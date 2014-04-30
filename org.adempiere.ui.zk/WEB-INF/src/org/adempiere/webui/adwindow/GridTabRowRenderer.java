@@ -411,7 +411,6 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
     			editor.getComponent().setWidgetOverride("fieldDescription", HelpController.escapeJavascriptContent(gridPanelFields[i].getDescription()));
     			editor.getComponent().setWidgetOverride("fieldHelp", HelpController.escapeJavascriptContent(gridPanelFields[i].getHelp()));
     			editor.getComponent().setWidgetListener("onFocus", "zWatch.fire('onFieldTooltip', this, null, this.fieldHeader(), this.fieldDescription(), this.fieldHelp());");
-    			editor.getComponent().setWidgetListener("onBlur", "zWatch.fire('onFieldTooltip', this);");
     			
     			//	Default Focus
     			if (defaultFocusField == null && gridPanelFields[i].isDefaultFocus())

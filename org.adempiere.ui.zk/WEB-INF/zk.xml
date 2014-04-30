@@ -23,6 +23,9 @@
 		<processing-prompt-delay>500</processing-prompt-delay>
 	</client-config>
 
+	<desktop-config>
+	    <desktop-timeout>-1</desktop-timeout>
+	</desktop-config>
 	<!--
 		<language-config> <addon-uri>/WEB-INF/lang-addon.xml</addon-uri>
 		</language-config>

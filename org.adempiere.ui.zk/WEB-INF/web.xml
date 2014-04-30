@@ -84,6 +84,10 @@
 			<param-name>update-uri</param-name>
 			<param-value>/zkau</param-value>
 		</init-param>
+		<init-param> 
+			<param-name>compress</param-name>
+			<param-value>false</param-value> 
+		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
@@ -100,6 +104,10 @@
 		<servlet-class>
 			org.zkoss.zk.au.http.DHtmlUpdateServlet
 		</servlet-class>
+		<init-param> 
+			<param-name>compress</param-name>
+			<param-value>false</param-value> 
+		</init-param> 
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>auEngine</servlet-name>

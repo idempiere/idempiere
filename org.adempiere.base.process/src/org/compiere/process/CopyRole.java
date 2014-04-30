@@ -21,9 +21,12 @@ package org.compiere.process;
 
 import java.math.BigDecimal;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.I_AD_Role_Included;
+import org.compiere.model.MRole;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 
 /**
@@ -72,13 +75,17 @@ public class CopyRole extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{	
+		if (! MRole.getDefault().isAccessAdvanced()) {
+			throw new AdempiereException(Msg.getMsg(getCtx(), "CannotAccessProcess", new Object[] {getProcessInfo().getAD_Process_ID(), MRole.getDefault().getName()}));
+		}
+
 		String[] tables = new String[] {"AD_Window_Access", "AD_Process_Access", "AD_Form_Access",
-				"AD_Workflow_Access", "AD_Task_Access", "AD_Document_Action_Access",
-				I_AD_Role_Included.Table_Name,
+				"AD_Workflow_Access", "AD_Task_Access", "AD_Document_Action_Access", "AD_InfoWindow_Access",
+				I_AD_Role_Included.Table_Name
 		};
 		String[] keycolumns = new String[] {"AD_Window_ID", "AD_Process_ID", "AD_Form_ID",
-				"AD_Workflow_ID", "AD_Task_ID", "C_DocType_ID, AD_Ref_List_ID",
-				I_AD_Role_Included.COLUMNNAME_Included_Role_ID,
+				"AD_Workflow_ID", "AD_Task_ID", "C_DocType_ID, AD_Ref_List_ID", "AD_InfoWindow_ID",
+				I_AD_Role_Included.COLUMNNAME_Included_Role_ID
 		};
 		
 		int action = 0;
@@ -94,6 +101,7 @@ public class CopyRole extends SvrProcess
 			
 			final boolean column_IsReadWrite =
 				!table.equals("AD_Document_Action_Access")
+				&& !table.equals("AD_InfoWindow_Access")
 				&& !table.equals(I_AD_Role_Included.Table_Name);
 			final boolean column_SeqNo = table.equals(I_AD_Role_Included.Table_Name); 
 			
@@ -126,4 +134,5 @@ public class CopyRole extends SvrProcess
 	
 		return "Role copied";
 	}	//	doIt
-			}	//	CopyRole
+
+}	//	CopyRole

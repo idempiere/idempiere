@@ -527,7 +527,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         			editor.getComponent().setWidgetOverride("fieldDescription", HelpController.escapeJavascriptContent(field.getDescription()));
         			editor.getComponent().setWidgetOverride("fieldHelp", HelpController.escapeJavascriptContent(field.getHelp()));
         			editor.getComponent().setWidgetListener("onFocus", "zWatch.fire('onFieldTooltip', this, null, this.fieldHeader(), this.fieldDescription(), this.fieldHelp());");
-        			editor.getComponent().setWidgetListener("onBlur", "zWatch.fire('onFieldTooltip', this);");
         			
         			editor.setGridTab(this.getGridTab());
         			field.addPropertyChangeListener(editor);

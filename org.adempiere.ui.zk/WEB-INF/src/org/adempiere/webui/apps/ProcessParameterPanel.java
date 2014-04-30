@@ -286,7 +286,6 @@ public class ProcessParameterPanel extends Panel implements
 		WEditor editor = WebEditorFactory.getEditor(mField, false);
 		editor.setProcessParameter(true);
 		editor.getComponent().addEventListener(Events.ON_FOCUS, this);
-		editor.getComponent().addEventListener(Events.ON_BLUR, this);		
 		editor.addValueChangeListener(this);
 		editor.dynamicDisplay();
 		// MField => VEditor - New Field value to be updated to editor
@@ -343,7 +342,6 @@ public class ProcessParameterPanel extends Panel implements
 			//override attribute
 			editor2.getComponent().setWidgetAttribute("columnName", mField2.getColumnName()+"_To");
 			editor2.getComponent().addEventListener(Events.ON_FOCUS, this);
-			editor2.getComponent().addEventListener(Events.ON_BLUR, this);
 			// New Field value to be updated to editor
 			mField2.addPropertyChangeListener(editor2);
 			editor2.dynamicDisplay();
@@ -695,25 +693,6 @@ public class ProcessParameterPanel extends Panel implements
     			if (editor != null && editor.getComponent() != null && editor.isComponentOfEditor(event.getTarget()))
     			{
         			SessionManager.getAppDesktop().updateHelpTooltip(editor.getGridField());
-        			return;
-    			}
-    		}
-    	}
-    	else if (event.getName().equals(Events.ON_BLUR)) {
-    		for (WEditor editor : m_wEditors)
-    		{
-    			if (editor.isComponentOfEditor(event.getTarget()))
-    			{
-        			SessionManager.getAppDesktop().updateHelpTooltip(null);
-        			return;
-    			}
-    		}
-    		
-    		for (WEditor editor : m_wEditors2)
-    		{
-    			if (editor != null && editor.getComponent() != null && editor.isComponentOfEditor(event.getTarget()))
-    			{
-        			SessionManager.getAppDesktop().updateHelpTooltip(null);
         			return;
     			}
     		}
