@@ -533,7 +533,8 @@ public class DocumentEngine implements DocAction
 			if (m_document.voidIt())
 			{
 				m_status = STATUS_Voided;
-				m_document.setDocStatus(m_status);
+				if (!m_document.getDocStatus().equals(STATUS_Reversed))
+					m_document.setDocStatus(m_status);
 				return true;
 			}
 			return false;

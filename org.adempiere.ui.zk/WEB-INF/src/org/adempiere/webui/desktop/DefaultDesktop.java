@@ -588,6 +588,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	@Override
 	public void updateHelpContext(String ctxType, int recordId) {
+		Clients.response(new AuScript("zWatch.fire('onFieldTooltip', this);"));
 		helpController.renderCtxHelp(ctxType, recordId);
 	}
 
