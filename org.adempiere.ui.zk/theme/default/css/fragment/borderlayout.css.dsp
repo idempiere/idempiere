@@ -21,7 +21,7 @@
 }
 
 .z-west-collapsed > .z-borderlayout-icon {
-	width: 12px; right: auto;
+	right: 0px;
 }
 
 .z-east-collapsed {
@@ -29,8 +29,7 @@
 	width: 24px;
 }
 .z-east-collapsed > .z-borderlayout-icon {
-	width: 12px; 
-	left: auto;
+	left: 0px;
 }
 
 .z-borderlayout, .z-north, .z-center, .z-south {
