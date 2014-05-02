@@ -551,9 +551,11 @@ public class GridField
 
 		//	No defaults for these fields
 		if (m_vo.IsKey || m_vo.displayType == DisplayType.RowID 
-			|| DisplayType.isLOB(m_vo.displayType))
+			|| DisplayType.isLOB(m_vo.displayType)
+			|| "Created".equals(m_vo.ColumnName) // for Created/Updated default is managed on PO, and direct inserts on DB
+			|| "Updated".equals(m_vo.ColumnName))
 			return null;
-		//	Set Parent to context if not explitly set
+		//	Set Parent to context if not explicitly set
 		if (isParentValue()
 			&& (m_vo.DefaultValue == null || m_vo.DefaultValue.length() == 0))
 		{
