@@ -985,6 +985,25 @@ public class Doc_Invoice extends Doc
 						fl.setDescription(desc);
 						fl.setM_Product_ID(lca.getM_Product_ID());
 						fl.setQty(line.getQty());
+						
+						BigDecimal underAmt = estimatedAmt.subtract(allocationAmt);
+						drAmt = dr ? (reversal ? underAmt : null) : (reversal ? null : underAmt);
+						crAmt = dr ? (reversal ? null : underAmt) : (reversal ? underAmt : null);
+						account = zeroQty ? pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as) : pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+						fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
+						fl.setDescription(desc);
+						fl.setM_Product_ID(lca.getM_Product_ID());
+						fl.setQty(line.getQty());
+					}
+					else
+					{
+						drAmt = dr ? (reversal ? null : allocationAmt) : (reversal ? allocationAmt : null);
+						crAmt = dr ? (reversal ? allocationAmt : null) : (reversal ? null : allocationAmt);
+						account = pc.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
+						FactLine fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
+						fl.setDescription(desc);
+						fl.setM_Product_ID(lca.getM_Product_ID());
+						fl.setQty(line.getQty());
 					}
 				}
 			} 
