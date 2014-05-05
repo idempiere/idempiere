@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -489,6 +490,7 @@ public class Scheduler extends AdempiereServer
 					+ " - cannot evaluate=" + variable);
 				return null;
 			}
+			String tail=index < (columnName.length()-1) ? columnName.substring(index+1) : null;
 			columnName = columnName.substring(0, index);
 			//	try Env
 			String env = Env.getContext(m_schedulerctx, columnName);
@@ -503,6 +505,47 @@ public class Scheduler extends AdempiereServer
 			}
 			else
 				value = env;
+			
+			if (tail != null && columnName.equals("#Date"))
+			{
+				tail = tail.trim();
+				if (tail.startsWith("-") || tail.startsWith("+"))
+				{
+					boolean negate = tail.startsWith("-");
+					int type = Calendar.DATE;
+					tail = tail.substring(1);
+					if (tail.endsWith("d")) 
+					{
+						tail = tail.substring(0, tail.length()-1);
+					}
+					else if (tail.endsWith("m"))
+					{
+						type = Calendar.MONTH;
+						tail = tail.substring(0, tail.length()-1);
+					}
+					else if (tail.endsWith("y"))
+					{
+						type = Calendar.YEAR;
+						tail = tail.substring(0, tail.length()-1);
+					}
+					
+					int toApply = 0;
+					try
+					{
+						toApply = Integer.parseInt(tail);
+					} catch(Exception e){}
+					if (toApply > 0)
+					{
+						if (negate) toApply = toApply * -1;
+						Timestamp ts = toTimestamp(value);
+						Calendar cal = Calendar.getInstance();
+						cal.setTimeInMillis(ts.getTime());
+						cal.add(type, toApply);				
+						value = new Timestamp(cal.getTimeInMillis());
+					}
+				}
+				
+			}
 		}	//	@variable@
 		return value;
 	}
