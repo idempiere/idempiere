@@ -355,7 +355,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			int AD_Client_ID = Env.getAD_Client_ID(m_ctx);
 			int AD_User_ID = Env.getAD_User_ID(m_ctx);
 			
-			int count = new Query(m_ctx, MPInstance.Table_Name, "NVL(AD_User_ID,0)=? AND IsProcessing='Y'", null)
+			int count = new Query(m_ctx, MPInstance.Table_Name, "Coalesce(AD_User_ID,0)=? AND IsProcessing='Y' AND IsRunAsJob='Y' ", null)
 			.setOnlyActiveRecords(true)
 			.setClient_ID()
 			.setParameters(AD_User_ID)
@@ -363,14 +363,14 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			if (count >= MSysConfig.getIntValue(MSysConfig.BACKGROUND_JOB_MAX_PER_USER, 5, AD_Client_ID))
 				throw new IllegalStateException(Msg.getMsg(m_ctx, "BackgroundJobExceedMaxPerUser"));
 			
-			count = new Query(m_ctx, MPInstance.Table_Name, "IsProcessing='Y'", null)
+			count = new Query(m_ctx, MPInstance.Table_Name, "IsProcessing='Y' AND IsRunAsJob='Y' ", null)
 			.setOnlyActiveRecords(true)
 			.setClient_ID()
 			.count();
 			if (count >= MSysConfig.getIntValue(MSysConfig.BACKGROUND_JOB_MAX_PER_CLIENT, 10, AD_Client_ID))
 				throw new IllegalStateException(Msg.getMsg(m_ctx, "BackgroundJobExceedMaxPerClient"));
 			
-			count = new Query(m_ctx, MPInstance.Table_Name, "IsProcessing='Y'", null)
+			count = new Query(m_ctx, MPInstance.Table_Name, "IsProcessing='Y' AND IsRunAsJob='Y' ", null)
 			.setOnlyActiveRecords(true)
 			.count();
 			if (count >= MSysConfig.getIntValue(MSysConfig.BACKGROUND_JOB_MAX_IN_SYSTEM, 20))
