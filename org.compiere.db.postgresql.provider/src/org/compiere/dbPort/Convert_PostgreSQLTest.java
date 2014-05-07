@@ -140,6 +140,11 @@ public final class Convert_PostgreSQLTest extends TestCase{
         sqe = "INSERT INTO t_alter_column values('pp_order_nodenext','PP_Order_NodeNext_ID',null,'NULL',null)";
         r = convert.convert(sql);
         assertEquals(sqe, r[0].trim());
+        
+        sql = "ALTER TABLE C_InvoiceTax ADD Created DATE DEFAULT SYSDATE NOT NULL";
+        sqe = "ALTER TABLE C_InvoiceTax ADD COLUMN Created TIMESTAMP DEFAULT statement_timestamp() NOT NULL";
+        r = convert.convert(sql);
+        assertEquals(sqe, r[0].trim());
 	}
 
 	// Convert.recoverQuotedStrings() error on strings with "<-->" - teo_sarca [ 1705768 ]
