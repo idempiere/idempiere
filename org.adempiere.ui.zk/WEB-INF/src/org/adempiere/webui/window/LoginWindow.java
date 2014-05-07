@@ -168,6 +168,12 @@ public class LoginWindow extends FWindow implements EventListener<Event>
         	   changePasswordPanel.validateChangePassword();
         	   return;
            }
+           
+           ResetPasswordPanel resetPasswordPanel = (ResetPasswordPanel)this.getFellowIfAny("resetPasswordPanel");
+           if (resetPasswordPanel != null){
+        	   resetPasswordPanel.validate();
+        	   return;
+           }
        }
     }
     
