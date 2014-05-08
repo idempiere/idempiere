@@ -48,7 +48,7 @@ public class Callout_AD_Column extends CalloutEngine
 			column.setIsIdentifier(false);
 			column.setIsUpdateable(false);
 			column.setIsAlwaysUpdateable(false);
-			column.setIsKey(true);
+			column.setIsKey(false);
 		} else if (column.getAD_Table().getTableName().concat("_ID").equals(column.getColumnName())) {
 			// ID key column
 			column.setAD_Reference_ID(DisplayType.ID);
@@ -61,6 +61,7 @@ public class Callout_AD_Column extends CalloutEngine
 			column.setIsIdentifier(false);
 			column.setIsUpdateable(false);
 			column.setIsAlwaysUpdateable(false);
+			column.setIsKey(true);
 		} else {
 			// get defaults from most used case
 			String sql = ""
