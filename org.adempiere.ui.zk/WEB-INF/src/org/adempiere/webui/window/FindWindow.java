@@ -2006,8 +2006,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
     	if (null!=selectedHistoryItem && selectedHistoryItem.toString().length() > 0 && getHistoryDays(selectedHistoryValue) > 0)
     	{
-    		StringBuilder where = new StringBuilder();
-    		where.append("Created >= ");
+    		StringBuilder where = new StringBuilder(m_tableName);
+    		where.append(".Created >= ");
     		where.append("SysDate-").append(getHistoryDays(selectedHistoryValue));
     		m_query.addRestriction(where.toString());
     	}
