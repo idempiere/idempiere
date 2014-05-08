@@ -81,7 +81,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9086333125844297957L;
+	private static final long serialVersionUID = -2699974883136279635L;
 
 	/**
 	 *  Field Constructor.
@@ -1348,6 +1348,19 @@ public class GridField
 	public boolean isKey()
 	{
 		return m_vo.IsKey;
+	}
+	/**
+	 * 	UUID
+	 *	@return is UUID
+	 */
+	public boolean isUUID()
+	{
+		if (getGridTab() != null) {
+			if (m_vo.ColumnName.equals(PO.getUUIDColumnName(getGridTab().getTableName()))) {
+				return true;
+			}
+		}
+		return false;
 	}
 	/**
 	 * 	Parent Column
