@@ -45,6 +45,7 @@ import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Image;
 
 /**
@@ -274,6 +275,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     
     public void validateChangePassword()
     {
+    	Clients.clearBusy();
     	String oldPassword = txtOldPassword.getValue();
     	String newPassword = txtNewPassword.getValue();
     	String retypeNewPassword = txtRetypeNewPassword.getValue();

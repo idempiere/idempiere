@@ -503,7 +503,8 @@ public class GLJournalGenerate extends SvrProcess
 							AD_OrgTrx_ID, C_LocFrom_ID, C_LocTo_ID,
 							C_SalesRegion_ID, C_Project_ID, C_Campaign_ID,
 							C_Activity_ID, User1_ID, User2_ID, UserElement1_ID,
-							UserElement2_ID);
+							UserElement2_ID,
+							get_TrxName());
 					if (combination == null)
 						throw new AdempiereException("Could not create combination");
 		        }

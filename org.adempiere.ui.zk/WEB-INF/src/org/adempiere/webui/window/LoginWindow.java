@@ -153,14 +153,26 @@ public class LoginWindow extends FWindow implements EventListener<Event>
            if (rolePanel != null)
            {
                rolePanel.validateRoles();
+               return;
            }
-           else 
+           
+           LoginPanel loginPanel = (LoginPanel)this.getFellowIfAny("loginPanel");
+           if (loginPanel != null)
            {
-	           LoginPanel loginPanel = (LoginPanel)this.getFellowIfAny("loginPanel");
-	           if (loginPanel != null)
-	           {
-	               loginPanel.validateLogin();
-	           }
+               loginPanel.validateLogin();
+               return;
+           }
+           
+           ChangePasswordPanel changePasswordPanel = (ChangePasswordPanel)this.getFellowIfAny("changePasswordPanel");
+           if (changePasswordPanel != null){
+        	   changePasswordPanel.validateChangePassword();
+        	   return;
+           }
+           
+           ResetPasswordPanel resetPasswordPanel = (ResetPasswordPanel)this.getFellowIfAny("resetPasswordPanel");
+           if (resetPasswordPanel != null){
+        	   resetPasswordPanel.validate();
+        	   return;
            }
        }
     }

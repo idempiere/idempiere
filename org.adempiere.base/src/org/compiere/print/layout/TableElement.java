@@ -314,6 +314,15 @@ public class TableElement extends PrintElement
 			for (int row = 0; row < rows; row++)
 			{
 				m_data.setRowIndex(row);
+				// define if all the row is null
+				boolean isNullRow = true;
+				for (Serializable element : m_data.getRowData()) {
+					if (element != null) {
+						isNullRow = false;
+						break;
+					}
+				}
+				//
 				if (dataSizes.getRowCount() <= row) 
 				{
 					dataSizes.addRow(new ArrayList<Dimension2DImpl>());
@@ -331,7 +340,9 @@ public class TableElement extends PrintElement
 				if (dataItem == null)
 				{
 					//ensure fixed column width respected even when data is null
-					if (m_columnMaxWidth[col] != 0 && m_columnMaxWidth[col] != -1 && m_fixedWidth[col])
+					if (   m_columnMaxWidth[dataCol] >= 0  // the data column is not suppress null
+						&& m_fixedWidth[col]               // the print column (below column) has fixed width
+						&& !isNullRow)
 					{
 						dataItem = " ";
 					}

@@ -162,7 +162,7 @@ public class HelpWindow extends Window {
 		td.setClass("help-window-tabs");
 		tr.addElement(td);
 		td.addElement(new a().setName(winpref+"Tabs"));
-		h4 h4 = new h4("Tabs");
+		h4 h4 = new h4(Msg.getMsg(Env.getCtx(), "Tabs"));
 		td.addElement(h4);
 		
 		tr = new tr();
@@ -332,7 +332,7 @@ public class HelpWindow extends Window {
 		td td = new td();
 		tr.addElement(td);
 		td.addElement(new a().setName(winpref+"Fields"+tabIndex));
-		h4 h4 = new h4("Fields");
+		h4 h4 = new h4(Msg.getMsg(Env.getCtx(), "Fields"));
 		td.addElement(h4);
 		
 		tr = new tr();

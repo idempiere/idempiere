@@ -41,8 +41,28 @@ public class MAccount extends X_C_ValidCombination
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1936396369349550834L;
+	private static final long serialVersionUID = 7980515458720808532L;
 
+	/*
+	 * Deprecated - use the same method with trxName instead
+	 */
+	@Deprecated
+	public static MAccount get(Properties ctx, int ad_Client_ID, int ad_Org_ID,
+			int c_AcctSchema_ID, int new_account_id, int c_SubAcct_ID,
+			int m_Product_ID, int c_BPartner_ID, int ad_OrgTrx_ID,
+			int c_LocFrom_ID, int c_LocTo_ID, int c_SalesRegion_ID,
+			int c_Project_ID, int c_Campaign_ID, int c_Activity_ID,
+			int user1_ID, int user2_ID, int userElement1_ID,
+			int userElement2_ID) {
+		return get(ctx, ad_Client_ID, ad_Org_ID,
+				c_AcctSchema_ID, new_account_id, c_SubAcct_ID,
+				m_Product_ID, c_BPartner_ID, ad_OrgTrx_ID,
+				c_LocFrom_ID, c_LocTo_ID, c_SalesRegion_ID,
+				c_Project_ID, c_Campaign_ID, c_Activity_ID,
+				user1_ID, user2_ID, userElement1_ID,
+				userElement2_ID, null);
+	}
+	
 	/**
 	 * 	Get existing Account or create it 
 	 *	@param ctx context
@@ -64,6 +84,7 @@ public class MAccount extends X_C_ValidCombination
 	 *	@param User2_ID
 	 *	@param UserElement1_ID
 	 *	@param UserElement2_ID
+	 *	@param trxName
 	 *	@return account or null
 	 */
 	public static MAccount get (Properties ctx, 
@@ -72,7 +93,8 @@ public class MAccount extends X_C_ValidCombination
 		int M_Product_ID, int C_BPartner_ID, int AD_OrgTrx_ID, 
 		int C_LocFrom_ID, int C_LocTo_ID, int C_SalesRegion_ID, 
 		int C_Project_ID, int C_Campaign_ID, int C_Activity_ID,
-		int User1_ID, int User2_ID, int UserElement1_ID, int UserElement2_ID)
+		int User1_ID, int User2_ID, int UserElement1_ID, int UserElement2_ID,
+		String trxName)
 	{
 		StringBuilder info = new StringBuilder();
 		info.append("AD_Client_ID=").append(AD_Client_ID).append(",AD_Org_ID=").append(AD_Org_ID);
@@ -192,7 +214,7 @@ public class MAccount extends X_C_ValidCombination
 		}
 		//	whereClause.append(" ORDER BY IsFullyQualified DESC");
 		
-		MAccount existingAccount = new Query(ctx, MAccount.Table_Name, whereClause.toString(), null)
+		MAccount existingAccount = new Query(ctx, MAccount.Table_Name, whereClause.toString(), trxName)
 										.setParameters(params)
 										.setOnlyActiveRecords(true)
 										.firstOnly();
@@ -202,7 +224,7 @@ public class MAccount extends X_C_ValidCombination
 			return existingAccount;
 
 		//	New
-		MAccount newAccount = new MAccount (ctx, 0, null);
+		MAccount newAccount = new MAccount (ctx, 0, trxName);
 		newAccount.setClientOrg(AD_Client_ID, AD_Org_ID);
 		newAccount.setC_AcctSchema_ID(C_AcctSchema_ID);
 		newAccount.setAccount_ID(Account_ID);
@@ -821,6 +843,6 @@ public class MAccount extends X_C_ValidCombination
 		System.out.println(acct2);
 		
 	}	//	main
-	
+
 }	//	Account
 

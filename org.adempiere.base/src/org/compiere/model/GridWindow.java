@@ -458,7 +458,7 @@ public class GridWindow implements Serializable
 		if (getHelp().length() != 0)
 			center.addElement(new p().addElement(getHelp()));
 
-		center.addElement(new a().setName("Tabs")).addElement(new h3("Tabs").addAttribute("ALIGN", "left"));
+		center.addElement(new a().setName("Tabs")).addElement(new h3(Msg.getMsg(Env.getCtx(), "Tabs")).addAttribute("ALIGN", "left"));
 		//	List of all Tabs in current window
 		int size = getTabCount();
 		p p = new p();
@@ -502,7 +502,7 @@ public class GridWindow implements Serializable
 				td.addElement(new p().addElement(tab.getHelp()));
 			//	Links to Fields
 			td.addElement(new a().setName("Fields"+i));
-			td.addElement(new h4("Fields").addAttribute("ALIGN", "left"));
+			td.addElement(new h4(Msg.getMsg(Env.getCtx(), "Fields")).addAttribute("ALIGN", "left"));
 			p = new p();
 			if (!tab.isLoadComplete())
 				this.initTab(i);

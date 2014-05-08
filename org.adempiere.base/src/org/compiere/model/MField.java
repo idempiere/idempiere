@@ -51,6 +51,7 @@ public class MField extends X_AD_Field
 			setEntityType (ENTITYTYPE_UserMaintained);	// U
 			setIsCentrallyMaintained (true);	// Y
 			setIsDisplayed (true);	// Y
+			setIsDisplayedGrid (true);	// Y
 			setIsEncrypted (false);
 			setIsFieldOnly (false);
 			setIsHeading (false);

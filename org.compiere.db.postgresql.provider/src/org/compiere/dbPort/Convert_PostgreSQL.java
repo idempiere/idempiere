@@ -1013,7 +1013,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 						} else {
 							rest = "";
 						}
-						if (defaultvalue.equalsIgnoreCase("NULL")) {
+						if (defaultvalue.equalsIgnoreCase("NULL") || defaultvalue.equalsIgnoreCase("statement_timestamp()")) {
 							DDL = sqlStatement.substring(0, begin_col
 									- action.length())
 									+ " ADD COLUMN "
