@@ -760,15 +760,29 @@ public class MJournal extends X_GL_Journal implements DocAction
 		reverse.setReversal_ID(getGL_Journal_ID());
 		if (!reverse.save())
 			return null;
+
+		//	Lines
+		reverse.copyLinesFrom(this, null, 'C');
+		//
+		if (!reverse.processIt(DocAction.ACTION_Complete))
+		{
+			m_processMsg = "Reversal ERROR: " + reverse.getProcessMsg();
+			return null;
+		}
+		reverse.closeIt();
+		reverse.setProcessing(false);
+		reverse.setDocStatus(DOCSTATUS_Reversed);
+		reverse.setDocAction(DOCACTION_None);
+		reverse.saveEx(get_TrxName());
+		//
 		msgd = new StringBuilder("(").append(reverse.getDocumentNo()).append("<-)");
 		addDescription(msgd.toString());
 		
-		//	Lines
-		reverse.copyLinesFrom(this, null, 'C');
 		//
 		setProcessed(true);
 		//FR [ 1948157  ] 
 		setReversal_ID(reverse.getGL_Journal_ID());
+		setDocStatus(DOCSTATUS_Reversed);
 		setDocAction(DOCACTION_None);
 		return reverse;
 	}	//	reverseCorrectionIt
@@ -814,19 +828,31 @@ public class MJournal extends X_GL_Journal implements DocAction
 		reverse.set_ValueNoCheck ("C_Period_ID", null);		//	reset
 		reverse.setDateAcct(reverse.getDateDoc());
 		//	Reverse indicator
-		StringBuilder description;
-		if (reverse.getDescription() == null)
-			description = new StringBuilder("** ").append(getDocumentNo()).append(" **");
-		else
-			description = new StringBuilder(reverse.getDescription()).append(" ** ").append(getDocumentNo()).append(" **");
-		reverse.setDescription(description.toString());
+		StringBuilder msgd = new StringBuilder("(->").append(getDocumentNo()).append(")");
+		reverse.addDescription(msgd.toString());
+		reverse.setReversal_ID(getGL_Journal_ID());
 		if (!reverse.save())
 			return null;
-		
 		//	Lines
 		reverse.copyLinesFrom(this, reverse.getDateAcct(), 'R');
 		//
+		if (!reverse.processIt(DocAction.ACTION_Complete))
+		{
+			m_processMsg = "Reversal ERROR: " + reverse.getProcessMsg();
+			return null;
+		}
+		reverse.closeIt();
+		reverse.setProcessing(false);
+		reverse.setDocStatus(DOCSTATUS_Reversed);
+		reverse.setDocAction(DOCACTION_None);
+		reverse.saveEx(get_TrxName());
+		//
+		msgd = new StringBuilder("(").append(reverse.getDocumentNo()).append("<-)");
+		addDescription(msgd.toString());
+
 		setProcessed(true);
+		setReversal_ID(reverse.getGL_Journal_ID());
+		setDocStatus(DOCSTATUS_Reversed);
 		setDocAction(DOCACTION_None);
 		return reverse;
 	}	//	reverseAccrualIt
