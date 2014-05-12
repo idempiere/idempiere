@@ -198,7 +198,7 @@ public class Doc_MatchPO extends Doc
 		{
 			BigDecimal totalAmt = allocation.getAmt();
 			BigDecimal totalQty = allocation.getQty();
-			BigDecimal amt = totalAmt.multiply(m_ioLine.getMovementQty()).divide(totalQty, as.getCostingPrecision(), RoundingMode.HALF_UP);			
+			BigDecimal amt = totalAmt.multiply(m_ioLine.getMovementQty()).divide(totalQty, 12, RoundingMode.HALF_UP);			
 			if (m_oLine.getC_Currency_ID() != as.getC_Currency_ID())
 			{
 				MOrder order = m_oLine.getParent();
@@ -213,11 +213,11 @@ public class Doc_MatchPO extends Doc
 					return null;
 				}
 				amt = amt.multiply(rate);
-				if (amt.scale() > as.getCostingPrecision())
-					amt = amt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
 			}
-			amt = amt.divide(getQty(), as.getCostingPrecision(), RoundingMode.HALF_UP);
+			amt = amt.divide(getQty(), 12, RoundingMode.HALF_UP);
 			landedCost = landedCost.add(amt);
+			if (landedCost.scale() > as.getCostingPrecision())
+				landedCost = landedCost.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
 			int elementId = allocation.getC_OrderLandedCost().getM_CostElement_ID();
 			BigDecimal elementAmt = landedCostMap.get(elementId);
 			if (elementAmt == null) 
@@ -442,6 +442,8 @@ public class Doc_MatchPO extends Doc
 					return error;
 			}
 			
+			if (tAmt.scale() > as.getCostingPrecision())
+				tAmt = tAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
 			// Set Total Amount and Total Quantity from Matched PO 
 			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
 					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
@@ -471,6 +473,8 @@ public class Doc_MatchPO extends Doc
 		{
 			BigDecimal amt = landedCostMap.get(elementId);
 			amt = amt.multiply(tQty);
+			if (amt.scale() > as.getCostingPrecision())
+				amt = amt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
 			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
 					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
 					m_oLine.getC_OrderLine_ID(), elementId,

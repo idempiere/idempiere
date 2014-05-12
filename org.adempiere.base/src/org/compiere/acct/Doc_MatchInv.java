@@ -508,7 +508,7 @@ public class Doc_MatchInv extends Doc
 			{
 				BigDecimal totalAmt = allocation.getAmt();
 				BigDecimal totalQty = allocation.getQty();
-				BigDecimal amt = totalAmt.multiply(tQty).divide(totalQty, BigDecimal.ROUND_HALF_UP);			
+				BigDecimal amt = totalAmt.multiply(tQty).divide(totalQty, 12, BigDecimal.ROUND_HALF_UP);			
 				if (orderLine.getC_Currency_ID() != as.getC_Currency_ID())
 				{
 					I_C_Order order = orderLine.getC_Order();
