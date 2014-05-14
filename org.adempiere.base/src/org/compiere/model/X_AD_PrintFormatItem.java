@@ -398,6 +398,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public static final String BARCODETYPE_Code39LinearWOChecksum = "c39";
 	/** EAN 13 = E13 */
 	public static final String BARCODETYPE_EAN13 = "E13";
+	/** UPCA = UPCA*/
+	public static final String BARCODETYPE_UPCA = "UPA";
 	/** Set Barcode Type.
 		@param BarcodeType 
 		Type of barcode
