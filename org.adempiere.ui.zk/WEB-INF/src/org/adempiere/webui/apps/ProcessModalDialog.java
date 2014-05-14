@@ -16,45 +16,24 @@
  *****************************************************************************/
 package org.adempiere.webui.apps;
 
-import java.io.File;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.Future;
 import java.util.logging.Level;
 
-import org.adempiere.util.Callback;
-import org.adempiere.util.ContextRunnable;
-import org.adempiere.util.IProcessUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
-import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
-import org.adempiere.webui.window.FDialog;
-import org.adempiere.webui.window.MultiFileDownloadDialog;
-import org.compiere.Adempiere;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.Msg;
-import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Html;
 import org.zkoss.zul.Vlayout;
 
 /**
@@ -68,20 +47,18 @@ import org.zkoss.zul.Vlayout;
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
  */
-public class ProcessModalDialog extends Window implements EventListener<Event>, IProcessUI, DialogEvents
+public class ProcessModalDialog extends AbstractProcessDialog implements EventListener<Event>, DialogEvents
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3708004619583382450L;
+	private static final long serialVersionUID = -3260639688339379279L;
 
-	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
-	private static final String ON_COMPLETE = "onComplete";
-	
-	private boolean m_autoStart;
 	private VerticalBox dialogBody;
-	
-	private List<File> downloadFiles;
+
+	/**	Logger			*/
+	private static CLogger log = CLogger.getCLogger(ProcessModalDialog.class);
+	//
 
 	/**
 	 * @param aProcess
@@ -102,10 +79,7 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 	 */
 	public ProcessModalDialog(EventListener<Event> listener, int WindowNo, ProcessInfo pi, boolean autoStart)
 	{
-		m_ctx = Env.getCtx();
-		m_WindowNo = WindowNo;
-		m_pi = pi;
-		m_autoStart = autoStart;
+		super();
 		
 		if (listener != null) 
 		{
@@ -116,7 +90,7 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		try
 		{
 			initComponents();
-			init();
+			init(Env.getCtx(), WindowNo, pi.getAD_Process_ID(), pi, "100%", autoStart, true);
 		}
 		catch(Exception ex)
 		{
@@ -172,12 +146,10 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		dialogBody.appendChild(dialogContent);
 		Div div = new Div();
 		div.setId("message");
-		message = new Html();
-		div.appendChild(message);
+		div.appendChild(getMessage());
 		div.setStyle("max-height: 150pt; overflow: auto;");
 		dialogContent.appendChild(div);
-		centerPanel = new Panel();
-		dialogContent.appendChild(centerPanel);
+		dialogContent.appendChild(getCenterPanel());
 		Hbox hbox = new Hbox();
 		hbox.setWidth("100%");
 		hbox.setSclass("dialog-footer");
@@ -198,28 +170,6 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 
 	}
 
-	private int m_WindowNo;
-	private Properties m_ctx;
-	private String		    m_Name = null;
-	private StringBuffer	m_messageText = new StringBuffer();
-	private String          m_ShowHelp = null; // Determine if a Help Process Window is shown
-	private boolean m_valid = true;
-	private boolean m_cancel = false;
-
-	private Panel centerPanel = null;
-	private Html message = null;
-
-	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(ProcessModalDialog.class);
-	//
-	private ProcessParameterPanel parameterPanel = null;
-
-	private ProcessInfo m_pi = null;
-	private BusyDialog progressWindow;
-	private boolean isLocked = false;
-	private org.adempiere.webui.apps.ProcessModalDialog.ProcessDialogRunnable processDialogRunnable;
-	private Future<?> future;
-
 	/**
 	 * 	Set Visible
 	 * 	(set focus to OK if visible)
@@ -235,158 +185,39 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 	 */
 	public void dispose()
 	{
-		parameterPanel.restoreContext();
-		m_valid = false;
+		super.dispose();
+		getParameterPanel().restoreContext();
 		this.detach();
 	}	//	dispose
 
-	/**
-	 * is dialog still valid
-	 * @return boolean
-	 */
-	public boolean isValid()
+	@Override
+	public void autoStart() 
 	{
-		return m_valid;
+		this.getFirstChild().setVisible(false);
+		super.autoStart();
 	}
 
-	/**
-	 * @return true if user have press the cancel button to close the dialog
-	 */
-	public boolean isCancel()
-	{
-		return m_cancel;
-	}
-	
-	/**
-	 *	Dynamic Init
-	 *  @return true, if there is something to process (start from menu)
-	 */
-	public boolean init()
-	{
-		log.config("");
-		//
-		boolean trl = !Env.isBaseLanguage(m_ctx, "AD_Process");
-		String sql = "SELECT Name, Description, Help, IsReport, ShowHelp "
-				+ "FROM AD_Process "
-				+ "WHERE AD_Process_ID=?";
-		if (trl)
-			sql = "SELECT t.Name, t.Description, t.Help, p.IsReport, p.ShowHelp "
-				+ "FROM AD_Process p, AD_Process_Trl t "
-				+ "WHERE p.AD_Process_ID=t.AD_Process_ID"
-				+ " AND p.AD_Process_ID=? AND t.AD_Language=?";
-
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, m_pi.getAD_Process_ID());
-			if (trl)
-				pstmt.setString(2, Env.getAD_Language(m_ctx));
-			rs = pstmt.executeQuery();
-			if (rs.next())
-			{
-				m_Name = rs.getString(1);
-				m_ShowHelp = rs.getString(5);
-				//
-				m_messageText.append("<b>");
-				String s = rs.getString(2);		//	Description
-				if (rs.wasNull())
-					m_messageText.append(Msg.getMsg(m_ctx, "StartProcess?"));
-				else
-					m_messageText.append(s);
-				m_messageText.append("</b>");
-
-				s = rs.getString(3);			//	Help
-				if (!rs.wasNull())
-					m_messageText.append("<p>").append(s).append("</p>");
-			}
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-			return false;
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-		}
-
-		if (m_Name == null)
-			return false;
-		//
-		this.setTitle(m_Name);
-		message.setContent(m_messageText.toString());
-
-		//	Move from APanel.actionButton
-		m_pi.setAD_User_ID (Env.getAD_User_ID(Env.getCtx()));
-		m_pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
-		m_pi.setTitle(m_Name);
-		parameterPanel = new ProcessParameterPanel(m_WindowNo, m_pi);
-		centerPanel.getChildren().clear();
-		if ( parameterPanel.init() ) {
-			centerPanel.appendChild(parameterPanel);
-		} else {
-			if (m_ShowHelp != null && m_ShowHelp.equals("N")) {
-				m_autoStart = true;
-			}
-			if (m_autoStart) {
-				this.getFirstChild().setVisible(false);
-				startProcess();
-				return true;
-			}
-		}
-
-		// Check if the process is a silent one
-		if(isValid() && m_ShowHelp != null && m_ShowHelp.equals("S"))
-		{
-			this.getFirstChild().setVisible(false);
-			startProcess();
-		}
-		return true;
-	}	//	init
-
-	/**
-	 * launch process
-	 */
-	private void startProcess()
-	{		
-		m_pi.setPrintPreview(true);
-
-		lockUI(m_pi);
-		
-		downloadFiles = new ArrayList<File>();
-
-		//use echo, otherwise lock ui wouldn't work
-		Clients.response(new AuEcho(this, "runProcess", null));
-	}
-
-	private void showBusyDialog() {
+	@Override
+	public void showBusyDialog() {
 		this.setBorder("none");
 		this.setTitle(null);
 		dialogBody.setVisible(false);
 
-		progressWindow = new BusyDialog();
-		this.appendChild(progressWindow);
+		BusyDialog progressWindow = createBusyDialog();
 		if (this.getParent() != null)
 			LayoutUtils.openOverlappedWindow(this.getParent(), progressWindow, "middle_center");
 	}
-
-	/**
-	 * internal use, don't call this directly
-	 */
-	public void runProcess() {	
-		processDialogRunnable = new ProcessDialogRunnable();
-		future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(processDialogRunnable, getDesktop()));
+	
+	@Override
+	public void updateUI() {
+		
 	}
 	
-	private void hideBusyDialog() {
-		if (progressWindow != null) {
-			progressWindow.dispose();
-			progressWindow = null;
-		}
+	@Override
+	public void hideBusyDialog() {
+		closeBusyDialog();
 	}
-
+	
 	/**
 	 * handle events
 	 */
@@ -394,138 +225,12 @@ public class ProcessModalDialog extends Window implements EventListener<Event>, 
 		Component component = event.getTarget();
 		if (component instanceof Button) {
 			Button element = (Button)component;
-			if ("Ok".equalsIgnoreCase(element.getId())) {
-				onOK();
-			} else if ("Cancel".equalsIgnoreCase(element.getId())) {
-				onCancel();
-			}
-		} else if (event.getName().equals(ON_STATUS_UPDATE)) {
-			onStatusUpdate(event);
-		} else if (event.getName().equals(ON_COMPLETE)) {
-			onComplete();
+			if ("Ok".equalsIgnoreCase(element.getId()))
+				startProcess();
+			else if ("Cancel".equalsIgnoreCase(element.getId()))
+				cancelProcess();
+		} else {
+			super.onEvent(event);
 		}
-	}
-
-	private void onOK() {
-		if (!parameterPanel.validateParameters())
-			return;
-		this.startProcess();
-	}
-
-	private void onCancel() {
-		m_cancel = true;
-		this.dispose();
-	}
-
-	private void onStatusUpdate(Event event) {
-		String message = (String) event.getData();
-		if (progressWindow != null)
-			progressWindow.statusUpdate(message);
-	}
-
-	private void onComplete() {
-		if (future != null) {
-			try {
-				future.get();
-			} catch (Exception e) {
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-				if (!m_pi.isError()) {
-					m_pi.setSummary(e.getLocalizedMessage(), true);
-				}
-			}
-		}
-		future = null;			
-		processDialogRunnable = null;
-		unlockUI(m_pi);
-		if (downloadFiles.size() > 0) {
-			MultiFileDownloadDialog downloadDialog = new MultiFileDownloadDialog(downloadFiles.toArray(new File[0]));
-			downloadDialog.setPage(this.getPage());
-			downloadDialog.setTitle(m_pi.getTitle());
-			Events.postEvent(downloadDialog, new Event(MultiFileDownloadDialog.ON_SHOW));
-		}
-		dispose();		
-	}
-
-	@Override
-	public void lockUI(ProcessInfo pi) {
-		if (isLocked || Executions.getCurrent() == null)
-			return;
-		
-		showBusyDialog();
-		isLocked  = true;
-	}
-
-	@Override
-	public void unlockUI(ProcessInfo pi) {
-		if (!isLocked)
-			return;
-		
-		if (Executions.getCurrent() == null) {
-			Executions.schedule(getDesktop(), new EventListener<Event>() {
-				@Override
-				public void onEvent(Event event) throws Exception {
-					doUnlockUI();
-				}
-			}, new Event("onUnLockUI"));
-		} else {		
-			doUnlockUI();
-		}
-	}
-	
-	private void doUnlockUI() {
-		hideBusyDialog();
-		isLocked = false;
-	}
-
-	@Override
-	public boolean isUILocked() {
-		return isLocked;
-	}
-
-	@Override
-	public void statusUpdate(String message) {
-		Executions.schedule(getDesktop(), this, new Event(ON_STATUS_UPDATE, this, message));
-	}
-
-	/**
-	 * 
-	 * @return ProcessInfo
-	 */
-	public ProcessInfo getProcessInfo() {
-		return m_pi;
-	}
-	
-	class ProcessDialogRunnable extends ContextRunnable{		
-		ProcessDialogRunnable() {
-			super();
-		}
-		
-		protected void doRun() {
-			try {
-				if (log.isLoggable(Level.INFO))log.log(Level.INFO, "Process Info="+m_pi+" AD_Client_ID="+Env.getAD_Client_ID(Env.getCtx()));
-				WProcessCtl.process(ProcessModalDialog.this, m_WindowNo, parameterPanel, m_pi, null);
-			} catch (Exception ex) {
-				m_pi.setError(true);
-				m_pi.setSummary(ex.getLocalizedMessage());
-				log.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-			} finally {
-				Executions.schedule(getDesktop(), ProcessModalDialog.this, new Event(ON_COMPLETE, ProcessModalDialog.this, null));
-			}
-		}		
-	}
-
-	@Override
-	public void ask(final String message, final Callback<Boolean> callback) {
-		Executions.schedule(getDesktop(), new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				FDialog.ask(m_WindowNo, null, message, callback);
-			}
-		}, new Event("onAsk"));		
-	}
-
-	@Override
-	public void download(File file) {
-		downloadFiles.add(file);
-	}
+	}		
 }	//	ProcessDialog

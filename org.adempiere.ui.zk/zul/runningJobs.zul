@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zk>
+	<zscript>
+	<![CDATA[	
+		import org.adempiere.webui.theme.ThemeManager;
+		
+		var path = ThemeManager.getThemeResource("zul/dashboard/runningJobs.zul");
+	]]>
+	</zscript>
+	<include src="${path}"/>
+</zk>

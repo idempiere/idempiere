@@ -30,7 +30,7 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140404L;
+	private static final long serialVersionUID = 20140331L;
 
     /** Standard Constructor */
     public X_AD_PInstance (Properties ctx, int AD_PInstance_ID, String trxName)
@@ -41,6 +41,8 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 			setAD_PInstance_ID (0);
 			setAD_Process_ID (0);
 			setIsProcessing (false);
+			setIsRunAsJob (false);
+// N
 			setRecord_ID (0);
         } */
     }
@@ -224,6 +226,55 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 	public String getName () 
 	{
 		return (String)get_Value(COLUMNNAME_Name);
+	}
+
+	/** Set Run as Job.
+		@param IsRunAsJob Run as Job	  */
+	public void setIsRunAsJob (boolean IsRunAsJob)
+	{
+		set_Value (COLUMNNAME_IsRunAsJob, Boolean.valueOf(IsRunAsJob));
+	}
+
+	/** Get Run as Job.
+		@return Run as Job	  */
+	public boolean isRunAsJob () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsRunAsJob);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** NotificationType AD_Reference_ID=344 */
+	public static final int NOTIFICATIONTYPE_AD_Reference_ID=344;
+	/** EMail = E */
+	public static final String NOTIFICATIONTYPE_EMail = "E";
+	/** Notice = N */
+	public static final String NOTIFICATIONTYPE_Notice = "N";
+	/** None = X */
+	public static final String NOTIFICATIONTYPE_None = "X";
+	/** EMail+Notice = B */
+	public static final String NOTIFICATIONTYPE_EMailPlusNotice = "B";
+	/** Set Notification Type.
+		@param NotificationType 
+		Type of Notifications
+	  */
+	public void setNotificationType (String NotificationType)
+	{
+
+		set_Value (COLUMNNAME_NotificationType, NotificationType);
+	}
+
+	/** Get Notification Type.
+		@return Type of Notifications
+	  */
+	public String getNotificationType () 
+	{
+		return (String)get_Value(COLUMNNAME_NotificationType);
 	}
 
 	/** Set Record ID.
