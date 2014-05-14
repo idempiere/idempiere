@@ -229,6 +229,8 @@ public class PackOut
 			.append("-")
 			.append(client.getName());
 		atts.addAttribute("", "", "Client", "CDATA", sb.toString());
+		if (client.getAD_Client_UU() == null)
+			throw new IllegalStateException("2Pack requires UUID on AD_Client");
 		atts.addAttribute("", "", "AD_Client_UU", "CDATA", client.getAD_Client_UU());
 
 		packoutHandler.startElement("","","idempiere",atts);
