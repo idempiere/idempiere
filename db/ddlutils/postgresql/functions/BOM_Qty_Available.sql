@@ -4,6 +4,6 @@ BEGIN
 	RETURN bomQtyOnHand(Product_ID, Warehouse_ID, Locator_ID) - bomQtyReserved(Product_ID, Warehouse_ID, Locator_ID);
 END;
 $BODY$
-LANGUAGE 'plpgsql'
+LANGUAGE 'plpgsql' STABLE
 ;
 
