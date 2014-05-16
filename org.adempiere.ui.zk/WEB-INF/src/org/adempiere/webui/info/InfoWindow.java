@@ -40,6 +40,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.window.FDialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.EmbedWinInfo;
 import org.compiere.minigrid.IDColumn;
@@ -185,7 +186,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		for (int i = 0; i < identifiers.size(); i++) {
 			WEditor editor = identifiers.get(i);
 			editor.setValue(queryValue);
-			testCount();
+			testCount(false);
 			if (m_count > 0) {
 				break;
 			} else {
@@ -202,7 +203,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					WEditor editor = identifiers.get(i);
 					editor.setValue(values[i]);
 				}
-				testCount();
+				testCount(false);
 			} 
 		}
 		
@@ -1091,6 +1092,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	protected boolean testCount()
 	{
+		return testCount(true);
+	}
+	
+	/**
+	 * 	Test Row Count
+	 *	@return true if display
+	 */
+	private boolean testCount(boolean promptError)
+	{
 		long start = System.currentTimeMillis();
 		String dynWhere = getSQLWhere();
 		StringBuilder sql = new StringBuilder (m_sqlMain);
@@ -1136,6 +1146,16 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 		if (log.isLoggable(Level.FINE))
 			log.fine("#" + m_count + " - " + (System.currentTimeMillis()-start) + "ms");
+		
+		if (infoWindow.getMaxQueryRecords() > 0 && m_count > infoWindow.getMaxQueryRecords())
+		{
+			if (promptError)
+			{
+				FDialog.error(getWindowNo(), this, "InfoFindOverMax",
+		                m_count + " > " + infoWindow.getMaxQueryRecords());
+			}
+	        m_count = 0;
+		}
 
 		return true;
 	}	//	testCount

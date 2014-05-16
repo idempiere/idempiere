@@ -352,14 +352,17 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		cacheEnd = -1;
 
 		testCount();
-		m_useDatabasePaging = (m_count > 1000);
-		if (m_useDatabasePaging)
+		if (m_count > 0)
 		{
-			return ;
-		}
-		else
-		{
-			readLine(0, -1);
+			m_useDatabasePaging = (m_count > 1000);
+			if (m_useDatabasePaging)
+			{
+				return ;
+			}
+			else
+			{
+				readLine(0, -1);
+			}
 		}
 	}
 
