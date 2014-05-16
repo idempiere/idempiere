@@ -3147,4 +3147,11 @@ public final class APanel extends CPanel
 	public void download(File file) {
 	}
 
+	@Override
+	public void askForInput(String message, Callback<String> callback) {
+		String s = ADialog.askForInput(m_curWindowNo, this, message);
+		if(callback != null)
+			callback.onCallback(s);		
+	}
+
 }	//	APanel

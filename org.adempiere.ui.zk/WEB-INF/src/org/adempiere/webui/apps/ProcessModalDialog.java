@@ -233,4 +233,4 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 			super.onEvent(event);
 		}
 	}		
-}	//	ProcessDialog
+}	//	ProcessModalDialog

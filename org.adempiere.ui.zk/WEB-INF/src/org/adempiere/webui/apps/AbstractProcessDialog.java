@@ -733,4 +733,15 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			}
 		}
 	}
+
+	@Override
+	public void askForInput(final String message, final Callback<String> callback) {
+		Executions.schedule(getDesktop(), new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				FDialog.askForInput(m_WindowNo, null, message, callback);
+			}
+		}, new Event("onAskForInput"));
+	}
+
 }

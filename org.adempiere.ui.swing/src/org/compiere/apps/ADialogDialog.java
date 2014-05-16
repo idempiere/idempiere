@@ -41,6 +41,7 @@ import org.compiere.swing.CDialog;
 import org.compiere.swing.CLabel;
 import org.compiere.swing.CMenuItem;
 import org.compiere.swing.CPanel;
+import org.compiere.swing.CTextField;
 import org.compiere.swing.CTextPane;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -60,6 +61,7 @@ public final class ADialogDialog extends CDialog implements ActionListener
 	 */
 	private static final long serialVersionUID = 5670261006862936363L;
 
+	public static final int INPUT_MESSAGE = 4;
 	/**
 	 *	Create Dialog Window for Frame
 	 *
@@ -100,7 +102,7 @@ public final class ADialogDialog extends CDialog implements ActionListener
 		try
 		{
 			setInfoMessage (message);
-			jbInit();
+			jbInit(messageType);
 			setInfoIcon (messageType);
 		}
 		catch(Exception ex)
@@ -150,6 +152,7 @@ public final class ADialogDialog extends CDialog implements ActionListener
 	private CLabel iconLabel = new CLabel();
 	private GridBagLayout westLayout = new GridBagLayout();
 	private CTextPane info = new CTextPane ();
+	private CTextField input = new CTextField();
 	private GridBagLayout infoLayout = new GridBagLayout();
 	private CPanel infoPanel = new CPanel();
 
@@ -157,7 +160,7 @@ public final class ADialogDialog extends CDialog implements ActionListener
 	 *	Static Constructor
 	 *  @throws Exception
 	 */
-	private void jbInit() throws Exception
+	private void jbInit(int messageType) throws Exception
 	{
 		this.setJMenuBar(menuBar);
 		//
@@ -193,6 +196,9 @@ public final class ADialogDialog extends CDialog implements ActionListener
 		this.getContentPane().add(infoPanel, BorderLayout.CENTER);
 		infoPanel.add(info, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0
 			,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(10, 10, 10, 10), 0, 0));
+		if(messageType == ADialogDialog.INPUT_MESSAGE)
+			infoPanel.add(input, new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0
+					,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(10, 10, 10, 10), 0, 0));
 		//
 		menuBar.add(mFile);
 		mFile.add(mPrintScreen);
@@ -279,7 +285,10 @@ public final class ADialogDialog extends CDialog implements ActionListener
 			case JOptionPane.WARNING_MESSAGE:
 				iconLabel.setIcon(i_warn);
 				break;
-
+			case ADialogDialog.INPUT_MESSAGE:
+				confirmPanel.getCancelButton().setVisible(false);
+				iconLabel.setIcon(i_question);
+				break;
 			case JOptionPane.PLAIN_MESSAGE:
 			default:
 				break;
@@ -339,5 +348,13 @@ public final class ADialogDialog extends CDialog implements ActionListener
 	{
 		PrintScreenPainter.printScreen(this);
 	}	//	printScreen
+
+	/**
+	 * Get entered message if dialog is a askForInput-Dialog
+	 * @return
+	 */
+	public String getReturnMsg() {
+		return input.getText();
+	}
 
 }	//	ADialogDialog
