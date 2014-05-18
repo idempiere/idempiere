@@ -139,29 +139,72 @@ public class HelpController
         renderQuickInfo(null);
     }
     
+	/**
+	 * Make tooltip content for a field 
+	 * @param field
+	 */
     public void renderToolTip(GridField field)
-    {
-    	StringBuilder sb = new StringBuilder();
-    	sb.append("<html>\n<body>\n<div class=\"help-content\">\n");
+    {    	
+    	String hdr = null;
+    	String desc = null;
+    	String help = null;
+    	String otherContent = null;
     	
     	if (field != null)
     	{
-    		String hdr = field.getHeader();
+    		hdr = field.getHeader();
 			if (hdr != null && hdr.length() > 0)
-			{
-				sb.append("<b>" + hdr + "</b>");
-				
+			{	
 				if (field.getDescription().length() != 0)
-					sb.append("<br><br>\n<i>" + field.getDescription() + "</i>");
+					desc = field.getDescription();
 				
 				if (field.getHelp().length() != 0)
-					sb.append("<br><br>\n" + field.getHelp());
+					help = field.getHelp();
 			}
     	}
     	else
     	{
-    		sb.append("<i>(" + Msg.getMsg(Env.getCtx(), "PlaceCursorIntoField") + ")</i>");
+    		otherContent = Msg.getMsg(Env.getCtx(), "PlaceCursorIntoField");
     	}
+    	
+    	renderToolTip(hdr, desc, help, otherContent);
+    }
+    
+    /**
+     * Make tooltip content, when  hdr == null, show otherContent
+     * @param hdr
+     * @param desc
+     * @param help
+     * @param otherContent
+     */
+    public void renderToolTip(String hdr, String  desc, String help, String otherContent)
+    {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("<html>\n<body>\n<div class=\"help-content\">\n");
+    	
+    	if (hdr == null || hdr.trim().length() == 0){
+    		if (otherContent != null){
+    			sb.append("<i>(");
+    			sb.append (otherContent);
+    			sb.append (")</i>");
+    		}
+    	}else{
+    		sb.append("<b>");
+    		sb.append(hdr);
+    		sb.append("</b>");
+    		
+    		if (desc != null && desc.trim().length() > 0){
+    			sb.append("<br><br>\n<i>");
+    			sb.append(desc);
+    			sb.append("</i>");
+    		}
+    		
+    		if (help != null && help.trim().length() > 0){
+    			sb.append("<br><br>\n");
+    			sb.append(help);
+    		}
+    		
+    	}    	
     	
     	sb.append("</div>\n</body>\n</html>");
     	htmlToolTip.setContent(sb.toString());
