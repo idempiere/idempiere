@@ -1500,14 +1500,18 @@ public class MCost extends X_M_Cost
 			throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
 					+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
 		}
-		
-		BigDecimal oldSum = getCurrentCostPrice().multiply(getCurrentQty());
-		BigDecimal newSum = amt;	//	is total already
-		BigDecimal sumAmt = oldSum.add(newSum);
+				
 		BigDecimal sumQty = getCurrentQty().add(qty);
 		if (sumQty.signum() != 0)
 		{
-			BigDecimal cost = sumAmt.divide(sumQty, getPrecision(), BigDecimal.ROUND_HALF_UP);
+			BigDecimal oldSum = getCurrentCostPrice().multiply(getCurrentQty());
+			BigDecimal oldCost = oldSum.divide(sumQty, 12, BigDecimal.ROUND_HALF_UP);
+			BigDecimal newCost = amt.divide(sumQty, 12, BigDecimal.ROUND_HALF_UP); //amt is total already
+			BigDecimal cost = oldCost.add(newCost);
+			if (cost.scale() > (getPrecision()*2))
+			{
+				cost = cost.setScale((getPrecision()*2), BigDecimal.ROUND_HALF_UP);
+			}
 			setCurrentCostPrice(cost);
 		}
 		//
