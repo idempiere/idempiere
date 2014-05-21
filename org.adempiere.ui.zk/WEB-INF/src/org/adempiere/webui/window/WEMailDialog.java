@@ -45,8 +45,11 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.Lookup;
+import org.compiere.model.MAttachment;
+import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MClient;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MMailText;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserMail;
 import org.compiere.util.ByteArrayDataSource;
@@ -56,6 +59,7 @@ import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkforge.ckez.CKeditor;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
@@ -68,7 +72,6 @@ import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Space;
 
 /**
  *	EMail Dialog
@@ -108,10 +111,16 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
         this.setSclass("popup-dialog");
 		this.setClosable(true);
 		this.setBorder("normal");
-		this.setWidth("550px");
+		this.setWidth("80%");
+		this.setHeight("80%");
 		this.setShadow(true);
 		this.setMaximizable(true);
+		this.setSizable(true);
 		        
+		fMessage = new CKeditor();
+		fMessage.setCustomConfigurationsPath("/js/ckeditor/config.js");
+		fMessage.setToolbar("MyToolbar");
+
 		commonInit(from, to, subject, message, attachment);				
 	}	//	EmailDialog
 
@@ -183,9 +192,9 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	private Label lCc = new Label();
 	private Label lSubject = new Label();
 	private Label lAttachment = new Label();
-	private Textbox fMessage = new Textbox();
+	private CKeditor fMessage;
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
-		
+	private Button bAddDefaultMailText;
 	private Div attachmentBox;
 
 	@Override
@@ -194,6 +203,10 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		try {
 			render();
 		} catch (Exception e) {
+		}
+
+		if (MUser.get(Env.getCtx()).isAddMailTextAutomatically()) {
+			addMailText();
 		}
 	}
 
@@ -301,11 +314,9 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.appendChild(new Space());
-		row.appendChild(fMessage);
-		fMessage.setHflex("1");
-		fMessage.setHeight("100%");
-		fMessage.setRows(10);
+		row.appendCellChild(fMessage, 2);
+		fMessage.setHflex("2");
+		fMessage.setHeight("350px");
 		
 		confirmPanel.addActionListener(this);
 		
@@ -315,20 +326,25 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		btn.addEventListener(Events.ON_UPLOAD, this);
 		btn.setTooltiptext(Msg.getMsg(Env.getCtx(), "Attachment"));
 		confirmPanel.addComponentsLeft(btn);
+
+		bAddDefaultMailText = new Button();
+		bAddDefaultMailText.setImage(ThemeManager.getThemeResource("images/DefaultMailText.png"));
+		bAddDefaultMailText.addEventListener(Events.ON_CLICK, this);
+		bAddDefaultMailText.setTooltiptext(Msg.getMsg(Env.getCtx(), "AddDefaultMailTextContent"));
+		if (new MUser(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), null).getR_DefaultMailText_ID() > 0)
+			confirmPanel.addComponentsLeft(bAddDefaultMailText);
+
 		confirmPanel.getButton(ConfirmPanel.A_OK).setWidgetListener("onClick", "zAu.cmd0.showBusy(null)");
 		
 		Borderlayout borderlayout = new Borderlayout();
 		this.appendChild(borderlayout);
 		borderlayout.setHflex("1");
-		borderlayout.setVflex("min");
 		
 		Center centerPane = new Center();
 		centerPane.setSclass("dialog-content");
 		centerPane.setAutoscroll(true);
 		borderlayout.appendChild(centerPane);
 		centerPane.appendChild(grid);
-		grid.setVflex("1");
-		grid.setHflex("1");
 
 		South southPane = new South();
 		southPane.setSclass("dialog-footer");
@@ -432,7 +448,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	public void setMessage(String newMessage)
 	{
 		m_message = newMessage;
-		fMessage.setText(m_message);
+		fMessage.setValue(m_message);
 //		fMessage.setCaretPosition(0);
 	}   //  setMessage
 
@@ -441,7 +457,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	 */
 	public String getMessage()
 	{
-		m_message = fMessage.getText();
+		m_message = fMessage.getValue();
 		return m_message;
 	}   //  getMessage
 
@@ -481,7 +497,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 
 			StringTokenizer st = new StringTokenizer(getTo(), " ,;", false);
 			String to = st.nextToken();
-			EMail email = m_client.createEMail(getFrom(), to, getSubject(), getMessage());
+			EMail email = m_client.createEMail(getFrom(), to, getSubject(), getMessage(), true);
 			String status = "Check Setup";
 			if (email != null)
 			{
@@ -528,6 +544,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 				addAttachment(dataSource, true);
 			}
 		}
+		else if (event.getTarget() == bAddDefaultMailText) // Insert the mail text at cursor (light side) ? or at the end (dark side) :D
+			addMailText();
 	}
 
 	/**
@@ -652,4 +670,30 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			fCc.setValue(email);
 		}
 	}
-}	//	VEMailDialog
+
+	private void addMailText()
+	{
+		MMailText mt = (MMailText) MUser.get(Env.getCtx()).getR_DefaultMailText();
+		if (mt.get_ID() > 0) {
+			mt.setPO(MUser.get(Env.getCtx()));
+			fMessage.setValue(getMessage() + "\n" + mt.getMailText(true));
+			MAttachment attachment = MAttachment.get(Env.getCtx(), MMailText.Table_ID, mt.get_ID());
+			if (attachment != null) {
+				MAttachmentEntry[] entries = attachment.getEntries();
+				for (MAttachmentEntry entry : entries) {
+					boolean alreadyAdded = false;
+					for (DataSource attach : attachments)
+						if (attach.getName().equals(entry.getName()))
+							alreadyAdded = true;
+					if (alreadyAdded)
+						continue;
+					byte[] data = entry.getData();
+					ByteArrayDataSource dataSource = new ByteArrayDataSource(data, entry.getContentType());
+					dataSource.setName(entry.getName());
+					addAttachment(dataSource, true);
+				}
+			}
+		}
+	}
+
+}	//	WEMailDialog

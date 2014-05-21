@@ -31,7 +31,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20140502L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
@@ -42,6 +42,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 			setAD_User_ID (0);
 			setFailedLoginCount (0);
 // 0
+			setIsAddMailTextAutomatically (false);
+// N
 			setIsExpired (false);
 // N
 			setIsFullBPAccess (true);
@@ -584,6 +586,30 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return (String)get_Value(COLUMNNAME_Fax);
 	}
 
+	/** Set Add Mail Text Automatically.
+		@param IsAddMailTextAutomatically 
+		The selected mail template will be automatically inserted when creating an email
+	  */
+	public void setIsAddMailTextAutomatically (boolean IsAddMailTextAutomatically)
+	{
+		set_Value (COLUMNNAME_IsAddMailTextAutomatically, Boolean.valueOf(IsAddMailTextAutomatically));
+	}
+
+	/** Get Add Mail Text Automatically.
+		@return The selected mail template will be automatically inserted when creating an email
+	  */
+	public boolean isAddMailTextAutomatically () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsAddMailTextAutomatically);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Expired.
 		@param IsExpired Expired	  */
 	public void setIsExpired (boolean IsExpired)
@@ -1019,6 +1045,31 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	public org.compiere.model.I_R_MailText getR_DefaultMailText() throws RuntimeException
+    {
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
+			.getPO(getR_DefaultMailText_ID(), get_TrxName());	}
+
+	/** Set Default mail template.
+		@param R_DefaultMailText_ID Default mail template	  */
+	public void setR_DefaultMailText_ID (int R_DefaultMailText_ID)
+	{
+		if (R_DefaultMailText_ID < 1) 
+			set_Value (COLUMNNAME_R_DefaultMailText_ID, null);
+		else 
+			set_Value (COLUMNNAME_R_DefaultMailText_ID, Integer.valueOf(R_DefaultMailText_ID));
+	}
+
+	/** Get Default mail template.
+		@return Default mail template	  */
+	public int getR_DefaultMailText_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_R_DefaultMailText_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
