@@ -337,7 +337,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		//
 		m_sqlOrder = "";
 //		m_sqlUserOrder = "";
-		if (orderBy != null && orderBy.length() > 0)
+		if (orderBy != null && orderBy.trim().length() > 0)
 			m_sqlOrder = " ORDER BY " + orderBy;
 	}   //  prepareTable
 

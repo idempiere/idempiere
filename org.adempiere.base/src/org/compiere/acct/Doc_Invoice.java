@@ -22,6 +22,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AverageCostingZeroQtyException;
@@ -826,6 +828,8 @@ public class Doc_Invoice extends Doc
 		for (int i = 0; i < lcas.length; i++)
 			totalBase += lcas[i].getBase().doubleValue();
 
+		Map<String, BigDecimal> costDetailAmtMap = new HashMap<String, BigDecimal>();
+		
 		//	Create New
 		MInvoiceLine il = new MInvoiceLine (getCtx(), C_InvoiceLine_ID, getTrxName());
 		for (int i = 0; i < lcas.length; i++)
@@ -878,11 +882,11 @@ public class Doc_Invoice extends Doc
 				
 				if (estimatedAmt.scale() > as.getCostingPrecision())
 				{
-					estimatedAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
+					estimatedAmt = estimatedAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
 				}
 				BigDecimal costAdjustmentAmt = allocationAmt;
 				if (estimatedAmt.signum() > 0)
-				{
+				{					
 					//get other allocation amt
 					StringBuilder sql = new StringBuilder("SELECT Sum(Amt) FROM C_LandedCostAllocation WHERE M_InOutLine_ID=? ")
 						.append("AND C_LandedCostAllocation_ID<>? ")
@@ -900,7 +904,7 @@ public class Doc_Invoice extends Doc
 						}
 					}				
 					if (estimatedAmt.signum() > 0)
-					{
+					{						
 						if (allocationAmt.signum() > 0)
 							costAdjustmentAmt = allocationAmt.subtract(estimatedAmt);
 						else if (allocationAmt.signum() < 0)
@@ -928,6 +932,12 @@ public class Doc_Invoice extends Doc
 						if (costDetailAmt.scale() > as.getCostingPrecision())
 							costDetailAmt = costDetailAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
 						
+						String key = lca.getM_Product_ID()+"_"+lca.getM_AttributeSetInstance_ID();
+						BigDecimal prevAmt = costDetailAmtMap.remove(key);
+						if (prevAmt != null) {
+							costDetailAmt = costDetailAmt.add(prevAmt);
+						}
+						costDetailAmtMap.put(key, costDetailAmt);
 						if (!MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
 								lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
 								C_InvoiceLine_ID, lca.getM_CostElement_ID(),
@@ -963,6 +973,14 @@ public class Doc_Invoice extends Doc
 				
 				if (allocationAmt.signum() > 0)
 				{
+					if (allocationAmt.scale() > as.getStdPrecision())
+					{
+						allocationAmt = allocationAmt.setScale(as.getStdPrecision(), BigDecimal.ROUND_HALF_UP);
+					}
+					if (estimatedAmt.scale() > as.getStdPrecision())
+					{
+						estimatedAmt = estimatedAmt.setScale(as.getStdPrecision(), BigDecimal.ROUND_HALF_UP);
+					}
 					int compare = allocationAmt.compareTo(estimatedAmt);
 					if (compare > 0)
 					{

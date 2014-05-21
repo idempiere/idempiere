@@ -1226,8 +1226,8 @@ public class TableElement extends PrintElement
 		int startX = (int)pageStart.getX();
 		int startY = (int)pageStart.getY();
 		//	Table Start
-		startX += pageXindex == 0 ? m_firstPage.x : m_nextPages.x;
-		startY += pageYindex == 0 ? m_firstPage.y : m_nextPages.y;
+		startX += pageIndex == 0 ? m_firstPage.x : m_nextPages.x;
+		startY += pageIndex == 0 ? m_firstPage.y : m_nextPages.y;
 		if (DEBUG_PRINT)
 			if (log.isLoggable(Level.FINEST)) log.finest("PageStart=" + pageStart + ", StartTable x=" + startX + ", y=" + startY);
 

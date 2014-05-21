@@ -61,8 +61,10 @@ BEGIN
 		FROM M_PRODUCT_BOM b, M_PRODUCT p
 		WHERE b.M_ProductBOM_ID=p.M_Product_ID
 		  AND b.M_Product_ID=p_Product_ID
+		  AND b.M_ProductBOM_ID != p_Product_ID
 		  AND p.IsBOM='Y'
 		  AND p.IsVerified='Y'
+		  AND b.IsActive='Y'
 	LOOP
 		--	Stocked Items "leaf node"
 		IF (bom.ProductType = 'I' AND bom.IsStocked = 'Y') THEN
@@ -112,6 +114,6 @@ BEGIN
 	RETURN 0;
 END;
 $BODY$
-  LANGUAGE plpgsql VOLATILE;
+  LANGUAGE plpgsql STABLE;
 
 

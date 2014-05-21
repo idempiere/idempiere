@@ -25,7 +25,6 @@ BEGIN
 	IF (myWarehouse_ID IS NULL) THEN
 		RETURN 0;
 	END IF;
---	DBMS_OUTPUT.PUT_LINE(''Warehouse='' || myWarehouse_ID);
 
 	--	Check, if product exists and if it is stocked
 	BEGIN
@@ -51,19 +50,19 @@ BEGIN
 		  AND EXISTS (SELECT * FROM M_LOCATOR l WHERE s.M_Locator_ID=l.M_Locator_ID
 		  	AND l.M_Warehouse_ID=myWarehouse_ID);
 		--
-	--	DBMS_OUTPUT.PUT_LINE(''Qty='' || v_ProductQty);
 		RETURN v_ProductQty;
 	END IF;
 
 	--	Go though BOM
---	DBMS_OUTPUT.PUT_LINE(''BOM'');
 	FOR bom IN 	--	Get BOM Product info
 		SELECT b.M_ProductBOM_ID, b.BOMQty, p.IsBOM, p.IsStocked, p.ProductType
 		FROM M_PRODUCT_BOM b, M_PRODUCT p
 		WHERE b.M_ProductBOM_ID=p.M_Product_ID
 		  AND b.M_Product_ID=product_ID
+		  AND b.M_ProductBOM_ID != Product_ID
 		  AND p.IsBOM='Y'
 		  AND p.IsVerified='Y'
+		  AND b.IsActive='Y'
 	LOOP
 		--	Stocked Items "leaf node"
 		IF (bom.ProductType = 'I' AND bom.IsStocked = 'Y') THEN
@@ -107,6 +106,6 @@ BEGIN
 	RETURN 0;
 END;
 $BODY$
-LANGUAGE 'plpgsql'
+LANGUAGE 'plpgsql' STABLE
 ;
 
