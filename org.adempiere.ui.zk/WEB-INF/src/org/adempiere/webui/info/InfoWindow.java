@@ -270,7 +270,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			StringBuilder builder = new StringBuilder(p_whereClause != null ? p_whereClause.trim() : "");
 			String infoWhereClause = infoWindow.getWhereClause();
 			if (infoWhereClause != null && infoWhereClause.indexOf("@") >= 0) {
-				infoWhereClause = Env.parseContext(Env.getCtx(), p_WindowNo, infoWhereClause, false, false);
+				infoWhereClause = Env.parseContext(Env.getCtx(), p_WindowNo, infoWhereClause, true, false);
 				if (infoWhereClause.length() == 0)
 					log.log(Level.SEVERE, "Cannot parse context= " + infoWindow.getWhereClause());
 			}
@@ -471,6 +471,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 		int count = 0;
 		for(WEditor editor : editors) {
+			if (!editor.isVisible())
+				continue;
+			
 			if (editor instanceof IWhereClauseEditor) {
 				String whereClause = ((IWhereClauseEditor) editor).getWhereClause();
 				if (whereClause != null && whereClause.trim().length() > 0) {
@@ -518,7 +521,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				if (mInfoColumn.getQueryFunction() != null && mInfoColumn.getQueryFunction().trim().length() > 0) {
 					String function = mInfoColumn.getQueryFunction();
 					if (function.indexOf("@") >= 0) {
-						String s = Env.parseContext(infoContext, p_WindowNo, function, false, false);
+						String s = Env.parseContext(infoContext, p_WindowNo, function, true, false);
 						if (s.length() == 0) {
 							log.log(Level.SEVERE, "Failed to parse query function. " + function);
 						} else {
@@ -542,7 +545,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if (count > 0 && !checkAND.isChecked()) {
 			builder.append(" ) ");
 		}
-		return builder.toString();
+		String sql = builder.toString();
+		if (sql.indexOf("@") >= 0) {
+			sql = Env.parseContext(infoContext, p_WindowNo, sql, true, true);
+		}
+		return sql;
 	}
 
 	private MInfoColumn findInfoColumn(GridField gridField) {
@@ -561,7 +568,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	protected void setParameters(PreparedStatement pstmt, boolean forCount)
 			throws SQLException {
 		int parameterIndex = 0;
-		for(WEditor editor : editors) {			
+		for(WEditor editor : editors) {
+			if (!editor.isVisible())
+				continue;
+			
 			if (editor.getGridField() != null && editor.getValue() != null && editor.getValue().toString().trim().length() > 0) {
 				MInfoColumn mInfoColumn = findInfoColumn(editor.getGridField());
 				if (mInfoColumn == null || mInfoColumn.getSelectClause().equals("0")) {
@@ -608,7 +618,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}	
 		
 		if (m_sqlOrder != null && m_sqlOrder.indexOf("@") >= 0) {
-			String sql = Env.parseContext(infoContext, p_WindowNo, m_sqlOrder, false, false);
+			String sql = Env.parseContext(infoContext, p_WindowNo, m_sqlOrder, true, false);
 			if (sql == null || sql.length() == 0) {
 				log.severe("Failed to parsed sql. sql=" + m_sqlOrder);
 			} else {
@@ -966,7 +976,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         if (infoWindow.getOtherClause() != null && infoWindow.getOtherClause().trim().length() > 0) {
         	String otherClause = infoWindow.getOtherClause();
         	if (otherClause.indexOf("@") >= 0) {
-        		String s = Env.parseContext(infoContext, p_WindowNo, otherClause, false, false);
+        		String s = Env.parseContext(infoContext, p_WindowNo, otherClause, true, false);
         		if (s.length() == 0) {
         			log.severe("Failed to parse other clause. " + otherClause);
         		} else {
@@ -1008,8 +1018,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	public void valueChange(ValueChangeEvent evt) {
 		if (evt != null && evt.getSource() instanceof WEditor)
         {
-            WEditor editor = (WEditor)evt.getSource();
-            boolean asiChanged = false;
+            WEditor editor = (WEditor)evt.getSource();            
             if (evt.getNewValue() == null) {
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), "");
             	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, editor.getColumnName(), "");
@@ -1023,23 +1032,28 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
             	Env.setContext(infoContext, p_WindowNo, editor.getColumnName(), evt.getNewValue().toString());
             	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, editor.getColumnName(), evt.getNewValue().toString());
             }
-            // if attribute set changed (from any value to any value) clear the attribute set instance m_pAttributeWhere
-            if (editor instanceof WTableDirEditor && editor.getColumnName().equals("M_AttributeSet_ID"))
-            	asiChanged = true;
-            
-            for(WEditor otherEditor : editors)
-            {
-            	if (otherEditor == editor) 
-            		continue;
-            	if (asiChanged && otherEditor instanceof WInfoPAttributeEditor)
-            		((WInfoPAttributeEditor)otherEditor).clearWhereClause();
-            	
-            	otherEditor.dynamicDisplay();
-            }
-            
-            evalDisplayLogic();
+            dynamicDisplay(editor);
         }
 		
+	}
+
+	protected void dynamicDisplay(WEditor editor) {
+		// if attribute set changed (from any value to any value) clear the attribute set instance m_pAttributeWhere
+		boolean asiChanged = false;
+		if (editor != null && editor instanceof WTableDirEditor && editor.getColumnName().equals("M_AttributeSet_ID"))
+			asiChanged = true;
+		
+		for(WEditor otherEditor : editors)
+		{
+			if (otherEditor == editor) 
+				continue;
+			if (asiChanged && otherEditor instanceof WInfoPAttributeEditor)
+				((WInfoPAttributeEditor)otherEditor).clearWhereClause();
+			
+			otherEditor.dynamicDisplay();
+		}
+		
+		evalDisplayLogic();
 	}
 	
 	public void onEvent(Event event)

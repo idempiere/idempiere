@@ -107,6 +107,7 @@ public class InfoBPartnerWindow extends InfoWindow {
 				}
 			}
 		}
+		dynamicDisplay(null);
 	}
 	
 	@Override

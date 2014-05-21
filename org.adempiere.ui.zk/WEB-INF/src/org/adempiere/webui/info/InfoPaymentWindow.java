@@ -67,5 +67,6 @@ public class InfoPaymentWindow extends InfoWindow {
 				}
 			}
 		}
+		dynamicDisplay(null);
 	}
 }

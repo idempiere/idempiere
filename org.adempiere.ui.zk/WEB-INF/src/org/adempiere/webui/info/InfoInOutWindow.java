@@ -67,5 +67,6 @@ public class InfoInOutWindow extends InfoWindow {
 				}
 			}
 		}
+		dynamicDisplay(null);
 	}
 }
