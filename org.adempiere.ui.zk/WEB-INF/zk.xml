@@ -11,6 +11,11 @@
 		<listener-class>org.adempiere.webui.session.SessionContextListener
 		</listener-class>
 	</listener>
+	
+	<listener>
+		<description>iDempiere Web app init for register handle change in table system configuration</description>
+    	<listener-class>org.adempiere.webui.DefaultWebAppInit</listener-class>
+	</listener>
 
 	<!-- uncomment following to debug server event flow -->
 	<!-- listener>

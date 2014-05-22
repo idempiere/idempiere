@@ -16,4 +16,11 @@
     adempiere.store.get("zkTimeoutURL", callback);
 ]]>	
 </script>
+<zscript>
+<![CDATA[
+	import org.adempiere.webui.theme.ThemeManager;
+	self.setTitle(ThemeManager.getBrowserTitle());
+]]>
+</zscript>
+
 </zk>

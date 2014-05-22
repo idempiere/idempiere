@@ -4,8 +4,9 @@
 <![CDATA[
 	import org.compiere.util.Msg;
 	import org.compiere.util.Env;
-	
+	import org.adempiere.webui.theme.ThemeManager;
 	var continueText = Msg.getMsg(Env.getCtx(),"continue");
+	self.setTitle(ThemeManager.getBrowserTitle());
 ]]>
 </zscript>
 <window width="60%" mode="highlighted">
