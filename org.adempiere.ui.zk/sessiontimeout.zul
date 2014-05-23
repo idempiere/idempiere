@@ -1,4 +1,6 @@
 <?page title="iDempiere" contentType="text/html;charset=UTF-8" automaticTimeout="false" ?>
+<?init zscript="theme.zs" ?>
+<?link rel="icon" type="image/png" href="${browserIcon}"?>
 <zk>
 <zscript>
 <![CDATA[
