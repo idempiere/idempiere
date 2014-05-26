@@ -19,10 +19,13 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.model.MInfoProcess;
 import org.adempiere.model.MInfoRelated;
 import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.util.DB;
@@ -110,6 +113,12 @@ public class MInfoWindow extends X_AD_InfoWindow
 	 */
 	private MInfoRelated[] m_infoRelated;
 
+	/**
+	 * IDEMPIERE-1334
+	 * cache list process button info
+	 */
+	private MInfoProcess[]  m_infoProcess;
+
 	public MInfoRelated[] getInfoRelated(boolean requery) {
 		if ((this.m_infoRelated != null) && (!requery)) {
 			set_TrxName(this.m_infoRelated, get_TrxName());
@@ -125,6 +134,49 @@ public class MInfoWindow extends X_AD_InfoWindow
 		m_infoRelated =  list.toArray(new MInfoRelated[list.size()]);
 
 		return m_infoRelated;
+	}
+
+	/**
+	 * IDEMPIERE-1334
+	 * Get list {@link MInfoProcess} of this infoWindow
+	 * @param requery true get from db, false try get from cache
+	 * @return empty array when not exists Info Process
+	 */
+	public MInfoProcess [] getInfoProcess(boolean requery) {
+		// try from cache
+		if ((this.m_infoProcess != null) && (!requery)) {
+			set_TrxName(this.m_infoProcess, get_TrxName());
+			return this.m_infoProcess;
+		}
+		
+		// get list info process from db, order by seqNo
+		List<MInfoProcess> list = new Query(getCtx(), MInfoProcess.Table_Name, "AD_InfoWindow_ID=?", get_TrxName())
+			.setParameters(getAD_InfoWindow_ID())
+			.setOnlyActiveRecords(true)
+			.setOrderBy("SeqNo")
+			.list();
+
+		checkProcessRight(list);
+		m_infoProcess =  list.toArray(new MInfoProcess[list.size()]);
+
+		return m_infoProcess;
+	}
+	
+
+    /**
+     * if user haven't right to run a process, set infoProcess to null 
+     * @param lsInfoProcess
+     */
+	protected void checkProcessRight (List<MInfoProcess> lsInfoProcess) {
+		Iterator<MInfoProcess> iterator = lsInfoProcess.iterator();
+		while (iterator.hasNext()){
+			MInfoProcess testInfoProcess = iterator.next();
+			// need more review
+			if (MRole.getDefault().getProcessAccess(testInfoProcess.getAD_Process_ID()) == null){
+				iterator.remove();
+			}
+		}
+		
 	}
 
 	public MInfoColumn[] getInfoColumns(TableInfo[] tableInfos) {

@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for AD_InfoWindow
+/** Generated Interface for AD_InfoProcess
  *  @author iDempiere (generated) 
  *  @version Release 2.0
  */
-public interface I_AD_InfoWindow 
+public interface I_AD_InfoProcess 
 {
 
-    /** TableName=AD_InfoWindow */
-    public static final String Table_Name = "AD_InfoWindow";
+    /** TableName=AD_InfoProcess */
+    public static final String Table_Name = "AD_InfoProcess";
 
-    /** AD_Table_ID=895 */
-    public static final int Table_ID = 895;
+    /** AD_Table_ID=1000000 */
+    public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -49,16 +49,23 @@ public interface I_AD_InfoWindow
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_CtxHelp_ID */
-    public static final String COLUMNNAME_AD_CtxHelp_ID = "AD_CtxHelp_ID";
+    /** Column name AD_InfoProcess_ID */
+    public static final String COLUMNNAME_AD_InfoProcess_ID = "AD_InfoProcess_ID";
 
-	/** Set Context Help	  */
-	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID);
+	/** Set Info Process	  */
+	public void setAD_InfoProcess_ID (int AD_InfoProcess_ID);
 
-	/** Get Context Help	  */
-	public int getAD_CtxHelp_ID();
+	/** Get Info Process	  */
+	public int getAD_InfoProcess_ID();
 
-	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException;
+    /** Column name AD_InfoProcess_UU */
+    public static final String COLUMNNAME_AD_InfoProcess_UU = "AD_InfoProcess_UU";
+
+	/** Set AD_InfoProcess_UU	  */
+	public void setAD_InfoProcess_UU (String AD_InfoProcess_UU);
+
+	/** Get AD_InfoProcess_UU	  */
+	public String getAD_InfoProcess_UU();
 
     /** Column name AD_InfoWindow_ID */
     public static final String COLUMNNAME_AD_InfoWindow_ID = "AD_InfoWindow_ID";
@@ -73,14 +80,7 @@ public interface I_AD_InfoWindow
 	  */
 	public int getAD_InfoWindow_ID();
 
-    /** Column name AD_InfoWindow_UU */
-    public static final String COLUMNNAME_AD_InfoWindow_UU = "AD_InfoWindow_UU";
-
-	/** Set AD_InfoWindow_UU	  */
-	public void setAD_InfoWindow_UU (String AD_InfoWindow_UU);
-
-	/** Get AD_InfoWindow_UU	  */
-	public String getAD_InfoWindow_UU();
+	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -95,20 +95,20 @@ public interface I_AD_InfoWindow
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AD_Table_ID */
-    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
+    /** Column name AD_Process_ID */
+    public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
 
-	/** Set Table.
-	  * Database Table information
+	/** Set Process.
+	  * Process or Report
 	  */
-	public void setAD_Table_ID (int AD_Table_ID);
+	public void setAD_Process_ID (int AD_Process_ID);
 
-	/** Get Table.
-	  * Database Table information
+	/** Get Process.
+	  * Process or Report
 	  */
-	public int getAD_Table_ID();
+	public int getAD_Process_ID();
 
-	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -138,34 +138,6 @@ public interface I_AD_InfoWindow
 	  * Optional short description of the record
 	  */
 	public String getDescription();
-
-    /** Column name EntityType */
-    public static final String COLUMNNAME_EntityType = "EntityType";
-
-	/** Set Entity Type.
-	  * Dictionary Entity Type;
- Determines ownership and synchronization
-	  */
-	public void setEntityType (String EntityType);
-
-	/** Get Entity Type.
-	  * Dictionary Entity Type;
- Determines ownership and synchronization
-	  */
-	public String getEntityType();
-
-    /** Column name FromClause */
-    public static final String COLUMNNAME_FromClause = "FromClause";
-
-	/** Set Sql FROM.
-	  * SQL FROM clause
-	  */
-	public void setFromClause (String FromClause);
-
-	/** Get Sql FROM.
-	  * SQL FROM clause
-	  */
-	public String getFromClause();
 
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";
@@ -206,58 +178,6 @@ public interface I_AD_InfoWindow
 	  */
 	public boolean isActive();
 
-    /** Column name IsDefault */
-    public static final String COLUMNNAME_IsDefault = "IsDefault";
-
-	/** Set Default.
-	  * Default value
-	  */
-	public void setIsDefault (boolean IsDefault);
-
-	/** Get Default.
-	  * Default value
-	  */
-	public boolean isDefault();
-
-    /** Column name IsDistinct */
-    public static final String COLUMNNAME_IsDistinct = "IsDistinct";
-
-	/** Set Distinct.
-	  * Select Distinct
-	  */
-	public void setIsDistinct (boolean IsDistinct);
-
-	/** Get Distinct.
-	  * Select Distinct
-	  */
-	public boolean isDistinct();
-
-    /** Column name IsShowInDashboard */
-    public static final String COLUMNNAME_IsShowInDashboard = "IsShowInDashboard";
-
-	/** Set Show in Dashboard.
-	  * Show the dashlet in the dashboard
-	  */
-	public void setIsShowInDashboard (boolean IsShowInDashboard);
-
-	/** Get Show in Dashboard.
-	  * Show the dashlet in the dashboard
-	  */
-	public boolean isShowInDashboard();
-
-    /** Column name IsValid */
-    public static final String COLUMNNAME_IsValid = "IsValid";
-
-	/** Set Valid.
-	  * Element is valid
-	  */
-	public void setIsValid (boolean IsValid);
-
-	/** Get Valid.
-	  * Element is valid
-	  */
-	public boolean isValid();
-
     /** Column name LayoutType */
     public static final String COLUMNNAME_LayoutType = "LayoutType";
 
@@ -271,19 +191,6 @@ public interface I_AD_InfoWindow
 	  */
 	public String getLayoutType();
 
-    /** Column name MaxQueryRecords */
-    public static final String COLUMNNAME_MaxQueryRecords = "MaxQueryRecords";
-
-	/** Set Max Query Records.
-	  * If defined, you cannot query more records as defined - the query criteria needs to be changed to query less records
-	  */
-	public void setMaxQueryRecords (int MaxQueryRecords);
-
-	/** Get Max Query Records.
-	  * If defined, you cannot query more records as defined - the query criteria needs to be changed to query less records
-	  */
-	public int getMaxQueryRecords();
-
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -296,41 +203,6 @@ public interface I_AD_InfoWindow
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
-
-    /** Column name OrderByClause */
-    public static final String COLUMNNAME_OrderByClause = "OrderByClause";
-
-	/** Set Sql ORDER BY.
-	  * Fully qualified ORDER BY clause
-	  */
-	public void setOrderByClause (String OrderByClause);
-
-	/** Get Sql ORDER BY.
-	  * Fully qualified ORDER BY clause
-	  */
-	public String getOrderByClause();
-
-    /** Column name OtherClause */
-    public static final String COLUMNNAME_OtherClause = "OtherClause";
-
-	/** Set Other SQL Clause.
-	  * Other SQL Clause
-	  */
-	public void setOtherClause (String OtherClause);
-
-	/** Get Other SQL Clause.
-	  * Other SQL Clause
-	  */
-	public String getOtherClause();
-
-    /** Column name Processing */
-    public static final String COLUMNNAME_Processing = "Processing";
-
-	/** Set Process Now	  */
-	public void setProcessing (boolean Processing);
-
-	/** Get Process Now	  */
-	public boolean isProcessing();
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";
@@ -362,17 +234,4 @@ public interface I_AD_InfoWindow
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name WhereClause */
-    public static final String COLUMNNAME_WhereClause = "WhereClause";
-
-	/** Set Sql WHERE.
-	  * Fully qualified SQL WHERE clause
-	  */
-	public void setWhereClause (String WhereClause);
-
-	/** Get Sql WHERE.
-	  * Fully qualified SQL WHERE clause
-	  */
-	public String getWhereClause();
 }

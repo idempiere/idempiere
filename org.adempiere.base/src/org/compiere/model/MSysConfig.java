@@ -130,6 +130,8 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String BACKGROUND_JOB_MAX_PER_USER = "BACKGROUND_JOB_MAX_PER_USER";
 	public static final String DPVIEWS_SHOWINFOACCOUNT = "DPViews_ShowInfoAccount";
 	public static final String DPVIEWS_SHOWINFOSCHEDULE = "DPViews_ShowInfoSchedule";
+	// setting key for default value of info process layout 
+	public static final String INFO_PROCESS_LAYOUT_DEFAULT  = "PROCESS_BUTTON_LAYOUT";		
 
 	/**
 	 * 	Standard Constructor

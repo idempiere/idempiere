@@ -42,6 +42,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WTableDirEditor;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
@@ -341,6 +342,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	
 	public void runProcess() 
 	{
+		Events.sendEvent(DialogEvents.ON_BEFORE_RUN_PROCESS, this, null);
 		future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(new ProcessDialogRunnable(null), getDesktop()));
 	}
 

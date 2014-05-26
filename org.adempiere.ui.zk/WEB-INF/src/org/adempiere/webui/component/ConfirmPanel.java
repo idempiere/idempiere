@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.theme.ThemeManager;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
@@ -220,6 +221,8 @@ public final class ConfirmPanel extends Div
     //
     private Hlayout pnlBtnRight;
     private Hlayout pnlBtnLeft;
+    // IDEMPIERE-1334 center panel, contain all process button
+    private Hlayout pnlBtnCenter;
 
     /**
      * initialise components
@@ -231,13 +234,36 @@ public final class ConfirmPanel extends Div
         pnlBtnRight = new Hlayout();
         pnlBtnRight.setSclass("confirm-panel-right");
 
+        // IDEMPIERE-1334 start
+        pnlBtnCenter = new Hlayout();
+        pnlBtnCenter.setSclass("confirm-panel-center");
+        // IDEMPIERE-1334 end
+        
         this.appendChild(pnlBtnLeft);
+        // IDEMPIERE-1334
+        this.appendChild(pnlBtnCenter);
         this.appendChild(pnlBtnRight);
         this.setSclass("confirm-panel");
         this.setVflex("min");
         setId("confirmPanel");
     }
 
+    /**
+     * IDEMPIERE-1334
+     * add a process button into center panel
+     * @param btName
+     * @param imgName
+     * @return
+     */
+    public Button addProcessButton (String btName, String imgName){
+    	 Button btProcess = createButton(btName);
+    	 // replace default image with image set at info process
+    	 if (m_withImage && imgName != null && imgName.trim().length() > 0)
+    		 btProcess.setImage(ThemeManager.getThemeResource("images/" + imgName));
+    	 addComponentsCenter(btProcess);
+    	 return btProcess;     	
+    }
+    
     /**
      * add button to the left side of the confirm panel
      * @param button button
@@ -260,6 +286,26 @@ public final class ConfirmPanel extends Div
         pnlBtnRight.appendChild(button);
     }
 
+    /**
+     * IDEMPIERE-1334
+     * add button to the center side of the confirm panel
+     * @param button button
+     */
+    public void addComponentsCenter(Button button)
+    {
+    	if (!buttonMap.containsKey(button.getId()))
+    		buttonMap.put(button.getId(), button);
+        pnlBtnCenter.appendChild(button);
+    }
+
+    /**
+     * Add combobox to center panel
+     * @param cbb
+     */
+    public void addComponentsCenter(Combobox cbb){
+    	pnlBtnCenter.appendChild(cbb);
+    }
+    
     /**
      * return button of the specified id
      * @param id button id
@@ -391,8 +437,12 @@ public final class ConfirmPanel extends Div
     {
         List<?> list1 = pnlBtnLeft.getChildren();
         List<?> list2 = pnlBtnRight.getChildren();
+        // IDEMPIERE-1334
+        List<?> list3 = pnlBtnCenter.getChildren();
         Iterator<?> iter1 = list1.iterator();
         Iterator<?> iter2 = list2.iterator();
+        // IDEMPIERE-1334
+        Iterator<?> iter3 = list3.iterator();
 
         while (iter1.hasNext())
         {
@@ -404,6 +454,13 @@ public final class ConfirmPanel extends Div
             Button button = (Button)iter2.next();
             button.setEnabled(enabled);
         }
+        // IDEMPIERE-1334 start
+        while (iter3.hasNext())
+        {
+            Button button = (Button)iter3.next();
+            button.setEnabled(enabled);
+        }
+        // IDEMPIERE-1334 end
     }
     /**
      * add action listener on the existing buttons
@@ -414,8 +471,12 @@ public final class ConfirmPanel extends Div
     {
         List<?> list1 = pnlBtnLeft.getChildren();
         List<?> list2 = pnlBtnRight.getChildren();
+        // IDEMPIERE-1334
+        List<?> list3 = pnlBtnCenter.getChildren();
         Iterator<?> iter1 = list1.iterator();
         Iterator<?> iter2 = list2.iterator();
+        // IDEMPIERE-1334
+        Iterator<?> iter3 = list3.iterator();
 
         while (iter1.hasNext())
         {
@@ -427,6 +488,13 @@ public final class ConfirmPanel extends Div
             Button button = (Button)iter2.next();
             button.addEventListener(event, listener);
         }
+        // IDEMPIERE-1334 start
+        while (iter3.hasNext())
+        {
+            Button button = (Button)iter3.next();
+            button.addEventListener(event, listener);
+        }
+        // IDEMPIERE-1334 start
     }
 
     /**
