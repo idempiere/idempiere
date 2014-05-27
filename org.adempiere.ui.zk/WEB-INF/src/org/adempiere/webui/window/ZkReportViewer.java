@@ -598,7 +598,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		//	fill Report Options
 		String sql = MRole.getDefault().addAccessSQL(
-			"SELECT AD_PrintFormat_ID, Name, Description "
+			"SELECT * "
 				+ "FROM AD_PrintFormat "
 				+ "WHERE AD_Table_ID=? "
 				//Added Lines by Armen
@@ -619,7 +619,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				KeyNamePair pp = new KeyNamePair(rs.getInt(1), rs.getString(2));
+				MPrintFormat printFormat = new MPrintFormat (Env.getCtx(), rs, null);
+				
+				KeyNamePair pp = new KeyNamePair(printFormat.get_ID(), printFormat.get_Translation(MPrintFormat.COLUMNNAME_Name));
 				Listitem li = comboReport.appendItem(pp.getName(), pp.getKey());
 				if (rs.getInt(1) == AD_PrintFormat_ID)
 				{

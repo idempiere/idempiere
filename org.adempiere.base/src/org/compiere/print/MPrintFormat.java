@@ -1166,7 +1166,6 @@ public class MPrintFormat extends X_AD_PrintFormat
 		String sqlWhere = " WHERE AD_Table_ID=? AND IsTableBased='Y' ";
 		if (AD_Window_ID > 0)
 			sqlWhere += "AND (AD_Window_ID=? OR AD_Window_ID IS NULL) ";		
-		sqlWhere = sqlWhere + "ORDER BY AD_Client_ID DESC, IsDefault DESC, Name"; //	Own First
 		//
 		sqlWhere = MRole.getDefault().addAccessSQL (
 				sqlWhere, "AD_PrintFormat", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
@@ -1185,6 +1184,8 @@ public class MPrintFormat extends X_AD_PrintFormat
 		Query query = new Query(Env.getCtx(), MPrintFormat.Table_Name, sqlWhere, trxName);
 		
 		query.setParameters(lsParameter);
+		
+		query.setOrderBy(" ORDER BY AD_Client_ID DESC, IsDefault DESC, Name ");
 		
 		// query print fomart just in this client  
 		List<MPrintFormat> lsPrintFormat = query.setClient_ID().list();
