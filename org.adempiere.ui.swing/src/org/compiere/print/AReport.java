@@ -19,14 +19,11 @@ package org.compiere.print;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
-
-import javax.sql.RowSet;
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
-
 import org.adempiere.util.IProcessUI;
 import org.compiere.apps.ADialog;
 import org.compiere.apps.ClientProcessCtrl;
@@ -133,7 +130,7 @@ public class AReport implements ActionListener
 	/**	The Popup						*/
 	private JPopupMenu 	m_popup = new JPopupMenu("ReportMenu");
 	/**	The Option List					*/
-	private ArrayList<KeyNamePair>	m_list = new ArrayList<KeyNamePair>();
+	private List<KeyNamePair>	m_list = new ArrayList<KeyNamePair>();
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(AReport.class);
 	/** The parent window for locking/unlocking during process execution */
@@ -151,62 +148,20 @@ public class AReport implements ActionListener
 	 */
 	private void getPrintFormats (int AD_Table_ID, int AD_Window_ID, JComponent invoker)
 	{
-		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		RowSet rowSet = MPrintFormat.getAccessiblePrintFormats(AD_Table_ID, AD_Window_ID, -1, null);
-		KeyNamePair pp = null;
-		try
-		{
-			while (rowSet.next())
-			{
-				pp = new KeyNamePair (rowSet.getInt(1), rowSet.getString(2));
-				if (rowSet.getInt(3) == AD_Client_ID)
-				{
-					m_list.add(pp);
-					m_popup.add(pp.toString()).addActionListener(this);
-				}
-			}
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		}
-
-		//	No Format exists - create it
-		if (m_list.size() == 0)
-		{
-			if (pp == null)
-				createNewFormat (AD_Table_ID);		//	calls launch
-			else
-				copyFormat(pp.getKey(), AD_Client_ID);
-		}
-		//	One Format exists or no invoker - show it
-		else if (m_list.size() == 1 || invoker == null)
+		m_list = MPrintFormat.getAccessiblePrintFormats(AD_Table_ID, AD_Window_ID, null, true);
+		
+		if (m_list.size() == 1 || invoker == null)
 			launchReport ((KeyNamePair)m_list.get(0));
 		//	Multiple Formats exist - show selection
-		else if (invoker.isShowing())
+		else if (invoker.isShowing()){
+			for (KeyNamePair printFormatInfo : m_list)
+				m_popup.add(printFormatInfo.toString()).addActionListener(this);
+			
 			m_popup.show(invoker, 0, invoker.getHeight());	//	below button
+		}
+
 	}	//	getPrintFormats
 
-	/**
-	 * 	Create and Launch new Format for table
-	 * 	@param AD_Table_ID table
-	 */
-	private void createNewFormat (int AD_Table_ID)
-	{
-		MPrintFormat pf = MPrintFormat.createFromTable(Env.getCtx(), AD_Table_ID);
-		launchReport (pf);
-	}	//	createNewFormat
-
-	/**
-	 * 	Copy existing Format
-	 * 	@param AD_PrintFormat_ID print format
-	 * 	@param To_Client_ID to client
-	 */
-	private void copyFormat (int AD_PrintFormat_ID, int To_Client_ID)
-	{
-		MPrintFormat pf = MPrintFormat.copyToClient(Env.getCtx(), AD_PrintFormat_ID, To_Client_ID);
-		launchReport (pf);
-	}	//	copyFormatFromClient
 
 	/**
 	 * 	Launch Report

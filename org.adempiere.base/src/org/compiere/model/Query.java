@@ -204,7 +204,15 @@ public class Query
 	 */
 	public Query setClient_ID()
 	{
-		this.onlyClient_ID = true;
+		return setClient_ID (true);
+	}
+	
+	/**
+	 * Set include or not include AD_Client_ID in where clause
+	 */
+	public Query setClient_ID(boolean isIncludeClient)
+	{
+		this.onlyClient_ID = isIncludeClient;
 		return this;
 	}
 	

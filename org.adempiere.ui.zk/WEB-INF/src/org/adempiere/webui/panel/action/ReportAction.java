@@ -20,12 +20,9 @@ import static org.compiere.model.SystemIDs.WINDOW_PRINTFORMAT;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.StringWriter;
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
-
-import javax.sql.RowSet;
-
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.apps.WProcessCtl;
@@ -84,7 +81,7 @@ public class ReportAction implements EventListener<Event>
 	private Checkbox chkExport = new Checkbox();
 	private Checkbox chkAllColumns = new Checkbox();
 	
-	private ArrayList<KeyNamePair>	printFormatList = new ArrayList<KeyNamePair>();
+	private List<KeyNamePair>	printFormatList = new ArrayList<KeyNamePair>();
 
 	public ReportAction(AbstractADWindowContent panel)
 	{
@@ -451,29 +448,12 @@ public class ReportAction implements EventListener<Event>
 	{
 		printFormatList.clear();
 		
-		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		RowSet rowSet = MPrintFormat.getAccessiblePrintFormats(AD_Table_ID, AD_Window_ID, -1, null);
-		KeyNamePair pp = null;
-		try
-		{
-			while (rowSet.next())
-			{
-				pp = new KeyNamePair (rowSet.getInt(1), rowSet.getString(2));
-				if (rowSet.getInt(3) == AD_Client_ID)
-				{
-					printFormatList.add(pp);
-				}
-			}
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		}
+		printFormatList = MPrintFormat.getAccessiblePrintFormats(AD_Table_ID, AD_Window_ID, null, false);		
 		
 		if (MRole.getDefault().isTableAccess(MPrintFormat.Table_ID, false) && Boolean.TRUE.equals(MRole.getDefault().getWindowAccess(WINDOW_PRINTFORMAT)))
 		{
 			StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(Env.getCtx(), "NewReport")).append(" **");
-			pp = new KeyNamePair(-1, sb.toString());
+			KeyNamePair pp = new KeyNamePair(-1, sb.toString());
 			printFormatList.add(pp);
 		}
 	}

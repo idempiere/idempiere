@@ -29,9 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
-
-import javax.sql.RowSet;
-
 import org.adempiere.model.MTabCustomization;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -42,9 +39,9 @@ import org.compiere.model.Query;
 import org.compiere.model.X_AD_PrintFormat;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
-import org.compiere.util.CPreparedStatement;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -1159,56 +1156,65 @@ public class MPrintFormat extends X_AD_PrintFormat
 
 	/**
  	 * @param AD_Table_ID
- 	 * @param AD_Client_ID use -1 to retrieve from all client
- 	 * @param trxName
- 	 */
-	public static RowSet getAccessiblePrintFormats (int AD_Table_ID, int AD_Client_ID, String trxName)
-	{
-		return getAccessiblePrintFormats(AD_Table_ID, -1, AD_Client_ID, trxName);
-	}
-
-	/**
-	 * @param AD_Table_ID
 	 * @param AD_Window_ID
 	 * @param AD_Client_ID use -1 to retrieve from all client
 	 * @param trxName
 	 */
-	public static RowSet getAccessiblePrintFormats (int AD_Table_ID, int AD_Window_ID, int AD_Client_ID, String trxName)
+	public static List<KeyNamePair> getAccessiblePrintFormats (int AD_Table_ID, int AD_Window_ID, String trxName, boolean makeNewWhenEmpty)
 	{
-		RowSet rowSet = null;
-		String sql = "SELECT AD_PrintFormat_ID, Name, AD_Client_ID "
-			+ "FROM AD_PrintFormat "
-			+ "WHERE AD_Table_ID=? AND IsTableBased='Y' ";
+		// append  WHERE  to can use MRole.getDefault().addAccessSQL
+		String sqlWhere = " WHERE AD_Table_ID=? AND IsTableBased='Y' ";
 		if (AD_Window_ID > 0)
-			sql += "AND (AD_Window_ID=? OR AD_Window_ID IS NULL) ";
-		if (AD_Client_ID >= 0)
-			sql += " AND AD_Client_ID = ? ";
-		sql = sql + "ORDER BY AD_Client_ID DESC, IsDefault DESC, Name"; //	Own First
+			sqlWhere += "AND (AD_Window_ID=? OR AD_Window_ID IS NULL) ";		
+		sqlWhere = sqlWhere + "ORDER BY AD_Client_ID DESC, IsDefault DESC, Name"; //	Own First
 		//
-		sql = MRole.getDefault().addAccessSQL (
-			sql, "AD_PrintFormat", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-		CPreparedStatement pstmt = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, trxName);
-			int count = 1;
-			pstmt.setInt(count++, AD_Table_ID);
+		sqlWhere = MRole.getDefault().addAccessSQL (
+				sqlWhere, "AD_PrintFormat", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
+		
+		// remove " WHERE " to use in Query
+		sqlWhere = sqlWhere.substring(6);
+		
+		// add sql parameter
+		List<Object> lsParameter = new ArrayList<Object>();
+				
+		lsParameter.add(new Integer(AD_Table_ID));
 			if (AD_Window_ID > 0)
-				pstmt.setInt(count++, AD_Window_ID);
-			if (AD_Client_ID >= 0)
-				pstmt.setInt(count++, AD_Client_ID);
-			rowSet = pstmt.getRowSet();
-		}
-		catch (SQLException e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
-		}
-		finally {
-			DB.close(pstmt);
-			pstmt = null;
+			lsParameter.add(new Integer(AD_Window_ID));		
+		
+		// init query
+		Query query = new Query(Env.getCtx(), MPrintFormat.Table_Name, sqlWhere, trxName);
+		
+		query.setParameters(lsParameter);
+		
+		// query print fomart just in this client  
+		List<MPrintFormat> lsPrintFormat = query.setClient_ID().list();
+		MPrintFormat newPrintFormat = null;
+		
+		if (lsPrintFormat.size() == 0){
+			// get print format form other client
+			newPrintFormat = query.setClient_ID(false).first();
 		}
 
-		return rowSet;
+		// if must get from other client, make new print format is copy from other client
+		if (newPrintFormat != null){
+			newPrintFormat = MPrintFormat.copyToClient(Env.getCtx(), newPrintFormat.getAD_PrintFormat_ID(), Env.getAD_Client_ID(Env.getCtx()));
+			lsPrintFormat.add(newPrintFormat);
+		}
+		
+		// none client have print format, make new from default template
+		if (lsPrintFormat.size() == 0){
+			newPrintFormat =  MPrintFormat.createFromTable(Env.getCtx(), AD_Table_ID);
+			lsPrintFormat.add(newPrintFormat);
+		}
+		
+		// convert lsPrintFormat to list KeyNamePair, apply translate for name column
+		List<KeyNamePair>	m_list = new ArrayList<KeyNamePair>();
+		
+		for (MPrintFormat printFormat : lsPrintFormat){
+			m_list.add(new KeyNamePair(printFormat.get_ID(), printFormat.get_Translation(MPrintFormat.COLUMNNAME_Name)));
+		}				
+		
+		return m_list;
 	}
 
 	@Override
