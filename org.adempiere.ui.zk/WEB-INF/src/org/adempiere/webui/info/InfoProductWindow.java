@@ -841,7 +841,7 @@ public class InfoProductWindow extends InfoWindow {
 	@Override
 	protected void prepareTable(ColumnInfo[] layout, String from, String where,
 			String orderBy) {
-		if (getSelectedWarehouseId() > 0)
+		if (Util.isEmpty(orderBy) && getSelectedWarehouseId() > 0)
 		{
 			orderBy = "QtyAvailable DESC";
 		}
