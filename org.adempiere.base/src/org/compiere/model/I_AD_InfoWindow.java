@@ -258,19 +258,6 @@ public interface I_AD_InfoWindow
 	  */
 	public boolean isValid();
 
-    /** Column name LayoutType */
-    public static final String COLUMNNAME_LayoutType = "LayoutType";
-
-	/** Set Layout Type.
-	  * Layout type of info process
-	  */
-	public void setLayoutType (String LayoutType);
-
-	/** Get Layout Type.
-	  * Layout type of info process
-	  */
-	public String getLayoutType();
-
     /** Column name MaxQueryRecords */
     public static final String COLUMNNAME_MaxQueryRecords = "MaxQueryRecords";
 

@@ -57,7 +57,6 @@ import org.compiere.model.MInfoWindow;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MRole;
-import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_InfoColumn;
 import org.compiere.util.DB;
@@ -97,7 +96,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5198550045241794995L;
+	private static final long serialVersionUID = -3154640457502223300L;
 
 	protected Grid parameterGrid;
 	private Borderlayout layout;
@@ -196,28 +195,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 		
 		MInfoProcess [] infoProcessList = infoWindow.getInfoProcess(false);
-		// get default value of infoProcessLayout from sysConfig, when no config, select bt_list
-		String infoProcessLayoutDefault = MSysConfig.getValue(MSysConfig.INFO_PROCESS_LAYOUT_DEFAULT, MInfoProcess.INFO_PROCESS_LAYOUT_TYPE_bt);
-   		
-		// when default layout set in infowindow use it
-		if (infoWindow.getLayoutType() != null){
-   			infoProcessLayoutDefault = infoWindow.getLayoutType(); 
-   		}
-		
-		// when infoprocess have non layout type, set layout type default for it
-		for (MInfoProcess infoProcess : infoProcessList){
-			if (infoProcess.getLayoutType() == null){
-   				infoProcess.setLayoutType(infoProcessLayoutDefault);
-   			}
-		}
-		
+
 		// ** layout info process flow order (button list, drop down, dialog,...)
 		// each layout type in a loop to ensure this order
 		
 		// make list process button
    		for (MInfoProcess infoProcess : infoProcessList){
-   		    // just add info process have layout is bt
-   			if (!MInfoProcess.INFO_PROCESS_LAYOUT_TYPE_bt.equals(infoProcess.getLayoutType())){
+   		    // just add info process have layout is button
+   			if (!MInfoProcess.LAYOUTTYPE_Button.equals(infoProcess.getLayoutType())){
    				continue;
    			}
    			Button btProcess = confirmPanel.addProcessButton(infoProcess.getName(), infoProcess.getImageURL());
@@ -234,7 +219,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    		// filte just infoprocess have layout type is drop list for model of combobox
 		List<MInfoProcess> infoProcessDropList = new ArrayList<MInfoProcess>();
    		for (MInfoProcess infoProcess : infoProcessList){
-   			if (!MInfoProcess.INFO_PROCESS_LAYOUT_TYPE_drop_list.equals(infoProcess.getLayoutType())){
+   			if (!MInfoProcess.LAYOUTTYPE_List.equals(infoProcess.getLayoutType())){
    				continue;
    			}
    			infoProcessDropList.add(infoProcess);
@@ -268,7 +253,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    		Menupopup ipMenu = null;   		
    		for (MInfoProcess infoProcess : infoProcessList){
    			// just add info process have layout is bt_menu
-   			if (!MInfoProcess.INFO_PROCESS_LAYOUT_TYPE_menu.equals(infoProcess.getLayoutType())){
+   			if (!MInfoProcess.LAYOUTTYPE_Menu.equals(infoProcess.getLayoutType())){
    				continue;
    			}
    			

@@ -30,8 +30,8 @@ public interface I_AD_InfoProcess
     /** TableName=AD_InfoProcess */
     public static final String Table_Name = "AD_InfoProcess";
 
-    /** AD_Table_ID=1000000 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    /** AD_Table_ID=200129 */
+    public static final int Table_ID = 200129;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -181,12 +181,12 @@ public interface I_AD_InfoProcess
     /** Column name LayoutType */
     public static final String COLUMNNAME_LayoutType = "LayoutType";
 
-	/** Set Layout Type.
+	/** Set LayoutType.
 	  * Layout type of info process
 	  */
 	public void setLayoutType (String LayoutType);
 
-	/** Get Layout Type.
+	/** Get LayoutType.
 	  * Layout type of info process
 	  */
 	public String getLayoutType();

@@ -19,7 +19,6 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -43,7 +42,7 @@ public class MInfoWindow extends X_AD_InfoWindow
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4228782755777501270L;
+	private static final long serialVersionUID = -3099366897275960300L;
 
 	/**
 	 * 	Standard Constructor

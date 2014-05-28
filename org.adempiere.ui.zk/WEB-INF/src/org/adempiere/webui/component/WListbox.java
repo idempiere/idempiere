@@ -55,11 +55,11 @@ import org.zkoss.zul.ListModel;
  * @author Sendy Yagambrum
  */
 public class WListbox extends Listbox implements IMiniTable, TableValueChangeListener, WTableModelListener
-{	
+{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8717707799347994189L;
+	private static final long serialVersionUID = -706774424788688953L;
 
 	/**	Logger. */
 	private static CLogger logger = CLogger.getCLogger(WListbox.class);

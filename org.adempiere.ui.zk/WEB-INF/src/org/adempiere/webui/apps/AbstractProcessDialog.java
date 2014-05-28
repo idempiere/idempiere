@@ -83,8 +83,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2190456247109646320L;
-	
+	private static final long serialVersionUID = 761285757875594250L;
+
 	private static final String ON_COMPLETE = "onComplete";
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
 	

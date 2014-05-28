@@ -25,12 +25,11 @@ import org.compiere.model.X_AD_InfoProcess;
  *
  */
 public class MInfoProcess extends X_AD_InfoProcess {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -819673985356394056L;
-	
+	private static final long serialVersionUID = 4978433930748011554L;
+
 	/**
 	 * {@inheritDoc}
 	 * @param ctx
@@ -53,8 +52,4 @@ public class MInfoProcess extends X_AD_InfoProcess {
 
 	}
 	
-	public static final String INFO_PROCESS_LAYOUT_TYPE_menu = "Menu";
-	public static final String INFO_PROCESS_LAYOUT_TYPE_bt = "Button";
-	public static final String INFO_PROCESS_LAYOUT_TYPE_drop_list = "Drop List";
-
 }

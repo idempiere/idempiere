@@ -40,7 +40,8 @@ public final class ConfirmPanel extends Div
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6050634074454659578L;
+	private static final long serialVersionUID = 3257542169107223645L;
+
 	/** Action String OK.        */
     public static final String A_OK = "Ok";
     /** Action String Cancel.    */

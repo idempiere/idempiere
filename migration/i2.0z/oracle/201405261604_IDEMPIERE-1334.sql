@@ -2,7 +2,7 @@ SET SQLBLANKLINES ON
 SET DEFINE OFF
 
 -- May 26, 2014 10:31:26 PM ICT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
+-- IDEMPIERE-1334 Run one or more processes from Info Window
 INSERT INTO AD_Table (ImportTable,CopyColumnsFromTable,IsSecurityEnabled,AccessLevel,LoadSeq,AD_Window_ID,AD_Table_ID,IsHighVolume,IsView,IsChangeLog,EntityType,ReplicationType,AD_Table_UU,IsCentrallyMaintained,IsDeleteable,TableName,Description,Name,IsActive,AD_Org_ID,CreatedBy,Updated,UpdatedBy,Processing,DatabaseViewDrop,AD_Client_ID,Created) VALUES ('N','N','N','4',0,385,200129,'N','N','Y','D','L','399fcb47-f46c-4789-9e45-962cc5379c16','Y','Y','AD_InfoProcess','define process for info window','Info Process','Y',0,100,TO_DATE('2014-05-26 22:31:25','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,TO_DATE('2014-05-26 22:31:25','YYYY-MM-DD HH24:MI:SS'))
 ;
 
@@ -154,43 +154,43 @@ ALTER TABLE AD_InfoProcess ADD Help VARCHAR2(2000) DEFAULT NULL
 ;
 
 -- May 26, 2014 10:31:41 PM ICT
-INSERT INTO AD_Element (ColumnName,AD_Element_ID,Help,Name,Description,PrintName,AD_Element_UU,AD_Org_ID,CreatedBy,UpdatedBy,IsActive,AD_Client_ID,EntityType,Created,Updated) VALUES ('LayoutType',202714,'Process info can display as button list, drop down list, dialog button,...','LayoutType','Layout type of info process','Layout Type','913eafda-0cdc-4c44-85f8-487d77a3787c',0,100,100,'Y',0,'D',TO_DATE('2014-05-26 22:31:41','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2014-05-26 22:31:41','YYYY-MM-DD HH24:MI:SS'))
+INSERT INTO AD_Element (ColumnName,AD_Element_ID,Help,Name,Description,PrintName,AD_Element_UU,AD_Org_ID,CreatedBy,UpdatedBy,IsActive,AD_Client_ID,EntityType,Created,Updated) VALUES ('LayoutType',202714,'Process info can display as button, list, menu','LayoutType','Layout type of info process','Layout Type','913eafda-0cdc-4c44-85f8-487d77a3787c',0,100,100,'Y',0,'D',TO_DATE('2014-05-26 22:31:41','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2014-05-26 22:31:41','YYYY-MM-DD HH24:MI:SS'))
 ;
 
 -- May 26, 2014 10:31:42 PM ICT
-INSERT INTO AD_Reference (AD_Reference_ID,Name,EntityType,AD_Reference_UU,IsOrderByValue,Description,ValidationType,AD_Org_ID,CreatedBy,Updated,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (200083,'ad_info_process layout type','D','2171ebd2-e11a-4612-9885-128f155d65e8','N','define layout type of info process button','L',0,100,TO_DATE('2014-05-26 22:31:42','YYYY-MM-DD HH24:MI:SS'),'Y',TO_DATE('2014-05-26 22:31:42','YYYY-MM-DD HH24:MI:SS'),100,0)
+INSERT INTO AD_Reference (AD_Reference_ID,Name,EntityType,AD_Reference_UU,IsOrderByValue,Description,ValidationType,AD_Org_ID,CreatedBy,Updated,IsActive,Created,UpdatedBy,AD_Client_ID) VALUES (200083,'AD_InfoProcess LayoutType','D','2171ebd2-e11a-4612-9885-128f155d65e8','N','Define layout type of info process button','L',0,100,TO_DATE('2014-05-26 22:31:42','YYYY-MM-DD HH24:MI:SS'),'Y',TO_DATE('2014-05-26 22:31:42','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
 -- May 26, 2014 10:31:43 PM ICT
-INSERT INTO AD_Ref_List (AD_Ref_List_ID,AD_Reference_ID,Description,Name,AD_Ref_List_UU,Value,Created,CreatedBy,Updated,UpdatedBy,IsActive,EntityType,AD_Client_ID,AD_Org_ID) VALUES (200185,200083,'info process display as muilti buttons','Button','6884dcd1-bc9a-4d16-9b2c-fe40968747f8','Button',TO_DATE('2014-05-26 22:31:42','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2014-05-26 22:31:42','YYYY-MM-DD HH24:MI:SS'),100,'Y','D',0,0)
+INSERT INTO AD_Ref_List (AD_Ref_List_ID,AD_Reference_ID,Description,Name,AD_Ref_List_UU,Value,Created,CreatedBy,Updated,UpdatedBy,IsActive,EntityType,AD_Client_ID,AD_Org_ID) VALUES (200185,200083,'Display as button','Button','6884dcd1-bc9a-4d16-9b2c-fe40968747f8','B',TO_DATE('2014-05-26 22:31:42','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2014-05-26 22:31:42','YYYY-MM-DD HH24:MI:SS'),100,'Y','D',0,0)
 ;
 
 -- May 26, 2014 10:31:44 PM ICT
-INSERT INTO AD_Ref_List (AD_Ref_List_ID,AD_Reference_ID,Description,Name,AD_Ref_List_UU,Value,Created,CreatedBy,Updated,UpdatedBy,IsActive,EntityType,AD_Client_ID,AD_Org_ID) VALUES (200186,200083,'Each info process is a menu item, when click a button process, this menu is show','Menu','7b539591-296a-43ee-916c-c87c35acc84d','Menu',TO_DATE('2014-05-26 22:31:43','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2014-05-26 22:31:43','YYYY-MM-DD HH24:MI:SS'),100,'Y','D',0,0)
+INSERT INTO AD_Ref_List (AD_Ref_List_ID,AD_Reference_ID,Description,Name,AD_Ref_List_UU,Value,Created,CreatedBy,Updated,UpdatedBy,IsActive,EntityType,AD_Client_ID,AD_Org_ID) VALUES (200186,200083,'Display as menu on a gear button','Menu','7b539591-296a-43ee-916c-c87c35acc84d','M',TO_DATE('2014-05-26 22:31:43','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2014-05-26 22:31:43','YYYY-MM-DD HH24:MI:SS'),100,'Y','D',0,0)
 ;
 
 -- May 26, 2014 10:31:44 PM ICT
-INSERT INTO AD_Ref_List (AD_Ref_List_ID,AD_Reference_ID,Description,Name,AD_Ref_List_UU,Value,Created,CreatedBy,Updated,UpdatedBy,IsActive,EntityType,AD_Client_ID,AD_Org_ID) VALUES (200187,200083,'info process is display as drop down list','Drop List','ff0cba3e-e82c-4aa8-9f9b-bedf681b822d','Drop List',TO_DATE('2014-05-26 22:31:44','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2014-05-26 22:31:44','YYYY-MM-DD HH24:MI:SS'),100,'Y','D',0,0)
+INSERT INTO AD_Ref_List (AD_Ref_List_ID,AD_Reference_ID,Description,Name,AD_Ref_List_UU,Value,Created,CreatedBy,Updated,UpdatedBy,IsActive,EntityType,AD_Client_ID,AD_Org_ID) VALUES (200187,200083,'Display as list','List','ff0cba3e-e82c-4aa8-9f9b-bedf681b822d','L',TO_DATE('2014-05-26 22:31:44','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2014-05-26 22:31:44','YYYY-MM-DD HH24:MI:SS'),100,'Y','D',0,0)
 ;
 
 -- May 26, 2014 10:31:45 PM ICT
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,IsSecure,FKConstraintType,AD_Element_ID,AD_Reference_ID,AD_Reference_Value_ID,AD_Table_ID) VALUES (0,'Y',0,211257,'N','N','N',0,'N',10,'N','N','N','Y','a0e8f5b5-ac5f-44ba-a2c9-060dd3231c4e','Y','LayoutType','Layout type of info process','Process info can display as button list, drop down list, dialog button,...','LayoutType','Y',TO_DATE('2014-05-26 22:31:45','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2014-05-26 22:31:45','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N','N','N',202714,17,200083,200129)
+INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,IsSecure,FKConstraintType,AD_Element_ID,AD_Reference_ID,AD_Reference_Value_ID,AD_Table_ID) VALUES (0,'Y',0,211257,'N','N','N',0,'N',1,'N','N','N','Y','a0e8f5b5-ac5f-44ba-a2c9-060dd3231c4e','Y','LayoutType','Layout type of info process','Process info can display as button, list, menu','LayoutType','Y',TO_DATE('2014-05-26 22:31:45','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2014-05-26 22:31:45','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N','N','N',202714,17,200083,200129)
 ;
 
 -- May 26, 2014 10:31:45 PM ICT
-ALTER TABLE AD_InfoProcess ADD LayoutType VARCHAR2(10) DEFAULT NULL 
+ALTER TABLE AD_InfoProcess ADD LayoutType VARCHAR2(1) DEFAULT NULL 
 ;
 
--- May 26, 2014 10:31:46 PM ICT
-INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,IsSecure,FKConstraintType,AD_Element_ID,AD_Reference_ID,AD_Reference_Value_ID,AD_Table_ID) VALUES (0,'Y',0,211258,'N','N','N',0,'N',10,'N','N','N','Y','663fed7f-bda5-4602-9e9a-b2a45c02020c','Y','LayoutType','Layout type of info process','Process info can display as button list, drop down list, dialog button,...','LayoutType','Y',TO_DATE('2014-05-26 22:31:45','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2014-05-26 22:31:45','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N','N','N',202714,17,200083,895)
+-- 28/05/2014 01:24:40 PM COT
+UPDATE AD_Column SET IsMandatory='Y', DefaultValue='B',Updated=TO_DATE('2014-05-28 13:24:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=211257
 ;
 
--- May 26, 2014 10:31:46 PM ICT
-ALTER TABLE AD_InfoWindow ADD LayoutType VARCHAR2(10) DEFAULT NULL 
+-- 28/05/2014 01:24:44 PM COT
+ALTER TABLE AD_InfoProcess MODIFY LayoutType VARCHAR2(10) DEFAULT 'B'
 ;
 
--- May 26, 2014 10:31:47 PM ICT
-INSERT INTO AD_Field (SortNo,IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,SeqNo,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,Help,Description,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,UpdatedBy,AD_Org_ID,CreatedBy,Updated,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry,AD_Client_ID,ColumnSpan,NumLines,IsAdvancedField,IsDefaultFocus,AD_Column_ID,EntityType,Created) VALUES (0,'N',842,0,'N','N',220,'Y',203025,'N','Process info can display as button list, drop down list, dialog button,...','Layout type of info process','LayoutType','f447274d-3c6b-42e1-a2ae-85f641a91a2c','Y','N',100,0,100,TO_DATE('2014-05-26 22:31:47','YYYY-MM-DD HH24:MI:SS'),'Y','Y',130,1,'N',0,1,1,'N','N',211258,'D',TO_DATE('2014-05-26 22:31:47','YYYY-MM-DD HH24:MI:SS'))
+-- 28/05/2014 01:24:44 PM COT
+ALTER TABLE AD_InfoProcess MODIFY LayoutType NOT NULL
 ;
 
 -- May 26, 2014 10:31:48 PM ICT
@@ -242,7 +242,7 @@ INSERT INTO AD_Field (IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,S
 ;
 
 -- May 26, 2014 10:31:56 PM ICT
-INSERT INTO AD_Field (SortNo,IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,SeqNo,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,Help,Description,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,UpdatedBy,AD_Org_ID,CreatedBy,Updated,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry,AD_Client_ID,ColumnSpan,NumLines,IsAdvancedField,IsDefaultFocus,AD_Column_ID,EntityType,Created) VALUES (0,'N',200142,0,'N','N',100,'Y',203037,'N','Process info can display as button list, drop down list, dialog button,...','Layout type of info process','LayoutType','106b208d-b39b-4ab0-b839-7d0c95951bea','Y','N',100,0,100,TO_DATE('2014-05-26 22:31:55','YYYY-MM-DD HH24:MI:SS'),'Y','Y',90,1,'N',0,2,1,'N','N',211257,'D',TO_DATE('2014-05-26 22:31:55','YYYY-MM-DD HH24:MI:SS'))
+INSERT INTO AD_Field (SortNo,IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,SeqNo,IsCentrallyMaintained,AD_Field_ID,IsReadOnly,Help,Description,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,UpdatedBy,AD_Org_ID,CreatedBy,Updated,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry,AD_Client_ID,ColumnSpan,NumLines,IsAdvancedField,IsDefaultFocus,AD_Column_ID,EntityType,Created) VALUES (0,'N',200142,0,'N','N',100,'Y',203037,'N','Process info can display as button, list, menu','Layout type of info process','LayoutType','106b208d-b39b-4ab0-b839-7d0c95951bea','Y','N',100,0,100,TO_DATE('2014-05-26 22:31:55','YYYY-MM-DD HH24:MI:SS'),'Y','Y',90,1,'N',0,2,1,'N','N',211257,'D',TO_DATE('2014-05-26 22:31:55','YYYY-MM-DD HH24:MI:SS'))
 ;
 
 -- May 26, 2014 10:31:57 PM ICT
@@ -252,13 +252,16 @@ There are two reasons for de-activating and not deleting records:
 (2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.','The record is active in the system','Active','e45bfa22-f210-4a87-9b0c-b3ab2da35161','Y','N',100,0,100,TO_DATE('2014-05-26 22:31:56','YYYY-MM-DD HH24:MI:SS'),'Y','Y',70,5,'N',0,2,1,'N','N',211245,'D',TO_DATE('2014-05-26 22:31:56','YYYY-MM-DD HH24:MI:SS'))
 ;
 
-
 -- migrate for anyone use red1 process in info panel start
--- MISS SCRIPT THAN POSTGRES
+INSERT INTO AD_InfoProcess 
+(ad_infoprocess_id, ad_infowindow_id, ad_client_id, ad_org_id, isactive,createdby, updatedby, seqno, name, ad_process_id, description, help, ad_infoprocess_uu)
+(SELECT nextidfunc(200176,'N'), ad_infowindow_id, iw.ad_client_id, iw.ad_org_id, 'Y', 100, 100, 10, pr.name, iw.ad_process_id, pr.description, pr.help, generate_uuid()
+FROM ad_infowindow iw INNER JOIN ad_process pr ON pr.ad_process_ID = iw.ad_process_ID	
+WHERE iw.ad_process_ID IS NOT NULL
+);
 
 -- May 23, 2014 4:01:30 PM ICT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
-DELETE  FROM  AD_Field_Trl WHERE AD_Field_ID=202596
+DELETE FROM AD_Field_Trl WHERE AD_Field_ID=202596
 ;
 
 -- May 23, 2014 4:01:30 PM ICT
@@ -266,14 +269,8 @@ DELETE FROM AD_Field WHERE AD_Field_ID=202596
 ;
 
 -- May 23, 2014 4:01:51 PM ICT
-DELETE  FROM  AD_Column_Trl WHERE AD_Column_ID=210944
+UPDATE AD_Column SET IsActive='N' WHERE AD_Column_ID=210944
 ;
-
--- May 23, 2014 4:01:51 PM ICT
-DELETE FROM AD_Column WHERE AD_Column_ID=210944
-;
-
--- migrate for anyone use red1 process in info panel end
 
 SELECT register_migration_script('201405261604_IDEMPIERE-1334.sql') FROM dual
 ;

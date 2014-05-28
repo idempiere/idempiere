@@ -30,7 +30,7 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140523L;
+	private static final long serialVersionUID = 20140528L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow (Properties ctx, int AD_InfoWindow_ID, String trxName)
@@ -357,30 +357,6 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
-	}
-
-	/** Button = Button */
-	public static final String LAYOUTTYPE_Button = "Button";
-	/** Menu = Menu */
-	public static final String LAYOUTTYPE_Menu = "Menu";
-	/** Drop List = Drop List */
-	public static final String LAYOUTTYPE_DropList = "Drop List";
-	/** Set Layout Type.
-		@param LayoutType 
-		Layout type of info process
-	  */
-	public void setLayoutType (String LayoutType)
-	{
-
-		set_Value (COLUMNNAME_LayoutType, LayoutType);
-	}
-
-	/** Get Layout Type.
-		@return Layout type of info process
-	  */
-	public String getLayoutType () 
-	{
-		return (String)get_Value(COLUMNNAME_LayoutType);
 	}
 
 	/** Set Max Query Records.

@@ -29,7 +29,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140523L;
+	private static final long serialVersionUID = 20140528L;
 
     /** Standard Constructor */
     public X_AD_InfoProcess (Properties ctx, int AD_InfoProcess_ID, String trxName)
@@ -40,6 +40,8 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 			setAD_InfoProcess_ID (0);
 			setAD_InfoProcess_UU (null);
 			setAD_Process_ID (0);
+			setLayoutType (null);
+// B
 			setName (null);
 			setSeqNo (0);
 // @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_InfoProcess WHERE AD_InfoWindow_ID=@AD_InfoWindow_ID@
@@ -204,7 +206,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	  */
 	public void setImageURL (String ImageURL)
 	{
-		set_ValueNoCheck (COLUMNNAME_ImageURL, ImageURL);
+		set_Value (COLUMNNAME_ImageURL, ImageURL);
 	}
 
 	/** Get Image URL.
@@ -215,13 +217,15 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 		return (String)get_Value(COLUMNNAME_ImageURL);
 	}
 
-	/** button list = bt list */
-	public static final String LAYOUTTYPE_ButtonList = "bt list";
-	/** drop down list = drop list */
-	public static final String LAYOUTTYPE_DropDownList = "drop list";
-	/** button dialog = bt dialog */
-	public static final String LAYOUTTYPE_ButtonDialog = "bt dialog";
-	/** Set Layout Type.
+	/** LayoutType AD_Reference_ID=200083 */
+	public static final int LAYOUTTYPE_AD_Reference_ID=200083;
+	/** Button = B */
+	public static final String LAYOUTTYPE_Button = "B";
+	/** Menu = M */
+	public static final String LAYOUTTYPE_Menu = "M";
+	/** List = L */
+	public static final String LAYOUTTYPE_List = "L";
+	/** Set LayoutType.
 		@param LayoutType 
 		Layout type of info process
 	  */
@@ -231,7 +235,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 		set_Value (COLUMNNAME_LayoutType, LayoutType);
 	}
 
-	/** Get Layout Type.
+	/** Get LayoutType.
 		@return Layout type of info process
 	  */
 	public String getLayoutType () 
