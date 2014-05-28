@@ -15,9 +15,7 @@ package org.adempiere.webui.theme;
 
 import java.io.IOException;
 
-import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
 import org.compiere.model.MSysConfig;
