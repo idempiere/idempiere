@@ -26,6 +26,8 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
  
 /**
  *  Bank Transfer. Generate two Payments entry
@@ -98,11 +100,11 @@ public class BankTransfer extends SvrProcess
 				+ " - Description="+p_Description+ " - Statement Date="+p_StatementDate+
 				" - Date Account="+p_DateAcct);
 
+		if (Env.getAD_Org_ID(getCtx()) == 0)
+			throw new AdempiereUserError(Msg.getMsg(getCtx(), "Org0NotAllowed"));
+
 		if (p_To_C_BankAccount_ID == 0 || p_From_C_BankAccount_ID == 0)
 			throw new IllegalArgumentException("Banks required");
-
-		if (p_DocumentNo == null || p_DocumentNo.length() == 0)
-			throw new IllegalArgumentException("Document No required");
 
 		if (p_To_C_BankAccount_ID == p_From_C_BankAccount_ID)
 			throw new AdempiereUserError ("Banks From and To must be different");
@@ -145,7 +147,8 @@ public class BankTransfer extends SvrProcess
 		
 		MPayment paymentBankFrom = new MPayment(getCtx(), 0 ,  get_TrxName());
 		paymentBankFrom.setC_BankAccount_ID(mBankFrom.getC_BankAccount_ID());
-		paymentBankFrom.setDocumentNo(p_DocumentNo);
+		if (!Util.isEmpty(p_DocumentNo, true))
+			paymentBankFrom.setDocumentNo(p_DocumentNo);
 		paymentBankFrom.setDateAcct(p_DateAcct);
 		paymentBankFrom.setDateTrx(p_StatementDate);
 		paymentBankFrom.setTenderType(MPayment.TENDERTYPE_DirectDeposit);
@@ -171,7 +174,8 @@ public class BankTransfer extends SvrProcess
 
 		MPayment paymentBankTo = new MPayment(getCtx(), 0 ,  get_TrxName());
 		paymentBankTo.setC_BankAccount_ID(mBankTo.getC_BankAccount_ID());
-		paymentBankTo.setDocumentNo(p_DocumentNo);
+		if (!Util.isEmpty(p_DocumentNo, true))
+			paymentBankTo.setDocumentNo(p_DocumentNo);
 		paymentBankTo.setDateAcct(p_DateAcct);
 		paymentBankTo.setDateTrx(p_StatementDate);
 		paymentBankTo.setTenderType(MPayment.TENDERTYPE_DirectDeposit);
