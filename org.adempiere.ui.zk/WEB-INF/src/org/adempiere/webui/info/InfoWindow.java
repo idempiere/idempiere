@@ -1208,6 +1208,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 						{
 							if (infoColumn.getAD_Reference_ID() == DisplayType.List)
 							{
+								WEditor editor = null;							
+						        editor = WebEditorFactory.getEditor(getGridField(infoColumn), true);
+						        editor.setMandatory(false);
+						        editor.setReadWrite(false);
+						        editorMap.put(infoColumn.getSelectClause(), editor);
 								columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), ValueNamePair.class, (String)null);
 							}
 							else
