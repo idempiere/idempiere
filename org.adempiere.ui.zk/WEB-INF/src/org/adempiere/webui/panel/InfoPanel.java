@@ -222,7 +222,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			setStyle("position: absolute");
 		}
 
-        confirmPanel = new ConfirmPanel(true, true, false, true, true, true, true, false);  // Elaine 2008/12/16 
+		confirmPanel = new ConfirmPanel(true, true, false, true, true, true);  // Elaine 2008/12/16 
         confirmPanel.addActionListener(Events.ON_CLICK, this);
         confirmPanel.setHflex("1");
 
