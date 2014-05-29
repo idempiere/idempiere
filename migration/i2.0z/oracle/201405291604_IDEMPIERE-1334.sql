@@ -1,0 +1,68 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- May 29, 2014 6:19:41 AM ICT
+-- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
+DELETE  FROM  AD_Field_Trl WHERE AD_Field_ID=203032
+;
+
+-- May 29, 2014 6:19:41 AM ICT
+DELETE FROM AD_Field WHERE AD_Field_ID=203032
+;
+
+-- May 29, 2014 6:19:52 AM ICT
+DELETE  FROM  AD_Field_Trl WHERE AD_Field_ID=203033
+;
+
+-- May 29, 2014 6:19:52 AM ICT
+DELETE FROM AD_Field WHERE AD_Field_ID=203033
+;
+
+-- May 29, 2014 6:19:52 AM ICT
+DELETE  FROM  AD_Field_Trl WHERE AD_Field_ID=203034
+;
+
+-- May 29, 2014 6:19:52 AM ICT
+DELETE FROM AD_Field WHERE AD_Field_ID=203034
+;
+
+-- May 29, 2014 6:20:37 AM ICT
+DELETE  FROM  AD_Column_Trl WHERE AD_Column_ID=211251
+;
+
+-- May 29, 2014 6:20:37 AM ICT
+DELETE FROM AD_Column WHERE AD_Column_ID=211251
+;
+
+-- May 29, 2014 6:20:38 AM ICT
+DELETE  FROM  AD_Column_Trl WHERE AD_Column_ID=211256
+;
+
+-- May 29, 2014 6:20:38 AM ICT
+DELETE FROM AD_Column WHERE AD_Column_ID=211256
+;
+
+-- May 29, 2014 6:20:38 AM ICT
+DELETE  FROM  AD_Column_Trl WHERE AD_Column_ID=211250
+;
+
+-- May 29, 2014 6:20:38 AM ICT
+DELETE FROM AD_Column WHERE AD_Column_ID=211250
+;
+
+ALTER TABLE ad_infoprocess DROP COLUMN name
+;
+
+ALTER TABLE ad_infoprocess DROP COLUMN description
+;
+
+ALTER TABLE ad_infoprocess DROP COLUMN help
+;
+
+-- May 29, 2014 6:21:41 AM ICT
+INSERT INTO AD_Message (MsgType,MsgText,AD_Message_ID,EntityType,AD_Message_UU,Value,IsActive,Updated,CreatedBy,UpdatedBy,AD_Client_ID,AD_Org_ID,Created) VALUES ('M','Process Menu',200275,'D','c7cb8357-7a1f-46ab-9957-cda58431adfd','ProcessMenu','Y',TO_DATE('2014-05-29 06:21:35','YYYY-MM-DD HH24:MI:SS'),100,100,0,0,TO_DATE('2014-05-29 06:21:35','YYYY-MM-DD HH24:MI:SS'))
+;
+
+
+SELECT register_migration_script('201405291604_IDEMPIERE-1334.sql') FROM dual
+;

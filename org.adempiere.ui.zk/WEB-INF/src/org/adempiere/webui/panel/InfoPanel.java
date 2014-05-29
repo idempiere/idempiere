@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
-
-import org.adempiere.model.MInfoProcess;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
@@ -136,7 +134,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 	/** Window Width                */
 	static final int        INFO_WIDTH = 800;
-	private boolean m_lookup;
+	protected boolean m_lookup;
 
 	/**************************************************
      *  Detail Constructor
@@ -1168,8 +1166,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         		return;
         	}
             		
-        	MInfoProcess selectedInfoProcess = (MInfoProcess)cbbSelectedItem.getValue();
-        	preRunProcess(selectedInfoProcess.getAD_Process_ID());
+        	MProcess selectedProcess = (MProcess)cbbSelectedItem.getValue();
+        	preRunProcess(selectedProcess.getAD_Process_ID());
         }
         else if (btProcessList.contains(event.getTarget())){
         	// click bt process in case display button list

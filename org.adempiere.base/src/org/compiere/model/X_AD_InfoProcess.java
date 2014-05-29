@@ -29,7 +29,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140528L;
+	private static final long serialVersionUID = 20140529L;
 
     /** Standard Constructor */
     public X_AD_InfoProcess (Properties ctx, int AD_InfoProcess_ID, String trxName)
@@ -42,7 +42,6 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 			setAD_Process_ID (0);
 			setLayoutType (null);
 // B
-			setName (null);
 			setSeqNo (0);
 // @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_InfoProcess WHERE AD_InfoWindow_ID=@AD_InfoWindow_ID@
         } */
@@ -166,40 +165,6 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 		return ii.intValue();
 	}
 
-	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
-	public void setDescription (String Description)
-	{
-		set_Value (COLUMNNAME_Description, Description);
-	}
-
-	/** Get Description.
-		@return Optional short description of the record
-	  */
-	public String getDescription () 
-	{
-		return (String)get_Value(COLUMNNAME_Description);
-	}
-
-	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
-	public void setHelp (String Help)
-	{
-		set_Value (COLUMNNAME_Help, Help);
-	}
-
-	/** Get Comment/Help.
-		@return Comment or Hint
-	  */
-	public String getHelp () 
-	{
-		return (String)get_Value(COLUMNNAME_Help);
-	}
-
 	/** Set Image URL.
 		@param ImageURL 
 		URL of  image
@@ -241,23 +206,6 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	public String getLayoutType () 
 	{
 		return (String)get_Value(COLUMNNAME_LayoutType);
-	}
-
-	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
-	public void setName (String Name)
-	{
-		set_Value (COLUMNNAME_Name, Name);
-	}
-
-	/** Get Name.
-		@return Alphanumeric identifier of the entity
-	  */
-	public String getName () 
-	{
-		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Sequence.
