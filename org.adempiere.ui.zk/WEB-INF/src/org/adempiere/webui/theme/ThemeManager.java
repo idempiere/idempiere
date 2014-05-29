@@ -55,8 +55,8 @@ public final class ThemeManager {
 	 * @return name of active theme
 	 */
 	public static String getTheme() {
-		String theme = System.getProperty("ZK_THEME");
-		return Util.isEmpty(theme) ? MSysConfig.getValue(ITheme.ZK_THEME, ITheme.ZK_THEME_DEFAULT) : theme;
+		String theme = System.getProperty(MSysConfig.ZK_THEME);
+		return Util.isEmpty(theme) ? MSysConfig.getValue(MSysConfig.ZK_THEME, ITheme.ZK_THEME_DEFAULT) : theme;
 	}
 
 	/**

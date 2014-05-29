@@ -17,9 +17,6 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import static org.compiere.model.MSysConfig.CLIENT_ACCOUNTING;
-import static org.compiere.model.MSysConfig.MAIL_SEND_CREDENTIALS;
-
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -59,7 +56,7 @@ public class MClient extends X_AD_Client
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3043792947325698506L;
+	private static final long serialVersionUID = -4479164806149932775L;
 
 	/**
 	 * 	Get client
@@ -922,21 +919,21 @@ public class MClient extends X_AD_Client
 	private static final String CLIENT_ACCOUNTING_IMMEDIATE = "I";
 
 	public static boolean isClientAccounting() {
-		String ca = MSysConfig.getValue(CLIENT_ACCOUNTING,
+		String ca = MSysConfig.getValue(MSysConfig.CLIENT_ACCOUNTING,
 				CLIENT_ACCOUNTING_QUEUE, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return (ca.equalsIgnoreCase(CLIENT_ACCOUNTING_IMMEDIATE) || ca.equalsIgnoreCase(CLIENT_ACCOUNTING_QUEUE));
 	}
 
 	public static boolean isClientAccountingQueue() {
-		String ca = MSysConfig.getValue(CLIENT_ACCOUNTING,
+		String ca = MSysConfig.getValue(MSysConfig.CLIENT_ACCOUNTING,
 				CLIENT_ACCOUNTING_QUEUE, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return ca.equalsIgnoreCase(CLIENT_ACCOUNTING_QUEUE);
 	}
 
 	public static boolean isClientAccountingImmediate() {
-		String ca = MSysConfig.getValue(CLIENT_ACCOUNTING,
+		String ca = MSysConfig.getValue(MSysConfig.CLIENT_ACCOUNTING,
 				CLIENT_ACCOUNTING_QUEUE, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return ca.equalsIgnoreCase(CLIENT_ACCOUNTING_IMMEDIATE);
@@ -1086,14 +1083,14 @@ public class MClient extends X_AD_Client
 	private static final String MAIL_SEND_CREDENTIALS_SYSTEM = "S";
 
 	public static boolean isSendCredentialsClient() {
-		String msc = MSysConfig.getValue(MAIL_SEND_CREDENTIALS,
+		String msc = MSysConfig.getValue(MSysConfig.MAIL_SEND_CREDENTIALS,
 				MAIL_SEND_CREDENTIALS_USER, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return (MAIL_SEND_CREDENTIALS_CLIENT.equalsIgnoreCase(msc));
 	}
 
 	public static boolean isSendCredentialsSystem() {
-		String msc = MSysConfig.getValue(MAIL_SEND_CREDENTIALS,
+		String msc = MSysConfig.getValue(MSysConfig.MAIL_SEND_CREDENTIALS,
 				MAIL_SEND_CREDENTIALS_USER, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return (MAIL_SEND_CREDENTIALS_SYSTEM.equalsIgnoreCase(msc));

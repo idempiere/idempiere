@@ -19,9 +19,6 @@ package org.adempiere.webui.theme;
  *
  */
 public interface ITheme {
-
-	//theme key in MSysConfig
-	public static final String ZK_THEME = "ZK_THEME";
 	//default theme
 	public static final String ZK_THEME_DEFAULT = "default";
 	//theme resource url prefix
