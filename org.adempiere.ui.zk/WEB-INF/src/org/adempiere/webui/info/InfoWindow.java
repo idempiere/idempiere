@@ -97,7 +97,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3154640457502223300L;
+	private static final long serialVersionUID = 1958501982483183179L;
 
 	protected Grid parameterGrid;
 	private Borderlayout layout;
@@ -218,6 +218,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    			}
    			process = MProcess.get(Env.getCtx(), infoProcess.getAD_Process_ID());
    			Button btProcess = confirmPanel.addProcessButton(process.get_Translation(MProcess.COLUMNNAME_Name), infoProcess.getImageURL());
+   			if (Util.isEmpty(infoProcess.getImageURL(), true)) {
+   				btProcess.setImage(null);
+   				btProcess.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
+   			}
+   			
    			// save process_id, handle event will use
    			btProcess.setAttribute(PROCESS_ID_KEY, new Integer(infoProcess.getAD_Process_ID()));
    			btProcess.addEventListener(Events.ON_CLICK, this);
@@ -246,8 +251,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    					MProcess process = MProcess.get(Env.getCtx(), data.getAD_Process_ID());
    					item.setValue(process);
    					item.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
-   					if (data.getImageURL() != null && data.getImageURL().trim().length() > 0){
-   		   	   			item.setImage(ThemeManager.getThemeResource("images/" + data.getImageURL() + ".png"));
+   					if (!Util.isEmpty(data.getImageURL(), true)) {
+   		   	   			item.setImage(ThemeManager.getThemeResource("images/" + data.getImageURL()));
    		   	   		}
    				}
 			});
@@ -286,8 +291,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    			// make menu item for each info process
    	   		Menuitem ipMenuItem = new Menuitem();
    	   		ipMenuItem.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
-   	   		if (infoProcess.getImageURL() != null && infoProcess.getImageURL().trim().length() > 0){
-   	   			ipMenuItem.setImage(ThemeManager.getThemeResource("images/" + infoProcess.getImageURL() + ".png"));
+   	   		if (!Util.isEmpty(infoProcess.getImageURL(), true)) {
+   	   			ipMenuItem.setImage(ThemeManager.getThemeResource("images/" + infoProcess.getImageURL()));
    	   		}   	   		
    	   		ipMenuItem.setAttribute(PROCESS_ID_KEY, infoProcess.getAD_Process_ID());
    	   		ipMenuItem.addEventListener(Events.ON_CLICK, this);

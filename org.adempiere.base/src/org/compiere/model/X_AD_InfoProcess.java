@@ -19,6 +19,7 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoProcess
  *  @author iDempiere (generated) 
@@ -164,6 +165,14 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 			 return 0;
 		return ii.intValue();
 	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getAD_Process_ID()));
+    }
 
 	/** Set Image URL.
 		@param ImageURL 
