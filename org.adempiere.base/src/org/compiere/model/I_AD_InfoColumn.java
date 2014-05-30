@@ -188,6 +188,21 @@ public interface I_AD_InfoColumn
 	  */
 	public int getCreatedBy();
 
+    /** Column name DefaultValue */
+    public static final String COLUMNNAME_DefaultValue = "DefaultValue";
+
+	/** Set Default Logic.
+	  * Default value hierarchy, separated by ;
+
+	  */
+	public void setDefaultValue (String DefaultValue);
+
+	/** Get Default Logic.
+	  * Default value hierarchy, separated by ;
+
+	  */
+	public String getDefaultValue();
+
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 

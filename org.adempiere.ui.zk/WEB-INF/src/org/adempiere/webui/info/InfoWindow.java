@@ -379,7 +379,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 						vo.lookupInfo.IsValidated = false;
 					}
 				}
-				vo.DisplayLogic = infoColumn.getDisplayLogic() != null ? infoColumn.getDisplayLogic() : "";
+				if (infoColumn.getDisplayLogic() != null)					
+					vo.DisplayLogic =  infoColumn.getDisplayLogic();
+				if (infoColumn.isQueryCriteria() && infoColumn.getDefaultValue() != null)
+					vo.DefaultValue = infoColumn.getDefaultValue();
 				String desc = infoColumn.get_Translation("Description");
 				vo.Description = desc != null ? desc : "";
 				String help = infoColumn.get_Translation("Help");
@@ -1001,6 +1004,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         }
 
         fieldEditor.addEventListener(Events.ON_OK, this);		
+        
+        // set default value
+        mField.addPropertyChangeListener(editor);
+        mField.setValue(mField.getDefault(), true);
     }   // addSelectionColumn
 
 	protected void addSearchParameter(Label label, Component fieldEditor) {

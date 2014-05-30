@@ -519,9 +519,9 @@ public class GridFieldVO implements Serializable
 	public int			SeqNo = 0;
 	/** Grid Display sequence	*/
 	public int			SeqNoGrid = 0;
-	/**	Dislay Logic	*/
+	/**	Dislay Logic, never set null for it	*/
 	public String       DisplayLogic = "";
-	/**	Default Value	*/
+	/**	Default Value, never set null for it	*/	
 	public String       DefaultValue = "";
 	/**	Mandatory		*/
 	public boolean      IsMandatory = false;
