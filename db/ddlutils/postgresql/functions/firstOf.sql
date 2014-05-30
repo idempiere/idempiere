@@ -73,4 +73,5 @@ BEGIN
 	datetime = date_trunc(datepart, $1); 
 RETURN cast(datetime as date) + offsetdays;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql IMMUTABLE;
+

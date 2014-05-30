@@ -85,4 +85,5 @@ BEGIN
 	RETURN	v_PaymentAmt * v_MultiplierAP;
 END;	
 $BODY$
-LANGUAGE 'plpgsql' ;
+LANGUAGE 'plpgsql' STABLE;
+

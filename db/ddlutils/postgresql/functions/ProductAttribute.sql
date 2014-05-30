@@ -88,5 +88,5 @@ BEGIN
     RETURN v_Name;
 END;
 
-$body$ LANGUAGE plpgsql;
- 	  	 
+$body$ LANGUAGE plpgsql STABLE;
+

@@ -80,5 +80,5 @@ BEGIN
 	RETURN	Discount;
 END;
 
-$body$ LANGUAGE plpgsql;
- 	  	 
+$body$ LANGUAGE plpgsql STABLE;
+

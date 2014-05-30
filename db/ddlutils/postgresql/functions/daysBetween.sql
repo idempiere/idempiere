@@ -25,4 +25,5 @@ RETURNS INTEGER AS $$
 BEGIN
 	RETURN CAST(p_date1 AS DATE) - CAST(p_date2 as DATE);
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
