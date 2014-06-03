@@ -21,14 +21,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Service;
+import org.adempiere.base.event.EventManager;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.distributed.IMessageService;
+import org.idempiere.distributed.ITopic;
+import org.osgi.service.event.Event;
 
 /**
  *  Process Instance Model
@@ -45,7 +52,9 @@ public class MPInstance extends X_AD_PInstance
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3952972645135787655L;
+	private static final long serialVersionUID = -4047766735041088419L;
+    
+    public static final String ON_RUNNING_JOB_CHANGED_TOPIC = "onRunningJobChanged";
 
 	private static CLogger		s_log = CLogger.getCLogger (MPInstance.class);
 
@@ -351,6 +360,23 @@ public class MPInstance extends X_AD_PInstance
 		//
 		ip.saveEx();
 		return ip;
+	}
+	
+	public static void publishChangedEvent(int AD_User_ID) {
+		IMessageService service = Service.locator().locate(IMessageService.class).getService();
+		if (service != null) {
+			ITopic<Integer> topic = service.getTopic(ON_RUNNING_JOB_CHANGED_TOPIC);
+			topic.publish(AD_User_ID);
+		} else {
+			postOnChangedEvent(AD_User_ID);
+		}
+	}
+
+	public static void postOnChangedEvent(int AD_User_ID) {
+		Map<String, Integer> properties = new HashMap<String, Integer>();
+		properties.put("AD_User_ID", AD_User_ID);
+		Event event = new Event(ON_RUNNING_JOB_CHANGED_TOPIC, properties);
+		EventManager.getInstance().postEvent(event);
 	}
 	
 	public static List<MPInstance> get(Properties ctx, int AD_Process_ID, int AD_User_ID) {

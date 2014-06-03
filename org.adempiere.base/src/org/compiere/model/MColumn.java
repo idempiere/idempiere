@@ -751,7 +751,7 @@ public class MColumn extends X_AD_Column
 			setIsIdentifier(false);
 			setIsUpdateable(false);
 			setIsAlwaysUpdateable(false);
-			setIsKey(true);
+			setIsKey(false);
 		} else if (getAD_Table().getTableName().concat("_ID").equals(getColumnName())) {
 			// ID key column
 			setAD_Reference_ID(DisplayType.ID);
@@ -764,6 +764,7 @@ public class MColumn extends X_AD_Column
 			setIsIdentifier(false);
 			setIsUpdateable(false);
 			setIsAlwaysUpdateable(false);
+			setIsKey(true);
 		} else {
 			// get defaults from most used case
 			String sql = ""

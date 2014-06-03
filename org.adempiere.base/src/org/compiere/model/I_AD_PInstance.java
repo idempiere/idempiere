@@ -174,6 +174,28 @@ public interface I_AD_PInstance
 	  */
 	public String getName();
 
+    /** Column name IsRunAsJob */
+    public static final String COLUMNNAME_IsRunAsJob = "IsRunAsJob";
+
+	/** Set Run as Job	  */
+	public void setIsRunAsJob (boolean IsRunAsJob);
+
+	/** Get Run as Job	  */
+	public boolean isRunAsJob();
+
+    /** Column name NotificationType */
+    public static final String COLUMNNAME_NotificationType = "NotificationType";
+
+	/** Set Notification Type.
+	  * Type of Notifications
+	  */
+	public void setNotificationType (String NotificationType);
+
+	/** Get Notification Type.
+	  * Type of Notifications
+	  */
+	public String getNotificationType();
+
     /** Column name Record_ID */
     public static final String COLUMNNAME_Record_ID = "Record_ID";
 

@@ -471,4 +471,14 @@ public class WPaySelect extends PaySelect
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void askForInput(final String message, final Callback<String> callback) {
+		Executions.schedule(form.getDesktop(), new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				FDialog.askForInput(m_WindowNo, null, message, callback);
+			}
+		}, new Event("onAskForInput"));
+	}
 }   //  VPaySelect

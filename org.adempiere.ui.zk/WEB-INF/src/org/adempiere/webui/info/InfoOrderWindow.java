@@ -78,5 +78,6 @@ public class InfoOrderWindow extends InfoWindow {
 				}
 			}
 		}
+		dynamicDisplay(null);
 	}
 }

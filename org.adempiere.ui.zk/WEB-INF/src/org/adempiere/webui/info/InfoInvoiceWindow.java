@@ -78,6 +78,7 @@ public class InfoInvoiceWindow extends InfoWindow {
 				}
 			}
 		}
+		dynamicDisplay(null);
 	}
 
 }

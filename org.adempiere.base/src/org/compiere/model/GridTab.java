@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -946,18 +947,22 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo);
 		selection.clear();
-		/** @todo does not work with alpha key */
 		int keyNo = m_mTable.getKeyID(m_currentRow);
+		UUID uuid = null;
+		if (keyNo == -1) {
+			uuid = m_mTable.getUUID(m_currentRow);
+		}
 		m_mTable.dataRefreshAll(fireEvent, retainedCurrentRow ? m_currentRow : -1);
-		//  Should use RowID - not working for tables with multiple keys
-		if (keyNo != -1)
+		if (keyNo != -1 || uuid != null)
 		{
-			if (keyNo != m_mTable.getKeyID(m_currentRow))   //  something changed
+			if (   ( keyNo != -1 && keyNo != m_mTable.getKeyID(m_currentRow) ) 
+				|| ( uuid != null && uuid.compareTo(m_mTable.getUUID(m_currentRow)) != 0) )   //  something changed
 			{
 				int size = getRowCount();
 				for (int i = 0; i < size; i++)
 				{
-					if (keyNo == m_mTable.getKeyID(i))
+					if (   ( keyNo != -1 && keyNo == m_mTable.getKeyID(i) )
+						|| ( uuid != null && uuid.compareTo(m_mTable.getUUID(i)) == 0) )
 					{
 						m_currentRow = i;
 						break;

@@ -39,6 +39,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -101,7 +102,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4223765688790104180L;
+	private static final long serialVersionUID = -4440415447489133947L;
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 
@@ -212,6 +213,8 @@ public class GridTable extends AbstractTableModel
 
 	/** Index of Key Column                 */
 	private int			        m_indexKeyColumn = -1;
+	/** Index of UUID Column                */
+	private int			        m_indexUUIDColumn = -1;
 	/** Index of Color Column               */
 	private int			        m_indexColorColumn = -1;
 	/** Index of Processed Column           */
@@ -441,6 +444,8 @@ public class GridTable extends AbstractTableModel
 		//  Set Index for Key column
 		if (field.isKey())
 			m_indexKeyColumn = m_fields.size();
+		else if (field.isUUID())
+			m_indexUUIDColumn = m_fields.size();
 		//  Set Index of other standard columns
 		if (field.getColumnName().equals("IsActive"))
 			m_indexActiveColumn = m_fields.size();
@@ -992,6 +997,30 @@ public class GridTable extends AbstractTableModel
 			}
 		}
 		return -1;
+	}	//	getKeyID
+
+	/**
+	 *	Get UUID or null of none
+	 *  @param row row
+	 *  @return UUID or null
+	 */
+	public UUID getUUID (int row)
+	{
+		if (m_indexUUIDColumn != -1)
+		{
+			try
+			{
+				String ii = (String)getValueAt(row, m_indexUUIDColumn);
+				if (ii == null)
+					return null;
+				return UUID.fromString(ii);
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
+		}
+		return null;
 	}	//	getKeyID
 
 	/**

@@ -923,4 +923,11 @@ public class VInOutInvoiceGen extends CPanel
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void askForInput(String message, Callback<String> callback) {
+		String s = ADialog.askForInput(m_WindowNo, this, message);
+		if(callback != null)
+			callback.onCallback(s);		
+	}
 }	//	VInOutGen

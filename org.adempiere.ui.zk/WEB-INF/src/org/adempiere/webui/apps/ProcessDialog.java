@@ -1,91 +1,3 @@
-package org.adempiere.webui.apps;
-
-import static org.compiere.model.SystemIDs.PROCESS_C_INVOICE_GENERATE;
-import static org.compiere.model.SystemIDs.PROCESS_M_INOUT_GENERATE;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.Future;
-import java.util.logging.Level;
-
-import org.adempiere.util.Callback;
-import org.adempiere.util.ContextRunnable;
-import org.adempiere.util.IProcessUI;
-import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.component.Button;
-import org.adempiere.webui.component.Combobox;
-import org.adempiere.webui.component.ConfirmPanel;
-import org.adempiere.webui.component.Grid;
-import org.adempiere.webui.component.GridFactory;
-import org.adempiere.webui.component.Label;
-import org.adempiere.webui.component.Mask;
-import org.adempiere.webui.component.Panel;
-import org.adempiere.webui.component.Rows;
-import org.adempiere.webui.component.Window;
-import org.adempiere.webui.desktop.IDesktop;
-import org.adempiere.webui.factory.ButtonFactory;
-import org.adempiere.webui.panel.IHelpContext;
-import org.adempiere.webui.part.WindowContainer;
-import org.adempiere.webui.process.WProcessInfo;
-import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.theme.ThemeManager;
-import org.adempiere.webui.window.FDialog;
-import org.adempiere.webui.window.MultiFileDownloadDialog;
-import org.adempiere.webui.window.SimplePDFViewer;
-import org.compiere.Adempiere;
-import org.compiere.model.MPInstance;
-import org.compiere.model.MPInstancePara;
-import org.compiere.model.MProcess;
-import org.compiere.model.X_AD_CtxHelp;
-import org.compiere.print.ReportEngine;
-import org.compiere.process.ProcessInfo;
-import org.compiere.process.ProcessInfoLog;
-import org.compiere.process.ProcessInfoUtil;
-import org.compiere.util.AdempiereSystemError;
-import org.compiere.util.CLogger;
-import org.compiere.util.DB;
-import org.compiere.util.DisplayType;
-import org.compiere.util.Env;
-import org.compiere.util.Msg;
-import org.compiere.util.Util;
-import org.zkoss.zhtml.Table;
-import org.zkoss.zhtml.Td;
-import org.zkoss.zhtml.Text;
-import org.zkoss.zhtml.Tr;
-import org.zkoss.zk.au.out.AuEcho;
-import org.zkoss.zk.au.out.AuScript;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Desktop;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.A;
-import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Center;
-import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Html;
-import org.zkoss.zul.North;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.South;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfWriter;
-
 /******************************************************************************
  * Product: Adempiere ERP & CRM Smart Business Solution                       *
  * Copyright (C) 2007 Low Heng Sin											  *
@@ -100,8 +12,80 @@ import com.lowagie.text.pdf.PdfWriter;
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
+package org.adempiere.webui.apps;
 
+import static org.compiere.model.SystemIDs.PROCESS_C_INVOICE_GENERATE;
+import static org.compiere.model.SystemIDs.PROCESS_M_INOUT_GENERATE;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+
+import org.adempiere.util.Callback;
+import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.Combobox;
+import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.Grid;
+import org.adempiere.webui.component.GridFactory;
+import org.adempiere.webui.component.Mask;
+import org.adempiere.webui.component.Panel;
+import org.adempiere.webui.component.Row;
+import org.adempiere.webui.component.Rows;
+import org.adempiere.webui.component.Window;
+import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.panel.IHelpContext;
+import org.adempiere.webui.part.WindowContainer;
+import org.adempiere.webui.process.WProcessInfo;
+import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.SimplePDFViewer;
+import org.compiere.model.MPInstance;
+import org.compiere.model.MPInstancePara;
+import org.compiere.model.MProcess;
+import org.compiere.model.X_AD_CtxHelp;
+import org.compiere.print.ReportEngine;
+import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoLog;
+import org.compiere.process.ProcessInfoUtil;
+import org.compiere.util.AdempiereSystemError;
+import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
+import org.zkoss.zhtml.Table;
+import org.zkoss.zhtml.Td;
+import org.zkoss.zhtml.Text;
+import org.zkoss.zhtml.Tr;
+import org.zkoss.zk.au.out.AuEcho;
+import org.zkoss.zk.au.out.AuScript;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.A;
+import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Center;
+import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.North;
+import org.zkoss.zul.South;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfWriter;
 
 /**
  *	Dialog to Start process or report.
@@ -113,21 +97,30 @@ import com.lowagie.text.pdf.PdfWriter;
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
  */
-public class ProcessDialog extends Window implements EventListener<Event>, IProcessUI, IHelpContext
+public class ProcessDialog extends AbstractProcessDialog implements EventListener<Event>, IHelpContext
 {
 	/**
-	 * 
+	 * generate serial version ID
 	 */
-	private static final long serialVersionUID = -899849696748614034L;
-
+	private static final long serialVersionUID = 3329046204196602797L;
+	
 	private static final String MESSAGE_DIV_STYLE = "max-height: 150pt; overflow: auto; margin: 10px;";	
+	
+	/**	Logger			*/
+	private static CLogger log = CLogger.getCLogger(ProcessDialog.class);
+	//
+
 	private Div messageDiv;
 	private Center center;
 	private Table logMessageTable;
 	private North north;
-
-	private List<File> downloadFiles;
 	
+	private int[]		    m_ids = null;	
+	private Button bOK = null;
+	
+	private boolean isParameterPage = true;	
+	private Mask mask;
+
 	private boolean showLastRun = false;
 
 	private Grid southRowPanel = GridFactory.newGridLayout();
@@ -147,20 +140,19 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	public ProcessDialog (int AD_Process_ID, boolean isSOTrx)
 	{
 		log.info("Process=" + AD_Process_ID );
-		m_ctx = Env.getCtx();
-		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
-		this.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);
-		m_AD_Process_ID = AD_Process_ID;
-		Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", isSOTrx ? "Y" : "N");
+		int WindowNo = SessionManager.getAppDesktop().registerWindow(this);
+		this.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, WindowNo);
+		Env.setContext(Env.getCtx(), WindowNo, "IsSOTrx", isSOTrx ? "Y" : "N");
 		try
 		{
-			MProcess process = new MProcess(m_ctx, m_AD_Process_ID, null);
+			MProcess process = MProcess.get(Env.getCtx(), AD_Process_ID);
 		    int count = process.getParameters().length;
 		    if (count > 0)
 		    	showLastRun = true;
 
 			initComponents();
-			init();
+			init(Env.getCtx(), WindowNo, AD_Process_ID, null, "70%", false, false);
+			querySaved();
 			addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 		}
 		catch(Exception ex)
@@ -169,13 +161,26 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		}
 	}	//	ProcessDialog
 
+	private void querySaved() 
+	{
+		//user query
+		savedParams = MPInstance.get(Env.getCtx(), getAD_Process_ID(), Env.getContextAsInt(Env.getCtx(), "#AD_User_ID"));
+		fSavedName.removeAllItems();
+		for (MPInstance instance : savedParams)
+		{
+			String queries = instance.get_ValueAsString("Name");
+			fSavedName.appendItem(queries);
+		}
+
+		fSavedName.setValue("");
+	}
+
 	private void initComponents() {
 		this.setStyle("position: absolute; width: 100%; height: 100%");
 		Borderlayout layout = new Borderlayout();
 		layout.setStyle("position: absolute; width: 100%; height: 100%; border: none;");
 		messageDiv = new Div();
-		message = new Html();
-		messageDiv.appendChild(message);
+		messageDiv.appendChild(getMessage());
 		messageDiv.setStyle(MESSAGE_DIV_STYLE);
 		messageDiv.setId("message");
 		
@@ -185,12 +190,11 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		north.setAutoscroll(true);
 		north.setStyle("border: none;");
 		
-		centerPanel = new Panel();
 		center = new Center();
 		layout.appendChild(center);
-		center.appendChild(centerPanel);
-		centerPanel.setHflex("1");
-		centerPanel.setVflex("1");
+		center.appendChild(getCenterPanel());
+		getCenterPanel().setHflex("1");
+		getCenterPanel().setVflex("1");
 		center.setAutoscroll(true);
 		center.setStyle("border: none");
 		
@@ -199,6 +203,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 
 		Hbox hBox = new Hbox();
 
+		lSaved = new Label(Msg.getMsg(Env.getCtx(), "SavedParameter"));
 		hBox.appendChild(lSaved);
 		fSavedName.addEventListener(Events.ON_CHANGE, this);
 		hBox.appendChild(fSavedName);
@@ -218,8 +223,6 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 
 		Panel confParaPanel =new Panel();
 		confParaPanel.setAlign("right");
-		@SuppressWarnings("unused")
-		String label = Msg.getMsg(Env.getCtx(), "Start");
 		// Invert - Unify  OK/Cancel IDEMPIERE-77
 		bOK = ButtonFactory.createNamedButton(ConfirmPanel.A_OK, true, true);
 		bOK.setId("Ok");
@@ -239,45 +242,14 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		this.appendChild(layout);
 	}
 
-	private int m_WindowNo;
-	private Properties m_ctx;
-	private int 		    m_AD_Process_ID;
-	private String		    m_Name = null;
-	
-	private int[]		    m_ids = null;
-	private StringBuffer	m_messageText = new StringBuffer();
-	private String          m_ShowHelp = null; // Determine if a Help Process Window is shown
-	
-	private Panel centerPanel = null;
-	private Html message = null;
-	private Button bOK = null;
 	private Button bCancel = null;
-	
-	private boolean valid = true;
-	
-	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(ProcessDialog.class);
-	//
-	private ProcessParameterPanel parameterPanel = null;
-	
-	private ProcessInfo m_pi = null;
-	private boolean m_isLocked = false;
-	private boolean isParameterPage = true;
-	private String initialMessage;
-	private BusyDialog progressWindow;
-	private Future<?> future;
-	private ProcessDialogRunnable processDialogRunnable;
-	private Mask mask;
 
-	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
-	private static final String ON_COMPLETE = "onComplete";
-	
 	//saved parameters
 	private Combobox fSavedName=new Combobox();
 	private Button bSave=ButtonFactory.createNamedButton("Save");
 	private Button bDelete=ButtonFactory.createNamedButton("Delete");
 	private List<MPInstance> savedParams;
-	private Label lSaved=new Label(Msg.getMsg(Env.getCtx(), "SavedParameter"));
+	private Label lSaved;
 
 	/**
 	 * 	Set Visible 
@@ -294,153 +266,9 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	 */
 	public void dispose()
 	{
-		SessionManager.getAppDesktop().closeWindow(m_WindowNo);
-		valid = false;
+		super.dispose();
+		SessionManager.getAppDesktop().closeWindow(getWindowNo());
 	}//	dispose
-
-	/**
-	 *	Dynamic Init
-	 *  @return true, if there is something to process (start from menu)
-	 */
-	public boolean init()
-	{
-		log.config("");
-		//
-		boolean trl = !Env.isBaseLanguage(m_ctx, "AD_Process");
-		String sql = "SELECT Name, Description, Help, IsReport, ShowHelp "
-				+ "FROM AD_Process "
-				+ "WHERE AD_Process_ID=?";
-		if (trl)
-			sql = "SELECT t.Name, t.Description, t.Help, p.IsReport, p.ShowHelp "
-				+ "FROM AD_Process p, AD_Process_Trl t "
-				+ "WHERE p.AD_Process_ID=t.AD_Process_ID"
-				+ " AND p.AD_Process_ID=? AND t.AD_Language=?";
-		
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, m_AD_Process_ID);
-			if (trl)
-				pstmt.setString(2, Env.getAD_Language(m_ctx));
-			rs = pstmt.executeQuery();
-			if (rs.next())
-			{
-				m_Name = rs.getString(1);
-				m_ShowHelp = rs.getString(5);
-				//
-				m_messageText.append("<b>");
-				String s = rs.getString(2);		//	Description
-				if (rs.wasNull())
-					m_messageText.append(Msg.getMsg(m_ctx, "StartProcess?"));
-				else
-					m_messageText.append(s);
-				m_messageText.append("</b>");
-				
-				s = rs.getString(3);			//	Help
-				if (!rs.wasNull())
-					m_messageText.append("<p>").append(s).append("</p>");
-			}
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-			return false;
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-		}
-
-		if (m_Name == null)
-			return false;
-		//
-		this.setTitle(m_Name);
-		initialMessage = m_messageText.toString();
-		message.setContent(initialMessage);
-		bOK.setLabel(Msg.getMsg(Env.getCtx(), "Start"));
-
-		//	Move from APanel.actionButton
-		m_pi = new WProcessInfo(m_Name, m_AD_Process_ID);
-		m_pi.setAD_User_ID (Env.getAD_User_ID(Env.getCtx()));
-		m_pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
-		parameterPanel = new ProcessParameterPanel(m_WindowNo, m_pi, "70%");
-		centerPanel.getChildren().clear();
-		if ( parameterPanel.init() ) {
-			centerPanel.appendChild(parameterPanel);
-		} else {
-			if (m_ShowHelp != null && m_ShowHelp.equals("N")) {
-				startProcess();
-			}
-		}
-		
-		// Check if the process is a silent one
-		if(m_ShowHelp != null && m_ShowHelp.equals("S"))
-		{
-			startProcess();
-		}
-		querySaved();
-		return true;
-	}	//	init
-
-	private void querySaved() 
-	{
-		//user query
-		savedParams = MPInstance.get(Env.getCtx(), m_AD_Process_ID, Env.getContextAsInt(Env.getCtx(), "#AD_User_ID"));
-		fSavedName.removeAllItems();
-		for (MPInstance instance : savedParams)
-		{
-			String queries = instance.get_ValueAsString("Name");
-			fSavedName.appendItem(queries);
-		}
-
-		fSavedName.setValue("");
-	}
-
-	public void startProcess()
-	{
-		m_pi.setPrintPreview(true);
-
-		this.lockUI(m_pi);
-		
-		downloadFiles = new ArrayList<File>();
-		
-		Clients.response(new AuEcho(this, "runProcess", null));
-	}
-
-	public void runProcess() {
-		processDialogRunnable = new ProcessDialogRunnable();
-		future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(processDialogRunnable, getDesktop()));
-	}
-	
-	private void onComplete() {
-		if (future != null) {
-			try {
-				future.get();
-			} catch (Exception e) {
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-				if (!m_pi.isError()) {
-					m_pi.setSummary(e.getLocalizedMessage(), true);
-				}
-			}
-		}
-		future = null;			
-		processDialogRunnable = null;
-		unlockUI(m_pi);
-		if (downloadFiles.size() > 0) {
-			MultiFileDownloadDialog downloadDialog = new MultiFileDownloadDialog(downloadFiles.toArray(new File[0]));
-			downloadDialog.setPage(this.getPage());
-			downloadDialog.setTitle(m_pi.getTitle());
-			Events.postEvent(downloadDialog, new Event(MultiFileDownloadDialog.ON_SHOW));
-		}
-	}
-	
-	private void onStatusUpdate(Event event) {
-		String message = (String) event.getData();
-		if (progressWindow != null)
-			progressWindow.statusUpdate(message);
-	}
 	
 	public void onEvent(Event event) {
 		Component component = event.getTarget(); 
@@ -457,15 +285,13 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		} else if (component instanceof Button) {
 			Button element = (Button)component;
 			if ("Ok".equalsIgnoreCase(element.getId())) {
-				if (isParameterPage) {
-					if (!parameterPanel.validateParameters())
-						return;
-					this.startProcess();
-				}
+				if (isParameterPage)
+					startProcess();
 				else
 					restart();
 			} else if ("Cancel".equalsIgnoreCase(element.getId())) {
-				this.dispose();
+				cancelProcess();
+
 			} else if (event.getTarget().equals(bSave) && fSavedName != null
 					&& !lastRun) {
 
@@ -473,13 +299,13 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 				if (fSavedName.getSelectedIndex() > -1 && savedParams != null) {
 					for (int i = 0; i < savedParams.size(); i++) {
 						if (savedParams.get(i).getName().equals(saveName)) {
-							m_pi.setAD_PInstance_ID(savedParams.get(i)
+							getProcessInfo().setAD_PInstance_ID(savedParams.get(i)
 									.getAD_PInstance_ID());
 							for (MPInstancePara para : savedParams.get(i)
 									.getParameters()) {
 								para.deleteEx(true);
 							}
-							parameterPanel.saveParameters();
+							getParameterPanel().saveParameters();
 						}
 					}
 				}
@@ -488,13 +314,13 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 					MPInstance instance = null;
 					try {
 						instance = new MPInstance(Env.getCtx(),
-								m_pi.getAD_Process_ID(), m_pi.getRecord_ID());
+								getProcessInfo().getAD_Process_ID(), getProcessInfo().getRecord_ID());
 						instance.setName(saveName);
 						instance.saveEx();
-						m_pi.setAD_PInstance_ID(instance.getAD_PInstance_ID());
+						getProcessInfo().setAD_PInstance_ID(instance.getAD_PInstance_ID());
 						// Get Parameters
-						if (parameterPanel != null) {
-							if (!parameterPanel.saveParameters()) {
+						if (getParameterPanel() != null) {
+							if (!getParameterPanel().saveParameters()) {
 								throw new AdempiereSystemError(Msg.getMsg(
 										Env.getCtx(), "SaveParameterError"));
 							}
@@ -520,12 +346,8 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 				}
 				querySaved();
 			}
-		} else if (event.getName().equals(ON_STATUS_UPDATE)) {
-			onStatusUpdate(event);
-		} else if (event.getName().equals(ON_COMPLETE)) {
-			onComplete();			
 		} else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT)) {
-    		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Process, m_AD_Process_ID);
+    		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Process, getAD_Process_ID());
 		} else if (event.getTarget().equals(fSavedName)) {
 			if (savedParams != null && saveName != null) {
 				for (int i = 0; i < savedParams.size(); i++) {
@@ -538,6 +360,8 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 			bSave.setEnabled(enabled && !lastRun);
 			bDelete.setEnabled(enabled && fSavedName.getSelectedIndex() > -1
 					&& !lastRun);
+		} else {
+			super.onEvent(event);
 		}
 	}
 
@@ -555,7 +379,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	}
 
 	private void loadSavedParams(MPInstance instance) {
-		parameterPanel.loadParameters(instance);
+		getParameterPanel().loadParameters(instance);
 	}
 
 	private void doOnClick(A btn) {
@@ -575,19 +399,10 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		}		
 	}
 
-
-	public void lockUI(ProcessInfo pi) {
-		if (m_isLocked || Executions.getCurrent() == null) return;
-		
-		m_isLocked = true;
-		
-		showBusyDialog();
-	}
-
-	private void showBusyDialog() {		
-		progressWindow = new BusyDialog();
+	@Override
+	public void showBusyDialog() {		
+		BusyDialog progressWindow = createBusyDialog();
 		progressWindow.setStyle("position: absolute;");
-		this.appendChild(progressWindow);
 		showBusyMask(progressWindow);
 		LayoutUtils.openOverlappedWindow(this, progressWindow, "middle_center");
 	}
@@ -599,7 +414,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		return mask;
 	}
 	
-	public void showBusyMask(Window window) {
+	private void showBusyMask(Window window) {
 		getParent().appendChild(getMask());
 		StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
 		script.append(getParent().getUuid()).append("');");
@@ -610,16 +425,9 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		}
 		Clients.response(new AuScript(script.toString()));
 	}
-	
-	public void unlockUI(ProcessInfo pi) {
-		if (!m_isLocked || Executions.getCurrent() == null) return;
 		
-		m_isLocked = false;
-		hideBusyDialog();
-		updateUI(pi);
-	}
-
-	public void hideBusyMask() {
+	private void hideBusyMask() 
+	{
 		if (mask != null && mask.getParent() != null) {
 			mask.detach();
 			StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
@@ -628,20 +436,21 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		}
 	}
 	
-	private void hideBusyDialog() {
+	@Override
+	public void hideBusyDialog() 
+	{		
 		hideBusyMask();
-		if (progressWindow != null) {
-			progressWindow.dispose();
-			progressWindow = null;
-		}
+		closeBusyDialog();
 	}
 
-	private void updateUI(ProcessInfo pi) {
+	@Override
+	public void updateUI() {
+		ProcessInfo pi = getProcessInfo();
 		ProcessInfoUtil.setLogFromDB(pi);
-		m_messageText.append("<p><font color=\"").append(pi.isError() ? "#FF0000" : "#0000FF").append("\">** ")
+		getMessageText().append("<p><font color=\"").append(pi.isError() ? "#FF0000" : "#0000FF").append("\">** ")
 			.append(pi.getSummary())
 			.append("</font></p>");
-		message.setContent(m_messageText.toString());
+		getMessage().setContent(getMessageText().toString());
 		// Add Log info with zoom on record id
 		appendRecordLogInfo(pi.getLogs());
 		
@@ -652,7 +461,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		m_ids = pi.getIDs();
 		
 		//move message div to center to give more space to display potentially very long log info
-		centerPanel.detach();
+		getCenterPanel().detach();
 		messageDiv.detach();
 		messageDiv.setStyle("");
 		north.setVisible(false);
@@ -747,8 +556,8 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	}
 
 	private void restart() {
-		m_messageText = new StringBuffer(initialMessage);
-		message.setContent(initialMessage);
+		setMessageText(new StringBuffer(getInitialMessage()));
+		getMessage().setContent(getInitialMessage());
 
 		north.setVisible(true);
 		messageDiv.detach();
@@ -758,7 +567,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		messageDiv.setStyle(MESSAGE_DIV_STYLE);
 		north.appendChild(messageDiv);
 
-		center.appendChild(centerPanel);
+		center.appendChild(getCenterPanel());
 
 		isParameterPage = true;
 
@@ -766,10 +575,11 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 
 		//recreate process info
-		m_pi = new WProcessInfo(m_Name, m_AD_Process_ID);
+		ProcessInfo m_pi = new WProcessInfo(getName(), getAD_Process_ID());
 		m_pi.setAD_User_ID (Env.getAD_User_ID(Env.getCtx()));
 		m_pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
-		parameterPanel.setProcessInfo(m_pi);
+		setProcessInfo(m_pi);
+		getParameterPanel().setProcessInfo(m_pi);
 
 		m_ids = null;
 
@@ -781,7 +591,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		//
 		if (!afterProcessTask()) {
 			// If the process is a silent one and no errors occured, close the dialog
-			if(m_ShowHelp != null && m_ShowHelp.equals("S"))
+			if(getShowHelp() != null && getShowHelp().equals("S"))
 				this.dispose();	
 		}
 	}
@@ -796,12 +606,12 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		{
 			log.config("");
 			//	Print invoices
-			if (m_AD_Process_ID == PROCESS_C_INVOICE_GENERATE)
+			if (getAD_Process_ID() == PROCESS_C_INVOICE_GENERATE)
 			{
 				printInvoices();
 				return true;
 			}
-			else if (m_AD_Process_ID == PROCESS_M_INOUT_GENERATE)
+			else if (getAD_Process_ID() == PROCESS_M_INOUT_GENERATE)
 			{
 				printShipments();
 				return true;
@@ -821,12 +631,12 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	{		
 		if (m_ids == null)
 			return;
-		FDialog.ask(m_WindowNo, this, "PrintShipments", new Callback<Boolean>() {
+		FDialog.ask(getWindowNo(), this, "PrintShipments", new Callback<Boolean>() {
 			@Override
 			public void onCallback(Boolean result) {
 				if (result) {
-					m_messageText.append("<p>").append(Msg.getMsg(Env.getCtx(), "PrintShipments")).append("</p>");
-					message.setContent(m_messageText.toString());
+					getMessageText().append("<p>").append(Msg.getMsg(Env.getCtx(), "PrintShipments")).append("</p>");
+					getMessage().setContent(getMessageText().toString());
 					showBusyDialog();
 					Clients.response(new AuEcho(ProcessDialog.this, "onPrintShipments", null));
 				}
@@ -872,7 +682,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 				document.close();
 
 				hideBusyDialog();
-				Window win = new SimplePDFViewer(m_pi.getTitle(), new FileInputStream(outFile));
+				Window win = new SimplePDFViewer(getProcessInfo().getTitle(), new FileInputStream(outFile));
 				SessionManager.getAppDesktop().showWindow(win, "center");
 			} catch (Exception e) {
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
@@ -883,7 +693,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		} else if (pdfList.size() > 0) {
 			hideBusyDialog();
 			try {
-				Window win = new SimplePDFViewer(m_pi.getTitle(), new FileInputStream(pdfList.get(0)));
+				Window win = new SimplePDFViewer(getProcessInfo().getTitle(), new FileInputStream(pdfList.get(0)));
 				SessionManager.getAppDesktop().showWindow(win, "center");
 			} catch (Exception e)
 			{
@@ -892,7 +702,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		}
 		
 		// If the process is a silent one and no errors occured, close the dialog
-		if(m_ShowHelp != null && m_ShowHelp.equals("S"))
+		if(getShowHelp() != null && getShowHelp().equals("S"))
 			this.dispose();	
 	}
 
@@ -903,14 +713,14 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 	{
 		if (m_ids == null)
 			return;
-		FDialog.ask(m_WindowNo, this, "PrintInvoices", new Callback<Boolean>() {
+		FDialog.ask(getWindowNo(), this, "PrintInvoices", new Callback<Boolean>() {
 			@Override
 			public void onCallback(Boolean result) 
 			{
 				if (result)
 				{
-					m_messageText.append("<p>").append(Msg.getMsg(Env.getCtx(), "PrintInvoices")).append("</p>");
-					message.setContent(m_messageText.toString());
+					getMessageText().append("<p>").append(Msg.getMsg(Env.getCtx(), "PrintInvoices")).append("</p>");
+					getMessage().setContent(getMessageText().toString());
 					showBusyDialog();
 					Clients.response(new AuEcho(ProcessDialog.this, "onPrintInvoices", null));
 				}
@@ -954,7 +764,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 				document.close();
 
 				hideBusyDialog();
-				Window win = new SimplePDFViewer(m_pi.getTitle(), new FileInputStream(outFile));
+				Window win = new SimplePDFViewer(getProcessInfo().getTitle(), new FileInputStream(outFile));
 				SessionManager.getAppDesktop().showWindow(win, "center");
 			} catch (Exception e) {
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
@@ -965,7 +775,7 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		} else if (pdfList.size() > 0) {
 			hideBusyDialog();
 			try {
-				Window win = new SimplePDFViewer(m_pi.getTitle(), new FileInputStream(pdfList.get(0)));
+				Window win = new SimplePDFViewer(getProcessInfo().getTitle(), new FileInputStream(pdfList.get(0)));
 				SessionManager.getAppDesktop().showWindow(win, "center");
 			} catch (Exception e)
 			{
@@ -974,52 +784,8 @@ public class ProcessDialog extends Window implements EventListener<Event>, IProc
 		}
 		
 		// If the process is a silent one and no errors occured, close the dialog
-		if(m_ShowHelp != null && m_ShowHelp.equals("S"))
+		if(getShowHelp() != null && getShowHelp().equals("S"))
 			this.dispose();	
 	}
-
-	public boolean isValid() {
-		return valid;
-	}
-
-	public boolean isUILocked() {
-		return m_isLocked;
-	}
 	
-	class ProcessDialogRunnable extends ContextRunnable {
-		ProcessDialogRunnable() {
-			super();
-		}
-		
-		protected void doRun() {
-			try {
-				if (log.isLoggable(Level.INFO))log.log(Level.INFO, "Process Info="+m_pi+" AD_Client_ID="+Env.getAD_Client_ID(Env.getCtx()));
-				WProcessCtl.process(ProcessDialog.this, m_WindowNo, parameterPanel, m_pi, null);
-			} finally {
-				Executions.schedule(getDesktop(), ProcessDialog.this, new Event(ON_COMPLETE, ProcessDialog.this, null));
-			}
-		}		
-	}
-
-	@Override
-	public void statusUpdate(String message) {
-		Desktop desktop = getDesktop();
-		if (desktop != null && desktop.isAlive())
-			Executions.schedule(desktop, this, new Event(ON_STATUS_UPDATE, this, message));
-	}
-
-	@Override
-	public void ask(final String message, final Callback<Boolean> callback) {
-		Executions.schedule(getDesktop(), new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				FDialog.ask(m_WindowNo, null, message, callback);
-			}
-		}, new Event("onAsk"));
-	}
-
-	@Override
-	public void download(File file) {
-		downloadFiles.add(file);
-	}
 }	//	ProcessDialog

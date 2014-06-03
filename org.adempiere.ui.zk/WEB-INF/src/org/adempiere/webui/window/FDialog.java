@@ -330,7 +330,24 @@ public class FDialog
     	return ask(AEnv.getDialogHeader(Env.getCtx(), windowNo), windowNo, comp, adMessage, callback);
     }
     
-	/**************************************************************************
+    public static void askForInput(int windowNo, Component comp, String adMessage, final Callback<String> callback)
+    {
+    	Callback<String> msgCallback = null;
+    	if (callback != null) 
+    	{
+    		msgCallback = new Callback<String>() {
+				@Override
+				public void onCallback(String result) {
+					callback.onCallback(result);
+				}
+			};
+    	}
+    	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
+        Messagebox.showDialog(s, AEnv.getDialogHeader(Env.getCtx(), windowNo), 
+        		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, msgCallback, (msgCallback == null));
+    }
+
+    /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
 	 *	@param	WindowNo	Number of Window

@@ -323,6 +323,40 @@ public final class ADialog
 		return ask (WindowNo, c, AD_Message, null);
 	}	//	ask
 
+	public static String askForInput(int WindowNo, Container c, String AD_Message) {
+		if (log.isLoggable(Level.INFO)) log.info(AD_Message);
+		Properties ctx = Env.getCtx();
+		StringBuilder out = new StringBuilder();
+		if (AD_Message != null && !AD_Message.equals(""))
+			out.append(Msg.getMsg(ctx, AD_Message));
+
+		//
+		Window parent = Env.getParent(c);
+		if (parent == null)
+			parent = AEnv.getWindow(WindowNo);
+
+		String retValue = null;
+		if (parent != null)
+		{
+			if (parent instanceof JFrame)
+			{
+				ADialogDialog d = new ADialogDialog ((JFrame)parent,
+					Env.getHeader(ctx, WindowNo),
+					out.toString(),
+					ADialogDialog.INPUT_MESSAGE);
+				retValue = d.getReturnMsg();
+			}
+			else
+			{
+				ADialogDialog d = new ADialogDialog ((JDialog)parent,
+					Env.getHeader(ctx, WindowNo),
+					out.toString(),
+					ADialogDialog.INPUT_MESSAGE);
+				retValue = d.getReturnMsg();
+			}
+		}
+		return retValue;
+	}
 	
 	/**************************************************************************
 	 *	Display parsed development info Message string

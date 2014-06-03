@@ -29,7 +29,6 @@ import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
@@ -40,9 +39,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
-
-import net.sourceforge.barbecue.Barcode;
-import net.sourceforge.barbecue.output.OutputException;
 
 import org.compiere.model.MQuery;
 import org.compiere.print.MPrintFormatItem;
@@ -314,6 +310,15 @@ public class TableElement extends PrintElement
 			for (int row = 0; row < rows; row++)
 			{
 				m_data.setRowIndex(row);
+				// define if all the row is null
+				boolean isNullRow = true;
+				for (Serializable element : m_data.getRowData()) {
+					if (element != null) {
+						isNullRow = false;
+						break;
+					}
+				}
+				//
 				if (dataSizes.getRowCount() <= row) 
 				{
 					dataSizes.addRow(new ArrayList<Dimension2DImpl>());
@@ -331,7 +336,9 @@ public class TableElement extends PrintElement
 				if (dataItem == null)
 				{
 					//ensure fixed column width respected even when data is null
-					if (m_columnMaxWidth[col] != 0 && m_columnMaxWidth[col] != -1 && m_fixedWidth[col])
+					if (   m_columnMaxWidth[dataCol] >= 0  // the data column is not suppress null
+						&& m_fixedWidth[col]               // the print column (below column) has fixed width
+						&& !isNullRow)
 					{
 						dataItem = " ";
 					}
@@ -1219,8 +1226,8 @@ public class TableElement extends PrintElement
 		int startX = (int)pageStart.getX();
 		int startY = (int)pageStart.getY();
 		//	Table Start
-		startX += pageXindex == 0 ? m_firstPage.x : m_nextPages.x;
-		startY += pageYindex == 0 ? m_firstPage.y : m_nextPages.y;
+		startX += pageIndex == 0 ? m_firstPage.x : m_nextPages.x;
+		startY += pageIndex == 0 ? m_firstPage.y : m_nextPages.y;
 		if (DEBUG_PRINT)
 			if (log.isLoggable(Level.FINEST)) log.finest("PageStart=" + pageStart + ", StartTable x=" + startX + ", y=" + startY);
 
@@ -1466,34 +1473,8 @@ public class TableElement extends PrintElement
 					}
 					else if (printItems[index] instanceof BarcodeElement)
 					{
-						try {
-							Barcode barcode = ((BarcodeElement)printItems[index]).getBarcode();
-							if ( barcode != null )
-							{
-								double scale = ((BarcodeElement)printItems[index]).getScaleFactor();
-								if ( scale != 1.0 )
-								{
-									int w = barcode.getWidth();
-									int h = barcode.getHeight();
-
-									// draw barcode to buffer
-									BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-									Graphics2D temp = (Graphics2D) image.getGraphics();
-									barcode.draw(temp, 0, 0);
-
-									// scale barcode and paint
-									AffineTransform transform = new AffineTransform();
-									transform.translate(curX,penY);
-									transform.scale(scale, scale);
-									g2D.drawImage(image, transform, this);
-								}
-								else
-								{
-									barcode.draw(g2D, curX, (int)penY);
-								}
-							}
-						} catch (OutputException e) {
-						}
+						BarcodeElement barcodeElement = (BarcodeElement)printItems[index]; 
+						barcodeElement.paint(g2D, curX, (int)penY);
 					}
 					else if (printItems[index] instanceof Boolean)
 					{

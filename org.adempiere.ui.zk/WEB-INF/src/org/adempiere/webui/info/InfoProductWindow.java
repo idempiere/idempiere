@@ -130,6 +130,7 @@ public class InfoProductWindow extends InfoWindow {
 	protected void createParameterPanel() {
 		super.createParameterPanel();
 		initParameters();
+		dynamicDisplay(null);
 	}
 
 	@Override

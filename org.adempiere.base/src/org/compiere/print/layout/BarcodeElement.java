@@ -24,11 +24,16 @@ import java.util.Properties;
 
 import net.sourceforge.barbecue.Barcode;
 import net.sourceforge.barbecue.BarcodeFactory;
+import net.sourceforge.barbecue.BarcodeImageHandler;
 import net.sourceforge.barbecue.linear.ean.UCCEAN128Barcode;
-import net.sourceforge.barbecue.output.OutputException;
 
 import org.compiere.print.MPrintFont;
 import org.compiere.print.MPrintFormatItem;
+import org.krysalis.barcode4j.BarcodeDimension;
+import org.krysalis.barcode4j.ChecksumMode;
+import org.krysalis.barcode4j.HumanReadablePlacement;
+import org.krysalis.barcode4j.impl.upcean.UPCABean;
+import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 
 /**
  * 	Barcode Print Element
@@ -60,7 +65,7 @@ public class BarcodeElement extends PrintElement
 			m_valid = false;
 		
 		createBarcode(code, item);
-		if (m_barcode == null)
+		if (m_barcode == null && m_upc == null)
 			m_valid = false;
 		m_allowOverflow = item.isHeightOneLine(); // teo_sarca, [ 1673590 ]
 	}	//	BarcodeElement
@@ -73,6 +78,9 @@ public class BarcodeElement extends PrintElement
 	private boolean m_allowOverflow = true;
 	private float m_scaleFactor = 1;
 
+	private UPCABean m_upc = null;
+	private String m_code;
+	
 	/**
 	 * 	Create Barcode
 	 *	@param code barcode data string
@@ -131,7 +139,12 @@ public class BarcodeElement extends PrintElement
 				m_barcode = BarcodeFactory.createUCC128(UCCEAN128Barcode.EAN128_AI, code);
 			else if (type.equals(MPrintFormatItem.BARCODETYPE_EAN13)) //@Trifon
 				m_barcode = BarcodeFactory.createEAN13(code); //@Trifon
-			
+			else if (type.equals(MPrintFormatItem.BARCODETYPE_UPCA )) {				
+				m_upc = new UPCABean();
+				m_upc.setChecksumMode(ChecksumMode.CP_AUTO);
+				m_upc.setMsgPosition(HumanReadablePlacement.HRP_BOTTOM);
+				m_code = code;				
+			}
 			//	http://www.usps.com/cpim/ftp/pubs/pub97/97apxs_006.html#_Toc481397331
 			else if (type.equals(MPrintFormatItem.BARCODETYPE_USPostalServiceUCCEAN128))
 			{
@@ -145,7 +158,7 @@ public class BarcodeElement extends PrintElement
 		{
 			log.warning(code + " - " + e.toString());
 			m_valid = false;
-		}
+		}		
 		
 		if (m_valid && m_barcode != null)
 		{
@@ -157,15 +170,6 @@ public class BarcodeElement extends PrintElement
 			}
 		}
 	}	//	createBarcode
-	
-	/**
-	 * 	Get Barcode
-	 *	@return Barcode
-	 */
-	public Barcode getBarcode()
-	{
-		return m_barcode;
-	}	//	getBarcode
 	
 	/**
 	 * 	Is Barcode Valid
@@ -185,11 +189,31 @@ public class BarcodeElement extends PrintElement
 	{
 		p_width = 0;
 		p_height = 0;
-		if (m_barcode == null)
+		if (m_barcode == null && m_upc == null)
 			return true;
 
-		p_width = m_barcode.getWidth();
-		p_height = m_barcode.getHeight();
+		if (m_barcode != null)
+		{			
+			p_width = m_barcode.getWidth();
+			p_height = m_barcode.getHeight();
+		
+			//convert from pixel to point/inch
+			if (p_width > 0)
+				p_width = p_width * 3f / 4f;
+			if (p_height > 0)
+				p_height = p_height * 3f / 4f;
+		}
+		else
+		{			
+			BarcodeDimension t = m_upc.calcDimensions(m_code);
+			//convert from mm to point/inch
+			p_width = (float) (t.getWidthPlusQuiet() / 25.4f * 72f);
+			p_height = (float) (t.getHeight() / 25.4f * 72f);
+			
+			// * 3 for resolution of 216 dpi ( 72 * 3 )
+			p_width *= 3f;
+			p_height *=3f;
+		}
 
 		if (p_width * p_height == 0)
 			return true;	//	don't bother scaling and prevent div by 0
@@ -231,7 +255,7 @@ public class BarcodeElement extends PrintElement
 	public void paint (Graphics2D g2D, int pageNo, Point2D pageStart,
 		Properties ctx, boolean isView)
 	{
-		if (!m_valid || m_barcode == null)
+		if (!m_valid || (m_barcode == null && m_upc == null ))
 			return;
 		
 		//	Position
@@ -243,15 +267,28 @@ public class BarcodeElement extends PrintElement
 			x += (p_maxWidth - p_width) / 2;
 		int y = (int)location.y;
 
+		paint(g2D, x, y); 
+	}	//	paint
+
+	public void paint(Graphics2D g2D, int x, int y) {
 		try {
 			
-			int w = m_barcode.getWidth();
-			int h = m_barcode.getHeight();
+			BufferedImage image =  null;
 			
-			// draw barcode to buffer
-			BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-			Graphics2D temp = (Graphics2D) image.getGraphics();
-			m_barcode.draw(temp, 0, 0);
+			if (m_barcode != null)
+			{
+				// draw barcode to buffer
+				image = BarcodeImageHandler.getImage(m_barcode);
+				
+			}
+			else
+			{
+				//use resolution of 216 dpi (72 * 3) for better output
+				BitmapCanvasProvider provider = new BitmapCanvasProvider(72*3, BufferedImage.TYPE_INT_ARGB, true, 0);
+				m_upc.generateBarcode(provider, m_code);
+				provider.finish();
+				image = provider.getBufferedImage();
+			}
 			
 			// scale barcode and paint
 			AffineTransform transform = new AffineTransform();
@@ -259,9 +296,10 @@ public class BarcodeElement extends PrintElement
 			transform.scale(m_scaleFactor, m_scaleFactor);
 			g2D.drawImage(image, transform, this);
 
-		} catch (OutputException e) {
-		} 
-	}	//	paint
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * 	String Representation

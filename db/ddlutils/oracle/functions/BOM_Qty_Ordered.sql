@@ -27,8 +27,10 @@ AS
 		FROM M_PRODUCT_BOM b, M_PRODUCT p
 		WHERE b.M_ProductBOM_ID=p.M_Product_ID
 		  AND b.M_Product_ID=p_Product_ID
+		  AND b.M_ProductBOM_ID != p_Product_ID
 		  AND p.IsBOM='Y'
-		  AND p.IsVerified='Y';
+		  AND p.IsVerified='Y'
+		  AND b.IsActive='Y';
 	--
 BEGIN
 	--	Check Parameters
@@ -65,12 +67,13 @@ BEGIN
 	--	Stocked item
 	ELSIF (v_IsStocked='Y') THEN
 		--	Get ProductQty
-		SELECT 	NVL(SUM(QtyOrdered), 0)
+		SELECT 	NVL(SUM(Qty), 0)
 		  INTO	v_ProductQty
-		FROM 	M_STORAGE s
-		WHERE 	M_Product_ID=p_Product_ID
-		  AND EXISTS (SELECT * FROM M_LOCATOR l WHERE s.M_Locator_ID=l.M_Locator_ID
-		  	AND l.M_Warehouse_ID=v_Warehouse_ID);
+		FROM 	M_StorageReservation
+		WHERE M_Product_ID=p_Product_ID
+		  AND M_Warehouse_ID=v_Warehouse_ID
+		  AND IsSOTrx='N'
+		  AND IsActive='Y';
 		--
 		RETURN v_ProductQty;
 	END IF;
@@ -81,12 +84,13 @@ BEGIN
 		--	Stocked Items "leaf node"
 		IF (bom.ProductType = 'I' AND bom.IsStocked = 'Y') THEN
 			--	Get ProductQty
-			SELECT 	NVL(SUM(QtyOrdered), 0)
+			SELECT 	NVL(SUM(Qty), 0)
 			  INTO	v_ProductQty
-			FROM 	M_STORAGE s
-			WHERE 	M_Product_ID=bom.M_ProductBOM_ID
-			  AND EXISTS (SELECT * FROM M_LOCATOR l WHERE s.M_Locator_ID=l.M_Locator_ID
-			  	AND l.M_Warehouse_ID=v_Warehouse_ID);
+			FROM 	M_StorageReservation
+			WHERE M_Product_ID=p_Product_ID
+			  AND M_Warehouse_ID=v_Warehouse_ID
+			  AND IsSOTrx='N'
+			  AND IsActive='Y';
 			--	Get Rounding Precision
 			SELECT 	NVL(MAX(u.StdPrecision), 0)
 			  INTO	v_StdPrecision

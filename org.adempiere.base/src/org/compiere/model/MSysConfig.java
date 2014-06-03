@@ -122,6 +122,12 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String TAX_SAVE_REQUEST_RESPONSE_LOG = "TAX_SAVE_REQUEST_RESPONSE_LOG";
 	public static final String ADDRESS_SAVE_REQUEST_RESPONSE_LOG = "ADDRESS_SAVE_REQUEST_RESPONSE_LOG";
 	public static final String VALIDATE_MATCHING_TO_ORDERED_QTY = "VALIDATE_MATCHING_TO_ORDERED_QTY";
+	
+	public static final String BACKGROUND_JOB_ALLOWED = "BACKGROUND_JOB_ALLOWED";
+	public static final String BACKGROUND_JOB_BY_DEFAULT = "BACKGROUND_JOB_BY_DEFAULT";
+	public static final String BACKGROUND_JOB_MAX_IN_SYSTEM = "BACKGROUND_JOB_MAX_IN_SYSTEM";	
+	public static final String BACKGROUND_JOB_MAX_PER_CLIENT = "BACKGROUND_JOB_MAX_PER_CLIENT";
+	public static final String BACKGROUND_JOB_MAX_PER_USER = "BACKGROUND_JOB_MAX_PER_USER";
 	public static final String DPVIEWS_SHOWINFOACCOUNT = "DPViews_ShowInfoAccount";
 	public static final String DPVIEWS_SHOWINFOSCHEDULE = "DPViews_ShowInfoSchedule";
 

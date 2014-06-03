@@ -402,6 +402,19 @@ public interface I_AD_User
 	  */
 	public boolean isActive();
 
+    /** Column name IsAddMailTextAutomatically */
+    public static final String COLUMNNAME_IsAddMailTextAutomatically = "IsAddMailTextAutomatically";
+
+	/** Set Add Mail Text Automatically.
+	  * The selected mail template will be automatically inserted when creating an email
+	  */
+	public void setIsAddMailTextAutomatically (boolean IsAddMailTextAutomatically);
+
+	/** Get Add Mail Text Automatically.
+	  * The selected mail template will be automatically inserted when creating an email
+	  */
+	public boolean isAddMailTextAutomatically();
+
     /** Column name IsExpired */
     public static final String COLUMNNAME_IsExpired = "IsExpired";
 
@@ -645,6 +658,17 @@ public interface I_AD_User
 
 	/** Get Process Now	  */
 	public boolean isProcessing();
+
+    /** Column name R_DefaultMailText_ID */
+    public static final String COLUMNNAME_R_DefaultMailText_ID = "R_DefaultMailText_ID";
+
+	/** Set Default mail template	  */
+	public void setR_DefaultMailText_ID (int R_DefaultMailText_ID);
+
+	/** Get Default mail template	  */
+	public int getR_DefaultMailText_ID();
+
+	public org.compiere.model.I_R_MailText getR_DefaultMailText() throws RuntimeException;
 
     /** Column name SalesRep_ID */
     public static final String COLUMNNAME_SalesRep_ID = "SalesRep_ID";

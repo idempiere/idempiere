@@ -146,8 +146,8 @@ public class MOrderLandedCost extends X_C_OrderLandedCost {
 				if (base.signum() != 0)
 				{
 					BigDecimal result = getAmt().multiply(base);
-					result = result.divide(total, orderLine.getParent().getC_Currency().getStdPrecision(), BigDecimal.ROUND_HALF_UP);
-					allocation.setAmt(result.doubleValue(), orderLine.getParent().getC_Currency().getStdPrecision());
+					result = result.divide(total, orderLine.getParent().getC_Currency().getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
+					allocation.setAmt(result.doubleValue(), orderLine.getParent().getC_Currency().getCostingPrecision());
 				}
 				allocation.saveEx();	
 			}

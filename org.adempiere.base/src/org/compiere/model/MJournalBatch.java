@@ -628,16 +628,11 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		reverse.setC_Period_ID(getC_Period_ID());
 		reverse.setDateAcct(getDateAcct());
 		//	Reverse indicator
-		StringBuilder description;
-		if (reverse.getDescription() == null)
-			description = new StringBuilder("** ").append(getDocumentNo()).append(" **");
-		else
-			description = new StringBuilder(reverse.getDescription()).append(" ** ").append(getDocumentNo()).append(" **");
-		reverse.setDescription(description.toString());
+		StringBuilder msgd = new StringBuilder("(->").append(getDocumentNo()).append(")");
+		reverse.addDescription(msgd.toString());
 		//[ 1948157  ]
 		reverse.setReversal_ID(getGL_JournalBatch_ID());
 		reverse.saveEx();
-		//
 		
 		//	Reverse Journals
 		for (int i = 0; i < journals.length; i++)
@@ -652,9 +647,26 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 			}
 			journal.saveEx();
 		}
-		
+		//
+		if (!reverse.processIt(DocAction.ACTION_Complete))
+		{
+			m_processMsg = "Reversal ERROR: " + reverse.getProcessMsg();
+			return false;
+		}
+		reverse.closeIt();
+		reverse.setProcessing(false);
+		reverse.setDocStatus(DOCSTATUS_Reversed);
+		reverse.setDocAction(DOCACTION_None);
+		reverse.saveEx(get_TrxName());
+		//
+		msgd = new StringBuilder("(").append(reverse.getDocumentNo()).append("<-)");
+		addDescription(msgd.toString());
+
+		setProcessed(true);
 		//[ 1948157  ]
 		setReversal_ID(reverse.getGL_JournalBatch_ID());
+		setDocStatus(DOCSTATUS_Reversed);
+		setDocAction(DOCACTION_None);
 		saveEx();
 		// After reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
@@ -699,12 +711,9 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		reverse.setDateDoc(new Timestamp(System.currentTimeMillis()));
 		reverse.setDateAcct(reverse.getDateDoc());
 		//	Reverse indicator
-		StringBuilder description;
-		if (reverse.getDescription() == null)
-			description = new StringBuilder("** ").append(getDocumentNo()).append(" **");
-		else
-			description = new StringBuilder(reverse.getDescription()).append(" ** ").append(getDocumentNo()).append(" **");
-		reverse.setDescription(description.toString());
+		StringBuilder msgd = new StringBuilder("(->").append(getDocumentNo()).append(")");
+		reverse.addDescription(msgd.toString());
+		reverse.setReversal_ID(getGL_JournalBatch_ID());
 		reverse.saveEx();
 		
 		//	Reverse Journals
@@ -720,6 +729,26 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 			}
 			journal.saveEx();
 		}
+		//
+		if (!reverse.processIt(DocAction.ACTION_Complete))
+		{
+			m_processMsg = "Reversal ERROR: " + reverse.getProcessMsg();
+			return false;
+		}
+		reverse.closeIt();
+		reverse.setProcessing(false);
+		reverse.setDocStatus(DOCSTATUS_Reversed);
+		reverse.setDocAction(DOCACTION_None);
+		reverse.saveEx(get_TrxName());
+		//
+		msgd = new StringBuilder("(").append(reverse.getDocumentNo()).append("<-)");
+		addDescription(msgd.toString());
+
+		setProcessed(true);
+		setReversal_ID(reverse.getGL_JournalBatch_ID());
+		setDocStatus(DOCSTATUS_Reversed);
+		setDocAction(DOCACTION_None);
+		saveEx();
 		// After reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
 		if (m_processMsg != null)
@@ -872,4 +901,14 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		return getTotalDr();
 	}	//	getApprovalAmt
 	
+	public void addDescription (String description)
+	{
+		String desc = getDescription();
+		if (desc == null)
+			setDescription(description);
+		else{
+			StringBuilder msgd = new StringBuilder(desc).append(" | ").append(description);
+			setDescription(msgd.toString());
+		}
+	}
 }	//	MJournalBatch

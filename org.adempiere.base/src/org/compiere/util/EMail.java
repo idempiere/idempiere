@@ -941,7 +941,7 @@ public final class EMail implements Serializable
 					(new ByteArrayDataSource (m_messageHTML, charSetName, "text/html")));
 
 			// Create Multipart and its parts to it
-			Multipart mp = new MimeMultipart();
+			Multipart mp = new MimeMultipart("related");
 			mp.addBodyPart(mbp_1);
 			if (log.isLoggable(Level.FINE)) log.fine("(multi) " + getSubject() + " - " + mbp_1);
 
@@ -978,6 +978,11 @@ public final class EMail implements Serializable
 				mbp_2.setDataHandler(new DataHandler(ds));
 				mbp_2.setFileName(ds.getName());
 				if (log.isLoggable(Level.FINE)) log.fine("Added Attachment " + ds.getName() + " - " + mbp_2);
+
+				if (m_messageHTML != null && m_messageHTML.contains("cid:"+ds.getName())) {
+					mbp_2.setContentID("<" + ds.getName() + ">");
+					mbp_2.setDisposition(MimeBodyPart.INLINE);
+				}
 				mp.addBodyPart(mbp_2);
 			}
 

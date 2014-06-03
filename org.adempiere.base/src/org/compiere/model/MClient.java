@@ -555,6 +555,56 @@ public class MClient extends X_AD_Client
 	}	//	sendEMail
 
 	/**
+	 * 	Send EMail from User
+	 * 	@param from sender
+	 *	@param to recipient
+	 *	@param subject subject
+	 *	@param message message
+	 *	@param attachment optional attachment
+	 *	@return true if sent
+	 */
+	public boolean sendEMailAttachments (MUser from, MUser to,
+		String subject, String message, List<File> attachments)
+	{
+		return sendEMailAttachments(from, to, subject, message, attachments, false);
+	}
+
+	/**
+	 * 	Send EMail from User
+	 * 	@param from sender
+	 *	@param to recipient
+	 *	@param subject subject
+	 *	@param message message
+	 *	@param attachment optional attachment
+	 *  @param isHtml
+	 *	@return true if sent
+	 */
+	public boolean sendEMailAttachments (MUser from, MUser to,
+		String subject, String message, List<File> attachments, boolean isHtml)
+	{
+		EMail email = createEMail(from, to, subject, message, isHtml);
+		if (email == null)
+			return false;
+
+		if (attachments != null && !attachments.isEmpty())
+		{
+			for (File attachment : attachments)
+				email.addAttachment(attachment);
+		}
+		InternetAddress emailFrom = email.getFrom();
+		try
+		{
+			return sendEmailNow(from, to, email);
+		}
+		catch (Exception ex)
+		{
+			log.severe(getName() + " - from " + emailFrom
+				+ " to " + to + ": " + ex.getLocalizedMessage());
+			return false;
+		}
+	}	//	sendEMail
+	
+	/**
 	 * 	Send EMail from Request User - no trace
 	 *	@param to recipient email address
 	 *	@param subject subject

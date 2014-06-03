@@ -92,7 +92,9 @@ public class TabCreateFields extends SvrProcess
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		int seqno = DB.getSQLValue(null, "SELECT MAX(SeqNo) FROM AD_Field WHERE AD_Tab_ID=?", tab.getAD_Tab_ID());
+		int seqnogrid = DB.getSQLValue(null, "SELECT MAX(SeqNoGrid) FROM AD_Field WHERE AD_Tab_ID=?", tab.getAD_Tab_ID());
 		seqno = seqno + 10;
+		seqnogrid = seqnogrid + 10;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, get_TrxName());
@@ -125,8 +127,6 @@ public class TabCreateFields extends SvrProcess
 				}
 
 				// Assign some default formatting
-				field.setSeqNo(seqno);
-				seqno = seqno + 10;
 				if (column.getAD_Reference_ID() == DisplayType.Button || column.getAD_Reference_ID() == DisplayType.YesNo) {
 					field.setXPosition(2);
 				}
@@ -155,6 +155,15 @@ public class TabCreateFields extends SvrProcess
 						|| accessLevel.equals(MTable.ACCESSLEVEL_SystemPlusClient))) {
 						field.setIsDisplayedGrid(false);
 					}
+				}
+				if (field.isDisplayed()) {
+					field.setSeqNo(seqno);
+					seqno = seqno + 10;
+				}
+
+				if (field.isDisplayedGrid()) {
+					field.setSeqNoGrid(seqnogrid);
+					seqnogrid = seqnogrid + 10;
 				}
 
 				//set display logic for accounting dimensions

@@ -13,6 +13,7 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Trx;
 
 
 
@@ -29,15 +30,29 @@ public class ServerReportCtl {
 	private static CLogger	s_log	= CLogger.getCLogger (ServerReportCtl.class);
 	
 	/**
+	 * Start Document Print for Type with specified printer.
+	 * @param type
+	 * @param customPrintFormat
+	 * @param Record_ID
+	 * @param printerName
+	 * @return
+	 */
+	public static boolean startDocumentPrint (int type, MPrintFormat customPrintFormat, int Record_ID, String printerName)
+	{
+		return startDocumentPrint(type, customPrintFormat, Record_ID, printerName, null);
+	}
+	
+	/**
 	 * 	Start Document Print for Type with specified printer.
 	 * 	@param type document type in ReportEngine
 	 * 	@param Record_ID id
 	 *  @param parent The window which invoked the printing
 	 *  @param WindowNo The windows number which invoked the printing
 	 * 	@param printerName 	Specified printer name
+	 *  @param pi
 	 * 	@return true if success
 	 */
-	public static boolean startDocumentPrint (int type, MPrintFormat customPrintFormat, int Record_ID, String printerName)
+	public static boolean startDocumentPrint (int type, MPrintFormat customPrintFormat, int Record_ID, String printerName, ProcessInfo pi)
 	{
 		ReportEngine re = ReportEngine.get (Env.getCtx(), type, Record_ID);
 		if (re == null)
@@ -59,21 +74,27 @@ public class ServerReportCtl {
 			// ==============================
 			if(format.getJasperProcess_ID() > 0)	
 			{
-				boolean result = runJasperProcess(Record_ID, re, true, printerName);
+				boolean result = runJasperProcess(Record_ID, re, true, printerName, pi);
 				return(result);
 			}
 			else
 			// Standard Print Format (Non-Jasper)
 			// ==================================
 			{
-				createOutput(re, printerName);
+				if (pi != null && pi.isBatch() && pi.isPrintPreview())
+				{
+					pi.setPDFReport(re.getPDF());
+				}
+				else
+				{
+					createOutput(re, printerName);
+				}
 				ReportEngine.printConfirm (type, Record_ID);
 			}
 		}
 		return true;
 	}	//	StartDocumentPrint
 	
-
 	/**
 	 * Runs a Jasper process that prints the record
 	 * 
@@ -85,10 +106,29 @@ public class ServerReportCtl {
 	 * @return
 	 */
 	public static boolean runJasperProcess(int Record_ID, ReportEngine re, boolean IsDirectPrint, String printerName) {
+		return runJasperProcess(Record_ID, re, IsDirectPrint, printerName, null);
+	}
+
+	/**
+	 * Runs a Jasper process that prints the record
+	 * 
+	 * @param format
+	 * @param Record_ID
+	 * @param re
+	 * @param IsDirectPrint
+	 * @param printerName
+	 * @return
+	 */
+	public static boolean runJasperProcess(int Record_ID, ReportEngine re, boolean IsDirectPrint, String printerName, ProcessInfo pi) {
 		MPrintFormat format = re.getPrintFormat();
-		ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
-		pi.setPrintPreview( !IsDirectPrint );
-		pi.setRecord_ID ( Record_ID );
+		ProcessInfo jasperProcessInfo = new ProcessInfo ("", format.getJasperProcess_ID());
+		if (pi != null) {
+			jasperProcessInfo.setPrintPreview(pi.isPrintPreview());
+			jasperProcessInfo.setIsBatch(pi.isBatch());
+		} else {
+			jasperProcessInfo.setPrintPreview( !IsDirectPrint );
+		}
+		jasperProcessInfo.setRecord_ID ( Record_ID );
 		ArrayList<ProcessInfoParameter> jasperPrintParams = new ArrayList<ProcessInfoParameter>();
 		ProcessInfoParameter pip;
 		if (printerName!=null && printerName.trim().length()>0) {
@@ -101,11 +141,15 @@ public class ServerReportCtl {
 		pip = new ProcessInfoParameter(PARAM_PRINT_INFO, re.getPrintInfo(), null, null, null);
 		jasperPrintParams.add(pip);
 		
-		pi.setParameter(jasperPrintParams.toArray(new ProcessInfoParameter[]{}));
+		jasperProcessInfo.setParameter(jasperPrintParams.toArray(new ProcessInfoParameter[]{}));
 		
-		ServerProcessCtl.process(pi, null); 		
+		ServerProcessCtl.process(jasperProcessInfo, pi != null ? Trx.get(pi.getTransactionName(),false) : null); 		
 		
-		boolean result = true;
+		boolean result = !jasperProcessInfo.isError();
+		if (result && pi != null && pi.isBatch())
+		{
+			pi.setPDFReport(jasperProcessInfo.getPDFReport());
+		}
 		return(result);
 	}
 	
@@ -139,21 +183,21 @@ public class ServerReportCtl {
 		 *	Order Print
 		 */
 		if (pi.getAD_Process_ID() == 110)			//	C_Order
-			return startDocumentPrint(ReportEngine.ORDER, null, pi.getRecord_ID(), null);
+			return startDocumentPrint(ReportEngine.ORDER, null, pi.getRecord_ID(), null, pi);
 		if (pi.getAD_Process_ID() ==  MProcess.getProcess_ID("Rpt PP_Order", null))			//	C_Order
-			return startDocumentPrint(ReportEngine.MANUFACTURING_ORDER, null, pi.getRecord_ID(), null);
+			return startDocumentPrint(ReportEngine.MANUFACTURING_ORDER, null, pi.getRecord_ID(), null, pi);
 		if (pi.getAD_Process_ID() ==  MProcess.getProcess_ID("Rpt DD_Order", null))			//	C_Order
-			return startDocumentPrint(ReportEngine.DISTRIBUTION_ORDER, null, pi.getRecord_ID(), null);
+			return startDocumentPrint(ReportEngine.DISTRIBUTION_ORDER, null, pi.getRecord_ID(), null, pi);
 		else if (pi.getAD_Process_ID() == 116)		//	C_Invoice
-			return startDocumentPrint(ReportEngine.INVOICE, null, pi.getRecord_ID(), null);
+			return startDocumentPrint(ReportEngine.INVOICE, null, pi.getRecord_ID(), null, pi);
 		else if (pi.getAD_Process_ID() == 117)		//	M_InOut
-			return startDocumentPrint(ReportEngine.SHIPMENT, null, pi.getRecord_ID(), null);
+			return startDocumentPrint(ReportEngine.SHIPMENT, null, pi.getRecord_ID(), null, pi);
 		else if (pi.getAD_Process_ID() == 217)		//	C_Project
-			return startDocumentPrint(ReportEngine.PROJECT, null, pi.getRecord_ID(), null);
+			return startDocumentPrint(ReportEngine.PROJECT, null, pi.getRecord_ID(), null, pi);
 		else if (pi.getAD_Process_ID() == 276)		//	C_RfQResponse
-			return startDocumentPrint(ReportEngine.RFQ, null, pi.getRecord_ID(), null);
+			return startDocumentPrint(ReportEngine.RFQ, null, pi.getRecord_ID(), null, pi);
 		else if (pi.getAD_Process_ID() == 159)		//	Dunning
-			return startDocumentPrint(ReportEngine.DUNNING, null, pi.getRecord_ID(), null);
+			return startDocumentPrint(ReportEngine.DUNNING, null, pi.getRecord_ID(), null, pi);
  	    else if (pi.getAD_Process_ID() == 202			//	Financial Report
 			|| pi.getAD_Process_ID() == 204)			//	Financial Statement
 		   return startFinReport (pi);
@@ -203,7 +247,14 @@ public class ServerReportCtl {
 			MQuery query = MQuery.get (ctx, pi.getAD_PInstance_ID(), TableName);
 			PrintInfo info = new PrintInfo(pi);
 			re = new ReportEngine(ctx, format, query, info);
-			createOutput(re, null);
+			if (pi.isPrintPreview() && pi.isBatch())
+			{
+				pi.setPDFReport(re.getPDF());
+			}
+			else
+			{
+				createOutput(re, null);
+			}
 			return true;
 		}
 		//
@@ -217,7 +268,14 @@ public class ServerReportCtl {
 			}
 		}
 		
-		createOutput(re, null);
+		if (pi.isPrintPreview() && pi.isBatch())
+		{
+			pi.setPDFReport(re.getPDF());
+		}
+		else
+		{
+			createOutput(re, null);
+		}
 		return true;
 	}	//	startStandardReport
 
@@ -247,7 +305,14 @@ public class ServerReportCtl {
 		PrintInfo info = new PrintInfo(pi);
 
 		ReportEngine re = new ReportEngine(Env.getCtx(), format, query, info);
-		createOutput(re, null);
+		if (pi.isPrintPreview() && pi.isBatch())
+		{
+			pi.setPDFReport(re.getPDF());
+		}
+		else
+		{
+			createOutput(re, null);
+		}
 		return true;
 	}	//	startFinReport
 	

@@ -53,6 +53,7 @@ import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Image;
 
 /**
@@ -314,16 +315,22 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     {
         if (event.getTarget().getId().equals(ConfirmPanel.A_OK))
         {
-        	if (txtAnswer != null && txtAnswer.isReadonly())
-        		validateEmail();
-        	else
-        		validateResetPassword();
+        	validate ();
         }
         else if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
         {
         	SessionManager.logoutSession();
             wndLogin.loginCancelled();
         }
+    }
+    
+    public void validate (){
+    	Clients.clearBusy();
+    	
+    	if (txtAnswer != null && txtAnswer.isReadonly())
+    		validateEmail();
+    	else
+    		validateResetPassword();
     }
     
     protected void validateEmail()

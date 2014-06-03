@@ -30,7 +30,7 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140124L;
+	private static final long serialVersionUID = 20140516L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow (Properties ctx, int AD_InfoWindow_ID, String trxName)
@@ -51,6 +51,8 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 // Y
 			setIsValid (false);
 // N
+			setMaxQueryRecords (0);
+// 0
 			setName (null);
         } */
     }
@@ -383,6 +385,26 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Max Query Records.
+		@param MaxQueryRecords 
+		If defined, you cannot query more records as defined - the query criteria needs to be changed to query less records
+	  */
+	public void setMaxQueryRecords (int MaxQueryRecords)
+	{
+		set_Value (COLUMNNAME_MaxQueryRecords, Integer.valueOf(MaxQueryRecords));
+	}
+
+	/** Get Max Query Records.
+		@return If defined, you cannot query more records as defined - the query criteria needs to be changed to query less records
+	  */
+	public int getMaxQueryRecords () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_MaxQueryRecords);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Name.
