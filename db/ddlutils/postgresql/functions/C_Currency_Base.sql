@@ -48,4 +48,5 @@ BEGIN
 	RETURN currencyConvert (p_Amount, p_CurFrom_ID, v_CurTo_ID, p_ConvDate, null, p_Client_ID, p_Org_ID);
 END;
 
-$body$ LANGUAGE plpgsql;
+$body$ LANGUAGE plpgsql STABLE;
+

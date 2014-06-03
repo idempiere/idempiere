@@ -47,4 +47,5 @@ BEGIN
 	RETURN v_DocumentNo;
 END;	
 $BODY$
-  LANGUAGE 'plpgsql' ;
+  LANGUAGE 'plpgsql' STABLE;
+

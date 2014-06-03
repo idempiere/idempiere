@@ -443,7 +443,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 	private void openLoginHelp() {
 		String langName = (String) lstLanguage.getSelectedItem().getValue();
 		langName = langName.substring(0, 2);
-		String helpURL = MSysConfig.getValue("LOGIN_HELP_URL", 	"http://wiki.idempiere.org/{lang}/Login_Help");
+		String helpURL = MSysConfig.getValue(MSysConfig.LOGIN_HELP_URL, "http://wiki.idempiere.org/{lang}/Login_Help");
 		if (helpURL.contains("{lang}"))
 			helpURL = Util.replace(helpURL, "{lang}", langName);
 		try {

@@ -1,7 +1,5 @@
 package org.adempiere.webui.window;
 
-import static org.compiere.model.MSysConfig.ZK_REPORT_JASPER_OUTPUT_TYPE;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -87,7 +85,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	
 	private void init() {
 		final boolean isCanExport=MRole.getDefault().isCanExport();
-		defaultType = MSysConfig.getValue(ZK_REPORT_JASPER_OUTPUT_TYPE, "PDF",
+		defaultType = MSysConfig.getValue(MSysConfig.ZK_REPORT_JASPER_OUTPUT_TYPE, "PDF",
 				Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));//It gets default Jasper output type
 
 		Borderlayout layout = new Borderlayout();

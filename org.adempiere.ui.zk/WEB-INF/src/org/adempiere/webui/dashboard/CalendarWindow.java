@@ -13,8 +13,6 @@
  *****************************************************************************/
 package org.adempiere.webui.dashboard;
 
-import static org.compiere.model.MSysConfig.CALENDAR_ALTERNATE_TIMEZONE;
-
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -391,7 +389,7 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 	
 	private String getTimeZone()
 	{
-		String alternateTimeZone = MSysConfig.getValue(CALENDAR_ALTERNATE_TIMEZONE, "Pacific Time=PST", Env.getAD_Client_ID(Env.getCtx()));
+		String alternateTimeZone = MSysConfig.getValue(MSysConfig.CALENDAR_ALTERNATE_TIMEZONE, "Pacific Time=PST", Env.getAD_Client_ID(Env.getCtx()));
 		TimeZone defaultTimeZone = TimeZone.getDefault();
 		StringBuilder defaultTimeZoneName = new StringBuilder(defaultTimeZone.getDisplayName());
 		int defaultTimeZoneOffset = defaultTimeZone.getOffset(0) / 3600000;

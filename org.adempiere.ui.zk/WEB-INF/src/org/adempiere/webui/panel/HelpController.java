@@ -183,11 +183,13 @@ public class HelpController
     	sb.append("<html>\n<body>\n<div class=\"help-content\">\n");
     	
     	if (hdr == null || hdr.trim().length() == 0){
-    		if (otherContent != null){
+    		if (otherContent == null){
+    			otherContent = Msg.getMsg(Env.getCtx(), "PlaceCursorIntoField");
+    		}
+    		
     			sb.append("<i>(");
     			sb.append (otherContent);
     			sb.append (")</i>");
-    		}
     	}else{
     		sb.append("<b>");
     		sb.append(hdr);

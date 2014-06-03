@@ -45,5 +45,6 @@ BEGIN
 	RETURN DueDate;
 END;
 $BODY$
-LANGUAGE 'plpgsql'
+LANGUAGE 'plpgsql' STABLE
 ;
+

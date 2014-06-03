@@ -84,6 +84,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		if (listener != null) 
 		{
 			addEventListener(ON_WINDOW_CLOSE, listener);
+			addEventListener(ON_BEFORE_RUN_PROCESS, listener);
 		}
 
 		log.info("Process=" + pi.getAD_Process_ID());

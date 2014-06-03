@@ -132,7 +132,8 @@ BEGIN
 	RETURN v_TotalOpenAmt;
 END;
 $BODY$
-  LANGUAGE 'plpgsql' ;
+  LANGUAGE 'plpgsql' STABLE;
+
 
 CREATE OR REPLACE FUNCTION InvoiceopenToDate
 (
@@ -233,4 +234,5 @@ BEGIN
 	RETURN v_TotalOpenAmt;
 END;
 $BODY$
-  LANGUAGE 'plpgsql' ;
+  LANGUAGE 'plpgsql' STABLE;
+

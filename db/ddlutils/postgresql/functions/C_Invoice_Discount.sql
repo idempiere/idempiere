@@ -29,15 +29,16 @@ DECLARE
 	v_GrandTotal		NUMERIC;
 	v_TotalLines		NUMERIC;
 	v_C_PaymentTerm_ID	NUMERIC(10);
+	v_C_Currency_ID		NUMERIC(10);
 	v_DocDate		timestamp with time zone;
 	v_PayDate		timestamp with time zone := now();
     	v_IsPayScheduleValid    CHAR(1);
 
 BEGIN
 	SELECT 	ci.IsDiscountLineAmt, i.GrandTotal, i.TotalLines,
-		i.C_PaymentTerm_ID, i.DateInvoiced, i.IsPayScheduleValid
+		i.C_PaymentTerm_ID, i.DateInvoiced, i.IsPayScheduleValid, C_Currency_ID
 	INTO 	v_IsDiscountLineAmt, v_GrandTotal, v_TotalLines,
-		v_C_PaymentTerm_ID, v_DocDate, v_IsPayScheduleValid
+		v_C_PaymentTerm_ID, v_DocDate, v_IsPayScheduleValid, v_C_Currency_ID
 	FROM 	AD_ClientInfo ci, C_Invoice i
 	WHERE 	ci.AD_Client_ID=i.AD_Client_ID
 	  AND 	i.C_Invoice_ID=p_C_Invoice_ID;
@@ -69,7 +70,7 @@ BEGIN
     END IF;
 
 	--	return discount amount	
-	RETURN paymentTermDiscount (v_Amount, 0, v_C_PaymentTerm_ID, v_DocDate, p_PayDate);
+	RETURN paymentTermDiscount (v_Amount, v_C_Currency_ID, v_C_PaymentTerm_ID, v_DocDate, p_PayDate);
 
 --	Most likely if invoice not found
 EXCEPTION
@@ -77,6 +78,5 @@ EXCEPTION
 		RETURN NULL;
 END;
 
-$body$ LANGUAGE plpgsql;
+$body$ LANGUAGE plpgsql STABLE;
 
- 	  	 

@@ -14,17 +14,20 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
+import org.adempiere.model.MInfoProcess;
 import org.adempiere.model.MInfoRelated;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
+import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListModelTable;
+import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Tab;
@@ -40,6 +43,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.EmbedWinInfo;
@@ -52,6 +56,7 @@ import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
+import org.compiere.model.MProcess;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_InfoColumn;
@@ -70,7 +75,12 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SwipeEvent;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
@@ -87,7 +97,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5198550045241794995L;
+	private static final long serialVersionUID = 1958501982483183179L;
 
 	protected Grid parameterGrid;
 	private Borderlayout layout;
@@ -111,6 +121,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	protected String queryValue;
 	
 	private List<GridField> gridFields;
+	private int AD_InfoWindow_ID;
 	private Checkbox checkAND;
     
 	/**
@@ -140,18 +151,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		this.queryValue = queryValue;
 		this.AD_InfoWindow_ID = AD_InfoWindow_ID;
 
-		//red1 IDEMPIERE-1711 (Hengsin advised this minimal coding way)
-		infoWindow = new MInfoWindow(Env.getCtx(), AD_InfoWindow_ID, null);
-   		if (infoWindow.getAD_Process_ID() > 0)
-   		{
-   			p_multipleSelection = true;
-   			hasProcess = true;
-        	Button b = confirmPanel.createButton(ConfirmPanel.A_PROCESS);
-            confirmPanel.addComponentsLeft(b);
-            b.addEventListener(Events.ON_CLICK, this);
-        }
-        //red1  -- end --
-
    		//Xolali IDEMPIERE-1045
    		contentPanel.addActionListener(new EventListener<Event>() {
    			public void onEvent(Event event) throws Exception {
@@ -166,6 +165,16 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 		infoContext = new Properties(Env.getCtx());
 		p_loadedOK = loadInfoDefinition(); 
+		
+		// make process button only in windown mode
+		if (!m_lookup){
+		// IDEMPIERE-1334
+			boolean haveProcess = initInfoProcess();
+			// when have a process, force multi select mode
+			if (haveProcess)
+				p_multipleSelection = true;
+		}		
+				
 		loadInfoRelatedTabs();
 		if (loadedOK()) {
 			if (isLookup()) {
@@ -180,6 +189,117 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				processQueryValue();
 			}			
 		}
+	}
+
+	/**
+	 * IDEMPIERE-1334
+	 * load info process info
+	 * layout each info process as button or dropdown item 
+	 * @return true when have process, false when no process
+	 */
+	protected boolean initInfoProcess() {
+		if (infoWindow == null){
+			return false;
+		}
+		
+		MInfoProcess [] infoProcessList = infoWindow.getInfoProcess(false);
+
+		// ** layout info process flow order (button list, drop down, dialog,...)
+		// each layout type in a loop to ensure this order
+		
+		// get info from process (name, help, des), set to name of button, item menu,...
+		MProcess process = null; 
+		
+		// make list process button
+   		for (MInfoProcess infoProcess : infoProcessList){
+   		    // just add info process have layout is button
+   			if (!MInfoProcess.LAYOUTTYPE_Button.equals(infoProcess.getLayoutType())){
+   				continue;
+   			}
+   			process = MProcess.get(Env.getCtx(), infoProcess.getAD_Process_ID());
+   			Button btProcess = confirmPanel.addProcessButton(process.get_Translation(MProcess.COLUMNNAME_Name), infoProcess.getImageURL());
+   			if (Util.isEmpty(infoProcess.getImageURL(), true)) {
+   				btProcess.setImage(null);
+   				btProcess.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
+   			}
+   			
+   			// save process_id, handle event will use
+   			btProcess.setAttribute(PROCESS_ID_KEY, new Integer(infoProcess.getAD_Process_ID()));
+   			btProcess.addEventListener(Events.ON_CLICK, this);
+   			// save info process to use in handle event
+   			btProcess.setAttribute(ATT_INFO_PROCESS_KEY, process);
+   			// update tooltip hepl when focus
+   			btProcess.addEventListener(Events.ON_FOCUS, this);
+   			btProcessList.add(btProcess);
+   		}
+		
+   		// filte just infoprocess have layout type is drop list for model of combobox
+		List<MInfoProcess> infoProcessDropList = new ArrayList<MInfoProcess>();
+   		for (MInfoProcess infoProcess : infoProcessList){
+   			if (!MInfoProcess.LAYOUTTYPE_List.equals(infoProcess.getLayoutType())){
+   				continue;
+   			}
+   			infoProcessDropList.add(infoProcess);
+   		}
+		// make combobox contain list info process
+   		if (infoProcessDropList.size() > 0){
+   			cbbProcess = new Combobox ();
+   			ListModel<MInfoProcess> infoProccessModel = new ListModelList<MInfoProcess>(infoProcessDropList);
+   			// render item, use name to display
+   			cbbProcess.setItemRenderer(new ComboitemRenderer<MInfoProcess>() {
+   				public void render(Comboitem item, MInfoProcess data, int index){
+   					MProcess process = MProcess.get(Env.getCtx(), data.getAD_Process_ID());
+   					item.setValue(process);
+   					item.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
+   					if (!Util.isEmpty(data.getImageURL(), true)) {
+   		   	   			item.setImage(ThemeManager.getThemeResource("images/" + data.getImageURL()));
+   		   	   		}
+   				}
+			});
+   			
+   		    // update tooltip hepl when select a item
+   			cbbProcess.addEventListener(Events.ON_SELECT, this);
+   			
+   			cbbProcess.setModel(infoProccessModel);	   			
+   			confirmPanel.addComponentsCenter(cbbProcess);
+
+   			btCbbProcess = confirmPanel.addProcessButton(Msg.getMsg(Env.getCtx(), ConfirmPanel.A_PROCESS), null);
+   			btCbbProcess.addEventListener(Events.ON_CLICK, this);
+   		}
+   		
+   		// make menu button
+   		Menupopup ipMenu = null;   		
+   		for (MInfoProcess infoProcess : infoProcessList){
+   			// just add info process have layout is bt_menu
+   			if (!MInfoProcess.LAYOUTTYPE_Menu.equals(infoProcess.getLayoutType())){
+   				continue;
+   			}
+   			
+   			process = MProcess.get(Env.getCtx(), infoProcess.getAD_Process_ID());
+   			
+   			// init popup menu
+   			if (ipMenu == null){
+   				ipMenu = new Menupopup();
+   				ipMenu.setId("ipMenu");
+   				confirmPanel.appendChild(ipMenu);
+   				
+   				// init button to show menu
+   				btMenuProcess = confirmPanel.addProcessButton("ProcessMenu", null);
+   				btMenuProcess.setPopup("ipMenu, before_start");   				
+   			}
+   				   			
+   			// make menu item for each info process
+   	   		Menuitem ipMenuItem = new Menuitem();
+   	   		ipMenuItem.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
+   	   		if (!Util.isEmpty(infoProcess.getImageURL(), true)) {
+   	   			ipMenuItem.setImage(ThemeManager.getThemeResource("images/" + infoProcess.getImageURL()));
+   	   		}   	   		
+   	   		ipMenuItem.setAttribute(PROCESS_ID_KEY, infoProcess.getAD_Process_ID());
+   	   		ipMenuItem.addEventListener(Events.ON_CLICK, this);
+   	   		ipMenu.appendChild(ipMenuItem);
+   		}
+   		
+   		return infoProcessList.length > 0;
 	}
 
 	private void processQueryValue() {
@@ -398,6 +518,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				{
 					if (infoColumn.getAD_Reference_ID() == DisplayType.List)
 					{
+						WEditor editor = null;
+						editor = WebEditorFactory.getEditor(gridFields.get(i), true);
+				        editor.setMandatory(false);
+				        editor.setReadWrite(false);
+				        editorMap.put(infoColumn.getSelectClause(), editor);
 						columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), ValueNamePair.class, (String)null);
 					}
 					else
@@ -662,9 +787,23 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		confirmPanel.getButton(ConfirmPanel.A_ZOOM).setVisible(hasZoom());
 		confirmPanel.getButton(ConfirmPanel.A_ZOOM).setDisabled(true);
-		if (hasProcess)
-			confirmPanel.getButton(ConfirmPanel.A_PROCESS).setDisabled(true);
 
+		// IDEMPIERE-1334 start when init all button process is disable because nothing record is selected
+		for (Button btProcess : btProcessList){
+			btProcess.setDisabled(true);
+		}
+		if (btCbbProcess != null){
+			btCbbProcess.setDisabled(true);
+		}
+		
+		if (btMenuProcess != null){
+			btMenuProcess.setDisabled(true);
+		}
+		
+		if (cbbProcess != null){
+			cbbProcess.setDisabled(true);
+		}
+		// IDEMPIERE-1334 end
 	}
 
 	protected void renderFooter(South south) {		
@@ -1011,11 +1150,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 
 	@Override
-	protected boolean hasProcess() {  //red1 IDEMPIERE-1711 to retain InfoWindow.process_ID > 0 as true
-		return hasProcess;
-	}
-
-	@Override
 	public void valueChange(ValueChangeEvent evt) {
 		if (evt != null && evt.getSource() instanceof WEditor)
         {
@@ -1059,7 +1193,13 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	
 	public void onEvent(Event event)
     {
-		if (event.getName().equals(Events.ON_FOCUS)) {
+		if (event.getName().equals(Events.ON_FOCUS) && event.getTarget() != null && 
+				event.getTarget().getAttribute(ATT_INFO_PROCESS_KEY) != null){
+			
+			MProcess process = (MProcess)event.getTarget().getAttribute(ATT_INFO_PROCESS_KEY);
+			SessionManager.getAppDesktop().updateHelpTooltip(process.get_Translation(MProcess.COLUMNNAME_Name), process.get_Translation(MProcess.COLUMNNAME_Description), process.get_Translation(MProcess.COLUMNNAME_Help), null);
+		}
+		else if (event.getName().equals(Events.ON_FOCUS)) {
     		for (WEditor editor : editors)
     		{
     			if (editor.isComponentOfEditor(event.getTarget()))
@@ -1068,6 +1208,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         			return;
     			}
     		}
+    	}else if (event.getName().equals(Events.ON_SELECT) && event.getTarget().equals(cbbProcess)){
+    		// update help panel when change select item in combobox process
+    		Comboitem selectedItem = cbbProcess.getSelectedItem();
+    		if (selectedItem != null && selectedItem.getValue() != null){
+    			MProcess selectedValue = (MProcess)selectedItem.getValue();
+    			
+        		SessionManager.getAppDesktop().updateHelpTooltip(selectedValue.get_Translation(MProcess.COLUMNNAME_Name), selectedValue.get_Translation(MProcess.COLUMNNAME_Description), selectedValue.get_Translation(MProcess.COLUMNNAME_Help), null);
+    		}
+    		    		
     	}
     	else
     	{
@@ -1203,6 +1352,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 						{
 							if (infoColumn.getAD_Reference_ID() == DisplayType.List)
 							{
+								WEditor editor = null;							
+						        editor = WebEditorFactory.getEditor(getGridField(infoColumn), true);
+						        editor.setMandatory(false);
+						        editor.setReadWrite(false);
+						        editorMap.put(infoColumn.getSelectClause(), editor);
 								columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), ValueNamePair.class, (String)null);
 							}
 							else

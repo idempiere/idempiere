@@ -15,7 +15,7 @@ package org.adempiere.webui.theme;
 
 import java.io.IOException;
 
-import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.apps.AEnv;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
 import org.compiere.model.MSysConfig;
@@ -55,8 +55,8 @@ public final class ThemeManager {
 	 * @return name of active theme
 	 */
 	public static String getTheme() {
-		String theme = System.getProperty("ZK_THEME");
-		return Util.isEmpty(theme) ? MSysConfig.getValue(ITheme.ZK_THEME, ITheme.ZK_THEME_DEFAULT) : theme;
+		String theme = System.getProperty(MSysConfig.ZK_THEME);
+		return Util.isEmpty(theme) ? MSysConfig.getValue(MSysConfig.ZK_THEME, ITheme.ZK_THEME_DEFAULT) : theme;
 	}
 
 	/**
@@ -83,9 +83,8 @@ public final class ThemeManager {
 	/**
 	 * @return title text for the browser window
 	 */
-	public static String getBrowserTitle() {
-		String s = Env.getContext(Env.getCtx(), "#ZK_BROWSER_TITLE");
-		return Util.isEmpty(s) ? MSysConfig.getValue(MSysConfig.ZK_BROWSER_TITLE, AdempiereWebUI.APP_NAME) : s;
+	public static String getBrowserTitle() {		
+		return AEnv.getDesktop().getWebApp().getAppName();
 	}
 
 	/**

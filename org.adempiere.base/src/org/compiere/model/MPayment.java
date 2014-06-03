@@ -80,12 +80,10 @@ import org.compiere.util.ValueNamePair;
 public class MPayment extends X_C_Payment 
 	implements DocAction, ProcessCall, PaymentInterface
 {
-
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 6200327948230438741L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3426445843281140181L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -1625,7 +1623,7 @@ public class MPayment extends X_C_Payment
 				sumPaymentAllocates = sumPaymentAllocates.add(pAlloc.getAmount());
 			if (getPayAmt().compareTo(sumPaymentAllocates) != 0) {
 				if (isReceipt() && getPayAmt().compareTo(sumPaymentAllocates) < 0) {
-					if (MSysConfig.getBooleanValue("ALLOW_OVER_APPLIED_PAYMENT", false, Env.getAD_Client_ID(Env.getCtx()))) {
+					if (MSysConfig.getBooleanValue(MSysConfig.ALLOW_OVER_APPLIED_PAYMENT, false, Env.getAD_Client_ID(Env.getCtx()))) {
 						return true;
 					}
 				}

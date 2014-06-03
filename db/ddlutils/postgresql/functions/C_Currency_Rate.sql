@@ -175,4 +175,5 @@ EXCEPTION WHEN OTHERS THEN
 	
 END;
 
-$body$ LANGUAGE plpgsql;
+$body$ LANGUAGE plpgsql STABLE;
+

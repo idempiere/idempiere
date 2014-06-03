@@ -42,6 +42,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WTableDirEditor;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
@@ -82,8 +83,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2190456247109646320L;
-	
+	private static final long serialVersionUID = 761285757875594250L;
+
 	private static final String ON_COMPLETE = "onComplete";
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
 	
@@ -341,6 +342,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	
 	public void runProcess() 
 	{
+		Events.sendEvent(DialogEvents.ON_BEFORE_RUN_PROCESS, this, null);
 		future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(new ProcessDialogRunnable(null), getDesktop()));
 	}
 

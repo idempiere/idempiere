@@ -63,4 +63,5 @@ begin
 	return v_nextDate::timestamp with time zone;
 end;
 $$
-    LANGUAGE plpgsql;
+    LANGUAGE plpgsql STABLE;
+

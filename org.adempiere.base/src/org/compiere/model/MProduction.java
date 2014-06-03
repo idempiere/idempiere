@@ -26,7 +26,7 @@ public class MProduction extends X_M_Production implements DocAction {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9055468125493188165L;
+	private static final long serialVersionUID = 2222265936552140706L;
 
 	/**
 	 * 
@@ -454,7 +454,7 @@ public class MProduction extends X_M_Production implements DocAction {
 
 		if (!costsOK(M_Product_ID)) {
 			msg = "Excessive difference in standard costs";
-			if (MSysConfig.getBooleanValue("MFG_ValidateCostsDifferenceOnCreate", false, getAD_Client_ID())) {
+			if (MSysConfig.getBooleanValue(MSysConfig.MFG_ValidateCostsDifferenceOnCreate, false, getAD_Client_ID())) {
 				return msg;
 			} else {
 				log.warning(msg);
@@ -503,7 +503,7 @@ public class MProduction extends X_M_Production implements DocAction {
 			{
 				costPercentageDiff = Env.ZERO;
 				String msg = "Could not retrieve costs";
-				if (MSysConfig.getBooleanValue("MFG_ValidateCostsOnCreate", false, getAD_Client_ID())) {
+				if (MSysConfig.getBooleanValue(MSysConfig.MFG_ValidateCostsOnCreate, false, getAD_Client_ID())) {
 					throw new AdempiereUserError(msg);
 				} else {
 					log.warning(msg);

@@ -49,12 +49,12 @@ import org.osgi.service.event.Event;
  */
 public class MPInstance extends X_AD_PInstance
 {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -4047766735041088419L;
-    
-    public static final String ON_RUNNING_JOB_CHANGED_TOPIC = "onRunningJobChanged";
+	private static final long serialVersionUID = 558778359873793799L;
+
+	public static final String ON_RUNNING_JOB_CHANGED_TOPIC = "onRunningJobChanged";
 
 	private static CLogger		s_log = CLogger.getCLogger (MPInstance.class);
 
@@ -395,7 +395,7 @@ public class MPInstance extends X_AD_PInstance
 		}
 
 		// unnamed instances
-		int lastRunCount = MSysConfig.getIntValue("LASTRUN_RECORD_COUNT", 5, Env.getAD_Client_ID(ctx));
+		int lastRunCount = MSysConfig.getIntValue(MSysConfig.LASTRUN_RECORD_COUNT, 5, Env.getAD_Client_ID(ctx));
 		if (lastRunCount > 0) {
 			// using JDBC instead of Query for performance reasons, AD_PInstance can be huge
 			String sql = "SELECT * FROM AD_PInstance "

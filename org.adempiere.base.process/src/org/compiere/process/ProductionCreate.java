@@ -83,7 +83,7 @@ public class ProductionCreate extends SvrProcess {
 		{
 			costPercentageDiff = Env.ZERO;
 			String msg = "Could not retrieve costs";
-			if (MSysConfig.getBooleanValue("MFG_ValidateCostsOnCreate", false, getAD_Client_ID())) {
+			if (MSysConfig.getBooleanValue(MSysConfig.MFG_ValidateCostsOnCreate, false, getAD_Client_ID())) {
 				throw new AdempiereUserError(msg);
 			} else {
 				log.warning(msg);
@@ -141,7 +141,7 @@ public class ProductionCreate extends SvrProcess {
 		
 		if (!costsOK(M_Product_ID)) {
 			String msg = "Excessive difference in standard costs";
-			if (MSysConfig.getBooleanValue("MFG_ValidateCostsDifferenceOnCreate", false, getAD_Client_ID())) {
+			if (MSysConfig.getBooleanValue(MSysConfig.MFG_ValidateCostsDifferenceOnCreate, false, getAD_Client_ID())) {
 				throw new AdempiereUserError("Excessive difference in standard costs");
 			} else {
 				log.warning(msg);

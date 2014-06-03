@@ -421,10 +421,10 @@ public class Allocation
 			
 			if (col == i_payment)
 			{
-				if (! MSysConfig.getBooleanValue("ALLOW_APPLY_PAYMENT_TO_CREDITMEMO", false, Env.getAD_Client_ID(Env.getCtx())) 
+				if (! MSysConfig.getBooleanValue(MSysConfig.ALLOW_APPLY_PAYMENT_TO_CREDITMEMO, false, Env.getAD_Client_ID(Env.getCtx())) 
 						&& open.signum() > 0 && applied.signum() == -open.signum() )
 					applied = applied.negate();
-				if (! MSysConfig.getBooleanValue("ALLOW_OVER_APPLIED_PAYMENT", false, Env.getAD_Client_ID(Env.getCtx())))
+				if (! MSysConfig.getBooleanValue(MSysConfig.ALLOW_OVER_APPLIED_PAYMENT, false, Env.getAD_Client_ID(Env.getCtx())))
 					if ( open.abs().compareTo( applied.abs() ) < 0 )
 						applied = open;
 			}

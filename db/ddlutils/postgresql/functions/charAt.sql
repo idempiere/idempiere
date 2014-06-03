@@ -21,8 +21,6 @@
  */
 
 /** Get Character at Position */
-SET search_path = adempiere, pg_catalog;
-
 CREATE OR REPLACE FUNCTION charAt (
  IN VARCHAR, -- $1 the string
  IN INTEGER -- $2 the position
@@ -31,4 +29,5 @@ $$
  BEGIN
  RETURN SUBSTR($1, $2, 1);
  END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql IMMUTABLE;
+

@@ -31,6 +31,10 @@
 .confirm-panel-left {
 	float: left;
 }
+.confirm-panel-center{
+	padding-left: 5px;
+	float: left;
+}
 
 <%-- busy dialog --%>
 .busy-dialog {
