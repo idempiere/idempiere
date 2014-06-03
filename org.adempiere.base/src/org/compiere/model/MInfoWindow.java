@@ -329,6 +329,17 @@ public class MInfoWindow extends X_AD_InfoWindow
 				}
 			}
 		}
+		
+		// evaluate need valid
+		boolean isNeedValid = is_new() || is_ValueChanged (I_AD_InfoWindow.COLUMNNAME_AD_Table_ID) || is_ValueChanged (I_AD_InfoWindow.COLUMNNAME_WhereClause) ||
+								is_ValueChanged (I_AD_InfoWindow.COLUMNNAME_FromClause) || is_ValueChanged (I_AD_InfoWindow.COLUMNNAME_OrderByClause) ||
+								is_ValueChanged (I_AD_InfoWindow.COLUMNNAME_OtherClause) || is_ValueChanged (I_AD_InfoWindow.COLUMNNAME_IsDistinct);
+		
+		// valid config 
+		if (isNeedValid){
+			validate();
+		}
+		
 		return true;
 	}
 
@@ -362,5 +373,77 @@ public class MInfoWindow extends X_AD_InfoWindow
 		return super.afterSave(newRecord, success);
 	}
 	
+	
+	public void validate ()
+	{		
+		// default, before complete check is invalid
+		this.setIsValid(false);		
+		
+		// add DISTINCT clause
+		StringBuilder builder = new StringBuilder("SELECT ");
+		if (this.isDistinct())
+			builder.append("DISTINCT ");
+		
+		MInfoColumn[] infoColumns = this.getInfoColumns();
+		// none column make this invalid
+		if (infoColumns.length == 0){
+			return;
+		}
+		
+		// build select clause
+		for (int columnIndex = 0; columnIndex < infoColumns.length; columnIndex++) {
+			if (columnIndex > 0)
+            {
+                builder.append(", ");
+            }
+			builder.append(infoColumns[columnIndex].getSelectClause());
+		}
+		
+		// build from clause
+		builder.append( " FROM ").append(this.getFromClause());
+		
+		// build where clause add (1=2) because not need get result, decrease load 
+		if (this.getWhereClause() != null && this.getWhereClause().trim().length() > 0) {
+			builder.append(" WHERE (1=2) AND (").append(this.getWhereClause()).append(")");
+		} else {
+			builder.append(" WHERE 1=2");
+		}
+		
+		// build other (having) clause
+		if (this.getOtherClause() != null && this.getOtherClause().trim().length() > 0) {
+			builder.append(" ").append(this.getOtherClause());
+		}
+		
+		// build order (having) clause
+		if (this.getOrderByClause() != null && this.getOrderByClause().trim().length() > 0) {
+			builder.append(" ORDER BY ").append(this.getOrderByClause());
+		}
+		
+		// replace env value by dummy value
+		while(builder.indexOf("@") >= 0) {
+			int start = builder.indexOf("@");
+			int end = builder.indexOf("@", start+1);
+			if (start >=0 && end > start) {
+				builder.replace(start, end+1, "0");
+			} else {
+				break;
+			}
+		}
+		
+		// try run sql
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = DB.prepareStatement(builder.toString(), null);
+			pstmt.executeQuery();
+		}catch (Exception ex){
+			log.log(Level.WARNING, ex.getMessage());
+			return;
+		} finally {
+			DB.close(pstmt);
+		}
+		
+		// valid state
+		this.setIsValid(true);		
+	}
 	
 }	//	MInfoWindow

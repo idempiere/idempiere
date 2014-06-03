@@ -131,5 +131,38 @@ public class MInfoColumn extends X_AD_InfoColumn
 		return true;
 	}
 	
+	/**
+	 * when change field relate to sql, call valid from infoWindow
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (!success)
+			return success;
 	
+		// evaluate need valid
+		boolean isNeedValid = newRecord || is_ValueChanged (MInfoColumn.COLUMNNAME_SelectClause);
+		
+		// call valid of parrent
+		if (isNeedValid){
+			MInfoWindow parentInfo = new MInfoWindow (getCtx(), this.getAD_InfoWindow_ID(), get_TrxName());
+			parentInfo.validate();
+			parentInfo.saveEx();
+		}
+		 
+				
+		return super.afterSave(newRecord, success);
+	}
+	
+	/**
+	 * when delete record, call valid from parent to set state
+	 * when delete all, valid state is false
+	 * when delete a wrong column can make valid state to true
+	 */
+	@Override
+	protected boolean afterDelete(boolean success) {
+		MInfoWindow parentInfo = new MInfoWindow (getCtx(), this.getAD_InfoWindow_ID(), get_TrxName());
+		parentInfo.validate();
+		parentInfo.saveEx();		
+		return super.afterDelete(success);
+	}
 }	//	MInfoColumn
