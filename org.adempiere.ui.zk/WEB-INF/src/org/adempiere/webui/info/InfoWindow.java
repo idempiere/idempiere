@@ -1004,10 +1004,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         }
 
         fieldEditor.addEventListener(Events.ON_OK, this);		
-        
-        // set default value
-        mField.addPropertyChangeListener(editor);
-        mField.setValue(mField.getDefault(), true);
+
+        if (! Util.isEmpty(mField.getVO().DefaultValue, true)) {
+            // set default value
+            mField.addPropertyChangeListener(editor);
+            mField.setValue(mField.getDefault(), true);
+        }
     }   // addSelectionColumn
 
 	protected void addSearchParameter(Label label, Component fieldEditor) {
