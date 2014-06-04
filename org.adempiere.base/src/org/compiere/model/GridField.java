@@ -589,7 +589,7 @@ public class GridField
 		 *  (b) SQL Statement (for data integity & consistency)
 		 */
 		String	defStr = "";
-		if (m_vo.DefaultValue.startsWith("@SQL="))
+		if (m_vo.DefaultValue != null && m_vo.DefaultValue.startsWith("@SQL="))
 		{
 			String sql = m_vo.DefaultValue.substring(5);			//	w/o tag
 			//sql = Env.parseContext(m_vo.ctx, m_vo.WindowNo, sql, false, true);	//	replace variables
@@ -637,7 +637,7 @@ public class GridField
 		/**
 		 * 	(c) Field DefaultValue		=== similar code in AStartRPDialog.getDefault ===
 		 */
-		if (!m_vo.DefaultValue.equals("") && !m_vo.DefaultValue.startsWith("@SQL="))
+		if (m_vo.DefaultValue != null && !m_vo.DefaultValue.equals("") && !m_vo.DefaultValue.startsWith("@SQL="))
 		{
 			defStr = "";		//	problem is with texts like 'sss;sss'
 			//	It is one or more variables/constants
