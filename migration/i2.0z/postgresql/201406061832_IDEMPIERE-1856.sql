@@ -1,3 +1,6 @@
+-- June 6, 2014 18:32:00 PM SGT
+-- IDEMPIERE-1856 Amount in database functions and views are hardcoded to round to 2 decimal points
+
 create or replace FUNCTION  paymenttermDiscount
 (
 	Amount			NUMERIC,
@@ -91,5 +94,7 @@ BEGIN
 	RETURN	Discount;
 END;
 
-$body$ LANGUAGE plpgsql STABLE;
+$body$ LANGUAGE plpgsql;
 
+SELECT register_migration_script('201406061832_IDEMPIERE-1856.sql') FROM dual
+;
