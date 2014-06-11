@@ -823,7 +823,12 @@ public class InfoProductWindow extends InfoWindow {
 
 	@Override
 	protected void saveSelectionDetail() {
+        int row = contentPanel.getSelectedRow();
+        if (row == -1)
+            return;
+
 		super.saveSelectionDetail();
+
 		if (m_M_AttributeSetInstance_ID == -1)	//	not selected
 		{
 			Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "M_AttributeSetInstance_ID", "0");
@@ -836,6 +841,9 @@ public class InfoProductWindow extends InfoWindow {
 			Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "M_Locator_ID",
 				String.valueOf(m_M_Locator_ID));
 		}
+        //  publish for Callout to read
+        Integer ID = getSelectedRowKey();
+        Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "M_Product_ID", ID == null ? "0" : ID.toString());
 	}
 
 	@Override

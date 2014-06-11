@@ -12,11 +12,10 @@ import org.compiere.util.Util;
  *
  */
 public class InfoInvoiceWindow extends InfoWindow {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3413423439591833575L;
+	private static final long serialVersionUID = -5614659763247990639L;
 
 	/**
 	 * @param WindowNo
@@ -79,6 +78,19 @@ public class InfoInvoiceWindow extends InfoWindow {
 			}
 		}
 		dynamicDisplay(null);
+	}
+
+	@Override
+	protected void saveSelectionDetail() {
+        int row = contentPanel.getSelectedRow();
+        if (row == -1)
+            return;
+
+		super.saveSelectionDetail();
+
+        //  publish for Callout to read
+        Integer ID = getSelectedRowKey();
+        Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "C_Invoice_ID", ID == null ? "0" : ID.toString());
 	}
 
 }
