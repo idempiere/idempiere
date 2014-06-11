@@ -1350,6 +1350,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             	contentPanel.setSelectedByKeys(lsSelectedKey);            	            	
             	m_results.clear();            	
             }
+        	// just evaluate display logic of process button when requery by use click requery button
+        	if (isQueryByUser){
+        		bindInfoProcess();
+        	}
         	// IDEMPIERE-1334 after refresh, restore prev selected item end
         }
     	finally
@@ -1358,6 +1362,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     	}
     }
 
+    /**
+    * evaluate display logic of button process
+    * empty method. implement at child class extend
+    */
+    protected void bindInfoProcess (){}
+    
     private void onOk()
     {
 		if (!contentPanel.getChildren().isEmpty() && contentPanel.getSelectedRowKey()!=null)

@@ -15,8 +15,12 @@ package org.adempiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-
+import java.util.logging.Level;
+import org.compiere.model.MProcess;
 import org.compiere.model.X_AD_InfoProcess;
+import org.compiere.util.Env;
+import org.compiere.util.Evaluatee;
+import org.compiere.util.Evaluator;
 
 /**
  * Contain info of process in info window
@@ -50,6 +54,36 @@ public class MInfoProcess extends X_AD_InfoProcess {
 	public MInfoProcess(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 
+	}
+	
+	/**************************************************************************
+	 *	Is the Column Visible ? Evaluater base in display logic expression and context of this po
+	 *  @return true, if visible
+	 */
+	public boolean isDisplayed (final int windowNo)
+	{
+		return isDisplayed(this.getCtx(), windowNo);
+}
+	
+	 /**************************************************************************
+	 * Is the Column Visible ? Evaluater base in display logic expression and context
+	 * @param ctx
+	 * @return
+	 */
+	public boolean isDisplayed(final Properties ctx, final int windowNo) {		
+		if (getDisplayLogic() == null || getDisplayLogic().trim().length() == 0)
+			return true;
+		
+		Evaluatee evaluatee = new Evaluatee() {
+			public String get_ValueAsString(String variableName) {
+				return Env.getContext (ctx, windowNo, variableName, true);
+			}
+		};
+		
+		boolean retValue = Evaluator.evaluateLogic(evaluatee, getDisplayLogic());
+		if (log.isLoggable(Level.FINEST)) log.finest(MProcess.get(getCtx(), getAD_Process_ID()).getName() 
+					+ " (" + getDisplayLogic() + ") => " + retValue);
+		return retValue;
 	}
 	
 }

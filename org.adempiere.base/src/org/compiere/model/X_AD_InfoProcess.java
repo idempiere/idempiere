@@ -30,7 +30,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140529L;
+	private static final long serialVersionUID = 20140531L;
 
     /** Standard Constructor */
     public X_AD_InfoProcess (Properties ctx, int AD_InfoProcess_ID, String trxName)
@@ -173,6 +173,23 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Process_ID()));
     }
+
+	/** Set Display Logic.
+		@param DisplayLogic 
+		If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public void setDisplayLogic (String DisplayLogic)
+	{
+		set_Value (COLUMNNAME_DisplayLogic, DisplayLogic);
+	}
+
+	/** Get Display Logic.
+		@return If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public String getDisplayLogic () 
+	{
+		return (String)get_Value(COLUMNNAME_DisplayLogic);
+	}
 
 	/** Set Image URL.
 		@param ImageURL 
