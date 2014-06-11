@@ -998,7 +998,8 @@ public class Login
 	{
 		if (TableName.startsWith("AD_Window")
 			|| TableName.startsWith("AD_PrintFormat")
-			|| TableName.startsWith("AD_Workflow") )
+			|| TableName.startsWith("AD_Workflow")
+			|| TableName.startsWith("M_Locator") )
 			return;
 		String value = null;
 		//
