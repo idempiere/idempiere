@@ -141,6 +141,8 @@ public class InfoProductWindow extends InfoWindow {
 		super.createParameterPanel();
 		initParameters();
 		dynamicDisplay(null);
+		// update display of mandatory field
+		validateParameters();
 	}
 
 	@Override

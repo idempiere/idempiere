@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
+
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
@@ -1235,10 +1236,20 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
      * Call query when user click to query button enter in parameter field
      */
     public void onUserQuery (){   	
+    	if (validateParameters()){
             	showBusyDialog();
 		isQueryByUser = true;
             	Clients.response(new AuEcho(this, "onQueryCallback", null));
             }
+    }
+    
+    /**
+    * validate parameter before run query
+    * @return
+    */
+    public boolean validateParameters(){
+    	return true;
+    }
 
     void preRunProcess (Integer processId){
     	// disable all control button when run process

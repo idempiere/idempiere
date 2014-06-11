@@ -369,9 +369,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			gridFields = new ArrayList<GridField>();
 			for(MInfoColumn infoColumn : infoColumns) {
 				String columnName = infoColumn.getColumnName();
+				/*!m_lookup && infoColumn.isMandatory():apply Mandatory only case open as window and only for criteria field*/
+				boolean isMandatory = !m_lookup && infoColumn.isMandatory() && infoColumn.isQueryCriteria();
 				GridFieldVO vo = GridFieldVO.createParameter(infoContext, p_WindowNo, 0, 
 						columnName, infoColumn.get_Translation("Name"), infoColumn.getAD_Reference_ID(), 
-						infoColumn.getAD_Reference_Value_ID(), false, false);
+						infoColumn.getAD_Reference_Value_ID(), isMandatory, false);
 				if (infoColumn.getAD_Val_Rule_ID() > 0) {
 					vo.ValidationCode = infoColumn.getAD_Val_Rule().getCode();
 					if (vo.lookupInfo != null) {
@@ -1016,7 +1018,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         else 
         {
 	        editor = WebEditorFactory.getEditor(mField, false);
-	        editor.setMandatory(false);
 	        editor.setReadWrite(true);
 	        editor.dynamicDisplay();
 	        editor.addValueChangeListener(this);
@@ -1082,7 +1083,13 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         }
         if (!(fieldEditor instanceof Checkbox))
         {
-        	panel.appendChild(label.rightAlign());
+        	Div div = new Div();
+        	div.setStyle("text-align: right;");
+        	div.appendChild(label);
+        	if (label.getDecorator() != null){
+        		div.appendChild (label.getDecorator());
+        	}
+        	panel.appendChild(div);
         } else {
         	panel.appendChild(new Space());
         }
@@ -1225,6 +1232,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 
 	protected void dynamicDisplay(WEditor editor) {
+		validateField(editor);
 		// if attribute set changed (from any value to any value) clear the attribute set instance m_pAttributeWhere
 		boolean asiChanged = false;
 		if (editor != null && editor instanceof WTableDirEditor && editor.getColumnName().equals("M_AttributeSet_ID"))
@@ -1592,6 +1600,53 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 
 		return data;
+	}
+
+	
+	/**
+	 * {@inheritDoc}
+	 * eval input value of mandatory field, if null show field in red color
+	 */
+	@Override
+	public boolean validateParameters() {
+		boolean isValid = true;
+		
+		for (int i = 0; i < editors.size(); i++){
+			WEditor wEditor = (WEditor) editors.get(i);
+			// cancel editor not display
+			if (wEditor == null || !wEditor.isVisible() || wEditor.getGridField() == null){
+				continue;
+}
+			
+			isValid = isValid & validateField (wEditor);
+		}
+		
+		return isValid;
+	}
+	
+	/**
+	 * valid mandatory of a not null, display field
+	 * display red color when a mandatory field is not input
+	 * @param wEditor
+	 * @return
+	 */
+	protected boolean validateField (WEditor wEditor){
+		if (wEditor == null || !wEditor.isVisible() || wEditor.getGridField() == null){
+			return true;
+		}
+		
+		GridField validateGrid = wEditor.getGridField();
+		// eval only mandatory field
+		if (validateGrid.isMandatory(true)){
+			// update color of field
+			wEditor.updateLabelStyle();
+			Object data = wEditor.getValue();
+			if (data == null || data.toString().length() == 0) {				
+				return false;
+			}
+		}
+		
+		return true;		
 	}
 
 }
