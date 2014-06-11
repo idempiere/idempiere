@@ -300,7 +300,20 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private boolean m_useDatabasePaging = false;
 	private BusyDialog progressWindow;
 	private Listitem m_lastOnSelectItem;
-
+	/**
+	 * false, use saved where clause
+	 * IDEMPIERE-1979
+	 */
+	protected boolean isQueryByUser = false;
+	/**
+	 * save where clause of prev requery
+	 */
+	protected String prevWhereClause = null;
+	/**
+	 * save value of parameter to set info query paramenter
+	 */
+	protected List<Object> prevParameterValues = null;
+	protected List<String> prevQueryOperators = null;
 	private static final String[] lISTENER_EVENTS = {};
 
 	/**
@@ -987,6 +1000,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**************************************************************************
 	 *  Get dynamic WHERE part of SQL
 	 *	To be overwritten by concrete classes
+	 *  When override this method, please consider isQueryByUser and prevWhereClause 
 	 *  @return WHERE clause
 	 */
 	protected abstract String getSQLWhere();
@@ -994,6 +1008,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 *  Set Parameters for Query
 	 *	To be overwritten by concrete classes
+	 *  When override this method, please consider isQueryByUser and prevWhereClause
 	 *  @param pstmt statement
 	 *  @param forCount for counting records
 	 *  @throws SQLException
@@ -1114,8 +1129,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             }
             else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_REFRESH)))
             {
-            	showBusyDialog();
-            	Clients.response(new AuEcho(this, "onQueryCallback", null));
+            	onUserQuery();
             }
             else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_CANCEL)))
             {
@@ -1210,13 +1224,21 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     			else
     				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
         	}
-            //default
+            //when user push enter keyboard at input parameter field
             else
             {
-            	showBusyDialog();
-            	Clients.response(new AuEcho(this, "onQueryCallback", null));
+            	onUserQuery();
             }
     }  //  onEvent
+
+    /**
+     * Call query when user click to query button enter in parameter field
+     */
+    public void onUserQuery (){   	
+            	showBusyDialog();
+		isQueryByUser = true;
+            	Clients.response(new AuEcho(this, "onQueryCallback", null));
+            }
 
     void preRunProcess (Integer processId){
     	// disable all control button when run process
@@ -1269,7 +1291,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 					}else if (!m_pi.isError() && m_pi.getSummary() != null && m_pi.getSummary().trim().length() > 0){
 						// when success, show summary if exists
 						FDialog.info(p_WindowNo, null, m_pi.getSummary());
-						//showBusyDialog();
+						isQueryByUser = false;						
 						Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", m_results));
 					}
 					

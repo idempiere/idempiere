@@ -590,6 +590,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	@Override
 	protected String getSQLWhere() {
+		/**
+		 * when query not by click requery button, reuse prev where clause
+		 * IDEMPIERE-1979  
+		 */
+		if (!isQueryByUser){
+			return prevWhereClause;
+		}
+		
 		StringBuilder builder = new StringBuilder();
 		MTable table = MTable.get(Env.getCtx(), infoWindow.getAD_Table_ID());
 		if (!hasIsActiveEditor() && table.get_ColumnIndex("IsActive") >=0 ) {
@@ -678,6 +686,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if (sql.indexOf("@") >= 0) {
 			sql = Env.parseContext(infoContext, p_WindowNo, sql, true, true);
 		}
+		
+		// IDEMPIERE-1979
+		prevWhereClause = sql;
+		
 		return sql;
 	}
 
@@ -696,6 +708,23 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	@Override
 	protected void setParameters(PreparedStatement pstmt, boolean forCount)
 			throws SQLException {
+		// when query not by click requery button, reuse parameter value
+		if (!isQueryByUser){
+			for (int parameterIndex = 0; parameterIndex < prevParameterValues.size(); parameterIndex++){
+				setParameter (pstmt, parameterIndex + 1, prevParameterValues.get(parameterIndex), prevQueryOperators.get(parameterIndex));
+			}
+			return;
+		}
+		
+		// init collection to save current parameter value 
+		if (prevParameterValues == null){
+			prevParameterValues = new ArrayList<Object> ();
+			prevQueryOperators = new ArrayList<String> ();
+		}else{
+			prevParameterValues.clear();
+			prevQueryOperators.clear();
+		}
+
 		int parameterIndex = 0;
 		for(WEditor editor : editors) {
 			if (!editor.isVisible())
@@ -708,10 +737,28 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				}
 				Object value = editor.getValue();
 				parameterIndex++;
+				prevParameterValues.add(value);
+				prevQueryOperators.add(mInfoColumn.getQueryOperator());
+				setParameter (pstmt, parameterIndex, value, mInfoColumn.getQueryOperator());
+			}
+		}
+
+	}
+	
+	/**
+	 * set parameter for statement. 
+	 * not need check null for value
+	 * @param pstmt
+	 * @param parameterIndex
+	 * @param value
+	 * @param queryOperator
+	 * @throws SQLException
+	 */
+	protected void setParameter (PreparedStatement pstmt, int parameterIndex, Object value, String queryOperator) throws SQLException{
 				if (value instanceof Boolean) {					
 					pstmt.setString(parameterIndex, ((Boolean) value).booleanValue() ? "Y" : "N");
 				} else if (value instanceof String) {
-					if (mInfoColumn.getQueryOperator().equals(X_AD_InfoColumn.QUERYOPERATOR_Like)) {
+			if (queryOperator.equals(X_AD_InfoColumn.QUERYOPERATOR_Like)) {
 						StringBuilder valueStr = new StringBuilder(value.toString().toUpperCase());
 	                    if (!valueStr.toString().endsWith("%"))
 	                        valueStr.append("%");
@@ -722,10 +769,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				} else {
 					pstmt.setObject(parameterIndex, value);
 				}
-				
-			}
-		}
-
 	}
 
 	@Override
