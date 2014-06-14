@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.activation.DataSource;
-
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.AttachmentItem;
 import org.adempiere.webui.component.Button;
@@ -497,7 +497,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 
 			StringTokenizer st = new StringTokenizer(getTo(), " ,;", false);
 			String to = st.nextToken();
-			EMail email = m_client.createEMail(getFrom(), to, getSubject(), getMessage(), true);
+			EMail email = m_client.createEMail(getFrom(), to, getSubject(), replaceBASE64Img(getMessage()), true);
 			String status = "Check Setup";
 			if (email != null)
 			{
@@ -671,12 +671,133 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		}
 	}
 
+	/**
+	 * convert attach image as base64 and embed to message content for preview in cfEditor
+	 * @param mt
+	 * @param attachment
+	 * @return
+	 */
+	public static String embedImgToEmail (MMailText mt, MAttachment attachment){
+
+		String origonSign = mt.getMailText(true);
+		
+		// pattern to get src value of attach image.
+		Pattern imgPattern = Pattern.compile("\\s+src\\s*=\\s*\"cid:(.*?)\"");
+		// matcher object to anlysic image tab in sign
+		Matcher imgMatcher = imgPattern.matcher(origonSign);
+		// part not include "cid:imageName"
+		List<String> lsPart = new ArrayList<String> ();
+		// list image name in sign
+		List<String> lsImgSrc = new ArrayList<String> ();
+		
+		// start index of text part not include "cid:imageName" 
+		int startIndex = 0;
+		// start index of "cid:imageName"
+		int startIndexMatch = 0;
+		// end index of "cid:imageName"
+		int endIndexMatch = 0;
+		
+		// split sign string to part
+		// example: acb <img src="cid:image1"/> def <img src="cid:image2"/> ghi
+		// lsPart will include "acb <img ", "/> def <img ", "/> ghi"
+		// lsImgSrc wil  include "image1", "image2"
+		while (imgMatcher.find()){
+			startIndexMatch = imgMatcher.start();
+			endIndexMatch = imgMatcher.end();
+			// split text from end last matcher to start matcher  
+			String startString = origonSign.substring(startIndex, startIndexMatch);
+			lsPart.add(startString);
+			// get image name
+			lsImgSrc.add(imgMatcher.group(1).trim());
+			startIndex = endIndexMatch;
+		}
+		// end string not include "cid:imageName"
+		String startString = origonSign.substring(startIndex);
+		lsPart.add(startString);
+		
+		// no image in sign return origon
+		if (lsPart.size() < 0){
+			return origonSign;
+		}
+		
+		StringBuilder reconstructSign = new StringBuilder();
+		
+		// no attachment because add server warning and return origon without src value, 
+		// maybe can improve to remove img tag 
+		if(attachment == null){
+			//TODO: add server warning log
+			for (String strPart : lsPart){
+				reconstructSign.append(strPart);
+			}
+			return reconstructSign.toString();
+		}
+
+		// resconstruct with image source convert to embed image by base64 encode
+		for (int i = 0; i < lsImgSrc.size(); i++){
+			if (i == 0)
+				reconstructSign.append(lsPart.get(0));
+			
+			MAttachmentEntry[] entries = attachment.getEntries();
+			String imageBase64 = null;
+
+			// find file attach map with this name 
+			for (MAttachmentEntry entry : entries) {				
+				if (entry.getName().equalsIgnoreCase(lsImgSrc.get(i))){
+					imageBase64 = javax.xml.bind.DatatypeConverter.printBase64Binary(entry.getData());
+					break;
+				}
+			}
+			
+			if (imageBase64 == null){
+				// no attach map with this src value 
+				// add server warning and return origon without src value, 
+				// maybe can improve to remove img tag
+				//TODO: add server warning log
+			}else{
+				// convert image to base64 encode and embed to img tag
+				reconstructSign.append(" srcSave=\"" + lsImgSrc.get(i) + "\" src=\"data:image/jpeg;base64," + imageBase64 + "\"");
+			}
+			
+			reconstructSign.append(lsPart.get(i + 1));
+
+		}
+		
+		return reconstructSign.toString();
+	}
+	
+	/**
+	 * remove base64 image encode in message content before sent email 
+	 * @param base64
+	 * @return
+	 */
+	public static String replaceBASE64Img (String base64){
+		// pattern map base64 in image
+		Pattern imgPattern = Pattern.compile(" srcSave=\"(.*?)\" src=\"data:image/jpeg;base64,.*?\"");
+		// matcher object replace base64
+		Matcher imgMatcher = imgPattern.matcher(base64);
+		
+		StringBuffer result = new StringBuffer();
+		// repace base64 string with origon image name to sent email  
+		while (imgMatcher.find()){
+			imgMatcher.appendReplacement(result, " src = \"cid:$1\"");
+		}
+
+		if (result.length() > 0){
+			imgMatcher.appendTail(result);
+			return result.toString();	
+		}else{
+			// no base64 in input string
+			return base64;
+		}
+		
+	}
+	
+	
 	private void addMailText()
 	{
 		MMailText mt = (MMailText) MUser.get(Env.getCtx()).getR_DefaultMailText();
 		if (mt.get_ID() > 0) {
 			mt.setPO(MUser.get(Env.getCtx()));
-			fMessage.setValue(getMessage() + "\n" + mt.getMailText(true));
 			MAttachment attachment = MAttachment.get(Env.getCtx(), MMailText.Table_ID, mt.get_ID());
 			if (attachment != null) {
 				MAttachmentEntry[] entries = attachment.getEntries();
@@ -693,6 +814,9 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 					addAttachment(dataSource, true);
 				}
 			}
+
+			fMessage.setValue(getMessage() + "\n" + embedImgToEmail(mt, attachment));
+			
 		}
 	}
 
