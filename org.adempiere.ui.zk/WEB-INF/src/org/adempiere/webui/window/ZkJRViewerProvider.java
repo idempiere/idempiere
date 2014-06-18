@@ -7,7 +7,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
-import org.compiere.report.JRViewerProvider;
+import org.compiere.report.jasper.JRViewerProvider;
 
 public class ZkJRViewerProvider implements JRViewerProvider {
 

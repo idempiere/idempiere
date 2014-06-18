@@ -1,5 +1,7 @@
 package org.compiere.report;
 
+import org.compiere.report.jasper.JRViewerProvider;
+
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 
