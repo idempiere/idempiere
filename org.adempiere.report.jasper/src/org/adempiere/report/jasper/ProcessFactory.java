@@ -16,7 +16,6 @@ package org.adempiere.report.jasper;
 import org.adempiere.base.IProcessFactory;
 import org.adempiere.util.ProcessUtil;
 import org.compiere.process.ProcessCall;
-import org.compiere.report.ReportStarter;
 
 /**
  * ProcessFactory to start the ReportStarter class.
@@ -33,9 +32,14 @@ import org.compiere.report.ReportStarter;
  */
 public class ProcessFactory implements IProcessFactory {
 
+	public static final String JASPER_STARTER_CLASS_DEPRECATED = "org.compiere.report.ReportStarter";
+
 	@Override
 	public ProcessCall newProcessInstance(String className) {
 		if (ProcessUtil.JASPER_STARTER_CLASS.equals(className))
+			return new ReportStarter();
+		// this is for compatibility with older installations
+		if (JASPER_STARTER_CLASS_DEPRECATED.equals(className))
 			return new ReportStarter();
 		else
 			return null;

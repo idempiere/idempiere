@@ -11,7 +11,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  * For the text or an alternative of this public license, you may reach us    *
  *****************************************************************************/
-package org.compiere.report;
+package org.adempiere.report.jasper;
 
 import java.awt.print.PrinterJob;
 import java.io.ByteArrayOutputStream;
@@ -79,7 +79,6 @@ import net.sf.jasperreports.engine.xml.JRXmlWriter;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
-import org.adempiere.report.jasper.JRViewerProvider;
 import org.adempiere.util.IProcessUI;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;

@@ -53,7 +53,7 @@ import org.compiere.wf.MWorkflow;
  */
 public final class ProcessUtil {
 
-	public static final String JASPER_STARTER_CLASS = "org.compiere.report.ReportStarter";
+	public static final String JASPER_STARTER_CLASS = "org.adempiere.report.jasper.ReportStarter";
 
 	/**	Logger				*/
 	private static CLogger log = CLogger.getCLogger(ProcessUtil.class);
