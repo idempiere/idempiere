@@ -11,7 +11,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.compiere.report.jasper;
+package org.adempiere.report.jasper;
 
 import org.adempiere.base.IProcessFactory;
 import org.adempiere.util.ProcessUtil;

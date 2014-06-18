@@ -12,5 +12,5 @@ Import-Package: org.apache.commons.codec;version="1.3.0",
 Require-Bundle: org.adempiere.base;bundle-version="2.0.0",
  org.adempiere.report.jasper.library;bundle-version="2.0.0"
 Service-Component: OSGI-INF/processfactory.xml
-Export-Package: org.compiere.report.jasper
+Export-Package: org.adempiere.report.jasper
 Bundle-ActivationPolicy: lazy
