@@ -758,10 +758,9 @@ public class MInOut extends X_M_InOut implements DocAction
 						line.setM_RMALine_ID(peer.getRef_RMALine_ID());
 				}
 			}
-			else if (!isSOTrx())
-			{
-				line.setQtyOverReceipt(fromLine.getQtyOverReceipt());
-			}
+			
+			line.setQtyOverReceipt(fromLine.getQtyOverReceipt());
+			
 			//
 			line.setProcessed(false);
 			if (line.save(get_TrxName()))
@@ -1290,7 +1289,6 @@ public class MInOut extends X_M_InOut implements DocAction
 			BigDecimal Qty = sLine.getMovementQty();
 			if (MovementType.charAt(1) == '-')	//	C- Customer Shipment - V- Vendor Return
 				Qty = Qty.negate();
-			BigDecimal QtySO = Env.ZERO;
 
 			//	Update Order Line
 			MOrderLine oLine = null;
@@ -1299,8 +1297,6 @@ public class MInOut extends X_M_InOut implements DocAction
 				oLine = new MOrderLine (getCtx(), sLine.getC_OrderLine_ID(), get_TrxName());
 				if (log.isLoggable(Level.FINE)) log.fine("OrderLine - Reserved=" + oLine.getQtyReserved()
 					+ ", Delivered=" + oLine.getQtyDelivered());
-				if (isSOTrx())
-					QtySO = sLine.getMovementQty();
 			}
 
 
@@ -1326,41 +1322,29 @@ public class MInOut extends X_M_InOut implements DocAction
 
 				log.fine("Material Transaction");
 				MTransaction mtrx = null;
-				//same warehouse in order and receipt?
-				boolean sameWarehouse = true;
-				//	Reservation ASI - assume none
-				int reservationAttributeSetInstance_ID = 0; // sLine.getM_AttributeSetInstance_ID();
-				int reservationWarehouse_ID = getM_Warehouse_ID();				
-				if (oLine != null) {
-					reservationAttributeSetInstance_ID = oLine.getM_AttributeSetInstance_ID();
-					sameWarehouse = oLine.getM_Warehouse_ID()==getM_Warehouse_ID();
-				}
-				if(!sameWarehouse){
-					reservationWarehouse_ID = oLine.getM_Warehouse_ID();
-				}
+				
 				//
 				BigDecimal overReceipt = BigDecimal.ZERO;
-				if (!isSOTrx())
-				{						
-					if (!isReversal())
+				if (!isReversal()) 
+				{
+					if (oLine != null) 
 					{
-						if (oLine != null)
+						BigDecimal toDelivered = oLine.getQtyOrdered()
+								.subtract(oLine.getQtyDelivered());
+						if (sLine.getMovementQty().compareTo(toDelivered) > 0)
+							overReceipt = sLine.getMovementQty().subtract(
+									toDelivered);
+						if (overReceipt.signum() != 0) 
 						{
-							BigDecimal toDelivered = oLine.getQtyOrdered().subtract(oLine.getQtyDelivered());
-							if (sLine.getMovementQty().compareTo(toDelivered) > 0)
-								overReceipt = sLine.getMovementQty().subtract(toDelivered);
-							if (overReceipt.signum() != 0)
-							{
-								sLine.setQtyOverReceipt(overReceipt);
-								sLine.saveEx();
-							}
+							sLine.setQtyOverReceipt(overReceipt);
+							sLine.saveEx();
 						}
 					}
-					else
-					{
-						overReceipt = sLine.getQtyOverReceipt();
-					}
-				}					
+				} 
+				else 
+				{
+					overReceipt = sLine.getQtyOverReceipt();
+				}
 				BigDecimal orderedQtyToUpdate = sLine.getMovementQty().subtract(overReceipt);
 				//
 				if (sLine.getM_AttributeSetInstance_ID() == 0)
@@ -1373,27 +1357,6 @@ public class MInOut extends X_M_InOut implements DocAction
 						BigDecimal QtyMA = ma.getMovementQty();
 						if (MovementType.charAt(1) == '-')	//	C- Customer Shipment - V- Vendor Return
 							QtyMA = QtyMA.negate();
-						BigDecimal reservedDiff = Env.ZERO;
-						if (sLine.getC_OrderLine_ID() != 0)
-						{
-							if (isSOTrx())
-							{
-								reservedDiff = ma.getMovementQty().negate();
-							}
-							else
-							{
-								if (orderedQtyToUpdate.compareTo(ma.getMovementQty()) >= 0)
-								{
-									orderedQtyToUpdate = orderedQtyToUpdate.subtract(ma.getMovementQty());
-									reservedDiff = ma.getMovementQty().negate();
-								}
-								else
-								{
-									reservedDiff = orderedQtyToUpdate.negate();
-									orderedQtyToUpdate = BigDecimal.ZERO;
-								}
-							}
-						}
 
 						//	Update Storage - see also VMatch.createMatchRecord
 						if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
@@ -1406,20 +1369,7 @@ public class MInOut extends X_M_InOut implements DocAction
 							String lastError = CLogger.retrieveErrorString("");
 							m_processMsg = "Cannot correct Inventory OnHand (MA) [" + product.getValue() + "] - " + lastError;
 							return DocAction.STATUS_Invalid;
-						}
-						if (reservedDiff.signum() != 0) {
-							if (!MStorageReservation.add(getCtx(), reservationWarehouse_ID,
-									sLine.getM_Product_ID(),
-									ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
-									reservedDiff,
-									isSOTrx(),
-									get_TrxName()))
-							{
-								String lastError = CLogger.retrieveErrorString("");
-								m_processMsg = "Cannot correct Inventory " + (isSOTrx()? "Reserved" : "Ordered") + " (MA) - [" + product.getValue() + "] - " + lastError;
-								return DocAction.STATUS_Invalid;
-							}
-						}
+						}					
 						
 						//	Create Transaction
 						mtrx = new MTransaction (getCtx(), sLine.getAD_Org_ID(),
@@ -1433,16 +1383,29 @@ public class MInOut extends X_M_InOut implements DocAction
 							return DocAction.STATUS_Invalid;
 						}
 					}
+					
+					if (oLine!=null && mtrx!=null)
+					{					
+						if (sLine.getC_OrderLine_ID() != 0)
+						{
+							if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
+									sLine.getM_Product_ID(),
+									oLine.getM_AttributeSetInstance_ID(),
+									orderedQtyToUpdate.negate(),
+									isSOTrx(),
+									get_TrxName()))
+							{
+								String lastError = CLogger.retrieveErrorString("");
+								m_processMsg = "Cannot correct Inventory " + (isSOTrx()? "Reserved" : "Ordered") + " (MA) - [" + product.getValue() + "] - " + lastError;
+								return DocAction.STATUS_Invalid;
+							}
+						}
+					}
+					
 				}
 				//	sLine.getM_AttributeSetInstance_ID() != 0
 				if (mtrx == null)
 				{
-					BigDecimal reservedDiff = null;
-					if(isSOTrx())
-						reservedDiff = QtySO.negate();
-					else
-						reservedDiff = orderedQtyToUpdate.negate();
-
 					Timestamp dateMPolicy = getMovementDate();
 					if(sLine.getM_AttributeSetInstance_ID()>0){
 						I_M_AttributeSetInstance asi = sLine.getM_AttributeSetInstance();
@@ -1460,11 +1423,12 @@ public class MInOut extends X_M_InOut implements DocAction
 						m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
 						return DocAction.STATUS_Invalid;
 					}
-					if (reservedDiff.signum() != 0) {
-						if (!MStorageReservation.add(getCtx(), reservationWarehouse_ID,
+					if (oLine!=null) 
+					{
+						if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
 								sLine.getM_Product_ID(),
-								sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
-								reservedDiff, isSOTrx(), get_TrxName()))
+								oLine.getM_AttributeSetInstance_ID(),
+								orderedQtyToUpdate.negate(), isSOTrx(), get_TrxName()))
 						{
 							m_processMsg = "Cannot correct Inventory Reserved " + (isSOTrx()? "Reserved [" :"Ordered [") + product.getValue() + "]";
 							return DocAction.STATUS_Invalid;
