@@ -99,6 +99,8 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class ProcessDialog extends AbstractProcessDialog implements EventListener<Event>, IHelpContext
 {
+	public static final String ON_INITIAL_FOCUS_EVENT = "onInitialFocus";
+
 	/**
 	 * generate serial version ID
 	 */
@@ -154,6 +156,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			init(Env.getCtx(), WindowNo, AD_Process_ID, null, "70%", false, false);
 			querySaved();
 			addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
+			addEventListener(ON_INITIAL_FOCUS_EVENT, this);
 		}
 		catch(Exception ex)
 		{
@@ -360,6 +363,14 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			bSave.setEnabled(enabled && !lastRun);
 			bDelete.setEnabled(enabled && fSavedName.getSelectedIndex() > -1
 					&& !lastRun);
+		} else if (event.getName().equals(ON_INITIAL_FOCUS_EVENT)) {
+			if (!isUILocked())
+			{
+				if (!getParameterPanel().focusToFirstEditor()) 
+				{
+					bOK.focus();
+				}
+			}
 		} else {
 			super.onEvent(event);
 		}

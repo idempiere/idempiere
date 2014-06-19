@@ -76,6 +76,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 			pd.setTitle(null);
 			preOpenNewTab();
 			windowContainer.addWindow(tabPanel, title, true);
+			Events.postEvent(ProcessDialog.ON_INITIAL_FOCUS_EVENT, pd, null);
 		}
 		return pd;
 	}
