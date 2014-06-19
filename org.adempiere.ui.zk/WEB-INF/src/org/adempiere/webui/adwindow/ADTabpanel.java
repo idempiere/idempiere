@@ -1395,6 +1395,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		if (listPanel.isVisible()) {
 			listPanel.refresh(gridTab);
 			listPanel.scrollToCurrentRow();
+			Clients.resize(listPanel);
 		} else {
 			listPanel.deactivate();
 		}
@@ -1647,6 +1648,14 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			script.append("b=false;}}}catch(error){}");
 			script.append("if(b){var w=zk.Widget.$('#").append(c.getUuid()).append("');w.focus(0);}");
 			Clients.response(new AuScript(script.toString()));
+		}
+	}
+
+	@Override
+	public void setParent(Component parent) {
+		super.setParent(parent);
+		if (parent != null) {
+			listPanel.onADTabPanelParentChanged();
 		}
 	}
 }

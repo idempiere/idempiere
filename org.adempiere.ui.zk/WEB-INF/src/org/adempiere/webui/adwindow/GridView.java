@@ -58,6 +58,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Frozen;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.event.ZulEvents;
 
@@ -143,7 +144,6 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		this.setHflex("1");
 		
 		gridFooter = new Div();
-		gridFooter.setHflex("1");
 		gridFooter.setVflex("0");
 		
 		//default paging size
@@ -195,6 +195,11 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		if (paging != null && paging.getPageSize() != pageSize) {
 			paging.setPageSize(pageSize);
 			updateModel();
+			if (paging.getPageSize() > 1) {
+				showPagingControl();
+			} else {
+				hidePagingControl();
+			}
 		}
 	}
 
@@ -217,6 +222,21 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		updateListIndex();
 
 		this.init = true;
+		
+		showRecordsCount();
+	}
+
+	private void showRecordsCount() {
+		Component parent = this.getParent();
+		while (parent != null) {
+			if (parent instanceof DetailPane) {
+				DetailPane p = (DetailPane) parent;
+				if (p.getSelectedADTabpanel() != null && p.getSelectedADTabpanel().getGridTab() == this.gridTab)
+					p.setStatusMessage(tableModel.getRowCount() + " " + Msg.getMsg(Env.getCtx(), "Records"), false);
+				break;
+			} 
+			parent = parent.getParent();					
+		}
 	}
 
 	private void setupFields(GridTab gridTab) {		
@@ -290,6 +310,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 	public void activate(GridTab gridTab) {
 		if (!isInit()) {
 			init(gridTab);
+		} else {
+			showRecordsCount();
 		}
 	}
 
@@ -329,7 +351,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 			if (paging.getTotalSize() != gridTab.getRowCount())
 				paging.setTotalSize(gridTab.getRowCount());
 			if (paging.getPageCount() > 1 && !gridFooter.isVisible()) {
-				gridFooter.setVisible(true);
+				showPagingControl();
 			}
 			int pgIndex = rowIndex >= 0 ? rowIndex % pageSize : 0;
 			int pgNo = rowIndex >= 0 ? (rowIndex - pgIndex) / pageSize : 0;
@@ -359,9 +381,9 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 				paging.setActivePage(pgNo);
 			}
 			if (paging.getPageCount() == 1) {
-				gridFooter.setVisible(false);
+				hidePagingControl();
 			} else {
-				gridFooter.setVisible(true);
+				showPagingControl();
 			}
 			if (rowIndex >= 0 && pgIndex >= 0) {
 				echoOnPostSelectedRowChanged();
@@ -370,7 +392,17 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 			if (rowIndex >= 0) {
 				echoOnPostSelectedRowChanged();
 			}
-		}
+		}		
+	}
+
+	private void hidePagingControl() {
+		if (gridFooter.isVisible())
+			gridFooter.setVisible(false);
+	}
+
+	private void showPagingControl() {
+		if (!gridFooter.isVisible())
+			gridFooter.setVisible(true);		
 	}
 
 	/**
@@ -530,20 +562,20 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 			paging.setPageSize(pageSize);
 			paging.setTotalSize(tableModel.getRowCount());
 			paging.setDetailed(true);
-			gridFooter.appendChild(paging);
-			gridFooter.setSclass("adtab-grid-south");
+			paging.setId("paging");
+			gridFooter.appendChild(paging);			
 			paging.addEventListener(ZulEvents.ON_PAGING, this);
 			renderer.setPaging(paging);
 			if (paging.getPageCount() == 1) {
-				gridFooter.setVisible(false);
+				hidePagingControl();
 			} else {
-				gridFooter.setVisible(true);
-			}
-			paging.setId("paging");
+				showPagingControl();				
+			}						
+			positionPagingControl();
 		}
 		else
 		{
-			gridFooter.setVisible(false);
+			hidePagingControl();
 		}		
 		
 	}
@@ -1053,6 +1085,40 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 				if (!selectAll.isChecked() && isAllSelected())
 					selectAll.setChecked(true);
 				break;
+		}
+	}
+
+	protected void onADTabPanelParentChanged() {
+		positionPagingControl();
+	}
+
+	private void positionPagingControl() {
+		if (isDetailPane()) {
+			Component parent = this.getParent();
+			while (parent != null) {
+				if (parent instanceof Tabpanel) {
+					Component firstChild = parent.getFirstChild();
+					if ( gridFooter.getParent() != firstChild ) { 
+						firstChild.appendChild(gridFooter);
+						gridFooter.setHflex("0");
+						gridFooter.setSclass("adwindow-detailpane-adtab-grid-south");												
+					}
+					break;
+				}
+				parent = parent.getParent();
+			}
+			if (paging != null)
+				paging.setDetailed(false);
+		}
+		else 
+		{
+			if (gridFooter.getParent() != this) {
+				gridFooter.setHflex("1");
+				gridFooter.setSclass("adtab-grid-south");
+				appendChild(gridFooter);
+			}
+			if (paging != null)
+				paging.setDetailed(true);			
 		}
 	}
 }
