@@ -27,6 +27,7 @@ import org.adempiere.base.event.IEventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.model.MBroadcastMessage;
 import org.adempiere.util.ServerContext;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
@@ -37,6 +38,7 @@ import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DrillEvent;
 import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.event.ZKBroadCastManager;
@@ -111,6 +113,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private static final String IMAGES_DOWNARROW_PNG = "images/expand-header.png";
 	
 	private static final String IMAGES_CONTEXT_HELP_PNG = "images/Help16.png";
+	
+	private static final String IMAGES_THREELINE_MENU_PNG = "images/threelines.png";
 
 	@SuppressWarnings("unused")
 	private static final CLogger logger = CLogger.getCLogger(DefaultDesktop.class);
@@ -138,6 +142,12 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private ToolBarButton max;
 	
 	private ToolBarButton contextHelp;
+	
+	private ToolBarButton showHeader;
+
+	private Component headerContainer;
+
+	private Window headerPopup;
 
     public DefaultDesktop()
     {
@@ -156,12 +166,14 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
     	queue.subscribe(this);
     }
 
-    protected Component doCreatePart(Component parent)
+    @SuppressWarnings("serial")
+	protected Component doCreatePart(Component parent)
     {
     	PageDefinition pagedef = Executions.getCurrent().getPageDefinition(ThemeManager.getThemeResource("zul/desktop/desktop.zul"));
     	Component page = Executions.createComponents(pagedef, parent, null);
     	layout = (Borderlayout) page.getFellow("layout");
-    	pnlHead = (HeaderPanel) page.getFellow("northBody").getFellow("header");
+    	headerContainer = page.getFellow("northBody");
+    	pnlHead = (HeaderPanel) headerContainer.getFellow("header");
         
         layout.addEventListener("onZoom", this);
         layout.addEventListener(DrillEvent.ON_DRILL_DOWN, this);
@@ -272,6 +284,23 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		ToolBar toolbar = new ToolBar();
         windowContainer.getComponent().appendChild(toolbar);
                 
+        showHeader = new ToolBarButton() {
+			@Override
+			public void onPageDetached(Page page) {
+				super.onPageDetached(page);
+				if (DefaultDesktop.this.headerPopup != null) {
+					DefaultDesktop.this.headerPopup.setPage(null);
+				}
+			}
+        	
+        };
+        toolbar.appendChild(showHeader);
+        showHeader.setImage(ThemeManager.getThemeResource(IMAGES_THREELINE_MENU_PNG));
+        showHeader.addEventListener(Events.ON_CLICK, this);
+        showHeader.setSclass("window-container-toolbar-btn");
+        showHeader.setStyle("cursor: pointer; border: 1px solid transparent; padding: 2px;");
+        showHeader.setVisible(false);
+        
         max = new ToolBarButton();
         toolbar.appendChild(max);
         max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
@@ -288,6 +317,11 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         contextHelp.setTooltiptext(Util.cleanAmp(Msg.getElement(Env.getCtx(), "AD_CtxHelp_ID")));
         contextHelp.setVisible(!e.isVisible());
         
+        boolean headerCollapsed= pref.isPropertyBool(UserPreference.P_HEADER_COLLAPSED);
+        if (headerCollapsed) {
+        	collapseHeader();
+        }
+        
         return layout;
     }
 
@@ -300,6 +334,12 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private void updateHelpCollapsedPreference(boolean collapsed) {
 		UserPreference pref = SessionManager.getSessionApplication().getUserPreference();
 		pref.setProperty(UserPreference.P_HELP_COLLAPSED, collapsed);
+		pref.savePreference();
+	}
+	
+	private void updateHeaderCollapsedPreference(boolean collapsed) {
+		UserPreference pref = SessionManager.getSessionApplication().getUserPreference();
+		pref.setProperty(UserPreference.P_HEADER_COLLAPSED, collapsed);
 		pref.savePreference();
 	}
 
@@ -330,14 +370,19 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	{
         		if (layout.getNorth().isVisible())
         		{
-        			layout.getNorth().setVisible(false);
-        			max.setImage(ThemeManager.getThemeResource(IMAGES_DOWNARROW_PNG));
+        			collapseHeader();
         		}
         		else
         		{
-        			layout.getNorth().setVisible(true);
-        			max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
+        			restoreHeader();
         		}
+        	}
+        	else if (comp == showHeader)
+        	{        		
+    			showHeader.setPressed(true);
+    			if (pnlHead.getParent() != headerPopup)
+    				headerPopup.appendChild(pnlHead);        			
+    			LayoutUtils.openPopupWindow(showHeader, headerPopup, "after_start");        			
         	}
         	else if (comp == contextHelp)
         	{
@@ -404,6 +449,42 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 			}
 		}
     }
+
+	protected void restoreHeader() {
+		layout.getNorth().setVisible(true);
+		max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
+		showHeader.setVisible(false);
+		pnlHead.detach();
+		headerContainer.appendChild(pnlHead);
+		Clients.resize(pnlHead);
+		updateHeaderCollapsedPreference(false);
+	}
+
+	protected void collapseHeader() {
+		layout.getNorth().setVisible(false);
+		max.setImage(ThemeManager.getThemeResource(IMAGES_DOWNARROW_PNG));
+		showHeader.setVisible(true);
+		pnlHead.detach();
+		if (headerPopup == null) 
+		{
+			headerPopup = new Window();        	
+			headerPopup.setWidth("100%");
+			headerPopup.setVflex("true");
+			headerPopup.setShadow(true);
+			headerPopup.setVisible(false);
+			headerPopup.addEventListener(Events.ON_OPEN, new EventListener<OpenEvent>() {
+				@Override
+				public void onEvent(OpenEvent event) throws Exception {
+					if (!event.isOpen()) {
+						if (showHeader.isPressed())
+							showHeader.setPressed(false);
+					}
+				}
+			});            			
+		}
+		headerPopup.appendChild(pnlHead);
+		updateHeaderCollapsedPreference(true);
+	}
 
 	/**
 	 * 	Execute Drill to Query
@@ -654,4 +735,17 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         }
         return false;
     }
+
+	@Override
+	public void onMenuSelected(int menuId) {
+		super.onMenuSelected(menuId);
+		if (showHeader.isVisible()) {
+			//ensure header popup is close
+			String script = "var w=zk.Widget.$('#" + layout.getUuid()+"'); " +
+					"zWatch.fire('onFloatUp', w);";
+			Clients.response(new AuScript(script));
+		} 
+	}
+    
+    
 }

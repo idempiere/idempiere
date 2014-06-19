@@ -67,6 +67,10 @@ public final class UserPreference implements Serializable {
 	/** Help Panel Collapsed **/
 	public static final String P_HELP_COLLAPSED = "HelpCollapsed";
 	public static final String DEFAULT_HELP_COLLAPSED = "N";
+	
+	/** Header Collapsed **/
+	public static final String P_HEADER_COLLAPSED = "HeaderCollapsed";
+	public static final String DEFAULT_HEADER_COLLAPSED = "N";
 
 	/** Ini Properties */
 	private static final String[] PROPERTIES = new String[] {
@@ -78,7 +82,8 @@ public final class UserPreference implements Serializable {
 		P_AUTO_COMMIT,
 		P_AUTO_NEW,
 		P_MENU_COLLAPSED,
-		P_HELP_COLLAPSED};
+		P_HELP_COLLAPSED,
+		P_HEADER_COLLAPSED};
 	/** Ini Property Values */
 	private static final String[] VALUES = new String[] {
 		DEFAULT_LANGUAGE,
@@ -89,7 +94,8 @@ public final class UserPreference implements Serializable {
 		DEFAULT_AUTO_COMMIT,
 		DEFAULT_AUTO_NEW,
 		DEFAULT_MENU_COLLAPSED,
-		DEFAULT_HELP_COLLAPSED};
+		DEFAULT_HELP_COLLAPSED,
+		DEFAULT_HEADER_COLLAPSED};
 
 	/** Container for Properties */
 	private Properties props = new Properties();

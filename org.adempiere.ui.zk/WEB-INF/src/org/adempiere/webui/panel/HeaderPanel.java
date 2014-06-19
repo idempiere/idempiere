@@ -122,7 +122,8 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 	@Override
 	public void onPageDetached(Page page) {
 		super.onPageDetached(page);
-		popMenu.setPage(null);
+		if (popMenu != null)
+			popMenu.setPage(null);
 	}
 	
 	
