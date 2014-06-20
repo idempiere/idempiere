@@ -3,16 +3,17 @@
  */
 package org.adempiere.webui.info;
 
+import org.compiere.util.Env;
+
 /**
  * @author hengsin
  *
  */
 public class InfoAssetWindow extends InfoWindow {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 623767863373135404L;
+	private static final long serialVersionUID = 8671986505516245911L;
 
 	/**
 	 * @param WindowNo
@@ -47,6 +48,19 @@ public class InfoAssetWindow extends InfoWindow {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
 				whereClause, AD_InfoWindow_ID, lookup);
 		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	protected void saveSelectionDetail() {
+        int row = contentPanel.getSelectedRow();
+        if (row == -1)
+            return;
+
+		super.saveSelectionDetail();
+
+        //  publish for Callout to read
+        Integer ID = getSelectedRowKey();
+        Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "A_Asset_ID", ID == null ? "0" : ID.toString());
 	}
 
 }
