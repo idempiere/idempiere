@@ -467,10 +467,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		pnlHead.detach();
 		if (headerPopup == null) 
 		{
-			headerPopup = new Window();        	
-			headerPopup.setWidth("100%");
+			headerPopup = new Window(); 
+			headerPopup.setSclass("desktop-header-popup");
 			headerPopup.setVflex("true");
-			headerPopup.setShadow(true);
 			headerPopup.setVisible(false);
 			headerPopup.addEventListener(Events.ON_OPEN, new EventListener<OpenEvent>() {
 				@Override

@@ -121,6 +121,19 @@ html,body {
 	font-size: 10px;
 }
 
+.desktop-header-popup {
+	width: 800px;
+	border-radius: 3px;
+	border: 1px solid #d5d5d5;
+	border-right: 2px solid #d5d5d5;
+	border-bottom-width: 2px;
+	right: 1px;
+}
+
+.desktop-header-popup .desktop-header {
+	border: none;
+}
+
 .menu-href {
 	font-size: 11px;
 	font-weight: normal;
