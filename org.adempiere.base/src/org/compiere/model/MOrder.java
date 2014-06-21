@@ -1747,7 +1747,7 @@ public class MOrder extends X_C_Order implements DocAction
 					//	Update Reservation Storage
 					if (!MStorageReservation.add(getCtx(), line.getM_Warehouse_ID(), 
 						line.getM_Product_ID(), 
-						line.getM_AttributeSetInstance_ID(), line.getM_AttributeSetInstance_ID(),
+						line.getM_AttributeSetInstance_ID(),
 						difference, isSOTrx, get_TrxName()))
 						return false;
 				}	//	stocked

@@ -25,11 +25,14 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
+import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
+import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
+import org.adempiere.webui.component.Urlbox;
 import org.adempiere.webui.editor.IZoomableEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
@@ -51,6 +54,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -815,7 +820,31 @@ public class ProcessParameterPanel extends Panel implements
 	public void setProcessInfo(ProcessInfo processInfo) {
 		m_processInfo = processInfo;
 	}
+	
+	public boolean focusToFirstEditor() {
+		if (m_wEditors.isEmpty())
+			return false;
+		for(WEditor editor : m_wEditors) {
+			if (editor.isVisible()) {
+				focusToEditor(editor);
+				return true;
+			}
+		}
+		return false;
+	}
 
+	private void focusToEditor(WEditor toFocus) {
+		Component c = toFocus.getComponent();
+		if (c instanceof EditorBox) {
+			c = ((EditorBox)c).getTextbox();
+		} else if (c instanceof NumberBox) {
+			c = ((NumberBox)c).getDecimalbox();
+		} else if (c instanceof Urlbox) {
+			c = ((Urlbox)c).getTextbox();
+		}
+		((HtmlBasedComponent)c).focus();		
+	}
+	
 	static class ZoomListener implements EventListener<Event> {
 
 		private IZoomableEditor searchEditor;

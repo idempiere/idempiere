@@ -33,6 +33,10 @@
 	background-image: none !important; 
 }
 
+div.z-column-cnt, div.z-grid-header div.z-auxheader-cnt {
+	padding: 4px 2px 3px;
+}
+
 <%-- text overflow for grid cell --%>
 .z-cell > span.z-label {
 	overflow: hidden;

@@ -1655,5 +1655,13 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			Clients.response(new AuScript(script.toString()));
 		}
 	}
+
+	@Override
+	public void setParent(Component parent) {
+		super.setParent(parent);
+		if (parent != null) {
+			listPanel.onADTabPanelParentChanged();
+		}
+	}
 }
 

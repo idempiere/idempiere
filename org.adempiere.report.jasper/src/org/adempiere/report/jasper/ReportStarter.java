@@ -11,7 +11,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  * For the text or an alternative of this public license, you may reach us    *
  *****************************************************************************/
-package org.compiere.report;
+package org.adempiere.report.jasper;
 
 import java.awt.print.PrinterJob;
 import java.io.ByteArrayOutputStream;

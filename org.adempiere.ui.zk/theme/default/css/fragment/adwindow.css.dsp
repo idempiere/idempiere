@@ -147,6 +147,23 @@
 	background-color: #D3D3D3;
 }
 
+.adwindow-detailpane-adtab-grid-south {
+	background-color: transparent; 
+	position: absolute; 
+	right: 0px; 
+	top: 0px; 
+	height: 24px;
+}
+
+.adwindow-detailpane-adtab-grid-south .z-paging {
+	padding: 0px !important;
+}
+
+.adwindow-detailpane-adtab-grid-south .z-paging .z-paging-inp {
+	height: 16px;
+	line-height: 16px;
+}
+
 .adwindow-gridview-detail {
 	height: 200px;
 }

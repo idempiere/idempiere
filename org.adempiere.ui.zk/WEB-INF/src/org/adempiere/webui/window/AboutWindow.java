@@ -24,11 +24,14 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.FolderBrowser;
+import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListHead;
 import org.adempiere.webui.component.ListHeader;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
+import org.adempiere.webui.component.Row;
+import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabbox;
@@ -320,16 +323,18 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		div.setWidth("100%");
 		div.setHeight("100%");
 		div.setStyle("overflow: auto;");
-		Hbox hbox = new Hbox();
-		LayoutUtils.addSclass("about-credit-panel-logo", hbox);
-		hbox.setParent(div);
+		Vbox vbox = new Vbox();
+		LayoutUtils.addSclass("about-credit-panel-logo", vbox);
+		vbox.setParent(div);
+		Label caption = new Label("Top iDempiere sponsor");
+		caption.setStyle("font-weight: bold;");
+		caption.setParent(vbox);
 		ToolBarButton link = new ToolBarButton();
+		link.setHeight("72px");
 		link.setImage("images/TrekGlobal.jpg");
-		link.setParent(hbox);
+		link.setParent(vbox);
 		link.setHref("http://www.trekglobal.com");
 		link.setTarget("_blank");
-		Label label= new Label("Top iDempiere sponsor");
-		label.setParent(hbox);
 
 		Separator separator = new Separator();
 		separator.setParent(div);
@@ -338,47 +343,32 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		LayoutUtils.addSclass("about-credit-panel-sponsors", panel);
 		panel.setParent(div);
 		panel.setWidth("100%");
-		Vbox vbox = new Vbox();
+		vbox = new Vbox();
 		LayoutUtils.addSclass("about-credit-panel-sponsors-header", vbox);
 		vbox.setWidth("100%");
 		vbox.setParent(panel);
-		Label caption = new Label("Sponsors");
+		caption = new Label("Sponsors");
 		caption.setStyle("font-weight: bold;");
 		caption.setParent(vbox);
-		separator = new Separator();
-		separator.setBar(true);
-		separator.setParent(vbox);
 		Vbox content = new Vbox();
 		LayoutUtils.addSclass("about-credit-panel-sponsors-links", content);
 		content.setWidth("100%");
 		content.setParent(panel);
 
-		link = new ToolBarButton();
-		link.setLabel("GlobalQSS");
-		link.setHref("http://www.globalqss.com/");
-		link.setTarget("_blank");
-		link.setParent(content);
+		Grid grid = new Grid();
+		grid.setParent(content);
 
-		link = new ToolBarButton();
-		link.setLabel("Adaxa");
-		link.setHref("http://www.adaxa.com/");
-		link.setTarget("_blank");
-		link.setParent(content);
+		Rows rows = new Rows();
+		rows.setParent(grid);
 
-		link = new ToolBarButton();
-		link.setLabel("Posterita");
-		link.setHref("http://www.posterita.com/");
-		link.setTarget("_blank");
-		link.setParent(content);
-
-		link = new ToolBarButton();
-		link.setLabel("Sysnova");
-		link.setHref("http://www.sysnova.com/");
-		link.setTarget("_blank");
-		link.setParent(content);
-
-		separator = new Separator();
-		separator.setParent(div);
+		Row row = new Row();
+		row.setParent(rows);
+		row.appendCellChild(addLink("GlobalQSS", "http://www.globalqss.com/"));
+		row.appendCellChild(addLink("Adaxa", "http://www.adaxa.com/"));
+		row.appendCellChild(addLink("Sysnova", "http://www.sysnova.com/"));
+		row = new Row();
+		row.setParent(rows);
+		row.appendCellChild(addLink("See also ...", "http://www.idempiere.org/sponsors"), 3);
 
 		panel = new Div();
 		LayoutUtils.addSclass("about-credit-panel-contributors", panel);
@@ -391,45 +381,47 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		caption = new Label("Contributors");
 		caption.setStyle("font-weight: bold;");
 		caption.setParent(vbox);
-		separator = new Separator();
-		separator.setBar(true);
-		separator.setParent(vbox);
 		content = new Vbox();
 		LayoutUtils.addSclass("about-credit-panel-contributors-links", content);
 		content.setWidth("100%");
 		content.setParent(panel);
 
-		link = new ToolBarButton();
-		link.setLabel("Low Heng Sin");
-		link.setHref("http://www.adempiere.com/User:Hengsin");
-		link.setTarget("_blank");
-		link.setParent(content);
+		grid = new Grid();
+		grid.setParent(content);
 
-		link = new ToolBarButton();
-		link.setLabel("Ashley G Ramdass");
-		link.setHref("http://www.adempiere.com/User:Agramdass");
-		link.setTarget("_blank");
-		link.setParent(content);
+		rows = new Rows();
+		rows.setParent(grid);
 
-		link = new ToolBarButton();
-		link.setLabel("Carlos Ruiz");
-		link.setHref("http://www.adempiere.com/User:CarlosRuiz");
-		link.setTarget("_blank");
-		link.setParent(content);
-
-		link = new ToolBarButton();
-		link.setLabel("Teo Sarca");
-		link.setHref("http://www.adempiere.com/User:Teo_sarca");
-		link.setTarget("_blank");
-		link.setParent(content);
-
-		link = new ToolBarButton();
-		link.setLabel("Trifon Trifonov");
-		link.setHref("http://www.adempiere.com/User:Trifonnt");
-		link.setTarget("_blank");
-		link.setParent(content);
+		row = new Row();
+		row.setParent(rows);
+		row.appendCellChild(addLink("Low Heng Sin", "http://www.adempiere.com/User:Hengsin"));
+		row.appendCellChild(addLink("Carlos Ruiz", "http://wiki.idempiere.org/en/User:CarlosRuiz"));
+		row = new Row();
+		row.setParent(rows);
+		row.appendCellChild(addLink("Hiep Lq", "http://wiki.idempiere.org/en/User:Hieplq"));
+		row.appendCellChild(addLink("Nicolas Micoud", "http://wiki.idempiere.org/en/User:Nmicoud"));
+		row = new Row();
+		row.setParent(rows);
+		row.appendCellChild(addLink("Jan Thielemann", "http://wiki.idempiere.org/en/User:Jan.thielemann"));
+		row.appendCellChild(addLink("Redhuan D. Oon", "http://www.red1.org"));
+		row = new Row();
+		row.setParent(rows);
+		row.appendCellChild(addLink("Thomas Bayen", "http://wiki.idempiere.org/en/User:TBayen"));
+		row.appendCellChild(addLink("Ashley G Ramdass", "http://www.adempiere.com/User:Agramdass"));
+		row = new Row();
+		row.setParent(rows);
+		row.appendCellChild(addLink("Teo Sarca", "http://www.adempiere.com/User:Teo_sarca"));
+		row.appendCellChild(addLink("Trifon Trifonov", "http://www.adempiere.com/User:Trifonnt"));
 
 		return tabPanel;
+	}
+
+	private ToolBarButton addLink(String label, String href) {
+		ToolBarButton link = new ToolBarButton();
+		link.setLabel(label);
+		link.setHref(href);
+		link.setTarget("_blank");
+		return link;
 	}
 
 	protected Tabpanel createAbout() {
@@ -475,14 +467,6 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		separator.setParent(vbox);
 		ToolBarButton link = new ToolBarButton();
 		link.setLabel("Project Site");
-		link.setHref("http://www.idempiere.com");
-		link.setTarget("_blank");
-		link.setParent(vbox);
-		
-		separator = new Separator();
-		separator.setParent(vbox);
-		link = new ToolBarButton();
-		link.setLabel("Community Site");
 		link.setHref("http://www.idempiere.org");
 		link.setTarget("_blank");
 		link.setParent(vbox);

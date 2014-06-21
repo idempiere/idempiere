@@ -1373,7 +1373,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	            String origmsg = null;
 	            if (msg != null && msg.length() > 0)
 	            {
-	            	origmsg = Msg.getMsg(Env.getCtx(), e.getAD_Message());
+	            	if (detailTab && GridTable.DATA_REFRESH_MESSAGE.equals(e.getAD_Message()))
+	            	{
+	            		origmsg = e.getTotalRows() + " " + Msg.getMsg(Env.getCtx(), "Records");
+	            	}
+	            	else
+	            	{
+	            		origmsg = Msg.getMsg(Env.getCtx(), e.getAD_Message());
+	            	}
 	            	adMessage.append(origmsg);
 	            }
 	            String info = e.getInfo();
