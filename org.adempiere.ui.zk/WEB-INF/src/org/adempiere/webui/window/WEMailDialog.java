@@ -92,7 +92,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2960343329714019910L;
+	private static final long serialVersionUID = 4540369233682337505L;
 
 	/**
 	 * 	EMail Dialog
@@ -755,7 +755,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 				//TODO: add server warning log
 			}else{
 				// convert image to base64 encode and embed to img tag
-				reconstructSign.append(" srcSave=\"" + lsImgSrc.get(i) + "\" src=\"data:image/jpeg;base64," + imageBase64 + "\"");
+				reconstructSign.append(" alt=\"inline_image_").append(lsImgSrc.get(i)).append("\" src=\"data:image/jpeg;base64,").append(imageBase64).append("\"");
 			}
 			
 			reconstructSign.append(lsPart.get(i + 1));
@@ -772,14 +772,14 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	 */
 	public static String replaceBASE64Img (String base64){
 		// pattern map base64 in image
-		Pattern imgPattern = Pattern.compile(" srcSave=\"(.*?)\" src=\"data:image/jpeg;base64,.*?\"");
+		Pattern imgPattern = Pattern.compile(" alt=\"inline_image_(.*?)\" src=\"data:image/jpeg;base64,.*?\"");
 		// matcher object replace base64
 		Matcher imgMatcher = imgPattern.matcher(base64);
 		
 		StringBuffer result = new StringBuffer();
-		// repace base64 string with origon image name to sent email  
+		// replace base64 string with original image name to sent email  
 		while (imgMatcher.find()){
-			imgMatcher.appendReplacement(result, " src = \"cid:$1\"");
+			imgMatcher.appendReplacement(result, " src=\"cid:$1\"");
 		}
 
 		if (result.length() > 0){
