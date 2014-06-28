@@ -44,7 +44,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9202148574984537051L;
+	private static final long serialVersionUID = -4934837951332485064L;
 
 	/**
 	 * 

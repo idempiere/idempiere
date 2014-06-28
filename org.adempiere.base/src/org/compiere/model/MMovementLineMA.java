@@ -41,7 +41,8 @@ public class MMovementLineMA extends X_M_MovementLineMA
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8812388635431003742L;
+	private static final long serialVersionUID = -155379485409000271L;
+
 
 	/**
 	 * 	Get Material Allocations for Line

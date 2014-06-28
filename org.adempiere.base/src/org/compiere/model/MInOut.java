@@ -65,6 +65,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	private static final long serialVersionUID = -239302197968535277L;
 
+
 	/**
 	 * 	Create Shipment From Order
 	 *	@param order order

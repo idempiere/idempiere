@@ -41,7 +41,7 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 811710371747854597L;
+	private static final long serialVersionUID = -5654504108476140057L;
 
 
 	/**

@@ -43,8 +43,8 @@ public class MInOutLineMA extends X_M_InOutLineMA
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3229418883339488380L;
-
+	private static final long serialVersionUID = -4131812777103744727L;
+	
 	/** Log								*/
 	private static CLogger		s_log = CLogger.getCLogger (MInOutLineMA.class);
 	public static String COLUMNNAME_ReturnedQty ="returnedQty";
