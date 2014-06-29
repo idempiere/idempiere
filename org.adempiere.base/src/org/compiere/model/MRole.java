@@ -2368,9 +2368,10 @@ public final class MRole extends X_AD_Role
 				//	NOT IN (x)
 				if (m_recordAccess[i].isExclude())
 				{
-					if (sbExclude.length() == 0)
-						sbExclude.append(keyColumnName)
-							.append(" NOT IN (");
+					if (sbExclude.length() == 0){
+						sbExclude.append("(").append(keyColumnName).append(" IS NULL OR ");
+						sbExclude.append(keyColumnName).append(" NOT IN (");
+					}
 					else
 						sbExclude.append(",");
 					sbExclude.append(m_recordAccess[i].getRecord_ID());
@@ -2390,7 +2391,7 @@ public final class MRole extends X_AD_Role
 		
 		StringBuilder sb = new StringBuilder();
 		if (sbExclude.length() > 0)
-			sb.append(sbExclude).append(")");
+			sb.append(sbExclude).append("))");
 		if (sbInclude.length() > 0)
 		{
 			if (sb.length() > 0)
