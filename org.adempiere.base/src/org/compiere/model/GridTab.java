@@ -624,6 +624,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo
 			+ " - Only Current Rows=" + onlyCurrentRows
 			+ ", Days=" + onlyCurrentDays + ", Detail=" + isDetail());
+		m_oldQuery = m_query.getWhereClause();
 		m_vo.onlyCurrentRows = onlyCurrentRows;
 		m_vo.onlyCurrentDays = onlyCurrentDays;
 
