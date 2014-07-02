@@ -247,6 +247,21 @@ public interface I_I_Inventory
 	  */
 	public String getLot();
 
+    /** Column name M_CostingLine_ID */
+    public static final String COLUMNNAME_M_CostingLine_ID = "M_CostingLine_ID";
+
+	/** Set Cost Adjustment Line.
+	  * Unique line in an Inventory cost adjustment document
+	  */
+	public void setM_CostingLine_ID (int M_CostingLine_ID);
+
+	/** Get Cost Adjustment Line.
+	  * Unique line in an Inventory cost adjustment document
+	  */
+	public int getM_CostingLine_ID();
+
+	public org.compiere.model.I_M_InventoryLine getM_CostingLine() throws RuntimeException;
+
     /** Column name M_Inventory_ID */
     public static final String COLUMNNAME_M_Inventory_ID = "M_Inventory_ID";
 
