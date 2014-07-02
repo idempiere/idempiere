@@ -131,16 +131,14 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	/**
 	 * Get Location/Address
 	 * 
-	 * @param requery
-	 *            requery
+	 * @param requery get again the location from DB - please note that if used out of transaction the result is get from the cache
 	 * @return location
 	 */
 	public MLocation getLocation(boolean requery) {
-		if (m_location == null)
-			m_location = MLocation.get(getCtx(), getC_Location_ID(),
-					get_TrxName());
+		if (requery || m_location == null)
+			m_location = MLocation.get(getCtx(), getC_Location_ID(), get_TrxName());
 		return m_location;
-	} // getLoaction
+	} // getLocation
 
 	/**
 	 * String Representation
