@@ -42,6 +42,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Secure;
 import org.compiere.util.SecureEngine;
+import org.compiere.util.Util;
 
 /**
  *  User Model
@@ -899,7 +900,7 @@ public class MUser extends X_AD_User
 			setEMailVerifyDate(null);
 
 		// IDEMPIERE-1409
-		if (getEMail() != null && (newRecord || is_ValueChanged("EMail"))) {
+		if (!Util.isEmpty(getEMail()) && (newRecord || is_ValueChanged("EMail"))) {
 			if (! EMail.validate(getEMail())) {
 				log.saveError("SaveError", Msg.getMsg(getCtx(), "InvalidEMailFormat") + Msg.getElement(getCtx(), COLUMNNAME_EMail) + " - [" + getEMail() + "]");
 				return false;
