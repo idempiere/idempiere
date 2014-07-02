@@ -398,10 +398,11 @@ public class ADSortTab extends Panel implements IADTabpanel
 		}
 
 		int reportView_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "AD_ReportView_ID");
-		if (reportView_ID > 0)
+		if ("AD_PrintFormatItem".equals(m_TableName) && reportView_ID > 0) {
 			sql.append(" AND (t.AD_Column_ID IN (SELECT AD_Column_ID FROM AD_ReportView_Column WHERE AD_ReportView_ID=")
 			.append(reportView_ID).append(" AND IsActive='Y')")
-			.append(" OR ((SELECT COUNT(*) FROM AD_ReportView_Column WHERE AD_ReportView_ID=").append(reportView_ID).append(") = 0))");
+			.append(" OR ((SELECT COUNT(*) FROM AD_ReportView_Column WHERE AD_ReportView_ID=").append(reportView_ID).append(" AND IsActive='Y') = 0))");
+		}
 
 		if (m_IdentifierTranslated)
 			sql.append(" AND t.").append(m_KeyColumnName).append("=tt.").append(m_KeyColumnName)

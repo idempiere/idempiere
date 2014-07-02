@@ -843,7 +843,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 			+ " AND IsEncrypted='N' AND ObscureType IS NULL "
 			+ " AND AD_Column_ID NOT IN (SELECT pfi.AD_Column_ID FROM AD_PrintFormatItem pfi WHERE pfi.AD_PrintFormat_ID=? AND pfi.AD_Column_ID IS NOT NULL) "
 			+ " AND (AD_Column_ID IN (SELECT AD_Column_ID FROM AD_ReportView_Column WHERE AD_ReportView_ID=? AND IsActive='Y')"
-			+ " OR ((SELECT COUNT(*) FROM AD_ReportView_Column WHERE AD_ReportView_ID=?) = 0))"
+			+ " OR ((SELECT COUNT(*) FROM AD_ReportView_Column WHERE AD_ReportView_ID=? AND IsActive='Y') = 0))"
 			+ "ORDER BY COALESCE(IsDisplayed,'N') DESC, SortNo, SeqNo, Name";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -883,7 +883,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 				+ "WHERE IsActive='Y' AND AD_Table_ID=? "
 				+ " AND AD_Column_ID NOT IN (SELECT pfi.AD_Column_ID FROM AD_PrintFormatItem pfi WHERE pfi.AD_PrintFormat_ID=? AND pfi.AD_Column_ID IS NOT NULL) "
 				+ " AND (AD_Column_ID IN (SELECT AD_Column_ID FROM AD_ReportView_Column WHERE AD_ReportView_ID=? AND IsActive='Y')"
-				+ " OR ((SELECT COUNT(*) FROM AD_ReportView_Column WHERE AD_ReportView_ID=?) = 0))"
+				+ " OR ((SELECT COUNT(*) FROM AD_ReportView_Column WHERE AD_ReportView_ID=?) = 0 AND IsActive='Y'))"
 				+ "ORDER BY IsIdentifier DESC, SeqNo, Name";
 			try
 			{
