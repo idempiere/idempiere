@@ -65,7 +65,7 @@ UPDATE AD_Field SET SeqNo=250,Updated=TO_DATE('2014-05-30 22:06:40','YYYY-MM-DD 
 UPDATE ad_infocolumn SET ismandatory = 'N'
 ;
 
-ALTER TABLE ad_infocolumn ALTER COLUMN ismandatory SET NOT NULL
+ALTER TABLE ad_infocolumn MODIFY (ismandatory CHAR(1) NOT NULL)
 ;
 -- Jun 11, 2014 8:59:36 AM ICT
 -- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
