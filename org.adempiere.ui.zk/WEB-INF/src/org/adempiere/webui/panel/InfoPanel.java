@@ -105,7 +105,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7396541753653210881L;
+	private static final long serialVersionUID = -6885406231649824253L;
 
 	private final static int PAGE_SIZE = 100;
 	protected List<Button> btProcessList = new ArrayList<Button>();
