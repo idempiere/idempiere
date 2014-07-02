@@ -11,9 +11,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)','Display Logic','Y',TO_DATE('2014-05-31 10:33:19','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2014-05-31 10:33:19','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N','N',283,14,200129)
 ;
 
@@ -30,9 +30,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)','If the Field is displayed, the result determines if the field is actually displayed','Display Logic','c6112319-f905-4614-a2ee-f27945e414be','Y','N',100,0,100,TO_DATE('2014-05-31 10:35:23','YYYY-MM-DD HH24:MI:SS'),'Y','Y',60,1,'N',0,1,1,'N','N',211274,'D',TO_DATE('2014-05-31 10:35:23','YYYY-MM-DD HH24:MI:SS'))
 ;
 
