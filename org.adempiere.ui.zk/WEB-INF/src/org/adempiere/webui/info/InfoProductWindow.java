@@ -137,15 +137,6 @@ public class InfoProductWindow extends InfoWindow {
 	}
 
 	@Override
-	protected void createParameterPanel() {
-		super.createParameterPanel();
-		initParameters();
-		dynamicDisplay(null);
-		// update display of mandatory field
-		validateParameters();
-	}
-
-	@Override
 	protected void renderWindow() {
 		super.renderWindow();
 		// Product Attribute Instance
@@ -445,7 +436,11 @@ public class InfoProductWindow extends InfoWindow {
 		return 0;
 	}
 
-	private void initParameters() {		
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void initParameters() {
 		int M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_Warehouse_ID");
 		int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_PriceList_ID");
 		

@@ -50,9 +50,11 @@ public class InfoInvoiceWindow extends InfoWindow {
 				whereClause, AD_InfoWindow_ID, lookup);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void createParameterPanel() {
-		super.createParameterPanel();
+	protected void initParameters() {
 		String isSOTrx = Env.getContext(Env.getCtx(), p_WindowNo, "IsSOTrx");
 		if (!isLookup() && Util.isEmpty(isSOTrx)) {
 			isSOTrx = "Y";
@@ -77,7 +79,6 @@ public class InfoInvoiceWindow extends InfoWindow {
 				}
 			}
 		}
-		dynamicDisplay(null);
 	}
 
 	@Override

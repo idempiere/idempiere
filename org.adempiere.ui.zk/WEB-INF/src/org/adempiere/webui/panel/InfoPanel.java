@@ -226,7 +226,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			setStyle("position: absolute");
 		}
 
-		confirmPanel = new ConfirmPanel(true, true, false, true, true, true);  // Elaine 2008/12/16 
+		confirmPanel = new ConfirmPanel(true, true, true, true, true, true);  // Elaine 2008/12/16 
         confirmPanel.addActionListener(Events.ON_CLICK, this);
         confirmPanel.setHflex("1");
 
@@ -1142,6 +1142,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             	m_cancel = true;
                 dispose(false);
             }
+            else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_RESET))) {
+            	resetParameters ();
+            }
             // Elaine 2008/12/16
             else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_HISTORY)))
             {
@@ -1256,6 +1259,23 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     	return true;
     }
 
+	/**
+	 * Call after load parameter panel to set init value can call when reset
+	 * parameter implement this method at inheritance class
+	 * with each parameter, remember call Env.setContext to set new value to env  
+	 */
+	protected void initParameters() {
+
+	}
+
+	/**
+	 * Reset parameter to default value or to empty value? implement at
+	 * inheritance class when reset parameter maybe need init again parameter,
+	 * reset again default value
+	 */
+	protected void resetParameters() {
+	}
+    
     void preRunProcess (Integer processId){
     	// disable all control button when run process
     	enableButtons(false);

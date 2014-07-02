@@ -1096,6 +1096,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			}
 		}
 		evalDisplayLogic();
+		initParameters();
+		dynamicDisplay(null);
 	}
 
 	private void evalDisplayLogic() {
@@ -1362,6 +1364,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		{
 			if (otherEditor == editor) 
 				continue;
+			
+			// reset value of WInfoPAttributeEditor to null when change M_AttributeSet_ID
 			if (asiChanged && otherEditor instanceof WInfoPAttributeEditor)
 				((WInfoPAttributeEditor)otherEditor).clearWhereClause();
 			
@@ -1403,6 +1407,38 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     		super.onEvent(event);
     	}
     }
+	
+	/**
+	 * {@inheritDoc-}
+	 */
+	@Override
+	protected void resetParameters() {
+		// reset value of parameter to null, just reset display parameter
+		for (WEditor editor : editors) {
+			GridField gField = editor.getGridField();
+			if (gField == null || !gField.isDisplayed()) {
+				continue;
+			}
+
+			// just reset to default Field set explicit DefaultValue
+			Object resetValue = null;
+			if (! Util.isEmpty(gField.getVO().DefaultValue, true)) {
+				resetValue = gField.getDefault();
+			}
+			Object oldValue = gField.getValue();
+			gField.setValue(resetValue, true);
+			
+			// call valueChange to update env
+			ValueChangeEvent changeEvent = new ValueChangeEvent (editor, "", oldValue, resetValue);
+			valueChange (changeEvent);
+		}
+
+		// init again parameter
+		initParameters();
+
+		// filter dynamic value
+		dynamicDisplay(null);
+	}
 	
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
