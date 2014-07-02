@@ -713,7 +713,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		 * when query not by click requery button, reuse prev where clause
 		 * IDEMPIERE-1979  
 		 */
-		if (!isQueryByUser){
+		if (!isQueryByUser && prevWhereClause != null){
 			return prevWhereClause;
 		}
 		
@@ -828,7 +828,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	protected void setParameters(PreparedStatement pstmt, boolean forCount)
 			throws SQLException {
 		// when query not by click requery button, reuse parameter value
-		if (!isQueryByUser){
+		if (!isQueryByUser && prevParameterValues != null){
 			for (int parameterIndex = 0; parameterIndex < prevParameterValues.size(); parameterIndex++){
 				setParameter (pstmt, parameterIndex + 1, prevParameterValues.get(parameterIndex), prevQueryOperators.get(parameterIndex));
 			}
