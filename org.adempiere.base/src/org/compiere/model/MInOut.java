@@ -1317,7 +1317,17 @@ public class MInOut extends X_M_InOut implements DocAction
 				//Ignore the Material Policy when is Reverse Correction
 				if(!isReversal())
 				{
-					checkMaterialPolicy(sLine);
+					BigDecimal movementQty = sLine.getMovementQty();
+					BigDecimal qtyOnLineMA = MInOutLineMA.getManualQty(sLine.getM_InOutLine_ID(), get_TrxName());
+					
+					if(qtyOnLineMA.compareTo(movementQty)>0)
+					{
+						// More then line qty on attribute tab for line 10
+						m_processMsg = "@Over_Qty_On_Attribute_Tab@ " + sLine.getLine();
+						return DOCSTATUS_Invalid;
+					}
+					
+					checkMaterialPolicy(sLine,movementQty.subtract(qtyOnLineMA));
 				}
 
 				log.fine("Material Transaction");
@@ -1751,16 +1761,19 @@ public class MInOut extends X_M_InOut implements DocAction
 	 * 	Check Material Policy
 	 * 	Sets line ASI
 	 */
-	private void checkMaterialPolicy(MInOutLine line)
+	private void checkMaterialPolicy(MInOutLine line,BigDecimal qty)
 	{
+			
 		int no = MInOutLineMA.deleteInOutLineMA(line.getM_InOutLine_ID(), get_TrxName());
 		if (no > 0)
 			if (log.isLoggable(Level.CONFIG)) log.config("Delete old #" + no);
-
+		
+		if(Env.ZERO.compareTo(qty)==0)
+			return;
+		
 		//	Incoming Trx
 		String MovementType = getMovementType();
 		boolean inTrx = MovementType.charAt(1) == '+';	//	V+ Vendor Receipt
-
 
 		boolean needSave = false;
 
@@ -1784,30 +1797,33 @@ public class MInOut extends X_M_InOut implements DocAction
 			if (getMovementType().compareTo(MInOut.MOVEMENTTYPE_VendorReceipts) == 0 )
 			{
 				//auto balance negative on hand
-				BigDecimal qtyToReceive = autoBalanceNegative(line, product);
+				BigDecimal qtyToReceive = autoBalanceNegative(line, product,qty);
 				
 				//Allocate remaining qty.
 				if (qtyToReceive.compareTo(Env.ZERO)>0)
 				{
-					MInOutLineMA ma = MInOutLineMA.addOrCreate(line, 0, qtyToReceive, getMovementDate()); 
+					MInOutLineMA ma = MInOutLineMA.addOrCreate(line, 0, qtyToReceive, getMovementDate(),true); 
 					ma.saveEx();
 				}
 				
 			} else if (getMovementType().compareTo(MInOut.MOVEMENTTYPE_CustomerReturns) == 0){
-				BigDecimal qtyToReturn = autoBalanceNegative(line, product);
+				BigDecimal qtyToReturn = autoBalanceNegative(line, product,qty);
 				
 				if (line.getM_RMALine_ID()!=0 && qtyToReturn.compareTo(Env.ZERO)>0){
 					//Linking to shipment line
 					MRMALine rmaLine = new MRMALine(getCtx(), line.getM_RMALine_ID(), get_TrxName());
 					if(rmaLine.getM_InOutLine_ID()>0){
-						MInOutLineMA shipmentMAS[] = MInOutLineMA.get(getCtx(), rmaLine.getM_InOutLine_ID(), get_TrxName());
+						//retrieving ASI which is not already returned
+						MInOutLineMA shipmentMAS[] = MInOutLineMA.getNonReturned(getCtx(), rmaLine.getM_InOutLine_ID(), get_TrxName());
+						
 						for(MInOutLineMA sMA : shipmentMAS){
 							BigDecimal lineMAQty = qtyToReturn;
-							if(lineMAQty.compareTo(sMA.getMovementQty())>0){
-								lineMAQty = sMA.getMovementQty();
+							BigDecimal qtyReturnable = (BigDecimal)sMA.get_Value(MInOutLineMA.COLUMNNAME_ReturnedQty);
+							if(lineMAQty.compareTo(qtyReturnable)>0){
+								lineMAQty = qtyReturnable;
 							}
 							
-							MInOutLineMA ma = MInOutLineMA.addOrCreate(line, sMA.getM_AttributeSetInstance_ID(), lineMAQty, sMA.getDateMaterialPolicy()); 
+							MInOutLineMA ma = MInOutLineMA.addOrCreate(line, sMA.getM_AttributeSetInstance_ID(), lineMAQty, sMA.getDateMaterialPolicy(),true); 
 							ma.saveEx();			
 							
 							qtyToReturn = qtyToReturn.subtract(lineMAQty);
@@ -1818,7 +1834,7 @@ public class MInOut extends X_M_InOut implements DocAction
 				}
 				if(qtyToReturn.compareTo(Env.ZERO)>0){
 					//Use movement data for  Material policy if no linkage found to Shipment.
-					MInOutLineMA ma = MInOutLineMA.addOrCreate(line, 0, qtyToReturn, getMovementDate()); 
+					MInOutLineMA ma = MInOutLineMA.addOrCreate(line, 0, qtyToReturn, getMovementDate(),true); 
 					ma.saveEx();			
 				}	
 			}
@@ -1829,14 +1845,14 @@ public class MInOut extends X_M_InOut implements DocAction
 				Timestamp minGuaranteeDate = getMovementDate();
 				MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 						minGuaranteeDate, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, line.getM_Locator_ID(), get_TrxName(), true);
-				BigDecimal qtyToDeliver = line.getMovementQty();
+				BigDecimal qtyToDeliver = qty;
 				for (MStorageOnHand storage: storages)
 				{
 					if (storage.getQtyOnHand().compareTo(qtyToDeliver) >= 0)
 					{
 						MInOutLineMA ma = new MInOutLineMA (line,
 								storage.getM_AttributeSetInstance_ID(),
-								qtyToDeliver,storage.getDateMaterialPolicy());
+								qtyToDeliver,storage.getDateMaterialPolicy(),true);
 						ma.saveEx();
 						qtyToDeliver = Env.ZERO;
 					}
@@ -1844,7 +1860,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					{
 						MInOutLineMA ma = new MInOutLineMA (line,
 								storage.getM_AttributeSetInstance_ID(),
-								storage.getQtyOnHand(),storage.getDateMaterialPolicy());
+								storage.getQtyOnHand(),storage.getDateMaterialPolicy(),true);
 						ma.saveEx();
 						qtyToDeliver = qtyToDeliver.subtract(storage.getQtyOnHand());
 						if (log.isLoggable(Level.FINE)) log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);
@@ -1857,7 +1873,7 @@ public class MInOut extends X_M_InOut implements DocAction
 				if (qtyToDeliver.signum() != 0)
 				{					
 					//Over Delivery
-					MInOutLineMA ma = MInOutLineMA.addOrCreate(line, line.getM_AttributeSetInstance_ID(), qtyToDeliver, getMovementDate());
+					MInOutLineMA ma = MInOutLineMA.addOrCreate(line, line.getM_AttributeSetInstance_ID(), qtyToDeliver, getMovementDate(),true);
 					ma.saveEx();
 					if (log.isLoggable(Level.FINE)) log.fine("##: " + ma);
 				}
@@ -1870,12 +1886,11 @@ public class MInOut extends X_M_InOut implements DocAction
 		}
 	}	//	checkMaterialPolicy
 
-	private BigDecimal autoBalanceNegative(MInOutLine line, MProduct product) {
+	private BigDecimal autoBalanceNegative(MInOutLine line, MProduct product,BigDecimal qtyToReceive) {
 		MStorageOnHand[] storages = MStorageOnHand.getWarehouseNegative(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
 				null, MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), line.getM_Locator_ID(), get_TrxName(), true);
 		
 		Timestamp dateMPolicy = null;
-		BigDecimal qtyToReceive = line.getMovementQty();
 			
 		for (MStorageOnHand storage : storages)
 		{
@@ -1887,7 +1902,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					lineMAQty = storage.getQtyOnHand().negate();
 				
 				//Using ASI from storage record
-				MInOutLineMA ma = new MInOutLineMA (line, storage.getM_AttributeSetInstance_ID(), lineMAQty,dateMPolicy);
+				MInOutLineMA ma = new MInOutLineMA (line, storage.getM_AttributeSetInstance_ID(), lineMAQty,dateMPolicy,true);
 				ma.saveEx();			
 				qtyToReceive = qtyToReceive.subtract(lineMAQty);
 			}
@@ -2177,7 +2192,7 @@ public class MInOut extends X_M_InOut implements DocAction
 				{
 					MInOutLineMA ma = new MInOutLineMA (rLine,
 						mas[j].getM_AttributeSetInstance_ID(),
-						mas[j].getMovementQty().negate(),mas[j].getDateMaterialPolicy());
+						mas[j].getMovementQty().negate(),mas[j].getDateMaterialPolicy(),true);
 					ma.saveEx();
 				}
 			}

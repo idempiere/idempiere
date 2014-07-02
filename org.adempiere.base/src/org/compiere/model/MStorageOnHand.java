@@ -1008,4 +1008,40 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		return sb.toString();
 	}	//	toString
 
+	/**
+	 * 
+	 * @param M_Product_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @return
+	 */
+	public static Timestamp getDateMaterialPolicy(int M_Product_ID, int M_AttributeSetInstance_ID,String trxName){
+		
+		String sql = "SELECT dateMaterialPolicy FROM M_StorageOnHand WHERE M_Product_ID=? and M_AttributeSetInstance_ID=?";
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, trxName);
+			pstmt.setInt(1, M_Product_ID);
+			pstmt.setInt(2, M_AttributeSetInstance_ID);
+			
+			rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				return rs.getTimestamp(1);
+			}
+		}catch (SQLException ex)
+		{
+			s_log.log(Level.SEVERE, sql, ex);
+			
+		}finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
+		
+		return null;
+	}  //getDateMaterialPolicy
 }	//	MStorageOnHand
