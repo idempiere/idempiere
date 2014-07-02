@@ -80,5 +80,5 @@ UPDATE AD_Field SET XPosition=4,Updated=TO_DATE('2014-04-20 12:46:49','YYYY-MM-D
 UPDATE AD_Field SET XPosition=1,Updated=TO_DATE('2014-04-20 12:48:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=55366
 ;
 
-SELECT register_migration_script('201404200408_IDEMPIERE-1770.sql') FROM dual
+SELECT register_migration_script('201407010831_IDEMPIERE-1770.sql') FROM dual
 ;
