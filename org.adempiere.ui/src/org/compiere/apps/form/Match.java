@@ -499,7 +499,7 @@ public class Match
 					if (sLine.getProduct() != null && sLine.getProduct().isStocked())
 						success = MStorageReservation.add (Env.getCtx(), sLine.getM_Warehouse_ID(),
 							sLine.getM_Product_ID(),
-							sLine.getM_AttributeSetInstance_ID(), oLine.getM_AttributeSetInstance_ID(),
+							sLine.getM_AttributeSetInstance_ID(),
 							qty.negate(), false, trxName);
 				}
 			}
