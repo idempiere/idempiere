@@ -126,7 +126,11 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		vbox.appendChild(new Separator());
 		
 		ConfirmPanel confirmPanel = new ConfirmPanel(true);
-		vbox.appendChild(confirmPanel);
+		//Bug IDEMPIERE-1992 Create a Wrapper Div to Wrap ConfirmPanel,to prevent it from disappearing after user navigate to another window/tab
+		Div confirmPanelWrapper = new Div();
+		vbox.appendChild(confirmPanelWrapper);
+		confirmPanelWrapper.appendChild(confirmPanel);
+		//
 		confirmPanel.addButton(confirmPanel.createButton(ConfirmPanel.A_RESET));
 		confirmPanel.addActionListener(this);
 		
@@ -142,6 +146,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		}		
 		
 		tabbox.addEventListener(Events.ON_SELECT, this);
+		//Bug IDEMPIERE-1992 Ensure that text editor dialog has a close button
+		setClosable(true);
 	}
 
 	private void createEditor(org.zkoss.zul.Tabpanel tabPanel) {
