@@ -1237,10 +1237,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
      */
     public void onUserQuery (){   	
     	if (validateParameters()){
-            	showBusyDialog();
-		isQueryByUser = true;
-            	Clients.response(new AuEcho(this, "onQueryCallback", null));
-            }
+            showBusyDialog();
+            isQueryByUser = true;
+            Clients.response(new AuEcho(this, "onQueryCallback", null));
+        }
     }
     
     /**
@@ -1256,7 +1256,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     	enableButtons(false);
     	// call run process in next request to disable all button control
     	Events.echoEvent(ON_RUN_PROCESS, this, processId);
-        }
+    }
     
     /**
      * Run a process.
@@ -1302,7 +1302,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 					}else if (!m_pi.isError() && m_pi.getSummary() != null && m_pi.getSummary().trim().length() > 0){
 						// when success, show summary if exists
 						FDialog.info(p_WindowNo, null, m_pi.getSummary());
-						isQueryByUser = false;						
 						Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", m_results));
 					}
 					
@@ -1358,6 +1357,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         }
     	finally
     	{
+    		isQueryByUser = false;
     		hideBusyDialog();
     	}
     }

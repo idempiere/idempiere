@@ -120,7 +120,7 @@ public class InfoProductWindow extends InfoWindow {
 		 * when query not by click requery button, reuse prev where clause
 		 * IDEMPIERE-1979  
 		 */
-		if (!isQueryByUser){
+		if (!isQueryByUser && prevWhereClause != null){
 			return prevWhereClause;
 		}
 		
