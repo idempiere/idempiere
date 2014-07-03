@@ -929,13 +929,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (keyNo != -1 || uuid != null)
 		{
 			if (   ( keyNo != -1 && keyNo != m_mTable.getKeyID(m_currentRow) ) 
-				|| ( uuid != null && uuid.compareTo(m_mTable.getUUID(m_currentRow)) != 0) )   //  something changed
+				|| (uuid != null && m_mTable.getUUID(m_currentRow) == null) || ( uuid != null && uuid.compareTo(m_mTable.getUUID(m_currentRow)) != 0) )   //  something changed
 			{
 				int size = getRowCount();
 				for (int i = 0; i < size; i++)
 				{
 					if (   ( keyNo != -1 && keyNo == m_mTable.getKeyID(i) )
-						|| ( uuid != null && uuid.compareTo(m_mTable.getUUID(i)) == 0) )
+						|| ( uuid != null && m_mTable.getUUID(i) != null && uuid.compareTo(m_mTable.getUUID(i)) == 0) )
 					{
 						m_currentRow = i;
 						break;
