@@ -43,6 +43,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.lang.Library;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.AbstractComponent;
@@ -61,6 +62,7 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.event.ZulEvents;
+import org.zkoss.zul.impl.CustomGridDataLoader;
 
 /**
  * Grid view implemented using the Grid component.
@@ -155,6 +157,10 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		else
 		{
 			pageSize = MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, DEFAULT_PAGE_SIZE);
+			String limit = Library.getProperty(CustomGridDataLoader.GRID_DATA_LOADER_LIMIT);
+			if (limit == null || !(limit.equals(Integer.toString(pageSize)))) {
+				Library.setProperty(CustomGridDataLoader.GRID_DATA_LOADER_LIMIT, Integer.toString(pageSize));
+			}
 		}
 		
 		//default true for better UI experience
@@ -739,7 +745,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 	 */
 	public void onPostSelectedRowChanged() {
 		removeAttribute(ATTR_ON_POST_SELECTED_ROW_CHANGED);
-		if (listbox.getRows().getChildren().isEmpty())
+		if (listbox.getRows() == null || listbox.getRows().getChildren().isEmpty())
 			return;
 
 		int rowIndex  = gridTab.isOpen() ? gridTab.getCurrentRow() : -1;

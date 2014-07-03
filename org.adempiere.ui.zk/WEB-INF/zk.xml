@@ -101,6 +101,14 @@
 	    <name>org.zkoss.web.util.resource.dir</name>
 	    <value>/WEB-INF/cwr</value>
 	</library-property>
+	<library-property>
+	    <name>org.zkoss.zul.grid.DataLoader.class</name>
+	    <value>org.zkoss.zul.impl.CustomGridDataLoader</value>
+	</library-property>
+	<library-property>
+	    <name>org.zkoss.zul.grid.rod</name>
+	    <value>true</value>
+	</library-property>
 		
 	<preference>
     	<name>org.zkoss.zk.ui.WebApp.name</name>
