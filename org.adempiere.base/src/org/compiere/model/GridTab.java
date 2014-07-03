@@ -113,7 +113,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1583164211079643636L;
+	private static final long serialVersionUID = 1377113168185797983L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -209,8 +209,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	private long m_lastDataStatusEventTime;
 
 	private DataStatusEvent m_lastDataStatusEvent;
-
-	private String m_parsedWhere;
 
 	//Contains currently selected rows
 	private ArrayList<Integer> selection = null;
@@ -626,9 +624,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo
 			+ " - Only Current Rows=" + onlyCurrentRows
 			+ ", Days=" + onlyCurrentDays + ", Detail=" + isDetail());
-		//	is it same query?
-		boolean refresh = m_oldQuery.equals(m_query.getWhereClause())
-			&& m_vo.onlyCurrentRows == onlyCurrentRows && m_vo.onlyCurrentDays == onlyCurrentDays;
 		m_oldQuery = m_query.getWhereClause();
 		m_vo.onlyCurrentRows = onlyCurrentRows;
 		m_vo.onlyCurrentDays = onlyCurrentDays;
@@ -670,8 +665,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				}
 
 				//	Same link value?
-				if (refresh)
-					refresh = m_linkValue.equals(value);
 				if (! m_linkValue.equals(value))
 					setQuery(null);
 				m_linkValue = value;
@@ -704,23 +697,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 		m_extendedWhere = where.toString();
 		
-		if (m_extendedWhere.indexOf("@") > 1)
-		{
-			String s = Env.parseContext(Env.getCtx(), getWindowNo(), m_extendedWhere, false);
-			if (s != null)
-			{
-				if (!(s.equals(m_parsedWhere)))
-				{
-					refresh = false;
-				}				
-			}
-			else
-			{
-				refresh = false;
-			}
-			m_parsedWhere = s;
-		}
-
 		//	Final Query
 		if (m_query.isActive())
 		{
@@ -740,10 +716,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - " + where);
 		if (m_mTable.isOpen())
 		{
-			if (refresh)
-				m_mTable.dataRefreshAll();
-			else
-				m_mTable.dataRequery(where.toString(), m_vo.onlyCurrentRows && !isDetail(), onlyCurrentDays);
+			m_mTable.dataRequery(where.toString(), m_vo.onlyCurrentRows && !isDetail(), onlyCurrentDays);
 		}
 		else
 		{

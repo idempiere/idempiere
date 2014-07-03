@@ -142,6 +142,7 @@ public class ADWindowContent extends AbstractADWindowContent
         LayoutUtils.addSclass("adwindow-status", statusBar);
 
         contentArea = new Div();
+        contentArea.setRenderdefer(50);
         contentArea.setParent(layout);
         contentArea.setVflex("1");
         contentArea.setHflex("1");

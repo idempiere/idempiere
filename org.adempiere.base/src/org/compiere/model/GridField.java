@@ -423,17 +423,17 @@ public class GridField
 			|| (m_vo.ColumnName.equals("Record_ID") && m_vo.displayType == DisplayType.Button))	//  Zoom
 			return true;
 
-		//  Fields always updareable
-		if (m_vo.IsAlwaysUpdateable)      //  Zoom
-			return true;
-		
 		//  Tab or field is R/O
 		if (m_vo.tabReadOnly || m_vo.IsReadOnly)
 		{
 			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " NO - TabRO=" + m_vo.tabReadOnly + ", FieldRO=" + m_vo.IsReadOnly);
 			return false;
 		}
-		
+
+		//  Fields always updateable
+		if (m_vo.IsAlwaysUpdateable)      //  Zoom
+			return true;
+
 		//check tab context
 		if (checkContext && getGridTab() != null &&
 			! "Y".equals(Env.getContext(Env.getCtx(), getWindowNo(), "_QUICK_ENTRY_MODE_")))

@@ -581,7 +581,11 @@ public class CompositeADTabbox extends AbstractADTabbox
 								selectDetailPanel.switchRowPresentation();	
 							}
 							if (selectDetailPanel instanceof ADTabpanel)
+							{
 								((ADTabpanel)selectDetailPanel).activated = true;
+								String msg = ((ADTabpanel)selectDetailPanel).getGridTab().getRowCount() + " " + Msg.getMsg(Env.getCtx(), "Records");
+								setDetailPaneStatusMessage(msg, false);
+							}
 
 							if (selectDetailPanel.getGridTab().isTreeTab()) {
 								if (selectDetailPanel.getGridTab().getTreeDisplayedOn().equals(MTab.TREEDISPLAYEDON_MasterTab))

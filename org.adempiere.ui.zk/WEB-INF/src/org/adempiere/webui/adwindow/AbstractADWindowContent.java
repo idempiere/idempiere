@@ -1360,7 +1360,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	if (GridTab.DEFAULT_STATUS_MESSAGE.equals(e.getAD_Message()))
         	{
         		if (detailTab) {
-                	adTabbox.setDetailPaneStatusMessage("", false);
+        			String msg = e.getTotalRows() + " " + Msg.getMsg(Env.getCtx(), "Records");
+                	adTabbox.setDetailPaneStatusMessage(msg, false);
                 } else {
                 	statusBar.setStatusLine ("", false);
                 }

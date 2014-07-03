@@ -116,7 +116,7 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		calendars.setModel(scm);
 		if (calendars.getCurrentDate() != null)
 			calendars.setCurrentDate(calendars.getCurrentDate());
-		calendars.setTimeZone(getTimeZone());
+		setTimeZone();
 
 		btnRefresh = (Toolbarbutton) component.getFellow("btnRefresh");
 		btnRefresh.addEventListener(Events.ON_CLICK, this);
@@ -387,22 +387,17 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		syncModel();
 	}
 	
-	private String getTimeZone()
+	private void setTimeZone()
 	{
 		String alternateTimeZone = MSysConfig.getValue(MSysConfig.CALENDAR_ALTERNATE_TIMEZONE, "Pacific Time=PST", Env.getAD_Client_ID(Env.getCtx()));
 		TimeZone defaultTimeZone = TimeZone.getDefault();
-		StringBuilder defaultTimeZoneName = new StringBuilder(defaultTimeZone.getDisplayName());
-		int defaultTimeZoneOffset = defaultTimeZone.getOffset(0) / 3600000;
-		defaultTimeZoneName.append("=GMT");
-		if (defaultTimeZoneOffset >= 0)
-			defaultTimeZoneName.append("+");
-		defaultTimeZoneName.append(defaultTimeZoneOffset);
+		calendars.addTimeZone (defaultTimeZone.getDisplayName(), defaultTimeZone);
 		if (!Util.isEmpty(alternateTimeZone, true)) {
-			if (!alternateTimeZone.equalsIgnoreCase(defaultTimeZoneName.toString())) {
-				defaultTimeZoneName.append(",").append(alternateTimeZone);
+			if (!alternateTimeZone.equalsIgnoreCase(defaultTimeZone.getDisplayName())) {
+				String[] pair = alternateTimeZone.split("=");
+				calendars.addTimeZone(pair[0].trim(), pair[1].trim());
 			}
 		}
-		return defaultTimeZoneName.toString();
 	}
 	
 	private void updateDateLabel() {

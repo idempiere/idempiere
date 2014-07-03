@@ -78,7 +78,6 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.North;
@@ -97,7 +96,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1958501982483183179L;
+	private static final long serialVersionUID = 5015742153094526149L;
 
 	protected Grid parameterGrid;
 	private Borderlayout layout;
@@ -123,7 +122,30 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	private List<GridField> gridFields;
 	private int AD_InfoWindow_ID;
 	private Checkbox checkAND;
-    
+	/**
+	 * All info process of this infoWindow
+	 */
+	protected MInfoProcess [] infoProcessList;
+    /**
+     * flag detect exists info process
+     */
+	protected boolean haveProcess = false;
+	/**
+	 * Info process have style is button
+	 */
+	protected List<MInfoProcess> infoProcessBtList;
+	/**
+	 * Info process have style is drop down list
+	 */
+	protected List<MInfoProcess> infoProcessDropList;
+	/**
+	 * Info process have style is menu
+	 */
+	protected List<MInfoProcess> infoProcessMenuList;	
+	/**
+	 * Menu contail process menu item
+	 */
+	protected Menupopup ipMenu;
 	/**
 	 * @param WindowNo
 	 * @param tableName
@@ -169,7 +191,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		// make process button only in windown mode
 		if (!m_lookup){
 		// IDEMPIERE-1334
-			boolean haveProcess = initInfoProcess();
+			initInfoProcess();
 			// when have a process, force multi select mode
 			if (haveProcess)
 				p_multipleSelection = true;
@@ -194,29 +216,38 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	/**
 	 * IDEMPIERE-1334
 	 * load info process info
-	 * layout each info process as button or dropdown item 
+	 * separate by layout type
+	 * init drop list and menu control
+	 * set status of haveProcess flag 
 	 * @return true when have process, false when no process
 	 */
-	protected boolean initInfoProcess() {
+	protected void initInfoProcess() {
 		if (infoWindow == null){
-			return false;
+			return;
 		}
 		
-		MInfoProcess [] infoProcessList = infoWindow.getInfoProcess(false);
+		infoProcessList = infoWindow.getInfoProcess(false);
+		
+		if (infoProcessList.length == 0)
+			return;
+		
+		haveProcess = true;
 
 		// ** layout info process flow order (button list, drop down, dialog,...)
-		// each layout type in a loop to ensure this order
-		
-		// get info from process (name, help, des), set to name of button, item menu,...
-		MProcess process = null; 
 		
 		// make list process button
    		for (MInfoProcess infoProcess : infoProcessList){
    		    // just add info process have layout is button
-   			if (!MInfoProcess.LAYOUTTYPE_Button.equals(infoProcess.getLayoutType())){
+   			if (!MInfoProcess.LAYOUTTYPE_Button.equals(infoProcess.getLayoutType()))
    				continue;
-   			}
-   			process = MProcess.get(Env.getCtx(), infoProcess.getAD_Process_ID());
+   			
+   			if (infoProcessBtList == null)
+   				infoProcessBtList = new ArrayList<MInfoProcess> ();
+   			
+   			infoProcessBtList.add(infoProcess);
+   			
+   			// make process button
+			MProcess process = MProcess.get(Env.getCtx(), infoProcess.getAD_Process_ID());
    			Button btProcess = confirmPanel.addProcessButton(process.get_Translation(MProcess.COLUMNNAME_Name), infoProcess.getImageURL());
    			if (Util.isEmpty(infoProcess.getImageURL(), true)) {
    				btProcess.setImage(null);
@@ -233,18 +264,21 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    			btProcessList.add(btProcess);
    		}
 		
-   		// filte just infoprocess have layout type is drop list for model of combobox
-		List<MInfoProcess> infoProcessDropList = new ArrayList<MInfoProcess>();
+   		// make list process for drop down		
    		for (MInfoProcess infoProcess : infoProcessList){
-   			if (!MInfoProcess.LAYOUTTYPE_List.equals(infoProcess.getLayoutType())){
+   			if (!MInfoProcess.LAYOUTTYPE_List.equals(infoProcess.getLayoutType()))
    				continue;
-   			}
+   			
+   			if (infoProcessDropList == null)
+   				infoProcessDropList = new ArrayList<MInfoProcess>();
+   			
    			infoProcessDropList.add(infoProcess);
    		}
-		// make combobox contain list info process
-   		if (infoProcessDropList.size() > 0){
+   		
+		// init combobox control
+   		if (infoProcessDropList != null && infoProcessDropList.size() > 0){
    			cbbProcess = new Combobox ();
-   			ListModel<MInfoProcess> infoProccessModel = new ListModelList<MInfoProcess>(infoProcessDropList);
+
    			// render item, use name to display
    			cbbProcess.setItemRenderer(new ComboitemRenderer<MInfoProcess>() {
    				public void render(Comboitem item, MInfoProcess data, int index){
@@ -260,22 +294,24 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    		    // update tooltip hepl when select a item
    			cbbProcess.addEventListener(Events.ON_SELECT, this);
    			
-   			cbbProcess.setModel(infoProccessModel);	   			
    			confirmPanel.addComponentsCenter(cbbProcess);
 
    			btCbbProcess = confirmPanel.addProcessButton(Msg.getMsg(Env.getCtx(), ConfirmPanel.A_PROCESS), null);
+   			
    			btCbbProcess.addEventListener(Events.ON_CLICK, this);
    		}
    		
-   		// make menu button
-   		Menupopup ipMenu = null;   		
+   		// make list process for menu
    		for (MInfoProcess infoProcess : infoProcessList){
    			// just add info process have layout is bt_menu
    			if (!MInfoProcess.LAYOUTTYPE_Menu.equals(infoProcess.getLayoutType())){
    				continue;
    			}
    			
-   			process = MProcess.get(Env.getCtx(), infoProcess.getAD_Process_ID());
+   			if (infoProcessMenuList == null)
+   				infoProcessMenuList = new ArrayList<MInfoProcess>();
+   			
+   			infoProcessMenuList.add(infoProcess);
    			
    			// init popup menu
    			if (ipMenu == null){
@@ -287,7 +323,88 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    				btMenuProcess = confirmPanel.addProcessButton("ProcessMenu", null);
    				btMenuProcess.setPopup("ipMenu, before_start");   				
    			}
+   		}
+	}
    				   			
+	/**
+	 * {@inheritDoc} 
+	 */
+	@Override
+	protected void bindInfoProcess (){
+		bindInfoProcessBt ();
+		bindInfoProcessDropDown ();
+		bindInfoProcessMenu ();
+	}
+	
+	/**
+	 * evel display logic of process info button
+	 * set visible of button base in display logic
+	 * when two button set for same process, two button can hiden too, or display too.
+	 * this is bug of implementor by never have this case
+	 */
+	protected void bindInfoProcessBt (){
+		if (infoProcessBtList == null){
+			return;
+		}
+				
+		// display process in button style		
+		for (MInfoProcess infoProcessBt : infoProcessBtList){
+			// eval display logic
+			for (Button evlBt: btProcessList){
+				Integer processId = (Integer)evlBt.getAttribute(PROCESS_ID_KEY);
+				if (processId.intValue() == infoProcessBt.getAD_Process_ID()){
+					// display or hiden button
+					evlBt.setVisible(infoProcessBt.isDisplayed(infoContext, p_WindowNo));
+					break;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * recreate drop down item by recreate model to set hiden, display of drop down item
+	 * when all item is hiden, hiden combobox and process button too
+	 */
+	protected void bindInfoProcessDropDown (){
+		if (infoProcessDropList == null || infoProcessDropList.size() == 0){
+			return;
+		}				
+				
+		// list info process after eval display logic
+		List<MInfoProcess> infoProcessDropListTmp = new ArrayList<MInfoProcess> (); 
+		
+		// filter item not display
+		for (MInfoProcess infoProcessDropDown : infoProcessDropList){
+			if (infoProcessDropDown.isDisplayed(infoContext, p_WindowNo)){
+				infoProcessDropListTmp.add(infoProcessDropDown);
+			}
+		}
+		
+		// when item is filter out all. don't show combobox
+		cbbProcess.setVisible(infoProcessDropListTmp.size() > 0);
+		btCbbProcess.setVisible(infoProcessDropListTmp.size() > 0);
+		if (infoProcessDropListTmp.size() > 0){			
+			ListModelList<MInfoProcess> infoProccessModel = new ListModelList<MInfoProcess>(infoProcessDropListTmp);
+			cbbProcess.setModel(infoProccessModel);
+		}
+				
+	}
+	
+	/**
+	 * recreate menu item by set hiden, display of menu item
+	 * when all menu item is hiden, hiden process menu button too
+	 */
+	protected void bindInfoProcessMenu (){
+		if (infoProcessMenuList == null || infoProcessMenuList == null)
+			return;
+		
+		ipMenu.getChildren().clear();
+		for (MInfoProcess infoProcess : infoProcessMenuList){
+			if (!infoProcess.isDisplayed(infoContext, p_WindowNo)){
+				continue;
+			}
+			
+			MProcess process = MProcess.get(Env.getCtx(), infoProcess.getAD_Process_ID());
    			// make menu item for each info process
    	   		Menuitem ipMenuItem = new Menuitem();
    	   		ipMenuItem.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
@@ -299,7 +416,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    	   		ipMenu.appendChild(ipMenuItem);
    		}
    		
-   		return infoProcessList.length > 0;
+		btMenuProcess.setVisible(ipMenu.getChildren().size() > 0);
 	}
 
 	private void processQueryValue() {
@@ -369,9 +486,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			gridFields = new ArrayList<GridField>();
 			for(MInfoColumn infoColumn : infoColumns) {
 				String columnName = infoColumn.getColumnName();
+				/*!m_lookup && infoColumn.isMandatory():apply Mandatory only case open as window and only for criteria field*/
+				boolean isMandatory = !m_lookup && infoColumn.isMandatory() && infoColumn.isQueryCriteria();
 				GridFieldVO vo = GridFieldVO.createParameter(infoContext, p_WindowNo, 0, 
 						columnName, infoColumn.get_Translation("Name"), infoColumn.getAD_Reference_ID(), 
-						infoColumn.getAD_Reference_Value_ID(), false, false);
+						infoColumn.getAD_Reference_Value_ID(), isMandatory, false);
 				if (infoColumn.getAD_Val_Rule_ID() > 0) {
 					vo.ValidationCode = infoColumn.getAD_Val_Rule().getCode();
 					if (vo.lookupInfo != null) {
@@ -590,6 +709,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	@Override
 	protected String getSQLWhere() {
+		/**
+		 * when query not by click requery button, reuse prev where clause
+		 * IDEMPIERE-1979  
+		 */
+		if (!isQueryByUser && prevWhereClause != null){
+			return prevWhereClause;
+		}
+		
 		StringBuilder builder = new StringBuilder();
 		MTable table = MTable.get(Env.getCtx(), infoWindow.getAD_Table_ID());
 		if (!hasIsActiveEditor() && table.get_ColumnIndex("IsActive") >=0 ) {
@@ -678,6 +805,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if (sql.indexOf("@") >= 0) {
 			sql = Env.parseContext(infoContext, p_WindowNo, sql, true, true);
 		}
+		
+		// IDEMPIERE-1979
+		prevWhereClause = sql;
+		
 		return sql;
 	}
 
@@ -696,6 +827,23 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	@Override
 	protected void setParameters(PreparedStatement pstmt, boolean forCount)
 			throws SQLException {
+		// when query not by click requery button, reuse parameter value
+		if (!isQueryByUser && prevParameterValues != null){
+			for (int parameterIndex = 0; parameterIndex < prevParameterValues.size(); parameterIndex++){
+				setParameter (pstmt, parameterIndex + 1, prevParameterValues.get(parameterIndex), prevQueryOperators.get(parameterIndex));
+			}
+			return;
+		}
+		
+		// init collection to save current parameter value 
+		if (prevParameterValues == null){
+			prevParameterValues = new ArrayList<Object> ();
+			prevQueryOperators = new ArrayList<String> ();
+		}else{
+			prevParameterValues.clear();
+			prevQueryOperators.clear();
+		}
+
 		int parameterIndex = 0;
 		for(WEditor editor : editors) {
 			if (!editor.isVisible())
@@ -708,10 +856,28 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				}
 				Object value = editor.getValue();
 				parameterIndex++;
+				prevParameterValues.add(value);
+				prevQueryOperators.add(mInfoColumn.getQueryOperator());
+				setParameter (pstmt, parameterIndex, value, mInfoColumn.getQueryOperator());
+			}
+		}
+
+	}
+	
+	/**
+	 * set parameter for statement. 
+	 * not need check null for value
+	 * @param pstmt
+	 * @param parameterIndex
+	 * @param value
+	 * @param queryOperator
+	 * @throws SQLException
+	 */
+	protected void setParameter (PreparedStatement pstmt, int parameterIndex, Object value, String queryOperator) throws SQLException{
 				if (value instanceof Boolean) {					
 					pstmt.setString(parameterIndex, ((Boolean) value).booleanValue() ? "Y" : "N");
 				} else if (value instanceof String) {
-					if (mInfoColumn.getQueryOperator().equals(X_AD_InfoColumn.QUERYOPERATOR_Like)) {
+			if (queryOperator.equals(X_AD_InfoColumn.QUERYOPERATOR_Like)) {
 						StringBuilder valueStr = new StringBuilder(value.toString().toUpperCase());
 	                    if (!valueStr.toString().endsWith("%"))
 	                        valueStr.append("%");
@@ -722,10 +888,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				} else {
 					pstmt.setObject(parameterIndex, value);
 				}
-				
-			}
-		}
-
 	}
 
 	@Override
@@ -792,6 +954,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		confirmPanel.getButton(ConfirmPanel.A_ZOOM).setDisabled(true);
 
 		// IDEMPIERE-1334 start when init all button process is disable because nothing record is selected
+		
 		for (Button btProcess : btProcessList){
 			btProcess.setDisabled(true);
 		}
@@ -948,6 +1111,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         			editor.getLabel().setVisible(true);
         	}
         }
+		
 	}
 	
 	/**
@@ -973,7 +1137,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         else 
         {
 	        editor = WebEditorFactory.getEditor(mField, false);
-	        editor.setMandatory(false);
 	        editor.setReadWrite(true);
 	        editor.dynamicDisplay();
 	        editor.addValueChangeListener(this);
@@ -1005,9 +1168,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
         fieldEditor.addEventListener(Events.ON_OK, this);		
 
+        mField.addPropertyChangeListener(editor);
+        
         if (! Util.isEmpty(mField.getVO().DefaultValue, true)) {
             // set default value
-            mField.addPropertyChangeListener(editor);
             mField.setValue(mField.getDefault(), true);
         }
     }   // addSelectionColumn
@@ -1039,7 +1203,13 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         }
         if (!(fieldEditor instanceof Checkbox))
         {
-        	panel.appendChild(label.rightAlign());
+        	Div div = new Div();
+        	div.setStyle("text-align: right;");
+        	div.appendChild(label);
+        	if (label.getDecorator() != null){
+        		div.appendChild (label.getDecorator());
+        	}
+        	panel.appendChild(div);
         } else {
         	panel.appendChild(new Space());
         }
@@ -1182,6 +1352,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 
 	protected void dynamicDisplay(WEditor editor) {
+		validateField(editor);
 		// if attribute set changed (from any value to any value) clear the attribute set instance m_pAttributeWhere
 		boolean asiChanged = false;
 		if (editor != null && editor instanceof WTableDirEditor && editor.getColumnName().equals("M_AttributeSet_ID"))
@@ -1549,6 +1720,53 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 
 		return data;
+	}
+
+	
+	/**
+	 * {@inheritDoc}
+	 * eval input value of mandatory field, if null show field in red color
+	 */
+	@Override
+	public boolean validateParameters() {
+		boolean isValid = true;
+		
+		for (int i = 0; i < editors.size(); i++){
+			WEditor wEditor = (WEditor) editors.get(i);
+			// cancel editor not display
+			if (wEditor == null || !wEditor.isVisible() || wEditor.getGridField() == null){
+				continue;
+}
+			
+			isValid = isValid & validateField (wEditor);
+		}
+		
+		return isValid;
+	}
+	
+	/**
+	 * valid mandatory of a not null, display field
+	 * display red color when a mandatory field is not input
+	 * @param wEditor
+	 * @return
+	 */
+	protected boolean validateField (WEditor wEditor){
+		if (wEditor == null || !wEditor.isVisible() || wEditor.getGridField() == null){
+			return true;
+		}
+		
+		GridField validateGrid = wEditor.getGridField();
+		// eval only mandatory field
+		if (validateGrid.isMandatory(true)){
+			// update color of field
+			wEditor.updateLabelStyle();
+			Object data = wEditor.getValue();
+			if (data == null || data.toString().length() == 0) {				
+				return false;
+			}
+		}
+		
+		return true;		
 	}
 
 }

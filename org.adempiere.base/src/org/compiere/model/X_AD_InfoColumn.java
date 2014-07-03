@@ -30,7 +30,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140529L;
+	private static final long serialVersionUID = 20140530L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -49,6 +49,8 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 			setIsDisplayed (true);
 // Y
 			setIsIdentifier (false);
+// N
+			setIsMandatory (false);
 // N
 			setIsQueryCriteria (false);
 			setName (null);
@@ -431,6 +433,30 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isIdentifier () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsIdentifier);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Mandatory.
+		@param IsMandatory 
+		Data entry is required in this column
+	  */
+	public void setIsMandatory (boolean IsMandatory)
+	{
+		set_Value (COLUMNNAME_IsMandatory, Boolean.valueOf(IsMandatory));
+	}
+
+	/** Get Mandatory.
+		@return Data entry is required in this column
+	  */
+	public boolean isMandatory () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsMandatory);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

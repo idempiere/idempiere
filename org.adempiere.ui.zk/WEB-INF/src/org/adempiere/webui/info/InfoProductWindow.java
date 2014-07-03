@@ -116,6 +116,14 @@ public class InfoProductWindow extends InfoWindow {
 
 	@Override
 	protected String getSQLWhere() {
+		/**
+		 * when query not by click requery button, reuse prev where clause
+		 * IDEMPIERE-1979  
+		 */
+		if (!isQueryByUser && prevWhereClause != null){
+			return prevWhereClause;
+		}
+		
 		StringBuilder where = new StringBuilder(super.getSQLWhere());
 		if (getSelectedWarehouseId() > 0) {
 			if (where.length() > 0) {
@@ -123,7 +131,9 @@ public class InfoProductWindow extends InfoWindow {
 			}
 			where.append("p.IsSummary='N' ");
 		}
-		return where.toString();
+		// IDEMPIERE-1979
+		prevWhereClause = where.toString();
+		return prevWhereClause;
 	}
 
 	@Override
@@ -131,6 +141,8 @@ public class InfoProductWindow extends InfoWindow {
 		super.createParameterPanel();
 		initParameters();
 		dynamicDisplay(null);
+		// update display of mandatory field
+		validateParameters();
 	}
 
 	@Override

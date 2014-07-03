@@ -147,6 +147,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		}		
 		
 		tabbox.addEventListener(Events.ON_SELECT, this);
+		//Bug IDEMPIERE-1992 Ensure that text editor dialog has a close button
+		setClosable(true);
 	}
 
 	private void createEditor(org.zkoss.zul.Tabpanel tabPanel) {

@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
+
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
@@ -104,7 +105,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7396541753653210881L;
+	private static final long serialVersionUID = -6885406231649824253L;
 
 	private final static int PAGE_SIZE = 100;
 	protected List<Button> btProcessList = new ArrayList<Button>();
@@ -300,7 +301,20 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private boolean m_useDatabasePaging = false;
 	private BusyDialog progressWindow;
 	private Listitem m_lastOnSelectItem;
-
+	/**
+	 * false, use saved where clause
+	 * IDEMPIERE-1979
+	 */
+	protected boolean isQueryByUser = false;
+	/**
+	 * save where clause of prev requery
+	 */
+	protected String prevWhereClause = null;
+	/**
+	 * save value of parameter to set info query paramenter
+	 */
+	protected List<Object> prevParameterValues = null;
+	protected List<String> prevQueryOperators = null;
 	private static final String[] lISTENER_EVENTS = {};
 
 	/**
@@ -987,6 +1001,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**************************************************************************
 	 *  Get dynamic WHERE part of SQL
 	 *	To be overwritten by concrete classes
+	 *  When override this method, please consider isQueryByUser and prevWhereClause 
 	 *  @return WHERE clause
 	 */
 	protected abstract String getSQLWhere();
@@ -994,6 +1009,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 *  Set Parameters for Query
 	 *	To be overwritten by concrete classes
+	 *  When override this method, please consider isQueryByUser and prevWhereClause
 	 *  @param pstmt statement
 	 *  @param forCount for counting records
 	 *  @throws SQLException
@@ -1114,8 +1130,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             }
             else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_REFRESH)))
             {
-            	showBusyDialog();
-            	Clients.response(new AuEcho(this, "onQueryCallback", null));
+            	onUserQuery();
             }
             else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_CANCEL)))
             {
@@ -1210,20 +1225,38 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     			else
     				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
         	}
-            //default
+            //when user push enter keyboard at input parameter field
             else
             {
-            	showBusyDialog();
-            	Clients.response(new AuEcho(this, "onQueryCallback", null));
+            	onUserQuery();
             }
     }  //  onEvent
+
+    /**
+     * Call query when user click to query button enter in parameter field
+     */
+    public void onUserQuery (){   	
+    	if (validateParameters()){
+            showBusyDialog();
+            isQueryByUser = true;
+            Clients.response(new AuEcho(this, "onQueryCallback", null));
+        }
+    }
+    
+    /**
+    * validate parameter before run query
+    * @return
+    */
+    public boolean validateParameters(){
+    	return true;
+    }
 
     void preRunProcess (Integer processId){
     	// disable all control button when run process
     	enableButtons(false);
     	// call run process in next request to disable all button control
     	Events.echoEvent(ON_RUN_PROCESS, this, processId);
-        }
+    }
     
     /**
      * Run a process.
@@ -1269,7 +1302,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 					}else if (!m_pi.isError() && m_pi.getSummary() != null && m_pi.getSummary().trim().length() > 0){
 						// when success, show summary if exists
 						FDialog.info(p_WindowNo, null, m_pi.getSummary());
-						//showBusyDialog();
 						Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", m_results));
 					}
 					
@@ -1317,14 +1349,25 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             	contentPanel.setSelectedByKeys(lsSelectedKey);            	            	
             	m_results.clear();            	
             }
+        	// just evaluate display logic of process button when requery by use click requery button
+        	if (isQueryByUser){
+        		bindInfoProcess();
+        	}
         	// IDEMPIERE-1334 after refresh, restore prev selected item end
         }
     	finally
     	{
+    		isQueryByUser = false;
     		hideBusyDialog();
     	}
     }
 
+    /**
+    * evaluate display logic of button process
+    * empty method. implement at child class extend
+    */
+    protected void bindInfoProcess (){}
+    
     private void onOk()
     {
 		if (!contentPanel.getChildren().isEmpty() && contentPanel.getSelectedRowKey()!=null)
