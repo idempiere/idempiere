@@ -31,6 +31,7 @@ import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.NumberBox;
+import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.util.SortComparator;
 import org.compiere.model.GridField;
@@ -597,8 +598,10 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		if (pageSize > 0 && paging != null)
 			renderer.setPaging(paging);
 
-		listbox.setRowRenderer(renderer);
 		listbox.setModel(listModel);
+		if (listbox.getRows() == null) 
+			listbox.appendChild(new Rows());
+		listbox.setRowRenderer(renderer);
 	}
 
 	/**
