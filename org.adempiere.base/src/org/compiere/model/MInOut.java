@@ -1395,7 +1395,7 @@ public class MInOut extends X_M_InOut implements DocAction
 						}
 					}
 					
-					if (oLine!=null && mtrx!=null)
+					if (oLine!=null && mtrx!=null && oLine.getQtyOrdered().signum() > 0)
 					{					
 						if (sLine.getC_OrderLine_ID() != 0)
 						{
@@ -1434,7 +1434,7 @@ public class MInOut extends X_M_InOut implements DocAction
 						m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
 						return DocAction.STATUS_Invalid;
 					}
-					if (oLine!=null) 
+					if (oLine!=null && oLine.getQtyOrdered().signum() > 0)  
 					{
 						if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
 								sLine.getM_Product_ID(),

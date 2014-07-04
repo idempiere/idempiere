@@ -1722,7 +1722,7 @@ public class MOrder extends X_C_Order implements DocAction
 			BigDecimal difference = target
 				.subtract(line.getQtyReserved())
 				.subtract(line.getQtyDelivered()); 
-			if (difference.signum() == 0)
+			if (difference.signum() <= 0)
 			{
 				MProduct product = line.getProduct();
 				if (product != null)
