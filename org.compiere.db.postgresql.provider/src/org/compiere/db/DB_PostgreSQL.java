@@ -51,6 +51,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Ini;
+import org.compiere.util.Language;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.jfree.io.IOUtils;
@@ -440,10 +441,19 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	 **/
 	public String TO_CHAR (String columnName, int displayType, String AD_Language)
 	{
-		StringBuilder retValue = new StringBuilder("CAST (");
-		retValue.append(columnName);
-		retValue.append(" AS Text)");
-
+		StringBuilder retValue = null;
+		if (DisplayType.isDate(displayType)) {
+			retValue = new StringBuilder("TO_CHAR(");
+	        retValue.append(columnName)
+	        	.append(",'")
+            	.append(Language.getLanguage(AD_Language).getDBdatePattern())
+            	.append("')");	        
+		} else {
+			retValue = new StringBuilder("CAST (");
+			retValue.append(columnName);
+			retValue.append(" AS Text)");
+		}
+		return retValue.toString();
 		//  Numbers
 		/*
 		if (DisplayType.isNumeric(displayType))
@@ -462,8 +472,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 				.append("'");
 		}
 		retValue.append(")");
-		//*/
-		return retValue.toString();
+		//*/		
 	}   //  TO_CHAR
 
 	/**
