@@ -62,6 +62,7 @@ import org.compiere.model.MInfoWindow;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.ProcessInfo;
@@ -107,13 +108,14 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	private static final long serialVersionUID = -6885406231649824253L;
 
-	private final static int PAGE_SIZE = 100;
+	private final static int DEFAULT_PAGE_SIZE = 100;
 	protected List<Button> btProcessList = new ArrayList<Button>();
 	protected Map<String, WEditor> editorMap = new HashMap<String, WEditor>();
 	protected final static String PROCESS_ID_KEY = "processId";
 	protected final static String ON_RUN_PROCESS = "onRunProcess";
 	// attribute key of info process
 	protected final static String ATT_INFO_PROCESS_KEY = "INFO_PROCESS";
+	protected int pageSize;
 	
     public static InfoPanel create (int WindowNo,
             String tableName, String keyColumn, String value,
@@ -183,6 +185,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			if (p_whereClause.length() == 0)
 				log.log(Level.SEVERE, "Cannot parse context= " + whereClause);
 		}
+		
+		pageSize = MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, DEFAULT_PAGE_SIZE);
+		
 		init();
 
 		this.setAttribute(ITabOnSelectHandler.ATTRIBUTE_KEY, new ITabOnSelectHandler() {
@@ -473,12 +478,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     {
         if (m_count > 0)
         {
-        	if (m_count > PAGE_SIZE)
+        	if (m_count > pageSize)
         	{
         		if (paging == null)
         		{
 	        		paging = new Paging();
-	    			paging.setPageSize(PAGE_SIZE);
+	    			paging.setPageSize(pageSize);
 	    			paging.setTotalSize(m_count);
 	    			paging.setDetailed(true);
 	    			paging.addEventListener(ZulEvents.ON_PAGING, this);
@@ -489,7 +494,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         			paging.setTotalSize(m_count);
         			paging.setActivePage(0);
         		}
-    			List<Object> subList = readLine(0, PAGE_SIZE);
+    			List<Object> subList = readLine(0, pageSize);
     			model = new ListModelTable(subList);
     			model.setSorter(this);
 	            model.addTableModelListener(this);
@@ -555,7 +560,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     		}
     	}
 
-    	setCacheStart(start + 1 - (PAGE_SIZE * 4));
+    	setCacheStart(start + 1 - (pageSize * 4));
     	if (getCacheStart() <= 0)
     		setCacheStart(1);
 
@@ -565,7 +570,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     	}
     	else
     	{
-	    	cacheEnd = end + 1 + (PAGE_SIZE * 4);
+	    	cacheEnd = end + 1 + (pageSize * 4);
 	    	if (cacheEnd > m_count)
 	    		cacheEnd = m_count;
     	}
@@ -1201,8 +1206,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             		contentPanel.clearSelection();
 
             		pageNo = pgNo;
-            		int start = pageNo * PAGE_SIZE;
-            		int end = start + PAGE_SIZE;
+            		int start = pageNo * pageSize;
+            		int end = start + pageSize;
             		if (end >= m_count)
             			end = m_count - 1;
             		List<Object> subList = readLine(start, end);
