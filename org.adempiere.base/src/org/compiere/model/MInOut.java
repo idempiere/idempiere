@@ -1407,7 +1407,7 @@ public class MInOut extends X_M_InOut implements DocAction
 							m_processMsg = "Cannot correct Inventory OnHand (MA) [" + product.getValue() + "] - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
-						if (reservedDiff.signum() != 0) {
+						if (reservedDiff.signum() != 0 && oLine.getQtyOrdered().signum() > 0) {
 							if (!MStorageReservation.add(getCtx(), reservationWarehouse_ID,
 									sLine.getM_Product_ID(),
 									ma.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
@@ -1460,7 +1460,7 @@ public class MInOut extends X_M_InOut implements DocAction
 						m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
 						return DocAction.STATUS_Invalid;
 					}
-					if (reservedDiff.signum() != 0) {
+					if (reservedDiff.signum() != 0 && oLine.getQtyOrdered().signum() > 0) {
 						if (!MStorageReservation.add(getCtx(), reservationWarehouse_ID,
 								sLine.getM_Product_ID(),
 								sLine.getM_AttributeSetInstance_ID(), reservationAttributeSetInstance_ID,
