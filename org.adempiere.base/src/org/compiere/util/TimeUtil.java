@@ -815,4 +815,18 @@ public class TimeUtil
 		return endCal.get(Calendar.YEAR) * 12 + endCal.get(Calendar.MONTH)
 				- (startCal.get(Calendar.YEAR) * 12 + startCal.get(Calendar.MONTH));
 	}
+
+	/** Returns start date + nbDays which cannot be saturday or sunday or non business days */
+	public static Timestamp addOnlyBusinessDays(Timestamp startDate, int nbDays, int clientID, String trxName)
+	{
+		Timestamp retValue = startDate;
+		while (nbDays > 0) {
+			retValue = TimeUtil.addDays(retValue, 1);
+			StringBuilder sql = new StringBuilder("SELECT nextBusinessDay(?,?) FROM DUAL");
+			retValue = DB.getSQLValueTSEx(trxName, sql.toString(), retValue, clientID);
+			nbDays--;
+		}
+		return retValue;
+	}
+
 }	//	TimeUtil
