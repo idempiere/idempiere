@@ -1376,6 +1376,18 @@ tbody.z-grid-empty-body td {
 	text-align: left;
 }
 
+tbody.z-listbox-empty-body td {
+	text-align: left;
+}
+
+div.z-listbox-body .z-listcell {
+	padding: 2px;
+}
+
+.z-listbox-autopaging .z-listcell-cnt {
+	height: 20px;
+}
+
 <%-- notification message --%>
 .z-notification .z-notification-cl, 
 .z-notification .z-notification-cnt {
