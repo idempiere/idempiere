@@ -55,7 +55,7 @@ public class MTable extends X_AD_Table
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3743087295968040894L;
+	private static final long serialVersionUID = -1776819186412187384L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -536,8 +536,8 @@ public class MTable extends X_AD_Table
 		StringBuffer sb = new StringBuffer("CREATE TABLE ")
 			.append(getTableName()).append(" (");
 		//
-		boolean hasPK = false;
-		boolean hasParents = false;
+		// boolean hasPK = false;
+		// boolean hasParents = false;
 		StringBuffer constraints = new StringBuffer();
 		getColumns(true);
 		for (int i = 0; i < m_columns.length; i++)
@@ -553,14 +553,15 @@ public class MTable extends X_AD_Table
 			else // virtual column
 				continue;
 			//
-			if (column.isKey())
-				hasPK = true;
-			if (column.isParent())
-				hasParents = true;
+			// if (column.isKey())
+			//	hasPK = true;
+			// if (column.isParent())
+			//	hasParents = true;
 			String constraint = column.getConstraint(getTableName());
 			if (constraint != null && constraint.length() > 0)
 				constraints.append(", ").append(constraint);
 		}
+		/* IDEMPIERE-1901 - deprecate code that create composite primary key
 		//	Multi Column PK
 		if (!hasPK && hasParents)
 		{
@@ -578,6 +579,7 @@ public class MTable extends X_AD_Table
 				.append(getTableName()).append("_Key PRIMARY KEY (")
 				.append(cols).append(")");
 		}
+		*/
 
 		sb.append(constraints)
 			.append(")");
