@@ -14,6 +14,7 @@
 package org.adempiere.webui.apps;
 
 import org.adempiere.webui.component.Bandbox;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -68,29 +69,23 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		bandbox.addEventListener(Events.ON_CTRL_KEY, this);
 		
 		Bandpopup popup = new Bandpopup();
-		popup.setWidth("700px");
 		popup.setHeight("600px");
 		bandbox.appendChild(popup);		
 		
 		Hlayout hlayout = new Hlayout();
-		hlayout.setHflex("1");
 		popup.appendChild(hlayout);
 		menuController.create(hlayout);
 		
 		Separator separator = new Separator();
-		separator.setHeight("100%");
-		separator.setBar(true);
 		separator.setHflex("0");
-		separator.setOrient("horizontal");
+		separator.setOrient("vertical");
 		hlayout.appendChild(separator);
 		docController.create(hlayout);	
 		
 		addEventListener(ON_SEARCH, this);
 		addEventListener(ON_CREATE_ECHO, this);
 		bandbox.addEventListener(ON_ENTER_KEY, this);
-		addEventListener(ON_POST_ENTER_KEY, this);
-		
-		Events.echoEvent(ON_CREATE_ECHO, this, null);
+		addEventListener(ON_POST_ENTER_KEY, this);				
 	}
 
 	@Override
@@ -122,16 +117,16 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 			docController.search(value);
 			bandbox.focus();
         } else if (event.getName().equals(ON_CREATE_ECHO)) {
-        	StringBuilder script = new StringBuilder("jq('#")
-        		.append(bandbox.getUuid())
-        		.append("').bind('keydown', function(e) {var code=e.keyCode||e.which;console.log(code);if(code==13){")
-        		.append("var widget=zk.Widget.$('#").append(bandbox.getUuid()).append("');")
-        		.append("var event=new zk.Event(widget,'")
-        		.append(ON_ENTER_KEY)
-        		.append("',{},{toServer:true});")
-        		.append("zAu.send(event);")
-        		.append("}});");
-        	Clients.evalJavaScript(script.toString());
+    		StringBuilder script = new StringBuilder("jq('#")
+    			.append(bandbox.getUuid())
+    			.append("').bind('keydown', function(e) {var code=e.keyCode||e.which;console.log(code);if(code==13){")
+    			.append("var widget=zk.Widget.$(this);")
+    			.append("var event=new zk.Event(widget,'")
+    			.append(ON_ENTER_KEY)
+    			.append("',{},{toServer:true});")
+    			.append("zAu.send(event);")
+    			.append("}});");
+    		Clients.evalJavaScript(script.toString());
         } else if (event.getName().equals(ON_ENTER_KEY)) {
         	Clients.showBusy(bandbox, null);
         	Events.echoEvent(ON_POST_ENTER_KEY, this, null);        	
@@ -143,5 +138,14 @@ public class GlobalSearch extends Div implements EventListener<Event> {
         		docController.onOk(bandbox);
         	}
         }
+	}
+
+	/* (non-Javadoc)
+	 * @see org.zkoss.zk.ui.AbstractComponent#onPageAttached(org.zkoss.zk.ui.Page, org.zkoss.zk.ui.Page)
+	 */
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		Events.echoEvent(ON_CREATE_ECHO, this, null);		
 	}
 }
