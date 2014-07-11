@@ -154,4 +154,13 @@ public class GridTab2PackExporter implements IGridTabExporter {
 	public String getSuggestedFileName(GridTab gridTab) {
 		return gridTab.getName() + "." + getFileExtension();
 	}
+
+	/**
+	 * {@inheritDoc}
+	 * With 2Pack, everry tab is support to export
+	 */
+	@Override
+	public boolean isExportableTab(GridTab gridTab) {
+		return true;
+	}
 }

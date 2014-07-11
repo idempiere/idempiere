@@ -182,4 +182,13 @@ public class GridTabExcelExporter extends AbstractExcelExporter implements IGrid
 	public String getSuggestedFileName(GridTab gridTab) {
 		return gridTab.getName() + "." + getFileExtension();
 	}
+
+	/**
+	 * {@inheritDoc}
+	 * no detail tab is support to export with excel
+	 */
+	@Override
+	public boolean isExportableTab(GridTab gridTab) {
+		return false;
+	}
 }
