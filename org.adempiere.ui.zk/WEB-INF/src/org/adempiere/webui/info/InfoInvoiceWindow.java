@@ -15,7 +15,7 @@ public class InfoInvoiceWindow extends InfoWindow {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5614659763247990639L;
+	private static final long serialVersionUID = -3169476148884310274L;
 
 	/**
 	 * @param WindowNo

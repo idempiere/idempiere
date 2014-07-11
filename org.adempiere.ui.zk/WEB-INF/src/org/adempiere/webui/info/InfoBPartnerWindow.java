@@ -16,7 +16,7 @@ public class InfoBPartnerWindow extends InfoWindow {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 126054851491958589L;
+	private static final long serialVersionUID = -5291476382115985651L;
 
 	/**
 	 * @param WindowNo

@@ -51,7 +51,7 @@ public class InfoProductWindow extends InfoWindow {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4817648658129732541L;
+	private static final long serialVersionUID = -1343685368452976048L;
 
 	private Tabbox tabbedPane;
 	private WListbox warehouseTbl;

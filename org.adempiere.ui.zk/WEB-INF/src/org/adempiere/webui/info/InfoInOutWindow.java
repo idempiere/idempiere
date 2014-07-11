@@ -12,11 +12,10 @@ import org.compiere.util.Util;
  *
  */
 public class InfoInOutWindow extends InfoWindow {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3027121642718090785L;
+	private static final long serialVersionUID = 1687215125029008351L;
 
 	/**
 	 * @param WindowNo
