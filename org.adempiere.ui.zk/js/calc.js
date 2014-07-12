@@ -1,13 +1,14 @@
 
 function Calc()
 {
-	this.validate = validate;
+	this.validateUp = validateUp;
+	this.validatePress = validatePress;
 	this.clear = clear;
 	this.clearAll = clearAll;
 	this.evaluate = evaluate;
 	this.append = append;
 
-	function validate(displayTextId, calcTextId, integral, separatorKey, e)
+	function validatePress(displayTextId, calcTextId, integral, separatorKey, e)
 	{
 	     var key;
 
@@ -15,43 +16,29 @@ function Calc()
 	          key = e.keyCode; //IE
 	     else
 	          key = e.which;   //Firefox
-
-	     if(key == 13 || key == 61) // Enter, =
+	     // console.log("validatePress: " + displayTextId + " / " + calcTextId + " / " + integral + " / " + separatorKey + " / " + key);
+	     if (key == 61) // =
 	     {
 	     	evaluate(displayTextId, calcTextId, String.fromCharCode(separatorKey));
-	        return false;
 	     }
-	     else if (key == 0) // control, delete, ...
-	     {
-	     	return true;
-	     }
-	     else if (key == 8) // backspace
-	     {
-	     	return true;
-	     }
-	     else if (key >= 17 && key <= 20) // Control
-	     {
-	     	return true;
-	     }
-	     else if (key == 32) // space
-	     {
-	     	return true;
-	     }
-	     else if (key >= 48 && key <= 57) // 0 - 9
-	     {
-	     	return true;
-	     }
-	     else if (key == 42 || key == 43 || key == 45 || key == 47) // *, +, -, /
-	     {
-	     	return true;
-	     }
-	     else if ( key == separatorKey && !integral)
-	     {
-	     	return true;
-	     }
+	}
+
+	function validateUp(displayTextId, calcTextId, integral, separatorKey, e, processDotKeypad)
+	{
+	     var key;
+	     if(window.event)
+	          key = e.keyCode; //IE
 	     else
+	          key = e.which;   //Firefox
+	     // console.log("validateUp: " + displayTextId + " / " + calcTextId + " / " + integral + " / " + separatorKey + " / " + key + " / " + processDotKeypad);
+	     if (key == 13) // Enter
 	     {
-	     	return false;
+	     	evaluate(displayTextId, calcTextId, String.fromCharCode(separatorKey));
+	     }
+	     else if (processDotKeypad && separatorKey != 46 && (key == 110 || key == 190) && !window.opera) // numeric dot on keypad (not working for opera)
+	     {
+	     	append(calcTextId, String.fromCharCode(separatorKey));
+	     	e.stop;
 	     }
 	}
 
@@ -89,6 +76,8 @@ function Calc()
 
 	function evaluate(displayTextId, calcTextId, separator)
 	{
+		// console.log("evaluate: " + displayTextId + " / " + calcTextId + " / " + separator);
+		var newValue = "error";
 		try
 		{
 			var id = "$".concat(calcTextId);
@@ -99,6 +88,11 @@ function Calc()
 				var re = new RegExp("[" + separator + "]", "g");
 				value = value.replace(re,'.');
 			}
+			var reclean = new RegExp("[^1234567890+-/*%() ]", "g"); // sanitize
+			value = value.replace(reclean,'');
+			var reperc = new RegExp("[%]", "g"); // percentage
+			value = value.replace(reperc,'/100 ');
+			newValue = value;
 			var result = "" + eval(value);
 			if (separator != '.')
 			{
@@ -117,6 +111,7 @@ function Calc()
 		}
 	   	catch (err)
 	   	{
+			calcText.value = newValue;
 	   	}
 	}
 

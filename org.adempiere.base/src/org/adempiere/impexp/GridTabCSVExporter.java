@@ -265,7 +265,13 @@ public class GridTabCSVExporter implements IGridTabExporter
 								  if (record_id!=null)
 								      sValue = queryExecute(columnRef,tableRef,record_id);
 							  }else{
-							      sValue = address.get_Value(columnName);	
+								  sValue = address.get_Value(columnName);	
+								  if (DisplayType.YesNo == MColumn.get(Env.getCtx(), MLocation.Table_Name, columnName).getAD_Reference_ID()) {
+									  if (sValue != null && (Boolean) sValue)
+										  sValue = "Y";
+									  else if (sValue != null && ! (Boolean) sValue)
+										  sValue = "N";
+								  }
 							  }						
 							  row.put(gridTab.getTableName()+">"+specialHeader,sValue);
 							  idxfld++;
@@ -384,7 +390,13 @@ public class GridTabCSVExporter implements IGridTabExporter
 							if(record_id!=null)
 							   sValue = queryExecute(columnRef,tableRef,record_id);
 						}else{
-						    sValue = address.get_Value(columnName);	
+							sValue = address.get_Value(columnName);	
+							if (DisplayType.YesNo == MColumn.get(Env.getCtx(), MLocation.Table_Name, columnName).getAD_Reference_ID()) {
+								if (sValue != null && (Boolean) sValue)
+									sValue = "Y";
+								else if (sValue != null && ! (Boolean) sValue)
+									sValue = "N";
+							}
 						}						
 						row.put(childTab.getTableName()+">"+specialHeader,sValue);
 					}	
