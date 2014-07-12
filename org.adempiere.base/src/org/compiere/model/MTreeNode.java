@@ -38,7 +38,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4663753548813509716L;
+	private static final long serialVersionUID = -6871590404494812487L;
 
 	/**
 	 *  Construct Model TreeNode
