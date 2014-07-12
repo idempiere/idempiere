@@ -2,12 +2,8 @@ SET SQLBLANKLINES ON
 SET DEFINE OFF
 
 -- Jun 3, 2014 5:05:09 PM ICT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
+-- IDEMPIERE-1968 valid check box in info window can manual editable
 UPDATE AD_Column SET IsUpdateable='N', FKConstraintType='C',Updated=TO_DATE('2014-06-03 17:05:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=208377
-;
-
--- Jun 3, 2014 5:05:16 PM ICT
-ALTER TABLE AD_InfoWindow_Access MODIFY AD_InfoWindow_ID NUMBER(10)
 ;
 
 -- Jun 3, 2014 5:05:16 PM ICT
@@ -62,7 +58,6 @@ UPDATE AD_Field SET DisplayLogic=NULL, DefaultValue='@AD_InfoWindow_ID@',Updated
 ;
 
 -- Jun 3, 2014 5:21:06 PM ICT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Tab SET TabLevel=1,Updated=TO_DATE('2014-06-03 17:21:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200144
 ;
 
@@ -74,5 +69,5 @@ UPDATE AD_Field SET IsReadOnly='Y',Updated=TO_DATE('2014-06-03 17:25:34','YYYY-M
 UPDATE AD_Field SET IsReadOnly='Y',Updated=TO_DATE('2014-06-03 17:26:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=203053
 ;
 
-SELECT register_migration_script('201406031604_IDEMPIERE-1968-Access.sql') FROM dual
+SELECT register_migration_script('201406031605_IDEMPIERE-1968-Access.sql') FROM dual
 ;

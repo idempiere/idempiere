@@ -1,10 +1,6 @@
 -- Jun 3, 2014 5:05:09 PM ICT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
+-- IDEMPIERE-1968 valid check box in info window can manual editable
 UPDATE AD_Column SET IsUpdateable='N', FKConstraintType='C',Updated=TO_TIMESTAMP('2014-06-03 17:05:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=208377
-;
-
--- Jun 3, 2014 5:05:16 PM ICT
-INSERT INTO t_alter_column values('ad_infowindow_access','AD_InfoWindow_ID','NUMERIC(10)',null,null)
 ;
 
 -- Jun 3, 2014 5:05:16 PM ICT
@@ -57,8 +53,8 @@ UPDATE AD_Field SET IsReadOnly='Y', DisplayLogic='@AD_InfoWindow_ID@',Updated=TO
 -- Jun 3, 2014 5:17:05 PM ICT
 UPDATE AD_Field SET DisplayLogic=NULL, DefaultValue='@AD_InfoWindow_ID@',Updated=TO_TIMESTAMP('2014-06-03 17:17:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=203055
 ;
+
 -- Jun 3, 2014 5:21:06 PM ICT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 UPDATE AD_Tab SET TabLevel=1,Updated=TO_TIMESTAMP('2014-06-03 17:21:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200144
 ;
 
@@ -69,5 +65,6 @@ UPDATE AD_Field SET IsReadOnly='Y',Updated=TO_TIMESTAMP('2014-06-03 17:25:34','Y
 -- Jun 3, 2014 5:26:17 PM ICT
 UPDATE AD_Field SET IsReadOnly='Y',Updated=TO_TIMESTAMP('2014-06-03 17:26:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=203053
 ;
-SELECT register_migration_script('201406031604_IDEMPIERE-1968-Access.sql') FROM dual
+
+SELECT register_migration_script('201406031605_IDEMPIERE-1968-Access.sql') FROM dual
 ;

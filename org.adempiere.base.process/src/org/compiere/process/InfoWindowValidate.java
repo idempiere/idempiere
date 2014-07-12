@@ -16,11 +16,7 @@
  *****************************************************************************/
 package org.compiere.process;
 
-import java.sql.PreparedStatement;
-
-import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
-import org.compiere.util.DB;
 
 /**
  * 	Validate Info Window SQL
@@ -50,60 +46,10 @@ public class InfoWindowValidate extends SvrProcess
 		throws Exception
 	{
 		MInfoWindow infoWindow = new MInfoWindow(getCtx(), p_AD_InfoWindow_ID, (String)null);
-		infoWindow.setIsValid(false);
+		infoWindow.validate();
 		infoWindow.saveEx();
-		
-		StringBuilder builder = new StringBuilder("SELECT ");
-		if (infoWindow.isDistinct())
-			builder.append("DISTINCT ");
-		
-		MInfoColumn[] infoColumns = infoWindow.getInfoColumns();
-		if (infoColumns.length == 0) 
-			throw new Exception("NoColumns");
-		
-		for (int columnIndex = 0; columnIndex < infoColumns.length; columnIndex++) {
-			if (columnIndex > 0)
-            {
-                builder.append(", ");
-            }
-			builder.append(infoColumns[columnIndex].getSelectClause());
-		}
-		
-		builder.append( " FROM ").append(infoWindow.getFromClause());
-		if (infoWindow.getWhereClause() != null && infoWindow.getWhereClause().trim().length() > 0) {
-			builder.append(" WHERE ").append(infoWindow.getWhereClause());
-		}
-		
-		if (infoWindow.getOtherClause() != null && infoWindow.getOtherClause().trim().length() > 0) {
-			builder.append(" ").append(infoWindow.getOtherClause());
-		}
-		
-		if (infoWindow.getOrderByClause() != null && infoWindow.getOrderByClause().trim().length() > 0) {
-			builder.append(" ORDER BY ").append(infoWindow.getOrderByClause());
-		}
-		
-		while(builder.indexOf("@") >= 0) {
-			int start = builder.indexOf("@");
-			int end = builder.indexOf("@", start+1);
-			if (start >=0 && end > start) {
-				builder.replace(start, end+1, "0");
-			} else {
-				break;
-			}
-		}
-		
-		PreparedStatement pstmt = null;
-		try {
-			pstmt = DB.prepareStatement(builder.toString(), get_TrxName());
-			pstmt.executeQuery();
-		} finally {
-			DB.close(pstmt);
-		}
-		
-		infoWindow.setIsValid(true);
-		infoWindow.saveEx();
-		
-		return "Ok";
+
+		return infoWindow.isValid() ? "@OK@" : "@NotValid@";
 	}	//	doIt
 	
 }	//	InfoWindowValidate

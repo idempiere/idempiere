@@ -36,7 +36,7 @@ public class MInfoColumn extends X_AD_InfoColumn
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4317064257861102601L;
+	private static final long serialVersionUID = 9198213211937136870L;
 
 	/**
 	 * 	Stanfard Constructor
@@ -59,6 +59,20 @@ public class MInfoColumn extends X_AD_InfoColumn
 	{
 		super (ctx, rs, trxName);
 	}	//	MInfoColumn
+
+	/** Parent						*/
+	private MInfoWindow	m_parent = null;
+
+	/**
+	 * 	Get Parent
+	 *	@return parent
+	 */
+	public MInfoWindow getParent()
+	{
+		if (m_parent == null)
+			m_parent = new MInfoWindow(getCtx(), getAD_InfoWindow_ID(), get_TrxName());
+		return m_parent;
+	}	//	getParent
 
 	/**
 	 * check column read access
@@ -144,11 +158,9 @@ public class MInfoColumn extends X_AD_InfoColumn
 		
 		// call valid of parrent
 		if (isNeedValid){
-			MInfoWindow parentInfo = new MInfoWindow (getCtx(), this.getAD_InfoWindow_ID(), get_TrxName());
-			parentInfo.validate();
-			parentInfo.saveEx();
+			getParent().validate();
+			getParent().saveEx(get_TrxName());
 		}
-		 
 				
 		return super.afterSave(newRecord, success);
 	}
@@ -160,9 +172,8 @@ public class MInfoColumn extends X_AD_InfoColumn
 	 */
 	@Override
 	protected boolean afterDelete(boolean success) {
-		MInfoWindow parentInfo = new MInfoWindow (getCtx(), this.getAD_InfoWindow_ID(), get_TrxName());
-		parentInfo.validate();
-		parentInfo.saveEx();		
+		getParent().validate();
+		getParent().saveEx(get_TrxName());
 		return super.afterDelete(success);
 	}
 }	//	MInfoColumn
