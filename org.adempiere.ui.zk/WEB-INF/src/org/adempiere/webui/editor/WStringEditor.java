@@ -233,7 +233,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 		else if (WEditorPopupMenu.EDITOR_EVENT.equals(evt.getContextEvent()))
 		{
 			adwindowContent = findADWindowContent();
-			final WTextEditorDialog dialog = new WTextEditorDialog(this.getColumnName(), getDisplay(),
+			final WTextEditorDialog dialog = new WTextEditorDialog(gridField.getVO().Header, getDisplay(),
 					isReadWrite(), gridField.getFieldLength());
 			dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 				@Override
