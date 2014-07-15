@@ -758,8 +758,8 @@ public class GridTabCSVImporter implements IGridTabImporter
 			if (field.isParentValue())
 				continue;
 			
-			if (field.isReadOnly() && !field.isParentValue()) 
-				return new StringBuilder(Msg.getMsg(Env.getCtx(), "FieldIsReadOnly",new Object[] {header.get(i)}));
+//			if (field.isReadOnly() && !field.isParentValue() && !field.isParentColumn()) 
+//				return new StringBuilder(Msg.getMsg(Env.getCtx(), "FieldIsReadOnly",new Object[] {header.get(i)}));
 			
 			if (!(field.isDisplayed() || field.isDisplayedGrid())) 
 				return new StringBuilder(Msg.getMsg(Env.getCtx(), "FieldNotDisplayed",new Object[] {header.get(i)}));
@@ -802,8 +802,8 @@ public class GridTabCSVImporter implements IGridTabImporter
 	   if(field == null) 
 		  return new StringBuilder(Msg.getMsg(Env.getCtx(), "NotAWindowField",new Object[] {sField}));
 	    
-	   if(field.isReadOnly() && !field.isParentValue()) 
-		  return new StringBuilder(Msg.getMsg(Env.getCtx(), "FieldIsReadOnly",new Object[] {field.getColumnName()}));
+//	   if(field.isReadOnly() && !field.isParentValue()) 
+//		  return new StringBuilder(Msg.getMsg(Env.getCtx(), "FieldIsReadOnly",new Object[] {field.getColumnName()}));
 			
 	   if(!(field.isDisplayed() || field.isDisplayedGrid())) 
 		  return new StringBuilder(Msg.getMsg(Env.getCtx(), "FieldNotDisplayed",new Object[] {field.getColumnName()}));
@@ -960,10 +960,10 @@ public class GridTabCSVImporter implements IGridTabImporter
 				if(!field.isDisplayed(true)) 
 					continue;
 					
-				if(!isInsertMode() && !field.isEditable(true) && value!=null){
-				   logMsg = Msg.getMsg(Env.getCtx(), "FieldNotEditable", new Object[] {header.get(i)}) + "{" + value + "}";
-				   break;
-				}		
+//				if(!isInsertMode() && !field.isEditable(true) && value!=null){
+//				   logMsg = Msg.getMsg(Env.getCtx(), "FieldNotEditable", new Object[] {header.get(i)}) + "{" + value + "}";
+//				   break;
+//				}		
 				if("(null)".equals(value.toString().trim())){
 				   logMsg = gridTab.setValue(field,null);	
 				   if(logMsg.equals(""))
@@ -1035,9 +1035,18 @@ public class GridTabCSVImporter implements IGridTabImporter
 						  isThereRow =true;
 					   }
 				   }
-					
-				   if(setValue != null) 				
-					  logMsg = gridTab.setValue(field,setValue);
+									   
+				   if(setValue != null) {
+					  Object oldValue = gridTab.getValue(field);
+					  if (isValueChanged(oldValue, setValue)) {
+						  if (!field.isEditable(true)) {
+							  return Msg.getMsg(Env.getCtx(), "FieldIsReadOnly",new Object[] {header.get(i)});
+						  }
+						  logMsg = gridTab.setValue(field,setValue);
+					  } else {
+						  logMsg = "";
+					  }
+				   }
 				   
 				   if(logMsg!=null && logMsg.equals(""))
 					  logMsg= null;
@@ -1286,6 +1295,55 @@ public class GridTabCSVImporter implements IGridTabImporter
 		return id;
 	}
 
+	//Copy from GridTable
+	private boolean	isValueChanged(Object oldValue, Object value)
+	{
+		if ( isNotNullAndIsEmpty(oldValue) ) {
+			oldValue = null;
+		}
+
+		if ( isNotNullAndIsEmpty(value) ) {
+			value = null;
+		}
+
+		boolean bChanged = (oldValue == null && value != null) 
+							|| (oldValue != null && value == null);
+
+		if (!bChanged && oldValue != null)
+		{
+			if (oldValue.getClass().equals(value.getClass()))
+			{
+				if (oldValue instanceof Comparable<?>)
+				{
+					bChanged = (((Comparable<Object>)oldValue).compareTo(value) != 0);
+				}
+				else
+				{
+					bChanged = !oldValue.equals(value);
+				}
+			}
+			else if(value != null)
+			{
+				bChanged = !(oldValue.toString().equals(value.toString()));
+			}
+		}
+		return bChanged;	
+	}
+	
+	//Copy from GridTable
+	private boolean isNotNullAndIsEmpty (Object value) {
+		if (value != null 
+				&& (value instanceof String) 
+				&& value.toString().equals("")
+			) 
+		{
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+	
 	@Override
 	public String getFileExtension() {
 		return "csv";
