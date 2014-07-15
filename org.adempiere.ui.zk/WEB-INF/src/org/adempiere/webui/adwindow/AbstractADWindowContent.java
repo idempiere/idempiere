@@ -1081,7 +1081,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	{
     		ADTabpanel adtab = (ADTabpanel) event.getTarget();
     		if (adtab == adTabbox.getSelectedTabpanel()) {
-    			toolbar.enableProcessButton(adtab.getToolbarButtons().size() > 0);
+    			toolbar.enableProcessButton(adtab.getToolbarButtons().size() > 0 && !adTabbox.getSelectedGridTab().isNew());
     			toolbar.dynamicDisplay();
     		}
     	}
@@ -1271,7 +1271,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			toolbar.lock(adTabbox.getSelectedGridTab().isLocked());
 		}
 
-		toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted());
+		toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !adTabbox.getSelectedGridTab().isNew());
 
         //Deepak-Enabling customize button IDEMPIERE-364
         if(!(adTabbox.getSelectedTabpanel() instanceof ADSortTab))
@@ -1596,8 +1596,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	adTabbox.evaluate(e);
         }
 
-        toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !adTabbox.getSelectedGridTab().isNew());
-        toolbar.enableReport(true);
+        boolean isNewRow = adTabbox.getSelectedGridTab().getRowCount() == 0 || adTabbox.getSelectedGridTab().isNew();
+        toolbar.enableProcessButton(!isNewRow);
+        toolbar.enableArchive(!isNewRow);
+        toolbar.enableZoomAcross(!isNewRow);
+        toolbar.enableActiveWorkflows(!isNewRow);
+        toolbar.enableRequests(!isNewRow);
+        
+        toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !isNewRow);
+        toolbar.enableReport(!isNewRow);
         toolbar.enableExport(!adTabbox.getSelectedGridTab().isSortTab());
         toolbar.enableFileImport(!changed && !adTabbox.getSelectedGridTab().isSortTab() && adTabbox.getSelectedGridTab().isInsertRecord());
         
@@ -1741,8 +1748,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			            breadCrumb.enableLastNavigation(adTabbox.getSelectedGridTab().getCurrentRow() + 1 < adTabbox.getSelectedGridTab().getRowCount());
 			            toolbar.enableTabNavigation(breadCrumb.hasParentLink(), adTabbox.getSelectedDetailADTabpanel() != null);
 			            toolbar.enableIgnore(true);
-			            toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted());
-			            toolbar.enableReport(true);
 			            if (adTabbox.getSelectedGridTab().isSingleRow()) 
 			            {
 			            	if (adTabbox.getSelectedTabpanel().isGridView())
@@ -1789,8 +1794,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             breadCrumb.enableLastNavigation(adTabbox.getSelectedGridTab().getCurrentRow() + 1 < adTabbox.getSelectedGridTab().getRowCount());
             toolbar.enableTabNavigation(false);
             toolbar.enableIgnore(true);
-            toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted());
-            toolbar.enableReport(true);
         }
         else
         {
