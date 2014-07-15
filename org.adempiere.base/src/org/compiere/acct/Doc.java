@@ -28,6 +28,13 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.model.I_C_AllocationHdr;
+import org.compiere.model.I_C_BankStatement;
+import org.compiere.model.I_C_Cash;
+import org.compiere.model.I_C_ProjectIssue;
+import org.compiere.model.I_M_MatchInv;
+import org.compiere.model.I_M_MatchPO;
+import org.compiere.model.I_M_Production;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MConversionRate;
@@ -122,6 +129,8 @@ public abstract class Doc
 	 *  M_Requisition		POR
 	 **************************************************************************/
 
+	private static final String DOC_TYPE_BY_DOC_BASE_TYPE_SQL = "SELECT C_DocType_ID FROM C_DocType WHERE AD_Client_ID=? AND DocBaseType=? AND IsActive='Y'";
+	
 	/**	AR Invoices - ARI       */
 	public static final String 	DOCTYPE_ARInvoice       = MDocType.DOCBASETYPE_ARInvoice;
 	/**	AR Credit Memo          */
@@ -1728,6 +1737,58 @@ public abstract class Doc
 			}
 			if (ii != null)
 				return ii.intValue();
+		}
+		else
+		{
+			if (p_po.get_TableName().equals(I_M_MatchPO.Table_Name)) 
+			{				
+				int docTypeId = DB.getSQLValue((String)null, DOC_TYPE_BY_DOC_BASE_TYPE_SQL, 
+						p_po.getAD_Client_ID(), Doc.DOCTYPE_MatMatchPO);
+				if (docTypeId > 0)
+					return docTypeId;
+			}
+			else if (p_po.get_TableName().equals(I_M_MatchInv.Table_Name)) 
+			{				
+				int docTypeId = DB.getSQLValue((String)null, DOC_TYPE_BY_DOC_BASE_TYPE_SQL, 
+						p_po.getAD_Client_ID(), Doc.DOCTYPE_MatMatchInv);
+				if (docTypeId > 0)
+					return docTypeId;
+			}
+			else if (p_po.get_TableName().equals(I_C_AllocationHdr.Table_Name)) 
+			{				
+				int docTypeId = DB.getSQLValue((String)null, DOC_TYPE_BY_DOC_BASE_TYPE_SQL, 
+						p_po.getAD_Client_ID(), Doc.DOCTYPE_Allocation);
+				if (docTypeId > 0)
+					return docTypeId;
+			}
+			else if (p_po.get_TableName().equals(I_C_BankStatement.Table_Name)) 
+			{				
+				int docTypeId = DB.getSQLValue((String)null, DOC_TYPE_BY_DOC_BASE_TYPE_SQL, 
+						p_po.getAD_Client_ID(), Doc.DOCTYPE_BankStatement);
+				if (docTypeId > 0)
+					return docTypeId;
+			}
+			else if (p_po.get_TableName().equals(I_C_Cash.Table_Name)) 
+			{				
+				int docTypeId = DB.getSQLValue((String)null, DOC_TYPE_BY_DOC_BASE_TYPE_SQL, 
+						p_po.getAD_Client_ID(), Doc.DOCTYPE_CashJournal);
+				if (docTypeId > 0)
+					return docTypeId;
+			}
+			else if (p_po.get_TableName().equals(I_C_ProjectIssue.Table_Name)) 
+			{				
+				int docTypeId = DB.getSQLValue((String)null, DOC_TYPE_BY_DOC_BASE_TYPE_SQL, 
+						p_po.getAD_Client_ID(), Doc.DOCTYPE_ProjectIssue);
+				if (docTypeId > 0)
+					return docTypeId;
+			}
+			else if (p_po.get_TableName().equals(I_M_Production.Table_Name)) 
+			{				
+				int docTypeId = DB.getSQLValue((String)null, DOC_TYPE_BY_DOC_BASE_TYPE_SQL, 
+						p_po.getAD_Client_ID(), Doc.DOCTYPE_MatProduction);
+				if (docTypeId > 0)
+					return docTypeId;
+			}
 		}
 		return 0;
 	}	//	getC_DocType_ID
