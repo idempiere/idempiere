@@ -12,11 +12,10 @@ import org.compiere.util.Util;
  *
  */
 public class InfoInOutWindow extends InfoWindow {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3027121642718090785L;
+	private static final long serialVersionUID = 1687215125029008351L;
 
 	/**
 	 * @param WindowNo
@@ -51,14 +50,18 @@ public class InfoInOutWindow extends InfoWindow {
 				whereClause, AD_InfoWindow_ID, lookup);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * set value of checkbox isSoTrx
+	 */
 	@Override
-	protected void createParameterPanel() {
-		super.createParameterPanel();
+	protected void initParameters() {
 		String isSOTrx = Env.getContext(Env.getCtx(), p_WindowNo, "IsSOTrx");
 		if (!isLookup() && Util.isEmpty(isSOTrx)) {
 			isSOTrx = "Y";
 		}
 		
+		// set value of isSoTrx checkbox by env
 		if (!Util.isEmpty(isSOTrx)) {
 			for (WEditor editor : editors) {
 				if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("IsSOTrx")) {
@@ -67,6 +70,6 @@ public class InfoInOutWindow extends InfoWindow {
 				}
 			}
 		}
-		dynamicDisplay(null);
 	}
+	
 }

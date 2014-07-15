@@ -51,7 +51,7 @@ public class InfoProductWindow extends InfoWindow {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4817648658129732541L;
+	private static final long serialVersionUID = -1343685368452976048L;
 
 	private Tabbox tabbedPane;
 	private WListbox warehouseTbl;
@@ -134,15 +134,6 @@ public class InfoProductWindow extends InfoWindow {
 		// IDEMPIERE-1979
 		prevWhereClause = where.toString();
 		return prevWhereClause;
-	}
-
-	@Override
-	protected void createParameterPanel() {
-		super.createParameterPanel();
-		initParameters();
-		dynamicDisplay(null);
-		// update display of mandatory field
-		validateParameters();
 	}
 
 	@Override
@@ -445,7 +436,11 @@ public class InfoProductWindow extends InfoWindow {
 		return 0;
 	}
 
-	private void initParameters() {		
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void initParameters() {
 		int M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_Warehouse_ID");
 		int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_PriceList_ID");
 		

@@ -117,8 +117,11 @@ public final class ThemeManager {
 	public static org.zkoss.image.Image getClientWebLogo() throws IOException {
 		MClientInfo cinfo = MClientInfo.get(Env.getCtx());
 		if (cinfo.getLogoWeb_ID() > 0) {
-			MImage mImage = MImage.get(Env.getCtx(), cinfo.getLogoWeb_ID());			
-			return new AImage(mImage.getName(), mImage.getData());
+			MImage mImage = MImage.get(Env.getCtx(), cinfo.getLogoWeb_ID());
+			if (mImage.getData() != null)
+				return new AImage(mImage.getName(), mImage.getData());
+			else
+				return null;
 	    	
 			/* Using different approach: ImageEncoder supports only PNG and JPEG
 			Image image = mImage.getImage();

@@ -15,7 +15,7 @@ public class InfoInvoiceWindow extends InfoWindow {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5614659763247990639L;
+	private static final long serialVersionUID = -3169476148884310274L;
 
 	/**
 	 * @param WindowNo
@@ -50,9 +50,11 @@ public class InfoInvoiceWindow extends InfoWindow {
 				whereClause, AD_InfoWindow_ID, lookup);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void createParameterPanel() {
-		super.createParameterPanel();
+	protected void initParameters() {
 		String isSOTrx = Env.getContext(Env.getCtx(), p_WindowNo, "IsSOTrx");
 		if (!isLookup() && Util.isEmpty(isSOTrx)) {
 			isSOTrx = "Y";
@@ -77,7 +79,6 @@ public class InfoInvoiceWindow extends InfoWindow {
 				}
 			}
 		}
-		dynamicDisplay(null);
 	}
 
 	@Override

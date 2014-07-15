@@ -33,7 +33,7 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20140701L;
 
     /** Standard Constructor */
     public X_I_Inventory (Properties ctx, int I_Inventory_ID, String trxName)
@@ -319,6 +319,34 @@ public class X_I_Inventory extends PO implements I_I_Inventory, I_Persistent
 	public String getLot () 
 	{
 		return (String)get_Value(COLUMNNAME_Lot);
+	}
+
+	public org.compiere.model.I_M_InventoryLine getM_CostingLine() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_Name)
+			.getPO(getM_CostingLine_ID(), get_TrxName());	}
+
+	/** Set Cost Adjustment Line.
+		@param M_CostingLine_ID 
+		Unique line in an Inventory cost adjustment document
+	  */
+	public void setM_CostingLine_ID (int M_CostingLine_ID)
+	{
+		if (M_CostingLine_ID < 1) 
+			set_Value (COLUMNNAME_M_CostingLine_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_CostingLine_ID, Integer.valueOf(M_CostingLine_ID));
+	}
+
+	/** Get Cost Adjustment Line.
+		@return Unique line in an Inventory cost adjustment document
+	  */
+	public int getM_CostingLine_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_CostingLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException

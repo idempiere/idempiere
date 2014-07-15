@@ -83,3 +83,19 @@ div.z-column-cnt, div.z-grid-header div.z-auxheader-cnt {
 	background-image: none !important;
 }
 
+tbody.z-grid-empty-body td {
+	text-align: left;
+}
+
+tbody.z-listbox-empty-body td {
+	text-align: left;
+}
+
+div.z-listbox-body .z-listcell {
+	padding: 2px;
+}
+
+.z-listbox-autopaging .z-listcell-cnt {
+	height: 20px;
+}
+

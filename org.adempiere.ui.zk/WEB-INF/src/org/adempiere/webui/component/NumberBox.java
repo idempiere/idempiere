@@ -23,6 +23,7 @@ import java.text.ParseException;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.theme.ThemeManager;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Page;
@@ -47,7 +48,7 @@ public class NumberBox extends Div
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3548087521669052891L;
+	private static final long serialVersionUID = 8543853599051754172L;
 
 	private Textbox txtCalc = new Textbox();
     
@@ -84,7 +85,40 @@ public class NumberBox extends Div
     	decimalBox.setStyle("display: inline-block;text-align:right");
     	decimalBox.setHflex("0");
     	decimalBox.setSclass("editor-input");
-    	appendChild(decimalBox);
+        decimalBox.setId(decimalBox.getUuid());
+
+        char separatorChar = DisplayType.getNumberFormat(DisplayType.Number, Env.getLanguage(Env.getCtx())).getDecimalFormatSymbols().getDecimalSeparator();
+        String separator = Character.toString(separatorChar);
+        boolean processDotKeypad = MSysConfig.getBooleanValue(MSysConfig.ZK_DECIMALBOX_PROCESS_DOTKEYPAD, true, Env.getAD_Client_ID(Env.getCtx()));
+        if (".".equals(separator))
+        	processDotKeypad = false;
+        if (processDotKeypad) {
+            StringBuffer funct = new StringBuffer();
+            funct.append("function(evt)");
+            funct.append("{");
+            // ignore dot and process it on key up
+            funct.append("    if (!this._shallIgnore(evt, '0123456789-%").append(separator).append("'))");
+            funct.append("    {");
+            funct.append("        this.$doKeyPress_(evt);");
+            funct.append("    }");
+            funct.append("}");
+            decimalBox.setWidgetOverride("doKeyPress_", funct.toString());
+            funct = new StringBuffer();
+            // not working correctly on opera
+            funct.append("if (window.event)");
+            funct.append("    key = event.keyCode;");
+            funct.append("else");
+            funct.append("    key = event.which;");
+            funct.append("if ((key == 110 || key == 190) && !window.opera) {");
+            funct.append("    var id = '$'.concat('").append(decimalBox.getId()).append("');");
+            funct.append("    var calcText = jq(id)[0];");
+            funct.append("    calcText.value += '").append(separator).append("';");
+            funct.append("    event.stop;");
+            funct.append("};");
+            decimalBox.setWidgetListener("onKeyUp", funct.toString());
+        }
+
+        appendChild(decimalBox);
 		
 		btn = new Button();
         btn.setImage(ThemeManager.getThemeResource("images/Calculator16.png"));
@@ -197,13 +231,35 @@ public class NumberBox extends Div
         Vbox vbox = new Vbox();
 
         char separatorChar = DisplayType.getNumberFormat(DisplayType.Number, Env.getLanguage(Env.getCtx())).getDecimalFormatSymbols().getDecimalSeparator();
+        String separator = Character.toString(separatorChar);
         
         txtCalc = new Textbox();
         
         decimalBox.setId(decimalBox.getUuid());
         txtCalc.setId(txtCalc.getUuid());
-        
-        txtCalc.setWidgetListener("onKeyUp", "return calc.validate('" + 
+
+        boolean processDotKeypad = MSysConfig.getBooleanValue(MSysConfig.ZK_DECIMALBOX_PROCESS_DOTKEYPAD, true, Env.getAD_Client_ID(Env.getCtx()));
+        if (".".equals(separator))
+        	processDotKeypad = false;
+
+        // restrict allowed characters
+        String decimalSep = separator;
+        if (!processDotKeypad && !".".equals(separator))
+        	decimalSep += ".";
+        StringBuffer funct = new StringBuffer();
+        funct.append("function(evt)");
+        funct.append("{");
+        funct.append("    if (!this._shallIgnore(evt, '= -/()*%+0123456789").append(decimalSep).append("'))");
+        funct.append("    {");
+        funct.append("        this.$doKeyPress_(evt);");
+        funct.append("    }");
+        funct.append("}");
+        txtCalc.setWidgetOverride("doKeyPress_", funct.toString());
+
+        txtCalc.setWidgetListener("onKeyUp", "calc.validateUp('" + 
+        		decimalBox.getId() + "','" + txtCalc.getId() 
+                + "'," + integral + "," + (int)separatorChar + ", event, " + ( processDotKeypad ? "true" : "false" ) + ");");
+        txtCalc.setWidgetListener("onKeyPress", "calc.validatePress('" + 
         		decimalBox.getId() + "','" + txtCalc.getId() 
                 + "'," + integral + "," + (int)separatorChar + ", event);");
         txtCalc.setMaxlength(250);
@@ -323,7 +379,6 @@ public class NumberBox extends Div
         btn0.setLabel("0");
         btn0.setWidgetListener("onClick", "calc.append('" + txtCalcId + "', '0')");
 
-        String separator = Character.toString(separatorChar);
         Button btnDot = new Button();
         btnDot.setWidth("30px");
         btnDot.setLabel(separator);

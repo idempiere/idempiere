@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.I_C_DocType;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeSetInstance;
@@ -31,9 +32,13 @@ import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategoryAcct;
+import org.compiere.model.PO;
 import org.compiere.model.X_I_Inventory;
+import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.ValueNamePair;
 
@@ -73,7 +78,9 @@ public class ImportInventory extends SvrProcess
 	private int				p_AD_OrgTrx_ID = 0;
 	/**	Document Action					*/
 	private String			m_docAction = null;
+	private MInventory 		costingDoc = null;
 	
+	private int 			p_C_DocType_ID = 0;
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
@@ -107,8 +114,10 @@ public class ImportInventory extends SvrProcess
 				p_AD_OrgTrx_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else if (name.equals("DocAction"))
 				m_docAction = (String)para[i].getParameter();
+			else if (name.equals("C_DocType_ID"))
+				p_C_DocType_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				log.log(Level.WARNING, "Unknown Parameter: " + name);
 		}
 	}	//	prepare
 
@@ -135,6 +144,9 @@ public class ImportInventory extends SvrProcess
 			}
 			if (p_AD_OrgTrx_ID < 0 ) {
 				throw new IllegalArgumentException("AD_OrgTrx required!");
+			}
+			if (p_C_DocType_ID <= 0 ) {
+				throw new IllegalArgumentException("Cost Adjustment Document Type required!");
 			}
 			 acctSchema = MAcctSchema.get(getCtx(), p_C_AcctSchema_ID, get_TrxName());
 		}
@@ -426,28 +438,7 @@ public class ImportInventory extends SvrProcess
 						noInsertLine++;
 						//@Trifon update Product cost record if Update costing is enabled
 						if (p_UpdateCosting) {
-							String costingLevel = null;
-							if(product.getM_Product_Category_ID() > 0){
-								MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), product.getM_Product_Category_ID(), p_C_AcctSchema_ID, get_TrxName());
-								costingLevel = pca.getCostingLevel();
-								if (costingLevel == null) {
-									costingLevel = acctSchema.getCostingLevel();
-								}
-
-							}
-
-							int costOrgID = p_AD_OrgTrx_ID;
-							int costASI = line.getM_AttributeSetInstance_ID();
-							if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel)){
-								costOrgID = 0;
-								costASI = 0;
-							} else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel)) { 
-								costASI = 0;
-							}
-							MCost cost = MCost.get (MProduct.get(getCtx(), imp.getM_Product_ID()), costASI
-									, acctSchema, costOrgID, p_M_CostElement_ID, get_TrxName());
-							cost.setCurrentCostPrice( imp.getCurrentCostPrice() );
-							cost.saveEx();
+							updateCosting(imp, product, line);
 						}
 					}
 				} else {
@@ -469,6 +460,21 @@ public class ImportInventory extends SvrProcess
 					}
 					inventory.saveEx();
 				}
+			}
+			
+			if (costingDoc != null) {
+				if (!DocumentEngine.processIt(costingDoc, DocAction.ACTION_Complete)) 
+				{
+					StringBuilder msg = new StringBuilder();
+					I_C_DocType docType = costingDoc.getC_DocType();
+					msg.append(Msg.getMsg(getCtx(), "ProcessFailed")).append(": ");
+					if (Env.isBaseLanguage(getCtx(), I_C_DocType.Table_Name))
+						msg.append(docType.getName());
+					else
+						msg.append(((PO)docType).get_Translation(I_C_DocType.COLUMNNAME_Name));
+					throw new AdempiereUserError(msg.toString());
+				}
+				costingDoc.saveEx();
 			}
 		}
 		catch (Exception e)
@@ -492,5 +498,49 @@ public class ImportInventory extends SvrProcess
 		addLog (0, null, new BigDecimal (noInsertLine), "@M_InventoryLine_ID@: @Inserted@");
 		return "";
 	}	//	doIt
+
+
+	private void updateCosting(X_I_Inventory imp, MProduct product,
+			MInventoryLine line) {
+		String costingLevel = null;
+		if(product.getM_Product_Category_ID() > 0){
+			MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), product.getM_Product_Category_ID(), p_C_AcctSchema_ID, get_TrxName());
+			costingLevel = pca.getCostingLevel();
+			if (costingLevel == null) {
+				costingLevel = acctSchema.getCostingLevel();
+			}
+
+		}
+
+		int costOrgID = p_AD_OrgTrx_ID;
+		int costASI = line.getM_AttributeSetInstance_ID();
+		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel)){
+			costOrgID = 0;
+			costASI = 0;
+		} else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel)) { 
+			costASI = 0;
+		}
+		MCost cost = MCost.get (MProduct.get(getCtx(), imp.getM_Product_ID()), costASI
+				, acctSchema, costOrgID, p_M_CostElement_ID, get_TrxName());
+		
+		if (costingDoc == null) {
+			costingDoc = new MInventory(getCtx(), 0, get_TrxName());
+			costingDoc.setC_DocType_ID(p_C_DocType_ID);
+			costingDoc.setCostingMethod(cost.getM_CostElement().getCostingMethod());
+			costingDoc.setDocAction(DocAction.ACTION_Complete);
+			costingDoc.saveEx();
+		}
+		
+		MInventoryLine costingLine = new MInventoryLine(getCtx(), 0, get_TrxName());
+		costingLine.setM_Inventory_ID(costingDoc.getM_Inventory_ID());
+		costingLine.setM_Product_ID(cost.getM_Product_ID());
+		costingLine.setCurrentCostPrice(cost.getCurrentCostPrice());
+		costingLine.setNewCostPrice(imp.getCurrentCostPrice());
+		costingLine.setM_Locator_ID(0);
+		costingLine.saveEx();				
+		
+		imp.setM_CostingLine_ID(costingLine.getM_InventoryLine_ID());
+		imp.saveEx();
+	}
 
 }	//	ImportInventory

@@ -144,6 +144,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		dialogContent.setHflex("1");
 		dialogContent.setVflex("1");
 		dialogContent.setSclass("dialog-content");
+		dialogContent.setStyle("overflow-y: auto;");
 		dialogBody.appendChild(dialogContent);
 		Div div = new Div();
 		div.setId("message");

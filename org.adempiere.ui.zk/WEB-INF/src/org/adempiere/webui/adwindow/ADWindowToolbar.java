@@ -523,6 +523,26 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     {
     	btnCustomize.setDisabled(!enabled);
     }
+    
+    public void enableArchive(boolean enabled)
+    {
+    	btnArchive.setDisabled(!enabled);
+    }
+    
+    public void enableZoomAcross(boolean enabled)
+    {
+    	btnZoomAcross.setDisabled(!enabled);
+    }
+    
+    public void enableActiveWorkflows(boolean enabled)
+    {
+    	btnActiveWorkflows.setDisabled(!enabled);
+    }
+    
+    public void enableRequests(boolean enabled)
+    {
+    	btnRequests.setDisabled(!enabled);
+    }
 
     public void lock(boolean locked)
     {

@@ -1,39 +1,44 @@
-create or replace FUNCTION  paymenttermDiscount
+-- June 6, 2014 18:32:00 PM SGT
+-- IDEMPIERE-1856 Amount in database functions and views are hardcoded to round to 2 decimal points
+
+CREATE OR REPLACE FUNCTION paymentTermDiscount
 (
-	Amount			NUMERIC,
-    	Currency_ID     	NUMERIC,
-	PaymentTerm_ID		NUMERIC,
-	DocDate			timestamp with time zone,
-	PayDate			timestamp with time zone
+	Amount			IN	NUMBER,
+    Currency_ID     IN  NUMBER,
+	PaymentTerm_ID	IN	NUMBER,
+	DocDate			IN	DATE,
+	PayDate			IN	DATE
 )
-RETURNS NUMERIC AS $body$
+RETURN NUMBER
 /*************************************************************************
  * The contents of this file are subject to the Compiere License.  You may
  * obtain a copy of the License at    http://www.compiere.org/license.html
  * Software is on an  "AS IS" basis,  WITHOUT WARRANTY OF ANY KIND, either
  * express or implied. See the License for details. Code: Compiere ERP+CRM
  * Copyright (C) 1999-2001 Jorg Janke, ComPiere, Inc. All Rights Reserved.
- *
- * converted to postgreSQL by Karsten Thiemann (Schaeffer AG), 
- * kthiemann@adempiere.org
  *************************************************************************
+ * $Id: C_PaymentTerm_Discount.sql,v 1.1 2006/04/21 17:51:58 jjanke Exp $
+ ***
  * Title:	Calculate Discount
  * Description:
  *	Calculate the allowable Discount Amount of the Payment Term
  *
- *	Test:	SELECT paymenttermDiscount(110, 103, 106, now(), now()) FROM TEST; => 2.20
+ *	Test:	SELECT C_PaymentTerm_Discount(17777, 103, '10-DEC-1999') FROM DUAL
  ************************************************************************/
 
-DECLARE
-	v_Precision		NUMERIC := 0;
-	v_Currency		NUMERIC := 0;
-    v_Min			NUMERIC := 0;
-	Discount		NUMERIC := 0;
-	Discount1Date		timestamp with time zone;
-	Discount2Date		timestamp with time zone;
-	Add1Date		NUMERIC := 0;
-	Add2Date		NUMERIC := 0;
-	p   			RECORD;
+AS
+	v_Precision			NUMBER := 0;
+	v_Currency			NUMBER := 0;
+    v_Min				NUMBER := 0;
+	Discount			NUMBER := 0;
+	CURSOR Cur_PT	IS
+		SELECT	*
+		FROM	C_PaymentTerm
+		WHERE	C_PaymentTerm_ID = PaymentTerm_ID;
+	Discount1Date		DATE;
+	Discount2Date		DATE;
+	Add1Date			NUMBER := 0;
+	Add2Date			NUMBER := 0;
 BEGIN
 	v_Currency := Currency_ID;
 	IF (v_Currency = 0) THEN 
@@ -50,18 +55,15 @@ BEGIN
 	    FROM C_Currency
 	    WHERE C_Currency_ID = v_Currency;
 
-	SELECT 1/10^v_Precision INTO v_Min;
+	SELECT POWER(1/10,v_Precision) INTO v_Min FROM DUAL;
 	
 	--	No Data - No Discount
 	IF (Amount IS NULL OR PaymentTerm_ID IS NULL OR DocDate IS NULL) THEN
 		RETURN 0;
 	END IF;
 
-	FOR p IN 
-		SELECT	*
-		FROM	C_PaymentTerm
-		WHERE	C_PaymentTerm_ID = PaymentTerm_ID
-	LOOP	--	for convineance only
+	FOR p IN Cur_PT LOOP	--	for convineance only
+--		DBMS_OUTPUT.PUT_LINE(p.Name || ' - Doc = ' || TO_CHAR(DocDate));
 		Discount1Date := TRUNC(DocDate + p.DiscountDays + p.GraceDays);
 		Discount2Date := TRUNC(DocDate + p.DiscountDays2 + p.GraceDays);
 
@@ -73,9 +75,11 @@ BEGIN
 
 		--	Discount 1
 		IF (Discount1Date >= TRUNC(PayDate)) THEN
+--			DBMS_OUTPUT.PUT_LINE('Discount 1 ' || TO_CHAR(Discount1Date) || ' ' || p.Discount);
 			Discount := Amount * p.Discount / 100;
 		--	Discount 2
 		ELSIF (Discount2Date >= TRUNC(PayDate)) THEN
+--			DBMS_OUTPUT.PUT_LINE('Discount 2 ' || TO_CHAR(Discount2Date) || ' ' || p.Discount2);
 			Discount := Amount * p.Discount2 / 100;
 		END IF;	
 	END LOOP;
@@ -89,7 +93,8 @@ BEGIN
 	Discount := ROUND(COALESCE(Discount,0), v_Precision);
 	
 	RETURN	Discount;
-END;
+END paymentTermDiscount;
+/
 
-$body$ LANGUAGE plpgsql STABLE;
-
+SELECT register_migration_script('201406061832_IDEMPIERE-1856.sql') FROM dual
+;

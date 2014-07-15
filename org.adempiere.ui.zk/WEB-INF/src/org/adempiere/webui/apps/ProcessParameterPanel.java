@@ -795,6 +795,9 @@ public class ProcessParameterPanel extends Panel implements
 			editor.setMandatory(mField.isMandatory(true));
         	editor.updateLabelStyle();
 		}
+		if (getParent() != null) {
+			getParent().invalidate();
+		}
 	}
 
 	/**

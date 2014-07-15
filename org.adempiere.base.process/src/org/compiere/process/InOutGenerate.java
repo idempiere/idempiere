@@ -525,6 +525,10 @@ public class InOutGenerate extends SvrProcess
 				 MInOutLine line = new MInOutLine (m_shipment);
 				 line.setOrderLine(orderLine, 0, order.isSOTrx() ? toDeliver : Env.ZERO);
 				 line.setQty(toDeliver);
+				 if (orderLine.getQtyEntered().compareTo(orderLine.getQtyOrdered()) != 0)
+					 line.setQtyEntered(line.getMovementQty().multiply(orderLine.getQtyEntered())
+						 .divide(orderLine.getQtyOrdered(), 12, BigDecimal.ROUND_HALF_UP));
+				 line.setLine(m_line + orderLine.getLine());
 			     if (!line.save())
 					 throw new IllegalStateException("Could not create Shipment Line");
 					 

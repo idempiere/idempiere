@@ -12,11 +12,10 @@ import org.compiere.util.Util;
  *
  */
 public class InfoPaymentWindow extends InfoWindow {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1322780214387328688L;
+	private static final long serialVersionUID = -3556977962189259779L;
 
 	/**
 	 * @param WindowNo
@@ -51,9 +50,11 @@ public class InfoPaymentWindow extends InfoWindow {
 				whereClause, AD_InfoWindow_ID, lookup);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void createParameterPanel() {
-		super.createParameterPanel();
+	protected void initParameters() {
 		String isSOTrx = Env.getContext(Env.getCtx(), p_WindowNo, "IsSOTrx");
 		if (!isLookup() && Util.isEmpty(isSOTrx)) {
 			isSOTrx = "Y";
@@ -67,6 +68,5 @@ public class InfoPaymentWindow extends InfoWindow {
 				}
 			}
 		}
-		dynamicDisplay(null);
 	}
 }

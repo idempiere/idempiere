@@ -25,6 +25,7 @@ RETURN NUMBER
 
 AS
 	v_Precision			NUMBER := 0;
+	v_Currency			NUMBER := 0;
     v_Min				NUMBER := 0;
 	Discount			NUMBER := 0;
 	CURSOR Cur_PT	IS
@@ -36,10 +37,20 @@ AS
 	Add1Date			NUMBER := 0;
 	Add2Date			NUMBER := 0;
 BEGIN
+	v_Currency := Currency_ID;
+	IF (v_Currency = 0) THEN 
+		SELECT COALESCE(MAX(C_Currency_ID),0) 
+		INTO v_Currency 
+		FROM AD_ClientInfo ci, C_AcctSchema s, C_PaymentTerm pt 
+		WHERE ci.AD_Client_ID = s.AD_Client_ID 
+		AND ci.AD_Client_ID = pt.AD_Client_ID 
+		AND pt.C_PaymentTerm_ID = PaymentTerm_ID; 
+	END IF;
+	
 	SELECT StdPrecision
 	    INTO v_Precision
 	    FROM C_Currency
-	    WHERE C_Currency_ID = Currency_ID;
+	    WHERE C_Currency_ID = v_Currency;
 
 	SELECT POWER(1/10,v_Precision) INTO v_Min FROM DUAL;
 	

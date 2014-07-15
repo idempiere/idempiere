@@ -17,6 +17,8 @@
 
 package org.adempiere.webui.panel;
 
+import org.adempiere.webui.apps.GlobalSearch;
+import org.adempiere.webui.apps.MenuSearchController;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.AboutWindow;
@@ -49,6 +51,8 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 	protected LabelImageElement btnMenu;
 	protected Popup popMenu;
 
+	private MenuTreePanel menuTreePanel;
+
     public HeaderPanel()
     {
         super();
@@ -62,9 +66,9 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	image.addEventListener(Events.ON_CLICK, this);
     	image.setStyle("cursor: pointer;");
 
-    	createSearchPanel();
-
     	createPopupMenu();
+    	
+    	createSearchPanel();
 
     	btnMenu = (LabelImageElement) getFellow("menuButton");
     	btnMenu.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")));
@@ -74,7 +78,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 	protected void createPopupMenu() {
 		popMenu = new Popup();
     	popMenu.setId("menuTreePopup");
-		new MenuTreePanel(popMenu);
+		menuTreePanel = new MenuTreePanel(popMenu);
     	popMenu.setSclass("desktop-menu-popup");
     	popMenu.setHeight("90%");
     	popMenu.setWidth("600px");
@@ -82,11 +86,11 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 	}
 
 	protected void createSearchPanel() {
-		MenuSearchPanel menuSearchPanel = new MenuSearchPanel(this);
+		GlobalSearch globalSearch = new GlobalSearch(new MenuSearchController(menuTreePanel.getMenuTree()));
     	Component stub = getFellow("menuLookup");
-    	stub.getParent().insertBefore(menuSearchPanel, stub);
+    	stub.getParent().insertBefore(globalSearch, stub);
     	stub.detach();
-    	menuSearchPanel.setId("menuLookup");
+    	globalSearch.setId("menuLookup");
 	}
 
 	public void onEvent(Event event) throws Exception {
