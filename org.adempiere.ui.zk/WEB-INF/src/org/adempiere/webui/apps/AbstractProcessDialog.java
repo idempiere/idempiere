@@ -285,7 +285,10 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	{
 		Component component = event.getTarget();
 		if (component == runAsJobField && event.getName().equals(Events.ON_CHECK))
+		{
 			notificationTypeField.getComponent().getParent().setVisible(runAsJobField.isChecked());
+			centerPanel.invalidate();
+		}
 		else if (event.getName().equals(ON_COMPLETE))
 			onComplete();
 		else if (event.getName().equals(ON_STATUS_UPDATE))
