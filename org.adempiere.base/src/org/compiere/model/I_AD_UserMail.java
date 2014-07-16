@@ -128,6 +128,15 @@ public interface I_AD_UserMail
 	  */
 	public String getDeliveryConfirmation();
 
+    /** Column name EMailFrom */
+    public static final String COLUMNNAME_EMailFrom = "EMailFrom";
+
+	/** Set EMail sent from	  */
+	public void setEMailFrom (String EMailFrom);
+
+	/** Get EMail sent from	  */
+	public String getEMailFrom();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -175,6 +184,33 @@ public interface I_AD_UserMail
 	  * EMail Message ID
 	  */
 	public String getMessageID();
+
+    /** Column name RecipientBcc */
+    public static final String COLUMNNAME_RecipientBcc = "RecipientBcc";
+
+	/** Set Bcc	  */
+	public void setRecipientBcc (String RecipientBcc);
+
+	/** Get Bcc	  */
+	public String getRecipientBcc();
+
+    /** Column name RecipientCc */
+    public static final String COLUMNNAME_RecipientCc = "RecipientCc";
+
+	/** Set Cc	  */
+	public void setRecipientCc (String RecipientCc);
+
+	/** Get Cc	  */
+	public String getRecipientCc();
+
+    /** Column name RecipientTo */
+    public static final String COLUMNNAME_RecipientTo = "RecipientTo";
+
+	/** Set To	  */
+	public void setRecipientTo (String RecipientTo);
+
+	/** Get To	  */
+	public String getRecipientTo();
 
     /** Column name R_MailText_ID */
     public static final String COLUMNNAME_R_MailText_ID = "R_MailText_ID";

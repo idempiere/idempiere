@@ -30,7 +30,7 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20140716L;
 
     /** Standard Constructor */
     public X_AD_UserMail (Properties ctx, int AD_UserMail_ID, String trxName)
@@ -161,6 +161,20 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 		return (String)get_Value(COLUMNNAME_DeliveryConfirmation);
 	}
 
+	/** Set EMail sent from.
+		@param EMailFrom EMail sent from	  */
+	public void setEMailFrom (String EMailFrom)
+	{
+		set_Value (COLUMNNAME_EMailFrom, EMailFrom);
+	}
+
+	/** Get EMail sent from.
+		@return EMail sent from	  */
+	public String getEMailFrom () 
+	{
+		return (String)get_Value(COLUMNNAME_EMailFrom);
+	}
+
 	/** IsDelivered AD_Reference_ID=319 */
 	public static final int ISDELIVERED_AD_Reference_ID=319;
 	/** Yes = Y */
@@ -214,6 +228,48 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 	public String getMessageID () 
 	{
 		return (String)get_Value(COLUMNNAME_MessageID);
+	}
+
+	/** Set Bcc.
+		@param RecipientBcc Bcc	  */
+	public void setRecipientBcc (String RecipientBcc)
+	{
+		set_Value (COLUMNNAME_RecipientBcc, RecipientBcc);
+	}
+
+	/** Get Bcc.
+		@return Bcc	  */
+	public String getRecipientBcc () 
+	{
+		return (String)get_Value(COLUMNNAME_RecipientBcc);
+	}
+
+	/** Set Cc.
+		@param RecipientCc Cc	  */
+	public void setRecipientCc (String RecipientCc)
+	{
+		set_Value (COLUMNNAME_RecipientCc, RecipientCc);
+	}
+
+	/** Get Cc.
+		@return Cc	  */
+	public String getRecipientCc () 
+	{
+		return (String)get_Value(COLUMNNAME_RecipientCc);
+	}
+
+	/** Set To.
+		@param RecipientTo To	  */
+	public void setRecipientTo (String RecipientTo)
+	{
+		set_Value (COLUMNNAME_RecipientTo, RecipientTo);
+	}
+
+	/** Get To.
+		@return To	  */
+	public String getRecipientTo () 
+	{
+		return (String)get_Value(COLUMNNAME_RecipientTo);
 	}
 
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
