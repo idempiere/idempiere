@@ -13,28 +13,24 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
+import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.ListModelTable;
 import org.adempiere.webui.component.ListboxFactory;
 import org.adempiere.webui.component.Panel;
-import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.component.WAppsAction;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.WTableModelEvent;
 import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.panel.StatusBarPanel;
-import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.grid.CreateFrom;
-import org.compiere.util.Env;
-import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
-import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
@@ -46,7 +42,7 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1525723342123192509L;
+	private static final long serialVersionUID = 6750121735083748182L;
 
 	private CreateFrom createFrom;
 	private int windowNo;
@@ -59,7 +55,6 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 	private boolean isCancel;
 	
 	public static final String SELECT_DESELECT_ALL = "SelectAll";
-	private ToolBarButton selectAllAction = new ToolBarButton(SELECT_DESELECT_ALL);
 	private boolean checkAllSelected = true;
 
 	public WCreateFromWindow(CreateFrom createFrom, int windowNo)
@@ -97,10 +92,10 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
         contentPane.appendChild(center);
 		center.appendChild(dataTable);
 
-		selectAllAction.setMode("toggle");
-		selectAllAction.setImage(ThemeManager.getThemeResource("images/SelectAll24.png"));
-		selectAllAction.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), SELECT_DESELECT_ALL)));
-		selectAllAction.addEventListener(Events.ON_CLICK, this);
+		WAppsAction selectAllAction = new WAppsAction (SELECT_DESELECT_ALL, null, null);
+		Button selectAllButton = selectAllAction.getButton();
+		selectAllButton.setAttribute(SELECT_DESELECT_ALL, Boolean.FALSE);
+		confirmPanel.addComponentsLeft(selectAllButton);
 
 		South south = new South();
 		contentPane.appendChild(south);
@@ -108,7 +103,6 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		south.appendChild(southPanel);
 		southPanel.appendChild(new Separator());
 		southPanel.appendChild(confirmPanel);
-		southPanel.appendChild(selectAllAction);
 
 		southPanel.appendChild(new Separator());
 		southPanel.appendChild(statusBar);
@@ -151,11 +145,15 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		}
 		// Select All
 		// Trifon
-		else if (e.getTarget().equals(selectAllAction)) {
+		else if (e.getTarget().getId().equals(SELECT_DESELECT_ALL)) {
 			ListModelTable model = dataTable.getModel();
 			int rows = model.getSize();
-			Boolean selectAll = selectAllAction.isPressed() ? Boolean.FALSE : Boolean.TRUE;
-			selectAllAction.setPressed(! selectAllAction.isPressed());
+			Button selectAllBtn = confirmPanel.getButton(SELECT_DESELECT_ALL);
+			Boolean selectAll = (Boolean) selectAllBtn.getAttribute(SELECT_DESELECT_ALL);
+			if (selectAll == null)
+				selectAll = Boolean.FALSE;
+			selectAll = !selectAll;
+			selectAllBtn.setAttribute(SELECT_DESELECT_ALL, selectAll);
 			checkAllSelected = false;
 			for (int i = 0; i < rows; i++) {
 				model.setValueAt(selectAll, i, 0);
@@ -185,7 +183,8 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 						break;
 					}
 				}
-				selectAllAction.setPressed(! rowUnSelected);
+				Button selectAllBtn = confirmPanel.getButton(SELECT_DESELECT_ALL);
+				selectAllBtn.setAttribute(SELECT_DESELECT_ALL, ! rowUnSelected);
 			}
 		}
 		info();
