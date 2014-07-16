@@ -44,8 +44,7 @@ public class MRefList extends X_AD_Ref_List
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2210328198547927123L;
-
+	private static final long serialVersionUID = -3612793187620297377L;
 
 	/**
 	 * 	Get Reference List 
@@ -129,7 +128,8 @@ public class MRefList extends X_AD_Ref_List
 		//
 		return retValue;
 	}	//	getListName
-
+	
+	
 	/**
 	 * Get Reference List Value Description (cached)
 	 * @param ctx context
@@ -140,6 +140,18 @@ public class MRefList extends X_AD_Ref_List
 	public static String getListDescription (Properties ctx, String ListName, String Value)
 	{
 		String AD_Language = Env.getAD_Language(ctx);
+		return getListDescription (AD_Language, ListName, Value);
+	}
+
+	/**
+	 * Get Reference List Value Description (cached)
+	 * @param Language
+	 * @param ListName reference
+	 * @param Value value
+	 * @return List or null
+	 */
+	public static String getListDescription (String AD_Language, String ListName, String Value)
+	{
 		String key = AD_Language + "_" + ListName + "_" + Value;
 		String retValue = s_cache.get(key);
 		if (retValue != null)
