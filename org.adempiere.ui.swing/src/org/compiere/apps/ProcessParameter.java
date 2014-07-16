@@ -66,7 +66,7 @@ public class ProcessParameter extends CDialog
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3898982577949513358L;
+	private static final long serialVersionUID = 5813968036015697042L;
 
 	/**
 	 *	Dynamic generated Parameter Dialog screen.
@@ -91,11 +91,15 @@ public class ProcessParameter extends CDialog
 		//
 		m_WindowNo = WindowNo;
 		m_processInfo = pi;
+		
+		// TODO: set m_AD_Window_ID, is AD_Window_ID of window below this dialog 
 		//
 	}	//	ProcessParameter
 
 	private Frame		m_frame;
 	private int			m_WindowNo;
+	// AD_Window of window below this dialog in case show parameter dialog panel
+	private int			m_AD_Window_ID;
 	private ProcessInfo m_processInfo;
 	private boolean 	m_isOK = false;
 	/**	Logger			*/
@@ -292,7 +296,7 @@ public class ProcessParameter extends CDialog
 	private void createField (ResultSet rs)
 	{
 		//  Create Field
-		GridFieldVO voF = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, rs);
+		GridFieldVO voF = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, m_processInfo.getAD_Process_ID(), m_AD_Window_ID, rs);
 		GridField mField = new GridField (voF);
 		m_mFields.add(mField);                      //  add to Fields
 

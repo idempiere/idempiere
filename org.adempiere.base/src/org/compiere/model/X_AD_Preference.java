@@ -30,7 +30,7 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20140604L;
 
     /** Standard Constructor */
     public X_AD_Preference (Properties ctx, int AD_Preference_ID, String trxName)
@@ -40,6 +40,8 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
         {
 			setAD_Preference_ID (0);
 			setAttribute (null);
+			setPreferenceFor (null);
+// W
 			setValue (null);
         } */
     }
@@ -107,6 +109,34 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	public String getAD_Preference_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_AD_Preference_UU);
+	}
+
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
+			.getPO(getAD_Process_ID(), get_TrxName());	}
+
+	/** Set Process.
+		@param AD_Process_ID 
+		Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID)
+	{
+		if (AD_Process_ID < 1) 
+			set_Value (COLUMNNAME_AD_Process_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
+	}
+
+	/** Get Process.
+		@return Process or Report
+	  */
+	public int getAD_Process_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
@@ -186,6 +216,30 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
     {
         return new KeyNamePair(get_ID(), getAttribute());
     }
+
+	/** PreferenceFor AD_Reference_ID=200084 */
+	public static final int PREFERENCEFOR_AD_Reference_ID=200084;
+	/** Window = W */
+	public static final String PREFERENCEFOR_Window = "W";
+	/** Process = P */
+	public static final String PREFERENCEFOR_Process = "P";
+	/** Set Preference For.
+		@param PreferenceFor 
+		Type of preference, it can window, info window or parameter process
+	  */
+	public void setPreferenceFor (String PreferenceFor)
+	{
+
+		set_Value (COLUMNNAME_PreferenceFor, PreferenceFor);
+	}
+
+	/** Get Preference For.
+		@return Type of preference, it can window, info window or parameter process
+	  */
+	public String getPreferenceFor () 
+	{
+		return (String)get_Value(COLUMNNAME_PreferenceFor);
+	}
 
 	/** Set Search Key.
 		@param Value 

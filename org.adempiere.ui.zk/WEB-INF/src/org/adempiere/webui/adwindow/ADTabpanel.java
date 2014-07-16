@@ -124,7 +124,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2592856355985389339L;
+	private static final long serialVersionUID = -3728896318124756192L;
 
 	private static final String ON_SAVE_OPEN_PREFERENCE_EVENT = "onSaveOpenPreference";
 
@@ -1079,7 +1079,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     		int windowId = getGridTab().getAD_Window_ID();
     		int adTabId = getGridTab().getAD_Tab_ID();
     		if (windowId > 0 && adTabId > 0) {
-    			Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), "AD_Window_ID=? AND Attribute=?", null);
+    			Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), "AD_Window_ID=? AND Attribute=? AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
     			MPreference preference = query.setOnlyActiveRecords(true)
     										  .setApplyAccessFilter(true)
     										  .setParameters(windowId, adTabId+"|DetailPane.IsOpen")

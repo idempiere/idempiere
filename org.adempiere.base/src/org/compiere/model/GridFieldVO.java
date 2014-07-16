@@ -46,9 +46,7 @@ public class GridFieldVO implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7595228091613559685L;
-
-	
+	private static final long serialVersionUID = 6391887120974125904L;
 
 	/**
 	 *  Return the SQL statement used for the MFieldVO.create
@@ -314,13 +312,15 @@ public class GridFieldVO implements Serializable
 	 *  @param rs result set AD_Process_Para
 	 *  @return MFieldVO
 	 */
-	public static GridFieldVO createParameter (Properties ctx, int WindowNo, ResultSet rs)
+	public static GridFieldVO createParameter (Properties ctx, int WindowNo, int ProcessIDOfPanel, int WindowIDOfPanel, ResultSet rs)
 	{
 		GridFieldVO vo = new GridFieldVO (ctx, WindowNo, 0, 0, 0, false);
 		vo.isProcess = true;
 		vo.IsDisplayed = true;
 		vo.IsReadOnly = false;
 		vo.IsUpdateable = true;
+		vo.AD_Process_ID_Of_Panel = ProcessIDOfPanel;
+		vo.AD_Window_ID_Of_Panel = WindowIDOfPanel;
 
 		try
 		{
@@ -399,6 +399,7 @@ public class GridFieldVO implements Serializable
 		voT.IsEncryptedField = voF.IsEncryptedField;
 		voT.ReadOnlyLogic = voF.ReadOnlyLogic;
 		voT.DisplayLogic = voF.DisplayLogic;
+		voT.AD_Process_ID_Of_Panel = voF.AD_Process_ID_Of_Panel;
 		voT.initFinish();
 		
 		return voT;
@@ -487,6 +488,12 @@ public class GridFieldVO implements Serializable
 	public int          TabNo;
 	/** AD_Winmdow_ID               */
 	public int          AD_Window_ID;
+	/** 
+	 *  in case this field lie on parameter process panel, AD_Process_ID_Of_Panel is id of process will run in this panel 
+	 *  it's difference with AD_Process_ID
+	 */
+	public int          AD_Process_ID_Of_Panel;
+	public int          AD_Window_ID_Of_Panel;
 	/** AD_Tab_ID					*/
 	public int			AD_Tab_ID;
 	/** Is the Tab Read Only        */
@@ -756,7 +763,8 @@ public class GridFieldVO implements Serializable
 		//  Process Parameter
 		clone.isRange = isRange;
 		clone.DefaultValue2 = DefaultValue2;
-
+		clone.AD_Process_ID_Of_Panel = AD_Process_ID_Of_Panel;
+		clone.AD_Window_ID_Of_Panel = AD_Window_ID_Of_Panel;
 		return clone;
 	}	//	clone
 	

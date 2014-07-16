@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
@@ -77,7 +78,7 @@ public class ProcessParameterPanel extends Panel implements
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6089753824709746119L;
+	private static final long serialVersionUID = 195320654866887445L;
 
 	private String width;
 
@@ -105,12 +106,36 @@ public class ProcessParameterPanel extends Panel implements
 		//
 		m_WindowNo = WindowNo;
 		m_processInfo = pi;
+		m_AD_Window_ID = getADWindowID (WindowNo);		
 		this.width = width;
 		//
 		initComponent();
 		addEventListener("onDynamicDisplay", this);
 	} // ProcessParameterPanel
 
+	/**
+	 * Get adWindowId below gridField
+	 * when field lie in window, it's id of this window
+	 * when field lie in process parameter dialog it's ad_window_id of window open this process
+	 * when field lie in process parameter open in a standalone window (run process from menu) return id of dummy window
+	 * @param mField
+	 * @return
+	 */
+	public static int getADWindowID (int windowNo){
+		int adWindowID = 0;
+		// form process parameter panel
+		
+		Object  window = SessionManager.getAppDesktop().findWindow(windowNo);
+		// case show a process dialog, window is below window of process dialog
+		if (window != null && window instanceof ADWindow){
+			adWindowID = ((ADWindow)window).getAD_Window_ID();
+		}else if (window != null && window instanceof ProcessDialog){
+			adWindowID = 200054;// dummy window
+		}
+					
+		return adWindowID;
+	}
+	
 	private void initComponent() {
 		centerPanel = GridFactory.newGridLayout();
 		centerPanel.setInnerWidth(width);
@@ -129,6 +154,8 @@ public class ProcessParameterPanel extends Panel implements
 
 	private int m_WindowNo;
 	private ProcessInfo m_processInfo;
+	// AD_Window of window below this dialog in case show parameter dialog panel
+	private int			m_AD_Window_ID = 0;
 	/** Logger */
 	private static CLogger log = CLogger
 			.getCLogger(ProcessParameterPanel.class);
@@ -280,7 +307,7 @@ public class ProcessParameterPanel extends Panel implements
 	 */
 	private void createField(ResultSet rs, Rows rows) {
 		// Create Field
-		GridFieldVO voF = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo,
+		GridFieldVO voF = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, m_processInfo.getAD_Process_ID(), m_AD_Window_ID,
 				rs);
 		GridField mField = new GridField(voF);
 		m_mFields.add(mField); // add to Fields

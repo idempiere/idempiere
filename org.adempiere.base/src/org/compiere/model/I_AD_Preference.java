@@ -84,6 +84,21 @@ public interface I_AD_Preference
 	/** Get AD_Preference_UU	  */
 	public String getAD_Preference_UU();
 
+    /** Column name AD_Process_ID */
+    public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
+
+	/** Set Process.
+	  * Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID);
+
+	/** Get Process.
+	  * Process or Report
+	  */
+	public int getAD_Process_ID();
+
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
+
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
 
@@ -151,6 +166,19 @@ public interface I_AD_Preference
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name PreferenceFor */
+    public static final String COLUMNNAME_PreferenceFor = "PreferenceFor";
+
+	/** Set Preference For.
+	  * Type of preference, it can window, info window or parameter process
+	  */
+	public void setPreferenceFor (String PreferenceFor);
+
+	/** Get Preference For.
+	  * Type of preference, it can window, info window or parameter process
+	  */
+	public String getPreferenceFor();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
