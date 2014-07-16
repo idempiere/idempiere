@@ -18,6 +18,7 @@ package org.compiere.process;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.logging.Level;
 
 import org.compiere.model.MColumn;
@@ -28,6 +29,7 @@ import org.compiere.model.PO;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Util;
 
 
 /**
@@ -47,14 +49,29 @@ import org.compiere.util.DisplayType;
  */
 public class TabCreateFields extends SvrProcess
 {
-	/**	Tab NUmber				*/
+	/**	Tab Number				*/
 	private int	p_AD_Tab_ID= 0;
+	private String p_EntityType = null;
+	private Timestamp p_CreatedSince = null;
 	
 	/**
 	 * 	prepare
 	 */
 	protected void prepare ()
 	{
+		ProcessInfoParameter[] para = getParameter();
+		for (int i = 0; i < para.length; i++)
+		{
+			String name = para[i].getParameterName();
+			if (para[i].getParameter() == null)
+				;
+			else if (name.equals("EntityType"))
+				p_EntityType = (String)para[i].getParameter();
+			else if (name.equals("CreatedSince"))
+				p_CreatedSince = para[i].getParameterAsTimestamp();
+			else
+				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+		}
 		p_AD_Tab_ID = getRecord_ID();
 	}	//	prepare
 
@@ -78,8 +95,14 @@ public class TabCreateFields extends SvrProcess
 				+ " AND f.AD_Tab_ID=?)"		//	#2
 			+ " AND AD_Table_ID=?"			//	#3
 			+ " AND NOT (Name LIKE 'Created%' OR Name LIKE 'Updated%')"
-			+ " AND IsActive='Y' "
-			+ "ORDER  BY CASE "
+			+ " AND IsActive='Y' ";
+
+		if(!Util.isEmpty(p_EntityType))
+			sql += " AND c.entitytype = ?";
+		if(p_CreatedSince != null)
+			sql += " AND c.created >= ? ";
+
+		sql += "ORDER  BY CASE "
 			+ "            WHEN c.ColumnName = 'AD_Client_ID' THEN -100 "
 			+ "            WHEN c.ColumnName = 'AD_Org_ID' THEN -90 "
 			+ "            WHEN c.ColumnName = 'Value' THEN -80 "
@@ -101,6 +124,11 @@ public class TabCreateFields extends SvrProcess
 			pstmt.setInt (1, tab.getAD_Table_ID());
 			pstmt.setInt (2, tab.getAD_Tab_ID());
 			pstmt.setInt (3, tab.getAD_Table_ID());
+			int i = 4;
+			if(!Util.isEmpty(p_EntityType))
+				pstmt.setString(i++, p_EntityType);
+			if(p_CreatedSince != null)
+				pstmt.setTimestamp(i++, p_CreatedSince);
 			rs = pstmt.executeQuery ();
 			String uuidcolname = PO.getUUIDColumnName(tab.getAD_Table().getTableName());
 			while (rs.next ())
