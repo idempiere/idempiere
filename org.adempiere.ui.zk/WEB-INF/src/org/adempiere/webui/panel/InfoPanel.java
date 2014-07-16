@@ -79,6 +79,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Comboitem;
@@ -1250,6 +1251,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             }
             else if (event.getTarget() == contentPanel && event.getName().equals(Events.ON_DOUBLE_CLICK))
             {
+            	if (event.getClass().equals(MouseEvent.class)){
+            		return;
+            	}
             	if (contentPanel.isMultiple()) {
             		if (m_lastOnSelectItem != null)
             			contentPanel.setSelectedItem(m_lastOnSelectItem);

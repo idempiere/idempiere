@@ -483,7 +483,7 @@ public class WGraph extends Div implements IdSpace {
 		Br br = new Br();
 		td.appendChild(br);
 		text = new Text(stripHtml(m_goal.getColorSchema()
-						.getDescription(), true));
+						.getDescription(), false));
 		td.appendChild(text);				
 	}
 

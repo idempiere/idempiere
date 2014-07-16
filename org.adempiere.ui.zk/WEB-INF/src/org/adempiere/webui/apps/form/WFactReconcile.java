@@ -292,27 +292,40 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 			
 		if (Account_ID != 0)
 			m_Account_ID = Account_ID;
+		else
+			m_Account_ID = 0;
 		
 		if(fieldOrg.getValue()!=null)
 			m_AD_Org_ID = (Integer)fieldOrg.getValue();
+		else
+			m_AD_Org_ID = 0;
 			
 		if(fieldAcctSchema.getValue()!=null)
 			m_C_AcctSchema_ID = (Integer)fieldAcctSchema.getValue();
+		else
+			m_C_AcctSchema_ID = 0;
 
 		m_isReconciled = isReconciled.isChecked();
 		
 		if(fieldBPartner.getValue()!=null)
 			m_C_BPartner_ID = (Integer)fieldBPartner.getValue();
+		else
+			m_C_BPartner_ID = 0;
 		
 		if((Integer)fieldProduct.getValue()!=null)
 			m_M_Product_ID = (Integer)fieldProduct.getValue();
+		else
+			m_M_Product_ID = 0;
 		
 		if(fieldDateAcct.getValue()!=null)
 			m_DateAcct = (Timestamp)fieldDateAcct.getValue();
+		else
+			m_DateAcct = null;
 		
 		if(fieldDateAcct2.getValue()!=null)
 			m_DateAcct2 = (Timestamp)fieldDateAcct2.getValue();
-		
+		else
+			m_DateAcct2 = null;
 		//  Set Model
 		Vector<Vector<Object>> data = getData();
 		Vector<String> columnNames = getColumnNames();

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.CharArrayWriter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -545,35 +546,50 @@ public class Process {
 					else if (DisplayType.isDate(displayType))
 					{
 						java.util.Date d;
-						if (displayType == DisplayType.DateTime)
-							d = m_cs.dateTimeFormat.parse(value.toString());
-							
-						else  
-							d = m_cs.dateFormat.parse(value.toString());
-						 
-						Timestamp ts = null;
-						ts = new Timestamp(d.getTime());
-						iPara.setP_Date(ts);
-						
-						if (pPara.isRange())
-						{
-							if (displayType == DisplayType.DateTime)
-								d = m_cs.dateTimeFormat.parse(valueString2); 
-							else
-							{
-								if (valueString2 == null || valueString2.length() == 0)
-									d = new java.util.Date();
-								else
-									d = m_cs.dateFormat.parse(valueString2);
+						if (value.toString().length() > 0) {
+							if (displayType == DisplayType.DateTime) {
+								try {
+									d = m_cs.dateTimeFormatJDBC.parse(value.toString());
+								} catch (ParseException e) {
+									d = m_cs.dateTimeFormat.parse(value.toString());
+								}
+							} else if (displayType == DisplayType.Time) {
+								try {
+									d = m_cs.timeFormatJDBC.parse(value.toString());
+								} catch (ParseException e) {
+									d = m_cs.timeFormat.parse(value.toString());
+								}
+							} else {
+								try {
+									d = m_cs.dateFormatJDBC.parse(value.toString());
+								} catch (ParseException e) {
+									d = m_cs.dateFormat.parse(value.toString());
+								}
 							}
-							
-							ts = new Timestamp(d.getTime());
-							iPara.setP_Date_To(ts );
+
+							Timestamp ts = new Timestamp(d.getTime());
+							iPara.setP_Date(ts);
+							if (log.isLoggable(Level.FINE)) log.fine("fillParameter - " + key
+									+ " = " + valueString + " (=" + ts + "=)");
 						}
 
-						
-						if (log.isLoggable(Level.FINE)) log.fine("fillParameter - " + key
-							+ " = " + valueString + " (=" + ts + "=)");
+						if (pPara.isRange())
+						{
+							if (valueString2 != null && valueString2.length() > 0) {
+								if (displayType == DisplayType.DateTime)
+									d = m_cs.dateTimeFormat.parse(valueString2.toString());
+								else if (displayType == DisplayType.Time)
+									d = m_cs.timeFormat.parse(valueString2.toString());
+								else
+									d = m_cs.dateFormat.parse(valueString2.toString());
+
+								Timestamp ts = new Timestamp(d.getTime());
+								iPara.setP_Date_To(ts);
+								if (log.isLoggable(Level.FINE)) log.fine("fillParameterTo - " + key
+										+ " = " + valueString + " (=" + ts + "=)");
+							}
+						}
+
 					}
 					else if (DisplayType.YesNo == pPara.getAD_Reference_ID())
 					{
