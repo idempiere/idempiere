@@ -211,7 +211,7 @@ public abstract class SvrProcess implements ProcessCall
 		}
 		
 		//transaction should rollback if there are error in process
-		if(msg.startsWith("@Error@"))
+		if(msg != null && msg.startsWith("@Error@"))
 			success = false;
 
 		if (success)
