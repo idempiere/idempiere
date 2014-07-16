@@ -123,26 +123,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	private int AD_InfoWindow_ID;
 	private Checkbox checkAND;
 	/**
-	 * All info process of this infoWindow
-	 */
-	protected MInfoProcess [] infoProcessList;
-    /**
-     * flag detect exists info process
-     */
-	protected boolean haveProcess = false;
-	/**
-	 * Info process have style is button
-	 */
-	protected List<MInfoProcess> infoProcessBtList;
-	/**
-	 * Info process have style is drop down list
-	 */
-	protected List<MInfoProcess> infoProcessDropList;
-	/**
-	 * Info process have style is menu
-	 */
-	protected List<MInfoProcess> infoProcessMenuList;	
-	/**
 	 * Menu contail process menu item
 	 */
 	protected Menupopup ipMenu;
@@ -903,6 +883,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			}
 		}
 		
+		addViewIDToQuery();
+		
 		if (m_sqlMain.length() > 0 &&  infoWindow.isDistinct()) {
 			m_sqlMain = m_sqlMain.substring("SELECT ".length());
 			m_sqlMain = "SELECT DISTINCT " + m_sqlMain;			
@@ -918,6 +900,58 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 	}
 
+	/**
+	 * add all ViewID in each MInfoProcess to query
+	 * if main query have subquery in SELECT, it will beak or incorrect
+	 */
+	protected void addViewIDToQuery () {
+		
+		if (m_sqlMain.length() > 0 && infoProcessList != null && infoProcessList.length > 0){
+			int fromIndex = m_sqlMain.indexOf("FROM");
+			// split Select and from clause
+			String selectClause = m_sqlMain.substring(0, fromIndex);
+			String fromClause = m_sqlMain.substring(fromIndex);
+			
+			// get alias of main table
+			String alias = getTableName();
+			StringBuilder sqlBuilder = new StringBuilder(selectClause);
+			
+			// reset flag relate viewID to recount
+			numOfViewID = 0;
+			isHasViewID = false;
+			
+			// add View_ID column to select clause
+			for (MInfoProcess infoProcess : infoProcessList){
+				String columnInQuery = infoProcess.getViewIDName();
+				// this process hasn't viewID column, next other infoProcess
+				if (columnInQuery == null)
+					continue;
+				
+				// add alias of main table to column
+				columnInQuery = alias + "." + columnInQuery;
+				
+				// maintain varial relate to ViewID, it can init just one time when load infoWindow define
+				// but let it here for simple logic control
+				numOfViewID++;
+				isHasViewID = true;
+				
+				// if query is include this viewID column, not need add
+				if (sqlBuilder.toString().toLowerCase().contains(columnInQuery.toLowerCase())){
+					continue;
+				}
+				
+				// add column to SELECT clause of main sql
+				sqlBuilder.append(", ");	
+				sqlBuilder.append (columnInQuery);
+				sqlBuilder.append(" ");				
+			}
+			
+			sqlBuilder.append(fromClause);
+			// update main sql 
+			m_sqlMain = sqlBuilder.toString();
+		}
+	}
+	
 	protected void renderWindow()
 	{		
 		setTitle(infoWindow.get_Translation("Name"));

@@ -49,6 +49,21 @@ public interface I_AD_InfoProcess
 	  */
 	public int getAD_Client_ID();
 
+    /** Column name AD_Column_ID */
+    public static final String COLUMNNAME_AD_Column_ID = "AD_Column_ID";
+
+	/** Set ViewID Column.
+	  * Name of unique column in a view. value of this column will save to t_selection table
+	  */
+	public void setAD_Column_ID (int AD_Column_ID);
+
+	/** Get ViewID Column.
+	  * Name of unique column in a view. value of this column will save to t_selection table
+	  */
+	public int getAD_Column_ID();
+
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
+
     /** Column name AD_InfoProcess_ID */
     public static final String COLUMNNAME_AD_InfoProcess_ID = "AD_InfoProcess_ID";
 

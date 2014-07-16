@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.model.MInfoProcess;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
@@ -323,6 +324,39 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private static final String[] lISTENER_EVENTS = {};
 
 	/**
+	* All info process of this infoWindow
+	*/
+	protected MInfoProcess [] infoProcessList;
+	/**
+	* flag detect exists info process
+	*/
+	protected boolean haveProcess = false;
+	/**
+	* Info process have style is button
+	*/
+	protected List<MInfoProcess> infoProcessBtList;
+	/**
+	* Info process have style is drop down list
+	*/
+	protected List<MInfoProcess> infoProcessDropList;
+	/**
+	* Info process have style is menu
+	*/
+	protected List<MInfoProcess> infoProcessMenuList;
+	/**
+	* save selected id and viewID
+	*/
+	protected Map<Integer, List<String>> m_viewIDMap = new HashMap<Integer, List<String>>();
+	/**
+	 * flag indicate have infoOProcess define ViewID 
+	 */
+	protected boolean isHasViewID = false;
+	/**
+	 * number of infoProcess contain ViewID
+	 */
+	protected int numOfViewID = 0;
+	
+	/**
 	 * IDEMPIERE-1334
 	 * button and combobox when layout process button as dropdow list
 	 */
@@ -374,7 +408,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (orderBy != null && orderBy.trim().length() > 0)
 			m_sqlOrder = " ORDER BY " + orderBy;
 	}   //  prepareTable
-
 
 	/**************************************************************************
 	 *  Execute Query
@@ -472,6 +505,34 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			data.add(value);
 		}
         line.add(data);
+        
+        readViewID(rs, data);
+	}
+	
+	/**
+	 * save all viewID to end of data line
+	 * when override readData(ResultSet rs), consider call this method 
+	 * IDEMPIERE-1970
+	 */
+	protected void readViewID(ResultSet rs, List<Object> data) throws SQLException {
+		if (infoProcessList == null || infoProcessList.length == 0){
+			return;
+		}
+		
+		// with each process have viewID, read it form resultSet by name
+		for (MInfoProcess infoProcess : infoProcessList){
+			if (infoProcess.getAD_Column_ID() == 0){
+				continue;
+			}
+
+			String viewIDSql = infoProcess.getViewIDName();
+			String viewIDValue = rs.getString(viewIDSql);
+			if (rs.wasNull()){
+				data.add(null);
+			}else{
+				data.add(viewIDValue);
+			}
+		}
 	}
 
     protected void renderItems()
@@ -762,10 +823,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			return;
 
 		if (log.isLoggable(Level.CONFIG)) log.config( "OK=" + m_ok);
+		// clear prev selected result
+		m_results.clear();
 
 		if (!m_ok)      //  did not press OK
 		{
-			m_results.clear();
 			contentPanel = null;
 			this.detach();
             return;
@@ -851,6 +913,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
     /**
 	 *	Get selected Keys as Collection
+	 *  @deprecated use getSaveKeys
 	 *  @return selected keys (Integers)
 	 */
 	public Collection<Integer> getSelectedKeysCollection()
@@ -860,6 +923,66 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (!m_ok || m_results.size() == 0)
 			return null;	
 		return m_results;
+	}
+
+	/**
+	 * Save selected id, viewID of all process to map viewIDMap to save into T_Selection
+	 */
+	public Map<Integer, List<String>> getSaveKeys (){
+		// clear result from prev time
+		m_viewIDMap.clear();
+		
+		if (p_multipleSelection)
+        {
+        	int[] rows = contentPanel.getSelectedIndices();
+        	
+        	// this flag to just check key column in first record
+        	boolean isCheckedKeyType = false;
+        	
+            for (int row = 0; row < rows.length; row++)
+            {
+            	// get key data column
+                Object keyData = contentPanel.getModel().getValueAt(rows[row], contentPanel.getKeyColumnIndex());
+                
+                // check key data must is IDColumn
+                if (!isCheckedKeyType){
+                	if (keyData instanceof IDColumn){
+                		isCheckedKeyType = true;
+                	}else{
+                		log.severe("For multiple selection, IDColumn should be key column for selection");
+                		break;
+                	}
+                }
+                
+                IDColumn dataColumn = (IDColumn)keyData;
+
+                if (isHasViewID){
+                	// have viewID, get it
+                	List<String> viewIDValueList = new ArrayList <String> ();
+                	String viewIDValue = null;
+                	for (int viewIDIndex = 0; viewIDIndex < numOfViewID; viewIDIndex++){
+                		// get row data from model
+                		@SuppressWarnings("unchecked")
+						List<Object> selectedRowData = (List<Object>)contentPanel.getModel().get(rows[row]);
+                		// view data store at end of data line
+                		viewIDValue = (String)selectedRowData.get (contentPanel.getLayout().length + viewIDIndex);                		
+            			viewIDValueList.add(viewIDValue);
+                	}
+                	
+                	m_viewIDMap.put(dataColumn.getRecord_ID(), viewIDValueList);
+                }else{
+                	// hasn't viewID, set viewID value collection is null
+                	m_viewIDMap.put(dataColumn.getRecord_ID(), null);
+                }
+                
+            }
+            
+            return m_viewIDMap;
+        }else{
+        	// never has this case, because when have process, p_multipleSelection always is true
+        	return null;
+        }
+
 	}
 
 	/**
@@ -1311,7 +1434,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				ProcessModalDialog processModalDialog = (ProcessModalDialog)event.getTarget();
 				if (DialogEvents.ON_BEFORE_RUN_PROCESS.equals(event.getName())){
 					// store in T_Selection table selected rows for Execute Process that retrieves from T_Selection in code.
-					DB.createT_Selection(pInstanceID, getSelectedKeysCollection(),
+					DB.createT_Selection(pInstanceID, getSaveKeys(), getProcessIndex(processModalDialog.getAD_Process_ID()), 
 						null);					
 				}else if (ProcessModalDialog.ON_WINDOW_CLOSE.equals(event.getName())){ 
 					if (processModalDialog.isCancel()){
@@ -1335,6 +1458,24 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		//HengSin -- end --
 			}
 		});   		
+    }
+   
+    /**
+     * Get index of infoProcess have processId
+     * @param processId
+     * @return
+     */
+    protected int getProcessIndex (int processId){
+    	int index = 0;
+    	for (int i = 0; i < infoProcessList.length; i++){
+    		if (infoProcessList[i].getAD_Process_ID() == processId){
+    			return index;
+    		}
+    		// just increase index when process is have ViewID column
+    		if (infoProcessList[i].getAD_Column_ID() > 0)
+    			index++;
+    	}
+    	return -1;
     }
    
 
