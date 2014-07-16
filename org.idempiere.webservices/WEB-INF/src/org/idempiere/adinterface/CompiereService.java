@@ -15,7 +15,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -38,8 +37,6 @@ import org.compiere.util.Login;
 public class CompiereService {
 
 	private static CLogger	log = CLogger.getCLogger(CompiereService.class);
-	
-	public final static String datePattern = "dd-MM-yyyy"; 
 
 	private Properties m_ctx; 
 	
@@ -56,32 +53,17 @@ public class CompiereService {
 	
 	/** Localized Date format       */
 	public SimpleDateFormat dateFormat = null;
+	/** JDBC Date format  */
+	public SimpleDateFormat dateFormatJDBC = null;
 	/** Localized Timestamp format  */
 	public SimpleDateFormat dateTimeFormat = null;
+	/** JDBC Timestamp format  */
+	public SimpleDateFormat dateTimeFormatJDBC = null;
+	/** Localized Time format  */
+	public SimpleDateFormat timeFormat = null;
+	/** JDBC Time format  */
+	public SimpleDateFormat timeFormatJDBC = null;
 
-	/** Localized Amount format    */
-	public DecimalFormat 	amountFormat = null;
-	/** Localized Integer format    */
-	public DecimalFormat 	integerFormat = null;
-	/** Localized Number format     */
-	public DecimalFormat 	numberFormat = null;
-	/** Localized Quantity format   */
-	public DecimalFormat 	quantityFormat = null;
-
-	/** Localized Date format       */
-	public SimpleDateFormat modelDateFormat = null;
-	/** Localized Timestamp format  */
-	public SimpleDateFormat modelDateTimeFormat = null;
-
-	/** Localized Amount format    */
-	public DecimalFormat 	modelAmountFormat = null;
-	/** Localized Integer format    */
-	public DecimalFormat 	modelIntegerFormat = null;
-	/** Localized Number format     */
-	public DecimalFormat 	modelNumberFormat = null;
-	/** Localized Quantity format   */
-	public DecimalFormat 	modelQuantityFormat = null;
-	
 	private Language m_language; 
 		
 	public final String dateFormatOnlyForCtx =  "yyyy-MM-dd";
@@ -137,17 +119,12 @@ public class CompiereService {
 			Env.setContext( m_ctx, "#AD_Language", "en_US" );
 			m_language = Language.getLanguage("en_US");
 			
-			// These variables are needed for ADClient.exe
-			Language m_lang2 = Language.getLanguage("pl_PL");
-			
-			
-			dateFormat = new SimpleDateFormat( datePattern );
-			dateTimeFormat = new SimpleDateFormat( datePattern );
-			
-			amountFormat = DisplayType.getNumberFormat(DisplayType.Amount, m_lang2);
-			integerFormat = DisplayType.getNumberFormat(DisplayType.Integer, m_lang2);
-			numberFormat = DisplayType.getNumberFormat(DisplayType.Number, m_lang2);
-			quantityFormat = DisplayType.getNumberFormat(DisplayType.Quantity, m_lang2);		
+			dateFormat = DisplayType.getDateFormat(DisplayType.Date, m_language);
+			dateTimeFormat = DisplayType.getDateFormat(DisplayType.DateTime, m_language);
+			timeFormat = DisplayType.getDateFormat(DisplayType.Time, m_language);
+			dateFormatJDBC = DisplayType.getDateFormat_JDBC();
+			dateTimeFormatJDBC = DisplayType.getTimestampFormat_Default();
+			timeFormatJDBC = DisplayType.getTimeFormat_Default();
 		}
 	}
 
@@ -279,14 +256,13 @@ public class CompiereService {
 		Env.setContext( m_ctx, "#AD_Language", Lang);
 		m_language = Language.getLanguage(Lang);
 		Env.verifyLanguage( getCtx(), m_language );
-		
-		modelDateFormat = new SimpleDateFormat( datePattern );
-		modelDateTimeFormat = new SimpleDateFormat( datePattern );
-		
-		modelAmountFormat = DisplayType.getNumberFormat(DisplayType.Amount, m_language);
-		modelIntegerFormat = DisplayType.getNumberFormat(DisplayType.Integer, m_language);
-		modelNumberFormat = DisplayType.getNumberFormat(DisplayType.Number, m_language);
-		modelQuantityFormat = DisplayType.getNumberFormat(DisplayType.Quantity, m_language);
+
+		dateFormat = DisplayType.getDateFormat(DisplayType.Date, m_language);
+		dateTimeFormat = DisplayType.getDateFormat(DisplayType.DateTime, m_language);
+		timeFormat = DisplayType.getDateFormat(DisplayType.Time, m_language);
+		dateFormatJDBC = DisplayType.getDateFormat_JDBC();
+		dateTimeFormatJDBC = DisplayType.getTimestampFormat_Default();
+		timeFormatJDBC = DisplayType.getTimeFormat_Default();
 
 		//  Set Date
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
