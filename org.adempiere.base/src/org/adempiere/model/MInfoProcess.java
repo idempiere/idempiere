@@ -33,7 +33,7 @@ public class MInfoProcess extends X_AD_InfoProcess {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7324387365288006121L;
+	private static final long serialVersionUID = -2167041563372362436L;
 
 	/**
 	 * {@inheritDoc}
