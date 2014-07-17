@@ -135,24 +135,25 @@ public class GridTabCSVExporter implements IGridTabExporter
 			//Details up to tab level 1 
 			if(childs.size() > 0){		
 			  int specialDetDispayType = 0; 
-			  int numOfTabs=0;
+			  //int numOfTabs=0;
 			  for(GridTab detail: childs){
 				 
-				 if(indxDetailSelected != detail.getTabNo())
-					continue;
+				 //if(indxDetailSelected != detail.getTabNo())
+					//continue;
 				  
 				 if(!detail.isDisplayed())
 					continue;
 				 
 				 if(detail.getDisplayLogic()!=null){
-				    if(!currentRowOnly)
-				       numOfTabs--;	
-				    else if(!Evaluator.evaluateLogic(detail,detail.getDisplayLogic()))
+				    //if(!currentRowOnly)
+				       //numOfTabs--;	
+					 //TODO: it's need? DisplayLogic is evaluated when call detail.isDisplayed() 
+				    if(currentRowOnly && !Evaluator.evaluateLogic(detail,detail.getDisplayLogic()))
 					   continue;
 				 }
 				 //comment this line if you want to export all tabs
-				 if(numOfTabs > 0) 
-					break;
+				 //if(numOfTabs > 0) 
+					//break;
 		 		 
 				 if(detail.getTabLevel()>1) 
 	 			    continue; 
@@ -196,7 +197,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 				   specialDetDispayType = 0;
 			    }				 
 			    tabMapDetails.put(detail,gridFields); 
-			    numOfTabs++;
+			    //numOfTabs++;
 			}
 				gridFields = null;
 		   }
@@ -591,6 +592,25 @@ public class GridTabCSVExporter implements IGridTabExporter
 	@Override
 	public String getSuggestedFileName(GridTab gridTab) {
 		return "Export_" + gridTab.getTableName() + "." + getFileExtension();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * just export display tab, one level deep, not read only and not account tab
+	 */
+	@Override
+	public boolean isExportableTab(GridTab detail) {
+		if(!detail.isDisplayed())
+			return false;
+		
+		 if(detail.getTabLevel()>1) 
+			    return false; 
+		  
+		 if (isValidTabToExport(detail) != null){
+			 return false;
+		 }
+		 
+		 return true;
 	}
 
 }

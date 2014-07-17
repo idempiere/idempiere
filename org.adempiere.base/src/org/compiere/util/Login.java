@@ -928,7 +928,7 @@ public class Login
 
 			//	This reads all relevant window neutral defaults
 			//	overwriting superseeded ones.  Window specific is read in Mainain
-			sql = "SELECT Attribute, Value, AD_Window_ID "
+			sql = "SELECT Attribute, Value, AD_Window_ID, AD_Process_ID, PreferenceFor "
 				+ "FROM AD_Preference "
 				+ "WHERE AD_Client_ID IN (0, @#AD_Client_ID@)"
 				+ " AND AD_Org_ID IN (0, @#AD_Org_ID@)"
@@ -946,11 +946,22 @@ public class Login
 				while (rs.next())
 				{
 					int AD_Window_ID = rs.getInt(3);
+					boolean isAllWindow = rs.wasNull(); 
+					int AD_Process_ID = rs.getInt(4);
+					String PreferenceFor = rs.getString(5);
 					String at = "";
-					if (rs.wasNull())
+					
+					// preference for window
+					if ("W".equals(PreferenceFor)){
+					  if (isAllWindow)
 						at = "P|" + rs.getString(1);
-					else
+					  else
 						at = "P" + AD_Window_ID + "|" + rs.getString(1);
+					}else if ("P".equals(PreferenceFor)){ // preference for processs
+					  // when apply for all window or all process format is "P0|0|m_Attribute; 
+					  at = "P" + AD_Window_ID + "|" + AD_Process_ID + "|" + rs.getString(1);
+					}
+					
 					String va = rs.getString(2);
 					Env.setContext(m_ctx, at, va);
 				}

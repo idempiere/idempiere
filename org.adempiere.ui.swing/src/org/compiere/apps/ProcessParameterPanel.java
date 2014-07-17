@@ -63,10 +63,10 @@ import org.compiere.util.Msg;
  * @version 	2006-12-01
  */
 public class ProcessParameterPanel extends CPanel implements VetoableChangeListener, IProcessParameter {
-	/**
+		/**
 	 * 
 	 */
-	private static final long serialVersionUID = -111202562692738248L;
+	private static final long serialVersionUID = -8583999032745045111L;
 
 		/**
 		 *	Dynamic generated Parameter panel.
@@ -86,11 +86,14 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 			//
 			m_WindowNo = WindowNo;
 			m_processInfo = pi;
+			// TODO: set m_AD_Window_ID, is AD_Window_ID of window below this dialog 
 			//
 		}	//	ProcessParameterPanel
 
 		private int			m_WindowNo;
 		private ProcessInfo m_processInfo;
+		// AD_Window of window below this dialog in case show parameter dialog panel
+		private int			m_AD_Window_ID;
 		/**	Logger			*/
 		private static CLogger log = CLogger.getCLogger(ProcessParameterPanel.class);
 		//
@@ -283,7 +286,7 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 		private void createField (ResultSet rs)
 		{
 			//  Create Field
-			GridFieldVO voF = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, rs);
+			GridFieldVO voF = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, m_processInfo.getAD_Process_ID(), m_AD_Window_ID, rs);
 			GridField mField = new GridField (voF);
 			m_mFields.add(mField);                      //  add to Fields
 

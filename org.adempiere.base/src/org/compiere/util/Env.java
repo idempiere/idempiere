@@ -960,6 +960,17 @@ public final class Env
 		return (retValue == null ? "" : retValue);
 	}	//	getPreference
 
+	public static String getPreference (Properties ctx, int AD_Window_ID, int AD_Process_ID_Of_Panel, String context)
+	{
+		if (ctx == null || context == null)
+			throw new IllegalArgumentException ("Require Context");
+		String retValue = null;
+		
+		retValue = ctx.getProperty("P"+AD_Window_ID+"|"+ AD_Process_ID_Of_Panel + "|" + context);
+
+		return (retValue == null ? "" : retValue);
+	}	//	getPreference
+	
 	/**************************************************************************
 	 *  Language issues
 	 */

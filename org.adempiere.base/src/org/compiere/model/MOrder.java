@@ -1722,15 +1722,23 @@ public class MOrder extends X_C_Order implements DocAction
 			BigDecimal difference = target
 				.subtract(line.getQtyReserved())
 				.subtract(line.getQtyDelivered()); 
-			if (difference.signum() <= 0)
+
+			if (difference.signum() == 0 || line.getQtyOrdered().signum() < 0)
 			{
-				MProduct product = line.getProduct();
-				if (product != null)
+				if (difference.signum() == 0 || line.getQtyReserved().signum() == 0)
 				{
-					Volume = Volume.add(product.getVolume().multiply(line.getQtyOrdered()));
-					Weight = Weight.add(product.getWeight().multiply(line.getQtyOrdered()));
+					MProduct product = line.getProduct();
+					if (product != null)
+					{
+						Volume = Volume.add(product.getVolume().multiply(line.getQtyOrdered()));
+						Weight = Weight.add(product.getWeight().multiply(line.getQtyOrdered()));
+					}
+					continue;
 				}
-				continue;
+				else if (line.getQtyOrdered().signum() < 0 && line.getQtyReserved().signum() > 0)
+				{
+					difference = line.getQtyReserved().negate();
+				}
 			}
 			
 			if (log.isLoggable(Level.FINE)) log.fine("Line=" + line.getLine() 

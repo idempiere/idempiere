@@ -30,8 +30,11 @@ import org.compiere.util.Language;
  *			<li>FR [ 2694043 ] Query. first/firstOnly usage best practice
  */
 public final class UserPreference implements Serializable {
-	
-	private static final long serialVersionUID = -5334572174003341079L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9128019013390545760L;
+
 	/** Language			*/
 	public static final String 	P_LANGUAGE = 		"Language";
 	private static final String DEFAULT_LANGUAGE = 	Language.getName
@@ -111,7 +114,7 @@ public final class UserPreference implements Serializable {
 	 */
 	public void savePreference() {
 		if (m_AD_User_ID >= 0) {
-			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "NVL(AD_User_ID,0) = ? AND Attribute = ? AND AD_Window_ID Is NULL", null);
+			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "NVL(AD_User_ID,0) = ? AND Attribute = ? AND AD_Window_ID Is NULL AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
 			for (int i = 0; i < PROPERTIES.length; i++) {
 				String attribute = PROPERTIES[i];
 				String value = props.getProperty(attribute);
@@ -141,7 +144,7 @@ public final class UserPreference implements Serializable {
 			m_AD_User_ID = AD_User_ID;
 			props = new Properties();
 
-			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "NVL(AD_User_ID,0) = ? AND Attribute = ? AND AD_Window_ID Is NULL", null);
+			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "NVL(AD_User_ID,0) = ? AND Attribute = ? AND AD_Window_ID Is NULL AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
 
 			for (int i = 0; i < PROPERTIES.length; i++) {
 				String attribute = PROPERTIES[i];
@@ -164,7 +167,7 @@ public final class UserPreference implements Serializable {
 		if (m_AD_User_ID > 0) {
 			props = new Properties();
 
-			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "AD_User_ID = ? AND Attribute = ? AND AD_Window_ID Is NULL", null);
+			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "AD_User_ID = ? AND Attribute = ? AND AD_Window_ID Is NULL AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
 			for (int i = 0; i < PROPERTIES.length; i++) {
 				String attribute = PROPERTIES[i];
 

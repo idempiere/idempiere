@@ -521,6 +521,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 				//
 				if (m_user != null)
 					new MUserMail(m_user, m_user.getAD_User_ID(), email).saveEx();
+				else
+					new MUserMail(Env.getCtx(), email).saveEx();
 				if (email.isSentOK())
 				{
 					FDialog.info(0, this, "MessageSent");

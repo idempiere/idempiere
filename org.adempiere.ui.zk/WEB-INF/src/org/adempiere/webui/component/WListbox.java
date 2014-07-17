@@ -1135,6 +1135,12 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		//no op
 	}
 
+	/**
+	 * TODO:in theory column of model maybe not map with column of view
+	 * in case set other data model this function always return number of column of model, 
+	 * maybe not equal with number of column of view
+	 * so it should is m_layout.length
+	 */
 	public int getColumnCount() {
 		return getModel() != null ? getModel().getNoColumns() : 0;
 	}

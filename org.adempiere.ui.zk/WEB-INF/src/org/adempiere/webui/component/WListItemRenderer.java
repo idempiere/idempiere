@@ -178,6 +178,9 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 			listcell.setParent(item);
 			listcell.addEventListener(Events.ON_DOUBLE_CLICK, cellListener);
 			colIndex++;
+			// just render column in list m_tableColumns
+			if (m_tableColumns != null && m_tableColumns.size() == colIndex)
+				break;
 		}
 
 		return;

@@ -735,6 +735,11 @@ public class MClient extends X_AD_Client
 		um.setAD_User_ID(to.getAD_User_ID());
 		um.setSubject(email.getSubject());
 		um.setMailText(email.getMessageCRLF());
+		um.setMailText(email.getMessageCRLF());
+		um.setEMailFrom(email.getFrom().toString());
+		um.setRecipientTo(MUserMail.getRecipientWithCommaSeparator(email.getTos()));
+		um.setRecipientCc(MUserMail.getRecipientWithCommaSeparator(email.getCcs()));
+		um.setRecipientBcc(MUserMail.getRecipientWithCommaSeparator(email.getBccs()));
 		if (email.isSentOK())
 			um.setMessageID(email.getMessageID());
 		else

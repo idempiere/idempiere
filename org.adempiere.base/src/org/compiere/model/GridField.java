@@ -81,7 +81,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2699974883136279635L;
+	private static final long serialVersionUID = -3759342619253398035L;
 
 	/**
 	 *  Field Constructor.
@@ -660,6 +660,14 @@ public class GridField
 			}	//	while more Tokens
 		}	//	Default value
 
+	  if (getAD_Process_ID_Of_Panel() > 0){
+		defStr = Env.getPreference (m_vo.ctx, getAD_Window_ID_Of_Panel(), getAD_Process_ID_Of_Panel(), m_vo.ColumnName);
+		if (!defStr.equals(""))
+		{
+			if (log.isLoggable(Level.FINE)) log.fine("[Process Parameter Preference] " + m_vo.ColumnName + "=" + defStr);
+			return createDefault(defStr);
+		}
+	  } else {
 		/**
 		 *	(d) Preference (user) - P|
 		 */
@@ -679,6 +687,8 @@ public class GridField
 			if (log.isLoggable(Level.FINE)) log.fine("[SystemPreference] " + m_vo.ColumnName + "=" + defStr);
 			return createDefault(defStr);
 		}
+
+	  }
 
 		/**
 		 *	(f) DataType defaults
@@ -1052,6 +1062,23 @@ public class GridField
 	public int getAD_Window_ID()
 	{
 		return m_vo.AD_Window_ID;
+	}
+	/** 
+	 *  in case this field lie on parameter process panel, AD_Process_ID_Of_Panel is id of process will run in this panel 
+	 *  it's difference with AD_Process_ID
+	 */
+	public int getAD_Process_ID_Of_Panel()
+	{
+		return m_vo.AD_Process_ID_Of_Panel;
+	}
+	
+	/** 
+	 *  in case this field lie on parameter process panel, AD_Process_ID_Of_Panel is id of process will run in this panel 
+	 *  it's difference with AD_Process_ID
+	 */
+	public int getAD_Window_ID_Of_Panel()
+	{
+		return m_vo.AD_Window_ID_Of_Panel > 0 ? m_vo.AD_Window_ID_Of_Panel : m_vo.AD_Window_ID;		
 	}
 	
 	/** get AD_Chart_ID
