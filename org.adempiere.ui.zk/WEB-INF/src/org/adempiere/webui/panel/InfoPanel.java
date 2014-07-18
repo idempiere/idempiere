@@ -1349,7 +1349,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     	            model.setMultiple(p_multipleSelection);
     	            contentPanel.setData(model, null);
 
-    				contentPanel.setSelectedIndex(0);
+    				//contentPanel.setSelectedIndex(0);
     			}
             }
             else if (event.getName().equals(Events.ON_CHANGE))
