@@ -159,10 +159,12 @@ public class GridTab2PackExporter implements IGridTabExporter {
 
 	/**
 	 * {@inheritDoc}
-	 * With 2Pack, everry tab is support to export
+	 * With 2Pack, just trl tabs are not intended to be exported (they are exported as translation
 	 */
 	@Override
 	public boolean isExportableTab(GridTab gridTab) {
+		if (gridTab.getTableName().toLowerCase().endsWith("_trl"))
+			return false;
 		return true;
 	}
 }
