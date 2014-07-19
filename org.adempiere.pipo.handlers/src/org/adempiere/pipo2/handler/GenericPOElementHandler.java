@@ -53,13 +53,13 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class GenericPOElementHandler extends AbstractElementHandler {
 
-	private String tableName;
+	private String m_tableName;
 
 	public GenericPOElementHandler() {
 	}
 	
 	public GenericPOElementHandler(String tableName) {
-		this.tableName = tableName;
+		this.m_tableName = tableName;
 	}
 
 	public void startElement(PIPOContext ctx, Element element) throws SAXException {
@@ -223,6 +223,12 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						document.startElement("", "", tables[index], atts);
 						PoExporter filler = new PoExporter(ctx, document, po);
 						filler.export(excludes, true);
+						ctx.packOut.getCtx().ctx.put("Table_Name",tables[index]);
+						try {
+							new CommonTranslationHandler().packOut(ctx.packOut,document,null,po.get_ID());
+						} catch(Exception e) {
+							if (log.isLoggable(Level.INFO)) log.info(e.toString());
+						}
 					}
 				}
 				for (int i=index+1; i<tables.length; i++) {
@@ -252,8 +258,8 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 		}
 		else
 		{
-			tableId = MTable.get(packout.getCtx().ctx, tableName).getAD_Table_ID();
-			sql = "SELECT * FROM " + tableName + " WHERE " + tableName + "_ID=" + recordId;
+			tableId = MTable.get(packout.getCtx().ctx, m_tableName).getAD_Table_ID();
+			sql = "SELECT * FROM " + m_tableName + " WHERE " + m_tableName + "_ID=" + recordId;
 		}
 		packout.getCtx().ctx.put(DataElementParameters.AD_TABLE_ID, Integer.toString(tableId));
 		packout.getCtx().ctx.put(DataElementParameters.SQL_STATEMENT, sql);
