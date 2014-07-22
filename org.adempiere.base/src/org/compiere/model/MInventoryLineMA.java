@@ -238,7 +238,7 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//Set DateMaterialPolicy
-		if(is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)){
+		if(!newRecord && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)){
 			I_M_InventoryLine line = getM_InventoryLine();
 			
 			Timestamp dateMPolicy = null;
