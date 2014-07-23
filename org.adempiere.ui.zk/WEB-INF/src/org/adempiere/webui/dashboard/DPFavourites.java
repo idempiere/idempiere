@@ -353,7 +353,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 			return "images/mWindow.png";
 		if (mt.isReport())
 			return "images/mReport.png";
-		if (mt.isProcess())
+		if (mt.isProcess() || mt.isTask())
 			return "images/mProcess.png";
 		if (mt.isWorkFlow())
 			return "images/mWorkFlow.png";
