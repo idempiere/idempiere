@@ -28,7 +28,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 
@@ -300,7 +299,7 @@ public class GridFieldVO implements Serializable
 				if (userDef.getSeqNo() > 0)
 				    vo.SeqNo = userDef.getSeqNo();
 				if (userDef.getAD_Val_Rule_ID() > 0)
-					vo.ValidationCode  = DB.getSQLValueStringEx(null, "SELECT Code FROM AD_Val_Rule WHERE AD_Val_Rule_ID = ?", userDef.getAD_Val_Rule_ID());
+					vo.ValidationCode  = MValRule.get(ctx, userDef.getAD_Val_Rule_ID()).getCode();
 			}
 		}
 		//
