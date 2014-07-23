@@ -233,8 +233,16 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 		else if (WEditorPopupMenu.EDITOR_EVENT.equals(evt.getContextEvent()))
 		{
 			adwindowContent = findADWindowContent();
+			boolean isHtml = false;
+			if ((   gridField.getDisplayType() == DisplayType.Text 
+				 || gridField.getDisplayType() == DisplayType.TextLong
+				 || gridField.getDisplayType() == DisplayType.Memo)
+				&& adwindowContent != null
+				&& adwindowContent.getActiveGridTab() != null) {
+				isHtml = adwindowContent.getActiveGridTab().getValueAsBoolean("IsHtml");
+			}
 			final WTextEditorDialog dialog = new WTextEditorDialog(gridField.getVO().Header, getDisplay(),
-					isReadWrite(), gridField.getFieldLength());
+					isReadWrite(), gridField.getFieldLength(), isHtml);
 			dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {
