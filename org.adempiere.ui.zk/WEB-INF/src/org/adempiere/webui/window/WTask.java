@@ -37,9 +37,9 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
+import org.zkoss.zul.South;
 
 /**
  *  Application Task
@@ -96,7 +96,14 @@ public class WTask extends Window implements EventListener<Event>, IHelpContext
 
 			SessionManager.getAppDesktop().showWindow(this);
 
-			Events.echoEvent("executeTask", this, null);
+			addEventListener("onExecuteTask", new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					executeTask();
+				}
+			});
+
+			Events.echoEvent("onExecuteTask", this, null);
 		}
 		catch(Exception e)
 		{
@@ -204,8 +211,8 @@ public class WTask extends Window implements EventListener<Event>, IHelpContext
 			taskThread.interrupt();
 		else if (e.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT))
     		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Task, m_task.getAD_Task_ID());
-
-		SessionManager.getAppDesktop().closeActiveWindow();
+		else if (e.getName().equals(Events.ON_CLICK))
+			SessionManager.getAppDesktop().closeActiveWindow();
 	}   //  actionPerformed
 
 }   //  ATask

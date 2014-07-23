@@ -38,11 +38,11 @@ import org.zkoss.zul.Vlayout;
  *
  */
 public class WTextEditorDialog extends Window implements EventListener<Event>{
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3852236029054284848L;
+	private static final long serialVersionUID = 1188165765430615546L;
+
 	private boolean editable;
 	private int maxSize;
 	private String text;
@@ -59,8 +59,9 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	 * @param text
 	 * @param editable
 	 * @param maxSize
+	 * @param isHtml - select the html tab at start
 	 */
-	public WTextEditorDialog(String title, String text, boolean editable, int maxSize) {
+	public WTextEditorDialog(String title, String text, boolean editable, int maxSize, boolean IsHtml) {
 		super();
 		setTitle(title);
 		this.editable = editable;
@@ -68,8 +69,14 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		this.text = text;
 		
 		init();
+		if (IsHtml)
+			tabbox.setSelectedTab(htmlTab);
 	}
-	
+
+	public WTextEditorDialog(String title, String text, boolean editable, int maxSize) {
+		this(title, text, editable, maxSize, false);
+	}
+
 	private void init() {
 		setBorder("normal");
 		setHeight("450px");

@@ -264,7 +264,7 @@ public class MInOutLineMA extends X_M_InOutLineMA
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//Set DateMaterialPolicy
-		if(is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)){
+		if(!newRecord && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)){
 			//TODO Require testing for all scenario
 			I_M_InOutLine line = getM_InOutLine();
 			
