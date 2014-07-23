@@ -17,6 +17,8 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import static org.compiere.model.SystemIDs.REFERENCE_AD_USER;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -26,9 +28,9 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import static org.compiere.model.SystemIDs.*;
 
 
 /**
@@ -297,7 +299,8 @@ public class GridFieldVO implements Serializable
 				//IDEMPIERE-1120 Implement Field SeqNo customization
 				if (userDef.getSeqNo() > 0)
 				    vo.SeqNo = userDef.getSeqNo();
-
+				if (userDef.getAD_Val_Rule_ID() > 0)
+					vo.ValidationCode  = DB.getSQLValueStringEx(null, "SELECT Code FROM AD_Val_Rule WHERE AD_Val_Rule_ID = ?", userDef.getAD_Val_Rule_ID());
 			}
 		}
 		//
