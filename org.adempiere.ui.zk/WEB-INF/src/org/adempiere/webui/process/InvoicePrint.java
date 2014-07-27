@@ -229,7 +229,7 @@ public class InvoicePrint extends SvrProcess
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
-		List<File> pdfList = new ArrayList<File>();
+		final List<File> pdfList = new ArrayList<File>();
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName()); 
@@ -368,6 +368,20 @@ public class InvoicePrint extends SvrProcess
 			DB.close(rs, pstmt);
 		}
 		
+		AEnv.executeAsyncDesktopTask(new Runnable() {
+			@Override
+			public void run() {
+				showReports(pdfList);
+			}
+		});
+
+		//
+		if (p_EMailPDF)
+			return "@Sent@=" + count + " - @Errors@=" + errors;
+		return "@Printed@=" + count;
+	}	//	doIt
+
+	private void showReports(List<File> pdfList) {
 		if (pdfList.size() > 1) {
 			try {
 				File outFile = File.createTempFile("InvoicePrint", ".pdf");					
@@ -390,10 +404,6 @@ public class InvoicePrint extends SvrProcess
 			}
 		}
 		
-		//
-		if (p_EMailPDF)
-			return "@Sent@=" + count + " - @Errors@=" + errors;
-		return "@Printed@=" + count;
-	}	//	doIt
+	}
 
 }	//	InvoicePrint
