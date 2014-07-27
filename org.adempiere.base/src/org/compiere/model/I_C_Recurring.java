@@ -138,6 +138,17 @@ public interface I_C_Recurring
 	  */
 	public int getCreatedBy();
 
+    /** Column name C_RecurringGroup_ID */
+    public static final String COLUMNNAME_C_RecurringGroup_ID = "C_RecurringGroup_ID";
+
+	/** Set Recurring Group	  */
+	public void setC_RecurringGroup_ID (int C_RecurringGroup_ID);
+
+	/** Get Recurring Group	  */
+	public int getC_RecurringGroup_ID();
+
+	public org.compiere.model.I_C_RecurringGroup getC_RecurringGroup() throws RuntimeException;
+
     /** Column name C_Recurring_ID */
     public static final String COLUMNNAME_C_Recurring_ID = "C_Recurring_ID";
 
