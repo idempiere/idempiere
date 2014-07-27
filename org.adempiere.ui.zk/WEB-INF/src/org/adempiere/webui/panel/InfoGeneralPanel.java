@@ -506,11 +506,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			pstmt.setString(index++, getSQLText(txt3));
 		if (txt4.getText().length() > 0)
 			pstmt.setString(index++, getSQLText(txt4));
-	}   //  setParameters
-
-    public void tableChanged(WTableModelEvent event)
-    {
-    }
+	}   //  setParameters    
 
     @Override
 	protected void insertPagingComponent()
