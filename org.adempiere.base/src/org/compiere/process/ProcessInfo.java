@@ -43,7 +43,7 @@ public class ProcessInfo implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1371812474929601477L;
+	private static final long serialVersionUID = -3654748247858779823L;
 
 	/**
 	 *  Constructor
@@ -783,4 +783,16 @@ public class ProcessInfo implements Serializable
 	public PO getPO() {
 		return m_po;
 	}
+
+	/** FileName to be used */
+	private String m_PDFfileName;
+
+	public String getPDFFileName() {
+		return m_PDFfileName;
+	}
+
+	public void setPDFFileName(String fileName) {
+		this.m_PDFfileName = fileName;
+	}
+
 }   //  ProcessInfo

@@ -74,12 +74,14 @@ import org.compiere.model.PrintInfo;
 import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.layout.LayoutEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.eevolution.model.MDDOrder;
 import org.eevolution.model.X_PP_Order;
@@ -993,10 +995,17 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 
 		try
 		{
-			if (m_layout == null)
-				layout ();			
-			Document.getPDFAsFile(fileName, m_layout.getPageable(false));
-			ArchiveEngine.get().archive(new File(fileName), m_info);
+			if (m_printFormat != null && m_printFormat.getJasperProcess_ID() > 0) {
+				ProcessInfo pi = new ProcessInfo ("", m_printFormat.getJasperProcess_ID(), m_printFormat.getAD_Table_ID(), m_info.getRecord_ID());
+				pi.setIsBatch(true);
+				pi.setPDFFileName(fileName);
+				ServerProcessCtl.process(pi, (m_trxName == null ? null : Trx.get(m_trxName, false)));
+			} else {
+				if (m_layout == null)
+					layout ();
+				Document.getPDFAsFile(fileName, m_layout.getPageable(false));
+				ArchiveEngine.get().archive(new File(fileName), m_info);
+			}
 		}
 		catch (Exception e)
 		{
