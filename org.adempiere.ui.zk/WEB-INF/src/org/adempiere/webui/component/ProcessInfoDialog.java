@@ -98,13 +98,8 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 
 				if (log.getAD_Table_ID() > 0
 						&& log.getRecord_ID() > 0) {
-					A recordLink = new A();
-					recordLink.setLabel(sb.toString());
-					recordLink.setAttribute("Record_ID",
-							String.valueOf(log.getRecord_ID()));
-					recordLink.setAttribute("AD_Table_ID",
-							String.valueOf(log.getAD_Table_ID()));
-					recordLink.addEventListener(Events.ON_CLICK, this);
+					DocumentLink recordLink = new DocumentLink(sb.toString(), log.getAD_Table_ID(), log.getRecord_ID());
+																				
 					pnlMessage.appendChild(recordLink);
 				} else {
 					Text recordText = new Text(sb.toString());
@@ -153,18 +148,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	public void onEvent(Event event) throws Exception {
 		if (event == null)
 			return;
-		if (event.getTarget() instanceof A) {
-			int Record_ID = 0;
-			int AD_Table_ID = 0;
-			Record_ID = Integer.valueOf((String) event.getTarget()
-					.getAttribute("Record_ID"));
-			AD_Table_ID = Integer.valueOf((String) event.getTarget()
-					.getAttribute("AD_Table_ID"));
-
-			if (Record_ID > 0 && AD_Table_ID > 0) {
-				AEnv.zoom(AD_Table_ID, Record_ID);
-			}
-		} else if (event.getTarget() == btnOk) {
+		if (event.getTarget() == btnOk) {
 			this.detach();
 		}
 	}
