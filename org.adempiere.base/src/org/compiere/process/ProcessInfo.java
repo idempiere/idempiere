@@ -608,9 +608,14 @@ public class ProcessInfo implements Serializable
 	{
 		if (m_logs == null)
 			return null;
-		int[] ids = new int[m_logs.size()];
-		for (int i = 0; i < m_logs.size(); i++)
-			ids[i] = m_logs.get(i).getP_ID();
+		ArrayList<Integer> idsarray = new ArrayList<Integer>();
+		for (int i = 0; i < m_logs.size(); i++) {
+			if (m_logs.get(i).getP_ID() > 0)
+				idsarray.add(m_logs.get(i).getP_ID());
+		}
+		int[] ids = new int[idsarray.size()];
+		for (int i = 0; i < idsarray.size(); i++)
+			ids[i] = idsarray.get(i);
 		return ids;
 	}	//	getIDs
 

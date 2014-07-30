@@ -1046,9 +1046,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			// reset shipment line invoiced flag
 			MInvoiceLine[] lines = getLines(false);
 			for (int i = 0; i < lines.length; i++) {
-				MInOutLine sLine = new MInOutLine(getCtx(), lines[i].getM_InOutLine_ID(), get_TrxName());
-				sLine.setIsInvoiced(false);
-				sLine.saveEx();
+				if (lines[i].getM_InOutLine_ID() > 0) {
+					MInOutLine sLine = new MInOutLine(getCtx(), lines[i].getM_InOutLine_ID(), get_TrxName());
+					sLine.setIsInvoiced(false);
+					sLine.saveEx();
+				}
 			}	
 		}			
 		return true;
