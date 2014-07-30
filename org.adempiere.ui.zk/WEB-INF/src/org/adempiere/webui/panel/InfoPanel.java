@@ -44,6 +44,7 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.ListModelTable;
+import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.WListItemRenderer;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
@@ -69,6 +70,8 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoLog;
+import org.compiere.process.ProcessInfoUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -1483,12 +1486,26 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 						enableButtons();
 					}else if (m_pi.isError()){
 						// show error info
-						FDialog.error(p_WindowNo, m_pi.getSummary());
+						ProcessInfoUtil.setLogFromDB(m_pi);						
+						ProcessInfoLog m_logs[] = m_pi.getLogs();
+						if (m_logs != null && m_logs.length > 0) {
+							ProcessInfoDialog.showProcessInfo(m_pi, p_WindowNo, InfoPanel.this, false);
+						}else{
+							FDialog.error(p_WindowNo, m_pi.getSummary());
+						}
 						// enable or disable control button rely selected record status 
 						enableButtons();
-					}else if (!m_pi.isError() && m_pi.getSummary() != null && m_pi.getSummary().trim().length() > 0){
-						// when success, show summary if exists
-						FDialog.info(p_WindowNo, null, m_pi.getSummary());
+					}else if (!m_pi.isError()){
+						ProcessInfoUtil.setLogFromDB(m_pi);						
+						ProcessInfoLog m_logs[] = m_pi.getLogs();
+						if (m_logs != null && m_logs.length > 0) {
+							ProcessInfoDialog.showProcessInfo(m_pi, p_WindowNo, InfoPanel.this, false);
+							
+							// when success, show summary if exists
+						}else if (m_pi.getSummary() != null && m_pi.getSummary().trim().length() > 0){
+							FDialog.info(p_WindowNo, null, m_pi.getSummary());
+						}		
+						
 						Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", m_results));
 					}
 					
