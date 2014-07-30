@@ -16,17 +16,22 @@ package org.adempiere.webui.component;
 
 import java.text.SimpleDateFormat;
 
+import org.adempiere.webui.ISupportMask;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
+import org.compiere.process.ProcessInfoUtil;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zhtml.Text;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.A;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Separator;
@@ -161,5 +166,33 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		} else if (event.getTarget() == btnOk) {
 			this.detach();
 		}
+	}
+	
+	/**
+	 * after run a process, call this function to show result in a dialog 
+	 * @param pi
+	 * @param windowNo
+	 * @param comp
+	 * @param needFillLogFromDb if ProcessInfoUtil.setLogFromDB(pi) is called by outer function, 
+	 * just pass false, other pass true to avoid duplicate message 
+	 */
+	public static void showProcessInfo (ProcessInfo pi, int windowNo, final Component comp, boolean needFillLogFromDb) {						
+		//		Get Log Info
+		if (needFillLogFromDb)
+			ProcessInfoUtil.setLogFromDB(pi);
+		ProcessInfoLog m_logs[] = pi.getLogs();
+		
+		if (m_logs != null && m_logs.length > 0) {
+			ProcessInfoDialog dialog = new ProcessInfoDialog(AEnv.getDialogHeader(Env.getCtx(), windowNo),AEnv.getDialogHeader(Env.getCtx(), windowNo), m_logs);
+			final ISupportMask supportMask = LayoutUtils.showWindowWithMask(dialog, comp, LayoutUtils.OVERLAP_PARENT);;
+			dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					supportMask.hideMask();
+				}
+			});			
+			
+		}
+		
 	}
 }
