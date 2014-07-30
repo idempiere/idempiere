@@ -16,6 +16,10 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import org.adempiere.webui.component.Label;
+import org.adempiere.webui.component.Mask;
+import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuOuter;
 import org.zkoss.zk.au.out.AuScript;
@@ -220,5 +224,98 @@ public final class LayoutUtils {
 			sclass = sclass.trim();
 			target.setSclass(sclass);
 		}
+	}
+	
+	public static final int OVERLAP_TAB_PANEL = 1;
+	public static final int OVERLAP_ALL_PAGE = 2;
+	public static final int OVERLAP_PARENT = 3;
+	public static final int OVERLAP_SELF = 4;
+	
+	/**
+	 * show window with a mask below. mask over tabPanel, all window or only over a control, dependency ownModel flag.
+	 * when ownModel == {@link #OVERLAP_SELF}, window show overlap childOfOwn, 
+	 * 					when childOfOwn isn't implement {@link ISupportMask} make new {@link Mask} object to make mask layout
+	 *                	ownModel == {@link #OVERLAP_ALL_PAGE}, window show overlap all page
+	 *                  ownModel == {@link #OVERLAP_TAB_PANEL}, window show overlap tabPanel
+	 *                  ownModel == {@link #OVERLAP_PARENT}, search near parent of childOfOwn implement {@link ISupportMask} if not exist user as OVERLAP_ALL_PAGE
+	 * @param window 
+	 * @param childOfOwn  
+	 * @param ownModel
+	 * @return when show success return IMask object, it is own window, use {@link ISupportMask#hideMask()} to hiden mask. 
+	 * other return null. with case return null (show over childOfOwn or parent of childOfOwn but childOfOwn or parent of childOfOwn isn't implement {@link ISupportMask}), please consider use {@link #showOverlapWithMask(Component, Component)}  
+	 */
+	public static ISupportMask showWindowWithMask(Window window, Component childOfOwn, int ownModel){
+		ISupportMask ownWindow = null;
+		// search to top parent, capture parent with interface ISupportMask
+		if (ownModel == OVERLAP_SELF && ISupportMask.class.isInstance(childOfOwn)){
+			ownWindow = (ISupportMask) childOfOwn;			
+		}else  if (ownModel == OVERLAP_TAB_PANEL){
+			ownWindow = findMaskParent (childOfOwn, Tabpanel.class);
+		}else  if (ownModel == OVERLAP_PARENT){
+			ownWindow = findMaskParent (childOfOwn, null);
+		}else if (ownModel == OVERLAP_ALL_PAGE){
+			IDesktop desktop = SessionManager.getAppDesktop();
+			if (desktop != null && ISupportMask.class.isInstance(desktop)){
+				ownWindow = (ISupportMask)desktop;				
+			}			
+		}
+		
+		// show window
+		if (ownWindow != null){
+			showWindowWithMask (window, ownWindow);
+		}
+		
+		return ownWindow;		 
+	}
+	
+	/**
+	 * Show window in center of component get from {@link}
+	 * @param window
+	 * @param mask
+	 */
+	protected static void showWindowWithMask(Window window, ISupportMask mask){
+		mask.showMask();
+		mask.getMaskComponent().appendChild(window);
+		LayoutUtils.openOverlappedWindow(mask.getMaskComponent(), window, "middle_center");
+	}
+	
+	/**
+	 * Show window over ownWindow with a mask, use when ownWindow isn't implement {@link ISupportMask}
+	 * @param window
+	 * @param ownWindow
+	 * @param mask if mask = null, make new and return it
+	 * @return {@link Mask} objec for hiden mask when close window.
+	 */
+	public static Mask showWindowWithMask(Window window, Component ownWindow, Mask mask){
+		if (mask == null){
+			mask = new Mask();
+		}		
+		ownWindow.appendChild(mask);		
+		
+		ownWindow.appendChild(window);		
+		LayoutUtils.openOverlappedWindow(ownWindow, window, "middle_center");
+		
+		return mask;
+	}
+	
+	/**
+	 * find parent control of child control, parent must implement {@link ISupportMask}
+	 * if parentClass != null, parent class must extends parentClass
+	 * @param child
+	 * @param ownModel
+	 * @return
+	 */
+	public static ISupportMask findMaskParent (Component child, Class<?> parentClass){
+		Component parent = child;
+		ISupportMask trueParent = null;		
+		while ((parent = parent.getParent()) != null){
+			if (ISupportMask.class.isInstance(parent)){
+				if (parentClass == null || parentClass.isInstance(parent)){						
+					trueParent = (ISupportMask)parent;
+					break;
+				}
+			}
+		}
+		return trueParent;
 	}
 }

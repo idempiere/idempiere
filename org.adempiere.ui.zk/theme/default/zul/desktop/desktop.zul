@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zk>
+  <div height="100%">
 	<borderlayout id="layout" sclass="desktop-layout">
 		<north sclass="desktop-north">
 			<include src="/theme/default/zul/desktop/header.zul" id="northBody"/>
@@ -12,4 +13,5 @@
 		<center sclass="desktop-center" id="windowArea">
 		</center>
 	</borderlayout>
+  </div>
 </zk>

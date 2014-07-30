@@ -17,7 +17,9 @@
 
 package org.adempiere.webui.component;
 
+import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.event.DialogEvents;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
@@ -29,7 +31,7 @@ import org.zkoss.zk.ui.event.Events;
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
-public class Window extends org.zkoss.zul.Window
+public class Window extends org.zkoss.zul.Window implements ISupportMask
 {
     /**
 	 * 
@@ -104,5 +106,52 @@ public class Window extends org.zkoss.zul.Window
 		} else {
 			return Mode.HIGHLIGHTED;
 		}
+	}
+	
+	/**
+	 * cache {@link Mask} Object
+	 */
+	private Mask maskObj; 
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void showMask() {
+		maskObj = getMaskObj ();
+		if (maskObj.getParent() == null){
+			this.appendChild(maskObj);
+		}
+		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void hideMask() {
+		if (maskObj != null || maskObj.getParent() != null){
+			maskObj.detach();
+		}
+		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Mask getMaskObj() {
+		if (maskObj == null)
+			maskObj = new Mask();
+		
+		return maskObj;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Component getMaskComponent() {		
+		return this;
 	}
 }

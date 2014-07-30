@@ -17,7 +17,9 @@
 
 package org.adempiere.webui.component;
 
+import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zul.Tab;
 
@@ -27,7 +29,7 @@ import org.zkoss.zul.Tab;
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
-public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace
+public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace, ISupportMask
 {
     /**
 	 * 
@@ -84,5 +86,52 @@ public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace
 	
 	public void setOnCloseHandler(ITabOnCloseHandler handler) {
 		this.onCloseHandler = handler;
+	}
+	
+	/**
+	 * cache {@link Mask} Object
+	 */
+	private Mask maskObj; 
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void showMask() {
+		maskObj = getMaskObj ();
+		if (maskObj.getParent() == null){
+			this.appendChild(maskObj);
+		}
+		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void hideMask() {
+		if (maskObj != null || maskObj.getParent() != null){
+			maskObj.detach();
+		}
+		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Mask getMaskObj() {
+		if (maskObj == null)
+			maskObj = new Mask();
+		
+		return maskObj;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Component getMaskComponent() {		
+		return this;
 	}
 }
