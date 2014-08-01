@@ -2,14 +2,7 @@ Accounting.txt
 --------------
 
 This directory contains example natural account structure. 
-Note that Adempiere only maintains and validates AccountingUS.xls/csv.
+Note that iDempiere only maintains and validates AccountingUS.xls/csv and AccountingDefaultsOnly.csv
 
-The other examples are contributions may not be complete.
-
-For explanation, use and updates please check
-http://www.adempiere.com/wiki/index.php/COA
-
-We suggest to maintain your info in xls, but save the 
-account structure in csv for import.
-
-
+You can find localized (country) versions of the Chart of Accounts at the wiki page:
+http://wiki.idempiere.org/en/Localizations

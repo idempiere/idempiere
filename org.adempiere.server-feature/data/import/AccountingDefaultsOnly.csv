@@ -1,0 +1,56 @@
+[Account_Value],[Account_Name],[Account_Description],[Account_Type],[Account_Sign],[Account_Document],[Account_Summary],[Default_Account],[Account_Parent]
+DEFAULTS_NOT_CONFIGURED,Not Configured Default Accounts,Not Configured Default Accounts,Asset,,No,Yes,SUMMARY,
+B_ASSET,Checking Account,Bank Asset,Asset,,Yes,No,B_ASSET_ACCT,DEFAULTS_NOT_CONFIGURED
+B_INTRANSIT,Checking In-Transfer,Bank transactions in transit,Asset,,Yes,No,B_INTRANSIT_ACCT,DEFAULTS_NOT_CONFIGURED
+B_UNALLOCATEDCASH,Checking Unallocated Receipts,"Received, unallocated payments",Asset,,Yes,No,B_UNALLOCATEDCASH_ACCT,DEFAULTS_NOT_CONFIGURED
+CB_ASSET,Petty Cash,Cash Book Asset,Asset,,Yes,No,CB_ASSET_ACCT,DEFAULTS_NOT_CONFIGURED
+CB_CASHTRANSFER,Petty Cash In-Transfer,Cash Book Transfer,Asset,,Yes,No,CB_CASHTRANSFER_ACCT,DEFAULTS_NOT_CONFIGURED
+C_RECEIVABLE,Accounts Receivable - Trade,Accounts Receivables,Asset,,Yes,No,C_RECEIVABLE_ACCT,DEFAULTS_NOT_CONFIGURED
+C_RECEIVABLE_SERVICES,Accounts Receivable Services - Trade,Accounts Receivables for Services,Asset,,Yes,No,C_RECEIVABLE_SERVICES_ACCT,DEFAULTS_NOT_CONFIGURED
+V_PREPAYMENT,Vendor prepayment,Prepayments for future expense,Asset,,Yes,No,V_PREPAYMENT_ACCT,DEFAULTS_NOT_CONFIGURED
+T_CREDIT,Tax credit A/R,Tax to be reimbursed - before tax declaration,Asset,,Yes,No,T_CREDIT_ACCT,DEFAULTS_NOT_CONFIGURED
+INTERCOMPANYDUEFROM,Intercompany Due From,Default Receivables account for intercompany trx,Asset,,Yes,No,INTERCOMPANYDUEFROM_ACCT,DEFAULTS_NOT_CONFIGURED
+P_ASSET,Product asset,Product Inventory Account,Asset,,Yes,No,P_ASSET_ACCT,DEFAULTS_NOT_CONFIGURED
+PJ_ASSET,Project asset,Created Asset,Asset,,Yes,No,PJ_ASSET_ACCT,DEFAULTS_NOT_CONFIGURED
+PJ_WIP,Project WIP,Asset Work in Progress,Asset,,Yes,No,PJ_WIP_ACCT,DEFAULTS_NOT_CONFIGURED
+V_LIABILITY,Accounts Payable Trade,Accounts Payables,Liability,,Yes,No,V_LIABILITY_ACCT,DEFAULTS_NOT_CONFIGURED
+NOTINVOICEDRECEIPTS,Not invoiced receipts,"Received products/services from vendors, but not invoiced",Liability,,Yes,No,NOTINVOICEDRECEIPTS_ACCT,DEFAULTS_NOT_CONFIGURED
+V_LIABILITY_SERVICES,Accounts Payable Services,Accounts Payables for non-product revenue,Liability,,Yes,No,V_LIABILITY_SERVICES_ACCT,DEFAULTS_NOT_CONFIGURED
+B_PAYMENTSELECT,Payment selection,Selected A/P invoices for payment ,Liability,,Yes,No,B_PAYMENTSELECT_ACCT,DEFAULTS_NOT_CONFIGURED
+C_PREPAYMENT,Customer Prepayments,Prepayments for future revenue,Liability,,Yes,No,C_PREPAYMENT_ACCT,DEFAULTS_NOT_CONFIGURED
+T_DUE,Tax due,Tax to be paid - before tax declaration,Liability,,Yes,No,T_DUE_ACCT,DEFAULTS_NOT_CONFIGURED
+INTERCOMPANYDUETO,Intercompany Due To,Default Payables account for intercompany trx,Liability,,Yes,No,INTERCOMPANYDUETO_ACCT,DEFAULTS_NOT_CONFIGURED
+P_REVENUE,Trade Revenue,Default Product or Service revenue,Revenue,,Yes,No,P_REVENUE_ACCT,DEFAULTS_NOT_CONFIGURED
+UNEARNEDREVENUE,Unearned revenue,"We have invoiced, but not delivered yet",Revenue,,Yes,No,UNEARNEDREVENUE_ACCT,DEFAULTS_NOT_CONFIGURED
+P_TRADEDISCOUNTGRANT,Trade Discounts,Granted Trade discounts (corrects Product Revenue),Revenue,,Yes,No,P_TRADEDISCOUNTGRANT_ACCT,DEFAULTS_NOT_CONFIGURED
+PAYDISCOUNT_EXP,Payment discount expense,Granted early payment discount to customers,Revenue,,Yes,No,PAYDISCOUNT_EXP_ACCT,DEFAULTS_NOT_CONFIGURED
+P_COGS,Product CoGs,Cost of Goods Sold,Expense,,Yes,No,P_COGS_ACCT,DEFAULTS_NOT_CONFIGURED
+P_EXPENSE,Product Expense,Default Service costs (I.e. not on inventory),Expense,,Yes,No,P_EXPENSE_ACCT,DEFAULTS_NOT_CONFIGURED
+P_COSTADJUSTMENT,Product Cost Adjustment,Product Cost Adjustments,Expense,,Yes,No,P_COSTADJUSTMENT_ACCT,DEFAULTS_NOT_CONFIGURED
+P_LANDEDCOSTCLEARING,Landed Cost Clearing,Default Landed Cost Clearing,Expense,,Yes,No,P_LANDEDCOSTCLEARING_ACCT,DEFAULTS_NOT_CONFIGURED
+P_INVENTORYCLEARING,Product Inventory Clearing,Default Product costs (I.e. on inventory),Expense,,Yes,No,P_INVENTORYCLEARING_ACCT,DEFAULTS_NOT_CONFIGURED
+W_DIFFERENCES,Inventory Shrinkage,Physical Inventory Gain/Loss,Expense,,Yes,No,W_DIFFERENCES_ACCT,DEFAULTS_NOT_CONFIGURED
+P_INVOICEPRICEVARIANCE,Invoice price variance,Difference between product cost and invoice price (IPV),Expense,,Yes,No,P_INVOICEPRICEVARIANCE_ACCT,DEFAULTS_NOT_CONFIGURED
+P_PURCHASEPRICEVARIANCE,Purchase price variance,Difference between purchase price and standard costs (PPV),Expense,,Yes,No,P_PURCHASEPRICEVARIANCE_ACCT,DEFAULTS_NOT_CONFIGURED
+PPVOFFSET,Purchase price variance Offset,Offset Account for Purchase price variance (PPV) ,Expense,,Yes,No,PPVOFFSET_ACCT,DEFAULTS_NOT_CONFIGURED
+P_RATEVARIANCE,Rate Variance,Account for Rate Variance,Expense,,Yes,No,P_RATEVARIANCE_ACCT,DEFAULTS_NOT_CONFIGURED
+P_AVERAGECOSTVARIANCE,Average Cost Variance,Account for Average Cost Variance,Expense,,Yes,No,P_AVERAGECOSTVARIANCE_ACCT,DEFAULTS_NOT_CONFIGURED
+P_TRADEDISCOUNTREC,Trade discounts received,Received Trade Discounts (corrects Product expense),Expense,,Yes,No,P_TRADEDISCOUNTREC_ACCT,DEFAULTS_NOT_CONFIGURED
+PAYDISCOUNT_REV,Payment discount revenue,Granted early payment discount from vendors,Expense,,Yes,No,PAYDISCOUNT_REV_ACCT,DEFAULTS_NOT_CONFIGURED
+T_EXPENSE,Tax expense,Sales Tax paid to Vendors,Expense,,Yes,No,T_EXPENSE_ACCT,DEFAULTS_NOT_CONFIGURED
+WRITEOFF,Bad Debts Write-off,Receivables write-off - bad debt,Expense,,Yes,No,WRITEOFF_ACCT,DEFAULTS_NOT_CONFIGURED
+CB_DIFFERENCES,Petty Cash Over/Short,Petty Cash Differences,Expense,,Yes,No,CB_DIFFERENCES_ACCT,DEFAULTS_NOT_CONFIGURED
+DEFAULT,Default account,Default Account (if no other account is defined) V1.1,Expense,,Yes,No,DEFAULT_ACCT,DEFAULTS_NOT_CONFIGURED
+SUSPENSEBALANCING,Suspense balancing ,Difference to make journal balance in source currency - needs to be solved,Expense,,Yes,No,SUSPENSEBALANCING_ACCT,DEFAULTS_NOT_CONFIGURED
+CB_EXPENSE,Cash book expense,Default other expense for petty cash transactions,Expense,,Yes,No,CB_EXPENSE_ACCT,DEFAULTS_NOT_CONFIGURED
+CB_RECEIPT,Cash book receipts,Default other revenue for petty cash transactions,Revenue,,Yes,No,CB_RECEIPT_ACCT,DEFAULTS_NOT_CONFIGURED
+CH_EXPENSE,Charge expense,Default other expense,Expense,,Yes,No,CH_EXPENSE_ACCT,DEFAULTS_NOT_CONFIGURED
+B_INTERESTREV,Interest Income,Bank interest revenue,Revenue,,Yes,No,B_INTERESTREV_ACCT,DEFAULTS_NOT_CONFIGURED
+UNREALIZEDGAIN,Unrealized gain,Difference between foreign currency receivables/payables and current rate,Revenue,,Yes,No,UNREALIZEDGAIN_ACCT,DEFAULTS_NOT_CONFIGURED
+REALIZEDGAIN,Realized gain,Difference between invoice and payment currency,Revenue,,Yes,No,REALIZEDGAIN_ACCT,DEFAULTS_NOT_CONFIGURED
+B_INTERESTEXP,Interest Expense,Bank interest expense,Expense,,Yes,No,B_INTERESTEXP_ACCT,DEFAULTS_NOT_CONFIGURED
+UNREALIZEDLOSS,Unrealized loss,Difference between foreign currency receivables/payables and current rate,Expense,,Yes,No,UNREALIZEDLOSS_ACCT,DEFAULTS_NOT_CONFIGURED
+REALIZEDLOSS,Realized loss,Difference between invoice and payment currency,Expense,,Yes,No,REALIZEDLOSS_ACCT,DEFAULTS_NOT_CONFIGURED
+CURRENCYBALANCING,Currency balancing,Rounding difference to make journal balance in accounting currency,Expense,,Yes,No,CURRENCYBALANCING_ACCT,DEFAULTS_NOT_CONFIGURED
+COMMITMENTOFFSET,PO Commitment,PO Commitment,Memo,,Yes,No,COMMITMENTOFFSET_ACCT,DEFAULTS_NOT_CONFIGURED
+COMMITMENTOFFSETSALES,SO Commitment,SO Commitment,Memo,,Yes,No,COMMITMENTOFFSETSALES_ACCT,DEFAULTS_NOT_CONFIGURED

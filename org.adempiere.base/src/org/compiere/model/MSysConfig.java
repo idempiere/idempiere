@@ -42,7 +42,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4115621058281458156L;
+	private static final long serialVersionUID = 7046297257733064917L;
 
 	public static final String ADDRESS_SAVE_REQUEST_RESPONSE_LOG = "ADDRESS_SAVE_REQUEST_RESPONSE_LOG";
     public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
@@ -61,6 +61,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String CHECK_CREDIT_ON_CASH_POS_ORDER = "CHECK_CREDIT_ON_CASH_POS_ORDER";
     public static final String CHECK_CREDIT_ON_PREPAY_ORDER = "CHECK_CREDIT_ON_PREPAY_ORDER";
     public static final String CLIENT_ACCOUNTING = "CLIENT_ACCOUNTING";
+    public static final String DEFAULT_COA_PATH = "DEFAULT_COA_PATH";
     public static final String DICTIONARY_ID_COMMENTS = "DICTIONARY_ID_COMMENTS";
     public static final String DICTIONARY_ID_PASSWORD = "DICTIONARY_ID_PASSWORD";
     public static final String DICTIONARY_ID_USE_CENTRALIZED_ID = "DICTIONARY_ID_USE_CENTRALIZED_ID";

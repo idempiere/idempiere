@@ -99,6 +99,7 @@ public final class MSetup
 	private boolean         m_hasProject = false;
 	private boolean         m_hasMCampaign = false;
 	private boolean         m_hasSRegion = false;
+	private boolean         m_hasActivity = false;
 
 	/**
 	 *  Create Client Info.
@@ -376,7 +377,16 @@ public final class MSetup
 		return true;
 	}   //  createClient
 
-
+	// preserving backward compatibility with swing client
+	public boolean createAccounting(KeyNamePair currency,
+			boolean hasProduct, boolean hasBPartner, boolean hasProject,
+			boolean hasMCampaign, boolean hasSRegion,
+			File AccountingFile) {
+		return createAccounting(currency,
+				hasProduct, hasBPartner, hasProject,
+				hasMCampaign, hasSRegion,
+				false, AccountingFile, false, false);
+	}
 
 	/**************************************************************************
 	 *  Create Accounting elements.
@@ -392,19 +402,23 @@ public final class MSetup
 	 *  @param hasProject has project segment
 	 *  @param hasMCampaign has campaign segment
 	 *  @param hasSRegion has sales region segment
+	 *  @param hasActivity has activity segment
 	 *  @param AccountingFile file name of accounting file
+	 *  @param inactivateDefaults inactivate the default accounts after created
+	 *  @param useDefaultCoA use the Default CoA (load and group summary account)
 	 *  @return true if created
 	 */
 	public boolean createAccounting(KeyNamePair currency,
 		boolean hasProduct, boolean hasBPartner, boolean hasProject,
 		boolean hasMCampaign, boolean hasSRegion,
-		File AccountingFile)
+		boolean hasActivity, File AccountingFile, boolean useDefaultCoA, boolean inactivateDefaults)
 	{
 		if (log.isLoggable(Level.INFO)) log.info(m_client.toString());
 		//
 		m_hasProject = hasProject;
 		m_hasMCampaign = hasMCampaign;
 		m_hasSRegion = hasSRegion;
+		m_hasActivity = hasActivity;
 
 		//  Standard variables
 		m_info = new StringBuffer();
@@ -458,7 +472,7 @@ public final class MSetup
 			m_trx.close();
 			return false;
 		}
-		if (m_nap.saveAccounts(getAD_Client_ID(), getAD_Org_ID(), C_Element_ID))
+		if (m_nap.saveAccounts(getAD_Client_ID(), getAD_Org_ID(), C_Element_ID, !inactivateDefaults))
 			m_info.append(Msg.translate(m_lang, "C_ElementValue_ID")).append(" # ").append(m_nap.size()).append("\n");
 		else
 		{
@@ -468,6 +482,14 @@ public final class MSetup
 			m_trx.rollback();
 			m_trx.close();
 			return false;
+		}
+
+		int summary_ID = m_nap.getC_ElementValue_ID("SUMMARY");
+		if (log.isLoggable(Level.FINE)) log.fine("summary_ID=" + summary_ID);
+		if (summary_ID > 0) {
+			DB.executeUpdateEx("UPDATE AD_TreeNode SET Parent_ID=? WHERE AD_Tree_ID=? AND Node_ID!=?",
+					new Object[] {summary_ID, m_AD_Tree_Account_ID, summary_ID},
+					m_trx.getTrxName());
 		}
 
 		int C_ElementValue_ID = m_nap.getC_ElementValue_ID("DEFAULT_ACCT");
@@ -559,7 +581,13 @@ public final class MSetup
 					IsMandatory = "N";
 					SeqNo = 70;
 				}
-				//	Not OT, LF, LT, U1, U2, AY
+				else if (ElementType.equals("AY") && hasActivity)
+				{
+					C_AcctSchema_Element_ID = getNextID(AD_Client_ID, "C_AcctSchema_Element");
+					IsMandatory = "N";
+					SeqNo = 80;
+				}
+				//	Not OT, LF, LT, U1, U2
 
 				if (IsMandatory != null)
 				{
@@ -1013,7 +1041,7 @@ public final class MSetup
 			sqlCmd.append(" AND ElementType='MC'");
 			no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 			if (no != 1)
-				log.log(Level.SEVERE, "AcctSchema ELement Campaign NOT updated");
+				log.log(Level.SEVERE, "AcctSchema Element Campaign NOT updated");
 		}
 
 		//	Create Sales Region
@@ -1037,7 +1065,31 @@ public final class MSetup
 			sqlCmd.append(" AND ElementType='SR'");
 			no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 			if (no != 1)
-				log.log(Level.SEVERE, "AcctSchema ELement SalesRegion NOT updated");
+				log.log(Level.SEVERE, "AcctSchema Element SalesRegion NOT updated");
+		}
+
+		//	Create Activity
+		int C_Activity_ID = getNextID(getAD_Client_ID(), "C_Activity");
+		sqlCmd = new StringBuffer ("INSERT INTO C_Activity ");
+		sqlCmd.append("(C_Activity_ID,").append(m_stdColumns).append(",");
+		sqlCmd.append(" Value,Name,IsSummary,C_Activity_UU) VALUES (");
+		sqlCmd.append(C_Activity_ID).append(",").append(m_stdValues).append(", ");
+		sqlCmd.append(defaultEntry).append(defaultEntry).append("'N'").append(",").append(DB.TO_STRING(UUID.randomUUID().toString())).append(")");
+		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
+		if (no == 1)
+			m_info.append(Msg.translate(m_lang, "C_Activity_ID")).append("=").append(defaultName).append("\n");
+		else
+			log.log(Level.SEVERE, "Activity NOT inserted");
+		if (m_hasActivity)
+		{
+			//  Default
+			sqlCmd = new StringBuffer ("UPDATE C_AcctSchema_Element SET ");
+			sqlCmd.append("C_Activity_ID=").append(C_Activity_ID);
+			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
+			sqlCmd.append(" AND ElementType='AY'");
+			no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
+			if (no != 1)
+				log.log(Level.SEVERE, "AcctSchema Element Activity NOT updated");
 		}
 
 		/**
@@ -1326,7 +1378,7 @@ public final class MSetup
 			sqlCmd.append(" AND ElementType='PJ'");
 			no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 			if (no != 1)
-				log.log(Level.SEVERE, "AcctSchema ELement Project NOT updated");
+				log.log(Level.SEVERE, "AcctSchema Element Project NOT updated");
 		}
 
 		//  CashBook
@@ -1422,4 +1474,5 @@ public final class MSetup
 			m_trx.close();
 		} catch (Exception e) {}
 	}
+
 }   //  MSetup
