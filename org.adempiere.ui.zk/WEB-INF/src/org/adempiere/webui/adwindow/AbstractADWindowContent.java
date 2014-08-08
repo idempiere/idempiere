@@ -1517,14 +1517,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             				Env.getAD_Role_ID(ctx), adTabbox.getSelectedGridTab().getAD_Window_ID(),
             				adTabbox.getSelectedGridTab().getAD_Tab_ID());
             	} else {
-	        		/* when a detail record is modified add header to recent items */
-					GridTab mainTab = adTabbox.getSelectedGridTab(); // find parent tab (IDEMPIERE-2125 - tbayen)
-					while (mainTab != null && mainTab.getTabLevel() > 0) {
-						GridTab parentTab = mainTab.getParentTab();
-						if (parentTab == mainTab)
-							break;
-						mainTab = parentTab;
-					}
+	        		GridTab mainTab = getMainTabAbove();
 	        		if (mainTab != null) {
 			        	MRecentItem.addModifiedField(ctx, mainTab.getAD_Table_ID(),
 			        			mainTab.getRecord_ID(), Env.getAD_User_ID(ctx),
@@ -2176,8 +2169,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			        			Env.getAD_Role_ID(ctx), adTabbox.getSelectedGridTab().getAD_Window_ID(),
 			        			adTabbox.getSelectedGridTab().getAD_Tab_ID());
 		        	} else {
-		        		/* when a detail record is modified add header to recent items */
-		        		GridTab mainTab = gridWindow.getTab(0);
+		        		GridTab mainTab = getMainTabAbove();
 		        		if (mainTab != null) {
 				        	MRecentItem.addModifiedField(ctx, mainTab.getAD_Table_ID(),
 				        			mainTab.getRecord_ID(), Env.getAD_User_ID(ctx),
@@ -2191,7 +2183,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		        	MRecentItem.touchUpdatedRecord(ctx, adTabbox.getSelectedGridTab().getAD_Table_ID(),
 		        			adTabbox.getSelectedGridTab().getRecord_ID(), Env.getAD_User_ID(ctx));
 		    	} else {
-		    		GridTab mainTab = gridWindow.getTab(0);
+	        		GridTab mainTab = getMainTabAbove();
 		    		if (mainTab != null) {
 			        	MRecentItem.touchUpdatedRecord(ctx, mainTab.getAD_Table_ID(),
 			        			mainTab.getRecord_ID(), Env.getAD_User_ID(ctx));
@@ -2207,6 +2199,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		
 		if (callback != null)
 			callback.onCallback(true);
+	}
+
+	private GridTab getMainTabAbove() {
+		/* when a detail record is modified add header to recent items */
+		GridTab mainTab = adTabbox.getSelectedGridTab(); // find parent tab (IDEMPIERE-2125 - tbayen)
+		while (mainTab != null && mainTab.getTabLevel() > 0) {
+			GridTab parentTab = mainTab.getParentTab();
+			if (parentTab == mainTab)
+				break;
+			mainTab = parentTab;
+		}
+		return mainTab;
 	}
 
 	private void showLastError() {
