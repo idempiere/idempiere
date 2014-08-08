@@ -1518,7 +1518,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             				adTabbox.getSelectedGridTab().getAD_Tab_ID());
             	} else {
 	        		/* when a detail record is modified add header to recent items */
-	        		GridTab mainTab = gridWindow.getTab(0);
+					GridTab mainTab = adTabbox.getSelectedGridTab(); // find parent tab (IDEMPIERE-2125 - tbayen)
+					while (mainTab != null && mainTab.getTabLevel() > 0) {
+						GridTab parentTab = mainTab.getParentTab();
+						if (parentTab == mainTab)
+							break;
+						mainTab = parentTab;
+					}
 	        		if (mainTab != null) {
 			        	MRecentItem.addModifiedField(ctx, mainTab.getAD_Table_ID(),
 			        			mainTab.getRecord_ID(), Env.getAD_User_ID(ctx),
