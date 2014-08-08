@@ -613,6 +613,10 @@ UPDATE AD_Field SET ReadOnlyLogic='@C_CountryGroupTo_ID@>0',Updated=TO_DATE('201
 UPDATE AD_Ref_Table SET OrderByClause='C_CountryGroup.Value',Updated=TO_DATE('2014-08-08 10:13:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Reference_ID=200092
 ;
 
+-- Aug 3, 2014 11:51:36 AM CEST
+INSERT INTO AD_Sequence (StartNewYear,CurrentNextSys,IsTableID,CurrentNext,IsAudited,IsAutoSequence,AD_Sequence_ID,Description,Name,IncrementNo,AD_Sequence_UU,AD_Org_ID,CreatedBy,Updated,UpdatedBy,IsActive,StartNo,AD_Client_ID,Created) VALUES ('N',200000,'Y',1000000,'N','Y',200200,'Table C_CountryGroupCountry','C_CountryGroupCountry',1,'1289bea1-9e97-412d-bf5e-108f6e9a7bee',0,100,TO_DATE('2014-08-03 11:51:34','YYYY-MM-DD HH24:MI:SS'),100,'Y',1000000,0,TO_DATE('2014-08-03 11:51:34','YYYY-MM-DD HH24:MI:SS'))
+;
+
 SELECT register_migration_script('201408071840_IDEMPIERE-2127.sql') FROM dual
 ;
 
