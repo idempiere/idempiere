@@ -2811,37 +2811,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 		Object value = field.getValue();
 		Object oldValue = field.getOldValue();
-		List<IColumnCallout> callouts = Core.findCallout(getTableName(), field.getColumnName());
-		if (callouts != null && !callouts.isEmpty()) {
-			for(IColumnCallout co : callouts)
-			{
-				String retValue = "";
-
-				String cmd = co.getClass().getName();
-				//detect infinite loop
-				if (activeCallouts.contains(cmd)) continue;
-				try
-				{
-					activeCallouts.add(cmd);
-					retValue = co.start(m_vo.ctx, m_vo.WindowNo, this, field, value, oldValue);
-				}
-				catch (Exception e)
-				{
-					log.log(Level.SEVERE, "start", e);
-					retValue = 	"Callout Invalid: " + e.toString();
-					return retValue;
-				}
-				finally
-				{
-					activeCallouts.remove(cmd);
-				}
-				if (!Util.isEmpty(retValue))		//	interrupt on first error
-				{
-					log.severe (retValue);
-					return retValue;
-				}
-			}
-		}
 
 		String callout = field.getCallout();
 		if (callout.length() == 0)
@@ -2963,6 +2932,39 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				return retValue;
 			}
 		}   //  for each callout
+
+		List<IColumnCallout> callouts = Core.findCallout(getTableName(), field.getColumnName());
+		if (callouts != null && !callouts.isEmpty()) {
+			for(IColumnCallout co : callouts)
+			{
+				String retValue = "";
+
+				String cmd = co.getClass().getName();
+				//detect infinite loop
+				if (activeCallouts.contains(cmd)) continue;
+				try
+				{
+					activeCallouts.add(cmd);
+					retValue = co.start(m_vo.ctx, m_vo.WindowNo, this, field, value, oldValue);
+				}
+				catch (Exception e)
+				{
+					log.log(Level.SEVERE, "start", e);
+					retValue = 	"Callout Invalid: " + e.toString();
+					return retValue;
+				}
+				finally
+				{
+					activeCallouts.remove(cmd);
+				}
+				if (!Util.isEmpty(retValue))		//	interrupt on first error
+				{
+					log.severe (retValue);
+					return retValue;
+				}
+			}
+		}
+
 		return "";
 	}	//	processCallout
 
