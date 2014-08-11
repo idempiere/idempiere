@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.DBException;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.IMiniTable;
@@ -173,7 +175,7 @@ public class PaySelect
 		try
 		{
 			sql = MRole.getDefault().addAccessSQL(
-				"SELECT doc.c_doctype_id,doc.name FROM c_doctype doc WHERE doc.ad_client_id = ? AND doc.docbasetype in ('API','APC') ORDER BY 2", "doc",
+				"SELECT doc.c_doctype_id,doc.name FROM c_doctype doc WHERE doc.ad_client_id = ? AND doc.docbasetype in ('API','APC','ARI','ARC') ORDER BY 2", "doc",
 				MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 
 			KeyNamePair dt = new KeyNamePair(0, "");
@@ -214,7 +216,7 @@ public class PaySelect
 		i.GrandTotal-paymentTermDiscount(i.GrandTotal,i.C_PaymentTerm_ID,i.DateInvoiced,SysDate) AS DueAmount,
 		currencyConvert(i.GrandTotal-paymentTermDiscount(i.GrandTotal,i.C_PaymentTerm_ID,i.DateInvoiced,SysDate,null),
 			i.C_Currency_ID,xx100,SysDate) AS PayAmt
-		FROM C_Invoice i, C_BPartner bp, C_Currency c, C_PaymentTerm p
+		FROM C_Invoice_v i, C_BPartner bp, C_Currency c, C_PaymentTerm p
 		WHERE i.IsSOTrx='N'
 		AND i.C_BPartner_ID=bp.C_BPartner_ID
 		AND i.C_Currency_ID=c.C_Currency_ID
@@ -226,16 +228,16 @@ public class PaySelect
 		m_sql = miniTable.prepareTable(new ColumnInfo[] {
 			//  0..4
 			new ColumnInfo(" ", "i.C_Invoice_ID", IDColumn.class, false, false, null),
-			new ColumnInfo(Msg.translate(ctx, "DueDate"), "paymentTermDueDate(i.C_PaymentTerm_ID, i.DateInvoiced) AS DateDue", Timestamp.class, true, true, null),
+			new ColumnInfo(Msg.translate(ctx, "DueDate"), "i.DueDate AS DateDue", Timestamp.class, true, true, null),
 			new ColumnInfo(Msg.translate(ctx, "C_BPartner_ID"), "bp.Name", KeyNamePair.class, true, false, "i.C_BPartner_ID"),
 			new ColumnInfo(Msg.translate(ctx, "DocumentNo"), "i.DocumentNo", String.class),
 			new ColumnInfo(Msg.translate(ctx, "C_Currency_ID"), "c.ISO_Code", KeyNamePair.class, true, false, "i.C_Currency_ID"),
 			// 5..9
 			new ColumnInfo(Msg.translate(ctx, "GrandTotal"), "i.GrandTotal", BigDecimal.class),
-			new ColumnInfo(Msg.translate(ctx, "DiscountAmt"), "paymentTermDiscount(i.GrandTotal,i.C_Currency_ID,i.C_PaymentTerm_ID,i.DateInvoiced, ?)", BigDecimal.class),
-			new ColumnInfo(Msg.getMsg(ctx, "DiscountDate"), "SysDate-paymentTermDueDays(i.C_PaymentTerm_ID,i.DateInvoiced,SysDate)", Timestamp.class),
-			new ColumnInfo(Msg.getMsg(ctx, "AmountDue"), "currencyConvert(invoiceOpen(i.C_Invoice_ID,i.C_InvoicePaySchedule_ID),i.C_Currency_ID, ?,?,i.C_ConversionType_ID, i.AD_Client_ID,i.AD_Org_ID)", BigDecimal.class),
-			new ColumnInfo(Msg.getMsg(ctx, "AmountPay"), "currencyConvert(invoiceOpen(i.C_Invoice_ID,i.C_InvoicePaySchedule_ID)-paymentTermDiscount(i.GrandTotal,i.C_Currency_ID,i.C_PaymentTerm_ID,i.DateInvoiced, ?),i.C_Currency_ID, ?,?,i.C_ConversionType_ID, i.AD_Client_ID,i.AD_Org_ID)", BigDecimal.class)
+			new ColumnInfo(Msg.translate(ctx, "DiscountAmt"), "invoiceDiscount(i.C_Invoice_ID,?,i.C_InvoicePaySchedule_ID)", BigDecimal.class),
+			new ColumnInfo(Msg.getMsg(ctx, "DiscountDate"), "COALESCE((SELECT discountdate from C_InvoicePaySchedule ips WHERE ips.C_InvoicePaySchedule_ID=i.C_InvoicePaySchedule_ID),i.DateInvoiced+p.DiscountDays+p.GraceDays) AS DiscountDate", Timestamp.class),
+			new ColumnInfo(Msg.getMsg(ctx, "AmountDue"), "currencyConvert(invoiceOpen(i.C_Invoice_ID,i.C_InvoicePaySchedule_ID),i.C_Currency_ID, ?,?,i.C_ConversionType_ID, i.AD_Client_ID,i.AD_Org_ID) AS AmountDue", BigDecimal.class),
+			new ColumnInfo(Msg.getMsg(ctx, "AmountPay"), "currencyConvert(invoiceOpen(i.C_Invoice_ID,i.C_InvoicePaySchedule_ID)-invoiceDiscount(i.C_Invoice_ID,?,i.C_InvoicePaySchedule_ID),i.C_Currency_ID, ?,?,i.C_ConversionType_ID, i.AD_Client_ID,i.AD_Org_ID) AS AmountPay", BigDecimal.class)
 			},
 			//	FROM
 			"C_Invoice_v i"
@@ -271,7 +273,7 @@ public class PaySelect
 		MLookupInfo info = MLookupFactory.getLookup_List(language, AD_Reference_ID);
 		String sql = info.Query.substring(0, info.Query.indexOf(" ORDER BY"))
 			+ " AND " + info.KeyColumn
-			+ " IN (SELECT PaymentRule FROM C_BankAccountDoc WHERE C_BankAccount_ID=?) "
+			+ " IN (SELECT PaymentRule FROM C_BankAccountDoc WHERE C_BankAccount_ID=? AND IsActive='Y') "
 			+ info.Query.substring(info.Query.indexOf(" ORDER BY"));
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -283,7 +285,7 @@ public class PaySelect
 			ValueNamePair vp = null;
 			while (rs.next())
 			{
-				vp = new ValueNamePair(rs.getString(2), rs.getString(3));   //  returns also not active
+				vp = new ValueNamePair(rs.getString(2), rs.getString(3));
 				data.add(vp);
 			}
 		}
@@ -321,7 +323,7 @@ public class PaySelect
 		}
 		//
 		if (onlyDue)
-			sql += " AND paymentTermDueDate(i.C_PaymentTerm_ID, i.DateInvoiced) <= ?";
+			sql += " AND i.DueDate <= ?";
 		//
 		KeyNamePair pp = bpartner;
 		int C_BPartner_ID = pp.getKey();
@@ -362,7 +364,11 @@ public class PaySelect
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			throw new DBException(e);
+		}
+		catch (Exception e)
+		{
+			throw new AdempiereException(e);
 		}
 		finally
 		{

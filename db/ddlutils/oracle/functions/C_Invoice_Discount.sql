@@ -59,7 +59,7 @@ BEGIN
           INTO v_Amount
         FROM C_InvoicePaySchedule
         WHERE C_InvoicePaySchedule_ID=p_C_InvoicePaySchedule_ID
-          AND DiscountDate <= v_PayDate;
+          AND DiscountDate >= v_PayDate;
         --
         RETURN v_Amount;
     END IF;

@@ -17,6 +17,8 @@
  *****************************************************************************/
 package org.compiere.apps.form;
 
+import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
+
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,11 +30,9 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaymentBatch;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.ValueNamePair;
 
@@ -54,45 +54,6 @@ public class PayPrint {
 	/**	Logger			*/
 	public static CLogger log = CLogger.getCLogger(PayPrint.class);
 	
-	public ArrayList<KeyNamePair> getPaySelectionData()
-	{
-		ArrayList<KeyNamePair> data = new ArrayList<KeyNamePair>();
-		
-		log.config("");
-		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-
-		//  Load PaySelect
-		String sql = "SELECT C_PaySelection_ID, Name || ' - ' || TotalAmt FROM C_PaySelection "
-			+ "WHERE AD_Client_ID=? AND Processed='Y' AND IsActive='Y'"
-			+ "ORDER BY PayDate DESC";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, AD_Client_ID);
-			rs = pstmt.executeQuery();
-			//
-			while (rs.next())
-			{
-				KeyNamePair pp = new KeyNamePair(rs.getInt(1), rs.getString(2));
-				data.add(pp);
-			}
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		
-		return data;
-	}
-
 	public String bank;
 	public String currency;
 	public BigDecimal balance;

@@ -1,48 +1,51 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- Aug 11, 2014 11:38:21 AM CEST
+-- IDEMPIERE-2134 Issues found on Payment Selection process
+UPDATE AD_Process_Para SET DefaultValue='N',Updated=TO_DATE('2014-08-11 11:38:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=184
+;
+
 CREATE OR REPLACE FUNCTION invoiceDiscount
 (
-	p_C_Invoice_ID		       	NUMERIC,
-	p_paydate 			timestamp with time zone,
-	p_C_InvoicePaySchedule_ID	NUMERIC
+	p_C_Invoice_ID		        IN NUMBER,
+	p_PayDate			        IN	DATE,
+	p_C_InvoicePaySchedule_ID	IN	NUMBER
 )
-RETURNS numeric AS $body$
+RETURN NUMBER
 /*************************************************************************
  * The contents of this file are subject to the Compiere License.  You may
  * obtain a copy of the License at    http://www.compiere.org/license.html
  * Software is on an  "AS IS" basis,  WITHOUT WARRANTY OF ANY KIND, either
  * express or implied. See the License for details. Code: Compiere ERP+CRM
  * Copyright (C) 1999-2001 Jorg Janke, ComPiere, Inc. All Rights Reserved.
- *
- * converted to postgreSQL by Karsten Thiemann (Schaeffer AG), 
- * kthiemann@adempiere.org
  *************************************************************************
+ * $Id: C_Invoice_Discount.sql,v 1.1 2006/04/21 17:51:58 jjanke Exp $
  ***
  * Title:	Calculate Payment Discount Amount
  * Description:
  *			- Calculate discountable amount (i.e. with or without tax)
  *			- Calculate and return payment discount
- * Test:
- * 		select invoiceDiscount(109, now(), 103) from ad_system; => 0
  ************************************************************************/
-DECLARE
-	v_Amount		NUMERIC;
+AS
+	v_Amount			NUMBER;
 	v_IsDiscountLineAmt	CHAR(1);
-	v_GrandTotal		NUMERIC;
-	v_TotalLines		NUMERIC;
-	v_C_PaymentTerm_ID	NUMERIC(10);
-	v_C_Currency_ID		NUMERIC(10);
-	v_DocDate		timestamp with time zone;
-	v_PayDate		timestamp with time zone := now();
-    	v_IsPayScheduleValid    CHAR(1);
+	v_GrandTotal		NUMBER;
+	v_TotalLines		NUMBER;
+	v_C_PaymentTerm_ID	NUMBER(10);
+	v_C_Currency_ID		NUMBER(10);
+	v_DocDate			DATE;
+	v_PayDate			DATE := SysDate;
+    v_IsPayScheduleValid    CHAR(1);
 
 BEGIN
 	SELECT 	ci.IsDiscountLineAmt, i.GrandTotal, i.TotalLines,
 		i.C_PaymentTerm_ID, i.DateInvoiced, i.IsPayScheduleValid, C_Currency_ID
-	INTO 	v_IsDiscountLineAmt, v_GrandTotal, v_TotalLines,
+	  INTO 	v_IsDiscountLineAmt, v_GrandTotal, v_TotalLines,
 		v_C_PaymentTerm_ID, v_DocDate, v_IsPayScheduleValid, v_C_Currency_ID
 	FROM 	AD_ClientInfo ci, C_Invoice i
 	WHERE 	ci.AD_Client_ID=i.AD_Client_ID
 	  AND 	i.C_Invoice_ID=p_C_Invoice_ID;
-	  
 	--	What Amount is the Discount Base?
  	IF (v_IsDiscountLineAmt = 'Y') THEN
 		v_Amount := v_TotalLines;
@@ -76,7 +79,9 @@ BEGIN
 EXCEPTION
 	WHEN OTHERS THEN
 		RETURN NULL;
-END;
+END invoiceDiscount;
+/
 
-$body$ LANGUAGE plpgsql STABLE;
+SELECT register_migration_script('201408111139_IDEMPIERE-2134.sql') FROM dual
+;
 

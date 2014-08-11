@@ -1,3 +1,8 @@
+-- Aug 11, 2014 11:38:21 AM CEST
+-- IDEMPIERE-2134 Issues found on Payment Selection process
+UPDATE AD_Process_Para SET DefaultValue='N',Updated=TO_TIMESTAMP('2014-08-11 11:38:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=184
+;
+
 CREATE OR REPLACE FUNCTION invoiceDiscount
 (
 	p_C_Invoice_ID		       	NUMERIC,
@@ -79,4 +84,7 @@ EXCEPTION
 END;
 
 $body$ LANGUAGE plpgsql STABLE;
+
+SELECT register_migration_script('201408111139_IDEMPIERE-2134.sql') FROM dual
+;
 

@@ -39,6 +39,8 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.editor.WDateEditor;
+import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.event.WTableModelEvent;
 import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.panel.ADForm;
@@ -76,7 +78,7 @@ import org.zkoss.zul.Space;
  *  @version $Id: VPaySelect.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
 public class WPaySelect extends PaySelect
-	implements IFormController, EventListener<Event>, WTableModelListener, IProcessUI
+	implements IFormController, EventListener<Event>, WTableModelListener, IProcessUI, ValueChangeListener
 {
 	/** @todo withholding */
 	
@@ -164,6 +166,8 @@ public class WPaySelect extends PaySelect
 		onlyDue.setText(Msg.getMsg(Env.getCtx(), "OnlyDue"));
 		dataStatus.setText(" ");
 		dataStatus.setPre(true);
+		onlyDue.addActionListener(this);
+		fieldPayDate.addValueChangeListener(this);
 		//
 		bGenerate.addActionListener(this);
 		bCancel.addActionListener(this);
@@ -322,10 +326,17 @@ public class WPaySelect extends PaySelect
 			dispose();
 
 		//  Update Open Invoices
-		else if (e.getTarget() == fieldBPartner || e.getTarget() == bRefresh || e.getTarget() == fieldDtype)
+		else if (e.getTarget() == fieldBPartner || e.getTarget() == bRefresh || e.getTarget() == fieldDtype
+				|| e.getTarget() == fieldPaymentRule || e.getTarget() == onlyDue)
 			loadTableInfo();
 
 	}   //  actionPerformed
+
+	@Override
+	public void valueChange(ValueChangeEvent e) {
+		if (e.getSource() == fieldPayDate)
+			loadTableInfo();
+	}
 
 	/**
 	 *  Table Model Listener
