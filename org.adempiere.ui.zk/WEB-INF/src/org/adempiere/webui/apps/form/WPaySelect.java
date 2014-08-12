@@ -28,6 +28,7 @@ import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.util.IProcessUI;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -53,6 +54,8 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.PaySelect;
+import org.compiere.model.MPaySelection;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.X_C_PaySelection;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
@@ -407,8 +410,10 @@ public class WPaySelect extends PaySelect
 			return;
 		}
 
-		//  Ask to Post it
-		FDialog.ask(m_WindowNo, form, "VPaySelectGenerate?", new Callback<Boolean>() {
+		loadTableInfo();
+		if (MSysConfig.getBooleanValue(MSysConfig.PAYMENT_SELECTION_MANUAL_ASK_INVOKE_GENERATE, true, m_ps.getAD_Client_ID(), m_ps.getAD_Org_ID())) {
+		  //  Ask to Post it
+		  FDialog.ask(m_WindowNo, form, "VPaySelectGenerate?", new Callback<Boolean>() {
 
 			@Override
 			public void onCallback(Boolean result) 
@@ -434,7 +439,10 @@ public class WPaySelect extends PaySelect
 				}
 				
 			}
-		});				
+		  });				
+		} else {
+			AEnv.zoom(MPaySelection.Table_ID, m_ps.getC_PaySelection_ID());
+		}
 	}   //  generatePaySelect
 	
 	/**
