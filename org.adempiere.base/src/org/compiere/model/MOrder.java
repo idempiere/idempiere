@@ -1369,7 +1369,7 @@ public class MOrder extends X_C_Order implements DocAction
 		}
 		
 		if (   getGrandTotal().signum() != 0
-			&& PAYMENTRULE_OnCredit.equals(getPaymentRule()))
+			&& (PAYMENTRULE_OnCredit.equals(getPaymentRule()) || PAYMENTRULE_DirectDebit.equals(getPaymentRule())))
 		{
 			if (!createPaySchedule())
 			{

@@ -1450,7 +1450,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		}
 
 		if (   getGrandTotal().signum() != 0
-			&& PAYMENTRULE_OnCredit.equals(getPaymentRule()))
+			&& (PAYMENTRULE_OnCredit.equals(getPaymentRule()) || PAYMENTRULE_DirectDebit.equals(getPaymentRule())))
 		{
 			if (!createPaySchedule())
 			{
