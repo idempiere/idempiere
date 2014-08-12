@@ -51,12 +51,6 @@ public class PaySelect
 {
 	/** @todo withholding */
 
-	/**
-	 * 
-	 */
-	@SuppressWarnings("unused")
-	private static final long serialVersionUID = 2872767371244295934L;
-
 	/**	Window No			*/
 	public int         	m_WindowNo = 0;
 
@@ -417,52 +411,61 @@ public class PaySelect
 	public String generatePaySelect(IMiniTable miniTable, ValueNamePair paymentRule, Timestamp payDate, BankInfo bi)
 	{
 		log.info("");
-	//	String trxName Trx.createTrxName("PaySelect");
-	//	Trx trx = Trx.get(trxName, true);	trx needs to be committed too
+
 		String trxName = null;
-		trx = null;
+		Trx trx = null;
+		try {
+			trxName = Trx.createTrxName("PaySelect");
+			trx = Trx.get(trxName, true);
 
-		String PaymentRule = paymentRule.getValue();
+			String PaymentRule = paymentRule.getValue();
 
-		//  Create Header
-		m_ps = new MPaySelection(Env.getCtx(), 0, trxName);
-		m_ps.setName (Msg.getMsg(Env.getCtx(), "VPaySelect")
-				+ " - " + paymentRule.getName()
-				+ " - " + payDate);
-		m_ps.setPayDate (payDate);
-		m_ps.setC_BankAccount_ID(bi.C_BankAccount_ID);
-		m_ps.setIsApproved(true);
-		if (!m_ps.save())
-		{
-			m_ps = null;
-			return Msg.translate(Env.getCtx(), "C_PaySelection_ID");
-		}
-		if (log.isLoggable(Level.CONFIG)) log.config(m_ps.toString());
+			//  Create Header
+			m_ps = new MPaySelection(Env.getCtx(), 0, trxName);
+			m_ps.setName (Msg.getMsg(Env.getCtx(), "VPaySelect")
+					+ " - " + paymentRule.getName()
+					+ " - " + payDate);
+			m_ps.setPayDate (payDate);
+			m_ps.setC_BankAccount_ID(bi.C_BankAccount_ID);
+			m_ps.setIsApproved(true);
+			m_ps.saveEx();
+			if (log.isLoggable(Level.CONFIG)) log.config(m_ps.toString());
 
-		//  Create Lines
-		int rows = miniTable.getRowCount();
-		int line = 0;
-		for (int i = 0; i < rows; i++)
-		{
-			IDColumn id = (IDColumn)miniTable.getValueAt(i, 0);
-			if (id.isSelected())
+			//  Create Lines
+			int rows = miniTable.getRowCount();
+			int line = 0;
+			for (int i = 0; i < rows; i++)
 			{
-				line += 10;
-				MPaySelectionLine psl = new MPaySelectionLine (m_ps, line, PaymentRule);
-				int C_Invoice_ID = id.getRecord_ID().intValue();
-				BigDecimal OpenAmt = (BigDecimal)miniTable.getValueAt(i, 8);
-				BigDecimal PayAmt = (BigDecimal)miniTable.getValueAt(i, 9);
-				boolean isSOTrx = false;
-				//
-				psl.setInvoice(C_Invoice_ID, isSOTrx,
-					OpenAmt, PayAmt, OpenAmt.subtract(PayAmt));
-				if (!psl.save(trxName))
+				IDColumn id = (IDColumn)miniTable.getValueAt(i, 0);
+				if (id.isSelected())
 				{
-					return Msg.translate(Env.getCtx(), "C_PaySelectionLine_ID");
+					line += 10;
+					MPaySelectionLine psl = new MPaySelectionLine (m_ps, line, PaymentRule);
+					int C_Invoice_ID = id.getRecord_ID().intValue();
+					BigDecimal OpenAmt = (BigDecimal)miniTable.getValueAt(i, 8);
+					BigDecimal PayAmt = (BigDecimal)miniTable.getValueAt(i, 9);
+					boolean isSOTrx = false;
+					//
+					psl.setInvoice(C_Invoice_ID, isSOTrx,
+						OpenAmt, PayAmt, OpenAmt.subtract(PayAmt));
+					psl.saveEx(trxName);
+					if (log.isLoggable(Level.FINE)) log.fine("C_Invoice_ID=" + C_Invoice_ID + ", PayAmt=" + PayAmt);
 				}
-				if (log.isLoggable(Level.FINE)) log.fine("C_Invoice_ID=" + C_Invoice_ID + ", PayAmt=" + PayAmt);
+			}   //  for all rows in table
+		} catch (Exception e) {
+			if (trx != null) {
+				trx.rollback();
+				trx.close();
+				trx = null;
 			}
-		}   //  for all rows in table
+			m_ps = null;
+			throw new AdempiereException(e);
+		} finally {
+			if (trx != null) {
+				trx.commit();
+				trx.close();
+			}
+		}
 		
 		return null;
 	}   //  generatePaySelect
@@ -507,4 +510,4 @@ public class PaySelect
 		}
 	}   //  BankInfo
 
-}   //  VPaySelect
+}   //  PaySelect

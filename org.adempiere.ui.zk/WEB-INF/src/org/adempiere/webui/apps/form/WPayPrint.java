@@ -253,7 +253,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		else if (e.getTarget() == bProcess)
 			cmd_EFT();
 		else if (e.getTarget() == bPrint)
-			cmd_print();
+			confirm_cmd_print();
 	}   //  actionPerformed
 
 	/**
@@ -409,6 +409,25 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			return;
 		dispose();
 	}   //  cmd_EFT
+
+	/**
+	 *  Confirm before printing
+	 */
+	protected void confirm_cmd_print()
+	{
+		FDialog.ask(m_WindowNo, form, "CreatePayments?", new Callback<Boolean>() {
+
+			@Override
+			public void onCallback(Boolean result) 
+			{
+				if (result)
+				{
+					cmd_print();
+				}
+
+			}
+		});
+	}
 
 	/**
 	 *  Print Checks and/or Remittance
