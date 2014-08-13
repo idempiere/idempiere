@@ -249,7 +249,7 @@ public class ADWindow extends AbstractUIPart
 	 * @return adwindow instance if found, null otherwise
 	 */
 	public static ADWindow findADWindow(Component comp) {
-		Component parent = comp.getParent();
+		Component parent = comp;
 		while(parent != null) {
 			if (parent.getAttribute(AD_WINDOW_ATTRIBUTE_KEY) != null) {
 				ADWindow adwindow = (ADWindow) parent.getAttribute(AD_WINDOW_ATTRIBUTE_KEY);

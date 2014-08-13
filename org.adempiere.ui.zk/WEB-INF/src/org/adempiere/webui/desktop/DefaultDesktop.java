@@ -671,6 +671,14 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	public void updateHelpContext(String ctxType, int recordId) {
 		Clients.response(new AuScript("zWatch.fire('onFieldTooltip', this);"));
 		helpController.renderCtxHelp(ctxType, recordId);
+		
+		GridTab gridTab = null;
+		Component window = getActiveWindow();
+		ADWindow adwindow = ADWindow.findADWindow(window);
+		if (adwindow != null) {
+			gridTab = adwindow.getADWindowContent().getActiveGridTab();
+		}
+		updateHelpQuickInfo(gridTab);
 	}
 
 	@Override
