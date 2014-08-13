@@ -279,7 +279,7 @@ public class CostUpdate extends SvrProcess
 			MClient client = MClient.get(getCtx());
 			MAcctSchema primarySchema = client.getAcctSchema();
 			MInventory inventoryDoc = null;
-			pstmt = DB.prepareStatement (sql, null);
+			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, m_ce.getM_CostElement_ID());
 			if (p_M_Product_Category_ID != 0)
 				pstmt.setInt (2, p_M_Product_Category_ID);
@@ -381,16 +381,20 @@ public class CostUpdate extends SvrProcess
 			{
 				cost.setFutureCostPrice(costs);				
 				updated = true;
-			}
-			if (lines != null)
-			{
-				MInventoryLine line = new MInventoryLine(getCtx(), 0, get_TrxName());
-				line.setM_Product_ID(cost.getM_Product_ID());
-				line.setCurrentCostPrice(cost.getCurrentCostPrice());
-				line.setNewCostPrice(costs);
-				line.setM_Locator_ID(0);
-				lines.add(line);
-			}
+				
+				if (lines != null)
+				{
+					BigDecimal currentCost = cost.getCurrentCostPrice();
+					if (currentCost == null || currentCost.compareTo(costs) != 0) {
+						MInventoryLine line = new MInventoryLine(getCtx(), 0, get_TrxName());
+						line.setM_Product_ID(cost.getM_Product_ID());
+						line.setCurrentCostPrice(cost.getCurrentCostPrice());
+						line.setNewCostPrice(costs);
+						line.setM_Locator_ID(0);
+						lines.add(line);
+					}
+				}
+			}			
 		}
 		else
 		{
@@ -401,13 +405,16 @@ public class CostUpdate extends SvrProcess
 					BigDecimal costs = getCosts(cost, p_SetStandardCostTo);
 					if (costs != null && costs.signum() != 0)
 					{
-						MInventoryLine line = new MInventoryLine(getCtx(), 0, get_TrxName());
-						line.setM_Product_ID(cost.getM_Product_ID());
-						line.setCurrentCostPrice(cost.getCurrentCostPrice());
-						line.setNewCostPrice(costs);
-						line.setM_Locator_ID(0);
-						lines.add(line);
-						updated = true;
+						BigDecimal currentCost = cost.getCurrentCostPrice();
+						if (currentCost == null || currentCost.compareTo(costs) != 0) {
+							MInventoryLine line = new MInventoryLine(getCtx(), 0, get_TrxName());
+							line.setM_Product_ID(cost.getM_Product_ID());
+							line.setCurrentCostPrice(cost.getCurrentCostPrice());
+							line.setNewCostPrice(costs);
+							line.setM_Locator_ID(0);
+							lines.add(line);
+							updated = true;
+						}
 					}
 				}				
 			}
