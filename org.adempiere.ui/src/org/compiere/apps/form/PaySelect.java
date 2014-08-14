@@ -445,6 +445,8 @@ public class PaySelect
 					BigDecimal OpenAmt = (BigDecimal)miniTable.getValueAt(i, 8);
 					BigDecimal PayAmt = (BigDecimal)miniTable.getValueAt(i, 9);
 					boolean isSOTrx = false;
+					if (paymentRule != null && X_C_Order.PAYMENTRULE_DirectDebit.equals(paymentRule.getValue()))
+						isSOTrx = true;
 					//
 					psl.setInvoice(C_Invoice_ID, isSOTrx,
 						OpenAmt, PayAmt, OpenAmt.subtract(PayAmt));
