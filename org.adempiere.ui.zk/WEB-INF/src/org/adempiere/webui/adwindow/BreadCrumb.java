@@ -76,7 +76,6 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	private int windowNo;
 	
 	private HashMap<String, ToolBarButton> buttons = new HashMap<String, ToolBarButton>();
-	private Map<Integer, ToolBarButton> altKeyMap = new HashMap<Integer, ToolBarButton>();
 
 	private DataStatusEvent m_dse;
 
@@ -128,12 +127,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
         btnLast = createButton("Last", "Last", "Last");
         btnLast.setTooltiptext(btnLast.getTooltiptext()+"    Alt+End");
         toolbar.appendChild(btnLast);
-        
-        altKeyMap.put(KeyEvent.UP, btnPrevious);
-		altKeyMap.put(KeyEvent.DOWN, btnNext);
-		altKeyMap.put(KeyEvent.PAGE_UP, btnFirst);
-		altKeyMap.put(KeyEvent.PAGE_DOWN, btnLast);		
-		
+
 		toolbar.setStyle("background-image: none; background-color: transparent; border: none;");
 		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "breadcrumb");
 		
