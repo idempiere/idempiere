@@ -35,6 +35,7 @@ import java.util.logging.Level;
 
 import org.adempiere.model.MInfoProcess;
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.ProcessModalDialog;
@@ -79,6 +80,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.Clients;
@@ -108,7 +110,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7393899696081833013L;
+	private static final long serialVersionUID = 6027970576265023451L;
 
 	private final static int DEFAULT_PAGE_SIZE = 100;
 	protected List<Button> btProcessList = new ArrayList<Button>();
@@ -1360,12 +1362,45 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     			else
     				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
         	}
+            else if (event.getName().equals(Events.ON_CTRL_KEY))
+            {
+        		KeyEvent keyEvent = (KeyEvent) event;
+        		if (LayoutUtils.isReallyVisible(this)) {
+        			this.onCtrlKeyEvent(keyEvent);
+        		}
+        	}
             //when user push enter keyboard at input parameter field
             else
             {
-            	onUserQuery();
+            	// onUserQuery(); // captured now on control key
             }
     }  //  onEvent
+
+    public static final int VK_ENTER          = '\r';
+    public static final int VK_ESCAPE         = 0x1B;
+	private void onCtrlKeyEvent(KeyEvent keyEvent) {
+		if (keyEvent.isAltKey() && !keyEvent.isCtrlKey() && keyEvent.isShiftKey()) { // Shift+Alt
+			if (keyEvent.getKeyCode() == KeyEvent.DOWN) { // Shift+Alt+Down
+				// navigate to results
+				if (contentPanel.getRowCount() > 0) {
+					contentPanel.setFocus(true);
+					contentPanel.setSelectedIndex(0);
+				}
+			}
+		} else if (keyEvent.getKeyCode() == VK_ENTER) { // Enter
+			// enter in contentpanel to select
+            //when user push enter keyboard at input parameter field
+			if (contentPanel.getSelectedIndex() >= 0) {
+				onOk();
+			} else {
+	           	onUserQuery();
+			}
+		} else if (keyEvent.getKeyCode() == VK_ESCAPE) { // Escape
+			// Escape for cancel
+        	m_cancel = true;
+            dispose(false);
+		}
+	}
 
     /**
      * Call query when user click to query button enter in parameter field
@@ -1753,6 +1788,16 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			else
 				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
 		}
+		SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
 	}
+
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		try {
+			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+		} catch (Exception e){}
+	}
+
 }	//	Info
 
