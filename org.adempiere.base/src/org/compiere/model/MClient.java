@@ -118,7 +118,7 @@ public class MClient extends X_AD_Client
 	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MClient.class);
 	/**	Cache						*/
-	private static CCache<Integer,MClient>	s_cache = new CCache<Integer,MClient>(Table_Name, 3);
+	private static CCache<Integer,MClient>	s_cache = new CCache<Integer,MClient>(Table_Name, 3, 120, true);
 
 
 	/**************************************************************************

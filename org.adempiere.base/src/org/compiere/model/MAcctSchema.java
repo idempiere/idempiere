@@ -131,14 +131,15 @@ public class MAcctSchema extends X_C_AcctSchema
 		//  Save
 		MAcctSchema[] retValue = new MAcctSchema [list.size()];
 		list.toArray(retValue);
-		s_schema.put(key, retValue);
+		if (trxName == null)
+			s_schema.put(key, retValue);
 		return retValue;
 	}   //  getClientAcctSchema
 
 	/** Cache of Client AcctSchema Arrays		**/
-	private static CCache<Integer,MAcctSchema[]> s_schema = new CCache<Integer,MAcctSchema[]>(I_AD_ClientInfo.Table_Name, 3);	//  3 clients
+	private static CCache<Integer,MAcctSchema[]> s_schema = new CCache<Integer,MAcctSchema[]>(I_AD_ClientInfo.Table_Name, 3, 120, true);	//  3 clients
 	/**	Cache of AcctSchemas 					**/
-	private static CCache<Integer,MAcctSchema> s_cache = new CCache<Integer,MAcctSchema>(Table_Name, 3);	//  3 accounting schemas
+	private static CCache<Integer,MAcctSchema> s_cache = new CCache<Integer,MAcctSchema>(Table_Name, 3, 120, true);	//  3 accounting schemas
 	
 	
 	/**************************************************************************
