@@ -42,7 +42,7 @@ public class DefaultWorkflowProcessorFactory implements IServerFactory<WorkflowP
 		List<WorkflowProcessor> list = new ArrayList<WorkflowProcessor>();
 		for (MWorkflowProcessor pModel : workflowModels)
 		{
-			WorkflowProcessor server = new WorkflowProcessor(pModel);
+			WorkflowProcessor server = create(ctx, pModel);
 			list.add(server);
 		}
 		return list.toArray(new WorkflowProcessor[0]);
@@ -54,5 +54,11 @@ public class DefaultWorkflowProcessorFactory implements IServerFactory<WorkflowP
 	@Override
 	public Class<MWorkflowProcessor> getProcessorClass() {
 		return MWorkflowProcessor.class;
+	}
+
+	@Override
+	public WorkflowProcessor create(Properties ctx,
+			MWorkflowProcessor serverModel) {
+		return new WorkflowProcessor(serverModel);
 	}
 }
