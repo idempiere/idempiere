@@ -169,6 +169,14 @@ public class WChartEditor extends WEditor
 		super.dynamicDisplay();
 		createChart();		
 	}
+
+	/* (non-Javadoc)
+	 * @see org.adempiere.webui.editor.WEditor#isSearchable()
+	 */
+	@Override
+	public boolean isSearchable() {
+		return false;
+	}
 	
    /* (non-Javadoc)
 	 * @see org.adempiere.webui.editor.WEditor#setFieldStyle(java.lang.String)

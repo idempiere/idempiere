@@ -637,6 +637,13 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 				component.setStyle(style);
 		}
 	}
+	
+	/**
+	 * @return true if usable in find window, false otherwise
+	 */
+	public boolean isSearchable() {
+		return true;
+	}
 
 	protected String buildStyle(int AD_Style_ID) {
 		MStyle style = MStyle.get(Env.getCtx(), AD_Style_ID);
