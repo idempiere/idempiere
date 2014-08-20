@@ -2813,125 +2813,126 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		Object oldValue = field.getOldValue();
 
 		String callout = field.getCallout();
-		if (callout.length() == 0)
-			return "";
 
 		if (log.isLoggable(Level.FINE)) log.fine(field.getColumnName() + "=" + value
 			+ " (" + callout + ") - old=" + oldValue);
 
-		StringTokenizer st = new StringTokenizer(callout, ";,", false);
-		while (st.hasMoreTokens())      //  for each callout
+		if (callout.length() > 0)
 		{
-			String cmd = st.nextToken().trim();
-
-			//detect infinite loop
-			if (activeCallouts.contains(cmd)) continue;
-
-			String retValue = "";
-			// FR [1877902]
-			// CarlosRuiz - globalqss - implement beanshell callout
-			// Victor Perez  - vpj-cd implement JSR 223 Scripting
-			if (cmd.toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
-
-				MRule rule = MRule.get(m_vo.ctx, cmd.substring(MRule.SCRIPT_PREFIX.length()));
-				if (rule == null) {
-					retValue = "Callout " + cmd + " not found";
-					log.log(Level.SEVERE, retValue);
-					return retValue;
-				}
-				if ( !  (rule.getEventType().equals(MRule.EVENTTYPE_Callout)
-					  && rule.getRuleType().equals(MRule.RULETYPE_JSR223ScriptingAPIs))) {
-					retValue = "Callout " + cmd
-						+ " must be of type JSR 223 and event Callout";
-					log.log(Level.SEVERE, retValue);
-					return retValue;
-				}
-
-				ScriptEngine engine = rule.getScriptEngine();
-
-				// Window context are    W_
-				// Login context  are    G_
-				MRule.setContext(engine, m_vo.ctx, m_vo.WindowNo);
-				// now add the callout parameters windowNo, tab, field, value, oldValue to the engine
-				// Method arguments context are A_
-				engine.put(MRule.ARGUMENTS_PREFIX + "WindowNo", m_vo.WindowNo);
-				engine.put(MRule.ARGUMENTS_PREFIX + "Tab", this);
-				engine.put(MRule.ARGUMENTS_PREFIX + "Field", field);
-				engine.put(MRule.ARGUMENTS_PREFIX + "Value", value);
-				engine.put(MRule.ARGUMENTS_PREFIX + "OldValue", oldValue);
-				engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", m_vo.ctx);
-
-				try
-				{
-					activeCallouts.add(cmd);
-					retValue = engine.eval(rule.getScript()).toString();
-				}
-				catch (Exception e)
-				{
-					log.log(Level.SEVERE, "", e);
-					retValue = 	"Callout Invalid: " + e.toString();
-					return retValue;
-				}
-				finally
-				{
-					activeCallouts.remove(cmd);
-				}
-
-			} else {
-
-				Callout call = null;
-				String method = null;
-				int methodStart = cmd.lastIndexOf('.');
-				try
-				{
-					if (methodStart != -1)      //  no class
-					{
-						String className = cmd.substring(0,methodStart);
-						//first, check matching extension id in extension registry
-						call = EquinoxExtensionLocator.instance().locate(Callout.class, Callout.class.getName(), className, (ServiceQuery)null).getExtension();
-						if (call == null) {
-							//no match from extension registry, check java classpath
-							Class<?> cClass = Class.forName(className);
-							call = (Callout)cClass.newInstance();
-						}
-						method = cmd.substring(methodStart+1);
-					}
-				}
-				catch (Exception e)
-				{
-					log.log(Level.SEVERE, "class", e);
-					return "Callout Invalid: " + cmd + " (" + e.toString() + ")";
-				}
-
-				if (call == null || method == null || method.length() == 0)
-					return "Callout Invalid: " + method;
-
-				try
-				{
-					activeCallouts.add(cmd);
-					activeCalloutInstance.add(call);
-					retValue = call.start(m_vo.ctx, method, m_vo.WindowNo, this, field, value, oldValue);
-				}
-				catch (Exception e)
-				{
-					log.log(Level.SEVERE, "start", e);
-					retValue = 	"Callout Invalid: " + e.toString();
-					return retValue;
-				}
-				finally
-				{
-					activeCallouts.remove(cmd);
-					activeCalloutInstance.remove(call);
-				}
-
-			}
-
-			if (!Util.isEmpty(retValue))		//	interrupt on first error
+			StringTokenizer st = new StringTokenizer(callout, ";,", false);
+			while (st.hasMoreTokens())      //  for each callout
 			{
-				log.severe (retValue);
-				return retValue;
-			}
-		}   //  for each callout
+				String cmd = st.nextToken().trim();
+	
+				//detect infinite loop
+				if (activeCallouts.contains(cmd)) continue;
+	
+				String retValue = "";
+				// FR [1877902]
+				// CarlosRuiz - globalqss - implement beanshell callout
+				// Victor Perez  - vpj-cd implement JSR 223 Scripting
+				if (cmd.toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
+	
+					MRule rule = MRule.get(m_vo.ctx, cmd.substring(MRule.SCRIPT_PREFIX.length()));
+					if (rule == null) {
+						retValue = "Callout " + cmd + " not found";
+						log.log(Level.SEVERE, retValue);
+						return retValue;
+					}
+					if ( !  (rule.getEventType().equals(MRule.EVENTTYPE_Callout)
+						  && rule.getRuleType().equals(MRule.RULETYPE_JSR223ScriptingAPIs))) {
+						retValue = "Callout " + cmd
+							+ " must be of type JSR 223 and event Callout";
+						log.log(Level.SEVERE, retValue);
+						return retValue;
+					}
+	
+					ScriptEngine engine = rule.getScriptEngine();
+	
+					// Window context are    W_
+					// Login context  are    G_
+					MRule.setContext(engine, m_vo.ctx, m_vo.WindowNo);
+					// now add the callout parameters windowNo, tab, field, value, oldValue to the engine
+					// Method arguments context are A_
+					engine.put(MRule.ARGUMENTS_PREFIX + "WindowNo", m_vo.WindowNo);
+					engine.put(MRule.ARGUMENTS_PREFIX + "Tab", this);
+					engine.put(MRule.ARGUMENTS_PREFIX + "Field", field);
+					engine.put(MRule.ARGUMENTS_PREFIX + "Value", value);
+					engine.put(MRule.ARGUMENTS_PREFIX + "OldValue", oldValue);
+					engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", m_vo.ctx);
+	
+					try
+					{
+						activeCallouts.add(cmd);
+						retValue = engine.eval(rule.getScript()).toString();
+					}
+					catch (Exception e)
+					{
+						log.log(Level.SEVERE, "", e);
+						retValue = 	"Callout Invalid: " + e.toString();
+						return retValue;
+					}
+					finally
+					{
+						activeCallouts.remove(cmd);
+					}
+	
+				} else {
+	
+					Callout call = null;
+					String method = null;
+					int methodStart = cmd.lastIndexOf('.');
+					try
+					{
+						if (methodStart != -1)      //  no class
+						{
+							String className = cmd.substring(0,methodStart);
+							//first, check matching extension id in extension registry
+							call = EquinoxExtensionLocator.instance().locate(Callout.class, Callout.class.getName(), className, (ServiceQuery)null).getExtension();
+							if (call == null) {
+								//no match from extension registry, check java classpath
+								Class<?> cClass = Class.forName(className);
+								call = (Callout)cClass.newInstance();
+							}
+							method = cmd.substring(methodStart+1);
+						}
+					}
+					catch (Exception e)
+					{
+						log.log(Level.SEVERE, "class", e);
+						return "Callout Invalid: " + cmd + " (" + e.toString() + ")";
+					}
+	
+					if (call == null || method == null || method.length() == 0)
+						return "Callout Invalid: " + method;
+	
+					try
+					{
+						activeCallouts.add(cmd);
+						activeCalloutInstance.add(call);
+						retValue = call.start(m_vo.ctx, method, m_vo.WindowNo, this, field, value, oldValue);
+					}
+					catch (Exception e)
+					{
+						log.log(Level.SEVERE, "start", e);
+						retValue = 	"Callout Invalid: " + e.toString();
+						return retValue;
+					}
+					finally
+					{
+						activeCallouts.remove(cmd);
+						activeCalloutInstance.remove(call);
+					}
+	
+				}
+	
+				if (!Util.isEmpty(retValue))		//	interrupt on first error
+				{
+					log.severe (retValue);
+					return retValue;
+				}
+			}   //  for each callout
+		}
 
 		List<IColumnCallout> callouts = Core.findCallout(getTableName(), field.getColumnName());
 		if (callouts != null && !callouts.isEmpty()) {
