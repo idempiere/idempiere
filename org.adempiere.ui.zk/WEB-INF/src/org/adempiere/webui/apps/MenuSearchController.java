@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListHead;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
@@ -182,13 +181,11 @@ public class MenuSearchController implements EventListener<Event>{
 		layout.setHeight("100%");
 		parent.appendChild(layout);
 		
-		Label label = new Label(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")));
-		label.setStyle("padding: 3px; font-weight: bold; display: block;");
-		layout.appendChild(label);
 		listbox = new Listbox();
 		listbox.setEmptyMessage(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "FindZeroRecords")));
 		listbox.setStyle("border: none");
-		listbox.setWidth("500px");
+		listbox.setWidth("100%");
+		listbox.setVflex("true");
 		layout.appendChild(listbox);
 		listbox.setItemRenderer(new MenuItemRenderer());
 		listbox.addEventListener(Events.ON_SELECT, this);
@@ -316,7 +313,7 @@ public class MenuSearchController implements EventListener<Event>{
     }
 	
 	public void search(String value) {
-		listbox.setVisible(false);
+		listbox.setModel((ListModel)null);
 		Events.echoEvent(ON_SEARCH_ECHO, layout, value);
 	}
 	
@@ -330,7 +327,6 @@ public class MenuSearchController implements EventListener<Event>{
 			newModel = (ListModelList<MenuItem>) subModel.getSubModel(null, -1);
 		}
 		updateListboxModel(newModel);
-		listbox.setVisible(true);
 	}
 
 	private void updateListboxModel(ListModelList<MenuItem> newModel) {

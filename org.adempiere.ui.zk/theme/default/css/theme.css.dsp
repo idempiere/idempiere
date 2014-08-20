@@ -1676,6 +1676,15 @@ font-size: 0;
 	height: 16px;
 	width: 16px;
 } 
+
+.document-search-current-link {
+	background-image:url(${c:encodeThemeURL('~./zul/img/tree/item-sel.gif')});
+}
+
+.global-search-tabpanel {
+	width: 500px;
+}
+
 <%-- workaround for http://jira.idempiere.com/browse/IDEMPIERE-692 --%>
 .z-combobox-pp {
 	max-height: 200px;
