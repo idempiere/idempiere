@@ -152,6 +152,8 @@ ContextMenuListener, IZoomableEditor
         getComponent().setAutodrop(true);
         getComponent().addEventListener(Events.ON_BLUR, this);
         getComponent().addEventListener(Events.ON_CHANGING, this);
+        getComponent().addEventListener(Events.ON_OPEN, this);
+        getComponent().addEventListener("onPostSelect", this);
 
         boolean zoom= false;
         if (lookup != null)
@@ -414,6 +416,7 @@ ContextMenuListener, IZoomableEditor
     		} finally {
     			onselecting = false;
     		}
+    		Events.echoEvent("onPostSelect", getComponent(), null);
     	}
     	else if (Events.ON_BLUR.equalsIgnoreCase(event.getName()))
     	{
@@ -444,7 +447,13 @@ ContextMenuListener, IZoomableEditor
     		}
     	} else if (event.getName().equals(Events.ON_CHANGING)) {
     		onChanging((InputEvent) event);
-    	}
+    	} else if (event.getName().equals("onPostSelect")) {
+    		if (getComponent().isOpen()) {
+	    		getComponent().select();
+	    		getComponent().setOpen(false);
+	    		getComponent().setOpen(true);
+    		}
+    	} 
     }
 
     private void onChanging(InputEvent event) {
