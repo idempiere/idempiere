@@ -70,7 +70,7 @@ public class MTax extends X_C_Tax
 		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
 		List<MTax> list = new Query(ctx, I_C_Tax.Table_Name, null, null)
 								.setClient_ID()
-								.setOrderBy("C_Country_ID, C_Region_ID, To_Country_ID, To_Region_ID, ValidFrom DESC")
+								.setOrderBy("C_CountryGroupFrom_ID, C_Country_ID, C_Region_ID, C_CountryGroupTo_ID, To_Country_ID, To_Region_ID, ValidFrom DESC")
 								.setOnlyActiveRecords(true)
 								.list();
 		for (MTax tax : list)
@@ -293,6 +293,13 @@ public class MTax extends X_C_Tax
 				return false;
 			}
 		}
+		if (getC_Country_ID() > 0 && getC_CountryGroupFrom_ID() > 0) {
+			setC_Country_ID(0);
+		}
+		if (getTo_Country_ID() > 0 && getC_CountryGroupTo_ID() > 0) {
+			setTo_Country_ID(0);
+		}
+
 		return super.beforeSave(newRecord);
 	}
 	

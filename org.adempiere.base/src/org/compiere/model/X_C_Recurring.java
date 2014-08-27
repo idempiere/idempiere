@@ -31,7 +31,7 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20140727L;
 
     /** Standard Constructor */
     public X_C_Recurring (Properties ctx, int C_Recurring_ID, String trxName)
@@ -185,6 +185,31 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	public int getC_Project_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_RecurringGroup getC_RecurringGroup() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_RecurringGroup)MTable.get(getCtx(), org.compiere.model.I_C_RecurringGroup.Table_Name)
+			.getPO(getC_RecurringGroup_ID(), get_TrxName());	}
+
+	/** Set Recurring Group.
+		@param C_RecurringGroup_ID Recurring Group	  */
+	public void setC_RecurringGroup_ID (int C_RecurringGroup_ID)
+	{
+		if (C_RecurringGroup_ID < 1) 
+			set_Value (COLUMNNAME_C_RecurringGroup_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_RecurringGroup_ID, Integer.valueOf(C_RecurringGroup_ID));
+	}
+
+	/** Get Recurring Group.
+		@return Recurring Group	  */
+	public int getC_RecurringGroup_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_RecurringGroup_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

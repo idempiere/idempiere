@@ -569,6 +569,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				embeddedTbl.autoSize();
 
 				embeddedTbl.getModel().addTableModelListener(this);
+				embeddedTbl.setVflex("1");
 
 				//Xolali - add embeddedTbl to list, add m_sqlembedded to list
 				EmbedWinInfo ewinInfo = new EmbedWinInfo(embedInfo,embeddedTbl,m_sqlEmbedded,relatedInfo.getLinkColumnName(), relatedInfo.getLinkInfoColumn());

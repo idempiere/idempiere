@@ -303,6 +303,7 @@ public class MAttachment extends X_AD_Attachment
 		}
 		if (!replaced) {
 			 retValue = m_items.add(item);
+			 item.setIndex(m_items.size());
 		}
 		if (log.isLoggable(Level.FINE)) log.fine(item.toStringX());
 		setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(

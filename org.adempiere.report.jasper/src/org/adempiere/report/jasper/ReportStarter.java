@@ -668,7 +668,12 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	                    {
 	                    	try
 	                    	{
-	                    		File PDF = File.createTempFile(makePrefix(jasperPrint.getName()), ".pdf");
+	                    		File PDF;
+	                    		if (processInfo.getPDFFileName() != null) {
+		                    		PDF = new File(processInfo.getPDFFileName());
+	                    		} else {
+		                    		PDF = File.createTempFile(makePrefix(jasperPrint.getName()), ".pdf");
+	                    		}
 	                    		DefaultJasperReportsContext jrContext = DefaultJasperReportsContext.getInstance();
 	                    		LocalJasperReportsContext ljrContext = new LocalJasperReportsContext(jrContext);
 	                    		ljrContext.setClassLoader(this.getClass().getClassLoader());

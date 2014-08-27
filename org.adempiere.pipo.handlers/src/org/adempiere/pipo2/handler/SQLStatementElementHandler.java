@@ -47,6 +47,7 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 		String sql = getStringValue(element, "statement");
 		if (sql.endsWith(";") && !(sql.toLowerCase().endsWith("end;")))
 			sql = sql.substring(0, sql.length() - 1);
+		sql=Env.parseContext(Env.getCtx(), 0, sql, false);  // tbayen IDEMPIERE-2140
 		Savepoint savepoint = null;
 		PreparedStatement pstmt = null;
 		X_AD_Package_Imp_Detail impDetail = null;

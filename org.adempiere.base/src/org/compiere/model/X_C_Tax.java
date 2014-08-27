@@ -33,7 +33,7 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20140808L;
 
     /** Standard Constructor */
     public X_C_Tax (Properties ctx, int C_Tax_ID, String trxName)
@@ -106,6 +106,56 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 	public int getAD_Rule_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Rule_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_CountryGroup getC_CountryGroupFrom() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_CountryGroup)MTable.get(getCtx(), org.compiere.model.I_C_CountryGroup.Table_Name)
+			.getPO(getC_CountryGroupFrom_ID(), get_TrxName());	}
+
+	/** Set Country Group From.
+		@param C_CountryGroupFrom_ID Country Group From	  */
+	public void setC_CountryGroupFrom_ID (int C_CountryGroupFrom_ID)
+	{
+		if (C_CountryGroupFrom_ID < 1) 
+			set_Value (COLUMNNAME_C_CountryGroupFrom_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_CountryGroupFrom_ID, Integer.valueOf(C_CountryGroupFrom_ID));
+	}
+
+	/** Get Country Group From.
+		@return Country Group From	  */
+	public int getC_CountryGroupFrom_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_CountryGroupFrom_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_CountryGroup getC_CountryGroupTo() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_CountryGroup)MTable.get(getCtx(), org.compiere.model.I_C_CountryGroup.Table_Name)
+			.getPO(getC_CountryGroupTo_ID(), get_TrxName());	}
+
+	/** Set Country Group To.
+		@param C_CountryGroupTo_ID Country Group To	  */
+	public void setC_CountryGroupTo_ID (int C_CountryGroupTo_ID)
+	{
+		if (C_CountryGroupTo_ID < 1) 
+			set_Value (COLUMNNAME_C_CountryGroupTo_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_CountryGroupTo_ID, Integer.valueOf(C_CountryGroupTo_ID));
+	}
+
+	/** Get Country Group To.
+		@return Country Group To	  */
+	public int getC_CountryGroupTo_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_CountryGroupTo_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

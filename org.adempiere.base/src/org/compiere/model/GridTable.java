@@ -2254,7 +2254,7 @@ public class GridTable extends AbstractTableModel
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(refreshSQL.toString(), null);
+			pstmt = DB.prepareStatement(refreshSQL.toString(), get_TrxName());
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{

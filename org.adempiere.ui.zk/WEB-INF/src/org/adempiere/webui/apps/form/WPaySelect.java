@@ -18,6 +18,9 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
+import static org.compiere.model.SystemIDs.FORM_PAYMENT_PRINT_EXPORT;
+import static org.compiere.model.SystemIDs.PROCESS_C_PAYSELECTION_CREATEPAYMENT;
+
 import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -25,6 +28,7 @@ import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.util.IProcessUI;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -39,6 +43,9 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.editor.WDateEditor;
+import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.event.WTableModelEvent;
 import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.panel.ADForm;
@@ -47,7 +54,8 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.PaySelect;
-import static org.compiere.model.SystemIDs.*;
+import org.compiere.model.MPaySelection;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.X_C_PaySelection;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
@@ -62,8 +70,8 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 
 /**
@@ -76,7 +84,7 @@ import org.zkoss.zul.Space;
  *  @version $Id: VPaySelect.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
 public class WPaySelect extends PaySelect
-	implements IFormController, EventListener<Event>, WTableModelListener, IProcessUI
+	implements IFormController, EventListener<Event>, WTableModelListener, IProcessUI, ValueChangeListener
 {
 	/** @todo withholding */
 	
@@ -164,6 +172,8 @@ public class WPaySelect extends PaySelect
 		onlyDue.setText(Msg.getMsg(Env.getCtx(), "OnlyDue"));
 		dataStatus.setText(" ");
 		dataStatus.setPre(true);
+		onlyDue.addActionListener(this);
+		fieldPayDate.addValueChangeListener(this);
 		//
 		bGenerate.addActionListener(this);
 		bCancel.addActionListener(this);
@@ -322,10 +332,40 @@ public class WPaySelect extends PaySelect
 			dispose();
 
 		//  Update Open Invoices
-		else if (e.getTarget() == fieldBPartner || e.getTarget() == bRefresh || e.getTarget() == fieldDtype)
+		else if (e.getTarget() == fieldBPartner || e.getTarget() == bRefresh || e.getTarget() == fieldDtype
+				|| e.getTarget() == fieldPaymentRule || e.getTarget() == onlyDue)
 			loadTableInfo();
 
+		else if (DialogEvents.ON_WINDOW_CLOSE.equals(e.getName())) {
+
+			//  Ask to Open Print Form
+			FDialog.ask(m_WindowNo, form, "VPaySelectPrint?", new Callback<Boolean>() {
+
+				@Override
+				public void onCallback(Boolean result) 
+				{
+					if (result)
+					{
+						//  Start PayPrint
+						int AD_Form_ID = FORM_PAYMENT_PRINT_EXPORT;	//	Payment Print/Export
+						ADForm form = SessionManager.getAppDesktop().openForm(AD_Form_ID);
+						if (m_ps != null)
+						{
+							WPayPrint pp = (WPayPrint) form.getICustomForm();
+							pp.setPaySelection(m_ps.getC_PaySelection_ID());
+						}
+					}
+					
+				}
+			});
+		}
 	}   //  actionPerformed
+
+	@Override
+	public void valueChange(ValueChangeEvent e) {
+		if (e.getSource() == fieldPayDate)
+			loadTableInfo();
+	}
 
 	/**
 	 *  Table Model Listener
@@ -370,8 +410,10 @@ public class WPaySelect extends PaySelect
 			return;
 		}
 
-		//  Ask to Post it
-		FDialog.ask(m_WindowNo, form, "VPaySelectGenerate?", "(" + m_ps.getName() + ")", new Callback<Boolean>() {
+		loadTableInfo();
+		if (MSysConfig.getBooleanValue(MSysConfig.PAYMENT_SELECTION_MANUAL_ASK_INVOKE_GENERATE, true, m_ps.getAD_Client_ID(), m_ps.getAD_Org_ID())) {
+		  //  Ask to Post it
+		  FDialog.ask(m_WindowNo, form, "VPaySelectGenerate?", new Callback<Boolean>() {
 
 			@Override
 			public void onCallback(Boolean result) 
@@ -397,7 +439,10 @@ public class WPaySelect extends PaySelect
 				}
 				
 			}
-		});				
+		  });				
+		} else {
+			AEnv.zoom(MPaySelection.Table_ID, m_ps.getC_PaySelection_ID());
+		}
 	}   //  generatePaySelect
 	
 	/**
@@ -422,23 +467,7 @@ public class WPaySelect extends PaySelect
 		m_pi = pi;
 		Clients.clearBusy();	
 		
-		//TODO: The response returned is always Cancel
-//		if (!FDialog.ask(0, form, "VPaySelectPrint?", "(" + m_pi.getSummary() + ")"))
-//		{
-//			dispose();
-//			return;
-//		}
-
 		this.dispose();
-		
-		//  Start PayPrint
-		int AD_Form_ID = FORM_PAYMENT_PRINT_EXPORT;	//	Payment Print/Export
-		ADForm form = SessionManager.getAppDesktop().openForm(AD_Form_ID);
-		if (m_ps != null)
-		{
-			WPayPrint pp = (WPayPrint) form.getICustomForm();
-			pp.setPaySelection(m_ps.getC_PaySelection_ID());
-		}
 	}
 
 	public void executeASync(ProcessInfo pi) {

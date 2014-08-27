@@ -581,23 +581,33 @@ public class Tax
 				continue;
 			if (!IsSOTrx && MTax.SOPOTYPE_SalesTax.equals(tax.getSOPOType()))
 				continue;
-			
+
+			if (log.isLoggable(Level.FINEST)) log.finest("From Country Group - " + (MCountryGroup.countryGroupContains(tax.getC_CountryGroupFrom_ID(), lFrom.getC_Country_ID()) 
+				|| tax.getC_CountryGroupFrom_ID() == 0));
 			if (log.isLoggable(Level.FINEST)) log.finest("From Country - " + (tax.getC_Country_ID() == lFrom.getC_Country_ID() 
 				|| tax.getC_Country_ID() == 0));
 			if (log.isLoggable(Level.FINEST)) log.finest("From Region - " + (tax.getC_Region_ID() == lFrom.getC_Region_ID() 
 				|| tax.getC_Region_ID() == 0));
+			if (log.isLoggable(Level.FINEST)) log.finest("To Country Group - " + (MCountryGroup.countryGroupContains(tax.getC_CountryGroupTo_ID(), lTo.getC_Country_ID())
+				|| tax.getC_CountryGroupTo_ID() == 0));
 			if (log.isLoggable(Level.FINEST)) log.finest("To Country - " + (tax.getTo_Country_ID() == lTo.getC_Country_ID() 
 				|| tax.getTo_Country_ID() == 0));
 			if (log.isLoggable(Level.FINEST)) log.finest("To Region - " + (tax.getTo_Region_ID() == lTo.getC_Region_ID() 
 				|| tax.getTo_Region_ID() == 0));
 			if (log.isLoggable(Level.FINEST)) log.finest("Date valid - " + (!tax.getValidFrom().after(billDate)));
 			
+			//	From Country Group
+			if ((tax.getC_CountryGroupFrom_ID() == 0
+					|| MCountryGroup.countryGroupContains(tax.getC_CountryGroupFrom_ID(), lFrom.getC_Country_ID()))
 				//	From Country
-			if ((tax.getC_Country_ID() == lFrom.getC_Country_ID() 
+				&& (tax.getC_Country_ID() == lFrom.getC_Country_ID()
 					|| tax.getC_Country_ID() == 0)
 				//	From Region
-				&& (tax.getC_Region_ID() == lFrom.getC_Region_ID() 
+				&& (tax.getC_Region_ID() == lFrom.getC_Region_ID()
 					|| tax.getC_Region_ID() == 0)
+				//	To Country Group
+				&& (tax.getC_CountryGroupTo_ID() == 0
+					|| MCountryGroup.countryGroupContains(tax.getC_CountryGroupTo_ID(), lTo.getC_Country_ID()))
 				//	To Country
 				&& (tax.getTo_Country_ID() == lTo.getC_Country_ID() 
 					|| tax.getTo_Country_ID() == 0)

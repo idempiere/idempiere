@@ -54,6 +54,8 @@ public class DocumentSearchController implements EventListener<Event>{
 	private static final String SEARCH_RESULT = "search.result";
 	private static final String ON_SEARCH_DOCUMENTS = "onSearchDocuments";
 	private Vlayout layout;
+	private ArrayList<SearchResult> list;
+	private int selected = -1;
 
 	/**
 	 * 
@@ -64,7 +66,8 @@ public class DocumentSearchController implements EventListener<Event>{
 	public void create(Component parent) {
 		layout = new Vlayout();
 		layout.setStyle("padding: 3px;");
-		layout.setWidth("200px");
+		layout.setWidth("100%");
+		layout.setVflex("true");
 		
 		parent.appendChild(layout);
 		
@@ -77,6 +80,7 @@ public class DocumentSearchController implements EventListener<Event>{
 	}
 	
 	private void onSearchDocuments(String searchString) {
+		list = new ArrayList<SearchResult>();
 		if (Util.isEmpty(searchString)) {
 			return;
 		} 
@@ -113,8 +117,8 @@ public class DocumentSearchController implements EventListener<Event>{
 	
 	private List<SearchResult> doSearch(String searchString) {
 		final MRole role = MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()), true);
-		
-		List<SearchResult> list = new ArrayList<SearchResult>();
+				
+		selected = -1;
 		Query query = new Query(Env.getCtx(), I_AD_SearchDefinition.Table_Name, "", null);
 		List<MSearchDefinition> definitions = query.setOnlyActiveRecords(true).list();		
 		for(MSearchDefinition msd : definitions) {
@@ -140,6 +144,7 @@ public class DocumentSearchController implements EventListener<Event>{
 				} else {
 					sql.append("WHERE UPPER(").append(column.getColumnName()).append(") LIKE UPPER(?)");
 				}
+				sql.append(" AND AD_Client_ID=@AD_Client_ID@  ");
 
 				// search for a Integer
 				if (msd.getDataType().equals(MSearchDefinition.DATATYPE_INTEGER)) {
@@ -198,6 +203,13 @@ public class DocumentSearchController implements EventListener<Event>{
 			String sql = builder.toString();
 			if (!Util.isEmpty(extraWhereClase))
 				sql = sql + extraWhereClase;
+			//@@ is full text search operator for postgresql
+			boolean hasFullTextOperator = sql.indexOf("@@") >= 0;
+			if (hasFullTextOperator)
+				sql = sql.replace("@@", "~!#$*");
+			sql = Env.parseContext(Env.getCtx(), -1, sql, false, true);
+			if (hasFullTextOperator)
+				sql = sql.replace("~!#$*", "@@");
 			pstmt = DB.prepareStatement(sql, (String)null);
 			if (params.size() > 0)
 				DB.setParameters(pstmt, params);
@@ -245,7 +257,7 @@ public class DocumentSearchController implements EventListener<Event>{
 		AEnv.zoom(result.getWindowId(), query);
 	}
 	
-	private class SearchResult {
+	public static class SearchResult {
 		private String windowName;
 		private int windowId;
 		private String tableName;
@@ -361,5 +373,45 @@ public class DocumentSearchController implements EventListener<Event>{
 		}
 		
 		return false;
+	}
+
+	public SearchResult selectPrior() {
+		if (selected > 0) {
+			selected--;
+			SearchResult result = list.get(selected);
+			List<Component> links = layout.getChildren();
+			for(Component link : links) {
+				if (link instanceof A) {
+					A a = (A) link;
+					if (result.getLabel().equals(a.getLabel())) {
+						a.setSclass("document-search-current-link");
+					} else if ("document-search-current-link".equals(a.getSclass())) {
+						a.setSclass(null);
+					}
+				}
+			}
+			return result;
+		}
+		return null;
+	}
+
+	public SearchResult selectNext() {
+		if (selected < (list.size()-1)) {
+			selected++;
+			SearchResult result = list.get(selected);
+			List<Component> links = layout.getChildren();
+			for(Component link : links) {
+				if (link instanceof A) {
+					A a = (A) link;
+					if (result.getLabel().equals(a.getLabel())) {
+						a.setSclass("document-search-current-link");
+					} else if ("document-search-current-link".equals(a.getSclass())) {
+						a.setSclass(null);
+					}
+				}
+			}
+			return result;
+		}
+		return null;
 	}
 }

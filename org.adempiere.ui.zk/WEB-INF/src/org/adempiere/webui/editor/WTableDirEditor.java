@@ -48,6 +48,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -55,6 +56,8 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Menuitem;
@@ -148,6 +151,9 @@ ContextMenuListener, IZoomableEditor
         getComponent().setAutocomplete(true);
         getComponent().setAutodrop(true);
         getComponent().addEventListener(Events.ON_BLUR, this);
+        getComponent().addEventListener(Events.ON_CHANGING, this);
+        getComponent().addEventListener(Events.ON_OPEN, this);
+        getComponent().addEventListener("onPostSelect", this);
 
         boolean zoom= false;
         if (lookup != null)
@@ -410,6 +416,7 @@ ContextMenuListener, IZoomableEditor
     		} finally {
     			onselecting = false;
     		}
+    		Events.echoEvent("onPostSelect", getComponent(), null);
     	}
     	else if (Events.ON_BLUR.equalsIgnoreCase(event.getName()))
     	{
@@ -438,10 +445,36 @@ ContextMenuListener, IZoomableEditor
     				}
     			}
     		}
-    	}
+    	} else if (event.getName().equals(Events.ON_CHANGING)) {
+    		onChanging((InputEvent) event);
+    	} else if (event.getName().equals("onPostSelect")) {
+    		if (getComponent().isOpen()) {
+	    		getComponent().select();
+	    		getComponent().setOpen(false);
+	    		getComponent().setOpen(true);
+    		}
+    	} 
     }
 
-    private boolean isValueChange(Object newValue) {
+    private void onChanging(InputEvent event) {
+		String v = event.getValue();
+		if (!Util.isEmpty(v)) {
+			v = v.toLowerCase();
+			int count = getComponent().getItemCount();
+			for(int i = 0; i < count; i++) {
+				Comboitem item = getComponent().getItemAtIndex(i);
+				if(item.getLabel() != null && item.getLabel().toLowerCase().startsWith(v)) {
+					Clients.scrollIntoView(item);
+					break;
+				}
+			}
+		} else if (getComponent().getItemCount() > 0) {
+			Comboitem item = getComponent().getItemAtIndex(0);
+			Clients.scrollIntoView(item);
+		}
+	}
+
+	private boolean isValueChange(Object newValue) {
 		return (oldValue == null && newValue != null) || (oldValue != null && newValue == null) 
 			|| ((oldValue != null && newValue != null) && !oldValue.equals(newValue));
 	}

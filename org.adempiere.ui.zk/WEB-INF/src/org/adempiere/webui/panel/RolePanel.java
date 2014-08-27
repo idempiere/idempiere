@@ -26,6 +26,8 @@ package org.adempiere.webui.panel;
 import java.sql.Timestamp;
 import java.util.Properties;
 
+import javax.servlet.http.HttpSession;
+
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
@@ -55,6 +57,8 @@ import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.au.out.AuScript;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Deferrable;
 import org.zkoss.zk.ui.event.Event;
@@ -609,6 +613,13 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 		String msg = login.loadPreferences(orgKNPair, warehouseKNPair, date, null);
         if (Util.isEmpty(msg))
         {
+
+            Session currSess = Executions.getCurrent().getDesktop().getSession();
+            HttpSession httpSess = (HttpSession) currSess.getNativeSession();
+            int timeout = MSysConfig.getIntValue(MSysConfig.ZK_SESSION_TIMEOUT_IN_SECONDS, -2, Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));
+            if (timeout != -2) // default to -2 meaning not set
+            	httpSess.setMaxInactiveInterval(timeout);
+
             msg = login.validateLogin(orgKNPair);
         }
         if (! Util.isEmpty(msg))

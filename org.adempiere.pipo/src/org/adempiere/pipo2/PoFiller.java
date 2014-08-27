@@ -304,15 +304,20 @@ public class PoFiller{
 					MAttachment attach = ((MAttachment)po);
 					for (File file : files) {
 						boolean found = false;
+						int index = -1;
 						for (MAttachmentEntry entry : attach.getEntries()) {
+							index++;
 							if (entry.getName().equals(file.getName())) {
 								found = true;
-								attach.updateEntry(entry.getIndex(), file);
+								attach.updateEntry(index, file);
+								break;
 							}
 						}
 						if (! found)
 							attach.addEntry(file);
 					}
+					if (!attach.is_Changed())
+						attach.set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis()));
 				}
 			} else {
 				Object data = null;

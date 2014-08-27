@@ -91,13 +91,26 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule
 	 * 	@param orderAmt order amount
 	 *	@return true if I can send Invoice
 	 */
+	@Deprecated
+	// Deprecation note: consider using just canInvoice(Timestamp)
+	// validating the order amount doesn't make sense as the total must be calculated based on shipments
 	public boolean canInvoice (Timestamp xDate, BigDecimal orderAmt)
 	{
 		//	Amount
 		if (isAmount() && getAmt() != null && orderAmt != null 
 			&& orderAmt.compareTo(getAmt()) >= 0)
 			return true;
-		
+
+		return canInvoice(xDate);
+	}	//	canInvoice
+	
+	/**
+	 * 	Can I send Invoice
+	 * 	@param xDate date
+	 *	@return true if I can send Invoice
+	 */
+	public boolean canInvoice (Timestamp xDate)
+	{
 		//	Daily
 		if (INVOICEFREQUENCY_Daily.equals(getInvoiceFrequency()))
 			return true;

@@ -118,6 +118,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 			infoPanel.setTitle(null);
 			preOpenNewTab();
 			windowContainer.addWindow(tabPanel, title, true);
+			infoPanel.focus();
 		} else {
 			FDialog.error(0, "NotValid");
 		}

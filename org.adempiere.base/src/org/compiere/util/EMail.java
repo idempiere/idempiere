@@ -155,7 +155,7 @@ public final class EMail implements Serializable
 		setSmtpHost(smtpHost);
 		setFrom(from);
 		String bccAddressForAllMails = MSysConfig.getValue(MSysConfig.MAIL_SEND_BCC_TO_ADDRESS, Env.getAD_Client_ID(Env.getCtx()));
-		if (bccAddressForAllMails != null && bccAddressForAllMails.length() > 0)
+		if (! Util.isEmpty(bccAddressForAllMails, true))
 			addBcc(bccAddressForAllMails);
 		addTo(to);
 		m_ctx = ctx;
@@ -291,17 +291,37 @@ public final class EMail implements Serializable
 			m_msg = new SMTPMessage(session);
 			//	Addresses
 			m_msg.setFrom(m_from);
-			InternetAddress[] rec = getTos();
-			if (rec.length == 1)
-				m_msg.setRecipient (Message.RecipientType.TO, rec[0]);
-			else
-				m_msg.setRecipients (Message.RecipientType.TO, rec);
-			rec = getCcs();
-			if (rec != null && rec.length > 0)
-				m_msg.setRecipients (Message.RecipientType.CC, rec);
-			rec = getBccs();
-			if (rec != null && rec.length > 0)
-				m_msg.setRecipients (Message.RecipientType.BCC, rec);
+
+			// IDEMPIERE-2104 - intended for test or dev systems to not send undesired emails
+			boolean isDontSendToAddress = MSysConfig.getBooleanValue(MSysConfig.MAIL_DONT_SEND_TO_ADDRESS, false, Env.getAD_Client_ID(Env.getCtx()));
+
+			if (! isDontSendToAddress) {
+				InternetAddress[] rec = getTos();
+				if (rec.length == 1)
+					m_msg.setRecipient (Message.RecipientType.TO, rec[0]);
+				else
+					m_msg.setRecipients (Message.RecipientType.TO, rec);
+				rec = getCcs();
+				if (rec != null && rec.length > 0)
+					m_msg.setRecipients (Message.RecipientType.CC, rec);
+				rec = getBccs();
+				if (rec != null && rec.length > 0)
+					m_msg.setRecipients (Message.RecipientType.BCC, rec);
+			} else {
+				String bccAddressForAllMails = MSysConfig.getValue(MSysConfig.MAIL_SEND_BCC_TO_ADDRESS, Env.getAD_Client_ID(Env.getCtx()));
+				if (! Util.isEmpty(bccAddressForAllMails, true)) {
+					m_msg.setRecipient (Message.RecipientType.TO, new InternetAddress(bccAddressForAllMails, true));
+				}
+				InternetAddress[] rec = getTos();
+				if (rec != null && rec.length > 0)
+					m_msg.setHeader("OriginalTo", getCommaSeparatedString(rec));
+				rec = getCcs();
+				if (rec != null && rec.length > 0)
+					m_msg.setHeader("OriginalCC", getCommaSeparatedString(rec));
+				rec = getBccs();
+				if (rec != null && rec.length > 0)
+					m_msg.setHeader("OriginalBCC", getCommaSeparatedString(rec));
+			}
 			if (m_replyTo != null)
 				m_msg.setReplyTo(new Address[] {m_replyTo});
 			//
@@ -435,6 +455,16 @@ public final class EMail implements Serializable
 		m_sentMsg = SENT_OK;
 		return m_sentMsg;
 	}	//	send
+
+	private String getCommaSeparatedString(InternetAddress[] recs) {
+		StringBuilder retValue = new StringBuilder();
+		for (InternetAddress rec : recs) {
+			if (retValue.length() > 0)
+				retValue.append(",");
+			retValue.append(rec.getAddress());
+		}
+		return retValue.toString();
+	}
 
 	/**
 	 * 	Get Send Result Msg
