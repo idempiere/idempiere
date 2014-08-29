@@ -400,6 +400,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 
 	private void processQueryValue() {
+		onUserQuery();//IDEMPIERE-1979 Add by Hideaki Hagiwara
 		for (int i = 0; i < identifiers.size(); i++) {
 			WEditor editor = identifiers.get(i);
 			editor.setValue(queryValue);
