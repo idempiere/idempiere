@@ -438,7 +438,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 
 		//	Get Period
-		MPeriod period = MPeriod.get (getCtx(), getDateAcct(), getAD_Org_ID());
+		MPeriod period = MPeriod.get (getCtx(), getDateAcct(), getAD_Org_ID(), get_TrxName());
 		if (period == null)
 		{
 			log.warning("No Period for " + getDateAcct());
