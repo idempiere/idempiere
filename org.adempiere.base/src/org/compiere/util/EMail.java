@@ -22,8 +22,10 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -307,14 +309,23 @@ public final class EMail implements Serializable
 				rec = getBccs();
 				if (rec != null && rec.length > 0)
 					m_msg.setRecipients (Message.RecipientType.BCC, rec);
+				if (m_replyTo != null)
+					m_msg.setReplyTo(new Address[] {m_replyTo});
 			} else {
 				String bccAddressForAllMails = MSysConfig.getValue(MSysConfig.MAIL_SEND_BCC_TO_ADDRESS, Env.getAD_Client_ID(Env.getCtx()));
 				if (! Util.isEmpty(bccAddressForAllMails, true)) {
 					m_msg.setRecipient (Message.RecipientType.TO, new InternetAddress(bccAddressForAllMails, true));
 				}
+				List<InternetAddress> replyToList=new ArrayList<InternetAddress>();
+				if(m_replyTo!=null)
+					replyToList.add(m_replyTo);
 				InternetAddress[] rec = getTos();
-				if (rec != null && rec.length > 0)
+				if (rec != null && rec.length > 0){
 					m_msg.setHeader("OriginalTo", getCommaSeparatedString(rec));
+					replyToList.addAll(Arrays.asList(rec));
+				}
+				if(replyToList.size()>0)
+					m_msg.setReplyTo(replyToList.toArray(new InternetAddress[]{}));
 				rec = getCcs();
 				if (rec != null && rec.length > 0)
 					m_msg.setHeader("OriginalCC", getCommaSeparatedString(rec));
@@ -322,8 +333,6 @@ public final class EMail implements Serializable
 				if (rec != null && rec.length > 0)
 					m_msg.setHeader("OriginalBCC", getCommaSeparatedString(rec));
 			}
-			if (m_replyTo != null)
-				m_msg.setReplyTo(new Address[] {m_replyTo});
 			//
 			m_msg.setSentDate(new java.util.Date());
 			m_msg.setHeader("Comments", "iDempiereMail");
