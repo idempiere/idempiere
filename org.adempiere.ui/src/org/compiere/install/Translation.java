@@ -24,6 +24,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -37,10 +38,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.adempiere.base.Core;
 import org.compiere.Adempiere;
 import org.compiere.model.MLanguage;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.process.ProcessCall;
+import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -48,6 +52,8 @@ import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.eclipse.equinox.app.IApplication;
+import org.eclipse.equinox.app.IApplicationContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -58,7 +64,7 @@ import org.w3c.dom.Element;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: Translation.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
-public class Translation
+public class Translation implements IApplication
 {
 	/**
 	 * 	Translation
@@ -68,6 +74,16 @@ public class Translation
 	{
 		m_ctx = ctx;
 	}	//	Translation
+
+	/**
+	 * Do not use this Constructor in normal calls. It is used e.g. by the
+	 * headless call for an only-translation batch script call.
+	 * 
+	 * @author tbayen - IDEMPIERE-1554
+	 */
+	public Translation(){
+		m_ctx=Env.getCtx();
+	}
 	
 	/**	DTD						*/
 	public static final String DTD = "<!DOCTYPE idempiereTrl PUBLIC \"-//ComPiere, Inc.//DTD iDempiere Translation 1.0//EN\" \"http://www.idempiere.com/dtd/idempiereTrl.dtd\">";
@@ -435,7 +451,7 @@ public class Translation
 	 * 	@param AD_Language language
 	 * 	@param mode mode
 	 */
-	private void process (String directory, String AD_Language, String mode)
+	public void process (String directory, String AD_Language, String mode)
 	{
 		String 	sql = "SELECT Name, TableName "
 			+ "FROM AD_Table "
@@ -489,7 +505,66 @@ public class Translation
 		}
 	}	//	process
 
-	
+	/**************************************************************************
+	 * OSGi Batch Interface
+	 * 
+	 * @author tbayen - IDEMPIERE-1554
+	 */
+
+	/**
+	 * Launch method of the OSGi application.
+	 * 
+	 * In pre-OSGi times commandline launching was done by a run of the main()
+	 * method of {@link Translation}. This is the OSGized launch method. This
+	 * class has to be mentioned in META-INF/MANIFEST.MF as an
+	 * "org.eclipse.core.runtime.applications" extension. Because of that it can
+	 * be called from the commandline.
+	 * 
+	 * You should take care that the org.eclipse.equinox.event bundle is active
+	 * if you run this to send events in the case something goes wrong (like a
+	 * missing file etc.)
+	 */
+	@Override
+	public Object start(IApplicationContext context) throws Exception {
+		Adempiere.startup(false);
+		Map<?, ?> args = context.getArguments();
+		String commandlineArgs[] = (String[]) args.get("application.args");
+		if (commandlineArgs.length == 3
+				&& ("import".equals(commandlineArgs[0]) || "export".equals(commandlineArgs[0]))) {
+			String command = commandlineArgs[0];
+			String directory = commandlineArgs[1];
+			String countrycode = commandlineArgs[2];
+			Properties ctx = Env.getCtx();
+			Translation translation = new Translation(ctx);
+			translation.process(directory, countrycode, command);
+		} else if (commandlineArgs.length == 1 && "sync".equals(commandlineArgs[0])) {
+			ProcessInfo pi = new ProcessInfo("Synchronize Terminology", 172);
+			pi.setAD_Client_ID(0);
+			pi.setAD_User_ID(100);
+			/*
+			 * I do not call this direct because I did not want the
+			 * org.adempiere.process plugin become a dependency of
+			 * org.adempier.ui only for this commandline sync command.
+			 */
+			ProcessCall process = Core.getProcess("org.compiere.process.SynchronizeTerminology");
+			process.startProcess(Env.getCtx(), pi, null);
+			StringBuilder msgout = new StringBuilder("Process=").append(pi.getTitle())
+					.append(" Error=").append(pi.isError()).append(" Summary=")
+					.append(pi.getSummary());
+			System.out.println(msgout.toString());
+		} else {
+			System.out.println("translation OSGi plugin commandline usage:");
+			System.out.println("Translation.sh import translation/data de_DE");
+			System.out.println("Translation.sh export translation/data de_DE");
+		}
+		return IApplication.EXIT_OK;
+	}
+
+	@Override
+	public void stop() {
+		// IApplication implementation method - (only start method used)
+	}
+
 	/**************************************************************************
 	 * 	Batch Interface
 	 * 	@param args directory AD_Language import/export

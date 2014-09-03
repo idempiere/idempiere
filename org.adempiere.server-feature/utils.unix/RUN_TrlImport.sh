@@ -16,7 +16,6 @@ export  DIRECTORY=$IDEMPIERE_HOME/data/$AD_LANGUAGE
 
 echo	This Procedure imports language $AD_LANGUAGE from directory $DIRECTORY
 
-$JAVA_HOME/bin/java -cp $CLASSPATH org.compiere.install.Translation $DIRECTORY $AD_LANGUAGE import
-
+$JAVA -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -XX:MaxPermSize=192m -jar plugins/org.eclipse.equinox.launcher_1.*.jar -console 12612 -application org.adempiere.ui.translation import $DIRECTORY $AD_LANGUAGE
 
 echo	Done
