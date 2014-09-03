@@ -1193,10 +1193,7 @@ public class MOrder extends X_C_Order implements DocAction
 	{
 		if (isProcessed())
 			return false;
-		
-		for (MOrderLine line : getLines()) {
-			line.deleteEx(true);
-		}
+		// automatic deletion of lines is driven by model cascade definition in dictionary - see IDEMPIERE-2060
 		return true;
 	}	//	beforeDelete
 	

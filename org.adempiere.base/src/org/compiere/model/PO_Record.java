@@ -18,10 +18,14 @@ package org.compiere.model;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 
 /**
@@ -147,7 +151,43 @@ public class PO_Record
 			}
 		}
 		return true;
-	}	//	deleteCascase
+	}	//	deleteCascade
+
+	//IDEMPIERE-2060
+	public static void deleteModelCascade(String tableName, int Record_ID, String trxName) {
+		//find dependent tables to delete cascade	
+		final String sql = ""
+				+ "SELECT t.TableName, "
+				+ "       c.ColumnName "
+				+ "FROM   AD_Column c "
+				+ "       JOIN AD_Table t ON c.AD_Table_ID = t.AD_Table_ID "
+				+ "       LEFT JOIN AD_Ref_Table r ON c.AD_Reference_Value_ID = r.AD_Reference_ID "
+				+ "       LEFT JOIN AD_Table tr ON r.AD_Table_ID = tr.AD_Table_ID "
+				+ "WHERE  t.IsView = 'N' "
+				+ "       AND t.IsActive = 'Y' "
+				+ "       AND c.IsActive = 'Y' "
+				+ "       AND ( ( c.AD_Reference_ID = " + DisplayType.TableDir
+				+ "               AND c.ColumnName = ? || '_ID' ) "
+				+ "              OR ( c.AD_Reference_ID IN ( " + DisplayType.Table + ", " + DisplayType.Search + " ) "
+				+ "                   AND ( tr.TableName = ? OR ( tr.TableName IS NULL AND c.ColumnName = ? || '_ID' ) ) ) ) "
+				+ "       AND c.FKConstraintType = '" + MColumn.FKCONSTRAINTTYPE_ModelCascade + "' ";
+
+		List<List<Object>> dependents = DB.getSQLArrayObjectsEx(trxName, sql, tableName, tableName, tableName);
+		if (dependents != null) {
+			for (List<Object> row : dependents) {
+				String dependentTableName = (String) row.get(0);
+				String dependentColumnName = (String) row.get(1);
+				String dependentWhere = dependentColumnName + "=?";
+				List<PO> poList = new Query(Env.getCtx(), 
+						dependentTableName,
+						dependentWhere,
+						trxName).setParameters(Record_ID).list();
+				for (PO po : poList) {
+					po.deleteEx(true, trxName);
+				}
+			}
+		}
+	}
 
 	/**
 	 * 	An entry Exists for restrict table/record combination
