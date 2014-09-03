@@ -39,7 +39,6 @@ import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_Process;
 import org.compiere.model.X_AD_Role;
 import org.compiere.model.X_AD_Task;
-import org.compiere.model.X_AD_User;
 import org.compiere.model.X_AD_Window;
 import org.compiere.model.X_AD_Workflow;
 import org.compiere.util.DB;
@@ -51,7 +50,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 
 	private OrgRoleElementHandler orgHandler = new OrgRoleElementHandler();
 	private ProcessAccessElementHandler processHandler = new ProcessAccessElementHandler();
-	private UserRoleElementHandler userHandler = new UserRoleElementHandler();
+	// private UserRoleElementHandler userHandler = new UserRoleElementHandler();
 	private WindowAccessElementHandler windowHandler = new WindowAccessElementHandler();
 	private FormAccessElementHandler formHandler = new FormAccessElementHandler();
 	private TaskAccessElementHandler taskHandler = new TaskAccessElementHandler();
@@ -136,7 +135,8 @@ public class RoleElementHandler extends AbstractElementHandler {
 			DB.close(rs, pstmt);
 		}
 
-		// Process user assignment access
+		// Process user assignment access - processing of AD_User_Roles dropped with IDEMPIERE-2137
+		/*
 		sql = "SELECT AD_User_ID, AD_Role_ID, AD_Org_ID FROM AD_User_Roles WHERE AD_Role_ID= " + Role_id
 			+ " AND AD_User_ID > 0 ";
 		pstmt = null;
@@ -153,6 +153,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 		} finally {
 			DB.close(rs, pstmt);
 		}
+		*/
 
 		// Process AD_Window_Access Values
 		sql = "SELECT AD_Window_ID, AD_Role_ID FROM AD_Window_Access WHERE AD_Role_ID= " + Role_id;
@@ -289,6 +290,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 		ctx.ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 	}
 
+	/*
 	private void createUserRole(PIPOContext ctx, TransformerHandler document,
 			int AD_User_ID, int AD_Role_ID, int AD_Org_ID) throws SAXException {
 		Env.setContext(ctx.ctx, X_AD_User.COLUMNNAME_AD_User_ID, AD_User_ID);
@@ -299,6 +301,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 		ctx.ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 		ctx.ctx.remove("AD_Org_ID");
 	}
+	*/
 
 	private void createOrgAccess(PIPOContext ctx, TransformerHandler document,
 			int AD_Org_ID, int AD_Role_ID) throws SAXException {
