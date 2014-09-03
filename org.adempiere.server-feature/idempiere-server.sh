@@ -9,10 +9,14 @@ else
   echo Set JAVA_HOME to the directory of your local JDK.
 fi
 
+if [ "$1"=="debug" ]; then
+  DEBUG="-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=4554,server=y,suspend=n"
+fi
+
 echo ===================================
 echo Starting iDempiere Server
 echo ===================================
 
 unset DISPLAY
 BASE=`dirname $( readlink -f idempiere-server.sh )`
-$JAVA -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -XX:MaxPermSize=192m -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -console 12612 -application org.adempiere.server.application
+$JAVA ${DEBUG} -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -XX:MaxPermSize=192m -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -console 12612 -application org.adempiere.server.application
