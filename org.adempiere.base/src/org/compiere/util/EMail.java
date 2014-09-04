@@ -314,7 +314,7 @@ public final class EMail implements Serializable
 			} else {
 				String bccAddressForAllMails = MSysConfig.getValue(MSysConfig.MAIL_SEND_BCC_TO_ADDRESS, Env.getAD_Client_ID(Env.getCtx()));
 				if (! Util.isEmpty(bccAddressForAllMails, true)) {
-					m_msg.setRecipient (Message.RecipientType.TO, new InternetAddress(bccAddressForAllMails, true));
+					m_msg.setRecipients (Message.RecipientType.TO, bccAddressForAllMails);
 				}
 				List<InternetAddress> replyToList=new ArrayList<InternetAddress>();
 				if(m_replyTo!=null)
@@ -697,19 +697,22 @@ public final class EMail implements Serializable
 	{
 		if (newBcc == null || newBcc.length() == 0)
 			return false;
-		InternetAddress ia = null;
-		try
-		{
-			ia = new InternetAddress (newBcc, true);
+		String[] addresses = newBcc.split(", *");
+		for (String bccAddress : addresses) {
+			InternetAddress ia = null;
+			try
+			{
+				ia = new InternetAddress (bccAddress, true);
+			}
+			catch (Exception e)
+			{
+				log.log(Level.WARNING, bccAddress + ": " + e.getMessage());
+				return false;
+			}
+			if (m_bcc == null)
+				m_bcc = new ArrayList<InternetAddress>();
+			m_bcc.add (ia);
 		}
-		catch (Exception e)
-		{
-			log.log(Level.WARNING, newBcc + ": " + e.getMessage());
-			return false;
-		}
-		if (m_bcc == null)
-			m_bcc = new ArrayList<InternetAddress>();
-		m_bcc.add (ia);
 		return true;
 	}	//	addBcc
 
