@@ -980,7 +980,7 @@ public final class EMail implements Serializable
 					(new ByteArrayDataSource (m_messageHTML, charSetName, "text/html")));
 
 			// Create Multipart and its parts to it
-			Multipart mp = new MimeMultipart("mixed");
+			Multipart mp = new MimeMultipart("related");
 			mp.addBodyPart(mbp_1);
 			if (log.isLoggable(Level.FINE)) log.fine("(multi) " + getSubject() + " - " + mbp_1);
 
