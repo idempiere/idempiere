@@ -24,7 +24,6 @@ import org.adempiere.webui.window.InfoSchedule;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
-import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -90,7 +89,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 		for (int i = 0; i < infos.length; i++)
 		{
 			MInfoWindow info = infos[i];
-			if (MInfoWindow.get(MTable.getTableName(Env.getCtx(), info.getAD_Table_ID()), null) != null)
+			if (MInfoWindow.get(info.getAD_InfoWindow_ID(), null) != null)
 			{
 				ToolBarButton btnViewItem = new ToolBarButton(info.getName());
 				btnViewItem.setSclass("link");
