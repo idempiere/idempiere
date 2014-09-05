@@ -400,7 +400,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 
 	private void processQueryValue() {
-		onUserQuery();//IDEMPIERE-1979 Add by Hideaki Hagiwara
+		isQueryByUser = true;
 		for (int i = 0; i < identifiers.size(); i++) {
 			WEditor editor = identifiers.get(i);
 			editor.setValue(queryValue);
@@ -431,6 +431,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		} else if (!splitValue) {
 			editors.get(0).setValue(queryValue);
 		}
+		isQueryByUser = false;
 	}
 
 	private boolean loadInfoDefinition() {
