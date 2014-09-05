@@ -20,8 +20,6 @@ import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import javax.security.auth.login.AccountException;
-
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
@@ -54,8 +52,6 @@ public class Charge
 	private int         m_C_TaxCategory_ID = 0;
 	private int         m_AD_Client_ID = 0;
 	private int         m_AD_Org_ID = 0;
-	@SuppressWarnings("unused")
-	private int         m_CreatedBy = 0;
 	private MAcctSchema  m_acctSchema = null;
 	/**	Logger			*/
 	public static CLogger log = CLogger.getCLogger(Charge.class);
@@ -173,7 +169,6 @@ public class Charge
 		//  Other Defaults
 		m_AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 		m_AD_Org_ID = Env.getAD_Org_ID(Env.getCtx());
-		m_CreatedBy = Env.getAD_User_ID(Env.getCtx());
 
 		//  TaxCategory
 		String sql = "SELECT C_TaxCategory_ID FROM C_TaxCategory "
