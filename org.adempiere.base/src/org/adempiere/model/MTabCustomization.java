@@ -32,6 +32,6 @@ public class MTabCustomization extends X_AD_Tab_Customization {
 	 */
 	public static MTabCustomization get(Properties ctx, int AD_User_ID, int AD_Tab_ID, String trxName) {
 		Query query = new Query(ctx, Table_Name, "AD_User_ID=? AND AD_Tab_ID=?", trxName);
-		return query.setParameters(new Object[]{AD_User_ID, AD_Tab_ID}).first();
+		return query.setClient_ID().setParameters(new Object[]{AD_User_ID, AD_Tab_ID}).first();
 	}
 }
