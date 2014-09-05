@@ -1073,13 +1073,14 @@ public class GridTable extends AbstractTableModel
 	public void waitLoadingForRow(int row) {
 		//	need to wait for data read into buffer
 		int loops = 0;
-		//wait for 30 seconds
-		while (row >= m_sort.size() && m_loaderFuture != null && !m_loaderFuture.isDone() && loops < 60)
+		//wait for [timeout] seconds
+		int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, 30, Env.getAD_Client_ID(Env.getCtx()));
+		while (row >= m_sort.size() && m_loaderFuture != null && !m_loaderFuture.isDone() && loops < timeout)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Waiting for loader row=" + row + ", size=" + m_sort.size());
 			try
 			{
-				m_loaderFuture.get(500, TimeUnit.MILLISECONDS); 
+				m_loaderFuture.get(1000, TimeUnit.MILLISECONDS);
 			}
 			catch (Exception ie)
 			{}
@@ -1092,6 +1093,7 @@ public class GridTable extends AbstractTableModel
 				throw new IllegalStateException(savedEx);
 		}
 		if (row >= m_sort.size()) {
+			log.warning("Reached " + timeout + " seconds timeout loading row " + (row+1) + " for SQL=" + m_SQL);
 			throw new IllegalStateException("Timeout loading row " + (row+1));
 		}
 	}
