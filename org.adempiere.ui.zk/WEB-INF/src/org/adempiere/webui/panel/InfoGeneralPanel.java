@@ -32,7 +32,6 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
-import org.adempiere.webui.event.WTableModelEvent;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
@@ -47,10 +46,10 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -61,9 +60,10 @@ import org.zkoss.zul.Vbox;
 public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = -665127800885078238L;
+	private static final long serialVersionUID = 3328089102224160413L;
+
 	private Textbox txt1;
 	private Textbox txt2;
 	private Textbox txt3;
@@ -506,7 +506,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			pstmt.setString(index++, getSQLText(txt3));
 		if (txt4.getText().length() > 0)
 			pstmt.setString(index++, getSQLText(txt4));
-	}   //  setParameters    
+	}   //  setParameters
 
     @Override
 	protected void insertPagingComponent()
