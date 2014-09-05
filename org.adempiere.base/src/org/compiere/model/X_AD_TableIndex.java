@@ -30,7 +30,7 @@ public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20140905L;
 
     /** Standard Constructor */
     public X_AD_TableIndex (Properties ctx, int AD_TableIndex_ID, String trxName)
@@ -43,6 +43,8 @@ public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
 			setEntityType (null);
 // U
 			setIsCreateConstraint (false);
+// N
+			setIsKey (false);
 // N
 			setIsUnique (false);
 // N
@@ -243,6 +245,30 @@ public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
 		return false;
 	}
 
+	/** Set Key column.
+		@param IsKey 
+		This column is the key in this table
+	  */
+	public void setIsKey (boolean IsKey)
+	{
+		set_Value (COLUMNNAME_IsKey, Boolean.valueOf(IsKey));
+	}
+
+	/** Get Key column.
+		@return This column is the key in this table
+	  */
+	public boolean isKey () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsKey);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Unique.
 		@param IsUnique Unique	  */
 	public void setIsUnique (boolean IsUnique)
@@ -308,5 +334,19 @@ public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Drop table index.
+		@param TableIndexDrop Drop table index	  */
+	public void setTableIndexDrop (String TableIndexDrop)
+	{
+		set_Value (COLUMNNAME_TableIndexDrop, TableIndexDrop);
+	}
+
+	/** Get Drop table index.
+		@return Drop table index	  */
+	public String getTableIndexDrop () 
+	{
+		return (String)get_Value(COLUMNNAME_TableIndexDrop);
 	}
 }

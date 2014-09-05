@@ -155,7 +155,7 @@ public class TableIndexValidate extends SvrProcess {
 			
 			if (modified)
 			{
-				String sql = "DROP INDEX " + index.getName();
+				String sql = index.getDropDDL();
 				int rvalue = DB.executeUpdate(sql, (Object[]) null, true, trxName);
 				if (pi != null)
 					pi.addLog(0, null, new BigDecimal(rvalue), sql);
