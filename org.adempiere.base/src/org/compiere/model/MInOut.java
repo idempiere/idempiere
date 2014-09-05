@@ -1820,6 +1820,8 @@ public class MInOut extends X_M_InOut implements DocAction
 						for(MInOutLineMA sMA : shipmentMAS){
 							BigDecimal lineMAQty = qtyToReturn;
 							BigDecimal qtyReturnable = (BigDecimal)sMA.get_Value(MInOutLineMA.COLUMNNAME_ReturnedQty);
+							if (qtyReturnable == null)
+								qtyReturnable = Env.ZERO;
 							if(lineMAQty.compareTo(qtyReturnable)>0){
 								lineMAQty = qtyReturnable;
 							}
