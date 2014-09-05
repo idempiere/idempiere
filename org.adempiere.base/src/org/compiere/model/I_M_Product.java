@@ -88,19 +88,6 @@ public interface I_M_Product
 	  */
 	public String getCopyFrom();
 
-    /** Column name CostStandard */
-    public static final String COLUMNNAME_CostStandard = "CostStandard";
-
-	/** Set Standard Cost.
-	  * Standard Costs
-	  */
-	public void setCostStandard (BigDecimal CostStandard);
-
-	/** Get Standard Cost.
-	  * Standard Costs
-	  */
-	public BigDecimal getCostStandard();
-
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -229,6 +216,19 @@ public interface I_M_Product
 	  */
 	public Timestamp getDiscontinuedAt();
 
+    /** Column name DocumentDescription */
+    public static final String COLUMNNAME_DocumentDescription = "DocumentDescription";
+
+	/** Set DocumentDescription.
+	  * DocumentDescription
+	  */
+	public void setDocumentDescription (String DocumentDescription);
+
+	/** Get DocumentDescription.
+	  * DocumentDescription
+	  */
+	public String getDocumentDescription();
+
     /** Column name DocumentNote */
     public static final String COLUMNNAME_DocumentNote = "DocumentNote";
 
@@ -298,6 +298,24 @@ public interface I_M_Product
 	  * Comment or Hint
 	  */
 	public String getHelp();
+
+    /** Column name ImageBig_ID */
+    public static final String COLUMNNAME_ImageBig_ID = "ImageBig_ID";
+
+	/** Set ImageBig_ID	  */
+	public void setImageBig_ID (int ImageBig_ID);
+
+	/** Get ImageBig_ID	  */
+	public int getImageBig_ID();
+
+    /** Column name ImageSmall_ID */
+    public static final String COLUMNNAME_ImageSmall_ID = "ImageSmall_ID";
+
+	/** Set ImageSmall_ID	  */
+	public void setImageSmall_ID (int ImageSmall_ID);
+
+	/** Get ImageSmall_ID	  */
+	public int getImageSmall_ID();
 
     /** Column name ImageURL */
     public static final String COLUMNNAME_ImageURL = "ImageURL";
