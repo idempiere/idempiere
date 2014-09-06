@@ -612,12 +612,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			if (infoColumn.isDisplayed(infoContext, p_WindowNo)) 
 			{
 				ColumnInfo columnInfo = null;
+				String colSQL = infoColumn.getSelectClause();
+				if (! colSQL.toUpperCase().contains(" AS "))
+					colSQL += " AS " + infoColumn.getColumnName();
 				if (infoColumn.getAD_Reference_ID() == DisplayType.ID) 
 				{
 					if (infoColumn.getSelectClause().equalsIgnoreCase(keySelectClause))
 						continue;
 					
-					columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
+					columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), colSQL, DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
 				}
 				else if (DisplayType.isLookup(infoColumn.getAD_Reference_ID()))
 				{
@@ -627,8 +630,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 						editor = WebEditorFactory.getEditor(gridFields.get(i), true);
 				        editor.setMandatory(false);
 				        editor.setReadWrite(false);
-				        editorMap.put(infoColumn.getSelectClause(), editor);
-						columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), ValueNamePair.class, (String)null);
+				        editorMap.put(colSQL, editor);
+						columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), colSQL, ValueNamePair.class, (String)null);
 					}
 					else
 					{
@@ -637,7 +640,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				}
 				else  
 				{
-					columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
+					columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), colSQL, DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
 				}
 				columnInfo.setColDescription(infoColumn.get_Translation("Description"));
 				columnInfo.setGridField(gridFields.get(i));
@@ -681,9 +684,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         editor = WebEditorFactory.getEditor(gridField, true);
         editor.setMandatory(false);
         editor.setReadWrite(false);
-        editorMap.put(infoColumn.getSelectClause(), editor);
-        
-		ColumnInfo columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), KeyNamePair.class, (String)null);
+
+		String colSQL = infoColumn.getSelectClause();
+		if (! colSQL.toUpperCase().contains(" AS "))
+			colSQL += " AS " + infoColumn.getColumnName();
+        editorMap.put(colSQL, editor);
+		ColumnInfo columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), colSQL, KeyNamePair.class, (String)null);
 		return columnInfo;
 	}
 
@@ -916,7 +922,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			String fromClause = m_sqlMain.substring(fromIndex);
 			
 			// get alias of main table
-			String alias = getTableName();
 			StringBuilder sqlBuilder = new StringBuilder(selectClause);
 			
 			// reset flag relate viewID to recount
@@ -924,29 +929,25 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			isHasViewID = false;
 			
 			// add View_ID column to select clause
-			for (MInfoProcess infoProcess : infoProcessList){
-				String columnInQuery = infoProcess.getViewIDName();
+			for (MInfoProcess infoProcess : infoProcessList) {
 				// this process hasn't viewID column, next other infoProcess
-				if (columnInQuery == null)
+				if (infoProcess.getAD_InfoColumn_ID() <= 0)
 					continue;
-				
-				// add alias of main table to column
-				columnInQuery = alias + "." + columnInQuery;
-				
+
+				MInfoColumn infocol = (MInfoColumn) infoProcess.getAD_InfoColumn();
 				// maintain varial relate to ViewID, it can init just one time when load infoWindow define
 				// but let it here for simple logic control
 				numOfViewID++;
 				isHasViewID = true;
-				
-				// if query is include this viewID column, not need add
-				if (sqlBuilder.toString().toLowerCase().contains(columnInQuery.toLowerCase())){
-					continue;
+
+				if (! infocol.isDisplayed()) {
+					// add column to SELECT clause of main sql
+					sqlBuilder.append(", ");
+					sqlBuilder.append (infocol.getSelectClause());
+					sqlBuilder.append(" AS ");				
+					sqlBuilder.append (infocol.getColumnName());
+					sqlBuilder.append(" ");				
 				}
-				
-				// add column to SELECT clause of main sql
-				sqlBuilder.append(", ");	
-				sqlBuilder.append (columnInQuery);
-				sqlBuilder.append(" ");				
 			}
 			
 			sqlBuilder.append(fromClause);
@@ -1594,12 +1595,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					if (infoColumn.isDisplayed(infoContext, p_WindowNo))
 					{
 						ColumnInfo columnInfo = null;
+						String colSQL = infoColumn.getSelectClause();
+						if (! colSQL.toUpperCase().contains(" AS "))
+							colSQL += " AS " + infoColumn.getColumnName();
 						if (infoColumn.getAD_Reference_ID() == DisplayType.ID)
 						{
 							if (infoColumn.getSelectClause().equalsIgnoreCase(keySelectClause))
 								continue;
 
-							columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
+							columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), colSQL, DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
 						}
 						else if (DisplayType.isLookup(infoColumn.getAD_Reference_ID()))
 						{
@@ -1609,8 +1613,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 						        editor = WebEditorFactory.getEditor(getGridField(infoColumn), true);
 						        editor.setMandatory(false);
 						        editor.setReadWrite(false);
-						        editorMap.put(infoColumn.getSelectClause(), editor);
-								columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), ValueNamePair.class, (String)null);
+						        editorMap.put(colSQL, editor);
+								columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), colSQL, ValueNamePair.class, (String)null);
 							}
 							else
 							{
@@ -1620,7 +1624,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 						}
 						else
 						{
-							columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), infoColumn.getSelectClause(), DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
+							columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), colSQL, DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
 						}
 						columnInfo.setColDescription(infoColumn.get_Translation("Description"));
 						columnInfo.setGridField(getGridField(infoColumn));

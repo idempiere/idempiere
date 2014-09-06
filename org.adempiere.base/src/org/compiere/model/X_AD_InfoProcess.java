@@ -30,7 +30,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140606L;
+	private static final long serialVersionUID = 20140905L;
 
     /** Standard Constructor */
     public X_AD_InfoProcess (Properties ctx, int AD_InfoProcess_ID, String trxName)
@@ -76,29 +76,29 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
       return sb.toString();
     }
 
-	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
+	public org.compiere.model.I_AD_InfoColumn getAD_InfoColumn() throws RuntimeException
     {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_Name)
+			.getPO(getAD_InfoColumn_ID(), get_TrxName());	}
 
-	/** Set ViewID Column.
-		@param AD_Column_ID 
-		Name of unique column in a view. value of this column will save to t_selection table
+	/** Set Info Column.
+		@param AD_InfoColumn_ID 
+		Info Window Column
 	  */
-	public void setAD_Column_ID (int AD_Column_ID)
+	public void setAD_InfoColumn_ID (int AD_InfoColumn_ID)
 	{
-		if (AD_Column_ID < 1) 
-			set_Value (COLUMNNAME_AD_Column_ID, null);
+		if (AD_InfoColumn_ID < 1) 
+			set_Value (COLUMNNAME_AD_InfoColumn_ID, null);
 		else 
-			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
+			set_Value (COLUMNNAME_AD_InfoColumn_ID, Integer.valueOf(AD_InfoColumn_ID));
 	}
 
-	/** Get ViewID Column.
-		@return Name of unique column in a view. value of this column will save to t_selection table
+	/** Get Info Column.
+		@return Info Window Column
 	  */
-	public int getAD_Column_ID () 
+	public int getAD_InfoColumn_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoColumn_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
