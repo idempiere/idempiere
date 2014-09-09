@@ -279,6 +279,9 @@ public class ListModelTable extends ListModelList<Object> implements Sortable<Ob
 		}
 		else
 		{
+			//hot fix for:IDEMPIERE-2154 wait complete solution from zk update
+			if (rowCount == 0)
+				clearSelection();
 			removeRange(rowCount, currentSize);
 		}
 	}
