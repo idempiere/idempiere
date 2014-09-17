@@ -9,7 +9,7 @@ else
   echo Set JAVA_HOME to the directory of your local JDK.
 fi
 
-if [ "$1"=="debug" ]; then
+if [ "$1" = "debug" ] then
   DEBUG="-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=4554,server=y,suspend=n"
 fi
 
