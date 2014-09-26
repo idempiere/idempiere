@@ -1932,6 +1932,12 @@ public class MOrder extends X_C_Order implements DocAction
 		
 		boolean realTimePOS = MSysConfig.getBooleanValue(MSysConfig.REAL_TIME_POS, false , getAD_Client_ID());
 		
+		// Counter Documents
+		// move by IDEMPIERE-2216
+		MOrder counter = createCounterDoc();
+		if (counter != null)
+			info.append(" - @CounterDoc@: @Order@=").append(counter.getDocumentNo());
+		
 		//	Create SO Shipment - Force Shipment
 		MInOut shipment = null;
 		if (MDocType.DOCSUBTYPESO_OnCreditOrder.equals(DocSubTypeSO)		//	(W)illCall(I)nvoice
@@ -1976,10 +1982,6 @@ public class MOrder extends X_C_Order implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 
-		//	Counter Documents
-		MOrder counter = createCounterDoc();
-		if (counter != null)
-			info.append(" - @CounterDoc@: @Order@=").append(counter.getDocumentNo());
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
