@@ -756,6 +756,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		//	Reverse indicator
 		StringBuilder msgd = new StringBuilder("(->").append(getDocumentNo()).append(")");
 		reverse.addDescription(msgd.toString());
+		reverse.setControlAmt(getControlAmt().negate());
 		//FR [ 1948157  ] 
 		reverse.setReversal_ID(getGL_Journal_ID());
 		if (!reverse.save())
