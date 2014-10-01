@@ -1125,7 +1125,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		int AD_Table_ID = 0;
 		int AD_ReportView_ID = 0;
 		String TableName = null;
-		String whereClause = "";
 		int AD_PrintFormat_ID = 0;
 		boolean IsForm = false;
 		int Client_ID = -1;
@@ -1152,9 +1151,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			if (rs.next())
 			{
 				AD_ReportView_ID = rs.getInt(1);		//	required
-				whereClause = rs.getString(2);
-				if (rs.wasNull())
-					whereClause = "";
 				//
 				AD_Table_ID = rs.getInt(3);
 				TableName = rs.getString(4);			//	required for query
@@ -1188,7 +1184,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				rs = pstmt.executeQuery();
 				if (rs.next())
 				{
-					whereClause = "";
 					AD_Table_ID = rs.getInt(1);
 					TableName = rs.getString(2);			//	required for query
 					AD_PrintFormat_ID = rs.getInt(3);		//	required
@@ -1223,10 +1218,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		{
 			query = MQuery.get (ctx, pi.getAD_PInstance_ID(), TableName);
 		}
-		
-		//  Add to static where clause from ReportView
-		if (whereClause.length() != 0)
-			query.addRestriction(whereClause);
 
 		//	Get Print Format
 		MPrintFormat format = null;
