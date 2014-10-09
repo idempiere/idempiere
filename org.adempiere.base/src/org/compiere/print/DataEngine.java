@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MLookupFactory;
@@ -294,6 +295,15 @@ public class DataEngine
 			rs = pstmt.executeQuery();
 
 			m_synonym = "A";		//	synonym
+			
+			// init regular object to replace table name in virtual column
+			String orgTable = null;
+			Pattern regTranslateTable = null; 
+			if (tableName.toLowerCase().endsWith("_vt")){
+				orgTable = MTable.getTableName(ctx, format.getAD_Table_ID());
+				regTranslateTable =  Pattern.compile("\\b" + orgTable + "\\b", Pattern.CASE_INSENSITIVE);
+			}
+			
 			while (rs.next())
 			{
 				//	get Values from record
@@ -304,6 +314,12 @@ public class DataEngine
 					ColumnSQL = Env.parseContext(Env.getCtx(), -1, ColumnSQL, false, true);
 				if (ColumnSQL == null)
 					ColumnSQL = "";
+				else{
+					// replace table with translate table IDEMPIERE-2234
+					if (tableName.toLowerCase().endsWith("_vt")){
+						ColumnSQL = regTranslateTable.matcher(ColumnSQL).replaceAll(tableName);
+					}
+				}
 				int AD_Reference_ID = rs.getInt(3);
 				int AD_Reference_Value_ID = rs.getInt(4);
 				//  ColumnInfo
