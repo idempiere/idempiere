@@ -136,8 +136,11 @@ public class MOrder extends X_C_Order implements DocAction
 		//
 		if (!to.save(trxName))
 			throw new IllegalStateException("Could not create Order");
-		if (counter)
+		if (counter){
+			// save to other counter document can re-get refer document  
 			from.setRef_Order_ID(to.getC_Order_ID());
+			from.saveEx();
+		}
 
 		if (to.copyLinesFrom(from, counter, copyASI) == 0)
 			throw new IllegalStateException("Could not create Order Lines");
