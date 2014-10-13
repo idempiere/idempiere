@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <?artifactRepository version='1.1.0'?>
-<repository name='file:/home/hengsin/workspace/idempiere-zk7-test/lib/ - artifacts' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1'>
+<repository name='idempiere local repository - artifacts' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1'>
   <properties size='2'>
-    <property name='p2.timestamp' value='1396453941058'/>
+    <property name='p2.timestamp' value='1410940772016'/>
     <property name='p2.compressed' value='false'/>
   </properties>
   <mappings size='3'>
@@ -10,33 +10,12 @@
     <rule filter='(&amp; (classifier=binary))' output='${repoUrl}/binary/${id}_${version}'/>
     <rule filter='(&amp; (classifier=org.eclipse.update.feature))' output='${repoUrl}/features/${id}_${version}.jar'/>
   </mappings>
-  <artifacts size='4'>
-    <artifact classifier='osgi.bundle' id='org.apache.felix.webconsole.plugins.packageadmin' version='1.0.0'>
+  <artifacts size='1'>
+    <artifact classifier='osgi.bundle' id='org.apache.felix.webconsole.plugins.packageadmin' version='1.0.0.1'>
       <properties size='3'>
-        <property name='artifact.size' value='26195'/>
-        <property name='download.size' value='26195'/>
-        <property name='download.md5' value='0d0b1172a4bb948dc62b8fca8310c179'/>
-      </properties>
-    </artifact>
-    <artifact classifier='osgi.bundle' id='com.sun.mail.javax.mail' version='1.5.1'>
-      <properties size='3'>
-        <property name='artifact.size' value='545362'/>
-        <property name='download.size' value='545362'/>
-        <property name='download.md5' value='7568b973bb2e3cc6f150ad908ddf349f'/>
-      </properties>
-    </artifact>
-    <artifact classifier='osgi.bundle' id='org.apache.felix.webconsole.plugins.memoryusage' version='1.0.4'>
-      <properties size='3'>
-        <property name='artifact.size' value='50278'/>
-        <property name='download.size' value='50278'/>
-        <property name='download.md5' value='4efb370c95ffb8c3202bf5634208c313'/>
-      </properties>
-    </artifact>
-    <artifact classifier='osgi.bundle' id='org.apache.felix.webconsole' version='4.0.0'>
-      <properties size='3'>
-        <property name='artifact.size' value='591992'/>
-        <property name='download.size' value='591992'/>
-        <property name='download.md5' value='8f1ea912ae02473b9fd84389ec6f647f'/>
+        <property name='artifact.size' value='27244'/>
+        <property name='download.size' value='27244'/>
+        <property name='download.md5' value='12db1250ba0e1ee705771d8ce293ce52'/>
       </properties>
     </artifact>
   </artifacts>

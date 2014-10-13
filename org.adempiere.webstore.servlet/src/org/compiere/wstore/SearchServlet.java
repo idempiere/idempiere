@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,6 +49,10 @@ import org.compiere.util.WebUtil;
  *  @version $Id$
  *  @author Michael Judd BF [2728388]  - fix potential CSS velnerability
  */
+@WebServlet(
+		name="searchServlet",
+        urlPatterns = "/searchServlet"
+)
 public class SearchServlet extends HttpServlet
 {
     /**

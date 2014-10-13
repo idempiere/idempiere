@@ -1,59 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <?metadataRepository version='1.1.0'?>
-<repository name='file:/home/hengsin/workspace/idempiere-zk7-test/lib/ - metadata' type='org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository' version='1'>
+<repository name='idempiere local repository - metadata' type='org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository' version='1'>
   <properties size='2'>
-    <property name='p2.timestamp' value='1396453941062'/>
+    <property name='p2.timestamp' value='1410940772018'/>
     <property name='p2.compressed' value='false'/>
   </properties>
-  <units size='4'>
-    <unit id='org.apache.felix.webconsole' version='4.0.0' singleton='false'>
-      <update id='org.apache.felix.webconsole' range='[0.0.0,4.0.0)' severity='0'/>
-      <properties size='4'>
-        <property name='org.eclipse.equinox.p2.name' value='Apache Felix Web Management Console'/>
-        <property name='org.eclipse.equinox.p2.description' value='Web Based Management Console for OSGi Frameworks. See        http://felix.apache.org/site/apache-felix-web-console.html for more        information on this bundle.'/>
-        <property name='org.eclipse.equinox.p2.provider' value='The Apache Software Foundation'/>
-        <property name='org.eclipse.equinox.p2.doc.url' value='http://felix.apache.org/site/apache-felix-web-console.html'/>
-      </properties>
-      <provides size='10'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='org.apache.felix.webconsole' version='4.0.0'/>
-        <provided namespace='osgi.bundle' name='org.apache.felix.webconsole' version='4.0.0'/>
-        <provided namespace='java.package' name='org.apache.felix.webconsole' version='3.1.2'/>
-        <provided namespace='java.package' name='org.json' version='0.0.0'/>
-        <provided namespace='java.package' name='org.apache.commons.io' version='1.4.0'/>
-        <provided namespace='java.package' name='org.apache.commons.io.output' version='1.4.0'/>
-        <provided namespace='java.package' name='org.apache.commons.io.input' version='1.4.0'/>
-        <provided namespace='java.package' name='org.apache.commons.io.filefilter' version='1.4.0'/>
-        <provided namespace='java.package' name='org.apache.commons.io.comparator' version='1.4.0'/>
-        <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
-      </provides>
-      <requires size='12'>
-        <required namespace='java.package' name='javax.servlet' range='2.4.0'/>
-        <required namespace='java.package' name='javax.servlet.http' range='2.4.0'/>
-        <required namespace='java.package' name='org.apache.commons.fileupload' range='[1.2.0,2.0.0)'/>
-        <required namespace='java.package' name='org.apache.commons.fileupload.disk' range='[1.2.0,2.0.0)'/>
-        <required namespace='java.package' name='org.apache.commons.fileupload.servlet' range='[1.2.0,2.0.0)'/>
-        <required namespace='java.package' name='org.apache.felix.webconsole' range='[3.1.0,3.2.0)'/>
-        <required namespace='java.package' name='org.osgi.framework' range='[1.4.0,2.0.0)'/>
-        <required namespace='java.package' name='org.osgi.service.http' range='[1.2.0,2.0.0)'/>
-        <required namespace='java.package' name='org.osgi.service.metatype' range='[1.1.0,2.0.0)' optional='true' greedy='false'/>
-        <required namespace='java.package' name='org.osgi.service.packageadmin' range='[1.2.0,2.0.0)'/>
-        <required namespace='java.package' name='org.osgi.service.startlevel' range='[1.1.0,2.0.0)'/>
-        <required namespace='java.package' name='org.osgi.util.tracker' range='[1.3.0,2.0.0)'/>
-      </requires>
-      <artifacts size='1'>
-        <artifact classifier='osgi.bundle' id='org.apache.felix.webconsole' version='4.0.0'/>
-      </artifacts>
-      <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
-      <touchpointData size='1'>
-        <instructions size='1'>
-          <instruction key='manifest'>
-            Bundle-SymbolicName: org.apache.felix.webconsole&#xA;Bundle-Version: 4.0.0&#xA;
-          </instruction>
-        </instructions>
-      </touchpointData>
-    </unit>
-    <unit id='org.apache.felix.webconsole.plugins.packageadmin' version='1.0.0' singleton='false'>
-      <update id='org.apache.felix.webconsole.plugins.packageadmin' range='[0.0.0,1.0.0)' severity='0'/>
+  <units size='1'>
+    <unit id='org.apache.felix.webconsole.plugins.packageadmin' version='1.0.0.1' singleton='false'>
+      <update id='org.apache.felix.webconsole.plugins.packageadmin' range='[0.0.0,1.0.0.1)' severity='0'/>
       <properties size='4'>
         <property name='org.eclipse.equinox.p2.name' value='Apache Felix Web Console Package Admin Service Plugin'/>
         <property name='org.eclipse.equinox.p2.description' value='Plugin providing support to query the Package Admin service        for various details; e.g. finding duplicate package exports        or finding bundles exporting given packages'/>
@@ -61,14 +15,14 @@
         <property name='org.eclipse.equinox.p2.doc.url' value='http://www.apache.org/'/>
       </properties>
       <provides size='3'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='org.apache.felix.webconsole.plugins.packageadmin' version='1.0.0'/>
-        <provided namespace='osgi.bundle' name='org.apache.felix.webconsole.plugins.packageadmin' version='1.0.0'/>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='org.apache.felix.webconsole.plugins.packageadmin' version='1.0.0.1'/>
+        <provided namespace='osgi.bundle' name='org.apache.felix.webconsole.plugins.packageadmin' version='1.0.0.1'/>
         <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
       </provides>
       <requires size='8'>
         <required namespace='java.package' name='javax.servlet' range='0.0.0'/>
         <required namespace='java.package' name='javax.servlet.http' range='0.0.0'/>
-        <required namespace='java.package' name='org.apache.commons.io' range='[1.4.0,2.0.0)'/>
+        <required namespace='java.package' name='org.apache.commons.io' range='[1.4.0,3.0.0)'/>
         <required namespace='java.package' name='org.apache.felix.webconsole' range='[3.1.0,4.0.0)'/>
         <required namespace='java.package' name='org.json' range='0.0.0'/>
         <required namespace='java.package' name='org.osgi.framework' range='[1.3.0,2.0.0)'/>
@@ -76,106 +30,13 @@
         <required namespace='java.package' name='org.osgi.util.tracker' range='[1.3.0,2.0.0)'/>
       </requires>
       <artifacts size='1'>
-        <artifact classifier='osgi.bundle' id='org.apache.felix.webconsole.plugins.packageadmin' version='1.0.0'/>
+        <artifact classifier='osgi.bundle' id='org.apache.felix.webconsole.plugins.packageadmin' version='1.0.0.1'/>
       </artifacts>
       <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
       <touchpointData size='1'>
         <instructions size='1'>
           <instruction key='manifest'>
-            Bundle-SymbolicName: org.apache.felix.webconsole.plugins.packageadmin&#xA;Bundle-Version: 1.0.0&#xA;
-          </instruction>
-        </instructions>
-      </touchpointData>
-    </unit>
-    <unit id='org.apache.felix.webconsole.plugins.memoryusage' version='1.0.4' singleton='false'>
-      <update id='org.apache.felix.webconsole.plugins.memoryusage' range='[0.0.0,1.0.4)' severity='0'/>
-      <properties size='4'>
-        <property name='org.eclipse.equinox.p2.name' value='Apache Felix Web Console Memory Usage Plugin'/>
-        <property name='org.eclipse.equinox.p2.description' value='Plugin providing plugins to the Felix Shell and Web Console to        observe the VMs memory use and cause try to get thread dumps etc.'/>
-        <property name='org.eclipse.equinox.p2.provider' value='The Apache Software Foundation'/>
-        <property name='org.eclipse.equinox.p2.doc.url' value='http://www.apache.org/'/>
-      </properties>
-      <provides size='3'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='org.apache.felix.webconsole.plugins.memoryusage' version='1.0.4'/>
-        <provided namespace='osgi.bundle' name='org.apache.felix.webconsole.plugins.memoryusage' version='1.0.4'/>
-        <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
-      </provides>
-      <requires size='2'>
-        <required namespace='java.package' name='javax.management' range='0.0.0'/>
-        <required namespace='java.package' name='org.osgi.framework' range='[1.3.0,2.0.0)'/>
-      </requires>
-      <artifacts size='1'>
-        <artifact classifier='osgi.bundle' id='org.apache.felix.webconsole.plugins.memoryusage' version='1.0.4'/>
-      </artifacts>
-      <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
-      <touchpointData size='1'>
-        <instructions size='1'>
-          <instruction key='manifest'>
-            Bundle-SymbolicName: org.apache.felix.webconsole.plugins.memoryusage&#xA;Bundle-Version: 1.0.4&#xA;
-          </instruction>
-        </instructions>
-      </touchpointData>
-    </unit>
-    <unit id='com.sun.mail.javax.mail' version='1.5.1' singleton='false'>
-      <update id='com.sun.mail.javax.mail' range='[0.0.0,1.5.1)' severity='0'/>
-      <properties size='4'>
-        <property name='org.eclipse.equinox.p2.name' value='JavaMail API'/>
-        <property name='org.eclipse.equinox.p2.description' value='JavaMail API'/>
-        <property name='org.eclipse.equinox.p2.provider' value='Oracle'/>
-        <property name='org.eclipse.equinox.p2.doc.url' value='http://www.oracle.com'/>
-      </properties>
-      <provides size='16'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='com.sun.mail.javax.mail' version='1.5.1'/>
-        <provided namespace='osgi.bundle' name='com.sun.mail.javax.mail' version='1.5.1'/>
-        <provided namespace='java.package' name='javax.mail.internet' version='1.5.0'/>
-        <provided namespace='java.package' name='javax.mail.util' version='1.5.0'/>
-        <provided namespace='java.package' name='javax.mail.search' version='1.5.0'/>
-        <provided namespace='java.package' name='javax.mail' version='1.5.0'/>
-        <provided namespace='java.package' name='javax.mail.event' version='1.5.0'/>
-        <provided namespace='java.package' name='com.sun.mail.imap' version='1.5.1'/>
-        <provided namespace='java.package' name='com.sun.mail.imap.protocol' version='1.5.1'/>
-        <provided namespace='java.package' name='com.sun.mail.iap' version='1.5.1'/>
-        <provided namespace='java.package' name='com.sun.mail.pop3' version='1.5.1'/>
-        <provided namespace='java.package' name='com.sun.mail.smtp' version='1.5.1'/>
-        <provided namespace='java.package' name='com.sun.mail.util' version='1.5.1'/>
-        <provided namespace='java.package' name='com.sun.mail.util.logging' version='1.5.1'/>
-        <provided namespace='java.package' name='com.sun.mail.handlers' version='1.5.1'/>
-        <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
-      </provides>
-      <requires size='24'>
-        <required namespace='java.package' name='com.sun.mail.handlers' range='1.5.0'/>
-        <required namespace='java.package' name='com.sun.mail.iap' range='1.5.0'/>
-        <required namespace='java.package' name='com.sun.mail.imap' range='1.5.0'/>
-        <required namespace='java.package' name='com.sun.mail.imap.protocol' range='1.5.0'/>
-        <required namespace='java.package' name='com.sun.mail.pop3' range='1.5.0'/>
-        <required namespace='java.package' name='com.sun.mail.smtp' range='1.5.0'/>
-        <required namespace='java.package' name='com.sun.mail.util' range='1.5.0'/>
-        <required namespace='java.package' name='com.sun.mail.util.logging' range='1.5.0'/>
-        <required namespace='java.package' name='javax.activation' range='0.0.0'/>
-        <required namespace='java.package' name='javax.crypto' range='0.0.0'/>
-        <required namespace='java.package' name='javax.crypto.spec' range='0.0.0'/>
-        <required namespace='java.package' name='javax.mail' range='1.5.0'/>
-        <required namespace='java.package' name='javax.mail.event' range='1.5.0'/>
-        <required namespace='java.package' name='javax.mail.internet' range='1.5.0'/>
-        <required namespace='java.package' name='javax.mail.search' range='1.5.0'/>
-        <required namespace='java.package' name='javax.mail.util' range='1.5.0'/>
-        <required namespace='java.package' name='javax.net' range='0.0.0'/>
-        <required namespace='java.package' name='javax.net.ssl' range='0.0.0'/>
-        <required namespace='java.package' name='javax.security.auth.callback' range='0.0.0'/>
-        <required namespace='java.package' name='javax.security.auth.x500' range='0.0.0'/>
-        <required namespace='java.package' name='javax.security.sasl' range='0.0.0' optional='true' greedy='false'/>
-        <required namespace='java.package' name='javax.xml.transform' range='0.0.0'/>
-        <required namespace='java.package' name='javax.xml.transform.stream' range='0.0.0'/>
-        <required namespace='java.package' name='sun.security.util' range='0.0.0' optional='true' greedy='false'/>
-      </requires>
-      <artifacts size='1'>
-        <artifact classifier='osgi.bundle' id='com.sun.mail.javax.mail' version='1.5.1'/>
-      </artifacts>
-      <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
-      <touchpointData size='1'>
-        <instructions size='1'>
-          <instruction key='manifest'>
-            Bundle-SymbolicName: com.sun.mail.javax.mail&#xA;Bundle-Version: 1.5.1&#xA;
+            Bundle-SymbolicName: org.apache.felix.webconsole.plugins.packageadmin&#xA;Bundle-Version: 1.0.0.1&#xA;
           </instruction>
         </instructions>
       </touchpointData>

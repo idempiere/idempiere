@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +45,10 @@ import org.compiere.wf.MWFActivity;
  *  @author     Jorg Janke
  *  @version    $Id: WorkflowServlet.java,v 1.3 2006/09/16 08:32:34 comdivision Exp $
  */
+@WebServlet(
+		name="workflowServlet",
+        urlPatterns = "/workflowServlet"
+)
 public class WorkflowServlet extends HttpServlet
 {
 	/**

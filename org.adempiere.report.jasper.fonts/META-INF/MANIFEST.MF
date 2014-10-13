@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JasperReport Font Demo
 Bundle-SymbolicName: org.adempiere.report.jasper.fonts
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.adempiere.report.jasper.fonts
 Fragment-Host: org.adempiere.report.jasper.library
 

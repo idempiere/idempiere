@@ -4,21 +4,38 @@
 cd %~dp0
 
 cp idempiere.ini idempiere.ini.sav
-if exist server.xml.sav del /q server.xml.sav
-if exist plugins/org.adempiere.tomcat.config_1.0.0/META-INF/tomcat/server.xml (
-   copy plugins/org.adempiere.tomcat.config_1.0.0/META-INF/tomcat/server.xml server.xml.sav
-   del /q plugins/org.adempiere.tomcat.config_1.0.0/META-INF/tomcat/server.xml
-)
-if exist plugins/org.adempiere.tomcat.config_2.0.0/META-INF/tomcat/server.xml (
-   copy plugins/org.adempiere.tomcat.config_2.0.0/META-INF/tomcat/server.xml server.xml.sav
+
+if exist jetty.xml.sav del /q jetty.xml.sav
+if exist jettyhome/etc/jetty.xml (
+   copy jettyhome/etc/jetty.xml jetty.xml.sav
 )
 
-java -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=director -jar plugins/org.eclipse.osgi_3.9.*.jar -application org.eclipse.equinox.p2.director -consoleLog -profileProperties org.eclipse.update.install.features=true -destination %~dp0 -repository %1 -u org.adempiere.server.product
+if exist jetty-ssl.xml.sav del /q jetty-ssl.xml.sav
+if exist jettyhome/etc/jetty-ssl.xml (
+   copy jettyhome/etc/jetty-ssl.xml jetty-ssl.xml.sav
+)
 
-java -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=director -jar plugins/org.eclipse.osgi_3.9.*.jar -application org.eclipse.equinox.p2.director -consoleLog -profileProperties org.eclipse.update.install.features=true -destination %~dp0 -repository %1 -i org.adempiere.server.product
+if exist jetty-selector.xml.sav del /q jetty-selector.xml.sav
+if exist jettyhome/etc/jetty-selector.xml (
+   copy jettyhome/etc/jetty-selector.xml jetty-selector.xml.sav
+)
+
+java -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install director -configuration director/configuration -application org.eclipse.equinox.p2.director -consoleLog -profileProperties org.eclipse.update.install.features=true -destination $DESTINATION -repository $1 -u org.adempiere.server.product -i org.adempiere.server.product
 
 cp idempiere.ini.sav idempiere.ini
-if exist server.xml.sav (
-   copy server.xml.sav plugins/org.adempiere.tomcat.config_2.0.0/META-INF/tomcat/server.xml 
-   del /q server.xml.sav
+
+if exist jetty.xml.sav (
+   copy jetty.xml.sav jettyhome/etc/jetty.xml 
+   del /q jetty.xml.sav
 )
+
+if exist jetty-ssl.xml.sav (
+   copy jetty-ssl.xml.sav jettyhome/etc/jetty-ssl.xml 
+   del /q jetty-ssl.xml.sav
+)
+
+if exist jetty-selector.xml.sav (
+   copy jetty-selector.xml.sav jettyhome/etc/jetty-selector.xml 
+   del /q jetty-selector.xml.sav
+)
+

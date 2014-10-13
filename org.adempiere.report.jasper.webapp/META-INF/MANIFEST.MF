@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Jasper Report Web App
+Bundle-Name: iDempiere JasperReport Web App
 Bundle-SymbolicName: org.adempiere.report.jasper.webapp;singleton:=true
-Bundle-Version: 2.0.0.qualifier
-Require-Bundle: org.adempiere.base;bundle-version="2.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Version: 3.0.0.qualifier
+Require-Bundle: org.adempiere.base;bundle-version="3.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Web-ContextPath: JasperReportFiles
 Bundle-ClassPath: .
 Import-Package: javax.servlet;version="2.5.0",
@@ -12,3 +12,5 @@ Import-Package: javax.servlet;version="2.5.0",
  javax.servlet.jsp;version="2.1.0",
  org.apache.commons.codec,
  org.apache.commons.codec.binary
+
+

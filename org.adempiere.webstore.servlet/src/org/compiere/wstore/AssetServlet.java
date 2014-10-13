@@ -28,6 +28,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,6 +51,10 @@ import org.compiere.util.WebUtil;
  *  @author Jorg Janke
  *  @version $Id: AssetServlet.java,v 1.3 2006/09/16 08:32:33 comdivision Exp $
  */
+@WebServlet(
+		name="assetServlet",
+        urlPatterns = "/assetServlet"
+)
 public class AssetServlet extends HttpServlet
 {
 	/**

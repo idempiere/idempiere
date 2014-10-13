@@ -62,7 +62,7 @@ public class WebEnv
 
 	/**
 	 *  Base Directory links <b>http://localhost:8080/adempiere</b>
-	 *  to the physical <i>%adempiere_HOME%/tomcat/webroot/adempiere</i> directory
+	 *  to the physical <i>%adempiere_HOME%/jetty/webroot/adempiere</i> directory
 	 */
 	public static final String   	DIR_BASE    = "/adempiere";      //  /adempiere
 	/** Image Sub-Directory under BASE          */

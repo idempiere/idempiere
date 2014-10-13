@@ -1,9 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Webstore Resource
+Bundle-Name: iDempiere Web Store Resources
 Bundle-SymbolicName: org.adempiere.webstore.resource
-Bundle-Version: 2.0.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Adempiere.org
-Fragment-Host: org.adempiere.webstore;bundle-version="2.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Fragment-Host: org.adempiere.webstore;bundle-version="3.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.compiere.wstore
+Jetty-WarPatchFragmentFolderPath: /

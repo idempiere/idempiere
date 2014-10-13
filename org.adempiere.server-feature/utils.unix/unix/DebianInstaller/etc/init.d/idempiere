@@ -244,7 +244,7 @@ configure_perform()
 !
 	echo "Done"
     fi
-    grep ${ADEMPIERE_WEB_PORT} ${IDEMPIERE_HOME}/plugins/org.adempiere.tomcat.config_2.0.0/META-INF/tomcat/server.xml > /dev/null 2>&1
+    grep ${ADEMPIERE_WEB_PORT} ${IDEMPIERE_HOME}/jettyhome/etc/jetty.xml > /dev/null 2>&1
     if [ $? -ne 0 ]
     then
         echo "Error deploying iDempiere, please verify and try again"
@@ -317,17 +317,6 @@ EOF
     # TODO: ask for certificate data (or integrate with openssl certificate)
     # TODO: ask for mail server settings
     # TODO: ask for postgres port (and perhaps machine if it's remote)
-
-    # Check not configurable tomcat ports (i.e. 8005, 8009)
-    for TOMCATPORT in 8005 8009
-    do
-        if checkportused "$TOMCATPORT"
-        then
-            echo Port $TOMCATPORT is required by iDempiere ERP server and it appears to be in use by another application.\
-            Please fix the problem and try again.
-            exit 1
-        fi
-    done
 
     #get the http port value
     while :

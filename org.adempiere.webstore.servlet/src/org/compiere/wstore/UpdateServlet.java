@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,6 +40,10 @@ import org.compiere.util.WebUtil;
  *  @author     Malachi de AElfweald
  *  @version    $Id: UpdateServlet.java,v 1.6 2006/09/23 19:38:46 comdivision Exp $
  */
+@WebServlet(
+		name="updateServlet",
+        urlPatterns = "/updateServlet"
+)
 public class UpdateServlet
     extends HttpServlet
 {

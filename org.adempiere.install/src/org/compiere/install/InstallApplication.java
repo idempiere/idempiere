@@ -36,7 +36,7 @@ public class InstallApplication implements IApplication {
 		}
 		String path = System.getProperty("user.dir") + "/org.adempiere.install/build.xml";
 		File file = new File(path);
-		System.out.println("file="+path+" exists="+file.exists());
+//		System.out.println("file="+path+" exists="+file.exists());
 		//only exists if it is running from development environment
 		if (file.exists()) {
 			AntRunner runner = new AntRunner();
@@ -46,7 +46,7 @@ public class InstallApplication implements IApplication {
 			runner.run();
 			runner.stop();
 		}
-		return null;
+		return EXIT_OK;
 	}
 
 	public void stop() {

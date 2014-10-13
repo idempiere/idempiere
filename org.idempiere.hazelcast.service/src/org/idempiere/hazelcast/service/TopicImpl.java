@@ -48,7 +48,7 @@ public class TopicImpl<E> implements ITopic<E> {
 	@Override
 	public void subscribe(final ITopicSubscriber<E> subscriber) {
 		TopicSubscriberAdapter<E> adapter = new TopicSubscriberAdapter<E>(subscriber);
-		topic.addMessageListener(adapter);
+		adapter.setListenerId(topic.addMessageListener(adapter));
 		adapters.add(adapter);
 	}
 
@@ -58,7 +58,7 @@ public class TopicImpl<E> implements ITopic<E> {
 		for(TopicSubscriberAdapter<E> adapter : adapters) {
 			if (adapter.subscriber == subscriber) {
 				found = adapter;
-				topic.removeMessageListener(adapter); 
+				topic.removeMessageListener(adapter.getListenerId()); 
 				break;
 			}
 		}
@@ -73,9 +73,18 @@ public class TopicImpl<E> implements ITopic<E> {
 
 	class TopicSubscriberAdapter<T> implements MessageListener<T> {
 		protected ITopicSubscriber<T> subscriber;
+		private String listenerId;
 
 		protected TopicSubscriberAdapter(ITopicSubscriber<T> subscriber) {
 			this.subscriber = subscriber;
+		}
+
+		public void setListenerId(String listenerId) {
+			this.listenerId = listenerId;
+		}
+		
+		public String getListenerId() {
+			return listenerId;
 		}
 
 		@Override

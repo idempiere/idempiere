@@ -295,6 +295,11 @@ public class ServletContextAdaptor implements ServletContext {
 	}
 
 	public void setSessionTrackingModes(Set<SessionTrackingMode> arg0) {
-		servletContext.setSessionTrackingModes(arg0);		
+		servletContext.setSessionTrackingModes(arg0);
+	}
+
+	@Override
+	public String getVirtualServerName() {
+		return servletContext.getVirtualServerName();
 	}
 }

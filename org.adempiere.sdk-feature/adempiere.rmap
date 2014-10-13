@@ -1,30 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rm:rmap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:maven="http://www.eclipse.org/buckminster/MavenProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
+  <rm:locator pattern="^org\.apache\.felix\.webconsole\.plugins\.packageadmin$" searchPathRef="workspace.bundle"/>
+  <rm:locator pattern="^org\.idempiere\.hazelcast\.service$" searchPathRef="workspace.feature" failOnError="false"/>
+  <rm:locator pattern="^org\.idempiere\.hazelcast\.service$" searchPathRef="workspace.project"/>
   <rm:locator pattern="^org\.apache\.poi$" searchPathRef="orbit"/>
-  <rm:locator searchPathRef="workspace.bundle.jar" failOnError="false"/>
-  <rm:locator pattern="^org\.eclipse\.jdt\.core\.compiler\.batch$" searchPathRef="gemini" failOnError="false"/>
+  <rm:locator pattern="^org\.eclipse\.jdt\.core\.compiler\.batch$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.mortbay\.jasper(\..+)?" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.eclipse\.jetty\.apache\-jsp$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.eclipse\.jetty\.osgi\-servlet\-api$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.felix\.webconsole(\..+)?" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^javax\.websocket\-api$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^javax\.annotation\-api$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^javax\.management\.j2ee\-api$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^com\.sun\.mail\.javax\.mail$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.objectweb\.asm(\..+)?" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.taglibs(\..+)?" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.aries(\..+)?" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.servicemix\.bundles\.cglib$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.activemq(\..+)?" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.eclipse\.jetty(\..+)?" searchPathRef="jetty"/>
+  <rm:locator pattern="^javax\.security\.auth\.message$" searchPathRef="jetty"/>
   <rm:locator pattern="^org\.eclipse(\..+)?" searchPathRef="equinox" failOnError="false"/>
   <rm:locator pattern="^org\.sat4j(\..+)?" searchPathRef="equinox"/>
+  <rm:locator pattern="^org\.slf4j\.jdk14$" searchPathRef="workspace.project"/>
   <rm:locator pattern="^org\.slf4j(\..+)?" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.apache\.ant(\..+)?" searchPathRef="orbit"/>
-  <rm:locator pattern="^org\.apache\.commons(\..+)?" searchPathRef="orbit" failOnError="false"/>
-  <rm:locator pattern="^org\.eclipse\.gemini(\..+)?" searchPathRef="gemini" failOnError="false"/>
-  <rm:locator pattern="^org\.eclipse\.virgo(\..+)?" searchPathRef="gemini" failOnError="false"/>
-  <rm:locator pattern="^com\.springsource(\..+)?" searchPathRef="gemini" failOnError="false"/>
-  <rm:locator pattern="^javax(\..+)?" searchPathRef="gemini" failOnError="false"/>
-  <rm:locator pattern="^org\.restlet(\..+)?" searchPathRef="restlet.maven" failOnError="false"/>
-  <rm:locator pattern="^com\.springsource(\..+)?" searchPathRef="spring.external.maven" failOnError="false"/>
+  <rm:locator pattern="^org\.apache\.commons(\..+)?" searchPathRef="orbit"/>
+  <rm:locator pattern="^org\.restlet(\..+)?" searchPathRef="restlet.maven"/>
   <rm:locator searchPathRef="orbit" failOnError="false"/>
-  <rm:locator searchPathRef="workspace.bundle.project" failOnError="false"/>
-  <rm:locator searchPathRef="workspace.feature.project"/>
+  <rm:locator searchPathRef="workspace.project" failOnError="false"/>
+  <rm:locator searchPathRef="workspace.feature"/>
   <rm:searchPath name="equinox">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://download.eclipse.org/releases/kepler"/>
+      <rm:uri format="http://download.eclipse.org/eclipse/updates/4.4/"/>
     </rm:provider>
   </rm:searchPath>
-  <rm:searchPath name="workspace.bundle.project">
+  <rm:searchPath name="workspace.project">
     <rm:provider componentTypes="osgi.bundle" readerType="local">
       <rm:uri format="{0}/{1}">
         <bc:propertyRef key="workspace.root"/>
@@ -32,7 +45,7 @@
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
-  <rm:searchPath name="workspace.bundle.jar">
+  <rm:searchPath name="workspace.bundle">
     <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
@@ -44,7 +57,7 @@
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
-  <rm:searchPath name="workspace.feature.project">
+  <rm:searchPath name="workspace.feature">
     <rm:provider componentTypes="eclipse.feature" readerType="local">
       <rm:uri format="{0}/{1}-feature">
         <bc:propertyRef key="workspace.root"/>
@@ -52,20 +65,20 @@
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
+  <rm:searchPath name="jetty">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2">
+      <rm:uri format="http://download.eclipse.org/jetty/updates/jetty-bundles-9.x"/>
+    </rm:provider>
+  </rm:searchPath>
   <rm:searchPath name="orbit">
     <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository/"/>
-    </rm:provider>
-  </rm:searchPath>
-  <rm:searchPath name="gemini">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2">
-      <rm:uri format="http://download.eclipse.org/gemini/updates/web/2.2.2/"/>
+      <rm:uri format="http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="restlet.maven">
-    <rm:provider xsi:type="maven:MavenProvider" componentTypes="osgi.bundle,eclipse.feature" readerType="maven2" source="false" mutable="false">
+    <rm:provider xsi:type="maven:MavenProvider" componentTypes="osgi.bundle" readerType="maven2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
       <rm:uri format="http://maven.restlet.org"/>
@@ -77,18 +90,35 @@
       </maven:mappings>
     </rm:provider>
   </rm:searchPath>
-  <rm:searchPath name="spring.external.maven">
-    <rm:provider xsi:type="maven:MavenProvider" componentTypes="osgi.bundle,eclipse.feature" readerType="maven2" source="false" mutable="false">
+  <rm:searchPath name="bundles.maven">
+    <rm:provider xsi:type="maven:MavenProvider" componentTypes="osgi.bundle" readerType="maven2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://repository.springsource.com/maven/bundles/external"/>
+      <rm:uri format="http://repo1.maven.org/maven2"/>
       <maven:mappings>
-        <maven:entry artifactId="com.springsource.net.sf.cglib" groupId="net.sourceforge.cglib" name="com.springsource.net.sf.cglib"/>
-        <maven:entry artifactId="com.springsource.org.apache.xmlcommons" groupId="org.apache.xmlcommons" name="com.springsource.org.apache.xmlcommons"/>
-        <maven:entry artifactId="com.springsource.javax.jms" groupId="javax.jms" name="com.springsource.javax.jms"/>
-        <maven:entry artifactId="com.springsource.org.apache.activemq" groupId="org.apache.activemq" name="com.springsource.org.apache.activemq"/>
-        <maven:entry artifactId="com.springsource.org.apache.kahadb" groupId="org.apache.activemq" name="com.springsource.org.apache.kahadb"/>
-        <maven:entry artifactId="com.springsource.javax.management.j2ee" groupId="org.apache.geronimo.specs" name="com.springsource.javax.management.j2ee"/>
+        <maven:entry artifactId="apache-jsp" groupId="org.mortbay.jasper" name="org.mortbay.jasper.apache-jsp"/>
+        <maven:entry artifactId="apache-el" groupId="org.mortbay.jasper" name="org.mortbay.jasper.apache-el"/>
+        <maven:entry artifactId="apache-jsp" groupId="org.eclipse.jetty" name="org.eclipse.jetty.apache-jsp"/>
+        <maven:entry artifactId="jetty-osgi-servlet-api" groupId="org.eclipse.jetty.toolchain" name="org.eclipse.jetty.osgi-servlet-api"/>
+        <maven:entry artifactId="org.eclipse.jdt.core" groupId="org.eclipse.jetty.orbit" name="org.eclipse.jdt.core.compiler.batch"/>
+        <maven:entry artifactId="javax.websocket-api" groupId="javax.websocket" name="javax.websocket-api"/>
+        <maven:entry artifactId="javax.annotation-api" groupId="javax.annotation" name="javax.annotation-api"/>
+        <maven:entry artifactId="javax.management.j2ee-api" groupId="javax.management.j2ee" name="javax.management.j2ee-api"/>
+        <maven:entry artifactId="javax.mail" groupId="com.sun.mail" name="com.sun.mail.javax.mail"/>
+        <maven:entry artifactId="asm-commons" groupId="org.ow2.asm" name="org.objectweb.asm.commons"/>
+        <maven:entry artifactId="asm-tree" groupId="org.ow2.asm" name="org.objectweb.asm.tree"/>
+        <maven:entry artifactId="asm" groupId="org.ow2.asm" name="org.objectweb.asm"/>
+        <maven:entry artifactId="taglibs-standard-impl" groupId="org.apache.taglibs" name="org.apache.taglibs.standard-impl"/>
+        <maven:entry artifactId="taglibs-standard-spec" groupId="org.apache.taglibs" name="org.apache.taglibs.taglibs-standard-spec"/>
+        <maven:entry artifactId="taglibs-standard-jstlel" groupId="org.apache.taglibs" name="org.apache.taglibs.standard-jstlel"/>
+        <maven:entry artifactId="org.apache.aries.spifly.dynamic.bundle" groupId="org.apache.aries.spifly" name="org.apache.aries.spifly.dynamic.bundle"/>
+        <maven:entry artifactId="org.apache.aries.util" groupId="org.apache.aries" name="org.apache.aries.util"/>
+        <maven:entry artifactId="org.apache.servicemix.bundles.cglib" groupId="org.apache.servicemix.bundles" name="org.apache.servicemix.bundles.cglib"/>
+        <maven:entry artifactId="activemq-core" groupId="org.apache.activemq" name="org.apache.activemq.activemq-core"/>
+        <maven:entry artifactId="kahadb" groupId="org.apache.activemq" name="org.apache.activemq.kahadb"/>
+        <maven:entry artifactId="org.apache.felix.webconsole" groupId="org.apache.felix" name="org.apache.felix.webconsole"/>
+        <maven:entry artifactId="org.apache.felix.webconsole.plugins.ds" groupId="org.apache.felix" name="org.apache.felix.webconsole.plugins.ds"/>
+        <maven:entry artifactId="org.apache.felix.webconsole.plugins.memoryusage" groupId="org.apache.felix" name="org.apache.felix.webconsole.plugins.memoryusage"/>
       </maven:mappings>
     </rm:provider>
   </rm:searchPath>

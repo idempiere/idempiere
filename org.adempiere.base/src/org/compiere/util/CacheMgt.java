@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.adempiere.base.IServiceHolder;
 import org.adempiere.base.Service;
 import org.idempiere.distributed.ICacheService;
+import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
 
 /**
@@ -141,13 +142,13 @@ public class CacheMgt
 		IClusterService service = holder.getService();
 		if (service != null) {			
 			ResetCacheCallable callable = new ResetCacheCallable(tableName, recordId);
-			Future<Collection<Integer>> future = service.execute(callable, service.getMembers());
-			if (future != null) {
+			Map<IClusterMember, Future<Integer>> futureMap = service.execute(callable, service.getMembers());
+			if (futureMap != null) {
 				int total = 0;
 				try {
-					Collection<Integer> results = future.get();
-					for(Integer i : results) 
-					{
+					Collection<Future<Integer>> results = futureMap.values();
+					for(Future<Integer> future : results) {						
+						Integer i = future.get();
 						total += i.intValue();
 					}
 				} catch (InterruptedException e) {

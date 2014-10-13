@@ -1,13 +1,19 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Zk Web Client
+Bundle-Name: iDempiere Web Client
 Bundle-SymbolicName: org.adempiere.ui.zk;singleton:=true
-Bundle-Version: 2.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: javax.activation;version="1.1.1",
+Bundle-Version: 3.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: javax.activation,
+ javax.annotation;version="1.2.0",
+ javax.annotation.processing,
+ javax.annotation.security;version="1.2.0",
+ javax.annotation.sql;version="1.2.0",
  javax.servlet,
+ javax.servlet.annotation;version="3.1.0",
  javax.servlet.http,
- metainfo.zk,
+ javax.servlet.jsp.resources;version="2.3.0",
+ javax.servlet.resources;version="3.1.0",
  net.sf.jasperreports.engine,
  net.sf.jasperreports.engine.export,
  net.sf.jasperreports.engine.util,
@@ -83,10 +89,9 @@ Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  web.js.jawwa.atmosphere,
  web.js.zkforge,
  web.js.zkforge.mold
-Require-Bundle: org.adempiere.base;bundle-version="2.0.0",
- org.adempiere.ui;bundle-version="2.0.0",
- org.zkoss.zk.library;bundle-version="6.0.0",
- org.apache.catalina;bundle-version="7.0.35"
+Require-Bundle: org.adempiere.base;bundle-version="3.0.0",
+ org.adempiere.ui;bundle-version="3.0.0",
+ org.zkoss.zk.library;bundle-version="6.0.0"
 Bundle-Activator: org.adempiere.webui.WebUIActivator
 Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.zkoss.zk.library
