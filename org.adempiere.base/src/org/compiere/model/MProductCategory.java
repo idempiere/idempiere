@@ -41,8 +41,7 @@ public class MProductCategory extends X_M_Product_Category
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1290361229726779892L;
-
+	private static final long serialVersionUID = 1239249591584452179L;
 
 	/**
 	 * 	Get from Cache
@@ -178,15 +177,6 @@ public class MProductCategory extends X_M_Product_Category
 		return success;
 	}	//	afterSave
 
-	/**
-	 * 	Before Delete
-	 *	@return true
-	 */
-	protected boolean beforeDelete ()
-	{
-		return delete_Accounting("M_Product_Category_Acct"); 
-	}	//	beforeDelete
-	
 	/**
 	 * 	FiFo Material Movement Policy
 	 *	@return true if FiFo

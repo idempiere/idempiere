@@ -41,8 +41,8 @@ public class MTax extends X_C_Tax
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6423328193350641479L;
-	
+	private static final long serialVersionUID = 5871827364071851846L;
+
 	/**	Cache						*/
 	private static CCache<Integer,MTax>		s_cache	= new CCache<Integer,MTax>(Table_Name, 5);
 	/**	Cache of Client						*/
@@ -316,14 +316,5 @@ public class MTax extends X_C_Tax
 
 		return success;
 	}	//	afterSave
-
-	/**
-	 * 	Before Delete
-	 *	@return true
-	 */
-	protected boolean beforeDelete ()
-	{
-		return delete_Accounting("C_Tax_Acct"); 
-	}	//	beforeDelete
 
 }	//	MTax

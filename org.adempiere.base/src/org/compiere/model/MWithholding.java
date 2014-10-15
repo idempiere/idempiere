@@ -31,7 +31,7 @@ public class MWithholding extends X_C_Withholding
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7734620609620104180L;
+	private static final long serialVersionUID = 6368597644089198711L;
 
 	/**
 	 * 	Standard Constructor
@@ -68,14 +68,5 @@ public class MWithholding extends X_C_Withholding
 
 		return success;
 	}	//	afterSave
-
-	/**
-	 * 	Before Delete
-	 *	@return true
-	 */
-	protected boolean beforeDelete ()
-	{
-		return delete_Accounting("C_Withholding_Acct"); 
-	}	//	beforeDelete
 
 }	//	MWithholding

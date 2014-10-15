@@ -39,7 +39,7 @@ public class MBPGroup extends X_C_BP_Group
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5323639776872742839L;
+	private static final long serialVersionUID = 8897399796117872715L;
 
 	/**
 	 * 	Get MBPGroup from Cache
@@ -244,15 +244,5 @@ public class MBPGroup extends X_C_BP_Group
 			return insert_Accounting("C_BP_Group_Acct", "C_AcctSchema_Default", null);
 		return success;
 	}	//	afterSave
-	
-	
-	/**
-	 * 	Before Delete
-	 *	@return true
-	 */
-	protected boolean beforeDelete ()
-	{
-		return delete_Accounting("C_BP_Group_Acct");
-	}	//	beforeDelete
-	
+
 }	//	MBPGroup

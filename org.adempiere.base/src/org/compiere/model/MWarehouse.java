@@ -41,7 +41,8 @@ public class MWarehouse extends X_M_Warehouse
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7037547130625087045L;
+	private static final long serialVersionUID = 2696705459515717619L;
+
 	/**
 	 * 	Get from Cache
 	 *	@param ctx context
@@ -272,14 +273,5 @@ public class MWarehouse extends X_M_Warehouse
 		
 		return success;
 	}	//	afterSave
-
-	/**
-	 * 	Before Delete
-	 *	@return true
-	 */
-	protected boolean beforeDelete ()
-	{
-		return delete_Accounting("M_Warehouse_Acct"); 
-	}	//	beforeDelete
 
 }	//	MWarehouse
