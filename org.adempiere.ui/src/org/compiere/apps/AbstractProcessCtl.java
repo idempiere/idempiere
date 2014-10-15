@@ -287,7 +287,7 @@ public abstract class AbstractProcessCtl implements Runnable
 			m_pi.setReportingProcess(true);
 			//	Start Report	-----------------------------------------------
 			boolean ok = ReportCtl.start(m_processUI, windowno, m_pi, IsDirectPrint);
-			m_pi.setSummary("Report", !ok);
+			m_pi.setSummary(Msg.getCleanMsg(Env.getCtx(), "Report"), !ok);
 			MPInstance pinstance = new MPInstance(Env.getCtx(), m_pi.getAD_PInstance_ID(), null);
 			String errmsg = pinstance.getErrorMsg();
 			if (Util.isEmpty(errmsg, true))
