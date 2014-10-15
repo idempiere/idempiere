@@ -1108,9 +1108,20 @@ class Restriction  implements Serializable
 	{
 		if (DirectWhereClause != null)
 			return DirectWhereClause;
+		// verify if is a virtual column, do not prefix tableName if this is a virtualColumn
+		boolean virtualColumn = false;
+		if (tableName != null && tableName.length() > 0) {
+			MTable table = MTable.get(Env.getCtx(), tableName);
+			for (MColumn col : table.getColumns(false)) {
+				if (ColumnName.equals(col.getColumnSQL())) {
+					virtualColumn = true;
+					break;
+				}
+			}
+		}
 		//
 		StringBuilder sb = new StringBuilder();
-		if (tableName != null && tableName.length() > 0)
+		if (!virtualColumn && tableName != null && tableName.length() > 0)
 		{
 			//	Assumes - REPLACE(INITCAP(variable),'s','X') or UPPER(variable)
 			int pos = ColumnName.lastIndexOf('(')+1;	//	including (
