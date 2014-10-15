@@ -1463,10 +1463,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			//	Correct Order Line
 			if (product != null && oLine != null)		//	other in VMatch.createMatchRecord
 			{
-				if (isSOTrx())
-					oLine.setQtyReserved(oLine.getQtyReserved().subtract(sLine.getMovementQty()));
-				else
-					oLine.setQtyReserved(oLine.getQtyReserved().subtract(sLine.getMovementQty().subtract(sLine.getQtyOverReceipt())));
+				oLine.setQtyReserved(oLine.getQtyReserved().subtract(sLine.getMovementQty().subtract(sLine.getQtyOverReceipt())));
 			}
 
 			//	Update Sales Order Line
