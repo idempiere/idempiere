@@ -19,7 +19,7 @@
 	<classpathentry exported="true" kind="lib" path="super-csv-2.0.0-beta-1.jar" sourcepath="/home/carlos/libsources/super-csv-2.0.0-beta-1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="barcode4j-2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="bcprov-jdk15on-1.46.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>

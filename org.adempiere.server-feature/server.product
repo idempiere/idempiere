@@ -73,6 +73,7 @@
       <plugin id="org.objectweb.asm.commons" autoStart="true" startLevel="0" />
       <plugin id="org.objectweb.asm.tree" autoStart="true" startLevel="0" />
       <plugin id="org.restlet" autoStart="true" startLevel="3" />
+      <property name="eclipse.product" value="org.adempiere.server.product" />
       <property name="org.eclipse.update.reconcile" value="false" />
       <property name="osgi.compatibility.bootdelegation" value="true" />
       <property name="osgi.console.enable.builtin" value="false" />

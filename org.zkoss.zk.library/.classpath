@@ -15,7 +15,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/zul-7.0.3.jar" sourcepath="lib/src/zul-7.0.3-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/zweb-7.0.3.jar" sourcepath="lib/src/zweb-7.0.3-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jython-2.5.3.jar" sourcepath="lib/src/jython-2.5.3-sources.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-el.jar"/>
