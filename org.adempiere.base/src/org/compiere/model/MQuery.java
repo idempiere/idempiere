@@ -1112,10 +1112,12 @@ class Restriction  implements Serializable
 		boolean virtualColumn = false;
 		if (tableName != null && tableName.length() > 0) {
 			MTable table = MTable.get(Env.getCtx(), tableName);
-			for (MColumn col : table.getColumns(false)) {
-				if (ColumnName.equals(col.getColumnSQL())) {
-					virtualColumn = true;
-					break;
+			if (table != null) {
+				for (MColumn col : table.getColumns(false)) {
+					if (ColumnName.equals(col.getColumnSQL())) {
+						virtualColumn = true;
+						break;
+					}
 				}
 			}
 		}
