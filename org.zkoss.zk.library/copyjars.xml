@@ -1,19 +1,19 @@
 <project name="zklibrary" basedir=".." default="copy">
 	<target name="copy">
-	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zk/zk/7.0.3/zk-7.0.3.jar" dest="lib" usetimestamp="true"/>
-	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zk/zul/7.0.3/zul-7.0.3.jar" dest="lib" usetimestamp="true"/>
-	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zk/zhtml/7.0.3/zhtml-7.0.3.jar" dest="lib" usetimestamp="true"/>
-	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zk/zkplus/7.0.3/zkplus-7.0.3.jar" dest="lib" usetimestamp="true"/>
-	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zk/zkbind/7.0.3/zkbind-7.0.3.jar" dest="lib" usetimestamp="true"/>
-	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/common/zcommon/7.0.3/zcommon-7.0.3.jar" dest="lib" usetimestamp="true"/>
-	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/common/zel/7.0.3/zel-7.0.3.jar" dest="lib" usetimestamp="true"/>
-	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/common/zweb/7.0.3/zweb-7.0.3.jar" dest="lib" usetimestamp="true"/>
-	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zkforge/ckez/4.3.3.0/ckez-4.3.3.0.jar" dest="lib" usetimestamp="true"/>
-	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zkforge/gmapsz/3.0.3/gmapsz-3.0.3.jar" dest="lib" usetimestamp="true"/>
-	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zkforge/timelinez/2.3.1_50/timelinez-2.3.1_50.jar" dest="lib" usetimestamp="true"/>
-	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zkforge/timeplotz/1.1_50/timeplotz-1.1_50.jar" dest="lib" usetimestamp="true"/>
-	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/calendar/calendar/2.1.4/calendar-2.1.4.jar" dest="lib" usetimestamp="true"/>
-	      <get src="http://repo1.maven.org/maven2/org/python/jython/2.5.3/jython-2.5.3.jar" dest="lib" usetimestamp="true"/>
-	      <get src="http://repo1.maven.org/maven2/org/jruby/jruby-complete/1.7.15/jruby-complete-1.7.15.jar" dest="lib" usetimestamp="true"/>
+	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zk/zk/7.0.3/zk-7.0.3.jar" dest="lib" usetimestamp="true" verbose="true" retries="5"/>
+	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zk/zul/7.0.3/zul-7.0.3.jar" dest="lib" usetimestamp="true" verbose="true" retries="5"/>
+	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zk/zhtml/7.0.3/zhtml-7.0.3.jar" dest="lib" usetimestamp="true" verbose="true" retries="5"/>
+	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zk/zkplus/7.0.3/zkplus-7.0.3.jar" dest="lib" usetimestamp="true" verbose="true" retries="5"/>
+	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zk/zkbind/7.0.3/zkbind-7.0.3.jar" dest="lib" usetimestamp="true" verbose="true" retries="5"/>
+	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/common/zcommon/7.0.3/zcommon-7.0.3.jar" dest="lib" usetimestamp="true" verbose="true" retries="5"/>
+	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/common/zel/7.0.3/zel-7.0.3.jar" dest="lib" usetimestamp="true" verbose="true" retries="5"/>
+	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/common/zweb/7.0.3/zweb-7.0.3.jar" dest="lib" usetimestamp="true" verbose="true" retries="5"/>
+	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zkforge/ckez/4.3.3.0/ckez-4.3.3.0.jar" dest="lib" usetimestamp="true" verbose="true" retries="5"/>
+	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zkforge/gmapsz/3.0.3/gmapsz-3.0.3.jar" dest="lib" usetimestamp="true" verbose="true" retries="5"/>
+	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zkforge/timelinez/2.3.1_50/timelinez-2.3.1_50.jar" dest="lib" usetimestamp="true" verbose="true" retries="5"/>
+	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/zkforge/timeplotz/1.1_50/timeplotz-1.1_50.jar" dest="lib" usetimestamp="true" verbose="true" retries="5"/>
+	      <get src="http://mavensync.zkoss.org/maven2/org/zkoss/calendar/calendar/2.1.4/calendar-2.1.4.jar" dest="lib" usetimestamp="true" verbose="true" retries="5"/>
+	      <get src="http://repo1.maven.org/maven2/org/python/jython/2.5.3/jython-2.5.3.jar" dest="lib" usetimestamp="true" verbose="true" retries="5"/>
+	      <get src="http://repo1.maven.org/maven2/org/jruby/jruby-complete/1.7.15/jruby-complete-1.7.15.jar" dest="lib" usetimestamp="true" verbose="true" retries="5"/>
 	</target>
 </project>
