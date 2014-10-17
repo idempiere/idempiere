@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><cq:componentQuery xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" resourceMap="adempiere.rmap">
     <cq:rootRequest name="org.adempiere.sdk" componentType="eclipse.feature"/>
     <cq:property key="buckminster.download.source" value="true"/>
+    <cq:property key="osgi.configuration.area.default" value="configuration"/>
+    <cq:property key="osgi.user.area" value="${user.home}"/>
+    <cq:property key="osgi.user.area.default" value="${user.home}"/>
     <cq:property key="target.arch" value="*"/>
     <cq:property key="target.os" value="*"/>
     <cq:property key="target.ws" value="*"/>
