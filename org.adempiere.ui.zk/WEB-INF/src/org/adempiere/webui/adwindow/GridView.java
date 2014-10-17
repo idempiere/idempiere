@@ -498,7 +498,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 				column.setSortAscending(new SortComparator(colindex, true, Env.getLanguage(Env.getCtx())));
 				column.setSortDescending(new SortComparator(colindex, false, Env.getLanguage(Env.getCtx())));
 				column.setLabel(gridField[i].getHeader());
-				if (columnWidthMap != null && columnWidthMap.get(gridField[i].getAD_Field_ID()) != null) {
+				if (columnWidthMap != null && columnWidthMap.get(gridField[i].getAD_Field_ID()) != null && !columnWidthMap.get(gridField[i].getAD_Field_ID()).equals("")) {
 					column.setWidth(columnWidthMap.get(gridField[i].getAD_Field_ID()));
 				} else {
 					if (gridField[i].getDisplayType()==DisplayType.YesNo) {
