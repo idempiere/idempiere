@@ -24,11 +24,10 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.Msg;
 
 public class MTableIndex extends X_AD_TableIndex {
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2672452678101398999L;
+	private static final long serialVersionUID = 5312095272014146977L;
 
 	/**
 	 * Get active indexes from table
@@ -168,7 +167,11 @@ public class MTableIndex extends X_AD_TableIndex {
 		}
 		else if (isUnique())
 		{
-			sql = new StringBuilder("ALTER TABLE " + getTableName() + " ADD CONSTRAINT " + getName() + " UNIQUE (");
+			sql = new StringBuilder("ALTER TABLE ").append(getTableName()).append(" ADD CONSTRAINT ").append(getName());
+			if (isKey())
+				sql.append(" PRIMARY KEY (");
+			else
+				sql.append(" UNIQUE (");
 			getColumns(false);
 			for (int i = 0; i < m_columns.length; i++)
 			{
@@ -189,7 +192,7 @@ public class MTableIndex extends X_AD_TableIndex {
 			
 		return sql.toString();
 	}
-	
+
 	/**
 	 * Get SQL index create DDL
 	 * @return SQL DDL
@@ -201,6 +204,20 @@ public class MTableIndex extends X_AD_TableIndex {
 		return m_ddl;
 	}
 	
+	/**
+	 * Get SQL index create DDL
+	 * @return SQL DDL
+	 */
+	public String getDropDDL()
+	{
+		String sql = null;
+		if (isCreateConstraint())
+			sql = "ALTER TABLE " + getAD_Table().getTableName() + " DROP CONSTRAINT " + getName() + " CASCADE";
+		else
+			sql = "DROP INDEX " + getName();
+		return sql;
+	}
+
 	/**
 	 * String representation
 	 * @return info

@@ -42,7 +42,7 @@ public class MInfoWindow extends X_AD_InfoWindow
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3099366897275960300L;
+	private static final long serialVersionUID = -3627504150648422756L;
 
 	/**
 	 * 	Standard Constructor
@@ -176,6 +176,15 @@ public class MInfoWindow extends X_AD_InfoWindow
 			}
 		}
 		
+	}
+
+	/** return true if the current role can access to the specified info window ; otherwise return null */
+	public static MInfoWindow get(int infoWindowID, String trxName) {
+		MInfoWindow iw = new MInfoWindow(Env.getCtx(), infoWindowID, null);
+		Boolean access = MRole.getDefault().getInfoAccess(iw.getAD_InfoWindow_ID());
+		if (access != null && access.booleanValue())
+			return iw;
+		return null;
 	}
 
 	public MInfoColumn[] getInfoColumns(TableInfo[] tableInfos) {

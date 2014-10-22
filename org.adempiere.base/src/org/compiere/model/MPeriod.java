@@ -54,7 +54,7 @@ public class MPeriod extends X_C_Period
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6498973218391994963L;
+	private static final long serialVersionUID = -1636783790829454894L;
 
 	/**
 	 * Get Period from Cache
@@ -97,7 +97,7 @@ public class MPeriod extends X_C_Period
 	 * @param AD_Org_ID Organization
 	 * @return active Period or null
 	 */
-	public static MPeriod get (Properties ctx, Timestamp DateAcct, int AD_Org_ID)
+	public static MPeriod get (Properties ctx, Timestamp DateAcct, int AD_Org_ID, String trxName)
 	{
 		
 		if (DateAcct == null)
@@ -105,8 +105,14 @@ public class MPeriod extends X_C_Period
 		
         int C_Calendar_ID = getC_Calendar_ID(ctx,AD_Org_ID);
         
-        return findByCalendar(ctx, DateAcct, C_Calendar_ID);
+        return findByCalendar(ctx, DateAcct, C_Calendar_ID, trxName);
 	}	//	get
+
+	@Deprecated
+	public static MPeriod get (Properties ctx, Timestamp DateAcct, int AD_Org_ID)
+	{
+		return get(ctx, DateAcct, AD_Org_ID, null);
+	}
 
 	/**
 	 * 

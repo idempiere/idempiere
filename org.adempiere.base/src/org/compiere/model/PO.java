@@ -3242,6 +3242,11 @@ public abstract class PO
 				deleteTranslations(localTrxName);
 				//	Delete Cascade AD_Table_ID/Record_ID (Attachments, ..)
 				PO_Record.deleteCascade(AD_Table_ID, Record_ID, localTrxName);
+
+				//delete cascade only for single key column record
+				if (m_KeyColumns != null && m_KeyColumns.length == 1) {
+					PO_Record.deleteModelCascade(p_info.getTableName(), Record_ID, localTrxName);
+				}
 		
 				//	The Delete Statement
 				StringBuilder sql = new StringBuilder ("DELETE FROM ") //jz why no FROM??
@@ -3788,6 +3793,7 @@ public abstract class PO
 	 *	@param acctTable accounting sub table
 	 *	@return true
 	 */
+	@Deprecated // see IDEMPIERE-2088
 	protected boolean delete_Accounting(String acctTable)
 	{
 		return true;

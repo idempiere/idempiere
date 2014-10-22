@@ -28,6 +28,7 @@ import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -62,8 +63,10 @@ import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.CConnection;
 import org.compiere.model.AdempiereProcessorLog;
 import org.compiere.model.MClient;
+import org.compiere.model.MSession;
 import org.compiere.model.MStore;
 import org.compiere.model.MSystem;
+import org.compiere.model.Query;
 import org.compiere.server.AdempiereServerGroup;
 import org.compiere.server.AdempiereServerMgr;
 import org.compiere.server.AdempiereServerMgr.ServerWrapper;
@@ -72,6 +75,8 @@ import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.CMemoryUsage;
 import org.compiere.util.CacheMgt;
+import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
@@ -1029,6 +1034,50 @@ public class AdempiereMonitor extends HttpServlet
 			p.addElement(a);
 		}
 		if (wstores.length == 0)
+			p.addElement("&nbsp;");
+		line.addElement(new td().addElement(p));
+		table.addElement(line);
+		//	
+		line = new tr();
+		List<MSession> sessions =  new Query(Env.getCtx(), MSession.Table_Name, "Processed = 'N'", null).list();
+		line.addElement(new th().addElement("Active sessions #" + sessions.size()));
+		p = new p();
+		for (int i = 0; i < clients.length; i++) {
+			MClient client = clients[i];
+			if (i > 0)
+				p.addElement(" - ");
+			int count = 0;
+			for (MSession session : sessions) {
+				if (session.getAD_Client_ID()==client.getAD_Client_ID())
+					count++;
+			}
+			p.addElement(client.getName() + " : " + count);
+		}
+		if (clients.length == 0)
+			p.addElement("&nbsp;");
+		line.addElement(new td().addElement(p));
+		table.addElement(line);
+		//	
+		line = new tr();
+		int inMaintenanceClients[] = DB.getIDsEx(null, "SELECT AD_Client_ID FROM AD_SysConfig WHERE Name = 'SYSTEM_IN_MAINTENANCE_MODE' AND Value = 'Y'");
+		line.addElement(new th().addElement("Maintenance Mode #"+inMaintenanceClients.length));
+		p = new p();
+		if (inMaintenanceClients.length > 0) {
+			for (int i = 0; i < clients.length; i++) {
+				MClient client = clients[i];
+				if (i > 0)
+					p.addElement(" - ");
+				for (int clientID : inMaintenanceClients) {
+					if (client.getAD_Client_ID() == clientID)
+						p.addElement(client.getName() + " : Yes");
+					else
+						p.addElement(client.getName() + " : No");
+				}
+			}
+		}
+		else
+			p.addElement("All clients are in normal operation mode");
+		if (clients.length == 0)
 			p.addElement("&nbsp;");
 		line.addElement(new td().addElement(p));
 		table.addElement(line);

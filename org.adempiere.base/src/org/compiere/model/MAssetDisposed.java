@@ -325,7 +325,7 @@ implements DocAction
 		}
 		if (newRecord || is_ValueChanged(COLUMNNAME_DateAcct))
 		{
-			setC_Period_ID(MPeriod.get(getCtx(), getDateAcct(), getAD_Org_ID()).get_ID());
+			setC_Period_ID(MPeriod.get(getCtx(), getDateAcct(), getAD_Org_ID(), get_TrxName()).get_ID());
 		}
 		if (getA_Disposed_Date() == null)
 		{

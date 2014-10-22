@@ -34,7 +34,7 @@ public class MBankAccount extends X_C_BankAccount
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8742307130542608791L;
+	private static final long serialVersionUID = 2392818253347168347L;
 
 	/**
 	 * 	Get BankAccount from Cache
@@ -133,14 +133,5 @@ public class MBankAccount extends X_C_BankAccount
 			return insert_Accounting("C_BankAccount_Acct", "C_AcctSchema_Default", null);
 		return success;
 	}	//	afterSave
-	
-	/**
-	 * 	Before Delete
-	 *	@return true
-	 */
-	protected boolean beforeDelete ()
-	{
-		return delete_Accounting("C_BankAccount_Acct");
-	}	//	beforeDelete
 
 }	//	MBankAccount

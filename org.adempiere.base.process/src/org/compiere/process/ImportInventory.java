@@ -527,6 +527,7 @@ public class ImportInventory extends SvrProcess
 			costingDoc = new MInventory(getCtx(), 0, get_TrxName());
 			costingDoc.setC_DocType_ID(p_C_DocType_ID);
 			costingDoc.setCostingMethod(cost.getM_CostElement().getCostingMethod());
+			costingDoc.setAD_Org_ID(imp.getAD_Org_ID());
 			costingDoc.setDocAction(DocAction.ACTION_Complete);
 			costingDoc.saveEx();
 		}
@@ -537,6 +538,7 @@ public class ImportInventory extends SvrProcess
 		costingLine.setCurrentCostPrice(cost.getCurrentCostPrice());
 		costingLine.setNewCostPrice(imp.getCurrentCostPrice());
 		costingLine.setM_Locator_ID(0);
+		costingLine.setAD_Org_ID(imp.getAD_Org_ID());
 		costingLine.saveEx();				
 		
 		imp.setM_CostingLine_ID(costingLine.getM_InventoryLine_ID());

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Label;
@@ -267,7 +268,9 @@ public class ADSortTab extends Panel implements IADTabpanel
 		yesList.setVflex(true);
 		noList.setVflex(true);
 
-		EventListener<Event> mouseListener = new EventListener<Event>()
+        setId(AdempiereIdGenerator.escapeId(gridTab.getName()));
+
+        EventListener<Event> mouseListener = new EventListener<Event>()
 		{
 
 			public void onEvent(Event event) throws Exception
@@ -866,8 +869,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 	    	
 	    	setAttribute(ATTR_ON_ACTIVATE_POSTED, Boolean.TRUE);
     	}
-		
-		Event event = new Event(ON_ACTIVATE_EVENT, this, b);
+
+    	active = b;
+
+    	Event event = new Event(ON_ACTIVATE_EVENT, this, b);
         Events.postEvent(event);
 	}
 

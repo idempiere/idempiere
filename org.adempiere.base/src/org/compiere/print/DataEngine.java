@@ -171,8 +171,13 @@ public class DataEngine
 					reportName = rs.getString(3);
 					// Add WhereClause restriction from AD_ReportView - teo_sarca BF [ 1761891 ]
 					String whereClause = rs.getString(4);
-					if (!Util.isEmpty(whereClause))
-						queryCopy.addRestriction(whereClause);
+					if (!Util.isEmpty(whereClause)) {
+						if (whereClause.indexOf("@") == -1) {
+							queryCopy.addRestriction(whereClause);
+						} else { // replace context variables
+							queryCopy.addRestriction(Env.parseContext(ctx, 0, whereClause.toString(), false, true));
+						}
+					}
 				}
 			}
 			catch (SQLException e)

@@ -47,7 +47,7 @@ public class MBPartner extends X_C_BPartner
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4308267492285903865L;
+	private static final long serialVersionUID = -5503105554864289337L;
 
 	/**
 	 * 	Get Empty Template Business Partner
@@ -944,17 +944,6 @@ public class MBPartner extends X_C_BPartner
 		}
 		return success;
 	}	//	afterSave
-
-	/**
-	 * 	Before Delete
-	 *	@return true
-	 */
-	protected boolean beforeDelete ()
-	{
-		return delete_Accounting("C_BP_Customer_Acct") 
-			&& delete_Accounting("C_BP_Vendor_Acct")
-			&& delete_Accounting("C_BP_Employee_Acct");
-	}	//	beforeDelete
 
 	/**
 	 * 	After Delete

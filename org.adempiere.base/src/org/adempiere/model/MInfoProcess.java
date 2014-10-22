@@ -16,7 +16,7 @@ package org.adempiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
-import org.compiere.model.MColumn;
+
 import org.compiere.model.MProcess;
 import org.compiere.model.X_AD_InfoProcess;
 import org.compiere.util.Env;
@@ -33,7 +33,7 @@ public class MInfoProcess extends X_AD_InfoProcess {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2167041563372362436L;
+	private static final long serialVersionUID = 2478699719088685214L;
 
 	/**
 	 * {@inheritDoc}
@@ -87,27 +87,6 @@ public class MInfoProcess extends X_AD_InfoProcess {
 		if (log.isLoggable(Level.FINEST)) log.finest(MProcess.get(getCtx(), getAD_Process_ID()).getName() 
 					+ " (" + getDisplayLogic() + ") => " + retValue);
 		return retValue;
-	}
-	
-	/**
-	 * name of column define is ViewID
-	 * @return
-	 */
-	public String getViewIDName (){
-		// no column define
-		if (getAD_Column_ID() == 0)
-			return null;
-		
-		// return cache value
-		if (m_viewIDName != null)
-			return m_viewIDName;
-		
-		MColumn viewIDColumn = (MColumn)getAD_Column();
-		if (viewIDColumn != null){
-			return viewIDColumn.getColumnName();
-}
-		
-		return null;
 	}
 	
 }

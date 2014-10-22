@@ -1374,6 +1374,27 @@ public class CalloutOrder extends CalloutEngine
 		return "";
 	}	//	SalesOrderTenderType
 
-
+	public String organization(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value){
+		
+		//Return if Organization field is empty
+		if(value == null || (Integer)value == 0)
+			return "";
+		
+		log.info("Set default Warehouse for Organization " + value + " on Window " + WindowNo);
+		
+		//Get the current Warehouse
+		Integer m_warehouse_id = (Integer) mTab.getValue("M_Warehouse_ID");
+		
+		//Only set Warehouse if the field is empty
+		if(m_warehouse_id == null || m_warehouse_id == 0){
+			Integer ad_org_id = (Integer) value;
+			MOrgInfo orginfo = MOrgInfo.get(ctx, ad_org_id.intValue(), null);
+			
+			//only set Warehouse if there is a default Warehouse on OrgInfo
+			if(orginfo!=null && orginfo.getM_Warehouse_ID() != 0)
+				mTab.setValue("M_Warehouse_ID", orginfo.getM_Warehouse_ID());
+		}
+		return "";
+	}
 }	//	CalloutOrder
 

@@ -176,10 +176,10 @@ ContextMenuListener, IZoomableEditor
         
         if (gridField != null) 
         {
-        	String columnName = getColumnName();
-    		if ((columnName.toUpperCase().equals("C_BPARTNER_LOCATION_ID"))
-    				|| (columnName.toUpperCase().equals("BILL_LOCATION_ID"))
-    				|| (columnName.toUpperCase().equals("DROPSHIP_LOCATION_ID")))
+        	String tableName_temp = lookup.getColumnName();	// Returns AD_Org.AD_Org_ID
+    		int posPoint = tableName_temp.indexOf(".");
+    		String tableName = tableName_temp.substring(0, posPoint);
+    		if (tableName.toUpperCase().equals("C_BPARTNER_LOCATION"))    				
     		{
     			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, true, lookup);
     		} else {
@@ -191,9 +191,6 @@ ContextMenuListener, IZoomableEditor
         	boolean isShortListAvailable = false;	// Short List available for this lookup
         	if (lookup != null && (lookup.getDisplayType() == DisplayType.TableDir || lookup.getDisplayType() == DisplayType.Table))	// only for Table & TableDir
         	{
-        		String tableName_temp = lookup.getColumnName();	// Returns AD_Org.AD_Org_ID
-        		int posPoint = tableName_temp.indexOf(".");
-        		String tableName = tableName_temp.substring(0, posPoint);
     			MTable table = MTable.get(Env.getCtx(), tableName);
     			isShortListAvailable = (table.getColumnIndex("IsShortList") >= 0);
         		if (isShortListAvailable)

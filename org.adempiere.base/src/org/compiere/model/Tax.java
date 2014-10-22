@@ -508,12 +508,12 @@ public class Tax
 	 * @return C_Tax_ID
 	 * @throws TaxNoExemptFoundException if no tax exempt found
 	 */
-	private static int getExemptTax (Properties ctx, int AD_Org_ID, String trxName)
+	public static int getExemptTax (Properties ctx, int AD_Org_ID, String trxName)
 	{
 		final String sql = "SELECT t.C_Tax_ID "
 			+ "FROM C_Tax t"
 			+ " INNER JOIN AD_Org o ON (t.AD_Client_ID=o.AD_Client_ID) "
-			+ "WHERE t.IsTaxExempt='Y' AND o.AD_Org_ID=? "
+			+ "WHERE t.IsTaxExempt='Y' AND o.AD_Org_ID=? AND t.IsActive='Y' "
 			+ "ORDER BY t.Rate DESC";
 		int C_Tax_ID = DB.getSQLValueEx(trxName, sql, AD_Org_ID);
 		if (log.isLoggable(Level.FINE)) log.fine("getExemptTax - TaxExempt=Y - C_Tax_ID=" + C_Tax_ID);
@@ -543,7 +543,7 @@ public class Tax
 	 *	@return C_Tax_ID
 	 *  @throws TaxNotFoundException if no tax found for given criteria
 	 */
-	protected static int get (Properties ctx,
+	public static int get (Properties ctx,
 		int C_TaxCategory_ID, boolean IsSOTrx,
 		Timestamp shipDate, int shipFromC_Location_ID, int shipToC_Location_ID,
 		Timestamp billDate, int billFromC_Location_ID, int billToC_Location_ID, String trxName)

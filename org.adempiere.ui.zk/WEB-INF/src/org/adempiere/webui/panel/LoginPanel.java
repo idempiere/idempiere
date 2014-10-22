@@ -492,10 +492,6 @@ public class LoginPanel extends Window implements EventListener<Event>
     private void languageChanged(String langName)
     {
     	Language language = findLanguage(langName);
-
-    	//	Locales
-		Locale loc = language.getLocale();
-		Locale.setDefault(loc);
 		
 		if (email_login)
 			lblUserId.setValue(Msg.getMsg(language, "EMail"));

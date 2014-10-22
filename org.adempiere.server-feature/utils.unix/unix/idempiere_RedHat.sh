@@ -40,6 +40,7 @@ start () {
 	  return 1
     fi
     echo -n "Starting ADempiere ERP: "
+    cd $IDEMPIERE_HOME/utils
     source $ENVFILE 
     export LOGFILE=$IDEMPIERE_HOME/log/idempiere_`date +%Y%m%d%H%M%S`.log
     su $IDEMPIEREUSER -c "mkdir -p $IDEMPIERE_HOME/log"
@@ -81,6 +82,7 @@ stop () {
 	  return 1
     fi
     echo -n "Stopping iDempiere ERP: "
+    cd $IDEMPIERE_HOME/utils
     source $ENVFILE 
     echo "Trying direct kill with signal -15"
     # Adempiere didn't finish - try direct kill with signal 15, then signal 9

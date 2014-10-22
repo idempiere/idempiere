@@ -71,7 +71,7 @@ implements DocAction
 	
 	public void setC_Period_ID() 
 	{
-		MPeriod period = MPeriod.get(getCtx(), getDateAcct(), getAD_Org_ID());
+		MPeriod period = MPeriod.get(getCtx(), getDateAcct(), getAD_Org_ID(), get_TrxName());
 		if (period == null)
 		{
 			throw new AdempiereException("@NotFound@ @C_Period_ID@");

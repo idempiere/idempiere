@@ -32,7 +32,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20140903L;
 
     /** Standard Constructor */
     public X_AD_Column (Properties ctx, int AD_Column_ID, String trxName)
@@ -487,6 +487,8 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public static final String FKCONSTRAINTTYPE_Cascade = "C";
 	/** Set Null = S */
 	public static final String FKCONSTRAINTTYPE_SetNull = "S";
+	/** Model Cascade = M */
+	public static final String FKCONSTRAINTTYPE_ModelCascade = "M";
 	/** Set Constraint Type.
 		@param FKConstraintType Constraint Type	  */
 	public void setFKConstraintType (String FKConstraintType)

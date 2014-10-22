@@ -104,7 +104,7 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		menuController.create(tabPanel);
 		
 		tab = new Tab();
-		tab.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Document")));
+		tab.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"search")));
 		tabs.appendChild(tab);
 		tabPanel = new Tabpanel();
 		tabPanel.setSclass("global-search-tabpanel");

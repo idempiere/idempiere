@@ -60,6 +60,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
@@ -518,21 +519,20 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * IDEMPIERE-1970
 	 */
 	protected void readViewID(ResultSet rs, List<Object> data) throws SQLException {
-		if (infoProcessList == null || infoProcessList.length == 0){
+		if (infoProcessList == null || infoProcessList.length == 0) {
 			return;
 		}
-		
+
 		// with each process have viewID, read it form resultSet by name
 		for (MInfoProcess infoProcess : infoProcessList){
-			if (infoProcess.getAD_Column_ID() == 0){
+			if (infoProcess.getAD_InfoColumn_ID() <= 0)
 				continue;
-			}
 
-			String viewIDSql = infoProcess.getViewIDName();
-			String viewIDValue = rs.getString(viewIDSql);
-			if (rs.wasNull()){
+			MInfoColumn infocol = (MInfoColumn) infoProcess.getAD_InfoColumn();
+			String viewIDValue = rs.getString(infocol.getColumnName());
+			if (rs.wasNull()) {
 				data.add(null);
-			}else{
+			} else {
 				data.add(viewIDValue);
 			}
 		}
@@ -1511,7 +1511,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     			return index;
     		}
     		// just increase index when process is have ViewID column
-    		if (infoProcessList[i].getAD_Column_ID() > 0)
+    		if (infoProcessList[i].getAD_InfoColumn_ID() > 0)
     			index++;
     	}
     	return -1;

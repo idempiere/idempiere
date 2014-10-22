@@ -408,7 +408,7 @@ public class Allocation
 				// selection of payment row
 				if (((Boolean)payment.getValueAt(row, 0)).booleanValue())
 				{
-					applied = open.signum() > 0 ? open : BigDecimal.ZERO;   //  Open Amount
+					applied = open;   //  Open Amount
 					if (totalDiff.abs().compareTo(applied.abs()) < 0			// where less is available to allocate than open
 							&& totalDiff.signum() == -applied.signum() )    	// and the available amount has the opposite sign
 						applied = totalDiff.negate();						// reduce the amount applied to what's available
