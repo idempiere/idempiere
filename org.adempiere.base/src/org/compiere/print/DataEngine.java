@@ -173,9 +173,9 @@ public class DataEngine
 					String whereClause = rs.getString(4);
 					if (!Util.isEmpty(whereClause)) {
 						if (whereClause.indexOf("@") == -1) {
-							query.addRestriction(whereClause);
+							queryCopy.addRestriction(whereClause);
 						} else { // replace context variables
-							query.addRestriction(Env.parseContext(ctx, 0, whereClause.toString(), false, true));
+							queryCopy.addRestriction(Env.parseContext(ctx, 0, whereClause.toString(), false, true));
 						}
 					}
 				}
