@@ -535,13 +535,13 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         	} else {
         		ctxBeforeChangeRole = null;
         		SessionManager.logoutSession();
-        		wndLogin.loginCancelled();
+        		//wndLogin.loginCancelled();
         	}
         }
 		else if (ON_DEFER_LOGOUT.equals(event.getName()))
 		{
             SessionManager.logoutSession();
-            wndLogin.loginCancelled();
+            //wndLogin.loginCancelled();
 		}
     }
     
