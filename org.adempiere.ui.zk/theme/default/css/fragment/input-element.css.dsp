@@ -10,7 +10,9 @@
 .z-combobox-text-disabled {
 	background-color: #ECEAE4 !important;
 }
-
+.z-comboitem {
+	min-height:14px;
+}
 <%-- highlight focus form element --%>
 input:focus, textarea:focus, .z-combobox-input:focus, z-datebox-input:focus {
 	border: 1px solid #0000ff;
