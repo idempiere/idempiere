@@ -3014,6 +3014,8 @@ public abstract class PO
 			{
 				if (m_KeyColumns[i].endsWith("_ID"))
 					sb.append(m_IDs[i]);
+				else if(m_IDs[i] instanceof Timestamp)
+					sb.append(DB.TO_DATE((Timestamp)m_IDs[i], false));
 				else {
 					sb.append("'");
 					if (m_IDs[i] instanceof Boolean) {
