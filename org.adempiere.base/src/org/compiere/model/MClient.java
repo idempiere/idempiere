@@ -447,9 +447,10 @@ public class MClient extends X_AD_Client
 			return msgreturn.toString();
 		}	
 		//
-		StringBuilder msgce = new StringBuilder("iDempiere EMail Test: ").append(toString());
+		String systemName = MSystem.get(getCtx()).getName();
+		StringBuilder msgce = new StringBuilder(systemName).append(" EMail Test: ").append(toString());
 		EMail email = createEMail (getRequestEMail(),
-			"iDempiere EMail Test",msgce.toString());
+				systemName + " EMail Test",msgce.toString());
 		if (email == null){
 			StringBuilder msgreturn = new StringBuilder("Could not create EMail: ").append(getName());
 			return msgreturn.toString();
