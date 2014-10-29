@@ -35,6 +35,7 @@ import javax.swing.event.EventListenerList;
 import org.adempiere.base.Core;
 import org.compiere.db.CConnection;
 import org.compiere.model.MClient;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ServerStateChangeEvent;
@@ -153,6 +154,10 @@ public final class Adempiere
 	 */
 	public static String getVersion()
 	{
+		String version = MSysConfig.getValue(MSysConfig.APPLICATION_MAIN_VERSION, null);
+		if(version != null)
+			return version;
+
 		IProduct product = Platform.getProduct();
 		if (product != null) {
 			Bundle bundle = product.getDefiningBundle();
@@ -170,9 +175,40 @@ public final class Adempiere
 		return "Unknown";
 	}   //  getVersion
 
+	public static boolean isVersionShown(){ 
+		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_MAIN_VERSION_SHOWN, true);
+	}
+
+	public static boolean isDBVersionShown(){
+		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
+		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_DATABASE_VERSION_SHOWN, defaultVal);
+	}
+
+	public static boolean isVendorShown(){
+		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_IMPLEMENTATION_VENDOR_SHOWN, true);
+	}
+
+	public static boolean isJVMShown(){
+		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
+		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_JVM_VERSION_SHOWN, defaultVal);
+	}
+
+	public static boolean isOSShown(){
+		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
+		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_OS_INFO_SHOWN, defaultVal);
+	}
+
+	public static boolean isHostShown() 
+	{
+		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
+		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_HOST_SHOWN, defaultVal);
+	}
+
 	public static String getDatabaseVersion() 
 	{
-		return DB.getSQLValueString(null, "select lastmigrationscriptapplied from ad_system");
+//		return DB.getSQLValueString(null, "select lastmigrationscriptapplied from ad_system");
+		return MSysConfig.getValue(MSysConfig.APPLICATION_DATABASE_VERSION,
+				DB.getSQLValueString(null, "select lastmigrationscriptapplied from ad_system"));
 	}
 	
 	/**
@@ -238,6 +274,11 @@ public final class Adempiere
 	 */
 	public static String getImplementationVendor()
 	{
+		if(DB.isConnected()){
+			String vendor = MSysConfig.getValue(MSysConfig.APPLICATION_IMPLEMENTATION_VENDOR, null);
+			if(vendor != null)
+				return vendor;
+		}
 		if (s_ImplementationVendor == null)
 			setPackageInfo();
 		return s_ImplementationVendor;

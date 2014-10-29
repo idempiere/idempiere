@@ -57,7 +57,8 @@ public class ExecuteProcessCommand extends ServerResource {
 		String procedureName = (String) entity.get("procedureName");
 		
 		MRole role = MRole.get(context, Env.getAD_Role_ID(context), Env.getAD_User_ID(context), false);
-		if (!role.getProcessAccess(pi.getAD_Process_ID())) {
+    	Boolean access = role.getProcessAccess(pi.getAD_Process_ID());
+    	if (access == null || !access.booleanValue()) {
 			throw new AdempiereException("Access denied.");
 		}
 		

@@ -61,7 +61,7 @@ BEGIN
             FROM (
                 SELECT C_ConversionType_ID 
                 FROM C_ConversionType 
-                WHERE IsDefault='Y'
+                WHERE IsActive='Y' AND IsDefault='Y'
                     AND AD_Client_ID IN (0,p_Client_ID)
                 ORDER BY AD_Client_ID DESC
             )
@@ -137,7 +137,7 @@ BEGIN
 		CURSOR	CUR_Rate	IS
 			SELECT	MultiplyRate
 			FROM	C_Conversion_Rate
-			WHERE	C_Currency_ID=v_CurrencyFrom AND C_Currency_ID_To=v_CurrencyTo
+			WHERE	IsActive='Y' AND C_Currency_ID=v_CurrencyFrom AND C_Currency_ID_To=v_CurrencyTo
 			  AND	C_ConversionType_ID=v_ConversionType_ID
 			  AND	v_ConvDate BETWEEN ValidFrom AND ValidTo
 			  AND	AD_Client_ID IN (0,p_Client_ID) AND AD_Org_ID IN (0,p_Org_ID)

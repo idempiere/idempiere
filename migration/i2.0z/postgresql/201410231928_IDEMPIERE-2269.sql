@@ -1,3 +1,16 @@
+-- Oct 23, 2014 7:27:09 PM COT
+-- IDEMPIERE-2250 Charge on bank transfer not needed
+DELETE FROM C_Conversion_Rate WHERE C_Conversion_Rate_ID=117
+;
+
+-- Oct 23, 2014 7:27:11 PM COT
+DELETE FROM C_Conversion_Rate WHERE C_Conversion_Rate_ID=120
+;
+
+-- Oct 23, 2014 7:27:14 PM COT
+DELETE FROM C_Conversion_Rate WHERE C_Conversion_Rate_ID=119
+;
+
 CREATE OR REPLACE FUNCTION currencyRate(
 	p_CurFrom_ID		NUMERIC,
 	p_CurTo_ID		NUMERIC,
@@ -176,4 +189,7 @@ EXCEPTION WHEN OTHERS THEN
 END;
 
 $body$ LANGUAGE plpgsql STABLE;
+
+SELECT register_migration_script('201410231928_IDEMPIERE-2269.sql') FROM dual
+;
 

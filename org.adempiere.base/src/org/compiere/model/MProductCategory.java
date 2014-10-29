@@ -52,10 +52,13 @@ public class MProductCategory extends X_M_Product_Category
 	public static MProductCategory get (Properties ctx, int M_Product_Category_ID)
 	{
 		Integer ii = new Integer (M_Product_Category_ID);
-		MProductCategory pc = (MProductCategory)s_cache.get(ii);
-		if (pc == null)
-			pc = new MProductCategory (ctx, M_Product_Category_ID, null);
-		return pc;
+		MProductCategory retValue = (MProductCategory)s_cache.get(ii);
+		if (retValue != null)
+			return retValue;
+		retValue = new MProductCategory (ctx, M_Product_Category_ID, null);
+		if (retValue.get_ID () != 0)
+			s_cache.put (M_Product_Category_ID, retValue);
+		return retValue;
 	}	//	get
 	
 	/**
