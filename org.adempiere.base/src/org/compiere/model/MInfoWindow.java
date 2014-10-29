@@ -170,8 +170,8 @@ public class MInfoWindow extends X_AD_InfoWindow
 		Iterator<MInfoProcess> iterator = lsInfoProcess.iterator();
 		while (iterator.hasNext()){
 			MInfoProcess testInfoProcess = iterator.next();
-			// need more review
-			if (MRole.getDefault().getProcessAccess(testInfoProcess.getAD_Process_ID()) == null){
+			Boolean access = MRole.getDefault().getProcessAccess(testInfoProcess.getAD_Process_ID());
+			if (access == null || !access.booleanValue()) {
 				iterator.remove();
 			}
 		}

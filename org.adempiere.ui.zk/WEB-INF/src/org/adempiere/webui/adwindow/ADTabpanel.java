@@ -62,6 +62,7 @@ import org.compiere.model.GridWindow;
 import org.compiere.model.I_AD_Preference;
 import org.compiere.model.MLookup;
 import org.compiere.model.MPreference;
+import org.compiere.model.MRole;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButton;
@@ -632,8 +633,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		//get extra toolbar process buttons
         MToolBarButton[] mToolbarButtons = MToolBarButton.getProcessButtonOfTab(gridTab.getAD_Tab_ID(), null);
         for(MToolBarButton mToolbarButton : mToolbarButtons) {
-        	ToolbarProcessButton toolbarProcessButton = new ToolbarProcessButton(mToolbarButton, this, windowPanel, windowNo);
-        	toolbarProcessButtons.add(toolbarProcessButton);
+        	Boolean access = MRole.getDefault().getProcessAccess(mToolbarButton.getAD_Process_ID());
+        	if (access != null && access.booleanValue()) {
+        		ToolbarProcessButton toolbarProcessButton = new ToolbarProcessButton(mToolbarButton, this, windowPanel, windowNo);
+        		toolbarProcessButtons.add(toolbarProcessButton);
+        	}
         }
         
         if (toolbarProcessButtons.size() > 0) {
