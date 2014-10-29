@@ -616,13 +616,9 @@ public class ModelInterfaceGenerator
 		if ("D".equals(entityType))
 			return "org.compiere.model";
 
-		for (MEntityType entity : MEntityType.getEntityTypes(Env.getCtx()))
-		{
-			if (entity.getEntityType().equals(entityType))
-			{
-				return entity.getModelPackage();
-			}
-		}
+		MEntityType entity = MEntityType.get(Env.getCtx(), entityType);
+		if (entity != null)
+			return entity.getModelPackage();
 		return null;
 	}
 
