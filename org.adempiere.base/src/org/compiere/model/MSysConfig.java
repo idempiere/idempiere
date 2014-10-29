@@ -42,7 +42,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1418216769489567455L;
+	private static final long serialVersionUID = -5622739157380126505L;
 
 	public static final String ADDRESS_SAVE_REQUEST_RESPONSE_LOG = "ADDRESS_SAVE_REQUEST_RESPONSE_LOG";
     public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
@@ -50,6 +50,15 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ALLOW_APPLY_PAYMENT_TO_CREDITMEMO = "ALLOW_APPLY_PAYMENT_TO_CREDITMEMO";
     public static final String ALLOW_OVER_APPLIED_PAYMENT = "ALLOW_OVER_APPLIED_PAYMENT";
     public static final String ALogin_ShowOneRole = "ALogin_ShowOneRole";
+    public static final String APPLICATION_DATABASE_VERSION = "APPLICATION_DATABASE_VERSION";
+    public static final String APPLICATION_DATABASE_VERSION_SHOWN = "APPLICATION_DATABASE_VERSION_SHOWN";
+    public static final String APPLICATION_HOST_SHOWN = "APPLICATION_HOST_SHOWN";   
+    public static final String APPLICATION_IMPLEMENTATION_VENDOR = "APPLICATION_IMPLEMENTATION_VENDOR";
+    public static final String APPLICATION_IMPLEMENTATION_VENDOR_SHOWN = "APPLICATION_IMPLEMENTATION_VENDOR_SHOWN";
+    public static final String APPLICATION_JVM_VERSION_SHOWN = "APPLICATION_JVM_VERSION_SHOWN";
+    public static final String APPLICATION_MAIN_VERSION = "APPLICATION_MAIN_VERSION";
+    public static final String APPLICATION_MAIN_VERSION_SHOWN = "APPLICATION_MAIN_VERSION_SHOWN";
+    public static final String APPLICATION_OS_INFO_SHOWN = "APPLICATION_OS_INFO_SHOWN";
     public static final String BACKGROUND_JOB_ALLOWED = "BACKGROUND_JOB_ALLOWED";
     public static final String BACKGROUND_JOB_BY_DEFAULT = "BACKGROUND_JOB_BY_DEFAULT";
     public static final String BACKGROUND_JOB_MAX_IN_SYSTEM = "BACKGROUND_JOB_MAX_IN_SYSTEM";
