@@ -718,7 +718,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		lsPart.add(startString);
 		
 		// no image in sign return origon
-		if (lsPart.size() < 0){
+		if (lsPart.size() == 0 || lsImgSrc.size() == 0){
 			return origonSign;
 		}
 		
