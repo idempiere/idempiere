@@ -43,7 +43,7 @@
          version="0.0.0"/>
 
    <requires>
-      <import feature="org.adempiere.base" version="2.0.0" match="compatible"/>
+      <import feature="org.adempiere.base" version="2.1.0" match="compatible"/>
    </requires>
 
    <plugin
@@ -150,7 +150,7 @@
          id="org.adempiere.tomcat.config"
          download-size="0"
          install-size="0"
-         version="2.0.0"
+         version="2.1.0"
          fragment="true"/>
 
    <plugin
