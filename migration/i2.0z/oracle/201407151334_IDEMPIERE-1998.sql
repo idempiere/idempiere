@@ -1,4 +1,8 @@
 -- IDEMPIERE-1998 for backward compatibility insert the creator as scheduler recipient
+INSERT INTO AD_SchedulerRecipient(ad_schedulerrecipient_id, ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby, ad_scheduler_id, ad_user_id, ad_role_id, ad_schedulerrecipient_uu)
+  VALUES(200000, 0, 0, 'Y', to_date('20140715133400','yyyymmddHH24MISS'), 100, to_date('20140715133400','yyyymmddHH24MISS'), 100, 100, 0, NULL, '2c529b16-06c0-4cb5-85fb-fbb81ab94238')
+;
+
 insert 
 into ad_schedulerrecipient 
     (
