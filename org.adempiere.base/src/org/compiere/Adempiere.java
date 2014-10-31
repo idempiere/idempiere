@@ -35,6 +35,7 @@ import javax.swing.event.EventListenerList;
 import org.adempiere.base.Core;
 import org.compiere.db.CConnection;
 import org.compiere.model.MClient;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ServerStateChangeEvent;
@@ -68,11 +69,11 @@ public final class Adempiere
 	/** Main Version String         */
 	// Conventions for naming second number is even for stable, and odd for unstable
 	// the releases will have a suffix (a) for alpha - (b) for beta - (t) for trunk - (s) for stable - and (LTS) for long term support
-	static public String	MAIN_VERSION	= "Release 2.0";
+	static public String	MAIN_VERSION	= "Release 2.1";
 	/** Detail Version as date      Used for Client/Server		*/
-	static public String	DATE_VERSION	= "2013-10-31";
+	static public String	DATE_VERSION	= "2014-10-31";
 	/** Database Version as date    Compared with AD_System		*/
-	static public String	DB_VERSION		= "2013-10-31";
+	static public String	DB_VERSION		= "2014-10-31";
 
 	/** Product Name            */
 	static public final String	NAME 			= "iDempiere\u00AE";
@@ -153,6 +154,10 @@ public final class Adempiere
 	 */
 	public static String getVersion()
 	{
+		String version = MSysConfig.getValue(MSysConfig.APPLICATION_MAIN_VERSION, null);
+		if(version != null)
+			return version;
+
 		IProduct product = Platform.getProduct();
 		if (product != null) {
 			Bundle bundle = product.getDefiningBundle();
@@ -170,9 +175,40 @@ public final class Adempiere
 		return "Unknown";
 	}   //  getVersion
 
+	public static boolean isVersionShown(){ 
+		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_MAIN_VERSION_SHOWN, true);
+	}
+
+	public static boolean isDBVersionShown(){
+		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
+		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_DATABASE_VERSION_SHOWN, defaultVal);
+	}
+
+	public static boolean isVendorShown(){
+		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_IMPLEMENTATION_VENDOR_SHOWN, true);
+	}
+
+	public static boolean isJVMShown(){
+		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
+		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_JVM_VERSION_SHOWN, defaultVal);
+	}
+
+	public static boolean isOSShown(){
+		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
+		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_OS_INFO_SHOWN, defaultVal);
+	}
+
+	public static boolean isHostShown() 
+	{
+		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
+		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_HOST_SHOWN, defaultVal);
+	}
+
 	public static String getDatabaseVersion() 
 	{
-		return DB.getSQLValueString(null, "select lastmigrationscriptapplied from ad_system");
+//		return DB.getSQLValueString(null, "select lastmigrationscriptapplied from ad_system");
+		return MSysConfig.getValue(MSysConfig.APPLICATION_DATABASE_VERSION,
+				DB.getSQLValueString(null, "select lastmigrationscriptapplied from ad_system"));
 	}
 	
 	/**
@@ -238,6 +274,11 @@ public final class Adempiere
 	 */
 	public static String getImplementationVendor()
 	{
+		if(DB.isConnected()){
+			String vendor = MSysConfig.getValue(MSysConfig.APPLICATION_IMPLEMENTATION_VENDOR, null);
+			if(vendor != null)
+				return vendor;
+		}
 		if (s_ImplementationVendor == null)
 			setPackageInfo();
 		return s_ImplementationVendor;

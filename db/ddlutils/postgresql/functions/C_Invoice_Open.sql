@@ -116,5 +116,6 @@ BEGIN
 END;
 
 $BODY$
-LANGUAGE 'plpgsql'
+LANGUAGE 'plpgsql' STABLE
 ;
+

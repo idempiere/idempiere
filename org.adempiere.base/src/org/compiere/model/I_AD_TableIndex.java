@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_TableIndex
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_AD_TableIndex 
 {
@@ -189,6 +189,19 @@ public interface I_AD_TableIndex
 	/** Get Create Constraint	  */
 	public boolean isCreateConstraint();
 
+    /** Column name IsKey */
+    public static final String COLUMNNAME_IsKey = "IsKey";
+
+	/** Set Key column.
+	  * This column is the key in this table
+	  */
+	public void setIsKey (boolean IsKey);
+
+	/** Get Key column.
+	  * This column is the key in this table
+	  */
+	public boolean isKey();
+
     /** Column name IsUnique */
     public static final String COLUMNNAME_IsUnique = "IsUnique";
 
@@ -219,6 +232,15 @@ public interface I_AD_TableIndex
 
 	/** Get Process Now	  */
 	public boolean isProcessing();
+
+    /** Column name TableIndexDrop */
+    public static final String COLUMNNAME_TableIndexDrop = "TableIndexDrop";
+
+	/** Set Drop table index	  */
+	public void setTableIndexDrop (String TableIndexDrop);
+
+	/** Get Drop table index	  */
+	public String getTableIndexDrop();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

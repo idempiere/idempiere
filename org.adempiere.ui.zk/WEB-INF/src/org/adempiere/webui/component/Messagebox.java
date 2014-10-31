@@ -35,6 +35,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
+import org.zkoss.zul.Vbox;
 
 /**
 * Messagebox : Replaces ZK's Messagebox
@@ -46,9 +47,10 @@ import org.zkoss.zul.Image;
 public class Messagebox extends Window implements EventListener<Event>
 {	
 	/**
-	 * generated serial version ID
+	 * 
 	 */
-	private static final long serialVersionUID = -4957498533838144942L;
+	private static final long serialVersionUID = 8928526331932742124L;
+
 	private static final String MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 350pt; min-width: 230pt; max-width: 450pt;";	
 	private String msg = new String("");
 	private String imgSrc = new String("");
@@ -62,11 +64,14 @@ public class Messagebox extends Window implements EventListener<Event>
 	private Button btnAbort;
 	private Button btnRetry;
 	private Button btnIgnore;
+	private Textbox txtInput = new Textbox();;
 
 	private Image img = new Image();
 
 	private int returnValue;
-	private Callback<Integer> callback;
+	@SuppressWarnings("rawtypes")
+	private Callback callback;
+	private boolean isInput = false;
 
 	/** A OK button. */
 	public static final int OK = 0x0001;
@@ -88,6 +93,9 @@ public class Messagebox extends Window implements EventListener<Event>
 
 	/** A IGNORE button. */
 	public static final int IGNORE = 0x0400;
+	
+	/** A INPUT Textfield*/
+	public static final int INPUT = 0x0800;
 
 	/** A symbol consisting of a question mark in a circle. */
 	public static final String QUESTION = "~./zul/img/msgbox/question-btn.png";
@@ -155,6 +163,14 @@ public class Messagebox extends Window implements EventListener<Event>
 		pnlMessage.setStyle(MESSAGE_PANEL_STYLE);
 		pnlMessage.appendChild(lblMsg);
 		
+		Panel pnlInput= new Panel();
+		pnlInput.setStyle(MESSAGE_PANEL_STYLE);
+		pnlInput.appendChild(txtInput);
+
+		Vbox pnlText = new Vbox();
+		pnlText.appendChild(pnlMessage);
+		pnlText.appendChild(pnlInput);
+
 		Hbox pnlImage = new Hbox();
 
 		img.setSrc(imgSrc);
@@ -168,7 +184,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		north.setAlign("center");
 		this.appendChild(north);		
 		north.appendChild(pnlImage);
-		north.appendChild(pnlMessage);
+		north.appendChild(pnlText);
 		north.setSclass("dialog-content");
 
 		Hbox pnlButtons = new Hbox();
@@ -201,7 +217,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		return show(message, title, buttons, icon, callback, false);
 	}
 	
-	public int show(String message, String title, int buttons, String icon, Callback<Integer> callback, boolean modal)
+	public int show(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal)
 	{
 		this.msg = message;
 		this.imgSrc = icon;
@@ -216,6 +232,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		btnRetry.setVisible(false);
 		btnAbort.setVisible(false);
 		btnIgnore.setVisible(false);
+		txtInput.setVisible(false);
 
 		if ((buttons & OK) != 0)
 			btnOk.setVisible(true);
@@ -237,6 +254,11 @@ public class Messagebox extends Window implements EventListener<Event>
 
 		if ((buttons & IGNORE) != 0)
 			btnIgnore.setVisible(true);
+
+		if ((buttons & INPUT) != 0) {
+			txtInput.setVisible(true);
+			isInput = true;
+		}
 
 		this.setTitle(title);
 		this.setPosition("center");
@@ -274,7 +296,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		return showDialog(message, title, buttons, icon, callback, false);
 	}
 	
-	public static int showDialog(String message, String title, int buttons, String icon, Callback<Integer> callback, boolean modal) 
+	public static int showDialog(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal) 
 	{
 		Messagebox msg = new Messagebox();
 
@@ -318,12 +340,15 @@ public class Messagebox extends Window implements EventListener<Event>
 		this.detach();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onPageDetached(Page page) {
 		super.onPageDetached(page);
-		if (callback != null)
+		if (callback != null && !isInput)
 		{
 			callback.onCallback(returnValue);
+		} else if (callback != null && isInput) {
+			callback.onCallback(txtInput.getText());
 		}
 	}
 }

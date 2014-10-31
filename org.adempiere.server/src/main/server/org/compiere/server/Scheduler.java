@@ -22,7 +22,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -39,7 +43,6 @@ import org.compiere.model.MScheduler;
 import org.compiere.model.MSchedulerLog;
 import org.compiere.model.MSchedulerPara;
 import org.compiere.model.MUser;
-import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.process.ServerProcessCtl;
@@ -157,7 +160,8 @@ public class Scheduler extends AdempiereServer
 	{
 		if (log.isLoggable(Level.INFO)) log.info(process.toString());
 		
-		boolean isReport = (process.isReport() || process.getAD_ReportView_ID() > 0);
+		boolean isReport = (process.isReport() || process.getAD_ReportView_ID() > 0 || process.getJasperReport() != null || process.getAD_PrintFormat_ID() > 0);
+		String schedulerName = Env.parseContext(m_schedulerctx, -1, m_model.getName(), false, true);
 		
 		//	Process (see also MWFActivity.performWork
 		int AD_Table_ID = m_model.getAD_Table_ID();
@@ -170,9 +174,12 @@ public class Scheduler extends AdempiereServer
 		pi.setAD_User_ID(getAD_User_ID());
 		pi.setAD_Client_ID(m_model.getAD_Client_ID());
 		pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
+		pi.setIsBatch(true);
+		pi.setPrintPreview(true);
 		MUser from = new MUser(getCtx(), pi.getAD_User_ID(), null);
 		
-		if ( !process.processIt(pi, m_trx) ) // note, this call close the transaction, don't use m_trx below
+		ServerProcessCtl.process(pi, m_trx);
+		if ( pi.isError() ) // note, this call close the transaction, don't use m_trx below
 		{
 			// notify supervisor if error
 			int supervisor = m_model.getSupervisor_ID();
@@ -188,16 +195,23 @@ public class Scheduler extends AdempiereServer
 				if (email)
 				{
 					MClient client = MClient.get(m_model.getCtx(), m_model.getAD_Client_ID());
-					client.sendEMail(from, user, process.getName(), pi.getSummary() + " " + pi.getLogInfo(), null);
+					client.sendEMail(from, user, schedulerName, pi.getSummary() + " " + pi.getLogInfo(), null);
 				}
 				if (notice) {
 					int AD_Message_ID = 442; // HARDCODED ProcessRunError
 					MNote note = new MNote(getCtx(), AD_Message_ID, supervisor, null);
 					note.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
-					note.setTextMsg(pi.getSummary());
-					//note.setDescription();
+					note.setTextMsg(schedulerName+"\n"+pi.getSummary());
 					note.setRecord(MPInstance.Table_ID, pi.getAD_PInstance_ID());
 					note.saveEx();
+					String log = pi.getLogInfo(true);
+					if (log != null &&  log.trim().length() > 0) {
+						MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), null);
+						attachment.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
+						attachment.setTextMsg(schedulerName);
+						attachment.addEntry("ProcessLog.html", log.getBytes("UTF-8"));
+						attachment.saveEx();
+					}
 				}
 			}
 		}
@@ -207,38 +221,21 @@ public class Scheduler extends AdempiereServer
 		if (userIDs.length > 0) 
 		{
 			ProcessInfoUtil.setLogFromDB(pi);
+			List<File> fileList = new ArrayList<File>();
+			if (isReport) {
+				fileList.add(pi.getPDFReport());
+			}
+			if (pi.isExport() && pi.getExportFile() != null)
+			{
+				fileList.add(pi.getExportFile());
+			}
+			
 			for (int i = 0; i < userIDs.length; i++)
 			{
 				MUser user = new MUser(getCtx(), userIDs[i].intValue(), null);
 				boolean email = user.isNotificationEMail();
 				boolean notice = user.isNotificationNote();
-				
-				File report = null;
-				if (isReport) {
-					//	Report
-					ReportEngine re = ReportEngine.get(m_schedulerctx, pi);
-					
-					if(process.getJasperReport() != null 
-							|| (re != null && re.getPrintFormat().getJasperProcess_ID() > 0))
-					{
-						// We have a Jasper Print Format
-						// ==============================
-						ProcessInfo jasperpi = new ProcessInfo ("", process.getAD_Process_ID());
-						jasperpi.setIsBatch(true);
-						ServerProcessCtl.process(jasperpi, null);
-						report = jasperpi.getPDFReport();
-					}
-					else
-					{
-						// Standard Print Format (Non-Jasper)
-						// ==================================
-						if (re == null)
-							return "Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
-							+ " - " + process.getName();
-						report = re.getPDF();
-					}
-				}
-				
+								
 				if (notice) {
 					int AD_Message_ID = 441; // ProcessOK
 					if (isReport)
@@ -246,33 +243,46 @@ public class Scheduler extends AdempiereServer
 					MNote note = new MNote(getCtx(), AD_Message_ID, userIDs[i].intValue(), null);
 					note.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
 					if (isReport) {
-						note.setTextMsg(m_model.getName());
+						note.setTextMsg(schedulerName);
 						note.setDescription(m_model.getDescription());
 						note.setRecord(AD_Table_ID, Record_ID);
 					} else {
-						note.setTextMsg(pi.getSummary());
-						// note.setDescription();
+						note.setTextMsg(schedulerName + "\n" + pi.getSummary());
 						note.setRecord(MPInstance.Table_ID, pi.getAD_PInstance_ID());
 					}
 					if (note.save()) {
-						if (isReport) {
+						MAttachment attachment = null;
+						if (fileList != null && !fileList.isEmpty()) {
 							//	Attachment
-							MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), null);
+							attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), null);
 							attachment.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
-							attachment.addEntry(report);
-							attachment.setTextMsg(m_model.getName());
+							attachment.setTextMsg(schedulerName);
+							for (File entry : fileList)
+								attachment.addEntry(entry);
+							
+						} 
+						String log = pi.getLogInfo(true);
+						if (log != null &&  log.trim().length() > 0) {
+							if (attachment == null) {
+								attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), null);
+								attachment.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
+								attachment.setTextMsg(schedulerName);
+							}
+							attachment.addEntry("ProcessLog.html", log.getBytes("UTF-8"));
 							attachment.saveEx();
 						}
+						if (attachment != null)
+							attachment.saveEx();
 					}
 				}
 				
 				if (email)
 				{
 					MClient client = MClient.get(m_model.getCtx(), m_model.getAD_Client_ID());
-					if (isReport) {
-						client.sendEMail(from, user, m_model.getName(), m_model.getDescription(), report);
+					if (fileList != null && !fileList.isEmpty()) {
+						client.sendEMailAttachments(from, user, schedulerName, m_model.getDescription(), fileList);
 					} else {
-						client.sendEMail(from, user, process.getName(), pi.getSummary() + " " + pi.getLogInfo(), null);
+						client.sendEMail(from, user, schedulerName, pi.getSummary() + " " + pi.getLogInfo(), null);
 					}
 				}
 				
@@ -334,23 +344,41 @@ public class Scheduler extends AdempiereServer
 						if (DisplayType.isNumeric(sPara.getDisplayType())
 							|| DisplayType.isID(sPara.getDisplayType()))
 						{
+							DecimalFormat decimalFormat = DisplayType.getNumberFormat(sPara.getDisplayType());
 							BigDecimal bd = toBigDecimal(value);
-							iPara.setP_Number(bd);
+							iPara.setP_Number(bd);							
 							if (toValue != null)
 							{
 								bd = toBigDecimal(toValue);
 								iPara.setP_Number_To(bd);
+							}
+							if (Util.isEmpty(paraDesc)) 
+							{
+								String info = decimalFormat.format(iPara.getP_Number());
+								if (iPara.getP_Number_To() != null)
+									info = info + " - " + decimalFormat.format(iPara.getP_Number_To());
+								iPara.setInfo(info);
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable + " (=" + bd + "=)");
 						}
 						else if (DisplayType.isDate(sPara.getDisplayType()))
 						{
+							SimpleDateFormat dateFormat = DisplayType.getDateFormat(sPara.getDisplayType());
 							Timestamp ts = toTimestamp(value);
 							iPara.setP_Date(ts);
 							if (toValue != null) {
 								ts = toTimestamp(toValue);
 								iPara.setP_Date_To(ts);
+							}
+							if (Util.isEmpty(paraDesc)) 
+							{
+								String info = dateFormat.format(iPara.getP_Date());
+								if (iPara.getP_Date_To() != null)
+								{
+									info = info + " - " + dateFormat.format(iPara.getP_Date_To());
+								}
+								iPara.setInfo(info);
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable + " (=" + ts + "=)");
@@ -361,6 +389,15 @@ public class Scheduler extends AdempiereServer
 							if (toValue != null) 
 							{
 								iPara.setP_String_To(toValue.toString());
+							}
+							if (Util.isEmpty(paraDesc))
+							{
+								String info = iPara.getP_String();
+								if (iPara.getP_String_To() != null)
+								{
+									info = info + " - " + iPara.getP_String_To();
+								}
+								iPara.setInfo(info);
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable
@@ -453,6 +490,7 @@ public class Scheduler extends AdempiereServer
 					+ " - cannot evaluate=" + variable);
 				return null;
 			}
+			String tail=index < (columnName.length()-1) ? columnName.substring(index+1) : null;
 			columnName = columnName.substring(0, index);
 			//	try Env
 			String env = Env.getContext(m_schedulerctx, columnName);
@@ -467,6 +505,47 @@ public class Scheduler extends AdempiereServer
 			}
 			else
 				value = env;
+			
+			if (tail != null && columnName.equals("#Date"))
+			{
+				tail = tail.trim();
+				if (tail.startsWith("-") || tail.startsWith("+"))
+				{
+					boolean negate = tail.startsWith("-");
+					int type = Calendar.DATE;
+					tail = tail.substring(1);
+					if (tail.endsWith("d")) 
+					{
+						tail = tail.substring(0, tail.length()-1);
+					}
+					else if (tail.endsWith("m"))
+					{
+						type = Calendar.MONTH;
+						tail = tail.substring(0, tail.length()-1);
+					}
+					else if (tail.endsWith("y"))
+					{
+						type = Calendar.YEAR;
+						tail = tail.substring(0, tail.length()-1);
+					}
+					
+					int toApply = 0;
+					try
+					{
+						toApply = Integer.parseInt(tail);
+					} catch(Exception e){}
+					if (toApply > 0)
+					{
+						if (negate) toApply = toApply * -1;
+						Timestamp ts = toTimestamp(value);
+						Calendar cal = Calendar.getInstance();
+						cal.setTimeInMillis(ts.getTime());
+						cal.add(type, toApply);				
+						value = new Timestamp(cal.getTimeInMillis());
+					}
+				}
+				
+			}
 		}	//	@variable@
 		return value;
 	}

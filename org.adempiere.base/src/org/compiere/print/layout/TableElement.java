@@ -29,7 +29,6 @@ import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
@@ -40,9 +39,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
-
-import net.sourceforge.barbecue.Barcode;
-import net.sourceforge.barbecue.output.OutputException;
 
 import org.compiere.model.MQuery;
 import org.compiere.print.MPrintFormatItem;
@@ -1477,34 +1473,8 @@ public class TableElement extends PrintElement
 					}
 					else if (printItems[index] instanceof BarcodeElement)
 					{
-						try {
-							Barcode barcode = ((BarcodeElement)printItems[index]).getBarcode();
-							if ( barcode != null )
-							{
-								double scale = ((BarcodeElement)printItems[index]).getScaleFactor();
-								if ( scale != 1.0 )
-								{
-									int w = barcode.getWidth();
-									int h = barcode.getHeight();
-
-									// draw barcode to buffer
-									BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-									Graphics2D temp = (Graphics2D) image.getGraphics();
-									barcode.draw(temp, 0, 0);
-
-									// scale barcode and paint
-									AffineTransform transform = new AffineTransform();
-									transform.translate(curX,penY);
-									transform.scale(scale, scale);
-									g2D.drawImage(image, transform, this);
-								}
-								else
-								{
-									barcode.draw(g2D, curX, (int)penY);
-								}
-							}
-						} catch (OutputException e) {
-						}
+						BarcodeElement barcodeElement = (BarcodeElement)printItems[index]; 
+						barcodeElement.paint(g2D, curX, (int)penY);
 					}
 					else if (printItems[index] instanceof Boolean)
 					{

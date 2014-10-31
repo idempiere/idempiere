@@ -295,5 +295,9 @@ public class MAttachmentEntry
 			return null;
 		return new ByteArrayInputStream(m_data);
 	}	//	getInputStream
+
+	public void setIndex(int index) {
+		m_index = index;
+	}
 	
 }	//	MAttachmentItem

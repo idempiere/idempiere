@@ -25,9 +25,11 @@ import org.adempiere.webui.LayoutUtils;
  */
 public class ToolBarButton extends org.zkoss.zul.Toolbarbutton
 {
-    
-    private static final long serialVersionUID = 0L;
-    
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1214319982911389339L;
+
     private String name;
     
     private boolean pressed; // Elaine 2008/12/09

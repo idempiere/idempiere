@@ -389,8 +389,20 @@ public class MMovement extends X_M_Movement implements DocAction
 					&& product.isStocked() )
 			{
 				//Ignore the Material Policy when is Reverse Correction
-				if(!isReversal())
-					checkMaterialPolicy(line);
+				if(!isReversal()){
+					BigDecimal qtyOnLineMA = MMovementLineMA.getManualQty(line.getM_MovementLine_ID(), get_TrxName());
+					BigDecimal movementQty = line.getMovementQty();
+
+					if(qtyOnLineMA.compareTo(movementQty)>0)
+					{
+						// More then line qty on attribute tab for line 10
+						m_processMsg = "@Over_Qty_On_Attribute_Tab@ " + line.getLine();
+						return DOCSTATUS_Invalid;
+					}
+					
+					checkMaterialPolicy(line,movementQty.subtract(qtyOnLineMA));
+				}
+					
 
 				if (line.getM_AttributeSetInstance_ID() == 0)
 				{
@@ -548,23 +560,27 @@ public class MMovement extends X_M_Movement implements DocAction
 	 * 	Check Material Policy
 	 * 	Sets line ASI
 	 */
-	private void checkMaterialPolicy(MMovementLine line)
+	private void checkMaterialPolicy(MMovementLine line,BigDecimal qtyToDeliver)
 	{
+		
 		int no = MMovementLineMA.deleteMovementLineMA(line.getM_MovementLine_ID(), get_TrxName());
 		if (no > 0)
 			if (log.isLoggable(Level.CONFIG)) log.config("Delete old #" + no);
+
+		if(Env.ZERO.compareTo(qtyToDeliver)==0)
+			return;
 		
 		boolean needSave = false;
 
 		//	Attribute Set Instance
 		if (line.getM_AttributeSetInstance_ID() == 0)
 		{
+						
 			MProduct product = MProduct.get(getCtx(), line.getM_Product_ID());
 			String MMPolicy = product.getMMPolicy();
 			MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), 0, line.getM_Product_ID(), 0, 
 					null, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, line.getM_Locator_ID(), get_TrxName());
 
-			BigDecimal qtyToDeliver = line.getMovementQty();
 
 			for (MStorageOnHand storage: storages)
 			{
@@ -572,7 +588,7 @@ public class MMovement extends X_M_Movement implements DocAction
 				{
 					MMovementLineMA ma = new MMovementLineMA (line, 
 							storage.getM_AttributeSetInstance_ID(),
-							qtyToDeliver,storage.getDateMaterialPolicy());
+							qtyToDeliver,storage.getDateMaterialPolicy(),true);
 					ma.saveEx();		
 					qtyToDeliver = Env.ZERO;
 					if (log.isLoggable(Level.FINE)) log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);		
@@ -581,7 +597,7 @@ public class MMovement extends X_M_Movement implements DocAction
 				{	
 					MMovementLineMA ma = new MMovementLineMA (line, 
 								storage.getM_AttributeSetInstance_ID(),
-								storage.getQtyOnHand(),storage.getDateMaterialPolicy());
+								storage.getQtyOnHand(),storage.getDateMaterialPolicy(),true);
 					ma.saveEx();	
 					qtyToDeliver = qtyToDeliver.subtract(storage.getQtyOnHand());
 					if (log.isLoggable(Level.FINE)) log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);		
@@ -593,7 +609,7 @@ public class MMovement extends X_M_Movement implements DocAction
 			//	No AttributeSetInstance found for remainder
 			if (qtyToDeliver.signum() != 0)
 			{
-				MMovementLineMA ma = MMovementLineMA.addOrCreate(line, 0, qtyToDeliver, getMovementDate()) ;
+				MMovementLineMA ma = MMovementLineMA.addOrCreate(line, 0, qtyToDeliver, getMovementDate(),true) ;
 				ma.saveEx();
 				if (log.isLoggable(Level.FINE)) log.fine("##: " + ma);
 				
@@ -789,7 +805,7 @@ public class MMovement extends X_M_Movement implements DocAction
 				{
 					MMovementLineMA ma = new MMovementLineMA (rLine, 
 							mas[j].getM_AttributeSetInstance_ID(),
-							mas[j].getMovementQty().negate(),mas[j].getDateMaterialPolicy());
+							mas[j].getMovementQty().negate(),mas[j].getDateMaterialPolicy(),true);
 					ma.saveEx();
 				}
 			}

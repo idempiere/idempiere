@@ -1,0 +1,224 @@
+/*
+Theme Name: iDempiere Theme
+Version: 2.0
+Description: White Template
+Author: BMLaurus
+Author URI: http://www.bmlaurus.com
+*/
+body{
+	background-color:white;
+	font-family: verdana;
+}
+a{ 
+	color: #336699;
+	text-decoration: none;
+}
+div.body{
+	margin-top: 25px;
+	width: 810px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+}
+.toolBar{
+	width: 100%;
+	position: absolute;
+}
+.toolBar-title{
+	margin-left: 10px;
+    float: left; 
+    width: 50%;
+}
+.toolBar-tools {
+	bottom: 10px;
+    position: absolute;
+    right: 10px; 
+}
+.toolBar-tools img{
+	filter:alpha(opacity=80);
+ 	opacity: 0.8;
+}
+.toolBar-tools img:hover{
+	filter:alpha(opacity=100);
+ 	opacity: 1;
+}
+.main{
+	padding-top: 70px;
+}
+#main-background{
+	height: 396px;
+    position: absolute;
+    top: 71px;
+    width: 810px;
+    z-index: -1000;
+}
+#main-background img{
+	height: 396px;
+	width: 810px;
+}
+.topBtnHeader{
+	overflow: hidden;
+}
+.topBtnFooter{
+	margin-top: 50px;
+}
+.topBtn{
+	border-top: 2px solid #59595B;
+	border-right: 2px solid #59595B;
+	float:left;
+	width: 200px;
+	height:70px;
+}
+.topBtn img{
+	padding-top: 10px;
+	width: 200px;
+ 	height: 50px;
+ 	filter:alpha(opacity=80);
+ 	opacity: 0.8;
+}
+.bottomBtn{
+	border-bottom: 2px solid #59595B;
+	border-right: 2px solid #59595B;
+	float:left;
+	width: 200px;
+	height:70px;
+}
+.bottomBtn img{
+	padding-top: 10px;
+	width: 200px;
+ 	height: 50px;
+ 	filter:alpha(opacity=80);
+ 	opacity: 0.8;
+}
+.topBtn img:hover{
+ 	filter:alpha(opacity=100);
+ 	opacity: 1;
+}
+.main-content{
+	position: relative;
+	height: 550px;
+}
+.main-login{
+	bottom: 150px;
+    position: absolute;
+    right: 100px;
+}
+.main-login img{
+	 filter:alpha(opacity=60);
+ 	opacity: 0.6;
+}
+.main-login img:hover{
+	 filter:alpha(opacity=100);
+ 	opacity: 1;
+}
+.btnDocu-content{
+	position: relative;
+}
+.btnResoc-content{
+	position: relative;
+}
+
+.main-txt-btn{
+	font-size: 11px;
+	left: 90px;
+    position: absolute;
+    top: 25px;
+    cursor: pointer;
+    z-index: -1000;
+}
+
+#main-requestBtns-btnReq{
+	-moz-border-top-left-radius: 15px;
+	border-top-left-radius: 15px;
+	border-left: 2px solid #59595B;
+}
+#main-requestBtns-btnResoc{
+	-moz-border-top-right-radius: 15px;
+	border-top-right-radius: 15px;
+	border-right: 2px solid #59595B;
+}
+#main-docuBtns-btnIrc{
+	-moz-border-bottom-left-radius: 15px;
+	border-bottom-left-radius: 15px;
+	border-left: 2px solid #59595B;
+}
+#main-docuBtns-btnSuppReq{
+	-moz-border-bottom-right-radius: 15px;
+	border-bottom-right-radius: 15px;
+	border-right: 2px solid #59595B;
+}
+
+
+#main-rssContent{
+	height: 320px;
+	padding-left: 25px;
+    padding-top: 25px;
+}
+#credits{
+	font-size: 70%;	
+}
+.foot{
+	position: relative;
+}
+#footercopyright{
+	bottom: 10px;
+    font-size: 60%;
+    position: absolute;
+    right: 10px;
+}
+#socialBar{
+	margin-left: 10px;
+}
+#socialBar img{
+	filter:alpha(opacity=80);
+ 	opacity: 0.8;
+}
+#socialBar img:hover{
+	filter:alpha(opacity=100);
+ 	opacity: 1;
+}
+
+/** RSS FEED **/
+.labelfield{ 
+	color:gray; 
+	font-size: 50%; }
+.datefield{ 
+	color:gray; 
+	font-size: 80%;}
+#rssfeeds a{ 
+	color: #336699;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 90%;
+}
+#rssfeeds p{ 
+	margin-bottom: 2px;
+	text-decoration: none;
+	font-size: 90%;
+}
+code{ 
+	color: red;
+}
+#blogoolafeed, #blogoolafeed a { 
+					color:white; 
+				}
+#blogoolafeed a:hover{ 
+				color:#8E7BD3; 
+			}
+#blogoolafeed ul { 
+	margin-left:-15px 
+}
+#rssfeed-wrap {
+	font-size: 80%;
+	height: 300px;
+    overflow: scroll;
+    text-align: left;
+    width: 280px;
+    background-color:white; 
+    filter:alpha(opacity=90); 
+    opacity:.9;
+    -moz-border-radius: 15px;
+	border-radius: 15px;
+	padding: 10px;
+}

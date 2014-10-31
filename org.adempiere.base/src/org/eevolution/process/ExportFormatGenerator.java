@@ -230,6 +230,7 @@ public class ExportFormatGenerator extends SvrProcess
 					referenceFormat.setAD_Table_ID(MTable.getTable_ID(m_parent_table));
 					referenceFormat.setDescription(table.getDescription());
 					referenceFormat.setHelp(table.getHelp());
+					referenceFormat.setVersion(version);
 					referenceFormat.saveEx();
 					
 					int AD_Column_ID=DB.getSQLValue(get_TrxName(), "SELECT AD_Column_ID FROM AD_Column WHERE AD_Table_ID=(SELECT AD_Table_ID FROM AD_Table WHERE TableName=?) AND UPPER(ColumnName)='DOCUMENTNO'",m_parent_table);
@@ -322,8 +323,9 @@ public class ExportFormatGenerator extends SvrProcess
 				&& DisplayType.Image 
 				!= col.getAD_Reference_ID())	
 				{
-
-					String tableName = col.getColumnName().substring(0, col.getColumnName().lastIndexOf("_ID"));
+					//String tableName = col.getColumnName().substring(0, col.getColumnName().lastIndexOf("_ID"));
+					String tableName = col.getColumnName().lastIndexOf("_ID") == -1 ? null 
+					: col.getColumnName().substring(0, col.getColumnName().lastIndexOf("_ID"));
 					if (log.isLoggable(Level.INFO)) log.info("Table Name:"+tableName);
 				
 					if(tableName==null)

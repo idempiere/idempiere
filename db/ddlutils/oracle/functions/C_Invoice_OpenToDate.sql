@@ -34,6 +34,8 @@ SELECT C_InvoicePaySchedule_ID, DueAmt FROM C_InvoicePaySchedule WHERE C_Invoice
  ************************************************************************/
 AS
  v_Currency_ID  NUMBER(10);
+ v_Precision	NUMBER := 0;
+ v_Min			NUMBER := 0;
  v_TotalOpenAmt   NUMBER := 0;
  v_PaidAmt           NUMBER := 0;
  v_Remaining         NUMBER := 0;
@@ -73,6 +75,13 @@ BEGIN
  END;
 --  DBMS_OUTPUT.PUT_LINE('== C_Invoice_ID=' || p_C_Invoice_ID || ', Total=' || v_TotalOpenAmt || ', AP=' || v_MultiplierAP || ', CM=' || v_MultiplierCM);
 
+	SELECT StdPrecision
+	    INTO v_Precision
+	    FROM C_Currency
+	    WHERE C_Currency_ID = v_Currency_ID;
+
+	SELECT POWER(1/10,v_Precision) INTO v_Min FROM DUAL;
+
  -- Calculate Allocated Amount
  FOR a IN Cur_Alloc LOOP
         v_Temp := a.Amount + a.DisCountAmt + a.WriteOffAmt;
@@ -106,13 +115,14 @@ BEGIN
     END IF;
 --  DBMS_OUTPUT.PUT_LINE('== Total=' || v_TotalOpenAmt);
 
- -- Ignore Rounding
- IF (v_TotalOpenAmt BETWEEN -0.00999 AND 0.00999) THEN
-  v_TotalOpenAmt := 0;
- END IF;
+	--	Ignore Rounding
+	IF (v_TotalOpenAmt > -v_Min AND v_TotalOpenAmt < v_Min) THEN
+		v_TotalOpenAmt := 0;
+	END IF;
 
- -- Round to penny
- v_TotalOpenAmt := ROUND(COALESCE(v_TotalOpenAmt,0), 2);
- RETURN v_TotalOpenAmt;
+	--	Round to currency precision
+	v_TotalOpenAmt := ROUND(COALESCE(v_TotalOpenAmt,0), v_Precision);
+	
+	RETURN v_TotalOpenAmt;
 END InvoiceopenToDate;
 /

@@ -16,15 +16,13 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import static org.compiere.model.SystemIDs.ENTITYTYPE_ADEMPIERE;
+import static org.compiere.model.SystemIDs.ENTITYTYPE_DICTIONARY;
+
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
 
-import static org.compiere.model.SystemIDs.*;
-
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 
 /**
@@ -46,27 +44,8 @@ public class MEntityType extends X_AD_EntityType
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4670009709141738924L;
+	private static final long serialVersionUID = -8449015496292546851L;
 
-	/**
-	 * 	Get Entity Types
-	 * 	@param ctx context
-	 *	@return entity type array
-	 */
-	static synchronized public MEntityType[] getEntityTypes(Properties ctx)
-	{
-		if (s_entityTypes != null)
-			return s_entityTypes;
-		List<MEntityType> list = new Query(ctx, Table_Name, null, null)
-		.setOnlyActiveRecords(true)
-		.setOrderBy(COLUMNNAME_AD_EntityType_ID)
-		.list();
-		s_entityTypes = new MEntityType[list.size()];
-		list.toArray(s_entityTypes);
-		if (s_log.isLoggable(Level.FINER)) s_log.finer("# " + s_entityTypes.length);
-		return s_entityTypes;
-	}	//	getEntityTypes
-	
 	/**
 	 * Get EntityType object by name  
 	 * @param ctx
@@ -75,102 +54,21 @@ public class MEntityType extends X_AD_EntityType
 	 */
 	public static MEntityType get(Properties ctx, String entityType)
 	{
-		for (MEntityType entity : getEntityTypes(ctx))
-		{
-			if (entity.getEntityType().equals(entityType))
-			{
-				return entity;
-			}
-		}
-		return null;
+		MEntityType retValue = (MEntityType) s_cache.get (entityType);
+		if (retValue != null)
+			return retValue;
+		retValue = new Query(ctx, Table_Name, "EntityType=?", null)
+			.setParameters(entityType)
+			.firstOnly();
+		if (retValue != null)
+			s_cache.put (entityType, retValue);
+		return retValue;
 	}
 	
-	/**
-	 * 	Get Entity Type as String array
-	 *	@param ctx context
-	 *	@return entity type array
-	 */
-	static public String[] getEntityTypeStrings(Properties ctx)
-	{
-		MEntityType[] entityTypes = getEntityTypes(ctx);
-		ArrayList<String> list = new ArrayList<String>();	//	list capabilities
-		String[] retValue = new String[entityTypes.length];
-		for (int i = 0; i < entityTypes.length; i++)
-		{
-			String s = entityTypes[i].getEntityType().trim();
-			list.add(s);
-			retValue[i] = s;
-		}
-		if (s_log.isLoggable(Level.FINER)) s_log.finer(list.toString());
-		return retValue;
-	}	//	getEntityTypeStrings
-
-	/**
-	 * 	Get Entity Type Classpath array
-	 *	@param ctx context
-	 *	@return classpath array
-	 */
-	static public String[] getClasspaths(Properties ctx)
-	{
-		MEntityType[] entityTypes = getEntityTypes(ctx);
-		ArrayList<String> list = new ArrayList<String>();
-		for (int i = 0; i < entityTypes.length; i++)
-		{
-			String classpath = entityTypes[i].getClasspath();
-			if (classpath == null || classpath.length() == 0)
-				continue;
-			StringTokenizer st = new StringTokenizer(classpath, ";, \t\n\r\f");
-			while (st.hasMoreTokens())
-			{
-				String token = st.nextToken();
-				if (token.length() > 0)
-				{
-					if (!list.contains(token))
-						list.add(token);
-				}
-			}
-		}
-		String[] retValue = new String[list.size()];
-		list.toArray(retValue);
-		if (s_log.isLoggable(Level.FINER)) s_log.finer(list.toString());
-		return retValue;
-	}	//	getClathpaths
-
-	/**
-	 * 	Get Entity Type Model Package array
-	 *	@param ctx context
-	 *	@return entity type array
-	 */
-	static public String[] getModelPackages(Properties ctx)
-	{
-		MEntityType[] entityTypes = getEntityTypes(ctx);
-		ArrayList<String> list = new ArrayList<String>();
-		list.add("adempiere.model");		//	default
-		for (int i = 0; i < entityTypes.length; i++)
-		{
-			String modelPackage = entityTypes[i].getModelPackage();
-			if (modelPackage == null || modelPackage.length() == 0)
-				continue;
-			StringTokenizer st = new StringTokenizer(modelPackage, ";, \t\n\r\f");
-			while (st.hasMoreTokens())
-			{
-				String token = st.nextToken();
-				if (token.length() > 0)
-				{
-					if (!list.contains(token))
-						list.add(token);
-				}
-			}
-		}
-		String[] retValue = new String[list.size()];
-		list.toArray(retValue);
-		if (s_log.isLoggable(Level.FINER)) s_log.finer(list.toString());
-		return retValue;
-	}	//	getModelPackages
-	
 	/** Cached EntityTypes						*/
-	private static MEntityType[] s_entityTypes = null;
+	private static CCache<String,MEntityType>	s_cache = new CCache<String,MEntityType>(Table_Name, 20);
 	/**	Logger	*/
+	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MEntityType.class);
 	
 	/**************************************************************************
@@ -268,7 +166,6 @@ public class MEntityType extends X_AD_EntityType
 			*/
 			//setAD_EntityType_ID();
 		}	//	new
-		s_entityTypes = null;	//	reset
 		return true;
 	}	//	beforeSave
 	
@@ -283,7 +180,6 @@ public class MEntityType extends X_AD_EntityType
 			log.saveError("Error", "You cannot delete a System maintained entity");
 			return false;
 		}
-		s_entityTypes = null;	//	reset
 		return true;
 	}	//	beforeDelete
 	

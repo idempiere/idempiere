@@ -25,6 +25,9 @@ RETURNS NUMERIC AS $body$
  ************************************************************************/
 
 DECLARE
+	v_Precision		NUMERIC := 0;
+	v_Currency		NUMERIC := 0;
+    v_Min			NUMERIC := 0;
 	Discount		NUMERIC := 0;
 	Discount1Date		timestamp with time zone;
 	Discount2Date		timestamp with time zone;
@@ -32,6 +35,23 @@ DECLARE
 	Add2Date		NUMERIC := 0;
 	p   			RECORD;
 BEGIN
+	v_Currency := Currency_ID;
+	IF (v_Currency = 0) THEN 
+		SELECT COALESCE(MAX(C_Currency_ID),0) 
+		INTO v_Currency 
+		FROM AD_ClientInfo ci, C_AcctSchema s, C_PaymentTerm pt 
+		WHERE ci.AD_Client_ID = s.AD_Client_ID 
+		AND ci.AD_Client_ID = pt.AD_Client_ID 
+		AND pt.C_PaymentTerm_ID = PaymentTerm_ID; 
+	END IF;
+	
+	SELECT StdPrecision
+	    INTO v_Precision
+	    FROM C_Currency
+	    WHERE C_Currency_ID = v_Currency;
+
+	SELECT 1/10^v_Precision INTO v_Min;
+	
 	--	No Data - No Discount
 	IF (Amount IS NULL OR PaymentTerm_ID IS NULL OR DocDate IS NULL) THEN
 		RETURN 0;
@@ -59,9 +79,17 @@ BEGIN
 			Discount := Amount * p.Discount2 / 100;
 		END IF;	
 	END LOOP;
-	--
-    RETURN ROUND(COALESCE(Discount,0), 2);	--	fixed rounding
+	
+	--	Ignore Rounding
+	IF (Discount > -v_Min AND Discount < v_Min) THEN
+		Discount := 0;
+	END IF;
+
+	--	Round to currency precision
+	Discount := ROUND(COALESCE(Discount,0), v_Precision);
+	
+	RETURN	Discount;
 END;
 
-$body$ LANGUAGE plpgsql;
- 	  	 
+$body$ LANGUAGE plpgsql STABLE;
+

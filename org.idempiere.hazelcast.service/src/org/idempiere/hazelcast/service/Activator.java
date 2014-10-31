@@ -110,11 +110,14 @@ public class Activator implements BundleActivator {
 				if (file != null && file.exists()) {
 					try {
 						Config config = new FileSystemXmlConfig(file);
+						config.setClassLoader(getClass().getClassLoader());
 						hazelcastInstance = Hazelcast.newHazelcastInstance(config);
 						return;
 					} catch (FileNotFoundException e) {}
 				}
-				hazelcastInstance = Hazelcast.newHazelcastInstance(null);		
+				Config config = new Config();
+				config.setClassLoader(getClass().getClassLoader());
+				hazelcastInstance = Hazelcast.newHazelcastInstance(config);		
 			}
 		});
 	}

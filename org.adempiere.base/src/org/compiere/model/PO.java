@@ -51,6 +51,7 @@ import org.adempiere.exceptions.DBException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.Adempiere;
 import org.compiere.acct.Doc;
+import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.CacheMgt;
@@ -1876,6 +1877,9 @@ public abstract class PO
 		set_ValueNoCheck ("UpdatedBy", new Integer(AD_User_ID));
 	}	//	setAD_User_ID
 
+	/**	Cache						*/
+	private static CCache<String,String> trl_cache	= new CCache<String,String>("po_trl", 5);
+
 	/**
 	 * Get Translation of column (if needed).
 	 * It checks if the base language is used or the column is not translated.
@@ -1899,20 +1903,27 @@ public abstract class PO
 												+ ", ID=" + m_IDs[0]);
 		}
 
+		String key = get_TableName() + "." + columnName + "|" + get_ID() + "|" + AD_Language;
 		String retValue = null;
-		//
-		// Check if NOT base language and column is translated => load trl from db
-		if (!Env.isBaseLanguage(AD_Language, get_TableName())
-				&& p_info.isColumnTranslated(p_info.getColumnIndex(columnName))
-			)
-		{
-			// Load translation from database
-			int ID = ((Integer)m_IDs[0]).intValue();
-			StringBuilder sql = new StringBuilder("SELECT ").append(columnName)
-									.append(" FROM ").append(p_info.getTableName()).append("_Trl WHERE ")
-									.append(m_KeyColumns[0]).append("=?")
-									.append(" AND AD_Language=?");
-			retValue = DB.getSQLValueString(get_TrxName(), sql.toString(), ID, AD_Language);
+		if (trl_cache.containsKey(key)) {
+			retValue = trl_cache.get(key);
+			return retValue;
+
+		} else {
+			//
+			// Check if NOT base language and column is translated => load trl from db
+			if (!Env.isBaseLanguage(AD_Language, get_TableName())
+					&& p_info.isColumnTranslated(p_info.getColumnIndex(columnName))
+				)
+			{
+				// Load translation from database
+				int ID = ((Integer)m_IDs[0]).intValue();
+				StringBuilder sql = new StringBuilder("SELECT ").append(columnName)
+										.append(" FROM ").append(p_info.getTableName()).append("_Trl WHERE ")
+										.append(m_KeyColumns[0]).append("=?")
+										.append(" AND AD_Language=?");
+				retValue = DB.getSQLValueString(get_TrxName(), sql.toString(), ID, AD_Language);
+			}
 		}
 		//
 		// If no translation found or not translated, fallback to original:
@@ -1920,6 +1931,7 @@ public abstract class PO
 			Object val = get_Value(columnName);
 			retValue = (val != null ? val.toString() : null);
 		}
+		trl_cache.put(key, retValue);
 		//
 		return retValue;
 	}	//	get_Translation
@@ -3002,6 +3014,8 @@ public abstract class PO
 			{
 				if (m_KeyColumns[i].endsWith("_ID"))
 					sb.append(m_IDs[i]);
+				else if(m_IDs[i] instanceof Timestamp)
+					sb.append(DB.TO_DATE((Timestamp)m_IDs[i], false));
 				else {
 					sb.append("'");
 					if (m_IDs[i] instanceof Boolean) {
@@ -3230,6 +3244,11 @@ public abstract class PO
 				deleteTranslations(localTrxName);
 				//	Delete Cascade AD_Table_ID/Record_ID (Attachments, ..)
 				PO_Record.deleteCascade(AD_Table_ID, Record_ID, localTrxName);
+
+				//delete cascade only for single key column record
+				if (m_KeyColumns != null && m_KeyColumns.length == 1) {
+					PO_Record.deleteModelCascade(p_info.getTableName(), Record_ID, localTrxName);
+				}
 		
 				//	The Delete Statement
 				StringBuilder sql = new StringBuilder ("DELETE FROM ") //jz why no FROM??
@@ -3776,6 +3795,7 @@ public abstract class PO
 	 *	@param acctTable accounting sub table
 	 *	@return true
 	 */
+	@Deprecated // see IDEMPIERE-2088
 	protected boolean delete_Accounting(String acctTable)
 	{
 		return true;

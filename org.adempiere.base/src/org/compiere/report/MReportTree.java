@@ -105,8 +105,8 @@ public class MReportTree
 		m_ElementType = ElementType;
 		m_TreeType = m_ElementType;
 		if (MAcctSchemaElement.ELEMENTTYPE_Account.equals(m_ElementType)
-			|| MAcctSchemaElement.ELEMENTTYPE_UserList1.equals(m_ElementType)
-			|| MAcctSchemaElement.ELEMENTTYPE_UserList2.equals(m_ElementType) )
+			|| MAcctSchemaElement.ELEMENTTYPE_UserElementList1.equals(m_ElementType)
+			|| MAcctSchemaElement.ELEMENTTYPE_UserElementList2.equals(m_ElementType) )
 			m_TreeType = MTree.TREETYPE_ElementValue;
 		if (MAcctSchemaElement.ELEMENTTYPE_OrgTrx.equals(m_ElementType))
 				m_TreeType = MTree.TREETYPE_Organization;

@@ -18,6 +18,8 @@ RETURN NUMBER
  ************************************************************************/
 AS
 	v_Currency_ID		NUMBER(10);
+	v_Precision         NUMBER := 0;
+    v_Min            	NUMBER := 0;
 	v_AvailableAmt		NUMBER := 0;
     v_IsReceipt         C_Payment.IsReceipt%TYPE;
     v_Amt               NUMBER := 0;
@@ -45,18 +47,28 @@ BEGIN
 	WHERE	C_Payment_ID = p_C_Payment_ID;
 --  DBMS_OUTPUT.PUT_LINE('== C_Payment_ID=' || p_C_Payment_ID || ', PayAmt=' || v_AvailableAmt || ', Receipt=' || v_IsReceipt);
 
+	SELECT StdPrecision
+	    INTO v_Precision
+	    FROM C_Currency
+	    WHERE C_Currency_ID = v_Currency_ID;
+
+	SELECT POWER(1/10,v_Precision) INTO v_Min FROM DUAL;
+	
 	--	Calculate Allocated Amount
 	FOR a IN Cur_Alloc LOOP
         v_Amt := currencyConvert(a.Amount, a.C_Currency_ID, v_Currency_ID, a.DateTrx, null, a.AD_Client_ID, a.AD_Org_ID);
 	    v_AvailableAmt := v_AvailableAmt - v_Amt;
 --      DBMS_OUTPUT.PUT_LINE('  Allocation=' || a.Amount || ' - Available=' || v_AvailableAmt);
 	END LOOP;
+	
 	--	Ignore Rounding
-	IF (v_AvailableAmt BETWEEN -0.00999 AND 0.00999) THEN
+	IF (v_AvailableAmt > -v_Min AND v_AvailableAmt < v_Min) THEN
 		v_AvailableAmt := 0;
 	END IF;
-	--	Round to penny
-	v_AvailableAmt := ROUND(NVL(v_AvailableAmt,0), 2);
+
+	--	Round to currency precision
+	v_AvailableAmt := ROUND(COALESCE(v_AvailableAmt,0), v_Precision);
+	
 	RETURN	v_AvailableAmt;
 END paymentAvailable;
 /

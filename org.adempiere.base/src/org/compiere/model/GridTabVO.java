@@ -41,7 +41,7 @@ public class GridTabVO implements Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5120775523212893253L;
+	private static final long serialVersionUID = -7973388282943436222L;
 
 	/**************************************************************************
 	 *	Create MTab VO
@@ -203,6 +203,8 @@ public class GridTabVO implements Evaluatee, Serializable
 
 			if (rs.getString("HasTree").equals("Y"))
 				vo.HasTree = true;
+
+			vo.TreeDisplayedOn = rs.getString("TreeDisplayedOn");
 
 			vo.AD_Table_ID = rs.getInt("AD_Table_ID");
 			vo.TableName = rs.getString("TableName");
@@ -432,6 +434,8 @@ public class GridTabVO implements Evaluatee, Serializable
 	public 	boolean		IsInsertRecord = true;
 	/** Tree			*/
 	public  boolean	    HasTree = false;
+	/** Tree displayed on	*/
+	public  String	    TreeDisplayedOn = "";
 	/** Table			*/
 	public  int		    AD_Table_ID;
 	/** Table UUID		*/
@@ -546,6 +550,7 @@ public class GridTabVO implements Evaluatee, Serializable
 		clone.IsReadOnly = IsReadOnly;
 		clone.IsInsertRecord = IsInsertRecord;
 		clone.HasTree = HasTree;
+		clone.TreeDisplayedOn = TreeDisplayedOn;
 		clone.AD_Table_ID = AD_Table_ID;
 		clone.AD_Column_ID = AD_Column_ID;
 		clone.Parent_Column_ID = Parent_Column_ID;

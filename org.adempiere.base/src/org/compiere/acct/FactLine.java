@@ -168,7 +168,7 @@ public final class FactLine extends X_Fact_Acct
 
 		//	User Defined References
 		MAcctSchemaElement ud1 = m_acctSchema.getAcctSchemaElement(
-				X_C_AcctSchema_Element.ELEMENTTYPE_UserElement1);
+				X_C_AcctSchema_Element.ELEMENTTYPE_UserColumn1);
 		if (ud1 != null)
 		{
 			String ColumnName1 = ud1.getDisplayColumnName();
@@ -188,7 +188,7 @@ public final class FactLine extends X_Fact_Acct
 			}
 		}
 		MAcctSchemaElement ud2 = m_acctSchema.getAcctSchemaElement(
-				X_C_AcctSchema_Element.ELEMENTTYPE_UserElement2);
+				X_C_AcctSchema_Element.ELEMENTTYPE_UserColumn2);
 		if (ud2 != null)
 		{
 			String ColumnName2 = ud2.getDisplayColumnName();

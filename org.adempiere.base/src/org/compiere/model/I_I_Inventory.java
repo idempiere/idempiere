@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_Inventory
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_I_Inventory 
 {
@@ -246,6 +246,21 @@ public interface I_I_Inventory
 	  * Lot number (alphanumeric)
 	  */
 	public String getLot();
+
+    /** Column name M_CostingLine_ID */
+    public static final String COLUMNNAME_M_CostingLine_ID = "M_CostingLine_ID";
+
+	/** Set Cost Adjustment Line.
+	  * Unique line in an Inventory cost adjustment document
+	  */
+	public void setM_CostingLine_ID (int M_CostingLine_ID);
+
+	/** Get Cost Adjustment Line.
+	  * Unique line in an Inventory cost adjustment document
+	  */
+	public int getM_CostingLine_ID();
+
+	public org.compiere.model.I_M_InventoryLine getM_CostingLine() throws RuntimeException;
 
     /** Column name M_Inventory_ID */
     public static final String COLUMNNAME_M_Inventory_ID = "M_Inventory_ID";

@@ -85,6 +85,7 @@ public class CashFlow  extends SvrProcess {
 		dateFrom.set(Calendar.HOUR_OF_DAY, 0);
 		dateFrom.set(Calendar.MINUTE, 0);
 		dateFrom.set(Calendar.SECOND, 0);
+		dateFrom.set(Calendar.MILLISECOND, 0);
 		p_dateFrom = new Timestamp(dateFrom.getTimeInMillis());
 		p_dateFrom.setNanos(0);
 		

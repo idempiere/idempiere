@@ -29,6 +29,7 @@ import org.adempiere.model.IAddressValidation;
 import org.adempiere.model.IShipmentProcessor;
 import org.adempiere.model.ITaxProvider;
 import org.adempiere.model.MShipperFacade;
+import org.compiere.impexp.BankStatementLoaderInterface;
 import org.compiere.model.MAddressValidation;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MPaymentProcessor;
@@ -172,6 +173,40 @@ public class Core {
 		myProcessor.initialize(mbap, mp);
 		//
 		return myProcessor;
+	}
+	
+	/**
+	 * get BankStatementLoader instance
+	 * 
+	 * @param className
+	 * @return instance of the BankStatementLoaderInterface or null
+	 */
+	public static BankStatementLoaderInterface getBankStatementLoader(String className){
+		if (className == null || className.length() == 0) {
+			s_log.log(Level.SEVERE, "No BankStatementLoaderInterface class name");
+			return null;
+		}
+
+		BankStatementLoaderInterface myBankStatementLoader = null;
+		
+		List<IBankStatementLoaderFactory> factoryList = 
+				Service.locator().list(IBankStatementLoaderFactory.class).getServices();
+		if (factoryList != null) {
+			for(IBankStatementLoaderFactory factory : factoryList) {
+				BankStatementLoaderInterface loader = factory.newBankStatementLoaderInstance(className);
+				if (loader != null) {
+					myBankStatementLoader = loader;
+					break;
+				}
+			}
+		}
+		
+		if (myBankStatementLoader == null) {
+			s_log.log(Level.SEVERE, "Not found in service/extension registry and classpath");
+			return null;
+		}
+		
+		return myBankStatementLoader;
 	}
 	
 	/**

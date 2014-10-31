@@ -51,6 +51,7 @@ public final class DocTax
 		m_C_Tax_ID = C_Tax_ID;
 		m_name = name;
 		m_rate = rate;
+		m_taxBaseAmt =  taxBaseAmt;//IDEMPIERE-2160 Add by Hideaki Hagiwara
 		m_amount = amount;
 		m_salesTax = salesTax;
 	}	//	DocTax

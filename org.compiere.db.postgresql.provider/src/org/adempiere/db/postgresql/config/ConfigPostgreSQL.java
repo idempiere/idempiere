@@ -137,7 +137,12 @@ public class ConfigPostgreSQL implements IDatabaseConfig
 			if (isDBExists) {
 				log.warning(error);
 			} else {
-				return error;
+				if ("^TryLocalConnection^".equals(systemPassword)) {
+					// Debian installer uses postgres socket domain connection
+					log.warning(error);
+				} else {
+					return error;
+				}
 			}
 		}
 		if (log.isLoggable(Level.INFO)) log.info("OK: System Connection = " + urlSystem);

@@ -78,6 +78,8 @@ public interface IProcessUI {
 	 */
 	public void ask(String message, Callback<Boolean> callback);
 	
+	public void askForInput(String message, Callback<String> callback);
+
 	/**
 	 * add to list of file available for download after process end 
 	 * @param file

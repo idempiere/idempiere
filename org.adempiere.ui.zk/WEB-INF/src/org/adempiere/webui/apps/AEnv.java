@@ -165,14 +165,18 @@ public final class AEnv
 	 *	@param Record_ID
 	 *	@param query
 	 */
-	public static void zoom (int AD_Table_ID, int Record_ID, MQuery query)
+	public static void zoom (int AD_Table_ID, int Record_ID, MQuery query, int windowNo)
 	{
-		int AD_Window_ID = Env.getZoomWindowID(AD_Table_ID, Record_ID);
+		int AD_Window_ID = Env.getZoomWindowID(AD_Table_ID, Record_ID, windowNo);
 		//  Nothing to Zoom to
 		if (AD_Window_ID == 0)
 			return;
 		zoom(AD_Window_ID, query);
 	}	//	zoom
+
+	public static void zoom (int AD_Table_ID, int Record_ID, MQuery query) {
+		zoom (AD_Table_ID, Record_ID, query, 0);
+	}
 
 	/**
 	 *	Exit System
@@ -402,10 +406,10 @@ public final class AEnv
         }
         if (value instanceof Integer && ((Integer) value).intValue() >= 0 && zoomQuery != null && zoomQuery.getZoomTableName() != null) {
         	int tableId = MTable.getTable_ID(zoomQuery.getZoomTableName());
-        	zoom(tableId, ((Integer) value).intValue(), zoomQuery);
+        	zoom(tableId, ((Integer) value).intValue(), zoomQuery, lookup.getWindowNo());
         } else {
         	int windowId = lookup.getZoom(zoomQuery);
-        	zoom(windowId, zoomQuery);
+        	zoom(windowId, zoomQuery, lookup.getWindowNo());
         }
     }
 
@@ -425,10 +429,14 @@ public final class AEnv
 	 * @param AD_Window_ID Window on which to zoom
 	 * @param query Filter to be applied on the records.
 	 */
-	public static void zoom(int AD_Window_ID, MQuery query)
+	public static void zoom(int AD_Window_ID, MQuery query, int windowNo)
 	{
-		int zoomId = MZoomCondition.findZoomWindowByWindowId(AD_Window_ID, query);
+		int zoomId = MZoomCondition.findZoomWindowByWindowId(AD_Window_ID, query, windowNo);
         showZoomWindow(zoomId > 0 ? zoomId : AD_Window_ID, query);
+	}
+	
+	public static void zoom(int AD_Window_ID, MQuery query) {
+		zoom(AD_Window_ID, query, 0);
 	}
 
 	public static void showWindow(Window win)

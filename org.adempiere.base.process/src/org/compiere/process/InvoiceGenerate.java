@@ -19,7 +19,10 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -43,6 +46,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.compiere.util.Trx;
 
 /**
  *	Generate Invoices
@@ -77,7 +81,13 @@ public class InvoiceGenerate extends SvrProcess
 	private int			m_line = 0;
 	/**	Business Partner		*/
 	private MBPartner	m_bp = null;
-	
+	/**	Minimum Amount to Invoice */
+	private BigDecimal p_MinimumAmt = null;
+	/**	Minimum Amount to Invoice according to Invoice Schedule */
+	private BigDecimal p_MinimumAmtInvSched = null;
+	/**	Per Invoice Savepoint */
+	private Savepoint m_savepoint = null;
+
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
@@ -103,6 +113,8 @@ public class InvoiceGenerate extends SvrProcess
 				p_ConsolidateDocument = "Y".equals(para[i].getParameter());
 			else if (name.equals("DocAction"))
 				p_docAction = (String)para[i].getParameter();
+			else if (name.equals("MinimumAmt"))
+				p_MinimumAmt = para[i].getParameterAsBigDecimal();
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 		}
@@ -198,6 +210,7 @@ public class InvoiceGenerate extends SvrProcess
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
+				p_MinimumAmtInvSched = null;
 				MOrder order = new MOrder (getCtx(), rs, get_TrxName());
 				StringBuilder msgsup = new StringBuilder(Msg.getMsg(getCtx(), "Processing")).append(" ").append(order.getDocumentInfo());
 				statusUpdate(msgsup.toString());
@@ -223,10 +236,13 @@ public class InvoiceGenerate extends SvrProcess
 					else
 					{
 						MInvoiceSchedule is = MInvoiceSchedule.get(getCtx(), m_bp.getC_InvoiceSchedule_ID(), get_TrxName());
-						if (is.canInvoice(order.getDateOrdered(), order.getGrandTotal()))
+						if (is.canInvoice(order.getDateOrdered())) {
+							if (is.isAmount() && is.getAmt() != null)
+							p_MinimumAmtInvSched = is.getAmt();
 							doInvoice = true;
-						else
+						} else {
 							continue;
+						}
 					}
 				}	//	Schedule
 				
@@ -352,6 +368,13 @@ public class InvoiceGenerate extends SvrProcess
 	{
 		if (m_invoice == null)
 		{
+			try {
+				if (m_savepoint != null)
+					Trx.get(get_TrxName(), false).releaseSavepoint(m_savepoint);
+				m_savepoint = Trx.get(get_TrxName(), false).setSavepoint(null);
+			} catch (SQLException e) {
+				throw new AdempiereException(e);
+			}
 			m_invoice = new MInvoice (order, 0, p_DateInvoiced);
 			if (!m_invoice.save())
 				throw new IllegalStateException("Could not create Invoice (o)");
@@ -377,6 +400,13 @@ public class InvoiceGenerate extends SvrProcess
 	{
 		if (m_invoice == null)
 		{
+			try {
+				if (m_savepoint != null)
+					Trx.get(get_TrxName(), false).releaseSavepoint(m_savepoint);
+				m_savepoint = Trx.get(get_TrxName(), false).setSavepoint(null);
+			} catch (SQLException e) {
+				throw new AdempiereException(e);
+			}
 			m_invoice = new MInvoice (order, 0, p_DateInvoiced);
 			if (!m_invoice.save())
 				throw new IllegalStateException("Could not create Invoice (s)");
@@ -485,19 +515,42 @@ public class InvoiceGenerate extends SvrProcess
 					m_invoice.saveEx();
 				}
 			}
-			
-			if (!m_invoice.processIt(p_docAction))
-			{
-				log.warning("completeInvoice - failed: " + m_invoice);
-				addBufferLog(0, null, null,"completeInvoice - failed: " + m_invoice,m_invoice.get_Table_ID(),m_invoice.getC_Invoice_ID()); // Elaine 2008/11/25
-				throw new IllegalStateException("Invoice Process Failed: " + m_invoice + " - " + m_invoice.getProcessMsg());
-				
-			}
-			m_invoice.saveEx();
 
-			String message = Msg.parseTranslation(getCtx(), "@InvoiceProcessed@ " + m_invoice.getDocumentNo());
-			addBufferLog(m_invoice.getC_Invoice_ID(), m_invoice.getDateInvoiced(), null, message, m_invoice.get_Table_ID(), m_invoice.getC_Invoice_ID());
-			m_created++;
+			if (     (p_MinimumAmt != null && p_MinimumAmt.signum() != 0
+				   && m_invoice.getGrandTotal().compareTo(p_MinimumAmt) < 0)
+			    ||   (p_MinimumAmtInvSched != null
+				   && m_invoice.getGrandTotal().compareTo(p_MinimumAmtInvSched) < 0)) {
+
+				// minimum amount not reached
+				DecimalFormat format = DisplayType.getNumberFormat(DisplayType.Amount);
+				String amt = format.format(m_invoice.getGrandTotal().doubleValue());
+				String message = Msg.parseTranslation(getCtx(), "@NotInvoicedAmt@ " + amt + " - " + m_invoice.getC_BPartner().getName());
+				addLog(message);
+				if (m_savepoint != null) {
+					try {
+						Trx.get(get_TrxName(), false).rollback(m_savepoint);
+					} catch (SQLException e) {
+						throw new AdempiereException(e);
+					}
+				} else {
+					throw new AdempiereException("No savepoint");
+				}
+
+			} else {
+
+				if (!m_invoice.processIt(p_docAction))
+				{
+					log.warning("completeInvoice - failed: " + m_invoice);
+					addBufferLog(0, null, null,"completeInvoice - failed: " + m_invoice,m_invoice.get_Table_ID(),m_invoice.getC_Invoice_ID()); // Elaine 2008/11/25
+					throw new IllegalStateException("Invoice Process Failed: " + m_invoice + " - " + m_invoice.getProcessMsg());
+					
+				}
+				m_invoice.saveEx();
+
+				String message = Msg.parseTranslation(getCtx(), "@InvoiceProcessed@ " + m_invoice.getDocumentNo());
+				addBufferLog(m_invoice.getC_Invoice_ID(), m_invoice.getDateInvoiced(), null, message, m_invoice.get_Table_ID(), m_invoice.getC_Invoice_ID());
+				m_created++;
+			}
 		}
 		m_invoice = null;
 		m_ship = null;

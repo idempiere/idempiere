@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.DBException;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.IMiniTable;
@@ -48,12 +50,6 @@ import org.compiere.util.ValueNamePair;
 public class PaySelect
 {
 	/** @todo withholding */
-
-	/**
-	 * 
-	 */
-	@SuppressWarnings("unused")
-	private static final long serialVersionUID = 2872767371244295934L;
 
 	/**	Window No			*/
 	public int         	m_WindowNo = 0;
@@ -173,7 +169,7 @@ public class PaySelect
 		try
 		{
 			sql = MRole.getDefault().addAccessSQL(
-				"SELECT doc.c_doctype_id,doc.name FROM c_doctype doc WHERE doc.ad_client_id = ? AND doc.docbasetype in ('API','APC') ORDER BY 2", "doc",
+				"SELECT doc.c_doctype_id,doc.name FROM c_doctype doc WHERE doc.ad_client_id = ? AND doc.docbasetype in ('API','APC','ARI','ARC') ORDER BY 2", "doc",
 				MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 
 			KeyNamePair dt = new KeyNamePair(0, "");
@@ -214,7 +210,7 @@ public class PaySelect
 		i.GrandTotal-paymentTermDiscount(i.GrandTotal,i.C_PaymentTerm_ID,i.DateInvoiced,SysDate) AS DueAmount,
 		currencyConvert(i.GrandTotal-paymentTermDiscount(i.GrandTotal,i.C_PaymentTerm_ID,i.DateInvoiced,SysDate,null),
 			i.C_Currency_ID,xx100,SysDate) AS PayAmt
-		FROM C_Invoice i, C_BPartner bp, C_Currency c, C_PaymentTerm p
+		FROM C_Invoice_v i, C_BPartner bp, C_Currency c, C_PaymentTerm p
 		WHERE i.IsSOTrx='N'
 		AND i.C_BPartner_ID=bp.C_BPartner_ID
 		AND i.C_Currency_ID=c.C_Currency_ID
@@ -226,16 +222,16 @@ public class PaySelect
 		m_sql = miniTable.prepareTable(new ColumnInfo[] {
 			//  0..4
 			new ColumnInfo(" ", "i.C_Invoice_ID", IDColumn.class, false, false, null),
-			new ColumnInfo(Msg.translate(ctx, "DueDate"), "paymentTermDueDate(i.C_PaymentTerm_ID, i.DateInvoiced) AS DateDue", Timestamp.class, true, true, null),
+			new ColumnInfo(Msg.translate(ctx, "DueDate"), "i.DueDate AS DateDue", Timestamp.class, true, true, null),
 			new ColumnInfo(Msg.translate(ctx, "C_BPartner_ID"), "bp.Name", KeyNamePair.class, true, false, "i.C_BPartner_ID"),
 			new ColumnInfo(Msg.translate(ctx, "DocumentNo"), "i.DocumentNo", String.class),
 			new ColumnInfo(Msg.translate(ctx, "C_Currency_ID"), "c.ISO_Code", KeyNamePair.class, true, false, "i.C_Currency_ID"),
 			// 5..9
 			new ColumnInfo(Msg.translate(ctx, "GrandTotal"), "i.GrandTotal", BigDecimal.class),
-			new ColumnInfo(Msg.translate(ctx, "DiscountAmt"), "paymentTermDiscount(i.GrandTotal,i.C_Currency_ID,i.C_PaymentTerm_ID,i.DateInvoiced, ?)", BigDecimal.class),
-			new ColumnInfo(Msg.getMsg(ctx, "DiscountDate"), "SysDate-paymentTermDueDays(i.C_PaymentTerm_ID,i.DateInvoiced,SysDate)", Timestamp.class),
-			new ColumnInfo(Msg.getMsg(ctx, "AmountDue"), "currencyConvert(invoiceOpen(i.C_Invoice_ID,i.C_InvoicePaySchedule_ID),i.C_Currency_ID, ?,?,i.C_ConversionType_ID, i.AD_Client_ID,i.AD_Org_ID)", BigDecimal.class),
-			new ColumnInfo(Msg.getMsg(ctx, "AmountPay"), "currencyConvert(invoiceOpen(i.C_Invoice_ID,i.C_InvoicePaySchedule_ID)-paymentTermDiscount(i.GrandTotal,i.C_Currency_ID,i.C_PaymentTerm_ID,i.DateInvoiced, ?),i.C_Currency_ID, ?,?,i.C_ConversionType_ID, i.AD_Client_ID,i.AD_Org_ID)", BigDecimal.class)
+			new ColumnInfo(Msg.translate(ctx, "DiscountAmt"), "invoiceDiscount(i.C_Invoice_ID,?,i.C_InvoicePaySchedule_ID)", BigDecimal.class),
+			new ColumnInfo(Msg.getMsg(ctx, "DiscountDate"), "COALESCE((SELECT discountdate from C_InvoicePaySchedule ips WHERE ips.C_InvoicePaySchedule_ID=i.C_InvoicePaySchedule_ID),i.DateInvoiced+p.DiscountDays+p.GraceDays) AS DiscountDate", Timestamp.class),
+			new ColumnInfo(Msg.getMsg(ctx, "AmountDue"), "currencyConvert(invoiceOpen(i.C_Invoice_ID,i.C_InvoicePaySchedule_ID),i.C_Currency_ID, ?,?,i.C_ConversionType_ID, i.AD_Client_ID,i.AD_Org_ID) AS AmountDue", BigDecimal.class),
+			new ColumnInfo(Msg.getMsg(ctx, "AmountPay"), "currencyConvert(invoiceOpen(i.C_Invoice_ID,i.C_InvoicePaySchedule_ID)-invoiceDiscount(i.C_Invoice_ID,?,i.C_InvoicePaySchedule_ID),i.C_Currency_ID, ?,?,i.C_ConversionType_ID, i.AD_Client_ID,i.AD_Org_ID) AS AmountPay", BigDecimal.class)
 			},
 			//	FROM
 			"C_Invoice_v i"
@@ -271,7 +267,7 @@ public class PaySelect
 		MLookupInfo info = MLookupFactory.getLookup_List(language, AD_Reference_ID);
 		String sql = info.Query.substring(0, info.Query.indexOf(" ORDER BY"))
 			+ " AND " + info.KeyColumn
-			+ " IN (SELECT PaymentRule FROM C_BankAccountDoc WHERE C_BankAccount_ID=?) "
+			+ " IN (SELECT PaymentRule FROM C_BankAccountDoc WHERE C_BankAccount_ID=? AND IsActive='Y') "
 			+ info.Query.substring(info.Query.indexOf(" ORDER BY"));
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -283,7 +279,7 @@ public class PaySelect
 			ValueNamePair vp = null;
 			while (rs.next())
 			{
-				vp = new ValueNamePair(rs.getString(2), rs.getString(3));   //  returns also not active
+				vp = new ValueNamePair(rs.getString(2), rs.getString(3));
 				data.add(vp);
 			}
 		}
@@ -321,7 +317,7 @@ public class PaySelect
 		}
 		//
 		if (onlyDue)
-			sql += " AND paymentTermDueDate(i.C_PaymentTerm_ID, i.DateInvoiced) <= ?";
+			sql += " AND i.DueDate <= ?";
 		//
 		KeyNamePair pp = bpartner;
 		int C_BPartner_ID = pp.getKey();
@@ -362,7 +358,11 @@ public class PaySelect
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			throw new DBException(e);
+		}
+		catch (Exception e)
+		{
+			throw new AdempiereException(e);
 		}
 		finally
 		{
@@ -411,52 +411,63 @@ public class PaySelect
 	public String generatePaySelect(IMiniTable miniTable, ValueNamePair paymentRule, Timestamp payDate, BankInfo bi)
 	{
 		log.info("");
-	//	String trxName Trx.createTrxName("PaySelect");
-	//	Trx trx = Trx.get(trxName, true);	trx needs to be committed too
+
 		String trxName = null;
-		trx = null;
+		Trx trx = null;
+		try {
+			trxName = Trx.createTrxName("PaySelect");
+			trx = Trx.get(trxName, true);
 
-		String PaymentRule = paymentRule.getValue();
+			String PaymentRule = paymentRule.getValue();
 
-		//  Create Header
-		m_ps = new MPaySelection(Env.getCtx(), 0, trxName);
-		m_ps.setName (Msg.getMsg(Env.getCtx(), "VPaySelect")
-				+ " - " + paymentRule.getName()
-				+ " - " + payDate);
-		m_ps.setPayDate (payDate);
-		m_ps.setC_BankAccount_ID(bi.C_BankAccount_ID);
-		m_ps.setIsApproved(true);
-		if (!m_ps.save())
-		{
-			m_ps = null;
-			return Msg.translate(Env.getCtx(), "C_PaySelection_ID");
-		}
-		if (log.isLoggable(Level.CONFIG)) log.config(m_ps.toString());
+			//  Create Header
+			m_ps = new MPaySelection(Env.getCtx(), 0, trxName);
+			m_ps.setName (Msg.getMsg(Env.getCtx(), "VPaySelect")
+					+ " - " + paymentRule.getName()
+					+ " - " + payDate);
+			m_ps.setPayDate (payDate);
+			m_ps.setC_BankAccount_ID(bi.C_BankAccount_ID);
+			m_ps.setIsApproved(true);
+			m_ps.saveEx();
+			if (log.isLoggable(Level.CONFIG)) log.config(m_ps.toString());
 
-		//  Create Lines
-		int rows = miniTable.getRowCount();
-		int line = 0;
-		for (int i = 0; i < rows; i++)
-		{
-			IDColumn id = (IDColumn)miniTable.getValueAt(i, 0);
-			if (id.isSelected())
+			//  Create Lines
+			int rows = miniTable.getRowCount();
+			int line = 0;
+			for (int i = 0; i < rows; i++)
 			{
-				line += 10;
-				MPaySelectionLine psl = new MPaySelectionLine (m_ps, line, PaymentRule);
-				int C_Invoice_ID = id.getRecord_ID().intValue();
-				BigDecimal OpenAmt = (BigDecimal)miniTable.getValueAt(i, 8);
-				BigDecimal PayAmt = (BigDecimal)miniTable.getValueAt(i, 9);
-				boolean isSOTrx = false;
-				//
-				psl.setInvoice(C_Invoice_ID, isSOTrx,
-					OpenAmt, PayAmt, OpenAmt.subtract(PayAmt));
-				if (!psl.save(trxName))
+				IDColumn id = (IDColumn)miniTable.getValueAt(i, 0);
+				if (id.isSelected())
 				{
-					return Msg.translate(Env.getCtx(), "C_PaySelectionLine_ID");
+					line += 10;
+					MPaySelectionLine psl = new MPaySelectionLine (m_ps, line, PaymentRule);
+					int C_Invoice_ID = id.getRecord_ID().intValue();
+					BigDecimal OpenAmt = (BigDecimal)miniTable.getValueAt(i, 8);
+					BigDecimal PayAmt = (BigDecimal)miniTable.getValueAt(i, 9);
+					boolean isSOTrx = false;
+					if (paymentRule != null && X_C_Order.PAYMENTRULE_DirectDebit.equals(paymentRule.getValue()))
+						isSOTrx = true;
+					//
+					psl.setInvoice(C_Invoice_ID, isSOTrx,
+						OpenAmt, PayAmt, OpenAmt.subtract(PayAmt));
+					psl.saveEx(trxName);
+					if (log.isLoggable(Level.FINE)) log.fine("C_Invoice_ID=" + C_Invoice_ID + ", PayAmt=" + PayAmt);
 				}
-				if (log.isLoggable(Level.FINE)) log.fine("C_Invoice_ID=" + C_Invoice_ID + ", PayAmt=" + PayAmt);
+			}   //  for all rows in table
+		} catch (Exception e) {
+			if (trx != null) {
+				trx.rollback();
+				trx.close();
+				trx = null;
 			}
-		}   //  for all rows in table
+			m_ps = null;
+			throw new AdempiereException(e);
+		} finally {
+			if (trx != null) {
+				trx.commit();
+				trx.close();
+			}
+		}
 		
 		return null;
 	}   //  generatePaySelect
@@ -501,4 +512,4 @@ public class PaySelect
 		}
 	}   //  BankInfo
 
-}   //  VPaySelect
+}   //  PaySelect

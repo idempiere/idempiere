@@ -20,6 +20,9 @@ import java.sql.Timestamp;
 import java.util.BitSet;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
+
+import org.compiere.model.MCountry;
 
 
 /**
@@ -815,4 +818,65 @@ public class TimeUtil
 		return endCal.get(Calendar.YEAR) * 12 + endCal.get(Calendar.MONTH)
 				- (startCal.get(Calendar.YEAR) * 12 + startCal.get(Calendar.MONTH));
 	}
+
+	/** Returns start date + nbDays which cannot be saturday or sunday or non business days */
+	public static Timestamp addOnlyBusinessDays(Timestamp startDate, int nbDays, int clientID, String trxName)
+	{
+		Timestamp retValue = startDate;
+		while (nbDays > 0) {
+			retValue = TimeUtil.addDays(retValue, 1);
+			StringBuilder sql = new StringBuilder("SELECT nextBusinessDay(?,?) FROM DUAL");
+			retValue = DB.getSQLValueTSEx(trxName, sql.toString(), retValue, clientID);
+			nbDays--;
+		}
+		return retValue;
+	}
+
+	/** Returns number of non business days between 2 dates */
+	public static int getBusinessDaysBetween(Timestamp startDate, Timestamp endDate, int clientID, String trxName)
+	{
+		int retValue = 0;
+
+		if (startDate.equals(endDate))
+			return 0;
+
+		boolean negative = false;
+		if (endDate.before(startDate)) {
+			negative = true;
+			Timestamp temp = startDate;
+			startDate = endDate;
+			endDate = temp;
+		}
+
+		final String sql = "SELECT Date1 FROM C_NonBusinessDay WHERE IsActive='Y' AND AD_Client_ID=? AND Date1 BETWEEN ? AND ? AND COALESCE(C_Country_ID,0) IN (0, ?)";
+		List<Object> nbd = DB.getSQLValueObjectsEx(trxName, sql, clientID, startDate, endDate, MCountry.getDefault(Env.getCtx()).getC_Country_ID());
+
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(startDate);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+
+		GregorianCalendar calEnd = new GregorianCalendar();
+		calEnd.setTime(endDate);
+		calEnd.set(Calendar.HOUR_OF_DAY, 0);
+		calEnd.set(Calendar.MINUTE, 0);
+		calEnd.set(Calendar.SECOND, 0);
+		calEnd.set(Calendar.MILLISECOND, 0);
+
+		while (cal.before(calEnd) || cal.equals(calEnd)) {
+			if (!nbd.contains(new Timestamp(cal.getTimeInMillis()))) {
+				if (cal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+					retValue++;
+				}
+			}
+			cal.add(Calendar.DAY_OF_MONTH, 1);
+		}
+
+		if (negative)
+			retValue = retValue * -1;
+		return retValue;
+	}
+
 }	//	TimeUtil

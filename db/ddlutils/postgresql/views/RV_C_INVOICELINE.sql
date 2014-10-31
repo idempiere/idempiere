@@ -37,15 +37,15 @@ SELECT il.ad_client_id,
     il.priceactual,
     il.pricelimit,
     il.priceentered,
-    CASE WHEN il.pricelist = 0 THEN 0 ELSE round((il.pricelist - il.priceactual) / il.pricelist * 100, 2) END                                                                AS discount,
-    CASE WHEN il.pricelimit = 0 THEN 0 ELSE round((il.priceactual - il.pricelimit) / il.pricelimit * 100, 2) END                                                                AS margin,
+    CASE WHEN il.pricelist = 0 THEN 0 ELSE currencyRound((il.pricelist - il.priceactual) / il.pricelist * 100,i.C_Currency_ID,'N') END                                                                AS discount,
+    CASE WHEN il.pricelimit = 0 THEN 0 ELSE currencyRound((il.priceactual - il.pricelimit) / il.pricelimit * 100,i.C_Currency_ID,'N') END                                                                AS margin,
     CASE WHEN il.pricelimit = 0 THEN 0 ELSE (il.priceactual - il.pricelimit) * il.qtyinvoiced END                                                                AS marginamt,
-    round(i.multiplier * il.linenetamt, 2)                                 AS linenetamt,
-    round(i.multiplier * il.pricelist * il.qtyinvoiced, 2)                 AS linelistamt,
-    CASE WHEN COALESCE(il.pricelimit, 0) = 0 THEN round(i.multiplier * il.linenetamt, 2) ELSE round(i.multiplier * il.pricelimit * il.qtyinvoiced, 2) END                                                                
+    currencyRound(i.multiplier * il.linenetamt,i.C_Currency_ID,'N')                                 AS linenetamt,
+    currencyRound(i.multiplier * il.pricelist * il.qtyinvoiced,i.C_Currency_ID,'N')                 AS linelistamt,
+    CASE WHEN COALESCE(il.pricelimit, 0) = 0 THEN currencyRound(i.multiplier * il.linenetamt,i.C_Currency_ID,'N') ELSE currencyRound(i.multiplier * il.pricelimit * il.qtyinvoiced,i.C_Currency_ID,'N') END                                                                
     AS linelimitamt,
-    round(i.multiplier * il.pricelist * il.qtyinvoiced - il.linenetamt, 2) AS linediscountamt,
-    CASE WHEN COALESCE(il.pricelimit, 0) = 0 THEN 0 ELSE round(i.multiplier * il.linenetamt - il.pricelimit * il.qtyinvoiced, 2) END                                                                AS 
+    currencyRound(i.multiplier * il.pricelist * il.qtyinvoiced - il.linenetamt,i.C_Currency_ID,'N') AS linediscountamt,
+    CASE WHEN COALESCE(il.pricelimit, 0) = 0 THEN 0 ELSE currencyRound(i.multiplier * il.linenetamt - il.pricelimit * il.qtyinvoiced,i.C_Currency_ID,'N') END                                                                AS 
     lineoverlimitamt,
     il.ad_orgtrx_id,
     il.a_processed,

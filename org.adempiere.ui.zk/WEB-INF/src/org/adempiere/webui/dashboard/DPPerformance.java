@@ -15,6 +15,8 @@ package org.adempiere.webui.dashboard;
 
 import org.adempiere.webui.apps.graph.WPAPanel;
 import org.adempiere.webui.util.ServerPushTemplate;
+import org.compiere.model.MSysConfig;
+import org.compiere.util.Env;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -81,9 +83,10 @@ public class DPPerformance extends DashboardPanel {
 		removeAttribute(ON_POST_RENDER_ATTR);
 		if (this.getFirstChild() != null)
 		{
+			int timeout = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_PERFORMANCE_TIMEOUT, 500, Env.getAD_Client_ID(Env.getCtx()));
 			Component grid = this.getFirstChild().getFirstChild();
 			String script = "setTimeout(function() { var grid = jq('#" + grid.getUuid() + "');";
-			script = script + "grid.parent().height(grid.css('height'));}, 500);";
+			script = script + "grid.parent().height(grid.css('height'));}, " + timeout + ");";
 			if (Executions.getCurrent() != null)
 				Clients.response(new AuScript(script));
 			this.getFirstChild().invalidate();

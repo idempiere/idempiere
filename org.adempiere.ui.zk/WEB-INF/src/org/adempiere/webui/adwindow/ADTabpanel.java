@@ -62,6 +62,8 @@ import org.compiere.model.GridWindow;
 import org.compiere.model.I_AD_Preference;
 import org.compiere.model.MLookup;
 import org.compiere.model.MPreference;
+import org.compiere.model.MRole;
+import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButton;
 import org.compiere.model.MToolBarButtonRestrict;
@@ -120,11 +122,10 @@ import org.zkoss.zul.impl.XulElement;
 public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
 DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 {
-
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -6748431395547118246L;
+	private static final long serialVersionUID = -3728896318124756192L;
 
 	private static final String ON_SAVE_OPEN_PREFERENCE_EVENT = "onSaveOpenPreference";
 
@@ -632,8 +633,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		//get extra toolbar process buttons
         MToolBarButton[] mToolbarButtons = MToolBarButton.getProcessButtonOfTab(gridTab.getAD_Tab_ID(), null);
         for(MToolBarButton mToolbarButton : mToolbarButtons) {
-        	ToolbarProcessButton toolbarProcessButton = new ToolbarProcessButton(mToolbarButton, this, windowPanel, windowNo);
-        	toolbarProcessButtons.add(toolbarProcessButton);
+        	Boolean access = MRole.getDefault().getProcessAccess(mToolbarButton.getAD_Process_ID());
+        	if (access != null && access.booleanValue()) {
+        		ToolbarProcessButton toolbarProcessButton = new ToolbarProcessButton(mToolbarButton, this, windowPanel, windowNo);
+        		toolbarProcessButtons.add(toolbarProcessButton);
+        	}
         }
         
         if (toolbarProcessButtons.size() > 0) {
@@ -941,6 +945,22 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     }
 
     /**
+     * @return TreePanel
+     */
+    public ADTreePanel getTreePanel()
+    {
+    	return treePanel;
+    }
+
+    /**
+     * @return TreePanel
+     */
+    public String getTreeDisplayedOn()
+    {
+    	return gridTab.getTreeDisplayedOn();
+    }
+
+    /**
      * Refresh current row
      */
     public void refresh()
@@ -1063,7 +1083,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     		int windowId = getGridTab().getAD_Window_ID();
     		int adTabId = getGridTab().getAD_Tab_ID();
     		if (windowId > 0 && adTabId > 0) {
-    			Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), "AD_Window_ID=? AND Attribute=?", null);
+    			Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), "AD_Window_ID=? AND Attribute=? AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
     			MPreference preference = query.setOnlyActiveRecords(true)
     										  .setApplyAccessFilter(true)
     										  .setParameters(windowId, adTabId+"|DetailPane.IsOpen")
@@ -1201,6 +1221,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         //sync tree 
         if (treePanel != null) 
         {
+        	if (getTreeDisplayedOn().equals(MTab.TREEDISPLAYEDON_MasterTab))
+        		treePanel.getParent().setVisible(!isDetailPaneMode());
+        	else if (getTreeDisplayedOn().equals(MTab.TREEDISPLAYEDON_DetailTab))
+        		treePanel.getParent().setVisible(isDetailPaneMode());
+
         	if ("Deleted".equalsIgnoreCase(e.getAD_Message()))
         	{
         		if (e.Record_ID != null && e.Record_ID instanceof Integer && ((Integer)e.Record_ID != gridTab.getRecord_ID()))
@@ -1374,6 +1399,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		if (listPanel.isVisible()) {
 			listPanel.refresh(gridTab);
 			listPanel.scrollToCurrentRow();
+			Clients.resize(listPanel);
 		} else {
 			listPanel.deactivate();
 		}
@@ -1626,6 +1652,14 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			script.append("b=false;}}}catch(error){}");
 			script.append("if(b){var w=zk.Widget.$('#").append(c.getUuid()).append("');w.focus(0);}");
 			Clients.response(new AuScript(script.toString()));
+		}
+	}
+
+	@Override
+	public void setParent(Component parent) {
+		super.setParent(parent);
+		if (parent != null) {
+			listPanel.onADTabPanelParentChanged();
 		}
 	}
 }

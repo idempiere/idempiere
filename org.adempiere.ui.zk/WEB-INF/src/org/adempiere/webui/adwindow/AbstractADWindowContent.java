@@ -38,6 +38,9 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.WArchive;
 import org.adempiere.webui.WRequest;
 import org.adempiere.webui.WZoomAcross;
+import org.adempiere.webui.adwindow.validator.WindowValidatorEvent;
+import org.adempiere.webui.adwindow.validator.WindowValidatorEventType;
+import org.adempiere.webui.adwindow.validator.WindowValidatorManager;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialogTemplate;
 import org.adempiere.webui.apps.HelpWindow;
@@ -78,6 +81,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
 import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
+import org.compiere.model.I_M_Product;
 import org.compiere.model.MImage;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
@@ -860,6 +864,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	private Div mask;
 
+	protected ADWindow adwindow;
+
 	/**
 	 *	@see ToolbarListener#onLock()
 	 */
@@ -1354,7 +1360,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	if (GridTab.DEFAULT_STATUS_MESSAGE.equals(e.getAD_Message()))
         	{
         		if (detailTab) {
-                	adTabbox.setDetailPaneStatusMessage("", false);
+        			String msg = e.getTotalRows() + " " + Msg.getMsg(Env.getCtx(), "Records");
+                	adTabbox.setDetailPaneStatusMessage(msg, false);
                 } else {
                 	statusBar.setStatusLine ("", false);
                 }
@@ -1367,7 +1374,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	            String origmsg = null;
 	            if (msg != null && msg.length() > 0)
 	            {
-	            	origmsg = Msg.getMsg(Env.getCtx(), e.getAD_Message());
+	            	if (detailTab && GridTable.DATA_REFRESH_MESSAGE.equals(e.getAD_Message()))
+	            	{
+	            		origmsg = e.getTotalRows() + " " + Msg.getMsg(Env.getCtx(), "Records");
+	            	}
+	            	else
+	            	{
+	            		origmsg = Msg.getMsg(Env.getCtx(), e.getAD_Message());
+	            	}
 	            	adMessage.append(origmsg);
 	            }
 	            String info = e.getInfo();
@@ -1503,8 +1517,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             				Env.getAD_Role_ID(ctx), adTabbox.getSelectedGridTab().getAD_Window_ID(),
             				adTabbox.getSelectedGridTab().getAD_Tab_ID());
             	} else {
-	        		/* when a detail record is modified add header to recent items */
-	        		GridTab mainTab = gridWindow.getTab(0);
+	        		GridTab mainTab = getMainTabAbove();
 	        		if (mainTab != null) {
 			        	MRecentItem.addModifiedField(ctx, mainTab.getAD_Table_ID(),
 			        			mainTab.getRecord_ID(), Env.getAD_User_ID(ctx),
@@ -1531,11 +1544,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         //  Transaction info
         if (!detailTab)
         {
-	        String trxInfo = adTabbox.getSelectedGridTab().getTrxInfo();
+        	GridTab gt = adTabbox.getSelectedGridTab();
+	        String trxInfo = gt.getStatusLine();
 	        if (trxInfo != null)
 	        {
 	            statusBar.setInfo(trxInfo);
 	        }
+	        SessionManager.getAppDesktop().updateHelpQuickInfo(gt);
         }
 
 	    //  Check Attachment
@@ -1721,14 +1736,38 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	SessionManager.getAppDesktop().showWindow(new HelpWindow(gridWindow), "center");
     }
 
-    /**
-     * @see ToolbarListener#onNew()
-     */
+    @Override
     public void onNew()
+    {
+    	final Callback<Boolean> postCallback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.AFTER_NEW.getName());
+			    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, null);
+				}
+			}
+		};
+    	Callback<Boolean> preCallback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					onNewCallback(postCallback);
+				}
+			}
+		};
+		
+		WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.BEFORE_NEW.getName());
+    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, preCallback);
+    }
+    
+    private void onNewCallback(final Callback<Boolean> postCallback)
     {
         if (!adTabbox.getSelectedGridTab().isInsertRecord())
         {
             logger.warning("Insert Record disabled for Tab");
+            if (postCallback != null)
+            	postCallback.onCallback(false);
             return;
         }
 
@@ -1760,26 +1799,59 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			            {
 			            	adTabbox.getSelectedTabpanel().getGridView().onEditCurrentRow();
 			            }
+			            if (postCallback != null)
+			            	postCallback.onCallback(true);
 			        }
 			        else
 			        {
 			            logger.severe("Could not create new record");
+			            if (postCallback != null)
+			            	postCallback.onCallback(false);
 			        }
 			        focusToActivePanel();
+				}
+				else
+				{
+					if (postCallback != null)
+		            	postCallback.onCallback(result);
 				}
 			}
 		});
     }
 
-	// Elaine 2008/11/19
-    /**
-     * @see ToolbarListener#onCopy()
-     */
+    @Override
     public void onCopy()
+    {
+    	final Callback<Boolean> postCallback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.AFTER_COPY.getName());
+			    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, null);
+				}
+			}
+		};
+    	Callback<Boolean> preCallback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					onCopyCallback(postCallback);
+				}
+			}
+		};
+		
+		WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.BEFORE_COPY.getName());
+    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, preCallback);
+    }
+    
+	// Elaine 2008/11/19
+    private void onCopyCallback(Callback<Boolean> postCallback)
     {
         if (!adTabbox.getSelectedGridTab().isInsertRecord())
         {
             logger.warning("Insert Record disabled for Tab");
+            if (postCallback != null)
+            	postCallback.onCallback(false);
             return;
         }
 
@@ -1794,10 +1866,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             breadCrumb.enableLastNavigation(adTabbox.getSelectedGridTab().getCurrentRow() + 1 < adTabbox.getSelectedGridTab().getRowCount());
             toolbar.enableTabNavigation(false);
             toolbar.enableIgnore(true);
+            if (postCallback != null)
+            	postCallback.onCallback(true);
+            
         }
         else
         {
             logger.severe("Could not create new record");
+            if (postCallback != null)
+            	postCallback.onCallback(false);
         }
         focusToActivePanel();
     }
@@ -1879,10 +1956,32 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         LayoutUtils.openEmbeddedWindow(toolbar, findWindow, "after_start");
 	}
 
-    /**
-     * @see ToolbarListener#onIgnore()
-     */
-    public void onIgnore()
+	@Override
+	public void onIgnore() 
+	{
+    	final Callback<Boolean> postCallback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.AFTER_IGNORE.getName());
+			    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, null);
+				}
+			}
+		};
+    	Callback<Boolean> preCallback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					onIgnoreCallback(postCallback);
+				}
+			}
+		};
+		
+		WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.BEFORE_IGNORE.getName());
+    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, preCallback);
+    }
+	
+    private void onIgnoreCallback(Callback<Boolean> postCallback)
     {
     	IADTabpanel dirtyTabpanel = adTabbox.getDirtyADTabpanel();
     	boolean newrecod = adTabbox.getSelectedGridTab().isNew();
@@ -1913,15 +2012,19 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		focusToActivePanel();
     	
     	updateToolbar();
+    	
+    	if (postCallback != null)
+    		postCallback.onCallback(true);
     }
 
     /**
      * @see ToolbarListener#onSave()
      */
+    @Override
     public void onSave()
     {
     	final IADTabpanel dirtyTabpanel = adTabbox.getDirtyADTabpanel();
-    	onSave(true, false, new Callback<Boolean>() {
+		onSave(true, false, new Callback<Boolean>() {
 			@Override
 			public void onCallback(Boolean result)
 			{
@@ -1943,7 +2046,35 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		});
     }
 
-    public void onSavePayment()
+    private void onSave(final boolean onSaveEvent, final boolean onNavigationEvent, final Callback<Boolean> callback) {
+    	final Callback<Boolean> postCallback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.AFTER_SAVE.getName());
+			    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, callback);
+				} else {
+					callback.onCallback(result);
+				}
+			}
+		};
+		
+    	Callback<Boolean> preCallback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					onSaveCallback(onSaveEvent, onNavigationEvent, postCallback);
+				} else if (callback != null) {
+					callback.onCallback(result);
+				}
+			}
+		};
+		
+    	WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.BEFORE_SAVE.getName());
+    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, preCallback);
+	}
+
+	public void onSavePayment()
     {
     	onSave(false, false, new Callback<Boolean>() {
 
@@ -1958,7 +2089,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     /**
      * @param onSaveEvent
      */
-    private void onSave(final boolean onSaveEvent, final boolean onNavigationEvent, final Callback<Boolean> callback)
+    private void onSaveCallback(final boolean onSaveEvent, final boolean onNavigationEvent, final Callback<Boolean> callback)
     {
     	final boolean wasChanged = toolbar.isSaveEnable();
     	IADTabpanel dirtyTabpanel = adTabbox.getDirtyADTabpanel();
@@ -2038,8 +2169,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			        			Env.getAD_Role_ID(ctx), adTabbox.getSelectedGridTab().getAD_Window_ID(),
 			        			adTabbox.getSelectedGridTab().getAD_Tab_ID());
 		        	} else {
-		        		/* when a detail record is modified add header to recent items */
-		        		GridTab mainTab = gridWindow.getTab(0);
+		        		GridTab mainTab = getMainTabAbove();
 		        		if (mainTab != null) {
 				        	MRecentItem.addModifiedField(ctx, mainTab.getAD_Table_ID(),
 				        			mainTab.getRecord_ID(), Env.getAD_User_ID(ctx),
@@ -2053,7 +2183,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		        	MRecentItem.touchUpdatedRecord(ctx, adTabbox.getSelectedGridTab().getAD_Table_ID(),
 		        			adTabbox.getSelectedGridTab().getRecord_ID(), Env.getAD_User_ID(ctx));
 		    	} else {
-		    		GridTab mainTab = gridWindow.getTab(0);
+	        		GridTab mainTab = getMainTabAbove();
 		    		if (mainTab != null) {
 			        	MRecentItem.touchUpdatedRecord(ctx, mainTab.getAD_Table_ID(),
 			        			mainTab.getRecord_ID(), Env.getAD_User_ID(ctx));
@@ -2069,6 +2199,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		
 		if (callback != null)
 			callback.onCallback(true);
+	}
+
+	private GridTab getMainTabAbove() {
+		/* when a detail record is modified add header to recent items */
+		GridTab mainTab = adTabbox.getSelectedGridTab(); // find parent tab (IDEMPIERE-2125 - tbayen)
+		while (mainTab != null && mainTab.getTabLevel() > 0) {
+			GridTab parentTab = mainTab.getParentTab();
+			if (parentTab == mainTab)
+				break;
+			mainTab = parentTab;
+		}
+		return mainTab;
 	}
 
 	private void showLastError() {
@@ -2109,13 +2251,37 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		});
     }
 
-    /**
-     * @see ToolbarListener#onDelete()
-     */
-    public void onDelete()
+	@Override
+	public void onDelete()
+	{
+		final Callback<Boolean> postCallback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.AFTER_DELETE.getName());
+			    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, null);
+				}
+			}
+		};
+    	Callback<Boolean> preCallback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					onDeleteCallback(postCallback);
+				}
+			}
+		};
+		
+		WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.BEFORE_DELETE.getName());
+    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, preCallback);
+	}
+	
+    private void onDeleteCallback(final Callback<Boolean> postCallback)
     {
         if (adTabbox.getSelectedGridTab().isReadOnly())
         {
+        	if (postCallback != null)
+        		postCallback.onCallback(false);
             return;
         }
         
@@ -2123,7 +2289,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         final int[] indices = adTabbox.getSelectedGridTab().getSelection();
 		if (indices.length > 0 && adTabbox.getSelectedTabpanel().isGridView())
 		{
-			onDeleteSelected();
+			onDeleteSelected(postCallback);
 			return;
 		}
 
@@ -2140,17 +2306,21 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		            adTabbox.getSelectedTabpanel().dynamicDisplay(0);
 		            focusToActivePanel();
-		            MRecentItem.publishChangedEvent(Env.getAD_User_ID(ctx));
+		            MRecentItem.publishChangedEvent(Env.getAD_User_ID(ctx));		            
 				}
+				if (postCallback != null)
+					postCallback.onCallback(result);
 	        }
 		});
     }
 
     // Elaine 2008/12/01
-    private void onDeleteSelected()
+    private void onDeleteSelected(final Callback<Boolean> postCallback)
 	{
     	if (adTabbox.getSelectedGridTab().isReadOnly() || !adTabbox.getSelectedTabpanel().isGridView())
         {
+    		if (postCallback != null)
+    			postCallback.onCallback(false);
             return;
         }
 
@@ -2181,18 +2351,43 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						adTabbox.getSelectedTabpanel().dynamicDisplay(0);
 						statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted")+": "+count, false);
 					}
+					if (postCallback != null)
+						postCallback.onCallback(result);
 				}
 			});
 		} else {
 			statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Selected")+": 0", false);
+			if (postCallback != null)
+				postCallback.onCallback(false);
 		}
 	}
 	//
 
-    /**
-     * @see ToolbarListener#onPrint()
-     */
-	public void onPrint() {
+    @Override
+    public void onPrint() {
+    	final Callback<Boolean> postCallback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.AFTER_PRINT.getName());
+			    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, null);
+				}
+			}
+		};
+    	Callback<Boolean> preCallback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					onPrintCallback(postCallback);
+				}
+			}
+		};
+		
+		WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.BEFORE_PRINT.getName());
+    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, preCallback);
+    }
+    
+	private void onPrintCallback(final Callback<Boolean> postCallback) {
 		//Get process defined for this tab
 		final int AD_Process_ID = adTabbox.getSelectedGridTab().getAD_Process_ID();
 		//log.info("ID=" + AD_Process_ID);
@@ -2212,15 +2407,27 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					int table_ID = adTabbox.getSelectedGridTab().getAD_Table_ID();
 					int record_ID = adTabbox.getSelectedGridTab().getRecord_ID();
 
-					ProcessModalDialog dialog = new ProcessModalDialog(AbstractADWindowContent.this, getWindowNo(), AD_Process_ID,table_ID, record_ID, true);
+					final ProcessModalDialog dialog = new ProcessModalDialog(AbstractADWindowContent.this, getWindowNo(), AD_Process_ID,table_ID, record_ID, true);
 					if (dialog.isValid()) {
 						dialog.setWidth("500px");
 						dialog.setBorder("normal");						
 						getComponent().getParent().appendChild(dialog);
 						showBusyMask(dialog);
 						LayoutUtils.openOverlappedWindow(getComponent(), dialog, "middle_center");
+						if (postCallback != null) {
+							dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+								@Override
+								public void onEvent(Event event) throws Exception {
+									postCallback.onCallback(!dialog.isCancel());
+								}
+							});
+						}
 						dialog.focus();
+					} else if (postCallback != null) {
+						postCallback.onCallback(result);
 					}
+				} else if (postCallback != null) {
+					postCallback.onCallback(result);
 				}
 			}
 		};
@@ -2327,7 +2534,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      */
 	public void onProductInfo()
 	{
-		InfoPanel.showProduct(0);
+		InfoPanel.showPanel(I_M_Product.Table_Name);
 	}
 	//
 
@@ -2929,6 +3136,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		return boolChanges;
 	}
 
+	public void setADWindow(ADWindow adwindow) {
+		this.adwindow = adwindow;
+	}
+	
+	public ADWindow getADWindow() {
+		return adwindow;
+	}
+	
 	private void clearTitleRelatedContext() {
 		// IDEMPIERE-1328
 		// clear the values for the tab header

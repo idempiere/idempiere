@@ -35,7 +35,7 @@ public class MCashBook extends X_C_CashBook
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4602423783184037174L;
+	private static final long serialVersionUID = 3991585668643587699L;
 
 	/**
 	 * 	Get MCashBook from Cache
@@ -142,14 +142,5 @@ public class MCashBook extends X_C_CashBook
 
 		return success;
 	}	//	afterSave
-
-	/**
-	 * 	Before Delete
-	 *	@return true
-	 */
-	protected boolean beforeDelete ()
-	{
-		return delete_Accounting("C_Cashbook_Acct"); 
-	}	//	beforeDelete
 
 }	//	MCashBook

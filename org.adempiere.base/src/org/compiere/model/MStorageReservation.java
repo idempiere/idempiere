@@ -210,22 +210,20 @@ public class MStorageReservation extends X_M_StorageReservation {
 	}
 
 	/**
-	 * 	Update Storage Info add.
-	 * 	Called from MProjectIssue
-	 *	@param ctx context
-	 *	@param M_Warehouse_ID warehouse
-	 *	@param M_Product_ID product
-	 *	@param M_AttributeSetInstance_ID AS Instance
-	 *	@param reservationAttributeSetInstance_ID reservation AS Instance
-	 *	@param diffQty add
-	 *	@param isSOTrx
-	 *	@param trxName transaction
-	 *	@return true if updated
+	 * 
+	 * @param ctx
+	 * @param M_Warehouse_ID
+	 * @param M_Product_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param diffQty
+	 * @param isSOTrx
+	 * @param trxName
+	 * @return
 	 */
 	public static boolean add (Properties ctx, int M_Warehouse_ID, 
-		int M_Product_ID, int M_AttributeSetInstance_ID, int reservationAttributeSetInstance_ID,
-		BigDecimal diffQty, boolean isSOTrx, String trxName)
-	{
+			int M_Product_ID, int M_AttributeSetInstance_ID,
+			BigDecimal diffQty, boolean isSOTrx, String trxName){
+		
 		if (diffQty == null || diffQty.signum() == 0)
 			return true;
 
@@ -233,12 +231,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 		MProduct prd = new MProduct(ctx, M_Product_ID, trxName);
 		if (prd.getM_AttributeSet_ID() == 0 || ! prd.getM_AttributeSet().isInstanceAttribute()) {
 			// Product doesn't manage attribute set, always reserved with 0
-			reservationAttributeSetInstance_ID = 0;
 			M_AttributeSetInstance_ID = 0;
-		}
-		//
-		if (M_AttributeSetInstance_ID != reservationAttributeSetInstance_ID) {
-			M_AttributeSetInstance_ID = reservationAttributeSetInstance_ID;
 		}
 
 		//	Get Storage
@@ -261,6 +254,28 @@ public class MStorageReservation extends X_M_StorageReservation {
 			s_log.fine(diffText.toString());
 		}
 		return storage.save (trxName);
+	}
+	
+	/**
+	 * 	Update Storage Info add.
+	 * 	Called from MProjectIssue
+	 *	@param ctx context
+	 *	@param M_Warehouse_ID warehouse
+	 *	@param M_Product_ID product
+	 *	@param M_AttributeSetInstance_ID AS Instance
+	 *	@param reservationAttributeSetInstance_ID reservation AS Instance
+	 *	@param diffQty add
+	 *	@param isSOTrx
+	 *	@param trxName transaction
+	 *	@return true if updated
+	 */
+	@Deprecated
+	public static boolean add (Properties ctx, int M_Warehouse_ID, 
+		int M_Product_ID, int M_AttributeSetInstance_ID, int reservationAttributeSetInstance_ID,
+		BigDecimal diffQty, boolean isSOTrx, String trxName)
+	{
+		
+		return add(ctx, M_Warehouse_ID, M_Product_ID, reservationAttributeSetInstance_ID, diffQty, isSOTrx, trxName);
 	}	//	add
 
 	/**

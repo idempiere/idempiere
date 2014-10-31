@@ -55,11 +55,11 @@ import org.zkoss.zul.ListModel;
  * @author Sendy Yagambrum
  */
 public class WListbox extends Listbox implements IMiniTable, TableValueChangeListener, WTableModelListener
-{	
+{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8717707799347994189L;
+	private static final long serialVersionUID = -706774424788688953L;
 
 	/**	Logger. */
 	private static CLogger logger = CLogger.getCLogger(WListbox.class);
@@ -745,22 +745,30 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	 */
 	public Integer getSelectedRowKey()
 	{
-		int row = 0;
-		final int noSelection = -1;
-		final int noIndex = -1;
-		Object data;
-
 		if (m_layout == null)
 		{
 			throw new UnsupportedOperationException("Layout not defined");
 		}
 
-		row = getSelectedRow();
+		int row = getSelectedRow();
 
+		// make common function
+		return getRowKeyAt (row);		
+	}   //  getSelectedRowKey
+
+	/**
+	 * IDEMPIERE-1334
+	 * get key of record at index
+	 * @param index
+	 * @return
+	 */
+	public Integer getRowKeyAt (int index){
 		// TODO factor out the two parts of this guard statement
-		if (row != noSelection && m_keyColumnIndex != noIndex)
-		{
-			data = getModel().getDataAt(row, m_keyColumnIndex);
+		if (index < 0 || m_keyColumnIndex < 0)
+			return null;
+		
+		
+		Object data = getModel().getDataAt(index, m_keyColumnIndex);
 
 			if (data instanceof IDColumn)
 			{
@@ -770,10 +778,33 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 			{
 				return (Integer)data;
 			}
+		return null;
 		}
 
-		return null;
-	}   //  getSelectedRowKey
+	/**
+	 * IDEMPIERE-1334
+	 * deselect all current select, set all record have key in lsKey is selected
+	 * when non key column just return
+	 * @param lsKey
+	 * @return
+	 */
+	public void setSelectedByKeys (List<Integer> lsKey){		
+		// no key column because can't set selected, just return
+		if (m_keyColumnIndex < 0)
+			return;					
+		ListModelTable model = getModel();
+		List<Object> lsSelectedItem = new ArrayList<Object> ();  
+		for (int index = 0; index < model.getSize(); index++){
+			Integer key = getRowKeyAt(index);
+			if (key == null)
+				continue;
+			
+			if (lsKey.contains(key)){
+				lsSelectedItem.add (model.getElementAt(index));						
+			}			
+		}	
+		model.setSelection(lsSelectedItem);
+	}
 
 	public Integer getFirstRowKey()
 	{
@@ -787,19 +818,8 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 			return null;
 		}
 		
-		Object data = getModel().getDataAt(0, m_keyColumnIndex);
-
-		if (data instanceof IDColumn)
-		{
-			data = ((IDColumn)data).getRecord_ID();
-		}
-		
-		if (data instanceof Integer)
-		{
-			return (Integer)data;
-		}
-		
-		return null;
+		// make common function
+		return getRowKeyAt (0);
 	}
 	
 	/**
@@ -1115,6 +1135,12 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		//no op
 	}
 
+	/**
+	 * TODO:in theory column of model maybe not map with column of view
+	 * in case set other data model this function always return number of column of model, 
+	 * maybe not equal with number of column of view
+	 * so it should is m_layout.length
+	 */
 	public int getColumnCount() {
 		return getModel() != null ? getModel().getNoColumns() : 0;
 	}

@@ -433,9 +433,22 @@ public class MInventory extends X_M_Inventory implements DocAction
 				continue;
 
 			//Ignore the Material Policy when is Reverse Correction
-			if(!isReversal())
-				checkMaterialPolicy(line, qtyDiff);
-
+			if(!isReversal()){
+				BigDecimal qtyOnLineMA = MInventoryLineMA.getManualQty(line.getM_InventoryLine_ID(), get_TrxName());
+				
+				if(qtyDiff.signum()<0){
+					if(qtyOnLineMA.compareTo(qtyDiff)<0){
+						m_processMsg = "@Over_Qty_On_Attribute_Tab@ " + line.getLine();
+						return DOCSTATUS_Invalid;
+					}
+				}else{
+					if(qtyOnLineMA.compareTo(qtyDiff)>0){
+						m_processMsg = "@Over_Qty_On_Attribute_Tab@ " + line.getLine();
+						return DOCSTATUS_Invalid;
+					}
+				}
+				checkMaterialPolicy(line, qtyDiff.subtract(qtyOnLineMA));
+			}
 			//	Stock Movement - Counterpart MOrder.reserveStock
 			if (product != null 
 					&& product.isStocked() )
@@ -594,11 +607,15 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 * 	Check Material Policy.
 	 */
 	private void checkMaterialPolicy(MInventoryLine line, BigDecimal qtyDiff)
-	{
+	{	
+		
 		int no = MInventoryLineMA.deleteInventoryLineMA(line.getM_InventoryLine_ID(), get_TrxName());
 		if (no > 0)
-			if (log.isLoggable(Level.CONFIG)) log.config("Delete old #" + no);
-
+			if (log.isLoggable(Level.CONFIG)) log.config("Delete old #" + no);		
+		
+		if(qtyDiff.compareTo(Env.ZERO)==0)
+			return;
+		
 		//	Check Line
 		boolean needSave = false;
 		//	Attribute Set Instance
@@ -621,7 +638,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 						}
 						
 						//backward compatibility: -ve in MA is incoming trx, +ve in MA is outgoing trx 
-						MInventoryLineMA lineMA =  new MInventoryLineMA(line, storage.getM_AttributeSetInstance_ID(), maQty.negate(), storage.getDateMaterialPolicy());
+						MInventoryLineMA lineMA =  new MInventoryLineMA(line, storage.getM_AttributeSetInstance_ID(), maQty.negate(), storage.getDateMaterialPolicy(),true);
 						lineMA.saveEx();
 						
 						qtyDiff = qtyDiff.subtract(maQty);
@@ -632,7 +649,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 				
 				if(qtyDiff.compareTo(Env.ZERO)>0)
 				{
-					MInventoryLineMA lineMA =  MInventoryLineMA.addOrCreate(line, 0, qtyDiff.negate(), getMovementDate());
+					MInventoryLineMA lineMA =  MInventoryLineMA.addOrCreate(line, 0, qtyDiff.negate(), getMovementDate(),true);
 					lineMA.saveEx();
 				}				
 			}
@@ -649,7 +666,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 					{
 						MInventoryLineMA ma = new MInventoryLineMA (line, 
 								storage.getM_AttributeSetInstance_ID(),
-								qtyToDeliver,storage.getDateMaterialPolicy());
+								qtyToDeliver,storage.getDateMaterialPolicy(),true);
 						ma.saveEx();		
 						qtyToDeliver = Env.ZERO;
 						if (log.isLoggable(Level.FINE)) log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);		
@@ -658,7 +675,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 					{	
 						MInventoryLineMA ma = new MInventoryLineMA (line, 
 								storage.getM_AttributeSetInstance_ID(),
-								storage.getQtyOnHand(),storage.getDateMaterialPolicy());
+								storage.getQtyOnHand(),storage.getDateMaterialPolicy(),true);
 						ma.saveEx();
 						qtyToDeliver = qtyToDeliver.subtract(storage.getQtyOnHand());
 						if (log.isLoggable(Level.FINE)) log.fine( ma + ", QtyToDeliver=" + qtyToDeliver);		
@@ -670,7 +687,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 				//	No AttributeSetInstance found for remainder
 				if (qtyToDeliver.signum() != 0)
 				{
-					MInventoryLineMA lineMA =  MInventoryLineMA.addOrCreate(line, 0, qtyToDeliver, getMovementDate());
+					MInventoryLineMA lineMA =  MInventoryLineMA.addOrCreate(line, 0, qtyToDeliver, getMovementDate(),true);
 					lineMA.saveEx();
 					if (log.isLoggable(Level.FINE)) log.fine("##: " + lineMA);
 				}
@@ -859,7 +876,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 				{
 					MInventoryLineMA ma = new MInventoryLineMA (rLine, 
 							mas[j].getM_AttributeSetInstance_ID(),
-							mas[j].getMovementQty().negate(),mas[j].getDateMaterialPolicy());
+							mas[j].getMovementQty().negate(),mas[j].getDateMaterialPolicy(),true);
 					ma.saveEx();
 				}
 			}

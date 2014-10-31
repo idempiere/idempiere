@@ -21,6 +21,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.part.UIPart;
 import org.compiere.model.GridField;
+import org.compiere.model.GridTab;
 import org.compiere.model.MQuery;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
@@ -204,6 +205,10 @@ public interface IDesktop extends UIPart {
 	public void updateHelpContext(String ctxType, int recordId);
 	
 	public void updateHelpTooltip(GridField gridField);
+
+	public void updateHelpTooltip(String hdr, String  desc, String help, String otherContent);
+
+	public void updateHelpQuickInfo(GridTab gridTab);
 
 	public boolean isPendingWindow();
 

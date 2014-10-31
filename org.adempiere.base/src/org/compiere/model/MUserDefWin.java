@@ -106,11 +106,6 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	 */
 	public static MUserDefWin getBestMatch (Properties ctx, int window_ID)
 	{
-		//  Check Cache
-		Integer key = new Integer(window_ID);
-		if (s_cache.containsKey(key))
-			return s_cache.get(key);
-
 		// parameters
 		final int AD_Org_ID = Env.getAD_Org_ID(ctx);
 		//final int anyOrg = 0;
@@ -119,6 +114,17 @@ public class MUserDefWin extends X_AD_UserDef_Win
 		final int AD_User_ID = Env.getAD_User_ID(ctx);
 		//final String anyUser = "NULL";
 		
+		//  Check Cache
+		String key = new StringBuilder().append(window_ID).append("_")
+				.append(Env.getAD_Client_ID(ctx)).append("_")
+				.append(Env.getAD_Language(ctx)).append("_")
+				.append(AD_Org_ID).append("_")
+				.append(AD_Role_ID).append("_")
+				.append(AD_User_ID)
+				.toString();
+		if (s_cache.containsKey(key))
+			return s_cache.get(key);
+
 		// candidates
 		MUserDefWin[] candidates = getAll(ctx, window_ID);
 		if (candidates == null) {
@@ -189,7 +195,7 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	}
 	
 	/**	Cache of selected MUserDefWin entries 					**/
-	private static CCache<Integer,MUserDefWin> s_cache = new CCache<Integer,MUserDefWin>(Table_Name, 3);	//  3 weights
+	private static CCache<String,MUserDefWin> s_cache = new CCache<String,MUserDefWin>(Table_Name, 3);	//  3 weights
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {

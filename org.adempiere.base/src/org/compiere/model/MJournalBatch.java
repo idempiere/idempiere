@@ -630,6 +630,7 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		//	Reverse indicator
 		StringBuilder msgd = new StringBuilder("(->").append(getDocumentNo()).append(")");
 		reverse.addDescription(msgd.toString());
+		reverse.setControlAmt(getControlAmt().negate());
 		//[ 1948157  ]
 		reverse.setReversal_ID(getGL_JournalBatch_ID());
 		reverse.saveEx();

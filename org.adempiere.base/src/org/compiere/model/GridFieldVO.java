@@ -17,6 +17,8 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import static org.compiere.model.SystemIDs.REFERENCE_AD_USER;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -28,7 +30,6 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import static org.compiere.model.SystemIDs.*;
 
 
 /**
@@ -46,9 +47,7 @@ public class GridFieldVO implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7595228091613559685L;
-
-	
+	private static final long serialVersionUID = 6391887120974125904L;
 
 	/**
 	 *  Return the SQL statement used for the MFieldVO.create
@@ -299,7 +298,8 @@ public class GridFieldVO implements Serializable
 				//IDEMPIERE-1120 Implement Field SeqNo customization
 				if (userDef.getSeqNo() > 0)
 				    vo.SeqNo = userDef.getSeqNo();
-
+				if (userDef.getAD_Val_Rule_ID() > 0)
+					vo.ValidationCode  = MValRule.get(ctx, userDef.getAD_Val_Rule_ID()).getCode();
 			}
 		}
 		//
@@ -314,13 +314,15 @@ public class GridFieldVO implements Serializable
 	 *  @param rs result set AD_Process_Para
 	 *  @return MFieldVO
 	 */
-	public static GridFieldVO createParameter (Properties ctx, int WindowNo, ResultSet rs)
+	public static GridFieldVO createParameter (Properties ctx, int WindowNo, int ProcessIDOfPanel, int WindowIDOfPanel, ResultSet rs)
 	{
 		GridFieldVO vo = new GridFieldVO (ctx, WindowNo, 0, 0, 0, false);
 		vo.isProcess = true;
 		vo.IsDisplayed = true;
 		vo.IsReadOnly = false;
 		vo.IsUpdateable = true;
+		vo.AD_Process_ID_Of_Panel = ProcessIDOfPanel;
+		vo.AD_Window_ID_Of_Panel = WindowIDOfPanel;
 
 		try
 		{
@@ -399,6 +401,7 @@ public class GridFieldVO implements Serializable
 		voT.IsEncryptedField = voF.IsEncryptedField;
 		voT.ReadOnlyLogic = voF.ReadOnlyLogic;
 		voT.DisplayLogic = voF.DisplayLogic;
+		voT.AD_Process_ID_Of_Panel = voF.AD_Process_ID_Of_Panel;
 		voT.initFinish();
 		
 		return voT;
@@ -487,6 +490,12 @@ public class GridFieldVO implements Serializable
 	public int          TabNo;
 	/** AD_Winmdow_ID               */
 	public int          AD_Window_ID;
+	/** 
+	 *  in case this field lie on parameter process panel, AD_Process_ID_Of_Panel is id of process will run in this panel 
+	 *  it's difference with AD_Process_ID
+	 */
+	public int          AD_Process_ID_Of_Panel;
+	public int          AD_Window_ID_Of_Panel;
 	/** AD_Tab_ID					*/
 	public int			AD_Tab_ID;
 	/** Is the Tab Read Only        */
@@ -519,9 +528,9 @@ public class GridFieldVO implements Serializable
 	public int			SeqNo = 0;
 	/** Grid Display sequence	*/
 	public int			SeqNoGrid = 0;
-	/**	Dislay Logic	*/
+	/**	Dislay Logic, never set null for it	*/
 	public String       DisplayLogic = "";
-	/**	Default Value	*/
+	/**	Default Value, never set null for it	*/	
 	public String       DefaultValue = "";
 	/**	Mandatory		*/
 	public boolean      IsMandatory = false;
@@ -756,7 +765,8 @@ public class GridFieldVO implements Serializable
 		//  Process Parameter
 		clone.isRange = isRange;
 		clone.DefaultValue2 = DefaultValue2;
-
+		clone.AD_Process_ID_Of_Panel = AD_Process_ID_Of_Panel;
+		clone.AD_Window_ID_Of_Panel = AD_Window_ID_Of_Panel;
 		return clone;
 	}	//	clone
 	

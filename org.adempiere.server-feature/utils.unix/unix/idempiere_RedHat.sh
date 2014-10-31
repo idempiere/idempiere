@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # FileName:	idempiere.init
-# Description:	adempiere erp software startup and shutdown
+# Description:	idempiere erp software startup and shutdown
 # Vendor:	K.K. Alice
 # Created:	05. April 2004
 # Author:	S. Christians
@@ -13,11 +13,11 @@
 # FilePerms:	0755
 #
 # chkconfig:	2345 97 06
-# $Id: adempiere,v 1.1 2006/03/16 05:00:28 cruiz Exp $
+# $Id: idempiere,v 1.1 2006/03/16 05:00:28 cruiz Exp $
 
 # initialization
 # adjust these variables to your environment
-IDEMPIERE_HOME=/home/idempiere/idempiere-server
+IDEMPIERE_HOME=/opt/idempiere-server
 ENVFILE=$IDEMPIERE_HOME/utils/myEnvironment.sh
 IDEMPIEREUSER=idempiere
 
@@ -39,7 +39,8 @@ start () {
 	  echo "iDempiere is already running"
 	  return 1
     fi
-    echo -n "Starting ADempiere ERP: "
+    echo -n "Starting iDempiere ERP: "
+    cd $IDEMPIERE_HOME/utils
     source $ENVFILE 
     export LOGFILE=$IDEMPIERE_HOME/log/idempiere_`date +%Y%m%d%H%M%S`.log
     su $IDEMPIEREUSER -c "mkdir -p $IDEMPIERE_HOME/log"
@@ -81,9 +82,10 @@ stop () {
 	  return 1
     fi
     echo -n "Stopping iDempiere ERP: "
+    cd $IDEMPIERE_HOME/utils
     source $ENVFILE 
     echo "Trying direct kill with signal -15"
-    # Adempiere didn't finish - try direct kill with signal 15, then signal 9
+    # iDempiere didn't finish - try direct kill with signal 15, then signal 9
     kill -15 -`ps ax o pgid,command | grep -v grep | grep $IDEMPIERE_HOME | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
     sleep 5
     getidempierestatus
@@ -136,9 +138,6 @@ case "$1" in
     stop)
 	stop
 	;;
-    reload)
-	restart
-	;;
     restart)
 	restart
 	;;
@@ -149,7 +148,7 @@ case "$1" in
 	status
 	;;
     *)
-	echo $"Usage: $0 {start|stop|reload|restart|condrestart|status}"
+	echo $"Usage: $0 {start|stop|restart|condrestart|status}"
 	exit 1
 esac
 

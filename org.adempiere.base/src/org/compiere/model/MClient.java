@@ -17,9 +17,6 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import static org.compiere.model.MSysConfig.CLIENT_ACCOUNTING;
-import static org.compiere.model.MSysConfig.MAIL_SEND_CREDENTIALS;
-
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -59,7 +56,7 @@ public class MClient extends X_AD_Client
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3043792947325698506L;
+	private static final long serialVersionUID = -4479164806149932775L;
 
 	/**
 	 * 	Get client
@@ -450,9 +447,10 @@ public class MClient extends X_AD_Client
 			return msgreturn.toString();
 		}	
 		//
-		StringBuilder msgce = new StringBuilder("iDempiere EMail Test: ").append(toString());
+		String systemName = MSystem.get(getCtx()).getName();
+		StringBuilder msgce = new StringBuilder(systemName).append(" EMail Test: ").append(toString());
 		EMail email = createEMail (getRequestEMail(),
-			"iDempiere EMail Test",msgce.toString());
+				systemName + " EMail Test",msgce.toString());
 		if (email == null){
 			StringBuilder msgreturn = new StringBuilder("Could not create EMail: ").append(getName());
 			return msgreturn.toString();
@@ -554,6 +552,56 @@ public class MClient extends X_AD_Client
 		}
 	}	//	sendEMail
 
+	/**
+	 * 	Send EMail from User
+	 * 	@param from sender
+	 *	@param to recipient
+	 *	@param subject subject
+	 *	@param message message
+	 *	@param attachment optional attachment
+	 *	@return true if sent
+	 */
+	public boolean sendEMailAttachments (MUser from, MUser to,
+		String subject, String message, List<File> attachments)
+	{
+		return sendEMailAttachments(from, to, subject, message, attachments, false);
+	}
+
+	/**
+	 * 	Send EMail from User
+	 * 	@param from sender
+	 *	@param to recipient
+	 *	@param subject subject
+	 *	@param message message
+	 *	@param attachment optional attachment
+	 *  @param isHtml
+	 *	@return true if sent
+	 */
+	public boolean sendEMailAttachments (MUser from, MUser to,
+		String subject, String message, List<File> attachments, boolean isHtml)
+	{
+		EMail email = createEMail(from, to, subject, message, isHtml);
+		if (email == null)
+			return false;
+
+		if (attachments != null && !attachments.isEmpty())
+		{
+			for (File attachment : attachments)
+				email.addAttachment(attachment);
+		}
+		InternetAddress emailFrom = email.getFrom();
+		try
+		{
+			return sendEmailNow(from, to, email);
+		}
+		catch (Exception ex)
+		{
+			log.severe(getName() + " - from " + emailFrom
+				+ " to " + to + ": " + ex.getLocalizedMessage());
+			return false;
+		}
+	}	//	sendEMail
+	
 	/**
 	 * 	Send EMail from Request User - no trace
 	 *	@param to recipient email address
@@ -688,6 +736,11 @@ public class MClient extends X_AD_Client
 		um.setAD_User_ID(to.getAD_User_ID());
 		um.setSubject(email.getSubject());
 		um.setMailText(email.getMessageCRLF());
+		um.setMailText(email.getMessageCRLF());
+		um.setEMailFrom(email.getFrom().toString());
+		um.setRecipientTo(MUserMail.getRecipientWithCommaSeparator(email.getTos()));
+		um.setRecipientCc(MUserMail.getRecipientWithCommaSeparator(email.getCcs()));
+		um.setRecipientBcc(MUserMail.getRecipientWithCommaSeparator(email.getBccs()));
 		if (email.isSentOK())
 			um.setMessageID(email.getMessageID());
 		else
@@ -872,21 +925,21 @@ public class MClient extends X_AD_Client
 	private static final String CLIENT_ACCOUNTING_IMMEDIATE = "I";
 
 	public static boolean isClientAccounting() {
-		String ca = MSysConfig.getValue(CLIENT_ACCOUNTING,
+		String ca = MSysConfig.getValue(MSysConfig.CLIENT_ACCOUNTING,
 				CLIENT_ACCOUNTING_QUEUE, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return (ca.equalsIgnoreCase(CLIENT_ACCOUNTING_IMMEDIATE) || ca.equalsIgnoreCase(CLIENT_ACCOUNTING_QUEUE));
 	}
 
 	public static boolean isClientAccountingQueue() {
-		String ca = MSysConfig.getValue(CLIENT_ACCOUNTING,
+		String ca = MSysConfig.getValue(MSysConfig.CLIENT_ACCOUNTING,
 				CLIENT_ACCOUNTING_QUEUE, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return ca.equalsIgnoreCase(CLIENT_ACCOUNTING_QUEUE);
 	}
 
 	public static boolean isClientAccountingImmediate() {
-		String ca = MSysConfig.getValue(CLIENT_ACCOUNTING,
+		String ca = MSysConfig.getValue(MSysConfig.CLIENT_ACCOUNTING,
 				CLIENT_ACCOUNTING_QUEUE, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return ca.equalsIgnoreCase(CLIENT_ACCOUNTING_IMMEDIATE);
@@ -1036,14 +1089,14 @@ public class MClient extends X_AD_Client
 	private static final String MAIL_SEND_CREDENTIALS_SYSTEM = "S";
 
 	public static boolean isSendCredentialsClient() {
-		String msc = MSysConfig.getValue(MAIL_SEND_CREDENTIALS,
+		String msc = MSysConfig.getValue(MSysConfig.MAIL_SEND_CREDENTIALS,
 				MAIL_SEND_CREDENTIALS_USER, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return (MAIL_SEND_CREDENTIALS_CLIENT.equalsIgnoreCase(msc));
 	}
 
 	public static boolean isSendCredentialsSystem() {
-		String msc = MSysConfig.getValue(MAIL_SEND_CREDENTIALS,
+		String msc = MSysConfig.getValue(MSysConfig.MAIL_SEND_CREDENTIALS,
 				MAIL_SEND_CREDENTIALS_USER, // default
 				Env.getAD_Client_ID(Env.getCtx()));
 		return (MAIL_SEND_CREDENTIALS_SYSTEM.equalsIgnoreCase(msc));

@@ -61,31 +61,38 @@ public class ServerProcessCtl implements Runnable {
 		if (log.isLoggable(Level.FINE)) log.fine("ServerProcess - " + pi);
 
 		MPInstance instance = null; 
-		try 
-		{ 
-			instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getRecord_ID()); 
-		} 
-		catch (Exception e) 
-		{ 
-			pi.setSummary (e.getLocalizedMessage()); 
-			pi.setError (true); 
-			log.warning(pi.toString()); 
-			return null; 
-		} 
-		catch (Error e) 
-		{ 
-			pi.setSummary (e.getLocalizedMessage()); 
-			pi.setError (true); 
-			log.warning(pi.toString()); 
-			return null; 
-		}
-		if (!instance.save())
+		if (pi.getAD_PInstance_ID() <= 0)
 		{
-			pi.setSummary (Msg.getMsg(Env.getCtx(), "ProcessNoInstance"));
-			pi.setError (true);
-			return null;
+			try 
+			{ 
+				instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getRecord_ID()); 
+			} 
+			catch (Exception e) 
+			{ 
+				pi.setSummary (e.getLocalizedMessage()); 
+				pi.setError (true); 
+				log.warning(pi.toString()); 
+				return null; 
+			} 
+			catch (Error e) 
+			{ 
+				pi.setSummary (e.getLocalizedMessage()); 
+				pi.setError (true); 
+				log.warning(pi.toString()); 
+				return null; 
+			}
+			if (!instance.save())
+			{
+				pi.setSummary (Msg.getMsg(Env.getCtx(), "ProcessNoInstance"));
+				pi.setError (true);
+				return null;
+			}
+			pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
 		}
-		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+		else
+		{
+			instance = new MPInstance(Env.getCtx(), pi.getAD_PInstance_ID(), null);
+		}
 
 		//	execute
 		ServerProcessCtl worker = new ServerProcessCtl(pi, trx);

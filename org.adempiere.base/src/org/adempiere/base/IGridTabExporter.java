@@ -53,4 +53,11 @@ public interface IGridTabExporter {
 	 * @return suggested file name
 	 */
 	public String getSuggestedFileName(GridTab gridTab);
+	
+	/**
+	 * Check a tab (detail tab) is support to export in this exporter
+	 * @param gridTab
+	 * @return
+	 */
+	public boolean isExportableTab (GridTab gridTab);
 }

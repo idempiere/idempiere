@@ -121,6 +121,19 @@ html,body {
 	font-size: 10px;
 }
 
+.desktop-header-popup {
+	width: 800px;
+	border-radius: 3px;
+	border: 1px solid #d5d5d5;
+	border-right: 2px solid #d5d5d5;
+	border-bottom-width: 2px;
+	right: 1px;
+}
+
+.desktop-header-popup .desktop-header {
+	border: none;
+}
+
 .menu-href {
 	font-size: 11px;
 	font-weight: normal;
@@ -856,6 +869,23 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	background-color: #D3D3D3;
 }
 
+.adwindow-detailpane-adtab-grid-south {
+	background-color: transparent; 
+	position: absolute; 
+	right: 0px; 
+	top: 0px; 
+	height: 24px;
+}
+
+.adwindow-detailpane-adtab-grid-south .z-paging {
+	padding: 0px !important;
+}
+
+.adwindow-detailpane-adtab-grid-south .z-paging .z-paging-inp {
+	height: 16px;
+	line-height: 16px;
+}
+
 .adwindow-gridview-detail {
 	height: 200px;
 }
@@ -954,6 +984,10 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 .z-grid tbody tr.highlight td.row-indicator {
 	background-color: transparent !important;
 	background-image: none !important; 
+}
+
+div.z-column-cnt, div.z-grid-header div.z-auxheader-cnt {
+	padding: 4px 2px 3px;
 }
 
 .form-label 
@@ -1324,6 +1358,11 @@ div.simileAjax-bubble-container {
 	float: left;
 }
 
+.confirm-panel-center{
+    padding-left: 5px;
+    float: left;
+}
+
 .info-product-tabbedpane {
 	background-color: #FFFFFF;
 }
@@ -1335,6 +1374,18 @@ div.simileAjax-bubble-container {
 
 tbody.z-grid-empty-body td {
 	text-align: left;
+}
+
+tbody.z-listbox-empty-body td {
+	text-align: left;
+}
+
+div.z-listbox-body .z-listcell {
+	padding: 2px;
+}
+
+.z-listbox-autopaging .z-listcell-cnt {
+	height: 20px;
 }
 
 <%-- notification message --%>
@@ -1625,6 +1676,15 @@ font-size: 0;
 	height: 16px;
 	width: 16px;
 } 
+
+.document-search-current-link {
+	background-image:url(${c:encodeThemeURL('~./zul/img/tree/item-sel.gif')});
+}
+
+.global-search-tabpanel {
+	width: 500px;
+}
+
 <%-- workaround for http://jira.idempiere.com/browse/IDEMPIERE-692 --%>
 .z-combobox-pp {
 	max-height: 200px;

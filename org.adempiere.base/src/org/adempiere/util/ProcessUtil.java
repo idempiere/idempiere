@@ -53,7 +53,7 @@ import org.compiere.wf.MWorkflow;
  */
 public final class ProcessUtil {
 
-	public static final String JASPER_STARTER_CLASS = "org.compiere.report.ReportStarter";
+	public static final String JASPER_STARTER_CLASS = "org.adempiere.report.jasper.ReportStarter";
 
 	/**	Logger				*/
 	private static CLogger log = CLogger.getCLogger(ProcessUtil.class);
@@ -269,7 +269,7 @@ public final class ProcessUtil {
 
 			msg = engine.eval(rule.getScript()).toString();
 			//transaction should rollback if there are error in process
-			if ("@Error@".equals(msg))
+			if (msg != null && msg.startsWith("@Error@"))
 				success = false;
 
 			//	Parse Variables

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Terminal=false
+MultipleArgs=true
+Type=Link
+URL=http://localhost:8080
+Categories=Applications;
+Icon=idempiere.png
+Encoding=UTF-8
+Name=iDempiere Homepage
+Name[es]=Página Principal iDempiere

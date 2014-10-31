@@ -19,11 +19,15 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.DBException;
 import org.compiere.model.MPaySelection;
 import org.compiere.model.MPaySelectionLine;
+import org.compiere.model.X_C_Order;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -115,21 +119,27 @@ public class PaySelectionCreateFrom extends SvrProcess
 
 		StringBuilder sql = new StringBuilder("SELECT C_Invoice_ID,")
 			//	Open
-			.append(" currencyConvert(invoiceOpen(i.C_Invoice_ID, 0)")
-				.append(",i.C_Currency_ID, ?,?, i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID),")	//	##1/2 Currency_To,PayDate
+			.append(" currencyConvert(invoiceOpen(i.C_Invoice_ID, i.C_InvoicePaySchedule_ID)")
+				.append(",i.C_Currency_ID, ?,?, i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID) AS PayAmt,")	//	##1/2 Currency_To,PayDate
 			//	Discount
-			.append(" currencyConvert(paymentTermDiscount(i.GrandTotal,i.C_Currency_ID,i.C_PaymentTerm_ID,i.DateInvoiced, ?)")	//	##3 PayDate
-				.append(",i.C_Currency_ID, ?,?,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID),")	//	##4/5 Currency_To,PayDate
+			.append(" currencyConvert(invoiceDiscount(i.C_Invoice_ID,?,i.C_InvoicePaySchedule_ID)")	//	##3 PayDate
+				.append(",i.C_Currency_ID, ?,?,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID) AS DiscountAmt,")	//	##4/5 Currency_To,PayDate
 			.append(" PaymentRule, IsSOTrx ")		//	4..6
-			.append("FROM C_Invoice i ")
-			.append("WHERE IsSOTrx='N' AND IsPaid='N' AND DocStatus IN ('CO','CL')")
+			.append("FROM C_Invoice_v i WHERE ");
+		if (X_C_Order.PAYMENTRULE_DirectDebit.equals(p_PaymentRule))
+			sql.append("IsSOTrx='Y'");
+		else
+			sql.append("IsSOTrx='N'");
+		sql.append(" AND IsPaid='N' AND DocStatus IN ('CO','CL')")
 			.append(" AND AD_Client_ID=?")				//	##6
 			//	Existing Payments - Will reselect Invoice if prepared but not paid 
 			.append(" AND NOT EXISTS (SELECT * FROM C_PaySelectionLine psl")
 						.append(" INNER JOIN C_PaySelectionCheck psc ON (psl.C_PaySelectionCheck_ID=psc.C_PaySelectionCheck_ID)")
 						.append(" LEFT OUTER JOIN C_Payment pmt ON (pmt.C_Payment_ID=psc.C_Payment_ID)")
 						.append(" WHERE i.C_Invoice_ID=psl.C_Invoice_ID AND psl.IsActive='Y'")
-						.append(" AND (pmt.DocStatus IS NULL OR pmt.DocStatus NOT IN ('VO','RE')) )");
+						.append(" AND (pmt.DocStatus IS NULL OR pmt.DocStatus NOT IN ('VO','RE')) )")
+			//	Don't generate again invoices already on this payment selection 
+			.append(" AND i.C_Invoice_ID NOT IN (SELECT i.C_Invoice_ID FROM C_PaySelectionLine psl WHERE psl.C_PaySelection_ID=?)"); //	##7 
 		//	Disputed
 		if (!p_IncludeInDispute)
 			sql.append(" AND i.IsInDispute='N'");
@@ -143,7 +153,7 @@ public class PaySelectionCreateFrom extends SvrProcess
 				sql.append(" AND (");
 			else
 				sql.append(" AND ");
-			sql.append("paymentTermDiscount(invoiceOpen(C_Invoice_ID, 0), C_Currency_ID, C_PaymentTerm_ID, DateInvoiced, ?) > 0");	//	##
+			sql.append("invoiceDiscount(i.C_Invoice_ID,?,i.C_InvoicePaySchedule_ID) > 0");	//	##
 		}
 		//	OnlyDue
 		if (p_OnlyDue)
@@ -152,7 +162,8 @@ public class PaySelectionCreateFrom extends SvrProcess
 				sql.append(" OR ");
 			else
 				sql.append(" AND ");
-			sql.append("paymentTermDueDays(C_PaymentTerm_ID, DateInvoiced, ?) >= 0");	//	##
+			// sql.append("paymentTermDueDays(C_PaymentTerm_ID, DateInvoiced, ?) >= 0");	//	##
+			sql.append("i.DueDate<=?");	//	##
 			if (p_OnlyDiscount)
 				sql.append(")");
 		}
@@ -197,6 +208,7 @@ public class PaySelectionCreateFrom extends SvrProcess
 			pstmt.setTimestamp(index++, psel.getPayDate());
 			//
 			pstmt.setInt(index++, psel.getAD_Client_ID());
+			pstmt.setInt(index++, p_C_PaySelection_ID);
 			if (p_PaymentRule != null)
 				pstmt.setString(index++, p_PaymentRule);
 			if (p_OnlyDiscount)
@@ -229,9 +241,13 @@ public class PaySelectionCreateFrom extends SvrProcess
 				}
 			}
 		}
+		catch (SQLException e)
+		{
+			throw new DBException(e);
+		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, sql.toString(), e);
+			throw new AdempiereException(e);
 		}
 		finally
 		{

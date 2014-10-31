@@ -49,6 +49,7 @@ import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Vbox;
@@ -70,7 +71,11 @@ public class ExportAction implements EventListener<Event>
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private Listbox cboType = new Listbox();
 	private Checkbox chkCurrentRow = new Checkbox();
-
+	private int indxDetailSelected = 0;
+	private List<GridTab> childs;
+	private Row selectionTabRow = null;
+	private List<Checkbox> chkSelectionTabForExport = null;
+	private IGridTabExporter exporter;
 	/**
 	 * @param panel
 	 */
@@ -117,6 +122,7 @@ public class ExportAction implements EventListener<Event>
 			}
 
 			cboType.setSelectedIndex(0);
+			cboType.addActionListener(this);
 
 			Vbox vb = new Vbox();
 			vb.setWidth("100%");
@@ -154,15 +160,68 @@ public class ExportAction implements EventListener<Event>
 			chkCurrentRow.setSelected(true);
 			row.appendChild(chkCurrentRow);
 
+			selectionTabRow = new Row();
+			rows.appendChild(selectionTabRow);
+			
 			LayoutUtils.addSclass("dialog-footer", confirmPanel);
 			vb.appendChild(confirmPanel);
 			confirmPanel.addActionListener(this);
 		}
-		
+		displayExportTabSelection();
 		panel.getComponent().getParent().appendChild(winExportFile);
 		panel.showBusyMask(winExportFile);
 		LayoutUtils.openOverlappedWindow(panel.getComponent(), winExportFile, "middle_center");
 		winExportFile.addEventListener(DialogEvents.ON_WINDOW_CLOSE, this);
+		winExportFile.addEventListener("onExporterException", this);
+
+	}
+	
+	/**
+	 * Show list tab can export for user selection
+	 */
+	protected void displayExportTabSelection() {
+		initTabInfo ();
+		
+		exporter = getExporter ();
+		if (exporter == null){
+			Events.echoEvent("onExporterException", winExportFile, null);	
+		}
+		
+		// clear list checkbox selection to recreate with new reporter
+		selectionTabRow.getChildren().clear();
+		Vlayout vlayout = new Vlayout();
+		selectionTabRow.appendChild(new Space());
+		selectionTabRow.appendChild(vlayout);
+		vlayout.appendChild(new Label(Msg.getMsg(Env.getCtx(), "SelectTabToExport")));
+		
+		chkSelectionTabForExport = new ArrayList<Checkbox> ();
+		boolean isHasSelectionTab = false;
+		boolean isSelectTabDefault = false;
+		// with 2Pack, default is export all child tab
+		if (exporter.getClass().getName().equals("org.adempiere.pipo2.GridTab2PackExporter")){
+			isSelectTabDefault = true;
+		}
+		// for to make each export tab with one checkbox
+		for (GridTab child : childs){
+			Checkbox chkSelectionTab = new Checkbox();
+			chkSelectionTab.setLabel(child.getName());
+			// just allow selection tab can export
+			if (!exporter.isExportableTab(child)){
+				continue;
+			}
+			if (child.getTabNo() == indxDetailSelected || isSelectTabDefault){
+				chkSelectionTab.setSelected(true);
+			}
+			chkSelectionTab.setAttribute("tabBinding", child);
+			vlayout.appendChild(chkSelectionTab);
+			chkSelectionTabForExport.add(chkSelectionTab);
+			isHasSelectionTab = true;
+		}
+		
+		// in case no child tab can export. clear selection area
+		if (isHasSelectionTab == false){
+			selectionTabRow.getChildren().clear();
+		}
 	}
 
 	@Override
@@ -173,59 +232,79 @@ public class ExportAction implements EventListener<Event>
 			exportFile();
 		else if (event.getName().equals(DialogEvents.ON_WINDOW_CLOSE)) {
 			panel.hideBusyMask();			
+		}else if (event.getTarget().equals(cboType) && event.getName().equals(Events.ON_SELECT)) {
+			displayExportTabSelection();	
+		}else if (event.getName().equals("onExporterException")){
+			FDialog.error(0, winExportFile, "FileInvalidExtension");
+			winExportFile.onClose();
 		}
 	}
+	
+	/**
+	 * get info of window export,
+	 * index of active tab, list child tab 
+	 */
+	protected void initTabInfo() {
+		IADTabbox adTab = panel.getADTab();
+		int selected = adTab.getSelectedIndex();
+		int tabLevel = panel.getActiveGridTab().getTabLevel();
+		Set<String> tables = new HashSet<String>();
+		childs = new ArrayList<GridTab>();
+		List<GridTab> includedList = panel.getActiveGridTab().getIncludedTabs();
+		for(GridTab included : includedList)
+		{
+			String tableName = included.getTableName();
+			if (tables.contains(tableName))
+				continue;
+			tables.add(tableName);
+			childs.add(included);
+		}
+		for(int i = selected+1; i < adTab.getTabCount(); i++)
+		{
+			IADTabpanel adTabPanel = adTab.getADTabpanel(i);
+			if (adTabPanel.getGridTab().isSortTab())
+				continue;
+			if (adTabPanel.getGridTab().getTabLevel() <= tabLevel)
+				break;
+			String tableName = adTabPanel.getGridTab().getTableName();
+			if (tables.contains(tableName))
+				continue;
+			tables.add(tableName);
+			childs.add(adTabPanel.getGridTab());
+		}
+		
+		indxDetailSelected = 0;
+		if( adTab.getSelectedDetailADTabpanel()!=null )
+			indxDetailSelected = adTab.getSelectedDetailADTabpanel().getGridTab().getTabNo();
+		
+	}
 
+	/**
+	 * Get selected exporter
+	 * @return
+	 */
+	protected IGridTabExporter getExporter() {
+		ListItem li = cboType.getSelectedItem();
+		if(li == null || li.getValue() == null)
+		{
+			return null;
+		}
+
+		String ext = li.getValue().toString();
+		IGridTabExporter exporter = exporterMap.get(ext);
+		return exporter;
+	} 
+	
 	private void exportFile() {
 		try {
-			ListItem li = cboType.getSelectedItem();
-			if(li == null || li.getValue() == null)
-			{
-				FDialog.error(0, winExportFile, "FileInvalidExtension");
-				return;
-			}
-
-			String ext = li.getValue().toString();
-			IGridTabExporter exporter = exporterMap.get(ext);
-			if (exporter == null)
-			{
-				FDialog.error(0, winExportFile, "FileInvalidExtension");
-				return;
-			}
-
 			boolean currentRowOnly = chkCurrentRow.isSelected();
-			File file = File.createTempFile("Export", "."+ext);
-			IADTabbox adTab = panel.getADTab();
-			int selected = adTab.getSelectedIndex();
-			int tabLevel = panel.getActiveGridTab().getTabLevel();
-			Set<String> tables = new HashSet<String>();
-			List<GridTab> childs = new ArrayList<GridTab>();
-			List<GridTab> includedList = panel.getActiveGridTab().getIncludedTabs();
-			for(GridTab included : includedList)
-			{
-				String tableName = included.getTableName();
-				if (tables.contains(tableName))
-					continue;
-				tables.add(tableName);
-				childs.add(included);
+			File file = File.createTempFile("Export", "."+cboType.getSelectedItem().getValue().toString());
+			childs.clear();
+			for (Checkbox chkSeletionTab : chkSelectionTabForExport){
+				if (chkSeletionTab.isChecked()){
+					childs.add((GridTab)chkSeletionTab.getAttribute("tabBinding"));
+				}
 			}
-			for(int i = selected+1; i < adTab.getTabCount(); i++)
-			{
-				IADTabpanel adTabPanel = adTab.getADTabpanel(i);
-				if (adTabPanel.getGridTab().isSortTab())
-					continue;
-				if (adTabPanel.getGridTab().getTabLevel() <= tabLevel)
-					break;
-				String tableName = adTabPanel.getGridTab().getTableName();
-				if (tables.contains(tableName))
-					continue;
-				tables.add(tableName);
-				childs.add(adTabPanel.getGridTab());
-			}
-			
-			int indxDetailSelected = 0;
-			if( adTab.getSelectedDetailADTabpanel()!=null )
-				indxDetailSelected = adTab.getSelectedDetailADTabpanel().getGridTab().getTabNo();
 			
 			exporter.export(panel.getActiveGridTab(), childs, currentRowOnly,file,indxDetailSelected);
 

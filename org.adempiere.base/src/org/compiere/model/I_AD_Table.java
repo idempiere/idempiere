@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Table
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_AD_Table 
 {
@@ -151,6 +151,15 @@ public interface I_AD_Table
 	  * User who created this records
 	  */
 	public int getCreatedBy();
+
+    /** Column name DatabaseViewDrop */
+    public static final String COLUMNNAME_DatabaseViewDrop = "DatabaseViewDrop";
+
+	/** Set Drop view	  */
+	public void setDatabaseViewDrop (String DatabaseViewDrop);
+
+	/** Get Drop view	  */
+	public String getDatabaseViewDrop();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

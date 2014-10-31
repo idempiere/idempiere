@@ -16,12 +16,9 @@
  *****************************************************************************/
 package org.adempiere.webui.apps;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
-
-import javax.sql.RowSet;
-
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -112,7 +109,7 @@ public class WReport implements EventListener<Event> {
 	private MQuery	 	m_query;
 	private Menupopup 	m_popup;
 	/**	The Option List					*/
-	private ArrayList<KeyNamePair>	m_list = new ArrayList<KeyNamePair>();
+	private List<KeyNamePair>	m_list = new ArrayList<KeyNamePair>();
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(WReport.class);
 	/** The parent window for locking/unlocking during process execution */
@@ -130,35 +127,9 @@ public class WReport implements EventListener<Event> {
 	 */
 	private void getPrintFormats (int AD_Table_ID, int AD_Window_ID)
 	{
-		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		RowSet rowSet = MPrintFormat.getAccessiblePrintFormats(AD_Table_ID, AD_Window_ID, -1, null);
-		KeyNamePair pp = null;
-		try
-		{
-			while (rowSet.next())
-			{
-				pp = new KeyNamePair (rowSet.getInt(1), rowSet.getString(2));
-				if (rowSet.getInt(3) == AD_Client_ID)
-				{
-					m_list.add(pp);
-				}
-			}
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		}
+		m_list = MPrintFormat.getAccessiblePrintFormats(AD_Table_ID, AD_Window_ID, null, true);
 
-		//	No Format exists - create it
-		if (m_list.size() == 0)
-		{
-			if (pp == null)
-				createNewFormat (AD_Table_ID);		//	calls launch
-			else
-				copyFormat(pp.getKey(), AD_Client_ID);
-		}
-		//	One Format exists or no invoker - show it
-		else if (m_list.size() == 1)
+		if (m_list.size() == 1)
 			launchReport ((KeyNamePair)m_list.get(0));
 		//	Multiple Formats exist - show selection
 		else 
@@ -178,27 +149,6 @@ public class WReport implements EventListener<Event> {
 		m_popup.setPage(parent.getPage());
 		m_popup.open(parent);
 	}
-
-	/**
-	 * 	Create and Launch new Format for table
-	 * 	@param AD_Table_ID table
-	 */
-	private void createNewFormat (int AD_Table_ID)
-	{
-		MPrintFormat pf = MPrintFormat.createFromTable(Env.getCtx(), AD_Table_ID);
-		launchReport (pf);
-	}	//	createNewFormat
-
-	/**
-	 * 	Copy existing Format
-	 * 	@param AD_PrintFormat_ID print format
-	 * 	@param To_Client_ID to client
-	 */
-	private void copyFormat (int AD_PrintFormat_ID, int To_Client_ID)
-	{
-		MPrintFormat pf = MPrintFormat.copyToClient(Env.getCtx(), AD_PrintFormat_ID, To_Client_ID);
-		launchReport (pf);
-	}	//	copyFormatFromClient
 
 	/**
 	 * 	Launch Report

@@ -51,7 +51,7 @@ public class InfoProductWindow extends InfoWindow {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4817648658129732541L;
+	private static final long serialVersionUID = -1343685368452976048L;
 
 	private Tabbox tabbedPane;
 	private WListbox warehouseTbl;
@@ -116,6 +116,14 @@ public class InfoProductWindow extends InfoWindow {
 
 	@Override
 	protected String getSQLWhere() {
+		/**
+		 * when query not by click requery button, reuse prev where clause
+		 * IDEMPIERE-1979  
+		 */
+		if (!isQueryByUser && prevWhereClause != null){
+			return prevWhereClause;
+		}
+		
 		StringBuilder where = new StringBuilder(super.getSQLWhere());
 		if (getSelectedWarehouseId() > 0) {
 			if (where.length() > 0) {
@@ -123,14 +131,9 @@ public class InfoProductWindow extends InfoWindow {
 			}
 			where.append("p.IsSummary='N' ");
 		}
-		return where.toString();
-	}
-
-	@Override
-	protected void createParameterPanel() {
-		super.createParameterPanel();
-		initParameters();
-		dynamicDisplay(null);
+		// IDEMPIERE-1979
+		prevWhereClause = where.toString();
+		return prevWhereClause;
 	}
 
 	@Override
@@ -433,7 +436,11 @@ public class InfoProductWindow extends InfoWindow {
 		return 0;
 	}
 
-	private void initParameters() {		
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void initParameters() {
 		int M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_Warehouse_ID");
 		int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_PriceList_ID");
 		

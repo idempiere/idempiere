@@ -1193,10 +1193,7 @@ public class MOrder extends X_C_Order implements DocAction
 	{
 		if (isProcessed())
 			return false;
-		
-		for (MOrderLine line : getLines()) {
-			line.deleteEx(true);
-		}
+		// automatic deletion of lines is driven by model cascade definition in dictionary - see IDEMPIERE-2060
 		return true;
 	}	//	beforeDelete
 	
@@ -1369,7 +1366,7 @@ public class MOrder extends X_C_Order implements DocAction
 		}
 		
 		if (   getGrandTotal().signum() != 0
-			&& PAYMENTRULE_OnCredit.equals(getPaymentRule()))
+			&& (PAYMENTRULE_OnCredit.equals(getPaymentRule()) || PAYMENTRULE_DirectDebit.equals(getPaymentRule())))
 		{
 			if (!createPaySchedule())
 			{
@@ -1755,7 +1752,7 @@ public class MOrder extends X_C_Order implements DocAction
 					//	Update Reservation Storage
 					if (!MStorageReservation.add(getCtx(), line.getM_Warehouse_ID(), 
 						line.getM_Product_ID(), 
-						line.getM_AttributeSetInstance_ID(), line.getM_AttributeSetInstance_ID(),
+						line.getM_AttributeSetInstance_ID(),
 						difference, isSOTrx, get_TrxName()))
 						return false;
 				}	//	stocked

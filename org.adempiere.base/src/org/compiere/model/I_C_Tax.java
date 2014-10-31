@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Tax
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_C_Tax 
 {
@@ -72,6 +72,28 @@ public interface I_C_Tax
 	public int getAD_Rule_ID();
 
 	public org.compiere.model.I_AD_Rule getAD_Rule() throws RuntimeException;
+
+    /** Column name C_CountryGroupFrom_ID */
+    public static final String COLUMNNAME_C_CountryGroupFrom_ID = "C_CountryGroupFrom_ID";
+
+	/** Set Country Group From	  */
+	public void setC_CountryGroupFrom_ID (int C_CountryGroupFrom_ID);
+
+	/** Get Country Group From	  */
+	public int getC_CountryGroupFrom_ID();
+
+	public org.compiere.model.I_C_CountryGroup getC_CountryGroupFrom() throws RuntimeException;
+
+    /** Column name C_CountryGroupTo_ID */
+    public static final String COLUMNNAME_C_CountryGroupTo_ID = "C_CountryGroupTo_ID";
+
+	/** Set Country Group To	  */
+	public void setC_CountryGroupTo_ID (int C_CountryGroupTo_ID);
+
+	/** Get Country Group To	  */
+	public int getC_CountryGroupTo_ID();
+
+	public org.compiere.model.I_C_CountryGroup getC_CountryGroupTo() throws RuntimeException;
 
     /** Column name C_Country_ID */
     public static final String COLUMNNAME_C_Country_ID = "C_Country_ID";

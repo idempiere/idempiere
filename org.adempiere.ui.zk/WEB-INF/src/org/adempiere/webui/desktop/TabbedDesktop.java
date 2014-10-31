@@ -40,7 +40,6 @@ import org.zkoss.image.AImage;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Tab;
@@ -53,7 +52,6 @@ import org.zkoss.zul.Tabpanels;
  */
 public abstract class TabbedDesktop extends AbstractDesktop {
 
-	private static final String IN_PROGRESS_IMAGE = "~./zk/img/progress3.gif";
 	protected WindowContainer windowContainer;
 
 	public TabbedDesktop() {
@@ -76,6 +74,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 			pd.setTitle(null);
 			preOpenNewTab();
 			windowContainer.addWindow(tabPanel, title, true);
+			Events.postEvent(ProcessDialog.ON_INITIAL_FOCUS_EVENT, pd, null);
 		}
 		return pd;
 	}
@@ -119,6 +118,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 			infoPanel.setTitle(null);
 			preOpenNewTab();
 			windowContainer.addWindow(tabPanel, title, true);
+			infoPanel.focus();
 		} else {
 			FDialog.error(0, "NotValid");
 		}
@@ -161,17 +161,10 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		String id = AdempiereIdGenerator.escapeId(adWindow.getTitle());
 		tabPanel.setId(id+"_"+adWindow.getADWindowContent().getWindowNo());
 		final Tab tab = windowContainer.addWindow(tabPanel, adWindow.getTitle(), true);
-		tab.setImage(IN_PROGRESS_IMAGE);
 		tab.setClosable(false);		
 		final OpenWindowRunnable runnable = new OpenWindowRunnable(adWindow, tab, tabPanel, callback);
-		tabPanel.addEventListener("onOpenWindow", new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				runnable.run();
-			}
-		});				
 		preOpenNewTab();
-		Events.echoEvent(new Event("onOpenWindow", tabPanel));
+		runnable.run();
 	}
 
 	/**
@@ -253,17 +246,10 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 
     	final DesktopTabpanel tabPanel = new DesktopTabpanel();		
 		final Tab tab = windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, wnd.getTitle(), true, true);
-		tab.setImage(IN_PROGRESS_IMAGE);
 		tab.setClosable(false);		
 		final OpenWindowRunnable runnable = new OpenWindowRunnable(wnd, tab, tabPanel, null);
-		tabPanel.addEventListener("onOpenWindow", new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				runnable.run();
-			}
-		});				
 		preOpenNewTab();
-		Events.echoEvent(new Event("onOpenWindow", tabPanel));
+		runnable.run();
 	}
 
     /**
@@ -394,7 +380,6 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		@Override
 		public void run() {			
 			if (adWindow.createPart(tabPanel) != null ) {
-				tab.setImage(null);
 				tab.setClosable(true);
 				if (adWindow.getMImage() != null) {
 					try {

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Exec=gksudo "su -c idempiere '/opt/idempiere-server/utils/RUN_DBRestore.sh'"
+Terminal=true
+MultipleArgs=true
+Type=Application
+Categories=Applications;
+Icon=idempiere-restore.png
+Encoding=UTF-8
+Name=Restore Database
+Name[es]=Restaurar Base de Datos

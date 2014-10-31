@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_ReportCube
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_PA_ReportCube 
 {
@@ -291,38 +291,38 @@ public interface I_PA_ReportCube
     /** Column name IsUser1Dim */
     public static final String COLUMNNAME_IsUser1Dim = "IsUser1Dim";
 
-	/** Set User 1 Dimension.
-	  * Include User 1 as a cube dimension
+	/** Set User Element List 1 Dimension.
+	  * Include User Element List 1 as a cube dimension
 	  */
 	public void setIsUser1Dim (boolean IsUser1Dim);
 
-	/** Get User 1 Dimension.
-	  * Include User 1 as a cube dimension
+	/** Get User Element List 1 Dimension.
+	  * Include User Element List 1 as a cube dimension
 	  */
 	public boolean isUser1Dim();
 
     /** Column name IsUser2Dim */
     public static final String COLUMNNAME_IsUser2Dim = "IsUser2Dim";
 
-	/** Set User 2 Dimension.
-	  * Include User 2 as a cube dimension
+	/** Set User Element List 2 Dimension.
+	  * Include User Element List 2 as a cube dimension
 	  */
 	public void setIsUser2Dim (boolean IsUser2Dim);
 
-	/** Get User 2 Dimension.
-	  * Include User 2 as a cube dimension
+	/** Get User Element List 2 Dimension.
+	  * Include User Element List 2 as a cube dimension
 	  */
 	public boolean isUser2Dim();
 
     /** Column name IsUserElement1Dim */
     public static final String COLUMNNAME_IsUserElement1Dim = "IsUserElement1Dim";
 
-	/** Set User Element 1 Dimension.
+	/** Set User Column 1 Dimension.
 	  * Include User Element 1 as a cube dimension
 	  */
 	public void setIsUserElement1Dim (boolean IsUserElement1Dim);
 
-	/** Get User Element 1 Dimension.
+	/** Get User Column 1 Dimension.
 	  * Include User Element 1 as a cube dimension
 	  */
 	public boolean isUserElement1Dim();
@@ -330,12 +330,12 @@ public interface I_PA_ReportCube
     /** Column name IsUserElement2Dim */
     public static final String COLUMNNAME_IsUserElement2Dim = "IsUserElement2Dim";
 
-	/** Set User Element 2 Dimension.
+	/** Set User Column 2 Dimension.
 	  * Include User Element 2 as a cube dimension
 	  */
 	public void setIsUserElement2Dim (boolean IsUserElement2Dim);
 
-	/** Get User Element 2 Dimension.
+	/** Get User Column 2 Dimension.
 	  * Include User Element 2 as a cube dimension
 	  */
 	public boolean isUserElement2Dim();

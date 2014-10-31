@@ -43,7 +43,7 @@ public class ProcessInfo implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1371812474929601477L;
+	private static final long serialVersionUID = -3654748247858779823L;
 
 	/**
 	 *  Constructor
@@ -608,9 +608,14 @@ public class ProcessInfo implements Serializable
 	{
 		if (m_logs == null)
 			return null;
-		int[] ids = new int[m_logs.size()];
-		for (int i = 0; i < m_logs.size(); i++)
-			ids[i] = m_logs.get(i).getP_ID();
+		ArrayList<Integer> idsarray = new ArrayList<Integer>();
+		for (int i = 0; i < m_logs.size(); i++) {
+			if (m_logs.get(i).getP_ID() > 0)
+				idsarray.add(m_logs.get(i).getP_ID());
+		}
+		int[] ids = new int[idsarray.size()];
+		for (int i = 0; i < idsarray.size(); i++)
+			ids[i] = idsarray.get(i);
 		return ids;
 	}	//	getIDs
 
@@ -783,4 +788,16 @@ public class ProcessInfo implements Serializable
 	public PO getPO() {
 		return m_po;
 	}
+
+	/** FileName to be used */
+	private String m_PDFfileName;
+
+	public String getPDFFileName() {
+		return m_PDFfileName;
+	}
+
+	public void setPDFFileName(String fileName) {
+		this.m_PDFfileName = fileName;
+	}
+
 }   //  ProcessInfo

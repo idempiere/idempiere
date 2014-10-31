@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Tab
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_AD_Tab 
 {
@@ -518,6 +518,19 @@ public interface I_AD_Tab
 	  * Hierarchical Tab Level (0 = top)
 	  */
 	public int getTabLevel();
+
+    /** Column name TreeDisplayedOn */
+    public static final String COLUMNNAME_TreeDisplayedOn = "TreeDisplayedOn";
+
+	/** Set Tree displayed.
+	  * The tree can be displayed on master tab, detail tab or both
+	  */
+	public void setTreeDisplayedOn (String TreeDisplayedOn);
+
+	/** Get Tree displayed.
+	  * The tree can be displayed on master tab, detail tab or both
+	  */
+	public String getTreeDisplayedOn();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

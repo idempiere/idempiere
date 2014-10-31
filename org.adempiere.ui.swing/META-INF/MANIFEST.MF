@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Swing Client
 Bundle-SymbolicName: org.adempiere.ui.swing;singleton:=true
-Bundle-Version: 2.0.0.qualifier
+Bundle-Version: 2.1.0.qualifier
 Bundle-ClassPath: client.jar,
  swingx-1.6.jar,
  looks-2.0.4.jar,
@@ -58,6 +58,7 @@ Export-Package: com.jgoodies.looks,
  org.jdesktop.swingx.multisplitpane,
  org.jdesktop.swingx.painter,
  org.jdesktop.swingx.painter.effects,
+ org.jdesktop.swingx.plaf,
  org.jdesktop.swingx.renderer,
  org.jdesktop.swingx.rollover,
  org.jdesktop.swingx.search,
@@ -67,10 +68,8 @@ Export-Package: com.jgoodies.looks,
  org.jdesktop.swingx.tree,
  org.jdesktop.swingx.treetable,
  org.jdesktop.swingx.util
-Require-Bundle: org.adempiere.base;bundle-version="2.0.0",
- org.adempiere.ui;bundle-version="2.0.0",
- org.adempiere.report.jasper;bundle-version="2.0.0",
- org.adempiere.report.jasper.library;bundle-version="2.0.0",
+Require-Bundle: org.adempiere.base;bundle-version="2.1.0",
+ org.adempiere.ui;bundle-version="2.1.0",
  org.restlet;bundle-version="2.1.0",
  org.restlet.ext.net;bundle-version="2.1.0",
  org.restlet.ext.servlet;bundle-version="2.1.0",
@@ -79,6 +78,7 @@ Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.adempiere.base
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.net.ssl,
+ net.sf.jasperreports.engine,
  org.apache.ecs,
  org.apache.ecs.xhtml,
  org.apache.poi.hssf.usermodel,

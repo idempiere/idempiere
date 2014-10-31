@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry exported="true" kind="lib" path="lib/xalan-2.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-core-2.0.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/barcode4j-2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jasperreports-fonts-5.1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-beanutils-1.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-digester-2.1.jar"/>

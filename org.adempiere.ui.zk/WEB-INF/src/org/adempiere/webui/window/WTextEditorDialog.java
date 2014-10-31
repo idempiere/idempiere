@@ -38,11 +38,11 @@ import org.zkoss.zul.Vlayout;
  *
  */
 public class WTextEditorDialog extends Window implements EventListener<Event>{
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3852236029054284848L;
+	private static final long serialVersionUID = 1188165765430615546L;
+
 	private boolean editable;
 	private int maxSize;
 	private String text;
@@ -59,8 +59,9 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	 * @param text
 	 * @param editable
 	 * @param maxSize
+	 * @param isHtml - select the html tab at start
 	 */
-	public WTextEditorDialog(String title, String text, boolean editable, int maxSize) {
+	public WTextEditorDialog(String title, String text, boolean editable, int maxSize, boolean IsHtml) {
 		super();
 		setTitle(title);
 		this.editable = editable;
@@ -68,8 +69,14 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		this.text = text;
 		
 		init();
+		if (IsHtml)
+			tabbox.setSelectedTab(htmlTab);
 	}
-	
+
+	public WTextEditorDialog(String title, String text, boolean editable, int maxSize) {
+		this(title, text, editable, maxSize, false);
+	}
+
 	private void init() {
 		setBorder("normal");
 		setHeight("450px");
@@ -126,7 +133,11 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		vbox.appendChild(new Separator());
 		
 		ConfirmPanel confirmPanel = new ConfirmPanel(true);
-		vbox.appendChild(confirmPanel);
+		//Bug IDEMPIERE-1992 Create a Wrapper Div to Wrap ConfirmPanel,to prevent it from disappearing after user navigate to another window/tab
+		Div confirmPanelWrapper = new Div();
+		vbox.appendChild(confirmPanelWrapper);
+		confirmPanelWrapper.appendChild(confirmPanel);
+		//
 		confirmPanel.addButton(confirmPanel.createButton(ConfirmPanel.A_RESET));
 		confirmPanel.addActionListener(this);
 		
@@ -142,6 +153,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		}		
 		
 		tabbox.addEventListener(Events.ON_SELECT, this);
+		//Bug IDEMPIERE-1992 Ensure that text editor dialog has a close button
+		setClosable(true);
 	}
 
 	private void createEditor(org.zkoss.zul.Tabpanel tabPanel) {

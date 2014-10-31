@@ -56,16 +56,19 @@ import org.compiere.util.Language;
 public class InvoicePrint extends SvrProcess
 {
 	/**	Mail PDF			*/
-	private boolean		p_EMailPDF = false;
+	protected boolean		p_EMailPDF = false;
 	/** Mail Template		*/
-	private int			p_R_MailText_ID = 0;
+	protected int			p_R_MailText_ID = 0;
 	
-	private Timestamp	m_dateInvoiced_From = null;
-	private Timestamp	m_dateInvoiced_To = null;
-	private int		m_C_BPartner_ID = 0;
-	private int		m_C_Invoice_ID = 0;
-	private String		m_DocumentNo_From = null;
-	private String		m_DocumentNo_To = null;
+	protected Timestamp	m_dateInvoiced_From = null;
+	protected Timestamp	m_dateInvoiced_To = null;
+	protected int		m_C_BPartner_ID = 0;
+	protected int		m_C_Invoice_ID = 0;
+	protected String		m_DocumentNo_From = null;
+	protected String		m_DocumentNo_To = null;
+
+	protected volatile StringBuffer sql = new StringBuffer();
+	protected volatile List<Object> params = new ArrayList<Object>();
 
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -135,89 +138,8 @@ public class InvoicePrint extends SvrProcess
 			throw new AdempiereUserError ("@RestrictSelection@");
 
 		MClient client = MClient.get(getCtx());
-		
-		//	Get Info
-		StringBuilder sql = new StringBuilder (
-			"SELECT i.C_Invoice_ID,bp.AD_Language,c.IsMultiLingualDocument,"		//	1..3
-			//	Prio: 1. BPartner 2. DocType, 3. PrintFormat (Org)	//	see ReportCtl+MInvoice
-			+ " COALESCE(bp.Invoice_PrintFormat_ID, dt.AD_PrintFormat_ID, pf.Invoice_PrintFormat_ID),"	//	4 
-			+ " dt.DocumentCopies+bp.DocumentCopies,"								//	5
-			+ " bpc.AD_User_ID, i.DocumentNo,"										//	6..7
-			+ " bp.C_BPartner_ID "													//	8
-			+ "FROM C_Invoice i"
-			+ " INNER JOIN C_BPartner bp ON (i.C_BPartner_ID=bp.C_BPartner_ID)"
-			+ " LEFT OUTER JOIN AD_User bpc ON (i.AD_User_ID=bpc.AD_User_ID)"
-			+ " INNER JOIN AD_Client c ON (i.AD_Client_ID=c.AD_Client_ID)"
-			+ " INNER JOIN AD_PrintForm pf ON (i.AD_Client_ID=pf.AD_Client_ID)"
-			+ " INNER JOIN C_DocType dt ON (i.C_DocType_ID=dt.C_DocType_ID)"
-		    + " WHERE i.AD_Client_ID=? AND i.AD_Org_ID=? AND i.isSOTrx='Y' AND "
-		    + "       pf.AD_Org_ID IN (0,i.AD_Org_ID) AND " );	//	more them 1 PF
-		boolean needAnd = false;
-		if (m_C_Invoice_ID != 0)
-			sql.append("i.C_Invoice_ID=").append(m_C_Invoice_ID);
-		else
-		{
-			if (m_C_BPartner_ID != 0)
-			{
-				sql.append ("i.C_BPartner_ID=").append (m_C_BPartner_ID);
-				needAnd = true;
-			}
-			if (m_dateInvoiced_From != null && m_dateInvoiced_To != null)
-			{
-				if (needAnd)
-					sql.append(" AND ");
-				sql.append("TRUNC(i.DateInvoiced) BETWEEN ")
-					.append(DB.TO_DATE(m_dateInvoiced_From, true)).append(" AND ")
-					.append(DB.TO_DATE(m_dateInvoiced_To, true));
-				needAnd = true;
-			}
-			else if (m_dateInvoiced_From != null)
-			{
-				if (needAnd)
-					sql.append(" AND ");
-				sql.append("TRUNC(i.DateInvoiced) >= ")
-					.append(DB.TO_DATE(m_dateInvoiced_From, true));
-				needAnd = true;
-			}
-			else if (m_dateInvoiced_To != null)
-			{
-				if (needAnd)
-					sql.append(" AND ");
-				sql.append("TRUNC(i.DateInvoiced) <= ")
-					.append(DB.TO_DATE(m_dateInvoiced_To, true));
-				needAnd = true;
-			}
-			else if (m_DocumentNo_From != null && m_DocumentNo_To != null)
-			{
-				if (needAnd)
-					sql.append(" AND ");
-				sql.append("i.DocumentNo BETWEEN ")
-					.append(DB.TO_STRING(m_DocumentNo_From)).append(" AND ")
-					.append(DB.TO_STRING(m_DocumentNo_To));
-			}
-			else if (m_DocumentNo_From != null)
-			{
-				if (needAnd)
-					sql.append(" AND ");
-				if (m_DocumentNo_From.indexOf('%') == -1)
-					sql.append("i.DocumentNo >= ")
-						.append(DB.TO_STRING(m_DocumentNo_From));
-				else
-					sql.append("i.DocumentNo LIKE ")
-						.append(DB.TO_STRING(m_DocumentNo_From));
-			}
-			
-			if (p_EMailPDF)
-			{
-				if (needAnd)
-				{
-					sql.append(" AND ");
-				}
-				/* if emailed to customer only select COmpleted & CLosed invoices */ 
-				sql.append("i.DocStatus IN ('CO','CL') "); 
-			}
-		}
-		sql.append(" ORDER BY i.C_Invoice_ID, pf.AD_Org_ID DESC");	//	more than 1 PF record
+
+		setSQLAndParams();
 		if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
 
 		MPrintFormat format = null;
@@ -232,9 +154,17 @@ public class InvoicePrint extends SvrProcess
 		final List<File> pdfList = new ArrayList<File>();
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), get_TrxName()); 
-			pstmt.setInt(1, Env.getAD_Client_ID(Env.getCtx()));
-			pstmt.setInt(2, Env.getAD_Org_ID(Env.getCtx()));
+			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
+			int idx = 1;
+			for (Object param : params) {
+				if (param instanceof Integer)
+					pstmt.setInt(idx, (Integer) param);
+				else if (param instanceof Timestamp)
+					pstmt.setTimestamp(idx, (Timestamp) param);
+				else
+					pstmt.setString(idx, param.toString());
+				idx++;
+			}
 			rs = pstmt.executeQuery();
 						
 			while (rs.next())
@@ -380,6 +310,75 @@ public class InvoicePrint extends SvrProcess
 			return "@Sent@=" + count + " - @Errors@=" + errors;
 		return "@Printed@=" + count;
 	}	//	doIt
+
+	protected void setSQLAndParams() {
+		//	Get Info
+		sql.append(
+			"SELECT i.C_Invoice_ID,bp.AD_Language,c.IsMultiLingualDocument,"		//	1..3
+			//	Prio: 1. BPartner 2. DocType, 3. PrintFormat (Org)	//	see ReportCtl+MInvoice
+			+ " COALESCE(bp.Invoice_PrintFormat_ID, dt.AD_PrintFormat_ID, pf.Invoice_PrintFormat_ID),"	//	4 
+			+ " dt.DocumentCopies+bp.DocumentCopies,"								//	5
+			+ " bpc.AD_User_ID, i.DocumentNo,"										//	6..7
+			+ " bp.C_BPartner_ID "													//	8
+			+ "FROM C_Invoice i"
+			+ " INNER JOIN C_BPartner bp ON (i.C_BPartner_ID=bp.C_BPartner_ID)"
+			+ " LEFT OUTER JOIN AD_User bpc ON (i.AD_User_ID=bpc.AD_User_ID)"
+			+ " INNER JOIN AD_Client c ON (i.AD_Client_ID=c.AD_Client_ID)"
+			+ " INNER JOIN AD_PrintForm pf ON (i.AD_Client_ID=pf.AD_Client_ID)"
+			+ " INNER JOIN C_DocType dt ON (i.C_DocType_ID=dt.C_DocType_ID)"
+		    + " WHERE i.AD_Client_ID=? AND i.AD_Org_ID=? AND i.isSOTrx='Y' AND "
+		    + "       pf.AD_Org_ID IN (0,i.AD_Org_ID) " );	//	more them 1 PF
+		params.add(Env.getAD_Client_ID(Env.getCtx()));
+		params.add(Env.getAD_Org_ID(Env.getCtx()));
+		if (m_C_Invoice_ID != 0) {
+			sql.append(" AND i.C_Invoice_ID=?");
+			params.add(m_C_Invoice_ID);
+		} else {
+			if (m_C_BPartner_ID != 0)
+			{
+				sql.append (" AND i.C_BPartner_ID=?");
+				params.add(m_C_BPartner_ID);
+			}
+			if (m_dateInvoiced_From != null && m_dateInvoiced_To != null)
+			{
+				sql.append(" AND TRUNC(i.DateInvoiced) BETWEEN ? AND ?");
+				params.add(m_dateInvoiced_From);
+				params.add(m_dateInvoiced_To);
+			}
+			else if (m_dateInvoiced_From != null)
+			{
+				sql.append(" AND TRUNC(i.DateInvoiced) >= ?");
+				params.add(m_dateInvoiced_From);
+			}
+			else if (m_dateInvoiced_To != null)
+			{
+				sql.append(" AND TRUNC(i.DateInvoiced) <= ?");
+				params.add(m_dateInvoiced_To);
+			}
+			else if (m_DocumentNo_From != null && m_DocumentNo_To != null)
+			{
+				sql.append(" AND i.DocumentNo BETWEEN ? AND ?");
+				params.add(m_DocumentNo_From);
+				params.add(m_DocumentNo_To);
+			}
+			else if (m_DocumentNo_From != null)
+			{
+				if (m_DocumentNo_From.indexOf('%') == -1) {
+					sql.append(" AND i.DocumentNo >= ?");
+				} else {
+					sql.append(" AND i.DocumentNo LIKE ?");
+				}
+				params.add(m_DocumentNo_From);
+			}
+			
+			if (p_EMailPDF)
+			{
+				/* if emailed to customer only select COmpleted & CLosed invoices */ 
+				sql.append(" AND i.DocStatus IN ('CO','CL') "); 
+			}
+		}
+		sql.append(" ORDER BY i.C_Invoice_ID, pf.AD_Org_ID DESC");	//	more than 1 PF record
+	}
 
 	private void showReports(List<File> pdfList) {
 		if (pdfList.size() > 1) {

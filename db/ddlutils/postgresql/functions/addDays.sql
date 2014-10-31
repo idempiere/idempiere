@@ -30,11 +30,12 @@ BEGIN
 	duration = days || ' day';	 
 	return cast(date_trunc('day',datetime) + cast(duration as interval) as date);
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION subtractdays (day TIMESTAMP WITH TIME ZONE, days NUMERIC)
 RETURNS DATE AS $$
 BEGIN
     RETURN addDays(day,(days * -1));
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql IMMUTABLE;
+

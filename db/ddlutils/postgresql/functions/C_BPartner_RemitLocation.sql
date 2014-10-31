@@ -20,5 +20,5 @@ BEGIN
 	
 END;
 
-$body$ LANGUAGE plpgsql;
-  
+$body$ LANGUAGE plpgsql STABLE;
+

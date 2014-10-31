@@ -18,31 +18,27 @@
 package org.adempiere.webui.editor;
 
 import java.beans.PropertyChangeEvent;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import org.adempiere.util.Callback;
 import org.adempiere.webui.ValuePreference;
-import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
-import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.grid.WQuickEntry;
-import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WLocationDialog;
 import org.compiere.model.GridField;
-import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MLocation;
-import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -52,6 +48,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -59,6 +56,8 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Menuitem;
@@ -152,6 +151,9 @@ ContextMenuListener, IZoomableEditor
         getComponent().setAutocomplete(true);
         getComponent().setAutodrop(true);
         getComponent().addEventListener(Events.ON_BLUR, this);
+        getComponent().addEventListener(Events.ON_CHANGING, this);
+        getComponent().addEventListener(Events.ON_OPEN, this);
+        getComponent().addEventListener("onPostSelect", this);
 
         boolean zoom= false;
         if (lookup != null)
@@ -174,10 +176,10 @@ ContextMenuListener, IZoomableEditor
         
         if (gridField != null) 
         {
-        	String columnName = getColumnName();
-    		if ((columnName.toUpperCase().equals("C_BPARTNER_LOCATION_ID"))
-    				|| (columnName.toUpperCase().equals("BILL_LOCATION_ID"))
-    				|| (columnName.toUpperCase().equals("DROPSHIP_LOCATION_ID")))
+        	String tableName_temp = lookup.getColumnName();	// Returns AD_Org.AD_Org_ID
+    		int posPoint = tableName_temp.indexOf(".");
+    		String tableName = tableName_temp.substring(0, posPoint);
+    		if (tableName.toUpperCase().equals("C_BPARTNER_LOCATION"))    				
     		{
     			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, true, lookup);
     		} else {
@@ -189,9 +191,6 @@ ContextMenuListener, IZoomableEditor
         	boolean isShortListAvailable = false;	// Short List available for this lookup
         	if (lookup != null && (lookup.getDisplayType() == DisplayType.TableDir || lookup.getDisplayType() == DisplayType.Table))	// only for Table & TableDir
         	{
-        		String tableName_temp = lookup.getColumnName();	// Returns AD_Org.AD_Org_ID
-        		int posPoint = tableName_temp.indexOf(".");
-        		String tableName = tableName_temp.substring(0, posPoint);
     			MTable table = MTable.get(Env.getCtx(), tableName);
     			isShortListAvailable = (table.getColumnIndex("IsShortList") >= 0);
         		if (isShortListAvailable)
@@ -261,7 +260,7 @@ ContextMenuListener, IZoomableEditor
     		return;
     	}
     	
-    	if (value != null && (value instanceof Integer || value instanceof String))
+    	if (value != null && (value instanceof Integer || value instanceof String || value instanceof Timestamp || value instanceof BigDecimal))
         {
 
             getComponent().setValue(value);            
@@ -414,6 +413,7 @@ ContextMenuListener, IZoomableEditor
     		} finally {
     			onselecting = false;
     		}
+    		Events.echoEvent("onPostSelect", getComponent(), null);
     	}
     	else if (Events.ON_BLUR.equalsIgnoreCase(event.getName()))
     	{
@@ -442,10 +442,36 @@ ContextMenuListener, IZoomableEditor
     				}
     			}
     		}
-    	}
+    	} else if (event.getName().equals(Events.ON_CHANGING)) {
+    		onChanging((InputEvent) event);
+    	} else if (event.getName().equals("onPostSelect")) {
+    		if (getComponent().isOpen()) {
+	    		getComponent().select();
+	    		getComponent().setOpen(false);
+	    		getComponent().setOpen(true);
+    		}
+    	} 
     }
 
-    private boolean isValueChange(Object newValue) {
+    private void onChanging(InputEvent event) {
+		String v = event.getValue();
+		if (!Util.isEmpty(v)) {
+			v = v.toLowerCase();
+			int count = getComponent().getItemCount();
+			for(int i = 0; i < count; i++) {
+				Comboitem item = getComponent().getItemAtIndex(i);
+				if(item.getLabel() != null && item.getLabel().toLowerCase().startsWith(v)) {
+					Clients.scrollIntoView(item);
+					break;
+				}
+			}
+		} else if (getComponent().getItemCount() > 0) {
+			Comboitem item = getComponent().getItemAtIndex(0);
+			Clients.scrollIntoView(item);
+		}
+	}
+
+	private boolean isValueChange(Object newValue) {
 		return (oldValue == null && newValue != null) || (oldValue != null && newValue == null) 
 			|| ((oldValue != null && newValue != null) && !oldValue.equals(newValue));
 	}
@@ -488,45 +514,13 @@ ContextMenuListener, IZoomableEditor
 	 */
     public void actionZoom()
 	{
-    	if (getValue() == null) 
-    	{
-    		onNewRecord();
-    	}
-    	else
-    	{
-    		AEnv.actionZoom(lookup, getValue());
-    	}
+   		AEnv.actionZoom(lookup, getValue());
 	}
     
     public Lookup getLookup()
     {
     	return lookup;
     }
-    
-    private void onNewRecord() {
-    	try
-        {
-    		MQuery query = new MQuery("");
-    		query.addRestriction("1=2");
-			query.setRecordCount(0);
-
-			SessionManager.getAppDesktop().openWindow(lookup.getZoom(query), query, new Callback<ADWindow>() {				
-				@Override
-				public void onCallback(ADWindow result) {
-					if(result == null)
-						return;
-		    					
-					GridTab tab = result.getADWindowContent().getActiveGridTab();
-					tab.dataNew(false);					
-				}
-			});			
-        }
-        catch (Exception e)
-        {
-            throw new ApplicationException(e.getMessage(), e);
-        }
-		
-	}
     
 	/**
 	 *	Action - Special Quick Entry Screen

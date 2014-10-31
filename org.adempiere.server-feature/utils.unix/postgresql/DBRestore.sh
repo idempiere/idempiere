@@ -23,20 +23,33 @@ fi
 
 PGPASSWORD=$4
 export PGPASSWORD
+if [ "x$4" = "x^TryLocalConnection^" ]
+then
+    LOCALPG=true  # Allow to run this command with user postgres (just useful running configure as root)
+else
+    LOCALPG=false
+fi
+
 echo -------------------------------------
 echo Recreate user and database
 echo -------------------------------------
-dropdb -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U postgres $ADEMPIERE_DB_NAME
-
-dropuser -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U postgres $2
-
 ADEMPIERE_CREATE_ROLE_SQL="CREATE ROLE $2 SUPERUSER LOGIN PASSWORD '$3'"
-psql -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U postgres -c "$ADEMPIERE_CREATE_ROLE_SQL"
+if [ $LOCALPG = "true" ]
+then
+    # Assuming that adempiere role already exists (it was created out there)
+    PGPASSWORD=$3
+    export PGPASSWORD
+    dropdb -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U $2 $ADEMPIERE_DB_NAME
+else
+    dropdb -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U postgres $ADEMPIERE_DB_NAME
+    dropuser -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U postgres $2
+    psql -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U postgres -c "$ADEMPIERE_CREATE_ROLE_SQL"
+fi
 ADEMPIERE_CREATE_ROLE_SQL=
 
 PGPASSWORD=$3
 export PGPASSWORD
-createdb -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -E UNICODE -O $2 -U $2 $ADEMPIERE_DB_NAME
+createdb -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -E UNICODE -T template0 -O $2 -U $2 $ADEMPIERE_DB_NAME
 
 echo -------------------------------------
 echo Import Adempiere_pg.dmp

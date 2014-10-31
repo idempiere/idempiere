@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoColumn
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -49,6 +49,8 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 			setIsDisplayed (true);
 // Y
 			setIsIdentifier (false);
+// N
+			setIsMandatory (false);
 // N
 			setIsQueryCriteria (false);
 			setName (null);
@@ -280,6 +282,23 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 		return (String)get_Value(COLUMNNAME_ColumnName);
 	}
 
+	/** Set Default Logic.
+		@param DefaultValue 
+		Default value hierarchy, separated by ;
+	  */
+	public void setDefaultValue (String DefaultValue)
+	{
+		set_Value (COLUMNNAME_DefaultValue, DefaultValue);
+	}
+
+	/** Get Default Logic.
+		@return Default value hierarchy, separated by ;
+	  */
+	public String getDefaultValue () 
+	{
+		return (String)get_Value(COLUMNNAME_DefaultValue);
+	}
+
 	/** Set Description.
 		@param Description 
 		Optional short description of the record
@@ -414,6 +433,30 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isIdentifier () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsIdentifier);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Mandatory.
+		@param IsMandatory 
+		Data entry is required in this column
+	  */
+	public void setIsMandatory (boolean IsMandatory)
+	{
+		set_Value (COLUMNNAME_IsMandatory, Boolean.valueOf(IsMandatory));
+	}
+
+	/** Get Mandatory.
+		@return Data entry is required in this column
+	  */
+	public boolean isMandatory () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsMandatory);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

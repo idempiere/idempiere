@@ -34,16 +34,16 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 
 public class WCreateFromWindow extends Window implements EventListener<Event>, WTableModelListener, DialogEvents
 {
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3703236565441597403L;
+	private static final long serialVersionUID = 6750121735083748182L;
+
 	private CreateFrom createFrom;
 	private int windowNo;
 	
@@ -54,9 +54,9 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 
 	private boolean isCancel;
 	
-	public static final String SELECT_ALL = "SelectAll";
+	public static final String SELECT_DESELECT_ALL = "SelectAll";
+	private boolean checkAllSelected = true;
 
-	
 	public WCreateFromWindow(CreateFrom createFrom, int windowNo)
 	{
 		super();
@@ -91,12 +91,12 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		Center center = new Center();
         contentPane.appendChild(center);
 		center.appendChild(dataTable);
-		
-		WAppsAction selectAllAction = new WAppsAction (SELECT_ALL, null, null);
+
+		WAppsAction selectAllAction = new WAppsAction (SELECT_DESELECT_ALL, null, null);
 		Button selectAllButton = selectAllAction.getButton();
+		selectAllButton.setAttribute(SELECT_DESELECT_ALL, Boolean.FALSE);
 		confirmPanel.addComponentsLeft(selectAllButton);
-		selectAllButton.addActionListener(this);
-		
+
 		South south = new South();
 		contentPane.appendChild(south);
 		Panel southPanel = new Panel();
@@ -145,13 +145,20 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		}
 		// Select All
 		// Trifon
-		else if (e.getTarget().getId().equals(SELECT_ALL)) {
+		else if (e.getTarget().getId().equals(SELECT_DESELECT_ALL)) {
 			ListModelTable model = dataTable.getModel();
 			int rows = model.getSize();
-			for (int i = 0; i < rows; i++)
-			{
-				model.setValueAt(new Boolean(true), i, 0);
+			Button selectAllBtn = confirmPanel.getButton(SELECT_DESELECT_ALL);
+			Boolean selectAll = (Boolean) selectAllBtn.getAttribute(SELECT_DESELECT_ALL);
+			if (selectAll == null)
+				selectAll = Boolean.FALSE;
+			selectAll = !selectAll;
+			selectAllBtn.setAttribute(SELECT_DESELECT_ALL, selectAll);
+			checkAllSelected = false;
+			for (int i = 0; i < rows; i++) {
+				model.setValueAt(selectAll, i, 0);
 			}
+			checkAllSelected = true;
 			//refresh
 			dataTable.setModel(model);
 			info();
@@ -166,6 +173,19 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 			type = e.getType();
 			if (type != WTableModelEvent.CONTENTS_CHANGED)
 				return;
+
+			if (checkAllSelected && e.getColumn() == 0) {
+				ListModelTable model = dataTable.getModel();
+				boolean rowUnSelected = false;
+				for (int i = 0; i < model.getRowCount(); i++) {
+					if ( ! (Boolean) model.getValueAt(i, 0) ) {
+						rowUnSelected = true;
+						break;
+					}
+				}
+				Button selectAllBtn = confirmPanel.getButton(SELECT_DESELECT_ALL);
+				selectAllBtn.setAttribute(SELECT_DESELECT_ALL, ! rowUnSelected);
+			}
 		}
 		info();
 	}

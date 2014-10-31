@@ -36,7 +36,7 @@ public class MInfoColumn extends X_AD_InfoColumn
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4317064257861102601L;
+	private static final long serialVersionUID = 9198213211937136870L;
 
 	/**
 	 * 	Stanfard Constructor
@@ -59,6 +59,20 @@ public class MInfoColumn extends X_AD_InfoColumn
 	{
 		super (ctx, rs, trxName);
 	}	//	MInfoColumn
+
+	/** Parent						*/
+	private MInfoWindow	m_parent = null;
+
+	/**
+	 * 	Get Parent
+	 *	@return parent
+	 */
+	public MInfoWindow getParent()
+	{
+		if (m_parent == null)
+			m_parent = new MInfoWindow(getCtx(), getAD_InfoWindow_ID(), get_TrxName());
+		return m_parent;
+	}	//	getParent
 
 	/**
 	 * check column read access
@@ -131,5 +145,35 @@ public class MInfoColumn extends X_AD_InfoColumn
 		return true;
 	}
 	
+	/**
+	 * when change field relate to sql, call valid from infoWindow
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (!success)
+			return success;
 	
+		// evaluate need valid
+		boolean isNeedValid = newRecord || is_ValueChanged (MInfoColumn.COLUMNNAME_SelectClause);
+		
+		// call valid of parrent
+		if (isNeedValid){
+			getParent().validate();
+			getParent().saveEx(get_TrxName());
+		}
+				
+		return super.afterSave(newRecord, success);
+	}
+	
+	/**
+	 * when delete record, call valid from parent to set state
+	 * when delete all, valid state is false
+	 * when delete a wrong column can make valid state to true
+	 */
+	@Override
+	protected boolean afterDelete(boolean success) {
+		getParent().validate();
+		getParent().saveEx(get_TrxName());
+		return super.afterDelete(success);
+	}
 }	//	MInfoColumn

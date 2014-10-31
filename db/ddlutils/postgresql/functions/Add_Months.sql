@@ -9,5 +9,6 @@ BEGIN
 	return cast(datetime + cast(duration as interval) as date);
 END;
 $BODY$
-LANGUAGE 'plpgsql'
+LANGUAGE 'plpgsql' IMMUTABLE
 ;
+

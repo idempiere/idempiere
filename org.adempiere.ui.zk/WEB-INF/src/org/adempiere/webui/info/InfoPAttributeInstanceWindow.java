@@ -46,7 +46,7 @@ public class InfoPAttributeInstanceWindow extends InfoWindow {
 			String whereClause, int AD_InfoWindow_ID, boolean lookup) {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
 				whereClause, AD_InfoWindow_ID, lookup);
-		// TODO Auto-generated constructor stub
+
 	}
 
 }

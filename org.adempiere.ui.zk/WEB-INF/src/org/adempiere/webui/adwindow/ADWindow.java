@@ -33,6 +33,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MToolBarButton;
 import org.compiere.model.MToolBarButtonRestrict;
+import org.compiere.model.MWindow;
 import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
@@ -66,6 +67,7 @@ public class ADWindow extends AbstractUIPart
 	private List<String> windowToolbarRestrictList = null;
 	
 	private List<String> windowToolbarAdvancedList = null;
+	private String adWindowUUID;
 	
 	/**
 	 * 
@@ -90,6 +92,7 @@ public class ADWindow extends AbstractUIPart
          
          this.ctx = ctx;
          this.adWindowId = adWindowId;
+         this.adWindowUUID = MWindow.get(ctx, adWindowId).getAD_Window_UU();
          windowNo = SessionManager.getAppDesktop().registerWindow(this);
          this.query = query;
          try {
@@ -103,6 +106,7 @@ public class ADWindow extends AbstractUIPart
     private void init()
     {
         windowContent = new ADWindowContent(ctx, windowNo, adWindowId);      
+        windowContent.setADWindow(this);
         _title = windowContent.getTitle();
         image = windowContent.getImage();
     }
@@ -222,6 +226,14 @@ public class ADWindow extends AbstractUIPart
 		}
 		return windowToolbarAdvancedList;
 	}
+
+	public int getAD_Window_ID() {
+		return adWindowId;
+	}
+	
+	public String getAD_Window_UU() {
+		return adWindowUUID;
+	}
 	
 	/**
 	 * 
@@ -237,7 +249,7 @@ public class ADWindow extends AbstractUIPart
 	 * @return adwindow instance if found, null otherwise
 	 */
 	public static ADWindow findADWindow(Component comp) {
-		Component parent = comp.getParent();
+		Component parent = comp;
 		while(parent != null) {
 			if (parent.getAttribute(AD_WINDOW_ATTRIBUTE_KEY) != null) {
 				ADWindow adwindow = (ADWindow) parent.getAttribute(AD_WINDOW_ATTRIBUTE_KEY);

@@ -18,7 +18,7 @@
 
 # initialization
 # adjust these variables to your environment
-IDEMPIERE_HOME=/home/idempiere/idempiere-server
+IDEMPIERE_HOME=/opt/idempiere-server
 IDEMPIEREUSER=idempiere
 # Instead of using ENVFILE you can set JAVA_HOME, IDEMPIERE_HOME and add JAVA_HOME/bin to PATH
 # in this case you can comment the source lines for ENVFILE below
@@ -141,9 +141,6 @@ case "$1" in
     stop)
 	stop
 	;;
-    reload)
-	restart
-	;;
     restart)
 	restart
 	;;
@@ -154,7 +151,7 @@ case "$1" in
 	status
 	;;
     *)
-	echo $"Usage: $0 {start|stop|reload|restart|condrestart|status}"
+	echo $"Usage: $0 {start|stop|restart|condrestart|status}"
 	exit 1
 esac
 

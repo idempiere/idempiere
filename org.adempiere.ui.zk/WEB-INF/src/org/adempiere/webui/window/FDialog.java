@@ -204,6 +204,34 @@ public class FDialog
     	error(windowNo, comp, adMessage, message, (Callback<Integer>)null);
     }
     
+    /**
+	 *	Display error with error icon.
+	 *
+	 *	@param	windowNo	Number of Window
+	 *  @param	comp		Component (unused)
+	 *	@param	adMessage	Message to be translated
+	 *	@param	message		Additional message
+	 *  @param  callback
+	 */
+    public static void error(int windowNo, Component comp, String adMessage, String message, Callback<Integer> callback)
+    {
+    	error(windowNo, comp, adMessage, message, callback, null);
+    }
+    
+    /**
+	 *	Display error with error icon.
+	 *
+	 *	@param	windowNo	Number of Window
+	 *  @param	comp		Component (unused)
+	 *	@param	adMessage	Message to be translated
+	 *	@param	message		Additional message
+	 *  @param	title		If none then one will be generated
+	 */
+    public static void error(int windowNo, Component comp, String adMessage, String message, String title)
+    {
+    	error(windowNo, comp, adMessage, message, (Callback<Integer>)null, title);
+    }
+    
 	/**
 	 *	Display error with error icon.
 	 *
@@ -212,13 +240,14 @@ public class FDialog
 	 *	@param	adMessage	Message to be translated
 	 *	@param	message		Additional message
 	 *  @param  callback
+	 *  @param	title		If none then one will be generated
 	 *
 	 *  @see #error(int, String)
 	 *  @see #error(int, Component, String)
 	 *  @see #error(int, String, String)
 	 */
     
-    public static void error(int windowNo, Component comp, String adMessage, String message, Callback<Integer> callback)
+    public static void error(int windowNo, Component comp, String adMessage, String message, Callback<Integer> callback, String title)
     {
     	Properties ctx = Env.getCtx();
 		StringBuffer out = new StringBuffer();
@@ -232,8 +261,15 @@ public class FDialog
 
 		out = constructMessage(adMessage, message);
 		
-		String s = out.toString().replace("\n", "<br>");
-		Messagebox.showDialog(s, AEnv.getDialogHeader(ctx, windowNo), Messagebox.OK, Messagebox.ERROR, callback);
+		String newTitle;
+
+        if (title == null)
+        	newTitle = AEnv.getDialogHeader(ctx, windowNo);
+        else
+        	newTitle = title;
+
+        String s = out.toString().replace("\n", "<br>");
+		Messagebox.showDialog(s, newTitle, Messagebox.OK, Messagebox.ERROR, callback);
 		
 		return;
     }
@@ -263,7 +299,7 @@ public class FDialog
 	 *
 	 *	@return true, if OK
 	 */    
-    public static boolean ask(int windowNo, Component comp, String adMessage, String msg, Callback<Boolean> callback)
+    public static boolean ask(int windowNo, Component comp, String adMessage, String msg, final Callback<Boolean> callback)
     {
     	StringBuilder out = new StringBuilder();
 		if (adMessage != null && !adMessage.equals(""))
@@ -271,7 +307,23 @@ public class FDialog
 		if (msg != null && msg.length() > 0)
 			out.append("\n").append(msg);
 		String s = out.toString().replace("\n", "<br>");
-		return ask(windowNo, comp, s, callback);
+
+    	Callback<Integer> msgCallback = null;
+    	if (callback != null) 
+    	{
+    		msgCallback = new Callback<Integer>() {
+				@Override
+				public void onCallback(Integer result) {
+					boolean b = result != null && result.intValue() == Messagebox.OK;
+					callback.onCallback(b);
+				}
+			};
+    	}
+    	String title = AEnv.getDialogHeader(Env.getCtx(), windowNo);
+        int response = Messagebox.showDialog(s, title, 
+        		Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, msgCallback, (msgCallback == null));
+
+        return (response == Messagebox.OK);
     }
     
     /**************************************************************************
@@ -294,7 +346,24 @@ public class FDialog
     	return ask(AEnv.getDialogHeader(Env.getCtx(), windowNo), windowNo, comp, adMessage, callback);
     }
     
-	/**************************************************************************
+    public static void askForInput(int windowNo, Component comp, String adMessage, final Callback<String> callback)
+    {
+    	Callback<String> msgCallback = null;
+    	if (callback != null) 
+    	{
+    		msgCallback = new Callback<String>() {
+				@Override
+				public void onCallback(String result) {
+					callback.onCallback(result);
+				}
+			};
+    	}
+    	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
+        Messagebox.showDialog(s, AEnv.getDialogHeader(Env.getCtx(), windowNo), 
+        		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, msgCallback, (msgCallback == null));
+    }
+
+    /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
 	 *	@param	WindowNo	Number of Window
@@ -341,7 +410,6 @@ public class FDialog
         return;
     }
 
-
     /**
      *  Display information with information icon.
      *
@@ -350,10 +418,27 @@ public class FDialog
      *  @param  adMessage   Message to be translated
      *  @param  message     Additional message
      *
+     *  @see #info(int, Component, String, String)
+     */
+    public static void info(int windowNo, Component comp, String adMessage, String message)
+    {
+    	info(windowNo, comp, adMessage, message, null);
+    }
+
+
+    /**
+     *  Display information with information icon.
+     *
+     *  @param  windowNo    Number of Window
+     *  @param  comp        Component (unused)
+     *  @param  adMessage   Message to be translated
+     *  @param  message     Additional message
+     *  @param	title		If none then one will be generated
+     *
      *  @see #info(int, Component, String)
      */
     
-    public static void info(int windowNo, Component comp, String adMessage, String message)
+    public static void info(int windowNo, Component comp, String adMessage, String message, String title)
     {
         Properties ctx = Env.getCtx();
         
@@ -367,10 +452,16 @@ public class FDialog
         }
 
         out = constructMessage(adMessage, message);
+        
+        String newTitle;
+
+        if (title == null)
+        	newTitle = AEnv.getDialogHeader(ctx, windowNo);
+        else
+        	newTitle = title;
 
     	String s = out.toString().replace("\n", "<br>");
-    	Messagebox.showDialog(s, AEnv.getDialogHeader(ctx, windowNo), Messagebox.OK, Messagebox.INFORMATION);
-        
+    	Messagebox.showDialog(s, newTitle, Messagebox.OK, Messagebox.INFORMATION);
         return;
     }
 }

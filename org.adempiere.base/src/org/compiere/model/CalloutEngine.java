@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.acct.Doc;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 
@@ -230,8 +231,58 @@ public class CalloutEngine implements Callout
 		if (value == null || !(value instanceof Timestamp))
 			return NO_ERROR;
 		mTab.setValue("DateAcct", value);
-		return NO_ERROR;
+		return checkPeriodOpen (ctx, WindowNo, mTab, mField, value);
 	}	//	dateAcct
+
+	/**
+	 *  Check Account Date is on a opened period
+	 *	@param ctx context
+	 *	@param WindowNo window no
+	 *	@param mTab tab
+	 *	@param mField field
+	 *	@param value value
+	 *	@return null or error message
+	 */
+	public String checkPeriodOpen (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		if (isCalloutActive())		//	assuming it is resetting value
+			return NO_ERROR;
+		if (value == null || !(value instanceof Timestamp))
+			return NO_ERROR;
+
+		int orgID = 0;
+		if (mTab.getValue("AD_Org_ID") != null)
+			orgID = (Integer) mTab.getValue("AD_Org_ID");
+
+		int doctypeID = -1;
+		if (mTab.getValue("C_DocTypeTarget_ID") != null)
+			doctypeID = (Integer) mTab.getValue("C_DocTypeTarget_ID");
+		else if (mTab.getValue("C_DocType_ID") != null)
+			doctypeID = (Integer) mTab.getValue("C_DocType_ID");
+
+		String docBase = null;
+		if (doctypeID <= 0) {
+			if (MBankStatement.Table_Name.equals(mTab.getTableName()))
+				docBase = Doc.DOCTYPE_BankStatement;
+			else if (MBankStatementLine.Table_Name.equals(mTab.getTableName()))
+				docBase = Doc.DOCTYPE_BankStatement;
+			else if (MInventory.Table_Name.equals(mTab.getTableName()))
+				docBase = Doc.DOCTYPE_MatInventory;
+			else if (MMovement.Table_Name.equals(mTab.getTableName()))
+				docBase = Doc.DOCTYPE_MatMovement;
+			else if (MProduction.Table_Name.equals(mTab.getTableName()))
+				docBase = Doc.DOCTYPE_MatProduction;
+			else if (MRequisition.Table_Name.equals(mTab.getTableName()))
+				docBase = Doc.DOCTYPE_PurchaseRequisition;
+		}
+
+		if (doctypeID > 0) {
+			MPeriod.testPeriodOpen(ctx, (Timestamp)value, doctypeID, orgID);
+		} else if (docBase != null) {
+			MPeriod.testPeriodOpen(ctx, (Timestamp)value, docBase, orgID);
+		}
+		return NO_ERROR;
+	}
 
 	/**
 	 *	Rate - set Multiply Rate from Divide Rate and vice versa

@@ -33,6 +33,7 @@ import java.io.File;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.Adempiere;
 import org.compiere.model.MCity;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MSetup;
@@ -78,7 +79,10 @@ public class InitialClientSetup extends SvrProcess
 	private boolean p_IsUseProjectDimension = false;
 	private boolean p_IsUseCampaignDimension = false;
 	private boolean p_IsUseSalesRegionDimension = false;
+	private boolean p_IsUseActivityDimension;
+	private boolean p_UseDefaultCoA = false;
 	private String p_CoAFile = null;
+	private boolean p_InactivateDefaults = false;
 	private String p_AdminUserEmail = null;
 	private String p_NormalUserEmail = null;
 
@@ -121,17 +125,23 @@ public class InitialClientSetup extends SvrProcess
 			else if (name.equals("Address1"))
 				p_Address1 = (String) para[i].getParameter();
 			else if (name.equals("IsUseBPDimension"))
-				p_IsUseBPDimension = para[i].getParameter().equals("Y");
+				p_IsUseBPDimension = para[i].getParameterAsBoolean();
 			else if (name.equals("IsUseProductDimension"))
-				p_IsUseProductDimension = para[i].getParameter().equals("Y");
+				p_IsUseProductDimension = para[i].getParameterAsBoolean();
 			else if (name.equals("IsUseProjectDimension"))
-				p_IsUseProjectDimension = para[i].getParameter().equals("Y");
+				p_IsUseProjectDimension = para[i].getParameterAsBoolean();
 			else if (name.equals("IsUseCampaignDimension"))
-				p_IsUseCampaignDimension = para[i].getParameter().equals("Y");
+				p_IsUseCampaignDimension = para[i].getParameterAsBoolean();
 			else if (name.equals("IsUseSalesRegionDimension"))
-				p_IsUseSalesRegionDimension = para[i].getParameter().equals("Y");
+				p_IsUseSalesRegionDimension = para[i].getParameterAsBoolean();
+			else if (name.equals("IsUseActivityDimension"))
+				p_IsUseActivityDimension = para[i].getParameterAsBoolean();
+			else if (name.equals("UseDefaultCoA"))
+				p_UseDefaultCoA = para[i].getParameterAsBoolean();
 			else if (name.equals("CoAFile"))
 				p_CoAFile = (String) para[i].getParameter();
+			else if (name.equals("InactivateDefaults"))
+				p_InactivateDefaults = para[i].getParameterAsBoolean();
 			else if (name.equals("Phone"))
 				p_Phone = (String) para[i].getParameter();
 			else if (name.equals("Phone2"))
@@ -175,11 +185,16 @@ public class InitialClientSetup extends SvrProcess
 								.append(", IsUseProjectDimension=").append(p_IsUseProjectDimension)
 								.append(", IsUseCampaignDimension=").append(p_IsUseCampaignDimension)
 								.append(", IsUseSalesRegionDimension=").append(p_IsUseSalesRegionDimension)
+								.append(", IsUseActivityDimension=").append(p_IsUseActivityDimension)
+								.append(", UseDefaultCoA=").append(p_UseDefaultCoA)
+								.append(", InactivateDefaults=").append(p_InactivateDefaults)
 								.append(", CoAFile=").append(p_CoAFile);
 		
 		if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 
 		// Validations
+		if (p_UseDefaultCoA)
+			p_CoAFile = null;
 
 		// Validate Mandatory parameters
 		if (   p_ClientName == null || p_ClientName.length() == 0
@@ -188,7 +203,7 @@ public class InitialClientSetup extends SvrProcess
 			|| p_NormalUserName == null || p_NormalUserName.length() == 0
 			|| p_C_Currency_ID <= 0
 			|| p_C_Country_ID <= 0
-			|| p_CoAFile == null || p_CoAFile.length() == 0
+			|| (!p_UseDefaultCoA && (p_CoAFile == null || p_CoAFile.length() == 0))
 			)
 			throw new IllegalArgumentException("Missing required parameters");
 
@@ -225,6 +240,11 @@ public class InitialClientSetup extends SvrProcess
 			if (! EMail.validate(p_NormalUserEmail)) 
 				throw new AdempiereException("NormalUserEmail " + p_NormalUserEmail + " is incorrect");
 		}
+		if (Util.isEmpty(p_CoAFile, true))
+			p_CoAFile = MSysConfig.getValue(MSysConfig.DEFAULT_COA_PATH,
+					Adempiere.getAdempiereHome() + File.separator + "data"
+							+ File.separator + "import"
+							+ File.separator + "AccountingDefaultsOnly.csv");
 		File coaFile = new File(p_CoAFile);
 		if (!coaFile.exists())
 			throw new AdempiereException("CoaFile " + p_CoAFile + " does not exist");
@@ -250,8 +270,8 @@ public class InitialClientSetup extends SvrProcess
 		MCurrency currency = MCurrency.get(getCtx(), p_C_Currency_ID);
 		KeyNamePair currency_kp = new KeyNamePair(p_C_Currency_ID, currency.getDescription());
 		if (!ms.createAccounting(currency_kp,
-			p_IsUseProductDimension, p_IsUseBPDimension, p_IsUseProjectDimension, p_IsUseCampaignDimension, p_IsUseSalesRegionDimension,
-			coaFile)) {
+			p_IsUseProductDimension, p_IsUseBPDimension, p_IsUseProjectDimension, p_IsUseCampaignDimension, p_IsUseSalesRegionDimension, p_IsUseActivityDimension,
+			coaFile, p_UseDefaultCoA, p_InactivateDefaults)) {
 			ms.rollback();
 			throw new AdempiereException("@AccountSetupError@");
 		}

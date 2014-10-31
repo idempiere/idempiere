@@ -22,8 +22,10 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -155,7 +157,7 @@ public final class EMail implements Serializable
 		setSmtpHost(smtpHost);
 		setFrom(from);
 		String bccAddressForAllMails = MSysConfig.getValue(MSysConfig.MAIL_SEND_BCC_TO_ADDRESS, Env.getAD_Client_ID(Env.getCtx()));
-		if (bccAddressForAllMails != null && bccAddressForAllMails.length() > 0)
+		if (! Util.isEmpty(bccAddressForAllMails, true))
 			addBcc(bccAddressForAllMails);
 		addTo(to);
 		m_ctx = ctx;
@@ -291,19 +293,46 @@ public final class EMail implements Serializable
 			m_msg = new SMTPMessage(session);
 			//	Addresses
 			m_msg.setFrom(m_from);
-			InternetAddress[] rec = getTos();
-			if (rec.length == 1)
-				m_msg.setRecipient (Message.RecipientType.TO, rec[0]);
-			else
-				m_msg.setRecipients (Message.RecipientType.TO, rec);
-			rec = getCcs();
-			if (rec != null && rec.length > 0)
-				m_msg.setRecipients (Message.RecipientType.CC, rec);
-			rec = getBccs();
-			if (rec != null && rec.length > 0)
-				m_msg.setRecipients (Message.RecipientType.BCC, rec);
-			if (m_replyTo != null)
-				m_msg.setReplyTo(new Address[] {m_replyTo});
+
+			// IDEMPIERE-2104 - intended for test or dev systems to not send undesired emails
+			boolean isDontSendToAddress = MSysConfig.getBooleanValue(MSysConfig.MAIL_DONT_SEND_TO_ADDRESS, false, Env.getAD_Client_ID(Env.getCtx()));
+
+			if (! isDontSendToAddress) {
+				InternetAddress[] rec = getTos();
+				if (rec.length == 1)
+					m_msg.setRecipient (Message.RecipientType.TO, rec[0]);
+				else
+					m_msg.setRecipients (Message.RecipientType.TO, rec);
+				rec = getCcs();
+				if (rec != null && rec.length > 0)
+					m_msg.setRecipients (Message.RecipientType.CC, rec);
+				rec = getBccs();
+				if (rec != null && rec.length > 0)
+					m_msg.setRecipients (Message.RecipientType.BCC, rec);
+				if (m_replyTo != null)
+					m_msg.setReplyTo(new Address[] {m_replyTo});
+			} else {
+				String bccAddressForAllMails = MSysConfig.getValue(MSysConfig.MAIL_SEND_BCC_TO_ADDRESS, Env.getAD_Client_ID(Env.getCtx()));
+				if (! Util.isEmpty(bccAddressForAllMails, true)) {
+					m_msg.setRecipients (Message.RecipientType.TO, bccAddressForAllMails);
+				}
+				List<InternetAddress> replyToList=new ArrayList<InternetAddress>();
+				if(m_replyTo!=null)
+					replyToList.add(m_replyTo);
+				InternetAddress[] rec = getTos();
+				if (rec != null && rec.length > 0){
+					m_msg.setHeader("OriginalTo", getCommaSeparatedString(rec));
+					replyToList.addAll(Arrays.asList(rec));
+				}
+				if(replyToList.size()>0)
+					m_msg.setReplyTo(replyToList.toArray(new InternetAddress[]{}));
+				rec = getCcs();
+				if (rec != null && rec.length > 0)
+					m_msg.setHeader("OriginalCC", getCommaSeparatedString(rec));
+				rec = getBccs();
+				if (rec != null && rec.length > 0)
+					m_msg.setHeader("OriginalBCC", getCommaSeparatedString(rec));
+			}
 			//
 			m_msg.setSentDate(new java.util.Date());
 			m_msg.setHeader("Comments", "iDempiereMail");
@@ -435,6 +464,16 @@ public final class EMail implements Serializable
 		m_sentMsg = SENT_OK;
 		return m_sentMsg;
 	}	//	send
+
+	private String getCommaSeparatedString(InternetAddress[] recs) {
+		StringBuilder retValue = new StringBuilder();
+		for (InternetAddress rec : recs) {
+			if (retValue.length() > 0)
+				retValue.append(",");
+			retValue.append(rec.getAddress());
+		}
+		return retValue.toString();
+	}
 
 	/**
 	 * 	Get Send Result Msg
@@ -658,19 +697,22 @@ public final class EMail implements Serializable
 	{
 		if (newBcc == null || newBcc.length() == 0)
 			return false;
-		InternetAddress ia = null;
-		try
-		{
-			ia = new InternetAddress (newBcc, true);
+		String[] addresses = newBcc.split(", *");
+		for (String bccAddress : addresses) {
+			InternetAddress ia = null;
+			try
+			{
+				ia = new InternetAddress (bccAddress, true);
+			}
+			catch (Exception e)
+			{
+				log.log(Level.WARNING, bccAddress + ": " + e.getMessage());
+				return false;
+			}
+			if (m_bcc == null)
+				m_bcc = new ArrayList<InternetAddress>();
+			m_bcc.add (ia);
 		}
-		catch (Exception e)
-		{
-			log.log(Level.WARNING, newBcc + ": " + e.getMessage());
-			return false;
-		}
-		if (m_bcc == null)
-			m_bcc = new ArrayList<InternetAddress>();
-		m_bcc.add (ia);
 		return true;
 	}	//	addBcc
 
@@ -941,7 +983,7 @@ public final class EMail implements Serializable
 					(new ByteArrayDataSource (m_messageHTML, charSetName, "text/html")));
 
 			// Create Multipart and its parts to it
-			Multipart mp = new MimeMultipart();
+			Multipart mp = new MimeMultipart("related");
 			mp.addBodyPart(mbp_1);
 			if (log.isLoggable(Level.FINE)) log.fine("(multi) " + getSubject() + " - " + mbp_1);
 
@@ -978,6 +1020,11 @@ public final class EMail implements Serializable
 				mbp_2.setDataHandler(new DataHandler(ds));
 				mbp_2.setFileName(ds.getName());
 				if (log.isLoggable(Level.FINE)) log.fine("Added Attachment " + ds.getName() + " - " + mbp_2);
+
+				if (m_messageHTML != null && m_messageHTML.contains("cid:"+ds.getName())) {
+					mbp_2.setContentID("<" + ds.getName() + ">");
+					mbp_2.setDisposition(MimeBodyPart.INLINE);
+				}
 				mp.addBodyPart(mbp_2);
 			}
 

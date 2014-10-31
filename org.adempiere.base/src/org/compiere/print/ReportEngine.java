@@ -74,12 +74,14 @@ import org.compiere.model.PrintInfo;
 import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.layout.LayoutEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.eevolution.model.MDDOrder;
 import org.eevolution.model.X_PP_Order;
@@ -993,10 +995,17 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 
 		try
 		{
-			if (m_layout == null)
-				layout ();			
-			Document.getPDFAsFile(fileName, m_layout.getPageable(false));
-			ArchiveEngine.get().archive(new File(fileName), m_info);
+			if (m_printFormat != null && m_printFormat.getJasperProcess_ID() > 0) {
+				ProcessInfo pi = new ProcessInfo ("", m_printFormat.getJasperProcess_ID(), m_printFormat.getAD_Table_ID(), m_info.getRecord_ID());
+				pi.setIsBatch(true);
+				pi.setPDFFileName(fileName);
+				ServerProcessCtl.process(pi, (m_trxName == null ? null : Trx.get(m_trxName, false)));
+			} else {
+				if (m_layout == null)
+					layout ();
+				Document.getPDFAsFile(fileName, m_layout.getPageable(false));
+				ArchiveEngine.get().archive(new File(fileName), m_info);
+			}
 		}
 		catch (Exception e)
 		{
@@ -1116,7 +1125,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		int AD_Table_ID = 0;
 		int AD_ReportView_ID = 0;
 		String TableName = null;
-		String whereClause = "";
 		int AD_PrintFormat_ID = 0;
 		boolean IsForm = false;
 		int Client_ID = -1;
@@ -1143,9 +1151,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			if (rs.next())
 			{
 				AD_ReportView_ID = rs.getInt(1);		//	required
-				whereClause = rs.getString(2);
-				if (rs.wasNull())
-					whereClause = "";
 				//
 				AD_Table_ID = rs.getInt(3);
 				TableName = rs.getString(4);			//	required for query
@@ -1179,7 +1184,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				rs = pstmt.executeQuery();
 				if (rs.next())
 				{
-					whereClause = "";
 					AD_Table_ID = rs.getInt(1);
 					TableName = rs.getString(2);			//	required for query
 					AD_PrintFormat_ID = rs.getInt(3);		//	required
@@ -1214,10 +1218,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		{
 			query = MQuery.get (ctx, pi.getAD_PInstance_ID(), TableName);
 		}
-		
-		//  Add to static where clause from ReportView
-		if (whereClause.length() != 0)
-			query.addRestriction(whereClause);
 
 		//	Get Print Format
 		MPrintFormat format = null;

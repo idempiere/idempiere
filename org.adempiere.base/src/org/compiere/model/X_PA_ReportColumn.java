@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportColumn
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_PA_ReportColumn (Properties ctx, int PA_ReportColumn_ID, String trxName)
@@ -465,14 +465,14 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	public static final String ELEMENTTYPE_SubAccount = "SA";
 	/** Sales Region = SR */
 	public static final String ELEMENTTYPE_SalesRegion = "SR";
-	/** User List 1 = U1 */
-	public static final String ELEMENTTYPE_UserList1 = "U1";
-	/** User List 2 = U2 */
-	public static final String ELEMENTTYPE_UserList2 = "U2";
-	/** User Element 1 = X1 */
-	public static final String ELEMENTTYPE_UserElement1 = "X1";
-	/** User Element 2 = X2 */
-	public static final String ELEMENTTYPE_UserElement2 = "X2";
+	/** User Element List 1 = U1 */
+	public static final String ELEMENTTYPE_UserElementList1 = "U1";
+	/** User Element List 2 = U2 */
+	public static final String ELEMENTTYPE_UserElementList2 = "U2";
+	/** User Column 1 = X1 */
+	public static final String ELEMENTTYPE_UserColumn1 = "X1";
+	/** User Column 2 = X2 */
+	public static final String ELEMENTTYPE_UserColumn2 = "X2";
 	/** Combination = CO */
 	public static final String ELEMENTTYPE_Combination = "CO";
 	/** Set Type.
@@ -1242,7 +1242,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 		return ii.intValue();
 	}
 
-	/** Set User Element 1.
+	/** Set User Column 1.
 		@param UserElement1_ID 
 		User defined accounting Element
 	  */
@@ -1254,7 +1254,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 			set_Value (COLUMNNAME_UserElement1_ID, Integer.valueOf(UserElement1_ID));
 	}
 
-	/** Get User Element 1.
+	/** Get User Column 1.
 		@return User defined accounting Element
 	  */
 	public int getUserElement1_ID () 
@@ -1265,7 +1265,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 		return ii.intValue();
 	}
 
-	/** Set User Element 2.
+	/** Set User Column 2.
 		@param UserElement2_ID 
 		User defined accounting Element
 	  */
@@ -1277,7 +1277,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 			set_Value (COLUMNNAME_UserElement2_ID, Integer.valueOf(UserElement2_ID));
 	}
 
-	/** Get User Element 2.
+	/** Get User Column 2.
 		@return User defined accounting Element
 	  */
 	public int getUserElement2_ID () 

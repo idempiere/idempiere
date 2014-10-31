@@ -28,13 +28,11 @@ import org.compiere.util.Util;
  */
 public class ButtonFactory {
 
-	private static final String ZK_BUTTON_STYLE = "ZK_BUTTON_STYLE";
-	
 	/**
 	 * @return true if button should have text label
 	 */
 	public static final boolean isWithText() {
-		String type = MSysConfig.getValue(ZK_BUTTON_STYLE, "I");
+		String type = MSysConfig.getValue(MSysConfig.ZK_BUTTON_STYLE, "I");
 		return type.indexOf("T") >= 0;
 	}
 	
@@ -42,7 +40,7 @@ public class ButtonFactory {
 	 * @return true if button should include an image icon
 	 */
 	public static final boolean isWithImage() {
-		String type = MSysConfig.getValue(ZK_BUTTON_STYLE, "I");
+		String type = MSysConfig.getValue(MSysConfig.ZK_BUTTON_STYLE, "I");
 		return type.indexOf("I") >= 0;
 	}
 	

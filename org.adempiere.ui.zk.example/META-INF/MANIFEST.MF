@@ -10,8 +10,10 @@ Import-Package: org.adempiere.base,
  org.adempiere.base.equinox,
  org.adempiere.exceptions,
  org.adempiere.plugin.utils,
+ org.adempiere.util,
  org.adempiere.webui.action,
  org.adempiere.webui.adwindow,
+ org.adempiere.webui.adwindow.validator,
  org.adempiere.webui.apps,
  org.adempiere.webui.component,
  org.adempiere.webui.window,
@@ -24,5 +26,6 @@ Import-Package: org.adempiere.base,
  org.zkoss.zul,
  org.zkoss.zul.event,
  org.zkoss.zul.impl
-Service-Component: OSGI-INF/export.xml
+Service-Component: OSGI-INF/export.xml,
+ OSGI-INF/paymentwindowvalidator.xml 
 Export-Package: action.images

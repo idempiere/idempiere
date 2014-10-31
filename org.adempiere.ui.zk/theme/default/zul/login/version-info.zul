@@ -11,6 +11,13 @@ Copyright (C) 2009 Idalica Corporation
 	var vendor = Adempiere.getImplementationVendor();
 	var jvm = Adempiere.getJavaInfo();
 	var os = Adempiere.getOSInfo();
+	var isVersionShown = Adempiere.isVersionShown();
+	var isDBVersionShown = Adempiere.isDBVersionShown();
+	var isVendorShown = Adempiere.isVendorShown();
+	var isJVMShown = Adempiere.isJVMShown();
+	var isOSShown = Adempiere.isOSShown();
+	var isHostShown = Adempiere.isHostShown();
+	var isInfoShown = isVersionShown || isDBVersionShown || isVendorShown || isJVMShown || isOSShown || isHostShown;
 </zscript>
 <html>
 <![CDATA[
@@ -25,40 +32,41 @@ Copyright (C) 2009 Idalica Corporation
 		font-size: 8pt;
 	}
 </style>
-<div class="versionInfoBox">
+]]>
+<div class="versionInfoBox" if="${isInfoShown == true}">
 	<table border="0">
-		<tr>
+		<tr if="${isVersionShown == true}">
 			<td align="right">Version</td>
 			<td>:</td>
 			<td aligh="left">${mainVersion}</td>
 		</tr>
-		<tr>
+		<tr if="${isDBVersionShown == true}">
 			<td align="right">Database Version</td>
 			<td>:</td>
 			<td aligh="left">${dbVersion}</td>
 		</tr>
-		<tr>
+		<tr if="${isVendorShown == true}">
 			<td align="right">Vendor</td>
 			<td>:</td>
 			<td aligh="left">${vendor}</td>
 		</tr>
-		<tr>
+		<tr if="${isJVMShown == true}">
 			<td align="right">JVM</td>
 			<td>:</td>
 			<td aligh="left">${jvm}</td>
 		</tr>
-		<tr>
+		<tr if="${isOSShown == true}">
 			<td align="right">OS</td>
 			<td>:</td>
 			<td aligh="left">${os}</td>
 		</tr>
-		<tr>
+		<tr if="${isHostShown == true}">
 			<td align="right">Host</td>
 			<td>:</td>
 			<td aligh="left">${desktop.execution.serverName}</td>
 		</tr>
 	</table>
 </div>
-]]>
+
 </html>
 </zk>

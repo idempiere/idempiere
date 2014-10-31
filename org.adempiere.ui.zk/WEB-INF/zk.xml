@@ -11,6 +11,11 @@
 		<listener-class>org.adempiere.webui.session.SessionContextListener
 		</listener-class>
 	</listener>
+	
+	<listener>
+		<description>iDempiere Web app init for register handle change in table system configuration</description>
+    	<listener-class>org.adempiere.webui.DefaultWebAppInit</listener-class>
+	</listener>
 
 	<!-- uncomment following to debug server event flow -->
 	<!-- listener>
@@ -95,6 +100,14 @@
 	<library-property>
 	    <name>org.zkoss.web.util.resource.dir</name>
 	    <value>/WEB-INF/cwr</value>
+	</library-property>
+	<library-property>
+	    <name>org.zkoss.zul.grid.DataLoader.class</name>
+	    <value>org.zkoss.zul.impl.CustomGridDataLoader</value>
+	</library-property>
+	<library-property>
+	    <name>org.zkoss.zul.grid.rod</name>
+	    <value>true</value>
 	</library-property>
 		
 	<preference>

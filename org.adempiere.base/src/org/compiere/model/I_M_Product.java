@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Product
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_M_Product 
 {
@@ -87,19 +87,6 @@ public interface I_M_Product
 	  * Copy From Record
 	  */
 	public String getCopyFrom();
-
-    /** Column name CostStandard */
-    public static final String COLUMNNAME_CostStandard = "CostStandard";
-
-	/** Set Standard Cost.
-	  * Standard Costs
-	  */
-	public void setCostStandard (BigDecimal CostStandard);
-
-	/** Get Standard Cost.
-	  * Standard Costs
-	  */
-	public BigDecimal getCostStandard();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

@@ -960,6 +960,17 @@ public final class Env
 		return (retValue == null ? "" : retValue);
 	}	//	getPreference
 
+	public static String getPreference (Properties ctx, int AD_Window_ID, int AD_Process_ID_Of_Panel, String context)
+	{
+		if (ctx == null || context == null)
+			throw new IllegalArgumentException ("Require Context");
+		String retValue = null;
+		
+		retValue = ctx.getProperty("P"+AD_Window_ID+"|"+ AD_Process_ID_Of_Panel + "|" + context);
+
+		return (retValue == null ? "" : retValue);
+	}	//	getPreference
+	
 	/**************************************************************************
 	 *  Language issues
 	 */
@@ -1855,7 +1866,12 @@ public final class Env
 	
 	public static int getZoomWindowID(int AD_Table_ID, int Record_ID)
 	{
-		int AD_Window_ID = MZoomCondition.findZoomWindowByTableId(AD_Table_ID, Record_ID);
+		return getZoomWindowID(AD_Table_ID, Record_ID, 0);
+	}
+
+	public static int getZoomWindowID(int AD_Table_ID, int Record_ID, int windowNo)
+	{
+		int AD_Window_ID = MZoomCondition.findZoomWindowByTableId(AD_Table_ID, Record_ID, windowNo);
 		MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
 		if (AD_Window_ID <= 0)
 		{
@@ -1869,7 +1885,7 @@ public final class Env
 			if (table.getPO_Window_ID() != 0)
 			{
 				String whereClause = table.getTableName() + "_ID=" + Record_ID;
-				isSOTrx = DB.isSOTrx(table.getTableName(), whereClause);
+				isSOTrx = DB.isSOTrx(table.getTableName(), whereClause, windowNo);
 				if (!isSOTrx)
 					AD_Window_ID = table.getPO_Window_ID();
 			}

@@ -1,0 +1,70 @@
+#!/bin/sh
+
+case "$1" in
+remove|purge)
+    ;;
+*)
+    exit 0
+    ;;
+esac
+
+if [ "$1" = "purge" ] ; then
+	update-rc.d idempiere remove >/dev/null || exit 0
+fi
+
+
+case "$1" in
+purge)
+    rm -fr /opt/idempiere-server
+    # rm -fr /etc/default/idempiere
+    # rm -fr /etc/init.d/idempiere
+    # rm -fr /etc/xdg/menus/idempiere.menu
+    rm -fr /usr/share/desktop-directories/idempiere-gethelp.directory
+    rm -fr /usr/share/desktop-directories/idempiere.directory
+    rm -fr /usr/share/pixmaps/idempiere-restore.png
+    rm -fr /usr/share/pixmaps/idempiere.png
+    rm -fr /usr/share/pixmaps/idempiere-gethelp.png
+    rm -fr /usr/share/pixmaps/idempiere-gotoonlineforum.png
+    rm -fr /usr/share/pixmaps/idempiere-backup.png
+    rm -fr /usr/share/pixmaps/idempiere-start.png
+    rm -fr /usr/share/pixmaps/idempiere-readdocumentation.png
+    rm -fr /usr/share/applications/idempiere-gotoonlineforum.desktop
+    rm -fr /usr/share/applications/idempiere-homepage.desktop
+    rm -fr /usr/share/applications/idempiere-webclient.desktop
+    rm -fr /usr/share/applications/idempiere-readdocumentation.desktop
+    rm -fr /usr/share/applications/idempiere-restore.desktop
+    rm -fr /usr/share/applications/idempiere-startserver.desktop
+    rm -fr /usr/share/applications/idempiere-backup.desktop
+    ;;
+*)
+    ;;
+esac
+
+mergefile()
+{
+    MENUFILE="$1"
+    if [ -z "$MENUFILE" ]
+    then
+        return
+    fi
+
+	TFILE="$(mktemp)" || TFILE="/tmp/idempiereapplications.tmp"
+	sed -n '/<\!\-- iDempiere \-->/,/<\!\-- End of iDempiere \-->/!p' "$MENUFILE" > "$TFILE"
+	cp -f "$TFILE" "$MENUFILE"
+	rm -f "$TFILE"
+}
+
+if [ -f /etc/xdg/menus/gnome-applications.menu ]
+then
+	mergefile /etc/xdg/menus/gnome-applications.menu
+fi
+if [ -f /etc/xdg/menus/kde-applications.menu ]
+then
+	mergefile /etc/xdg/menus/kde-applications.menu
+fi
+if [ -f /etc/xdg/menus/applications.menu ]
+then
+	mergefile /etc/xdg/menus/applications.menu
+fi
+
+exit 0

@@ -62,11 +62,11 @@ import org.zkoss.zul.Vbox;
  *  @version  $Id: ValuePreference.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
  */
 public class ValuePreference extends Window implements EventListener<Event>
-{	
+{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 471820722501563271L;
+	private static final long serialVersionUID = 737741552754618206L;
 
 	/**
 	 *  Factory
@@ -105,7 +105,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 
 		//  Get from mField
 		//  AD_Window_ID, DisplayAttribute, Attribute, DisplayType, AD_Referenece_ID
-		int AD_Window_ID = mField.getAD_Window_ID();
+		int AD_Window_ID = mField.getAD_Window_ID_Of_Panel();
 		String Attribute = mField.getColumnName();
 		String DisplayAttribute = mField.getHeader();
 		int displayType = mField.getDisplayType();
@@ -121,7 +121,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		//  Create Editor
 		@SuppressWarnings("unused")
 		ValuePreference vp = new ValuePreference (WindowNo,
-			AD_Client_ID, AD_Org_ID, AD_User_ID, AD_Window_ID,
+			AD_Client_ID, AD_Org_ID, AD_User_ID, AD_Window_ID, mField.getAD_Process_ID_Of_Panel(), 
 			Attribute, DisplayAttribute, Value, DisplayValue,
 			displayType, AD_Reference_ID, ref);
 	}   //  create
@@ -183,7 +183,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	 * @param ref 
 	 */
 	public ValuePreference (int WindowNo,
-		int AD_Client_ID, int AD_Org_ID, int AD_User_ID, int AD_Window_ID,
+		int AD_Client_ID, int AD_Org_ID, int AD_User_ID, int AD_Window_ID, int AD_Process_ID_Of_Panel,
 		String Attribute, String DisplayAttribute, String Value, String DisplayValue,
 		int displayType, int AD_Reference_ID, Component ref)
 	{
@@ -206,6 +206,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		m_Value = Value;
 		m_DisplayValue = DisplayValue;
 		m_DisplayType = displayType;
+		m_AD_Process_ID_Of_Panel = AD_Process_ID_Of_Panel;
 		//
 		m_role = MRole.getDefault();
 		try
@@ -247,6 +248,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	private String          m_DisplayValue;
 	private int             m_DisplayType;
 	private MRole			m_role;
+	private int				m_AD_Process_ID_Of_Panel;
 
 	//  Display
 	private Panel setPanel = new Panel();
@@ -262,6 +264,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	private Checkbox cbOrg = new Checkbox();
 	private Checkbox cbUser = new Checkbox();
 	private Checkbox cbWindow = new Checkbox();
+	private Checkbox cbProcess = new Checkbox();
 	private Label lExplanation = new Label();
 
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
@@ -283,6 +286,8 @@ public class ValuePreference extends Window implements EventListener<Event>
 		cbUser.setChecked(true);
 		cbWindow.setLabel(Msg.translate(m_ctx, "AD_Window_ID"));
 		cbWindow.setChecked(true);
+		cbProcess.setLabel(Msg.translate(m_ctx, "AD_Process_ID"));
+		cbProcess.setChecked(true);
 		// 
 		setPanel.appendChild(setLayout);
 		setPanel.setHflex("1");
@@ -330,7 +335,10 @@ public class ValuePreference extends Window implements EventListener<Event>
 		chlayout.appendChild(cbOrg);
 		chlayout.appendChild(cbUser);
 		chlayout.appendChild(cbWindow);
-		row.appendCellChild(chlayout, 4);
+		if(m_AD_Process_ID_Of_Panel > 0){
+			chlayout.appendChild(cbProcess);
+		}
+		row.appendCellChild(chlayout, 5);
 		rows.appendChild(row);
 		
 		row = new Row();
@@ -393,6 +401,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		}
 		//	Can change all/specific
 		cbWindow.addEventListener(Events.ON_CHECK, this);
+		cbProcess.addEventListener(Events.ON_CHECK, this);
 
 		//  Other
 		confirmPanel.addComponentsLeft(confirmPanel.createButton("Delete"));
@@ -458,6 +467,14 @@ public class ValuePreference extends Window implements EventListener<Event>
 		else
 			expl.append(" and all Windows");
 		//
+		if (m_AD_Process_ID_Of_Panel > 0){
+			if (cbProcess.isChecked())
+				expl.append(" and this Process");
+			else
+				expl.append(" and all Process");
+		}
+		
+		//
 		if (Env.getLanguage(Env.getCtx()).isBaseLanguage())
 		{
 			lExplanation.setValue(expl.toString ());
@@ -483,6 +500,20 @@ public class ValuePreference extends Window implements EventListener<Event>
 			sql.append(" AND AD_Window_ID=").append(m_AD_Window_ID);
 		else
 			sql.append(" AND AD_Window_ID IS NULL");
+		
+		if (m_AD_Process_ID_Of_Panel > 0){
+			// preference for process parameter
+			sql.append(" AND PreferenceFor = 'P'");
+			if (cbProcess.isChecked())
+				sql.append(" AND AD_Process_ID=").append(m_AD_Process_ID_Of_Panel);
+			else
+				sql.append(" AND AD_Process_ID IS NULL");
+		}else{
+			// preference for process window
+			sql.append(" AND PreferenceFor = 'W'");
+			sql.append(" AND AD_Process_ID IS NULL");
+		}
+		
 		sql.append(" AND Attribute='").append(m_Attribute).append("'");
 		//
 		if (log.isLoggable(Level.FINE)) log.fine( sql.toString());
@@ -498,10 +529,19 @@ public class ValuePreference extends Window implements EventListener<Event>
 	 */
 	private String getContextKey()
 	{
+		if (m_AD_Process_ID_Of_Panel > 0){
+			if (cbProcess.isChecked())
+				return "P" + m_AD_Window_ID + "|" + m_AD_Process_ID_Of_Panel + "|" + m_Attribute;
+			else{
+				return "P" + m_AD_Window_ID + "|0|" + m_Attribute;
+			}
+		}else{
 		if (cbWindow.isChecked())
 			return "P" + m_AD_Window_ID + "|" + m_Attribute;
 		else
 			return "P|" + m_Attribute;
+		}
+		
 	}   //  getContextKey
 
 	/**
@@ -535,13 +575,31 @@ public class ValuePreference extends Window implements EventListener<Event>
 		//
 		StringBuilder sql = new StringBuilder ("INSERT INTO AD_Preference ("
 			+ "AD_Preference_ID, AD_Preference_UU, AD_Client_ID, AD_Org_ID, IsActive, Created,CreatedBy,Updated,UpdatedBy,"
-			+ "AD_Window_ID, AD_User_ID, Attribute, Value) VALUES (");
+			+ "AD_Window_ID, AD_Process_ID, PreferenceFor, AD_User_ID, Attribute, Value) VALUES (");
 		sql.append(AD_Preference_ID).append(",").append(DB.TO_STRING(UUID.randomUUID().toString())).append(",").append(Client_ID).append(",").append(Org_ID)
 			.append(", 'Y',SysDate,").append(m_AD_User_ID).append(",SysDate,").append(m_AD_User_ID).append(", ");
+		
 		if (cbWindow.isChecked())
 			sql.append(m_AD_Window_ID).append(",");
 		else
 			sql.append("NULL,") ;
+		
+		// set value for AD_Process_ID and PreferenceFor
+		if(m_AD_Process_ID_Of_Panel > 0){
+			if (cbProcess.isChecked()){
+				sql.append(m_AD_Process_ID_Of_Panel).append(",");
+			}else{
+				sql.append("NULL,");
+			}
+			// in case Preference for process, set PreferenceFor = P
+			sql.append("'P',");
+		}else{
+			// in case Preference for window, AD_Process_ID always null
+			sql.append("NULL,");
+			// in case Preference for window, set PreferenceFor = P
+			sql.append("'W',");
+		}
+		
 		if (cbUser.isChecked())
 			sql.append(m_AD_User_ID).append(",");
 		else

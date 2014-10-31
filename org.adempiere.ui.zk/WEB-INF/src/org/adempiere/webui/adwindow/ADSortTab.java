@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Label;
@@ -75,7 +76,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1775234591903753429L;
+	private static final long serialVersionUID = -4161399343247477912L;
 
 	/**
 	 *	Sort Tab Constructor
@@ -267,7 +268,9 @@ public class ADSortTab extends Panel implements IADTabpanel
 		yesList.setVflex(true);
 		noList.setVflex(true);
 
-		EventListener<Event> mouseListener = new EventListener<Event>()
+        setId(AdempiereIdGenerator.escapeId(gridTab.getName()));
+
+        EventListener<Event> mouseListener = new EventListener<Event>()
 		{
 
 			public void onEvent(Event event) throws Exception
@@ -396,6 +399,14 @@ public class ADSortTab extends Panel implements IADTabpanel
 		{
 			sql.append(" WHERE 1=?");
 		}
+
+		int reportView_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "AD_ReportView_ID");
+		if ("AD_PrintFormatItem".equals(m_TableName) && reportView_ID > 0) {
+			sql.append(" AND (t.AD_Column_ID IN (SELECT AD_Column_ID FROM AD_ReportView_Column WHERE AD_ReportView_ID=")
+			.append(reportView_ID).append(" AND IsActive='Y')")
+			.append(" OR ((SELECT COUNT(*) FROM AD_ReportView_Column WHERE AD_ReportView_ID=").append(reportView_ID).append(" AND IsActive='Y') = 0))");
+		}
+
 		if (m_IdentifierTranslated)
 			sql.append(" AND t.").append(m_KeyColumnName).append("=tt.").append(m_KeyColumnName)
 			.append(" AND tt.AD_Language=?");
@@ -858,8 +869,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 	    	
 	    	setAttribute(ATTR_ON_ACTIVATE_POSTED, Boolean.TRUE);
     	}
-		
-		Event event = new Event(ON_ACTIVATE_EVENT, this, b);
+
+    	active = b;
+
+    	Event event = new Event(ON_ACTIVATE_EVENT, this, b);
         Events.postEvent(event);
 	}
 
@@ -1014,6 +1027,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 		yesList.setModel(yesModel);
 		noList.setItemRenderer(noModel);
 		noList.setModel(noModel);
+	}
+
+	public ADTreePanel getTreePanel() {
+		return null;
 	}
 }	//ADSortTab
 

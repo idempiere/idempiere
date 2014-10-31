@@ -109,10 +109,10 @@ public abstract class PaymentFormCash extends PaymentForm {
 		 *  Load Bank Accounts
 		 */
 		String SQL = MRole.getDefault().addAccessSQL(
-			"SELECT C_BankAccount_ID, ba.Name || ' ' || AccountNo, IsDefault "
+			"SELECT C_BankAccount_ID, ba.Name || ' ' || ba.AccountNo, ba.IsDefault "
 			+ "FROM C_BankAccount ba"
 			+ " INNER JOIN C_Bank b ON (ba.C_Bank_ID=b.C_Bank_ID) "
-			+ "WHERE b.IsActive='Y'",
+			+ "WHERE b.IsActive='Y' AND ba.IsActive='Y'",
 			"ba", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

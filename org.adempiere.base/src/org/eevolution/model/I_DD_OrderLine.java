@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for DD_OrderLine
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 @SuppressWarnings("all")
 public interface I_DD_OrderLine 
@@ -558,12 +558,12 @@ public interface I_DD_OrderLine
     /** Column name User1_ID */
     public static final String COLUMNNAME_User1_ID = "User1_ID";
 
-	/** Set User List 1.
+	/** Set User Element List 1.
 	  * User defined list element #1
 	  */
 	public void setUser1_ID (int User1_ID);
 
-	/** Get User List 1.
+	/** Get User Element List 1.
 	  * User defined list element #1
 	  */
 	public int getUser1_ID();
@@ -573,12 +573,12 @@ public interface I_DD_OrderLine
     /** Column name User2_ID */
     public static final String COLUMNNAME_User2_ID = "User2_ID";
 
-	/** Set User List 2.
+	/** Set User Element List 2.
 	  * User defined list element #2
 	  */
 	public void setUser2_ID (int User2_ID);
 
-	/** Get User List 2.
+	/** Get User Element List 2.
 	  * User defined list element #2
 	  */
 	public int getUser2_ID();

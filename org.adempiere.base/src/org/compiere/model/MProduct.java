@@ -757,7 +757,7 @@ public class MProduct extends X_M_Product
 		}*/
 		
 		//
-		return delete_Accounting("M_Product_Acct"); 
+		return true; 
 	}	//	beforeDelete
 	
 	@Override

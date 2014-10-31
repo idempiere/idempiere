@@ -36,7 +36,7 @@ public class MProject extends X_C_Project
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2151648902207548617L;
+	private static final long serialVersionUID = -6103964836289951325L;
 
 	/**
 	 * 	Create new Project by copying
@@ -441,15 +441,6 @@ public class MProject extends X_C_Project
 
 		return success;
 	}	//	afterSave
-
-	/**
-	 * 	Before Delete
-	 *	@return true
-	 */
-	protected boolean beforeDelete ()
-	{
-		return delete_Accounting("C_Project_Acct"); 
-	}	//	beforeDelete
 
 	/**
 	 * 	After Delete

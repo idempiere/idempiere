@@ -38,7 +38,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4663753548813509716L;
+	private static final long serialVersionUID = -6871590404494812487L;
 
 	/**
 	 *  Construct Model TreeNode
@@ -215,7 +215,18 @@ public class MTreeNode extends DefaultMutableTreeNode
 		return m_description;
 	}	//	getDescription
 
-	
+	/**
+	 *  Set Description
+	 *  @param name name
+	 */
+	public void setDescription (String description)
+	{
+		if (description == null)
+			m_description = "";
+		else
+			m_description = description;
+	}   //  setDescription
+
 	/**************************************************************************
 	 *  Set Summary (allow children)
 	 *  @param isSummary summary node

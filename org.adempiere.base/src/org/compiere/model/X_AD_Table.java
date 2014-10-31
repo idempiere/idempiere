@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Table
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_AD_Table extends PO implements I_AD_Table, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_AD_Table (Properties ctx, int AD_Table_ID, String trxName)
@@ -222,6 +222,20 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	public String getCopyColumnsFromTable () 
 	{
 		return (String)get_Value(COLUMNNAME_CopyColumnsFromTable);
+	}
+
+	/** Set Drop view.
+		@param DatabaseViewDrop Drop view	  */
+	public void setDatabaseViewDrop (String DatabaseViewDrop)
+	{
+		set_Value (COLUMNNAME_DatabaseViewDrop, DatabaseViewDrop);
+	}
+
+	/** Get Drop view.
+		@return Drop view	  */
+	public String getDatabaseViewDrop () 
+	{
+		return (String)get_Value(COLUMNNAME_DatabaseViewDrop);
 	}
 
 	/** Set Description.

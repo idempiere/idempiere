@@ -1,0 +1,23 @@
+    <!-- iDempiere ERP -->
+    <Menu>
+       <Name>iDempiere ERP</Name>
+       <Directory>idempiere.directory</Directory>
+       <NotDeleted/>
+       <Include>
+        <Filename>idempiere-startserver.desktop</Filename>
+        <Filename>idempiere-homepage.desktop</Filename>
+        <Filename>idempiere-webclient.desktop</Filename>
+        <Filename>idempiere-backup.desktop</Filename>
+        <Filename>idempiere-restore.desktop</Filename>
+       </Include>
+      <Menu>
+	    <Name>Get Help</Name>
+	    <Directory>idempiere-gethelp.directory</Directory>
+	    <NotDeleted/>
+	    <Include>
+	     <Filename>idempiere-gotoonlineforum.desktop</Filename>
+	     <Filename>idempiere-readdocumentation.desktop</Filename>
+	    </Include>
+      </Menu>
+    </Menu>
+    <!-- End of iDempiere -->

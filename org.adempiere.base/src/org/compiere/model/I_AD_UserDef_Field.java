@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Field
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_AD_UserDef_Field 
 {
@@ -135,6 +135,21 @@ public interface I_AD_UserDef_Field
 	public int getAD_UserDef_Tab_ID();
 
 	public org.compiere.model.I_AD_UserDef_Tab getAD_UserDef_Tab() throws RuntimeException;
+
+    /** Column name AD_Val_Rule_ID */
+    public static final String COLUMNNAME_AD_Val_Rule_ID = "AD_Val_Rule_ID";
+
+	/** Set Dynamic Validation.
+	  * Dynamic Validation Rule
+	  */
+	public void setAD_Val_Rule_ID (int AD_Val_Rule_ID);
+
+	/** Get Dynamic Validation.
+	  * Dynamic Validation Rule
+	  */
+	public int getAD_Val_Rule_ID();
+
+	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
 
     /** Column name ColumnSpan */
     public static final String COLUMNNAME_ColumnSpan = "ColumnSpan";

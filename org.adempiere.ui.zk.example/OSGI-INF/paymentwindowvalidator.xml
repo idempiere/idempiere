@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.adempiere.window.payment.validator.PaymentWindowValidator">
+   <implementation class="org.adempiere.window.payment.validator.PaymentWindowValidator"/>
+   <service>
+      <provide interface="org.adempiere.webui.adwindow.validator.WindowValidator"/>
+   </service>
+   <property name="AD_Window_UU" type="String" value="ba895dc4-73df-4cf6-bc29-6dde6e011487"/>
+</scr:component>

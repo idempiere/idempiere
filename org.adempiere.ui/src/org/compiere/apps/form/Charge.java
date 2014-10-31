@@ -16,6 +16,7 @@ package org.compiere.apps.form;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -51,8 +52,6 @@ public class Charge
 	private int         m_C_TaxCategory_ID = 0;
 	private int         m_AD_Client_ID = 0;
 	private int         m_AD_Org_ID = 0;
-	@SuppressWarnings("unused")
-	private int         m_CreatedBy = 0;
 	private MAcctSchema  m_acctSchema = null;
 	/**	Logger			*/
 	public static CLogger log = CLogger.getCLogger(Charge.class);
@@ -170,7 +169,6 @@ public class Charge
 		//  Other Defaults
 		m_AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 		m_AD_Org_ID = Env.getAD_Org_ID(Env.getCtx());
-		m_CreatedBy = Env.getAD_User_ID(Env.getCtx());
 
 		//  TaxCategory
 		String sql = "SELECT C_TaxCategory_ID FROM C_TaxCategory "
@@ -232,27 +230,28 @@ public class Charge
         MCharge charge;
         MAccount account;
 
-        if (log.isLoggable(Level.CONFIG)) log.config(name + " - ");
-        // Charge
-        charge = new MCharge(Env.getCtx(), 0, null);
-        charge.setName(name);
-        charge.setC_TaxCategory_ID(m_C_TaxCategory_ID);
-        if (!charge.save())
-        {
-            log.log(Level.SEVERE, name + " not created");
-            return 0;
-        }
-
         refreshAccountSchema();
         if (!isAccountSchemaValid())
         {
             return 0;
         }
-
+        
         //  Target Account
-        account = getAccount(elementValueId, charge);
+        account = getAccount(elementValueId);
         if (account == null)
         {
+            return 0;
+        }
+        
+        if (log.isLoggable(Level.CONFIG)) log.config(name + " - ");
+        // Charge
+        charge = new MCharge(Env.getCtx(), 0, null);
+        // IDEMPIERE-1099 - Key must be included in name to avoid name crashes in account schema.
+        charge.setName(account.getAccount().getValue() + " " + name);
+        charge.setC_TaxCategory_ID(m_C_TaxCategory_ID);
+        if (!charge.save())
+        {
+            log.log(Level.SEVERE, name + " not created");
             return 0;
         }
 
@@ -338,15 +337,15 @@ public class Charge
      * Gets the account for the specified charge and element value.
      * The account is created if it doesn't already exist.
      * @param elementValueId    identifier for the element value
-     * @param charge            charge
      * @return the account
      */
-    private MAccount getAccount(int elementValueId, MCharge charge)
+    private MAccount getAccount(int elementValueId)
     {
+    	Properties ctx = Env.getCtx();
         MAccount defaultAccount = MAccount.getDefault(m_acctSchema, true); //  optional null
-        MAccount account = MAccount.get(Env.getCtx(),
-            charge.getAD_Client_ID(),
-            charge.getAD_Org_ID(),
+        MAccount account = MAccount.get(ctx,
+            Env.getAD_Client_ID(ctx),
+            Env.getAD_Org_ID(ctx),
             m_acctSchema.getC_AcctSchema_ID(),
             elementValueId,
             defaultAccount.getC_SubAcct_ID(),

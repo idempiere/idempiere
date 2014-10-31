@@ -212,13 +212,13 @@ public class AcctSchemaCopyAcct extends SvrProcess
 				C_Project_ID = sourceAcct.getC_Project_ID();
 			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_SalesRegion))
 				C_SalesRegion_ID = sourceAcct.getC_SalesRegion_ID();
-			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserList1))
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList1))
 				User1_ID = sourceAcct.getUser1_ID();
-			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserList2))
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList2))
 				User2_ID = sourceAcct.getUser2_ID();
-			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElement1))
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn1))
 				UserElement1_ID = sourceAcct.getUserElement1_ID();
-			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElement2))
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn2))
 				UserElement2_ID = sourceAcct.getUserElement2_ID();
 			//	No UserElement
 		}

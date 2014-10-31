@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoWindow
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow (Properties ctx, int AD_InfoWindow_ID, String trxName)
@@ -47,8 +47,12 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 // N
 			setIsDistinct (false);
 // N
+			setIsShowInDashboard (true);
+// Y
 			setIsValid (false);
 // N
+			setMaxQueryRecords (0);
+// 0
 			setName (null);
         } */
     }
@@ -242,6 +246,23 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
+	/** Set Image URL.
+		@param ImageURL 
+		URL of  image
+	  */
+	public void setImageURL (String ImageURL)
+	{
+		set_Value (COLUMNNAME_ImageURL, ImageURL);
+	}
+
+	/** Get Image URL.
+		@return URL of  image
+	  */
+	public String getImageURL () 
+	{
+		return (String)get_Value(COLUMNNAME_ImageURL);
+	}
+
 	/** Set Default.
 		@param IsDefault 
 		Default value
@@ -290,6 +311,30 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 		return false;
 	}
 
+	/** Set Show in Dashboard.
+		@param IsShowInDashboard 
+		Show the dashlet in the dashboard
+	  */
+	public void setIsShowInDashboard (boolean IsShowInDashboard)
+	{
+		set_Value (COLUMNNAME_IsShowInDashboard, Boolean.valueOf(IsShowInDashboard));
+	}
+
+	/** Get Show in Dashboard.
+		@return Show the dashlet in the dashboard
+	  */
+	public boolean isShowInDashboard () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowInDashboard);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Valid.
 		@param IsValid 
 		Element is valid
@@ -312,6 +357,26 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Max Query Records.
+		@param MaxQueryRecords 
+		If defined, you cannot query more records as defined - the query criteria needs to be changed to query less records
+	  */
+	public void setMaxQueryRecords (int MaxQueryRecords)
+	{
+		set_Value (COLUMNNAME_MaxQueryRecords, Integer.valueOf(MaxQueryRecords));
+	}
+
+	/** Get Max Query Records.
+		@return If defined, you cannot query more records as defined - the query criteria needs to be changed to query less records
+	  */
+	public int getMaxQueryRecords () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_MaxQueryRecords);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Name.
@@ -392,6 +457,26 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Sequence.
+		@param SeqNo 
+		Method of ordering records; lowest number comes first
+	  */
+	public void setSeqNo (int SeqNo)
+	{
+		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
+	}
+
+	/** Get Sequence.
+		@return Method of ordering records; lowest number comes first
+	  */
+	public int getSeqNo () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Sql WHERE.

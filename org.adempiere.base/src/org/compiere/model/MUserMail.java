@@ -19,7 +19,10 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import javax.mail.internet.InternetAddress;
+
 import org.compiere.util.EMail;
+import org.compiere.util.Env;
 
 /**
  * 	User Mail Model
@@ -31,7 +34,7 @@ public class MUserMail extends X_AD_UserMail
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1019980049099249013L;
+	private static final long serialVersionUID = 925597416692485382L;
 
 	/**
 	 * 	Standard Constructor
@@ -67,6 +70,7 @@ public class MUserMail extends X_AD_UserMail
 		setClientOrg(parent);
 		setAD_User_ID(AD_User_ID);
 		setR_MailText_ID(parent.getR_MailText_ID());
+		setSenderAndRecipient(mail);
 		//
 		if (mail.isSentOK())
 			setMessageID(mail.getMessageID());
@@ -89,6 +93,7 @@ public class MUserMail extends X_AD_UserMail
 		setClientOrg(parent);
 		setAD_User_ID(AD_User_ID);
 		setW_MailMsg_ID(parent.getW_MailMsg_ID());
+		setSenderAndRecipient(mail);
 		//
 		if (mail.isSentOK())
 			setMessageID(mail.getMessageID());
@@ -112,6 +117,24 @@ public class MUserMail extends X_AD_UserMail
 		setAD_User_ID(AD_User_ID);
 		setSubject(mail.getSubject());
 		setMailText(mail.getMessageCRLF());
+		setSenderAndRecipient(mail);
+		//
+		if (mail.isSentOK())
+			setMessageID(mail.getMessageID());
+		else
+		{
+			setMessageID(mail.getSentMsg());
+			setIsDelivered(ISDELIVERED_No);
+		}
+	}	//	MUserMail
+	
+	public MUserMail (Properties ctx, EMail mail)
+	{
+		this (ctx, 0, null);
+		setAD_User_ID(Env.getAD_User_ID(ctx));
+		setSubject(mail.getSubject());
+		setMailText(mail.getMessageCRLF());
+		setSenderAndRecipient(mail);
 		//
 		if (mail.isSentOK())
 			setMessageID(mail.getMessageID());
@@ -154,5 +177,24 @@ public class MUserMail extends X_AD_UserMail
 		String s = getIsDelivered();
 		return s == null;
 	}	//	isDeliveredUnknown
+
+	/** Fill sender and recipients fields */
+	public void setSenderAndRecipient(EMail mail)
+	{
+		setEMailFrom(mail.getFrom().toString());
+		setRecipientTo(getRecipientWithCommaSeparator(mail.getTos()));
+		setRecipientCc(getRecipientWithCommaSeparator(mail.getCcs()));
+		setRecipientBcc(getRecipientWithCommaSeparator(mail.getBccs()));
+	}
+
+	static public String getRecipientWithCommaSeparator(InternetAddress[] recipients)
+	{
+		StringBuilder retValue = new StringBuilder("");
+		if (recipients != null) {
+			for (InternetAddress ia : recipients)
+				retValue.append(retValue.length() > 0 ? ", " : "" ).append(ia.getAddress());
+		}
+		return retValue.toString();
+	}
 
 }	//	MUserMail

@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AcctSchema_Default
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_C_AcctSchema_Default (Properties ctx, int C_AcctSchema_Default_ID, String trxName)
@@ -45,15 +45,9 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 			setB_PaymentSelect_Acct (0);
 			setB_UnallocatedCash_Acct (0);
 			setC_AcctSchema_ID (0);
-			setCB_Asset_Acct (0);
-			setCB_CashTransfer_Acct (0);
-			setCB_Differences_Acct (0);
-			setCB_Expense_Acct (0);
-			setCB_Receipt_Acct (0);
 			setCh_Expense_Acct (0);
 			setC_Prepayment_Acct (0);
 			setC_Receivable_Acct (0);
-			setC_Receivable_Services_Acct (0);
 			setNotInvoicedReceipts_Acct (0);
 			setP_Asset_Acct (0);
 			setPayDiscount_Exp_Acct (0);
@@ -75,11 +69,9 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 			setT_Credit_Acct (0);
 			setT_Due_Acct (0);
 			setT_Expense_Acct (0);
-			setUnEarnedRevenue_Acct (0);
 			setUnrealizedGain_Acct (0);
 			setUnrealizedLoss_Acct (0);
 			setV_Liability_Acct (0);
-			setV_Liability_Services_Acct (0);
 			setV_Prepayment_Acct (0);
 			setW_Differences_Acct (0);
 			setWriteOff_Acct (0);

@@ -781,7 +781,7 @@ public class MProductPricing
 			return;
 		
 		MDiscountSchema sd = MDiscountSchema.get(Env.getCtx(), M_DiscountSchema_ID);	//	not correct
-		if (sd.get_ID() == 0)
+		if (sd.get_ID() == 0 || MDiscountSchema.CUMULATIVELEVEL_Line.equals(sd.getCumulativeLevel()))
 			return;
 		//
 		m_discountSchema = true;		

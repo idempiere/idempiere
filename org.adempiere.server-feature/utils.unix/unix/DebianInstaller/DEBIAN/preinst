@@ -1,0 +1,48 @@
+#!/bin/sh
+
+if [ "$1" != "install" -o -n "$2" ]
+then
+    exit 0
+fi
+
+# User must be root
+
+if [ $(id -u) != "0" ]
+then
+    echo "You must be the root to install the software" >&2
+    exit 1
+fi
+
+# IDEMPIERE_HOME must be unset
+if `env | grep -q IDEMPIERE_HOME`
+then
+	unset IDEMPIERE_HOME
+fi
+
+# Check for sufficient diskspace
+if [ -d /opt/idempiere-server ] 
+then
+	diskspace=`df -k /opt/idempiere-server | grep % | tr -s " " | cut -d" " -f4 | tail -1`
+	diskspace=`expr $diskspace / 1024`
+	if [ $diskspace -lt 1024 ]
+	then
+	echo "You have insufficient diskspace in the destination directory (/opt/idempiere-server) 
+to install idempiere  The installation requires at 
+least 1 GB free on this disk."
+        exit 1
+	fi
+else
+	diskspace=`df -k /usr/lib | grep % | tr -s " " | cut -d" " -f4 | tail -1`
+	diskspace=`expr $diskspace / 1024`
+	if [ $diskspace -lt 1024 ]
+	then
+	echo "You have insufficient diskspace in the destination directory (/usr/lib) to 
+install idempiere.  The installation requires at 
+least 1 GB free on this disk."
+        exit 1
+	fi
+fi
+
+# Don't fail, even on sysctl errors
+exit 0
+

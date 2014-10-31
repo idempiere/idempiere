@@ -39,7 +39,7 @@ public class MCharge extends X_C_Charge
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8246481667219415012L;
+	private static final long serialVersionUID = -4628105180010713510L;
 
 	/**
 	 *  Get Charge Account
@@ -149,14 +149,5 @@ public class MCharge extends X_C_Charge
 
 		return success;
 	}	//	afterSave
-
-	/**
-	 * 	Before Delete
-	 *	@return true
-	 */
-	protected boolean beforeDelete ()
-	{
-		return delete_Accounting("C_Charge_Acct"); 
-	}	//	beforeDelete
 
 }	//	MCharge

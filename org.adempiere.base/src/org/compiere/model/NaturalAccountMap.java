@@ -59,7 +59,7 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2246313934440519036L;
+	private static final long serialVersionUID = -2193338049120937392L;
 
 	/**
 	 *  Constructor.
@@ -227,7 +227,7 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 		//	No Summary Account
 		if (IsSummary == null || IsSummary.length() == 0)
 			IsSummary = "N";
-		if (!IsSummary.equals("N"))
+		if (!"SUMMARY".equals(Default_Account) && !IsSummary.equals("N"))
 			return "";
 			
 		//  Validation
@@ -246,7 +246,7 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 
 		try
 		{
-			//	Try to find - allows to use same natutal account for multiple default accounts 
+			//	Try to find - allows to use same natural account for multiple default accounts 
 			MElementValue na = (MElementValue)m_valueMap.get(Value);
 			if (na == null)
 			{
@@ -275,9 +275,10 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 	 * 	@param AD_Client_ID client
 	 * 	@param AD_Org_ID org
 	 * 	@param C_Element_ID element
+	 *  @param isActive 
 	 * 	@return true if created
 	 */
-	public boolean saveAccounts (int AD_Client_ID, int AD_Org_ID, int C_Element_ID)
+	public boolean saveAccounts (int AD_Client_ID, int AD_Org_ID, int C_Element_ID, boolean isActive)
 	{
 		log.config("");
 		Iterator<?> iterator = this.values().iterator();
@@ -287,6 +288,7 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 			na.setAD_Client_ID(AD_Client_ID);
 			na.setAD_Org_ID(AD_Org_ID);
 			na.setC_Element_ID(C_Element_ID);
+			na.setIsActive(isActive);
 			if (!na.save())
 				return false;
 		}

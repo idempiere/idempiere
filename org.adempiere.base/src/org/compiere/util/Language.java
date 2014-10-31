@@ -22,7 +22,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 
@@ -42,7 +42,7 @@ public class Language implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6705748825004207885L;
+	private static final long serialVersionUID = 8855937839841807335L;
 
 	/**
 	 * 
@@ -59,18 +59,18 @@ public class Language implements Serializable
 	
 	/***
 	 *  System Languages.
-	 *  If you want to add a language, extend the array
-	 *  - or use the addLanguage() method.
+	 *  If you want to add a language, use the method getLanguage which extends the array
 	 **/
-	static private Language[]   s_languages = new Language[] {
-		new Language ("English",
-				AD_Language_en_US,  Locale.US,      null, null,
-				MediaSize.NA.LETTER)
-	};
+	private static List<Language> s_languages = new ArrayList<Language>();
 
 	/** Base Language            */
-	private static Language     s_baseLanguage = s_languages[0];
+	private static Language    s_baseLanguage = null;
 	private static boolean     isBaseLanguageSet = false;
+
+	static {
+		s_languages.add(new Language ("English", AD_Language_en_US,  Locale.US, null, null, MediaSize.NA.LETTER));
+		s_baseLanguage = s_languages.get(0);
+    }
 
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(Language.class.getName());
@@ -81,7 +81,7 @@ public class Language implements Serializable
 	 */
 	public static int getLanguageCount()
 	{
-		return s_languages.length;
+		return s_languages.size();
 	}   //  getLanguageCount
 
 	/**
@@ -91,25 +91,10 @@ public class Language implements Serializable
 	 */
 	public static Language getLanguage (int index)
 	{
-		if (index < 0 || index >= s_languages.length)
+		if (index < 0 || index >= s_languages.size())
 			return s_baseLanguage;
-		return s_languages[index];
+		return s_languages.get(index);
 	}   //  getLanguage
-
-	/**
-	 *  Add Language to supported Languages
-	 *  @param language new language
-	 *  @deprecated IDEMPIERE-489 Configure the language in the database
-	 */
-	public static void addLanguage (Language language)
-	{
-		if (language == null)
-			return;
-		ArrayList<Language> list = new ArrayList<Language>(Arrays.asList(s_languages));
-		list.add(language);
-		s_languages = new Language[list.size()];
-		list.toArray(s_languages);
-	}   //  addLanguage
 
 	/**************************************************************************
 	 *  Get Language.
@@ -117,7 +102,7 @@ public class Language implements Serializable
 	 *  @param langInfo either language (en) or locale (en-US) or display name
 	 *  @return Name (e.g. Deutsch)
 	 */
-	public static Language getLanguage (String langInfo)
+	public synchronized static Language getLanguage (String langInfo)
 	{
 		int idxReplace = -1;
 		String lang = langInfo;
@@ -125,17 +110,17 @@ public class Language implements Serializable
 			lang = System.getProperty("user.language", "");
 
 		//	Search existing Languages
-		for (int i = 0; i < s_languages.length; i++)
+		for (int i = 0; i < s_languages.size(); i++)
 		{
-			if 	(   lang.equals(s_languages[i].getName())
-				 || lang.equals(s_languages[i].getLanguageCode())
-				 || lang.equals(s_languages[i].getAD_Language())) {
-				if (!s_languages[i].m_fromDB && DB.isConnected()) {
+			if 	(   lang.equals(s_languages.get(i).getAD_Language())
+				 || lang.equals(s_languages.get(i).getLanguageCode())
+				 || lang.equals(s_languages.get(i).getName())) {
+				if (!s_languages.get(i).m_fromDB && DB.isConnected()) {
 					// if language was not get from DB and now we're connected
 					idxReplace = i;
 					break;
 				} else {
-					return s_languages[i];
+					return s_languages.get(i);
 				}
 			}
 		}
@@ -181,17 +166,16 @@ public class Language implements Serializable
 			if (ll == null) {
 				ll = new Language (lang, lang, locale);
 			}
+			if (log.isLoggable(Level.INFO)) {
+				StringBuilder msglog = new StringBuilder("Adding Language=").append(language).append(", Country=").append(country).append(", Locale=").append(locale);			
+				log.info (msglog.toString());
+			}
 			StringBuilder msglog = new StringBuilder("Adding Language=").append(language).append(", Country=").append(country).append(", Locale=").append(locale);			
-			if (log.isLoggable(Level.INFO)) log.info (msglog.toString());
+			log.warning(msglog.toString());
 			if (idxReplace >= 0) {
-				s_languages[idxReplace] = ll;
+				s_languages.set(idxReplace, ll);
 			} else {
-				//	Add to Languages
-				ArrayList<Language> list = new ArrayList<Language>(Arrays.asList(s_languages));
-				list.add(ll);
-				s_languages = new Language [list.size()];
-				list.toArray(s_languages);
-				//	Return Language
+				s_languages.add(ll);
 			}
 			return ll;
 		}
@@ -274,10 +258,10 @@ public class Language implements Serializable
 	{
 		if (locale != null)
 		{
-			for (int i = 0; i < s_languages.length; i++)
+			for (int i = 0; i < s_languages.size(); i++)
 			{
-				if (locale.getLanguage().equals(s_languages[i].getLocale().getLanguage()))
-					return s_languages[i].getAD_Language();
+				if (locale.getLanguage().equals(s_languages.get(i).getLocale().getLanguage()))
+					return s_languages.get(i).getAD_Language();
 			}
 		}
 		return s_baseLanguage.getAD_Language();
@@ -309,9 +293,9 @@ public class Language implements Serializable
 	 */
 	public static String[] getNames()
 	{
-		String[] retValue = new String[s_languages.length];
-		for (int i = 0; i < s_languages.length; i++)
-			retValue[i] = s_languages[i].getName();
+		String[] retValue = new String[s_languages.size()];
+		for (int i = 0; i < s_languages.size(); i++)
+			retValue[i] = s_languages.get(i).getName();
 		return retValue;
 	}   //  getNames
 

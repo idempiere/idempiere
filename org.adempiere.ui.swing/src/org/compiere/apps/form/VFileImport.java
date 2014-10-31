@@ -58,6 +58,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 
 /**
@@ -81,6 +82,7 @@ public class VFileImport extends CPanel
 	private static final long serialVersionUID = 3996535986364873964L;
 	private static final int MAX_LOADED_LINES = 100;
 	private static final int MAX_SHOWN_LINES = 10;
+	private static String lastPath = null;
 
 	/**
 	 *	Initialize Panel
@@ -304,6 +306,8 @@ public class VFileImport extends CPanel
 		String directory = org.compiere.Adempiere.getAdempiereHome() 
 			+ File.separator + "data" 
 			+ File.separator + "import";
+		if (!Util.isEmpty(lastPath))
+			directory = lastPath;
 		log.config(directory);
 		//
 		JFileChooser chooser = new JFileChooser(directory);
@@ -314,6 +318,7 @@ public class VFileImport extends CPanel
 			return;
 		m_file = chooser.getSelectedFile();
 		if (log.isLoggable(Level.CONFIG)) log.config(m_file.getName());
+		lastPath = m_file.getParentFile().getAbsolutePath();
 		bFile.setText(m_file.getName());
 		cmd_reloadFile();
 	}

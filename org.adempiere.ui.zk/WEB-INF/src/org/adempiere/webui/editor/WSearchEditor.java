@@ -26,10 +26,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.ValuePreference;
-import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.ADWindowContent;
 import org.adempiere.webui.adwindow.IFieldEditorContainer;
@@ -40,7 +38,6 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
-import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.grid.WQuickEntry;
 import org.adempiere.webui.panel.IHelpContext;
@@ -53,14 +50,12 @@ import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
-import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -289,47 +284,14 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 	public void actionZoom()
 	{
-		if (getValue() == null || Util.isEmpty(getValue().toString())) 
-    	{
-    		onNewRecord();
-    	}
-    	else
-    	{
-    		AEnv.actionZoom(lookup, getValue());
-    	}
+   		AEnv.actionZoom(lookup, getValue());
 	}
-    private void actionZoom(Object value)
+
+	private void actionZoom(Object value)
     {
         AEnv.actionZoom(lookup, value);
     }
 
-    private void onNewRecord() {
-    	try
-        {
-    		MQuery query = new MQuery("");
-    		query.addRestriction("1=2");
-			query.setRecordCount(0);
-
-			int zoomWindowId = gridField != null ? lookup.getZoom(Env.isSOTrx(Env.getCtx(), gridField.getWindowNo())) : lookup.getZoom(Env.isSOTrx(Env.getCtx()));
-			SessionManager.getAppDesktop().openWindow(zoomWindowId, query, new Callback<ADWindow>() {				
-				@Override
-				public void onCallback(ADWindow result) {
-					if(result == null)
-						return;
-		    					
-					result.getADWindowContent().onNew();
-					ADTabpanel adtabpanel = (ADTabpanel) result.getADWindowContent().getADTab().getSelectedTabpanel();
-					adtabpanel.focusToFirstEditor(false);
-				}
-			});			
-        }
-        catch (Exception e)
-        {
-            throw new ApplicationException(e.getMessage(), e);
-        }
-		
-	}
-    
 	public void onMenu(ContextMenuEvent evt)
 	{
 		if (WEditorPopupMenu.REQUERY_EVENT.equals(evt.getContextEvent()))

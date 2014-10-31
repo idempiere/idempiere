@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.compiere.process;
 
+import java.math.BigDecimal;
+
 import org.compiere.model.MTableIndex;
 import org.compiere.util.DB;
 
@@ -30,8 +32,9 @@ public class TableIndexDrop extends SvrProcess {
 		MTableIndex index = new MTableIndex(getCtx(), p_AD_TableIndex_ID, get_TrxName());
 		log.info(index.toString());
 
-		String sql = "DROP INDEX " + index.getName();
+		String sql = index.getDropDDL();
 		int rvalue = DB.executeUpdateEx(sql, get_TrxName());
+		addLog(0, null, new BigDecimal(rvalue), sql);
 
 		return rvalue + " - " + sql;
 	}

@@ -20,6 +20,8 @@ import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
 import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_CURRENCY_ID;
 import static org.compiere.model.SystemIDs.COLUMN_C_PERIOD_AD_ORG_ID;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -336,7 +338,13 @@ public class WAllocation extends Allocation
 		statusBar.setVflex("min");
 		
 		//  Date set to Login Date
-		dateField.setValue(Env.getContextAsDate(Env.getCtx(), "#Date"));
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(Env.getContextAsDate(Env.getCtx(), "#Date"));
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		dateField.setValue(new Timestamp(cal.getTimeInMillis()));
 		dateField.addValueChangeListener(this);
 
 		
