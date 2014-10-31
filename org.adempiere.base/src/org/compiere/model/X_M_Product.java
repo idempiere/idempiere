@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Product
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_M_Product extends PO implements I_M_Product, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140905L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_M_Product (Properties ctx, int M_Product_ID, String trxName)
@@ -331,23 +331,6 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_DiscontinuedAt);
 	}
 
-	/** Set DocumentDescription.
-		@param DocumentDescription 
-		DocumentDescription
-	  */
-	public void setDocumentDescription (String DocumentDescription)
-	{
-		set_Value (COLUMNNAME_DocumentDescription, DocumentDescription);
-	}
-
-	/** Get DocumentDescription.
-		@return DocumentDescription
-	  */
-	public String getDocumentDescription () 
-	{
-		return (String)get_Value(COLUMNNAME_DocumentDescription);
-	}
-
 	/** Set Document Note.
 		@param DocumentNote 
 		Additional information for a Document
@@ -448,46 +431,6 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public String getHelp () 
 	{
 		return (String)get_Value(COLUMNNAME_Help);
-	}
-
-	/** Set ImageBig_ID.
-		@param ImageBig_ID ImageBig_ID	  */
-	public void setImageBig_ID (int ImageBig_ID)
-	{
-		if (ImageBig_ID < 1) 
-			set_Value (COLUMNNAME_ImageBig_ID, null);
-		else 
-			set_Value (COLUMNNAME_ImageBig_ID, Integer.valueOf(ImageBig_ID));
-	}
-
-	/** Get ImageBig_ID.
-		@return ImageBig_ID	  */
-	public int getImageBig_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ImageBig_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set ImageSmall_ID.
-		@param ImageSmall_ID ImageSmall_ID	  */
-	public void setImageSmall_ID (int ImageSmall_ID)
-	{
-		if (ImageSmall_ID < 1) 
-			set_Value (COLUMNNAME_ImageSmall_ID, null);
-		else 
-			set_Value (COLUMNNAME_ImageSmall_ID, Integer.valueOf(ImageSmall_ID));
-	}
-
-	/** Get ImageSmall_ID.
-		@return ImageSmall_ID	  */
-	public int getImageSmall_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ImageSmall_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Image URL.

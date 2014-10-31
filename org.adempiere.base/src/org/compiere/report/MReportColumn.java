@@ -181,13 +181,13 @@ public class MReportColumn extends X_PA_ReportColumn
 			ID = getC_SalesRegion_ID();
 		else if (MReportColumn.ELEMENTTYPE_OrgTrx.equals(et))
 			ID = getOrg_ID();	//	(re)uses Org_ID
-		else if (MReportColumn.ELEMENTTYPE_UserList1.equals(et))
+		else if (MReportColumn.ELEMENTTYPE_UserElementList1.equals(et))
 			ID = getC_ElementValue_ID();
-		else if (MReportColumn.ELEMENTTYPE_UserList2.equals(et))
+		else if (MReportColumn.ELEMENTTYPE_UserElementList2.equals(et))
 			ID = getC_ElementValue_ID();
-		else if (MReportColumn.ELEMENTTYPE_UserElement1.equals(et))
+		else if (MReportColumn.ELEMENTTYPE_UserColumn1.equals(et))
 			return " AND UserElement1_ID="+getUserElement1_ID(); // Not Tree
-		else if (MReportColumn.ELEMENTTYPE_UserElement2.equals(et))
+		else if (MReportColumn.ELEMENTTYPE_UserColumn2.equals(et))
 			return " AND UserElement2_ID="+getUserElement2_ID(); // Not Tree
 		// Financial Report Source with Type Combination
 		else if (MReportColumn.ELEMENTTYPE_Combination.equals(et))

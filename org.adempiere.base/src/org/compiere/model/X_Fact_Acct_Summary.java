@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for Fact_Acct_Summary
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_Fact_Acct_Summary (Properties ctx, int Fact_Acct_Summary_ID, String trxName)
@@ -670,7 +670,7 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
 			.getPO(getUser1_ID(), get_TrxName());	}
 
-	/** Set User List 1.
+	/** Set User Element List 1.
 		@param User1_ID 
 		User defined list element #1
 	  */
@@ -682,7 +682,7 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
 			set_Value (COLUMNNAME_User1_ID, Integer.valueOf(User1_ID));
 	}
 
-	/** Get User List 1.
+	/** Get User Element List 1.
 		@return User defined list element #1
 	  */
 	public int getUser1_ID () 
@@ -698,7 +698,7 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
 			.getPO(getUser2_ID(), get_TrxName());	}
 
-	/** Set User List 2.
+	/** Set User Element List 2.
 		@param User2_ID 
 		User defined list element #2
 	  */
@@ -710,7 +710,7 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
 			set_Value (COLUMNNAME_User2_ID, Integer.valueOf(User2_ID));
 	}
 
-	/** Get User List 2.
+	/** Get User Element List 2.
 		@return User defined list element #2
 	  */
 	public int getUser2_ID () 
@@ -721,7 +721,7 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
 		return ii.intValue();
 	}
 
-	/** Set User Element 1.
+	/** Set User Column 1.
 		@param UserElement1_ID 
 		User defined accounting Element
 	  */
@@ -733,7 +733,7 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
 			set_Value (COLUMNNAME_UserElement1_ID, Integer.valueOf(UserElement1_ID));
 	}
 
-	/** Get User Element 1.
+	/** Get User Column 1.
 		@return User defined accounting Element
 	  */
 	public int getUserElement1_ID () 
@@ -744,7 +744,7 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
 		return ii.intValue();
 	}
 
-	/** Set User Element 2.
+	/** Set User Column 2.
 		@param UserElement2_ID 
 		User defined accounting Element
 	  */
@@ -756,7 +756,7 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
 			set_Value (COLUMNNAME_UserElement2_ID, Integer.valueOf(UserElement2_ID));
 	}
 
-	/** Get User Element 2.
+	/** Get User Column 2.
 		@return User defined accounting Element
 	  */
 	public int getUserElement2_ID () 

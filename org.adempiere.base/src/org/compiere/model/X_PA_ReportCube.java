@@ -24,14 +24,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportCube
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_PA_ReportCube (Properties ctx, int PA_ReportCube_ID, String trxName)
@@ -432,17 +432,17 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 		return false;
 	}
 
-	/** Set User 1 Dimension.
+	/** Set User Element List 1 Dimension.
 		@param IsUser1Dim 
-		Include User 1 as a cube dimension
+		Include User Element List 1 as a cube dimension
 	  */
 	public void setIsUser1Dim (boolean IsUser1Dim)
 	{
 		set_Value (COLUMNNAME_IsUser1Dim, Boolean.valueOf(IsUser1Dim));
 	}
 
-	/** Get User 1 Dimension.
-		@return Include User 1 as a cube dimension
+	/** Get User Element List 1 Dimension.
+		@return Include User Element List 1 as a cube dimension
 	  */
 	public boolean isUser1Dim () 
 	{
@@ -456,17 +456,17 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 		return false;
 	}
 
-	/** Set User 2 Dimension.
+	/** Set User Element List 2 Dimension.
 		@param IsUser2Dim 
-		Include User 2 as a cube dimension
+		Include User Element List 2 as a cube dimension
 	  */
 	public void setIsUser2Dim (boolean IsUser2Dim)
 	{
 		set_Value (COLUMNNAME_IsUser2Dim, Boolean.valueOf(IsUser2Dim));
 	}
 
-	/** Get User 2 Dimension.
-		@return Include User 2 as a cube dimension
+	/** Get User Element List 2 Dimension.
+		@return Include User Element List 2 as a cube dimension
 	  */
 	public boolean isUser2Dim () 
 	{
@@ -480,7 +480,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 		return false;
 	}
 
-	/** Set User Element 1 Dimension.
+	/** Set User Column 1 Dimension.
 		@param IsUserElement1Dim 
 		Include User Element 1 as a cube dimension
 	  */
@@ -489,7 +489,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 		set_Value (COLUMNNAME_IsUserElement1Dim, Boolean.valueOf(IsUserElement1Dim));
 	}
 
-	/** Get User Element 1 Dimension.
+	/** Get User Column 1 Dimension.
 		@return Include User Element 1 as a cube dimension
 	  */
 	public boolean isUserElement1Dim () 
@@ -504,7 +504,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 		return false;
 	}
 
-	/** Set User Element 2 Dimension.
+	/** Set User Column 2 Dimension.
 		@param IsUserElement2Dim 
 		Include User Element 2 as a cube dimension
 	  */
@@ -513,7 +513,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 		set_Value (COLUMNNAME_IsUserElement2Dim, Boolean.valueOf(IsUserElement2Dim));
 	}
 
-	/** Get User Element 2 Dimension.
+	/** Get User Column 2 Dimension.
 		@return Include User Element 2 as a cube dimension
 	  */
 	public boolean isUserElement2Dim () 

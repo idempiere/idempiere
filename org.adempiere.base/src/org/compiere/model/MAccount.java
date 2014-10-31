@@ -343,13 +343,13 @@ public class MAccount extends X_C_ValidCombination
 				vc.setC_Project_ID(defaultValue);
 			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_SalesRegion) && setValue)
 				vc.setC_SalesRegion_ID(defaultValue);
-			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserList1) && setValue)
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList1) && setValue)
 				vc.setUser1_ID(defaultValue);
-			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserList2) && setValue)
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList2) && setValue)
 				vc.setUser2_ID(defaultValue);
-			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElement1) && setValue)
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn1) && setValue)
 				vc.setUserElement1_ID(defaultValue);
-			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElement2) && setValue)
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn2) && setValue)
 				vc.setUserElement2_ID(defaultValue);
 		}
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("Client_ID="
@@ -749,7 +749,7 @@ public class MAccount extends X_C_ValidCombination
 					fullyQualified = false;
 				}
 			}
-			else if (MAcctSchemaElement.ELEMENTTYPE_UserList1.equals(element.getElementType()))
+			else if (MAcctSchemaElement.ELEMENTTYPE_UserElementList1.equals(element.getElementType()))
 			{
 				if (getUser1_ID() != 0)
 				{
@@ -758,7 +758,7 @@ public class MAccount extends X_C_ValidCombination
 					descrStr = ev.getName();
 				}
 			}
-			else if (MAcctSchemaElement.ELEMENTTYPE_UserList2.equals(element.getElementType()))
+			else if (MAcctSchemaElement.ELEMENTTYPE_UserElementList2.equals(element.getElementType()))
 			{
 				if (getUser2_ID() != 0)
 				{
@@ -767,13 +767,13 @@ public class MAccount extends X_C_ValidCombination
 					descrStr = ev.getName();
 				}
 			}
-			else if (MAcctSchemaElement.ELEMENTTYPE_UserElement1.equals(element.getElementType()))
+			else if (MAcctSchemaElement.ELEMENTTYPE_UserColumn1.equals(element.getElementType()))
 			{
 				if (getUserElement1_ID() != 0)
 				{
 				}
 			}
-			else if (MAcctSchemaElement.ELEMENTTYPE_UserElement2.equals(element.getElementType()))
+			else if (MAcctSchemaElement.ELEMENTTYPE_UserColumn2.equals(element.getElementType()))
 			{
 				if (getUserElement2_ID() != 0)
 				{

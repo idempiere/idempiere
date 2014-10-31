@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_FAJournal
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_I_FAJournal 
 {
@@ -923,12 +923,12 @@ public interface I_I_FAJournal
     /** Column name User1_ID */
     public static final String COLUMNNAME_User1_ID = "User1_ID";
 
-	/** Set User List 1.
+	/** Set User Element List 1.
 	  * User defined list element #1
 	  */
 	public void setUser1_ID (int User1_ID);
 
-	/** Get User List 1.
+	/** Get User Element List 1.
 	  * User defined list element #1
 	  */
 	public int getUser1_ID();
@@ -938,12 +938,12 @@ public interface I_I_FAJournal
     /** Column name User2_ID */
     public static final String COLUMNNAME_User2_ID = "User2_ID";
 
-	/** Set User List 2.
+	/** Set User Element List 2.
 	  * User defined list element #2
 	  */
 	public void setUser2_ID (int User2_ID);
 
-	/** Get User List 2.
+	/** Get User Element List 2.
 	  * User defined list element #2
 	  */
 	public int getUser2_ID();
@@ -953,12 +953,12 @@ public interface I_I_FAJournal
     /** Column name UserElement1_ID */
     public static final String COLUMNNAME_UserElement1_ID = "UserElement1_ID";
 
-	/** Set User Element 1.
+	/** Set User Column 1.
 	  * User defined accounting Element
 	  */
 	public void setUserElement1_ID (int UserElement1_ID);
 
-	/** Get User Element 1.
+	/** Get User Column 1.
 	  * User defined accounting Element
 	  */
 	public int getUserElement1_ID();
@@ -966,12 +966,12 @@ public interface I_I_FAJournal
     /** Column name UserElement2_ID */
     public static final String COLUMNNAME_UserElement2_ID = "UserElement2_ID";
 
-	/** Set User Element 2.
+	/** Set User Column 2.
 	  * User defined accounting Element
 	  */
 	public void setUserElement2_ID (int UserElement2_ID);
 
-	/** Get User Element 2.
+	/** Get User Column 2.
 	  * User defined accounting Element
 	  */
 	public int getUserElement2_ID();

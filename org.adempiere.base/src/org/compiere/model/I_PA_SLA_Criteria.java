@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_SLA_Criteria
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_PA_SLA_Criteria 
 {

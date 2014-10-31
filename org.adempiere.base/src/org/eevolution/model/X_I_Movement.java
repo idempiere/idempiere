@@ -26,14 +26,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_Movement
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_I_Movement extends PO implements I_I_Movement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_I_Movement (Properties ctx, int I_Movement_ID, String trxName)
@@ -815,7 +815,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return (String)get_Value(COLUMNNAME_ShipperName);
 	}
 
-	/** Set User List 1.
+	/** Set User Element List 1.
 		@param User1_ID 
 		User defined list element #1
 	  */
@@ -824,7 +824,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		set_Value (COLUMNNAME_User1_ID, User1_ID);
 	}
 
-	/** Get User List 1.
+	/** Get User Element List 1.
 		@return User defined list element #1
 	  */
 	public String getUser1_ID () 
@@ -832,7 +832,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return (String)get_Value(COLUMNNAME_User1_ID);
 	}
 
-	/** Set User List 2.
+	/** Set User Element List 2.
 		@param User2_ID 
 		User defined list element #2
 	  */
@@ -841,7 +841,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		set_Value (COLUMNNAME_User2_ID, User2_ID);
 	}
 
-	/** Get User List 2.
+	/** Get User Element List 2.
 		@return User defined list element #2
 	  */
 	public String getUser2_ID () 

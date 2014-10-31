@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RecurringGroup
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_C_RecurringGroup extends PO implements I_C_RecurringGroup, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140727L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_C_RecurringGroup (Properties ctx, int C_RecurringGroup_ID, String trxName)

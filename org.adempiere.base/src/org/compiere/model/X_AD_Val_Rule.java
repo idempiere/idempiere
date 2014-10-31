@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Val_Rule
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_AD_Val_Rule (Properties ctx, int AD_Val_Rule_ID, String trxName)

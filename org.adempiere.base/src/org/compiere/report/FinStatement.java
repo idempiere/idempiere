@@ -191,11 +191,11 @@ public class FinStatement extends SvrProcess
 		//	Optional User1_ID
 		if (p_User1_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_UserList1, p_User1_ID));
+				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_UserElementList1, p_User1_ID));
 		//  Optional User2_ID
 		if (p_User2_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_UserList2, p_User2_ID));
+				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_UserElementList2, p_User2_ID));
 		//	Optional UserElement1_ID
 		if (p_UserElement1_ID != 0)
 			m_parameterWhere.append(" AND UserElement1_ID=").append(p_UserElement1_ID);

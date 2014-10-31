@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for QM_SpecificationLine
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 @SuppressWarnings("all")
 public interface I_QM_SpecificationLine 

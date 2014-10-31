@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_TableIndex
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140905L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_AD_TableIndex (Properties ctx, int AD_TableIndex_ID, String trxName)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_ReportSource
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_PA_ReportSource 
 {
@@ -471,12 +471,12 @@ public interface I_PA_ReportSource
     /** Column name UserElement1_ID */
     public static final String COLUMNNAME_UserElement1_ID = "UserElement1_ID";
 
-	/** Set User Element 1.
+	/** Set User Column 1.
 	  * User defined accounting Element
 	  */
 	public void setUserElement1_ID (int UserElement1_ID);
 
-	/** Get User Element 1.
+	/** Get User Column 1.
 	  * User defined accounting Element
 	  */
 	public int getUserElement1_ID();
@@ -484,12 +484,12 @@ public interface I_PA_ReportSource
     /** Column name UserElement2_ID */
     public static final String COLUMNNAME_UserElement2_ID = "UserElement2_ID";
 
-	/** Set User Element 2.
+	/** Set User Column 2.
 	  * User defined accounting Element
 	  */
 	public void setUserElement2_ID (int UserElement2_ID);
 
-	/** Get User Element 2.
+	/** Get User Column 2.
 	  * User defined accounting Element
 	  */
 	public int getUserElement2_ID();

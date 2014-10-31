@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Product
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_M_Product 
 {
@@ -216,19 +216,6 @@ public interface I_M_Product
 	  */
 	public Timestamp getDiscontinuedAt();
 
-    /** Column name DocumentDescription */
-    public static final String COLUMNNAME_DocumentDescription = "DocumentDescription";
-
-	/** Set DocumentDescription.
-	  * DocumentDescription
-	  */
-	public void setDocumentDescription (String DocumentDescription);
-
-	/** Get DocumentDescription.
-	  * DocumentDescription
-	  */
-	public String getDocumentDescription();
-
     /** Column name DocumentNote */
     public static final String COLUMNNAME_DocumentNote = "DocumentNote";
 
@@ -298,24 +285,6 @@ public interface I_M_Product
 	  * Comment or Hint
 	  */
 	public String getHelp();
-
-    /** Column name ImageBig_ID */
-    public static final String COLUMNNAME_ImageBig_ID = "ImageBig_ID";
-
-	/** Set ImageBig_ID	  */
-	public void setImageBig_ID (int ImageBig_ID);
-
-	/** Get ImageBig_ID	  */
-	public int getImageBig_ID();
-
-    /** Column name ImageSmall_ID */
-    public static final String COLUMNNAME_ImageSmall_ID = "ImageSmall_ID";
-
-	/** Set ImageSmall_ID	  */
-	public void setImageSmall_ID (int ImageSmall_ID);
-
-	/** Get ImageSmall_ID	  */
-	public int getImageSmall_ID();
 
     /** Column name ImageURL */
     public static final String COLUMNNAME_ImageURL = "ImageURL";

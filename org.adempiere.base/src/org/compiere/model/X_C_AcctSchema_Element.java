@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AcctSchema_Element
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_C_AcctSchema_Element (Properties ctx, int C_AcctSchema_Element_ID, String trxName)
@@ -415,18 +415,18 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	public static final String ELEMENTTYPE_Project = "PJ";
 	/** Campaign = MC */
 	public static final String ELEMENTTYPE_Campaign = "MC";
-	/** User List 1 = U1 */
-	public static final String ELEMENTTYPE_UserList1 = "U1";
-	/** User List 2 = U2 */
-	public static final String ELEMENTTYPE_UserList2 = "U2";
+	/** User Element List 1 = U1 */
+	public static final String ELEMENTTYPE_UserElementList1 = "U1";
+	/** User Element List 2 = U2 */
+	public static final String ELEMENTTYPE_UserElementList2 = "U2";
 	/** Activity = AY */
 	public static final String ELEMENTTYPE_Activity = "AY";
 	/** Sub Account = SA */
 	public static final String ELEMENTTYPE_SubAccount = "SA";
-	/** User Element 1 = X1 */
-	public static final String ELEMENTTYPE_UserElement1 = "X1";
-	/** User Element 2 = X2 */
-	public static final String ELEMENTTYPE_UserElement2 = "X2";
+	/** User Column 1 = X1 */
+	public static final String ELEMENTTYPE_UserColumn1 = "X1";
+	/** User Column 2 = X2 */
+	public static final String ELEMENTTYPE_UserColumn2 = "X2";
 	/** Set Type.
 		@param ElementType 
 		Element Type (account or user defined)

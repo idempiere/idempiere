@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ProductionLine
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_M_ProductionLine (Properties ctx, int M_ProductionLine_ID, String trxName)
@@ -47,7 +47,6 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 // @M_Locator_ID@
 			setMovementQty (Env.ZERO);
 			setM_Product_ID (0);
-			setM_Production_ID (0);
 			setM_ProductionLine_ID (0);
 			setProcessed (false);
         } */

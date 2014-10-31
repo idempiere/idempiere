@@ -24,14 +24,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_NonBusinessDay
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131211L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_C_NonBusinessDay (Properties ctx, int C_NonBusinessDay_ID, String trxName)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ContactActivity
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_C_ContactActivity 
 {
@@ -216,6 +216,8 @@ public interface I_C_ContactActivity
 	  * Sales Representative or Company Agent
 	  */
 	public int getSalesRep_ID();
+
+	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name StartDate */
     public static final String COLUMNNAME_StartDate = "StartDate";

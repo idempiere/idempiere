@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_DashboardContent
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
@@ -389,15 +389,15 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return false;
 	}
 
-	/** Set IsShowinLogin.
-		@param IsShowinLogin IsShowinLogin	  */
+	/** Set Show on Login.
+		@param IsShowinLogin Show on Login	  */
 	public void setIsShowinLogin (boolean IsShowinLogin)
 	{
 		set_Value (COLUMNNAME_IsShowinLogin, Boolean.valueOf(IsShowinLogin));
 	}
 
-	/** Get IsShowinLogin.
-		@return IsShowinLogin	  */
+	/** Get Show on Login.
+		@return Show on Login	  */
 	public boolean isShowinLogin () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowinLogin);
