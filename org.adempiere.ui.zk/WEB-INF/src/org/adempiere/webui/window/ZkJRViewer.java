@@ -146,7 +146,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		North north = new North();
 		layout.appendChild(north);
 		north.appendChild(toolbar);
-
+		north.setVflex("min");
+		
 		Center center = new Center();
 		layout.appendChild(center);
 		iframe = new Iframe();
