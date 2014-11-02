@@ -503,6 +503,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         South south = new South();
         layout.appendChild(south);
         south.appendChild(confirmPanel);
+        south.setVflex("min");
 
         winAdvanced.setHeight("100%");
         winAdvanced.setWidth("99%");
