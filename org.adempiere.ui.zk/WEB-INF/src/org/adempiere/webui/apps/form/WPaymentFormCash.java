@@ -67,17 +67,7 @@ public class WPaymentFormCash extends PaymentFormCash implements EventListener<E
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 				
-		//Bojana&Daniel
-		//If Invoice is Vendor invoice then Cash has to be created by negative amount
-		int C_Invoice_ID = Env.getContextAsInt(Env.getCtx(), getWindowNo(), "C_Invoice_ID");
-		MInvoice invoice_tmp = new MInvoice (Env.getCtx(), C_Invoice_ID, null);
-		if (! invoice_tmp.isSOTrx())
-		{
-			bAmountField.setValue(m_Amount.negate());
-		}else {
-			bAmountField.setValue(m_Amount);
-		}
-		invoice_tmp = null;
+		bAmountField.setValue(m_Amount);
 	}
 	
 	public void init() {

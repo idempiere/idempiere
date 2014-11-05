@@ -631,6 +631,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 				m_inventory = new MInventory (wh, get_TrxName());
 				StringBuilder msgd = new StringBuilder().append(Msg.translate(getCtx(), "M_InOutConfirm_ID")).append(" ").append(getDocumentNo());
 				m_inventory.setDescription(msgd.toString());
+				setInventoryDocType(m_inventory);
 				m_inventory.saveEx();
 				setM_Inventory_ID(m_inventory.getM_Inventory_ID());
 			}
@@ -655,6 +656,23 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		return true;
 	}	//	createDifferenceDoc
 
+
+	/**
+	 * @param inventory 
+	 */
+	private void setInventoryDocType(MInventory inventory) {
+		MDocType[] doctypes = MDocType.getOfDocBaseType(Env.getCtx(), X_C_DocType.DOCBASETYPE_MaterialPhysicalInventory);
+		for(MDocType doctype : doctypes)
+		{
+			if (X_C_DocType.DOCSUBTYPEINV_PhysicalInventory.equals(doctype.getDocSubTypeInv()))
+			{
+				inventory.setC_DocType_ID(doctype.getC_DocType_ID());
+				break;
+			}
+		}
+	}
+	
+	
 	/**
 	 * 	Void Document.
 	 * 	@return false 
