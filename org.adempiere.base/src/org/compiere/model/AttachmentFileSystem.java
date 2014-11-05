@@ -204,7 +204,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 						log.severe("Error Reading The File.");
 						e1.printStackTrace();
 					}
-					final MAttachmentEntry entry = new MAttachmentEntry(filePath,
+					final MAttachmentEntry entry = new MAttachmentEntry(file.getName(),
 							dataEntry, attach.m_items.size() + 1);
 					attach.m_items.add(entry);
 				} else {
