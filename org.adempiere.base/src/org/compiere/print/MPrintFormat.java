@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
+
 import org.adempiere.model.MTabCustomization;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -58,7 +59,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2826550741107576964L;
+	private static final long serialVersionUID = 5563074831750686572L;
 
 	/**
 	 *	Public Constructor.
@@ -1237,6 +1238,11 @@ public class MPrintFormat extends X_AD_PrintFormat
 		clone.m_language = Env.getLanguage(Env.getCtx());
 		clone.m_translationViewLanguage = null;
 		return clone;
+	}
+
+	public static int getZoomWindowID(int AD_PrintFormat_ID) {
+		int pfAD_Window_ID = Env.getZoomWindowID(Table_ID, AD_PrintFormat_ID);
+		return pfAD_Window_ID;
 	}
 
 	/**************************************************************************

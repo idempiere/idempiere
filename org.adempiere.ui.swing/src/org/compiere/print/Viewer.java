@@ -18,8 +18,6 @@
  *****************************************************************************/
 package org.compiere.print;
 
-import static org.compiere.model.SystemIDs.WINDOW_PRINTFORMAT;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -473,8 +471,9 @@ public class Viewer extends CFrame
 			pstmt = null;
 		}
 		// IDEMPIERE-297 - Check for Table Access and Window Access for New Report
+		int pfAD_Window_ID = MPrintFormat.getZoomWindowID(AD_PrintFormat_ID);
 		if (   MRole.getDefault().isTableAccess(MPrintFormat.Table_ID, false) 
-			&& (Boolean.TRUE.equals(MRole.getDefault().getWindowAccess(WINDOW_PRINTFORMAT))))
+			&& (Boolean.TRUE.equals(MRole.getDefault().getWindowAccess(pfAD_Window_ID))))
 		{
 			StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(m_ctx, "NewReport")).append(" **");
 			KeyNamePair pp = new KeyNamePair(-1, sb.toString());
@@ -1221,8 +1220,8 @@ public class Viewer extends CFrame
 	{
 		AWindow win = new AWindow (getGraphicsConfiguration());
 		new AWindowListener (win, this);	//	forwards Window Events
-		int AD_Window_ID = WINDOW_PRINTFORMAT;		//	hardcoded
 		int AD_PrintFormat_ID = m_reportEngine.getPrintFormat().get_ID();
+		int AD_Window_ID = MPrintFormat.getZoomWindowID(AD_PrintFormat_ID);
 		boolean loadedOK = win.initWindow(AD_Window_ID, MQuery.getEqualQuery("AD_PrintFormat_ID", AD_PrintFormat_ID));
 		if (loadedOK)
 		{

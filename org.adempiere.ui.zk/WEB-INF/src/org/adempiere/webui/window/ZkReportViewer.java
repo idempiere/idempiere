@@ -16,8 +16,6 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
-import static org.compiere.model.SystemIDs.WINDOW_PRINTFORMAT;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.StringWriter;
@@ -648,8 +646,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			pstmt = null;
 		}
 		// IDEMPIERE-297 - Check for Table Access and Window Access for New Report
+		int pfAD_Window_ID = MPrintFormat.getZoomWindowID(AD_PrintFormat_ID);
 		if (   MRole.getDefault().isTableAccess(MPrintFormat.Table_ID, false) 
-			&& Boolean.TRUE.equals(MRole.getDefault().getWindowAccess(WINDOW_PRINTFORMAT)))
+			&& Boolean.TRUE.equals(MRole.getDefault().getWindowAccess(pfAD_Window_ID)))
 		{
 			StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(Env.getCtx(), "NewReport")).append(" **");
 			KeyNamePair pp = new KeyNamePair(-1, sb.toString());
@@ -1162,9 +1161,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	 */
 	private void cmd_customize()
 	{
-		int AD_Window_ID = WINDOW_PRINTFORMAT;		//	hardcoded
 		int AD_PrintFormat_ID = m_reportEngine.getPrintFormat().get_ID();
-		AEnv.zoom(AD_Window_ID, MQuery.getEqualQuery("AD_PrintFormat_ID", AD_PrintFormat_ID));
+		int pfAD_Window_ID = MPrintFormat.getZoomWindowID(AD_PrintFormat_ID);
+		AEnv.zoom(pfAD_Window_ID, MQuery.getEqualQuery("AD_PrintFormat_ID", AD_PrintFormat_ID));
 	}	//	cmd_customize
 	
 	/*IDEMPIERE -379*/
