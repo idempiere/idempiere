@@ -157,7 +157,7 @@ public class MMailText extends X_R_MailText
 	 */
 	private String parse (String text)
 	{
-		if (text.indexOf('@') == -1)
+		if (Util.isEmpty(text) || text.indexOf('@') == -1)
 			return text;
 		//	Parse User
 		text = parse (text, m_user);
@@ -177,7 +177,7 @@ public class MMailText extends X_R_MailText
 	 */
 	private String parse (String text, PO po)
 	{
-		if (po == null || text.indexOf('@') == -1)
+		if (po == null || Util.isEmpty(text) || text.indexOf('@') == -1)
 			return text;
 		
 		String inStr = text;
