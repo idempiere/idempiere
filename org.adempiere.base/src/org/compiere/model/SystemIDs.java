@@ -145,7 +145,6 @@ public class SystemIDs
 	public final static int WINDOW_MATERIALTRANSACTIONS_INDIRECTUSER = 223;
 	public final static int WINDOW_MY_REQUESTS = 237;
 	public final static int WINDOW_PHYSICALINVENTORY = 168;
-	public final static int WINDOW_PRINTFORMAT = 240;
 	public final static int WINDOW_PRODUCTION = 191;
 	public final static int WINDOW_REQUESTS_ALL = 232;
 	public final static int WINDOW_RETURNTOVENDOR = 53098;

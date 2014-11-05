@@ -250,24 +250,19 @@ public abstract class PaymentFormCash extends PaymentForm {
 			C_Invoice_ID = getInvoiceID (C_Order_ID);
 
 		//  Amount sign negative, if ARC (Credit Memo) or API (AP Invoice)
-		boolean negateAmt = false;
 		MInvoice invoice = null;
 		if (C_Invoice_ID != 0)
 		{
 			invoice = new MInvoice (Env.getCtx(), C_Invoice_ID, null);
-			negateAmt = invoice.isCreditMemo();
 		}
 		MOrder order = null;
 		if (invoice == null && C_Order_ID != 0)
 			order = new MOrder (Env.getCtx(), C_Order_ID, null);
 		
-		BigDecimal payAmount = m_Amount;
-		
+		BigDecimal payAmount = newAmount;
 
-		if (negateAmt)
-			payAmount = m_Amount.negate();
 		// Info
-		if (log.isLoggable(Level.CONFIG)) log.config("C_Order_ID=" + C_Order_ID + ", C_Invoice_ID=" + C_Invoice_ID + ", NegateAmt=" + negateAmt);
+		if (log.isLoggable(Level.CONFIG)) log.config("C_Order_ID=" + C_Order_ID + ", C_Invoice_ID=" + C_Invoice_ID);
 		
 		/***********************
 		 *  CashBook
@@ -284,7 +279,6 @@ public abstract class PaymentFormCash extends PaymentForm {
 			}
 			else
 			{
-				payAmount = newAmount;
 				//  Changed Amount
 				if (m_cashLine != null
 					&& payAmount.compareTo(m_cashLine.getAmount()) != 0)

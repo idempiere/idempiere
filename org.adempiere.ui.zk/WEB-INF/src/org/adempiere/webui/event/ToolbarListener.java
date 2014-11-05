@@ -166,6 +166,11 @@ public interface ToolbarListener
     public void onFileImport();
 
     /**
+     * CSV import data
+     */
+    public void onCSVImport();
+
+    /**
      * Customize grid view.
      */
     public void onCustomize();

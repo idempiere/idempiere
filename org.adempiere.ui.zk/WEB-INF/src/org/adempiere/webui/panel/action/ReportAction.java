@@ -15,14 +15,13 @@
 
 package org.adempiere.webui.panel.action;
 
-import static org.compiere.model.SystemIDs.WINDOW_PRINTFORMAT;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.apps.WProcessCtl;
@@ -449,8 +448,9 @@ public class ReportAction implements EventListener<Event>
 		printFormatList.clear();
 		
 		printFormatList = MPrintFormat.getAccessiblePrintFormats(AD_Table_ID, AD_Window_ID, null, false);		
-		
-		if (MRole.getDefault().isTableAccess(MPrintFormat.Table_ID, false) && Boolean.TRUE.equals(MRole.getDefault().getWindowAccess(WINDOW_PRINTFORMAT)))
+
+		int pfAD_Window_ID = MPrintFormat.getZoomWindowID(-1);
+		if (MRole.getDefault().isTableAccess(MPrintFormat.Table_ID, false) && Boolean.TRUE.equals(MRole.getDefault().getWindowAccess(pfAD_Window_ID)))
 		{
 			StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(Env.getCtx(), "NewReport")).append(" **");
 			KeyNamePair pp = new KeyNamePair(-1, sb.toString());
