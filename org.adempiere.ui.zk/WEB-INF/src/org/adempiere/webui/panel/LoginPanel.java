@@ -189,19 +189,25 @@ public class LoginPanel extends Window implements EventListener<Event>
 			}
 		});
 
-        // Make the default language the language of client System
-        // TODO: possible improvement to check if the first default browser language is supported and default to it
-        //   Executions.getCurrent().getHeader("accept-language");
-        String defaultLanguage = MClient.get(ctx, 0).getAD_Language();
-        for(int i = 0; i < lstLanguage.getItemCount(); i++)
-        {
-        	Comboitem li = lstLanguage.getItemAtIndex(i);
-        	if (li.getValue().equals(defaultLanguage))
-        	{
-        		lstLanguage.setSelectedIndex(i);
-        		languageChanged(li.getLabel());
-        		break;
-        	}
+        // Make the default language the browser language; otherwise it will be the language of client System
+        List<String> browserLanguages = browserLanguages(Executions.getCurrent().getHeader("accept-language"));
+        String defaultSystemLanguage = MClient.get(ctx, 0).getAD_Language();
+        if (!browserLanguages.contains(defaultSystemLanguage))
+        	browserLanguages.add(defaultSystemLanguage);
+        boolean found = false;
+        for (String browserLanguage : browserLanguages) {
+            for (int i = 0; i < lstLanguage.getItemCount(); i++) {
+            	Comboitem li = lstLanguage.getItemAtIndex(i);
+            	String lang = li.getValue();
+            	if (lang.startsWith(browserLanguage)) {
+            		lstLanguage.setSelectedIndex(i);
+            		languageChanged(li.getLabel());
+            		found = true;
+            		break;
+            	}
+            }
+            if (found)
+            	break;
         }
     }
 
@@ -654,4 +660,31 @@ public class LoginPanel extends Window implements EventListener<Event>
 		
 		wndLogin.resetPassword(userId, users.size() == 0);
 	}
+
+	/** get default languages from the browser */
+	private List<String> browserLanguages(String header) {
+		List<String> arrstr = new ArrayList<String>();
+		for (String str : header.split(",")){
+			String[] arr = str.trim().replace("-", "_").split(";");
+
+			for (String s : arr){
+				s = s.trim();
+				if (!s.startsWith("q=")) {
+					if (s.contains("_") && s.length() == 5) {
+						String baselang = s.substring(0, 2).toLowerCase();
+						StringBuffer lang = new StringBuffer(baselang).append("_").append(s.substring(3).toUpperCase());
+						if (!arrstr.contains(lang.toString()))
+							arrstr.add(lang.toString());
+						if (!arrstr.contains(baselang))
+							arrstr.add(baselang);
+					} else {
+						if (s.length() == 2 && !arrstr.contains(s.toLowerCase()))
+							arrstr.add(s.toLowerCase());
+					}
+				}
+			}
+		}
+		return arrstr;
+	}
+
 }
