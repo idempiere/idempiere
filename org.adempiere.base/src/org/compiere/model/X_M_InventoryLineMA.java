@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InventoryLineMA
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_M_InventoryLineMA extends PO implements I_M_InventoryLineMA, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140508L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_M_InventoryLineMA (Properties ctx, int M_InventoryLineMA_ID, String trxName)
@@ -44,6 +44,7 @@ public class X_M_InventoryLineMA extends PO implements I_M_InventoryLineMA, I_Pe
 			setM_AttributeSetInstance_ID (0);
 			setM_InventoryLine_ID (0);
 			setMovementQty (Env.ZERO);
+// 1
         } */
     }
 

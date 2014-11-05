@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_DashboardContent
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_PA_DashboardContent 
 {
@@ -265,10 +265,10 @@ public interface I_PA_DashboardContent
     /** Column name IsShowinLogin */
     public static final String COLUMNNAME_IsShowinLogin = "IsShowinLogin";
 
-	/** Set IsShowinLogin	  */
+	/** Set Show on Login	  */
 	public void setIsShowinLogin (boolean IsShowinLogin);
 
-	/** Get IsShowinLogin	  */
+	/** Get Show on Login	  */
 	public boolean isShowinLogin();
 
     /** Column name Line */

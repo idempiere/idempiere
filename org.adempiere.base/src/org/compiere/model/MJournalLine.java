@@ -427,9 +427,9 @@ public class MJournalLine extends X_GL_JournalLine
 					errorFields += "@" + COLUMNNAME_C_Project_ID + "@, ";
 				if (MAcctSchemaElement.ELEMENTTYPE_SalesRegion.equals(et) && getC_SalesRegion_ID() == 0)
 					errorFields += "@" + COLUMNNAME_C_SalesRegion_ID + "@, ";
-				if (MAcctSchemaElement.ELEMENTTYPE_UserList1.equals(et) && getUser1_ID() == 0)
+				if (MAcctSchemaElement.ELEMENTTYPE_UserElementList1.equals(et) && getUser1_ID() == 0)
 					errorFields += "@" + COLUMNNAME_User1_ID + "@, ";
-				if (MAcctSchemaElement.ELEMENTTYPE_UserList2.equals(et) && getUser2_ID() == 0)
+				if (MAcctSchemaElement.ELEMENTTYPE_UserElementList2.equals(et) && getUser2_ID() == 0)
 					errorFields += "@" + COLUMNNAME_User2_ID + "@, ";
 			}
 			if (errorFields.length() > 0)

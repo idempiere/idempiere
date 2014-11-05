@@ -703,7 +703,7 @@ public class AcctViewer extends CFrame
 		{
 			lookupColumn = "C_ElementValue_ID";
 			MAcctSchemaElement ase = m_data.ASchema
-				.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserList1);
+				.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserElementList1);
 			if (ase != null)
 				whereClause += " AND C_Element_ID=" + ase.getC_Element_ID();
 		}
@@ -711,7 +711,7 @@ public class AcctViewer extends CFrame
 		{
 			lookupColumn = "C_ElementValue_ID";
 			MAcctSchemaElement ase = m_data.ASchema
-				.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserList2);
+				.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserElementList2);
 			if (ase != null)
 				whereClause += " AND C_Element_ID=" + ase.getC_Element_ID();
 		}
@@ -721,13 +721,13 @@ public class AcctViewer extends CFrame
 		}
 		else if (keyColumn.equals("UserElement1_ID")) // KTU
 		{	
-			MAcctSchemaElement ase = m_data.ASchema.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserElement1);
+			MAcctSchemaElement ase = m_data.ASchema.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserColumn1);
 			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getAD_Column_ID());
 			whereClause = "";
 		}
 		else if (keyColumn.equals("UserElement2_ID")) // KTU
 		{
-			MAcctSchemaElement ase = m_data.ASchema.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserElement2);
+			MAcctSchemaElement ase = m_data.ASchema.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserColumn2);
 			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getAD_Column_ID());
 			whereClause = "";
 		}

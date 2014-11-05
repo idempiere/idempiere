@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_InfoRelated
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_AD_InfoRelated 
 {
@@ -61,10 +61,10 @@ public interface I_AD_InfoRelated
     /** Column name AD_InfoRelated_UU */
     public static final String COLUMNNAME_AD_InfoRelated_UU = "AD_InfoRelated_UU";
 
-	/** Set InfoRelated	  */
+	/** Set AD_InfoRelated_UU	  */
 	public void setAD_InfoRelated_UU (String AD_InfoRelated_UU);
 
-	/** Get InfoRelated	  */
+	/** Get AD_InfoRelated_UU	  */
 	public String getAD_InfoRelated_UU();
 
     /** Column name AD_InfoWindow_ID */
@@ -166,10 +166,10 @@ public interface I_AD_InfoRelated
     /** Column name RelatedColumn_ID */
     public static final String COLUMNNAME_RelatedColumn_ID = "RelatedColumn_ID";
 
-	/** Set RelatedColumn_ID	  */
+	/** Set Related Info Column	  */
 	public void setRelatedColumn_ID (int RelatedColumn_ID);
 
-	/** Get RelatedColumn_ID	  */
+	/** Get Related Info Column	  */
 	public int getRelatedColumn_ID();
 
 	public org.compiere.model.I_AD_InfoColumn getRelatedColumn() throws RuntimeException;
@@ -177,10 +177,10 @@ public interface I_AD_InfoRelated
     /** Column name RelatedInfo_ID */
     public static final String COLUMNNAME_RelatedInfo_ID = "RelatedInfo_ID";
 
-	/** Set RelatedInfo_ID	  */
+	/** Set Related Info Window	  */
 	public void setRelatedInfo_ID (int RelatedInfo_ID);
 
-	/** Get RelatedInfo_ID	  */
+	/** Get Related Info Window	  */
 	public int getRelatedInfo_ID();
 
 	public org.compiere.model.I_AD_InfoWindow getRelatedInfo() throws RuntimeException;

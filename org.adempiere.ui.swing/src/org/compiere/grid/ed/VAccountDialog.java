@@ -415,13 +415,13 @@ public final class VAccountDialog extends CDialog
 				addLine(field, f_C_Activity_ID, isMandatory);
 			}
 			//	User1
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserList1))
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList1))
 			{
 				GridField field = m_mTab.getField("User1_ID");
 				f_User1_ID = VEditorFactory.getEditor(m_mTab, field, false);
 				addLine(field, f_User1_ID, isMandatory);
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserList2))
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList2))
 			{
 				GridField field = m_mTab.getField("User2_ID");
 				f_User2_ID = VEditorFactory.getEditor(m_mTab, field, false);
@@ -879,7 +879,7 @@ public final class VAccountDialog extends CDialog
 				else
 					sql.append("=").append(value).append(" AND ");
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserList1))
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList1))
 			{
 				value = f_User1_ID.getValue();
 				sql.append("User1_ID");
@@ -888,7 +888,7 @@ public final class VAccountDialog extends CDialog
 				else
 					sql.append("=").append(value).append(" AND ");
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserList2))
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList2))
 			{
 				value = f_User2_ID.getValue();
 				sql.append("User2_ID");

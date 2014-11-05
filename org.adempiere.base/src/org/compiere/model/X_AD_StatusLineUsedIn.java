@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_StatusLineUsedIn
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140112L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_AD_StatusLineUsedIn (Properties ctx, int AD_StatusLineUsedIn_ID, String trxName)
@@ -72,9 +72,9 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
       return sb.toString();
     }
 
-	public I_AD_StatusLine getAD_StatusLine() throws RuntimeException
+	public org.compiere.model.I_AD_StatusLine getAD_StatusLine() throws RuntimeException
     {
-		return (I_AD_StatusLine)MTable.get(getCtx(), I_AD_StatusLine.Table_Name)
+		return (org.compiere.model.I_AD_StatusLine)MTable.get(getCtx(), org.compiere.model.I_AD_StatusLine.Table_Name)
 			.getPO(getAD_StatusLine_ID(), get_TrxName());	}
 
 	/** Set Status Line.

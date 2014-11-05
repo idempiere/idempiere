@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Tab
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140125L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_AD_Tab (Properties ctx, int AD_Tab_ID, String trxName)
@@ -49,7 +49,8 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 			setIsInsertRecord (true);
 // Y
 			setIsReadOnly (false);
-			setIsSingleRow (false);
+			setIsSingleRow (true);
+// Y
 			setIsSortTab (false);
 // N
 			setIsTranslationTab (false);
@@ -825,9 +826,9 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	public static final int TREEDISPLAYEDON_AD_Reference_ID=200074;
 	/** Both = B */
 	public static final String TREEDISPLAYEDON_Both = "B";
-	/** DetailTab = D */
+	/** Detail Tab = D */
 	public static final String TREEDISPLAYEDON_DetailTab = "D";
-	/** MasterTab = M */
+	/** Master Tab = M */
 	public static final String TREEDISPLAYEDON_MasterTab = "M";
 	/** Set Tree displayed.
 		@param TreeDisplayedOn 

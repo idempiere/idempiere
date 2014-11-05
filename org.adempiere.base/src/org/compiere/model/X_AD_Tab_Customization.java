@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_Tab_Customization
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_AD_Tab_Customization (Properties ctx, int AD_Tab_Customization_ID, String trxName)

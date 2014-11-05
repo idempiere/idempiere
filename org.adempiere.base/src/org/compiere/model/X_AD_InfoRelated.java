@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoRelated
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20140126L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_AD_InfoRelated (Properties ctx, int AD_InfoRelated_ID, String trxName)
@@ -97,15 +97,15 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 		return ii.intValue();
 	}
 
-	/** Set InfoRelated.
-		@param AD_InfoRelated_UU InfoRelated	  */
+	/** Set AD_InfoRelated_UU.
+		@param AD_InfoRelated_UU AD_InfoRelated_UU	  */
 	public void setAD_InfoRelated_UU (String AD_InfoRelated_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_InfoRelated_UU, AD_InfoRelated_UU);
 	}
 
-	/** Get InfoRelated.
-		@return InfoRelated	  */
+	/** Get AD_InfoRelated_UU.
+		@return AD_InfoRelated_UU	  */
 	public String getAD_InfoRelated_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_AD_InfoRelated_UU);
@@ -203,8 +203,8 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_Name)
 			.getPO(getRelatedColumn_ID(), get_TrxName());	}
 
-	/** Set RelatedColumn_ID.
-		@param RelatedColumn_ID RelatedColumn_ID	  */
+	/** Set Related Info Column.
+		@param RelatedColumn_ID Related Info Column	  */
 	public void setRelatedColumn_ID (int RelatedColumn_ID)
 	{
 		if (RelatedColumn_ID < 1) 
@@ -213,8 +213,8 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 			set_Value (COLUMNNAME_RelatedColumn_ID, Integer.valueOf(RelatedColumn_ID));
 	}
 
-	/** Get RelatedColumn_ID.
-		@return RelatedColumn_ID	  */
+	/** Get Related Info Column.
+		@return Related Info Column	  */
 	public int getRelatedColumn_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_RelatedColumn_ID);
@@ -228,8 +228,8 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
 			.getPO(getRelatedInfo_ID(), get_TrxName());	}
 
-	/** Set RelatedInfo_ID.
-		@param RelatedInfo_ID RelatedInfo_ID	  */
+	/** Set Related Info Window.
+		@param RelatedInfo_ID Related Info Window	  */
 	public void setRelatedInfo_ID (int RelatedInfo_ID)
 	{
 		if (RelatedInfo_ID < 1) 
@@ -238,8 +238,8 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 			set_Value (COLUMNNAME_RelatedInfo_ID, Integer.valueOf(RelatedInfo_ID));
 	}
 
-	/** Get RelatedInfo_ID.
-		@return RelatedInfo_ID	  */
+	/** Get Related Info Window.
+		@return Related Info Window	  */
 	public int getRelatedInfo_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_RelatedInfo_ID);

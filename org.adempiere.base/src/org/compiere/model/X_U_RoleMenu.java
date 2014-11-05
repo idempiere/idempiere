@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for U_RoleMenu
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_U_RoleMenu extends PO implements I_U_RoleMenu, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_U_RoleMenu (Properties ctx, int U_RoleMenu_ID, String trxName)

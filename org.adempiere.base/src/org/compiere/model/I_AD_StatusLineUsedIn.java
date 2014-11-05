@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_StatusLineUsedIn
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_AD_StatusLineUsedIn 
 {
@@ -71,7 +71,7 @@ public interface I_AD_StatusLineUsedIn
 	/** Get Status Line	  */
 	public int getAD_StatusLine_ID();
 
-	public I_AD_StatusLine getAD_StatusLine() throws RuntimeException;
+	public org.compiere.model.I_AD_StatusLine getAD_StatusLine() throws RuntimeException;
 
     /** Column name AD_StatusLineUsedIn_ID */
     public static final String COLUMNNAME_AD_StatusLineUsedIn_ID = "AD_StatusLineUsedIn_ID";

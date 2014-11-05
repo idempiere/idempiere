@@ -112,13 +112,13 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 			return I_C_ValidCombination.COLUMNNAME_C_Project_ID;
 		else if (elementType.equals(ELEMENTTYPE_SalesRegion))
 			return I_C_ValidCombination.COLUMNNAME_C_SalesRegion_ID;
-		else if (elementType.equals(ELEMENTTYPE_UserList1))
+		else if (elementType.equals(ELEMENTTYPE_UserElementList1))
 			return I_C_ValidCombination.COLUMNNAME_User1_ID;
-		else if (elementType.equals(ELEMENTTYPE_UserList2))
+		else if (elementType.equals(ELEMENTTYPE_UserElementList2))
 			return I_C_ValidCombination.COLUMNNAME_User2_ID;
-		else if (elementType.equals(ELEMENTTYPE_UserElement1))
+		else if (elementType.equals(ELEMENTTYPE_UserColumn1))
 			return I_C_ValidCombination.COLUMNNAME_UserElement1_ID;
-		else if (elementType.equals(ELEMENTTYPE_UserElement2))
+		else if (elementType.equals(ELEMENTTYPE_UserColumn2))
 			return I_C_ValidCombination.COLUMNNAME_UserElement2_ID;
 		//
 		return "";
@@ -155,14 +155,14 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 			return "SELECT Value,Name FROM C_Project WHERE C_Project_ID=";
 		else if (elementType.equals(ELEMENTTYPE_SalesRegion))
 			return "SELECT Value,Name FROM C_SalesRegion WHERE C_SalesRegion_ID="; // ADEMPIERE-119 / Freepath
-		else if (elementType.equals(ELEMENTTYPE_UserList1))
+		else if (elementType.equals(ELEMENTTYPE_UserElementList1))
 			return "SELECT Value,Name FROM C_ElementValue WHERE C_ElementValue_ID=";
-		else if (elementType.equals(ELEMENTTYPE_UserList2))
+		else if (elementType.equals(ELEMENTTYPE_UserElementList2))
 			return "SELECT Value,Name FROM C_ElementValue WHERE C_ElementValue_ID=";
 		//
-		else if (elementType.equals(ELEMENTTYPE_UserElement1))
+		else if (elementType.equals(ELEMENTTYPE_UserColumn1))
 			return null;
-		else if (elementType.equals(ELEMENTTYPE_UserElement2))
+		else if (elementType.equals(ELEMENTTYPE_UserColumn2))
 			return null;
 		//
 		return "";
@@ -343,13 +343,13 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 			defaultValue = getC_Project_ID();
 		else if (elementType.equals(ELEMENTTYPE_SalesRegion))
 			defaultValue = getC_SalesRegion_ID();
-		else if (elementType.equals(ELEMENTTYPE_UserList1))
+		else if (elementType.equals(ELEMENTTYPE_UserElementList1))
 			defaultValue = getC_ElementValue_ID();
-		else if (elementType.equals(ELEMENTTYPE_UserList2))
+		else if (elementType.equals(ELEMENTTYPE_UserElementList2))
 			defaultValue = getC_ElementValue_ID();
-		else if (elementType.equals(ELEMENTTYPE_UserElement1))
+		else if (elementType.equals(ELEMENTTYPE_UserColumn1))
 			defaultValue = 0;
-		else if (elementType.equals(ELEMENTTYPE_UserElement2))
+		else if (elementType.equals(ELEMENTTYPE_UserColumn2))
 			defaultValue = 0;
 		return defaultValue;
 	}	//	getDefault
@@ -372,7 +372,7 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 	public String getDisplayColumnName()
 	{
 		String et = getElementType();
-		if (ELEMENTTYPE_UserElement1.equals(et) || ELEMENTTYPE_UserElement2.equals(et))
+		if (ELEMENTTYPE_UserColumn1.equals(et) || ELEMENTTYPE_UserColumn2.equals(et))
 		{
 			if (m_ColumnName == null)
 				m_ColumnName = MColumn.getColumnName(getCtx(), getAD_Column_ID());
@@ -409,8 +409,8 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 			setAD_Org_ID(0);
 		String et = getElementType();
 		if (isMandatory() &&
-			(ELEMENTTYPE_UserList1.equals(et) || ELEMENTTYPE_UserList2.equals(et)
-			|| ELEMENTTYPE_UserElement1.equals(et) || ELEMENTTYPE_UserElement2.equals(et)))
+			(ELEMENTTYPE_UserElementList1.equals(et) || ELEMENTTYPE_UserElementList2.equals(et)
+			|| ELEMENTTYPE_UserColumn1.equals(et) || ELEMENTTYPE_UserColumn2.equals(et)))
 			setIsMandatory(false);
 		// Acct Schema Elements "Account" and "Org" should be mandatory - teo_sarca BF [ 1795817 ]
 		if (ELEMENTTYPE_Account.equals(et) || ELEMENTTYPE_Organization.equals(et)) {
@@ -453,7 +453,7 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 		}
 		//
 		if (getAD_Column_ID() == 0
-			&& (ELEMENTTYPE_UserElement1.equals(et) || ELEMENTTYPE_UserElement2.equals(et)))
+			&& (ELEMENTTYPE_UserColumn1.equals(et) || ELEMENTTYPE_UserColumn2.equals(et)))
 		{
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@IsMandatory@: @AD_Column_ID@"));
 			return false;

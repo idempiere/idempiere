@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PInstance
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 2.1
  */
 public interface I_AD_PInstance 
 {
@@ -161,6 +161,15 @@ public interface I_AD_PInstance
 	/** Get Processing	  */
 	public boolean isProcessing();
 
+    /** Column name IsRunAsJob */
+    public static final String COLUMNNAME_IsRunAsJob = "IsRunAsJob";
+
+	/** Set Run as Job	  */
+	public void setIsRunAsJob (boolean IsRunAsJob);
+
+	/** Get Run as Job	  */
+	public boolean isRunAsJob();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -173,15 +182,6 @@ public interface I_AD_PInstance
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
-
-    /** Column name IsRunAsJob */
-    public static final String COLUMNNAME_IsRunAsJob = "IsRunAsJob";
-
-	/** Set Run as Job	  */
-	public void setIsRunAsJob (boolean IsRunAsJob);
-
-	/** Get Run as Job	  */
-	public boolean isRunAsJob();
 
     /** Column name NotificationType */
     public static final String COLUMNNAME_NotificationType = "NotificationType";

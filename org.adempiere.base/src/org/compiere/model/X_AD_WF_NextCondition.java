@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_NextCondition
  *  @author iDempiere (generated) 
- *  @version Release 2.0 - $Id$ */
+ *  @version Release 2.1 - $Id$ */
 public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20131031L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_AD_WF_NextCondition (Properties ctx, int AD_WF_NextCondition_ID, String trxName)
@@ -41,6 +41,7 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
 			setAD_Column_ID (0);
 			setAD_WF_NextCondition_ID (0);
 			setAD_WF_NodeNext_ID (0);
+// @4|AD_WF_NodeNext_ID@
 			setAndOr (null);
 // O
 			setEntityType (null);

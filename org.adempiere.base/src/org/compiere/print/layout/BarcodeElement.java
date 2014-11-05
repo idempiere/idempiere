@@ -139,7 +139,7 @@ public class BarcodeElement extends PrintElement
 				m_barcode = BarcodeFactory.createUCC128(UCCEAN128Barcode.EAN128_AI, code);
 			else if (type.equals(MPrintFormatItem.BARCODETYPE_EAN13)) //@Trifon
 				m_barcode = BarcodeFactory.createEAN13(code); //@Trifon
-			else if (type.equals(MPrintFormatItem.BARCODETYPE_UPCA )) {				
+			else if (type.equals(MPrintFormatItem.BARCODETYPE_UPC_A )) {				
 				m_upc = new UPCABean();
 				m_upc.setChecksumMode(ChecksumMode.CP_AUTO);
 				m_upc.setMsgPosition(HumanReadablePlacement.HRP_BOTTOM);
