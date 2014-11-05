@@ -100,6 +100,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
     private ToolBarButton btnExport;
     private ToolBarButton btnFileImport;
+    private ToolBarButton btnCSVImport;
 
     private ToolBarButton btnProcess;
 
@@ -212,6 +213,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         	btnExport = createButton("Export", "Export", "Export");
         }
         btnFileImport = createButton("FileImport", "FileImport", "FileImport");
+        btnCSVImport = createButton("CSVImport", "CSVImport", "CSVImport");
 
         MToolBarButton[] officialButtons = MToolBarButton.getToolbarButtons("W", null);
         for (MToolBarButton button : officialButtons) {
@@ -646,6 +648,15 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public void enableFileImport(boolean b) {
 		if (btnFileImport != null)
 			btnFileImport.setDisabled(!b);
+	}
+
+	/**
+	 * Enable/disable CSV import button
+	 * @param b
+	 */
+	public void enableCSVImport(boolean b) {
+		if (btnCSVImport != null)
+			btnCSVImport.setDisabled(!b);
 	}
 
 	private boolean ToolBarMenuRestictionLoaded = false;

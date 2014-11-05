@@ -2187,6 +2187,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	}	//	getCM_ChatID
 
 
+	/**
+	 *	Returns true, if this tab have templates allowed with current role
+	 *  @return true if record has templates
+	 */
+	public boolean hasTemplate()
+	{
+		return MImportTemplate.getTemplates(Env.getAD_Role_ID(Env.getCtx()), getAD_Tab_ID()).size() > 0;
+	}	//	hasChat
+
 	/**************************************************************************
 	 * 	Load Locks for Table and User
 	 */

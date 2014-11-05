@@ -62,6 +62,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.panel.WAttachment;
 import org.adempiere.webui.panel.WDocActionPanel;
+import org.adempiere.webui.panel.action.CSVImportAction;
 import org.adempiere.webui.panel.action.ExportAction;
 import org.adempiere.webui.panel.action.FileImportAction;
 import org.adempiere.webui.panel.action.ReportAction;
@@ -1278,6 +1279,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}
 
 		toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !adTabbox.getSelectedGridTab().isNew());
+		toolbar.enableCSVImport(adTabbox.getSelectedGridTab().hasTemplate());
 
         //Deepak-Enabling customize button IDEMPIERE-364
         if(!(adTabbox.getSelectedTabpanel() instanceof ADSortTab))
@@ -2572,6 +2574,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	@Override
 	public void onFileImport() {
 		FileImportAction action = new FileImportAction(this);
+		action.fileImport();
+	}
+
+	@Override
+	public void onCSVImport() {
+		CSVImportAction action = new CSVImportAction(this);
 		action.fileImport();
 	}
 
