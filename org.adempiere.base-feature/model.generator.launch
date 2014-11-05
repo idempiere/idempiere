@@ -16,7 +16,6 @@
 <stringAttribute key="location" value="${workspace_loc}/../runtime-model.generator"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DPropertyFile=/home/carlos/.idempiere/idempiere2.properties"/>
 <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc}"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.adempiere.server.server_product"/>
