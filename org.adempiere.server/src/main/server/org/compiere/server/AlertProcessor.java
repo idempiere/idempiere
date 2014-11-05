@@ -264,6 +264,7 @@ public class AlertProcessor extends AdempiereServer
 					note.saveEx();
 					// Attachment
 					MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), trx.getTrxName());
+					attachment.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
 					for (File f : attachments) {
 						attachment.addEntry(f);
 					}
