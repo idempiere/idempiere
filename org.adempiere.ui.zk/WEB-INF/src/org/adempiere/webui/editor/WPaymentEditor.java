@@ -181,6 +181,8 @@ public class WPaymentEditor extends WEditor implements ListDataListener {
 			if (!m_onlyRule // Only order has Warehouse
 					&& !m_isSOTrx && m_mTab.getValue("M_Warehouse_ID") != null)
 				m_onlyRule = true;
+			if (!m_onlyRule && m_mTab.needSave(true, false)) // don't show button until change on payment rule is saved
+				m_onlyRule = true;
 		}
 
 		getComponent().setEnabled(readWrite, readWrite && !m_onlyRule);

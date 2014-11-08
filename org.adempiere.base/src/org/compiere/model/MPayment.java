@@ -83,7 +83,7 @@ public class MPayment extends X_C_Payment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3426445843281140181L;
+	private static final long serialVersionUID = -7646717328867858897L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -654,6 +654,22 @@ public class MPayment extends X_C_Payment
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
+		if (isComplete() &&
+            (   is_ValueChanged(COLUMNNAME_C_BankAccount_ID)
+             || is_ValueChanged(COLUMNNAME_C_BPartner_ID)
+             || is_ValueChanged(COLUMNNAME_C_Charge_ID)
+             || is_ValueChanged(COLUMNNAME_C_Currency_ID)
+             || is_ValueChanged(COLUMNNAME_C_DocType_ID)
+             || is_ValueChanged(COLUMNNAME_C_Invoice_ID)
+             || is_ValueChanged(COLUMNNAME_C_Order_ID)
+             || is_ValueChanged(COLUMNNAME_DateAcct)
+             || is_ValueChanged(COLUMNNAME_DateTrx)
+             || is_ValueChanged(COLUMNNAME_DiscountAmt)
+             || is_ValueChanged(COLUMNNAME_PayAmt)
+             || is_ValueChanged(COLUMNNAME_WriteOffAmt))) {
+			log.saveError("PaymentAlreadyProcessed", Msg.translate(getCtx(), "C_Payment_ID"));
+			return false;
+		}
 		// @Trifon - CashPayments
 		//if ( getTenderType().equals("X") ) {
 		if ( isCashbookTrx()) {
@@ -781,7 +797,19 @@ public class MPayment extends X_C_Payment
 
 		return true;
 	}	//	beforeSave
-	
+
+	/**
+	 * 	Document Status is Complete or Closed
+	 *	@return true if CO, CL or RE
+	 */
+	public boolean isComplete()
+	{
+		String ds = getDocStatus();
+		return DOCSTATUS_Completed.equals(ds)
+			|| DOCSTATUS_Closed.equals(ds)
+			|| DOCSTATUS_Reversed.equals(ds);
+	}	//	isComplete
+
 	/**
 	 * 	Get Allocated Amt in Payment Currency
 	 *	@return amount or null
