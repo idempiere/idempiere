@@ -400,7 +400,7 @@ public class ImportInventory extends SvrProcess
 					x_isInternalUse = isInternalUse;
 					noInsert++;
 				}
-				MProduct product = MProduct.get(getCtx(), imp.getM_Product_ID());
+				MProduct product = new MProduct(getCtx(), imp.getM_Product_ID(), get_TrxName());
 				//	Line
 				int M_AttributeSetInstance_ID = 0;
 				if ((imp.getLot() != null && imp.getLot().length() > 0) || (imp.getSerNo() != null && imp.getSerNo().length() > 0))
@@ -519,10 +519,13 @@ public class ImportInventory extends SvrProcess
 			costASI = 0;
 		} else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel)) { 
 			costASI = 0;
+		} else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel)) {
+			costOrgID = 0;
 		}
-		MCost cost = MCost.get (MProduct.get(getCtx(), imp.getM_Product_ID()), costASI
+		MCost cost = MCost.get (product, costASI
 				, acctSchema, costOrgID, p_M_CostElement_ID, get_TrxName());
-		
+		if (cost.is_new())
+			cost.saveEx();
 		if (costingDoc == null) {
 			costingDoc = new MInventory(getCtx(), 0, get_TrxName());
 			costingDoc.setC_DocType_ID(p_C_DocType_ID);
@@ -539,7 +542,8 @@ public class ImportInventory extends SvrProcess
 		costingLine.setNewCostPrice(imp.getCurrentCostPrice());
 		costingLine.setM_Locator_ID(0);
 		costingLine.setAD_Org_ID(imp.getAD_Org_ID());
-		costingLine.saveEx();				
+		costingLine.setM_AttributeSetInstance_ID(costASI);
+		costingLine.saveEx();
 		
 		imp.setM_CostingLine_ID(costingLine.getM_InventoryLine_ID());
 		imp.saveEx();

@@ -353,7 +353,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			}
 			
 			int M_ASI_ID = getM_AttributeSetInstance_ID();
-			MProduct product = getProduct();
+			MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 			MClient client = MClient.get(getCtx());
 			MAcctSchema as = client.getAcctSchema();
 			String costingLevel = product.getCostingLevel(as);
