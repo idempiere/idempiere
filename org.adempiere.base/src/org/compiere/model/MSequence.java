@@ -41,6 +41,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 
 /**
  *	Sequence Model.
@@ -519,15 +520,23 @@ public class MSequence extends X_AD_Sequence
 
 		//	create DocumentNo
 		StringBuilder doc = new StringBuilder();
-		if (prefix != null && prefix.length() > 0)
-			doc.append(Env.parseVariable(prefix, po, trxName, false));
-		
+		if (prefix != null && prefix.length() > 0) {
+			String prefixValue = Env.parseVariable(prefix, po, trxName, false);
+			if (Util.isEmpty(prefixValue))
+				doc.append(prefixValue);
+		}
+
 		if (decimalPattern != null && decimalPattern.length() > 0)
 			doc.append(new DecimalFormat(decimalPattern).format(next));
 		else
 			doc.append(next);
-		if (suffix != null && suffix.length() > 0)
-			doc.append(Env.parseVariable(suffix, po, trxName, false));
+
+		if (suffix != null && suffix.length() > 0) {
+			String suffixValue = Env.parseVariable(suffix, po, trxName, false);
+			if (Util.isEmpty(suffixValue))
+				doc.append(suffixValue);
+		}
+
 		String documentNo = doc.toString();
 		if (s_log.isLoggable(Level.FINER)) s_log.finer (documentNo + " (" + incrementNo + ")"
 				+ " - Sequence=" + AD_Sequence_ID + " [" + trx + "]");
