@@ -522,7 +522,7 @@ public class MSequence extends X_AD_Sequence
 		StringBuilder doc = new StringBuilder();
 		if (prefix != null && prefix.length() > 0) {
 			String prefixValue = Env.parseVariable(prefix, po, trxName, false);
-			if (Util.isEmpty(prefixValue))
+			if (!Util.isEmpty(prefixValue))
 				doc.append(prefixValue);
 		}
 
@@ -533,7 +533,7 @@ public class MSequence extends X_AD_Sequence
 
 		if (suffix != null && suffix.length() > 0) {
 			String suffixValue = Env.parseVariable(suffix, po, trxName, false);
-			if (Util.isEmpty(suffixValue))
+			if (!Util.isEmpty(suffixValue))
 				doc.append(suffixValue);
 		}
 
