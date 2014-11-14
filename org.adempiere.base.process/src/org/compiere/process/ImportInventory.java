@@ -23,6 +23,8 @@ import java.sql.Timestamp;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.model.ImportValidator;
+import org.adempiere.process.ImportProcess;
 import org.compiere.model.I_C_DocType;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAttributeSet;
@@ -32,6 +34,7 @@ import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategoryAcct;
+import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.PO;
 import org.compiere.model.X_I_Inventory;
 import org.compiere.util.AdempiereUserError;
@@ -50,8 +53,9 @@ import org.compiere.util.ValueNamePair;
  * 
  *  Contributor:
  *  Carlos Ruiz - globalqss - IDEMPIERE-281 Extend Import Inventory to support also internal use
+ *  Deepak Pansheriya - logilite - IDEMPIERE-2314 Making import inventory process extendible
  */
-public class ImportInventory extends SvrProcess
+public class ImportInventory extends SvrProcess implements ImportProcess
 {
 	/**	Client to be imported to		*/
 	private int				p_AD_Client_ID = 0;
@@ -184,6 +188,8 @@ public class ImportInventory extends SvrProcess
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		if (log.isLoggable(Level.INFO)) log.info ("Reset=" + no);
 
+		ModelValidationEngine.get().fireImportValidate(this, null, null, ImportValidator.TIMING_BEFORE_VALIDATE);
+		
 		sql = new StringBuilder ("UPDATE I_Inventory o ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Org, '")
 			.append("WHERE (AD_Org_ID IS NULL OR AD_Org_ID=0")
@@ -330,6 +336,8 @@ public class ImportInventory extends SvrProcess
 		if (no != 0)
 			log.warning ("Required charge=" + no);
 
+		ModelValidationEngine.get().fireImportValidate(this, null, null, ImportValidator.TIMING_AFTER_VALIDATE);
+		
 		commitEx();
 		
 		/*********************************************************************/
@@ -354,6 +362,8 @@ public class ImportInventory extends SvrProcess
 			int x_C_DocType_ID = -1;
 			Timestamp x_MovementDate = null;
 			int x_isInternalUse = -1;
+			
+			X_I_Inventory lastImp=null;
 			while (rs.next())
 			{
 				X_I_Inventory imp = new X_I_Inventory (getCtx (), rs, get_TrxName());
@@ -367,6 +377,9 @@ public class ImportInventory extends SvrProcess
 					|| isInternalUse != x_isInternalUse)
 				{
 					if (inventory != null) {
+						
+						ModelValidationEngine.get().fireImportValidate(this, lastImp, inventory, ImportValidator.TIMING_AFTER_IMPORT);
+						
 						if (m_docAction != null && m_docAction.length() > 0) {
 							if (!inventory.processIt(m_docAction)) {
 								log.warning("Inventory Process Failed: " + inventory + " - " + inventory.getProcessMsg());
@@ -383,6 +396,8 @@ public class ImportInventory extends SvrProcess
 					inventory.setDescription("I " + imp.getM_Warehouse_ID() + " " + MovementDate);
 					inventory.setM_Warehouse_ID(imp.getM_Warehouse_ID());
 					inventory.setMovementDate(MovementDate);
+					
+					ModelValidationEngine.get().fireImportValidate(this, imp, inventory, ImportValidator.TIMING_BEFORE_IMPORT);
 					//
 					if (!inventory.save())
 					{
@@ -402,23 +417,8 @@ public class ImportInventory extends SvrProcess
 				}
 				MProduct product = new MProduct(getCtx(), imp.getM_Product_ID(), get_TrxName());
 				//	Line
-				int M_AttributeSetInstance_ID = 0;
-				if ((imp.getLot() != null && imp.getLot().length() > 0) || (imp.getSerNo() != null && imp.getSerNo().length() > 0))
-				{
-					
-					if (product.isInstanceAttribute())
-					{
-						MAttributeSet mas = product.getAttributeSet();
-						MAttributeSetInstance masi = new MAttributeSetInstance(getCtx(), 0, mas.getM_AttributeSet_ID(), get_TrxName());
-						if (mas.isLot() && imp.getLot() != null)
-							masi.setLot(imp.getLot(), imp.getM_Product_ID());
-						if (mas.isSerNo() && imp.getSerNo() != null)
-							masi.setSerNo(imp.getSerNo());
-						masi.setDescription();
-						masi.saveEx();
-						M_AttributeSetInstance_ID = masi.getM_AttributeSetInstance_ID();
-					}
-				}
+				int M_AttributeSetInstance_ID = generateASI(product,imp);
+
 				MInventoryLine line = new MInventoryLine (inventory, 
 					imp.getM_Locator_ID(), imp.getM_Product_ID(), M_AttributeSetInstance_ID,
 					imp.getQtyBook(), imp.getQtyCount(), imp.getQtyInternalUse());
@@ -428,6 +428,9 @@ public class ImportInventory extends SvrProcess
 				else
 					line.setInventoryType(MInventoryLine.INVENTORYTYPE_InventoryDifference);
 				line.setC_Charge_ID(imp.getC_Charge_ID());
+				
+				ModelValidationEngine.get().fireImportValidate(this, imp, line, ImportValidator.TIMING_BEFORE_IMPORT);
+				
 				if (line.save())
 				{
 					imp.setI_IsImported(true);
@@ -450,6 +453,9 @@ public class ImportInventory extends SvrProcess
 					log.log(Level.SEVERE, "Inventory Line not saved");
 					break;
 				}
+				
+				ModelValidationEngine.get().fireImportValidate(this, imp, line, ImportValidator.TIMING_AFTER_IMPORT);
+				lastImp = imp;
 			}
 			if (inventory != null) {
 				if (m_docAction != null && m_docAction.length() > 0) {
@@ -499,8 +505,28 @@ public class ImportInventory extends SvrProcess
 		return "";
 	}	//	doIt
 
+	protected int generateASI(MProduct product,X_I_Inventory imp){
+		int M_AttributeSetInstance_ID = 0;
+		if ((imp.getLot() != null && imp.getLot().length() > 0) || (imp.getSerNo() != null && imp.getSerNo().length() > 0))
+		{
+			
+			if (product.isInstanceAttribute())
+			{
+				MAttributeSet mas = product.getAttributeSet();
+				MAttributeSetInstance masi = new MAttributeSetInstance(getCtx(), 0, mas.getM_AttributeSet_ID(), get_TrxName());
+				if (mas.isLot() && imp.getLot() != null)
+					masi.setLot(imp.getLot(), imp.getM_Product_ID());
+				if (mas.isSerNo() && imp.getSerNo() != null)
+					masi.setSerNo(imp.getSerNo());
+				masi.setDescription();
+				masi.saveEx();
+				M_AttributeSetInstance_ID = masi.getM_AttributeSetInstance_ID();
+			}
+		}
+		return M_AttributeSetInstance_ID;
+	}
 
-	private void updateCosting(X_I_Inventory imp, MProduct product,
+	protected void updateCosting(X_I_Inventory imp, MProduct product,
 			MInventoryLine line) {
 		String costingLevel = null;
 		if(product.getM_Product_Category_ID() > 0){
@@ -549,4 +575,16 @@ public class ImportInventory extends SvrProcess
 		imp.saveEx();
 	}
 
+
+	@Override
+	public String getImportTableName() {
+		return X_I_Inventory.Table_Name;
+	}
+
+
+	@Override
+	public String getWhereClause() {
+		StringBuilder msgreturn = new StringBuilder(" AND AD_Client_ID=").append(p_AD_Client_ID);
+		return msgreturn.toString();
+	}
 }	//	ImportInventory
