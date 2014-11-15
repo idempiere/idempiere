@@ -38,6 +38,7 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -85,7 +86,6 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -1489,6 +1489,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     				editorComponent = ((EditorBox)editorComponent).getTextbox();
     			}
     			if (editorComponent.equals(tagetComponent)){
+    				// IDEMPIERE-2136
+        			if (editor instanceof WSearchEditor){
+        				if (((WSearchEditor)editor).isShowingDialog()){
+    						return;
+    					}
+        			}
     				isCacheEvent = true;
     				break;
     			}
