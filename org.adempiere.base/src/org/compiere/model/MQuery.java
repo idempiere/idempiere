@@ -1145,7 +1145,7 @@ class Restriction  implements Serializable
 			if (Code instanceof String)
 				sb.append(DB.TO_STRING(Code.toString()));
 			else if (Code instanceof Timestamp)
-				sb.append(DB.TO_DATE((Timestamp)Code));
+				sb.append(DB.TO_DATE((Timestamp)Code, false));
 			else
 				sb.append(Code);
 
@@ -1157,7 +1157,7 @@ class Restriction  implements Serializable
 				if (Code_to instanceof String)
 					sb.append(DB.TO_STRING(Code_to.toString()));
 				else if (Code_to instanceof Timestamp)
-					sb.append(DB.TO_DATE((Timestamp)Code_to));
+					sb.append(DB.TO_DATE((Timestamp)Code_to, false));
 				else
 					sb.append(Code_to);
 			}

@@ -1662,8 +1662,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             {
             	if (valueTo != null && valueTo.toString().length() > 0) {
             		// range
-                    StringBuilder msglog = new StringBuilder(ColumnName).append(">=").append(value).append("<=").append(valueTo);
-                    if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
+                    if (log.isLoggable(Level.FINE)) {
+                        StringBuilder msglog = new StringBuilder(ColumnName).append(">=").append(value).append("<=").append(valueTo);
+                    	log.fine(msglog.toString());
+                    }
 
                     GridField field = getTargetMField(ColumnName);
                     StringBuilder ColumnSQL = new StringBuilder(field.getColumnSQL(false));
@@ -1671,8 +1673,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     		ColumnName, wed.getDisplay(), wedTo.getDisplay(), true, 0);
                     appendCode(code, ColumnName, MQuery.BETWEEN, value.toString(), valueTo.toString(), "AND", "", "");
             	} else {
-                    StringBuilder msglog = new StringBuilder(ColumnName).append("=").append(value);
-                    if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
+                    if (log.isLoggable(Level.FINE)) {
+                        StringBuilder msglog = new StringBuilder(ColumnName).append("=").append(value);
+                    	log.fine(msglog.toString());
+                    }
 
                     // globalqss - Carlos Ruiz - 20060711
                     // fix a bug with virtualColumn + isSelectionColumn not yielding results
@@ -1723,8 +1727,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             	}
             } else if (valueTo != null && valueTo.toString().length() > 0) {
             	// filled upper limit without filling lower limit
-                StringBuilder msglog = new StringBuilder(ColumnName).append("<=").append(valueTo);
-                if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
+                if (log.isLoggable(Level.FINE)) {
+                    StringBuilder msglog = new StringBuilder(ColumnName).append("<=").append(valueTo);
+                	log.fine(msglog.toString());
+                }
 
                 GridField field = getTargetMField(ColumnName);
                 StringBuilder ColumnSQL = new StringBuilder(field.getColumnSQL(false));
