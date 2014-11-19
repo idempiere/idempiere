@@ -30,7 +30,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171031L;
+	private static final long serialVersionUID = 20180911L;
 
     /** Standard Constructor */
     public X_M_Attribute (Properties ctx, int M_Attribute_ID, String trxName)
@@ -83,6 +83,8 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	public static final String ATTRIBUTEVALUETYPE_Number = "N";
 	/** List = L */
 	public static final String ATTRIBUTEVALUETYPE_List = "L";
+	/** Date = D */
+	public static final String ATTRIBUTEVALUETYPE_Date = "D";
 	/** Set Attribute Value Type.
 		@param AttributeValueType 
 		Type of Attribute Value
@@ -99,6 +101,23 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	public String getAttributeValueType () 
 	{
 		return (String)get_Value(COLUMNNAME_AttributeValueType);
+	}
+
+	/** Set Date Format.
+		@param DateFormat 
+		Date format used in the input format
+	  */
+	public void setDateFormat (String DateFormat)
+	{
+		set_Value (COLUMNNAME_DateFormat, DateFormat);
+	}
+
+	/** Get Date Format.
+		@return Date format used in the input format
+	  */
+	public String getDateFormat () 
+	{
+		return (String)get_Value(COLUMNNAME_DateFormat);
 	}
 
 	/** Set Description.

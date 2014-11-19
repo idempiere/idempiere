@@ -174,6 +174,15 @@ public interface I_M_AttributeInstance
 	  */
 	public String getValue();
 
+    /** Column name ValueDate */
+    public static final String COLUMNNAME_ValueDate = "ValueDate";
+
+	/** Set Value Date	  */
+	public void setValueDate (Timestamp ValueDate);
+
+	/** Get Value Date	  */
+	public Timestamp getValueDate();
+
     /** Column name ValueNumber */
     public static final String COLUMNNAME_ValueNumber = "ValueNumber";
 

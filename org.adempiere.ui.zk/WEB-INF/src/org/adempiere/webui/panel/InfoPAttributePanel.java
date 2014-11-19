@@ -30,6 +30,7 @@ import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -302,6 +303,10 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 				else if (MAttribute.ATTRIBUTEVALUETYPE_Number.equals(attributeValueType))
 				{
 					field = new WNumberEditor(name, false, false, true, DisplayType.Number, name).getComponent();
+				}
+				else if(MAttribute.ATTRIBUTEVALUETYPE_Date.equals(attributeValueType))
+				{
+					field = new WDateEditor(name, false, false, true, name).getComponent();
 				}
 				else
 				{
