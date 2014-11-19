@@ -56,19 +56,21 @@ public class Actions {
 		}
 		if (aImage != null)
 			return aImage;
-		
-		String path = ACTION_IMAGES_PATH + actionId + "24.png";
-		InputStream inputStream = Actions.class.getClassLoader().getResourceAsStream(path);
-		if (inputStream != null) {
-			try {
-				aImage = new AImage(actionId, inputStream);
-			} catch (IOException e) {
+
+		IServiceHolder<IAction> action = Service.locator().locate(IAction.class, actionId, null);
+		if (action.getService() != null) {
+			String path = ACTION_IMAGES_PATH + actionId + "24.png";
+			InputStream inputStream = action.getService().getClass().getClassLoader().getResourceAsStream(path);
+			if (inputStream != null) {
+				try {
+					aImage = new AImage(actionId, inputStream);
+				} catch (IOException e) {
+				}
 			}
-		}
-		if (aImage != null) {
-			synchronized (imageCache) {
-				imageCache.put(actionId, aImage);
-			}
+			if (aImage != null)
+				synchronized (imageCache) {
+					imageCache.put(actionId, aImage);
+				}
 		}
 		return aImage;
 	}
