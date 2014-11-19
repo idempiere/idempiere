@@ -1691,7 +1691,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	{
 		if (AD_User_ID != 0)
 		{
-			MUser user = MUser.get(getCtx(), AD_User_ID);
+			MUser user = new MUser(getCtx(), AD_User_ID, get_TrxName());
 			email = user.getEMail();
 			if (email != null && email.length() > 0)
 			{

@@ -731,7 +731,7 @@ public class MClient extends X_AD_Client
 			msg = email.send();
 		}
 		//
-		X_AD_UserMail um = new X_AD_UserMail(getCtx(), 0, null);
+		X_AD_UserMail um = new X_AD_UserMail(getCtx(), 0, to.get_TrxName());
 		um.setClientOrg(this);
 		um.setAD_User_ID(to.getAD_User_ID());
 		um.setSubject(email.getSubject());
