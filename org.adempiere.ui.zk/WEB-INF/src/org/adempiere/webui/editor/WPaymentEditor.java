@@ -16,15 +16,19 @@ package org.adempiere.webui.editor;
 import javax.swing.event.ListDataListener;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.form.WPaymentFormFactory;
 import org.adempiere.webui.apps.form.WPaymentFormWindow;
 import org.adempiere.webui.component.Paymentbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.ContextMenuEvent;
+import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.grid.IPaymentForm;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -45,7 +49,7 @@ import org.zkoss.zul.Comboitem;
  * @author Elaine
  *
  */
-public class WPaymentEditor extends WEditor implements ListDataListener {
+public class WPaymentEditor extends WEditor implements ListDataListener, ContextMenuListener {
 
 	public final static String ON_SAVE_PAYMENT = "onSavePayment";
 	
@@ -79,6 +83,8 @@ public class WPaymentEditor extends WEditor implements ListDataListener {
             	lookup.refresh();
             refreshList();
         }
+    	popupMenu = new WEditorPopupMenu(false, true, isShowPreference());
+    	addChangeLogMenu(popupMenu);
     }
 	
 	@Override
@@ -349,4 +355,41 @@ public class WPaymentEditor extends WEditor implements ListDataListener {
 	public String[] getEvents() {
 		return LISTENER_EVENTS;
 	}
+
+	@Override
+	public void onMenu(ContextMenuEvent evt) 
+	{
+		if (WEditorPopupMenu.REQUERY_EVENT.equals(evt.getContextEvent()))
+		{
+			actionRefresh();
+		}
+		else if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
+		{
+			if (isShowPreference())
+				ValuePreference.start (getComponent(), this.getGridField(), getValue());
+			return;
+		}
+		else if (WEditorPopupMenu.CHANGE_LOG_EVENT.equals(evt.getContextEvent()))
+		{
+			WFieldRecordInfo.start(gridField);
+		}
+	}
+
+    public void actionRefresh()
+    {    	
+		if (lookup != null)
+        {
+			Object curValue = getValue();
+			
+			if (isReadWrite())
+				lookup.refresh();
+			else
+				refreshList();
+            if (curValue != null)
+            {
+            	setValue(curValue);
+            }
+        }
+    }
+
 }
