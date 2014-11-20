@@ -513,7 +513,7 @@ public class CostUpdate extends SvrProcess
 			}
 			if (retValue == null)
 			{
-				MProduct product = MProduct.get(getCtx(), cost.getM_Product_ID());
+				MProduct product = new MProduct(getCtx(), cost.getM_Product_ID(), get_TrxName());
 				MAcctSchema as = MAcctSchema.get(getCtx(), cost.getC_AcctSchema_ID());
 				retValue = MCost.getLastInvoicePrice(product, 
 					cost.getM_AttributeSetInstance_ID(), cost.getAD_Org_ID(), as.getC_Currency_ID());				
@@ -532,7 +532,7 @@ public class CostUpdate extends SvrProcess
 			}
 			if (retValue == null)
 			{
-				MProduct product = MProduct.get(getCtx(), cost.getM_Product_ID());
+				MProduct product = new MProduct(getCtx(), cost.getM_Product_ID(), get_TrxName());
 				MAcctSchema as = MAcctSchema.get(getCtx(), cost.getC_AcctSchema_ID());
 				retValue = MCost.getLastPOPrice(product, 
 					cost.getM_AttributeSetInstance_ID(), cost.getAD_Org_ID(), as.getC_Currency_ID());				

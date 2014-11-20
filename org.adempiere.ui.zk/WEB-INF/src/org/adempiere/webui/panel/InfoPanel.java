@@ -1390,7 +1390,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		} else if (keyEvent.getKeyCode() == VK_ENTER) { // Enter
 			// enter in contentpanel to select
             //when user push enter keyboard at input parameter field
-			if (contentPanel.getSelectedIndex() >= 0) {
+			if (m_lookup && contentPanel.getSelectedIndex() >= 0) {
 				onOk();
 			} else {
 	           	onUserQuery();

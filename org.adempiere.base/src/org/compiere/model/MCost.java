@@ -55,14 +55,10 @@ import org.compiere.util.Trx;
  */
 public class MCost extends X_M_Cost
 {
-
-
-
-    	/**
-         * 
-         */
-        private static final long serialVersionUID = -127982599769472918L;
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8904980122276406878L;
 
 	/**
 	 * 	Retrieve/Calculate Current Cost Price
@@ -1519,6 +1515,19 @@ public class MCost extends X_M_Cost
 		setCumulatedQty(getCumulatedQty().add(qty));
 		setCurrentQty(getCurrentQty().add(qty));
 	}	//	setWeightedAverage
+
+	/**
+	 *	@param amt unit amt
+	 */
+	public void setWeightedAverageInitial (BigDecimal amtUnit)
+	{
+		BigDecimal cost = amtUnit;
+		if (cost.scale() > (getPrecision()*2))
+		{
+			cost = cost.setScale((getPrecision()*2), BigDecimal.ROUND_HALF_UP);
+		}
+		setCurrentCostPrice(cost);
+	}	//	setWeightedAverageInitial
 
 	/**
 	 * 	Get Costing Precision

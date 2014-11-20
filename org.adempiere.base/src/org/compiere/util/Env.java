@@ -1480,8 +1480,12 @@ public final class Env
 				String v = Env.getContext(ctx, token);
 				if (v != null && v.length() > 0)
 					outStr.append(v);
-				else if (keepUnparseable)
-					outStr.append("@"+token+"@");
+				else if (keepUnparseable) {
+					outStr.append("@").append(token);
+					if (!Util.isEmpty(format))
+						outStr.append("<").append(format).append(">");
+					outStr.append("@");
+				}
 			} else if (po != null) {
 				//take from po
 				if (po.get_ColumnIndex(token) >= 0) {
@@ -1525,7 +1529,10 @@ public final class Env
 						}
 					}
 				} else if (keepUnparseable) {
-					outStr.append("@"+token+"@");
+					outStr.append("@").append(token);
+					if (!Util.isEmpty(format))
+						outStr.append("<").append(format).append(">");
+					outStr.append("@");
 				}
 			}
 

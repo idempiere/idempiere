@@ -208,11 +208,11 @@ public abstract class PaymentFormCheck extends PaymentForm {
 		if (invoice == null && C_Order_ID != 0)
 			order = new MOrder (Env.getCtx(), C_Order_ID, null);
 		
-		BigDecimal payAmount = m_Amount;
+		BigDecimal payAmount = amount;
 		
 
 		if (negateAmt)
-			payAmount = m_Amount.negate();
+			payAmount = amount.negate();
 		// Info
 		if (log.isLoggable(Level.CONFIG)) log.config("C_Order_ID=" + C_Order_ID + ", C_Invoice_ID=" + C_Invoice_ID + ", NegateAmt=" + negateAmt);
 		
