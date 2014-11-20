@@ -323,23 +323,25 @@ public final class MLocatorLookup extends Lookup implements Serializable
 			int local_only_warehouse_id = getOnly_Warehouse_ID(); // [ 1674891 ] MLocatorLookup - weird error 
 			int local_only_product_id = getOnly_Product_ID();
 			
-			StringBuilder sql = new StringBuilder("SELECT * FROM M_Locator ")
-				.append(" WHERE IsActive='Y'");
+			StringBuilder sql = new StringBuilder("SELECT M_Locator.* FROM M_Locator ")
+				.append(" INNER JOIN M_Warehouse wh ON (wh.M_Warehouse_ID=M_Locator.M_Warehouse_ID) ")
+				.append(" WHERE M_Locator.IsActive='Y' ")
+				.append(" AND wh.IsActive='Y'");
 			
 			if (local_only_warehouse_id != 0)
-				sql.append(" AND M_Warehouse_ID=?");
+				sql.append(" AND M_Locator.M_Warehouse_ID=?");
 			if (local_only_product_id != 0)
-				sql.append(" AND (IsDefault='Y' ")	//	Default Locator
+				sql.append(" AND (M_Locator.IsDefault='Y' ")	//	Default Locator
 					.append("OR EXISTS (SELECT * FROM M_Product p ")	//	Product Locator
 					.append("WHERE p.M_Locator_ID=M_Locator.M_Locator_ID AND p.M_Product_ID=?)")
 					.append("OR EXISTS (SELECT * FROM M_Storage s ")	//	Storage Locator
 					.append("WHERE s.M_Locator_ID=M_Locator.M_Locator_ID AND s.M_Product_ID=?))");
 			sql.append(" ORDER BY ");
 			if (local_only_warehouse_id == 0)
-				sql.append("(SELECT wh.Name FROM M_Warehouse wh WHERE wh.M_Warehouse_ID=M_Locator.M_Warehouse_ID),");
+				sql.append("wh.Name,");
 			sql.append("M_Locator.Value");
 			String finalSql = MRole.getDefault(m_ctx, false).addAccessSQL(
-				sql.toString(), "M_Locator", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
+				sql.toString(), "M_Locator", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 			if (isInterrupted())
 			{
 				log.log(Level.SEVERE, "Interrupted");

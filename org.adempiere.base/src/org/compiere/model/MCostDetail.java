@@ -833,7 +833,7 @@ public class MCostDetail extends X_M_CostDetail
 
 		//	get costing level for product
 		MAcctSchema as = MAcctSchema.get(getCtx(), getC_AcctSchema_ID());
-		MProduct product = MProduct.get(getCtx(), getM_Product_ID());
+		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 		String CostingLevel = product.getCostingLevel(as);
 		//	Org Element
 		int Org_ID = getAD_Org_ID();
@@ -1152,7 +1152,12 @@ public class MCostDetail extends X_M_CostDetail
 						costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
 						if (MCostElement.COSTINGMETHOD_AverageInvoice.equals(costingMethod))
 						{
-							cost.setWeightedAverage(amt.multiply(cost.getCurrentQty()), qty);
+							if (cost.getCurrentQty().signum() == 0 && qty.signum() == 0) {
+								// IDEMPIERE-2057 - this is a cost adjustment when there is no qty - setting the initial cost								
+								cost.setWeightedAverageInitial(amt);
+							} else {
+								cost.setWeightedAverage(amt.multiply(cost.getCurrentQty()), qty);
+							}
 						}
 					}
 					else if (addition)
@@ -1177,7 +1182,12 @@ public class MCostDetail extends X_M_CostDetail
 					costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
 					if (MCostElement.COSTINGMETHOD_AveragePO.equals(costingMethod))
 					{
-						cost.setWeightedAverage(amt.multiply(cost.getCurrentQty()), qty);
+						if (cost.getCurrentQty().signum() == 0 && qty.signum() == 0) {
+							// IDEMPIERE-2057 - this is a cost adjustment when there is no qty - setting the initial cost								
+							cost.setWeightedAverageInitial(amt);
+						} else {
+							cost.setWeightedAverage(amt.multiply(cost.getCurrentQty()), qty);
+						}
 					}
 				}
 				else if (addition)

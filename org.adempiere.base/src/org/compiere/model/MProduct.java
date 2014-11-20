@@ -910,7 +910,7 @@ public class MProduct extends X_M_Product
 		if (ce == null) {
 			return null;
 		}
-		MCost cost = MCost.get(this, M_ASI_ID, as, AD_Org_ID, ce.getM_CostElement_ID(), (String)null);
+		MCost cost = MCost.get(this, M_ASI_ID, as, AD_Org_ID, ce.getM_CostElement_ID(), get_TrxName());
 		return cost.is_new() ? null : cost;
 	}
 }	//	MProduct

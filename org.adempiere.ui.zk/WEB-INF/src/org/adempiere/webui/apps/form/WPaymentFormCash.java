@@ -34,7 +34,6 @@ import org.adempiere.webui.window.FDialog;
 import org.compiere.grid.PaymentFormCash;
 import org.compiere.model.GridTab;
 import org.compiere.model.MConversionRate;
-import org.compiere.model.MInvoice;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;

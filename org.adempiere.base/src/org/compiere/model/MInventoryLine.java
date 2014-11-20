@@ -268,6 +268,10 @@ public class MInventoryLine extends X_M_InventoryLine
 				MProduct product = MProduct.get(getCtx(), getM_Product_ID());
 				if (product != null && product.isASIMandatory(isSOTrx()))
 				{
+					if(product.getAttributeSet()==null){
+						log.saveError("NoAttributeSet", product.getValue());
+						return false;
+					}
 					if (! product.getAttributeSet().excludeTableEntry(MInventoryLine.Table_ID, isSOTrx())) {
 						log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_M_AttributeSetInstance_ID));
 						return false;
@@ -353,7 +357,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			}
 			
 			int M_ASI_ID = getM_AttributeSetInstance_ID();
-			MProduct product = getProduct();
+			MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 			MClient client = MClient.get(getCtx());
 			MAcctSchema as = client.getAcctSchema();
 			String costingLevel = product.getCostingLevel(as);
