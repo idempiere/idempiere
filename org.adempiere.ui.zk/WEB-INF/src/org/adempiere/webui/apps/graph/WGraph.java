@@ -15,6 +15,7 @@ package org.adempiere.webui.apps.graph;
 
 import java.awt.Point;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +34,9 @@ import org.compiere.model.MLookupInfo;
 import org.compiere.model.MMeasure;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.zkoss.zhtml.A;
 import org.zkoss.zhtml.Br;
 import org.zkoss.zhtml.Table;
@@ -97,6 +100,8 @@ public class WGraph extends Div implements IdSpace {
 	private String m_xAxisLabel;
 
 	private String m_yAxisLabel;
+	
+	public DecimalFormat format = DisplayType.getNumberFormat(DisplayType.Amount);
 
 	/**
 	 * Constructor
@@ -393,14 +398,14 @@ public class WGraph extends Div implements IdSpace {
 		Td td = new Td();
 		td.setSclass("pa-label");
 		tr.appendChild(td);
-		Text text = new Text("Target");
+		Text text = new Text(Msg.getElement(Env.getCtx(), "MeasureTarget"));
 		td.appendChild(text);
 		td = new Td();
 		td.setDynamicProperty("colspan", "2");
 		td.setSclass("pa-tdcontent");
 		tr.appendChild(td);
-		text = new Text(m_goal.getMeasureTarget().setScale(2,
-				BigDecimal.ROUND_HALF_UP).toPlainString());
+		text = new Text(format.format(m_goal.getMeasureTarget().setScale(2,
+				BigDecimal.ROUND_HALF_UP)));
 		td.appendChild(text);
 
 		tr = new Tr();
@@ -408,14 +413,14 @@ public class WGraph extends Div implements IdSpace {
 		td = new Td();
 		td.setSclass("pa-label");
 		tr.appendChild(td);
-		text = new Text("Actual");
+		text = new Text(Msg.getElement(Env.getCtx(), "MeasureActual"));
 		td.appendChild(text);
 		td = new Td();
 		td.setDynamicProperty("colspan", "2");
 		td.setSclass("pa-tdcontent");
 		tr.appendChild(td);
-		text = new Text(m_goal.getMeasureActual().setScale(2,
-				BigDecimal.ROUND_HALF_UP).toPlainString());
+		text = new Text(format.format(m_goal.getMeasureActual().setScale(2,
+				BigDecimal.ROUND_HALF_UP)));
 		td.appendChild(text);
 
 		GraphColumn[] bList = getGraphColumnList();
@@ -466,11 +471,11 @@ public class WGraph extends Div implements IdSpace {
 
 				});
 				a.setDynamicProperty("href", "javascript:;");
-				text = new Text(value.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString());
+				text = new Text(format.format(value.setScale(2, BigDecimal.ROUND_HALF_UP)));
 				a.appendChild(text);
 
 			} else {
-				text = new Text(value.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString());
+				text = new Text(format.format(value.setScale(2, BigDecimal.ROUND_HALF_UP)));
 			}
 		}
 		tr = new Tr();
