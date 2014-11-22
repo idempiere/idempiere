@@ -113,7 +113,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1377113168185797983L;
+	private static final long serialVersionUID = 1151723870943569774L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -156,6 +156,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	// The window of this tab
 	private GridWindow			m_window;
+
+	public GridWindow getGridWindow() {
+		return m_window;
+	}
 
 	/** The Table Model for Query   */
 	private GridTable          	m_mTable = null;
