@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -79,7 +81,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -225993322049019137L;
+	private static final long serialVersionUID = 8229814619282121621L;
 
 	private static final String SAVED_CONTEXT = "saved.context";
 	
@@ -109,12 +111,16 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	
 	private static boolean eventThreadEnabled = false;
 
+	private static ConcurrentMap<String, String[]> m_URLParameters;
+
     public AdempiereWebUI()
     {
     	this.addEventListener(Events.ON_CLIENT_INFO, this);
     	this.setVisible(false);
 
     	userPreference = new UserPreference();
+    	// preserve the original URL parameters as is destroyed later on loging
+    	m_URLParameters = new ConcurrentHashMap<String, String[]>(Executions.getCurrent().getParameterMap());
     }
 
     public void onCreate()
@@ -280,20 +286,13 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 		processParameters();
     }
-    
+
     private void processParameters() {
-    	String action = Executions.getCurrent().getParameter("Action");
-    	if (action != null && "Zoom".equalsIgnoreCase(action)) {
-    		int tableID = 0;
-    		try {
-        		String prm = Executions.getCurrent().getParameter("AD_Table_ID");
-        		if (!Util.isEmpty(prm))
-        			tableID = Integer.parseInt(prm);
-    		} catch (NumberFormatException e) {
-    			// ignore
-    		}
+    	String action = getPrmString("Action");
+    	if ("Zoom".equalsIgnoreCase(action)) {
+    		int tableID = getPrmInt("AD_Table_ID");
     		if (tableID == 0) {
-    			String tableName = Executions.getCurrent().getParameter("TableName");
+    			String tableName = getPrmString("TableName");
     			if (!Util.isEmpty(tableName)) {
     				MTable table = MTable.get(Env.getCtx(), tableName);
     				if (table != null) {
@@ -301,19 +300,33 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     				}
     			}
     		}
-    		int recordID = 0;
-    		try {
-        		String prm = Executions.getCurrent().getParameter("AD_Table_ID");
-        		if (!Util.isEmpty(prm))
-        			recordID = Integer.parseInt(prm);
-    		} catch (NumberFormatException e) {
-    			// ignore
-    		}
+    		int recordID = getPrmInt("Record_ID");
     		if (tableID > 0) {
     			AEnv.zoom(tableID, recordID);
     		}
     	}
-	}
+    	m_URLParameters = null;
+    }
+
+    private String getPrmString(String prm) {
+    	String retValue = "";
+    	String[] strs = m_URLParameters.get(prm);
+    	if (strs != null && strs.length == 1 && strs[0] != null)
+    		retValue = strs[0];
+    	return retValue;
+    }
+
+    private int getPrmInt(String prm) {
+    	int retValue = 0;
+    	String str = getPrmString(prm);
+		try {
+    		if (!Util.isEmpty(str))
+    			retValue = Integer.parseInt(str);
+		} catch (NumberFormatException e) {
+			// ignore
+		}
+    	return retValue;
+    }
 
 	/**
      * @return key listener
