@@ -310,9 +310,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
     private String getPrmString(String prm) {
     	String retValue = "";
-    	String[] strs = m_URLParameters.get(prm);
-    	if (strs != null && strs.length == 1 && strs[0] != null)
-    		retValue = strs[0];
+    	if (m_URLParameters != null) {
+        	String[] strs = m_URLParameters.get(prm);
+        	if (strs != null && strs.length == 1 && strs[0] != null)
+        		retValue = strs[0];
+    	}
     	return retValue;
     }
 
