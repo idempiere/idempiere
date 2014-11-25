@@ -43,11 +43,13 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
+import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkforge.keylistener.Keylistener;
 import org.zkoss.web.Attributes;
 import org.zkoss.web.servlet.Servlets;
@@ -77,7 +79,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5875869799688466929L;
+	private static final long serialVersionUID = -225993322049019137L;
 
 	private static final String SAVED_CONTEXT = "saved.context";
 	
@@ -275,9 +277,45 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		}
 		Env.setContext(ctx, "#LocalHttpAddr", localHttpAddr.toString());		
 		Clients.response(new AuScript("zAu.cmd0.clearBusy()"));
+
+		processParameters();
     }
     
-    /**
+    private void processParameters() {
+    	String action = Executions.getCurrent().getParameter("Action");
+    	if (action != null && "Zoom".equalsIgnoreCase(action)) {
+    		int tableID = 0;
+    		try {
+        		String prm = Executions.getCurrent().getParameter("AD_Table_ID");
+        		if (!Util.isEmpty(prm))
+        			tableID = Integer.parseInt(prm);
+    		} catch (NumberFormatException e) {
+    			// ignore
+    		}
+    		if (tableID == 0) {
+    			String tableName = Executions.getCurrent().getParameter("TableName");
+    			if (!Util.isEmpty(tableName)) {
+    				MTable table = MTable.get(Env.getCtx(), tableName);
+    				if (table != null) {
+    					tableID = table.getAD_Table_ID();
+    				}
+    			}
+    		}
+    		int recordID = 0;
+    		try {
+        		String prm = Executions.getCurrent().getParameter("AD_Table_ID");
+        		if (!Util.isEmpty(prm))
+        			recordID = Integer.parseInt(prm);
+    		} catch (NumberFormatException e) {
+    			// ignore
+    		}
+    		if (tableID > 0) {
+    			AEnv.zoom(tableID, recordID);
+    		}
+    	}
+	}
+
+	/**
      * @return key listener
      */
     @Override
