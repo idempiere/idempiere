@@ -60,6 +60,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JRDesignQuery;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
+import net.sf.jasperreports.engine.export.JRCsvExporterParameter;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
@@ -714,8 +715,12 @@ public class ReportStarter implements ProcessCall, ClientProcess
             				exporter = new JRPrintServiceExporter(ljrContext);
             			else if (ext.equals("xml"))
             				exporter = new JRXmlExporter(ljrContext);
-            			else if (ext.equals("csv") || ext.equals("ssv"))
+            			else if (ext.equals("csv"))
             				exporter = new JRCsvExporter(ljrContext);
+            			else if (ext.equals("ssv")) {
+            				exporter = new JRCsvExporter(ljrContext);
+            				exporter.setParameter(JRCsvExporterParameter.FIELD_DELIMITER, ";");
+            			}
             			else if (ext.equals("txt"))
             				exporter = new JRTextExporter(ljrContext);            				
             			else if (ext.equals("html") || ext.equals("htm"))

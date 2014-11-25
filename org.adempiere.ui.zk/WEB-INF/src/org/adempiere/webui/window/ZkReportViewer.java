@@ -948,10 +948,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				m_reportEngine.createXML(sw);
 				data = sw.getBuffer().toString().getBytes();
 			}
-			else if (ext.equals("csv") || ext.equals("ssv"))
+			else if (ext.equals("csv"))
 			{
 				StringWriter sw = new StringWriter();							
 				m_reportEngine.createCSV(sw, ',', m_reportEngine.getPrintFormat().getLanguage());
+				data = sw.getBuffer().toString().getBytes();
+			}
+			else if (ext.equals("ssv"))
+			{
+				StringWriter sw = new StringWriter();							
+				m_reportEngine.createCSV(sw, ';', m_reportEngine.getPrintFormat().getLanguage());
 				data = sw.getBuffer().toString().getBytes();
 			}
 			else if (ext.equals("txt"))
