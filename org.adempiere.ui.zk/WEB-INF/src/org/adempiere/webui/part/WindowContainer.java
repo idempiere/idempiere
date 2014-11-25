@@ -13,6 +13,9 @@
 
 package org.adempiere.webui.part;
 
+import java.util.List;
+
+import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
@@ -21,11 +24,14 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.X_AD_CtxHelp;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SwipeEvent;
+import org.zkoss.zul.Menuitem;
 
 /**
  * 
@@ -128,7 +134,7 @@ public class WindowContainer extends AbstractUIPart
      */
     public Tab insertBefore(Tab refTab, Component comp, String title, boolean closeable, boolean enable)
     {
-        Tab tab = new Tab();
+        final Tab tab = new Tab();
         if (title != null) 
         {
 	        setTabTitle(title, tab);
@@ -198,6 +204,63 @@ public class WindowContainer extends AbstractUIPart
         	else
         		setSelectedTab(tab);
         }
+        
+        Menupopup popupClose = new Menupopup();
+        Menuitem mi;
+        if(tab.getIndex()!=0){
+        	mi = new Menuitem(Msg.getMsg(Env.getCtx(), "Close"));
+        	popupClose.appendChild(mi);
+        	mi.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+        		public void onEvent(Event event) throws Exception {
+        			int currentTabIndex = tab.getIndex();
+        			int tabsSizeBeforeClose = tabbox.getTabs().getChildren().size();
+
+        			if ( tabsSizeBeforeClose == currentTabIndex + 1 ) {
+        				currentTabIndex--;
+        			}
+        			if ( tab.getPreviousSibling() != null ) {
+        				tab.onClose();
+        				// Update the current tab index.
+        				if ( tabsSizeBeforeClose != tabbox.getTabs().getChildren().size() )
+        					tabbox.setSelectedIndex( currentTabIndex );
+        			}
+        		}
+        	});
+
+        	mi = new Menuitem(Msg.getMsg(Env.getCtx(), "CloseOtherWindows"));
+        	popupClose.appendChild(mi);
+        	mi.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+        		public void onEvent(Event event) throws Exception {
+        			int focusTabIndex = 1;
+        			List<Component> tabs = tabbox.getTabs().getChildren();
+        			for ( int i = tabs.size() - 1; i > 0; i-- ) {
+        				if(!((Tab)tabs.get( i )).equals(tab)){
+        					((Tab)tabs.get( i )).setSelected(false);
+
+        					((Tab)tabs.get( i )).onClose();
+        				}
+        			}
+        			tabbox.setSelectedIndex(focusTabIndex);
+        		}
+        	});
+        }
+
+		mi = new Menuitem(Msg.getMsg(Env.getCtx(), "CloseAllWindows"));
+		mi.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+			public void onEvent(Event event) throws Exception {
+				int focusTabIndex = 0;
+				List<Component> tabs = tabbox.getTabs().getChildren();
+				for ( int i = tabs.size() - 1; i > 0; i-- ) {
+					((Tab)tabs.get( i )).setSelected(false);
+					((Tab)tabs.get( i )).onClose();
+				}
+				tabbox.setSelectedIndex( focusTabIndex );
+			}
+		});
+		popupClose.appendChild(mi);
+		popupClose.setWidth("auto");
+		popupClose.setPage(tab.getPage());
+		tab.setContext(popupClose);
         
         return tab;
     }
