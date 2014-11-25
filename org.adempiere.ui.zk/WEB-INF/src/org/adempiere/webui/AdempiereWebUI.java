@@ -81,7 +81,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8229814619282121621L;
+	private static final long serialVersionUID = 2030098494203345181L;
 
 	private static final String SAVED_CONTEXT = "saved.context";
 	
@@ -111,7 +111,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	
 	private static boolean eventThreadEnabled = false;
 
-	private static ConcurrentMap<String, String[]> m_URLParameters;
+	private ConcurrentMap<String, String[]> m_URLParameters;
 
     public AdempiereWebUI()
     {
