@@ -48,7 +48,6 @@ import javax.mail.internet.MimeMultipart;
 
 import org.compiere.model.MClient;
 import org.compiere.model.MSysConfig;
-
 import com.sun.mail.smtp.SMTPMessage;
 
 /**
@@ -974,18 +973,34 @@ public final class EMail implements Serializable
 		else	//	Multi part message	***************************************
 		{
 			//	First Part - Message
-			MimeBodyPart mbp_1 = new MimeBodyPart();
-			mbp_1.setText("");
-			if (m_messageHTML == null || m_messageHTML.length () == 0)
-				mbp_1.setText (getMessageCRLF(), charSetName);
-			else
-				mbp_1.setDataHandler (new DataHandler
-					(new ByteArrayDataSource (m_messageHTML, charSetName, "text/html")));
+			MimeBodyPart htmlPart= null;
+			MimeBodyPart planPart = new MimeBodyPart();
+			//TODO: get plan text form html, i see getMessageCRLF just return empty string
+			planPart.setText (getMessageCRLF(), charSetName);
+			htmlPart = new MimeBodyPart();
+			if (m_messageHTML == null){
+				m_messageHTML = "<html><body>" + getMessageCRLF() + "</body></html>";
+			}
 
+			htmlPart.setDataHandler (new DataHandler
+					(new ByteArrayDataSource (m_messageHTML, charSetName, "text/html")));
+			
 			// Create Multipart and its parts to it
-			Multipart mp = new MimeMultipart("related");
-			mp.addBodyPart(mbp_1);
-			if (log.isLoggable(Level.FINE)) log.fine("(multi) " + getSubject() + " - " + mbp_1);
+			Multipart mainPart = new MimeMultipart("mixed");
+			
+			Multipart viewContentPart = new MimeMultipart("related");
+			MimeBodyPart viewBodyPart = new MimeBodyPart();
+			viewBodyPart.setContent(viewContentPart);
+			mainPart.addBodyPart(viewBodyPart);
+			
+			Multipart textAlternativePart = new MimeMultipart("alternative");
+			//textAlternativePart.addBodyPart(planPart);
+			textAlternativePart.addBodyPart(htmlPart);
+			MimeBodyPart alternativeBodyPart = new MimeBodyPart();
+			alternativeBodyPart.setContent(textAlternativePart);
+			viewContentPart.addBodyPart(alternativeBodyPart);
+			
+			if (log.isLoggable(Level.FINE)) log.fine("(multi) " + getSubject() + " - " + htmlPart);
 
 			//	for all attachments
 			for (int i = 0; i < m_attachments.size(); i++)
@@ -1024,12 +1039,14 @@ public final class EMail implements Serializable
 				if (m_messageHTML != null && m_messageHTML.contains("cid:"+ds.getName())) {
 					mbp_2.setContentID("<" + ds.getName() + ">");
 					mbp_2.setDisposition(MimeBodyPart.INLINE);
+					viewContentPart.addBodyPart(mbp_2);
+				}else{
+					mainPart.addBodyPart(mbp_2);
 				}
-				mp.addBodyPart(mbp_2);
 			}
 
 			//	Add to Message
-			m_msg.setContent(mp);
+			m_msg.setContent(mainPart);
 		}	//	multi=part
 	}	//	setContent
 
