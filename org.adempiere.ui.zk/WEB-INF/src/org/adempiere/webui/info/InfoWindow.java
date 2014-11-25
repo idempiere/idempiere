@@ -399,7 +399,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		btMenuProcess.setVisible(ipMenu.getChildren().size() > 0);
 	}
 
-	private void processQueryValue() {
+	protected void processQueryValue() {
 		isQueryByUser = true;
 		for (int i = 0; i < identifiers.size(); i++) {
 			WEditor editor = identifiers.get(i);
@@ -434,7 +434,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		isQueryByUser = false;
 	}
 
-	private boolean loadInfoDefinition() {
+	protected boolean loadInfoDefinition() {
 		String tableName = null;
 		if (AD_InfoWindow_ID > 0) {
 			infoWindow = new MInfoWindow(Env.getCtx(), AD_InfoWindow_ID, null);
@@ -514,7 +514,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 
 	//private MInfoColumn[] topinfoColumns;//infoWindow.getInfoColumns(tableInfos);
-	private boolean loadInfoRelatedTabs() {
+	protected boolean loadInfoRelatedTabs() {
 		if (infoWindow == null)
 			return false;
 
@@ -654,7 +654,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		prepareTable(columnInfos, infoWindow.getFromClause(), p_whereClause, infoWindow.getOrderByClause());		
 	}
 
-	private ColumnInfo createLookupColumnInfo(TableInfo[] tableInfos,
+	protected ColumnInfo createLookupColumnInfo(TableInfo[] tableInfos,
 			GridField gridField, MInfoColumn infoColumn) {
 		String columnName = gridField.getColumnName();
 		String validationCode = "";
@@ -801,7 +801,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return sql;
 	}
 
-	private MInfoColumn findInfoColumn(GridField gridField) {
+	protected MInfoColumn findInfoColumn(GridField gridField) {
 		for(int i = 0; i < gridFields.size(); i++) {
 			if (gridFields.get(i) == gridField) {
 				return infoColumns[i];
@@ -1138,7 +1138,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		dynamicDisplay(null);
 	}
 
-	private void evalDisplayLogic() {
+	protected void evalDisplayLogic() {
 		for(WEditor editor : editors) {
         	if (editor.getGridField() != null && !editor.getGridField().isDisplayed(true)) {        		
         		editor.getComponent().setVisible(false);
@@ -1256,7 +1256,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         panel.appendChild(fieldEditor);
 	}
 
-	private void createAndCheckbox() {
+	protected void createAndCheckbox() {
 		checkAND = new Checkbox();
 		checkAND.setLabel(Msg.getMsg(Env.getCtx(), "SearchAND", true));
 		String tips = Msg.getMsg(Env.getCtx(), "SearchAND", false);
@@ -1502,7 +1502,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * 	Test Row Count
 	 *	@return true if display
 	 */
-	private boolean testCount(boolean promptError)
+	protected boolean testCount(boolean promptError)
 	{
 		long start = System.currentTimeMillis();
 		String dynWhere = getSQLWhere();
@@ -1640,7 +1640,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @author xolali IDEMPIERE-1045
 	 * refresh(Object obj, EmbedWinInfo relatedInfo)
 	 */
-	private void refresh(Object obj, EmbedWinInfo relatedInfo)
+	protected void refresh(Object obj, EmbedWinInfo relatedInfo)
 	{
 		StringBuilder sql = new StringBuilder();
 		sql.append(relatedInfo.getInfoSql()); // delete get sql method from MInfoWindow
@@ -1703,7 +1703,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @author xolali IDEMPIERE-1045
 	 * GridField getGridField(MInfoColumn infoColumn)
 	 */
-	private GridField getGridField(MInfoColumn infoColumn){
+	protected GridField getGridField(MInfoColumn infoColumn){
 		String columnName = infoColumn.getColumnName();
 		GridFieldVO vo = GridFieldVO.createParameter(infoContext, p_WindowNo, 0,
 				columnName, infoColumn.get_Translation("Name"), infoColumn.getAD_Reference_ID(),
@@ -1725,7 +1725,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return gridField;
 	}
 
-	private  ArrayList<Object> readData(ResultSet rs, ColumnInfo[] p_layout) throws SQLException {
+	protected  ArrayList<Object> readData(ResultSet rs, ColumnInfo[] p_layout) throws SQLException {
 
 		int colOffset = 1;  //  columns start with 1
 		ArrayList<Object> data = new ArrayList<Object>();

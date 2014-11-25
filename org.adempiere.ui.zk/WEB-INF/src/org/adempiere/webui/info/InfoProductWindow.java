@@ -53,32 +53,32 @@ public class InfoProductWindow extends InfoWindow {
 	 */
 	private static final long serialVersionUID = -1343685368452976048L;
 
-	private Tabbox tabbedPane;
-	private WListbox warehouseTbl;
-    private String m_sqlWarehouse;
-    private WListbox substituteTbl;
-    private String m_sqlSubstitute;
-    private WListbox relatedTbl;
-    private String m_sqlRelated;
+	protected Tabbox tabbedPane;
+	protected WListbox warehouseTbl;
+	protected String m_sqlWarehouse;
+	protected WListbox substituteTbl;
+	protected String m_sqlSubstitute;
+	protected WListbox relatedTbl;
+	protected String m_sqlRelated;
     //Available to Promise Tab
-	private WListbox m_tableAtp;
+	protected WListbox m_tableAtp;
 	
 	// Group atp by warehouse or non
-	private Checkbox chbShowDetailAtp;
+	protected Checkbox chbShowDetailAtp;
 
 	//IDEMPIERE-337
-    private WListbox productpriceTbl;
-    private String m_sqlProductprice;
+	protected WListbox productpriceTbl;
+	protected String m_sqlProductprice;
     
-    private Textbox fieldDescription;
+	protected Textbox fieldDescription;
     
     /** ASI							*/
-    protected int	m_M_AttributeSetInstance_ID;
+	protected int	m_M_AttributeSetInstance_ID;
 
-	private Borderlayout contentBorderLayout;
+	protected Borderlayout contentBorderLayout;
 	
 	/** Instance Button				*/
-	private Button	m_PAttributeButton;
+	protected Button	m_PAttributeButton;
 
 	protected int m_M_Locator_ID;
 	
@@ -369,7 +369,7 @@ public class InfoProductWindow extends InfoWindow {
 		});
 	}
 
-	private void onPAttributeClick() {
+	protected void onPAttributeClick() {
 		Integer productInteger = getSelectedRowKey();
 		if (productInteger == null) {
 			m_PAttributeButton.setEnabled(false);
@@ -397,7 +397,7 @@ public class InfoProductWindow extends InfoWindow {
 		});
 	}
 	
-	private String getSelectedWarehouseLabel() {
+	protected String getSelectedWarehouseLabel() {
 		for(WEditor editor : editors) {
 			if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_Warehouse_ID")) {
 				Number value = (Number) editor.getValue();
@@ -461,7 +461,7 @@ public class InfoProductWindow extends InfoWindow {
 	 * @param M_PriceList_ID price list
 	 * @return M_PriceList_Version_ID price list version
 	 */
-	private int findPLV (int M_PriceList_ID)
+	protected int findPLV (int M_PriceList_ID)
 	{
 		Timestamp priceDate = null;
 		//	Sales Order Date
@@ -518,7 +518,7 @@ public class InfoProductWindow extends InfoWindow {
 	 *
 	 * 	@param M_Warehouse_ID warehouse
 	 */
-	private void setWarehouse(int M_Warehouse_ID)
+	protected void setWarehouse(int M_Warehouse_ID)
 	{
 		for(WEditor editor : editors) {
 			if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_Warehouse_ID")) {
@@ -535,7 +535,7 @@ public class InfoProductWindow extends InfoWindow {
 	 *
 	 * @param M_PriceList_Version_ID price list
 	 */
-	private void setPriceListVersion(int M_PriceList_Version_ID)
+	protected void setPriceListVersion(int M_PriceList_Version_ID)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("M_PriceList_Version_ID=" + M_PriceList_Version_ID);
 		
@@ -555,7 +555,7 @@ public class InfoProductWindow extends InfoWindow {
 	/**
 	 * 	Refresh Query
 	 */
-	private void refresh(int M_Warehouse_ID, int M_PriceList_Version_ID)
+	protected void refresh(int M_Warehouse_ID, int M_PriceList_Version_ID)
 	{
 		int m_M_Product_ID = getSelectedRowKey();
 		String sql = m_sqlWarehouse;
@@ -641,7 +641,7 @@ public class InfoProductWindow extends InfoWindow {
 	 * @param m_M_Warehouse_ID
 	 * @param m_M_Product_ID 
 	 */
-	private void initAtpTab (int  m_M_Warehouse_ID, int m_M_Product_ID)
+	protected void initAtpTab (int  m_M_Warehouse_ID, int m_M_Product_ID)
 	{
 		//	Header
 		Vector<String> columnNames = new Vector<String>();
