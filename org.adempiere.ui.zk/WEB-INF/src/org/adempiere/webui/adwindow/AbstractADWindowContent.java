@@ -1622,8 +1622,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         
         toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !isNewRow);
         toolbar.enableReport(!isNewRow);
-        toolbar.enableExport(!adTabbox.getSelectedGridTab().isSortTab());
-        toolbar.enableFileImport(!changed && !adTabbox.getSelectedGridTab().isSortTab() && adTabbox.getSelectedGridTab().isInsertRecord());
+        toolbar.enableExport(!isNewRow && !adTabbox.getSelectedGridTab().isSortTab());
+        toolbar.enableFileImport(!isNewRow && !changed && !adTabbox.getSelectedGridTab().isSortTab() && adTabbox.getSelectedGridTab().isInsertRecord());
         
         toolbar.enableTabNavigation(breadCrumb.hasParentLink(), adTabbox.getSelectedDetailADTabpanel() != null);
         
