@@ -338,7 +338,7 @@ public final class EMail implements Serializable
 			m_msg.setHeader("Comments", "iDempiereMail");
 		//	m_msg.setDescription("Description");
 			//	SMTP specifics
-			m_msg.setAllow8bitMIME(true);
+			//m_msg.setAllow8bitMIME(true);
 			//	Send notification on Failure & Success - no way to set envid in Java yet
 		//	m_msg.setNotifyOptions (SMTPMessage.NOTIFY_FAILURE | SMTPMessage.NOTIFY_SUCCESS);
 			//	Bounce only header
