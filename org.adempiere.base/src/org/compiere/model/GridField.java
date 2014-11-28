@@ -180,13 +180,6 @@ public class GridField
 					log.log(Level.SEVERE, "(" + m_vo.ColumnName + ") - No LookupInfo");
 					return;
 				}
-				//	Prevent loading of CreatedBy/UpdatedBy
-				if (m_vo.displayType == DisplayType.Table
-					&& (m_vo.ColumnName.equals("CreatedBy") || m_vo.ColumnName.equals("UpdatedBy")) )
-				{
-					m_vo.lookupInfo.IsCreadedUpdatedBy = true;
-					m_vo.lookupInfo.DisplayType = DisplayType.Search;
-				}
 				//
 				loadLookupNoValidate();
 			}
@@ -219,6 +212,14 @@ public class GridField
 		}
 		if (m_vo.lookupInfo == null) {
 			return;
+		}
+		//	Prevent loading of CreatedBy/UpdatedBy
+		if (m_vo.displayType == DisplayType.Table
+			&& (m_vo.ColumnName.equals("CreatedBy") || m_vo.ColumnName.equals("UpdatedBy")) )
+		{
+			m_vo.lookupInfo.IsCreadedUpdatedBy = true;
+			m_vo.lookupInfo.DisplayType = DisplayType.Search;
+			m_vo.displayType = DisplayType.Search;
 		}
 		m_vo.lookupInfo.IsKey = isKey();
 		loadLookupFromFactory();
