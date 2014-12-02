@@ -599,8 +599,9 @@ public class GridTabCSVImporter implements IGridTabImporter
 			}
 		} catch (IOException e) {
 	      throw new AdempiereException(e);
-		}
-		finally {
+		} catch (Exception ex) {
+			throw new AdempiereException(ex);
+		} finally {
 			try {
 				if (mapReader != null)
 					mapReader.close();
@@ -1296,6 +1297,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 	}
 
 	//Copy from GridTable
+	@SuppressWarnings("unchecked")
 	private boolean	isValueChanged(Object oldValue, Object value)
 	{
 		if ( isNotNullAndIsEmpty(oldValue) ) {
