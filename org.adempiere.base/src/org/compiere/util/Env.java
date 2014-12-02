@@ -1509,8 +1509,9 @@ public final class Env
 										if (column.isSecure()) {
 											outStr.append("********");
 										} else {
-											outStr.append(DB.getSQLValueString(trxName,
-													"SELECT " + columnName + " FROM " + tableName + " WHERE " + tableName + "_ID = ?", (Integer)v));
+											String value = DB.getSQLValueString(trxName,"SELECT " + columnName + " FROM " + tableName + " WHERE " + tableName + "_ID = ?", (Integer)v);
+											if (value != null)
+												outStr.append(value);
 										}
 									}
 								}

@@ -17,7 +17,6 @@
 
 package org.adempiere.webui.component;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -60,11 +59,6 @@ public class AutoComplete extends Combobox
 	public void setDict(String[] vals)
 	{
 		comboItems = vals;
-		
-		if (comboItems != null)
-		{
-			Arrays.sort(comboItems);
-		}
 	}
 	
 	/**

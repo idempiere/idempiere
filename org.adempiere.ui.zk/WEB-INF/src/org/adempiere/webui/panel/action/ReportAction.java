@@ -400,10 +400,16 @@ public class ReportAction implements EventListener<Event>
 				re.createXML(sw);
 				data = sw.getBuffer().toString().getBytes();
 			}
-			else if (ext.equals("csv") || ext.equals("ssv"))
+			else if (ext.equals("csv"))
 			{
 				StringWriter sw = new StringWriter();							
 				re.createCSV(sw, ',', re.getPrintFormat().getLanguage());
+				data = sw.getBuffer().toString().getBytes();
+			}
+			else if (ext.equals("ssv"))
+			{
+				StringWriter sw = new StringWriter();							
+				re.createCSV(sw, ';', re.getPrintFormat().getLanguage());
 				data = sw.getBuffer().toString().getBytes();
 			}
 			else if (ext.equals("txt"))

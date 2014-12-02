@@ -476,7 +476,7 @@ public final class DisplayType
 		//
 		if ( pattern != null && pattern.length() > 0)
 		{
-			SimpleDateFormat format = (SimpleDateFormat)DateFormat.getInstance();
+			SimpleDateFormat format = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, language.getLocale());
 			try {
 			format.applyPattern(pattern);
 			return format;

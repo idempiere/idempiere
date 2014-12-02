@@ -14,6 +14,7 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
+import net.sf.jasperreports.engine.export.JRCsvExporterParameter;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
@@ -57,7 +58,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8378226782387071338L;
+	private static final long serialVersionUID = -1250003381099609830L;
 
 	private JasperPrint jasperPrint;
 	private Listbox previewType = new Listbox();
@@ -103,6 +104,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			previewType.appendItem("HTML", "HTML");
 			previewType.appendItem("Excel", "XLS");
 			previewType.appendItem("CSV", "CSV");	
+			previewType.appendItem("SSV", "SSV");
 			if ("PDF".equals(defaultType)) {
 				previewType.setSelectedIndex(0);
 			} else if ("HTML".equals(defaultType)) {
@@ -111,6 +113,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				previewType.setSelectedIndex(2);
 			} else if ("CSV".equals(defaultType)) {
 				previewType.setSelectedIndex(3);
+			} else if ("SSV".equals(defaultType)) {
+				previewType.setSelectedIndex(4);
 			} else {
 				previewType.setSelectedIndex(0);
 				log.info("Format not Valid: "+defaultType);
@@ -125,6 +129,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			} else if ("XLS".equals(defaultType)) {
 				previewType.setSelectedIndex(0); // default to PDF if cannot export
 			} else if ("CSV".equals(defaultType)) {
+				previewType.setSelectedIndex(0); // default to PDF if cannot export
+			} else if ("SSV".equals(defaultType)) {
 				previewType.setSelectedIndex(0); // default to PDF if cannot export
 			} else {
 				previewType.setSelectedIndex(0);
@@ -292,6 +298,23 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				exporter.exportReport();
 				
 				media = new AMedia(m_title, "csv", "application/csv", file, true);	
+
+			}else if ("SSV".equals(reportType)) {
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = makePrefix(jasperPrint.getName());
+				if (log.isLoggable(Level.FINE))
+				{
+					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				}
+				File file = File.createTempFile(prefix, ".ssv", new File(path));
+				FileOutputStream fos = new FileOutputStream(file);
+				JRCsvExporter exporter= new JRCsvExporter();
+				exporter.setParameter(JRCsvExporterParameter.FIELD_DELIMITER, ";");
+				exporter.setParameter(JRExporterParameter.JASPER_PRINT,  jasperPrint);
+				exporter.setParameter(JRExporterParameter.OUTPUT_STREAM,  fos);
+				exporter.exportReport();
+				
+				media = new AMedia(m_title, "ssv", "application/ssv", file, true);	
 			}
 		} finally {
 			Thread.currentThread().setContextClassLoader(cl);

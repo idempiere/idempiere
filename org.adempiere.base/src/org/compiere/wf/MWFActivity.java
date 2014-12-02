@@ -1011,6 +1011,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			if (!m_po.save())
 			{
 				success = false;
+				m_docStatus = null;
 				processMsg = "SaveError";
 			}
 			if (!success)

@@ -765,7 +765,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 				return new StringBuilder(Msg.getMsg(Env.getCtx(), "FieldNotDisplayed",new Object[] {header.get(i)}));
 			
 			MColumn column = MColumn.get(Env.getCtx(), field.getAD_Column_ID());		
-			if((field.isMandatory(true) || column.isMandatory()) && value == null && field.getDefault()==null){ 
+			if((field.isMandatory(false) || column.isMandatory()) && value == null && field.getDefault()==null){ 
 				mandatoryColumns.append(" / ");
 				mandatoryColumns.append(header.get(i));
 			} 

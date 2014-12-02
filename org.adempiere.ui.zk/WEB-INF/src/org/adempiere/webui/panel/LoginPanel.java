@@ -664,6 +664,9 @@ public class LoginPanel extends Window implements EventListener<Event>
 	/** get default languages from the browser */
 	private List<String> browserLanguages(String header) {
 		List<String> arrstr = new ArrayList<String>();
+		if (header == null)
+			return arrstr;
+
 		for (String str : header.split(",")){
 			String[] arr = str.trim().replace("-", "_").split(";");
 
