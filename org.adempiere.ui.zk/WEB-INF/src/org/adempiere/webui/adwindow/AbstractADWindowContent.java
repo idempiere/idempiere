@@ -1279,7 +1279,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}
 
 		toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !adTabbox.getSelectedGridTab().isNew());
-		toolbar.enableCSVImport(adTabbox.getSelectedGridTab().hasTemplate());
 
         //Deepak-Enabling customize button IDEMPIERE-364
         if(!(adTabbox.getSelectedTabpanel() instanceof ADSortTab))
@@ -1623,7 +1622,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !isNewRow);
         toolbar.enableReport(!isNewRow);
         toolbar.enableExport(!isNewRow && !adTabbox.getSelectedGridTab().isSortTab());
-        toolbar.enableFileImport(!isNewRow && !changed && !adTabbox.getSelectedGridTab().isSortTab() && adTabbox.getSelectedGridTab().isInsertRecord());
+        toolbar.enableFileImport(toolbar.isNewEnabled());
+		toolbar.enableCSVImport(toolbar.isNewEnabled() && adTabbox.getSelectedGridTab().hasTemplate());
         
         toolbar.enableTabNavigation(breadCrumb.hasParentLink(), adTabbox.getSelectedDetailADTabpanel() != null);
         
