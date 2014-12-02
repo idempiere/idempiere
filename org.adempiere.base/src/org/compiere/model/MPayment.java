@@ -660,8 +660,6 @@ public class MPayment extends X_C_Payment
              || is_ValueChanged(COLUMNNAME_C_Charge_ID)
              || is_ValueChanged(COLUMNNAME_C_Currency_ID)
              || is_ValueChanged(COLUMNNAME_C_DocType_ID)
-             || is_ValueChanged(COLUMNNAME_C_Invoice_ID)
-             || is_ValueChanged(COLUMNNAME_C_Order_ID)
              || is_ValueChanged(COLUMNNAME_DateAcct)
              || is_ValueChanged(COLUMNNAME_DateTrx)
              || is_ValueChanged(COLUMNNAME_DiscountAmt)

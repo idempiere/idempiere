@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -43,11 +45,13 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
+import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkforge.keylistener.Keylistener;
 import org.zkoss.web.Attributes;
 import org.zkoss.web.servlet.Servlets;
@@ -77,7 +81,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5875869799688466929L;
+	private static final long serialVersionUID = 2030098494203345181L;
 
 	private static final String SAVED_CONTEXT = "saved.context";
 	
@@ -107,12 +111,16 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	
 	private static boolean eventThreadEnabled = false;
 
+	private ConcurrentMap<String, String[]> m_URLParameters;
+
     public AdempiereWebUI()
     {
     	this.addEventListener(Events.ON_CLIENT_INFO, this);
     	this.setVisible(false);
 
     	userPreference = new UserPreference();
+    	// preserve the original URL parameters as is destroyed later on loging
+    	m_URLParameters = new ConcurrentHashMap<String, String[]>(Executions.getCurrent().getParameterMap());
     }
 
     public void onCreate()
@@ -275,9 +283,54 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		}
 		Env.setContext(ctx, "#LocalHttpAddr", localHttpAddr.toString());		
 		Clients.response(new AuScript("zAu.cmd0.clearBusy()"));
+
+		processParameters();
     }
-    
-    /**
+
+    private void processParameters() {
+    	String action = getPrmString("Action");
+    	if ("Zoom".equalsIgnoreCase(action)) {
+    		int tableID = getPrmInt("AD_Table_ID");
+    		if (tableID == 0) {
+    			String tableName = getPrmString("TableName");
+    			if (!Util.isEmpty(tableName)) {
+    				MTable table = MTable.get(Env.getCtx(), tableName);
+    				if (table != null) {
+    					tableID = table.getAD_Table_ID();
+    				}
+    			}
+    		}
+    		int recordID = getPrmInt("Record_ID");
+    		if (tableID > 0) {
+    			AEnv.zoom(tableID, recordID);
+    		}
+    	}
+    	m_URLParameters = null;
+    }
+
+    private String getPrmString(String prm) {
+    	String retValue = "";
+    	if (m_URLParameters != null) {
+        	String[] strs = m_URLParameters.get(prm);
+        	if (strs != null && strs.length == 1 && strs[0] != null)
+        		retValue = strs[0];
+    	}
+    	return retValue;
+    }
+
+    private int getPrmInt(String prm) {
+    	int retValue = 0;
+    	String str = getPrmString(prm);
+		try {
+    		if (!Util.isEmpty(str))
+    			retValue = Integer.parseInt(str);
+		} catch (NumberFormatException e) {
+			// ignore
+		}
+    	return retValue;
+    }
+
+	/**
      * @return key listener
      */
     @Override

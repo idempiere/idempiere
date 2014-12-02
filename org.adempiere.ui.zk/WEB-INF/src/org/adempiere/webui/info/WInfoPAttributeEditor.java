@@ -123,7 +123,7 @@ public class WInfoPAttributeEditor extends WEditor implements IWhereClauseEditor
 	 *		M_AttributeSet pa
 	 *	</code>
 	 */
-	private void cmd_InfoPAttribute()
+	protected void cmd_InfoPAttribute()
 	{
 		int attributeSetId = Env.getContextAsInt(ctx, windowNo, Env.TAB_INFO, "M_AttributeSet_ID");
 		final InfoPAttributePanel ia = new InfoPAttributePanel(attributeSetId);
