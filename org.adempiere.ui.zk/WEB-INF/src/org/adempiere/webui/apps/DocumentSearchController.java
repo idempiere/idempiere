@@ -144,7 +144,7 @@ public class DocumentSearchController implements EventListener<Event>{
 				} else {
 					sql.append("WHERE UPPER(").append(column.getColumnName()).append(") LIKE UPPER(?)");
 				}
-				sql.append(" AND AD_Client_ID=@AD_Client_ID@  ");
+				sql.append(" AND AD_Client_ID=@#AD_Client_ID@  ");
 
 				// search for a Integer
 				if (msd.getDataType().equals(MSearchDefinition.DATATYPE_INTEGER)) {
