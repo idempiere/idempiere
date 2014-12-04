@@ -42,7 +42,7 @@ public class MSysConfig extends X_AD_SysConfig
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 8965976274227777648L;
+	private static final long serialVersionUID = -4290840203977716310L;
 
     public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -95,6 +95,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String MAIL_SEND_BCC_TO_FROM = "MAIL_SEND_BCC_TO_FROM";
     public static final String MAIL_SEND_CREDENTIALS = "MAIL_SEND_CREDENTIALS";
     public static final String MAX_ACTIVITIES_IN_LIST = "MAX_ACTIVITIES_IN_LIST";
+	public static final String MAX_RESULTS_PER_SEARCH = "MAX_RESULTS_PER_SEARCH";
     public static final String MENU_INFOUPDATER_SLEEP_MS = "MENU_INFOUPDATER_SLEEP_MS";
     public static final String MFG_ValidateCostsDifferenceOnCreate = "MFG_ValidateCostsDifferenceOnCreate";
     public static final String MFG_ValidateCostsOnCreate = "MFG_ValidateCostsOnCreate";

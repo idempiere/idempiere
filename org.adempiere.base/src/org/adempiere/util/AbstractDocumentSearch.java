@@ -171,9 +171,15 @@ public abstract class AbstractDocumentSearch {
 						}
 						// search for a String
 					} else if (msd.getDataType().equals(MSearchDefinition.DATATYPE_STRING)) {
-						pstmtSO.setString(1, searchString);
+						if (searchString.endsWith("%"))
+							pstmtSO.setString(1, searchString);
+						else
+							pstmtSO.setString(1, searchString+"%");
 						if (msd.getPO_Window_ID() != 0) {
-							pstmtPO.setString(1, searchString);
+							if (searchString.endsWith("%"))
+								pstmtPO.setString(1, searchString);
+							else
+								pstmtPO.setString(1, searchString+"%");
 						}
 					}
 					// SearchDefinition with a special query
@@ -191,7 +197,10 @@ public abstract class AbstractDocumentSearch {
 						if (msd.getDataType().equals(MSearchDefinition.DATATYPE_INTEGER)) {
 							pstmtSO.setInt(i, Integer.valueOf(searchString.replaceAll("\\D", "")));
 						} else if (msd.getDataType().equals(MSearchDefinition.DATATYPE_STRING)) {
-							pstmtSO.setString(i, searchString + "%");
+							if (searchString.endsWith("%"))
+								pstmtSO.setString(i, searchString);
+							else
+								pstmtSO.setString(i, searchString+"%");
 						}
 					}
 				}

@@ -30,6 +30,7 @@ import org.compiere.model.MLookupInfo;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSearchDefinition;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MWindow;
 import org.compiere.model.Query;
@@ -53,6 +54,7 @@ public class DocumentSearchController implements EventListener<Event>{
 
 	private static final String SEARCH_RESULT = "search.result";
 	private static final String ON_SEARCH_DOCUMENTS = "onSearchDocuments";
+	private int MAX_RESULTS_PER_SEARCH = 3;
 	private Vlayout layout;
 	private ArrayList<SearchResult> list;
 	private int selected = -1;
@@ -61,6 +63,7 @@ public class DocumentSearchController implements EventListener<Event>{
 	 * 
 	 */
 	public DocumentSearchController() {
+		MAX_RESULTS_PER_SEARCH = MSysConfig.getIntValue(MSysConfig.MAX_RESULTS_PER_SEARCH, 3, Env.getAD_Client_ID(Env.getCtx()));
 	}
 
 	public void create(Component parent) {
@@ -119,7 +122,7 @@ public class DocumentSearchController implements EventListener<Event>{
 		final MRole role = MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()), true);
 				
 		selected = -1;
-		Query query = new Query(Env.getCtx(), I_AD_SearchDefinition.Table_Name, "", null);
+		Query query = new Query(Env.getCtx(), I_AD_SearchDefinition.Table_Name, "TransactionCode IS NULL", null);
 		List<MSearchDefinition> definitions = query.setOnlyActiveRecords(true).list();		
 		for(MSearchDefinition msd : definitions) {
 			MTable table = new MTable(Env.getCtx(), msd.getAD_Table_ID(), null);
@@ -216,7 +219,7 @@ public class DocumentSearchController implements EventListener<Event>{
 			pstmt.setQueryTimeout(1);
 			rs = pstmt.executeQuery();
 			int count = 0;
-			while (rs.next() && count < 3) {
+			while (rs.next() && count < MAX_RESULTS_PER_SEARCH) {
 				count++;
 				int id = rs.getInt(1);
 				SearchResult result = new SearchResult();
