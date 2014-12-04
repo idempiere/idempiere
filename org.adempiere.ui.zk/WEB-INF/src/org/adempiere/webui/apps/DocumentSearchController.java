@@ -54,7 +54,7 @@ public class DocumentSearchController implements EventListener<Event>{
 
 	private static final String SEARCH_RESULT = "search.result";
 	private static final String ON_SEARCH_DOCUMENTS = "onSearchDocuments";
-	private int MAX_RESULTS_PER_SEARCH = 3;
+	private int MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER = 3;
 	private Vlayout layout;
 	private ArrayList<SearchResult> list;
 	private int selected = -1;
@@ -63,7 +63,7 @@ public class DocumentSearchController implements EventListener<Event>{
 	 * 
 	 */
 	public DocumentSearchController() {
-		MAX_RESULTS_PER_SEARCH = MSysConfig.getIntValue(MSysConfig.MAX_RESULTS_PER_SEARCH, 3, Env.getAD_Client_ID(Env.getCtx()));
+		MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER = MSysConfig.getIntValue(MSysConfig.MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER, 3, Env.getAD_Client_ID(Env.getCtx()));
 	}
 
 	public void create(Component parent) {
@@ -219,7 +219,7 @@ public class DocumentSearchController implements EventListener<Event>{
 			pstmt.setQueryTimeout(1);
 			rs = pstmt.executeQuery();
 			int count = 0;
-			while (rs.next() && count < MAX_RESULTS_PER_SEARCH) {
+			while (rs.next() && count < MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER) {
 				count++;
 				int id = rs.getInt(1);
 				SearchResult result = new SearchResult();
