@@ -198,6 +198,8 @@ public class POInfo implements Serializable
 				//
 				m_AccessLevel = rs.getString(18);
 				String ColumnSQL = rs.getString(19);
+				if (ColumnSQL != null && ColumnSQL.contains("@"))
+					ColumnSQL = Env.parseContext(Env.getCtx(), -1, ColumnSQL, false, true);
 				boolean IsEncrypted = "Y".equals(rs.getString(20));
 				boolean IsAllowLogging = "Y".equals(rs.getString(21));
 				boolean IsAllowCopy = "Y".equals(rs.getString(22));
