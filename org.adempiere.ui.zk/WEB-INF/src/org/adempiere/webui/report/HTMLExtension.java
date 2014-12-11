@@ -19,6 +19,7 @@ import org.apache.ecs.ConcreteElement;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.div;
 import org.apache.ecs.xhtml.img;
+import org.compiere.model.MSysConfig;
 import org.compiere.print.IHTMLExtension;
 import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataElement;
@@ -35,8 +36,16 @@ public class HTMLExtension implements IHTMLExtension {
 	private String contextPath;
 	private String classPrefix;
 	private String componentId;
+	private String reportTheme;
 
 	public HTMLExtension(String contextPath, String classPrefix, String componentId) {
+		
+		String theme = MSysConfig.getValue( "HTML_REPORT_THEME" , "" );
+		
+		if ( theme != null ) {
+			reportTheme = "/" + theme;
+		}
+		
 		this.contextPath = contextPath;
 		this.classPrefix = classPrefix;
 		this.componentId = componentId;
@@ -106,11 +115,11 @@ public class HTMLExtension implements IHTMLExtension {
 	}
 
 	public String getScriptURL() {
-		return contextPath + "/js/report.js";
+		return contextPath + reportTheme + "/js/report.js";
 	}
 
 	public String getStyleURL() {
-		return contextPath + "/css/report.css";
+		return contextPath + reportTheme + "/css/report.css";
 	}
 
 }
