@@ -72,7 +72,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5540268492066600133L;
+	private static final long serialVersionUID = -9183846974546235806L;
 
 	public static final String BTNPREFIX = "Btn";
 
@@ -476,6 +476,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     	return !btnDelete.isDisabled();
     }
     
+	public boolean isNewEnabled() {
+    	return !btnNew.isDisabled();
+	}
+
     public void enableIgnore(boolean enabled)
     {
         this.btnIgnore.setDisabled(!enabled);

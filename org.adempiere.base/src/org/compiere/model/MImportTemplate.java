@@ -20,6 +20,7 @@ import java.util.Properties;
 
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -33,7 +34,7 @@ public class MImportTemplate extends X_AD_ImportTemplate
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3316290883489953101L;
+	private static final long serialVersionUID = -1207697938690504067L;
 
 	/**	Logger			*/
 	@SuppressWarnings("unused")
@@ -94,6 +95,23 @@ public class MImportTemplate extends X_AD_ImportTemplate
 			.list();
 		s_cacheRoleTab.put(key, retValue);
 		return retValue;
+	}
+
+	public boolean isAllowed(String importMode, int roleID) {
+		StringBuilder sql= new StringBuilder(
+				"SELECT COUNT(*) FROM AD_ImportTemplateAccess WHERE IsActive='Y' AND AD_ImportTemplate_ID=? AND AD_Role_ID=? AND IsAllow");
+		if ("I".equals(importMode))
+			sql.append("Insert");
+		else if ("U".equals(importMode))
+			sql.append("Update");
+		else if ("M".equals(importMode))
+			sql.append("Merge");
+		else
+			return false;
+		sql.append("='Y'");
+
+		int cnt = DB.getSQLValueEx(get_TrxName(), sql.toString(), getAD_ImportTemplate_ID(), roleID);
+		return cnt > 0;
 	}
 
 }	//	MImportTemplate

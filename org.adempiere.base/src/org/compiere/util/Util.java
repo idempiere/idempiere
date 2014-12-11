@@ -22,12 +22,14 @@ import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
+import java.text.Normalizer;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -237,7 +239,19 @@ public class Util
 		else
 			return str.length() == 0;
 	}	//	isEmpty
-	
+
+	/**
+	 * Remove accents from string
+	 * @param str string
+	 * @return Unaccented String
+	 */
+	public static String deleteAccents(String text) {
+	    String nfdNormalizedString = Normalizer.normalize(text, Normalizer.Form.NFD); 
+	    Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+	    text = pattern.matcher(nfdNormalizedString).replaceAll("");
+		return text;
+	}
+
 	/**************************************************************************
 	 * Find index of search character in str.
 	 * This ignores content in () and 'texts'

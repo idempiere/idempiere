@@ -299,6 +299,8 @@ public class DataEngine
 				int AD_Column_ID = rs.getInt(1);
 				String ColumnName = rs.getString(2);
 				String ColumnSQL = rs.getString(24);
+				if (ColumnSQL != null && ColumnSQL.contains("@"))
+					ColumnSQL = Env.parseContext(Env.getCtx(), -1, ColumnSQL, false, true);
 				if (ColumnSQL == null)
 					ColumnSQL = "";
 				int AD_Reference_ID = rs.getInt(3);

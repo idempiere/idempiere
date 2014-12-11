@@ -216,9 +216,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			return true;
 		}
 		
-		MProcess process = new MProcess(m_ctx, m_AD_Process_ID, null);
-		boolean isReport = (process.isReport() || process.getAD_ReportView_ID() > 0);
-		if (isReport && MSysConfig.getBooleanValue(MSysConfig.BACKGROUND_JOB_ALLOWED, false))
+		if (MSysConfig.getBooleanValue(MSysConfig.BACKGROUND_JOB_ALLOWED, false))
 		{
 			Grid grid = GridFactory.newGridLayout();
 			centerPanel.appendChild(grid);

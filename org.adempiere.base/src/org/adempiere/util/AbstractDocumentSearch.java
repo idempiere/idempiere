@@ -155,6 +155,7 @@ public abstract class AbstractDocumentSearch {
 					} else {
 						sqlSO.append("WHERE UPPER(").append(column.getColumnName()).append(") LIKE UPPER(?)");
 					}
+					sqlSO.append(Env.parseContext(Env.getCtx(), -1, " AND AD_Client_ID=@#AD_Client_ID@", false, true));
 
 					if (msd.getPO_Window_ID() != 0) {
 						sqlPO = new StringBuilder(sqlSO.toString()).append(" AND IsSOTrx='N'");
@@ -170,14 +171,20 @@ public abstract class AbstractDocumentSearch {
 						}
 						// search for a String
 					} else if (msd.getDataType().equals(MSearchDefinition.DATATYPE_STRING)) {
-						pstmtSO.setString(1, searchString);
+						if (searchString.endsWith("%"))
+							pstmtSO.setString(1, searchString);
+						else
+							pstmtSO.setString(1, searchString+"%");
 						if (msd.getPO_Window_ID() != 0) {
-							pstmtPO.setString(1, searchString);
+							if (searchString.endsWith("%"))
+								pstmtPO.setString(1, searchString);
+							else
+								pstmtPO.setString(1, searchString+"%");
 						}
 					}
 					// SearchDefinition with a special query
 				} else if (msd.getSearchType().equals(MSearchDefinition.SEARCHTYPE_QUERY)) {
-					sqlSO = new StringBuilder().append(msd.getQuery());
+					sqlSO = new StringBuilder().append(Env.parseContext(Env.getCtx(), -1, msd.getQuery(), false, true));
 					pstmtSO = DB.prepareStatement(sqlSO.toString(), null);
 					// count '?' in statement
 					int count = 1;
@@ -190,7 +197,10 @@ public abstract class AbstractDocumentSearch {
 						if (msd.getDataType().equals(MSearchDefinition.DATATYPE_INTEGER)) {
 							pstmtSO.setInt(i, Integer.valueOf(searchString.replaceAll("\\D", "")));
 						} else if (msd.getDataType().equals(MSearchDefinition.DATATYPE_STRING)) {
-							pstmtSO.setString(i, searchString);
+							if (searchString.endsWith("%"))
+								pstmtSO.setString(i, searchString);
+							else
+								pstmtSO.setString(i, searchString+"%");
 						}
 					}
 				}

@@ -2405,6 +2405,10 @@ public class MOrder extends X_C_Order implements DocAction
 			so.setLink_Order_ID(0);
 			so.saveEx();
 		}
+
+		if (!createReversals())
+			return false;
+
 		MOrderLine[] lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);
 		for (int i = 0; i < lines.length; i++)
 		{
@@ -2447,9 +2451,6 @@ public class MOrder extends X_C_Order implements DocAction
 		
 		// UnLink All Requisitions
 		MRequisitionLine.unlinkC_Order_ID(getCtx(), get_ID(), get_TrxName());
-		
-		if (!createReversals())
-			return false;
 		
 		/* globalqss - 2317928 - Reactivating/Voiding order must reset posted */
 		MFactAcct.deleteEx(MOrder.Table_ID, getC_Order_ID(), get_TrxName());
@@ -2551,7 +2552,7 @@ public class MOrder extends X_C_Order implements DocAction
 	
 	/**
 	 * 	Close Document.
-	 * 	Cancel not delivered Qunatities
+	 * 	Cancel not delivered Quantities
 	 * 	@return true if success 
 	 */
 	public boolean closeIt()

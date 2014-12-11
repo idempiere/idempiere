@@ -417,6 +417,8 @@ public class MLookupFactory
 				ZoomWindowPO = rs.getInt(9);
 				//AD_Table_ID = rs.getInt(10);
 				displayColumnSQL = rs.getString(11);
+				if (displayColumnSQL != null && displayColumnSQL.contains("@"))
+					displayColumnSQL = Env.parseContext(Env.getCtx(), -1, displayColumnSQL, false, true);
 				overrideZoomWindow = rs.getInt(12);
 				infoWindowId = rs.getInt(13);
 				loaded = true;

@@ -1114,7 +1114,10 @@ class Restriction  implements Serializable
 			MTable table = MTable.get(Env.getCtx(), tableName);
 			if (table != null) {
 				for (MColumn col : table.getColumns(false)) {
-					if (ColumnName.equals(col.getColumnSQL())) {
+					String colSQL = col.getColumnSQL();
+					if (colSQL != null && colSQL.contains("@"))
+						colSQL = Env.parseContext(Env.getCtx(), -1, colSQL, false, true);
+					if (ColumnName.equals(colSQL)) {
 						virtualColumn = true;
 						break;
 					}
