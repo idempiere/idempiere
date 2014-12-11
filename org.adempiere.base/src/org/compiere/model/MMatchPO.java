@@ -1162,7 +1162,7 @@ public class MMatchPO extends X_M_MatchPO
 
 	public boolean reverse(Timestamp reversalDate)  
 	{
-		if (this.isPosted() && this.getReversal_ID() == 0)
+		if (this.isProcessed() && this.getReversal_ID() == 0)
 		{		
 			MMatchPO reversal = new MMatchPO (getCtx(), 0, get_TrxName());
 			reversal.setC_InvoiceLine_ID(getC_InvoiceLine_ID()); 

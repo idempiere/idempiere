@@ -200,10 +200,14 @@ public class GridFieldVO implements Serializable
 					vo.AD_Reference_Value_ID = rs.getInt(i);
 				else if (columnName.equalsIgnoreCase("ValidationCode"))
 					vo.ValidationCode = rs.getString(i);
-				else if (columnName.equalsIgnoreCase("ColumnSQL"))
+				else if (columnName.equalsIgnoreCase("ColumnSQL")) {
 					vo.ColumnSQL = rs.getString(i);
+					if (vo.ColumnSQL != null && vo.ColumnSQL.contains("@")) {
+						// NOTE: cannot use window context because this is set globally on the query, not per record
+						vo.ColumnSQL = Env.parseContext(ctx, -1, vo.ColumnSQL, false, true);
+					}
 				//Feature Request FR [ 1757088 ]
-				else if (columnName.equalsIgnoreCase("Included_Tab_ID"))
+				} else if (columnName.equalsIgnoreCase("Included_Tab_ID"))
 					vo.Included_Tab_ID = rs.getInt(i);
 				// Collapse Default State
 				else if (columnName.equalsIgnoreCase("IsCollapsedByDefault"))

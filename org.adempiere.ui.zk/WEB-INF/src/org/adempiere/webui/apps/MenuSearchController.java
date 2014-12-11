@@ -313,7 +313,7 @@ public class MenuSearchController implements EventListener<Event>{
     }
 	
 	public void search(String value) {
-		listbox.setModel((ListModel)null);
+		listbox.setModel((ListModel<?>)null);
 		Events.echoEvent(ON_SEARCH_ECHO, layout, value);
 	}
 	
@@ -349,20 +349,20 @@ public class MenuSearchController implements EventListener<Event>{
 		private String compare;
 
 		private MenuListComparator(String compare) {
-			this.compare = compare;
+			this.compare = Util.deleteAccents(compare.toLowerCase().trim());
 		}
 		
 		@Override
 		public int compare(MenuItem o1, MenuItem o2) {			
-			compare = compare.toLowerCase().trim();
+			String label2 = Util.deleteAccents(o2.getLabel().toLowerCase());
 			boolean match = false;
 			if (compare.length() < 3)
 			{
-				match = o2.getLabel().toLowerCase().startsWith(compare);
+				match = label2.startsWith(compare);
 			}
 			else
 			{
-				match = o2.getLabel().toLowerCase().contains(compare);
+				match = label2.contains(compare);
 			} 
 			return match ? 0 : -1;
 		}

@@ -14,6 +14,8 @@
  *****************************************************************************/
 package org.adempiere.webui.panel.action;
 
+import static org.compiere.model.SystemIDs.REFERENCE_IMPORT_MODE;
+
 import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -44,13 +46,18 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.util.ReaderInputStream;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
+import org.compiere.model.MLookup;
+import org.compiere.model.MLookupFactory;
+import org.compiere.model.MLookupInfo;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
@@ -80,7 +87,7 @@ public class FileImportAction implements EventListener<Event>
 	private Listbox cboType = new Listbox();
 	private Button bFile = new Button();
 	private Listbox fCharset = new Listbox();
-	private Listbox fImportMode = new Listbox();
+	private WTableDirEditor fImportMode;
 	private InputStream m_file_istream = null;
 	
 	/**
@@ -115,10 +122,9 @@ public class FileImportAction implements EventListener<Event>
 		}
 		fCharset.addEventListener(Events.ON_SELECT, this);
 
-		fImportMode.appendItem("Insert","I");
-		fImportMode.appendItem("Update","U");
-		fImportMode.appendItem("Merge","M");
-		fImportMode.setSelectedIndex(0);
+		MLookupInfo lookupInfo = MLookupFactory.getLookup_List(Env.getLanguage(Env.getCtx()), REFERENCE_IMPORT_MODE);
+		MLookup lookup = new MLookup(lookupInfo, 0);
+		fImportMode = new WTableDirEditor("ImportMode",true,false,true,lookup);
 		
 		importerMap = new HashMap<String, IGridTabImporter>();
 		extensionMap = new HashMap<String, String>();
@@ -195,11 +201,7 @@ public class FileImportAction implements EventListener<Event>
 			row = new Row();
 			rows.appendChild(row);
 			row.appendChild(new Label(Msg.getMsg(Env.getCtx(), "import.mode", true)));
-			fImportMode.setMold("select");
-			fImportMode.setRows(0);
-			fImportMode.setTooltiptext(Msg.getMsg(Env.getCtx(), "import.mode", false));
-			row.appendChild(fImportMode);
-			fImportMode.setHflex("1");
+			row.appendChild(fImportMode.getComponent());
 			
 			row = new Row();
 			rows.appendChild(row);
@@ -242,7 +244,7 @@ public class FileImportAction implements EventListener<Event>
 			Executions.getCurrent().getDesktop().getWebApp().getConfiguration().setUploadCharset(charset.name());
 			bFile.setLabel(Msg.getMsg(Env.getCtx(), "FileImportFile"));
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
-			if (m_file_istream == null || fCharset.getSelectedItem() == null)
+			if (m_file_istream == null || fCharset.getSelectedItem() == null || Util.isEmpty((String)fImportMode.getValue()))
 				return;
 			importFile();
 		} else if (event.getName().equals(DialogEvents.ON_WINDOW_CLOSE)) {
@@ -321,11 +323,7 @@ public class FileImportAction implements EventListener<Event>
 				return;
 			charset = (Charset)listitem.getValue();
 			
-			ListItem importItem = fImportMode.getSelectedItem();
-			if (importItem == null)
-				return;
-			
-			String iMode = (String)importItem.getValue();
+			String iMode = (String) fImportMode.getValue();
 			File outFile = importer.fileImport(panel.getActiveGridTab(), childs, m_file_istream, charset,iMode);
 			winImportFile.onClose();
 			winImportFile = null;

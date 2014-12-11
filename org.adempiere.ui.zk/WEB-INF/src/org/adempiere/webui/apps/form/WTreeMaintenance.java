@@ -16,10 +16,8 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
 
 import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
@@ -43,6 +41,7 @@ import org.compiere.model.MTreeNode;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -262,15 +261,8 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 
 	private void searchElement() {
 		String filter = searchBox.getText() == null ? "" : searchBox.getText();
-		filter = deleteAccents(filter.trim().toUpperCase());
+		filter = Util.deleteAccents(filter.trim().toUpperCase());
 		action_loadTree(filter);
-	}
-
-	private String deleteAccents(String text) {
-	    String nfdNormalizedString = Normalizer.normalize(text, Normalizer.Form.NFD); 
-	    Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-	    text = pattern.matcher(nfdNormalizedString).replaceAll("");
-		return text;
 	}
 
 	private void action_loadTree() {
@@ -304,9 +296,13 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		SimpleListModel model = new SimpleListModel();
 		ArrayList<ListItem> items = getTreeItemData();
 		for (ListItem item : items) {
-			String valueItem = item.toString() == null ? "" : deleteAccents(item.toString().toUpperCase());
-			if (filter == null || filter.length() == 0 || valueItem.contains(filter)) {
+			if (Util.isEmpty(filter)) {
 				model.addElement(item);
+			} else {
+				String valueItem = item.toString() == null ? "" : Util.deleteAccents(item.toString().toUpperCase());
+				if (valueItem.contains(filter)) {
+					model.addElement(item);
+				}
 			}
 		}
 		

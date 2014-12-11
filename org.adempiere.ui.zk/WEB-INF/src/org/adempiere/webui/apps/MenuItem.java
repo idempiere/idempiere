@@ -84,4 +84,9 @@ public class MenuItem {
 	public void setType(String type) {
 		this.type = type;
 	}
+
+	@Override
+	public String toString() {
+		return label != null ? label : super.toString();
+	}
 }
