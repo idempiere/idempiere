@@ -12,6 +12,9 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Tab;
@@ -21,6 +24,8 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.compiere.util.Env;
+import org.compiere.util.Language;
 import org.zkforge.ckez.CKeditor;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.event.Event;
@@ -161,6 +166,9 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		editor = new CKeditor();
 		editor.setCustomConfigurationsPath("/js/ckeditor/config.js");
 		editor.setToolbar("MyToolbar");
+		Map<String,Object> lang = new HashMap<String,Object>();
+		lang.put("language", Language.getLoginLanguage().getAD_Language());
+		editor.setConfig(lang);
 		tabPanel.appendChild(editor);
 		editor.setVflex("1");
 		editor.setWidth("100%");
