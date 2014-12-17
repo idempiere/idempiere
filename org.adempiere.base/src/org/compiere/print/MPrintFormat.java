@@ -1171,22 +1171,23 @@ public class MPrintFormat extends X_AD_PrintFormat
 	 */
 	public static List<KeyNamePair> getAccessiblePrintFormats (int AD_Table_ID, int AD_Window_ID, String trxName, boolean makeNewWhenEmpty)
 	{
-		// append  WHERE  to can use MRole.getDefault().addAccessSQL
-		String sqlWhere = " WHERE AD_Table_ID=? AND IsTableBased='Y' ";
+		String constantForRoleAccess = "SELECT * FROM AD_PrintFormat WHERE ";
+		StringBuilder sqlWhereB = new StringBuilder(constantForRoleAccess)
+			.append("AD_Table_ID=? AND IsTableBased='Y' ");
 		if (AD_Window_ID > 0)
-			sqlWhere += "AND (AD_Window_ID=? OR AD_Window_ID IS NULL) ";		
+			sqlWhereB.append("AND (AD_Window_ID=? OR AD_Window_ID IS NULL)");		
 		//
-		sqlWhere = MRole.getDefault().addAccessSQL (
-				sqlWhere, "AD_PrintFormat", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-		
+		String sqlWhere = MRole.getDefault().addAccessSQL (
+				sqlWhereB.toString(), "AD_PrintFormat", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
+
 		// remove " WHERE " to use in Query
-		sqlWhere = sqlWhere.substring(6);
+		sqlWhere = sqlWhere.substring(constantForRoleAccess.length());
 		
 		// add sql parameter
 		List<Object> lsParameter = new ArrayList<Object>();
-				
+
 		lsParameter.add(new Integer(AD_Table_ID));
-			if (AD_Window_ID > 0)
+		if (AD_Window_ID > 0)
 			lsParameter.add(new Integer(AD_Window_ID));		
 		
 		// init query
