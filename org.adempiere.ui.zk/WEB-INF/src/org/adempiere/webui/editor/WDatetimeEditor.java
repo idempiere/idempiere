@@ -23,6 +23,8 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
@@ -77,8 +79,8 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
 
 	public WDatetimeEditor()
 	{
-		this("Datetime", "Datetime", false, false, true);
-	}   // VDate
+		this(Msg.getMsg(Env.getCtx(), "DateTime"), Msg.getMsg(Env.getCtx(), "DateTime"), false, false, true);
+	}   // WDatetimeEditor
 
 	/**
 	 *
