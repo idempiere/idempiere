@@ -34,7 +34,9 @@ import java.util.logging.Level;
 import org.adempiere.server.rpl.IImportProcessor;
 import org.compiere.model.AdempiereProcessor;
 import org.compiere.model.MClient;
+import org.compiere.model.MOrgInfo;
 import org.compiere.model.X_IMP_Processor_Type;
+import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.server.AdempiereServer;
 import org.compiere.model.MIMPProcessor;
@@ -95,6 +97,16 @@ public class ReplicationProcessor extends AdempiereServer {
 		else 
 		{
 		    // process is not started!
+			
+			// Prepare a ctx
+			Env.setContext(mImportProcessor.getCtx(), "#AD_Client_ID", mImportProcessor.getAD_Client_ID());
+			Env.setContext(mImportProcessor.getCtx(), "#AD_Org_ID", mImportProcessor.getAD_Org_ID());
+			if (mImportProcessor.getAD_Org_ID() != 0) {
+				MOrgInfo schedorg = MOrgInfo.get(getCtx(), mImportProcessor.getAD_Org_ID(), null);
+				if (schedorg.getM_Warehouse_ID() > 0)
+					Env.setContext(mImportProcessor.getCtx(), "#M_Warehouse_ID", schedorg.getM_Warehouse_ID());
+				}
+			Env.setContext(mImportProcessor.getCtx(), "#AD_User_ID", getAD_User_ID());
 		    
 		    m_summary = new StringBuffer();
 		    String trxName = mImportProcessor.get_TrxName();
@@ -148,6 +160,18 @@ public class ReplicationProcessor extends AdempiereServer {
 		}
 	}
 
+	protected int getAD_User_ID() {
+		int AD_User_ID;
+		if (mImportProcessor.getCreatedBy() > 0)
+			AD_User_ID = mImportProcessor.getCreatedBy();
+		else if (mImportProcessor.getUpdatedBy() > 0)
+			AD_User_ID = mImportProcessor.getUpdatedBy();
+		else
+			AD_User_ID = 100; //fall back to SuperUser
+			
+		return AD_User_ID;
+	}
+	
 	@Override
 	public String getServerInfo()
 	{
