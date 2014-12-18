@@ -593,7 +593,10 @@ public class MJournal extends X_GL_Journal implements DocAction
 			if (!DocAction.STATUS_InProgress.equals(status))
 				return status;
 		}
-		
+
+		// Set the definite document number after completed (if needed)
+		setDefiniteDocumentNo();
+
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -609,9 +612,6 @@ public class MJournal extends X_GL_Journal implements DocAction
 			m_processMsg = valid;
 			return DocAction.STATUS_Invalid;
 		}
-
-		// Set the definite document number after completed (if needed)
-		setDefiniteDocumentNo();
 
 		//
 		setProcessed(true);
