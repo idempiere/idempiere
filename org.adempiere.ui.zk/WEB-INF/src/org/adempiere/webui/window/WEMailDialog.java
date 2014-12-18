@@ -22,7 +22,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -57,6 +59,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
+import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkforge.ckez.CKeditor;
@@ -120,6 +123,9 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		fMessage = new CKeditor();
 		fMessage.setCustomConfigurationsPath("/js/ckeditor/config.js");
 		fMessage.setToolbar("MyToolbar");
+		Map<String,Object> lang = new HashMap<String,Object>();
+		lang.put("language", Language.getLoginLanguage().getAD_Language());
+		fMessage.setConfig(lang);
 
 		commonInit(from, to, subject, message, attachment);				
 	}	//	EmailDialog

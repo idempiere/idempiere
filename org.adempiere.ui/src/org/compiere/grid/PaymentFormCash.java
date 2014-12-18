@@ -372,8 +372,8 @@ public abstract class PaymentFormCash extends PaymentForm {
 				m_mPayment.setC_Order_ID(C_Order_ID);
 				m_needSave = true;
 			}
-			m_mPayment.setDateTrx(m_DateAcct);
-			m_mPayment.setDateAcct(m_DateAcct);
+			m_mPayment.setDateTrx(newDateAcct);
+			m_mPayment.setDateAcct(newDateAcct);
 			m_mPayment.saveEx();
 			
 			//  Save/Post
@@ -398,8 +398,6 @@ public abstract class PaymentFormCash extends PaymentForm {
 		 */
 		log.config("Saving changes");
 		//
-		if (!newDateAcct.equals(m_DateAcct))
-			getGridTab().setValue("DateAcct", newDateAcct);
 		//	Set Payment
 		if (m_mPayment.getC_Payment_ID() != m_C_Payment_ID)
 		{

@@ -2128,6 +2128,10 @@ public class MOrder extends X_C_Order implements DocAction
 			/* a42niem - BF IDEMPIERE-63 - check if document has been completed before */ 
 			if (this.getProcessedOn().signum() == 0) {
 				setDateOrdered(new Timestamp (System.currentTimeMillis()));
+				if (getDateAcct().before(getDateOrdered())) {
+					setDateAcct(getDateOrdered());
+					MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocTypeTarget_ID(), getAD_Org_ID());
+				}
 			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {

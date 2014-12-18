@@ -654,7 +654,8 @@ public class MPayment extends X_C_Payment
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (isComplete() &&
+		if (isComplete() && 
+			! is_ValueChanged(COLUMNNAME_Processed) &&
             (   is_ValueChanged(COLUMNNAME_C_BankAccount_ID)
              || is_ValueChanged(COLUMNNAME_C_BPartner_ID)
              || is_ValueChanged(COLUMNNAME_C_Charge_ID)
@@ -2094,6 +2095,10 @@ public class MPayment extends X_C_Payment
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			setDateTrx(new Timestamp (System.currentTimeMillis()));
+			if (getDateAcct().before(getDateTrx())) {
+				setDateAcct(getDateTrx());
+				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
 			String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
