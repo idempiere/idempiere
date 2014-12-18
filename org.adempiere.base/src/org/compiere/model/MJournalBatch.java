@@ -510,6 +510,10 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			setDateDoc(new Timestamp (System.currentTimeMillis()));
+			if (getDateAcct().before(getDateDoc())) {
+				setDateAcct(getDateDoc());
+				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
 			String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);

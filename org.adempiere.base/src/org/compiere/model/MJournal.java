@@ -627,6 +627,10 @@ public class MJournal extends X_GL_Journal implements DocAction
 		if (dt.isOverwriteDateOnComplete()) {
 			if (this.getProcessedOn().signum() == 0) {
 				setDateDoc(new Timestamp (System.currentTimeMillis()));
+				if (getDateAcct().before(getDateDoc())) {
+					setDateAcct(getDateDoc());
+					MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+				}
 			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {

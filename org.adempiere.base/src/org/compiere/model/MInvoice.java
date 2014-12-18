@@ -2118,6 +2118,10 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			setDateInvoiced(new Timestamp (System.currentTimeMillis()));
+			if (getDateAcct().before(getDateInvoiced())) {
+				setDateAcct(getDateInvoiced());
+				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocTypeTarget_ID(), getAD_Org_ID());
+			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
 			String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
