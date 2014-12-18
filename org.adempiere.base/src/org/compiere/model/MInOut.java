@@ -1752,6 +1752,10 @@ public class MInOut extends X_M_InOut implements DocAction
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			setMovementDate(new Timestamp (System.currentTimeMillis()));
+			if (getDateAcct().before(getMovementDate())) {
+				setDateAcct(getMovementDate());
+				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
 			String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);

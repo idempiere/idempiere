@@ -19,6 +19,7 @@ import org.apache.ecs.ConcreteElement;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.div;
 import org.apache.ecs.xhtml.img;
+import org.compiere.model.MSysConfig;
 import org.compiere.print.IHTMLExtension;
 import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataElement;
@@ -32,14 +33,24 @@ import org.compiere.util.Msg;
  */
 public class HTMLExtension implements IHTMLExtension {
 
-	private String contextPath;
 	private String classPrefix;
 	private String componentId;
+	private String scriptURL;
+	private String styleURL;
 
 	public HTMLExtension(String contextPath, String classPrefix, String componentId) {
-		this.contextPath = contextPath;
+
+		String theme = MSysConfig.getValue(MSysConfig.HTML_REPORT_THEME, "/", Env.getAD_Client_ID(Env.getCtx()));
+
+		if (! theme.startsWith("/"))
+			theme = "/" + theme;
+		if (! theme.endsWith("/"))
+			theme = theme + "/";
+
 		this.classPrefix = classPrefix;
 		this.componentId = componentId;
+		this.scriptURL = contextPath + theme + "js/report.js";
+		this.styleURL = contextPath + theme + "css/report.css";
 	}
 	
 	public void extendIDColumn(int row, ConcreteElement columnElement, a href,
@@ -106,11 +117,11 @@ public class HTMLExtension implements IHTMLExtension {
 	}
 
 	public String getScriptURL() {
-		return contextPath + "/js/report.js";
+		return scriptURL;
 	}
 
 	public String getStyleURL() {
-		return contextPath + "/css/report.css";
+		return styleURL;
 	}
 
 }

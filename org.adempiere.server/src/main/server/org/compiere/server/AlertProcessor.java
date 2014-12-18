@@ -41,6 +41,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
@@ -93,7 +94,13 @@ public class AlertProcessor extends AdempiereServer
 		MAlert[] alerts = m_model.getAlerts(false);
 		for (int i = 0; i < alerts.length; i++)
 		{
-			if (!processAlert(alerts[i]))
+			Language language = Env.getLanguage(getCtx());
+			// Try to get the language of the client's alert
+			MClient client = MClient.get(getCtx(), alerts[i].getAD_Client_ID());
+			if (client.getLanguage() != null)
+				language = client.getLanguage();
+
+			if (!processAlert(alerts[i], language))
 				countError++;
 			count++;
 		}
@@ -119,7 +126,7 @@ public class AlertProcessor extends AdempiereServer
 	 *	@param alert alert
 	 *	@return true if processed
 	 */
-	protected boolean processAlert (MAlert alert)
+	protected boolean processAlert (MAlert alert, Language language)
 	{
 		if (!alert.isValid())
 			return false;
@@ -164,8 +171,8 @@ public class AlertProcessor extends AdempiereServer
 			try
 			{
 				String text = null;
-				if (MSysConfig.getBooleanValue(MSysConfig.ALERT_SEND_ATTACHMENT_AS_XLS, true, Env.getAD_Client_ID(getCtx())))
-					text = getExcelReport(rule, sql, null, attachments);
+				if (MSysConfig.getBooleanValue(MSysConfig.ALERT_SEND_ATTACHMENT_AS_XLS, true, alert.getAD_Client_ID()))
+					text = getExcelReport(rule, sql, language, null, attachments);
 				else
 					text = getPlainTextReport(rule, sql, null, attachments);
 				if (text != null && text.length() > 0)
@@ -220,9 +227,9 @@ public class AlertProcessor extends AdempiereServer
 		
 		//
 		// Report footer - Date Generated
-		DateFormat df = DisplayType.getDateFormat(DisplayType.DateTime);
+		DateFormat df = DisplayType.getDateFormat(DisplayType.DateTime, language);
 		message.append("\n\n");
-		message.append(Msg.translate(getCtx(), "Date")).append(" : ")
+		message.append(Msg.translate(language, "Date")).append(" : ")
 				.append(df.format(new Timestamp(System.currentTimeMillis())));
 		
 		Collection<Integer> users = alert.getRecipientUsers();
@@ -408,7 +415,7 @@ public class AlertProcessor extends AdempiereServer
 	 * @return summary message to be added into mail content
 	 * @throws Exception
 	 */
-	protected String getExcelReport(MAlertRule rule, String sql, String trxName, Collection<File> attachments)
+	protected String getExcelReport(MAlertRule rule, String sql, Language language, String trxName, Collection<File> attachments)
 	throws Exception
 	{
 		ArrayList<ArrayList<Object>> data = getData(sql, trxName);
@@ -418,10 +425,10 @@ public class AlertProcessor extends AdempiereServer
 		File file = rule.createReportFile("xls");
 		//
 		ArrayExcelExporter exporter = new ArrayExcelExporter(getCtx(), data);
-		exporter.export(file, null, false);
+		exporter.export(file, language, false);
 		attachments.add(file);
-		String msg = rule.getName() + " (@SeeAttachment@ "+file.getName()+")"+Env.NL;
-		return Msg.parseTranslation(Env.getCtx(), msg);
+		String msg = rule.getName() + " (" + Msg.translate(language, "SeeAttachment") + " " + file.getName() + ")" + Env.NL;
+		return msg;
 	}
 	
 	/**

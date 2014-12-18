@@ -57,8 +57,10 @@ import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.link;
 import org.apache.ecs.xhtml.script;
 import org.apache.ecs.xhtml.table;
+import org.apache.ecs.xhtml.tbody;
 import org.apache.ecs.xhtml.td;
 import org.apache.ecs.xhtml.th;
+import org.apache.ecs.xhtml.thead;
 import org.apache.ecs.xhtml.tr;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
@@ -71,7 +73,9 @@ import org.compiere.model.MProject;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRfQResponse;
 import org.compiere.model.PrintInfo;
+
 import static org.compiere.model.SystemIDs.*;
+
 import org.compiere.print.layout.LayoutEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
@@ -587,6 +591,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				}
 				doc.output(w);
 			}
+			thead thead = new thead();
+			tbody tbody = new tbody();
 			//	for all rows (-1 = header row)
 			for (int row = -1; row < m_printData.getRowCount(); row++)
 			{
@@ -598,6 +604,16 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 					{
 						extension.extendRowElement(tr, m_printData);
 					}
+					if (m_printData.isFunctionRow()) {
+						tr.setClass(cssPrefix + "-functionrow");
+					} else if ( row < m_printData.getRowCount() && m_printData.isFunctionRow(row+1)) {
+						tr.setClass(cssPrefix + "-lastgrouprow");
+					}
+					// add row to table body
+					tbody.addElement(tr);
+				} else {
+					// add row to table header
+					thead.addElement(tr);
 				}
 				//	for all columns
 				for (int col = 0; col < m_printFormat.getItemCount(); col++)
@@ -719,9 +735,11 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						}
 					}	//	printed
 				}	//	for all columns
-				tr.output(w);
 			}	//	for all rows
 
+			thead.output(w);
+			tbody.output(w);
+			
 			w.println();
 			w.println("</table>");
 			if (!onlyTable)
