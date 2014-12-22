@@ -540,15 +540,18 @@ public class MTable extends X_AD_Table
 		// boolean hasParents = false;
 		StringBuffer constraints = new StringBuffer();
 		getColumns(true);
+		boolean columnAdded = false;
 		for (int i = 0; i < m_columns.length; i++)
 		{
 			MColumn column = m_columns[i];
 			String colSQL = column.getSQLDDL();
 			if ( colSQL != null )
 			{
-				if (i > 0)
+				if (columnAdded)
 					sb.append(", ");
-					sb.append(column.getSQLDDL());
+				else
+					columnAdded = true;
+				sb.append(column.getSQLDDL());
 			}
 			else // virtual column
 				continue;
