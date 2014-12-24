@@ -122,7 +122,7 @@ public class ASPGenerateLevel extends SvrProcess
 			node = thisTree.getRoot();
 			
 		// Navigate the menu and add every non-summary node
-		if (node != null && node.isSummary())
+		if (node != null)
 		{
 			Enumeration<?> en = node.preorderEnumeration();
 			while (en.hasMoreElements())
