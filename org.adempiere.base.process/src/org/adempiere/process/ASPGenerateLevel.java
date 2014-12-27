@@ -41,6 +41,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MTab;
 import org.compiere.model.MTask;
+import org.compiere.model.MToolBarButton;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.model.MWindow;
@@ -56,6 +57,7 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWorkflow;
 
 /**
@@ -158,98 +160,13 @@ public class ASPGenerateLevel extends SvrProcess
 		MMenu menu = new MMenu(getCtx(), nn.getNode_ID(), get_TrxName());
 
 		if (menu.getAction().equals(MMenu.ACTION_Window)) {
-			MWindow window = new MWindow(getCtx(), menu.getAD_Window_ID(), get_TrxName());
-			int asp_window_id = DB.getSQLValueEx(get_TrxName(),
-					"SELECT ASP_Window_ID FROM ASP_Window WHERE ASP_Level_ID = ? AND AD_Window_ID = ?",
-					p_ASP_Level_ID, window.getAD_Window_ID());
-			X_ASP_Window aspWindow = null;
-			if (asp_window_id < 1) {
-				// Add Window, Tabs and Fields (if IsGenerateFields)
-				aspWindow = new X_ASP_Window(getCtx(), 0, get_TrxName());
-				aspWindow.setASP_Level_ID(p_ASP_Level_ID);
-				aspWindow.setAD_Window_ID(window.getAD_Window_ID());
-				aspWindow.setASP_Status(p_ASP_Status);
-				if (aspWindow.save()) {
-					noWindows++;
-					asp_window_id = aspWindow.getASP_Window_ID();
-				}
-			} else {
-				aspWindow = new X_ASP_Window(getCtx(), asp_window_id, get_TrxName());
-			}
-			// tabs
-			for (MTab tab : window.getTabs(true, get_TrxName())) {
-				int asp_tab_id = DB.getSQLValueEx(get_TrxName(),
-						"SELECT ASP_Tab_ID FROM ASP_Tab WHERE ASP_Window_ID = ? AND AD_Tab_ID = ?",
-						asp_window_id, tab.getAD_Tab_ID());
-				X_ASP_Tab aspTab = null;
-				if (asp_tab_id < 1) {
-					aspTab = new X_ASP_Tab(getCtx(), 0, get_TrxName());
-					aspTab.setASP_Window_ID(asp_window_id);
-					aspTab.setAD_Tab_ID(tab.getAD_Tab_ID());
-					aspTab.setASP_Status(p_ASP_Status);
-					aspTab.setAllFields(! p_IsGenerateFields);
-					if (aspTab.save()) {
-						noTabs++;
-						asp_tab_id = aspTab.getASP_Tab_ID();
-					}
-				} else {
-					aspTab = new X_ASP_Tab(getCtx(), asp_tab_id, get_TrxName());
-				}
-				// fields
-				for (MField field : tab.getFields(true, get_TrxName())) {
-					if (p_IsGenerateFields) {
-						if (DB.getSQLValueEx(
-								get_TrxName(),
-								"SELECT COUNT(*) FROM ASP_Field WHERE ASP_Tab_ID = ? AND AD_Field_ID = ?",
-								aspTab.getASP_Tab_ID(), field.getAD_Field_ID()) < 1) {
-							X_ASP_Field aspField = new X_ASP_Field(getCtx(), 0, get_TrxName());
-							aspField.setASP_Tab_ID(aspTab.getASP_Tab_ID());
-							aspField.setAD_Field_ID(field.getAD_Field_ID());
-							aspField.setASP_Status(p_ASP_Status);
-							if (aspField.save())
-								noFields++;
-						}
-					}
-					// verify if a field is a button and assign permission to the corresponding process
-					MColumn column = MColumn.get(getCtx(), field.getAD_Column_ID());
-					if (column.getAD_Reference_ID() == DisplayType.Button) {
-						if (column.getAD_Process_ID() > 0) {
-							generateProcess(column.getAD_Process_ID());
-						}
-					}
-				}
-			}
-		} else if (menu.getAction().equals(MMenu.ACTION_Process)
-				|| menu.getAction().equals(MMenu.ACTION_Report)) {
+			generateWindow(menu.getAD_Window_ID());
+		} else if (menu.getAction().equals(MMenu.ACTION_Process) || menu.getAction().equals(MMenu.ACTION_Report)) {
 			generateProcess(menu.getAD_Process_ID());
 		} else if (menu.getAction().equals(MMenu.ACTION_Form)) {
-			// Add Form
-			MForm form = new MForm(getCtx(), menu.getAD_Form_ID(), get_TrxName());
-			if (DB.getSQLValueEx(
-					get_TrxName(),
-					"SELECT COUNT(*) FROM ASP_Form WHERE ASP_Level_ID = ? AND AD_Form_ID = ?",
-					p_ASP_Level_ID, form.getAD_Form_ID()) < 1) {
-				X_ASP_Form aspForm = new X_ASP_Form(getCtx(), 0, get_TrxName());
-				aspForm.setASP_Level_ID(p_ASP_Level_ID);
-				aspForm.setAD_Form_ID(form.getAD_Form_ID());
-				aspForm.setASP_Status(p_ASP_Status);
-				if (aspForm.save())
-					noForms++;
-			}
+			generateForm(menu.getAD_Form_ID());
 		} else if (menu.getAction().equals(MMenu.ACTION_Task)) {
-			// Add Task
-			MTask task = new MTask(getCtx(), menu.getAD_Task_ID(), get_TrxName());
-			if (DB.getSQLValueEx(
-					get_TrxName(),
-					"SELECT COUNT(*) FROM ASP_Task WHERE ASP_Level_ID = ? AND AD_Task_ID = ?",
-					p_ASP_Level_ID, task.getAD_Task_ID()) < 1) {
-				X_ASP_Task aspTask = new X_ASP_Task(getCtx(), 0, get_TrxName());
-				aspTask.setASP_Level_ID(p_ASP_Level_ID);
-				aspTask.setAD_Task_ID(task.getAD_Task_ID());
-				aspTask.setASP_Status(p_ASP_Status);
-				if (aspTask.save())
-					noTasks++;
-			}
+			generateTask(menu.getAD_Task_ID());
 		} else if (menu.getAction().equals(MMenu.ACTION_WorkFlow)) {
 			generateWorkflow(menu.getAD_Workflow_ID());
 		}		
@@ -291,6 +208,9 @@ public class ASPGenerateLevel extends SvrProcess
 		if (process.getAD_Workflow_ID() > 0) {
 			generateWorkflow(process.getAD_Workflow_ID());
 		}
+		if (process.getAD_Form_ID() > 0) {
+			generateForm(process.getAD_Form_ID());
+		}
 	}
 
 	private void generateWorkflow(int p_AD_Workflow_ID) {
@@ -306,6 +226,121 @@ public class ASPGenerateLevel extends SvrProcess
 			aspWorkflow.setASP_Status(p_ASP_Status);
 			if (aspWorkflow.save())
 				noWorkflows++;
+		}
+		for (MWFNode node : workflow.getNodes(false, getAD_Client_ID())) {
+			if ( ( MWFNode.ACTION_AppsProcess.equals(node.getAction()) || MWFNode.ACTION_AppsReport.equals(node.getAction()) ) && node.getAD_Process_ID() > 0) {
+				generateProcess(node.getAD_Process_ID());
+			} else if (MWFNode.ACTION_AppsTask.equals(node.getAction()) && node.getAD_Task_ID() > 0) {
+				generateTask(node.getAD_Task_ID());
+			} else if (MWFNode.ACTION_UserForm.equals(node.getAction()) && node.getAD_Form_ID() > 0) {
+				generateForm(node.getAD_Form_ID());
+			} else if (MWFNode.ACTION_UserWindow.equals(node.getAction()) && node.getAD_Window_ID() > 0) {
+				generateWindow(node.getAD_Window_ID());
+			}
+		}
+	}
+
+	private void generateForm(int p_AD_Form_ID) {
+		// Add Form
+		MForm form = new MForm(getCtx(), p_AD_Form_ID, get_TrxName());
+		if (DB.getSQLValueEx(
+				get_TrxName(),
+				"SELECT COUNT(*) FROM ASP_Form WHERE ASP_Level_ID = ? AND AD_Form_ID = ?",
+				p_ASP_Level_ID, form.getAD_Form_ID()) < 1) {
+			X_ASP_Form aspForm = new X_ASP_Form(getCtx(), 0, get_TrxName());
+			aspForm.setASP_Level_ID(p_ASP_Level_ID);
+			aspForm.setAD_Form_ID(form.getAD_Form_ID());
+			aspForm.setASP_Status(p_ASP_Status);
+			if (aspForm.save())
+				noForms++;
+		}
+	}
+
+	private void generateTask(int p_AD_Task_ID) {
+		// Add Task
+		MTask task = new MTask(getCtx(), p_AD_Task_ID, get_TrxName());
+		if (DB.getSQLValueEx(
+				get_TrxName(),
+				"SELECT COUNT(*) FROM ASP_Task WHERE ASP_Level_ID = ? AND AD_Task_ID = ?",
+				p_ASP_Level_ID, task.getAD_Task_ID()) < 1) {
+			X_ASP_Task aspTask = new X_ASP_Task(getCtx(), 0, get_TrxName());
+			aspTask.setASP_Level_ID(p_ASP_Level_ID);
+			aspTask.setAD_Task_ID(task.getAD_Task_ID());
+			aspTask.setASP_Status(p_ASP_Status);
+			if (aspTask.save())
+				noTasks++;
+		}
+	}
+
+	private void generateWindow(int p_AD_Window_ID) {
+		MWindow window = new MWindow(getCtx(), p_AD_Window_ID, get_TrxName());
+		int asp_window_id = DB.getSQLValueEx(get_TrxName(),
+				"SELECT ASP_Window_ID FROM ASP_Window WHERE ASP_Level_ID = ? AND AD_Window_ID = ?",
+				p_ASP_Level_ID, window.getAD_Window_ID());
+		X_ASP_Window aspWindow = null;
+		if (asp_window_id < 1) {
+			// Add Window, Tabs and Fields (if IsGenerateFields)
+			aspWindow = new X_ASP_Window(getCtx(), 0, get_TrxName());
+			aspWindow.setASP_Level_ID(p_ASP_Level_ID);
+			aspWindow.setAD_Window_ID(window.getAD_Window_ID());
+			aspWindow.setASP_Status(p_ASP_Status);
+			if (aspWindow.save()) {
+				noWindows++;
+				asp_window_id = aspWindow.getASP_Window_ID();
+			}
+		} else {
+			aspWindow = new X_ASP_Window(getCtx(), asp_window_id, get_TrxName());
+		}
+		// tabs
+		for (MTab tab : window.getTabs(true, get_TrxName())) {
+			int asp_tab_id = DB.getSQLValueEx(get_TrxName(),
+					"SELECT ASP_Tab_ID FROM ASP_Tab WHERE ASP_Window_ID = ? AND AD_Tab_ID = ?",
+					asp_window_id, tab.getAD_Tab_ID());
+			X_ASP_Tab aspTab = null;
+			if (asp_tab_id < 1) {
+				aspTab = new X_ASP_Tab(getCtx(), 0, get_TrxName());
+				aspTab.setASP_Window_ID(asp_window_id);
+				aspTab.setAD_Tab_ID(tab.getAD_Tab_ID());
+				aspTab.setASP_Status(p_ASP_Status);
+				aspTab.setAllFields(! p_IsGenerateFields);
+				if (aspTab.save()) {
+					noTabs++;
+					asp_tab_id = aspTab.getASP_Tab_ID();
+				}
+			} else {
+				aspTab = new X_ASP_Tab(getCtx(), asp_tab_id, get_TrxName());
+			}
+			if (tab.getAD_Process_ID() > 0) {
+				generateProcess(tab.getAD_Process_ID());
+			}
+			for (MToolBarButton tb : MToolBarButton.getProcessButtonOfTab(tab.getAD_Tab_ID(), get_TrxName())) {
+				if (tb.getAD_Process_ID() > 0) {
+					generateProcess(tb.getAD_Process_ID());
+				}
+			}
+			// fields
+			for (MField field : tab.getFields(true, get_TrxName())) {
+				if (p_IsGenerateFields) {
+					if (DB.getSQLValueEx(
+							get_TrxName(),
+							"SELECT COUNT(*) FROM ASP_Field WHERE ASP_Tab_ID = ? AND AD_Field_ID = ?",
+							aspTab.getASP_Tab_ID(), field.getAD_Field_ID()) < 1) {
+						X_ASP_Field aspField = new X_ASP_Field(getCtx(), 0, get_TrxName());
+						aspField.setASP_Tab_ID(aspTab.getASP_Tab_ID());
+						aspField.setAD_Field_ID(field.getAD_Field_ID());
+						aspField.setASP_Status(p_ASP_Status);
+						if (aspField.save())
+							noFields++;
+					}
+				}
+				// verify if a field is a button and assign permission to the corresponding process
+				MColumn column = MColumn.get(getCtx(), field.getAD_Column_ID());
+				if (column.getAD_Reference_ID() == DisplayType.Button) {
+					if (column.getAD_Process_ID() > 0) {
+						generateProcess(column.getAD_Process_ID());
+					}
+				}
+			}
 		}
 	}
 
