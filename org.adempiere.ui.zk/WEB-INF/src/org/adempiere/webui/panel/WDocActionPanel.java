@@ -35,7 +35,11 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
+import org.compiere.model.MAllocationHdr;
+import org.compiere.model.MBankStatement;
 import org.compiere.model.MClientInfo;
+import org.compiere.model.MDocType;
+import org.compiere.model.MProduction;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.process.DocOptions;
@@ -168,6 +172,15 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		Integer doctypeId = (Integer)gridTab.getValue("C_DocType_ID");
 		if(doctypeId==null || doctypeId.intValue()==0){
 			doctypeId = (Integer)gridTab.getValue("C_DocTypeTarget_ID");
+		}
+		if (doctypeId == null && MAllocationHdr.Table_ID == m_AD_Table_ID) {
+			doctypeId = MDocType.getDocType(MDocType.DOCBASETYPE_PaymentAllocation);
+		}
+		if (doctypeId == null && MBankStatement.Table_ID == m_AD_Table_ID) {
+			doctypeId = MDocType.getDocType(MDocType.DOCBASETYPE_BankStatement);
+		}
+		if (doctypeId == null && MProduction.Table_ID == m_AD_Table_ID) {
+			doctypeId = MDocType.getDocType(MDocType.DOCBASETYPE_MaterialProduction);
 		}
 		if (logger.isLoggable(Level.FINE)) logger.fine("get doctype: " + doctypeId);
 		if (doctypeId != null) {
