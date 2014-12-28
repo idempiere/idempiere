@@ -415,6 +415,9 @@ public class MProduction extends X_M_Production implements DocAction {
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
+		//	Std Period open?
+		MPeriod.testPeriodOpen(getCtx(), getMovementDate(), MDocType.DOCBASETYPE_MaterialProduction, getAD_Org_ID());
+
 		if ( getIsCreated().equals("N") )
 		{
 			m_processMsg = "Not created";
