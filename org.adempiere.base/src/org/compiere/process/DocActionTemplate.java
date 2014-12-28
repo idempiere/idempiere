@@ -216,6 +216,8 @@ public class DocActionTemplate extends PO implements DocAction
 				return status;
 		}
 
+		// setDefiniteDocumentNo();
+
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -233,8 +235,6 @@ public class DocActionTemplate extends PO implements DocAction
 			m_processMsg = valid;
 			return DocAction.STATUS_Invalid;
 		}
-		// setDefiniteDocumentNo();
-
 	//	setProcessed(true);
 	//	setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
@@ -248,6 +248,10 @@ public class DocActionTemplate extends PO implements DocAction
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			setDateInvoiced(new Timestamp (System.currentTimeMillis()));
+			if (getDateAcct().before(getDateInvoiced())) {
+				setDateAcct(getDateInvoiced());
+				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
 			String value = null;

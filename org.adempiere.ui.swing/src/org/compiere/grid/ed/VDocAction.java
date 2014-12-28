@@ -34,6 +34,10 @@ import org.compiere.apps.ADialog;
 import org.compiere.apps.AEnv;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.model.GridTab;
+import org.compiere.model.MAllocationHdr;
+import org.compiere.model.MBankStatement;
+import org.compiere.model.MDocType;
+import org.compiere.model.MProduction;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.process.DocOptions;
@@ -244,6 +248,15 @@ public class VDocAction extends CDialog
 		Integer doctypeId = (Integer)m_mTab.getValue("C_DocType_ID");
 		if(doctypeId==null || doctypeId.intValue()==0){
 			doctypeId = (Integer)m_mTab.getValue("C_DocTypeTarget_ID");
+		}
+		if (doctypeId == null && MAllocationHdr.Table_ID == m_AD_Table_ID) {
+			doctypeId = MDocType.getDocType(MDocType.DOCBASETYPE_PaymentAllocation);
+		}
+		if (doctypeId == null && MBankStatement.Table_ID == m_AD_Table_ID) {
+			doctypeId = MDocType.getDocType(MDocType.DOCBASETYPE_BankStatement);
+		}
+		if (doctypeId == null && MProduction.Table_ID == m_AD_Table_ID) {
+			doctypeId = MDocType.getDocType(MDocType.DOCBASETYPE_MaterialProduction);
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("get doctype: " + doctypeId);
 		if (doctypeId != null) {

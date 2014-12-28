@@ -1869,6 +1869,10 @@ public class MOrder extends X_C_Order implements DocAction
 			setProcessed(false);
 			return DocAction.STATUS_InProgress;
 		}
+
+		// Set the definite document number after completed (if needed)
+		setDefiniteDocumentNo();
+
 		//	Offers
 		if (MDocType.DOCSUBTYPESO_Proposal.equals(DocSubTypeSO)
 			|| MDocType.DOCSUBTYPESO_Quotation.equals(DocSubTypeSO)) 
@@ -1882,8 +1886,6 @@ public class MOrder extends X_C_Order implements DocAction
 			m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 			if (m_processMsg != null)
 				return DocAction.STATUS_Invalid;
-			// Set the definite document number after completed (if needed)
-			setDefiniteDocumentNo();
 			setProcessed(true);
 			return DocAction.STATUS_Completed;
 		}
@@ -1986,9 +1988,6 @@ public class MOrder extends X_C_Order implements DocAction
 				return DocAction.STATUS_Invalid;
 			}
 		}
-		
-		// Set the definite document number after completed (if needed)
-		setDefiniteDocumentNo();
 
 		setProcessed(true);	
 		m_processMsg = info.toString();
@@ -2130,7 +2129,7 @@ public class MOrder extends X_C_Order implements DocAction
 				setDateOrdered(new Timestamp (System.currentTimeMillis()));
 				if (getDateAcct().before(getDateOrdered())) {
 					setDateAcct(getDateOrdered());
-					MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocTypeTarget_ID(), getAD_Org_ID());
+					MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
 				}
 			}
 		}

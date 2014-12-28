@@ -1692,6 +1692,9 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				return status;
 		}
 
+		// Set the definite document number after completed (if needed)
+		setDefiniteDocumentNo();
+
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -2086,9 +2089,6 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 
-		// Set the definite document number after completed (if needed)
-		setDefiniteDocumentNo();
-
 		//	Counter Documents
 		MInvoice counter = createCounterDoc();
 		if (counter != null)
@@ -2120,7 +2120,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			setDateInvoiced(new Timestamp (System.currentTimeMillis()));
 			if (getDateAcct().before(getDateInvoiced())) {
 				setDateAcct(getDateInvoiced());
-				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocTypeTarget_ID(), getAD_Org_ID());
+				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
 			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {

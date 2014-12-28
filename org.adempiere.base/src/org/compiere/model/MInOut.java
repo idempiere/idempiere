@@ -1256,6 +1256,9 @@ public class MInOut extends X_M_InOut implements DocAction
 				return status;
 		}
 
+		// Set the definite document number after completed (if needed)
+		setDefiniteDocumentNo();
+
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -1651,9 +1654,6 @@ public class MInOut extends X_M_InOut implements DocAction
 			m_processMsg = valid;
 			return DocAction.STATUS_Invalid;
 		}
-
-		// Set the definite document number after completed (if needed)
-		setDefiniteDocumentNo();
 
 		m_processMsg = info.toString();
 		setProcessed(true);

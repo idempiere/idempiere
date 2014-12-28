@@ -2551,6 +2551,8 @@ public final class MRole extends X_AD_Role
 							+ " WHERE ro.AD_Role_ID=?"
 							+ " AND ty.DocBaseType=?"
 							+ (MDocType.DOCBASETYPE_SalesOrder.equals(doc.getDocBaseType()) ? " AND ty.DocSubTypeSO=?" : "")
+							+ (MDocType.DOCBASETYPE_PurchaseOrder.equals(doc.getDocBaseType()) && doc.getDocSubTypeSO() != null ? " AND ty.DocSubTypeSO=?" : "")
+							+ (MDocType.DOCBASETYPE_MaterialPhysicalInventory.equals(doc.getDocBaseType()) ? " AND ty.DocSubTypeInv=?" : "")
 							+ " AND rl.Value IN ("
 							+ sql_values
 							+ ")";
@@ -2560,6 +2562,10 @@ public final class MRole extends X_AD_Role
 					pstmt.setString(idxpar++, doc.getDocBaseType());
 					if (MDocType.DOCBASETYPE_SalesOrder.equals(doc.getDocBaseType()))
 						pstmt.setString(idxpar++, doc.getDocSubTypeSO());
+					else if (MDocType.DOCBASETYPE_PurchaseOrder.equals(doc.getDocBaseType()) && doc.getDocSubTypeSO() != null)
+						pstmt.setString(idxpar++, doc.getDocSubTypeSO());
+					else if (MDocType.DOCBASETYPE_MaterialPhysicalInventory.equals(doc.getDocBaseType()))
+						pstmt.setString(idxpar++, doc.getDocSubTypeInv());
 				} else {
 					// master role on tenant - check options based on doctypeid
 				    sql = "SELECT DISTINCT rl.Value, a.IsActive"
