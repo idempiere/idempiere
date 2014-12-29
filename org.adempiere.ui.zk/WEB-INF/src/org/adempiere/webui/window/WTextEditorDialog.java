@@ -24,7 +24,6 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
-import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.zkforge.ckez.CKeditor;
 import org.zkoss.zk.au.out.AuScript;
@@ -160,6 +159,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		tabbox.addEventListener(Events.ON_SELECT, this);
 		//Bug IDEMPIERE-1992 Ensure that text editor dialog has a close button
 		setClosable(true);
+		setSizable(true);
+		setMaximizable(true);
 	}
 
 	private void createEditor(org.zkoss.zul.Tabpanel tabPanel) {
