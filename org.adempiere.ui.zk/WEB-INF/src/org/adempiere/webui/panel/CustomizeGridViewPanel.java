@@ -73,7 +73,7 @@ public class CustomizeGridViewPanel extends Panel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1592146462575454625L;
+	private static final long serialVersionUID = -6300916636341781651L;
 
 	private Map<Integer, String> m_columnsWidth;
 	ArrayList<Integer> tableSeqs;

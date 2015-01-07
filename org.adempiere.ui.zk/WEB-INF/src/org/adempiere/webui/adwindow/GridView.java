@@ -72,16 +72,16 @@ import org.zkoss.zul.impl.CustomGridDataLoader;
  */
 public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFieldEditorContainer, StateChangeListener
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2966799998482667434L;
+
 	private static final String HEADER_GRID_STYLE = "border: none; margin:0; padding: 0;";
 
 	private static final int DEFAULT_DETAIL_PAGE_SIZE = 10;
 
 	private static final int DEFAULT_PAGE_SIZE = 20;
-
-	/**
-	 * generated serial version ID
-	 */
-	private static final long serialVersionUID = -7151423393713654553L;
 
 	private static final int MIN_COLUMN_WIDTH = 100;
 
