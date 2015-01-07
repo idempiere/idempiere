@@ -244,7 +244,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			if ( "PDF".equals( reportType ) ) 
 			{
 				attachment = getPDF();
-				media = new AMedia(m_title, "pdf", "application/pdf", attachment, true);
+				media = new AMedia(m_title + ".pdf", "pdf", "application/pdf", attachment, true);
 				
 			} else if ("HTML".equals(reportType)) {
 				String path = System.getProperty("java.io.tmpdir");
@@ -281,7 +281,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, fos);
 				exporterXLS.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
 				exporterXLS.exportReport();			
-				media = new AMedia(m_title, "xls", "application/vnd.ms-excel", file, true);						
+				media = new AMedia(m_title + ".xls", "xls", "application/vnd.ms-excel", file, true);						
 				
 			}else if ("CSV".equals(reportType)) {
 				String path = System.getProperty("java.io.tmpdir");
@@ -297,7 +297,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				exporter.setParameter(JRExporterParameter.OUTPUT_STREAM,  fos);
 				exporter.exportReport();
 				
-				media = new AMedia(m_title, "csv", "application/csv", file, true);	
+				media = new AMedia(m_title + ".csv", "csv", "application/csv", file, true);	
 
 			}else if ("SSV".equals(reportType)) {
 				String path = System.getProperty("java.io.tmpdir");
