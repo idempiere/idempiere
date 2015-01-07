@@ -61,6 +61,7 @@ public class CustomizeGridViewDialog extends Window {
 	 * @param WindowNo window no
 	 * @param AD_Tab_ID
 	 * @param columnsWidth 
+	 * @param gridFieldIds list fieldId current display in gridview
 	 */
 	public static boolean showCustomize (int WindowNo, int AD_Tab_ID, Map<Integer, String> columnsWidth,ArrayList<Integer> gridFieldIds,GridView gridPanel)
 	{

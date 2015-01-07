@@ -16,9 +16,6 @@
  *****************************************************************************/
 package org.adempiere.webui.panel;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.DBException;
 import org.adempiere.model.MTabCustomization;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.GridView;
@@ -43,9 +41,12 @@ import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
+import org.compiere.model.MField;
 import org.compiere.model.MRefList;
+import org.compiere.model.MRole;
+import org.compiere.model.MTab;
+import org.compiere.model.Query;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
@@ -295,27 +296,31 @@ public class CustomizeGridViewPanel extends Panel
 		yesModel.removeAllElements();
 		noModel.removeAllElements();		
 		boolean baseLanguage = Env.isBaseLanguage(Env.getCtx(), "AD_Field");
-		String sql;
-		if (baseLanguage)
-			sql = "SELECT f.AD_Field_ID,f.Name FROM AD_Field f WHERE f.AD_Tab_ID=? AND (f.IsDisplayed='Y' OR f.IsDisplayedGrid='Y') AND f.IsActive='Y' ORDER BY f.SeqNoGrid,f.Name,f.SeqNo";
-		else
-			sql = "SELECT f.AD_Field_ID,trl.Name FROM AD_Field f JOIN AD_Field_Trl trl ON (f.AD_Field_ID = trl.AD_Field_ID)"
-					+ " WHERE f.AD_Tab_ID=? AND (f.IsDisplayed='Y' OR f.IsDisplayedGrid='Y') AND f.IsActive='Y' AND trl.AD_Language=? ORDER BY f.SeqNoGrid,f.Name,f.SeqNo";
-		PreparedStatement  pstmt = null;
-		ResultSet rs = null;
+		Query query = null;
+		
+		query = new Query(Env.getCtx(), MField.Table_Name, "AD_Tab_ID=? AND (IsDisplayed='Y' OR IsDisplayedGrid='Y') AND IsActive='Y'", null);
+		query.setOrderBy("SeqNoGrid, Name, SeqNo");
+		query.setParameters(new Object [] {m_AD_Tab_ID});
+		query.setApplyAccessFilter(true);
+
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, m_AD_Tab_ID);
-			if (!baseLanguage)
-				pstmt.setString(2, Env.getAD_Language(Env.getCtx()));
-			rs = pstmt.executeQuery();
-
+			List<MField> lsFieldsOfGrid = query.list();
 			HashMap<Integer, ListElement> curTabSel = new HashMap<Integer, CustomizeGridViewPanel.ListElement>();
-			while (rs.next())
+			MTab tab = new MTab(Env.getCtx(), m_AD_Tab_ID, null);
+			
+			for (MField field : lsFieldsOfGrid)
 			{
-				int key = rs.getInt(1);
-				String name = rs.getString(2);
+				if (!MRole.getDefault(Env.getCtx(), false).isColumnAccess(tab.getAD_Table_ID(), field.getAD_Column_ID(), true))
+					continue;
+				
+				int key = field.get_ID();
+				String name = null; 
+				if (baseLanguage)
+					name = field.getName();
+				else
+					name = field.get_Translation(MField.COLUMNNAME_Name);
+					
 				ListElement pp = new ListElement(key, name);
 				if (tableSeqs != null && tableSeqs.size() > 0 ) {
 					if (tableSeqs.contains(key)) {
@@ -335,16 +340,10 @@ public class CustomizeGridViewPanel extends Panel
 				}
 			}
 		}
-		catch (SQLException e)
+		catch (DBException e)
 		{
-			log.log(Level.SEVERE, sql.toString(), e);
+			log.log(Level.SEVERE, e.getMessage(), e);
 		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-
 		
 		bAdd.setEnabled(true);
 		bRemove.setEnabled(true);
