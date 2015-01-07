@@ -325,6 +325,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	protected List<Object> prevParameterValues = null;
 	protected List<String> prevQueryOperators = null;
+	protected List<WEditor> prevRefParmeterEditor = null;
 	private static final String[] lISTENER_EVENTS = {};
 
 	/**
@@ -1368,6 +1369,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         		if (LayoutUtils.isReallyVisible(this)) {
         			this.onCtrlKeyEvent(keyEvent);
         		}
+        	}else if (event.getName().equals(Events.ON_OK)){// on ok when focus at non parameter component. example grid result
+	        	if (m_lookup && contentPanel.getSelectedIndex() >= 0){
+	    			// do nothing when parameter not change and at window mode, or at dialog mode but select non record    			
+	    			onOk();
+	    		}
         	}
             //when user push enter keyboard at input parameter field
             else
@@ -1388,13 +1394,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				}
 			}
 		} else if (keyEvent.getKeyCode() == VK_ENTER) { // Enter
-			// enter in contentpanel to select
-            //when user push enter keyboard at input parameter field
-			if (m_lookup && contentPanel.getSelectedIndex() >= 0) {
-				onOk();
-			} else {
-	           	onUserQuery();
-			}
+			// do nothing, let on_ok at infoWindo do, at this is too soon to get value from control, it's not bind
 		} else if (keyEvent.getKeyCode() == VK_ESCAPE) { // Escape
 			// Escape for cancel
         	m_cancel = true;
@@ -1573,7 +1573,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     */
     protected void bindInfoProcess (){}
     
-    private void onOk()
+    protected void onOk()
     {
 		if (!contentPanel.getChildren().isEmpty() && contentPanel.getSelectedRowKey()!=null)
 		{
