@@ -38,7 +38,7 @@ INSERT INTO AD_Ref_List (AD_Client_ID,AD_Org_ID,AD_Ref_List_ID,AD_Ref_List_UU,AD
 
 -- Oct 4, 2013 12:03:25 AM CEST
 -- IDEMPIERE-1148
-INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Column_UU,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,DefaultValue,EntityType,FieldLength,IsActive,IsAllowCopy,IsAllowLogging,IsAlwaysUpdateable,IsAutocomplete,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSecure,IsSelectionColumn,IsSyncDatabase,IsToolbarButton,IsTranslated,IsUpdateable,Name,SeqNo,SeqNoSelection,Updated,UpdatedBy,Version) VALUES (0,210873,'25a5098a-b000-4b5f-9432-1a1a893a418e',202614,0,20,188,'IsDetailBPartner',TO_DATE('2013-10-04 00:03:24','YYYY-MM-DD HH24:MI:SS'),100,'N','U',1,'Y','Y','Y','N','N','N','N','N','Y','N','N','N','N','N','N','Y','Manage Business Partners',0,0,TO_DATE('2013-10-04 00:03:24','YYYY-MM-DD HH24:MI:SS'),100,0)
+INSERT INTO AD_Column (AD_Client_ID,AD_Column_ID,AD_Column_UU,AD_Element_ID,AD_Org_ID,AD_Reference_ID,AD_Table_ID,ColumnName,Created,CreatedBy,DefaultValue,EntityType,FieldLength,IsActive,IsAllowCopy,IsAllowLogging,IsAlwaysUpdateable,IsAutocomplete,IsEncrypted,IsIdentifier,IsKey,IsMandatory,IsParent,IsSecure,IsSelectionColumn,IsSyncDatabase,IsToolbarButton,IsTranslated,IsUpdateable,Name,SeqNo,SeqNoSelection,Updated,UpdatedBy,Version) VALUES (0,210873,'25a5098a-b000-4b5f-9432-1a1a893a418e',202614,0,20,188,'IsDetailBPartner',TO_DATE('2013-10-04 00:03:24','YYYY-MM-DD HH24:MI:SS'),100,'N','D',1,'Y','Y','Y','N','N','N','N','N','Y','N','N','N','N','N','N','Y','Manage Business Partners',0,0,TO_DATE('2013-10-04 00:03:24','YYYY-MM-DD HH24:MI:SS'),100,0)
 ;
 
 -- Oct 4, 2013 12:03:32 AM CEST
@@ -356,6 +356,29 @@ UPDATE AD_Field SET DisplayLogic='@IsDetailBPartner@=Y',Updated=TO_DATE('2013-10
 UPDATE AD_Field SET IsSameLine='Y',Updated=TO_DATE('2013-10-04 00:09:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202521
 ;
 
+-- Jan 7, 2015 9:09:16 AM COT
+UPDATE AD_Field SET DisplayLogic='@ElementType@=A & @IsSummary@=N',Updated=TO_DATE('2015-01-07 09:09:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202522
+;
+
+-- Jan 7, 2015 9:09:23 AM COT
+UPDATE AD_Field SET DisplayLogic='@ElementType@=A & @IsSummary@=N',Updated=TO_DATE('2015-01-07 09:09:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202521
+;
+
+-- Jan 7, 2015 9:09:29 AM COT
+UPDATE AD_Field SET DisplayLogic='@ElementType@=A & @IsSummary@=N & @IsDetailBPartner@=Y',Updated=TO_DATE('2015-01-07 09:09:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202523
+;
+
+-- Jan 7, 2015 9:10:10 AM COT
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=190, XPosition=2,Updated=TO_DATE('2015-01-07 09:10:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202521
+;
+
+-- Jan 7, 2015 9:10:10 AM COT
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=200, XPosition=4,Updated=TO_DATE('2015-01-07 09:10:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202523
+;
+
+-- Jan 7, 2015 9:10:10 AM COT
+UPDATE AD_Field SET SeqNo=210,Updated=TO_DATE('2015-01-07 09:10:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202522
+;
 
 SELECT register_migration_script('201501070858_IDEMPIERE-1148.sql') FROM dual
 ;
