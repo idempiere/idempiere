@@ -240,7 +240,7 @@ public class InvoiceNGL extends SvrProcess
 		MJournal journal = new MJournal (getCtx(), 0, get_TrxName());
 		journal.setC_DocType_ID(p_C_DocTypeReval_ID);
 		journal.setPostingType(MJournal.POSTINGTYPE_Actual);
-		journal.setDateDoc(new Timestamp(System.currentTimeMillis()));
+		journal.setDateDoc(p_DateReval);
 		journal.setDateAcct(p_DateReval); // sets the period too
 		journal.setC_Currency_ID(as.getC_Currency_ID());
 		journal.setC_AcctSchema_ID (as.getC_AcctSchema_ID());
@@ -346,6 +346,7 @@ public class InvoiceNGL extends SvrProcess
 		BigDecimal gainTotal, BigDecimal lossTotal, int AD_Org_ID, int lineNo)
 	{
 		if (journal == null)
+			throw new IllegalArgumentException("Journal is null");
 		//		CR Entry = Gain
 		if (gainTotal.signum() != 0)
 		{
