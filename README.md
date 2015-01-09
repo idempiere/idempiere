@@ -8,4 +8,5 @@ WE WORK WELL DOCUMENTING ISSUES (Please do so at https://idempiere.atlassian.net
 ALL COMMUNICATION REGARDING CODE IS APPRECIATED AT https://groups.google.com/forum/#!forum/idempiere.
 
 COMMUNITY LEADER
-Redhuan D. Oon 
+
+Redhuan D. Oon
