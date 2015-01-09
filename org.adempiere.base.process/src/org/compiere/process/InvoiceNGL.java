@@ -29,7 +29,6 @@ import org.compiere.model.MFactAcct;
 import org.compiere.model.MGLCategory;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MJournal;
-import org.compiere.model.MJournalBatch;
 import org.compiere.model.MJournalLine;
 import org.compiere.model.MOrg;
 import org.compiere.model.Query;
@@ -147,7 +146,7 @@ public class InvoiceNGL extends SvrProcess
 		    .append(" AND EXISTS (SELECT * FROM C_ElementValue ev ")
 		    	.append("WHERE ev.C_ElementValue_ID=fa.Account_ID AND (ev.AccountType='A' OR ev.AccountType='L'))")
 		    .append(" AND fa.C_AcctSchema_ID=").append(p_C_AcctSchema_ID);
-		if (!p_IsAllCurrencies)
+		if (p_IsAllCurrencies)
 			sql.append(" AND i.C_Currency_ID<>a.C_Currency_ID");
 		if (ONLY_AR.equals(p_APAR))
 			sql.append(" AND i.IsSOTrx='Y'");
@@ -238,19 +237,23 @@ public class InvoiceNGL extends SvrProcess
 			cat = MGLCategory.get(getCtx(), docType.getGL_Category_ID());
 		}
 		//
-		MJournalBatch batch = new MJournalBatch(getCtx(), 0, get_TrxName());
-		batch.setDescription (getName());
-		batch.setC_DocType_ID(p_C_DocTypeReval_ID);
-		batch.setDateDoc(new Timestamp(System.currentTimeMillis()));
-		batch.setDateAcct(p_DateReval);
-		batch.setC_Currency_ID(as.getC_Currency_ID());
-		if (!batch.save())
-			return " - Could not create Batch";
+		MJournal journal = new MJournal (getCtx(), 0, get_TrxName());
+		journal.setC_DocType_ID(p_C_DocTypeReval_ID);
+		journal.setPostingType(MJournal.POSTINGTYPE_Actual);
+		journal.setDateDoc(new Timestamp(System.currentTimeMillis()));
+		journal.setDateAcct(p_DateReval); // sets the period too
+		journal.setC_Currency_ID(as.getC_Currency_ID());
+		journal.setC_AcctSchema_ID (as.getC_AcctSchema_ID());
+		journal.setC_ConversionType_ID(p_C_ConversionTypeReval_ID);
+		journal.setGL_Category_ID (cat.getGL_Category_ID());
+		journal.setDescription(getName()); // updated below
+		if (!journal.save())
+			return " - Could not create Journal";
 		//
-		MJournal journal = null;
-		BigDecimal drTotal = Env.ZERO;
-		BigDecimal crTotal = Env.ZERO;
+		BigDecimal gainTotal = Env.ZERO;
+		BigDecimal lossTotal = Env.ZERO;
 		int AD_Org_ID = 0;
+		MOrg org = null;
 		for (int i = 0; i < list.size(); i++)
 		{
 			X_T_InvoiceGL gl = list.get(i);
@@ -265,25 +268,19 @@ public class InvoiceNGL extends SvrProcess
 			//	Change in Org
 			if (AD_Org_ID != gl.getAD_Org_ID())
 			{
-				createBalancing (asDefaultAccts, journal, drTotal, crTotal, AD_Org_ID, (i+1) * 10);
+				createBalancing (asDefaultAccts, journal, gainTotal, lossTotal, AD_Org_ID, (i+1) * 10);
 				//
 				AD_Org_ID = gl.getAD_Org_ID();
-				drTotal = Env.ZERO;
-				crTotal = Env.ZERO;
+				gainTotal = Env.ZERO;
+				lossTotal = Env.ZERO;
 				journal = null;
 			}
 			//
-			if (journal == null)
-			{
-				journal = new MJournal (batch);
-				journal.setC_AcctSchema_ID (as.getC_AcctSchema_ID());
-				journal.setC_Currency_ID(as.getC_Currency_ID());
-				journal.setC_ConversionType_ID(p_C_ConversionTypeReval_ID);
-				MOrg org = MOrg.get(getCtx(), gl.getAD_Org_ID());
+			if (org == null) {
+				org = MOrg.get(getCtx(), gl.getAD_Org_ID());
 				journal.setDescription (getName() + " - " + org.getName());
-				journal.setGL_Category_ID (cat.getGL_Category_ID());
 				if (!journal.save())
-					return " - Could not create Journal";
+					return " - Could not set Description for Journal";
 			}
 			//
 			MJournalLine line = new MJournalLine(journal);
@@ -291,39 +288,66 @@ public class InvoiceNGL extends SvrProcess
 			line.setDescription(invoice.getSummary());
 			//
 			MFactAcct fa = new MFactAcct (getCtx(), gl.getFact_Acct_ID(), null);
-			line.setC_ValidCombination_ID(MAccount.get(fa));
+			MAccount acct = MAccount.get(fa);
+			line.setC_ValidCombination_ID(acct);
 			BigDecimal dr = gl.getAmtRevalDrDiff();
 			BigDecimal cr = gl.getAmtRevalCrDiff();
-			drTotal = drTotal.add(dr);
-			crTotal = crTotal.add(cr);
+			// Check if acct.IsActiva to differentiate gain and loss ->
+			// acct.isActiva negative dr or positive cr -> loss
+			// acct.isActiva positive dr or negative cr -> gain
+			// acct.isPassiva negative cr or positive dr -> gain
+			// acct.isPassiva positive cr or negative dr -> loss
+			if (acct.isActiva()) {
+				if (dr.signum() < 0) {
+					lossTotal = lossTotal.add(dr.negate());
+				} else if (dr.signum() > 0) {
+					gainTotal = gainTotal.add(dr);
+				}
+				if (cr.signum() > 0) {
+					lossTotal = lossTotal.add(cr);
+				} if (cr.signum() < 0) {
+					gainTotal = gainTotal.add(cr.negate());
+				}
+			} else { // isPassiva
+				if (cr.signum() < 0) {
+					gainTotal = gainTotal.add(cr.negate());
+				} else if (cr.signum() > 0) {
+					lossTotal = lossTotal.add(cr);
+				}
+				if (dr.signum() > 0) {
+					gainTotal = gainTotal.add(dr);
+				} else if (dr.signum() < 0) {
+					lossTotal = lossTotal.add(dr.negate());
+				}
+			}
 			line.setAmtSourceDr (dr);
 			line.setAmtAcctDr (dr);
 			line.setAmtSourceCr (cr);
 			line.setAmtAcctCr (cr);
 			line.saveEx();
 		}
-		createBalancing (asDefaultAccts, journal, drTotal, crTotal, AD_Org_ID, (list.size()+1) * 10);
-		
-		StringBuilder msgreturn = new StringBuilder(" - ").append(batch.getDocumentNo()).append(" #").append(list.size());
-		return msgreturn.toString();
+		createBalancing (asDefaultAccts, journal, gainTotal, lossTotal, AD_Org_ID, (list.size()+1) * 10);
+
+		StringBuilder msgreturn = new StringBuilder(" - ").append(journal.getDocumentNo()).append(" #").append(list.size());
+		addLog(journal.getGL_Journal_ID(), null, null, msgreturn.toString(), MJournal.Table_ID, journal.getGL_Journal_ID());
+		return "OK";
 	}	//	createGLJournal
 
 	/**
 	 * 	Create Balancing Entry
 	 *	@param asDefaultAccts acct schema default accounts
 	 *	@param journal journal
-	 *	@param drTotal dr
-	 *	@param crTotal cr
+	 *	@param gainTotal dr
+	 *	@param lossTotal cr
 	 *	@param AD_Org_ID org
 	 *	@param lineNo base line no
 	 */
 	private void createBalancing (MAcctSchemaDefault asDefaultAccts, MJournal journal, 
-		BigDecimal drTotal, BigDecimal crTotal, int AD_Org_ID, int lineNo)
+		BigDecimal gainTotal, BigDecimal lossTotal, int AD_Org_ID, int lineNo)
 	{
 		if (journal == null)
-			throw new IllegalArgumentException("Jornal is null");
 		//		CR Entry = Gain
-		if (drTotal.signum() != 0)
+		if (gainTotal.signum() != 0)
 		{
 			MJournalLine line = new MJournalLine(journal);
 			line.setLine(lineNo+1);
@@ -337,12 +361,12 @@ public class InvoiceNGL extends SvrProcess
 				get_TrxName());
 			line.setDescription(Msg.getElement(getCtx(), "UnrealizedGain_Acct"));
 			line.setC_ValidCombination_ID(acct.getC_ValidCombination_ID());
-			line.setAmtSourceCr (drTotal);
-			line.setAmtAcctCr (drTotal);
+			line.setAmtSourceCr (gainTotal);
+			line.setAmtAcctCr (gainTotal);
 			line.saveEx();
 		}
 		//	DR Entry = Loss
-		if (crTotal.signum() != 0)
+		if (lossTotal.signum() != 0)
 		{
 			MJournalLine line = new MJournalLine(journal);
 			line.setLine(lineNo+2);
@@ -356,8 +380,8 @@ public class InvoiceNGL extends SvrProcess
 				get_TrxName());
 			line.setDescription(Msg.getElement(getCtx(), "UnrealizedLoss_Acct"));
 			line.setC_ValidCombination_ID(acct.getC_ValidCombination_ID());
-			line.setAmtSourceDr (crTotal);
-			line.setAmtAcctDr (crTotal);
+			line.setAmtSourceDr (lossTotal);
+			line.setAmtAcctDr (lossTotal);
 			line.saveEx();
 		}
 	}	//	createBalancing
