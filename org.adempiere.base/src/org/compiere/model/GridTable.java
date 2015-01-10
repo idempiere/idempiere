@@ -3232,7 +3232,7 @@ public class GridTable extends AbstractTableModel
 				{
 					String str = rs.getString(j+1);
 					if (field.isEncryptedColumn())
-						str = (String)decrypt(str, getAD_Client_ID());
+						str = (String)decrypt(str, getAD_Client_ID(rs));
 					rowData[j] = new Boolean ("Y".equals(str));	//	Boolean
 				}
 				//	LOB
@@ -3263,7 +3263,7 @@ public class GridTable extends AbstractTableModel
 					rowData[j] = rs.getString(j+1);				//	String
 				//	Encrypted
 				if (field.isEncryptedColumn() && displayType != DisplayType.YesNo)
-					rowData[j] = decrypt(rowData[j], getAD_Client_ID());
+					rowData[j] = decrypt(rowData[j], getAD_Client_ID(rs));
 			}
 		}
 		catch (SQLException e)
@@ -3297,6 +3297,20 @@ public class GridTable extends AbstractTableModel
 		return SecureEngine.decrypt(yy, AD_Client_ID);
 	}	//	decrypt
 	
+	private int getAD_Client_ID(ResultSet rs) {
+		int AD_Client_ID = -1;
+		try {
+			AD_Client_ID = rs.getInt("AD_Client_ID");
+			if (rs.wasNull())
+				AD_Client_ID = -1;
+		} catch (SQLException e) {
+			AD_Client_ID = -1;
+		}
+		if (AD_Client_ID == -1)
+			AD_Client_ID = getAD_Client_ID();
+		return AD_Client_ID;
+	}
+
 	private int getAD_Client_ID() 
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());

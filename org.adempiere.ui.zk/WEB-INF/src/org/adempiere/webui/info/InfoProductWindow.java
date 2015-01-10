@@ -290,8 +290,9 @@ public class InfoProductWindow extends InfoWindow {
 			public void onEvent(Event event) throws Exception {
 				if (contentPanel.getLayout() != null) {
 					int M_Warehouse_ID = getSelectedWarehouseId();
-					int m_M_Product_ID = getSelectedRowKey();
-					initAtpTab(M_Warehouse_ID, m_M_Product_ID);
+					Integer m_M_Product_ID = getSelectedRowKey();
+					if (m_M_Product_ID != null)
+						initAtpTab(M_Warehouse_ID, m_M_Product_ID);
 				}
 			}
 		});

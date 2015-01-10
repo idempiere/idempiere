@@ -166,6 +166,13 @@ import org.compiere.util.Msg;
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_BankStatementLine"));
 			return false;
 		}
+		//	Calculate Charge = Statement - trx - Interest  
+		BigDecimal amt = getStmtAmt();
+		amt = amt.subtract(getTrxAmt());
+		amt = amt.subtract(getInterestAmt());
+		if (amt.compareTo(getChargeAmt()) != 0)
+			setChargeAmt (amt);
+		//
 		if (getChargeAmt().signum() != 0 && getC_Charge_ID() == 0)
 		{
 			log.saveError("FillMandatory", Msg.getElement(getCtx(), "C_Charge_ID"));
@@ -199,13 +206,6 @@ import org.compiere.util.Msg;
 			setC_BPartner_ID(invoice.getC_BPartner_ID());
 		}
 		
-		//	Calculate Charge = Statement - trx - Interest  
-		BigDecimal amt = getStmtAmt();
-		amt = amt.subtract(getTrxAmt());
-		amt = amt.subtract(getInterestAmt());
-		if (amt.compareTo(getChargeAmt()) != 0)
-			setChargeAmt (amt);
-		//
 		return true;
 	}	//	beforeSave
 	

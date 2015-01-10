@@ -94,7 +94,11 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	private int currentRowIndex = -1;
 	private AbstractADWindowContent m_windowPanel;
 	private ActionListener buttonListener;
-	
+	/**
+	 * Flag detect this view has customized column or not
+	 * value is set at {@link #render(Row, Object[], int)}
+	 */
+	private boolean isGridViewCustomized = false;
 	/** DefaultFocusField		*/
 	private WEditor	defaultFocusField = null;
 
@@ -164,14 +168,33 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		return checkBox;
 	}
 
-	private String getDisplayText(Object value, GridField gridField, int rowIndex)
+	/**
+	 * call {@link #getDisplayText(Object, GridField, int, boolean)} with isForceGetValue = false
+	 * @param value
+	 * @param gridField
+	 * @param rowIndex
+	 * @return
+	 */
+	private String getDisplayText(Object value, GridField gridField, int rowIndex){
+		return getDisplayText(value, gridField, rowIndex, false);
+	}
+	
+	/**
+	 * Get display text of a field. when field have isDisplay = false always return empty string, except isForceGetValue = true
+	 * @param value
+	 * @param gridField
+	 * @param rowIndex
+	 * @param isForceGetValue
+	 * @return
+	 */
+	private String getDisplayText(Object value, GridField gridField, int rowIndex, boolean isForceGetValue)
 	{
 		if (value == null)
 			return "";
 
 		if (rowIndex >= 0) {
 			GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
-			if (!gridField.isDisplayed(gridRowCtx, true)) {
+			if (!isForceGetValue && !gridField.isDisplayed(gridRowCtx, true)) {
 				return "";
 			}
 		}
@@ -188,8 +211,18 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
     	else
     		return value.toString();
 	}
-
-	private Component getDisplayComponent(int rowIndex, Object value, GridField gridField) {
+	
+	/**
+	 * get component to display value of a field.
+	 * when display is boolean or button, return correspond component
+	 * other return a label with text get from {@link #getDisplayText(Object, GridField, int, boolean)} 
+	 * @param rowIndex
+	 * @param value
+	 * @param gridField
+	 * @param isForceGetValue
+	 * @return
+	 */
+	private Component getDisplayComponent(int rowIndex, Object value, GridField gridField, boolean isForceGetValue) {
 		Component component;
 		if (gridField.getDisplayType() == DisplayType.YesNo) {
 			component = createReadonlyCheckbox(value);
@@ -202,7 +235,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			editor.addActionListener(buttonListener);
 			component = editor.getComponent();
 		} else {
-			String text = getDisplayText(value, gridField, rowIndex);
+			String text = getDisplayText(value, gridField, rowIndex, isForceGetValue);
 
 			Label label = new Label();
 			setLabelText(text, label);
@@ -315,7 +348,6 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		int columnCount = 0;
 		GridField[] gridPanelFields = null;
 		GridField[] gridTabFields = null;
-		boolean isGridViewCustomized = false;
 		
 		if (gridPanel != null) {
 			if (!gridPanel.isVisible()) {
@@ -426,7 +458,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				}
 			}
 			
-			if (!gridPanelFields[i].isDisplayedGrid() || gridPanelFields[i].isToolbarButton()) {
+			// IDEMPIERE-2148: when has tab customize, ignore check properties isDisplayedGrid
+			if ((!isGridViewCustomized && gridPanelFields[i].isDisplayedGrid()) || gridPanelFields[i].isToolbarButton()) {
 				continue;
 			}
 			colIndex ++;
@@ -435,7 +468,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			String divStyle = CELL_DIV_STYLE;
 			org.zkoss.zul.Column column = (org.zkoss.zul.Column) columns.getChildren().get(colIndex);
 			if (column.isVisible()) {
-				Component component = getDisplayComponent(rowIndex, currentValues[i], gridPanelFields[i]);
+				Component component = getDisplayComponent(rowIndex, currentValues[i], gridPanelFields[i], isGridViewCustomized);
 				div.appendChild(component);
 				div.setAttribute("display.component", component);
 
@@ -445,8 +478,12 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				else if (DisplayType.isNumeric(gridPanelFields[i].getDisplayType())) {
 					divStyle = CELL_DIV_STYLE_ALIGN_RIGHT;
 				}
+				
 				GridRowCtx ctx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
-				component.setVisible(gridPanelFields[i].isDisplayed(ctx, true));
+				if (!gridPanelFields[i].isDisplayed(ctx, true)){
+					// IDEMPIERE-2253 
+					div.removeChild(component);
+				}
 			}
 			div.setStyle(divStyle);
 			div.setWidth("100%");
@@ -553,7 +590,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			//skip selection and indicator column
 			int colIndex = 1;
 			for (int i = 0; i < columnCount; i++) {
-				if (!gridPanelFields[i].isDisplayedGrid() || gridPanelFields[i].isToolbarButton()) {
+				if ((!isGridViewCustomized && !gridPanelFields[i].isDisplayedGrid()) || gridPanelFields[i].isToolbarButton()) {
 					continue;
 				}
 				colIndex ++;
@@ -584,11 +621,11 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		            Properties ctx = isDetailPane() ? new GridRowCtx(Env.getCtx(), gridTab, gridTab.getCurrentRow()) 
 		            	: gridPanelFields[i].getVO().ctx;
 		            //check context
-					if (!gridPanelFields[i].isDisplayedGrid() || 
-						!gridPanelFields[i].isDisplayed(ctx, true)) 
-					{
-						editor.setVisible(false);
+					if (!gridPanelFields[i].isDisplayed(ctx, true)){
+						// IDEMPIERE-2253 
+						div.removeChild(editor.getComponent());
 					}
+					
 					editor.setReadWrite(gridPanelFields[i].isEditableGrid(true));
 				}
 			}

@@ -3101,6 +3101,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	}
 
 	/**
+	 * show dialog to customize fields (hidden, display, order of field) in grid mode 
+	 * @see CustomizeGridViewDialog
      * @see ToolbarListener#onCustomize()
      */
 	public void onCustomize() {
@@ -3111,6 +3113,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		Map<Integer, String> columnsWidth = new HashMap<Integer, String>();
 		ArrayList<Integer> gridFieldIds = new ArrayList<Integer>();
 		for (int i = 0; i < fields.length; i++) {
+			// 2 is offset of num of column in grid view and actual data fields.
+			// in grid view, add two function column, indicator column and selection (checkbox) column
+			// @see GridView#setupColumns
 			Column column = (Column) columnList.get(i+2);
 			String width = column.getWidth();
 			columnsWidth.put(fields[i].getAD_Field_ID(), width);

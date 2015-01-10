@@ -72,16 +72,16 @@ import org.zkoss.zul.impl.CustomGridDataLoader;
  */
 public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFieldEditorContainer, StateChangeListener
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2966799998482667434L;
+
 	private static final String HEADER_GRID_STYLE = "border: none; margin:0; padding: 0;";
 
 	private static final int DEFAULT_DETAIL_PAGE_SIZE = 10;
 
 	private static final int DEFAULT_PAGE_SIZE = 20;
-
-	/**
-	 * generated serial version ID
-	 */
-	private static final long serialVersionUID = -7151423393713654553L;
 
 	private static final int MIN_COLUMN_WIDTH = 100;
 
@@ -97,6 +97,10 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 
 	private int pageSize = DEFAULT_PAGE_SIZE;
 
+	/**
+	 * list field display in grid mode, in case user customize grid
+	 * this list container only customize list.
+	 */
 	private GridField[] gridField;
 	private AbstractTableModel tableModel;
 
@@ -129,6 +133,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 	private boolean detailPaneMode;
 
 	protected Checkbox selectAll;
+	
+	boolean isHasCustomizeData = false;
 
 	public GridView()
 	{
@@ -245,7 +251,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 			parent = parent.getParent();					
 		}
 	}
-
+	
 	private void setupFields(GridTab gridTab) {		
 		this.gridTab = gridTab;		
 		gridTab.addStateChangeListener(this);
@@ -254,8 +260,9 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		columnWidthMap = new HashMap<Integer, String>();
 		GridField[] tmpFields = ((GridTable)tableModel).getFields();
 		MTabCustomization tabCustomization = MTabCustomization.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), gridTab.getAD_Tab_ID(), null);
-		if (tabCustomization != null && tabCustomization.getAD_Tab_Customization_ID() > 0 
-			&& tabCustomization.getCustom() != null && tabCustomization.getCustom().trim().length() > 0) {
+		isHasCustomizeData = tabCustomization != null && tabCustomization.getAD_Tab_Customization_ID() > 0 
+				&& tabCustomization.getCustom() != null && tabCustomization.getCustom().trim().length() > 0;
+		if (isHasCustomizeData) {
 			String custom = tabCustomization.getCustom().trim();
 			String[] customComponent = custom.split(";");
 			String[] fieldIds = customComponent[0].split("[,]");
@@ -266,7 +273,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 				int AD_Field_ID = Integer.parseInt(fieldIdStr);
 				for(GridField gridField : tmpFields) {
 					if (gridField.getAD_Field_ID() == AD_Field_ID) {
-						if(gridField.isDisplayedGrid() && !gridField.isToolbarButton())
+						// IDEMPIERE-2204 add field in tabCustomization list to display list event this field have showInGrid = false
+						if((gridField.isDisplayedGrid() || gridField.isDisplayed()) && !gridField.isToolbarButton())
 							fieldList.add(gridField);
 						
 						break;
@@ -477,9 +485,11 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 
 		Map<Integer, String> colnames = new HashMap<Integer, String>();
 		int index = 0;
+		
 		for (int i = 0; i < numColumns; i++)
 		{
-			if (gridField[i].isDisplayedGrid() && !gridField[i].isToolbarButton())
+			// IDEMPIERE-2148: when has tab customize, ignore check properties isDisplayedGrid
+			if ((isHasCustomizeData || gridField[i].isDisplayedGrid()) && !gridField[i].isToolbarButton())
 			{
 				colnames.put(index, gridField[i].getHeader());
 				index++;
@@ -959,7 +969,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
                 Properties ctx = isDetailPane() ? new GridRowCtx(Env.getCtx(), gridTab, gridTab.getCurrentRow()) 
             		: mField.getVO().ctx;
                 
-                comp.setVisible(mField.isDisplayedGrid() && mField.isDisplayed(ctx, true));
+                comp.setVisible((isHasCustomizeData || mField.isDisplayedGrid()) && mField.isDisplayed(ctx, true));
             }
         }
 	}
@@ -1044,6 +1054,10 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		updateModel();
 	}
 
+	/**
+	 * list field display in grid mode, in case user customize grid
+	 * this list container only customize list.
+	 */
 	public GridField[] getFields() {
 		return gridField;
 	}

@@ -165,6 +165,7 @@ public class POInfo implements Serializable
 			+ " AND c.IsActive='Y'");
 		if (!baseLanguage)
 			sql.append(" AND e.AD_Language='").append(Env.getAD_Language(m_ctx)).append("'");
+		sql.append(" ORDER BY c.AD_Column_ID");
 		//
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

@@ -42,16 +42,18 @@ public class BankTransfer extends SvrProcess
 	private String 		p_DocumentNo= "";				// Document No
 	private String 		p_Description= "";				// Description
 	private int 		p_C_BPartner_ID = 0;   			// Business Partner to be used as bridge
-	private int		p_C_Currency_ID = 0;			// Payment Currency
+	private int			p_C_Currency_ID = 0;			// Payment Currency
 	private int 		p_C_ConversionType_ID = 0;		// Payment Conversion Type
-	private int		p_C_Charge_ID = 0;				// Charge to be used as bridge
+	private int			p_C_Charge_ID = 0;				// Charge to be used as bridge
 
 	private BigDecimal 	p_Amount = Env.ZERO;  			// Amount to be transfered between the accounts
 	private int 		p_From_C_BankAccount_ID = 0;	// Bank Account From
 	private int 		p_To_C_BankAccount_ID= 0;		// Bank Account To
 	private Timestamp	p_StatementDate = null;  		// Date Statement
 	private Timestamp	p_DateAcct = null;  			// Date Account
+	private int         p_AD_Org_ID = 0;
 	private int         m_created = 0;
+
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
@@ -83,6 +85,8 @@ public class BankTransfer extends SvrProcess
 				p_StatementDate = (Timestamp)para[i].getParameter();
 			else if (name.equals("DateAcct"))
 				p_DateAcct = (Timestamp)para[i].getParameter();
+			else if (name.equals("AD_Org_ID"))
+				p_AD_Org_ID = para[i].getParameterAsInt();
 			else
 				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
 		}
@@ -100,26 +104,26 @@ public class BankTransfer extends SvrProcess
 				+ " - Description="+p_Description+ " - Statement Date="+p_StatementDate+
 				" - Date Account="+p_DateAcct);
 
-		if (Env.getAD_Org_ID(getCtx()) == 0)
-			throw new AdempiereUserError(Msg.getMsg(getCtx(), "Org0NotAllowed"));
-
 		if (p_To_C_BankAccount_ID == 0 || p_From_C_BankAccount_ID == 0)
-			throw new IllegalArgumentException("Banks required");
+			throw new AdempiereUserError (Msg.parseTranslation(getCtx(), "@FillMandatory@: @To_C_BankAccount_ID@, @From_C_BankAccount_ID@"));
 
 		if (p_To_C_BankAccount_ID == p_From_C_BankAccount_ID)
-			throw new AdempiereUserError ("Banks From and To must be different");
+			throw new AdempiereUserError (Msg.getMsg(getCtx(), "BankFromToMustDiffer"));
 		
 		if (p_C_BPartner_ID == 0)
-			throw new AdempiereUserError ("Business Partner required");
+			throw new AdempiereUserError (Msg.parseTranslation(getCtx(), "@FillMandatory@ @C_BPartner_ID@"));
 		
 		if (p_C_Currency_ID == 0)
-			throw new AdempiereUserError ("Currency required");
+			throw new AdempiereUserError (Msg.parseTranslation(getCtx(), "@FillMandatory@ @C_Currency_ID@"));
 		
 		if (p_C_Charge_ID == 0)
-			throw new AdempiereUserError ("Business Partner required");
+			throw new AdempiereUserError (Msg.parseTranslation(getCtx(), "@FillMandatory@ @C_Charge_ID@"));
 	
 		if (p_Amount.signum() == 0)
-			throw new AdempiereUserError ("Amount required");
+			throw new AdempiereUserError (Msg.parseTranslation(getCtx(), "@FillMandatory@ @Amount@"));
+
+		if (p_AD_Org_ID == 0)
+			throw new AdempiereUserError (Msg.parseTranslation(getCtx(), "@FillMandatory@ @AD_Org_ID@"));
 
 		//	Login Date
 		if (p_StatementDate == null)
@@ -147,6 +151,7 @@ public class BankTransfer extends SvrProcess
 		
 		MPayment paymentBankFrom = new MPayment(getCtx(), 0 ,  get_TrxName());
 		paymentBankFrom.setC_BankAccount_ID(mBankFrom.getC_BankAccount_ID());
+		paymentBankFrom.setAD_Org_ID(p_AD_Org_ID);
 		if (!Util.isEmpty(p_DocumentNo, true))
 			paymentBankFrom.setDocumentNo(p_DocumentNo);
 		paymentBankFrom.setDateAcct(p_DateAcct);
@@ -174,6 +179,7 @@ public class BankTransfer extends SvrProcess
 
 		MPayment paymentBankTo = new MPayment(getCtx(), 0 ,  get_TrxName());
 		paymentBankTo.setC_BankAccount_ID(mBankTo.getC_BankAccount_ID());
+		paymentBankTo.setAD_Org_ID(p_AD_Org_ID);
 		if (!Util.isEmpty(p_DocumentNo, true))
 			paymentBankTo.setDocumentNo(p_DocumentNo);
 		paymentBankTo.setDateAcct(p_DateAcct);
@@ -200,6 +206,6 @@ public class BankTransfer extends SvrProcess
 		m_created++;
 		return;
 
-	}  //  createCashLines
+	}  //  generateBankTransfer
 	
-}	//	ImmediateBankTransfer
+}	//	BankTransfer

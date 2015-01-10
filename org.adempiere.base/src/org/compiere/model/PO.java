@@ -2477,7 +2477,7 @@ public abstract class PO
 						value = DB.getDocumentNo(AD_Client_ID, p_info.getTableName(), m_trxName, this);
 				}
 				else
-					log.warning("DocumentNo updated: " + m_oldValues[i] + " -> " + value);
+					if (log.isLoggable(Level.INFO)) log.info("DocumentNo updated: " + m_oldValues[i] + " -> " + value);
 			}
 
 			if (changes)
