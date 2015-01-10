@@ -34,6 +34,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *  Calendar Period Model
@@ -54,7 +55,7 @@ public class MPeriod extends X_C_Period
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1636783790829454894L;
+	private static final long serialVersionUID = 769103495098446073L;
 
 	/**
 	 * Get Period from Cache
@@ -264,6 +265,105 @@ public class MPeriod extends X_C_Period
 			s_log.warning(period.getName()
 				+ ": Not open for " + DocBaseType + " (" + DateAcct + ")");
 		return open;
+	}	//	isOpen
+
+	/**
+	 * Is standard Period Open - based on tableID+recordID (for IDEMPIERE-2392)
+	 * @param ctx context
+	 * @param tableID
+	 * @param recordID
+	 * @return true if open
+	 */
+	public static boolean isOpen (Properties ctx, int tableID, int recordID, String trxName) {
+		MTable table = MTable.get(ctx, tableID);
+		PO po = table.getPO(recordID, trxName);
+
+		// obtain DateAcct
+		int idxdate = -1;
+		if (   tableID == MInventory.Table_ID
+				|| tableID == MMovement.Table_ID
+				|| tableID == MProduction.Table_ID) {
+			idxdate = po.get_ColumnIndex("MovementDate");
+		} else if (   tableID == MRequisition.Table_ID) {
+			idxdate = po.get_ColumnIndex("DateDoc");
+		} else if (   tableID == MBankStatement.Table_ID) {
+			idxdate = po.get_ColumnIndex("StatementDate");
+		} else if (   tableID == MAllocationHdr.Table_ID
+				|| tableID == MMatchInv.Table_ID
+				|| tableID == MMatchPO.Table_ID) {
+			idxdate = po.get_ColumnIndex("DateTrx");
+		} else {
+			idxdate = po.get_ColumnIndex("DateAcct");
+		}
+		if (idxdate < 0) {
+			s_log.warning("Could not find DateAcct for " + table.getTableName());
+			return true;
+		}
+		Timestamp dateAcct = null;
+		Object objts = po.get_Value(idxdate);
+		if (objts != null && objts instanceof Timestamp) {
+			dateAcct = (Timestamp) objts;
+		} else {
+			s_log.warning("Could not find DateAcct (null or not Timestamp) for " + table.getTableName());
+			return true;
+		}
+
+		// obtain DocBaseType
+		String docBaseType = null;
+		int idxdoctype = po.get_ColumnIndex("C_DocType_ID");
+		if (idxdoctype < 0) {
+			if (tableID == MInventory.Table_ID) {
+				docBaseType = MDocType.DOCBASETYPE_MaterialPhysicalInventory;
+			} else if (tableID == MProduction.Table_ID) {
+				docBaseType = MDocType.DOCBASETYPE_MaterialProduction;
+			} else if (tableID == MRequisition.Table_ID) {
+				docBaseType = MDocType.DOCBASETYPE_PurchaseRequisition;
+			} else if (tableID == MBankStatement.Table_ID) {
+				docBaseType = MDocType.DOCBASETYPE_BankStatement;
+			} else if (tableID == MAllocationHdr.Table_ID) {
+				docBaseType = MDocType.DOCBASETYPE_PaymentAllocation;
+			} else if (tableID == MMatchInv.Table_ID) {
+				docBaseType = MDocType.DOCBASETYPE_MatchInvoice;
+			} else if (tableID == MMatchPO.Table_ID) {
+				docBaseType = MDocType.DOCBASETYPE_MatchPO;
+			} else if (   tableID == MAssetAddition.Table_ID
+					|| tableID == MAssetReval.Table_ID
+					|| tableID == MAssetTransfer.Table_ID) {
+				docBaseType = MDocType.DOCBASETYPE_GLJournal;
+			} else if (   tableID == MAssetDisposed.Table_ID
+					|| tableID == MDepreciationExp.Table_ID) {
+				docBaseType = MDocType.DOCBASETYPE_GLDocument; // seems like a bug of fixed assets - must use GLJournal instead of GLDocument?
+			} else {
+				s_log.warning("Could not find C_DocType_ID for " + table.getTableName());
+				return true;
+			}
+		} else {
+			Integer doctypeID = null;
+			Object objint = po.get_Value(idxdoctype);
+			if (objint != null && objint instanceof Integer) {
+				doctypeID = (Integer) objint;
+			} else {
+				s_log.warning("Could not find C_DocType_ID (null or not Integer) for " + table.getTableName());
+				return true;
+			}
+			MDocType dt = MDocType.get(ctx, doctypeID);
+			docBaseType = dt.getDocBaseType();
+		}
+		if (Util.isEmpty(docBaseType)) {
+			s_log.warning("Could not find DocBaseType for " + table.getTableName());
+			return true;
+		}
+
+		// obtain AD_Org_ID
+		int orgID = 0;
+		int idxorg = po.get_ColumnIndex("AD_Org_ID");
+		if (idxorg < 0) {
+			s_log.warning("Could not find AD_Org_ID for " + table.getTableName());
+		} else {
+			orgID = po.get_ValueAsInt(idxorg);
+		}
+
+		return isOpen(ctx, dateAcct, docBaseType, orgID);
 	}	//	isOpen
 
 	/**

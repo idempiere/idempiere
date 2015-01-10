@@ -55,6 +55,7 @@ import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MColumn;
 import org.compiere.model.MFactAcct;
+import org.compiere.model.MPeriod;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.model.X_C_AcctSchema_Element;
 import org.compiere.report.core.RModel;
@@ -1285,6 +1286,12 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		if (m_data.documentQuery
 			&& m_data.AD_Table_ID != 0 && m_data.Record_ID != 0)
 		{
+			// IDEMPIERE-2392
+			if (! MPeriod.isOpen(Env.getCtx(), m_data.AD_Table_ID, m_data.Record_ID, null)) {
+				FDialog.error(0, WAcctViewer.this, "Error", Msg.getMsg(Env.getCtx(), "PeriodClosed"));
+				return;
+			}
+
 			FDialog.ask(m_data.WindowNo, this, "PostImmediate?", new Callback<Boolean>() {
 				
 				@Override
