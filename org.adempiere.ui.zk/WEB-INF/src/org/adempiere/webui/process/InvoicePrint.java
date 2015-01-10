@@ -33,6 +33,7 @@ import org.compiere.model.MClient;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MMailText;
 import org.compiere.model.MQuery;
+import org.compiere.model.MRole;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserMail;
 import org.compiere.model.PrintInfo;
@@ -46,6 +47,7 @@ import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
+import org.compiere.util.Util;
 
 /**
  *	Print Invoices on Paper or send PDFs
@@ -326,10 +328,9 @@ public class InvoicePrint extends SvrProcess
 			+ " INNER JOIN AD_Client c ON (i.AD_Client_ID=c.AD_Client_ID)"
 			+ " INNER JOIN AD_PrintForm pf ON (i.AD_Client_ID=pf.AD_Client_ID)"
 			+ " INNER JOIN C_DocType dt ON (i.C_DocType_ID=dt.C_DocType_ID)"
-		    + " WHERE i.AD_Client_ID=? AND i.AD_Org_ID=? AND i.isSOTrx='Y' AND "
+		    + " WHERE i.AD_Client_ID=? AND i.isSOTrx='Y' AND "
 		    + "       pf.AD_Org_ID IN (0,i.AD_Org_ID) " );	//	more them 1 PF
 		params.add(Env.getAD_Client_ID(Env.getCtx()));
-		params.add(Env.getAD_Org_ID(Env.getCtx()));
 		if (m_C_Invoice_ID != 0) {
 			sql.append(" AND i.C_Invoice_ID=?");
 			params.add(m_C_Invoice_ID);
@@ -376,6 +377,11 @@ public class InvoicePrint extends SvrProcess
 				/* if emailed to customer only select COmpleted & CLosed invoices */ 
 				sql.append(" AND i.DocStatus IN ('CO','CL') "); 
 			}
+		}
+		String orgWhere = MRole.getDefault(getCtx(), false).getOrgWhere(MRole.SQL_RO);
+		if (!Util.isEmpty(orgWhere, true)) {
+			sql.append(" AND i.");
+			sql.append(orgWhere);
 		}
 		sql.append(" ORDER BY i.C_Invoice_ID, pf.AD_Org_ID DESC");	//	more than 1 PF record
 	}

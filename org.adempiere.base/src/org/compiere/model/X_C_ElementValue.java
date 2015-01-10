@@ -31,7 +31,7 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20150107L;
 
     /** Standard Constructor */
     public X_C_ElementValue (Properties ctx, int C_ElementValue_ID, String trxName)
@@ -45,6 +45,10 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 // E
 			setC_Element_ID (0);
 			setC_ElementValue_ID (0);
+			setIsDetailBPartner (false);
+// N
+			setIsDetailProduct (false);
+// N
 			setIsSummary (false);
 			setName (null);
 			setPostActual (true);
@@ -143,6 +147,29 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	public String getAccountType () 
 	{
 		return (String)get_Value(COLUMNNAME_AccountType);
+	}
+
+	/** BPartnerType AD_Reference_ID=200076 */
+	public static final int BPARTNERTYPE_AD_Reference_ID=200076;
+	/** Customer = C */
+	public static final String BPARTNERTYPE_Customer = "C";
+	/** Vendor = V */
+	public static final String BPARTNERTYPE_Vendor = "V";
+	/** Employee = E */
+	public static final String BPARTNERTYPE_Employee = "E";
+	/** Set Business Partner Type.
+		@param BPartnerType Business Partner Type	  */
+	public void setBPartnerType (String BPartnerType)
+	{
+
+		set_Value (COLUMNNAME_BPartnerType, BPartnerType);
+	}
+
+	/** Get Business Partner Type.
+		@return Business Partner Type	  */
+	public String getBPartnerType () 
+	{
+		return (String)get_Value(COLUMNNAME_BPartnerType);
 	}
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
@@ -298,6 +325,48 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	public boolean isBankAccount () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsBankAccount);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Manage Business Partners.
+		@param IsDetailBPartner Manage Business Partners	  */
+	public void setIsDetailBPartner (boolean IsDetailBPartner)
+	{
+		set_Value (COLUMNNAME_IsDetailBPartner, Boolean.valueOf(IsDetailBPartner));
+	}
+
+	/** Get Manage Business Partners.
+		@return Manage Business Partners	  */
+	public boolean isDetailBPartner () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsDetailBPartner);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Manage Products.
+		@param IsDetailProduct Manage Products	  */
+	public void setIsDetailProduct (boolean IsDetailProduct)
+	{
+		set_Value (COLUMNNAME_IsDetailProduct, Boolean.valueOf(IsDetailProduct));
+	}
+
+	/** Get Manage Products.
+		@return Manage Products	  */
+	public boolean isDetailProduct () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsDetailProduct);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

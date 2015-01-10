@@ -88,6 +88,15 @@ public interface I_C_ElementValue
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name BPartnerType */
+    public static final String COLUMNNAME_BPartnerType = "BPartnerType";
+
+	/** Set Business Partner Type	  */
+	public void setBPartnerType (String BPartnerType);
+
+	/** Get Business Partner Type	  */
+	public String getBPartnerType();
+
     /** Column name C_BankAccount_ID */
     public static final String COLUMNNAME_C_BankAccount_ID = "C_BankAccount_ID";
 
@@ -209,6 +218,24 @@ public interface I_C_ElementValue
 	  * Indicates if this is the Bank Account
 	  */
 	public boolean isBankAccount();
+
+    /** Column name IsDetailBPartner */
+    public static final String COLUMNNAME_IsDetailBPartner = "IsDetailBPartner";
+
+	/** Set Manage Business Partners	  */
+	public void setIsDetailBPartner (boolean IsDetailBPartner);
+
+	/** Get Manage Business Partners	  */
+	public boolean isDetailBPartner();
+
+    /** Column name IsDetailProduct */
+    public static final String COLUMNNAME_IsDetailProduct = "IsDetailProduct";
+
+	/** Set Manage Products	  */
+	public void setIsDetailProduct (boolean IsDetailProduct);
+
+	/** Get Manage Products	  */
+	public boolean isDetailProduct();
 
     /** Column name IsDocControlled */
     public static final String COLUMNNAME_IsDocControlled = "IsDocControlled";

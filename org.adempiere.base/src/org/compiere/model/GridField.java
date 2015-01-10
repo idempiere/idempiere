@@ -511,9 +511,7 @@ public class GridField
 		if (checkContext && getGridTab() != null && !Env.getContext(ctx, m_vo.WindowNo,m_vo.TabNo, "IsActive").equals("Y"))
 			return false;
 
-		//  ultimately visibility decides
-		if(isGrid)
-			return isDisplayedGrid();
+
 		
 		return isDisplayed (ctx, checkContext);
 	}	//	isEditable

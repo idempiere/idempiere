@@ -128,7 +128,7 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 	public void dynInit() throws Exception
 	{
 		//	C_OrderLine.M_Warehouse_ID
-		MLookup orgL = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, 2223, DisplayType.TableDir);
+		MLookup orgL = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, 11474 /* M_Requisition.M_Warehouse_ID */, DisplayType.TableDir);
 		fWarehouse = new WTableDirEditor ("M_Warehouse_ID", true, false, true, orgL);
 		lWarehouse.setText(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));
 		fWarehouse.addValueChangeListener(this);
