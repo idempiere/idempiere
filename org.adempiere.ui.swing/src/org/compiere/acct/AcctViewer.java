@@ -43,6 +43,7 @@ import org.compiere.grid.ed.VDate;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MColumn;
+import org.compiere.model.MPeriod;
 import org.compiere.model.X_C_AcctSchema_Element;
 import org.compiere.report.core.RModel;
 import org.compiere.report.core.RModelExcelExporter;
@@ -777,17 +778,24 @@ public class AcctViewer extends CFrame
 	private void actionRePost()
 	{
 		if (m_data.documentQuery 
-			&& m_data.AD_Table_ID != 0 && m_data.Record_ID != 0
-			&& ADialog.ask(m_data.WindowNo, this, "PostImmediate?"))
+			&& m_data.AD_Table_ID != 0 && m_data.Record_ID != 0)
 		{
-			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			boolean force = forcePost.isSelected();
-			String error = AEnv.postImmediate (m_data.WindowNo, m_data.AD_Client_ID,
-				m_data.AD_Table_ID, m_data.Record_ID, force);
-			setCursor(Cursor.getDefaultCursor());
-			if (error != null)
-				ADialog.error(0, this, "PostingError-N", error);
-			actionQuery();
+			// IDEMPIERE-2392
+			if (! MPeriod.isOpen(Env.getCtx(), m_data.AD_Table_ID, m_data.Record_ID, null)) {
+				ADialog.error(0, this, "Error", Msg.getMsg(Env.getCtx(), "PeriodClosed"));
+				return;
+			}
+
+			if (ADialog.ask(m_data.WindowNo, this, "PostImmediate?")) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				boolean force = forcePost.isSelected();
+				String error = AEnv.postImmediate (m_data.WindowNo, m_data.AD_Client_ID,
+					m_data.AD_Table_ID, m_data.Record_ID, force);
+				setCursor(Cursor.getDefaultCursor());
+				if (error != null)
+					ADialog.error(0, this, "PostingError-N", error);
+				actionQuery();
+			}
 		}
 	}   //  actionRePost
 
