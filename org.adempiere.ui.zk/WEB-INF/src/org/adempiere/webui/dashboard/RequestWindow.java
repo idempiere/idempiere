@@ -46,7 +46,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Center;
+import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Timebox;
 
@@ -249,12 +249,12 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		borderlayout.setHflex("1");
 		borderlayout.setVflex("min");
 		
-		Center centerPane = new Center();
-		centerPane.setSclass("dialog-content");
-		centerPane.setAutoscroll(true);
-		borderlayout.appendChild(centerPane);
+		North northPane = new North();
+		northPane.setSclass("dialog-content");
+		northPane.setAutoscroll(true);
+		borderlayout.appendChild(northPane);
 		
-		centerPane.appendChild(grid);
+		northPane.appendChild(grid);
 		grid.setVflex("1");
 		grid.setHflex("1");
 
