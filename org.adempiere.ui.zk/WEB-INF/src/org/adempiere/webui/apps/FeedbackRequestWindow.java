@@ -58,8 +58,8 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
 /**
@@ -197,12 +197,12 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		borderlayout.setHflex("1");
 		borderlayout.setVflex("min");
 		
-		Center centerPane = new Center();
-		centerPane.setSclass("dialog-content");
-		centerPane.setAutoscroll(true);
-		borderlayout.appendChild(centerPane);
+		North northPane = new North();
+		northPane.setSclass("dialog-content");
+		northPane.setAutoscroll(true);
+		borderlayout.appendChild(northPane);
 		
-		centerPane.appendChild(grid);
+		northPane.appendChild(grid);
 		grid.setVflex("1");
 		grid.setHflex("1");
 
