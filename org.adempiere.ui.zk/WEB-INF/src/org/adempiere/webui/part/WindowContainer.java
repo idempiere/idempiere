@@ -21,6 +21,7 @@ import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
+import org.adempiere.webui.desktop.TabbedDesktop;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.X_AD_CtxHelp;
@@ -265,11 +266,38 @@ public class WindowContainer extends AbstractUIPart
         return tab;
     }
 
-	public void setTabTitle(String title) {
-		setTabTitle(title, getSelectedTab());
+	public void setTabTitle(String title, int windowNo) {
+		setTabTitle(title, getTab(windowNo));
+	}
+
+	/**
+	 * IDEMPIERE-2333 / getTab - get the tab based on the windowNo
+	 * @param windowNo
+	 * @return org.zkoss.zul.Tab
+	 */
+	private org.zkoss.zul.Tab getTab(int windowNo) {
+		org.zkoss.zul.Tabpanels panels = tabbox.getTabpanels();
+		List<?> childrens = panels.getChildren();
+		for (Object child : childrens)
+		{
+			Tabpanel panel = (Tabpanel) child;
+			Component component = panel.getFirstChild();
+			Object att = component != null ? component.getAttribute(TabbedDesktop.WINDOWNO_ATTRIBUTE) : null;
+			if (att != null && (att instanceof Integer))
+			{
+				if (windowNo == (Integer)att)
+				{
+					org.zkoss.zul.Tab tab = panel.getLinkedTab();
+					return tab;
+				}
+			}
+		}
+		return null;
 	}
 
 	public void setTabTitle(String title, org.zkoss.zul.Tab tab) {
+		if (tab == null)
+			return;
 		title = title.replaceAll("[&]", "");
 		if (title.length() <= MAX_TITLE_LENGTH) 
 		{
@@ -278,7 +306,7 @@ public class WindowContainer extends AbstractUIPart
 		else
 		{
 			tab.setTooltiptext(title);
-			title = title.substring(0, 27) + "...";
+			title = title.substring(0, MAX_TITLE_LENGTH-3) + "...";
 			tab.setLabel(title);
 		}
 	}

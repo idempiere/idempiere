@@ -212,7 +212,7 @@ public interface IDesktop extends UIPart {
 
 	public boolean isPendingWindow();
 
-	public void setTabTitle(String title);
+	public void setTabTitle(String title, int windowNo);
 	
 	public void renderHomeTab();
 }
