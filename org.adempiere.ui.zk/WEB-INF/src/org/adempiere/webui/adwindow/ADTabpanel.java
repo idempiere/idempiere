@@ -435,8 +435,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         			editors.add(editor);
         			editor.getComponent().setId(field.getColumnName());
         			toolbarButtonEditors.add(editor);
-        			        			
-        			continue;
+                	if (field.isToolbarOnlyButton())
+                		continue;
         		}
         	}
         	

@@ -515,12 +515,12 @@ public interface I_AD_Column
 	/** Set Toolbar Button.
 	  * Add the column button to the toolbar
 	  */
-	public void setIsToolbarButton (boolean IsToolbarButton);
+	public void setIsToolbarButton (String IsToolbarButton);
 
 	/** Get Toolbar Button.
 	  * Add the column button to the toolbar
 	  */
-	public boolean isToolbarButton();
+	public String getIsToolbarButton();
 
     /** Column name IsTranslated */
     public static final String COLUMNNAME_IsTranslated = "IsTranslated";

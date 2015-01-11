@@ -207,7 +207,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
         {
         	MField field = getMField(gridField.getAD_Field_ID());
 
-        	if (!gridField.isDisplayed() || gridField.isToolbarButton())
+        	if (!gridField.isDisplayed() || gridField.isToolbarOnlyButton())
         		continue;
 
         	// field group
@@ -372,11 +372,11 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		int maxcol=0;
         for (GridField gridField : getGridFields())
         {
-        	if (!gridField.isDisplayed() || gridField.isToolbarButton())
+        	if (!gridField.isDisplayed() || gridField.isToolbarOnlyButton())
         		continue;
         	int col = gridField.getXPosition() + gridField.getColumnSpan();
         	if (gridField.isFieldOnly()
-        		|| (gridField.getDisplayType() == DisplayType.Button && !gridField.isToolbarButton())
+        		|| (gridField.getDisplayType() == DisplayType.Button && !gridField.isToolbarOnlyButton())
     			|| gridField.getDisplayType() == DisplayType.YesNo) {
         		col--;
         	}
@@ -804,7 +804,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		for (MField field : getMFields())
 		{
 			GridField gridField = getGridField(field);
-			if (!field.isActive() || gridField.isToolbarButton())
+			if (!field.isActive() || gridField.isToolbarOnlyButton())
 				continue;
 			KeyNamePair pair = new KeyNamePair(field.getAD_Field_ID(), field.getName());
 			if (field.isDisplayed()) {

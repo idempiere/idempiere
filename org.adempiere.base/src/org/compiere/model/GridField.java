@@ -81,7 +81,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3759342619253398035L;
+	private static final long serialVersionUID = -757531553169088955L;
 
 	/**
 	 *  Field Constructor.
@@ -2156,7 +2156,13 @@ public class GridField
 	
 	public boolean isToolbarButton()
 	{
-		return m_vo.displayType == DisplayType.Button && m_vo.IsToolbarButton;
+		return m_vo.displayType == DisplayType.Button &&
+			(MColumn.ISTOOLBARBUTTON_Toolbar.equals(m_vo.IsToolbarButton) || MColumn.ISTOOLBARBUTTON_Both.equals(m_vo.IsToolbarButton));
+	}
+
+	public boolean isToolbarOnlyButton()
+	{
+		return m_vo.displayType == DisplayType.Button && MColumn.ISTOOLBARBUTTON_Toolbar.equals(m_vo.IsToolbarButton);
 	}
 
 	public GridField clone(Properties ctx)  

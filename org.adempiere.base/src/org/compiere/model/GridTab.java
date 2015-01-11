@@ -3270,7 +3270,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		int maxcol=0;
         for (GridField gridField : getFields())
         {
-        	if (!gridField.isDisplayed() || gridField.isToolbarButton())
+        	if (!gridField.isDisplayed() || gridField.isToolbarOnlyButton())
         		continue;
         	int col = gridField.getXPosition() + gridField.getColumnSpan();
         	if (gridField.isFieldOnly()

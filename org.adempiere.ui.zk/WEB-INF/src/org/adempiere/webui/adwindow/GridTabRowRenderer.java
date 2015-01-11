@@ -459,7 +459,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			}
 			
 			// IDEMPIERE-2148: when has tab customize, ignore check properties isDisplayedGrid
-			if ((!isGridViewCustomized && gridPanelFields[i].isDisplayedGrid()) || gridPanelFields[i].isToolbarButton()) {
+			if ((!isGridViewCustomized && gridPanelFields[i].isDisplayedGrid()) || gridPanelFields[i].isToolbarOnlyButton()) {
 				continue;
 			}
 			colIndex ++;
@@ -590,7 +590,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			//skip selection and indicator column
 			int colIndex = 1;
 			for (int i = 0; i < columnCount; i++) {
-				if ((!isGridViewCustomized && !gridPanelFields[i].isDisplayedGrid()) || gridPanelFields[i].isToolbarButton()) {
+				if ((!isGridViewCustomized && !gridPanelFields[i].isDisplayedGrid()) || gridPanelFields[i].isToolbarOnlyButton()) {
 					continue;
 				}
 				colIndex ++;

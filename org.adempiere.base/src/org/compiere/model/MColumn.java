@@ -241,9 +241,9 @@ public class MColumn extends X_AD_Column
 		
 		if (displayType != DisplayType.Button)
 		{
-			if (isToolbarButton())
+			if (! ISTOOLBARBUTTON_Window.equals(getIsToolbarButton()))
 			{
-				setIsToolbarButton(false);
+				setIsToolbarButton(ISTOOLBARBUTTON_Window);
 			}
 		}
 		

@@ -32,7 +32,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20150111L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -775,12 +775,14 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return false;
 	}
 
-	/** IsToolbarButton AD_Reference_ID=319 */
-	public static final int ISTOOLBARBUTTON_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISTOOLBARBUTTON_Yes = "Y";
-	/** No = N */
-	public static final String ISTOOLBARBUTTON_No = "N";
+	/** IsToolbarButton AD_Reference_ID=200099 */
+	public static final int ISTOOLBARBUTTON_AD_Reference_ID=200099;
+	/** Toolbar = Y */
+	public static final String ISTOOLBARBUTTON_Toolbar = "Y";
+	/** Window = N */
+	public static final String ISTOOLBARBUTTON_Window = "N";
+	/** Both = B */
+	public static final String ISTOOLBARBUTTON_Both = "B";
 	/** Set Toolbar Button.
 		@param IsToolbarButton 
 		Add the column button to the toolbar
