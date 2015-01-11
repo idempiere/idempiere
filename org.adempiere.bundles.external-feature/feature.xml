@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.bundles.external"
       label="External bundles"
-      version="2.1.0.qualifier"
+      version="3.0.0.qualifier"
       provider-name="Adempiere.org">
 
    <description url="http://www.example.com/description">
@@ -18,14 +18,14 @@
    </license>
 
    <plugin
-         id="com.springsource.javax.jms"
+         id="javax.jms"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="javax.servlet.jsp.jstl"
+         id="org.apache.taglibs.taglibs-standard-spec"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -39,14 +39,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.net.sf.cglib"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.springsource.org.apache.activemq"
+         id="org.apache.servicemix.bundles.cglib"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -60,21 +53,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.kahadb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.poi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.taglibs.standard.glassfish"
          download-size="0"
          install-size="0"
          version="0.0.0"

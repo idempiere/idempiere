@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test
+Bundle-SymbolicName: org.adempiere.report.jasper.fragment.test
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.adempiere.report.jasper.webapp;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Jetty-WarPatchFragmentFolderPath: /
+

@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Swing Client
+Bundle-Name: iDempiere Swing Client
 Bundle-SymbolicName: org.adempiere.ui.swing;singleton:=true
-Bundle-Version: 2.1.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-ClassPath: client.jar,
  swingx-1.6.jar,
  looks-2.0.4.jar,
@@ -68,15 +68,15 @@ Export-Package: com.jgoodies.looks,
  org.jdesktop.swingx.tree,
  org.jdesktop.swingx.treetable,
  org.jdesktop.swingx.util
-Require-Bundle: org.adempiere.base;bundle-version="2.1.0",
- org.adempiere.ui;bundle-version="2.1.0",
+Require-Bundle: org.adempiere.base;bundle-version="3.0.0",
+ org.adempiere.ui;bundle-version="3.0.0",
  org.restlet;bundle-version="2.1.0",
  org.restlet.ext.net;bundle-version="2.1.0",
  org.restlet.ext.servlet;bundle-version="2.1.0",
  org.restlet.ext.ssl;bundle-version="2.1.0"
 Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.adempiere.base
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: javax.net.ssl,
  net.sf.jasperreports.engine,
  org.apache.ecs,

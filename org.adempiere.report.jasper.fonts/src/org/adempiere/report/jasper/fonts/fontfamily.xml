@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontfamilies>
+  <fontFamily name="Arial">
+     <normal>org/adempiere/report/jasper/fonts/Arial.ttf</normal>
+     <bold>org/adempiere/report/jasper/fonts/Arial_Bold.ttf</bold>
+     <italic>org/adempiere/report/jasper/fonts/Arial_Italic.ttf</italic>
+     <bolditalic>org/adempiere/report/jasper/fonts/Arial_Bold_Italic.ttf</bolditalic>
+     <pdfembedded>true</pdfembedded>
+  </fontFamily>
+  <fontFamily name="Comic Sans Test">
+     <normal>org/adempiere/report/jasper/fonts/Comic_Sans_MS.ttf</normal>
+     <bold>org/adempiere/report/jasper/fonts/Comic_Sans_MS_Bold.ttf</bold>
+     <pdfembedded>true</pdfembedded>
+  </fontFamily>
+  <fontFamily name="Courier New">
+     <normal>org/adempiere/report/jasper/fonts/Courier_New.ttf</normal>
+     <bold>org/adempiere/report/jasper/fonts/Courier_New_Bold.ttf</bold>
+     <italic>org/adempiere/report/jasper/fonts/Courier_New_Italic.ttf</italic>
+     <bolditalic>org/adempiere/report/jasper/fonts/Courier_New_Bold_Italic.ttf</bolditalic>
+     <pdfembedded>true</pdfembedded>
+  </fontFamily>
+  <fontFamily name="Georgia">
+     <normal>org/adempiere/report/jasper/fonts/Georgia.ttf</normal>
+     <bold>org/adempiere/report/jasper/fonts/Georgia_Bold.ttf</bold>
+     <italic>org/adempiere/report/jasper/fonts/Georgia_Italic.ttf</italic>
+     <bolditalic>org/adempiere/report/jasper/fonts/Georgia_Bold_Italic.ttf</bolditalic>
+     <pdfembedded>true</pdfembedded>
+  </fontFamily>
+  <fontFamily name="Monospaced">
+     <normal>org/adempiere/report/jasper/fonts/LiberationMono-Regular.ttf</normal>
+     <bold>org/adempiere/report/jasper/fonts/LiberationMono-Bold.ttf</bold>
+     <italic>org/adempiere/report/jasper/fonts/LiberationMono-Italic.ttf</italic>
+     <bolditalic>org/adempiere/report/jasper/fonts/LiberationMono-BoldItalic.ttf</bolditalic>
+     <pdfembedded>true</pdfembedded>
+  </fontFamily>
+  <fontFamily name="Times New Roman">
+     <normal>org/adempiere/report/jasper/fonts/Times_New_Roman.ttf</normal>
+     <bold>org/adempiere/report/jasper/fonts/Times_New_Roman_Bold.ttf</bold>
+     <italic>org/adempiere/report/jasper/fonts/Times_New_Roman_Italic.ttf</italic>
+     <bolditalic>org/adempiere/report/jasper/fonts/Times_New_Roman_Bold_Italic.ttf</bolditalic>
+     <pdfembedded>true</pdfembedded>
+  </fontFamily>
+  <fontFamily name="Verdana">
+     <normal>org/adempiere/report/jasper/fonts/Verdana.ttf</normal>
+     <bold>org/adempiere/report/jasper/fonts/Verdana_Bold.ttf</bold>
+     <italic>org/adempiere/report/jasper/fonts/Verdana_Italic.ttf</italic>
+     <bolditalic>org/adempiere/report/jasper/fonts/Verdana_Bold_Italic.ttf</bolditalic>
+     <pdfembedded>true</pdfembedded>
+  </fontFamily>
+</fontfamilies>
+

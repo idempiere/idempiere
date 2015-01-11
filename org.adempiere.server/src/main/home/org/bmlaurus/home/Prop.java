@@ -105,7 +105,7 @@ public final class Prop implements Serializable {
 	public static final String	RSS_REFRESH 		=	"RssRefreshMessage";
 	
 	/**Defaults*/
-	private static final String CREDITS				=	"Welcome to the iDempiere (OSGi+ADempiere) 1.0b Page!";
+	private static final String CREDITS				=	"Welcome to the iDempiere (OSGi+ADempiere) 3.0 Page!";
 	private static String LOGO_URL 					= 	null;
 	
 	

@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.target.platform"
       label="Adempiere Target Platform"
-      version="2.1.0.qualifier"
+      version="3.0.0.qualifier"
       provider-name="Adempiere.org">
 
    <description url="http://www.example.com/description">
@@ -19,25 +19,33 @@
 
    <includes
          id="org.eclipse.equinox.executable"
-         version="0.0.0"
+         version="3.6.100.v20140819-1617"
          os="linux,macosx,win32"
          ws="cocoa,gtk,win32"
          arch="x86,x86_64"/>
 
    <includes
          id="org.eclipse.equinox.server.core"
-         version="0.0.0"/>
+         version="1.3.0.v20140909-1633"/>
 
    <includes
          id="org.eclipse.equinox.server.p2"
-         version="0.0.0"/>
+         version="1.2.100.v20140606-1602"/>
 
    <includes
          id="org.adempiere.bundles.external"
-         version="2.1.0.qualifier"/>
+         version="3.0.0.qualifier"/>
 
    <includes
-         id="org.eclipse.gemini.web.feature"
+         id="org.eclipse.ecf.core.feature"
+         version="1.1.0.v20140827-1444"/>
+
+   <includes
+         id="org.eclipse.ecf.core.ssl.feature"
+         version="1.0.0.v20140827-1444"/>
+
+   <includes
+         id="org.eclipse.osgi.compatibility.plugins.feature"
          version="0.0.0"/>
 
    <plugin
@@ -51,153 +59,76 @@
          id="org.apache.ant"
          download-size="0"
          install-size="0"
-         version="1.7.1.v20100518-1145"/>
+         version="1.9.2.v201404171502"/>
 
    <plugin
          id="org.eclipse.core.contenttype"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.contenttype.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.jobs.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
+         version="3.4.200.v20140207-1251"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.runtime"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.runtime.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.app.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.common.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.ds.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.event.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
+         version="3.10.0.v20140318-2214"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.equinox.p2.director.app"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.300.v20140228-1829"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.equinox.p2.publisher"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.preferences.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.registry.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.security.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.util.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.http.registry.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osgi.services.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osgi.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osgi.util.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
+         version="1.3.0.v20140911-0143"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ant.core"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.3.0.v20140518-0042"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.variables"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.2.800.v20130819-1716"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.felix.gogo.command"
+         download-size="0"
+         install-size="0"
+         version="0.10.0.v201209301215"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.felix.gogo.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.10.0.v201209301036"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.felix.gogo.shell"
+         download-size="0"
+         install-size="0"
+         version="0.10.0.v201212101605"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.console"
+         download-size="0"
+         install-size="0"
+         version="1.1.0.v20140131-1639"
          unpack="false"/>
 
 </feature>

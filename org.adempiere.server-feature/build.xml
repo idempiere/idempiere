@@ -39,8 +39,14 @@
 		</condition>
 		<echo message="Windows=${isWindows}" />
 
-		<copy file="plugins/org.adempiere.tomcat.config_2.1.0/META-INF/tomcat/serverTemplate.xml"
-			tofile="plugins/org.adempiere.tomcat.config_2.1.0/META-INF/tomcat/server.xml" filtering="yes" overwrite="yes"/>
+		<copy file="jettyhome/etc/jetty-template.xml"
+			tofile="jettyhome/etc/jetty.xml" filtering="yes" overwrite="yes"/>
+		<copy file="jettyhome/etc/jetty-ssl-template.xml"
+					tofile="jettyhome/etc/jetty-ssl.xml" filtering="yes" overwrite="yes"/>
+		<copy file="jettyhome/etc/jetty-selector-template.xml"
+					tofile="jettyhome/etc/jetty-selector.xml" filtering="yes" overwrite="yes"/>
+		<copy file="hazelcast-template.xml"
+							tofile="hazelcast.xml" filtering="yes" overwrite="yes"/>
 
 	</target>
 

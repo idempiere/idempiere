@@ -73,19 +73,16 @@ public class KeyStoreMgt
 	
 	
 	/**	Directory below IDEMPIERE_HOME	*/
-	public static String		KEYSTORE_DIRECTORY = "keystore";
+	public static String		KEYSTORE_DIRECTORY = "jettyhome/etc";
 	/** Name of KeyStore				*/
-	public static String		KEYSTORE_NAME = "myKeystore";
-	/** Certificate Alias				*/
-	public static String		CERTIFICATE_ALIAS = "idempiere";
-	
+	public static String		KEYSTORE_NAME = "keystore";	
 
 	/**
 	 * 	Verify/Create Key Store
 	 * 	@param parent frame
 	 *	@return null or error message
 	 */
-	public String verify (JFrame parent)
+	public String verify (JFrame parent, String alias)
 	{
 		KeyStore ks = null;
 		try
@@ -100,7 +97,7 @@ public class KeyStoreMgt
 		//	No KeyStore
 		if (ks == null)
 		{
-			createCertificate(CERTIFICATE_ALIAS, parent);
+			createCertificate(alias, parent);
 			try
 			{
 				ks = getKeyStore();
@@ -120,7 +117,7 @@ public class KeyStoreMgt
 		Certificate cert = null;
 		try
 		{
-			cert = getCertificate(CERTIFICATE_ALIAS);
+			cert = getCertificate(alias);
 		}
 		catch (Exception e)
 		{
@@ -226,7 +223,7 @@ public class KeyStoreMgt
 		{
 			File dir = m_file.getParentFile();
 			if (!dir.exists())
-				dir.mkdir();
+				dir.mkdirs();
 		}
 		catch (Exception e)
 		{
@@ -496,7 +493,7 @@ public class KeyStoreMgt
 	{
 		Adempiere.startupEnvironment(true);
 		System.out.println(new KeyStoreMgt (
-			"C:/Adempiere/keystore/myKeystore2", "myPassword".toCharArray()).verify(null));
+			"C:/Adempiere/keystore/myKeystore2", "myPassword".toCharArray()).verify(null, "idempiere"));
 	}	//	main
 	
 }	//	MyKeyStore

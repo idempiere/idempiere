@@ -23,6 +23,7 @@ import java.util.logging.Level;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +43,10 @@ import org.compiere.util.Util;
  *  @version $Id: LocationServlet.java,v 1.5 2006/07/30 00:53:21 jjanke Exp $
  *  @author Michael Judd BF [2728388] - fix potential CSS velnerability
  */
+@WebServlet(
+		name="locationServlet",
+        urlPatterns = "/locationServlet"
+)
 public class LocationServlet extends HttpServlet
 {
     /**

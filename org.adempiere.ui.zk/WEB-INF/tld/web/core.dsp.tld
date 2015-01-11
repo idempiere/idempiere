@@ -509,6 +509,16 @@ Copyright (C) 2005 Potix Corporation. All Rights Reserved.
 	the browser code.
 		</description>
 	</function>
+	<function>
+		<name>resolveThemeURL</name>
+		<function-class>org.zkoss.web.fn.ServletFns</function-class>
+		<function-signature>
+	java.lang.String resolveThemeURL(java.lang.String)
+		</function-signature>
+		<description>
+		Resolves a URL to point to resource served by the current theme.
+		</description>
+	</function>
 
 	<function>
 		<name>escapeXML</name>

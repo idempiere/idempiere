@@ -1,0 +1,4 @@
+To Setup SSL:
+
+1) Copy your keystore file here.
+2) Replace the password and certAlias values in jetty-ssl.xml

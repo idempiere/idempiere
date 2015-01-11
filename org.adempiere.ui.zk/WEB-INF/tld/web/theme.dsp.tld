@@ -183,4 +183,14 @@ Copyright (C) 2012 Potix Corporation. All Rights Reserved.
 	Loads a specific theme properties and apply them into the request scope
 		]]></description>
 	</function>
+	<function>
+		<name>getCurrentTheme</name>
+		<function-class>org.zkoss.web.fn.ThemeFns</function-class>
+		<function-signature>
+	java.lang.String getCurrentTheme()
+		</function-signature>
+		<description><![CDATA[
+	Returns the current theme name
+		]]></description>
+	</function>
 </taglib>

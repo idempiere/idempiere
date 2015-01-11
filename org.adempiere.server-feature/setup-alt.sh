@@ -15,11 +15,11 @@ else
 fi
 
 #setup idempiere.properties and idempiereEnv.propertiess
-$JAVA -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.7.*.jar -application org.adempiere.install.application -consoleLog
+$JAVA -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.adempiere.install.application
 
-echo ... Setup Tomcat
-#setup tomcat
-$JAVA -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.7.*.jar -application org.eclipse.ant.core.antRunner -buildfile build.xml
+echo ... Setup Jetty
+#setup jetty
+$JAVA -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.eclipse.ant.core.antRunner -buildfile build.xml
 
 echo ... Make .sh executable
 chmod -R a+x *.sh

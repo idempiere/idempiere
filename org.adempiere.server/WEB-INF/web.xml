@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSPY v2004 rel. 4 U (http://www.xmlspy.com) by Jorg Janke (ComPiere, Inc.) -->
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
-   version="2.4">
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
 	<display-name>iDempiere Root</display-name>
 	<description></description>
 	<context-param>
@@ -42,16 +41,16 @@
 		<servlet-class>org.compiere.web.AdempiereMonitor</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	<!-- Restlet adapter -->  
-   <servlet>  
-      <servlet-name>RestletServlet</servlet-name>  
+	<!-- Restlet adapter -->
+    <servlet>
+      <servlet-name>RestletServlet</servlet-name>
       <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
       <init-param>
             <!-- Application class name -->
             <param-name>org.restlet.application</param-name>
             <param-value>org.adempiere.web.server.ServerApplication</param-value>
       </init-param>
-   </servlet>
+    </servlet>
 	<servlet-mapping>
 		<servlet-name>JnlpDownloadServlet</servlet-name>
 		<url-pattern>*.jnlp</url-pattern>
@@ -64,9 +63,9 @@
 		<servlet-name>idempiereMonitor</servlet-name>
 		<url-pattern>/idempiereMonitor/*</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>  
-      <servlet-name>RestletServlet</servlet-name>  
-      <url-pattern>/server/*</url-pattern>  
+	<servlet-mapping>
+      <servlet-name>RestletServlet</servlet-name>
+      <url-pattern>/server/*</url-pattern>
    </servlet-mapping>
 	<session-config>
 		<session-timeout>15</session-timeout>

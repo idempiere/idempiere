@@ -98,6 +98,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		this.setSizable(true);
 		this.setClosable(true);
 		this.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "recordInfo");
+		this.setSclass("popup-dialog");
 		
 		try
 		{
@@ -180,6 +181,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		}
 		//
 		South south = new South();
+		south.setSclass("dialog-footer");
 		south.setParent(layout);
 		south.appendChild(confirmPanel);
 		

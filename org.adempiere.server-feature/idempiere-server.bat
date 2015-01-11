@@ -17,4 +17,4 @@ goto START
 @Echo Starting iDempiere Server ...
 @Echo =======================================
 
-@"%JAVA%" -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -XX:MaxPermSize=192m -jar plugins/org.eclipse.equinox.launcher_1.*.jar -console 12612 -application org.adempiere.server.application
+@"%JAVA%" -Dosgi.console=localhost:12612 -Djetty.home=jettyhome -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-selector.xml,etc/jetty-ssl.xml,etc/jetty-https.xml,etc/jetty-deployer.xml -XX:MaxPermSize=192m -jar plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application

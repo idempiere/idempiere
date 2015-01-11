@@ -320,7 +320,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
         else if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
         {
         	SessionManager.logoutSession();
-            wndLogin.loginCancelled();
+            //wndLogin.loginCancelled();
         }
     }
     
@@ -490,7 +490,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 				@Override
 				public void onCallback(Integer result) {
 		        	SessionManager.logoutSession();
-		        	wndLogin.loginCancelled();
+		        	//wndLogin.loginCancelled();
 				}
 				
 			});

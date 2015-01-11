@@ -14,7 +14,7 @@ idempiere --launcher.ini setup.ini -application org.adempiere.install.console-ap
 @Exit
 
 :NEXT
-@REM Setup Tomcat
+@REM Setup Jetty
 idempiere --launcher.ini setup.ini -application org.eclipse.ant.core.antRunner -buildfile build.xml
 
 @Echo .

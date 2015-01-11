@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.hazelcast.service"
       label="Hazelcast Service Feature"
-      version="2.1.0.qualifier">
+      version="3.0.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -20,29 +20,28 @@
          id="org.idempiere.hazelcast.service"
          download-size="0"
          install-size="0"
-         version="2.1.0.qualifier"
+         version="3.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.slf4j.api"
+         id="org.slf4j.api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.slf4j.jcl"
+         id="org.slf4j.jcl"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
          unpack="false"/>
 
    <plugin
          id="org.idempiere.hazelcast.service.config"
          download-size="0"
          install-size="0"
-         version="2.1.0"
+         version="3.0.0"
          fragment="true"/>
 
 </feature>

@@ -25,6 +25,7 @@ import java.util.logging.Level;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +42,10 @@ import org.compiere.util.WebUtil;
  *  @author Jorg Janke
  *  @version $Id: IssueReportServlet.java,v 1.2 2006/07/30 00:53:21 jjanke Exp $
  */
+@WebServlet(
+		name="issueReportServlet",
+        urlPatterns = "/issueReportServlet"
+)
 public class IssueReportServlet extends HttpServlet
 {
 	/**

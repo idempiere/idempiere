@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +46,10 @@ import org.compiere.util.WebUtil;
  *  @author     Jorg Janke
  *  @version    $Id: LoginServlet.java,v 1.6 2006/10/08 18:17:43 comdivision Exp $
  */
+@WebServlet(
+		name="loginServlet",
+        urlPatterns = "/loginServlet"
+)
 public class LoginServlet extends HttpServlet
 {
 	/**

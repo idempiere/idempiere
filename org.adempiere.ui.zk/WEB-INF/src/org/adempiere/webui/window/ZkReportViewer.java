@@ -357,6 +357,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		North north = new North();
 		layout.appendChild(north);
 		north.appendChild(toolBar);
+		north.setVflex("min");
 		
 		Center center = new Center();
 		layout.appendChild(center);

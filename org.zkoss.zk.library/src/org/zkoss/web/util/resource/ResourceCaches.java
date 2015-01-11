@@ -22,8 +22,9 @@ import java.net.URL;
 
 import javax.servlet.ServletContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.lang.SystemException;
-import org.zkoss.util.logging.Log;
 import org.zkoss.web.servlet.Servlets;
 
 /**
@@ -44,7 +45,7 @@ import org.zkoss.web.servlet.Servlets;
  * @author tomyeh
  */
 public class ResourceCaches {
-	private static final Log log = Log.lookup(ResourceCaches.class);
+	private static final Logger log = LoggerFactory.getLogger(ResourceCaches.class);
 
 	/** Loads, parses and returns the resource of the specified URI,
 	 * or null if not found. The parser is defined by the loader defined
@@ -61,7 +62,7 @@ public class ResourceCaches {
 	V get(ResourceCache<V> cache, ServletContext ctx, String path, Object extra) {
 	//20050905: Tom Yeh
 	//We don't need to handle the default name if user specifies only a dir
-	//because it is handled by the container directlys
+	//because it is handled by the container directly
 	//And, web  developer has to specify <welcome-file> in web.xml
 		URL url = null;
 		if (path == null || path.length() == 0) path = "/";
@@ -93,7 +94,7 @@ public class ResourceCaches {
 					Servlets.getExtendletContext(ctx, ctxpath.substring(1));
 				if (extctx != null) {
 					url = extctx.getResource(path);
-//					if (log.debugable()) log.debug("Resolving "+path0+" to "+url);
+//					if (log.isDebugEnabled()) log.debug("Resolving "+path0+" to "+url);
 					if (url == null)
 						return null;
 					try {
@@ -102,14 +103,14 @@ public class ResourceCaches {
 						final IOException ioex = getIOException(ex);
 						if (ioex == null)
 							throw SystemException.Aide.wrap(ex);
-						log.warningBriefly("Unable to load "+url, ioex);
+						log.warn("Unable to load "+url, ioex);
 					}
 					return null;
 				}
 
 				ctx = ctx.getContext(ctxpath);
 				if (ctx == null) { //failed
-//					if (log.debugable()) log.debug("Context not found: "+ctxpath);
+//					if (log.isDebugEnabled()) log.debug("Context not found: "+ctxpath);
 					ctx = ctx0; path = path0;//restore
 				}
 			}
@@ -125,7 +126,7 @@ public class ResourceCaches {
 						final IOException ioex = getIOException(ex);
 						if (ioex == null)
 							throw SystemException.Aide.wrap(ex);
-						log.warningBriefly("Unable to load "+flnm, ioex);
+						log.warn("Unable to load "+flnm, ioex);
 					}
 					return null;
 				}
@@ -142,7 +143,7 @@ public class ResourceCaches {
 			final IOException ioex = getIOException(ex);
 			if (ioex == null)
 				throw SystemException.Aide.wrap(ex);
-			log.warningBriefly("Unable to load "+path, ioex);
+			log.warn("Unable to load "+path, ioex);
 		}
 		return null;
 	}

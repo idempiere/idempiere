@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: PipoHandlers
+Bundle-Name: iDempiere 2Pack Handlers
 Bundle-SymbolicName: org.adempiere.pipo.handlers;singleton:=true
-Bundle-Version: 2.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.adempiere.pipo;bundle-version="2.1.0",
- org.adempiere.base;bundle-version="2.1.0"
+Bundle-Version: 3.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.adempiere.pipo;bundle-version="3.0.0",
+ org.adempiere.base;bundle-version="3.0.0"

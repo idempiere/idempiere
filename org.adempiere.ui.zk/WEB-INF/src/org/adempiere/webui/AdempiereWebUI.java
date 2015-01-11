@@ -219,8 +219,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         HttpSession httpSess = (HttpSession) currSess.getNativeSession();
         String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
         
-		MSession mSession = MSession.get (ctx, x_Forward_IP!=null ? x_Forward_IP : currSess.getRemoteAddr(),
-			currSess.getRemoteHost(), httpSess.getId() );
+		MSession mSession = MSession.get (ctx, x_Forward_IP!=null ? x_Forward_IP : Executions.getCurrent().getRemoteAddr(),
+			Executions.getCurrent().getRemoteHost(), httpSess.getId() );
 		if (clientInfo.userAgent != null) {
 			mSession.setDescription(mSession.getDescription() + "\n" + clientInfo.toString());
 			mSession.saveEx();
@@ -373,11 +373,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	Env.getCtx().clear();
     	session.invalidate();
             	
-		if (desktopCache != null)
-			desktopCache.removeDesktop(Executions.getCurrent().getDesktop());
-		
         //redirect to login page
         Executions.sendRedirect("index.zul");
+        
+        if (desktopCache != null)
+			desktopCache.removeDesktop(Executions.getCurrent().getDesktop());
     }
     public void logoutAfterTabDestroyed(){
        	Session session = logout0();

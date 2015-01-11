@@ -19,4 +19,4 @@ echo ===================================
 
 unset DISPLAY
 BASE=`dirname $( readlink -f idempiere-server.sh )`
-$JAVA ${DEBUG} -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -XX:MaxPermSize=192m -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -console 12612 -application org.adempiere.server.application
+$JAVA ${DEBUG} -Dosgi.console=localhost:12612 -Djetty.home=$BASE/jettyhome -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-selector.xml,etc/jetty-ssl.xml,etc/jetty-https.xml,etc/jetty-deployer.xml -XX:MaxPermSize=192m -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application

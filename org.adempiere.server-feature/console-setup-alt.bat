@@ -18,7 +18,7 @@ goto START
 
 :START
 @REM Setup idempiere.properties and idempiereEnv.properties
-@"%JAVA%" -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.7.*.jar -application org.adempiere.install.console-application
+@"%JAVA%" -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.adempiere.install.console-application
 
 @Echo ErrorLevel = %ERRORLEVEL%
 @IF NOT ERRORLEVEL = 1 GOTO NEXT
@@ -29,8 +29,8 @@ goto START
 @Exit
 
 :NEXT
-@REM setup tomcat
-@"%JAVA%" -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=setup -jar plugins/org.eclipse.osgi_3.7.*.jar -application org.eclipse.ant.core.antRunner -buildfile build.xml
+@REM setup jetty
+@"%JAVA%" -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.eclipse.ant.core.antRunner -buildfile build.xml
 
 @Echo .
 @Echo For problems, check log file in base directory

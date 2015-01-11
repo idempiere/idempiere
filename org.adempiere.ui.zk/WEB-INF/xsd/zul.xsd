@@ -575,6 +575,7 @@
 			<xs:element ref="hbox" />
 			<xs:element ref="hlayout" />
 			<xs:element ref="html" />
+			<xs:element ref="idspace" />
 			<xs:element ref="iframe" />
 			<xs:element ref="image" />
 			<xs:element ref="imagemap" />
@@ -585,6 +586,7 @@
 			<xs:element ref="longbox" />
 			<xs:element ref="menubar" />
 			<xs:element ref="menupopup" />
+			<xs:element ref="navbar" />
 			<xs:element ref="paging" />
 			<xs:element ref="panel" />
 			<xs:element ref="pivottable" />
@@ -657,6 +659,7 @@
 				<xs:element ref="hbox" />
 				<xs:element ref="hlayout" />
 				<xs:element ref="html" />
+				<xs:element ref="idspace" />
 				<xs:element ref="iframe" />
 				<xs:element ref="image" />
 				<xs:element ref="imagemap" />
@@ -667,6 +670,7 @@
 				<xs:element ref="longbox" />
 				<xs:element ref="menubar" />
 				<xs:element ref="menupopup" />
+				<xs:element ref="navbar" />
 				<xs:element ref="paging" />
 				<xs:element ref="panel" />
 				<xs:element ref="pivottable" />
@@ -788,9 +792,27 @@
 		<xs:attribute name="align" type="alignAttrType" use="optional" />
 		<xs:attribute name="border" type="xs:string" use="optional" />
 		<xs:attribute name="src" type="xs:string" use="optional" />
+		<xs:attribute name="preload" type="audioPreloadAttrType" use="optional" />
+		<xs:attribute name="controls" type="booleanType" use="optional" />
+		<xs:attribute name="loop" type="booleanType" use="optional" />
 		<xs:attribute name="autostart" type="booleanType" use="optional" />
+		<xs:attribute name="autoplay" type="booleanType" use="optional" />
 		<xs:attributeGroup ref="rootAttrGroup" />
 	</xs:complexType>
+	<xs:simpleType name="audioPreloadAttrType">
+		<xs:union>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="none" />
+					<xs:enumeration value="auto" />
+					<xs:enumeration value="metadata" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType>
+				<xs:restriction base="annotationType" />
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
     <!-- auxhead -->
 	<xs:element name="auxhead" type="auxheadType" />
 	<xs:complexType name="auxheadType">
@@ -1195,7 +1217,7 @@
 		<xs:attribute name="image" type="xs:string" use="optional" />
 		<xs:attribute name="open" type="booleanType" use="optional" />
 	</xs:complexType>
-    
+
     <!-- div -->
 	<xs:element name="div" type="divType" />
 	<xs:complexType name="divType" mixed="true">
@@ -1595,6 +1617,14 @@
 		<xs:attribute name="content" type="xs:string" use="optional" />
 		<xs:attributeGroup ref="rootAttrGroup" />
 	</xs:complexType>
+    <!-- idspace -->
+	<xs:element name="idspace" type="idspaceType" />
+	<xs:complexType name="idspaceType" mixed="true">
+		<xs:group ref="anyGroup" minOccurs="0" maxOccurs="unbounded" />
+		<xs:attributeGroup ref="xulElementAttrGroup" />
+		<xs:attributeGroup ref="mouseExtAttrGroup" />
+		<xs:attributeGroup ref="rootAttrGroup" />
+	</xs:complexType>
     <!-- iframe -->
 	<xs:element name="iframe" type="iframeType" />
 	<xs:complexType name="iframeType">
@@ -1941,6 +1971,46 @@
 		<xs:group ref="baseGroup" minOccurs="0" maxOccurs="unbounded" />
 		<xs:attributeGroup ref="xulElementAttrGroup" />
 	</xs:complexType>
+    <!-- nav -->
+	<xs:element name="nav" type="navType" />
+	<xs:complexType name="navType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:group ref="baseGroup" />
+			<xs:element ref="navitem" />
+		</xs:choice>
+		<xs:attributeGroup ref="xulElementAttrGroup" />
+		<xs:attribute name="onOpen" type="xs:string" use="optional" />
+	</xs:complexType>
+	<!-- navbar -->
+	<xs:element name="navbar" type="navbarType" />
+	<xs:complexType name="navbarType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:group ref="baseGroup" />
+			<xs:element ref="nav" />
+			<xs:element ref="navitem" />
+		</xs:choice>
+		<xs:attributeGroup ref="xulElementAttrGroup" />
+		<xs:attribute name="orient" type="orientAttrType" use="optional" />
+		<xs:attribute name="collapsed" type="booleanType" use="optional" />
+		<xs:attribute name="onSelect" type="xs:string" use="optional" />
+		<xs:attributeGroup ref="rootAttrGroup" />
+	</xs:complexType>
+    <!-- navitem -->
+	<xs:element name="navitem" type="navitemType" />
+	<xs:complexType name="navitemType">
+		<xs:group ref="baseGroup" minOccurs="0" maxOccurs="unbounded" />
+		<xs:attributeGroup ref="labelImageElementAttrGroup" />
+		<xs:attribute name="href" type="xs:string" use="optional" />
+		<xs:attribute name="target" type="xs:string" use="optional" />
+		<xs:attribute name="disabled" type="booleanType" use="optional" />
+		<xs:attribute name="src" type="xs:string" use="optional" />
+	</xs:complexType>
+    <!-- navseparator -->
+	<xs:element name="navseparator" type="navseparatorType" />
+	<xs:complexType name="navseparatorType">
+		<xs:group ref="baseGroup" minOccurs="0" maxOccurs="unbounded" />
+		<xs:attributeGroup ref="xulElementAttrGroup" />
+	</xs:complexType>
     <!-- north -->
 	<xs:element name="north" type="northType" />
 	<xs:complexType name="northType">
@@ -2067,6 +2137,7 @@
 			<xs:element ref="portalchildren" />
 		</xs:choice>
 		<xs:attributeGroup ref="xulElementAttrGroup" />
+		<xs:attribute name="orient" type="orientAttrType" use="optional" />
 	</xs:complexType>
     <!-- progressmeter -->
 	<xs:element name="progressmeter" type="progressmeterType" />
@@ -2299,11 +2370,27 @@
 		<xs:attribute name="selectedIndex" type="intType" use="optional" />
 		<xs:attribute name="selectedTab" type="xs:string" use="optional" />
 		<xs:attribute name="selectedPanel" type="xs:string" use="optional" />
-		<xs:attribute name="orient" type="orientAttrType" use="optional" />
+		<xs:attribute name="orient" type="tabOrientAttrType" use="optional" />
+		<xs:attribute name="maximalHeight" type="booleanType" use="optional" />
 		<xs:attribute name="onRightClick" type="xs:string" use="optional" />
 		<xs:attribute name="onSelect" type="xs:string" use="optional" />
 		<xs:attributeGroup ref="rootAttrGroup" />
 	</xs:complexType>
+	<xs:simpleType name="tabOrientAttrType">
+		<xs:union>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="top" />
+					<xs:enumeration value="left" />
+					<xs:enumeration value="right" />
+					<xs:enumeration value="down" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType>
+				<xs:restriction base="annotationType" />
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
     <!-- tabpanel -->
 	<xs:element name="tabpanel" type="tabpanelType" />
 	<xs:complexType name="tabpanelType" mixed="true">
@@ -2355,7 +2442,7 @@
 	<!-- template -->
 	<xs:element name="template" type="templateType" />
 	<xs:complexType name="templateType">
-		<xs:group ref="baseGroup" minOccurs="0" maxOccurs="unbounded" />
+		<xs:group ref="anyGroup" minOccurs="0" maxOccurs="unbounded" />
 		<xs:attribute name="name" type="xs:string" use="required" />
 		<xs:attribute name="src" type="xs:string" use="optional" />
 		<xs:attribute name="if" type="xs:string" use="optional" />
@@ -2432,6 +2519,7 @@
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:group ref="baseGroup" />
 				<xs:element ref="auxhead" />
+				<xs:element ref="frozen" />
 			</xs:choice>
 			<xs:choice>
 				<xs:sequence>
@@ -2864,6 +2952,9 @@
 			<xs:element ref="menu" />
 			<xs:element ref="menuitem" />
 			<xs:element ref="menuseparator" />
+			<xs:element ref="nav" />
+			<xs:element ref="navitem" />
+			<xs:element ref="navseparator" />
 			<xs:element ref="north" />
 			<xs:element ref="rows" />
 			<xs:element ref="row" />

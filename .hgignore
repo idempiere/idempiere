@@ -3,85 +3,41 @@ build
 
 syntax: regexp
 ^adempiere$
-^org\.adempiere\.base/Base\.jar$
-^org\.adempiere\.base/base\.jar$
-^org\.adempiere\.ui\.swing/client\.jar$
-^extend/Extend\.jar$
-^extend/extend\.jar$
 ^org\.adempiere\.install/lib$
-^org\.adempiere\.install/CInstall\.jar$
-^org\.adempiere\.install/install\.jar$
-^org\.adempiere\.report\.jasper/needed$
-^org\.adempiere\.report\.jasper/JasperReports\.jar$
-^org\.adempiere\.report\.jasper/CompiereJasper\.jar$
-^org\.adempiere\.report\.jasper/CompiereJasperReqs\.jar$
-^org\.adempiere\.report\.jasper\.webapp/webApp\.ear$
-^org\.adempiere\.report\.jasper\.webapp/webApp\.war$
-^org\.adempiere\.report\.jasper\.webapp/webAppEJB\.jar$
-^org\.adempiere\.report\.jasper\.webapp/webEJB-client\.jar$
-^lib/Adempiere\.jar$
-^lib/adempiereApps\.jar$
-^lib/adempiereApps\.war$
-^lib/adempiereApps\.xml$
-^lib/adempiereRoot\.jar$
-^lib/adempiereRoot\.xml$
-^lib/adempiereRootBase\.war$
-^lib/adempiereWebCM\.xml$
-^lib/adempiereWebCMbase\.war$
-^lib/adempiereWebStore\.war$
-^lib/adempiereWebStore\.xml$
-^lib/CCTools\.jar$
-^lib/CompiereJasperReqs\.jar$
-^lib/CSTools\.jar$
-^lib/glassfish\.jar$
-^lib/jboss\.jar$
-^lib/oracle\.jar$
-^lib/posterita\.jar$
-^lib/posterita\.war$
-^lib/posteritaPatches\.jar$
-^lib/postgresql\.jar$
-^lib/webui\.war$
-^packages/liberoMFG\.jar$
-^posterita/posterita/dist$
-^posterita/posterita/web/WEB-INF/classes$
-^serverApps/serverApps\.jar$
-^sqlj/sqlj\.jar$
-^tools/tools\.jar$
-^utils_dev/mybuild\.properties$
-^webCM/deploy$
+^org\.adempiere\.install/bin/.*\.*$
 ^org\.adempiere\.ui\.zk/dist$
-^org\.adempiere\.ui\.zk/WEB-INF/classes/.*\.class$
-^org\.adempiere\.ui\.zk/WEB-INF/classes/.*\.xml$
-^org\.adempiere\.ui\.zk/WEB-INF/classes/.*\.js$
-^org\.adempiere\.ui\.zk/WEB-INF/classes/.*\.wpd$
+^org\.adempiere\.ui\.zk/bin/.*\.*$
 
 syntax: regexp
 ^lib/plugins$
 ^plugins/.*\.class$
 ^adempiere-local\.properties$
 ^org.adempiere.extend/test.properties$
+^org.adempiere.extend/bin/.*\.*$
 ^org\.adempiere\.ui/.*\.class$
 ^org\.adempiere\.ui/bin/.*\.css$
 ^org\.adempiere\.pipo.handlers/.*\.class$
 ^org\.adempiere\.pipo/.*\.class$
 ^org\.adempiere\.report\.jasper\.swing/.*\.class$
-^tomcatConfig/bin/\.hgignore$
 ^org\.compiere\.db\.oracle\.provider/bin/.*\.class$
 ^org\.compiere\.db\.postgresql\.provider/bin/.*\.class$
+^org\.adempiere\.ui\.swing/bin/.*\.*$
+^org\.adempiere\.report\.jasper\.fonts/bin/.*\.*$
 
 
 syntax: regexp
-^tomcatConfig/META-INF/tomcat/server\.xml$
+^org.adempiere.tomcat.config/META-INF/tomcat/server\.xml$
 ^org\.apache\.ecs/bin/.*\.class$
 ^org\.adempiere\.replication/bin/.*\.class$
-^org\.adempiere\.replication\.server/bin/.*\.class$
+^org\.adempiere\.replication\.server/bin/.*\.*$
+^org\.adempiere\.server/bin/.*\.*$
 ^org\.adempiere\.pipo\.legacy/bin/.*\.class$
+^org\.adempiere\.base/bin/.*\.*$
 ^org\.adempiere\.base\.callout/bin/.*\.class$
 ^org\.adempiere\.base\.process/bin/.*\.class$
 ^org\.adempiere\.payment\.processor/bin/.*\.class$
 ^org\.adempiere\.ui\.swing\.pluginlist/bin/.*\.class$
 ^org\.adempiere\.plugin\.utils/bin/.*\.class$
-^org\.adempiere\.tomcat\.config/META-INF/tomcat/server.xml$
 ^org\.adempiere\.webstore\.servlet/bin/.*\.class$
 ^org\.adempiere\.webstore\.servlet/bin/.*\.tld$
 ^org\.adempiere\.eclipse\.equinox\.servletbridge/bin/.*\.class$
@@ -104,13 +60,32 @@ syntax: regexp
 ^event\.test/bin.*\.class$
 ^packages/.*$
 ^work/.*$
+^hazelcast\.xml$
 
 syntax: regexp
-swingclient.product .*
-server.product .*
+swingclient.product.*
+server.product.*
+
 syntax: regexp
 ^org\.zkoss\.zk\.library/bin$
 syntax: regexp
 \.class$
 syntax: regexp
 \.class$
+
+syntax: regexp
+^org\.zkoss\.zk\.library/.*/calendar[-].*\.jar$
+^org\.zkoss\.zk\.library/.*/ckez[-].*\.jar$
+^org\.zkoss\.zk\.library/.*/gmapsz[-].*\.jar$
+^org\.zkoss\.zk\.library/.*/jruby[-].*\.jar$
+^org\.zkoss\.zk\.library/.*/jython[-].*\.jar$
+^org\.zkoss\.zk\.library/.*/timelinez[-].*\.jar$
+^org\.zkoss\.zk\.library/.*/timeplotz[-].*\.jar$
+^org\.zkoss\.zk\.library/.*/z.*\.jar$
+.buckminster/
+^jettyhome/
+.recommenders/
+^packin
+^packout
+^RemoteSystemsTempFiles
+

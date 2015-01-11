@@ -37,7 +37,7 @@ public class MD5Impl {
 			//Thread.currentThread().getContextClassLoader().getResource("");
 			if ( FileName.startsWith("http://") )
 			{
-				//extract absolute path by requesting jboss/tomcat
+				//extract absolute path
 				String[] filePathParts = FileName.split("/");
 				filepartOnly = filePathParts[filePathParts.length-1];
 				URL currentFile = Thread.currentThread().getContextClassLoader().getResource(filepartOnly);

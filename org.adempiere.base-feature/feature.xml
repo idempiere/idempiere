@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.base"
       label="Adempiere Base"
-      version="2.1.0.qualifier">
+      version="3.0.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -18,50 +18,50 @@
 
    <includes
          id="org.compiere.db.provider"
-         version="2.1.0.qualifier"/>
+         version="3.0.0.qualifier"/>
 
    <includes
          id="org.adempiere.payment.processor"
-         version="2.1.0.qualifier"/>
+         version="3.0.0.qualifier"/>
 
    <includes
          id="org.adempiere.pipo"
-         version="2.1.0.qualifier"/>
+         version="3.0.0.qualifier"/>
 
    <includes
          id="org.adempiere.replication"
-         version="2.1.0.qualifier"/>
+         version="3.0.0.qualifier"/>
 
    <includes
          id="org.adempiere.report.jasper"
-         version="2.1.0.qualifier"/>
+         version="3.0.0.qualifier"/>
 
    <plugin
          id="org.adempiere.base"
          download-size="0"
          install-size="0"
-         version="2.1.0.qualifier"
+         version="3.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.base.callout"
          download-size="0"
          install-size="0"
-         version="2.1.0.qualifier"
+         version="3.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.base.process"
          download-size="0"
          install-size="0"
-         version="2.1.0.qualifier"
+         version="3.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.extend"
          download-size="0"
          install-size="0"
-         version="2.1.0.qualifier"
+         version="3.0.0.qualifier"
          fragment="true"
          unpack="false"/>
 
@@ -69,14 +69,14 @@
          id="org.adempiere.ui"
          download-size="0"
          install-size="0"
-         version="2.1.0.qualifier"
+         version="3.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.apache.ecs"
          download-size="0"
          install-size="0"
-         version="1.0.0.qualifier"
+         version="3.0.0.qualifier"
          unpack="false"/>
 
    <plugin
@@ -90,180 +90,180 @@
          id="org.apache.ant"
          download-size="0"
          install-size="0"
-         version="1.7.1.v20100518-1145"/>
+         version="0.0.0"/>
 
    <plugin
-         id="com.springsource.javax.mail"
+         id="com.sun.mail.javax.mail"
          download-size="0"
          install-size="0"
-         version="1.4.5"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.javax.activation"
+         id="javax.activation"
          download-size="0"
          install-size="0"
-         version="1.1.1"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.javax.jms"
+         id="javax.jms"
          download-size="0"
          install-size="0"
-         version="1.1.0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="javax.servlet"
+         id="org.eclipse.jetty.osgi-servlet-api"
          download-size="0"
          install-size="0"
-         version="3.0.0.v201103241009"
+         version="3.1.0.M0"
          unpack="false"/>
 
    <plugin
          id="org.junit"
          download-size="0"
          install-size="0"
-         version="4.8.2.v4_8_2_v20110321-1705"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.net.sf.cglib"
+         id="org.apache.servicemix.bundles.cglib"
          download-size="0"
          install-size="0"
-         version="2.2.0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.activemq"
+         id="org.apache.activemq.activemq-core"
          download-size="0"
          install-size="0"
-         version="5.3.0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.activemq.kahadb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.apache.commons.collections"
          download-size="0"
          install-size="0"
-         version="3.2.0.v201005080500"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.apache.commons.net"
          download-size="0"
          install-size="0"
-         version="2.2.0.v201101241833"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.apache.poi"
          download-size="0"
          install-size="0"
-         version="3.7.0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.kahadb"
+         id="javax.management.j2ee-api"
          download-size="0"
          install-size="0"
-         version="5.3.0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.javax.management.j2ee"
+         id="org.apache.commons.logging"
          download-size="0"
          install-size="0"
-         version="1.0.1"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.org.apache.commons.logging"
+         id="javax.ejb"
          download-size="0"
          install-size="0"
-         version="1.1.1"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.javax.ejb"
+         id="javax.xml.rpc"
          download-size="0"
          install-size="0"
-         version="3.0.0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.springsource.javax.xml.rpc"
+         id="javax.xml.soap"
          download-size="0"
          install-size="0"
-         version="1.1.0.v20110517"
-         unpack="false"/>
-
-   <plugin
-         id="com.springsource.javax.xml.soap"
-         download-size="0"
-         install-size="0"
-         version="1.3.0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.apache.commons.codec"
          download-size="0"
          install-size="0"
-         version="1.3.0.v201101211617"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.apache.xml.resolver"
          download-size="0"
          install-size="0"
-         version="1.2.0.v201005080400"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.apache.xerces"
          download-size="0"
          install-size="0"
-         version="2.9.0.v201101211617"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.apache.xml.serializer"
          download-size="0"
          install-size="0"
-         version="2.7.1.v201005080400"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="javax.xml"
          download-size="0"
          install-size="0"
-         version="1.3.4.v201005080400"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="javax.el"
+         id="org.mortbay.jasper.apache-el"
          download-size="0"
          install-size="0"
-         version="2.2.0.v201105051105"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.install"
          download-size="0"
          install-size="0"
-         version="2.1.0.qualifier"/>
+         version="3.0.0.qualifier"/>
 
    <plugin
          id="org.eclipse.osgi.services"
          download-size="0"
          install-size="0"
-         version="3.3.0.v20110513"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.hamcrest.core"
          download-size="0"
          install-size="0"
-         version="1.1.0.v20090501071000"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

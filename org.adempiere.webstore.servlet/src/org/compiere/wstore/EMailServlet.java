@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,6 +40,10 @@ import org.compiere.util.WebUtil;
  *  @author Jorg Janke
  *  @version $Id: EMailServlet.java,v 1.4 2006/09/24 12:11:16 comdivision Exp $
  */
+@WebServlet(
+		name="emailServlet",
+        urlPatterns = "/emailServlet"
+)
 public class EMailServlet extends HttpServlet
 {
 	/**

@@ -6,32 +6,51 @@ DESTINATION=$(pwd)
 
 cp idempiere.ini idempiere.ini.sav
 
-if [ -f server.xml.sav ];
+if [ -f jetty.xml.sav ];
 then
-   rm -f server.xml.sav
+   rm -f jetty.xml.sav
 fi
-if [ -f plugins/org.adempiere.tomcat.config_1.0.0/META-INF/tomcat/server.xml ]
+if [ -f jettyhome/etc/jetty.xml ]
 then
-   cp plugins/org.adempiere.tomcat.config_1.0.0/META-INF/tomcat/server.xml server.xml.sav
-   rm plugins/org.adempiere.tomcat.config_1.0.0/META-INF/tomcat/server.xml
+   cp jettyhome/etc/jetty.xml jetty.xml.sav
 fi
-if [ -f plugins/org.adempiere.tomcat.config_2.0.0/META-INF/tomcat/server.xml ]
-then
-   cp plugins/org.adempiere.tomcat.config_2.0.0/META-INF/tomcat/server.xml server.xml.sav
-   rm plugins/org.adempiere.tomcat.config_2.0.0/META-INF/tomcat/server.xml
-fi
-if [ -f plugins/org.adempiere.tomcat.config_2.1.0/META-INF/tomcat/server.xml ]
-then
-   cp plugins/org.adempiere.tomcat.config_2.1.0/META-INF/tomcat/server.xml server.xml.sav
-fi
-java -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=director -jar plugins/org.eclipse.osgi_3.7.*.jar -application org.eclipse.equinox.p2.director -consoleLog -profileProperties org.eclipse.update.install.features=true -destination $DESTINATION -repository $1 -u org.adempiere.server.product
 
-java -Dosgi.noShutdown=false -Dosgi.compatibility.bootdelegation=true -Dosgi.install.area=director -jar plugins/org.eclipse.osgi_3.7.*.jar -application org.eclipse.equinox.p2.director -consoleLog -profileProperties org.eclipse.update.install.features=true -destination $DESTINATION -repository $1 -i org.adempiere.server.product
+if [ -f jetty-ssl.xml.sav ];
+then
+   rm -f jetty-ssl.xml.sav
+fi
+if [ -f jettyhome/etc/jetty-ssl.xml ]
+then
+   cp jettyhome/etc/jetty-ssl.xml jetty-ssl.xml.sav
+fi
+
+if [ -f jetty-selector.xml.sav ];
+then
+   rm -f jetty-selector.xml.sav
+fi
+if [ -f jettyhome/etc/jetty-selector.xml ]
+then
+   cp jettyhome/etc/jetty-selector.xml jetty-selector.xml.sav
+fi
+
+java -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install director -configuration director/configuration -application org.eclipse.equinox.p2.director -consoleLog -profileProperties org.eclipse.update.install.features=true -destination $DESTINATION -repository $1 -u org.adempiere.server.product -i org.adempiere.server.product 
 
 cp idempiere.ini.sav idempiere.ini
-if [ -f server.xml.sav ]
+
+if [ -f jetty.xml.sav ]
 then
-   cp server.xml.sav plugins/org.adempiere.tomcat.config_2.1.0/META-INF/tomcat/server.xml 
-   rm -f server.xml.sav
+   cp jetty.xml.sav jettyhome/etc/jetty.xml 
+   rm -f jetty.xml.sav
 fi
 
+if [ -f jetty-ssl.xml.sav ]
+then
+   cp jetty-ssl.xml.sav jettyhome/etc/jetty-ssl.xml 
+   rm -f jetty-ssl.xml.sav
+fi
+
+if [ -f jetty-selector.xml.sav ]
+then
+   cp jetty-selector.xml.sav jettyhome/etc/jetty-selector.xml 
+   rm -f jetty-selector.xml.sav
+fi

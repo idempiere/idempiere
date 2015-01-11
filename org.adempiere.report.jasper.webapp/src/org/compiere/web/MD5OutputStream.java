@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -49,5 +50,14 @@ public class MD5OutputStream extends ServletOutputStream {
 		Base64 base64 = new Base64();
 		String digestAsBase64 = new String(base64.encode(digest));
 		return digestAsBase64;
+	}
+
+	@Override
+	public boolean isReady() {
+		return true;
+	}
+
+	@Override
+	public void setWriteListener(WriteListener arg0) {
 	}
 }

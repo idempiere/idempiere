@@ -290,6 +290,10 @@ public class ConfigurationData
 				p_panel.fAdminEMail.setText((String)p_properties.get(ADEMPIERE_ADMIN_EMAIL));
 			}
 		}
+		else
+		{
+			setDatabaseType(DBTYPE_POSTGRESQL);
+		}
 
 		InetAddress localhost = null;
 		String hostName = "unknown";
@@ -355,9 +359,9 @@ public class ConfigurationData
 
 		//	Keystore Alias
 		if (!p_properties.containsKey(ADEMPIERE_KEYSTORECODEALIAS))
-			p_properties.setProperty(ADEMPIERE_KEYSTORECODEALIAS, "adempiere");
+			p_properties.setProperty(ADEMPIERE_KEYSTORECODEALIAS, "idempiere");
 		if (!p_properties.containsKey(ADEMPIERE_KEYSTOREWEBALIAS))
-			p_properties.setProperty(ADEMPIERE_KEYSTOREWEBALIAS, "adempiere");
+			p_properties.setProperty(ADEMPIERE_KEYSTOREWEBALIAS, "idempiere");
 
 		return true;
 	}	//	load
@@ -470,8 +474,8 @@ public class ConfigurationData
 		ks.setState((String)p_properties.getProperty(ADEMPIERE_CERT_STATE));
 		ks.setCountry((String)p_properties.getProperty(ADEMPIERE_CERT_COUNTRY));
 		error = p_panel != null
-			? ks.verify((JFrame)SwingUtilities.getWindowAncestor(p_panel))
-			: ks.verify(null);
+			? ks.verify((JFrame)SwingUtilities.getWindowAncestor(p_panel), p_properties.getProperty(ADEMPIERE_KEYSTOREWEBALIAS))
+			: ks.verify(null, p_properties.getProperty(ADEMPIERE_KEYSTOREWEBALIAS));
 		pass = error == null;
 		if (p_panel != null)
 			p_panel.signalOK(p_panel.okKeyStore, "KeyStorePassword",
@@ -862,9 +866,9 @@ public class ConfigurationData
 		Ini.setAdempiereHome(m_adempiereHome.getAbsolutePath());
 
 		//	Create Connection
-		String ccType = Database.DB_ORACLE;
-		if (getDatabaseType().equals(DBTYPE_POSTGRESQL))
-			ccType = Database.DB_POSTGRESQL;
+		String ccType = Database.DB_POSTGRESQL;
+		if (getDatabaseType().equals(DBTYPE_ORACLE))
+			ccType = Database.DB_ORACLE;
 		CConnection cc = null;
 		try
 		{
@@ -1124,10 +1128,10 @@ public class ConfigurationData
 	 *************************************************************************/
 
 	/** Oracle directory	*/
-	//private static String	DBTYPE_ORACLE = "Oracle";
+	private static String	DBTYPE_ORACLE = "Oracle";
 
 	/** PostgreSQL          */
-	private static String	DBTYPE_POSTGRESQL = "PostgreSQL";
+	private static String	DBTYPE_POSTGRESQL = "PostgreSQL";	
 
 	/** Database Types		*/
 	public static String[]	DBTYPE = null;

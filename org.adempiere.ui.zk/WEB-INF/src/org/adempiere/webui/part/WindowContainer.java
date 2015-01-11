@@ -72,6 +72,7 @@ public class WindowContainer extends AbstractUIPart
         tabbox = new Tabbox();
         tabbox.setSclass("desktop-tabbox");
         tabbox.setId("desktop_tabbox");
+        tabbox.setMaximalHeight(true);
         tabbox.addEventListener(ON_DEFER_SET_SELECTED_TAB, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -82,8 +83,6 @@ public class WindowContainer extends AbstractUIPart
 		});
         
         Tabpanels tabpanels = new Tabpanels();
-        tabpanels.setVflex("1");
-        tabpanels.setHflex("1");
         Tabs tabs = new Tabs();
 
         tabbox.appendChild(tabs);

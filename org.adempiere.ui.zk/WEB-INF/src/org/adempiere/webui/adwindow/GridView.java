@@ -168,7 +168,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 			if (limit == null || !(limit.equals(Integer.toString(pageSize)))) {
 				Library.setProperty(CustomGridDataLoader.GRID_DATA_LOADER_LIMIT, Integer.toString(pageSize));
 			}
-		}
+		}		
 		
 		//default true for better UI experience
 		modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_EDIT_MODELESS, true);
@@ -181,15 +181,16 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		gridFooter.setStyle(HEADER_GRID_STYLE);
 		
 		addEventListener("onSelectRow", this);
+		addEventListener("onCustomizeGrid", this);
 	}
 
 	protected void createListbox() {
-		listbox = new Grid();
-		listbox.setEmptyMessage(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "FindZeroRecords")));
+		listbox = new Grid();		
 		listbox.setSizedByContent(false);				
 		listbox.setVflex("1");
 		listbox.setHflex("1");
 		listbox.setSclass("adtab-grid");
+		listbox.setEmptyMessage(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Processing")));
 	}
 	
 	public void setDetailPaneMode(boolean detailPaneMode) {
@@ -328,6 +329,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		} else {
 			showRecordsCount();
 		}
+		if (this.isVisible())
+			Clients.resize(listbox);
 	}
 
 	/**
@@ -361,6 +364,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 	public void updateListIndex() {
 		if (gridTab == null || !gridTab.isOpen()) return;
 
+		updateEmptyMessage();		
+		
 		int rowIndex  = gridTab.getCurrentRow();
 		if (pageSize > 0) {
 			if (paging.getTotalSize() != gridTab.getRowCount())
@@ -460,7 +465,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		}
 		
 		org.zkoss.zul.Column selection = new Column();
-		selection.setWidth("28px");
+		selection.setWidth("22px");
 		try{
 			selection.setSort("none");
 		} catch (Exception e) {}
@@ -472,7 +477,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		columns.appendChild(selection);
 		
 		org.zkoss.zul.Column indicator = new Column();				
-		indicator.setWidth("18px");
+		indicator.setWidth("22px");
 		try {
 			indicator.setSort("none");
 		} catch (Exception e) {}
@@ -569,6 +574,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 
 	private void render()
 	{
+		updateEmptyMessage();
+		
 		listbox.addEventListener(Events.ON_CLICK, this);
 
 		updateModel();
@@ -595,6 +602,17 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 			hidePagingControl();
 		}		
 		
+	}
+
+	private void updateEmptyMessage() {
+		if (gridTab.getRowCount() == 0)
+		{
+			listbox.setEmptyMessage(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "FindZeroRecords")));
+		}
+		else
+		{
+			listbox.setEmptyMessage(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Processing")));
+		}
 	}
 
 	private void updateModel() {
@@ -678,6 +696,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 				listModel.setPage(pgNo);
 				onSelectedRowChange(0);
 				gridTab.clearSelection();
+				Clients.resize(listbox);
 			}
 		}
 		else if (event.getTarget() == selectAll)
@@ -702,6 +721,10 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 				if (selectAll.isChecked())
 					selectAll.setChecked(false);
 			}
+		}
+		else if (event.getName().equals("onCustomizeGrid"))
+		{
+			reInit();
 		}
 	}
 
@@ -1040,18 +1063,25 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 	}
 
 	public void reInit() {
-		this.setupFields(gridTab);
-		if(listbox.getFrozen()!=null)
-		{
-			listbox.removeChild(listbox.getFrozen());
+		listbox.getChildren().clear();
+		listbox.detach();
+		
+		if (paging != null) {
+			paging.detach();
+			paging = null;
 		}
-		if (listbox.getColumns() != null) {
-			listbox.removeChild(listbox.getColumns());
-		}
+		
+		renderer = null;
 		init = false;
-		setupColumns();
-		init = true;
-		updateModel();
+		
+		Grid tmp = listbox;
+		createListbox();
+		tmp.copyEventListeners(listbox);
+		insertBefore(listbox, gridFooter);
+		
+		refresh(gridTab);
+		scrollToCurrentRow();
+		Clients.resize(listbox);
 	}
 
 	/**
