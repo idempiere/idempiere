@@ -158,6 +158,10 @@ UPDATE AD_InfoColumn SET ColumnName='IsToolbarButton', Name='Toolbar Button', De
 UPDATE AD_Field SET Name='Toolbar Button', Description='Show the button on the toolbar, the window, or both', Help='The IsToolbarButton field indicates if this button is part of the toolbar''s process button popup list, or render as field in window, or both.' WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=200187) AND IsCentrallyMaintained='Y'
 ;
 
+-- Jan 11, 2015 5:01:02 PM COT
+UPDATE AD_Column SET IsToolbarButton='B',Updated=TO_TIMESTAMP('2015-01-11 17:01:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6487
+;
+
 SELECT register_migration_script('201501111521_IDEMPIERE-2064.sql') FROM dual
 ;
 
