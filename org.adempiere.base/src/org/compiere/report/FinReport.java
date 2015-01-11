@@ -28,6 +28,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.I_C_ValidCombination;
 import org.compiere.model.MAcctSchemaElement;
+import org.compiere.model.MPeriod;
 import org.compiere.model.MReportCube;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
@@ -80,6 +81,8 @@ public class FinReport extends SvrProcess
 	private int					p_PA_Hierarchy_ID = 0;
 	/** Optional report cube			*/
 	private int 				p_PA_ReportCube_ID = 0;
+	/** Exclude Adjustment Period		*/
+	private String				p_AdjPeriodToExclude = "";
 
 	/**	Start Time						*/
 	private long 				m_start = System.currentTimeMillis();
@@ -192,6 +195,24 @@ public class FinReport extends SvrProcess
 		//	Load Report Definition
 		m_report = new MReport (getCtx(), getRecord_ID(), null);
 		sb.append(" - ").append(m_report);
+
+		/* Exclude adjustment period
+		 * - if the report period is standard
+		 * - and there is an adjustment period with the same end date (on the same year) 
+		 */
+		if (p_C_Period_ID > 0) {
+			MPeriod per = MPeriod.get(getCtx(), p_C_Period_ID);
+			if (MPeriod.PERIODTYPE_StandardCalendarPeriod.equals(per.getPeriodType())) {
+				int adjPeriodToExclude_ID = DB.getSQLValue(get_TrxName(),
+						"SELECT C_Period_ID FROM C_Period WHERE IsActive='Y' AND PeriodType=? AND EndDate=? AND C_Year_ID=?",
+						MPeriod.PERIODTYPE_AdjustmentPeriod, per.getEndDate(), per.getC_Year_ID());
+				if (adjPeriodToExclude_ID > 0) {
+					p_AdjPeriodToExclude = " C_Period_ID!=" + adjPeriodToExclude_ID + " AND ";
+					log.warning("Will Exclude Adjustment Period -> " + p_AdjPeriodToExclude);
+				}
+			}
+		}
+		
 		//
 		setPeriods();
 		sb.append(" - C_Period_ID=").append(p_C_Period_ID)
@@ -212,6 +233,15 @@ public class FinReport extends SvrProcess
 	{
 		if (log.isLoggable(Level.INFO)) log.info("C_Calendar_ID=" + m_report.getC_Calendar_ID());
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+
+		// enable reporting on an adjustment period
+		if (p_C_Period_ID > 0) {
+			MPeriod per = MPeriod.get(getCtx(), p_C_Period_ID);
+			if (MPeriod.PERIODTYPE_AdjustmentPeriod.equals(per.getPeriodType())) {
+				today = per.getEndDate();
+				p_C_Period_ID = 0;
+			}
+		}
 		ArrayList<FinReportPeriod> list = new ArrayList<FinReportPeriod>();
 
 		String sql = "SELECT p.C_Period_ID, p.Name, p.StartDate, p.EndDate, MIN(p1.StartDate) "
@@ -370,10 +400,10 @@ public class FinReport extends SvrProcess
 			}
 			
 			if (p_PA_ReportCube_ID > 0) 
-				select.append(" FROM Fact_Acct_Summary fa WHERE DateAcct ");
+				select.append(" FROM Fact_Acct_Summary fa WHERE ").append(p_AdjPeriodToExclude).append("DateAcct ");
 			else {
 				//	Get Period/Date info
-				select.append(" FROM Fact_Acct fa WHERE TRUNC(DateAcct) ");
+				select.append(" FROM Fact_Acct fa WHERE ").append(p_AdjPeriodToExclude).append("TRUNC(DateAcct) ");
 			}
 
 			BigDecimal relativeOffset = null;	//	current
@@ -1314,11 +1344,11 @@ public class FinReport extends SvrProcess
 			}
 
 			if (p_PA_ReportCube_ID > 0) {
-				select.append(" FROM Fact_Acct_Summary fb WHERE DateAcct ");
+				select.append(" FROM Fact_Acct_Summary fb WHERE ").append(p_AdjPeriodToExclude).append("DateAcct ");
 			}  //report cube
 			else {
 			//	Get Period info
-				select.append(" FROM Fact_Acct fb WHERE TRUNC(DateAcct) ");
+				select.append(" FROM Fact_Acct fb WHERE ").append(p_AdjPeriodToExclude).append("TRUNC(DateAcct) ");
 			}
 			FinReportPeriod frp = getPeriod (m_columns[col].getRelativePeriod());
 			if (m_lines[line].getPAPeriodType() != null)			//	line amount type overwrites column
@@ -1434,10 +1464,10 @@ public class FinReport extends SvrProcess
 		where.append(variable).append(" IS NOT NULL");
 
 		if (p_PA_ReportCube_ID > 0)
-			insert.append(" FROM Fact_Acct_Summary x WHERE ").append(where);
+			insert.append(" FROM Fact_Acct_Summary x WHERE ").append(p_AdjPeriodToExclude).append(where);
 		else
 			//	FROM .. WHERE
-			insert.append(" FROM Fact_Acct x WHERE ").append(where);	
+			insert.append(" FROM Fact_Acct x WHERE ").append(p_AdjPeriodToExclude).append(where);	
 		//
 		insert.append(m_parameterWhere)
 			.append(" GROUP BY ").append(variable);
@@ -1448,9 +1478,9 @@ public class FinReport extends SvrProcess
 			unionWhere.append(variable).append(" IS NOT NULL");
 			unionWhere.append(" AND Account_ID not in (select Account_ID ");
 			if (p_PA_ReportCube_ID > 0)
-				unionWhere.append(" from Fact_Acct_Summary x WHERE ").append(where);
+				unionWhere.append(" from Fact_Acct_Summary x WHERE ").append(p_AdjPeriodToExclude).append(where);
 			else
-				unionWhere.append(" from Fact_Acct x WHERE ").append(where);	
+				unionWhere.append(" from Fact_Acct x WHERE ").append(p_AdjPeriodToExclude).append(where);	
 			//
 			unionWhere.append(m_parameterWhere).append(")");
 	
