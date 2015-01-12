@@ -152,6 +152,15 @@ public interface I_AD_Tree
 	  */
 	public boolean isDefault();
 
+    /** Column name IsTreeDrivenByValue */
+    public static final String COLUMNNAME_IsTreeDrivenByValue = "IsTreeDrivenByValue";
+
+	/** Set Driven by Search Key	  */
+	public void setIsTreeDrivenByValue (boolean IsTreeDrivenByValue);
+
+	/** Get Driven by Search Key	  */
+	public boolean isTreeDrivenByValue();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 

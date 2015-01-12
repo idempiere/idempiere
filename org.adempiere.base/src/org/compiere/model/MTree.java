@@ -408,8 +408,7 @@ public class MTree extends MTree_Base
 		String fromClause = getSourceTableName(false);	//	fully qualified
 		String columnNameX = getSourceTableName(true);
 		String color = getActionColorName();
-		if (getTreeType().equals(TREETYPE_Menu))
-		{
+		if (getTreeType().equals(TREETYPE_Menu)) {
 			boolean base = Env.isBaseLanguage(p_ctx, "AD_Menu");
 			sourceTable = "m";
 			if (base)
@@ -450,9 +449,13 @@ public class MTree extends MTree_Base
 					sqlNode.append("f.JSPURL");
 				sqlNode.append(" IS NOT NULL))");
 			}
-		}
-		else
-		{
+		} else if (getTreeType().equals(TREETYPE_ElementValue)) {
+			sqlNode.append("SELECT t.").append(columnNameX)
+			.append("_ID, t.Value || ' - ' || t.Name, t.Description, t.IsSummary,").append(color)
+			.append(" FROM ").append(fromClause);
+			if (!m_editable)
+				sqlNode.append(" WHERE t.IsActive='Y'");
+		} else {
 			if (columnNameX == null)
 				throw new IllegalArgumentException("Unknown TreeType=" + getTreeType());
 			sqlNode.append("SELECT t.").append(columnNameX)

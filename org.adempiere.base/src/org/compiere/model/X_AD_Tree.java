@@ -30,7 +30,7 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20150111L;
 
     /** Standard Constructor */
     public X_AD_Tree (Properties ctx, int AD_Tree_ID, String trxName)
@@ -41,6 +41,8 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 			setAD_Tree_ID (0);
 			setIsAllNodes (false);
 			setIsDefault (false);
+// N
+			setIsTreeDrivenByValue (false);
 // N
 			setName (null);
 			setTreeType (null);
@@ -168,6 +170,27 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	public boolean isDefault () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Driven by Search Key.
+		@param IsTreeDrivenByValue Driven by Search Key	  */
+	public void setIsTreeDrivenByValue (boolean IsTreeDrivenByValue)
+	{
+		set_Value (COLUMNNAME_IsTreeDrivenByValue, Boolean.valueOf(IsTreeDrivenByValue));
+	}
+
+	/** Get Driven by Search Key.
+		@return Driven by Search Key	  */
+	public boolean isTreeDrivenByValue () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsTreeDrivenByValue);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

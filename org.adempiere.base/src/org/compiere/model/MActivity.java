@@ -109,6 +109,8 @@ public class MActivity extends X_C_Activity
 			return success;
 		if (newRecord)
 			insert_Tree(MTree_Base.TREETYPE_Activity);
+		if (newRecord || is_ValueChanged(COLUMNNAME_Value))
+			update_Tree(MTree_Base.TREETYPE_Activity);
 		//	Value/Name change
 		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name"))){
 			StringBuilder msguvd = new StringBuilder("C_Activity_ID=").append(getC_Activity_ID());

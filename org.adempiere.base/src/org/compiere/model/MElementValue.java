@@ -246,14 +246,16 @@ public class MElementValue extends X_C_ElementValue
 	{
 		if (!success)
 			return success;
-		if (newRecord)
+		if (newRecord || is_ValueChanged(COLUMNNAME_Value))
 		{
 			// afalcone [Bugs #1837219]
 			int ad_Tree_ID= (new MElement(getCtx(), getC_Element_ID(), get_TrxName())).getAD_Tree_ID();
 			String treeType= (new MTree(getCtx(),ad_Tree_ID,get_TrxName())).getTreeType();
-			insert_Tree(treeType, getC_Element_ID());
-			//	insert_Tree(MTree_Base.TREETYPE_ElementValue, getC_Element_ID()); Old
-			
+
+			if (newRecord)
+				insert_Tree(treeType, getC_Element_ID());
+
+			update_Tree(treeType);
 		}
 		
 		//	Value/Name change

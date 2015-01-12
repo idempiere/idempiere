@@ -70,6 +70,8 @@ public class MCampaign extends X_C_Campaign
 			return success;
 		if (newRecord)
 			insert_Tree(MTree_Base.TREETYPE_Campaign);
+		if (newRecord || is_ValueChanged(COLUMNNAME_Value))
+			update_Tree(MTree_Base.TREETYPE_Campaign);
 		//	Value/Name change
 		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name")))
 			MAccount.updateValueDescription(getCtx(), "C_Campaign_ID=" + getC_Campaign_ID(), get_TrxName());

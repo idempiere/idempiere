@@ -925,7 +925,9 @@ public class MBPartner extends X_C_BPartner
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
-		if (newRecord && success)
+		if (!success)
+			return success;
+		if (newRecord)
 		{
 			//	Trees
 			insert_Tree(MTree_Base.TREETYPE_BPartner);
@@ -935,9 +937,11 @@ public class MBPartner extends X_C_BPartner
 			insert_Accounting("C_BP_Vendor_Acct", "C_BP_Group_Acct",msgacc.toString());
 			// insert_Accounting("C_BP_Employee_Acct", "C_AcctSchema_Default", null);
 		}
+		if (newRecord || is_ValueChanged(COLUMNNAME_Value))
+			update_Tree(MTree_Base.TREETYPE_BPartner);
 
 		//	Value/Name change
-		if (success && !newRecord 
+		if (!newRecord 
 			&& (is_ValueChanged("Value") || is_ValueChanged("Name"))){
 			StringBuilder msgacc = new StringBuilder("C_BPartner_ID=").append(getC_BPartner_ID());
 			MAccount.updateValueDescription(getCtx(), msgacc.toString(), get_TrxName());

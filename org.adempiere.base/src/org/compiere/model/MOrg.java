@@ -156,6 +156,8 @@ public class MOrg extends X_AD_Org
 			//	TreeNode
 			insert_Tree(MTree_Base.TREETYPE_Organization);
 		}
+		if (newRecord || is_ValueChanged(COLUMNNAME_Value))
+			update_Tree(MTree_Base.TREETYPE_Organization);
 		//	Value/Name change
 		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name")))
 		{
