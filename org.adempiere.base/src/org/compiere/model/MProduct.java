@@ -704,6 +704,8 @@ public class MProduct extends X_M_Product
 				"p.M_Product_Category_ID=" + getM_Product_Category_ID());
 			insert_Tree(X_AD_Tree.TREETYPE_Product);
 		}
+		if (newRecord || is_ValueChanged(COLUMNNAME_Value))
+			update_Tree(MTree_Base.TREETYPE_Product);
 		
 		//	New Costing
 		if (newRecord || is_ValueChanged("M_Product_Category_ID"))

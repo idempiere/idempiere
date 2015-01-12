@@ -428,14 +428,18 @@ public class MProject extends X_C_Project
 	 */
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
-		if (newRecord && success)
+		if (!success)
+			return success;
+		if (newRecord)
 		{
 			insert_Accounting("C_Project_Acct", "C_AcctSchema_Default", null);
 			insert_Tree(MTree_Base.TREETYPE_Project);
 		}
+		if (newRecord || is_ValueChanged(COLUMNNAME_Value))
+			update_Tree(MTree_Base.TREETYPE_Project);
 
 		//	Value/Name change
-		if (success && !newRecord 
+		if (!newRecord 
 			&& (is_ValueChanged("Value") || is_ValueChanged("Name")))
 			MAccount.updateValueDescription(getCtx(), "C_Project_ID=" + getC_Project_ID(), get_TrxName());
 

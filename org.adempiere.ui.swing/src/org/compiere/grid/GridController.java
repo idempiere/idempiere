@@ -158,9 +158,9 @@ public class GridController extends CPanel
 		VetoableChangeListener,	PropertyChangeListener, MouseListener
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 7308782933999556880L;
+	private static final long serialVersionUID = -2830833057882006196L;
 
 	/**
 	 *  Constructor - you need to call initGrid for instanciation
@@ -419,7 +419,7 @@ public class GridController extends CPanel
 						// IDEMPIERE-587 Swing: Toolbar Button to start Process from button fields
 						&& !(
 							mField.getDisplayType()==DisplayType.Button 
-							&& mField.isToolbarButton())
+							&& mField.isToolbarOnlyButton())
 						)
 				{
 					VEditor vEditor = VEditorFactory.getEditor(m_mTab, mField, false);

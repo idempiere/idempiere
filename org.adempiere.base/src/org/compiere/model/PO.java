@@ -106,7 +106,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -591429462738850345L;
+	private static final long serialVersionUID = -2731993630208549493L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -3868,6 +3868,63 @@ public abstract class PO
 		}
 		return no > 0;
 	}	//	insert_Tree
+
+	/**
+	 * 	Update parent key and seqno based on value if the tree is driven by value 
+	 * 	@param treeType MTree TREETYPE_*
+	 *	@return true if inserted
+	 */
+	protected void update_Tree (String treeType)
+	{
+		int idxValueCol = get_ColumnIndex("Value");
+		if (idxValueCol < 0)
+			return;
+		int idxValueIsSummary = get_ColumnIndex("IsSummary");
+		if (idxValueIsSummary < 0)
+			return;
+		String value = get_Value(idxValueCol).toString();
+		if (value == null)
+			return;
+
+		String tableName = MTree_Base.getNodeTableName(treeType);
+		String sourceTableName = MTree_Base.getSourceTableName(treeType);
+		String updateSeqNo = "UPDATE " + tableName + " SET SeqNo=SeqNo+1 WHERE Parent_ID=? AND SeqNo>=? AND AD_Tree_ID=?";
+		String update = "UPDATE " + tableName + " SET SeqNo=?, Parent_ID=? WHERE Node_ID=? AND AD_Tree_ID=?";
+		String selMinSeqNo = "SELECT COALESCE(MIN(tn.SeqNo),-1) FROM AD_TreeNode tn JOIN " + sourceTableName + " n ON (tn.Node_ID=n." + sourceTableName + "_ID) WHERE tn.Parent_ID=? AND tn.AD_Tree_ID=? AND n.Value>?";
+		String selMaxSeqNo = "SELECT COALESCE(MAX(tn.SeqNo)+1,999) FROM AD_TreeNode tn JOIN " + sourceTableName + " n ON (tn.Node_ID=n." + sourceTableName + "_ID) WHERE tn.Parent_ID=? AND tn.AD_Tree_ID=? AND n.Value<?";
+
+		List<MTree_Base> trees = new Query(getCtx(), MTree_Base.Table_Name, "TreeType=?", get_TrxName())
+			.setClient_ID()
+			.setOnlyActiveRecords(true)
+			.setParameters(treeType)
+			.list();
+
+		for (MTree_Base tree : trees) {
+			if (tree.isTreeDrivenByValue()) {
+				int newParentID = retrieveIdOfParentValue(value, sourceTableName, getAD_Client_ID(), get_TrxName());
+				int seqNo = DB.getSQLValueEx(get_TrxName(), selMinSeqNo, newParentID, tree.getAD_Tree_ID(), value);
+				if (seqNo == -1)
+					seqNo = DB.getSQLValueEx(get_TrxName(), selMaxSeqNo, newParentID, tree.getAD_Tree_ID(), value);
+				DB.executeUpdateEx(updateSeqNo, new Object[] {newParentID, seqNo, tree.getAD_Tree_ID()}, get_TrxName());
+				DB.executeUpdateEx(update, new Object[] {seqNo, newParentID, get_ID(), tree.getAD_Tree_ID()}, get_TrxName());
+			}
+		}
+	}	//	update_Tree
+
+	/** Returns the summary node with the corresponding value */
+	public static int retrieveIdOfParentValue(String value, String tableName, int clientID, String trxName)
+	{
+		String sql = "SELECT " + tableName + "_ID FROM " + tableName + " WHERE IsSummary='Y' AND AD_Client_ID=? AND Value=?";
+		int pos = value.length()-1;
+		while (pos > 0) {
+			String testParentValue = value.substring(0, pos);
+			int parentID = DB.getSQLValueEx(trxName, sql, clientID, testParentValue);
+			if (parentID > 0)
+				return parentID;
+			pos--;
+		}
+		return 0; // rootID
+	}
 
 	/**
 	 * 	Delete ID Tree Nodes

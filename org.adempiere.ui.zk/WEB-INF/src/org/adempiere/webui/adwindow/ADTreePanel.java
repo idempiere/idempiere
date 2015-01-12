@@ -41,7 +41,8 @@ public class ADTreePanel extends Panel implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3046550099597437942L;
+	private static final long serialVersionUID = -6868506934553777046L;
+
 	private static final String ON_EXPAND_MENU_EVENT = "onExpandMenu";
 	private TreeSearchPanel pnlSearch;
     private Tree tree;
@@ -180,4 +181,9 @@ public class ADTreePanel extends Panel implements EventListener<Event>
 			collapseAll();
 	}
 	//	
+
+	public void prepareForRefresh() {
+		this.AD_Tree_ID = -1;
+	}
+
 }

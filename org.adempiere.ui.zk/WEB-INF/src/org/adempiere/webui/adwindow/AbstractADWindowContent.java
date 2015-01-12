@@ -1348,7 +1348,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	        if (Util.isEmpty(header))
 	        	header = AEnv.getDialogHeader(Env.getCtx(), curWindowNo, prefix);
 
-	        SessionManager.getAppDesktop().setTabTitle(header);
+	        SessionManager.getAppDesktop().setTabTitle(header, curWindowNo);
     	}
     	else if (adTabbox.getSelectedDetailADTabpanel() == null)
     	{

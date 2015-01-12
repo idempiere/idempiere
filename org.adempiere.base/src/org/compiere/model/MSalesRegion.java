@@ -106,6 +106,8 @@ public class MSalesRegion extends X_C_SalesRegion
 			return success;
 		if (newRecord)
 			insert_Tree(MTree_Base.TREETYPE_SalesRegion);
+		if (newRecord || is_ValueChanged(COLUMNNAME_Value))
+			update_Tree(MTree_Base.TREETYPE_SalesRegion);
 		//	Value/Name change
 		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name")))
 			MAccount.updateValueDescription(getCtx(), "C_SalesRegion_ID=" + getC_SalesRegion_ID(), get_TrxName());

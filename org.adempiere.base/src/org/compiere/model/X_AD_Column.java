@@ -32,7 +32,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20150111L;
 
     /** Standard Constructor */
     public X_AD_Column (Properties ctx, int AD_Column_ID, String trxName)
@@ -62,7 +62,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 			setIsSecure (false);
 // N
 			setIsSelectionColumn (false);
-			setIsToolbarButton (true);
+			setIsToolbarButton (null);
 // Y
 			setIsTranslated (false);
 			setIsUpdateable (true);
@@ -819,28 +819,30 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 		return (String)get_Value(COLUMNNAME_IsSyncDatabase);
 	}
 
+	/** IsToolbarButton AD_Reference_ID=200099 */
+	public static final int ISTOOLBARBUTTON_AD_Reference_ID=200099;
+	/** Toolbar = Y */
+	public static final String ISTOOLBARBUTTON_Toolbar = "Y";
+	/** Window = N */
+	public static final String ISTOOLBARBUTTON_Window = "N";
+	/** Both = B */
+	public static final String ISTOOLBARBUTTON_Both = "B";
 	/** Set Toolbar Button.
 		@param IsToolbarButton 
 		Add the column button to the toolbar
 	  */
-	public void setIsToolbarButton (boolean IsToolbarButton)
+	public void setIsToolbarButton (String IsToolbarButton)
 	{
-		set_Value (COLUMNNAME_IsToolbarButton, Boolean.valueOf(IsToolbarButton));
+
+		set_Value (COLUMNNAME_IsToolbarButton, IsToolbarButton);
 	}
 
 	/** Get Toolbar Button.
 		@return Add the column button to the toolbar
 	  */
-	public boolean isToolbarButton () 
+	public String getIsToolbarButton () 
 	{
-		Object oo = get_Value(COLUMNNAME_IsToolbarButton);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_IsToolbarButton);
 	}
 
 	/** Set Translated.

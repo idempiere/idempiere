@@ -397,8 +397,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		}		
 	}
 
-	public void setTabTitle(String title) {
-		windowContainer.setTabTitle(title);		
+	public void setTabTitle(String title, int windowNo) {
+		windowContainer.setTabTitle(title, windowNo);		
 	}
 
 }

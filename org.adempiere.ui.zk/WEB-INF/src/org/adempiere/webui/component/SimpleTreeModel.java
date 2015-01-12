@@ -43,11 +43,10 @@ import org.zkoss.zul.event.TreeDataEvent;
  *
  */
 public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> implements TreeitemRenderer<Object>, EventListener<Event> {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4649471521757131755L;
+	private static final long serialVersionUID = -2689107390272278321L;
 
 	private static final CLogger logger = CLogger.getCLogger(SimpleTreeModel.class);
 	
@@ -81,6 +80,7 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 		MTreeNode root = vTree.getRoot();
 		SimpleTreeModel treeModel = SimpleTreeModel.createFrom(root);
 		treeModel.setItemDraggable(true);
+		treeModel.setTreeDrivenByValue(vTree.isTreeDrivenByValue());
 		treeModel.addOnDropEventListener(new ADTreeOnDropListener(tree, treeModel, vTree, windowNo));
 
 		if (tree.getTreecols() == null)
@@ -102,7 +102,17 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 		
 		return treeModel;
 	}
-	
+
+	private boolean isTreeDrivenByValue = false;
+
+	public boolean isTreeDrivenByValue() {
+		return isTreeDrivenByValue;
+	}
+
+	public void setTreeDrivenByValue(boolean isTreeDrivenByValue) {
+		this.isTreeDrivenByValue = isTreeDrivenByValue;
+	}
+
 	/**
 	 * 
 	 * @param root
@@ -168,6 +178,8 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 					ZkCssHelper.appendStyle(tc, "color: #" + hex);
 				}				
 				ti.setTooltiptext(mNode.getDescription());
+				if (mNode.isSummary())
+		    		ZkCssHelper.appendStyle(tc, "font-weight: bold");
 			}
 			// End color
 		}else{

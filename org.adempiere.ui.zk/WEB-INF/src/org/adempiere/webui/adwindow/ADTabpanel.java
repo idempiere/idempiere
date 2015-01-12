@@ -70,6 +70,7 @@ import org.compiere.model.MToolBarButton;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_FieldGroup;
 import org.compiere.model.X_AD_ToolBarButton;
@@ -436,8 +437,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         			editors.add(editor);
         			editor.getComponent().setId(field.getColumnName());
         			toolbarButtonEditors.add(editor);
-        			        			
-        			continue;
+                	if (field.isToolbarOnlyButton())
+                		continue;
         		}
         	}
         	
@@ -1248,9 +1249,14 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
             			refresh = false;
             		}
 				}
+        		// Remove the node if driven by value; will be re-added right after
+           		if ("Saved".equals(e.getAD_Message()) && model.find(null, gridTab.getRecord_ID())!=null && isTreeDrivenByValue())
+        			model.removeNode(model.find(null, gridTab.getRecord_ID()));
         		if ("Saved".equals(e.getAD_Message()) && model.find(null, gridTab.getRecord_ID())==null) 
         		{
 					addNewNode();
+        			if (isTreeDrivenByValue())
+        				treePanel.prepareForRefresh();
 				}
         		if (refresh)
         		{
@@ -1318,10 +1324,25 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			SimpleTreeModel model = (SimpleTreeModel)(TreeModel<?>) treePanel.getTree().getModel();
 			DefaultTreeNode<Object> treeNode = model.getRoot();
 			MTreeNode root = (MTreeNode) treeNode.getData();
+
+			int parentID = root.getNode_ID();
+			DefaultTreeNode<Object> parentNode = null;
+			if (isTreeDrivenByValue()) {
+				String value = gridTab.getValue("Value").toString();
+				parentID = PO.retrieveIdOfParentValue(value, getTableName(), Env.getAD_Client_ID(Env.getCtx()), null);
+				parentNode = model.find(treeNode, parentID);
+				name = value + " - " + name;
+			}
 			MTreeNode node = new MTreeNode (gridTab.getRecord_ID(), 0, name, description,
-					root.getNode_ID(), summary, imageIndicator, false, null);
+					parentID, summary, imageIndicator, false, null);
 			DefaultTreeNode<Object> newNode = new DefaultTreeNode<Object>(node);
-			model.addNode(newNode);			
+
+			if (isTreeDrivenByValue() && parentNode != null) {
+				model.addNode(parentNode, newNode, 0);
+			} else {
+				model.addNode(newNode);
+			}
+
 			int[] path = model.getPath(newNode);
 			Treeitem ti = treePanel.getTree().renderItemByPath(path);
 			treePanel.getTree().setSelectedItem(ti);			
@@ -1349,7 +1370,16 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 				}
 
 				boolean changed = false;
-				if (Env.isBaseLanguage(Env.getCtx(), "AD_Menu")) {
+				if (isTreeDrivenByValue()) {
+					String value = (String) gridTab.getValue("Value");
+					String name = (String) gridTab.getValue("Name");
+					String full = value + " - " + name;
+
+					if (full != null && !full.equals(data.getName())) {
+						data.setName(full);
+						changed = true;
+					}
+				} else if (Env.isBaseLanguage(Env.getCtx(), "AD_Menu")) {
 					String name = (String) gridTab.getValue("Name");
 					if (name != null && !name.equals(data.getName())) {
 						data.setName(name);
@@ -1667,5 +1697,12 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			listPanel.onADTabPanelParentChanged();
 		}
 	}
-}
 
+	private boolean isTreeDrivenByValue() {
+		SimpleTreeModel model = (SimpleTreeModel)(TreeModel<?>) treePanel.getTree().getModel();
+		boolean retValue = false;
+		retValue = model.isTreeDrivenByValue();
+		return retValue;
+	}
+
+}

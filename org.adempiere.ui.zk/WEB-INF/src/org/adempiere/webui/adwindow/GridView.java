@@ -275,7 +275,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 				for(GridField gridField : tmpFields) {
 					if (gridField.getAD_Field_ID() == AD_Field_ID) {
 						// IDEMPIERE-2204 add field in tabCustomization list to display list event this field have showInGrid = false
-						if((gridField.isDisplayedGrid() || gridField.isDisplayed()) && !gridField.isToolbarButton())
+						if((gridField.isDisplayedGrid() || gridField.isDisplayed()) && !gridField.isToolbarOnlyButton())
 							fieldList.add(gridField);
 						
 						break;
@@ -293,7 +293,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 			ArrayList<GridField> gridFieldList = new ArrayList<GridField>();
 			
 			for(GridField field:tmpFields){
-				if(field.isDisplayedGrid() && !field.isToolbarButton()) {
+				if(field.isDisplayedGrid() && !field.isToolbarOnlyButton()) {
 					gridFieldList.add(field);
 				}
 			}
@@ -494,7 +494,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		for (int i = 0; i < numColumns; i++)
 		{
 			// IDEMPIERE-2148: when has tab customize, ignore check properties isDisplayedGrid
-			if ((isHasCustomizeData || gridField[i].isDisplayedGrid()) && !gridField[i].isToolbarButton())
+			if ((isHasCustomizeData || gridField[i].isDisplayedGrid()) && !gridField[i].isToolbarOnlyButton())
 			{
 				colnames.put(index, gridField[i].getHeader());
 				index++;

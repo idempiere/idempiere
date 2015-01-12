@@ -342,6 +342,17 @@ public class MTree_Base extends X_AD_Tree
 	{
 		if (!isActive() || !isAllNodes())
 			setIsDefault(false);
+
+		if (isTreeDrivenByValue()) {
+			String tableName = getSourceTableName(true);
+			MTable table = MTable.get(getCtx(), tableName);
+			// Value and IsSummary are mandatory columns to have a tree driven by Value
+			if (   table.getColumn("Value") == null
+				|| table.getColumn("IsSummary") == null) {
+				setIsTreeDrivenByValue(false);
+			}
+		}
+
 		return true;
 	}	//	beforeSabe
 	

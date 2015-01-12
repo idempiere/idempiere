@@ -47,7 +47,7 @@ public class GridFieldVO implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6391887120974125904L;
+	private static final long serialVersionUID = 4367399601545064219L;
 
 	/**
 	 *  Return the SQL statement used for the MFieldVO.create
@@ -227,7 +227,7 @@ public class GridFieldVO implements Serializable
 				else if (columnName.equalsIgnoreCase("NumLines"))
 					vo.NumLines=rs.getInt(i);
 				else if (columnName.equalsIgnoreCase("IsToolbarButton"))
-					vo.IsToolbarButton  = "Y".equals(rs.getString(i));
+					vo.IsToolbarButton  = rs.getString(i);
 				else if (columnName.equalsIgnoreCase("AD_Chart_ID"))
 					vo.AD_Chart_ID = rs.getInt (i);
 			}
@@ -298,7 +298,7 @@ public class GridFieldVO implements Serializable
 				if (userDef.getNumLines() > 0)
 					vo.NumLines=userDef.getNumLines();
 				if (userDef.getIsToolbarButton() != null)
-					vo.IsToolbarButton  = "Y".equals(userDef.getIsToolbarButton());
+					vo.IsToolbarButton  = userDef.getIsToolbarButton();
 				//IDEMPIERE-1120 Implement Field SeqNo customization
 				if (userDef.getSeqNo() > 0)
 				    vo.SeqNo = userDef.getSeqNo();
@@ -628,7 +628,7 @@ public class GridFieldVO implements Serializable
 	/* Allow copy - IDEMPIERE-67 - Carlos Ruiz - globalqss */
 	public boolean IsAllowCopy = false;
 	/** Toolbar Button **/
-	public boolean IsToolbarButton = false;
+	public String IsToolbarButton = MColumn.ISTOOLBARBUTTON_Window;
 	
 	public int AD_Chart_ID = 0;
 	
