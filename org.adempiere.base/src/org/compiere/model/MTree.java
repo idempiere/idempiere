@@ -449,7 +449,7 @@ public class MTree extends MTree_Base
 					sqlNode.append("f.JSPURL");
 				sqlNode.append(" IS NOT NULL))");
 			}
-		} else if (getTreeType().equals(TREETYPE_ElementValue)) {
+		} else if (isTreeDrivenByValue()) {
 			sqlNode.append("SELECT t.").append(columnNameX)
 			.append("_ID, t.Value || ' - ' || t.Name, t.Description, t.IsSummary,").append(color)
 			.append(" FROM ").append(fromClause);
