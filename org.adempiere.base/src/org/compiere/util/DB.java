@@ -2399,8 +2399,10 @@ public final class DB
 	private static void verifyTrx(String trxName, String sql) {
 		if (trxName != null && Trx.get(trxName, false) == null) {
 			// Using a trx that was previously closed or never opened
-			// this is equivalent to commit without trx (autocommit)
-			log.severe("Transaction closed or never opened ("+trxName+") => this is equivalent to commit without trx (autocommit) --> " + sql); // severe?
+			// probably timed out - throw Exception (IDEMPIERE-644)
+			String msg = "Transaction closed or never opened ("+trxName+") => (maybe timed out)";
+			log.severe(msg); // severe
+			throw new DBException(msg);
 		}
 	}
 

@@ -406,6 +406,36 @@ public class Trx
 	
 
 	/**
+	 * 	Rollback and End Transaction, Close Connection and Throws an Exception
+	 *	@return true if success
+	 */
+	public synchronized boolean rollbackAndCloseOnTimeout() {
+		s_cache.remove(getTrxName());
+
+		//local
+		if (m_connection == null)
+			return true;
+
+		if (isActive())
+			rollback();
+
+		//	Close Connection
+		try
+		{
+			m_connection.close();
+			m_connection = null;
+			m_active = false;
+			fireAfterCloseEvent();
+		}
+		catch (SQLException e)
+		{
+			log.log(Level.SEVERE, m_trxName, e);
+		}
+		log.config(m_trxName);
+		return true;
+	}
+
+	/**
 	 * 	End Transaction and Close Connection
 	 *	@return true if success
 	 */
@@ -651,7 +681,7 @@ public class Trx
 					if (since > trxs[i].getTimeout() * 1000)
 					{
 						trxs[i].log.log(Level.WARNING, "Transaction timeout. Name="+trxs[i].getTrxName() + ", timeout(sec)="+(since / 1000));
-						trxs[i].close();
+						trxs[i].rollbackAndCloseOnTimeout();
 					}
 				}
 			}
