@@ -354,7 +354,13 @@ public final class EMail implements Serializable
 			t.connect();
 		//	t.connect(m_smtpHost, user, password);
 		//	log.fine("transport connected");
-			Transport.send(m_msg);
+			ClassLoader tcl = Thread.currentThread().getContextClassLoader();
+			try {
+				Thread.currentThread().setContextClassLoader(javax.mail.Session.class.getClassLoader());
+				Transport.send(m_msg);
+			} finally {
+				Thread.currentThread().setContextClassLoader(tcl);
+			}
 		//	t.sendMessage(msg, msg.getAllRecipients());
 			if (log.isLoggable(Level.FINE)) log.fine("Success - MessageID=" + m_msg.getMessageID());
 		}
