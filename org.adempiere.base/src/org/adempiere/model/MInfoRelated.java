@@ -17,16 +17,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.model.I_AD_InfoRelated;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_InfoRelated;
 
-public class MInfoRelated extends X_AD_InfoRelated implements I_AD_InfoRelated {
+public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7899684001732574833L;
+	private static final long serialVersionUID = -4239930986439783006L;
 
 	public MInfoRelated(Properties ctx, int AD_InfoRelated_ID, String trxName) {
 		super(ctx, AD_InfoRelated_ID, trxName);
@@ -54,4 +54,20 @@ public class MInfoRelated extends X_AD_InfoRelated implements I_AD_InfoRelated {
 			return "";
 	}
 
+	/**
+	 * Just forward call to {@link #getParentRelatedColumn_ID()}
+	 */
+	@Override
+	public int getInfoColumnID() {
+		return getParentRelatedColumn_ID();
+	}
+	
+	/**
+	 * Just forward call to {@link #getParentRelatedColumn()}
+	 */
+	@Override
+	public MInfoColumn getAD_InfoColumn (){
+		return (MInfoColumn) getParentRelatedColumn();
+	}
+	
 }

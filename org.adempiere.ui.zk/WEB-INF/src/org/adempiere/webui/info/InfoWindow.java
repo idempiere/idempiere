@@ -14,6 +14,7 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
+import org.adempiere.model.IInfoColumn;
 import org.adempiere.model.MInfoProcess;
 import org.adempiere.model.MInfoRelated;
 import org.adempiere.webui.AdempiereWebUI;
@@ -96,7 +97,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2192106603768665006L;
+	private static final long serialVersionUID = 2751982942639167289L;
 
 	protected Grid parameterGrid;
 	private Borderlayout layout;
@@ -159,7 +160,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    				int row = contentPanel.getSelectedRow();
    				if (row >= 0) {
    					for (EmbedWinInfo embed : embeddedWinList) {
-   						refresh(contentPanel.getValueAt(row,0),embed);
+   						int indexData = 0;
+   						if (columnDataIndex.containsKey(embed.getParentLinkColumnID())){
+   							indexData = p_layout.length + columnDataIndex.get(embed.getParentLinkColumnID());
+   						}
+   						refresh(contentPanel.getValueAt(row,indexData),embed);
    					}// refresh for all
    				}
    			}
@@ -519,7 +524,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			return false;
 
 		// topinfoColumns = infoWindow.getInfoColumns();
-		MInfoRelated[] relatedInfoList = infoWindow.getInfoRelated(true);
+		relatedInfoList = infoWindow.getInfoRelated(true);
 		Tabpanels tabPanels = new Tabpanels();
 		Tabs tabs = new Tabs();
 
@@ -573,8 +578,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				embeddedTbl.getModel().addTableModelListener(this);
 				embeddedTbl.setVflex("1");
 
+				
 				//Xolali - add embeddedTbl to list, add m_sqlembedded to list
-				EmbedWinInfo ewinInfo = new EmbedWinInfo(embedInfo,embeddedTbl,m_sqlEmbedded,relatedInfo.getLinkColumnName(), relatedInfo.getLinkInfoColumn());
+				EmbedWinInfo ewinInfo = new EmbedWinInfo(embedInfo,embeddedTbl,m_sqlEmbedded,relatedInfo.getLinkColumnName(), relatedInfo.getLinkInfoColumn(), relatedInfo.getParentRelatedColumn_ID());
 				embeddedWinList.add(ewinInfo);
 
 				MInfoWindow riw = (MInfoWindow) relatedInfo.getRelatedInfo();
@@ -894,6 +900,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		addViewIDToQuery();
 		
+		
 		if (m_sqlMain.length() > 0 &&  infoWindow.isDistinct()) {
 			m_sqlMain = m_sqlMain.substring("SELECT ".length());
 			m_sqlMain = "SELECT DISTINCT " + m_sqlMain;			
@@ -914,46 +921,58 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * if main query have subquery in SELECT, it will beak or incorrect
 	 */
 	protected void addViewIDToQuery () {
-		
-		if (m_sqlMain.length() > 0 && infoProcessList != null && infoProcessList.length > 0){
-			int fromIndex = m_sqlMain.indexOf("FROM");
-			// split Select and from clause
-			String selectClause = m_sqlMain.substring(0, fromIndex);
-			String fromClause = m_sqlMain.substring(fromIndex);
-			
-			// get alias of main table
-			StringBuilder sqlBuilder = new StringBuilder(selectClause);
-			
-			// reset flag relate viewID to recount
-			numOfViewID = 0;
-			isHasViewID = false;
-			
-			// add View_ID column to select clause
-			for (MInfoProcess infoProcess : infoProcessList) {
-				// this process hasn't viewID column, next other infoProcess
-				if (infoProcess.getAD_InfoColumn_ID() <= 0)
-					continue;
-
-				MInfoColumn infocol = (MInfoColumn) infoProcess.getAD_InfoColumn();
-				// maintain varial relate to ViewID, it can init just one time when load infoWindow define
-				// but let it here for simple logic control
-				numOfViewID++;
-				isHasViewID = true;
-
-				if (! infocol.isDisplayed()) {
-					// add column to SELECT clause of main sql
-					sqlBuilder.append(", ");
-					sqlBuilder.append (infocol.getSelectClause());
-					sqlBuilder.append(" AS ");				
-					sqlBuilder.append (infocol.getColumnName());
-					sqlBuilder.append(" ");				
-				}
-			}
-			
-			sqlBuilder.append(fromClause);
-			// update main sql 
-			m_sqlMain = sqlBuilder.toString();
+		m_sqlMain = addMoreColumnToQuery (m_sqlMain, infoProcessList);
+	}
+	
+	
+	/**
+	 * because data of infoColumn have isDisplay = false not load, 
+	 * just display column is load to show in List.
+	 * Some function receive data from hidden column as viewID in infoProcess
+	 * or parentLink of infoRelateWindow.
+	 * 
+	 * this function just add column name of hidden infoWindow to end of query
+	 * @param sqlMain main sql to append column 
+	 * @param listInfoColumn list of PO contain infoColumnID, this infoColumnID will add to query
+	 * @return sql after append column
+	 */
+	protected String addMoreColumnToQuery (String sqlMain, IInfoColumn [] listInfoColumn) {
+		if (sqlMain == null || sqlMain.length() == 0 || listInfoColumn == null || listInfoColumn.length == 0){
+			return sqlMain;
 		}
+				
+		int fromIndex = sqlMain.indexOf("FROM");
+		// split Select and from clause
+		String selectClause = sqlMain.substring(0, fromIndex);
+		String fromClause = sqlMain.substring(fromIndex);
+		
+		// get alias of main table
+		StringBuilder sqlBuilder = new StringBuilder(selectClause);
+		StringBuilder sqlColumn = new StringBuilder();
+		
+		// add View_ID column to select clause
+		for (IInfoColumn infoProcess : listInfoColumn) {
+			// this process hasn't viewID column, next other infoProcess
+			if (infoProcess.getInfoColumnID() <= 0)
+				continue;
+
+			MInfoColumn infocol = (MInfoColumn) infoProcess.getAD_InfoColumn();
+			
+			if (! infocol.isDisplayed()) {
+				sqlColumn.append(", ").append(infocol.getSelectClause()).append(" AS ").append(infocol.getColumnName()).append(" ");
+				// add column to SELECT clause of main sql, if query is include this viewID column, not need add
+				if (!sqlBuilder.toString().contains(sqlColumn)){
+					sqlBuilder.append(sqlColumn);
+				}
+				
+				sqlColumn.delete(0, sqlColumn.length());
+			}
+		}
+		
+		sqlBuilder.append(fromClause);
+		// update main sql 
+		return sqlBuilder.toString();
+		
 	}
 	
 	protected void renderWindow()
@@ -1646,13 +1665,32 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		sql.append(relatedInfo.getInfoSql()); // delete get sql method from MInfoWindow
 		if (log.isLoggable(Level.FINEST))
 			log.finest(sql.toString());
-		IDColumn ID = (IDColumn) obj;
+		
+		Object linkPara = null;
+		if (obj != null && obj instanceof IDColumn){
+			IDColumn ID = (IDColumn) obj;
+			linkPara = ID.getRecord_ID();
+		}else if (obj != null){
+			linkPara = obj.toString();
+		}else {
+			//TODO:hard case
+		}
+		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(relatedInfo.getInfoSql(), null);
-			pstmt.setObject(1, ID.getRecord_ID());
+			//TODO: implicit type conversion. will exception in some case must recheck
+			if (relatedInfo.getTypeDataOfLink().equals(String.class)){
+				pstmt.setString(1, (String)linkPara);
+			}else if (relatedInfo.getTypeDataOfLink().equals(int.class)){				
+				pstmt.setInt(1, Integer.parseInt(linkPara.toString()));
+				
+			}else{
+				pstmt.setObject(1, linkPara);
+			}
+			
 			rs = pstmt.executeQuery();
 			loadEmbedded(rs, relatedInfo);
 		}

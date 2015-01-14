@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.model.MInfoColumn;
 import org.compiere.model.MProcess;
 import org.compiere.model.X_AD_InfoProcess;
 import org.compiere.util.Env;
@@ -29,11 +30,12 @@ import org.compiere.util.Evaluator;
  * @author hieplq
  *
  */
-public class MInfoProcess extends X_AD_InfoProcess {
+public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2478699719088685214L;
+	private static final long serialVersionUID = 6603281032935632048L;
 
 	/**
 	 * {@inheritDoc}
@@ -87,6 +89,22 @@ public class MInfoProcess extends X_AD_InfoProcess {
 		if (log.isLoggable(Level.FINEST)) log.finest(MProcess.get(getCtx(), getAD_Process_ID()).getName() 
 					+ " (" + getDisplayLogic() + ") => " + retValue);
 		return retValue;
+	}
+
+	/**
+	 * just forward call to {@link #getAD_InfoColumn_ID()}
+	 */
+	@Override
+	public int getInfoColumnID() {
+		return getAD_InfoColumn_ID();
+	}
+
+	/**
+	 * Just forward call to {@link #getAD_InfoColumn ()}
+	 */
+	@Override
+	public MInfoColumn getAD_InfoColumn (){
+		return (MInfoColumn)super.getAD_InfoColumn();
 	}
 	
 }
