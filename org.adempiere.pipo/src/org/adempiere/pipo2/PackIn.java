@@ -235,7 +235,7 @@ public class PackIn {
 		ArrayList<File> files = new ArrayList<File>();
 		while (e.hasMoreElements()) {
 			ZipEntry ze = (ZipEntry) e.nextElement();
-			File file = new File(ze.getName());
+			File file = new File(m_packageDirectory + File.separator + ze.getName());
 			FileOutputStream fout = new FileOutputStream(file);
 			InputStream in = zf.getInputStream(ze);
 			for (int c = in.read(); c != -1; c = in.read()) {

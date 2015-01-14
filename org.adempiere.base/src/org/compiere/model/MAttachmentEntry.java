@@ -230,7 +230,7 @@ public class MAttachmentEntry
 	{
 		if (fileName == null || fileName.length() == 0)
 			fileName = getName();
-		return getFile (new File(fileName));
+		return getFile (new File(System.getProperty("java.io.tmpdir") + File.separator + fileName));
 	}	//	getFile
 
 	/**

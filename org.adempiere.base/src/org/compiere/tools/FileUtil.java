@@ -19,6 +19,7 @@ package org.compiere.tools;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
@@ -425,6 +426,18 @@ public class FileUtil
 				+ System.getProperty("file.separator") + cleanName + "_" + dt
 				+ extension;
 		return localFile;
+	}
+
+	public static boolean deleteFolderRecursive(File path) throws FileNotFoundException {
+		if (!path.exists())
+			throw new FileNotFoundException(path.getAbsolutePath());
+		boolean ret = true;
+		if (path.isDirectory()) {
+			for (File f : path.listFiles()){
+				ret = ret && deleteFolderRecursive(f);
+			}
+		}
+		return ret && path.delete();
 	}
 
 }	//	FileUtil
