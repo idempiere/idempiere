@@ -296,7 +296,7 @@ public class ProcessParameter extends CDialog
 	private void createField (ResultSet rs)
 	{
 		//  Create Field
-		GridFieldVO voF = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, m_processInfo.getAD_Process_ID(), m_AD_Window_ID, 0, rs);
+		GridFieldVO voF = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, m_processInfo.getAD_Process_ID(), m_AD_Window_ID, rs);
 		GridField mField = new GridField (voF);
 		m_mFields.add(mField);                      //  add to Fields
 

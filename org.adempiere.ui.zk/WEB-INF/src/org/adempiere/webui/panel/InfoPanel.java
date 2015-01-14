@@ -1531,7 +1531,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		final int pInstanceID = instance.getAD_PInstance_ID();
 		// Execute Process
 		m_pi.setAD_PInstance_ID(pInstanceID);		
-		m_pi.setAD_InfoWindow_ID(infoWindow.getAD_InfoWindow_ID());
 		
 		//HengSin - to let process end with message and requery
 		WProcessCtl.process(p_WindowNo, m_pi, (Trx)null, new EventListener<Event>() {

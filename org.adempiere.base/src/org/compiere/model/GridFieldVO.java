@@ -47,7 +47,7 @@ public class GridFieldVO implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7001013190366328211L;
+	private static final long serialVersionUID = 4367399601545064219L;
 
 	/**
 	 *  Return the SQL statement used for the MFieldVO.create
@@ -318,7 +318,7 @@ public class GridFieldVO implements Serializable
 	 *  @param rs result set AD_Process_Para
 	 *  @return MFieldVO
 	 */
-	public static GridFieldVO createParameter (Properties ctx, int WindowNo, int ProcessIDOfPanel, int WindowIDOfPanel, int adInfoPaneId, ResultSet rs)
+	public static GridFieldVO createParameter (Properties ctx, int WindowNo, int ProcessIDOfPanel, int WindowIDOfPanel, ResultSet rs)
 	{
 		GridFieldVO vo = new GridFieldVO (ctx, WindowNo, 0, 0, 0, false);
 		vo.isProcess = true;
@@ -327,8 +327,7 @@ public class GridFieldVO implements Serializable
 		vo.IsUpdateable = true;
 		vo.AD_Process_ID_Of_Panel = ProcessIDOfPanel;
 		vo.AD_Window_ID_Of_Panel = WindowIDOfPanel;
-		vo.AD_Infowindow_ID = adInfoPaneId;
-		
+
 		try
 		{
 			vo.AD_Table_ID = 0;
@@ -412,20 +411,7 @@ public class GridFieldVO implements Serializable
 		return voT;
 	}   //  createParameter
 
-	/**
-	 * Create parameter for infoWindow
-	 * @param ctx
-	 * @param WindowNo
-	 * @param AD_Column_ID
-	 * @param ColumnName
-	 * @param Name
-	 * @param AD_Reference_ID
-	 * @param AD_Reference_Value_ID
-	 * @param IsMandatory
-	 * @param IsEncrypted
-	 * @return
-	 */
-	public static GridFieldVO createParameter (Properties ctx, int WindowNo, int WindowIDOfPanel, int infoWindowID,
+	public static GridFieldVO createParameter (Properties ctx, int WindowNo, 
 			int AD_Column_ID, String ColumnName, String Name, int AD_Reference_ID, int AD_Reference_Value_ID, 
 			boolean IsMandatory, boolean IsEncrypted)
 	{
@@ -442,8 +428,6 @@ public class GridFieldVO implements Serializable
 		vo.AD_Reference_Value_ID = AD_Reference_Value_ID;
 		vo.IsMandatory = IsMandatory;
 		vo.IsEncryptedField= IsEncrypted;			
-		vo.AD_Infowindow_ID = infoWindowID;
-		vo.AD_Window_ID_Of_Panel = WindowIDOfPanel;
 		//
 		vo.initFinish();
 		return vo;
@@ -515,14 +499,7 @@ public class GridFieldVO implements Serializable
 	 *  it's difference with AD_Process_ID
 	 */
 	public int          AD_Process_ID_Of_Panel;
-	/**
-	 * ad_window_id of window show process dialog or infoWindow dialog
-	 */
 	public int          AD_Window_ID_Of_Panel;
-	/**
-	 * AD_Infowindow_ID call process. user in case from info window call process.
-	 */
-	public int          AD_Infowindow_ID;
 	/** AD_Tab_ID					*/
 	public int			AD_Tab_ID;
 	/** Is the Tab Read Only        */
@@ -794,7 +771,6 @@ public class GridFieldVO implements Serializable
 		clone.DefaultValue2 = DefaultValue2;
 		clone.AD_Process_ID_Of_Panel = AD_Process_ID_Of_Panel;
 		clone.AD_Window_ID_Of_Panel = AD_Window_ID_Of_Panel;
-		clone.AD_Infowindow_ID = AD_Infowindow_ID;
 		return clone;
 	}	//	clone
 	

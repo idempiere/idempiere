@@ -18,7 +18,6 @@ import org.adempiere.model.IInfoColumn;
 import org.adempiere.model.MInfoProcess;
 import org.adempiere.model.MInfoRelated;
 import org.adempiere.webui.AdempiereWebUI;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
@@ -476,7 +475,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				String columnName = infoColumn.getColumnName();
 				/*!m_lookup && infoColumn.isMandatory():apply Mandatory only case open as window and only for criteria field*/
 				boolean isMandatory = !m_lookup && infoColumn.isMandatory() && infoColumn.isQueryCriteria();
-				GridFieldVO vo = GridFieldVO.createParameter(infoContext, p_WindowNo, AEnv.getADWindowID(p_WindowNo), infoWindow.getAD_InfoWindow_ID(), 0,
+				GridFieldVO vo = GridFieldVO.createParameter(infoContext, p_WindowNo, 0, 
 						columnName, infoColumn.get_Translation("Name"), infoColumn.getAD_Reference_ID(), 
 						infoColumn.getAD_Reference_Value_ID(), isMandatory, false);
 				if (infoColumn.getAD_Val_Rule_ID() > 0) {
@@ -1222,9 +1221,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         addSearchParameter(label, fieldEditor);
         
         editors.add(editor);
-        
-        editor.showMenu();
-        
         if (infoColumn.isIdentifier()) {
         	identifiers.add(editor);
         }
@@ -1233,9 +1229,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
         mField.addPropertyChangeListener(editor);
         
-        if (!Util.isEmpty(mField.getVO().DefaultValue, true)) {
+        if (! Util.isEmpty(mField.getVO().DefaultValue, true)) {
             // set default value
-        	mField.setValue(mField.getDefault(), true);
+            mField.setValue(mField.getDefault(), true);
         }
     }   // addSelectionColumn
 
@@ -1276,11 +1272,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         } else {
         	panel.appendChild(new Space());
         }
-        
-        // add out parent to add menu for this field, without outerDiv, a new cell will auto make for menu.
-        Div outerParent = new Div();
-        outerParent.appendChild(fieldEditor);
-        panel.appendChild(outerParent);
+        panel.appendChild(fieldEditor);
 	}
 
 	protected void createAndCheckbox() {
@@ -1751,7 +1743,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	protected GridField getGridField(MInfoColumn infoColumn){
 		String columnName = infoColumn.getColumnName();
-		GridFieldVO vo = GridFieldVO.createParameter(infoContext, p_WindowNo, AEnv.getADWindowID(p_WindowNo), AD_InfoWindow_ID, 0,
+		GridFieldVO vo = GridFieldVO.createParameter(infoContext, p_WindowNo, 0,
 				columnName, infoColumn.get_Translation("Name"), infoColumn.getAD_Reference_ID(),
 				infoColumn.getAD_Reference_Value_ID(), false, false);
 		if (infoColumn.getAD_Val_Rule_ID() > 0) {

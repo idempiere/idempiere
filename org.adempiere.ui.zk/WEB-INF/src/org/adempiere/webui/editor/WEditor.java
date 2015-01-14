@@ -32,7 +32,6 @@ import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Paymentbox;
-import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.theme.ThemeManager;
@@ -54,7 +53,6 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.impl.InputElement;
-import org.zkoss.zul.impl.XulElement;
 
 /**
  *
@@ -96,53 +94,11 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	
 	private boolean isProcessParameter;
 
-	/**
-	 * call to show context menu of this field.
-	 * must call after append component of this field to parent
-	 */
-	public void showMenu() {		
-		if (popupMenu == null)
-			return;
-		
-		// handle standard menu item (log, preference) reply to data type of this field.
-		if (ContextMenuListener.class.isInstance(this))
-			popupMenu.addMenuListener((ContextMenuListener)this);
-		
-		//popupMenu.setId(mField.getColumnName()+"-popup");
-		this.component.getParent().appendChild(popupMenu);
-		
-		// when field have label, add action zoom when click to label, and show menu when right click to label
-		if (!gridField.isFieldOnly())
-		{				
-			if (popupMenu.isZoomEnabled() && this instanceof IZoomableEditor)
-			{
-				// add action zoom when click to label
-				label.addEventListener(Events.ON_CLICK, new EventListener<Event> (){
-					public void onEvent(Event event) throws Exception {
-						if (Events.ON_CLICK.equals(event.getName())) {
-							((IZoomableEditor)WEditor.this).actionZoom();
-						}
-
-					}
-				});
-			}
-
-			// show menu when right click to label
-			popupMenu.addContextElement(label);
-			
-			if (component instanceof XulElement) 
-			{
-				popupMenu.addContextElement((XulElement) component);
-			}
-		}
-		
-	}
-	
     public WEditor(Component comp, GridField gridField) {
     	this(comp, gridField, -1);
 	}
 
-	/**
+    /**
      *
      * @param comp
      * @param gridField

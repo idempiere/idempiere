@@ -42,7 +42,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
@@ -122,7 +121,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		//  Create Editor
 		@SuppressWarnings("unused")
 		ValuePreference vp = new ValuePreference (WindowNo,
-			AD_Client_ID, AD_Org_ID, AD_User_ID, AD_Window_ID, mField.getAD_Process_ID_Of_Panel(), mField.getAD_Infowindow_ID(),
+			AD_Client_ID, AD_Org_ID, AD_User_ID, AD_Window_ID, mField.getAD_Process_ID_Of_Panel(), 
 			Attribute, DisplayAttribute, Value, DisplayValue,
 			displayType, AD_Reference_ID, ref);
 	}   //  create
@@ -184,7 +183,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	 * @param ref 
 	 */
 	public ValuePreference (int WindowNo,
-		int AD_Client_ID, int AD_Org_ID, int AD_User_ID, int AD_Window_ID, int AD_Process_ID_Of_Panel, int AD_Infowindow_ID,
+		int AD_Client_ID, int AD_Org_ID, int AD_User_ID, int AD_Window_ID, int AD_Process_ID_Of_Panel,
 		String Attribute, String DisplayAttribute, String Value, String DisplayValue,
 		int displayType, int AD_Reference_ID, Component ref)
 	{
@@ -208,13 +207,8 @@ public class ValuePreference extends Window implements EventListener<Event>
 		m_DisplayValue = DisplayValue;
 		m_DisplayType = displayType;
 		m_AD_Process_ID_Of_Panel = AD_Process_ID_Of_Panel;
-		m_AD_Infowindow_ID = AD_Infowindow_ID;
 		//
 		m_role = MRole.getDefault();
-		
-		if (m_AD_Infowindow_ID > 0 && m_AD_Process_ID_Of_Panel > 0)
-			isProcessInIW = true;
-		
 		try
 		{
 			init();
@@ -235,7 +229,6 @@ public class ValuePreference extends Window implements EventListener<Event>
 		} else {
 			AEnv.showCenterScreen(this);
 		}		
-
 	}   //  ValuePreference
 
 	private AbstractADWindowContent findADWindowContent(Component comp) {
@@ -256,7 +249,6 @@ public class ValuePreference extends Window implements EventListener<Event>
 	private int             m_DisplayType;
 	private MRole			m_role;
 	private int				m_AD_Process_ID_Of_Panel;
-	private int				m_AD_Infowindow_ID;
 
 	//  Display
 	private Panel setPanel = new Panel();
@@ -273,16 +265,10 @@ public class ValuePreference extends Window implements EventListener<Event>
 	private Checkbox cbUser = new Checkbox();
 	private Checkbox cbWindow = new Checkbox();
 	private Checkbox cbProcess = new Checkbox();
-	private Checkbox cbInfowindow = new Checkbox();
 	private Label lExplanation = new Label();
 
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private Button bDelete;
-	
-	/**
-	* is true when value preference for a field of process call by info window 
-	*/
-	private boolean isProcessInIW = false;
 
 	/**
 	 *  Static Layout
@@ -302,8 +288,6 @@ public class ValuePreference extends Window implements EventListener<Event>
 		cbWindow.setChecked(true);
 		cbProcess.setLabel(Msg.translate(m_ctx, "AD_Process_ID"));
 		cbProcess.setChecked(true);
-		cbInfowindow.setLabel(Msg.translate(m_ctx, "AD_InfoWindow_ID"));
-		cbInfowindow.setChecked(true);
 		// 
 		setPanel.appendChild(setLayout);
 		setPanel.setHflex("1");
@@ -350,23 +334,10 @@ public class ValuePreference extends Window implements EventListener<Event>
 		chlayout.appendChild(cbClient);
 		chlayout.appendChild(cbOrg);
 		chlayout.appendChild(cbUser);
-		if(isProcessInIW){
-			// in case show process in info window, don't show checkbox window in value preference dialog.
-			// must set is checked to save current windowID (dummy) with value preference other it will save null, 
-			// make data conflic with case save for all window 
-			cbWindow.setChecked(true);
-		}else{
-			chlayout.appendChild(cbWindow);
-		}
-		
-		if(m_AD_Infowindow_ID > 0){
-			chlayout.appendChild(cbInfowindow);
-		}
-		
+		chlayout.appendChild(cbWindow);
 		if(m_AD_Process_ID_Of_Panel > 0){
 			chlayout.appendChild(cbProcess);
 		}
-		
 		row.appendCellChild(chlayout, 5);
 		rows.appendChild(row);
 		
@@ -431,7 +402,6 @@ public class ValuePreference extends Window implements EventListener<Event>
 		//	Can change all/specific
 		cbWindow.addEventListener(Events.ON_CHECK, this);
 		cbProcess.addEventListener(Events.ON_CHECK, this);
-		cbInfowindow.addEventListener(Events.ON_CHECK, this);
 
 		//  Other
 		confirmPanel.addComponentsLeft(confirmPanel.createButton("Delete"));
@@ -503,13 +473,6 @@ public class ValuePreference extends Window implements EventListener<Event>
 			else
 				expl.append(" and all Process");
 		}
-		//
-		if (m_AD_Infowindow_ID > 0){
-			if (cbInfowindow.isChecked())
-				expl.append(" and this Info Window");
-			else
-				expl.append(" and all Info Window");
-		}
 		
 		//
 		if (Env.getLanguage(Env.getCtx()).isBaseLanguage())
@@ -538,33 +501,17 @@ public class ValuePreference extends Window implements EventListener<Event>
 		else
 			sql.append(" AND AD_Window_ID IS NULL");
 		
-		// set where for Process 
-		if (m_AD_Process_ID_Of_Panel > 0 && cbProcess.isChecked()){
-			// case set for a process 
-			sql.append(" AND AD_Process_ID=").append(m_AD_Process_ID_Of_Panel);
-		}else{
-			// case set for a all process or non set for process (set for window or infowindow)
-			sql.append(" AND AD_Process_ID IS NULL");
-		}
-		
-		// set where for infoWindow 
-		if (m_AD_Infowindow_ID > 0 && cbInfowindow.isChecked()){
-			// case set for a info window
-			sql.append(" AND AD_InfoWindow_ID=").append(m_AD_Infowindow_ID);
-		}else{
-			// case set for a all process or non set for process (set for window or infowindow)
-			sql.append(" AND AD_InfoWindow_ID IS NULL");
-		}
-		
 		if (m_AD_Process_ID_Of_Panel > 0){
-			// in case Preference for process, set PreferenceFor = P
+			// preference for process parameter
 			sql.append(" AND PreferenceFor = 'P'");
-		}else if (m_AD_Infowindow_ID > 0){
-			// in case Preference for info window, set PreferenceFor = I
-			sql.append(" AND PreferenceFor = 'I'");
-		}else {
-			// in case Preference for window, set PreferenceFor = W
+			if (cbProcess.isChecked())
+				sql.append(" AND AD_Process_ID=").append(m_AD_Process_ID_Of_Panel);
+			else
+				sql.append(" AND AD_Process_ID IS NULL");
+		}else{
+			// preference for process window
 			sql.append(" AND PreferenceFor = 'W'");
+			sql.append(" AND AD_Process_ID IS NULL");
 		}
 		
 		sql.append(" AND Attribute='").append(m_Attribute).append("'");
@@ -578,44 +525,21 @@ public class ValuePreference extends Window implements EventListener<Event>
 
 	/**
 	 *  Get Context Key
-	 *  preferences in context update follow key.
-	 *  they load when login, and update when change.
-	 *  @see Login#loadPreferences(org.compiere.util.KeyNamePair, org.compiere.util.KeyNamePair, java.sql.Timestamp, String)
-	 *  and set to field when display field, {@link GridField#getDefault()}
 	 *  @return Context Key
 	 */
 	private String getContextKey()
 	{
-		// add window id info in case have process or field in info window parameter
-		StringBuilder preferencesContextKey = new StringBuilder ("P") ;
-		if (m_AD_Window_ID > 0){
-			preferencesContextKey.append(m_AD_Window_ID);
-		}else{
-			preferencesContextKey.append("0");
-		}
-		// add info window info in case have process or field in info window parameter
-		if (cbInfowindow.isChecked()){
-			preferencesContextKey.append("|").append(m_AD_Infowindow_ID);
-		}else{
-			preferencesContextKey.append("|0");
-		}
-		
 		if (m_AD_Process_ID_Of_Panel > 0){
-			// add info process info and field info in case have process
 			if (cbProcess.isChecked())
-				return preferencesContextKey.append("|").append(m_AD_Process_ID_Of_Panel).append("|").append(m_Attribute).toString();
+				return "P" + m_AD_Window_ID + "|" + m_AD_Process_ID_Of_Panel + "|" + m_Attribute;
 			else{
-				return preferencesContextKey.append("|0|").append(m_Attribute).toString();
+				return "P" + m_AD_Window_ID + "|0|" + m_Attribute;
 			}
-		}else if (m_AD_Infowindow_ID > 0){
-			// add field info in case lie in info window parameter
-			return preferencesContextKey.append("|").append(m_Attribute).toString();
 		}else{
-			// key in case lie in standard window
-			if (cbWindow.isChecked())
-				return "P" + m_AD_Window_ID + "|" + m_Attribute;
-			else
-				return "P|" + m_Attribute;
+		if (cbWindow.isChecked())
+			return "P" + m_AD_Window_ID + "|" + m_Attribute;
+		else
+			return "P|" + m_Attribute;
 		}
 		
 	}   //  getContextKey
@@ -651,7 +575,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		//
 		StringBuilder sql = new StringBuilder ("INSERT INTO AD_Preference ("
 			+ "AD_Preference_ID, AD_Preference_UU, AD_Client_ID, AD_Org_ID, IsActive, Created,CreatedBy,Updated,UpdatedBy,"
-			+ "AD_Window_ID, AD_Process_ID, AD_InfoWindow_ID, PreferenceFor, AD_User_ID, Attribute, Value) VALUES (");
+			+ "AD_Window_ID, AD_Process_ID, PreferenceFor, AD_User_ID, Attribute, Value) VALUES (");
 		sql.append(AD_Preference_ID).append(",").append(DB.TO_STRING(UUID.randomUUID().toString())).append(",").append(Client_ID).append(",").append(Org_ID)
 			.append(", 'Y',SysDate,").append(m_AD_User_ID).append(",SysDate,").append(m_AD_User_ID).append(", ");
 		
@@ -661,30 +585,18 @@ public class ValuePreference extends Window implements EventListener<Event>
 			sql.append("NULL,") ;
 		
 		// set value for AD_Process_ID and PreferenceFor
-		if(m_AD_Process_ID_Of_Panel > 0 && cbProcess.isChecked()){
-			sql.append(m_AD_Process_ID_Of_Panel).append(",");
-			
+		if(m_AD_Process_ID_Of_Panel > 0){
+			if (cbProcess.isChecked()){
+				sql.append(m_AD_Process_ID_Of_Panel).append(",");
+			}else{
+				sql.append("NULL,");
+			}
+			// in case Preference for process, set PreferenceFor = P
+			sql.append("'P',");
 		}else{
 			// in case Preference for window, AD_Process_ID always null
 			sql.append("NULL,");
-		}
-		
-		// set info window id
-		if (m_AD_Infowindow_ID > 0 && cbInfowindow.isChecked()){
-			sql.append(m_AD_Infowindow_ID).append(",");
-				
-		}else {
-			sql.append("NULL,");
-		}
-		
-		if (m_AD_Process_ID_Of_Panel > 0){
-			// in case Preference for process, set PreferenceFor = P
-			sql.append("'P',");
-		}else if (m_AD_Infowindow_ID > 0){
-			// in case Preference for info window, set PreferenceFor = I
-			sql.append("'I',");
-		}else {
-			// in case Preference for window, set PreferenceFor = W
+			// in case Preference for window, set PreferenceFor = P
 			sql.append("'W',");
 		}
 		
