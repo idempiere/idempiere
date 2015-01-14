@@ -248,7 +248,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		this.appendChild(layout);
 		this.setStyle("width: 100%; height: 100%; position: absolute; border:none; padding:none; margin:none;");
 
-		toolBar.setHeight("26px");
+		toolBar.setHeight("32px");
 		toolBar.setWidth("100%");
 		
 		previewType.setMold("select");

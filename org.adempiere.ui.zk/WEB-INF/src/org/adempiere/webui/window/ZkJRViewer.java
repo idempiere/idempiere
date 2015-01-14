@@ -95,7 +95,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		this.setStyle("width: 100%; height: 100%; position: absolute");
 
 		Toolbar toolbar = new Toolbar();
-		toolbar.setHeight("26px");
+		toolbar.setHeight("32px");
 
 		previewType.setMold("select");
 		attachment = null;  // Added by Martin Augustine - Ntier software Services 09/10/2013
