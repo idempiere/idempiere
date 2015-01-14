@@ -96,6 +96,8 @@ public final class Env
 
 	private static List<IEnvEventListener> eventListeners = new ArrayList<IEnvEventListener>();
 
+	public static int adWindowDummyID =200054; 
+	
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(Env.class);
 
@@ -960,13 +962,41 @@ public final class Env
 		return (retValue == null ? "" : retValue);
 	}	//	getPreference
 
-	public static String getPreference (Properties ctx, int AD_Window_ID, int AD_Process_ID_Of_Panel, String context)
+	/**
+	 * get preference of process from env
+	 * @param ctx
+	 * @param AD_Window_ID
+	 * @param AD_InfoWindow
+	 * @param AD_Process_ID_Of_Panel
+	 * @param context
+	 * @return
+	 */
+	public static String getPreference (Properties ctx, int AD_Window_ID, int AD_InfoWindow, int AD_Process_ID_Of_Panel, String context)
 	{
 		if (ctx == null || context == null)
 			throw new IllegalArgumentException ("Require Context");
 		String retValue = null;
 		
-		retValue = ctx.getProperty("P"+AD_Window_ID+"|"+ AD_Process_ID_Of_Panel + "|" + context);
+		retValue = ctx.getProperty("P"+AD_Window_ID+"|"+ AD_InfoWindow + "|" + AD_Process_ID_Of_Panel + "|" + context);
+
+		return (retValue == null ? "" : retValue);
+	}	//	getPreference
+	
+	/**
+	 * get preference of info window from env
+	 * @param ctx
+	 * @param AD_Window_ID
+	 * @param AD_InfoWindow
+	 * @param context
+	 * @return
+	 */
+	public static String getPreference (Properties ctx, int AD_Window_ID, int AD_InfoWindow, String context)
+	{
+		if (ctx == null || context == null)
+			throw new IllegalArgumentException ("Require Context");
+		String retValue = null;
+		
+		retValue = ctx.getProperty("P"+AD_Window_ID+"|"+ AD_InfoWindow + "|" + context);
 
 		return (retValue == null ? "" : retValue);
 	}	//	getPreference
