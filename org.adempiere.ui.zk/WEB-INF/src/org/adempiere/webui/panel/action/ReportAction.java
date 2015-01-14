@@ -317,7 +317,7 @@ public class ReportAction implements EventListener<Event>
 			// It's a report using the JasperReports engine
 			ProcessInfo pi = new ProcessInfo ("", pf.getJasperProcess_ID(), pf.getAD_Table_ID(), Record_ID);
 			pi.setRecord_IDs(RecordIDs);
-			pi.setIsBatch(true);
+			//pi.setIsBatch(true);
 			
 			if (export)
 			{
