@@ -12,6 +12,8 @@
  *****************************************************************************/
 package org.adempiere.webui.part;
 
+import java.awt.BorderLayout;
+
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.desktop.IDesktop;

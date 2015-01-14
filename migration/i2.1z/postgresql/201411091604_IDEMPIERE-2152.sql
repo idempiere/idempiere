@@ -1,5 +1,5 @@
 -- Sep 11, 2014 9:56:05 AM ICT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
+-- IDEMPIERE-2152 Info Window - Join related tabs on other columns than primary key
 INSERT INTO AD_Element (ColumnName,AD_Element_ID,Help,Name,Description,PrintName,AD_Element_UU,AD_Org_ID,CreatedBy,UpdatedBy,IsActive,AD_Client_ID,EntityType,Created,Updated) VALUES ('ParentRelatedColumn_ID',202792,'default column RelatedColumn in Relate Info window will link with key column of main info window
 column define in ParentRelatedColumn will replace key column','Parent Related Column','column in parent info window, link with column in this relate info','Parent Related Column','d35a2b4b-6022-4b52-bace-93f05958a77a',0,100,100,'Y',0,'D',TO_TIMESTAMP('2014-09-11 09:55:54','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2014-09-11 09:55:54','YYYY-MM-DD HH24:MI:SS'))
 ;

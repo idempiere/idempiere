@@ -18,7 +18,6 @@
 package org.adempiere.webui.adwindow;
 
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.DocumentLink;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
@@ -33,7 +32,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.A;
 import org.zkoss.zul.Caption;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
@@ -50,12 +48,12 @@ import org.zkoss.zul.Space;
  */
 public class StatusBar extends Panel implements EventListener<Event> 
 {
-	/**
-	 *
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = -3262889055635240201L;
+	private static final long serialVersionUID = 1519490416637936553L;
 
-    private Label infoLine;
+	private Label infoLine;
 
 	private Div west;
 	

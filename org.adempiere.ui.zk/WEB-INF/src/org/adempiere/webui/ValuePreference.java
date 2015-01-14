@@ -67,7 +67,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 737741552754618206L;
+	private static final long serialVersionUID = 7594680475358417813L;
 
 	/**
 	 *  Factory

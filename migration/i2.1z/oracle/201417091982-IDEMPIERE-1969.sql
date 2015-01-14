@@ -2,7 +2,7 @@ SET SQLBLANKLINES ON
 SET DEFINE OFF
 
 -- Sep 17, 2014 11:44:24 AM ICT
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
+-- IDEMPIERE-1969 Contextual Menu for Info Window Parameters
 INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,AD_Org_ID,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,AD_Client_ID,EntityType,IsEncrypted,IsSecure,FKConstraintName,FKConstraintType,AD_Element_ID,AD_Reference_ID,AD_Table_ID) VALUES (0,'N',0,211766,'N','N','N',0,'N',10,'N','N','N','Y','d32e78d0-660c-4e82-9797-52a00ce3042f','N','AD_InfoWindow_ID','Info and search/select Window','The Info window is used to search and select records as well as display information relevant to the selection.','Info Window','Y',TO_DATE('2014-09-17 11:44:23','YYYY-MM-DD HH24:MI:SS'),100,0,'Y',TO_DATE('2014-09-17 11:44:23','YYYY-MM-DD HH24:MI:SS'),100,'N','N',0,'D','N','N','ad_infowindow_preference','N',3068,19,195)
 ;
 

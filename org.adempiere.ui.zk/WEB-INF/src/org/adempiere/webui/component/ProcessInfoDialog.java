@@ -32,7 +32,6 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.A;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Separator;
@@ -43,7 +42,11 @@ import org.zkoss.zul.Separator;
  * @author Deepak Pansheriya
  */
 public class ProcessInfoDialog extends Window implements EventListener<Event> {
-	private static final long serialVersionUID = -4957498533838144942L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4479446865514015847L;
+
 	private static final String MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 250pt; min-width: 230pt; max-width: 450pt;";
 
 	private Text lblMsg = new Text();
