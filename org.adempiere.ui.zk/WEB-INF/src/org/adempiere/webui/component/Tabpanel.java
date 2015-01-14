@@ -31,10 +31,10 @@ import org.zkoss.zul.Tab;
  */
 public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace, ISupportMask
 {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -1057250877531248907L;
+	private static final long serialVersionUID = -3392752891445762516L;
 
 	private ITabOnCloseHandler onCloseHandler = null;
     

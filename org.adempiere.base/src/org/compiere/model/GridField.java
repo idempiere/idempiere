@@ -81,7 +81,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5875251339128387039L;
+	private static final long serialVersionUID = 8596059010377209016L;
 
 	/**
 	 *  Field Constructor.

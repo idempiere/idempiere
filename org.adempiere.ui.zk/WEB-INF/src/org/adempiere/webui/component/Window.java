@@ -33,11 +33,10 @@ import org.zkoss.zk.ui.event.Events;
  */
 public class Window extends org.zkoss.zul.Window implements ISupportMask
 {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -8249071775776387012L;
-
+	private static final long serialVersionUID = -977158068979292880L;
 	/*** Show as modal window ***/
     public static final String MODE_MODAL = "modal";
     /*** Show as popup window ***/

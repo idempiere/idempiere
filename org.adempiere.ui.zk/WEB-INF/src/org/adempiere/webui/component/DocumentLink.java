@@ -35,11 +35,8 @@ import org.zkoss.zul.A;
  *
  */
 public class DocumentLink extends A implements EventListener<Event> {	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1498406053715803814L;
-
+	
+	private static final long serialVersionUID = -2950001959302619043L;
 	public static final String ATT_RECORD_ID = "Record_ID";
 	public static final String ATT_AD_TABLE_ID = "AD_Table_ID";
 	

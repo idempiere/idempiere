@@ -15,8 +15,11 @@ package test.functional;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MTable;

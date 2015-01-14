@@ -31,10 +31,11 @@ import org.compiere.util.Evaluator;
  *
  */
 public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5586972894900686397L;
+	private static final long serialVersionUID = 6603281032935632048L;
 
 	/**
 	 * {@inheritDoc}

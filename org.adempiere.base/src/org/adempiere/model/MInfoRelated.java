@@ -22,10 +22,11 @@ import org.compiere.model.Query;
 import org.compiere.model.X_AD_InfoRelated;
 
 public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6216174103510277333L;
+	private static final long serialVersionUID = -4239930986439783006L;
 
 	public MInfoRelated(Properties ctx, int AD_InfoRelated_ID, String trxName) {
 		super(ctx, AD_InfoRelated_ID, trxName);
