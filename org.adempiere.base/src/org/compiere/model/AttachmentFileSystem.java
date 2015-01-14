@@ -247,19 +247,13 @@ public class AttachmentFileSystem implements IAttachmentStore {
 	}
 
 	@Override
-	public boolean delete(MAttachment attach, MStorageProvider prov) {
-		//delete all attachment files and folder
-		for (int i=0; i < attach.m_items.size(); i++) {
-			final MAttachmentEntry entry = attach.m_items.get(i);
-			final File file = entry.getFile();
-			if (file !=null && file.exists()) {
-				if (!file.delete()) {
-					log.warning("unable to delete " + file.getAbsolutePath());
-				}
-			}
-		}
-		String attachmentPathRoot = getAttachmentPathRoot(prov);
+	public boolean delete(MAttachment attach, MStorageProvider provider) {
+		String attachmentPathRoot = getAttachmentPathRoot(provider);
 		final File folder = new File(attachmentPathRoot + getAttachmentPathSnippet(attach));
+		//delete all attachment files and folder
+		while (attach.m_items.size() > 0) {
+			deleteEntry(attach, provider, attach.m_items.size()-1);
+		}
 		if (folder.exists()) {
 			if (!folder.delete()) {
 				log.warning("unable to delete " + folder.getAbsolutePath());
@@ -270,9 +264,11 @@ public class AttachmentFileSystem implements IAttachmentStore {
 
 	@Override
 	public boolean deleteEntry(MAttachment attach, MStorageProvider provider, int index) {
+		String attachmentPathRoot = getAttachmentPathRoot(provider);
+		final File folder = new File(attachmentPathRoot + getAttachmentPathSnippet(attach));
 		//remove files
 		final MAttachmentEntry entry = attach.m_items.get(index);
-		final File file = entry.getFile();
+		final File file = new File(folder, entry.getName());
 		if (log.isLoggable(Level.FINE)) log.fine("delete: " + file.getAbsolutePath());
 		if (file != null && file.exists()) {
 			if (!file.delete()) {
@@ -280,6 +276,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 			}
 		}
 		attach.m_items.remove(index);
+		attach.save(); // must save here as the operation cannot be rolled back on filesystem
 		if (log.isLoggable(Level.CONFIG)) log.config("Index=" + index + " - NewSize=" + attach.m_items.size());
 		return true;
 	}
