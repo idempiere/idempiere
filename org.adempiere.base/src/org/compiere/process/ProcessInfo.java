@@ -43,7 +43,7 @@ public class ProcessInfo implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3654748247858779823L;
+	private static final long serialVersionUID = -1084726411940456050L;
 
 	/**
 	 *  Constructor
@@ -94,6 +94,7 @@ public class ProcessInfo implements Serializable
 	/** Process Instance ID         */
 	private int					m_AD_PInstance_ID = 0;
 
+	private int					m_InfoWindowID = 0;
 	/** Summary of Execution        */
 	private String    			m_Summary = "";
 	/** Execution had an error      */
@@ -343,6 +344,23 @@ public class ProcessInfo implements Serializable
 		m_AD_PInstance_ID = AD_PInstance_ID;
 	}
 
+	/**
+	 * 
+	 * @return int
+	 */
+	public int getAD_InfoWindow_ID()
+	{
+		return m_InfoWindowID;
+	}
+	/**
+	 * 
+	 * @param AD_PInstance_ID int
+	 */
+	public void setAD_InfoWindow_ID(int infoWindowID)
+	{
+		m_InfoWindowID = infoWindowID;
+	}
+	
 	/**
 	 * Method getAD_Process_ID
 	 * @return int

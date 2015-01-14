@@ -34,8 +34,10 @@ import java.util.logging.Level;
 
 import javax.servlet.ServletRequest;
 
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.IServerPushCallback;
@@ -82,7 +84,7 @@ import com.lowagie.text.pdf.PdfWriter;
 public final class AEnv
 {
 	public static final String LOCALE = "#Locale";
-
+	
 	/**
 	 *  Show in the center of the screen.
 	 *  (pack, set location and set visibility)
@@ -759,5 +761,30 @@ public final class AEnv
 	public static boolean isTablet() {
 		IDesktop appDesktop = SessionManager.getAppDesktop();
 		return appDesktop != null ? appDesktop.getClientInfo().tablet : false;
+	}
+	
+	/**
+	 * Get adWindowId below gridField
+	 * when field lie in window, it's id of this window
+	 * when field lie in process parameter dialog it's ad_window_id of window open this process
+	 * when field lie in process parameter open in a standalone window (run process from menu) return id of dummy window
+	 * @param mField
+	 * @return
+	 */
+	public static int getADWindowID (int windowNo){
+		int adWindowID = 0;
+		// form process parameter panel
+		
+		Object  window = SessionManager.getAppDesktop().findWindow(windowNo);
+		// case show a process dialog, window is below window of process dialog
+		if (window != null && window instanceof ADWindow){
+			adWindowID = ((ADWindow)window).getAD_Window_ID();
+		}else if (window != null && (window instanceof ProcessDialog || window instanceof InfoWindow)){
+			// dummy window is use in case process or infoWindow open in stand-alone window
+			// it help we separate case save preference for all window (windowId = 0, null) and case open in stand-alone (windowId = 200054)
+			adWindowID = Env.adWindowDummyID;// dummy window
+		}
+					
+		return adWindowID;
 	}
 }	//	AEnv

@@ -928,7 +928,7 @@ public class Login
 
 			//	This reads all relevant window neutral defaults
 			//	overwriting superseeded ones.  Window specific is read in Mainain
-			sql = "SELECT Attribute, Value, AD_Window_ID, AD_Process_ID, PreferenceFor "
+			sql = "SELECT Attribute, Value, AD_Window_ID, AD_Process_ID, AD_InfoWindow_ID, PreferenceFor "
 				+ "FROM AD_Preference "
 				+ "WHERE AD_Client_ID IN (0, @#AD_Client_ID@)"
 				+ " AND AD_Org_ID IN (0, @#AD_Org_ID@)"
@@ -948,7 +948,8 @@ public class Login
 					int AD_Window_ID = rs.getInt(3);
 					boolean isAllWindow = rs.wasNull(); 
 					int AD_Process_ID = rs.getInt(4);
-					String PreferenceFor = rs.getString(5);
+					int AD_InfoWindow_ID = rs.getInt(5);
+					String PreferenceFor = rs.getString(6);
 					String at = "";
 					
 					// preference for window
@@ -958,8 +959,10 @@ public class Login
 					  else
 						at = "P" + AD_Window_ID + "|" + rs.getString(1);
 					}else if ("P".equals(PreferenceFor)){ // preference for processs
-					  // when apply for all window or all process format is "P0|0|m_Attribute; 
-					  at = "P" + AD_Window_ID + "|" + AD_Process_ID + "|" + rs.getString(1);
+						// when apply for all window or all process format is "P0|0|m_Attribute; 
+						at = "P" + AD_Window_ID + "|" + AD_InfoWindow_ID + "|" + AD_Process_ID + "|" + rs.getString(1);
+					}else if ("I".equals(PreferenceFor)){ // preference for infoWindow
+						at = "P" + AD_Window_ID + "|" + AD_InfoWindow_ID + "|" + rs.getString(1);
 					}
 					
 					String va = rs.getString(2);
