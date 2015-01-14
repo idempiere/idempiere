@@ -19,6 +19,7 @@ import org.adempiere.webui.window.InfoSchedule;
 import org.adempiere.webui.window.WAssignmentDialog;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
+import org.compiere.model.MProduct;
 import org.compiere.model.MResourceAssignment;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -150,10 +151,17 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 			MResourceAssignment ma = new MResourceAssignment(Env.getCtx(), S_ResourceAssignment_ID, null);
 			if (S_ResourceAssignment_ID == 0) {
 				if (gridField != null && gridField.getGridTab() != null) {
-					// assign the resource of the document if any
+					// assign the org of the document if any
 					Object org = gridField.getGridTab().getValue("AD_Org_ID");
 					if (org != null && org instanceof Integer)
 						ma.setAD_Org_ID((Integer) org);
+					// assign the resource of the document if any
+					Object prd = gridField.getGridTab().getValue("M_Product_ID");
+					if (prd != null && prd instanceof Integer) {
+						MProduct prod = MProduct.get(Env.getCtx(), (Integer) prd);
+						if (prod != null && prod.getS_Resource_ID() > 0)
+							ma.setS_Resource_ID(prod.getS_Resource_ID());
+					}
 				}
 			}
 	
