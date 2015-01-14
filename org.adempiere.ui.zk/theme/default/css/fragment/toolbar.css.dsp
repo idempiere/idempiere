@@ -40,3 +40,7 @@
 	filter: progid : DXImageTransform . Microsoft . Alpha(opacity = 20);
 	-moz-opacity: 0.2;
 }
+
+.z-toolbar-start{
+	width:100%;
+}
