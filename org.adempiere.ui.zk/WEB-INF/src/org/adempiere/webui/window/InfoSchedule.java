@@ -475,6 +475,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		//
 		else if (event instanceof CalendarsEvent)
 			doEdit((CalendarsEvent)event);
+		else if (event.getTarget() == fieldResource)
+			displayCalendar();
 		//
 	}
 	
