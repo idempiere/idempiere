@@ -460,7 +460,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		height = height - 50;
 		iframe.setHeight(height + "px");
 		iframe.setWidth("100%");
-		iframe.setAutohide(true);
+		//iframe.setAutohide(true);
 		
 		form.setWidth("100%");
 		form.setHeight("100%");

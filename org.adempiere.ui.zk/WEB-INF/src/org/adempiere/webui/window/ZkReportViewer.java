@@ -386,8 +386,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		updateToolbarAccess(AD_Window_ID, AD_Process_ID);
 		
 		postRenderReportEvent();
-				
-		iframe.setAutohide(true);
+		//iframe.setAutohide(true);
 
 		this.setBorder("normal");
 		
