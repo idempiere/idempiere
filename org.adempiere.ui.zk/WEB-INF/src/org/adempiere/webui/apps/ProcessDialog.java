@@ -100,13 +100,13 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class ProcessDialog extends AbstractProcessDialog implements EventListener<Event>, IHelpContext
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1320565116095846687L;
+
 	public static final String ON_INITIAL_FOCUS_EVENT = "onInitialFocus";
 
-	/**
-	 * generate serial version ID
-	 */
-	private static final long serialVersionUID = 3329046204196602797L;
-	
 	private static final String MESSAGE_DIV_STYLE = "max-height: 150pt; overflow: auto; margin: 10px;";	
 	
 	/**	Logger			*/

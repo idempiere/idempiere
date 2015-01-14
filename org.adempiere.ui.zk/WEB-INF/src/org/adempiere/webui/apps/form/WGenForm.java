@@ -67,14 +67,13 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.A;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Html;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Html;
 
 /**
  * Generate custom form window
@@ -85,7 +84,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8669256486969882958L;
+	private static final long serialVersionUID = 4240430312911412710L;
 
 	private GenForm genForm;
 	

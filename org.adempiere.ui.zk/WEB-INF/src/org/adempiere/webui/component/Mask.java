@@ -20,11 +20,10 @@ import org.zkoss.zul.Div;
  *
  */
 public class Mask extends Div {
-
 	/**
-	 * generated serial
+	 * 
 	 */
-	private static final long serialVersionUID = -9068605816183445421L;
+	private static final long serialVersionUID = 7462166722064971644L;
 
 	/**
 	 * default constructor
