@@ -21,13 +21,15 @@ import java.io.File;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
-import org.compiere.Adempiere;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.X_AD_Package_Imp_Proc;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
+import org.compiere.tools.FileUtil;
+import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 
 /**
  * IntPackIn Tool.
@@ -79,12 +81,17 @@ public class PackInProcess extends SvrProcess {
 		// Create Target directory if required
 		String packageDirectory = adPackageImp.getAD_Package_Dir();
 		if (packageDirectory == null || packageDirectory.trim().length() == 0) {
-			packageDirectory = Adempiere.getAdempiereHome();
+			packageDirectory = System.getProperty("java.io.tmpdir");
 		}
 
-		String targetDirName = packageDirectory + File.separator + "packin";
+		String targetDirName = packageDirectory + File.separator + "packin" + Env.getContext(getCtx(), "#AD_User_ID");
 		File targetDir = new File(targetDirName);
 
+		if (targetDir.exists()) {
+			if (!FileUtil.deleteFolderRecursive(targetDir)) {
+				throw new AdempiereSystemError("Could not delete folder " + targetDirName + ", please check permissions");
+			}
+		}
 		if (!targetDir.exists()) {
 			boolean success = targetDir.mkdirs();
 			if (!success) {
@@ -109,7 +116,7 @@ public class PackInProcess extends SvrProcess {
 		Zipper.unpackFile(zipFilepath, targetDir);
 
 		String dict_file = packageDirectory + File.separator
-				+ "packin" + File.separator + parentDir + File.separator
+				+ "packin" + Env.getContext(getCtx(), "#AD_User_ID") + File.separator + parentDir + File.separator
 				+ "dict" + File.separator + "PackOut.xml";
 
 		if (log.isLoggable(Level.INFO)) log.info("dict file->" + dict_file);
@@ -120,7 +127,7 @@ public class PackInProcess extends SvrProcess {
 			m_UpdateDictionary = false;
 
 		m_packageDirectory = packageDirectory + File.separator
-				+ "packin" + File.separator + parentDir + File.separator;
+				+ "packin" + Env.getContext(getCtx(), "#AD_User_ID") + File.separator + parentDir + File.separator;
 
 		PackIn packIn = new PackIn();
 		packIn.setPackageDirectory(m_packageDirectory);

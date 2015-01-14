@@ -25,6 +25,7 @@ import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -39,6 +40,7 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -817,6 +819,42 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return null;
 	}
 
+	/**
+	 * Check has new parameter is change or new input
+	 * in case first time search, return true
+	 * @return
+	 */
+	protected boolean isParameteChangeValue (){
+		if (prevParameterValues == null){
+			// never process query, because consider as changed value to process current search
+			return true;
+		}
+		
+		// compare old and new value of parameter input at prev time
+		for (int parameterIndex = 0; parameterIndex < prevParameterValues.size(); parameterIndex++){
+			Object newValue = prevRefParmeterEditor.get(parameterIndex).getValue();
+			if (!prevParameterValues.get(parameterIndex).equals(newValue)){
+				return true;
+			}
+		}
+
+		// in case new field is entered value
+		for(WEditor editor : editors) {
+			if (!editor.isVisible() || prevRefParmeterEditor.contains(editor))
+				continue;
+			
+			if (editor.getGridField() != null && editor.getValue() != null && editor.getValue().toString().trim().length() > 0) {
+				MInfoColumn mInfoColumn = findInfoColumn(editor.getGridField());
+				if (mInfoColumn == null || mInfoColumn.getSelectClause().equals("0")) {
+					continue;
+				}
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.adempiere.webui.panel.InfoPanel#setParameters(java.sql.PreparedStatement, boolean)
 	 */
@@ -835,9 +873,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if (prevParameterValues == null){
 			prevParameterValues = new ArrayList<Object> ();
 			prevQueryOperators = new ArrayList<String> ();
+			prevRefParmeterEditor = new ArrayList<WEditor>(); 
 		}else{
 			prevParameterValues.clear();
 			prevQueryOperators.clear();
+			prevRefParmeterEditor.clear();
 		}
 
 		int parameterIndex = 0;
@@ -854,6 +894,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				parameterIndex++;
 				prevParameterValues.add(value);
 				prevQueryOperators.add(mInfoColumn.getQueryOperator());
+				prevRefParmeterEditor.add(editor);
 				setParameter (pstmt, parameterIndex, value, mInfoColumn.getQueryOperator());
 			}
 		}
@@ -1466,6 +1507,41 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         		SessionManager.getAppDesktop().updateHelpTooltip(selectedValue.get_Translation(MProcess.COLUMNNAME_Name), selectedValue.get_Translation(MProcess.COLUMNNAME_Description), selectedValue.get_Translation(MProcess.COLUMNNAME_Help), null);
     		}
     		    		
+    	}else if (event.getName().equals(Events.ON_OK) && event.getTarget() != null){ // event when push enter at parameter
+    		Component tagetComponent = event.getTarget();
+    		boolean isCacheEvent = false;// when event from parameter component, catch it and process at there
+    		for(WEditor editor : editors) {
+    			Component editorComponent = editor.getComponent();
+    			if (editorComponent instanceof EditorBox){
+    				editorComponent = ((EditorBox)editorComponent).getTextbox();
+    			}
+    			if (editorComponent.equals(tagetComponent)){
+    				// IDEMPIERE-2136
+        			if (editor instanceof WSearchEditor){
+        				if (((WSearchEditor)editor).isShowingDialog()){
+    						return;
+    					}
+        			}
+    				isCacheEvent = true;
+    				break;
+    			}
+    		}
+    		
+    		if (isCacheEvent){
+    			boolean isParameterChange = isParameteChangeValue();
+        		// when change parameter, also requery
+        		if (isParameterChange){
+        			onUserQuery();
+        		}else if (m_lookup && contentPanel.getSelectedIndex() >= 0){
+        			// do nothing when parameter not change and at window mode, or at dialog mode but select non record    			
+        			onOk();
+        		}else {
+        			// parameter not change. do nothing.
+        		}
+    		}else{
+    			super.onEvent(event);
+    		}
+    		
     	}
     	else
     	{
@@ -1537,7 +1613,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 		if (dynWhere.length() > 0)
 			sql.append(dynWhere);   //  includes first AND
-
+		
 		String countSql = Msg.parseTranslation(Env.getCtx(), sql.toString());	//	Variables
 		if (countSql.trim().endsWith("WHERE")) {
 			countSql = countSql.trim();

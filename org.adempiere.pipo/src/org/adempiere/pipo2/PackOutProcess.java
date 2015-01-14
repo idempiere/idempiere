@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.compiere.Adempiere;
 import org.compiere.model.I_AD_EntityType;
 import org.compiere.model.I_AD_Form;
 import org.compiere.model.I_AD_ImpFormat;
@@ -48,6 +47,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.process.SvrProcess;
+import org.compiere.util.Env;
 
 /**
  *	Convert AD to XML
@@ -99,10 +99,10 @@ public class PackOutProcess extends SvrProcess
 
 			if (packageExp.getAD_Package_Exp_ID() == p_PackOut_ID){
 				//Create the package documentation
-				packoutDirectory = Adempiere.getAdempiereHome().trim();
+				packoutDirectory = System.getProperty("java.io.tmpdir");
 				if (!packoutDirectory.endsWith("/") && !packoutDirectory.endsWith("\\"))
 					packoutDirectory+= File.separator;
-				packoutDirectory = packoutDirectory + "packout" + File.separator;
+				packoutDirectory = packoutDirectory + "packout" + Env.getContext(getCtx(), "#AD_User_ID") + File.separator;
 
 				//create packout folder if needed
 				File packoutDirectoryFile = new File(packoutDirectory);

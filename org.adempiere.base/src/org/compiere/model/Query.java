@@ -748,8 +748,11 @@ public class Query
 			MRole role = MRole.getDefault(this.ctx, false);
 			sql = role.addAccessSQL(sql, table.getTableName(), applyAccessFilterFullyQualified, applyAccessFilterRW);
 		}
-		if (forUpdate)
+		if (forUpdate) {
 			sql = sql + " FOR UPDATE";
+			if (DB.isPostgreSQL())
+				sql = sql + " OF " + table.getTableName();
+		}
 		if (log.isLoggable(Level.FINEST)) log.finest("TableName = "+table.getTableName()+"... SQL = " +sql); //red1  - to assist in debugging SQL
 		return sql;
 	}

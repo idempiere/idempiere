@@ -43,11 +43,11 @@ import javax.xml.transform.stream.StreamResult;
 import org.compiere.model.MClient;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.Trx;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-
 import org.adempiere.exceptions.AdempiereException;
 
 /**
@@ -188,6 +188,7 @@ public class PackOut
 		String includesdir = packoutDocument.getPackageName() + File.separator +"**";
 		Zipper.zipFolder(srcFolder, destZipFile, includesdir);
 		exportFile = destZipFile.getAbsolutePath();
+		FileUtil.deleteFolderRecursive(new File(packageDirectory));
 	}	//	doIt
 
 	private TransformerHandler createPackoutHandler(

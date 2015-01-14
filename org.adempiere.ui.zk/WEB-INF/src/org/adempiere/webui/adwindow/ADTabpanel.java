@@ -1170,8 +1170,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(),"RecordIsNotInCurrentSearch"));
 		}
 
-		//  Navigate to node row
-		gridTab.navigate(row);
+		windowPanel.onTreeNavigate(row);				
 	}
 
     /**

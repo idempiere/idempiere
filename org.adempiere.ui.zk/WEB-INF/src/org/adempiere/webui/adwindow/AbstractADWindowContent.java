@@ -856,6 +856,23 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		saveAndNavigate(callback);
     }
 
+    /**
+     * @see ToolbarListener#onPrevious()
+     */
+    public void onTreeNavigate(final int rowIndex)
+    {
+    	Callback<Boolean> callback = new Callback<Boolean>() {
+    		@Override
+    		public void onCallback(Boolean result) {
+    			if (result) {
+    				adTabbox.getSelectedGridTab().navigate(rowIndex);
+    				focusToActivePanel();
+    			}
+    		}
+    	};
+    	saveAndNavigate(callback);
+    }
+
     // Elaine 2008/12/04
 	private Menupopup 	m_popup = null;
 	private Menuitem 	m_lock = null;

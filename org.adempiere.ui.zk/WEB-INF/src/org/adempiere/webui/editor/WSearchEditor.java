@@ -887,6 +887,10 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	}
 
 
+	public boolean isShowingDialog (){
+		return infoPanel != null;
+	}
+	
 	/**
 	 * @param windowNo
 	 * @return WSearchEditor

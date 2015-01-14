@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import org.compiere.model.MAttributeSet;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
 import org.compiere.model.MInventoryLineMA;
@@ -278,22 +277,6 @@ public class InventoryCountCreate extends SvrProcess
 	private int createInventoryLine (int M_Locator_ID, int M_Product_ID, 
 		int M_AttributeSetInstance_ID, BigDecimal QtyOnHand, int M_AttributeSet_ID,Timestamp dateMPolicy)
 	{
-		boolean oneLinePerASI = false;
-		if (M_AttributeSet_ID != 0)
-		{
-			MAttributeSet mas = MAttributeSet.get(getCtx(), M_AttributeSet_ID);
-			oneLinePerASI = mas.isInstanceAttribute();
-		}
-		if (oneLinePerASI)
-		{
-			MInventoryLine line = new MInventoryLine (m_inventory, M_Locator_ID, 
-				M_Product_ID, M_AttributeSetInstance_ID, 
-				QtyOnHand, QtyOnHand);		//	book/count
-			if (line.save())
-				return 1;
-			return 0;
-		}
-		
 		if (QtyOnHand.signum() == 0)
 			M_AttributeSetInstance_ID = 0;
 		
@@ -312,12 +295,12 @@ public class InventoryCountCreate extends SvrProcess
 				return 0;
 			}
 			//	Save Old Line info
-			else if (m_line.getM_AttributeSetInstance_ID() != 0)
+			else if (m_line.getM_AttributeSetInstance_ID() != 0 || oldDateMPolicy != null)
 			{
 				MInventoryLineMA ma = new MInventoryLineMA (m_line, 
 					m_line.getM_AttributeSetInstance_ID(), m_line.getQtyBook(),oldDateMPolicy,true);
 				if (!ma.save())
-					;
+					log.warning("Could not save " + ma);
 			}
 			m_line.setM_AttributeSetInstance_ID(0);
 			m_line.setQtyBook(m_line.getQtyBook().add(QtyOnHand));
@@ -328,7 +311,7 @@ public class InventoryCountCreate extends SvrProcess
 			MInventoryLineMA ma = new MInventoryLineMA (m_line, 
 				M_AttributeSetInstance_ID, QtyOnHand,dateMPolicy,true);
 			if (!ma.save())
-				;
+				log.warning("Could not save " + ma);
 			return 0;
 		}
 		//	new line
