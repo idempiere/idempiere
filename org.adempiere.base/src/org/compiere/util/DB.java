@@ -34,6 +34,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -2335,14 +2336,13 @@ public final class DB
 	 * @param selection
 	 * @param trxName
 	 */
-	public static void createT_SelectionNew (int AD_PInstance_ID, Collection<KeyNamePair> saveKeys, String trxName)
+	public static void createT_Selection(int AD_PInstance_ID, Map<Integer, List<String>> saveKeys, int viewIDIndex, String trxName)
 	{
 		StringBuilder insert = new StringBuilder();
 		insert.append("INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID, ViewID) ");
 		int counter = 0;
-		for(KeyNamePair saveKey : saveKeys)
+		for(Integer selectedId : saveKeys.keySet())
 		{
-			Integer selectedId = saveKey.getKey();
 			counter++;
 			if (counter > 1)
 				insert.append(" UNION ");
@@ -2352,13 +2352,13 @@ public final class DB
 			insert.append(selectedId);
 			insert.append(", ");
 			
-			String viewIDValue = saveKey.getName();
+			List<String> viewIDValues = saveKeys.get(selectedId);
 			// when no process have viewID or this process have no viewID or value of viewID is null
-			if (viewIDValue == null){
+			if (viewIDValues == null || viewIDIndex < 0 || viewIDValues.get(viewIDIndex) == null){
 				insert.append("NULL");
 			}else{
 				insert.append("'");
-				insert.append(viewIDValue);
+				insert.append(viewIDValues.get(viewIDIndex));
 				insert.append("'");
 			}
 			

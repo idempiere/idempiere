@@ -33,9 +33,7 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import org.adempiere.model.IInfoColumn;
 import org.adempiere.model.MInfoProcess;
-import org.adempiere.model.MInfoRelated;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
@@ -113,12 +111,11 @@ import org.zkoss.zul.ext.Sortable;
  */
 public abstract class InfoPanel extends Window implements EventListener<Event>, WTableModelListener, Sortable<Object>, IHelpContext
 {
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6617464791677971237L;
-	
+	private static final long serialVersionUID = 6027970576265023451L;
+
 	private final static int DEFAULT_PAGE_SIZE = 100;
 	protected List<Button> btProcessList = new ArrayList<Button>();
 	protected Map<String, WEditor> editorMap = new HashMap<String, WEditor>();
@@ -126,9 +123,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected final static String ON_RUN_PROCESS = "onRunProcess";
 	// attribute key of info process
 	protected final static String ATT_INFO_PROCESS_KEY = "INFO_PROCESS";
-	
 	protected int pageSize;
-	protected MInfoRelated[] relatedInfoList;
 	
     public static InfoPanel create (int WindowNo,
             String tableName, String keyColumn, String value,
@@ -358,28 +353,15 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	* save selected id and viewID
 	*/
-	protected Collection<KeyNamePair> m_viewIDMap = new ArrayList <KeyNamePair>();
-	
+	protected Map<Integer, List<String>> m_viewIDMap = new HashMap<Integer, List<String>>();
 	/**
-	 * store index of infoColumn have data append. each infoColumn just append only one time.
-	 * index increase from 0.
+	 * flag indicate have infoOProcess define ViewID 
 	 */
-	protected Map <Integer, Integer> columnDataIndex = new HashMap <Integer, Integer> ();
+	protected boolean isHasViewID = false;
 	/**
-	 * after load first record, set it to false. 
-	 * when need update index of column data append to end of list {@link #columnDataIndex}, set it to true 
+	 * number of infoProcess contain ViewID
 	 */
-	protected boolean isMustUpdateColumnIndex = true;
-	/**
-	 * When start update index of column data append to end of list {@link #columnDataIndex}, reset it to 0,
-	 * each read data for new append column, increase it up 1
-	 */
-	protected int indexColumnCount = 0;
-	/**
-	 * to prevent append duplicate data, when begin read each record reset this list, 
-	 * when read a column store id of infoColumn to list to check duplicate
-	 */
-	protected List <Integer> lsReadedColumn = new ArrayList <Integer> ();
+	protected int numOfViewID = 0;
 	
 	/**
 	 * IDEMPIERE-1334
@@ -461,7 +443,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private void readData(ResultSet rs) throws SQLException {
 		int colOffset = 1;  //  columns start with 1
 		List<Object> data = new ArrayList<Object>();
-	
 		for (int col = 0; col < p_layout.length; col++)
 		{
 			Object value = null;
@@ -530,78 +511,34 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			}
 			data.add(value);
 		}
-		
         line.add(data);
         
-        appendDataForViewID(rs, data, lsReadedColumn);
-        
-        appendDataForParentLink(rs, data, lsReadedColumn);
+        readViewID(rs, data);
 	}
 	
 	/**
-	 * save data of all viewID column in infoProcessList to end of data line
-	 * when override {@link #readData(ResultSet)} consider call this method 
+	 * save all viewID to end of data line
+	 * when override readData(ResultSet rs), consider call this method 
 	 * IDEMPIERE-1970
-	 * @param rs record set to read data
-	 * @param data data line to append
-	 * @param listReadedColumn list column is appended
-	 * @throws SQLException
 	 */
-	protected void appendDataForViewID(ResultSet rs, List<Object> data, List<Integer> listReadedColumn) throws SQLException {
-		appendInfoColumnData(rs, data, infoProcessList, listReadedColumn);
-	}
-	
-	/**
-	 * save data of all viewID column in infoProcessList to end of data line
-	 * when override {@link #readData(ResultSet)} consider call this method 
-	 * IDEMPIERE-2152
-	 * @param rs
-	 * @param data
-	 * @param listReadedColumn
-	 * @throws SQLException
-	 */
-	protected void appendDataForParentLink(ResultSet rs, List<Object> data, List<Integer> listReadedColumn) throws SQLException {
-		appendInfoColumnData(rs, data, relatedInfoList, listReadedColumn);
-	}
-	
-	/**
-	 * save data of all infoColumn in listModelHaveInfoColumn to end of data line
-	 * @param rs record set to read data
-	 * @param data data line to append
-	 * @param listModelHasInfoColumn
-	 * @param listReadedColumn list column is appended
-	 * @throws SQLException
-	 */
-	protected void appendInfoColumnData(ResultSet rs, List<Object> data, IInfoColumn [] listModelHasInfoColumn, List<Integer> listReadedColumn) throws SQLException {
-		if (listModelHasInfoColumn == null || listModelHasInfoColumn.length == 0) {
+	protected void readViewID(ResultSet rs, List<Object> data) throws SQLException {
+		if (infoProcessList == null || infoProcessList.length == 0) {
 			return;
 		}
-		
-		// get InfoColumn from each modelHaveInfoColumn, read it form resultSet by name and append to data line
-		for (IInfoColumn modelHasInfoColumn : listModelHasInfoColumn){
-			// have no InfoColumn or this column is readed, read next column
-			if (modelHasInfoColumn.getInfoColumnID() <= 0 || listReadedColumn.contains(modelHasInfoColumn.getInfoColumnID()))
+
+		// with each process have viewID, read it form resultSet by name
+		for (MInfoProcess infoProcess : infoProcessList){
+			if (infoProcess.getAD_InfoColumn_ID() <= 0)
 				continue;
 
-			MInfoColumn infoColumnAppend = (MInfoColumn) modelHasInfoColumn.getAD_InfoColumn();
-			//TODO: improve read data to get data by data type of column.
-			String appendData = rs.getString(infoColumnAppend.getColumnName());
+			MInfoColumn infocol = (MInfoColumn) infoProcess.getAD_InfoColumn();
+			String viewIDValue = rs.getString(infocol.getColumnName());
 			if (rs.wasNull()) {
 				data.add(null);
 			} else {
-				data.add(appendData);
+				data.add(viewIDValue);
 			}
-			
-			// when need update append column index, just update it.
-			if (isMustUpdateColumnIndex && !columnDataIndex.containsKey(modelHasInfoColumn.getInfoColumnID())){
-				columnDataIndex.put(modelHasInfoColumn.getInfoColumnID(), indexColumnCount);
-				indexColumnCount++;
-			}
-			
-			// mark this column is readed
-			listReadedColumn.add(modelHasInfoColumn.getInfoColumnID());
 		}
-
 	}
 
     protected void renderItems()
@@ -738,17 +675,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			}
 
 			int rowPointer = getCacheStart()-1;
-			
 			while (m_rs.next())
 			{
 				rowPointer++;
-				// reset list column readed to start new round
-				lsReadedColumn.clear();
-				
 				readData(m_rs);
-				// just set column index only one time.
-				isMustUpdateColumnIndex = false;
-				
 				//check now of rows loaded, break if we hit the suppose end
 				if (m_useDatabasePaging && rowPointer >= cacheEnd)
 				{
@@ -1004,7 +934,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 * Save selected id, viewID of all process to map viewIDMap to save into T_Selection
 	 */
-	public Collection<KeyNamePair> getSaveKeys (int infoCulumnId){
+	public Map<Integer, List<String>> getSaveKeys (){
 		// clear result from prev time
 		m_viewIDMap.clear();
 		
@@ -1032,17 +962,23 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
                 
                 IDColumn dataColumn = (IDColumn)keyData;
 
-                if (infoCulumnId > 0){
+                if (isHasViewID){
                 	// have viewID, get it
-                	int dataIndex = columnDataIndex.get(infoCulumnId) + p_layout.length;
+                	List<String> viewIDValueList = new ArrayList <String> ();
+                	String viewIDValue = null;
+                	for (int viewIDIndex = 0; viewIDIndex < numOfViewID; viewIDIndex++){
+                		// get row data from model
+                		@SuppressWarnings("unchecked")
+						List<Object> selectedRowData = (List<Object>)contentPanel.getModel().get(rows[row]);
+                		// view data store at end of data line
+                		viewIDValue = (String)selectedRowData.get (contentPanel.getLayout().length + viewIDIndex);                		
+            			viewIDValueList.add(viewIDValue);
+                	}
                 	
-            		// get row data from model
-					Object viewIDValue = contentPanel.getModel().getDataAt(rows[row], dataIndex);
-                	
-                	m_viewIDMap.add (new KeyNamePair(dataColumn.getRecord_ID(), viewIDValue == null?null:viewIDValue.toString()));
+                	m_viewIDMap.put(dataColumn.getRecord_ID(), viewIDValueList);
                 }else{
-                	// hasn't viewID, set viewID value is null
-                	m_viewIDMap.add (new KeyNamePair(dataColumn.getRecord_ID(), null));
+                	// hasn't viewID, set viewID value collection is null
+                	m_viewIDMap.put(dataColumn.getRecord_ID(), null);
                 }
                 
             }
@@ -1540,7 +1476,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				ProcessModalDialog processModalDialog = (ProcessModalDialog)event.getTarget();
 				if (DialogEvents.ON_BEFORE_RUN_PROCESS.equals(event.getName())){
 					// store in T_Selection table selected rows for Execute Process that retrieves from T_Selection in code.
-					DB.createT_SelectionNew(pInstanceID, getSaveKeys(getInfoColumnIDFromProcess(processModalDialog.getAD_Process_ID())), 
+					DB.createT_Selection(pInstanceID, getSaveKeys(), getProcessIndex(processModalDialog.getAD_Process_ID()), 
 						null);					
 				}else if (ProcessModalDialog.ON_WINDOW_CLOSE.equals(event.getName())){ 
 					if (processModalDialog.isCancel()){
@@ -1581,15 +1517,19 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     }
    
     /**
-     * Get InfoColumnID of infoProcess have processID is processId
+     * Get index of infoProcess have processId
      * @param processId
-     * @return value InfoColumnID, -1 when has not any map
+     * @return
      */
-    protected int getInfoColumnIDFromProcess (int processId){
+    protected int getProcessIndex (int processId){
+    	int index = 0;
     	for (int i = 0; i < infoProcessList.length; i++){
     		if (infoProcessList[i].getAD_Process_ID() == processId){
-    			return infoProcessList[i].getAD_InfoColumn_ID();
+    			return index;
     		}
+    		// just increase index when process is have ViewID column
+    		if (infoProcessList[i].getAD_InfoColumn_ID() > 0)
+    			index++;
     	}
     	return -1;
     }

@@ -163,21 +163,6 @@ public interface I_AD_InfoRelated
 	  */
 	public String getName();
 
-    /** Column name ParentRelatedColumn_ID */
-    public static final String COLUMNNAME_ParentRelatedColumn_ID = "ParentRelatedColumn_ID";
-
-	/** Set Parent Related Column.
-	  * column in parent info window, link with column in this relate info
-	  */
-	public void setParentRelatedColumn_ID (int ParentRelatedColumn_ID);
-
-	/** Get Parent Related Column.
-	  * column in parent info window, link with column in this relate info
-	  */
-	public int getParentRelatedColumn_ID();
-
-	public org.compiere.model.I_AD_InfoColumn getParentRelatedColumn() throws RuntimeException;
-
     /** Column name RelatedColumn_ID */
     public static final String COLUMNNAME_RelatedColumn_ID = "RelatedColumn_ID";
 

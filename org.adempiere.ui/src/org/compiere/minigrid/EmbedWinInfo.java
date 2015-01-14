@@ -23,10 +23,8 @@ public class EmbedWinInfo {
 	private String linkColumnSql;
 	private MInfoColumn linkInfoColumn;
 	private String linkColumnName;
-	private int parentLinkColumnID;
 
-	public EmbedWinInfo(MInfoWindow iw, IMiniTable mt, String isql, String linkName, MInfoColumn linkColumn, int parentLinkColumnID) {
-		this.parentLinkColumnID = parentLinkColumnID;
+	public EmbedWinInfo(MInfoWindow iw, IMiniTable mt, String isql, String linkName, MInfoColumn linkColumn) {
 		infowin=iw;
 		infoTbl=mt;
 		infoSql=isql;
@@ -58,18 +56,6 @@ public class EmbedWinInfo {
 
 	public String getLinkColumnName() {
 		return linkColumnName;
-	}
-	
-	public int getParentLinkColumnID() {
-		return parentLinkColumnID;
-	}
-	
-	public Class<?> getTypeDataOfLink (){
-		if (linkInfoColumn.getColumnName().lastIndexOf("_ID") > 0){
-			return int.class;
-		}else{
-			return String.class;
-		}
 	}
 
 }

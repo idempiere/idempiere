@@ -30,7 +30,7 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141112L;
+	private static final long serialVersionUID = 20141030L;
 
     /** Standard Constructor */
     public X_AD_InfoRelated (Properties ctx, int AD_InfoRelated_ID, String trxName)
@@ -197,34 +197,6 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
     {
         return new KeyNamePair(get_ID(), getName());
     }
-
-	public org.compiere.model.I_AD_InfoColumn getParentRelatedColumn() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_Name)
-			.getPO(getParentRelatedColumn_ID(), get_TrxName());	}
-
-	/** Set Parent Related Column.
-		@param ParentRelatedColumn_ID 
-		column in parent info window, link with column in this relate info
-	  */
-	public void setParentRelatedColumn_ID (int ParentRelatedColumn_ID)
-	{
-		if (ParentRelatedColumn_ID < 1) 
-			set_Value (COLUMNNAME_ParentRelatedColumn_ID, null);
-		else 
-			set_Value (COLUMNNAME_ParentRelatedColumn_ID, Integer.valueOf(ParentRelatedColumn_ID));
-	}
-
-	/** Get Parent Related Column.
-		@return column in parent info window, link with column in this relate info
-	  */
-	public int getParentRelatedColumn_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ParentRelatedColumn_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	public org.compiere.model.I_AD_InfoColumn getRelatedColumn() throws RuntimeException
     {
