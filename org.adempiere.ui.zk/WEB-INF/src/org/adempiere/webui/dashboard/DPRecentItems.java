@@ -24,6 +24,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRecentItem;
+import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.util.Env;
@@ -227,6 +228,8 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		List<MRecentItem> ris = MRecentItem.getFromUser(ctx, AD_User_ID);
 		int riShown = 0;
 		for (MRecentItem ri : ris) {
+			if (ri.getAD_Window_ID() > 0 && MRole.getDefault().getWindowAccess(ri.getAD_Window_ID()) == null)
+				continue;
 			String label = ri.getLabel();
 			if (label == null)
 				continue;
