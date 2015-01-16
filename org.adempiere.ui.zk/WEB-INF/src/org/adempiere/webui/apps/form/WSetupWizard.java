@@ -43,6 +43,7 @@ import org.adempiere.webui.util.TreeUtils;
 import org.compiere.apps.form.SetupWizard;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MRole;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -68,6 +69,7 @@ import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
 import org.zkoss.zul.Vbox;
+
 /**
  * View for Setup Wizard
  *
@@ -88,6 +90,8 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	private Treeitem 		firstOpenNode = null;
 	private Treeitem 		firstOpenWF = null;
 	private Treeitem 		firstWF = null;
+	private int				cntNodes = 0;
+	private int				cntSolved = 0;
 
 	private Label			pretitleLabel	= new Label(Msg.getMsg(Env.getCtx(), "SetupTask"));
 	private Label			titleLabel	= new Label();
@@ -181,6 +185,8 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	 * 	Load Wizard Nodes
 	 */
 	private void loadWizardNodes() {
+		cntNodes = 0;
+		cntSolved = 0;
 		nextItems.removeAll(nextItems);
 		Treechildren treeChildren = wfnodeTree.getTreechildren();		
 		List<MWorkflow> wfwizards = getWfWizards();
@@ -200,9 +206,19 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	protected void addWfEntry(MWorkflow wfwizard) {
 		allFinished = true;
 		allPending = true;
-		Treechildren treeChildren = wfnodeTree.getTreechildren();
 		Treeitem treeitemwf = new Treeitem();
+		Treechildren treeChildren = wfnodeTree.getTreechildren();
 		treeChildren.appendChild(treeitemwf);
+		addNodes(wfwizard, treeitemwf);
+		if (   treeitemwf.getTreechildren() == null
+			|| treeitemwf.getTreechildren().getChildren() == null
+			|| treeitemwf.getTreechildren().getChildren().size() == 0) {
+			// no nodes
+			treeChildren.removeChild(treeitemwf);
+			treeitemwf = null;
+			return;
+		}
+
 		if (firstWF == null)
 			firstWF = treeitemwf;
 
@@ -211,7 +227,6 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		Div div = new Div();
 		div.setStyle("display:inline;");
 		div.appendChild(wizardLabel);
-
 		Treerow treerow = new Treerow();
 		treerow.setStyle("vertical-align:top;");
 		treeitemwf.appendChild(treerow);
@@ -222,7 +237,6 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		nextItems.add(treeitemwf);
 		if (openNodes.contains(wfwizard.getAD_Workflow_ID()))
 			treeitemwf.setOpen(true);
-		addNodes(wfwizard, treeitemwf);
 		if (firstOpenWF == treeitemwf && allPending) {
 			firstOpenNode = firstOpenWF;
 		}
@@ -251,6 +265,20 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	}
 
 	private void addWfNode(MWFNode node, Treeitem treeitemwf) {
+		if (MWFNode.ACTION_UserWindow.equals(node.getAction()) && node.getAD_Window_ID() > 0) {
+			if (MRole.getDefault().getWindowAccess(node.getAD_Window_ID()) == null)
+				return;
+		} else if (MWFNode.ACTION_UserForm.equals(node.getAction()) && node.getAD_Form_ID() > 0) {
+			if (MRole.getDefault().getFormAccess(node.getAD_Form_ID()) == null)
+				return;
+		} else if ((MWFNode.ACTION_AppsProcess.equals(node.getAction()) || MWFNode.ACTION_AppsReport.equals(node.getAction())) && node.getAD_Process_ID() > 0) {
+			if (MRole.getDefault().getProcessAccess(node.getAD_Process_ID()) == null)
+				return;
+		} else if (MWFNode.ACTION_AppsTask.equals(node.getAction()) && node.getAD_Task_ID() > 0) {
+			if (MRole.getDefault().getTaskAccess(node.getAD_Task_ID()) == null)
+				return;
+		}
+
 		/* Color of node according to wizard status */
 		Label nodeLabel = new Label(node.getName(true));
 		MWizardProcess wp = MWizardProcess.get(Env.getCtx(), node.getAD_WF_Node_ID(), Env.getAD_Client_ID(Env.getCtx()));
@@ -270,9 +298,11 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 				nodeLabel.setZclass("tree-setupwizard-nostatus");
 			}
 		}
+		cntNodes++;
 		if (   MWizardProcess.WIZARDSTATUS_Finished.equals(status)
 			|| MWizardProcess.WIZARDSTATUS_Skipped.equals(status)) {
 			allPending = false;
+			cntSolved++;
 		} else {
 			allFinished = false;
 		}
@@ -465,14 +495,12 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	}	//	jbInit
 
 	private void refreshProgress() {
-		int nodes = getNodesCnt();
-		int solved = getWizardCnt();
-		int percent = solved * 100;
-		if (nodes > 0)
-			percent = percent / nodes;
+		int percent = cntSolved * 100;
+		if (cntNodes > 0)
+			percent = percent / cntNodes;
 		else
 			percent = 0;
-		Object[] args = new Object[] {solved, nodes, percent};
+		Object[] args = new Object[] {cntSolved, cntNodes, percent};
 		String msg = Msg.getMsg(Env.getCtx(), "SetupWizardProgress", args);
 		progressLabel.setText(msg);
 		progressbar.setValue(percent);
@@ -496,7 +524,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		if (e.getTarget() == wfnodeTree) {
 			onTreeSelection(e);
 		} else if (e.getTarget() == bRefresh) {
-			showInRightPanel(0, m_node.getAD_WF_Node_ID());
+			repaintTree();
 		} else if (e.getTarget() == bOK) {
 			int userid = 0;
 			allFinished=true;
@@ -672,7 +700,6 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	private void setNotesPanelVisible(boolean visible) {
 		notesLabel.setVisible(visible);
 		notesField.setVisible(visible);
-		bRefresh.setVisible(visible);
 		bOK.setVisible(visible);
 		statusLabel.setVisible(visible);
 		statusField.setVisible(visible);
