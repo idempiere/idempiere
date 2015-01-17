@@ -137,7 +137,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		}
 		catch (Exception ex)
 		{
-			log.log(Level.SEVERE, "VTreeMaintenance.init", ex);
+			log.log(Level.SEVERE, "WSetupWizard.init", ex);
 		}
 	}	//	init
 	
