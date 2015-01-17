@@ -209,12 +209,14 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		Treeitem treeitemwf = new Treeitem();
 		Treechildren treeChildren = wfnodeTree.getTreechildren();
 		treeChildren.appendChild(treeitemwf);
+		nextItems.add(treeitemwf);
 		addNodes(wfwizard, treeitemwf);
 		if (   treeitemwf.getTreechildren() == null
 			|| treeitemwf.getTreechildren().getChildren() == null
 			|| treeitemwf.getTreechildren().getChildren().size() == 0) {
 			// no nodes
 			treeChildren.removeChild(treeitemwf);
+			nextItems.remove(treeitemwf);
 			treeitemwf = null;
 			return;
 		}
@@ -234,7 +236,6 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		Treecell treecell = new Treecell();
 		treerow.appendChild(treecell);
 		treecell.appendChild(div);
-		nextItems.add(treeitemwf);
 		if (openNodes.contains(wfwizard.getAD_Workflow_ID()))
 			treeitemwf.setOpen(true);
 		if (firstOpenWF == treeitemwf && allPending) {
@@ -660,6 +661,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 			SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Workflow, wfid);
 		} else if (ti.getAttribute("AD_WF_Node_ID") != null) {
 			// MWFNode
+			((Treeitem)ti.getParent().getParent()).setOpen(true);
 			int nodeid = (Integer) ti.getAttribute("AD_WF_Node_ID");
 			showInRightPanel(0, nodeid);
 			SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Node, nodeid);
