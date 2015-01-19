@@ -11,12 +11,35 @@ Copyright (C) 2007 Ashley G Ramdass.
 <?link rel="stylesheet" type="text/css" href="${themeStyleSheetByBrowser}"?>
 <?link rel="stylesheet" type="text/css" href="css/PAPanel.css"?>
 <zk>
-	<script>
+	<script><![CDATA[
 		zk.afterLoad(function() {
 			zk._Erbx.push = function(msg) {
 				if (console) console.log(msg);
 			}
 		});
+			
+		zk.afterLoad(function() {
+			jq(window).unload(function () {
+				//rmDesktop not call in window.onbeforeunload (mount.js) when zk.confirmClose is not null								
+				if (!zk.ie && zk.confirmClose){						
+					rmDesktop();
+				} 
+			});						
+			
+			//function rmDesktop duplicated from mount.js ( zk.jar 7.0.3 )
+			function rmDesktop() {
+				var bRmDesktop = !zk.opera && !zk.keepDesktop;
+				if (bRmDesktop || zk.pfmeter) {
+					try {
+						var dts = zk.Desktop.all;
+						for (var dtid in dts)
+							zAu._rmDesktop(dts[dtid], !bRmDesktop);
+					} catch (e) { 
+					}
+				}
+			}
+		});								
+	]]>
 	</script>
     <include src="${themePreference}"/>
 	<window use="org.adempiere.webui.AdempiereWebUI"/>
