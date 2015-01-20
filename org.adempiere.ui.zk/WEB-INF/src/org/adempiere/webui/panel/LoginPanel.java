@@ -209,6 +209,9 @@ public class LoginPanel extends Window implements EventListener<Event>
             if (found)
             	break;
         }
+        
+        txtUserId.removeEventListener(Events.ON_FOCUS, txtUserId);
+        txtPassword.removeEventListener(Events.ON_FOCUS, txtPassword);
     }
 
 	protected void createUI() {
