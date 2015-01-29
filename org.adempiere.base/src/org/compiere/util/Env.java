@@ -59,6 +59,7 @@ import org.compiere.model.MLookupCache;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSession;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MZoomCondition;
 import org.compiere.model.PO;
@@ -1819,8 +1820,12 @@ public final class Env
 	 * @return trademark text for standard report footer
 	 */
 	public static String getStandardReportFooterTrademarkText() {
-		String s = Env.getContext(Env.getCtx(), STANDARD_REPORT_FOOTER_TRADEMARK_TEXT);
-		return Util.isEmpty(s) ? Adempiere.ADEMPIERE_R : s;
+		String s = MSysConfig.getValue(MSysConfig.STANDARD_REPORT_FOOTER_TRADEMARK_TEXT, Env.getAD_Client_ID(Env.getCtx()));
+		if (Util.isEmpty(s))
+			s = Env.getContext(Env.getCtx(), STANDARD_REPORT_FOOTER_TRADEMARK_TEXT);
+		if (Util.isEmpty(s))
+			s = Adempiere.ADEMPIERE_R;
+		return s;
 	}
 	
 	public static int getZoomWindowID(MQuery query)
