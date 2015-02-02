@@ -206,7 +206,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         infoWindow = MInfoWindow.get(p_keyColumn.replace("_ID", ""), null);
 		addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 		addEventListener(ON_RUN_PROCESS, this);
-		
+				
 	}	//	InfoPanel
 
 	private void init()
@@ -249,7 +249,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         this.setMaximizable(true);
 
         this.addEventListener(Events.ON_OK, this);
-
+        if (isLookup())
+        	addEventListener(Events.ON_CANCEL, this);
         contentPanel.setOddRowSclass(null);
 //        contentPanel.setSizedByContent(true);
         contentPanel.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoListbox");
@@ -1374,6 +1375,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	    			// do nothing when parameter not change and at window mode, or at dialog mode but select non record    			
 	    			onOk();
 	    		}
+        	}else if (event.getName().equals(Events.ON_CANCEL)){
+        		m_cancel = true;
+        		dispose(false);
         	}
             //when user push enter keyboard at input parameter field
             else
@@ -1395,10 +1399,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			}
 		} else if (keyEvent.getKeyCode() == VK_ENTER) { // Enter
 			// do nothing, let on_ok at infoWindo do, at this is too soon to get value from control, it's not bind
-		} else if (keyEvent.getKeyCode() == VK_ESCAPE) { // Escape
-			// Escape for cancel
-        	m_cancel = true;
-            dispose(false);
 		}
 	}
 
