@@ -189,7 +189,7 @@ public class BankTransfer extends SvrProcess
 		paymentBankTo.setC_BPartner_ID (p_C_BPartner_ID);
 		paymentBankTo.setC_Currency_ID(p_C_Currency_ID);
 		if (p_C_ConversionType_ID > 0)
-			paymentBankFrom.setC_ConversionType_ID(p_C_ConversionType_ID);	
+			paymentBankTo.setC_ConversionType_ID(p_C_ConversionType_ID);	
 		paymentBankTo.setPayAmt(p_Amount);
 		paymentBankTo.setOverUnderAmt(Env.ZERO);
 		paymentBankTo.setC_DocType_ID(true);
