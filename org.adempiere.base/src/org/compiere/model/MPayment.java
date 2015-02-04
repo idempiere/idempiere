@@ -1957,13 +1957,14 @@ public class MPayment extends X_C_Payment
 		if (log.isLoggable(Level.INFO)) log.info(toString());
 
 		//	Charge Handling
+		boolean createdAllocationRecords = false;
 		if (getC_Charge_ID() != 0)
 		{
 			setIsAllocated(true);
 		}
 		else
 		{
-			allocateIt();	//	Create Allocation Records
+			createdAllocationRecords = allocateIt();	//	Create Allocation Records
 			testAllocation();
 		}
 
@@ -1973,7 +1974,7 @@ public class MPayment extends X_C_Payment
 		//	MProject project = new MProject(getCtx(), getC_Project_ID());
 		}
 		//	Update BP for Prepayments
-		if (getC_BPartner_ID() != 0 && getC_Invoice_ID() == 0 && getC_Charge_ID() == 0 && MPaymentAllocate.get(this).length == 0)
+		if (getC_BPartner_ID() != 0 && getC_Invoice_ID() == 0 && getC_Charge_ID() == 0 && MPaymentAllocate.get(this).length == 0 && !createdAllocationRecords)
 		{
 			MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
 			DB.getDatabase().forUpdate(bp, 0);
