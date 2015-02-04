@@ -30,7 +30,9 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.print.MPrintFormatItem;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.event.DropEvent;
@@ -39,7 +41,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hlayout;
-
 import org.zkoss.zul.Vbox;
 
 public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener<Event>
@@ -47,7 +48,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2798618953887598651L;
+	private static final long serialVersionUID = -3178046711328450398L;
 
 	//	UI variables
 	private Label noLabel = new Label();
@@ -71,8 +72,8 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 	public void init()
 	{
 		//
-		noLabel.setValue("Available");
-		yesLabel.setValue("Order By");
+		noLabel.setValue(Msg.getMsg(Env.getCtx(), "Available"));
+		yesLabel.setValue(Msg.getMsg(Env.getCtx(), "OrderBy"));
 
 		yesList.setVflex(true);
 		noList.setVflex(true);
