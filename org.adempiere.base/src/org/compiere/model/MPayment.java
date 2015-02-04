@@ -2599,9 +2599,6 @@ public class MPayment extends X_C_Payment
 		}
 		MPeriod.testPeriodOpen(getCtx(), dateAcct, getC_DocType_ID(), getAD_Org_ID());
 		
-		//	Auto Reconcile if not on Bank Statement				
-		boolean reconciled = getC_BankStatementLine_ID() == 0; //AZ Goodwill
-
 		//	Create Reversal
 		MPayment reversal = new MPayment (getCtx(), 0, get_TrxName());
 		copyValues(this, reversal);
@@ -2620,7 +2617,7 @@ public class MPayment extends X_C_Payment
 		reversal.setOverUnderAmt(getOverUnderAmt().negate());
 		//
 		reversal.setIsAllocated(true);
-		reversal.setIsReconciled(reconciled);	//	to put on bank statement
+		reversal.setIsReconciled(false);
 		reversal.setIsOnline(false);
 		reversal.setIsApproved(true); 
 		reversal.setR_PnRef(null);
@@ -2650,7 +2647,6 @@ public class MPayment extends X_C_Payment
 
 		//	Unlink & De-Allocate
 		deAllocate(accrual);
-		setIsReconciled (reconciled);
 		setIsAllocated (true);	//	the allocation below is overwritten
 		//	Set Status 
 		addDescription("(" + reversal.getDocumentNo() + "<-)");
