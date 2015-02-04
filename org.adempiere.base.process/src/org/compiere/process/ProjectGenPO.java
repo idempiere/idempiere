@@ -40,6 +40,8 @@ public class ProjectGenPO extends SvrProcess
 	/** Project Parameter			*/
 	private int 		m_C_Project_ID = 0;
 	/** Opt Project Line Parameter	*/
+	private int 		m_C_ProjectPhase_ID = 0;
+	/** Opt Project Line Parameter	*/
 	private int 		m_C_ProjectLine_ID = 0;
 	/** Consolidate Document		*/
 	private boolean		m_ConsolidateDocument = true;
@@ -59,6 +61,8 @@ public class ProjectGenPO extends SvrProcess
 				;
 			else if (name.equals("C_Project_ID"))
 				m_C_Project_ID = ((BigDecimal)para[i].getParameter()).intValue();
+			else if (name.equals("C_ProjectPhase_ID"))
+				m_C_ProjectPhase_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else if (name.equals("C_ProjectLine_ID"))
 				m_C_ProjectLine_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else if (name.equals("ConsolidateDocument"))
@@ -81,6 +85,13 @@ public class ProjectGenPO extends SvrProcess
 			MProjectLine projectLine = new MProjectLine(getCtx(), m_C_ProjectLine_ID, get_TrxName());
 			MProject project = new MProject (getCtx(), projectLine.getC_Project_ID(), get_TrxName());
 			createPO (project, projectLine);
+		}
+		else if (m_C_ProjectPhase_ID != 0)
+		{
+			MProject project = new MProject (getCtx(), m_C_Project_ID, get_TrxName());
+			MProjectLine[] lines = project.getPhaseLines(m_C_ProjectPhase_ID);
+			for (int i = 0; i < lines.length; i++)
+				createPO (project, lines[i]);
 		}
 		else
 		{
@@ -187,7 +198,12 @@ public class ProjectGenPO extends SvrProcess
 		//	update ProjectLine
 		projectLine.setC_OrderPO_ID(order.getC_Order_ID());
 		projectLine.saveEx();
-		addLog (projectLine.getLine(), null, projectLine.getPlannedQty(), order.getDocumentNo());
+		addLog (order.getC_Order_ID(),
+				order.getDateOrdered(),
+				new BigDecimal(orderLine.getLine()), 
+				"Order:"+order.getDocumentNo()+" Line:"+orderLine.getLine(), 
+				order.get_Table_ID(), 
+				order.getC_Order_ID());
 	}	//	createPOfromProjectLine
 
 }	//	ProjectGenPO

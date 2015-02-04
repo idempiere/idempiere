@@ -214,6 +214,23 @@ public class MProject extends X_C_Project
 		return retValue;
 	}	//	getLines
 
+	/**************************************************************************
+	 * 	Get Project Lines from a Phase
+	 *	@return Array of lines from a Phase
+	 */
+	public MProjectLine[] getPhaseLines(int phase)
+	{
+		final String whereClause = "C_Project_ID=? and C_ProjectPhase_ID=?";
+		List <MProjectLine> list = new Query(getCtx(), I_C_ProjectLine.Table_Name, whereClause, get_TrxName())
+			.setParameters(getC_Project_ID(), phase)
+			.setOrderBy("Line")
+			.list();
+		//
+		MProjectLine[] retValue = new MProjectLine[list.size()];
+		list.toArray(retValue);
+		return retValue;
+	}	//	getPhaseLines
+
 	/**
 	 * 	Get Project Issues
 	 *	@return Array of issues
