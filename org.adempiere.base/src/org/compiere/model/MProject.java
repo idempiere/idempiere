@@ -36,7 +36,7 @@ public class MProject extends X_C_Project
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6103964836289951325L;
+	private static final long serialVersionUID = 8631795136761641303L;
 
 	/**
 	 * 	Create new Project by copying

@@ -26,7 +26,7 @@ public class MProduction extends X_M_Production implements DocAction {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2222265936552140706L;
+	private static final long serialVersionUID = 8047044372956625013L;
 
 	/**
 	 * 
