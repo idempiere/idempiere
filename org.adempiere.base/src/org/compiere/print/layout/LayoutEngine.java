@@ -37,6 +37,7 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
@@ -48,6 +49,7 @@ import javax.print.attribute.DocAttributeSet;
 
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MQuery;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
 import org.compiere.print.ArchiveEngine;
@@ -70,6 +72,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 
 /**
@@ -969,12 +972,19 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		element.setLocation(ft);
 		m_headerFooter.addElement(element);
 		//
-		element = new StringElement("@*Header@", font, color, null, true);
+		String s = MSysConfig.getValue(MSysConfig.ZK_FOOTER_SERVER_MSG, "@*Header@", Env.getAD_Client_ID(Env.getCtx()));
+		element = new StringElement(s, font, color, null, true);
 		element.layout (m_footer.width, 0, true, MPrintFormatItem.FIELDALIGNMENTTYPE_Center);
 		element.setLocation(ft);
 		m_headerFooter.addElement(element);
 		//
-		element = new StringElement("@*CurrentDateTime@", font, color, null, true);
+		String timestamp = "";
+		s = MSysConfig.getValue(MSysConfig.ZK_FOOTER_SERVER_DATETIME_FORMAT, Env.getAD_Client_ID(Env.getCtx()));
+		if (!Util.isEmpty(s))
+			timestamp = new SimpleDateFormat(s).format(System.currentTimeMillis());
+		else
+			timestamp = "@*CurrentDateTime@";
+		element = new StringElement(timestamp, font, color, null, true);
 		element.layout (m_footer.width, 0, true, MPrintFormatItem.FIELDALIGNMENTTYPE_TrailingRight);
 		element.setLocation(ft);
 		m_headerFooter.addElement(element);
