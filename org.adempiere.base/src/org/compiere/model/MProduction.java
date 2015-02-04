@@ -78,13 +78,10 @@ public class MProduction extends X_M_Production implements DocAction {
 		setC_Project_ID(line.getC_Project_ID());
 		setC_BPartner_ID(project.getC_BPartner_ID());
 		setC_Campaign_ID(project.getC_Campaign_ID());
-		//TODO: add AD_OrgTrx_ID to C_Project and C_ProjectLine table
-		//setAD_OrgTrx_ID(project.getAD_OrgTrx_ID());
-		//TODO: add C_Activity_ID to C_Project and C_ProjectLine table
-		//setC_Activity_ID(project.getC_Activity_ID);
-		//TODO: add C_ProjectPhase_ID and C_ProjectTask_ID to M_Production table
-		//setC_ProjectPhase_ID(line.getC_ProjectPhase_ID());
-		//setC_ProjectTask_ID(line.getC_ProjectTask_ID());
+		setAD_OrgTrx_ID(project.getAD_OrgTrx_ID());
+		setC_Activity_ID(project.getC_Activity_ID());
+		setC_ProjectPhase_ID(line.getC_ProjectPhase_ID());
+		setC_ProjectTask_ID(line.getC_ProjectTask_ID());
 		setMovementDate( Env.getContextAsDate(p_ctx, "#Date"));
 	}
 

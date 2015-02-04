@@ -131,12 +131,11 @@ public class ProjectGenProduction extends SvrProcess
 			return;
 		}
 		
-//		TODO - need to add C_ProjectLine.M_Production_ID
-//		if (projectLine.getM_Production_ID() != 0)
-//		{
-//			addLog (projectLine.getLine() ,null,null, "Line was produced previously");
-//			return;
-//		}
+		if (projectLine.getM_Production_ID() != 0)
+		{
+			addLog (projectLine.getLine() ,null,null, "Line was produced previously");
+			return;
+		}
 
 		//	Create to Production
 		MProduction production = null;
@@ -155,9 +154,8 @@ public class ProjectGenProduction extends SvrProcess
 		production.saveEx();
 
 		//	update ProjectLine
-		//TODO - need to add C_ProjectLine.M_Production_ID
-		//projectLine.setM_Production_ID(production.getM_Production_ID());
-		//projectLine.saveEx();
+		projectLine.setM_Production_ID(production.getM_Production_ID());
+		projectLine.saveEx();
 
 		addBufferLog (production.getM_Production_ID(),
 				production.getMovementDate(),
