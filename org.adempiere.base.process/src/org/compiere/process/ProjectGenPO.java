@@ -28,6 +28,7 @@ import org.compiere.model.MProductPO;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectLine;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *  Generate Purchase Order from Project.
@@ -89,16 +90,20 @@ public class ProjectGenPO extends SvrProcess
 		else if (m_C_ProjectPhase_ID != 0)
 		{
 			MProject project = new MProject (getCtx(), m_C_Project_ID, get_TrxName());
-			MProjectLine[] lines = project.getPhaseLines(m_C_ProjectPhase_ID);
-			for (int i = 0; i < lines.length; i++)
-				createPO (project, lines[i]);
+			for (MProjectLine line : project.getPhaseLines(m_C_ProjectPhase_ID)) {
+				if (line.isActive()) {
+					createPO (project, line);
+				}
+			}
 		}
 		else
 		{
 			MProject project = new MProject (getCtx(), m_C_Project_ID, get_TrxName());
-			MProjectLine[] lines = project.getLines();
-			for (int i = 0; i < lines.length; i++)
-				createPO (project, lines[i]);
+			for (MProjectLine line : project.getLines()) {
+				if (line.isActive()) {
+					createPO (project, line);
+				}
+			}
 		}
 		return "";
 	}	//	doIt
@@ -198,10 +203,10 @@ public class ProjectGenPO extends SvrProcess
 		//	update ProjectLine
 		projectLine.setC_OrderPO_ID(order.getC_Order_ID());
 		projectLine.saveEx();
-		addLog (order.getC_Order_ID(),
+		addBufferLog (order.getC_Order_ID(),
 				order.getDateOrdered(),
-				new BigDecimal(orderLine.getLine()), 
-				"Order:"+order.getDocumentNo()+" Line:"+orderLine.getLine(), 
+				new BigDecimal(orderLine.getLine()),
+				Msg.getElement(Env.getAD_Language(Env.getCtx()), "C_Order_ID", false)+":"+order.getDocumentNo(), 
 				order.get_Table_ID(), 
 				order.getC_Order_ID());
 	}	//	createPOfromProjectLine
