@@ -1496,7 +1496,7 @@ public final class MRole extends X_AD_Role
 			// first get the window access from the included and substitute roles
 			mergeIncludedAccess("m_windowAccess"); // Load included accesses - metas-2009_0021_AP1_G94
 			// and now get the window access directly from this role
-			MClient client = MClient.get(getCtx(), getAD_Client_ID());
+			MClient client = MClient.get(Env.getCtx());
 			String ASPFilter = "";
 			if (client.isUseASP())
 				ASPFilter =
@@ -1583,7 +1583,7 @@ public final class MRole extends X_AD_Role
 			// first get the process access from the included and substitute roles
 			mergeIncludedAccess("m_processAccess"); // Load included accesses - metas-2009_0021_AP1_G94
 			// and now get the process access directly from this role
-			MClient client = MClient.get(getCtx(), getAD_Client_ID());
+			MClient client = MClient.get(Env.getCtx());
 			String ASPFilter = "";
 			if (client.isUseASP())
 				ASPFilter =
@@ -1665,7 +1665,7 @@ public final class MRole extends X_AD_Role
 			// first get the task access from the included and substitute roles
 			mergeIncludedAccess("m_taskAccess"); // Load included accesses - metas-2009_0021_AP1_G94
 			// and now get the task access directly from this role
-			MClient client = MClient.get(getCtx(), getAD_Client_ID());
+			MClient client = MClient.get(Env.getCtx());
 			String ASPFilter = "";
 			if (client.isUseASP())
 				ASPFilter =
@@ -1745,7 +1745,7 @@ public final class MRole extends X_AD_Role
 			// first get the form access from the included and substitute roles
 			mergeIncludedAccess("m_formAccess"); // Load included accesses - metas-2009_0021_AP1_G94
 			// and now get the form access directly from this role
-			MClient client = MClient.get(getCtx(), getAD_Client_ID());
+			MClient client = MClient.get(Env.getCtx());
 			String ASPFilter = "";
 			if (client.isUseASP())
 				ASPFilter =
@@ -1825,7 +1825,7 @@ public final class MRole extends X_AD_Role
 			// first get the workflow access from the included and substitute roles
 			mergeIncludedAccess("m_workflowAccess"); // Load included accesses - metas-2009_0021_AP1_G94
 			// and now get the workflow access directly from this role
-			MClient client = MClient.get(getCtx(), getAD_Client_ID());
+			MClient client = MClient.get(Env.getCtx());
 			String ASPFilter = "";
 			if (client.isUseASP())
 				ASPFilter =

@@ -577,12 +577,6 @@ public abstract class Convert
 			prm_COMMENT = MSysConfig.getValue(MSysConfig.PROJECT_ID_COMMENTS);
 		else
 			prm_COMMENT = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_COMMENTS);
-		// log time and date
-		SimpleDateFormat format = DisplayType.getDateFormat(DisplayType.DateTime);
-		String dateTimeText = format.format(new Timestamp(System.currentTimeMillis()));
-		w.append("-- ");
-		w.append(dateTimeText);
-		w.append("\n");
 		if (prm_COMMENT != null && ! m_oldprm_COMMENT.equals(prm_COMMENT)) {
 			// log sysconfig comment
 			w.append("-- ");
@@ -591,6 +585,12 @@ public abstract class Convert
 			if (w == writerPg)
 				m_oldprm_COMMENT = prm_COMMENT;
 		}
+		// log time and date
+		SimpleDateFormat format = DisplayType.getDateFormat(DisplayType.DateTime);
+		String dateTimeText = format.format(new Timestamp(System.currentTimeMillis()));
+		w.append("-- ");
+		w.append(dateTimeText);
+		w.append("\n");
 		// log statement
 		w.append(statement);
 		// close statement

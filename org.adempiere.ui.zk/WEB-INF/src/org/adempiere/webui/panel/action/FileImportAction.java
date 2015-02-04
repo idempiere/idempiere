@@ -185,13 +185,13 @@ public class FileImportAction implements EventListener<Event>
 			
 			Row row = new Row();
 			rows.appendChild(row);
-			row.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType")));
+			row.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType", true)));
 			row.appendChild(cboType);
 			cboType.setHflex("1");
 			
 			row = new Row();
 			rows.appendChild(row);
-			row.appendChild(new Label(Msg.getMsg(Env.getCtx(), "Charset", false) + ": "));
+			row.appendChild(new Label(Msg.getMsg(Env.getCtx(), "Charset", true) + ": "));
 			fCharset.setMold("select");
 			fCharset.setRows(0);
 			fCharset.setTooltiptext(Msg.getMsg(Env.getCtx(), "Charset", false));

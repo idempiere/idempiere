@@ -463,11 +463,10 @@ public class GridTabCSVExporter implements IGridTabExporter
 		if (DisplayType.isLookup(column.getAD_Reference_ID())) {
 			// resolve to identifier - search for value first, if not search for name - if not use the ID
 			String foreignTable = column.getReferenceTableName();
-			if ( ! ("AD_Language".equals(foreignTable) || "AD_EntityType".equals(foreignTable))) {
+			if ( ! ("AD_Language".equals(foreignTable) || "AD_EntityType".equals(foreignTable) || "AD_Ref_List".equals(foreignTable))) {
 				MTable fTable = MTable.get(Env.getCtx(), foreignTable);
 				// Hardcoded / do not check for Value on AD_Org, AD_User and AD_Ref_List, must use name for these two tables
-				if (! ("AD_Org".equals(foreignTable) || "AD_User".equals(foreignTable) || "AD_Ref_List".equals(foreignTable))
-					&& fTable.getColumn("Value") != null) {
+				if (! ("AD_Org".equals(foreignTable) || "AD_User".equals(foreignTable)) && fTable.getColumn("Value") != null) {
 					name.append("[Value]"); // fully qualified
 				} else if (fTable.getColumn("Name") != null) {
 					name.append("[Name]");
@@ -540,17 +539,17 @@ public class GridTabCSVExporter implements IGridTabExporter
 				int AD_Field_ID = Integer.parseInt(fieldIdStr);
 				for (GridField gridField : tmpFields) 
 				{
-					if (   gridField.isVirtualColumn()
-						|| gridField.isEncrypted()
-						|| gridField.isEncryptedColumn()
-						|| !(gridField.isDisplayed() || gridField.isDisplayedGrid()))
-						continue;
-					
-					if (gridField.getAD_Field_ID() == AD_Field_ID) 
-					{
-						if (!gridField.isReadOnly() && gridField.isDisplayedGrid() && !(DisplayType.Button == MColumn.get(Env.getCtx(),gridField.getAD_Column_ID()).getAD_Reference_ID()))
-							fieldList.add(gridField);
-						
+					if (gridField.getAD_Field_ID() == AD_Field_ID) {
+						if (   gridField.isVirtualColumn()
+							|| gridField.isEncrypted()
+							|| gridField.isEncryptedColumn()
+							|| !(gridField.isDisplayed() || gridField.isDisplayedGrid())
+							|| gridField.isReadOnly()
+							|| (DisplayType.Button == MColumn.get(Env.getCtx(),gridField.getAD_Column_ID()).getAD_Reference_ID())
+						   )
+							continue;
+
+						fieldList.add(gridField);
 						break;
 					}
 				}

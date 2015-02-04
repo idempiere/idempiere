@@ -222,6 +222,7 @@ public class MConversionRate extends X_C_Conversion_Rate
 			+ " AND	? BETWEEN ValidFrom AND ValidTo"	//	#4	TRUNC (?) ORA-00932: inconsistent datatypes: expected NUMBER got TIMESTAMP
 			+ " AND AD_Client_ID IN (0,?)"				//	#5
 			+ " AND AD_Org_ID IN (0,?) "				//	#6
+			+ " AND IsActive = 'Y' "
 			+ "ORDER BY AD_Client_ID DESC, AD_Org_ID DESC, ValidFrom DESC";
 		BigDecimal retValue = null;
 		PreparedStatement pstmt = null;

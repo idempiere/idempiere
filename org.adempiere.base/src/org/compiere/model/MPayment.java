@@ -1957,13 +1957,14 @@ public class MPayment extends X_C_Payment
 		if (log.isLoggable(Level.INFO)) log.info(toString());
 
 		//	Charge Handling
+		boolean createdAllocationRecords = false;
 		if (getC_Charge_ID() != 0)
 		{
 			setIsAllocated(true);
 		}
 		else
 		{
-			allocateIt();	//	Create Allocation Records
+			createdAllocationRecords = allocateIt();	//	Create Allocation Records
 			testAllocation();
 		}
 
@@ -1973,7 +1974,7 @@ public class MPayment extends X_C_Payment
 		//	MProject project = new MProject(getCtx(), getC_Project_ID());
 		}
 		//	Update BP for Prepayments
-		if (getC_BPartner_ID() != 0 && getC_Invoice_ID() == 0 && getC_Charge_ID() == 0 && MPaymentAllocate.get(this).length == 0)
+		if (getC_BPartner_ID() != 0 && getC_Invoice_ID() == 0 && getC_Charge_ID() == 0 && MPaymentAllocate.get(this).length == 0 && !createdAllocationRecords)
 		{
 			MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
 			DB.getDatabase().forUpdate(bp, 0);
@@ -2598,9 +2599,6 @@ public class MPayment extends X_C_Payment
 		}
 		MPeriod.testPeriodOpen(getCtx(), dateAcct, getC_DocType_ID(), getAD_Org_ID());
 		
-		//	Auto Reconcile if not on Bank Statement				
-		boolean reconciled = getC_BankStatementLine_ID() == 0; //AZ Goodwill
-
 		//	Create Reversal
 		MPayment reversal = new MPayment (getCtx(), 0, get_TrxName());
 		copyValues(this, reversal);
@@ -2619,7 +2617,7 @@ public class MPayment extends X_C_Payment
 		reversal.setOverUnderAmt(getOverUnderAmt().negate());
 		//
 		reversal.setIsAllocated(true);
-		reversal.setIsReconciled(reconciled);	//	to put on bank statement
+		reversal.setIsReconciled(false);
 		reversal.setIsOnline(false);
 		reversal.setIsApproved(true); 
 		reversal.setR_PnRef(null);
@@ -2649,7 +2647,6 @@ public class MPayment extends X_C_Payment
 
 		//	Unlink & De-Allocate
 		deAllocate(accrual);
-		setIsReconciled (reconciled);
 		setIsAllocated (true);	//	the allocation below is overwritten
 		//	Set Status 
 		addDescription("(" + reversal.getDocumentNo() + "<-)");

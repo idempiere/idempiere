@@ -14,29 +14,18 @@
 
 package org.adempiere.webui.panel;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.desktop.IDesktop;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.model.MCtxHelpMsg;
 import org.compiere.model.MForm;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTab;
 import org.compiere.model.MTask;
 import org.compiere.model.X_AD_CtxHelp;
-import org.compiere.model.X_AD_CtxHelpMsg;
-import org.compiere.model.X_AD_Form;
-import org.compiere.model.X_AD_InfoWindow;
-import org.compiere.model.X_AD_Process;
-import org.compiere.model.X_AD_Tab;
-import org.compiere.model.X_AD_Task;
-import org.compiere.model.X_AD_WF_Node;
-import org.compiere.model.X_AD_Workflow;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.wf.MWFNode;
@@ -500,145 +489,14 @@ public class HelpController
 			.replace("<", "&lt;");
 		return htmlString;
 	}
-    
-    private int getCtxHelpID(String ctxType, int recordId)
+
+    private String getCtxHelpMsgList(String ctxType, int recordId)
     {
     	Properties ctx = Env.getCtx();
-    	
-    	StringBuilder sql = new StringBuilder();
-    	sql.append("SELECT t.");
-    	if (ctxType == X_AD_CtxHelp.CTXTYPE_Tab)
-    		sql.append(X_AD_Tab.COLUMNNAME_AD_CtxHelp_ID);
-    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Process)
-    		sql.append(X_AD_Process.COLUMNNAME_AD_CtxHelp_ID);
-    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Form)
-    		sql.append(X_AD_Form.COLUMNNAME_AD_CtxHelp_ID);
-    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Info)
-    		sql.append(X_AD_InfoWindow.COLUMNNAME_AD_CtxHelp_ID);
-    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Workflow)
-    		sql.append(X_AD_Workflow.COLUMNNAME_AD_CtxHelp_ID);
-    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Task)
-    		sql.append(X_AD_Task.COLUMNNAME_AD_CtxHelp_ID);
-    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Node)
-    		sql.append(X_AD_WF_Node.COLUMNNAME_AD_CtxHelp_ID);
-    	else
-    		sql.append(X_AD_CtxHelp.COLUMNNAME_AD_CtxHelp_ID);
-    	
-    	sql.append(" FROM ");
-    	if (ctxType == X_AD_CtxHelp.CTXTYPE_Tab)
-    		sql.append(X_AD_Tab.Table_Name);
-    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Process)
-    		sql.append(X_AD_Process.Table_Name);
-    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Form)
-    		sql.append(X_AD_Form.Table_Name);
-    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Info)
-    		sql.append(X_AD_InfoWindow.Table_Name);
-    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Workflow)
-    		sql.append(X_AD_Workflow.Table_Name);
-    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Task)
-    		sql.append(X_AD_Task.Table_Name);
-    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Node)
-    		sql.append(X_AD_WF_Node.Table_Name);
-    	else
-    		sql.append(X_AD_CtxHelp.Table_Name);
-    	sql.append(" t, AD_CtxHelp h ");
-    	
-    	sql.append("WHERE t.AD_CtxHelp_ID = h.AD_CtxHelp_ID ");
-    	sql.append("AND t.IsActive = 'Y' ");
-    	sql.append("AND h.IsActive = 'Y' ");
-    	sql.append("AND h.AD_Client_ID IN (0, ?) ");
-    	sql.append("AND h.AD_Org_ID IN (0, ?) ");
-    	
-    	if (ctxType == X_AD_CtxHelp.CTXTYPE_Home)
-    		sql.append("AND h." + X_AD_CtxHelp.COLUMNNAME_CtxType);    		
-    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Tab || ctxType == X_AD_CtxHelp.CTXTYPE_Process ||
-    			ctxType == X_AD_CtxHelp.CTXTYPE_Form || ctxType == X_AD_CtxHelp.CTXTYPE_Info ||
-    			ctxType == X_AD_CtxHelp.CTXTYPE_Workflow || ctxType == X_AD_CtxHelp.CTXTYPE_Task ||
-    			ctxType == X_AD_CtxHelp.CTXTYPE_Node)
-    	{
-	    	sql.append("AND t.");
-	    	if (ctxType == X_AD_CtxHelp.CTXTYPE_Tab)
-	    		sql.append(X_AD_Tab.COLUMNNAME_AD_Tab_ID);
-	    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Process)
-	    		sql.append(X_AD_Process.COLUMNNAME_AD_Process_ID);
-	    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Form)
-	    		sql.append(X_AD_Form.COLUMNNAME_AD_Form_ID);
-	    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Info)
-	    		sql.append(X_AD_InfoWindow.COLUMNNAME_AD_InfoWindow_ID);
-	    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Workflow)
-	    		sql.append(X_AD_Workflow.COLUMNNAME_AD_Workflow_ID);
-	    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Task)
-	    		sql.append(X_AD_Task.COLUMNNAME_AD_Task_ID);
-	    	else if (ctxType == X_AD_CtxHelp.CTXTYPE_Node)
-	    		sql.append(X_AD_WF_Node.COLUMNNAME_AD_WF_Node_ID);
-    	}
-    	else
-    		sql.append("1");
-    	sql.append(" = ? ");
-    	sql.append("ORDER BY h.AD_Client_ID DESC, h.AD_Org_ID DESC, h.AD_CtxHelp_ID DESC");    	
-    	return DB.getSQLValue(null, sql.toString(), Env.getAD_Client_ID(ctx), Env.getAD_Org_ID(ctx), ctxType == X_AD_CtxHelp.CTXTYPE_Home ? ctxType : recordId);
+    	String retValue = MCtxHelpMsg.get(ctx, ctxType, recordId);
+    	return retValue;
     }
-    
-    private String getCtxHelpMsgList(String ctxType, int recordId)
-	{
-    	Properties ctx = Env.getCtx();
-    	
-    	int AD_CtxHelp_ID = getCtxHelpID(ctxType, recordId);
-    	if (AD_CtxHelp_ID > 0)
-    	{
-    		StringBuilder sql = new StringBuilder();
-        	if (Env.isBaseLanguage(Env.getCtx(), X_AD_CtxHelpMsg.Table_Name))
-        	{
-        		sql.append("SELECT MsgText ");    		
-            	sql.append("FROM AD_CtxHelpMsg ");
-            	sql.append("WHERE IsActive = 'Y' ");
-            	sql.append("AND AD_Client_ID IN (0, ?) ");
-            	sql.append("AND AD_Org_ID IN (0, ?) ");
-            	sql.append("AND AD_CtxHelp_ID = ? ");
-            	sql.append("ORDER BY AD_Client_ID DESC, AD_Org_ID DESC, AD_CtxHelpMsg_ID DESC");
-        	}
-        	else
-        	{
-        		sql.append("SELECT mt.MsgText ");    		
-            	sql.append("FROM AD_CtxHelpMsg m ");
-            	sql.append("LEFT JOIN AD_CtxHelpMsg_Trl mt ON (mt.AD_CtxHelpMsg_ID = m.AD_CtxHelpMsg_ID AND mt.AD_Language = ?) ");
-            	sql.append("WHERE mt.IsActive = 'Y' ");
-            	sql.append("AND m.AD_Client_ID IN (0, ?) ");
-            	sql.append("AND m.AD_Org_ID IN (0, ?) ");
-            	sql.append("AND m.AD_CtxHelp_ID = ? ");
-            	sql.append("ORDER BY m.AD_Client_ID DESC, m.AD_Org_ID DESC, m.AD_CtxHelpMsg_ID DESC");
-        	}
-        	
-        	PreparedStatement pstmt = null;
-        	ResultSet rs = null;
-        	
-        	try
-    		{
-    			pstmt = DB.prepareStatement(sql.toString(), null);
-    			int count = 1;
-            	if (!Env.isBaseLanguage(Env.getCtx(), X_AD_CtxHelpMsg.Table_Name))
-            		pstmt.setString(count++, Env.getAD_Language(Env.getCtx()));
-            	pstmt.setInt(count++, Env.getAD_Client_ID(ctx));
-            	pstmt.setInt(count++, Env.getAD_Org_ID(ctx));
-    			pstmt.setInt(count++, AD_CtxHelp_ID);
-    			rs = pstmt.executeQuery();
-    			if (rs.next())
-    				return rs.getString(X_AD_CtxHelpMsg.COLUMNNAME_MsgText);
-    		}
-    		catch (Exception e)
-    		{
-    			throw new AdempiereException(e);
-    		} 
-        	finally 
-        	{
-    			DB.close(rs, pstmt);
-    			rs=null; pstmt=null; 
-    		}
-    	}
-    	
-    	return "";
-	}
-    
+
     /**
 	 * @param content content
 	 * @return masked content or empty string if the <code>content</code> is null

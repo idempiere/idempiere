@@ -866,7 +866,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 			if(value == null)
 			   continue;
 				
-			if(columnName.endsWith("_ID") && "0".equals(value))
+			if (columnName.endsWith("_ID") && "0".equals(value) && ! MTable.isZeroIDTable(gridTab.getTableName()))
 			   continue;
 				
 			boolean isKeyColumn= columnName.indexOf("/") > 0;

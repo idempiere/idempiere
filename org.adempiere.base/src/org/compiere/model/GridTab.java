@@ -182,7 +182,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
     /** A list of event listeners for this component.	*/
     protected EventListenerList m_listenerList = new EventListenerList();
     /** Current Data Status Event						*/
-	private DataStatusEvent 	m_DataStatusEvent = null;
+	private volatile DataStatusEvent 	m_DataStatusEvent = null;
 	/**	Query							*/
 	private MQuery 				m_query = new MQuery();
 	private String 				m_oldQuery = "0=9";
@@ -2346,6 +2346,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	private void fireDataStatusChanged (DataStatusEvent e)
 	{
+		if (e == null) {
+			log.warning("IDEMPIERE-2449 - event must not arrive null here -> " + Thread.currentThread().getStackTrace());
+			return;  // avoid NPE below
+		}
 		DataStatusListener[] listeners = m_listenerList.getListeners(DataStatusListener.class);
 		if (listeners.length == 0)
 			return;

@@ -18,9 +18,9 @@ package org.compiere.apps.form;
 import java.util.List;
 
 import org.adempiere.model.MWizardProcess;
+import org.compiere.model.MClient;
 import org.compiere.model.Query;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWorkflow;
@@ -39,41 +39,41 @@ public class SetupWizard
 
 	public MWFNode m_node; 
 
-	/**
-	 * 	Get the number of workflow wizard nodes
-	 */
-	public int getNodesCnt() {
-		/* TODO: SaaS filter */
-		final String sql = "SELECT COUNT(1) " +
-				"FROM AD_Workflow w " +
-				"JOIN AD_WF_Node n ON (n.AD_Workflow_ID=w.AD_Workflow_ID) " +
-				"WHERE w.WorkflowType='W' " + // Wizard
-				"AND w.IsActive='Y' " +
-				"AND n.IsActive='Y'";
-		return DB.getSQLValue(null, sql);
-	}
-
-	/**
-	 * 	Get the number of wizard nodes that has been finished or skipped by user
-	 */
-	public int getWizardCnt() {
-		/* TODO: SaaS filter */
-		final String sql = "SELECT COUNT(DISTINCT z.AD_WF_Node_ID) " +
-				"FROM AD_Workflow w " +
-				"JOIN AD_WF_Node n ON (n.AD_Workflow_ID=w.AD_Workflow_ID) " +
-				"JOIN AD_WizardProcess z ON (n.AD_WF_Node_ID=z.AD_WF_Node_ID) " +
-				"WHERE w.WorkflowType='W' " + // Wizard
-				"AND w.IsActive='Y' " +
-				"AND n.IsActive='Y' " +
-				"AND z.AD_Client_ID=" + Env.getAD_Client_ID(Env.getCtx()) +
-				" AND z.IsActive='Y' " +
-				"AND z.WizardStatus IN ('F','S')"; // Finished/Skipped
-		return DB.getSQLValue(null, sql);
-	}
-
 	public List<MWorkflow> getWfWizards() {
-		/* TODO: SaaS filter */
-		return new Query(Env.getCtx(), MWorkflow.Table_Name, "WorkflowType=? AND IsActive='Y' AND AD_Client_ID IN (0, ?)", null)
+		MClient client = MClient.get(Env.getCtx());
+		String ASPFilter = "";
+		if (client.isUseASP())
+			ASPFilter =
+				  "   AND (   AD_Workflow.AD_Workflow_ID IN ( "
+				// Just ASP subscribed workflows for client "
+				+ "              SELECT w.AD_Workflow_ID "
+				+ "                FROM ASP_Workflow w, ASP_Level l, ASP_ClientLevel cl "
+				+ "               WHERE w.ASP_Level_ID = l.ASP_Level_ID "
+				+ "                 AND cl.AD_Client_ID = " + client.getAD_Client_ID()
+				+ "                 AND cl.ASP_Level_ID = l.ASP_Level_ID "
+				+ "                 AND w.IsActive = 'Y' "
+				+ "                 AND l.IsActive = 'Y' "
+				+ "                 AND cl.IsActive = 'Y' "
+				+ "                 AND w.ASP_Status = 'S') " // Show
+				+ "        OR AD_Workflow.AD_Workflow_ID IN ( "
+				// + show ASP exceptions for client
+				+ "              SELECT AD_Workflow_ID "
+				+ "                FROM ASP_ClientException ce "
+				+ "               WHERE ce.AD_Client_ID = " + client.getAD_Client_ID()
+				+ "                 AND ce.IsActive = 'Y' "
+				+ "                 AND ce.AD_Workflow_ID IS NOT NULL "
+				+ "                 AND ce.ASP_Status = 'S') " // Show
+				+ "       ) "
+				+ "   AND AD_Workflow.AD_Workflow_ID NOT IN ( "
+				// minus hide ASP exceptions for client
+				+ "          SELECT AD_Workflow_ID "
+				+ "            FROM ASP_ClientException ce "
+				+ "           WHERE ce.AD_Client_ID = " + client.getAD_Client_ID()
+				+ "             AND ce.IsActive = 'Y' "
+				+ "             AND ce.AD_Workflow_ID IS NOT NULL "
+				+ "             AND ce.ASP_Status = 'H')"; // Hide
+		String where = "WorkflowType=? AND IsActive='Y' AND AD_Client_ID IN (0, ?)" + ASPFilter;
+		return new Query(Env.getCtx(), MWorkflow.Table_Name, where, null)
 			.setParameters(MWorkflow.WORKFLOWTYPE_Wizard, Env.getAD_Client_ID(Env.getCtx()))
 			.setOnlyActiveRecords(true)
 			.setOrderBy(MWorkflow.COLUMNNAME_Priority)

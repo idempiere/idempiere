@@ -617,8 +617,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 		if(qtyDiff.compareTo(Env.ZERO)==0)
 			return;
 		
-		//	Check Line
-		boolean needSave = false;
 		//	Attribute Set Instance
 		if (line.getM_AttributeSetInstance_ID() == 0)
 		{
@@ -693,11 +691,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 					if (log.isLoggable(Level.FINE)) log.fine("##: " + lineMA);
 				}
 			}	//	outgoing Trx
-
-			if (needSave)
-			{
-				line.saveEx();
-			}
 		}	//	for all lines
 
 	}	//	checkMaterialPolicy
