@@ -866,7 +866,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		public void onCallback(Boolean result) {
     			if (result) {
     				adTabbox.getSelectedGridTab().navigate(rowIndex);
-    				focusToActivePanel();
+    				//focusToActivePanel();
     			}
     		}
     	};
