@@ -18,6 +18,7 @@ package org.adempiere.webui.panel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,11 +42,13 @@ import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
+import org.compiere.model.I_AD_Field;
 import org.compiere.model.MField;
 import org.compiere.model.MRefList;
 import org.compiere.model.MRole;
 import org.compiere.model.MTab;
 import org.compiere.model.Query;
+import org.compiere.model.X_AD_Tab_Customization;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -144,10 +147,11 @@ public class CustomizeGridViewPanel extends Panel
 
 		yesList.setVflex(true);
 		noList.setVflex(true);
-
+		
 		EventListener<Event> mouseListener = new EventListener<Event>()
 		{
 
+			@Override
 			public void onEvent(Event event) throws Exception
 			{
 				if (Events.ON_DOUBLE_CLICK.equals(event.getName()))
@@ -161,6 +165,7 @@ public class CustomizeGridViewPanel extends Panel
 		//
 		EventListener<Event> actionListener = new EventListener<Event>()
 		{
+			@Override
 			public void onEvent(Event event) throws Exception {
 				migrateValueAcrossLists(event);
 			}
@@ -184,6 +189,7 @@ public class CustomizeGridViewPanel extends Panel
 
 		actionListener = new EventListener<Event>()
 		{
+			@Override
 			public void onEvent(Event event) throws Exception {
 				migrateValueWithinYesList(event);
 			}
@@ -214,7 +220,10 @@ public class CustomizeGridViewPanel extends Panel
 		listHead.setParent(noList);
 		listHeader = new ListHeader();
 		listHeader.appendChild(noLabel);
-
+		listHeader.setSort("auto");
+		listHeader.setSortDirection("ascending");
+		//http://books.zkoss.org/wiki/ZK%20Configuration%20Reference/zk.xml/The%20Library%20Properties/org.zkoss.zul.listbox.autoSort
+		noList.setAttribute("org.zkoss.zul.listbox.autoSort", "true");
 		Hlayout noButtonLayout = new Hlayout();
 
 		noButtonLayout.appendChild(bRemove);
@@ -268,6 +277,7 @@ public class CustomizeGridViewPanel extends Panel
 		LayoutUtils.addSclass("dialog-footer", confirmPanel);
 
 		EventListener<Event> onClickListener = new EventListener<Event>() {
+			@Override
 			public void onEvent(Event event) throws Exception {
 				if (event.getTarget().equals(
 						confirmPanel.getButton(ConfirmPanel.A_OK))) {
@@ -298,7 +308,7 @@ public class CustomizeGridViewPanel extends Panel
 		boolean baseLanguage = Env.isBaseLanguage(Env.getCtx(), "AD_Field");
 		Query query = null;
 		
-		query = new Query(Env.getCtx(), MField.Table_Name, "AD_Tab_ID=? AND (IsDisplayed='Y' OR IsDisplayedGrid='Y') AND IsActive='Y'", null);
+		query = new Query(Env.getCtx(), I_AD_Field.Table_Name, "AD_Tab_ID=? AND (IsDisplayed='Y' OR IsDisplayedGrid='Y') AND IsActive='Y'", null);
 		query.setOrderBy("SeqNoGrid, Name, SeqNo");
 		query.setParameters(new Object [] {m_AD_Tab_ID});
 		query.setApplyAccessFilter(true);
@@ -319,7 +329,7 @@ public class CustomizeGridViewPanel extends Panel
 				if (baseLanguage)
 					name = field.getName();
 				else
-					name = field.get_Translation(MField.COLUMNNAME_Name);
+					name = field.get_Translation(I_AD_Field.COLUMNNAME_Name);
 					
 				ListElement pp = new ListElement(key, name);
 				if (tableSeqs != null && tableSeqs.size() > 0 ) {
@@ -359,7 +369,7 @@ public class CustomizeGridViewPanel extends Panel
 
 		ValueNamePair pp = new ValueNamePair(null, null);
 		lstGridMode.addItem(pp);
-		ValueNamePair[]  list = MRefList.getList(Env.getCtx(), MTabCustomization.ISDISPLAYEDGRID_AD_Reference_ID, false);
+		ValueNamePair[]  list = MRefList.getList(Env.getCtx(), X_AD_Tab_Customization.ISDISPLAYEDGRID_AD_Reference_ID, false);
 		for (int i = 0;i < list.length; i++ ) { 
 			lstGridMode.addItem(list[i]);
 			if (m_tabcust != null && list[i].getValue().equals(m_tabcust.getIsDisplayedGrid()))
@@ -637,8 +647,7 @@ public class CustomizeGridViewPanel extends Panel
 			return s;
 		}
 	}
-
-	/**
+		/**
 	 * @author eslatis
 	 *
 	 */
@@ -652,6 +661,7 @@ public class CustomizeGridViewPanel extends Panel
 		{
 		}
 
+		@Override
 		public void onEvent(Event event) throws Exception {
 			if (event instanceof DropEvent)
 			{	
@@ -669,7 +679,6 @@ public class CustomizeGridViewPanel extends Panel
 					Listbox listTo =  (Listbox)endItem.getListbox();		
 					endIndex = yesList.getIndexOfItem(endItem);
 					migrateLists (listFrom,listTo,endIndex);
-					
 				}else if (startItem.getListbox() == endItem.getListbox() && startItem.getListbox() == yesList)
 				{  
 					List<ListElement> selObjects = new ArrayList<ListElement>();
@@ -718,3 +727,4 @@ public class CustomizeGridViewPanel extends Panel
 	}
 
 }	//CustomizeGridViewPanel
+
