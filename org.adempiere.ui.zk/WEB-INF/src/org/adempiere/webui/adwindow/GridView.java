@@ -616,6 +616,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 	}
 
 	private void updateModel() {
+		if (listModel != null)
+			((GridTable)tableModel).removeTableModelListener(listModel);
 		listModel = new GridTableListModel((GridTable)tableModel, windowNo);
 		listModel.setPageSize(pageSize);
 		if (renderer != null && renderer.isEditing())
