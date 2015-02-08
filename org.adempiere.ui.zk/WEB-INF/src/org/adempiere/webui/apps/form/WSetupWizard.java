@@ -373,15 +373,15 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		bZoom.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "Zoom"));
 		bZoom.addEventListener(Events.ON_CLICK, this);
 		
-		bExpand.setLabel("Expand Tree");
+		bExpand.setLabel(Msg.getCleanMsg(Env.getCtx(), "ExpandTree"));
 		bExpand.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "ExpandTree"));
 		bExpand.addEventListener(Events.ON_CLICK, this);
 		
-		justmine.setLabel("Just Mine");
+		justmine.setLabel(Msg.getCleanMsg(Env.getCtx(), "JustMine"));
 		justmine.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "JustMine"));
 		justmine.addEventListener(Events.ON_CHECK,this);
 		
-		showColors.setLabel("Show Colors");
+		showColors.setLabel(Msg.getCleanMsg(Env.getCtx(), "ShowColors"));
 		showColors.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "ShowColors"));
 		showColors.addEventListener(Events.ON_CHECK,this);
 			
