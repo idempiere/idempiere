@@ -261,22 +261,33 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		previewType.addEventListener(Events.ON_SELECT, this);
 		toolBar.appendChild(new Separator("vertical"));
 		
-		//set default type
-		String type = m_reportEngine.getPrintFormat().isForm()
-				// a42niem - provide explicit default and check on client/org specifics
-				? MSysConfig.getValue(MSysConfig.ZK_REPORT_FORM_OUTPUT_TYPE,"PDF",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx))
-				: MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE,"PDF",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx));
-
-		if ("HTML".equals(type)) {
-			previewType.setSelectedIndex(0);
-		} else if ("PDF".equals(type) && m_isCanExport) {
-			previewType.setSelectedIndex(1);
-		} else if ("XLS".equals(type) && m_isCanExport) {
-			previewType.setSelectedIndex(2);
-		} else {
-			// XXX - provide hint if unexpected value
-			previewType.setSelectedIndex(0); //fall back to HTML
+		int pTypeIndex = 0;
+		
+		if (m_reportEngine.getReportType() != null)
+		{
+			if (m_reportEngine.getReportType().equals("PDF") && m_isCanExport)
+				pTypeIndex = 1;
+			else if (m_reportEngine.getReportType().equals("XLS") && m_isCanExport)
+				pTypeIndex = 2;
 		}
+		else
+		{
+    		//set default type
+    		String type = m_reportEngine.getPrintFormat().isForm()
+    				// a42niem - provide explicit default and check on client/org specifics
+    				? MSysConfig.getValue(MSysConfig.ZK_REPORT_FORM_OUTPUT_TYPE,"PDF",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx))
+    				: MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE,"PDF",Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx));
+    
+    		if ("HTML".equals(type)) {
+    			pTypeIndex = 0;
+    		} else if ("PDF".equals(type) && m_isCanExport) {
+    			pTypeIndex = 1;
+    		} else if ("XLS".equals(type) && m_isCanExport) {
+    			pTypeIndex = 2;
+    		}
+		}
+		
+		previewType.setSelectedIndex(pTypeIndex);
 		
 		labelDrill.setValue(Msg.getMsg(Env.getCtx(), "Drill") + ": ");
 		toolBar.appendChild(labelDrill);

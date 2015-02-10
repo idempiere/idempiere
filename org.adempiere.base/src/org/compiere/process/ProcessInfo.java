@@ -144,6 +144,16 @@ public class ProcessInfo implements Serializable
 
 	private transient PO m_po = null;
 	
+	private String reportType = null;
+	
+	public String getReportType() {
+		return reportType;
+	}
+
+	public void setReportType(String reportType) {
+		this.reportType = reportType;
+	}
+
 	/**
 	 *  String representation
 	 *  @return String representation

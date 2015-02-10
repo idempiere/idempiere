@@ -126,34 +126,34 @@ public class WProcessCtl extends AbstractProcessCtl {
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("WindowNo=" + WindowNo + " - " + pi);
 
-		if (pi.getAD_PInstance_ID() < 1) { //red1 bypass if PInstance exists
-			MPInstance instance = null;
-			try
-			{
-				instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getRecord_ID());
-			}
-			catch (Exception e)
-			{
-				pi.setSummary (e.getLocalizedMessage());
-				pi.setError (true);
-				log.warning(pi.toString());
-				return;
-			}
-			catch (Error e)
-			{
-				pi.setSummary (e.getLocalizedMessage());
-				pi.setError (true);
-				log.warning(pi.toString());
-				return;
-			}
-			if (!instance.save())
-			{
-				pi.setSummary (Msg.getMsg(Env.getCtx(), "ProcessNoInstance"));
-				pi.setError (true);
-				return;
-			}
-			pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+//		if (pi.getAD_PInstance_ID() < 1) { //red1 bypass if PInstance exists
+		MPInstance instance = null;
+		try
+		{
+			instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getRecord_ID());
 		}
+		catch (Exception e)
+		{
+			pi.setSummary (e.getLocalizedMessage());
+			pi.setError (true);
+			log.warning(pi.toString());
+			return;
+		}
+		catch (Error e)
+		{
+			pi.setSummary (e.getLocalizedMessage());
+			pi.setError (true);
+			log.warning(pi.toString());
+			return;
+		}
+		if (!instance.save())
+		{
+			pi.setSummary (Msg.getMsg(Env.getCtx(), "ProcessNoInstance"));
+			pi.setError (true);
+			return;
+		}
+		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+//		}
 
 		//	Get Parameters
 		if (parameter != null) {

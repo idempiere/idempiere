@@ -1762,4 +1762,17 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	{
 		m_summary = summary;
 	}
+
+	private String reportType;
+	
+	public void setReportType(String type)
+	{
+		reportType = type;
+	}
+	
+	public String getReportType()
+	{
+		return reportType;
+	}
+	
 }	//	ReportEngine

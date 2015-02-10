@@ -90,7 +90,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	
 	private static CLogger log = CLogger.getCLogger(AbstractProcessDialog.class);
 
-	private int m_WindowNo;
+	protected int m_WindowNo;
 	private Properties m_ctx;
 	private int m_AD_Process_ID;
 	private ProcessInfo m_pi = null;

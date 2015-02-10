@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
@@ -33,12 +34,14 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.DocumentLink;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
+import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.part.WindowContainer;
@@ -47,10 +50,16 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
+import org.compiere.model.Lookup;
+import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MRole;
+import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
+import org.compiere.model.X_AD_ReportView;
+import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
@@ -146,6 +155,8 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		int WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		this.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, WindowNo);
 		Env.setContext(Env.getCtx(), WindowNo, "IsSOTrx", isSOTrx ? "Y" : "N");
+		m_ctx = Env.getCtx();
+		m_AD_Process_ID = AD_Process_ID;
 		try
 		{
 			MProcess process = MProcess.get(Env.getCtx(), AD_Process_ID);
@@ -165,6 +176,62 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		}
 	}	//	ProcessDialog
 
+	private void listPrintFormat()
+	{
+		int AD_Column_ID = 0;
+		boolean m_isCanExport = false; 
+		
+		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
+		int table_ID = 0;
+		try 
+		{
+			if (pr.getAD_ReportView_ID() > 0)
+			{
+				X_AD_ReportView m_Reportview = new X_AD_ReportView(m_ctx, pr.getAD_ReportView_ID(), null);
+				table_ID = m_Reportview.getAD_Table_ID();
+			}
+			else if (pr.getAD_PrintFormat_ID() > 0)
+			{
+				MPrintFormat format = new MPrintFormat(m_ctx, pr.getAD_PrintFormat_ID(), null);
+				table_ID = format.getAD_Table_ID();
+			}
+			String valCode = null;
+			if (table_ID > 0)
+			{
+				valCode = "AD_PrintFormat.AD_Table_ID=" + table_ID;
+				m_isCanExport = MRole.getDefault().isCanExport(table_ID);
+			}
+			Lookup lookup = MLookupFactory.get (Env.getCtx(), m_WindowNo, 
+					AD_Column_ID, DisplayType.TableDir,
+					Env.getLanguage(Env.getCtx()), "AD_PrintFormat_ID", 0, false,
+					valCode);
+			
+			fPrintFormat = new WTableDirEditor("AD_PrintFormat_ID", false, false, true, lookup);
+		} 
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, e.getLocalizedMessage());
+		}
+		
+		freportType.removeAllItems();
+		freportType.setMold("select");
+		freportType.appendItem("HTML", "HTML");
+		
+		if (m_isCanExport)
+		{
+			freportType.appendItem("PDF", "PDF");
+			freportType.appendItem("Excel", "XLS");
+		}
+		freportType.setSelectedIndex(0);
+		
+		String where = "AD_Process_ID = ? AND AD_User_ID = ? AND Name IS NULL ";
+		
+		MPInstance lastrun = MTable.get(Env.getCtx(), MPInstance.Table_Name).createQuery(where, null).setOnlyActiveRecords(true).setClient_ID()
+			.setParameters(m_AD_Process_ID, Env.getContextAsInt(Env.getCtx(), "#AD_User_ID")).setOrderBy("Created DESC").first();
+		
+		setReportTypeAndPrintFormat(lastrun);
+	}
+	
 	private void querySaved() 
 	{
 		//user query
@@ -203,12 +270,15 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		center.setStyle("border: none");
 		
 		Rows rows = southRowPanel.newRows();
+		rows.getParent().getId();
+		Row row1 = rows.newRow();
 		Row row = rows.newRow();
 
 		Hbox hBox = new Hbox();
+		Hbox hBox1 = new Hbox();
 
 		lSaved = new Label(Msg.getMsg(Env.getCtx(), "SavedParameter"));
-		hBox.appendChild(lSaved);
+		hBox1.appendChild(lSaved);
 		fSavedName.addEventListener(Events.ON_CHANGE, this);
 		hBox.appendChild(fSavedName);
 
@@ -220,21 +290,50 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		bDelete.addActionListener(this);
 		hBox.appendChild(bDelete);
 
+		hBox.setStyle("margin-right:30px;");
+		hBox1.setStyle("margin-right:30px;");
+		row1.appendChild(hBox1);
 		row.appendChild(hBox);
+		
+		// Print format on report para
+		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
+		if (pr.isReport() && pr.getJasperReport() == null)
+		{
+			listPrintFormat();
 
-		if(!showLastRun)	
+			hBox = new Hbox();
+			hBox1 = new Hbox();
+			hBox1.appendChild(lPrintFormat);
+			hBox.appendChild(fPrintFormat.getComponent());
+			row1.appendChild(hBox1);
+			row.appendChild(hBox);
+
+			hBox = new Hbox();
+			hBox1 = new Hbox();
+			hBox1.appendChild(lreportType);
+			hBox.appendChild(freportType);
+			row1.appendChild(hBox1);
+			row.appendChild(hBox);
+		}
+
+		if(!showLastRun)
+		{
 			hBox.setVisible(false);
+			hBox1.setVisible(false);
+		}
 
 		Panel confParaPanel =new Panel();
-		confParaPanel.setAlign("right");
+		confParaPanel.setStyle("float:right");
 		// Invert - Unify  OK/Cancel IDEMPIERE-77
 		bOK = ButtonFactory.createNamedButton(ConfirmPanel.A_OK, true, true);
 		bOK.setId("Ok");
+		bOK.setWidth("50%");
 		bOK.addEventListener(Events.ON_CLICK, this);
 		confParaPanel.appendChild(bOK);
 		
 		bCancel = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL, true, true);
 		bCancel.setId("Cancel");
+		bCancel.setWidth("50%");
 		bCancel.addEventListener(Events.ON_CLICK, this);
 		confParaPanel.appendChild(bCancel);
 		row.appendChild(confParaPanel);
@@ -255,6 +354,15 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	private List<MPInstance> savedParams;
 	private Label lSaved;
 
+	private Properties m_ctx;
+	private int m_AD_Process_ID;
+	
+	// Print Format and View Report
+	private WTableDirEditor fPrintFormat = null;
+	private Listbox freportType = new Listbox();
+	private Label lPrintFormat = new Label(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
+	private Label lreportType = new Label(Msg.translate(Env.getCtx(), "view.report"));
+	
 	/**
 	 * 	Set Visible 
 	 * 	(set focus to OK if visible)
@@ -289,6 +397,16 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		} else if (component instanceof Button) {
 			Button element = (Button)component;
 			if ("Ok".equalsIgnoreCase(element.getId())) {
+				if(freportType.getSelectedItem() != null) {
+					getProcessInfo().setReportType(freportType.getSelectedItem().getValue().toString());
+				}
+				if(fPrintFormat != null && fPrintFormat.getValue() != null) {
+					MPrintFormat format = new MPrintFormat(m_ctx, (Integer) fPrintFormat.getValue(), null);
+					if (format != null) {
+						getProcessInfo().setSerializableObject(format);
+					}
+				}
+
 				if (isParameterPage)
 					startProcess();
 				else
@@ -310,6 +428,9 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 								para.deleteEx(true);
 							}
 							getParameterPanel().saveParameters();
+							savedParams.get(i).setAD_PrintFormat_ID((Integer)fPrintFormat.getValue());
+							savedParams.get(i).setReportType(freportType.getSelectedItem().getValue().toString());
+							savedParams.get(i).saveEx();
 						}
 					}
 				}
@@ -320,6 +441,8 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 						instance = new MPInstance(Env.getCtx(),
 								getProcessInfo().getAD_Process_ID(), getProcessInfo().getRecord_ID());
 						instance.setName(saveName);
+						instance.setAD_PrintFormat_ID((Integer) fPrintFormat.getValue());
+						instance.setReportType(freportType.getSelectedItem().getValue().toString());						
 						instance.saveEx();
 						getProcessInfo().setAD_PInstance_ID(instance.getAD_PInstance_ID());
 						// Get Parameters
@@ -390,8 +513,23 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		return item;
 	}
 
+	private void setReportTypeAndPrintFormat(MPInstance instance)
+	{
+		if (fPrintFormat != null && instance != null) {
+			fPrintFormat.setValue((Integer) instance.getAD_PrintFormat_ID());
+		}
+		
+		if (freportType != null && instance != null) {
+			if (instance.getReportType() == null)
+				freportType.setValue("HTML");
+			else 
+				freportType.setValue(instance.getReportType());
+		}
+	}
+
 	private void loadSavedParams(MPInstance instance) {
 		getParameterPanel().loadParameters(instance);
+		setReportTypeAndPrintFormat(instance);
 	}
 
 	private void doOnClick(A btn) {
