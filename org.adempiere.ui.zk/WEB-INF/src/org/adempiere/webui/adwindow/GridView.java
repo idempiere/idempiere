@@ -828,7 +828,11 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 			ADWindow adwindow = ADWindow.findADWindow(adtabpanel);
 			if (adwindow != null) {
 				IADTabpanel selectedADTabpanel = adwindow.getADWindowContent().getADTab().getSelectedTabpanel();
-				if (selectedADTabpanel != adtabpanel)
+				IADTabpanel  selectedADDetailTabpanel = null ;
+				if(selectedADTabpanel.getDetailPane() != null)
+					selectedADDetailTabpanel = selectedADTabpanel.getDetailPane().getSelectedADTabpanel();
+				
+				if (selectedADTabpanel != adtabpanel && selectedADDetailTabpanel != null && selectedADDetailTabpanel != adtabpanel)
 					setFocus = false;
 			}
 		}
