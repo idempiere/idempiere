@@ -42,6 +42,13 @@ public class ListboxFactory {
 		
 		return dataTable;
 	}
+	
+	public static WListbox newDataTableAutoSize() {
+		WListbox listBox = newDataTable();
+		listBox.setSizedByContent(true);
+		listBox.setSpan(true);
+		return listBox;
+	}
 
 	public static Listbox newDropdownListbox(String[] items) {
 		Listbox listbox = newDropdownListbox();

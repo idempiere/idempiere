@@ -284,7 +284,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 					else
 					{
 						listcell.setLabel(format.format(((Number)field).doubleValue()));
-						ZkCssHelper.appendStyle(listcell, "width: 96%; text-align: right");
+						ZkCssHelper.appendStyle(listcell, "text-align: right");
 					}
 				}
 			}
@@ -303,7 +303,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 				else
 				{
 					listcell.setLabel(dateFormat.format((Timestamp)field));
-					ZkCssHelper.appendStyle(listcell, "width: 96%; margin: auto");
+					ZkCssHelper.appendStyle(listcell, "margin: auto");
 				}
 			}
 			else if (field instanceof String)
@@ -340,7 +340,6 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 					else
 					{
 						listcell.setLabel(field.toString());
-						ZkCssHelper.appendStyle(listcell, "width: 96%;");
 					}
 				}
 			}
@@ -358,7 +357,6 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 			{
 				listcell.setLabel(field.toString());
 				listcell.setValue(field.toString());
-				ZkCssHelper.appendStyle(listcell, "width: 96%;");
 			}
 		}
 		else
