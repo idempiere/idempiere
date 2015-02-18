@@ -47,7 +47,7 @@ public class MCountry extends X_C_Country
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4015127112992493778L;
+	private static final long serialVersionUID = -4966707939803861163L;
 
 	/**
 	 * 	Get Country (cached)
@@ -164,17 +164,6 @@ public class MCountry extends X_C_Country
 	}
 
 	/**
-	 *	Return Language
-	 *  @return Name
-	 */
-	private String getEnvLanguage() {
-		String lang = Env.getAD_Language(Env.getCtx());
-		if (Language.isBaseLanguage(lang))
-			return null;
-		return lang;
-	}
-
-	/**
 	 * 	Set the Language for Display (toString)
 	 *	@param AD_Language language or null
 	 *  @deprecated - not used at all, you can delete references to this method
@@ -232,22 +221,13 @@ public class MCountry extends X_C_Country
 		super(ctx, rs, trxName);
 	}	//	MCountry
 
-	/**	Translated Name			*/
-	private String	m_trlName = null;
-	
 	/**
 	 *	Return Name - translated if DisplayLanguage is set.
 	 *  @return Name
 	 */
 	public String toString()
 	{
-		if (getEnvLanguage() != null)
-		{
-			String nn = getTrlName();
-			if (nn != null)
-				return nn;
-		}
-		return getName();
+		return getTrlName();
 	}   //  toString
 
 	/**
@@ -256,13 +236,7 @@ public class MCountry extends X_C_Country
 	 */
 	public String getTrlName()
 	{
-		if (m_trlName == null && getEnvLanguage() != null)
-		{
-			m_trlName = get_Translation(COLUMNNAME_Name, getEnvLanguage());
-			if (m_trlName == null)
-				m_trlName = getName();
-		}
-		return m_trlName;
+		return getTrlName(Env.getAD_Language(Env.getCtx()));
 	}	//	getTrlName
 	
 	/**
@@ -272,11 +246,7 @@ public class MCountry extends X_C_Country
 	 */
 	public String getTrlName(String language)
 	{
-		if ( language != null)
-		{
-			m_trlName = get_Translation(COLUMNNAME_Name, language);
-		}
-		return m_trlName;
+		return get_Translation(COLUMNNAME_Name, language);
 	}	//	getTrlName
 	
 	
