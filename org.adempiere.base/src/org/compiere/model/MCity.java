@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.io.Serializable;
 import java.sql.ResultSet;
+import java.text.Collator;
 import java.util.Comparator;
 import java.util.Properties;
 
@@ -127,7 +128,8 @@ public class MCity extends X_C_City
 		String s2 = o2.toString();
 		if (s2 == null)
 			s2 = "";
-		return s1.compareTo(s2);
+		Collator collator = Collator.getInstance();
+		return collator.compare(s1, s2);
 	}	//	compare
 
 }	//	MCity

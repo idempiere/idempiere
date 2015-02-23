@@ -102,8 +102,8 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 			int path[] = treeModel.getPath(toNode);
 			Treeitem toItem = tree.renderItemByPath(path);
 			
-			tree.setSelectedItem(toItem);
-			Events.sendEvent(tree, new Event(Events.ON_SELECT, tree));
+			//tree.setSelectedItem(toItem);
+			//Events.sendEvent(tree, new Event(Events.ON_SELECT, tree));
 
 			MenuListener listener = new MenuListener(movingNode, toNode);
 
@@ -154,8 +154,8 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 			tree.onInitRender();
 		}
 		Treeitem movingItem = tree.renderItemByPath(path);		
-		tree.setSelectedItem(movingItem);
-		Events.sendEvent(tree, new Event(Events.ON_SELECT, tree));
+		//tree.setSelectedItem(movingItem);
+		//Events.sendEvent(tree, new Event(Events.ON_SELECT, tree));
 
 		//	***	Save changes to disk
 		Trx trx = Trx.get (Trx.createTrxName("ADTree"), true);

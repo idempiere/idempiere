@@ -17,6 +17,7 @@
 package org.compiere.util;
 
 import java.io.Serializable;
+import java.text.Collator;
 import java.util.Comparator;
 
 /**
@@ -84,7 +85,8 @@ public abstract class NamePair implements Comparator<Object>, Serializable, Comp
 	{
 		String s1 = o1 == null ? "" : o1.toString();
 		String s2 = o2 == null ? "" : o2.toString();
-		return s1.compareTo (s2);    //  sort order ??
+		Collator collator = Collator.getInstance();
+		return collator.compare(s1, s2);
 	}	//	compare
 
 	/**

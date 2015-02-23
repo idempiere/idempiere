@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -227,7 +228,8 @@ public class MRegion extends X_C_Region
 		String s2 = o2.toString();
 		if (s2 == null)
 			s2 = "";
-		return s1.compareTo(s2);
+		Collator collator = Collator.getInstance();
+		return collator.compare(s1, s2);
 	}	//	compare
 
 	/**

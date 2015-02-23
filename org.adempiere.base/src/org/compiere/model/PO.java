@@ -28,6 +28,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Timestamp;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -344,6 +345,7 @@ public abstract class PO
 		if (!(o2 instanceof PO))
 			throw new ClassCastException ("Not PO -2- " + o2);
 		//	same class
+		Collator collator = Collator.getInstance();
 		if (o1.getClass().equals(o2.getClass()))
 		{
 			int index = get_ColumnIndex("DocumentNo");
@@ -363,10 +365,10 @@ public abstract class PO
 					return -1;
 				else if (comp2 == null)
 					return 1;
-				return comp1.toString().compareTo(comp2.toString());
+				return collator.compare(comp1.toString(), comp2.toString());
 			}
 		}
-		return o1.toString().compareTo(o2.toString());
+		return collator.compare(o1.toString(), o2.toString());
 	}	//	compare
 
 	/**
