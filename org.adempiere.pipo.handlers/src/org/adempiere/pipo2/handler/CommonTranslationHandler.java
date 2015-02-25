@@ -121,7 +121,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 
 				if(columnName.equalsIgnoreCase("IsActive") ||
 						columnName.equalsIgnoreCase("IsTranslated")){
-					value = "true".equals(value) ? "Y" : "N";
+					value = "true".equals(value) || "Y".equals(value) ? "Y" : "N";
 				}
 				pstm.setString(i, value);
 			}
@@ -161,7 +161,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 				if(columnName.equalsIgnoreCase("IsActive") ||
 						columnName.equalsIgnoreCase("IsTranslated")){
 
-					value = "true".equals(value) ? "Y" : "N";
+					value = "true".equals(value) || "Y".equals(value) ? "Y" : "N";
 				}
 
 				pstm.setString(i, value);

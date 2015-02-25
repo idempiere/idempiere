@@ -70,7 +70,7 @@ public class PoFiller{
 		Element e = element.properties.get(columnName);
 		String value = e != null ? e.contents.toString() : null;
 
-		boolean bool = "true".equals(value) ? true : false;
+		boolean bool = "true".equals(value) || "Y".equals(value) ? true : false;
 
 		if (po.get_Value(columnName) != null && po.get_ValueAsBoolean(columnName) == bool)
 			return;
