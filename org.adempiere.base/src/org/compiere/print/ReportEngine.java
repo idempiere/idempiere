@@ -72,6 +72,7 @@ import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MProject;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRfQResponse;
+import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
 
 import static org.compiere.model.SystemIDs.*;
@@ -660,8 +661,26 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 									if (cssPrefix != null)
 										href.setClass(cssPrefix + "-href");
 									
-									extension.extendIDColumn(row, td, href, pde);
-																											
+									if (item.getColumnName().equals("Record_ID")) {
+										Object tablePDE = m_printData.getNode("AD_Table_ID");
+										if (tablePDE != null && tablePDE instanceof PrintDataElement) {
+											int tableID = -1;
+											try {
+												tableID = Integer.parseInt(((PrintDataElement)tablePDE).getValueAsString());
+											} catch (Exception e) {
+												tableID = -1;
+											}
+											if (tableID > 0) {
+												MTable mTable = MTable.get(getCtx(), tableID);
+												String foreignColumnName = mTable.getTableName() + "_ID";
+												pde.setForeignColumnName(foreignColumnName);
+												extension.extendIDColumn(row, td, href, pde);
+											}
+										}
+									} else {
+										extension.extendIDColumn(row, td, href, pde);
+									}
+
 								}
 								else
 								{
