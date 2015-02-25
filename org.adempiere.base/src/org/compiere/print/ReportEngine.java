@@ -72,6 +72,7 @@ import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MProject;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRfQResponse;
+import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
 
@@ -653,14 +654,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 								String value = pde.getValueDisplay(language);	//	formatted
 								if (pde.getColumnName().endsWith("_ID") && extension != null)
 								{
-									//link for column
-									a href = new a("javascript:void(0)");									
-									href.setID(pde.getColumnName() + "_" + row + "_a");									
-									td.addElement(href);
-									href.addElement(Util.maskHTML(value));
-									if (cssPrefix != null)
-										href.setClass(cssPrefix + "-href");
-									
+									boolean isZoom = false;
 									if (item.getColumnName().equals("Record_ID")) {
 										Object tablePDE = m_printData.getNode("AD_Table_ID");
 										if (tablePDE != null && tablePDE instanceof PrintDataElement) {
@@ -674,11 +668,33 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 												MTable mTable = MTable.get(getCtx(), tableID);
 												String foreignColumnName = mTable.getTableName() + "_ID";
 												pde.setForeignColumnName(foreignColumnName);
-												extension.extendIDColumn(row, td, href, pde);
+												isZoom = true;
 											}
 										}
 									} else {
+										isZoom = true;
+									}
+									if (isZoom) {
+										// check permission on the zoomed window
+										MTable mTable = MTable.get(getCtx(), pde.getForeignColumnName().substring(0, pde.getForeignColumnName().length()-3));
+										int Record_ID = Integer.parseInt(pde.getValueAsString());
+										int AD_Window_ID = Env.getZoomWindowID(mTable.get_ID(), Record_ID);
+							    		Boolean canAccess = MRole.getDefault().getWindowAccess(AD_Window_ID);
+							    		if (canAccess == null) {
+							    			isZoom = false;
+							    		}
+									}
+									if (isZoom) {
+										//link for column
+										a href = new a("javascript:void(0)");									
+										href.setID(pde.getColumnName() + "_" + row + "_a");									
+										td.addElement(href);
+										href.addElement(Util.maskHTML(value));
+										if (cssPrefix != null)
+											href.setClass(cssPrefix + "-href");
 										extension.extendIDColumn(row, td, href, pde);
+									} else {
+										td.addElement(Util.maskHTML(value));
 									}
 
 								}
