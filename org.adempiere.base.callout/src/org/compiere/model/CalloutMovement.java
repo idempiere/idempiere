@@ -76,7 +76,7 @@ public class CalloutMovement extends CalloutEngine
 		if (isCalloutActive() || value == null)
 			return "";
 
-		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, "M_Product_ID");
+		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
 		checkQtyAvailable(ctx, mTab, WindowNo, M_Product_ID, (BigDecimal)value);
 		//
 		return "";
@@ -95,7 +95,7 @@ public class CalloutMovement extends CalloutEngine
 	public String locator(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value) {
 		if (value == null)
 			return "";
-		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, "M_Product_ID");
+		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
 		checkQtyAvailable(ctx, mTab, WindowNo, M_Product_ID, null);
 		return "";
 	}
@@ -116,11 +116,11 @@ public class CalloutMovement extends CalloutEngine
 			if (product.isStocked()) {
 				if (MovementQty == null)
 					MovementQty = (BigDecimal) mTab.getValue("MovementQty");
-				int M_Locator_ID = Env.getContextAsInt(ctx, WindowNo, "M_Locator_ID");
+				int M_Locator_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Locator_ID");
 				// If no locator, don't check anything and assume is ok
 				if (M_Locator_ID <= 0)
 					return;
-				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, "M_AttributeSetInstance_ID");
+				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_AttributeSetInstance_ID");
 				BigDecimal available = MStorageOnHand.getQtyOnHandForLocator(M_Product_ID, M_Locator_ID, M_AttributeSetInstance_ID, null);
 				
 				if (available == null)
