@@ -3943,8 +3943,9 @@ public abstract class PO
 		StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM ")
 			.append(MTree_Base.getNodeTableName(treeType))
 			.append(" WHERE Parent_ID=?");
-		if(DB.getSQLValue( get_TrxName(), countSql.toString(), id) > 0)
-			throw new AdempiereException("CannotDeleteParent");
+		int cnt = DB.getSQLValue( get_TrxName(), countSql.toString(), id);
+		if (cnt > 0)
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(),"NoParentDelete", new Object[] {cnt}));
 		
 		StringBuilder sb = new StringBuilder ("DELETE FROM ")
 			.append(MTree_Base.getNodeTableName(treeType))
