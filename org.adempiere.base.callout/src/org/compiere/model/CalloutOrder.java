@@ -841,7 +841,7 @@ public class CalloutOrder extends CalloutEngine
 			{
 				BigDecimal QtyOrdered = (BigDecimal)mTab.getValue("QtyOrdered");
 				int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
-				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, "M_AttributeSetInstance_ID");
+				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_AttributeSetInstance_ID");
 				BigDecimal available = MStorageReservation.getQtyAvailable
 					(M_Warehouse_ID, M_Product_ID.intValue(), M_AttributeSetInstance_ID, null);
 				if (available == null)
@@ -961,12 +961,12 @@ public class CalloutOrder extends CalloutEngine
 		if (column.equals("M_Product_ID"))
 			M_Product_ID = ((Integer)value).intValue();
 		else
-			M_Product_ID = Env.getContextAsInt(ctx, WindowNo, "M_Product_ID");
+			M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
 		int C_Charge_ID = 0;
 		if (column.equals("C_Charge_ID"))
 			C_Charge_ID = ((Integer)value).intValue();
 		else
-			C_Charge_ID = Env.getContextAsInt(ctx, WindowNo, "C_Charge_ID");
+			C_Charge_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_Charge_ID");
 		if (log.isLoggable(Level.FINE)) log.fine("Product=" + M_Product_ID + ", C_Charge_ID=" + C_Charge_ID);
 		if (M_Product_ID == 0 && C_Charge_ID == 0)
 			return amt(ctx, WindowNo, mTab, mField, value);		//
@@ -1034,9 +1034,9 @@ public class CalloutOrder extends CalloutEngine
 			return "";
 
 		if (steps) log.warning("init");
-		int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, "C_UOM_ID");
-		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, "M_Product_ID");
-		int M_PriceList_ID = Env.getContextAsInt(ctx, WindowNo, "M_PriceList_ID");
+		int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
+		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
+		int M_PriceList_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_PriceList_ID");
 		int StdPrecision = MPriceList.getStandardPrecision(ctx, M_PriceList_ID);
 		MPriceList pl = new MPriceList(ctx, M_PriceList_ID, null);
 		boolean isEnforcePriceLimit = pl.isEnforcePriceLimit();
@@ -1211,7 +1211,7 @@ public class CalloutOrder extends CalloutEngine
 	{
 		if (isCalloutActive() || value == null)
 			return "";
-		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, "M_Product_ID");
+		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
 		if (steps) log.warning("init - M_Product_ID=" + M_Product_ID + " - " );
 		BigDecimal QtyOrdered = Env.ZERO;
 		BigDecimal QtyEntered, PriceActual, PriceEntered;
@@ -1257,7 +1257,7 @@ public class CalloutOrder extends CalloutEngine
 		//	QtyEntered changed - calculate QtyOrdered
 		else if (mField.getColumnName().equals("QtyEntered"))
 		{
-			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, "C_UOM_ID");
+			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
 			QtyEntered = (BigDecimal)value;
 			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), BigDecimal.ROUND_HALF_UP);
 			if (QtyEntered.compareTo(QtyEntered1) != 0)
@@ -1282,7 +1282,7 @@ public class CalloutOrder extends CalloutEngine
 		//	QtyOrdered changed - calculate QtyEntered (should not happen)
 		else if (mField.getColumnName().equals("QtyOrdered"))
 		{
-			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, "C_UOM_ID");
+			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
 			QtyOrdered = (BigDecimal)value;
 			int precision = MProduct.get(ctx, M_Product_ID).getUOMPrecision();
 			BigDecimal QtyOrdered1 = QtyOrdered.setScale(precision, BigDecimal.ROUND_HALF_UP);
@@ -1320,7 +1320,7 @@ public class CalloutOrder extends CalloutEngine
 			if (product.isStocked())
 			{
 				int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
-				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, "M_AttributeSetInstance_ID");
+				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_AttributeSetInstance_ID");
 				BigDecimal available = MStorageReservation.getQtyAvailable
 					(M_Warehouse_ID, M_Product_ID, M_AttributeSetInstance_ID, null);
 				if (available == null)
