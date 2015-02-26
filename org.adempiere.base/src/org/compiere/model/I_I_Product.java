@@ -563,12 +563,12 @@ public interface I_I_Product
 	/** Set Shelf Height.
 	  * Shelf height required
 	  */
-	public void setShelfHeight (int ShelfHeight);
+	public void setShelfHeight (BigDecimal ShelfHeight);
 
 	/** Get Shelf Height.
 	  * Shelf height required
 	  */
-	public int getShelfHeight();
+	public BigDecimal getShelfHeight();
 
     /** Column name ShelfWidth */
     public static final String COLUMNNAME_ShelfWidth = "ShelfWidth";

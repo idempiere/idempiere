@@ -33,7 +33,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20150226L;
 
     /** Standard Constructor */
     public X_I_Product (Properties ctx, int I_Product_ID, String trxName)
@@ -815,20 +815,20 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 		@param ShelfHeight 
 		Shelf height required
 	  */
-	public void setShelfHeight (int ShelfHeight)
+	public void setShelfHeight (BigDecimal ShelfHeight)
 	{
-		set_Value (COLUMNNAME_ShelfHeight, Integer.valueOf(ShelfHeight));
+		set_Value (COLUMNNAME_ShelfHeight, ShelfHeight);
 	}
 
 	/** Get Shelf Height.
 		@return Shelf height required
 	  */
-	public int getShelfHeight () 
+	public BigDecimal getShelfHeight () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ShelfHeight);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ShelfHeight);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Shelf Width.
