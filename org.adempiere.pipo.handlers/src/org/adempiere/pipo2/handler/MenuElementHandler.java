@@ -133,17 +133,8 @@ public class MenuElementHandler extends AbstractElementHandler {
 							int columnID = DB.getSQLValue(getTrxName(ctx), sql, colName, tableID);
 							sql = "SELECT AD_Reference_ID FROM AD_COLUMN WHERE AD_Column_ID = ?";
 							int referenceID = DB.getSQLValue(getTrxName(ctx), sql, columnID);
-							if (referenceID == 20 || referenceID == 28)
-								if (rs.getObject(q).equals("Y"))
-									colValue = "true";
-								else
-									colValue = "false";
-							else
-							{
-								Object obj = rs.getObject(q);
-								colValue = obj == null ? "" : obj.toString();
-							}
-	
+							Object obj = rs.getObject(q);
+							colValue = obj == null ? "" : obj.toString();
 							X_AD_Package_Imp_Backup backup = new X_AD_Package_Imp_Backup(ctx.ctx, 0, getTrxName(ctx));
 							backup.setAD_Package_Imp_Detail_ID(impDetail.getAD_Package_Imp_Detail_ID());
 							backup.setAD_Package_Imp_ID(getPackageImpId(ctx.ctx));

@@ -90,7 +90,7 @@ public class PoExporter {
 	 * @param boolValue
 	 */
 	public void addBoolean(String name, boolean boolValue, AttributesImpl atts){
-		addTextElement(name, boolValue == true ? "true" : "false", atts);
+		addTextElement(name, boolValue == true ? "Y" : "N", atts);
 	}
 
 
@@ -120,7 +120,7 @@ public class PoExporter {
 		if(value instanceof String){
 			addTextElement(columnName, (String)value, atts);
 		} else if(value instanceof Boolean) {
-			addTextElement(columnName, (Boolean)value == true ? "true" : "false", atts);
+			addTextElement(columnName, (Boolean)value == true ? "Y" : "N", atts);
 		} else if(value instanceof Integer) {
 			addTextElement(columnName, value.toString(), atts);
 		} else if(value instanceof BigDecimal) {

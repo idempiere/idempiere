@@ -570,7 +570,7 @@ public class CalloutInOut extends CalloutEngine
 		if (isCalloutActive() || value == null)
 			return "";
 
-		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, "M_Product_ID");
+		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
 		//	log.log(Level.WARNING,"qty - init - M_Product_ID=" + M_Product_ID);
 		BigDecimal MovementQty, QtyEntered;
 
@@ -606,7 +606,7 @@ public class CalloutInOut extends CalloutEngine
 			mTab.setValue("MovementQty", MovementQty);
 		}
 		//	No UOM defined
-		else if (Env.getContextAsInt(ctx, WindowNo, "C_UOM_ID") == 0)
+		else if (Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID") == 0)
 		{
 			QtyEntered = (BigDecimal)mTab.getValue("QtyEntered");
 			mTab.setValue("MovementQty", QtyEntered);
@@ -614,7 +614,7 @@ public class CalloutInOut extends CalloutEngine
 		//	QtyEntered changed - calculate MovementQty
 		else if (mField.getColumnName().equals("QtyEntered"))
 		{
-			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, "C_UOM_ID");
+			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
 			QtyEntered = (BigDecimal)value;
 			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), BigDecimal.ROUND_HALF_UP);
 			if (QtyEntered.compareTo(QtyEntered1) != 0)
@@ -639,7 +639,7 @@ public class CalloutInOut extends CalloutEngine
 		//	MovementQty changed - calculate QtyEntered (should not happen)
 		else if (mField.getColumnName().equals("MovementQty"))
 		{
-			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, "C_UOM_ID");
+			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
 			MovementQty = (BigDecimal)value;
 			int precision = MProduct.get(ctx, M_Product_ID).getUOMPrecision();
 			BigDecimal MovementQty1 = MovementQty.setScale(precision, BigDecimal.ROUND_HALF_UP);
@@ -683,9 +683,9 @@ public class CalloutInOut extends CalloutEngine
 		if (M_ASI_ID == null || M_ASI_ID.intValue() == 0)
 			return "";
 		//
-		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, "M_Product_ID");
+		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
 		int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
-		int M_Locator_ID = Env.getContextAsInt(ctx, WindowNo, "M_Locator_ID");
+		int M_Locator_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Locator_ID");
 		if (log.isLoggable(Level.FINE)) log.fine("M_Product_ID=" + M_Product_ID
 			+ ", M_ASI_ID=" + M_ASI_ID
 			+ " - M_Warehouse_ID=" + M_Warehouse_ID

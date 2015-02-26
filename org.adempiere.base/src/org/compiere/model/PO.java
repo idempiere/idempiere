@@ -3938,6 +3938,15 @@ public abstract class PO
 		int id = get_ID();
 		if (id == 0)
 			id = get_IDOld();
+		
+		// IDEMPIERE-2453
+		StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM ")
+			.append(MTree_Base.getNodeTableName(treeType))
+			.append(" WHERE Parent_ID=?");
+		int cnt = DB.getSQLValue( get_TrxName(), countSql.toString(), id);
+		if (cnt > 0)
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(),"NoParentDelete", new Object[] {cnt}));
+		
 		StringBuilder sb = new StringBuilder ("DELETE FROM ")
 			.append(MTree_Base.getNodeTableName(treeType))
 			.append(" n WHERE Node_ID=").append(id)

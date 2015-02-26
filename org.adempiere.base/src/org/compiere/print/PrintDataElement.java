@@ -39,7 +39,7 @@ public class PrintDataElement implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2177482817458457236L;
+	private static final long serialVersionUID = -2121125127301364735L;
 
 	/**
 	 *	Print Data Element Constructor
@@ -129,6 +129,13 @@ public class PrintDataElement implements Serializable
 			return m_foreignColumnName;
 	}
 
+	/**
+	 * 	Set ForeignName
+	 * 	@return name
+	 */
+	public void setForeignColumnName(String foreignColumnName) {
+		m_foreignColumnName = foreignColumnName;
+	}
 
 	/**
 	 * 	Get Node Value

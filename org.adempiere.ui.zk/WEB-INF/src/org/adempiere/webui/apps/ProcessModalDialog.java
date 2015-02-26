@@ -21,10 +21,10 @@ import java.util.logging.Level;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
-import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -33,7 +33,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Layout;
 import org.zkoss.zul.Vlayout;
 
 /**
@@ -53,8 +54,6 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	 * 
 	 */
 	private static final long serialVersionUID = -3260639688339379279L;
-
-	private VerticalBox dialogBody;
 
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ProcessModalDialog.class);
@@ -138,23 +137,32 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 
 	private void initComponents() {
 		this.setBorder("normal");
-		dialogBody = new VerticalBox();
+		Layout dialogBody = new Vlayout();
 		dialogBody.setHflex("1");
+		dialogBody.setStyle(dialogBody.getStyle() + ";max-height:" + (SessionManager.getAppDesktop().getClientInfo().desktopHeight - 100) + "px");
+		
+		
 		Vlayout dialogContent = new Vlayout();
 		dialogContent.setHflex("1");
 		dialogContent.setVflex("1");
 		dialogContent.setSclass("dialog-content");
 		dialogContent.setStyle("overflow-y: auto;");
 		dialogBody.appendChild(dialogContent);
+		// description
 		Div div = new Div();
 		div.setId("message");
 		div.appendChild(getMessage());
 		div.setStyle("max-height: 150pt; overflow: auto;");
 		dialogContent.appendChild(div);
+		
 		dialogContent.appendChild(getCenterPanel());
-		Hbox hbox = new Hbox();
+		// button panel
+		Layout hbox = new Hlayout();
+		hbox.setStyle("bottom:0;text-align:right");
+		dialogBody.appendChild(hbox);
 		hbox.setWidth("100%");
 		hbox.setSclass("dialog-footer");
+		
 		Button btn = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
 		btn.setId("Ok");
 		btn.addEventListener(Events.ON_CLICK, this);
@@ -163,11 +171,10 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		btn = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL);
 		btn.setId("Cancel");
 		btn.addEventListener(Events.ON_CLICK, this);
-
 		hbox.appendChild(btn);
-		hbox.setPack("end");
 		dialogBody.appendChild(hbox);
 		this.appendChild(dialogBody);
+		
 		this.setSclass("popup-dialog");
 
 	}
@@ -201,13 +208,13 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 
 	@Override
 	public void showBusyDialog() {
-		this.setBorder("none");
-		this.setTitle(null);
-		dialogBody.setVisible(false);
-
 		BusyDialog progressWindow = createBusyDialog();
-		if (this.getParent() != null)
+		if (this.getParent() != null){
+			this.getParent().appendChild(progressWindow);
 			LayoutUtils.openOverlappedWindow(this.getParent(), progressWindow, "middle_center");
+		}
+		
+		this.setVisible(false);
 	}
 	
 	@Override

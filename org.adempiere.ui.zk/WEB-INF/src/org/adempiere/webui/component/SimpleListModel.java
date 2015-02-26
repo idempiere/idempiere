@@ -15,8 +15,11 @@ package org.adempiere.webui.component;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import org.zkoss.lang.Objects;
 import org.zkoss.zul.AbstractListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -24,13 +27,14 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.ListitemRendererExt;
 import org.zkoss.zul.event.ListDataEvent;
+import org.zkoss.zul.ext.Sortable;
 
 /**
  * 
  * @author Low Heng Sin
  *
  */
-public class SimpleListModel extends AbstractListModel<Object> implements ListitemRenderer<Object>, ListitemRendererExt {
+public class SimpleListModel extends AbstractListModel<Object> implements ListitemRenderer<Object>, ListitemRendererExt, Sortable<Object> {
 
 	/**
 	 * 
@@ -38,6 +42,10 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 	private static final long serialVersionUID = -572148106182756840L;
 
 	protected List<Object> list;
+	
+	private Comparator<Object> _sorting;
+
+	private boolean _sortDir;
 	
 	private int[] maxLength;
 
@@ -50,6 +58,7 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 		this.list = (List<Object>)list;
 	}
 	
+	@Override
 	public Object getElementAt(int index) {
 		if (index >= 0 && index < list.size())
 			return list.get(index);
@@ -57,6 +66,7 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 			return null;
 	}
 
+	@Override
 	public int getSize() {
 		return list.size();
 	}
@@ -111,14 +121,17 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 		}
 	}
 
+	@Override
 	public int getControls() {
 		return DETACH_ON_RENDER;
 	}
 
+	@Override
 	public Listcell newListcell(Listitem item) {
 		return null;
 	}
 
+	@Override
 	public Listitem newListitem(Listbox listbox) {
 		ListItem item = new ListItem();
 		item.applyProperties();
@@ -158,5 +171,21 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 
 	public int indexOf(Object value) {
 		return list.indexOf(value);
+	}
+
+	@Override
+	public void sort(Comparator<Object> cmpr, boolean ascending) {
+		_sorting = cmpr;
+		_sortDir = ascending;
+		Collections.sort(list, cmpr);
+		fireEvent(ListDataEvent.STRUCTURE_CHANGED, -1, -1);
+	}
+
+	@Override
+	public String getSortDirection(Comparator<Object> cmpr) {
+		if (Objects.equals(_sorting, cmpr))
+			return _sortDir ?
+					"ascending" : "descending";
+		return "natural";
 	}
 }

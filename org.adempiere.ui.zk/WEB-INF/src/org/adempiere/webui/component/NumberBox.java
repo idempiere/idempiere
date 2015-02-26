@@ -466,7 +466,7 @@ public class NumberBox extends Div
 	 */
 	public boolean isEnabled()
 	{
-		 return decimalBox.isReadonly();
+		 return !decimalBox.isReadonly();
 	}
 	
 	@Override

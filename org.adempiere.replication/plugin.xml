@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="org.adempiere.model.ExportModelValidator"
+         name="org.adempiere.model.ExportModelValidator"
+         point="org.adempiere.base.ModelValidator">
+      <listener
+            class="org.adempiere.model.ExportModelValidator">
+      </listener>
+   </extension>
+
+</plugin>

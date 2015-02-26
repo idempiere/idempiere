@@ -319,7 +319,7 @@ public class CalloutInvoice extends CalloutEngine
 
 		/*****	Price Calculation see also qty	****/
 		boolean IsSOTrx = Env.getContext(ctx, WindowNo, "IsSOTrx").equals("Y");
-		int C_BPartner_ID = Env.getContextAsInt(ctx, WindowNo, WindowNo, "C_BPartner_ID");
+		int C_BPartner_ID = Env.getContextAsInt(ctx, WindowNo, "C_BPartner_ID");
 		BigDecimal Qty = (BigDecimal)mTab.getValue("QtyInvoiced");
 		MProductPricing pp = new MProductPricing (M_Product_ID.intValue(), C_BPartner_ID, Qty, IsSOTrx);
 		//
@@ -444,12 +444,12 @@ public class CalloutInvoice extends CalloutEngine
 		if (column.equals("M_Product_ID"))
 			M_Product_ID = ((Integer)value).intValue();
 		else
-			M_Product_ID = Env.getContextAsInt(ctx, WindowNo, "M_Product_ID");
+			M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
 		int C_Charge_ID = 0;
 		if (column.equals("C_Charge_ID"))
 			C_Charge_ID = ((Integer)value).intValue();
 		else
-			C_Charge_ID = Env.getContextAsInt(ctx, WindowNo, "C_Charge_ID");
+			C_Charge_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_Charge_ID");
 		if (log.isLoggable(Level.FINE)) log.fine("Product=" + M_Product_ID + ", C_Charge_ID=" + C_Charge_ID);
 		if (M_Product_ID == 0 && C_Charge_ID == 0)
 			return amt (ctx, WindowNo, mTab, mField, value);	//
@@ -506,8 +506,8 @@ public class CalloutInvoice extends CalloutEngine
 			return "";
 
 	//	log.log(Level.WARNING,"amt - init");
-		int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, "C_UOM_ID");
-		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, "M_Product_ID");
+		int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
+		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
 		int M_PriceList_ID = Env.getContextAsInt(ctx, WindowNo, "M_PriceList_ID");
 		int StdPrecision = MPriceList.getStandardPrecision(ctx, M_PriceList_ID);
 		MPriceList pl = new MPriceList(ctx, M_PriceList_ID, null);
@@ -732,7 +732,7 @@ public class CalloutInvoice extends CalloutEngine
 		if (isCalloutActive() || value == null)
 			return "";
 
-		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, "M_Product_ID");
+		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
 	//	log.log(Level.WARNING,"qty - init - M_Product_ID=" + M_Product_ID);
 		BigDecimal QtyInvoiced, QtyEntered, PriceActual, PriceEntered;
 		
@@ -776,7 +776,7 @@ public class CalloutInvoice extends CalloutEngine
 		//	QtyEntered changed - calculate QtyInvoiced
 		else if (mField.getColumnName().equals("QtyEntered"))
 		{
-			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, "C_UOM_ID");
+			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
 			QtyEntered = (BigDecimal)value;
 			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), BigDecimal.ROUND_HALF_UP);
 			if (QtyEntered.compareTo(QtyEntered1) != 0)
@@ -801,7 +801,7 @@ public class CalloutInvoice extends CalloutEngine
 		//	QtyInvoiced changed - calculate QtyEntered (should not happen)
 		else if (mField.getColumnName().equals("QtyInvoiced"))
 		{
-			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, "C_UOM_ID");
+			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
 			QtyInvoiced = (BigDecimal)value;
 			int precision = MProduct.get(ctx, M_Product_ID).getUOMPrecision(); 
 			BigDecimal QtyInvoiced1 = QtyInvoiced.setScale(precision, BigDecimal.ROUND_HALF_UP);
