@@ -3208,7 +3208,7 @@ public class GridTable extends AbstractTableModel
 				columnName = field.getColumnName();
 				displayType = field.getDisplayType();
 				//	Integer, ID, Lookup
-				if (displayType == DisplayType.Integer || DisplayType.isID(displayType))
+				if (displayType == DisplayType.Integer || (DisplayType.isID(displayType) && !(columnName.equals("EntityType") || columnName.equals("AD_Language"))))
 				{
 					rowData[j] = new Integer(rs.getInt(j+1));	//	Integer
 					if (rs.wasNull())

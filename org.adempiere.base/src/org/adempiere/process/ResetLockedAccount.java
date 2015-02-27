@@ -52,7 +52,7 @@ public class ResetLockedAccount extends SvrProcess {
 					.append(" AND DateAccountLocked IS NOT NULL ")
 					.append(" AND AD_User_ID = " + user.getAD_User_ID());
 			int no = DB.executeUpdate(sql.toString(), new Object[] { p_AD_Client_ID }, false, get_TrxName());
-			if (no < 0)
+			if (no <= 0)
 				throw new AdempiereException("Could not unlock user account" + user.toString());
 
 			StringBuilder msgreturn = new StringBuilder("@OK@ - The user '").append(user.getName()).append("' has been unlocked");
