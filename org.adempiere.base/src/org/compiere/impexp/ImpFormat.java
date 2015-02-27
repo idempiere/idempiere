@@ -37,8 +37,10 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @author Trifon Trifonov, Catura AG (www.catura.de)
  *				<li>FR [ 3010957 ] Custom Separator Character, http://sourceforge.net/tracker/?func=detail&aid=3010957&group_id=176962&atid=879335 </li>
-
- *  @version $Id: ImpFormat.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
+ *  @author eugen.hanussek@klst.com
+ *  			<li>BF [ 3564464 ] Import File Loader discards input records , https://sourceforge.net/tracker/?func=detail&aid=3564464&group_id=176962&atid=879332 </li>
+ *
+ *  @version $Id$
  */
 public final class ImpFormat
 {
@@ -617,8 +619,10 @@ public final class ImpFormat
 			}
 			if (log.isLoggable(Level.FINER)) log.finer("New ID=" + ID + " " + find);
 		}
-		else
-			if (log.isLoggable(Level.FINER)) log.finer("Old ID=" + ID + " " + find);
+		else {
+			log.warning("Not Inserted, Old ID=" + ID + " " + find);
+			return false;
+		}
 
 		//	Update Info -------------------------------------------------------
 		sql = new StringBuilder ("UPDATE ")

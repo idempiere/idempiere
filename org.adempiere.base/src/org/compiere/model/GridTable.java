@@ -3207,12 +3207,8 @@ public class GridTable extends AbstractTableModel
 				GridField field = (GridField)m_fields.get(j);
 				columnName = field.getColumnName();
 				displayType = field.getDisplayType();
-				//	Integer, ID, Lookup (UpdatedBy is a numeric column)
-				if (displayType == DisplayType.Integer
-					|| (DisplayType.isID(displayType) 
-						&& (columnName.endsWith("_ID") || columnName.endsWith("_Acct") 
-							|| columnName.equals("AD_Key") || columnName.equals("AD_Display"))) 
-					|| columnName.endsWith("atedBy"))
+				//	Integer, ID, Lookup
+				if (displayType == DisplayType.Integer || (DisplayType.isID(displayType) && !(columnName.equals("EntityType") || columnName.equals("AD_Language"))))
 				{
 					rowData[j] = new Integer(rs.getInt(j+1));	//	Integer
 					if (rs.wasNull())

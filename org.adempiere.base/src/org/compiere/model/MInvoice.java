@@ -2115,6 +2115,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 * 	Set the definite document number after completed
 	 */
 	private void setDefiniteDocumentNo() {
+		if (isReversal() && ! MSysConfig.getBooleanValue(MSysConfig.Invoice_ReverseUseNewNumber, true, getAD_Client_ID())) // IDEMPIERE-1771
+			return;
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			setDateInvoiced(new Timestamp (System.currentTimeMillis()));

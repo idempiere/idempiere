@@ -47,12 +47,12 @@ public class ResetLockedAccount extends SvrProcess {
 			if (!user.isLocked())
 				throw new AdempiereException("User " + user.getName() + " is not locked");
 
-			StringBuilder sql = new StringBuilder ("UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, DateLastLogin=NULL, Updated=SysDate ")
+			StringBuilder sql = new StringBuilder ("UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, Updated=SysDate ")
 					.append(" WHERE IsLocked='Y' AND AD_Client_ID = ? ")
 					.append(" AND DateAccountLocked IS NOT NULL ")
 					.append(" AND AD_User_ID = " + user.getAD_User_ID());
 			int no = DB.executeUpdate(sql.toString(), new Object[] { p_AD_Client_ID }, false, get_TrxName());
-			if (no < 0)
+			if (no <= 0)
 				throw new AdempiereException("Could not unlock user account" + user.toString());
 
 			StringBuilder msgreturn = new StringBuilder("@OK@ - The user '").append(user.getName()).append("' has been unlocked");
@@ -63,8 +63,8 @@ public class ResetLockedAccount extends SvrProcess {
 			int MAX_ACCOUNT_LOCK_MINUTES = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_ACCOUNT_LOCK_MINUTES, 0);
 			int MAX_INACTIVE_PERIOD = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_INACTIVE_PERIOD_DAY, 0);
 			
-			StringBuilder sql = new StringBuilder("UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, DateLastLogin=NULL, Updated=SysDate ")
-					.append(" WHERE IsLocked='Y' AND AD_Client_ID IN (0, ?) ")
+			StringBuilder sql = new StringBuilder("UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, Updated=SysDate ")
+					.append(" WHERE IsLocked='Y' AND AD_Client_ID = ? ")
 					.append(" AND DateAccountLocked IS NOT NULL");
 			
 			if (DB.isPostgreSQL())
