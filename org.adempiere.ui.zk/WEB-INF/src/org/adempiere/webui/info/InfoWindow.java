@@ -417,7 +417,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		boolean splitValue = false;
 		if (m_count <= 0) {			
 			String[] values = queryValue.split("[_]");
-			if (values.length == 2 && identifiers.size() == 2) {
+			if (values.length == 2) {
 				splitValue = true;
 				for(int i = 0; i < values.length && i < identifiers.size(); i++) {
 					WEditor editor = identifiers.get(i);
