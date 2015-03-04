@@ -71,7 +71,9 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		super ();
 		this.setTitle(Msg.getMsg(Env.getCtx(), "PAttributeInstance") + title);
 		this.setBorder("normal");
-		this.setWidth("500px");
+		this.setSizable(true);
+		this.setMaximizable(true);
+		this.setWidth("1000px");
 		this.setHeight("550px");
 		
 		init (M_Warehouse_ID, M_Locator_ID, M_Product_ID, C_BPartner_ID);
