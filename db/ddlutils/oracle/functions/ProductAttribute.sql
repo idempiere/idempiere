@@ -53,7 +53,7 @@ BEGIN
     IF (p_M_AttributeSetInstance_ID > 0) THEN
         SELECT asi.Lot, asi.SerNo, asi.GuaranteeDate,
             COALESCE(a.SerNoCharSOverwrite, TO_NCHAR('#')), COALESCE(a.SerNoCharEOverwrite, TO_NCHAR('')),
-            COALESCE(a.LotCharSOverwrite, TO_NCHAR('«')), COALESCE(a.LotCharEOverwrite, TO_NCHAR('»'))
+            COALESCE(a.LotCharSOverwrite, to_nchar(chr(49835))), COALESCE(a.LotCharEOverwrite, to_nchar(chr(49851)))
           INTO v_Lot, v_SerNo, v_GuaranteeDate,
             v_SerNoStart, v_SerNoEnd, v_LotStart, v_LotEnd
         FROM M_AttributeSetInstance asi
