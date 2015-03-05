@@ -31,27 +31,27 @@
 
    <includes
          id="org.eclipse.ecf.core.feature"
-         version="0.0.0"/>
+         version="1.1.0.v20140827-1444"/>
 
    <includes
          id="org.eclipse.ecf.core.ssl.feature"
-         version="0.0.0"/>
+         version="1.0.0.v20140827-1444"/>
 
    <includes
          id="org.eclipse.ecf.filetransfer.feature"
-         version="0.0.0"/>
+         version="3.9.0.v20140827-1444"/>
 
    <includes
          id="org.eclipse.ecf.filetransfer.httpclient4.feature"
-         version="0.0.0"/>
+         version="3.9.1.v20140827-1444"/>
 
    <includes
          id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"
-         version="0.0.0"/>
+         version="1.0.0.v20140827-1444"/>
 
    <includes
          id="org.eclipse.ecf.filetransfer.ssl.feature"
-         version="0.0.0"/>
+         version="1.0.0.v20140827-1444"/>
 
    <includes
          id="org.eclipse.osgi.compatibility.plugins.feature"
@@ -162,21 +162,21 @@
          id="org.apache.felix.gogo.command"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.10.0.v201209301215"
          unpack="false"/>
 
    <plugin
          id="org.apache.felix.gogo.runtime"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.10.0.v201209301036"
          unpack="false"/>
 
    <plugin
          id="org.apache.felix.gogo.shell"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.10.0.v201212101605"
          unpack="false"/>
 
 </feature>
