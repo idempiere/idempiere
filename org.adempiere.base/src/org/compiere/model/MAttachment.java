@@ -30,6 +30,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.MimeType;
+import org.compiere.util.Util;
 
 
 /**
@@ -489,6 +490,8 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
+		if (Util.isEmpty(getTitle()))
+			setTitle(NONE);
 		return saveLOBData();		//	save in BinaryData
 	}	//	beforeSave
 
