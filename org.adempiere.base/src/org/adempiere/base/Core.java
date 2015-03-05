@@ -333,7 +333,7 @@ public class Core {
 		}
 		
 		if (myReplenishInstance == null) {
-			s_log.log(Level.SEVERE, "Not found in service/extension registry and classpath");
+			s_log.log(Level.CONFIG, className + " not found in service/extension registry and classpath");
 			return null;
 		}
 		
