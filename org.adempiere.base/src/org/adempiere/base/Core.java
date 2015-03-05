@@ -40,6 +40,7 @@ import org.compiere.model.PaymentProcessor;
 import org.compiere.model.StandardTaxProvider;
 import org.compiere.process.ProcessCall;
 import org.compiere.util.CLogger;
+import org.compiere.util.ReplenishInterface;
 
 /**
  * This is a facade class for the Service Locator.
@@ -303,5 +304,39 @@ public class Core {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * get Custom Replenish instance
+	 * 
+	 * @param className
+	 * @return instance of the ReplenishInterface or null
+	 */
+	public static ReplenishInterface getReplenish(String className){
+		if (className == null || className.length() == 0) {
+			s_log.log(Level.SEVERE, "No ReplenishInterface class name");
+			return null;
+		}
+
+		ReplenishInterface myReplenishInstance = null;
+		
+		List<IReplenishFactory> factoryList = 
+				Service.locator().list(IReplenishFactory.class).getServices();
+		if (factoryList != null) {
+			for(IReplenishFactory factory : factoryList) {
+				ReplenishInterface loader = factory.newReplenishInstance(className);
+				if (loader != null) {
+					myReplenishInstance = loader;
+					break;
+				}
+			}
+		}
+		
+		if (myReplenishInstance == null) {
+			s_log.log(Level.SEVERE, "Not found in service/extension registry and classpath");
+			return null;
+		}
+		
+		return myReplenishInstance;
 	}
 }
