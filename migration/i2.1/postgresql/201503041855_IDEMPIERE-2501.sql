@@ -90,3 +90,6 @@ END;
 
 $body$ LANGUAGE plpgsql STABLE;
 
+SELECT register_migration_script('201503041855_IDEMPIERE-2501.sql') FROM dual
+;
+

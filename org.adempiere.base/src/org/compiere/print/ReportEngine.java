@@ -677,9 +677,17 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 									if (isZoom) {
 										// check permission on the zoomed window
 										MTable mTable = MTable.get(getCtx(), pde.getForeignColumnName().substring(0, pde.getForeignColumnName().length()-3));
-										int Record_ID = Integer.parseInt(pde.getValueAsString());
-										int AD_Window_ID = Env.getZoomWindowID(mTable.get_ID(), Record_ID);
-							    		Boolean canAccess = MRole.getDefault().getWindowAccess(AD_Window_ID);
+										int Record_ID = -1;
+										try {
+											Record_ID = Integer.parseInt(pde.getValueAsString());
+										} catch (Exception e) {
+											Record_ID = -1;
+										}
+							    		Boolean canAccess = null;
+										if (Record_ID >= 0) {
+											int AD_Window_ID = Env.getZoomWindowID(mTable.get_ID(), Record_ID);
+								    		canAccess = MRole.getDefault().getWindowAccess(AD_Window_ID);
+										}
 							    		if (canAccess == null) {
 							    			isZoom = false;
 							    		}

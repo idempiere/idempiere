@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MDocType;
@@ -351,8 +352,12 @@ public class ReplenishReport extends SvrProcess
 			ReplenishInterface custom = null;
 			try
 			{
-				Class<?> clazz = Class.forName(className);
-				custom = (ReplenishInterface)clazz.newInstance();
+				custom = Core.getReplenish(className);
+				if(custom==null){
+					// if no OSGi plugin is found try the legacy way (in my own classpath)
+					Class<?> clazz = Class.forName(className);
+					custom = (ReplenishInterface) clazz.newInstance();
+				}
 			}
 			catch (Exception e)
 			{

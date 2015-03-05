@@ -347,7 +347,7 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		calEnd.set(Calendar.SECOND, 0);
 		calEnd.set(Calendar.MILLISECOND, 0);
 
-		if ((cal1.get(Calendar.HOUR_OF_DAY) >= cal2.get(Calendar.HOUR_OF_DAY)) && (dbxStartPlan.getValue().compareTo(dbxCompletePlan.getValue()) == 0)) {
+		if (calBegin.compareTo(calEnd) >= 0) {
 			return true;
 		} else {
 			return false;
