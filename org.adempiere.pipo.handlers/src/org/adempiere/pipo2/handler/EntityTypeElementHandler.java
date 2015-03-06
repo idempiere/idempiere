@@ -96,7 +96,7 @@ public class EntityTypeElementHandler extends AbstractElementHandler{
 				} else {
 					logImportDetail(ctx, impDetail, 0, m_EntityType.getName(),
 							m_EntityType.get_ID(), action);
-					throw new POSaveFailedException("Failed to save Model Validator " + m_EntityType.getName());
+					throw new POSaveFailedException("Failed to save Entity Type " + m_EntityType.getName());
 				}
 			}
 			
