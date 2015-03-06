@@ -20,11 +20,9 @@ the License.
 package fi.jawsy.jawwa.zk.atmosphere;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.atmosphere.cpr.AtmosphereResource;
-import org.compiere.Adempiere;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.lang.Library;
@@ -218,37 +216,13 @@ public class AtmosphereServerPush implements ServerPush {
             return;
         }
 
-        boolean suspend = !desktopCtrl.scheduledServerPush();
-        if (suspend) {
-		  	if (!resource.isSuspended()) {
-		  		resource.suspend(-1, false);
-		  	}
-		  	this.resource.set(resource);
-		  	
-		  	//check again, just in case task is schedule between the resource.suspend and resource.set call
-		  	if (desktopCtrl.scheduledServerPush()) {
-		  		scheduleCommit();
-		  	}
-        }	  	
+	  	if (!resource.isSuspended()) {
+	  		resource.suspend(-1, false);
+	  	}
+	  	this.resource.set(resource);
+
     }
 
-	private void scheduleCommit() {
-		Adempiere.getThreadPoolExecutor().schedule(new Runnable() {					
-			@Override
-			public void run() {
-				DesktopCtrl desktopCtrl = (DesktopCtrl) AtmosphereServerPush.this.desktop.get();
-		        if (desktopCtrl == null) return;
-		        if (desktopCtrl.scheduledServerPush()) {
-					try {
-						commitResponse();
-					} catch (IOException e) {
-						log.error(e.getLocalizedMessage(), e);
-					}
-		        }
-			}
-		}, 100, TimeUnit.MILLISECONDS);
-	}
-    
 	private static class ThreadInfo {
 		private final Thread thread;
 		/** # of activate() was called. */
