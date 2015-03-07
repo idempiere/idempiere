@@ -19,6 +19,7 @@ package org.compiere.install;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.security.Key;
 import java.security.KeyStore;
@@ -33,8 +34,6 @@ import javax.swing.JFrame;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
-
-import sun.security.tools.KeyTool;
 
 /**
  *	Class to manage SSL KeyStore
@@ -460,7 +459,16 @@ public class KeyStoreMgt
                 //vpj-cd add support java 6
 		try
         {
-			KeyTool.main(args);
+			Class<?> keyTool = null;
+			try{
+				// java 7 
+				keyTool = Class.forName("sun.security.tools.KeyTool");
+			}catch (ClassNotFoundException ex){
+				// java 8 
+				keyTool = Class.forName("sun.security.tools.keytool.Main");
+			}
+			Method mainMethod = keyTool.getDeclaredMethod("main", String[].class);
+			mainMethod.invoke(null, new Object[]{args});
         }
         catch (Exception e)
         {
