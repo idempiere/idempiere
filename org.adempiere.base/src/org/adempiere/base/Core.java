@@ -204,7 +204,7 @@ public class Core {
 		}
 		
 		if (myBankStatementLoader == null) {
-			s_log.log(Level.SEVERE, "Not found in service/extension registry and classpath");
+			s_log.log(Level.CONFIG, className + " not found in service/extension registry and classpath");
 			return null;
 		}
 		
@@ -238,7 +238,7 @@ public class Core {
 		}
 		
 		if (myBankStatementMatcher == null) {
-			s_log.log(Level.SEVERE, "Not found in service/extension registry and classpath");
+			s_log.log(Level.CONFIG, className + " not found in service/extension registry and classpath");
 			return null;
 		}
 		
