@@ -38,6 +38,7 @@ import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.compiere.model.I_C_Payment;
 import org.compiere.model.MColumn;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -158,15 +159,20 @@ public abstract class AbstractDocumentSearch {
 					sqlSO.append(Env.parseContext(Env.getCtx(), -1, " AND AD_Client_ID=@#AD_Client_ID@", false, true));
 
 					if (msd.getPO_Window_ID() != 0) {
-						sqlPO = new StringBuilder(sqlSO.toString()).append(" AND IsSOTrx='N'");
-						sqlSO.append(" AND IsSOTrx='Y'");
+						sqlPO = new StringBuilder(sqlSO.toString());
+						String columntrx = "IsSOTrx";
+						if (I_C_Payment.Table_Name.equals(table.getTableName())) {
+							columntrx = "IsReceipt";
+						}
+						sqlPO.append(" AND ").append(columntrx).append("='N'");
+						sqlSO.append(" AND ").append(columntrx).append("='Y'");
+						pstmtPO = DB.prepareStatement(sqlPO.toString(), null);
 					}
 					pstmtSO = DB.prepareStatement(sqlSO.toString(), null);
-					pstmtPO = DB.prepareStatement(sqlPO.toString(), null);
 					// search for a Integer
 					if (msd.getDataType().equals(MSearchDefinition.DATATYPE_INTEGER)) {
 						pstmtSO.setInt(1, Integer.valueOf(searchString.replaceAll("\\D", "")));
-						if (msd.getPO_Window_ID() != 0) {
+						if (pstmtPO != null) {
 							pstmtPO.setInt(1, Integer.valueOf(searchString.replaceAll("\\D", "")));
 						}
 						// search for a String
@@ -175,7 +181,7 @@ public abstract class AbstractDocumentSearch {
 							pstmtSO.setString(1, searchString);
 						else
 							pstmtSO.setString(1, searchString+"%");
-						if (msd.getPO_Window_ID() != 0) {
+						if (pstmtPO != null) {
 							if (searchString.endsWith("%"))
 								pstmtPO.setString(1, searchString);
 							else
