@@ -61,7 +61,7 @@
 <%-- status bar --%>
 .status {
 	width: 100%;
-	height: 20px;
+	height: 29px;
 }
 .status-db {
 	padding-top: 0;
