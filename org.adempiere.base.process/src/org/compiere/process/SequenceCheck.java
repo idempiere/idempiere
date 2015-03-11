@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
 import org.compiere.model.MSequence;
@@ -79,6 +80,7 @@ public class SequenceCheck extends SvrProcess
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, "validate", e);
+			throw new AdempiereException(e);
 		}
 	}	//	validate
 	
@@ -124,6 +126,7 @@ public class SequenceCheck extends SvrProcess
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
+			throw new AdempiereException(e);
 		}
 		finally
 		{
@@ -173,6 +176,7 @@ public class SequenceCheck extends SvrProcess
 		catch (Exception e)
 		{
 			s_log.log (Level.SEVERE, sql, e);
+			throw new AdempiereException(e);
 		}
 		finally
 		{
@@ -233,6 +237,7 @@ public class SequenceCheck extends SvrProcess
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
+			throw new AdempiereException(e);
 		}
 		finally
 		{
