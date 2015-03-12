@@ -3,6 +3,8 @@
 UPDATE AD_Column SET FieldLength=60,Updated=TO_TIMESTAMP('2015-03-11 09:43:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200702
 ;
 
+DROP VIEW ad_sessioninfo_v;
+
 CREATE OR REPLACE VIEW ad_sessioninfo_v AS  
  SELECT s.ad_session_id, 0::numeric(10,0) AS ad_client_id, 0::numeric(10,0) AS  ad_org_id, s.isactive,
                 s.created, s.createdby, s.updated, s.updatedby, substr(s.websession,1,40) as websession,
