@@ -38,7 +38,7 @@
   <New id="sslContextFactory" class="org.eclipse.jetty.util.ssl.SslContextFactory">
     <Set name="CertAlias">@ADEMPIERE_KEYSTORECODEALIAS@</Set>
     <Set name="KeyStorePath">@ADEMPIERE_KEYSTORE@</Set>
-    <Set name="KeyStorePassword"><Property name="jetty.keystore.password" default="myPassword"/></Set>
+    <Set name="KeyStorePassword"><Property name="jetty.keystore.password" default="@ADEMPIERE_KEYSTOREPASS@"/></Set>
     <Set name="KeyManagerPassword"><Property name="jetty.keymanager.password" default="@ADEMPIERE_KEYSTOREPASS@"/></Set>
     <Set name="TrustStorePath">@ADEMPIERE_KEYSTORE@</Set>
     <Set name="TrustStorePassword"><Property name="jetty.truststore.password" default="@ADEMPIERE_KEYSTOREPASS@"/></Set>
