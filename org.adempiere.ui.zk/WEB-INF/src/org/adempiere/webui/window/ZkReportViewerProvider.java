@@ -16,14 +16,10 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
-import org.adempiere.util.ContextRunnable;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.apps.DesktopRunnable;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
-import org.compiere.Adempiere;
 import org.compiere.print.ReportEngine;
 import org.compiere.print.ReportViewerProvider;
 import org.zkoss.zk.ui.Executions;
