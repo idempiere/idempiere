@@ -16,12 +16,15 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
+import org.adempiere.util.ContextRunnable;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
+import org.compiere.Adempiere;
 import org.compiere.print.ReportEngine;
 import org.compiere.print.ReportViewerProvider;
+import org.zkoss.zk.ui.Executions;
 
 /**
  * 
@@ -29,9 +32,9 @@ import org.compiere.print.ReportViewerProvider;
  *
  */
 public class ZkReportViewerProvider implements ReportViewerProvider {
-
+	
 	public void openViewer(final ReportEngine report) {
-		Runnable runnable = new Runnable() {			
+		final Runnable runnable = new Runnable() {			
 			@Override
 			public void run() {
 				Window viewer = new ZkReportViewer(report, report.getName());
@@ -42,6 +45,21 @@ public class ZkReportViewerProvider implements ReportViewerProvider {
 		    	SessionManager.getAppDesktop().showWindow(viewer);				
 			}
 		};
-		AEnv.executeAsyncDesktopTask(runnable);
+		
+		// IDEMPIERE-2499
+		// detect ui thread by value of Executions.getCurrent(), not office method but work
+		if (Executions.getCurrent() != null){
+			Adempiere.getThreadPoolExecutor().submit(new ContextRunnable(){
+				protected void doRun(){
+					// load layout, with big report it's heavy job, do in non ui thread to don't lock gui 
+					report.getLayout();
+					AEnv.executeAsyncDesktopTask(runnable);
+				}
+			});
+		}else{
+			// load layout in non ui thread before run into ui thread 
+			report.getLayout();
+			AEnv.executeAsyncDesktopTask(runnable);
+		}
 	}
 }

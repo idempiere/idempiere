@@ -548,7 +548,6 @@ public class Login
 				+" INNER JOIN AD_Client c on (c.AD_Client_ID=?)"
 				+" WHERE o.IsActive='Y' "
 				+" AND o.AD_Client_ID IN (0, c.AD_Client_ID)"
-				+" AND o.IsSummary='N'"
 				+" AND (r.IsAccessAllOrgs='Y'" 
 				+" OR (r.IsUseUserOrgAccess='N' AND o.AD_Org_ID IN (SELECT AD_Org_ID FROM AD_Role_OrgAccess ra" 
 				+" WHERE ra.AD_Role_ID=r.AD_Role_ID AND ra.IsActive='Y')) "

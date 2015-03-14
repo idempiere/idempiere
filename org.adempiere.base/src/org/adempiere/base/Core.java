@@ -30,6 +30,7 @@ import org.adempiere.model.IShipmentProcessor;
 import org.adempiere.model.ITaxProvider;
 import org.adempiere.model.MShipperFacade;
 import org.compiere.impexp.BankStatementLoaderInterface;
+import org.compiere.impexp.BankStatementMatcherInterface;
 import org.compiere.model.MAddressValidation;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MPaymentProcessor;
@@ -203,11 +204,45 @@ public class Core {
 		}
 		
 		if (myBankStatementLoader == null) {
-			s_log.log(Level.SEVERE, "Not found in service/extension registry and classpath");
+			s_log.log(Level.CONFIG, className + " not found in service/extension registry and classpath");
 			return null;
 		}
 		
 		return myBankStatementLoader;
+	}
+	
+	/**
+	 * get BankStatementMatcher instance
+	 * 
+	 * @param className
+	 * @return instance of the BankStatementMatcherInterface or null
+	 */
+	public static BankStatementMatcherInterface getBankStatementMatcher(String className){
+		if (className == null || className.length() == 0) {
+			s_log.log(Level.SEVERE, "No BankStatementMatcherInterface class name");
+			return null;
+		}
+
+		BankStatementMatcherInterface myBankStatementMatcher = null;
+		
+		List<IBankStatementMatcherFactory> factoryList = 
+				Service.locator().list(IBankStatementMatcherFactory.class).getServices();
+		if (factoryList != null) {
+			for(IBankStatementMatcherFactory factory : factoryList) {
+				BankStatementMatcherInterface matcher = factory.newBankStatementMatcherInstance(className);
+				if (matcher != null) {
+					myBankStatementMatcher = matcher;
+					break;
+				}
+			}
+		}
+		
+		if (myBankStatementMatcher == null) {
+			s_log.log(Level.CONFIG, className + " not found in service/extension registry and classpath");
+			return null;
+		}
+		
+		return myBankStatementMatcher;
 	}
 	
 	/**

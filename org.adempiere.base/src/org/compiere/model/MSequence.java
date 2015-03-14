@@ -902,6 +902,7 @@ public class MSequence extends X_AD_Sequence
 			+ "FROM AD_Table t"
 			+ " INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID) "
 			+ "WHERE t.TableName='" + tableName + "'"
+			+ " AND t.IsView='N'" // ignore for views -- IDEMPIERE-2513
 			+ " AND c.ColumnName='" + tableName + "_ID'");
 		if (AD_Column_ID <= 0)
 			return null;

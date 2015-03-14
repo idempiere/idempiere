@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.compiere.impexp.BankStatementMatcherInterface;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -134,8 +135,14 @@ public class MBankStatementMatcher extends X_C_BankStatementMatcher
 		
 		try
 		{
-			Class<?> matcherClass = Class.forName(className);
-			m_matcher = (BankStatementMatcherInterface)matcherClass.newInstance();
+			if (log.isLoggable(Level.INFO)) log.info( "MBankStatementMatch Class Name=" + className);
+			// load the BankStatementMatcher class via OSGi Service definition from a plugin
+			m_matcher = Core.getBankStatementMatcher(className);
+			if(m_matcher==null){
+				// if no OSGi plugin is found try the legacy way (in my own classpath)
+				Class<?> bsrClass = Class.forName(className);
+				m_matcher = (BankStatementMatcherInterface) bsrClass.newInstance();
+			}
 			m_matcherValid = Boolean.TRUE;
 		}
 		catch (Exception e)

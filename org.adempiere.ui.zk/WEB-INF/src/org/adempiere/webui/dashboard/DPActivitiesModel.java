@@ -97,6 +97,7 @@ public class DPActivitiesModel {
 			+ ") AND a.AD_Client_ID=?";	//	#5
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
+		sql = MRole.getDefault().addAccessSQL(sql, "a", true, false);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
