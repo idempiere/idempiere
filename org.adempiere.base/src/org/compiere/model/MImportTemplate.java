@@ -85,12 +85,22 @@ public class MImportTemplate extends X_AD_ImportTemplate
 			return retValue;
 
 		final String where = ""
-				+ "IsActive='Y' AND AD_Client_ID IN (0, ?) AND AD_Tab_ID=? "
+				+ "IsActive = 'Y' "
+				+ "AND AD_Client_ID IN ( 0, ? ) "
+				+ "AND AD_Tab_ID = ? " 
 				+ "AND EXISTS (SELECT 1 "
-				+ "              FROM AD_ImportTemplateAccess ita "
-				+ "              WHERE ita.AD_ImportTemplate_ID=AD_ImportTemplate.AD_ImportTemplate_ID AND ita.IsActive='Y' AND ita.AD_Role_ID=? AND (IsAllowInsert='Y' OR IsAllowMerge='Y' OR IsAllowUpdate='Y'))";
+				+ "            FROM   AD_ImportTemplateAccess ita "
+				+ "            WHERE  ita.AD_ImportTemplate_ID = AD_ImportTemplate.AD_ImportTemplate_ID "
+				+ "                   AND ita.IsActive = 'Y' "
+				+ "                   AND ( ita.AD_Role_ID = ? "
+				+ "                          OR ita.AD_Role_ID IN (SELECT Included_Role_ID "
+				+ "                                                FROM   AD_Role_Included "
+				+ "                                                WHERE  AD_Role_ID = ? AND IsActive = 'Y') ) "
+				+ "                   AND ( IsAllowInsert = 'Y' "
+				+ "                          OR IsAllowMerge = 'Y' "
+				+ "                          OR IsAllowUpdate = 'Y' ))";
 		retValue = new Query(Env.getCtx(), MImportTemplate.Table_Name, where, null)
-			.setParameters(Env.getAD_Client_ID(Env.getCtx()), tabid, roleid)
+			.setParameters(Env.getAD_Client_ID(Env.getCtx()), tabid, roleid, roleid)
 			.setOrderBy("Name")
 			.list();
 		s_cacheRoleTab.put(key, retValue);
@@ -98,8 +108,17 @@ public class MImportTemplate extends X_AD_ImportTemplate
 	}
 
 	public boolean isAllowed(String importMode, int roleID) {
-		StringBuilder sql= new StringBuilder(
-				"SELECT COUNT(*) FROM AD_ImportTemplateAccess WHERE IsActive='Y' AND AD_ImportTemplate_ID=? AND AD_Role_ID=? AND IsAllow");
+		StringBuilder sql= new StringBuilder(""
+				+ "SELECT COUNT(*) "
+				+ "FROM   AD_ImportTemplateaccess "
+				+ "WHERE  IsActive = 'Y' "
+				+ "       AND AD_ImportTemplate_ID = ? "
+				+ "       AND ( AD_Role_ID = ? "
+				+ "              OR AD_Role_ID IN (SELECT Included_Role_ID "
+				+ "                                FROM   AD_Role_Included "
+				+ "                                WHERE  AD_Role_id = ? "
+				+ "                                       AND IsActive = 'Y') ) "
+				+ "       AND IsAllow");
 		if ("I".equals(importMode))
 			sql.append("Insert");
 		else if ("U".equals(importMode))
@@ -110,7 +129,7 @@ public class MImportTemplate extends X_AD_ImportTemplate
 			return false;
 		sql.append("='Y'");
 
-		int cnt = DB.getSQLValueEx(get_TrxName(), sql.toString(), getAD_ImportTemplate_ID(), roleID);
+		int cnt = DB.getSQLValueEx(get_TrxName(), sql.toString(), getAD_ImportTemplate_ID(), roleID, roleID);
 		return cnt > 0;
 	}
 

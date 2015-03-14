@@ -16,12 +16,10 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
-import org.adempiere.util.ContextRunnable;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
-import org.compiere.Adempiere;
 import org.compiere.print.ReportEngine;
 import org.compiere.print.ReportViewerProvider;
 import org.zkoss.zk.ui.Executions;
@@ -34,32 +32,26 @@ import org.zkoss.zk.ui.Executions;
 public class ZkReportViewerProvider implements ReportViewerProvider {
 	
 	public void openViewer(final ReportEngine report) {
-		final Runnable runnable = new Runnable() {			
-			@Override
-			public void run() {
-				Window viewer = new ZkReportViewer(report, report.getName());
-				
-		    	viewer.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
-		    	viewer.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
-		    	viewer.setAttribute(WindowContainer.DEFER_SET_SELECTED_TAB, Boolean.TRUE);
-		    	SessionManager.getAppDesktop().showWindow(viewer);				
-			}
-		};
-		
 		// IDEMPIERE-2499
 		// detect ui thread by value of Executions.getCurrent(), not office method but work
 		if (Executions.getCurrent() != null){
-			Adempiere.getThreadPoolExecutor().submit(new ContextRunnable(){
-				protected void doRun(){
-					// load layout, with big report it's heavy job, do in non ui thread to don't lock gui 
-					report.getLayout();
-					AEnv.executeAsyncDesktopTask(runnable);
+			openReportViewWindow (report);
+		}else {
+			AEnv.executeAsyncDesktopTask(new Runnable() {			
+				@Override
+				public void run() {
+					openReportViewWindow (report);				
 				}
 			});
-		}else{
-			// load layout in non ui thread before run into ui thread 
-			report.getLayout();
-			AEnv.executeAsyncDesktopTask(runnable);
 		}
+	}
+	
+	protected void openReportViewWindow (ReportEngine report) {
+		Window viewer = new ZkReportViewer(report, report.getName());
+		
+    	viewer.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
+    	viewer.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
+    	viewer.setAttribute(WindowContainer.DEFER_SET_SELECTED_TAB, Boolean.TRUE);
+    	SessionManager.getAppDesktop().showWindow(viewer);
 	}
 }

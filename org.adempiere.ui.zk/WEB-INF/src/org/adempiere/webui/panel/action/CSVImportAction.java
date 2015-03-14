@@ -247,18 +247,30 @@ public class CSVImportAction implements EventListener<Event>
 
 	private void fillImportMode() {
 		final String sql= ""
-				+ "SELECT IsAllowInsert, IsAllowUpdate, IsAllowMerge "
-				+ "FROM AD_ImportTemplateAccess "
-				+ "WHERE IsActive='Y' AND AD_ImportTemplate_ID=? AND AD_Role_ID=? AND (IsAllowInsert='Y' OR IsAllowMerge='Y' OR IsAllowUpdate='Y')";
-		List<Object> flags = DB.getSQLValueObjectsEx(null, sql, theTemplate.getAD_ImportTemplate_ID(), Env.getAD_Role_ID(Env.getCtx()));
+				+ "SELECT MAX(IsAllowInsert), "
+				+ "       MAX(IsAllowUpdate), "
+				+ "       MAX(IsAllowMerge) "
+				+ "FROM   AD_ImportTemplateAccess "
+				+ "WHERE  IsActive = 'Y' "
+				+ "       AND AD_ImportTemplate_ID = ? "
+				+ "       AND ( AD_Role_ID = ? "
+				+ "              OR AD_Role_ID IN (SELECT Included_Role_ID "
+				+ "                                FROM   AD_Role_Included "
+				+ "                                WHERE  AD_Role_ID = ? "
+				+ "                                       AND IsActive = 'Y') ) "
+				+ "       AND ( IsAllowInsert = 'Y' "
+				+ "              OR IsAllowMerge = 'Y' "
+				+ "              OR IsAllowUpdate = 'Y' )";
+		List<Object> flags = DB.getSQLValueObjectsEx(null, sql, theTemplate.getAD_ImportTemplate_ID(), Env.getAD_Role_ID(Env.getCtx()), Env.getAD_Role_ID(Env.getCtx()));
 		fImportMode.removeAllItems();
 		if (flags.get(0) != null && "Y".equals(flags.get(0).toString()))
 			fImportMode.appendItem("Insert","I");
-		if (flags.get(1) != null && "Y".equals(flags.get(0).toString()))
+		if (flags.get(1) != null && "Y".equals(flags.get(1).toString()))
 			fImportMode.appendItem("Update","U");
-		if (flags.get(2) != null && "Y".equals(flags.get(0).toString()))
+		if (flags.get(2) != null && "Y".equals(flags.get(2).toString()))
 			fImportMode.appendItem("Merge","M");
-		fImportMode.setSelectedIndex(0);
+		if (fImportMode.getItemCount() == 1)
+			fImportMode.setSelectedIndex(0);
 	}
 
 	private void processUploadMedia(Media media) {

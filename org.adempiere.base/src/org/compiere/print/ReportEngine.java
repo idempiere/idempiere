@@ -338,9 +338,9 @@ public class ReportEngine implements PrintServiceAttributeListener
 	 */
 	public Properties getCtx()
 	{
-		return getLayout().getCtx();
+		return m_ctx;
 	}	//	getCtx
-
+	
 	/**
 	 * 	Get Row Count
 	 * 	@return row count
