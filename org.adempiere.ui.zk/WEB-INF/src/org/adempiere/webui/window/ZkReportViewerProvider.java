@@ -17,9 +17,7 @@
 package org.adempiere.webui.window;
 
 import org.adempiere.util.ContextRunnable;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.apps.DesktopRunnable;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
@@ -51,22 +49,13 @@ public class ZkReportViewerProvider implements ReportViewerProvider {
 		// IDEMPIERE-2499
 		// detect ui thread by value of Executions.getCurrent(), not office method but work
 		if (Executions.getCurrent() != null){
-			
-			final DesktopRunnable getLayoutThread = new DesktopRunnable(new ContextRunnable(){
+			Adempiere.getThreadPoolExecutor().submit(new ContextRunnable(){
 				protected void doRun(){
 					// load layout, with big report it's heavy job, do in non ui thread to don't lock gui 
 					report.getLayout();
 					AEnv.executeAsyncDesktopTask(runnable);
-					
 				}
-			}, Executions.getCurrent().getDesktop());
-			
-			Adempiere.getThreadPoolExecutor().submit(new ContextRunnable(){
-					protected void doRun(){
-						getLayoutThread.run();
-					}
-				});
-
+			});
 		}else{
 			// load layout in non ui thread before run into ui thread 
 			report.getLayout();
