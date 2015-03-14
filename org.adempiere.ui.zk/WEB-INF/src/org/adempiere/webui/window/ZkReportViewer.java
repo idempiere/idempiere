@@ -229,9 +229,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				m_ctx = m_reportEngine.getCtx();
 				init();
 				dynInit();
-				
-				if (!ArchiveEngine.isValid(m_reportEngine.getLayout()))
-					log.warning("Cannot archive Document");
 			}
 			catch(Exception e)
 			{
@@ -467,7 +464,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(new XLSRendererRunnable(this),getDesktop()));
 		}						
 	}
-
+	
 	private void onPreviewReport() {
 		try {
 			if (future != null) {
@@ -1306,6 +1303,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		@Override
 		protected void doRun() {
 			try {
+				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
+					log.warning("Cannot archive Document");
 				String path = System.getProperty("java.io.tmpdir");
 				String prefix = viewer.makePrefix(viewer.m_reportEngine.getName());
 				if (log.isLoggable(Level.FINE))
@@ -1351,6 +1350,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		@Override
 		protected void doRun() {
 			try {
+				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
+					log.warning("Cannot archive Document");
 				String path = System.getProperty("java.io.tmpdir");
 				String prefix = viewer.makePrefix(viewer.m_reportEngine.getName());
 				if (log.isLoggable(Level.FINE))
@@ -1395,6 +1396,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		@Override
 		protected void doRun() {
 			try {
+				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
+					log.warning("Cannot archive Document");
 				String path = System.getProperty("java.io.tmpdir");
 				String prefix = viewer.makePrefix(viewer.m_reportEngine.getName());
 				if (log.isLoggable(Level.FINE))
