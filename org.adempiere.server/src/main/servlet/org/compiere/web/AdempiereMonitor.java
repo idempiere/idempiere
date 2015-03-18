@@ -65,6 +65,7 @@ import org.compiere.model.AdempiereProcessorLog;
 import org.compiere.model.MClient;
 import org.compiere.model.MSession;
 import org.compiere.model.MStore;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.Query;
 import org.compiere.server.AdempiereServerGroup;
@@ -95,7 +96,8 @@ public class AdempiereMonitor extends HttpServlet
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -387582087015910664L;
+	private static final long serialVersionUID = -7455613826465213838L;
+
 	/**	Logger				*/
 	private static CLogger	log = CLogger.getCLogger(AdempiereMonitor.class);
 	/**	The Server			*/
@@ -1005,7 +1007,7 @@ public class AdempiereMonitor extends HttpServlet
 		table.setCellPadding(2);
 		//	
 		line = new tr();
-		MClient[] clients = MClient.getAll(ctx);
+		MClient[] clients = MClient.getAll(ctx, "AD_Client_ID");
 		line.addElement(new th().addElement("Client #" + clients.length + " - EMail Test:"));
 		p = new p();
 		for (int i = 0; i < clients.length; i++)
@@ -1044,6 +1046,8 @@ public class AdempiereMonitor extends HttpServlet
 		p = new p();
 		for (int i = 0; i < clients.length; i++) {
 			MClient client = clients[i];
+			if (!client.isActive())
+				continue;
 			if (i > 0)
 				p.addElement(" - ");
 			int count = 0;
@@ -1059,20 +1063,34 @@ public class AdempiereMonitor extends HttpServlet
 		table.addElement(line);
 		//	
 		line = new tr();
-		int inMaintenanceClients[] = DB.getIDsEx(null, "SELECT AD_Client_ID FROM AD_SysConfig WHERE Name = 'SYSTEM_IN_MAINTENANCE_MODE' AND Value = 'Y'");
-		line.addElement(new th().addElement("Maintenance Mode #"+inMaintenanceClients.length));
+
+		boolean isSystemInMaintenance = MSysConfig.getBooleanValue(MSysConfig.SYSTEM_IN_MAINTENANCE_MODE, false, 0);
+		List<Integer> inMaintenanceClients = new ArrayList<Integer>();
+		if (isSystemInMaintenance)
+			line.addElement(new th().addElement("Maintenance Mode"));
+		else {
+			int possiblyInMaintenanceClients[] = DB.getIDsEx(null, "SELECT AD_Client_ID FROM AD_SysConfig WHERE AD_Client_ID!=0 AND IsActive='Y' AND Name=?", MSysConfig.SYSTEM_IN_MAINTENANCE_MODE);
+			for (int clientId : possiblyInMaintenanceClients) {
+				boolean isTenantInMaintenance = MSysConfig.getBooleanValue(MSysConfig.SYSTEM_IN_MAINTENANCE_MODE, false, clientId);
+				if (isTenantInMaintenance)
+					inMaintenanceClients.add(clientId);
+			}
+			line.addElement(new th().addElement("Maintenance Mode #"+inMaintenanceClients.size()));
+		}
+
 		p = new p();
-		if (inMaintenanceClients.length > 0) {
-			for (int i = 0; i < clients.length; i++) {
-				MClient client = clients[i];
-				if (i > 0)
+		if (isSystemInMaintenance)
+			p.addElement("All clients are in maintenance mode");
+		else if (inMaintenanceClients.size() > 0) {
+			boolean first = true;
+			for (int clientID : inMaintenanceClients) {
+				MClient client = MClient.get(ctx, clientID);
+				if (!client.isActive())
+					continue;
+				if (!first)
 					p.addElement(" - ");
-				for (int clientID : inMaintenanceClients) {
-					if (client.getAD_Client_ID() == clientID)
-						p.addElement(client.getName() + " : Yes");
-					else
-						p.addElement(client.getName() + " : No");
-				}
+				p.addElement(client.getName());
+				first = false;
 			}
 		}
 		else
