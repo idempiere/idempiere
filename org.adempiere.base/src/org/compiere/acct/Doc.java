@@ -528,6 +528,10 @@ public abstract class Doc
 				//	post
 				p_Status = postLogic ();
 			}
+			else
+			{
+				//p_Status = STATUS_Posted; // skipped is OK
+			}
 		}
 		catch (Exception e)
 		{
