@@ -338,7 +338,7 @@ public class ModelValidationEngine
 	 */
 	public String fireModelChange (PO po, int changeType)
 	{
-		if (po == null || m_modelChangeListeners.size() == 0)
+		if (po == null )
 			return null;
 
 		String propertyName = po.get_TableName() + "*";
@@ -502,7 +502,7 @@ public class ModelValidationEngine
 	 */
 	public String fireDocValidate (PO po, int docTiming)
 	{
-		if (po == null || m_docValidateListeners.size() == 0)
+		if (po == null)
 			return null;
 
 		String propertyName = po.get_TableName() + "*";
@@ -688,7 +688,7 @@ public class ModelValidationEngine
 	 */
 	public String fireFactsValidate (MAcctSchema schema, List<Fact> facts, PO po)
 	{
-		if (schema == null || facts == null || po == null || m_factsValidateListeners.size() == 0)
+		if (schema == null || facts == null || po == null)
 			return null;
 
 		String propertyName = po.get_TableName() + "*";
@@ -715,6 +715,7 @@ public class ModelValidationEngine
 		FactsEventData eventData = new FactsEventData(schema, facts, po);
 		Event event = EventManager.newEvent(IEventTopics.ACCT_FACTS_VALIDATE,
 				new EventProperty(EventManager.EVENT_DATA, eventData), new EventProperty("tableName", po.get_TableName()));
+		EventManager.getInstance().sendEvent(event);
 		@SuppressWarnings("unchecked")
 		List<String> errors = (List<String>) event.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
 		if (errors != null && !errors.isEmpty())
@@ -769,8 +770,6 @@ public class ModelValidationEngine
 	 */
 	public void fireImportValidate (ImportProcess process, PO importModel, PO targetModel, int timing)
 	{
-		if (m_impValidateListeners.size() == 0)
-			return;
 
 		String propertyName = process.getImportTableName() + "*";
 		ArrayList<ImportValidator> list = m_impValidateListeners.get(propertyName);
