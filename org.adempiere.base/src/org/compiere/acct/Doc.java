@@ -530,7 +530,7 @@ public abstract class Doc
 			}
 			else
 			{
-				//p_Status = STATUS_Posted; // skipped is OK
+				p_Status = STATUS_Posted; // skipped is OK
 			}
 		}
 		catch (Exception e)
