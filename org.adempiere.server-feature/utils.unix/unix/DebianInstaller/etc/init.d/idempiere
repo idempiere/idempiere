@@ -244,7 +244,7 @@ configure_perform()
 !
 	echo "Done"
     fi
-    grep ${ADEMPIERE_WEB_PORT} ${IDEMPIERE_HOME}/plugins/org.adempiere.tomcat.config_2.0.0/META-INF/tomcat/server.xml > /dev/null 2>&1
+    grep ${ADEMPIERE_WEB_PORT} ${IDEMPIERE_HOME}/plugins/org.adempiere.tomcat.config_2.1.0/META-INF/tomcat/server.xml > /dev/null 2>&1
     if [ $? -ne 0 ]
     then
         echo "Error deploying iDempiere, please verify and try again"
