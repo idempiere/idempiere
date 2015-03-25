@@ -52,7 +52,7 @@ public class MProductPricing
 			m_Qty = Qty;
 		m_isSOTrx = isSOTrx;
 		int thereAreVendorBreakRecords = DB.getSQLValue(null, 
-				"SELECT count(M_Product_ID) FROM M_ProductPriceVendorBreak WHERE M_Product_ID=? AND C_BPartner_ID=?",
+				"SELECT count(M_Product_ID) FROM M_ProductPriceVendorBreak WHERE M_Product_ID=? AND (C_BPartner_ID=? OR C_BPartner_ID is NULL)",
 				m_M_Product_ID, m_C_BPartner_ID);
 		m_useVendorBreak = thereAreVendorBreakRecords > 0;
 	}	//	MProductPricing
@@ -440,9 +440,9 @@ public class MProductPricing
 			+ " AND pp.IsActive='Y'"
 			+ " AND p.M_Product_ID=?"				//	#1
 			+ " AND pv.M_PriceList_Version_ID=?"	//	#2
-			+ " AND pp.C_BPartner_ID=?"				//	#3
+			+ " AND (pp.C_BPartner_ID=? OR pp.C_BPartner_ID is NULL)"				//	#3
 			+ " AND ?>=pp.BreakValue"				//  #4
-			+ " ORDER BY BreakValue DESC";
+			+ " ORDER BY  pp.C_BPartner_ID, BreakValue DESC";
 		m_calculated = false;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -561,9 +561,9 @@ public class MProductPricing
 			+ " AND pp.IsActive='Y'"
 			+ " AND p.M_Product_ID=?"				//	#1
 			+ " AND pv.M_PriceList_ID=?"			//	#2
-			+ " AND pp.C_BPartner_ID=?"				//	#3
+			+ " AND (pp.C_BPartner_ID=? OR pp.C_BPartner_ID is NULL)"				//	#3
 			+ " AND ?>=pp.BreakValue"				//  #4
-			+ " ORDER BY pv.ValidFrom DESC, BreakValue DESC";
+			+ " ORDER BY pp.C_BPartner_ID, pv.ValidFrom DESC, BreakValue DESC";
 		m_calculated = false;
 		if (m_PriceDate == null)
 			m_PriceDate = new Timestamp (System.currentTimeMillis());
@@ -646,9 +646,9 @@ public class MProductPricing
 			+ " AND pp.IsActive='Y'"
 			+ " AND p.M_Product_ID=?"				//	#1
 			+ " AND pl.M_PriceList_ID=?"			//	#2
-			+ " AND pp.C_BPartner_ID=?"				//	#3
+			+ " AND (pp.C_BPartner_ID=? OR pp.C_BPartner_ID is NULL)"				//	#3
 			+ " AND ?>=pp.BreakValue"				//  #4
-			+ " ORDER BY pv.ValidFrom DESC, BreakValue DESC";
+			+ " ORDER BY pp.C_BPartner_ID, pv.ValidFrom DESC, BreakValue DESC";
 		m_calculated = false;
 		if (m_PriceDate == null)
 			m_PriceDate = new Timestamp (System.currentTimeMillis());
