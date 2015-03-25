@@ -37,6 +37,7 @@ import javax.servlet.ServletRequest;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -47,7 +48,10 @@ import org.compiere.model.GridWindowVO;
 import org.compiere.model.I_AD_Window;
 import org.compiere.model.Lookup;
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MClient;
+import org.compiere.model.MLanguage;
 import org.compiere.model.MLookup;
+import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
 import org.compiere.model.MSession;
 import org.compiere.model.MTable;
@@ -786,5 +790,16 @@ public final class AEnv
 		}
 					
 		return adWindowID;
+	}
+	
+	public static WTableDirEditor getListDocumentLanguage (MClient client) throws Exception {
+		WTableDirEditor fLanguageType = null;
+		if (client.isMultiLingualDocument()){
+			Lookup lookupLanguage = MLookupFactory.get (Env.getCtx(), 0, 0, DisplayType.TableDir,
+					Env.getLanguage(Env.getCtx()), MLanguage.COLUMNNAME_AD_Language_ID, 0, false, 
+					" IsActive='Y' AND IsLoginLocale = 'Y' ");
+			fLanguageType = new WTableDirEditor(MLanguage.COLUMNNAME_AD_Language_ID, false, false, true, lookupLanguage);
+		}
+		return fLanguageType;
 	}
 }	//	AEnv

@@ -48,6 +48,7 @@ import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.DrillEvent;
 import org.adempiere.webui.event.ZoomEvent;
@@ -63,6 +64,7 @@ import org.compiere.Adempiere;
 import org.compiere.model.GridField;
 import org.compiere.model.MArchive;
 import org.compiere.model.MClient;
+import org.compiere.model.MLanguage;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -79,6 +81,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
@@ -166,6 +169,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private ToolBarButton bExport = new ToolBarButton();
 	private ToolBarButton bWizard = new ToolBarButton();
 	private Listbox comboReport = new Listbox();
+	private WTableDirEditor wLanguage;
 	private Label labelDrill = new Label();
 	private Listbox comboDrill = new Listbox();
 	private Listbox previewType = new Listbox();
@@ -301,6 +305,21 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		comboReport.setMold("select");
 		comboReport.setTooltiptext(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
 		toolBar.appendChild(comboReport);
+		
+		toolBar.appendChild(new Separator("vertical"));
+		
+		MClient client = MClient.get(m_ctx);
+		if (client.isMultiLingualDocument()){
+			try {
+				wLanguage = AEnv.getListDocumentLanguage(client);
+				wLanguage.getComponent().setTooltiptext(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
+				toolBar.appendChild(wLanguage.getComponent());
+				wLanguage.setValue(m_reportEngine.getLanguageID());
+				wLanguage.getComponent().addEventListener(Events.ON_SELECT, this);
+			} catch (Exception e) {
+				log.log(Level.SEVERE, e.getLocalizedMessage());
+			}
+		}
 		
 		toolBar.appendChild(new Separator("vertical"));
 		
@@ -764,7 +783,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			return;
 		if (e.getTarget() == comboReport)
 			cmd_report();
-		else if (e.getTarget() == bFind)
+		else if (MClient.get(m_ctx).isMultiLingualDocument() && e.getTarget() == wLanguage.getComponent()){
+			cmd_report();
+		}else if (e.getTarget() == bFind)
 			cmd_find();
 		else if (e.getTarget() == bExport)
 			cmd_export();
@@ -1058,8 +1079,19 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		postRenderReportEvent();
 	}	//	cmd_report
 
+	protected void setLanguage (){
+		if (MClient.get(m_ctx).isMultiLingualDocument() && wLanguage.getValue() != null){
+			MLanguage language = new MLanguage (m_ctx, (int)wLanguage.getValue(), null);
+			Language lang = new Language(language.getName(), language.getAD_Language(), language.getLocale());
+			m_reportEngine.setLanguageID(language.getAD_Language_ID());
+			m_reportEngine.getPrintFormat().setLanguage(lang);
+			m_reportEngine.getPrintFormat().setTranslationLanguage(lang);
+		}
+	}
+	
 	private void postRenderReportEvent() {
 		showBusyDialog();
+		setLanguage();
 		Events.echoEvent(ON_RENDER_REPORT_EVENT, this, null);
 	}
 
@@ -1372,7 +1404,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				}
 				File file = File.createTempFile(prefix, ".html", new File(path));
-				viewer.m_reportEngine.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(contextPath, "rp", viewer.getUuid()));
+				viewer.m_reportEngine.createHTML(file, false, viewer.m_reportEngine.getPrintFormat().getLanguage(), new HTMLExtension(contextPath, "rp", viewer.getUuid()));
 				viewer.media = new AMedia(file.getName(), "html", "text/html", file, false);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
@@ -1418,7 +1450,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				}
 				File file = File.createTempFile(prefix, ".xls", new File(path));
-				viewer.m_reportEngine.createXLS(file, AEnv.getLanguage(Env.getCtx()));
+				viewer.m_reportEngine.createXLS(file, viewer.m_reportEngine.getPrintFormat().getLanguage());
 				viewer.media = new AMedia(file.getName(), "xls", "application/vnd.ms-excel", file, true);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)

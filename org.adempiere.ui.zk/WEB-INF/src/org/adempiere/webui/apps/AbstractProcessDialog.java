@@ -43,6 +43,7 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
@@ -53,6 +54,7 @@ import org.compiere.Adempiere;
 import org.compiere.model.Lookup;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MClient;
+import org.compiere.model.MLanguage;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
@@ -112,8 +114,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	private ProcessInfo m_pi = null;
 	private boolean m_disposeOnComplete;
 
-	private Html message = null;
-
 	private ProcessParameterPanel parameterPanel = null;
 	private Checkbox runAsJobField = null;
 	private WTableDirEditor notificationTypeField = null;
@@ -135,7 +135,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	protected AbstractProcessDialog()
 	{
 		super();		
-		message = new Html();
 	}
 	
 	/**
@@ -212,7 +211,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		//
 		this.setTitle(m_Name);
 		initialMessage = m_messageText.toString();
-		message.setContent(initialMessage);
 
 		//	Move from APanel.actionButton
 		if (m_pi == null)
@@ -249,6 +247,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	protected HtmlBasedComponent bottomParameterLayout;
 	protected HtmlBasedComponent mainParameterLayout;
 	private WTableDirEditor fPrintFormat;
+	private WEditor fLanguageType;
 	private Listbox freportType;
 	private Checkbox chbIsSummary;
 	protected Button bOK;
@@ -384,9 +383,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	protected void reportOptionLayout(HtmlBasedComponent bottomParameterLayout) {
-		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
-		boolean isReport = pr.isReport() && pr.getJasperReport() == null;
-		if (!isReport)
+		if (!isReport())
 			return;//if not a report not need show this pannel
 		
 		// option control
@@ -405,10 +402,17 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		Label lIsSummary = new Label(Msg.translate(Env.getCtx(), "Summary"));
 		lIsSummary.setSclass("option-input-parameter");
 		
-		listPrintFormat();
+		MClient client = MClient.get(m_ctx);
+		listPrintFormat(client);
 		
 		reportOptionLayout.appendChild(lPrintFormat);
 		reportOptionLayout.appendChild(fPrintFormat.getComponent());
+		if (client.isMultiLingualDocument()){
+			Label lLanguageType = new Label(Msg.translate(Env.getCtx(), MLanguage.COLUMNNAME_AD_Language_ID));
+			reportOptionLayout.appendChild(lLanguageType);
+			reportOptionLayout.appendChild(fLanguageType.getComponent());
+			((Combobox)fLanguageType.getComponent()).setSclass("option-input-parameter");
+		}
 		fPrintFormat.getComponent().setSclass("option-input-parameter");
 		reportOptionLayout.appendChild(lreportType);
 		reportOptionLayout.appendChild(freportType);	
@@ -416,6 +420,12 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		reportOptionLayout.appendChild(chbIsSummary);
 	}
 
+	protected boolean isReport () {
+		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
+		return pr.isReport() && pr.getJasperReport() == null;
+		
+	}
+	
 	protected void savePrameterLayout(HtmlBasedComponent bottomParameterLayout) {
 		HtmlBasedComponent savePrameterLayout = new Div();
 		savePrameterLayout.setSclass("save-parameter-container");
@@ -470,7 +480,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		
 	}
 	
-	private void listPrintFormat()
+	private void listPrintFormat(MClient client)
 	{
 		int AD_Column_ID = 0;
 		boolean m_isCanExport = false; 
@@ -501,6 +511,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 					valCode);
 			
 			fPrintFormat = new WTableDirEditor("AD_PrintFormat_ID", false, false, true, lookup);
+			
+			if (client.isMultiLingualDocument()){
+				fLanguageType = AEnv.getListDocumentLanguage(client);
+			}
+			
 		} 
 		catch (Exception e)
 		{
@@ -532,6 +547,10 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			fPrintFormat.setValue((Integer) instance.getAD_PrintFormat_ID());
 		}
 		
+		if (fLanguageType != null && instance != null) {
+			fLanguageType.setValue((Integer) instance.getAD_Language_ID());
+		}
+		
 		if (freportType != null && instance != null) {
 			if (instance.getReportType() == null)
 				freportType.setValue("HTML");
@@ -544,6 +563,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	protected void saveReportOption (){
+		if (!isReport()){
+			return;
+		}
 		if(freportType.getSelectedItem() != null) {
 			getProcessInfo().setReportType(freportType.getSelectedItem().getValue().toString());
 		}
@@ -555,6 +577,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}
 		
 		getProcessInfo().setIsSummary(chbIsSummary.isChecked());
+		if (fLanguageType != null)
+			getProcessInfo().setLanguageID(fLanguageType.getValue() == null?0:(int)fLanguageType.getValue());
 	}
 	
 	protected void autoStart()
@@ -605,7 +629,21 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 							para.deleteEx(true);
 						}
 						getParameterPanel().saveParameters();
-						savedParams.get(i).setAD_PrintFormat_ID((Integer)fPrintFormat.getValue());
+						
+						Object value = fPrintFormat.getValue();
+						if (value == null){
+							savedParams.get(i).setAD_PrintFormat_ID(0);
+						}else{
+							savedParams.get(i).setAD_PrintFormat_ID((Integer)value);
+						}
+						
+						value = fLanguageType.getValue();
+						if (value == null){
+							savedParams.get(i).setAD_Language_ID(0);
+						}else{
+							savedParams.get(i).setAD_Language_ID((Integer)value);
+						}
+						
 						savedParams.get(i).setReportType(freportType.getSelectedItem().getValue().toString());
 						savedParams.get(i).setIsSummary(chbIsSummary.isSelected());
 						savedParams.get(i).saveEx();
@@ -946,12 +984,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	{
 		return m_AD_Process_ID;
 	}
-	
-	public Html getMessage()
-	{
-		return message;
-	}
-	
+		
 	public ProcessParameterPanel getParameterPanel()
 	{
 		return parameterPanel;

@@ -150,6 +150,34 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 		return ii.intValue();
 	}
 	
+	public org.compiere.model.I_AD_Language getAD_Language() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Language)MTable.get(getCtx(), org.compiere.model.I_AD_Language.Table_Name)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
+
+	/** Set Print Format.
+		@param AD_PrintFormat_ID 
+		Data Print Format
+	  */
+	public void setAD_Language_ID (int AD_Language_ID)
+	{
+		if (AD_Language_ID < 1) 
+			set_Value (COLUMNNAME_AD_Language_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Language_ID, Integer.valueOf(AD_Language_ID));
+	}
+
+	/** Get Print Format.
+		@return Data Print Format
+	  */
+	public int getAD_Language_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Language_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	
 	/** Set IsSummary.
 	@param IsSummary 
 	Data IsSummary

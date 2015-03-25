@@ -27,6 +27,7 @@ import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.DocumentLink;
 import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Window;
@@ -47,6 +48,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Text;
@@ -54,13 +56,16 @@ import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Html;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Vlayout;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -96,6 +101,9 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	
 	private boolean isParameterPage = true;	
 	private Mask mask;
+	private HtmlBasedComponent resultPanelLayout;
+	private HtmlBasedComponent messageResultContent;
+	private HtmlBasedComponent infoResultContent;
 
 	/**
 	 * Dialog to start a process/report
@@ -161,6 +169,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			else
 				restart();
 		}else if (bCancel.equals(component)){
+			super.onEvent(event);
 			cancelProcess();
 		} else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT)) {
     		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Process, getAD_Process_ID());
@@ -240,33 +249,56 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 
 	@Override
 	public void updateUI() {
+		swithToFinishScreen();
+	}
+	
+	protected void swithToFinishScreen() {
 		ProcessInfo pi = getProcessInfo();
 		ProcessInfoUtil.setLogFromDB(pi);
 		getMessageText().append("<p><font color=\"").append(pi.isError() ? "#FF0000" : "#0000FF").append("\">** ")
 			.append(pi.getSummary())
 			.append("</font></p>");
-		getMessage().setContent(getMessageText().toString());
+		
+		layoutResultPanel (topParameterLayout);
+		
 		// Add Log info with zoom on record id
-		appendRecordLogInfo(pi.getLogs());
+		appendRecordLogInfo(pi.getLogs(), infoResultContent);
 		
 		bOK.setLabel(Msg.getMsg(Env.getCtx(), "Parameter"));
 		bOK.setImage(ThemeManager.getThemeResource("images/Reset16.png"));
 		
 		bCancel.setLabel(Msg.getMsg(Env.getCtx(), "Close"));
 		bCancel.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
+		
 		isParameterPage = false;
 
 		m_ids = pi.getIDs();
 		
 		//move message div to center to give more space to display potentially very long log info
-		topParameterLayout.detach();
-		//TODO:hieplq show result 
+		replaceComponent (resultPanelLayout, topParameterLayout);
 		invalidate();
-		
 		Clients.response(new AuEcho(this, "onAfterProcess", null));
 	}
 	
-	private void appendRecordLogInfo(ProcessInfoLog[] m_logs) {
+	private void layoutResultPanel (HtmlBasedComponent topParameterLayout){
+		if (resultPanelLayout == null){
+			resultPanelLayout = new Vlayout();
+			resultPanelLayout.setSclass("result-parameter-layout");
+			resultPanelLayout.setVflex("true");
+			// reference for update late
+			messageResultContent = setHeadMessage(resultPanelLayout, getMessageText().toString());
+			
+			infoResultContent = new Div();
+			resultPanelLayout.appendChild(infoResultContent);
+		}
+	}
+	
+	protected void replaceComponent(HtmlBasedComponent newComponent, HtmlBasedComponent oldComponent) {
+		oldComponent.getParent().insertBefore(newComponent, oldComponent);
+		oldComponent.detach();
+	}	
+	
+	private void appendRecordLogInfo(ProcessInfoLog[] m_logs, HtmlBasedComponent infoResultContent) {
 		if (m_logs == null)
 			return;
 
@@ -280,7 +312,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		logMessageTable.setDynamicProperty("cellspacing", "0");
 		logMessageTable.setDynamicProperty("width", "100%");
 
-		this.appendChild(logMessageTable);
+		infoResultContent.appendChild(logMessageTable);
 
 		boolean datePresents = false;
 		boolean numberPresents = false;
@@ -343,18 +375,15 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	}
 
 	private void restart() {
-		setMessageText(new StringBuffer(getInitialMessage()));
-		getMessage().setContent(getInitialMessage());
-
-		if(logMessageTable!=null){
-			//messageDiv.removeChild(logMessageTable);
-		}
-		//messageDiv.setStyle(MESSAGE_DIV_STYLE);
-
+		replaceComponent (topParameterLayout, resultPanelLayout);
+		
 		isParameterPage = true;
 
 		bOK.setLabel(Msg.getMsg(Env.getCtx(), "Start"));
 		bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
+		
+		bCancel.setLabel(Util.cleanAmp(Msg.translate(Env.getCtx(), ConfirmPanel.A_CANCEL)));
+		bCancel.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
 
 		//recreate process info
 		ProcessInfo m_pi = new WProcessInfo(getName(), getAD_Process_ID());
@@ -364,7 +393,8 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		getParameterPanel().setProcessInfo(m_pi);
 
 		m_ids = null;
-
+		if (fSavedName != null)
+			querySaved();
 		invalidate();
 	}
 
@@ -418,7 +448,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			public void onCallback(Boolean result) {
 				if (result) {
 					getMessageText().append("<p>").append(Msg.getMsg(Env.getCtx(), "PrintShipments")).append("</p>");
-					getMessage().setContent(getMessageText().toString());
+					((Html)messageResultContent).setContent(getMessageText().toString());
 					showBusyDialog();
 					Clients.response(new AuEcho(ProcessDialog.this, "onPrintShipments", null));
 				}
@@ -502,7 +532,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 				if (result)
 				{
 					getMessageText().append("<p>").append(Msg.getMsg(Env.getCtx(), "PrintInvoices")).append("</p>");
-					getMessage().setContent(getMessageText().toString());
+					((Html)messageResultContent).setContent(getMessageText().toString());
 					showBusyDialog();
 					Clients.response(new AuEcho(ProcessDialog.this, "onPrintInvoices", null));
 				}

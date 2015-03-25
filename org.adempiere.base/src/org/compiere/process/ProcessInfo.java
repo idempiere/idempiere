@@ -148,6 +148,16 @@ public class ProcessInfo implements Serializable
 	
 	private boolean isSummary = false;
 	
+	private int languageID = 0;
+	
+	public int getLanguageID() {
+		return languageID;
+	}
+
+	public void setLanguageID(int languageID) {
+		this.languageID = languageID;
+	}
+
 	public String getReportType() {
 		return reportType;
 	}

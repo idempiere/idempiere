@@ -86,7 +86,9 @@ public interface I_AD_PInstance
 
     /** Column name AD_PrintFormat_ID */
     public static final String COLUMNNAME_AD_PrintFormat_ID = "AD_PrintFormat_ID";
-
+    
+    public static final String COLUMNNAME_AD_Language_ID = "AD_Language_ID";
+    
 	/** Set Print Format.
 	  * Data Print Format
 	  */

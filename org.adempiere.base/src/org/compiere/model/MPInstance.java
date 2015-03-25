@@ -449,6 +449,13 @@ public class MPInstance extends X_AD_PInstance
 			.append(ip.getInfo_To()).append("|")
 			.append(")");
 		}
+		if (getAD_Process().isReport()){
+			cksum.append(this.getAD_Language_ID()).append("|")
+			.append(this.getAD_PrintFormat_ID())
+			.append(this.getAD_Language_ID())
+			.append(this.getReportType())
+			.append(this.getIsSummary());
+		}
 		return cksum.toString();
 	}
 

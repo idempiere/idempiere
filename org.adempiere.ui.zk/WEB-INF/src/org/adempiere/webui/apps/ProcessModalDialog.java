@@ -19,7 +19,6 @@ package org.adempiere.webui.apps;
 import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.session.SessionManager;
@@ -182,13 +181,13 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	 */
 	public void onEvent(Event event) {		
 		Component component = event.getTarget();
-		if (component instanceof Button) {
-			Button element = (Button)component;
-			if ("Ok".equalsIgnoreCase(element.getId()))
-				startProcess();
-			else if ("Cancel".equalsIgnoreCase(element.getId()))
-				cancelProcess();
-		} else {
+		if (component.equals(bOK)) {
+			super.onEvent(event);
+			startProcess();
+		} else if (component.equals(bCancel)) {
+			super.onEvent(event);
+			cancelProcess();
+		}else {
 			super.onEvent(event);
 		}
 	}		

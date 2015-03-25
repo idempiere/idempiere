@@ -205,6 +205,8 @@ public class ReportEngine implements PrintServiceAttributeListener
 	/** Window */
 	private int m_windowNo = 0;
 	
+	private int m_language_id = 0;
+	
 	private boolean m_summary = false;
 	
 	private List<IReportEngineEventListener> eventListeners = new ArrayList<IReportEngineEventListener>();
@@ -1794,6 +1796,16 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	public boolean isSummary()
 	{
 		return m_summary;
+	}
+	
+	public void setLanguageID(int languageID)
+	{
+		m_language_id = languageID;
+	}
+
+	public int getLanguageID()
+	{
+		return m_language_id;
 	}
 	
 	private String reportType;

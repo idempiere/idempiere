@@ -133,6 +133,7 @@ public class ReportCtl
 		if (pi.getSerializableObject() != null)
 			instance.setAD_PrintFormat_ID(((MPrintFormat)pi.getSerializableObject()).getAD_PrintFormat_ID());
 		instance.setIsSummary(pi.isSummary());
+		instance.setAD_Language_ID(pi.getLanguageID());
 		instance.saveEx();
 
 		/**
@@ -259,7 +260,7 @@ public class ReportCtl
 		if (pi.getReportType() != null) {
 			re.setReportType(pi.getReportType());
 		}
-		
+		re.setLanguageID(pi.getLanguageID());
 		re.setWindowNo(WindowNo);
 		createOutput(re, pi.isPrintPreview(), null);
 		return true;
@@ -301,8 +302,14 @@ public class ReportCtl
 		}
 		PrintInfo info = new PrintInfo(pi);
 
-		ReportEngine re = new ReportEngine(Env.getCtx(), format, query, info);
+		ReportEngine re = new ReportEngine(Env.getCtx(), format, query, info, pi.isSummary());
 		re.setWindowNo(WindowNo);
+		if (pi.getReportType() != null) {
+			re.setReportType(pi.getReportType());
+		}
+		
+		re.setLanguageID(pi.getLanguageID());
+		
 		createOutput(re, pi.isPrintPreview(), null);
 		return true;
 	}	//	startFinReport
