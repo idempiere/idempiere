@@ -237,7 +237,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 	public BigDecimal getHdrStroke()
 	{
 		BigDecimal retValue = super.getHdrStroke();
-		if (retValue == null || Env.ZERO.compareTo(retValue) <= 0)
+		if (retValue == null || Env.ZERO.compareTo(retValue) >= 0)
 			retValue = BigDecimal.valueOf(2.0);
 		return retValue;
 	}	//	getHdrStroke
@@ -485,7 +485,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 	public BigDecimal getLineStroke()
 	{
 		BigDecimal retValue = super.getLineStroke();
-		if (retValue == null || Env.ZERO.compareTo(retValue) <= 0)
+		if (retValue == null || Env.ZERO.compareTo(retValue) >= 0)
 			retValue = Env.ONE;
 		return retValue;
 	}	//	getLineStroke
@@ -497,7 +497,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 	public BigDecimal getVLineStroke()
 	{
 		BigDecimal retValue = super.getLineStroke();
-		if (retValue == null || Env.ZERO.compareTo(retValue) <= 0)
+		if (retValue == null || Env.ZERO.compareTo(retValue) >= 0)
 			retValue = Env.ONE;
 		return retValue;
 	}	//	getVLineStroke
