@@ -23,27 +23,14 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.component.Button;
-import org.adempiere.webui.component.Checkbox;
-import org.adempiere.webui.component.Combobox;
-import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.DocumentLink;
-import org.adempiere.webui.component.Grid;
-import org.adempiere.webui.component.GridFactory;
-import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Mask;
-import org.adempiere.webui.component.Panel;
-import org.adempiere.webui.component.Row;
-import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
-import org.adempiere.webui.editor.WTableDirEditor;
-import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.process.WProcessInfo;
@@ -51,26 +38,15 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
-import org.compiere.model.Lookup;
-import org.compiere.model.MLookupFactory;
-import org.compiere.model.MPInstance;
-import org.compiere.model.MPInstancePara;
-import org.compiere.model.MProcess;
-import org.compiere.model.MRole;
-import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
-import org.compiere.model.X_AD_ReportView;
-import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
-import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.Util;
 import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Text;
@@ -83,14 +59,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
-import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Center;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -115,28 +85,17 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	 */
 	private static final long serialVersionUID = 1320565116095846687L;
 
-	public static final String ON_INITIAL_FOCUS_EVENT = "onInitialFocus";
-
-	private static final String MESSAGE_DIV_STYLE = "max-height: 150pt; overflow: auto; margin: 10px;";	
+	public static final String ON_INITIAL_FOCUS_EVENT = "onInitialFocus";	
 	
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ProcessDialog.class);
 	//
 
-	private Div messageDiv;
-	private Center center;
-	private Table logMessageTable;
-	private North north;
-	
+	private Table logMessageTable;	
 	private int[]		    m_ids = null;	
-	private Button bOK = null;
 	
 	private boolean isParameterPage = true;	
 	private Mask mask;
-
-	private boolean showLastRun = false;
-
-	private Grid southRowPanel = GridFactory.newGridLayout();
 
 	/**
 	 * Dialog to start a process/report
@@ -156,17 +115,10 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		int WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		this.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, WindowNo);
 		Env.setContext(Env.getCtx(), WindowNo, "IsSOTrx", isSOTrx ? "Y" : "N");
-		m_ctx = Env.getCtx();
-		m_AD_Process_ID = AD_Process_ID;
+		
 		try
 		{
-			MProcess process = MProcess.get(Env.getCtx(), AD_Process_ID);
-		    int count = process.getParameters().length;
-		    if (count > 0)
-		    	showLastRun = true;
-
-			initComponents();
-			init(Env.getCtx(), WindowNo, AD_Process_ID, null, "70%", false, false);
+			init(Env.getCtx(), WindowNo, AD_Process_ID, null, false, false);
 			querySaved();
 			addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 			addEventListener(ON_INITIAL_FOCUS_EVENT, this);
@@ -176,202 +128,6 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			log.log(Level.SEVERE, "", ex);
 		}
 	}	//	ProcessDialog
-
-	private void listPrintFormat()
-	{
-		int AD_Column_ID = 0;
-		boolean m_isCanExport = false; 
-		
-		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
-		int table_ID = 0;
-		try 
-		{
-			if (pr.getAD_ReportView_ID() > 0)
-			{
-				X_AD_ReportView m_Reportview = new X_AD_ReportView(m_ctx, pr.getAD_ReportView_ID(), null);
-				table_ID = m_Reportview.getAD_Table_ID();
-			}
-			else if (pr.getAD_PrintFormat_ID() > 0)
-			{
-				MPrintFormat format = new MPrintFormat(m_ctx, pr.getAD_PrintFormat_ID(), null);
-				table_ID = format.getAD_Table_ID();
-			}
-			String valCode = null;
-			if (table_ID > 0)
-			{
-				valCode = "AD_PrintFormat.AD_Table_ID=" + table_ID;
-				m_isCanExport = MRole.getDefault().isCanExport(table_ID);
-			}
-			Lookup lookup = MLookupFactory.get (Env.getCtx(), m_WindowNo, 
-					AD_Column_ID, DisplayType.TableDir,
-					Env.getLanguage(Env.getCtx()), "AD_PrintFormat_ID", 0, false,
-					valCode);
-			
-			fPrintFormat = new WTableDirEditor("AD_PrintFormat_ID", false, false, true, lookup);
-		} 
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, e.getLocalizedMessage());
-		}
-		
-		freportType.removeAllItems();
-		freportType.setMold("select");
-		freportType.appendItem("HTML", "HTML");
-		
-		if (m_isCanExport)
-		{
-			freportType.appendItem("PDF", "PDF");
-			freportType.appendItem("Excel", "XLS");
-		}
-		freportType.setSelectedIndex(0);
-		
-		String where = "AD_Process_ID = ? AND AD_User_ID = ? AND Name IS NULL ";
-		
-		MPInstance lastrun = MTable.get(Env.getCtx(), MPInstance.Table_Name).createQuery(where, null).setOnlyActiveRecords(true).setClient_ID()
-			.setParameters(m_AD_Process_ID, Env.getContextAsInt(Env.getCtx(), "#AD_User_ID")).setOrderBy("Created DESC").first();
-		
-		setReportTypeAndPrintFormat(lastrun);
-	}
-	
-	private void querySaved() 
-	{
-		//user query
-		savedParams = MPInstance.get(Env.getCtx(), getAD_Process_ID(), Env.getContextAsInt(Env.getCtx(), "#AD_User_ID"));
-		fSavedName.removeAllItems();
-		for (MPInstance instance : savedParams)
-		{
-			String queries = instance.get_ValueAsString("Name");
-			fSavedName.appendItem(queries);
-		}
-
-		fSavedName.setValue("");
-	}
-
-	private void initComponents() {
-		this.setStyle("position: absolute; width: 100%; height: 100%");
-		Borderlayout layout = new Borderlayout();
-		layout.setStyle("position: absolute; width: 100%; height: 100%; border: none;");
-		messageDiv = new Div();
-		messageDiv.appendChild(getMessage());
-		messageDiv.setStyle(MESSAGE_DIV_STYLE);
-		messageDiv.setId("message");
-		
-		north = new North();
-		north.appendChild(messageDiv);
-		layout.appendChild(north);
-		north.setAutoscroll(true);
-		north.setStyle("border: none;");
-		
-		center = new Center();
-		layout.appendChild(center);
-		center.appendChild(getCenterPanel());
-		getCenterPanel().setHflex("1");
-		getCenterPanel().setVflex("1");
-		center.setAutoscroll(true);
-		center.setStyle("border: none");
-		
-		Rows rows = southRowPanel.newRows();
-		rows.getParent().getId();
-		Row row1 = rows.newRow();
-		Row row = rows.newRow();
-
-		Hbox hBox = new Hbox();
-		Hbox hBox1 = new Hbox();
-
-		lSaved = new Label(Msg.getMsg(Env.getCtx(), "SavedParameter"));
-		hBox1.appendChild(lSaved);
-		fSavedName.addEventListener(Events.ON_CHANGE, this);
-		hBox.appendChild(fSavedName);
-
-		bSave.setEnabled(false);
-		bSave.addActionListener(this);
-		hBox.appendChild(bSave);
-
-		bDelete.setEnabled(false);
-		bDelete.addActionListener(this);
-		hBox.appendChild(bDelete);
-
-		hBox.setStyle("margin-right:30px;");
-		hBox1.setStyle("margin-right:30px;");
-		row1.appendChild(hBox1);
-		row.appendChild(hBox);
-		
-		// Print format on report para
-		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
-		if (pr.isReport() && pr.getJasperReport() == null)
-		{
-			listPrintFormat();
-
-			hBox = new Hbox();
-			hBox1 = new Hbox();
-			hBox1.appendChild(lPrintFormat);
-			hBox.appendChild(fPrintFormat.getComponent());
-			row1.appendChild(hBox1);
-			row.appendChild(hBox);
-
-			hBox = new Hbox();
-			hBox1 = new Hbox();
-			hBox1.appendChild(lreportType);
-			hBox.appendChild(freportType);
-			row1.appendChild(hBox1);
-			row.appendChild(hBox);
-			
-			hBox = new Hbox();
-			hBox1 = new Hbox();
-			hBox1.appendChild(lIsSummary);
-			hBox.appendChild(chbIsSummary);
-			row1.appendChild(hBox1);
-			row.appendChild(hBox);
-		}
-
-		if(!showLastRun)
-		{
-			hBox.setVisible(false);
-			hBox1.setVisible(false);
-		}
-
-		Panel confParaPanel =new Panel();
-		confParaPanel.setStyle("float:right");
-		// Invert - Unify  OK/Cancel IDEMPIERE-77
-		bOK = ButtonFactory.createNamedButton(ConfirmPanel.A_OK, true, true);
-		bOK.setId("Ok");
-		bOK.setWidth("50%");
-		bOK.addEventListener(Events.ON_CLICK, this);
-		confParaPanel.appendChild(bOK);
-		
-		bCancel = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL, true, true);
-		bCancel.setId("Cancel");
-		bCancel.setWidth("50%");
-		bCancel.addEventListener(Events.ON_CLICK, this);
-		confParaPanel.appendChild(bCancel);
-		row.appendChild(confParaPanel);
-		
-		South south = new South();
-		south.setSclass("dialog-footer");
-		layout.appendChild(south);
-		south.appendChild(southRowPanel);		
-		this.appendChild(layout);
-	}
-
-	private Button bCancel = null;
-
-	//saved parameters
-	private Combobox fSavedName=new Combobox();
-	private Button bSave=ButtonFactory.createNamedButton("Save");
-	private Button bDelete=ButtonFactory.createNamedButton("Delete");
-	private List<MPInstance> savedParams;
-	private Label lSaved;
-
-	private Properties m_ctx;
-	private int m_AD_Process_ID;
-	
-	// Print Format and View Report
-	private WTableDirEditor fPrintFormat = null;
-	private Listbox freportType = new Listbox();
-	private Label lPrintFormat = new Label(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
-	private Label lreportType = new Label(Msg.translate(Env.getCtx(), "view.report"));
-	private Label lIsSummary = new Label(Msg.translate(Env.getCtx(), "Summary"));
-	private Checkbox chbIsSummary = new Checkbox();
 	
 	/**
 	 * 	Set Visible 
@@ -394,113 +150,20 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	
 	public void onEvent(Event event) {
 		Component component = event.getTarget(); 
-
-		String saveName = null;
-		boolean lastRun = false;
-		if (fSavedName.getRawText() != null) {
-			saveName = fSavedName.getRawText();
-			lastRun = ("** " + Msg.getMsg(Env.getCtx(), "LastRun") + " **")
-					.equals(saveName);
-		}
+		
 		if(component instanceof A && event.getName().equals((Events.ON_CLICK))){
 			doOnClick((A)component);
-		} else if (component instanceof Button) {
-			Button element = (Button)component;
-			if ("Ok".equalsIgnoreCase(element.getId())) {
-				if(freportType.getSelectedItem() != null) {
-					getProcessInfo().setReportType(freportType.getSelectedItem().getValue().toString());
-				}
-				if(fPrintFormat != null && fPrintFormat.getValue() != null) {
-					MPrintFormat format = new MPrintFormat(m_ctx, (Integer) fPrintFormat.getValue(), null);
-					if (format != null) {
-						getProcessInfo().setSerializableObject(format);
-					}
-				}
-				
-				getProcessInfo().setIsSummary(chbIsSummary.isChecked());
-
-				if (isParameterPage)
-					startProcess();
-				else
-					restart();
-			} else if ("Cancel".equalsIgnoreCase(element.getId())) {
-				cancelProcess();
-
-			} else if (event.getTarget().equals(bSave) && fSavedName != null
-					&& !lastRun) {
-
-				// Update existing
-				if (fSavedName.getSelectedIndex() > -1 && savedParams != null) {
-					for (int i = 0; i < savedParams.size(); i++) {
-						if (savedParams.get(i).getName().equals(saveName)) {
-							getProcessInfo().setAD_PInstance_ID(savedParams.get(i)
-									.getAD_PInstance_ID());
-							for (MPInstancePara para : savedParams.get(i)
-									.getParameters()) {
-								para.deleteEx(true);
-							}
-							getParameterPanel().saveParameters();
-							savedParams.get(i).setAD_PrintFormat_ID((Integer)fPrintFormat.getValue());
-							savedParams.get(i).setReportType(freportType.getSelectedItem().getValue().toString());
-							savedParams.get(i).setIsSummary(chbIsSummary.isSelected());
-							savedParams.get(i).saveEx();
-						}
-					}
-				}
-				// create new
-				else {
-					MPInstance instance = null;
-					try {
-						instance = new MPInstance(Env.getCtx(),
-								getProcessInfo().getAD_Process_ID(), getProcessInfo().getRecord_ID());
-						instance.setName(saveName);
-						instance.setAD_PrintFormat_ID((Integer) fPrintFormat.getValue());
-						instance.setReportType(freportType.getSelectedItem().getValue().toString());
-						instance.setIsSummary(chbIsSummary.isSelected());
-						instance.saveEx();
-						getProcessInfo().setAD_PInstance_ID(instance.getAD_PInstance_ID());
-						// Get Parameters
-						if (getParameterPanel() != null) {
-							if (!getParameterPanel().saveParameters()) {
-								throw new AdempiereSystemError(Msg.getMsg(
-										Env.getCtx(), "SaveParameterError"));
-							}
-						}
-					} catch (Exception ex) {
-						log.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-					}
-				}
-				querySaved();
-				fSavedName.setSelectedItem(getComboItem(saveName));
-			}
-
-			else if (event.getTarget().equals(bDelete) && fSavedName != null
-					&& !lastRun) {
-				Object o = fSavedName.getSelectedItem();
-				if (savedParams != null && o != null) {
-					String selected = fSavedName.getSelectedItem().getLabel();
-					for (int i = 0; i < savedParams.size(); i++) {
-						if (savedParams.get(i).getName().equals(selected)) {
-							savedParams.get(i).deleteEx(true);
-						}
-					}
-				}
-				querySaved();
-			}
+		} else if (bOK.equals(component)) {
+			super.onEvent(event);
+			
+			if (isParameterPage)
+				startProcess();
+			else
+				restart();
+		}else if (bCancel.equals(component)){
+			cancelProcess();
 		} else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT)) {
     		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Process, getAD_Process_ID());
-		} else if (event.getTarget().equals(fSavedName)) {
-			if (savedParams != null && saveName != null) {
-				for (int i = 0; i < savedParams.size(); i++) {
-					if (savedParams.get(i).getName().equals(saveName)) {
-						loadSavedParams(savedParams.get(i));
-					}
-				}
-			}
-			boolean enabled = !Util.isEmpty(saveName);
-			bSave.setEnabled(enabled && !lastRun);
-			bDelete.setEnabled(enabled && fSavedName.getSelectedIndex() > -1
-					&& !lastRun);
 		} else if (event.getName().equals(ON_INITIAL_FOCUS_EVENT)) {
 			if (!isUILocked())
 			{
@@ -512,41 +175,6 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		} else {
 			super.onEvent(event);
 		}
-	}
-
-	public  Comboitem getComboItem( String value) {
-		Comboitem item = null;
-		for (int i = 0; i < fSavedName.getItems().size(); i++) {
-			if (fSavedName.getItems().get(i) != null) {
-				item = (Comboitem)fSavedName.getItems().get(i);
-				if (value.equals(item.getLabel().toString())) {
-					break;
-				}
-			}
-		}
-		return item;
-	}
-
-	private void setReportTypeAndPrintFormat(MPInstance instance)
-	{
-		if (fPrintFormat != null && instance != null) {
-			fPrintFormat.setValue((Integer) instance.getAD_PrintFormat_ID());
-		}
-		
-		if (freportType != null && instance != null) {
-			if (instance.getReportType() == null)
-				freportType.setValue("HTML");
-			else 
-				freportType.setValue(instance.getReportType());
-		}
-		
-       if (instance != null)       
-		    chbIsSummary.setSelected(instance.getIsSummary());
-	}
-
-	private void loadSavedParams(MPInstance instance) {
-		getParameterPanel().loadParameters(instance);
-		setReportTypeAndPrintFormat(instance);
 	}
 
 	private void doOnClick(A btn) {
@@ -623,18 +251,16 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		
 		bOK.setLabel(Msg.getMsg(Env.getCtx(), "Parameter"));
 		bOK.setImage(ThemeManager.getThemeResource("images/Reset16.png"));
+		
+		bCancel.setLabel(Msg.getMsg(Env.getCtx(), "Close"));
+		bCancel.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
 		isParameterPage = false;
 
 		m_ids = pi.getIDs();
 		
 		//move message div to center to give more space to display potentially very long log info
-		getCenterPanel().detach();
-		messageDiv.detach();
-		messageDiv.setStyle("");
-		north.setVisible(false);
-		center.appendChild(messageDiv);
-		messageDiv.setVflex("1");
-		messageDiv.setHflex("1");
+		topParameterLayout.detach();
+		//TODO:hieplq show result 
 		invalidate();
 		
 		Clients.response(new AuEcho(this, "onAfterProcess", null));
@@ -713,22 +339,17 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 				tr.appendChild(td);
 			}
 		}
-		messageDiv.appendChild(logMessageTable);
+		//messageDiv.appendChild(logMessageTable);
 	}
 
 	private void restart() {
 		setMessageText(new StringBuffer(getInitialMessage()));
 		getMessage().setContent(getInitialMessage());
 
-		north.setVisible(true);
-		messageDiv.detach();
 		if(logMessageTable!=null){
-			messageDiv.removeChild(logMessageTable);
+			//messageDiv.removeChild(logMessageTable);
 		}
-		messageDiv.setStyle(MESSAGE_DIV_STYLE);
-		north.appendChild(messageDiv);
-
-		center.appendChild(getCenterPanel());
+		//messageDiv.setStyle(MESSAGE_DIV_STYLE);
 
 		isParameterPage = true;
 

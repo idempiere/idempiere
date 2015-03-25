@@ -96,7 +96,7 @@ public class WProcessCtl extends AbstractProcessCtl {
 		ProcessModalDialog para = new ProcessModalDialog(listener, WindowNo, pi, false);
 		if (para.isValid())
 		{
-			para.setWidth("500px");
+			//para.setWidth("500px");
 			para.setVisible(true);
 			para.setPosition("center");
 			para.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);

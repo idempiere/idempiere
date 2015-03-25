@@ -428,7 +428,7 @@ public class WPaySelect extends PaySelect
 							AD_Proces_ID, X_C_PaySelection.Table_ID, m_ps.getC_PaySelection_ID(), false);
 					if (dialog.isValid()) {
 						try {
-							dialog.setWidth("500px");
+							//dialog.setWidth("500px");
 							dialog.setVisible(true);
 							dialog.setPage(form.getPage());
 							dialog.doHighlighted();

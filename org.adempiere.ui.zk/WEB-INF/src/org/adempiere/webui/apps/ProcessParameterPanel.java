@@ -79,8 +79,6 @@ public class ProcessParameterPanel extends Panel implements
 	 */
 	private static final long serialVersionUID = -5730428618898681676L;
 
-	private String width;
-
 	/**
 	 * Dynamic generated Parameter panel.
 	 * 
@@ -90,23 +88,10 @@ public class ProcessParameterPanel extends Panel implements
 	 *            process info
 	 */
 	public ProcessParameterPanel(int WindowNo, ProcessInfo pi) {
-		this(WindowNo, pi, "100%");
-	} // ProcessParameterPanel
-
-	/**
-	 * Dynamic generated Parameter panel.
-	 * 
-	 * @param WindowNo
-	 *            window
-	 * @param pi
-	 *            process info
-	 */
-	public ProcessParameterPanel(int WindowNo, ProcessInfo pi, String width) {
 		//
 		m_WindowNo = WindowNo;
 		m_processInfo = pi;
 		m_AD_Window_ID = AEnv.getADWindowID (WindowNo);		
-		this.width = width;
 		this.m_InfoWindowID = pi.getAD_InfoWindow_ID();
 		//
 		initComponent();
@@ -115,7 +100,6 @@ public class ProcessParameterPanel extends Panel implements
 	
 	private void initComponent() {
 		centerPanel = GridFactory.newGridLayout();
-		centerPanel.setInnerWidth(width);
 		this.appendChild(centerPanel);
 
 		// setup columns
