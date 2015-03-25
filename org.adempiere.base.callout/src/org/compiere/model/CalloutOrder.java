@@ -1101,7 +1101,14 @@ public class CalloutOrder extends CalloutEngine
 			if (log.isLoggable(Level.FINE)) log.fine("QtyChanged -> PriceActual=" + pp.getPriceStd()
 				+ ", PriceEntered=" + PriceEntered + ", Discount=" + pp.getDiscount());
 			PriceActual = pp.getPriceStd();
+			PriceEntered = pp.getPriceStd();
+			Discount = pp.getDiscount();
+			PriceLimit = pp.getPriceLimit();
+			PriceList = pp.getPriceList();
+			mTab.setValue("PriceList", pp.getPriceList());
+			mTab.setValue("PriceLimit", pp.getPriceLimit());
 			mTab.setValue("PriceActual", pp.getPriceStd());
+			mTab.setValue("PriceEntered", pp.getPriceStd());
 			mTab.setValue("Discount", pp.getDiscount());
 			mTab.setValue("PriceEntered", PriceEntered);
 			Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");

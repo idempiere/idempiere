@@ -19,7 +19,7 @@ ALTER TABLE M_ProductPriceVendorBreak DROP CONSTRAINT cbpartner_mproductpriceven
 ALTER TABLE M_ProductPriceVendorBreak ADD CONSTRAINT cbpartner_mproductpricevendorb FOREIGN KEY (C_BPartner_ID) REFERENCES c_bpartner(c_bpartner_id) DEFERRABLE INITIALLY DEFERRED
 ;
 
-SELECT register_migration_script('201503251255_IDEMPIERE-2540') FROM dual
+SELECT register_migration_script('201503251255_IDEMPIERE-2540.sql') FROM dual
 ;
 
 
