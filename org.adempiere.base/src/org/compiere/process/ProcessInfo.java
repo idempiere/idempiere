@@ -146,12 +146,22 @@ public class ProcessInfo implements Serializable
 	
 	private String reportType = null;
 	
+	private boolean isSummary = false;
+	
 	public String getReportType() {
 		return reportType;
 	}
 
 	public void setReportType(String reportType) {
 		this.reportType = reportType;
+	}
+	
+	public void setIsSummary(boolean isSummary) {
+		this.isSummary = isSummary;
+	}
+	
+	public boolean isSummary() {
+		return this.isSummary;
 	}
 
 	/**

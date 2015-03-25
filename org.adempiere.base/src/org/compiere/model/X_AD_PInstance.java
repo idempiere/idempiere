@@ -149,6 +149,30 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 			 return 0;
 		return ii.intValue();
 	}
+	
+	/** Set IsSummary.
+	@param IsSummary 
+	Data IsSummary
+	*/
+	public void setIsSummary (boolean isSummary)
+	{
+		set_Value (COLUMNNAME_IsSummary, Boolean.valueOf(isSummary));
+	}
+	
+	/** Get IsSummary.
+		@return Data IsSummary
+	  */
+	public boolean getIsSummary () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsSummary);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
     {

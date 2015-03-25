@@ -306,7 +306,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		summary.setText(Msg.getMsg(Env.getCtx(), "Summary"));
 		toolBar.appendChild(summary);
-		
+		summary.setChecked(m_reportEngine.isSummary());
 		toolBar.appendChild(new Separator("vertical"));
 		
 		bCustomize.setName("Customize");

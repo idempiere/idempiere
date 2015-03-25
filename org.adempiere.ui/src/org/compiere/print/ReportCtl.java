@@ -132,6 +132,7 @@ public class ReportCtl
 			instance.setReportType(pi.getReportType());
 		if (pi.getSerializableObject() != null)
 			instance.setAD_PrintFormat_ID(((MPrintFormat)pi.getSerializableObject()).getAD_PrintFormat_ID());
+		instance.setIsSummary(pi.isSummary());
 		instance.saveEx();
 
 		/**
@@ -242,7 +243,7 @@ public class ReportCtl
 			String TableName = MTable.getTableName(ctx, format.getAD_Table_ID());
 			MQuery query = MQuery.get (ctx, pi.getAD_PInstance_ID(), TableName);
 			PrintInfo info = new PrintInfo(pi);
-			re = new ReportEngine(ctx, format, query, info);
+			re = new ReportEngine(ctx, format, query, info, pi.isSummary());
 		}
 		//
 		// Create Report Engine normally
@@ -258,6 +259,7 @@ public class ReportCtl
 		if (pi.getReportType() != null) {
 			re.setReportType(pi.getReportType());
 		}
+		
 		re.setWindowNo(WindowNo);
 		createOutput(re, pi.isPrintPreview(), null);
 		return true;

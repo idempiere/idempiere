@@ -118,6 +118,7 @@ import org.eevolution.model.X_PP_Order;
  */
 public class ReportEngine implements PrintServiceAttributeListener
 {
+	
 	/**
 	 *	Constructor
 	 * 	@param ctx context
@@ -131,15 +132,42 @@ public class ReportEngine implements PrintServiceAttributeListener
 	}	//	ReportEngine
 	
 	/**
+	 * Set report engine with summary and null transaction
+	 * @param ctx
+	 * @param pf
+	 * @param query
+	 * @param info
+	 * @param isSummary
+	 */
+	public ReportEngine (Properties ctx, MPrintFormat pf, MQuery query, PrintInfo info, boolean isSummary)
+	{
+		this(ctx, pf, query, info, isSummary, null);
+	}	//	ReportEngine
+	
+	/**
+	 * Set report engine with summary = false
+	 * @param ctx
+	 * @param pf
+	 * @param query
+	 * @param info
+	 * @param trxName
+	 */
+	public ReportEngine (Properties ctx, MPrintFormat pf, MQuery query, PrintInfo info, String trxName){
+		this(ctx, pf, query, info, false, trxName);
+	}
+	
+	/**
 	 *	Constructor
 	 * 	@param ctx context
 	 *  @param pf Print Format
 	 *  @param query Optional Query
 	 *  @param info print info
+	 *  @param isSummary
 	 *  @param trxName
 	 */
-	public ReportEngine (Properties ctx, MPrintFormat pf, MQuery query, PrintInfo info, String trxName)
+	public ReportEngine (Properties ctx, MPrintFormat pf, MQuery query, PrintInfo info, boolean isSummary, String trxName)
 	{
+		m_summary = isSummary;
 		if (pf == null)
 			throw new IllegalArgumentException("ReportEngine - no PrintFormat");
 		if (log.isLoggable(Level.INFO)) log.info(pf + " -- " + query);
@@ -1310,7 +1338,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		PrintInfo info = new PrintInfo (pi);
 		info.setAD_Table_ID(AD_Table_ID);
 		
-		return new ReportEngine(ctx, format, query, info, pi.getTransactionName());
+		return new ReportEngine(ctx, format, query, info, pi.isSummary(), pi.getTransactionName());
 	}	//	get
 	
 	/*************************************************************************/
@@ -1763,6 +1791,11 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		m_summary = summary;
 	}
 
+	public boolean isSummary()
+	{
+		return m_summary;
+	}
+	
 	private String reportType;
 	
 	public void setReportType(String type)

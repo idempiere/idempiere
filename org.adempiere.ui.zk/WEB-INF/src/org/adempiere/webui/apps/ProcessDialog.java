@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.DocumentLink;
@@ -314,6 +315,13 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			hBox.appendChild(freportType);
 			row1.appendChild(hBox1);
 			row.appendChild(hBox);
+			
+			hBox = new Hbox();
+			hBox1 = new Hbox();
+			hBox1.appendChild(lIsSummary);
+			hBox.appendChild(chbIsSummary);
+			row1.appendChild(hBox1);
+			row.appendChild(hBox);
 		}
 
 		if(!showLastRun)
@@ -362,6 +370,8 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	private Listbox freportType = new Listbox();
 	private Label lPrintFormat = new Label(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
 	private Label lreportType = new Label(Msg.translate(Env.getCtx(), "view.report"));
+	private Label lIsSummary = new Label(Msg.translate(Env.getCtx(), "Summary"));
+	private Checkbox chbIsSummary = new Checkbox();
 	
 	/**
 	 * 	Set Visible 
@@ -406,6 +416,8 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 						getProcessInfo().setSerializableObject(format);
 					}
 				}
+				
+				getProcessInfo().setIsSummary(chbIsSummary.isChecked());
 
 				if (isParameterPage)
 					startProcess();
@@ -430,6 +442,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 							getParameterPanel().saveParameters();
 							savedParams.get(i).setAD_PrintFormat_ID((Integer)fPrintFormat.getValue());
 							savedParams.get(i).setReportType(freportType.getSelectedItem().getValue().toString());
+							savedParams.get(i).setIsSummary(chbIsSummary.isSelected());
 							savedParams.get(i).saveEx();
 						}
 					}
@@ -442,7 +455,8 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 								getProcessInfo().getAD_Process_ID(), getProcessInfo().getRecord_ID());
 						instance.setName(saveName);
 						instance.setAD_PrintFormat_ID((Integer) fPrintFormat.getValue());
-						instance.setReportType(freportType.getSelectedItem().getValue().toString());						
+						instance.setReportType(freportType.getSelectedItem().getValue().toString());
+						instance.setIsSummary(chbIsSummary.isSelected());
 						instance.saveEx();
 						getProcessInfo().setAD_PInstance_ID(instance.getAD_PInstance_ID());
 						// Get Parameters
@@ -525,6 +539,9 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			else 
 				freportType.setValue(instance.getReportType());
 		}
+		
+       if (instance != null)       
+		    chbIsSummary.setSelected(instance.getIsSummary());
 	}
 
 	private void loadSavedParams(MPInstance instance) {

@@ -96,6 +96,19 @@ public interface I_AD_PInstance
 	  * Data Print Format
 	  */
 	public int getAD_PrintFormat_ID();
+	
+	/** Column name IsSummary */
+    public static final String COLUMNNAME_IsSummary = "IsSummary";
+
+	/** Set IsSummary.
+	  * Data IsSummary
+	  */
+	public void setIsSummary (boolean isSummary);
+
+	/** Get IsSummary.
+	  * Data IsSummary
+	  */
+	public boolean getIsSummary();
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
