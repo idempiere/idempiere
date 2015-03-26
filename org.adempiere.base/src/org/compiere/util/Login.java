@@ -771,7 +771,9 @@ public class Login
 
 		// IDEMPIERE-1717 Maintenance mode
 		if (! MRole.get(m_ctx, AD_Role_ID).isAccessAdvanced()) {
-			if (MSysConfig.getBooleanValue(MSysConfig.SYSTEM_IN_MAINTENANCE_MODE, false, AD_Client_ID))
+			if (MSysConfig.getBooleanValue(MSysConfig.SYSTEM_IN_MAINTENANCE_MODE, false, 0))
+				return Msg.getMsg(m_ctx, "SystemInMaintenance");
+			if (AD_Client_ID != 0 && MSysConfig.getBooleanValue(MSysConfig.SYSTEM_IN_MAINTENANCE_MODE, false, AD_Client_ID))
 				return Msg.getMsg(m_ctx, "SystemInMaintenance");
 		}
 

@@ -866,7 +866,7 @@ public class TimeUtil
 		calEnd.set(Calendar.MILLISECOND, 0);
 
 		while (cal.before(calEnd) || cal.equals(calEnd)) {
-			if (!nbd.contains(new Timestamp(cal.getTimeInMillis()))) {
+			if (nbd == null || !nbd.contains(new Timestamp(cal.getTimeInMillis()))) {
 				if (cal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
 					retValue++;
 				}
