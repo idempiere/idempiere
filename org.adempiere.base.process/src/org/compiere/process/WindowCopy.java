@@ -22,6 +22,7 @@ import org.compiere.model.MField;
 import org.compiere.model.MTab;
 import org.compiere.model.MWindow;
 import org.compiere.util.AdempiereUserError;
+import org.compiere.util.DB;
 
 
 /**
@@ -63,6 +64,55 @@ public class WindowCopy extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
+		final String sqluptrlwin = ""
+				+ "UPDATE ad_window_trl "
+				+ "SET    name = (SELECT name "
+				+ "               FROM   ad_window_trl t2 "
+				+ "               WHERE  t2.ad_window_id = ? AND t2.ad_language = ad_window_trl.ad_language), "
+				+ "       description = (SELECT description "
+				+ "                      FROM   ad_window_trl t2 "
+				+ "                      WHERE  t2.ad_window_id = ? AND t2.ad_language = ad_window_trl.ad_language), "
+				+ "       help = (SELECT help "
+				+ "               FROM   ad_window_trl t2 "
+				+ "               WHERE  t2.ad_window_id = ? AND t2.ad_language = ad_window_trl.ad_language), "
+				+ "       istranslated = (SELECT istranslated "
+				+ "                       FROM   ad_window_trl t2 "
+				+ "                       WHERE  t2.ad_window_id = ? AND t2.ad_language = ad_window_trl.ad_language) "
+				+ "WHERE  ad_window_id = ?";
+		final String sqluptrltab = ""
+				+ "UPDATE ad_tab_trl "
+				+ "SET    name = (SELECT name "
+				+ "               FROM   ad_tab_trl t2 "
+				+ "               WHERE  t2.ad_tab_id = ? AND t2.ad_language = ad_tab_trl.ad_language), "
+				+ "       description = (SELECT description "
+				+ "                      FROM   ad_tab_trl t2 "
+				+ "                      WHERE  t2.ad_tab_id = ? AND t2.ad_language = ad_tab_trl.ad_language), "
+				+ "       help = (SELECT help "
+				+ "               FROM   ad_tab_trl t2 "
+				+ "               WHERE  t2.ad_tab_id = ? AND t2.ad_language = ad_tab_trl.ad_language), "
+				+ "       commitwarning = (SELECT commitwarning "
+				+ "                        FROM   ad_tab_trl t2 "
+				+ "                        WHERE  t2.ad_tab_id = ? AND t2.ad_language = ad_tab_trl.ad_language), "
+				+ "       istranslated = (SELECT istranslated "
+				+ "                       FROM   ad_tab_trl t2 "
+				+ "                       WHERE  t2.ad_tab_id = ? AND t2.ad_language = ad_tab_trl.ad_language) "
+				+ "WHERE  ad_tab_id = ?";
+		final String sqluptrlfld = ""
+				+ "UPDATE ad_field_trl "
+				+ "SET    name = (SELECT name "
+				+ "               FROM   ad_field_trl t2 "
+				+ "               WHERE  t2.ad_field_id = ? AND t2.ad_language = ad_field_trl.ad_language), "
+				+ "       description = (SELECT description "
+				+ "                      FROM   ad_field_trl t2 "
+				+ "                      WHERE  t2.ad_field_id = ? AND t2.ad_language = ad_field_trl.ad_language), "
+				+ "       help = (SELECT help "
+				+ "               FROM   ad_field_trl t2 "
+				+ "               WHERE  t2.ad_field_id = ? AND t2.ad_language = ad_field_trl.ad_language), "
+				+ "       istranslated = (SELECT istranslated "
+				+ "                       FROM   ad_field_trl t2 "
+				+ "                       WHERE  t2.ad_field_id = ? AND t2.ad_language = ad_field_trl.ad_language) "
+				+ "WHERE  ad_field_id = ?";		
+
 		if (log.isLoggable(Level.INFO)) log.info("doIt - To AD_Window_ID=" + p_AD_WindowTo_ID + ", From=" + p_AD_WindowFrom_ID);
 		MWindow from = new MWindow (getCtx(), p_AD_WindowFrom_ID, get_TrxName());
 		if (from.get_ID() == 0)
@@ -70,6 +120,7 @@ public class WindowCopy extends SvrProcess
 		MWindow to = new MWindow (getCtx(), p_AD_WindowTo_ID, get_TrxName());
 		if (to.get_ID() == 0)
 			throw new AdempiereUserError("@NotFound@ (to<-) @AD_Window_ID@");
+		DB.executeUpdateEx(sqluptrlwin, new Object[]{from.get_ID(),from.get_ID(),from.get_ID(),from.get_ID(),to.get_ID()}, get_TrxName());
 		
 		int tabCount = 0;
 		int fieldCount = 0;
@@ -80,6 +131,7 @@ public class WindowCopy extends SvrProcess
 			MTab newTab = new MTab (to, oldTab);
 			if (newTab.save())
 			{
+				DB.executeUpdateEx(sqluptrltab, new Object[]{oldTab.get_ID(),oldTab.get_ID(),oldTab.get_ID(),oldTab.get_ID(),oldTab.get_ID(),newTab.get_ID()}, get_TrxName());
 				tabCount++;
 				//	Copy Fields
 				for (MField oldField : oldTab.getFields(false, get_TrxName()))
@@ -87,10 +139,12 @@ public class WindowCopy extends SvrProcess
 					MField newField = new MField (newTab, oldField);
 					if (! oldField.isActive())
 						newField.setIsActive(false);
-					if (newField.save())
+					if (newField.save()) {
+						DB.executeUpdateEx(sqluptrlfld, new Object[]{oldField.get_ID(),oldField.get_ID(),oldField.get_ID(),oldField.get_ID(),newField.get_ID()}, get_TrxName());
 						fieldCount++;
-					else
+					} else {
 						throw new AdempiereUserError("@Error@ @AD_Field_ID@");
+					}
 				}
 			}
 			else

@@ -684,7 +684,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 											Record_ID = -1;
 										}
 							    		Boolean canAccess = null;
-										if (Record_ID >= 0) {
+										if (Record_ID >= 0 && mTable != null) {
 											int AD_Window_ID = Env.getZoomWindowID(mTable.get_ID(), Record_ID);
 								    		canAccess = MRole.getDefault().getWindowAccess(AD_Window_ID);
 										}

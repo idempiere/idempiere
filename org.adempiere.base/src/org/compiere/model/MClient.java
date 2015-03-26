@@ -56,7 +56,7 @@ public class MClient extends X_AD_Client
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4479164806149932775L;
+	private static final long serialVersionUID = -4420908648355523008L;
 
 	/**
 	 * 	Get client
@@ -82,7 +82,19 @@ public class MClient extends X_AD_Client
 	 */
 	public static MClient[] getAll (Properties ctx)
 	{
+		return getAll(ctx, "");
+	}	//	getAll
+
+	/**
+	 * 	Get all clients
+	 *	@param ctx context
+	 *	@param order by clause
+	 *	@return clients
+	 */
+	public static MClient[] getAll (Properties ctx, String orderBy)
+	{
 		List<MClient> list = new Query(ctx,I_AD_Client.Table_Name,null,null)
+		.setOrderBy(orderBy)
 		.list();
 		for(MClient client:list ){
 			s_cache.put (new Integer (client.getAD_Client_ID()), client);
