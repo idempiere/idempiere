@@ -17,7 +17,8 @@
 
 package org.adempiere.webui.component;
 
-import org.adempiere.webui.ISupportMask;
+import org.adempiere.webui.ISupportMask; 
+import org.adempiere.webui.ShowMaskWrapper;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.IdSpace;
@@ -42,6 +43,8 @@ public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace, ISuppor
 
 	private int tabLevel;
 
+	protected ShowMaskWrapper showMaskWrapper = new ShowMaskWrapper(this);
+	
     public boolean isEnabled()
     {
         return enabled;
@@ -89,20 +92,11 @@ public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace, ISuppor
 	}
 	
 	/**
-	 * cache {@link Mask} Object
-	 */
-	private Mask maskObj; 
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void showMask() {
-		maskObj = getMaskObj ();
-		if (maskObj.getParent() == null){
-			this.appendChild(maskObj);
-		}
-		
+		showMaskWrapper.showMask();
 	}
 
 	/**
@@ -110,10 +104,7 @@ public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace, ISuppor
 	 */
 	@Override
 	public void hideMask() {
-		if (maskObj != null || maskObj.getParent() != null){
-			maskObj.detach();
-		}
-		
+		showMaskWrapper.hideMask();
 	}
 
 	/**
@@ -121,10 +112,7 @@ public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace, ISuppor
 	 */
 	@Override
 	public Mask getMaskObj() {
-		if (maskObj == null)
-			maskObj = new Mask();
-		
-		return maskObj;
+		return showMaskWrapper.getMaskObj();
 	}
 
 	/**
@@ -132,6 +120,6 @@ public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace, ISuppor
 	 */
 	@Override
 	public Component getMaskComponent() {		
-		return this;
+		return showMaskWrapper.getMaskComponent();
 	}
 }
