@@ -60,7 +60,6 @@ import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.part.ITabOnSelectHandler;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.window.FDialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MInfoColumn;
@@ -72,8 +71,6 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.ProcessInfo;
-import org.compiere.process.ProcessInfoLog;
-import org.compiere.process.ProcessInfoUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -1550,27 +1547,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 						// enable or disable control button rely selected record status 
 						enableButtons();
 					}else if (m_pi.isError()){
-						// show error info
-						ProcessInfoUtil.setLogFromDB(m_pi);						
-						ProcessInfoLog m_logs[] = m_pi.getLogs();
-						if (m_logs != null && m_logs.length > 0) {
-							ProcessInfoDialog.showProcessInfo(m_pi, p_WindowNo, InfoPanel.this, false);
-						}else{
-							FDialog.error(p_WindowNo, m_pi.getSummary());
-						}
+						ProcessInfoDialog.showProcessInfo(m_pi, p_WindowNo, InfoPanel.this, true);
 						// enable or disable control button rely selected record status 
 						enableButtons();
 					}else if (!m_pi.isError()){
-						ProcessInfoUtil.setLogFromDB(m_pi);						
-						ProcessInfoLog m_logs[] = m_pi.getLogs();
-						if (m_logs != null && m_logs.length > 0) {
-							ProcessInfoDialog.showProcessInfo(m_pi, p_WindowNo, InfoPanel.this, false);
-							
-							// when success, show summary if exists
-						}else if (m_pi.getSummary() != null && m_pi.getSummary().trim().length() > 0){
-							FDialog.info(p_WindowNo, null, m_pi.getSummary());
-						}		
-						
+						ProcessInfoDialog.showProcessInfo(m_pi, p_WindowNo, InfoPanel.this, true);	
 						Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", m_results));
 					}
 					
