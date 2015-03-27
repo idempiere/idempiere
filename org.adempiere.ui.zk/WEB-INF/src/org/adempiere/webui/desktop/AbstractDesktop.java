@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.exception.ApplicationException;
@@ -151,6 +152,8 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
     }
     
     /**
+     * when width of win set by stylesheet (css class or in style) win sometime don't in center.
+     * fix by find out method change to  {@link LayoutUtils#openOverlappedWindow(org.zkoss.zk.ui.Component, org.zkoss.zul.Window, String)}  
      * @param win
      * @param pos
      */

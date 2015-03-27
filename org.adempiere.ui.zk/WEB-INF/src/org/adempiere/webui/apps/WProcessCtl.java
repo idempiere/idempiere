@@ -19,7 +19,12 @@ package org.adempiere.webui.apps;
 import java.util.logging.Level;
 
 import org.adempiere.util.IProcessUI;
+import org.adempiere.webui.ISupportMask;
+import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.apps.AbstractProcessCtl;
 import org.compiere.apps.IProcessParameter;
 import org.compiere.model.MPInstance;
@@ -28,6 +33,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
@@ -98,9 +104,30 @@ public class WProcessCtl extends AbstractProcessCtl {
 		{
 			//para.setWidth("500px");
 			para.setVisible(true);
-			para.setPosition("center");
-			para.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-			AEnv.showWindow(para);
+
+			Object window = SessionManager.getAppDesktop().findWindow(WindowNo);
+			if (window != null && window instanceof Component && window instanceof ISupportMask){
+				final ISupportMask parent = LayoutUtils.showWindowWithMask(para, (Component)window, LayoutUtils.OVERLAP_PARENT);
+				para.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						parent.hideMask();
+					}
+				});
+			}else if (window != null && window instanceof Component){
+				final Mask mask = LayoutUtils.showWindowWithMask(para, (Component)window, null);
+				para.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						mask.hideMask();
+					}
+				});
+			}else{
+				para.setPosition("center");
+				para.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+				AEnv.showWindow(para);
+			}
+			
 		}
 	}	//	execute
 	
