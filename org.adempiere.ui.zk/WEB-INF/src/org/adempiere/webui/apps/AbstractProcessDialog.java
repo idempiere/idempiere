@@ -98,11 +98,11 @@ import org.zkoss.zul.Vlayout;
 
 public abstract class AbstractProcessDialog extends Window implements IProcessUI, EventListener<Event>
 {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 761285757875594250L;
-
+	private static final long serialVersionUID = -4807787318205732697L;
 	private static final String ON_COMPLETE = "onComplete";
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
 	

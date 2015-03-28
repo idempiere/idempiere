@@ -42,10 +42,11 @@ import org.zkoss.zul.Separator;
  * @author Deepak Pansheriya
  */
 public class ProcessInfoDialog extends Window implements EventListener<Event> {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4479446865514015847L;
+	private static final long serialVersionUID = -1712025652050086903L;
 
 	private static final String MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 250pt; min-width: 230pt; max-width: 450pt;";
 

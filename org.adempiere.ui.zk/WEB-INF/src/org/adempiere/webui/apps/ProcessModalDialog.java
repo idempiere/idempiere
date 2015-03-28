@@ -45,8 +45,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3260639688339379279L;
-
+	private static final long serialVersionUID = -6227339628038418701L;
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ProcessModalDialog.class);
 	//
@@ -82,7 +81,8 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		try
 		{
 			init(Env.getCtx(), WindowNo, pi.getAD_Process_ID(), pi, autoStart, true);
-			mainParameterLayout.setStyle("max-height:" + (SessionManager.getAppDesktop().getClientInfo().desktopHeight - 150) + "px");
+			if (mainParameterLayout != null)// when auto start it's null
+				mainParameterLayout.setStyle("max-height:" + (SessionManager.getAppDesktop().getClientInfo().desktopHeight - 150) + "px");
 			this.setSclass("popup-dialog");
 		}
 		catch(Exception ex)
@@ -147,13 +147,6 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		getParameterPanel().restoreContext();
 		this.detach();
 	}	//	dispose
-
-	@Override
-	public void autoStart() 
-	{
-		this.getFirstChild().setVisible(false);
-		super.autoStart();
-	}
 
 	@Override
 	public void showBusyDialog() {
