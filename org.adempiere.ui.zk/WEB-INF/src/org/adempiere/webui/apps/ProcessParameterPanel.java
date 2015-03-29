@@ -479,6 +479,9 @@ public class ProcessParameterPanel extends Panel implements
 
 		}	//	for every field
 
+		//TODO: consider also call processDependencies per each time set value for field to validate, call callout,...
+		dynamicDisplay();
+		
 		return true;
 	}	//	loadParameters
 
