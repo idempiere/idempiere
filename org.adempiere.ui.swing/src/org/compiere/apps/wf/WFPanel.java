@@ -164,7 +164,7 @@ public class WFPanel extends CPanel
 	private JButton wfEnd = new JButton();
 	//
 	private CPanel loadPanel = new CPanel(new FlowLayout(FlowLayout.LEADING));
-	private CComboBox workflow = new CComboBox();
+	private CComboBox<Object>workflow = new CComboBox<Object>();
 	private CButton bResetLayout = AEnv.getButton("Reset");
 	private CButton bSaveLayout = AEnv.getButton ("Save");
 	private CButton bZoom = AEnv.getButton("Zoom");
@@ -276,7 +276,7 @@ public class WFPanel extends CPanel
 			"AD_Workflow", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);	//	all
 		KeyNamePair[] pp = DB.getKeyNamePairs(sql, true);
 		//
-		workflow = new CComboBox(pp);
+		workflow = new CComboBox<Object>(pp);
 		loadPanel.add(workflow);
 		workflow.addActionListener(this);
 		//

@@ -50,7 +50,7 @@ public class ComboSelectionManager implements JComboBox.KeySelectionManager
 	 *  @param model a ComboBoxModel -- the component's data model, containing the list of selectable items
 	 *  @return an int equal to the selected row, where 0 is the first item and -1 is none
 	 */
-	public int selectionForKey (char key, ComboBoxModel model)
+	public int selectionForKey (char key, @SuppressWarnings("rawtypes") ComboBoxModel model)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("Key=" + key);
 		//

@@ -34,7 +34,7 @@ import org.compiere.util.NamePair;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: VComboBox.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
  */
-public class VComboBox extends CComboBox
+public class VComboBox extends CComboBox<Object>
 {
 	/**
 	 * 
@@ -54,7 +54,7 @@ public class VComboBox extends CComboBox
 		super(items);
 //		common_init();
 	}
-	public VComboBox(ComboBoxModel model)
+	public VComboBox(ComboBoxModel<Object> model)
 	{
 		super(model);
 //		common_init();
@@ -91,7 +91,7 @@ public class VComboBox extends CComboBox
 			return;
 		}
 
-		ComboBoxModel model = getModel();
+		ComboBoxModel<Object> model = getModel();
 		int size = model.getSize();
 		for (int i = 0; i < size; i++)
 		{

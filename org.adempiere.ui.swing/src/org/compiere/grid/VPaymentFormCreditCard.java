@@ -47,7 +47,7 @@ public class VPaymentFormCreditCard extends PaymentFormCreditCard implements Act
 	private VPaymentFormDialog dialog;
 	
 	private CLabel kTypeLabel = new CLabel();
-	private CComboBox kTypeCombo = new CComboBox();
+	private CComboBox<Object>kTypeCombo = new CComboBox<Object>();
 	private CLabel kNumberLabel = new CLabel();
 	private CTextField kNumberField = new CTextField();
 	private CLabel kNameLabel = new CLabel();

@@ -116,7 +116,7 @@ public class VDocAction extends CDialog
 	private CPanel mainPanel = new CPanel();
 	private BorderLayout mainLayout = new BorderLayout();
 	private CPanel northPanel = new CPanel();
-	private CComboBox actionCombo = new CComboBox();
+	private CComboBox<Object>actionCombo = new CComboBox<Object>();
 	private JLabel actionLabel = new JLabel();
 	private JScrollPane centerPane = new JScrollPane();
 	private JTextArea message = new JTextArea();

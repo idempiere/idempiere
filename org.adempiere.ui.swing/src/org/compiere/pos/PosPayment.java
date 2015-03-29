@@ -53,7 +53,9 @@ import org.compiere.model.MPOS;
 import org.compiere.model.MPOSKey;
 import org.compiere.model.MPayment;
 import org.compiere.model.MPaymentValidate;
+
 import static org.compiere.model.SystemIDs.*;
+
 import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CDialog;
@@ -179,7 +181,7 @@ public class PosPayment extends CDialog implements PosKeyListener, VetoableChang
 	private PosOrderModel p_order;
 	private CTextField fTotal = new CTextField(10);
 	private CTextField fBalance = new CTextField(10);
-	private CComboBox tenderTypePick = new CComboBox();
+	private CComboBox<Object>tenderTypePick = new CComboBox<Object>();
 	private PosTextField fPayAmt;
 	private CButton f_bProcess;
 	private boolean paid = false;
@@ -189,7 +191,7 @@ public class PosPayment extends CDialog implements PosKeyListener, VetoableChang
 	private PosTextField fCheckRouteNo;
 	private PosTextField fCCardNo;
 	private PosTextField fCCardName;
-	private CComboBox fCCardType;
+	private CComboBox<Object>fCCardType;
 	private PosTextField fCCardMonth;
 	private PosTextField fCCardVC;
 
@@ -252,7 +254,7 @@ public class PosPayment extends CDialog implements PosKeyListener, VetoableChang
 		MLookup lookup = MLookupFactory.get(Env.getCtx(), 0, 0, AD_Column_ID, DisplayType.List);
 		ArrayList<Object> types = lookup.getData(true, false, true, true, false); // IDEMPIERE 90
 		
-		DefaultComboBoxModel typeModel = new DefaultComboBoxModel(types.toArray()); 
+		DefaultComboBoxModel<Object> typeModel = new DefaultComboBoxModel<Object>(types.toArray()); 
 		tenderTypePick.setModel(typeModel);
 		// default to cash payment
 		for (Object obj : types)
@@ -271,10 +273,10 @@ public class PosPayment extends CDialog implements PosKeyListener, VetoableChang
 		tenderTypePick.setFont(font);
 		tenderTypePick.addActionListener(this);
 		tenderTypePick.setName("tenderTypePick"); //red1 for ID purpuse during testing
-		tenderTypePick.setRenderer(new ListCellRenderer() {
+		tenderTypePick.setRenderer(new ListCellRenderer<Object>() {
 			protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
-			public Component getListCellRendererComponent(JList list, Object value,
+			public Component getListCellRendererComponent(JList<?> list, Object value,
 					int index, boolean isSelected, boolean cellHasFocus) {
 				
 				JLabel renderer = (JLabel) defaultRenderer
@@ -340,12 +342,12 @@ public class PosPayment extends CDialog implements PosKeyListener, VetoableChang
 		 */
 		ValueNamePair[] ccs = p_order.getCreditCards((BigDecimal) fPayAmt.getValue());
 		//	Set Selection
-		fCCardType = new CComboBox(ccs);
+		fCCardType = new CComboBox<Object>(ccs);
 		fCCardType.setName("cardType"); //red1 Id for testing
-		fCCardType.setRenderer(new ListCellRenderer() {
+		fCCardType.setRenderer(new ListCellRenderer<Object>() {
 			protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
-			public Component getListCellRendererComponent(JList list, Object value,
+			public Component getListCellRendererComponent(JList<?> list, Object value,
 					int index, boolean isSelected, boolean cellHasFocus) {
 				
 				JLabel renderer = (JLabel) defaultRenderer

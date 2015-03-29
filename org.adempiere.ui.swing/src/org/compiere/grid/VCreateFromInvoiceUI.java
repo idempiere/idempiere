@@ -84,15 +84,15 @@ public class VCreateFromInvoiceUI extends CreateFromInvoice implements ActionLis
 	private VLookup bPartnerField;
 	
 	private JLabel orderLabel = new JLabel();
-	private JComboBox orderField = new JComboBox();
+	private JComboBox<Object> orderField = new JComboBox<Object>();
 	
 	private JLabel shipmentLabel = new JLabel();
-	private JComboBox shipmentField = new JComboBox();
+	private JComboBox<Object> shipmentField = new JComboBox<Object>();
     
     /** Label for the rma selection */
 	private JLabel rmaLabel = new JLabel();
     /** Combo box for selecting RMA document */
-	private JComboBox rmaField = new JComboBox();
+	private JComboBox<Object> rmaField = new JComboBox<Object>();
 	
 	/**
 	 *  Dynamic Init

@@ -99,9 +99,9 @@ public class ArchiveViewer extends Archive
 	private CPanel queryPanel = new CPanel(new GridBagLayout());
 	private CCheckBox reportField = new CCheckBox(Msg.translate(Env.getCtx(), "IsReport"));
 	private CLabel processLabel = new CLabel(Msg.translate(Env.getCtx(), "AD_Process_ID"));
-	private CComboBox processField = null;
+	private CComboBox<Object> processField = null;
 	private CLabel tableLabel = new CLabel(Msg.translate(Env.getCtx(), "AD_Table_ID"));
-	private CComboBox tableField = null;
+	private CComboBox<Object> tableField = null;
 	private CLabel bPartnerLabel = new CLabel(Msg.translate(Env.getCtx(), "C_BPartner_ID"));
 	private VLookup bPartnerField = null;
 	private CLabel nameQLabel = new CLabel(Msg.translate(Env.getCtx(), "Name"));
@@ -111,7 +111,7 @@ public class ArchiveViewer extends Archive
 	private CLabel helpQLabel = new CLabel(Msg.translate(Env.getCtx(), "Help"));
 	private CTextField helpQField = new CTextField(15);
 	private CLabel createdByQLabel = new CLabel(Msg.translate(Env.getCtx(), "CreatedBy"));
-	private CComboBox createdByQField = null;
+	private CComboBox<Object> createdByQField = null;
 	private CLabel createdQLabel = new CLabel(Msg.translate(Env.getCtx(), "Created"));
 	private VDate createdQFrom = new VDate();
 	private VDate createdQTo = new VDate();
@@ -143,9 +143,9 @@ public class ArchiveViewer extends Archive
 	 */
 	private void dynInit()
 	{
-		processField = new CComboBox(getProcessData());
-		tableField = new CComboBox(getTableData());
-		createdByQField = new CComboBox(getUserData());
+		processField = new CComboBox<Object>(getProcessData());
+		tableField = new CComboBox<Object>(getTableData());
+		createdByQField = new CComboBox<Object>(getUserData());
 		//
 		bPartnerField = VLookup.createBPartner(m_WindowNo);
 	}	//	dynInit

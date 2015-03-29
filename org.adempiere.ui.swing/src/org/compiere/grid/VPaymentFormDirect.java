@@ -43,7 +43,7 @@ public abstract class VPaymentFormDirect extends PaymentFormDirect implements Ac
 	private VPaymentFormDialog dialog;
 	
 	private CLabel tAccountLabel = new CLabel();
-	private CComboBox tAccountCombo = new CComboBox();
+	private CComboBox<Object>tAccountCombo = new CComboBox<Object>();
 	private CButton tOnline = new CButton();
 	private CTextField tRoutingField = new CTextField();
 	private CTextField tNumberField = new CTextField();

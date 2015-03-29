@@ -132,7 +132,7 @@ public class VPaymentEditor extends JComponent implements VEditor, ActionListene
 		m_combo.getEditor().getEditorComponent().removeFocusListener(this);
 		m_combo.removeFocusListener(this);
 		m_combo.removeActionListener(this);
-		m_combo.setModel(new DefaultComboBoxModel());    //  remove reference
+		m_combo.setModel(new DefaultComboBoxModel<Object>());    //  remove reference
 	//	m_combo.removeAllItems();
 		m_combo = null;
 	}

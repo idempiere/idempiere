@@ -1295,7 +1295,7 @@ public final class AdempiereTabbedPaneUI extends MetalTabbedPaneUI {
     }
 
     
-    private boolean requestFocusForVisibleComponent() {
+    private boolean requestFocusForVisibleComponentX() {
         Component visibleComponent = getVisibleComponent();
         if (visibleComponent.isFocusable()) {
             visibleComponent.requestFocus();
@@ -1580,7 +1580,7 @@ public final class AdempiereTabbedPaneUI extends MetalTabbedPaneUI {
                         }
                     }
                     if (shouldChangeFocus) {
-                        if (!requestFocusForVisibleComponent()) {
+                        if (!requestFocusForVisibleComponentX()) {
                            tabPane.requestFocus();
                         }
                     }

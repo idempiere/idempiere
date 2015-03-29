@@ -124,9 +124,9 @@ public class InfoSchedule extends CDialog
 	private CPanel parameterPanel = new CPanel();
 	private GridBagLayout parameterLayout = new GridBagLayout();
 	private JLabel labelResourceType = new JLabel();
-	private JComboBox fieldResourceType = new JComboBox();
+	private JComboBox<Object> fieldResourceType = new JComboBox<Object>();
 	private JLabel labelResource = new JLabel();
-	private JComboBox fieldResource = new JComboBox();
+	private JComboBox<Object> fieldResource = new JComboBox<Object>();
 	private JButton bPrevious = new JButton();
 	private JLabel labelDate = new JLabel();
 	private VDate fieldDate = new VDate();

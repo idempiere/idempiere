@@ -111,7 +111,7 @@ public class VPayPrint extends PayPrint implements FormPanel, ActionListener, Ve
 	private CLabel lBank = new CLabel();
 	private CLabel fBank = new CLabel();
 	private CLabel lPaymentRule = new CLabel();
-	private CComboBox fPaymentRule = new CComboBox();
+	private CComboBox<Object>fPaymentRule = new CComboBox<Object>();
 	private CLabel lDocumentNo = new CLabel();
 	private VNumber fDocumentNo = new VNumber();
 	private CLabel lNoPayments = new CLabel();

@@ -54,7 +54,7 @@ import org.compiere.util.Trace;
  *  @author     Jorg Janke
  *  @version    $Id: CComboBox.java,v 1.2 2006/07/30 00:52:24 jjanke Exp $
  */
-public class CComboBox extends JComboBox
+public class CComboBox<E> extends JComboBox<E>
 	implements CEditor
 {
 	/**
@@ -73,7 +73,7 @@ public class CComboBox extends JComboBox
 	 * 		displayed list of items
 	 * @see DefaultComboBoxModel
 	 */
-	public CComboBox(ComboBoxModel aModel)
+	public CComboBox(ComboBoxModel<E> aModel)
 	{
 		super(aModel);
 		init();
@@ -87,7 +87,7 @@ public class CComboBox extends JComboBox
 	 * @param items  an array of objects to insert into the combo box
 	 * @see DefaultComboBoxModel
 	 */
-	public CComboBox(final Object items[])
+	public CComboBox(final E items[])
 	{
 		super(items);
 		init();
@@ -102,7 +102,7 @@ public class CComboBox extends JComboBox
 	 * @param key set selected if exists
 	 * @see DefaultComboBoxModel
 	 */
-	public CComboBox(final Object items[], String key)
+	public CComboBox(final E items[], String key)
 	{
 		this(items);
 		if (key == null)
@@ -133,7 +133,7 @@ public class CComboBox extends JComboBox
 	 * @param items  an array of vectors to insert into the combo box
 	 * @see DefaultComboBoxModel
 	 */
-	public CComboBox(Vector<?> items)
+	public CComboBox(Vector<E> items)
 	{
 		super(items);
 		init();
@@ -163,7 +163,7 @@ public class CComboBox extends JComboBox
 	public static final String CASE_SENSITIVE_PROPERTY = "caseSensitive";
 
 	/** View model for hiding showing only filtered data             */
-	ReducibleModel m_reducibleModel;
+	ReducibleModel<E> m_reducibleModel;
 
 	/** Key listener for triggering an update the filtering model .             */
 	private ReducibleKeyListener reducibleKeyListener = new ReducibleKeyListener();
@@ -255,7 +255,7 @@ public class CComboBox extends JComboBox
 	}   //  setIcon
 
 	   
-	public ComboBoxModel getCompleteComboBoxModel()
+	public ComboBoxModel<E> getCompleteComboBoxModel()
 	{
 		return m_reducibleModel.getModel();
 	}   //   getCompleteComboBoxModel
@@ -263,9 +263,9 @@ public class CComboBox extends JComboBox
 	/**
 	 * @see javax.swing.JComboBox#setModel(javax.swing.ComboBoxModel)
 	 */
-	public void setModel(ComboBoxModel aModel) 
+	public void setModel(ComboBoxModel<E> aModel) 
 	{
-		m_reducibleModel = (m_reducibleModel == null) ? new ReducibleModel() : m_reducibleModel;
+		m_reducibleModel = (m_reducibleModel == null) ? new ReducibleModel<E>() : m_reducibleModel;
 		m_reducibleModel.setModel(aModel);
 
 		super.setModel(m_reducibleModel);
@@ -573,7 +573,7 @@ public class CComboBox extends JComboBox
 	/**
 	 * A view adapter model to hide filtered choices in the underlying combo box model.
 	 */
-	private class ReducibleModel implements MutableComboBoxModel, ListDataListener 
+	private class ReducibleModel<T> implements MutableComboBoxModel<T>, ListDataListener 
 	{
 		/**
 		 * Default constructor.  Creates a ReducibleModel.
@@ -583,16 +583,16 @@ public class CComboBox extends JComboBox
 		}
 
 		/** The wrapped data model. */
-		private ComboBoxModel m_model;
+		private ComboBoxModel<T> m_model;
 
 		/** The wrapped data model. */
 		private EventListenerList m_listenerList = new EventListenerList();
 
 		/** The filtered data. */
-		private ArrayList<Object> m_visibleData = new ArrayList<Object>();
+		private ArrayList<T> m_visibleData = new ArrayList<T>();
 
 		/** The filtered data. */
-		private ArrayList<Object> m_modelData = new ArrayList<Object>();
+		private ArrayList<T> m_modelData = new ArrayList<T>();
 
 		/** The current filter. */
 		private String m_filter = "";
@@ -605,11 +605,11 @@ public class CComboBox extends JComboBox
 		 * 
 		 * @see javax.swing.DefaultComboBoxModel#addElement(java.lang.Object)
 		 */
-		public void addElement(Object anObject)
+		public void addElement(T anObject)
 		{
 			checkMutableComboBoxModel();
 			m_modelData.add(anObject);
-			((MutableComboBoxModel)m_model).addElement(anObject);
+			((MutableComboBoxModel<T>)m_model).addElement(anObject);
 		}
 
 		/* (non-Javadoc)
@@ -668,7 +668,7 @@ public class CComboBox extends JComboBox
 		/* (non-Javadoc)
 		 * @see javax.swing.ListModel#getElementAt(int)
 		 */
-		public Object getElementAt(int index)
+		public T getElementAt(int index)
 		{
 			return m_visibleData.get(index);
 		}
@@ -702,7 +702,7 @@ public class CComboBox extends JComboBox
 		/**
 		 * @return the wrapped model
 		 */
-		public ComboBoxModel getModel()
+		public ComboBoxModel<T> getModel()
 		{
 			return m_model;
 		}
@@ -730,11 +730,11 @@ public class CComboBox extends JComboBox
 		 * 
 		 * @see javax.swing.DefaultComboBoxModel#insertElementAt(java.lang.Object, int)
 		 */
-		public void insertElementAt(Object anObject, int index)
+		public void insertElementAt(T anObject, int index)
 		{
 			checkMutableComboBoxModel();
 			m_modelData.add(index, anObject);
-			((MutableComboBoxModel)m_model).insertElementAt(anObject, index);
+			((MutableComboBoxModel<T>)m_model).insertElementAt(anObject, index);
 		}
 
 		/**
@@ -774,7 +774,7 @@ public class CComboBox extends JComboBox
 			m_modelData.clear();
 			m_visibleData.clear();
 			while (m_model.getSize() > 0)
-				((MutableComboBoxModel)m_model).removeElementAt(0);
+				((MutableComboBoxModel<T>)m_model).removeElementAt(0);
 
 			for (ListDataListener ldl : listeners)
 				addListDataListener(ldl);
@@ -793,7 +793,7 @@ public class CComboBox extends JComboBox
 			checkMutableComboBoxModel();
 			m_modelData.remove(anObject);
 			m_visibleData.clear();
-			((MutableComboBoxModel)m_model).removeElement(anObject);
+			((MutableComboBoxModel<T>)m_model).removeElement(anObject);
 		}
 
 		/**
@@ -806,7 +806,7 @@ public class CComboBox extends JComboBox
 			checkMutableComboBoxModel();
 			m_modelData.remove(index);
 			m_visibleData.clear();
-			((MutableComboBoxModel)m_model).removeElementAt(index);
+			((MutableComboBoxModel<T>)m_model).removeElementAt(index);
 		}
 
 		/* (non-Javadoc)
@@ -831,7 +831,7 @@ public class CComboBox extends JComboBox
 		 * 
 		 * @param model the model to set
 		 */
-		public void setModel(ComboBoxModel model)
+		public void setModel(ComboBoxModel<T> model)
 		{
 			if (this.m_model != null)
 				this.m_model.removeListDataListener(this);
@@ -895,7 +895,7 @@ public class CComboBox extends JComboBox
 
 				for (int i = 0; i < size; i++)
 				{
-					Object element = m_model.getElementAt(i);
+					T element = m_model.getElementAt(i);
 					if (element == null || isMatchingFilter(element))
 					{
 						m_visibleData.add(element);

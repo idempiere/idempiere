@@ -42,7 +42,7 @@ public class JasperReportViewer extends JRViewer {
 	@SuppressWarnings("unused")
 	private JasperViewer jasperViewer;
 	private JasperPrint jasperPrint;
-    private JComboBox comboBox;
+    private JComboBox<Object> comboBox;
 
     public JasperReportViewer(final JasperViewer jasperViewer, final JasperPrint jasperPrint) throws JRException {
         super( jasperPrint);
@@ -69,7 +69,7 @@ public class JasperReportViewer extends JRViewer {
         btnExport.addActionListener( new ExportListener( this));
         tlbToolBar.add(btnExport);
         
-		comboBox = new JComboBox( new String[] {"PDF","HTML", "XLS"});
+		comboBox = new JComboBox<Object>( new String[] {"PDF","HTML", "XLS"});
         comboBox.setPreferredSize(new java.awt.Dimension(80, 23));
         comboBox.setMaximumSize(new java.awt.Dimension(80, 23));
         comboBox.setMinimumSize(new java.awt.Dimension(80, 23));

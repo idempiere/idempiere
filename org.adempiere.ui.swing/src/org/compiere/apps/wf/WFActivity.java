@@ -164,7 +164,7 @@ public class WFActivity extends CPanel
 	private CLabel lAnswer = new CLabel(Msg.getMsg(Env.getCtx(), "Answer"));
 	private CPanel answers = new CPanel(new FlowLayout(FlowLayout.LEADING));
 	private CTextField fAnswerText = new CTextField();
-	private CComboBox fAnswerList = new CComboBox();
+	private CComboBox<Object>fAnswerList = new CComboBox<Object>();
 	private CButton fAnswerButton = new CButton();
 	// private CButton bPrevious = AEnv.getButton("Previous");
 	// private CButton bNext = AEnv.getButton("Next");
@@ -535,13 +535,13 @@ public class WFActivity extends CPanel
 				if (dt == DisplayType.YesNo)
 				{
 					ValueNamePair[] values = MRefList.getList(Env.getCtx(), 319, false);		//	_YesNo
-					fAnswerList.setModel(new DefaultComboBoxModel(values));
+					fAnswerList.setModel(new DefaultComboBoxModel<Object>(values));
 					fAnswerList.setVisible(true);
 				}
 				else if (dt == DisplayType.List)
 				{
 					ValueNamePair[] values = MRefList.getList(Env.getCtx(), m_column.getAD_Reference_Value_ID(), false);
-					fAnswerList.setModel(new DefaultComboBoxModel(values));
+					fAnswerList.setModel(new DefaultComboBoxModel<Object>(values));
 					fAnswerList.setVisible(true);
 				}
 				else	//	other display types come here

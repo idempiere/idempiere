@@ -185,12 +185,12 @@ public class PLAFEditor extends JDialog
 	private CButton bHelp = new CButton();	/** @todo Help Button */
 	private GridBagLayout northLayout = new GridBagLayout();
 	private CLabel lfLabel = new CLabel();
-	private CComboBox lfField = new CComboBox(AdempierePLAF.getPLAFs());
+	private CComboBox<Object>lfField = new CComboBox<Object>(AdempierePLAF.getPLAFs());
 	private CLabel themeLabel = new CLabel();
-	private CComboBox themeField = new CComboBox(AdempierePLAF.getThemes());
+	private CComboBox<Object>themeField = new CComboBox<Object>(AdempierePLAF.getThemes());
 	private FlowLayout southLayout = new FlowLayout();
 	private CButton rButton = new CButton();
-	private CComboBox blindField = new CComboBox(ColorBlind.COLORBLIND_TYPE);
+	private CComboBox<Object>blindField = new CComboBox<Object>(ColorBlind.COLORBLIND_TYPE);
 	private CLabel blindLabel = new CLabel();
 	private BorderLayout mainLayout = new BorderLayout();
 	//
@@ -204,12 +204,12 @@ public class PLAFEditor extends JDialog
 	private JRadioButton jRadioButton1 = new JRadioButton();
 	private CButton jButton1 = new CButton();
 	private CToggleButton jToggleButton1 = new CToggleButton();
-	private CComboBox jComboBox1 = new CComboBox(s_columns);
+	private CComboBox<Object>jComboBox1 = new CComboBox<Object>(s_columns);
 	private JTextArea jTextArea1 = new JTextArea();
 	private JTextPane jTextPane1 = new JTextPane();
 	private JEditorPane jEditorPane1 = new JEditorPane();
 	private JPasswordField jPasswordField1 = new JPasswordField();
-	private JList jList1 = new JList(s_columns);
+	private JList<Object> jList1 = new JList<Object>(s_columns);
 	private JSplitPane jSplitPane1 = new JSplitPane();
 	private BorderLayout borderLayout1 = new BorderLayout();
 	private JScrollPane jScrollPane1 = new JScrollPane();
@@ -225,16 +225,16 @@ public class PLAFEditor extends JDialog
 	private CButton jButtonGardient = new CButton();
 	private JButton jButtonTexture = new JButton();
 	private CButton jButtonLines = new CButton();
-	private JComboBox jComboBoxFlat = new JComboBox(s_pos);
+	private JComboBox<Object> jComboBoxFlat = new JComboBox<Object>(s_pos);
 	private JTextField jTextFieldFlat = new JTextField();
 	private JLabel jLabelFlat = new JLabel();
-	private CComboBox jComboBoxGradient = new CComboBox(s_pos);
+	private CComboBox<Object>jComboBoxGradient = new CComboBox<Object>(s_pos);
 	private CTextField jTextFieldGradient = new CTextField();
 	private CLabel jLabelGradient = new CLabel();
-	private JComboBox jComboBoxTexture = new JComboBox(s_pos);
+	private JComboBox<Object> jComboBoxTexture = new JComboBox<Object>(s_pos);
 	private JTextField jTextFieldTexture = new JTextField();
 	private JLabel jLabelTexture = new JLabel();
-	private CComboBox jComboBoxLines = new CComboBox(s_pos);
+	private CComboBox<Object>jComboBoxLines = new CComboBox<Object>(s_pos);
 	private CTextField jTextFieldLines = new CTextField();
 	private CLabel jLabelLines = new CLabel();
 	private CCheckBox jCheckBoxLines = new CCheckBox();
@@ -443,7 +443,7 @@ public class PLAFEditor extends JDialog
 		MetalTheme metalTheme = null;
 		ValueNamePair theme = null;
 		boolean metal = UIManager.getLookAndFeel() instanceof MetalLookAndFeel;
-		themeField.setModel(new DefaultComboBoxModel(AdempierePLAF.getThemes()));
+		themeField.setModel(new DefaultComboBoxModel<Object>(AdempierePLAF.getThemes()));
 		if (metal)
 		{
 			theme = null;
@@ -552,7 +552,7 @@ public class PLAFEditor extends JDialog
 			if (!m_setting)
 			{
 				m_setting = true;
-				int index = ((JComboBox)e.getSource()).getSelectedIndex();
+				int index = ((JComboBox<?>)e.getSource()).getSelectedIndex();
 				example.setTabPlacement(index+1);
 				jComboBoxFlat.setSelectedIndex(index);
 				jComboBoxGradient.setSelectedIndex(index);

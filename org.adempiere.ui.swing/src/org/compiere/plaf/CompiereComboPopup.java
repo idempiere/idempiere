@@ -39,7 +39,7 @@ public class CompiereComboPopup extends BasicComboPopup
 	 *  Constructor
 	 *  @param combo
 	 */
-	public CompiereComboPopup(JComboBox combo)
+	public CompiereComboPopup(JComboBox<?> combo)
 	{
 		super(combo);
 	}   //  AdempiereComboPopup
@@ -54,7 +54,7 @@ public class CompiereComboPopup extends BasicComboPopup
 	public void show()
 	{
 		//  Check ComboBox if popup should be displayed
-		if (comboBox instanceof CComboBox && !((CComboBox)comboBox).displayPopup())
+		if (comboBox instanceof CComboBox && !((CComboBox<?>)comboBox).displayPopup())
 			return;
 		//  Check Field if popup should be displayed
 		if (comboBox instanceof CField && !((CField)comboBox).displayPopup())
@@ -64,7 +64,7 @@ public class CompiereComboPopup extends BasicComboPopup
 
 
 	/**
-	 *  Inform CComboBox and CField that Popup was hidden
+	 *  Inform CComboBox<Object> and CField that Popup was hidden
 	 *  @see CComboBox.hidingPopup
 	 *  @see CField.hidingPopup
 	 *
@@ -73,9 +73,9 @@ public class CompiereComboPopup extends BasicComboPopup
 		super.hide();
 		//  Inform ComboBox that popup was hidden
 		if (comboBox instanceof CComboBox)
-			(CComboBox)comboBox).hidingPopup();
+			(CComboBox<Object>)comboBox).hidingPopup();
 		else if (comboBox instanceof CComboBox)
-			(CComboBox)comboBox).hidingPopup();
+			(CComboBox<Object>)comboBox).hidingPopup();
 	}   //  hided
 	/**/
 }   //  AdempiereComboPopup

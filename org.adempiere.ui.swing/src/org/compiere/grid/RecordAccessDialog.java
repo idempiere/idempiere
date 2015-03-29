@@ -94,7 +94,7 @@ public class RecordAccessDialog extends CDialog
 	private BorderLayout mainLayout = new BorderLayout();
 	
 	private CLabel roleLabel = new CLabel(Msg.translate(Env.getCtx(), "AD_Role_ID"));
-	private CComboBox roleField = null;	
+	private CComboBox<Object>roleField = null;	
 	private CCheckBox cbActive = new CCheckBox(Msg.translate(Env.getCtx(), "IsActive"));
 	private CCheckBox cbExclude = new CCheckBox(Msg.translate(Env.getCtx(), "IsExclude"));
 	private CCheckBox cbReadOnly = new CCheckBox(Msg.translate(Env.getCtx(), "IsReadOnly"));
@@ -117,7 +117,7 @@ public class RecordAccessDialog extends CDialog
 		String sql = MRole.getDefault().addAccessSQL(
 			"SELECT AD_Role_ID, Name FROM AD_Role ORDER BY 2", 
 			"AD_Role", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-		roleField = new CComboBox(DB.getKeyNamePairs(sql, false));
+		roleField = new CComboBox<Object>(DB.getKeyNamePairs(sql, false));
 		
 		//	Load Record Access for all roles
 		sql = "SELECT * FROM AD_Record_Access "

@@ -127,7 +127,7 @@ public class VFileImport extends CPanel
 	//
 	private CPanel northPanel = new CPanel();
 	private JButton bFile = new JButton();
-	private JComboBox pickFormat = new JComboBox();
+	private JComboBox<Object> pickFormat = new JComboBox<Object>();
 	private CPanel centerPanel = new CPanel();
 	private BorderLayout centerLayout = new BorderLayout();
 	private JScrollPane rawDataPane = new JScrollPane();
@@ -141,7 +141,7 @@ public class VFileImport extends CPanel
 	private JButton bNext = new JButton();
 	private JButton bPrevious = new JButton();
 	private JLabel record = new JLabel();
-	private CComboBox fCharset = new CComboBox(Ini.getAvailableCharsets());
+	private CComboBox<Object>fCharset = new CComboBox<Object>(Ini.getAvailableCharsets());
 
 	/**
 	 *	Static Init

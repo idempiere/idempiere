@@ -223,16 +223,16 @@ public class Viewer extends CFrame
 	private CButton bEnd = new CButton();
 	private CButton bFind = new CButton();
 	private CButton bExport = new CButton();
-	private CComboBox comboReport = new CComboBox();
+	private CComboBox<Object>comboReport = new CComboBox<Object>();
 	private CButton bPrevious = new CButton();
 	private CButton bNext = new CButton();
 	private SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1,1,100,1);
 	private JSpinner spinner = new JSpinner(spinnerModel);
 	private CLabel labelDrill = new CLabel();
-	private CComboBox comboDrill = new CComboBox();
+	private CComboBox<Object>comboDrill = new CComboBox<Object>();
 	//FR 201156
 	private CCheckBox summary = new CCheckBox();
-	private CComboBox comboZoom = new CComboBox(View.ZOOM_OPTIONS);
+	private CComboBox<Object>comboZoom = new CComboBox<Object>(View.ZOOM_OPTIONS);
 
 
 	/**

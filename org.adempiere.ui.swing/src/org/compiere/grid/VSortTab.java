@@ -128,7 +128,7 @@ public class VSortTab extends CPanel implements APanelTab
 	private CButton bUp = new CButton();
 	private CButton bDown = new CButton();
 	//
-	DefaultListModel noModel = new DefaultListModel()
+	DefaultListModel<Object> noModel = new DefaultListModel<Object>()
 	{
 		/**
 		 * 
@@ -151,7 +151,7 @@ public class VSortTab extends CPanel implements APanelTab
 			addElement(obj);
 		}
 	};
-	DefaultListModel yesModel = new DefaultListModel();
+	DefaultListModel<Object> yesModel = new DefaultListModel<Object>();
 	DefaultListCellRenderer listRenderer = new DefaultListCellRenderer() {
 		/**
 		 * 
@@ -159,7 +159,7 @@ public class VSortTab extends CPanel implements APanelTab
 		private static final long serialVersionUID = -101524191283634472L;
 
 		@Override
-		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 			Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 			if (value != null && value instanceof ListItem && !((ListItem)value).isUpdateable()) {
 				Font f = c.getFont();
@@ -170,8 +170,8 @@ public class VSortTab extends CPanel implements APanelTab
 		}
 		
 	};
-	JList noList = new JList(noModel);
-	JList yesList = new JList(yesModel);
+	JList<Object> noList = new JList<Object>(noModel);
+	JList<Object> yesList = new JList<Object>(yesModel);
 	private JScrollPane noPane = new JScrollPane(noList);
 	private JScrollPane yesPane = new JScrollPane(yesList);
 
@@ -306,7 +306,7 @@ public class VSortTab extends CPanel implements APanelTab
 			{
 				if (me.getClickCount() > 1)
 				{
-					JList list = (JList)me.getComponent();
+					JList<?> list = (JList<?>)me.getComponent();
 					Point p = me.getPoint();
 					int index = list.locationToIndex(p);
 					if (index > -1 && list.getCellBounds(index, index).contains(p))
@@ -362,7 +362,7 @@ public class VSortTab extends CPanel implements APanelTab
 		{
 			public void mouseDragged(MouseEvent me)
 			{
-				JList list = (JList)me.getComponent();
+				JList<?> list = (JList<?>)me.getComponent();
 				Point p = me.getPoint();
 				int index = list.locationToIndex(p);
 				if (index > -1 && list.getCellBounds(index, index).contains(p))
@@ -533,13 +533,13 @@ public class VSortTab extends CPanel implements APanelTab
 			if (selObject == null || !selObject.isUpdateable())
 				continue;
 
-			DefaultListModel lmFrom = (source == bAdd || source == noList) ?
+			DefaultListModel<Object> lmFrom = (source == bAdd || source == noList) ?
 					noModel : yesModel;
-			DefaultListModel lmTo = (lmFrom == yesModel) ? noModel : yesModel;
+			DefaultListModel<Object> lmTo = (lmFrom == yesModel) ? noModel : yesModel;
 			lmFrom.removeElement(selObject);
 			lmTo.addElement(selObject);
 
-			JList list =  (source == bAdd || source == noList) ?
+			JList<Object> list =  (source == bAdd || source == noList) ?
 					yesList : noList;
 			list.setSelectedValue(selObject, true);
 
@@ -816,10 +816,10 @@ public class VSortTab extends CPanel implements APanelTab
 		private String cursorName = "/org/compiere/images/DragCursor32.gif";
 
 		/** StartList	*/
-		private JList 				startList = null;
+		private JList<?> 				startList = null;
 
 		/** The startModel. */
-		private DefaultListModel	startModel = null;
+		private DefaultListModel<Object>	startModel = null;
 
 		/** The selObject. */
 		private Object 				selObject = null;
@@ -834,7 +834,7 @@ public class VSortTab extends CPanel implements APanelTab
 		 */
 		public void mousePressed(MouseEvent me)
 		{
-			JList list = (JList)me.getComponent();
+			JList<?> list = (JList<?>)me.getComponent();
 			Point p = me.getPoint();
 			int index = list.locationToIndex(p);
 			if (index > -1 && list.getCellBounds(index, index).contains(p))
@@ -873,8 +873,8 @@ public class VSortTab extends CPanel implements APanelTab
 			{
 				Point p = me.getPoint();
 
-				JList endList = yesList;
-				DefaultListModel endModel = yesModel;
+				JList<Object> endList = yesList;
+				DefaultListModel<Object> endModel = yesModel;
 
 				if (me.getComponent() == yesList)
 				{

@@ -154,21 +154,21 @@ public class AcctViewer extends CFrame
 //	private CPanel graphPanel = new CPanel();
 	private CCheckBox displayDocumentInfo = new CCheckBox();
 	private CLabel lSort = new CLabel();
-	private CComboBox sortBy1 = new CComboBox();
-	private CComboBox sortBy2 = new CComboBox();
-	private CComboBox sortBy3 = new CComboBox();
+	private CComboBox<Object> sortBy1 = new CComboBox<Object>();
+	private CComboBox<Object> sortBy2 = new CComboBox<Object>();
+	private CComboBox<Object> sortBy3 = new CComboBox<Object>();
 	private CCheckBox group1 = new CCheckBox();
 	private CCheckBox group2 = new CCheckBox();
 	private CCheckBox group3 = new CCheckBox();
 	private CLabel lGroup = new CLabel();
 	private GridBagLayout selectionLayout = new GridBagLayout();
-	private CComboBox selAcctSchema = new CComboBox();
-	private CComboBox selPostingType = new CComboBox();
+	private CComboBox<Object> selAcctSchema = new CComboBox<Object>();
+	private CComboBox<Object> selPostingType = new CComboBox<Object>();
 	private CCheckBox selDocument = new CCheckBox();
-	private CComboBox selTable = new CComboBox();
+	private CComboBox<Object> selTable = new CComboBox<Object>();
 	private CButton selRecord = new CButton();
 	private CLabel lOrg = new CLabel();
-	private CComboBox selOrg = new CComboBox();
+	private CComboBox<Object> selOrg = new CComboBox<Object>();
 	private CLabel lAcct = new CLabel();
 	private CButton selAcct = new CButton();
 	private CLabel lDate = new CLabel();
@@ -195,7 +195,7 @@ public class AcctViewer extends CFrame
 	//
 	private CButton bRePost = new CButton();
 	private CCheckBox forcePost = new CCheckBox();
-	private CComboBox sortBy4 = new CComboBox();
+	private CComboBox<Object> sortBy4 = new CComboBox<Object>();
 	private CCheckBox group4 = new CCheckBox();
 
 	/**

@@ -103,10 +103,10 @@ public class VAttributeGrid extends CPanel
 		vector.add(new KeyNamePair(0,""));
 		for (int i = 0; i < m_attributes.length; i++)
 			vector.add(m_attributes[i].getKeyNamePair());
-		attributeCombo1 = new CComboBox(vector);
+		attributeCombo1 = new CComboBox<KeyNamePair>(vector);
 		selectPanel.add(attributeCombo1, null);
 		selectPanel.add(attributeLabel2, new ALayoutConstraint(1,0));
-		attributeCombo2 = new CComboBox(vector);
+		attributeCombo2 = new CComboBox<KeyNamePair>(vector);
 		selectPanel.add(attributeCombo2, null);
 		//
 		fillPicks();
@@ -157,9 +157,9 @@ public class VAttributeGrid extends CPanel
 	private CTabbedPane tabbedPane = new CTabbedPane();
 	private CPanel		selectPanel = new CPanel(new ALayout());
 	private CLabel		attributeLabel1 = new CLabel(Msg.getElement(Env.getCtx(), "M_Attribute_ID") + " 1");
-	private CComboBox	attributeCombo1 = null;
+	private CComboBox<KeyNamePair>	attributeCombo1 = null;
 	private CLabel		attributeLabel2 = new CLabel(Msg.getElement(Env.getCtx(), "M_Attribute_ID") + " 2");
-	private CComboBox	attributeCombo2 = null;
+	private CComboBox<KeyNamePair>	attributeCombo2 = null;
 	private CLabel 		labelPriceList = new CLabel(Msg.getElement(Env.getCtx(), "M_PriceList_ID"));
 	private VComboBox 	pickPriceList = new VComboBox();
 	private CLabel 		labelWarehouse = new CLabel(Msg.getElement(Env.getCtx(), "M_Warehouse_ID"));
@@ -169,7 +169,7 @@ public class VAttributeGrid extends CPanel
 	private CPanel		gridPanel = new CPanel(new BorderLayout());
 	private CPanel		modePanel = new CPanel();
 	private CLabel		modeLabel = new CLabel(Msg.getMsg(Env.getCtx(), "Mode"));
-	private CComboBox	modeCombo = new CComboBox(MODES);
+	private CComboBox<Object>	modeCombo = new CComboBox<Object>(MODES);
 	
 	/**
 	 * 	Dispose

@@ -44,7 +44,7 @@ import org.adempiere.plaf.AdempierePLAF;
  *  @author     Jorg Janke
  *  @version    $Id: CField.java,v 1.2 2006/07/30 00:52:24 jjanke Exp $
  */
-public class CField extends JComboBox
+public class CField extends JComboBox<Object>
 	implements CEditor, ActionListener
 {
 

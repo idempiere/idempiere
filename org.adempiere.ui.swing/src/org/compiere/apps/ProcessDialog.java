@@ -206,7 +206,7 @@ public class ProcessDialog extends CFrame
 	private ProcessParameterPanel parameterPanel = null;
 	private JSeparator separator = new JSeparator();
 	private ProcessInfo m_pi = null;
-	private CComboBox fSavedName = new CComboBox();
+	private CComboBox<Object>fSavedName = new CComboBox<Object>();
 	private CButton bSave = new CButton();
 	private CButton bDelete = new CButton();
 	private List<MPInstance> savedParams;
@@ -388,7 +388,7 @@ public class ProcessDialog extends CFrame
 		{
 			queries[i++] = instance.getName();
 		}
-		fSavedName.setModel(new DefaultComboBoxModel(queries));
+		fSavedName.setModel(new DefaultComboBoxModel<Object>(queries));
 		fSavedName.setValue("");
 	}
 

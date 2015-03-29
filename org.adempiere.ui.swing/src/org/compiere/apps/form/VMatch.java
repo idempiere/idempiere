@@ -143,11 +143,11 @@ public class VMatch extends Match
 	private CPanel northPanel = new CPanel();
 	private GridBagLayout northLayout = new GridBagLayout();
 	private CLabel matchFromLabel = new CLabel();
-	private CComboBox matchFrom = new CComboBox(m_matchOptions);
+	private CComboBox<Object>matchFrom = new CComboBox<Object>(m_matchOptions);
 	private CLabel matchToLabel = new CLabel();
-	private CComboBox matchTo = new CComboBox();
+	private CComboBox<String>matchTo = new CComboBox<String>();
 	private CLabel matchModeLabel = new CLabel();
-	private CComboBox matchMode = new CComboBox(m_matchMode);
+	private CComboBox<Object>matchMode = new CComboBox<Object>(m_matchMode);
 	private VLookup onlyVendor = null; 
 	private VLookup onlyProduct = null;
 	private CLabel onlyVendorLabel = new CLabel();
@@ -314,7 +314,7 @@ public class VMatch extends Match
 		sameProduct.addActionListener(this);
 		sameQty.addActionListener(this);
 		//  Init
-		matchTo.setModel(new DefaultComboBoxModel(cmd_matchFrom((String)matchFrom.getSelectedItem())));
+		matchTo.setModel(new DefaultComboBoxModel<String>(cmd_matchFrom((String)matchFrom.getSelectedItem())));
 		//  Set Title
 		xMatchedBorder.setTitle((String)matchFrom.getSelectedItem());
 		xMatchedScrollPane.repaint();
@@ -350,7 +350,7 @@ public class VMatch extends Match
 		Timestamp to = dateTo.getValue()!=null?(Timestamp)dateTo.getValue():null;
 		if (e.getSource() == matchFrom) {
 			String selection = (String)matchFrom.getSelectedItem();
-			matchTo.setModel(new DefaultComboBoxModel(cmd_matchFrom(selection)));
+			matchTo.setModel(new DefaultComboBoxModel<String>(cmd_matchFrom(selection)));
 			//  Set Title
 			xMatchedBorder.setTitle(selection);
 			xMatchedScrollPane.repaint();

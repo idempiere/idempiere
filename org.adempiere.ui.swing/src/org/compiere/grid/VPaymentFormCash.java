@@ -46,11 +46,11 @@ public class VPaymentFormCash extends PaymentFormCash implements ActionListener 
 	private VPaymentFormDialog dialog;
 	
 	private CLabel bBankAccountLabel = new CLabel();
-	private CComboBox bBankAccountCombo = new CComboBox();
+	private CComboBox<Object>bBankAccountCombo = new CComboBox<Object>();
 	private CLabel bCashBookLabel = new CLabel();
-	private CComboBox bCashBookCombo = new CComboBox();
+	private CComboBox<Object>bCashBookCombo = new CComboBox<Object>();
 	private CLabel bCurrencyLabel = new CLabel();
-	private CComboBox bCurrencyCombo = new CComboBox();
+	private CComboBox<Object>bCurrencyCombo = new CComboBox<Object>();
 	private VDate bDateField;
 	private CLabel bDateLabel = new CLabel();
 	private CLabel bAmountLabel = new CLabel();

@@ -43,8 +43,8 @@ public class AutoCompletion extends PlainDocument {
 	 * 
 	 */
 	private static final long serialVersionUID = 1449135613844313889L;
-	CComboBox comboBox;
-	ComboBoxModel model;
+	CComboBox<Object> comboBox;
+	ComboBoxModel<?> model;
 	JTextComponent editor;
 	/**
 	 * Flag to indicate if setSelectedItem has been called 
@@ -60,7 +60,7 @@ public class AutoCompletion extends PlainDocument {
 	KeyListener editorKeyListener;
 	FocusListener editorFocusListener;
 
-	public AutoCompletion(final CComboBox comboBox) {
+	public AutoCompletion(final CComboBox<Object> comboBox) {
 		this.comboBox = comboBox;
 		model = comboBox.getModel();
 		comboBox.addActionListener(new ActionListener() {
@@ -71,7 +71,7 @@ public class AutoCompletion extends PlainDocument {
 		comboBox.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
 				if (e.getPropertyName().equals("editor")) configureEditor((ComboBoxEditor) e.getNewValue());
-				if (e.getPropertyName().equals("model")) model = (ComboBoxModel) e.getNewValue();
+				if (e.getPropertyName().equals("model")) model = (ComboBoxModel<?>) e.getNewValue();
 			}
 		});
 		editorKeyListener = new KeyAdapter() {
@@ -104,7 +104,7 @@ public class AutoCompletion extends PlainDocument {
 				}
 			}
 		};
-		// Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when tabbing out
+		// Bug 5100422 on Java 1.5: Editable JComboBox<Object> won't hide popup when tabbing out
 		hidePopupOnFocusLoss=System.getProperty("java.version").startsWith("1.5");
 		// Highlight whole text when gaining focus
 		editorFocusListener = new FocusAdapter() {
@@ -127,7 +127,7 @@ public class AutoCompletion extends PlainDocument {
 	 * Enable auto completion for a combo box (strict mode)  
 	 * @param comboBox
 	 */
-	public static void enable(CComboBox comboBox) {
+	public static void enable(CComboBox<Object> comboBox) {
 		enable(comboBox, true);
 	}
 
@@ -136,7 +136,7 @@ public class AutoCompletion extends PlainDocument {
 	 * @param comboBox
 	 * @param strictMode true if you want to set strict mode
 	 */
-	public static void enable(CComboBox comboBox, boolean strictMode) {
+	public static void enable(CComboBox<Object> comboBox, boolean strictMode) {
 		// has to be editable
 		comboBox.setEditable(true);
 		// change the editor's document

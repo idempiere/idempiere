@@ -84,8 +84,8 @@ public class SubOrder extends PosSubPanel
 	private	PosTextField		f_name;
 	private CButton 		f_bNew;
 	//private CButton 		f_bSearch;
-	private CComboBox		f_location;
-	private CComboBox		f_user;
+	private CComboBox<KeyNamePair>		f_location;
+	private CComboBox<KeyNamePair>		f_user;
 	private CButton 		f_process;
 	private CButton 		f_print;
 	private CTextField 		f_DocumentNo;
@@ -191,7 +191,7 @@ public class SubOrder extends PosSubPanel
 		//
 		
 		/*
-		f_location = new CComboBox();
+		f_location = new CComboBox<Object>();
 		add (f_location, " wrap");
 	*/
 		
@@ -218,7 +218,7 @@ public class SubOrder extends PosSubPanel
 		f_total.setValue (Env.ZERO);
 		/*
 		//
-		f_user = new CComboBox();
+		f_user = new CComboBox<Object>();
 		add (f_user, "skip 1");
 		*/
 	}	//	init
@@ -449,7 +449,7 @@ public class SubOrder extends PosSubPanel
 			for (int i = 0; i < locations.length; i++)
 				locationVector.add(locations[i].getKeyNamePair());
 		}
-		DefaultComboBoxModel locationModel = new DefaultComboBoxModel(locationVector); 
+		DefaultComboBoxModel<KeyNamePair> locationModel = new DefaultComboBoxModel<KeyNamePair>(locationVector); 
 		f_location.setModel(locationModel);
 		//
 		Vector<KeyNamePair> userVector = new Vector<KeyNamePair>();
@@ -459,7 +459,7 @@ public class SubOrder extends PosSubPanel
 			for (int i = 0; i < users.length; i++)
 				userVector.add(users[i].getKeyNamePair());
 		}
-		DefaultComboBoxModel userModel = new DefaultComboBoxModel(userVector); 
+		DefaultComboBoxModel<KeyNamePair> userModel = new DefaultComboBoxModel<KeyNamePair>(userVector); 
 		f_user.setModel(userModel);
 	}	//	fillCombos
 	

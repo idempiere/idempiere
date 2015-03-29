@@ -1180,7 +1180,7 @@ public class ConfigurationData
 			if (p_panel != null)
 			{
 				String[] databases = m_databaseConfig[index].discoverDatabases(selected);
-				DefaultComboBoxModel model = new DefaultComboBoxModel(databases);
+				DefaultComboBoxModel<Object> model = new DefaultComboBoxModel<Object>(databases);
 				p_panel.fDatabaseDiscovered.setModel(model);
 				p_panel.fDatabaseDiscovered.setEnabled(databases.length != 0);
 				if (databases.length > 0)

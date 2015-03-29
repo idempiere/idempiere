@@ -703,7 +703,7 @@ public class CColumnControlButton extends JButton {
      * @return a list containing all additional actions to include into the popup.
      */
     protected List<Action> getAdditionalActions() {
-        List<Object> actionKeys = getColumnControlActionKeys();
+        List<String> actionKeys = getColumnControlActionKeys();
         List<Action> actions = new ArrayList<Action>();
         for (Object key : actionKeys) {
           actions.add(table.getActionMap().get(key));
@@ -721,13 +721,12 @@ public class CColumnControlButton extends JButton {
      * @return the action keys of table's actionMap entries whose
      *   action should be included into the popup.
      */
-    @SuppressWarnings("unchecked")
-    protected List<Object> getColumnControlActionKeys() {
+    protected List<String> getColumnControlActionKeys() {
         Object[] allKeys = table.getActionMap().allKeys();
-        List columnKeys = new ArrayList<Object>();
+        List<String> columnKeys = new ArrayList<String>();
         for (int i = 0; i < allKeys.length; i++) {
             if (isColumnControlActionKey(allKeys[i])) {
-                columnKeys.add(allKeys[i]);
+                columnKeys.add((String)allKeys[i]);
             }
         }
         // JW: this will blow for non-String keys!
@@ -769,7 +768,7 @@ public class CColumnControlButton extends JButton {
         setFocusable(false);
         // this is a trick to get hold of the client prop which
         // prevents closing of the popup
-        JComboBox box = new JComboBox();
+        JComboBox<Object> box = new JComboBox<Object>();
         Object preventHide = box.getClientProperty("doNotCancelPopup");
         putClientProperty("doNotCancelPopup", preventHide);
     }

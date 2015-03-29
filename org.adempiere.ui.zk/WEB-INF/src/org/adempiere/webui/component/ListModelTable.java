@@ -33,7 +33,7 @@ import org.zkoss.zul.event.ListDataEvent;
 import org.zkoss.zul.ext.Sortable;
 
 /**
- * This is a ListModel to be used with Listbox.
+ * This is a ListModel<Object> to be used with Listbox.
  * The model allows for a table structure to be created, with columns
  * in addition to the rows provided by {@link org.zkoss.zul.ListModelList}.
  *
@@ -63,7 +63,7 @@ public class ListModelTable extends ListModelList<Object> implements Sortable<Ob
 	}
 
 	/**
-	 * Construct the ListModel with a collection of objects.
+	 * Construct the ListModel<Object> with a collection of objects.
 	 * A copy is made of the collection.
 	 * The objects should be vectors of objects
 	 *

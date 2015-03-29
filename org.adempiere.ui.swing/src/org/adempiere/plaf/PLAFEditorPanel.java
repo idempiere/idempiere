@@ -85,8 +85,8 @@ public class PLAFEditorPanel extends CPanel {
 		{"-l0-", "-l1-"}};
 	
 	private PreviewPanel previewPanel = new PreviewPanel();
-	private JList lookList = new JList(AdempierePLAF.getPLAFs());
-	private JList themeList = new JList();
+	private JList<Object> lookList = new JList<Object>(AdempierePLAF.getPLAFs());
+	private JList<Object> themeList = new JList<Object>();
 	
 	/** 
 	 * Instance variable to disable list event handling when updating list with value 
@@ -271,12 +271,12 @@ public class PLAFEditorPanel extends CPanel {
 		CTabbedPane tab = new CTabbedPane();
 		column3.add(tab, new GridBagConstraints(0, 0, 2, 1, 1.0, 1.0,
 				GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5,2,2,5),0,0));
-		CComboBox editable = new CComboBox(new Object[]{"Editable"});
+		CComboBox<Object> editable = new CComboBox<Object>(new Object[]{"Editable"});
 		editable.setEditable(true);
 		editable.setFocusable(false);
 		column3.add(editable, new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0,
 				GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2,2,5,2),0,0));
-		CComboBox choice = new CComboBox(new Object[]{"Choice"});
+		CComboBox<Object> choice = new CComboBox<Object>(new Object[]{"Choice"});
 		choice.setEditable(false);
 		choice.setFocusable(false);
 		column3.add(choice, new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0,
@@ -332,7 +332,7 @@ public class PLAFEditorPanel extends CPanel {
 		MetalTheme metalTheme = null;
 		ValueNamePair theme = null;
 		boolean metal = UIManager.getLookAndFeel() instanceof MetalLookAndFeel;
-		themeList.setModel(new DefaultComboBoxModel(AdempierePLAF.getThemes()));
+		themeList.setModel(new DefaultComboBoxModel<Object>(AdempierePLAF.getThemes()));
 		if (metal)
 		{
 			theme = null;

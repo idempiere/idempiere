@@ -101,15 +101,15 @@ public class VCreateFromShipmentUI extends CreateFromShipment implements ActionL
 	private VLookup bPartnerField;
 	
 	private JLabel orderLabel = new JLabel();
-	private JComboBox orderField = new JComboBox();
+	private JComboBox<Object> orderField = new JComboBox<Object>();
 	
 	private JLabel invoiceLabel = new JLabel();
-	private JComboBox invoiceField = new JComboBox();
+	private JComboBox<Object> invoiceField = new JComboBox<Object>();
 
     /** Label for the rma selection */
 	private JLabel rmaLabel = new JLabel();
     /** Combo box for selecting RMA document */
-	private JComboBox rmaField = new JComboBox();
+	private JComboBox<Object> rmaField = new JComboBox<Object>();
 	
 	private JLabel upcLabel = new JLabel();
 	private JTextField upcField = new JTextField();

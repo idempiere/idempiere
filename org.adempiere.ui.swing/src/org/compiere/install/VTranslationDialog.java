@@ -70,16 +70,16 @@ public class VTranslationDialog extends TranslationController
 	private static CLogger log = CLogger.getCLogger(VTranslationDialog.class);
 	//
 	private GridBagLayout mainLayout = new GridBagLayout();
-	private JComboBox cbLanguage = new JComboBox();
+	private JComboBox<Object> cbLanguage = new JComboBox<Object>();
 	private JLabel lLanguage = new JLabel();
 	private JLabel lTable = new JLabel();
-	private JComboBox cbTable = new JComboBox();
+	private JComboBox<Object> cbTable = new JComboBox<Object>();
 	private JButton bExport = new JButton();
 	private JButton bImport = new JButton();
 	//
 	private StatusBar statusBar = new StatusBar();
 	private JLabel lClient = new JLabel();
-	private JComboBox cbClient = new JComboBox();
+	private JComboBox<Object> cbClient = new JComboBox<Object>();
 
 
 	/**

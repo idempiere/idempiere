@@ -50,9 +50,9 @@ public class VPaymentFormCheck extends PaymentFormCheck implements ActionListene
 	private VPaymentFormDialog dialog;
 	
 	private CLabel sBankAccountLabel = new CLabel();
-	private CComboBox sBankAccountCombo = new CComboBox();
+	private CComboBox<Object>sBankAccountCombo = new CComboBox<Object>();
 	private CLabel sCurrencyLabel = new CLabel();
-	private CComboBox sCurrencyCombo = new CComboBox();
+	private CComboBox<Object>sCurrencyCombo = new CComboBox<Object>();
 	private CLabel sAmountLabel = new CLabel();
 	private VNumber sAmountField = new VNumber();
 	private CLabel sRoutingLabel = new CLabel();

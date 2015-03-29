@@ -112,7 +112,7 @@ public final class VBPartner extends CDialog implements ActionListener
 	//
 	private VString	fValue, fName, fName2, fContact, fTitle, fPhone, fFax, fPhone2, fEMail;
 	private VLocation 		fAddress;
-	private JComboBox 		fGreetingBP, fGreetingC;
+	private JComboBox<Object> 		fGreetingBP, fGreetingC;
 	//
 	private CPanel mainPanel = new CPanel();
 	private BorderLayout mainLayout = new BorderLayout();
@@ -166,7 +166,7 @@ public final class VBPartner extends CDialog implements ActionListener
 		fValue.addActionListener(this);
 		createLine (fValue, "Value", true);
 		//	Greeting Business Partner
-		fGreetingBP = new JComboBox (m_greeting);
+		fGreetingBP = new JComboBox<Object> (m_greeting);
 		createLine (fGreetingBP, "Greeting", false);
 		//	Name
 		fName = new VString("Name", true, false, true, 30, 60, "", null);
@@ -180,7 +180,7 @@ public final class VBPartner extends CDialog implements ActionListener
 		fContact = new VString("Contact", false, false, true, 30, 60, "", null);
 		createLine (fContact, "Contact", true).setFontBold(true);
 		//	Greeting Contact
-		fGreetingC = new JComboBox (m_greeting);
+		fGreetingC = new JComboBox<Object> (m_greeting);
 		createLine (fGreetingC, "Greeting", false);
 		//	Title
 		fTitle = new VString("Title", false, false, true, 30, 60, "", null);

@@ -69,9 +69,9 @@ public class PDFViewerBean extends JPanel {
     private final JScrollPane center = new JScrollPane(decoder);
     private final JTextField pageField = new JTextField(2);
     private final JLabel pageCountLabel = new JLabel("00");
-    private final JComboBox rotationSelect = new JComboBox(new String[] {
+    private final JComboBox<Object> rotationSelect = new JComboBox<Object>(new String[] {
             "0", "90", "180", "270"});
-    private final JComboBox zoomSelect;
+    private final JComboBox<Object> zoomSelect;
     private final float[] zoomFactors = new float[] {
             0.25f, 0.33f, 0.50f, 0.75f, 1.00f, 1.50f, 2.00f, 4.00f, 8.00f};
 
@@ -197,7 +197,7 @@ public class PDFViewerBean extends JPanel {
         for (int i = 0; i < zoomFactors.length; i++) {
             zoomLabels[i] = Integer.toString((int) (zoomFactors[i] * 100));
         }
-        zoomSelect = new JComboBox(zoomLabels);
+        zoomSelect = new JComboBox<Object>(zoomLabels);
         
         zoomSelect.addActionListener(new ActionListener() {
             private boolean isAdjusting = false;

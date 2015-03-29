@@ -33,7 +33,7 @@ import org.compiere.util.Ini;
  *  @author     Jorg Janke
  *  @version    $Id: CPrinter.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
  */
-public class CPrinter extends CComboBox implements ActionListener 
+public class CPrinter extends CComboBox<Object> implements ActionListener 
 {
 	/**
 	 * 
@@ -105,7 +105,7 @@ public class CPrinter extends CComboBox implements ActionListener
 	public void refresh() {
 		String current = (String) getSelectedItem();
 		removeAllItems();
-		setModel(new DefaultComboBoxModel(getPrinterNames()));
+		setModel(new DefaultComboBoxModel<Object>(getPrinterNames()));
 		if (current != null) {
 			for (int i = 0; i < getItemCount(); i++) {
 				String item = (String) getItemAt(i);

@@ -83,7 +83,9 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MUserQuery;
+
 import static org.compiere.model.SystemIDs.*;
+
 import org.compiere.model.X_AD_Column;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBox;
@@ -222,7 +224,7 @@ public final class Find extends CDialog
 	private ConfirmPanel confirmPanelA = new ConfirmPanel(true, true, false, false, false, false, true);
 	private CButton bIgnore = new CButton();
 	private JToolBar toolBar = new JToolBar();
-	private CComboBoxEditable fQueryName = new CComboBoxEditable();
+	private CComboBoxEditable<Object> fQueryName = new CComboBoxEditable<Object>();
 	private CButton bSave = new CButton();
 	private CButton bNew = new CButton();
 	private CButton bDelete = new CButton();
@@ -311,17 +313,17 @@ public final class Find extends CDialog
 	public static final int		INDEX_RIGHTBRACKET = 6;
 
 	/**	Advanced Search Column 		*/
-	public CComboBox 	columns = null;
 	/**	Advanced Search Operators 	*/
-	public CComboBox 	operators = null;
+	public CComboBox<ValueNamePair> 	columns = null;
+	public CComboBox<Object> 	operators = null;
 	private MUserQuery[] userQueries;
 	private ValueNamePair[] columnValueNamePairs;
 	
-	private CComboBox leftBrackets;
+	private CComboBox<Object> leftBrackets;
 
-	private CComboBox rightBrackets;
+	private CComboBox<Object> rightBrackets;
 
-	private CComboBox andOr;
+	private CComboBox<Object> andOr;
 	
 	private static final String FIELD_SEPARATOR = "<^>";
 	private static final String SEGMENT_SEPARATOR = "<~>";
@@ -682,7 +684,7 @@ public final class Find extends CDialog
 		columnValueNamePairs = new ValueNamePair[items.size()];
 		items.toArray(columnValueNamePairs);
 		Arrays.sort(columnValueNamePairs);		//	sort alpha
-		columns = new CComboBox(columnValueNamePairs);
+		columns = new CComboBox<ValueNamePair>(columnValueNamePairs);
 		columns.addActionListener(this);		
 		TableColumn tc = advancedTable.getColumnModel().getColumn(INDEX_COLUMNNAME);
 		tc.setPreferredWidth(120);
@@ -710,7 +712,7 @@ public final class Find extends CDialog
 
 
 		// 0 = And/Or
-		andOr = new CComboBox(new String[] {"",Msg.getMsg(Env.getCtx(),"AND"),Msg.getMsg(Env.getCtx(), "OR")});
+		andOr = new CComboBox<Object>(new String[] {"",Msg.getMsg(Env.getCtx(),"AND"),Msg.getMsg(Env.getCtx(), "OR")});
 		tc = advancedTable.getColumnModel().getColumn(INDEX_ANDOR);
 		tc.setPreferredWidth(45);
 		dce = new FindCellEditor(andOr);
@@ -718,7 +720,7 @@ public final class Find extends CDialog
 		tc.setHeaderValue(Msg.getMsg(Env.getCtx(), "And/Or"));
 		
 		// 1 = Left Bracket
-		leftBrackets = new CComboBox(new String[] {"","(","((","((("});
+		leftBrackets = new CComboBox<Object>(new String[] {"","(","((","((("});
 		tc = advancedTable.getColumnModel().getColumn(INDEX_LEFTBRACKET);
 		tc.setPreferredWidth(25);
 		dce = new FindCellEditor(leftBrackets);
@@ -726,7 +728,7 @@ public final class Find extends CDialog
 		tc.setHeaderValue("(");
 
 		//	3 = Operators
-		operators = new CComboBox(MQuery.OPERATORS);
+		operators = new CComboBox<Object>(MQuery.OPERATORS);
 		tc = advancedTable.getColumnModel().getColumn(INDEX_OPERATOR);
 		tc.setPreferredWidth(55);
 		dce = new FindCellEditor(operators);
@@ -750,7 +752,7 @@ public final class Find extends CDialog
 		tc.setHeaderValue(Msg.getMsg(Env.getCtx(), "QueryValue2"));
 		
 		// 6 = Right Bracket
-		rightBrackets = new CComboBox(new String[] {"",")","))",")))"});
+		rightBrackets = new CComboBox<Object>(new String[] {"",")","))",")))"});
 		tc = advancedTable.getColumnModel().getColumn(INDEX_RIGHTBRACKET);
 		tc.setPreferredWidth(25);
 		dce = new FindCellEditor(rightBrackets);
@@ -766,7 +768,7 @@ public final class Find extends CDialog
 		String[] queries = new String[userQueries.length];
 		for (int i = 0; i < userQueries.length; i++)
 			queries[i] = userQueries[i].getName();
-		fQueryName.setModel(new DefaultComboBoxModel(queries));
+		fQueryName.setModel(new DefaultComboBoxModel<Object>(queries));
 		fQueryName.setValue("");
 
 		//	No Row - Create one
@@ -854,17 +856,17 @@ public final class Find extends CDialog
 		        		|| DisplayType.YesNo == referenceType
 		        		|| DisplayType.Button == referenceType)
 		        {
-					operators.setModel(new DefaultComboBoxModel(MQuery.OPERATORS_LOOKUP));
+					operators.setModel(new DefaultComboBoxModel<Object>(MQuery.OPERATORS_LOOKUP));
 		        }
 		        else if (DisplayType.isNumeric(referenceType)
 		        		|| DisplayType.isDate(referenceType)
 		        		|| DisplayType.isID(referenceType)) // Note that lookups were filtered above
 		        {
-					operators.setModel(new DefaultComboBoxModel(MQuery.OPERATORS_NUMBERS));
+					operators.setModel(new DefaultComboBoxModel<Object>(MQuery.OPERATORS_NUMBERS));
 		        }
 		        else // DisplayType.isText
 		        {
-					operators.setModel(new DefaultComboBoxModel(MQuery.OPERATORS));
+					operators.setModel(new DefaultComboBoxModel<Object>(MQuery.OPERATORS));
 		        }
 			}
 		}
@@ -1311,7 +1313,7 @@ public final class Find extends CDialog
 		String[] queries = new String[userQueries.length];
 		for (int i = 0; i < userQueries.length; i++)
 			queries[i] = userQueries[i].getName();
-		fQueryName.setModel(new DefaultComboBoxModel(queries));
+		fQueryName.setModel(new DefaultComboBoxModel<Object>(queries));
 		fQueryName.setSelectedItem(selected);
 		if (fQueryName.getSelectedIndex() < 0)
 			fQueryName.setValue("");

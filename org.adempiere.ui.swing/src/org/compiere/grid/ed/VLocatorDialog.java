@@ -126,7 +126,7 @@ public class VLocatorDialog extends CDialog
 	private BorderLayout southLayout = new BorderLayout();
 	//
 	private VComboBox fLocator = new VComboBox();
-	private CComboBox fWarehouse = new CComboBox();
+	private CComboBox<Object>fWarehouse = new CComboBox<Object>();
 	private JCheckBox fCreateNew = new JCheckBox();
 	private CTextField fX = new CTextField();
 	private CTextField fY = new CTextField();

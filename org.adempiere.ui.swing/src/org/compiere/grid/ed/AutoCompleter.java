@@ -42,7 +42,7 @@ public abstract class AutoCompleter implements MouseListener
 
 	protected final CLogger log = CLogger.getCLogger(getClass()); 
 
-	final JList listBox = new JList(); 
+	final JList<Object> listBox = new JList<Object>(); 
 	final JTextComponent textBox;
 	final private JPopupMenu popup = new JPopupMenu();
 	private boolean m_empty = false; 
@@ -114,7 +114,7 @@ public abstract class AutoCompleter implements MouseListener
 			if (completer.listBox.getSelectedValue() == null)
 			{
 				String txt = completer.textBox.getText();
-				ListModel lm = completer.listBox.getModel();
+				ListModel<Object> lm = completer.listBox.getModel();
 				for (int index = 0; index < lm.getSize(); index++)
 				{
 					if (startsWithIgnoreCase(lm.getElementAt(index).toString(), txt))

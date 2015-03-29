@@ -98,7 +98,7 @@ public class ConvertDialog extends CFrame implements ActionListener
 	private JPanel parameterPanel = new JPanel();
 	private GridBagLayout gridBagLayout1 = new GridBagLayout();
 	private JLabel lSelectFile = new JLabel();
-	private JComboBox fSelectFile = new JComboBox();
+	private JComboBox<Object> fSelectFile = new JComboBox<Object>();
 	private JButton bSelectFile = new JButton();
 	private JCheckBox fExecute = new JCheckBox();
 	private JLabel lConnect = new JLabel();
@@ -111,7 +111,7 @@ public class ConvertDialog extends CFrame implements ActionListener
 	private Component component3;
 	private Component component4;
 	private JLabel lTarget = new JLabel();
-	private JComboBox fTarget = new JComboBox(Database.getDatabaseNames());
+	private JComboBox<Object> fTarget = new JComboBox<Object>(Database.getDatabaseNames());
 	private JCheckBox fVerbose = new JCheckBox();
 
 	/**

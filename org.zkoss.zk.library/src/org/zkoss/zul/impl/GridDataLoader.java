@@ -23,7 +23,6 @@ import java.util.Set;
 import org.zkoss.lang.Library;
 import org.zkoss.lang.Objects;
 import org.zkoss.xel.VariableResolver;
-
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.util.ForEachStatus;
@@ -79,7 +78,7 @@ public class GridDataLoader implements DataLoader, Cropper {
 
 	public int getTotalSize() {
 		final Rows rows = _grid.getRows();
-		final ListModel model = _grid.getModel();
+		final ListModel<Object> model = _grid.getModel();
 		return model != null ? model.getSize() : rows != null ? rows.getVisibleItemCount() : 0;
 	}
 
@@ -112,12 +111,12 @@ public class GridDataLoader implements DataLoader, Cropper {
 				else min = max - cnt + 1;
 			if (min > oldsz) min = oldsz;
 
-			RowRenderer renderer = null;
+			RowRenderer<?> renderer = null;
 			final Component next =
 				min < oldsz ? rows.getChildren().get(min): null;
 			while (--cnt >= 0) {
 				if (renderer == null)
-					renderer = (RowRenderer) getRealRenderer();
+					renderer = (RowRenderer<?>) getRealRenderer();
 				rows.insertBefore(newUnloadedItem(renderer, min++), next);
 			}
 			break;
@@ -154,11 +153,11 @@ public class GridDataLoader implements DataLoader, Cropper {
 	
 	/** Creates a new and unloaded row. */
 	protected Component newUnloadedItem(Object renderer, int index) {
-		final RowRenderer renderer0 = (RowRenderer) renderer;
-		final ListModel model = ((Grid)getOwner()).getModel();
+		final RowRenderer<?> renderer0 = (RowRenderer<?>) renderer;
+		final ListModel<Object> model = ((Grid)getOwner()).getModel();
 		Row row = null;
-		if (model instanceof GroupsListModel) {
-			final GroupsListModel gmodel = (GroupsListModel) model;
+		if (model instanceof GroupsListModel <?, ?, ?>) {
+			final GroupsListModel<?, ?, ?> gmodel = (GroupsListModel<?, ?, ?>) model;
 			final GroupingInfo info = gmodel.getDataInfo(index);
 			switch(info.getType()){
 			case GroupDataInfo.GROUP:
@@ -181,7 +180,7 @@ public class GridDataLoader implements DataLoader, Cropper {
 		return row;
 	}
 	
-	private Row newRow(RowRenderer renderer) {
+	private Row newRow(RowRenderer<?> renderer) {
 		Row row = null;
 		if (renderer instanceof RowRendererExt)
 			row = ((RowRendererExt)renderer).newRow((Grid)getOwner());
@@ -191,7 +190,7 @@ public class GridDataLoader implements DataLoader, Cropper {
 		}
 		return row;
 	}
-	private Group newGroup(RowRenderer renderer) {
+	private Group newGroup(RowRenderer<?> renderer) {
 		Group group = null;
 		if (renderer instanceof GroupRendererExt)
 			group = ((GroupRendererExt)renderer).newGroup((Grid)getOwner());
@@ -201,7 +200,7 @@ public class GridDataLoader implements DataLoader, Cropper {
 		}
 		return group;
 	}
-	private Groupfoot newGroupfoot(RowRenderer renderer) {
+	private Groupfoot newGroupfoot(RowRenderer<?> renderer) {
 		Groupfoot groupfoot = null;
 		if (renderer instanceof GroupRendererExt)
 			groupfoot = ((GroupRendererExt)renderer).newGroupfoot((Grid)getOwner());
@@ -211,7 +210,7 @@ public class GridDataLoader implements DataLoader, Cropper {
 		}
 		return groupfoot;
 	}
-	private Component newUnloadedCell(RowRenderer renderer, Row row) {
+	private Component newUnloadedCell(RowRenderer<?> renderer, Row row) {
 		Component cell = null;
 		if (renderer instanceof RowRendererExt)
 			cell = ((RowRendererExt)renderer).newCell(row);
@@ -233,10 +232,10 @@ public class GridDataLoader implements DataLoader, Cropper {
 	}
 	
 	public Object getRealRenderer() {
-		final RowRenderer renderer = _grid.getRowRenderer();
+		final RowRenderer<?> renderer = _grid.getRowRenderer();
 		return renderer != null ? renderer : _defRend; 
 	}
-	private static final RowRenderer _defRend = new RowRenderer() {
+	private static final RowRenderer<Object> _defRend = new RowRenderer<Object>() {
 		public void render(final Row row, final Object data, final int index) {
 			final Rows rows = (Rows)row.getParent();
 			final Grid grid = (Grid)rows.getParent();
@@ -246,8 +245,8 @@ public class GridDataLoader implements DataLoader, Cropper {
 				final Template tm2 = getTemplate(grid, rows, "model:group");
 				if (tm2 != null)
 					tm = tm2;
-				if (grid.getModel() instanceof GroupsListModel) {
-					final GroupsListModel gmodel = (GroupsListModel) grid.getModel();
+				if (grid.getModel() instanceof GroupsListModel<?, ?, ?>) {
+					final GroupsListModel<?, ?, ?> gmodel = (GroupsListModel<?, ?, ?>)grid.getModel();
 					info = gmodel.getDataInfo(index);
 				}
 			} else if (row instanceof Groupfoot) {
@@ -325,7 +324,7 @@ public class GridDataLoader implements DataLoader, Cropper {
 		int min = offset;
 		int max = offset + limit - 1;
 
-		final ListModel model = _grid.getModel();
+		final ListModel<Object> model = _grid.getModel();
 		Rows rows = _grid.getRows(); 
 		final int newsz = model.getSize();
 		final int oldsz = rows != null ? rows.getChildren().size(): 0;
@@ -336,7 +335,7 @@ public class GridDataLoader implements DataLoader, Cropper {
 
 		int newcnt = newsz - oldsz;
 		int atg = pgi != null ? _grid.getActivePage(): 0;
-		RowRenderer renderer = null;
+		RowRenderer<?> renderer = null;
 		Component next = null;		
 		if (oldsz > 0) {
 			if (min < 0) min = 0;
@@ -365,7 +364,7 @@ public class GridDataLoader implements DataLoader, Cropper {
 						comp.detach();
 						comp = p;
 					}
-				} else { //ListModel
+				} else { //ListModel<Object>
 					int addcnt = 0;
 					Component row = rows.getChildren().get(min);
 					while (--cnt >= 0) {
@@ -375,7 +374,7 @@ public class GridDataLoader implements DataLoader, Cropper {
 							row.detach(); //remove extra
 						} else if (((LoadStatus)((Row)row).getExtraCtrl()).isLoaded()) {
 							if (renderer == null)
-								renderer = (RowRenderer)getRealRenderer();
+								renderer = (RowRenderer<?>)getRealRenderer();
 							row.detach(); //always detach
 							rows.insertBefore(newUnloadedItem(renderer, min), next);
 							++addcnt;
@@ -402,7 +401,7 @@ public class GridDataLoader implements DataLoader, Cropper {
 
 		for (; --newcnt >= 0; ++min) {
 			if (renderer == null)
-				renderer = (RowRenderer) getRealRenderer();
+				renderer = (RowRenderer<?>) getRealRenderer();
 			rows.insertBefore(newUnloadedItem(renderer, min), next);
 		}
 		

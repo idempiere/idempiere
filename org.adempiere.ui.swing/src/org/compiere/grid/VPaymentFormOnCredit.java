@@ -35,7 +35,7 @@ public class VPaymentFormOnCredit extends PaymentFormOnCredit {
 	private VPaymentFormDialog dialog;
 	
 	private CLabel pTermLabel = new CLabel();
-	private CComboBox pTermCombo = new CComboBox();
+	private CComboBox<Object>pTermCombo = new CComboBox<Object>();
 
 	public VPaymentFormOnCredit(int windowNo, GridTab mTab) {
 		super(windowNo, mTab);

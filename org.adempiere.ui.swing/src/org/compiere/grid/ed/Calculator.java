@@ -172,8 +172,8 @@ public final class Calculator extends CDialog
 	private CPanel bordPanel = new CPanel();
 	private CPanel currencyPanel = new CPanel();
 	private BorderLayout bordLayout = new BorderLayout();
-	private JComboBox curFrom = new JComboBox();
-	private JComboBox curTo = new JComboBox();
+	private JComboBox<Object> curFrom = new JComboBox<Object>();
+	private JComboBox<Object> curTo = new JComboBox<Object>();
 	private JLabel curLabel = new JLabel();
 	private FlowLayout currencyLayout = new FlowLayout();
 

@@ -126,7 +126,7 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 	JCheckBox okSSLPort = new JCheckBox();
 	//	Database
 	private JLabel lDatabaseType = new JLabel();
-	JComboBox fDatabaseType = new JComboBox(ConfigurationData.DBTYPE);
+	JComboBox<Object> fDatabaseType = new JComboBox<Object>(ConfigurationData.DBTYPE);
 	//
 	JLabel lDatabaseServer = new JLabel();
 	JLabel ldbExists = new JLabel();
@@ -134,7 +134,7 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 	private JLabel lDatabaseName = new JLabel();
 	JTextField fDatabaseName = new JTextField(FIELDLENGTH);
 	private JLabel lDatabaseDiscovered = new JLabel();
-	JComboBox fDatabaseDiscovered = new JComboBox();
+	JComboBox<Object> fDatabaseDiscovered = new JComboBox<Object>();
 	private JLabel lDatabasePort = new JLabel();
 	JTextField fDatabasePort = new JTextField(FIELDLENGTH);
 	private JLabel lSystemPassword = new JLabel();

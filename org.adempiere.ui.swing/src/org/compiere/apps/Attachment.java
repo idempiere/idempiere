@@ -136,7 +136,7 @@ public final class Attachment extends CDialog
 	private CPanel toolBar = new CPanel(new FlowLayout(FlowLayout.LEADING, 5,5));
 	private CButton bDelete = new CButton();
 	private CButton bDeleteAll = null;
-	private CComboBox cbContent = new CComboBox();
+	private CComboBox<Object> cbContent = new CComboBox<Object>();
 	private JSplitPane centerPane = new JSplitPane();
 	//
 	private CPanel graphPanel = new CPanel(new BorderLayout());

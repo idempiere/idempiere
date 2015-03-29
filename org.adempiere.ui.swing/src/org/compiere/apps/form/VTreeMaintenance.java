@@ -65,7 +65,7 @@ public class VTreeMaintenance extends TreeMaintenance
 	private CPanel 			northPanel	= new CPanel ();
 	private FlowLayout		northLayout	= new FlowLayout ();
 	private CLabel			treeLabel	= new CLabel ();
-	private CComboBox		treeField;
+	private CComboBox<Object>		treeField;
 	private CButton			bAddAll		= new CButton (Env.getImageIcon("FastBack24.gif"));
 	private CButton			bAdd		= new CButton (Env.getImageIcon("StepBack24.gif"));
 	private CButton			bDelete		= new CButton (Env.getImageIcon("StepForward24.gif"));
@@ -75,7 +75,7 @@ public class VTreeMaintenance extends TreeMaintenance
 	//
 	private JSplitPane		splitPane	= new JSplitPane ();
 	private VTreePanel		centerTree;
-	private JList			centerList	= new JList ();
+	private JList<Object>			centerList	= new JList<Object> ();
 
 	
 	/**
@@ -107,7 +107,7 @@ public class VTreeMaintenance extends TreeMaintenance
 	 */
 	private void preInit()
 	{
-		treeField = new CComboBox(getTreeData());
+		treeField = new CComboBox<Object>(getTreeData());
 		treeField.addActionListener(this);
 		//
 		centerTree = new VTreePanel (m_WindowNo, false, true);
@@ -191,7 +191,7 @@ public class VTreeMaintenance extends TreeMaintenance
 		if (log.isLoggable(Level.INFO)) log.info("Tree=" + tree);
 		if (tree.getKey() <= 0)
 		{
-			centerList.setModel(new DefaultListModel());
+			centerList.setModel(new DefaultListModel<Object>());
 			return;
 		}
 		//	Tree
@@ -204,7 +204,7 @@ public class VTreeMaintenance extends TreeMaintenance
 		//
 		
 		//	List
-		DefaultListModel model = new DefaultListModel();
+		DefaultListModel<Object> model = new DefaultListModel<Object>();
 		ArrayList<ListItem> items = getTreeItemData();
 		for(ListItem item : items)
 			model.addElement(item);
@@ -247,7 +247,7 @@ public class VTreeMaintenance extends TreeMaintenance
 		if (tn == null)
 			return;
 		if (log.isLoggable(Level.INFO)) log.info(tn.toString());
-		ListModel model = centerList.getModel();
+		ListModel<Object> model = centerList.getModel();
 		int size = model.getSize();
 		int index = -1;
 		for (index = 0; index < size; index++)
@@ -300,7 +300,7 @@ public class VTreeMaintenance extends TreeMaintenance
 	{
 		if (ADialog.ask(m_WindowNo, null, "TreeAddAllItems")) {	// idempiere-85
 			log.info("");
-			ListModel model = centerList.getModel();
+			ListModel<Object> model = centerList.getModel();
 			int size = model.getSize();
 			int index = -1;
 			for (index = 0; index < size; index++)
@@ -318,7 +318,7 @@ public class VTreeMaintenance extends TreeMaintenance
 	{
 		if (ADialog.ask(m_WindowNo, null, "TreeRemoveAllItems")) {	// idempiere-85
 			log.info("");
-			ListModel model = centerList.getModel();
+			ListModel<Object> model = centerList.getModel();
 			int size = model.getSize();
 			int index = -1;
 			for (index = 0; index < size; index++)

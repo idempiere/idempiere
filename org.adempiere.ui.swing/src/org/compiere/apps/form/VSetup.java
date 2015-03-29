@@ -111,7 +111,7 @@ public class VSetup extends CPanel
 	private JTextField fOrgName = new JTextField();
 	private JTextField fOrgValue = new JTextField();
 	private JLabel lCurrency = new JLabel();
-	private JComboBox fCurrency = new JComboBox();
+	private JComboBox<Object> fCurrency = new JComboBox<Object>();
 	private JLabel lUserClient = new JLabel();
 	private JTextField fUserClient = new JTextField();
 	private JLabel lUserOrg = new JLabel();
@@ -125,10 +125,10 @@ public class VSetup extends CPanel
 	private JButton buttonLoadAcct = new JButton();
 	private JLabel lCountry = new JLabel();
 	private JLabel lCity = new JLabel();
-	private JComboBox fCountry = new JComboBox();
+	private JComboBox<Object> fCountry = new JComboBox<Object>();
 	private JTextField fCity = new JTextField();
 	private JLabel lRegion = new JLabel();
-	private JComboBox fRegion = new JComboBox();
+	private JComboBox<Object> fRegion = new JComboBox<Object>();
 
 	/**
 	 *	Static Init

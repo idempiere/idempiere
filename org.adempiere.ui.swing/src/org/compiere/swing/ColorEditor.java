@@ -159,7 +159,7 @@ public class ColorEditor extends CDialog
 	private FlowLayout southLayout = new FlowLayout();
 	private GridBagLayout northLayout = new GridBagLayout();
 	private CLabel typeLabel = new CLabel();
-	private CComboBox typeField = new CComboBox(CompiereColor.TYPES);
+	private CComboBox<Object> typeField = new CComboBox<Object>(CompiereColor.TYPES);
 	private CButton gradientUpper = new CButton();
 	private CButton gradientLower = new CButton();
 	private CLabel urlLabel = new CLabel();
@@ -175,7 +175,7 @@ public class ColorEditor extends CDialog
 	private CTextField distanceField = new CTextField(10);
 	private CPanel centerPanel = new CPanel();
 	private CButton flatField = new CButton();
-	private CComboBox gradientStartField = new CComboBox(CompiereColor.GRADIENT_SP);
+	private CComboBox<Object> gradientStartField = new CComboBox<Object>(CompiereColor.GRADIENT_SP);
 	private CTextField gradientDistanceField = new CTextField(10);
 	private CLabel gradientStartLabel = new CLabel();
 	private CLabel gradientDistanceLabel = new CLabel();

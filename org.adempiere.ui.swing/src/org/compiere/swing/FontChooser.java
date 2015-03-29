@@ -116,11 +116,11 @@ public class FontChooser extends CDialog
 	private BorderLayout mainLayout = new BorderLayout();
 	private CPanel selectPanel = new CPanel();
 	private CLabel nameLabel = new CLabel();
-	private CComboBox fontName = new CComboBox();
+	private CComboBox<Object>fontName = new CComboBox<Object>();
 	private CLabel sizeLabel = new CLabel();
 	private CLabel styleLabel = new CLabel();
-	private CComboBox fontStyle = new CComboBox();
-	private CComboBox fontSize = new CComboBox();
+	private CComboBox<Object>fontStyle = new CComboBox<Object>();
+	private CComboBox<Object>fontSize = new CComboBox<Object>();
 	private JTextArea fontTest = new JTextArea();
 	private JTextArea fontInfo = new JTextArea();
 	private GridBagLayout selectLayout = new GridBagLayout();

@@ -158,9 +158,9 @@ class AcctViewerData
 	
 	/**************************************************************************
 	 *  Fill Accounting Schema
-	 *  @param cb JComboBox to be filled
+	 *  @param cb JComboBox<Object> to be filled
 	 */
-	protected void fillAcctSchema (JComboBox cb)
+	protected void fillAcctSchema (JComboBox<Object> cb)
 	{
 		for (int i = 0; i < ASchemas.length; i++)
 			cb.addItem(new KeyNamePair(ASchemas[i].getC_AcctSchema_ID(),
@@ -169,9 +169,9 @@ class AcctViewerData
 
 	/**
 	 *  Fill Posting Type
-	 *  @param cb JComboBox to be filled
+	 *  @param cb JComboBox<Object> to be filled
 	 */
-	protected void fillPostingType (JComboBox cb)
+	protected void fillPostingType (JComboBox<Object> cb)
 	{
 		int AD_Reference_ID = REFERENCE_POSTING_TYPE;
 		ValueNamePair[] pt = MRefList.getList(Env.getCtx(), AD_Reference_ID, true);
@@ -185,9 +185,9 @@ class AcctViewerData
 	 *  and tableInfo with (TableName, AD_Table_ID)
 	 *  and select the entry for AD_Table_ID
 	 *
-	 *  @param cb JComboBox to be filled
+	 *  @param cb JComboBox<Object> to be filled
 	 */
-	protected void fillTable (JComboBox cb)
+	protected void fillTable (JComboBox<Object> cb)
 	{
 		ValueNamePair select = null;
 		//
@@ -231,9 +231,9 @@ class AcctViewerData
 	/**
 	 *  Fill Org
 	 *
-	 *  @param cb JComboBox to be filled
+	 *  @param cb JComboBox<Object> to be filled
 	 */
-	protected void fillOrg (JComboBox cb)
+	protected void fillOrg (JComboBox<Object> cb)
 	{
 		KeyNamePair pp = new KeyNamePair(0, "");
 		cb.addItem(pp);

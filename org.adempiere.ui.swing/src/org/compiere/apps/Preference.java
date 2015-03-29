@@ -140,7 +140,7 @@ public final class Preference extends CDialog
 	private CPanel southPanel = new CPanel();
 	private BorderLayout southLayout = new BorderLayout();
 	private BorderLayout icontextLayout = new BorderLayout();
-	private JList infoList = new JList();
+	private JList<Object> infoList = new JList<Object>();
 	private JScrollPane contextListScrollPane = new JScrollPane(infoList);
 	private CPanel contextSouthPanel = new CPanel();
 	private CTextArea contextHeader = new CTextArea(4,15);
@@ -149,7 +149,7 @@ public final class Preference extends CDialog
 	private BorderLayout contextSouthLayout = new BorderLayout();
 	private StatusBar statusBar = new StatusBar();
 	private ConfirmPanel confirm = new ConfirmPanel(true);
-	private CComboBox traceLevel = new CComboBox(CLogMgt.LEVELS);
+	private CComboBox<Object>traceLevel = new CComboBox<Object>(CLogMgt.LEVELS);
 	private CLabel traceLabel = new CLabel();
 	private CCheckBox traceFile = new CCheckBox();
 	private CCheckBox autoLogin = new CCheckBox();
@@ -175,7 +175,7 @@ public final class Preference extends CDialog
 	private CButton bRoleInfo = new CButton(Msg.translate(Env.getCtx(), "AD_Role_ID"));
 	// Charset:
 	private CLabel lCharset = new CLabel();
-	private CComboBox fCharset = new CComboBox(Ini.getAvailableCharsets());
+	private CComboBox<Object>fCharset = new CComboBox<Object>(Ini.getAvailableCharsets());
 
 	private CPanel configPanel = new CPanel();
 

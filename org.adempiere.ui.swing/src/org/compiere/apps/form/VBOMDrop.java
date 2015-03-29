@@ -169,11 +169,11 @@ public class VBOMDrop extends CPanel
 	//
 	private ConfirmPanel confirmPanel = new ConfirmPanel (true);
 	private CPanel selectionPanel = new CPanel(new ALayout());
-	private CComboBox productField;
+	private CComboBox<Object>productField;
 	private VNumber productQty = new VNumber("Qty", true, false, true, DisplayType.Quantity, Msg.translate(Env.getCtx(), "Qty"));
-	private CComboBox orderField;
-	private CComboBox invoiceField;
-	private CComboBox projectField;
+	private CComboBox<Object>orderField;
+	private CComboBox<Object>invoiceField;
+	private CComboBox<Object>projectField;
 
 	
 	/**************************************************************************
@@ -186,7 +186,7 @@ public class VBOMDrop extends CPanel
 	{
 		int row = 0;
 		selectionPanel.setBorder(new TitledBorder(Msg.translate(Env.getCtx(), "Selection")));
-		productField = new CComboBox(getProducts());
+		productField = new CComboBox<Object>(getProducts());
 		CLabel label = new CLabel(Msg.translate(Env.getCtx(), "M_Product_ID"));
 		label.setLabelFor(productField);
 		selectionPanel.add(label, new ALayoutConstraint(row++, 0));
@@ -202,7 +202,7 @@ public class VBOMDrop extends CPanel
 		
 		if (order)
 		{
-			orderField = new CComboBox(getOrders());
+			orderField = new CComboBox<Object>(getOrders());
 			label = new CLabel (Msg.translate(Env.getCtx(), "C_Order_ID"));
 			label.setLabelFor(orderField);
 			selectionPanel.add(label, new ALayoutConstraint(row++, 0));
@@ -211,7 +211,7 @@ public class VBOMDrop extends CPanel
 		}
 		if (invoice)
 		{
-			invoiceField = new CComboBox(getInvoices());
+			invoiceField = new CComboBox<Object>(getInvoices());
 			label = new CLabel (Msg.translate(Env.getCtx(), "C_Invoice_ID"));
 			label.setLabelFor(invoiceField);
 			selectionPanel.add(label, new ALayoutConstraint(row++, 0));
@@ -220,7 +220,7 @@ public class VBOMDrop extends CPanel
 		}
 		if (project)
 		{
-			projectField = new CComboBox(getProjects());
+			projectField = new CComboBox<Object>(getProjects());
 			label = new CLabel (Msg.translate(Env.getCtx(), "C_Project_ID"));
 			label.setLabelFor(projectField);
 			selectionPanel.add(label, new ALayoutConstraint(row++, 0));

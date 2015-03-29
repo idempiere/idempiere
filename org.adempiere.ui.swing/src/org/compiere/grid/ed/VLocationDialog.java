@@ -139,11 +139,11 @@ public class VLocationDialog extends CDialog
 		Env.setContext(Env.getCtx(), m_WindowNo, Env.TAB_INFO, "C_Country_ID", null);
 
 		//	Current Country
-		fCountry = new CComboBoxEditable(MCountry.getCountries(Env.getCtx()));
+		fCountry = new CComboBoxEditable<Object>(MCountry.getCountries(Env.getCtx()));
 		fCountry.setSelectedItem(m_location.getCountry());
 		m_origCountry_ID = m_location.getC_Country_ID();
 		//	Current Region
-		fRegion = new CComboBoxEditable(MRegion.getRegions(Env.getCtx(), m_origCountry_ID));
+		fRegion = new CComboBoxEditable<Object>(MRegion.getRegions(Env.getCtx(), m_origCountry_ID));
 		if (m_location.getCountry().isHasRegion()) {
 			if (   m_location.getCountry().get_Translation(MCountry.COLUMNNAME_RegionName) != null
 				&& m_location.getCountry().get_Translation(MCountry.COLUMNNAME_RegionName).trim().length() > 0)
@@ -192,8 +192,8 @@ public class VLocationDialog extends CDialog
 	private CTextField	fAddress4 = new CTextField(20);		//	length=60
 	private CTextField	fCity  = new CTextField(20);		//	length=60
 	private CityAutoCompleter	fCityAutoCompleter;
-	private CComboBoxEditable	fCountry;
-	private CComboBoxEditable	fRegion;
+	private CComboBoxEditable<Object>	fCountry;
+	private CComboBoxEditable<Object>	fRegion;
 	private CTextField	fPostal = new CTextField(5);		//	length=10
 	private CTextField	fPostalAdd = new CTextField(5);		//	length=10
 	private CButton 	fOnline = new CButton();			
@@ -217,7 +217,7 @@ public class VLocationDialog extends CDialog
 	private JButton toLink  	= new JButton();
 	private JButton toRoute 	= new JButton();
 	
-	private CComboBoxEditable lstAddressValidation	= new CComboBoxEditable();
+	private CComboBoxEditable<Object> lstAddressValidation	= new CComboBoxEditable<Object>();
 	private CButton btnOnline						= new CButton();
 	private CTextArea txtResult						= new CTextArea(3, 30);
 	private CCheckBox cbxValid 						= new CCheckBox();
@@ -935,7 +935,7 @@ public class VLocationDialog extends CDialog
  							{
 								if (log.isLoggable(Level.FINE)) log.fine("Added new region from web service: " + values.getRegion());
 								//reload regions to combo box
-								fRegion = new CComboBoxEditable(MRegion.getRegions(Env.getCtx(), country.getC_Country_ID()));
+								fRegion = new CComboBoxEditable<Object>(MRegion.getRegions(Env.getCtx(), country.getC_Country_ID()));
 								// select region
 								fRegion.setSelectedItem(values);
 							} else

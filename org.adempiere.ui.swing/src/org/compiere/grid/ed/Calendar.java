@@ -149,7 +149,7 @@ public class Calendar extends CDialog
 	//
 	private CPanel mainPanel = new CPanel();
 	private CPanel monthPanel = new CPanel();
-	private CComboBox cMonth = new CComboBox();
+	private CComboBox<Object> cMonth = new CComboBox<Object>();
 	// BUG:3075946 KTU - Fix Thai Date
 	//private JSpinner cYear = new JSpinner(new SpinnerNumberModel(2000, 1900,2100,1));
 	private JSpinner cYear = new JSpinner(new SpinnerNumberModel(2000, 1900, 3000, 1));
@@ -161,7 +161,7 @@ public class Calendar extends CDialog
 	private CButton bNext = new CButton();
 	private CButton bBack = new CButton();
 	private CPanel timePanel = new CPanel();
-	private CComboBox fHour = new CComboBox(getHours());
+	private CComboBox<Object> fHour = new CComboBox<Object>(getHours());
 	private CLabel lTimeSep = new CLabel();
 	private JSpinner fMinute = new JSpinner(new MinuteModel(5));	//	5 minute snap size
 	private JCheckBox cbPM = new JCheckBox();

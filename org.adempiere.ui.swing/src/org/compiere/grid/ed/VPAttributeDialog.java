@@ -195,7 +195,7 @@ public class VPAttributeDialog extends CDialog
 	private CButton		bSelect = new CButton(Env.getImageIcon("PAttribute16.gif")); 
 	//	Lot
 	private VString fieldLotString = new VString ("Lot", false, false, true, 20, 20, null, null);
-	private CComboBox fieldLot = null;
+	private CComboBox<Object>fieldLot = null;
 	private CButton bLot = new CButton(Msg.getMsg (Env.getCtx(), "New"));
 	//	Lot Popup
 	JPopupMenu 					popupMenu = new JPopupMenu();
@@ -318,7 +318,7 @@ public class VPAttributeDialog extends CDialog
 				+ "WHERE EXISTS (SELECT M_Product_ID FROM M_Product p "
 					+ "WHERE p.M_AttributeSet_ID=" + m_masi.getM_AttributeSet_ID()
 					+ " AND p.M_Product_ID=l.M_Product_ID)";
-			fieldLot = new CComboBox(DB.getKeyNamePairs(sql, true));
+			fieldLot = new CComboBox<Object>(DB.getKeyNamePairs(sql, true));
 			label = new CLabel (Msg.translate(Env.getCtx(), "M_Lot_ID"));
 			label.setLabelFor (fieldLot);
 			centerPanel.add(label, new ALayoutConstraint(m_row++,0));
@@ -436,7 +436,7 @@ public class VPAttributeDialog extends CDialog
 		if (MAttribute.ATTRIBUTEVALUETYPE_List.equals(attribute.getAttributeValueType()))
 		{
 			MAttributeValue[] values = attribute.getMAttributeValues();	//	optional = null
-			CComboBox editor = new CComboBox(values);
+			CComboBox<Object> editor = new CComboBox<Object>(values);
 			boolean found = false;
 			if (instance != null)
 			{
@@ -757,7 +757,7 @@ public class VPAttributeDialog extends CDialog
 		{
 			if (MAttribute.ATTRIBUTEVALUETYPE_List.equals(attributes[i].getAttributeValueType()))
 			{
-				CComboBox editor = (CComboBox)m_editors.get(i);
+				CComboBox<?> editor = (CComboBox<?>)m_editors.get(i);
 				MAttributeValue value = (MAttributeValue)editor.getSelectedItem();
 				if (log.isLoggable(Level.FINE)) log.fine(attributes[i].getName() + "=" + value);
 				if (attributes[i].isMandatory() && value == null)

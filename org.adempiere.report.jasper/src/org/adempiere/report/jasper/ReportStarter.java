@@ -708,7 +708,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
                 		LocalJasperReportsContext ljrContext = new LocalJasperReportsContext(jrContext);
                 		ljrContext.setClassLoader(this.getClass().getClassLoader());
 
-            			JRExporter exporter = null;
+            			JRExporter<?, ?, ?, ?> exporter = null;
                 		if (ext.equals("pdf"))
                 			exporter = new JRPdfExporter(ljrContext);
             			else if (ext.equals("ps"))

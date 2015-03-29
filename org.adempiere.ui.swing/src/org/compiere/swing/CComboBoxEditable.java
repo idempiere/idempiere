@@ -39,7 +39,7 @@ import org.compiere.util.Trace;
  *  @author     Jorg Janke
  *  @version    $Id: CComboBoxEditable.java,v 1.2 2006/07/30 00:52:24 jjanke Exp $
  */
-public class CComboBoxEditable extends JComboBox
+public class CComboBoxEditable<E> extends JComboBox<E>
 	implements CEditor
 {
 	/**
@@ -58,7 +58,7 @@ public class CComboBoxEditable extends JComboBox
 	 * 		displayed list of items
 	 * @see DefaultComboBoxModel
 	 */
-	public CComboBoxEditable(ComboBoxModel aModel)
+	public CComboBoxEditable(ComboBoxModel<E> aModel)
 	{
 		super(aModel);
 		init();
@@ -72,7 +72,7 @@ public class CComboBoxEditable extends JComboBox
 	 * @param items  an array of objects to insert into the combo box
 	 * @see DefaultComboBoxModel
 	 */
-	public CComboBoxEditable(final Object items[])
+	public CComboBoxEditable(final E items[])
 	{
 		super(items);
 		init();
@@ -87,7 +87,7 @@ public class CComboBoxEditable extends JComboBox
 	 * @param key set selected if exists
 	 * @see DefaultComboBoxModel
 	 */
-	public CComboBoxEditable(final Object items[], String key)
+	public CComboBoxEditable(final E items[], String key)
 	{
 		this(items);
 		if (key == null)
@@ -118,7 +118,7 @@ public class CComboBoxEditable extends JComboBox
 	 * @param items  an array of vectors to insert into the combo box
 	 * @see DefaultComboBoxModel
 	 */
-	public CComboBoxEditable(Vector<Object> items)
+	public CComboBoxEditable(Vector<E> items)
 	{
 		super(items);
 		init();

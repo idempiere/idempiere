@@ -118,8 +118,8 @@ public final class FindCellEditor extends AbstractCellEditor
 
 		//  Other UI
 		((JComponent)m_editor).setFont(table.getFont());
-		if ( m_editor instanceof JComboBox) {
-			((JComboBox)m_editor).setBorder(BorderFactory.createEmptyBorder());			
+		if ( m_editor instanceof JComboBox<?>) {
+			((JComboBox<?>)m_editor).setBorder(BorderFactory.createEmptyBorder());			
 		} else {
 			((JComponent)m_editor).setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
 		}
