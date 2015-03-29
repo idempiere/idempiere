@@ -99,7 +99,6 @@ import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.GridWorkbench;
 import org.compiere.model.Lookup;
-import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
@@ -121,7 +120,6 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
-import org.compiere.util.NamePair;
 import org.compiere.util.Util;
 
 /**
@@ -1965,7 +1963,7 @@ public final class APanel extends CPanel
 			return;
 		//show table with deletion rows -> by identifiers columns
 		JPanel messagePanel = new JPanel();
-		JList list = new JList();
+		JList<Object> list = new JList<Object>();
 		JScrollPane scrollPane = new JScrollPane(list);
 		Vector<String> data = new Vector<String>();
 		// FR [ 2877111 ]
@@ -2156,20 +2154,16 @@ public final class APanel extends CPanel
 				ImageIcon icon = Env.getImageIcon2("Process16");
 				String text = field.getHeader();
 				Color color = null;
-				// preparing data like lookup tables
-				// code to find the text and icons to display is shameless
-				// stolen from org.compiere.grid.ed.VButton
-				MLookup m_lookup = null;
 				// Record_ID for Zoom Buttons (see
 				// http://www.adempiere.com/Entering_Data_-_Fields_and_Buttons#Button)
 				if (field.getColumnName().endsWith("_ID")
 						&& !field.getColumnName().equals("Record_ID")) {
-					m_lookup = MLookupFactory.get(Env.getCtx(),
+					MLookupFactory.get(Env.getCtx(),
 							field.getWindowNo(), 0, field.getAD_Column_ID(),
 							DisplayType.Search);
 				} else if (field.getAD_Reference_Value_ID() != 0) {
 					// Assuming List
-					m_lookup = MLookupFactory.get(Env.getCtx(),
+					MLookupFactory.get(Env.getCtx(),
 							field.getWindowNo(), 0, field.getAD_Column_ID(),
 							DisplayType.List);
 				}
@@ -2235,11 +2229,6 @@ public final class APanel extends CPanel
 						;
 					else if (values != null)
 						text = (String) values.get(field.getValue());
-					else if (m_lookup != null) {
-						NamePair pp = m_lookup.get(field.getValue());
-						if (pp != null)
-							text = pp.getName();
-					}
 					// Display it
 				} // setValue
 
