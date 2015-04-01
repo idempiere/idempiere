@@ -1718,6 +1718,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			String whereClause = "AD_Org_ID=? AND C_Currency_ID=?";
 			MBankAccount ba = new Query(getCtx(),MBankAccount.Table_Name,whereClause,get_TrxName())
 				.setParameters(getAD_Org_ID(), getC_Currency_ID())
+				.setOnlyActiveRecords(true)
 				.setOrderBy("IsDefault DESC")
 				.first();
 			if (ba == null) {
