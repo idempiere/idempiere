@@ -17,7 +17,6 @@
 package org.compiere.process;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
@@ -118,7 +117,6 @@ public class FactReconcile extends SvrProcess
 		if (log.isLoggable(Level.INFO)) log.info("AD_PInstance_ID= " + getAD_PInstance_ID());
 		
 		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		int count;
 		int unmatched;
 		
@@ -126,8 +124,8 @@ public class FactReconcile extends SvrProcess
 		if (seq == null)
 			throw new AdempiereException("No sequence for Fact_Reconciliation table");
 		
-		try
-		{
+	  try
+	  {
 			// add new facts into reconciliation table
 			 sql = "INSERT into Fact_Reconciliation " +
 				"(Fact_Reconciliation_ID, AD_Client_ID, AD_Org_ID, Created, CreatedBy, Updated, UpdatedBy, " +
@@ -144,6 +142,7 @@ public class FactReconcile extends SvrProcess
 			pstmt.setInt(1, seq.getAD_Sequence_ID());
 			pstmt.setInt(2, account.get_ID());
 			count = pstmt.executeUpdate();
+			DB.close(pstmt); pstmt = null;
 			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Inserted " + count + " new facts into Fact_Reconciliation");
 			
 			// set the matchcode based on the rule found in AD_Rule
@@ -160,6 +159,7 @@ public class FactReconcile extends SvrProcess
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, account.get_ID());
 			count = pstmt.executeUpdate();
+			DB.close(pstmt); pstmt = null;
 			
 			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Updated " + count + " match codes.");
 			
@@ -180,18 +180,17 @@ public class FactReconcile extends SvrProcess
 		unmatched = pstmt.executeUpdate();
 		
 		if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Cleared match codes from " + unmatched + " unreconciled facts.");
-			
-		}
-		catch (SQLException e)
-		{
+	  }
+	  catch (SQLException e)
+	  {
 			log.log(Level.SEVERE, sql, e);
 			return e.getLocalizedMessage();
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
+	  }
+	  finally
+	  {
+			DB.close(pstmt);
+			pstmt = null;
+	  }
 		
 		return "Matched " + (count-unmatched) + " facts";
 	}	//	doIt
