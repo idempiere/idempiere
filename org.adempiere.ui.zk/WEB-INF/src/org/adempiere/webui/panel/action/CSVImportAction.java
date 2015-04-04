@@ -378,12 +378,23 @@ public class CSVImportAction implements EventListener<Event>
 		} catch (IOException e) {
 			throw new AdempiereException(e);
 		} finally {
-			try {
-				reader.close();
-				in.close();
-				if (bw != null)
+			if (in != null)
+				try {
+					in.close();
+				} catch (IOException e) {
+				}
+			
+			if (bw != null)
+				try {
 					bw.close();
-			} catch (IOException e) {}
+				} catch (IOException e) {
+				}
+			
+			if (reader != null)
+				try {
+					reader.close();
+				} catch (IOException e) {
+				}
 		}
 		return is;
 	}
