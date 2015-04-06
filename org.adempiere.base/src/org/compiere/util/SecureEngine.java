@@ -217,6 +217,34 @@ public class SecureEngine
 		if (log.isLoggable(Level.CONFIG)) log.config (realClass + " initialized - " + implementation);
 	}	//	SecureEngine
 
+	/**
+	 * use salt in hex form and text hashed compare with plan text
+	 * when has exception in hash, log to server
+	 * @param hashedText
+	 * @param hexSalt
+	 * @param planText
+	 * @param log
+	 * @return
+	 */
+	public static boolean isMatchHash (String hashedText, String hexSalt, String planText){
+		boolean valid=false;
+
+		// always do calculation to prevent timing based attacks
+		if ( hashedText == null )
+			hashedText = "0000000000000000";
+		if ( hexSalt == null )
+			hexSalt = "0000000000000000";
+
+		try {
+			valid= SecureEngine.getSHA512Hash(1000, planText, Secure.convertHexString(hexSalt)).equals(hashedText);
+		} catch (NoSuchAlgorithmException ignored) {
+			log.log(Level.WARNING, "Password hashing not supported by JVM");
+		} catch (UnsupportedEncodingException ignored) {
+			log.log(Level.WARNING, "Password hashing not supported by JVM");
+		}
+				
+	 	return valid;
+	}
 	
 	/** Test String					*/
 	private static final String	TEST = "This is a 0123456789 .,; -= Test!";

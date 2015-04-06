@@ -24,12 +24,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.util.HistoryRuleSupportHash;
 import org.passay.AlphabeticalCharacterRule;
 import org.passay.AlphabeticalSequenceRule;
 import org.passay.CharacterCharacteristicsRule;
@@ -116,7 +118,7 @@ public class MPasswordRule extends X_AD_PasswordRule {
 		return true;
 	}
 
-	public void validate(String username, String newPassword) throws AdempiereException {
+	public void validate(String username, String newPassword, List<MPasswordHistory> passwordHistorys) throws AdempiereException {
 
 		ArrayList<Rule> ruleList =  new ArrayList<Rule>();
 
@@ -213,10 +215,18 @@ public class MPasswordRule extends X_AD_PasswordRule {
 			}
 		}
 
+		// history password check
+		List<PasswordData.Reference> historyData = new ArrayList<PasswordData.Reference>();
+		for (MPasswordHistory passwordHistory : passwordHistorys){
+			historyData.add(new PasswordData.HistoricalReference(passwordHistory.getSalt(), passwordHistory.getPassword()));
+		}
+		HistoryRuleSupportHash historyRule = new HistoryRuleSupportHash();
+		ruleList.add(historyRule);
+		
+		// validator all rule
 		if (!ruleList.isEmpty()) {
 			PasswordValidator validator = new PasswordValidator(getCustomResolver(), ruleList);
-			PasswordData passwordData = new PasswordData(newPassword);
-			passwordData.setUsername(username);
+			PasswordData passwordData =  PasswordData.newInstance(newPassword, username, historyData);
 			RuleResult result = validator.validate(passwordData);
 			if (!result.isValid()) {
 				StringBuilder error = new StringBuilder(Msg.getMsg(getCtx(), "PasswordErrors"));

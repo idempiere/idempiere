@@ -27,12 +27,12 @@ import org.compiere.util.KeyNamePair;
 public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persistent 
 {
 
-    /**
-	 * 
+	/**
+	 *
 	 */
-	private static final long serialVersionUID = -6204385406753580912L;
+	private static final long serialVersionUID = 20150406L;
 
-	/** Standard Constructor */
+    /** Standard Constructor */
     public X_AD_PasswordRule (Properties ctx, int AD_PasswordRule_ID, String trxName)
     {
       super (ctx, AD_PasswordRule_ID, trxName);
@@ -153,6 +153,26 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 		return ii.intValue();
 	}
 
+	/** Set Days Reuse Password.
+		@param Days_Reuse_Password 
+		Define number of day can reuser password
+	  */
+	public void setDays_Reuse_Password (int Days_Reuse_Password)
+	{
+		set_Value (COLUMNNAME_Days_Reuse_Password, Integer.valueOf(Days_Reuse_Password));
+	}
+
+	/** Get Days Reuse Password.
+		@return Define number of day can reuser password
+	  */
+	public int getDays_Reuse_Password () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Days_Reuse_Password);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Word Length Dictionary.
 		@param DictWordLength Word Length Dictionary	  
 		@deprecated by update library */
@@ -163,7 +183,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 
 	/** Get Word Length Dictionary.
 		@return Word Length Dictionary	  
-		@deprecated by update library*/
+		@deprecated by update library */
 	public int getDictWordLength () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DictWordLength);

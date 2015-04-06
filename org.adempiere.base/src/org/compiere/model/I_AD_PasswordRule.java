@@ -122,6 +122,19 @@ public interface I_AD_PasswordRule
 	  */
 	public int getCreatedBy();
 
+    /** Column name Days_Reuse_Password */
+    public static final String COLUMNNAME_Days_Reuse_Password = "Days_Reuse_Password";
+
+	/** Set Days Reuse Password.
+	  * Define number of day can reuser password
+	  */
+	public void setDays_Reuse_Password (int Days_Reuse_Password);
+
+	/** Get Days Reuse Password.
+	  * Define number of day can reuser password
+	  */
+	public int getDays_Reuse_Password();
+
     /** Column name DictWordLength */
     public static final String COLUMNNAME_DictWordLength = "DictWordLength";
 

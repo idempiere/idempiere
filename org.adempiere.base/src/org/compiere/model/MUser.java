@@ -448,31 +448,7 @@ public class MUser extends X_AD_User
 	 * check if hashed password matches
 	 */
 	public boolean authenticateHash (String password)  {
-
-		String hash = null;
-		String salt = null;
-		
-		boolean valid=false;
-
-		hash = getPassword();
-		salt = getSalt();
-
-		// always do calculation to prevent timing based attacks
-		if ( hash == null )
-			hash = "0000000000000000";
-		if ( salt == null )
-			salt = "0000000000000000";
-
-		try {
-			valid= SecureEngine.getSHA512Hash(1000, password, Secure.convertHexString(salt)).equals(hash);
-		} catch (NoSuchAlgorithmException ignored) {
-			log.log(Level.WARNING, "Password hashing not supported by JVM");
-		} catch (UnsupportedEncodingException ignored) {
-			log.log(Level.WARNING, "Password hashing not supported by JVM");
-		}
-				
-	 	  return valid;
-		
+		return SecureEngine.isMatchHash (getPassword(), getSalt(), password);
 	}	
 	
 	/**
@@ -933,8 +909,19 @@ public class MUser extends X_AD_User
 				;
 			} else {
 				MPasswordRule pwdrule = MPasswordRule.getRules(getCtx(), get_TrxName());
-				if (pwdrule != null)
-					pwdrule.validate((getLDAPUser() != null ? getLDAPUser() : getName()), getPassword());
+				if (pwdrule != null){
+					List<MPasswordHistory> passwordHistorys = MPasswordHistory.getPasswordHistoryForCheck(MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_PASSWORD_AGE_DAY, 0), pwdrule.getDays_Reuse_Password(), this.getAD_User_ID());
+					// for long time user don't use this system, because all password in history table is out of check range. but we will want new password must difference latest password  
+					if (passwordHistorys.size() == 0 && !this.is_new() && this.get_ValueOld(MUser.COLUMNNAME_Password) != null){
+						Object oldSalt = this.get_ValueOld(MUser.COLUMNNAME_Salt);
+						Object oldPassword = this.get_ValueOld(MUser.COLUMNNAME_Password);
+						
+						MPasswordHistory latestPassword = new MPasswordHistory(oldSalt == null?null:oldSalt.toString(), oldPassword == null?null:oldPassword.toString());
+						passwordHistorys.add(latestPassword);
+					}
+					pwdrule.validate((getLDAPUser() != null ? getLDAPUser() : getName()), getPassword(), passwordHistorys);
+				}
+					
 			}
 
 			// Hash password - IDEMPIERE-347
@@ -1067,4 +1054,24 @@ public class MUser extends X_AD_User
 		}
 	}
 
+	/**
+	 * save new pass to history
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (getPassword() != null && getPassword().length() > 0 && (newRecord || is_ValueChanged("Password"))) {
+			MPasswordHistory passwordHistory = new MPasswordHistory(this.getCtx(), 0, this.get_TrxName());
+			passwordHistory.setSalt(this.getSalt());
+			passwordHistory.setPassword(this.getPassword());
+			// http://wiki.idempiere.org/en/System_user
+			if (!this.is_new() && this.getAD_User_ID() == 0){
+				passwordHistory.set_Value(MPasswordHistory.COLUMNNAME_AD_User_ID, 0);
+			}else{
+				passwordHistory.setAD_User_ID(this.getAD_User_ID());
+			}
+			passwordHistory.setDatePasswordChanged(this.getUpdated());
+			passwordHistory.saveEx();
+		}
+		return super.afterSave(newRecord, success);
+	}
 }	//	MUser
