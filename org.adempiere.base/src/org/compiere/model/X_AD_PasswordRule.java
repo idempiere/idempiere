@@ -27,12 +27,12 @@ import org.compiere.util.KeyNamePair;
 public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persistent 
 {
 
-	/**
-	 *
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = -6204385406753580912L;
 
-    /** Standard Constructor */
+	/** Standard Constructor */
     public X_AD_PasswordRule (Properties ctx, int AD_PasswordRule_ID, String trxName)
     {
       super (ctx, AD_PasswordRule_ID, trxName);
@@ -154,14 +154,16 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Word Length Dictionary.
-		@param DictWordLength Word Length Dictionary	  */
+		@param DictWordLength Word Length Dictionary	  
+		@deprecated by update library */
 	public void setDictWordLength (int DictWordLength)
 	{
 		set_Value (COLUMNNAME_DictWordLength, Integer.valueOf(DictWordLength));
 	}
 
 	/** Get Word Length Dictionary.
-		@return Word Length Dictionary	  */
+		@return Word Length Dictionary	  
+		@deprecated by update library*/
 	public int getDictWordLength () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DictWordLength);

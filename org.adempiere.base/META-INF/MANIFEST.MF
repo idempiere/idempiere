@@ -16,11 +16,10 @@ Bundle-ClassPath: base.jar,
  jfreechart-1.0.19.jar,
  jnlp.jar,
  groovy-all-1.7.5.jar,
- vt-dictionary-3.0.jar,
- vt-password-3.1.2.jar,
  super-csv-2.2.0.jar,
  barcode4j-2.1.jar,
- bcprov-jdk15on-1.46.jar
+ bcprov-jdk15on-1.46.jar,
+ passay-1.0.jar
 Export-Package: bsh,
  bsh.classpath,
  bsh.collection,
