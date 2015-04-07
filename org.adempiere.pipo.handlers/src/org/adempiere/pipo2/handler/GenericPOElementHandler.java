@@ -255,6 +255,10 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 		{
 			tableId = (Integer)detail.getProperty(DataElementParameters.AD_TABLE_ID);
 			sql = (String)detail.getProperty(DataElementParameters.SQL_STATEMENT);
+			if (sql == null){
+				m_tableName = MTable.get(packout.getCtx().ctx, tableId).getTableName();
+				sql = "SELECT * FROM " + m_tableName;
+			}
 		}
 		else
 		{
