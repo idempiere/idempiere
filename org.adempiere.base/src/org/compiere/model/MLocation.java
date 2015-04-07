@@ -439,7 +439,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	public boolean isAddressLinesReverse()
 	{
 		//	Local
-		if (getC_Country_ID() == MCountry.getDefault(getCtx()).getC_Country_ID())
+		if (MCountry.getDefault(getCtx()) != null && getC_Country_ID() == MCountry.getDefault(getCtx()).getC_Country_ID())
 			return getCountry().isAddressLinesLocalReverse();
 		return getCountry().isAddressLinesReverse();
 	}	//	isAddressLinesReverse
