@@ -98,7 +98,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4540369233682337505L;
+	private static final long serialVersionUID = -3675260492572002393L;
 
 	/**
 	 * 	EMail Dialog

@@ -72,7 +72,7 @@ public final class EMail implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5857825644737211294L;
+	private static final long serialVersionUID = 955264336741872361L;
 
 	//use in server bean
 	public final static String HTML_MAIL_MARKER = "ContentType=text/html;";
