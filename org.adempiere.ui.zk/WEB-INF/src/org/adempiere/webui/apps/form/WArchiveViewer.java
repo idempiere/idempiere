@@ -64,6 +64,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -133,15 +134,25 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	{
 		log.info("");
 
-		form = new CustomForm();
-		try {
-			dynInit();
-			jbInit();
-		}
-		catch(Exception e)
-		{
-			log.log(Level.SEVERE, "init", e);
-		}
+		form = new CustomForm() {
+			private static final long serialVersionUID = 7226661630651936293L;
+
+			@Override
+			public void onPageAttached(Page newpage, Page oldpage) {
+				super.onPageAttached(newpage, oldpage);
+				if (newpage != null)
+					try {
+						dynInit();
+						jbInit();
+					}
+				catch(Exception e)
+				{
+					log.log(Level.SEVERE, "init", e);
+				}
+
+			}
+
+		};
 
 		m_WindowNo = form.getWindowNo();
 	}
@@ -511,6 +522,9 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	 */
 	private void updateQDisplay()
 	{
+		if (!showQuery)
+			return;
+
 		boolean reports = reportField.isChecked();
 		if (log.isLoggable(Level.CONFIG)) log.config("Reports=" + reports);
 
