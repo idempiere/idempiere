@@ -1183,10 +1183,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			@Override
 			public void onEvent(Event event) throws Exception {
 				if (DialogEvents.ON_WINDOW_CLOSE.equals(event.getName())) {
-				   if(m_reportEngine.getPrintFormat().get_ID()!=Env.getContextAsInt(m_ctx, "AD_PrintFormat_ID")){
-					  fillComboReport (m_reportEngine.getPrintFormat().get_ID());	
-				   }
-				   cmd_report();		
+					fillComboReport (m_reportEngine.getPrintFormat().get_ID());	
+					cmd_report();		
 				}
 			}
 		});

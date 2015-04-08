@@ -17,9 +17,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.model.GenericPO;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -32,6 +34,7 @@ import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
@@ -46,6 +49,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.ZkReportViewer;
 import org.compiere.model.MRole;
+import org.compiere.model.Query;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.print.ReportEngine;
@@ -54,6 +58,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -86,7 +91,8 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	public ArrayList<MPrintFormatItem> pfi ; 
 	
 	private Auxheader headerPanel=new Auxheader();
-	private Listbox comboReport = new Listbox();
+	private WStringEditor name = new WStringEditor();
+	private String tempName = "";
 	private Button newPrintFormat;
 	private Label selectAll;
 	private Label deselectAll;
@@ -168,12 +174,20 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 		headerPanel.appendChild(new Separator("vertical"));
 
-		comboReport.setMold("select");
 		fm =m_reportEngine.getPrintFormat();
-		comboReport.setTooltiptext(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
-		comboReport.appendItem(fm.getName(), fm.get_ID());
-		headerPanel.appendChild(comboReport);
+		name.setValue(fm.getName());
+
+		if (Env.isMultiLingualDocument(m_ctx))
+			name.setValue(fm.get_Translation("Name"));
+		else
+			name.setValue(fm.getName());
+
+		headerPanel.appendChild(name.getComponent());
 		headerPanel.appendChild(new Separator("vertical"));
+		
+		name.getComponent().addEventListener(Events.ON_FOCUS, this);	
+		name.getComponent().addEventListener(Events.ON_BLUR, this);	
+		name.getComponent().addEventListener(Events.ON_OK, this);
 
 		newPrintFormat=new Button();
 		newPrintFormat.setName("NewPrintFormat");
@@ -350,20 +364,69 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 			onSave();
 			close();
 	    } 
+
+		if (event.getTarget() == name.getComponent()) {
+			if (event.getName().equals(Events.ON_FOCUS))
+				tempName = (String) name.getValue();
+			else if (event.getName().equals(Events.ON_BLUR) || event.getName().equals(Events.ON_OK)) {
+				if (!tempName.equals(name.getValue()))
+					setIsChanged(true);
+			}
+		}
+
 		selectAll.setVisible(oldtabidx == 0);
 		deselectAll.setVisible(oldtabidx == 0);
 		pipeSeparator.setVisible(oldtabidx == 0);
 	}
 
 	private void onSave() {
-		
-	 for (MPrintFormatItem item : pfi)
-		 if (item.is_Changed())
-		     item.saveEx();
-	 
-	  setIsChanged(false);
+
+		if (name.getValue() == null || Util.isEmpty((String) name.getValue()))
+			throw new WrongValueException(name.getComponent(), Msg.getMsg(m_ctx, "FillMandatory"));
+
+		if (Env.isMultiLingualDocument(m_ctx)) {
+			if (Env.isBaseLanguage(m_ctx, "AD_PrintFormat")) {
+				if (!fm.getName().equals(name.getValue())) {
+					fm.setName((String) name.getValue());
+					fm.saveEx();
+					tempName = (String) name.getValue();
+				}
+			} else {
+				if (!fm.get_Translation("Name").equals(name.getValue())) {
+					updateTrl();
+					tempName = (String) name.getValue();
+				}
+			}
+		} else {
+			if (!fm.getName().equals(name.getValue())) {
+				fm.setName((String) name.getValue());
+				fm.saveEx();
+				updateTrl();
+				tempName = (String) name.getValue();
+			}
+		}
+
+		for (MPrintFormatItem item : pfi)
+			if (item.is_Changed())
+				item.saveEx();
+
+		setIsChanged(false);
 	}
-	
+
+	private void updateTrl()
+	{
+		List<GenericPO> list = new Query(m_ctx, "AD_PrintFormat_Trl", "AD_PrintFormat_ID = ?", null)
+		.setParameters(fm.getAD_PrintFormat_ID())
+		.list();
+		for (GenericPO trl : list) {
+			trl.set_ValueOfColumn("Name", (String) name.getValue());
+			trl.saveEx();
+
+			String key = fm.getTranslationKey("Name", trl.get_ValueAsString("AD_Language")); 
+			fm.removeTrlFromCache(key);
+		}
+	}
+
 	@Override
 	public ADForm getForm() {
 		return form;
@@ -551,9 +614,11 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		tpsf5.refresh();
 		setIsChanged(false);
 
-		comboReport.removeAllItems();
-		comboReport.appendItem(newpf.getName(), newpf.get_ID());
+		name.setValue(newpf.getName());
 		m_reportEngine.setPrintFormat(newpf);
+
+		newpf.saveEx();
+		fm = newpf;
 	}
 
 	 public void setIsChanged(boolean change){
