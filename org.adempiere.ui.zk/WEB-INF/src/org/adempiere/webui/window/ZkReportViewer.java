@@ -213,7 +213,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
 		m_isCanExport = MRole.getDefault().isCanExport(m_AD_Table_ID);
 		
-		setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report") + ": " + m_reportEngine.getName()));
+		setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report") + ": " +
+				m_reportEngine.getPrintFormat().get_Translation(MPrintFormat.COLUMNNAME_Name)));
 		
 		addEventListener(ON_RENDER_REPORT_EVENT, this);
 	}

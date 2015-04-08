@@ -265,7 +265,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		m_printFont = MPrintFont.get (format.getAD_PrintFont_ID());
 
 		//	Print Context
-		Env.setContext(m_printCtx, Page.CONTEXT_REPORTNAME, m_format.getName());
+		Env.setContext(m_printCtx, Page.CONTEXT_REPORTNAME, m_format.get_Translation(MPrintFormat.COLUMNNAME_Name));
 		Env.setContext(m_printCtx, Page.CONTEXT_HEADER, Env.getHeader(m_printCtx, 0));
 		Env.setContext(m_printCtx, Env.LANGUAGE, m_format.getLanguage().getAD_Language());
 
