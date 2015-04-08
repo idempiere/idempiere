@@ -1172,9 +1172,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	/*IDEMPIERE -379*/
 	private void cmd_Wizard()
 	{
-		int AD_PrintFormat_ID = m_reportEngine.getPrintFormat().get_ID();
-
-		Env.setContext(m_ctx, "AD_PrintFormat_ID", AD_PrintFormat_ID);
 	    ADForm form = ADForm.openForm(SystemIDs.FORM_REPORT_WIZARD);
 		WReportCustomization av = (WReportCustomization) form.getICustomForm();
 		av.setReportEngine(m_reportEngine);
