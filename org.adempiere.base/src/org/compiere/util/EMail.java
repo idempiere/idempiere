@@ -184,6 +184,10 @@ public final class EMail implements Serializable
 		m_smtpPort = smtpPort;
 	}
 
+	public void setAcknoledgmentReceipt(boolean ar) {
+		m_acknowledgementReceipt = ar;
+	}
+
 	/**	From Address				*/
 	private InternetAddress     m_from;
 	/** To Address					*/
@@ -204,7 +208,7 @@ public final class EMail implements Serializable
 	private String  			m_smtpHost;
 	private int					m_smtpPort;
 	private boolean				m_secureSmtp;
-
+	private boolean				m_acknowledgementReceipt;
 	
 	/**	Attachments					*/
 	private ArrayList<DataSource>	m_attachments;
@@ -335,6 +339,8 @@ public final class EMail implements Serializable
 			//
 			m_msg.setSentDate(new java.util.Date());
 			m_msg.setHeader("Comments", "iDempiereMail");
+			if (m_acknowledgementReceipt)
+				m_msg.setHeader("Disposition-Notification-To", m_from.getAddress());
 		//	m_msg.setDescription("Description");
 			//	SMTP specifics
 			//m_msg.setAllow8bitMIME(true);
