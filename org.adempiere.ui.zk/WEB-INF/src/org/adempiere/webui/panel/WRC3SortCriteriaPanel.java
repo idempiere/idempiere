@@ -175,7 +175,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		noItems =new ArrayList<MPrintFormatItem>();
 		for(int i=0 ; i< m_pfi.size();i++){
 		    MPrintFormatItem item  = m_pfi.get(i);
-		    if(item!=null && item.isPrinted()){
+		    if(item!=null){
 		    	if(item.isOrderBy()){
 		    		yesItems.add(item);
 		    	}else{

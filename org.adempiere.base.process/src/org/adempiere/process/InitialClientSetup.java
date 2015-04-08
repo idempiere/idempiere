@@ -257,34 +257,38 @@ public class InitialClientSetup extends SvrProcess
 
 		// Process
 		MSetup ms = new MSetup(Env.getCtx(), WINDOW_THIS_PROCESS);
+		try {
+			if (! ms.createClient(p_ClientName, p_OrgValue, p_OrgName, p_AdminUserName, p_NormalUserName
+					, p_Phone, p_Phone2, p_Fax, p_EMail, p_TaxID, p_AdminUserEmail, p_NormalUserEmail)) {
+				ms.rollback();
+				throw new AdempiereException("Create client failed");
+			}
+				
+			addLog(ms.getInfo());
 
-		if (! ms.createClient(p_ClientName, p_OrgValue, p_OrgName, p_AdminUserName, p_NormalUserName
-				, p_Phone, p_Phone2, p_Fax, p_EMail, p_TaxID, p_AdminUserEmail, p_NormalUserEmail)) {
+			//  Generate Accounting
+			MCurrency currency = MCurrency.get(getCtx(), p_C_Currency_ID);
+			KeyNamePair currency_kp = new KeyNamePair(p_C_Currency_ID, currency.getDescription());
+			if (!ms.createAccounting(currency_kp,
+				p_IsUseProductDimension, p_IsUseBPDimension, p_IsUseProjectDimension, p_IsUseCampaignDimension, p_IsUseSalesRegionDimension, p_IsUseActivityDimension,
+				coaFile, p_UseDefaultCoA, p_InactivateDefaults)) {
+				ms.rollback();
+				throw new AdempiereException("@AccountSetupError@");
+			}
+
+			//  Generate Entities
+			if (!ms.createEntities(p_C_Country_ID, p_CityName, p_C_Region_ID, p_C_Currency_ID, p_Postal, p_Address1)) {
+				ms.rollback();
+				throw new AdempiereException("@AccountSetupError@");
+			}
+			addLog(ms.getInfo());
+
+			//	Create Print Documents
+			PrintUtil.setupPrintForm(ms.getAD_Client_ID());
+		} catch (Exception e) {
 			ms.rollback();
-			throw new AdempiereException("Create client failed");
+			throw e;
 		}
-			
-		addLog(ms.getInfo());
-
-		//  Generate Accounting
-		MCurrency currency = MCurrency.get(getCtx(), p_C_Currency_ID);
-		KeyNamePair currency_kp = new KeyNamePair(p_C_Currency_ID, currency.getDescription());
-		if (!ms.createAccounting(currency_kp,
-			p_IsUseProductDimension, p_IsUseBPDimension, p_IsUseProjectDimension, p_IsUseCampaignDimension, p_IsUseSalesRegionDimension, p_IsUseActivityDimension,
-			coaFile, p_UseDefaultCoA, p_InactivateDefaults)) {
-			ms.rollback();
-			throw new AdempiereException("@AccountSetupError@");
-		}
-
-		//  Generate Entities
-		if (!ms.createEntities(p_C_Country_ID, p_CityName, p_C_Region_ID, p_C_Currency_ID, p_Postal, p_Address1)) {
-			ms.rollback();
-			throw new AdempiereException("@AccountSetupError@");
-		}
-		addLog(ms.getInfo());
-
-		//	Create Print Documents
-		PrintUtil.setupPrintForm(ms.getAD_Client_ID());
 
 		return "@OK@";
 	}

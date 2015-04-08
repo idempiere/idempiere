@@ -133,7 +133,7 @@ public class WArchive implements EventListener<Event>
 		if (allReports > 0)
 		{
 			m_reportsAll = new Menuitem(Msg.getMsg(Env.getCtx(), "ArchivedReportsAll") 
-					+ " (" + reportCount + ")");
+					+ " (" + allReports + ")");
 			m_reportsAll.addEventListener(Events.ON_CLICK, this);
 			m_popup.appendChild(m_reportsAll);
 		}

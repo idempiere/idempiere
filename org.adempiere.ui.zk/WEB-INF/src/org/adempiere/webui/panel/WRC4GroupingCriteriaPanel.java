@@ -49,7 +49,7 @@ public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListe
 	public void refresh() {
 		orderfield = new ArrayList<MPrintFormatItem>();
 		for(int i=0 ; i < m_pfi.size(); i++){
-			if(m_pfi.get(i) != null && m_pfi.get(i).isOrderBy()  && m_pfi.get(i).isPrinted()){
+			if(m_pfi.get(i) != null && m_pfi.get(i).isOrderBy()){
 				orderfield.add(m_pfi.get(i));
 			}
 		}

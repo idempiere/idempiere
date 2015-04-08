@@ -353,8 +353,9 @@ public class ReplicationLocal extends SvrProcess
 			//	no keys - search for parents
 			if (list.size() == 0)
 			{
-				DB.close(rs);
+				DB.close(rs, pstmt);
 				rs = null;
+				pstmt = null;
 				sql = "SELECT ColumnName FROM AD_Column "
 					+ "WHERE AD_Table_ID=?"
 					+ " AND IsParent='Y'";

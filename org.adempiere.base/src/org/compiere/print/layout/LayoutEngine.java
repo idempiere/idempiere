@@ -265,7 +265,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		m_printFont = MPrintFont.get (format.getAD_PrintFont_ID());
 
 		//	Print Context
-		Env.setContext(m_printCtx, Page.CONTEXT_REPORTNAME, m_format.getName());
+		Env.setContext(m_printCtx, Page.CONTEXT_REPORTNAME, m_format.get_Translation(MPrintFormat.COLUMNNAME_Name));
 		Env.setContext(m_printCtx, Page.CONTEXT_HEADER, Env.getHeader(m_printCtx, 0));
 		Env.setContext(m_printCtx, Env.LANGUAGE, m_format.getLanguage().getAD_Language());
 
@@ -1009,6 +1009,9 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		{
 			if (log.isLoggable(Level.INFO)) log.info("Row=" + row);
 			m_data.setRowIndex(row);
+			if (row > 0)
+				newPage(true, false); // break page per record when the report is a form
+
 			boolean somethingPrinted = true;	//	prevent NL of nothing printed and supress null
 			//	for every item
 			for (int i = 0; i < m_format.getItemCount(); i++)

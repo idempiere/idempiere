@@ -233,20 +233,25 @@ public class PackIn {
 		ZipFile zf = new ZipFile(m_packageDirectory+File.separator+"blobs"+File.separator+fileName);
 		Enumeration<?> e = zf.entries();
 		ArrayList<File> files = new ArrayList<File>();
-		while (e.hasMoreElements()) {
-			ZipEntry ze = (ZipEntry) e.nextElement();
-			File file = new File(m_packageDirectory + File.separator + ze.getName());
-			FileOutputStream fout = new FileOutputStream(file);
-			InputStream in = zf.getInputStream(ze);
-			for (int c = in.read(); c != -1; c = in.read()) {
-				fout.write(c);
+		File[] retValue = null;
+		try{
+			while (e.hasMoreElements()) {
+				ZipEntry ze = (ZipEntry) e.nextElement();
+				File file = new File(m_packageDirectory + File.separator + ze.getName());
+				FileOutputStream fout = new FileOutputStream(file);
+				InputStream in = zf.getInputStream(ze);
+				for (int c = in.read(); c != -1; c = in.read()) {
+					fout.write(c);
+				}
+				in.close();
+				fout.close();
+				files.add(file);
 			}
-			in.close();
-			fout.close();
-			files.add(file);
+			retValue = new File[files.size()];
+			files.toArray(retValue);
+		}catch (Exception ex){
+			zf.close();
 		}
-		File[] retValue = new File[files.size()];
-		files.toArray(retValue);
 		return retValue;
 	}
 

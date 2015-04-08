@@ -17,6 +17,7 @@
 package org.compiere.impexp;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 
 import org.compiere.model.MBankStatementLoader;
 import org.xml.sax.SAXException;
@@ -71,6 +72,13 @@ public final class OFXFileBankStatementLoader extends OFXBankStatementHandler im
 		{
 			m_errorMessage = new StringBuffer("ErrorReadingData");
 			m_errorDescription = new StringBuffer();
+		}finally{
+			if (m_stream != null)
+				try {
+					m_stream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 		}
 
 		return result;

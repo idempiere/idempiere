@@ -1625,6 +1625,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 					.append("FROM C_DocType dt, C_Order o ")
 					.append("WHERE o.C_DocTypeTarget_ID=dt.C_DocType_ID")
 					.append(" AND o.C_Order_ID=?");
+				DB.close(rs, pstmt);
+				rs = null; pstmt = null;
 				pstmt = DB.prepareStatement(sql.toString(), null);
 				pstmt.setInt(1, C_Order_ID);
 				rs = pstmt.executeQuery();

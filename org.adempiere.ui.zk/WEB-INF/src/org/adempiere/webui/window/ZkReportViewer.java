@@ -213,7 +213,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
 		m_isCanExport = MRole.getDefault().isCanExport(m_AD_Table_ID);
 		
-		setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report") + ": " + m_reportEngine.getName()));
+		setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report") + ": " +
+				m_reportEngine.getPrintFormat().get_Translation(MPrintFormat.COLUMNNAME_Name)));
 		
 		addEventListener(ON_RENDER_REPORT_EVENT, this);
 	}
@@ -624,7 +625,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			{
 				MPrintFormat printFormat = new MPrintFormat (Env.getCtx(), rs, null);
 				
-				KeyNamePair pp = new KeyNamePair(printFormat.get_ID(), printFormat.get_Translation(MPrintFormat.COLUMNNAME_Name));
+				KeyNamePair pp = new KeyNamePair(printFormat.get_ID(), printFormat.get_Translation(MPrintFormat.COLUMNNAME_Name, Env.getAD_Language(Env.getCtx()), true));
 				Listitem li = comboReport.appendItem(pp.getName(), pp.getKey());
 				if (rs.getInt(1) == AD_PrintFormat_ID)
 				{
@@ -1174,9 +1175,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	/*IDEMPIERE -379*/
 	private void cmd_Wizard()
 	{
-		int AD_PrintFormat_ID = m_reportEngine.getPrintFormat().get_ID();
-
-		Env.setContext(m_ctx, "AD_PrintFormat_ID", AD_PrintFormat_ID);
 	    ADForm form = ADForm.openForm(SystemIDs.FORM_REPORT_WIZARD);
 		WReportCustomization av = (WReportCustomization) form.getICustomForm();
 		av.setReportEngine(m_reportEngine);
@@ -1187,10 +1185,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			@Override
 			public void onEvent(Event event) throws Exception {
 				if (DialogEvents.ON_WINDOW_CLOSE.equals(event.getName())) {
-				   if(m_reportEngine.getPrintFormat().get_ID()!=Env.getContextAsInt(m_ctx, "AD_PrintFormat_ID")){
-					  fillComboReport (m_reportEngine.getPrintFormat().get_ID());	
-				   }
-				   cmd_report();		
+					fillComboReport (m_reportEngine.getPrintFormat().get_ID());	
+					cmd_report();		
 				}
 			}
 		});

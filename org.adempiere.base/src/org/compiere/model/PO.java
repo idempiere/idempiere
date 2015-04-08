@@ -107,7 +107,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2731993630208549493L;
+	private static final long serialVersionUID = 8237905660667141657L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -1882,16 +1882,22 @@ public abstract class PO
 	/**	Cache						*/
 	private static CCache<String,String> trl_cache	= new CCache<String,String>("po_trl", 5);
 
+	public String get_Translation (String columnName, String AD_Language)
+	{
+		return get_Translation(columnName, AD_Language, false);
+	}
+
 	/**
 	 * Get Translation of column (if needed).
 	 * It checks if the base language is used or the column is not translated.
 	 * If there is no translation then it fallback to original value.
 	 * @param columnName
 	 * @param AD_Language
+	 * @boolean reload
 	 * @return translated string
 	 * @throws IllegalArgumentException if columnName or AD_Language is null or model has multiple PK
 	 */
-	public String get_Translation (String columnName, String AD_Language)
+	public String get_Translation (String columnName, String AD_Language, boolean reload)
 	{
 		//
 		// Check if columnName, AD_Language is valid or table support translation (has 1 PK) => error
@@ -1907,7 +1913,7 @@ public abstract class PO
 
 		String key = get_TableName() + "." + columnName + "|" + get_ID() + "|" + AD_Language;
 		String retValue = null;
-		if (trl_cache.containsKey(key)) {
+		if (! reload && trl_cache.containsKey(key)) {
 			retValue = trl_cache.get(key);
 			return retValue;
 
