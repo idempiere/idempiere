@@ -623,7 +623,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			{
 				MPrintFormat printFormat = new MPrintFormat (Env.getCtx(), rs, null);
 				
-				KeyNamePair pp = new KeyNamePair(printFormat.get_ID(), printFormat.get_Translation(MPrintFormat.COLUMNNAME_Name));
+				KeyNamePair pp = new KeyNamePair(printFormat.get_ID(), printFormat.get_Translation(MPrintFormat.COLUMNNAME_Name, Env.getAD_Language(Env.getCtx()), true));
 				Listitem li = comboReport.appendItem(pp.getName(), pp.getKey());
 				if (rs.getInt(1) == AD_PrintFormat_ID)
 				{

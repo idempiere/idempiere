@@ -422,8 +422,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 			trl.set_ValueOfColumn("Name", (String) name.getValue());
 			trl.saveEx();
 
-			String key = fm.getTranslationKey("Name", trl.get_ValueAsString("AD_Language")); 
-			fm.removeTrlFromCache(key);
+			fm.get_Translation("Name", trl.get_ValueAsString("AD_Language"), true); // reload
 		}
 	}
 
