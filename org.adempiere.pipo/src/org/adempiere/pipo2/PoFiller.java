@@ -204,11 +204,13 @@ public class PoFiller{
 		{
 			Element orgElement = element.properties.get("AD_Org_ID");
 			String sAD_Org_ID = orgElement != null ? orgElement.contents.toString() : null;
-			if (sAD_Org_ID != null && sAD_Org_ID.equals("0") && po.getAD_Org_ID() != 0)
-				po.setAD_Org_ID(0);
-			else if (sAD_Org_ID != null && sAD_Org_ID.equals("@AD_Org_ID@"))
+			if (sAD_Org_ID != null && sAD_Org_ID.equals("0")) {
+				if (po.getAD_Org_ID() != 0) {
+					po.setAD_Org_ID(0);
+				}
+			} else if (sAD_Org_ID != null && sAD_Org_ID.equals("@AD_Org_ID@")) {
 				po.setAD_Org_ID(Env.getAD_Org_ID(ctx.ctx));
-			else {
+			} else {
 				if (setTableReference("AD_Client_ID") >= 0)
 					setTableReference("AD_Org_ID");
 			}

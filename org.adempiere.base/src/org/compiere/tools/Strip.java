@@ -18,7 +18,6 @@ package org.compiere.tools;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -165,32 +164,15 @@ public class Strip
 	private boolean copy (File infile, File outfile)
 	{
 		FileInputStream fis = null;
-		try
-		{
-			fis = new FileInputStream(infile);
-		}
-		catch (FileNotFoundException fnfe)
-		{
-			System.err.println(fnfe);
-			return false;
-		}
-		//
 		FileOutputStream fos = null;
-		try
-		{
-			fos = new FileOutputStream(outfile, false);    //  no append
-		}
-		catch (FileNotFoundException fnfe)
-		{
-			System.err.println(fnfe);
-			return false;
-		}
-
-		int noIn = 0;
-		int noOut = 0;
-		int noLines = 1;
-		try
-		{
+		try{
+			fis = new FileInputStream(infile);
+			fos = new FileOutputStream(outfile, false);    //  no append		
+	
+			int noIn = 0;
+			int noOut = 0;
+			int noLines = 1;
+			
 			int c;
 			while ((c = fis.read()) != -1)
 			{
@@ -203,15 +185,24 @@ public class Strip
 				if (c == 13)    //  cr
 					noLines++;
 			}
-			fis.close();
-			fos.close();
-		}
-		catch (IOException ioe)
+			System.out.println("  read: " + noIn + ", written: " + noOut + " - lines: " + noLines);
+		}catch (IOException ioe)
 		{
 			System.err.println(ioe);
 			return false;
+		}finally{
+			if (fos != null)
+				try {
+					fos.close();
+				} catch (IOException e) {
+				}
+			if (fis != null)
+				try {
+					fis.close();
+				} catch (IOException e) {
+				}
+			
 		}
-		System.out.println("  read: " + noIn + ", written: " + noOut + " - lines: " + noLines);
 		return true;
 	}   //  stripIt
 

@@ -29,10 +29,13 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.activation.DataSource;
+
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.AttachmentItem;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -95,7 +98,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4540369233682337505L;
+	private static final long serialVersionUID = -3675260492572002393L;
 
 	/**
 	 * 	EMail Dialog
@@ -202,7 +205,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private Button bAddDefaultMailText;
 	private Div attachmentBox;
-
+	private Checkbox isAcknowledgmentReceipt = new Checkbox();
+	
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
 		super.onPageAttached(newpage, oldpage);
@@ -227,6 +231,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		lSubject.setValue(Msg.getMsg(Env.getCtx(), "Subject") + ":");
 		lAttachment.setValue(Msg.getMsg(Env.getCtx(), "Attachment") + ":");
 		fFrom.setReadonly(true);
+		isAcknowledgmentReceipt.setLabel(Msg.getMsg(Env.getCtx(), "Acknowledge"));
 		//
 				
 		Grid grid = new Grid();
@@ -266,7 +271,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.appendChild(new Label(""));
+		row.appendChild(isAcknowledgmentReceipt);
 		row.appendChild(fTo);
 		fTo.setHflex("1");
 		
@@ -522,7 +527,9 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 				{
 					email.addAttachment(ds);
 				}
-				
+
+				email.setAcknoledgmentReceipt(isAcknowledgmentReceipt.isChecked());
+
 				status = email.send();
 				//
 				if (m_user != null)

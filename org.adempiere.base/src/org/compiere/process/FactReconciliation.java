@@ -2,7 +2,6 @@ package org.compiere.process;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
@@ -51,9 +50,7 @@ public class FactReconciliation extends SvrProcess
 	 */
 	protected String doIt()
 	{
-		
 		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		
 		String sql = "INSERT into T_Reconciliation " +
 		"(AD_Client_ID, AD_Org_ID, Created, CreatedBy, Updated, UpdatedBy, " +
@@ -69,8 +66,6 @@ public class FactReconciliation extends SvrProcess
 		
 		try
 		{
-			
-
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getAD_PInstance_ID());
 			pstmt.setInt(2, p_Account_ID);
@@ -88,25 +83,26 @@ public class FactReconciliation extends SvrProcess
 				"       AND r.AD_PInstance_ID = t.AD_PInstance_ID) = 0 " +
 				"AND t.AD_PInstance_ID = ?";
 		
-		pstmt = DB.prepareStatement(sql, get_TrxName());
-		pstmt.setInt(1, getAD_PInstance_ID());
-		count = pstmt.executeUpdate();
-		result = Msg.getMsg(getCtx(), "@Deleted@") + ": " + count;
+			DB.close(pstmt);
+			pstmt = null;
+			pstmt = DB.prepareStatement(sql, get_TrxName());
+			pstmt.setInt(1, getAD_PInstance_ID());
+			count = pstmt.executeUpdate();
+			result = Msg.getMsg(getCtx(), "@Deleted@") + ": " + count;
+			
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, result);
 		
-		if (log.isLoggable(Level.FINE))log.log(Level.FINE, result);
-		
-		
-	}
-	catch (SQLException e)
-	{
-		log.log(Level.SEVERE, sql, e);
-		return e.getLocalizedMessage();
-	}
-	finally
-	{
-		DB.close(rs, pstmt);
-		rs = null; pstmt = null;
-	}
+		}
+		catch (SQLException e)
+		{
+			log.log(Level.SEVERE, sql, e);
+			return e.getLocalizedMessage();
+		}
+		finally
+		{
+			DB.close(pstmt);
+			pstmt = null;
+		}
 	
 		if (log.isLoggable(Level.FINE)) log.fine((System.currentTimeMillis() - m_start) + " ms");
 		return "";
