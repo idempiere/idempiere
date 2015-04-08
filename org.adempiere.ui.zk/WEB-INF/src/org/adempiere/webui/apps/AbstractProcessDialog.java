@@ -558,7 +558,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 				freportType.setValue(instance.getReportType());
 		}
 		
-       if (instance != null)       
+       if (instance != null && chbIsSummary != null)       
 		    chbIsSummary.setSelected(instance.getIsSummary());
 	}
 	
@@ -630,22 +630,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 						}
 						getParameterPanel().saveParameters();
 						
-						Object value = fPrintFormat.getValue();
-						if (value == null){
-							savedParams.get(i).setAD_PrintFormat_ID(0);
-						}else{
-							savedParams.get(i).setAD_PrintFormat_ID((Integer)value);
-						}
+						saveReportOptionToInstance(savedParams.get(i));
 						
-						value = fLanguageType.getValue();
-						if (value == null){
-							savedParams.get(i).setAD_Language_ID(0);
-						}else{
-							savedParams.get(i).setAD_Language_ID((Integer)value);
-						}
-						
-						savedParams.get(i).setReportType(freportType.getSelectedItem().getValue().toString());
-						savedParams.get(i).setIsSummary(chbIsSummary.isSelected());
 						savedParams.get(i).saveEx();
 					}
 				}
@@ -657,9 +643,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 					instance = new MPInstance(Env.getCtx(),
 							getProcessInfo().getAD_Process_ID(), getProcessInfo().getRecord_ID());
 					instance.setName(saveName);
-					instance.setAD_PrintFormat_ID((Integer) fPrintFormat.getValue());
-					instance.setReportType(freportType.getSelectedItem().getValue().toString());
-					instance.setIsSummary(chbIsSummary.isSelected());
+					saveReportOptionToInstance(instance);
 					instance.saveEx();
 					getProcessInfo().setAD_PInstance_ID(instance.getAD_PInstance_ID());
 					// Get Parameters
@@ -675,6 +659,30 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			}
 			querySaved();
 			fSavedName.setSelectedItem(getComboItem(saveName));
+	}
+	
+	protected void saveReportOptionToInstance (MPInstance instance){
+		if (!isReport())
+			return;
+		
+		Object value = fPrintFormat.getValue();
+		if (value == null){
+			instance.setAD_PrintFormat_ID(0);
+		}else{
+			instance.setAD_PrintFormat_ID((Integer)value);
+		}
+		
+		if (fLanguageType != null){
+			value = fLanguageType.getValue();
+			if (value == null){
+				instance.setAD_Language_ID(0);
+			}else{
+				instance.setAD_Language_ID((Integer)value);
+			}
+		}
+		
+		instance.setReportType(freportType.getSelectedItem().getValue().toString());
+		instance.setIsSummary(chbIsSummary.isSelected());
 	}
 	
 	public  Comboitem getComboItem( String value) {
