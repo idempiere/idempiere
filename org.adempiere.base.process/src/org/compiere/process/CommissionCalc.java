@@ -376,7 +376,6 @@ public class CommissionCalc extends SvrProcess
 				if (!cd.save())
 					throw new IllegalArgumentException ("CommissionCalc - Detail Not saved");
 			}
-			pstmt = null;
 		}
 		catch (Exception e)
 		{
