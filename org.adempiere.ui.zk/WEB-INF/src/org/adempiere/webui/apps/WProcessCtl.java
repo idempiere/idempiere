@@ -19,7 +19,12 @@ package org.adempiere.webui.apps;
 import java.util.logging.Level;
 
 import org.adempiere.util.IProcessUI;
+import org.adempiere.webui.ISupportMask;
+import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.apps.AbstractProcessCtl;
 import org.compiere.apps.IProcessParameter;
 import org.compiere.model.MPInstance;
@@ -28,6 +33,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
@@ -96,11 +102,32 @@ public class WProcessCtl extends AbstractProcessCtl {
 		ProcessModalDialog para = new ProcessModalDialog(listener, WindowNo, pi, false);
 		if (para.isValid())
 		{
-			para.setWidth("500px");
+			//para.setWidth("500px");
 			para.setVisible(true);
-			para.setPosition("center");
-			para.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-			AEnv.showWindow(para);
+
+			Object window = SessionManager.getAppDesktop().findWindow(WindowNo);
+			if (window != null && window instanceof Component && window instanceof ISupportMask){
+				final ISupportMask parent = LayoutUtils.showWindowWithMask(para, (Component)window, LayoutUtils.OVERLAP_PARENT);
+				para.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						parent.hideMask();
+					}
+				});
+			}else if (window != null && window instanceof Component){
+				final Mask mask = LayoutUtils.showWindowWithMask(para, (Component)window, null);
+				para.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						mask.hideMask();
+					}
+				});
+			}else{
+				para.setPosition("center");
+				para.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+				AEnv.showWindow(para);
+			}
+			
 		}
 	}	//	execute
 	
@@ -126,34 +153,34 @@ public class WProcessCtl extends AbstractProcessCtl {
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("WindowNo=" + WindowNo + " - " + pi);
 
-		if (pi.getAD_PInstance_ID() < 1) { //red1 bypass if PInstance exists
-			MPInstance instance = null;
-			try
-			{
-				instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getRecord_ID());
-			}
-			catch (Exception e)
-			{
-				pi.setSummary (e.getLocalizedMessage());
-				pi.setError (true);
-				log.warning(pi.toString());
-				return;
-			}
-			catch (Error e)
-			{
-				pi.setSummary (e.getLocalizedMessage());
-				pi.setError (true);
-				log.warning(pi.toString());
-				return;
-			}
-			if (!instance.save())
-			{
-				pi.setSummary (Msg.getMsg(Env.getCtx(), "ProcessNoInstance"));
-				pi.setError (true);
-				return;
-			}
-			pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+//		if (pi.getAD_PInstance_ID() < 1) { //red1 bypass if PInstance exists
+		MPInstance instance = null;
+		try
+		{
+			instance = new MPInstance(Env.getCtx(), pi.getAD_Process_ID(), pi.getRecord_ID());
 		}
+		catch (Exception e)
+		{
+			pi.setSummary (e.getLocalizedMessage());
+			pi.setError (true);
+			log.warning(pi.toString());
+			return;
+		}
+		catch (Error e)
+		{
+			pi.setSummary (e.getLocalizedMessage());
+			pi.setError (true);
+			log.warning(pi.toString());
+			return;
+		}
+		if (!instance.save())
+		{
+			pi.setSummary (Msg.getMsg(Env.getCtx(), "ProcessNoInstance"));
+			pi.setError (true);
+			return;
+		}
+		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+//		}
 
 		//	Get Parameters
 		if (parameter != null) {

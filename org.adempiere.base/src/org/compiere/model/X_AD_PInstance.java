@@ -30,7 +30,7 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20150204L;
 
     /** Standard Constructor */
     public X_AD_PInstance (Properties ctx, int AD_PInstance_ID, String trxName)
@@ -44,6 +44,8 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 			setIsRunAsJob (false);
 // N
 			setRecord_ID (0);
+			setReportType (null);
+// P
         } */
     }
 
@@ -118,6 +120,86 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 	public String getAD_PInstance_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_AD_PInstance_UU);
+	}
+
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
+
+	/** Set Print Format.
+		@param AD_PrintFormat_ID 
+		Data Print Format
+	  */
+	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID)
+	{
+		if (AD_PrintFormat_ID < 1) 
+			set_Value (COLUMNNAME_AD_PrintFormat_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_PrintFormat_ID, Integer.valueOf(AD_PrintFormat_ID));
+	}
+
+	/** Get Print Format.
+		@return Data Print Format
+	  */
+	public int getAD_PrintFormat_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormat_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	
+	public org.compiere.model.I_AD_Language getAD_Language() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Language)MTable.get(getCtx(), org.compiere.model.I_AD_Language.Table_Name)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
+
+	/** Set Print Format.
+		@param AD_PrintFormat_ID 
+		Data Print Format
+	  */
+	public void setAD_Language_ID (int AD_Language_ID)
+	{
+		if (AD_Language_ID < 1) 
+			set_Value (COLUMNNAME_AD_Language_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Language_ID, Integer.valueOf(AD_Language_ID));
+	}
+
+	/** Get Print Format.
+		@return Data Print Format
+	  */
+	public int getAD_Language_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Language_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	
+	/** Set IsSummary.
+	@param IsSummary 
+	Data IsSummary
+	*/
+	public void setIsSummary (boolean isSummary)
+	{
+		set_Value (COLUMNNAME_IsSummary, Boolean.valueOf(isSummary));
+	}
+	
+	/** Get IsSummary.
+		@return Data IsSummary
+	  */
+	public boolean getIsSummary () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsSummary);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
@@ -298,6 +380,27 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** PDF = P */
+	public static final String REPORTTYPE_PDF = "P";
+	/** HTML = H */
+	public static final String REPORTTYPE_HTML = "H";
+	/** XLS = X */
+	public static final String REPORTTYPE_XLS = "X";
+	/** Set Report Type.
+		@param ReportType Report Type	  */
+	public void setReportType (String ReportType)
+	{
+
+		set_Value (COLUMNNAME_ReportType, ReportType);
+	}
+
+	/** Get Report Type.
+		@return Report Type	  */
+	public String getReportType () 
+	{
+		return (String)get_Value(COLUMNNAME_ReportType);
 	}
 
 	/** Set Result.

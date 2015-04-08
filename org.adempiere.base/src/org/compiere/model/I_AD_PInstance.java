@@ -84,6 +84,36 @@ public interface I_AD_PInstance
 	/** Get AD_PInstance_UU	  */
 	public String getAD_PInstance_UU();
 
+    /** Column name AD_PrintFormat_ID */
+    public static final String COLUMNNAME_AD_PrintFormat_ID = "AD_PrintFormat_ID";
+    
+    public static final String COLUMNNAME_AD_Language_ID = "AD_Language_ID";
+    
+	/** Set Print Format.
+	  * Data Print Format
+	  */
+	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID);
+
+	/** Get Print Format.
+	  * Data Print Format
+	  */
+	public int getAD_PrintFormat_ID();
+	
+	/** Column name IsSummary */
+    public static final String COLUMNNAME_IsSummary = "IsSummary";
+
+	/** Set IsSummary.
+	  * Data IsSummary
+	  */
+	public void setIsSummary (boolean isSummary);
+
+	/** Get IsSummary.
+	  * Data IsSummary
+	  */
+	public boolean getIsSummary();
+
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
+
     /** Column name AD_Process_ID */
     public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
 
@@ -208,6 +238,15 @@ public interface I_AD_PInstance
 	  * Direct internal record ID
 	  */
 	public int getRecord_ID();
+
+    /** Column name ReportType */
+    public static final String COLUMNNAME_ReportType = "ReportType";
+
+	/** Set Report Type	  */
+	public void setReportType (String ReportType);
+
+	/** Get Report Type	  */
+	public String getReportType();
 
     /** Column name Result */
     public static final String COLUMNNAME_Result = "Result";

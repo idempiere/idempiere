@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.IProcessUI;
+import org.compiere.model.MPInstance;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
@@ -124,6 +125,17 @@ public class ReportCtl
 		if (s_log.isLoggable(Level.INFO)) s_log.info("start - " + pi);
 
 		m_pi = pi;
+
+		MPInstance instance = new MPInstance(Env.getCtx(), pi.getAD_PInstance_ID(), null);
+
+		if (pi.getReportType() != null)
+			instance.setReportType(pi.getReportType());
+		if (pi.getSerializableObject() != null)
+			instance.setAD_PrintFormat_ID(((MPrintFormat)pi.getSerializableObject()).getAD_PrintFormat_ID());
+		instance.setIsSummary(pi.isSummary());
+		instance.setAD_Language_ID(pi.getLanguageID());
+		instance.saveEx();
+
 		/**
 		 *	Order Print
 		 */
@@ -232,10 +244,7 @@ public class ReportCtl
 			String TableName = MTable.getTableName(ctx, format.getAD_Table_ID());
 			MQuery query = MQuery.get (ctx, pi.getAD_PInstance_ID(), TableName);
 			PrintInfo info = new PrintInfo(pi);
-			re = new ReportEngine(ctx, format, query, info);
-			re.setWindowNo(WindowNo);
-			createOutput(re, pi.isPrintPreview(), null);
-			return true;
+			re = new ReportEngine(ctx, format, query, info, pi.isSummary());
 		}
 		//
 		// Create Report Engine normally
@@ -246,9 +255,13 @@ public class ReportCtl
 				pi.setSummary("No ReportEngine");
 				return false;
 			}
-			re.setWindowNo(WindowNo);
 		}
 
+		if (pi.getReportType() != null) {
+			re.setReportType(pi.getReportType());
+		}
+		re.setLanguageID(pi.getLanguageID());
+		re.setWindowNo(WindowNo);
 		createOutput(re, pi.isPrintPreview(), null);
 		return true;
 	}	//	startStandardReport
@@ -289,8 +302,14 @@ public class ReportCtl
 		}
 		PrintInfo info = new PrintInfo(pi);
 
-		ReportEngine re = new ReportEngine(Env.getCtx(), format, query, info);
+		ReportEngine re = new ReportEngine(Env.getCtx(), format, query, info, pi.isSummary());
 		re.setWindowNo(WindowNo);
+		if (pi.getReportType() != null) {
+			re.setReportType(pi.getReportType());
+		}
+		
+		re.setLanguageID(pi.getLanguageID());
+		
 		createOutput(re, pi.isPrintPreview(), null);
 		return true;
 	}	//	startFinReport
