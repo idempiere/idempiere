@@ -435,7 +435,8 @@ public class MMovement extends X_M_Movement implements DocAction
 							M_AttributeSetInstanceTo_ID = ma.getM_AttributeSetInstance_ID();
 						}
 						//Update Storage 
-						if (!MStorageOnHand.add(getCtx(),locator.getM_Warehouse_ID(),
+						MLocator locatorTo = new MLocator (getCtx(), line.getM_LocatorTo_ID(), get_TrxName());
+						if (!MStorageOnHand.add(getCtx(),locatorTo.getM_Warehouse_ID(),
 								line.getM_LocatorTo_ID(),
 								line.getM_Product_ID(), 
 								M_AttributeSetInstanceTo_ID,
@@ -473,17 +474,13 @@ public class MMovement extends X_M_Movement implements DocAction
 				//	Fallback - We have ASI
 				if (trxFrom == null)
 				{
-					I_M_AttributeSetInstance asi = line.getM_AttributeSetInstance();
-					Timestamp dateMPolicy= getMovementDate();
-					dateMPolicy = asi.getCreated();
-					
 					MLocator locator = new MLocator (getCtx(), line.getM_Locator_ID(), get_TrxName());
 					//Update Storage 
 					if (!MStorageOnHand.add(getCtx(),locator.getM_Warehouse_ID(),
 							line.getM_Locator_ID(),
 							line.getM_Product_ID(), 
 							line.getM_AttributeSetInstance_ID(),
-							line.getMovementQty().negate(),dateMPolicy, get_TrxName()))
+							line.getMovementQty().negate(), null, get_TrxName()))
 					{
 						String lastError = CLogger.retrieveErrorString("");
 						m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
@@ -491,11 +488,12 @@ public class MMovement extends X_M_Movement implements DocAction
 					}
 
 					//Update Storage 
-					if (!MStorageOnHand.add(getCtx(),locator.getM_Warehouse_ID(),
+					MLocator locatorTo = new MLocator (getCtx(), line.getM_LocatorTo_ID(), get_TrxName());
+					if (!MStorageOnHand.add(getCtx(),locatorTo.getM_Warehouse_ID(),
 							line.getM_LocatorTo_ID(),
 							line.getM_Product_ID(), 
 							line.getM_AttributeSetInstanceTo_ID(),
-							line.getMovementQty(),dateMPolicy, get_TrxName()))
+							line.getMovementQty(), null, get_TrxName()))
 					{
 						String lastError = CLogger.retrieveErrorString("");
 						m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
