@@ -910,7 +910,7 @@ public class MUser extends X_AD_User
 			} else {
 				MPasswordRule pwdrule = MPasswordRule.getRules(getCtx(), get_TrxName());
 				if (pwdrule != null){
-					List<MPasswordHistory> passwordHistorys = MPasswordHistory.getPasswordHistoryForCheck(MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_PASSWORD_AGE_DAY, 0), pwdrule.getDays_Reuse_Password(), this.getAD_User_ID());
+					List<MPasswordHistory> passwordHistorys = MPasswordHistory.getPasswordHistoryForCheck(pwdrule.getDays_Reuse_Password(), this.getAD_User_ID());
 					// for long time user don't use this system, because all password in history table is out of check range. but we will want new password must difference latest password  
 					if (passwordHistorys.size() == 0 && !this.is_new() && this.get_ValueOld(MUser.COLUMNNAME_Password) != null){
 						Object oldSalt = this.get_ValueOld(MUser.COLUMNNAME_Salt);

@@ -173,25 +173,6 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 		return ii.intValue();
 	}
 
-	/** Set Word Length Dictionary.
-		@param DictWordLength Word Length Dictionary	  
-		@deprecated by update library */
-	public void setDictWordLength (int DictWordLength)
-	{
-		set_Value (COLUMNNAME_DictWordLength, Integer.valueOf(DictWordLength));
-	}
-
-	/** Get Word Length Dictionary.
-		@return Word Length Dictionary	  
-		@deprecated by update library */
-	public int getDictWordLength () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_DictWordLength);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Digit Character.
 		@param DigitCharacter 
 		Require at least # digit in passwords

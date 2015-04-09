@@ -138,12 +138,6 @@ public interface I_AD_PasswordRule
     /** Column name DictWordLength */
     public static final String COLUMNNAME_DictWordLength = "DictWordLength";
 
-	/** Set Word Length Dictionary	  */
-	public void setDictWordLength (int DictWordLength);
-
-	/** Get Word Length Dictionary	  */
-	public int getDictWordLength();
-
     /** Column name DigitCharacter */
     public static final String COLUMNNAME_DigitCharacter = "DigitCharacter";
 

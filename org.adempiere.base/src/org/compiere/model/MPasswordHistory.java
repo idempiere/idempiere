@@ -30,12 +30,11 @@ public class MPasswordHistory extends X_AD_Password_History {
 	
 	/**
 	 * get list password history has age <= passwordMaxDay + daysReuse
-	 * @param passwordMaxDay max day a password is validate, get from configuration
 	 * @param daysReuse max day can't reuse password, get from password rule
 	 * @param userId
 	 * @return
 	 */
-	public static List<MPasswordHistory> getPasswordHistoryForCheck (int passwordMaxDay, int daysReuse, int userId){
+	public static List<MPasswordHistory> getPasswordHistoryForCheck (int daysReuse, int userId){
 		StringBuilder whereClause = new StringBuilder();
 		// note: because we use current_date, it's date => subtract make a interval of date + house + ...
 		// extrack day will get day range
@@ -43,7 +42,7 @@ public class MPasswordHistory extends X_AD_Password_History {
 		whereClause.append("extract (day from (current_date - ");
 		whereClause.append(MPasswordHistory.COLUMNNAME_DatePasswordChanged);
 		whereClause.append(")) <= ");
-		whereClause.append(daysReuse + passwordMaxDay);
+		whereClause.append(daysReuse);
 		
 		whereClause.append(" AND ");
 		whereClause.append(MPasswordHistory.COLUMNNAME_AD_User_ID);
