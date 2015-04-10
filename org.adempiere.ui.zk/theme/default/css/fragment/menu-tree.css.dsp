@@ -2,8 +2,8 @@
 <%@ taglib uri="http://www.idempiere.org/dsp/web/util" prefix="u" %>
 .menu-treecell-cnt {
 	border: 0; margin: 0; padding: 0;
-	font-family: ${c:property('org.zkoss.zul.theme.fontFamilyC')};
-	font-size: ${c:property('org.zkoss.zul.theme.fontSizeM')}; 
+	${fontFamilyC};
+	${fontSizeM}; 
 	font-weight: normal;
     overflow-x: hidden;
     white-space: nowrap;
@@ -14,15 +14,16 @@
 div.z-tree-body td.menu-tree-cell {
 	cursor: pointer;
 	padding: 0 2px;
-   	font-size: ${c:property('org.zkoss.zul.theme.fontSizeM')};
+   	${fontSizeM};
    	font-weight: normal;
    	overflow: visible;
 }
 
 div.menu-tree-cell-cnt {
 	border: 0; margin: 0; padding: 0;
-	font-family: ${c:property('org.zkoss.zul.theme.fontFamilyC')};
-	font-size: ${c:property('org.zkoss.zul.theme.fontSizeM')}; font-weight: normal;
+	${fontFamilyC};
+	${fontSizeM}; 
+	font-weight: normal;
     white-space:nowrap
 }
 
@@ -38,15 +39,18 @@ td.menu-tree-cell-disd a:visited, td.menu-tree-cell-disd a:hover {
 
 div.z-dottree-body td.menu-tree-cell {
 	cursor: pointer; padding: 0 2px;
-	font-size: ${c:property('org.zkoss.zul.theme.fontSizeM')}; font-weight: normal; overflow: visible;
+	${fontSizeM}; 
+	font-weight: normal; overflow: visible;
 }
 
 div.z-filetree-body td.menu-tree-cell {
 	cursor: pointer; padding: 0 2px;
-	font-size: ${c:property('org.zkoss.zul.theme.fontSizeM')}; font-weight: normal; overflow: visible;
+	${fontSizeM}; 
+	font-weight: normal; overflow: visible;
 }
 
 div.z-vfiletree-body td.menu-tree-cell {
 	cursor: pointer; padding: 0 2px;
-	font-size: ${c:property('org.zkoss.zul.theme.fontSizeM')}; font-weight: normal; overflow: visible;
+	${fontSizeM}; 
+	font-weight: normal; overflow: visible;
 }

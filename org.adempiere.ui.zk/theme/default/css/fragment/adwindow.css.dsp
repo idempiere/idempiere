@@ -134,7 +134,7 @@
 
 .adwindow-detailpane-toolbar .z-toolbar-body .docstatus-normal .z-label,
 .adwindow-detailpane-toolbar .z-toolbar-body .docstatus-error .z-label {
-	font-size: ${c:property('org.zkoss.zul.theme.fontSizeM')};
+	${fontSizeM};
 }
 
 .adwindow-detailpane-message {
