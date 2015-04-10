@@ -256,13 +256,18 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	protected void swithToFinishScreen() {
 		ProcessInfo pi = getProcessInfo();
 		ProcessInfoUtil.setLogFromDB(pi);
-		getMessageText().append("<p><font color=\"").append(pi.isError() ? "#FF0000" : "#0000FF").append("\">** ")
-			.append(pi.getSummary())
-			.append("</font></p>");
 		
 		layoutResultPanel (topParameterLayout);
 		
+		StringBuilder buildMsg = new StringBuilder(getInitialMessage());
+		buildMsg.append("<p><font color=\"").append(pi.isError() ? "#FF0000" : "#0000FF").append("\">** ")
+		.append(pi.getSummary())
+		.append("</font></p>");
+	
+		((Html)messageResultContent).setContent (buildMsg.toString());
+		
 		// Add Log info with zoom on record id
+		infoResultContent.getChildren().removeAll(infoResultContent.getChildren());
 		appendRecordLogInfo(pi.getLogs(), infoResultContent);
 		
 		bOK.setLabel(Msg.getMsg(Env.getCtx(), "Parameter"));
@@ -287,7 +292,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			resultPanelLayout.setSclass("result-parameter-layout");
 			resultPanelLayout.setVflex("true");
 			// reference for update late
-			messageResultContent = setHeadMessage(resultPanelLayout, getMessageText().toString());
+			messageResultContent = setHeadMessage(resultPanelLayout, null);
 			
 			infoResultContent = new Div();
 			resultPanelLayout.appendChild(infoResultContent);
@@ -448,8 +453,9 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			@Override
 			public void onCallback(Boolean result) {
 				if (result) {
-					getMessageText().append("<p>").append(Msg.getMsg(Env.getCtx(), "PrintShipments")).append("</p>");
-					((Html)messageResultContent).setContent(getMessageText().toString());
+					StringBuilder buildMsg = new StringBuilder(((Html)messageResultContent).getContent());
+					buildMsg.append("<p>").append(Msg.getMsg(Env.getCtx(), "PrintShipments")).append("</p>");
+					((Html)messageResultContent).setContent(buildMsg.toString());
 					showBusyDialog();
 					Clients.response(new AuEcho(ProcessDialog.this, "onPrintShipments", null));
 				}
@@ -532,8 +538,9 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			{
 				if (result)
 				{
-					getMessageText().append("<p>").append(Msg.getMsg(Env.getCtx(), "PrintInvoices")).append("</p>");
-					((Html)messageResultContent).setContent(getMessageText().toString());
+					StringBuilder buildMsg = new StringBuilder(((Html)messageResultContent).getContent());
+					buildMsg.append("<p>").append(Msg.getMsg(Env.getCtx(), "PrintInvoices")).append("</p>");
+					((Html)messageResultContent).setContent(buildMsg.toString());
 					showBusyDialog();
 					Clients.response(new AuEcho(ProcessDialog.this, "onPrintInvoices", null));
 				}

@@ -121,7 +121,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	private BusyDialog progressWindow;	
 	
 	private String		    m_Name = null;
-	private StringBuffer	m_messageText = new StringBuffer();
 	private String          m_ShowHelp = null; // Determine if a Help Process Window is shown
 	private String initialMessage;
 	
@@ -178,23 +177,26 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			if (trl)
 				pstmt.setString(2, Env.getAD_Language(m_ctx));
 			rs = pstmt.executeQuery();
+			StringBuilder buildMsg = new StringBuilder();
 			if (rs.next())
 			{
 				m_Name = rs.getString(1);
 				m_ShowHelp = rs.getString(5);
 				//
-				m_messageText.append("<b>");
+				buildMsg.append("<b>");
 				String s = rs.getString(2);		//	Description
 				if (rs.wasNull())
-					m_messageText.append(Msg.getMsg(m_ctx, "StartProcess?"));
+					buildMsg.append(Msg.getMsg(m_ctx, "StartProcess?"));
 				else
-					m_messageText.append(s);
-				m_messageText.append("</b>");
+					buildMsg.append(s);
+				buildMsg.append("</b>");
 
 				s = rs.getString(3);			//	Help
 				if (!rs.wasNull())
-					m_messageText.append("<p>").append(s).append("</p>");
+					buildMsg.append("<p>").append(s).append("</p>");
 			}
+			
+			initialMessage = buildMsg.toString();
 		}
 		catch (SQLException e)
 		{
@@ -210,7 +212,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			return false;
 		//
 		this.setTitle(m_Name);
-		initialMessage = m_messageText.toString();
 
 		//	Move from APanel.actionButton
 		if (m_pi == null)
@@ -282,7 +283,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	
 	protected void topLayout(HtmlBasedComponent topParameterLayout) {
 		// message
-		setHeadMessage (topParameterLayout, getMessageText().toString());
+		setHeadMessage (topParameterLayout, initialMessage);
 		
 		// input component
 		HtmlBasedComponent inputParameterLayout = new Div();
@@ -301,12 +302,15 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		
 		// header content
 		HtmlBasedComponent messageDiv = new Div();
-		Html content = new Html(contentMsg);
+		Html content = new Html();
+		if (contentMsg != null){
+			content.setContent(contentMsg);
+		}
 		messageDiv.appendChild(content);
 		messageDiv.setSclass("message-paramenter");
 		messageParameterLayout.appendChild(messageDiv);
 		
-		return messageParameterLayout;
+		return content;
 	}
 	
 	protected void inputParameterLayout (HtmlBasedComponent parent) {
@@ -1001,16 +1005,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	public String getName()
 	{
 		return m_Name;
-	}
-	
-	public StringBuffer getMessageText()
-	{
-		return m_messageText;
-	}
-	
-	public void setMessageText(StringBuffer messageText)
-	{
-		this.m_messageText = messageText;
 	}
 
 	public String getShowHelp()
