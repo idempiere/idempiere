@@ -45,8 +45,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.eevolution.model.MPPProductBOM;
-import org.eevolution.model.MPPProductBOMLine;
 
 
 /**
@@ -1538,7 +1536,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				int lineNo = line.getLine ();
 
 				//find default BOM with valid dates and to this product
-				MPPProductBOM bom = MPPProductBOM.get(product, getAD_Org_ID(),getDateInvoiced(), get_TrxName());
+				/*MPPProductBOM bom = MPPProductBOM.get(product, getAD_Org_ID(),getDateInvoiced(), get_TrxName());
 				if(bom != null)
 				{
 					MPPProductBOMLine[] bomlines = bom.getLines(getDateInvoiced());
@@ -1557,24 +1555,19 @@ public class MInvoice extends X_C_Invoice implements DocAction
 						newLine.setPrice ();
 						newLine.saveEx (get_TrxName());
 					}
-				}
-
-				/*MProductBOM[] boms = MProductBOM.getBOMLines (product);
-				for (int j = 0; j < boms.length; j++)
-				{
-					MProductBOM bom = boms[j];
-					MInvoiceLine newLine = new MInvoiceLine (this);
-					newLine.setLine (++lineNo);
-					newLine.setM_Product_ID (bom.getProduct().getM_Product_ID(),
-						bom.getProduct().getC_UOM_ID());
-					newLine.setQty (line.getQtyInvoiced().multiply(
-						bom.getBOMQty ()));		//	Invoiced/Entered
-					if (bom.getDescription () != null)
-						newLine.setDescription (bom.getDescription ());
-					//
-					newLine.setPrice ();
-					newLine.save (get_TrxName());
 				}*/
+
+				for (MProductBOM bom : MProductBOM.getBOMLines(product))
+				{
+					MInvoiceLine newLine = new MInvoiceLine(this);
+					newLine.setLine(++lineNo);
+					newLine.setM_Product_ID(bom.getM_ProductBOM_ID(), true);
+					newLine.setQty(line.getQtyInvoiced().multiply(bom.getBOMQty()));
+					if (bom.getDescription() != null)
+						newLine.setDescription(bom.getDescription());
+					newLine.setPrice();
+					newLine.save(get_TrxName());
+				}
 
 				//	Convert into Comment Line
 				line.setM_Product_ID (0);
