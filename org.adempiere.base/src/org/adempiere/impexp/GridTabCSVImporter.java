@@ -336,7 +336,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 					}
 
 					if (!isMasterok && isDetail){
-						 rawLine = rawLine + delimiter + quoteChar + Msg.getMsg(Env.getCtx(),"NotProccesed") + quoteChar + "\n";
+						 rawLine = rawLine + delimiter + quoteChar + Msg.getMsg(Env.getCtx(),"NotProcessed") + quoteChar + "\n";
 						 rowsTmpResult.add(rawLine);
 						 continue;		 
 					}else if(isMasterok && isDetail && !isDetailok){
