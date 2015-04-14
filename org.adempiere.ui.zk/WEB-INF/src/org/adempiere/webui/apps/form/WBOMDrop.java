@@ -413,6 +413,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		this.appendChild(confirmPanel);
 		this.appendChild(new Separator());
 		this.setBorder("normal");
+		this.setContentStyle("overflow: auto");
 		
 		Caption title = new Caption(Msg.getMsg(Env.getCtx(), "SelectProduct"));
 
@@ -467,6 +468,17 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 			}
 		});
 
+	        // 2nd sort by Line Number in order to correspond with BOM Structure, patch 2015-03-31
+	        Arrays.sort(bomLines, new Comparator<MProductBOM>() {
+	                @Override
+	                public int compare(MProductBOM arg0, MProductBOM arg1) {
+	                        String t1 = String.valueOf(arg0.getLine()+100000);
+	                        String t2 = String.valueOf(arg1.getLine()+100000);
+	                        return t1.compareTo(t2);
+	                		}
+			});
+			
+		
 		for (int i = 0; i < bomLines.length; i++)
 		{
 			addBOMLine (bomLines[i], qty, parentPanel, bomLevel);
@@ -592,7 +604,8 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		if (MProductBOM.BOMTYPE_StandardPart.equals(bomType) || MProductBOM.BOMTYPE_OptionalPart.equals(bomType)) {
 			outerContainer.appendChild(outerProductPanel);
 		} else {
-			String groupName = String.valueOf(parentM_Product_ID) + "_" + bomType;
+			// String groupName = String.valueOf(parentM_Product_ID) + "_" + bomType;
+			String groupName = String.valueOf(parentM_Product_ID) + "_" + bomType + "_" +  parentPanel.toString();	
 			Radiogroup group = m_buttonGroups.get(groupName);
 			
 			if (group == null) {
