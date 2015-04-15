@@ -67,6 +67,10 @@ public class MProduction extends X_M_Production implements DocAction {
 				return status;
 		}
 
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
+		if (m_processMsg != null)
+			return DocAction.STATUS_Invalid;
+
 		StringBuilder errors = new StringBuilder();
 		int processed = 0;
 
@@ -96,7 +100,15 @@ public class MProduction extends X_M_Production implements DocAction {
 			}
 		}
 
-		setProcessed(true);		
+		//		User Validation
+		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
+		if (valid != null)
+		{
+			m_processMsg = valid;
+			return DocAction.STATUS_Invalid;
+		}
+
+		setProcessed(true);
 		setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
 	}
