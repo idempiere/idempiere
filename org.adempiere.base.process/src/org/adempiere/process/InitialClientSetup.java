@@ -62,6 +62,7 @@ public class InitialClientSetup extends SvrProcess
 	private String p_OrgName = null;
 	private String p_AdminUserName = null;
 	private String p_NormalUserName = null;
+	private boolean p_IsSetInitialPassword = true;
 	private int p_C_Currency_ID = 0;
 	private int p_C_Country_ID = 0;
 	private int p_C_Region_ID = 0;
@@ -110,6 +111,8 @@ public class InitialClientSetup extends SvrProcess
 				p_AdminUserName = (String) para[i].getParameter();
 			else if (name.equals("NormalUserName"))
 				p_NormalUserName = (String) para[i].getParameter();
+			else if (name.equals("IsSetInitialPassword"))
+				p_IsSetInitialPassword = para[i].getParameterAsBoolean();
 			else if (name.equals("C_Currency_ID"))
 				p_C_Currency_ID = para[i].getParameterAsInt();
 			else if (name.equals("C_Country_ID"))
@@ -175,6 +178,7 @@ public class InitialClientSetup extends SvrProcess
 								.append(", OrgName=").append(p_OrgName)
 								.append(", AdminUserName=").append(p_AdminUserName)
 								.append(", NormalUserName=").append(p_NormalUserName)
+								.append(", IsSetInitialPassword=").append(p_IsSetInitialPassword)
 								.append(", C_Currency_ID=").append(p_C_Currency_ID)
 								.append(", C_Country_ID=").append(p_C_Country_ID)
 								.append(", C_Region_ID=").append(p_C_Region_ID)
@@ -259,7 +263,7 @@ public class InitialClientSetup extends SvrProcess
 		MSetup ms = new MSetup(Env.getCtx(), WINDOW_THIS_PROCESS);
 		try {
 			if (! ms.createClient(p_ClientName, p_OrgValue, p_OrgName, p_AdminUserName, p_NormalUserName
-					, p_Phone, p_Phone2, p_Fax, p_EMail, p_TaxID, p_AdminUserEmail, p_NormalUserEmail)) {
+					, p_Phone, p_Phone2, p_Fax, p_EMail, p_TaxID, p_AdminUserEmail, p_NormalUserEmail, p_IsSetInitialPassword)) {
 				ms.rollback();
 				throw new AdempiereException("Create client failed");
 			}
