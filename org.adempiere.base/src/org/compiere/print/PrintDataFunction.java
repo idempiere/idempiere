@@ -137,10 +137,10 @@ public class PrintDataFunction
 				mean = mean.setScale(4, BigDecimal.ROUND_HALF_UP);
 			return mean;
 		}
-		//	Variance = sum of squares - (square of sum / count)
+		//	Variance = ( sum of squares - (square of sum / count) ) / count
 		BigDecimal ss = m_sum.multiply(m_sum);
-		ss = ss.divide(count, 4, BigDecimal.ROUND_HALF_UP);
-		BigDecimal variance = m_sumSquare.subtract(ss);
+		ss = ss.divide(count, 10, BigDecimal.ROUND_HALF_UP);
+		BigDecimal variance = m_sumSquare.subtract(ss).divide(count, 10, BigDecimal.ROUND_HALF_UP);
 		if (function == F_VARIANCE)
 		{
 			if (variance.scale() > 4)
