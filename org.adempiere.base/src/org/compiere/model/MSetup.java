@@ -108,11 +108,12 @@ public final class MSetup
 	 *  @param orgName org name
 	 *  @param userClient user id client
 	 *  @param userOrg user id org
+	 *  @param isSetInitialPassword 
 	 *  @return true if created
 	 */
 	public boolean createClient (String clientName, String orgValue, String orgName,
 		String userClient, String userOrg, String phone, String phone2, String fax, String eMail, String taxID,
-		String adminEmail, String userEmail)
+		String adminEmail, String userEmail, boolean isSetInitialPassword)
 	{
 		log.info(clientName);
 		m_trx.start();
@@ -286,7 +287,8 @@ public final class MSetup
 		if (name == null || name.length() == 0)
 			name = m_clientName + "Client";
 
-		clientAdminUser.setPassword(name);
+		if (isSetInitialPassword)
+			clientAdminUser.setPassword(name);
 		clientAdminUser.setDescription(name);
 		clientAdminUser.setName(name);
 		clientAdminUser.setAD_Client_ID(AD_Client_ID);
@@ -320,7 +322,8 @@ public final class MSetup
 		if (name == null || name.length() == 0)
 			name = m_clientName + "Org";
 
-		clientUser.setPassword(name);
+		if (isSetInitialPassword)
+			clientUser.setPassword(name);
 		clientUser.setDescription(name);
 		clientUser.setName(name);
 		clientUser.setAD_Client_ID(AD_Client_ID);

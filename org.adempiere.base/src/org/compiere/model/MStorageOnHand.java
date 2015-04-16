@@ -713,7 +713,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			if (M_AttributeSetInstance_ID > 0)
 			{
 				MAttributeSetInstance asi = new MAttributeSetInstance(ctx, M_AttributeSetInstance_ID, trxName);
-				dateMPolicy = asi.getCreated();				
+				dateMPolicy = asi.getCreated();
 			}
 			else
 			{

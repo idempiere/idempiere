@@ -96,6 +96,10 @@ public class MProduction extends X_M_Production implements DocAction {
 				return status;
 		}
 
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
+		if (m_processMsg != null)
+			return DocAction.STATUS_Invalid;
+
 		StringBuilder errors = new StringBuilder();
 		int processed = 0;
 
@@ -125,7 +129,15 @@ public class MProduction extends X_M_Production implements DocAction {
 			}
 		}
 
-		setProcessed(true);		
+		//		User Validation
+		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
+		if (valid != null)
+		{
+			m_processMsg = valid;
+			return DocAction.STATUS_Invalid;
+		}
+
+		setProcessed(true);
 		setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
 	}
@@ -562,6 +574,12 @@ public class MProduction extends X_M_Production implements DocAction {
 
 	@Override
 	public boolean voidIt() {
+		if (log.isLoggable(Level.INFO)) log.info(toString());
+		// Before Void
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
+		if (m_processMsg != null)
+			return false;
+
 		if (DOCSTATUS_Closed.equals(getDocStatus())
 				|| DOCSTATUS_Reversed.equals(getDocStatus())
 				|| DOCSTATUS_Voided.equals(getDocStatus()))
@@ -611,6 +629,11 @@ public class MProduction extends X_M_Production implements DocAction {
 			else
 				return reverseCorrectIt();
 		}
+
+		// After Void
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
+		if (m_processMsg != null)
+			return false;
 
 		setProcessed(true);
 		setDocAction(DOCACTION_None);
@@ -769,8 +792,8 @@ public class MProduction extends X_M_Production implements DocAction {
 	@Override
 	public boolean reverseAccrualIt() {
 		if (log.isLoggable(Level.INFO)) log.info(toString());
-		// Before reverseCorrect
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
+		// Before reverseAccrual
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 
@@ -778,8 +801,8 @@ public class MProduction extends X_M_Production implements DocAction {
 		if (reversal == null)
 			return false;
 
-		// After reverseCorrect
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
+		// After reverseAccrual
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
 
@@ -790,7 +813,17 @@ public class MProduction extends X_M_Production implements DocAction {
 
 	@Override
 	public boolean reActivateIt() {
-		throw new UnsupportedOperationException();
+		if (log.isLoggable(Level.INFO)) log.info("reActivateIt - " + toString());
+		// Before reActivate
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
+		if (m_processMsg != null)
+			return false;
+
+		// After reActivate
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
+		if (m_processMsg != null)
+			return false;
+		return false;
 	}
 
 	@Override

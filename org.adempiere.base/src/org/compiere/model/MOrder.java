@@ -47,8 +47,6 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
-import org.eevolution.model.MPPProductBOM;
-import org.eevolution.model.MPPProductBOMLine;
 
 
 /**
@@ -1605,7 +1603,7 @@ public class MOrder extends X_C_Order implements DocAction
 				//	New Lines
 				int lineNo = line.getLine ();
 				//find default BOM with valid dates and to this product
-				MPPProductBOM bom = MPPProductBOM.get(product, getAD_Org_ID(),getDatePromised(), get_TrxName());
+				/*/MPPProductBOM bom = MPPProductBOM.get(product, getAD_Org_ID(),getDatePromised(), get_TrxName());
 				if(bom != null)
 				{	
 					MPPProductBOMLine[] bomlines = bom.getLines(getDatePromised());
@@ -1624,30 +1622,19 @@ public class MOrder extends X_C_Order implements DocAction
 						newLine.setPrice ();
 						newLine.save (get_TrxName());
 					}
-				}	
-				
-				/*MProductBOM[] boms = MProductBOM.getBOMLines (product);
-				for (int j = 0; j < boms.length; j++)
+				}	*/
+
+				for (MProductBOM bom : MProductBOM.getBOMLines(product))
 				{
-					//MProductBOM bom = boms[j];
-					MPPProductBOMLine bom = boms[j];
-					MOrderLine newLine = new MOrderLine (this);
-					newLine.setLine (++lineNo);
-					//newLine.setM_Product_ID (bom.getProduct ()
-					//	.getM_Product_ID ());
-					newLine.setM_Product_ID (bom.getM_Product_ID ());
-					//newLine.setC_UOM_ID (bom.getProduct ().getC_UOM_ID ());
-					newLine.setC_UOM_ID (bom.getC_UOM_ID ());
-					//newLine.setQty (line.getQtyOrdered ().multiply (
-					//		bom.getBOMQty ()));
-					newLine.setQty (line.getQtyOrdered ().multiply (
-						bom.getQtyBOM()));
-					if (bom.getDescription () != null)
-						newLine.setDescription (bom.getDescription ());
-					//
-					newLine.setPrice ();
-					newLine.save (get_TrxName());
-				}*/
+					MOrderLine newLine = new MOrderLine(this);
+					newLine.setLine(++lineNo);
+					newLine.setM_Product_ID(bom.getM_ProductBOM_ID(), true);
+					newLine.setQty(line.getQtyOrdered().multiply(bom.getBOMQty()));
+					if (bom.getDescription() != null)
+						newLine.setDescription(bom.getDescription());
+					newLine.setPrice();
+					newLine.save(get_TrxName());
+				}
 				
 				//	Convert into Comment Line
 				line.setM_Product_ID (0);

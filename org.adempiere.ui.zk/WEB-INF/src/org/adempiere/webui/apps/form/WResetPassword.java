@@ -17,6 +17,7 @@ package org.adempiere.webui.apps.form;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
@@ -75,6 +76,7 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
     private Textbox txtOldPassword;
     private Textbox txtNewPassword;
     private Textbox txtRetypeNewPassword;
+    private Checkbox cbForceChangeNextLogin;
     private Textbox txtNewEMail;
     private Textbox txtNewEMailUser;
     private Textbox txtNewEMailUserPW;
@@ -144,7 +146,11 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
         txtRetypeNewPassword.setType("password");
         txtRetypeNewPassword.setCols(25);
         txtRetypeNewPassword.setWidth("220px");
-        
+
+        cbForceChangeNextLogin = new Checkbox();
+        cbForceChangeNextLogin.setLabel(Msg.getMsg(Env.getCtx(), "ForceChangeOnNextLogin"));
+        cbForceChangeNextLogin.setChecked(false);
+
         txtNewEMail = new Textbox();
         txtNewEMail.setId("txtNewEMail");
         txtNewEMail.setCols(25);
@@ -208,6 +214,11 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 		rows.appendChild(row);
 		row.appendChild(lblRetypeNewPassword.rightAlign());
 		row.appendChild(txtRetypeNewPassword);
+		
+		row = new Row();
+		rows.appendChild(row);
+		row.appendChild(new Label());
+		row.appendChild(cbForceChangeNextLogin);
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -327,6 +338,8 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 			user.setEMailUser(p_NewEMailUser);
 		if (!Util.isEmpty(p_NewEMailUserPW))
 			user.setEMailUserPW(p_NewEMailUserPW);
+		if (cbForceChangeNextLogin.isChecked())
+			user.setIsExpired(true);
 		
 		try {
 			user.saveEx();
