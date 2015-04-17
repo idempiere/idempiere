@@ -35,19 +35,11 @@ public class MPasswordHistory extends X_AD_Password_History {
 	 * @return
 	 */
 	public static List<MPasswordHistory> getPasswordHistoryForCheck (int daysReuse, int userId){
-		StringBuilder whereClause = new StringBuilder();
-		// note: because we use current_date, it's date => subtract make a interval of date + house + ...
-		// extrack day will get day range
-		// TODO:need recheck in oracle
-		whereClause.append("extract (day from (current_date - ");
-		whereClause.append(MPasswordHistory.COLUMNNAME_DatePasswordChanged);
-		whereClause.append(")) <= ");
-		whereClause.append(daysReuse);
-		
-		whereClause.append(" AND ");
-		whereClause.append(MPasswordHistory.COLUMNNAME_AD_User_ID);
-		whereClause.append(" = ");
-		whereClause.append(userId);
+		StringBuilder whereClause = new StringBuilder()
+				.append("SYSDATE-")
+				.append(daysReuse)
+				.append("<=DatePasswordChanged AND AD_User_ID=")
+				.append(userId);
 		
 		Query query = new Query(Env.getCtx(), MPasswordHistory.Table_Name, whereClause.toString(), null);
 		query.setClient_ID(true);
