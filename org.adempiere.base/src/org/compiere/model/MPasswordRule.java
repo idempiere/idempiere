@@ -105,11 +105,6 @@ public class MPasswordRule extends X_AD_PasswordRule {
 			if (Util.isEmpty(getPathDictionary())) {
 				msg.append(Msg.getElement(getCtx(), COLUMNNAME_PathDictionary));
 			}
-			if (getDictWordLength() <= 0) {
-				if (msg.length() > 0)
-					msg.append(", ");
-				msg.append(Msg.getElement(getCtx(), COLUMNNAME_DictWordLength));
-			}
 			if (msg.length() > 0) {
 				log.saveError("FillMandatory", msg.toString());
 				return false;

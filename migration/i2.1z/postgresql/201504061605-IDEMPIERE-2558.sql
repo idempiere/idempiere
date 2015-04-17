@@ -1,4 +1,4 @@
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
+-- IDEMPIERE-2558:don't allow use old password when change password
 -- Apr 6, 2015 6:42:41 PM ICT
 INSERT INTO AD_Table (AD_Table_ID,Name,Help,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop) VALUES (200171,'Password History ID','Save password history to void user from reuse it for time range','AD_Password_History',0,'4',0,0,'Y',TO_TIMESTAMP('2015-04-06 18:42:41','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2015-04-06 18:42:41','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','N','L','N','Y','49da1460-ff37-4f00-9ace-97bdf44db0ad','N','N')
 ;
@@ -98,7 +98,7 @@ CREATE UNIQUE INDEX AD_Password_History_Password_uu_idx ON AD_Password_History (
 -- Apr 6, 2015 6:42:43 PM ICT
 INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,Help,PrintName,EntityType,AD_Element_UU) VALUES (202868,0,0,'Y',TO_TIMESTAMP('2015-04-06 18:42:43','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2015-04-06 18:42:43','YYYY-MM-DD HH24:MI:SS'),100,'Days_Reuse_Password','Days Reuse Password','Define number of day can reuser password','Each time change password, old password keep in history
 Example this value = 60. user can''t reuse password in history has age < 60
-','Days Reuse Password','U','7f28c4dd-e1fb-41d6-a8b7-de18c205e6ac')
+','Days Reuse Password','D','7f28c4dd-e1fb-41d6-a8b7-de18c205e6ac')
 ;
 
 -- Apr 6, 2015 6:42:43 PM ICT

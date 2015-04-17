@@ -59,7 +59,7 @@ public class MUser extends X_AD_User
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1916348077418252152L;
+	private static final long serialVersionUID = 9027688865361175114L;
 
 	/**
 	 * Get active Users of BPartner

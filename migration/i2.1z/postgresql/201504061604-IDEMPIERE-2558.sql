@@ -1,4 +1,4 @@
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
+-- IDEMPIERE-2558:don't allow use old password when change password
 -- Apr 6, 2015 1:54:49 AM ICT
 UPDATE AD_Field SET IsActive='N',Updated=TO_TIMESTAMP('2015-04-06 01:54:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200080
 ;
