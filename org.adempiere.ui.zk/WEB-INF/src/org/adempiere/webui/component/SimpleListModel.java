@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.compiere.apps.form.TreeMaintenance;
 import org.zkoss.lang.Objects;
 import org.zkoss.zul.AbstractListModel;
 import org.zkoss.zul.Listbox;
@@ -101,6 +102,15 @@ public class SimpleListModel extends AbstractListModel<Object> implements Listit
 		listCell.setParent(item);			
 		if (tooltip != null)
 			listCell.setTooltiptext(tooltip);
+		// IDEMPIERE-492
+		boolean isSummary = false;
+		Object li = null;
+		if (item != null && list != null)
+			li = list.get(item.getIndex());
+		if (li != null && li instanceof TreeMaintenance.ListItem)
+			isSummary = ((TreeMaintenance.ListItem)li).isSummary;
+		if (isSummary)
+			ZkCssHelper.appendStyle(listCell, "font-weight: bold");
 	}
 
 	private void renderCollection(Listitem item, Collection<?> data) {
