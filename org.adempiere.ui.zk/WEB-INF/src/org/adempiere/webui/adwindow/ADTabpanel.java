@@ -29,6 +29,7 @@ import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Column;
@@ -51,6 +52,7 @@ import org.adempiere.webui.editor.WPaymentEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.panel.HelpController;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.GridTabDataBinder;
 import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.window.FDialog;
@@ -63,6 +65,7 @@ import org.compiere.model.I_AD_Preference;
 import org.compiere.model.MLookup;
 import org.compiere.model.MPreference;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButton;
@@ -85,6 +88,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.IdSpace;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -282,6 +286,22 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		south.setSplittable(true);
 		south.setOpen(isOpenDetailPane());
 		south.setSclass("adwindow-gridview-detail");
+		String height = heigthDetailPane();
+		if (! Util.isEmpty(height)) {
+			try {
+				ClientInfo browserInfo = SessionManager.getAppDesktop().getClientInfo();
+				int browserHeight = browserInfo.desktopHeight;
+				int prefHeight = Integer.valueOf(height.replace("px", ""));
+				int topmarginpx = MSysConfig.getIntValue("TOP_MARGIN_PIXELS_FOR_HEADER", 222);
+				int maxHeight = browserHeight - topmarginpx;
+				if (prefHeight <= maxHeight) {
+					height = Integer.toString(prefHeight) + "px";
+					formContainer.getSouth().setHeight(height);	
+				}
+			} catch (Exception e) {
+				// just ignore exception is harmless here, consequence is just not setting height so it will assume the default of theme
+			}
+		}
     }
     
     @Override
@@ -1138,7 +1158,17 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		}
     	return open;
     }
-    
+
+    private String heigthDetailPane() {
+    	String height = null;
+    	int windowId = getGridTab().getAD_Window_ID();
+		int adTabId = getGridTab().getAD_Tab_ID();
+		if (windowId > 0 && adTabId > 0) {
+			height = Env.getPreference(Env.getCtx(), windowId, adTabId+"|DetailPane.Height", false);
+		}
+    	return height;
+    }
+
     private void navigateTo(DefaultTreeNode<MTreeNode> value) {
     	MTreeNode treeNode = value.getData();
     	//  We Have a TreeNode
@@ -1697,6 +1727,36 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		boolean retValue = false;
 		retValue = model.isTreeDrivenByValue();
 		return retValue;
+	}
+
+	@Override
+	public void onPageDetached(Page page) {
+		if (formContainer.getSouth() != null) {
+			if (formContainer.getSouth().isVisible() && formContainer.getSouth().isOpen()) {
+				String height = formContainer.getSouth().getHeight();
+				if (! Util.isEmpty(height)) {
+		    		int windowId = getGridTab().getAD_Window_ID();
+		    		int adTabId = getGridTab().getAD_Tab_ID();
+		    		if (windowId > 0 && adTabId > 0) {
+		    			Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), "AD_Window_ID=? AND Attribute=? AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
+		    			MPreference preference = query.setOnlyActiveRecords(true)
+		    										  .setApplyAccessFilter(true)
+		    										  .setParameters(windowId, adTabId+"|DetailPane.Height")
+		    										  .first();
+		    			if (preference == null || preference.getAD_Preference_ID() <= 0) {
+		    				preference = new MPreference(Env.getCtx(), 0, null);
+		    				preference.setAD_Window_ID(windowId);
+		    				preference.setAttribute(adTabId+"|DetailPane.Height");
+		    			}
+	    				preference.setValue(height);
+		    			preference.saveEx();
+		    			//update current context
+		    			Env.getCtx().setProperty("P"+windowId+"|"+adTabId+"|DetailPane.Height", height);
+		    		}
+				}
+			}
+		}
+		super.onPageDetached(page);
 	}
 
 }
