@@ -84,15 +84,11 @@ ALTER TABLE AD_Password_History ADD CONSTRAINT AD_Password_History_UU_idx UNIQUE
 ;
 
 -- Apr 6, 2015 6:42:43 PM ICT
-INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,TableIndexDrop,IsKey) VALUES (0,0,201031,'ff68b691-ab99-4e65-886c-93b2741fade4',TO_TIMESTAMP('2015-04-06 18:42:43','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_Password_History_Password_uu_idx',TO_TIMESTAMP('2015-04-06 18:42:43','YYYY-MM-DD HH24:MI:SS'),100,200171,'N','Y','N','N','N')
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,TableIndexDrop,IsKey) VALUES (0,0,201031,'ff68b691-ab99-4e65-886c-93b2741fade4',TO_TIMESTAMP('2015-04-06 18:42:43','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_Password_History_uu_idx',TO_TIMESTAMP('2015-04-06 18:42:43','YYYY-MM-DD HH24:MI:SS'),100,200171,'N','Y','N','N','N')
 ;
 
 -- Apr 6, 2015 6:42:43 PM ICT
 INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201256,'94ca3aa6-d1d5-4481-b787-d7f44297b71a',TO_TIMESTAMP('2015-04-06 18:42:43','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2015-04-06 18:42:43','YYYY-MM-DD HH24:MI:SS'),100,212112,201031,0)
-;
-
--- Apr 6, 2015 6:42:43 PM ICT
-CREATE UNIQUE INDEX AD_Password_History_Password_uu_idx ON AD_Password_History (AD_Password_History_UU)
 ;
 
 -- Apr 6, 2015 6:42:43 PM ICT
