@@ -283,13 +283,14 @@ public class OrderPOCreate extends SvrProcess
 		if ( p_IsDropShip )
 		{
 			po.setIsDropShip(p_IsDropShip);
-			
+			po.setDeliveryViaRule(so.getDeliveryViaRule());
+			po.setM_Shipper_ID(so.getM_Shipper_ID());
+
 			if (so.isDropShip() && so.getDropShip_BPartner_ID() != 0 )	{
 				po.setDropShip_BPartner_ID(so.getDropShip_BPartner_ID());
 				po.setDropShip_Location_ID(so.getDropShip_Location_ID());
 				po.setDropShip_User_ID(so.getDropShip_User_ID());
-		}
-			else {
+			} else {
 				po.setDropShip_BPartner_ID(so.getC_BPartner_ID());
 				po.setDropShip_Location_ID(so.getC_BPartner_Location_ID());
 				po.setDropShip_User_ID(so.getAD_User_ID());
