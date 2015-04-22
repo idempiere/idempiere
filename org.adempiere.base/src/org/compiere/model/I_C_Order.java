@@ -1071,6 +1071,21 @@ public interface I_C_Order
 	  */
 	public String getPromotionCode();
 
+    /** Column name QuotationOrder_ID */
+    public static final String COLUMNNAME_QuotationOrder_ID = "QuotationOrder_ID";
+
+	/** Set Quotation.
+	  * Quotation used for generating this order
+	  */
+	public void setQuotationOrder_ID (int QuotationOrder_ID);
+
+	/** Get Quotation.
+	  * Quotation used for generating this order
+	  */
+	public int getQuotationOrder_ID();
+
+	public org.compiere.model.I_C_Order getQuotationOrder() throws RuntimeException;
+
     /** Column name Ref_Order_ID */
     public static final String COLUMNNAME_Ref_Order_ID = "Ref_Order_ID";
 

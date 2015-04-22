@@ -83,7 +83,7 @@ public class MPayment extends X_C_Payment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7646717328867858897L;
+	private static final long serialVersionUID = -7179638016937305380L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -2303,6 +2303,7 @@ public class MPayment extends X_C_Payment
 			throw new AdempiereException("Failed when processing document - " + alloc.getProcessMsg());
 		// end added
 		alloc.saveEx(get_TrxName());
+		m_justCreatedAllocInv = alloc;
 		m_processMsg = "@C_AllocationHdr_ID@: " + alloc.getDocumentNo();
 			
 		//	Get Project from Invoice
@@ -2996,6 +2997,12 @@ public class MPayment extends X_C_Payment
 		whereClause.append("ORDER BY DateTrx DESC");
 
 		return MPaymentTransaction.getAllIDs(Table_Name, whereClause.toString(), trxName);
+	}
+
+	// IDEMPIERE-2588
+	private MAllocationHdr m_justCreatedAllocInv = null;
+	public MAllocationHdr getJustCreatedAllocInv() {
+		return m_justCreatedAllocInv;
 	}
 	
 }   //  MPayment

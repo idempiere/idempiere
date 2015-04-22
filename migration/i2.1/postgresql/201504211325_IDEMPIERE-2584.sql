@@ -1,0 +1,16 @@
+-- IDEMPIERE-2584 Field Sequence items not placed together in Purchase Order
+-- Apr 21, 2015 1:23:36 PM COT
+UPDATE AD_Field SET AD_FieldGroup_ID=130,Updated=TO_TIMESTAMP('2015-04-21 13:23:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=55413
+;
+
+-- Apr 21, 2015 1:23:43 PM COT
+UPDATE AD_Field SET AD_FieldGroup_ID=130,Updated=TO_TIMESTAMP('2015-04-21 13:23:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=55414
+;
+
+-- Apr 21, 2015 1:23:50 PM COT
+UPDATE AD_Field SET AD_FieldGroup_ID=130,Updated=TO_TIMESTAMP('2015-04-21 13:23:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=55415
+;
+
+SELECT register_migration_script('201504211325_IDEMPIERE-2584.sql') FROM dual
+;
+

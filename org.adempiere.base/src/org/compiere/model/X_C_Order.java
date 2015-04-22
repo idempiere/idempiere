@@ -33,7 +33,7 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20150420L;
 
     /** Standard Constructor */
     public X_C_Order (Properties ctx, int C_Order_ID, String trxName)
@@ -1981,6 +1981,34 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	public String getPromotionCode () 
 	{
 		return (String)get_Value(COLUMNNAME_PromotionCode);
+	}
+
+	public org.compiere.model.I_C_Order getQuotationOrder() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_Name)
+			.getPO(getQuotationOrder_ID(), get_TrxName());	}
+
+	/** Set Quotation.
+		@param QuotationOrder_ID 
+		Quotation used for generating this order
+	  */
+	public void setQuotationOrder_ID (int QuotationOrder_ID)
+	{
+		if (QuotationOrder_ID < 1) 
+			set_Value (COLUMNNAME_QuotationOrder_ID, null);
+		else 
+			set_Value (COLUMNNAME_QuotationOrder_ID, Integer.valueOf(QuotationOrder_ID));
+	}
+
+	/** Get Quotation.
+		@return Quotation used for generating this order
+	  */
+	public int getQuotationOrder_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_QuotationOrder_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_Order getRef_Order() throws RuntimeException

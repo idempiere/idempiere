@@ -200,7 +200,9 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		headerPanel.appendChild(tor);
 
 		selectAll = new Label(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "SelectAll")));
+		selectAll.setStyle("cursor:pointer;text-decoration: underline;");
 		deselectAll= new Label(Msg.getMsg(Env.getCtx(), "DeSelectAll"));
+		deselectAll.setStyle("cursor:pointer;text-decoration: underline;");
 		pipeSeparator = new Label("|");
 		selectAll.setAttribute("name", "SelectAll");
 		deselectAll.setAttribute("name", "DeselectAll");

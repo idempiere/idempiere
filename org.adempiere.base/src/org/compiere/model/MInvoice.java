@@ -1765,6 +1765,9 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			payment.saveEx();
 			info.append("@C_Payment_ID@: " + payment.getDocumentInfo());
 
+			// IDEMPIERE-2588 - add the allocation generation with the payment
+			if (payment.getJustCreatedAllocInv() != null)
+				addDocsPostProcess(payment.getJustCreatedAllocInv());
 		}	//	Payment
 
 		//	Update Order & Match

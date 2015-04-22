@@ -189,6 +189,7 @@ public class OrderPOCreate extends SvrProcess
 			+ "FROM M_Product_PO po"
 			+ " INNER JOIN C_OrderLine ol ON (po.M_Product_ID=ol.M_Product_ID) "
 			+ "WHERE ol.C_Order_ID=? AND po.IsCurrentVendor='Y' "
+			+ "AND po.IsActive='Y' "
 			+ ((p_Vendor_ID > 0) ? " AND po.C_BPartner_ID=? " : "")
 			+ "GROUP BY po.M_Product_ID "
 			+ "ORDER BY 1";
@@ -283,13 +284,14 @@ public class OrderPOCreate extends SvrProcess
 		if ( p_IsDropShip )
 		{
 			po.setIsDropShip(p_IsDropShip);
-			
+			po.setDeliveryViaRule(so.getDeliveryViaRule());
+			po.setM_Shipper_ID(so.getM_Shipper_ID());
+
 			if (so.isDropShip() && so.getDropShip_BPartner_ID() != 0 )	{
 				po.setDropShip_BPartner_ID(so.getDropShip_BPartner_ID());
 				po.setDropShip_Location_ID(so.getDropShip_Location_ID());
 				po.setDropShip_User_ID(so.getDropShip_User_ID());
-		}
-			else {
+			} else {
 				po.setDropShip_BPartner_ID(so.getC_BPartner_ID());
 				po.setDropShip_Location_ID(so.getC_BPartner_Location_ID());
 				po.setDropShip_User_ID(so.getAD_User_ID());

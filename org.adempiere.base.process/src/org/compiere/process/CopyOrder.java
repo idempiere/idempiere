@@ -86,6 +86,7 @@ public class CopyOrder extends SvrProcess
 		MOrder newOrder = MOrder.copyFrom (from, p_DateDoc, 
 			dt.getC_DocType_ID(), dt.isSOTrx(), false, true, get_TrxName());		//	copy ASI
 		newOrder.setC_DocTypeTarget_ID(p_C_DocType_ID);
+		newOrder.setQuotationOrder_ID(from.getC_Order_ID()); // IDEMPIERE-475
 		boolean OK = newOrder.save();
 		if (!OK)
 			throw new IllegalStateException("Could not create new Order");
