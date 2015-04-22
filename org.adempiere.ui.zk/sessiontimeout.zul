@@ -7,7 +7,6 @@
 	import org.compiere.util.Msg;
 	import org.compiere.util.Env;
 	import org.adempiere.webui.theme.ThemeManager;
-	var continueText = Msg.getMsg(Env.getCtx(),"continue");
 	self.setTitle(ThemeManager.getBrowserTitle());
 ]]>
 </zscript>
@@ -16,7 +15,7 @@
 
 <div id="timeoutText"></div>
 <div style="margin-top: 10px">
-	<toolbarbutton href="/index.zul" label="${continueText}"/>
+	<toolbarbutton id="continueText" href="/index.zul" label="Continue"/>
 </div>
 </vbox>
 <script defer="true">
@@ -27,8 +26,14 @@
 			document.getElementById("${timeoutText.uuid}").innerHTML = val;
 		}
 	};
-    
+	var callbackC = function(ok, val) {
+		if (ok && !!val)
+		{
+			document.getElementById("${continueText.uuid}").innerHTML = val;
+		}
+	};
     adempiere.store.get("zkTimeoutText", callback);
+	adempiere.store.get("zkContinueText", callbackC);
 ]]>	
 </script>
 </window>
