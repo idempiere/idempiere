@@ -189,6 +189,7 @@ public class OrderPOCreate extends SvrProcess
 			+ "FROM M_Product_PO po"
 			+ " INNER JOIN C_OrderLine ol ON (po.M_Product_ID=ol.M_Product_ID) "
 			+ "WHERE ol.C_Order_ID=? AND po.IsCurrentVendor='Y' "
+			+ "AND po.IsActive='Y' "
 			+ ((p_Vendor_ID > 0) ? " AND po.C_BPartner_ID=? " : "")
 			+ "GROUP BY po.M_Product_ID "
 			+ "ORDER BY 1";
