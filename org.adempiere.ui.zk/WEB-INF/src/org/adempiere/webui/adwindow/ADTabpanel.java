@@ -1104,19 +1104,19 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     		int windowId = getGridTab().getAD_Window_ID();
     		int adTabId = getGridTab().getAD_Tab_ID();
     		if (windowId > 0 && adTabId > 0) {
-    			Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), "AD_Window_ID=? AND Attribute=? AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
+    			Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), "AD_Window_ID=? AND Attribute=? AND AD_User_ID=? AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
+    			int userId = Env.getAD_User_ID(Env.getCtx());
     			MPreference preference = query.setOnlyActiveRecords(true)
     										  .setApplyAccessFilter(true)
-    										  .setParameters(windowId, adTabId+"|DetailPane.IsOpen")
+    										  .setParameters(windowId, adTabId+"|DetailPane.IsOpen", userId)
     										  .first();
-    			if (preference != null && preference.getAD_Preference_ID() > 0) {
-    				preference.setValue(value ? "Y" : "N");
-    			} else {
+    			if (preference == null || preference.getAD_Preference_ID() <= 0) {
     				preference = new MPreference(Env.getCtx(), 0, null);
     				preference.setAD_Window_ID(windowId);
+    				preference.setAD_User_ID(userId);
     				preference.setAttribute(adTabId+"|DetailPane.IsOpen");
-    				preference.setValue(value ? "Y" : "N");
     			}
+				preference.setValue(value ? "Y" : "N");
     			preference.saveEx();
     			//update current context
     			Env.getCtx().setProperty("P"+windowId+"|"+adTabId+"|DetailPane.IsOpen", value ? "Y" : "N");
@@ -1738,14 +1738,16 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		    		int windowId = getGridTab().getAD_Window_ID();
 		    		int adTabId = getGridTab().getAD_Tab_ID();
 		    		if (windowId > 0 && adTabId > 0) {
-		    			Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), "AD_Window_ID=? AND Attribute=? AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
+		    			Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), "AD_Window_ID=? AND Attribute=? AND AD_User_ID=? AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
+		    			int userId = Env.getAD_User_ID(Env.getCtx());
 		    			MPreference preference = query.setOnlyActiveRecords(true)
 		    										  .setApplyAccessFilter(true)
-		    										  .setParameters(windowId, adTabId+"|DetailPane.Height")
+		    										  .setParameters(windowId, adTabId+"|DetailPane.Height", userId)
 		    										  .first();
 		    			if (preference == null || preference.getAD_Preference_ID() <= 0) {
 		    				preference = new MPreference(Env.getCtx(), 0, null);
 		    				preference.setAD_Window_ID(windowId);
+		    				preference.setAD_User_ID(userId);
 		    				preference.setAttribute(adTabId+"|DetailPane.Height");
 		    			}
 	    				preference.setValue(height);
