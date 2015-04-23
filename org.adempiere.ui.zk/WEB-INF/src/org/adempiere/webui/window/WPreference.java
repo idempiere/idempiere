@@ -13,14 +13,17 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
+import java.util.logging.Level;
+
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WYesNoEditor;
-import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.grid.WQuickEntry;
 import org.adempiere.webui.theme.ThemeManager;
-import org.adempiere.webui.util.UserPreference;
+import org.compiere.model.MUserPreference;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Component;
@@ -29,50 +32,66 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
-import org.zkoss.zul.Window.Mode;
 /**
  *
  * @author hengsin
  *
  */
-public class WPreference extends Popup implements EventListener<Event> {
+public class WPreference extends WQuickEntry implements EventListener<Event> {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8223456746437563389L;
+	private static CLogger log = CLogger.getCLogger(WPreference.class);
 
-	private WYesNoEditor autoCommit;
-	private WYesNoEditor autoNew;
-	private WYesNoEditor adempiereSys;
-	private WYesNoEditor logMigrationScript;
-	private WGadgets gadgets;
-	private A addgadgets;
-	
+	private WYesNoEditor 	adempiereSys;
+	private WYesNoEditor 	logMigrationScript;
+	private WGadgets 		gadgets;
+	private A 				addgadgets;
+	private A 				morePreferences;
+	private MUserPreference preferences = null;
+	private int             recordId    = 0;
+
 
 	public WPreference() {
-		super();
+		super(Env.getZoomWindowID(MUserPreference.Table_ID, 0));
+
+		try
+		{
+			jbInit();
+		}
+		catch(Exception ex)
+		{
+			log.log(Level.SEVERE, ex.getMessage());
+		}
+
+		initPOs();
+		loadPreferences();
+
+		this.setTitle("");
+	} //WPreference
+
+	private void loadPreferences(){
+		preferences = MUserPreference.getUserPreference(Env.getAD_User_ID(Env.getCtx()), Env.getAD_Client_ID(Env.getCtx()));
+		recordId = preferences.get_ID();
+
+		loadRecord(recordId);
+	} //loadPreferences
+
+	protected void jbInit() throws Exception
+	{
+		this.setWidth("230px");
+		this.setBorder("normal");
+		this.setClosable(true);
+		this.setSizable(true);
+		this.appendChild(centerPanel);
 		init();
-	}
+	} //jbInit
 
 	private void init() {
 
 		Div div = new Div();
-		div.setStyle("background-color: transparent !important; border: none; margin: 5px;");
-		autoCommit = new WYesNoEditor("AutoCommit", Msg.getMsg(Env.getCtx(), "AutoCommit", true),
-				null, false, false, true);
-		div.appendChild(autoCommit.getComponent());
-		autoCommit.getComponent().setTooltiptext(Msg.getMsg(Env.getCtx(), "AutoCommit", false));
-		this.appendChild(div);
-
-		autoNew = new WYesNoEditor("AutoNew", Msg.getMsg(Env.getCtx(), "AutoNew", true),
-				null, false, false, true);
-		autoNew.getComponent().setTooltiptext(Msg.getMsg(Env.getCtx(), "AutoNew", false));
-		div = new Div();
-		div.setStyle("background-color: transparent !important; border: none; margin: 5px;");
-		div.appendChild(autoNew.getComponent());
-		this.appendChild(div);
 
 		if (Env.getAD_Client_ID(Env.getCtx()) <= 20 && Env.getAD_User_ID(Env.getCtx()) <= 102) {
 			adempiereSys = new WYesNoEditor("AdempiereSys", Msg.getMsg(Env.getCtx(), "AdempiereSys", true),
@@ -101,6 +120,15 @@ public class WPreference extends Popup implements EventListener<Event> {
 		addgadgets.addEventListener(Events.ON_CLICK, this);
 		div.appendChild(addgadgets);
 		this.appendChild(div);
+
+		div = new Div();
+		div.setStyle("background-color: transparent !important; border: none; margin: 5px;");
+		morePreferences= new A();	
+		morePreferences.setLabel(Msg.translate(Env.getCtx(), "MorePreferences"));
+		morePreferences.addEventListener(Events.ON_CLICK, this);
+		div.appendChild(morePreferences);
+		this.appendChild(div);
+
 		Separator separator = new Separator();
 		separator.setSpacing("20px");
 		div = new Div();
@@ -112,22 +140,19 @@ public class WPreference extends Popup implements EventListener<Event> {
 		toolbar.setAlign("end");
 		this.appendChild(toolbar);
 		ToolBarButton btn = new ToolBarButton("");
-        btn.setName("btnSave");
-        btn.setImage(ThemeManager.getThemeResource("images/Save24.png"));
-        btn.setTooltiptext(Msg.getMsg(Env.getCtx(),"Save"));
-        btn.addEventListener(Events.ON_CLICK, this);
-        toolbar.appendChild(btn);
-        toolbar.setStyle("border: none");
+		btn.setName("btnSave");
+		btn.setImage(ThemeManager.getThemeResource("images/Save24.png"));
+		btn.setTooltiptext(Msg.getMsg(Env.getCtx(),"Save"));
+		btn.addEventListener(Events.ON_CLICK, this);
+		toolbar.appendChild(btn);
+		toolbar.setStyle("border: none");
 
-		UserPreference preference = SessionManager.getSessionApplication().getUserPreference();
-		autoCommit.setValue(preference.getProperty(UserPreference.P_AUTO_COMMIT));
-		autoNew.setValue(preference.getProperty(UserPreference.P_AUTO_NEW));
-	}
+	} //init
 
 	public void onEvent(Event event) throws Exception {
 		String nameEvent=event.getName();
 		Component com =event.getTarget();
-		
+
 		if (Events.ON_CLICK.equals(nameEvent)) {
 			if (com instanceof ToolBarButton) {
 				onSave();
@@ -144,22 +169,19 @@ public class WPreference extends Popup implements EventListener<Event> {
 				AEnv.showWindow(gadgets);
 				gadgets.focus();
 			}
+
+			if (com == morePreferences) {
+				AEnv.zoom(MUserPreference.Table_ID, recordId);
+			}
 		}
-	}
+	} //onEvent
 
 	private void onSave() {
-		UserPreference preference = SessionManager.getSessionApplication().getUserPreference();
-		preference.setProperty(UserPreference.P_AUTO_COMMIT,
-				(Boolean)autoCommit.getValue() ? "Y" : "N");
-		preference.setProperty(UserPreference.P_AUTO_NEW,
-				(Boolean)autoNew.getValue() ? "Y" : "N");
+		actionSave();
 
-		preference.savePreference();
+		//Set all preferences in the Context
+		preferences.fillPreferences();
 
-		//update context
-		Env.setAutoCommit(Env.getCtx(), "y".equalsIgnoreCase(preference.getProperty(UserPreference.P_AUTO_COMMIT)));
-		Env.setAutoNew(Env.getCtx(), "y".equalsIgnoreCase(preference.getProperty(UserPreference.P_AUTO_NEW)));
-		
 		// Log Migration Script and AdempiereSys are just in-memory preferences, must not be saved
 		if (logMigrationScript != null)
 			Env.getCtx().setProperty("LogMigrationScript", (Boolean)logMigrationScript.getValue() ? "Y" : "N");
@@ -167,5 +189,5 @@ public class WPreference extends Popup implements EventListener<Event> {
 			Env.getCtx().setProperty("AdempiereSys", (Boolean)adempiereSys.getValue() ? "Y" : "N");
 
 		this.detach();
-	}
+	} //onSave
 }

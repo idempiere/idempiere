@@ -47,6 +47,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
+import org.compiere.model.MUserPreference;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
@@ -100,6 +101,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	private String langSession;
 
 	private UserPreference userPreference;
+	
+	private MUserPreference userPreferences;
 
 	private Keylistener keyListener;
 
@@ -234,14 +237,10 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 		// to reload preferences when the user refresh the browser
 		userPreference = loadUserPreference(Env.getAD_User_ID(ctx));
-		
-		//auto commit user preference
-		String autoCommit = userPreference.getProperty(UserPreference.P_AUTO_COMMIT);
-		Env.setAutoCommit(ctx, "true".equalsIgnoreCase(autoCommit) || "y".equalsIgnoreCase(autoCommit));
+    	userPreferences = MUserPreference.getUserPreference(Env.getAD_User_ID(ctx), Env.getAD_Client_ID(ctx));
 
-		//auto new user preference
-		String autoNew = userPreference.getProperty(UserPreference.P_AUTO_NEW);
-		Env.setAutoNew(ctx, "true".equalsIgnoreCase(autoNew) || "y".equalsIgnoreCase(autoNew));
+		//auto commit user preference
+    	userPreferences.fillPreferences();
 
 		keyListener = new Keylistener();
 		keyListener.setPage(this.getPage());

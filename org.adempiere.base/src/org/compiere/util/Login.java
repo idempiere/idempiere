@@ -43,6 +43,7 @@ import org.compiere.model.MSystem;
 import org.compiere.model.MTable;
 import org.compiere.model.MTree_Base;
 import org.compiere.model.MUser;
+import org.compiere.model.MUserPreference;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.Query;
 
@@ -839,8 +840,8 @@ public class Login
 		MRole.getDefault(m_ctx, true);	
 
 		//	Other
-		Env.setAutoCommit(m_ctx, Ini.isPropertyBool(Ini.P_A_COMMIT));
-		Env.setAutoNew(m_ctx, Ini.isPropertyBool(Ini.P_A_NEW));
+		loadUserPreferences();
+		
 		if (MRole.getDefault(m_ctx, false).isShowAcct())
 			Env.setContext(m_ctx, "#ShowAcct", Ini.getProperty(Ini.P_SHOW_ACCT));
 		else
@@ -1003,6 +1004,14 @@ public class Login
 		ModelValidationEngine.get().afterLoadPreferences(m_ctx);
 		return retValue;
 	}	//	loadPreferences
+	
+	/**
+	 * Load preferences based on user
+	 */
+	public void loadUserPreferences(){
+		MUserPreference userPreference = MUserPreference.getUserPreference(Env.getAD_User_ID(m_ctx), Env.getAD_Client_ID(m_ctx));
+		userPreference.fillPreferences();
+	}// loadUserPreferences
 
 	/**
 	 *	Load Default Value for Table into Context.

@@ -445,7 +445,9 @@ public final class Env
 	 *	Set Auto Commit
 	 *  @param ctx context
 	 *  @param autoCommit auto commit (save)
+	 *  @Deprecated user setProperty instead
 	 */
+	@Deprecated
 	public static void setAutoCommit (Properties ctx, boolean autoCommit)
 	{
 		if (ctx == null)
@@ -470,7 +472,9 @@ public final class Env
 	 *	Set Auto New Record
 	 *  @param ctx context
 	 *  @param autoNew auto new record
+	 *  @Deprecated user setProperty instead
 	 */
+	@Deprecated
 	public static void setAutoNew (Properties ctx, boolean autoNew)
 	{
 		if (ctx == null)

@@ -20,6 +20,7 @@ package org.adempiere.webui.panel;
 import java.util.Properties;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Messagebox;
@@ -202,7 +203,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 			}
 			preferencePopup = new WPreference();
 			preferencePopup.setPage(component.getPage());
-			preferencePopup.open(preference, "after_start");
+			LayoutUtils.openPopupWindow(preference, preferencePopup, "after_start");
 		}
 		else if (feedback == event.getTarget())
 		{

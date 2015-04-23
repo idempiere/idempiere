@@ -69,11 +69,11 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 
 	private static CLogger log = CLogger.getCLogger(WQuickEntry.class);
 
-	private int m_WindowNo;
+	protected int m_WindowNo;
 	private int parent_WindowNo;
 
 	List<GridField> quickFields = new ArrayList<GridField>();
-	List<WEditor> quickEditors = new ArrayList<WEditor>();
+	protected List<WEditor> quickEditors = new ArrayList<WEditor>();
 	List<Object> initialValues = new ArrayList<Object>();
 	List<GridTab> quickTabs = new ArrayList<GridTab>();
 	List<PO> quickPOs = new ArrayList<PO>();
@@ -81,7 +81,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	/** Read Only				*/
 	private boolean m_readOnly = false;
 
-	private Vlayout centerPanel = new Vlayout();
+	protected Vlayout centerPanel = new Vlayout();
 
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true, false, false, false, false, false);
 
@@ -116,13 +116,23 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 		initPOs();
 
 	}	//	WQuickEntry
+	
+	public WQuickEntry(int AD_Window_ID)
+	{
+		super();
+		
+		m_AD_Window_ID = AD_Window_ID;
+		parent_WindowNo = 0;
+		m_WindowNo = 0;
+		log.info("R/O=" + m_readOnly);
+	}	//	WQuickEntry
 
 	/**
 	 *	Static Init
 	 * 	@throws Exception
 	 */
 
-	void jbInit() throws Exception
+	private void jbInit() throws Exception
 	{
 		this.setWidth("350px");
 		this.setBorder("normal");
@@ -138,7 +148,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	/**
 	 *	Dynamic Init
 	 */
-	private void initPOs()
+	protected void initPOs()
 	{
 		GridWindow gridwindow = GridWindow.get(Env.getCtx(), m_WindowNo, m_AD_Window_ID);
 		this.setTitle(gridwindow.getName());
@@ -206,7 +216,8 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 		layout.setHflex("10");
 
 		Span span = new Span();
-		span.setHflex("3");
+		if(parent_WindowNo!= 0)
+			span.setHflex("3");
 		layout.appendChild(span);
 		Label label = editor.getLabel();
 		span.appendChild(label);
@@ -214,7 +225,8 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 
 		layout.appendChild(field);
 		((HtmlBasedComponent)field).setHflex("7");
-
+		
+		//editor.setValue("Y");
 		centerPanel.appendChild(layout);
 	}
 
@@ -319,7 +331,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	 *	Save.
 	 * 	@return true if saved
 	 */
-	private boolean actionSave()
+	protected boolean actionSave()
 	{
 		log.config("");
 		boolean anyChange = false;
@@ -458,7 +470,8 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	@Override
 	public void detach() {
 		super.detach();
-		SessionManager.getAppDesktop().unregisterWindow(m_WindowNo);
+		if(m_WindowNo!=0)
+			SessionManager.getAppDesktop().unregisterWindow(m_WindowNo);
 	}
 	
 	public void valueChange(ValueChangeEvent evt)
