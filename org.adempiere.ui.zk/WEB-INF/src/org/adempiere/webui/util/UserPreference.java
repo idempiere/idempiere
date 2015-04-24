@@ -28,12 +28,14 @@ import org.compiere.util.Language;
  * @author hengsin
  * @author Teo Sarca, www.arhipac.ro
  *			<li>FR [ 2694043 ] Query. first/firstOnly usage best practice
+ * 
+ * IDEMPIERE-2556 - this class is now for global code-managed preferences - user selectable preferences are managed in table AD_UserPreference 
  */
 public final class UserPreference implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9128019013390545760L;
+	private static final long serialVersionUID = -2619860653017483658L;
 
 	/** Language			*/
 	public static final String 	P_LANGUAGE = 		"Language";
@@ -52,17 +54,9 @@ public final class UserPreference implements Serializable {
 	public static final String P_WAREHOUSE = "Warehouse";
 	private static final String DEFAULT_WAREHOUSE = "";
 
-	/** Auto Commit */
-	public static final String P_AUTO_COMMIT = "AutoCommit";
-	private static final String DEFAULT_AUTO_COMMIT = "Y";
-
 	/** Language Name Context **/
 	public static final String LANGUAGE_NAME = "#LanguageName";
 
-	/** Auto New **/
-	public static final String P_AUTO_NEW = "AutoNew";
-	public static final String DEFAULT_AUTO_NEW = "Y";
-	
 	/** Menu Collapsed **/
 	public static final String P_MENU_COLLAPSED = "MenuCollapsed";
 	public static final String DEFAULT_MENU_COLLAPSED = "N";
@@ -82,8 +76,6 @@ public final class UserPreference implements Serializable {
 		P_CLIENT,
 		P_ORG,
 		P_WAREHOUSE,
-		P_AUTO_COMMIT,
-		P_AUTO_NEW,
 		P_MENU_COLLAPSED,
 		P_HELP_COLLAPSED,
 		P_HEADER_COLLAPSED};
@@ -94,8 +86,6 @@ public final class UserPreference implements Serializable {
 		DEFAULT_CLIENT,
 		DEFAULT_ORG,
 		DEFAULT_WAREHOUSE,
-		DEFAULT_AUTO_COMMIT,
-		DEFAULT_AUTO_NEW,
 		DEFAULT_MENU_COLLAPSED,
 		DEFAULT_HELP_COLLAPSED,
 		DEFAULT_HEADER_COLLAPSED};

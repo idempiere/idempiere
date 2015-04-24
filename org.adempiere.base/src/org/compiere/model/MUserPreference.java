@@ -1,3 +1,28 @@
+/**********************************************************************
+* This file is part of iDempiere ERP Open Source                      *
+* http://www.idempiere.org                                            *
+*                                                                     *
+* Copyright (C) Contributors                                          *
+*                                                                     *
+* This program is free software; you can redistribute it and/or       *
+* modify it under the terms of the GNU General Public License         *
+* as published by the Free Software Foundation; either version 2      *
+* of the License, or (at your option) any later version.              *
+*                                                                     *
+* This program is distributed in the hope that it will be useful,     *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+* GNU General Public License for more details.                        *
+*                                                                     *
+* You should have received a copy of the GNU General Public License   *
+* along with this program; if not, write to the Free Software         *
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+* MA 02110-1301, USA.                                                 *
+*                                                                     *
+* Contributors:                                                       *
+* - Diego Ruiz - BX Service GmbH                                      *
+**********************************************************************/
+
 package org.compiere.model;
 
 import java.sql.ResultSet;
@@ -6,16 +31,11 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 public class MUserPreference extends X_AD_UserPreference{
-	
-	/** Auto Commit */
-	public static final String P_AUTO_COMMIT = "AutoCommit";	
-	public static final String P_AUTO_NEW = "AutoNew";
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2406291562249262021L;
-	
+	private static final long serialVersionUID = 4653362918831026642L;
+
 	public MUserPreference(Properties ctx, int AD_UserPreference_ID,
 			String trxName) {
 		super(ctx, AD_UserPreference_ID, trxName);
@@ -45,7 +65,7 @@ public class MUserPreference extends X_AD_UserPreference{
 	} //createUserPreferences
 	
 	public static MUserPreference getUserPreference(int AD_User_ID, int AD_Client_ID){
-		Query query = new Query(Env.getCtx(), MUserPreference.Table_Name, "NVL(AD_User_ID,0) = ? AND NVL(AD_Client_ID,0) = ?", null);
+		Query query = new Query(Env.getCtx(), MUserPreference.Table_Name, "AD_User_ID=? AND AD_Client_ID=?", null);
 		MUserPreference preferences = query.setParameters(new Object[]{AD_User_ID, AD_Client_ID}).firstOnly();
 		
 		if(preferences==null){
@@ -70,18 +90,38 @@ public class MUserPreference extends X_AD_UserPreference{
 
 		return "";
 	}
-	
-	public void fillPreferences(){
-		MTable t = new MTable(Env.getCtx(), MUserPreference.Table_ID, null);
-		for (MColumn c: t.getColumns(false)){
-			if( !c.getColumnName().equals("AD_Client_ID") && !c.getColumnName().equals("AD_Org_ID") &&
-			          !c.getColumnName().equals("AD_User_ID") && !c.getColumnName().equals("AD_UserPreference_ID") &&
-   			          !c.getColumnName().equals("AD_UserPreference_UU") && !c.getColumnName().equals("Created") &&
-			          !c.getColumnName().equals("CreatedBy") && !c.getColumnName().equals("Updated") &&
-			          !c.getColumnName().equals("UpdatedBy") && !c.getColumnName().equals("IsActive") )
 
-				Env.getCtx().setProperty(c.getColumnName(), getPreference(c.getColumnName()));
+	public void fillPreferences(){
+		for (int i=0; i < get_ColumnCount(); i++) {
+			String colName = get_ColumnName(i);
+			if (! (    "AD_Client_ID".equals(colName)
+					|| "AD_Org_ID".equals(colName)
+					|| "AD_User_ID".equals(colName)
+					|| "AD_UserPreference_ID".equals(colName)
+					|| "AD_UserPreference_UU".equals(colName)
+					|| "Created".equals(colName)
+					|| "CreatedBy".equals(colName)
+					|| "Updated".equals(colName)
+					|| "UpdatedBy".equals(colName)
+					|| "IsActive".equals(colName))) {
+				Env.setContext(getCtx(), colName, getPreference(colName));
+				Env.setContext(getCtx(), "P|" + colName, getPreference(colName));
+			}
 		}
 	}
-	
+
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if (getAD_Org_ID() != 0)
+			setAD_Org_ID(0);
+		return true;
+	}
+
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (success)
+			fillPreferences();
+		return success;
+	}
+
 }

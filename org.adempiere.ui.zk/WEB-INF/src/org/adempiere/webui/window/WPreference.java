@@ -32,7 +32,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Separator;
 /**
  *
  * @author hengsin
@@ -92,6 +91,12 @@ public class WPreference extends WQuickEntry implements EventListener<Event> {
 	private void init() {
 
 		Div div = new Div();
+		div.setStyle("background-color: transparent !important; border: none; margin: 5px;");
+		morePreferences= new A();	
+		morePreferences.setLabel(Msg.translate(Env.getCtx(), "MorePreferences"));
+		morePreferences.addEventListener(Events.ON_CLICK, this);
+		div.appendChild(morePreferences);
+		this.appendChild(div);
 
 		if (Env.getAD_Client_ID(Env.getCtx()) <= 20 && Env.getAD_User_ID(Env.getCtx()) <= 102) {
 			adempiereSys = new WYesNoEditor("AdempiereSys", Msg.getMsg(Env.getCtx(), "AdempiereSys", true),
@@ -113,29 +118,6 @@ public class WPreference extends WQuickEntry implements EventListener<Event> {
 			logMigrationScript.setValue(Env.getCtx().getProperty("LogMigrationScript"));
 		}
 
-		div = new Div();
-		div.setStyle("background-color: transparent !important; border: none; margin: 5px;");
-		addgadgets= new A();	
-		addgadgets.setLabel( Msg.translate(Env.getCtx(), "ManageGadgets"));
-		addgadgets.addEventListener(Events.ON_CLICK, this);
-		div.appendChild(addgadgets);
-		this.appendChild(div);
-
-		div = new Div();
-		div.setStyle("background-color: transparent !important; border: none; margin: 5px;");
-		morePreferences= new A();	
-		morePreferences.setLabel(Msg.translate(Env.getCtx(), "MorePreferences"));
-		morePreferences.addEventListener(Events.ON_CLICK, this);
-		div.appendChild(morePreferences);
-		this.appendChild(div);
-
-		Separator separator = new Separator();
-		separator.setSpacing("20px");
-		div = new Div();
-		div.setStyle("background-color: transparent !important; border: none; margin: 5px;");
-		div.appendChild(separator);
-		this.appendChild(div);
-
 		ToolBar toolbar = new ToolBar();
 		toolbar.setAlign("end");
 		this.appendChild(toolbar);
@@ -146,6 +128,14 @@ public class WPreference extends WQuickEntry implements EventListener<Event> {
 		btn.addEventListener(Events.ON_CLICK, this);
 		toolbar.appendChild(btn);
 		toolbar.setStyle("border: none");
+
+		div = new Div();
+		div.setStyle("background-color: transparent !important; border: none; margin: 5px;");
+		addgadgets= new A();	
+		addgadgets.setLabel( Msg.translate(Env.getCtx(), "ManageGadgets"));
+		addgadgets.addEventListener(Events.ON_CLICK, this);
+		div.appendChild(addgadgets);
+		this.appendChild(div);
 
 	} //init
 
@@ -178,9 +168,6 @@ public class WPreference extends WQuickEntry implements EventListener<Event> {
 
 	private void onSave() {
 		actionSave();
-
-		//Set all preferences in the Context
-		preferences.fillPreferences();
 
 		// Log Migration Script and AdempiereSys are just in-memory preferences, must not be saved
 		if (logMigrationScript != null)

@@ -331,10 +331,6 @@ INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsA
 UPDATE AD_Tab SET WhereClause='AD_User_ID=@#AD_User_ID@ AND AD_Client_ID=@#AD_Client_ID@',Updated=TO_TIMESTAMP('2015-04-20 22:11:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Tab_ID=200189
 ;
 
--- Apr 20, 2015 10:11:23 PM CEST
-UPDATE C_AcctProcessor SET DateLastRun=TO_TIMESTAMP('2015-04-20 22:11:22','YYYY-MM-DD HH24:MI:SS'), DateNextRun=TO_TIMESTAMP('2015-04-20 22:21:22','YYYY-MM-DD HH24:MI:SS'),Updated=TO_TIMESTAMP('2015-04-20 22:11:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE C_AcctProcessor_ID=100
-;
-
 -- Apr 20, 2015 10:11:33 PM CEST
 UPDATE AD_Column SET DefaultValue='Y',Updated=TO_TIMESTAMP('2015-04-20 22:11:33','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Column_ID=212173
 ;
@@ -367,6 +363,6 @@ INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexCol
 CREATE UNIQUE INDEX ad_userpreference_user_idx ON AD_UserPreference (AD_User_ID,AD_Client_ID)
 ;
 
-SELECT register_migration_script('201504180139_IDEMPIERE-2556.sql') FROM dual
+SELECT register_migration_script('201504231737_IDEMPIERE-2556.sql') FROM dual
 ;
 
