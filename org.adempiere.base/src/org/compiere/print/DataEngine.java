@@ -170,7 +170,7 @@ public class DataEngine
 					tableName = rs.getString(2);  	//	TableName
 					reportName = rs.getString(3);
 					// Add WhereClause restriction from AD_ReportView - teo_sarca BF [ 1761891 ]
-					String whereClause = rs.getString(4);
+					String whereClause = "(" + rs.getString(4) + ")";
 					if (!Util.isEmpty(whereClause)) {
 						if (whereClause.indexOf("@") == -1) {
 							queryCopy.addRestriction(whereClause);
