@@ -159,6 +159,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		if (log.isLoggable(Level.CONFIG)) log.config("ID=" + AD_Attachment_ID + ", Table=" + AD_Table_ID + ", Record=" + Record_ID);
 
 		m_WindowNo = WindowNo;
+		this.addEventListener(DialogEvents.ON_WINDOW_CLOSE, this);
 		if (eventListener != null) 
 		{
 			this.addEventListener(DialogEvents.ON_WINDOW_CLOSE, eventListener);
@@ -472,85 +473,52 @@ public class WAttachment extends Window implements EventListener<Event>
 	public void onEvent(Event e)
 	{
 		//	Save and Close
-
-		if (e instanceof UploadEvent)
-		{
+		if (e instanceof UploadEvent) {
 			preview.setVisible(false);
 			UploadEvent ue = (UploadEvent) e;
 			processUploadMedia(ue.getMedia());
-		}
-		else if (e.getTarget() == bOk)
-		{
+		} else if (e.getTarget() == bOk || DialogEvents.ON_WINDOW_CLOSE.equals(e.getName())) {
 			String newText = text.getText();
-
 			if (newText == null)
 				newText = "";
-
 			String oldText = m_attachment.getTextMsg();
-
 			if (oldText == null)
 				oldText = "";
 
 			if (!m_change)
 				m_change = !newText.equals(oldText);
 
-			if (newText.length() > 0 || m_attachment.getEntryCount() > 0)
-			{
-				if (m_change)
-				{
+			if (newText.length() > 0 || m_attachment.getEntryCount() > 0) {
+				if (m_change) {
 					m_attachment.setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(
 					m_attachment.setTextMsg(text.getText());
 					m_attachment.saveEx();
 				}
-			}
-			else
-			{
+			} else {
 				m_attachment.delete(true);
 				m_attachment = null;
 			}
 
 			dispose();
-		}
-
-		//	Cancel
-
-		else if (e.getTarget() == bCancel)
-		{
+		} else if (e.getTarget() == bCancel) {
+			//	Cancel
 			dispose();
-		}
-
-		//	Delete Attachment
-
-		else if (e.getTarget() == bDeleteAll)
-		{
+		} else if (e.getTarget() == bDeleteAll) {
+			//	Delete Attachment
 			deleteAttachment();
 			dispose();
-		}
-
-		//	Delete individual entry and Return
-
-		else if (e.getTarget() == bDelete)
+		} else if (e.getTarget() == bDelete) {
+			//	Delete individual entry and Return
 			deleteAttachmentEntry();
-
-		//	Show Data
-
-		else if (e.getTarget() == cbContent)
-		{
+		} else if (e.getTarget() == cbContent) {
+			//	Show Data
 			clearPreview();
 			autoPreview (cbContent.getSelectedIndex(), false);
-		}
-
-		//	Open Attachment
-
-		else if (e.getTarget() == bSave)
+		} else if (e.getTarget() == bSave) {
+			//	Open Attachment
 			saveAttachmentToFile();
-
-		else if (e.getTarget() == bRefresh)
+		} else if (e.getTarget() == bRefresh) {
 			displayData(cbContent.getSelectedIndex(), true);
-		else if (e instanceof UploadEvent) 
-		{
-			UploadEvent ue = (UploadEvent) e;
-			processUploadMedia(ue.getMedia());
 		}
 
 	}	//	onEvent
