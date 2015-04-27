@@ -29,7 +29,7 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20150418L;
+	private static final long serialVersionUID = 20150427L;
 
     /** Standard Constructor */
     public X_AD_UserPreference (Properties ctx, int AD_UserPreference_ID, String trxName)
@@ -39,6 +39,8 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
         {
 			setAD_User_ID (0);
 			setAD_UserPreference_ID (0);
+			setIsAllowCopy (false);
+// N
         } */
     }
 
@@ -98,8 +100,8 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 		return ii.intValue();
 	}
 
-	/** Set User Preference.
-		@param AD_UserPreference_ID User Preference	  */
+	/** Set AD_UserPreference_ID.
+		@param AD_UserPreference_ID AD_UserPreference_ID	  */
 	public void setAD_UserPreference_ID (int AD_UserPreference_ID)
 	{
 		if (AD_UserPreference_ID < 1) 
@@ -108,8 +110,8 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 			set_ValueNoCheck (COLUMNNAME_AD_UserPreference_ID, Integer.valueOf(AD_UserPreference_ID));
 	}
 
-	/** Get User Preference.
-		@return User Preference	  */
+	/** Get AD_UserPreference_ID.
+		@return AD_UserPreference_ID	  */
 	public int getAD_UserPreference_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserPreference_ID);
@@ -153,6 +155,26 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 		return false;
 	}
 
+	/** Set Automatic Decimal Places For Amounts.
+		@param AutomaticDecimalPlacesForAmoun 
+		Automatically insert a decimal point
+	  */
+	public void setAutomaticDecimalPlacesForAmoun (int AutomaticDecimalPlacesForAmoun)
+	{
+		set_Value (COLUMNNAME_AutomaticDecimalPlacesForAmoun, Integer.valueOf(AutomaticDecimalPlacesForAmoun));
+	}
+
+	/** Get Automatic Decimal Places For Amounts.
+		@return Automatically insert a decimal point
+	  */
+	public int getAutomaticDecimalPlacesForAmoun () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AutomaticDecimalPlacesForAmoun);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Automatic New Record.
 		@param AutoNew Automatic New Record	  */
 	public void setAutoNew (boolean AutoNew)
@@ -165,6 +187,54 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	public boolean isAutoNew () 
 	{
 		Object oo = get_Value(COLUMNNAME_AutoNew);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Reverse Address Lines.
+		@param IsAddressLinesReverse 
+		Print Address in reverse Order
+	  */
+	public void setIsAddressLinesReverse (boolean IsAddressLinesReverse)
+	{
+		set_Value (COLUMNNAME_IsAddressLinesReverse, Boolean.valueOf(IsAddressLinesReverse));
+	}
+
+	/** Get Reverse Address Lines.
+		@return Print Address in reverse Order
+	  */
+	public boolean isAddressLinesReverse () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsAddressLinesReverse);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Allow Copy.
+		@param IsAllowCopy 
+		Determine if a column must be copied when pushing the button to copy record
+	  */
+	public void setIsAllowCopy (boolean IsAllowCopy)
+	{
+		set_Value (COLUMNNAME_IsAllowCopy, Boolean.valueOf(IsAllowCopy));
+	}
+
+	/** Get Allow Copy.
+		@return Determine if a column must be copied when pushing the button to copy record
+	  */
+	public boolean isAllowCopy () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsAllowCopy);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

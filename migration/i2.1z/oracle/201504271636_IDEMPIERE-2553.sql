@@ -26,18 +26,21 @@ UPDATE AD_Field SET IsDisplayed='Y', SeqNo=60, XPosition=1,Updated=TO_DATE('2015
 UPDATE AD_Field SET SeqNo=70,Updated=TO_DATE('2015-04-27 10:36:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=203798
 
 -- Apr 27, 2015 9:53:47 PM CEST
-UPDATE AD_Element SET Help='i.e. "Entering 2 only results in a value of 0.02 for the entry. If you use the "." key during entry of a value, the decimal point is included at the place you specify. This mode is no effect on multiplication and division operations. If 0 is entered it will work as usual."',Updated=TO_DATE('2015-04-27 21:53:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=202883
+UPDATE AD_Element SET Help='i.e. "Entering 2 only results in a value of 0.02 for the entry. If you use the "." key during entry of a value, the decimal point is included at the place you specify. This mode has no effect on multiplication and division operations. If 0 is entered it will work as usual."',Updated=TO_DATE('2015-04-27 21:53:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=202883
 ;
 
 -- Apr 27, 2015 9:53:47 PM CEST
-UPDATE AD_Column SET ColumnName='AutomaticDecimalPlacesForAmoun', Name='Automatic Decimal Places For Amounts', Description='Automatically insert a decimal point', Help='i.e. "Entering 2 only results in a value of 0.02 for the entry. If you use the "." key during entry of a value, the decimal point is included at the place you specify. This mode is no effect on multiplication and division operations. If 0 is entered it will work as usual."' WHERE AD_Element_ID=202883
+UPDATE AD_Column SET ColumnName='AutomaticDecimalPlacesForAmoun', Name='Automatic Decimal Places For Amounts', Description='Automatically insert a decimal point', Help='i.e. "Entering 2 only results in a value of 0.02 for the entry. If you use the "." key during entry of a value, the decimal point is included at the place you specify. This mode has no effect on multiplication and division operations. If 0 is entered it will work as usual."' WHERE AD_Element_ID=202883
 ;
 
 -- Apr 27, 2015 9:53:47 PM CEST
-UPDATE AD_InfoColumn SET ColumnName='AutomaticDecimalPlacesForAmoun', Name='Automatic Decimal Places For Amounts', Description='Automatically insert a decimal point', Help='i.e. "Entering 2 only results in a value of 0.02 for the entry. If you use the "." key during entry of a value, the decimal point is included at the place you specify. This mode is no effect on multiplication and division operations. If 0 is entered it will work as usual."' WHERE AD_Element_ID=202883 AND IsCentrallyMaintained='Y'
+UPDATE AD_InfoColumn SET ColumnName='AutomaticDecimalPlacesForAmoun', Name='Automatic Decimal Places For Amounts', Description='Automatically insert a decimal point', Help='i.e. "Entering 2 only results in a value of 0.02 for the entry. If you use the "." key during entry of a value, the decimal point is included at the place you specify. This mode has no effect on multiplication and division operations. If 0 is entered it will work as usual."' WHERE AD_Element_ID=202883 AND IsCentrallyMaintained='Y'
 ;
 
 -- Apr 27, 2015 9:53:47 PM CEST
-UPDATE AD_Field SET Name='Automatic Decimal Places For Amounts', Description='Automatically insert a decimal point', Help='i.e. "Entering 2 only results in a value of 0.02 for the entry. If you use the "." key during entry of a value, the decimal point is included at the place you specify. This mode is no effect on multiplication and division operations. If 0 is entered it will work as usual."' WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=202883) AND IsCentrallyMaintained='Y'
+UPDATE AD_Field SET Name='Automatic Decimal Places For Amounts', Description='Automatically insert a decimal point', Help='i.e. "Entering 2 only results in a value of 0.02 for the entry. If you use the "." key during entry of a value, the decimal point is included at the place you specify. This mode has no effect on multiplication and division operations. If 0 is entered it will work as usual."' WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=202883) AND IsCentrallyMaintained='Y'
+;
+
+SELECT register_migration_script('201504271636_IDEMPIERE-2553.sql') FROM dual
 ;
 

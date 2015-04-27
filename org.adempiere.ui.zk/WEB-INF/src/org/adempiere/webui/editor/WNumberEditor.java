@@ -18,7 +18,6 @@
 package org.adempiere.webui.editor;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import org.adempiere.webui.ValuePreference;
@@ -199,11 +198,18 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
     	if(oldValue.toString().contains("."))
     		return oldValue;
     	
-    	Integer decimalPlaces = Integer.parseInt(Env.getCtx().getProperty("AutomaticDecimalPlacesForAmoun"));
+    	int decimalPlaces = Env.getContextAsInt(Env.getCtx(), "AutomaticDecimalPlacesForAmoun");
     	if(decimalPlaces <= 0)
     		return oldValue;
-    	
-    	BigDecimal newValue = oldValue.divide(BigDecimal.valueOf(Math.pow(10,decimalPlaces)),decimalPlaces,BigDecimal.ROUND_HALF_UP);
+
+    	BigDecimal divisor;
+    	if (decimalPlaces == 2) // most common case
+    		divisor = Env.ONEHUNDRED;
+    	else if (decimalPlaces == 1)
+    		divisor = BigDecimal.TEN;
+    	else
+    		divisor = BigDecimal.TEN.pow(decimalPlaces);
+    	BigDecimal newValue = oldValue.divide(divisor, decimalPlaces, BigDecimal.ROUND_HALF_UP);
     	return newValue;
     } //getAddDecimalPlaces
 

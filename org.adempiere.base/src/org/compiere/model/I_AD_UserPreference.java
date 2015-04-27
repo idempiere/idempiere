@@ -80,10 +80,10 @@ public interface I_AD_UserPreference
     /** Column name AD_UserPreference_ID */
     public static final String COLUMNNAME_AD_UserPreference_ID = "AD_UserPreference_ID";
 
-	/** Set User Preference	  */
+	/** Set AD_UserPreference_ID	  */
 	public void setAD_UserPreference_ID (int AD_UserPreference_ID);
 
-	/** Get User Preference	  */
+	/** Get AD_UserPreference_ID	  */
 	public int getAD_UserPreference_ID();
 
     /** Column name AD_UserPreference_UU */
@@ -103,6 +103,19 @@ public interface I_AD_UserPreference
 
 	/** Get Automatic Commit	  */
 	public boolean isAutoCommit();
+
+    /** Column name AutomaticDecimalPlacesForAmoun */
+    public static final String COLUMNNAME_AutomaticDecimalPlacesForAmoun = "AutomaticDecimalPlacesForAmoun";
+
+	/** Set Automatic Decimal Places For Amounts.
+	  * Automatically insert a decimal point
+	  */
+	public void setAutomaticDecimalPlacesForAmoun (int AutomaticDecimalPlacesForAmoun);
+
+	/** Get Automatic Decimal Places For Amounts.
+	  * Automatically insert a decimal point
+	  */
+	public int getAutomaticDecimalPlacesForAmoun();
 
     /** Column name AutoNew */
     public static final String COLUMNNAME_AutoNew = "AutoNew";
@@ -141,6 +154,32 @@ public interface I_AD_UserPreference
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsAddressLinesReverse */
+    public static final String COLUMNNAME_IsAddressLinesReverse = "IsAddressLinesReverse";
+
+	/** Set Reverse Address Lines.
+	  * Print Address in reverse Order
+	  */
+	public void setIsAddressLinesReverse (boolean IsAddressLinesReverse);
+
+	/** Get Reverse Address Lines.
+	  * Print Address in reverse Order
+	  */
+	public boolean isAddressLinesReverse();
+
+    /** Column name IsAllowCopy */
+    public static final String COLUMNNAME_IsAllowCopy = "IsAllowCopy";
+
+	/** Set Allow Copy.
+	  * Determine if a column must be copied when pushing the button to copy record
+	  */
+	public void setIsAllowCopy (boolean IsAllowCopy);
+
+	/** Get Allow Copy.
+	  * Determine if a column must be copied when pushing the button to copy record
+	  */
+	public boolean isAllowCopy();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
