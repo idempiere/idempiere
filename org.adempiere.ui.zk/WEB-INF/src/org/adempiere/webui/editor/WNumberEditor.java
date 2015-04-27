@@ -18,6 +18,7 @@
 package org.adempiere.webui.editor;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import org.adempiere.webui.ValuePreference;
@@ -57,7 +58,7 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 	private int displayType;
 
 	private boolean tableEditor;
-
+	
     public WNumberEditor()
     {
     	this("Number", false, false, true, DisplayType.Number, "");
@@ -176,11 +177,35 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 	    	    return;
 	    	}
 	        
+	        //IDEMPIERE-2553 - Enter amounts without decimal separator
+	        if(displayType == DisplayType.Amount || displayType == DisplayType.CostPrice){
+	        	if (newValue != null && newValue instanceof BigDecimal) {
+	        		newValue = addDecimalPlaces((BigDecimal)newValue);
+		        }	        
+	        }
+	        
 	        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
 	        super.fireValueChange(changeEvent);
 	        oldValue = getComponent().getValue(); // IDEMPIERE-963 - check again the value could be changed by callout
     	}
     }
+    
+    /**
+     * IDEMPIERE-2553 - Enter amounts without decimal separator
+     * @param oldValue
+     * @return
+     */
+    public BigDecimal addDecimalPlaces(BigDecimal oldValue){
+    	if(oldValue.toString().contains("."))
+    		return oldValue;
+    	
+    	Integer decimalPlaces = Integer.parseInt(Env.getCtx().getProperty("AutomaticDecimalPlacesForAmoun"));
+    	if(decimalPlaces <= 0)
+    		return oldValue;
+    	
+    	BigDecimal newValue = oldValue.divide(BigDecimal.valueOf(Math.pow(10,decimalPlaces)),decimalPlaces,BigDecimal.ROUND_HALF_UP);
+    	return newValue;
+    } //getAddDecimalPlaces
 
     @Override
 	public NumberBox getComponent() {
