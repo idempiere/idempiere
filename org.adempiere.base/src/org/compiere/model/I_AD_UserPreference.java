@@ -155,32 +155,6 @@ public interface I_AD_UserPreference
 	  */
 	public boolean isActive();
 
-    /** Column name IsAddressLinesReverse */
-    public static final String COLUMNNAME_IsAddressLinesReverse = "IsAddressLinesReverse";
-
-	/** Set Reverse Address Lines.
-	  * Print Address in reverse Order
-	  */
-	public void setIsAddressLinesReverse (boolean IsAddressLinesReverse);
-
-	/** Get Reverse Address Lines.
-	  * Print Address in reverse Order
-	  */
-	public boolean isAddressLinesReverse();
-
-    /** Column name IsAllowCopy */
-    public static final String COLUMNNAME_IsAllowCopy = "IsAllowCopy";
-
-	/** Set Allow Copy.
-	  * Determine if a column must be copied when pushing the button to copy record
-	  */
-	public void setIsAllowCopy (boolean IsAllowCopy);
-
-	/** Get Allow Copy.
-	  * Determine if a column must be copied when pushing the button to copy record
-	  */
-	public boolean isAllowCopy();
-
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

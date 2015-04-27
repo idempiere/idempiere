@@ -39,8 +39,6 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
         {
 			setAD_User_ID (0);
 			setAD_UserPreference_ID (0);
-			setIsAllowCopy (false);
-// N
         } */
     }
 
@@ -187,54 +185,6 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	public boolean isAutoNew () 
 	{
 		Object oo = get_Value(COLUMNNAME_AutoNew);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Reverse Address Lines.
-		@param IsAddressLinesReverse 
-		Print Address in reverse Order
-	  */
-	public void setIsAddressLinesReverse (boolean IsAddressLinesReverse)
-	{
-		set_Value (COLUMNNAME_IsAddressLinesReverse, Boolean.valueOf(IsAddressLinesReverse));
-	}
-
-	/** Get Reverse Address Lines.
-		@return Print Address in reverse Order
-	  */
-	public boolean isAddressLinesReverse () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsAddressLinesReverse);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Allow Copy.
-		@param IsAllowCopy 
-		Determine if a column must be copied when pushing the button to copy record
-	  */
-	public void setIsAllowCopy (boolean IsAllowCopy)
-	{
-		set_Value (COLUMNNAME_IsAllowCopy, Boolean.valueOf(IsAllowCopy));
-	}
-
-	/** Get Allow Copy.
-		@return Determine if a column must be copied when pushing the button to copy record
-	  */
-	public boolean isAllowCopy () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsAllowCopy);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 
