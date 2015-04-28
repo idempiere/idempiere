@@ -24,6 +24,7 @@ UPDATE AD_Field SET IsDisplayed='Y', SeqNo=60, XPosition=1,Updated=TO_DATE('2015
 
 -- Apr 27, 2015 10:36:32 AM CEST
 UPDATE AD_Field SET SeqNo=70,Updated=TO_DATE('2015-04-27 10:36:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=203798
+;
 
 -- Apr 27, 2015 9:53:47 PM CEST
 UPDATE AD_Element SET Help='i.e. "Entering 2 only results in a value of 0.02 for the entry. If you use the "." key during entry of a value, the decimal point is included at the place you specify. This mode has no effect on multiplication and division operations. If 0 is entered it will work as usual."',Updated=TO_DATE('2015-04-27 21:53:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=202883
