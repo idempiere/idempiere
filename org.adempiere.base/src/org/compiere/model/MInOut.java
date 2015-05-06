@@ -1328,9 +1328,9 @@ public class MInOut extends X_M_InOut implements DocAction
 				{
 					BigDecimal movementQty = sLine.getMovementQty();
 					BigDecimal qtyOnLineMA = MInOutLineMA.getManualQty(sLine.getM_InOutLine_ID(), get_TrxName());
-					
-					if(qtyOnLineMA.compareTo(movementQty)>0)
-					{
+
+					if (   (movementQty.signum() != 0 && qtyOnLineMA.signum() != 0 && movementQty.signum() != qtyOnLineMA.signum()) // must have same sign
+						|| (qtyOnLineMA.abs().compareTo(movementQty.abs())>0)) { // compare absolute values
 						// More then line qty on attribute tab for line 10
 						m_processMsg = "@Over_Qty_On_Attribute_Tab@ " + sLine.getLine();
 						return DOCSTATUS_Invalid;
