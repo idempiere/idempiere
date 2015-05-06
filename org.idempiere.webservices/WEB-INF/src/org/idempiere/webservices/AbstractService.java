@@ -339,7 +339,8 @@ public class AbstractService {
 							 lookup.refresh();
 						 
 						 NamePair pair = lookup.getDirect(po.get_Value(indCol), false, false);
-						 outField.setText(pair.getName());
+						 if (pair != null)
+							 outField.setText(pair.getName());
 					 }
 				 }
 			 }
