@@ -172,6 +172,7 @@ public class DataEngine
 					// Add WhereClause restriction from AD_ReportView - teo_sarca BF [ 1761891 ]
 					String whereClause = rs.getString(4);
 					if (!Util.isEmpty(whereClause)) {
+						whereClause = "(" + whereClause + ")";  // IDEMPIERE-2597
 						if (whereClause.indexOf("@") == -1) {
 							queryCopy.addRestriction(whereClause);
 						} else { // replace context variables

@@ -44,6 +44,7 @@ import javax.xml.ws.WebServiceContext;
 
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.xmlbeans.StringEnumAbstractBase.Table;
+import org.compiere.model.I_AD_Column;
 import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
@@ -1454,7 +1455,16 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			{
 				for (DataField field : modelCRUD.getDataRow().getFieldArray()) {
 		    		if (m_webservicetype.isInputColumnNameAllowed(field.getColumn())) {
-		        		sqlquery += " AND " + field.getColumn() + "=?";
+		    			
+		    			// Jan Thielemann Solution for query using the sentence like
+		    			X_WS_WebServiceFieldInput inputField = m_webservicetype.getFieldInput(field.getColumn());
+		    			I_AD_Column col = inputField.getAD_Column();		    			
+		    			String sqlType = DisplayType.getSQLDataType(col.getAD_Reference_ID(), col.getColumnName(), col.getFieldLength());		    					
+		    			if(sqlType.contains("CHAR"))
+		    		        sqlquery += " AND " + field.getColumn() + " LIKE ?";
+		    			else
+		    				sqlquery += " AND " + field.getColumn() + "=?";
+				    	// End Jan Thielemann Solution for query using the sentence like		    			
 		    		} else {
 						throw new IdempiereServiceFault("Web service type "
 								+ m_webservicetype.getValue() + ": input column "

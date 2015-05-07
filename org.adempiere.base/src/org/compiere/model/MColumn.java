@@ -604,9 +604,8 @@ public class MColumn extends X_AD_Column
 		if (getColumnName().equals(PO.getUUIDColumnName(tableName))) {
 			StringBuilder indexName = new StringBuilder().append(getColumnName()).append("_idx");
 			if (indexName.length() > 30) {
-				int i = indexName.length() - 31;
-				indexName = new StringBuilder().append(getColumnName().substring(0, getColumnName().length() - i));
-				indexName.append("_uu_idx");
+				indexName = new StringBuilder().append(getColumnName().substring(0, 25));
+				indexName.append("uuidx");
 			}
 			StringBuilder msgreturn = new StringBuilder("CONSTRAINT ").append(indexName).append(" UNIQUE (").append(getColumnName()).append(")");
 			return msgreturn.toString();
