@@ -475,29 +475,22 @@ public class MMovement extends X_M_Movement implements DocAction
 				if (trxFrom == null)
 				{
 					Timestamp dateMPolicy= null;
-					
 					MStorageOnHand[] storages = null;
 					if (line.getMovementQty().compareTo(Env.ZERO) > 0) {
 						// Find Date Material Policy bases on ASI
 						storages = MStorageOnHand.getWarehouse(getCtx(), 0,
-								line.getM_Product_ID(), line
-										.getM_AttributeSetInstance_ID(), null,
-								MClient.MMPOLICY_FiFo.equals(product
-										.getMMPolicy()), false, line
-										.getM_Locator_ID(), get_TrxName());
-					}
-					else{
+								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), null,
+								MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+								line.getM_Locator_ID(), get_TrxName());
+					} else {
 						//Case of reversal
-						storages = MStorageOnHand
-								.getWarehouse(getCtx(), 0, line.getM_Product_ID(),
-										line.getM_AttributeSetInstanceTo_ID(), null,
-										MClient.MMPOLICY_FiFo.equals(product
-												.getMMPolicy()), false, line
-												.getM_LocatorTo_ID(), get_TrxName());
+						storages = MStorageOnHand.getWarehouse(getCtx(), 0,
+								line.getM_Product_ID(), line.getM_AttributeSetInstanceTo_ID(), null,
+								MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+								line.getM_LocatorTo_ID(), get_TrxName());
 					}
 					for (MStorageOnHand storage : storages) {
-						if (storage.getQtyOnHand().compareTo(
-								line.getMovementQty()) >= 0) {
+						if (storage.getQtyOnHand().compareTo(line.getMovementQty()) >= 0) {
 							dateMPolicy = storage.getDateMaterialPolicy();
 							break;
 						}
@@ -506,13 +499,12 @@ public class MMovement extends X_M_Movement implements DocAction
 					if (dateMPolicy == null && storages.length > 0)
 						dateMPolicy = storages[0].getDateMaterialPolicy();
 					
-					if(dateMPolicy==null && line.getM_AttributeSetInstanceTo_ID()!=0){
+					if (dateMPolicy==null && line.getM_AttributeSetInstanceTo_ID()!=0) {
 						I_M_AttributeSetInstance asi = line.getM_AttributeSetInstance();
 						dateMPolicy = asi.getCreated();
-					}
-					else if(dateMPolicy==null )
+					} else if(dateMPolicy==null)
 						dateMPolicy = getMovementDate();
-					
+
 					MLocator locator = new MLocator (getCtx(), line.getM_Locator_ID(), get_TrxName());
 					//Update Storage 
 					if (!MStorageOnHand.add(getCtx(),locator.getM_Warehouse_ID(),
@@ -526,12 +518,6 @@ public class MMovement extends X_M_Movement implements DocAction
 						return DocAction.STATUS_Invalid;
 					}
 
-					//TO may have Different material policy
-					I_M_AttributeSetInstance asiTo = line.getM_AttributeSetInstanceTo();
-					Timestamp dateMPolicyTo= null;
-					
-					
-					
 					//Update Storage 
 					MLocator locatorTo = new MLocator (getCtx(), line.getM_LocatorTo_ID(), get_TrxName());
 					if (!MStorageOnHand.add(getCtx(),locatorTo.getM_Warehouse_ID(),
