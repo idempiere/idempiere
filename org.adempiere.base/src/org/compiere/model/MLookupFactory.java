@@ -86,48 +86,7 @@ public class MLookupFactory
 
 	public static MLookupInfo getLookupInfo(Properties ctx, int WindowNo, int Column_ID, int AD_Reference_ID)
 	{
-		String ColumnName = "";
-		int AD_Reference_Value_ID = 0;
-		boolean IsParent = false;
-		String ValidationCode = "";
-		//
-		String sql = "SELECT c.ColumnName, c.AD_Reference_Value_ID, c.IsParent, vr.Code "
-			+ "FROM AD_Column c"
-			+ " LEFT OUTER JOIN AD_Val_Rule vr ON (c.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) "
-			+ "WHERE c.AD_Column_ID=?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, Column_ID);
-			//
-			rs = pstmt.executeQuery();
-			if (rs.next())
-			{
-				ColumnName = rs.getString(1);
-				AD_Reference_Value_ID = rs.getInt(2);
-				IsParent = "Y".equals(rs.getString(3));
-				ValidationCode = rs.getString(4);
-			}
-			else
-				s_log.log(Level.SEVERE, "Column Not Found - AD_Column_ID=" + Column_ID);
-		}
-		catch (SQLException ex)
-		{
-			s_log.log(Level.SEVERE, "create", ex);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		//
-		MLookupInfo info = getLookupInfo (ctx, WindowNo, Column_ID, AD_Reference_ID,
-			Env.getLanguage(ctx), ColumnName, AD_Reference_Value_ID, IsParent, ValidationCode);
-
-		return info;
+		return 	getLookupInfo(ctx, WindowNo, 0, Column_ID, AD_Reference_ID);
 	}
 	
 	public static MLookupInfo getLookupInfo(Properties ctx, int WindowNo, int TabNo, int Column_ID, int AD_Reference_ID)
@@ -189,7 +148,7 @@ public class MLookupFactory
 	public static MLookup get (Properties ctx, int WindowNo, int TabNo, int Column_ID, int AD_Reference_ID)
 	{
 		//
-		MLookupInfo info = getLookupInfo (ctx, WindowNo, Column_ID, AD_Reference_ID);
+		MLookupInfo info = getLookupInfo (ctx, WindowNo, TabNo, Column_ID, AD_Reference_ID);
 		return new MLookup(info, TabNo);
 	}   //  get
 
@@ -221,7 +180,7 @@ public class MLookupFactory
 				          Column_ID, AD_Reference_ID,
 				          language, ColumnName, AD_Reference_Value_ID,
 				          IsParent, ValidationCode);
-	}	//	createLookupInfo
+	}	//	getLookupInfo
 	
 	/**************************************************************************
 	 *  Get Information for Lookups based on Column_ID for Table Columns or Process Parameters.
@@ -348,7 +307,7 @@ public class MLookupFactory
 	//	s_log.finest("Query:  " + info.Query);
 	//	s_log.finest("Direct: " + info.QueryDirect);
 		return info;
-	}	//	createLookupInfo
+	}	//	getLookupInfo
 
 
 	/**************************************************************************

@@ -593,8 +593,7 @@ public final class Env
 	 */
 	public static String getContext (Properties ctx, int WindowNo, int TabNo, String context, boolean onlyTab)
 	{
-		final boolean onlyWindow = onlyTab ? true : false;
-		return getContext(ctx, WindowNo, TabNo, context, onlyTab, onlyWindow);
+		return getContext(ctx, WindowNo, TabNo, context, onlyTab, onlyTab);
 	}
 
 	/**
