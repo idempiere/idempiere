@@ -160,7 +160,7 @@ public class MLookupInfo implements Serializable, Cloneable
 		ZoomQuery = zoomQuery;
 	}   //  MLookupInfo
 	
-	static final long serialVersionUID = -7958664359250070233L;
+	static final long serialVersionUID = -1869207615748248653L;
 
 	/** SQL Query       */
 	public String       Query = null;
@@ -190,6 +190,8 @@ public class MLookupInfo implements Serializable, Cloneable
 	public Properties   ctx = null;
 	/** WindowNo		*/
 	public int          WindowNo;
+	/** TabNo	    	*/
+	public int          tabNo;
 
 	/**	AD_Column_Info or AD_Process_Para	*/
 	public int          Column_ID;

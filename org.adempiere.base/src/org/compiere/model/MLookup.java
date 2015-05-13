@@ -742,7 +742,7 @@ public final class MLookup extends Lookup implements Serializable
 			//	not validated
 			if (!m_info.IsValidated)
 			{
-				String validation = Env.parseContext(m_info.ctx, m_info.WindowNo, m_info.ValidationCode, false);
+				String validation = Env.parseContext(m_info.ctx, m_info.WindowNo, m_info.tabNo, m_info.ValidationCode, false);
 				m_info.parsedValidationCode = validation;
 				if (validation.length() == 0 && m_info.ValidationCode.length() > 0)
 				{

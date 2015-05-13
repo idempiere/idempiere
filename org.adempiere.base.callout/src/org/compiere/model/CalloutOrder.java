@@ -837,7 +837,7 @@ public class CalloutOrder extends CalloutEngine
 		if (Env.isSOTrx(ctx, WindowNo))
 		{
 			MProduct product = MProduct.get (ctx, M_Product_ID.intValue());
-			if (product.isStocked())
+			if (product.isStocked() && Env.getContext(ctx, WindowNo, "IsDropShip").equals("N"))
 			{
 				BigDecimal QtyOrdered = (BigDecimal)mTab.getValue("QtyOrdered");
 				int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
@@ -1324,7 +1324,7 @@ public class CalloutOrder extends CalloutEngine
 			&& QtyOrdered.signum() > 0)		//	no negative (returns)
 		{
 			MProduct product = MProduct.get (ctx, M_Product_ID);
-			if (product.isStocked())
+			if (product.isStocked() && Env.getContext(ctx, WindowNo, "IsDropShip").equals("N"))
 			{
 				int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
 				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_AttributeSetInstance_ID");

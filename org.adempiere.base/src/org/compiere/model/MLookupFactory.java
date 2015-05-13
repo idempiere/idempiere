@@ -86,6 +86,11 @@ public class MLookupFactory
 
 	public static MLookupInfo getLookupInfo(Properties ctx, int WindowNo, int Column_ID, int AD_Reference_ID)
 	{
+		return 	getLookupInfo(ctx, WindowNo, 0, Column_ID, AD_Reference_ID);
+	}
+	
+	public static MLookupInfo getLookupInfo(Properties ctx, int WindowNo, int TabNo, int Column_ID, int AD_Reference_ID)
+	{
 		String ColumnName = "";
 		int AD_Reference_Value_ID = 0;
 		boolean IsParent = false;
@@ -124,7 +129,7 @@ public class MLookupFactory
 			pstmt = null;
 		}
 		//
-		MLookupInfo info = getLookupInfo (ctx, WindowNo, Column_ID, AD_Reference_ID,
+		MLookupInfo info = getLookupInfo (ctx, WindowNo, TabNo, Column_ID, AD_Reference_ID,
 			Env.getLanguage(ctx), ColumnName, AD_Reference_Value_ID, IsParent, ValidationCode);
 
 		return info;
@@ -143,7 +148,7 @@ public class MLookupFactory
 	public static MLookup get (Properties ctx, int WindowNo, int TabNo, int Column_ID, int AD_Reference_ID)
 	{
 		//
-		MLookupInfo info = getLookupInfo (ctx, WindowNo, Column_ID, AD_Reference_ID);
+		MLookupInfo info = getLookupInfo (ctx, WindowNo, TabNo, Column_ID, AD_Reference_ID);
 		return new MLookup(info, TabNo);
 	}   //  get
 
@@ -167,6 +172,36 @@ public class MLookupFactory
 	 *  @return lookup info structure
 	 */
 	static public MLookupInfo getLookupInfo (Properties ctx, int WindowNo,
+		int Column_ID, int AD_Reference_ID,
+		Language language, String ColumnName, int AD_Reference_Value_ID,
+		boolean IsParent, String ValidationCode)
+	{
+		return getLookupInfo(ctx, WindowNo, 0,
+				          Column_ID, AD_Reference_ID,
+				          language, ColumnName, AD_Reference_Value_ID,
+				          IsParent, ValidationCode);
+	}	//	getLookupInfo
+	
+	/**************************************************************************
+	 *  Get Information for Lookups based on Column_ID for Table Columns or Process Parameters.
+	 *
+	 *	The SQL returns three columns:
+	 *  <pre>
+	 *		Key, Value, Name, IsActive	(where either key or value is null)
+	 *  </pre>
+	 *  @param ctx context for access
+	 *  @param language report language
+	 *  @param WindowNo window no
+	 *  @param tabNo    tab no
+	 *  @param Column_ID AD_Column_ID or AD_Process_Para_ID
+	 * 	@param ColumnName key column name
+	 * 	@param AD_Reference_ID display type
+	 * 	@param AD_Reference_Value_ID AD_Reference (List, Table)
+	 * 	@param IsParent parent (prevents query to directly access value)
+	 * 	@param ValidationCode optional SQL validation
+	 *  @return lookup info structure
+	 */
+	static public MLookupInfo getLookupInfo (Properties ctx, int WindowNo, int tabNo,
 		int Column_ID, int AD_Reference_ID,
 		Language language, String ColumnName, int AD_Reference_Value_ID,
 		boolean IsParent, String ValidationCode)
@@ -199,6 +234,7 @@ public class MLookupFactory
 		//	remaining values
 		info.ctx = ctx;
 		info.WindowNo = WindowNo;
+		info.tabNo = tabNo;
 		info.Column_ID = Column_ID;
 		info.DisplayType = AD_Reference_ID;
 		info.AD_Reference_Value_ID = AD_Reference_Value_ID;
@@ -271,7 +307,7 @@ public class MLookupFactory
 	//	s_log.finest("Query:  " + info.Query);
 	//	s_log.finest("Direct: " + info.QueryDirect);
 		return info;
-	}	//	createLookupInfo
+	}	//	getLookupInfo
 
 
 	/**************************************************************************
