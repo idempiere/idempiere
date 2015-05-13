@@ -683,7 +683,7 @@ public class GridFieldVO implements Serializable
 	public void loadLookupInfo() {
 		try
 		{
-			lookupInfo = MLookupFactory.getLookupInfo (ctx, WindowNo, AD_Column_ID, displayType,
+			lookupInfo = MLookupFactory.getLookupInfo (ctx, WindowNo, TabNo,AD_Column_ID, displayType,
 				Env.getLanguage(ctx), ColumnName, AD_Reference_Value_ID,
 				IsParent, ValidationCode);
 			if (lookupInfo == null)

@@ -1421,6 +1421,78 @@ public final class Env
 
 		return outStr.toString();
 	}	//	parseContext
+	
+	/**
+	 *	Parse Context replaces global or Window context @tag@ with actual value.
+	 *
+	 *  @tag@ are ignored otherwise "" is returned
+	 *  @param ctx context
+	 *	@param WindowNo	Number of Window
+	 *	@param tabNo	Number of Tab
+	 *	@param value Message to be parsed
+	 *  @param onlyTab if true, no defaults are used
+	 * 	@param ignoreUnparsable if true, unsuccessful @return parsed String or "" if not successful and ignoreUnparsable
+	 *	@return parsed context
+	 */
+	public static String parseContext (Properties ctx, int WindowNo, int tabNo, String value,
+		boolean onlyTab, boolean ignoreUnparsable)
+	{
+		if (value == null || value.length() == 0)
+			return "";
+
+		String token;
+		String inStr = new String(value);
+		StringBuilder outStr = new StringBuilder();
+
+		int i = inStr.indexOf('@');
+		while (i != -1)
+		{
+			outStr.append(inStr.substring(0, i));			// up to @
+			inStr = inStr.substring(i+1, inStr.length());	// from first @
+
+			int j = inStr.indexOf('@');						// next @
+			if (j < 0)
+			{
+				if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "No second tag: " + inStr);
+				//not context variable, add back @ and break
+				outStr.append("@");
+				break;
+			}
+
+			token = inStr.substring(0, j);
+
+			// IDEMPIERE-194 Handling null context variable
+			String defaultV = null;
+			int idx = token.indexOf(":");	//	or clause
+			if (idx  >=  0) 
+			{
+				defaultV = token.substring(idx+1, token.length());
+				token = token.substring(0, idx);
+			}
+
+			String ctxInfo = getContext(ctx, WindowNo, tabNo, token, onlyTab);	// get context
+			if (ctxInfo.length() == 0 && (token.startsWith("#") || token.startsWith("$")) )
+				ctxInfo = getContext(ctx, token);	// get global context
+
+			if (ctxInfo.length() == 0 && defaultV != null)
+				ctxInfo = defaultV;
+
+			if (ctxInfo.length() == 0)
+			{
+				if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);
+				if (!ignoreUnparsable)
+					return "";						//	token not found
+			}
+			else
+				outStr.append(ctxInfo);				// replace context with Context
+
+			inStr = inStr.substring(j+1, inStr.length());	// from second @
+			i = inStr.indexOf('@');
+		}
+		outStr.append(inStr);						// add the rest of the string
+
+		return outStr.toString();
+	}	//	parseContext
 
 	/**
 	 *	Parse Context replaces global or Window context @tag@ with actual value.
@@ -1435,6 +1507,22 @@ public final class Env
 		boolean onlyWindow)
 	{
 		return parseContext(ctx, WindowNo, value, onlyWindow, false);
+	}	//	parseContext
+	
+	/**
+	 *	Parse Context replaces global or Window context @tag@ with actual value.
+	 *
+	 *  @param ctx context
+	 *	@param	WindowNo	Number of Window
+	 *	@param	TabNo   	Number of Tab
+	 *	@param	value		Message to be parsed
+	 *  @param  onlyWindow  if true, no defaults are used
+	 *  @return parsed String or "" if not successful
+	 */
+	public static String parseContext (Properties ctx, int WindowNo, int tabNo, String value,
+		boolean onlyWindow)
+	{
+		return parseContext(ctx, WindowNo, tabNo, value, onlyWindow, false);
 	}	//	parseContext
 
 	/**
