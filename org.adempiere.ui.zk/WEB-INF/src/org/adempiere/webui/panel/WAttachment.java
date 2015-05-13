@@ -478,28 +478,31 @@ public class WAttachment extends Window implements EventListener<Event>
 			UploadEvent ue = (UploadEvent) e;
 			processUploadMedia(ue.getMedia());
 		} else if (e.getTarget() == bOk || DialogEvents.ON_WINDOW_CLOSE.equals(e.getName())) {
-			String newText = text.getText();
-			if (newText == null)
-				newText = "";
-			String oldText = m_attachment.getTextMsg();
-			if (oldText == null)
-				oldText = "";
+			if (m_attachment != null) {
+				String newText = text.getText();
+				if (newText == null)
+					newText = "";
+				String oldText = m_attachment.getTextMsg();
+				if (oldText == null)
+					oldText = "";
 
-			if (!m_change)
-				m_change = !newText.equals(oldText);
+				if (!m_change)
+					m_change = !newText.equals(oldText);
 
-			if (newText.length() > 0 || m_attachment.getEntryCount() > 0) {
-				if (m_change) {
-					m_attachment.setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(
-					m_attachment.setTextMsg(text.getText());
-					m_attachment.saveEx();
+				if (newText.length() > 0 || m_attachment.getEntryCount() > 0) {
+					if (m_change) {
+						m_attachment.setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(
+						m_attachment.setTextMsg(text.getText());
+						m_attachment.saveEx();
+						m_change = false;
+					}
+				} else {
+					m_attachment.delete(true);
+					m_attachment = null;
 				}
-			} else {
-				m_attachment.delete(true);
-				m_attachment = null;
-			}
 
-			dispose();
+				dispose();
+			}
 		} else if (e.getTarget() == bCancel) {
 			//	Cancel
 			dispose();
