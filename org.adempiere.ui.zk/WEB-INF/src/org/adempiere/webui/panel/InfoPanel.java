@@ -206,7 +206,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         infoWindow = MInfoWindow.get(p_keyColumn.replace("_ID", ""), null);
 		addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 		addEventListener(ON_RUN_PROCESS, this);
-				
+		addEventListener(Events.ON_CLOSE, this);
+		
 	}	//	InfoPanel
 
 	private void init()
@@ -1375,7 +1376,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	    			// do nothing when parameter not change and at window mode, or at dialog mode but select non record    			
 	    			onOk();
 	    		}
-        	}else if (event.getName().equals(Events.ON_CANCEL)){
+        	}else if (event.getName().equals(Events.ON_CANCEL) || (event.getTarget().equals(this) && event.getName().equals(Events.ON_CLOSE))){
         		m_cancel = true;
         		dispose(false);
         	}
