@@ -263,6 +263,8 @@
      		</xsd:restriction>
      	</xsd:simpleType>
      </xsd:element>
+     <xsd:element name="Offset" type="xsd:int" maxOccurs="1" minOccurs="0"/>
+     <xsd:element name="Limit" type="xsd:int" maxOccurs="1" minOccurs="0"/>
      <xsd:element name="DataRow" type="tns:DataRow" minOccurs="0" maxOccurs="1"/>
    </xsd:sequence>
    </xsd:complexType>

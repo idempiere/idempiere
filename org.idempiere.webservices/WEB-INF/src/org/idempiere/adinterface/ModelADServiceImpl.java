@@ -1478,6 +1478,9 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			
 	    	POInfo poinfo = POInfo.getPOInfo(ctx, table.getAD_Table_ID());
 	    	int cnt = 0;
+	    	int rowCnt = 0;
+			int offset = modelCRUD.getOffset();
+			int limit = modelCRUD.getLimit();
 	
 	    	PreparedStatement pstmtquery = null;
 			ResultSet rsquery = null;
@@ -1539,6 +1542,9 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				DataSet ds = resp.addNewDataSet();
 				while (rsquery.next ()) {
 					cnt++;
+					if ((offset >= cnt) || (limit > 0 && offset+limit < cnt))
+						continue;
+					rowCnt++;
 					DataRow dr = ds.addNewDataRow();
 					for (int i = 0; i < poinfo.getColumnCount(); i++) {
 			    		String columnName = poinfo.getColumnName(i);
@@ -1560,11 +1566,11 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				rsquery = null; pstmtquery = null;
 			}
 	
-			resp.setSuccess(true);
-	    	resp.setRowCount(cnt);
-	    	resp.setNumRows(cnt);
+			resp.setSuccess(true);			
+	    	resp.setRowCount(rowCnt);
+	    	resp.setNumRows(rowCnt);
 	    	resp.setTotalRows(cnt);
-	    	resp.setStartRow(1);
+	    	resp.setStartRow(offset);
 	
 			return ret;
 		} finally {
