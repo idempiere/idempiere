@@ -317,6 +317,8 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		for (int i = 0; i < lines.length; i++)
 		{
 			MBankStatementLine line = lines[i];
+			if (!line.isActive())
+				continue;
 			total = total.add(line.getStmtAmt());
 			if (line.getDateAcct().before(minDate))
 				minDate = line.getDateAcct(); 
