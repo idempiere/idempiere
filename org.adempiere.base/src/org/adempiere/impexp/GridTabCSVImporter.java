@@ -14,8 +14,8 @@
  *****************************************************************************/
 package org.adempiere.impexp;
 
-import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
 import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTACTION;
+import static org.compiere.model.SystemIDs.REFERENCE_PAYMENTRULE;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.IGridTabImporter;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ProcessUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -93,6 +95,10 @@ public class GridTabCSVImporter implements IGridTabImporter
 	private static CLogger log = CLogger.getCLogger(GridTabCSVImporter.class);
 	
 	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset , String importMode) {		
+		return fileImport(gridTab, childs, filestream, charset, importMode, null);
+	}
+	@Override
+	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset, String importMode, IProcessUI processUI) {
 		ICsvMapReader mapReader = null;
 		File errFile = null;
 		File logFile = null;
@@ -105,7 +111,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 		PO masterRecord = null;
         
 		if(!gridTab.isInsertRecord() && isInsertMode())
-        	throw new AdempiereException("Insert record disabled for Tab");
+			throwAdempiereException("Insert record disabled for Tab");
 	
 		try {
 			String errFileName = FileUtil.getTempMailName("Import_" + gridTab.getTableName(), "_err.csv");
@@ -123,8 +129,9 @@ public class GridTabCSVImporter implements IGridTabImporter
 			for(int idx = 0; idx < header.size(); idx++) {
 				String headName = header.get(idx);
 				
-				if (headName==null)
-					throw new AdempiereException("Header column cannot be empty, Col: " + (idx + 1));
+				if (headName==null) {
+					throwAdempiereException("Header column cannot be empty, Col: " + (idx + 1));
+				}
 				
 				if (headName.equals(ERROR_HEADER) || headName.equals(LOG_HEADER)){
 					header.set(idx, null);
@@ -133,7 +140,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 				}
 				if (headName.indexOf(">") > 0) {
 					if(idx==0){
-					   throw new AdempiereException(Msg.getMsg(Env.getCtx(),"WrongHeader", new Object[] {headName}));
+						throwAdempiereException(Msg.getMsg(Env.getCtx(),"WrongHeader", new Object[] {headName}));
 				    }else if (headName.contains(MTable.getTableName(Env.getCtx(), MLocation.Table_ID)) && locationFields==null){ 
 				       locationFields = getSpecialMColumn(header,MTable.getTableName(Env.getCtx(), MLocation.Table_ID),idx);
 					   for(GridField sField:locationFields){
@@ -151,7 +158,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 					GridField field 	= gridTab.getField(columnName);
 					
 					if (field == null)
-						throw new AdempiereException(Msg.getMsg(Env.getCtx(), "FieldNotFound" , new Object[] {columnName}) );
+						throwAdempiereException(Msg.getMsg(Env.getCtx(), "FieldNotFound" , new Object[] {columnName}) );
 					else if(isKeyColumn && !isThereKey)
 						isThereKey =true;
 					else if (!isThereDocAction &&
@@ -164,7 +171,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 			}	
 			
 			if(isUpdateOrMergeMode() && !isThereKey)
-			    throw new AdempiereException(gridTab.getTableName()+": "+Msg.getMsg(Env.getCtx(), "NoKeyFound"));
+				throwAdempiereException(gridTab.getTableName()+": "+Msg.getMsg(Env.getCtx(), "NoKeyFound"));
 			
 			tabMapIndexes.put(gridTab,indxDetail-1);
 			String  childTableName   = null;
@@ -182,7 +189,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 		    		   if(currentDetailTab!=null){ 
 		    			 //check out key per Tab   
 		   		    	 if(isUpdateOrMergeMode() && !isThereKey){
-		 				    throw new AdempiereException(currentDetailTab.getTableName()+": "+Msg.getMsg(Env.getCtx(), "NoKeyFound"));
+		   		    		throwAdempiereException(currentDetailTab.getTableName()+": "+Msg.getMsg(Env.getCtx(), "NoKeyFound"));
 		   		    	 }else{
 		   		    	    tabMapIndexes.put(currentDetailTab,idx-1); 	
 			    			isThereKey =false; 
@@ -198,7 +205,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 		    	   }
 		    	   
 				   if(currentDetailTab == null) 
-					  throw new AdempiereException(Msg.getMsg(Env.getCtx(),"NoChildTab",new Object[] {childTableName}));
+					   throwAdempiereException(Msg.getMsg(Env.getCtx(),"NoChildTab",new Object[] {childTableName}));
 		    	   
 				   String columnName = detailName;
 				   if (columnName.contains(MTable.getTableName(Env.getCtx(), MLocation.Table_ID)) && locationFields==null){
@@ -215,20 +222,20 @@ public class GridTabCSVImporter implements IGridTabImporter
 					   GridField field = currentDetailTab.getField(columnName);
 					  
 					   if(field == null)
-						  throw new AdempiereException(Msg.getMsg(Env.getCtx(), "FieldNotFound",new Object[] {detailName}));
+						   throwAdempiereException(Msg.getMsg(Env.getCtx(), "FieldNotFound",new Object[] {detailName}));
 					   else if(isKeyColumn && !isThereKey)
 						  isThereKey =true;
 					
 					   readProcArray.add(getProccesorFromColumn(field));  
 				   }				   
 		    	}else
-		    	   throw new AdempiereException(Msg.getMsg(Env.getCtx(),"WrongDetailName",new Object[] {" col("+idx+") ",detailName}));
+		    		throwAdempiereException(Msg.getMsg(Env.getCtx(),"WrongDetailName",new Object[] {" col("+idx+") ",detailName}));
 		    	
 		    }
 		    
 		    if(currentDetailTab!=null){
 		    	if(isUpdateOrMergeMode() && !isThereKey)
-				   throw new AdempiereException(currentDetailTab.getTableName()+": "+Msg.getMsg(Env.getCtx(), "NoKeyFound"));
+		    		throwAdempiereException(currentDetailTab.getTableName()+": "+Msg.getMsg(Env.getCtx(), "NoKeyFound"));
 
 			    tabMapIndexes.put(currentDetailTab,header.size()-1); 	   
 		    }
@@ -254,7 +261,12 @@ public class GridTabCSVImporter implements IGridTabImporter
 			List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
 			List<String> rawData = new ArrayList<String>();
 			// pre-process to check for errors
+			long lastOutput = new Date().getTime();
 			while (true) {
+				if( processUI != null && new Date().getTime()-lastOutput > 1000 /* one second */){
+					processUI.statusUpdate(refreshImportStatus(data.size(), 0));
+					lastOutput = new Date().getTime();
+				}
 				Map<String, Object> map = null;
 				boolean isLineError = false; 
 				StringBuilder errMsg = new StringBuilder();
@@ -315,7 +327,13 @@ public class GridTabCSVImporter implements IGridTabImporter
 				Trx trx = null;
 				String trxName= null;
 				List<String>  rowsTmpResult = new ArrayList<String>();
+				lastOutput = new Date().getTime();
+
 				for (int idx = 0; idx < data.size(); idx++) {
+					if( processUI != null && new Date().getTime()-lastOutput > 1000 /* one second */){
+						processUI.statusUpdate(refreshImportStatus(idx + 1, data.size() + 1));
+						lastOutput = new Date().getTime();
+					}
 					String rawLine = rawData.get(idx);
 					String logMsg = null;
 					StringBuilder rowResult = new StringBuilder();
@@ -371,7 +389,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 										  
 								    	  rowsTmpResult.set(0,rowsTmpResult.get(0).replace(quoteChar + "\n",docResult + quoteChar + "\n")); 
 								      }else {
-								      	 throw new AdempiereException("No Process found for document action.");	  
+								    	  throwAdempiereException("No Process found for document action.");	  
 								      }
 									  
 									  if(isError){
@@ -539,7 +557,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 					rawLine = rawLine + delimiter + quoteChar + rowResult.toString().replaceAll(delimiter, "") + quoteChar + "\n";
 					rowsTmpResult.add(rawLine);
 				}
-					
+
 				if(trx!=null){
 				   if(error){
 					  trx.rollback();	 
@@ -562,24 +580,24 @@ public class GridTabCSVImporter implements IGridTabImporter
 						     
 						     rowsTmpResult.set(0,rowsTmpResult.get(0).replace(quoteChar + "\n",docResult + quoteChar + "\n"));    
 						 }else {
-						    throw new AdempiereException("No Process found for document action.");	  
+							 throwAdempiereException("No Process found for document action.");	  
 						 }
 						 
 						 if(isError){
-							trx.rollback();	 
+							trx.rollback();
 							for(String row:rowsTmpResult){
 								row = row.replaceAll("Updated","RolledBack");
 								row = row.replaceAll("Inserted","RolledBack");
 							    logFileW.write(row);
-							}   
+							}
 						 }else{
-							trx.commit();   
-							for(String row:rowsTmpResult)						   
+							trx.commit();
+							for(String row:rowsTmpResult)
 								logFileW.write(row);
 						 }
 					  }else {
 					     trx.commit();  
-						 for(String row:rowsTmpResult)						   
+						 for(String row:rowsTmpResult)
 							 logFileW.write(row);
 					  }
 					}   
@@ -621,6 +639,26 @@ public class GridTabCSVImporter implements IGridTabImporter
 			return logFile;
 		else
 			return errFile;
+	}
+	
+	private void throwAdempiereException(String msg){
+	    throw new AdempiereException(msg);
+	}
+	
+	private String refreshImportStatus(int currentRecord, int total){
+		int percent = currentRecord * 100;
+		if (total > 0)
+			percent = percent / total;
+		else
+			percent = 0;
+		
+		if( percent == 0 ){
+			Object[] args = new Object[] {currentRecord};
+			return Msg.getMsg(Env.getCtx(), "PreProcessingCVSProgress", args);
+		}else{
+			Object[] args = new Object[] {currentRecord, total, percent};
+			return Msg.getMsg(Env.getCtx(), "PercentProcessingProgress", args);
+		}
 	}
 
 	private String processDocAction(PO document, int AD_Process_ID){

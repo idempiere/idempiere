@@ -133,7 +133,7 @@ public class ImportCSVProcess extends SvrProcess {
 	protected void importFile(String filePath, IGridTabImporter csvImporter, GridTab activeTab, List<GridTab> childTabs) throws Exception {
 		m_file_istream = new FileInputStream(filePath);
 
-		File outFile = csvImporter.fileImport(activeTab, childTabs, m_file_istream, Charset.forName(m_importTemplate.getCharacterSet()), p_ImportMode);
+		File outFile = csvImporter.fileImport(activeTab, childTabs, m_file_istream, Charset.forName(m_importTemplate.getCharacterSet()), p_ImportMode, processUI);
 		// TODO: Potential improvement - traverse the outFile and call addLog with the results
 
 		if (processUI != null)

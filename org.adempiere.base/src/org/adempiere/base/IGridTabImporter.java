@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import org.adempiere.util.IProcessUI;
 import org.compiere.model.GridTab;
 
 /**
@@ -36,6 +37,18 @@ public interface IGridTabImporter {
 	 * @param charset
 	 */
 	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset, String importMode);
+	
+	/**
+	 * export gridTab data to file
+	 * @param gridTab
+	 * @param childs
+	 * @param filestream
+	 * @param charset
+	 * @param importMode
+	 * @param processUI
+	 * @return
+	 */
+	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset, String importMode, IProcessUI processUI);
 
 	/**
 	 * @return file extension
