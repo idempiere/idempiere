@@ -464,4 +464,41 @@ public class FDialog
     	Messagebox.showDialog(s, newTitle, Messagebox.OK, Messagebox.INFORMATION);
         return;
     }
+    
+    
+    /**************************************************************************
+	 *	Ask Question with question icon and (OK) (Cancel) buttons
+	 *
+	 *	@param	WindowNo	Number of Window
+	 *  @param  c           Container (owner)
+	 *	@param	title		Title of the dialog panel
+	 *	@param	AD_Message	Message to be translated
+	 *	@param	msg			Additional clear text message
+	 *
+	 *	@return true, if OK
+	 */        
+    public static boolean ask(int windowNo, Component comp, String title, String adMessage, String msg, final Callback<Boolean> callback)
+    {
+    	Callback<Integer> msgCallback = null;
+    	if (callback != null) 
+    	{
+    		msgCallback = new Callback<Integer>() {
+				@Override
+				public void onCallback(Integer result) {
+					boolean b = result != null && result.intValue() == Messagebox.OK;
+					callback.onCallback(b);
+				}
+			};
+    	}
+    	
+    	StringBuilder out = new StringBuilder();
+		if (adMessage != null && !adMessage.equals(""))
+			out.append(Msg.getMsg(Env.getCtx(), adMessage));
+		if (msg != null && msg.length() > 0)
+			out.append("\n").append(msg);
+		String s = out.toString().replace("\n", "<br>");
+
+        int response = Messagebox.showDialog(s, title, Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, msgCallback, (msgCallback == null));
+        return (response == Messagebox.OK);
+    }
 }
