@@ -62,6 +62,7 @@ import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.model.GridField;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MPInstance;
@@ -110,12 +111,11 @@ import org.zkoss.zul.ext.Sortable;
  */
 public abstract class InfoPanel extends Window implements EventListener<Event>, WTableModelListener, Sortable<Object>, IHelpContext
 {
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6617464791677971237L;
-	
+	private static final long serialVersionUID = 965821837109028155L;
+
 	private final static int DEFAULT_PAGE_SIZE = 100;
 	protected List<Button> btProcessList = new ArrayList<Button>();
 	protected Map<String, WEditor> editorMap = new HashMap<String, WEditor>();
@@ -317,6 +317,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private boolean m_useDatabasePaging = false;
 	private BusyDialog progressWindow;
 	private Listitem m_lastOnSelectItem;
+	protected GridField m_gridfield;
+
 	/**
 	 * false, use saved where clause
 	 * IDEMPIERE-1979
@@ -1858,5 +1860,17 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		} catch (Exception e){}
 	}
 
+	/**
+	 * field call this info panel as search editor
+	 * null in case info window open in stand-alone window (from menu, fav,...) 
+	 * @return
+	 */
+	public GridField getGridfield() {
+		return m_gridfield;
+	}
+
+	public void setGridfield(GridField m_gridfield) {
+		this.m_gridfield = m_gridfield;
+	}
 }	//	Info
 
