@@ -402,6 +402,7 @@ public class AbstractService {
 				
 				firstInd = sql.indexOf('@');
 			}
+			sqlBuilder.append(sql);
 		}
 
 
