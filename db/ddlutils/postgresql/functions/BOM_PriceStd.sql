@@ -20,8 +20,6 @@ BEGIN
 			WHERE b.M_ProductBOM_ID=p.M_Product_ID
 			AND b.M_Product_ID=Product_ID
 			AND b.M_ProductBOM_ID != Product_ID
-			AND p.IsBOM='Y'
-			AND p.IsVerified='Y'
 			AND b.IsActive='Y'
 		LOOP
 			v_ProductPrice := bomPriceStd (bom.M_ProductBOM_ID, PriceList_Version_ID);
