@@ -2053,6 +2053,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		    		adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
 		    		adTabbox.getSelectedGridTab().refreshParentTabs();
 		    		statusBar.setStatusLine(statusLine);
+		    		if( adTabbox.getSelectedDetailADTabpanel() != null && 
+		    				adTabbox.getSelectedDetailADTabpanel().getGridTab() != null )
+		    			adTabbox.getSelectedDetailADTabpanel().getGridTab().dataRefreshAll(true, true);
 		    	}
 				if (dirtyTabpanel != null) {
 					if (dirtyTabpanel == adTabbox.getSelectedDetailADTabpanel())

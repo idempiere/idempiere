@@ -11,8 +11,26 @@ the new webservice will have the following parameters:
 
 Note, if you need to define new datatypes you need to define them in  WEB-INF/xsd/idempiere-schema.xsd
 and generate the idempiere-xmlbeans.jar again with this command:
+
   scomp -out ./WEB-INF/lib/idempiere-xmlbeans.jar ./WEB-INF/xsd/idempiere-schema.xsd
+  
 scomp will generate the corresponding classes to manipulate the xml objects from the messages
+
+To install xmlbeans Git Clone URL: git://git.apache.org/xmlbeans.git
+cd xmlbeans/
+./xbeanenv.sh
+ant
+
+Environment example:
+export XMLBEANS_HOME=/opt/xmlbeans
+export PATH=$PATH:$XMLBEANS_HOME/bin
+export XMLBEANS_LIB=$XMLBEANS_HOME/build/lib
+export JAVA_HOME=/usr/lib/jvm/java-1.7.0...(your path)
+
+Apps:
+ant
+svn
+git
 
 
 The method will be called modelSetDocAction - the model in name indicates that the web service is going to be based on model classes, current web services are based in UI instead of model.

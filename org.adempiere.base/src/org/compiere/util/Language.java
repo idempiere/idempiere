@@ -170,8 +170,6 @@ public class Language implements Serializable
 				StringBuilder msglog = new StringBuilder("Adding Language=").append(language).append(", Country=").append(country).append(", Locale=").append(locale);			
 				log.info (msglog.toString());
 			}
-			StringBuilder msglog = new StringBuilder("Adding Language=").append(language).append(", Country=").append(country).append(", Locale=").append(locale);			
-			log.warning(msglog.toString());
 			if (idxReplace >= 0) {
 				s_languages.set(idxReplace, ll);
 			} else {

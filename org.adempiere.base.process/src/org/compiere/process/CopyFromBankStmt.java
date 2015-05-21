@@ -76,6 +76,8 @@ public class CopyFromBankStmt extends SvrProcess
 
 		for (MBankStatementLine fromLine : from.getLines(false))
 		{
+			if (!fromLine.isActive())
+				continue;
 			if (fromLine.getC_Payment_ID() > 0)
 			{
 				// check if payment is used on another statement

@@ -1362,6 +1362,8 @@ public class DB_Oracle implements AdempiereDatabase
 				}
 				rs = stmt.executeQuery();
 				if (rs.next()) {
+					// reload the record being locked - it could have changed in a different thread - IDEMPIERE-2629
+					po.load(po.get_TrxName());
 					return true;
 				} else {
 					return false;
