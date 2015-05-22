@@ -113,7 +113,7 @@ public class MPriceListVersion extends X_M_PriceList_Version
 	 */
 	public MProductPrice[] getProductPrice (String whereClause)
 	{
-		String localWhereClause = I_M_ProductPrice.COLUMNNAME_M_PriceList_Version_ID+"=?"+whereClause;
+		String localWhereClause = I_M_ProductPrice.COLUMNNAME_M_PriceList_Version_ID+"=?";
 		if (whereClause != null)
 			localWhereClause += " " + whereClause;
 		List<MProductPrice> list = new Query(getCtx(),I_M_ProductPrice.Table_Name,localWhereClause,get_TrxName())
