@@ -153,6 +153,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 		{
 			tree.onInitRender();
 		}
+		@SuppressWarnings("unused")
 		Treeitem movingItem = tree.renderItemByPath(path);		
 		//tree.setSelectedItem(movingItem);
 		//Events.sendEvent(tree, new Event(Events.ON_SELECT, tree));
