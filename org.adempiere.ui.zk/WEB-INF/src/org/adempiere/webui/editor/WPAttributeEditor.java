@@ -174,24 +174,10 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 		//	M_Product.M_AttributeSetInstance_ID = 8418
 		final boolean productWindow = (gridField.getAD_Column_ID() == COLUMN_M_PRODUCT_M_ATTRIBUTESETINSTANCE_ID);		//	HARDCODED
 
-		//	Exclude ability to enter ASI
-		boolean exclude = true;
-
-		if (M_Product_ID != 0)
-		{
-			MProduct product = MProduct.get(Env.getCtx(), M_Product_ID);
-			int M_AttributeSet_ID = product.getM_AttributeSet_ID();
-			if (M_AttributeSet_ID != 0)
-			{
-				MAttributeSet mas = MAttributeSet.get(Env.getCtx(), M_AttributeSet_ID);
-				exclude = mas.excludeEntry(gridField.getAD_Column_ID(), Env.isSOTrx(Env.getCtx(), m_WindowNo));
-			}
-		}
-
 		if (M_ProductBOM_ID != 0)	//	Use BOM Component
 			M_Product_ID = M_ProductBOM_ID;
 		//
-		if (!productWindow && (M_Product_ID == 0 || exclude))
+		if (!productWindow && (M_Product_ID == 0))
 		{
 			getComponent().setText(null);
 			M_AttributeSetInstance_ID = 0;
