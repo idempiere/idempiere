@@ -132,7 +132,7 @@ public class MProductionLine extends X_M_ProductionLine {
 		
 		// create transactions and update stock used in production
 		MStorageOnHand[] storages = MStorageOnHand.getAll( getCtx(), getM_Product_ID(),
-				getM_Locator_ID(), get_TrxName(), true, 120);
+				getM_Locator_ID(), get_TrxName(), false, 0);
 		
 		MProductionLineMA lineMA = null;
 		MTransaction matTrx = null;
@@ -181,6 +181,7 @@ public class MProductionLine extends X_M_ProductionLine {
 						} else {
 							if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Saved transaction for " + toString());
 						}
+						DB.getDatabase().forUpdate(storages[sl], 120);
 						storages[sl].changeQtyOnHand(lineQty, false);
 						if ( !storages[sl].save(get_TrxName()) )  {
 							log.log(Level.SEVERE, "Could not update storage for " + toString());
