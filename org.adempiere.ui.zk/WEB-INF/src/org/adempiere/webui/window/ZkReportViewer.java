@@ -48,6 +48,7 @@ import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.DrillEvent;
 import org.adempiere.webui.event.ZoomEvent;
@@ -91,6 +92,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.ext.render.DynamicMedia;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
@@ -134,10 +136,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3463776496724974142L;
+	private static final long serialVersionUID = 946000686957291327L;
 
 	/** Window No					*/
 	private int                 m_WindowNo = -1;
+	private long prevKeyEventTime = 0;
+	private KeyEvent prevKeyEvent;
 	/**	Print Context				*/
 	private Properties			m_ctx;
 	/**	Setting Values				*/
@@ -203,6 +207,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		init = false;
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
+		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);
 		Env.setContext(re.getCtx(), m_WindowNo, "_WinInfo_IsReportViewer", "Y");
 		m_reportEngine = re;
 		m_AD_Table_ID = re.getPrintFormat().getAD_Table_ID();
@@ -218,8 +223,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		addEventListener(ON_RENDER_REPORT_EVENT, this);
 	}
-	
-	
 
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
@@ -230,6 +233,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				m_ctx = m_reportEngine.getCtx();
 				init();
 				dynInit();
+				SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
 			}
 			catch(Exception e)
 			{
@@ -238,6 +242,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				this.onClose();
 			}
 		}
+	}
+
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		try {
+			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+		} catch (Exception e) {}
 	}
 
 	private void init() {
@@ -735,6 +747,35 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		else if (event.getName().equals(ON_RENDER_REPORT_EVENT))
 		{
 			onRenderReportEvent();
+        } else if (event.getName().equals(Events.ON_CTRL_KEY)) {
+        	KeyEvent keyEvent = (KeyEvent) event;
+        	if (LayoutUtils.isReallyVisible(this)) {
+	        	//filter same key event that is too close
+	        	//firefox fire key event twice when grid is visible
+	        	long time = System.currentTimeMillis();
+	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
+	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
+	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
+	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
+	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
+	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
+	        		if ((time - prevKeyEventTime) <= 300) {
+	        			return;
+	        		}
+	        	}
+	        	this.onCtrlKeyEvent(keyEvent);
+        	}
+		}
+	}
+
+	private void onCtrlKeyEvent(KeyEvent keyEvent) {
+		if (keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58) { // Alt-X
+			if (m_WindowNo > 0) {
+				prevKeyEventTime = System.currentTimeMillis();
+				prevKeyEvent = keyEvent;
+				keyEvent.stopPropagation();
+				SessionManager.getAppDesktop().closeWindow(m_WindowNo);
+			}
 		}
 	}
 

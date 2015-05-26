@@ -67,9 +67,11 @@ import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Borderlayout;
@@ -99,13 +101,13 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class ProcessDialog extends AbstractProcessDialog implements EventListener<Event>, IHelpContext
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6728929130788829223L;
+
 	public static final String ON_INITIAL_FOCUS_EVENT = "onInitialFocus";
 
-	/**
-	 * generate serial version ID
-	 */
-	private static final long serialVersionUID = 3329046204196602797L;
-	
 	private static final String MESSAGE_DIV_STYLE = "max-height: 150pt; overflow: auto; margin: 10px;";	
 	
 	/**	Logger			*/
@@ -127,6 +129,11 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 
 	private Grid southRowPanel = GridFactory.newGridLayout();
 
+	/** Window No					*/
+	private int                 m_WindowNo = -1;
+	private long prevKeyEventTime = 0;
+	private KeyEvent prevKeyEvent;
+
 	/**
 	 * Dialog to start a process/report
 	 * @param ctx
@@ -142,9 +149,9 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	public ProcessDialog (int AD_Process_ID, boolean isSOTrx)
 	{
 		log.info("Process=" + AD_Process_ID );
-		int WindowNo = SessionManager.getAppDesktop().registerWindow(this);
-		this.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, WindowNo);
-		Env.setContext(Env.getCtx(), WindowNo, "IsSOTrx", isSOTrx ? "Y" : "N");
+		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
+		this.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);
+		Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", isSOTrx ? "Y" : "N");
 		try
 		{
 			MProcess process = MProcess.get(Env.getCtx(), AD_Process_ID);
@@ -153,7 +160,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		    	showLastRun = true;
 
 			initComponents();
-			init(Env.getCtx(), WindowNo, AD_Process_ID, null, "70%", false, false);
+			init(Env.getCtx(), m_WindowNo, AD_Process_ID, null, "70%", false, false);
 			querySaved();
 			addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 			addEventListener(ON_INITIAL_FOCUS_EVENT, this);
@@ -176,6 +183,22 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		}
 
 		fSavedName.setValue("");
+	}
+
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		try {
+			SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+		} catch (Exception e) {}
+	}
+
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		try {
+			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+		} catch (Exception e) {}
 	}
 
 	private void initComponents() {
@@ -371,8 +394,37 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 					bOK.focus();
 				}
 			}
+        } else if (event.getName().equals(Events.ON_CTRL_KEY)) {
+        	KeyEvent keyEvent = (KeyEvent) event;
+        	if (LayoutUtils.isReallyVisible(this)) {
+	        	//filter same key event that is too close
+	        	//firefox fire key event twice when grid is visible
+	        	long time = System.currentTimeMillis();
+	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
+	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
+	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
+	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
+	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
+	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
+	        		if ((time - prevKeyEventTime) <= 300) {
+	        			return;
+	        		}
+	        	}
+	        	this.onCtrlKeyEvent(keyEvent);
+        	}
 		} else {
 			super.onEvent(event);
+		}
+	}
+
+	private void onCtrlKeyEvent(KeyEvent keyEvent) {
+		if (keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58) { // Alt-X
+			if (m_WindowNo > 0) {
+				prevKeyEventTime = System.currentTimeMillis();
+				prevKeyEvent = keyEvent;
+				keyEvent.stopPropagation();
+				SessionManager.getAppDesktop().closeWindow(m_WindowNo);
+			}
 		}
 	}
 

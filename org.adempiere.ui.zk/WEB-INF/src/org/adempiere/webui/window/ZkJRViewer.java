@@ -23,11 +23,13 @@ import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -42,9 +44,11 @@ import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Iframe;
@@ -58,7 +62,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1250003381099609830L;
+	private static final long serialVersionUID = -7047317766671393738L;
 
 	private JasperPrint jasperPrint;
 	private Listbox previewType = new Listbox();
@@ -72,6 +76,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	
 	/** Window No					*/
 	private int                 m_WindowNo = -1;
+	private long prevKeyEventTime = 0;
+	private KeyEvent prevKeyEvent;
 
 	private String m_title; // local title - embedded windows clear the title
 	
@@ -81,9 +87,26 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		m_title = title;
 		this.jasperPrint = jasperPrint;
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
+		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);
 		init();
 	}
-	
+
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		try {
+			SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+		} catch (Exception e) {}
+	}
+
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		try {
+			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+		} catch (Exception e) {}
+	}
+
 	private void init() {
 		final boolean isCanExport=MRole.getDefault().isCanExport();
 		defaultType = MSysConfig.getValue(MSysConfig.ZK_REPORT_JASPER_OUTPUT_TYPE, "PDF",
@@ -229,11 +252,40 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	}	//	cmd_sendMail
 
 	public void onEvent(Event event) throws Exception {	
-		if(event.getName().equals(Events.ON_CLICK) || event.getName().equals(Events.ON_SELECT))
+		if (event.getName().equals(Events.ON_CLICK) || event.getName().equals(Events.ON_SELECT)) {
 			actionPerformed(event);
-		
+		} else if (event.getName().equals(Events.ON_CTRL_KEY)) {
+			KeyEvent keyEvent = (KeyEvent) event;
+			if (LayoutUtils.isReallyVisible(this)) {
+				//filter same key event that is too close
+				//firefox fire key event twice when grid is visible
+				long time = System.currentTimeMillis();
+				if (prevKeyEvent != null && prevKeyEventTime > 0 &&
+						prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
+						prevKeyEvent.getTarget() == keyEvent.getTarget() &&
+						prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
+						prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
+						prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
+					if ((time - prevKeyEventTime) <= 300) {
+						return;
+					}
+				}
+				this.onCtrlKeyEvent(keyEvent);
+			}
+		}
 	}
-	
+
+	private void onCtrlKeyEvent(KeyEvent keyEvent) {
+		if (keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58) { // Alt-X
+			if (m_WindowNo > 0) {
+				prevKeyEventTime = System.currentTimeMillis();
+				prevKeyEvent = keyEvent;
+				keyEvent.stopPropagation();
+				SessionManager.getAppDesktop().closeWindow(m_WindowNo);
+			}
+		}
+	}
+
 	private void renderReport() throws Exception {
 		String reportType;
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
