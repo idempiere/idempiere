@@ -575,7 +575,7 @@ public final class Env
 		if (TAB_INFO == TabNo)
 			return s != null ? s : "";
 		//
-		if (s == null)
+		if (Util.isEmpty(s))
 			return getContext(ctx, WindowNo, context, false);
 		return s;
 	}	//	getContext
@@ -617,7 +617,7 @@ public final class Env
 		if (TAB_INFO == TabNo)
 			return s != null ? s : "";
 		//
-		if (s == null && ! onlyTab)
+		if (Util.isEmpty(s) && ! onlyTab)
 			return getContext(ctx, WindowNo, context, onlyWindow);
 		return s;
 	}	//	getContext
@@ -709,7 +709,7 @@ public final class Env
 	public static int getContextAsInt (Properties ctx, int WindowNo, int TabNo, String context)
 	{
 		String s = getContext(ctx, WindowNo, TabNo, context);
-		if (s.length() == 0)
+		if (Util.isEmpty(s))
 			return 0;
 		//
 		try
