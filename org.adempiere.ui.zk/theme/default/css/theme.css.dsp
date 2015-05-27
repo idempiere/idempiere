@@ -434,7 +434,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	margin: 0;
 	padding: 0;
 	border: 0;
-	position: absolute !important;
+	position: relative !important;
 	background-color: #FFFFFF
 }
 
@@ -552,6 +552,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .desktop-home-tabpanel {
+	position:relative;
 	background-color: #FFFFFF;
 	width: 99% !important;
 }
@@ -745,7 +746,6 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 
 .adwindow-layout {
-	position:absolute; 
 	border: none;
 	width: 100%;
 	height: 100%;
