@@ -53,6 +53,7 @@ import org.compiere.model.MPInstancePara;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Component;
@@ -504,9 +505,20 @@ public class ProcessParameterPanel extends Panel implements
 					}
 					else if ( !Env.ZERO.equals(para.getP_Number()) || !Env.ZERO.equals(para.getP_Number_To()) )
 					{
-						editor.setValue(para.getP_Number());
-						if (editor2 != null)
-							editor2.setValue(para.getP_Number_To());
+						if (DisplayType.isID(para.getDisplayType())) {
+							editor.setValue(para.getP_Number().intValue());
+							if (editor2 != null)
+								editor2.setValue(para.getP_Number_To().intValue());
+						} else {
+							editor.setValue(para.getP_Number());
+							if (editor2 != null)
+								editor2.setValue(para.getP_Number_To());
+						}
+					}
+					if (editor.getValue() != null) {
+	            		ValueChangeEvent changeEvent = new ValueChangeEvent(editor, editor.getColumnName(), editor.getValue(), null);
+	            		valueChange(changeEvent);
+	            		// Note that the second editor2 in ranges has no event verification
 					}
 
 					log.fine(para.toString());
