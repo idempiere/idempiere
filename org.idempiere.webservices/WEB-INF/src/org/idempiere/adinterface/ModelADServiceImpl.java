@@ -32,7 +32,6 @@ package org.idempiere.adinterface;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
@@ -170,6 +169,8 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	public StandardResponseDocument setDocAction(ModelSetDocActionRequestDocument req) {
 		boolean connected = getCompiereService().isConnected();
 		
+		boolean manageTrx = this.manageTrx;
+		Trx trx=null;
 		try {
 			if (!connected)
 				getCompiereService().connect();
@@ -211,7 +212,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				manageTrx = true;
 			}
 	
-			Trx trx = Trx.get(trxName, true);
+			trx = Trx.get(trxName, true);
 			
 			Map<String, Object> requestCtx = getRequestCtx();
 	
@@ -298,6 +299,9 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			
 			return ret;
 		} finally {
+			if (manageTrx && trx != null)
+				trx.close();
+			
 			if (!connected)
 				getCompiereService().disconnect();
 		}
@@ -1413,6 +1417,8 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	public WindowTabDataDocument queryData(ModelCRUDRequestDocument req) {
 		boolean connected = getCompiereService().isConnected();
 		
+		boolean manageTrx = this.manageTrx;
+		Trx trx=null;
 		try {
 			if (!connected)
 				getCompiereService().connect();
@@ -1432,10 +1438,10 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	
 	    	// Validate parameters vs service type
 			validateCRUD(modelCRUD);
-	
+			
 	    	Properties ctx = m_cs.getCtx();
 	    	String tableName = modelCRUD.getTableName();
-	    	
+	    	Map<String, Object> reqCtx = getRequestCtx();
 	    	MWebServiceType  m_webservicetype = getWebServiceType();
 	    	// get the PO for the tablename and record ID
 	    	MTable table = MTable.get(ctx, tableName);
@@ -1447,12 +1453,42 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	
 			int roleid = reqlogin.getRoleID();
 			MRole role = new MRole(ctx, roleid, null);
-	
-	    	String sqlquery = "SELECT * FROM " + tableName;
-			sqlquery = role.addAccessSQL(sqlquery, tableName, true, true);
+			
+			// start a trx
+			String trxName = localTrxName;
+
+			if (trxName == null) {
+				trxName = Trx.createTrxName("ws_modelQueryData");
+				manageTrx = true;
+			}
+			trx = Trx.get(trxName, true);
+			
+	    	StringBuilder sqlBuilder = new StringBuilder(role.addAccessSQL("SELECT * FROM " + tableName, tableName, true, true));
+			
+			ArrayList<Object> sqlParaList = new ArrayList<Object>();
+			PO holderPo = table.getPO(0, trxName);
+			POInfo poinfo = POInfo.getPOInfo(ctx, table.getAD_Table_ID());
 			
 			if (modelCRUD.getDataRow() != null)
 			{
+				DataRow dr = modelCRUD.getDataRow();
+				DataField fields[] = dr.getFieldArray();
+				StandardResponseDocument stdRet = StandardResponseDocument.Factory.newInstance();
+				StandardResponse stdResp = stdRet.addNewStandardResponse();
+		
+				StandardResponseDocument retResp = invokeWSValidator(m_webservicetype, IWSValidator.TIMING_BEFORE_PARSE, holderPo, fields, trx,
+						reqCtx, stdResp, stdRet);
+				if (retResp != null){
+					throw new IdempiereServiceFault(retResp.getStandardResponse().getError(), new QName("queryData"));
+				}
+		
+				retResp = scanFields(fields, m_webservicetype, holderPo, poinfo, trx, stdResp, stdRet);
+				
+				if (retResp != null){
+					throw new IdempiereServiceFault(retResp.getStandardResponse().getError(), new QName("queryData"));
+				}
+		
+				
 				for (DataField field : modelCRUD.getDataRow().getFieldArray()) {
 		    		if (m_webservicetype.isInputColumnNameAllowed(field.getColumn())) {
 		    			
@@ -1461,11 +1497,14 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		    			I_AD_Column col = inputField.getAD_Column();		    			
 		    			String sqlType = DisplayType.getSQLDataType(col.getAD_Reference_ID(), col.getColumnName(), col.getFieldLength());		    					
 		    			if(sqlType.contains("CHAR"))
-		    		        sqlquery += " AND " + field.getColumn() + " LIKE ?";
+		    				sqlBuilder.append(" AND ").append(field.getColumn()).append(" LIKE ?");
 		    			else
-		    				sqlquery += " AND " + field.getColumn() + "=?";
+		    				sqlBuilder.append(" AND ").append(field.getColumn()).append("=?");
+		    			
+		    			sqlParaList.add(holderPo.get_Value(field.getColumn()));
 				    	// End Jan Thielemann Solution for query using the sentence like		    			
-		    		} else {
+		    		}else if(m_webservicetype.getFieldInput(field.getColumn())==null){
+		    			//If not even ctx variable column
 						throw new IdempiereServiceFault("Web service type "
 								+ m_webservicetype.getValue() + ": input column "
 								+ field.getColumn() + " not allowed", new QName("queryData"));
@@ -1473,10 +1512,11 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				}
 			}
 			
-			if (modelCRUD.getFilter() != null && modelCRUD.getFilter().length() > 0)
-				sqlquery += " AND " + modelCRUD.getFilter();
+			if (modelCRUD.getFilter() != null && modelCRUD.getFilter().length() > 0){
+				String sql = parseSQL(" WHERE " + modelCRUD.getFilter(), sqlParaList, holderPo, poinfo, reqCtx);
+				sqlBuilder.append(" AND ").append(sql.substring(6));
+			}
 			
-	    	POInfo poinfo = POInfo.getPOInfo(ctx, table.getAD_Table_ID());
 	    	int cnt = 0;
 	    	int rowCnt = 0;
 			int offset = modelCRUD.getOffset();
@@ -1486,58 +1526,10 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			ResultSet rsquery = null;
 			try
 			{
-				pstmtquery = DB.prepareStatement (sqlquery, localTrxName);
-				int p = 1;
-				if (modelCRUD.getDataRow() != null)
-				{
-					for (DataField field : modelCRUD.getDataRow().getFieldArray()) {
-		    			int idx = poinfo.getColumnIndex(field.getColumn());
-		    			Class<?> c = poinfo.getColumnClass(idx);
-		    			if (c == Integer.class)
-		    			{
-		    				int value = 0;
-		    				if (Util.isEmpty(field.getVal()) && !Util.isEmpty(field.getLval()))
-		    				{
-		    					Lookup lookup = null;
-		    					int idxcol = poinfo.getColumnIndex(field.getColumn());
-		    					X_WS_WebServiceFieldInput fieldInput = m_webservicetype.getFieldInput(field.getColumn());
-		    					if(fieldInput.getAD_Reference_ID() > 0 && fieldInput.getAD_Reference_Value_ID()>0)
-		    					{
-		    						try{
-		    							lookup = MLookupFactory.get(m_cs.getCtx(),0,poinfo.getAD_Column_ID(poinfo.getColumnName(idxcol)),fieldInput.getAD_Reference_ID(),Env.getLanguage(m_cs.getCtx()),poinfo.getColumnName(idxcol),fieldInput.getAD_Reference_Value_ID(),false,null); 
-		    						}catch (Exception e) {
-		    							throw new IdempiereServiceFault("Exception in resolving overridden lookup ", new QName(
-		    									"LookupResolutionFailed"));
-		    						}
-		    					}
-		    					else
-		    					{
-		    						lookup = poinfo.getColumnLookup(idxcol);
-		    					}
-		    					
-		    					if (lookup == null) {
-		    						throw new IdempiereServiceFault(field.getColumn() + " is not lookup column. Pass Value in val element ", new QName(
-		    								"LookupResolutionFailed"));
-		    					}
-		    					
-		    					String sql = ADLookup.getDirectAccessSQL(lookup, field.getLval().toUpperCase());
-		    					int id = DB.getSQLValue(localTrxName, sql); 
-		    					if (id > 0)
-		    						value = id;
-		    				}
-		    				else
-		    				{
-		    					value = Integer.valueOf(field.getVal());
-		    				}
-			        		pstmtquery.setInt(p++, value);
-		    			}
-		    			else if (c == Timestamp.class)
-			        		pstmtquery.setTimestamp(p++, Timestamp.valueOf(field.getVal()));
-		    			else if (c == Boolean.class || c == String.class)
-			        		pstmtquery.setString(p++, field.getVal());
-					}
-				}
-				rsquery = pstmtquery.executeQuery ();
+				pstmtquery = DB.prepareStatement (sqlBuilder.toString(), trxName);
+				DB.setParameters(pstmtquery, sqlParaList);
+				
+				rsquery = pstmtquery.executeQuery();
 				// Angelo Dabala' (genied) must create just one DataSet, moved outside of the while loop
 				DataSet ds = resp.addNewDataSet();
 				while (rsquery.next ()) {
@@ -1559,6 +1551,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			catch (Exception e)
 			{
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+				throw new IdempiereServiceFault(e);
 			}
 			finally
 			{
@@ -1574,6 +1567,9 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	
 			return ret;
 		} finally {
+			if (manageTrx && trx != null)
+				trx.close();
+			
 			if (!connected)
 				getCompiereService().disconnect();
 		}

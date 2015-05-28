@@ -70,6 +70,9 @@ public class ZoomCommand implements AuService {
 		MQuery query = new MQuery(tableName);
 		query.addRestriction(columnName, MQuery.EQUAL, code);
 		query.setRecordCount(1);
+		query.setZoomTableName(tableName);
+		query.setZoomColumnName(columnName);
+		query.setZoomValue(code);
 
 		Events.postEvent(new ZoomEvent(comp, query));
 

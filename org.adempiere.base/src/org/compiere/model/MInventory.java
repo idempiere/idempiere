@@ -625,7 +625,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 			{
 				//auto balance negative on hand
 				MStorageOnHand[] storages = MStorageOnHand.getWarehouseNegative(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
-						null, MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), line.getM_Locator_ID(), get_TrxName(), true);
+						null, MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), line.getM_Locator_ID(), get_TrxName(), false);
 				for (MStorageOnHand storage : storages)
 				{
 					if (storage.getQtyOnHand().signum() < 0)
@@ -656,7 +656,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 			{
 				String MMPolicy = product.getMMPolicy();
 				MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
-						null, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, line.getM_Locator_ID(), get_TrxName(), true);
+						null, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, line.getM_Locator_ID(), get_TrxName(), false);
 
 				BigDecimal qtyToDeliver = qtyDiff.negate();
 				for (MStorageOnHand storage: storages)
