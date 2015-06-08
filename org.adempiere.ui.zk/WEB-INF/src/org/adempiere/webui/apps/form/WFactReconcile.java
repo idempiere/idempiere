@@ -94,7 +94,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	private Label labelReconciled = new Label();
 	private Checkbox isReconciled = new Checkbox();
 	private Label labelAccount = new Label();
-	private Listbox fieldAccount = null;
+	private Listbox fieldAccount = new Listbox();
 	private Label labelBPartner = new Label();
 	private WSearchEditor fieldBPartner = null;
 	
@@ -252,6 +252,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		fieldAcctSchema = new WTableDirEditor("C_AcctSchema_ID", true, false, true, lookupAS);
 		fieldAcctSchema.setValue(MClient.get(Env.getCtx()).getAcctSchema().getC_AcctSchema_ID());
 		fieldAcctSchema.addValueChangeListener(this);
+		m_C_AcctSchema_ID = (Integer)fieldAcctSchema.getValue();
 		
 		// Organization
 		AD_Column_ID = FactReconcile.col_AD_Org_ID; //C_Period.AD_Org_ID (needed to allow org 0)
@@ -273,17 +274,25 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		fieldProduct = new WSearchEditor("M_Product_ID", false, false, true, lookupProduct);
 		
 		//  Account
+		loadAccounts();
+	}
+	
+	private void loadAccounts(){
+		fieldAccount.removeAllItems();
 		Vector<KeyNamePair> vector = getAccount();
-		KeyNamePair[] listAccount = new KeyNamePair[vector.size()];
 		for(int i=0;i<vector.size();i++)
-			listAccount[i] = vector.get(i);
-		fieldAccount = new Listbox(listAccount);
+			fieldAccount.addItem(vector.get(i));
 		fieldAccount.setMold("select");
-		fieldAccount.setSelectedIndex(0);
-				
+		fieldAccount.setSelectedIndex(0);	
 	}
 	
 	public void loadData(){
+		
+		if(fieldAcctSchema.getValue()!=null)
+			m_C_AcctSchema_ID = (Integer)fieldAcctSchema.getValue();
+		else
+			m_C_AcctSchema_ID = 0;
+		
 		ListItem listAccount = fieldAccount.getSelectedItem();
 		int Account_ID = 0;
 		if(listAccount!=null){
@@ -299,11 +308,6 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 			m_AD_Org_ID = (Integer)fieldOrg.getValue();
 		else
 			m_AD_Org_ID = 0;
-			
-		if(fieldAcctSchema.getValue()!=null)
-			m_C_AcctSchema_ID = (Integer)fieldAcctSchema.getValue();
-		else
-			m_C_AcctSchema_ID = 0;
 
 		m_isReconciled = isReconciled.isChecked();
 		
@@ -375,8 +379,17 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	
 	@Override
 	public void valueChange(ValueChangeEvent evt) {
-		// TODO Auto-generated method stub
+		String name = evt.getPropertyName();
+		Object value = evt.getNewValue();
+		if (log.isLoggable(Level.CONFIG)) log.config(name + "=" + value);
 		
+		if (value == null)
+			return;
+		
+		if (name.equals("C_AcctSchema_ID")) {
+			m_C_AcctSchema_ID = ((Integer)value).intValue();
+			loadAccounts();
+		}
 	}
 
 	@Override
