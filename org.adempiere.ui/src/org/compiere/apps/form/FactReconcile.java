@@ -253,4 +253,41 @@ public class FactReconcile {
 		rec.setMatchCode(null);
 		return rec.save();
 	}
+	
+	protected Vector<KeyNamePair> getAccount(){
+		Vector<KeyNamePair> vector = new Vector<KeyNamePair>();
+		String sql = MRole.getDefault().addAccessSQL(
+			"SELECT ev.C_ElementValue_ID, ev.Value || ' ' || ev.Name FROM C_ElementValue ev", "ev",
+			MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO)
+			+ "AND ev.IsActive='Y' AND ev.IsSummary='N' " 
+			+ "AND EXISTS (SELECT 1 FROM C_AcctSchema_Element ase "
+			+ "WHERE ase.C_Element_ID=ev.C_Element_ID AND ase.ElementType='AC' "
+			+ "AND ase.C_AcctSchema_ID=" + m_C_AcctSchema_ID + " AND ase.AD_Client_ID=" + m_AD_Client_ID + ") "
+			+ "ORDER BY 2";
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
+			while (rs.next())
+			{
+				vector.add(new KeyNamePair(rs.getInt(1), rs.getString(2)));
+			}
+		}
+		catch (SQLException e)
+		{
+			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}
+		
+		return vector;
+	}
+	
 }
