@@ -48,7 +48,7 @@ public class ResetLockedAccount extends SvrProcess {
 			if (!user.isLocked())
 				throw new AdempiereException(Msg.getMsg(getCtx(), "UserIsNotLocked", new Object[] {user.getName()}));
 
-			StringBuilder sql = new StringBuilder ("UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, Updated=SysDate ")
+			StringBuilder sql = new StringBuilder ("UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, DateLastLogin=NULL, Updated=SysDate ")
 					.append(" WHERE IsLocked='Y' AND AD_Client_ID = ? ")
 					.append(" AND DateAccountLocked IS NOT NULL ")
 					.append(" AND AD_User_ID = " + user.getAD_User_ID());
@@ -64,7 +64,7 @@ public class ResetLockedAccount extends SvrProcess {
 			int MAX_ACCOUNT_LOCK_MINUTES = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_ACCOUNT_LOCK_MINUTES, 0);
 			int MAX_INACTIVE_PERIOD = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_INACTIVE_PERIOD_DAY, 0);
 			
-			StringBuilder sql = new StringBuilder("UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, Updated=SysDate ")
+			StringBuilder sql = new StringBuilder("UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, DateLastLogin=NULL, Updated=SysDate ")
 					.append(" WHERE IsLocked='Y' AND AD_Client_ID = ? ")
 					.append(" AND DateAccountLocked IS NOT NULL");
 			

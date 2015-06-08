@@ -424,7 +424,6 @@ public class AbstractService {
 		int indDot = varName.indexOf(".");
 		if (indDot == -1) {
 			if (varName.charAt(0) == '#') {
-				varName = varName.substring(1);
 				val = getCompiereService().getCtx().getProperty(varName);
 			} else {
 				// If there is no table name, then it should be

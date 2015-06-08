@@ -448,8 +448,6 @@ public class ProcessParameterPanel extends Panel implements
 			for ( int i = 0; i<params.length; i++)
 			{
 				MPInstancePara para = params[i];
-				para.getParameterName();
-
 				if ( mField.getColumnName().equals(para.getParameterName()) )
 				{
 
@@ -479,7 +477,7 @@ public class ProcessParameterPanel extends Panel implements
 						}
 					}
 					if (editor.getValue() != null) {
-	            		ValueChangeEvent changeEvent = new ValueChangeEvent(editor, editor.getColumnName(), editor.getValue(), null);
+	            		ValueChangeEvent changeEvent = new ValueChangeEvent(editor, editor.getColumnName(), null, editor.getValue());
 	            		valueChange(changeEvent);
 	            		// Note that the second editor2 in ranges has no event verification
 					}
