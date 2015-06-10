@@ -76,6 +76,11 @@ public class ValuePreference extends Window implements EventListener<Event>
 	 */
 	public static void start (Component ref, GridField mField, Object aValue)
 	{
+		if (aValue != null && aValue instanceof Boolean)
+			if ((Boolean) aValue)
+				aValue = 'Y';
+			else
+				aValue = 'N';
 		start (ref, mField, aValue, null);
 	}   //  start
 
