@@ -30,7 +30,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8646802850122507899L;
+	private static final long serialVersionUID = -2649259510341856418L;
 
 	/**
 	 * 	Get Storage Info
@@ -203,7 +203,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	public static BigDecimal getQtyAvailable (int M_Warehouse_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID, String trxName)
 	{
-		BigDecimal qtyOnHand = MStorageOnHand.getQtyOnHand(M_Product_ID, M_Warehouse_ID, M_AttributeSetInstance_ID, trxName);
+		BigDecimal qtyOnHand = MStorageOnHand.getQtyOnHandForReservation(M_Product_ID, M_Warehouse_ID, M_AttributeSetInstance_ID, trxName);
 		BigDecimal qtyReserved = MStorageReservation.getQty(M_Product_ID, M_Warehouse_ID, M_AttributeSetInstance_ID, true, trxName);
 		BigDecimal retValue = qtyOnHand.subtract(qtyReserved);
 		return retValue;

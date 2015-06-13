@@ -18,15 +18,11 @@ package org.compiere.model;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
@@ -74,7 +70,7 @@ public class MOrder extends X_C_Order implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5424713436299981736L;
+	private static final long serialVersionUID = 6669447827539872218L;
 
 	/**
 	 * 	Create new Order by copying
@@ -2835,13 +2831,6 @@ public class MOrder extends X_C_Order implements DocAction
 			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
 
-	private static final String OrderLinesToAllocate = "select C_OrderLine.* from C_OrderLine " + 
-		   "JOIN C_Order ON C_OrderLine.C_Order_ID=C_Order.C_Order_ID " + 
-		   "JOIN M_Product ON C_OrderLine.M_Product_ID=M_Product.M_Product_ID " + 
-		   "where C_Order.IsSOTrx='Y' AND C_Order.DocStatus='CO' AND QtyAllocated<(QtyOrdered-QtyDelivered) " + 
-		   "AND M_Product.M_Product_ID=? " + 
-		   "order by PriorityRule, C_OrderLine.Created ";
-	
 	/**
 	 * Finds all order lines that contains not yet delivered physical items of a specific product.
 	 * 
@@ -2850,7 +2839,14 @@ public class MOrder extends X_C_Order implements DocAction
 	 * @return  Order lines to allocate products to.
 	 * @throws SQLException
 	 */
+	/*  commenting out wrong unused function - column qtyallocated does not exist
 	public static List<MOrderLine> getOrderLinesToAllocate(Connection conn, int productId, String trxName) throws SQLException {
+		final String OrderLinesToAllocate = "select C_OrderLine.* from C_OrderLine " + 
+				   "JOIN C_Order ON C_OrderLine.C_Order_ID=C_Order.C_Order_ID " + 
+				   "JOIN M_Product ON C_OrderLine.M_Product_ID=M_Product.M_Product_ID " + 
+				   "where C_Order.IsSOTrx='Y' AND C_Order.DocStatus='CO' AND QtyAllocated<(QtyOrdered-QtyDelivered) " + 
+				   "AND M_Product.M_Product_ID=? " + 
+				   "order by PriorityRule, C_OrderLine.Created ";
 		List<MOrderLine> result = new Vector<MOrderLine>();
 		Properties ctx = Env.getCtx();
 		MOrderLine line;
@@ -2872,6 +2868,7 @@ public class MOrder extends X_C_Order implements DocAction
 		}
 		return(result);
 	}
+	*/
 	
 	/**
 	 * Finds all products that can be allocated. A product can be allocated if there are more items 
@@ -2882,6 +2879,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 * @return
 	 * @throws 	SQLException
 	 */
+	/*  commenting out wrong unused function - column qtyallocated does not exist
 	public static List<StockInfo> getProductsToAllocate(Connection conn, int WarehouseID) throws SQLException {
 		
 		List<StockInfo> result = new Vector<StockInfo>();
@@ -2934,6 +2932,7 @@ public class MOrder extends X_C_Order implements DocAction
 		public StockInfo() {}
 		
 	}
+	*/
 	
 	/**
 	 * Set process message

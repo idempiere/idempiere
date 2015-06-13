@@ -565,6 +565,18 @@ public class MInOutLine extends X_M_InOutLine
 						locator,
 						getLine());
 			}
+
+	        // IDEMPIERE-2668
+	        if (getParent().isSOTrx()) {
+	        	if (locator.getM_LocatorType_ID() > 0) {
+	        		MLocatorType lt = MLocatorType.get(getCtx(), locator.getM_LocatorType_ID());
+	        		if (! lt.isAvailableForShipping()) {
+	    				log.saveError("Error", Msg.translate(getCtx(), "LocatorNotAvailableForShipping"));
+	    				return false;
+	        		}
+	        	}
+	        }
+	        
 		}
 
 	//	if (getC_Charge_ID() == 0 && getM_Product_ID() == 0)

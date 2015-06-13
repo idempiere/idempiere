@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION BOMQtyOnHand (in product_id numeric, in warehouse_id numeric, in locator_id numeric) RETURNS numeric AS
+CREATE OR REPLACE FUNCTION BOMQtyOnHandForReservation (in product_id numeric, in warehouse_id numeric, in locator_id numeric) RETURNS numeric AS
 $BODY$
 DECLARE
 	myWarehouse_ID		numeric;
@@ -47,7 +47,9 @@ BEGIN
 		  INTO	v_ProductQty
 		FROM 	M_Storageonhand s
 		  JOIN M_Locator l ON (s.M_Locator_ID=l.M_Locator_ID)
-		WHERE s.M_Product_ID=Product_ID AND l.M_Warehouse_ID=myWarehouse_ID;
+		  LEFT JOIN M_LocatorType lt ON (l.M_LocatorType_ID=lt.M_LocatorType_ID)
+		WHERE s.M_Product_ID=Product_ID AND l.M_Warehouse_ID=myWarehouse_ID
+		  AND COALESCE(lt.IsAvailableForReservation,'Y')='Y';
 		--
 		RETURN v_ProductQty;
 	END IF;
@@ -70,7 +72,9 @@ BEGIN
 			  INTO	v_ProductQty
 			FROM 	M_Storageonhand s
 			  JOIN M_Locator l ON (s.M_Locator_ID=l.M_Locator_ID)
-			WHERE s.M_Product_ID=bom.M_ProductBOM_ID AND l.M_Warehouse_ID=myWarehouse_ID;
+		  	  LEFT JOIN M_LocatorType lt ON (l.M_LocatorType_ID=lt.M_LocatorType_ID)
+			WHERE s.M_Product_ID=bom.M_ProductBOM_ID AND l.M_Warehouse_ID=myWarehouse_ID
+		  	  AND COALESCE(lt.IsAvailableForReservation,'Y')='Y';
 			--	Get Rounding Precision
 			SELECT 	COALESCE(MAX(u.StdPrecision), 0)
 			  INTO	v_StdPrecision
@@ -84,7 +88,7 @@ BEGIN
 			END IF;
 		--	Another BOM
 		ELSIF (bom.IsBOM = 'Y') THEN
-			v_ProductQty := Bomqtyonhand (bom.M_ProductBOM_ID, myWarehouse_ID, Locator_ID);
+			v_ProductQty := BOMQtyOnHandForReservation (bom.M_ProductBOM_ID, myWarehouse_ID, Locator_ID);
 			--	How much can we make overall
 			IF (v_ProductQty < v_Quantity) THEN
 				v_Quantity := v_ProductQty;

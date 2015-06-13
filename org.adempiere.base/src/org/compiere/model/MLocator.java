@@ -39,8 +39,7 @@ public class MLocator extends X_M_Locator
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6019655556196171287L;
-
+	private static final long serialVersionUID = 3649134803161895263L;
 
 	/**
 	 * 	Get oldest Default Locator of warehouse with locator
@@ -118,7 +117,12 @@ public class MLocator extends X_M_Locator
 	}	//	getDefault
 	
 	
-	/**
+	 public static MLocator get (Properties ctx, int M_Warehouse_ID, String Value,
+			 String X, String Y, String Z) {
+		 return get (ctx, M_Warehouse_ID, Value, X, Y, Z, 0);
+	 }
+
+	 /**
 	 * 	Get the Locator with the combination or create new one
 	 *	@param ctx Context
 	 *	@param M_Warehouse_ID warehouse
@@ -129,7 +133,7 @@ public class MLocator extends X_M_Locator
 	 * 	@return locator
 	 */
 	 public static MLocator get (Properties ctx, int M_Warehouse_ID, String Value,
-		 String X, String Y, String Z)
+		 String X, String Y, String Z, int M_LocatorType_ID)
 	 {
 		MLocator retValue = null;
 		String sql = "SELECT * FROM M_Locator WHERE IsActive = 'Y' AND M_Warehouse_ID=? AND X=? AND Y=? AND Z=?";
@@ -160,6 +164,7 @@ public class MLocator extends X_M_Locator
 			MWarehouse wh = MWarehouse.get (ctx, M_Warehouse_ID);
 			retValue = new MLocator (wh, Value);
 			retValue.setXYZ(X, Y, Z);
+			retValue.setM_LocatorType_ID(M_LocatorType_ID);
 			retValue.saveEx();
 		}
 		return retValue;

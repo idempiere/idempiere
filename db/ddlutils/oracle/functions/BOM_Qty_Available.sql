@@ -15,7 +15,7 @@ RETURN NUMBER
  */
 AS
 BEGIN
-	RETURN bomQtyOnHand(Product_ID, Warehouse_ID, Locator_ID)
+	RETURN bomQtyOnHandForReservation(Product_ID, Warehouse_ID, Locator_ID)
 		- bomQtyReserved(Product_ID, Warehouse_ID, Locator_ID);
 END bomQtyAvailable;
 /

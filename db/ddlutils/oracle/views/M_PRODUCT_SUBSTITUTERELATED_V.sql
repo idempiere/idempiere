@@ -10,7 +10,7 @@ SELECT s.ad_client_id,
 		s.substitute_id, 
 		'S' AS rowtype,
 		mp.name, 
-		sum(ms.qtyonhand - ms.qtyreserved) AS qtyavailable, 
+		sum(CASE WHEN COALESCE(lt.IsAvailableForReservation,'Y')='Y' THEN ms.qtyonhand ELSE 0 END - ms.qtyreserved) AS qtyavailable, 
 		sum(ms.qtyonhand) AS qtyonhand, 
 		sum(ms.qtyreserved) AS qtyreserved,
 		currencyRound(MAX(mpr.pricestd),mpl.C_Currency_ID,'N') AS pricestd, 
@@ -21,6 +21,7 @@ SELECT s.ad_client_id,
       JOIN m_storage ms ON ms.m_product_id = s.substitute_id
    JOIN m_product mp ON ms.m_product_id = mp.m_product_id
    JOIN m_locator ml ON ms.m_locator_id = ml.m_locator_id
+   LEFT JOIN M_LOCATORTYPE lt ON ml.m_locatortype_id = lt.m_locatortype_id
    JOIN m_warehouse mw ON ml.m_warehouse_id = mw.m_warehouse_id
    JOIN m_productprice mpr ON ms.m_product_id = mpr.m_product_id 
    JOIN m_pricelist_version mplv ON mplv.m_pricelist_version_id = mpr.m_pricelist_version_id 
@@ -52,7 +53,7 @@ SELECT s.ad_client_id,
 			r.relatedproduct_id AS substitute_id, 
 			'R' AS rowtype,  
 			mp.name, 
-			sum(ms.qtyonhand - ms.qtyreserved) AS qtyavailable, 
+			sum(CASE WHEN COALESCE(lt.IsAvailableForReservation,'Y')='Y' THEN ms.qtyonhand ELSE 0 END - ms.qtyreserved) AS qtyavailable, 
 			sum(ms.qtyonhand) AS qtyonhand, 
 			sum(ms.qtyreserved) AS qtyreserved, 
 			currencyRound(MAX(mpr.pricestd),mpl.C_Currency_ID,'N') AS pricestd, 
@@ -63,6 +64,7 @@ SELECT s.ad_client_id,
       JOIN m_storage ms ON ms.m_product_id = r.relatedproduct_id
    JOIN m_product mp ON ms.m_product_id = mp.m_product_id
    JOIN m_locator ml ON ms.m_locator_id = ml.m_locator_id
+   LEFT JOIN M_LOCATORTYPE lt ON ml.m_locatortype_id = lt.m_locatortype_id
    JOIN m_warehouse mw ON ml.m_warehouse_id = mw.m_warehouse_id
    JOIN m_productprice mpr ON ms.m_product_id = mpr.m_product_id 
    JOIN m_pricelist_version mplv ON mplv.m_pricelist_version_id = mpr.m_pricelist_version_id 

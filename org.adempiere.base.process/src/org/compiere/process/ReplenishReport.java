@@ -28,6 +28,8 @@ import org.adempiere.base.Core;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MDocType;
+import org.compiere.model.MLocator;
+import org.compiere.model.MLocatorType;
 import org.compiere.model.MMovement;
 import org.compiere.model.MMovementLine;
 import org.compiere.model.MOrder;
@@ -429,6 +431,9 @@ public class ReplenishReport extends SvrProcess
 				order.setM_Warehouse_ID(wh.getM_Warehouse_ID());
 				if (!order.save())
 					return;
+				addBufferLog(order.getC_Order_ID(), order.getDateOrdered(), null,
+						Msg.parseTranslation(getCtx(), "@C_Order_ID@ @Created@"),
+						MOrder.Table_ID, order.getC_Order_ID());
 				if (log.isLoggable(Level.FINE)) log.fine(order.toString());
 				noOrders++;
 				info.append(" - "); 
@@ -473,6 +478,9 @@ public class ReplenishReport extends SvrProcess
 				requisition.setM_Warehouse_ID(wh.getM_Warehouse_ID());
 				if (!requisition.save())
 					return;
+				addBufferLog(requisition.getM_Requisition_ID(), requisition.getDateDoc(), null,
+						Msg.parseTranslation(getCtx(), "@M_Requisition_ID@ @Created@"),
+						MRequisition.Table_ID, requisition.getM_Requisition_ID());
 				if (log.isLoggable(Level.FINE)) log.fine(requisition.toString());
 				noReqs++;
 				info.append(" - "); 
@@ -530,6 +538,9 @@ public class ReplenishReport extends SvrProcess
 				move.setAD_Org_ID(whSource.getAD_Org_ID());
 				if (!move.save())
 					return;
+				addBufferLog(move.getM_Movement_ID(), move.getMovementDate(), null,
+						Msg.parseTranslation(getCtx(), "@M_Movement_ID@ @Created@"),
+						MMovement.Table_ID, move.getM_Movement_ID());
 				if (log.isLoggable(Level.FINE)) log.fine(move.toString());
 				noMoves++;
 				info.append(" - ").append(move.getDocumentNo());
@@ -549,6 +560,15 @@ public class ReplenishReport extends SvrProcess
 				MStorageOnHand storage = storages[j];
 				if (storage.getQtyOnHand().signum() <= 0)
 					continue;
+
+				/* IDEMPIERE-2668 - filter just locators enabled for replenishment */ 
+				MLocator loc = MLocator.get(getCtx(), storage.getM_Locator_ID());
+				MLocatorType lt = null;
+				if (loc.getM_LocatorType_ID() > 0)
+					lt = MLocatorType.get(getCtx(), loc.getM_LocatorType_ID());
+				if (lt != null && !lt.isAvailableForReplenishment())
+					continue;
+
 				BigDecimal moveQty = target;
 				if (storage.getQtyOnHand().compareTo(moveQty) < 0)
 					moveQty = storage.getQtyOnHand();
@@ -653,6 +673,9 @@ public class ReplenishReport extends SvrProcess
 				
 				if (!order.save())
 					return;
+				addBufferLog(order.getDD_Order_ID(), order.getDateOrdered(), null,
+						Msg.parseTranslation(getCtx(), "@DD_Order_ID@ @Created@"),
+						MDDOrder.Table_ID, order.getDD_Order_ID());
 				if (log.isLoggable(Level.FINE)) log.fine(order.toString());
 				noMoves++;
 				info.append(" - ").append(order.getDocumentNo());

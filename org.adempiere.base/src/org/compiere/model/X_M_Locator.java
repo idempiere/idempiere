@@ -30,7 +30,7 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20150609L;
 
     /** Standard Constructor */
     public X_M_Locator (Properties ctx, int M_Locator_ID, String trxName)
@@ -120,6 +120,31 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	public int getM_Locator_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_M_LocatorType getM_LocatorType() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_LocatorType)MTable.get(getCtx(), org.compiere.model.I_M_LocatorType.Table_Name)
+			.getPO(getM_LocatorType_ID(), get_TrxName());	}
+
+	/** Set Locator Type.
+		@param M_LocatorType_ID Locator Type	  */
+	public void setM_LocatorType_ID (int M_LocatorType_ID)
+	{
+		if (M_LocatorType_ID < 1) 
+			set_Value (COLUMNNAME_M_LocatorType_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_LocatorType_ID, Integer.valueOf(M_LocatorType_ID));
+	}
+
+	/** Get Locator Type.
+		@return Locator Type	  */
+	public int getM_LocatorType_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_LocatorType_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

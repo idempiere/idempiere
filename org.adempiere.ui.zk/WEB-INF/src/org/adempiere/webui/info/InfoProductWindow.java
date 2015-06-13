@@ -666,6 +666,7 @@ public class InfoProductWindow extends InfoWindow {
 		sql += " w.Name, l.Value "
 			+ "FROM M_Storage s"
 			+ " INNER JOIN M_Locator l ON (s.M_Locator_ID=l.M_Locator_ID)"
+			+ " LEFT JOIN M_LocatorType lt ON (l.M_LocatorType_ID=lt.M_LocatorType_ID)"
 			+ " INNER JOIN M_Warehouse w ON (l.M_Warehouse_ID=w.M_Warehouse_ID) "
 			+ "WHERE M_Product_ID=?";
 		if (m_M_Warehouse_ID != 0)
@@ -673,6 +674,7 @@ public class InfoProductWindow extends InfoWindow {
 		if (m_M_AttributeSetInstance_ID > 0)
 			sql += " AND s.M_AttributeSetInstance_ID=?";
 		sql += " AND (s.QtyOnHand<>0 OR s.QtyReserved<>0 OR s.QtyOrdered<>0)";
+		sql += " AND COALESCE(lt.IsAvailableForReservation,'Y')='Y'";
 		if (!showDetail)
 			sql += " GROUP BY productAttribute(s.M_AttributeSetInstance_ID), w.Name, l.Value";
 		sql += " ORDER BY l.Value";

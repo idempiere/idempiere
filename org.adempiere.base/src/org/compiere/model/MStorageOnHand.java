@@ -44,7 +44,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4934837951332485064L;
+	private static final long serialVersionUID = 1137569740767949519L;
 
 	/**
 	 * 
@@ -940,6 +940,39 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		sql.append(" SELECT SUM(QtyOnHand) FROM M_StorageOnHand oh JOIN M_Locator loc ON (oh.M_Locator_ID=loc.M_Locator_ID)")
 			.append(" WHERE oh.M_Product_ID=?")
 			.append(" AND loc.M_Warehouse_ID=?");
+
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(M_Product_ID);
+		params.add(M_Warehouse_ID);
+
+		// With ASI
+		if (M_AttributeSetInstance_ID != 0) {
+			sql.append(" AND oh.M_AttributeSetInstance_ID=?");
+			params.add(M_AttributeSetInstance_ID);
+		}
+
+		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
+		if (qty == null)
+			qty = Env.ZERO;
+
+		return qty;
+	}
+
+	/**
+	 * Get Quantity On Hand of Warehouse Available for Reservation
+	 * @param M_Product_ID
+	 * @param M_Warehouse_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param trxName
+	 * @return QtyOnHand
+	 */
+	public static BigDecimal getQtyOnHandForReservation(int M_Product_ID, int M_Warehouse_ID, int M_AttributeSetInstance_ID, String trxName) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT SUM(QtyOnHand) FROM M_StorageOnHand oh"
+				+ " JOIN M_Locator loc ON (oh.M_Locator_ID=loc.M_Locator_ID)"
+				+ " LEFT JOIN M_LocatorType lt ON (loc.M_LocatorType_ID=lt.M_LocatorType_ID)")
+			.append(" WHERE oh.M_Product_ID=?")
+			.append(" AND loc.M_Warehouse_ID=? AND COALESCE(lt.IsAvailableForReservation,'Y')='Y'");
 
 		ArrayList<Object> params = new ArrayList<Object>();
 		params.add(M_Product_ID);

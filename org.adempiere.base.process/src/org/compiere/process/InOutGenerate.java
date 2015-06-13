@@ -22,12 +22,15 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MClient;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MLocator;
+import org.compiere.model.MLocatorType;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
@@ -559,9 +562,23 @@ public class InOutGenerate extends SvrProcess
 		
 		if (m_lastStorages == null)
 		{
-			m_lastStorages = MStorageOnHand.getWarehouse(getCtx(), 
+			MStorageOnHand[] tmpStorages = MStorageOnHand.getWarehouse(getCtx(), 
 				M_Warehouse_ID, M_Product_ID, M_AttributeSetInstance_ID,
 				minGuaranteeDate, FiFo,false, 0, get_TrxName());
+
+			/* IDEMPIERE-2668 - filter just locators enabled for shipping */
+			List<MStorageOnHand> m_storagesForShipping = new ArrayList<MStorageOnHand>();
+			for (MStorageOnHand soh : tmpStorages) {
+				MLocator loc = MLocator.get(getCtx(), soh.getM_Locator_ID());
+				MLocatorType lt = null;
+				if (loc.getM_LocatorType_ID() > 0)
+					lt = MLocatorType.get(getCtx(), loc.getM_LocatorType_ID());
+				if (lt == null || lt.isAvailableForShipping())
+					m_storagesForShipping.add(soh);
+			}
+			m_lastStorages = new MStorageOnHand[m_storagesForShipping.size()];
+			m_storagesForShipping.toArray(m_lastStorages);
+
 			m_map.put(m_lastPP, m_lastStorages);
 		}
 		return m_lastStorages;

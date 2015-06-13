@@ -22,7 +22,7 @@ SELECT s.ad_client_id,
     l.z,
     s.qtyonhand,
     s.qtyreserved,
-    s.qtyonhand - s.qtyreserved                                    AS qtyavailable,
+    CASE WHEN COALESCE(lt.IsAvailableForReservation,'Y')='Y' THEN s.qtyonhand ELSE 0 END - s.qtyreserved                                    AS qtyavailable,
     s.qtyordered,
     s.datelastinventory,
     s.m_attributesetinstance_id,
@@ -99,6 +99,8 @@ SELECT s.ad_client_id,
 FROM m_storage s 
         JOIN m_locator l 
         ON s.m_locator_id = l.m_locator_id 
+        LEFT JOIN m_locatortype lt
+        ON l.m_locatortype_id = lt.m_locatortype_id 
         JOIN m_product p 
         ON s.m_product_id = p.m_product_id 
         LEFT JOIN m_attributesetinstance asi 

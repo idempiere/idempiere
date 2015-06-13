@@ -182,10 +182,11 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		confirmPanel.addActionListener(this);
         
 		Borderlayout borderlayout = new Borderlayout();
-        borderlayout.setWidth("700px");
-        borderlayout.setHeight("400px");
+        this.setWidth("700px");
+        this.setHeight("400px");
         borderlayout.setStyle("border: none; position: relative");
 		this.appendChild(borderlayout);
+		this.setClosable(true);
 		
 		North north = new North();
 		north.setStyle("border: none");
@@ -615,6 +616,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		sql += " w.Name, l.Value "
 			+ "FROM M_Storage s"
 			+ " INNER JOIN M_Locator l ON (s.M_Locator_ID=l.M_Locator_ID)"
+			+ " LEFT JOIN M_LocatorType lt ON (l.M_LocatorType_ID=lt.M_LocatorType_ID)"
 			+ " INNER JOIN M_Warehouse w ON (l.M_Warehouse_ID=w.M_Warehouse_ID) "
 			+ "WHERE M_Product_ID=?";
 		if (m_M_Warehouse_ID != 0)
@@ -622,6 +624,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		if (m_M_AttributeSetInstance_ID > 0)
 			sql += " AND s.M_AttributeSetInstance_ID=?";
 		sql += " AND (s.QtyOnHand<>0 OR s.QtyReserved<>0 OR s.QtyOrdered<>0)";
+		sql += " AND COALESCE(lt.IsAvailableForReservation,'Y')='Y'";
 		if (!showDetailATP)
 			sql += " GROUP BY productAttribute(s.M_AttributeSetInstance_ID), w.Name, l.Value";
 		sql += " ORDER BY l.Value";

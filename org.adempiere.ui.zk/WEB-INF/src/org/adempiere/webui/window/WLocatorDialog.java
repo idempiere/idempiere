@@ -42,6 +42,7 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.compiere.model.MLocator;
 import org.compiere.model.MLocatorLookup;
+import org.compiere.model.MLocatorType;
 import org.compiere.model.MRole;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
@@ -69,16 +70,18 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1013647722305985723L;
+	private static final long serialVersionUID = -2441739966645819543L;
 
 	private Grid mainPanel = GridFactory.newGridLayout();
 	
 	private Listbox lstLocator = new Listbox();
 	private Listbox lstWarehouse = new Listbox();
+	private Listbox lstLocatorType = new Listbox();
 	
 	private Checkbox chkCreateNew = new Checkbox();
 
 	private Textbox txtWarehouse = new Textbox();
+	private Textbox txtLocatorType = new Textbox();
 	private Textbox txtAisleX = new Textbox();
 	private Textbox txtBinY = new Textbox();
 	private Textbox txtLevelZ = new Textbox();
@@ -87,6 +90,8 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 	private Label lblLocator = new Label();
 	private Label lblWarehouse = new Label();
 	private Label lblWarehouse2 = new Label();
+	private Label lblLocatorType = new Label();
+	private Label lblLocatorType2 = new Label();
 	private Label lblAisleX = new Label();
 	private Label lblBinY = new Label();
 	private Label lblLevelZ = new Label();
@@ -152,6 +157,8 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		lblLocator.setValue(Msg.translate(Env.getCtx(), "M_Locator_ID"));
 		lblWarehouse.setValue(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));
 		lblWarehouse2.setValue(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));
+		lblLocatorType.setValue(Msg.getElement(Env.getCtx(), "M_LocatorType_ID"));
+		lblLocatorType2.setValue(Msg.getElement(Env.getCtx(), "M_LocatorType_ID"));
 		lblAisleX.setValue(Msg.getElement(Env.getCtx(), "X"));
 		lblBinY.setValue(Msg.getElement(Env.getCtx(), "Y"));
 		lblLevelZ.setValue(Msg.getElement(Env.getCtx(), "Z"));
@@ -166,7 +173,11 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		lstWarehouse.setMold("select");
 		lstWarehouse.setRows(0);		
 		LayoutUtils.addSclass("z-label", lstWarehouse);
-		
+
+		lstLocatorType.setMold("select");
+		lstLocatorType.setRows(0);		
+		LayoutUtils.addSclass("z-label", lstLocatorType);
+
 		confirmPanel = new ConfirmPanel(true);
 		confirmPanel.addActionListener(this);
 
@@ -205,7 +216,19 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		row.appendChild(lblWarehouse2);
 		row.appendChild(txtWarehouse);
 		txtWarehouse.setHflex("1");
-		
+
+		row = new Row();
+		rows.appendChild(row);
+		row.appendChild(lblLocatorType);
+		row.appendChild(lstLocatorType);
+		lstLocatorType.setHflex("1");
+
+		row = new Row();
+		rows.appendChild(row);
+		row.appendChild(lblLocatorType2);
+		row.appendChild(txtLocatorType);
+		txtLocatorType.setHflex("1");
+
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lblAisleX);
@@ -253,7 +276,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		this.setClosable(true);
 		this.setBorder("normal");
 		this.setWidth("260px");
-		this.setHeight("300px"); // required fixed height for ZK to auto adjust the position based on available space
+		this.setHeight("350px"); // required fixed height for ZK to auto adjust the position based on available space
 		this.setShadow(true);
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		this.setSizable(true); // Elaine 2009/02/02 - window set to resizable
@@ -298,6 +321,38 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 
 		if (log.isLoggable(Level.FINE)) log.fine("Warehouses=" + lstWarehouse.getItemCount());
 
+		//	Load Locator Type
+		sql = "SELECT M_LocatorType_ID, Name FROM M_LocatorType WHERE IsActive='Y'";
+		SQL = MRole.getDefault().addAccessSQL(
+			sql, "M_LocatorType", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO)
+			+ " ORDER BY 2";
+		pstmt = null;
+		rs = null;
+		KeyNamePair keyEmpty = new KeyNamePair(0, "");
+		lstLocatorType.appendItem(keyEmpty.getName(), keyEmpty);
+		try
+		{
+			pstmt = DB.prepareStatement(SQL, null);
+			rs = pstmt.executeQuery();			
+			while (rs.next())
+			{
+				KeyNamePair key = new KeyNamePair(rs.getInt(1), rs.getString(2));
+				lstLocatorType.appendItem(key.getName(), key);
+			}
+		}
+		catch (SQLException e)
+		{
+			log.log(Level.SEVERE, SQL, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}
+
+		if (log.isLoggable(Level.FINE)) log.fine("LocatorTypes=" + lstLocatorType.getItemCount());
+
 		//	Load existing Locators
 		
 		m_mLocator.fillComboBox(m_mandatory, true, true, false, false); // IDEMPIERE 90
@@ -338,7 +393,6 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		enableNew();
 
 		lstWarehouse.addEventListener(Events.ON_SELECT, this);
-		
 		txtAisleX.addEventListener(Events.ON_CHANGE, this);
 		txtBinY.addEventListener(Events.ON_CHANGE, this);
 		txtLevelZ.addEventListener(Events.ON_CHANGE, this);
@@ -363,6 +417,14 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		m_M_Locator_ID = l.getM_Locator_ID();
 		
 		txtWarehouse.setText(l.getWarehouseName());
+
+		if (l.getM_LocatorType_ID() > 0) {
+			MLocatorType lt = MLocatorType.get(Env.getCtx(), l.getM_LocatorType_ID());
+			txtLocatorType.setText(lt.getName());
+		} else {
+			txtLocatorType.setText("");
+		}
+
 		txtAisleX.setText(l.getX());
 		txtBinY.setText(l.getY());
 		txtLevelZ.setText(l.getZ());
@@ -385,6 +447,19 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 				continue;
 			}
 		}
+
+		//	Set Locator Type
+		size = lstLocatorType.getItemCount();
+		for (int i = 0; i < size; i++)
+		{
+			ListItem listItem = lstLocatorType.getItemAtIndex(i);
+			KeyNamePair pp = (KeyNamePair)listItem.getValue();
+			if (pp.getKey() == l.getM_LocatorType_ID())
+			{
+				lstLocatorType.setSelectedIndex(i);
+				continue;
+			}
+		}
 	} // displayLocator
 	
 	/**
@@ -400,8 +475,14 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		//lWarehouseInfo.setVisible(!sel);
 		txtWarehouse.setVisible(!sel);
 		txtWarehouse.getParent().setVisible(!sel);
-		
 		txtWarehouse.setReadonly(true);
+		
+		lstLocatorType.setVisible(sel);
+		lstLocatorType.getParent().setVisible(sel);
+		txtLocatorType.setVisible(!sel);
+		txtLocatorType.getParent().setVisible(!sel);
+		txtLocatorType.setReadonly(true);
+
 		txtAisleX.setReadonly(!sel);
 		txtBinY.setReadonly(!sel);
 		txtLevelZ.setReadonly(!sel);
@@ -525,8 +606,14 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 				return;
 			}
 
+			listitem = lstLocatorType.getSelectedItem();
+			pp = (KeyNamePair)listitem.getValue();
+			int lt = 0;
+			if (pp != null)
+				lt = pp.getKey();
+
 			MLocator loc = MLocator.get(Env.getCtx(), m_M_Warehouse_ID, txtKey.getText(),
-				txtAisleX.getText(), txtBinY.getText(), txtLevelZ.getText());
+				txtAisleX.getText(), txtBinY.getText(), txtLevelZ.getText(), lt);
 			
 			m_M_Locator_ID = loc.getM_Locator_ID();
 			
@@ -596,7 +683,8 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		else if (event.getTarget() == chkCreateNew)
 			enableNew();
 		//	Entered/Changed data for Value
-		else if (chkCreateNew.isChecked() && event.getTarget() == lstWarehouse)
+		else if (chkCreateNew.isChecked()
+				 && (event.getTarget() == lstWarehouse || event.getTarget() == txtAisleX || event.getTarget() == txtBinY || event.getTarget() == txtLevelZ))
 			createValue();
 	}
 }

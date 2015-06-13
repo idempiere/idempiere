@@ -20,24 +20,24 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for M_Locator
+/** Generated Interface for M_LocatorType
  *  @author iDempiere (generated) 
  *  @version Release 2.1
  */
-public interface I_M_Locator 
+public interface I_M_LocatorType 
 {
 
-    /** TableName=M_Locator */
-    public static final String Table_Name = "M_Locator";
+    /** TableName=M_LocatorType */
+    public static final String Table_Name = "M_LocatorType";
 
-    /** AD_Table_ID=207 */
-    public static final int Table_ID = 207;
+    /** AD_Table_ID=200175 */
+    public static final int Table_ID = 200175;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 7 - System - Client - Org 
+    /** AccessLevel = 3 - Client - Org 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(7);
+    BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
 
@@ -78,6 +78,32 @@ public interface I_M_Locator
 	  */
 	public int getCreatedBy();
 
+    /** Column name Description */
+    public static final String COLUMNNAME_Description = "Description";
+
+	/** Set Description.
+	  * Optional short description of the record
+	  */
+	public void setDescription (String Description);
+
+	/** Get Description.
+	  * Optional short description of the record
+	  */
+	public String getDescription();
+
+    /** Column name Help */
+    public static final String COLUMNNAME_Help = "Help";
+
+	/** Set Comment/Help.
+	  * Comment or Hint
+	  */
+	public void setHelp (String Help);
+
+	/** Get Comment/Help.
+	  * Comment or Hint
+	  */
+	public String getHelp();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -91,31 +117,32 @@ public interface I_M_Locator
 	  */
 	public boolean isActive();
 
-    /** Column name IsDefault */
-    public static final String COLUMNNAME_IsDefault = "IsDefault";
+    /** Column name IsAvailableForReplenishment */
+    public static final String COLUMNNAME_IsAvailableForReplenishment = "IsAvailableForReplenishment";
 
-	/** Set Default.
-	  * Default value
-	  */
-	public void setIsDefault (boolean IsDefault);
+	/** Set Available for Replenishment	  */
+	public void setIsAvailableForReplenishment (boolean IsAvailableForReplenishment);
 
-	/** Get Default.
-	  * Default value
-	  */
-	public boolean isDefault();
+	/** Get Available for Replenishment	  */
+	public boolean isAvailableForReplenishment();
 
-    /** Column name M_Locator_ID */
-    public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
+    /** Column name IsAvailableForReservation */
+    public static final String COLUMNNAME_IsAvailableForReservation = "IsAvailableForReservation";
 
-	/** Set Locator.
-	  * Warehouse Locator
-	  */
-	public void setM_Locator_ID (int M_Locator_ID);
+	/** Set Available for Reservation	  */
+	public void setIsAvailableForReservation (boolean IsAvailableForReservation);
 
-	/** Get Locator.
-	  * Warehouse Locator
-	  */
-	public int getM_Locator_ID();
+	/** Get Available for Reservation	  */
+	public boolean isAvailableForReservation();
+
+    /** Column name IsAvailableForShipping */
+    public static final String COLUMNNAME_IsAvailableForShipping = "IsAvailableForShipping";
+
+	/** Set Available for Shipping	  */
+	public void setIsAvailableForShipping (boolean IsAvailableForShipping);
+
+	/** Get Available for Shipping	  */
+	public boolean isAvailableForShipping();
 
     /** Column name M_LocatorType_ID */
     public static final String COLUMNNAME_M_LocatorType_ID = "M_LocatorType_ID";
@@ -126,44 +153,27 @@ public interface I_M_Locator
 	/** Get Locator Type	  */
 	public int getM_LocatorType_ID();
 
-	public org.compiere.model.I_M_LocatorType getM_LocatorType() throws RuntimeException;
+    /** Column name M_LocatorType_UU */
+    public static final String COLUMNNAME_M_LocatorType_UU = "M_LocatorType_UU";
 
-    /** Column name M_Locator_UU */
-    public static final String COLUMNNAME_M_Locator_UU = "M_Locator_UU";
+	/** Set M_LocatorType_UU	  */
+	public void setM_LocatorType_UU (String M_LocatorType_UU);
 
-	/** Set M_Locator_UU	  */
-	public void setM_Locator_UU (String M_Locator_UU);
+	/** Get M_LocatorType_UU	  */
+	public String getM_LocatorType_UU();
 
-	/** Get M_Locator_UU	  */
-	public String getM_Locator_UU();
+    /** Column name Name */
+    public static final String COLUMNNAME_Name = "Name";
 
-    /** Column name M_Warehouse_ID */
-    public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
-
-	/** Set Warehouse.
-	  * Storage Warehouse and Service Point
+	/** Set Name.
+	  * Alphanumeric identifier of the entity
 	  */
-	public void setM_Warehouse_ID (int M_Warehouse_ID);
+	public void setName (String Name);
 
-	/** Get Warehouse.
-	  * Storage Warehouse and Service Point
+	/** Get Name.
+	  * Alphanumeric identifier of the entity
 	  */
-	public int getM_Warehouse_ID();
-
-	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
-
-    /** Column name PriorityNo */
-    public static final String COLUMNNAME_PriorityNo = "PriorityNo";
-
-	/** Set Relative Priority.
-	  * Where inventory should be picked from first
-	  */
-	public void setPriorityNo (int PriorityNo);
-
-	/** Get Relative Priority.
-	  * Where inventory should be picked from first
-	  */
-	public int getPriorityNo();
+	public String getName();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -180,56 +190,4 @@ public interface I_M_Locator
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name Value */
-    public static final String COLUMNNAME_Value = "Value";
-
-	/** Set Search Key.
-	  * Search key for the record in the format required - must be unique
-	  */
-	public void setValue (String Value);
-
-	/** Get Search Key.
-	  * Search key for the record in the format required - must be unique
-	  */
-	public String getValue();
-
-    /** Column name X */
-    public static final String COLUMNNAME_X = "X";
-
-	/** Set Aisle (X).
-	  * X dimension, e.g., Aisle
-	  */
-	public void setX (String X);
-
-	/** Get Aisle (X).
-	  * X dimension, e.g., Aisle
-	  */
-	public String getX();
-
-    /** Column name Y */
-    public static final String COLUMNNAME_Y = "Y";
-
-	/** Set Bin (Y).
-	  * Y dimension, e.g., Bin
-	  */
-	public void setY (String Y);
-
-	/** Get Bin (Y).
-	  * Y dimension, e.g., Bin
-	  */
-	public String getY();
-
-    /** Column name Z */
-    public static final String COLUMNNAME_Z = "Z";
-
-	/** Set Level (Z).
-	  * Z dimension, e.g., Level
-	  */
-	public void setZ (String Z);
-
-	/** Get Level (Z).
-	  * Z dimension, e.g., Level
-	  */
-	public String getZ();
 }
