@@ -541,6 +541,7 @@ public class ReplicationLocal extends SvrProcess
 		//
 		try
 		{
+			sql = DB.getDatabase().convertStatement(sql);
 			pstmt = conn.prepareStatement(sql,
 				ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			//	Set Parameters

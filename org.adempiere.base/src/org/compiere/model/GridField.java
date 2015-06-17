@@ -784,7 +784,7 @@ public class GridField
 	private Object createDefault (String value)
 	{
 		//	true NULL
-		if (value == null || value.toString().length() == 0)
+		if (value == null || value.toString().length() == 0 || value.toUpperCase().equals("NULL"))
 			return null;
 		//	see also MTable.readData
 		try

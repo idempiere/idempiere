@@ -115,6 +115,8 @@ public class PO_LOB implements Serializable
 			.append(m_tableName)
 			.append(" SET ").append(m_columnName)
 			.append("=? WHERE ").append(m_whereClause);
+		if (!DB.isPostgreSQL() && !DB.isOracle())
+			sql = new StringBuffer(DB.getDatabase().convertStatement(sql.toString()));
 		//
 		
 		if (log.isLoggable(Level.FINE)) log.fine("[" + trxName + "] - Local - " + m_value);

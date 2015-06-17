@@ -320,7 +320,8 @@ public class ColumnEncryption extends SvrProcess {
 		ResultSet rs = null;
 		
 		try {
-			selectStmt = m_conn.prepareStatement(selectSql.toString(),
+			String selectSqlStr = DB.getDatabase().convertStatement(selectSql.toString());
+			selectStmt = m_conn.prepareStatement(selectSqlStr,
 					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 			updateStmt = m_conn.prepareStatement(updateSql.toString());
 	
@@ -397,7 +398,8 @@ public class ColumnEncryption extends SvrProcess {
 		ResultSet rs = null;
 		
 		try {
-			selectStmt = m_conn.prepareStatement(selectSql.toString(),
+			String selectSqlStr = DB.getDatabase().convertStatement(selectSql.toString());
+			selectStmt = m_conn.prepareStatement(selectSqlStr,
 					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 			updateStmt = m_conn.prepareStatement(updateSql.toString());
 	
@@ -460,10 +462,7 @@ public class ColumnEncryption extends SvrProcess {
 		int rowsEffected = -1;
 
 		// Select SQL
-		StringBuilder selectSql = new StringBuilder();
-		selectSql.append("SELECT FieldLength");
-		selectSql.append(" FROM AD_Column");
-		selectSql.append(" WHERE AD_Column_ID=?");
+		String selectSql = "SELECT FieldLength FROM AD_Column WHERE AD_Column_ID=?";
 
 		// Alter SQL
 		StringBuilder alterSql = new StringBuilder();
@@ -482,7 +481,8 @@ public class ColumnEncryption extends SvrProcess {
 		ResultSet rs = null;
 		
 		try {
-			selectStmt = m_conn.prepareStatement(selectSql.toString(),
+			selectSql = DB.getDatabase().convertStatement(selectSql);
+			selectStmt = m_conn.prepareStatement(selectSql,
 					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 	
 			selectStmt.setInt(1, columnID);
@@ -490,6 +490,7 @@ public class ColumnEncryption extends SvrProcess {
 	
 			if (rs.next()) {
 				// Change the column size physically.
+				alterSql = new StringBuilder(DB.getDatabase().convertStatement(alterSql.toString()));
 				if (DB.executeUpdate(alterSql.toString(), false, m_trx
 								.getTrxName()) == -1) {
 					log.severe("EncryptError [ChangeFieldLength]: ColumnID="
@@ -498,6 +499,7 @@ public class ColumnEncryption extends SvrProcess {
 				}
 	
 				// Change the column size in AD.
+				updateSql = new StringBuilder(DB.getDatabase().convertStatement(updateSql.toString()));
 				if (DB.executeUpdate(updateSql.toString(), false, m_trx
 						.getTrxName()) == -1) {
 					log.severe("EncryptError [ChangeFieldLength]: ColumnID="
