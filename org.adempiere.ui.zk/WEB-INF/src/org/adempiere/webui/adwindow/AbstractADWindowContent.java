@@ -1564,10 +1564,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         {
         	GridTab gt = adTabbox.getSelectedGridTab();
 	        String trxInfo = gt.getStatusLine();
-	        if (trxInfo != null)
-	        {
-	            statusBar.setInfo(trxInfo);
-	        }
+	        if (trxInfo == null)
+	        	trxInfo = "";
+            statusBar.setInfo(trxInfo);
 	        SessionManager.getAppDesktop().updateHelpQuickInfo(gt);
         }
 
