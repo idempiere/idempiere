@@ -125,6 +125,8 @@ public class MSequence extends X_AD_Sequence
 			+ " AND IsActive='Y' AND IsTableID='Y' AND IsAutoSequence='Y' ";
 
 		}
+		if (!DB.isOracle() && !DB.isPostgreSQL())
+			selectSQL = DB.getDatabase().convertStatement(selectSQL);
 
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -221,12 +223,16 @@ public class MSequence extends X_AD_Sequence
 						{
 							int incrementNo = rs.getInt(3);
 							if (adempiereSys) {
-								updateSQL = conn
-										.prepareStatement("UPDATE AD_Sequence SET CurrentNextSys = CurrentNextSys + ? WHERE AD_Sequence_ID = ?");
+								String updateCmd = "UPDATE AD_Sequence SET CurrentNextSys=CurrentNextSys+? WHERE AD_Sequence_ID=?";
+								if (!DB.isOracle() && !DB.isPostgreSQL())
+									updateCmd = DB.getDatabase().convertStatement(updateCmd);
+								updateSQL = conn.prepareStatement(updateCmd);
 								retValue = rs.getInt(2);
 							} else {
-								updateSQL = conn
-										.prepareStatement("UPDATE AD_Sequence SET CurrentNext = CurrentNext + ? WHERE AD_Sequence_ID = ?");
+								String updateCmd = "UPDATE AD_Sequence SET CurrentNext=CurrentNext+? WHERE AD_Sequence_ID=?";
+								if (!DB.isOracle() && !DB.isPostgreSQL())
+									updateCmd = DB.getDatabase().convertStatement(updateCmd);
+								updateSQL = conn.prepareStatement(updateCmd);
 								retValue = rs.getInt(1);
 							}
 							updateSQL.setInt(1, incrementNo);
@@ -367,6 +373,8 @@ public class MSequence extends X_AD_Sequence
 				selectSQL = selectSQL + " FOR UPDATE OF s";
 			}
 		}
+		if (!DB.isOracle() && !DB.isPostgreSQL())
+			selectSQL = DB.getDatabase().convertStatement(selectSQL);
 		Connection conn = null;
 		Trx trx = trxName == null ? null : Trx.get(trxName, true);
 		//
@@ -439,7 +447,10 @@ public class MSequence extends X_AD_Sequence
 				try
 				{
 					if (adempiereSys) {
-						updateSQL = conn.prepareStatement("UPDATE AD_Sequence SET CurrentNextSys = CurrentNextSys + ? WHERE AD_Sequence_ID = ?");
+						String updateCmd = "UPDATE AD_Sequence SET CurrentNextSys = CurrentNextSys + ? WHERE AD_Sequence_ID = ?";
+						if (!DB.isOracle() && !DB.isPostgreSQL())
+							updateCmd = DB.getDatabase().convertStatement(updateCmd);
+						updateSQL = conn.prepareStatement(updateCmd);
 						next = rs.getInt(2);
 					} else {
 						String sql;
@@ -447,6 +458,8 @@ public class MSequence extends X_AD_Sequence
 							sql = "UPDATE AD_Sequence_No SET CurrentNext = CurrentNext + ? WHERE AD_Sequence_ID=? AND CalendarYearMonth=? AND AD_Org_ID=?";
 						else
 							sql = "UPDATE AD_Sequence SET CurrentNext = CurrentNext + ? WHERE AD_Sequence_ID=?";
+						if (!DB.isOracle() && !DB.isPostgreSQL())
+							sql = DB.getDatabase().convertStatement(sql);
 						updateSQL = conn.prepareStatement(sql);
 						next = rs.getInt(1);
 					}
