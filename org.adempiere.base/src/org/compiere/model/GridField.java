@@ -1597,8 +1597,10 @@ public class GridField
 				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.ColumnName, 
 					((Boolean)m_value).booleanValue());
 			}
-			Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName, 
-					m_value==null ? null : (((Boolean)m_value) ? "Y" : "N"));
+			if (m_gridTab != null) {
+				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName,
+						m_value==null ? null : (((Boolean)m_value) ? "Y" : "N"));
+			}
 		}
 		else if (m_value instanceof Timestamp)
 		{
@@ -1608,8 +1610,6 @@ public class GridField
 				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.ColumnName, (Timestamp)m_value);
 			}
 			// BUG:3075946 KTU - Fix Thai Date
-			//Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName, 
-			//		m_value==null ? null : m_value.toString().substring(0, m_value.toString().indexOf(".")));
 			String stringValue = null;
 			if (m_value != null && !m_value.toString().equals("")) {
 				Calendar c1 = Calendar.getInstance();
@@ -1617,7 +1617,9 @@ public class GridField
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				stringValue = sdf.format(c1.getTime());
 			}
-			Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName, stringValue);
+			if (m_gridTab != null) {
+				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName, stringValue);
+			}
 			// KTU - Fix Thai Date		
 		}
 		else
@@ -1628,8 +1630,10 @@ public class GridField
 				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.ColumnName, 
 					m_value==null ? null : m_value.toString());
 			}
-			Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName, 
-				m_value==null ? null : m_value.toString());
+			if (m_gridTab != null) {
+				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName,
+						m_value==null ? null : m_value.toString());
+			}
 		}		
 	}
 
