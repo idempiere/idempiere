@@ -863,8 +863,8 @@ public class ConfigurationData
 
 		//	Create Connection
 		String ccType = Database.DB_ORACLE;
-		if (getDatabaseType().equals(DBTYPE_POSTGRESQL))
-			ccType = Database.DB_POSTGRESQL;
+		if (getDatabaseType() != null && !getDatabaseType().equals(Database.DB_ORACLE))
+			ccType = getDatabaseType();
 		CConnection cc = null;
 		try
 		{
@@ -1122,12 +1122,6 @@ public class ConfigurationData
 	/**************************************************************************
 	 * 	Database Settings
 	 *************************************************************************/
-
-	/** Oracle directory	*/
-	//private static String	DBTYPE_ORACLE = "Oracle";
-
-	/** PostgreSQL          */
-	private static String	DBTYPE_POSTGRESQL = "PostgreSQL";
 
 	/** Database Types		*/
 	public static String[]	DBTYPE = null;
