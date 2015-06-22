@@ -903,10 +903,11 @@ public class DocumentEngine implements DocAction
 	 * @param AD_Table_ID
 	 * @param docAction
 	 * @param options
+	 * @param periodOpen - flag indicating if the period is Open - to avoid including Void and ReverseCorrect options in the list
 	 * @return Number of valid options
 	 */
 	public static int getValidActions(String docStatus, Object processing,
-			String orderType, String isSOTrx, int AD_Table_ID, String[] docAction, String[] options)
+			String orderType, String isSOTrx, int AD_Table_ID, String[] docAction, String[] options, boolean periodOpen)
 	{
 		if (options == null)
 			throw new IllegalArgumentException("Option array parameter is null");
@@ -1001,8 +1002,9 @@ public class DocumentEngine implements DocAction
 			//	Complete                    ..  CO
 			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
-				options[index++] = DocumentEngine.ACTION_Void;
-				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				if (periodOpen) {
+					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				}
 				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 			}
 		}
@@ -1014,8 +1016,9 @@ public class DocumentEngine implements DocAction
 			//	Complete                    ..  CO
 			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
-				options[index++] = DocumentEngine.ACTION_Void;
-				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				if (periodOpen) {
+					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				}
 				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 			}
 		}
@@ -1027,8 +1030,9 @@ public class DocumentEngine implements DocAction
 			//	Complete                    ..  CO
 			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
-				options[index++] = DocumentEngine.ACTION_Void;
-				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				if (periodOpen) {
+					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				}
 				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 			}
 		}
@@ -1040,9 +1044,11 @@ public class DocumentEngine implements DocAction
 			//	Complete                    ..  CO
 			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
-				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				if (periodOpen) {
+					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+					options[index++] = DocumentEngine.ACTION_ReActivate;
+				}
 				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
-				options[index++] = DocumentEngine.ACTION_ReActivate;
 			}
 		}
 		/********************
@@ -1053,8 +1059,9 @@ public class DocumentEngine implements DocAction
 			//	Complete                    ..  CO
 			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
-				options[index++] = DocumentEngine.ACTION_Void;
-				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				if (periodOpen) {
+					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				}
 				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 			}
 		}
@@ -1078,7 +1085,9 @@ public class DocumentEngine implements DocAction
 			//	Complete                    ..  CO
 			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
-				options[index++] = DocumentEngine.ACTION_Void;
+				if (periodOpen) {
+					options[index++] = DocumentEngine.ACTION_Void;
+				}
 			}
 		}
 		/********************
@@ -1090,8 +1099,9 @@ public class DocumentEngine implements DocAction
 			//	Complete                    ..  CO
 			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
-				options[index++] = DocumentEngine.ACTION_Void;
-				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				if (periodOpen) {
+					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				}
 				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 			}
 		}
@@ -1129,8 +1139,9 @@ public class DocumentEngine implements DocAction
 			//	Complete                    ..  CO
 			else if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
-				options[index++] = DocumentEngine.ACTION_Void;
-				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				if (periodOpen) {
+					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				}
 				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 			}
 
