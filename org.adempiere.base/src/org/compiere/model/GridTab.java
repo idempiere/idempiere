@@ -2542,12 +2542,14 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public int setCurrentRow (int newCurrentRow, boolean fireEvents)
 	{
+		boolean changingRow = (m_currentRow != newCurrentRow);
 		int oldCurrentRow = m_currentRow;
 		m_currentRow = verifyRow (newCurrentRow);
 		if (log.isLoggable(Level.FINE)) log.fine("Row=" + m_currentRow + " - fire=" + fireEvents);
 
 		//  Update Field Values
 		int size = m_mTable.getColumnCount();
+		GridField keyCalloutDelayed = null;
 		for (int i = 0; i < size; i++)
 		{
 			GridField mField = m_mTable.getField(i);
@@ -2558,6 +2560,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				mField.setValue(value, m_mTable.isInserting());
 				if (m_mTable.isInserting())		//	set invalid values to null
 					mField.validateValue();
+				if (mField.isKey())
+					keyCalloutDelayed = mField;
 			}
 			else
 			{   //  no rows - set to a reasonable value - not updateable
@@ -2576,6 +2580,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					mField.setValue();
 			}
 		}
+		if (changingRow && keyCalloutDelayed != null)
+			processCallout(keyCalloutDelayed);
 		loadDependentInfo();
 
 		if (!fireEvents)    //  prevents informing twice
