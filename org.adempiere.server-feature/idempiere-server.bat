@@ -17,4 +17,5 @@ goto START
 @Echo Starting iDempiere Server ...
 @Echo =======================================
 
-@"%JAVA%" -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -XX:MaxPermSize=192m -jar plugins/org.eclipse.equinox.launcher_1.*.jar -console 12612 -application org.adempiere.server.application
+FOR %%c in (plugins\org.eclipse.equinox.launcher_1.*.jar) DO set JARFILE=%%c
+@"%JAVA%" -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -XX:MaxPermSize=192m -jar %JARFILE% -console 12612 -application org.adempiere.server.application
