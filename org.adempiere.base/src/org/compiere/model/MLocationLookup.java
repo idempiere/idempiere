@@ -37,7 +37,7 @@ public final class MLocationLookup extends Lookup
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7335118019935048922L;
+	private static final long serialVersionUID = 7238110708451510319L;
 
 	/**
 	 *	Constructor
@@ -95,6 +95,10 @@ public final class MLocationLookup extends Lookup
 		return getLocation(key, null) != null;
 	}   //  containsKey
 
+	public boolean containsKeyNoDirect (Object key)
+	{
+		return containsKey(key);
+	}
 	
 	/**************************************************************************
 	 * 	Get Location

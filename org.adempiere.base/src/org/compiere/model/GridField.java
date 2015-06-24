@@ -81,7 +81,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -757531553169088955L;
+	private static final long serialVersionUID = 7859929653710975421L;
 
 	/**
 	 *  Field Constructor.
@@ -812,8 +812,56 @@ public class GridField
 	}	//	createDefault
 
 	/**
-	 *  Validate initial Field Value.
-	 * 	Called from MTab.dataNew and MTab.setCurrentRow when inserting
+	 *  Validate initial Field Value.  Do not push direct value if it doesn't exist
+	 * 	Called from GridTab.dataNew when inserting
+	 *  @return true if valid
+	 */
+	public boolean validateValueNoDirect()
+	{
+		//  null
+		if (m_value == null || m_value.toString().length() == 0)
+		{
+			if (isMandatory(true))
+			{
+				m_error = true;
+				return false;
+			}
+			else
+				return true;
+		}
+		
+		//	Search not cached
+		if (getDisplayType() == DisplayType.Search && m_lookup != null)
+		{
+			// need to re-set invalid values - OK BPartner in PO Line - not OK SalesRep in Invoice
+			if (m_lookup.getDirect(m_value, false, true) == null)
+			{
+				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " Serach not valid - set to null");
+				setValue(null, m_inserting);
+				m_error = true;
+				return false;
+			}
+			return true;
+		} 
+
+		//  cannot be validated
+		if (!isLookup()
+			|| m_lookup == null
+			|| m_lookup.containsKeyNoDirect(m_value))
+			return true;
+		//	it's not null, a lookup and does not have the key
+		if (isKey() || isParentValue())		//	parents/ket are not validated
+			return true;	
+			
+		if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " - set to null");
+		setValue(null, m_inserting);
+		m_error = true;
+		return false;
+	}   //  validateValue
+
+	/**
+	 *  Validate initial Field Value.  Push direct value if it doesn't exist
+	 * 	Called from GridTab.setCurrentRow when inserting
 	 *  @return true if valid
 	 */
 	public boolean validateValue()
@@ -857,8 +905,7 @@ public class GridField
 		setValue(null, m_inserting);
 		m_error = true;
 		return false;
-	}   //  validateValue
-
+	}   //  validateValuePushDirect
 
 	/**************************************************************************
 	 *	Is the Column Visible ?

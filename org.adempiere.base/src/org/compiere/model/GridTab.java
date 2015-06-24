@@ -113,7 +113,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1151723870943569774L;
+	private static final long serialVersionUID = 5446672147679386907L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -1185,15 +1185,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			return retValue;
 		setCurrentRow(m_currentRow + 1, true);
 
-		//  process all Callouts (no dependency check - assumed that settings are valid)
-		for (int i = 0; i < getFieldCount(); i++)
-			processCallout(getField(i));
 		//  check validity of defaults
 		for (int i = 0; i < getFieldCount(); i++)
 		{
 			getField(i).refreshLookup();
-			getField(i).validateValue();
+			getField(i).validateValueNoDirect();
 		}
+		//  process all Callouts (no dependency check - assumed that settings are valid)
+		for (int i = 0; i < getFieldCount(); i++)
+			processCallout(getField(i));
 		m_mTable.setChanged(false);		
 
 		fireStateChangeEvent(new StateChangeEvent(this, StateChangeEvent.DATA_NEW));

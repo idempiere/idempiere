@@ -39,7 +39,7 @@ public class MPaymentLookup extends Lookup implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6505672741140583659L;
+	private static final long serialVersionUID = 2876345457828980720L;
 
 	/**	Context					*/
 	private Properties 		m_ctx;
@@ -95,6 +95,11 @@ public class MPaymentLookup extends Lookup implements Serializable {
 				return true;
 		}
 		return false;
+	}
+
+	public boolean containsKeyNoDirect (Object key)
+	{
+		return containsKey(key);
 	}
 
 	@Override

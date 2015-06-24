@@ -51,11 +51,11 @@ import org.w3c.dom.Node;
  *
  */
 public class QueryDataLookup extends Lookup {
-
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -137206840260406730L;
+	private static final long serialVersionUID = -1322365740845617635L;
+
 	private String filter;
 	private String serviceType;
 	private String endPoint;
@@ -217,6 +217,11 @@ public class QueryDataLookup extends Lookup {
 	@Override
 	public boolean containsKey(Object key) {
 		return dataMap.containsKey(key);
+	}
+
+	public boolean containsKeyNoDirect (Object key)
+	{
+		return containsKey(key);
 	}
 
 	/**

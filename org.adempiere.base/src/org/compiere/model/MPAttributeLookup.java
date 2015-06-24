@@ -41,11 +41,10 @@ import org.compiere.util.NamePair;
 public class MPAttributeLookup extends Lookup
 	implements Serializable
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 70273805106666111L;
+	private static final long serialVersionUID = 1877125428249819248L;
 
 	/**
 	 * 	Constructor
@@ -87,6 +86,11 @@ public class MPAttributeLookup extends Lookup
 	{
 		return get(key) != null;
 	}   //  containsKey
+
+	public boolean containsKeyNoDirect (Object key)
+	{
+		return containsKey(key);
+	}
 
 	/**
 	 *	Get Object of Key Value

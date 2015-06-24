@@ -43,7 +43,7 @@ public abstract class Lookup extends AbstractListModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2811763289904455349L;
+	private static final long serialVersionUID = -28200392264647953L;
 
 	/**
 	 *  Lookup
@@ -382,6 +382,12 @@ public abstract class Lookup extends AbstractListModel
 	 */
 	public abstract boolean containsKey (Object key);
 
+	/**
+	 *  The Lookup contains the key, do not push direct
+	 *  @param key key
+	 *  @return true if contains key
+	 */
+	public abstract boolean containsKeyNoDirect (Object key);
 	
 	/**************************************************************************
 	 *	Refresh Values - default implementation

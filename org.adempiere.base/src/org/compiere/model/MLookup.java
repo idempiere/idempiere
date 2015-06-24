@@ -56,7 +56,7 @@ public final class MLookup extends Lookup implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5784044288965615466L;
+	private static final long serialVersionUID = 2228200000988048623L;
 
 	/**
 	 *  MLookup Constructor
@@ -179,7 +179,7 @@ public final class MLookup extends Lookup implements Serializable
 	 *  @param key key	(Integer for Keys or String for Lists)
 	 *  @return value
 	 */
-	public NamePair get (Object key)
+	public NamePair get (Object key, boolean includeDirect)
 	{
 		if (key == null || MINUS_ONE.equals(key))	//	indicator for null
 			return null;
@@ -212,10 +212,22 @@ public final class MLookup extends Lookup implements Serializable
 				return retValue;
 		}
 
-		//	Try to get it directly
-		boolean cacheLocal = m_info.IsValidated ; 
-		return getDirect(key, false, cacheLocal);	//	do NOT cache	
+		if (includeDirect) {
+			//	Try to get it directly
+			boolean cacheLocal = m_info.IsValidated ; 
+			return getDirect(key, false, cacheLocal);	//	do NOT cache	
+		}
+
+		return null;
 	}	//	get
+
+	public NamePair get(Object key) {
+		return get(key, true);
+	}
+
+	public NamePair getNoDirect(Object key) {
+		return get(key, false);
+	}
 
 	/**
 	 *	Get Display value (name).
@@ -253,6 +265,24 @@ public final class MLookup extends Lookup implements Serializable
 				return ( get(key) != null );			
 		}
 	}   //  containsKey
+
+	/**
+	 *  The Lookup contains the key, do not get direct
+	 *  @param key key
+	 *  @return true if key is known
+	 */
+	public boolean containsKeyNoDirect (Object key)
+	{
+		//should check direct too
+		if (m_lookup.containsKey(key))
+			return true;
+		else {
+			if (m_lookup.size() > 0)
+				return false;
+			else
+				return ( getNoDirect(key) != null );			
+		}
+	}   //  containsKeyNoDirect
 
 	/**
 	 * @return  a string representation of the object.
