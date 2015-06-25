@@ -135,6 +135,8 @@ public class WAllocation extends Allocation
 	private Checkbox multiCurrency = new Checkbox();
 	private Label chargeLabel = new Label();
 	private WTableDirEditor chargePick = null;
+	private Label DocTypeLabel = new Label();
+	private WTableDirEditor DocTypePick = null;
 	private Label allocCurrencyLabel = new Label();
 	private Hlayout statusBar = new Hlayout();
 	private Label dateLabel = new Label();
@@ -170,6 +172,7 @@ public class WAllocation extends Allocation
 		invoiceInfo.setText(".");
 		paymentInfo.setText(".");
 		chargeLabel.setText(" " + Msg.translate(Env.getCtx(), "C_Charge_ID"));
+		DocTypeLabel.setText(" " + Msg.translate(Env.getCtx(), "C_DocType_ID"));	
 		differenceLabel.setText(Msg.getMsg(Env.getCtx(), "Difference"));
 		differenceField.setText("0");
 		differenceField.setReadonly(true);
@@ -232,6 +235,9 @@ public class WAllocation extends Allocation
 		row.appendCellChild(chargeLabel.rightAlign());
 		chargePick.getComponent().setHflex("true");
 		row.appendCellChild(chargePick.getComponent());
+		row.appendCellChild(DocTypeLabel.rightAlign());
+		DocTypePick.getComponent().setHflex("true");
+		row.appendCellChild(DocTypePick.getComponent());
 		allocateButton.setHflex("true");
 		row.appendCellChild(allocateButton);
 		row.appendCellChild(refreshButton);
@@ -351,6 +357,14 @@ public class WAllocation extends Allocation
 		chargePick = new WTableDirEditor("C_Charge_ID", false, false, true, lookupCharge);
 		chargePick.setValue(new Integer(m_C_Charge_ID));
 		chargePick.addValueChangeListener(this);
+		
+	//  Charge
+			AD_Column_ID = 212213;    //  C_AllocationLine.C_Charge_ID
+			MLookup lookupDocType = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
+			DocTypePick = new WTableDirEditor("C_DocType_ID", false, false, true, lookupDocType);
+			DocTypePick.setValue(new Integer(m_C_DocType_ID));
+			DocTypePick.addValueChangeListener(this);
+			
 	}   //  dynInit
 	
 	/**************************************************************************
@@ -431,7 +445,7 @@ public class WAllocation extends Allocation
 		String name = e.getPropertyName();
 		Object value = e.getNewValue();
 		if (log.isLoggable(Level.CONFIG)) log.config(name + "=" + value);
-		if (value == null && !name.equals("C_Charge_ID"))
+		if (value == null && (!name.equals("C_Charge_ID")||!name.equals("C_DocType_ID") ))
 			return;
 		
 		// Organization
@@ -447,6 +461,12 @@ public class WAllocation extends Allocation
 			m_C_Charge_ID = value!=null? ((Integer) value).intValue() : 0;
 			
 			setAllocateButton();
+		}
+
+		else if (name.equals("C_DocType_ID") )
+		{
+			m_C_DocType_ID = value!=null? ((Integer) value).intValue() : 0;
+			
 		}
 
 		//  BPartner

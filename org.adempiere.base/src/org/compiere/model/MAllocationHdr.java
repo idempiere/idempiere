@@ -186,6 +186,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 			setPosted (false);
 			setProcessed (false);
 			setProcessing(false);
+			setC_DocType_ID(MDocType.getDocType("CMA"));
 		}
 	}	//	MAllocation
 
@@ -212,6 +213,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		if (description != null)
 			setDescription(description);
 	}	//  create Allocation
+
 
 	/** 
 	 * 	Load Constructor
