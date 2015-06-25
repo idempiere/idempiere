@@ -30,7 +30,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8646802850122507899L;
+	private static final long serialVersionUID = 8179093165315835613L;
 
 	/**
 	 * 	Get Storage Info
@@ -248,14 +248,27 @@ public class MStorageReservation extends X_M_StorageReservation {
 			return false;
 		}
 
-		storage.setQty (storage.getQty().add(diffQty));
+		storage.addQty(diffQty);
+		storage.load(storage.get_TrxName());
 		if (s_log.isLoggable(Level.FINE)) {
 			StringBuilder diffText = new StringBuilder("(Qty=").append(diffQty).append(") -> ").append(storage.toString());
 			s_log.fine(diffText.toString());
 		}
-		return storage.save (trxName);
+		return true;
 	}
-	
+
+	/**
+	 * Add quantity on hand directly - not using cached value - solving IDEMPIERE-2629
+	 * @param addition
+	 */
+	public void addQty(BigDecimal addition) {
+		final String sql = "UPDATE M_StorageReservation SET Qty=Qty+?, Updated=SYSDATE, UpdatedBy=? " +
+				"WHERE M_Product_ID=? AND M_Warehouse_ID=? AND M_AttributeSetInstance_ID=? AND IsSOTrx=?";
+		DB.executeUpdateEx(sql, 
+			new Object[] {addition, Env.getAD_User_ID(Env.getCtx()), getM_Product_ID(), getM_Warehouse_ID(), getM_AttributeSetInstance_ID(), isSOTrx()}, 
+			get_TrxName());
+	}
+
 	/**
 	 * 	Update Storage Info add.
 	 * 	Called from MProjectIssue
@@ -308,5 +321,21 @@ public class MStorageReservation extends X_M_StorageReservation {
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("New " + retValue);
 		return retValue;
 	}	//	getCreate
+
+	/**
+	 *	String Representation
+	 * 	@return info
+	 */
+	public String toString()
+	{
+		StringBuffer sb = new StringBuffer("MStorageReservation[")
+			.append("M_Warehouse_ID=").append(getM_Warehouse_ID())
+			.append(",M_Product_ID=").append(getM_Product_ID())
+			.append(",M_AttributeSetInstance_ID=").append(getM_AttributeSetInstance_ID())
+			.append(",IsSOTrx=").append(isSOTrx())
+			.append(": Qty=").append(getQty())
+			.append("]");
+		return sb.toString();
+	}	//	toString
 
 }

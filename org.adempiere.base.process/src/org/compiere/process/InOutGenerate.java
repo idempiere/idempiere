@@ -507,7 +507,7 @@ public class InOutGenerate extends SvrProcess
 				throw new IllegalStateException("Could not create Shipment Line");
 			if (log.isLoggable(Level.FINE)) log.fine("ToDeliver=" + qty + "/" + deliver + " - " + line);
 			toDeliver = toDeliver.subtract(deliver);
-			//      Temp adjustment, actual update happen in MInOut.completeIt
+			//      Temp adjustment, actual update happen in MInOut.completeIt - just in memory - not saved
 			storage.setQtyOnHand(storage.getQtyOnHand().subtract(deliver));
 			//
 			if (toDeliver.signum() == 0)

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -44,7 +45,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4934837951332485064L;
+	private static final long serialVersionUID = -3820729340100521329L;
 
 	/**
 	 * 
@@ -735,15 +736,32 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			return false;
 		}
 
-		storage.setQtyOnHand (storage.getQtyOnHand().add (diffQtyOnHand));
+		storage.addQtyOnHand(diffQtyOnHand);
+		storage.load(storage.get_TrxName());
+		if (storage.getQtyOnHand().signum() == -1) {
+			if (MWarehouse.get(Env.getCtx(), M_Warehouse_ID).isDisallowNegativeInv()) {
+				throw new AdempiereException(Msg.getMsg(ctx, "NegativeInventoryDisallowed"));
+			}
+		}
 		if (s_log.isLoggable(Level.FINE)) {
 			StringBuilder diffText = new StringBuilder("(OnHand=").append(diffQtyOnHand).append(") -> ").append(storage.toString());
 			s_log.fine(diffText.toString());
 		}
-		return storage.save (trxName);
+		return true;
 	}	//	add
 
-	
+	/**
+	 * Add quantity on hand directly - not using cached value - solving IDEMPIERE-2629
+	 * @param addition
+	 */
+	public void addQtyOnHand(BigDecimal addition) {
+		final String sql = "UPDATE M_StorageOnHand SET QtyOnHand=QtyOnHand+?, Updated=SYSDATE, UpdatedBy=? " +
+				"WHERE M_Product_ID=? AND M_Locator_ID=? AND M_AttributeSetInstance_ID=? AND DateMaterialPolicy=?";
+		DB.executeUpdateEx(sql, 
+			new Object[] {addition, Env.getAD_User_ID(Env.getCtx()), getM_Product_ID(), getM_Locator_ID(), getM_AttributeSetInstance_ID(), getDateMaterialPolicy()}, 
+			get_TrxName());
+	}
+
 	/**************************************************************************
 	 * 	Get Location with highest Locator Priority and a sufficient OnHand Qty
 	 * 	@param M_Warehouse_ID warehouse
@@ -854,21 +872,6 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/** Warehouse						*/
 	private int		m_M_Warehouse_ID = 0;
 	
-	/**
-	 * 	Change Qty OnHand
-	 *	@param qty quantity
-	 *	@param add add if true 
-	 */
-	public void changeQtyOnHand (BigDecimal qty, boolean add)
-	{
-		if (qty == null || qty.signum() == 0)
-			return;
-		if (add)
-			setQtyOnHand(getQtyOnHand().add(qty));
-		else
-			setQtyOnHand(getQtyOnHand().subtract(qty));
-	}	//	changeQtyOnHand
-
 	/**
 	 * 	Get M_Warehouse_ID of Locator
 	 *	@return warehouse
@@ -997,8 +1000,9 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	{
 		StringBuffer sb = new StringBuffer("MStorageOnHand[")
 			.append("M_Locator_ID=").append(getM_Locator_ID())
-				.append(",M_Product_ID=").append(getM_Product_ID())
-				.append(",M_AttributeSetInstance_ID=").append(getM_AttributeSetInstance_ID())
+			.append(",M_Product_ID=").append(getM_Product_ID())
+			.append(",M_AttributeSetInstance_ID=").append(getM_AttributeSetInstance_ID())
+			.append(",DateMaterialPolicy=").append(getDateMaterialPolicy())
 			.append(": OnHand=").append(getQtyOnHand())
 			/* @win commented out
 			.append(",Reserved=").append(getQtyReserved())
