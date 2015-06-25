@@ -48,7 +48,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8932848190660391496L;
+	private static final long serialVersionUID = -6041455174391573888L;
 
 	/**
 	 *	Constructor
@@ -207,6 +207,11 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	{
 		return m_lookup.containsKey(key);
 	}   //  containsKey
+
+	public boolean containsKeyNoDirect (Object key)
+	{
+		return containsKey(key);
+	}
 
 	/**
 	 *	Get Data Direct from Table

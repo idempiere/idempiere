@@ -120,11 +120,8 @@ public class MProductionLine extends X_M_ProductionLine {
 			}
 			MStorageOnHand storage = MStorageOnHand.getCreate(getCtx(), getM_Locator_ID(),
 					getM_Product_ID(), asi.get_ID(),dateMPolicy, get_TrxName());
-			storage.changeQtyOnHand(getMovementQty(), true);
-			if ( !storage.save(get_TrxName()) )  {
-				log.log(Level.SEVERE, "Could not update storage for " + toString());
-				errorString.append("Could not save transaction for " + toString() + "\n");
-			}
+			storage.addQtyOnHand(getMovementQty());
+			storage.load(storage.get_TrxName());
 			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Created finished goods line " + getLine());
 			
 			return errorString.toString();
@@ -182,11 +179,8 @@ public class MProductionLine extends X_M_ProductionLine {
 							if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Saved transaction for " + toString());
 						}
 						DB.getDatabase().forUpdate(storages[sl], 120);
-						storages[sl].changeQtyOnHand(lineQty, false);
-						if ( !storages[sl].save(get_TrxName()) )  {
-							log.log(Level.SEVERE, "Could not update storage for " + toString());
-							errorString.append("Could not update storage for " + toString() + "\n");
-						}
+						storages[sl].addQtyOnHand(lineQty.negate());
+						storages[sl].load(storages[sl].get_TrxName());
 						qtyToMove = qtyToMove.subtract(lineQty);
 						if (log.isLoggable(Level.FINE))log.log(Level.FINE, getLine() + " Qty moved = " + lineQty + ", Remaining = " + qtyToMove );
 					}
@@ -244,11 +238,8 @@ public class MProductionLine extends X_M_ProductionLine {
 					} else {
 						if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Saved transaction for " + toString());
 					}
-					storage.changeQtyOnHand(lineQty, false);
-					if ( !storage.save(get_TrxName()) )  {
-						log.log(Level.SEVERE, "Could not update storage for " + toString());
-						errorString.append("Could not update storage for " + toString() + "\n");
-					}
+					storage.addQtyOnHand(lineQty.negate());
+					storage.load(storage.get_TrxName());
 					qtyToMove = qtyToMove.subtract(lineQty);
 					if (log.isLoggable(Level.FINE))log.log(Level.FINE, getLine() + " Qty moved = " + lineQty + ", Remaining = " + qtyToMove );
 				}

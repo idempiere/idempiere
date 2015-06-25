@@ -17,4 +17,5 @@ goto START
 @Echo Starting iDempiere Server ...
 @Echo =======================================
 
-@"%JAVA%" -Dosgi.console=localhost:12612 -Djetty.home=jettyhome -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-selector.xml,etc/jetty-ssl.xml,etc/jetty-https.xml,etc/jetty-deployer.xml -XX:MaxPermSize=192m -Dmail.mime.encodefilename=true -Dmail.mime.decodefilename=true -Dmail.mime.encodeparameters=true -Dmail.mime.decodeparameters=true -jar plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application
+FOR %%c in (plugins\org.eclipse.equinox.launcher_1.*.jar) DO set JARFILE=%%c
+@"%JAVA%" -Dosgi.console=localhost:12612 -Djetty.home=jettyhome -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-selector.xml,etc/jetty-ssl.xml,etc/jetty-https.xml,etc/jetty-deployer.xml -XX:MaxPermSize=192m -Dmail.mime.encodefilename=true -Dmail.mime.decodefilename=true -Dmail.mime.encodeparameters=true -Dmail.mime.decodeparameters=true -jar %JARFILE% -application org.adempiere.server.application

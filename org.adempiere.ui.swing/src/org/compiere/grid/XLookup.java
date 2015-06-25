@@ -36,7 +36,7 @@ public class XLookup extends Lookup
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1388987648081532657L;
+	private static final long serialVersionUID = -1960941688071305272L;
 
 	/**
 	 *	Manual Lookup
@@ -93,6 +93,11 @@ public class XLookup extends Lookup
 		}
 		return false;
 	}   //  containsKey
+
+	public boolean containsKeyNoDirect (Object key)
+	{
+		return containsKey(key);
+	}
 
 	/**
 	 *	Get Object of Key Value

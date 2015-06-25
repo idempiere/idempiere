@@ -37,9 +37,11 @@ import org.compiere.model.GridTab;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MDocType;
+import org.compiere.model.MPeriod;
 import org.compiere.model.MProduction;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.process.DocAction;
 import org.compiere.process.DocOptions;
 import org.compiere.process.DocumentEngine;
 import org.compiere.swing.CComboBox;
@@ -235,12 +237,16 @@ public class VDocAction extends CDialog
 		/*******************
 		 *  General Actions
 		 */
-		String[] docActionHolder = new String[] {DocAction};
-		index = DocumentEngine.getValidActions(DocStatus, Processing, OrderType, IsSOTrx, m_AD_Table_ID, 
-				docActionHolder, options);
-
 		MTable table = MTable.get(Env.getCtx(), m_AD_Table_ID);
 		PO po = table.getPO(Record_ID, null);
+		boolean periodOpen = true;
+		if (po instanceof DocAction)
+			periodOpen = MPeriod.isOpen(Env.getCtx(), m_AD_Table_ID, Record_ID, null);
+
+		String[] docActionHolder = new String[] {DocAction};
+		index = DocumentEngine.getValidActions(DocStatus, Processing, OrderType, IsSOTrx, m_AD_Table_ID, 
+				docActionHolder, options, periodOpen);
+
 		if (po instanceof DocOptions)
 			index = ((DocOptions) po).customizeValidActions(DocStatus, Processing, OrderType, IsSOTrx,
 					m_AD_Table_ID, docActionHolder, options, index);

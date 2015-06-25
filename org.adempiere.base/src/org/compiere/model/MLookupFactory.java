@@ -607,7 +607,7 @@ public class MLookupFactory
 			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);
 		retValue.DisplayColumn = lookupDisplayColumn;		
 		retValue.InfoWindowId = infoWindowId;
-		retValue.QueryDirect = directQuery;
+		retValue.QueryDirect = MRole.getDefault().addAccessSQL(directQuery, TableName, true, false);
 		s_cacheRefTable.put(key.toString(), retValue.cloneIt());
 		return retValue;
 	}	//	getLookup_Table
@@ -814,7 +814,7 @@ public class MLookupFactory
 		MLookupInfo lInfo = new MLookupInfo(realSQL.toString(), TableName,
 			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);
 		lInfo.DisplayColumn = displayColumn.toString();
-		lInfo.QueryDirect = directQuery;
+		lInfo.QueryDirect = MRole.getDefault().addAccessSQL(directQuery, TableName, true, false);
 		s_cacheRefTable.put(cacheKey.toString(), lInfo.cloneIt());
 		return lInfo;
 	}	//	getLookup_TableDir

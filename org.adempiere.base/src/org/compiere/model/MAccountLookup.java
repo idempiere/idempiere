@@ -39,7 +39,7 @@ public final class MAccountLookup extends Lookup implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5565166586045152280L;
+	private static final long serialVersionUID = -6307559127917670193L;
 
 	/**
 	 *	Constructor
@@ -102,6 +102,11 @@ public final class MAccountLookup extends Lookup implements Serializable
 		//
 		return load (intValue);
 	}   //  containsKey
+
+	public boolean containsKeyNoDirect (Object key)
+	{
+		return containsKey(key);
+	}
 
 	/**
 	 *  Get Description

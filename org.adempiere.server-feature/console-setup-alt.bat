@@ -18,7 +18,8 @@ goto START
 
 :START
 @REM Setup idempiere.properties and idempiereEnv.properties
-@"%JAVA%" -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.adempiere.install.console-application
+FOR %%c in (plugins\org.eclipse.equinox.launcher_1.*.jar) DO set JARFILE=%%c
+@"%JAVA%" -jar %JARFILE% -install setup -configuration setup/configuration -application org.adempiere.install.console-application
 
 @Echo ErrorLevel = %ERRORLEVEL%
 @IF NOT ERRORLEVEL = 1 GOTO NEXT
@@ -30,7 +31,7 @@ goto START
 
 :NEXT
 @REM setup jetty
-@"%JAVA%" -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.eclipse.ant.core.antRunner -buildfile build.xml
+@"%JAVA%" -jar %JARFILE% -install setup -configuration setup/configuration -application org.eclipse.ant.core.antRunner -buildfile build.xml
 
 @Echo .
 @Echo For problems, check log file in base directory
