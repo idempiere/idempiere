@@ -292,7 +292,7 @@ public class ConfigurationData
 		}
 		else
 		{
-			setDatabaseType(DBTYPE_POSTGRESQL);
+			setDatabaseType(Database.DB_POSTGRESQL);
 		}
 
 		InetAddress localhost = null;
