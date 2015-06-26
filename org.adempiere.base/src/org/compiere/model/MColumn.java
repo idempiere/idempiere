@@ -48,7 +48,7 @@ public class MColumn extends X_AD_Column
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4372212315789445915L;
+	private static final long serialVersionUID = -7470893214933465732L;
 
 	/**
 	 * 	Get MColumn from Cache
@@ -830,4 +830,10 @@ public class MColumn extends X_AD_Column
 		}
 	}
 
+	@Override
+	public I_AD_Table getAD_Table() throws RuntimeException {
+		MTable table = MTable.get(getCtx(), getAD_Table_ID());
+		return table;
+	}
+	
 }	//	MColumn
