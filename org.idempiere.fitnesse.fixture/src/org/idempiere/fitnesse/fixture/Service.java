@@ -232,7 +232,7 @@ public class Service {
 		//  Get Login Info
 		String loginInfo = null;
 		//  Verify existance of User/Client/Org/Role and User's acces to Client & Org
-		String sql = "SELECT u.Name || '@' || c.Name || '.' || o.Name || ' [' || INITCAP(USER) || ']' AS Text "
+		String sql = "SELECT u.Name || '@' || c.Name || '.' || o.Name AS Text "
 			+ "FROM AD_User u, AD_Client c, AD_Org o, AD_User_Roles ur "
 			+ "WHERE u.AD_User_ID=?"    //  #1
 			+ " AND c.AD_Client_ID=?"   //  #2
