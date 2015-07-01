@@ -34,8 +34,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -62,6 +65,7 @@ import org.apache.ecs.xhtml.td;
 import org.apache.ecs.xhtml.th;
 import org.apache.ecs.xhtml.thead;
 import org.apache.ecs.xhtml.tr;
+import org.compiere.model.I_AD_PrintFormat;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MDunningRunEntry;
@@ -208,6 +212,12 @@ public class ReportEngine implements PrintServiceAttributeListener
 	private int m_language_id = 0;
 	
 	private boolean m_summary = false;
+	
+	/**
+	 * store all column has same css rule into a list
+	 * for IDEMPIERE-2640
+	 */
+	private Map<CSSInfo, List<ColumnInfo>> mapCssInfo = new HashMap<CSSInfo, List<ColumnInfo>>();
 	
 	private List<IReportEngineEventListener> eventListeners = new ArrayList<IReportEngineEventListener>();
 
@@ -601,28 +611,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			//
 			table.setNeedClosingTag(false);
 			PrintWriter w = new PrintWriter(writer);
-			if (onlyTable)
-				table.output(w);
-			else
-			{
-				XhtmlDocument doc = new XhtmlDocument();
-				doc.getHtml().setNeedClosingTag(false);
-				doc.getBody().setNeedClosingTag(false);
-				doc.appendBody(table);
-				if (extension != null && extension.getStyleURL() != null)
-				{
-					link l = new link(extension.getStyleURL(), "stylesheet", "text/css");
-					doc.appendHead(l);					
-				}
-				if (extension != null && extension.getScriptURL() != null)
-				{
-					script jslink = new script();
-					jslink.setLanguage("javascript");
-					jslink.setSrc(extension.getScriptURL());
-					doc.appendHead(jslink);
-				}
-				doc.output(w);
-			}
+			
 			thead thead = new thead();
 			tbody tbody = new tbody();
 			//	for all rows (-1 = header row)
@@ -749,55 +738,10 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 									else
 										td.setClass(cssPrefix + "-text");
 								}			
+								//just run with on record
+								if (row == 0)
+									addCssInfo(item, col);
 								
-								String style = "";
-								MPrintFont mPrintFont = null;
-								if (item.getAD_PrintFont_ID() > 0) 
-								{
-									mPrintFont = MPrintFont.get(item.getAD_PrintFont_ID());
-								}
-								else if (m_printFormat.getAD_PrintFont_ID() > 0)
-								{
-									mPrintFont = MPrintFont.get(m_printFormat.getAD_PrintFont_ID());
-								}
-								if (mPrintFont != null && mPrintFont.getAD_PrintFont_ID() > 0)
-								{
-									Font font = mPrintFont.getFont();
-									String fontFamily = font.getFamily();
-									fontFamily = getCSSFontFamily(fontFamily);
-									style = fontFamily != null ?"font-family:'"+fontFamily+"';" : "";
-									if (font.isBold())
-									{
-										style = style + "font-weight:bold;"; 
-									}
-									if (font.isItalic())
-									{
-										style = style + "font-style:italic;";
-									}									
-									int size = font.getSize();
-									style=style+"font-size:"+size+"pt;";
-								}
-								
-								MPrintColor mPrintColor = null;
-								if (item.getAD_PrintColor_ID() > 0) 
-								{
-									mPrintColor = MPrintColor.get(m_ctx, item.getAD_PrintColor_ID());
-								}
-								else if (m_printFormat.getAD_PrintColor_ID() > 0)
-								{
-									mPrintColor = MPrintColor.get(m_ctx, m_printFormat.getAD_PrintColor_ID());
-								}
-								if (mPrintColor != null && mPrintColor.getAD_PrintColor_ID() > 0)
-								{
-									Color color = mPrintColor.getColor();
-									if (color != null)
-									{
-										style = style+"color:rgb("+color.getRed()+","+color.getGreen()+","+color.getBlue()+");";
-									}
-								}
-								
-								if (style != null && style.trim().length() > 0)
-									td.setStyle(style);
 							}
 							else if (obj instanceof PrintData)
 							{
@@ -810,6 +754,32 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				}	//	for all columns
 			}	//	for all rows
 
+			if (onlyTable)
+				table.output(w);
+			else
+			{
+				XhtmlDocument doc = new XhtmlDocument();
+				doc.getHtml().setNeedClosingTag(false);
+				doc.getBody().setNeedClosingTag(false);
+				doc.appendBody(table);
+				if (extension != null && extension.getStyleURL() != null)
+				{
+					link l = new link(extension.getStyleURL(), "stylesheet", "text/css");
+					doc.appendHead(l);					
+				}
+				if (extension != null && extension.getScriptURL() != null)
+				{
+					script jslink = new script();
+					jslink.setLanguage("javascript");
+					jslink.setSrc(extension.getScriptURL());
+					doc.appendHead(jslink);
+				}
+				
+				appendInlineCss (doc);
+				
+				doc.output(w);
+			}
+			
 			thead.output(w);
 			tbody.output(w);
 			
@@ -1822,4 +1792,198 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		return reportType;
 	}
 	
+	/**
+	 * build css for table from mapCssInfo
+	 * @param doc
+	 */
+	public void appendInlineCss (XhtmlDocument doc){
+		StringBuilder buildCssInline = new StringBuilder();
+		
+		// each entry is a css class
+		for (Entry<CSSInfo, List<ColumnInfo>> cssClassInfo : mapCssInfo.entrySet()){
+			// each column is a css name.
+			for (int i = 0; i < cssClassInfo.getValue().size(); i++){
+				if (i > 0)
+					buildCssInline.append (",");
+				
+				buildCssInline.append(cssClassInfo.getValue().get(i).getCssSelector());
+			}
+			
+			buildCssInline.append(cssClassInfo.getKey().getCssRule());
+			buildCssInline.append("\n");
+		}
+		
+		if (buildCssInline.length() > 0){
+			buildCssInline.insert(0, "<style>");
+			buildCssInline.append("</style>");
+			doc.appendHead(buildCssInline.toString());
+		}
+	}
+	
+	/**
+	 * create css info from formatItem, add all column has same formatItem in a list
+	 * @param formatItem
+	 * @param index
+	 */
+	public void addCssInfo (MPrintFormatItem formatItem, int index){
+		CSSInfo cadidateCss = new CSSInfo(formatItem);
+		if (mapCssInfo.containsKey(cadidateCss)){
+			mapCssInfo.get(cadidateCss).add(new ColumnInfo(index, formatItem));
+		}else{
+			List<ColumnInfo> newColumnList = new ArrayList<ColumnInfo>();
+			newColumnList.add(new ColumnInfo(index, formatItem));
+			mapCssInfo.put(cadidateCss, newColumnList);
+		}
+	}
+	
+	/**
+	 * Store info for make css rule
+	 * @author hieplq
+	 *
+	 */
+	public class CSSInfo {
+		private Font font;		
+		private Color color;
+		private String cssStr;
+		public CSSInfo (MPrintFormatItem item){
+			MPrintFont mPrintFont = null;
+			I_AD_PrintFormat m_printFormat = item.getAD_PrintFormat();
+			
+			if (item.getAD_PrintFont_ID() > 0) 
+			{
+				mPrintFont = MPrintFont.get(item.getAD_PrintFont_ID());
+			}			
+			else if (m_printFormat.getAD_PrintFont_ID() > 0)
+			{
+				mPrintFont = MPrintFont.get(m_printFormat.getAD_PrintFont_ID());
+			}
+			if (mPrintFont != null && mPrintFont.getAD_PrintFont_ID() > 0)
+			{
+				font = mPrintFont.getFont();				
+			}
+			
+			MPrintColor mPrintColor = null;
+			if (item.getAD_PrintColor_ID() > 0) 
+			{
+				mPrintColor = MPrintColor.get(m_ctx, item.getAD_PrintColor_ID());
+			}
+			else if (m_printFormat.getAD_PrintColor_ID() > 0)
+			{
+				mPrintColor = MPrintColor.get(m_ctx, m_printFormat.getAD_PrintColor_ID());
+			}
+			if (mPrintColor != null && mPrintColor.getAD_PrintColor_ID() > 0)
+			{
+				color = mPrintColor.getColor();
+				
+			}
+		}
+		
+		/**
+		 * sum hashCode of partial
+		 */
+		@Override
+		public int hashCode() {
+			return (color == null ? 0 : color.hashCode()) + (font == null ? 0 : font.hashCode());
+		}
+		
+		/**
+		 * equal only when same color and font
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == null || !(obj instanceof CSSInfo) || obj.hashCode() != this.hashCode())
+				return false;
+			
+			CSSInfo compareObj = (CSSInfo)obj;
+			
+			if (compareObj.color == null && color != null)
+				return false;
+			
+			if (compareObj.font == null && font != null)
+				return false;
+			
+			return compareObj.color.equals(color) && compareObj.font.equals(font);
+		}
+		
+		/**
+		 * append a css rule to css class
+		 * @param cssBuild
+		 * @param ruleName
+		 * @param ruleValue
+		 */
+		protected void addCssRule(StringBuilder cssBuild, String ruleName, String ruleValue) {
+			cssBuild.append (ruleName);
+			cssBuild.append (":");
+			cssBuild.append (ruleValue);
+			cssBuild.append (";");
+		}
+		
+		/**
+		 * build css rule
+		 * @return
+		 */
+		public String getCssRule (){
+			if (cssStr != null)
+				return cssStr;
+			
+			StringBuilder cssBuild = new StringBuilder();
+			cssBuild.append ("{");
+			
+			if (font != null){
+				
+				String fontFamily = font.getFamily();
+				fontFamily = getCSSFontFamily(fontFamily);
+				if (fontFamily != null){
+					addCssRule(cssBuild, "font-family", fontFamily);
+				}
+				
+				if (font.isBold())
+				{
+					addCssRule(cssBuild, "font-weight", "bold");					
+				}
+				
+				if (font.isItalic())
+				{
+					addCssRule(cssBuild, "font-style", "italic");
+				}									
+				
+				int size = font.getSize();
+				addCssRule(cssBuild, "font-size", size + "pt");
+			}
+			
+			if (color != null)
+			{
+				cssBuild.append("color:rgb(");
+				cssBuild.append(color.getRed()); 
+				cssBuild.append(",");
+				cssBuild.append(color.getGreen());
+				cssBuild.append(",");
+				cssBuild.append(color.getBlue());
+				cssBuild.append(");");
+			}
+			cssBuild.append ("}");
+			cssStr = cssBuild.toString();
+			
+			return cssStr;
+		}
+	}
+	
+	/**
+	 * store info of report column,
+	 * now just use index to create css selector, but for later maybe will construct a complex class name
+	 * @author hieplq
+	 *
+	 */
+	public static class ColumnInfo {
+		protected static String CSS_SELECTOR_TEMPLATE = "table > tbody > tr > td:nth-child(%1$s)";
+		int index = -1;
+		public ColumnInfo (int index, MPrintFormatItem formatItem){
+			this.index = index;
+			
+		}
+		
+		public String getCssSelector(){
+			return String.format(CSS_SELECTOR_TEMPLATE, index + 1);
+		}
+	}
 }	//	ReportEngine
