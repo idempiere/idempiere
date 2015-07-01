@@ -567,7 +567,7 @@ public class MInOutLine extends X_M_InOutLine
 			}
 
 	        // IDEMPIERE-2668
-	        if (getParent().isSOTrx()) {
+			if (MInOut.MOVEMENTTYPE_CustomerShipment.equals(getParent().getMovementType())) {
 	        	if (locator.getM_LocatorType_ID() > 0) {
 	        		MLocatorType lt = MLocatorType.get(getCtx(), locator.getM_LocatorType_ID());
 	        		if (! lt.isAvailableForShipping()) {
