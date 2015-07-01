@@ -195,6 +195,7 @@ public class WGraph extends Div implements IdSpace {
 		if (m_renderTable) {
 			if (m_renderChart) {
 				East east = new East();
+				east.setAutoscroll(true);
 				layout.appendChild(east);
 				renderTable(east);
 			} else {
