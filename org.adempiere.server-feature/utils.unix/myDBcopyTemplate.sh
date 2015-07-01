@@ -6,5 +6,3 @@
 DATE=`date +%Y%m%d_%H%M%S`
 mv $IDEMPIERE_HOME/data/ExpDat.jar $IDEMPIERE_HOME/data/ExpDat$DATE.jar
 echo copy $IDEMPIERE_HOME/data/ExpDat$DATE.jar to backup media
-
-sleep 30

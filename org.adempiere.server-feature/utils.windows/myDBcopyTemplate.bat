@@ -18,6 +18,3 @@ ren ExpDat.jar "ExpDat%DATETIME%.jar"
 @dir ExpDat%DATETIME%.jar
 
 @Echo copy %IDEMPIERE_HOME%\data\ExpDat%DATETIME%.jar to backup media
-
-@Rem Sleep 30
-@CHOICE /C YN /T 30 /D N > NUL
