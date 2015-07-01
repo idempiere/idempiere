@@ -64,6 +64,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
@@ -174,7 +175,9 @@ public class WPaySelect extends PaySelect
 		dataStatus.setPre(true);
 		onlyDue.addActionListener(this);
 		fieldPayDate.addValueChangeListener(this);
-		//
+
+		//IDEMPIERE-2657, pritesh shah
+		bGenerate.setEnabled(false);
 		bGenerate.addActionListener(this);
 		bCancel.addActionListener(this);
 		//
@@ -289,6 +292,11 @@ public class WPaySelect extends PaySelect
 	private void loadTableInfo()
 	{
 		Timestamp payDate = (Timestamp)fieldPayDate.getValue();
+		
+		//IDEMPIERE-2657, pritesh shah
+		if(payDate == null){
+			throw new WrongValueException(fieldPayDate.getComponent(), Msg.getMsg(Env.getCtx(), "FillMandatory") + labelPayDate.getValue());
+		}
 		miniTable.setColorCompare(payDate);
 		if (log.isLoggable(Level.CONFIG)) log.config("PayDate=" + payDate);
 		
