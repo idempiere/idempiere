@@ -6,24 +6,14 @@ Copyright (C) 2009 Idalica Corporation
 <zk>
 
 <div style="background-color: #E5E5E5; margin: 5px;"
-	if="${desktop.execution.serverName == &quot;ip-10-8-0-1.ec2.internal&quot;}">
+	if="${desktop.execution.serverName.equals(&quot;127.0.0.1&quot;) or desktop.execution.serverName.startsWith(&quot;demo.&quot;) or desktop.execution.serverName.startsWith(&quot;test.&quot;) or desktop.execution.serverName.startsWith(&quot;experimental.&quot;)}">
 	<hbox align="center">
-		<toolbarbutton
-			href="http://www.idalica.com" image="http://www.testadempiere.com/images/Idalica_Logo-grey-sm.png" target="_blank"/>
-		<label value="iDempiere Online Demonstration - Built Nightly by Idalica"
-			style="font-family:Arial,sans-serif; color:#578BB8; font-size:1em; font-weight: bold;" />
-	</hbox>
-</div>
-<div style="background-color: #E5E5E5; margin: 5px;"
-	if="${desktop.execution.serverName.startsWith(&quot;demo.&quot;) or desktop.execution.serverName.startsWith(&quot;test.&quot;) or desktop.execution.serverName.startsWith(&quot;experimental.&quot;)}">
-	<hbox align="center">
-		<toolbarbutton
-			href="http://www.idempiere.org" image="http://www.idempiere.org/_/rsrc/1366146890872/config/customLogo.gif?revision=3" target="_blank"/>
+		<a href="http://www.idempiere.org" target="_blank"><image src="/theme/default/images/login-logo.png"/></a>
 		<label value="iDempiere Online Demonstration"
 			style="font-family:Arial,sans-serif; color:#578BB8; font-size:1.5em; font-weight: bold;" />
 	</hbox>
 </div>
-<div style="height: 90px" if="${desktop.execution.serverName != &quot;ip-10-8-0-1.ec2.internal&quot; and ! desktop.execution.serverName.startsWith(&quot;demo.&quot;) and ! desktop.execution.serverName.startsWith(&quot;test.&quot;) and ! desktop.execution.serverName.startsWith(&quot;experimental.&quot;)}">
+<div style="height: 90px" if="${! desktop.execution.serverName.equals(&quot;127.0.0.1&quot;) and ! desktop.execution.serverName.startsWith(&quot;demo.&quot;) and ! desktop.execution.serverName.startsWith(&quot;test.&quot;) and ! desktop.execution.serverName.startsWith(&quot;experimental.&quot;)}">
 	<space/>
 </div>
 

@@ -15,10 +15,10 @@ Copyright (C) 2009 Idalica Corporation
 	}
 </style>
 
-<div class="loginLinksBox" if="${desktop.execution.serverName == &quot;ip-10-8-0-1.ec2.internal&quot; or desktop.execution.serverName.startsWith(&quot;demo.&quot;) or desktop.execution.serverName.startsWith(&quot;test.&quot;) or desktop.execution.serverName.startsWith(&quot;experimental.&quot;)}"
-	style="position: absolute; bottom: 5px;">
+<div class="loginLinksBox" if="${desktop.execution.serverName.equals(&quot;127.0.0.1&quot;) or desktop.execution.serverName.startsWith(&quot;demo.&quot;) or desktop.execution.serverName.startsWith(&quot;test.&quot;) or desktop.execution.serverName.startsWith(&quot;experimental.&quot;)}"
+	style="position: absolute; bottom: 30px;">
 
-	<toolbarbutton href="http://www.zkoss.org" image="http://www.zkoss.org/img/zkpowered_s.png"
+	<toolbarbutton href="http://www.zkoss.org" image="/theme/default/images/zkpowered_s.png"
 		tooltiptext="Powered by Zk" target="_blank"
 		/>
 </div>
