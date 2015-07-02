@@ -23,12 +23,16 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -764,8 +768,16 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				doc.appendBody(table);
 				if (extension != null && extension.getStyleURL() != null)
 				{
-					link l = new link(extension.getStyleURL(), "stylesheet", "text/css");
-					doc.appendHead(l);					
+					// maybe cache style content with key is path
+					String pathStyleFile = extension.getFullPathStyle();
+					Path path = Paths.get(pathStyleFile);
+				    List<String> styleLines = Files.readAllLines(path, Ini.getCharset());
+				    StringBuilder styleBuild = new StringBuilder();
+				    for (String styleLine : styleLines){
+				    	styleBuild.append(styleLine);
+				    }
+				    
+				    appendInlineCss (doc, styleBuild);
 				}
 				if (extension != null && extension.getScriptURL() != null)
 				{
@@ -1816,6 +1828,10 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			buildCssInline.append("\n");
 		}
 		
+		appendInlineCss (doc, buildCssInline);
+	}
+	
+	public void appendInlineCss (XhtmlDocument doc, StringBuilder buildCssInline){
 		if (buildCssInline.length() > 0){
 			buildCssInline.insert(0, "<style>");
 			buildCssInline.append("</style>");

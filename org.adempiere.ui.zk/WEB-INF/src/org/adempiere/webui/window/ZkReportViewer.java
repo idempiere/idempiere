@@ -1422,11 +1422,13 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 
 		private ZkReportViewer viewer;
 		private String contextPath;
+		private String contextFullPath;
 		
 		public HTMLRendererRunnable(ZkReportViewer viewer) {
 			super();
 			this.viewer = viewer;
 			contextPath = Executions.getCurrent().getContextPath();
+			contextFullPath = Executions.getCurrent().getDesktop().getWebApp().getRealPath("/");
 		}
 
 		@Override
@@ -1441,7 +1443,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				}
 				File file = File.createTempFile(prefix, ".html", new File(path));
-				viewer.m_reportEngine.createHTML(file, false, viewer.m_reportEngine.getPrintFormat().getLanguage(), new HTMLExtension(contextPath, "rp", viewer.getUuid()));
+				viewer.m_reportEngine.createHTML(file, false, viewer.m_reportEngine.getPrintFormat().getLanguage(), new HTMLExtension(contextFullPath, contextPath, "rp", viewer.getUuid()));
 				viewer.media = new AMedia(file.getName(), "html", "text/html", file, false);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)

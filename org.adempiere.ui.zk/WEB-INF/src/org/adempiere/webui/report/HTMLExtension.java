@@ -36,8 +36,9 @@ public class HTMLExtension implements IHTMLExtension {
 	private String componentId;
 	private String scriptURL;
 	private String styleURL;
+	private String contextFullPath;
 
-	public HTMLExtension(String contextPath, String classPrefix, String componentId) {
+	public HTMLExtension(String contextFullPath, String contextPath, String classPrefix, String componentId) {
 
 		String theme = MSysConfig.getValue(MSysConfig.HTML_REPORT_THEME, "/", Env.getAD_Client_ID(Env.getCtx()));
 
@@ -50,6 +51,7 @@ public class HTMLExtension implements IHTMLExtension {
 		this.componentId = componentId;
 		this.scriptURL = contextPath + theme + "js/report.js";
 		this.styleURL = contextPath + theme + "css/report.css";
+		this.contextFullPath = contextFullPath;
 	}
 	
 	public void extendIDColumn(int row, ConcreteElement columnElement, a href,
@@ -89,6 +91,18 @@ public class HTMLExtension implements IHTMLExtension {
 		reportBody.addAttribute("reportIco", "/webui" + ThemeManager.getThemeResource("images/mReport.png"));
 		reportBody.addAttribute ("reportLabel", Msg.getMsg(AEnv.getLanguage(Env.getCtx()), "Report").replace("&", ""));
 		reportBody.addAttribute ("windowLabel", Msg.getMsg(AEnv.getLanguage(Env.getCtx()), "Window"));
+		
+	}
+	
+	public String getFullPathStyle (){
+		String theme = MSysConfig.getValue(MSysConfig.HTML_REPORT_THEME, "/", Env.getAD_Client_ID(Env.getCtx()));
+
+		if (! theme.startsWith("/"))
+			theme = "/" + theme;
+		if (! theme.endsWith("/"))
+			theme = theme + "/";
+
+		return contextFullPath + theme + "css/report.css";
 		
 	}
 }

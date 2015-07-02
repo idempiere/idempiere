@@ -35,4 +35,6 @@ public interface IHTMLExtension {
 	public void extendIDColumn(int row, ConcreteElement columnElement, a href, PrintDataElement dataElement);
 	
 	public void setWebAttribute (body reportBody);
+	
+	public String getFullPathStyle ();
 }
