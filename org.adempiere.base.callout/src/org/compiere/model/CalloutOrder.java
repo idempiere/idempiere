@@ -373,11 +373,6 @@ public class CalloutOrder extends CalloutEngine
 				String s = rs.getString("POReference");
 				if (s != null && s.length() != 0)
 					mTab.setValue("POReference", s);
-				// should not be reset to null if we entered already value! VHARCQ, accepted YS makes sense that way
-				// TODO: should get checked and removed if no longer needed!
-				/*else
-					mTab.setValue("POReference", null);*/
-
 				//	SO Description
 				s = rs.getString("SO_Description");
 				if (s != null && s.trim().length() != 0)
@@ -570,8 +565,6 @@ public class CalloutOrder extends CalloutEngine
 				String s = rs.getString("POReference");
 				if (s != null && s.length() != 0)
 					mTab.setValue("POReference", s);
-				else
-					mTab.setValue("POReference", null);
 				//	SO Description
 				s = rs.getString("SO_Description");
 				if (s != null && s.trim().length() != 0)
