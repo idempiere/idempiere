@@ -280,7 +280,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 				" C_ElementValue.IsActive='Y' AND C_ElementValue.IsSummary='N' " 
 				+ "AND EXISTS (SELECT 1 FROM C_AcctSchema_Element ase "
 				+ "WHERE ase.C_Element_ID=C_ElementValue.C_Element_ID AND ase.ElementType='AC' "
-				+ "AND ase.C_AcctSchema_ID=" + m_C_AcctSchema_ID + " AND ase.AD_Client_ID=" + m_AD_Client_ID + ") ");
+				+ "AND ase.C_AcctSchema_ID=@C_AcctSchema_ID@ AND ase.AD_Client_ID=@AD_Client_ID@) ");
 		fieldAccount = new WTableDirEditor("C_ElementValue_ID", false, false, true, lookupAccount);
 	}
 	
@@ -380,6 +380,8 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		
 		if (name.equals("C_AcctSchema_ID")) {
 			m_C_AcctSchema_ID = ((Integer)value).intValue();
+			Env.setContext(Env.getCtx(), form.getWindowNo(), "C_AcctSchema_ID", m_C_AcctSchema_ID);
+			Env.setContext(Env.getCtx(), form.getWindowNo(), "AD_Client_ID", Env.getAD_Client_ID(Env.getCtx()));
 			fieldAccount.actionRefresh();
 		}
 	}
