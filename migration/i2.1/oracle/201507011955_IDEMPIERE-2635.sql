@@ -7,7 +7,7 @@ UPDATE AD_Column SET FieldLength=255, IsToolbarButton='N',Updated=TO_DATE('2015-
 ;
 
 -- Jul 1, 2015 7:54:52 PM COT
-ALTER TABLE WS_WebService_Para MODIFY ConstantValue VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE WS_WebService_Para MODIFY ConstantValue NVARCHAR2(255) DEFAULT NULL 
 ;
 
 SELECT register_migration_script('201507011955_IDEMPIERE-2635.sql') FROM dual
