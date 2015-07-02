@@ -890,8 +890,10 @@ public class CompositeADTabbox extends AbstractADTabbox
 		if (!tabPanel.isVisible()) {
 			tabPanel.setVisible(true);
 		}
+		boolean wasForm = false;
 		if (!tabPanel.isGridView()) {
-			tabPanel.switchRowPresentation();	
+			tabPanel.switchRowPresentation(); // required to avoid NPE on GridTabRowRenderer.getCurrentRow below
+			wasForm = true;
 		}
 		tabPanel.setDetailPaneMode(true);
 		headerTab.getDetailPane().setVflex("true");
@@ -904,7 +906,9 @@ public class CompositeADTabbox extends AbstractADTabbox
 			Row row = gtr.getCurrentRow();
 			if (row != null)	
 				gtr.setCurrentRow(row);
-		}				
+		}
+		if (wasForm && tabPanel.getTabLevel() == 0 && headerTab.getTabLevel() != 0) // maintain form on header when zooming to a detail tab
+			tabPanel.switchRowPresentation();
 	}
 	
 	private void showLastError() {

@@ -15,9 +15,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
-import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.ListModelTable;
-import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
@@ -37,8 +35,10 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.apps.form.FactReconcile;
 import org.compiere.model.MClient;
+import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.X_C_ElementValue;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -94,7 +94,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	private Label labelReconciled = new Label();
 	private Checkbox isReconciled = new Checkbox();
 	private Label labelAccount = new Label();
-	private Listbox fieldAccount = null;
+	private WTableDirEditor fieldAccount = null;
 	private Label labelBPartner = new Label();
 	private WSearchEditor fieldBPartner = null;
 	
@@ -184,8 +184,8 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		row.appendCellChild(fieldOrg.getComponent(), 2);
 		row = rows.newRow();
 		row.appendCellChild(labelAccount.rightAlign());
-		fieldAccount.setHflex("true");
-		row.appendCellChild(fieldAccount, 2);
+		fieldAccount.getComponent().setHflex("true");
+		row.appendCellChild(fieldAccount.getComponent(), 2);
 		row.appendCellChild(labelReconciled);
 		row.appendCellChild(isReconciled, 2);
 		row = rows.newRow();
@@ -252,6 +252,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		fieldAcctSchema = new WTableDirEditor("C_AcctSchema_ID", true, false, true, lookupAS);
 		fieldAcctSchema.setValue(MClient.get(Env.getCtx()).getAcctSchema().getC_AcctSchema_ID());
 		fieldAcctSchema.addValueChangeListener(this);
+		m_C_AcctSchema_ID = (Integer)fieldAcctSchema.getValue();
 		
 		// Organization
 		AD_Column_ID = FactReconcile.col_AD_Org_ID; //C_Period.AD_Org_ID (needed to allow org 0)
@@ -273,25 +274,25 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		fieldProduct = new WSearchEditor("M_Product_ID", false, false, true, lookupProduct);
 		
 		//  Account
-		Vector<KeyNamePair> vector = getAccount();
-		KeyNamePair[] listAccount = new KeyNamePair[vector.size()];
-		for(int i=0;i<vector.size();i++)
-			listAccount[i] = vector.get(i);
-		fieldAccount = new Listbox(listAccount);
-		fieldAccount.setMold("select");
-		fieldAccount.setSelectedIndex(0);
-				
+		AD_Column_ID = MColumn.getColumn_ID(X_C_ElementValue.Table_Name, X_C_ElementValue.COLUMNNAME_C_ElementValue_ID);
+		MLookup lookupAccount = MLookupFactory.get(Env.getCtx(), form.getWindowNo(), AD_Column_ID, DisplayType.TableDir, Env.getLanguage(Env.getCtx()), 
+				X_C_ElementValue.COLUMNNAME_C_ElementValue_ID, 0, true, 
+				" C_ElementValue.IsActive='Y' AND C_ElementValue.IsSummary='N' " 
+				+ "AND EXISTS (SELECT 1 FROM C_AcctSchema_Element ase "
+				+ "WHERE ase.C_Element_ID=C_ElementValue.C_Element_ID AND ase.ElementType='AC' "
+				+ "AND ase.C_AcctSchema_ID=@C_AcctSchema_ID@ AND ase.AD_Client_ID=@AD_Client_ID@) ");
+		fieldAccount = new WTableDirEditor("C_ElementValue_ID", false, false, true, lookupAccount);
 	}
 	
 	public void loadData(){
-		ListItem listAccount = fieldAccount.getSelectedItem();
-		int Account_ID = 0;
-		if(listAccount!=null){
-			Account_ID = (Integer)listAccount.getValue();
-		}
-			
-		if (Account_ID != 0)
-			m_Account_ID = Account_ID;
+		
+		if(fieldAcctSchema.getValue()!=null)
+			m_C_AcctSchema_ID = (Integer)fieldAcctSchema.getValue();
+		else
+			m_C_AcctSchema_ID = 0;
+		
+		if(fieldAccount.getValue()!=null)
+			m_Account_ID = (Integer)fieldAccount.getValue();
 		else
 			m_Account_ID = 0;
 		
@@ -299,11 +300,6 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 			m_AD_Org_ID = (Integer)fieldOrg.getValue();
 		else
 			m_AD_Org_ID = 0;
-			
-		if(fieldAcctSchema.getValue()!=null)
-			m_C_AcctSchema_ID = (Integer)fieldAcctSchema.getValue();
-		else
-			m_C_AcctSchema_ID = 0;
 
 		m_isReconciled = isReconciled.isChecked();
 		
@@ -375,8 +371,19 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	
 	@Override
 	public void valueChange(ValueChangeEvent evt) {
-		// TODO Auto-generated method stub
+		String name = evt.getPropertyName();
+		Object value = evt.getNewValue();
+		if (log.isLoggable(Level.CONFIG)) log.config(name + "=" + value);
 		
+		if (value == null)
+			return;
+		
+		if (name.equals("C_AcctSchema_ID")) {
+			m_C_AcctSchema_ID = ((Integer)value).intValue();
+			Env.setContext(Env.getCtx(), form.getWindowNo(), "C_AcctSchema_ID", m_C_AcctSchema_ID);
+			Env.setContext(Env.getCtx(), form.getWindowNo(), "AD_Client_ID", Env.getAD_Client_ID(Env.getCtx()));
+			fieldAccount.actionRefresh();
+		}
 	}
 
 	@Override

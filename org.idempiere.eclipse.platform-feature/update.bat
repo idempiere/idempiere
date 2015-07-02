@@ -3,7 +3,7 @@
 
 cd %~dp0
 
-cp idempiere.ini idempiere.ini.sav
+copy idempiere.ini idempiere.ini.sav
 
 if exist jetty.xml.sav del /q jetty.xml.sav
 if exist jettyhome/etc/jetty.xml (
@@ -20,9 +20,10 @@ if exist jettyhome/etc/jetty-selector.xml (
    copy jettyhome/etc/jetty-selector.xml jetty-selector.xml.sav
 )
 
-java -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install director -configuration director/configuration -application org.eclipse.equinox.p2.director -consoleLog -profileProperties org.eclipse.update.install.features=true -destination $DESTINATION -repository $1 -u org.adempiere.server.product -i org.adempiere.server.product
+FOR %%c in (plugins\org.eclipse.equinox.launcher_1.*.jar) DO set JARFILE=%%c
+java -jar %JARFILE% -install director -configuration director/configuration -application org.eclipse.equinox.p2.director -consoleLog -profileProperties org.eclipse.update.install.features=true -destination $DESTINATION -repository $1 -u org.adempiere.server.product -i org.adempiere.server.product
 
-cp idempiere.ini.sav idempiere.ini
+copy idempiere.ini.sav idempiere.ini
 
 if exist jetty.xml.sav (
    copy jetty.xml.sav jettyhome/etc/jetty.xml 

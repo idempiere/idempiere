@@ -685,54 +685,64 @@ public class M_PriceList_Create extends SvrProcess {
 						sqlpc.append(" WHERE s.T_Selection_ID=p.M_Product_ID");
 						sqlpc.append(" AND s.AD_PInstance_ID=").append(m_AD_PInstance_ID + ")");
 						
-						PreparedStatement ps = DB.prepareStatement(sqlpc.toString(), get_TrxName());
-						ResultSet rs = ps.executeQuery();
-						while(rs.next()) 
-						{
-							int M_Product_ID = rs.getInt(MProductPrice.COLUMNNAME_M_Product_ID);
-							ProductCost m_productCost = new ProductCost (getCtx(), M_Product_ID, 0, get_TrxName());
-							m_productCost.setQty(BigDecimal.ONE);
-							BigDecimal costs = m_productCost.getProductCosts(as, rsCurgen.getInt("AD_Org_ID"), null, 0, false);	
-							
-							if (costs == null || costs.signum() == 0)	//	zero costs OK
+						PreparedStatement ps = null;
+						ResultSet rs = null;
+						
+						try{
+							ps = DB.prepareStatement(sqlpc.toString(), get_TrxName());
+							rs = ps.executeQuery();
+							while(rs.next()) 
 							{
-								MProduct product = new MProduct(getCtx(), M_Product_ID, get_TrxName());
-								if (product.isStocked())
-									log.log(Level.WARNING, "No Costs for " + product.getName());
-							}
-							else
-							{
-								sqlupd = new StringBuilder("UPDATE M_ProductPrice p ");
-								sqlupd.append(" SET	PriceList  = (DECODE('").append(rsDiscountLine.getString(MDiscountSchemaLine.COLUMNNAME_List_Base)).append("', 'P', ?, PriceList) + ?) * (1 - ?/100), ");
-								sqlupd.append("     PriceStd   = (DECODE('").append(rsDiscountLine.getString(MDiscountSchemaLine.COLUMNNAME_Std_Base)).append("', 'P', ?, PriceStd) + ?) * (1 - ?/100),");
-								sqlupd.append("     PriceLimit = (DECODE('").append(rsDiscountLine.getString(MDiscountSchemaLine.COLUMNNAME_Limit_Base)).append("', 'P', ?, PriceLimit) + ?) * (1 - ?/100)");
-								sqlupd.append(" WHERE	M_PriceList_Version_ID=").append(p_PriceList_Version_ID); 
-								sqlupd.append(" AND M_Product_ID = ?");
-								sqlupd.append(" AND EXISTS	(SELECT * FROM T_Selection s");
-								sqlupd.append(" WHERE s.T_Selection_ID=p.M_Product_ID");
-								sqlupd.append(" AND s.AD_PInstance_ID=").append(m_AD_PInstance_ID + ")");
+								int M_Product_ID = rs.getInt(MProductPrice.COLUMNNAME_M_Product_ID);
+								ProductCost m_productCost = new ProductCost (getCtx(), M_Product_ID, 0, get_TrxName());
+								m_productCost.setQty(BigDecimal.ONE);
+								BigDecimal costs = m_productCost.getProductCosts(as, rsCurgen.getInt("AD_Org_ID"), null, 0, false);	
 								
-								pstmu = DB.prepareStatement(sqlupd.toString(),
-										ResultSet.TYPE_SCROLL_INSENSITIVE,
-										ResultSet.CONCUR_UPDATABLE, get_TrxName());
-
-								pstmu.setBigDecimal(1, costs);
-								pstmu.setDouble(2, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_List_AddAmt));
-								pstmu.setDouble(3, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_List_Discount));
-								pstmu.setBigDecimal(4, costs);
-								pstmu.setDouble(5, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_Std_AddAmt));
-								pstmu.setDouble(6, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_Std_Discount));
-								pstmu.setBigDecimal(7, costs);
-								pstmu.setDouble(8, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_Limit_AddAmt));
-								pstmu.setDouble(9, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_Limit_Discount));
-								pstmu.setInt(10, M_Product_ID);
-
-								cntu = pstmu.executeUpdate();
-
-								if (cntu == -1)
-									raiseError("Update	M_ProductPrice ", sqlupd.toString());
-								if (log.isLoggable(Level.FINE)) log.fine("Updated " + cntu);
+								if (costs == null || costs.signum() == 0)	//	zero costs OK
+								{
+									MProduct product = new MProduct(getCtx(), M_Product_ID, get_TrxName());
+									if (product.isStocked())
+										log.log(Level.WARNING, "No Costs for " + product.getName());
+								}
+								else
+								{
+									sqlupd = new StringBuilder("UPDATE M_ProductPrice p ");
+									sqlupd.append(" SET	PriceList  = (DECODE('").append(rsDiscountLine.getString(MDiscountSchemaLine.COLUMNNAME_List_Base)).append("', 'P', ?, PriceList) + ?) * (1 - ?/100), ");
+									sqlupd.append("     PriceStd   = (DECODE('").append(rsDiscountLine.getString(MDiscountSchemaLine.COLUMNNAME_Std_Base)).append("', 'P', ?, PriceStd) + ?) * (1 - ?/100),");
+									sqlupd.append("     PriceLimit = (DECODE('").append(rsDiscountLine.getString(MDiscountSchemaLine.COLUMNNAME_Limit_Base)).append("', 'P', ?, PriceLimit) + ?) * (1 - ?/100)");
+									sqlupd.append(" WHERE	M_PriceList_Version_ID=").append(p_PriceList_Version_ID); 
+									sqlupd.append(" AND M_Product_ID = ?");
+									sqlupd.append(" AND EXISTS	(SELECT * FROM T_Selection s");
+									sqlupd.append(" WHERE s.T_Selection_ID=p.M_Product_ID");
+									sqlupd.append(" AND s.AD_PInstance_ID=").append(m_AD_PInstance_ID + ")");
+									
+									pstmu = DB.prepareStatement(sqlupd.toString(),
+											ResultSet.TYPE_SCROLL_INSENSITIVE,
+											ResultSet.CONCUR_UPDATABLE, get_TrxName());
+	
+									pstmu.setBigDecimal(1, costs);
+									pstmu.setDouble(2, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_List_AddAmt));
+									pstmu.setDouble(3, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_List_Discount));
+									pstmu.setBigDecimal(4, costs);
+									pstmu.setDouble(5, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_Std_AddAmt));
+									pstmu.setDouble(6, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_Std_Discount));
+									pstmu.setBigDecimal(7, costs);
+									pstmu.setDouble(8, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_Limit_AddAmt));
+									pstmu.setDouble(9, rsDiscountLine.getDouble(MDiscountSchemaLine.COLUMNNAME_Limit_Discount));
+									pstmu.setInt(10, M_Product_ID);
+	
+									cntu = pstmu.executeUpdate();
+	
+									if (cntu == -1)
+										raiseError("Update	M_ProductPrice ", sqlupd.toString());
+									if (log.isLoggable(Level.FINE)) log.fine("Updated " + cntu);
+								}
 							}
+						} catch (SQLException e) {
+							throw e;
+						} finally {
+							DB.close(rs, ps);
+							rs = null; ps = null;
 						}
 					}
 

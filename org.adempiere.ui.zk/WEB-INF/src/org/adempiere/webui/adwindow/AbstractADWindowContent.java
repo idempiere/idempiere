@@ -527,8 +527,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     					{
     						setActiveTab(gridWindow.getTabIndex(gTab), null);
     						gTab.navigate(i);
-    						if (gc.isGridView())
-    							gc.switchRowPresentation();
     						return true;
     					}
     				}

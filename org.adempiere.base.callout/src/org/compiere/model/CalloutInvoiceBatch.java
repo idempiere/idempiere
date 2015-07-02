@@ -387,6 +387,8 @@ public class CalloutInvoiceBatch extends CalloutEngine
 			}
 		}
 		
+		if (TaxAmt == null)
+			TaxAmt = BigDecimal.ZERO;
 		//	
 		if (IsTaxIncluded)
 		{

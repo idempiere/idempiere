@@ -707,7 +707,8 @@ public class MUOMConversion extends X_C_UOM_Conversion
 			if (getM_Product_ID() != 0 
 				&& (newRecord || is_ValueChanged("M_Product_ID")))
 			{
-				MProduct product = MProduct.get(getCtx(), getM_Product_ID());
+				// Check of product must be in the same transaction as the conversion being saved
+				MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 				if (product.getC_UOM_ID() != getC_UOM_ID())
 				{
 					MUOM uom = MUOM.get(getCtx(), product.getC_UOM_ID());

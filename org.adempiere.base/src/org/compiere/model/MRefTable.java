@@ -25,7 +25,7 @@ public class MRefTable extends X_AD_Ref_Table
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 9123965213307214868L;
+	private static final long serialVersionUID = 380648726485603193L;
 
 	/**
 	 * 	Standard Constructor
@@ -57,4 +57,10 @@ public class MRefTable extends X_AD_Ref_Table
 		super (ctx, rs, trxName);
 	}	//	MRefTable
 
+	@Override
+	public I_AD_Table getAD_Table() throws RuntimeException {
+		MTable table = MTable.get(getCtx(), getAD_Table_ID());
+		return table;
+	}
+	
 }	//	MRefTable

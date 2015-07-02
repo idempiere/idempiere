@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
+import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -60,6 +61,9 @@ public class MZoomCondition extends X_AD_ZoomCondition
 		super (ctx, rs, trxName);
 	}	//	MZoomCondition
 	
+	/** Cache of Table Conditions Array		**/
+	private static CCache<Integer,MZoomCondition[]> s_conditions = new CCache<Integer,MZoomCondition[]>(Table_Name, 0);
+
 	/**
 	 * Retrieve zoom condition record by AD_Table_ID 	
 	 * @param AD_Table_ID
@@ -67,13 +71,18 @@ public class MZoomCondition extends X_AD_ZoomCondition
 	 */
 	public static MZoomCondition[] getConditions(int AD_Table_ID)
 	{
-		final String whereClauseFinal = "AD_Table_ID=?";
-		List<MZoomCondition> list = new Query(Env.getCtx(), MZoomCondition.Table_Name, whereClauseFinal, null)
-		.setParameters(AD_Table_ID)
-		.setOnlyActiveRecords(true)
-		.setOrderBy(MZoomCondition.COLUMNNAME_SeqNo)
-		.list();
-		return list.toArray(new MZoomCondition[list.size()]);
+		MZoomCondition[] conditions = s_conditions.get(AD_Table_ID);
+		if (conditions == null) {
+			final String whereClauseFinal = "AD_Table_ID=?";
+			List<MZoomCondition> list = new Query(Env.getCtx(), MZoomCondition.Table_Name, whereClauseFinal, null)
+				.setParameters(AD_Table_ID)
+				.setOnlyActiveRecords(true)
+				.setOrderBy(MZoomCondition.COLUMNNAME_SeqNo)
+				.list();
+			conditions = list.toArray(new MZoomCondition[list.size()]);
+			s_conditions.put(AD_Table_ID, conditions);
+		}
+		return conditions;
 	}	//	getConditions
 
 	private static int findZoomWindowByTableId(int AD_Table_ID, MQuery query)

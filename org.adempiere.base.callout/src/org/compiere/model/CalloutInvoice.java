@@ -234,8 +234,6 @@ public class CalloutInvoice extends CalloutEngine
 				s = rs.getString("POReference");
 				if (s != null && s.length() != 0)
 					mTab.setValue("POReference", s);
-				else
-					mTab.setValue("POReference", null);
 				//	SO Description
 				s = rs.getString("SO_Description");
 				if (s != null && s.trim().length() != 0)

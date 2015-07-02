@@ -260,8 +260,9 @@ public class FactReconcile {
 			"SELECT ev.C_ElementValue_ID, ev.Value || ' ' || ev.Name FROM C_ElementValue ev", "ev",
 			MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO)
 			+ "AND ev.IsActive='Y' AND ev.IsSummary='N' " 
-			+ "AND ev.C_Element_ID IN (SELECT C_Element_ID FROM C_AcctSchema_Element ase "
-			+ "WHERE ase.ElementType='AC' AND ase.AD_Client_ID=" + m_AD_Client_ID + ") "
+			+ "AND EXISTS (SELECT 1 FROM C_AcctSchema_Element ase "
+			+ "WHERE ase.C_Element_ID=ev.C_Element_ID AND ase.ElementType='AC' "
+			+ "AND ase.C_AcctSchema_ID=" + m_C_AcctSchema_ID + " AND ase.AD_Client_ID=" + m_AD_Client_ID + ") "
 			+ "ORDER BY 2";
 		
 		PreparedStatement pstmt = null;
