@@ -15,6 +15,7 @@ package org.compiere.print;
 
 import org.apache.ecs.ConcreteElement;
 import org.apache.ecs.xhtml.a;
+import org.apache.ecs.xhtml.body;
 
 /**
  * 
@@ -32,4 +33,6 @@ public interface IHTMLExtension {
 	public void extendRowElement(ConcreteElement row, PrintData printData);
 	
 	public void extendIDColumn(int row, ConcreteElement columnElement, a href, PrintDataElement dataElement);
+	
+	public void setWebAttribute (body reportBody);
 }

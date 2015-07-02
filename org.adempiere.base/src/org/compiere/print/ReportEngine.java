@@ -776,6 +776,9 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				}
 				
 				appendInlineCss (doc);
+				if (extension != null){
+					extension.setWebAttribute(doc.getBody());
+				}
 				
 				doc.output(w);
 			}
