@@ -1915,13 +1915,24 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			
 			CSSInfo compareObj = (CSSInfo)obj;
 			
-			if (compareObj.color == null && color != null)
+			return compareObj (compareObj.color, color) && compareObj (compareObj.font, font);			
+		}
+		
+		/**
+		 * compare two object equal when both is null or result of equal
+		 * @param obj1
+		 * @param obj2
+		 * @return
+		 */
+		protected boolean compareObj(Object obj1, Object obj2) {
+			if (obj1 == null && obj2 != null)
 				return false;
 			
-			if (compareObj.font == null && font != null)
-				return false;
+			if (obj1 == null && obj2 == null){
+				return true;
+			}
 			
-			return compareObj.color.equals(color) && compareObj.font.equals(font);
+			return obj1.equals(obj2);
 		}
 		
 		/**
