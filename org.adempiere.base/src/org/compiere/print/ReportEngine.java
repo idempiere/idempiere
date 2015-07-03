@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.print;
 
+import static org.compiere.model.SystemIDs.TABLE_AD_TABLE;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.print.PrinterJob;
@@ -23,7 +25,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -61,7 +62,6 @@ import org.adempiere.pdf.Document;
 import org.adempiere.print.export.PrintDataExcelExporter;
 import org.apache.ecs.XhtmlDocument;
 import org.apache.ecs.xhtml.a;
-import org.apache.ecs.xhtml.link;
 import org.apache.ecs.xhtml.script;
 import org.apache.ecs.xhtml.table;
 import org.apache.ecs.xhtml.tbody;
@@ -83,9 +83,6 @@ import org.compiere.model.MRfQResponse;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
-
-import static org.compiere.model.SystemIDs.*;
-
 import org.compiere.print.layout.LayoutEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;

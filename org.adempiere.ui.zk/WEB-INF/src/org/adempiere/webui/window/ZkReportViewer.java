@@ -139,7 +139,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 946000686957291327L;
+	private static final long serialVersionUID = -5315520059451132465L;
 
 	/** Window No					*/
 	private int                 m_WindowNo = -1;
