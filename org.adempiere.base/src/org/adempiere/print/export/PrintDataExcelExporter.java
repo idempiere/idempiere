@@ -38,11 +38,12 @@ extends AbstractExcelExporter
 {
 	private PrintData m_printData;
 	private MPrintFormat m_printFormat;
-
-	public PrintDataExcelExporter(PrintData printData, MPrintFormat printFormat) {
+	
+	public PrintDataExcelExporter(PrintData printData, MPrintFormat printFormat, boolean[] colSuppressRepeats) {
 		super();
 		this.m_printData = printData;
 		this.m_printFormat = printFormat;
+		this.colSuppressRepeats = colSuppressRepeats;
 	}
 
 	@Override
@@ -191,6 +192,4 @@ extends AbstractExcelExporter
 		sheet.setMargin(HSSFSheet.BottomMargin, ((double)paper.getMarginBottom()) / 72);
 		//
 	}
-
-
 }

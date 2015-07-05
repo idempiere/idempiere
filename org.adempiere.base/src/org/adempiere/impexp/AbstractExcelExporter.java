@@ -131,6 +131,8 @@ public abstract class AbstractExcelExporter
 	/** Styles cache */
 	private HashMap<String, HSSFCellStyle> m_styles = new HashMap<String, HSSFCellStyle>();
 
+	protected boolean[] colSuppressRepeats;
+	
 	public AbstractExcelExporter() {
 		m_workbook = new HSSFWorkbook();
 		m_dataFormat = m_workbook.createDataFormat();
@@ -377,6 +379,12 @@ public abstract class AbstractExcelExporter
 		int colnumMax = 0;
 		int rownum = isCurrentRowOnly() ? getCurrentRow() : 0;
 		int lastRowNum = isCurrentRowOnly() ? getCurrentRow()+1 : getRowCount();
+		Object [] preValues = null;
+		int printColIndex = -1;
+		if (colSuppressRepeats != null){
+			preValues = new Object [colSuppressRepeats.length];
+		}
+		
 		for (int xls_rownum = 1; rownum < lastRowNum; rownum++, xls_rownum++)
 		{
 			if (!isCurrentRowOnly())
@@ -384,6 +392,7 @@ public abstract class AbstractExcelExporter
 
 			boolean isPageBreak = false;
 			HSSFRow row = sheet.createRow(xls_rownum);
+			printColIndex = -1;
 			//	for all columns
 			int colnum = 0;
 			for (int col = 0; col < getColumnCount(); col++)
@@ -393,13 +402,19 @@ public abstract class AbstractExcelExporter
 				//
 				if (isColumnPrinted(col))
 				{
+					printColIndex++;
 					HSSFCell cell = row.createCell(colnum);
 
 					// line row
 					Object obj = getValueAt(rownum, col);
 					int displayType = getDisplayType(rownum, col);
-					if (obj == null)
-						;
+					if (obj == null){
+						if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
+							preValues[printColIndex] = null;
+						}
+					}else if (colSuppressRepeats != null && colSuppressRepeats[printColIndex] && obj.equals(preValues[printColIndex])){
+						//suppress
+					}
 					else if (DisplayType.isDate(displayType)) {
 						Timestamp value = (Timestamp)obj;
 						cell.setCellValue(value);
@@ -433,6 +448,8 @@ public abstract class AbstractExcelExporter
 					}
 					//
 					colnum++;
+					if (colSuppressRepeats != null)
+						preValues[printColIndex] = obj;
 				}	//	printed
 			}	//	for all columns
 			//

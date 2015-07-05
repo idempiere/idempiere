@@ -688,7 +688,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 							if (obj == null){
 								td.addElement("&nbsp;");
 								if (m_layout.colSuppressRepeats[printColIndex]){
-									preValues[col] = null;
+									preValues[printColIndex] = null;
 								}
 							}
 							else if (obj instanceof PrintDataElement)
@@ -931,7 +931,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 							String data = "";
 							if (obj == null){
 								if (m_layout.colSuppressRepeats[printColIndex]){
-									preValues[col] = null;
+									preValues[printColIndex] = null;
 								}
 							}
 							else if (obj instanceof PrintDataElement)
@@ -1229,7 +1229,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	public void createXLS(File outFile, Language language)
 	throws Exception
 	{
-		PrintDataExcelExporter exp = new PrintDataExcelExporter(getPrintData(), getPrintFormat());
+		PrintDataExcelExporter exp = new PrintDataExcelExporter(getPrintData(), getPrintFormat(), m_layout.colSuppressRepeats);
 		exp.export(outFile, language);
 	}
 
