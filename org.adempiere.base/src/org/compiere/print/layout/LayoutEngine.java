@@ -225,6 +225,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	/** Image Size				*/
 	public static Dimension		IMAGE_SIZE = new Dimension(10,10);
 
+	public boolean[] colSuppressRepeats;
+	
 	static {
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		URL url = LayoutEngine.class.getResource("true10.gif");
@@ -1603,7 +1605,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		int[] columnMaxWidth = new int[columnCount];
 		int[] columnMaxHeight = new int[columnCount];
 		boolean[] fixedWidth = new boolean [columnCount];
-		boolean[] colSuppressRepeats = new boolean[columnCount];
+		colSuppressRepeats = new boolean[columnCount];
 		String[] columnJustification = new String[columnCount];
 		HashMap<Integer,Integer> additionalLines = new HashMap<Integer,Integer>();
 

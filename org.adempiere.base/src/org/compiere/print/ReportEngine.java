@@ -628,6 +628,9 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			
 			thead thead = new thead();
 			tbody tbody = new tbody();
+			
+			Object [] preValues = new Object [m_layout.colSuppressRepeats.length];
+			int printColIndex = -1;
 			//	for all rows (-1 = header row)
 			for (int row = -1; row < m_printData.getRowCount(); row++)
 			{
@@ -650,12 +653,15 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 					// add row to table header
 					thead.addElement(tr);
 				}
+				
+				printColIndex = -1;
 				//	for all columns
 				for (int col = 0; col < m_printFormat.getItemCount(); col++)
 				{
 					MPrintFormatItem item = m_printFormat.getItem(col);
 					if (item.isPrinted())
 					{
+						printColIndex++;
 						//	header row
 						if (row == -1)
 						{
@@ -679,12 +685,26 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 							td td = new td();
 							tr.addElement(td);
 							Object obj = m_printData.getNode(new Integer(item.getAD_Column_ID()));
-							if (obj == null)
+							if (obj == null){
 								td.addElement("&nbsp;");
+								if (m_layout.colSuppressRepeats[printColIndex]){
+									preValues[col] = null;
+								}
+							}
 							else if (obj instanceof PrintDataElement)
 							{
 								PrintDataElement pde = (PrintDataElement) obj;
 								String value = pde.getValueDisplay(language);	//	formatted
+
+								if (m_layout.colSuppressRepeats[printColIndex]){
+									if (value.equals(preValues[printColIndex])){
+										td.addElement("&nbsp;");
+										continue;
+									}else{
+										preValues[printColIndex] = value;
+									}
+								}
+
 								if (pde.getColumnName().endsWith("_ID") && extension != null && !isExport)
 								{
 									boolean isZoom = false;
