@@ -898,9 +898,12 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			delimiter = '\t';
 		try
 		{
+			Object [] preValues = new Object [m_layout.colSuppressRepeats.length];
+			int printColIndex = -1;
 			//	for all rows (-1 = header row)
 			for (int row = -1; row < m_printData.getRowCount(); row++)
 			{
+				printColIndex = -1;
 				StringBuffer sb = new StringBuffer();
 				if (row != -1)
 					m_printData.setRowIndex(row);
@@ -923,10 +926,14 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 								m_printFormat.getItem(col).getPrintName(language));
 						else
 						{
+							printColIndex++;
 							Object obj = m_printData.getNode(new Integer(item.getAD_Column_ID()));
 							String data = "";
-							if (obj == null)
-								;
+							if (obj == null){
+								if (m_layout.colSuppressRepeats[printColIndex]){
+									preValues[col] = null;
+								}
+							}
 							else if (obj instanceof PrintDataElement)
 							{
 								PrintDataElement pde = (PrintDataElement)obj;
@@ -934,6 +941,14 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 									data = pde.getValueAsString();
 								else
 									data = pde.getValueDisplay(language);	//	formatted
+								
+								if (m_layout.colSuppressRepeats[printColIndex]){
+									if (data.equals(preValues[printColIndex])){
+										continue;
+									}else{
+										preValues[printColIndex] = data;
+									}
+								}
 							}
 							else if (obj instanceof PrintData)
 							{
