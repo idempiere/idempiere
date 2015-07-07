@@ -131,7 +131,7 @@ public abstract class AbstractExcelExporter
 	/** Styles cache */
 	private HashMap<String, HSSFCellStyle> m_styles = new HashMap<String, HSSFCellStyle>();
 
-	protected boolean[] colSuppressRepeats;
+	protected Boolean[] colSuppressRepeats;
 	
 	public AbstractExcelExporter() {
 		m_workbook = new HSSFWorkbook();

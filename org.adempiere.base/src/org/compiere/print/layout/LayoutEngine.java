@@ -40,6 +40,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -225,7 +226,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	/** Image Size				*/
 	public static Dimension		IMAGE_SIZE = new Dimension(10,10);
 
-	public boolean[] colSuppressRepeats;
+	public Boolean[] colSuppressRepeats;
 	
 	static {
 		Toolkit tk = Toolkit.getDefaultToolkit();
@@ -1605,7 +1606,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		int[] columnMaxWidth = new int[columnCount];
 		int[] columnMaxHeight = new int[columnCount];
 		boolean[] fixedWidth = new boolean [columnCount];
-		colSuppressRepeats = new boolean[columnCount];
+		colSuppressRepeats = new Boolean[columnCount];
 		String[] columnJustification = new String[columnCount];
 		HashMap<Integer,Integer> additionalLines = new HashMap<Integer,Integer>();
 
@@ -1973,4 +1974,16 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		return  m_PrintInfo;
 	}
 
+	public static Boolean [] getColSuppressRepeats (MPrintFormat format){
+		List<Boolean> colSuppressRepeats = new ArrayList<>();
+		for (int c = 0; c < format.getItemCount(); c++)
+		{
+			MPrintFormatItem item = format.getItem(c);
+			if (item.isPrinted())
+			{
+				colSuppressRepeats.add(item.isSuppressRepeats());
+			}
+		}
+		return colSuppressRepeats.toArray(new Boolean[0]);
+	}
 }	//	LayoutEngine

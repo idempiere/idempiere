@@ -39,7 +39,7 @@ extends AbstractExcelExporter
 	private PrintData m_printData;
 	private MPrintFormat m_printFormat;
 	
-	public PrintDataExcelExporter(PrintData printData, MPrintFormat printFormat, boolean[] colSuppressRepeats) {
+	public PrintDataExcelExporter(PrintData printData, MPrintFormat printFormat, Boolean[] colSuppressRepeats) {
 		super();
 		this.m_printData = printData;
 		this.m_printFormat = printFormat;

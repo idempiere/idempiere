@@ -629,7 +629,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			thead thead = new thead();
 			tbody tbody = new tbody();
 			
-			Object [] preValues = new Object [m_layout.colSuppressRepeats.length];
+			Boolean [] colSuppressRepeats = m_layout == null ? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
+			Object [] preValues = new Object [colSuppressRepeats.length];
 			int printColIndex = -1;
 			//	for all rows (-1 = header row)
 			for (int row = -1; row < m_printData.getRowCount(); row++)
@@ -687,7 +688,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 							Object obj = m_printData.getNode(new Integer(item.getAD_Column_ID()));
 							if (obj == null){
 								td.addElement("&nbsp;");
-								if (m_layout.colSuppressRepeats[printColIndex]){
+								if (colSuppressRepeats[printColIndex]){
 									preValues[printColIndex] = null;
 								}
 							}
@@ -696,7 +697,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 								PrintDataElement pde = (PrintDataElement) obj;
 								String value = pde.getValueDisplay(language);	//	formatted
 
-								if (m_layout.colSuppressRepeats[printColIndex]){
+								if (colSuppressRepeats[printColIndex]){
 									if (value.equals(preValues[printColIndex])){
 										td.addElement("&nbsp;");
 										continue;
@@ -898,7 +899,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			delimiter = '\t';
 		try
 		{
-			Object [] preValues = new Object [m_layout.colSuppressRepeats.length];
+			Boolean [] colSuppressRepeats = m_layout == null ? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
+			Object [] preValues = new Object [colSuppressRepeats.length];
 			int printColIndex = -1;
 			//	for all rows (-1 = header row)
 			for (int row = -1; row < m_printData.getRowCount(); row++)
@@ -930,7 +932,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 							Object obj = m_printData.getNode(new Integer(item.getAD_Column_ID()));
 							String data = "";
 							if (obj == null){
-								if (m_layout.colSuppressRepeats[printColIndex]){
+								if (colSuppressRepeats[printColIndex]){
 									preValues[printColIndex] = null;
 								}
 							}
@@ -942,7 +944,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 								else
 									data = pde.getValueDisplay(language);	//	formatted
 								
-								if (m_layout.colSuppressRepeats[printColIndex]){
+								if (colSuppressRepeats[printColIndex]){
 									if (data.equals(preValues[printColIndex])){
 										continue;
 									}else{
@@ -1229,7 +1231,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	public void createXLS(File outFile, Language language)
 	throws Exception
 	{
-		PrintDataExcelExporter exp = new PrintDataExcelExporter(getPrintData(), getPrintFormat(), m_layout.colSuppressRepeats);
+		Boolean [] colSuppressRepeats = m_layout == null ? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
+		PrintDataExcelExporter exp = new PrintDataExcelExporter(getPrintData(), getPrintFormat(), colSuppressRepeats);
 		exp.export(outFile, language);
 	}
 
