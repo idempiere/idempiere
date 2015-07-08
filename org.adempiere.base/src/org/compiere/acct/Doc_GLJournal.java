@@ -50,8 +50,8 @@ public class Doc_GLJournal extends Doc
 	}	//	Doc_GL_Journal
 
 	/** Posting Type				*/
-	private String			m_PostingType = null;
-	private int				m_C_AcctSchema_ID = 0;
+	protected String			m_PostingType = null;
+	protected int				m_C_AcctSchema_ID = 0;
 
 	/**
 	 *  Load Specific Document Details
@@ -75,7 +75,7 @@ public class Doc_GLJournal extends Doc
 	 *	@param journal journal
 	 *  @return DocLine Array
 	 */
-	private DocLine[] loadLines(MJournal journal)
+	protected DocLine[] loadLines(MJournal journal)
 	{
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
 		MJournalLine[] lines = journal.getLines(false);

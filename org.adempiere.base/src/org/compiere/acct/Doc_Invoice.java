@@ -71,13 +71,13 @@ public class Doc_Invoice extends Doc
 	}	//	Doc_Invoice
 
 	/** Contained Optional Tax Lines    */
-	private DocTax[]        m_taxes = null;
+	protected DocTax[]        m_taxes = null;
 	/** Currency Precision				*/
-	private int				m_precision = -1;
+	protected int				m_precision = -1;
 	/** All lines are Service			*/
-	private boolean			m_allLinesService = true;
+	protected boolean			m_allLinesService = true;
 	/** All lines are product item		*/
-	private boolean			m_allLinesItem = true;
+	protected boolean			m_allLinesItem = true;
 
 	/**
 	 *  Load Specific Document Details
@@ -815,7 +815,7 @@ public class Doc_Invoice extends Doc
 	 *	@param dr DR entry (normal api)
 	 *	@return true if landed costs were created
 	 */
-	private boolean landedCost (MAcctSchema as, Fact fact, DocLine line, boolean dr)
+	protected boolean landedCost (MAcctSchema as, Fact fact, DocLine line, boolean dr)
 	{
 		int C_InvoiceLine_ID = line.get_ID();
 		MLandedCostAllocation[] lcas = MLandedCostAllocation.getOfInvoiceLine(
@@ -1054,7 +1054,7 @@ public class Doc_Invoice extends Doc
 	 * 	Update ProductPO PriceLastInv
 	 *	@param as accounting schema
 	 */
-	private void updateProductPO (MAcctSchema as)
+	protected void updateProductPO (MAcctSchema as)
 	{
 		MClientInfo ci = MClientInfo.get(getCtx(), as.getAD_Client_ID());
 		if (ci.getC_AcctSchema1_ID() != as.getC_AcctSchema_ID())
