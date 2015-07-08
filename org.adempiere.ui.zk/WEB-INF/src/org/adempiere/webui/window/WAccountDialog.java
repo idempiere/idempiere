@@ -80,7 +80,11 @@ import org.zkoss.zul.Vbox;
 public final class WAccountDialog extends Window
 	implements EventListener<Event>, DataStatusListener, ValueChangeListener
 {
-	private static final long serialVersionUID = -1684167361808052482L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3041802296879719489L;
+
 	private Callback<Integer> m_callback;
 
 	/**
@@ -669,9 +673,10 @@ public final class WAccountDialog extends Window
 				FDialog.ask(m_WindowNo, this, "CreateNewAccountCombination?", new Callback<Boolean>() {
 					public void onCallback(Boolean result) {
 						if (result) {
-							action_Save();
-							m_changed = true;
-							dispose();
+							if (action_Save()) {
+								m_changed = true;
+								dispose();
+							}
 						}
 					}
 				});
@@ -700,22 +705,13 @@ public final class WAccountDialog extends Window
 	{
 		if (editor != null ) {
 			String columnName = editor.getColumnName();
-			if (log.isLoggable(Level.FINE)) log.fine("columnName : " + columnName + " : " + combiOrg.get_Value(columnName) + " - " + editor.getValue());
+			String oldValue = combiOrg.get_ValueAsString(columnName);
+			String newValue = "";
+			if (editor.getValue() != null)
+				newValue = editor.getValue().toString();
+			if (log.isLoggable(Level.FINE)) log.fine("columnName : " + columnName + " : " + oldValue + " - " + newValue);
 
-			if (columnName.equals("AD_Org_ID") || columnName.equals("AD_OrgTrx_ID")) { // 0 can be a correct value for orgs
-				if((combiOrg.get_Value(columnName) == null && editor.getValue() != null && !"".equals(String.valueOf(editor.getValue())))
-						|| 	(combiOrg.get_Value(columnName) != null && combiOrg.get_ValueAsInt(columnName) >= 0 && editor.getValue() == null)
-						||	(editor.getValue() != null && !"".equals(String.valueOf(editor.getValue())) && combiOrg.get_ValueAsInt(columnName) != (Integer) editor.getValue())) {
-					return true;
-				}
-
-			} else {
-				if((combiOrg.get_ValueAsInt(columnName) == 0 && editor.getValue() != null && !"".equals(String.valueOf(editor.getValue())))						
-						|| 	combiOrg.get_ValueAsInt(columnName) > 0 && editor.getValue() == null
-						||	(editor.getValue() != null && !"".equals(String.valueOf(editor.getValue())) && combiOrg.get_ValueAsInt(columnName) != (Integer) editor.getValue())) {
-					return true;
-				}
-			}
+			return ! oldValue.equals(newValue);
 		}
 
 		return false;
@@ -819,7 +815,7 @@ public final class WAccountDialog extends Window
 	/**
 	 *	Create/Save Account
 	 */
-	private void action_Save()
+	private boolean action_Save()
 	{
 		log.info("");
 		/**
@@ -974,17 +970,17 @@ public final class WAccountDialog extends Window
 		if (sb.length() != 0)
 		{
 			FDialog.error(m_WindowNo, this, "FillMandatory", sb.substring(0, sb.length()-2));
-			return;
+			return false;
 		}
 		if (f_AD_Org_ID == null || f_AD_Org_ID.getValue() == null)
 		{
 			FDialog.error(m_WindowNo, this, "FillMandatory", Msg.getElement(Env.getCtx(), "AD_Org_ID"));
-			return;
+			return false;
 		}
 		if (f_Account_ID == null || f_Account_ID.getValue() == null)
 		{
 			FDialog.error(m_WindowNo, this, "FillMandatory", Msg.getElement(Env.getCtx(), "Account_ID"));
-			return;
+			return false;
 		}
 
 
@@ -1060,7 +1056,7 @@ public final class WAccountDialog extends Window
 		{
 			loadInfo (IDvalue, s_AcctSchema.getC_AcctSchema_ID());
 			action_Find (false);
-			return;
+			return true;
 		}
 
 		log.config("New");
@@ -1128,7 +1124,9 @@ public final class WAccountDialog extends Window
 			}
 			loadInfo (acct.get_ID(), s_AcctSchema.getC_AcctSchema_ID());
 		}
+		IDvalue = acct.get_ID();
 		action_Find (false);
+		return true;
 	}	//	action_Save
 
 	private boolean isEmpty(Object value) {
