@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -272,9 +273,13 @@ public class MPaymentTerm extends X_C_PaymentTerm
 	 */
 	private void deleteInvoicePaySchedule (int C_Invoice_ID, String trxName)
 	{
-		String sql = "DELETE C_InvoicePaySchedule WHERE C_Invoice_ID=" + C_Invoice_ID;
-		int no = DB.executeUpdate(sql, trxName);
-		if (log.isLoggable(Level.FINE)) log.fine("C_Invoice_ID=" + C_Invoice_ID + " - #" + no);
+		Query query = new Query(Env.getCtx(), I_C_InvoicePaySchedule.Table_Name, "C_Invoice_ID=?", trxName);
+		List<MInvoicePaySchedule> ipsList = query.setParameters(C_Invoice_ID).list();
+		for (MInvoicePaySchedule ips : ipsList)
+		{
+			ips.deleteEx(true);
+		}
+		if (log.isLoggable(Level.FINE)) log.fine("C_Invoice_ID=" + C_Invoice_ID + " - #" + ipsList.size());
 	}	//	deleteInvoicePaySchedule
 
 	
@@ -377,9 +382,13 @@ public class MPaymentTerm extends X_C_PaymentTerm
 	 */
 	private void deleteOrderPaySchedule (int C_Order_ID, String trxName)
 	{
-		String sql = "DELETE C_OrderPaySchedule WHERE C_Order_ID=" + C_Order_ID;
-		int no = DB.executeUpdate(sql, trxName);
-		if (log.isLoggable(Level.FINE)) log.fine("C_Order_ID=" + C_Order_ID + " - #" + no);
+		Query query = new Query(Env.getCtx(), I_C_OrderPaySchedule.Table_Name, "C_Order_ID=?", trxName);
+		List<MOrderPaySchedule> opsList = query.setParameters(C_Order_ID).list();
+		for (MOrderPaySchedule ops : opsList)
+		{
+			ops.deleteEx(true);
+		}
+		if (log.isLoggable(Level.FINE)) log.fine("C_Order_ID=" + C_Order_ID + " - #" + opsList.size());
 	}	//	deleteOrderPaySchedule
 
 	
