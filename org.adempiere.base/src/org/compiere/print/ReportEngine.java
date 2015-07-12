@@ -776,6 +776,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				doc.getHtml().setNeedClosingTag(false);
 				doc.getBody().setNeedClosingTag(false);
 				doc.appendBody(table);
+				appendInlineCss (doc);
 				if (extension != null && extension.getStyleURL() != null)
 				{
 					// maybe cache style content with key is path
@@ -797,7 +798,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 					doc.appendHead(jslink);
 				}
 				
-				appendInlineCss (doc);
 				if (extension != null && !isExport){
 					extension.setWebAttribute(doc.getBody());
 				}
