@@ -590,14 +590,27 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	}
 	
 	/**
-	 * 	Write HTML to writer
+	 * 	Write HTML to writer with isExport = false
 	 * 	@param writer writer
 	 *  @param onlyTable if false create complete HTML document
 	 *  @param language optional language - if null numbers/dates are not formatted
 	 *  @param extension optional extension for html output
 	 * 	@return true if success
 	 */
-	public boolean createHTML (Writer writer, boolean onlyTable, Language language, IHTMLExtension extension)
+	public boolean createHTML (Writer writer, boolean onlyTable, Language language, IHTMLExtension extension){
+		return createHTML (writer, onlyTable, language, extension, false);
+	}
+	
+	/**
+	 * 	Write HTML to writer
+	 * 	@param writer writer
+	 *  @param onlyTable if false create complete HTML document
+	 *  @param language optional language - if null numbers/dates are not formatted
+	 *  @param extension optional extension for html output
+	 *  @param isExport when isExport = true will don't embed resource dependent zk framework
+	 * 	@return true if success
+	 */
+	public boolean createHTML (Writer writer, boolean onlyTable, Language language, IHTMLExtension extension, boolean isExport)
 	{
 		try
 		{
@@ -622,7 +635,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				if (row != -1)
 				{
 					m_printData.setRowIndex(row);					
-					if (extension != null)
+					if (extension != null && !isExport)
 					{
 						extension.extendRowElement(tr, m_printData);
 					}
@@ -672,7 +685,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 							{
 								PrintDataElement pde = (PrintDataElement) obj;
 								String value = pde.getValueDisplay(language);	//	formatted
-								if (pde.getColumnName().endsWith("_ID") && extension != null)
+								if (pde.getColumnName().endsWith("_ID") && extension != null && !isExport)
 								{
 									boolean isZoom = false;
 									if (item.getColumnName().equals("Record_ID")) {
@@ -776,7 +789,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				    
 				    appendInlineCss (doc, styleBuild);
 				}
-				if (extension != null && extension.getScriptURL() != null)
+				if (extension != null && extension.getScriptURL() != null && !isExport)
 				{
 					script jslink = new script();
 					jslink.setLanguage("javascript");
@@ -785,7 +798,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				}
 				
 				appendInlineCss (doc);
-				if (extension != null){
+				if (extension != null && !isExport){
 					extension.setWebAttribute(doc.getBody());
 				}
 				

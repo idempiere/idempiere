@@ -1042,7 +1042,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			else if (ext.equals("html") || ext.equals("htm"))
 			{
 				StringWriter sw = new StringWriter();							
-				m_reportEngine.createHTML(sw, false, m_reportEngine.getPrintFormat().getLanguage());
+				String contextPath = Executions.getCurrent().getContextPath();
+				String contextFullPath = Executions.getCurrent().getDesktop().getWebApp().getRealPath("/");
+				m_reportEngine.createHTML(sw, false, m_reportEngine.getPrintFormat().getLanguage(), new HTMLExtension(contextFullPath, contextPath, "rp", this.getUuid()), true);
 				data = sw.getBuffer().toString().getBytes();	
 			}
 			else if (ext.equals("xls"))
