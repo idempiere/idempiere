@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import org.adempiere.util.ServerContext;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MClient;
+import org.compiere.model.MMailText;
 import org.compiere.model.MNote;
 import org.compiere.model.MOrgInfo;
 import org.compiere.model.MPInstance;
@@ -278,12 +279,26 @@ public class Scheduler extends AdempiereServer
 				
 				if (email)
 				{
+					MMailText mailTemplate = new MMailText(m_schedulerctx, m_model.getR_MailText_ID(), null);
+					String mailContent = "";
+					
+					if (mailTemplate.is_new()){
+						mailContent = m_model.getDescription();
+					}else{
+						mailTemplate.setUser(user);
+						mailTemplate.setLanguage(Env.getContext(m_schedulerctx, "#AD_Language"));
+						// if user has bpartner link. maybe use language depend user
+						mailContent = mailTemplate.getMailText(true);
+						schedulerName = mailTemplate.getMailHeader();
+					}
+
 					MClient client = MClient.get(m_model.getCtx(), m_model.getAD_Client_ID());
 					if (fileList != null && !fileList.isEmpty()) {
-						client.sendEMailAttachments(from, user, schedulerName, m_model.getDescription(), fileList);
+						client.sendEMailAttachments(from, user, schedulerName, mailContent, fileList);
 					} else {
-						client.sendEMail(from, user, schedulerName, pi.getSummary() + " " + pi.getLogInfo(), null);
+						client.sendEMail(from, user, schedulerName, mailContent + "\n" + pi.getSummary() + " " + pi.getLogInfo(), null);
 					}
+					
 				}
 				
 			}

@@ -31,7 +31,7 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20150714L;
 
     /** Standard Constructor */
     public X_AD_Scheduler (Properties ctx, int AD_Scheduler_ID, String trxName)
@@ -330,6 +330,34 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	public int getRecord_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
+    {
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
+			.getPO(getR_MailText_ID(), get_TrxName());	}
+
+	/** Set Mail Template.
+		@param R_MailText_ID 
+		Text templates for mailings
+	  */
+	public void setR_MailText_ID (int R_MailText_ID)
+	{
+		if (R_MailText_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_R_MailText_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_R_MailText_ID, Integer.valueOf(R_MailText_ID));
+	}
+
+	/** Get Mail Template.
+		@return Text templates for mailings
+	  */
+	public int getR_MailText_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_R_MailText_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
