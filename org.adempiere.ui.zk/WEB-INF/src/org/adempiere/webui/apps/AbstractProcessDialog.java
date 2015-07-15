@@ -700,13 +700,13 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 				if (sendEmail)
 				{
 					MClient client = MClient.get(m_ctx, AD_Client_ID);
-					client.sendEMailAttachments(AD_User_ID, process.getName(), m_pi.getSummary() + " " + m_pi.getLogInfo(), getDownloadFiles());
+					client.sendEMailAttachments(AD_User_ID, process.get_Translation("Name", Env.getAD_Language(Env.getCtx())), m_pi.getSummary() + " " + m_pi.getLogInfo(), getDownloadFiles());
 				}
 				
 				if (createNotice)
 				{
 					MNote note = new MNote(m_ctx, "BackgroundJob", AD_User_ID, null);
-					note.setTextMsg(process.getName() + "\n" + m_pi.getSummary());
+					note.setTextMsg(process.get_Translation("Name", Env.getAD_Language(Env.getCtx())) + "\n" + m_pi.getSummary());
 					note.setRecord(MPInstance.Table_ID, m_pi.getAD_PInstance_ID());
 					note.saveEx();
 					
