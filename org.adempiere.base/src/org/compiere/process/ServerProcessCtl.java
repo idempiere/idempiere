@@ -16,6 +16,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.compiere.wf.MWFProcess;
 
 public class ServerProcessCtl implements Runnable {
@@ -278,7 +279,8 @@ public class ServerProcessCtl implements Runnable {
 			m_pi.setReportingProcess(true);
 			//	Start Report	-----------------------------------------------
 			boolean ok = ServerReportCtl.start(m_pi);
-			m_pi.setSummary("Report", !ok);
+			String summ = Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report"));
+			m_pi.setSummary(summ, !ok);
 		}
 		/**********************************************************************
 		 * 	Process submission
