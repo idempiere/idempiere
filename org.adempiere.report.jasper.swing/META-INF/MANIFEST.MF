@@ -5,7 +5,9 @@ Bundle-SymbolicName: org.adempiere.report.jasper.swing;singleton:=true
 Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.adempiere.base;bundle-version="3.0.0",
- org.adempiere.ui.swing;bundle-version="3.0.0"
+ org.adempiere.ui.swing;bundle-version="3.0.0",
+ org.adempiere.report.jasper;bundle-version="3.0.0",
+ org.adempiere.report.jasper.library;bundle-version="3.0.0"
 Import-Package: net.sf.jasperreports.engine,
  net.sf.jasperreports.engine.export,
  net.sf.jasperreports.view,
