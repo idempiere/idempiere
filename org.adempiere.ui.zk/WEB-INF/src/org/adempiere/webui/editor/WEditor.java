@@ -687,6 +687,16 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		this.isProcessParameter = isProcessParameter;
 	}
 
+	/**
+	 * return component use for display value in grid view mode in non edit status
+	 * if return null, a label will replace.
+	 * because each row must has one instance of this component, don't cache it. just create new instance
+	 * @return
+	 */
+	public Component getDisplayComponent() {
+		return null;
+	}
+	
 	private static final String STYLE_ZOOMABLE_LABEL = "cursor: pointer; text-decoration: underline;";
 	private static final String STYLE_NORMAL_LABEL = "color: #333;";
 	private static final String STYLE_EMPTY_MANDATORY_LABEL = "color: red;";

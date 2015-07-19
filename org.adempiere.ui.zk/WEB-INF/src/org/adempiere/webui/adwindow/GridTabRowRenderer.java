@@ -53,6 +53,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Html;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.RendererCtrl;
@@ -236,11 +237,19 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			component = editor.getComponent();
 		} else {
 			String text = getDisplayText(value, gridField, rowIndex, isForceGetValue);
-
-			Label label = new Label();
-			setLabelText(text, label);
-
-			component = label;
+			WEditor editor = getEditorCell(gridField);
+			if (editor.getDisplayComponent() == null){
+				Label label = new Label();
+				setLabelText(text, label);
+				component = label;
+			}else{
+				component = editor.getDisplayComponent();
+				if (component instanceof Html){
+					((Html)component).setContent(text);
+				}else{
+					throw new UnsupportedOperationException("neet a componet has setvalue function");
+				}
+			}
 		}
 		return component;
 	}
@@ -316,6 +325,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 							checkBox.setChecked(true);
 						else
 							checkBox.setChecked(false);
+					} else if (component instanceof Html){
+						((Html)component).setContent(getDisplayText(entry.getValue().getValue(), entry.getValue().getGridField(), -1));
 					}
 				}
 				if (row == null)

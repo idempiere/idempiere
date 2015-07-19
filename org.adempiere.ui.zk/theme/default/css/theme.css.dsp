@@ -13,6 +13,10 @@ html,body {
 	overflow: hidden;
 }
 
+.z-html p{
+	margin:0px;
+}
+
 <%-- Tablet --%>
 .tablet-scrolling {
 	-webkit-overflow-scrolling: touch;
