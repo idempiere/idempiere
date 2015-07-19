@@ -1284,7 +1284,7 @@ public class TableElement extends PrintElement
 		float netWidth = colWidth - (2*H_GAP) - m_tFormat.getVLineStroke().floatValue();
 		if (leftVline)
 			netWidth -= m_tFormat.getVLineStroke().floatValue();
-		int rowHeight = m_headerHeight;
+		float rowHeight = m_headerHeight;
 		float netHeight = rowHeight - (4*m_tFormat.getLineStroke().floatValue()) + (2*V_GAP);
 
 		if (DEBUG_PRINT)
@@ -1406,7 +1406,7 @@ public class TableElement extends PrintElement
 		//	paint Data		***************************************************
 		for (int row = firstRow; row < nextPageRow; row++)
 		{
-			rowHeight = ((Float)m_rowHeights.get(row)).intValue();	//	includes 2*Gaps+Line
+			rowHeight = m_rowHeights.get(row);	//	includes 2*Gaps+Line
 			netHeight = rowHeight - (2*V_GAP) - m_tFormat.getLineStroke().floatValue();
 			int rowYstart = curY;
 
