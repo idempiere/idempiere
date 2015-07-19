@@ -1503,7 +1503,7 @@ public class TableElement extends PrintElement
 						if (str.length() > 0)
 						{
 							usedHeight = 0;
-							String[] lines = Pattern.compile("$", Pattern.MULTILINE).split(str);
+							String[] lines = Pattern.compile("\n", Pattern.MULTILINE).split(str);
 							for (int lineNo = 0; lineNo < lines.length; lineNo++)
 							{
 								aString = new AttributedString(lines[lineNo]);
