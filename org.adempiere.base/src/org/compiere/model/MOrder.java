@@ -70,7 +70,7 @@ public class MOrder extends X_C_Order implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6669447827539872218L;
+	private static final long serialVersionUID = -6750443365394535762L;
 
 	/**
 	 * 	Create new Order by copying
@@ -253,11 +253,11 @@ public class MOrder extends X_C_Order implements DocAction
 	}	//	MOrder
 
 	/**	Order Lines					*/
-	private MOrderLine[] 	m_lines = null;
+	protected MOrderLine[] 	m_lines = null;
 	/**	Tax Lines					*/
-	private MOrderTax[] 	m_taxes = null;
+	protected MOrderTax[] 	m_taxes = null;
 	/** Force Creation of order		*/
-	private boolean			m_forceCreation = false;
+	protected boolean			m_forceCreation = false;
 	
 	/**
 	 * 	Overwrite Client/Org if required
@@ -1204,9 +1204,9 @@ public class MOrder extends X_C_Order implements DocAction
 	}	//	processIt
 	
 	/**	Process Message 			*/
-	private String		m_processMsg = null;
+	protected String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
-	private boolean		m_justPrepared = false;
+	protected boolean		m_justPrepared = false;
 
 	/**
 	 * 	Unlock Document.
@@ -1434,7 +1434,7 @@ public class MOrder extends X_C_Order implements DocAction
 		return DocAction.STATUS_InProgress;
 	}	//	prepareIt
 	
-	private boolean calculateFreightCharge()
+	protected boolean calculateFreightCharge()
 	{
 		MClientInfo ci = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
 		if (ci.getC_ChargeFreight_ID() == 0 && ci.getM_ProductFreight_ID() == 0)
@@ -1574,7 +1574,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 * 	Explode non stocked BOM.
 	 * 	@return true if bom exploded
 	 */
-	private boolean explodeBOM()
+	protected boolean explodeBOM()
 	{
 		boolean retValue = false;
 		String where = "AND IsActive='Y' AND EXISTS "
@@ -1665,7 +1665,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 * 	@param lines order lines (ordered by M_Product_ID for deadlock prevention)
 	 * 	@return true if (un) reserved
 	 */
-	private boolean reserveStock (MDocType dt, MOrderLine[] lines)
+	protected boolean reserveStock (MDocType dt, MOrderLine[] lines)
 	{
 		if (dt == null)
 			dt = MDocType.get(getCtx(), getC_DocType_ID());
@@ -1788,7 +1788,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 * 	(Re) Create Pay Schedule
 	 *	@return true if valid schedule
 	 */
-	private boolean createPaySchedule()
+	protected boolean createPaySchedule()
 	{
 		if (getC_PaymentTerm_ID() == 0)
 			return false;
@@ -1981,7 +1981,7 @@ public class MOrder extends X_C_Order implements DocAction
 	
 	
 	
-	private String landedCostAllocation() {
+	protected String landedCostAllocation() {
 		MOrderLandedCost[] landedCosts = MOrderLandedCost.getOfOrder(getC_Order_ID(), get_TrxName());
 		for(MOrderLandedCost landedCost : landedCosts) {
 			String error = landedCost.distributeLandedCost();
@@ -1992,7 +1992,7 @@ public class MOrder extends X_C_Order implements DocAction
 	}
 
 
-	private String createPOSPayments() {
+	protected String createPOSPayments() {
 
 		// Just for POS order with payment rule mixed
 		if (! this.isSOTrx())
@@ -2104,7 +2104,7 @@ public class MOrder extends X_C_Order implements DocAction
 	/**
 	 * 	Set the definite document number after completed
 	 */
-	private void setDefiniteDocumentNo() {
+	protected void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			/* a42niem - BF IDEMPIERE-63 - check if document has been completed before */ 
@@ -2132,7 +2132,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 *	@param movementDate optional movement date (default today)
 	 *	@return shipment or null
 	 */
-	private MInOut createShipment(MDocType dt, Timestamp movementDate)
+	protected MInOut createShipment(MDocType dt, Timestamp movementDate)
 	{
 		if (log.isLoggable(Level.INFO)) log.info("For " + dt);
 		MInOut shipment = new MInOut (this, dt.getC_DocTypeShipment_ID(), movementDate);
@@ -2193,7 +2193,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 *	@param invoiceDate invoice date
 	 *	@return invoice or null
 	 */
-	private MInvoice createInvoice (MDocType dt, MInOut shipment, Timestamp invoiceDate)
+	protected MInvoice createInvoice (MDocType dt, MInOut shipment, Timestamp invoiceDate)
 	{
 		if (log.isLoggable(Level.INFO)) log.info(dt.toString());
 		MInvoice invoice = new MInvoice (this, dt.getC_DocTypeInvoice_ID(), invoiceDate);
@@ -2294,7 +2294,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 * 	Create Counter Document
 	 * 	@return counter order
 	 */
-	private MOrder createCounterDoc()
+	protected MOrder createCounterDoc()
 	{
 		//	Is this itself a counter doc ?
 		if (getRef_Order_ID() != 0)
@@ -2456,7 +2456,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 * 	Create Shipment/Invoice Reversals
 	 * 	@return true if success
 	 */
-	private boolean createReversals()
+	protected boolean createReversals()
 	{
 		//	Cancel only Sales 
 		if (!isSOTrx())
@@ -2787,7 +2787,7 @@ public class MOrder extends X_C_Order implements DocAction
 	}	//	getApprovalAmt
 	
 	//AZ Goodwill
-	private String deleteMatchPOCostDetail(MOrderLine line)
+	protected String deleteMatchPOCostDetail(MOrderLine line)
 	{
 		// Get Account Schemas to delete MCostDetail
 		MAcctSchema[] acctschemas = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID());

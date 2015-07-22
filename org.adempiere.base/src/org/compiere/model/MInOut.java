@@ -63,8 +63,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -239302197968535277L;
-
+	private static final long serialVersionUID = 1226522383231204912L;
 
 	/**
 	 * 	Create Shipment From Order
@@ -541,11 +540,11 @@ public class MInOut extends X_M_InOut implements DocAction
 
 
 	/**	Lines					*/
-	private MInOutLine[]	m_lines = null;
+	protected MInOutLine[]	m_lines = null;
 	/** Confirmations			*/
-	private MInOutConfirm[]	m_confirms = null;
+	protected MInOutConfirm[]	m_confirms = null;
 	/** BPartner				*/
-	private MBPartner		m_partner = null;
+	protected MBPartner		m_partner = null;
 
 
 	/**
@@ -781,13 +780,13 @@ public class MInOut extends X_M_InOut implements DocAction
 	}	//	copyLinesFrom
 
 	/** Reversal Flag		*/
-	private boolean m_reversal = false;
+	protected boolean m_reversal = false;
 
 	/**
 	 * 	Set Reversal
 	 *	@param reversal reversal
 	 */
-	private void setReversal(boolean reversal)
+	protected void setReversal(boolean reversal)
 	{
 		m_reversal = reversal;
 	}	//	setReversal
@@ -955,7 +954,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			MInOutConfirm.create (this, MInOutConfirm.CONFIRMTYPE_ShipReceiptConfirm, true);
 	}	//	createConfirmation
 	
-	private void voidConfirmations()
+	protected void voidConfirmations()
 	{
 		for(MInOutConfirm confirm : getConfirmations(true))
 		{
@@ -1079,9 +1078,9 @@ public class MInOut extends X_M_InOut implements DocAction
 	}	//	process
 
 	/**	Process Message 			*/
-	private String		m_processMsg = null;
+	protected String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
-	private boolean		m_justPrepared = false;
+	protected boolean		m_justPrepared = false;
 
 	/**
 	 * 	Unlock Document.
@@ -1664,7 +1663,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	/* Save array of documents to process AFTER completing this one */
 	ArrayList<PO> docsPostProcess = new ArrayList<PO>();
 
-	private void addDocsPostProcess(PO doc) {
+	protected void addDocsPostProcess(PO doc) {
 		docsPostProcess.add(doc);
 	}
 
@@ -1678,7 +1677,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 * Based on createCounterDoc() by JJ
 	 * @return shipment if created else null
 	 */
-	private MInOut createDropShipment() {
+	protected MInOut createDropShipment() {
 
 		if ( isSOTrx() || !isDropShip() || getC_Order_ID() == 0 )
 			return null;
@@ -1748,7 +1747,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	/**
 	 * 	Set the definite document number after completed
 	 */
-	private void setDefiniteDocumentNo() {
+	protected void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			setMovementDate(new Timestamp (System.currentTimeMillis()));
@@ -1768,7 +1767,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 * 	Check Material Policy
 	 * 	Sets line ASI
 	 */
-	private void checkMaterialPolicy(MInOutLine line,BigDecimal qty)
+	protected void checkMaterialPolicy(MInOutLine line,BigDecimal qty)
 	{
 			
 		int no = MInOutLineMA.deleteInOutLineMA(line.getM_InOutLine_ID(), get_TrxName());
@@ -1895,7 +1894,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		}
 	}	//	checkMaterialPolicy
 
-	private BigDecimal autoBalanceNegative(MInOutLine line, MProduct product,BigDecimal qtyToReceive) {
+	protected BigDecimal autoBalanceNegative(MInOutLine line, MProduct product,BigDecimal qtyToReceive) {
 		MStorageOnHand[] storages = MStorageOnHand.getWarehouseNegative(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
 				null, MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), line.getM_Locator_ID(), get_TrxName(), false);
 		
@@ -1924,7 +1923,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 * 	Create Counter Document
 	 * 	@return InOut
 	 */
-	private MInOut createCounterDoc()
+	protected MInOut createCounterDoc()
 	{
 		//	Is this a counter doc ?
 		if (getRef_InOut_ID() != 0)
@@ -2145,7 +2144,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		return true;
 	}	//	reverseCorrectionIt
 
-	private MInOut reverse(boolean accrual) {
+	protected MInOut reverse(boolean accrual) {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getDateAcct();
 		if (reversalDate == null) {
@@ -2251,7 +2250,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		return reversal;
 	}
 
-	private boolean reverseMatching(Timestamp reversalDate) {
+	protected boolean reverseMatching(Timestamp reversalDate) {
 		MMatchInv[] mInv = MMatchInv.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
 		for (MMatchInv mMatchInv : mInv)
 		{		
