@@ -138,7 +138,10 @@ public abstract class AbstractEventHandler implements EventHandler {
 	 * @param e
 	 */
 	protected void addError(Event event, Throwable e) {
-		addErrorMessage(event, e.getLocalizedMessage());
+		String msg = e.getLocalizedMessage();
+		if (msg == null)
+			msg = e.toString();
+		addErrorMessage(event, msg);
 	}
 
 	/**
