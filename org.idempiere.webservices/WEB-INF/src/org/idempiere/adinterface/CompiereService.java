@@ -17,7 +17,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
-import java.util.UUID;
 import java.util.logging.Level;
 
 import org.adempiere.util.ServerContext;
@@ -283,8 +282,7 @@ public class CompiereService {
 			log.fine("No Session found");
 			session = MSession.get (getCtx(), true);    	
 		}
-		session.setWebSession(UUID.randomUUID().toString());
-		session.setDescription(session.getDescription() + " WebService" );
+		session.setWebSession("WebService");
 		session.saveEx();
 				
 		m_loggedin = true;		
