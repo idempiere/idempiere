@@ -2154,10 +2154,10 @@ public final class MRole extends X_AD_Role
 
 
 	/**
-	 *	UPADATE - Can I Update the record.
+	 *	UPDATE - Can I Update the record.
 	 *  Access error info (AccessTableNoUpdate) is saved in the log
 	 * 
-	 * @param AD_Client_ID comntext to derive client/org/user level
+	 * @param AD_Client_ID context to derive client/org/user level
 	 * @param AD_Org_ID number of the current window to retrieve context
 	 * @param AD_Table_ID table
 	 * @param Record_ID record id
@@ -2170,7 +2170,7 @@ public final class MRole extends X_AD_Role
 	{
 		String userLevel = getUserLevel();	//	Format 'SCO'
 
-		if (userLevel.indexOf('S') != -1)	//	System cannot change anything
+		if (userLevel.indexOf('S') != -1)	//	System can change anything
 			return true;
 
 		boolean	retValue = true;
@@ -2208,6 +2208,7 @@ public final class MRole extends X_AD_Role
 		// Client Access: Verify if the role has access to the given client - teo_sarca, BF [ 1982398 ]
 		if (retValue) {
 			retValue = isClientAccess(AD_Client_ID, true); // r/w access
+			whatMissing += "C";
 		}
 		
 		// Org Access: Verify if the role has access to the given organization - teo_sarca, patch [ 1628050 ]
