@@ -31,6 +31,7 @@ import org.adempiere.model.ITaxProvider;
 import org.adempiere.model.MShipperFacade;
 import org.compiere.impexp.BankStatementLoaderInterface;
 import org.compiere.impexp.BankStatementMatcherInterface;
+import org.compiere.model.Callout;
 import org.compiere.model.MAddressValidation;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MPaymentProcessor;
@@ -94,7 +95,26 @@ public class Core {
 		return list;
 	}
 
+	// IDEMPIERE-2732
 	/**
+	 *
+	 * @param className
+	 * @return callout for className
+	 */
+	public static Callout getCallout(String className) {
+		List<ICalloutFactory> factories = Service.locator().list(ICalloutFactory.class).getServices();
+		if (factories != null) {
+			for(ICalloutFactory factory : factories) {
+				Callout callout = factory.getCallout(className);
+				if (callout != null) {
+					return callout;
+				}
+			}
+		}
+		return null;
+	}
+
+		/**
 	 *
 	 * @param processId Java class name or equinox extension id
 	 * @return ProcessCall instance or null if processId not found
