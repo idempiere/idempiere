@@ -619,11 +619,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     		}
     		else
     		{
-    			if (end >= cacheEnd || end <= 0)
+    			if (end > cacheEnd || end <= 0)
     			{
-    				end = cacheEnd-1;
+    				end = cacheEnd;
     			}
-    			return line.subList(start, end+1);
+    			return line.subList(start, end);
     		}
     	}
 
@@ -1344,7 +1344,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             		int start = pageNo * pageSize;
             		int end = start + pageSize;
             		if (end >= m_count)
-            			end = m_count - 1;
+            			end = m_count;
             		List<Object> subList = readLine(start, end);
         			model = new ListModelTable(subList);
         			model.setSorter(this);
