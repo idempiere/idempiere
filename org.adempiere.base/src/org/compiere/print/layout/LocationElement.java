@@ -76,7 +76,7 @@ public class LocationElement extends GridElement
 			else if (ml.isAddressLinesReverse())
 			{
 				setData(index++, 0, ml.getCountry(true, language), font, color);
-				String[] lines = Pattern.compile("$", Pattern.MULTILINE).split(ml.getCityRegionPostal());
+				String[] lines = Pattern.compile("\n", Pattern.MULTILINE).split(ml.getCityRegionPostal());
 				for (int i = 0; i < lines.length; i++)
 					setData(index++, 0, lines[i], font, color);
 				if (ml.getAddress4() != null && ml.getAddress4().length() > 0)
@@ -98,7 +98,7 @@ public class LocationElement extends GridElement
 					setData(index++, 0, ml.getAddress3(), font, color);
 				if (ml.getAddress4() != null && ml.getAddress4().length() > 0)
 					setData(index++, 0, ml.getAddress4(), font, color);
-				String[] lines = Pattern.compile("$", Pattern.MULTILINE).split(ml.getCityRegionPostal());
+				String[] lines = Pattern.compile("\n", Pattern.MULTILINE).split(ml.getCityRegionPostal());
 				for (int i = 0; i < lines.length; i++)
 					setData(index++, 0, lines[i], font, color);
 				setData(index++, 0, ml.getCountry(true, language), font, color);

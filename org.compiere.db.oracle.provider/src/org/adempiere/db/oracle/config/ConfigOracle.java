@@ -247,7 +247,8 @@ public class ConfigOracle implements IDatabaseConfig
 			return null;
 
 		ArrayList<String> list = new ArrayList<String>();
-		Pattern pattern = Pattern.compile("$", Pattern.MULTILINE);
+		Pattern pattern = Pattern.compile("\n", Pattern.MULTILINE);
+		System.out.println(tnsnames);
 		String[] lines = pattern.split(tnsnames);
 		for (int i = 0; i < lines.length; i++)
 		{
