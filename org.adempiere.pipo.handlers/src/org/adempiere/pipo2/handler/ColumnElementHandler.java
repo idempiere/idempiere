@@ -25,6 +25,7 @@ import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PIPOContext;
@@ -228,6 +229,18 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			if (!rst.next()) {
 				// table doesn't exist
 				sql = table.getSQLCreate();
+				MColumn[] cols = table.getColumns(false);
+				for (MColumn col : cols)
+				{
+					String fkConstraintSql;
+					try {
+						fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, col);
+					} catch (Exception e) {
+						throw new AdempiereException(e);
+					}
+					if (fkConstraintSql != null && fkConstraintSql.length() > 0)
+						sql += fkConstraintSql;
+				}
 			} else {
 				//
 				rsc = md.getColumns(catalog, schema, tableName, columnName);
@@ -243,6 +256,14 @@ public class ColumnElementHandler extends AbstractElementHandler {
 					// No existing column
 					sql = column.getSQLAdd(table);
 				}
+				String fkConstraintSql;
+				try {
+					fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, column);
+				} catch (Exception e) {
+					throw new AdempiereException(e);
+				}
+				if (fkConstraintSql != null && fkConstraintSql.length() > 0)
+					sql += fkConstraintSql;
 			}
 
 			//execute modify or add if needed
@@ -260,6 +281,8 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				} else {
 					String statements[] = sql.split(DB.SQLSTATEMENT_SEPARATOR);
 					for (int i = 0; i < statements.length; i++) {
+						if ("null".equals(statements[i]))
+							continue;
 						int ret = DB.executeUpdate(statements[i], false,
 								trx.getTrxName());
 						if (ret == -1) {

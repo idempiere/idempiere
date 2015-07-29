@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.util.ServerContext;
+import org.compiere.model.MSession;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -135,6 +136,7 @@ public class CompiereService {
 	{
 		if (m_connected) 
 		{
+			Env.logout();
 			ServerContext.dispose();
 			m_ctx = null;
 			m_loggedin = false;
@@ -274,6 +276,15 @@ public class CompiereService {
 		Env.setContext( getCtx(), "#M_Warehouse_ID", M_Warehouse_ID );
 		Env.setContext(m_ctx, Env.LANGUAGE, m_language.getAD_Language());
 		
+		// Create session
+		MSession session = MSession.get (getCtx(), false);
+		if (session == null){
+			log.fine("No Session found");
+			session = MSession.get (getCtx(), true);    	
+		}
+		session.setWebSession("WebService");
+		session.saveEx();
+				
 		m_loggedin = true;		
 		return true;
 	}

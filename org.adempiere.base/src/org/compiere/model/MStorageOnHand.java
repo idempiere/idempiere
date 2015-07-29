@@ -737,7 +737,6 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		}
 
 		storage.addQtyOnHand(diffQtyOnHand);
-		storage.load(storage.get_TrxName());
 		if (storage.getQtyOnHand().signum() == -1) {
 			if (MWarehouse.get(Env.getCtx(), M_Warehouse_ID).isDisallowNegativeInv()) {
 				throw new AdempiereException(Msg.getMsg(ctx, "NegativeInventoryDisallowed"));
@@ -760,6 +759,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		DB.executeUpdateEx(sql, 
 			new Object[] {addition, Env.getAD_User_ID(Env.getCtx()), getM_Product_ID(), getM_Locator_ID(), getM_AttributeSetInstance_ID(), getDateMaterialPolicy()}, 
 			get_TrxName());
+		load(get_TrxName());
 	}
 
 	/**************************************************************************

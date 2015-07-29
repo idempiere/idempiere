@@ -431,7 +431,7 @@ public class TableElement extends PrintElement
 					}
 					else
 					{ 
-						String[] lines = Pattern.compile("$", Pattern.MULTILINE).split(string);
+						String[] lines = Pattern.compile("\n", Pattern.MULTILINE).split(string);
 						for (int lineNo = 0; lineNo < lines.length; lineNo++)
 						{
 							AttributedString aString = new AttributedString(lines[lineNo]);
@@ -503,7 +503,7 @@ public class TableElement extends PrintElement
 				{
 					float height = 0;
 					//
-					String[] lines = Pattern.compile("$", Pattern.MULTILINE).split(string);
+					String[] lines = Pattern.compile("\n", Pattern.MULTILINE).split(string);
 					for (int lineNo = 0; lineNo < lines.length; lineNo++)
 					{
 						AttributedString aString = new AttributedString(lines[lineNo]);
@@ -1503,7 +1503,7 @@ public class TableElement extends PrintElement
 						if (str.length() > 0)
 						{
 							usedHeight = 0;
-							String[] lines = Pattern.compile("$", Pattern.MULTILINE).split(str);
+							String[] lines = Pattern.compile("\n", Pattern.MULTILINE).split(str);
 							for (int lineNo = 0; lineNo < lines.length; lineNo++)
 							{
 								aString = new AttributedString(lines[lineNo]);

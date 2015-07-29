@@ -80,7 +80,7 @@ public class StringElement extends PrintElement
 			}
 		}
 		m_ID = ID;
-		String[] lines = Pattern.compile("$", Pattern.MULTILINE).split(inText);
+		String[] lines = Pattern.compile("\n", Pattern.MULTILINE).split(inText);
 		m_string_paper = new AttributedString[lines.length];
 		m_string_view = new AttributedString[lines.length];
 		for (int i = 0; i < lines.length; i++)
@@ -155,7 +155,7 @@ public class StringElement extends PrintElement
 			endOffset = labelSuffix.length();
 		}
 		m_ID = ID;
-		String[] lines = Pattern.compile("$", Pattern.MULTILINE).split(text);
+		String[] lines = Pattern.compile("\n", Pattern.MULTILINE).split(text);
 		m_string_paper = new AttributedString[lines.length];
 		m_string_view = new AttributedString[lines.length];
 		for (int i = 0; i < lines.length; i++)
@@ -230,7 +230,7 @@ public class StringElement extends PrintElement
 			return;
 		String inText = Msg.parseTranslation(ctx, m_originalString);
 	//	log.fine( "StringElement.translate", inText);
-		String[] lines = Pattern.compile("$", Pattern.MULTILINE).split(inText);
+		String[] lines = Pattern.compile("\n", Pattern.MULTILINE).split(inText);
 		m_string_paper = new AttributedString[lines.length];
 		for (int i = 0; i < lines.length; i++)
 		{

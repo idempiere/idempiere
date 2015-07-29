@@ -249,7 +249,6 @@ public class MStorageReservation extends X_M_StorageReservation {
 		}
 
 		storage.addQty(diffQty);
-		storage.load(storage.get_TrxName());
 		if (s_log.isLoggable(Level.FINE)) {
 			StringBuilder diffText = new StringBuilder("(Qty=").append(diffQty).append(") -> ").append(storage.toString());
 			s_log.fine(diffText.toString());
@@ -267,6 +266,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 		DB.executeUpdateEx(sql, 
 			new Object[] {addition, Env.getAD_User_ID(Env.getCtx()), getM_Product_ID(), getM_Warehouse_ID(), getM_AttributeSetInstance_ID(), isSOTrx()}, 
 			get_TrxName());
+		load(get_TrxName());
 	}
 
 	/**
