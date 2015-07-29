@@ -54,7 +54,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8726957992840702609L;
+	private static final long serialVersionUID = -7787519874581251920L;
 
 	/**	Tolerance Gain and Loss */
 	private static final BigDecimal	TOLERANCE = BigDecimal.valueOf(0.02);
@@ -1256,4 +1256,18 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 	{
 		return m_reversal;
 	}	//	isReversal
+
+	/** Returns a description parsing the bpartner defined in the Allocation form and then the allocation itself */
+	public String getDescriptionForManualAllocation(int bpartnerID, String trxName)
+	{
+		String sysconfig_desc = MSysConfig.getValue(MSysConfig.ALLOCATION_DESCRIPTION, "@#AD_User_Name@", getAD_Client_ID());
+		String description = "";
+		if (sysconfig_desc.contains("@")) {
+			description = Env.parseVariable(sysconfig_desc, new MBPartner(getCtx(), bpartnerID, null), trxName, true);
+			description = Env.parseVariable(description, this, trxName, true);
+		} else
+			description = Env.getContext(getCtx(), "#AD_User_Name"); // just to be sure
+
+		return description;
+	}
 }   //  MAllocation
