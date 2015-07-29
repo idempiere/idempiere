@@ -222,8 +222,9 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 		headerPanel.appendChild(new Separator("horizontal"));
 
-		tabbox.setWidth("100%");
-		tabbox.setHeight("87%");
+		tabbox.setWidth("100%");		
+		tabbox.setHeight("84%");//IDEMPIERE-2476, Pritesh Shah
+		
 		tabfo2.addEventListener(Events.ON_CLICK, this);
 		tabsc3.addEventListener(Events.ON_CLICK, this);
 		tabgc4.addEventListener(Events.ON_CLICK, this);
@@ -288,7 +289,9 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		{	
 			btnSave.setDisabled(true);
 		}   
-
+		
+		foot.setSclass("report-wizard-footer");//IDEMPIERE-2476, Pritesh Shah
+		
 		confirmPanelMain.addComponentsLeft(btnSave);
 
 		if (m_isCanExport)

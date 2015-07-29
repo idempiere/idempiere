@@ -82,3 +82,7 @@
 	border: solid 1px #9CBDFF;
 }
 
+<%-- report wizard --%>
+.report-wizard-footer {
+	width: 100%;
+}
