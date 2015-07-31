@@ -241,7 +241,7 @@ public class Process {
 				Object value = null;
 				String s = field.getVal();
 				if (requestCtx != null && !Util.isEmpty(s) && s.charAt(0) == '@') {
-					value = ModelADServiceImpl.parseVatriable(m_cs, requestCtx, field.getColumn(), s);
+					value = ModelADServiceImpl.parseVariable(m_cs, requestCtx, field.getColumn(), s);
 					if (value != null) {
 						if (value instanceof Number) {
 							m_record_id = ((Number)value).intValue();
@@ -473,7 +473,7 @@ public class Process {
 				valueString = dataField.getVal();
 				if (requestCtx != null && valueString.charAt(0) == '@') 
 				{
-					Object value = ModelADServiceImpl.parseVatriable(m_cs, requestCtx, iPara.getParameterName(), valueString);
+					Object value = ModelADServiceImpl.parseVariable(m_cs, requestCtx, iPara.getParameterName(), valueString);
 					valueString = value != null ? value.toString() : null;
 				}
 			}
@@ -495,7 +495,7 @@ public class Process {
 					valueString2 = dataField.toString();
 					if (requestCtx != null && valueString2.charAt(0) == '@') 
 					{
-						Object value = ModelADServiceImpl.parseVatriable(m_cs, requestCtx, iPara.getParameterName(), valueString2);
+						Object value = ModelADServiceImpl.parseVariable(m_cs, requestCtx, iPara.getParameterName(), valueString2);
 						valueString2 = value != null ? value.toString() : null;
 					}
 				}

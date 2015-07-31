@@ -359,7 +359,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		
 		Map<String, Object> requestCtx = getRequestCtx();
 		if (requestCtx != null && string.charAt(0) == '@') {
-			Object value = parseVatriable(getCompiereService(), requestCtx, parameterName, string);
+			Object value = parseVariable(getCompiereService(), requestCtx, parameterName, string);
 			if (value != null && value instanceof Number) {
 				return ((Number)value).intValue();
 			} else if (value != null ){
@@ -1122,7 +1122,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		} else {
 			Map<String, Object> requestCtx = getRequestCtx();
 			if (requestCtx != null && strValue.charAt(0) == '@') {
-				value = parseVatriable(getCompiereService(), requestCtx, field.getColumn(), strValue);
+				value = parseVariable(getCompiereService(), requestCtx, field.getColumn(), strValue);
 			}
 			if (value == null) {
 				value = convertToObj(strValue, columnClass, field.getColumn());
@@ -1141,11 +1141,9 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		Env.setContext(Env.getCtx(), 0, field.getColumn(), 	value==null ? null : value.toString());
 	}
 
-	public static Object parseVatriable(CompiereService cs, Map<String, Object> requestCtx, String name,
-			String strValue) {		
+	public static Object parseVariable(CompiereService cs, Map<String, Object> requestCtx, String name, String strValue) {		
 		String varName = strValue.substring(1);
 		if (varName.charAt(0) == '#') {
-			varName = varName.substring(1);
 			return cs.getCtx().getProperty(varName);
 		} else {
 			int indDot = varName.indexOf(".");
