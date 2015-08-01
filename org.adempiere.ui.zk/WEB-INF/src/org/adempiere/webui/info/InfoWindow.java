@@ -1292,7 +1292,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         
         if (!Util.isEmpty(mField.getVO().DefaultValue, true)) {
             // set default value
-        	mField.setValue(mField.getDefault(), true);
+        	mField.setValue(mField.getDefaultForPanel(), true);
         }
     }   // addSelectionColumn
 
@@ -1580,7 +1580,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			// just reset to default Field set explicit DefaultValue
 			Object resetValue = null;
 			if (! Util.isEmpty(gField.getVO().DefaultValue, true)) {
-				resetValue = gField.getDefault();
+				resetValue = gField.getDefaultForPanel();
 			}
 			Object oldValue = gField.getValue();
 			gField.setValue(resetValue, true);

@@ -287,7 +287,7 @@ public class ProcessParameterPanel extends Panel implements
 		// MField => VEditor - New Field value to be updated to editor
 		mField.addPropertyChangeListener(editor);
 		// Set Default
-		Object defaultObject = mField.getDefault();
+		Object defaultObject = mField.getDefaultForPanel();
 		mField.setValue(defaultObject, true);
 		// streach component to fill grid cell
 		editor.fillHorizontal();
@@ -349,7 +349,7 @@ public class ProcessParameterPanel extends Panel implements
 				this.appendChild(popupMenu);
 			}
 			// Set Default
-			Object defaultObject2 = mField2.getDefault();
+			Object defaultObject2 = mField2.getDefaultForPanel();
 			mField2.setValue(defaultObject2, true);
 			//
 			m_wEditors2.add(editor2);

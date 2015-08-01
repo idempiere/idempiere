@@ -331,7 +331,7 @@ public class ProcessParameter extends CDialog
 		//  MField => VEditor - New Field value to be updated to editor
 		mField.addPropertyChangeListener(vEditor);
 		//  Set Default
-		Object defaultObject = mField.getDefault();
+		Object defaultObject = mField.getDefaultForPanel();
 		mField.setValue (defaultObject, true);
 		//
 		centerPanel.add ((Component)vEditor, gbc);
@@ -360,7 +360,7 @@ public class ProcessParameter extends CDialog
 			//  New Field value to be updated to editor
 			mField2.addPropertyChangeListener(vEditor2);
 			//  Set Default
-			Object defaultObject2 = mField2.getDefault();
+			Object defaultObject2 = mField2.getDefaultForPanel();
 			mField2.setValue (defaultObject2, true);
 			//
 			centerPanel.add ((Component)vEditor2, gbc);
