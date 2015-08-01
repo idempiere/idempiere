@@ -202,7 +202,8 @@ public class WAllocation extends Allocation
 		row = rows.newRow();
 		row.appendCellChild(bpartnerLabel.rightAlign());
 		bpartnerSearch.getComponent().setHflex("true");
-		row.appendCellChild(bpartnerSearch.getComponent(),2);	
+		row.appendCellChild(bpartnerSearch.getComponent(),2);
+		bpartnerSearch.showMenu();
 		Hbox box = new Hbox();
 		box.appendChild(dateLabel.rightAlign());
 		box.appendChild(dateField.getComponent());
