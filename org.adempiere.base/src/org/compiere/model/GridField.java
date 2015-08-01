@@ -540,6 +540,8 @@ public class GridField
 	 *  Don't default from Context => use explicit defaultValue
 	 *  (would otherwise copy previous record)
 	 *  </pre>
+	 *  this method code in mind GirdField lie at standard window, and default is receive when new record.
+	 *  maybe it will don't suitable for use at other place as info panel parameter,...
 	 *  @return default value or null
 	 */
 	public Object getDefault()
@@ -547,14 +549,75 @@ public class GridField
 		/**
 		 *  (a) Key/Parent/IsActive/SystemAccess
 		 */
-
-		//	No defaults for these fields
-		if (m_vo.IsKey || m_vo.displayType == DisplayType.RowID 
-			|| DisplayType.isLOB(m_vo.displayType)
-			|| "Created".equals(m_vo.ColumnName) // for Created/Updated default is managed on PO, and direct inserts on DB
-			|| "Updated".equals(m_vo.ColumnName))
+		if (isIgnoreDefault())
 			return null;
-		//	Set Parent to context if not explicitly set
+		
+		Object defaultValue = null;
+		
+		if ((defaultValue = defaultForSpecialCase ()) != null){
+			return defaultValue;
+		}
+		
+		if ((defaultValue = defaultFromSQLExpression ()) != null){
+			return defaultValue;
+		}
+		
+		if ((defaultValue = defaultFromExpression()) != null){
+			return defaultValue;
+		}
+		
+		if ((defaultValue = defaultFromPreference()) != null){
+			return defaultValue;
+		}
+	  
+		if ((defaultValue = defaultFromDatatype()) != null){
+			return defaultValue;
+		}
+		
+		/**
+		 *  No resolution
+		 */
+		if (log.isLoggable(Level.FINE)) log.fine("[NONE] " + m_vo.ColumnName);
+		return null;
+	}	//	getDefault
+	
+	protected boolean isIgnoreDefault (){
+		// No defaults for these fields
+		return (m_vo.IsKey || m_vo.displayType == DisplayType.RowID 
+				|| DisplayType.isLOB(m_vo.displayType)
+				|| "Created".equals(m_vo.ColumnName) // for Created/Updated default is managed on PO, and direct inserts on DB
+				|| "Updated".equals(m_vo.ColumnName));
+	}
+
+	/**
+	 * When field lie down at standard window, for make new record, some column is fix will special logic
+	 * example: reference column at child tab always use parent value
+	 * active column always true
+	 * in system client always use system for client
+	 * @return
+	 */
+	protected Object defaultForSpecialCase (){
+		Object defaultValue = null;
+		// Set Parent to context if not explicitly set
+		if ((defaultValue = defaultFromParent()) != null){
+			return defaultValue;
+		}
+		
+		// is active field then return "Y"
+		if ((defaultValue = defaultForActiveField()) != null){
+			return defaultValue;
+		}
+		
+		// Set Client & Org to System, if System access
+		if ((defaultValue = defaultForClientOrg()) != null){
+			return defaultValue;
+		}
+		
+		return null;
+	}
+	
+	protected Object defaultFromParent (){
+		// Set Parent to context if not explicitly set
 		if (isParentValue()
 			&& (m_vo.DefaultValue == null || m_vo.DefaultValue.length() == 0))
 		{
@@ -562,14 +625,22 @@ public class GridField
 			if (log.isLoggable(Level.FINE)) log.fine("[Parent] " + m_vo.ColumnName + "=" + parent);
 			return createDefault(parent);
 		}
-		//	Always Active
+		return null;
+	}
+
+	protected Object defaultForActiveField (){
+		// Always Active
 		if (m_vo.ColumnName.equals("IsActive"))
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("[IsActive] " + m_vo.ColumnName + "=Y");
 			return "Y";
 		}
 		
-		//	Set Client & Org to System, if System access
+		return null;
+	}
+	
+	protected Object defaultForClientOrg (){
+		// Set Client & Org to System, if System access
 		if (X_AD_Table.ACCESSLEVEL_SystemOnly.equals(Env.getContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, GridTab.CTX_AccessLevel))
 			&& (m_vo.ColumnName.equals("AD_Client_ID") || m_vo.ColumnName.equals("AD_Org_ID")))
 		{
@@ -583,7 +654,11 @@ public class GridField
 			if (log.isLoggable(Level.FINE)) log.fine("[ClientAccess] " + m_vo.ColumnName + "=0");
 			return new Integer(0);
 		}
-
+		
+		return null;
+	}
+	
+	protected Object defaultFromSQLExpression () {
 		/**
 		 *  (b) SQL Statement (for data integity & consistency)
 		 */
@@ -631,14 +706,19 @@ public class GridField
 				if (log.isLoggable(Level.FINE)) log.fine("[SQL] " + m_vo.ColumnName + "=" + defStr);
 				return createDefault(defStr);
 			}
-		}	//	SQL Statement
 
+		}	//	SQL Statement
+		
+		return null;
+	}
+	
+	protected Object defaultFromExpression (){
 		/**
 		 * 	(c) Field DefaultValue		=== similar code in AStartRPDialog.getDefault ===
 		 */
 		if (m_vo.DefaultValue != null && !m_vo.DefaultValue.equals("") && !m_vo.DefaultValue.startsWith("@SQL="))
 		{
-			defStr = "";		//	problem is with texts like 'sss;sss'
+			String defStr = "";		//	problem is with texts like 'sss;sss'
 			//	It is one or more variables/constants
 			StringTokenizer st = new StringTokenizer(m_vo.DefaultValue, ",;", false);
 			while (st.hasMoreTokens())
@@ -658,80 +738,104 @@ public class GridField
 				 }
 			}	//	while more Tokens
 		}	//	Default value
-
-	  if (getAD_Process_ID_Of_Panel() > 0){
-		defStr = Env.getPreference (m_vo.ctx, getAD_Window_ID_Of_Panel(), getAD_Infowindow_ID(), getAD_Process_ID_Of_Panel(), m_vo.ColumnName);
 		
-		// when have no preference set for field, and field lie in process dialog call from infoWindow
-		if (defStr.equals("") && getAD_Infowindow_ID() > 0){
-			// try get preference for current infoWindow but all process
-			defStr = Env.getPreference (m_vo.ctx, Env.adWindowDummyID, getAD_Infowindow_ID(), 0, m_vo.ColumnName);
-			
-			if (defStr.equals("")){
-				// try get preference for current process but all infoWindow
-				defStr = Env.getPreference (m_vo.ctx, Env.adWindowDummyID, 0, getAD_Process_ID_Of_Panel(), m_vo.ColumnName);
+		return null;
+	}
+	
+	protected Object defaultFromPreference() {
+		String defStr = "";
+		if (getAD_Process_ID_Of_Panel() > 0) {
+			defStr = Env.getPreference(m_vo.ctx, getAD_Window_ID_Of_Panel(),
+					getAD_Infowindow_ID(), getAD_Process_ID_Of_Panel(),
+					m_vo.ColumnName);
+
+			// when have no preference set for field, and field lie in process
+			// dialog call from infoWindow
+			if (defStr.equals("") && getAD_Infowindow_ID() > 0) {
+				// try get preference for current infoWindow but all process
+				defStr = Env.getPreference(m_vo.ctx, Env.adWindowDummyID,
+						getAD_Infowindow_ID(), 0, m_vo.ColumnName);
+
+				if (defStr.equals("")) {
+					// try get preference for current process but all infoWindow
+					defStr = Env.getPreference(m_vo.ctx, Env.adWindowDummyID,
+							0, getAD_Process_ID_Of_Panel(), m_vo.ColumnName);
+				}
+
+				if (defStr.equals("")) {
+					// try get preference for all infoWindow and all process
+					defStr = Env.getPreference(m_vo.ctx, Env.adWindowDummyID,
+							0, 0, m_vo.ColumnName);
+				}
 			}
-			
-			if (defStr.equals("")){
-				// try get preference for all infoWindow and all process
-				defStr = Env.getPreference (m_vo.ctx, Env.adWindowDummyID, 0, 0, m_vo.ColumnName);
+
+			if (defStr.equals("")) {
+				// try get preference apply for all process and current window
+				defStr = Env.getPreference(m_vo.ctx,
+						getAD_Window_ID_Of_Panel(), 0, 0, m_vo.ColumnName);
 			}
-		}
 
-		if (defStr.equals("")){
-			// try get preference apply for all process and current window 
-			defStr = Env.getPreference (m_vo.ctx, getAD_Window_ID_Of_Panel(), 0, 0, m_vo.ColumnName);
+			if (defStr.equals("")) {
+				// try get preference apply for all window and this process
+				defStr = Env.getPreference(m_vo.ctx, 0, 0,
+						getAD_Process_ID_Of_Panel(), m_vo.ColumnName);
+			}
+
+			if (defStr.equals("")) {
+				// try get preference apply for all process and all window
+				defStr = Env.getPreference(m_vo.ctx, 0, 0, 0, m_vo.ColumnName);
+			}
+
+			if (!defStr.equals("")) {
+				if (log.isLoggable(Level.FINE))
+					log.fine("[Process Parameter Preference] "
+							+ m_vo.ColumnName + "=" + defStr);
+				return createDefault(defStr);
+			}
+			// <- End of suggested changes
+		} else if (getAD_Infowindow_ID() > 0) {
+			defStr = Env.getPreference(m_vo.ctx, getAD_Window_ID_Of_Panel(),
+					getAD_Infowindow_ID(), m_vo.ColumnName);
+			if (!defStr.equals("")) {
+				if (log.isLoggable(Level.FINE))
+					log.fine("[Process Parameter Preference] "
+							+ m_vo.ColumnName + "=" + defStr);
+				return createDefault(defStr);
+			}
+		} else {
+			/**
+			 * (d) Preference (user) - P|
+			 */
+			defStr = Env.getPreference(m_vo.ctx, m_vo.AD_Window_ID,
+					m_vo.ColumnName, false);
+			if (!defStr.equals("")) {
+				if (log.isLoggable(Level.FINE))
+					log.fine("[UserPreference] " + m_vo.ColumnName + "="
+							+ defStr);
+				return createDefault(defStr);
+			}
+
+			/**
+			 * (e) Preference (System) - # $
+			 */
+			defStr = Env.getPreference(m_vo.ctx, m_vo.AD_Window_ID,
+					m_vo.ColumnName, true);
+			if (!defStr.equals("")) {
+				if (log.isLoggable(Level.FINE))
+					log.fine("[SystemPreference] " + m_vo.ColumnName + "="
+							+ defStr);
+				return createDefault(defStr);
+			}
+
 		}
 		
-		if (defStr.equals("")){
-			// try get preference apply for all window and this process
-			defStr = Env.getPreference (m_vo.ctx, 0, 0, getAD_Process_ID_Of_Panel(), m_vo.ColumnName);
-		}
-		
-		if (defStr.equals("")){
-			// try get preference apply for all process and all window 
-			defStr = Env.getPreference (m_vo.ctx, 0, 0, 0, m_vo.ColumnName);
-		}
-		
-		if (!defStr.equals("")){
-			if (log.isLoggable(Level.FINE)) log.fine("[Process Parameter Preference] " + m_vo.ColumnName + "=" + defStr);
-			return createDefault(defStr);
-		}
-		// <- End of suggested changes
-	  } else if (getAD_Infowindow_ID() > 0){
-		  defStr = Env.getPreference (m_vo.ctx, getAD_Window_ID_Of_Panel(), getAD_Infowindow_ID(), m_vo.ColumnName);
-		  if (!defStr.equals(""))
-		  {
-			  if (log.isLoggable(Level.FINE)) log.fine("[Process Parameter Preference] " + m_vo.ColumnName + "=" + defStr);
-			  return createDefault(defStr);
-		  } 
-	  } else {
-		/**
-		 *	(d) Preference (user) - P|
-		 */
-		defStr = Env.getPreference (m_vo.ctx, m_vo.AD_Window_ID, m_vo.ColumnName, false);
-		if (!defStr.equals(""))
-		{
-			if (log.isLoggable(Level.FINE)) log.fine("[UserPreference] " + m_vo.ColumnName + "=" + defStr);
-			return createDefault(defStr);
-		}
-
-		/**
-		 *	(e) Preference (System) - # $
-		 */
-		defStr = Env.getPreference (m_vo.ctx, m_vo.AD_Window_ID, m_vo.ColumnName, true);
-		if (!defStr.equals(""))
-		{
-			if (log.isLoggable(Level.FINE)) log.fine("[SystemPreference] " + m_vo.ColumnName + "=" + defStr);
-			return createDefault(defStr);
-		}
-
-	  }
-
+		return null;
+	}
+	
+	protected Object defaultFromDatatype (){
 		/**
 		 *	(f) DataType defaults
 		 */
-
 		//	Button to N
 		if (m_vo.displayType == DisplayType.Button && !m_vo.ColumnName.endsWith("_ID"))
 		{
@@ -761,14 +865,10 @@ public class GridField
 			if (log.isLoggable(Level.FINE)) log.fine("[Number=0] " + m_vo.ColumnName);
 			return createDefault("0");
 		}
-
-		/**
-		 *  No resolution
-		 */
-		if (log.isLoggable(Level.FINE)) log.fine("[NONE] " + m_vo.ColumnName);
+		
 		return null;
-	}	//	getDefault
-
+	}
+	
 	/**
 	 *	Create Default Object type.
 	 *  <pre>
