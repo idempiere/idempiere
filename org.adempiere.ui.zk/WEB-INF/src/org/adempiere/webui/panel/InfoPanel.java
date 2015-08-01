@@ -196,7 +196,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				log.log(Level.SEVERE, "Cannot parse context= " + whereClause);
 		}
 		
-		pageSize = MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, DEFAULT_PAGE_SIZE);
+		pageSize = MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, DEFAULT_PAGE_SIZE, Env.getAD_Client_ID(Env.getCtx()));
 		
 		init();
 
