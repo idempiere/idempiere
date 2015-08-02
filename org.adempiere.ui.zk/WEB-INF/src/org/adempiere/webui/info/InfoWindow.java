@@ -175,16 +175,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    		//Xolali IDEMPIERE-1045
    		contentPanel.addActionListener(new EventListener<Event>() {
    			public void onEvent(Event event) throws Exception {
-   				int row = contentPanel.getSelectedRow();
-   				if (row >= 0) {
-   					for (EmbedWinInfo embed : embeddedWinList) {
-   						int indexData = 0;
-   						if (columnDataIndex.containsKey(embed.getParentLinkColumnID())){
-   							indexData = p_layout.length + columnDataIndex.get(embed.getParentLinkColumnID());
-   						}
-   						refresh(contentPanel.getValueAt(row,indexData),embed);
-   					}// refresh for all
-   				}
+   				updateSubcontent();
    			}
    		}); //xolali --end-
 
@@ -213,6 +204,29 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				prepareTable();
 				processQueryValue();
 			}			
+		}
+	}
+	
+	/**
+	* {@inheritDoc}
+	*/
+	@Override
+	protected void updateSubcontent (){
+		int row = contentPanel.getSelectedRow();
+		if (row >= 0) {
+			for (EmbedWinInfo embed : embeddedWinList) {
+				// default link column is key column
+				int indexData = 0;
+				if (columnDataIndex.containsKey(embed.getParentLinkColumnID())){
+					// get index of link column
+					indexData = p_layout.length + columnDataIndex.get(embed.getParentLinkColumnID());
+				}
+				refresh(contentPanel.getValueAt(row,indexData),embed);
+			}// refresh for all
+		}else{
+			for (EmbedWinInfo embed : embeddedWinList) {
+				refresh(embed);
+			}
 		}
 	}
 
@@ -1803,6 +1817,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 	}	//	refresh
 
+	protected void refresh(EmbedWinInfo relatedInfo){
+		if (relatedInfo.getInfoTbl() != null){
+			if (((WListbox)relatedInfo.getInfoTbl()).getModel() != null)
+				((WListbox)relatedInfo.getInfoTbl()).getModel().clear();
+			else
+				((WListbox)relatedInfo.getInfoTbl()).clear();
+		}
+	}
+	
 	/**
 	 * @author xolali IDEMPIERE-1045
 	 * loadEmbedded(ResultSet rs, EmbedWinInfo info)

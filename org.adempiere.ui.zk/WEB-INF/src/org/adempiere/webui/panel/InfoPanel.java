@@ -1496,6 +1496,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected void initParameters() {
 
 	}
+	
+	/**
+	 * Update relate info when selection in main info change
+	 */
+	protected void updateSubcontent (){};
 
 	/**
 	 * Reset parameter to default value or to empty value? implement at
@@ -1621,6 +1626,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         		bindInfoProcess();
         	}
         	// IDEMPIERE-1334 after refresh, restore prev selected item end
+        	updateSubcontent ();
         }
     	finally
     	{
