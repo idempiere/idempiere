@@ -1559,7 +1559,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     			boolean isParameterChange = isParameteChangeValue();
         		// when change parameter, also requery
         		if (isParameterChange){
-        			onUserQuery();
+        			if (!isQueryByUser)
+        				onUserQuery();
         		}else if (m_lookup && contentPanel.getSelectedIndex() >= 0){
         			// do nothing when parameter not change and at window mode, or at dialog mode but select non record    			
         			onOk();
