@@ -492,15 +492,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	
 	protected boolean loadInfoDefinition() {
 		if (infoWindow != null) {
-			if (p_tableName == null)
-				p_tableName = MTable.getTableName(Env.getCtx(), infoWindow.getAD_Table_ID());
+			String tableName = null;
+				tableName = MTable.getTableName(Env.getCtx(), infoWindow.getAD_Table_ID());
 			
 			AccessSqlParser sqlParser = new AccessSqlParser("SELECT * FROM " + infoWindow.getFromClause());
 			tableInfos = sqlParser.getTableInfo(0);
 			if (tableInfos[0].getSynonym() != null && tableInfos[0].getSynonym().trim().length() > 0) {
 				p_tableName = tableInfos[0].getSynonym().trim();
 				if (p_whereClause != null && p_whereClause.trim().length() > 0) {
-					p_whereClause = p_whereClause.replace(p_tableName+".", p_tableName+".");
+					p_whereClause = p_whereClause.replace(tableName+".", p_tableName+".");
 				}					
 			}
 			
