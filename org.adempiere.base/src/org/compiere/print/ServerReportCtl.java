@@ -201,6 +201,8 @@ public class ServerReportCtl {
  	    else if (pi.getAD_Process_ID() == 202			//	Financial Report
 			|| pi.getAD_Process_ID() == 204)			//	Financial Statement
 		   return startFinReport (pi);
+		else if (pi.getAD_Process_ID() == 291)			//	M_Inventory
+			return startDocumentPrint(ReportEngine.INVENTORY, null, pi.getRecord_ID(), null, pi);
 		/********************
 		 *	Standard Report
 		 *******************/
