@@ -148,7 +148,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/** Window Width                */
 	static final int        INFO_WIDTH = 800;
 	protected boolean m_lookup;
-
+	protected int AD_InfoWindow_ID;
+	
 	/**************************************************
      *  Detail Constructor
      * @param WindowNo  WindowNo
@@ -163,6 +164,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		this(WindowNo, tableName, keyColumn, multipleSelection, whereClause, true);
 	}
 
+	protected InfoPanel (int WindowNo,
+			String tableName, String keyColumn,boolean multipleSelection,
+			 String whereClause, boolean lookup){
+		this(WindowNo, tableName, keyColumn, multipleSelection, whereClause,
+				lookup, 0);
+	}
+	
 	/**************************************************
      *  Detail Constructor
      * @param WindowNo  WindowNo
@@ -172,7 +180,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	protected InfoPanel (int WindowNo,
 		String tableName, String keyColumn,boolean multipleSelection,
-		 String whereClause, boolean lookup)
+		 String whereClause, boolean lookup, int ADInfoWindowID)
 	{		
 		if (WindowNo <= 0) {
 			p_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
@@ -182,11 +190,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (log.isLoggable(Level.INFO))
 			log.info("WinNo=" + WindowNo + " " + whereClause);
 		p_tableName = tableName;
+		this.AD_InfoWindow_ID = ADInfoWindowID;
 		p_keyColumn = keyColumn;
 		
         p_multipleSelection = multipleSelection;
         m_lookup = lookup;
-
+        infoWindow = loadInfoWindowData(this.AD_InfoWindow_ID);
 		if (whereClause == null || whereClause.indexOf('@') == -1)
 			p_whereClause = whereClause == null ? "" : whereClause;
 		else
@@ -208,7 +217,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		
 		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infopanel");
 		
-        infoWindow = MInfoWindow.get(p_keyColumn.replace("_ID", ""), null);
 		addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 		addEventListener(ON_RUN_PROCESS, this);
 		addEventListener(Events.ON_CLOSE, this);
@@ -304,7 +312,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**	PO Zoom Window						*/
 	private int					m_PO_Window_ID = -1;
 	
-	private MInfoWindow infoWindow;
+	protected MInfoWindow infoWindow;
 
 	/**	Logger			*/
 	protected CLogger log = CLogger.getCLogger(getClass());
@@ -1126,7 +1134,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		return sb.toString();
 	}	//	getSelectedSQL;
 
-
+	/**
+	 * query ADInfoWindow from ADInfoWindowID
+	 * @param ADInfoWindowID
+	 */
+	protected MInfoWindow loadInfoWindowData (int ADInfoWindowID){return null;}
 
 	/**
 	 *  Get Table name Synonym

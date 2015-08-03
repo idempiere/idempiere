@@ -118,13 +118,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     public static final int FIELDLENGTH = 20;
     
     protected ColumnInfo[] columnInfos;
-	protected MInfoWindow infoWindow;
 	protected TableInfo[] tableInfos;
 	protected MInfoColumn[] infoColumns;	
 	protected String queryValue;
 	
 	private List<GridField> gridFields;
-	private int AD_InfoWindow_ID;
 	private Checkbox checkAND;
 	/**
 	 * Menu contail process menu item
@@ -170,7 +168,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				lookup);
 		this.m_gridfield = field;
 		this.queryValue = queryValue;
-		this.AD_InfoWindow_ID = AD_InfoWindow_ID;
 
    		//Xolali IDEMPIERE-1045
    		contentPanel.addActionListener(new EventListener<Event>() {
@@ -471,32 +468,38 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		isQueryByUser = false;
 	}
 
-	protected boolean loadInfoDefinition() {
-		String tableName = null;
+	@Override
+	protected MInfoWindow loadInfoWindowData (int ADInfoWindowID){
+		MInfoWindow infoWindow = null;
 		if (AD_InfoWindow_ID > 0) {
 			infoWindow = new MInfoWindow(Env.getCtx(), AD_InfoWindow_ID, null);
-			if (!infoWindow.isValid()) {
-				infoWindow = null;
-			} else {
-				tableName = MTable.getTableName(Env.getCtx(), infoWindow.getAD_Table_ID());
-				if (!tableName.equalsIgnoreCase(p_tableName)) {
-					throw new IllegalArgumentException("AD_InfoWindow.TableName <> TableName argument. ("+tableName + " <> " + p_tableName+")");
-				}
-			}
-		} else {
+		}else {
 			infoWindow = MInfoWindow.get(p_tableName, (String)null);			
 		}
 		
+		if (!infoWindow.isValid()) {
+			infoWindow = null;
+		} else {
+			String tableName = MTable.getTableName(Env.getCtx(), infoWindow.getAD_Table_ID());
+			if (!tableName.equalsIgnoreCase(p_tableName)) {
+				throw new IllegalArgumentException("AD_InfoWindow.TableName <> TableName argument. ("+tableName + " <> " + p_tableName+")");
+			}
+		}
+		
+		return infoWindow;
+	}
+	
+	protected boolean loadInfoDefinition() {
 		if (infoWindow != null) {
-			if (tableName == null)
-				tableName = MTable.getTableName(Env.getCtx(), infoWindow.getAD_Table_ID());
+			if (p_tableName == null)
+				p_tableName = MTable.getTableName(Env.getCtx(), infoWindow.getAD_Table_ID());
 			
 			AccessSqlParser sqlParser = new AccessSqlParser("SELECT * FROM " + infoWindow.getFromClause());
 			tableInfos = sqlParser.getTableInfo(0);
 			if (tableInfos[0].getSynonym() != null && tableInfos[0].getSynonym().trim().length() > 0) {
 				p_tableName = tableInfos[0].getSynonym().trim();
 				if (p_whereClause != null && p_whereClause.trim().length() > 0) {
-					p_whereClause = p_whereClause.replace(tableName+".", p_tableName+".");
+					p_whereClause = p_whereClause.replace(p_tableName+".", p_tableName+".");
 				}					
 			}
 			
