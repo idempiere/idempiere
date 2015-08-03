@@ -148,7 +148,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/** Window Width                */
 	static final int        INFO_WIDTH = 800;
 	protected boolean m_lookup;
-	protected int AD_InfoWindow_ID;
+	protected int m_infoWindowID;
 	
 	/**************************************************
      *  Detail Constructor
@@ -190,12 +190,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (log.isLoggable(Level.INFO))
 			log.info("WinNo=" + WindowNo + " " + whereClause);
 		p_tableName = tableName;
-		this.AD_InfoWindow_ID = ADInfoWindowID;
+		this.m_infoWindowID = ADInfoWindowID;
 		p_keyColumn = keyColumn;
 		
         p_multipleSelection = multipleSelection;
         m_lookup = lookup;
-        infoWindow = loadInfoWindowData(this.AD_InfoWindow_ID);
+        loadInfoWindowData();
 		if (whereClause == null || whereClause.indexOf('@') == -1)
 			p_whereClause = whereClause == null ? "" : whereClause;
 		else
@@ -1136,9 +1136,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 	/**
 	 * query ADInfoWindow from ADInfoWindowID
-	 * @param ADInfoWindowID
 	 */
-	protected MInfoWindow loadInfoWindowData (int ADInfoWindowID){return null;}
+	protected void loadInfoWindowData (){}
 
 	/**
 	 *  Get Table name Synonym

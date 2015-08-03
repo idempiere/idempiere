@@ -469,10 +469,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 
 	@Override
-	protected MInfoWindow loadInfoWindowData (int ADInfoWindowID){
-		MInfoWindow infoWindow = null;
-		if (AD_InfoWindow_ID > 0) {
-			infoWindow = new MInfoWindow(Env.getCtx(), AD_InfoWindow_ID, null);
+	protected void loadInfoWindowData (){
+		if (m_infoWindowID > 0) {
+			infoWindow = new MInfoWindow(Env.getCtx(), m_infoWindowID, null);
 		}else {
 			infoWindow = MInfoWindow.get(p_tableName, (String)null);			
 		}
@@ -485,8 +484,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				throw new IllegalArgumentException("AD_InfoWindow.TableName <> TableName argument. ("+tableName + " <> " + p_tableName+")");
 			}
 		}
-		
-		return infoWindow;
 	}
 	
 	protected boolean loadInfoDefinition() {
@@ -1868,7 +1865,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	protected GridField getGridField(MInfoColumn infoColumn){
 		String columnName = infoColumn.getColumnName();
-		GridFieldVO vo = GridFieldVO.createParameter(infoContext, p_WindowNo, AEnv.getADWindowID(p_WindowNo), AD_InfoWindow_ID, 0,
+		GridFieldVO vo = GridFieldVO.createParameter(infoContext, p_WindowNo, AEnv.getADWindowID(p_WindowNo), m_infoWindowID, 0,
 				columnName, infoColumn.get_Translation("Name"), infoColumn.getAD_Reference_ID(),
 				infoColumn.getAD_Reference_Value_ID(), false, false);
 		if (infoColumn.getAD_Val_Rule_ID() > 0) {
