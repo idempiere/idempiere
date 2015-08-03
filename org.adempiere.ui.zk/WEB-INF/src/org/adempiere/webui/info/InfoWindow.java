@@ -43,8 +43,10 @@ import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.grid.WQuickEntry;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -71,12 +73,14 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SwipeEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Comboitem;
@@ -2004,6 +2008,42 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 		
 		return true;		
+	}
+	
+	@Override
+	protected boolean hasNew() {
+		return getADWindowID () > 0;
+	}
+	
+	/**
+	 * Get id of window link with main table of this info window
+	 * @param tableName
+	 * @return
+	 */
+	protected int getADWindowID() {
+		String isSOTrx = Env.getContext(Env.getCtx(), p_WindowNo, "IsSOTrx");
+		if (!isLookup() && Util.isEmpty(isSOTrx)) {
+			isSOTrx = "Y";
+		}
+		
+		return super.getAD_Window_ID(MTable.getTableName(Env.getCtx(), infoWindow.getAD_Table_ID()), isSOTrx.equalsIgnoreCase("Y"));
+	}
+	
+	@Override
+	protected void newRecordAction() {
+		final WQuickEntry vqe = new WQuickEntry (0, getADWindowID());												
+										
+		vqe.loadRecord (0);								
+										
+		vqe.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {								
+			@Override							
+			public void onEvent(Event event) throws Exception {							
+				Clients.response(new AuEcho(InfoWindow.this, "onQueryCallback", null));
+			}
+		});								
+										
+		vqe.setVisible(true);								
+		AEnv.showWindow(vqe);								
 	}
 
 }

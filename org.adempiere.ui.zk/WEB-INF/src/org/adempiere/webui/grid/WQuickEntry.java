@@ -446,7 +446,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 
 	public int getRecord_ID()
 	{
-		if (quickPOs.get(0) == null)
+		if (quickPOs.isEmpty() || quickPOs.get(0) == null)
 			return 0;
 
 		return quickPOs.get(0).get_ID();

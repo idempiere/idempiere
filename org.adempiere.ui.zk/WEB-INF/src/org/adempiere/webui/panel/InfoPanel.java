@@ -123,10 +123,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected final static String ON_RUN_PROCESS = "onRunProcess";
 	// attribute key of info process
 	protected final static String ATT_INFO_PROCESS_KEY = "INFO_PROCESS";
-	
 	protected int pageSize;
 	protected MInfoRelated[] relatedInfoList;
-	
     public static InfoPanel create (int WindowNo,
             String tableName, String keyColumn, String value,
             boolean multiSelection, String whereClause)
@@ -246,6 +244,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		}
 
 		confirmPanel = new ConfirmPanel(true, true, true, true, true, true);  // Elaine 2008/12/16 
+		confirmPanel.addComponentsLeft(confirmPanel.createButton(ConfirmPanel.A_NEW));
         confirmPanel.addActionListener(Events.ON_CLICK, this);
         confirmPanel.setHflex("1");
 
@@ -253,6 +252,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		confirmPanel.getButton(ConfirmPanel.A_CUSTOMIZE).setVisible(hasCustomize());
 		confirmPanel.getButton(ConfirmPanel.A_HISTORY).setVisible(hasHistory());
 		confirmPanel.getButton(ConfirmPanel.A_ZOOM).setVisible(hasZoom());
+		confirmPanel.getButton(ConfirmPanel.A_NEW).setVisible(hasNew());
 		//
 		if (!isLookup())
 		{
@@ -1189,7 +1189,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			confirmPanel.getButton(ConfirmPanel.A_ZOOM).setEnabled(!enable?enable : (contentPanel.getSelectedCount() == 1) ); //red1 only zoom for single record
 		if (hasProcess())
 			confirmPanel.getButton(ConfirmPanel.A_PROCESS).setEnabled(enable);
-		
 		// IDEMPIERE-1334 start
 		for (Button btProcess : btProcessList){
 			btProcess.setEnabled(enable);
@@ -1262,6 +1261,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 *  @return true if it has zoom (default false)
 	 */
 	protected boolean hasZoom()					{return false;}
+	/**
+	 *  Has new function for create new record (false)
+	 *	To be overwritten by concrete classes 
+	 * @return
+	 */
+	protected boolean hasNew()					{return false;}
 	/**
 	 *  Save Selection Details
 	 *	To be overwritten by concrete classes
@@ -1378,6 +1383,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
                     if (isLookup())
                     	this.detach();
                 }
+            }else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_NEW)))
+            {
+            	newRecordAction ();
             }
         // IDEMPIERE-1334 handle event click into process button start
         else if (ON_RUN_PROCESS.equals(event.getName())){
@@ -1706,6 +1714,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     	}
     }
 
+    /**
+     * process action when user click to new button
+     */
+    protected void newRecordAction (){}
+    
     public void addValueChangeListener(ValueChangeListener listener)
     {
         if (listener == null)
