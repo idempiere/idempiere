@@ -117,6 +117,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private static final long serialVersionUID = 965821837109028155L;
 
 	private final static int DEFAULT_PAGE_SIZE = 100;
+	private final static int DEFAULT_PAGE_RELOAD = 4;
 	protected List<Button> btProcessList = new ArrayList<Button>();
 	protected Map<String, WEditor> editorMap = new HashMap<String, WEditor>();
 	protected final static String PROCESS_ID_KEY = "processId";
@@ -125,6 +126,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected final static String ATT_INFO_PROCESS_KEY = "INFO_PROCESS";
 	protected int pageSize;
 	protected MInfoRelated[] relatedInfoList;
+	// for test disable load all record when num of record < 1000
+	protected boolean isIgnoreCacheAll = true;
+	// Num of page preload, default is 2 page before current and 2 page after current 
+	protected int numPagePreLoad = MSysConfig.getIntValue(MSysConfig.ZK_INFO_NUM_PAGE_RELOAD, DEFAULT_PAGE_RELOAD);
+	
     public static InfoPanel create (int WindowNo,
             String tableName, String keyColumn, String value,
             boolean multiSelection, String whereClause)
@@ -456,7 +462,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		testCount();
 		if (m_count > 0)
 		{
-			m_useDatabasePaging = (m_count > 1000);
+			m_useDatabasePaging = isIgnoreCacheAll || (m_count > 1000);
 			if (m_useDatabasePaging)
 			{
 				return ;
@@ -700,7 +706,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     		}
     	}
 
-    	setCacheStart(start + 1 - (pageSize * 4));
+    	setCacheStart(start + 1 - (pageSize * numPagePreLoad));
     	if (getCacheStart() <= 0)
     		setCacheStart(1);
 
@@ -710,7 +716,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     	}
     	else
     	{
-	    	cacheEnd = end + 1 + (pageSize * 4);
+	    	cacheEnd = end + 1 + (pageSize * numPagePreLoad);
 	    	if (cacheEnd > m_count)
 	    		cacheEnd = m_count;
     	}
