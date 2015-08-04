@@ -687,7 +687,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     		{
     			if (start+1 >= getCacheStart() && end+1 <= cacheEnd)
     			{
-    				return end == -1 ? line : line.subList(start-getCacheStart()+1, end-getCacheStart()+2);
+    				return end == -1 ? line : line.subList(start-getCacheStart()+1, end-getCacheStart()+1);
     			}
     		}
     		else
@@ -777,9 +777,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			DB.close(m_rs, m_pstmt);
 		}
 
-		if (end >= cacheEnd || end <= 0)
+		if (end > cacheEnd || end <= 0)
 		{
-			end = cacheEnd-1;
+			end = cacheEnd;
 		}
 		
 		if (end == -1) 
@@ -789,7 +789,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		else
 		{
 			int fromIndex = start-getCacheStart()+1;
-			int toIndex = end-getCacheStart()+2;
+			int toIndex = end-getCacheStart()+1;
 			if (toIndex > line.size()) 
 				toIndex = line.size();
 			return line.subList(fromIndex, toIndex);
