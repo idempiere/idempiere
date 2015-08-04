@@ -57,8 +57,16 @@ public class PoFiller{
 			return;
 		else if (oldValue != null && oldValue.toString().equals(value))
 			return;
-		else
+		else {
+			if (po instanceof MColumn && "IsToolbarButton".equals(columnName)) {
+				// IDEMPIERE-2064 - backward compatibility with 2packs generated before IDEMPIERE-2477
+				if ("true".equals(value))
+					value ="Y";
+				else if ("false".equals(value))
+					value ="N";
+			}
 			po.set_ValueNoCheck(columnName, value);
+		}
 	}
 
 	/**
