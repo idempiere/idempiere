@@ -206,6 +206,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				processQueryValue();
 			}			
 		}
+		
 	}
 	
 	/**
@@ -507,7 +508,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			infoColumns = infoWindow.getInfoColumns(tableInfos);
 		
 			gridFields = new ArrayList<GridField>();
+			
 			for(MInfoColumn infoColumn : infoColumns) {
+				if (infoColumn.isKey())
+					keyColumnOfView = infoColumn;
 				String columnName = infoColumn.getColumnName();
 				/*!m_lookup && infoColumn.isMandatory():apply Mandatory only case open as window and only for criteria field*/
 				boolean isMandatory = !m_lookup && infoColumn.isMandatory() && infoColumn.isQueryCriteria();
@@ -686,9 +690,19 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				}
 				columnInfo.setColDescription(infoColumn.get_Translation("Description"));
 				columnInfo.setGridField(gridFields.get(i));
-				list.add(columnInfo);				
+				list.add(columnInfo);
+				
+				if (keyColumnOfView == infoColumn){
+					if (columnInfo.getColClass().equals(IDColumn.class)) 
+						isIDColumnKeyOfView = true;
+					indexKeyOfView = list.size() - 1;
+				}
 			}		
 			i++;
+		}
+		
+		if (keyColumnOfView == null){
+			isIDColumnKeyOfView = true;// because use main key
 		}
 		
 		columnInfos = list.toArray(new ColumnInfo[0]);
@@ -974,7 +988,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 		
 		addViewIDToQuery();
-		
+		addKeyViewToQuery();
 		
 		if (m_sqlMain.length() > 0 &&  infoWindow.isDistinct()) {
 			m_sqlMain = m_sqlMain.substring("SELECT ".length());
@@ -999,6 +1013,19 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		m_sqlMain = addMoreColumnToQuery (m_sqlMain, infoProcessList);
 	}
 	
+	/**
+	 * if {@link #keyColumnOfView} not null and not display, add query to query it's value
+	 */
+	protected void addKeyViewToQuery () {
+		if (isNeedAppendKeyViewData()){
+			m_sqlMain = addMoreColumnToQuery (m_sqlMain, new IInfoColumn [] {keyColumnOfView});
+		}
+	}
+	
+	@Override
+	public boolean isNeedAppendKeyViewData() {
+		return (keyColumnOfView != null && !keyColumnOfView.isDisplayed(infoContext, p_WindowNo));
+	}
 	
 	/**
 	 * because data of infoColumn have isDisplay = false not load, 
