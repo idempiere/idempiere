@@ -1,4 +1,3 @@
-
 -- Jun 18, 2015 10:47:07 AM IST
 INSERT INTO AD_Column (SeqNoSelection,AD_Column_ID,IsAlwaysUpdateable,IsSyncDatabase,AD_Client_ID,AD_Org_ID,CreatedBy,Updated,UpdatedBy,EntityType,IsSecure,IsEncrypted,IsParent,IsMandatory,IsIdentifier,SeqNo,Help,Version,FieldLength,IsKey,IsTranslated,Created,IsUpdateable,IsAutocomplete,IsAllowLogging,IsAllowCopy,Description,ColumnName,Name,IsSelectionColumn,AD_Column_UU,IsActive,IsToolbarButton,FKConstraintType,AD_Element_ID,AD_Reference_ID,AD_Table_ID) VALUES (0,212212,'N','N',0,0,100,TO_TIMESTAMP('2015-06-18 10:47:06','YYYY-MM-DD HH24:MI:SS'),100,'D','N','N','N','N','N',0,'The Database Table provides the information of the table definition',0,10,'N','N',TO_TIMESTAMP('2015-06-18 10:47:06','YYYY-MM-DD HH24:MI:SS'),'Y','N','Y','Y','Database Table information','AD_Table_ID','Table','N','cd639a6d-243f-4737-80b7-e953534cafa6','Y','N','N',126,19,288)
 ;

@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import javax.sql.RowSet;
 
 import org.compiere.print.MPrintColor;
+import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -111,6 +112,8 @@ public class MTree extends MTree_Base
 	/**	Logger			*/
 	private static CLogger s_log = CLogger.getCLogger(MTree.class);
 	
+	/**	Cache						*/
+	private static CCache<String,Integer> tree_cache	= new CCache<String,Integer>("AD_Tree_ID", 5);
 	
 	/**************************************************************************
 	 *  Get default (oldest) complete AD_Tree_ID for KeyColumn.
@@ -121,6 +124,10 @@ public class MTree extends MTree_Base
 	 */
 	public static int getDefaultAD_Tree_ID (int AD_Client_ID, String keyColumnName)
 	{
+		String key = AD_Client_ID + "|" + keyColumnName;
+		if (tree_cache.containsKey(key))
+			return tree_cache.get(key);
+
 		s_log.config(keyColumnName);
 		if (keyColumnName == null || keyColumnName.length() == 0)
 			return 0;
@@ -160,14 +167,19 @@ public class MTree extends MTree_Base
 		else
 		{
 			String tableName = keyColumnName.substring(0, keyColumnName.length() - 3);
-			String query = "SELECT tr.AD_Tree_ID FROM AD_Tree tr inner join AD_Table t on (tr.AD_Table_ID=t.AD_Table_ID) WHERE tr.AD_Client_ID=? AND tr.TreeType='"
-					+ TREETYPE_Table
-					+ " ' AND tr.IsActive='Y' AND tr.IsAllNodes='Y' AND t.TableName = ?";
-			int treeID = DB.getSQLValue(null, query, Env.getAD_Client_ID(Env.getCtx()),tableName);
+			String query = "SELECT tr.AD_Tree_ID "
+					+ "FROM AD_Tree tr "
+					+ "JOIN AD_Table t ON (tr.AD_Table_ID=t.AD_Table_ID) "
+					+ "WHERE tr.AD_Client_ID=? AND tr.TreeType=? AND tr.IsActive='Y' AND tr.IsAllNodes='Y' AND t.TableName = ? "
+					+ "ORDER BY tr.AD_Tree_ID";
+			int treeID = DB.getSQLValueEx(null, query, Env.getAD_Client_ID(Env.getCtx()), TREETYPE_Table, tableName);
 
-			if (treeID != -1)
+			if (treeID != -1) {
+				tree_cache.put(key, treeID);
 				return treeID;
+			}
 			s_log.log(Level.SEVERE, "Could not map " + keyColumnName);
+			tree_cache.put(key, 0);
 			return 0;
 		}
 
@@ -197,6 +209,7 @@ public class MTree extends MTree_Base
 			pstmt = null;
 		}
 
+		tree_cache.put(key, AD_Tree_ID);
 		return AD_Tree_ID;
 	}   //  getDefaultAD_Tree_ID
 
