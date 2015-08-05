@@ -253,7 +253,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		
 		MAttributeSet as = null;
 		
-		if (m_M_Product_ID != 0)
+		int M_AttributeSet_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNoParent, "M_AttributeSet_ID");
+		if (m_M_Product_ID != 0 && M_AttributeSet_ID == 0)
 		{
 			//	Get Model
 			m_masi = MAttributeSetInstance.get(Env.getCtx(), m_M_AttributeSetInstance_ID, m_M_Product_ID);
@@ -269,7 +270,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		}
 		else 
 		{
-			int M_AttributeSet_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNoParent, "M_AttributeSet_ID");
 			m_masi = new MAttributeSetInstance (Env.getCtx(), m_M_AttributeSetInstance_ID, M_AttributeSet_ID, null);
 			as = m_masi.getMAttributeSet();
 		}
