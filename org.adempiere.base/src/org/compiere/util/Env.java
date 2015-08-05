@@ -1582,7 +1582,7 @@ public final class Env
 					String foreignTable = colToken.getReferenceTableName();
 					if (v != null) {
 						if (format != null && format.length() > 0) {
-							if (v instanceof Integer && (Integer) v > 0 && token.endsWith("_ID")) {
+							if (v instanceof Integer && (Integer) v > 0 && !Util.isEmpty(foreignTable)) {
 								int tblIndex = format.indexOf(".");
 								String tableName = null;
 								if (tblIndex > 0)
