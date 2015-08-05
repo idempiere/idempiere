@@ -1,5 +1,15 @@
 package org.compiere.print;
 
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_DUNNING;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_INVOICE;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_ORDER;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_PROJECT;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_RFQRESPONSE;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_FINREPORT;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_FINSTATEMENT;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INOUT;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INVENTORY;
+
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -182,26 +192,26 @@ public class ServerReportCtl {
 		/**
 		 *	Order Print
 		 */
-		if (pi.getAD_Process_ID() == 110)			//	C_Order
+		if (pi.getAD_Process_ID() == PROCESS_RPT_C_ORDER)			//	C_Order
 			return startDocumentPrint(ReportEngine.ORDER, null, pi.getRecord_ID(), null, pi);
 		if (pi.getAD_Process_ID() ==  MProcess.getProcess_ID("Rpt PP_Order", null))			//	C_Order
 			return startDocumentPrint(ReportEngine.MANUFACTURING_ORDER, null, pi.getRecord_ID(), null, pi);
 		if (pi.getAD_Process_ID() ==  MProcess.getProcess_ID("Rpt DD_Order", null))			//	C_Order
 			return startDocumentPrint(ReportEngine.DISTRIBUTION_ORDER, null, pi.getRecord_ID(), null, pi);
-		else if (pi.getAD_Process_ID() == 116)		//	C_Invoice
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_C_INVOICE)		//	C_Invoice
 			return startDocumentPrint(ReportEngine.INVOICE, null, pi.getRecord_ID(), null, pi);
-		else if (pi.getAD_Process_ID() == 117)		//	M_InOut
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_M_INOUT)		//	M_InOut
 			return startDocumentPrint(ReportEngine.SHIPMENT, null, pi.getRecord_ID(), null, pi);
-		else if (pi.getAD_Process_ID() == 217)		//	C_Project
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_C_PROJECT)		//	C_Project
 			return startDocumentPrint(ReportEngine.PROJECT, null, pi.getRecord_ID(), null, pi);
-		else if (pi.getAD_Process_ID() == 276)		//	C_RfQResponse
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_C_RFQRESPONSE)		//	C_RfQResponse
 			return startDocumentPrint(ReportEngine.RFQ, null, pi.getRecord_ID(), null, pi);
-		else if (pi.getAD_Process_ID() == 159)		//	Dunning
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_C_DUNNING)		//	Dunning
 			return startDocumentPrint(ReportEngine.DUNNING, null, pi.getRecord_ID(), null, pi);
- 	    else if (pi.getAD_Process_ID() == 202			//	Financial Report
-			|| pi.getAD_Process_ID() == 204)			//	Financial Statement
+ 	    else if (pi.getAD_Process_ID() == PROCESS_RPT_FINREPORT			//	Financial Report
+			|| pi.getAD_Process_ID() == PROCESS_RPT_FINSTATEMENT)			//	Financial Statement
 		   return startFinReport (pi);
-		else if (pi.getAD_Process_ID() == 291)			//	M_Inventory
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_M_INVENTORY)			//	M_Inventory
 			return startDocumentPrint(ReportEngine.INVENTORY, null, pi.getRecord_ID(), null, pi);
 		/********************
 		 *	Standard Report
