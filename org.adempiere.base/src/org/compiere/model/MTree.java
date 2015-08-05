@@ -159,6 +159,14 @@ public class MTree extends MTree_Base
 			TreeType = TREETYPE_CMTemplate;
 		else
 		{
+			String tableName = keyColumnName.substring(0, keyColumnName.length() - 3);
+			String query = "SELECT tr.AD_Tree_ID FROM AD_Tree tr inner join AD_Table t on (tr.AD_Table_ID=t.AD_Table_ID) WHERE tr.AD_Client_ID=? AND tr.TreeType='"
+					+ TREETYPE_Table
+					+ " ' AND tr.IsActive='Y' AND tr.IsAllNodes='Y' AND t.TableName = ?";
+			int treeID = DB.getSQLValue(null, query, Env.getAD_Client_ID(Env.getCtx()),tableName);
+
+			if (treeID != -1)
+				return treeID;
 			s_log.log(Level.SEVERE, "Could not map " + keyColumnName);
 			return 0;
 		}
@@ -219,6 +227,11 @@ public class MTree extends MTree_Base
 		else	// IDEMPIERE 329 - nmicoud
 		{
 			String sourceTableName = getSourceTableName(getTreeType());
+			if (sourceTableName == null)
+			{
+				if (getAD_Table_ID() > 0)
+					sourceTableName = MTable.getTableName(getCtx(), getAD_Table_ID());
+			}
 			sql = new StringBuffer("SELECT "
 					+ "tn.Node_ID,tn.Parent_ID,tn.SeqNo,st.IsActive "
 					+ "FROM ").append(sourceTableName).append(" st "
@@ -449,13 +462,27 @@ public class MTree extends MTree_Base
 					sqlNode.append("f.JSPURL");
 				sqlNode.append(" IS NOT NULL))");
 			}
-		} else if (isTreeDrivenByValue()) {
+		}else if(getAD_Table_ID() != 0)	{
+			String tableName =MTable.getTableName(getCtx(), getAD_Table_ID());
+			sqlNode.append("SELECT t.").append(tableName)
+			.append("_ID,");
+			if (isTreeDrivenByValue())
+				sqlNode.append("t.Value || ' - ' || t.Name,");
+			else
+				sqlNode.append("t.Name,");
+			
+			sqlNode.append("t.Description,t.IsSummary,").append(color)
+			.append(" FROM ").append(tableName).append(" t ");
+			if (!m_editable)
+			sqlNode.append(" WHERE t.IsActive='Y'");
+		}  else if (isTreeDrivenByValue()) {
 			sqlNode.append("SELECT t.").append(columnNameX)
 			.append("_ID, t.Value || ' - ' || t.Name, t.Description, t.IsSummary,").append(color)
 			.append(" FROM ").append(fromClause);
 			if (!m_editable)
 				sqlNode.append(" WHERE t.IsActive='Y'");
-		} else {
+		}
+		else {
 			if (columnNameX == null)
 				throw new IllegalArgumentException("Unknown TreeType=" + getTreeType());
 			sqlNode.append("SELECT t.").append(columnNameX)
