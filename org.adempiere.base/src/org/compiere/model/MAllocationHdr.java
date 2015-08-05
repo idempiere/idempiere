@@ -54,8 +54,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7787519874581251920L;
-
+	private static final long serialVersionUID = 8726957992840702609L;
 	/**	Tolerance Gain and Loss */
 	private static final BigDecimal	TOLERANCE = BigDecimal.valueOf(0.02);
 	
@@ -1265,6 +1264,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		if (sysconfig_desc.contains("@")) {
 			description = Env.parseVariable(sysconfig_desc, new MBPartner(getCtx(), bpartnerID, null), trxName, true);
 			description = Env.parseVariable(description, this, trxName, true);
+			description = Msg.parseTranslation(getCtx(), description);
 		} else
 			description = Env.getContext(getCtx(), "#AD_User_Name"); // just to be sure
 
