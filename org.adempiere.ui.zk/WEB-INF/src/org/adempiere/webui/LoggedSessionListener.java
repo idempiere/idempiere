@@ -66,13 +66,10 @@ public class LoggedSessionListener implements HttpSessionListener, ServletContex
 	}
 	
 	public void removeADSession(String sessionID, String serverName) {
-		String whereClause = "WebSession=? AND ServerName=? AND Processed='N'";
-		List<MSession> sessions = new Query(Env.getCtx(), MSession.Table_Name, whereClause, null)
-			.setParameters(sessionID, serverName)
-			.list();
-		for (MSession session : sessions) {
-			session.setProcessed(true);
-			session.saveEx();
+		String sql = "UPDATE AD_Session SET Processed='Y' WHERE WebSession=? AND ServerName=? AND Processed='N'";
+		int no = DB.executeUpdate(sql, new Object[] {sessionID, serverName}, false, null);
+		if (no < 0) {
+			throw new AdempiereException("UpdateSession: Cannot Destroy Session");
 		}
 	}
 
