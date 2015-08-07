@@ -269,14 +269,14 @@ public class Scheduler extends AdempiereServer
 				
 				if (email)
 				{
-					MMailText mailTemplate = new MMailText(m_schedulerctx, m_model.getR_MailText_ID(), null);
+					MMailText mailTemplate = new MMailText(getCtx(), m_model.getR_MailText_ID(), null);
 					String mailContent = "";
 					
 					if (mailTemplate.is_new()){
 						mailContent = m_model.getDescription();
 					}else{
 						mailTemplate.setUser(user);
-						mailTemplate.setLanguage(Env.getContext(m_schedulerctx, "#AD_Language"));
+						mailTemplate.setLanguage(Env.getContext(getCtx(), "#AD_Language"));
 						// if user has bpartner link. maybe use language depend user
 						mailContent = mailTemplate.getMailText(true);
 						schedulerName = mailTemplate.getMailHeader();
