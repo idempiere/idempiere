@@ -20,12 +20,14 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.util.ServerContext;
 import org.compiere.model.AdempiereProcessor;
 import org.compiere.model.AdempiereProcessor2;
 import org.compiere.model.AdempiereProcessorLog;
 import org.compiere.model.MClient;
 import org.compiere.model.MSchedule;
 import org.compiere.model.MSystem;
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -46,12 +48,10 @@ public abstract class AdempiereServer implements Runnable
 	 */
 	protected AdempiereServer (AdempiereProcessor model, int initialNap)
 	{
-		p_model = model;
-		m_ctx = new Properties(model.getCtx());
+		p_model = model;		
 		if (p_system == null)
-			p_system = MSystem.get(m_ctx);
-		p_client = MClient.get(m_ctx);
-		Env.setContext(m_ctx, "#AD_Client_ID", p_client.getAD_Client_ID());
+			p_system = MSystem.get(model.getCtx());
+		p_client = MClient.get(model.getCtx(), model.getAD_Client_ID());
 		m_initialNap = initialNap;
 	
 		Timestamp dateNextRun = getDateNextRun(true);
@@ -89,8 +89,6 @@ public abstract class AdempiereServer implements Runnable
 
 	/**	Logger						*/
 	protected CLogger	log = CLogger.getCLogger(getClass());
-	/**	Context						*/
-	private Properties	m_ctx = null;
 	/** System						*/
 	protected volatile static MSystem p_system = null;
 	/** Client						*/
@@ -102,7 +100,7 @@ public abstract class AdempiereServer implements Runnable
 	 */
 	public Properties getCtx()
 	{
-		return m_ctx;
+		return Env.getCtx();
 	}	//	getCtx
 
 	/**
@@ -118,12 +116,35 @@ public abstract class AdempiereServer implements Runnable
 		return m_initialNap;
 	}
 
+	public void runNow()
+	{
+		Properties context = new Properties();
+		Env.setContext(context, "#AD_Client_ID", p_model.getAD_Client_ID());
+		if (p_model instanceof PO) {
+			PO po = (PO) p_model;
+			if (po.get_ColumnIndex("AD_Org_ID") >= 0)
+				Env.setContext(context, "#AD_Org_ID", po.get_ValueAsInt("AD_Org_ID"));
+			if (po.get_ColumnIndex("AD_User_ID") >= 0)
+				Env.setContext(context, "#AD_User_ID", po.get_ValueAsInt("AD_User_ID"));
+		}
+		
+		Properties prevContext = ServerContext.getCurrentInstance();
+		try {
+			ServerContext.setCurrentInstance(context);						
+			m_sleeping = false;
+			doRunNow();
+		} finally {
+			ServerContext.dispose();
+			ServerContext.setCurrentInstance(prevContext);
+			m_sleeping = true;
+		}
+	}
+		
 	/**
 	 * 	Run Now
 	 */
-	public void runNow()
+	public void doRunNow()
 	{
-		m_sleeping = false;
 		p_startWork = System.currentTimeMillis();
 		doWork();
 		long now = System.currentTimeMillis();
@@ -137,14 +158,10 @@ public abstract class AdempiereServer implements Runnable
 		p_model.saveEx();
 		//
 		if (log.isLoggable(Level.FINE))
-			log.fine(getStatistics());
-		m_sleeping = true;
+			log.fine(getStatistics());		
 	}	//	runNow
 
-	/**************************************************************************
-	 * 	Run async
-	 */
-	public void run ()
+	public void run() 
 	{
 		final Thread currentThread = Thread.currentThread();
 		final String oldThreadName = currentThread.getName();
@@ -157,7 +174,35 @@ public abstract class AdempiereServer implements Runnable
 			} catch (SecurityException e) {}
 		}
 
-		m_sleeping = false;
+		Properties context = new Properties();
+		Env.setContext(context, "#AD_Client_ID", p_model.getAD_Client_ID());
+		if (p_model instanceof PO) {
+			PO po = (PO) p_model;
+			if (po.get_ColumnIndex("AD_Org_ID") >= 0)
+				Env.setContext(context, "#AD_Org_ID", po.get_ValueAsInt("AD_Org_ID"));
+			if (po.get_ColumnIndex("AD_User_ID") >= 0)
+				Env.setContext(context, "#AD_User_ID", po.get_ValueAsInt("AD_User_ID"));
+		}
+		
+		try {
+			ServerContext.setCurrentInstance(context);					
+			m_sleeping = false;
+			doRun();
+		} finally {
+			m_sleeping = true;
+			ServerContext.dispose(); 
+			if (renamed) {
+				// Revert the name back if the current thread was renamed.
+				// We do not check the exception here because we know it works.
+				currentThread.setName(oldThreadName);
+			}	
+		}
+	}
+	/**************************************************************************
+	 * 	Run async
+	 */
+	protected void doRun()
+	{		
 		if (m_start == 0)
 			m_start = System.currentTimeMillis();
 		
@@ -191,13 +236,7 @@ public abstract class AdempiereServer implements Runnable
 		//
 		p_model.setDateLastRun(lastRun);
 		p_model.setDateNextRun(new Timestamp(m_nextWork));
-		p_model.saveEx();
-		m_sleeping = true;
-		if (renamed) {
-			// Revert the name back if the current thread was renamed.
-			// We do not check the exception here because we know it works.
-			currentThread.setName(oldThreadName);
-		}		
+		p_model.saveEx();			
 	}	//	run
 
 	/**

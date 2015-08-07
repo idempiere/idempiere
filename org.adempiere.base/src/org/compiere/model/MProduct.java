@@ -598,17 +598,29 @@ public class MProduct extends X_M_Product
 			m_precision = null;
 		
 		// AttributeSetInstance reset
-		if (is_ValueChanged(COLUMNNAME_M_AttributeSet_ID))
+		if (getM_AttributeSetInstance_ID() > 0 && is_ValueChanged(COLUMNNAME_M_AttributeSet_ID))
 		{
 			MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), getM_AttributeSetInstance_ID(), get_TrxName());
-			setM_AttributeSetInstance_ID(0);
-			// Delete the old m_attributesetinstance
-			try {
-				asi.deleteEx(true, get_TrxName());
-			} catch (AdempiereException ex)
-			{
-				log.saveError("Error", "Error deleting the AttributeSetInstance");
-				return false;
+			if (asi.getM_AttributeSet_ID() != getM_AttributeSet_ID())
+				setM_AttributeSetInstance_ID(0);
+		}
+		if (!newRecord && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID))
+		{
+			// IDEMPIERE-2752 check if the ASI is referenced in other products before trying to delete it
+			int oldasiid = get_ValueOldAsInt(COLUMNNAME_M_AttributeSetInstance_ID);
+			if (oldasiid > 0) {
+				MAttributeSetInstance oldasi = new MAttributeSetInstance(getCtx(), get_ValueOldAsInt(COLUMNNAME_M_AttributeSetInstance_ID), get_TrxName());
+				int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM M_Product WHERE M_AttributeSetInstance_ID=?", oldasi.getM_AttributeSetInstance_ID());
+				if (cnt == 1) {
+					// Delete the old m_attributesetinstance
+					try {
+						oldasi.deleteEx(true, get_TrxName());
+					} catch (AdempiereException ex)
+					{
+						log.saveError("Error", "Error deleting the AttributeSetInstance");
+						return false;
+					}
+				}
 			}
 		}
 

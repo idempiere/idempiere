@@ -1989,6 +1989,7 @@ public abstract class PO
 	 */
 	public boolean save()
 	{
+		checkValidContext();
 		CLogger.resetLast();
 		boolean newRecord = is_new();	//	save locally as load resets
 		if (!newRecord && !is_Changed())
@@ -3116,6 +3117,7 @@ public abstract class PO
 	 */
 	public boolean delete (boolean force)
 	{
+		checkValidContext();
 		CLogger.resetLast();
 		if (is_new())
 			return true;
@@ -4701,4 +4703,10 @@ public abstract class PO
 				log.saveError(msg, info);
 		}
 	}
+
+	private void checkValidContext() {
+		if (getCtx().size() == 0)
+			throw new AdempiereException("Context lost");
+	}
+
 }   //  PO
