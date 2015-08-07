@@ -26,6 +26,7 @@ import static org.compiere.model.SystemIDs.PROCESS_RPT_FINREPORT;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_FINSTATEMENT;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INOUT;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INVENTORY;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_M_MOVEMENT;
 
 import java.util.Properties;
 import java.util.logging.Level;
@@ -158,6 +159,8 @@ public class ReportCtl
 			return startCheckPrint(pi.getRecord_ID(), !pi.isPrintPreview());
 		else if (pi.getAD_Process_ID() == PROCESS_RPT_M_INVENTORY)		//	Physical Inventory
 			return startDocumentPrint(ReportEngine.INVENTORY, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_M_MOVEMENT)		//	Inventory Move
+			return startDocumentPrint(ReportEngine.MOVEMENT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
 		/**
         else if (pi.getAD_Process_ID() == 290)      // Movement Submission by VHARCQ
             return startDocumentPrint(ReportEngine.MOVEMENT, pi.getRecord_ID(), parent, WindowNo, IsDirectPrint);
