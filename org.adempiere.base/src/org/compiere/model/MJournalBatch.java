@@ -135,7 +135,6 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 	{
 		this (original.getCtx(), 0, original.get_TrxName());
 		setClientOrg(original);
-		setGL_JournalBatch_ID(original.getGL_JournalBatch_ID());
 		//
 	//	setC_AcctSchema_ID(original.getC_AcctSchema_ID());
 	//	setGL_Budget_ID(original.getGL_Budget_ID());
