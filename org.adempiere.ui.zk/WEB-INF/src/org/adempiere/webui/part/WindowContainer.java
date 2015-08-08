@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Tab;
+import org.adempiere.webui.component.Tab.DecorateInfo;
 import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabpanels;
@@ -102,14 +103,62 @@ public class WindowContainer extends AbstractUIPart
     }
     
     /**
+     * @deprecated keep for compatible, replace by {@link #addWindow(Component, String, boolean, DecorateInfo)}
+     * @param comp
+     * @param title
+     * @param closeable
+     * @return
+     */
+    public Tab addWindow(Component comp, String title, boolean closeable){
+    	return addWindow(comp, title, closeable, true, null);
+    }
+    
+    /**
+     * @deprecated keep for compatible, replace by {@link #addWindow(Component, String, boolean, boolean, DecorateInfo)}
+     * @param comp
+     * @param title
+     * @param closeable
+     * @param enable
+     * @return
+     */
+    public Tab addWindow(Component comp, String title, boolean closeable, boolean enable) {
+    	return addWindow(comp, title, closeable, true, null);
+    }
+    
+    /**
+     * @deprecated keep for compatible, replace by {@link #insertBefore(Tab, Component, String, boolean, boolean, DecorateInfo)}
+     * @param refTab
+     * @param comp
+     * @param title
+     * @param closeable
+     * @param enable
+     * @return
+     */
+    public Tab insertBefore(Tab refTab, Component comp, String title, boolean closeable, boolean enable){
+    	return insertBefore(refTab, comp, title, closeable, enable, null);
+    }
+    
+    /**
+     * @deprecated keep for compatible, replace by {@link #insertAfter(Component, String, boolean, boolean, DecorateInfo)}
+     * @param refTab
+     * @param comp
+     * @param title
+     * @param closeable
+     * @param enable
+     * @return
+     */
+    public Tab insertAfter(Tab refTab, Component comp, String title, boolean closeable, boolean enable){
+    	return insertAfter(refTab, comp, title, closeable, enable, null);
+    }
+    /**
      * 
      * @param comp
      * @param title
      * @param closeable
      */
-    public Tab addWindow(Component comp, String title, boolean closeable)
+    public Tab addWindow(Component comp, String title, boolean closeable, DecorateInfo decorateInfo)
     {
-        return addWindow(comp, title, closeable, true);
+        return addWindow(comp, title, closeable, true, decorateInfo);
     }
     
     /**
@@ -119,9 +168,9 @@ public class WindowContainer extends AbstractUIPart
      * @param closeable
      * @param enable
      */
-    public Tab addWindow(Component comp, String title, boolean closeable, boolean enable) 
+    public Tab addWindow(Component comp, String title, boolean closeable, boolean enable, DecorateInfo decorateInfo) 
     {
-    	return insertBefore(null, comp, title, closeable, enable);
+    	return insertBefore(null, comp, title, closeable, enable, decorateInfo);
     }
     
     /**
@@ -132,9 +181,10 @@ public class WindowContainer extends AbstractUIPart
      * @param closeable
      * @param enable
      */
-    public Tab insertBefore(Tab refTab, Component comp, String title, boolean closeable, boolean enable)
+    public Tab insertBefore(Tab refTab, Component comp, String title, boolean closeable, boolean enable, DecorateInfo decorateInfo)
     {
         final Tab tab = new Tab();
+        tab.setDecorateInfo(decorateInfo);
         if (title != null) 
         {
 	        setTabTitle(title, tab);
@@ -318,12 +368,12 @@ public class WindowContainer extends AbstractUIPart
      * @param closeable
      * @param enable
      */
-    public Tab insertAfter(Tab refTab, Component comp, String title, boolean closeable, boolean enable)
+    public Tab insertAfter(Tab refTab, Component comp, String title, boolean closeable, boolean enable, DecorateInfo decorateInfo)
     {
     	if (refTab == null)
-    		return addWindow(comp, title, closeable, enable);
+    		return addWindow(comp, title, closeable, enable, decorateInfo);
     	else
-    		return insertBefore((Tab)refTab.getNextSibling(), comp, title, closeable, enable);
+    		return insertBefore((Tab)refTab.getNextSibling(), comp, title, closeable, enable, decorateInfo);
     }
 
     /**
