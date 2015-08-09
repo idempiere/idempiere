@@ -64,6 +64,6 @@ UPDATE AD_Field SET SeqNo=220,Updated=TO_TIMESTAMP('2015-08-09 23:45:12','YYYY-M
 ;
 UPDATE AD_InfoWindow SET isLoadPageNum = 'Y'
 ;
-SELECT register_migration_script('201509081982-IDEMPIERE-2470.sql') FROM dua			l
+SELECT register_migration_script('201509081982-IDEMPIERE-2488.sql') FROM dual
 ;
 
