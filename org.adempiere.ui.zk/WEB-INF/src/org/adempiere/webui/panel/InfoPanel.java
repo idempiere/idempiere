@@ -747,7 +747,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     		{
     			if (start+1 >= getCacheStart() && end+1 <= cacheEnd)
     			{
-    				return end == -1 ? line : line.subList(start-getCacheStart()+1, end-getCacheStart()+1);
+    				return end == -1 ? line : getSubList(start-getCacheStart()+1, end-getCacheStart()+1, line);
     			}
     		}
     		else
@@ -756,7 +756,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     			{
     				end = cacheEnd;
     			}
-    			return line.subList(start, end);
+    			return getSubList (start, end, line);
     		}
     	}
 
@@ -850,12 +850,36 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		{
 			int fromIndex = start-getCacheStart()+1;
 			int toIndex = end-getCacheStart()+1;
-			if (toIndex > line.size()) 
-				toIndex = line.size();
-			return line.subList(fromIndex, toIndex);
+			return getSubList(fromIndex, toIndex, line);
 		}
 	}
 
+    /**
+     * fromIndex and toIndex calculate with assume always query record as {@link #testCount()}
+     * example after testCount we get calculate 6page.
+     * when user navigate to page 4. something change in system (a batch record change become don't match with search query) 
+     * let we just get 5 page with current parameter.
+     * so when user navigate to page 6. user will face with index issue. (out of index or start index > end index)
+     * this function is fix for it.
+     * @param fromIndex
+     * @param toIndex
+     * @param line
+     * @return
+     */
+    protected List<Object> getSubList (int fromIndex, int toIndex, List<Object> line){
+    	if (toIndex > line.size())
+    		toIndex = line.size();
+    	
+    	if (fromIndex >= line.size())
+    		fromIndex = line.size() - 1;
+    	
+    	// case line.size = 0
+    	if (fromIndex < 0)
+    		fromIndex = 0;
+    	
+    	return line.subList(fromIndex, toIndex);
+    }
+    
 	protected String buildDataSQL(int start, int end) {
 		String dataSql;
 		String dynWhere = getSQLWhere();
