@@ -481,6 +481,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			infoWindow = MInfoWindow.get(p_tableName, (String)null);			
 		}
 		
+		if (infoWindow == null)
+			return;
 		if (!infoWindow.isValid()) {
 			infoWindow = null;
 		} else {
@@ -2048,6 +2050,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @return
 	 */
 	protected int getADWindowID() {
+		if(infoWindow == null)
+			return 0;
 		String isSOTrx = Env.getContext(Env.getCtx(), p_WindowNo, "IsSOTrx");
 		if (!isLookup() && Util.isEmpty(isSOTrx)) {
 			isSOTrx = "Y";
