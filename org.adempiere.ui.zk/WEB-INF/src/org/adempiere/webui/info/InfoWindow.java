@@ -101,11 +101,11 @@ import org.zkoss.zul.Vbox;
  * @contributor xolali 	IDEMPIERE-1045 Sub-Info Tabs  (reviewed by red1)
  */
 public class InfoWindow extends InfoPanel implements ValueChangeListener, EventListener<Event> {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3538308098379400144L;
-
+	private static final long serialVersionUID = 8358292103127594383L;
 	protected Grid parameterGrid;
 	private Borderlayout layout;
 	private Vbox southBody;

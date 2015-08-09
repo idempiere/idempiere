@@ -113,11 +113,11 @@ import org.zkoss.zul.ext.Sortable;
  */
 public abstract class InfoPanel extends Window implements EventListener<Event>, WTableModelListener, Sortable<Object>, IHelpContext
 {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 965821837109028155L;
-
+	private static final long serialVersionUID = -7706948638874794856L;
 	private final static int DEFAULT_PAGE_SIZE = 100;
 	private final static int DEFAULT_PAGE_RELOAD = 4;
 	protected List<Button> btProcessList = new ArrayList<Button>();

@@ -80,10 +80,11 @@ import org.idempiere.util.ParseSeq;
 public class GridField 
 	implements Serializable, Evaluatee, Cloneable
 {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7859929653710975421L;
+	private static final long serialVersionUID = -7739433012288022819L;
 
 	/**
 	 *  Field Constructor.

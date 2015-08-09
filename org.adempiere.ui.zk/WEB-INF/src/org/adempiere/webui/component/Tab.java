@@ -32,10 +32,10 @@ import org.zkoss.zul.impl.LabelImageElement;
  */
 public class Tab extends org.zkoss.zul.Tab
 {
-    /**
-	 *
+	/**
+	 * 
 	 */
-	private static final long serialVersionUID = -550172446768384271L;
+	private static final long serialVersionUID = -5146887728183695020L;
 
 	public Tab(String str)
     {
