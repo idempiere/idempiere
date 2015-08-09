@@ -132,7 +132,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected boolean isIgnoreCacheAll = true;
 	// Num of page preload, default is 2 page before current and 2 page after current 
 	protected int numPagePreLoad = MSysConfig.getIntValue(MSysConfig.ZK_INFO_NUM_PAGE_RELOAD, DEFAULT_PAGE_RELOAD);
-	
+	// max end index is integer.max_value - 1, not integer.max_value.
+	protected int extra_max_row = 1;
 	/**
 	 * MInfoColumn has isKey = true, play as key column in case non column has
 	 * isKey = true, this column is null and we use {@link #p_keyColumn}
@@ -760,7 +761,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     		}
     	}
 
-    	setCacheStart(start + 1 - (pageSize * numPagePreLoad));
+    	setCacheStart(getOverIntValue((long)start + 1 - (pageSize * numPagePreLoad)));
     	if (getCacheStart() <= 0)
     		setCacheStart(1);
 
@@ -770,7 +771,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     	}
     	else
     	{
-	    	cacheEnd = end + 1 + (pageSize * numPagePreLoad);
+	    	cacheEnd = getOverIntValue(end + 1 + (pageSize * numPagePreLoad));
 	    	if (cacheEnd > m_count)
 	    		cacheEnd = m_count;
     	}
@@ -880,6 +881,28 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     	return line.subList(fromIndex, toIndex);
     }
     
+    /**
+     * when calculator value at bound, sometime value is overflow by data type
+     * this function calculator at high type for avoid it
+     * @param overValue
+     * @return
+     */
+    protected int getOverIntValue (long overValue){
+    	return getOverIntValue (overValue, 0);
+    }
+    
+    /**
+     * see {@link #getOverIntValue(long)}. when value over max_value set it near max_value.
+     * @param overValue
+     * @param extra
+     * @return
+     */
+    protected int getOverIntValue (long overValue, int extra){
+    	if (overValue >= Integer.MAX_VALUE)
+    		overValue = Integer.MAX_VALUE - extra;
+    	
+    	return (int)overValue;
+    }
 	protected String buildDataSQL(int start, int end) {
 		String dataSql;
 		String dynWhere = getSQLWhere();
@@ -1650,7 +1673,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
             		pageNo = pgNo;
             		int start = pageNo * pageSize;
-            		int end = start + pageSize;
+            		int end = getOverIntValue ((long)start + pageSize, extra_max_row);
             		if (end >= m_count)
             			end = m_count;
             		List<Object> subList = readLine(start, end);
