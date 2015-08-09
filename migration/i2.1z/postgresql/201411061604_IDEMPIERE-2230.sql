@@ -1,7 +1,5 @@
 -- Nov 6, 2014 3:13:05 PM ICT
 -- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
-UPDATE AD_SysConfig SET Value='hieplq',Updated=TO_TIMESTAMP('2014-11-06 15:13:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_SysConfig_ID=50001
-;
 
 -- Nov 6, 2014 3:13:13 PM ICT
 INSERT INTO AD_Column (SeqNoSelection,IsSyncDatabase,Version,AD_Column_ID,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsUpdateable,ColumnName,Description,Help,Name,IsAllowCopy,Updated,CreatedBy,IsActive,Created,UpdatedBy,IsToolbarButton,IsAlwaysUpdateable,IsEncrypted,IsSecure,AD_Element_ID,AD_Reference_ID,AD_Table_ID,AD_Client_ID,AD_Org_ID,EntityType) VALUES (0,'N',0,211799,'N','N','N',0,'N',1,'N','N','N','Y','4ef802de-84a4-4ebc-a364-8ba9a27a39b5','Y','IsKey','This column is the key in this table','The key column must also be display sequence 0 in the field definition and may be hidden.','Key column','N',TO_TIMESTAMP('2014-11-06 15:13:12','YYYY-MM-DD HH24:MI:SS'),100,'Y',TO_TIMESTAMP('2014-11-06 15:13:12','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','N',389,20,897,0,0,'D')
