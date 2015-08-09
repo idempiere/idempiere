@@ -79,6 +79,7 @@ public class SystemIDs
 	public final static int PROCESS_RPT_C_DUNNING = 159;
 	public final static int PROCESS_RPT_FINREPORT = 202;
 	public final static int PROCESS_RPT_FINSTATEMENT = 204;
+	public final static int PROCESS_RPT_M_INVENTORY = 291;
 
 	public final static int REFERENCE_DATATYPE_ACCOUNT = 25;
 	public final static int REFERENCE_DATATYPE_AMOUNT = 12;

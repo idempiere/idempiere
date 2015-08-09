@@ -27,10 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.util.ServerContext;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MClient;
 import org.compiere.model.MMailText;
@@ -84,9 +82,6 @@ public class Scheduler extends AdempiereServer
 	/** Transaction					*/
 	protected Trx					m_trx = null;
 
-	// ctx for the report/process
-	protected Properties m_schedulerctx = new Properties();
-
 	/**
 	 * 	Work
 	 */
@@ -96,29 +91,27 @@ public class Scheduler extends AdempiereServer
 			.append(" - ");
 
 		// Prepare a ctx for the report/process - BF [1966880]
-		m_schedulerctx.clear();
 		MClient schedclient = MClient.get(getCtx(), m_model.getAD_Client_ID());
-		Env.setContext(m_schedulerctx, "#AD_Client_ID", schedclient.getAD_Client_ID());
-		Env.setContext(m_schedulerctx, "#AD_Language", schedclient.getAD_Language());
-		Env.setContext(m_schedulerctx, "#AD_Org_ID", m_model.getAD_Org_ID());
+		Env.setContext(getCtx(), "#AD_Client_ID", schedclient.getAD_Client_ID());
+		Env.setContext(getCtx(), "#AD_Language", schedclient.getAD_Language());
+		Env.setContext(getCtx(), "#AD_Org_ID", m_model.getAD_Org_ID());
 		if (m_model.getAD_Org_ID() != 0) {
 			MOrgInfo schedorg = MOrgInfo.get(getCtx(), m_model.getAD_Org_ID(), null);
 			if (schedorg.getM_Warehouse_ID() > 0)
-				Env.setContext(m_schedulerctx, "#M_Warehouse_ID", schedorg.getM_Warehouse_ID());
+				Env.setContext(getCtx(), "#M_Warehouse_ID", schedorg.getM_Warehouse_ID());
 		}
-		Env.setContext(m_schedulerctx, "#AD_User_ID", getAD_User_ID());
-		Env.setContext(m_schedulerctx, "#SalesRep_ID", getAD_User_ID());
+		Env.setContext(getCtx(), "#AD_User_ID", getAD_User_ID());
+		Env.setContext(getCtx(), "#SalesRep_ID", getAD_User_ID());
 		// TODO: It can be convenient to add  AD_Scheduler.AD_Role_ID
 		MUser scheduser = MUser.get(getCtx(), getAD_User_ID());
 		MRole[] schedroles = scheduser.getRoles(m_model.getAD_Org_ID());
 		if (schedroles != null && schedroles.length > 0)
-			Env.setContext(m_schedulerctx, "#AD_Role_ID", schedroles[0].getAD_Role_ID()); // first role, ordered by AD_Role_ID
+			Env.setContext(getCtx(), "#AD_Role_ID", schedroles[0].getAD_Role_ID()); // first role, ordered by AD_Role_ID
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		SimpleDateFormat dateFormat4Timestamp = new SimpleDateFormat("yyyy-MM-dd"); 
-		Env.setContext(m_schedulerctx, "#Date", dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
-		ServerContext.setCurrentInstance(m_schedulerctx);
+		Env.setContext(getCtx(), "#Date", dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
 
-		MProcess process = new MProcess(m_schedulerctx, m_model.getAD_Process_ID(), null);
+		MProcess process = new MProcess(getCtx(), m_model.getAD_Process_ID(), null);
 		try
 		{
 			m_trx = Trx.get(Trx.createTrxName("Scheduler"), true);
@@ -138,9 +131,6 @@ public class Scheduler extends AdempiereServer
 				m_trx.close();
 		}
 		
-		// clear thread local context
-		ServerContext.dispose();
-
 		//
 		int no = m_model.deleteLog();
 		m_summary.append(" Logs deleted=").append(no);
@@ -162,7 +152,7 @@ public class Scheduler extends AdempiereServer
 		if (log.isLoggable(Level.INFO)) log.info(process.toString());
 		
 		boolean isReport = (process.isReport() || process.getAD_ReportView_ID() > 0 || process.getJasperReport() != null || process.getAD_PrintFormat_ID() > 0);
-		String schedulerName = Env.parseContext(m_schedulerctx, -1, m_model.getName(), false, true);
+		String schedulerName = Env.parseContext(getCtx(), -1, m_model.getName(), false, true);
 		
 		//	Process (see also MWFActivity.performWork
 		int AD_Table_ID = m_model.getAD_Table_ID();
@@ -279,14 +269,14 @@ public class Scheduler extends AdempiereServer
 				
 				if (email)
 				{
-					MMailText mailTemplate = new MMailText(m_schedulerctx, m_model.getR_MailText_ID(), null);
+					MMailText mailTemplate = new MMailText(getCtx(), m_model.getR_MailText_ID(), null);
 					String mailContent = "";
 					
 					if (mailTemplate.is_new()){
 						mailContent = m_model.getDescription();
 					}else{
 						mailTemplate.setUser(user);
-						mailTemplate.setLanguage(Env.getContext(m_schedulerctx, "#AD_Language"));
+						mailTemplate.setLanguage(Env.getContext(getCtx(), "#AD_Language"));
 						// if user has bpartner link. maybe use language depend user
 						mailContent = mailTemplate.getMailText(true);
 						schedulerName = mailTemplate.getMailHeader();
@@ -464,7 +454,7 @@ public class Scheduler extends AdempiereServer
 			String sql = variable.substring(5);	//	w/o tag
 			//sql = Env.parseContext(m_vo.ctx, m_vo.WindowNo, sql, false, true);	//	replace variables
 			//hengsin, capture unparseable error to avoid subsequent sql exception
-			sql = Env.parseContext(m_schedulerctx, 0, sql, false, false);	//	replace variables
+			sql = Env.parseContext(getCtx(), 0, sql, false, false);	//	replace variables
 			if (sql.equals(""))
 				log.log(Level.WARNING, "(" + sPara.getColumnName() + ") - Default SQL variable parse failed: " + variable);
 			else {
@@ -508,7 +498,7 @@ public class Scheduler extends AdempiereServer
 			String tail=index < (columnName.length()-1) ? columnName.substring(index+1) : null;
 			columnName = columnName.substring(0, index);
 			//	try Env
-			String env = Env.getContext(m_schedulerctx, columnName);
+			String env = Env.getContext(getCtx(), columnName);
 			if (env == null || env.length() == 0)
 				env = Env.getContext(getCtx(), columnName);
 			if (env.length() == 0)

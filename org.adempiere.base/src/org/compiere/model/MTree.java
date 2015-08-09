@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import javax.sql.RowSet;
 
 import org.compiere.print.MPrintColor;
+import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -111,6 +112,8 @@ public class MTree extends MTree_Base
 	/**	Logger			*/
 	private static CLogger s_log = CLogger.getCLogger(MTree.class);
 	
+	/**	Cache						*/
+	private static CCache<String,Integer> tree_cache	= new CCache<String,Integer>("AD_Tree_ID", 5);
 	
 	/**************************************************************************
 	 *  Get default (oldest) complete AD_Tree_ID for KeyColumn.
@@ -121,6 +124,10 @@ public class MTree extends MTree_Base
 	 */
 	public static int getDefaultAD_Tree_ID (int AD_Client_ID, String keyColumnName)
 	{
+		String key = AD_Client_ID + "|" + keyColumnName;
+		if (tree_cache.containsKey(key))
+			return tree_cache.get(key);
+
 		s_log.config(keyColumnName);
 		if (keyColumnName == null || keyColumnName.length() == 0)
 			return 0;
@@ -159,7 +166,20 @@ public class MTree extends MTree_Base
 			TreeType = TREETYPE_CMTemplate;
 		else
 		{
+			String tableName = keyColumnName.substring(0, keyColumnName.length() - 3);
+			String query = "SELECT tr.AD_Tree_ID "
+					+ "FROM AD_Tree tr "
+					+ "JOIN AD_Table t ON (tr.AD_Table_ID=t.AD_Table_ID) "
+					+ "WHERE tr.AD_Client_ID=? AND tr.TreeType=? AND tr.IsActive='Y' AND tr.IsAllNodes='Y' AND t.TableName = ? "
+					+ "ORDER BY tr.AD_Tree_ID";
+			int treeID = DB.getSQLValueEx(null, query, Env.getAD_Client_ID(Env.getCtx()), TREETYPE_Table, tableName);
+
+			if (treeID != -1) {
+				tree_cache.put(key, treeID);
+				return treeID;
+			}
 			s_log.log(Level.SEVERE, "Could not map " + keyColumnName);
+			tree_cache.put(key, 0);
 			return 0;
 		}
 
@@ -189,6 +209,7 @@ public class MTree extends MTree_Base
 			pstmt = null;
 		}
 
+		tree_cache.put(key, AD_Tree_ID);
 		return AD_Tree_ID;
 	}   //  getDefaultAD_Tree_ID
 
@@ -219,6 +240,11 @@ public class MTree extends MTree_Base
 		else	// IDEMPIERE 329 - nmicoud
 		{
 			String sourceTableName = getSourceTableName(getTreeType());
+			if (sourceTableName == null)
+			{
+				if (getAD_Table_ID() > 0)
+					sourceTableName = MTable.getTableName(getCtx(), getAD_Table_ID());
+			}
 			sql = new StringBuffer("SELECT "
 					+ "tn.Node_ID,tn.Parent_ID,tn.SeqNo,st.IsActive "
 					+ "FROM ").append(sourceTableName).append(" st "
@@ -449,13 +475,27 @@ public class MTree extends MTree_Base
 					sqlNode.append("f.JSPURL");
 				sqlNode.append(" IS NOT NULL))");
 			}
-		} else if (isTreeDrivenByValue()) {
+		}else if(getAD_Table_ID() != 0)	{
+			String tableName =MTable.getTableName(getCtx(), getAD_Table_ID());
+			sqlNode.append("SELECT t.").append(tableName)
+			.append("_ID,");
+			if (isTreeDrivenByValue())
+				sqlNode.append("t.Value || ' - ' || t.Name,");
+			else
+				sqlNode.append("t.Name,");
+			
+			sqlNode.append("t.Description,t.IsSummary,").append(color)
+			.append(" FROM ").append(tableName).append(" t ");
+			if (!m_editable)
+			sqlNode.append(" WHERE t.IsActive='Y'");
+		}  else if (isTreeDrivenByValue()) {
 			sqlNode.append("SELECT t.").append(columnNameX)
 			.append("_ID, t.Value || ' - ' || t.Name, t.Description, t.IsSummary,").append(color)
 			.append(" FROM ").append(fromClause);
 			if (!m_editable)
 				sqlNode.append(" WHERE t.IsActive='Y'");
-		} else {
+		}
+		else {
 			if (columnNameX == null)
 				throw new IllegalArgumentException("Unknown TreeType=" + getTreeType());
 			sqlNode.append("SELECT t.").append(columnNameX)
