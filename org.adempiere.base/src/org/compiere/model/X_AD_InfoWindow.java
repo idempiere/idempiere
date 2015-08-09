@@ -30,7 +30,7 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20150809L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow (Properties ctx, int AD_InfoWindow_ID, String trxName)
@@ -302,6 +302,30 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public boolean isDistinct () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsDistinct);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Load Page Num.
+		@param isLoadPageNum 
+		When load data for info window, also load number of paging
+	  */
+	public void setisLoadPageNum (boolean isLoadPageNum)
+	{
+		set_Value (COLUMNNAME_isLoadPageNum, Boolean.valueOf(isLoadPageNum));
+	}
+
+	/** Get Load Page Num.
+		@return When load data for info window, also load number of paging
+	  */
+	public boolean isLoadPageNum () 
+	{
+		Object oo = get_Value(COLUMNNAME_isLoadPageNum);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

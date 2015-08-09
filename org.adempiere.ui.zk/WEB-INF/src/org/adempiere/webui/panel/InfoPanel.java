@@ -496,8 +496,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		line = new ArrayList<Object>();
 		setCacheStart(-1);
 		cacheEnd = -1;
-
-		testCount();
+		if (infoWindow == null || infoWindow.isLoadPageNum())
+			testCount();
+		else
+			m_count = Integer.MAX_VALUE;
+		
 		if (m_count > 0)
 		{
 			m_useDatabasePaging = isIgnoreCacheAll || (m_count > 1000);
@@ -872,7 +875,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     		toIndex = line.size();
     	
     	if (fromIndex >= line.size())
-    		fromIndex = line.size() - 1;
+    		fromIndex = line.size();
     	
     	// case line.size = 0
     	if (fromIndex < 0)
