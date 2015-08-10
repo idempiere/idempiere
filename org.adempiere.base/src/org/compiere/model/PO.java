@@ -425,6 +425,8 @@ public abstract class PO
 	 */
 	public Properties getCtx()
 	{
+		if (p_ctx.size() == 0 && Env.getCtx().size() > 0)
+			p_ctx = Env.getCtx();
 		return p_ctx;
 	}	//	getCtx
 
