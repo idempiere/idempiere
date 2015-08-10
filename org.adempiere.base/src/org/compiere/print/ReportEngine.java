@@ -632,7 +632,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			thead thead = new thead();
 			tbody tbody = new tbody();
 			
-			Boolean [] colSuppressRepeats = m_layout == null ? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
+			Boolean [] colSuppressRepeats = m_layout == null || m_layout.colSuppressRepeats == null? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
 			Object [] preValues = new Object [colSuppressRepeats.length];
 			int printColIndex = -1;
 			//	for all rows (-1 = header row)
@@ -902,7 +902,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			delimiter = '\t';
 		try
 		{
-			Boolean [] colSuppressRepeats = m_layout == null ? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
+			Boolean [] colSuppressRepeats = m_layout == null || m_layout.colSuppressRepeats == null? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
 			Object [] preValues = new Object [colSuppressRepeats.length];
 			int printColIndex = -1;
 			//	for all rows (-1 = header row)
@@ -1234,7 +1234,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	public void createXLS(File outFile, Language language)
 	throws Exception
 	{
-		Boolean [] colSuppressRepeats = m_layout == null ? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
+		Boolean [] colSuppressRepeats = m_layout == null || m_layout.colSuppressRepeats == null? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
 		PrintDataExcelExporter exp = new PrintDataExcelExporter(getPrintData(), getPrintFormat(), colSuppressRepeats);
 		exp.export(outFile, language);
 	}
