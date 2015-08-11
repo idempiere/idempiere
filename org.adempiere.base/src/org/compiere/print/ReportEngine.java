@@ -778,7 +778,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 								}			
 								//just run with on record
 								if (row == 0)
-									addCssInfo(item, col);
+									addCssInfo(item, printColIndex);
 								
 							}
 							else if (obj instanceof PrintData)
