@@ -39,8 +39,6 @@ public class CompiereService {
 
 	private static CLogger	log = CLogger.getCLogger(CompiereService.class);
 
-	private Properties m_ctx; 
-	
 	private int m_AD_Client_ID;
 	private int m_AD_Org_ID;
 	private int m_AD_User_ID;
@@ -92,7 +90,7 @@ public class CompiereService {
 	 * @return context of current request
 	 */
 	public Properties getCtx() {
-		return m_ctx;
+		return Env.getCtx();
 	}
 
 	/**
@@ -113,11 +111,10 @@ public class CompiereService {
 		{
 			CompiereUtil.initWeb();
 			
-			m_ctx = new Properties();
 			m_connected = true;
 			
-			ServerContext.setCurrentInstance(m_ctx);
-			Env.setContext( m_ctx, "#AD_Language", "en_US" );
+			ServerContext.setCurrentInstance(new Properties());
+			Env.setContext(getCtx(), "#AD_Language", "en_US" );
 			m_language = Language.getLanguage("en_US");
 			
 			dateFormat = DisplayType.getDateFormat(DisplayType.Date, m_language);
@@ -138,7 +135,6 @@ public class CompiereService {
 		{
 			Env.logout();
 			ServerContext.dispose();
-			m_ctx = null;
 			m_loggedin = false;
 			m_connected = false;
 		}
@@ -255,7 +251,7 @@ public class CompiereService {
 		m_locale = Lang;
 		m_userName = MUser.getNameOfUser(m_AD_User_ID);
 		
-		Env.setContext( m_ctx, "#AD_Language", Lang);
+		Env.setContext( getCtx(), "#AD_Language", Lang);
 		m_language = Language.getLanguage(Lang);
 		Env.verifyLanguage( getCtx(), m_language );
 
@@ -274,7 +270,7 @@ public class CompiereService {
 		if (log.isLoggable(Level.INFO)) log.info(" #Date = "+ Env.getContextAsDate( getCtx(), "#Date"));
 
 		Env.setContext( getCtx(), "#M_Warehouse_ID", M_Warehouse_ID );
-		Env.setContext(m_ctx, Env.LANGUAGE, m_language.getAD_Language());
+		Env.setContext(getCtx(), Env.LANGUAGE, m_language.getAD_Language());
 		
 		// Create session
 		MSession session = MSession.get (getCtx(), false);
