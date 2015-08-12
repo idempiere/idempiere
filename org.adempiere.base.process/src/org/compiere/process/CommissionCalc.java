@@ -109,8 +109,12 @@ public class CommissionCalc extends SvrProcess
 			{
 				if (m_com.isListDetails())
 				{
-					sql.append("SELECT h.C_Currency_ID, (l.LineNetAmt*al.Amount/h.GrandTotal) AS Amt,")
-						.append(" (l.QtyInvoiced*al.Amount/h.GrandTotal) AS Qty,")
+					sql.append("SELECT h.C_Currency_ID, CASE WHEN h.GrandTotal <> 0 ")
+						.append(" 		THEN (l.LineNetAmt*al.Amount/h.GrandTotal) ")
+						.append("		ELSE 0 END AS Amt,")
+						.append(" CASE WHEN h.GrandTotal <> 0 ")
+						.append("		THEN (l.QtyInvoiced*al.Amount/h.GrandTotal) ")
+						.append("		ELSE 0 END AS Qty,")
 						.append(" NULL, l.C_InvoiceLine_ID, p.DocumentNo||'_'||h.DocumentNo,")
 						.append(" COALESCE(prd.Value,l.Description), h.DateInvoiced ")
 						.append("FROM C_Payment p")
@@ -125,8 +129,11 @@ public class CommissionCalc extends SvrProcess
 				}
 				else
 				{
-					sql.append("SELECT h.C_Currency_ID, SUM(l.LineNetAmt*al.Amount/h.GrandTotal) AS Amt,")
-						.append(" SUM(l.QtyInvoiced*al.Amount/h.GrandTotal) AS Qty,")
+					sql.append("SELECT h.C_Currency_ID, ")
+						.append(" SUM(CASE WHEN h.GrandTotal <> 0 ")
+						.append("		THEN l.LineNetAmt*al.Amount/h.GrandTotal ELSE 0 END) AS Amt,")
+						.append(" SUM(CASE WHEN h.GrandTotal <> 0 ")
+						.append("		THEN l.QtyInvoiced*al.Amount/h.GrandTotal ELSE 0 END) AS Qty,")
 						.append(" NULL, NULL, NULL, NULL, MAX(h.DateInvoiced) ")
 						.append("FROM C_Payment p")
 						.append(" INNER JOIN C_AllocationLine al ON (p.C_Payment_ID=al.C_Payment_ID)")
