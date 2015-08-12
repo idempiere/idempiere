@@ -4705,7 +4705,7 @@ public abstract class PO
 	}
 
 	private void checkValidContext() {
-		if (getCtx().size() == 0)
+		if (getCtx().isEmpty() && getCtx().getProperty("#AD_Client_ID") == null)
 			throw new AdempiereException("Context lost");
 	}
 

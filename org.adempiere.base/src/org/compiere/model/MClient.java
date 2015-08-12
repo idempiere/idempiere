@@ -362,7 +362,13 @@ public class MClient extends X_AD_Client
 					success = tree.save();
 					AD_Tree_Activity_ID = tree.getAD_Tree_ID();
 				}
-				else if (value.equals(X_AD_Tree.TREETYPE_Menu))	//	No Menu
+				else if (   value.equals(X_AD_Tree.TREETYPE_Menu)	//	No Menu
+						 || value.equals(X_AD_Tree.TREETYPE_Table)	//	No Custom Table
+						 || value.equals(X_AD_Tree.TREETYPE_User1)	//	No custom user trees
+						 || value.equals(X_AD_Tree.TREETYPE_User2)
+						 || value.equals(X_AD_Tree.TREETYPE_User3)
+						 || value.equals(X_AD_Tree.TREETYPE_User4)
+						)
 					success = true;
 				else	//	PC (Product Category), BB (BOM)
 				{
