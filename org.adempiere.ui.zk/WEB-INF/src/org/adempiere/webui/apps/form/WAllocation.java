@@ -211,11 +211,13 @@ public class WAllocation extends Allocation
 		row.appendCellChild(organizationLabel.rightAlign());
 		organizationPick.getComponent().setHflex("true");
 		row.appendCellChild(organizationPick.getComponent(),1);
+		organizationPick.showMenu();
 		
 		row = rows.newRow();
 		row.appendCellChild(currencyLabel.rightAlign(),1);
 		currencyPick.getComponent().setHflex("true");
 		row.appendCellChild(currencyPick.getComponent(),1);		
+		currencyPick.showMenu();
 		row.appendCellChild(multiCurrency,1);		
 		row.appendCellChild(autoWriteOff,2);
 		row.appendCellChild(new Space(),1);		

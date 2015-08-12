@@ -174,19 +174,20 @@ ContextMenuListener, IZoomableEditor
             	refreshList();            
         }
         
+        String tableName_temp = lookup.getColumnName();	// Returns AD_Org.AD_Org_ID
+        int posPoint = tableName_temp.indexOf(".");
+		String tableName = tableName_temp.substring(0, posPoint);
+		
+        if (tableName.toUpperCase().equals("C_BPARTNER_LOCATION"))    				
+		{
+			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, true, lookup);
+		} else {
+        	popupMenu = new WEditorPopupMenu(zoom, true, isShowPreference(), false, false, false, lookup);
+		}
+    	addChangeLogMenu(popupMenu);
+    	
         if (gridField != null) 
         {
-        	String tableName_temp = lookup.getColumnName();	// Returns AD_Org.AD_Org_ID
-    		int posPoint = tableName_temp.indexOf(".");
-    		String tableName = tableName_temp.substring(0, posPoint);
-    		if (tableName.toUpperCase().equals("C_BPARTNER_LOCATION"))    				
-    		{
-    			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, true, lookup);
-    		} else {
-            	popupMenu = new WEditorPopupMenu(zoom, true, isShowPreference(), false, false, false, lookup);
-    		}
-        	addChangeLogMenu(popupMenu);
-
         	//	IDEMPIERE 90
         	boolean isShortListAvailable = false;	// Short List available for this lookup
         	if (lookup != null && (lookup.getDisplayType() == DisplayType.TableDir || lookup.getDisplayType() == DisplayType.Table))	// only for Table & TableDir
@@ -199,7 +200,7 @@ ContextMenuListener, IZoomableEditor
         			lookup.setShortList(true);
         			getLabel().setText(">" + getGridField().getHeader() + "<");
         			actionRefresh();
-
+        			
         			// add in popup menu
         			Menuitem searchMode;
         			searchMode = new Menuitem();
