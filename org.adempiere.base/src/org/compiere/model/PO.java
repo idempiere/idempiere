@@ -2303,8 +2303,8 @@ public abstract class PO
 				}
 			}
 			m_newValues = new Object[size];
+			m_createNew = false;
 		}
-		m_createNew = false;
 		if (!newRecord)
 			CacheMgt.get().reset(p_info.getTableName());
 		else if (get_ID() > 0 && success)
@@ -2669,10 +2669,10 @@ public abstract class PO
 			else
 			{
 				if (m_trxName == null)
-					log.log(Level.WARNING, "Update return " + no + " instead of 1"
+					log.saveError("SaveError", "Update return " + no + " instead of 1"
 						+ " - " + p_info.getTableName() + "." + where);
 				else
-					log.log(Level.WARNING, "Update return " + no + " instead of 1"
+					log.saveError("SaveError", "Update return " + no + " instead of 1"
 						+ " - [" + m_trxName + "] - " + p_info.getTableName() + "." + where);
 			}
 			return ok;
