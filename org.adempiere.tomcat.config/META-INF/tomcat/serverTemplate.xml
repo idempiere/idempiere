@@ -85,7 +85,8 @@
 	           keystoreFile="@ADEMPIERE_KEYSTORE@"
     	       keystorePass="@ADEMPIERE_KEYSTOREPASS@"
     	       keyAlias="idempiere"
-               sslProtocol="TLS" />
+               sslProtocol="TLS" 
+               ciphers="TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA" />
 
     <!-- Define an AJP 1.3 Connector on port 8009 -->
     <Connector port="8009"
