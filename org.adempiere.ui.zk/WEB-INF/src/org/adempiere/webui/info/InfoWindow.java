@@ -169,7 +169,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
 			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, GridField field) {
 		super(WindowNo, tableName, keyColumn, multipleSelection, whereClause,
-				lookup);
+				lookup, AD_InfoWindow_ID);
 		this.m_gridfield = field;
 		this.queryValue = queryValue;
 
