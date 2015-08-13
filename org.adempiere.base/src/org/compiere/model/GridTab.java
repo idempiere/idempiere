@@ -2953,7 +2953,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	
 				if (!Util.isEmpty(retValue))		//	interrupt on first error
 				{
-					log.severe (retValue);
+					log.config(retValue); // no need to save an AD_Issue error on each callout
 					return retValue;
 				}
 			}   //  for each callout
