@@ -267,6 +267,20 @@
          unpack="false"/>
 
    <plugin
+         id="org.apache.felix.inventory"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.felix.scr"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.apache.felix.webconsole.plugins.memoryusage"
          download-size="0"
          install-size="0"
@@ -483,5 +497,4 @@
          install-size="0"
          version="0.0.0"
          fragment="true"/>
-
 </feature>
