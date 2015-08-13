@@ -113,11 +113,10 @@ import org.zkoss.zul.ext.Sortable;
  */
 public abstract class InfoPanel extends Window implements EventListener<Event>, WTableModelListener, Sortable<Object>, IHelpContext
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7706948638874794856L;
+	private static final long serialVersionUID = 3761627143274259211L;
 	private final static int DEFAULT_PAGE_SIZE = 100;
 	private final static int DEFAULT_PAGE_RELOAD = 4;
 	protected List<Button> btProcessList = new ArrayList<Button>();
@@ -470,6 +469,38 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		statusBar.setStatusDB(text);
 	}	//	setStatusDB
 
+	/**
+	 *	Set Status DB
+	 *  @param text text
+	 */
+	public void setStatusSelected ()
+	{
+		if (!p_multipleSelection)
+			return;
+		
+		int selectedCount = recordSelectedData.size();
+		
+		for (int rowIndex = 0; rowIndex < contentPanel.getModel().getRowCount(); rowIndex++){			
+			Integer keyCandidate = getColumnValue(rowIndex);
+			
+			@SuppressWarnings("unchecked")
+			List<Object> candidateRecord = (List<Object>)contentPanel.getModel().get(rowIndex);
+						
+			if (contentPanel.getModel().isSelected(candidateRecord)){
+				if (!recordSelectedData.containsKey(keyCandidate)){
+					selectedCount++;
+				}
+			}else{
+				if (recordSelectedData.containsKey(keyCandidate)){// unselected record
+					selectedCount--;
+				}
+			}
+		}	
+		
+		String msg = Msg.getMsg(Env.getCtx(), "IWStatusSelected", new Object [] {String.valueOf(selectedCount)});
+		statusBar.setSelectedRowNumber(msg);
+	}	//	setStatusDB
+	
 	protected void prepareTable (ColumnInfo[] layout,
             String from,
             String where,
@@ -739,7 +770,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         int no = m_count;
         setStatusLine(Integer.toString(no) + " " + Msg.getMsg(Env.getCtx(), "SearchRows_EnterQuery"), false);
         setStatusDB(Integer.toString(no));
-
+        setStatusSelected ();
         addDoubleClickListener();
     }
 
@@ -1576,6 +1607,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             }
             else if (event.getTarget() == contentPanel && event.getName().equals(Events.ON_SELECT))
             {
+            	setStatusSelected ();
             	m_lastOnSelectItem = null;
             	SelectEvent<?, ?> selectEvent = (SelectEvent<?, ?>) event;
             	if (selectEvent.getReference() != null && selectEvent.getReference() instanceof Listitem)
