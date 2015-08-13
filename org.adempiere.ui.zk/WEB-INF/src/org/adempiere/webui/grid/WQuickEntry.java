@@ -63,7 +63,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -949213040088881469L;
+	private static final long serialVersionUID = 6033101081045706748L;
 
 	public static final String QUICK_ENTRY_MODE = "_QUICK_ENTRY_MODE_";
 
@@ -86,7 +86,8 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true, false, false, false, false, false);
 
 	private int m_AD_Window_ID;
-
+	
+	private boolean isHasField = false;
 	/**
 	 *	Constructor.
 	 *	Requires call loadRecord
@@ -180,7 +181,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 					if (! quickTabs.contains(gridtab)) {
 						quickTabs.add(gridtab);
 					}
-
+					isHasField = true;
 					newTab = false;
 				}
 			}
@@ -230,6 +231,15 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 		centerPanel.appendChild(layout);
 	}
 
+	/**
+	 * check table is editable in quick entry
+	 * user must has write right and has at least a input field
+	 * @return
+	 */
+	public boolean isAvailableQuickEdit (){
+		return isHasField && !m_readOnly;
+	}
+	
 	/**
 	 *	Load Record_ID
 	 *  @param Record_ID - existing Record or 0 for new

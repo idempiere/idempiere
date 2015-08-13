@@ -18,6 +18,8 @@ import org.adempiere.model.IInfoColumn;
 import org.adempiere.model.MInfoProcess;
 import org.adempiere.model.MInfoRelated;
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ISupportMask;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Button;
@@ -125,9 +127,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	protected TableInfo[] tableInfos;
 	protected MInfoColumn[] infoColumns;	
 	protected String queryValue;
+	protected WQuickEntry vqe;
 	
 	private List<GridField> gridFields;
 	private Checkbox checkAND;
+	
 	/**
 	 * Menu contail process menu item
 	 */
@@ -2041,10 +2045,13 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	
 	@Override
 	protected boolean hasNew() {
-		return getADWindowID () > 0;
+		boolean hasNew = getADWindowID () > 0;
+		if (hasNew && vqe == null)
+			vqe = new WQuickEntry (0, getADWindowID());
+		return hasNew && vqe.isAvailableQuickEdit();
 	}
 	
-	/**
+	/**	
 	 * Get id of window link with main table of this info window
 	 * @param tableName
 	 * @return
@@ -2062,19 +2069,26 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	
 	@Override
 	protected void newRecordAction() {
-		final WQuickEntry vqe = new WQuickEntry (0, getADWindowID());												
-										
+		// each time close WQuickEntry dialog, 
+		// window is  un-registry, variable environment of this window as _QUICK_ENTRY_MODE_ is removed
+		// so if reuse WQuickEntry will let some field in child tab init at read only state
+		WQuickEntry vqe = new WQuickEntry (0, getADWindowID());
+		
 		vqe.loadRecord (0);								
-										
+		
+		final ISupportMask parent = LayoutUtils.showWindowWithMask(vqe, this, LayoutUtils.OVERLAP_TAB_PANEL);
+		
 		vqe.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {								
 			@Override							
 			public void onEvent(Event event) throws Exception {							
 				Clients.response(new AuEcho(InfoWindow.this, "onQueryCallback", null));
+				if (parent != null)
+					parent.hideMask();
 			}
 		});								
 										
 		vqe.setVisible(true);								
-		AEnv.showWindow(vqe);								
+					
 	}
 
 }
