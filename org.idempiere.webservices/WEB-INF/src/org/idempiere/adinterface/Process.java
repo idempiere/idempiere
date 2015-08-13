@@ -11,20 +11,15 @@ import static org.compiere.model.SystemIDs.PROCESS_RPT_FINSTATEMENT;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INOUT;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INVENTORY;
 
-import java.io.ByteArrayOutputStream;
 import java.io.CharArrayWriter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.xml.namespace.QName;
-
-import net.sf.compilo.report.ReportProcessor;
-import net.sf.jasperreports.engine.JasperPrint;
 
 import org.adempiere.util.ProcessUtil;
 import org.compiere.model.Lookup;
@@ -379,6 +374,7 @@ public class Process {
 		//	Report
 		if ((process.isReport() || jasperreport))
 		{
+			pi.setReportingProcess(true);
 			r.setIsReport(true);
 			ReportEngine re=null;
 			if (!jasperreport) 
@@ -418,11 +414,12 @@ public class Process {
 					}
 					else
 					{
-						JasperPrint jp = getJasperReportPrint( m_cs.getCtx(), pi);
-						ByteArrayOutputStream wr = new ByteArrayOutputStream();
-						net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jp, wr); 
-						file_type ="pdf";							
-						r.setData(wr.toByteArray());	
+						Trx trx = trxName == null ? Trx.get(Trx.createTrxName("WebPrc"), true) : Trx.get(trxName, true);
+						pi.setPrintPreview (false);
+						pi.setIsBatch(true);
+						ProcessUtil.startJavaProcess(Env.getCtx(), pi, trx, true, null);
+						file_type ="pdf";				
+						r.setData(java.nio.file.Files.readAllBytes(pi.getPDFReport().toPath()));
 						r.setReportFormat(file_type);
 						ok = true;
 					}
@@ -674,32 +671,6 @@ public class Process {
 
 		return null;
 	}
-
-	private static JasperPrint getJasperReportPrint(Properties ctx, ProcessInfo pi)
-	{
-        try
-        {
-            JasperPrint jasperPrint;
-            
-            ReportProcessor rp = new ReportProcessor(ctx, pi);
-            jasperPrint = rp.runReport();
-            
-        	if(jasperPrint == null)		
-        	{
-        		log.finer("ReportStarter.startProcess Cannot process JasperPrint Object");
-        		return null;
-        	}
-        	else
-        		return jasperPrint;
-        }        
-        catch (Exception ex)
-		{
-        	log.saveError("ReportStarter.startProcess: Can not run report - ", ex);
-        	return null;
-        	// return ex.getMessage();
-		}
-	}
-
 	
 	static public ReportEngine start (ProcessInfo pi)
 	{

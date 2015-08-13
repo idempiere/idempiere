@@ -1606,7 +1606,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		int[] columnMaxWidth = new int[columnCount];
 		int[] columnMaxHeight = new int[columnCount];
 		boolean[] fixedWidth = new boolean [columnCount];
-		colSuppressRepeats = new Boolean[columnCount];
+		Boolean [] colSuppressRepeats = new Boolean[columnCount];
 		String[] columnJustification = new String[columnCount];
 		HashMap<Integer,Integer> additionalLines = new HashMap<Integer,Integer>();
 
@@ -1781,6 +1781,9 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		table.layout(0,0,false, MPrintFormatItem.FIELDALIGNMENTTYPE_LeadingLeft);
 		if (m_tableElement == null)
 			m_tableElement = table;
+		
+		if (format == m_format)
+			this.colSuppressRepeats = colSuppressRepeats;
 		return table;
 	}	//	layoutTable
 
