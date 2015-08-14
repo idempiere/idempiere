@@ -60,6 +60,7 @@ import org.compiere.model.AccessSqlParser;
 import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
+import org.compiere.model.GridWindow;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MLookupFactory;
@@ -2046,9 +2047,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	@Override
 	protected boolean hasNew() {
 		boolean hasNew = getADWindowID () > 0;
-		if (hasNew && vqe == null)
-			vqe = new WQuickEntry (0, getADWindowID());
-		return hasNew && vqe.isAvailableQuickEdit();
+		if (hasNew && vqe == null && hasRightQuickEntry){
+			GridWindow gridwindow = GridWindow.get(Env.getCtx(), 0, getADWindowID());
+			hasRightQuickEntry = gridwindow != null;
+			if (hasRightQuickEntry)
+				vqe = new WQuickEntry (0, getADWindowID());
+		}
+			
+		return hasNew && vqe != null && vqe.isAvailableQuickEdit();
 	}
 	
 	/**	

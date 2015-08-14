@@ -145,7 +145,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected int indexKeyOfView = -1;
 	
 	protected boolean isIDColumnKeyOfView = false;
-	
+	protected boolean hasRightQuickEntry = true;
 	/**
 	 * store selected record info
 	 * key of map is value of column play as keyView
