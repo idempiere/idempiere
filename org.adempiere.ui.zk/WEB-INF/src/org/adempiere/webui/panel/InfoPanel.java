@@ -96,6 +96,7 @@ import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Paging;
+import org.zkoss.zul.event.PagingEvent;
 import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.ext.Sortable;
 
@@ -146,6 +147,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	
 	protected boolean isIDColumnKeyOfView = false;
 	protected boolean hasRightQuickEntry = true;
+	protected boolean isHasNextPage = false;
 	/**
 	 * store selected record info
 	 * key of map is value of column play as keyView
@@ -519,6 +521,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			m_sqlOrder = " ORDER BY " + orderBy;
 	}   //  prepareTable
 
+	protected boolean isLoadPageNumber(){
+		return infoWindow == null || infoWindow.isLoadPageNum();
+	}
+	
 	/**************************************************************************
 	 *  Execute Query
 	 */
@@ -527,7 +533,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		line = new ArrayList<Object>();
 		setCacheStart(-1);
 		cacheEnd = -1;
-		if (infoWindow == null || infoWindow.isLoadPageNum())
+		if (isLoadPageNumber())
 			testCount();
 		else
 			m_count = Integer.MAX_VALUE;
@@ -767,13 +773,16 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             contentPanel.setData(model, null);
         }
         restoreSelectedInPage();
-        int no = m_count;
-        setStatusLine(Integer.toString(no) + " " + Msg.getMsg(Env.getCtx(), "SearchRows_EnterQuery"), false);
-        setStatusDB(Integer.toString(no));
+        updateStatusBar (m_count);
         setStatusSelected ();
         addDoubleClickListener();
     }
 
+    protected void updateStatusBar (int no){
+    	setStatusLine((no == Integer.MAX_VALUE?"?":Integer.toString(no)) + " " + Msg.getMsg(Env.getCtx(), "SearchRows_EnterQuery"), false);
+        setStatusDB(no == Integer.MAX_VALUE?"?":Integer.toString(no));
+    }
+    
     private List<Object> readLine(int start, int end) {
     	//cacheStart & cacheEnd - 1 based index, start & end - 0 based index
     	if (getCacheStart() >= 1 && cacheEnd > getCacheStart())
@@ -820,6 +829,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			//
 
         dataSql = buildDataSQL(start, end);
+        isHasNextPage = false;
         if (log.isLoggable(Level.FINER))
         	log.finer(dataSql);
 		try
@@ -857,6 +867,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				//check now of rows loaded, break if we hit the suppose end
 				if (m_useDatabasePaging && rowPointer >= cacheEnd)
 				{
+					isHasNextPage = true;
 					break;
 				}
 			}
@@ -876,7 +887,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		{
 			end = cacheEnd;
 		}
-		
+		validateEndPage ();
+
 		if (end == -1) 
 		{
 			return line;
@@ -889,6 +901,40 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		}
 	}
 
+    /**
+     * after query from database, process validate.
+     * if end page include in cache, process calculate total record
+     * if current page is out of page (no record is query) process query count to detect end page
+     */
+    protected void validateEndPage (){
+    	if (paging == null || isLoadPageNumber())
+    		return;
+    	
+    	if (!isHasNextPage){
+    		int extraPage = ((line.size() % pageSize > 0)?1:0);
+    		int pageInCache = line.size() / pageSize + extraPage;
+    		
+    		if (pageInCache == 0 || pageInCache <= numPagePreLoad){
+    			// selected page is out of page
+    			testCount();
+    			extraPage = ((m_count  % pageSize > 0)?1:0);
+        		pageInCache = m_count  / pageSize + extraPage;    			
+    			// this one will set current page to end page
+    			paging.setTotalSize(m_count);
+    			Event pagingEvent = new PagingEvent("onPaging", paging, paging.getPageCount() - 1);
+    			Events.postEvent(pagingEvent);
+    		}else if (pageInCache > numPagePreLoad){
+    			// current page isn't end page. but page in cache has end page.
+    			int prePage = pageNo - numPagePreLoad;
+    			int readTotalRecord = (prePage > 0?prePage:0) * pageSize + line.size();
+    			paging.setTotalSize(readTotalRecord);
+    			m_count = readTotalRecord;
+    		}
+    		
+    		updateStatusBar (m_count);
+    	}
+    }
+    
     /**
      * fromIndex and toIndex calculate with assume always query record as {@link #testCount()}
      * example after testCount we get calculate 6page.
@@ -1701,6 +1747,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             {
             	updateListSelected();
             	int pgNo = paging.getActivePage();
+
             	if (pageNo != pgNo)
             	{
 
@@ -1719,6 +1766,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     	            contentPanel.setData(model, null);
     	            restoreSelectedInPage();
     				//contentPanel.setSelectedIndex(0);
+    	            
     			}
             }
             else if (event.getName().equals(Events.ON_CHANGE))
