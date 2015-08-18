@@ -232,14 +232,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				MColumn[] cols = table.getColumns(false);
 				for (MColumn col : cols)
 				{
-					String fkConstraintSql;
-					try {
-						fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, col);
-					} catch (Exception e) {
-						throw new AdempiereException(e);
-					}
-					if (fkConstraintSql != null && fkConstraintSql.length() > 0)
-						sql += fkConstraintSql;
+					sql += addConstraint(table, md, catalog, schema, tableName, col);
 				}
 			} else {
 				//
@@ -256,14 +249,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 					// No existing column
 					sql = column.getSQLAdd(table);
 				}
-				String fkConstraintSql;
-				try {
-					fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, column);
-				} catch (Exception e) {
-					throw new AdempiereException(e);
-				}
-				if (fkConstraintSql != null && fkConstraintSql.length() > 0)
-					sql += fkConstraintSql;
+				sql += addConstraint(table, md, catalog, schema, tableName, column);
 			}
 
 			//execute modify or add if needed
@@ -308,6 +294,19 @@ public class ColumnElementHandler extends AbstractElementHandler {
 		}
 
 		return 1;
+	}
+
+	private String addConstraint(MTable table, DatabaseMetaData md,
+			String catalog, String schema, String tableName, MColumn col) {
+		String fkConstraintSql;
+		try {
+			fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, col, false);
+		} catch (Exception e) {
+			throw new AdempiereException(e);
+		}
+		if (fkConstraintSql != null && fkConstraintSql.length() > 0)
+			fkConstraintSql = "";
+		return fkConstraintSql;
 	}
 
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
