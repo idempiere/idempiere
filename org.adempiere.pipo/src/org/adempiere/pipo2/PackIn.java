@@ -40,6 +40,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_Package_Imp_Detail;
+import org.compiere.model.X_AD_Package_Imp_Proc;
 import org.compiere.util.CLogger;
 import org.compiere.util.Trx;
 
@@ -60,7 +61,8 @@ public class PackIn {
 	private Map<String,Integer> columnCache = new HashMap<String,Integer>();
 	private String packageName = null;
 	private String packageVersion = null;
-	
+	private X_AD_Package_Imp_Proc packinProc;
+
 	private List<X_AD_Package_Imp_Detail> importDetails;
 
 	public PackIn() {
@@ -284,4 +286,15 @@ public class PackIn {
 	public void setPackageVersion(String packageVersion) {
 		this.packageVersion = packageVersion;
 	}
+
+	public X_AD_Package_Imp_Proc getAD_Package_Imp_Proc() {
+		if (packinProc.getAD_Package_Imp_Proc_ID() == 0)
+			packinProc.saveEx(); // we need the ID to set
+		return packinProc;
+	}
+
+	public void setAD_Package_Imp_Proc(X_AD_Package_Imp_Proc packinProc) {
+		this.packinProc = packinProc;
+	}
+
 } // PackIn

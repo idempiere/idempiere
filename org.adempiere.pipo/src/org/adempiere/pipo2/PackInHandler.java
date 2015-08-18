@@ -175,6 +175,7 @@ public class PackInHandler extends DefaultHandler {
 			packageImp.setCreator(atts.getValue("Creator"));
 			packageImp.setCreatorContact(atts.getValue("CreatorContact"));
 			packageImp.setPK_Status(packageStatus);
+			packageImp.setAD_Package_Imp_Proc_ID(packIn.getAD_Package_Imp_Proc().getAD_Package_Imp_Proc_ID());
 
 			packageImp.saveEx();
 			AD_Package_Imp_ID = packageImp.getAD_Package_Imp_ID();
@@ -290,16 +291,22 @@ public class PackInHandler extends DefaultHandler {
     	else
     		elementValue = uri + localName;
 
+		X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx.ctx, AD_Package_Imp_ID, null);
+		packageImp.setProcessed(true);
     	if (elementValue.equals("idempiere")){
     		processDeferElements();
 
     		processDeferFKElements();
-
-    		if (!packageStatus.equals("Completed with errors"))
-    			packageStatus = "Completed successfully";
+    		
+    		if (!packageStatus.equals("Completed with errors")) {
+    			if (getUnresolvedCount() > 0) {
+        			packageStatus = "Completed - unresolved";
+    			} else {
+        			packageStatus = "Completed successfully";
+    			}
+    		}
 
     		//Update package history log with package status
-    		X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx.ctx, AD_Package_Imp_ID, null);
     		packageImp.setPK_Status(packageStatus);
     		packageImp.saveEx();
 
@@ -319,14 +326,12 @@ public class PackInHandler extends DefaultHandler {
     			} catch (RuntimeException re) {
     				packageStatus = "Import Failed";
     				//Update package history log with package status
-    	    		X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx.ctx, AD_Package_Imp_ID, null);
     	    		packageImp.setPK_Status(packageStatus);
     	    		packageImp.saveEx();
     	    		throw re;
     			} catch (SAXException se) {
     				packageStatus = "Import Failed";
     				//Update package history log with package status
-    	    		X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx.ctx, AD_Package_Imp_ID, null);
     	    		packageImp.setPK_Status(packageStatus);
     	    		packageImp.saveEx();
     	    		throw se;

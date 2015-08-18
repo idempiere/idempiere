@@ -111,7 +111,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
     		detail.setName(objectName);
     		detail.setAction(objectStatus);
     		detail.setSuccess(result);
-    		detail.setAD_Original_ID(objectID);
+    		detail.setRecord_ID(objectID);
     		detail.setAD_Backup_ID(objectIDBackup);
     		detail.setTableName(tableName);
     		detail.setAD_Table_ID(AD_Table_ID);

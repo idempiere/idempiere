@@ -35,8 +35,10 @@ public class PipoDictionaryService implements IDictionaryService {
 			return;
 		}
 		String trxName = Trx.createTrxName();
+		X_AD_Package_Imp_Proc adPackageImp = null;
+		PackIn packIn = null;
 		try {
-			PackIn packIn = new PackIn();
+			packIn = new PackIn();
 			packIn.setPackageName(context.getBundle().getSymbolicName());
 			
 			//get package version from file name suffix or bundle header
@@ -59,13 +61,11 @@ public class PipoDictionaryService implements IDictionaryService {
 			packIn.setPackageVersion(packageVersion);
 			packIn.setUpdateDictionary(false);
 
-			X_AD_Package_Imp_Proc adPackageImp = new X_AD_Package_Imp_Proc(Env.getCtx(),
-					0, trxName);
-			File zipFilepath = packageFile;
-			if (logger.isLoggable(Level.INFO)) logger.info("zipFilepath->" + zipFilepath);
-			String parentDir = Zipper.getParentDir(zipFilepath);
+			adPackageImp = new X_AD_Package_Imp_Proc(Env.getCtx(), 0, null);
+			if (logger.isLoggable(Level.INFO)) logger.info("zipFilepath->" + packageFile);
+			String parentDir = Zipper.getParentDir(packageFile);
 			File targetDir = new File(System.getProperty("java.io.tmpdir"));
-			Zipper.unpackFile(zipFilepath, targetDir);
+			Zipper.unpackFile(packageFile, targetDir);
 
 			String dict_file = targetDir + File.separator + parentDir + File.separator
 					+ "dict" + File.separator + "PackOut.xml";
@@ -73,14 +73,14 @@ public class PipoDictionaryService implements IDictionaryService {
 			packIn.setPackageDirectory(targetDir + File.separator + parentDir);
 
 			if (logger.isLoggable(Level.INFO)) logger.info("dict file->" + dict_file);
+			adPackageImp.setName(packIn.getPackageName());
+			adPackageImp.setAD_Package_Source_Type("File");
+			packIn.setAD_Package_Imp_Proc(adPackageImp); 
 
 			// call XML Handler
 			String msg = packIn.importXML(dict_file, Env.getCtx(), trxName);
-			adPackageImp.setName(packIn.getPackageName());
 			adPackageImp.setDateProcessed(new Timestamp(System.currentTimeMillis()));
 			adPackageImp.setP_Msg(msg);
-			adPackageImp.setAD_Package_Source_Type("File");
-			adPackageImp.saveEx();
 			
 			Trx.get(trxName, false).commit();
 			if (logger.isLoggable(Level.INFO)) logger.info("commit " + trxName);
@@ -89,6 +89,7 @@ public class PipoDictionaryService implements IDictionaryService {
 			throw e;
 		} finally {
 			Trx.get(trxName, false).close();
+			adPackageImp.saveEx();
 		}
 
 	}
