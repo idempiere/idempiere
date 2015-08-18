@@ -853,10 +853,13 @@ public class MColumn extends X_AD_Column
 				{
 					Hashtable<String, DatabaseKey> htForeignKeys = new Hashtable<String, DatabaseKey>();
 
-					if (md.storesUpperCaseIdentifiers())
+					if (md.storesUpperCaseIdentifiers()) {
 						referenceTableName = referenceTableName.toUpperCase();
-					else if (md.storesLowerCaseIdentifiers())
+						tableName = tableName.toUpperCase();
+					} else if (md.storesLowerCaseIdentifiers()) {
 						referenceTableName = referenceTableName.toLowerCase();
+						tableName = tableName.toLowerCase();
+					}
 
 					if (!isNoTable) {
 						ResultSet rs = null;
@@ -968,6 +971,18 @@ public class MColumn extends X_AD_Column
 									column.setFKConstraintName(fkConstraintName);
 									column.setFKConstraintType(fkConstraintType);
 									column.saveEx();
+
+									// if the current db FK is same as what we need to create
+									if (   dbForeignKey.getKeyName().equalsIgnoreCase(column.getFKConstraintName())
+										&& (   (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyCascade && MColumn.FKCONSTRAINTTYPE_Cascade.equals(column.getFKConstraintType()))
+										    || (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeySetNull && MColumn.FKCONSTRAINTTYPE_SetNull.equals(column.getFKConstraintType()))
+										    || (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyNoAction && MColumn.FKCONSTRAINTTYPE_NoAction.equals(column.getFKConstraintType()))
+										    || (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyRestrict && MColumn.FKCONSTRAINTTYPE_NoAction.equals(column.getFKConstraintType()))
+										   )
+									   ) {
+										// nothing changed
+										return "";
+									}
 								}
 							}
 							modified = true;
