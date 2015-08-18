@@ -52,6 +52,7 @@ import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.editor.IProcessButton;
+import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.ActionEvent;
 import org.adempiere.webui.event.ActionListener;
@@ -2641,8 +2642,22 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		//  Zoom
 		if (col.equals("Record_ID"))
 		{
-			int AD_Table_ID = Env.getContextAsInt (ctx, curWindowNo, "AD_Table_ID");
-			int Record_ID = Env.getContextAsInt (ctx, curWindowNo, "Record_ID");
+			int AD_Table_ID = -1;
+			int Record_ID = -1;
+
+			if (wButton instanceof WButtonEditor) {
+				int curTabNo = 0;
+				WButtonEditor be = (WButtonEditor)wButton;
+				if (be.getGridField() != null && be.getGridField().getGridTab() != null) {
+					curTabNo = ((WButtonEditor)wButton).getGridField().getGridTab().getTabNo();
+					AD_Table_ID = Env.getContextAsInt (ctx, curWindowNo, curTabNo, "AD_Table_ID");
+					Record_ID = Env.getContextAsInt (ctx, curWindowNo, curTabNo, "Record_ID");
+				}
+			}
+			if (AD_Table_ID < 0)
+				AD_Table_ID = Env.getContextAsInt (ctx, curWindowNo, "AD_Table_ID");
+			if (Record_ID < 0)
+				Record_ID = Env.getContextAsInt (ctx, curWindowNo, "Record_ID");
 
 			AEnv.zoom(AD_Table_ID, Record_ID);
 			return;
