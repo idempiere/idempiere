@@ -394,7 +394,7 @@ public class PackInHandler extends DefaultHandler {
     		return;
 
     	for (int columnID : deferFK) {
-    		MColumn column = MColumn.get(m_ctx.ctx, columnID);
+    		MColumn column = new MColumn(m_ctx.ctx, columnID, m_ctx.trx.getTrxName());
     		try {
     			Connection conn = m_ctx.trx.getConnection();
     			DatabaseMetaData md = conn.getMetaData();
