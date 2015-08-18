@@ -89,6 +89,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRecentItem;
 import org.compiere.model.MRole;
 import org.compiere.model.MWindow;
+import org.compiere.model.PO;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
@@ -1308,6 +1309,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	}
 
+	private String prevdbInfo = "";
 	/**
 	 * @param e
 	 * @see DataStatusListener#dataStatusChanged(DataStatusEvent)
@@ -1334,36 +1336,51 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	if (!detailTab)
     	{
 	        String dbInfo = e.getMessage();
-	        if (logger.isLoggable(Level.INFO)) logger.info(dbInfo);
-	        if (adTabbox.getSelectedGridTab() != null && adTabbox.getSelectedGridTab().isQueryActive())
-	            dbInfo = "[ " + dbInfo + " ]";
-	        breadCrumb.setStatusDB(dbInfo, e);
+	        if (! prevdbInfo.equals(dbInfo)) {
+	        	prevdbInfo = dbInfo;
+		        if (logger.isLoggable(Level.INFO)) logger.info(dbInfo);
+		        if (adTabbox.getSelectedGridTab() != null && adTabbox.getSelectedGridTab().isQueryActive())
+		            dbInfo = "[ " + dbInfo + " ]";
+		        breadCrumb.setStatusDB(dbInfo, e);
 
-	        String prefix = null;
-	        if (dbInfo.contains("*"))
-	        	prefix = "*";
+		        String prefix = null;
+		        if (dbInfo.contains("*"))
+		        	prefix = "*";
 
-	        String titleLogic = null;
-	        int windowID = getADTab().getSelectedGridTab().getAD_Window_ID();
-	        if (windowID > 0) {
-	        	titleLogic = MWindow.get(Env.getCtx(), windowID).getTitleLogic();
+		        String titleLogic = null;
+		        int windowID = getADTab().getSelectedGridTab().getAD_Window_ID();
+		        if (windowID > 0) {
+		        	titleLogic = MWindow.get(Env.getCtx(), windowID).getTitleLogic();
+		        }
+		        String header = null;
+		        if (! Util.isEmpty(titleLogic)) {
+			        StringBuilder sb = new StringBuilder();
+			        if (prefix != null)
+			        	sb.append(prefix);
+					sb.append(Env.getContext(ctx, curWindowNo, "_WinInfo_WindowName", false)).append(": ");
+					if (titleLogic.contains("<")) {
+						// IDEMPIERE-1328 - enable using format or subcolumns on title
+						if (   getADTab() != null 
+							&& getADTab().getADTabpanel(0) != null  
+							&& getADTab().getADTabpanel(0).getGridTab() != null 
+							&& getADTab().getADTabpanel(0).getGridTab().getTableModel() != null) {
+							GridTab tab = getADTab().getADTabpanel(0).getGridTab();
+							PO po = tab.getTableModel().getPO(tab.getCurrentRow());
+							titleLogic = Env.parseVariable(titleLogic, po, null, false);
+						}
+					} else {
+						titleLogic = Env.parseContext(Env.getCtx(), curWindowNo, titleLogic, false, true);
+					}
+	        		sb.append(titleLogic);
+	        		header = sb.toString().trim();
+	        		if (header.endsWith(":"))
+	        			header = header.substring(0, header.length()-1);
+		        }
+		        if (Util.isEmpty(header))
+		        	header = AEnv.getDialogHeader(Env.getCtx(), curWindowNo, prefix);
+
+		        SessionManager.getAppDesktop().setTabTitle(header, curWindowNo);
 	        }
-	        String header = null;
-	        if (! Util.isEmpty(titleLogic)) {
-		        StringBuilder sb = new StringBuilder();
-		        if (prefix != null)
-		        	sb.append(prefix);
-				sb.append(Env.getContext(ctx, curWindowNo, "_WinInfo_WindowName", false)).append(": ");
-				titleLogic = Env.parseContext(Env.getCtx(), curWindowNo, titleLogic, false, true);
-        		sb.append(titleLogic);
-        		header = sb.toString().trim();
-        		if (header.endsWith(":"))
-        			header = header.substring(0, header.length()-1);
-	        }
-	        if (Util.isEmpty(header))
-	        	header = AEnv.getDialogHeader(Env.getCtx(), curWindowNo, prefix);
-
-	        SessionManager.getAppDesktop().setTabTitle(header, curWindowNo);
     	}
     	else if (adTabbox.getSelectedDetailADTabpanel() == null)
     	{
@@ -1701,6 +1718,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			detailTab.dynamicDisplay(0);
 		}
 		focusToActivePanel();
+		// IDEMPIERE-1328 - refresh recent item after running a process, i.e. completing a doc that changes documentno
+    	MRecentItem.touchUpdatedRecord(ctx, adTabbox.getSelectedGridTab().getAD_Table_ID(),
+    			adTabbox.getSelectedGridTab().getRecord_ID(), Env.getAD_User_ID(ctx));
 	}
 
     /**
