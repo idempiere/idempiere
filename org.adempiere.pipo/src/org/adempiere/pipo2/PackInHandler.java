@@ -19,6 +19,8 @@
 
 package org.adempiere.pipo2;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -27,13 +29,17 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
+import org.compiere.model.MColumn;
+import org.compiere.model.MTable;
 import org.compiere.model.X_AD_Package_Imp;
 import org.compiere.model.X_AD_Package_Imp_Inst;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -68,6 +74,7 @@ public class PackInHandler extends DefaultHandler {
 
 	private IHandlerRegistry handlerRegistry = null;
 	private List<DeferEntry> defer = new ArrayList<DeferEntry>();
+	private List<Integer> deferFK = new ArrayList<Integer>();
 	private Stack<Element> stack = new Stack<Element>();
 	private PackIn packIn;
 	private int elementProcessed = 0;
@@ -228,6 +235,11 @@ public class PackInHandler extends DefaultHandler {
 		{
 			defer.add(new DeferEntry(element, true));
 		}
+		if (element.deferFKColumnID > 0)
+		{
+			if (! deferFK.contains(element.deferFKColumnID))
+				deferFK.add(element.deferFKColumnID);
+		}
 
 		for (Element childElement : element.childrens)
 		{
@@ -280,6 +292,9 @@ public class PackInHandler extends DefaultHandler {
 
     	if (elementValue.equals("idempiere")){
     		processDeferElements();
+
+    		processDeferFKElements();
+
     		if (!packageStatus.equals("Completed with errors"))
     			packageStatus = "Completed successfully";
 
@@ -366,6 +381,40 @@ public class PackInHandler extends DefaultHandler {
     		int endSize = defer.size();
     		if (startSize == endSize) break;
     	} while (defer.size() > 0);
+    }
+
+    private void processDeferFKElements() throws SAXException {
+
+    	if (deferFK.isEmpty())
+    		return;
+
+    	for (int columnID : deferFK) {
+    		MColumn column = MColumn.get(m_ctx.ctx, columnID);
+    		try {
+    			Connection conn = m_ctx.trx.getConnection();
+    			DatabaseMetaData md = conn.getMetaData();
+    			String catalog = DB.getDatabase().getCatalog();
+    			String schema = DB.getDatabase().getSchema();
+    			MTable table = MTable.get(m_ctx.ctx, column.getAD_Table_ID());
+    			String tableName = table.getTableName();
+
+        		String fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, column, false);
+        		if (! Util.isEmpty(fkConstraintSql)) {
+        			if (fkConstraintSql.indexOf(DB.SQLSTATEMENT_SEPARATOR) == -1) {
+        				DB.executeUpdate(fkConstraintSql, false, m_ctx.trx.getTrxName());
+        			} else {
+        				String statements[] = fkConstraintSql.split(DB.SQLSTATEMENT_SEPARATOR);
+        				for (int i = 0; i < statements.length; i++) {
+        					if (Util.isEmpty(statements[i]))
+        						continue;
+        					DB.executeUpdateEx(statements[i], m_ctx.trx.getTrxName());
+        				}
+        			}
+        		}
+    		} catch (Exception e) {
+    			throw new AdempiereException(e);
+    		}
+    	}
     }
 
 	public void setCtx(PIPOContext ctx) {

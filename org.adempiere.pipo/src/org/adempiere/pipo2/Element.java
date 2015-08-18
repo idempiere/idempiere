@@ -37,6 +37,8 @@ public class Element {
 	public Attributes attributes;
 	//defer for later reprocessing
 	public boolean defer = false;
+	//defer for post packin foreign key processing
+	public int deferFKColumnID = 0;
 	//parent element
 	public Element parent;
 	//resolved db recordid, store for reference by child element
