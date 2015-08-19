@@ -2358,23 +2358,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		
 		MPeriod.testPeriodOpen(getCtx(), reversalDate, getC_DocType_ID(), getAD_Org_ID());
 		//
-		MAllocationHdr[] allocations = MAllocationHdr.getOfInvoice(getCtx(),
-			getC_Invoice_ID(), get_TrxName());
-		for (int i = 0; i < allocations.length; i++)
-		{
-			if (accrual)
-			{
-				allocations[i].setDocAction(DocAction.ACTION_Reverse_Accrual);
-				allocations[i].reverseAccrualIt();
-				allocations[i].saveEx(get_TrxName());
-			}
-			else
-			{
-				allocations[i].setDocAction(DocAction.ACTION_Reverse_Correct);
-				allocations[i].reverseCorrectIt();
-				allocations[i].saveEx(get_TrxName());
-			}
-		}
+		reverseAllocations(accrual, getC_Invoice_ID());
 		//	Reverse/Delete Matching
 		if (!isSOTrx())
 		{
@@ -2462,6 +2446,9 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			m_processMsg = "Reversal ERROR: " + reversal.getProcessMsg();
 			return null;
 		}
+		//
+		reverseAllocations(accrual, reversal.getC_Invoice_ID());
+
 		reversal.setC_Payment_ID(0);
 		reversal.setIsPaid(true);
 		reversal.closeIt();
@@ -2527,6 +2514,19 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		}
 		
 		return reversal;
+	}
+
+	private void reverseAllocations(boolean accrual, int invoiceID) {
+		for (MAllocationHdr allocation : MAllocationHdr.getOfInvoice(getCtx(), invoiceID, get_TrxName())) {
+			if (accrual) {
+				allocation.setDocAction(DocAction.ACTION_Reverse_Accrual);
+				allocation.reverseAccrualIt();
+			} else {
+				allocation.setDocAction(DocAction.ACTION_Reverse_Correct);
+				allocation.reverseCorrectIt();
+			}
+			allocation.saveEx(get_TrxName());
+		}
 	}
 
 	/**

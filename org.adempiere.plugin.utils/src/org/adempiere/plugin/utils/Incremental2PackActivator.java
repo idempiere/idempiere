@@ -34,7 +34,6 @@ import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.X_AD_Package_Imp;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
-import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -88,8 +87,6 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 	}
 
 	private void installPackage() {
-		String trxName = Trx.createTrxName();
-		try {			
 			// e.g. 1.0.0.qualifier, check only the "1.0.0" part
 			String bundleVersionPart = getVersion();
 			String installedVersionPart = null;
@@ -120,14 +117,8 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 					}
 				}
 			}
-			packIn(trxName, installedVersionPart, bundleVersionPart);
+			packIn(installedVersionPart, bundleVersionPart);
 			afterPackIn();
-			Trx.get(trxName, false).commit();
-		} finally {
-			if (Trx.get(trxName, false) != null) {
-				Trx.get(trxName, false).close();
-			}
-		}
 	}
 	
 	private static class TwoPackEntry {
@@ -139,7 +130,7 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 		}
 	}
 	
-	protected void packIn(String trxName, String installedVersionPart, String bundleVersionPart) {
+	protected void packIn(String installedVersionPart, String bundleVersionPart) {
 		List<TwoPackEntry> list = new ArrayList<TwoPackEntry>();
 				
 		//2Pack_1.0.0.zip, 2Pack_1.0.1.zip, etc
@@ -172,7 +163,7 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 		});		
 				
 		for(TwoPackEntry entry : list) {
-			packIn(trxName, entry.url);
+			packIn(entry.url);
 		}
 	}
 
@@ -184,7 +175,7 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 		return v;
 	}
 
-	protected void packIn(String trxName, URL packout) {
+	protected void packIn(URL packout) {
 		if (packout != null && service != null) {
 			String path = packout.getPath();
 			String suffix = path.substring(path.lastIndexOf("_"));

@@ -72,6 +72,7 @@ public class FormElementHandler extends AbstractElementHandler {
 				if (mForm.save(getTrxName(ctx)) == true){
 					logImportDetail (ctx, impDetail, 1, mForm.getName(), mForm.get_ID(), action);
 					element.recordId = mForm.get_ID();
+					element.requireRoleAccessUpdate = true;
 				}
 				else{
 					logImportDetail (ctx, impDetail, 0, mForm.getName(), mForm.get_ID(), action);

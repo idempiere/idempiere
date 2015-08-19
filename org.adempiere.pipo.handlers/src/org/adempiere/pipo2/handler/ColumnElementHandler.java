@@ -25,7 +25,6 @@ import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PIPOContext;
@@ -81,6 +80,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			if (!mColumn.is_new() && !mColumn.is_Changed()) {
 				boolean syncDatabase = "Y".equalsIgnoreCase(getStringValue(element, "IsSyncDatabase"));
 				if (syncDatabase) {
+					deferFK(element, mColumn);
 					syncColumn(ctx, mColumn, "Sync", false);
 				}
 				return;
@@ -111,10 +111,12 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			}
 
 			boolean recreateColumn = (mColumn.is_new()
-					|| mColumn.is_ValueChanged("AD_Reference_ID")
-					|| mColumn.is_ValueChanged("FieldLength")
-					|| mColumn.is_ValueChanged("ColumnName") || mColumn
-					.is_ValueChanged("IsMandatory"));
+					|| mColumn.is_ValueChanged(X_AD_Column.COLUMNNAME_AD_Reference_ID)
+					|| mColumn.is_ValueChanged(X_AD_Column.COLUMNNAME_FieldLength)
+					|| mColumn.is_ValueChanged(X_AD_Column.COLUMNNAME_ColumnName)
+					|| mColumn.is_ValueChanged(X_AD_Column.COLUMNNAME_FKConstraintName)
+					|| mColumn.is_ValueChanged(X_AD_Column.COLUMNNAME_FKConstraintType)
+					|| mColumn.is_ValueChanged(X_AD_Column.COLUMNNAME_IsMandatory));
 
 			//ignore fieldlength change for clob and lob
 			if (!mColumn.is_ValueChanged("AD_Reference_ID") && mColumn.is_ValueChanged("FieldLength")) {
@@ -161,11 +163,18 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			}
 
 			if (recreateColumn || syncDatabase) {
+				deferFK(element, mColumn);
 				syncColumn(ctx, mColumn, action, recreateColumn);
 			}
 		} else {
 			element.skip = true;
 		}
+	}
+
+	private void deferFK(Element element, MColumn mColumn) {
+		String foreignTable = mColumn.getReferenceTableName();
+		if (foreignTable != null && ! "AD_Ref_List".equals(foreignTable))
+			element.deferFKColumnID = mColumn.getAD_Column_ID();
 	}
 
 	private void syncColumn(PIPOContext ctx, MColumn mColumn, String action,
@@ -216,10 +225,10 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			String schema = DB.getDatabase().getSchema();
 			String tableName = table.getTableName();
 			String columnName = column.getColumnName();
-			if (DB.isOracle()) {
+			if (md.storesUpperCaseIdentifiers()) {
 				tableName = tableName.toUpperCase();
 				columnName = columnName.toUpperCase();
-			} else if (DB.isPostgreSQL()) {
+			} else if (md.storesLowerCaseIdentifiers()) {
 				tableName = tableName.toLowerCase();
 				columnName = columnName.toLowerCase();
 			}
@@ -229,18 +238,6 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			if (!rst.next()) {
 				// table doesn't exist
 				sql = table.getSQLCreate();
-				MColumn[] cols = table.getColumns(false);
-				for (MColumn col : cols)
-				{
-					String fkConstraintSql;
-					try {
-						fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, col);
-					} catch (Exception e) {
-						throw new AdempiereException(e);
-					}
-					if (fkConstraintSql != null && fkConstraintSql.length() > 0)
-						sql += fkConstraintSql;
-				}
 			} else {
 				//
 				rsc = md.getColumns(catalog, schema, tableName, columnName);
@@ -256,14 +253,6 @@ public class ColumnElementHandler extends AbstractElementHandler {
 					// No existing column
 					sql = column.getSQLAdd(table);
 				}
-				String fkConstraintSql;
-				try {
-					fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, column);
-				} catch (Exception e) {
-					throw new AdempiereException(e);
-				}
-				if (fkConstraintSql != null && fkConstraintSql.length() > 0)
-					sql += fkConstraintSql;
 			}
 
 			//execute modify or add if needed

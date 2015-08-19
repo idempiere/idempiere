@@ -36,6 +36,12 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PackoutItem;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
+import org.compiere.model.I_AD_Form;
+import org.compiere.model.I_AD_InfoWindow;
+import org.compiere.model.I_AD_Process;
+import org.compiere.model.I_AD_Role;
+import org.compiere.model.I_AD_Window;
+import org.compiere.model.I_C_DocType;
 import org.compiere.model.MColumn;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
@@ -91,6 +97,13 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 		}
 		po.saveEx();
 		element.recordId = po.get_ID();
+		if (   I_AD_Window.Table_Name.equals(tableName)
+			|| I_AD_Process.Table_Name.equals(tableName)
+			|| I_AD_Role.Table_Name.equals(tableName)
+			|| I_AD_Form.Table_Name.equals(tableName)
+			|| I_C_DocType.Table_Name.equals(tableName)
+			|| I_AD_InfoWindow.Table_Name.equals(tableName))
+			element.requireRoleAccessUpdate = true;
 	}
 
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {

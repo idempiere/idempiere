@@ -1,7 +1,6 @@
 package org.adempiere.webui;
 
 import java.util.Hashtable;
-import java.util.List;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -11,12 +10,9 @@ import javax.servlet.http.HttpSessionListener;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.Adempiere;
-import org.compiere.model.MSession;
-import org.compiere.model.Query;
 import org.compiere.model.ServerStateChangeEvent;
 import org.compiere.model.ServerStateChangeListener;
 import org.compiere.util.DB;
-import org.compiere.util.Env;
 import org.compiere.util.WebUtil;
 
 public class LoggedSessionListener implements HttpSessionListener, ServletContextListener, ServerStateChangeListener{

@@ -134,7 +134,8 @@ public class PackInProcess extends SvrProcess {
 		packIn.setPackageName(packageName);
 		packIn.setPackageVersion(packageVersion);
 		packIn.setUpdateDictionary(m_UpdateDictionary);
-		
+		packIn.setAD_Package_Imp_Proc(adPackageImp);
+
 		// call XML Handler
 		String msg = packIn.importXML(dict_file, getCtx(), get_TrxName());
 		adPackageImp.setDateProcessed(new Timestamp(System.currentTimeMillis()));

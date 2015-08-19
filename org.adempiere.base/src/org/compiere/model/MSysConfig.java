@@ -42,7 +42,7 @@ public class MSysConfig extends X_AD_SysConfig
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 4290286149969983294L;
+	private static final long serialVersionUID = -2870394087507976203L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -59,6 +59,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String APPLICATION_MAIN_VERSION = "APPLICATION_MAIN_VERSION";
     public static final String APPLICATION_MAIN_VERSION_SHOWN = "APPLICATION_MAIN_VERSION_SHOWN";
     public static final String APPLICATION_OS_INFO_SHOWN = "APPLICATION_OS_INFO_SHOWN";
+	public static final String ATTACH_EMBEDDED_2PACK = "ATTACH_EMBEDDED_2PACK";
     public static final String BACKGROUND_JOB_ALLOWED = "BACKGROUND_JOB_ALLOWED";
     public static final String BACKGROUND_JOB_BY_DEFAULT = "BACKGROUND_JOB_BY_DEFAULT";
     public static final String BACKGROUND_JOB_MAX_IN_SYSTEM = "BACKGROUND_JOB_MAX_IN_SYSTEM";

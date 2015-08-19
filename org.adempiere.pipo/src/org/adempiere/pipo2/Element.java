@@ -37,6 +37,8 @@ public class Element {
 	public Attributes attributes;
 	//defer for later reprocessing
 	public boolean defer = false;
+	//defer for post packin foreign key processing
+	public int deferFKColumnID = 0;
 	//parent element
 	public Element parent;
 	//resolved db recordid, store for reference by child element
@@ -49,6 +51,8 @@ public class Element {
 	public boolean skip = false;
 
 	public boolean deferEnd = false;
+
+	public boolean requireRoleAccessUpdate = false;
 
 	public Map<String, Element> properties = new LinkedHashMap<String, Element>();
 

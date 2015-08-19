@@ -128,14 +128,14 @@ public class ColumnSync extends SvrProcess
 				MColumn[] cols = table.getColumns(false);
 				for (MColumn col : cols)
 				{
-					String fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, col);
+					String fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, col, false);
 					if (fkConstraintSql != null && fkConstraintSql.length() > 0)
 						sql += fkConstraintSql;
 				}
 			}
 			else
 			{
-				String fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, column);
+				String fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, column, false);
 				if (fkConstraintSql != null && fkConstraintSql.length() > 0)
 					sql += fkConstraintSql;
 			}

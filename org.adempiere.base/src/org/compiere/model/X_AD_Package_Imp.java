@@ -30,7 +30,7 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20150813L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp (Properties ctx, int AD_Package_Imp_ID, String trxName)
@@ -99,6 +99,31 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Package_Imp_ID()));
     }
+
+	public org.compiere.model.I_AD_Package_Imp_Proc getAD_Package_Imp_Proc() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Package_Imp_Proc)MTable.get(getCtx(), org.compiere.model.I_AD_Package_Imp_Proc.Table_Name)
+			.getPO(getAD_Package_Imp_Proc_ID(), get_TrxName());	}
+
+	/** Set Package Imp. Proc..
+		@param AD_Package_Imp_Proc_ID Package Imp. Proc.	  */
+	public void setAD_Package_Imp_Proc_ID (int AD_Package_Imp_Proc_ID)
+	{
+		if (AD_Package_Imp_Proc_ID < 1) 
+			set_Value (COLUMNNAME_AD_Package_Imp_Proc_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Package_Imp_Proc_ID, Integer.valueOf(AD_Package_Imp_Proc_ID));
+	}
+
+	/** Get Package Imp. Proc..
+		@return Package Imp. Proc.	  */
+	public int getAD_Package_Imp_Proc_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Package_Imp_Proc_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	/** Set AD_Package_Imp_UU.
 		@param AD_Package_Imp_UU AD_Package_Imp_UU	  */
