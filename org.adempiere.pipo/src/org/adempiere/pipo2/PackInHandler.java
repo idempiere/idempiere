@@ -303,6 +303,7 @@ public class PackInHandler extends DefaultHandler {
         			packageStatus = "Completed - unresolved";
     			} else {
         			packageStatus = "Completed successfully";
+        			packIn.setSuccess(true);
     			}
     		}
 

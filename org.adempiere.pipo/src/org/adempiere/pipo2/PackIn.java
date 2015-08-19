@@ -64,6 +64,7 @@ public class PackIn {
 	private X_AD_Package_Imp_Proc packinProc;
 
 	private List<X_AD_Package_Imp_Detail> importDetails;
+	private boolean success = false;
 
 	public PackIn() {
 		super();
@@ -295,6 +296,14 @@ public class PackIn {
 
 	public void setAD_Package_Imp_Proc(X_AD_Package_Imp_Proc packinProc) {
 		this.packinProc = packinProc;
+	}
+
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+
+	public boolean isSuccess() {
+		return success;
 	}
 
 } // PackIn

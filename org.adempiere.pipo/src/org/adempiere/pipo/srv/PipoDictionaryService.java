@@ -13,11 +13,15 @@ package org.adempiere.pipo.srv;
 
 import java.io.File;
 import java.sql.Timestamp;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.base.IDictionaryService;
 import org.adempiere.pipo2.PackIn;
 import org.adempiere.pipo2.Zipper;
+import org.compiere.model.MAttachment;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_Package_Imp_Proc;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -28,16 +32,30 @@ public class PipoDictionaryService implements IDictionaryService {
 
 	CLogger logger = CLogger.getCLogger(PipoDictionaryService.class.getName());
 
+	private final Semaphore semaphore;
+	
+	public PipoDictionaryService() {
+		super();
+		semaphore = new Semaphore(1, true);
+	}
+
 	@Override
 	public void merge(BundleContext context, File packageFile) throws Exception {
 		if (packageFile == null || !packageFile.exists()) {
 			logger.info("No PackIn Model found");
 			return;
 		}
-		String trxName = Trx.createTrxName();
+		String trxName = null;
 		X_AD_Package_Imp_Proc adPackageImp = null;
 		PackIn packIn = null;
 		try {
+			try {
+				semaphore.tryAcquire(120, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				semaphore.release();
+				semaphore.acquire();
+			}
+			trxName = Trx.createTrxName("PipoDS");
 			packIn = new PackIn();
 			packIn.setPackageName(context.getBundle().getSymbolicName());
 			
@@ -85,11 +103,25 @@ public class PipoDictionaryService implements IDictionaryService {
 			Trx.get(trxName, false).commit();
 			if (logger.isLoggable(Level.INFO)) logger.info("commit " + trxName);
 		} catch (Exception e) {
+			adPackageImp.setP_Msg(e.getLocalizedMessage());
 			logger.log(Level.SEVERE, "importXML:", e);
 			throw e;
 		} finally {
-			Trx.get(trxName, false).close();
-			adPackageImp.saveEx();
+			try {
+				Trx.get(trxName, false).close();
+			} catch (Exception e) {}
+			semaphore.release();
+			adPackageImp.save(); // ignoring exceptions
+
+			if (adPackageImp != null && packIn != null) {
+				// Add the attachment to the packin for possible reprocessing
+				if (MSysConfig.getBooleanValue(MSysConfig.ATTACH_EMBEDDED_2PACK, true) || ! packIn.isSuccess()) {
+					// TODO: This sometimes fails with error No archive storage provider found - because the IAttachmentStore required is still not loaded
+					MAttachment attachment = new MAttachment (adPackageImp.getCtx(), X_AD_Package_Imp_Proc.Table_ID, adPackageImp.getAD_Package_Imp_Proc_ID(), null);
+					attachment.addEntry(packageFile);
+					attachment.save(); // ignoring exceptions
+				}
+			}
 		}
 
 	}
