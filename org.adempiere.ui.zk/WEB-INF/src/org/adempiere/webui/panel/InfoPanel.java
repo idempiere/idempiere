@@ -119,7 +119,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	private static final long serialVersionUID = 3761627143274259211L;
 	private final static int DEFAULT_PAGE_SIZE = 100;
-	private final static int DEFAULT_PAGE_RELOAD = 4;
+	private final static int DEFAULT_PAGE_PRELOAD = 4;
 	protected List<Button> btProcessList = new ArrayList<Button>();
 	protected Map<String, WEditor> editorMap = new HashMap<String, WEditor>();
 	protected final static String PROCESS_ID_KEY = "processId";
@@ -131,7 +131,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	// for test disable load all record when num of record < 1000
 	protected boolean isIgnoreCacheAll = true;
 	// Num of page preload, default is 2 page before current and 2 page after current 
-	protected int numPagePreLoad = MSysConfig.getIntValue(MSysConfig.ZK_INFO_NUM_PAGE_PRELOAD, DEFAULT_PAGE_RELOAD);
+	protected int numPagePreLoad = MSysConfig.getIntValue(MSysConfig.ZK_INFO_NUM_PAGE_PRELOAD, DEFAULT_PAGE_PRELOAD);
 	// max end index is integer.max_value - 1, not integer.max_value.
 	protected int extra_max_row = 1;
 	/**
