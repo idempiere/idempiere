@@ -232,6 +232,19 @@ public interface I_AD_InfoWindow
 	  */
 	public boolean isDistinct();
 
+    /** Column name isLoadPageNum */
+    public static final String COLUMNNAME_isLoadPageNum = "isLoadPageNum";
+
+	/** Set Load Page Num.
+	  * When load data for info window, also load number of paging
+	  */
+	public void setisLoadPageNum (boolean isLoadPageNum);
+
+	/** Get Load Page Num.
+	  * When load data for info window, also load number of paging
+	  */
+	public boolean isLoadPageNum();
+
     /** Column name IsShowInDashboard */
     public static final String COLUMNNAME_IsShowInDashboard = "IsShowInDashboard";
 

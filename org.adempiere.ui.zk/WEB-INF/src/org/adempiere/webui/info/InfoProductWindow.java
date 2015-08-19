@@ -873,5 +873,29 @@ public class InfoProductWindow extends InfoWindow {
 			m_PAttributeButton.setEnabled(false);
 	}
 	
-	
+	@Override
+	protected void updateSubcontent() {
+		super.updateSubcontent();
+		int row = contentPanel.getSelectedRow();
+		if (row < 0){
+			if (warehouseTbl != null && warehouseTbl.getModel() != null)
+				warehouseTbl.getModel().clear();
+			
+			if (substituteTbl != null && substituteTbl.getModel() != null)
+				substituteTbl.getModel().clear();
+			
+			if (relatedTbl != null && relatedTbl.getModel() != null)
+				relatedTbl.getModel().clear();
+			
+			if (m_tableAtp != null && m_tableAtp.getModel() != null)
+				m_tableAtp.getModel().clear();
+			
+			if (productpriceTbl != null && productpriceTbl.getModel() != null)
+				productpriceTbl.getModel().clear();
+			
+			if (fieldDescription != null)
+				fieldDescription.setText("");
+		}
+		
+	}
 }

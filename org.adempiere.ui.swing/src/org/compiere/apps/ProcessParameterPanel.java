@@ -326,7 +326,7 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 			centerPanel.add ((Component)vEditor, gbc);
 			m_vEditors.add (vEditor);                   //  add to Editors
 			//  Set Default
-			Object defaultObject = mField.getDefault();
+			Object defaultObject = mField.getDefaultForPanel();
 			mField.setValue (defaultObject, true);
 			//
 			if (voF.isRange)
@@ -356,7 +356,7 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 				centerPanel.add ((Component)vEditor2, gbc);
 				m_vEditors2.add (vEditor2);
 				//  Set Default
-				Object defaultObject2 = mField2.getDefault();
+				Object defaultObject2 = mField2.getDefaultForPanel();
 				mField2.setValue (defaultObject2, true);
 			}
 			else

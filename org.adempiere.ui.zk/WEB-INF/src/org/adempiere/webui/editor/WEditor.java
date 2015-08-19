@@ -112,7 +112,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		this.component.getParent().appendChild(popupMenu);
 		
 		// when field have label, add action zoom when click to label, and show menu when right click to label
-		if (!gridField.isFieldOnly())
+		if (!readOnly)
 		{				
 			if (popupMenu.isZoomEnabled() && this instanceof IZoomableEditor)
 			{

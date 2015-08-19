@@ -67,6 +67,7 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
 	private Label statusDB;
     private Label infoLine;
     private Label statusLine;
+    private Label selectedLine;
 
 	private DataStatusEvent m_dse;
 
@@ -107,6 +108,11 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
         
         west = new Div();
         west.setStyle("text-align: left; ");
+        selectedLine = new Label();
+        west.appendChild(selectedLine);
+        selectedLine.setVisible(false);
+        LayoutUtils.addSclass("status-selected", selectedLine);
+        
         west.appendChild(statusLine);
         Vbox vbox = new Vbox();
         vbox.setPack("center");
@@ -117,7 +123,8 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
         east = new Div();
         east.setWidth("100%");
         east.setStyle("text-align: right; ");
-    	infoLine = new Label();
+        
+        infoLine = new Label();
     	east.appendChild(infoLine);
     	infoLine.setVisible(false);
         east.appendChild(statusDB);
@@ -298,6 +305,13 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
 			infoLine.setVisible(true);
 	}	//	setInfo
 
+	public void setSelectedRowNumber (String rowNum){
+		selectedLine.setVisible(rowNum != null);
+		if (rowNum != null){
+			selectedLine.setValue(rowNum);
+		}
+	}
+	
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_CLICK.equals(event.getName()) && event.getTarget() == statusDB)
 		{

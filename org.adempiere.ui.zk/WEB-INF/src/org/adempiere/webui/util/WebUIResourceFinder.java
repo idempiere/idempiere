@@ -15,6 +15,7 @@ package org.adempiere.webui.util;
 
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.regex.Pattern;
 
 import org.adempiere.base.IResourceFinder;
 import org.adempiere.webui.WebUIActivator;
@@ -40,6 +41,7 @@ public class WebUIResourceFinder implements IResourceFinder {
 		return WebUIActivator.getBundleContext().getBundle().findEntries(path, pattern, false);
 	}
 	
+	protected Pattern patternOnlyName = Pattern.compile("\\w+\\.\\w+"); 
 	@Override
 	public URL getResource(String name) {
 		if ("images/iDempiereHR.png".equals(name) || "images/iDempiere.png".equals(name)) {
@@ -47,6 +49,9 @@ public class WebUIResourceFinder implements IResourceFinder {
 		}
 		Enumeration<URL> e = find(name);
 		URL url = e != null && e.hasMoreElements() ? e.nextElement() : null;
+		if (url == null && patternOnlyName.matcher(name).matches()){
+			name = "images/" + name;
+		}
 		if (url == null && name.startsWith("org/compiere/images")) {
 			String t = name.substring("org/compiere/".length());
 			t = ThemeManager.getThemeResource(t);

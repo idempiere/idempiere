@@ -202,7 +202,8 @@ public class WAllocation extends Allocation
 		row = rows.newRow();
 		row.appendCellChild(bpartnerLabel.rightAlign());
 		bpartnerSearch.getComponent().setHflex("true");
-		row.appendCellChild(bpartnerSearch.getComponent(),2);	
+		row.appendCellChild(bpartnerSearch.getComponent(),2);
+		bpartnerSearch.showMenu();
 		Hbox box = new Hbox();
 		box.appendChild(dateLabel.rightAlign());
 		box.appendChild(dateField.getComponent());
@@ -210,11 +211,13 @@ public class WAllocation extends Allocation
 		row.appendCellChild(organizationLabel.rightAlign());
 		organizationPick.getComponent().setHflex("true");
 		row.appendCellChild(organizationPick.getComponent(),1);
+		organizationPick.showMenu();
 		
 		row = rows.newRow();
 		row.appendCellChild(currencyLabel.rightAlign(),1);
 		currencyPick.getComponent().setHflex("true");
 		row.appendCellChild(currencyPick.getComponent(),1);		
+		currencyPick.showMenu();
 		row.appendCellChild(multiCurrency,1);		
 		row.appendCellChild(autoWriteOff,2);
 		row.appendCellChild(new Space(),1);		
@@ -236,8 +239,10 @@ public class WAllocation extends Allocation
 		chargePick.getComponent().setHflex("true");
 		row.appendCellChild(chargePick.getComponent());
 		row.appendCellChild(DocTypeLabel.rightAlign());
+		chargePick.showMenu();
 		DocTypePick.getComponent().setHflex("true");
 		row.appendCellChild(DocTypePick.getComponent());
+		DocTypePick.showMenu();
 		allocateButton.setHflex("true");
 		row.appendCellChild(allocateButton);
 		row.appendCellChild(refreshButton);

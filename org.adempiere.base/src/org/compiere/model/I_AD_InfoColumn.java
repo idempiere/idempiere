@@ -309,6 +309,19 @@ public interface I_AD_InfoColumn
 	  */
 	public boolean isIdentifier();
 
+    /** Column name IsKey */
+    public static final String COLUMNNAME_IsKey = "IsKey";
+
+	/** Set Key column.
+	  * This column is the key in this table
+	  */
+	public void setIsKey (boolean IsKey);
+
+	/** Get Key column.
+	  * This column is the key in this table
+	  */
+	public boolean isKey();
+
     /** Column name IsMandatory */
     public static final String COLUMNNAME_IsMandatory = "IsMandatory";
 

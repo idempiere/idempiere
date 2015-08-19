@@ -30,7 +30,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20141106L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -433,6 +433,30 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isIdentifier () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsIdentifier);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Key column.
+		@param IsKey 
+		This column is the key in this table
+	  */
+	public void setIsKey (boolean IsKey)
+	{
+		set_Value (COLUMNNAME_IsKey, Boolean.valueOf(IsKey));
+	}
+
+	/** Get Key column.
+		@return This column is the key in this table
+	  */
+	public boolean isKey () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsKey);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

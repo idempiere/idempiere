@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.model.IInfoColumn;
 import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -31,7 +32,7 @@ import org.compiere.util.Evaluator;
  *  @author Jorg Janke
  *  @version $Id: MInfoColumn.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MInfoColumn extends X_AD_InfoColumn
+public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn
 {
 	/**
 	 * 
@@ -175,5 +176,15 @@ public class MInfoColumn extends X_AD_InfoColumn
 		getParent().validate();
 		getParent().saveEx(get_TrxName());
 		return super.afterDelete(success);
+	}
+
+	@Override
+	public int getInfoColumnID() {		
+		return get_ID();
+	}
+
+	@Override
+	public MInfoColumn getAD_InfoColumn() {
+		return this;
 	}
 }	//	MInfoColumn

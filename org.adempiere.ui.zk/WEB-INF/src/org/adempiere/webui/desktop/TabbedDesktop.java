@@ -13,7 +13,6 @@
  *****************************************************************************/
 package org.adempiere.webui.desktop;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.adempiere.util.Callback;
@@ -22,6 +21,7 @@ import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.apps.wf.WFPanel;
 import org.adempiere.webui.component.DesktopTabpanel;
+import org.adempiere.webui.component.Tab.DecorateInfo;
 import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
@@ -32,11 +32,11 @@ import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.WTask;
+import org.compiere.model.MInfoWindow;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTask;
 import org.compiere.util.Env;
 import org.compiere.wf.MWorkflow;
-import org.zkoss.image.AImage;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -73,7 +73,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 			String title = pd.getTitle();
 			pd.setTitle(null);
 			preOpenNewTab();
-			windowContainer.addWindow(tabPanel, title, true);
+			windowContainer.addWindow(tabPanel, title, true, null);
 			Events.postEvent(ProcessDialog.ON_INITIAL_FOCUS_EVENT, pd, null);
 		}
 		return pd;
@@ -93,7 +93,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 			//do not show window title when open as tab
 			form.setTitle(null);
 			preOpenNewTab();
-			windowContainer.addWindow(tabPanel, form.getFormName(), true);
+			windowContainer.addWindow(tabPanel, form.getFormName(), true, null);
 			form.focus();
 		} else {
 			form.setAttribute(Window.MODE_KEY, form.getWindowMode());
@@ -117,7 +117,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 			String title = infoPanel.getTitle();
 			infoPanel.setTitle(null);
 			preOpenNewTab();
-			windowContainer.addWindow(tabPanel, title, true);
+			windowContainer.addWindow(tabPanel, title, true, DecorateInfo.get(MInfoWindow.get(infoId, null)));
 			infoPanel.focus();
 		} else {
 			FDialog.error(0, "NotValid");
@@ -135,7 +135,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		DesktopTabpanel tabPanel = new DesktopTabpanel();
 		p.setParent(tabPanel);
 		preOpenNewTab();
-		windowContainer.addWindow(tabPanel, p.getWorkflow().get_Translation(MWorkflow.COLUMNNAME_Name), true);
+		windowContainer.addWindow(tabPanel, p.getWorkflow().get_Translation(MWorkflow.COLUMNNAME_Name), true, null);
 	}
 	
 	/**
@@ -160,7 +160,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		final DesktopTabpanel tabPanel = new DesktopTabpanel();		
 		String id = AdempiereIdGenerator.escapeId(adWindow.getTitle());
 		tabPanel.setId(id+"_"+adWindow.getADWindowContent().getWindowNo());
-		final Tab tab = windowContainer.addWindow(tabPanel, adWindow.getTitle(), true);
+		final Tab tab = windowContainer.addWindow(tabPanel, adWindow.getTitle(), true, DecorateInfo.get(adWindow));
+		
 		tab.setClosable(false);		
 		final OpenWindowRunnable runnable = new OpenWindowRunnable(adWindow, tab, tabPanel, callback);
 		preOpenNewTab();
@@ -233,7 +234,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
         Tabpanel tabPanel = new Tabpanel();
     	window.setParent(tabPanel);
     	preOpenNewTab();
-    	windowContainer.addWindow(tabPanel, title, closeable);
+    	windowContainer.addWindow(tabPanel, title, closeable, null);
     }
 
     /**
@@ -245,7 +246,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
     	final ADWindow wnd = new ADWindow(Env.getCtx(), AD_Window_ID, query);
 
     	final DesktopTabpanel tabPanel = new DesktopTabpanel();		
-		final Tab tab = windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, wnd.getTitle(), true, true);
+		final Tab tab = windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, wnd.getTitle(), true, true, DecorateInfo.get(wnd));
 		tab.setClosable(false);		
 		final OpenWindowRunnable runnable = new OpenWindowRunnable(wnd, tab, tabPanel, null);
 		preOpenNewTab();
@@ -277,9 +278,9 @@ public abstract class TabbedDesktop extends AbstractDesktop {
     	window.setTitle(null);
     	preOpenNewTab();
     	if (Window.INSERT_NEXT.equals(window.getAttribute(Window.INSERT_POSITION_KEY)))
-    		windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, title, true, true);
+    		windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, title, true, true, null);
     	else
-    		windowContainer.addWindow(tabPanel, title, true);
+    		windowContainer.addWindow(tabPanel, title, true, null);
     	if (window instanceof IHelpContext)
 			Events.sendEvent(new Event(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, window));
    	}
@@ -381,13 +382,6 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		public void run() {			
 			if (adWindow.createPart(tabPanel) != null ) {
 				tab.setClosable(true);
-				if (adWindow.getMImage() != null) {
-					try {
-						AImage aImage = adWindow.getAImage();
-						tab.setImageContent(aImage);
-					} catch (IOException e) {
-					}
-				}
 				if (callback != null) {
 					callback.onCallback(adWindow);
 				}

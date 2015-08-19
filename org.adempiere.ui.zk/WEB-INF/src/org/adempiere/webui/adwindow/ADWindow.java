@@ -17,7 +17,6 @@
 
 package org.adempiere.webui.adwindow;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,9 +34,7 @@ import org.compiere.model.MToolBarButton;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MWindow;
 import org.compiere.model.X_AD_ToolBarButton;
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
-import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -59,8 +56,6 @@ public class ADWindow extends AbstractUIPart
 
 	private Component windowPanelComponent;
 	private MImage image;
-	
-	private static final CCache<Integer, AImage> imageCache = new CCache<Integer, AImage>(null, "WindowImageCache", 5, false);
     
 	private Map<Integer, List<String>> tabToolbarRestricMap = new HashMap<Integer, List<String>>();
 	
@@ -128,23 +123,6 @@ public class ADWindow extends AbstractUIPart
     {
     	return image;
     }
-    
-    public AImage getAImage() throws IOException {
-    	MImage image = getMImage();
-    	AImage aImage = null;
-    	if (image != null) {
-    		synchronized (imageCache) {
-    			aImage = imageCache.get(image.getAD_Image_ID());
-			}
-    		if (aImage == null) {
-    			aImage = new AImage(image.getName(), image.getData());
-    			synchronized (imageCache) {
-    				imageCache.put(image.getAD_Image_ID(), aImage);
-    			}
-    		}
-    	}
-		return aImage;
-	}
     
     protected Component doCreatePart(Component parent) 
     {

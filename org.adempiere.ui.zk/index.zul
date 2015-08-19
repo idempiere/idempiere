@@ -39,6 +39,37 @@ Copyright (C) 2007 Ashley G Ramdass.
 				}
 			}
 		});								
+		
+		zk.afterLoad('zul.mesh', function () {
+			
+			zk.override(zul.mesh.Paging.prototype, "bind_", function () {
+				this.$bind_.apply(this, arguments);
+				if (this._totalSize == 0x7fffffff){
+					jq(".z-paging-text", this).text("?");
+				}
+			});
+			
+			
+			zk.override(zul.mesh.Paging.prototype, "infoText_",
+					  function () {
+					    //this.$infoText_.apply(this, arguments);
+					    var acp = this._activePage,
+								psz = this._pageSize,
+								tsz = this._totalSize,
+								
+								lastItem = (acp + 1) * psz,
+								dash = '';
+							
+							if ('os' != this.getMold())
+								dash = ' - ' + (lastItem > tsz ? tsz : lastItem);
+							
+							if (this._totalSize == 0x7fffffff)
+								tsz = "?";
+							
+							return '[ ' + (acp * psz + 1) + dash + ' / ' + tsz + ' ]';
+					  });	  
+			});
+		
 	]]>
 	</script>
     <include src="${themePreference}"/>

@@ -78,6 +78,13 @@
 	padding-right: 10px;
 	border-left: solid 1px #9CBDFF;
 }
+
+.status-selected{
+	padding-right: 5px;
+	padding-right: 5px;
+	border-right: solid 1px #9CBDFF;
+}
+
 .status-border {
 	border: solid 1px #9CBDFF;
 }
