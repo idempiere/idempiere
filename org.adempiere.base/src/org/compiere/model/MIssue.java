@@ -224,8 +224,8 @@ public class MIssue extends X_AD_Issue
 		setLocal_Host(InetAddress.getLocalHost().toString());
 		if (system.isAllowStatistics())
 		{
-			setStatisticsInfo(system.getStatisticsInfo(true));
-			setProfileInfo(system.getProfileInfo(true));
+			setStatisticsInfo(system.getStatisticsInfo(false));
+			setProfileInfo(system.getProfileInfo(false));
 		}
 	}	//	init
 	
