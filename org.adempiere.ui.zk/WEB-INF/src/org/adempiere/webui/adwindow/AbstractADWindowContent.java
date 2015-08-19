@@ -1337,7 +1337,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	if (!detailTab)
     	{
 	        String dbInfo = e.getMessage();
-	        if (! prevdbInfo.equals(dbInfo)) {
+	        String adInfo = e.getAD_Message();
+	        if (   ! prevdbInfo.equals(dbInfo)
+	        	&& (   GridTab.DEFAULT_STATUS_MESSAGE.equals(adInfo)
+	        	    || GridTable.DATA_REFRESH_MESSAGE.equals(adInfo)
+	        	    || GridTable.DATA_INSERTED_MESSAGE.equals(adInfo)
+	        	    || GridTable.DATA_UPDATE_COPIED_MESSAGE.equals(adInfo)
+	        	   )
+	           ) {
 	        	prevdbInfo = dbInfo;
 		        if (logger.isLoggable(Level.INFO)) logger.info(dbInfo);
 		        if (adTabbox.getSelectedGridTab() != null && adTabbox.getSelectedGridTab().isQueryActive())
@@ -1361,13 +1368,20 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					sb.append(Env.getContext(ctx, curWindowNo, "_WinInfo_WindowName", false)).append(": ");
 					if (titleLogic.contains("<")) {
 						// IDEMPIERE-1328 - enable using format or subcolumns on title
-						if (   getADTab() != null 
-							&& getADTab().getADTabpanel(0) != null  
-							&& getADTab().getADTabpanel(0).getGridTab() != null 
+						if (   getADTab() != null
+							&& getADTab().getADTabpanel(0) != null
+							&& getADTab().getADTabpanel(0).getGridTab() != null
 							&& getADTab().getADTabpanel(0).getGridTab().getTableModel() != null) {
 							GridTab tab = getADTab().getADTabpanel(0).getGridTab();
-							PO po = tab.getTableModel().getPO(tab.getCurrentRow());
-							titleLogic = Env.parseVariable(titleLogic, po, null, false);
+							int row = tab.getCurrentRow();
+							int cnt = tab.getRowCount();
+							boolean inserting = tab.getTableModel().isInserting();
+							if (row >= 0 && cnt > 0 && !inserting) {
+								PO po = tab.getTableModel().getPO(row);
+								titleLogic = Env.parseVariable(titleLogic, po, null, false);
+							} else {
+								titleLogic = Env.parseContext(Env.getCtx(), curWindowNo, titleLogic, false, true);
+							}
 						}
 					} else {
 						titleLogic = Env.parseContext(Env.getCtx(), curWindowNo, titleLogic, false, true);
