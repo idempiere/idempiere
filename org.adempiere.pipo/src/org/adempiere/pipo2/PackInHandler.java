@@ -32,7 +32,9 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.compiere.model.MColumn;
+import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Imp;
 import org.compiere.model.X_AD_Package_Imp_Inst;
 import org.compiere.util.CLogger;
@@ -78,6 +80,7 @@ public class PackInHandler extends DefaultHandler {
 	private Stack<Element> stack = new Stack<Element>();
 	private PackIn packIn;
 	private int elementProcessed = 0;
+	private boolean isUpdateRoleAccess = false;
 
 	private void init() throws SAXException {
 
@@ -241,6 +244,9 @@ public class PackInHandler extends DefaultHandler {
 			if (! deferFK.contains(element.deferFKColumnID))
 				deferFK.add(element.deferFKColumnID);
 		}
+		if (element.requireRoleAccessUpdate) {
+			isUpdateRoleAccess = true;
+		}
 
 		for (Element childElement : element.childrens)
 		{
@@ -298,6 +304,8 @@ public class PackInHandler extends DefaultHandler {
 
     		processDeferFKElements();
     		
+    		updateRoleAccess();
+
     		if (!packageStatus.equals("Completed with errors")) {
     			if (getUnresolvedCount() > 0) {
         			packageStatus = "Completed - unresolved";
@@ -493,4 +501,18 @@ public class PackInHandler extends DefaultHandler {
 			startElement = b;
 		}
 	}
+
+    private void updateRoleAccess() {
+    	if (!isUpdateRoleAccess)
+    		return;
+
+    	List<MRole> roles = new Query(m_ctx.ctx, MRole.Table_Name, "IsManual='N'", m_ctx.trx.getTrxName())
+			.setOnlyActiveRecords(true)
+			.setOrderBy("AD_Client_ID, Name")
+			.list();
+    	for (MRole role : roles) {
+        	role.updateAccessRecords(false);
+    	}
+	}
+
 }   // PackInHandler

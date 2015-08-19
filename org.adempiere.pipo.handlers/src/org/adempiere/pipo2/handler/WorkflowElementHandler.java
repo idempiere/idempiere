@@ -91,6 +91,7 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 							.get_ID(), action);
 					workflows.add(mWorkflow.getAD_Workflow_ID());
 					element.recordId = mWorkflow.get_ID();
+					element.requireRoleAccessUpdate = true;
 				} else {
 					log.info("m_Workflow save failure");
 					logImportDetail(ctx, impDetail, 0, mWorkflow.getName(), mWorkflow
@@ -131,6 +132,7 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 							.get_ID(), "Update");
 					workflows.add(m_Workflow.getAD_Workflow_ID());
 					element.recordId = m_Workflow.getAD_Workflow_ID();
+					element.requireRoleAccessUpdate = true;
 				} else {
 					log.info("m_Workflow update fail");
 					logImportDetail(ctx, impDetail, 0, m_Workflow.getName(), m_Workflow

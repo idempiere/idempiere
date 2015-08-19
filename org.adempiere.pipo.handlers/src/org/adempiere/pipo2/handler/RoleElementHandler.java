@@ -87,6 +87,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 				element.recordId = mRole.getAD_Role_ID();
 				logImportDetail(ctx, impDetail, 1, mRole.getName(), mRole.get_ID(),
 						action);
+				element.requireRoleAccessUpdate = true;
 			} else {
 	
 				logImportDetail(ctx, impDetail, 0, mRole.getName(), mRole.get_ID(),

@@ -52,6 +52,8 @@ public class Element {
 
 	public boolean deferEnd = false;
 
+	public boolean requireRoleAccessUpdate = false;
+
 	public Map<String, Element> properties = new LinkedHashMap<String, Element>();
 
 	public List<Element> childrens = new ArrayList<Element>();
