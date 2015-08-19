@@ -239,8 +239,10 @@ public class WAllocation extends Allocation
 		chargePick.getComponent().setHflex("true");
 		row.appendCellChild(chargePick.getComponent());
 		row.appendCellChild(DocTypeLabel.rightAlign());
+		chargePick.showMenu();
 		DocTypePick.getComponent().setHflex("true");
 		row.appendCellChild(DocTypePick.getComponent());
+		DocTypePick.showMenu();
 		allocateButton.setHflex("true");
 		row.appendCellChild(allocateButton);
 		row.appendCellChild(refreshButton);
