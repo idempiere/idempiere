@@ -148,8 +148,11 @@ public class PackInNotifier {
 		EMail email = client.createEMail(null, to, subject.toString(), message.toString());
 		if (email != null)
 		{
-			if (!packIn.isSuccess())
+			if (!packIn.isSuccess()) {
 				email.setHeader("X-Priority", "1");
+				email.setHeader("Priority","Urgent");
+				email.setHeader("Importance","high");
+			}
 			while (st.hasMoreTokens())
 				email.addTo(st.nextToken());
 			status = email.send();

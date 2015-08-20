@@ -73,7 +73,7 @@ public final class EMail implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8117458371229316972L;
+	private static final long serialVersionUID = -2489441683920482601L;
 
 	//use in server bean
 	public final static String HTML_MAIL_MARKER = "ContentType=text/html;";
@@ -221,6 +221,8 @@ public final class EMail implements Serializable
 	/** Send result Message			*/
 	private String		m_sentMsg = null;
 
+	private List<ValueNamePair> additionalHeaders = new ArrayList<ValueNamePair>();
+
 	/**	Mail Sent OK Status				*/
 	public static final String      SENT_OK = "OK";
 
@@ -344,6 +346,11 @@ public final class EMail implements Serializable
 			//	Bounce only header
 			m_msg.setReturnOption (SMTPMessage.RETURN_HDRS);
 		//	m_msg.setHeader("X-Mailer", "msgsend");
+			if (additionalHeaders.size() > 0) {
+				for (ValueNamePair vnp : additionalHeaders) {
+					m_msg.setHeader(vnp.getName(), vnp.getValue());
+				}
+			}
 			//
 			setContent();
 			m_msg.saveChanges();
@@ -1202,11 +1209,7 @@ public final class EMail implements Serializable
 	}   //  main
 
 	public void setHeader(String name, String value) {
-		try {
-			m_msg.setHeader(name, value);
-		} catch (MessagingException e) {
-			log.log(Level.WARNING, m_msg.toString(), e);
-		}
+		additionalHeaders.add(new ValueNamePair(value, name));
 	}
 
 }	//	EMail

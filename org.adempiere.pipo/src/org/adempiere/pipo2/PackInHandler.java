@@ -410,7 +410,15 @@ public class PackInHandler extends DefaultHandler {
     			DatabaseMetaData md = conn.getMetaData();
     			String catalog = DB.getDatabase().getCatalog();
     			String schema = DB.getDatabase().getSchema();
-    			MTable table = MTable.get(m_ctx.ctx, column.getAD_Table_ID());
+    			MTable table = MTable.get(m_ctx.ctx, column.getAD_Table_ID(), m_ctx.trx.getTrxName());
+    			if (table.get_ID() != column.getAD_Table_ID()) {
+    				// table not found
+    				log.warning("Table " + column.getAD_Table_ID() + " not found");
+    				continue;
+    			}
+    			if (table.isView()) {
+    				continue;
+    			}
     			String tableName = table.getTableName();
 
         		String fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, column, false);
