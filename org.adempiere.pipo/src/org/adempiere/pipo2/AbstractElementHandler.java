@@ -100,6 +100,14 @@ public abstract class AbstractElementHandler implements ElementHandler {
 		detail.setSuccess(result);
 		detail.setRecord_ID(objectID);
 		ctx.packIn.addImportDetail(detail);
+		StringBuilder msg = new StringBuilder(action).append(" ");
+		if (detail.getTableName() != null)
+			msg.append(detail.getTableName());
+		msg.append("=").append(objectName).append("[").append(objectID).append("]");
+		if (success == 1)
+			ctx.packIn.getNotifier().addSuccessLine(msg.toString());
+		else
+			ctx.packIn.getNotifier().addFailureLine(msg.toString());
     }
 
     /**

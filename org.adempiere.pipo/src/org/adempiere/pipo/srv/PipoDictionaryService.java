@@ -78,6 +78,8 @@ public class PipoDictionaryService implements IDictionaryService {
 			
 			packIn.setPackageVersion(packageVersion);
 			packIn.setUpdateDictionary(false);
+			packIn.getNotifier().setFileName(packageFile.getName());
+			packIn.getNotifier().setPluginName(context.getBundle().getSymbolicName() + " v" + packageVersion);
 
 			adPackageImp = new X_AD_Package_Imp_Proc(Env.getCtx(), 0, null);
 			if (logger.isLoggable(Level.INFO)) logger.info("zipFilepath->" + packageFile);
@@ -104,6 +106,7 @@ public class PipoDictionaryService implements IDictionaryService {
 			if (logger.isLoggable(Level.INFO)) logger.info("commit " + trxName);
 		} catch (Exception e) {
 			adPackageImp.setP_Msg(e.getLocalizedMessage());
+			packIn.getNotifier().addStatusLine(e.getLocalizedMessage());
 			logger.log(Level.SEVERE, "importXML:", e);
 			throw e;
 		} finally {
@@ -122,6 +125,7 @@ public class PipoDictionaryService implements IDictionaryService {
 					attachment.save(); // ignoring exceptions
 				}
 			}
+			packIn.getNotifier().notifyRecipient();
 		}
 
 	}

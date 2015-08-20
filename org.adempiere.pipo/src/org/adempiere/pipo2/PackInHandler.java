@@ -306,14 +306,13 @@ public class PackInHandler extends DefaultHandler {
     		
     		updateRoleAccess();
 
-    		if (!packageStatus.equals("Completed with errors")) {
-    			if (getUnresolvedCount() > 0) {
-        			packageStatus = "Completed - unresolved";
-    			} else {
-        			packageStatus = "Completed successfully";
-        			packIn.setSuccess(true);
-    			}
+    		if (getUnresolvedCount() > 0) {
+    			packageStatus = "Completed - unresolved";
+    		} else {
+    			packageStatus = "Completed successfully";
+    			packIn.setSuccess(true);
     		}
+    		packIn.getNotifier().addStatusLine(packageStatus);
 
     		//Update package history log with package status
     		packageImp.setPK_Status(packageStatus);
@@ -334,12 +333,14 @@ public class PackInHandler extends DefaultHandler {
     				processElement(e);
     			} catch (RuntimeException re) {
     				packageStatus = "Import Failed";
+    				packIn.getNotifier().addStatusLine(packageStatus);
     				//Update package history log with package status
     	    		packageImp.setPK_Status(packageStatus);
     	    		packageImp.saveEx();
     	    		throw re;
     			} catch (SAXException se) {
     				packageStatus = "Import Failed";
+    				packIn.getNotifier().addStatusLine(packageStatus);
     				//Update package history log with package status
     	    		packageImp.setPK_Status(packageStatus);
     	    		packageImp.saveEx();
@@ -409,7 +410,15 @@ public class PackInHandler extends DefaultHandler {
     			DatabaseMetaData md = conn.getMetaData();
     			String catalog = DB.getDatabase().getCatalog();
     			String schema = DB.getDatabase().getSchema();
-    			MTable table = MTable.get(m_ctx.ctx, column.getAD_Table_ID());
+    			MTable table = MTable.get(m_ctx.ctx, column.getAD_Table_ID(), m_ctx.trx.getTrxName());
+    			if (table.get_ID() != column.getAD_Table_ID()) {
+    				// table not found
+    				log.warning("Table " + column.getAD_Table_ID() + " not found");
+    				continue;
+    			}
+    			if (table.isView()) {
+    				continue;
+    			}
     			String tableName = table.getTableName();
 
         		String fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, column, false);
@@ -487,6 +496,7 @@ public class PackInHandler extends DefaultHandler {
 					if (e.unresolved != null && e.unresolved.length() > 0)
 						s.append(" unresolved ").append(e.unresolved);
 					log.warning(s.toString());
+					packIn.getNotifier().addFailureLine(s.toString());
 				}
 			}
 		}
