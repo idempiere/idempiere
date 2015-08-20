@@ -51,6 +51,7 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 		Savepoint savepoint = null;
 		PreparedStatement pstmt = null;
 		X_AD_Package_Imp_Detail impDetail = null;
+		impDetail = createImportDetail(ctx, element.qName, "", 0);
 		try {
 			// NOTE Postgres needs to commit DDL statements
 			// add a SQL command just with COMMIT if you want to simulate the Oracle behavior (commit on DDL)			
@@ -86,6 +87,8 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 					stmt = null;
 				}
 			}						
+			logImportDetail (ctx, impDetail, 1, "SQLStatement",1,"Execute");
+			ctx.packIn.getNotifier().addSuccessLine("-> " + sql);
 		} catch (Exception e)	{
 			// rollback immediately on exception to avoid a wrong SQL stop the whole process
 			if (savepoint != null) 
@@ -101,6 +104,9 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 				}
 				savepoint = null;
 			}
+			ctx.packIn.getNotifier().addFailureLine("SQL statement failed but ignored, error (" + e.getLocalizedMessage() + "): " + sql);
+			logImportDetail (ctx, impDetail, 0, "SQLStatement",1,"Execute");
+			ctx.packIn.getNotifier().addFailureLine("-> " + sql);
 			log.log(Level.SEVERE,"SQLSatement", e);
 		} finally {
 			DB.close(pstmt);
@@ -118,9 +124,6 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 				}
 			}
 		}
-		impDetail = createImportDetail(ctx, element.qName, "",
-				0);
-		logImportDetail (ctx, impDetail, 1, "SQLStatement",1,"Execute");
 	}
 
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {

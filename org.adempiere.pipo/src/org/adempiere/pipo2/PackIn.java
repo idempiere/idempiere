@@ -61,6 +61,7 @@ public class PackIn {
 	private Map<String,Integer> columnCache = new HashMap<String,Integer>();
 	private String packageName = null;
 	private String packageVersion = null;
+	private PackInNotifier notifier = new PackInNotifier(this);
 	private X_AD_Package_Imp_Proc packinProc;
 
 	private List<X_AD_Package_Imp_Detail> importDetails;
@@ -176,7 +177,9 @@ public class PackIn {
 			log.info(msg);
 			if (handler.getUnresolvedCount() > 0)
 				handler.dumpUnresolvedElements();
-			return "Processed="+handler.getElementsProcessed()+" Un-Resolved="+handler.getUnresolvedCount();
+			msg = "Processed="+handler.getElementsProcessed()+" Un-Resolved="+handler.getUnresolvedCount();
+			getNotifier().addStatusLine(msg);
+			return msg;
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "importXML:", e);
 			throw new RuntimeException(e.getLocalizedMessage(), e);
@@ -286,6 +289,10 @@ public class PackIn {
 	 */
 	public void setPackageVersion(String packageVersion) {
 		this.packageVersion = packageVersion;
+	}
+
+	public PackInNotifier getNotifier() {
+		return notifier;
 	}
 
 	public X_AD_Package_Imp_Proc getAD_Package_Imp_Proc() {

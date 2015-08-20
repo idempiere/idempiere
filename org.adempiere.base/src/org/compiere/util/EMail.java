@@ -48,6 +48,7 @@ import javax.mail.internet.MimeMultipart;
 
 import org.compiere.model.MClient;
 import org.compiere.model.MSysConfig;
+
 import com.sun.mail.smtp.SMTPMessage;
 
 /**
@@ -72,7 +73,7 @@ public final class EMail implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5857825644737211294L;
+	private static final long serialVersionUID = 8117458371229316972L;
 
 	//use in server bean
 	public final static String HTML_MAIL_MARKER = "ContentType=text/html;";
@@ -1199,5 +1200,13 @@ public final class EMail implements Serializable
 		EMail email = new EMail(System.getProperties(), args[0], args[1], args[2], args[3], args[4]);
 		email.send();
 	}   //  main
+
+	public void setHeader(String name, String value) {
+		try {
+			m_msg.setHeader(name, value);
+		} catch (MessagingException e) {
+			log.log(Level.WARNING, m_msg.toString(), e);
+		}
+	}
 
 }	//	EMail

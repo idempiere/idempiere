@@ -42,7 +42,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2870394087507976203L;
+	private static final long serialVersionUID = 2300170888492939423L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -79,6 +79,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String DOCACTIONBUTTON_SHOWACTIONNAME = "DOCACTIONBUTTON_SHOWACTIONNAME";
     public static final String DPVIEWS_SHOWINFOACCOUNT = "DPViews_ShowInfoAccount";
     public static final String DPVIEWS_SHOWINFOSCHEDULE = "DPViews_ShowInfoSchedule";
+	public static final String EMAIL_NOTIFY_2PACK = "EMAIL_NOTIFY_2PACK";
 	public static final String ENABLE_PAYMENTBOX_BUTTON = "ENABLE_PAYMENTBOX_BUTTON";
 	public static final String GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = "GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS";
 	public static final String HTML_REPORT_THEME = "HTML_REPORT_THEME";

@@ -46,6 +46,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
@@ -95,8 +96,13 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 			element.unresolved = notfounds.toString();
 			return;
 		}
+		String action = po.is_new() ? "New" : "Update";
 		po.saveEx();
 		element.recordId = po.get_ID();
+
+		X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, po.get_TableName(), po.get_Table_ID());
+		logImportDetail(ctx, impDetail, 1, po.toString(), element.recordId, action);
+
 		if (   I_AD_Window.Table_Name.equals(tableName)
 			|| I_AD_Process.Table_Name.equals(tableName)
 			|| I_AD_Role.Table_Name.equals(tableName)
