@@ -1186,10 +1186,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		setCurrentRow(m_currentRow + 1, true);
 
 		//  check validity of defaults
-		for (int i = 0; i < getFieldCount(); i++)
-		{
-			getField(i).refreshLookup();
-			getField(i).validateValueNoDirect();
+		for (GridField field : getFields()) {
+			field.refreshLookup();
+			field.validateValueNoDirect();
 		}
 		//  process all Callouts (no dependency check - assumed that settings are valid)
 		for (int i = 0; i < getFieldCount(); i++)

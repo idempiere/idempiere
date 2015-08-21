@@ -15,6 +15,8 @@ package org.adempiere.webui.editor;
 
 
 
+import static org.compiere.model.SystemIDs.COLUMN_M_PRODUCT_M_ATTRIBUTESETINSTANCE_ID;
+
 import java.util.logging.Level;
 
 import org.adempiere.webui.apps.AEnv;
@@ -29,9 +31,6 @@ import org.adempiere.webui.window.WPAttributeDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
-import org.compiere.model.MAttributeSet;
-import org.compiere.model.MProduct;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Event;
