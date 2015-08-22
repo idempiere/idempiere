@@ -10,7 +10,6 @@
   <rm:locator pattern="^org\.eclipse\.jetty\.osgi\-servlet\-api$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.felix\.webconsole(\..+)?" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.felix\.inventory" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.apache\.felix\.scr" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^javax\.websocket\-api$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^javax\.annotation\-api$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^javax\.management\.j2ee\-api$" searchPathRef="bundles.maven"/>
@@ -122,7 +121,6 @@
         <maven:entry artifactId="org.apache.felix.webconsole.plugins.ds" groupId="org.apache.felix" name="org.apache.felix.webconsole.plugins.ds"/>
         <maven:entry artifactId="org.apache.felix.webconsole.plugins.memoryusage" groupId="org.apache.felix" name="org.apache.felix.webconsole.plugins.memoryusage"/>
         <maven:entry artifactId="org.apache.felix.inventory" groupId="org.apache.felix" name="org.apache.felix.inventory"/>
-        <maven:entry artifactId="org.apache.felix.scr" groupId="org.apache.felix" name="org.apache.felix.scr"/>
       </maven:mappings>
     </rm:provider>
   </rm:searchPath>
