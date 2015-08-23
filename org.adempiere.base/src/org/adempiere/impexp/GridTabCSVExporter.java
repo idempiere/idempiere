@@ -114,7 +114,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 				} else if (DisplayType.DateTime == field.getDisplayType()) {
 					procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_TIMESTAMP_FORMAT)));
 				} else if (DisplayType.Time == field.getDisplayType()) {
-					procArray.add(new Optional(new FmtDate("DisplayType.DEFAULT_TIME_FORMAT")));
+					procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_TIME_FORMAT)));
 				} else if (DisplayType.Integer == field.getDisplayType() || DisplayType.isNumeric(field.getDisplayType())) {
 					DecimalFormat nf = DisplayType.getNumberFormat(field.getDisplayType());
 					nf.setGroupingUsed(false);
@@ -178,7 +178,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 					 } else if (DisplayType.DateTime == field.getDisplayType()) {
 						 procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_TIMESTAMP_FORMAT)));
 					 } else if (DisplayType.Time == field.getDisplayType()) {
-						 procArray.add(new Optional(new FmtDate("DisplayType.DEFAULT_TIME_FORMAT")));
+						 procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_TIME_FORMAT)));
 					 } else if (DisplayType.Integer == field.getDisplayType() || DisplayType.isNumeric(field.getDisplayType())) {
 						 DecimalFormat nf = DisplayType.getNumberFormat(field.getDisplayType());
 						 nf.setGroupingUsed(false);
