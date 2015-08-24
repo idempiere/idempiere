@@ -202,7 +202,6 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 			//	Update
 			r.setDateLastAction(r.getUpdated());
 			r.setLastResult(r.getResult());
-			r.setDueType();
 			//	Reset
 			r.setConfidentialTypeEntry (r.getConfidentialType());
 			// r.setStartDate(null);  //red1 - bug [ 1743159 ] Requests - Start Date is not retained.
