@@ -223,7 +223,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 				int rowDetail=0;  
 				int record_Id = 0;
 				boolean isActiveRow = true;
-				
+				gridTab.setCurrentRow(idxrow);
 				for(GridField field : getFields(gridTab)){   
 					MColumn column = MColumn.get(Env.getCtx(), field.getAD_Column_ID());
 					Object value = null;
@@ -284,7 +284,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 
 				while(true){		 
 					  if(childs.size()>0){
-						 Map<String, Object> tmpRow = resolveMasterDetailRow(rowDetail,tabMapDetails,headArray,index,gridTab.getKeyID(idxrow), gridTab.getKeyColumnName()); 					  
+						 Map<String, Object> tmpRow = resolveMasterDetailRow(rowDetail,tabMapDetails,headArray,index); 					  
 						 if(tmpRow!= null){   							
 						   for(Map.Entry<String, Object> details : tmpRow.entrySet()) {	
 							   String detailColumn = details.getKey();
@@ -334,7 +334,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 		return result;
 	}
 	
-	private Map<String, Object> resolveMasterDetailRow(int currentDetRow,Map<GridTab,GridField[]> tabMapDetails,List<String>headArray,int idxfld,int record_Id,String keyColumnParent){
+	private Map<String, Object> resolveMasterDetailRow(int currentDetRow,Map<GridTab,GridField[]> tabMapDetails,List<String>headArray,int idxfld){
 		Map<String,Object> activeRow = new HashMap<String,Object>();
 		Object value = null;
 		boolean hasDetails = false;
@@ -346,8 +346,9 @@ public class GridTabCSVExporter implements IGridTabExporter
 		
 		for(Map.Entry<GridTab, GridField[]> childTabDetail : tabMapDetails.entrySet()) {		
 		    GridTab childTab = childTabDetail.getKey();
-		    String  whereCla = getWhereClause (childTab ,record_Id ,keyColumnParent);
-		    childTab.getTableModel().dataRequery(whereCla, false, 0);
+		    //String  whereCla = getWhereClause (childTab, parentGrid, currentParentIndex);
+		    //childTab.getTableModel().dataRequery(whereCla, false, 0);
+		    childTab.query(false, 0, 0);
 			Map<String,Object> row = new HashMap<String,Object>();
 			boolean isActiveRow = true;
 		    if (childTab.getRowCount() > 0) {
@@ -412,11 +413,20 @@ public class GridTabCSVExporter implements IGridTabExporter
 		    return null;
 	}
 	
-	public String getWhereClause (GridTab childTab, int record_Id , String keyColumnParent){
+	/**
+	 * @deprecated don't use any where, relate IDEMPIERE-2788
+	 * @param childTab
+	 * @param parentGrid
+	 * @param currentParentIndex
+	 * @return
+	 */
+	public String getWhereClause (GridTab childTab, GridTab parentGrid, int currentParentIndex){
 		String whereClau = null; 
 		String linkColumn = childTab.getLinkColumnName();
-		if (keyColumnParent.equals(linkColumn)){
-	    	 whereClau= linkColumn+MQuery.EQUAL+record_Id;
+		if (parentGrid.getKeyColumnName().equals(linkColumn)){
+	    	whereClau= linkColumn+MQuery.EQUAL + parentGrid.getKeyID(currentParentIndex);
+		}else{
+			whereClau= parentGrid.getKeyColumnName() + MQuery.EQUAL + parentGrid.getValue(currentParentIndex, parentGrid.getKeyColumnName());
 		}
 	    return whereClau; 
 	}
