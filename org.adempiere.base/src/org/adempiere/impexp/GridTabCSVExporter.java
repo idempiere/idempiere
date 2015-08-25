@@ -282,8 +282,16 @@ public class GridTabCSVExporter implements IGridTabExporter
 			         }	
 				}
 
-				while(true){		 
-					  if(childs.size()>0){
+				if(childs.size()>0){
+					for (GridTab childTab:childs){
+						if (!childTab.isLoadComplete()){
+							childTab.initTab(false);
+						}
+						
+						childTab.query(false, 0, 0);
+					}
+					
+					while(true){
 						 Map<String, Object> tmpRow = resolveMasterDetailRow(rowDetail,tabMapDetails,headArray,index); 					  
 						 if(tmpRow!= null){   							
 						   for(Map.Entry<String, Object> details : tmpRow.entrySet()) {	
@@ -296,10 +304,9 @@ public class GridTabCSVExporter implements IGridTabExporter
 						}else{
 						   break;
 						}
-					 }else{
-						break;
-					 }
-			    }  	
+					 
+			    	}  	
+				}
 				
 				if(rowDetail==0)
 				    mapWriter.write(row, header,processors);
@@ -348,7 +355,6 @@ public class GridTabCSVExporter implements IGridTabExporter
 		    GridTab childTab = childTabDetail.getKey();
 		    //String  whereCla = getWhereClause (childTab, parentGrid, currentParentIndex);
 		    //childTab.getTableModel().dataRequery(whereCla, false, 0);
-		    childTab.query(false, 0, 0);
 			Map<String,Object> row = new HashMap<String,Object>();
 			boolean isActiveRow = true;
 		    if (childTab.getRowCount() > 0) {
