@@ -695,12 +695,16 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 			MInfoColumn infoColumnAppend = (MInfoColumn) modelHasInfoColumn.getAD_InfoColumn();
 			//TODO: improve read data to get data by data type of column.
-			String appendData = rs.getString(infoColumnAppend.getColumnName());
-			if (rs.wasNull()) {
-				data.add(null);
-			} else {
-				data.add(appendData);
+			String appendData = null;
+			try {
+				appendData = rs.getString(infoColumnAppend.getColumnName());
+			} catch (SQLException e) {
+				appendData = null;
 			}
+			if (rs.wasNull()) {
+				appendData = null;
+			}
+			data.add(appendData);
 			
 			// when need update append column index, just update it.
 			if (isMustUpdateColumnIndex && !columnDataIndex.containsKey(modelHasInfoColumn.getInfoColumnID())){
