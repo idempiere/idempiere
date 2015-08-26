@@ -370,6 +370,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private int cacheEnd;
 	private boolean m_useDatabasePaging = false;
 	private BusyDialog progressWindow;
+	// in case double click to item. this store clicked item (maybe it's un-select item)
 	private Listitem m_lastOnSelectItem;
 	protected GridField m_gridfield;
 
@@ -1261,16 +1262,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * we maintain value of key, and extra value append by {@link #appendInfoColumnData(ResultSet, List, IInfoColumn[], List)} 
 	 */
 	protected void updateListSelected (){
-		if (!p_multipleSelection){
-			return;
-		}
-    	
 		for (int rowIndex = 0; rowIndex < contentPanel.getModel().getRowCount(); rowIndex++){			
 			Integer keyCandidate = getColumnValue(rowIndex);
 			
 			@SuppressWarnings("unchecked")
 			List<Object> candidateRecord = (List<Object>)contentPanel.getModel().get(rowIndex);
-						
+					
 			if (contentPanel.getModel().isSelected(candidateRecord)){
 				recordSelectedData.put(keyCandidate, candidateRecord);// add or update selected record info				
 			}else{
@@ -1672,8 +1669,15 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             		return;
             	}
             	if (contentPanel.isMultiple()) {
-            		if (m_lastOnSelectItem != null)
-            			contentPanel.setSelectedItem(m_lastOnSelectItem);
+            		//un-select all selected column
+            		if (m_lastOnSelectItem != null){
+            			contentPanel.getModel().clearSelection();
+            			int clickItemIndex = contentPanel.getIndexOfItem(m_lastOnSelectItem);
+            			Object selectedItemModle = contentPanel.getModel().get(clickItemIndex);
+            			contentPanel.getModel().addToSelection(selectedItemModle);
+            		}
+            		// clean selected record in cache
+            		recordSelectedData.clear();
             	}
             	onDoubleClick();
             }
