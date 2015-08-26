@@ -58,7 +58,7 @@ public class MOrderLine extends X_C_OrderLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6972864309223293705L;
+	private static final long serialVersionUID = -7152360636393521683L;
 
 	/**
 	 * 	Get Order Unreserved Qty
@@ -116,7 +116,7 @@ public class MOrderLine extends X_C_OrderLine
 	}	//	getNotReserved
 	
 	/**	Logger	*/
-	private static CLogger s_log = CLogger.getCLogger (MOrderLine.class);
+	protected static CLogger s_log = CLogger.getCLogger (MOrderLine.class);
 	
 	/**************************************************************************
 	 *  Default Constructor
@@ -192,23 +192,23 @@ public class MOrderLine extends X_C_OrderLine
 		super(ctx, rs, trxName);
 	}	//	MOrderLine
 
-	private int 			m_M_PriceList_ID = 0;
+	protected int 			m_M_PriceList_ID = 0;
 	//
-	private boolean			m_IsSOTrx = true;
+	protected boolean			m_IsSOTrx = true;
 	//	Product Pricing
-	private MProductPricing	m_productPrice = null;
+	protected MProductPricing	m_productPrice = null;
 
 	/** Tax							*/
-	private MTax 		m_tax = null;
+	protected MTax 		m_tax = null;
 	
 	/** Cached Currency Precision	*/
-	private Integer			m_precision = null;
+	protected Integer			m_precision = null;
 	/**	Product					*/
-	private MProduct 		m_product = null;
+	protected MProduct 		m_product = null;
 	/**	Charge					*/
-	private MCharge 		m_charge = null;
+	protected MCharge 		m_charge = null;
 	/** Parent					*/
-	private MOrder			m_parent = null;
+	protected MOrder			m_parent = null;
 	
 	/**
 	 * 	Set Defaults from Order.
@@ -321,7 +321,7 @@ public class MOrderLine extends X_C_OrderLine
 	 *	@param M_PriceList_ID id
 	 *	@return product pricing
 	 */
-	private MProductPricing getProductPricing (int M_PriceList_ID)
+	protected MProductPricing getProductPricing (int M_PriceList_ID)
 	{
 		m_productPrice = new MProductPricing (getM_Product_ID(), 
 			getC_BPartner_ID(), getQtyOrdered(), m_IsSOTrx);
