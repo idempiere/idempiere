@@ -1145,7 +1145,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo);
 		if (!isInsertRecord())
 		{
-			log.warning ("Inset Not allowed in TabNo=" + m_vo.TabNo);
+			log.warning ("Insert Not allowed in TabNo=" + m_vo.TabNo);
 			return false;
 		}
 		//	Prevent New Where Main Record is processed
