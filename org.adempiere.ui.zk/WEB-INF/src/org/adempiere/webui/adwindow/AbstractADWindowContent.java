@@ -1337,6 +1337,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	if (!detailTab)
     	{
 	        String dbInfo = e.getMessage();
+	        if (logger.isLoggable(Level.INFO)) logger.info(dbInfo);
+	        if (adTabbox.getSelectedGridTab() != null && adTabbox.getSelectedGridTab().isQueryActive())
+	            dbInfo = "[ " + dbInfo + " ]";
+	        breadCrumb.setStatusDB(dbInfo, e);
+
 	        String adInfo = e.getAD_Message();
 	        if (   ! prevdbInfo.equals(dbInfo)
 	        	&& (   GridTab.DEFAULT_STATUS_MESSAGE.equals(adInfo)
@@ -1346,10 +1351,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	        	   )
 	           ) {
 	        	prevdbInfo = dbInfo;
-		        if (logger.isLoggable(Level.INFO)) logger.info(dbInfo);
-		        if (adTabbox.getSelectedGridTab() != null && adTabbox.getSelectedGridTab().isQueryActive())
-		            dbInfo = "[ " + dbInfo + " ]";
-		        breadCrumb.setStatusDB(dbInfo, e);
 
 		        String prefix = null;
 		        if (dbInfo.contains("*"))
