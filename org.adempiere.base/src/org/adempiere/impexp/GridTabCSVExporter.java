@@ -420,12 +420,12 @@ public class GridTabCSVExporter implements IGridTabExporter
 	}
 	
 	/**
-	 * @deprecated don't use any where, relate IDEMPIERE-2788
 	 * @param childTab
 	 * @param parentGrid
 	 * @param currentParentIndex
 	 * @return
 	 */
+	@Deprecated // don't use any where, relate IDEMPIERE-2788
 	public String getWhereClause (GridTab childTab, GridTab parentGrid, int currentParentIndex){
 		String whereClau = null; 
 		String linkColumn = childTab.getLinkColumnName();
