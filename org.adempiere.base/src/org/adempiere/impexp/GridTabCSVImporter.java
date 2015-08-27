@@ -1172,7 +1172,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 		} else if (DisplayType.DateTime == field.getDisplayType()) {
 			return (new Optional(new ParseDate(DisplayType.DEFAULT_TIMESTAMP_FORMAT)));
 		} else if (DisplayType.Time == field.getDisplayType()) {
-			return (new Optional(new ParseDate("DisplayType.DEFAULT_TIME_FORMAT")));
+			return (new Optional(new ParseDate(DisplayType.DEFAULT_TIME_FORMAT)));
 		} else if (DisplayType.Integer == field.getDisplayType()) {
 			return (new Optional(new ParseInt()));
 		} else if (DisplayType.isNumeric(field.getDisplayType())) {

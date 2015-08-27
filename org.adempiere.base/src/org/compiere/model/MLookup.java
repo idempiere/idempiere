@@ -528,11 +528,16 @@ public final class MLookup extends Lookup implements Serializable
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
-				String name = rs.getString(3);
+				StringBuilder name = new StringBuilder().append(rs.getString(3));
+				boolean isActive = rs.getString(4).equals("Y");
+				if (!isActive)
+				{
+					name.insert(0, INACTIVE_S).append(INACTIVE_E);
+				}
 				if (isNumber)
 				{
 					int keyValue = rs.getInt(1);
-					KeyNamePair p = new KeyNamePair(keyValue, name);
+					KeyNamePair p = new KeyNamePair(keyValue, name.toString());
 					if (saveInCache)		//	save if
 						m_lookup.put(new Integer(keyValue), p);
 					directValue = p;
@@ -540,7 +545,7 @@ public final class MLookup extends Lookup implements Serializable
 				else
 				{
 					String value = rs.getString(2);
-					ValueNamePair p = new ValueNamePair(value, name);
+					ValueNamePair p = new ValueNamePair(value, name.toString());
 					if (saveInCache)		//	save if
 						m_lookup.put(value, p);
 					directValue = p;
@@ -855,7 +860,7 @@ public final class MLookup extends Lookup implements Serializable
 					boolean isActive = rs.getString(4).equals("Y");
 					if (!isActive)
 					{
-						name = new StringBuilder(INACTIVE_S).append(name).append(INACTIVE_E);
+						name.insert(0, INACTIVE_S).append(INACTIVE_E);
 						m_hasInactive = true;
 					}
 					// IDEMPIERE 90

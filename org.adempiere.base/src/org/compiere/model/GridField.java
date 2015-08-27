@@ -281,8 +281,11 @@ public class GridField
 	 */
 	public boolean refreshLookup()
 	{
-		//  if there is a validation string, the lookup is unstable
-		if (m_lookup == null || m_lookup.getValidation().length() == 0)
+		if (m_lookup == null)
+			return true;
+
+		//  if there is a validation string, the lookup is unstable - read-only fields are not loaded initially
+		if (m_lookup.getValidation().length() == 0 && m_lookup.isLoaded())
 			return true;
 		//
 		if (log.isLoggable(Level.FINE)) log.fine("(" + m_vo.ColumnName + ")");
@@ -1046,7 +1049,7 @@ public class GridField
 			// need to re-set invalid values - OK BPartner in PO Line - not OK SalesRep in Invoice
 			if (m_lookup.getDirect(m_value, false, true) == null)
 			{
-				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " Serach not valid - set to null");
+				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " Search not valid - set to null");
 				setValue(null, m_inserting);
 				m_error = true;
 				return false;
@@ -1055,14 +1058,24 @@ public class GridField
 		} 
 
 		//  cannot be validated
-		if (!isLookup()
-			|| m_lookup == null
-			|| m_lookup.containsKeyNoDirect(m_value))
+		if (!isLookup() || m_lookup == null)
 			return true;
+		if (m_lookup.containsKeyNoDirect(m_value)) {
+			String name = m_lookup.get(m_value).getName();
+			if (! ( name.startsWith(MLookup.INACTIVE_S) && name.endsWith(MLookup.INACTIVE_E) ) ) {
+				return true;
+			}
+		}
 		//	it's not null, a lookup and does not have the key
 		if (isKey() || isParentValue())		//	parents/ket are not validated
 			return true;	
 			
+		// special case for IDEMPIERE-2781
+		if (   "AD_Client_ID".equals(m_vo.ColumnName)
+			&& "0".equals(m_value.toString())
+			&& Env.getAD_Client_ID(Env.getCtx()) == 0)
+			return true;
+
 		if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " - set to null");
 		setValue(null, m_inserting);
 		m_error = true;
@@ -1094,7 +1107,7 @@ public class GridField
 			// need to re-set invalid values - OK BPartner in PO Line - not OK SalesRep in Invoice
 			if (m_lookup.getDirect(m_value, false, true) == null)
 			{
-				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " Serach not valid - set to null");
+				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " Search not valid - set to null");
 				setValue(null, m_inserting);
 				m_error = true;
 				return false;

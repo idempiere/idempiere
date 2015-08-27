@@ -1429,18 +1429,6 @@ public class FinReport extends SvrProcess
 				sb.append (")");
 				unionWhere.append(sb.toString ());
 			}
-			//	Posting Type
-			String PostingType = m_lines[line].getPostingType();
-			if (PostingType != null && PostingType.length() > 0)
-			{
-				if (unionWhere.length() > 0)
-					unionWhere.append(" AND ");
-				unionWhere.append("PostingType='" + PostingType + "'");
-				if (MReportLine.POSTINGTYPE_Budget.equals(PostingType)) {
-					if (m_lines[line].getGL_Budget_ID() > 0)
-						unionWhere.append(" AND GL_Budget_ID=" + m_lines[line].getGL_Budget_ID());
-				}
-			}
 		}
 		//
 

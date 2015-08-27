@@ -1145,7 +1145,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo);
 		if (!isInsertRecord())
 		{
-			log.warning ("Inset Not allowed in TabNo=" + m_vo.TabNo);
+			log.warning ("Insert Not allowed in TabNo=" + m_vo.TabNo);
 			return false;
 		}
 		//	Prevent New Where Main Record is processed
@@ -1186,10 +1186,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		setCurrentRow(m_currentRow + 1, true);
 
 		//  check validity of defaults
-		for (int i = 0; i < getFieldCount(); i++)
-		{
-			getField(i).refreshLookup();
-			getField(i).validateValueNoDirect();
+		for (GridField field : getFields()) {
+			field.refreshLookup();
+			field.validateValueNoDirect();
 		}
 		//  process all Callouts (no dependency check - assumed that settings are valid)
 		for (int i = 0; i < getFieldCount(); i++)

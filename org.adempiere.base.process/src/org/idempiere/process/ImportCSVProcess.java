@@ -35,17 +35,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.base.IGridTabImporter;
 import org.adempiere.base.equinox.EquinoxExtensionLocator;
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.DataStatusEvent;
+import org.compiere.model.DataStatusListener;
+import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.MImportTemplate;
+import org.compiere.model.MLookup;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
 
-public class ImportCSVProcess extends SvrProcess {
+public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 
 	private InputStream m_file_istream = null;
 	private int p_AD_ImportTemplate_ID = 0;
@@ -112,6 +117,7 @@ public class ImportCSVProcess extends SvrProcess {
 
 		if (m_gridTab == null)
 			throw new Exception("No Active Tab");
+		m_gridTab.addDataStatusListener(this);
 	}
 
 	protected IGridTabImporter initImporter() throws Exception {
@@ -141,5 +147,45 @@ public class ImportCSVProcess extends SvrProcess {
 
 		m_file_istream.close();
 	}
+
+    /**
+     * @param e
+     * @see DataStatusListener#dataStatusChanged(DataStatusEvent)
+     */
+	public void dataStatusChanged(DataStatusEvent e)
+    {
+        int col = e.getChangedColumn();
+        if (log.isLoggable(Level.CONFIG)) log.config("(" + m_gridTab + ") Col=" + col + ": " + e.toString());
+
+        //  Process Callout
+        GridField mField = m_gridTab.getField(col);
+        if (mField != null
+            && (mField.getCallout().length() > 0
+            		|| (Core.findCallout(m_gridTab.getTableName(), mField.getColumnName())).size()>0
+            		|| m_gridTab.hasDependants(mField.getColumnName())))
+        {
+            String msg = m_gridTab.processFieldChange(mField);     //  Dependencies & Callout
+            if (msg.length() > 0)
+            {
+            	log.warning(msg);
+            }
+
+            // Refresh the list on dependant fields
+    		for (GridField dependentField : m_gridTab.getDependantFields(mField.getColumnName()))
+    		{
+    			//  if the field has a lookup
+    			if (dependentField != null && dependentField.getLookup() instanceof MLookup)
+    			{
+    				MLookup mLookup = (MLookup)dependentField.getLookup();
+    				//  if the lookup is dynamic (i.e. contains this columnName as variable)
+    				if (mLookup.getValidation().indexOf("@"+mField.getColumnName()+"@") != -1)
+    				{
+    					mLookup.refresh();
+    				}
+    			}
+    		}   //  for all dependent fields
+
+        }
+    }
 
 }
