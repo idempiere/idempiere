@@ -25,8 +25,9 @@ public interface ICalloutFactory {
 	/**
 	 * 
 	 * @param className
+	 * @param methodName 
 	 * @return matching Callout
 	 */
-	public Callout getCallout(String className);
+	public Callout getCallout(String className, String methodName);
 	
 }

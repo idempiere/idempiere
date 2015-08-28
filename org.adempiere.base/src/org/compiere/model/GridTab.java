@@ -2910,15 +2910,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 						{
 							String className = cmd.substring(0,methodStart);
 							// IDEMPIERE-2732
+							method = cmd.substring(methodStart+1);
 							// get corresponding callout
-							call = Core.getCallout(className);
+							call = Core.getCallout(className, method);
 							// end IDEMPIERE-2732
 							if (call == null) {
 								//no match from factory, check java classpath
 								Class<?> cClass = Class.forName(className);
 								call = (Callout)cClass.newInstance();
 							}
-							method = cmd.substring(methodStart+1);
 						}
 					}
 					catch (Exception e)
