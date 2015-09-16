@@ -41,8 +41,6 @@ import javax.swing.event.EventListenerList;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IColumnCallout;
-import org.adempiere.base.ServiceQuery;
-import org.adempiere.base.equinox.EquinoxExtensionLocator;
 import org.adempiere.model.MTabCustomization;
 import org.adempiere.util.ContextRunnable;
 import org.compiere.Adempiere;
