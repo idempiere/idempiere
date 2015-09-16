@@ -434,7 +434,10 @@ public class TableElement extends PrintElement
 						String[] lines = Pattern.compile("\n", Pattern.MULTILINE).split(string);
 						for (int lineNo = 0; lineNo < lines.length; lineNo++)
 						{
-							AttributedString aString = new AttributedString(lines[lineNo]);
+							String str = lines[lineNo];
+							if (str.length() == 0)
+								str = " ";
+							AttributedString aString = new AttributedString(str);
 							aString.addAttribute(TextAttribute.FONT, font);
 							AttributedCharacterIterator iter = aString.getIterator();
 							LineBreakMeasurer measurer = new LineBreakMeasurer(iter, frc);

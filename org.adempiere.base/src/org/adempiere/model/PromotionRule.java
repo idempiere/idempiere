@@ -296,6 +296,7 @@ public class PromotionRule {
 		nol.setQty(qty);
 		if (discount.scale() > 2)
 			discount = discount.setScale(2, BigDecimal.ROUND_HALF_UP);
+		nol.setPriceEntered(discount.negate());
 		nol.setPriceActual(discount.negate());
 		if (ol != null && Integer.toString(ol.getLine()).endsWith("0")) {
 			for(int i = 0; i < 9; i++) {
