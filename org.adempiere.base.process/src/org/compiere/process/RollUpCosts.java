@@ -97,7 +97,7 @@ public class RollUpCosts extends SvrProcess {
 	{
 		StringBuilder sql = new StringBuilder("SELECT M_ProductBOM_ID FROM M_Product_BOM WHERE M_Product_ID = ? ") 
 		    .append(" AND AD_Client_ID = ").append(client_id);
-		int[] prodbomids = DB.getIDsEx(get_TrxName(), sql.toString(), client_id);
+		int[] prodbomids = DB.getIDsEx(get_TrxName(), sql.toString(), p_id);
 		
 		for (int prodbomid : prodbomids) {
 			if ( !processed.contains(p_id)) {
