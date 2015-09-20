@@ -1148,7 +1148,7 @@ public class CalloutOrder extends CalloutEngine
 		//	calculate Discount
 		else
 		{
-			if (PriceList.intValue() == 0)
+			if (PriceList.compareTo(Env.ZERO) == 0)
 				Discount = Env.ZERO;
 			else
 				Discount = BigDecimal.valueOf((PriceList.doubleValue() - PriceActual.doubleValue()) / PriceList.doubleValue() * 100.0);
@@ -1177,7 +1177,7 @@ public class CalloutOrder extends CalloutEngine
 			mTab.setValue ("PriceEntered", PriceEntered);
 			mTab.fireDataStatusEEvent ("UnderLimitPrice", "", false);
 			//	Repeat Discount calc
-			if (PriceList.intValue() != 0)
+			if (PriceList.compareTo(Env.ZERO) != 0)
 			{
 				Discount = BigDecimal.valueOf((PriceList.doubleValue () - PriceActual.doubleValue ()) / PriceList.doubleValue () * 100.0);
 				if (Discount.scale () > 2)
