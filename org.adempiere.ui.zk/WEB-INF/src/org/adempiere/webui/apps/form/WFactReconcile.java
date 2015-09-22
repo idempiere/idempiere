@@ -253,6 +253,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		fieldAcctSchema.setValue(MClient.get(Env.getCtx()).getAcctSchema().getC_AcctSchema_ID());
 		fieldAcctSchema.addValueChangeListener(this);
 		m_C_AcctSchema_ID = (Integer)fieldAcctSchema.getValue();
+		Env.setContext(Env.getCtx(), form.getWindowNo(), "C_AcctSchema_ID", m_C_AcctSchema_ID);
 		
 		// Organization
 		AD_Column_ID = FactReconcile.col_AD_Org_ID; //C_Period.AD_Org_ID (needed to allow org 0)
