@@ -303,7 +303,7 @@ public class InvoiceGenerate extends SvrProcess
 									.divide(oLine.getQtyOrdered(), 12, BigDecimal.ROUND_HALF_UP);
 							createLine (order, oLine, toInvoice, qtyEntered);
 						}
-						else
+						else if (!completeOrder)
 						{
 							if (log.isLoggable(Level.FINE)) log.fine("Failed: " + order.getInvoiceRule() 
 								+ " - ToInvoice=" + toInvoice + " - " + oLine);
