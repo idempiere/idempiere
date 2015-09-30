@@ -46,6 +46,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.MImportTemplate;
 import org.compiere.model.MLookup;
+import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
@@ -144,6 +145,11 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 
 		if (processUI != null)
 			processUI.download(outFile);
+		else if( getProcessInfo() != null ){
+			ProcessInfo m_pi = getProcessInfo();
+			m_pi.setExportFile(outFile);
+			m_pi.setExportFileExtension("csv");
+		}
 
 		m_file_istream.close();
 	}

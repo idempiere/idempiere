@@ -364,10 +364,23 @@ public class Process {
 			} 
 			else
 			{
-				r.setSummary(pi.getSummary());
-				r.setError(pi.getSummary());
-				r.setLogInfo(pi.getLogInfo(true));
-				r.setIsError( false );
+				try{
+					if( pi.getExportFile() != null ){
+						r.setData(java.nio.file.Files.readAllBytes(pi.getExportFile().toPath()));
+						r.setReportFormat(pi.getExportFileExtension());
+					}
+					r.setSummary(pi.getSummary());
+					r.setError(pi.getSummary());
+					r.setLogInfo(pi.getLogInfo(true));
+					r.setIsError( false );
+				}
+				catch (Exception e)
+				{
+					r.setError("Cannot get the export file:" + e.getMessage());
+					r.setLogInfo(pi.getLogInfo(true) );
+					r.setIsError( true );
+					return res;
+				}
 			}
 		}
 		
