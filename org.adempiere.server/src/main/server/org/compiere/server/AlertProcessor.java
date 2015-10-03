@@ -228,6 +228,13 @@ public class AlertProcessor extends AdempiereServer
 		Collection<Integer> users = alert.getRecipientUsers();
 		int countMail = notifyUsers(users, alert.getAlertSubject(), message.toString(), attachments);
 		
+		// IDEMPIERE-2864
+		for(File attachment : attachments)
+		{
+			if(attachment.exists() && !attachment.delete())
+				attachment.deleteOnExit();
+		}
+		
 		m_summary.append(alert.getName()).append(" (EMails+Notes=").append(countMail).append(") - ");
 		return valid;
 	}	//	processAlert
