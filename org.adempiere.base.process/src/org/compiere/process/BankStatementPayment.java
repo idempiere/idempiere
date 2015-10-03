@@ -201,7 +201,7 @@ public class BankStatementPayment extends SvrProcess
 			else	// set Pay Amout from Invoice
 			{
 				payment.setC_Currency_ID(invoice.getC_Currency_ID());
-				payment.setPayAmt(invoice.getGrandTotal(true));
+				payment.setPayAmt(invoice.getOpenAmt());
 			}
 		}
 		else if (C_BPartner_ID != 0)
