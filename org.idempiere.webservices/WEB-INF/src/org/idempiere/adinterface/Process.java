@@ -10,6 +10,7 @@ import static org.compiere.model.SystemIDs.PROCESS_RPT_FINREPORT;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_FINSTATEMENT;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INOUT;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INVENTORY;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_M_MOVEMENT;
 
 import java.io.CharArrayWriter;
 import java.math.BigDecimal;
@@ -706,6 +707,8 @@ public class Process {
 			return startCheckPrint(pi.getRecord_ID());
 		else if (pi.getAD_Process_ID() == PROCESS_RPT_M_INVENTORY)		//	Physical Inventory
 			return startDocumentPrint(ReportEngine.INVENTORY, pi.getRecord_ID());
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_M_MOVEMENT)		//	Inventory Move
+			return startDocumentPrint(ReportEngine.MOVEMENT, pi.getRecord_ID());
 		/**
 		else if (pi.AD_Process_ID == 9999999)	//	PaySelection
 			return startDocumentPrint(CHECK, pi, IsDirectPrint);
