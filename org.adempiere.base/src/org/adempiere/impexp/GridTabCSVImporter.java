@@ -230,11 +230,12 @@ public class GridTabCSVImporter implements IGridTabImporter
 					}
 
 					if( !isDetail ){
-						processMaster(gridTab);
+						manageMasterTrx(gridTab, null);
+						createTrx(gridTab);
 					}
 
-					String detailResult = processDetails(importMode, gridTab, indxDetail, isDetail, idx, rowResult);
-					rowResult.append(detailResult);
+					String recordResult = processRecord(importMode, gridTab, indxDetail, isDetail, idx, rowResult);
+					rowResult.append(recordResult);
 
 					// write
 					rawLine = rawLine + delimiter + quoteChar + rowResult.toString().replaceAll(delimiter, "") + quoteChar + "\n";
@@ -242,9 +243,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 
 				}
 
-				if( trx != null ){
-					completeDetailTrx(gridTab,childs);
-				}
+				manageMasterTrx(gridTab,childs);
 
 			}
 		} catch (IOException e) {
@@ -505,10 +504,12 @@ public class GridTabCSVImporter implements IGridTabImporter
 	}//preProcess
 	
 	/**
-	 * Process the line until a detail field is found
+	 * Manage the trx
+	 * if the trx exists - commits when no errors, rollback when errors.
 	 * @param gridTab
+	 * @param childs
 	 */
-	private void processMaster(GridTab gridTab){
+	private void manageMasterTrx(GridTab gridTab, List<GridTab> childs){
 
 		if( trx != null ){
 
@@ -542,9 +543,30 @@ public class GridTabCSVImporter implements IGridTabImporter
 					commitTrx();
 				}								   
 			}
+			
+			if( childs != null ){
+				if( masterRecord != null ){
+					gridTab.query(false);
+					gridTab.getTableModel().setImportingMode(false,null);
+					for( GridTab detail : childs )
+						if( detail.getTableModel().isOpen() ){
+							detail.query(true);
+							detail.getTableModel().setImportingMode(false,null);	
+						}
+				}
+			}
+			
 			trx.close();
 			trx=null;
 		}
+
+	}//manageMasterTrx
+	
+	/**
+	 * Create a new Trx with a random Name
+	 * @param gridTab
+	 */
+	private void createTrx(GridTab gridTab){
 
 		trxName = getTrxName(gridTab.getTableName());
 		gridTab.getTableModel().setImportingMode(true,trxName);	
@@ -553,11 +575,13 @@ public class GridTabCSVImporter implements IGridTabImporter
 		rowsTmpResult.clear();
 		isMasterok = true;
 		isDetailok = true;
-
-	}//processMaster
+		
+	} //createTrx
 	
 	/**
-	 * Process the details
+	 * Process the record for each row
+	 * First insert the master tab - if no errors found proceeds with the details tabs when existing
+	 * Stops at the first error found in the row
 	 * @param importMode
 	 * @param gridTab
 	 * @param indxDetail
@@ -566,7 +590,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 	 * @param rowResult
 	 * @return
 	 */
-	private String processDetails(String importMode, GridTab gridTab, int indxDetail, boolean isDetail, int idx, StringBuilder rowResult){
+	private String processRecord(String importMode, GridTab gridTab, int indxDetail, boolean isDetail, int idx, StringBuilder rowResult){
 		
 		String logMsg = null;
 		GridTab currentGridTab = null;
@@ -719,60 +743,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 		
 		return rowResult.toString();
 
-	}//processDetails
-	
-	/**
-	 * Finishes the detail import process 
-	 * When the detail failed - rollback the trx
-	 * if the detail succeed commit and close the trx
-	 * @param gridTab
-	 * @param childs
-	 */
-	private void completeDetailTrx(GridTab gridTab, List<GridTab> childs){
-		if( isError() ){
-			rollbackTrx();
-		}else {
-
-			if(isThereDocAction){
-
-				boolean isError = false;
-				int AD_Process_ID = MColumn.get(Env.getCtx(),gridTab.getField("DocAction").getAD_Column_ID()).getAD_Process_ID(); 
-
-				if( AD_Process_ID > 0 ){
-					String docResult = processDocAction(masterRecord,AD_Process_ID); 
-
-					if(docResult.contains("error")) 
-						isError = true; 
-
-					rowsTmpResult.set(0,rowsTmpResult.get(0).replace(quoteChar + "\n",docResult + quoteChar + "\n"));
-				}else {
-					throwAdempiereException("No Process found for document action.");	  
-				}
-
-				if( isError ){
-					rollbackTrx();
-				}else{
-					commitTrx();
-				}
-			}else {
-				commitTrx();
-			}
-		}   
-
-		if( masterRecord != null ){
-			gridTab.query(false);
-			gridTab.getTableModel().setImportingMode(false,null);
-			for( GridTab detail : childs )
-				if( detail.getTableModel().isOpen() ){
-					detail.query(true);
-					detail.getTableModel().setImportingMode(false,null);	
-				}
-		}
-
-		trx.close();
-		trx = null;	
-
-	}//completeDetailTrx
+	}//processRecord
 	
 	private String getTrxName(String gritTabName){
 		return "Import_" + gritTabName + "_" + UUID.randomUUID();
