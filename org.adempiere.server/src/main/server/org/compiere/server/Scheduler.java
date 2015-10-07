@@ -292,6 +292,13 @@ public class Scheduler extends AdempiereServer
 				}
 				
 			}
+			
+			// IDEMPIERE-2864
+			for(File file : fileList)
+			{
+				if(file.exists() && !file.delete())
+					file.deleteOnExit();
+			}
 		}
 		
 		return pi.getSummary();

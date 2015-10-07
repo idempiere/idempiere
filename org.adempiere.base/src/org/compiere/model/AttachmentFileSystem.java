@@ -93,11 +93,12 @@ public class AttachmentFileSystem implements IAttachmentStore {
 						in.transferTo(0, in.size(), out);
 						in.close();
 						out.close();
+						/* IDEMPIERE-2864
 						if(entryFile.exists()){
 							if(!entryFile.delete()){
 								entryFile.deleteOnExit();
 							}
-						}
+						}*/
 						entryFile = destFile;
 
 					} catch (IOException e) {
