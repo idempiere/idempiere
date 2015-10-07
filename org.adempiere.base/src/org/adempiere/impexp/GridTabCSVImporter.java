@@ -120,6 +120,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 	//Trx
 	private Trx trx;
 	private String trxName;
+	private boolean isSingleTrx = false;
 
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(GridTabCSVImporter.class);
@@ -228,8 +229,11 @@ public class GridTabCSVImporter implements IGridTabImporter
 						rowsTmpResult.add(rawLine);
 						continue;	 
 					}
+					
+					if( isSingleTrx() && trx == null )
+						createTrx(gridTab);
 
-					if( !isDetail ){
+					if( !isDetail && !isSingleTrx() ){
 						manageMasterTrx(gridTab, null);
 						createTrx(gridTab);
 					}
@@ -240,6 +244,9 @@ public class GridTabCSVImporter implements IGridTabImporter
 					// write
 					rawLine = rawLine + delimiter + quoteChar + rowResult.toString().replaceAll(delimiter, "") + quoteChar + "\n";
 					rowsTmpResult.add(rawLine);
+					
+					if( isSingleTrx() && isError() )
+						break;
 
 				}
 
@@ -808,7 +815,11 @@ public class GridTabCSVImporter implements IGridTabImporter
 		if(isKey){
 		   if(headName.indexOf("/") > 0){
 			  if(headName.endsWith("K"))
-				  headName = headName.substring(0,headName.length()-2);  
+				  headName = headName.substring(0,headName.length()-2);
+			  else if (headName.endsWith("KT")){
+				  setSingleTrx(true);
+				  headName = headName.substring(0,headName.length()-3);
+			  }
 			  else
 				 throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ColumnKey")+" "+headName);
 		   } 
@@ -1303,7 +1314,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 		List<String> parentColumns = new ArrayList<String>(); 
 		//Process columnKeys + Foreign to add restrictions.
 		for (int i = startindx ; i < endindx + 1 ; i++){					  
-		    boolean isKeyColumn = header.get(i).indexOf("/") > 0 && header.get(i).endsWith("K");	
+		    boolean isKeyColumn = header.get(i).indexOf("/") > 0 && ( header.get(i).endsWith("K") || header.get(i).endsWith("KT"));	
 			if(isKeyColumn && !header.get(i).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID))){  
 			   boolean isForeing = header.get(i).indexOf("[") > 0 && header.get(i).indexOf("]")>0;
 			   boolean isDetail  = header.get(i).indexOf(">") > 0;
@@ -1520,6 +1531,14 @@ public class GridTabCSVImporter implements IGridTabImporter
 	
     public boolean isError() {
 		return error;
+	}
+
+	public boolean isSingleTrx() {
+		return isSingleTrx;
+	}
+
+	public void setSingleTrx(boolean isSingleTrx) {
+		this.isSingleTrx = isSingleTrx;
 	}
 
 	public void setError(boolean error) {
