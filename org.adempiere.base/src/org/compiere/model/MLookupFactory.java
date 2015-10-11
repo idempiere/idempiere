@@ -402,7 +402,11 @@ public class MLookupFactory
 		} else {
 			lang = language.getAD_Language();
 		}
-		StringBuilder key = new StringBuilder().append(Env.getAD_Client_ID(ctx)).append("|").append(lang).append("|").append(String.valueOf(AD_Reference_Value_ID));
+		StringBuilder key = new StringBuilder()
+				.append(Env.getAD_Client_ID(ctx)).append("|")
+				.append(Env.getAD_User_ID(ctx)).append("|")
+				.append(lang).append("|")
+				.append(String.valueOf(AD_Reference_Value_ID));
 		MLookupInfo retValue = (MLookupInfo)s_cacheRefTable.get(key.toString());
 		if (retValue != null)
 		{
@@ -748,6 +752,7 @@ public class MLookupFactory
 		//try cache
 		StringBuilder cacheKey = new StringBuilder()
 				.append(Env.getAD_Client_ID(ctx)).append("|")
+				.append(Env.getAD_User_ID(ctx)).append("|")
 				.append(language.getAD_Language()).append("|")
 				.append(TableName).append(".")
 				.append(KeyColumn);
