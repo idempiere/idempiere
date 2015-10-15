@@ -192,7 +192,9 @@ public abstract class CreateFromShipment extends CreateFrom
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		StringBuilder sql = new StringBuilder("SELECT "
-				+ "l.QtyOrdered-SUM(COALESCE(m.Qty,0)),"					//	1
+				+ "l.QtyOrdered-SUM(COALESCE(m.Qty,0))"
+				// subtract drafted lines from this or other orders IDEMPIERE-2889
+				+ "-COALESCE((SELECT SUM(MovementQty) FROM M_InOutLine iol JOIN M_InOut io ON iol.M_InOut_ID=io.M_InOut_ID WHERE l.C_OrderLine_ID=iol.C_OrderLine_ID AND io.Processed='N'),0),"	//	1
 				+ "CASE WHEN l.QtyOrdered=0 THEN 0 ELSE l.QtyEntered/l.QtyOrdered END,"	//	2
 				+ " l.C_UOM_ID,COALESCE(uom.UOMSymbol,uom.Name),"			//	3..4
 				+ " p.M_Locator_ID, loc.Value, " // 5..6

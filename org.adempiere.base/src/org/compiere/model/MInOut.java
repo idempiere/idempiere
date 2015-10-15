@@ -1350,6 +1350,8 @@ public class MInOut extends X_M_InOut implements DocAction
 					{
 						BigDecimal toDelivered = oLine.getQtyOrdered()
 								.subtract(oLine.getQtyDelivered());
+						if (toDelivered.signum() < 0) // IDEMPIERE-2889
+							toDelivered = Env.ZERO;
 						if (sLine.getMovementQty().compareTo(toDelivered) > 0)
 							overReceipt = sLine.getMovementQty().subtract(
 									toDelivered);
