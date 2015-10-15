@@ -59,6 +59,9 @@ public class PipoDictionaryService implements IDictionaryService {
 			packIn = new PackIn();
 			packIn.setPackageName(context.getBundle().getSymbolicName());
 			
+			if (Env.getCtx().getProperty("#AD_Client_ID") == null) {
+				Env.getCtx().put("#AD_Client_ID", 0);
+			}
 			//get package version from file name suffix or bundle header
 			String packageVersion = null;
 			String fileName = packageFile.getName();
