@@ -462,13 +462,16 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		
 		if (Executions.getCurrent() == null) 
 		{
-			Executions.schedule(getDesktop(), new EventListener<Event>() 
+			if (getDesktop() != null) 
 			{
-				@Override
-				public void onEvent(Event event) throws Exception {
-					doUnlockUI();
-				}
-			}, new Event("onUnLockUI"));
+				Executions.schedule(getDesktop(), new EventListener<Event>() 
+				{
+					@Override
+					public void onEvent(Event event) throws Exception {
+						doUnlockUI();
+					}
+				}, new Event("onUnLockUI"));
+			}
 		} else {
 			doUnlockUI();
 		}
