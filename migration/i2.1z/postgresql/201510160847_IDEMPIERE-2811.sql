@@ -17,7 +17,7 @@ ALTER TABLE M_ProductPrice ADD COLUMN M_ProductPrice_ID NUMERIC(10) DEFAULT NULL
 
 --Chuck added here
 --drop current primary key
-alter table m_productprice drop constraint if exists m_productprice_pkey;
+alter table m_productprice drop constraint m_productprice_pkey;
 
 --Chuck added here
 --set the values for the keys

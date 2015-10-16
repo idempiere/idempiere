@@ -20,7 +20,7 @@ ALTER TABLE M_ProductPrice ADD M_ProductPrice_ID NUMBER(10) DEFAULT NULL
 
 --CHUCK added here
 --oracle
-ALTER TABLE m_productprice DROP CONSTRAINT m_productprice_pkey;
+ALTER TABLE m_productprice DROP CONSTRAINT m_productpice_key CASCADE;
 
 --CHUCK added here
 --set the values for the keys
@@ -46,6 +46,10 @@ INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexCol
 
 -- Oct 8, 2015 2:16:13 PM CDT
 ALTER TABLE M_ProductPrice ADD CONSTRAINT m_productprice_unique_idx UNIQUE (M_PriceList_Version_ID,M_Product_ID)
+;
+
+-- Carlos - rename old unique key index
+ALTER INDEX M_PRODUCTPICE_KEY RENAME TO M_PRODUCTPRICE_UNIQUE_IDX
 ;
 
 -- Oct 8, 2015 2:23:10 PM CDT
