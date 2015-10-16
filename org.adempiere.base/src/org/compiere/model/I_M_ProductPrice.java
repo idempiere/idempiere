@@ -121,6 +121,15 @@ public interface I_M_ProductPrice
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
+    /** Column name M_ProductPrice_ID */
+    public static final String COLUMNNAME_M_ProductPrice_ID = "M_ProductPrice_ID";
+
+	/** Set M_ProductPrice_ID	  */
+	public void setM_ProductPrice_ID (int M_ProductPrice_ID);
+
+	/** Get M_ProductPrice_ID	  */
+	public int getM_ProductPrice_ID();
+
     /** Column name M_ProductPrice_UU */
     public static final String COLUMNNAME_M_ProductPrice_UU = "M_ProductPrice_UU";
 

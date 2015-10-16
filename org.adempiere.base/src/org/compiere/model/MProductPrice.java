@@ -64,14 +64,9 @@ public class MProductPrice extends X_M_ProductPrice
 	 *	@param ignored ignored
 	 *	@param trxName transaction
 	 */
-	public MProductPrice (Properties ctx, int ignored, String trxName)
+	public MProductPrice (Properties ctx, int M_ProductPrice_ID, String trxName)
 	{
 		super(ctx, 0, trxName);
-		if (ignored != 0)
-			throw new IllegalArgumentException("Multi-Key");
-		setPriceLimit (Env.ZERO);
-		setPriceList (Env.ZERO);
-		setPriceStd (Env.ZERO);
 	}	//	MProductPrice
 
 	/**

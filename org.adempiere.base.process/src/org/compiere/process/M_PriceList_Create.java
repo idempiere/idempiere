@@ -33,6 +33,7 @@ import org.compiere.model.MClientInfo;
 import org.compiere.model.MDiscountSchemaLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductPrice;
+import org.compiere.model.MSequence;
 import org.compiere.model.MUOMConversion;
 import org.compiere.model.ProductCost;
 import org.compiere.util.AdempiereSystemError;
@@ -424,7 +425,8 @@ public class M_PriceList_Create extends SvrProcess {
 					//	
 					{
 						sqlins = new StringBuilder("INSERT INTO M_ProductPrice ");
-									sqlins.append("(M_PriceList_Version_ID");
+									sqlins.append("(M_ProductPrice_ID");
+									sqlins.append(" ,M_PriceList_Version_ID");
 									sqlins.append(" ,M_Product_ID ");
 									sqlins.append(" ,AD_Client_ID");
 									sqlins.append(" , AD_Org_ID");
@@ -437,6 +439,9 @@ public class M_PriceList_Create extends SvrProcess {
 									sqlins.append(" , PriceStd");
 									sqlins.append(" , PriceLimit) ");
 									sqlins.append("SELECT ");
+									sqlins.append("nextIdFunc(");
+									sqlins.append(	MSequence.get(getCtx(), "M_ProductPrice").get_ID());
+									sqlins.append(",'N')      ,");
 									sqlins.append(p_PriceList_Version_ID);
 									sqlins.append("      ,po.M_Product_ID ");
 									sqlins.append("      ,");
@@ -558,10 +563,13 @@ public class M_PriceList_Create extends SvrProcess {
 						//Copy and Convert from other PriceList_Version
 						//
 						sqlins = new StringBuilder("INSERT INTO M_ProductPrice ");					
-									sqlins.append(" (M_PriceList_Version_ID, M_Product_ID,");
+									sqlins.append(" (M_ProductPrice_ID, M_PriceList_Version_ID, M_Product_ID,");
 									sqlins.append(" AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,");
 									sqlins.append(" PriceList, PriceStd, PriceLimit)");
 									sqlins.append(" SELECT ");
+									sqlins.append("nextIdFunc(");
+									sqlins.append(	MSequence.get(getCtx(), "M_ProductPrice").get_ID());
+									sqlins.append(",'N')      ,");
 									sqlins.append(p_PriceList_Version_ID);
 									sqlins.append(", pp.M_Product_ID,");
 									sqlins.append(rsCurgen.getInt("AD_Client_ID"));
