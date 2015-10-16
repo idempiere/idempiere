@@ -563,8 +563,13 @@ public abstract class SvrProcess implements ProcessCall
 	 */
 	private void unlock ()
 	{
+		boolean noContext = Env.getCtx().isEmpty() && Env.getCtx().getProperty("#AD_Client_ID") == null;
 		try 
 		{
+			//save logging info even if context is lost
+			if (noContext)
+				Env.getCtx().put("#AD_Client_ID", m_pi.getAD_Client_ID());
+			
 			MPInstance mpi = new MPInstance (getCtx(), m_pi.getAD_PInstance_ID(), null);
 			if (mpi.get_ID() == 0)
 			{
@@ -582,6 +587,11 @@ public abstract class SvrProcess implements ProcessCall
 		catch (Exception e)
 		{
 			log.severe("unlock() - " + e.getLocalizedMessage());
+		}
+		finally
+		{
+			if (noContext)
+				Env.getCtx().remove("#AD_Client_ID");
 		}
 	}   //  unlock
 

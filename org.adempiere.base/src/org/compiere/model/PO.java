@@ -186,9 +186,7 @@ public abstract class PO
 	 */
 	public PO (Properties ctx, int ID, String trxName, ResultSet rs)
 	{
-		if (ctx == null)
-			throw new IllegalArgumentException ("No Context");
-		p_ctx = ctx;
+		p_ctx = ctx != null ? ctx : Env.getCtx();
 		m_trxName = trxName;
 
 		p_info = initPO(ctx);
