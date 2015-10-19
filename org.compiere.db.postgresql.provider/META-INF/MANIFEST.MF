@@ -12,7 +12,8 @@ Require-Bundle: org.adempiere.base;bundle-version="3.0.0",
  org.adempiere.install;bundle-version="3.0.0"
 Import-Package: junit.framework;version="3.8.2",
  org.junit;version="4.8.1",
- org.osgi.framework
+ org.osgi.framework,
+ org.slf4j;version="1.7.2"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.adempiere.db.postgresql.PostgreSQLBundleActivator
 Service-Component: OSGI-INF/pgprovider.xml
