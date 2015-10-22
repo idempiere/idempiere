@@ -145,6 +145,15 @@ public class CompositeADTabbox extends AbstractADTabbox
 						}
 					});
 				}
+				else if (DetailPane.ON_SAVE_EVENT.equals(event.getName())) {
+					if (headerTab.getGridTab().isNew()) return;
+					
+					final IADTabpanel tabPanel = getSelectedDetailADTabpanel();
+					if (!tabPanel.getGridTab().dataSave(true)) {
+						showLastError();
+					} 
+					tabPanel.getGridTab().dataRefreshAll(true, true);
+				}
 				else if (DetailPane.ON_DELETE_EVENT.equals(event.getName())) {
 					onDelete();
 				}
