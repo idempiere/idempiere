@@ -27,10 +27,6 @@ INSERT INTO AD_ToolBarButton (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Component
 INSERT INTO AD_ToolBarButton (AD_Client_ID,AD_Org_ID,Created,CreatedBy,ComponentName,IsActive,AD_ToolBarButton_ID,Name,Updated,UpdatedBy,IsCustomization,KeyStroke_KeyCode,KeyStroke_Modifiers,AD_ToolBarButton_UU,"action",SeqNo,IsAdvancedButton,IsAddSeparator) VALUES (0,0,TO_TIMESTAMP('2015-10-21 14:47:34','YYYY-MM-DD HH24:MI:SS'),0,'Edit','Y',200086,'Detail - Edit',TO_TIMESTAMP('2015-10-21 14:47:34','YYYY-MM-DD HH24:MI:SS'),0,'N',0,0,'11b7e9ee-5f06-4595-96ca-a14321b93c38','D',20,'N','N')
 ;
 
--- Oct 22, 2015 11:28:13 AM CEST
-UPDATE AD_Val_Rule SET Code='(((AD_ToolbarButton.Action=''@Action@'') OR (AD_ToolbarButton.Action||''@Action@''=''RWD'' )) AND (AD_ToolbarButton.AD_Tab_ID IS NULL OR COALESCE(AD_ToolbarButton.AD_Tab_ID,0)=@AD_Tab_ID:0@))',Updated=TO_TIMESTAMP('2015-10-22 11:28:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Val_Rule_ID=200011
-;
-
 -- Oct 22, 2015 11:42:03 AM CEST
 UPDATE AD_Field SET DisplayLogic='@Action@=W | @Action@=D',Updated=TO_TIMESTAMP('2015-10-22 11:42:03','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=200070
 ;
