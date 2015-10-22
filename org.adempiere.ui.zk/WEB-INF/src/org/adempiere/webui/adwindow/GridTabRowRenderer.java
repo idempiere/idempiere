@@ -25,6 +25,7 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.NumberBox;
+import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Urlbox;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
@@ -169,6 +170,13 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		return checkBox;
 	}
 
+	private Component createInvisibleComponent() {
+		Textbox textBox = new Textbox();
+		textBox.setDisabled(true);
+		textBox.setVisible(false);
+		return textBox;
+	}
+
 	/**
 	 * call {@link #getDisplayText(Object, GridField, int, boolean)} with isForceGetValue = false
 	 * @param value
@@ -227,6 +235,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		Component component;
 		if (gridField.getDisplayType() == DisplayType.YesNo) {
 			component = createReadonlyCheckbox(value);
+		} else if (gridField.isHeading()) {
+			component = createInvisibleComponent();
 		} else if (gridField.getDisplayType() == DisplayType.Button) {
 			GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
 			WButtonEditor editor = new WButtonEditor(gridField, rowIndex);
@@ -438,7 +448,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		int colIndex = -1;
 		for (int i = 0; i < columnCount; i++) {
 			if (editors.get(gridPanelFields[i]) == null) {
-				WEditor editor = WebEditorFactory.getEditor(gridPanelFields[i], true);
+			  WEditor editor = WebEditorFactory.getEditor(gridPanelFields[i], true);
+			  if (editor != null) {
 				editors.put(gridPanelFields[i], editor);
 				if (editor instanceof WButtonEditor) {
 					((WButtonEditor)editor).addActionListener(buttonListener);
@@ -446,8 +457,10 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				
 				//readonly for display text
 				WEditor readOnlyEditor = WebEditorFactory.getEditor(gridPanelFields[i], true);
-				readOnlyEditor.setReadWrite(false);
-				readOnlyEditors.put(gridPanelFields[i], readOnlyEditor);
+				if (readOnlyEditor != null) {
+					readOnlyEditor.setReadWrite(false);
+					readOnlyEditors.put(gridPanelFields[i], readOnlyEditor);
+				}
 				
 				editor.getComponent().setWidgetOverride("fieldHeader", HelpController.escapeJavascriptContent(gridPanelFields[i].getHeader()));
     			editor.getComponent().setWidgetOverride("fieldDescription", HelpController.escapeJavascriptContent(gridPanelFields[i].getDescription()));
@@ -457,6 +470,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
     			//	Default Focus
     			if (defaultFocusField == null && gridPanelFields[i].isDefaultFocus())
     				defaultFocusField = editor;
+			  }
 			}
 			
 			if ("IsActive".equals(gridPanelFields[i].getColumnName())) {
@@ -481,6 +495,9 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				Component component = getDisplayComponent(rowIndex, currentValues[i], gridPanelFields[i], isGridViewCustomized);
 				div.appendChild(component);
 				div.setAttribute("display.component", component);
+				if (gridPanelFields[i].isHeading()) {
+					component.setVisible(false);
+				}
 
 				if (DisplayType.YesNo == gridPanelFields[i].getDisplayType() || DisplayType.Image == gridPanelFields[i].getDisplayType()) {
 					divStyle = CELL_DIV_STYLE_ALIGN_CENTER;
