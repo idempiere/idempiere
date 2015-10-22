@@ -29,7 +29,7 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20150427L;
+	private static final long serialVersionUID = 20151022L;
 
     /** Standard Constructor */
     public X_AD_UserPreference (Properties ctx, int AD_UserPreference_ID, String trxName)
@@ -185,6 +185,30 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	public boolean isAutoNew () 
 	{
 		Object oo = get_Value(COLUMNNAME_AutoNew);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Toggle on Double Click.
+		@param ToggleOnDoubleClick 
+		Defines if double click in a field on grid mode switch to form view
+	  */
+	public void setToggleOnDoubleClick (boolean ToggleOnDoubleClick)
+	{
+		set_Value (COLUMNNAME_ToggleOnDoubleClick, Boolean.valueOf(ToggleOnDoubleClick));
+	}
+
+	/** Get Toggle on Double Click.
+		@return Defines if double click in a field on grid mode switch to form view
+	  */
+	public boolean isToggleOnDoubleClick () 
+	{
+		Object oo = get_Value(COLUMNNAME_ToggleOnDoubleClick);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

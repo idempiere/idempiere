@@ -246,7 +246,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         form.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "form");
         
         listPanel = new GridView();
-        if( "Y".equals(Env.getContext(Env.getCtx(), "ToggleOnDoubleClick")) )
+        if( "Y".equals(Env.getContext(Env.getCtx(), "P|ToggleOnDoubleClick")) )
         	listPanel.getListbox().addEventListener(Events.ON_DOUBLE_CLICK, this);
     }
     

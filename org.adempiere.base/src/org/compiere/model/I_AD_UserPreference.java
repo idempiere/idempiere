@@ -155,6 +155,19 @@ public interface I_AD_UserPreference
 	  */
 	public boolean isActive();
 
+    /** Column name ToggleOnDoubleClick */
+    public static final String COLUMNNAME_ToggleOnDoubleClick = "ToggleOnDoubleClick";
+
+	/** Set Toggle on Double Click.
+	  * Defines if double click in a field on grid mode switch to form view
+	  */
+	public void setToggleOnDoubleClick (boolean ToggleOnDoubleClick);
+
+	/** Get Toggle on Double Click.
+	  * Defines if double click in a field on grid mode switch to form view
+	  */
+	public boolean isToggleOnDoubleClick();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
