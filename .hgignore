@@ -74,13 +74,13 @@ syntax: regexp
 \.class$
 
 syntax: regexp
-^org\.zkoss\.zk\.library/.*/calendar[-].*\.jar$
-^org\.zkoss\.zk\.library/.*/ckez[-].*\.jar$
-^org\.zkoss\.zk\.library/.*/gmapsz[-].*\.jar$
-^org\.zkoss\.zk\.library/.*/jruby[-].*\.jar$
-^org\.zkoss\.zk\.library/.*/jython[-].*\.jar$
-^org\.zkoss\.zk\.library/.*/timelinez[-].*\.jar$
-^org\.zkoss\.zk\.library/.*/timeplotz[-].*\.jar$
+^org\.zkoss\.zk\.library/.*/calendar.*\.jar$
+^org\.zkoss\.zk\.library/.*/ckez.*\.jar$
+^org\.zkoss\.zk\.library/.*/gmapsz.*\.jar$
+^org\.zkoss\.zk\.library/.*/jruby.*\.jar$
+^org\.zkoss\.zk\.library/.*/jython.*\.jar$
+^org\.zkoss\.zk\.library/.*/timelinez.*\.jar$
+^org\.zkoss\.zk\.library/.*/timeplotz.*\.jar$
 ^org\.zkoss\.zk\.library/.*/z.*\.jar$
 .buckminster/
 ^jettyhome/
