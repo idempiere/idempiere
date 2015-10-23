@@ -111,7 +111,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4209181029836503344L;
+	private static final long serialVersionUID = 6775071898539380777L;
 
 	private static final String IMAGES_UPARROW_PNG = "images/collapse-header.png";
 
