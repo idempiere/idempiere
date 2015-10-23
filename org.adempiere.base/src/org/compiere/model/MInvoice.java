@@ -67,7 +67,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1061413366741817262L;
+	private static final long serialVersionUID = -859760245939837565L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -651,6 +651,21 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		return amt;
 	}	//	getGrandTotal
 
+	/**
+	 * 	Get Total Lines
+	 * 	@param creditMemoAdjusted adjusted for CM (negative)
+	 *	@return total lines
+	 */
+	public BigDecimal getTotalLines (boolean creditMemoAdjusted)
+	{
+		if (!creditMemoAdjusted)
+			return super.getTotalLines();
+		//
+		BigDecimal amt = getTotalLines();
+		if (isCreditMemo())
+			return amt.negate();
+		return amt;
+	}	//	getTotalLines
 
 	/**
 	 * 	Get Invoice Lines of Invoice
