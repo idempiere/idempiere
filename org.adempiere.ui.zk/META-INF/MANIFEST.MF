@@ -91,7 +91,7 @@ Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  web.js.zkforge.mold
 Require-Bundle: org.adempiere.base;bundle-version="3.0.0",
  org.adempiere.ui;bundle-version="3.0.0",
- org.zkoss.zk.library;bundle-version="6.0.0"
+ org.zkoss.zk.library;bundle-version="7.0.0"
 Bundle-Activator: org.adempiere.webui.WebUIActivator
 Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.zkoss.zk.library

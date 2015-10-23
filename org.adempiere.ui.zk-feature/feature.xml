@@ -30,7 +30,7 @@
          id="org.zkoss.zk.library"
          download-size="0"
          install-size="0"
-         version="7.0.3.qualifier"
+         version="7.0.7.qualifier"
          unpack="false"/>
 
 </feature>
