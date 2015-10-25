@@ -21,7 +21,7 @@
     - no hazelcast.xml if present
 
 -->
-<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.3.xsd"
+<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.5.xsd"
            xmlns="http://www.hazelcast.com/schema/config"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <group>
@@ -117,7 +117,7 @@
            Possible values:
            BINARY (default): keys and values will be stored as binary data
            OBJECT : values will be stored in their object forms
-           OFFHEAP : values will be stored in non-heap region of JVM
+           NATIVE : values will be stored in non-heap region of JVM
         -->
         <in-memory-format>BINARY</in-memory-format>
 
@@ -183,7 +183,7 @@
             the policy set here. Default policy is PutIfAbsentMapMergePolicy
 
             There are built-in merge policies such as
-            com.hazelcast.map.merge.PassThroughMergePolicy; entry will be added if there is no existing entry for the key.
+            com.hazelcast.map.merge.PassThroughMergePolicy; entry will be overwritten if merging entry exists for the key.
             com.hazelcast.map.merge.PutIfAbsentMapMergePolicy ; entry will be added if the merging entry doesn't exist in the cluster.
             com.hazelcast.map.merge.HigherHitsMapMergePolicy ; entry with the higher hits wins.
             com.hazelcast.map.merge.LatestUpdateMapMergePolicy ; entry with the latest update wins.
@@ -191,11 +191,6 @@
         <merge-policy>com.hazelcast.map.merge.PassThroughMergePolicy</merge-policy>
 
     </map>
-
-    <multimap name="default">
-        <backup-count>1</backup-count>
-        <value-collection-type>SET</value-collection-type>
-    </multimap>
 
     <multimap name="default">
         <backup-count>1</backup-count>
@@ -226,6 +221,20 @@
         <async-backup-count>0</async-backup-count>
     </semaphore>
 
+    <reliable-topic name="default">
+        <read-batch-size>10</read-batch-size>
+        <topic-overload-policy>BLOCK</topic-overload-policy>
+        <statistics-enabled>true</statistics-enabled>
+    </reliable-topic>
+    
+    <ringbuffer name="default">
+        <capacity>10000</capacity>
+        <backup-count>1</backup-count>
+        <async-backup-count>0</async-backup-count>
+        <time-to-live-seconds>30</time-to-live-seconds>
+        <in-memory-format>BINARY</in-memory-format>
+    </ringbuffer>
+    
     <serialization>
         <portable-version>0</portable-version>
     </serialization>
