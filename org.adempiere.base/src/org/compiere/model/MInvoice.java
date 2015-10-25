@@ -67,7 +67,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -859760245939837565L;
+	private static final long serialVersionUID = 6262118410996877227L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -2739,4 +2739,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		providers.values().toArray(retValue);
 		return retValue;
 	}
+
+	/** Returns C_DocType_ID (or C_DocTypeTarget_ID if C_DocType_ID is not set) */
+	public int getDocTypeID()
+	{
+		return getC_DocType_ID() > 0 ? getC_DocType_ID() : getC_DocTypeTarget_ID();
+	}
+
 }	//	MInvoice

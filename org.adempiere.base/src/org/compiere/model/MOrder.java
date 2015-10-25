@@ -70,7 +70,7 @@ public class MOrder extends X_C_Order implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6750443365394535762L;
+	private static final long serialVersionUID = -4032643956656204341L;
 
 	/**
 	 * 	Create new Order by copying
@@ -2963,4 +2963,11 @@ public class MOrder extends X_C_Order implements DocAction
 		providers.values().toArray(retValue);
 		return retValue;
 	}
+
+	/** Returns C_DocType_ID (or C_DocTypeTarget_ID if C_DocType_ID is not set) */
+	public int getDocTypeID()
+	{
+		return getC_DocType_ID() > 0 ? getC_DocType_ID() : getC_DocTypeTarget_ID();
+	}
+
 }	//	MOrder
