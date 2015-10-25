@@ -579,7 +579,7 @@ public class GridField
 	 */
 	public Object getDefaultForPanel (){
 		//default is preference for field > special case > default logic > sql default > data-type default
-		String defaultSeq = "63";
+		String defaultSeq = "623";
 		return getDefault (MSysConfig.getValue(MSysConfig.ZK_SEQ_DEFAULT_VALUE_PANEL, defaultSeq, Env.getAD_Client_ID(m_vo.ctx)));
 	}
 	
