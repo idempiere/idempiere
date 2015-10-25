@@ -549,6 +549,9 @@ public abstract class Convert
 			return true;
 		if (uppStmt.matches("INSERT INTO .*_TRL .*"))
 			return true;
+		// Don't log tree custom table statements (not present in core)
+		if (uppStmt.startsWith("INSERT INTO AD_TREENODE ") && uppStmt.contains(" AND T.TREETYPE='TL' AND T.AD_TABLE_ID="))
+			return true;
 		for (int i = 0; i < dontLogTables.length; i++) {
 			if (uppStmt.startsWith("INSERT INTO " + dontLogTables[i] + " "))
 				return true;
