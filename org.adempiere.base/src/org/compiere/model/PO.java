@@ -3880,7 +3880,8 @@ public abstract class PO
 		if (no > 0) {
 			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=" + treeType);
 		} else {
-			log.warning("#" + no + " - TreeType=" + treeType);
+			if (! MTree_Base.TREETYPE_Table.equals(treeType))
+				log.warning("#" + no + " - TreeType=" + treeType);
 		}
 
 		if (uuidColumnId > 0 && !uuidFunction )
@@ -3994,7 +3995,8 @@ public abstract class PO
 		if (no > 0) {
 			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=" + treeType);
 		} else {
-			log.warning("#" + no + " - TreeType=" + treeType);
+			if (! MTree_Base.TREETYPE_Table.equals(treeType))
+				log.warning("#" + no + " - TreeType=" + treeType);
 		}
 		return no > 0;
 	}	//	delete_Tree
