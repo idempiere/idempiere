@@ -1272,7 +1272,21 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				recordSelectedData.put(keyCandidate, candidateRecord);// add or update selected record info				
 			}else{
 				if (recordSelectedData.containsKey(keyCandidate)){// unselected record
-					recordSelectedData.remove(keyCandidate);
+					List<Object> recordSelected = recordSelectedData.get(keyCandidate);
+					IDColumn idcSel = null;
+					if (recordSelected.get(0) instanceof IDColumn) {
+						idcSel = (IDColumn) recordSelected.get(0);
+					}
+					IDColumn idcCan = null;
+					if (candidateRecord.get(0) instanceof IDColumn) {
+						idcCan = (IDColumn) candidateRecord.get(0);
+					}
+					if (idcSel != null && idcCan != null && idcSel.getRecord_ID().equals(idcCan.getRecord_ID())) {
+						recordSelected.set(0, candidateRecord.get(0)); // set same IDColumn for comparison
+					}
+					if (recordSelected.equals(candidateRecord)) {
+						recordSelectedData.remove(keyCandidate);
+					}
 				}
 			}
 			
