@@ -109,8 +109,24 @@ update m_productprice set m_productprice_id=200085 where m_productprice_uu='ecef
 
 --Chuck added here
 --set the values for the keys
-update m_productprice set m_productprice_id = nextIdFunc(165,'N') where m_productprice_id is null;
+-- !! too slow without native sequences !! -- update m_productprice set m_productprice_id = nextIdFunc(165,'N') where m_productprice_id is null;
 --165 = select ad_sequence_id from ad_sequence where name = 'M_ProductPrice' and istableID='Y'
+update m_productprice
+set m_productprice_id=rownum
+from (
+SELECT m_pricelist_version_id, m_product_id
+	, 999999+ROW_NUMBER() OVER (ORDER BY m_pricelist_version_id, m_product_id) AS rownum
+FROM
+	m_productprice
+where m_productprice_id is null
+) as numbered
+WHERE numbered.m_pricelist_version_id=m_productprice.m_pricelist_version_id
+and numbered.m_product_id=m_productprice.m_product_id
+;
+
+-- for native sequences is also updated using processes_post_migration/postgresql/03_update_sequences.sql
+update ad_sequence set currentnext=(select max(m_productprice_id) from m_productprice) where ad_sequence_id=165
+;
 
 -- Oct 8, 2015 2:07:06 PM CDT
 ALTER TABLE M_ProductPrice ADD CONSTRAINT M_ProductPrice_Key PRIMARY KEY (M_ProductPrice_ID)
