@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_InOut
  *  @author iDempiere (generated) 
- *  @version Release 2.1
+ *  @version Release 3.1
  */
 public interface I_M_InOut 
 {
@@ -418,12 +418,12 @@ public interface I_M_InOut
     /** Column name DropShip_BPartner_ID */
     public static final String COLUMNNAME_DropShip_BPartner_ID = "DropShip_BPartner_ID";
 
-	/** Set DropShip_BPartner_ID.
+	/** Set Drop Ship Business Partner.
 	  * Business Partner to ship to
 	  */
 	public void setDropShip_BPartner_ID (int DropShip_BPartner_ID);
 
-	/** Get DropShip_BPartner_ID.
+	/** Get Drop Ship Business Partner.
 	  * Business Partner to ship to
 	  */
 	public int getDropShip_BPartner_ID();

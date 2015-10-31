@@ -563,7 +563,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}
 		
        if (instance != null && chbIsSummary != null)       
-		    chbIsSummary.setSelected(instance.getIsSummary());
+		    chbIsSummary.setSelected(instance.isSummary());
 	}
 	
 	protected void saveReportOption (){

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_RequestAction
  *  @author iDempiere (generated) 
- *  @version Release 2.1
+ *  @version Release 3.1
  */
 public interface I_R_RequestAction 
 {
@@ -310,12 +310,12 @@ public interface I_R_RequestAction
 	/** Set Invoiced.
 	  * Is this invoiced?
 	  */
-	public void setIsInvoiced (String IsInvoiced);
+	public void setIsInvoiced (boolean IsInvoiced);
 
 	/** Get Invoiced.
 	  * Is this invoiced?
 	  */
-	public String getIsInvoiced();
+	public boolean isInvoiced();
 
     /** Column name IsSelfService */
     public static final String COLUMNNAME_IsSelfService = "IsSelfService";

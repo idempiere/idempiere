@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PInstance
  *  @author iDempiere (generated) 
- *  @version Release 2.1 - $Id$ */
+ *  @version Release 3.1 - $Id$ */
 public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20150204L;
+	private static final long serialVersionUID = 20151030L;
 
     /** Standard Constructor */
     public X_AD_PInstance (Properties ctx, int AD_PInstance_ID, String trxName)
@@ -44,8 +44,6 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 			setIsRunAsJob (false);
 // N
 			setRecord_ID (0);
-			setReportType (null);
-// P
         } */
     }
 
@@ -76,6 +74,31 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_Language getAD_Language() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Language)MTable.get(getCtx(), org.compiere.model.I_AD_Language.Table_Name)
+			.getPO(getAD_Language_ID(), get_TrxName());	}
+
+	/** Set Language ID.
+		@param AD_Language_ID Language ID	  */
+	public void setAD_Language_ID (int AD_Language_ID)
+	{
+		if (AD_Language_ID < 1) 
+			set_Value (COLUMNNAME_AD_Language_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Language_ID, Integer.valueOf(AD_Language_ID));
+	}
+
+	/** Get Language ID.
+		@return Language ID	  */
+	public int getAD_Language_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Language_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	/** Set Process Instance.
 		@param AD_PInstance_ID 
@@ -148,58 +171,6 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-	
-	public org.compiere.model.I_AD_Language getAD_Language() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Language)MTable.get(getCtx(), org.compiere.model.I_AD_Language.Table_Name)
-			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
-
-	/** Set Print Format.
-		@param AD_PrintFormat_ID 
-		Data Print Format
-	  */
-	public void setAD_Language_ID (int AD_Language_ID)
-	{
-		if (AD_Language_ID < 1) 
-			set_Value (COLUMNNAME_AD_Language_ID, null);
-		else 
-			set_Value (COLUMNNAME_AD_Language_ID, Integer.valueOf(AD_Language_ID));
-	}
-
-	/** Get Print Format.
-		@return Data Print Format
-	  */
-	public int getAD_Language_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Language_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-	
-	/** Set IsSummary.
-	@param IsSummary 
-	Data IsSummary
-	*/
-	public void setIsSummary (boolean isSummary)
-	{
-		set_Value (COLUMNNAME_IsSummary, Boolean.valueOf(isSummary));
-	}
-	
-	/** Get IsSummary.
-		@return Data IsSummary
-	  */
-	public boolean getIsSummary () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsSummary);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
@@ -314,6 +285,30 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 		return false;
 	}
 
+	/** Set Summary Level.
+		@param IsSummary 
+		This is a summary entity
+	  */
+	public void setIsSummary (boolean IsSummary)
+	{
+		set_Value (COLUMNNAME_IsSummary, Boolean.valueOf(IsSummary));
+	}
+
+	/** Get Summary Level.
+		@return This is a summary entity
+	  */
+	public boolean isSummary () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsSummary);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Name.
 		@param Name 
 		Alphanumeric identifier of the entity
@@ -382,17 +377,10 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 		return ii.intValue();
 	}
 
-	/** PDF = P */
-	public static final String REPORTTYPE_PDF = "P";
-	/** HTML = H */
-	public static final String REPORTTYPE_HTML = "H";
-	/** XLS = X */
-	public static final String REPORTTYPE_XLS = "X";
 	/** Set Report Type.
 		@param ReportType Report Type	  */
 	public void setReportType (String ReportType)
 	{
-
 		set_Value (COLUMNNAME_ReportType, ReportType);
 	}
 

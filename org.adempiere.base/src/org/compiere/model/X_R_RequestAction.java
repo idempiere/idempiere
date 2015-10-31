@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for R_RequestAction
  *  @author iDempiere (generated) 
- *  @version Release 2.1 - $Id$ */
+ *  @version Release 3.1 - $Id$ */
 public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20151030L;
 
     /** Standard Constructor */
     public X_R_RequestAction (Properties ctx, int R_RequestAction_ID, String trxName)
@@ -445,28 +445,28 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 		return (String)get_Value(COLUMNNAME_IsEscalated);
 	}
 
-	/** IsInvoiced AD_Reference_ID=319 */
-	public static final int ISINVOICED_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISINVOICED_Yes = "Y";
-	/** No = N */
-	public static final String ISINVOICED_No = "N";
 	/** Set Invoiced.
 		@param IsInvoiced 
 		Is this invoiced?
 	  */
-	public void setIsInvoiced (String IsInvoiced)
+	public void setIsInvoiced (boolean IsInvoiced)
 	{
-
-		set_ValueNoCheck (COLUMNNAME_IsInvoiced, IsInvoiced);
+		set_ValueNoCheck (COLUMNNAME_IsInvoiced, Boolean.valueOf(IsInvoiced));
 	}
 
 	/** Get Invoiced.
 		@return Is this invoiced?
 	  */
-	public String getIsInvoiced () 
+	public boolean isInvoiced () 
 	{
-		return (String)get_Value(COLUMNNAME_IsInvoiced);
+		Object oo = get_Value(COLUMNNAME_IsInvoiced);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** IsSelfService AD_Reference_ID=319 */

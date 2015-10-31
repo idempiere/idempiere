@@ -172,7 +172,7 @@ public class MTree extends MTree_Base
 					+ "JOIN AD_Table t ON (tr.AD_Table_ID=t.AD_Table_ID) "
 					+ "WHERE tr.AD_Client_ID=? AND tr.TreeType=? AND tr.IsActive='Y' AND tr.IsAllNodes='Y' AND t.TableName = ? "
 					+ "ORDER BY tr.AD_Tree_ID";
-			int treeID = DB.getSQLValueEx(null, query, Env.getAD_Client_ID(Env.getCtx()), TREETYPE_Table, tableName);
+			int treeID = DB.getSQLValueEx(null, query, Env.getAD_Client_ID(Env.getCtx()), TREETYPE_CustomTable, tableName);
 
 			if (treeID != -1) {
 				tree_cache.put(key, treeID);

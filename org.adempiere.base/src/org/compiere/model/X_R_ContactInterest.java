@@ -24,14 +24,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_ContactInterest
  *  @author iDempiere (generated) 
- *  @version Release 2.1 - $Id$ */
+ *  @version Release 3.1 - $Id$ */
 public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20151030L;
 
     /** Standard Constructor */
     public X_R_ContactInterest (Properties ctx, int R_ContactInterest_ID, String trxName)
@@ -115,7 +115,7 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
 	  */
 	public void setOptOutDate (Timestamp OptOutDate)
 	{
-		set_ValueNoCheck (COLUMNNAME_OptOutDate, OptOutDate);
+		set_Value (COLUMNNAME_OptOutDate, OptOutDate);
 	}
 
 	/** Get Opt-out Date.
@@ -174,7 +174,7 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
 	  */
 	public void setSubscribeDate (Timestamp SubscribeDate)
 	{
-		set_ValueNoCheck (COLUMNNAME_SubscribeDate, SubscribeDate);
+		set_Value (COLUMNNAME_SubscribeDate, SubscribeDate);
 	}
 
 	/** Get Subscribe Date.

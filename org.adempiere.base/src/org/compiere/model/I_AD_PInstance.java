@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PInstance
  *  @author iDempiere (generated) 
- *  @version Release 2.1
+ *  @version Release 3.1
  */
 public interface I_AD_PInstance 
 {
@@ -48,6 +48,17 @@ public interface I_AD_PInstance
 	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
+
+    /** Column name AD_Language_ID */
+    public static final String COLUMNNAME_AD_Language_ID = "AD_Language_ID";
+
+	/** Set Language ID	  */
+	public void setAD_Language_ID (int AD_Language_ID);
+
+	/** Get Language ID	  */
+	public int getAD_Language_ID();
+
+	public org.compiere.model.I_AD_Language getAD_Language() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -86,9 +97,7 @@ public interface I_AD_PInstance
 
     /** Column name AD_PrintFormat_ID */
     public static final String COLUMNNAME_AD_PrintFormat_ID = "AD_PrintFormat_ID";
-    
-    public static final String COLUMNNAME_AD_Language_ID = "AD_Language_ID";
-    
+
 	/** Set Print Format.
 	  * Data Print Format
 	  */
@@ -98,19 +107,6 @@ public interface I_AD_PInstance
 	  * Data Print Format
 	  */
 	public int getAD_PrintFormat_ID();
-	
-	/** Column name IsSummary */
-    public static final String COLUMNNAME_IsSummary = "IsSummary";
-
-	/** Set IsSummary.
-	  * Data IsSummary
-	  */
-	public void setIsSummary (boolean isSummary);
-
-	/** Get IsSummary.
-	  * Data IsSummary
-	  */
-	public boolean getIsSummary();
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
@@ -199,6 +195,19 @@ public interface I_AD_PInstance
 
 	/** Get Run as Job	  */
 	public boolean isRunAsJob();
+
+    /** Column name IsSummary */
+    public static final String COLUMNNAME_IsSummary = "IsSummary";
+
+	/** Set Summary Level.
+	  * This is a summary entity
+	  */
+	public void setIsSummary (boolean IsSummary);
+
+	/** Get Summary Level.
+	  * This is a summary entity
+	  */
+	public boolean isSummary();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

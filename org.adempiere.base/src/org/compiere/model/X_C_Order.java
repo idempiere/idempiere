@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Order
  *  @author iDempiere (generated) 
- *  @version Release 2.1 - $Id$ */
+ *  @version Release 3.1 - $Id$ */
 public class X_C_Order extends PO implements I_C_Order, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20150420L;
+	private static final long serialVersionUID = 20151030L;
 
     /** Standard Constructor */
     public X_C_Order (Properties ctx, int C_Order_ID, String trxName)
@@ -1108,7 +1108,7 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
 			.getPO(getDropShip_BPartner_ID(), get_TrxName());	}
 
-	/** Set DropShip_BPartner_ID.
+	/** Set Drop Ship Business Partner.
 		@param DropShip_BPartner_ID 
 		Business Partner to ship to
 	  */
@@ -1120,7 +1120,7 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 			set_Value (COLUMNNAME_DropShip_BPartner_ID, Integer.valueOf(DropShip_BPartner_ID));
 	}
 
-	/** Get DropShip_BPartner_ID.
+	/** Get Drop Ship Business Partner.
 		@return Business Partner to ship to
 	  */
 	public int getDropShip_BPartner_ID () 

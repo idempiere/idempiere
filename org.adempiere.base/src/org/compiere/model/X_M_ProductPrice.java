@@ -24,14 +24,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_ProductPrice
  *  @author iDempiere (generated) 
- *  @version Release 2.1 - $Id$ */
+ *  @version Release 3.1 - $Id$ */
 public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20151001L;
+	private static final long serialVersionUID = 20151030L;
 
     /** Standard Constructor */
     public X_M_ProductPrice (Properties ctx, int M_ProductPrice_ID, String trxName)
@@ -41,7 +41,6 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
         {
 			setM_PriceList_Version_ID (0);
 			setM_Product_ID (0);
-			setM_ProductPrice_ID (0);
 			setPriceLimit (Env.ZERO);
 			setPriceList (Env.ZERO);
 			setPriceStd (Env.ZERO);
@@ -132,8 +131,10 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
 		return ii.intValue();
 	}
 
-	/** Set M_ProductPrice_ID.
-		@param M_ProductPrice_ID M_ProductPrice_ID	  */
+	/** Set Product Price.
+		@param M_ProductPrice_ID 
+		Intersection between a Product and a Price List Version
+	  */
 	public void setM_ProductPrice_ID (int M_ProductPrice_ID)
 	{
 		if (M_ProductPrice_ID < 1) 
@@ -142,8 +143,9 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
 			set_ValueNoCheck (COLUMNNAME_M_ProductPrice_ID, Integer.valueOf(M_ProductPrice_ID));
 	}
 
-	/** Get M_ProductPrice_ID.
-		@return M_ProductPrice_ID	  */
+	/** Get Product Price.
+		@return Intersection between a Product and a Price List Version
+	  */
 	public int getM_ProductPrice_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ProductPrice_ID);

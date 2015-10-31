@@ -454,7 +454,7 @@ public class MPInstance extends X_AD_PInstance
 			.append(this.getAD_PrintFormat_ID())
 			.append(this.getAD_Language_ID())
 			.append(this.getReportType())
-			.append(this.getIsSummary());
+			.append(this.isSummary());
 		}
 		return cksum.toString();
 	}

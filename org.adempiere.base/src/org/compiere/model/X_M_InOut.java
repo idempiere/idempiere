@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InOut
  *  @author iDempiere (generated) 
- *  @version Release 2.1 - $Id$ */
+ *  @version Release 3.1 - $Id$ */
 public class X_M_InOut extends PO implements I_M_InOut, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20151030L;
 
     /** Standard Constructor */
     public X_M_InOut (Properties ctx, int M_InOut_ID, String trxName)
@@ -739,7 +739,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
 			.getPO(getDropShip_BPartner_ID(), get_TrxName());	}
 
-	/** Set DropShip_BPartner_ID.
+	/** Set Drop Ship Business Partner.
 		@param DropShip_BPartner_ID 
 		Business Partner to ship to
 	  */
@@ -751,7 +751,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 			set_Value (COLUMNNAME_DropShip_BPartner_ID, Integer.valueOf(DropShip_BPartner_ID));
 	}
 
-	/** Get DropShip_BPartner_ID.
+	/** Get Drop Ship Business Partner.
 		@return Business Partner to ship to
 	  */
 	public int getDropShip_BPartner_ID () 

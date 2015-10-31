@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_ToolBarButtonRestrict
  *  @author iDempiere (generated) 
- *  @version Release 2.1 - $Id$ */
+ *  @version Release 3.1 - $Id$ */
 public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButtonRestrict, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20151030L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButtonRestrict (Properties ctx, int AD_ToolBarButtonRestrict_ID, String trxName)
@@ -90,6 +90,8 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	public static final String ACTION_Workbench = "B";
 	/** Info = I */
 	public static final String ACTION_Info = "I";
+	/** Detail = D */
+	public static final String ACTION_Detail = "D";
 	/** Set Action.
 		@param Action 
 		Indicates the Action to be performed
