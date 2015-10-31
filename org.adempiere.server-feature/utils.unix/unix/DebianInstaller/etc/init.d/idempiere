@@ -39,7 +39,7 @@ esac
 # adjust these variables to your environment
 IDEMPIERE_USER=idempiere
 IDEMPIERE_HOME=/opt/idempiere-server
-JAVA_HOME=`ls -r /usr/lib/jvm/java-[67]-openjdk*/bin/javac | head -1`
+JAVA_HOME=`ls -r /usr/lib/jvm/java-[678]-openjdk*/bin/javac /usr/lib/jvm/java-[8]-oracle*/bin/javac | head -1`
 JAVA_HOME=`dirname $JAVA_HOME`
 JAVA_HOME=`dirname $JAVA_HOME`
 SU=su
