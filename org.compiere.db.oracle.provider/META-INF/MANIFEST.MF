@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Oracle Provider
 Bundle-SymbolicName: org.compiere.db.oracle.provider;singleton:=true
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 3.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.adempiere.base;bundle-version="3.0.0",
- org.adempiere.install;bundle-version="3.0.0"
+Require-Bundle: org.adempiere.base;bundle-version="3.1.0",
+ org.adempiere.install;bundle-version="3.1.0"
 Bundle-ClassPath: .,
  ojdbc7.jar,
  c3p0-0.9.5.jar,

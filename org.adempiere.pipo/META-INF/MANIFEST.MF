@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere 2Pack Core
 Bundle-SymbolicName: org.adempiere.pipo;singleton:=true
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 3.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.apache.commons.codec,
  org.apache.commons.codec.binary,
@@ -13,5 +13,5 @@ Import-Package: org.apache.commons.codec,
 Export-Package: org.adempiere.pipo.srv,
  org.adempiere.pipo2,
  org.adempiere.pipo2.exception
-Require-Bundle: org.adempiere.base;bundle-version="3.0.0"
+Require-Bundle: org.adempiere.base;bundle-version="3.1.0"
 Service-Component: OSGI-INF/dictionaryservice.xml
