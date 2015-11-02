@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Zk Library
 Bundle-SymbolicName: org.zkoss.zk.library
-Bundle-Version: 7.0.7.20151022
+Bundle-Version: 7.0.7.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: bsh,
  bsh.classpath,
