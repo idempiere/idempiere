@@ -117,7 +117,7 @@
          id="javax.annotation-api"
          download-size="0"
          install-size="0"
-         version="1.2.0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -250,27 +250,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.felix.webconsole"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.felix.webconsole.plugins.memoryusage"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.felix.webconsole.plugins.packageadmin"
-         download-size="0"
-         install-size="0"
-         version="1.0.0.1"
          unpack="false"/>
 
    <plugin

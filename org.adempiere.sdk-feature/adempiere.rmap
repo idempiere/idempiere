@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rm:rmap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:maven="http://www.eclipse.org/buckminster/MavenProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
-  <rm:locator pattern="^org\.apache\.felix\.webconsole\.plugins\.packageadmin$" searchPathRef="workspace.bundle"/>
+  <rm:locator pattern="^org\.apache\.felix\.webconsole\.plugins\.packageadmin$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.idempiere\.hazelcast\.service$" searchPathRef="workspace.feature" failOnError="false"/>
   <rm:locator pattern="^org\.idempiere\.hazelcast\.service$" searchPathRef="workspace.project"/>
   <rm:locator pattern="^org\.apache\.poi$" searchPathRef="orbit"/>
@@ -75,7 +75,7 @@
     <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/"/>
+      <rm:uri format="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository/"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="restlet.maven">
@@ -121,6 +121,7 @@
         <maven:entry artifactId="org.apache.felix.webconsole.plugins.ds" groupId="org.apache.felix" name="org.apache.felix.webconsole.plugins.ds"/>
         <maven:entry artifactId="org.apache.felix.webconsole.plugins.memoryusage" groupId="org.apache.felix" name="org.apache.felix.webconsole.plugins.memoryusage"/>
         <maven:entry artifactId="org.apache.felix.inventory" groupId="org.apache.felix" name="org.apache.felix.inventory"/>
+        <maven:entry artifactId="org.apache.felix.webconsole.plugins.packageadmin" groupId="org.apache.felix" name="org.apache.felix.webconsole.plugins.packageadmin"/>
       </maven:mappings>
     </rm:provider>
   </rm:searchPath>

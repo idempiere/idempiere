@@ -19,7 +19,7 @@
     <cq:advisorNode namePattern="^org\.apache\.xml\.resolver$" componentType="osgi.bundle" versionOverride="[1.2.0,1.3.0)"/>
     <cq:advisorNode namePattern="^org\.apache\.xerces$" componentType="osgi.bundle" versionOverride="[2.9.0,2.9.1)"/>
     <cq:advisorNode namePattern="^org\.apache\.xml\.serializer$" componentType="osgi.bundle" versionOverride="[2.7.1,2.7.2)"/>
-    <cq:advisorNode namePattern="^org\.apache\.felix\.webconsole$" versionOverride="[4.2.2,4.2.2]"/>
+    <cq:advisorNode namePattern="^org\.apache\.felix\.webconsole$" versionOverride="[4.2.2,4.3.0)"/>
     <cq:advisorNode namePattern="^org\.objectweb(\..+)?" componentType="osgi.bundle" versionOverride="[5.0.1,5.0.1]"/>
     <cq:advisorNode namePattern="^javax\.jms$" componentType="osgi.bundle" versionOverride="[1.1.0,1.1.1)"/>
     <cq:advisorNode namePattern="^javax\.ejb$" componentType="osgi.bundle" versionOverride="[3.1.1,3.1.2)"/>
@@ -30,4 +30,7 @@
     <cq:advisorNode namePattern="^org\.apache\.servicemix\.bundles\.cglib$" componentType="osgi.bundle" versionOverride="raw:[3.1.0.'1',3.1.0.'1']/format(n[.n=0;[.n=0;]][d?S=M;]):3.1_1,3.1_1"/>
     <cq:advisorNode namePattern="^org\.eclipse\.jetty\.osgi-servlet-api$" versionOverride="[3.1.0.M0,3.1.0.M0]"/>
     <cq:advisorNode namePattern="^org\.eclipse\.jetty(\..+)?" versionOverride="[9.2.0,9.3.0)"/>
+    <cq:advisorNode namePattern="^javax\.annotation-api$" versionOverride="[1.2.0,1.2.0]"/>
+    <cq:advisorNode namePattern="^org\.apache\.felix\.webconsole\.plugins\.packageadmin$" versionOverride="[1.0.0,1.0.0]"/>
+    <cq:advisorNode namePattern="org.apache.commons.io" componentType="osgi.bundle" versionOverride="[1.4.0,2.0.0)"/>
 </cq:componentQuery>
