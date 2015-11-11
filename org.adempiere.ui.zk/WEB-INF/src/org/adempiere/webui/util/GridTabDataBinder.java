@@ -172,24 +172,22 @@ public class GridTabDataBinder implements ValueChangeListener {
         
         //Checks if the change in a field modifies the display logic in the dependant fields
         Object source = e.getSource();
-        WEditor editor = (WEditor) source;
-
-        if( editor != null ){
-
+        if (source != null && source instanceof WEditor) {
+        	WEditor editor = (WEditor) source;
         	ArrayList<GridField> dependants = gridTab.getDependantFields(editor.getColumnName());
-
-        	if ( dependants != null && !dependants.isEmpty() )
-        		if( editor.getComponent() != null ) //Editor
-        			if( editor.getComponent().getParent() != null) //Cell
-        				if( editor.getComponent().getParent().getParent() != null ) //Row
-        					if( editor.getComponent().getParent().getParent().getParent() != null ) //Rows
-        						if( editor.getComponent().getParent().getParent().getParent().getParent() != null ){ //Grid
-        							Grid listBox = (Grid) editor.getComponent().getParent().getParent().getParent().getParent();
-        							RowRenderer<Object[]> renderer = listBox.getRowRenderer();
-        							GridTabRowRenderer gtr = (GridTabRowRenderer)renderer;
-        							gtr.checkDependants(dependants);
-
-        						}
+        	if (dependants != null
+        			&& !dependants.isEmpty()
+        			&& editor.getComponent() != null //Editor
+        			&& editor.getComponent().getParent() != null //Cell
+        			&& editor.getComponent().getParent().getParent() != null //Row
+        			&& editor.getComponent().getParent().getParent().getParent() != null //Rows
+        			&& editor.getComponent().getParent().getParent().getParent().getParent() != null //Grid
+        			&& editor.getComponent().getParent().getParent().getParent().getParent() instanceof Grid) {
+        		Grid listBox = (Grid) editor.getComponent().getParent().getParent().getParent().getParent();
+        		RowRenderer<Object[]> renderer = listBox.getRowRenderer();
+        		GridTabRowRenderer gtr = (GridTabRowRenderer)renderer;
+        		gtr.checkDependants(dependants);
+        	}
         }
 
     } // ValueChange
