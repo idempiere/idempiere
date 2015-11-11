@@ -801,6 +801,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				XhtmlDocument doc = new XhtmlDocument();
 				doc.getHtml().setNeedClosingTag(false);
 				doc.getBody().setNeedClosingTag(false);
+				doc.appendHead("<meta charset=\"UTF-8\" />");
 				doc.appendBody(table);
 				appendInlineCss (doc);
 				if (extension != null && extension.getStyleURL() != null)
