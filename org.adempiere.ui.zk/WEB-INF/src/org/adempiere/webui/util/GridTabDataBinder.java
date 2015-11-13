@@ -186,7 +186,8 @@ public class GridTabDataBinder implements ValueChangeListener {
         		Grid listBox = (Grid) editor.getComponent().getParent().getParent().getParent().getParent();
         		RowRenderer<Object[]> renderer = listBox.getRowRenderer();
         		GridTabRowRenderer gtr = (GridTabRowRenderer)renderer;
-        		gtr.checkDependants(dependants);
+        		if( gtr != null )
+        			gtr.checkDependants(dependants);
         	}
         }
 
