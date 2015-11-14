@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/junit.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/calendar.jar" sourcepath="lib/src/calendar-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ckez.jar" sourcepath="lib/src/ckez-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-el.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-fileupload.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-io.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/Filters.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gmapsz.jar" sourcepath="lib/src/gmapsz-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jruby-complete.jar" sourcepath="lib/src/jruby-complete-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/js.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/json_simple.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/junit.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jxl.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jython.jar" sourcepath="lib/src/jython-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/mvel.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/ognl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/timelinez.jar" sourcepath="lib/src/timelinez-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/timeplotz.jar" sourcepath="lib/src/timeplotz-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/zcommon.jar" sourcepath="lib/src/zcommon-sources.jar"/>

@@ -1,0 +1,5 @@
+<project name="zklibrary" basedir="." default="copy">
+	<target name="copy">
+		<get src="http://central.maven.org/maven2/org/apache/xmlgraphics/batik-ext/1.7/batik-ext-1.7.jar" dest="batik-ext.jar" usetimestamp="true" verbose="true" retries="5" />
+	</target>
+</project>

@@ -7,8 +7,11 @@ syntax: regexp
 ^org\.adempiere\.install/bin/.*\.*$
 ^org\.adempiere\.ui\.zk/dist$
 ^org\.adempiere\.ui\.zk/bin/.*\.*$
+^[^/]+/lib/.*\.jar$
+^[^/]+/.*\.jar$
+^[^/]+/WEB-INF/lib/.*\.jar$
+^db/ddlutils/lib/.*\.jar$
 
-syntax: regexp
 ^lib/plugins$
 ^plugins/.*\.class$
 ^adempiere-local\.properties$
@@ -24,8 +27,6 @@ syntax: regexp
 ^org\.adempiere\.ui\.swing/bin/.*\.*$
 ^org\.adempiere\.report\.jasper\.fonts/bin/.*\.*$
 
-
-syntax: regexp
 ^org.adempiere.tomcat.config/META-INF/tomcat/server\.xml$
 ^org\.apache\.ecs/bin/.*\.class$
 ^org\.adempiere\.replication/bin/.*\.class$
@@ -62,18 +63,12 @@ syntax: regexp
 ^work/.*$
 ^hazelcast\.xml$
 
-syntax: regexp
 swingclient.product.*
 server.product.*
 
-syntax: regexp
 ^org\.zkoss\.zk\.library/bin$
-syntax: regexp
-\.class$
-syntax: regexp
 \.class$
 
-syntax: regexp
 ^org\.zkoss\.zk\.library/.*/calendar.*\.jar$
 ^org\.zkoss\.zk\.library/.*/ckez.*\.jar$
 ^org\.zkoss\.zk\.library/.*/gmapsz.*\.jar$
@@ -89,3 +84,4 @@ syntax: regexp
 ^packout
 ^RemoteSystemsTempFiles
 
+^fitnesse/FitNesseRoot/FitLibraryWeb/[^/]+\.zip$
