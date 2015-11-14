@@ -17,4 +17,10 @@ IDEMPIERE_REDUCE=/mnt/data/dev/bitbucket/main-sync/idempiere-reduce
 
 hg convert --filemap $IDEMPIERE_ROOT/migration/reduce_repository/exclude_file_map.txt $IDEMPIERE_ROOT $IDEMPIERE_REDUCE
 
-5. wait (about 30 miutes), and upload your new repository to your server
+5. wait (about 30 miutes) for process finish
+
+6. in new repository do below command to delete latest commit of convert extension 
+
+7. hg rollback --verbose -f
+
+8. upload your new repository to your server or bitbucket
