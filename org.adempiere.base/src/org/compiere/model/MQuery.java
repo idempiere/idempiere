@@ -1025,10 +1025,10 @@ class Restriction  implements Serializable
 		//	clean code
 		if (Code instanceof String)
 		{
-			if (Code.toString().startsWith("'"))
+			if (Code.toString().startsWith("'") && Code.toString().endsWith("'")) {
 				Code = Code.toString().substring(1);
-			if (Code.toString().endsWith("'"))
 				Code = Code.toString().substring(0, Code.toString().length()-2);
+			}
 		}
 		if (infoDisplay != null)
 			InfoDisplay = infoDisplay.trim();

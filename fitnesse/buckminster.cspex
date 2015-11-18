@@ -1,0 +1,19 @@
+<cspecExtension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns="http://www.eclipse.org/buckminster/CSpec-1.0"
+	xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0">
+	<actions>
+		<!-- public action with ant actor to do the actual copying -->
+		<cs:public name="fetch.dependency.jars" actor="ant">
+			<cs:actorProperties>
+				<cs:property key="buildFile" value="copyjars.xml" />
+				<cs:property key="targets" value="copy" />
+			</cs:actorProperties>
+		</cs:public>		
+	</actions>
+	<groups>
+		<!-- buckminster.prebind the prebind group will be executed during materialization -->
+		<cs:private name="buckminster.postbind">
+			<cs:attribute name="fetch.dependency.jars" alias="action.requirements" />			
+		</cs:private>
+	</groups>
+</cspecExtension>

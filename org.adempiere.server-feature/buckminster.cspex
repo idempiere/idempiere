@@ -48,9 +48,20 @@
                 <path path="idempiereServer.${target.ws}.${target.os}.${target.arch}.zip" ></path>
             </products>
         </public>
+        <!-- public action with ant actor to do the actual copying -->
+		<public name="fetch.dependency.jars" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="copyjars.xml" />
+				<property key="targets" value="copy" />
+			</actorProperties>
+		</public>		
     </actions>
 	<groups>
 		<!-- Place your Groups here -->
+		<!-- buckminster.prebind the prebind group will be executed during materialization -->
+		<private name="buckminster.postbind">
+			<attribute name="fetch.dependency.jars" alias="action.requirements" />			
+		</private>
 	</groups>
 	<alterDependencies>
 		<!-- Place your Dependency alterations here -->

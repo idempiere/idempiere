@@ -85,6 +85,16 @@ public class AbstractService {
 	protected String login(ADLoginRequest loginRequest, String webService, String method, String serviceType) {
 
 		CompiereService m_cs = getCompiereService();
+		if (m_cs.getUserName() == null) {
+			HttpServletRequest req = getHttpServletRequest();
+			// search for a non-expired CompiereService with same login data
+			CompiereService cachedCs = CompiereService.get(req, loginRequest);
+			if (cachedCs != null) {
+				m_cs = cachedCs;
+				req.setAttribute(COMPIERE_SERVICE, cachedCs);
+				return authenticate(webService, method, serviceType, cachedCs); // already logged with same data
+			}
+		}
 
 		if (m_cs.isLoggedIn() && m_cs.getAD_Client_ID() == loginRequest.getClientID() && loginRequest.getClientID() == Env.getAD_Client_ID(Env.getCtx())
 				&& m_cs.getAD_Org_ID() == loginRequest.getOrgID() && m_cs.getAD_Role_ID() == loginRequest.getRoleID()
@@ -99,6 +109,9 @@ public class AbstractService {
 		KeyNamePair[] clients = login.getClients(loginRequest.getUser(), loginRequest.getPass());
 		if (clients == null)
 			return "Error login - User invalid";
+		m_cs.setPassword(loginRequest.getPass());
+		m_cs.setExpiryMinutes(loginRequest.getStage());
+		m_cs.setIPAddress(getHttpServletRequest().getRemoteAddr());
 
 		boolean okclient = false;
 		KeyNamePair selectedClient = null;
@@ -119,6 +132,8 @@ public class AbstractService {
     		Env.setContext(m_cs.getCtx(), "#AD_User_ID", user.getAD_User_ID() );
     		Env.setContext(m_cs.getCtx(), "#AD_User_Name", user.getName() );
     		Env.setContext(m_cs.getCtx(), "#SalesRep_ID", user.getAD_User_ID() );
+    		String userAgent = getHttpServletRequest().getHeader("User-Agent");
+    		Env.setContext(m_cs.getCtx(), "#UserAgent",   userAgent == null ? "Unknown" : userAgent);
     	}
 
 		KeyNamePair[] roles = login.getRoles(loginRequest.getUser(), selectedClient);
@@ -246,7 +261,9 @@ public class AbstractService {
 		String ret=invokeLoginValidator(null, m_cs.getCtx(), m_webservicetype, IWSValidator.TIMING_ON_AUTHORIZATION);
 		if(ret!=null && ret.length()>0)
 			return ret;
-		
+
+		m_cs.refreshLastAuthorizationTime();
+
 		return null;
 	}
 
@@ -331,7 +348,11 @@ public class AbstractService {
 				 OutputField outField= outputFields.addNewOutputField();
 				 outField.setColumn(colName);
 				 if(po.get_Value(indCol)!=null){
-					 outField.setValue(po.get_Value(indCol).toString());
+					 if(po.get_Value(indCol) instanceof byte[])
+						 outField.setValue(new String(Base64.encodeBase64((byte[]) po.get_Value(indCol))));
+					 else
+						 outField.setValue(po.get_Value(indCol).toString());
+					 
 					 Lookup lookup = poInfo.getColumnLookup(indCol);
 					 if(lookup != null){
 						 //Setting text

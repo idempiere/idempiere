@@ -1,0 +1,26 @@
+reference: https://idempiere.atlassian.net/browse/IDEMPIERE-2940
+
+1. asume folder contain your idempiere repository is /mnt/data/dev/bitbucket/main-sync/idempiere-experimental
+
+2. asume folder contain new repository is /mnt/data/dev/bitbucket/main-sync/idempiere-reduce
+
+3. active convert extension in your mercurial
+https://www.mercurial-scm.org/wiki/ConvertExtension#Configuration
+
+Add the following lines to your .hgrc or to enable the extension :
+[extensions]
+hgext.convert=
+
+4. run shell command:
+IDEMPIERE_ROOT=/mnt/data/dev/bitbucket/main-sync/idempiere-experimental
+IDEMPIERE_REDUCE=/mnt/data/dev/bitbucket/main-sync/idempiere-reduce
+
+hg convert --filemap $IDEMPIERE_ROOT/migration/reduce_repository/exclude_file_map.txt $IDEMPIERE_ROOT $IDEMPIERE_REDUCE
+
+5. wait (about 30 miutes) for process finish
+
+6. in new repository do below command to delete latest commit of convert extension 
+
+7. hg rollback --verbose -f
+
+8. upload your new repository to your server or bitbucket

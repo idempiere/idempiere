@@ -20,7 +20,7 @@
 		<!-- buckminster.prebind the prebind group will be executed during materialization -->
 		<cs:private name="buckminster.postbind">
 			<cs:attribute name="fetch.dependency.jars" alias="action.requirements" />			
-			<cs:attribute name="fetch.sources.jars" alias="action.requirements" />
+			<!--<cs:attribute name="fetch.sources.jars" alias="action.requirements" />-->
 		</cs:private>
 	</groups>
 </cspecExtension>

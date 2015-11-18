@@ -1,0 +1,5 @@
+<project name="zklibrary" basedir="." default="copy">
+	<target name="copy">
+		<get src="http://central.maven.org/maven2/ant-contrib/ant-contrib/1.0b3/ant-contrib-1.0b3.jar" dest="ant-contrib-1.0b3.jar" usetimestamp="true" verbose="true" retries="5" />
+	</target>
+</project>
