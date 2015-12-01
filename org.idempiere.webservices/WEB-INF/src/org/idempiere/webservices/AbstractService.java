@@ -85,16 +85,6 @@ public class AbstractService {
 	protected String login(ADLoginRequest loginRequest, String webService, String method, String serviceType) {
 
 		CompiereService m_cs = getCompiereService();
-		if (m_cs.getUserName() == null) {
-			HttpServletRequest req = getHttpServletRequest();
-			// search for a non-expired CompiereService with same login data
-			CompiereService cachedCs = CompiereService.get(req, loginRequest);
-			if (cachedCs != null) {
-				m_cs = cachedCs;
-				req.setAttribute(COMPIERE_SERVICE, cachedCs);
-				return authenticate(webService, method, serviceType, cachedCs); // already logged with same data
-			}
-		}
 
 		if (m_cs.isLoggedIn() && m_cs.getAD_Client_ID() == loginRequest.getClientID() && loginRequest.getClientID() == Env.getAD_Client_ID(Env.getCtx())
 				&& m_cs.getAD_Org_ID() == loginRequest.getOrgID() && m_cs.getAD_Role_ID() == loginRequest.getRoleID()
@@ -109,9 +99,6 @@ public class AbstractService {
 		KeyNamePair[] clients = login.getClients(loginRequest.getUser(), loginRequest.getPass());
 		if (clients == null)
 			return "Error login - User invalid";
-		m_cs.setPassword(loginRequest.getPass());
-		m_cs.setExpiryMinutes(loginRequest.getStage());
-		m_cs.setIPAddress(getHttpServletRequest().getRemoteAddr());
 
 		boolean okclient = false;
 		KeyNamePair selectedClient = null;
@@ -261,9 +248,7 @@ public class AbstractService {
 		String ret=invokeLoginValidator(null, m_cs.getCtx(), m_webservicetype, IWSValidator.TIMING_ON_AUTHORIZATION);
 		if(ret!=null && ret.length()>0)
 			return ret;
-
-		m_cs.refreshLastAuthorizationTime();
-
+		
 		return null;
 	}
 

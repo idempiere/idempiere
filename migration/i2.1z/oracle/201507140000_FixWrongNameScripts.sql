@@ -9,6 +9,6 @@ update ad_migrationscript set name='201509280947_IDEMPIERE-1820.sql' where name=
    
 update ad_system set lastmigrationscriptapplied='201509280947_IDEMPIERE-1820.sql' where lastmigrationscriptapplied='210509280947_IDEMPIERE-1820.sql'
 ;
-SELECT register_migration_script('201510161110_FixWrongNameScripts.sql') FROM dual
+SELECT register_migration_script('201507140000_FixWrongNameScripts.sql') FROM dual
 ;
 
