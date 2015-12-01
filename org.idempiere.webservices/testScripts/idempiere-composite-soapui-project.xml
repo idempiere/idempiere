@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project name="idempiere-composite2" soapui-version="5.2.0" activeEnvironment="Default" abortOnError="false" runType="SEQUENTIAL" resourceRoot="" id="deb80e74-01a5-45f8-bcca-3c8252c7e825" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="compositeInterfaceSoapBinding" type="wsdl" bindingName="{http://idempiere.org/ADInterface/1_0}compositeInterfaceSoapBinding" soapVersion="1_1" anonymous="optional" definition="https://localhost:8443/ADInterface/services/compositeInterface?wsdl" id="5ac83ca8-1291-4121-8e1e-1ec034faf398" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="https://localhost:8443/ADInterface/services/compositeInterface?wsdl"><con:part><con:url>https://localhost:8443/ADInterface/services/compositeInterface?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="compositeInterface" targetNamespace="http://idempiere.org/ADInterface/1_0" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://idempiere.org/ADInterface/1_0" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<con:soapui-project name="idempiere-composite2" soapui-version="4.5.1" activeEnvironment="Default" abortOnError="false" runType="SEQUENTIAL" resourceRoot="" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="compositeInterfaceSoapBinding" type="wsdl" bindingName="{http://idempiere.org/ADInterface/1_0}compositeInterfaceSoapBinding" soapVersion="1_1" anonymous="optional" definition="https://localhost:8443/ADInterface/services/compositeInterface?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="https://localhost:8443/ADInterface/services/compositeInterface?wsdl"><con:part><con:url>https://localhost:8443/ADInterface/services/compositeInterface?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="compositeInterface" targetNamespace="http://idempiere.org/ADInterface/1_0" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://idempiere.org/ADInterface/1_0" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <wsdl:types>
     <xsd:schema elementFormDefault="qualified" targetNamespace="http://idempiere.org/ADInterface/1_0">
       <xsd:element name="WindowTabData" type="tns:WindowTabData"/>
@@ -385,7 +385,7 @@
       <soap:address location="https://localhost:8443/ADInterface/services/compositeInterface"/>
     </wsdl:port>
   </wsdl:service>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>https://localhost:8443/ADInterface/services/compositeInterface</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="compositeOperation" bindingOperationName="compositeOperation" type="Request-Response" outputName="compositeOperationResponse" inputName="compositeOperation" receivesAttachments="false" sendsAttachments="false" anonymous="optional" id="5755b491-d433-47cf-ba9d-90387bd55ca0"><con:settings/><con:call name="Request 1" id="d95190b9-1d24-4da0-86b2-1a87a68776f4"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>https://localhost:8443/ADInterface/services/compositeInterface</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:_0="http://idempiere.org/ADInterface/1_0">
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>https://localhost:8443/ADInterface/services/compositeInterface</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="compositeOperation" bindingOperationName="compositeOperation" type="Request-Response" outputName="compositeOperationResponse" inputName="compositeOperation" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>https://localhost:8443/ADInterface/services/compositeInterface</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:_0="http://idempiere.org/ADInterface/1_0">
    <soapenv:Header/>
    <soapenv:Body>
       <_0:compositeOperation>
@@ -648,23 +648,4 @@
          </_0:CompositeRequest>
       </_0:compositeOperation>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://idempiere.org/ADInterface/1_0/CompositeService/compositeOperation"/><con:wsrmConfig version="1.2"/></con:call><con:call id="1c61f633-bef6-4bcd-b42d-024e77daa14e" name="OnlyLogin"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>https://localhost:8443/ADInterface/services/compositeInterface</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:_0="http://idempiere.org/ADInterface/1_0">
-   <soapenv:Header/>
-   <soapenv:Body>
-      <_0:compositeOperation>
-         <_0:CompositeRequest>
-         	  <_0:serviceType>TestLogin</_0:serviceType>
-            <_0:ADLoginRequest>
-               <_0:user>WebServicex</_0:user>
-               <_0:pass>WebService</_0:pass>
-               <_0:lang>en_US</_0:lang>
-               <_0:ClientID>11</_0:ClientID>
-               <_0:RoleID>50004</_0:RoleID>
-               <_0:OrgID>11</_0:OrgID>
-               <_0:WarehouseID>103</_0:WarehouseID>
-               <_0:stage>9</_0:stage>
-            </_0:ADLoginRequest>
-         </_0:CompositeRequest>
-      </_0:compositeOperation>
-   </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://idempiere.org/ADInterface/1_0/CompositeService/compositeOperation"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/></con:soapui-project>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://idempiere.org/ADInterface/1_0/CompositeService/compositeOperation"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/></con:soapui-project>
