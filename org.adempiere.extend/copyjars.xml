@@ -1,6 +1,6 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
-		<get src="https://bitbucket.org/idempiere/idempiere-experimental/downloads/spiffy-with_source-all-0.05.jar" dest="spiffy-with_source-all-0.05.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="https://bitbucket.org/idempiere/idempiere-experimental/downloads/extend.jar" dest="extend.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/3.1/spiffy-with_source-all-0.05.jar/download" dest="spiffy-with_source-all-0.05.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/3.1/extend.jar/download" dest="extend.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>

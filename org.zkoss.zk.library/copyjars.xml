@@ -15,6 +15,6 @@
 		<get src="http://mavensync.zkoss.org/maven2/org/zkoss/calendar/calendar/2.1.5/calendar-2.1.5.jar" dest="lib/calendar.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="http://central.maven.org/maven2/commons-fileupload/commons-fileupload/1.2.2/commons-fileupload-1.2.2.jar" dest="lib/commons-fileupload.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="http://central.maven.org/maven2/commons-io/commons-io/2.1/commons-io-2.1.jar" dest="lib/commons-io.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="https://bitbucket.org/idempiere/idempiere-experimental/downloads/junit.jar" dest="lib/junit.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/3.1/junit.jar/download" dest="lib/junit.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>

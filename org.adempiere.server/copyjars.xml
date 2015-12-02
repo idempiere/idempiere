@@ -1,7 +1,7 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
 		<mkdir dir="WEB-INF/lib" />
-		<get src="https://bitbucket.org/idempiere/idempiere-experimental/downloads/jardiff.jar" dest="WEB-INF/lib/jardiff.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="https://bitbucket.org/idempiere/idempiere-experimental/downloads/jnlp-servlet.jar" dest="WEB-INF/lib/jnlp-servlet.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/3.1/jardiff.jar/download" dest="WEB-INF/lib/jardiff.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/3.1/jnlp-servlet.jar/download" dest="WEB-INF/lib/jnlp-servlet.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>
