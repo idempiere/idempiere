@@ -16,9 +16,9 @@
  *****************************************************************************/
 package org.compiere.print;
 
-import static org.compiere.model.SystemIDs.TABLE_AD_TABLE;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INVENTORY;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_MOVEMENT;
+import static org.compiere.model.SystemIDs.TABLE_AD_TABLE;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -807,14 +807,14 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				if (extension != null && extension.getStyleURL() != null)
 				{
 					// maybe cache style content with key is path
-					String pathStyleFile = extension.getFullPathStyle();
+					String pathStyleFile = extension.getFullPathStyle(); // creates a temp file - delete below
 					Path path = Paths.get(pathStyleFile);
 				    List<String> styleLines = Files.readAllLines(path, Ini.getCharset());
+				    Files.delete(path); // delete temp file
 				    StringBuilder styleBuild = new StringBuilder();
 				    for (String styleLine : styleLines){
-				    	styleBuild.append(styleLine);
+				    	styleBuild.append(styleLine); //.append("\n");
 				    }
-				    
 				    appendInlineCss (doc, styleBuild);
 				}
 				if (extension != null && extension.getScriptURL() != null && !isExport)
@@ -2092,4 +2092,5 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			return String.format(CSS_SELECTOR_TEMPLATE, index + 1);
 		}
 	}
+
 }	//	ReportEngine
