@@ -13,6 +13,13 @@
  *****************************************************************************/
 package org.adempiere.webui.report;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.theme.ThemeManager;
 import org.apache.ecs.ConcreteElement;
@@ -36,9 +43,8 @@ public class HTMLExtension implements IHTMLExtension {
 	private String componentId;
 	private String scriptURL;
 	private String styleURL;
-	private String contextFullPath;
 
-	public HTMLExtension(String contextFullPath, String contextPath, String classPrefix, String componentId) {
+	public HTMLExtension(String contextPath, String classPrefix, String componentId) {
 
 		String theme = MSysConfig.getValue(MSysConfig.HTML_REPORT_THEME, "/", Env.getAD_Client_ID(Env.getCtx()));
 
@@ -51,7 +57,6 @@ public class HTMLExtension implements IHTMLExtension {
 		this.componentId = componentId;
 		this.scriptURL = contextPath + theme + "js/report.js";
 		this.styleURL = contextPath + theme + "css/report.css";
-		this.contextFullPath = contextFullPath;
 	}
 	
 	public void extendIDColumn(int row, ConcreteElement columnElement, a href,
@@ -94,15 +99,44 @@ public class HTMLExtension implements IHTMLExtension {
 		
 	}
 	
-	public String getFullPathStyle (){
+	public String getFullPathStyle() {
 		String theme = MSysConfig.getValue(MSysConfig.HTML_REPORT_THEME, "/", Env.getAD_Client_ID(Env.getCtx()));
-
 		if (! theme.startsWith("/"))
 			theme = "/" + theme;
 		if (! theme.endsWith("/"))
 			theme = theme + "/";
-
-		return contextFullPath + theme + "css/report.css";
+		String resFile = theme + "css/report.css";
 		
+		URL urlFile = this.getClass().getResource(resFile);
+		if (urlFile == null) {
+			resFile = "/css/report.css"; // default
+			urlFile = this.getClass().getResource(resFile);
+		}
+		if (urlFile != null) {
+			FileOutputStream cssStream = null;
+			File cssFile = null;
+			try {
+				// copy the resource to a temporary file to process it with 2pack
+				InputStream stream = urlFile.openStream();
+				cssFile = File.createTempFile("report", ".css");
+				cssStream = new FileOutputStream(cssFile);
+			    byte[] buffer = new byte[1024];
+			    int read;
+			    while((read = stream.read(buffer)) != -1){
+			    	cssStream.write(buffer, 0, read);
+			    }
+			} catch (IOException e) {
+				throw new AdempiereException(e);
+			} finally{
+				if (cssStream != null) {
+					try {
+						cssStream.close();
+					} catch (Exception e2) {}
+				}
+			}
+			return cssFile.getAbsolutePath();
+		} else {
+			return null;
+		}
 	}
 }

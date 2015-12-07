@@ -7,7 +7,7 @@
 		<get src="http://central.maven.org/maven2/net/sf/jasperreports/jasperreports-fonts/5.6.1/jasperreports-fonts-5.6.1.jar" dest="lib/jasperreports-fonts-5.6.1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="http://central.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.4/jackson-core-2.1.4.jar" dest="lib/jackson-core-2.1.4.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="http://central.maven.org/maven2/xalan/xalan/2.7.1/xalan-2.7.1.jar" dest="lib/xalan-2.7.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="https://bitbucket.org/idempiere/idempiere-experimental/downloads/jasperreports-functions-5.6.1.jar" dest="lib/jasperreports-functions-5.6.1.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="http://downloads.sourceforge.net/project/idempiere/binary.file/jarfile/3.1/jasperreports-functions-5.6.1.jar" dest="lib/jasperreports-functions-5.6.1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="http://central.maven.org/maven2/joda-time/joda-time/2.1/joda-time-2.1.jar" dest="lib/joda-time-2.1.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>

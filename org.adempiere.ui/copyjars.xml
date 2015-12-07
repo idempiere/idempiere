@@ -4,7 +4,7 @@
 		http://central.maven.org/maven2/org/codeartisans/thirdparties/swing/org-netbeans-api-visual/2.23.1/org-netbeans-api-visual-2.23.1.jar
 		http://central.maven.org/maven2/org/codeartisans/thirdparties/swing/org-openide-util/8.6.2/org-openide-util-8.6.2.jar
 		-->
-		<get src="https://bitbucket.org/idempiere/idempiere-experimental/downloads/org-netbeans-api-visual.jar" dest="org-netbeans-api-visual.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="https://bitbucket.org/idempiere/idempiere-experimental/downloads/org-openide-util.jar" dest="org-openide-util.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="http://downloads.sourceforge.net/project/idempiere/binary.file/jarfile/3.1/org-netbeans-api-visual.jar" dest="org-netbeans-api-visual.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="http://downloads.sourceforge.net/project/idempiere/binary.file/jarfile/3.1/org-openide-util.jar" dest="org-openide-util.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>

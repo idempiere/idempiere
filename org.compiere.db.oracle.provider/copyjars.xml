@@ -2,7 +2,7 @@
 	<target name="copy">
 		<get src="http://central.maven.org/maven2/com/mchange/c3p0/0.9.5/c3p0-0.9.5.jar" dest="c3p0-0.9.5.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="http://central.maven.org/maven2/com/mchange/mchange-commons-java/0.2.9/mchange-commons-java-0.2.9.jar" dest="mchange-commons-java-0.2.9.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="https://bitbucket.org/idempiere/idempiere-experimental/downloads/c3p0-oracle-thin-extras-0.9.5.jar" dest="c3p0-oracle-thin-extras-0.9.5.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="https://bitbucket.org/idempiere/idempiere-experimental/downloads/ojdbc7.jar" dest="ojdbc7.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="http://downloads.sourceforge.net/project/idempiere/binary.file/jarfile/3.1/c3p0-oracle-thin-extras-0.9.5.jar" dest="c3p0-oracle-thin-extras-0.9.5.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="http://downloads.sourceforge.net/project/idempiere/binary.file/jarfile/3.1/ojdbc7.jar" dest="ojdbc7.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>
