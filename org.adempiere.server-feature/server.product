@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="iDempiere Server" uid="org.adempiere.server.product" id="org.eclipse.equinox.p2.director.product" application="org.adempiere.server.application" version="3.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="iDempiere Server" uid="org.adempiere.server.product" id="org.eclipse.equinox.p2.director.product" application="org.adempiere.server.application" version="3.1.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -33,7 +33,7 @@
    </plugins>
 
    <features>
-      <feature id="org.adempiere.server" version="3.0.0.qualifier"/>
+      <feature id="org.adempiere.server" version="3.1.0.qualifier"/>
    </features>
 
    <configurations>
@@ -50,10 +50,7 @@
       <plugin id="org.adempiere.ui.zk" autoStart="true" startLevel="4" />
       <plugin id="org.adempiere.webstore" autoStart="true" startLevel="4" />
       <plugin id="org.apache.aries.spifly.dynamic.bundle" autoStart="true" startLevel="2" />
-      <plugin id="org.apache.felix.inventory" autoStart="true" startLevel="0" />
-      <plugin id="org.apache.felix.scr" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.webconsole" autoStart="true" startLevel="0" />
-      <plugin id="org.apache.felix.webconsole.plugins.packageadmin" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.equinox.cm" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
@@ -76,6 +73,7 @@
       <plugin id="org.objectweb.asm.tree" autoStart="true" startLevel="0" />
       <plugin id="org.restlet" autoStart="true" startLevel="3" />
       <property name="eclipse.product" value="org.adempiere.server.product" />
+      <property name="org.eclipse.equinox.simpleconfigurator.exclusiveInstallation" value="false" />
       <property name="org.eclipse.update.reconcile" value="false" />
       <property name="osgi.compatibility.bootdelegation" value="true" />
       <property name="osgi.console.enable.builtin" value="false" />

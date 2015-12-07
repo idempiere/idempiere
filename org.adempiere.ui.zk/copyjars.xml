@@ -1,0 +1,11 @@
+<project name="zklibrary" basedir="." default="copy">
+	<target name="copy">
+		<mkdir dir="WEB-INF/lib" />
+		<get src="http://central.maven.org/maven2/org/atmosphere/atmosphere-compat-jbossweb/1.0.4/atmosphere-compat-jbossweb-1.0.4.jar" dest="WEB-INF/lib/atmosphere-compat-jbossweb-1.0.4.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="http://central.maven.org/maven2/org/atmosphere/atmosphere-compat-tomcat/1.0.4/atmosphere-compat-tomcat-1.0.4.jar" dest="WEB-INF/lib/atmosphere-compat-tomcat-1.0.4.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="http://central.maven.org/maven2/org/atmosphere/atmosphere-compat-tomcat7/1.0.4/atmosphere-compat-tomcat7-1.0.4.jar" dest="WEB-INF/lib/atmosphere-compat-tomcat7-1.0.4.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="http://central.maven.org/maven2/org/atmosphere/atmosphere-runtime/1.0.4/atmosphere-runtime-1.0.4.jar" dest="WEB-INF/lib/atmosphere-runtime-1.0.4.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="http://downloads.sourceforge.net/project/idempiere/binary.file/jarfile/3.1/labelapplet.jar" dest="labelapplet.jar" usetimestamp="true" verbose="true" retries="5" />
+
+	</target>
+</project>

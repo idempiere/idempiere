@@ -183,7 +183,7 @@ public class WebEnv
 		MClient client = MClient.get(ctx, 0);
 		MSystem system = MSystem.get(ctx);
 		client.sendEMail(client.getRequestEMail(),
-			"Server started: " + system.getName(),
+			"Server started: " + system.getName() + " (" + WebUtil.getServerName() + ")",
 			"ServerInfo: " + context.getServerInfo(), null);
 
 		return s_initOK;

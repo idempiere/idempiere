@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for S_ResourceUnAvailable
  *  @author iDempiere (generated) 
- *  @version Release 2.1
+ *  @version Release 3.1
  */
 public interface I_S_ResourceUnAvailable 
 {

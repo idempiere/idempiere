@@ -27,6 +27,7 @@ import org.adempiere.base.event.IEventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.model.MBroadcastMessage;
 import org.adempiere.util.ServerContext;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
@@ -58,9 +59,12 @@ import org.adempiere.webui.window.FDialog;
 import org.compiere.Adempiere;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.model.I_AD_Preference;
+import org.compiere.model.MPreference;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
@@ -107,7 +111,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4209181029836503344L;
+	private static final long serialVersionUID = 6775071898539380777L;
 
 	private static final String IMAGES_UPARROW_PNG = "images/collapse-header.png";
 
@@ -200,6 +204,16 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 				}
 			}
 		});
+        
+        w.addEventListener(Events.ON_SIZE, new EventListener<Event>() {
+
+        	@Override
+        	public void onEvent(Event event) throws Exception {
+        			West west = (West) event.getTarget();
+        			updateSideControllerWidthPreference(west.getWidth());      
+        	}
+        });
+        
         UserPreference pref = SessionManager.getSessionApplication().getUserPreference();
         boolean menuCollapsed= pref.isPropertyBool(UserPreference.P_MENU_COLLAPSED);
         w.setOpen(!menuCollapsed);
@@ -232,7 +246,42 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 				}
 			}
 		});
+
+        e.addEventListener(Events.ON_SIZE, new EventListener<Event>() {
+
+        	@Override
+        	public void onEvent(Event event) throws Exception {
+        			East east = (East) event.getTarget();
+        			updateHelpWidthPreference(east.getWidth());      
+        	}
+        });
         
+        String westWidth = getWestWidthPreference();        
+        String eastWidth = getEastWidthPreference();
+
+        //Set preference width
+        if( westWidth != null || eastWidth != null ){
+        	
+        	//If both panels have prefered size check that the sum is not bigger than the browser
+        	if( westWidth != null && eastWidth != null ){
+            	ClientInfo browserInfo = getClientInfo();
+        		int browserWidth = browserInfo.desktopWidth;
+        		int wWidth = Integer.valueOf(westWidth.replace("px", ""));
+        		int eWidth = Integer.valueOf(eastWidth.replace("px", ""));
+        		
+        		if( eWidth + wWidth <= browserWidth ){
+        			w.setWidth(westWidth);
+        			e.setWidth(eastWidth);
+        		}
+        		
+        	}
+        	else if ( westWidth != null )
+            	w.setWidth(westWidth);
+
+        	else if ( eastWidth != null )
+            	e.setWidth(eastWidth);
+        }
+                
         boolean helpCollapsed= pref.isPropertyBool(UserPreference.P_HELP_COLLAPSED);
         e.setVisible(!helpCollapsed);
                 
@@ -329,7 +378,92 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         return layout;
     }
 
-    private void updateMenuCollapsedPreference(boolean collapsed) {
+    private String getWestWidthPreference() {
+    	
+    	String width = Env.getPreference(Env.getCtx(), 0, "SideController.Width", false);
+    	
+    	if( (! Util.isEmpty(width)) ){
+        	ClientInfo browserInfo = getClientInfo();
+    		int browserWidth = browserInfo.desktopWidth;
+    		int prefWidth = Integer.valueOf(width.replace("px", ""));
+    		
+    		if( prefWidth <= browserWidth )
+    			return width;
+    	}
+
+		return null;
+	}
+
+	protected void updateSideControllerWidthPreference(String width) {
+
+    	if( width != null ){
+        	Query query = new Query(Env.getCtx(), 
+        			MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), 
+        			" Attribute=? AND AD_User_ID=? AND AD_Process_ID IS NULL AND PreferenceFor = 'W'",
+        			null);
+
+        	int userId = Env.getAD_User_ID(Env.getCtx());
+        	MPreference preference = query.setOnlyActiveRecords(true)
+        			.setApplyAccessFilter(true)
+        			.setParameters("SideController.Width", userId)
+        			.first();
+        	
+        	if ( preference == null || preference.getAD_Preference_ID() <= 0 ) {
+        		
+        		preference = new MPreference(Env.getCtx(), 0, null);
+        		preference.set_ValueOfColumn("AD_User_ID", userId); // required set_Value for System=0 user
+        		preference.setAttribute("SideController.Width");
+        	}
+        	preference.setValue(width);
+        	preference.saveEx();
+
+    	}
+		
+	}
+
+	private String getEastWidthPreference() {
+    	
+    	String width = Env.getPreference(Env.getCtx(), 0, "HelpController.Width", false);
+    	
+    	if( (! Util.isEmpty(width)) ){
+        	ClientInfo browserInfo = getClientInfo();
+    		int browserWidth = browserInfo.desktopWidth;
+    		int prefWidth = Integer.valueOf(width.replace("px", ""));
+    		
+    		if( prefWidth <=  browserWidth )
+    			return width;
+    	}
+
+		return null;
+	}
+
+	protected void updateHelpWidthPreference(String width) {
+    	
+    	if( width != null ){
+        	Query query = new Query(Env.getCtx(), 
+        			MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), 
+        			" Attribute=? AND AD_User_ID=? AND AD_Process_ID IS NULL AND PreferenceFor = 'W'",
+        			null);
+
+        	int userId = Env.getAD_User_ID(Env.getCtx());
+        	MPreference preference = query.setOnlyActiveRecords(true)
+        			.setApplyAccessFilter(true)
+        			.setParameters("HelpController.Width", userId)
+        			.first();
+        	
+        	if ( preference == null || preference.getAD_Preference_ID() <= 0 ) {
+        		
+        		preference = new MPreference(Env.getCtx(), 0, null);
+        		preference.set_ValueOfColumn("AD_User_ID", userId); // required set_Value for System=0 user
+        		preference.setAttribute("HelpController.Width");
+        	}
+        	preference.setValue(width);
+        	preference.saveEx();
+    	}
+
+    }
+
+	private void updateMenuCollapsedPreference(boolean collapsed) {
 		UserPreference pref = SessionManager.getSessionApplication().getUserPreference();
 		pref.setProperty(UserPreference.P_MENU_COLLAPSED, collapsed);
 		pref.savePreference();

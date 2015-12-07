@@ -48,8 +48,6 @@ import javax.print.attribute.standard.JobName;
 
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRExporter;
-import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JRQuery;
@@ -59,12 +57,10 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JRDesignQuery;
 import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
-import net.sf.jasperreports.engine.export.JRCsvExporterParameter;
-import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
-import net.sf.jasperreports.engine.export.JRPrintServiceExporterParameter;
 import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXmlExporter;
@@ -76,6 +72,19 @@ import net.sf.jasperreports.engine.util.JRSwapFile;
 import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.engine.xml.JRXmlWriter;
+import net.sf.jasperreports.export.Exporter;
+import net.sf.jasperreports.export.ExporterInput;
+import net.sf.jasperreports.export.ExporterOutput;
+import net.sf.jasperreports.export.SimpleCsvExporterConfiguration;
+import net.sf.jasperreports.export.SimpleExporterConfiguration;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleHtmlExporterConfiguration;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
+import net.sf.jasperreports.export.SimplePrintServiceExporterConfiguration;
+import net.sf.jasperreports.export.SimpleTextExporterConfiguration;
+import net.sf.jasperreports.export.SimpleWriterExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsExporterConfiguration;
 
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
@@ -653,14 +662,16 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	                		prats.add(PrintUtil.getJobPriority(jasperPrint.getPages().size(), numCopies, true));
 	
 	                		// Create print service exporter
-	                    	JRPrintServiceExporter exporter = new JRPrintServiceExporter();;
+	                    	JRPrintServiceExporter exporter = new JRPrintServiceExporter();
 	                    	// Set parameters
-	                    	exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-	                    	exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE, printerJob.getPrintService());
-	                    	exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET, printerJob.getPrintService().getAttributes());
-	                    	exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET, prats);
-	                    	exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PAGE_DIALOG, Boolean.FALSE);
-	                    	exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PRINT_DIALOG, Boolean.FALSE);
+                    		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+                    		SimplePrintServiceExporterConfiguration configuration = new SimplePrintServiceExporterConfiguration();
+                    		configuration.setPrintService(printerJob.getPrintService());
+                    		configuration.setPrintServiceAttributeSet(printerJob.getPrintService().getAttributes());
+                    		configuration.setPrintRequestAttributeSet(prats);
+                    		configuration.setDisplayPageDialog(false);
+                    		configuration.setDisplayPrintDialog(false);
+                    		exporter.setConfiguration(configuration);
 	                    	// Print report / document
 	                    	exporter.exportReport();
 	
@@ -679,8 +690,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	                    		LocalJasperReportsContext ljrContext = new LocalJasperReportsContext(jrContext);
 	                    		ljrContext.setClassLoader(this.getClass().getClassLoader());
 	                    		JRPdfExporter exporter = new JRPdfExporter(ljrContext);                    		
-	                    		exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-	                    		exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, PDF.getAbsolutePath());
+	                    		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+	                    		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(PDF.getAbsolutePath()));
 	                    		exporter.exportReport();
 	                    		processInfo.setPDFReport(PDF);
 	                    	}
@@ -708,33 +719,63 @@ public class ReportStarter implements ProcessCall, ClientProcess
                 		LocalJasperReportsContext ljrContext = new LocalJasperReportsContext(jrContext);
                 		ljrContext.setClassLoader(this.getClass().getClassLoader());
 
-            			JRExporter<?, ?, ?, ?> exporter = null;
-                		if (ext.equals("pdf"))
-                			exporter = new JRPdfExporter(ljrContext);
-            			else if (ext.equals("ps"))
-            				exporter = new JRPrintServiceExporter(ljrContext);
-            			else if (ext.equals("xml"))
-            				exporter = new JRXmlExporter(ljrContext);
-            			else if (ext.equals("csv"))
-            				exporter = new JRCsvExporter(ljrContext);
-            			else if (ext.equals("ssv")) {
-            				exporter = new JRCsvExporter(ljrContext);
-            				exporter.setParameter(JRCsvExporterParameter.FIELD_DELIMITER, ";");
-            			}
-            			else if (ext.equals("txt"))
-            				exporter = new JRTextExporter(ljrContext);            				
-            			else if (ext.equals("html") || ext.equals("htm"))
-            				exporter = new JRHtmlExporter(ljrContext);
-            			else if (ext.equals("xls"))
-            				exporter = new JRXlsExporter(ljrContext);
-            			else
+                		FileOutputStream strm = new FileOutputStream(file);
+
+            			Exporter<ExporterInput, ?, ?, ? extends ExporterOutput> exporter = null;
+
+            			//JRExporter<?, ?, ?, ?> exporter = null;
+                		if (ext.equals("pdf")) {
+                			JRPdfExporter export = new JRPdfExporter(ljrContext);
+                			SimplePdfExporterConfiguration config = new SimplePdfExporterConfiguration();
+            				export.setConfiguration(config);
+            				export.setExporterOutput(new SimpleOutputStreamExporterOutput(strm));
+            				exporter = export;
+            			} else if (ext.equals("ps")) {
+            				JRPrintServiceExporter export = new JRPrintServiceExporter(
+            						jasperContext);
+            				SimplePrintServiceExporterConfiguration config = new SimplePrintServiceExporterConfiguration();
+            				export.setConfiguration(config);
+            				export.setExporterOutput(new SimpleOutputStreamExporterOutput(strm));
+            				exporter = export;
+            			} else if (ext.equals("xml")) {
+            				JRXmlExporter export = new JRXmlExporter(jasperContext);
+            				SimpleExporterConfiguration config = new SimpleExporterConfiguration();
+            				export.setConfiguration(config);
+            				export.setExporterOutput(new SimpleWriterExporterOutput(strm));
+            				exporter = export;
+            			} else if (ext.equals("csv") || ext.equals("ssv") ) {
+            				JRCsvExporter export = new JRCsvExporter(jasperContext);
+            				SimpleCsvExporterConfiguration config = new SimpleCsvExporterConfiguration();
+            				if(ext.equals("ssv"))
+            					config.setFieldDelimiter(";");
+            				export.setConfiguration(config);
+            				export.setExporterOutput(new SimpleWriterExporterOutput(strm));
+            				exporter = export;
+            			} else if (ext.equals("txt")) {
+            				JRTextExporter export = new JRTextExporter(jasperContext);
+            				SimpleTextExporterConfiguration config = new SimpleTextExporterConfiguration();
+            				export.setConfiguration(config);
+            				exporter = export;
+            			} else if (ext.equals("html") || ext.equals("htm")) {
+            				HtmlExporter export = new HtmlExporter(jasperContext);
+            				SimpleHtmlExporterConfiguration config = new SimpleHtmlExporterConfiguration();
+            				export.setConfiguration(config);
+            				exporter = export;
+            			} else if (ext.equals("xls")) {
+            				JRXlsExporter export = new JRXlsExporter(jasperContext);
+            				SimpleXlsExporterConfiguration config = new SimpleXlsExporterConfiguration();
+            				export.setConfiguration(config);
+            				exporter = export;
+            			} else {
             				log.severe("FileInvalidExtension="+ext);
+            				strm.close();
+            			}
                 		
                 		if (exporter == null)
             				exporter = new JRPdfExporter(ljrContext);
                 		
-        				exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-        				exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, new FileOutputStream(file));
+            			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+
         				exporter.exportReport();
         				processInfo.setExportFile(file);
                 	}

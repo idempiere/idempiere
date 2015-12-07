@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Field
  *  @author iDempiere (generated) 
- *  @version Release 2.1
+ *  @version Release 3.1
  */
 public interface I_AD_Field 
 {
@@ -483,12 +483,12 @@ public interface I_AD_Field
     public static final String COLUMNNAME_IsToolbarButton = "IsToolbarButton";
 
 	/** Set Toolbar Button.
-	  * Add the column button to the toolbar
+	  * Show the button on the toolbar, the window, or both
 	  */
 	public void setIsToolbarButton (String IsToolbarButton);
 
 	/** Get Toolbar Button.
-	  * Add the column button to the toolbar
+	  * Show the button on the toolbar, the window, or both
 	  */
 	public String getIsToolbarButton();
 

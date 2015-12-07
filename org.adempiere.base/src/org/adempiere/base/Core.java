@@ -99,13 +99,14 @@ public class Core {
 	/**
 	 *
 	 * @param className
+	 * @param method 
 	 * @return callout for className
 	 */
-	public static Callout getCallout(String className) {
+	public static Callout getCallout(String className, String methodName) {
 		List<ICalloutFactory> factories = Service.locator().list(ICalloutFactory.class).getServices();
 		if (factories != null) {
 			for(ICalloutFactory factory : factories) {
-				Callout callout = factory.getCallout(className);
+				Callout callout = factory.getCallout(className, methodName);
 				if (callout != null) {
 					return callout;
 				}

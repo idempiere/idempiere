@@ -16,7 +16,6 @@ import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.X_AD_Package_Imp;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
-import org.compiere.util.Trx;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -53,9 +52,6 @@ public class AdempiereActivator implements BundleActivator, ServiceTrackerCustom
 	}
 
 	private void installPackage() {
-		String trxName = Trx.createTrxName();
-		try {
-			
 			// e.g. 1.0.0.qualifier, check only the "1.0.0" part
 			String version = getVersion();
 			if (version != null)
@@ -86,22 +82,16 @@ public class AdempiereActivator implements BundleActivator, ServiceTrackerCustom
 			X_AD_Package_Imp pkg = q.first();
 			if (pkg == null) {
 				System.out.println("Installing " + getName() + " " + version + " ...");
-				packIn(trxName);
+				packIn();
 				install();
 				System.out.println(getName() + " " + version + " installed.");
 			} else {
 				if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + version + " was installed: "
 						+ pkg.getCreated());
 			}
-			Trx.get(trxName, false).commit();
-		} finally {
-			if (Trx.get(trxName, false) != null) {
-				Trx.get(trxName, false).close();
-			}
-		}
 	}
 
-	protected void packIn(String trxName) {
+	protected void packIn() {
 		URL packout = context.getBundle().getEntry("/META-INF/2Pack.zip");
 		if (packout != null && service != null) {
 			FileOutputStream zipstream = null;

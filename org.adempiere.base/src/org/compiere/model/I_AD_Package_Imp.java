@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Package_Imp
  *  @author iDempiere (generated) 
- *  @version Release 2.1
+ *  @version Release 3.1
  */
 public interface I_AD_Package_Imp 
 {
@@ -70,6 +70,17 @@ public interface I_AD_Package_Imp
 
 	/** Get Package Imp.	  */
 	public int getAD_Package_Imp_ID();
+
+    /** Column name AD_Package_Imp_Proc_ID */
+    public static final String COLUMNNAME_AD_Package_Imp_Proc_ID = "AD_Package_Imp_Proc_ID";
+
+	/** Set Package Imp. Proc.	  */
+	public void setAD_Package_Imp_Proc_ID (int AD_Package_Imp_Proc_ID);
+
+	/** Get Package Imp. Proc.	  */
+	public int getAD_Package_Imp_Proc_ID();
+
+	public org.compiere.model.I_AD_Package_Imp_Proc getAD_Package_Imp_Proc() throws RuntimeException;
 
     /** Column name AD_Package_Imp_UU */
     public static final String COLUMNNAME_AD_Package_Imp_UU = "AD_Package_Imp_UU";

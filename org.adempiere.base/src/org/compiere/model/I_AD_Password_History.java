@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Password_History
  *  @author iDempiere (generated) 
- *  @version Release 2.1
+ *  @version Release 3.1
  */
 public interface I_AD_Password_History 
 {
@@ -95,6 +95,22 @@ public interface I_AD_Password_History
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
+
     /** Column name DatePasswordChanged */
     public static final String COLUMNNAME_DatePasswordChanged = "DatePasswordChanged";
 
@@ -103,6 +119,19 @@ public interface I_AD_Password_History
 
 	/** Get Date Password Changed	  */
 	public Timestamp getDatePasswordChanged();
+
+    /** Column name IsActive */
+    public static final String COLUMNNAME_IsActive = "IsActive";
+
+	/** Set Active.
+	  * The record is active in the system
+	  */
+	public void setIsActive (boolean IsActive);
+
+	/** Get Active.
+	  * The record is active in the system
+	  */
+	public boolean isActive();
 
     /** Column name Password */
     public static final String COLUMNNAME_Password = "Password";
@@ -129,4 +158,20 @@ public interface I_AD_Password_History
 	  * Random data added to improve password hash effectiveness
 	  */
 	public String getSalt();
+
+    /** Column name Updated */
+    public static final String COLUMNNAME_Updated = "Updated";
+
+	/** Get Updated.
+	  * Date this record was updated
+	  */
+	public Timestamp getUpdated();
+
+    /** Column name UpdatedBy */
+    public static final String COLUMNNAME_UpdatedBy = "UpdatedBy";
+
+	/** Get Updated By.
+	  * User who updated this records
+	  */
+	public int getUpdatedBy();
 }

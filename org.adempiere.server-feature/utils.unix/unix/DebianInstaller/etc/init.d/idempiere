@@ -39,7 +39,7 @@ esac
 # adjust these variables to your environment
 IDEMPIERE_USER=idempiere
 IDEMPIERE_HOME=/opt/idempiere-server
-JAVA_HOME=`ls -r /usr/lib/jvm/java-[67]-openjdk*/bin/javac | head -1`
+JAVA_HOME=`ls -r /usr/lib/jvm/java-[678]-openjdk*/bin/javac /usr/lib/jvm/java-[8]-oracle*/bin/javac | head -1`
 JAVA_HOME=`dirname $JAVA_HOME`
 JAVA_HOME=`dirname $JAVA_HOME`
 SU=su
@@ -244,7 +244,7 @@ configure_perform()
 !
 	echo "Done"
     fi
-    grep ${ADEMPIERE_WEB_PORT} ${IDEMPIERE_HOME}/jettyhome/etc/jetty.xml > /dev/null 2>&1
+    grep ${ADEMPIERE_WEB_PORT} ${IDEMPIERE_HOME}/jettyhome/etc/jetty-selector.xml > /dev/null 2>&1
     if [ $? -ne 0 ]
     then
         echo "Error deploying iDempiere, please verify and try again"

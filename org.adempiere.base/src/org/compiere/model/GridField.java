@@ -281,8 +281,11 @@ public class GridField
 	 */
 	public boolean refreshLookup()
 	{
-		//  if there is a validation string, the lookup is unstable
-		if (m_lookup == null || m_lookup.getValidation().length() == 0)
+		if (m_lookup == null)
+			return true;
+
+		//  if there is a validation string, the lookup is unstable - read-only fields are not loaded initially
+		if (m_lookup.getValidation().length() == 0 && m_lookup.isLoaded())
 			return true;
 		//
 		if (log.isLoggable(Level.FINE)) log.fine("(" + m_vo.ColumnName + ")");
@@ -576,7 +579,7 @@ public class GridField
 	 */
 	public Object getDefaultForPanel (){
 		//default is preference for field > special case > default logic > sql default > data-type default
-		String defaultSeq = "63";
+		String defaultSeq = "623";
 		return getDefault (MSysConfig.getValue(MSysConfig.ZK_SEQ_DEFAULT_VALUE_PANEL, defaultSeq, Env.getAD_Client_ID(m_vo.ctx)));
 	}
 	
@@ -1046,7 +1049,7 @@ public class GridField
 			// need to re-set invalid values - OK BPartner in PO Line - not OK SalesRep in Invoice
 			if (m_lookup.getDirect(m_value, false, true) == null)
 			{
-				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " Serach not valid - set to null");
+				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " Search not valid - set to null");
 				setValue(null, m_inserting);
 				m_error = true;
 				return false;
@@ -1055,14 +1058,24 @@ public class GridField
 		} 
 
 		//  cannot be validated
-		if (!isLookup()
-			|| m_lookup == null
-			|| m_lookup.containsKeyNoDirect(m_value))
+		if (!isLookup() || m_lookup == null)
 			return true;
+		if (m_lookup.containsKeyNoDirect(m_value)) {
+			String name = m_lookup.get(m_value).getName();
+			if (! ( name.startsWith(MLookup.INACTIVE_S) && name.endsWith(MLookup.INACTIVE_E) ) ) {
+				return true;
+			}
+		}
 		//	it's not null, a lookup and does not have the key
 		if (isKey() || isParentValue())		//	parents/ket are not validated
 			return true;	
 			
+		// special case for IDEMPIERE-2781
+		if (   "AD_Client_ID".equals(m_vo.ColumnName)
+			&& "0".equals(m_value.toString())
+			&& Env.getAD_Client_ID(Env.getCtx()) == 0)
+			return true;
+
 		if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " - set to null");
 		setValue(null, m_inserting);
 		m_error = true;
@@ -1094,7 +1107,7 @@ public class GridField
 			// need to re-set invalid values - OK BPartner in PO Line - not OK SalesRep in Invoice
 			if (m_lookup.getDirect(m_value, false, true) == null)
 			{
-				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " Serach not valid - set to null");
+				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " Search not valid - set to null");
 				setValue(null, m_inserting);
 				m_error = true;
 				return false;
@@ -1858,8 +1871,10 @@ public class GridField
 				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.ColumnName, 
 					((Boolean)m_value).booleanValue());
 			}
-			Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName, 
-					m_value==null ? null : (((Boolean)m_value) ? "Y" : "N"));
+			if (m_gridTab != null) {
+				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName,
+						m_value==null ? null : (((Boolean)m_value) ? "Y" : "N"));
+			}
 		}
 		else if (m_value instanceof Timestamp)
 		{
@@ -1869,8 +1884,6 @@ public class GridField
 				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.ColumnName, (Timestamp)m_value);
 			}
 			// BUG:3075946 KTU - Fix Thai Date
-			//Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName, 
-			//		m_value==null ? null : m_value.toString().substring(0, m_value.toString().indexOf(".")));
 			String stringValue = null;
 			if (m_value != null && !m_value.toString().equals("")) {
 				Calendar c1 = Calendar.getInstance();
@@ -1878,7 +1891,9 @@ public class GridField
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				stringValue = sdf.format(c1.getTime());
 			}
-			Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName, stringValue);
+			if (m_gridTab != null) {
+				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName, stringValue);
+			}
 			// KTU - Fix Thai Date		
 		}
 		else
@@ -1889,8 +1904,10 @@ public class GridField
 				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.ColumnName, 
 					m_value==null ? null : m_value.toString());
 			}
-			Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName, 
-				m_value==null ? null : m_value.toString());
+			if (m_gridTab != null) {
+				Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName,
+						m_value==null ? null : m_value.toString());
+			}
 		}		
 	}
 

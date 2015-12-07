@@ -186,9 +186,7 @@ public abstract class PO
 	 */
 	public PO (Properties ctx, int ID, String trxName, ResultSet rs)
 	{
-		if (ctx == null)
-			throw new IllegalArgumentException ("No Context");
-		p_ctx = ctx;
+		p_ctx = ctx != null ? ctx : Env.getCtx();
 		m_trxName = trxName;
 
 		p_info = initPO(ctx);
@@ -2246,10 +2244,10 @@ public abstract class PO
 			// table with potential tree
 			if (get_ColumnIndex("IsSummary") >= 0) {
 				if (newRecord)
-					insert_Tree(MTree_Base.TREETYPE_Table);
+					insert_Tree(MTree_Base.TREETYPE_CustomTable);
 				int idxValue = get_ColumnIndex("Value");
 				if (newRecord || (idxValue >= 0 && is_ValueChanged(idxValue)))
-					update_Tree(MTree_Base.TREETYPE_Table);
+					update_Tree(MTree_Base.TREETYPE_CustomTable);
 			}
 		}
 		//
@@ -3262,7 +3260,7 @@ public abstract class PO
 				//
 				deleteTranslations(localTrxName);
 				if (get_ColumnIndex("IsSummary") >= 0) {
-					delete_Tree(MTree_Base.TREETYPE_Table);
+					delete_Tree(MTree_Base.TREETYPE_CustomTable);
 				}
 				//	Delete Cascade AD_Table_ID/Record_ID (Attachments, ..)
 				PO_Record.deleteCascade(AD_Table_ID, Record_ID, localTrxName);
@@ -3873,7 +3871,7 @@ public abstract class PO
 				.append(C_Element_ID).append(" AND t.AD_Tree_ID=ae.AD_Tree_ID)");
 		else	//	std trees
 			sb.append(" AND t.IsAllNodes='Y' AND t.TreeType='").append(treeType).append("'");
-		if (MTree_Base.TREETYPE_Table.equals(treeType))
+		if (MTree_Base.TREETYPE_CustomTable.equals(treeType))
 			sb.append(" AND t.AD_Table_ID=").append(get_Table_ID());
 		//	Duplicate Check
 		sb.append(" AND NOT EXISTS (SELECT * FROM " + MTree_Base.getNodeTableName(treeType) + " e "
@@ -3882,7 +3880,8 @@ public abstract class PO
 		if (no > 0) {
 			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=" + treeType);
 		} else {
-			log.warning("#" + no + " - TreeType=" + treeType);
+			if (! MTree_Base.TREETYPE_CustomTable.equals(treeType))
+				log.warning("#" + no + " - TreeType=" + treeType);
 		}
 
 		if (uuidColumnId > 0 && !uuidFunction )
@@ -3914,7 +3913,7 @@ public abstract class PO
 		String sourceTableName;
 		String whereTree;
 		Object[] parameters;
-		if (MTree_Base.TREETYPE_Table.equals(treeType)) {
+		if (MTree_Base.TREETYPE_CustomTable.equals(treeType)) {
 			sourceTableName = this.get_TableName();
 			whereTree = "TreeType=? AND AD_Table_ID=?";
 			parameters = new Object[]{treeType, this.get_Table_ID()};
@@ -3977,7 +3976,7 @@ public abstract class PO
 			.append(MTree_Base.getNodeTableName(treeType))
 			.append(" n JOIN AD_Tree t ON n.AD_Tree_ID=t.AD_Tree_ID")
 			.append(" WHERE Parent_ID=? AND t.TreeType=?");
-		if (MTree_Base.TREETYPE_Table.equals(treeType))
+		if (MTree_Base.TREETYPE_CustomTable.equals(treeType))
 			countSql.append(" AND t.AD_Table_ID=").append(get_Table_ID());
 		int cnt = DB.getSQLValueEx( get_TrxName(), countSql.toString(), id, treeType);
 		if (cnt > 0)
@@ -3989,14 +3988,15 @@ public abstract class PO
 			.append(" AND EXISTS (SELECT * FROM AD_Tree t "
 				+ "WHERE t.AD_Tree_ID=n.AD_Tree_ID AND t.TreeType='")
 			.append(treeType).append("'");
-		if (MTree_Base.TREETYPE_Table.equals(treeType))
+		if (MTree_Base.TREETYPE_CustomTable.equals(treeType))
 			sb.append(" AND t.AD_Table_ID=").append(get_Table_ID());
 		sb.append(")");
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
 		if (no > 0) {
 			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=" + treeType);
 		} else {
-			log.warning("#" + no + " - TreeType=" + treeType);
+			if (! MTree_Base.TREETYPE_CustomTable.equals(treeType))
+				log.warning("#" + no + " - TreeType=" + treeType);
 		}
 		return no > 0;
 	}	//	delete_Tree

@@ -24,14 +24,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_ProductPriceVendorBreak
  *  @author iDempiere (generated) 
- *  @version Release 2.1 - $Id$ */
+ *  @version Release 3.1 - $Id$ */
 public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceVendorBreak, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20151030L;
 
     /** Standard Constructor */
     public X_M_ProductPriceVendorBreak (Properties ctx, int M_ProductPriceVendorBreak_ID, String trxName)
@@ -40,7 +40,6 @@ public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceV
       /** if (M_ProductPriceVendorBreak_ID == 0)
         {
 			setBreakValue (Env.ZERO);
-			setC_BPartner_ID (0);
 			setM_PriceList_Version_ID (0);
 			setM_Product_ID (0);
 			setM_ProductPriceVendorBreak_ID (0);

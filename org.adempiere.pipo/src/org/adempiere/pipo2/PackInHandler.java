@@ -19,6 +19,8 @@
 
 package org.adempiere.pipo2;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -27,13 +29,19 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
+import org.compiere.model.MColumn;
+import org.compiere.model.MRole;
+import org.compiere.model.MTable;
+import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Imp;
 import org.compiere.model.X_AD_Package_Imp_Inst;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -68,9 +76,11 @@ public class PackInHandler extends DefaultHandler {
 
 	private IHandlerRegistry handlerRegistry = null;
 	private List<DeferEntry> defer = new ArrayList<DeferEntry>();
+	private List<Integer> deferFK = new ArrayList<Integer>();
 	private Stack<Element> stack = new Stack<Element>();
 	private PackIn packIn;
 	private int elementProcessed = 0;
+	private boolean isUpdateRoleAccess = false;
 
 	private void init() throws SAXException {
 
@@ -168,6 +178,7 @@ public class PackInHandler extends DefaultHandler {
 			packageImp.setCreator(atts.getValue("Creator"));
 			packageImp.setCreatorContact(atts.getValue("CreatorContact"));
 			packageImp.setPK_Status(packageStatus);
+			packageImp.setAD_Package_Imp_Proc_ID(packIn.getAD_Package_Imp_Proc().getAD_Package_Imp_Proc_ID());
 
 			packageImp.saveEx();
 			AD_Package_Imp_ID = packageImp.getAD_Package_Imp_ID();
@@ -228,6 +239,14 @@ public class PackInHandler extends DefaultHandler {
 		{
 			defer.add(new DeferEntry(element, true));
 		}
+		if (element.deferFKColumnID > 0)
+		{
+			if (! deferFK.contains(element.deferFKColumnID))
+				deferFK.add(element.deferFKColumnID);
+		}
+		if (element.requireRoleAccessUpdate) {
+			isUpdateRoleAccess = true;
+		}
 
 		for (Element childElement : element.childrens)
 		{
@@ -278,13 +297,24 @@ public class PackInHandler extends DefaultHandler {
     	else
     		elementValue = uri + localName;
 
+		X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx.ctx, AD_Package_Imp_ID, null);
+		packageImp.setProcessed(true);
     	if (elementValue.equals("idempiere")){
     		processDeferElements();
-    		if (!packageStatus.equals("Completed with errors"))
+
+    		processDeferFKElements();
+    		
+    		updateRoleAccess();
+
+    		if (getUnresolvedCount() > 0) {
+    			packageStatus = "Completed - unresolved";
+    		} else {
     			packageStatus = "Completed successfully";
+    			packIn.setSuccess(true);
+    		}
+    		packIn.getNotifier().addStatusLine(packageStatus);
 
     		//Update package history log with package status
-    		X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx.ctx, AD_Package_Imp_ID, null);
     		packageImp.setPK_Status(packageStatus);
     		packageImp.saveEx();
 
@@ -303,15 +333,15 @@ public class PackInHandler extends DefaultHandler {
     				processElement(e);
     			} catch (RuntimeException re) {
     				packageStatus = "Import Failed";
+    				packIn.getNotifier().addStatusLine(packageStatus);
     				//Update package history log with package status
-    	    		X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx.ctx, AD_Package_Imp_ID, null);
     	    		packageImp.setPK_Status(packageStatus);
     	    		packageImp.saveEx();
     	    		throw re;
     			} catch (SAXException se) {
     				packageStatus = "Import Failed";
+    				packIn.getNotifier().addStatusLine(packageStatus);
     				//Update package history log with package status
-    	    		X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx.ctx, AD_Package_Imp_ID, null);
     	    		packageImp.setPK_Status(packageStatus);
     	    		packageImp.saveEx();
     	    		throw se;
@@ -366,6 +396,48 @@ public class PackInHandler extends DefaultHandler {
     		int endSize = defer.size();
     		if (startSize == endSize) break;
     	} while (defer.size() > 0);
+    }
+
+    private void processDeferFKElements() throws SAXException {
+
+    	if (deferFK.isEmpty())
+    		return;
+
+    	for (int columnID : deferFK) {
+    		MColumn column = new MColumn(m_ctx.ctx, columnID, m_ctx.trx.getTrxName());
+    		try {
+    			Connection conn = m_ctx.trx.getConnection();
+    			DatabaseMetaData md = conn.getMetaData();
+    			String catalog = DB.getDatabase().getCatalog();
+    			String schema = DB.getDatabase().getSchema();
+    			MTable table = MTable.get(m_ctx.ctx, column.getAD_Table_ID(), m_ctx.trx.getTrxName());
+    			if (table.get_ID() != column.getAD_Table_ID()) {
+    				// table not found
+    				log.warning("Table " + column.getAD_Table_ID() + " not found");
+    				continue;
+    			}
+    			if (table.isView()) {
+    				continue;
+    			}
+    			String tableName = table.getTableName();
+
+        		String fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, column, false);
+        		if (! Util.isEmpty(fkConstraintSql)) {
+        			if (fkConstraintSql.indexOf(DB.SQLSTATEMENT_SEPARATOR) == -1) {
+        				DB.executeUpdate(fkConstraintSql, false, m_ctx.trx.getTrxName());
+        			} else {
+        				String statements[] = fkConstraintSql.split(DB.SQLSTATEMENT_SEPARATOR);
+        				for (int i = 0; i < statements.length; i++) {
+        					if (Util.isEmpty(statements[i]))
+        						continue;
+        					DB.executeUpdateEx(statements[i], m_ctx.trx.getTrxName());
+        				}
+        			}
+        		}
+    		} catch (Exception e) {
+    			throw new AdempiereException(e);
+    		}
+    	}
     }
 
 	public void setCtx(PIPOContext ctx) {
@@ -424,6 +496,7 @@ public class PackInHandler extends DefaultHandler {
 					if (e.unresolved != null && e.unresolved.length() > 0)
 						s.append(" unresolved ").append(e.unresolved);
 					log.warning(s.toString());
+					packIn.getNotifier().addFailureLine(s.toString());
 				}
 			}
 		}
@@ -438,4 +511,18 @@ public class PackInHandler extends DefaultHandler {
 			startElement = b;
 		}
 	}
+
+    private void updateRoleAccess() {
+    	if (!isUpdateRoleAccess)
+    		return;
+
+    	List<MRole> roles = new Query(m_ctx.ctx, MRole.Table_Name, "IsManual='N'", m_ctx.trx.getTrxName())
+			.setOnlyActiveRecords(true)
+			.setOrderBy("AD_Client_ID, Name")
+			.list();
+    	for (MRole role : roles) {
+        	role.updateAccessRecords(false);
+    	}
+	}
+
 }   // PackInHandler

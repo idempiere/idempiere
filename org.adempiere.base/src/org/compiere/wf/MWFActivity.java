@@ -916,19 +916,41 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				processMsg = e.getMessage();
 			setTextMsg(processMsg);
 			// addTextMsg(e); // do not add the exception text
-			setWFState (StateEngine.STATE_Terminated);	//	unlocks
-			//	Set Document Status
-			if (m_po != null && m_po instanceof DocAction && m_docStatus != null)
+			boolean contextLost = false;
+			if (e instanceof AdempiereException && "Context lost".equals(e.getMessage()))
 			{
-				m_po.load(get_TrxName());
-				DocAction doc = (DocAction)m_po;
-				doc.setDocStatus(m_docStatus);
-				m_po.saveEx();
-			}
-			if (m_process != null)
-			{
-				m_process.setProcessMsg(this.getTextMsg());
-				m_process.saveEx();
+				contextLost = true;			
+				m_docStatus = DocAction.STATUS_Invalid;
+			}			
+			try {
+				if (contextLost)
+				{
+					Env.getCtx().setProperty("#AD_Client_ID", (m_po != null ? Integer.toString(m_po.getAD_Client_ID()) : "0") );
+					m_state = new StateEngine(WFSTATE_Running);
+					setProcessed(true);
+					setWFState (StateEngine.STATE_Aborted);
+				}
+				else
+				{
+					setWFState (StateEngine.STATE_Terminated);	//	unlocks
+				}
+							
+				//	Set Document Status
+				if (m_po != null && m_po instanceof DocAction && m_docStatus != null)
+				{
+					m_po.load(get_TrxName());
+					DocAction doc = (DocAction)m_po;
+					doc.setDocStatus(m_docStatus);
+					m_po.saveEx();
+				}
+				if (m_process != null)
+				{
+					m_process.setProcessMsg(this.getTextMsg());
+					m_process.saveEx();
+				}
+			} finally {
+				if (contextLost)
+					Env.getCtx().remove("#AD_Client_ID");
 			}
 		}
 		finally

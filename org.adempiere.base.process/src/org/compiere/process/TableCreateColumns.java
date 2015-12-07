@@ -212,13 +212,7 @@ public class TableCreateColumns extends SvrProcess
 	 */
 	private void addTableColumn (ResultSet rs, MTable table) throws Exception
 	{
-		String tableName = table.getTableName ();
-		if (DB.isOracle ())
-			tableName = tableName.toUpperCase ();
-		// globalqss 2005-10-24
-		if (DB.isPostgreSQL())
-		    tableName = tableName.toLowerCase();
-		// end globalqss 2005-10-24
+		String tableName = table.getTableName();
 		while (rs.next ())
 		{
 			String tn = rs.getString ("TABLE_NAME");

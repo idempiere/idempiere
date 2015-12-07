@@ -502,7 +502,12 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 				int colindex =tableModel.findColumn(gridField[i].getColumnName()); 
 				column.setSortAscending(new SortComparator(colindex, true, Env.getLanguage(Env.getCtx())));
 				column.setSortDescending(new SortComparator(colindex, false, Env.getLanguage(Env.getCtx())));
-				column.setLabel(gridField[i].getHeader());
+				//IDEMPIERE-2898 - UX: Field only showing title at header on grid
+				if( gridField[i].isFieldOnly() )
+					column.setLabel("");
+				else
+					column.setLabel(gridField[i].getHeader());
+
 				if (columnWidthMap != null && columnWidthMap.get(gridField[i].getAD_Field_ID()) != null && !columnWidthMap.get(gridField[i].getAD_Field_ID()).equals("")) {
 					column.setWidth(columnWidthMap.get(gridField[i].getAD_Field_ID()));
 				} else {

@@ -52,6 +52,7 @@ import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.editor.IProcessButton;
+import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.ActionEvent;
 import org.adempiere.webui.event.ActionListener;
@@ -89,6 +90,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRecentItem;
 import org.compiere.model.MRole;
 import org.compiere.model.MWindow;
+import org.compiere.model.PO;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
@@ -1308,6 +1310,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	}
 
+	private String prevdbInfo = "";
 	/**
 	 * @param e
 	 * @see DataStatusListener#dataStatusChanged(DataStatusEvent)
@@ -1339,31 +1342,61 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	            dbInfo = "[ " + dbInfo + " ]";
 	        breadCrumb.setStatusDB(dbInfo, e);
 
-	        String prefix = null;
-	        if (dbInfo.contains("*"))
-	        	prefix = "*";
+	        String adInfo = e.getAD_Message();
+	        if (   ! prevdbInfo.equals(dbInfo)
+	        	&& (   GridTab.DEFAULT_STATUS_MESSAGE.equals(adInfo)
+	        	    || GridTable.DATA_REFRESH_MESSAGE.equals(adInfo)
+	        	    || GridTable.DATA_INSERTED_MESSAGE.equals(adInfo)
+	        	    || GridTable.DATA_UPDATE_COPIED_MESSAGE.equals(adInfo)
+	        	   )
+	           ) {
+	        	prevdbInfo = dbInfo;
 
-	        String titleLogic = null;
-	        int windowID = getADTab().getSelectedGridTab().getAD_Window_ID();
-	        if (windowID > 0) {
-	        	titleLogic = MWindow.get(Env.getCtx(), windowID).getTitleLogic();
-	        }
-	        String header = null;
-	        if (! Util.isEmpty(titleLogic)) {
-		        StringBuilder sb = new StringBuilder();
-		        if (prefix != null)
-		        	sb.append(prefix);
-				sb.append(Env.getContext(ctx, curWindowNo, "_WinInfo_WindowName", false)).append(": ");
-				titleLogic = Env.parseContext(Env.getCtx(), curWindowNo, titleLogic, false, true);
-        		sb.append(titleLogic);
-        		header = sb.toString().trim();
-        		if (header.endsWith(":"))
-        			header = header.substring(0, header.length()-1);
-	        }
-	        if (Util.isEmpty(header))
-	        	header = AEnv.getDialogHeader(Env.getCtx(), curWindowNo, prefix);
+		        String prefix = null;
+		        if (dbInfo.contains("*"))
+		        	prefix = "*";
 
-	        SessionManager.getAppDesktop().setTabTitle(header, curWindowNo);
+		        String titleLogic = null;
+		        int windowID = getADTab().getSelectedGridTab().getAD_Window_ID();
+		        if (windowID > 0) {
+		        	titleLogic = MWindow.get(Env.getCtx(), windowID).getTitleLogic();
+		        }
+		        String header = null;
+		        if (! Util.isEmpty(titleLogic)) {
+			        StringBuilder sb = new StringBuilder();
+			        if (prefix != null)
+			        	sb.append(prefix);
+					sb.append(Env.getContext(ctx, curWindowNo, "_WinInfo_WindowName", false)).append(": ");
+					if (titleLogic.contains("<")) {
+						// IDEMPIERE-1328 - enable using format or subcolumns on title
+						if (   getADTab() != null
+							&& getADTab().getADTabpanel(0) != null
+							&& getADTab().getADTabpanel(0).getGridTab() != null
+							&& getADTab().getADTabpanel(0).getGridTab().getTableModel() != null) {
+							GridTab tab = getADTab().getADTabpanel(0).getGridTab();
+							int row = tab.getCurrentRow();
+							int cnt = tab.getRowCount();
+							boolean inserting = tab.getTableModel().isInserting();
+							if (row >= 0 && cnt > 0 && !inserting) {
+								PO po = tab.getTableModel().getPO(row);
+								titleLogic = Env.parseVariable(titleLogic, po, null, false);
+							} else {
+								titleLogic = Env.parseContext(Env.getCtx(), curWindowNo, titleLogic, false, true);
+							}
+						}
+					} else {
+						titleLogic = Env.parseContext(Env.getCtx(), curWindowNo, titleLogic, false, true);
+					}
+	        		sb.append(titleLogic);
+	        		header = sb.toString().trim();
+	        		if (header.endsWith(":"))
+	        			header = header.substring(0, header.length()-1);
+		        }
+		        if (Util.isEmpty(header))
+		        	header = AEnv.getDialogHeader(Env.getCtx(), curWindowNo, prefix);
+
+		        SessionManager.getAppDesktop().setTabTitle(header, curWindowNo);
+	        }
     	}
     	else if (adTabbox.getSelectedDetailADTabpanel() == null)
     	{
@@ -1701,6 +1734,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			detailTab.dynamicDisplay(0);
 		}
 		focusToActivePanel();
+		// IDEMPIERE-1328 - refresh recent item after running a process, i.e. completing a doc that changes documentno
+    	MRecentItem.touchUpdatedRecord(ctx, adTabbox.getSelectedGridTab().getAD_Table_ID(),
+    			adTabbox.getSelectedGridTab().getRecord_ID(), Env.getAD_User_ID(ctx));
 	}
 
     /**
@@ -2621,8 +2657,22 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		//  Zoom
 		if (col.equals("Record_ID"))
 		{
-			int AD_Table_ID = Env.getContextAsInt (ctx, curWindowNo, "AD_Table_ID");
-			int Record_ID = Env.getContextAsInt (ctx, curWindowNo, "Record_ID");
+			int AD_Table_ID = -1;
+			int Record_ID = -1;
+
+			if (wButton instanceof WButtonEditor) {
+				int curTabNo = 0;
+				WButtonEditor be = (WButtonEditor)wButton;
+				if (be.getGridField() != null && be.getGridField().getGridTab() != null) {
+					curTabNo = ((WButtonEditor)wButton).getGridField().getGridTab().getTabNo();
+					AD_Table_ID = Env.getContextAsInt (ctx, curWindowNo, curTabNo, "AD_Table_ID");
+					Record_ID = Env.getContextAsInt (ctx, curWindowNo, curTabNo, "Record_ID");
+				}
+			}
+			if (AD_Table_ID < 0)
+				AD_Table_ID = Env.getContextAsInt (ctx, curWindowNo, "AD_Table_ID");
+			if (Record_ID < 0)
+				Record_ID = Env.getContextAsInt (ctx, curWindowNo, "Record_ID");
 
 			AEnv.zoom(AD_Table_ID, Record_ID);
 			return;

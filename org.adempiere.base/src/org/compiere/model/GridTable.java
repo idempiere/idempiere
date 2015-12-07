@@ -102,9 +102,11 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4440415447489133947L;
+	private static final long serialVersionUID = -3993077765244392901L;
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
+	public static final String DATA_UPDATE_COPIED_MESSAGE = "UpdateCopied";
+	public static final String DATA_INSERTED_MESSAGE = "Inserted";
 
 	/**
 	 *	JDBC Based Buffered Table
@@ -2621,7 +2623,7 @@ public class GridTable extends AbstractTableModel
 		//	inform
 		if (log.isLoggable(Level.FINE)) log.fine("Current=" + currentRow + ", New=" + m_newRow);
 		fireTableRowsInserted(m_newRow, m_newRow);
-		fireDataStatusIEvent(copyCurrent ? "UpdateCopied" : "Inserted", "");
+		fireDataStatusIEvent(copyCurrent ? DATA_UPDATE_COPIED_MESSAGE : DATA_INSERTED_MESSAGE, "");
 		if (log.isLoggable(Level.FINE)) log.fine("Current=" + currentRow + ", New=" + m_newRow + " - complete");
 		return true;
 	}	//	dataNew

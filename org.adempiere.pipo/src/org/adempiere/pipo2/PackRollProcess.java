@@ -102,7 +102,7 @@ public class PackRollProcess extends SvrProcess {
 
 					String tableName = packageImpDetail.getTableName();
 
-					int recordID = packageImpDetail.getAD_Original_ID();
+					int recordID = packageImpDetail.getRecord_ID();
 
 					// determine if record is an update to the original
 					// if record is an update then update record with backup

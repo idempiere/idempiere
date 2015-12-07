@@ -75,8 +75,7 @@ public class PackInProcess extends SvrProcess {
 	 */
 	protected String doIt() throws Exception {
 
-		X_AD_Package_Imp_Proc adPackageImp = new X_AD_Package_Imp_Proc(getCtx(),
-				p_PackIn_ID, get_TrxName());
+		X_AD_Package_Imp_Proc adPackageImp = new X_AD_Package_Imp_Proc(getCtx(), p_PackIn_ID, null);  // out of trx
 
 		// Create Target directory if required
 		String packageDirectory = adPackageImp.getAD_Package_Dir();
@@ -134,13 +133,25 @@ public class PackInProcess extends SvrProcess {
 		packIn.setPackageName(packageName);
 		packIn.setPackageVersion(packageVersion);
 		packIn.setUpdateDictionary(m_UpdateDictionary);
-		
+		packIn.getNotifier().setFileName(zipFilepath.getName());
+		packIn.setAD_Package_Imp_Proc(adPackageImp);
+
 		// call XML Handler
-		String msg = packIn.importXML(dict_file, getCtx(), get_TrxName());
-		adPackageImp.setDateProcessed(new Timestamp(System.currentTimeMillis()));
-		adPackageImp.setP_Msg(msg);
-		adPackageImp.saveEx();
-		
+		String msg;
+		try {
+			msg = packIn.importXML(dict_file, getCtx(), get_TrxName());
+			adPackageImp.setDateProcessed(new Timestamp(System.currentTimeMillis()));
+			adPackageImp.setP_Msg(msg);
+			adPackageImp.saveEx();
+		} catch (Exception e) {
+			adPackageImp.setP_Msg(e.getLocalizedMessage());
+			packIn.getNotifier().addStatusLine(e.getLocalizedMessage());
+			log.log(Level.SEVERE, "importXML:", e);
+			throw e;
+		} finally {
+			adPackageImp.save(); // ignoring exceptions
+			packIn.getNotifier().notifyRecipient();
+		}
 		return msg;
 	} // doIt
 } // PackInProcess

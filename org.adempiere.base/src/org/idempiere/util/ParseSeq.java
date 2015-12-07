@@ -212,4 +212,9 @@ public class ParseSeq implements Iterable<Character> {
 			
 	}
 
+	@Override
+	public String toString() {
+		return "OrderConfiguration=" + orderConfiguration;
+	}
+
 }

@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.base"
       label="Adempiere Base"
-      version="3.0.0.qualifier">
+      version="3.1.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -18,50 +18,50 @@
 
    <includes
          id="org.compiere.db.provider"
-         version="3.0.0.qualifier"/>
+         version="3.1.0.qualifier"/>
 
    <includes
          id="org.adempiere.payment.processor"
-         version="3.0.0.qualifier"/>
+         version="3.1.0.qualifier"/>
 
    <includes
          id="org.adempiere.pipo"
-         version="3.0.0.qualifier"/>
+         version="3.1.0.qualifier"/>
 
    <includes
          id="org.adempiere.replication"
-         version="3.0.0.qualifier"/>
+         version="3.1.0.qualifier"/>
 
    <includes
          id="org.adempiere.report.jasper"
-         version="3.0.0.qualifier"/>
+         version="3.1.0.qualifier"/>
 
    <plugin
          id="org.adempiere.base"
          download-size="0"
          install-size="0"
-         version="3.0.0.qualifier"
+         version="3.1.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.base.callout"
          download-size="0"
          install-size="0"
-         version="3.0.0.qualifier"
+         version="3.1.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.base.process"
          download-size="0"
          install-size="0"
-         version="3.0.0.qualifier"
+         version="3.1.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.extend"
          download-size="0"
          install-size="0"
-         version="3.0.0.qualifier"
+         version="3.1.0.qualifier"
          fragment="true"
          unpack="false"/>
 
@@ -69,14 +69,14 @@
          id="org.adempiere.ui"
          download-size="0"
          install-size="0"
-         version="3.0.0.qualifier"
+         version="3.1.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.apache.ecs"
          download-size="0"
          install-size="0"
-         version="3.0.0.qualifier"
+         version="3.1.0.qualifier"
          unpack="false"/>
 
    <plugin
@@ -117,7 +117,7 @@
          id="org.eclipse.jetty.osgi-servlet-api"
          download-size="0"
          install-size="0"
-         version="3.1.0.M0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -250,7 +250,7 @@
          id="org.adempiere.install"
          download-size="0"
          install-size="0"
-         version="3.0.0.qualifier"/>
+         version="3.1.0.qualifier"/>
 
    <plugin
          id="org.eclipse.osgi.services"

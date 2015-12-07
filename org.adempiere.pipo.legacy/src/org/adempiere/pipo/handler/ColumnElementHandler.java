@@ -309,10 +309,10 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			String schema = DB.getDatabase().getSchema();
 			String tableName = table.getTableName();
 			String columnName = column.getColumnName();
-			if (DB.isOracle()) {
+			if (md.storesUpperCaseIdentifiers()) {
 				tableName = tableName.toUpperCase();
 				columnName = columnName.toUpperCase();
-			} else if (DB.isPostgreSQL()) {
+			} else if (md.storesLowerCaseIdentifiers()) {
 				tableName = tableName.toLowerCase();
 				columnName = columnName.toLowerCase();
 			}

@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Tree
  *  @author iDempiere (generated) 
- *  @version Release 2.1 - $Id$ */
+ *  @version Release 3.1 - $Id$ */
 public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20150618L;
+	private static final long serialVersionUID = 20151030L;
 
     /** Standard Constructor */
     public X_AD_Tree (Properties ctx, int AD_Tree_ID, String trxName)
@@ -89,9 +89,9 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
 		if (AD_Table_ID < 1) 
-			set_Value (COLUMNNAME_AD_Table_ID, null);
+			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
 		else 
-			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
+			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
@@ -314,8 +314,8 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	public static final String TREETYPE_CMTemplate = "CT";
 	/** CM Media = CM */
 	public static final String TREETYPE_CMMedia = "CM";
-	/** Table = TL */
-	public static final String TREETYPE_Table = "TL";
+	/** Custom Table = TL */
+	public static final String TREETYPE_CustomTable = "TL";
 	/** Set Type | Area.
 		@param TreeType 
 		Element this tree is built on (i.e Product, Business Partner)

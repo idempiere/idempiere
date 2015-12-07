@@ -269,8 +269,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		bLoad.setId("bLoad");
 //		bLoad.setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);
 		bLoad.setTooltiptext(Msg.getMsg(Env.getCtx(), "Load"));
-//		bLoad.setUpload(AdempiereWebUI.getUploadSetting());
-		bLoad.setUpload("true,accept=audio/*|video/*|image/*|MIME_type,native");
+		bLoad.setUpload("multiple=true," + AdempiereWebUI.getUploadSetting());
 		bLoad.addEventListener(Events.ON_UPLOAD, this);
 
 		bDelete.addEventListener(Events.ON_CLICK, this);
@@ -386,6 +385,7 @@ public class WAttachment extends Window implements EventListener<Event>
 			}
 			else
 			{
+				clearPreview();
 				return false;
 			}
 		}
@@ -478,7 +478,11 @@ public class WAttachment extends Window implements EventListener<Event>
 		if (e instanceof UploadEvent) {
 			preview.setVisible(false);
 			UploadEvent ue = (UploadEvent) e;
-			processUploadMedia(ue.getMedia());
+			for (Media media : ue.getMedias()) {
+				processUploadMedia(media);
+			}
+			clearPreview();
+			autoPreview (cbContent.getSelectedIndex(), false);
 		} else if (e.getTarget() == bOk || DialogEvents.ON_WINDOW_CLOSE.equals(e.getName())) {
 			if (m_attachment != null) {
 				String newText = text.getText();
@@ -552,8 +556,6 @@ public class WAttachment extends Window implements EventListener<Event>
 			{
 				m_attachment.updateEntry(i, getMediaData(media));
 				cbContent.setSelectedIndex(i);
-				clearPreview();
-				autoPreview(cbContent.getSelectedIndex(), false);
 				m_change = true;
 				return;
 			}
@@ -564,8 +566,6 @@ public class WAttachment extends Window implements EventListener<Event>
 		{
 			cbContent.appendItem(media.getName(), media.getName());
 			cbContent.setSelectedIndex(cbContent.getItemCount()-1);
-			autoPreview(cbContent.getSelectedIndex(), false);
-			clearPreview();
 			m_change = true;
 		}
 	}
@@ -610,8 +610,10 @@ public class WAttachment extends Window implements EventListener<Event>
 			{
 				if (result)
 				{
-					m_attachment.delete(true);
-					m_attachment = null;
+					if (m_attachment != null) {
+						m_attachment.delete(true);
+						m_attachment = null;
+					}
 				}					
 			}
 		});			

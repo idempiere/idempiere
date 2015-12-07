@@ -333,6 +333,10 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		String cache = convertCache.get(oraStatement);
 		if (cache != null) {
 			Convert.logMigrationScript(oraStatement, cache);
+			if ("true".equals(System.getProperty("org.idempiere.db.postgresql.debug"))) {
+				// log.warning("Oracle -> " + oraStatement);
+				log.warning("Pgsql  -> " + cache);
+			}
 			return cache;
 		}
 
@@ -749,11 +753,13 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		int unreturnedConnectionTimeout = getIntProperty(poolProperties, "UnreturnedConnectionTimeout", 0);
 		boolean testConnectionOnCheckin = getBooleanProperty(poolProperties, "TestConnectionOnCheckin", false);
 		boolean testConnectionOnCheckout = getBooleanProperty(poolProperties, "TestConnectionOnCheckout", false);
+		String mlogClass = getStringProperty(poolProperties, "com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
+		
 		int checkoutTimeout = getIntProperty(poolProperties, "CheckoutTimeout", 0);
 
         try
         {
-            System.setProperty("com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
+            System.setProperty("com.mchange.v2.log.MLog", mlogClass);
             //System.setProperty("com.mchange.v2.log.FallbackMLog.DEFAULT_CUTOFF_LEVEL", "ALL");
             ComboPooledDataSource cpds = new ComboPooledDataSource();
             cpds.setDataSourceName("iDempiereDS");
@@ -1040,6 +1046,19 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			String s = properties.getProperty(key);
 			if (s != null && s.trim().length() > 0)
 				b = Boolean.valueOf(s);
+		}
+		catch (Exception e) {}
+		return b;
+	}
+	
+	private String getStringProperty(Properties properties, String key, String defaultValue)
+	{
+		String b = defaultValue;
+		try
+		{
+			String s = properties.getProperty(key);
+			if (s != null && s.trim().length() > 0)
+				b = s.trim();
 		}
 		catch (Exception e) {}
 		return b;

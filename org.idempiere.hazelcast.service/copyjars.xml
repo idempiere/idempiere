@@ -1,0 +1,6 @@
+<project name="zklibrary" basedir="." default="copy">
+	<target name="copy">
+		<get src="http://central.maven.org/maven2/com/hazelcast/hazelcast/3.5.3/hazelcast-3.5.3.jar" dest="hazelcast-3.5.3.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="http://central.maven.org/maven2/com/hazelcast/hazelcast-cloud/3.5.3/hazelcast-cloud-3.5.3.jar" dest="hazelcast-cloud-3.5.3.jar" usetimestamp="true" verbose="true" retries="5" />
+	</target>
+</project>

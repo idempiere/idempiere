@@ -119,6 +119,8 @@ public class AbstractService {
     		Env.setContext(m_cs.getCtx(), "#AD_User_ID", user.getAD_User_ID() );
     		Env.setContext(m_cs.getCtx(), "#AD_User_Name", user.getName() );
     		Env.setContext(m_cs.getCtx(), "#SalesRep_ID", user.getAD_User_ID() );
+    		String userAgent = getHttpServletRequest().getHeader("User-Agent");
+    		Env.setContext(m_cs.getCtx(), "#UserAgent",   userAgent == null ? "Unknown" : userAgent);
     	}
 
 		KeyNamePair[] roles = login.getRoles(loginRequest.getUser(), selectedClient);
@@ -331,7 +333,11 @@ public class AbstractService {
 				 OutputField outField= outputFields.addNewOutputField();
 				 outField.setColumn(colName);
 				 if(po.get_Value(indCol)!=null){
-					 outField.setValue(po.get_Value(indCol).toString());
+					 if(po.get_Value(indCol) instanceof byte[])
+						 outField.setValue(new String(Base64.encodeBase64((byte[]) po.get_Value(indCol))));
+					 else
+						 outField.setValue(po.get_Value(indCol).toString());
+					 
 					 Lookup lookup = poInfo.getColumnLookup(indCol);
 					 if(lookup != null){
 						 //Setting text

@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Menu
  *  @author iDempiere (generated) 
- *  @version Release 2.1 - $Id$ */
+ *  @version Release 3.1 - $Id$ */
 public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20151030L;
 
     /** Standard Constructor */
     public X_AD_Menu (Properties ctx, int AD_Menu_ID, String trxName)
@@ -95,6 +95,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	public static final String ACTION_Workbench = "B";
 	/** Info = I */
 	public static final String ACTION_Info = "I";
+	/** Detail = D */
+	public static final String ACTION_Detail = "D";
 	/** Set Action.
 		@param Action 
 		Indicates the Action to be performed

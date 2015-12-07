@@ -722,7 +722,7 @@ public class InfoProductWindow extends InfoWindow {
 		}
 
 		//	Orders
-		sql = "SELECT o.DatePromised, ol.QtyReserved,"
+		sql = "SELECT COALESCE(ol.DatePromised, o.DatePromised) AS DatePromised, ol.QtyReserved,"
 			+ " productAttribute(ol.M_AttributeSetInstance_ID), ol.M_AttributeSetInstance_ID,"
 			+ " dt.DocBaseType, bp.Name,"
 			+ " dt.PrintName || ' ' || o.DocumentNo As DocumentNo, w.Name "

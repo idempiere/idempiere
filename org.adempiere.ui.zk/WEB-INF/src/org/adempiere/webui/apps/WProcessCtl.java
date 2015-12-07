@@ -153,7 +153,7 @@ public class WProcessCtl extends AbstractProcessCtl {
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("WindowNo=" + WindowNo + " - " + pi);
 
-//		if (pi.getAD_PInstance_ID() < 1) { //red1 bypass if PInstance exists
+	  if (pi.getAD_PInstance_ID() < 1) { //red1 bypass if PInstance exists
 		MPInstance instance = null;
 		try
 		{
@@ -180,7 +180,7 @@ public class WProcessCtl extends AbstractProcessCtl {
 			return;
 		}
 		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
-//		}
+	  }
 
 		//	Get Parameters
 		if (parameter != null) {

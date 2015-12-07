@@ -24,14 +24,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeSetInstance
  *  @author iDempiere (generated) 
- *  @version Release 2.1 - $Id$ */
+ *  @version Release 3.1 - $Id$ */
 public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInstance, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20151030L;
 
     /** Standard Constructor */
     public X_M_AttributeSetInstance (Properties ctx, int M_AttributeSetInstance_ID, String trxName)

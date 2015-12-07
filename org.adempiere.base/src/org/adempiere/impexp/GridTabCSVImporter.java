@@ -85,538 +85,176 @@ public class GridTabCSVImporter implements IGridTabImporter
 {
 	private static final String ERROR_HEADER = "_ERROR_";
 	private static final String LOG_HEADER = "_LOG_";
-	private boolean m_isError = false;
-	private String m_import_mode = null;
 	private static final String IMPORT_MODE_MERGE = "M";
 	private static final String IMPORT_MODE_UPDATE = "U";
 	private static final String IMPORT_MODE_INSERT = "I";
 	
+	private boolean m_isError = false;
+	private String m_import_mode = null;
+	private List<String> header;  
+    private List<CellProcessor> readProcArray;
+    private List<GridField> locationFields;
+	private boolean isThereKey;
+    private boolean isThereDocAction;
+    private Map<GridTab,Integer> tabMapIndexes;
+    private List<Map<String, Object>> data;
+    private ICsvMapReader mapReader;
+    private TreeMap<GridTab,Integer> sortedtTabMapIndexes;
+    private List<String> rawData;
+    private boolean isMasterok = true; 
+	private boolean isDetailok = true;
+	private boolean error = false;
+	private List<String>  rowsTmpResult;
+	private PO masterRecord;
+    
+    //Files management
+	private File errFile;
+	private File logFile;
+	private PrintWriter errFileW;
+	private PrintWriter logFileW;
+	
+	private CsvPreference csvpref = CsvPreference.STANDARD_PREFERENCE;
+	private String delimiter = String.valueOf((char) csvpref.getDelimiterChar());
+	private String quoteChar = String.valueOf((char) csvpref.getQuoteChar());
+	
+	//Trx
+	private Trx trx;
+	private String trxName;
+	private boolean isSingleTrx = false;
+
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(GridTabCSVImporter.class);
 	
 	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset , String importMode) {		
 		return fileImport(gridTab, childs, filestream, charset, importMode, null);
-	}
+	}//fileImport
+
 	@Override
 	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset, String importMode, IProcessUI processUI) {
-		ICsvMapReader mapReader = null;
-		File errFile = null;
-		File logFile = null;
-		PrintWriter errFileW = null;
-		PrintWriter logFileW = null;
-		CsvPreference csvpref = CsvPreference.STANDARD_PREFERENCE;
-		String delimiter = String.valueOf((char) csvpref.getDelimiterChar());
-		String quoteChar = String.valueOf((char) csvpref.getQuoteChar());
-		m_import_mode = importMode;
-		PO masterRecord = null;
-        
+
 		if(!gridTab.isInsertRecord() && isInsertMode())
 			throwAdempiereException("Insert record disabled for Tab");
-	
+
 		try {
 			String errFileName = FileUtil.getTempMailName("Import_" + gridTab.getTableName(), "_err.csv");
+			initValues();
+			m_import_mode = importMode;
 			errFile = new File(errFileName);
 			errFileW = new PrintWriter(errFile, charset.name());
 			mapReader = new CsvMapReader(new InputStreamReader(filestream, charset), csvpref);
-			List<String> header =  Arrays.asList(mapReader.getHeader(true));  
-			List<CellProcessor> readProcArray = new ArrayList<CellProcessor>();
-			Map<GridTab,Integer> tabMapIndexes = new HashMap<GridTab,Integer>();
-			int indxDetail=0;
-			List<GridField> locationFields = null;
-			boolean isThereKey   = false;
-			boolean isThereDocAction = false;
-			//Mapping header  
-			for(int idx = 0; idx < header.size(); idx++) {
-				String headName = header.get(idx);
-				
-				if (headName==null) {
-					throwAdempiereException("Header column cannot be empty, Col: " + (idx + 1));
-				}
-				
-				if (headName.equals(ERROR_HEADER) || headName.equals(LOG_HEADER)){
-					header.set(idx, null);
-					readProcArray.add(null);
-					continue;
-				}
-				if (headName.indexOf(">") > 0) {
-					if(idx==0){
-						throwAdempiereException(Msg.getMsg(Env.getCtx(),"WrongHeader", new Object[] {headName}));
-				    }else if (headName.contains(MTable.getTableName(Env.getCtx(), MLocation.Table_ID)) && locationFields==null){ 
-				       locationFields = getSpecialMColumn(header,MTable.getTableName(Env.getCtx(), MLocation.Table_ID),idx);
-					   for(GridField sField:locationFields){
-				           readProcArray.add(getProccesorFromColumn(sField)); 
-				           indxDetail++;
-					   }
-					   idx=indxDetail;
-				    }else
-					   break;
-				    
-				}else{
-					boolean isKeyColumn = headName.indexOf("/") > 0;
-					boolean isForeing 	= headName.indexOf("[") > 0 && headName.indexOf("]")>0;
-					String  columnName  = getColumnName (isKeyColumn,isForeing,false,headName);
-					GridField field 	= gridTab.getField(columnName);
-					
-					if (field == null)
-						throwAdempiereException(Msg.getMsg(Env.getCtx(), "FieldNotFound" , new Object[] {columnName}) );
-					else if(isKeyColumn && !isThereKey)
-						isThereKey =true;
-					else if (!isThereDocAction &&
-							  MColumn.get(Env.getCtx(),field.getAD_Column_ID()).getAD_Reference_Value_ID() == REFERENCE_DOCUMENTACTION )
-						isThereDocAction= true;
-					
-					readProcArray.add(getProccesorFromColumn(field)); 
-					indxDetail++;
-			    }
-			}	
-			
+			header =  Arrays.asList(mapReader.getHeader(true));  
+
+			//Mapping header
+			int indxDetail = mapCSVHeader(gridTab);
+
 			if(isUpdateOrMergeMode() && !isThereKey)
 				throwAdempiereException(gridTab.getTableName()+": "+Msg.getMsg(Env.getCtx(), "NoKeyFound"));
-			
+
 			tabMapIndexes.put(gridTab,indxDetail-1);
-			String  childTableName   = null;
 			isThereKey = false;
 			locationFields = null;
-			GridTab currentDetailTab = null;
-			//Mapping details 
-		    for(int idx = indxDetail; idx < header.size(); idx++) {	
-		    	String detailName = header.get(idx);
-		    	if(detailName!=null && detailName.indexOf(">") > 0){
-		    	   childTableName = detailName.substring(0,detailName.indexOf(">"));  
-		    	   if (currentDetailTab==null || 
-		    		  (currentDetailTab!=null && !childTableName.equals(currentDetailTab.getTableName()))){
-		    		   
-		    		   if(currentDetailTab!=null){ 
-		    			 //check out key per Tab   
-		   		    	 if(isUpdateOrMergeMode() && !isThereKey){
-		   		    		throwAdempiereException(currentDetailTab.getTableName()+": "+Msg.getMsg(Env.getCtx(), "NoKeyFound"));
-		   		    	 }else{
-		   		    	    tabMapIndexes.put(currentDetailTab,idx-1); 	
-			    			isThereKey =false; 
-		   		    	 } 
-		    		   }
-		    		   
-		    		   for(GridTab detail: childs){
-						   if(detail.getTableName().equals(childTableName)){
-							  currentDetailTab = detail;
-							  break;
-						   }
-					   } 
-		    	   }
-		    	   
-				   if(currentDetailTab == null) 
-					   throwAdempiereException(Msg.getMsg(Env.getCtx(),"NoChildTab",new Object[] {childTableName}));
-		    	   
-				   String columnName = detailName;
-				   if (columnName.contains(MTable.getTableName(Env.getCtx(), MLocation.Table_ID)) && locationFields==null){
-					   locationFields = getSpecialMColumn(header,MTable.getTableName(Env.getCtx(), MLocation.Table_ID),idx);
-					   for(GridField sField:locationFields){
-						   readProcArray.add(getProccesorFromColumn(sField)); 
-						   idx++;
-					   }
-					   idx--;
-				    }else{
-					   boolean isKeyColumn= columnName.indexOf("/") > 0;
-					   boolean isForeing  = columnName.indexOf("[") > 0 && columnName.indexOf("]")>0;
-					   columnName = getColumnName(isKeyColumn,isForeing,true,columnName);
-					   GridField field = currentDetailTab.getField(columnName);
-					  
-					   if(field == null)
-						   throwAdempiereException(Msg.getMsg(Env.getCtx(), "FieldNotFound",new Object[] {detailName}));
-					   else if(isKeyColumn && !isThereKey)
-						  isThereKey =true;
-					
-					   readProcArray.add(getProccesorFromColumn(field));  
-				   }				   
-		    	}else
-		    		throwAdempiereException(Msg.getMsg(Env.getCtx(),"WrongDetailName",new Object[] {" col("+idx+") ",detailName}));
-		    	
-		    }
-		    
-		    if(currentDetailTab!=null){
-		    	if(isUpdateOrMergeMode() && !isThereKey)
-		    		throwAdempiereException(currentDetailTab.getTableName()+": "+Msg.getMsg(Env.getCtx(), "NoKeyFound"));
 
-			    tabMapIndexes.put(currentDetailTab,header.size()-1); 	   
-		    }
-	
-		    TreeMap<GridTab,Integer> sortedtTabMapIndexes= null;
-		    if (childs.size()>0 && !tabMapIndexes.isEmpty()){
-		    	ValueComparator bvc =  new ValueComparator(tabMapIndexes);
-		        sortedtTabMapIndexes = new TreeMap<GridTab,Integer>(bvc);
-		        sortedtTabMapIndexes.putAll(tabMapIndexes);
-		    }else{
-		    	Map<GridTab,Integer> localMapIndexes = new HashMap<GridTab,Integer>();
-		    	localMapIndexes.put(gridTab, header.size()-1);
-		    	ValueComparator bvc =  new ValueComparator(localMapIndexes);
-		        sortedtTabMapIndexes = new TreeMap<GridTab,Integer>(bvc);
-		    	sortedtTabMapIndexes.putAll(localMapIndexes);
-		    }
-			
-		    CellProcessor[] processors = readProcArray.toArray(new CellProcessor[readProcArray.size()]);	
+			//Mapping details 
+			mapCSVDetail(indxDetail, childs);
+
+			sortedtTabMapIndexes = null;
+			if (childs.size()>0 && !tabMapIndexes.isEmpty()){
+				ValueComparator bvc =  new ValueComparator(tabMapIndexes);
+				sortedtTabMapIndexes = new TreeMap<GridTab,Integer>(bvc);
+				sortedtTabMapIndexes.putAll(tabMapIndexes);
+			}else{
+				Map<GridTab,Integer> localMapIndexes = new HashMap<GridTab,Integer>();
+				localMapIndexes.put(gridTab, header.size()-1);
+				ValueComparator bvc =  new ValueComparator(localMapIndexes);
+				sortedtTabMapIndexes = new TreeMap<GridTab,Integer>(bvc);
+				sortedtTabMapIndexes.putAll(localMapIndexes);
+			}
+
 			m_isError = false;
 			// write the header
 			String rawHeader = mapReader.getUntokenizedRow();
 			errFileW.write(rawHeader + delimiter + ERROR_HEADER + "\n");
-			List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
-			List<String> rawData = new ArrayList<String>();
-			// pre-process to check for errors
-			long lastOutput = new Date().getTime();
-			while (true) {
-				if( processUI != null && new Date().getTime()-lastOutput > 1000 /* one second */){
-					processUI.statusUpdate(refreshImportStatus(data.size(), 0));
-					lastOutput = new Date().getTime();
-				}
-				Map<String, Object> map = null;
-				boolean isLineError = false; 
-				StringBuilder errMsg = new StringBuilder();
-				try {			
-				    map = mapReader.read((String [])header.toArray(), processors);
-				} catch (SuperCsvCellProcessorException e) {
-					int idx = e.getCsvContext().getColumnNumber() - 1;
-					errMsg.append(header.get(idx)).append(": ").append(e.getMessage());
-					isLineError = true;
-				}
-				String rawLine = mapReader.getUntokenizedRow();
-				if (! isLineError) {
-					if(map == null)
-					   break;
-					
-					//Re-order information coming from map
-					List<Object> tmpRow = getOrderedRowFromMap(header,map);	  					
-					//read master and detail
-					int initIndx= 0;
-					for(Map.Entry<GridTab, Integer> tabIndex : sortedtTabMapIndexes.entrySet()) {
-						GridTab tmpGrid = tabIndex.getKey(); 						
-						if(gridTab.equals(tmpGrid) && tmpRow.get(0)==null){
-						   initIndx = indxDetail;
-						   continue;	
-						}						
-						int endindx = tabIndex.getValue();
-						StringBuilder lineError = preprocessRow (tmpGrid,header,tmpRow,initIndx,endindx);
-						if( lineError!= null && lineError.length() > 0 ){
-							isLineError = true;
-							if (errMsg.length() > 0)
-								errMsg.append(" / ");
-							    errMsg.append(lineError);
-						}
-					    initIndx = endindx + 1;
-					}
-				}
-				if (isLineError && ! m_isError)
-					m_isError = true;
-				if (!m_isError) {
-					data.add(map);
-					rawData.add(rawLine);
-				}
-				// write
-				rawLine = rawLine + delimiter + quoteChar + errMsg.toString().replaceAll(quoteChar, "") + quoteChar + "\n";
-				errFileW.write(rawLine);
-			}
+			data = new ArrayList<Map<String, Object>>();
+			rawData = new ArrayList<String>();
 
-			if (!m_isError) {
+			// pre-process to check for errors
+			preProcess(processUI, gridTab, indxDetail);
+
+			if ( !m_isError ) {
+
 				String logFileName = FileUtil.getTempMailName("Import_" + gridTab.getTableName(), "_log.csv");
 				logFile = new File(logFileName);
 				logFileW = new PrintWriter(logFile, charset.name());
 				// write the header
 				logFileW.write(rawHeader + delimiter + LOG_HEADER + "\n");
 				// no errors found - process header and then details 
-				boolean isMasterok = true; 
-				boolean isDetailok = true;
-				boolean error=false;
-				Trx trx = null;
-				String trxName= null;
-				List<String>  rowsTmpResult = new ArrayList<String>();
-				lastOutput = new Date().getTime();
+				isMasterok = true; 
+				isDetailok = true;
+				error = false;
+				trx = null;
+				trxName = null;
+				rowsTmpResult = new ArrayList<String>();
+
+				long lastOutput = new Date().getTime();
 
 				for (int idx = 0; idx < data.size(); idx++) {
+
 					if( processUI != null && new Date().getTime()-lastOutput > 1000 /* one second */){
 						processUI.statusUpdate(refreshImportStatus(idx + 1, data.size() + 1));
 						lastOutput = new Date().getTime();
 					}
+
 					String rawLine = rawData.get(idx);
-					String logMsg = null;
 					StringBuilder rowResult = new StringBuilder();
-					GridTab currentGridTab=null;
-					boolean isDetail=false;
-					int currentColumn=0;
-					
+					boolean isDetail = false;
+
 					if (rawLine.charAt(0)==','){
-				    	isDetail=true;
+						isDetail=true;
 						//check out if master row comes empty  
 						Map<String, Object> rowMap = data.get(idx);
-					    for(int i=0; i < indxDetail-1; i++){	
-					    	if(rowMap.get(header.get(i))!=null){
-					    	   isDetail=false;
-					    	   break;
-					    	}
-					    }
+						for(int i=0; i < indxDetail-1; i++){	
+							if(rowMap.get(header.get(i))!=null){
+								isDetail=false;
+								break;
+							}
+						}
 					}
 
 					if (!isMasterok && isDetail){
-						 rawLine = rawLine + delimiter + quoteChar + Msg.getMsg(Env.getCtx(),"NotProcessed") + quoteChar + "\n";
-						 rowsTmpResult.add(rawLine);
-						 continue;		 
+						rawLine = rawLine + delimiter + quoteChar + Msg.getMsg(Env.getCtx(),"NotProcessed") + quoteChar + "\n";
+						rowsTmpResult.add(rawLine);
+						continue;		 
 					}else if(isMasterok && isDetail && !isDetailok){
-					     rawLine = rawLine + delimiter + quoteChar + "Record not proccesed due to detail record failure" + quoteChar + "\n";
-						 rowsTmpResult.add(rawLine);
-						 continue;	 
-				    }					
-					
-					try {
-
-						if(!isDetail){
-							if(trx!=null){ 
-							   if(error){
-								   trx.rollback();
-								   for(String row:rowsTmpResult){						   
-									   row =row.replaceAll("Updated","RolledBack");
-									   row =row.replaceAll("Inserted","RolledBack");
-									   logFileW.write(row);  
-								   }
-								   error =false;
-							   }else { 
-								 
-								   if(isThereDocAction){ 
-									  boolean isError = false;
-									  int AD_Process_ID = MColumn.get(Env.getCtx(),gridTab.getField("DocAction").getAD_Column_ID()).getAD_Process_ID(); 
-								      
-									  if( AD_Process_ID > 0 ){
-										  String docResult = processDocAction(masterRecord,AD_Process_ID); 
-										     
-										  if(docResult.contains("error")) 
-											 isError = true; 
-										  
-								    	  rowsTmpResult.set(0,rowsTmpResult.get(0).replace(quoteChar + "\n",docResult + quoteChar + "\n")); 
-								      }else {
-								    	  throwAdempiereException("No Process found for document action.");	  
-								      }
-									  
-									  if(isError){
-									     trx.rollback();	 
-										 for(String row:rowsTmpResult){
-											 row = row.replaceAll("Updated","RolledBack");
-											 row = row.replaceAll("Inserted","RolledBack");
-											 logFileW.write(row);
-										 }   
-									  }else{
-									     trx.commit();   
-									     for(String row:rowsTmpResult)						   
-											 logFileW.write(row);
-									  }
-								   }else{
-									   trx.commit();  
-									   for(String row:rowsTmpResult)						   
-										   logFileW.write(row);
-								   }								   
-							   }
-							   trx.close();
-							   trx=null;
-							}
-							trxName = "Import_" + gridTab.getTableName() + "_" + UUID.randomUUID();
-							gridTab.getTableModel().setImportingMode(true,trxName);	
-							trx = Trx.get(trxName,true);
-							masterRecord = null;
-							rowsTmpResult.clear();
-							isMasterok = true;
-							isDetailok = true;
-						}
-						
-						for(Map.Entry<GridTab, Integer> tabIndex : sortedtTabMapIndexes.entrySet()) {
-							currentGridTab = tabIndex.getKey(); 			
-
-							if(isDetail && gridTab.equals(currentGridTab)){
-							   currentColumn=indxDetail;
-							   continue;			
-							}
-						
-							//Assign master trx to its children
-							if(!gridTab.equals(currentGridTab)){
-								currentGridTab.getTableModel().setImportingMode(true,trxName);	
-								isDetail=true;
-							}
-							
-							int j = tabIndex.getValue();	
-							logMsg = areValidKeysAndColumns(currentGridTab,data.get(idx),header,currentColumn,j,masterRecord,trx);
-							
-							if (logMsg == null){
-								if (isInsertMode()){
-								  if(!currentGridTab.getTableModel().isOpen())
-								      currentGridTab.getTableModel().open(0);					
-								  //how to read from status since the warning is coming empty ?
-								  if (!currentGridTab.dataNew(false)){
-									  logMsg = "["+currentGridTab.getName()+"]"+"- Was not able to create a new record!";
-								  }else{
-									  currentGridTab.navigateCurrent();
-								  }
-								} 
-								
-								if(logMsg==null)
-								   logMsg = proccessRow(currentGridTab,header,data.get(idx),currentColumn,j,masterRecord,trx);
-
-								currentColumn = j + 1;		
-								if(!(logMsg == null)){
-								   m_import_mode =importMode;   
-							 	   //Ignore row since there is no data 
-								   if("NO_DATA_TO_IMPORT".equals(logMsg)){
-									  logMsg ="";
-									  continue;
-								   }else 
-									  error =true;
-								}
-							}else {
-								error =true;
-								currentColumn = j + 1;
-							}
-							if (! error) {
-								if (currentGridTab.dataSave(false)){						
-									PO po = currentGridTab.getTableModel().getPO(currentGridTab.getCurrentRow());		
-									//Keep master record for details validation 
-									if(currentGridTab.equals(gridTab))
-									   masterRecord = po;
-
-									if(isInsertMode())
-									   logMsg = Msg.getMsg(Env.getCtx(), "Inserted")+" "+ po.toString();	
-									else{
-									   logMsg = Msg.getMsg(Env.getCtx(), "Updated")+" "+ po.toString(); 
-									   if(currentGridTab.equals(gridTab) && sortedtTabMapIndexes.size()>1)
-										  currentGridTab.dataRefresh(true); 
-									}
-								} else {
-									ValueNamePair ppE = CLogger.retrieveWarning();
-									if (ppE==null)   
-										ppE = CLogger.retrieveError();
-									
-									String info = null;
-									
-									if (ppE != null)
-										info = ppE.getName();
-									if (info == null)
-										info = "";
-									
-									logMsg = Msg.getMsg(Env.getCtx(), "Error") + " " + Msg.getMsg(Env.getCtx(), "SaveError") + " (" + info + ")";
-									currentGridTab.dataIgnore();
-
-									if(currentGridTab.equals(gridTab) && masterRecord==null){
-									   isMasterok = false;
-									   rowResult.append("<"+currentGridTab.getTableName()+">: ");
-									   rowResult.append(logMsg);
-									   rowResult.append(" / ");
-									   break;
-								    }
-									
-									if(!currentGridTab.equals(gridTab) && masterRecord!=null){
-										isDetailok = false;
-										rowResult.append("<"+currentGridTab.getTableName()+">: ");
-										rowResult.append(logMsg);
-									    rowResult.append(" / ");
-										break;
-								    }
-								}
-								rowResult.append("<"+currentGridTab.getTableName()+">: ");
-								rowResult.append(logMsg);
-							    rowResult.append(" / ");
-							} else {
-								currentGridTab.dataIgnore();
-								
-								rowResult.append("<"+currentGridTab.getTableName()+">: ");
-								rowResult.append(logMsg);
-							    rowResult.append(" / ");
-   
-								//Master Failed, thus details cannot be imported 
-								if(currentGridTab.equals(gridTab) && masterRecord==null){
-								   isMasterok = false;
-								   break;
-								}
-								
-								if(!currentGridTab.equals(gridTab) && masterRecord!=null){
-								   isDetailok = false;
-								   break;
-								}
-							}	
-							m_import_mode = importMode;	
-						}
-					} catch (Exception e) {
-						rowResult.append("<"+currentGridTab.getTableName()+">: ");
-						rowResult.append(Msg.getMsg(Env.getCtx(), "Error") + " " + e);
-					    rowResult.append(" / ");
-						currentGridTab.dataIgnore();
-						
-						error = true;
-						//Master Failed, thus details cannot be imported 
-						if(currentGridTab.equals(gridTab) && masterRecord==null)
-						   isMasterok = false;
-						
-						if(!currentGridTab.equals(gridTab) && masterRecord!=null)
-						   isDetailok = false;
-						
-					} finally {						
-					  m_import_mode =importMode; 
+						rawLine = rawLine + delimiter + quoteChar + "Record not proccesed due to detail record failure" + quoteChar + "\n";
+						rowsTmpResult.add(rawLine);
+						continue;	 
 					}
+					
+					if( isSingleTrx() && trx == null )
+						createTrx(gridTab);
+
+					if( !isDetail && !isSingleTrx() ){
+						manageMasterTrx(gridTab, null);
+						createTrx(gridTab);
+					}
+
+					String recordResult = processRecord(importMode, gridTab, indxDetail, isDetail, idx, rowResult);
+					rowResult.append(recordResult);
+
 					// write
 					rawLine = rawLine + delimiter + quoteChar + rowResult.toString().replaceAll(delimiter, "") + quoteChar + "\n";
 					rowsTmpResult.add(rawLine);
+					
+					if( isSingleTrx() && isError() )
+						break;
+
 				}
 
-				if(trx!=null){
-				   if(error){
-					  trx.rollback();	 
-					  for(String row:rowsTmpResult){
-						  row =row.replaceAll("Updated","RolledBack");
-						  row =row.replaceAll("Inserted","RolledBack");
-					      logFileW.write(row);
-					  }   
-					}else{
-					  if(isThereDocAction){
-						 
-						 boolean isError = false;
-					     int AD_Process_ID = MColumn.get(Env.getCtx(),gridTab.getField("DocAction").getAD_Column_ID()).getAD_Process_ID(); 
-						 
-					     if( AD_Process_ID > 0 ){
-						     String docResult = processDocAction(masterRecord,AD_Process_ID); 
-						     
-						     if(docResult.contains("error")) 
-						        isError = true; 
-						     
-						     rowsTmpResult.set(0,rowsTmpResult.get(0).replace(quoteChar + "\n",docResult + quoteChar + "\n"));    
-						 }else {
-							 throwAdempiereException("No Process found for document action.");	  
-						 }
-						 
-						 if(isError){
-							trx.rollback();
-							for(String row:rowsTmpResult){
-								row = row.replaceAll("Updated","RolledBack");
-								row = row.replaceAll("Inserted","RolledBack");
-							    logFileW.write(row);
-							}
-						 }else{
-							trx.commit();
-							for(String row:rowsTmpResult)
-								logFileW.write(row);
-						 }
-					  }else {
-					     trx.commit();  
-						 for(String row:rowsTmpResult)
-							 logFileW.write(row);
-					  }
-					}   
-				   
-				    if(masterRecord!=null){
-				       gridTab.query(false);
-				       gridTab.getTableModel().setImportingMode(false,null);
-					   for(GridTab detail: childs)
-						   if(detail.getTableModel().isOpen()){
-							  detail.query(true);
-							  detail.getTableModel().setImportingMode(false,null);	
-						   }
-				    }					
-				    trx.close();
-					trx=null;	
-				}
+				manageMasterTrx(gridTab,childs);
+
 			}
 		} catch (IOException e) {
-	      throw new AdempiereException(e);
+			throw new AdempiereException(e);
 		} catch (Exception ex) {
 			throw new AdempiereException(ex);
 		} finally {
@@ -639,6 +277,483 @@ public class GridTabCSVImporter implements IGridTabImporter
 			return logFile;
 		else
 			return errFile;
+	}//fileImport
+	
+	private void initValues(){
+		mapReader = null;
+		errFile = null;
+		logFile = null;
+		errFileW = null;
+		logFileW = null;
+		masterRecord = null;
+		readProcArray = new ArrayList<CellProcessor>();
+		tabMapIndexes = new HashMap<GridTab,Integer>();
+		locationFields = null;
+		isThereKey = false;
+		isThereDocAction = false;
+	}
+	
+	/**
+	 * Rollsback the trx and update the text in the file
+	 */
+	private void rollbackTrx(){
+		trx.rollback();
+		for( String row : rowsTmpResult ){
+			row = row.replaceAll("Updated","RolledBack");
+			row = row.replaceAll("Inserted","RolledBack");
+			logFileW.write(row);
+		}
+	}
+	
+	/**
+	 * Commit the trx and writes in the file
+	 */
+	private void commitTrx(){
+		trx.commit();
+		for( String row : rowsTmpResult )
+			logFileW.write(row);
+	}
+	
+	/**
+	 * Map the header and returns the index where the detail starts
+	 * @param gridTab
+	 * @return
+	 */
+	private int mapCSVHeader(GridTab gridTab){
+		
+		int indxDetail = 0;
+		
+		for(int idx = 0; idx < header.size(); idx++) {
+			String headName = header.get(idx);
+
+			if (headName==null) {
+				throwAdempiereException("Header column cannot be empty, Col: " + (idx + 1));
+			}
+
+			if (headName.equals(ERROR_HEADER) || headName.equals(LOG_HEADER)){
+				header.set(idx, null);
+				readProcArray.add(null);
+				continue;
+			}
+			if (headName.indexOf(">") > 0) {
+				if(idx==0){
+					throwAdempiereException(Msg.getMsg(Env.getCtx(),"WrongHeader", new Object[] {headName}));
+				}else if (headName.contains(MTable.getTableName(Env.getCtx(), MLocation.Table_ID)) && locationFields==null){ 
+					locationFields = getSpecialMColumn(header,MTable.getTableName(Env.getCtx(), MLocation.Table_ID),idx);
+					for(GridField sField:locationFields){
+						readProcArray.add(getProccesorFromColumn(sField)); 
+						indxDetail++;
+					}
+					idx=indxDetail;
+				}else
+					break;
+
+			}else{
+				boolean isKeyColumn = headName.indexOf("/") > 0;
+				boolean isForeing 	= headName.indexOf("[") > 0 && headName.indexOf("]")>0;
+				String  columnName  = getColumnName (isKeyColumn,isForeing,false,headName);
+				GridField field 	= gridTab.getField(columnName);
+
+				if (field == null)
+					throwAdempiereException(Msg.getMsg(Env.getCtx(), "FieldNotFound" , new Object[] {columnName}) );
+				else if(isKeyColumn && !isThereKey)
+					isThereKey =true;
+				else if (!isThereDocAction &&
+						MColumn.get(Env.getCtx(),field.getAD_Column_ID()).getAD_Reference_Value_ID() == REFERENCE_DOCUMENTACTION )
+					isThereDocAction= true;
+
+				readProcArray.add(getProccesorFromColumn(field)); 
+				indxDetail++;
+			}
+		}
+		
+		return indxDetail;
+	}//mapFileHeader
+	
+	/**
+	 * Map details fields in the csv file
+	 * @param indxDetail
+	 */
+	private void mapCSVDetail(int indxDetail, List<GridTab> childs){
+
+		String  childTableName = null;
+		GridTab currentDetailTab = null;
+
+		for(int idx = indxDetail; idx < header.size(); idx++) {	
+			String detailName = header.get(idx);
+			if(detailName!=null && detailName.indexOf(">") > 0){
+				childTableName = detailName.substring(0,detailName.indexOf(">"));  
+				if (currentDetailTab==null || 
+						(currentDetailTab!=null && !childTableName.equals(currentDetailTab.getTableName()))){
+
+					if(currentDetailTab!=null){ 
+						//check out key per Tab   
+						if(isUpdateOrMergeMode() && !isThereKey){
+							throwAdempiereException(currentDetailTab.getTableName()+": "+Msg.getMsg(Env.getCtx(), "NoKeyFound"));
+						}else{
+							tabMapIndexes.put(currentDetailTab,idx-1); 	
+							isThereKey =false; 
+						} 
+					}
+
+					for(GridTab detail: childs){
+						if(detail.getTableName().equals(childTableName)){
+							currentDetailTab = detail;
+							break;
+						}
+					} 
+				}
+
+				if(currentDetailTab == null) 
+					throwAdempiereException(Msg.getMsg(Env.getCtx(),"NoChildTab",new Object[] {childTableName}));
+
+				String columnName = detailName;
+				if (columnName.contains(MTable.getTableName(Env.getCtx(), MLocation.Table_ID)) && locationFields==null){
+					locationFields = getSpecialMColumn(header,MTable.getTableName(Env.getCtx(), MLocation.Table_ID),idx);
+					for(GridField sField:locationFields){
+						readProcArray.add(getProccesorFromColumn(sField)); 
+						idx++;
+					}
+					idx--;
+				}else{
+					boolean isKeyColumn= columnName.indexOf("/") > 0;
+					boolean isForeing  = columnName.indexOf("[") > 0 && columnName.indexOf("]")>0;
+					columnName = getColumnName(isKeyColumn,isForeing,true,columnName);
+					GridField field = currentDetailTab.getField(columnName);
+
+					if(field == null)
+						throwAdempiereException(Msg.getMsg(Env.getCtx(), "FieldNotFound",new Object[] {detailName}));
+					else if(isKeyColumn && !isThereKey)
+						isThereKey =true;
+
+					readProcArray.add(getProccesorFromColumn(field));  
+				}				   
+			}else
+				throwAdempiereException(Msg.getMsg(Env.getCtx(),"WrongDetailName",new Object[] {" col("+idx+") ",detailName}));
+
+		}
+		if(currentDetailTab!=null){
+			if(isUpdateOrMergeMode() && !isThereKey)
+				throwAdempiereException(currentDetailTab.getTableName()+": "+Msg.getMsg(Env.getCtx(), "NoKeyFound"));
+
+			tabMapIndexes.put(currentDetailTab,header.size()-1); 	   
+		}
+
+	}//mapFileDetail
+	
+	/**
+	 * Pre process te file lookign for errors
+	 * @param processUI
+	 * @param gridTab
+	 * @param indxDetail
+	 */
+	private void preProcess(IProcessUI processUI, GridTab gridTab, int indxDetail){
+
+		CellProcessor[] processors = readProcArray.toArray(new CellProcessor[readProcArray.size()]);	
+		long lastOutput = new Date().getTime();
+
+		while (true) {
+			if( processUI != null && new Date().getTime()-lastOutput > 1000 /* one second */){
+				processUI.statusUpdate(refreshImportStatus(data.size(), 0));
+				lastOutput = new Date().getTime();
+			}
+
+			Map<String, Object> map = null;
+			boolean isLineError = false; 
+			StringBuilder errMsg = new StringBuilder();
+
+			try {			
+				map = mapReader.read( (String []) header.toArray(), processors);
+			} catch (SuperCsvCellProcessorException e) {
+				int idx = e.getCsvContext().getColumnNumber() - 1;
+				errMsg.append(header.get(idx)).append(": ").append(e.getMessage());
+				isLineError = true;
+			} catch (IOException e) {
+				throw new AdempiereException(e);
+			}
+
+			String rawLine = mapReader.getUntokenizedRow();
+			if (! isLineError) {
+				if(map == null)
+					break;
+
+				//Re-order information coming from map
+				List<Object> tmpRow = getOrderedRowFromMap(header,map);	  					
+				//read master and detail
+				int initIndx= 0;
+				for(Map.Entry<GridTab, Integer> tabIndex : sortedtTabMapIndexes.entrySet()) {
+					GridTab tmpGrid = tabIndex.getKey(); 						
+					if(gridTab.equals(tmpGrid) && tmpRow.get(0)==null){
+						initIndx = indxDetail;
+						continue;	
+					}						
+					int endindx = tabIndex.getValue();
+					StringBuilder lineError = preprocessRow (tmpGrid,header,tmpRow,initIndx,endindx);
+					if( lineError!= null && lineError.length() > 0 ){
+						isLineError = true;
+						if (errMsg.length() > 0)
+							errMsg.append(" / ");
+						errMsg.append(lineError);
+					}
+					initIndx = endindx + 1;
+				}
+			}
+			if (isLineError && ! m_isError)
+				m_isError = true;
+			if (!m_isError) {
+				data.add(map);
+				rawData.add(rawLine);
+			}
+			// write
+			rawLine = rawLine + delimiter + quoteChar + errMsg.toString().replaceAll(quoteChar, "") + quoteChar + "\n";
+			errFileW.write(rawLine);
+		}
+	}//preProcess
+	
+	/**
+	 * Manage the trx
+	 * if the trx exists - commits when no errors, rollback when errors.
+	 * @param gridTab
+	 * @param childs
+	 */
+	private void manageMasterTrx(GridTab gridTab, List<GridTab> childs){
+
+		if( trx != null ){
+
+			if( isError() ) {
+				rollbackTrx();
+				setError(false);
+			}else {
+
+				if( isThereDocAction ){
+
+					boolean isError = false;
+					int AD_Process_ID = MColumn.get(Env.getCtx(), gridTab.getField("DocAction").getAD_Column_ID()).getAD_Process_ID(); 
+
+					if( AD_Process_ID > 0 ){
+						String docResult = processDocAction(masterRecord, AD_Process_ID); 
+
+						if(docResult.contains("error")) 
+							isError = true; 
+
+						rowsTmpResult.set(0,rowsTmpResult.get(0).replace(quoteChar + "\n",docResult + quoteChar + "\n")); 
+					}else {
+						throwAdempiereException("No Process found for document action.");	  
+					}
+
+					if( isError ){
+						rollbackTrx();
+					}else{
+						commitTrx();
+					}
+				}else{
+					commitTrx();
+				}								   
+			}
+			
+			if( childs != null ){
+				if( masterRecord != null ){
+					gridTab.query(false);
+					gridTab.getTableModel().setImportingMode(false,null);
+					for( GridTab detail : childs )
+						if( detail.getTableModel().isOpen() ){
+							detail.query(true);
+							detail.getTableModel().setImportingMode(false,null);	
+						}
+				}
+			}
+			
+			trx.close();
+			trx=null;
+		}
+
+	}//manageMasterTrx
+	
+	/**
+	 * Create a new Trx with a random Name
+	 * @param gridTab
+	 */
+	private void createTrx(GridTab gridTab){
+
+		trxName = getTrxName(gridTab.getTableName());
+		gridTab.getTableModel().setImportingMode(true,trxName);	
+		trx = Trx.get(trxName,true);
+		masterRecord = null;
+		rowsTmpResult.clear();
+		isMasterok = true;
+		isDetailok = true;
+		
+	} //createTrx
+	
+	/**
+	 * Process the record for each row
+	 * First insert the master tab - if no errors found proceeds with the details tabs when existing
+	 * Stops at the first error found in the row
+	 * @param importMode
+	 * @param gridTab
+	 * @param indxDetail
+	 * @param isDetail
+	 * @param idx
+	 * @param rowResult
+	 * @return
+	 */
+	private String processRecord(String importMode, GridTab gridTab, int indxDetail, boolean isDetail, int idx, StringBuilder rowResult){
+		
+		String logMsg = null;
+		GridTab currentGridTab = null;
+		int currentColumn = 0;
+
+		try {
+
+			for( Map.Entry<GridTab, Integer> tabIndex : sortedtTabMapIndexes.entrySet() ) {
+
+				currentGridTab = tabIndex.getKey(); 			
+
+				if( isDetail && gridTab.equals(currentGridTab) ){
+					currentColumn = indxDetail;
+					continue;			
+				}
+
+				//Assign master trx to its children
+				if( !gridTab.equals(currentGridTab) ){
+					currentGridTab.getTableModel().setImportingMode(true,trxName);	
+					isDetail=true;
+				}
+
+				int j = tabIndex.getValue();	
+				logMsg = areValidKeysAndColumns(currentGridTab,data.get(idx),header,currentColumn,j,masterRecord,trx);
+
+				if (logMsg == null){
+
+					if ( isInsertMode() ){
+						if( !currentGridTab.getTableModel().isOpen() )
+							currentGridTab.getTableModel().open(0);
+						//how to read from status since the warning is coming empty ?
+						if ( !currentGridTab.dataNew(false) ){
+							logMsg = "["+currentGridTab.getName()+"]"+"- Was not able to create a new record!";
+						}else{
+							currentGridTab.navigateCurrent();
+						}
+					} 
+
+					if( logMsg==null )
+						logMsg = proccessRow(currentGridTab,header,data.get(idx),currentColumn,j,masterRecord,trx);
+
+					currentColumn = j + 1;
+					if( !(logMsg == null) ){
+						m_import_mode = importMode;   
+						//Ignore row since there is no data 
+						if("NO_DATA_TO_IMPORT".equals(logMsg)){
+							logMsg = "";
+							continue;
+						}else 
+							setError(true);
+					}
+
+				}else {
+					setError(true);
+					currentColumn = j + 1;
+				}
+
+				if ( !isError() ) {
+					if ( currentGridTab.dataSave(false) ){						
+						PO po = currentGridTab.getTableModel().getPO(currentGridTab.getCurrentRow());		
+						//Keep master record for details validation 
+						if(currentGridTab.equals(gridTab))
+							masterRecord = po;
+
+						if( isInsertMode() )
+							logMsg = Msg.getMsg(Env.getCtx(), "Inserted") + " " + po.toString();	
+						else{
+							logMsg = Msg.getMsg(Env.getCtx(), "Updated") + " " + po.toString(); 
+							if( currentGridTab.equals(gridTab) && sortedtTabMapIndexes.size()>1 )
+								currentGridTab.dataRefresh(true); 
+						}
+					} else {
+						ValueNamePair ppE = CLogger.retrieveWarning();
+						if (ppE==null)   
+							ppE = CLogger.retrieveError();
+
+						String info = null;
+
+						if ( ppE != null )
+							info = ppE.getName();
+						if ( info == null )
+							info = "";
+
+						logMsg = Msg.getMsg(Env.getCtx(), "Error") + " " + Msg.getMsg(Env.getCtx(), "SaveError") + " (" + info + ")";
+						currentGridTab.dataIgnore();
+
+						//Problem in the master record
+						if( currentGridTab.equals(gridTab) && masterRecord == null ){
+							isMasterok = false;
+							rowResult.append( "<" + currentGridTab.getTableName() + ">: " );
+							rowResult.append(logMsg);
+							rowResult.append(" / ");
+							break;
+						}
+
+						//Problem in the detail record
+						if( !currentGridTab.equals(gridTab) && masterRecord != null ){
+							isDetailok = false;
+							rowResult.append( "<" + currentGridTab.getTableName() + ">: " );
+							rowResult.append(logMsg);
+							rowResult.append(" / ");
+							break;
+						}
+					}
+					
+					rowResult.append( "<" + currentGridTab.getTableName() + ">: " );
+					rowResult.append(logMsg);
+					rowResult.append(" / ");
+
+				} else { //if error true
+					currentGridTab.dataIgnore();
+
+					rowResult.append( "<" + currentGridTab.getTableName() + ">: " );
+					rowResult.append(logMsg);
+					rowResult.append(" / ");
+
+					//Master Failed, thus details cannot be imported 
+					if( currentGridTab.equals(gridTab) && masterRecord == null ){
+						isMasterok = false;
+						break;
+					}
+					
+					//Detail failed
+					if( !currentGridTab.equals(gridTab) && masterRecord != null ){
+						isDetailok = false;
+						break;
+					}
+				}	
+				m_import_mode = importMode;	
+			}
+		} catch (Exception e) {
+
+			rowResult.append( "<" + currentGridTab.getTableName() + ">: " );
+			rowResult.append(Msg.getMsg(Env.getCtx(), "Error") + " " + e);
+			rowResult.append(" / ");
+			currentGridTab.dataIgnore();
+
+			setError(true);
+
+			//Master Failed, thus details cannot be imported 
+			if( currentGridTab.equals(gridTab) && masterRecord == null )
+				isMasterok = false;
+
+			if( !currentGridTab.equals(gridTab) && masterRecord != null )
+				isDetailok = false;
+
+		} finally {
+			m_import_mode = importMode;
+		}
+		
+		return rowResult.toString();
+
+	}//processRecord
+	
+	private String getTrxName(String gritTabName){
+		return "Import_" + gritTabName + "_" + UUID.randomUUID();
 	}
 	
 	private void throwAdempiereException(String msg){
@@ -700,7 +815,11 @@ public class GridTabCSVImporter implements IGridTabImporter
 		if(isKey){
 		   if(headName.indexOf("/") > 0){
 			  if(headName.endsWith("K"))
-				  headName = headName.substring(0,headName.length()-2);  
+				  headName = headName.substring(0,headName.length()-2);
+			  else if (headName.endsWith("KT")){
+				  setSingleTrx(true);
+				  headName = headName.substring(0,headName.length()-3);
+			  }
 			  else
 				 throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ColumnKey")+" "+headName);
 		   } 
@@ -1172,7 +1291,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 		} else if (DisplayType.DateTime == field.getDisplayType()) {
 			return (new Optional(new ParseDate(DisplayType.DEFAULT_TIMESTAMP_FORMAT)));
 		} else if (DisplayType.Time == field.getDisplayType()) {
-			return (new Optional(new ParseDate("DisplayType.DEFAULT_TIME_FORMAT")));
+			return (new Optional(new ParseDate(DisplayType.DEFAULT_TIME_FORMAT)));
 		} else if (DisplayType.Integer == field.getDisplayType()) {
 			return (new Optional(new ParseInt()));
 		} else if (DisplayType.isNumeric(field.getDisplayType())) {
@@ -1195,7 +1314,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 		List<String> parentColumns = new ArrayList<String>(); 
 		//Process columnKeys + Foreign to add restrictions.
 		for (int i = startindx ; i < endindx + 1 ; i++){					  
-		    boolean isKeyColumn = header.get(i).indexOf("/") > 0 && header.get(i).endsWith("K");	
+		    boolean isKeyColumn = header.get(i).indexOf("/") > 0 && ( header.get(i).endsWith("K") || header.get(i).endsWith("KT"));	
 			if(isKeyColumn && !header.get(i).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID))){  
 			   boolean isForeing = header.get(i).indexOf("[") > 0 && header.get(i).indexOf("]")>0;
 			   boolean isDetail  = header.get(i).indexOf(">") > 0;
@@ -1410,7 +1529,23 @@ public class GridTabCSVImporter implements IGridTabImporter
 		return localFile;
 	}
 	
-    static class ValueComparator implements Comparator<GridTab> {
+    public boolean isError() {
+		return error;
+	}
+
+	public boolean isSingleTrx() {
+		return isSingleTrx;
+	}
+
+	public void setSingleTrx(boolean isSingleTrx) {
+		this.isSingleTrx = isSingleTrx;
+	}
+
+	public void setError(boolean error) {
+		this.error = error;
+	}
+
+	static class ValueComparator implements Comparator<GridTab> {
     	Map<GridTab,Integer> base;
 		public ValueComparator(Map<GridTab,Integer> base) {
 		    this.base = base;

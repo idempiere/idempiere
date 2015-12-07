@@ -39,10 +39,11 @@ import org.compiere.util.DisplayType;
  */
 public class MSysConfig extends X_AD_SysConfig
 {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -8766810721578833704L;
+	private static final long serialVersionUID = 2300170888492939423L;
+
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
     public static final String ALLOCATION_DESCRIPTION = "ALLOCATION_DESCRIPTION";
@@ -58,6 +59,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String APPLICATION_MAIN_VERSION = "APPLICATION_MAIN_VERSION";
     public static final String APPLICATION_MAIN_VERSION_SHOWN = "APPLICATION_MAIN_VERSION_SHOWN";
     public static final String APPLICATION_OS_INFO_SHOWN = "APPLICATION_OS_INFO_SHOWN";
+	public static final String ATTACH_EMBEDDED_2PACK = "ATTACH_EMBEDDED_2PACK";
     public static final String BACKGROUND_JOB_ALLOWED = "BACKGROUND_JOB_ALLOWED";
     public static final String BACKGROUND_JOB_BY_DEFAULT = "BACKGROUND_JOB_BY_DEFAULT";
     public static final String BACKGROUND_JOB_MAX_IN_SYSTEM = "BACKGROUND_JOB_MAX_IN_SYSTEM";
@@ -78,6 +80,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String DOCACTIONBUTTON_SHOWACTIONNAME = "DOCACTIONBUTTON_SHOWACTIONNAME";
     public static final String DPVIEWS_SHOWINFOACCOUNT = "DPViews_ShowInfoAccount";
     public static final String DPVIEWS_SHOWINFOSCHEDULE = "DPViews_ShowInfoSchedule";
+	public static final String EMAIL_NOTIFY_2PACK = "EMAIL_NOTIFY_2PACK";
 	public static final String ENABLE_PAYMENTBOX_BUTTON = "ENABLE_PAYMENTBOX_BUTTON";
 	public static final String GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = "GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS";
 	public static final String HTML_REPORT_THEME = "HTML_REPORT_THEME";
@@ -157,9 +160,9 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_REPORT_TABLE_OUTPUT_TYPE = "ZK_REPORT_TABLE_OUTPUT_TYPE";
     public static final String ZK_ROOT_FOLDER_BROWSER = "ZK_ROOT_FOLDER_BROWSER";
     public static final String ZK_SEQ_DEFAULT_VALUE_PANEL = "ZK_SEQ_DEFAULT_VALUE_PANEL";
-    public static final String ZK_SESSION_TIMEOUT_IN_SECONDS = "ZK_SESSION_TIMEOUT_IN_SECONDS";
+	public static final String ZK_SESSION_TIMEOUT_IN_SECONDS = "ZK_SESSION_TIMEOUT_IN_SECONDS";
     public static final String ZK_THEME = "ZK_THEME";
-    
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

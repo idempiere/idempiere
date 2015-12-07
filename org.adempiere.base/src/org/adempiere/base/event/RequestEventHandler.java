@@ -202,7 +202,6 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 			//	Update
 			r.setDateLastAction(r.getUpdated());
 			r.setLastResult(r.getResult());
-			r.setDueType();
 			//	Reset
 			r.setConfidentialTypeEntry (r.getConfidentialType());
 			// r.setStartDate(null);  //red1 - bug [ 1743159 ] Requests - Start Date is not retained.
@@ -239,10 +238,17 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 		if (r.is_ValueChanged(columnName))
 		{
 			Object value = r.get_ValueOld(columnName);
-			if (value == null)
+			if (value == null) {
 				ra.addNullColumn(columnName);
-			else
-				ra.set_ValueNoCheck(columnName, value);
+			} else {
+				if (value instanceof Boolean
+					&& (   MRequestAction.COLUMNNAME_IsEscalated.equals(columnName)
+					    || MRequestAction.COLUMNNAME_IsSelfService.equals(columnName))) {
+					ra.set_ValueNoCheck(columnName, ((Boolean)value).booleanValue() ? "Y" : "N");
+				} else {
+					ra.set_ValueNoCheck(columnName, value);
+				}
+			}
 			r.setIsChanged(true);
 			return true;
 		}

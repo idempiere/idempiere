@@ -33,6 +33,7 @@ import org.compiere.model.MClientInfo;
 import org.compiere.model.MDiscountSchemaLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductPrice;
+import org.compiere.model.MSequence;
 import org.compiere.model.MUOMConversion;
 import org.compiere.model.ProductCost;
 import org.compiere.util.AdempiereSystemError;
@@ -413,6 +414,8 @@ public class M_PriceList_Create extends SvrProcess {
 					//	Copy (Insert) Prices
 					//
 					v_temp = rsCurgen.getInt("M_PriceList_Version_Base_ID");
+					int seqproductpriceid = MSequence.get(getCtx(), "M_ProductPrice").get_ID();
+					int currentUserID = Env.getAD_User_ID(getCtx());
 					if (v_temp == p_PriceList_Version_ID)
 						//
 						// We have Prices already
@@ -424,7 +427,9 @@ public class M_PriceList_Create extends SvrProcess {
 					//	
 					{
 						sqlins = new StringBuilder("INSERT INTO M_ProductPrice ");
-									sqlins.append("(M_PriceList_Version_ID");
+									sqlins.append("(M_ProductPrice_ID");
+									sqlins.append(" ,M_ProductPrice_UU");
+									sqlins.append(" ,M_PriceList_Version_ID");
 									sqlins.append(" ,M_Product_ID ");
 									sqlins.append(" ,AD_Client_ID");
 									sqlins.append(" , AD_Org_ID");
@@ -437,6 +442,8 @@ public class M_PriceList_Create extends SvrProcess {
 									sqlins.append(" , PriceStd");
 									sqlins.append(" , PriceLimit) ");
 									sqlins.append("SELECT ");
+									sqlins.append("      nextIdFunc(").append(seqproductpriceid).append(",'N')");
+									sqlins.append("      , generate_uuid(),");
 									sqlins.append(p_PriceList_Version_ID);
 									sqlins.append("      ,po.M_Product_ID ");
 									sqlins.append("      ,");
@@ -445,9 +452,9 @@ public class M_PriceList_Create extends SvrProcess {
 									sqlins.append(rsCurgen.getInt("AD_Org_ID"));
 									sqlins.append("      ,'Y'");
 									sqlins.append("      ,SysDate,");
-									sqlins.append(rsCurgen.getInt("UpdatedBy")); 
+									sqlins.append(currentUserID); 
 									sqlins.append("      ,SysDate,");
-									sqlins.append(rsCurgen.getInt("UpdatedBy"));
+									sqlins.append(currentUserID);
 									//
 									//Price List
 									//
@@ -558,19 +565,21 @@ public class M_PriceList_Create extends SvrProcess {
 						//Copy and Convert from other PriceList_Version
 						//
 						sqlins = new StringBuilder("INSERT INTO M_ProductPrice ");					
-									sqlins.append(" (M_PriceList_Version_ID, M_Product_ID,");
+									sqlins.append(" (M_ProductPrice_ID, M_ProductPrice_UU, M_PriceList_Version_ID, M_Product_ID,");
 									sqlins.append(" AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,");
 									sqlins.append(" PriceList, PriceStd, PriceLimit)");
 									sqlins.append(" SELECT ");
+									sqlins.append("nextIdFunc(").append(seqproductpriceid).append(",'N')");
+									sqlins.append(", generate_uuid(),");
 									sqlins.append(p_PriceList_Version_ID);
 									sqlins.append(", pp.M_Product_ID,");
 									sqlins.append(rsCurgen.getInt("AD_Client_ID"));
 									sqlins.append(", ");
 									sqlins.append(rsCurgen.getInt("AD_Org_ID"));
 									sqlins.append(", 'Y', SysDate,  ");
-									sqlins.append(rsCurgen.getInt("UpdatedBy"));
+									sqlins.append(currentUserID);
 									sqlins.append(", SysDate, ");
-									sqlins.append(rsCurgen.getInt("UpdatedBy"));
+									sqlins.append(currentUserID);
 									sqlins.append(" ,");
 									// Price List
 									sqlins.append("COALESCE(currencyConvert(pp.PriceList, pl.C_Currency_ID, ");
@@ -609,7 +618,7 @@ public class M_PriceList_Create extends SvrProcess {
 									sqlins.append(rsCurgen.getInt("M_PriceList_Version_Base_ID"));
 									sqlins.append(" AND EXISTS (SELECT * FROM T_Selection s WHERE pp.M_Product_ID=s.T_Selection_ID"); 
 										sqlins.append(" AND s.AD_PInstance_ID=").append(m_AD_PInstance_ID).append(")");
-									sqlins.append("AND	pp.IsActive='Y'");
+									sqlins.append(" AND	pp.IsActive='Y'");
 
 						pstmt = DB.prepareStatement(sqlins.toString(),
 								ResultSet.TYPE_SCROLL_INSENSITIVE,

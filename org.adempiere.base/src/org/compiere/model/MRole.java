@@ -2599,6 +2599,8 @@ public final class MRole extends X_AD_Role
 						}
 					} 
 				}
+
+				DB.close(rs, pstmt);
 			}
 
 			validOptions.toArray(options);

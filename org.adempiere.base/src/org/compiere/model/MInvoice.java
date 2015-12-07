@@ -67,7 +67,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1061413366741817262L;
+	private static final long serialVersionUID = 6262118410996877227L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -651,6 +651,21 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		return amt;
 	}	//	getGrandTotal
 
+	/**
+	 * 	Get Total Lines
+	 * 	@param creditMemoAdjusted adjusted for CM (negative)
+	 *	@return total lines
+	 */
+	public BigDecimal getTotalLines (boolean creditMemoAdjusted)
+	{
+		if (!creditMemoAdjusted)
+			return super.getTotalLines();
+		//
+		BigDecimal amt = getTotalLines();
+		if (isCreditMemo())
+			return amt.negate();
+		return amt;
+	}	//	getTotalLines
 
 	/**
 	 * 	Get Invoice Lines of Invoice
@@ -2358,23 +2373,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		
 		MPeriod.testPeriodOpen(getCtx(), reversalDate, getC_DocType_ID(), getAD_Org_ID());
 		//
-		MAllocationHdr[] allocations = MAllocationHdr.getOfInvoice(getCtx(),
-			getC_Invoice_ID(), get_TrxName());
-		for (int i = 0; i < allocations.length; i++)
-		{
-			if (accrual)
-			{
-				allocations[i].setDocAction(DocAction.ACTION_Reverse_Accrual);
-				allocations[i].reverseAccrualIt();
-				allocations[i].saveEx(get_TrxName());
-			}
-			else
-			{
-				allocations[i].setDocAction(DocAction.ACTION_Reverse_Correct);
-				allocations[i].reverseCorrectIt();
-				allocations[i].saveEx(get_TrxName());
-			}
-		}
+		reverseAllocations(accrual, getC_Invoice_ID());
 		//	Reverse/Delete Matching
 		if (!isSOTrx())
 		{
@@ -2462,6 +2461,9 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			m_processMsg = "Reversal ERROR: " + reversal.getProcessMsg();
 			return null;
 		}
+		//
+		reverseAllocations(accrual, reversal.getC_Invoice_ID());
+
 		reversal.setC_Payment_ID(0);
 		reversal.setIsPaid(true);
 		reversal.closeIt();
@@ -2527,6 +2529,19 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		}
 		
 		return reversal;
+	}
+
+	private void reverseAllocations(boolean accrual, int invoiceID) {
+		for (MAllocationHdr allocation : MAllocationHdr.getOfInvoice(getCtx(), invoiceID, get_TrxName())) {
+			if (accrual) {
+				allocation.setDocAction(DocAction.ACTION_Reverse_Accrual);
+				allocation.reverseAccrualIt();
+			} else {
+				allocation.setDocAction(DocAction.ACTION_Reverse_Correct);
+				allocation.reverseCorrectIt();
+			}
+			allocation.saveEx(get_TrxName());
+		}
 	}
 
 	/**
@@ -2724,4 +2739,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		providers.values().toArray(retValue);
 		return retValue;
 	}
+
+	/** Returns C_DocType_ID (or C_DocTypeTarget_ID if C_DocType_ID is not set) */
+	public int getDocTypeID()
+	{
+		return getC_DocType_ID() > 0 ? getC_DocType_ID() : getC_DocTypeTarget_ID();
+	}
+
 }	//	MInvoice

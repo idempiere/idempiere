@@ -196,12 +196,12 @@ public class BankStatementPayment extends SvrProcess
 					payment.setPayAmt(PayAmt);
 				else	//	payment is likely to be negative
 					payment.setPayAmt(PayAmt.negate());
-				payment.setOverUnderAmt(invoice.getGrandTotal(true).subtract(payment.getPayAmt()));
+				payment.setOverUnderAmt(invoice.getOpenAmt().subtract(payment.getPayAmt()));
 			}
 			else	// set Pay Amout from Invoice
 			{
 				payment.setC_Currency_ID(invoice.getC_Currency_ID());
-				payment.setPayAmt(invoice.getGrandTotal(true));
+				payment.setPayAmt(invoice.getOpenAmt());
 			}
 		}
 		else if (C_BPartner_ID != 0)

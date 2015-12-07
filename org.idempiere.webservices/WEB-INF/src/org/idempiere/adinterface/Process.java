@@ -10,6 +10,7 @@ import static org.compiere.model.SystemIDs.PROCESS_RPT_FINREPORT;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_FINSTATEMENT;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INOUT;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INVENTORY;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_M_MOVEMENT;
 
 import java.io.CharArrayWriter;
 import java.math.BigDecimal;
@@ -364,10 +365,23 @@ public class Process {
 			} 
 			else
 			{
-				r.setSummary(pi.getSummary());
-				r.setError(pi.getSummary());
-				r.setLogInfo(pi.getLogInfo(true));
-				r.setIsError( false );
+				try{
+					if( pi.getExportFile() != null ){
+						r.setData(java.nio.file.Files.readAllBytes(pi.getExportFile().toPath()));
+						r.setReportFormat(pi.getExportFileExtension());
+					}
+					r.setSummary(pi.getSummary());
+					r.setError(pi.getSummary());
+					r.setLogInfo(pi.getLogInfo(true));
+					r.setIsError( false );
+				}
+				catch (Exception e)
+				{
+					r.setError("Cannot get the export file:" + e.getMessage());
+					r.setLogInfo(pi.getLogInfo(true) );
+					r.setIsError( true );
+					return res;
+				}
 			}
 		}
 		
@@ -693,6 +707,8 @@ public class Process {
 			return startCheckPrint(pi.getRecord_ID());
 		else if (pi.getAD_Process_ID() == PROCESS_RPT_M_INVENTORY)		//	Physical Inventory
 			return startDocumentPrint(ReportEngine.INVENTORY, pi.getRecord_ID());
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_M_MOVEMENT)		//	Inventory Move
+			return startDocumentPrint(ReportEngine.MOVEMENT, pi.getRecord_ID());
 		/**
 		else if (pi.AD_Process_ID == 9999999)	//	PaySelection
 			return startDocumentPrint(CHECK, pi, IsDirectPrint);

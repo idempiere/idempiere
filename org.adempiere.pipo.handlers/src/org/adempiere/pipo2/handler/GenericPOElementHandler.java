@@ -36,10 +36,17 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PackoutItem;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
+import org.compiere.model.I_AD_Form;
+import org.compiere.model.I_AD_InfoWindow;
+import org.compiere.model.I_AD_Process;
+import org.compiere.model.I_AD_Role;
+import org.compiere.model.I_AD_Window;
+import org.compiere.model.I_C_DocType;
 import org.compiere.model.MColumn;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
@@ -89,8 +96,20 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 			element.unresolved = notfounds.toString();
 			return;
 		}
+		String action = po.is_new() ? "New" : "Update";
 		po.saveEx();
 		element.recordId = po.get_ID();
+
+		X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, po.get_TableName(), po.get_Table_ID());
+		logImportDetail(ctx, impDetail, 1, po.toString(), element.recordId, action);
+
+		if (   I_AD_Window.Table_Name.equals(tableName)
+			|| I_AD_Process.Table_Name.equals(tableName)
+			|| I_AD_Role.Table_Name.equals(tableName)
+			|| I_AD_Form.Table_Name.equals(tableName)
+			|| I_C_DocType.Table_Name.equals(tableName)
+			|| I_AD_InfoWindow.Table_Name.equals(tableName))
+			element.requireRoleAccessUpdate = true;
 	}
 
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {

@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Field
  *  @author iDempiere (generated) 
- *  @version Release 2.1 - $Id$ */
+ *  @version Release 3.1 - $Id$ */
 public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20150111L;
+	private static final long serialVersionUID = 20151030L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Field (Properties ctx, int AD_UserDef_Field_ID, String trxName)
@@ -491,7 +491,7 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	public static final String ISTOOLBARBUTTON_Both = "B";
 	/** Set Toolbar Button.
 		@param IsToolbarButton 
-		Add the column button to the toolbar
+		Show the button on the toolbar, the window, or both
 	  */
 	public void setIsToolbarButton (String IsToolbarButton)
 	{
@@ -500,7 +500,7 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	}
 
 	/** Get Toolbar Button.
-		@return Add the column button to the toolbar
+		@return Show the button on the toolbar, the window, or both
 	  */
 	public String getIsToolbarButton () 
 	{

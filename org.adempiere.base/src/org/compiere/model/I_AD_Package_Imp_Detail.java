@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Package_Imp_Detail
  *  @author iDempiere (generated) 
- *  @version Release 2.1
+ *  @version Release 3.1
  */
 public interface I_AD_Package_Imp_Detail 
 {
@@ -84,15 +84,6 @@ public interface I_AD_Package_Imp_Detail
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AD_Original_ID */
-    public static final String COLUMNNAME_AD_Original_ID = "AD_Original_ID";
-
-	/** Set Original	  */
-	public void setAD_Original_ID (int AD_Original_ID);
-
-	/** Get Original	  */
-	public int getAD_Original_ID();
-
     /** Column name AD_Package_Imp_Detail_ID */
     public static final String COLUMNNAME_AD_Package_Imp_Detail_ID = "AD_Package_Imp_Detail_ID";
 
@@ -120,6 +111,8 @@ public interface I_AD_Package_Imp_Detail
 	/** Get Package Imp.	  */
 	public int getAD_Package_Imp_ID();
 
+	public org.compiere.model.I_AD_Package_Imp getAD_Package_Imp() throws RuntimeException;
+
     /** Column name AD_Table_ID */
     public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
 
@@ -132,6 +125,8 @@ public interface I_AD_Package_Imp_Detail
 	  * Database Table information
 	  */
 	public int getAD_Table_ID();
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -174,6 +169,19 @@ public interface I_AD_Package_Imp_Detail
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name Record_ID */
+    public static final String COLUMNNAME_Record_ID = "Record_ID";
+
+	/** Set Record ID.
+	  * Direct internal record ID
+	  */
+	public void setRecord_ID (int Record_ID);
+
+	/** Get Record ID.
+	  * Direct internal record ID
+	  */
+	public int getRecord_ID();
 
     /** Column name Success */
     public static final String COLUMNNAME_Success = "Success";

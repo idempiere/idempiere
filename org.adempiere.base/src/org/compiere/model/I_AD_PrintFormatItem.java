@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PrintFormatItem
  *  @author iDempiere (generated) 
- *  @version Release 2.1
+ *  @version Release 3.1
  */
 public interface I_AD_PrintFormatItem 
 {
@@ -427,12 +427,12 @@ public interface I_AD_PrintFormatItem
     /** Column name IsMaxCalc */
     public static final String COLUMNNAME_IsMaxCalc = "IsMaxCalc";
 
-	/** Set Calculate Maximum (?).
+	/** Set Calculate Maximum (↑).
 	  * Calculate the maximum amount
 	  */
 	public void setIsMaxCalc (boolean IsMaxCalc);
 
-	/** Get Calculate Maximum (?).
+	/** Get Calculate Maximum (↑).
 	  * Calculate the maximum amount
 	  */
 	public boolean isMaxCalc();

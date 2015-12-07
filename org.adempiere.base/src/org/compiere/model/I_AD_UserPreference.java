@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserPreference
  *  @author iDempiere (generated) 
- *  @version Release 2.1
+ *  @version Release 3.1
  */
 public interface I_AD_UserPreference 
 {
@@ -154,6 +154,19 @@ public interface I_AD_UserPreference
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name ToggleOnDoubleClick */
+    public static final String COLUMNNAME_ToggleOnDoubleClick = "ToggleOnDoubleClick";
+
+	/** Set Toggle on Double Click.
+	  * Defines if double click in a field on grid mode switch to form view
+	  */
+	public void setToggleOnDoubleClick (boolean ToggleOnDoubleClick);
+
+	/** Get Toggle on Double Click.
+	  * Defines if double click in a field on grid mode switch to form view
+	  */
+	public boolean isToggleOnDoubleClick();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

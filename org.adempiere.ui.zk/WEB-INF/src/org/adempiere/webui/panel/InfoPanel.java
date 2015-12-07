@@ -370,6 +370,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private int cacheEnd;
 	private boolean m_useDatabasePaging = false;
 	private BusyDialog progressWindow;
+	// in case double click to item. this store clicked item (maybe it's un-select item)
 	private Listitem m_lastOnSelectItem;
 	protected GridField m_gridfield;
 
@@ -695,12 +696,16 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 			MInfoColumn infoColumnAppend = (MInfoColumn) modelHasInfoColumn.getAD_InfoColumn();
 			//TODO: improve read data to get data by data type of column.
-			String appendData = rs.getString(infoColumnAppend.getColumnName());
-			if (rs.wasNull()) {
-				data.add(null);
-			} else {
-				data.add(appendData);
+			String appendData = null;
+			try {
+				appendData = rs.getString(infoColumnAppend.getColumnName());
+			} catch (SQLException e) {
+				appendData = null;
 			}
+			if (rs.wasNull()) {
+				appendData = null;
+			}
+			data.add(appendData);
 			
 			// when need update append column index, just update it.
 			if (isMustUpdateColumnIndex && !columnDataIndex.containsKey(modelHasInfoColumn.getInfoColumnID())){
@@ -1257,21 +1262,31 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * we maintain value of key, and extra value append by {@link #appendInfoColumnData(ResultSet, List, IInfoColumn[], List)} 
 	 */
 	protected void updateListSelected (){
-		if (!p_multipleSelection){
-			return;
-		}
-    	
 		for (int rowIndex = 0; rowIndex < contentPanel.getModel().getRowCount(); rowIndex++){			
 			Integer keyCandidate = getColumnValue(rowIndex);
 			
 			@SuppressWarnings("unchecked")
 			List<Object> candidateRecord = (List<Object>)contentPanel.getModel().get(rowIndex);
-						
+					
 			if (contentPanel.getModel().isSelected(candidateRecord)){
 				recordSelectedData.put(keyCandidate, candidateRecord);// add or update selected record info				
 			}else{
 				if (recordSelectedData.containsKey(keyCandidate)){// unselected record
-					recordSelectedData.remove(keyCandidate);
+					List<Object> recordSelected = recordSelectedData.get(keyCandidate);
+					IDColumn idcSel = null;
+					if (recordSelected.get(0) instanceof IDColumn) {
+						idcSel = (IDColumn) recordSelected.get(0);
+					}
+					IDColumn idcCan = null;
+					if (candidateRecord.get(0) instanceof IDColumn) {
+						idcCan = (IDColumn) candidateRecord.get(0);
+					}
+					if (idcSel != null && idcCan != null && idcSel.getRecord_ID().equals(idcCan.getRecord_ID())) {
+						recordSelected.set(0, candidateRecord.get(0)); // set same IDColumn for comparison
+					}
+					if (recordSelected.equals(candidateRecord)) {
+						recordSelectedData.remove(keyCandidate);
+					}
 				}
 			}
 			
@@ -1668,8 +1683,15 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             		return;
             	}
             	if (contentPanel.isMultiple()) {
-            		if (m_lastOnSelectItem != null)
-            			contentPanel.setSelectedItem(m_lastOnSelectItem);
+            		//un-select all selected column
+            		if (m_lastOnSelectItem != null){
+            			contentPanel.getModel().clearSelection();
+            			int clickItemIndex = contentPanel.getIndexOfItem(m_lastOnSelectItem);
+            			Object selectedItemModle = contentPanel.getModel().get(clickItemIndex);
+            			contentPanel.getModel().addToSelection(selectedItemModle);
+            		}
+            		// clean selected record in cache
+            		recordSelectedData.clear();
             	}
             	onDoubleClick();
             }

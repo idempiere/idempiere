@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.base;
 
+import java.lang.reflect.Method;
 import java.util.logging.Level;
 
 import org.adempiere.base.equinox.EquinoxExtensionLocator;
@@ -39,7 +40,7 @@ public class DefaultCalloutFactory implements ICalloutFactory {
 	 * @see org.adempiere.base.ICalloutFactory#getCallout(java.lang.String)
 	 */
 	@Override
-	public Callout getCallout(String className) {
+	public Callout getCallout(String className, String methodName) {
 		Callout callout = null;
 		callout = EquinoxExtensionLocator.instance().locate(Callout.class, Callout.class.getName(), className, (ServiceQuery)null).getExtension();		
 		if (callout == null) {
@@ -86,8 +87,17 @@ public class DefaultCalloutFactory implements ICalloutFactory {
 				log.log(Level.WARNING, "Instance for " + className, ex);
 				return null;
 			}
+
+			//Check if callout method does really exist
+			Method[] methods = calloutClass.getDeclaredMethods();
+			for (int i = 0; i < methods.length; i++) {
+		        if (methods[i].getName().equals(methodName)) {
+		        	return callout;
+		        }
+			}
 		}
-		return callout;
+		log.log(Level.FINE, "Required method " + methodName + " not found in class " + className);
+		return null;
 	}
 
 }

@@ -1429,18 +1429,6 @@ public class FinReport extends SvrProcess
 				sb.append (")");
 				unionWhere.append(sb.toString ());
 			}
-			//	Posting Type
-			String PostingType = m_lines[line].getPostingType();
-			if (PostingType != null && PostingType.length() > 0)
-			{
-				if (unionWhere.length() > 0)
-					unionWhere.append(" AND ");
-				unionWhere.append("PostingType='" + PostingType + "'");
-				if (MReportLine.POSTINGTYPE_Budget.equals(PostingType)) {
-					if (m_lines[line].getGL_Budget_ID() > 0)
-						unionWhere.append(" AND GL_Budget_ID=" + m_lines[line].getGL_Budget_ID());
-				}
-			}
 		}
 		//
 
@@ -1538,26 +1526,88 @@ public class FinReport extends SvrProcess
 		for (int col = 0; col < m_columns.length; col++)
 		{
 			insert.append(", ");
-			//	Only relative Period (not calculation or segment value)
-			if (!(m_columns[col].isColumnTypeRelativePeriod() 
-				&& m_columns[col].getRelativePeriodAsInt() == 0))
+			//	No calculation
+			if (m_columns[col].isColumnTypeCalculation())
 			{
-				insert.append("NULL");
+				insert.append("Cast(NULL AS NUMBER)");
 				continue;
 			}
-			//	Amount Type ... Qty
+
+			//	SELECT
+			StringBuffer select = new StringBuffer ("SELECT ");
 			if (m_lines[line].getPAAmountType() != null)				//	line amount type overwrites column
-				insert.append (m_lines[line].getSelectClause (false));
+				select.append (m_lines[line].getSelectClause (false));
 			else if (m_columns[col].getPAAmountType() != null)
-				insert.append (m_columns[col].getSelectClause (false));
+				select.append (m_columns[col].getSelectClause (false));
 			else
 			{
-				insert.append("NULL");
+				insert.append("Cast(NULL AS NUMBER)");
 				continue;
 			}
+
+			if (p_PA_ReportCube_ID > 0) {
+				select.append(" FROM Fact_Acct_Summary fb WHERE ").append(p_AdjPeriodToExclude).append("DateAcct ");
+			}  //report cube
+			else {
+			//	Get Period info
+				select.append(" FROM Fact_Acct fb WHERE ").append(p_AdjPeriodToExclude).append("TRUNC(DateAcct) ");
+			}
+			FinReportPeriod frp = getPeriod (m_columns[col].getRelativePeriod());
+			if (m_lines[line].getPAPeriodType() != null)			//	line amount type overwrites column
+			{
+				if (m_lines[line].isPeriod())
+					select.append(frp.getPeriodWhere());
+				else if (m_lines[line].isYear())
+					select.append(frp.getYearWhere());
+				else if (m_lines[line].isNatural())
+					select.append(frp.getNaturalWhere("fb"));
+				else
+					select.append(frp.getTotalWhere());
+			}
+			else if (m_columns[col].getPAPeriodType() != null)
+			{
+				if (m_columns[col].isPeriod())
+					select.append(frp.getPeriodWhere());
+				else if (m_columns[col].isYear())
+					select.append(frp.getYearWhere());
+				else if (m_columns[col].isNatural())
+					select.append(frp.getNaturalWhere("fb"));
+				else
+					select.append(frp.getTotalWhere());
+			}
+			//	Link
+			select.append(" AND fb.Fact_Acct_ID=x.Fact_Acct_ID");
+			//	PostingType
+			if (!m_lines[line].isPostingType())		//	only if not defined on line
+			{
+				String PostingType = m_columns[col].getPostingType();
+				if (PostingType != null && PostingType.length() > 0)
+					select.append(" AND fb.PostingType='").append(PostingType).append("'");
+				// globalqss - CarlosRuiz
+				if (MReportColumn.POSTINGTYPE_Budget.equals(PostingType)) {
+					if (m_columns[col].getGL_Budget_ID() > 0)
+						select.append(" AND GL_Budget_ID=" + m_columns[col].getGL_Budget_ID());
+				}
+				// end globalqss
+			}
+			//	Report Where
+			String s = m_report.getWhereClause();
+			if (s != null && s.length() > 0)
+				select.append(" AND ").append(s);
+			//	Limited Segment Values
+			if (m_columns[col].isColumnTypeSegmentValue())
+				select.append(m_columns[col].getWhereClause(p_PA_Hierarchy_ID));
+			
+			//	Parameter Where
+			select.append(m_parameterWhere);
+			if (log.isLoggable(Level.FINEST))
+				log.finest("Col=" + col + ", Line=" + line + ": " + select);
+			//
+			insert.append("(").append(select).append(")");
 		}
+
 		//
-		insert.append(" FROM Fact_Acct WHERE ")
+		insert.append(" FROM Fact_Acct x WHERE ")
 			.append(m_lines[line].getWhereClause(p_PA_Hierarchy_ID));	//	(sources, posting type)
 		//	Report Where
 		String s = m_report.getWhereClause();
@@ -1569,24 +1619,6 @@ public class FinReport extends SvrProcess
 		if (p_PA_ReportCube_ID > 0)
 			whereClause = whereClause.replaceAll(" AND PA_ReportCube_ID=" + p_PA_ReportCube_ID, "");
 		insert.append(whereClause); // IDEMPIERE-130
-		
-		//	Period restriction
-		FinReportPeriod frp = getPeriod (0);
-		insert.append(" AND TRUNC(DateAcct) ")
-			.append(frp.getPeriodWhere());
-		//	PostingType ??
-//		if (!m_lines[line].isPostingType())		//	only if not defined on line
-//		{
-//	      String PostingType = m_columns[col].getPostingType();
-//  	    if (PostingType != null && PostingType.length() > 0)
-//      	  	insert.append(" AND PostingType='").append(PostingType).append("'");
-//			// globalqss - CarlosRuiz
-//			if (PostingType.equals(MReportColumn.POSTINGTYPE_Budget)) {
-//				if (m_columns[col].getGL_Budget_ID() > 0)
-//					select.append(" AND GL_Budget_ID=" + m_columns[col].getGL_Budget_ID());
-//			}
-//			// end globalqss
-//		}
 
 		int no = DB.executeUpdate(insert.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINEST)) log.finest("Trx #=" + no + " - " + insert);

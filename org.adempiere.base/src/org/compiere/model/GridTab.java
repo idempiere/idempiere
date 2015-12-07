@@ -41,8 +41,6 @@ import javax.swing.event.EventListenerList;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IColumnCallout;
-import org.adempiere.base.ServiceQuery;
-import org.adempiere.base.equinox.EquinoxExtensionLocator;
 import org.adempiere.model.MTabCustomization;
 import org.adempiere.util.ContextRunnable;
 import org.compiere.Adempiere;
@@ -1145,7 +1143,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo);
 		if (!isInsertRecord())
 		{
-			log.warning ("Inset Not allowed in TabNo=" + m_vo.TabNo);
+			log.warning ("Insert Not allowed in TabNo=" + m_vo.TabNo);
 			return false;
 		}
 		//	Prevent New Where Main Record is processed
@@ -1186,10 +1184,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		setCurrentRow(m_currentRow + 1, true);
 
 		//  check validity of defaults
-		for (int i = 0; i < getFieldCount(); i++)
-		{
-			getField(i).refreshLookup();
-			getField(i).validateValueNoDirect();
+		for (GridField field : getFields()) {
+			field.refreshLookup();
+			field.validateValueNoDirect();
 		}
 		//  process all Callouts (no dependency check - assumed that settings are valid)
 		for (int i = 0; i < getFieldCount(); i++)
@@ -2911,15 +2908,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 						{
 							String className = cmd.substring(0,methodStart);
 							// IDEMPIERE-2732
+							method = cmd.substring(methodStart+1);
 							// get corresponding callout
-							call = Core.getCallout(className);
+							call = Core.getCallout(className, method);
 							// end IDEMPIERE-2732
 							if (call == null) {
 								//no match from factory, check java classpath
 								Class<?> cClass = Class.forName(className);
 								call = (Callout)cClass.newInstance();
 							}
-							method = cmd.substring(methodStart+1);
 						}
 					}
 					catch (Exception e)

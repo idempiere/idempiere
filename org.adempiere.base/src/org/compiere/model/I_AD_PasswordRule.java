@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PasswordRule
  *  @author iDempiere (generated) 
- *  @version Release 2.1
+ *  @version Release 3.1
  */
 public interface I_AD_PasswordRule 
 {
@@ -134,9 +134,6 @@ public interface I_AD_PasswordRule
 	  * Define number of day can reuser password
 	  */
 	public int getDays_Reuse_Password();
-
-    /** Column name DictWordLength */
-    public static final String COLUMNNAME_DictWordLength = "DictWordLength";
 
     /** Column name DigitCharacter */
     public static final String COLUMNNAME_DigitCharacter = "DigitCharacter";

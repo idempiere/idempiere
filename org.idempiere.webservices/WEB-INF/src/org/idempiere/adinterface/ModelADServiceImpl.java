@@ -41,6 +41,7 @@ import javax.jws.WebService;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceContext;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.xmlbeans.StringEnumAbstractBase.Table;
 import org.compiere.model.I_AD_Column;
@@ -1391,10 +1392,13 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	    		String columnName = poinfo.getColumnName(i);
 				if (m_webservicetype.isOutputColumnNameAllowed(columnName)) {
 					DataField dfid = dr.addNewField();
-					dfid.setColumn(columnName);
-					if (po.get_Value(i) != null)
-						dfid.setVal(po.get_Value(i).toString());
-					else
+					dfid.setColumn(columnName);					
+					if (po.get_Value(i) != null){						
+						if(po.get_Value(i) instanceof byte[]){
+							dfid.setVal(new String(Base64.encodeBase64((byte[]) po.get_Value(i))));
+						}else						
+						    dfid.setVal(po.get_Value(i).toString());
+					}else
 						dfid.setVal(null);
 				}
 	    	}
@@ -1538,10 +1542,13 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 					DataRow dr = ds.addNewDataRow();
 					for (int i = 0; i < poinfo.getColumnCount(); i++) {
 			    		String columnName = poinfo.getColumnName(i);
-						if (m_webservicetype.isOutputColumnNameAllowed(columnName)) {
+						if (m_webservicetype.isOutputColumnNameAllowed(columnName)) {							
 							DataField dfid = dr.addNewField();
 							dfid.setColumn(columnName);
-							dfid.setVal(rsquery.getString(columnName));
+							if(rsquery.getObject(columnName) instanceof byte[])
+								dfid.setVal(new String(Base64.encodeBase64(rsquery.getBytes(columnName))));						
+							else
+								dfid.setVal(rsquery.getString(columnName));
 						}
 			    	}
 				}

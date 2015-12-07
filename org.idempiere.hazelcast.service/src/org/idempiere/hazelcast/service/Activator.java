@@ -107,6 +107,17 @@ public class Activator implements BundleActivator {
 						} catch (Exception e) {}
 					}
 				}
+				//try hazelcast.config - to be consistent with hazelcast configuration documentation
+				if (file == null) {
+					dataArea = System.getProperty("hazelcast.config");
+					if (dataArea != null && dataArea.trim().length() > 0) {
+						try {
+							file = new File(dataArea);
+							if (!file.exists())
+								file = null;
+						} catch (Exception e) {}
+					}
+				}
 				if (file != null && file.exists()) {
 					try {
 						Config config = new FileSystemXmlConfig(file);

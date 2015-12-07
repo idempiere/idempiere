@@ -79,6 +79,9 @@ public class CopyRole extends SvrProcess
 			throw new AdempiereException(Msg.getMsg(getCtx(), "CannotAccessProcess", new Object[] {getProcessInfo().getAD_Process_ID(), MRole.getDefault().getName()}));
 		}
 
+		if (m_AD_Role_ID_From == m_AD_Role_ID_To)
+			throw new AdempiereException("Roles must be different");
+
 		String[] tables = new String[] {"AD_Window_Access", "AD_Process_Access", "AD_Form_Access",
 				"AD_Workflow_Access", "AD_Task_Access", "AD_Document_Action_Access", "AD_InfoWindow_Access",
 				I_AD_Role_Included.Table_Name

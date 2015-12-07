@@ -47,7 +47,6 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	private TreeMap<String,String> m_map;
 
 	/** Logger */
-	@SuppressWarnings("unused")
 	private static CLogger log = CLogger.getCLogger(Convert_PostgreSQL.class);
 
 	
@@ -115,7 +114,11 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 		if (retVars.size() > 0)
 			statement = recoverQuotedStrings(statement, retVars);
 		result.add(statement);
-		
+
+		if ("true".equals(System.getProperty("org.idempiere.db.postgresql.debug"))) {
+			log.warning("Oracle -> " + sqlStatement);
+			log.warning("PgSQL  -> " + statement);
+		}
 		return result;
 	} // convertStatement
 

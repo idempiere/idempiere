@@ -526,7 +526,7 @@ public final class DB
 	{
 		if (s_cc != null)
 			return s_cc.isPostgreSQL();
-                log.severe("No Database");
+		log.severe("No Database");
 		return false;
 	}	//	isPostgreSQL
     //begin vpj-cd e-evolution 02/07/2005 PostgreSQL
@@ -2415,7 +2415,14 @@ public final class DB
 		ResultSet rs = null;
 		try {
 			DatabaseMetaData metadata = conn.getMetaData();
-			rs = metadata.getTables(null, null, (DB.isPostgreSQL() ? tableName.toLowerCase() : tableName.toUpperCase()), null);
+			String tblName;
+			if (metadata.storesUpperCaseIdentifiers())
+				tblName = tableName.toUpperCase();
+			else if (metadata.storesLowerCaseIdentifiers())
+				tblName = tableName.toLowerCase();
+			else
+				tblName = tableName;
+			rs = metadata.getTables(null, null, tblName, null);
 			if (rs.next()) {
 				return true;
 			}

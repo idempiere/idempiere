@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintFormatItem
  *  @author iDempiere (generated) 
- *  @version Release 2.1 - $Id$ */
+ *  @version Release 3.1 - $Id$ */
 public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20151030L;
 
     /** Standard Constructor */
     public X_AD_PrintFormatItem (Properties ctx, int AD_PrintFormatItem_ID, String trxName)
@@ -38,7 +38,6 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
       super (ctx, AD_PrintFormatItem_ID, trxName);
       /** if (AD_PrintFormatItem_ID == 0)
         {
-			setAD_Column_ID (0);
 			setAD_PrintFormatChild_ID (0);
 			setAD_PrintFormat_ID (0);
 			setAD_PrintFormatItem_ID (0);
@@ -766,7 +765,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return false;
 	}
 
-	/** Set Calculate Maximum (?).
+	/** Set Calculate Maximum (↑).
 		@param IsMaxCalc 
 		Calculate the maximum amount
 	  */
@@ -775,7 +774,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		set_Value (COLUMNNAME_IsMaxCalc, Boolean.valueOf(IsMaxCalc));
 	}
 
-	/** Get Calculate Maximum (?).
+	/** Get Calculate Maximum (↑).
 		@return Calculate the maximum amount
 	  */
 	public boolean isMaxCalc () 

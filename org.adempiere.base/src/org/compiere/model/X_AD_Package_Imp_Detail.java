@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_Package_Imp_Detail
  *  @author iDempiere (generated) 
- *  @version Release 2.1 - $Id$ */
+ *  @version Release 3.1 - $Id$ */
 public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Detail, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20151030L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Detail (Properties ctx, int AD_Package_Imp_Detail_ID, String trxName)
@@ -37,9 +37,9 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
       super (ctx, AD_Package_Imp_Detail_ID, trxName);
       /** if (AD_Package_Imp_Detail_ID == 0)
         {
-			setAD_Original_ID (0);
 			setAD_Package_Imp_Detail_ID (0);
 			setAD_Package_Imp_ID (0);
+			setRecord_ID (0);
         } */
     }
 
@@ -108,26 +108,6 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 		return ii.intValue();
 	}
 
-	/** Set Original.
-		@param AD_Original_ID Original	  */
-	public void setAD_Original_ID (int AD_Original_ID)
-	{
-		if (AD_Original_ID < 1) 
-			set_Value (COLUMNNAME_AD_Original_ID, null);
-		else 
-			set_Value (COLUMNNAME_AD_Original_ID, Integer.valueOf(AD_Original_ID));
-	}
-
-	/** Get Original.
-		@return Original	  */
-	public int getAD_Original_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Original_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Imp. Package Detail.
 		@param AD_Package_Imp_Detail_ID Imp. Package Detail	  */
 	public void setAD_Package_Imp_Detail_ID (int AD_Package_Imp_Detail_ID)
@@ -162,6 +142,11 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 		return (String)get_Value(COLUMNNAME_AD_Package_Imp_Detail_UU);
 	}
 
+	public org.compiere.model.I_AD_Package_Imp getAD_Package_Imp() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Package_Imp)MTable.get(getCtx(), org.compiere.model.I_AD_Package_Imp.Table_Name)
+			.getPO(getAD_Package_Imp_ID(), get_TrxName());	}
+
 	/** Set Package Imp..
 		@param AD_Package_Imp_ID Package Imp.	  */
 	public void setAD_Package_Imp_ID (int AD_Package_Imp_ID)
@@ -181,6 +166,11 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 			 return 0;
 		return ii.intValue();
 	}
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
+			.getPO(getAD_Table_ID(), get_TrxName());	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -220,6 +210,29 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 	public String getName () 
 	{
 		return (String)get_Value(COLUMNNAME_Name);
+	}
+
+	/** Set Record ID.
+		@param Record_ID 
+		Direct internal record ID
+	  */
+	public void setRecord_ID (int Record_ID)
+	{
+		if (Record_ID < 0) 
+			set_Value (COLUMNNAME_Record_ID, null);
+		else 
+			set_Value (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
+	}
+
+	/** Get Record ID.
+		@return Direct internal record ID
+	  */
+	public int getRecord_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Success.

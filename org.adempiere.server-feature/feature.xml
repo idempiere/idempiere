@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.server"
       label="iDempiere Server-feature"
-      version="3.0.0.qualifier">
+      version="3.1.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -18,21 +18,21 @@
 
    <includes
          id="org.adempiere.replication.server"
-         version="3.0.0.qualifier"
+         version="3.1.0.qualifier"
          optional="true"/>
 
    <includes
          id="org.adempiere.ui.zk"
-         version="3.0.0.qualifier"/>
+         version="3.1.0.qualifier"/>
 
    <includes
          id="org.adempiere.webstore"
-         version="3.0.0.qualifier"
+         version="3.1.0.qualifier"
          optional="true"/>
 
    <includes
          id="org.idempiere.felix.webconsole"
-         version="3.0.0.qualifier"/>
+         version="3.1.0.qualifier"/>
 
    <includes
          id="org.adempiere.report.jasper"
@@ -96,14 +96,14 @@
          id="org.adempiere.report.jasper.webapp"
          download-size="0"
          install-size="0"
-         version="3.0.0.qualifier"
+         version="3.1.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.server"
          download-size="0"
          install-size="0"
-         version="3.0.0.qualifier"
+         version="3.1.0.qualifier"
          unpack="false"/>
 
    <plugin
@@ -117,7 +117,7 @@
          id="javax.annotation-api"
          download-size="0"
          install-size="0"
-         version="1.2.0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -138,7 +138,7 @@
          id="org.adempiere.install"
          download-size="0"
          install-size="0"
-         version="3.0.0.qualifier"/>
+         version="3.1.0.qualifier"/>
 
    <plugin
          id="org.adempiere.eclipse.equinox.http.servlet"
@@ -172,7 +172,7 @@
          id="org.idempiere.webservices"
          download-size="0"
          install-size="0"
-         version="3.0.0.qualifier"
+         version="3.1.0.qualifier"
          unpack="false"/>
 
    <plugin
@@ -250,48 +250,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.felix.webconsole"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.felix.webconsole.plugins.ds"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.felix.inventory"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.felix.scr"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.felix.webconsole.plugins.memoryusage"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.felix.webconsole.plugins.packageadmin"
-         download-size="0"
-         install-size="0"
-         version="1.0.0.1"
          unpack="false"/>
 
    <plugin
@@ -497,4 +455,5 @@
          install-size="0"
          version="0.0.0"
          fragment="true"/>
+
 </feature>

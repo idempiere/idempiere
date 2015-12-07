@@ -27,10 +27,17 @@ echo sqlplus $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME @$IDE
 sqlplus $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME @$IDEMPIERE_HOME/utils/$ADEMPIERE_DB_PATH/CreateUser.sql $2 $3
 
 echo -------------------------------------
+echo Re-Create DataPump directory
+echo -------------------------------------
+sqlplus $1@$ADEMPIERE_DB_SERVER/$ADEMPIERE_DB_NAME @$IDEMPIERE_HOME/utils/$ADEMPIERE_DB_PATH/CreateDataPumpDir.sql $IDEMPIERE_HOME/data/seed
+chgrp dba $IDEMPIERE_HOME/data/seed
+chmod 770 $IDEMPIERE_HOME/data/seed
+
+echo -------------------------------------
 echo Import Adempiere.dmp
 echo -------------------------------------
-echo "imp $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME FILE=$IDEMPIERE_HOME/data/seed/Adempiere.dmp FROMUSER=\(reference\) TOUSER=$2"
-imp $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME FILE=$IDEMPIERE_HOME/data/seed/Adempiere.dmp FROMUSER=\(reference\) TOUSER=$2
+echo "impdp $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=Adempiere.dmp REMAP_SCHEMA=reference:$2"
+impdp $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=Adempiere.dmp REMAP_SCHEMA=reference:$2
 
 echo -------------------------------------
 echo Check System

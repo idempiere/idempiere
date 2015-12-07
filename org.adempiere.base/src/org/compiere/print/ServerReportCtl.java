@@ -9,6 +9,7 @@ import static org.compiere.model.SystemIDs.PROCESS_RPT_FINREPORT;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_FINSTATEMENT;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INOUT;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INVENTORY;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_M_MOVEMENT;
 
 import java.util.ArrayList;
 import java.util.Properties;
@@ -213,6 +214,8 @@ public class ServerReportCtl {
 		   return startFinReport (pi);
 		else if (pi.getAD_Process_ID() == PROCESS_RPT_M_INVENTORY)			//	M_Inventory
 			return startDocumentPrint(ReportEngine.INVENTORY, null, pi.getRecord_ID(), null, pi);
+		else if (pi.getAD_Process_ID() == PROCESS_RPT_M_MOVEMENT)			//	M_Movement
+			return startDocumentPrint(ReportEngine.MOVEMENT, null, pi.getRecord_ID(), null, pi);
 		/********************
 		 *	Standard Report
 		 *******************/

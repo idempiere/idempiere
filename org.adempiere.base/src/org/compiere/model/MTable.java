@@ -55,7 +55,7 @@ public class MTable extends X_AD_Table
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1776819186412187384L;
+	private static final long serialVersionUID = -8757836873040013402L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -67,12 +67,26 @@ public class MTable extends X_AD_Table
 	 */
 	public static MTable get (Properties ctx, int AD_Table_ID)
 	{
+		return get(ctx, AD_Table_ID, null);
+	}	//	get
+
+	/**
+	 * 	Get Table from Cache
+	 *	@param ctx context
+	 *	@param AD_Table_ID id
+	 *	@param trxName transaction
+	 *	@return MTable
+	 */
+	public static MTable get (Properties ctx, int AD_Table_ID, String trxName)
+	{
 		Integer key = Integer.valueOf(AD_Table_ID);
 		MTable retValue = s_cache.get (key);
 		if (retValue != null && retValue.getCtx() == ctx) {
+			if (trxName != null)
+				retValue.set_TrxName(trxName);
 			return retValue;
 		}
-		retValue = new MTable (ctx, AD_Table_ID, null);
+		retValue = new MTable (ctx, AD_Table_ID, trxName);
 		if (retValue.get_ID () != 0) {
 			s_cache.put (key, retValue);
 		}

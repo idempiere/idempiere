@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_UOM
  *  @author iDempiere (generated) 
- *  @version Release 2.1 - $Id$ */
+ *  @version Release 3.1 - $Id$ */
 public class X_C_UOM extends PO implements I_C_UOM, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20141030L;
+	private static final long serialVersionUID = 20151030L;
 
     /** Standard Constructor */
     public X_C_UOM (Properties ctx, int C_UOM_ID, String trxName)
@@ -269,8 +269,8 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	public static final String UOMTYPE_VolumeLiquid = "VL";
 	/** Volume Dry = VD */
 	public static final String UOMTYPE_VolumeDry = "VD";
-	/** Weigth = WE */
-	public static final String UOMTYPE_Weigth = "WE";
+	/** Weight = WE */
+	public static final String UOMTYPE_Weight = "WE";
 	/** Currency = CU */
 	public static final String UOMTYPE_Currency = "CU";
 	/** Data Speed = DV */

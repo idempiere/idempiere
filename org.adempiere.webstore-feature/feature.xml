@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.webstore"
       label="Webstore-feature"
-      version="3.0.0.qualifier">
+      version="3.1.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -17,8 +17,8 @@
    </license>
 
    <requires>
-      <import feature="org.adempiere.base" version="3.0.0.qualifier"/>
-      <import plugin="org.adempiere.report.jasper.webapp" version="3.0.0.qualifer"/>
+      <import feature="org.adempiere.base" version="3.1.0.qualifier"/>
+      <import plugin="org.adempiere.report.jasper.webapp" version="3.1.0.qualifer"/>
       <import plugin="org.mortbay.jasper.apache-jsp"/>
       <import plugin="org.apache.taglibs.taglibs-standard-spec"/>
    </requires>
@@ -27,20 +27,20 @@
          id="org.adempiere.webstore"
          download-size="0"
          install-size="0"
-         version="3.0.0.qualifier"/>
+         version="3.1.0.qualifier"/>
 
    <plugin
          id="org.adempiere.webstore.resource"
          download-size="0"
          install-size="0"
-         version="3.0.0.qualifier"
+         version="3.1.0.qualifier"
          fragment="true"/>
 
    <plugin
          id="org.adempiere.webstore.servlet"
          download-size="0"
          install-size="0"
-         version="3.0.0.qualifier"
+         version="3.1.0.qualifier"
          fragment="true"/>
 
 </feature>

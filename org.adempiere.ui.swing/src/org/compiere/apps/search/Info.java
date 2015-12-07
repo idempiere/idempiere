@@ -369,7 +369,7 @@ public abstract class Info extends CDialog
 	/** Static Layout           */
 	private CPanel southPanel = new CPanel();
 	private BorderLayout southLayout = new BorderLayout();
-	ConfirmPanel confirmPanel = new ConfirmPanel(true, true, true, true, true, true, true);
+	protected ConfirmPanel confirmPanel = new ConfirmPanel(true, true, true, true, true, true, true);
 	//Begin - [FR 1823612 ] Product Info Screen Improvements
 	protected CPanel addonPanel = new CPanel();
 	//End - [FR 1823612 ] Product Info Screen Improvements

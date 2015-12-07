@@ -85,6 +85,7 @@ public class ProcessElementHandler extends AbstractElementHandler {
 					logImportDetail(ctx, impDetail, 1, mProcess.getName(), mProcess
 							.get_ID(), action);
 					element.recordId = mProcess.get_ID();
+					element.requireRoleAccessUpdate = true;
 				} else {
 					logImportDetail(ctx, impDetail, 0, mProcess.getName(), mProcess
 							.get_ID(), action);

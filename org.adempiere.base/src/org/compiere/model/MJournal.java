@@ -491,10 +491,11 @@ public class MJournal extends X_GL_Journal implements DocAction
 			
 			// Michael Judd (mjudd) BUG: [ 2678088 ] Allow posting to system accounts for non-actual postings
 			if (line.isDocControlled() && 
-					( getPostingType().equals(POSTINGTYPE_Actual)) ||
+					( getPostingType().equals(POSTINGTYPE_Actual) ||
 					  getPostingType().equals(POSTINGTYPE_Commitment) ||
 					  getPostingType().equals(POSTINGTYPE_Reservation)
 					 )
+				 )
 			{
 				m_processMsg = "@DocControlledError@ - @Line@=" + line.getLine()
 					+ " - " + line.getAccountElementValue();

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_ProductPrice
  *  @author iDempiere (generated) 
- *  @version Release 2.1
+ *  @version Release 3.1
  */
 public interface I_M_ProductPrice 
 {
@@ -120,6 +120,19 @@ public interface I_M_ProductPrice
 	public int getM_Product_ID();
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name M_ProductPrice_ID */
+    public static final String COLUMNNAME_M_ProductPrice_ID = "M_ProductPrice_ID";
+
+	/** Set Product Price.
+	  * Intersection between a Product and a Price List Version
+	  */
+	public void setM_ProductPrice_ID (int M_ProductPrice_ID);
+
+	/** Get Product Price.
+	  * Intersection between a Product and a Price List Version
+	  */
+	public int getM_ProductPrice_ID();
 
     /** Column name M_ProductPrice_UU */
     public static final String COLUMNNAME_M_ProductPrice_UU = "M_ProductPrice_UU";
