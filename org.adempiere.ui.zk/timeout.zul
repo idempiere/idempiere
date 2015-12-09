@@ -13,7 +13,7 @@
 		}
 	};
     
-    adempiere.store.get("zkTimeoutURL", callback);
+    adempiere.get("zkTimeoutURL", callback);
 ]]>	
 </script>
 <zscript>

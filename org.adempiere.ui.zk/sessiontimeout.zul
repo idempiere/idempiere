@@ -32,8 +32,8 @@
 			document.getElementById("${continueText.uuid}").innerHTML = val;
 		}
 	};
-    adempiere.store.get("zkTimeoutText", callback);
-	adempiere.store.get("zkContinueText", callbackC);
+    adempiere.get("zkTimeoutText", callback);
+	adempiere.get("zkContinueText", callbackC);
 ]]>	
 </script>
 </window>

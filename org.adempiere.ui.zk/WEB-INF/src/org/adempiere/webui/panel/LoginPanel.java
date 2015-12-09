@@ -631,8 +631,8 @@ public class LoginPanel extends Window implements EventListener<Event>
 			return null;
 		}
 		msg = Strings.escape(msg, "\"");
-		String s = "adempiere.store.set(\"zkTimeoutText\", \"" + msg + "\");";//IDEMPIERE-847
-		s = s + " adempiere.store.set(\"zkContinueText\", \"" + continueNsg + "\");"; //IDEMPIERE-847
+		String s = "adempiere.set(\"zkTimeoutText\", \"" + msg + "\");";//IDEMPIERE-847
+		s = s + " adempiere.set(\"zkContinueText\", \"" + continueNsg + "\");"; //IDEMPIERE-847
 		return s;
 	}
 	
