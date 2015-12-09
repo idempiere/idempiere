@@ -40,10 +40,10 @@ as
     WHERE Posted <> 'Y' AND DocStatus <> 'VO'
    UNION
    SELECT AD_Client_ID, AD_Org_ID, Created, CreatedBy, Updated, UpdatedBy,
-          IsActive, DocumentNo, MovementDate, MovementDate, 325, M_Production_ID,
+          IsActive, documentno, MovementDate, MovementDate, 325, M_Production_ID,
           'N', posted, processing, processed, docstatus, processedon
      from M_PRODUCTION
-    WHERE Posted <> 'Y' AND DocStatus <> 'VO'
+    WHERE Posted <> 'Y' AND DocStatus <> 'VO'                                
    UNION
    SELECT AD_Client_ID, AD_Org_ID, Created, CreatedBy, Updated, UpdatedBy,
           IsActive, NAME, StatementDate, DateAcct, 407, C_Cash_ID, 'N',
@@ -93,3 +93,7 @@ as
      from M_REQUISITION
     WHERE Posted <> 'Y' AND DocStatus <> 'VO'
 ;
+
+SELECT register_migration_script('201512091605_FixRVUnposted.sql') FROM dual
+;
+

@@ -40,10 +40,10 @@ as
     WHERE Posted <> 'Y' AND DocStatus <> 'VO'
    UNION
    SELECT AD_Client_ID, AD_Org_ID, Created, CreatedBy, Updated, UpdatedBy,
-          IsActive, NAME, MovementDate, MovementDate, 325, M_Production_ID,
-          'N', posted, processing, processed, 'CO' as docstatus, processedon
+          IsActive, documentno, MovementDate, MovementDate, 325, M_Production_ID,
+          'N', posted, processing, processed, docstatus, processedon
      from M_PRODUCTION
-    WHERE Posted <> 'Y'                                 -- AND DocStatus<>'VO'
+    WHERE Posted <> 'Y' AND DocStatus <> 'VO'                                
    UNION
    SELECT AD_Client_ID, AD_Org_ID, Created, CreatedBy, Updated, UpdatedBy,
           IsActive, NAME, StatementDate, DateAcct, 407, C_Cash_ID, 'N',

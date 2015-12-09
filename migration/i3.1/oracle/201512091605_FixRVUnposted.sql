@@ -93,3 +93,6 @@ as
      from M_REQUISITION
     WHERE Posted <> 'Y' AND DocStatus <> 'VO'
 ;
+
+SELECT register_migration_script('201511181041_FixWrongRegister.sql') FROM dual
+;
