@@ -47,6 +47,7 @@ import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.BrowserToken;
 import org.adempiere.webui.util.UserPreference;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.Adempiere;
@@ -330,7 +331,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 		pnlButtons.addComponentsRight(helpButton);
         
         LayoutUtils.addSclass(ITheme.LOGIN_BOX_FOOTER_PANEL_CLASS, pnlButtons);
-        pnlButtons.setWidth(null);
+        ZKUpdateUtil.setWidth(pnlButtons, null);
         pnlButtons.getButton(ConfirmPanel.A_OK).setSclass(ITheme.LOGIN_BUTTON_CLASS);
         div.appendChild(pnlButtons);
         this.appendChild(div);
@@ -354,7 +355,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtUserId.setId("txtUserId");
         txtUserId.setCols(25);
         txtUserId.setMaxlength(40);
-        txtUserId.setWidth("220px");
+        ZKUpdateUtil.setWidth(txtUserId, "220px");
         txtUserId.addEventListener(Events.ON_CHANGE, this); // Elaine 2009/02/06
 
         txtPassword = new Textbox();
@@ -363,14 +364,14 @@ public class LoginPanel extends Window implements EventListener<Event>
         
         txtPassword.setCols(25);
 //        txtPassword.setMaxlength(40);
-        txtPassword.setWidth("220px");
+        ZKUpdateUtil.setWidth(txtPassword, "220px");
 
         lstLanguage = new Combobox();
         lstLanguage.setAutocomplete(true);
         lstLanguage.setAutodrop(true);
         lstLanguage.setId("lstLanguage");
         lstLanguage.addEventListener(Events.ON_SELECT, this);
-        lstLanguage.setWidth("220px");
+        ZKUpdateUtil.setWidth(lstLanguage, "220px");
 
         // Update Language List
         lstLanguage.getItems().clear();

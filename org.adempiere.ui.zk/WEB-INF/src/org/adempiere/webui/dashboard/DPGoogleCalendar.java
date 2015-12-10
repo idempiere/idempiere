@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.dashboard;
 
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.zkoss.zul.Iframe;
 
 /**
@@ -32,8 +33,8 @@ public class DPGoogleCalendar extends DashboardPanel {
 		super();
 		
 		Iframe iframe = new Iframe("http://www.google.com/calendar/embed?showTitle=0&amp;showTabs=0&amp;height=300&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;color=%232952A3");
-		iframe.setWidth("300px");
-		iframe.setHeight("310px");
+		ZKUpdateUtil.setWidth(iframe, "300px");
+		ZKUpdateUtil.setHeight(iframe, "310px");
         this.appendChild(iframe);
 	}	
 }

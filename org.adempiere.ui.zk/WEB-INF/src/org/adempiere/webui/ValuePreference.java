@@ -34,6 +34,7 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MRole;
@@ -311,15 +312,15 @@ public class ValuePreference extends Window implements EventListener<Event>
 		cbInfowindow.setChecked(true);
 		// 
 		setPanel.appendChild(setLayout);
-		setPanel.setHflex("1");
+		ZKUpdateUtil.setHflex(setPanel, "1");
 		fAttribute.setReadonly(true);
 		fValue.setReadonly(true);
 		
 		Vbox box = new Vbox();
-		box.setWidth("100%");
-		box.setHeight("100%");
+		ZKUpdateUtil.setWidth(box, "100%");
+		ZKUpdateUtil.setHeight(box, "100%");
 		box.setParent(this);
-		box.setHflex("1");
+		ZKUpdateUtil.setHflex(box, "1");
 		box.appendChild(setPanel);
 		
 		Rows rows = new Rows();
@@ -331,7 +332,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		div.appendChild(lAttribute);
 		row.appendCellChild(div, 1);
 		row.appendCellChild(fAttribute, 4);
-		fAttribute.setWidth("96%");
+		ZKUpdateUtil.setWidth(fAttribute, "96%");
 		row.appendCellChild(lAttributeValue, 1);
 		rows.appendChild(row);
 		
@@ -341,7 +342,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		div.appendChild(lValue);
 		row.appendCellChild(div, 1);
 		row.appendCellChild(fValue, 4);
-		fValue.setWidth("96%");
+		ZKUpdateUtil.setWidth(fValue, "96%");
 		row.appendCellChild(lValueValue, 1);
 		rows.appendChild(row);
 		
@@ -382,7 +383,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		
 		//
 		Separator separator = new Separator();
-		separator.setHeight("10px");
+		ZKUpdateUtil.setHeight(separator, "10px");
 		box.appendChild(separator);
 		box.appendChild(confirmPanel);
 		
@@ -390,7 +391,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		setLayout.makeNoStrip();
 		setLayout.setOddRowSclass("even");
 		
-		this.setWidth("500px");
+		ZKUpdateUtil.setWidth(this, "500px");
 		this.setSizable(true);
 	}   //  jbInit
 

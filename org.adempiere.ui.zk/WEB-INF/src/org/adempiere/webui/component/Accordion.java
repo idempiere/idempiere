@@ -16,6 +16,7 @@ package org.adempiere.webui.component;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -48,7 +49,7 @@ public class Accordion extends Borderlayout implements EventListener<Event> {
 		North north = new North();		
 		appendChild(north);
 		northBox = new Vbox();
-		northBox.setWidth("100%");
+		ZKUpdateUtil.setWidth(northBox, "100%");
 		north.appendChild(northBox);
 		north.setSplittable(false);
 		north.setCollapsible(false);
@@ -59,7 +60,7 @@ public class Accordion extends Borderlayout implements EventListener<Event> {
 		South south = new South();
 		appendChild(south);
 		southBox = new Vbox();
-		southBox.setWidth("100%");
+		ZKUpdateUtil.setWidth(southBox, "100%");
 		south.appendChild(southBox);
 		south.setSplittable(false);
 		south.setCollapsible(false);
@@ -74,7 +75,7 @@ public class Accordion extends Borderlayout implements EventListener<Event> {
 		ToolBarButton button = new ToolBarButton();
 		button.setLabel(label);
 		button.addEventListener(Events.ON_CLICK, this);
-		button.setWidth("100%");
+		ZKUpdateUtil.setWidth(button, "100%");
 		
 		Div div = new Div();
 		div.setClass("z-center-header");

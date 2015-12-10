@@ -25,6 +25,7 @@ import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.OSTask;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MTask;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
@@ -174,19 +175,19 @@ public class WTask extends Window implements EventListener<Event>, IHelpContext
 	private void zkInit() throws Exception
 	{
 		Borderlayout layout = new Borderlayout();
-		layout.setWidth("100%");
-		layout.setHeight("100%");
+		ZKUpdateUtil.setWidth(layout, "100%");
+		ZKUpdateUtil.setHeight(layout, "100%");
 		layout.setStyle("position: absolute;");
-		this.setHeight("100%");
-		this.setWidth("100%");
+		ZKUpdateUtil.setHeight(this, "100%");
+		ZKUpdateUtil.setWidth(this, "100%");
 		appendChild(layout);
 		Center center = new Center();
 		layout.appendChild(center);
 		Div div = new Div();
 		div.setStyle("width: 100%; height:100%; overflow: auto");
 		div.appendChild(info);
-		div.setHflex("true");
-		div.setVflex("true");
+		ZKUpdateUtil.setHflex(this, "true");
+		ZKUpdateUtil.setVflex(this, "true");
 		center.appendChild(div);
 
 		South south = new South();

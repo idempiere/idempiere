@@ -30,6 +30,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
@@ -196,7 +197,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         ConfirmPanel pnlButtons = new ConfirmPanel(true);
         pnlButtons.addActionListener(this);
         LayoutUtils.addSclass(ITheme.LOGIN_BOX_FOOTER_PANEL_CLASS, pnlButtons);
-        pnlButtons.setWidth(null);
+        ZKUpdateUtil.setWidth(pnlButtons, null);
         pnlButtons.getButton(ConfirmPanel.A_OK).setSclass(ITheme.LOGIN_BUTTON_CLASS);
         pnlButtons.getButton(ConfirmPanel.A_CANCEL).setSclass(ITheme.LOGIN_BUTTON_CLASS);
         div.appendChild(pnlButtons);
@@ -229,7 +230,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     	lstSecurityQuestion.setAutocomplete(true);
     	lstSecurityQuestion.setAutodrop(true);
     	lstSecurityQuestion.setId("lstSecurityQuestion");
-    	lstSecurityQuestion.setWidth("220px");
+    	ZKUpdateUtil.setWidth(lstSecurityQuestion, "220px");
     	
     	lstSecurityQuestion.getItems().clear();
     	for (int i = 1; i <= ResetPasswordPanel.NO_OF_SECURITY_QUESTION; i++)
@@ -239,25 +240,25 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         txtOldPassword.setId("txtOldPassword");
         txtOldPassword.setType("password");
         txtOldPassword.setCols(25);
-        txtOldPassword.setWidth("220px");
+        ZKUpdateUtil.setWidth(txtOldPassword, "220px");
 
         txtNewPassword = new Textbox();
         txtNewPassword.setId("txtNewPassword");
         txtNewPassword.setType("password");
         txtNewPassword.setCols(25);
-        txtNewPassword.setWidth("220px");
+        ZKUpdateUtil.setWidth(txtNewPassword, "220px");
         
         txtRetypeNewPassword = new Textbox();
         txtRetypeNewPassword.setId("txtRetypeNewPassword");
         txtRetypeNewPassword.setType("password");
         txtRetypeNewPassword.setCols(25);
-        txtRetypeNewPassword.setWidth("220px");
+        ZKUpdateUtil.setWidth(txtRetypeNewPassword, "220px");
         
     	txtAnswer = new Textbox();
     	txtAnswer.setId("txtAnswer");
 //        txtAnswer.setType("password");
         txtAnswer.setCols(25);
-        txtAnswer.setWidth("220px");
+        ZKUpdateUtil.setWidth(txtAnswer, "220px");
    }
 
     public void onEvent(Event event)

@@ -72,6 +72,7 @@ import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.part.MultiTabPart;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.GridTab;
@@ -246,8 +247,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         
         this.setBorder("normal");
         this.setShadow(false);
-        this.setWidth("900px");
-        this.setHeight("350px");
+        ZKUpdateUtil.setWidth(this, "900px");
+        ZKUpdateUtil.setHeight(this, "350px");
         this.setTitle(Msg.getMsg(Env.getCtx(), "Find").replaceAll("&", "") + ": " + title);
         this.setClosable(false);
         this.setSizable(true);  
@@ -338,62 +339,62 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         pnlButtonRight.appendChild(btnOk);
         pnlButtonRight.appendChild(btnCancel);
         pnlButtonRight.setStyle("text-align:right");
-        pnlButtonRight.setWidth("100%");
-        pnlButtonRight.setHflex("1");
+        ZKUpdateUtil.setWidth(pnlButtonRight, "100%");
+        ZKUpdateUtil.setHflex(pnlButtonRight, "1");
 
         Panel pnlButtonLeft = new Panel();
         pnlButtonLeft.appendChild(btnNew);
-        pnlButtonLeft.setHflex("1");
+        ZKUpdateUtil.setHflex(pnlButtonLeft, "1");
 
         Hbox hboxButton = new Hbox();
         hboxButton.appendChild(pnlButtonLeft);
         hboxButton.appendChild(pnlButtonRight);
-        hboxButton.setWidth("100%");
+        ZKUpdateUtil.setWidth(hboxButton, "100%");
 
         contentSimple = new Grid();
         contentSimple.setId("contentSimple");
         contentSimple.setStyle("width: 100%; position: relative");
         contentSimple.makeNoStrip();
-        contentSimple.setHflex("1");
+        ZKUpdateUtil.setHflex(contentSimple, "1");
         
         Columns columns = new Columns();
         Column column = new Column();
         column.setAlign("right");
-        column.setWidth("30%");
+        ZKUpdateUtil.setWidth(column, "30%");
         columns.appendChild(column);
         
         column = new Column();
         column.setAlign("left");
-        column.setWidth("50%");
+        ZKUpdateUtil.setWidth(column, "50%");
         columns.appendChild(column);
         
         column = new Column();
-        column.setWidth("20%");
+        ZKUpdateUtil.setWidth(column, "20%");
         columns.appendChild(column);
         
         contentSimple.appendChild(columns);
 
         contentSimpleRows = new Rows();
         contentSimple.appendChild(contentSimpleRows);
-        contentSimple.setVflex(true);
+        ZKUpdateUtil.setVflex(contentSimple, true);
 
         Borderlayout layout = new Borderlayout();
-        layout.setHflex("1");
-        layout.setVflex("1");
+        ZKUpdateUtil.setHflex(layout, "1");
+        ZKUpdateUtil.setVflex(layout, "1");
         winLookupRecord.appendChild(layout);
 
         Center center = new Center();
         layout.appendChild(center);
         center.appendChild(contentSimple);
-        contentSimple.setVflex("1");
-		contentSimple.setHflex("1");
+        ZKUpdateUtil.setVflex(contentSimple, "1");
+		ZKUpdateUtil.setHflex(contentSimple, "1");
 
         South south = new South();
         layout.appendChild(south);
         south.appendChild(hboxButton);
 
-        winLookupRecord.setWidth("100%");
-        winLookupRecord.setHeight("100%");
+        ZKUpdateUtil.setWidth(winLookupRecord, "100%");
+        ZKUpdateUtil.setHeight(winLookupRecord, "100%");
         winLookupRecord.addEventListener(Events.ON_OK, this);
         LayoutUtils.addSclass("find-window-simple", winLookupRecord);
 
@@ -430,13 +431,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         ToolBar toolBar = new ToolBar();
         toolBar.appendChild(btnNew);
         toolBar.appendChild(btnDelete);
-        toolBar.setWidth("100%");
+        ZKUpdateUtil.setWidth(toolBar, "100%");
 
         fQueryName.addEventListener(Events.ON_SELECT, this);
 
         Hbox confirmPanel = new Hbox();
         confirmPanel.appendChild(pnlButtonRight);
-        confirmPanel.setWidth("100%");
+        ZKUpdateUtil.setWidth(confirmPanel, "100%");
         confirmPanel.setPack("end");
 
         advancedPanel = new Listbox();
@@ -445,30 +446,30 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         ListHeader lstHAndOr = new ListHeader();
         lstHAndOr.setLabel(Msg.getMsg(Env.getCtx(), "And/Or"));
-        lstHAndOr.setWidth("10%");
+        ZKUpdateUtil.setWidth(lstHAndOr, "10%");
 
         ListHeader lstHLeftBracket = new ListHeader();
         lstHLeftBracket.setLabel("(");
-        lstHLeftBracket.setWidth("6%");
+        ZKUpdateUtil.setWidth(lstHLeftBracket, "6%");
 
         ListHeader lstHColumn = new ListHeader();
         lstHColumn.setLabel(Msg.translate(Env.getCtx(), "AD_Column_ID"));
-        lstHColumn.setWidth("30%");
+        ZKUpdateUtil.setWidth(lstHColumn, "30%");
 
         ListHeader lstHOperator = new ListHeader();
         lstHOperator.setLabel(Msg.getMsg(Env.getCtx(), "Operator"));
 
         ListHeader lstHQueryValue = new ListHeader();
         lstHQueryValue.setLabel(Msg.getMsg(Env.getCtx(), "QueryValue"));
-        lstHQueryValue.setWidth("24%");
+        ZKUpdateUtil.setWidth(lstHQueryValue, "24%");
 
         ListHeader lstHQueryTo = new ListHeader();
         lstHQueryTo.setLabel(Msg.getMsg(Env.getCtx(), "QueryValue2"));
-        lstHQueryTo.setWidth("20%");
+        ZKUpdateUtil.setWidth(lstHQueryTo, "20%");
 
         ListHeader lstHRightBracket = new ListHeader();
         lstHRightBracket.setLabel(")");
-        lstHRightBracket.setWidth("6%");
+        ZKUpdateUtil.setWidth(lstHRightBracket, "6%");
 
         listhead.appendChild(lstHAndOr);
         listhead.appendChild(lstHLeftBracket);
@@ -479,34 +480,34 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listhead.appendChild(lstHQueryTo);
         listhead.appendChild(lstHRightBracket);
         advancedPanel.appendChild(listhead);
-        advancedPanel.setVflex(true);
+        ZKUpdateUtil.setVflex(advancedPanel, true);
         
         
 
         Borderlayout layout = new Borderlayout();
-        layout.setHflex("1");
-        layout.setVflex("1");
+        ZKUpdateUtil.setHflex(layout, "1");
+        ZKUpdateUtil.setVflex(layout, "1");
         winAdvanced.appendChild(layout);
         
         North north =new North();
         layout.appendChild(north);        
         north.appendChild(toolBar);
        
-        toolBar.setVflex("0");
+        ZKUpdateUtil.setVflex(toolBar, "0");
 
         Center center = new Center();
         layout.appendChild(center);
         center.appendChild(advancedPanel);
-        advancedPanel.setVflex("1");
-        advancedPanel.setHflex("1");
+        ZKUpdateUtil.setVflex(advancedPanel, "1");
+        ZKUpdateUtil.setHflex(advancedPanel, "1");
 
         South south = new South();
         layout.appendChild(south);
         south.appendChild(confirmPanel);
-        south.setVflex("min");
+        ZKUpdateUtil.setVflex(south, "min");
 
-        winAdvanced.setHeight("100%");
-        winAdvanced.setWidth("99%");
+        ZKUpdateUtil.setHeight(winAdvanced, "100%");
+        ZKUpdateUtil.setWidth(winAdvanced, "99%");
         winAdvanced.addEventListener(Events.ON_OK,this);
         LayoutUtils.addSclass("find-window-advanced", winAdvanced);
 
@@ -522,11 +523,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	
     	Vlayout layout = new Vlayout();
     	layout.setStyle("height: 100%; width: 100%; position: relative;");
-    	layout.setVflex("1");
+    	ZKUpdateUtil.setVflex(layout, "1");
     	this.appendChild(layout);
     	
     	Div div = new Div();
-    	div.setVflex("0");
+    	ZKUpdateUtil.setVflex(div, "0");
     	layout.appendChild(div);
     	
     	btnSave = new ToolBarButton();
@@ -570,7 +571,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         winMain = new MultiTabPart();
         winMain.createPart(layout);
         winMain.getComponent().setStyle("position: relative; margin-left: auto; margin-right: auto; margin-top: 3px; margin-bottom: 3px;");
-        winMain.getComponent().setVflex("1");
+        ZKUpdateUtil.setVflex(winMain.getComponent(), "1");
         winMain.getComponent().addEventListener(Events.ON_SELECT, this);
         winAdvanced = new Window();
         winLookupRecord = new Window();
@@ -777,7 +778,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listColumn.setMold("select");
         listColumn.setRows(0);
         listColumn.addEventListener(Events.ON_SELECT,this);
-        listColumn.setHflex("true");
+        ZKUpdateUtil.setHflex(listColumn, "true");
         
         Listbox listOperator = new Listbox();
         listOperator.setId("listOperator"+listItem.getId());
@@ -785,7 +786,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listOperator.setMold("select");
         listOperator.setRows(0);
         listOperator.addEventListener(Events.ON_SELECT,this);
-        listOperator.setHflex("true");
+        ZKUpdateUtil.setHflex(listOperator, "true");
         
         Listbox listAndOr = new Listbox();
         listAndOr.setId("listAndOr"+listItem.getId());
@@ -793,7 +794,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listAndOr.setMold("select");
         listAndOr.setRows(0);
         listAndOr.addEventListener(Events.ON_SELECT,this);
-        listAndOr.setHflex("true");
+        ZKUpdateUtil.setHflex(listAndOr, "true");
 
         Listbox listLeftBracket = new Listbox();
         listLeftBracket.setId("listLeftBracket"+listItem.getId());
@@ -801,7 +802,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listLeftBracket.setMold("select");
         listLeftBracket.setRows(0);
         listLeftBracket.addEventListener(Events.ON_SELECT,this);
-        listLeftBracket.setHflex("true");
+        ZKUpdateUtil.setHflex(listLeftBracket, "true");
 
         Listbox listRightBracket = new Listbox();
         listRightBracket.setId("listRightBracket"+listItem.getId());
@@ -809,7 +810,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listRightBracket.setMold("select");
         listRightBracket.setRows(0);
         listRightBracket.addEventListener(Events.ON_SELECT,this);
-        listRightBracket.setHflex("true");
+        ZKUpdateUtil.setHflex(listRightBracket, "true");
 
         setValues(listColumn, listOperator, fields);
 
@@ -1814,7 +1815,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listcell.setLabel("");
         listcell.getChildren().clear();
         listcell.appendChild(component);
-        ((HtmlBasedComponent)component).setHflex("1");
+        ZKUpdateUtil.setHflex((HtmlBasedComponent)component, "1");
         listcell.invalidate();
      }   //  addComponent
 

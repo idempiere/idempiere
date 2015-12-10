@@ -52,6 +52,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.PaySelect;
 import org.compiere.model.MPaySelection;
@@ -153,8 +154,8 @@ public class WPaySelect extends PaySelect
 		form.appendChild(mainPanel);
 		mainPanel.appendChild(mainLayout);
 		mainPanel.setStyle("width: 100%; height: 100%; padding: 0; margin: 0");
-		mainLayout.setHeight("100%");
-		mainLayout.setWidth("99%");
+		ZKUpdateUtil.setHeight(mainLayout, "100%");
+		ZKUpdateUtil.setWidth(mainLayout, "99%");
 		parameterPanel.appendChild(parameterLayout);
 		//
 		labelBankAccount.setText(Msg.translate(Env.getCtx(), "C_BankAccount_ID"));

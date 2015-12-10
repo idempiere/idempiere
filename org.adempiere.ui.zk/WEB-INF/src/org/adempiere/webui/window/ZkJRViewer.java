@@ -33,6 +33,7 @@ import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
@@ -118,7 +119,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		this.setStyle("width: 100%; height: 100%; position: absolute");
 
 		Toolbar toolbar = new Toolbar();
-		toolbar.setHeight("32px");
+		ZKUpdateUtil.setHeight(toolbar, "32px");
 
 		previewType.setMold("select");
 		attachment = null;  // Added by Martin Augustine - Ntier software Services 09/10/2013
@@ -175,16 +176,16 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		North north = new North();
 		layout.appendChild(north);
 		north.appendChild(toolbar);
-		north.setVflex("min");
+		ZKUpdateUtil.setVflex(north, "min");
 		
 		Center center = new Center();
 		layout.appendChild(center);
 		iframe = new Iframe();
-		iframe.setHflex("true");
-		iframe.setVflex("true");
+		ZKUpdateUtil.setHflex(iframe, "true");
+		ZKUpdateUtil.setVflex(iframe, "true");
 		iframe.setId("reportFrame");
-		iframe.setHeight("100%");
-		iframe.setWidth("100%");
+		ZKUpdateUtil.setHeight(iframe, "100%");
+		ZKUpdateUtil.setWidth(iframe, "100%");
 
 		try {
 			renderReport();

@@ -39,6 +39,7 @@ import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
@@ -146,8 +147,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	private void init()
 	{
 		Grid grid = new Grid();
-		grid.setWidth("100%");
-        grid.setHeight("100%");
+		ZKUpdateUtil.setWidth(grid, "100%");
+		ZKUpdateUtil.setHeight(grid, "100%");
         grid.setStyle("margin:0; padding:0; position: absolute; align: center; valign: center;");
         grid.makeNoStrip();
         grid.setOddRowSclass("even");
@@ -162,8 +163,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		div.appendChild(lNode);
 		row.appendChild(div);
 		row.appendChild(fNode);
-		fNode.setWidth("100%");
-		fNode.setHflex("true");
+		ZKUpdateUtil.setWidth(fNode, "100%");
+		ZKUpdateUtil.setHflex(fNode, "true");
 		fNode.setReadonly(true);
 
 		row = new Row();
@@ -175,8 +176,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(div);
 		row.appendChild(fDescription);
 		fDescription.setMultiline(true);
-		fDescription.setWidth("100%");
-		fDescription.setHflex("true");
+		ZKUpdateUtil.setWidth(fDescription, "100%");
+		ZKUpdateUtil.setHflex(fDescription, "true");
 		fDescription.setReadonly(true);
 
 		row = new Row();
@@ -188,9 +189,9 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(fHelp);
 		fHelp.setMultiline(true);
 		fHelp.setRows(3);
-		fHelp.setWidth("100%");
-		fHelp.setHeight("100%");
-		fHelp.setHflex("true");
+		ZKUpdateUtil.setWidth(fHelp, "100%");
+		ZKUpdateUtil.setHeight(fHelp, "100%");
+		ZKUpdateUtil.setHflex(fHelp, "true");
 		fHelp.setReadonly(true);
 		row.appendChild(new Label());
 
@@ -201,7 +202,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		div.appendChild(lHistory);
 		row.appendChild(div);
 		row.appendChild(fHistory);
-		fHistory.setHflex("true");
+		ZKUpdateUtil.setHflex(fHistory, "true");
 		row.appendChild(new Label());
 
 		row = new Row();
@@ -212,7 +213,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(div);
 		Hbox hbox = new Hbox();
 		hbox.appendChild(fAnswerText);
-		fAnswerText.setHflex("true");
+		ZKUpdateUtil.setHflex(fAnswerText, "true");
 		hbox.appendChild(fAnswerList);
 		hbox.appendChild(fAnswerButton);
 		fAnswerButton.addEventListener(Events.ON_CLICK, this);
@@ -227,9 +228,9 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		div.appendChild(lTextMsg);
 		row.appendChild(div);
 		row.appendChild(fTextMsg);
-		fTextMsg.setHflex("true");
+		ZKUpdateUtil.setHflex(fTextMsg, "true");
 		fTextMsg.setMultiline(true);
-		fTextMsg.setWidth("100%");
+		ZKUpdateUtil.setWidth(fTextMsg, "100%");
 		row.appendChild(new Label());
 
 		row = new Row();
@@ -246,16 +247,16 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		bOK.addEventListener(Events.ON_CLICK, this);
 
 		Borderlayout layout = new Borderlayout();
-		layout.setWidth("100%");
-		layout.setHeight("100%");
+		ZKUpdateUtil.setWidth(layout, "100%");
+		ZKUpdateUtil.setHeight(layout, "100%");
 		layout.setStyle("background-color: transparent; position: absolute;");
 
 		North north = new North();
 		north.appendChild(listbox);
 		north.setSplittable(true);
-		listbox.setVflex("1");
-		listbox.setHflex("1");
-		north.setHeight("50%");
+		ZKUpdateUtil.setVflex(listbox, "1");
+		ZKUpdateUtil.setHflex(listbox, "1");
+		ZKUpdateUtil.setHeight(north, "50%");
 		layout.appendChild(north);
 		north.setStyle("background-color: transparent");
 		listbox.addEventListener(Events.ON_SELECT, this);
@@ -264,8 +265,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		center.appendChild(grid);
 		layout.appendChild(center);
 		center.setStyle("background-color: transparent");
-		grid.setVflex("1");
-		grid.setHflex("1");
+		ZKUpdateUtil.setVflex(grid, "1");
+		ZKUpdateUtil.setHflex(grid, "1");
 
 		South south = new South();
 		south.appendChild(statusBar);
@@ -417,13 +418,13 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
 		WListItemRenderer renderer = new WListItemRenderer(Arrays.asList(columns));
 		ListHeader header = new ListHeader();
-		header.setWidth("60px");
+		ZKUpdateUtil.setWidth(header, "60px");
 		renderer.setListHeader(0, header);
 		header = new ListHeader();
-		header.setWidth(null);
+		ZKUpdateUtil.setWidth(header, null);
 		renderer.setListHeader(1, header);
 		header = new ListHeader();
-		header.setWidth(null);
+		ZKUpdateUtil.setWidth(header, null);
 		renderer.setListHeader(2, header);
 		renderer.addTableValueChangeListener(listbox);
 		model.setNoColumns(columns.length);

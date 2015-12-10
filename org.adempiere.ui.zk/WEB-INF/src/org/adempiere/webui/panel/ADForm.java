@@ -24,6 +24,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridTab;
 import org.compiere.model.MForm;
 import org.compiere.model.X_AD_CtxHelp;
@@ -76,8 +77,8 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
     {
          m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 
-         this.setWidth("100%");
-         this.setHeight("95%");
+         ZKUpdateUtil.setWidth(this, "100%");
+         ZKUpdateUtil.setHeight(this, "95%");
          this.setStyle("position:absolute");
          this.setContentSclass("adform-content");
     }

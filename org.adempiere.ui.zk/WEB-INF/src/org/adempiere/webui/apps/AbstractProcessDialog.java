@@ -48,6 +48,7 @@ import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.process.WProcessInfo;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.compiere.Adempiere;
@@ -274,7 +275,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		topParameterLayout = new Vlayout();
 		topParameterLayout.setSclass("top-parameter-layout"); 
 		mainParameterLayout.appendChild(topParameterLayout);
-		topParameterLayout.setVflex("true");
+		ZKUpdateUtil.setVflex(topParameterLayout, "true");
 		// button and advanced control
 		bottomParameterLayout = new Vlayout();
 		bottomParameterLayout.setSclass("bottom-parameter-layout"); 
@@ -324,10 +325,10 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			Columns columns = new Columns();
 			grid.appendChild(columns);
 			Column col = new Column();
-			col.setWidth("30%");
+			ZKUpdateUtil.setWidth(col, "30%");
 			columns.appendChild(col);
 			col = new Column();
-			col.setWidth("70%");
+			ZKUpdateUtil.setWidth(col, "70%");
 			columns.appendChild(col);
 			
 			Rows rows = new Rows();

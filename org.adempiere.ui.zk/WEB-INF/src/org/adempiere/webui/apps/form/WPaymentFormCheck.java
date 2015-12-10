@@ -32,6 +32,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.editor.WNumberEditor;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.grid.PaymentFormCheck;
 import org.compiere.model.GridTab;
@@ -89,8 +90,8 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		sCheckLabel.setText(Msg.translate(Env.getCtx(), "CheckNo"));
 		sCheckField.setCols(8);
 		sCurrencyLabel.setText(Msg.translate(Env.getCtx(), "C_Currency_ID"));
-		sNumberField.setWidth("100pt");
-		sRoutingField.setWidth("70pt");
+		ZKUpdateUtil.setWidth(sNumberField, "100pt");
+		ZKUpdateUtil.setWidth(sRoutingField, "70pt");
 		sOnline.setLabel(Msg.getMsg(Env.getCtx(), "Online"));
 		LayoutUtils.addSclass("txt-btn", sOnline);
 		sOnline.addActionListener(this);
@@ -101,13 +102,13 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		
 		Column column = new Column();
 		columns.appendChild(column);
-		column.setWidth("40%");
+		ZKUpdateUtil.setWidth(column, "40%");
 		
 		column = new Column();
 		columns.appendChild(column);
-		column.setWidth("60%");
+		ZKUpdateUtil.setWidth(column, "60%");
 		
-		sAmountField.getComponent().setWidth("150px");
+		ZKUpdateUtil.setWidth(sAmountField.getComponent(), "150px");
 		
 		Rows rows = sPanelLayout.newRows();
 		Row row = rows.newRow();

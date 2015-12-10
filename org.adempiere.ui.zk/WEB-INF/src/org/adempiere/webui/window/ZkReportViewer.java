@@ -61,6 +61,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.Adempiere;
 import org.compiere.model.GridField;
 import org.compiere.model.MArchive;
@@ -262,8 +263,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		this.appendChild(layout);
 		this.setStyle("width: 100%; height: 100%; position: absolute; border:none; padding:none; margin:none;");
 
-		toolBar.setHeight("32px");
-		toolBar.setWidth("100%");
+		ZKUpdateUtil.setHeight(toolBar, "32px");
+		ZKUpdateUtil.setWidth(toolBar, "100%");
 		
 		previewType.setMold("select");
 		previewType.appendItem("HTML", "HTML");
@@ -397,20 +398,20 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		North north = new North();
 		layout.appendChild(north);
 		north.appendChild(toolBar);
-		north.setVflex("min");
+		ZKUpdateUtil.setVflex(north, "min");
 		
 		Center center = new Center();
 		layout.appendChild(center);
 		iframe = new Iframe();
-		//iframe.setHflex("true");
-		//iframe.setVflex("true");
-		iframe.setWidth("100%");
-		iframe.setHeight("100%");
+		//ZKUpdateUtil.setHflex(iframe, "true");
+		//ZKUpdateUtil.setVflex(iframe, "true");
+		ZKUpdateUtil.setWidth(iframe, "100%");
+		ZKUpdateUtil.setHeight(iframe, "100%");
 		iframe.setId("reportFrame");
 		center.appendChild(iframe);
 		
 		South south = new South();
-		south.setHeight("34px");
+		ZKUpdateUtil.setHeight(south, "34px");
 		layout.appendChild(south);
 		reportLink = new A();
 		reportLink.setTarget("_blank");
@@ -945,8 +946,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		{
 			winExportFile = new Window();
 			winExportFile.setTitle(Msg.getMsg(Env.getCtx(), "Export") + ": " + getTitle());
-			winExportFile.setWidth("450px");
-			winExportFile.setHeight("150px");
+			ZKUpdateUtil.setWidth(winExportFile, "450px");
+			ZKUpdateUtil.setHeight(winExportFile, "150px");
 			winExportFile.setClosable(true);
 			winExportFile.setBorder("normal");
 			winExportFile.setSclass("popup-dialog");
@@ -974,10 +975,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			div.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType")));
 			hb.appendChild(div);
 			hb.appendChild(cboType);
-			cboType.setWidth("100%");
+			ZKUpdateUtil.setWidth(cboType, "100%");
 
 			Vbox vb = new Vbox();
-			vb.setWidth("100%");
+			ZKUpdateUtil.setWidth(vb, "100%");
 			winExportFile.appendChild(vb);
 			vb.appendChild(hb);
 			vb.appendChild(confirmPanel);
@@ -1264,8 +1265,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		WReportCustomization av = (WReportCustomization) form.getICustomForm();
 		av.setReportEngine(m_reportEngine);
 		form.setClosable(true);
-		form.setWidth("70%");
-		form.setHeight("85%");
+		ZKUpdateUtil.setWidth(form, "70%");
+		ZKUpdateUtil.setHeight(form, "85%");
 		form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {

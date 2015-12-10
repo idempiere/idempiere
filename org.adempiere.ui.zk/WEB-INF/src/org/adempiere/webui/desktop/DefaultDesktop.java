@@ -55,6 +55,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.UserPreference;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.Adempiere;
 import org.compiere.model.GridField;
@@ -270,16 +271,16 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         		int eWidth = Integer.valueOf(eastWidth.replace("px", ""));
         		
         		if( eWidth + wWidth <= browserWidth ){
-        			w.setWidth(westWidth);
-        			e.setWidth(eastWidth);
+        			ZKUpdateUtil.setWidth(w, westWidth);
+        			ZKUpdateUtil.setWidth(e, eastWidth);
         		}
         		
         	}
         	else if ( westWidth != null )
-            	w.setWidth(westWidth);
+            	ZKUpdateUtil.setWidth(w, westWidth);
 
         	else if ( eastWidth != null )
-            	e.setWidth(eastWidth);
+            	ZKUpdateUtil.setWidth(e, eastWidth);
         }
                 
         boolean helpCollapsed= pref.isPropertyBool(UserPreference.P_HELP_COLLAPSED);
@@ -603,7 +604,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		{
 			headerPopup = new Window(); 
 			headerPopup.setSclass("desktop-header-popup");
-			headerPopup.setVflex("true");
+			ZKUpdateUtil.setVflex(headerPopup, "true");
 			headerPopup.setVisible(false);
 			headerPopup.addEventListener(Events.ON_OPEN, new EventListener<OpenEvent>() {
 				@Override

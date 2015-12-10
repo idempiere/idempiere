@@ -50,6 +50,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.panel.WTabEditorForm;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.form.TabEditor;
 import org.compiere.model.GridField;
 import org.compiere.model.MField;
@@ -151,13 +152,13 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 	private void dynList()
 	{
 		visible.addEventListener(Events.ON_SELECT, this);
-		visible.setVflex("70");
+		ZKUpdateUtil.setVflex(visible, "70");
 		visible.setItemDraggable(true);
 		visible.setDroppable("true");
 		visible.addOnDropListener(this);
 
 		invisible.addEventListener(Events.ON_SELECT, this);
-		invisible.setVflex("30");
+		ZKUpdateUtil.setVflex(invisible, "30");
 		invisible.setItemDraggable(true);
 		invisible.setDroppable("true");
 		invisible.addOnDropListener(this);
@@ -178,8 +179,8 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 	    
 		form = new Grid();
 		form.makeNoStrip();
-		form.setHflex("1");
-        form.setHeight(null);
+		ZKUpdateUtil.setHflex(form, "1");
+        ZKUpdateUtil.setHeight(form, null);
         form.setVflex(false);
 
     	int numCols = getNumColumns();
@@ -194,7 +195,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 
     	for (int h=0;h<numCols;h++){
     		Column col = new Column();
-    		col.setWidth(equalWidth + "%");
+    		ZKUpdateUtil.setWidth(col, equalWidth + "%");
     		columns.appendChild(col);
     	}
 
@@ -400,12 +401,12 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
     	//
     	Column  column = new Column();
     	columns.appendChild(column);
-    	column.setHflex("min");
+    	ZKUpdateUtil.setHflex(column, "min");
     	column.setAlign("right");
 
     	column = new Column();
     	columns.appendChild(column);
-    	column.setHflex("1");
+    	ZKUpdateUtil.setHflex(column, "1");
 		Rows rows = new Rows();
 		gridView.appendChild(rows);
 		
@@ -422,7 +423,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		row = new Row();
 		Label labelName =  new Label(Msg.getElement(Env.getCtx(), MField.COLUMNNAME_Name));
 		editorName = new WStringEditor(MField.COLUMNNAME_Name, false, true, false, 0, 0, null, null);
-		((WStringEditor) editorName).getComponent().setHflex("1");
+		ZKUpdateUtil.setHflex(((WStringEditor) editorName).getComponent(), "1");
 		row.appendChild(labelName.rightAlign());
 		row.appendChild(editorName.getComponent());
 		// editorName.addValueChangeListener(this);
@@ -451,7 +452,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		Label labelAD_FieldGroup_ID =  new Label(Msg.getElement(Env.getCtx(), MField.COLUMNNAME_AD_FieldGroup_ID));
 		MLookup lookup = MLookupFactory.get (Env.getCtx(), tabform.getWindowNo(), 0, COLUMN_AD_FIELD_AD_FIELDGROUP_ID, DisplayType.TableDir);
 		editorAD_FieldGroup_ID = new WTableDirEditor(MField.COLUMNNAME_AD_FieldGroup_ID, false, false, true, lookup);
-		((WTableDirEditor) editorAD_FieldGroup_ID).getComponent().setHflex("1");
+		ZKUpdateUtil.setHflex(((WTableDirEditor) editorAD_FieldGroup_ID).getComponent(), "1");
 		row.appendChild(labelAD_FieldGroup_ID.rightAlign());
 		row.appendChild(editorAD_FieldGroup_ID.getComponent());
 		editorAD_FieldGroup_ID.addValueChangeListener(this);
@@ -509,8 +510,8 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		tabform.setSizable(true);
 		tabform.setClosable(true);
 		tabform.setMaximizable(true);
-		tabform.setWidth("95%");
-		tabform.setHeight("95%");
+		ZKUpdateUtil.setWidth(tabform, "95%");
+		ZKUpdateUtil.setHeight(tabform, "95%");
 		tabform.appendChild (mainLayout);
 		LayoutUtils.addSclass("tab-editor-form-content", mainLayout);
 		tabform.setBorder("normal");
@@ -523,7 +524,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		LayoutUtils.addSclass("tab-editor-form-east-panel", east);
 		mainLayout.appendChild(east);
 		east.appendChild(propGrid);
-		east.setWidth("320px");
+		ZKUpdateUtil.setWidth(east, "320px");
 
 		ListHead visibleHead = new ListHead();
 		visibleHead.setParent(visible);
@@ -540,14 +541,14 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		invisibleHeader.setParent(invisibleHead);
 
 		westVLayout = new Vlayout();
-		westVLayout.setHeight("100%");
+		ZKUpdateUtil.setHeight(westVLayout, "100%");
 		westVLayout.appendChild(visible);
 		westVLayout.appendChild(invisible);
 
 		createUI();
 
 		centerVLayout = new Vlayout();
-		centerVLayout.setHeight("100%");
+		ZKUpdateUtil.setHeight(centerVLayout, "100%");
 		centerVLayout.appendChild(form);
 		centerVLayout.setStyle("overflow:auto");
 
@@ -562,7 +563,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		west.appendChild(westVLayout);
 		west.setCollapsible(true);
 		west.setSplittable(true);
-		west.setWidth("200px");
+		ZKUpdateUtil.setWidth(west, "200px");
 	}	//	jbInit
 
 	/**

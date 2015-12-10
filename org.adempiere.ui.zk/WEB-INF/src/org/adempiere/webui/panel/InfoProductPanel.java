@@ -65,6 +65,7 @@ import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MDocType;
@@ -281,7 +282,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		pickPriceList.setRows(0);
 		pickPriceList.setMultiple(false);
 		pickPriceList.setMold("select");
-		pickPriceList.setHflex("1");
+		ZKUpdateUtil.setHflex(pickPriceList, "1");
 		pickPriceList.addEventListener(Events.ON_SELECT, this);
 		pickPriceList.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "priceList");
 
@@ -290,7 +291,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		pickProductCategory.setRows(0);
 		pickProductCategory.setMultiple(false);
 		pickProductCategory.setMold("select");
-		pickProductCategory.setHflex("1");
+		ZKUpdateUtil.setHflex(pickProductCategory, "1");
 		pickProductCategory.addEventListener(Events.ON_SELECT, this);
 		pickProductCategory.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "productCategory");
 		//
@@ -298,7 +299,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		pickAS.setRows(0);
 		pickAS.setMultiple(false);
 		pickAS.setMold("select");
-		pickAS.setHflex("1");
+		ZKUpdateUtil.setHflex(pickAS, "1");
 		pickAS.addEventListener(Events.ON_SELECT, this);
 		pickAS.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "attributeSet");
 
@@ -306,13 +307,13 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		pickWarehouse.setRows(0);
 		pickWarehouse.setMultiple(false);
 		pickWarehouse.setMold("select");
-		pickWarehouse.setHflex("1");
+		ZKUpdateUtil.setHflex(pickWarehouse, "1");
 		pickWarehouse.addEventListener(Events.ON_SELECT, this);
 		pickWarehouse.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "warehouse");
 
 		fieldVendor = new Textbox();		
 
-        contentPanel.setVflex(true);
+        ZKUpdateUtil.setVflex(contentPanel, true);
 	}	//	initComponents
 
 	private void init()
@@ -326,10 +327,10 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		rows.appendChild(row);
 		row.appendChild(lblValue.rightAlign());
 		row.appendChild(fieldValue);
-		fieldValue.setHflex("1");
+		ZKUpdateUtil.setHflex(fieldValue, "1");
 		row.appendChild(lblUPC.rightAlign());
 		row.appendChild(fieldUPC);
-		fieldUPC.setHflex("1");
+		ZKUpdateUtil.setHflex(fieldUPC, "1");
 		row.appendChild(lblWarehouse.rightAlign());
 		row.appendChild(pickWarehouse);
 		row.appendChild(m_InfoPAttributeButton);
@@ -337,14 +338,14 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		row = new Row();
 		row.appendCellChild(lblName.rightAlign());
 		row.appendCellChild(fieldName);
-		fieldName.setHflex("1");
+		ZKUpdateUtil.setHflex(fieldName, "1");
 		row.appendCellChild(lblSKU.rightAlign());
 		row.appendCellChild(fieldSKU);
-		fieldSKU.setHflex("1");
+		ZKUpdateUtil.setHflex(fieldSKU, "1");
 		row.appendCellChild(lblVendor.rightAlign());
 		row.appendCellChild(fieldVendor);
 		rows.appendChild(row);
-		fieldVendor.setHflex("1");
+		ZKUpdateUtil.setHflex(fieldVendor, "1");
 		
 		//
 
@@ -361,7 +362,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		rows.appendChild(row);
 		row.appendCellChild(statusBar, 6);
 		statusBar.setEastVisibility(false);
-		statusBar.setWidth("100%");
+		ZKUpdateUtil.setWidth(statusBar, "100%");
 
 		// Product Attribute Instance
 		m_PAttributeButton = confirmPanel.createButton(ConfirmPanel.A_PATTRIBUTE);
@@ -372,7 +373,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
         // Elaine 2008/11/25
         fieldDescription.setMultiline(true);
 		fieldDescription.setReadonly(true);
-		fieldDescription.setHflex("1");
+		ZKUpdateUtil.setHflex(fieldDescription, "1");
 
 		//
         ColumnInfo[] s_layoutWarehouse = new ColumnInfo[]{
@@ -451,7 +452,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
         productpriceTbl.autoSize();
         productpriceTbl.getModel().addTableModelListener(this);
         
-        tabbedPane.setHeight("100%");
+        ZKUpdateUtil.setHeight(tabbedPane, "100%");
 		Tabpanels tabPanels = new Tabpanels();
 		tabbedPane.appendChild(tabPanels);
 		Tabs tabs = new Tabs();
@@ -460,52 +461,52 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		Tab tab = new Tab(Util.cleanAmp(Msg.translate(Env.getCtx(), "Warehouse")));
 		tabs.appendChild(tab);
 		Tabpanel desktopTabPanel = new Tabpanel();
-		desktopTabPanel.setHeight("100%");
+		ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
 		desktopTabPanel.appendChild(warehouseTbl);
 		tabPanels.appendChild(desktopTabPanel);
 
 		tab = new Tab(Msg.translate(Env.getCtx(), "Description"));
 		tabs.appendChild(tab);
 		desktopTabPanel = new Tabpanel();
-		desktopTabPanel.setHeight("100%");
-		fieldDescription.setWidth("99%");
-		fieldDescription.setHeight("99%");
+		ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
+		ZKUpdateUtil.setWidth(fieldDescription, "99%");
+		ZKUpdateUtil.setHeight(fieldDescription, "99%");
 		desktopTabPanel.appendChild(fieldDescription);
 		tabPanels.appendChild(desktopTabPanel);
 
 		tab = new Tab(Msg.translate(Env.getCtx(), "Substitute_ID"));
 		tabs.appendChild(tab);
 		desktopTabPanel = new Tabpanel();
-		desktopTabPanel.setHeight("100%");
+		ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
 		desktopTabPanel.appendChild(substituteTbl);
 		tabPanels.appendChild(desktopTabPanel);
 
 		tab = new Tab(Msg.translate(Env.getCtx(), "RelatedProduct_ID"));
 		tabs.appendChild(tab);
 		desktopTabPanel = new Tabpanel();
-		desktopTabPanel.setHeight("100%");
+		ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
 		desktopTabPanel.appendChild(relatedTbl);
 		tabPanels.appendChild(desktopTabPanel);
 
 		tab = new Tab(Msg.getMsg(Env.getCtx(), "ATP"));
 		tabs.appendChild(tab);
 		desktopTabPanel = new Tabpanel();
-		desktopTabPanel.setHeight("100%");
+		ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
 		desktopTabPanel.appendChild(m_tableAtp);
 		tabPanels.appendChild(desktopTabPanel);
 		
 		tab = new Tab(Msg.translate(Env.getCtx(), "Price"));
 		tabs.appendChild(tab);
 		desktopTabPanel = new Tabpanel();
-		desktopTabPanel.setHeight("100%");
+		ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
 		desktopTabPanel.appendChild(productpriceTbl);
 		tabPanels.appendChild(desktopTabPanel);
 		//
 		int height = SessionManager.getAppDesktop().getClientInfo().desktopHeight * 90 / 100;
 		int width = SessionManager.getAppDesktop().getClientInfo().desktopWidth * 80 / 100;
 
-        borderlayout.setWidth("100%");
-        borderlayout.setHeight("100%");
+		ZKUpdateUtil.setWidth(borderlayout, "100%");
+		ZKUpdateUtil.setHeight(borderlayout, "100%");
         if (isLookup())
         	borderlayout.setStyle("border: none; position: relative; ");
         else
@@ -515,11 +516,11 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
         center.setAutoscroll(false);
         borderlayout.appendChild(center);
 		center.appendChild(contentPanel);
-		contentPanel.setVflex("1");
-		contentPanel.setHflex("1");
+		ZKUpdateUtil.setVflex(contentPanel, "1");
+		ZKUpdateUtil.setHflex(contentPanel, "1");
 		South south = new South();
 		int detailHeight = (height * 25 / 100);
-		south.setHeight(detailHeight + "px");
+		ZKUpdateUtil.setHeight(south, detailHeight + "px");
 		south.setCollapsible(true);
 		south.setSplittable(true);
 		south.setTitle(Msg.translate(Env.getCtx(), "WarehouseStock"));
@@ -527,12 +528,12 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		borderlayout.appendChild(south);
 		tabbedPane.setSclass("info-product-tabbedpane");
 		south.appendChild(tabbedPane);
-		tabbedPane.setVflex("1");
-		tabbedPane.setHflex("1");
+		ZKUpdateUtil.setVflex(tabbedPane, "1");
+		ZKUpdateUtil.setHflex(tabbedPane, "1");
 
         Borderlayout mainPanel = new Borderlayout();
-        mainPanel.setWidth("100%");
-        mainPanel.setHeight("100%");
+        ZKUpdateUtil.setWidth(mainPanel, "100%");
+        ZKUpdateUtil.setHeight(mainPanel, "100%");
         North north = new North();
         mainPanel.appendChild(north);
         north.appendChild(grid);
@@ -550,8 +551,8 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		this.appendChild(mainPanel);
 		if (isLookup())
 		{
-			this.setWidth(width + "px");
-			this.setHeight(height + "px");
+			ZKUpdateUtil.setWidth(this, width + "px");
+			ZKUpdateUtil.setHeight(this, height + "px");
 		}
 
 		contentPanel.addActionListener(new EventListener<Event>() {

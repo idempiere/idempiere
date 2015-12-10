@@ -38,6 +38,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MQuery;
@@ -95,7 +96,7 @@ public class ReportAction implements EventListener<Event>
 		if(winReport == null)
 		{
 			winReport = new Window();
-			winReport.setWidth("450px");
+			ZKUpdateUtil.setWidth(winReport, "450px");
 			winReport.setClosable(true);
 			winReport.setBorder("normal");
 			winReport.setStyle("position:absolute");
@@ -140,7 +141,7 @@ public class ReportAction implements EventListener<Event>
 			}
 
 			Vbox vb = new Vbox();
-			vb.setWidth("100%");
+			ZKUpdateUtil.setWidth(vb, "100%");
 			winReport.appendChild(vb);
 			winReport.setSclass("toolbar-popup-window");
 			vb.setSclass("toolbar-popup-window-cnt");
@@ -151,10 +152,10 @@ public class ReportAction implements EventListener<Event>
 	        
 	        Columns columns = new Columns();
 	        Column column = new Column();
-	        column.setHflex("min");
+	        ZKUpdateUtil.setHflex(column, "min");
 	        columns.appendChild(column);
 	        column = new Column();
-	        column.setHflex("1");
+	        ZKUpdateUtil.setHflex(column, "1");
 	        columns.appendChild(column);
 	        grid.appendChild(columns);
 	        
@@ -165,7 +166,7 @@ public class ReportAction implements EventListener<Event>
 			rows.appendChild(row);
 			row.appendChild(new Label(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID")));
 			row.appendChild(cboPrintFormat);
-			cboPrintFormat.setHflex("1");
+			ZKUpdateUtil.setHflex(cboPrintFormat, "1");
 			cboPrintFormat.addEventListener(Events.ON_SELECT, this);
 			
 			row = new Row();
@@ -177,12 +178,12 @@ public class ReportAction implements EventListener<Event>
 			{
 				Panel panel = new Panel();
 				panel.appendChild(chkExport);
-				chkExport.setHflex("min");
+				ZKUpdateUtil.setHflex(chkExport, "min");
 				panel.appendChild(new Space());
 				chkExport.addEventListener(Events.ON_CHECK, this);
 				panel.appendChild(cboExportType);
-				cboExportType.setHflex("1");
-				panel.setHflex("1");
+				ZKUpdateUtil.setHflex(cboExportType, "1");
+				ZKUpdateUtil.setHflex(panel, "1");
 				
 				row = new Row();
 				rows.appendChild(row);

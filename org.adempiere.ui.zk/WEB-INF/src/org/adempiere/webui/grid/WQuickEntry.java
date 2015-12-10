@@ -28,6 +28,7 @@ import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -135,13 +136,13 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 
 	private void jbInit() throws Exception
 	{
-		this.setWidth("350px");
+		ZKUpdateUtil.setWidth(this, "350px");
 		this.setBorder("normal");
 		this.setClosable(true);
 		this.setSizable(true);
 		this.appendChild(centerPanel);
 		this.appendChild(confirmPanel);
-		centerPanel.setWidth("100%");
+		ZKUpdateUtil.setWidth(centerPanel, "100%");
 
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
 	}
@@ -214,18 +215,18 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 		Component field = editor.getComponent();
 		Hlayout layout = new Hlayout();
 
-		layout.setHflex("10");
+		ZKUpdateUtil.setHflex(layout, "10");
 
 		Span span = new Span();
 		if(parent_WindowNo!= 0)
-			span.setHflex("3");
+			ZKUpdateUtil.setHflex(span, "3");
 		layout.appendChild(span);
 		Label label = editor.getLabel();
 		span.appendChild(label);
 		label.setSclass("field-label");
 
 		layout.appendChild(field);
-		((HtmlBasedComponent)field).setHflex("7");
+		ZKUpdateUtil.setHflex((HtmlBasedComponent)field, "7");
 		
 		//editor.setValue("Y");
 		centerPanel.appendChild(layout);

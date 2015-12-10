@@ -31,6 +31,7 @@ import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WEditorPopupMenu;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.MChangeLog;
 import org.compiere.model.MColumn;
@@ -78,8 +79,8 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		super ();
 		this.setTitle(title);
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-		this.setWidth("640px");
-		this.setHeight("480px");
+		ZKUpdateUtil.setWidth(this, "640px");
+		ZKUpdateUtil.setHeight(this, "480px");
 		this.setBorder("normal");
 		this.setSizable(true);
 		this.setClosable(true);
@@ -134,17 +135,17 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 
 		Borderlayout layout = new Borderlayout();
 		layout.setParent(this);
-		layout.setWidth("100%");
-		layout.setHeight("100%");
+		ZKUpdateUtil.setWidth(layout, "100%");
+		ZKUpdateUtil.setHeight(layout, "100%");
 		
 		Center center = new Center();
 		center.setParent(layout);
 		if (showTable)
 		{
-			table.setHflex("true");
-			table.setVflex("true");
+			ZKUpdateUtil.setHflex(table, "true");
+			ZKUpdateUtil.setVflex(table, "true");
 			center.appendChild(table);
-			table.setWidth("100%");
+			ZKUpdateUtil.setWidth(table, "100%");
 		}
 		//
 		South south = new South();

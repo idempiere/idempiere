@@ -22,6 +22,7 @@ import org.adempiere.base.Service;
 import org.adempiere.webui.apps.graph.model.IndicatorModel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MGoal;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -171,14 +172,14 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 			height = width > 300 ? width * 40 / 100 : width * 85 / 100;
 			if (height == 0)
 				return; // no space to render
-			this.setHeight(height+"px");
+			ZKUpdateUtil.setHeight(this, height+"px");
 		} else {
 			int ratio = (height * 100) / width;
 			if (ratio > 85 || ratio < 50) {
 				height = width > 300 ? width * 40 / 100 : width * 85 / 100;
 				if (height == 0)
 					return; // no space to render
-				this.setHeight(height+"px");
+				ZKUpdateUtil.setHeight(this, height+"px");
 			} 
 		}
 		this.getChildren().clear();

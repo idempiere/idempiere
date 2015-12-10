@@ -7,6 +7,7 @@ import org.adempiere.webui.adwindow.GridView;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.CustomizeGridViewPanel;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -36,8 +37,8 @@ public class CustomizeGridViewDialog extends Window {
 	private void initComponent(int windowNo, int AD_Tab_ID, int AD_User_ID, Map<Integer, String> columnsWidth,ArrayList<Integer> gridFieldIds) {
 		customizePanel = new CustomizeGridViewPanel(windowNo, AD_Tab_ID, AD_User_ID, columnsWidth,gridFieldIds);
 		this.setStyle("position : absolute;");
-		this.setWidth("600px");
-		this.setHeight("500px");
+		ZKUpdateUtil.setWidth(this, "600px");
+		ZKUpdateUtil.setHeight(this, "500px");
 		this.setBorder("normal");
 		this.setSclass("popup-dialog");
 		appendChild(customizePanel);

@@ -38,6 +38,7 @@ import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.IFormController;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.StatementCreateFromBatch;
 import org.compiere.model.MBankStatement;
@@ -191,8 +192,8 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
     	amtToField.getComponent().setTooltiptext(Msg.translate(Env.getCtx(), "AmtTo"));
     	
     	Borderlayout parameterLayout = new Borderlayout();
-    	parameterLayout.setHeight("130px");
-		parameterLayout.setWidth("100%");
+    	ZKUpdateUtil.setHeight(parameterLayout, "130px");
+    	ZKUpdateUtil.setWidth(parameterLayout, "100%");
     	Panel parameterPanel = form.getParameterPanel();
 		parameterPanel.appendChild(parameterLayout);
 		
@@ -209,14 +210,14 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		Column column = new Column();
 		columns.appendChild(column);		
 		column = new Column();
-		column.setWidth("15%");
+		ZKUpdateUtil.setWidth(column, "15%");
 		columns.appendChild(column);
-		column.setWidth("35%");
+		ZKUpdateUtil.setWidth(column, "35%");
 		column = new Column();
-		column.setWidth("15%");
+		ZKUpdateUtil.setWidth(column, "15%");
 		columns.appendChild(column);
 		column = new Column();
-		column.setWidth("35%");
+		ZKUpdateUtil.setWidth(column, "35%");
 		columns.appendChild(column);
 		
 		Rows rows = (Rows) parameterBankLayout.newRows();

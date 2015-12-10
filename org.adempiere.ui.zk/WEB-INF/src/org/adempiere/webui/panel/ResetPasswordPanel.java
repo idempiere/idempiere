@@ -33,6 +33,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.model.MClient;
 import org.compiere.model.MMailText;
@@ -208,7 +209,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
         ConfirmPanel pnlButtons = new ConfirmPanel(true);
         pnlButtons.addActionListener(this);
         LayoutUtils.addSclass(ITheme.LOGIN_BOX_FOOTER_PANEL_CLASS, pnlButtons);
-        pnlButtons.setWidth(null);
+        ZKUpdateUtil.setWidth(pnlButtons, null);
         pnlButtons.getButton(ConfirmPanel.A_OK).setSclass(ITheme.LOGIN_BUTTON_CLASS);
         pnlButtons.getButton(ConfirmPanel.A_CANCEL).setSclass(ITheme.LOGIN_BUTTON_CLASS);
         div.appendChild(pnlButtons);
@@ -224,7 +225,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     	txtEmail = new Textbox();
     	txtEmail.setId("txtEmail");
     	txtEmail.setCols(25);
-    	txtEmail.setWidth("220px");
+    	ZKUpdateUtil.setWidth(txtEmail, "220px");
     	txtEmail.setReadonly(false);
 
     	lblUserId = new Label();
@@ -235,7 +236,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     	txtUserId.setId("txtUserId");
     	txtUserId.setCols(25);
     	txtUserId.setMaxlength(40);
-    	txtUserId.setWidth("220px");
+    	ZKUpdateUtil.setWidth(txtUserId, "220px");
     	txtUserId.setReadonly(false);
     	if (! m_noSecurityQuestion)
     	{
@@ -252,7 +253,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 	    	txtSecurityQuestion = new Textbox();
 	    	txtSecurityQuestion.setId("txtSecurityQuestion");
 	    	txtSecurityQuestion.setCols(25);
-	    	txtSecurityQuestion.setWidth("220px");
+	    	ZKUpdateUtil.setWidth(txtSecurityQuestion, "220px");
 	    	txtSecurityQuestion.setReadonly(true);
 	    	txtSecurityQuestion.setVisible(false);
 	        
@@ -260,7 +261,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 	    	txtAnswer.setId("txtAnswer");
 	//        txtAnswer.setType("password");
 	        txtAnswer.setCols(25);
-	        txtAnswer.setWidth("220px");
+	        ZKUpdateUtil.setWidth(txtAnswer, "220px");
 	        txtAnswer.setReadonly(true);
 	        txtAnswer.setVisible(false);
     	}

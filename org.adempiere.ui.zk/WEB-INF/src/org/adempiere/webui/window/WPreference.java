@@ -22,6 +22,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WYesNoEditor;
 import org.adempiere.webui.grid.WQuickEntry;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MUserPreference;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -80,7 +81,7 @@ public class WPreference extends WQuickEntry implements EventListener<Event> {
 
 	protected void jbInit() throws Exception
 	{
-		this.setWidth("230px");
+		ZKUpdateUtil.setWidth(this, "230px");
 		this.setBorder("normal");
 		this.setClosable(true);
 		this.setSizable(true);
@@ -152,8 +153,8 @@ public class WPreference extends WQuickEntry implements EventListener<Event> {
 				gadgets = new WGadgets();
 				gadgets.setClosable(true);
 				gadgets.setSizable(true);
-				gadgets.setWidth("40%");
-				gadgets.setHeight("60%");
+				ZKUpdateUtil.setWidth(gadgets, "40%");
+				ZKUpdateUtil.setHeight(gadgets, "60%");
 				gadgets.setTitle( Msg.translate(Env.getCtx(), "DashboardGadgets"));
 				gadgets.setAttribute(Window.MODE_KEY, Mode.HIGHLIGHTED);
 				AEnv.showWindow(gadgets);

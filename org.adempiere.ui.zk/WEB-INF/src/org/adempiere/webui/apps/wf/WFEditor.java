@@ -30,6 +30,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
 import org.compiere.model.MRole;
@@ -85,7 +86,7 @@ public class WFEditor extends ADForm {
 
 	@Override
 	protected void initForm() {
-		this.setHeight("100%");
+		ZKUpdateUtil.setHeight(this, "100%");
 		Borderlayout layout = new Borderlayout();
 		layout.setStyle("width: 100%; height: 100%; position: absolute;");
 		appendChild(layout);
@@ -131,7 +132,7 @@ public class WFEditor extends ADForm {
 		toolbar.appendChild(refreshButton);
 		refreshButton.addEventListener(Events.ON_CLICK, this);
 		refreshButton.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
-		north.setHeight("30px");
+		ZKUpdateUtil.setHeight(north, "30px");
 
 		createTable();
 		center = new Center();
@@ -144,7 +145,7 @@ public class WFEditor extends ADForm {
 		South south = new South();
 		layout.appendChild(south);
 		south.appendChild(confirmPanel);
-		south.setHeight("36px");
+		ZKUpdateUtil.setHeight(south, "36px");
 	}
 
 	private void createTable() {
@@ -231,7 +232,7 @@ public class WFEditor extends ADForm {
 			}
 		});
 		
-		w.setWidth("250px");
+		ZKUpdateUtil.setWidth(w, "250px");
 		w.setBorder("normal");
 		w.setPage(this.getPage());
 		w.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
@@ -347,8 +348,8 @@ public class WFEditor extends ADForm {
 					else
 					{
 						Div div = new Div();
-						div.setWidth((WFGraphLayout.COLUMN_WIDTH) + "px");
-						div.setHeight((WFGraphLayout.ROW_HEIGHT) + "px");
+						ZKUpdateUtil.setWidth(div, (WFGraphLayout.COLUMN_WIDTH) + "px");
+						ZKUpdateUtil.setHeight(div, (WFGraphLayout.ROW_HEIGHT) + "px");
 						div.setAttribute("Node.XPosition", c+1);
 						div.setAttribute("Node.YPosition", i+1);
 						div.setDroppable("WFNode");

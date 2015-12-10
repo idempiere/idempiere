@@ -31,6 +31,7 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WTableDirEditor;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
@@ -86,7 +87,7 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		Properties ctx = Env.getCtx();
 		setTitle(Msg.getMsg(Env.getCtx(),"Event"));
 		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-		setWidth("400px");
+		ZKUpdateUtil.setWidth(this, "400px");
 		this.setSclass("popup-dialog");
 		this.setBorder("normal");
 		this.setShadow(true);
@@ -158,8 +159,8 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		
 		txtSummary = new Textbox();
 		txtSummary.setRows(3);
-		txtSummary.setWidth("95%");
-		txtSummary.setHeight("100%");
+		ZKUpdateUtil.setWidth(txtSummary, "95%");
+		ZKUpdateUtil.setHeight(txtSummary, "100%");
 		
 		dbxStartPlan = new Datebox();
 		dbxCompletePlan = new Datebox();
@@ -181,7 +182,7 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		
 		column = new Column();
 		columns.appendChild(column);
-		column.setWidth("250px");
+		ZKUpdateUtil.setWidth(column, "250px");
 		
 		Rows rows = new Rows();
 		grid.appendChild(rows);
@@ -236,18 +237,18 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		rows.appendChild(row);
 		row.appendChild(lblStartTime.rightAlign());
 		row.appendChild(tbxStartTime);
-		tbxStartTime.setWidth("40%");
+		ZKUpdateUtil.setWidth(tbxStartTime, "40%");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lblEndTime.rightAlign());
 		row.appendChild(tbxEndTime);
-		tbxEndTime.setWidth("40%");
+		ZKUpdateUtil.setWidth(tbxEndTime, "40%");
 		
 		Borderlayout borderlayout = new Borderlayout();
 		this.appendChild(borderlayout);
-		borderlayout.setHflex("1");
-		borderlayout.setVflex("min");
+		ZKUpdateUtil.setHflex(borderlayout, "1");
+		ZKUpdateUtil.setVflex(borderlayout, "min");
 		
 		North northPane = new North();
 		northPane.setSclass("dialog-content");
@@ -255,8 +256,8 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		borderlayout.appendChild(northPane);
 		
 		northPane.appendChild(grid);
-		grid.setVflex("1");
-		grid.setHflex("1");
+		ZKUpdateUtil.setVflex(grid, "1");
+		ZKUpdateUtil.setHflex(grid, "1");
 
 		South southPane = new South();
 		southPane.setSclass("dialog-footer");

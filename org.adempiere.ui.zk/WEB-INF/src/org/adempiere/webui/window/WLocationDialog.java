@@ -44,6 +44,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.MAddressValidation;
 import org.compiere.model.MBPartnerLocation;
@@ -198,8 +199,8 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		setRegion();
 		initLocation();
 		//               
-		this.setWidth("350px");
-		this.setHeight("360px"); // required fixed height for ZK to auto adjust the position based on available space
+		ZKUpdateUtil.setWidth(this, "350px");
+		ZKUpdateUtil.setHeight(this, "360px"); // required fixed height for ZK to auto adjust the position based on available space
 		this.setSclass("popup-dialog");
 		this.setClosable(true);
 		this.setBorder("normal");
@@ -261,12 +262,12 @@ public class WLocationDialog extends Window implements EventListener<Event>
 
 		lstRegion    = new Listbox();
 		lstRegion.setMold("select");
-		lstRegion.setWidth("154px");
+		ZKUpdateUtil.setWidth(lstRegion, "154px");
 		lstRegion.setRows(0);
 
 		lstCountry  = new Listbox();
 		lstCountry.setMold("select");
-		lstCountry.setWidth("154px");
+		ZKUpdateUtil.setWidth(lstCountry, "154px");
 		lstCountry.setRows(0);
 		
 		confirmPanel = new ConfirmPanel(true);
@@ -286,7 +287,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		txtResult = new Textbox();
 		txtResult.setCols(2);
 		txtResult.setRows(3);
-		txtResult.setHeight("100%");
+		ZKUpdateUtil.setHeight(txtResult, "100%");
 		txtResult.setReadonly(true);
 		
 		cbxValid = new Checkbox();
@@ -295,7 +296,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		
 		lstAddressValidation = new Listbox();
 		lstAddressValidation.setMold("select");
-		lstAddressValidation.setWidth("154px");
+		ZKUpdateUtil.setWidth(lstAddressValidation, "154px");
 		lstAddressValidation.setRows(0);		
 
 		mainPanel = GridFactory.newGridLayout();
@@ -308,56 +309,56 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		
 		Column column = new Column();
 		columns.appendChild(column);
-		column.setWidth("30%");
+		ZKUpdateUtil.setWidth(column, "30%");
 		
 		column = new Column();
 		columns.appendChild(column);
-		column.setWidth("70%");
+		ZKUpdateUtil.setWidth(column, "70%");
 		
 		Row pnlAddress1 = new Row();
 		pnlAddress1.appendChild(lblAddress1.rightAlign());
 		pnlAddress1.appendChild(txtAddress1);
-		txtAddress1.setHflex("1");
+		ZKUpdateUtil.setHflex(txtAddress1, "1");
 
 		Row pnlAddress2 = new Row();
 		pnlAddress2.appendChild(lblAddress2.rightAlign());
 		pnlAddress2.appendChild(txtAddress2);
-		txtAddress2.setHflex("1");
+		ZKUpdateUtil.setHflex(txtAddress2, "1");
 
 		Row pnlAddress3 = new Row();
 		pnlAddress3.appendChild(lblAddress3.rightAlign());
 		pnlAddress3.appendChild(txtAddress3);
-		txtAddress3.setHflex("1");
+		ZKUpdateUtil.setHflex(txtAddress3, "1");
 
 		Row pnlAddress4 = new Row();
 		pnlAddress4.appendChild(lblAddress4.rightAlign());
 		pnlAddress4.appendChild(txtAddress4);
-		txtAddress4.setHflex("1");
+		ZKUpdateUtil.setHflex(txtAddress4, "1");
 
 		Row pnlCity     = new Row();
 		pnlCity.appendChild(lblCity.rightAlign());
 		pnlCity.appendChild(txtCity);
-		txtCity.setHflex("1");
+		ZKUpdateUtil.setHflex(txtCity, "1");
 
 		Row pnlPostal   = new Row();
 		pnlPostal.appendChild(lblPostal.rightAlign());
 		pnlPostal.appendChild(txtPostal);
-		txtPostal.setHflex("1");
+		ZKUpdateUtil.setHflex(pnlPostal, "1");
 
 		Row pnlPostalAdd = new Row();
 		pnlPostalAdd.appendChild(lblPostalAdd.rightAlign());
 		pnlPostalAdd.appendChild(txtPostalAdd);
-		txtPostalAdd.setHflex("1");
+		ZKUpdateUtil.setHflex(txtPostalAdd, "1");
 
 		Row pnlRegion    = new Row();
 		pnlRegion.appendChild(lblRegion.rightAlign());
 		pnlRegion.appendChild(lstRegion);
-		lstRegion.setHflex("1");
+		ZKUpdateUtil.setHflex(lstRegion, "1");
 
 		Row pnlCountry  = new Row();
 		pnlCountry.appendChild(lblCountry.rightAlign());
 		pnlCountry.appendChild(lstCountry);
-		lstCountry.setHflex("1");
+		ZKUpdateUtil.setHflex(lstCountry, "1");
 
 		Panel pnlLinks    = new Panel();
 		pnlLinks.appendChild(toLink);
@@ -366,13 +367,13 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		pnlLinks.appendChild(toRoute);
 		if (MLocation.LOCATION_MAPS_ROUTE_PREFIX == null || Env.getAD_Org_ID(Env.getCtx()) <= 0)
 			toRoute.setVisible(false);
-		pnlLinks.setWidth("100%");
+		ZKUpdateUtil.setWidth(pnlLinks, "100%");
 		pnlLinks.setStyle("text-align:right");
 		
 		Borderlayout borderlayout = new Borderlayout();
 		this.appendChild(borderlayout);
-		borderlayout.setHflex("1");
-		borderlayout.setVflex("1");
+		ZKUpdateUtil.setHflex(borderlayout, "1");
+		ZKUpdateUtil.setVflex(borderlayout, "1");
 		
 		Center centerPane = new Center();
 		centerPane.setSclass("dialog-content");
@@ -411,7 +412,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			Row row = new Row();
 			rows.appendChild(row);
 			row.appendCellChild(lstAddressValidation, 2);
-			lstAddressValidation.setHflex("1");			
+			ZKUpdateUtil.setHflex(lstAddressValidation, "1");			
 			
 			MAddressValidation[] validations = MAddressValidation.getAddressValidation(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()), null);
 			for (MAddressValidation validation : validations)
@@ -427,7 +428,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			row = new Row();
 			rows.appendChild(row);
 			row.appendCellChild(txtResult, 2);
-			txtResult.setHflex("1");
+			ZKUpdateUtil.setHflex(txtResult, "1");
 			txtResult.setText(m_location.getResult());
 			
 			row = new Row();
@@ -459,8 +460,8 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			}
 		}
 		
-		vbox.setVflex("1");
-		vbox.setHflex("1");
+		ZKUpdateUtil.setVflex(vbox, "1");
+		ZKUpdateUtil.setHflex(vbox, "1");
 
 		South southPane = new South();
 		southPane.setSclass("dialog-footer");

@@ -36,6 +36,7 @@ import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.WSchedule;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MAssignmentSlot;
 import org.compiere.model.MResourceAssignment;
 import org.compiere.model.MRole;
@@ -111,14 +112,14 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		if (createNew)
 		{
 			setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-			this.setWidth("700px");
-			this.setHeight("600px");
+			ZKUpdateUtil.setWidth(this, "700px");
+			ZKUpdateUtil.setHeight(this, "600px");
 			this.setSizable(true);
 		}
 		else
 		{
-			this.setWidth("100%");
-			this.setHeight("100%");
+			ZKUpdateUtil.setWidth(this, "100%");
+			ZKUpdateUtil.setHeight(this, "100%");
 		}
 		
 		this.setClosable(true);
@@ -200,8 +201,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	private void init() throws Exception
 	{
 		this.appendChild(mainLayout);
-		mainLayout.setHeight("100%");
-		mainLayout.setWidth("100%");
+		ZKUpdateUtil.setHeight(mainLayout, "100%");
+		ZKUpdateUtil.setWidth(mainLayout, "100%");
 		
 		labelResourceType.setValue(Msg.translate(Env.getCtx(), "S_ResourceType_ID"));
 		labelResource.setValue(Msg.translate(Env.getCtx(), "S_Resource_ID"));

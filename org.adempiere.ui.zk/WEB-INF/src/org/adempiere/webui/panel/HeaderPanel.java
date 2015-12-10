@@ -21,6 +21,7 @@ import org.adempiere.webui.apps.GlobalSearch;
 import org.adempiere.webui.apps.MenuSearchController;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.AboutWindow;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -80,8 +81,8 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	popMenu.setId("menuTreePopup");
 		menuTreePanel = new MenuTreePanel(popMenu);
     	popMenu.setSclass("desktop-menu-popup");
-    	popMenu.setHeight("90%");
-    	popMenu.setWidth("600px");
+    	ZKUpdateUtil.setHeight(popMenu, "90%");
+    	ZKUpdateUtil.setWidth(popMenu, "600px");
     	popMenu.setPage(this.getPage());
 	}
 

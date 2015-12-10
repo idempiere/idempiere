@@ -27,6 +27,7 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.util.CLogger;
 import org.zkoss.util.media.AMedia;
@@ -70,7 +71,7 @@ public class UPSHtmlLabelWindow extends Window implements EventListener<Event>
 	private void init()
 	{
 		this.setBorder("normal");
-		this.setWidth("730px");
+		ZKUpdateUtil.setWidth(this, "730px");
 		VerticalBox box = new VerticalBox();
 		this.appendChild(box);
 		html = ListboxFactory.newDropdownListbox();
@@ -82,8 +83,8 @@ public class UPSHtmlLabelWindow extends Window implements EventListener<Event>
 		box.appendChild(html);
 		box.appendChild(new Separator());
 		content = new Iframe();
-		content.setHeight("500px");
-		content.setWidth("700px");
+		ZKUpdateUtil.setHeight(content, "500px");
+		ZKUpdateUtil.setWidth(content, "700px");
 		content.setId("content");
 		content.setName(content.getUuid());
 		box.appendChild(content);

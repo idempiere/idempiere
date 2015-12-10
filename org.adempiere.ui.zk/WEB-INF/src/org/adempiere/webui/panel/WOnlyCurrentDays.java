@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -103,7 +104,7 @@ public class WOnlyCurrentDays extends Window implements EventListener<Event>, Di
 		bShowDay.setLabel(Msg.getMsg(Env.getCtx(), "Day"));
 		bShowDay.addEventListener(Events.ON_CLICK, this);
 		
-		mainPanel.setWidth("100%");
+		ZKUpdateUtil.setWidth(mainPanel, "100%");
 		mainPanel.setStyle("text-align:center");
 		mainPanel.appendChild(bShowDay);
 		mainPanel.appendChild(bShowWeek);
@@ -111,7 +112,7 @@ public class WOnlyCurrentDays extends Window implements EventListener<Event>, Di
 		mainPanel.appendChild(bShowYear);
 		mainPanel.appendChild(bShowAll);
 
-		this.setWidth("450px");
+		ZKUpdateUtil.setWidth(this, "450px");
 		this.setBorder("normal");
 		this.setTitle(Msg.getMsg(Env.getCtx(), "VOnlyCurrentDays"));
 		this.setClosable(true);

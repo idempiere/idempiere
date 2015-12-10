@@ -70,6 +70,7 @@ import org.adempiere.webui.panel.action.ReportAction;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.part.ITabOnSelectHandler;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.CustomizeGridViewDialog;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.FindWindow;
@@ -752,8 +753,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		findWindow.setTitle(null);
 		findWindow.setBorder("none");	
 		findWindow.setStyle("position: absolute; border-bottom: 2px solid #484848; padding: 2px; background-color: #fff;");
-		findWindow.setWidth("100%");
-		findWindow.setHeight("60%");
+		ZKUpdateUtil.setWidth(findWindow, "100%");
+		ZKUpdateUtil.setHeight(findWindow, "60%");
 		findWindow.setZindex(1000);
 		findWindow.setSizable(false);
 		findWindow.setContentStyle("background-color: #fff; width: 99%; margin: auto;");

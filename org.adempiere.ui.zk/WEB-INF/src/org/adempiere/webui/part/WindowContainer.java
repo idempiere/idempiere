@@ -25,6 +25,7 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.desktop.TabbedDesktop;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -89,10 +90,10 @@ public class WindowContainer extends AbstractUIPart
 
         tabbox.appendChild(tabs);
         tabbox.appendChild(tabpanels);
-        tabbox.setWidth("100%");
-        tabbox.setHeight("100%");
-        tabbox.setVflex("1");
-        tabbox.setHflex("1");
+        ZKUpdateUtil.setWidth(tabbox, "100%");
+        ZKUpdateUtil.setHeight(tabbox, "100%");
+        ZKUpdateUtil.setVflex(tabbox, "1");
+        ZKUpdateUtil.setHflex(tabbox, "1");
         
         if (parent != null)
         	tabbox.setParent(parent);
@@ -228,10 +229,10 @@ public class WindowContainer extends AbstractUIPart
         	tabpanel = new Tabpanel();
         	tabpanel.appendChild(comp);
         }                
-        tabpanel.setHeight("100%");
-        tabpanel.setWidth("100%");
-        tabpanel.setVflex("1");
-        tabpanel.setHflex("1");
+        ZKUpdateUtil.setHeight(tabpanel, "100%");
+        ZKUpdateUtil.setWidth(tabpanel, "100%");
+        ZKUpdateUtil.setVflex(tabpanel, "1");
+        ZKUpdateUtil.setHflex(tabpanel, "1");
         tabpanel.setSclass("desktop-tabpanel");
         
         if (refTab == null)  
@@ -308,7 +309,7 @@ public class WindowContainer extends AbstractUIPart
 			}
 		});
 		popupClose.appendChild(mi);
-		popupClose.setWidth("auto");
+		ZKUpdateUtil.setWidth(popupClose, "auto");
 		popupClose.setPage(tab.getPage());
 		tab.setContext(popupClose);
         

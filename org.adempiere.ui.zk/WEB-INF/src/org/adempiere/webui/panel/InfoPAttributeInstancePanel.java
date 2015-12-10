@@ -24,6 +24,7 @@ import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.WTableModelEvent;
 import org.adempiere.webui.event.WTableModelListener;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.util.CLogger;
@@ -66,8 +67,8 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
 	{
 		super();
 		setTitle(Msg.getMsg(Env.getCtx(), "PAttributeInstance"));
-        setWidth("700px");
-        setHeight("400px");
+		ZKUpdateUtil.setWidth(this, "700px");
+		ZKUpdateUtil.setHeight(this, "400px");
 		setSclass("popup-dialog");
 		
 		init (M_Warehouse_ID, M_Locator_ID, M_Product_ID, C_BPartner_ID);
@@ -124,8 +125,8 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
         showAll.setText(Msg.getMsg(Env.getCtx(), "ShowAll"));
         
 		Borderlayout borderlayout = new Borderlayout();
-		borderlayout.setHflex("1");
-		borderlayout.setVflex("1");
+		ZKUpdateUtil.setHflex(borderlayout, "1");
+		ZKUpdateUtil.setVflex(borderlayout, "1");
         this.appendChild(borderlayout);
         
         North north = new North();
@@ -140,8 +141,8 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
         center.setAutoscroll(true);
         borderlayout.appendChild(center);
 		center.appendChild(m_table);
-		m_table.setVflex("1");
-		m_table.setHflex("1");
+		ZKUpdateUtil.setVflex(m_table, "1");
+		ZKUpdateUtil.setHflex(m_table, "1");
 		
 		South south = new South();
 		south.setSclass("dialog-footer");

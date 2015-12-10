@@ -2,8 +2,7 @@
 <zk>
 <borderlayout id="layout" sclass="login-window">
 	<center border="none" autoscroll="true" style="background-color: transparent;">
-		<vbox height="100%" width="100%" pack="center" align="center" style="background-color: transparent;"
-			hflex="1" vflex="1">
+		<vbox pack="center" align="center" style="background-color: transparent;" hflex="1" vflex="1">
 			<window use="org.adempiere.webui.window.LoginWindow" id="loginWindow"/>
 		</vbox>
 	</center>

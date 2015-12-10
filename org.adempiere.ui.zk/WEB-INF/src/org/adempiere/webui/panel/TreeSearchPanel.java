@@ -30,6 +30,7 @@ import org.adempiere.webui.util.DocumentSearch;
 import org.adempiere.webui.util.TreeItemAction;
 import org.adempiere.webui.util.TreeNodeAction;
 import org.adempiere.webui.util.TreeUtils;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MTreeNode;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -168,7 +169,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         addEventListener(ON_POST_SELECT_TREEITEM_EVENT, this);
         if (AEnv.isInternetExplorer())
         {
-        	cmbSearch.setWidth("200px");
+        	ZKUpdateUtil.setWidth(cmbSearch, "200px");
         }
 
         layout.appendChild(lblSearch);

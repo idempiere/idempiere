@@ -38,13 +38,16 @@ import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.grid.CreateFromShipment;
 import org.compiere.model.GridTab;
 import org.compiere.model.MLocatorLookup;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MProduct;
+
 import static org.compiere.model.SystemIDs.*;
+
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -154,8 +157,8 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
         upcLabel.setText(Msg.getElement(Env.getCtx(), "UPC", false));
 
 		Vlayout vlayout = new Vlayout();
-		vlayout.setVflex("1");
-		vlayout.setWidth("100%");
+		ZKUpdateUtil.setVflex(vlayout, "1");
+		ZKUpdateUtil.setWidth(vlayout, "100%");
     	Panel parameterPanel = window.getParameterPanel();
 		parameterPanel.appendChild(vlayout);
 		
@@ -172,7 +175,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
     	if (! isRMAWindow) {
     		row.appendChild(orderLabel.rightAlign());
     		row.appendChild(orderField);
-    		orderField.setHflex("1");
+    		ZKUpdateUtil.setHflex(orderField, "1");
     	}
 		
 		row = rows.newRow();
@@ -181,7 +184,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
     	if (! isRMAWindow) {
     		row.appendChild(invoiceLabel.rightAlign());
     		row.appendChild(invoiceField);
-    		invoiceField.setHflex("1");
+    		ZKUpdateUtil.setHflex(invoiceField, "1");
     	}
         
 		row = rows.newRow();
@@ -195,7 +198,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
             // Add RMA document selection to panel
             row.appendChild(rmaLabel.rightAlign());
             row.appendChild(rmaField);
-            rmaField.setHflex("1");
+            ZKUpdateUtil.setHflex(rmaField, "1");
     	}
 	}
 

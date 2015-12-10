@@ -21,6 +21,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
@@ -109,7 +110,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 
 		Hbox pnlImage = new Hbox();
 		img.setSrc((pi != null && pi.isError()) ? ERROR:INFORMATION);
-		pnlImage.setWidth("72px");
+		ZKUpdateUtil.setWidth(pnlImage, "72px");
 		pnlImage.setAlign("center");
 		pnlImage.setPack("center");
 		pnlImage.appendChild(img);
@@ -125,20 +126,20 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		
 		north.appendChild(pnlMessage);
 		Hbox pnlButtons = new Hbox();
-		pnlButtons.setHeight("52px");
+		ZKUpdateUtil.setHeight(pnlButtons, "52px");
 		pnlButtons.setAlign("center");
 		pnlButtons.setPack("end");
 		pnlButtons.appendChild(btnOk);
 
 		Separator separator = new Separator();
 
-		separator.setWidth("100%");
+		ZKUpdateUtil.setWidth(separator, "100%");
 		separator.setBar(true);
 		this.appendChild(separator);
 
 		Hbox south = new Hbox();
 		south.setPack("end");
-		south.setWidth("100%");
+		ZKUpdateUtil.setWidth(south, "100%");
 		this.appendChild(south);
 		south.appendChild(pnlButtons);
 		
@@ -155,7 +156,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 				
 		if (m_logs != null && m_logs.length > 0){
 			separator = new Separator();
-			separator.setWidth("100%");
+			ZKUpdateUtil.setWidth(separator, "100%");
 			separator.setBar(true);
 			pnlMessage.appendChild(separator);
 			for (int loopCtr = 0; loopCtr < m_logs.length; loopCtr++) {				

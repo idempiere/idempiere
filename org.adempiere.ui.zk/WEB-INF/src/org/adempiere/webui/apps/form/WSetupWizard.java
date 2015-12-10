@@ -40,6 +40,7 @@ import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.TreeUtils;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.form.SetupWizard;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -349,12 +350,12 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	 */
 	private void jbInit () throws Exception
 	{
-		form.setWidth("99%");
-		form.setHeight("100%");
+		ZKUpdateUtil.setWidth(form, "99%");
+		ZKUpdateUtil.setHeight(form, "100%");
 		form.setStyle("position: absolute; padding: 0; margin: 0");
 		form.appendChild (mainLayout);
-		mainLayout.setWidth("100%");
-		mainLayout.setHeight("100%");
+		ZKUpdateUtil.setWidth(mainLayout, "100%");
+		ZKUpdateUtil.setHeight(mainLayout, "100%");
 		mainLayout.setStyle("position: absolute");
 
 		bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
@@ -388,13 +389,13 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		North north = new North();
 		mainLayout.appendChild(north);
 		north.appendChild(northPanel);
-		north.setHeight("38px");
+		ZKUpdateUtil.setHeight(north, "38px");
 		//
 		northPanel.appendChild(progressbar);
-		progressbar.setWidth("100%");
+		ZKUpdateUtil.setWidth(progressbar, "100%");
 		progressbar.setZclass("progressmeter-setupwizard");
 		northPanel.appendChild(progressLabel);
-		progressLabel.setWidth("100%");
+		ZKUpdateUtil.setWidth(progressLabel, "100%");
 		progressLabel.setStyle("margin:0; padding:0; position: absolute; align: center; valign: center; border:0; text-align: center; ");
 		refreshProgress();
 
@@ -405,14 +406,14 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		statusField = new WTableDirEditor("WizardStatus", true, false, true,wizardL);
 		statusField.setValue(MWizardProcess.WIZARDSTATUS_Pending);
 		
-		centerBox.setVflex("1");
-		centerBox.setHflex("1");
+		ZKUpdateUtil.setVflex(centerBox, "1");
+		ZKUpdateUtil.setHflex(centerBox, "1");
 		Center center = new Center();
 		mainLayout.appendChild(center);	
 		center.appendChild(centerBox);
 		centerBox.appendChild(wfnodeTree);
-		centerBox.setWidth("100%");
-		wfnodeTree.setVflex("1");
+		ZKUpdateUtil.setWidth(centerBox, "100%");
+		ZKUpdateUtil.setVflex(wfnodeTree, "1");
 		centerBox.appendChild(centerBoxdown);
 		centerBoxdown.setOrient("horizontal");
 		centerBoxdown.setAlign("center");
@@ -423,8 +424,8 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		center.setAutoscroll(true);
 	
 		Div div = new Div();
-		div.setHeight("88%");
-		div.setHflex("1");
+		ZKUpdateUtil.setHeight(div, "88%");
+		ZKUpdateUtil.setHflex(div, "1");
 		
 		div.setStyle("text-align:center ");
 		pretitleLabel.setStyle("font-weight: bold; font-size: 14px");
@@ -433,8 +434,8 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		titleLabel.setLeft("50%");
 		
 		div.appendChild(helpFrame);
-		helpFrame.setWidth("99%");
-		helpFrame.setHeight("80%");
+		ZKUpdateUtil.setWidth(helpFrame, "99%");
+		ZKUpdateUtil.setHeight(helpFrame, "80%");
 		helpFrame.setStyle("border: 1px solid lightgray; margin:auto");
 		
 		Div divNote = new Div();
@@ -445,8 +446,8 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		
 		divNote.appendChild(notesField);
 		notesField.setRows(4);
-		notesField.setHeight("100%");
-		notesField.setWidth("99%");
+		ZKUpdateUtil.setHeight(notesField, "100%");
+		ZKUpdateUtil.setWidth(notesField, "99%");
 
 		MLookup lookup = MLookupFactory.get(Env.getCtx(), form.getWindowNo(),
                 0, 200913, DisplayType.Search);
@@ -478,7 +479,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		east.appendChild(div);
 		east.setCollapsible(true);
 		east.setSplittable(true);
-		east.setWidth("70%");
+		ZKUpdateUtil.setWidth(east, "70%");
 		east.setAutoscroll(true);
 
 		setNotesPanelVisible(false);

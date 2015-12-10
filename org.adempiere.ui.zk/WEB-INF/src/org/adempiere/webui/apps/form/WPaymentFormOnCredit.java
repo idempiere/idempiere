@@ -25,6 +25,7 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.grid.PaymentFormOnCredit;
 import org.compiere.model.GridTab;
 import org.compiere.util.Env;
@@ -60,11 +61,11 @@ public class WPaymentFormOnCredit extends PaymentFormOnCredit {
 		
 		Column column = new Column();
 		columns.appendChild(column);
-		column.setWidth("40%");
+		ZKUpdateUtil.setWidth(column, "40%");
 		
 		column = new Column();
 		columns.appendChild(column);
-		column.setWidth("60%");
+		ZKUpdateUtil.setWidth(column, "60%");
 		
 		Rows rows = pPanelLayout.newRows();
 		Row row = rows.newRow();

@@ -23,6 +23,7 @@ import org.adempiere.base.event.EventManager;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.Query;
@@ -83,7 +84,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 		Panelchildren jobsContent = new Panelchildren();
 		panel.appendChild(jobsContent);
 		bxJobs = new Vbox();
-		bxJobs.setHflex("1");
+		ZKUpdateUtil.setHflex(bxJobs, "1");
 		this.setSclass("recentitems-box");
 		jobsContent.appendChild(bxJobs);
 		createJobsPanel();
@@ -188,7 +189,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 			btnJob.setImage(ThemeManager.getThemeResource(getIconFile()));
 			btnJob.addEventListener(Events.ON_CLICK, this);
 			btnJob.setSclass("menu-href");
-			btnJob.setHflex("1");
+			ZKUpdateUtil.setHflex(btnJob, "1");
 		}
 	}
 	

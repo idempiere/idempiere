@@ -34,6 +34,7 @@ import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.event.WTableModelEvent;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MLookupFactory;
@@ -154,8 +155,8 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 	
 	private void statInit()
 	{
-		fieldValue.setHflex("1");
-		fieldName.setHflex("1");
+		ZKUpdateUtil.setHflex(fieldValue, "1");
+		ZKUpdateUtil.setHflex(fieldName, "1");
 		
 		labelValue.setValue(Msg.getMsg(Env.getCtx(), "Value"));
 		fieldValue.addEventListener(Events.ON_CHANGE, this);
@@ -193,8 +194,8 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 		row.appendChild(fProduct_ID.getComponent());
 		
 		layout = new Borderlayout();
-        layout.setWidth("100%");
-        layout.setHeight("100%");
+		ZKUpdateUtil.setWidth(layout, "100%");
+		ZKUpdateUtil.setHeight(layout, "100%");
         if (!isLookup())
         {
         	layout.setStyle("position: absolute");
@@ -210,19 +211,19 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 		Div div = new Div();
 		div.appendChild(contentPanel);
 		if (isLookup())
-			contentPanel.setWidth("99%");
+			ZKUpdateUtil.setWidth(contentPanel, "99%");
         else
         	contentPanel.setStyle("width: 99%; margin: 0px auto;");
-        contentPanel.setVflex(true);
+        ZKUpdateUtil.setVflex(contentPanel, true);
 		div.setStyle("width :100%; height: 100%");
 		center.appendChild(div);
-		div.setVflex("1");
-		div.setHflex("1");
+		ZKUpdateUtil.setVflex(div, "1");
+		ZKUpdateUtil.setHflex(div, "1");
         
 		South south = new South();
 		layout.appendChild(south);
 		southBody = new Vbox();
-		southBody.setWidth("100%");
+		ZKUpdateUtil.setWidth(southBody, "100%");
 		south.appendChild(southBody);
 		southBody.appendChild(new Separator());
 		southBody.appendChild(confirmPanel);		

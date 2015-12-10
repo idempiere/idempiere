@@ -55,6 +55,7 @@ import org.adempiere.webui.panel.HelpController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.GridTabDataBinder;
 import org.adempiere.webui.util.TreeUtils;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
@@ -236,11 +237,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     {
     	LayoutUtils.addSclass("adtab-content", this);
 
-    	this.setWidth("100%");
+    	ZKUpdateUtil.setWidth(this, "100%");
     	
         form = new Grid();
-        form.setHflex("1");
-        form.setHeight(null);
+        ZKUpdateUtil.setHflex(form, "1");
+        ZKUpdateUtil.setHeight(form, null);
         form.setVflex(false);
         form.setSclass("grid-layout adwindow-form");
         form.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "form");
@@ -298,7 +299,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 				int maxHeight = browserHeight - topmarginpx;
 				if (prefHeight <= maxHeight) {
 					height = Integer.toString(prefHeight) + "px";
-					formContainer.getSouth().setHeight(height);	
+					ZKUpdateUtil.setHeight(formContainer.getSouth(), height);	
 				}
 			} catch (Exception e) {
 				// just ignore exception is harmless here, consequence is just not setting height so it will assume the default of theme
@@ -360,7 +361,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			treePanel = new ADTreePanel(windowNo, gridTab.getTabNo());
 			West west = new West();
 			west.appendChild(treePanel);
-			west.setWidth("300px");
+			ZKUpdateUtil.setWidth(west, "300px");
 			west.setCollapsible(true);
 			west.setSplittable(true);
 			west.setAutoscroll(true);
@@ -370,8 +371,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			Vlayout div = new Vlayout();
 			div.appendChild(form);
 			center.appendChild(div);
-			div.setVflex("1");
-			div.setHflex("1");
+			ZKUpdateUtil.setVflex(div, "1");
+			ZKUpdateUtil.setHflex(div, "1");
 			div.setSclass("adtab-form");
 			div.setStyle("overflow-y: visible;");
 			div.setSpacing("0px");
@@ -387,8 +388,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			div.setSclass("adtab-form");
 			div.appendChild(form);
 			div.setStyle("overflow-y: visible;");
-			div.setVflex("1");
-			div.setWidth("100%");
+			ZKUpdateUtil.setVflex(div, "1");
+			ZKUpdateUtil.setWidth(div, "100%");
 			div.setSpacing("0px");
 						
 			Borderlayout layout = new Borderlayout();
@@ -430,7 +431,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
     	for (int h=0;h<numCols;h++){
     		Column col = new Column();
-    		col.setWidth(equalWidth + "%");
+    		ZKUpdateUtil.setWidth(col, equalWidth + "%");
     		columns.appendChild(col);
     	}
 
@@ -1560,7 +1561,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			} else {
 				attachDetailPane();
 			}
-			this.setVflex("true");
+			ZKUpdateUtil.setVflex(this, "true");
 			listPanel.setDetailPaneMode(detailPaneMode);
 		}		
 	}

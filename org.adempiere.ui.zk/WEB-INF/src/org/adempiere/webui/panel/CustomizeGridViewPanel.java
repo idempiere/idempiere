@@ -40,6 +40,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.I_AD_Field;
 import org.compiere.model.MField;
@@ -144,8 +145,8 @@ public class CustomizeGridViewPanel extends Panel
 		noLabel.setValue(Msg.getMsg(Env.getCtx(), "Available"));
 		yesLabel.setValue(Msg.getMsg(Env.getCtx(), "Selected"));
 
-		yesList.setVflex(true);
-		noList.setVflex(true);
+		ZKUpdateUtil.setVflex(yesList, true);
+		ZKUpdateUtil.setVflex(noList, true);
 		
 		EventListener<Event> mouseListener = new EventListener<Event>()
 		{
@@ -233,16 +234,16 @@ public class CustomizeGridViewPanel extends Panel
 
 		Hlayout hlayout = new Hlayout();
 
-		hlayout.setVflex("true");
-		hlayout.setHflex("true");
+		ZKUpdateUtil.setVflex(hlayout, "true");
+		ZKUpdateUtil.setHflex(hlayout, "true");
 		hlayout.setStyle("margin: auto; margin-top: 2px;");
 
-		noList.setHflex("1");
-		noList.setVflex(true);
+		ZKUpdateUtil.setHflex(noList, "1");
+		ZKUpdateUtil.setVflex(noList, true);
 		hlayout.appendChild(noList);
 
-		yesList.setVflex(true);
-		yesList.setHflex("1");
+		ZKUpdateUtil.setVflex(yesList, true);
+		ZKUpdateUtil.setHflex(yesList, "1");
 		hlayout.appendChild(yesList);
 
 		center.appendChild(hlayout);

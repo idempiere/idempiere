@@ -15,6 +15,7 @@
 package org.adempiere.webui.panel;
 
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zhtml.Script;
@@ -56,8 +57,8 @@ public class TimeoutPanel extends Window implements
 		Borderlayout layout = new Borderlayout();
 		layout.setParent(this);
 
-		setWidth("23%");
-		setHeight("25%");
+		ZKUpdateUtil.setWidth(this, "23%");
+		ZKUpdateUtil.setHeight(this, "25%");
 		setPosition("left,bottom");
 		setBorder(true);
 		setShadow(false);

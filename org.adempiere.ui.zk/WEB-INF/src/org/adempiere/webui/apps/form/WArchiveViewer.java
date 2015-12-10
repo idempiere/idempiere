@@ -53,6 +53,7 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.Archive;
 import org.compiere.model.MArchive;
@@ -198,8 +199,8 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	
 	private void jbInit() throws Exception
 	{
-		tabbox.setWidth("100%");
-		tabbox.setHeight("90%");
+		ZKUpdateUtil.setWidth(tabbox, "100%");
+		ZKUpdateUtil.setHeight(tabbox, "90%");
 		tabbox.appendChild(tabs);
 		tabbox.appendChild(tabpanels);
 		tabbox.addEventListener(Events.ON_SELECT, this);
@@ -251,17 +252,17 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			gridQuery.appendChild(columns);
 			
 			Column column = new Column();
-			column.setWidth("35%");
+			ZKUpdateUtil.setWidth(column, "35%");
 			column.setAlign("right");
 			columns.appendChild(column);
 			
 			column = new Column();
-			column.setWidth("40%");
+			ZKUpdateUtil.setWidth(column, "40%");
 			column.setAlign("left");
 			columns.appendChild(column);
 			
 			column = new Column();
-			column.setWidth("25%");
+			ZKUpdateUtil.setWidth(column, "25%");
 			column.setAlign("left");
 			columns.appendChild(column);
 
@@ -278,49 +279,49 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			rows.appendChild(row);
 			row.appendChild(processLabel);
 			row.appendChild(processField);
-			processField.setHflex("1");
+			ZKUpdateUtil.setHflex(processField, "1");
 			row.appendChild(new Space());
 
 			row = new Row();
 			rows.appendChild(row);
 			row.appendChild(bPartnerLabel);
 			row.appendChild(bPartnerField.getComponent());
-			bPartnerField.getComponent().setHflex("1");
+			ZKUpdateUtil.setHflex(bPartnerField.getComponent(), "1");
 			row.appendChild(new Space());
 
 			row = new Row();
 			rows.appendChild(row);
 			row.appendChild(tableLabel);
 			row.appendChild(tableField);
-			tableField.setHflex("1");
+			ZKUpdateUtil.setHflex(tableField, "1");
 			row.appendChild(new Space());
 
 			row = new Row();
 			rows.appendChild(row);
 			row.appendChild(nameQLabel);
 			row.appendChild(nameQField);
-			nameQField.setHflex("1");
+			ZKUpdateUtil.setHflex(nameQField, "1");
 			row.appendChild(new Space());
 
 			row = new Row();
 			rows.appendChild(row);
 			row.appendChild(descriptionQLabel);
 			row.appendChild(descriptionQField);
-			descriptionQField.setHflex("1");
+			ZKUpdateUtil.setHflex(descriptionQField, "1");
 			row.appendChild(new Space());
 
 			row = new Row();
 			rows.appendChild(row);
 			row.appendChild(helpQLabel);
 			row.appendChild(helpQField);
-			helpQField.setHflex("1");
+			ZKUpdateUtil.setHflex(helpQField, "1");
 			row.appendChild(new Space());
 
 			row = new Row();
 			rows.appendChild(row);
 			row.appendChild(createdByQLabel);
 			row.appendChild(createdByQField);
-			createdByQField.setHflex("1");
+			ZKUpdateUtil.setHflex(createdByQField, "1");
 			row.appendChild(new Space());
 
 			row = new Row();
@@ -350,17 +351,17 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		gridView.appendChild(columns);
 		
 		Column column = new Column();
-		column.setHflex("min");
+		ZKUpdateUtil.setHflex(column, "min");
 		column.setAlign("left");
 		columns.appendChild(column);
 
 		column = new Column();
-		column.setHflex("1");
+		ZKUpdateUtil.setHflex(column, "1");
 		column.setAlign("center");
 		columns.appendChild(column);
 
 		column = new Column();
-		column.setHflex("min");
+		ZKUpdateUtil.setHflex(column, "min");
 		column.setAlign("right");
 		columns.appendChild(column);
         
@@ -376,12 +377,12 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		row = new Row();
 		rows.appendChild(row);
 		row.appendCellChild(createdByLabel, 3);
-		createdByLabel.setHflex("1");
+		ZKUpdateUtil.setHflex(createdByLabel, "1");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendCellChild(createdByField, 3);
-		createdByField.setHflex("1");
+		ZKUpdateUtil.setHflex(createdByField, "1");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -395,36 +396,36 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		row = new Row();
 		rows.appendChild(row);
 		row.appendCellChild(nameLabel, 3);
-		nameLabel.setHflex("1");
+		ZKUpdateUtil.setHflex(nameLabel, "1");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendCellChild(nameField, 3);
-		nameField.setHflex("1");
+		ZKUpdateUtil.setHflex(nameField, "1");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendCellChild(descriptionLabel, 3);
-		descriptionLabel.setHflex("1");
+		ZKUpdateUtil.setHflex(descriptionLabel, "1");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendCellChild(descriptionField, 3);
 		descriptionField.setRows(3);
-		descriptionField.setHeight("100%");
-		descriptionField.setHflex("1");
+		ZKUpdateUtil.setHeight(descriptionField, "100%");
+		ZKUpdateUtil.setHflex(descriptionField, "1");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendCellChild(helpLabel, 3);
-		helpLabel.setHflex("1");
+		ZKUpdateUtil.setHflex(helpLabel, "1");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendCellChild(helpField, 3);
 		helpField.setRows(3);
-		helpField.setHeight("100%");
-		helpField.setHflex("1");
+		ZKUpdateUtil.setHeight(helpField, "100%");
+		ZKUpdateUtil.setHflex(helpField, "1");
 		
 		row = new Row();
 		rows.appendChild(row);		
@@ -448,14 +449,14 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		
 		Tabpanel tabViewPanel = new Tabpanel();
 		Hbox boxViewSeparator = new Hbox();
-		boxViewSeparator.setWidth("100%");
-		boxViewSeparator.setHeight("100%");			
+		ZKUpdateUtil.setWidth(boxViewSeparator, "100%");
+		ZKUpdateUtil.setHeight(boxViewSeparator, "100%");			
 		cell = new Cell();
-		cell.setWidth("70%");
+		ZKUpdateUtil.setWidth(cell, "70%");
 		cell.appendChild(iframe);
 		boxViewSeparator.appendChild(cell);
 		cell = new Cell();
-		cell.setWidth("30%");
+		ZKUpdateUtil.setWidth(cell, "30%");
 		cell.appendChild(gridView);
 		boxViewSeparator.appendChild(cell);
 		tabViewPanel.appendChild(boxViewSeparator);
@@ -469,12 +470,12 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		iframe.setId("reportFrame");
 		int height = Double.valueOf(SessionManager.getAppDesktop().getClientInfo().desktopHeight * 0.8).intValue();
 		height = height - 50;
-		iframe.setHeight(height + "px");
-		iframe.setWidth("100%");
+		ZKUpdateUtil.setHeight(iframe, height + "px");
+		ZKUpdateUtil.setWidth(iframe, "100%");
 		//iframe.setAutohide(true);
 		
-		form.setWidth("100%");
-		form.setHeight("100%");
+		ZKUpdateUtil.setWidth(form, "100%");
+		ZKUpdateUtil.setHeight(form, "100%");
 		form.appendChild(tabbox);
 		form.appendChild(confirmPanel);
 	}

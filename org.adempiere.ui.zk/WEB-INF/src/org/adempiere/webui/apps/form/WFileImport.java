@@ -41,6 +41,7 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ReaderInputStream;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.impexp.ImpFormat;
 import org.compiere.impexp.ImpFormatRow;
@@ -134,14 +135,14 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			jbInit();
 			dynInit();
 			
-			this.setWidth("100%");
+			ZKUpdateUtil.setWidth(this, "100%");
 			this.setClosable(true);
 			this.setTitle("Import File Loader");
 			this.setBorder("normal");
 			
 			Borderlayout layout = new Borderlayout();
-			layout.setHeight("100%");
-			layout.setWidth("100%");
+			ZKUpdateUtil.setHeight(layout, "100%");
+			ZKUpdateUtil.setWidth(layout, "100%");
 			this.appendChild(layout);
 			North north = new North();
 			layout.appendChild(north);
@@ -149,8 +150,8 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			Center center = new Center();
 			layout.appendChild(center);
 			center.appendChild(centerPanel);
-			centerPanel.setVflex("1");
-			centerPanel.setHflex("1");
+			ZKUpdateUtil.setVflex(centerPanel, "1");
+			ZKUpdateUtil.setHflex(centerPanel, "1");
 			South south = new South();
 			layout.appendChild(south);
 			south.appendChild(confirmPanel);
@@ -211,22 +212,22 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		hbox.appendChild(record);
 		hbox.appendChild(bNext);
 				
-		rawData.setHflex("1");
+		ZKUpdateUtil.setHflex(rawData, "1");
 		rawData.setRows(MAX_SHOWN_LINES);
-		rawData.setHeight("100%");
+		ZKUpdateUtil.setHeight(rawData, "100%");
 		
-		northPanel.setHflex("1");
-		northPanel.setVflex("0");
+		ZKUpdateUtil.setHflex(northPanel, "1");
+		ZKUpdateUtil.setVflex(northPanel, "0");
 		northPanel.appendChild(hbox);
 		northPanel.appendChild(rawData);
 		northPanel.appendChild(new Separator());
 		
-		previewPanel.setHflex("1");
-		previewPanel.setVflex("1");
+		ZKUpdateUtil.setHflex(previewPanel, "1");
+		ZKUpdateUtil.setVflex(previewPanel, "1");
 		previewPanel.setStyle("overflow: auto");
 		
-		centerPanel.setHflex("1");
-		centerPanel.setVflex("1");
+		ZKUpdateUtil.setHflex(centerPanel, "1");
+		ZKUpdateUtil.setVflex(centerPanel, "1");
 		centerPanel.appendChild(previewPanel);
 		
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
@@ -491,14 +492,14 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			
 			Hbox hbox = new Hbox();
 			hbox.setAlign("center");
-			hbox.setWidth("100%");
+			ZKUpdateUtil.setWidth(hbox, "100%");
 			hbox.setStyle("padding-bottom: 3px");
 			Cell cell = new Cell();
-			cell.setWidth("30%");
+			ZKUpdateUtil.setWidth(cell, "30%");
 			cell.appendChild(m_labels[i].rightAlign());
 			hbox.appendChild(cell);
 			cell = new Cell();
-			cell.setWidth("70%");
+			ZKUpdateUtil.setWidth(cell, "70%");
 			
 			int length = row.getEndNo() - row.getStartNo();
 			
@@ -509,7 +510,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			
 			m_fields[i] = new Textbox();
 			m_fields[i].setStyle("margin-left: 2px");
-			m_fields[i].setWidth("300px");
+			ZKUpdateUtil.setWidth(m_fields[i], "300px");
 			
 			cell.appendChild(m_fields[i]);
 			hbox.appendChild(cell);

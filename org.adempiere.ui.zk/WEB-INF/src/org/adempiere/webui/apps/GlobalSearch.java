@@ -21,6 +21,7 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.util.DocumentSearch;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -75,7 +76,7 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		bandbox = new Bandbox();
 		bandbox.setSclass("global-search-box");
 		appendChild(bandbox);
-		bandbox.setWidth("100%");
+		ZKUpdateUtil.setWidth(bandbox, "100%");
 		bandbox.setAutodrop(true);
 		bandbox.addEventListener(Events.ON_CHANGING, this);
 		bandbox.addEventListener(Events.ON_CHANGE, this);
@@ -83,11 +84,11 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		bandbox.addEventListener(Events.ON_CTRL_KEY, this);
 		
 		Bandpopup popup = new Bandpopup();
-		popup.setHeight("500px");
+		ZKUpdateUtil.setHeight(popup, "500px");
 		bandbox.appendChild(popup);		
 		
 		tabbox = new Tabbox();
-		tabbox.setVflex("true");
+		ZKUpdateUtil.setVflex(tabbox, "true");
 		tabbox.addEventListener(Events.ON_SELECT, this);
 		Tabs tabs = new Tabs();
 		tabbox.appendChild(tabs);
@@ -97,7 +98,7 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		Tabpanels tabPanels = new Tabpanels();
 		tabbox.appendChild(tabPanels);
 		Tabpanel tabPanel = new Tabpanel();
-		tabPanel.setVflex("true");
+		ZKUpdateUtil.setVflex(tabPanel, "true");
 		tabPanel.setSclass("global-search-tabpanel");
 		tabPanels.appendChild(tabPanel);
 		popup.appendChild(tabbox);

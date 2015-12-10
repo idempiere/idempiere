@@ -29,6 +29,7 @@ import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.InfoPAttributeInstancePanel;
 import org.adempiere.webui.panel.InvoiceHistory;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.model.MDocType;
 import org.compiere.model.MRole;
@@ -236,7 +237,7 @@ public class InfoProductWindow extends InfoWindow {
 //        productpriceTbl.getModel().addTableModelListener(this);
         
         tabbedPane = new Tabbox();
-        tabbedPane.setHeight("100%");
+        ZKUpdateUtil.setHeight(tabbedPane, "100%");
 		Tabpanels tabPanels = new Tabpanels();
 		tabbedPane.appendChild(tabPanels);
 		Tabs tabs = new Tabs();
@@ -245,41 +246,41 @@ public class InfoProductWindow extends InfoWindow {
 		Tab tab = new Tab(Util.cleanAmp(Msg.translate(Env.getCtx(), "Warehouse")));
 		tabs.appendChild(tab);
 		Tabpanel desktopTabPanel = new Tabpanel();
-		desktopTabPanel.setHeight("100%");
+		ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
 		desktopTabPanel.appendChild(warehouseTbl);
 		tabPanels.appendChild(desktopTabPanel);
 
 		tab = new Tab(Msg.translate(Env.getCtx(), "Description"));
 		tabs.appendChild(tab);
 		desktopTabPanel = new Tabpanel();
-		desktopTabPanel.setHeight("100%");
+		ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
 		fieldDescription = new Textbox();
 		fieldDescription.setMultiline(true);
 		fieldDescription.setReadonly(true);
-		fieldDescription.setHflex("1");
-		fieldDescription.setWidth("99%");
-		fieldDescription.setHeight("99%");
+		ZKUpdateUtil.setHflex(fieldDescription, "1");
+		ZKUpdateUtil.setWidth(fieldDescription, "99%");
+		ZKUpdateUtil.setHeight(fieldDescription, "99%");
 		desktopTabPanel.appendChild(fieldDescription);
 		tabPanels.appendChild(desktopTabPanel);
 
 		tab = new Tab(Msg.translate(Env.getCtx(), "Substitute_ID"));
 		tabs.appendChild(tab);
 		desktopTabPanel = new Tabpanel();
-		desktopTabPanel.setHeight("100%");
+		ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
 		desktopTabPanel.appendChild(substituteTbl);
 		tabPanels.appendChild(desktopTabPanel);
 
 		tab = new Tab(Msg.translate(Env.getCtx(), "RelatedProduct_ID"));
 		tabs.appendChild(tab);
 		desktopTabPanel = new Tabpanel();
-		desktopTabPanel.setHeight("100%");
+		ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
 		desktopTabPanel.appendChild(relatedTbl);
 		tabPanels.appendChild(desktopTabPanel);
 
 		tab = new Tab(Msg.getMsg(Env.getCtx(), "ATP"));
 		tabs.appendChild(tab);
 		desktopTabPanel = new Tabpanel();
-		desktopTabPanel.setHeight("100%");
+		ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
 		desktopTabPanel.appendChild(m_tableAtp);
 		// IDEMPIERE-1692
 		chbShowDetailAtp = new Checkbox();
@@ -302,15 +303,15 @@ public class InfoProductWindow extends InfoWindow {
 		tab = new Tab(Msg.translate(Env.getCtx(), "Price"));
 		tabs.appendChild(tab);
 		desktopTabPanel = new Tabpanel();
-		desktopTabPanel.setHeight("100%");
+		ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
 		desktopTabPanel.appendChild(productpriceTbl);
 		tabPanels.appendChild(desktopTabPanel);
 		//
 		int height = SessionManager.getAppDesktop().getClientInfo().desktopHeight * 90 / 100;
 		
 		contentBorderLayout = new Borderlayout();
-		contentBorderLayout.setWidth("100%");
-        contentBorderLayout.setHeight("100%");
+		ZKUpdateUtil.setWidth(contentBorderLayout, "100%");
+		ZKUpdateUtil.setHeight(contentBorderLayout, "100%");
         if (isLookup())
         	contentBorderLayout.setStyle("border: none; position: relative; ");
         else
@@ -320,7 +321,7 @@ public class InfoProductWindow extends InfoWindow {
         contentBorderLayout.getCenter().setAutoscroll(false);
         South south = new South();
 		int detailHeight = (height * 25 / 100);
-		south.setHeight(detailHeight + "px");
+		ZKUpdateUtil.setHeight(south, detailHeight + "px");
 		south.setCollapsible(true);
 		south.setSplittable(true);
 		south.setTitle(Msg.translate(Env.getCtx(), "WarehouseStock"));
@@ -338,8 +339,8 @@ public class InfoProductWindow extends InfoWindow {
 		contentBorderLayout.appendChild(south);
 		tabbedPane.setSclass("info-product-tabbedpane");
 		south.appendChild(tabbedPane);
-		tabbedPane.setVflex("1");
-		tabbedPane.setHflex("1");
+		ZKUpdateUtil.setVflex(tabbedPane, "1");
+		ZKUpdateUtil.setHflex(tabbedPane, "1");
 		
 		center.appendChild(contentBorderLayout);
 		

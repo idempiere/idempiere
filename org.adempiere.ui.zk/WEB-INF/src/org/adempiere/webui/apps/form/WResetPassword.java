@@ -33,6 +33,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -93,13 +94,13 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 			
 			Borderlayout contentPane = new Borderlayout();
 			form.appendChild(contentPane);
-			contentPane.setWidth("99%");
-			contentPane.setHeight("100%");
+			ZKUpdateUtil.setWidth(contentPane, "99%");
+			ZKUpdateUtil.setHeight(contentPane, "100%");
 			Center center = new Center();
 			center.setStyle("border: none");
 			contentPane.appendChild(center);
-			gridPanel.setHflex("true");
-			gridPanel.setVflex("true");
+			ZKUpdateUtil.setHflex(gridPanel, "true");
+			ZKUpdateUtil.setVflex(gridPanel, "true");
 			center.appendChild(gridPanel);
 			South south = new South();
 			south.setStyle("border: none");
@@ -127,25 +128,25 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 		//	AD_User.AD_User_ID
 		MLookup userLkp = MLookupFactory.get(Env.getCtx(), form.getWindowNo(), 0, 212, DisplayType.Search);
 		fUser = new WSearchEditor("AD_User_ID", false, false, true, userLkp);
-		fUser.getComponent().setWidth("220px");
+		ZKUpdateUtil.setWidth(fUser.getComponent(), "220px");
 		
 		txtOldPassword = new Textbox();
         txtOldPassword.setId("txtOldPassword");
         txtOldPassword.setType("password");
         txtOldPassword.setCols(25);
-        txtOldPassword.setWidth("220px");
+        ZKUpdateUtil.setWidth(txtOldPassword, "220px");
 
         txtNewPassword = new Textbox();
         txtNewPassword.setId("txtNewPassword");
         txtNewPassword.setType("password");
         txtNewPassword.setCols(25);
-        txtNewPassword.setWidth("220px");
+        ZKUpdateUtil.setWidth(txtNewPassword, "220px");
         
         txtRetypeNewPassword = new Textbox();
         txtRetypeNewPassword.setId("txtRetypeNewPassword");
         txtRetypeNewPassword.setType("password");
         txtRetypeNewPassword.setCols(25);
-        txtRetypeNewPassword.setWidth("220px");
+        ZKUpdateUtil.setWidth(txtRetypeNewPassword, "220px");
 
         cbForceChangeNextLogin = new Checkbox();
         cbForceChangeNextLogin.setLabel(Msg.getMsg(Env.getCtx(), "ForceChangeOnNextLogin"));
@@ -154,24 +155,24 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
         txtNewEMail = new Textbox();
         txtNewEMail.setId("txtNewEMail");
         txtNewEMail.setCols(25);
-        txtNewEMail.setWidth("220px");
+        ZKUpdateUtil.setWidth(txtNewEMail, "220px");
         
         txtNewEMailUser = new Textbox();
         txtNewEMailUser.setId("txtNewEMailUser");
         txtNewEMailUser.setCols(25);
-        txtNewEMailUser.setWidth("220px");
+        ZKUpdateUtil.setWidth(txtNewEMailUser, "220px");
         
         txtNewEMailUserPW = new Textbox();
         txtNewEMailUserPW.setId("txtNewEMailUserPW");
         txtNewEMailUserPW.setType("password");
         txtNewEMailUserPW.setCols(25);
-        txtNewEMailUserPW.setWidth("220px");
+        ZKUpdateUtil.setWidth(txtNewEMailUserPW, "220px");
         
         txtRetypeNewEMailPW = new Textbox();
         txtRetypeNewEMailPW.setId("txtRetypeNewEMail");
         txtRetypeNewEMailPW.setType("password");
         txtRetypeNewEMailPW.setCols(25);
-        txtRetypeNewEMailPW.setWidth("220px");
+        ZKUpdateUtil.setWidth(txtRetypeNewEMailPW, "220px");
         
 		confirmPanel = new ConfirmPanel(true);
 	}
@@ -185,11 +186,11 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
     	
     	Column column = new Column();
     	columns.appendChild(column);
-    	column.setWidth("40%");
+    	ZKUpdateUtil.setWidth(column, "40%");
     	
     	column = new Column();
     	columns.appendChild(column);
-    	column.setWidth("60%");
+    	ZKUpdateUtil.setWidth(column, "60%");
     	
     	Rows rows = new Rows();
     	gridPanel.appendChild(rows);

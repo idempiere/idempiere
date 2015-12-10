@@ -18,6 +18,7 @@ import java.util.Arrays;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Ini;
@@ -80,8 +81,8 @@ public class FolderBrowser extends Window implements EventListener<Event>
 		this.browseForFolder = browseForFolder;
 
 		setTitle(browseForFolder ? "Directory Browser" : "File Browser");
-		setWidth("500px");
-		setHeight("500px");
+		ZKUpdateUtil.setWidth(this, "500px");
+		ZKUpdateUtil.setHeight(this, "500px");
 		setBorder("normal");
 		
 		Borderlayout contentLayout = new Borderlayout();
@@ -94,15 +95,15 @@ public class FolderBrowser extends Window implements EventListener<Event>
 		Center center = new Center();
 		contentLayout.appendChild(center);
 		center.appendChild(listDir);
-		listDir.setVflex("1");
-		listDir.setHflex("1");
+		ZKUpdateUtil.setVflex(listDir, "1");
+		ZKUpdateUtil.setHflex(listDir, "1");
 		
 		South south = new South();
 		south.setStyle("border: none");
 		contentLayout.appendChild(south);
 		south.appendChild(confirmPanel);
 		
-		txtPath.setWidth("475px");
+		ZKUpdateUtil.setWidth(txtPath, "475px");
 		txtPath.setReadonly(true);
 		
 		getFileListing(root.getPath());

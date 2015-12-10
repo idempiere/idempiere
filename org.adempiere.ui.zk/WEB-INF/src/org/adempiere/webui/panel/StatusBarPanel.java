@@ -23,6 +23,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WRecordInfo;
 import org.compiere.apps.IStatusBar;
 import org.compiere.model.DataStatusEvent;
@@ -95,16 +96,16 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
         statusLine = new Label();
 
         Hbox hbox = new Hbox();
-        hbox.setWidth("100%");
-        hbox.setHeight("100%");
-        hbox.setHflex("1");
+        ZKUpdateUtil.setWidth(hbox, "100%");
+        ZKUpdateUtil.setHeight(hbox, "100%");
+        ZKUpdateUtil.setHflex(hbox, "1");
         Cell leftCell = new Cell();
         hbox.appendChild(leftCell);
         Cell rightCell = new Cell();
         hbox.appendChild(rightCell);
         
-        leftCell.setWidth("50%");
-        rightCell.setWidth("50%");
+        ZKUpdateUtil.setWidth(leftCell, "50%");
+        ZKUpdateUtil.setWidth(rightCell, "50%");
         
         west = new Div();
         west.setStyle("text-align: left; ");
@@ -121,7 +122,7 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
         leftCell.appendChild(vbox);
 
         east = new Div();
-        east.setWidth("100%");
+        ZKUpdateUtil.setWidth(east, "100%");
         east.setStyle("text-align: right; ");
         
         infoLine = new Label();
@@ -252,7 +253,7 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
 		popupContent = new Div();
 
 		popup = new Div();
-        popup.setWidth("600px");
+		ZKUpdateUtil.setWidth(popup, "600px");
         popup.appendChild(popupContent);
         popup.addEventListener(Events.ON_CLICK, this);
         popup.setPage(SessionManager.getAppDesktop().getComponent().getPage());

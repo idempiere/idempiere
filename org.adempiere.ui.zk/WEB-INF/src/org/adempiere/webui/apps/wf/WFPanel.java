@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
 import org.compiere.model.X_AD_CtxHelp;
@@ -119,12 +120,12 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		div.setStyle("width:100%; height: 100%");
 		div.appendChild(infoTextPane);
 		south.appendChild(div);
-		south.setHeight("25%");
+		ZKUpdateUtil.setHeight(south, "25%");
 		south.setSplittable(true);
 		south.setCollapsible(true);
 		south.setAutoscroll(true);
-		div.setVflex("1");
-		div.setHflex("1");
+		ZKUpdateUtil.setVflex(div, "1");
+		ZKUpdateUtil.setHflex(div, "1");
 	}	//	jbInit
 
 	private void createTable() {

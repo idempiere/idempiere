@@ -52,7 +52,7 @@ public class AdempiereIdGenerator implements IdGenerator {
 		boolean useIdSpace = true;
 		if (Util.isEmpty(uuid)) {
 			useIdSpace = false;
-			String attribute = comp.getWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME);
+			String attribute = comp.getClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME);
 			if (!Util.isEmpty(attribute)) {
 				String widgetName = getWidgetName(comp.getWidgetClass());
 				uuid = widgetName+"0"+attribute;
@@ -156,7 +156,7 @@ public class AdempiereIdGenerator implements IdGenerator {
 		}
 		
 		if (Util.isEmpty(id)) {
-			String attribute = comp.getWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME);
+			String attribute = comp.getClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME);
 			if (attribute != null && attribute.length() > 0) {
 				String widgetName = getWidgetName(comp.getWidgetClass());
 				locatorBuilder.append("@")
@@ -171,7 +171,7 @@ public class AdempiereIdGenerator implements IdGenerator {
 		Component parent = comp.getParent();
 		while(parent != null) {
 			if (Util.isEmpty(id) || (parent instanceof IdSpace)) {
-				String parentLocator = parent.getWidgetAttribute(ZK_LOCATOR_ATTRIBUTE);
+				String parentLocator = parent.getClientAttribute(ZK_LOCATOR_ATTRIBUTE);
 				if (parentLocator != null && parentLocator.trim().length() > 0) {
 					locatorBuilder.insert(0, parentLocator+ " ");
 					break;
@@ -180,6 +180,6 @@ public class AdempiereIdGenerator implements IdGenerator {
 			parent = parent.getParent();
 		}
 		
-		comp.setWidgetAttribute(ZK_LOCATOR_ATTRIBUTE, locatorBuilder.toString());
+		comp.setClientAttribute(ZK_LOCATOR_ATTRIBUTE, locatorBuilder.toString());
 	}
 }

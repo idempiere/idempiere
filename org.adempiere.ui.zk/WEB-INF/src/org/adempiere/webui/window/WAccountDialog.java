@@ -41,6 +41,7 @@ import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridField;
@@ -98,8 +99,8 @@ public final class WAccountDialog extends Window
 	{
 		super ();
 		this.setTitle(title);
-		this.setHeight("500px");
-		this.setWidth("750px");
+		ZKUpdateUtil.setHeight(this, "500px");
+		ZKUpdateUtil.setWidth(this, "750px");
 
 		if (log.isLoggable(Level.CONFIG)) log.config("C_AcctSchema_ID=" + C_AcctSchema_ID
 			+ ", C_ValidCombination_ID=" + mAccount.C_ValidCombination_ID);
@@ -199,11 +200,11 @@ public final class WAccountDialog extends Window
 		//
 		Caption caption = new Caption(Msg.getMsg(Env.getCtx(),"Parameter"));
 		parameterPanel.appendChild(caption);
-		parameterPanel.setHflex("95");
+		ZKUpdateUtil.setHflex(parameterPanel, "95");
 		parameterPanel.setStyle("background-color: transparent;");
 		toolBar.setOrient("vertical");
 		toolBar.setStyle("border: none; margin: 5px");
-		toolBar.setHflex("5");
+		ZKUpdateUtil.setHflex(toolBar, "5");
 
 		bSave.setImage(ThemeManager.getThemeResource("images/Save24.png"));
 		bSave.setTooltiptext(Msg.getMsg(Env.getCtx(),"AccountNewUpdate"));
@@ -221,30 +222,30 @@ public final class WAccountDialog extends Window
 		//
 
 		northPanel.appendChild(parameterPanel);
-		parameterPanel.setWidth("95%");
+		ZKUpdateUtil.setWidth(parameterPanel, "95%");
 		northPanel.appendChild(toolBar);
-		northPanel.setWidth("100%");
+		ZKUpdateUtil.setWidth(northPanel, "100%");
 
 		m_adTabPanel = new ADTabpanel();
 
 		Borderlayout layout = new Borderlayout();
 		layout.setParent(this);
-		layout.setHeight("100%");
-		layout.setWidth("100%");
+		ZKUpdateUtil.setHeight(layout, "100%");
+		ZKUpdateUtil.setWidth(layout, "100%");
 		layout.setStyle("background-color: transparent;");
 
 		North nRegion = new North();
 		nRegion.setParent(layout);
-		northPanel.setHflex("false");
-		northPanel.setVflex("false");
+		ZKUpdateUtil.setHflex(northPanel, "false");
+		ZKUpdateUtil.setVflex(northPanel, "false");
 		nRegion.appendChild(northPanel);
 		nRegion.setStyle("background-color: transparent; border: none");
 		northPanel.setStyle("background-color: transparent;");
 
 		Center cRegion = new Center();
 		cRegion.setParent(layout);
-		m_adTabPanel.setHflex("true");
-		m_adTabPanel.setVflex("true");
+		ZKUpdateUtil.setHflex(m_adTabPanel, "true");
+		ZKUpdateUtil.setVflex(m_adTabPanel, "true");
 		cRegion.appendChild(m_adTabPanel);
 
 		South sRegion = new South();

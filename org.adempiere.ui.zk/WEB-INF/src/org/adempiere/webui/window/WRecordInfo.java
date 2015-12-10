@@ -32,6 +32,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
@@ -92,8 +93,8 @@ public class WRecordInfo extends Window implements EventListener<Event>
 	{
 		super ();
 		this.setTitle(title);
-		this.setWidth("500px");
-		this.setHeight("400px");
+		ZKUpdateUtil.setWidth(this, "500px");
+		ZKUpdateUtil.setHeight(this, "400px");
 		this.setBorder("normal");
 		this.setSizable(true);
 		this.setClosable(true);
@@ -156,27 +157,27 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		
 		Borderlayout layout = new Borderlayout();
 		layout.setParent(this);
-		layout.setWidth("100%");
-		layout.setHeight("100%");
+		ZKUpdateUtil.setWidth(layout, "100%");
+		ZKUpdateUtil.setHeight(layout, "100%");
 		
 		Center center = new Center();
 		center.setParent(layout);
 		if (showTable)
 		{
-			table.setHflex("true");
-			table.setVflex("true");
+			ZKUpdateUtil.setHflex(table, "true");
+			ZKUpdateUtil.setVflex(table, "true");
 			North north = new North();
 			north.setParent(layout);
 			north.appendChild(div);
 						
 			center.appendChild(table);
-			table.setWidth("100%");
-			table.setVflex(true);
+			ZKUpdateUtil.setWidth(table, "100%");
+			ZKUpdateUtil.setVflex(table, true);
 		}
 		else
 		{
-			div.setHflex("true");
-			div.setVflex("true");
+			ZKUpdateUtil.setHflex(div, "true");
+			ZKUpdateUtil.setVflex(div, "true");
 			center.appendChild(div);
 		}
 		//

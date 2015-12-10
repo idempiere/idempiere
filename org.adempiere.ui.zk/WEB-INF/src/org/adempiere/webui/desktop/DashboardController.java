@@ -40,6 +40,7 @@ import org.adempiere.webui.factory.IDashboardGadgetFactory;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.model.I_AD_Menu;
 import org.compiere.model.MChart;
@@ -106,8 +107,8 @@ public class DashboardController implements EventListener<Event> {
 	public DashboardController() {
 		dashboardLayout = new Anchorlayout();
 		dashboardLayout.setSclass("dashboard-layout");
-        dashboardLayout.setVflex("1");
-        dashboardLayout.setHflex("1");
+        ZKUpdateUtil.setVflex(dashboardLayout, "1");
+        ZKUpdateUtil.setHflex(dashboardLayout, "1");
         
         maximizedHolder = new Anchorchildren();                
         maximizedHolder.setAnchor("100% 100%");
@@ -176,7 +177,7 @@ public class DashboardController implements EventListener<Event> {
 	        		dashboardColumn.appendChild(dashboardColumnLayout);
 	        		columnList.add(dashboardColumn);
 	                dashboardLayout.appendChild(dashboardColumn);
-	                dashboardColumnLayout.setHflex("1");
+	                ZKUpdateUtil.setHflex(dashboardColumnLayout, "1");
 
 	                currentColumnNo = columnNo;
 	        	}
@@ -388,7 +389,7 @@ public class DashboardController implements EventListener<Event> {
 			        		//set normal height
 			        		if (height == 0) {
 			        			height = width * 85 / 100;
-			        			chartPanel.setHeight(height+"px");
+			        			ZKUpdateUtil.setHeight(chartPanel, height+"px");
 			        		}
 			        		chartPanel.getChildren().clear();
 			        		ChartModel model = new ChartModel();
@@ -419,13 +420,13 @@ public class DashboardController implements EventListener<Event> {
         		dashboardColumn.appendChild(dashboardColumnLayout);
         		columnList.add(dashboardColumn);
                 dashboardLayout.appendChild(dashboardColumn);
-                dashboardColumnLayout.setWidth("100%");
+                ZKUpdateUtil.setWidth(dashboardColumnLayout, "100%");
             }
             else if (isShowInDashboard)
             {
             	// additional column
             	dashboardColumnLayout = new Vlayout();
-            	dashboardColumnLayout.setWidth("100%");
+            	ZKUpdateUtil.setWidth(dashboardColumnLayout, "100%");
         		dashboardColumnLayout.setAttribute("ColumnNo", currentColumnNo + 1);
         		dashboardColumnLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
         		dashboardColumnLayout.setAttribute("IsAdditionalColumn", true);
@@ -436,7 +437,7 @@ public class DashboardController implements EventListener<Event> {
         		dashboardColumn.appendChild(dashboardColumnLayout);
         		columnList.add(dashboardColumn);
                 dashboardLayout.appendChild(dashboardColumn);
-                dashboardColumnLayout.setWidth("100%");
+                ZKUpdateUtil.setWidth(dashboardColumnLayout, "100%");
             }
 		}
         catch (Exception e)
@@ -493,8 +494,8 @@ public class DashboardController implements EventListener<Event> {
 	    		}
 	    		panel.setSclass("dashboard-widget");
 	    		//following 2 line needed for restore to size the panel correctly
-	    		panel.setWidth(null);
-	    		panel.setHeight(null);
+	    		ZKUpdateUtil.setWidth(panel, null);
+	    		ZKUpdateUtil.setHeight(panel, null);
 	    	}
 		}
 		else if(eventName.equals(Events.ON_CLICK))
@@ -699,7 +700,7 @@ public class DashboardController implements EventListener<Event> {
 			        		dashboardColumn.appendChild(dashboardColumnLayout);
 			        		columnList.add(dashboardColumn);
 			                dashboardLayout.appendChild(dashboardColumn);
-			                dashboardColumnLayout.setWidth("100%");
+			                ZKUpdateUtil.setWidth(dashboardColumnLayout, "100%");
 			                
 			                dashboardLayout.invalidate();			                
 						}

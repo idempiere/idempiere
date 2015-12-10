@@ -29,6 +29,7 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -75,8 +76,8 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		noLabel.setValue(Msg.getMsg(Env.getCtx(), "Available"));
 		yesLabel.setValue(Msg.getMsg(Env.getCtx(), "OrderBy"));
 
-		yesList.setVflex(true);
-		noList.setVflex(true);
+		ZKUpdateUtil.setVflex(yesList, true);
+		ZKUpdateUtil.setVflex(noList, true);
 
 		EventListener<Event> mouseListener = new EventListener<Event>()
 		{
@@ -126,20 +127,20 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		listHeader.setParent(listHead);
 
 		Hlayout hlayout = new Hlayout();
-		hlayout.setVflex("true");
-		hlayout.setHflex("true");
+		ZKUpdateUtil.setVflex(hlayout, "true");
+		ZKUpdateUtil.setHflex(hlayout, "true");
 		hlayout.setStyle("width:80%;height:80%;border:none;margin:none;padding:none");
-		noList.setHflex("1");
-		noList.setVflex(true);
+		ZKUpdateUtil.setHflex(noList, "1");
+		ZKUpdateUtil.setVflex(noList, true);
 		hlayout.appendChild(noList);
 		Vbox vbox = new Vbox();
 		vbox.appendChild(bAdd);
 		vbox.appendChild(bRemove);
-		vbox.setWidth("50px");
+		ZKUpdateUtil.setWidth(vbox, "50px");
 		hlayout.appendChild(vbox);
 
-		yesList.setVflex(true);
-		yesList.setHflex("1");
+		ZKUpdateUtil.setVflex(yesList, true);
+		ZKUpdateUtil.setHflex(yesList, "1");
 		hlayout.appendChild(yesList);
 		
 		
@@ -159,7 +160,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		vbox = new Vbox();
 		vbox.appendChild(bUp);
 		vbox.appendChild(bDown);
-		vbox.setWidth("46px");
+		ZKUpdateUtil.setWidth(vbox, "46px");
 		hlayout.appendChild(vbox);
 		
 		this.appendChild(hlayout);

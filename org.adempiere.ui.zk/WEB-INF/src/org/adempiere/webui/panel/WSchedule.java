@@ -29,6 +29,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.InfoSchedule;
 import org.compiere.model.MAssignmentSlot;
 import org.compiere.model.ScheduleUtil;
@@ -142,7 +143,7 @@ public class WSchedule extends Window implements EventListener<Event>
 		
 		borderlayout = (Borderlayout) calendarContainer.getFellow("main");
 		borderlayout.setStyle("position: absolute; width: 98%; margin: auto;");
-		borderlayout.setHeight("100%");
+		ZKUpdateUtil.setHeight(borderlayout, "100%");
 		if (borderlayout.getSouth() != null) {
 			borderlayout.getSouth().detach();
 		}
@@ -353,7 +354,7 @@ public class WSchedule extends Window implements EventListener<Event>
 			South south = new South();
 			south.appendChild(pane);
 			if (!Util.isEmpty(height)) {
-				south.setHeight(height);
+				ZKUpdateUtil.setHeight(south, height);
 			}
 			borderlayout.appendChild(south);
 		}

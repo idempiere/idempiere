@@ -34,6 +34,7 @@ import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
@@ -264,7 +265,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
     	configureKeyMap();
 
-        setWidth("100%");
+        ZKUpdateUtil.setWidth(this, "100%");
     }
 
 

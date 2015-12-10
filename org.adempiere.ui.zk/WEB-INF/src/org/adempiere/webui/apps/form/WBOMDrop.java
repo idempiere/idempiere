@@ -41,6 +41,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
@@ -236,7 +237,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		productField.addEventListener(Events.ON_SELECT, this);
 		productQty.addEventListener(Events.ON_CHANGE, this);
 		
-		productField.setWidth("99%");
+		ZKUpdateUtil.setWidth(productField, "99%");
 		boxProductQty.appendChild(lblProduct.rightAlign());
 		boxProductQty.appendChild(productField);
 		boxProductQty.appendChild(lblQty.rightAlign());
@@ -248,7 +249,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 			
 			orderField.setRows(1);
 			orderField.setMold("select");
-			orderField.setWidth("99%");
+			ZKUpdateUtil.setWidth(orderField, "99%");
 			
 			for (int i = 0; i < keyNamePair.length; i++)
 			{
@@ -271,7 +272,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		{
 			invoiceField.setRows(1);
 			invoiceField.setMold("select");
-			invoiceField.setWidth("99%");
+			ZKUpdateUtil.setWidth(invoiceField, "99%");
 			
 			keyNamePair = getInvoices();
 			
@@ -296,7 +297,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		{
 			projectField.setRows(1);
 			projectField.setMold("select");
-			projectField.setWidth("99%");
+			ZKUpdateUtil.setWidth(projectField, "99%");
 			
 			keyNamePair = getProjects();
 			
@@ -626,7 +627,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 
 	private Div createDivPanel (int with) {
 		Div divPanel = new Div ();
-		divPanel.setWidth(String.format("%1$spx", with));
+		ZKUpdateUtil.setWidth(divPanel, String.format("%1$spx", with));
 		divPanel.setStyle("padding-right:0;padding-left:0");
 		return divPanel; 
 	}
@@ -634,14 +635,14 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	private Hlayout createHlayoutPanel (String width) {
 		Hlayout layout = new Hlayout();
 		layout.setSpacing("0");
-		layout.setWidth(width);
+		ZKUpdateUtil.setWidth(layout, width);
 		return layout;
 	}
 
 	private Vlayout createVlayoutPanel (String width) {
 		Vlayout layout = new Vlayout();
 		layout.setSpacing("0");
-		layout.setWidth(width);
+		ZKUpdateUtil.setWidth(layout, width);
 		return layout;
 	}
 

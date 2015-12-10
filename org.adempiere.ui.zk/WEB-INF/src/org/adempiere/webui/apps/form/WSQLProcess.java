@@ -35,6 +35,7 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -99,14 +100,14 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
         final int noStatementRows = 3;
         final int noResultRows = 20;
 
-        m_grdMain.setWidth("80%");
+        ZKUpdateUtil.setWidth(m_grdMain, "80%");
 
         // create the top row of components
         m_txbSqlField.setMultiline(true);
         m_txbSqlField.setMaxlength(maxStatementLength);
         m_txbSqlField.setRows(noStatementRows);
-        m_txbSqlField.setHeight("100%");
-        m_txbSqlField.setHflex("1");
+        ZKUpdateUtil.setHeight(m_txbSqlField, "100%");
+        ZKUpdateUtil.setHflex(m_txbSqlField, "1");
         m_txbSqlField.setCols(noColumns);
         m_txbSqlField.setReadonly(false);
 
@@ -121,8 +122,8 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
         // create the bottom row of components
         m_txbResultField.setCols(noColumns);
         m_txbResultField.setRows(noResultRows);
-        m_txbResultField.setHeight("100%");
-        m_txbResultField.setHflex("1");
+        ZKUpdateUtil.setHeight(m_txbResultField, "100%");
+        ZKUpdateUtil.setHflex(m_txbResultField, "1");
         m_txbResultField.setReadonly(true);
 
         rwBottom.appendCellChild(m_txbResultField, 3);
@@ -135,13 +136,13 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
 
         Borderlayout contentPane = new Borderlayout();
 		this.appendChild(contentPane);
-		contentPane.setWidth("99%");
-		contentPane.setHeight("100%");
+		ZKUpdateUtil.setWidth(contentPane, "99%");
+		ZKUpdateUtil.setHeight(contentPane, "100%");
 		Center center = new Center();
 		center.setStyle("border: none");
 		contentPane.appendChild(center);
-		m_grdMain.setHflex("true");
-		m_grdMain.setVflex("true");
+		ZKUpdateUtil.setHflex(m_grdMain, "true");
+		ZKUpdateUtil.setVflex(m_grdMain, "true");
 		center.appendChild(m_grdMain);
 
         return;

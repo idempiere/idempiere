@@ -33,6 +33,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.form.FactReconcile;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
@@ -173,34 +174,34 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		
 		Rows rows = null;
 		Row row = null;
-		parameterLayout.setWidth("90%");
+		ZKUpdateUtil.setWidth(parameterLayout, "90%");
 		rows = parameterLayout.newRows();
 		row = rows.newRow();
 		row.appendCellChild(labelAcctSchema.rightAlign());
-		fieldAcctSchema.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(fieldAcctSchema.getComponent(), "true");
 		row.appendCellChild(fieldAcctSchema.getComponent(), 2);
 		row.appendCellChild(labelOrg.rightAlign());
-		fieldOrg.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(fieldOrg.getComponent(), "true");
 		row.appendCellChild(fieldOrg.getComponent(), 2);
 		row = rows.newRow();
 		row.appendCellChild(labelAccount.rightAlign());
-		fieldAccount.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(fieldAccount.getComponent(), "true");
 		row.appendCellChild(fieldAccount.getComponent(), 2);
 		row.appendCellChild(labelReconciled);
 		row.appendCellChild(isReconciled, 2);
 		row = rows.newRow();
 		row.appendCellChild(labelBPartner.rightAlign());
-		fieldBPartner.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(fieldBPartner.getComponent(), "true");
 		row.appendCellChild(fieldBPartner.getComponent(), 2);
 		row.appendCellChild(labelProduct.rightAlign());
-		fieldProduct.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(fieldProduct.getComponent(), "true");
 		row.appendCellChild(fieldProduct.getComponent(), 2);
 		row = rows.newRow();
 		row.appendCellChild(labelDateAcct.rightAlign());
-		fieldDateAcct.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(fieldDateAcct.getComponent(), "true");
 		row.appendCellChild(fieldDateAcct.getComponent(), 2);
 		row.appendCellChild(labelDateAcct2.rightAlign());
-		fieldDateAcct2.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(fieldDateAcct2.getComponent(), "true");
 		row.appendCellChild(fieldDateAcct2.getComponent(), 2);
 		row = rows.newRow();
 		row.appendChild(bRefresh);
@@ -209,8 +210,8 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		Center center = new Center();
 		mainLayout.appendChild(center);
 		center.appendChild(miniTable);
-		miniTable.setWidth("99%");
-		miniTable.setHeight("99%");
+		ZKUpdateUtil.setWidth(miniTable, "99%");
+		ZKUpdateUtil.setHeight(miniTable, "99%");
 		center.setStyle("border: none");
 		
 		// Command Panel
@@ -219,22 +220,22 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		mainLayout.appendChild(south);
 		south.appendChild(commandPanel);
 		commandPanel.appendChild(commandLayout);
-		commandLayout.setWidth("90%");
+		ZKUpdateUtil.setWidth(commandLayout, "90%");
 		rows = commandLayout.newRows();
 		row = rows.newRow();
 		row.appendCellChild(bZoom, 2);
-		bZoom.setHflex("true");
-		bZoom.setWidth("100%");
+		ZKUpdateUtil.setHflex(bZoom, "true");
+		ZKUpdateUtil.setWidth(bZoom, "100%");
 		row.appendCellChild(differenceLabel.rightAlign());
-		differenceLabel.setHflex("true");
+		ZKUpdateUtil.setHflex(differenceLabel, "true");
 		row.appendCellChild(differenceField, 2);
-		differenceField.setHflex("true");
+		ZKUpdateUtil.setHflex(differenceField, "true");
 		row.appendCellChild(bGenerate, 2);
-		bGenerate.setHflex("true");
+		ZKUpdateUtil.setHflex(bGenerate, "true");
 		row.appendCellChild(bReset, 2);
-		bReset.setHflex("true");
+		ZKUpdateUtil.setHflex(bReset, "true");
 		row.appendCellChild(bCancel);
-		bCancel.setHflex("true");
+		ZKUpdateUtil.setHflex(bCancel, "true");
 	}
 	
 	/**

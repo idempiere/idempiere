@@ -32,6 +32,7 @@ import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.Merge;
 import org.compiere.model.Lookup;
@@ -150,8 +151,8 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 	void zkInit () throws Exception
 	{
 		form.appendChild (mainLayout);
-		mainLayout.setHeight("100%");
-		mainLayout.setWidth("100%");
+		ZKUpdateUtil.setHeight(mainLayout, "100%");
+		ZKUpdateUtil.setWidth(mainLayout, "100%");
 		//
 		South south = new South();
 		mainLayout.appendChild(south);

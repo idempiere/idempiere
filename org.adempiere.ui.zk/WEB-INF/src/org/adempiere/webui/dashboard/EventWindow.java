@@ -28,6 +28,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MRequest;
 import org.compiere.model.MRequestType;
 import org.compiere.util.Env;
@@ -61,8 +62,8 @@ public class EventWindow extends Window implements EventListener<Event> {
 		Properties ctx = Env.getCtx();
 		setTitle(Msg.getMsg(ctx,"Event"));
 		setAttribute(Window.MODE_KEY, Window.MODE_POPUP);
-		setWidth("400px");
-		setHeight("310px");
+		ZKUpdateUtil.setWidth(this, "400px");
+		ZKUpdateUtil.setHeight(this, "310px");
 		this.setBorder("normal");
 		this.setClosable(true);
 		
@@ -80,16 +81,16 @@ public class EventWindow extends Window implements EventListener<Event> {
 		
 		txtContent = new Textbox();
 		txtContent.setRows(5);
-		txtContent.setWidth("95%");
-		txtContent.setHeight("100%");
+		ZKUpdateUtil.setWidth(txtContent, "95%");
+		ZKUpdateUtil.setHeight(txtContent, "100%");
 		txtContent.setReadonly(true);
 		
 		txtHeaderColor = new Textbox();
-		txtHeaderColor.setWidth("50px");
+		ZKUpdateUtil.setWidth(txtHeaderColor, "50px");
 		txtHeaderColor.setReadonly(true);
 		
 		txtContentColor = new Textbox();
-		txtContentColor.setWidth("50px");
+		ZKUpdateUtil.setWidth(txtContentColor, "50px");
 		txtContentColor.setReadonly(true);
 		
 		confirmPanel = new ConfirmPanel(false, false, false, false, false, true);
@@ -106,7 +107,7 @@ public class EventWindow extends Window implements EventListener<Event> {
 		
 		column = new Column();
 		columns.appendChild(column);
-		column.setWidth("250px");
+		ZKUpdateUtil.setWidth(column, "250px");
 		
 		Rows rows = new Rows();
 		grid.appendChild(rows);
@@ -142,8 +143,8 @@ public class EventWindow extends Window implements EventListener<Event> {
 		Center center = new Center();
 		borderlayout.appendChild(center);
 		center.appendChild(grid);
-		grid.setVflex("1");
-		grid.setHflex("1");
+		ZKUpdateUtil.setVflex(grid, "1");
+		ZKUpdateUtil.setHflex(grid, "1");
 		
 		South south = new South();
 		borderlayout.appendChild(south);

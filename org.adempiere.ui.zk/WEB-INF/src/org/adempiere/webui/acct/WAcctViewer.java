@@ -50,6 +50,7 @@ import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
@@ -250,11 +251,11 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	private void init() throws Exception
 	{
 		// Selection Panel
-		selectionPanel.setHflex("1");
+		ZKUpdateUtil.setHflex(selectionPanel, "1");
 			// Accounting Schema
 		
 		Grid grid = new Grid();
-		grid.setHflex("1");
+		ZKUpdateUtil.setHflex(grid, "1");
 		grid.setSclass("grid-layout");
 		
 		selectionPanel.appendChild(grid);
@@ -262,10 +263,10 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		Columns columns = new Columns();
 		grid.appendChild(columns);
 		Column column = new Column();
-		column.setWidth("30%");
+		ZKUpdateUtil.setWidth(column, "30%");
 		columns.appendChild(column);
 		column = new Column();
-		column.setWidth("60%");
+		ZKUpdateUtil.setWidth(column, "60%");
 		columns.appendChild(column);
 		
 		Rows rows = grid.newRows();
@@ -277,7 +278,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		Row row = rows.newRow();
 		row.appendChild(lacctSchema);
 		row.appendChild(selAcctSchema);
-		selAcctSchema.setHflex("1");
+		ZKUpdateUtil.setHflex(selAcctSchema, "1");
 
 		selDocument.setLabel(Msg.getMsg(Env.getCtx(), "SelectDocument"));
 		selDocument.addEventListener(Events.ON_CHECK, this);
@@ -301,7 +302,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		row = rows.newRow();
 		row.appendChild(lpostingType);
 		row.appendChild(selPostingType);
-		selPostingType.setHflex("1");
+		ZKUpdateUtil.setHflex(selPostingType, "1");
 
 			// Date
 
@@ -325,7 +326,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		row = rows.newRow();
 		row.appendChild(lOrg);
 		row.appendChild(selOrg);
-		selOrg.setHflex("1");
+		ZKUpdateUtil.setHflex(selOrg, "1");
 
 			// Account
 
@@ -384,7 +385,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		displayQty.setLabel(Msg.getMsg(Env.getCtx(), "DisplayQty"));
 		displayQty.addEventListener(Events.ON_CHECK, this);
 
-		displayPanel.setWidth("100%");
+		ZKUpdateUtil.setWidth(displayPanel, "100%");
 		displayPanel.appendChild(displayDocumentInfo);
 		displayPanel.appendChild(displaySourceAmt);
 		displayPanel.appendChild(displayQty);
@@ -392,15 +393,15 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		
 		grid = new Grid();
 		grid.setSclass("grid-layout");
-		grid.setHflex("1");
+		ZKUpdateUtil.setHflex(grid, "1");
 		displayPanel.appendChild(grid);
 		columns = new Columns();
 		grid.appendChild(columns);
 		column = new Column();
-		column.setWidth("70%");
+		ZKUpdateUtil.setWidth(column, "70%");
 		columns.appendChild(column);
 		column = new Column();
-		column.setWidth("30%");
+		ZKUpdateUtil.setWidth(column, "30%");
 		columns.appendChild(column);
 
 		rows = grid.newRows();
@@ -408,35 +409,35 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		lSort.setValue(Msg.getMsg(Env.getCtx(), "SortBy"));
 		lGroup.setValue(Msg.getMsg(Env.getCtx(), "GroupBy"));
 		row.appendChild(lSort);
-		lSort.setHflex("1");
+		ZKUpdateUtil.setHflex(lSort, "1");
 		row.appendChild(lGroup);
 
 		row = rows.newRow();		
 		sortBy1.setMold("select");
 		sortBy1.setRows(1);
 		row.appendChild(sortBy1);
-		sortBy1.setHflex("1");
+		ZKUpdateUtil.setHflex(sortBy1, "1");
 		row.appendChild(group1);
 
 		row = rows.newRow();
 		sortBy2.setMold("select");
 		sortBy2.setRows(1);
 		row.appendChild(sortBy2);
-		sortBy2.setHflex("1");
+		ZKUpdateUtil.setHflex(sortBy2, "1");
 		row.appendChild(group2);
 
 		row = rows.newRow();
 		sortBy3.setMold("select");
 		sortBy3.setRows(1);
 		row.appendChild(sortBy3);
-		sortBy3.setHflex("1");
+		ZKUpdateUtil.setHflex(sortBy3, "1");
 		row.appendChild(group3);
 
 		row = rows.newRow();
 		sortBy4.setMold("select");
 		sortBy4.setRows(1);
 		row.appendChild(sortBy4);
-		sortBy4.setHflex("1");
+		ZKUpdateUtil.setHflex(sortBy4, "1");
 		row.appendChild(group4);
 
 		//"images/InfoAccount16.png"
@@ -452,15 +453,15 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		groupSelection.appendChild(selectionPanel);
 
 		Hlayout boxQueryPanel = new Hlayout();
-		boxQueryPanel.setHflex("3");
+		ZKUpdateUtil.setHflex(boxQueryPanel, "3");
 
 		boxQueryPanel.appendChild(groupSelection);
-		groupSelection.setHflex("2");
+		ZKUpdateUtil.setHflex(groupSelection, "2");
 		Separator separator = new Separator();
 		separator.setOrient("vertical");
 		boxQueryPanel.appendChild(separator);
 		boxQueryPanel.appendChild(groupDisplay);
-		groupDisplay.setHflex("1");
+		ZKUpdateUtil.setHflex(groupDisplay, "1");
 
 		//  South Panel
 
@@ -489,11 +490,11 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		bExport.addEventListener(Events.ON_CLICK, this);
 		bExport.setVisible(false);
 
-		southPanel.setHflex("5");
+		ZKUpdateUtil.setHflex(southPanel, "5");
 		Grid southLeftGrid = new Grid();
 		southLeftGrid.setSclass("grid-layout");
 		southPanel.appendChild(southLeftGrid);
-		southLeftGrid.setHflex("4");
+		ZKUpdateUtil.setHflex(southLeftGrid, "4");
 		rows = southLeftGrid.newRows();
 		Row southLeft = rows.newRow();
 		Hlayout repostLayout = new Hlayout();
@@ -501,12 +502,12 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		repostLayout.appendChild(bRePost);
 		repostLayout.appendChild(new Separator());
 		repostLayout.appendChild(forcePost);
-		repostLayout.setVflex("1");
+		ZKUpdateUtil.setVflex(repostLayout, "1");
 		southLeft.appendChild(statusLine);
 		
 		Grid southRight = new Grid();
 		southRight.setSclass("grid-layout");
-		southRight.setHflex("1");
+		ZKUpdateUtil.setHflex(southRight, "1");
 		southPanel.appendChild(southRight);
 		Panel southRightPanel = new Panel();
 		southRightPanel.appendChild(bZoom); // Elaine 2009/07/29
@@ -521,27 +522,27 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 		resultPanel = new Borderlayout();
 		resultPanel.setStyle("position: absolute");
-		resultPanel.setWidth("99%");
-		resultPanel.setHeight("99%");
+		ZKUpdateUtil.setWidth(resultPanel, "99%");
+		ZKUpdateUtil.setHeight(resultPanel, "99%");
 		result.appendChild(resultPanel);
 
 		Center resultCenter = new Center();
 		resultPanel.appendChild(resultCenter);
-		table.setHflex("1");
-		table.setVflex(true);
-		table.setHeight("99%");
+		ZKUpdateUtil.setHflex(table, "1");
+		ZKUpdateUtil.setVflex(table, true);
+		ZKUpdateUtil.setHeight(table, "99%");
 		table.setStyle("position: absolute;");
 		resultCenter.appendChild(table);
-		table.setHflex("1");
-		table.setVflex("1");
+		ZKUpdateUtil.setHflex(table, "1");
+		ZKUpdateUtil.setVflex(table, "1");
 		table.addEventListener(Events.ON_DOUBLE_CLICK, this);
 
 		pagingPanel = new South();
 		resultPanel.appendChild(pagingPanel);
 		pagingPanel.appendChild(paging);
 
-		result.setHflex("1");
-		result.setHeight("100%");
+		ZKUpdateUtil.setHflex(result, "1");
+		ZKUpdateUtil.setHeight(result, "100%");
 		result.setStyle("position: relative");
 
 		paging.addEventListener("onPaging", this);
@@ -550,7 +551,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 		// Query Tab
 
-		query.setHflex("1");
+		ZKUpdateUtil.setHflex(query, "1");
 		query.appendChild(boxQueryPanel);
 
 		// Tabbox
@@ -564,35 +565,35 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		tabs.appendChild(tabQuery);
 		tabs.appendChild(tabResult);
 
-		tabpanels.setHflex("1");
+		ZKUpdateUtil.setHflex(tabpanels, "1");
 		tabpanels.appendChild(query);
 		tabpanels.appendChild(result);
 
-		tabbedPane.setHflex("1");
-		tabbedPane.setVflex("1");
+		ZKUpdateUtil.setHflex(tabbedPane, "1");
+		ZKUpdateUtil.setVflex(tabbedPane, "1");
 		tabbedPane.appendChild(tabs);
 		tabbedPane.appendChild(tabpanels);
 
 		Borderlayout layout = new Borderlayout();
 		layout.setParent(this);
-		layout.setHeight("100%");
-		layout.setWidth("100%");
+		ZKUpdateUtil.setHeight(layout, "100%");
+		ZKUpdateUtil.setWidth(layout, "100%");
 		layout.setStyle("background-color: transparent; margin: 0; position: absolute; padding: 0;");
 
 		Center center = new Center();
 		center.setParent(layout);
 		center.setStyle("background-color: transparent; padding: 2px;");
 		tabbedPane.setParent(center);
-		tabbedPane.setHflex("1");
-		tabbedPane.setVflex("1");
+		ZKUpdateUtil.setHflex(tabbedPane, "1");
+		ZKUpdateUtil.setVflex(tabbedPane, "1");
 
 		South south = new South();
 		south.setParent(layout);
 		south.setStyle("background-color: transparent");
-		south.setHeight("36px");
+		ZKUpdateUtil.setHeight(south, "36px");
 		southPanel.setParent(south);
-		southPanel.setVflex("1");
-		southPanel.setHflex("1");
+		ZKUpdateUtil.setVflex(southPanel, "1");
+		ZKUpdateUtil.setHflex(southPanel, "1");
 
 		this.setTitle(Msg.getMsg(Env.getCtx(), TITLE));
 		this.setClosable(true);

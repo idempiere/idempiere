@@ -22,6 +22,7 @@ import javax.servlet.ServletRequest;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.LoginWindow;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zhtml.Text;
@@ -76,7 +77,7 @@ public class WLogin extends AbstractUIPart
         	div.appendChild(new Text(msg));
         	browserWarningWindow.appendChild(div);
         	browserWarningWindow.setPosition("top,right");
-        	browserWarningWindow.setWidth("550px");
+        	ZKUpdateUtil.setWidth(browserWarningWindow, "550px");
         	browserWarningWindow.setPage(page);
         	browserWarningWindow.doOverlapped();
         }

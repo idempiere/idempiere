@@ -44,6 +44,7 @@ import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.FeedbackManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.Adempiere;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogErrorBuffer;
@@ -113,14 +114,14 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		this.setSizable(true);
 
 		tabbox = new Tabbox();
-		tabbox.setVflex("1");
-		tabbox.setHflex("1");
+		ZKUpdateUtil.setVflex(tabbox, "1");
+		ZKUpdateUtil.setHflex(tabbox, "1");
 		Tabs tabs = new Tabs();
 		tabs.setParent(tabbox);
 		tabPanels = new Tabpanels();
 		tabPanels.setParent(tabbox);
-		tabPanels.setHflex("1");
-		tabPanels.setVflex("1");
+		ZKUpdateUtil.setHflex(tabPanels, "1");
+		ZKUpdateUtil.setVflex(tabPanels, "1");
 
 		initTabs(tabs);
 
@@ -129,8 +130,8 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		
 		Borderlayout borderlayout = new Borderlayout();
 		this.appendChild(borderlayout);
-		borderlayout.setHflex("1");
-		borderlayout.setVflex("1");
+		ZKUpdateUtil.setHflex(borderlayout, "1");
+		ZKUpdateUtil.setVflex(borderlayout, "1");
 		
 		Center centerPane = new Center();
 		centerPane.setSclass("dialog-content");
@@ -145,8 +146,8 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		southPane.appendChild(btnOk);
 
 		this.setBorder("normal");
-		this.setWidth("600px");
-		this.setHeight("450px");
+		ZKUpdateUtil.setWidth(this, "600px");
+		ZKUpdateUtil.setHeight(this, "450px");
 		this.setShadow(true);
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 	}
@@ -187,14 +188,14 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		Vbox vbox = new Vbox();
 		LayoutUtils.addSclass("about-trace-panel", vbox);
 		vbox.setParent(tabPanel);
-		vbox.setHflex("1");
-		vbox.setVflex("1");
+		ZKUpdateUtil.setHflex(vbox, "1");
+		ZKUpdateUtil.setVflex(vbox, "1");
 		
 		Hbox hbox = new Hbox();
 		hbox.setAlign("center");
 		hbox.setPack("start");
 		Label levelLabel = new Label("Trace Level:");
-		levelLabel.setHeight("100%");
+		ZKUpdateUtil.setHeight(levelLabel, "100%");
 		hbox.appendChild(levelLabel);
 		levelListBox = ListboxFactory.newDropdownListbox();
 		levelListBox.addEventListener(Events.ON_SELECT, this);
@@ -234,8 +235,8 @@ public class AboutWindow extends Window implements EventListener<Event> {
 			}
 		}
 
-		hbox.setHflex("1");
-		hbox.setVflex("0");
+		ZKUpdateUtil.setHflex(hbox, "1");
+		ZKUpdateUtil.setVflex(hbox, "0");
 		vbox.appendChild(hbox);
 
 		hbox = new Hbox();
@@ -263,8 +264,8 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		LayoutUtils.addSclass("txt-btn", btnViewLog);
 		btnViewLog.addEventListener(Events.ON_CLICK, this);
 		hbox.appendChild(btnViewLog);
-		hbox.setHflex("1");
-		hbox.setVflex("0");
+		ZKUpdateUtil.setHflex(hbox, "1");
+		ZKUpdateUtil.setVflex(hbox, "0");
 		vbox.appendChild(hbox);
 
 		Vector<String> columnNames = CLogErrorBuffer.get(true).getColumnNames(Env.getCtx());
@@ -275,13 +276,13 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		listHead.setSizable(true);
 		for (Object obj : columnNames) {
 			ListHeader header = new ListHeader(obj.toString());
-			header.setHflex("1");
+			ZKUpdateUtil.setHflex(header, "1");
 			listHead.appendChild(header);
 		}
 
 		vbox.appendChild(logTable);
-		logTable.setVflex("1");
-		logTable.setHflex("1");
+		ZKUpdateUtil.setVflex(logTable, "1");
+		ZKUpdateUtil.setHflex(logTable, "1");
 
 		updateLogTable();
 
@@ -305,7 +306,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		Div div = new Div();
 		LayoutUtils.addSclass("about-info-panel", div);
 		div.setParent(tabPanel);
-		div.setHeight("100%");
+		ZKUpdateUtil.setHeight(div, "100%");
 		div.setStyle("overflow: auto;");
 		Pre pre = new Pre();
 		pre.setParent(div);
@@ -320,8 +321,8 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		Div div = new Div();
 		LayoutUtils.addSclass("about-credit-panel", div);
 		div.setParent(tabPanel);
-		div.setWidth("100%");
-		div.setHeight("100%");
+		ZKUpdateUtil.setWidth(div, "100%");
+		ZKUpdateUtil.setHeight(div, "100%");
 		div.setStyle("overflow: auto;");
 		Vbox vbox = new Vbox();
 		LayoutUtils.addSclass("about-credit-panel-logo", vbox);
@@ -330,7 +331,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		caption.setStyle("font-weight: bold;");
 		caption.setParent(vbox);
 		ToolBarButton link = new ToolBarButton();
-		link.setHeight("72px");
+		ZKUpdateUtil.setHeight(link, "72px");
 		link.setImage("images/TrekGlobal.jpg");
 		link.setParent(vbox);
 		link.setHref("http://www.trekglobal.com");
@@ -342,17 +343,17 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		Div panel = new Div();
 		LayoutUtils.addSclass("about-credit-panel-sponsors", panel);
 		panel.setParent(div);
-		panel.setWidth("100%");
+		ZKUpdateUtil.setWidth(panel, "100%");
 		vbox = new Vbox();
 		LayoutUtils.addSclass("about-credit-panel-sponsors-header", vbox);
-		vbox.setWidth("100%");
+		ZKUpdateUtil.setWidth(vbox, "100%");
 		vbox.setParent(panel);
 		caption = new Label("Sponsors");
 		caption.setStyle("font-weight: bold;");
 		caption.setParent(vbox);
 		Vbox content = new Vbox();
 		LayoutUtils.addSclass("about-credit-panel-sponsors-links", content);
-		content.setWidth("100%");
+		ZKUpdateUtil.setWidth(content, "100%");
 		content.setParent(panel);
 
 		Grid grid = new Grid();
@@ -373,17 +374,17 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		panel = new Div();
 		LayoutUtils.addSclass("about-credit-panel-contributors", panel);
 		panel.setParent(div);
-		panel.setWidth("100%");
+		ZKUpdateUtil.setWidth(panel, "100%");
 		vbox = new Vbox();
 		LayoutUtils.addSclass("about-credit-panel-contributors-header", vbox);
-		vbox.setWidth("100%");
+		ZKUpdateUtil.setWidth(vbox, "100%");
 		vbox.setParent(panel);
 		caption = new Label("Contributors");
 		caption.setStyle("font-weight: bold;");
 		caption.setParent(vbox);
 		content = new Vbox();
 		LayoutUtils.addSclass("about-credit-panel-contributors-links", content);
-		content.setWidth("100%");
+		ZKUpdateUtil.setWidth(content, "100%");
 		content.setParent(panel);
 
 		grid = new Grid();
@@ -429,15 +430,15 @@ public class AboutWindow extends Window implements EventListener<Event> {
 
 		Vbox vb = new Vbox();
 		LayoutUtils.addSclass("about-main-panel", vb);
-		vb.setWidth("100%");
-		vb.setHeight("100%");
+		ZKUpdateUtil.setWidth(vb, "100%");
+		ZKUpdateUtil.setHeight(vb, "100%");
 		vb.setAlign("center");
 		vb.setPack("center");
 		vb.setParent(tabPanel);
 
 		Vbox vbox = new Vbox();
 		LayoutUtils.addSclass("about-main-panel-logo", vbox);
-		vbox.setWidth("100%");
+		ZKUpdateUtil.setWidth(vbox, "100%");
 		vbox.setAlign("center");
 		vbox.setParent(vb);
 		
@@ -446,7 +447,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 
 		vbox = new Vbox();
 		LayoutUtils.addSclass("about-main-panel-version", vbox);
-		vbox.setWidth("100%");
+		ZKUpdateUtil.setWidth(vbox, "100%");
 		vbox.setAlign("center");
 		vbox.setParent(vb);
 		
@@ -459,7 +460,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		
 		vbox = new Vbox();
 		LayoutUtils.addSclass("about-main-panel-links", vbox);
-		vbox.setWidth("100%");
+		ZKUpdateUtil.setWidth(vb, "100%");
 		vbox.setAlign("center");
 		vbox.setParent(vb);
 		
@@ -554,8 +555,8 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		w.setClosable(true);
 		w.setMaximizable(true);
 		w.setSizable(true);
-		w.setWidth("600px");
-		w.setHeight("500px");
+		ZKUpdateUtil.setWidth(w, "600px");
+		ZKUpdateUtil.setHeight(w, "500px");
 		Textarea textbox = new Textarea();
 		textbox.setDynamicProperty("readonly", "true");
 		textbox.setStyle("width:99%; height: 99%; margin: auto; display: inline-block;");

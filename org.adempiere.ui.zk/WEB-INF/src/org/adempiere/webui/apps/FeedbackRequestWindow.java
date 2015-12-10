@@ -36,6 +36,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.FeedbackManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.apache.commons.io.IOUtils;
 import org.compiere.model.MAttachment;
@@ -89,7 +90,7 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		
 		setTitle(Msg.getMsg(Env.getCtx(), "RequestNew"));
 		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-		setWidth("400px");
+		ZKUpdateUtil.setWidth(this, "400px");
 		this.setSclass("popup-dialog");
 		this.setBorder("normal");
 		this.setShadow(true);
@@ -135,15 +136,15 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		
 		txtSummary = new Textbox();
 		txtSummary.setRows(10);
-		txtSummary.setWidth("95%");
-		txtSummary.setHeight("100%");
+		ZKUpdateUtil.setWidth(txtSummary, "95%");
+		ZKUpdateUtil.setHeight(txtSummary, "100%");
 		
 		confirmPanel = new ConfirmPanel(true);
 		confirmPanel.addActionListener(this);
 		
 		
 		Grid grid = GridFactory.newGridLayout();
-		grid.setVflex("min");
+		ZKUpdateUtil.setVflex(grid, "min");
 		
 		Rows rows = new Rows();
 		grid.appendChild(rows);
@@ -186,16 +187,16 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		row.appendChild(new Label(Msg.getMsg(Env.getCtx(), "Attachment")));
 		
 		attachmentBox = new Div();
-		attachmentBox.setHflex("1");
-		attachmentBox.setVflex("1");
+		ZKUpdateUtil.setHflex(attachmentBox, "1");
+		ZKUpdateUtil.setVflex(attachmentBox, "1");
 		row = rows.newRow();
 		row.setStyle("padding: 0px 4px 4px 6px");
 		row.appendChild(attachmentBox);
 		
 		Borderlayout borderlayout = new Borderlayout();
 		this.appendChild(borderlayout);
-		borderlayout.setHflex("1");
-		borderlayout.setVflex("min");
+		ZKUpdateUtil.setHflex(borderlayout, "1");
+		ZKUpdateUtil.setVflex(borderlayout, "min");
 		
 		North northPane = new North();
 		northPane.setSclass("dialog-content");
@@ -203,8 +204,8 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		borderlayout.appendChild(northPane);
 		
 		northPane.appendChild(grid);
-		grid.setVflex("1");
-		grid.setHflex("1");
+		ZKUpdateUtil.setVflex(grid, "1");
+		ZKUpdateUtil.setHflex(grid, "1");
 
 		South southPane = new South();
 		southPane.setSclass("dialog-footer");

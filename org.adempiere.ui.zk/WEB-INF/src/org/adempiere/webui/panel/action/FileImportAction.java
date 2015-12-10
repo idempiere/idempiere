@@ -49,6 +49,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.util.ReaderInputStream;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MLookup;
@@ -143,7 +144,7 @@ public class FileImportAction implements EventListener<Event>
 		{
 			winImportFile = new Window();
 			winImportFile.setTitle(Msg.getMsg(Env.getCtx(), "FileImport") + ": " + panel.getActiveGridTab().getName());
-			winImportFile.setWidth("450px");
+			ZKUpdateUtil.setWidth(winImportFile, "450px");
 			winImportFile.setClosable(true);
 			winImportFile.setBorder("normal");
 			winImportFile.setStyle("position:absolute");
@@ -161,7 +162,7 @@ public class FileImportAction implements EventListener<Event>
 			cboType.setSelectedIndex(0);
 
 			Vbox vb = new Vbox();
-			vb.setWidth("100%");
+			ZKUpdateUtil.setWidth(vb, "100%");
 			winImportFile.appendChild(vb);
 
 			Vlayout vlayout = new Vlayout();
@@ -173,10 +174,10 @@ public class FileImportAction implements EventListener<Event>
 	        
 	        Columns columns = new Columns();
 	        Column column = new Column();
-	        column.setHflex("min");
+	        ZKUpdateUtil.setHflex(column, "min");
 	        columns.appendChild(column);
 	        column = new Column();
-	        column.setHflex("1");
+	        ZKUpdateUtil.setHflex(column, "1");
 	        columns.appendChild(column);
 	        grid.appendChild(columns);
 	        
@@ -187,7 +188,7 @@ public class FileImportAction implements EventListener<Event>
 			rows.appendChild(row);
 			row.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType", true)));
 			row.appendChild(cboType);
-			cboType.setHflex("1");
+			ZKUpdateUtil.setHflex(cboType, "1");
 			
 			row = new Row();
 			rows.appendChild(row);
@@ -196,7 +197,7 @@ public class FileImportAction implements EventListener<Event>
 			fCharset.setRows(0);
 			fCharset.setTooltiptext(Msg.getMsg(Env.getCtx(), "Charset", false));
 			row.appendChild(fCharset);
-			fCharset.setHflex("1");
+			ZKUpdateUtil.setHflex(fCharset, "1");
 
 			row = new Row();
 			rows.appendChild(row);
