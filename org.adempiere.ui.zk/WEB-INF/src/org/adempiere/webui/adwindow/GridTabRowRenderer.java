@@ -872,6 +872,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			
 			WEditor editor = editors.get(field);
 			boolean isEditable = field.isEditableGrid(true); 
+			if(editor == null)
+				continue;
 			editor.setReadWrite(isEditable);
 			if( isEditable )
 				gridPanel.refresh(gridTab);
