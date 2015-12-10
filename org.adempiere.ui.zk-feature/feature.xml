@@ -26,11 +26,4 @@
          install-size="0"
          version="3.1.0.qualifier"/>
 
-   <plugin
-         id="org.zkoss.zk.library"
-         download-size="0"
-         install-size="0"
-         version="7.0.7.qualifier"
-         unpack="false"/>
-
 </feature>

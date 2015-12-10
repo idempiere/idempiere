@@ -91,9 +91,18 @@ Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  web.js.zkforge.mold
 Require-Bundle: org.adempiere.base;bundle-version="3.1.0",
  org.adempiere.ui;bundle-version="3.1.0",
- org.zkoss.zk.library;bundle-version="7.0.0"
+ org.idempiere.zk.extra;bundle-version="1.0.0",
+ zcommon;bundle-version="8.0.0",
+ zel;bundle-version="8.0.0",
+ zhtml;bundle-version="8.0.0",
+ zk;bundle-version="8.0.0",
+ zkbind;bundle-version="8.0.0",
+ zkplus;bundle-version="8.0.0",
+ zul;bundle-version="8.0.0",
+ zweb;bundle-version="8.0.0",
+ org.junit;bundle-version="4.11.0",
+ org.apache.commons.io;bundle-version="1.4.0"
 Bundle-Activator: org.adempiere.webui.WebUIActivator
 Eclipse-ExtensibleAPI: true
-Eclipse-RegisterBuddy: org.zkoss.zk.library
 Web-ContextPath: webui
 Service-Component: OSGI-INF/reportviewerprovider.xml, OSGI-INF/defaultinfofactory.xml, OSGI-INF/defaulteditorfactory.xml, OSGI-INF/jrviewerprovider.xml, OSGI-INF/resourcefinder.xml, OSGI-INF/defaultpaymentformfactory.xml, OSGI-INF/processfactory.xml, OSGI-INF/defaultprintshippinglabel.xml, OSGI-INF/defaultcreatefromfactory.xml, OSGI-INF/defaultformfactory.xml, OSGI-INF/feedbackservice.xml, OSGI-INF/zulgadgetfactory.xml, OSGI-INF/jfgchartrenderer.xml

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <config>
+	<config-name>org.adempiere.ui.zk</config-name>
 	<version>
 		<version-class>org.adempiere.webui.AdempiereWebUI</version-class>
 		<version-uid>1.0.0</version-uid>

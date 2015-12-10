@@ -42,6 +42,11 @@
 		<servlet-class>
 			org.zkoss.web.servlet.dsp.InterpreterServlet
 		</servlet-class>
+		<!-- Specify class-resource, if you want to access TLD defined in jar files -->
+       <init-param>
+           <param-name>class-resource</param-name>
+           <param-value>true</param-value>
+       </init-param>  
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>dspLoader</servlet-name>
