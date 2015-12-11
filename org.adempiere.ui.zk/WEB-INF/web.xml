@@ -58,15 +58,6 @@
 	<!-- ZK -->
 	<listener>
 		<description>
-			Used to cleanup when a session is destroyed
-		</description>
-		<display-name>ZK Session Cleaner</display-name>
-		<listener-class>
-			org.zkoss.zk.ui.http.HttpSessionListener
-		</listener-class>
-	</listener>
-	<listener>
-		<description>
 			Used to track the session currently used
 		</description>
 		<display-name>Update Session</display-name>
@@ -74,50 +65,6 @@
 			org.adempiere.webui.LoggedSessionListener
 		</listener-class>
 	</listener>
-
-	<servlet>
-		<description>ZK loader for ZUML pages</description>
-		<servlet-name>zkLoader</servlet-name>
-		<servlet-class>
-			org.adempiere.webui.session.WebUIServlet
-		</servlet-class>
-		<!-- Must. Specifies URI of the update engine (DHtmlUpdateServlet).
-			It must be the same as <url-pattern> for the update engine.
-		-->
-		<init-param>
-			<param-name>update-uri</param-name>
-			<param-value>/zkau</param-value>
-		</init-param>
-		<init-param>
-			<param-name>compress</param-name>
-			<param-value>false</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>zkLoader</servlet-name>
-		<url-pattern>*.zul</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>zkLoader</servlet-name>
-		<url-pattern>*.zhtml</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<description>The asynchronous update engine for ZK</description>
-		<servlet-name>auEngine</servlet-name>
-		<servlet-class>
-			org.zkoss.zk.au.http.DHtmlUpdateServlet
-		</servlet-class>
-		<init-param>
-			<param-name>compress</param-name>
-			<param-value>false</param-value>
-		</init-param>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>auEngine</servlet-name>
-		<url-pattern>/zkau/*</url-pattern>
-	</servlet-mapping>
-	<!-- //// -->
 
 	<!-- /////////// -->
 	<!-- Miscellaneous -->
