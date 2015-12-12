@@ -140,7 +140,7 @@
    <rm:provider componentTypes="osgi.bundle" readerType="p2">
     <rm:property key="buckminster.source" value="false" />
     <rm:property key="buckminster.mutable" value="false" />
-    <rm:uri format="https://dl.bintray.com/hieplq/generic/zkossOSGiP2/8.0.0/" />
+    <rm:uri format="https://dl.bintray.com/hieplq/generic/zkossOSGiP2/8.0.0.1/" />
    </rm:provider>
   </rm:searchPath>
 </rm:rmap>
