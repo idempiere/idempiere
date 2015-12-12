@@ -868,14 +868,15 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	 */
 	public void checkDependants(ArrayList<GridField> dependantFields){
 
-		for ( GridField field : dependantFields ){
-			
-			WEditor editor = editors.get(field);
-			boolean isEditable = field.isEditableGrid(true); 
-			if(editor == null)
+		for (GridField field : dependantFields) {
+			if (field == null)
 				continue;
+			WEditor editor = editors.get(field);
+			if (editor == null)
+				continue;
+			boolean isEditable = field.isEditableGrid(true); 
 			editor.setReadWrite(isEditable);
-			if( isEditable )
+			if (isEditable)
 				gridPanel.refresh(gridTab);
 		}
 		
