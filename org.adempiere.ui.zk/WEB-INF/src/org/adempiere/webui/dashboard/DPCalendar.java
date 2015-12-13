@@ -34,6 +34,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.compiere.model.I_R_Request;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 import org.compiere.model.X_R_RequestType;
 import org.compiere.util.CLogger;
@@ -200,13 +201,31 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	}
 	
 	public static ArrayList<ADCalendarEvent> getEvents(int RequestTypeID, Properties ctx) {
+		String mode = MSysConfig.getValue(MSysConfig.ZK_DASHBOARD_CALENDAR_REQUEST_DISPLAY_MODE, "CSU", Env.getAD_Client_ID(ctx));
+		
+		String modeCondition = "";
+		if (mode.indexOf('C') >= 0)
+			modeCondition += "r.CreatedBy = ?";		
+		if (mode.indexOf('S') >= 0)
+		{
+			if (modeCondition.length() > 0)
+				modeCondition += " OR ";
+			modeCondition += "r.SalesRep_ID = ?";
+		}		
+		if (mode.indexOf('U') >= 0)
+		{
+			if (modeCondition.length() > 0)
+				modeCondition += " OR ";
+			modeCondition += "r.AD_User_ID = ?";
+		}
+		
 		ArrayList<ADCalendarEvent> events = new ArrayList<ADCalendarEvent>();
 		String sql = "SELECT DISTINCT r.R_Request_ID, r.DateNextAction, "
 				+ "r.DateStartPlan, r.DateCompletePlan, r.StartTime, r.EndTime, "
 				+ "r.Summary, rt.HeaderColor, rt.ContentColor, rt.R_RequestType_ID "
 				+ "FROM R_Request r, R_RequestType rt "
 				+ "WHERE r.R_RequestType_ID = rt.R_RequestType_ID "
-				+ "AND (r.SalesRep_ID = ? OR r.AD_User_ID = ? OR r.CreatedBy = ?) "
+				+ "AND (" + modeCondition + ") "
 				+ "AND r.AD_Client_ID = ? AND r.IsActive = 'Y' "
 				+ "AND (r.R_Status_ID IS NULL OR r.R_Status_ID IN (SELECT R_Status_ID FROM R_Status WHERE IsClosed='N')) ";
 		if(RequestTypeID > 0)
@@ -214,16 +233,21 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		int count = 1;
 
 		try {
 			ps = DB.prepareStatement(sql, null);
 
-			ps.setInt(1, Env.getAD_User_ID(ctx));
-			ps.setInt(2, Env.getAD_User_ID(ctx));
-			ps.setInt(3, Env.getAD_User_ID(ctx));
-			ps.setInt(4, Env.getAD_Client_ID(ctx));
+			if (mode.indexOf('C') >= 0)
+				ps.setInt(count++, Env.getAD_User_ID(ctx));
+			if (mode.indexOf('S') >= 0)
+				ps.setInt(count++, Env.getAD_User_ID(ctx));
+			if (mode.indexOf('U') >= 0)
+				ps.setInt(count++, Env.getAD_User_ID(ctx));
+			
+			ps.setInt(count++, Env.getAD_Client_ID(ctx));
 			if(RequestTypeID > 0)
-				ps.setInt(5, RequestTypeID);
+				ps.setInt(count++, RequestTypeID);
 
 			rs = ps.executeQuery();
 

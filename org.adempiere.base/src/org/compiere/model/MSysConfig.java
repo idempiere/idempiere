@@ -42,7 +42,7 @@ public class MSysConfig extends X_AD_SysConfig
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 2300170888492939423L;
+	private static final long serialVersionUID = -5124493725187310483L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -142,6 +142,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_BROWSER_ICON = "ZK_BROWSER_ICON";
     public static final String ZK_BROWSER_TITLE = "ZK_BROWSER_TITLE";
     public static final String ZK_BUTTON_STYLE = "ZK_BUTTON_STYLE";
+    public static final String ZK_DASHBOARD_CALENDAR_REQUEST_DISPLAY_MODE = "ZK_DASHBOARD_CALENDAR_REQUEST_DISPLAY_MODE";
 	public static final String ZK_DASHBOARD_PERFORMANCE_TIMEOUT = "ZK_DASHBOARD_PERFORMANCE_TIMEOUT";
     public static final String ZK_DASHBOARD_REFRESH_INTERVAL = "ZK_DASHBOARD_REFRESH_INTERVAL";
 	public static final String ZK_DECIMALBOX_PROCESS_DOTKEYPAD = "ZK_DECIMALBOX_PROCESS_DOTKEYPAD";
