@@ -67,9 +67,7 @@ import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MMailMsg;
 import org.compiere.model.MRequest;
 import org.compiere.model.MStore;
-import org.compiere.model.MSysConfig;
 import org.compiere.model.MUserMail;
-import org.compiere.model.PO;
 
 /**
  *  Servlet Utilities
@@ -1315,47 +1313,6 @@ public final class WebUtil
 			}
 		}
 		return retVal;
-	}
-
-	/** Return the host name of the server (eg: demo.idempiere.com) */
-	public static String getHostName() {
-		StringBuilder retValue = new StringBuilder();
-
-		try {
-			retValue.append(InetAddress.getLocalHost().getHostName());
-		} catch (UnknownHostException e) {
-			log.log(Level.WARNING, "Local host or IP not found", e);
-			retValue.append(getHostIP());	
-		}
-		return retValue.toString();
-	}
-
-	/** Return the hardcoded link to the login page */
-	public static String getLoginPage() {
-		return getHostName() + "/webui/index.zul";
-	}
-
-	/** Return the link for direct access to the record using tableID */
-	public static String getZoomUrlTableID(PO po)
-	{
-		return getApplicationUrl(po) + "?Action=Zoom&AD_Table_ID=" + po.get_Table_ID() + "&Record_ID=" + po.get_ID();
-	}
-
-	/** Return the link for direct access to the record using tablename */
-	public static String getZoomUrlTableName(PO po)
-	{
-		return getApplicationUrl(po) + "?Action=Zoom&TableName" + po.get_TableName() + "&Record_ID=" + po.get_ID();
-	}
-
-	/** Return the link to the login page */
-	public static String getApplicationUrl(PO po)
-	{
-		String url = MSysConfig.getValue("APPLICATION_URL", po.getAD_Client_ID());
-		
-		if (!Util.isEmpty(url) && !url.equals("USE_HARDCODED"))
-			return MSysConfig.getValue("APPLICATION_URL", po.getAD_Client_ID());
-		else
-			return getLoginPage();
 	}
 
 }   //  WebUtil
