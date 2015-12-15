@@ -56,7 +56,7 @@
 </calendars>
 </center>
 <south open="false" size="300px" title="${EventsAnalysis}" collapsible="true">
-	<image id="mychart" width="600" height="250" vflex="1" hflex="1"/>
+	<image id="mychart" vflex="1" hflex="1"/>
 </south>
 </borderlayout>
 
