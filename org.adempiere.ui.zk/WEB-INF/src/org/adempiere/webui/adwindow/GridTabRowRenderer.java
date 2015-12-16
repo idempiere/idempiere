@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.LayoutUtils;
@@ -504,10 +505,11 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				else if (DisplayType.isNumeric(gridPanelFields[i].getDisplayType())) {
 					divStyle = CELL_DIV_STYLE_ALIGN_RIGHT;
 				}
-
-				if (!gridPanelFields[i].isDisplayedGrid()){
+				
+				GridRowCtx ctx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
+				if (!gridPanelFields[i].isDisplayed(ctx, true)){
 					// IDEMPIERE-2253 
-					div.removeChild(component);
+					component.setVisible(false);
 				}
 			}
 			div.setStyle(divStyle);
@@ -642,11 +644,14 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		            	div.appendChild(popupMenu);
 		            	popupMenu.addContextElement((XulElement) editor.getComponent());
 		            }		            
-
+		            
+		            
+		            Properties ctx = isDetailPane() ? new GridRowCtx(Env.getCtx(), gridTab, gridTab.getCurrentRow()) 
+		            	: gridPanelFields[i].getVO().ctx;
 		            //check context
-					if (!gridPanelFields[i].isDisplayedGrid()){
+					if (!gridPanelFields[i].isDisplayed(ctx, true)){
 						// IDEMPIERE-2253 
-						div.removeChild(editor.getComponent());
+						editor.getComponent().setVisible(false);
 					}
 					
 					editor.setReadWrite(gridPanelFields[i].isEditableGrid(true));
