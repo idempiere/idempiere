@@ -41,6 +41,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.adempiere.base.Core;
 import org.compiere.Adempiere;
 import org.compiere.model.MLanguage;
+import org.compiere.model.MPInstance;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.process.ProcessCall;
@@ -536,11 +537,17 @@ public class Translation implements IApplication
 			String countrycode = commandlineArgs[2];
 			Properties ctx = Env.getCtx();
 			Translation translation = new Translation(ctx);
+			String msg = translation.validateLanguage (countrycode);
+			if (msg.length() > 0)
+				System.err.println(msg);
 			translation.process(directory, countrycode, command);
 		} else if (commandlineArgs.length == 1 && "sync".equals(commandlineArgs[0])) {
 			ProcessInfo pi = new ProcessInfo("Synchronize Terminology", 172);
 			pi.setAD_Client_ID(0);
 			pi.setAD_User_ID(100);
+			MPInstance instance = new MPInstance(Env.getCtx(), 172, 0);
+			instance.saveEx();
+			pi.setAD_PInstance_ID(instance.getAD_PInstance_ID());
 			/*
 			 * I do not call this direct because I did not want the
 			 * org.adempiere.process plugin become a dependency of
