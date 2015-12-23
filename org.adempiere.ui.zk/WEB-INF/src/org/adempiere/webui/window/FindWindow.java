@@ -2382,7 +2382,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	private boolean isSearchLike(GridField field)
 	{
 		return DisplayType.isText(field.getDisplayType())
-		&& MColumn.isSuggestSelectionColumn(field.getColumnName(), true);
+		&& (field.isSelectionColumn() || MColumn.isSuggestSelectionColumn(field.getColumnName(), true));
 	}
 
 	public boolean isValid()

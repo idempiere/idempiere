@@ -941,30 +941,45 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			MAddressValidation validation = (MAddressValidation) lstAddressValidation.getSelectedItem().getValue();
 			m_location.setC_AddressValidation_ID(validation.getC_AddressValidation_ID());
 		}
-		
+
+		boolean changedCity = m_location.is_ValueChanged(MLocation.COLUMNNAME_City) || m_location.is_ValueChanged(MLocation.COLUMNNAME_C_City_ID);
+		boolean changedAddress1 = m_location.is_ValueChanged(MLocation.COLUMNNAME_Address1);
+		boolean changedAddress2 = m_location.is_ValueChanged(MLocation.COLUMNNAME_Address2);
+		boolean changedRegion = m_location.is_ValueChanged(MLocation.COLUMNNAME_RegionName) || m_location.is_ValueChanged(MLocation.COLUMNNAME_C_Region_ID);
 		//  Save changes
-		boolean success = false;
-		if (m_location.save())
-		{
+		boolean success = m_location.save();
+		if (success) {
             // IDEMPIERE-417 Force Update BPLocation.Name
-        	if (m_GridField != null && m_GridField.getGridTab() != null
-        			&& "C_BPartner_Location".equals(m_GridField.getGridTab().getTableName()))
-    		{
-        		m_GridField.getGridTab().setValue("Name", ".");
-				success = true;
-    		} else {
-    			//Update BP_Location name IDEMPIERE 417
-    			int bplID = DB.getSQLValueEx(trx.getTrxName(), "SELECT C_BPartner_Location_ID FROM C_BPartner_Location WHERE C_Location_ID = " + m_location.getC_Location_ID());
-    			if (bplID>0)
-    			{
-    				MBPartnerLocation bpl = new MBPartnerLocation(Env.getCtx(), bplID, trx.getTrxName());
-    				bpl.setName(bpl.getBPLocName(m_location));
-    				if (bpl.save())
-    					success = true;
-    			} else {
-					success = true;
-    			}
-    		}
+			// just trigger BPLocation name change when the location change affects the name:
+			// START_VALUE_BPLOCATION_NAME
+			// 0 - City
+			// 1 - City + Address1
+			// 2 - City + Address1 + Address2
+			// 3 - City + Address1 + Address2 + Region
+			// 4 - City + Address1 + Address2 + Region + ID
+			int bplocname = MSysConfig.getIntValue(MSysConfig.START_VALUE_BPLOCATION_NAME, 0, m_location.getAD_Client_ID(), m_location.getAD_Org_ID());
+			if (bplocname < 0 || bplocname > 4)
+				bplocname = 0;
+			if (   changedCity
+				|| (bplocname >= 1 && changedAddress1)
+				|| (bplocname >= 2 && changedAddress2)
+				|| (bplocname >= 3 && changedRegion)
+				) {
+	        	if (   m_GridField != null && m_GridField.getGridTab() != null
+	        		&& "C_BPartner_Location".equals(m_GridField.getGridTab().getTableName()))
+	    		{
+	        		m_GridField.getGridTab().setValue("Name", ".");
+	    		} else {
+	    			//Update BP_Location name IDEMPIERE 417
+	    			int bplID = DB.getSQLValueEx(trx.getTrxName(), "SELECT C_BPartner_Location_ID FROM C_BPartner_Location WHERE C_Location_ID = " + m_location.getC_Location_ID());
+	    			if (bplID>0)
+	    			{
+	    				MBPartnerLocation bpl = new MBPartnerLocation(Env.getCtx(), bplID, trx.getTrxName());
+	    				bpl.setName(bpl.getBPLocName(m_location));
+	    				success = bpl.save();
+	    			}
+	    		}
+			}
 		}
 		if (success) {
 			trx.commit();

@@ -39,6 +39,8 @@ public class BankRegister extends SvrProcess
 {
 	/**	Bank Parameter				*/
 	private int					p_C_Bank_ID = 0;
+	/**	Bank Account Parameter				*/
+	private int					p_C_BankAccount_ID = 0;
 	/**	Period Parameter				*/
 	//private int					p_C_Period_ID = 0;
 	private Timestamp			p_DateAcct_From = null;
@@ -78,11 +80,15 @@ public class BankRegister extends SvrProcess
 			}
 			else if (name.equals("C_BPartner_ID"))
 				p_C_BPartner_ID = ((BigDecimal)para[i].getParameter()).intValue();
+			else if (name.equals("C_BankAccount_ID"))
+				p_C_BankAccount_ID = para[i].getParameterAsInt();
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 		}
 		m_parameterWhere.append(" fa.AD_Table_ID = (Select AD_Table_ID From AD_Table Where TableName = 'C_Payment') ");
 		m_parameterWhere.append(" And b.C_Bank_ID = " + p_C_Bank_ID);
+		if(p_C_BankAccount_ID > 0)
+			m_parameterWhere.append(" AND ba.C_BankAccount_ID = " + p_C_BankAccount_ID);	
 
 		setDateAcct();
 		sb.append(" - DateAcct ").append(p_DateAcct_From).append("-").append(p_DateAcct_To);

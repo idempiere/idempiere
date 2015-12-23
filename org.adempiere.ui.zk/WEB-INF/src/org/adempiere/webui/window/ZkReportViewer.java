@@ -1060,10 +1060,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			winExportFile.onClose();
 			AMedia media = null;
 			if (data != null)
-				media = new AMedia(m_reportEngine.getPrintFormat().getName() + "." + ext, null, "application/octet-stream", data);
+				media = new AMedia(m_reportEngine.getName() + "." + ext, null, "application/octet-stream", data);
 			else
-				media = new AMedia(m_reportEngine.getPrintFormat().getName() + "." + ext, null, "application/octet-stream", inputFile, true);
-			Filedownload.save(media, m_reportEngine.getPrintFormat().getName() + "." + ext);
+				media = new AMedia(m_reportEngine.getName() + "." + ext, null, "application/octet-stream", inputFile, true);
+			Filedownload.save(media, m_reportEngine.getName() + "." + ext);
 		}
 		catch (Exception e)
 		{

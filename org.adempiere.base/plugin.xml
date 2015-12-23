@@ -116,4 +116,16 @@
          </run>
       </application>
    </extension>
+   <extension
+         id="org.adempiere.install.translation"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+      	 <run
+               class="org.compiere.install.Translation">
+         </run>
+      </application>
+   </extension>
 </plugin>

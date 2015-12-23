@@ -54,8 +54,10 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
 import org.compiere.model.MSession;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MZoomCondition;
+import org.compiere.model.PO;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.CacheMgt;
@@ -64,6 +66,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
+import org.compiere.util.Util;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -806,4 +809,35 @@ public final class AEnv
 		}
 		return fLanguageType;
 	}
+
+	private static String m_ApplicationUrl = null;
+	public static String getApplicationUrl() {
+		String url = MSysConfig.getValue("APPLICATION_URL", Env.getAD_Client_ID(Env.getCtx()));
+		if (!Util.isEmpty(url) && !url.equals("USE_HARDCODED"))
+			return MSysConfig.getValue("APPLICATION_URL", Env.getAD_Client_ID(Env.getCtx()));
+		if (m_ApplicationUrl != null)
+			return m_ApplicationUrl;
+		int port = Executions.getCurrent().getServerPort();
+		String sch = Executions.getCurrent().getScheme();
+		String sport = null;
+		if ( (sch.equals("http") && port == 80) || (sch.equals("https") && port == 443) )
+			sport = "";
+		else
+			sport = ":" + port;
+		m_ApplicationUrl = sch + "://" + Executions.getCurrent().getServerName() + sport + Executions.getCurrent().getContextPath() +  Executions.getCurrent().getDesktop().getRequestPath();
+		return m_ApplicationUrl;
+	}
+
+	/** Return the link for direct access to the record using tableID */
+	public static String getZoomUrlTableID(PO po)
+	{
+		return getApplicationUrl() + "?Action=Zoom&AD_Table_ID=" + po.get_Table_ID() + "&Record_ID=" + po.get_ID();
+	}
+
+	/** Return the link for direct access to the record using tablename */
+	public static String getZoomUrlTableName(PO po)
+	{
+		return getApplicationUrl() + "?Action=Zoom&TableName" + po.get_TableName() + "&Record_ID=" + po.get_ID();
+	}
+
 }	//	AEnv
