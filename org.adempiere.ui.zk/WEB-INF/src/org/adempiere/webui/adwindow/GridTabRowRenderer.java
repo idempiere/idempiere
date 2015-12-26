@@ -510,7 +510,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				GridRowCtx ctx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
 				if (!gridPanelFields[i].isDisplayed(ctx, true)){
 					// IDEMPIERE-2253 
-					div.removeChild(component);
+					component.setVisible(false);
 				}
 			}
 			div.setStyle(divStyle);
@@ -652,7 +652,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		            //check context
 					if (!gridPanelFields[i].isDisplayed(ctx, true)){
 						// IDEMPIERE-2253 
-						div.removeChild(editor.getComponent());
+						editor.getComponent().setVisible(false);
 					}
 					
 					editor.setReadWrite(gridPanelFields[i].isEditableGrid(true));
@@ -862,25 +862,4 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			Events.sendEvent(gridPanel, new Event("onSelectRow", gridPanel, checkBox));
 		}
 	}
-	
-	/**
-	 * Check if the new value in the field, changes the display logic in the dependant fields
-	 * @param dependantFields
-	 */
-	public void checkDependants(ArrayList<GridField> dependantFields){
-
-		for (GridField field : dependantFields) {
-			if (field == null)
-				continue;
-			WEditor editor = editors.get(field);
-			if (editor == null)
-				continue;
-			boolean isEditable = field.isEditableGrid(true); 
-			editor.setReadWrite(isEditable);
-			if (isEditable)
-				gridPanel.refresh(gridTab);
-		}
-		
-	}
-	
 }

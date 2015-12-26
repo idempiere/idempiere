@@ -1,21 +1,42 @@
 #!/bin/sh
 
-# $Id: RUN_TrlExport.sh,v 1.4 2005/01/22 21:59:15 jjanke Exp $
-
 if [ $IDEMPIERE_HOME ]; then
-  cd $IDEMPIERE_HOME/utils
+    cd $IDEMPIERE_HOME/utils
+else
+    cd "`dirname $0`"
 fi
 . ./myEnvironment.sh Server
 
-echo	Export idempiere Translation - $IDEMPIERE_HOME \($ADEMPIERE_DB_NAME\)
+if [ $JAVA_HOME ]; then
+  JAVA=$JAVA_HOME/bin/java
+else
+  JAVA=java
+fi
 
-# need to change this to reflect your language
-export  AD_LANGUAGE=ca_ES
+# $Id: RUN_TrlExport.sh,v 1.3 2005/01/22 21:59:15 jjanke Exp $
+echo    Export idempiere Translation - $IDEMPIERE_HOME \($ADEMPIERE_DB_NAME\)
 
-export  DIRECTORY=$IDEMPIERE_HOME/data/$AD_LANGUAGE
+if [ $# -gt 0 ]
+then
+    export  AD_LANGUAGE=$1
+else
+    # need to change this to reflect your language
+    export  AD_LANGUAGE=es_CO
+fi
 
-echo	This Procedure exports language $AD_LANGUAGE to directory $DIRECTORY
+if [ $# -gt 1 ]
+then
+    export  DIRECTORY=$2
+else
+    export  DIRECTORY=$IDEMPIERE_HOME/data/$AD_LANGUAGE
+fi
 
-$JAVA -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -XX:MaxPermSize=192m -jar plugins/org.eclipse.equinox.launcher_1.*.jar -console 12612 -application org.adempiere.ui.translation export $DIRECTORY $AD_LANGUAGE
+cd ..
 
-echo	Done
+echo    This Procedure exports language $AD_LANGUAGE to directory $DIRECTORY
+
+$JAVA -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=false -jar plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.install.translation export $DIRECTORY $AD_LANGUAGE
+
+echo    Done
+echo .
+echo For problems, check log file in base directory

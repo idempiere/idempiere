@@ -695,9 +695,26 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 			int bplID = DB.getSQLValueEx(get_TrxName(), "SELECT C_BPartner_Location_ID FROM C_BPartner_Location WHERE C_Location_ID = " + getC_Location_ID());
 			if (bplID>0)
 			{
-				MBPartnerLocation bpl = new MBPartnerLocation(getCtx(), bplID, get_TrxName());
-				bpl.setName(bpl.getBPLocName(this));
-				bpl.saveEx();
+				// just trigger BPLocation name change when the location change affects the name:
+				// START_VALUE_BPLOCATION_NAME
+				// 0 - City
+				// 1 - City + Address1
+				// 2 - City + Address1 + Address2
+				// 3 - City + Address1 + Address2 + Region
+				// 4 - City + Address1 + Address2 + Region + ID
+				int bplocname = MSysConfig.getIntValue(MSysConfig.START_VALUE_BPLOCATION_NAME, 0, getAD_Client_ID(), getAD_Org_ID());
+				if (bplocname < 0 || bplocname > 4)
+					bplocname = 0;
+				if (   is_ValueChanged(COLUMNNAME_City)
+					|| is_ValueChanged(COLUMNNAME_C_City_ID)
+					|| (bplocname >= 1 && is_ValueChanged(COLUMNNAME_Address1))
+					|| (bplocname >= 2 && is_ValueChanged(COLUMNNAME_Address2))
+					|| (bplocname >= 3 && (is_ValueChanged(COLUMNNAME_RegionName) || is_ValueChanged(COLUMNNAME_C_Region_ID)))
+					) {
+					MBPartnerLocation bpl = new MBPartnerLocation(getCtx(), bplID, get_TrxName());
+					bpl.setName(bpl.getBPLocName(this));
+					bpl.saveEx();
+				}
 			}
 		}
 		return success;

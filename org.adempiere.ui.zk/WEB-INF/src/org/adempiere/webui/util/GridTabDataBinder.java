@@ -12,14 +12,11 @@
  *****************************************************************************/
 package org.adempiere.webui.util;
 
-import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.webui.adwindow.GridTabRowRenderer;
-import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
@@ -29,7 +26,6 @@ import org.compiere.model.GridTable;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
-import org.zkoss.zul.RowRenderer;
 
 /**
  * Transfer data from editor to GridTab
@@ -168,27 +164,6 @@ public class GridTabDataBinder implements ValueChangeListener {
 					trx.close();
 				}
 			}
-        }
-        
-        //Checks if the change in a field modifies the display logic in the dependant fields
-        Object source = e.getSource();
-        if (source != null && source instanceof WEditor) {
-        	WEditor editor = (WEditor) source;
-        	ArrayList<GridField> dependants = gridTab.getDependantFields(editor.getColumnName());
-        	if (dependants != null
-        			&& !dependants.isEmpty()
-        			&& editor.getComponent() != null //Editor
-        			&& editor.getComponent().getParent() != null //Cell
-        			&& editor.getComponent().getParent().getParent() != null //Row
-        			&& editor.getComponent().getParent().getParent().getParent() != null //Rows
-        			&& editor.getComponent().getParent().getParent().getParent().getParent() != null //Grid
-        			&& editor.getComponent().getParent().getParent().getParent().getParent() instanceof Grid) {
-        		Grid listBox = (Grid) editor.getComponent().getParent().getParent().getParent().getParent();
-        		RowRenderer<Object[]> renderer = listBox.getRowRenderer();
-        		GridTabRowRenderer gtr = (GridTabRowRenderer)renderer;
-        		if( gtr != null )
-        			gtr.checkDependants(dependants);
-        	}
         }
 
     } // ValueChange
