@@ -230,6 +230,9 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		for (MRecentItem ri : ris) {
 			if (ri.getAD_Window_ID() > 0 && MRole.getDefault().getWindowAccess(ri.getAD_Window_ID()) == null)
 				continue;
+			if (ri.getAD_Window_ID() > 0 && !MRole.getDefault().isRecordAccess(ri.getAD_Table_ID(), ri.getRecord_ID(), false))
+				continue;
+				
 			String label = ri.getLabel();
 			if (label == null)
 				continue;
