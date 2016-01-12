@@ -346,6 +346,13 @@ public class MPeriod extends X_C_Period
 				s_log.warning("Could not find C_DocType_ID (null or not Integer) for " + table.getTableName());
 				return true;
 			}
+			if (doctypeID == 0 && tableID == MOrder.Table_ID) {
+				idxdoctype = po.get_ColumnIndex("C_DocTypeTarget_ID");
+				objint = po.get_Value(idxdoctype);
+				if (objint != null && objint instanceof Integer) {
+					doctypeID = (Integer) objint;
+				}
+			}
 			MDocType dt = MDocType.get(ctx, doctypeID);
 			docBaseType = dt.getDocBaseType();
 		}
