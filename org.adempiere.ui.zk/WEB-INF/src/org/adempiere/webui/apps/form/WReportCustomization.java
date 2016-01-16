@@ -170,8 +170,8 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 		form.setStyle("width: 90%; height: 90%; position: absolute; border:none; padding:none; margin:none;");
 
-		ZKUpdateUtil.setHeight(headerPanel, "40px");
-		headerPanel.setWidth("100%");
+		//ZKUpdateUtil.setHeight(headerPanel, "40px");
+		//headerPanel.setWidth("100%"); 
 
 		headerPanel.appendChild(new Separator("vertical"));
 

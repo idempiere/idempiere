@@ -93,7 +93,7 @@ public class WRC4GroupingCriteriaPanel extends WRCTabPanel implements EventListe
     	int widthTxt = widthChk*4;
 		for(int i=0;i<RENDER_IN_COLUMNS;i++){
 			cols[i] = new Column();
-			ZKUpdateUtil.setWidth(cols[i+1], widthChk+"%");
+			ZKUpdateUtil.setWidth(cols[i], widthChk+"%"); 
 	    	columns.appendChild(cols[i]);
 	    	cols[i+1] = new Column();
 	    	ZKUpdateUtil.setWidth(cols[i+1], widthTxt+"%");
