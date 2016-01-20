@@ -31,7 +31,7 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20151030L;
+	private static final long serialVersionUID = 20151223L;
 
     /** Standard Constructor */
     public X_C_Recurring (Properties ctx, int C_Recurring_ID, String trxName)
@@ -452,6 +452,8 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	public static final String RECURRINGTYPE_GLJournal = "G";
 	/** Project = J */
 	public static final String RECURRINGTYPE_Project = "J";
+	/** Payment = P */
+	public static final String RECURRINGTYPE_Payment = "P";
 	/** Set Recurring Type.
 		@param RecurringType 
 		Type of Recurring Document
