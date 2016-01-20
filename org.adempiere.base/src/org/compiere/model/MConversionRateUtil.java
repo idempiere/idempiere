@@ -107,7 +107,7 @@ public final class MConversionRateUtil
 	public static String getErrorMessage(Properties ctx, String adMessage, int currencyFromID, int currencyToID, int convertionTypeID, Timestamp date, String trxName)
 	{
 		String retValue = Msg.getMsg(ctx, adMessage,
-				new Object[] {MCurrency.get(ctx, currencyFromID).getISO_Code(), MCurrency.get(ctx, currencyFromID).getISO_Code(), new MConversionType(ctx, convertionTypeID, trxName).getName(), date});
+				new Object[] {MCurrency.get(ctx, currencyFromID).getISO_Code(), MCurrency.get(ctx, currencyToID).getISO_Code(), new MConversionType(ctx, convertionTypeID, trxName).getName(), date});
 		return retValue;
 	}
 }

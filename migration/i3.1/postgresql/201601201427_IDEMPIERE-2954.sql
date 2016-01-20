@@ -11,11 +11,11 @@ UPDATE AD_Message SET MsgText='Could not convert currency {0} to project currenc
 ;
 
 -- Jan 20, 2016 3:34:38 PM CET
-INSERT INTO AD_Message (AD_Client_ID,AD_Message_ID,AD_Message_UU,AD_Org_ID,Created,CreatedBy,EntityType,IsActive,MsgText,MsgType,Updated,UpdatedBy,Value) VALUES (0,200394,'64dd01ce-7afb-4db6-8641-bd80f7248ecd',0,TO_TIMESTAMP('2016-01-20 15:34:37','YYYY-MM-DD HH24:MI:SS'),0,'U','Y','Could not convert currency {0} to base currency {1} - converstion type : {2} / Date : {3}','I',TO_TIMESTAMP('2016-01-20 15:34:37','YYYY-MM-DD HH24:MI:SS'),0,'ErrorConvertingCurrencyToBaseCurrency')
+INSERT INTO AD_Message (AD_Client_ID,AD_Message_ID,AD_Message_UU,AD_Org_ID,Created,CreatedBy,EntityType,IsActive,MsgText,MsgType,Updated,UpdatedBy,Value) VALUES (0,200394,'64dd01ce-7afb-4db6-8641-bd80f7248ecd',0,TO_TIMESTAMP('2016-01-20 15:34:37','YYYY-MM-DD HH24:MI:SS'),0,'D','Y','Could not convert currency {0} to base currency {1} - converstion type : {2} / Date : {3}','I',TO_TIMESTAMP('2016-01-20 15:34:37','YYYY-MM-DD HH24:MI:SS'),0,'ErrorConvertingCurrencyToBaseCurrency')
 ;
 
 -- Jan 20, 2016 3:35:50 PM CET
-INSERT INTO AD_Message (AD_Client_ID,AD_Message_ID,AD_Message_UU,AD_Org_ID,Created,CreatedBy,EntityType,IsActive,MsgText,MsgType,Updated,UpdatedBy,Value) VALUES (0,200395,'66d383a0-ad94-435c-ac96-f03903fcda59',0,TO_TIMESTAMP('2016-01-20 15:35:50','YYYY-MM-DD HH24:MI:SS'),0,'U','Y','Could not convert allocation currency {0} to base currency {1} - conversion type : {2} / conversion date : {3}','I',TO_TIMESTAMP('2016-01-20 15:35:50','YYYY-MM-DD HH24:MI:SS'),0,'ErrorConvertingAllocationCurrencyToBaseCurrency')
+INSERT INTO AD_Message (AD_Client_ID,AD_Message_ID,AD_Message_UU,AD_Org_ID,Created,CreatedBy,EntityType,IsActive,MsgText,MsgType,Updated,UpdatedBy,Value) VALUES (0,200395,'66d383a0-ad94-435c-ac96-f03903fcda59',0,TO_TIMESTAMP('2016-01-20 15:35:50','YYYY-MM-DD HH24:MI:SS'),0,'D','Y','Could not convert allocation currency {0} to base currency {1} - conversion type : {2} / conversion date : {3}','I',TO_TIMESTAMP('2016-01-20 15:35:50','YYYY-MM-DD HH24:MI:SS'),0,'ErrorConvertingAllocationCurrencyToBaseCurrency')
 ;
 
 -- Jan 20, 2016 3:36:05 PM CET
@@ -32,6 +32,18 @@ UPDATE AD_Message SET EntityType='D',Updated=TO_TIMESTAMP('2016-01-20 15:36:20',
 
 -- Jan 20, 2016 3:36:59 PM CET
 INSERT INTO AD_Message (AD_Client_ID,AD_Message_ID,AD_Message_UU,AD_Org_ID,Created,CreatedBy,EntityType,IsActive,MsgText,MsgType,Updated,UpdatedBy,Value) VALUES (0,200396,'449bfa95-a175-4862-98c2-525c6a564c60',0,TO_TIMESTAMP('2016-01-20 15:36:59','YYYY-MM-DD HH24:MI:SS'),0,'D','Y','Could not convert invoice currency {0} to base currency {1} - conversion type : {2} / conversion date : {3}','I',TO_TIMESTAMP('2016-01-20 15:36:59','YYYY-MM-DD HH24:MI:SS'),0,'ErrorConvertingInvoiceCurrencyToBaseCurrency')
+;
+
+-- Jan 20, 2016 4:47:30 PM CET
+UPDATE AD_Message SET MsgText='Could not convert currency {0} to base currency {1} - conversion type : {2} / conversion date : {3,date,short}',Updated=TO_TIMESTAMP('2016-01-20 16:47:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200394
+;
+
+-- Jan 20, 2016 4:47:33 PM CET
+UPDATE AD_Message SET MsgText='Could not convert currency {0} to project currency {1} - conversion type : {2} / conversion date : {3,date,short}',Updated=TO_TIMESTAMP('2016-01-20 16:47:33','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200393
+;
+
+-- Jan 20, 2016 4:47:37 PM CET
+UPDATE AD_Message SET MsgText='Could not convert invoice currency {0} to base currency {1} - conversion type : {2} / conversion date : {3,date,short}',Updated=TO_TIMESTAMP('2016-01-20 16:47:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200396
 ;
 
 SELECT register_migration_script('201601201427_IDEMPIERE-2954.sql') FROM dual

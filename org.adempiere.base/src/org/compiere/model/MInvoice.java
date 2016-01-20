@@ -1898,7 +1898,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		if (invAmt == null)
 		{
 			m_processMsg = MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingCurrencyToBaseCurrency",
-					getC_Currency_ID(), MClient.get(Env.getCtx()).getC_Currency_ID(), getC_ConversionType_ID(), getDateAcct(), get_TrxName());
+					getC_Currency_ID(), MClient.get(getCtx()).getC_Currency_ID(), getC_ConversionType_ID(), getDateAcct(), get_TrxName());
 			return DocAction.STATUS_Invalid;
 		}
 		//	Total Balance
