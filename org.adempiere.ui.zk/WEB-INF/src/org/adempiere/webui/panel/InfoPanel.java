@@ -1984,7 +1984,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     			}
     		}
     		m_sqlUserOrder="";
-        	executeQuery();
+    		// event == null mean direct call from reset button
+    		if (event == null)
+    			m_count = 0;
+    		else
+    			executeQuery();
+    		
             renderItems();            
         	// IDEMPIERE-1334 after refresh, restore prev selected item start         	
         	// just evaluate display logic of process button when requery by use click requery button
