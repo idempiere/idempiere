@@ -6,10 +6,12 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.idempiere.exceptions.NoCurrencyConversionException;
 
 /**
@@ -100,4 +102,12 @@ public final class MConversionRateUtil
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("amt=" + sourceAmt + " * " + rate + "=" + amt + ", scale=" + stdPrecision);
 		return amt;
 	}	//	convert
+
+	/** Return the message to show when no exchange rate is found */
+	public static String getErrorMessage(Properties ctx, String adMessage, int currencyFromID, int currencyToID, int convertionTypeID, Timestamp date, String trxName)
+	{
+		String retValue = Msg.getMsg(ctx, adMessage,
+				new Object[] {MCurrency.get(ctx, currencyFromID).getISO_Code(), MCurrency.get(ctx, currencyFromID).getISO_Code(), new MConversionType(ctx, convertionTypeID, trxName).getName(), date});
+		return retValue;
+	}
 }

@@ -54,7 +54,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8726957992840702609L;
+	private static final long serialVersionUID = -7787519874581251920L;
 	/**	Tolerance Gain and Loss */
 	private static final BigDecimal	TOLERANCE = BigDecimal.valueOf(0.02);
 	
@@ -966,9 +966,8 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 								getC_Currency_ID(), paymentDate, convTypeID, getAD_Client_ID(), getAD_Org_ID());
 						if (amt == null)
 						{
-							m_processMsg = "Could not convert allocation C_Currency_ID=" + getC_Currency_ID()
-							+ " to base C_Currency_ID=" + MClient.get(getCtx()).getC_Currency_ID() + ", C_ConversionType_ID=" + convTypeID
-							+ ", conversion date= " + paymentDate;
+							m_processMsg = MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingAllocationCurrencyToBaseCurrency",
+									getC_Currency_ID(), MClient.get(Env.getCtx()).getC_Currency_ID(), convTypeID, paymentDate, get_TrxName());
 							return false;
 						}
 						openBalanceDiff = openBalanceDiff.add(amt);
@@ -980,9 +979,8 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 								getC_Currency_ID(), paymentDate, convTypeID, getAD_Client_ID(), getAD_Org_ID());
 						if (amt == null)
 						{
-							m_processMsg = "Could not convert allocation C_Currency_ID=" + getC_Currency_ID()
-							+ " to base C_Currency_ID=" + MClient.get(getCtx()).getC_Currency_ID() + ", C_ConversionType_ID=" + convTypeID
-							+ ", conversion date= " + paymentDate;
+							m_processMsg = MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingAllocationCurrencyToBaseCurrency",
+									getC_Currency_ID(), MClient.get(Env.getCtx()).getC_Currency_ID(), convTypeID, paymentDate, get_TrxName());
 							return false;
 						}
 						openBalanceDiff = openBalanceDiff.add(amt);
@@ -993,9 +991,8 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 							getC_Currency_ID(), getDateAcct(), convTypeID, getAD_Client_ID(), getAD_Org_ID());
 					if (allocAmtBase == null)
 					{
-						m_processMsg = "Could not convert allocation C_Currency_ID=" + getC_Currency_ID()
-						+ " to base C_Currency_ID=" + MClient.get(getCtx()).getC_Currency_ID() + ", C_ConversionType_ID=" + convTypeID
-						+ ", conversion date= " + getDateAcct();
+						m_processMsg = MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingAllocationCurrencyToBaseCurrency",
+								getC_Currency_ID(), MClient.get(Env.getCtx()).getC_Currency_ID(), convTypeID, getDateAcct(), get_TrxName());
 						return false;
 					}
 	
@@ -1009,9 +1006,8 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 						getC_Currency_ID(), invoice.getDateAcct(), invoice.getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
 				if (amt == null)
 				{
-					m_processMsg = "Could not convert allocation C_Currency_ID=" + getC_Currency_ID()
-					+ " to base C_Currency_ID=" + MClient.get(getCtx()).getC_Currency_ID() + ", C_ConversionType_ID=" + invoice.getC_ConversionType_ID()
-					+ ", conversion date= " + invoice.getDateAcct();
+					m_processMsg = MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingAllocationCurrencyToBaseCurrency",
+							getC_Currency_ID(), MClient.get(Env.getCtx()).getC_Currency_ID(), invoice.getC_ConversionType_ID(), invoice.getDateAcct(), get_TrxName());
 					return false;
 				}
 				openBalanceDiff = openBalanceDiff.add(amt);
@@ -1028,9 +1024,8 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 							getC_Currency_ID(), invoice.getC_Currency_ID(), getDateAcct(), invoice.getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
 					if (allocAmt == null)
 					{
-						m_processMsg = "Could not convert allocation C_Currency_ID=" + getC_Currency_ID()
-						+ " to invoice C_Currency_ID=" + invoice.getC_Currency_ID() + ", C_ConversionType_ID=" + invoice.getC_ConversionType_ID()
-						+ ", conversion date= " + getDateAcct();
+						m_processMsg = MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingAllocationCurrencyToInvoiceCurrency",
+								getC_Currency_ID(), invoice.getC_Currency_ID(), invoice.getC_ConversionType_ID(), getDateAcct(), get_TrxName());
 						return false;
 					}
 				}
@@ -1038,9 +1033,8 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 						invoice.getC_Currency_ID(), invoice.getDateAcct(), invoice.getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
 				if (invAmtAccted == null)
 				{
-					m_processMsg = "Could not convert invoice C_Currency_ID=" + getC_Currency_ID()
-					+ " to base C_Currency_ID=" + invoice.getC_Currency_ID() + ", C_ConversionType_ID=" + invoice.getC_ConversionType_ID()
-					+ ", date= " + invoice.getDateAcct();
+					m_processMsg = MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingInvoiceCurrencyToBaseCurrency",
+							getC_Currency_ID(), invoice.getC_Currency_ID(), invoice.getC_ConversionType_ID(), invoice.getDateAcct(), get_TrxName());
 					return false;
 				}
 				
@@ -1048,9 +1042,8 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 						invoice.getC_Currency_ID(), getDateAcct(), invoice.getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
 				if (allocAmtAccted == null)
 				{
-					m_processMsg = "Could not convert invoice C_Currency_ID=" + invoice.getC_Currency_ID()
-					+ " to base C_Currency_ID=" + MClient.get(getCtx()).getC_Currency_ID() + ", C_ConversionType_ID=" + invoice.getC_ConversionType_ID()
-					+ ", conversion date= " + getDateAcct();
+					m_processMsg = MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingInvoiceCurrencyToBaseCurrency",
+							invoice.getC_Currency_ID(), MClient.get(getCtx()).getC_Currency_ID(), invoice.getC_ConversionType_ID(), getDateAcct(), get_TrxName());
 					return false;
 				}
 
