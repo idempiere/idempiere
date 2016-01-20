@@ -131,7 +131,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3728896318124756192L;
+	private static final long serialVersionUID = -6108216899210485771L;
 
 	private static final String ON_SAVE_OPEN_PREFERENCE_EVENT = "onSaveOpenPreference";
 
@@ -1180,8 +1180,9 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     	if (windowId > 0 && adTabId > 0) {
     		width = Env.getPreference(Env.getCtx(), windowId, adTabId+"|TreePanel.Width", false);
     	}
-    	else
+    	if (Util.isEmpty(width)) {
     		width = DEFAULT_PANEL_WIDTH;
+    	}
     	return width;
     }
     private void navigateTo(DefaultTreeNode<MTreeNode> value) {
