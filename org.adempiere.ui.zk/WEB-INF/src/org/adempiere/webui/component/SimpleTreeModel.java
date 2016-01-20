@@ -149,13 +149,6 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 		}
 	}
 
-	private boolean isExpandAll = true;
-	
-	@Override
-	public boolean isPathOpened(int[] path) {
-		return isExpandAll || super.isPathOpened(path);
-	}
-	
 	/**
 	 * @param ti
 	 * @param node
@@ -334,13 +327,5 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 			int i = parent.getChildren().indexOf(node);
 			fireEvent(TreeDataEvent.CONTENTS_CHANGED, getPath(parent), i, i);
 		}
-	}
-
-	public boolean isExpandAll() {
-		return isExpandAll;
-	}
-
-	public void setExpandAll(boolean isExpandAll) {
-		this.isExpandAll = isExpandAll;
 	}
 }
