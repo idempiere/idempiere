@@ -733,7 +733,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	    			paging.setTotalSize(m_count);
 	    			paging.setDetailed(true);
 	    			paging.addEventListener(ZulEvents.ON_PAGING, this);
-	    			insertPagingComponent();
         		}
         		else
         		{
@@ -782,6 +781,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         updateStatusBar (m_count);
         setStatusSelected ();
         addDoubleClickListener();
+        
+        if (paging != null && paging.getParent() == null)
+        	insertPagingComponent();
     }
 
     protected void updateStatusBar (int no){
