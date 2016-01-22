@@ -1653,6 +1653,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			paging.setParent(null);
 		
 		layout.invalidate();
+		
+		contentPanel.getListHead().detach();
 	}
 	
 	@Override
