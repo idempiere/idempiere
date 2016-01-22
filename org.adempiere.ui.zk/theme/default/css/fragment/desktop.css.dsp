@@ -1,16 +1,16 @@
 <%-- header --%>
 .desktop-header-left {
 	margin: 0;
-	margin-left: 5px;
-	margin-top: 3px;
+	margin-left: 1px;
+	margin-top: 1px;
 	background-color: transparent !important; 
 	border: none !important;
 }
 
 .desktop-header-right {
 	margin: 0;
-	margin-top: 3px;
-	padding-right: 5px;
+	margin-top: 1px;
+	padding-right:1px;
 	background-color: transparent !important; 
 	border: none !important;
 }
@@ -29,7 +29,7 @@
 
 .desktop-header-popup {
 	width: 800px;
-	border-radius: 3px;
+	border-radius: 2px;
 	border: 1px solid #d5d5d5;
 	border-right: 2px solid #d5d5d5;
 	border-bottom-width: 2px;
@@ -92,7 +92,7 @@
 }
 
 .desktop-center {
-	padding-top: 4px;
+	padding-top: 1px;
 	background-color: #E4E4E4;
 }
 
@@ -109,7 +109,7 @@
 	border: none;
 	border-right: 1px solid #C5C5C5;
 	background-color: #E4E4E4;
-	padding-top: 4px; 
+	padding-top: 2px; 
 }
 
 .desktop-right-column {
@@ -117,7 +117,7 @@
 	border: none;
 	border-left: 1px solid #C5C5C5;
 	background-color: #E4E4E4;
-	padding-top: 4px; 
+	padding-top: 2px; 
 }
 
 .desktop-left-column + .z-west-splitter,  .desktop-left-column.z-west {
@@ -151,7 +151,7 @@
 .z-anchorchildren { overflow:visible }
 
 .desktop-hometab {
-	margin-left: 4px !important;
+	margin-left: 2px !important;
 }
 
 .desktop-tabbox .z-tabs .z-toolbar-tabs-body {

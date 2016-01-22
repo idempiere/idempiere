@@ -14,9 +14,9 @@
 }
 
 .z-panel {
-	border-radius: 3px;
+	border-radius: 5px;
 	border: 1px solid #d8d8d8;
-	border-bottom-width: 2px;
+	border-bottom-width: 1px;
 }
 
 .z-panel-noborder {
@@ -28,7 +28,7 @@
 }
 
 .z-panel-head {
-	padding-bottom: 4px;
+	padding-bottom: 1px;
 	border: none;
 }
 
@@ -41,7 +41,7 @@
 }	
 
 .z-caption .z-caption-content {
-	padding: 0 0 2px 0;
+	padding: 1px 1px 1px 6px;
 	color: #262626; 
 	font-weight: 300;
 	font-size: 13px;
@@ -55,11 +55,11 @@
 }
 
 .dashboard-widget {
-	margin-top: 4px; 
+	margin-top: 1px; 
 	margin-left: auto; 
 	margin-right: auto;
 	position: relative;
-	width: 92%;	
+	width: 99%;	
 }
 
 .dashboard-widget-max {
@@ -80,9 +80,9 @@
 }
 
 .favourites-box {
-	width: 90%;
+	width: 100%;
 	margin: auto;
-	padding: 5px 0px 5px 0px;
+	padding: 1px 0px 1px 0px;
 }
 
 .favourites-box .z-vbox {
@@ -90,8 +90,8 @@
 }
 
 .favourites-box .z-hbox {
-	padding: 2px 0px;
-	width: 100%;
+	padding: 0px 4px;
+	width: 100%; 
 }
 
 .favourites-box .z-toolbar-start {
@@ -99,14 +99,14 @@
 }
 
 .recentitems-box {
-	width: 90%;
+	width: 100%;
 	margin: auto;
-	padding: 5px 0px 5px 0px;
+	padding: 1px 0px 1px 0px;
 }
 
 .recentitems-box A {
 	display: block;
-	padding: 2px 0px;
+	padding: 1px 0px;
 }
 
 .recentitems-box .z-toolbar-start {
@@ -114,9 +114,9 @@
 }
 	
 .views-box {
-	width: 90%;
+	width: 100%;
 	margin: auto;
-	padding: 5px 0px 5px 0px;
+	padding: 2px 0px 2px 0px;
 }
 
 .views-box .z-vbox {
@@ -125,7 +125,7 @@
 
 .views-box .z-toolbarbutton {
 	width: 100%;
-	padding: 2px 0px;
+	padding: 0px 14px;
 }
 
 .views-box .link img {
@@ -134,9 +134,9 @@
 }
 
 .activities-box {
-	width: 90%;
+	width: 100%;
 	margin: auto;
-	padding: 5px 0px 5px 0px;
+	padding: 1px 0px 1px 0px;
 }
 
 .activities-box .z-vbox {
@@ -148,38 +148,40 @@
 }
 
 .recentitems-box .z-toolbar, .favourites-box .z-toolbar {
-	margin-top: 5px;
-	margin-bottom: 5px;
+	margin-top: 1px;
+	margin-bottom: 1px;
 }
 
 <%-- performance indicator --%>
 .performance-indicator {
-	margin: auto; 
+	margin: 0px; 
 	position: relative; 
 }
 .performance-indicator img {
-	display: block;
-	margin: auto;
+	display: block; 
+	margin: 0px;
+	padding:0px;
 }
 .window-view-pi .performance-indicator img {
 }
 .performance-indicator-box {
 	background-color: #eee; 
 	border: 1px solid #d8d8d8; 
-	border-radius: 5px; 
+	border-radius: 11px; 
 	cursor: pointer;
 }
 .performance-indicator-title {
 	text-align: center; 
 	background-color: #c8c8c8; 
 	border: 1px solid #c8c8c8;
-	padding-top: 4px; 
-	padding-bottom: 4px;
+	padding-top: 1px; 
+	padding-bottom: 1px;
+	line-height:12px;
 }
 .performance-panel .z-grid {
 	border: none;
-	margin:0; 
-	padding:0; 
+	margin:0px; 
+	padding:0px; 
 	position: relative;
 	width: 100%;
 }
@@ -190,7 +192,7 @@
 
 .help-content
 {
-	padding: 5px;
+	padding: 2px;
 	font-size: 11px;
 	font-weight: normal;
 }
