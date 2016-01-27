@@ -523,3 +523,6 @@ AS
                    AND dt.ad_language = cur.ad_language
 ;
 
+SELECT register_migration_script('201601271716_IDEMPIERE-3013.sql') FROM dual
+;
+
