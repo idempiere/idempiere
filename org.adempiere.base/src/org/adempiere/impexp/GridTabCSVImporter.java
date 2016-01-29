@@ -238,7 +238,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 						createTrx(gridTab);
 					}
 
-					String recordResult = processRecord(importMode, gridTab, indxDetail, isDetail, idx, rowResult);
+					String recordResult = processRecord(importMode, gridTab, indxDetail, isDetail, idx, rowResult, childs);
 					rowResult.append(recordResult);
 
 					// write
@@ -272,6 +272,13 @@ public class GridTabCSVImporter implements IGridTabImporter
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
+			gridTab.getTableModel().setImportingMode(false,null);
+			for (GridTab detail : childs) {
+				detail.getTableModel().setImportingMode(false,null);
+			}
+			gridTab.dataRefreshAll();
+
 		}		
 		if (logFile != null)
 			return logFile;
@@ -521,6 +528,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 		if( trx != null ){
 
 			if( isError() ) {
+				gridTab.dataDelete();
 				rollbackTrx();
 				setError(false);
 			}else {
@@ -542,6 +550,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 					}
 
 					if( isError ){
+						gridTab.dataDelete();
 						rollbackTrx();
 					}else{
 						commitTrx();
@@ -550,19 +559,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 					commitTrx();
 				}								   
 			}
-			
-			if( childs != null ){
-				if( masterRecord != null ){
-					gridTab.query(false);
-					gridTab.getTableModel().setImportingMode(false,null);
-					for( GridTab detail : childs )
-						if( detail.getTableModel().isOpen() ){
-							detail.query(true);
-							detail.getTableModel().setImportingMode(false,null);	
-						}
-				}
-			}
-			
+
 			trx.close();
 			trx=null;
 		}
@@ -597,7 +594,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 	 * @param rowResult
 	 * @return
 	 */
-	private String processRecord(String importMode, GridTab gridTab, int indxDetail, boolean isDetail, int idx, StringBuilder rowResult){
+	private String processRecord(String importMode, GridTab gridTab, int indxDetail, boolean isDetail, int idx, StringBuilder rowResult, List<GridTab> childs){
 		
 		String logMsg = null;
 		GridTab currentGridTab = null;
@@ -633,6 +630,11 @@ public class GridTabCSVImporter implements IGridTabImporter
 							logMsg = "["+currentGridTab.getName()+"]"+"- Was not able to create a new record!";
 						}else{
 							currentGridTab.navigateCurrent();
+							if (! isDetail) {
+								for (GridTab child : childs) {
+									child.query(false);
+								}
+							}
 						}
 					} 
 
