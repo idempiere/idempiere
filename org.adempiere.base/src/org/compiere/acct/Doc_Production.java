@@ -76,11 +76,23 @@ public class Doc_Production extends Doc
 	private DocLine[] loadLines(X_M_Production prod)
 	{
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
-		//	Production
-		//	-- ProductionLine	- the real level
-		String sqlPL = "SELECT * FROM M_ProductionLine pl "
-				+ "WHERE pl.M_Production_ID=? "
-				+ "ORDER BY pl.Line";
+		String sqlPL = null;
+		if (prod.isUseProductionPlan()){
+//			Production
+			//	-- ProductionLine	- the real level
+			sqlPL = "SELECT * FROM "
+							+ " M_ProductionLine pro_line INNER JOIN M_ProductionPlan plan ON pro_line.M_ProductionPlan_id = plan.M_ProductionPlan_id "
+							+ " INNER JOIN M_Production pro ON pro.M_Production_id = plan.M_Production_id "
+							+ " WHERE pro.M_Production_ID=? "
+							+ " ORDER BY pro_line.Line";
+		}else{
+//			Production
+			//	-- ProductionLine	- the real level
+			sqlPL = "SELECT * FROM M_ProductionLine pl "
+					+ "WHERE pl.M_Production_ID=? "
+					+ "ORDER BY pl.Line";
+		}
+		
 		PreparedStatement pstmtPL = null;
 		ResultSet rsPL = null;
 		try
