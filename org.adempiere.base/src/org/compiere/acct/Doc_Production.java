@@ -111,7 +111,10 @@ public class Doc_Production extends Doc
 				DocLine docLine = new DocLine (line, this);
 				docLine.setQty (line.getMovementQty(), false);
 				//	Identify finished BOM Product
-				docLine.setProductionBOM(line.getM_Product_ID() == prod.getM_Product_ID());
+				if (prod.isUseProductionPlan())
+					docLine.setProductionBOM(line.getM_Product_ID() == line.getM_ProductionPlan().getM_Product_ID());
+				else
+					docLine.setProductionBOM(line.getM_Product_ID() == prod.getM_Product_ID());
 				//
 				if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
 				list.add (docLine);
