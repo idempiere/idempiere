@@ -76,7 +76,7 @@ public class MViewComponent extends X_AD_ViewComponent {
 		
 		Query query = new Query(getCtx(), MViewColumn.Table_Name, MViewColumn.COLUMNNAME_AD_ViewComponent_ID + "=?", get_TrxName());
 		query.setParameters(getAD_ViewComponent_ID());
-		query.setOrderBy(MViewColumn.COLUMNNAME_AD_ViewColumn_ID);
+		query.setOrderBy("SeqNo, AD_ViewColumn_ID");
 		List<MViewColumn> list = query.<MViewColumn>list();
 		
 		m_columns = new MViewColumn[list.size()];
