@@ -47,6 +47,9 @@ INSERT INTO AD_Val_Rule (AD_Val_Rule_ID,Name,Type,Code,AD_Client_ID,AD_Org_ID,Is
 ;
 
 -- Feb 3, 2016 5:06:28 PM CET
-UPDATE AD_Process_Para SET AD_Val_Rule_ID=200088,Updated=TO_DATE('2016-02-03 17:06:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=50005
+UPDATE AD_Process_Para SET AD_Val_Rule_ID=200088,Updated=TO_DATE('2016-02-03 17:06:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200155
+;
+
+SELECT register_migration_script('201602031708_IDEMPIERE-3005.sql') FROM dual
 ;
 
