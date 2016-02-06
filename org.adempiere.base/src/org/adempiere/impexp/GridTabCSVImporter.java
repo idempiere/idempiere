@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -315,10 +316,16 @@ public class GridTabCSVImporter implements IGridTabImporter
 	/**
 	 * Commit the trx and writes in the file
 	 */
-	private void commitTrx(){
-		trx.commit();
+	private String commitTrx(){
+		try {
+			trx.commit(true);
+		} catch (SQLException e) {
+			setError(true);
+			return e.getLocalizedMessage();
+		}
 		for( String row : rowsTmpResult )
 			logFileW.write(row);
+		return null;
 	}
 	
 	/**
@@ -533,6 +540,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 				setError(false);
 			}else {
 
+				boolean commit = false;
 				if( isThereDocAction ){
 
 					boolean isError = false;
@@ -553,11 +561,19 @@ public class GridTabCSVImporter implements IGridTabImporter
 						gridTab.dataDelete();
 						rollbackTrx();
 					}else{
-						commitTrx();
+						commit = true;
 					}
 				}else{
-					commitTrx();
-				}								   
+					commit = true;
+				}
+				if (commit) {
+					String commitResult = commitTrx();
+					if (isError()) {
+						rowsTmpResult.set(0,rowsTmpResult.get(0).replace(quoteChar + "\n",commitResult + quoteChar + "\n")); 
+						gridTab.dataDelete();
+						rollbackTrx();
+					}
+				}
 			}
 
 			trx.close();
