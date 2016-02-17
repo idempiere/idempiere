@@ -285,7 +285,7 @@ public class WMatch extends Match
 		p.appendChild(xMatchedBorder);
 		p.appendChild(xMatchedTable);
 		ZKUpdateUtil.setWidth(xMatchedTable, "99%");
-		ZKUpdateUtil.setHeight(xMatchedTable, "85%");
+		//ZKUpdateUtil.setHeight(xMatchedTable, "85%");
 		p.setStyle("width: 100%; height: 100%; padding: 0; margin: 0");
 		north.appendChild(p);
 		ZKUpdateUtil.setHeight(north, "44%");
@@ -294,7 +294,7 @@ public class WMatch extends Match
 		centerLayout.appendChild(south);
 		south.setStyle("border: none");
 		ZKUpdateUtil.setWidth(xMatchedToTable, "99%");
-		ZKUpdateUtil.setHeight(xMatchedToTable, "99%");
+		//ZKUpdateUtil.setHeight(xMatchedToTable, "99%");
 		south.appendChild(xMatchedToTable);
 		ZKUpdateUtil.setHeight(south, "44%");
 		

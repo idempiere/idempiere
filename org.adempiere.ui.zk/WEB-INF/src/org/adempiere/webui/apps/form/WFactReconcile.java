@@ -211,7 +211,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		mainLayout.appendChild(center);
 		center.appendChild(miniTable);
 		ZKUpdateUtil.setWidth(miniTable, "99%");
-		ZKUpdateUtil.setHeight(miniTable, "99%");
+		//ZKUpdateUtil.setHeight(miniTable, "99%");
 		center.setStyle("border: none");
 		
 		// Command Panel

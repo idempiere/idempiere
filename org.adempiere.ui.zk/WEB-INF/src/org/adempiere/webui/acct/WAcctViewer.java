@@ -530,11 +530,11 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		resultPanel.appendChild(resultCenter);
 		ZKUpdateUtil.setHflex(table, "1");
 		ZKUpdateUtil.setVflex(table, true);
-		ZKUpdateUtil.setHeight(table, "99%");
+		//ZKUpdateUtil.setHeight(table, "99%");
 		table.setStyle("position: absolute;");
 		resultCenter.appendChild(table);
 		ZKUpdateUtil.setHflex(table, "1");
-		ZKUpdateUtil.setVflex(table, "1");
+		//ZKUpdateUtil.setVflex(table, "1");
 		table.addEventListener(Events.ON_DOUBLE_CLICK, this);
 
 		pagingPanel = new South();

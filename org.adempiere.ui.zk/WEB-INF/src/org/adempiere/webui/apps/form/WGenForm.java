@@ -183,7 +183,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		center.appendChild(miniTable);
 		ZKUpdateUtil.setVflex(miniTable, "1");
 		ZKUpdateUtil.setHflex(miniTable, "1");
-		ZKUpdateUtil.setHeight(miniTable, "99%");
+		//ZKUpdateUtil.setHeight(miniTable, "99%");
 		confirmPanelSel.addActionListener(this);
 		//
 		tabpanel = new DesktopTabpanel();
