@@ -16,8 +16,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.adempiere.util.ServerContext;
 import org.compiere.model.MSession;
@@ -29,6 +33,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Login;
+import org.idempiere.adInterface.x10.ADLoginRequest;
 
 /**
  * @author deepak
@@ -46,6 +51,12 @@ public class CompiereService {
 	private int m_M_Warehouse_ID;
 	private String m_locale;
 	private String m_userName;
+	private String m_password;
+	private int m_expiryMinutes;
+	private long m_lastAuthorizationTime;
+	private String m_IPAddress;
+	private static Map<String,CompiereService> csMap = new HashMap<String, CompiereService>();
+	private static Map<String,Properties> ctxMap = new HashMap<String, Properties>();
 
 	private boolean m_loggedin = false; 
 	
@@ -68,7 +79,7 @@ public class CompiereService {
 	public final String dateFormatOnlyForCtx =  "yyyy-MM-dd";
 
 	private boolean m_connected;
-    
+
 	/**
 	 * 
 	 * @return AD_Client_ID of current request
@@ -131,12 +142,23 @@ public class CompiereService {
 	 */
 	public void disconnect() 
 	{
-		if (m_connected) 
-		{
-			Env.logout();
-			ServerContext.dispose();
-			m_loggedin = false;
-			m_connected = false;
+		// TODO: create a thread that checks expired connected compiereservices and log them out
+		if (! isExpired()) {
+			// do not close, save session in cache
+			if (! csMap.containsValue(this)) {
+				String key = getKey(m_AD_Client_ID,
+						m_AD_Org_ID,
+						m_userName,
+						m_AD_Role_ID,
+						m_M_Warehouse_ID,
+						m_locale,
+						m_password,
+						m_IPAddress);
+				csMap.put(key.toString(), this);
+				Properties savedCache = new Properties();
+				savedCache.putAll(Env.getCtx());
+				ctxMap.put(key.toString(), savedCache);
+			}
 		}
 	}
 	
@@ -326,6 +348,103 @@ public class CompiereService {
 	 */
 	public String getUserName() {
 		return m_userName;
+	}
+
+	/**
+	 * @return set password
+	 */
+	public void setPassword(String pass) {
+		m_password = pass;
+	}
+
+	/**
+	 * @return logged in password of current request
+	 */
+	public String getPassword() {
+		return m_password;
+	}
+
+	/**
+	 * @return set expiry minutes
+	 */
+	public void setExpiryMinutes(int expiryMinutes) {
+		m_expiryMinutes = expiryMinutes;
+	}
+
+	/**
+	 * @return logged in expiry minutes of current request
+	 */
+	public int getExpiryMinutes() {
+		return m_expiryMinutes;
+	}
+
+	public void refreshLastAuthorizationTime() {
+		m_lastAuthorizationTime = System.currentTimeMillis();
+	}
+
+	public void setIPAddress(String remoteAddr) {
+		m_IPAddress = remoteAddr;
+	}
+
+	public static CompiereService get(HttpServletRequest req, ADLoginRequest loginRequest) {
+		String key = getKey(loginRequest.getClientID(),
+				loginRequest.getOrgID(),
+				loginRequest.getUser(),
+				loginRequest.getRoleID(),
+				loginRequest.getWarehouseID(),
+				loginRequest.getLang(),
+				loginRequest.getPass(),
+				req.getRemoteAddr());
+		CompiereService l_cs = null;
+		if (csMap.containsKey(key)) {
+			l_cs = csMap.get(key);
+			if (l_cs != null) {
+				if (l_cs.isExpired()) {
+					l_cs = null;
+				} else {
+					Properties cachedCtx = ctxMap.get(key);
+					Env.getCtx().putAll(cachedCtx);
+				}
+			}
+		}
+		return l_cs;
+	}
+
+	private static String getKey(
+			int aD_Client_ID,
+			int aD_Org_ID,
+			String userName,
+			int aD_Role_ID,
+			int m_Warehouse_ID,
+			String locale,
+			String password,
+			String iPAddress) {
+		StringBuilder key = new StringBuilder()
+			.append(aD_Client_ID).append("|")
+			.append(aD_Org_ID).append("|")
+			.append(userName).append("|")
+			.append(aD_Role_ID).append("|")
+			.append(m_Warehouse_ID).append("|")
+			.append(locale).append("|")
+			.append(password).append("|")
+			.append(iPAddress);
+		return key.toString();
+	}
+	
+	private boolean isExpired() {
+		boolean expired =
+			   (
+				   (getExpiryMinutes() <= 0)
+				|| (m_lastAuthorizationTime + (getExpiryMinutes() * 60000) <= System.currentTimeMillis())
+			   );
+		if (m_connected && expired) 
+		{
+			Env.logout();
+			ServerContext.dispose();
+			m_loggedin = false;
+			m_connected = false;
+		}
+		return expired;
 	}
 
 }
