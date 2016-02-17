@@ -274,7 +274,7 @@ public class WAllocation extends Allocation
 		paymentLayout.appendChild(center);
 		center.appendChild(paymentTable);
 		ZKUpdateUtil.setWidth(paymentTable, "99%");
-		ZKUpdateUtil.setHeight(paymentTable, "99%");
+		//ZKUpdateUtil.setHeight(paymentTable, "99%");
 		center.setStyle("border: none");
 		
 		north = new North();
@@ -289,7 +289,7 @@ public class WAllocation extends Allocation
 		invoiceLayout.appendChild(center);
 		center.appendChild(invoiceTable);
 		ZKUpdateUtil.setWidth(invoiceTable, "99%");
-		ZKUpdateUtil.setHeight(invoiceTable, "99%");
+		//ZKUpdateUtil.setHeight(invoiceTable, "99%");
 		center.setStyle("border: none");
 		//
 		center = new Center();
