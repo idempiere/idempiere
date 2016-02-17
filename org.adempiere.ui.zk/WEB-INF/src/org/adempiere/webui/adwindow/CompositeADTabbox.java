@@ -93,7 +93,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 			@Override
 			public void onEvent(Event event) throws Exception {
 				if (DetailPane.ON_EDIT_EVENT.equals(event.getName())) {
-					if (headerTab.getGridTab().isNew()) return;
+					if (headerTab.getGridTab().isNew() && ! headerTab.needSave(true, false)) return;
 					
 					final int row = getSelectedDetailADTabpanel() != null 
 							? getSelectedDetailADTabpanel().getGridTab().getCurrentRow()
@@ -227,6 +227,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 		IADTabpanel selectedPanel = getSelectedDetailADTabpanel();
 		if (selectedPanel == null) return;
 		int newIndex = selectedPanel.getTabNo();
+		selectedPanel.query();
 		
 		Executions.getCurrent().setAttribute(AD_TABBOX_ON_EDIT_DETAIL_ATTRIBUTE, selectedPanel);
 		Event selectionChanged = new Event(ON_SELECTION_CHANGED_EVENT, layout, new Object[]{oldIndex, newIndex});
