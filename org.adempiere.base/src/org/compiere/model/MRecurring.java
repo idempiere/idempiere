@@ -128,6 +128,26 @@ public class MRecurring extends X_C_Recurring
 			msg += journal.getDocumentNo();
 			setLastPO(journal);
 		}
+		else if (getRecurringType().equals(MRecurring.RECURRINGTYPE_Payment))
+		{
+			MPayment from = new MPayment(getCtx(), getC_Payment_ID(), get_TrxName());
+			MPayment to = new MPayment(getCtx(), 0, get_TrxName());
+			copyValues(from, to);
+			to.setAD_Org_ID(from.getAD_Org_ID());
+			to.setIsReconciled(false); // can't be already on a bank statement
+			to.setDateAcct(dateDoc);
+			to.setDateTrx(dateDoc);
+			to.setDocumentNo("");
+			to.setProcessed(false);
+			to.setPosted(false);
+			to.setDocStatus(MPayment.DOCSTATUS_Drafted);
+			to.setDocAction(MPayment.DOCACTION_Complete);
+			to.saveEx();
+
+			run.setC_Payment_ID(to.getC_Payment_ID());
+			msg += to.getDocumentNo();	
+			setLastPO(to);
+		}
 		else
 			return "Invalid @RecurringType@ = " + getRecurringType();
 		run.saveEx(get_TrxName());

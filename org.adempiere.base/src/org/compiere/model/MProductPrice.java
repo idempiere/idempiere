@@ -60,12 +60,12 @@ public class MProductPrice extends X_M_ProductPrice
 	/**
 	 * 	Persistency Constructor
 	 *	@param ctx context
-	 *	@param ignored ignored
+	 *	@param M_ProductPrice_ID key
 	 *	@param trxName transaction
 	 */
 	public MProductPrice (Properties ctx, int M_ProductPrice_ID, String trxName)
 	{
-		super(ctx, 0, trxName);
+		super(ctx, M_ProductPrice_ID, trxName);
 	}	//	MProductPrice
 
 	/**

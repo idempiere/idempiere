@@ -80,9 +80,7 @@ import org.compiere.util.ValueNamePair;
 public class MPayment extends X_C_Payment 
 	implements DocAction, ProcessCall, PaymentInterface
 {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -7179638016937305380L;
 
 	/**
@@ -1983,8 +1981,8 @@ public class MPayment extends X_C_Payment
 				getC_Currency_ID(), getDateAcct(), getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
 			if (payAmt == null)
 			{
-				m_processMsg = "Could not convert C_Currency_ID=" + getC_Currency_ID()
-					+ " to base C_Currency_ID=" + MClient.get(Env.getCtx()).getC_Currency_ID();
+				m_processMsg = MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingCurrencyToBaseCurrency",
+						getC_Currency_ID(), MClient.get(getCtx()).getC_Currency_ID(), getC_ConversionType_ID(), getDateAcct(), get_TrxName());
 				return DocAction.STATUS_Invalid;
 			}
 			//	Total Balance

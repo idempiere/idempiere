@@ -76,11 +76,23 @@ public class Doc_Production extends Doc
 	private DocLine[] loadLines(X_M_Production prod)
 	{
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
-		//	Production
-		//	-- ProductionLine	- the real level
-		String sqlPL = "SELECT * FROM M_ProductionLine pl "
-				+ "WHERE pl.M_Production_ID=? "
-				+ "ORDER BY pl.Line";
+		String sqlPL = null;
+		if (prod.isUseProductionPlan()){
+//			Production
+			//	-- ProductionLine	- the real level
+			sqlPL = "SELECT * FROM "
+							+ " M_ProductionLine pro_line INNER JOIN M_ProductionPlan plan ON pro_line.M_ProductionPlan_id = plan.M_ProductionPlan_id "
+							+ " INNER JOIN M_Production pro ON pro.M_Production_id = plan.M_Production_id "
+							+ " WHERE pro.M_Production_ID=? "
+							+ " ORDER BY plan.M_ProductionPlan_id, pro_line.Line";
+		}else{
+//			Production
+			//	-- ProductionLine	- the real level
+			sqlPL = "SELECT * FROM M_ProductionLine pl "
+					+ "WHERE pl.M_Production_ID=? "
+					+ "ORDER BY pl.Line";
+		}
+		
 		PreparedStatement pstmtPL = null;
 		ResultSet rsPL = null;
 		try
@@ -99,7 +111,10 @@ public class Doc_Production extends Doc
 				DocLine docLine = new DocLine (line, this);
 				docLine.setQty (line.getMovementQty(), false);
 				//	Identify finished BOM Product
-				docLine.setProductionBOM(line.getM_Product_ID() == prod.getM_Product_ID());
+				if (prod.isUseProductionPlan())
+					docLine.setProductionBOM(line.getM_Product_ID() == line.getM_ProductionPlan().getM_Product_ID());
+				else
+					docLine.setProductionBOM(line.getM_Product_ID() == prod.getM_Product_ID());
 				//
 				if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
 				list.add (docLine);
@@ -149,6 +164,7 @@ public class Doc_Production extends Doc
 
 		//  Line pointer
 		FactLine fl = null;
+		X_M_Production prod = (X_M_Production)getPO();
 		for (int i = 0; i < p_lines.length; i++)
 		{
 			DocLine line = p_lines[i];
@@ -166,12 +182,18 @@ public class Doc_Production extends Doc
 			}
 			if (line.isProductionBOM())
 			{
+				X_M_ProductionLine endProLine = (X_M_ProductionLine)line.getPO();
+				Object parentEndPro = prod.isUseProductionPlan()?endProLine.getM_ProductionPlan_ID():endProLine.getM_Production_ID();
+				
 				//	Get BOM Cost - Sum of individual lines
 				BigDecimal bomCost = Env.ZERO;
 				for (int ii = 0; ii < p_lines.length; ii++)
 				{
 					DocLine line0 = p_lines[ii];
-					if (line0.getM_Production_ID() != line.getM_Production_ID())
+					X_M_ProductionLine bomProLine = (X_M_ProductionLine)line0.getPO();
+					Object parentBomPro = prod.isUseProductionPlan()?bomProLine.getM_ProductionPlan_ID():bomProLine.getM_Production_ID();
+					
+					if (!parentBomPro.equals(parentEndPro))
 						continue;
 					//pb changed this 20/10/06 
 					if (!line0.isProductionBOM())

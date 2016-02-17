@@ -29,7 +29,7 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20151030L;
+	private static final long serialVersionUID = 20160125L;
 
     /** Standard Constructor */
     public X_AD_ViewColumn (Properties ctx, int AD_ViewColumn_ID, String trxName)
@@ -251,5 +251,25 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	public String getHelp () 
 	{
 		return (String)get_Value(COLUMNNAME_Help);
+	}
+
+	/** Set Sequence.
+		@param SeqNo 
+		Method of ordering records; lowest number comes first
+	  */
+	public void setSeqNo (int SeqNo)
+	{
+		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
+	}
+
+	/** Get Sequence.
+		@return Method of ordering records; lowest number comes first
+	  */
+	public int getSeqNo () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 }

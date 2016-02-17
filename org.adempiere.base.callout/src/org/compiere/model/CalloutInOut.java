@@ -706,6 +706,9 @@ public class CalloutInOut extends CalloutEngine
 			// serialized ASI - force qty yo 1 - IDEMPIERE-1140
 			mTab.setValue("MovementQty", Env.ONE);
 			mTab.setValue("QtyEntered", Env.ONE);
+			MProduct product = MProduct.get(ctx, M_Product_ID);
+			if (product != null)
+				mTab.setValue("C_UOM_ID", product.getC_UOM_ID());
 		}
 		return "";
 	}	//	asi

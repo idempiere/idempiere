@@ -661,6 +661,7 @@ public class MTable extends X_AD_Table
 		
 		Query query = new Query(getCtx(), MViewComponent.Table_Name, MViewComponent.COLUMNNAME_AD_Table_ID + "=?", get_TrxName());
 		query.setParameters(getAD_Table_ID());
+		query.setOrderBy(MViewComponent.COLUMNNAME_SeqNo);
 		query.setOnlyActiveRecords(true);
 		List<MTableIndex> list = query.<MTableIndex>list();
 		
