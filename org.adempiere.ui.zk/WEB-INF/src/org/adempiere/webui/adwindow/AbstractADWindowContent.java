@@ -1344,7 +1344,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	        String adInfo = e.getAD_Message();
 	        if (   ! prevdbInfo.equals(dbInfo)
-	        	&& (   GridTab.DEFAULT_STATUS_MESSAGE.equals(adInfo)
+	        	&& (   adInfo == null
+	        	    || GridTab.DEFAULT_STATUS_MESSAGE.equals(adInfo)
 	        	    || GridTable.DATA_REFRESH_MESSAGE.equals(adInfo)
 	        	    || GridTable.DATA_INSERTED_MESSAGE.equals(adInfo)
 	        	    || GridTable.DATA_UPDATE_COPIED_MESSAGE.equals(adInfo)
