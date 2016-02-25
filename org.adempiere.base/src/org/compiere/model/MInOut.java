@@ -1053,12 +1053,12 @@ public class MInOut extends X_M_InOut implements DocAction
 
 		if (is_ValueChanged("AD_Org_ID"))
 		{
-			StringBuilder sql = new StringBuilder("UPDATE M_InOutLine ol")
-				.append(" SET AD_Org_ID =")
-					.append("(SELECT AD_Org_ID")
-					.append(" FROM M_InOut o WHERE ol.M_InOut_ID=o.M_InOut_ID) ")
-				.append("WHERE M_InOut_ID=").append(getC_Order_ID());
-			int no = DB.executeUpdate(sql.toString(), get_TrxName());
+			final String sql = "UPDATE M_InOutLine ol"
+					+ " SET AD_Org_ID ="
+					+ "(SELECT AD_Org_ID"
+					+ " FROM M_InOut o WHERE ol.M_InOut_ID=o.M_InOut_ID) "
+					+ "WHERE M_InOut_ID=?";
+			int no = DB.executeUpdateEx(sql, new Object[] {getM_InOut_ID()}, get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Lines -> #" + no);
 		}
 		return true;
