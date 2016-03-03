@@ -2,14 +2,6 @@ SET SQLBLANKLINES ON
 SET DEFINE OFF
 
 -- IDEMPIERE-3046 Add Currency Field to Cost Adjustment Window
--- Mar 3, 2016 3:10:37 PM SGT
-UPDATE AD_SysConfig SET Value='hengsin',Updated=TO_DATE('2016-03-03 15:10:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_SysConfig_ID=50001
-;
-
--- Mar 3, 2016 3:10:53 PM SGT
-UPDATE AD_SysConfig SET Value='fREX4qu2',Updated=TO_DATE('2016-03-03 15:10:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_SysConfig_ID=50002
-;
-
 -- Mar 3, 2016 3:11:22 PM SGT
 INSERT INTO AD_Val_Rule (AD_Val_Rule_ID,Name,Description,Type,Code,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Val_Rule_UU) VALUES (200091,'C_Currency in accounting schema','Available currencies are based on the schemas currency.','S','C_Currency_ID in (SELECT C_Currency_ID FROM C_AcctSchema Where AD_Client_ID = @AD_Client_ID@)',0,0,'Y',TO_DATE('2016-03-03 15:11:21','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2016-03-03 15:11:21','YYYY-MM-DD HH24:MI:SS'),100,'U','b632eb71-14ab-498f-b956-58f549082dea')
 ;
