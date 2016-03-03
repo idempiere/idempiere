@@ -454,6 +454,18 @@ public class MInventory extends X_M_Inventory implements DocAction
 					BigDecimal currentCost = line.getCurrentCostPrice();
 					MClient client = MClient.get(getCtx(), getAD_Client_ID());
 					MAcctSchema as = client.getAcctSchema();
+					MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(getCtx(), client.get_ID());
+					
+					if (as.getC_Currency_ID() != getC_Currency_ID()) 
+					{
+						for (int i = 0; i < ass.length ; i ++)
+						{
+							MAcctSchema a =  ass[i];
+							if (a.getC_Currency_ID() ==  getC_Currency_ID()) 
+								as = a ; 
+						}
+					}
+
 					MCost cost = product.getCostingRecord(as, getAD_Org_ID(), line.getM_AttributeSetInstance_ID(), getCostingMethod());
 					if (cost != null && cost.getCurrentCostPrice().compareTo(currentCost) != 0) 
 					{
@@ -1013,16 +1025,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 		return getUpdatedBy();
 	}	//	getDoc_User_ID
 	
-	/**
-	 * 	Get Document Currency
-	 *	@return C_Currency_ID
-	 */
-	public int getC_Currency_ID()
-	{
-	//	MPriceList pl = MPriceList.get(getCtx(), getM_PriceList_ID());
-	//	return pl.getC_Currency_ID();
-		return 0;
-	}	//	getC_Currency_ID
 	
 	/** Reversal Flag		*/
 	private boolean m_reversal = false;
