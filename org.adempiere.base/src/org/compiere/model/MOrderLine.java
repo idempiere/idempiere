@@ -1019,12 +1019,19 @@ public class MOrderLine extends X_C_OrderLine
 	{
 		if (!success)
 			return success;
-		MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
-        MTaxProvider provider = new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName());
-		ITaxProvider calculator = Core.getTaxProvider(provider);
-		if (calculator == null)
-			throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
-    	return calculator.recalculateTax(provider, this, newRecord);
+		if (getParent().isProcessed())
+			return success;
+		if (   newRecord
+			|| is_ValueChanged(MOrderLine.COLUMNNAME_C_Tax_ID)
+			|| is_ValueChanged(MOrderLine.COLUMNNAME_LineNetAmt)) {
+			MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
+	        MTaxProvider provider = new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName());
+			ITaxProvider calculator = Core.getTaxProvider(provider);
+			if (calculator == null)
+				throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
+	    	return calculator.recalculateTax(provider, this, newRecord);
+		}
+		return success;
 	}	//	afterSave
 
 	/**

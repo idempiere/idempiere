@@ -79,7 +79,7 @@ public class StandardTaxProvider implements ITaxProvider {
 				for (int j = 0; j < cTaxes.length; j++)
 				{
 					MTax cTax = cTaxes[j];
-					BigDecimal taxAmt = cTax.calculateTax(oTax.getTaxBaseAmt(), order.isTaxIncluded(), order.getPrecision());
+					BigDecimal taxAmt = cTax.calculateTax(oTax.getTaxBaseAmt(), false, order.getPrecision());
 					//
 					MOrderTax newOTax = new MOrderTax(order.getCtx(), 0, order.get_TrxName());
 					newOTax.setClientOrg(order);
@@ -210,7 +210,7 @@ public class StandardTaxProvider implements ITaxProvider {
 				for (int j = 0; j < cTaxes.length; j++)
 				{
 					MTax cTax = cTaxes[j];
-					BigDecimal taxAmt = cTax.calculateTax(iTax.getTaxBaseAmt(), invoice.isTaxIncluded(), invoice.getPrecision());
+					BigDecimal taxAmt = cTax.calculateTax(iTax.getTaxBaseAmt(), false, invoice.getPrecision());
 					//
 					MInvoiceTax newITax = new MInvoiceTax(invoice.getCtx(), 0, invoice.get_TrxName());
 					newITax.setClientOrg(invoice);
@@ -336,7 +336,7 @@ public class StandardTaxProvider implements ITaxProvider {
 				for (int j = 0; j < cTaxes.length; j++)
 				{
 					MTax cTax = cTaxes[j];
-					BigDecimal taxAmt = cTax.calculateTax(oTax.getTaxBaseAmt(), rma.isTaxIncluded(), rma.getPrecision());
+					BigDecimal taxAmt = cTax.calculateTax(oTax.getTaxBaseAmt(), false, rma.getPrecision());
 					//
 					MRMATax newOTax = new MRMATax(rma.getCtx(), 0, rma.get_TrxName());
 					newOTax.setClientOrg(rma);
