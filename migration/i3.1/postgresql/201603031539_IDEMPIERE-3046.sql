@@ -120,5 +120,11 @@ UPDATE AD_Column SET EntityType='D',Updated=TO_TIMESTAMP('2016-03-03 15:32:54','
 UPDATE AD_Field SET DisplayLogic='@C_Currency_ID@!@$C_Currency_ID@',Updated=TO_TIMESTAMP('2016-03-03 15:34:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204146
 ;
 
+-- Mar 15, 2016 1:12:45 AM SGT
+UPDATE AD_Val_Rule SET Code='C_Currency_ID in (SELECT C_Currency_ID FROM C_AcctSchema Where AD_Client_ID = @AD_Client_ID@ AND (AD_OrgOnly_ID=@AD_Org_ID@ OR AD_OrgOnly_ID Is NULL ))',Updated=TO_TIMESTAMP('2016-03-15 01:12:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200091
+;
+
+
 SELECT register_migration_script('201603031539_IDEMPIERE-3046') FROM dual
 ;
+
