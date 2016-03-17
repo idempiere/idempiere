@@ -260,8 +260,13 @@ public class Doc_Invoice extends Doc
 							if (mTax.getC_Tax_ID() == m_taxes[i].getC_Tax_ID())
 							{
 								dls[j].setLineNetAmtDifference(diff);
+								m_taxes[i].addIncludedTax(diff.negate());
+								diff = Env.ZERO;
 								break;
 							}
+						}
+						if (diff.signum() == 0) {
+							break;
 						}
 					}	//	for all lines
 				}	//	tax difference
