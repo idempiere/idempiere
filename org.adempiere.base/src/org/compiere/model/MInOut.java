@@ -1053,12 +1053,12 @@ public class MInOut extends X_M_InOut implements DocAction
 
 		if (is_ValueChanged("AD_Org_ID"))
 		{
-			StringBuilder sql = new StringBuilder("UPDATE M_InOutLine ol")
-				.append(" SET AD_Org_ID =")
-					.append("(SELECT AD_Org_ID")
-					.append(" FROM M_InOut o WHERE ol.M_InOut_ID=o.M_InOut_ID) ")
-				.append("WHERE M_InOut_ID=").append(getC_Order_ID());
-			int no = DB.executeUpdate(sql.toString(), get_TrxName());
+			final String sql = "UPDATE M_InOutLine ol"
+					+ " SET AD_Org_ID ="
+					+ "(SELECT AD_Org_ID"
+					+ " FROM M_InOut o WHERE ol.M_InOut_ID=o.M_InOut_ID) "
+					+ "WHERE M_InOut_ID=?";
+			int no = DB.executeUpdateEx(sql, new Object[] {getM_InOut_ID()}, get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Lines -> #" + no);
 		}
 		return true;
@@ -1426,11 +1426,36 @@ public class MInOut extends X_M_InOut implements DocAction
 				//	sLine.getM_AttributeSetInstance_ID() != 0
 				if (mtrx == null)
 				{
-					Timestamp dateMPolicy = getMovementDate();
-					if(sLine.getM_AttributeSetInstance_ID()>0){
+					Timestamp dateMPolicy= null;
+					MStorageOnHand[] storages = null;
+					if (sLine.getMovementQty().compareTo(Env.ZERO) > 0) {
+						// Find Date Material Policy bases on ASI
+						storages = MStorageOnHand.getWarehouse(getCtx(), 0,
+								sLine.getM_Product_ID(), sLine.getM_AttributeSetInstance_ID(), null,
+								MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+								sLine.getM_Locator_ID(), get_TrxName());
+					} else {
+						//Case of reversal
+						storages = MStorageOnHand.getWarehouse(getCtx(), 0,
+								sLine.getM_Product_ID(), sLine.getM_AttributeSetInstance_ID(), null,
+								MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+								sLine.getM_Locator_ID(), get_TrxName());
+					}
+					for (MStorageOnHand storage : storages) {
+						if (storage.getQtyOnHand().compareTo(sLine.getMovementQty()) >= 0) {
+							dateMPolicy = storage.getDateMaterialPolicy();
+							break;
+						}
+					}
+
+					if (dateMPolicy == null && storages.length > 0)
+						dateMPolicy = storages[0].getDateMaterialPolicy();
+
+					if (dateMPolicy==null && sLine.getM_AttributeSetInstance_ID()!=0) {
 						I_M_AttributeSetInstance asi = sLine.getM_AttributeSetInstance();
 						dateMPolicy = asi.getCreated();
-					}
+					} else if(dateMPolicy==null)
+						dateMPolicy = getMovementDate();
 					
 					//	Fallback: Update Storage - see also VMatch.createMatchRecord
 					if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
