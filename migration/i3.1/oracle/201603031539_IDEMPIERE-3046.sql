@@ -121,9 +121,42 @@ UPDATE AD_Column SET EntityType='D',Updated=TO_DATE('2016-03-03 15:32:54','YYYY-
 UPDATE AD_Field SET DisplayLogic='@C_Currency_ID@!@$C_Currency_ID@',Updated=TO_DATE('2016-03-03 15:34:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204146
 ;
 
--- Mar 15, 2016 1:12:45 AM SGT
-UPDATE AD_Val_Rule SET Code='C_Currency_ID in (SELECT C_Currency_ID FROM C_AcctSchema Where AD_Client_ID = @AD_Client_ID@ AND (AD_OrgOnly_ID=@AD_Org_ID@ OR AD_OrgOnly_ID Is NULL ))',Updated=TO_DATE('2016-03-15 01:12:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200091
+-- Mar 21, 2016 7:12:45 PM SGT
+UPDATE AD_Val_Rule SET Code='C_Currency_ID in (SELECT C_Currency_ID FROM C_AcctSchema Where AD_Client_ID = @AD_Client_ID@ AND (IsMemberOfAcctSchema(AD_Client_ID,@AD_Org_ID@,C_AcctSchema_ID) OR AD_OrgOnly_ID Is NULL ))',Updated=TO_DATE('2016-03-15 01:12:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200091
 ;
+
+CREATE or REPLACE FUNCTION IsMemberOfAcctSchema( p_AD_Client_ID NUMBER , p_AD_Org_ID NUMBER , p_C_AcctSchema_ID NUMBER ) 
+RETURN boolean AS 
+ v_ad_org_id NUMBER ;
+ v_count NUMBER ;
+BEGIN
+v_ad_org_id := -1;
+v_count :=0 ;
+SELECT count(*) into v_count from C_AcctSchema c 
+Where C_AcctSchema_ID <> p_C_AcctSchema_ID
+and AD_OrgOnly_ID= p_AD_Org_ID;
+
+
+if (v_count = 0 ) Then
+	WITH tr(level, parent_name, name, ad_org_id) as (
+	 select 0, null as parentName, ad_org.name, tn.node_id 
+	 from ad_tree t
+	 join ad_treenode tn on t.ad_tree_id=tn.ad_tree_id
+	 join ad_org on tn.node_id=ad_org.ad_org_id
+	 join c_acctschema ca on ad_org.ad_org_id=ca.AD_OrgOnly_ID and ca.C_AcctSchema_ID=p_C_AcctSchema_ID
+	 where t.treetype='OO' AND t.ad_client_id= p_AD_Client_ID 
+	 and ((tn.parent_id = 0 and ad_org.issummary='Y') or (ad_org.ad_org_id=p_AD_Org_ID))
+	   UNION ALL select level+1, tr.name, ad_org.name, tn.node_id
+	 from ad_tree t
+	 join ad_treenode tn on t.ad_tree_id=tn.ad_tree_id
+	 join ad_org on tn.node_id=ad_org.ad_org_id
+	 join tr on tr.ad_org_id=tn.parent_id 
+			where tn.node_id=p_AD_Org_ID)
+	 select ad_org_id into v_ad_org_id from tr where ad_org_id=p_ad_org_id;
+END IF;
+
+   return v_ad_org_id=p_ad_org_id;
+END;
 
 SELECT register_migration_script('201603031539_IDEMPIERE-3046') FROM dual
 ;
