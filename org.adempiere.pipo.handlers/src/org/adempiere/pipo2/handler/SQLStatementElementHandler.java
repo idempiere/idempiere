@@ -104,10 +104,10 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 				}
 				savepoint = null;
 			}
-			ctx.packIn.getNotifier().addFailureLine("SQL statement failed but ignored, error (" + e.getLocalizedMessage() + "): " + sql);
+			ctx.packIn.getNotifier().addFailureLine("SQL statement failed but ignored, error (" + e.getLocalizedMessage() + "): ");
 			logImportDetail (ctx, impDetail, 0, "SQLStatement",1,"Execute");
 			ctx.packIn.getNotifier().addFailureLine("-> " + sql);
-			log.log(Level.SEVERE,"SQLSatement", e);
+			log.log(Level.SEVERE,"SQLStatement", e);
 		} finally {
 			DB.close(pstmt);
 			pstmt = null;

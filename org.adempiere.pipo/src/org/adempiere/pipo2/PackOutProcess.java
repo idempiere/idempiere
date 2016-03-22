@@ -183,6 +183,8 @@ public class PackOutProcess extends SvrProcess
 			return I_AD_Role.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_SQLStatement.equals(type))
 			return "SQLStatement";
+		else if (X_AD_Package_Exp_Detail.TYPE_SQLMandatory.equals(type))
+			return "SQLMandatory";
 		else if (X_AD_Package_Exp_Detail.TYPE_Table.equals(type))
 			return I_AD_Table.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_Window.equals(type))
@@ -202,7 +204,7 @@ public class PackOutProcess extends SvrProcess
 		if (MPackageExpDetail.TYPE_Data.equals(type)) {
 			properties.put(DataElementParameters.AD_TABLE_ID, dtl.getAD_Table_ID());
 			properties.put(DataElementParameters.SQL_STATEMENT, dtl.getSQLStatement());
-		} else if (MPackageExpDetail.TYPE_SQLStatement.equals(type)) {
+		} else if (MPackageExpDetail.TYPE_SQLStatement.equals(type) || MPackageExpDetail.TYPE_SQLMandatory.equals(type)) {
 			properties.put(SQLElementParameters.SQL_STATEMENT, dtl.getSQLStatement());
 			properties.put(SQLElementParameters.DB_TYPE, dtl.getDBType());
 		} else if (MPackageExpDetail.TYPE_File_CodeOrOther.equals(type)) {
