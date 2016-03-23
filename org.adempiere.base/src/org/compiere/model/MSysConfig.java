@@ -39,10 +39,10 @@ import org.compiere.util.DisplayType;
  */
 public class MSysConfig extends X_AD_SysConfig
 {
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5124493725187310483L;
+	private static final long serialVersionUID = 5139119853639605887L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -130,6 +130,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String SYSTEM_IN_MAINTENANCE_MODE = "SYSTEM_IN_MAINTENANCE_MODE";
     public static final String SYSTEM_INSERT_CHANGELOG = "SYSTEM_INSERT_CHANGELOG";
     public static final String SYSTEM_NATIVE_SEQUENCE = "SYSTEM_NATIVE_SEQUENCE";
+    public static final String TWOPACK_COMMIT_DDL = "2PACK_COMMIT_DDL";
     public static final String TWOPACK_HANDLE_TRANSLATIONS = "2PACK_HANDLE_TRANSLATIONS";
     public static final String USE_EMAIL_FOR_LOGIN = "USE_EMAIL_FOR_LOGIN";
     public static final String USER_LOCKING_MAX_ACCOUNT_LOCK_MINUTES = "USER_LOCKING_MAX_ACCOUNT_LOCK_MINUTES";

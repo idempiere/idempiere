@@ -36,6 +36,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Table;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MTableIndex;
 import org.compiere.model.MViewComponent;
@@ -126,12 +127,16 @@ public class TableElementHandler extends AbstractElementHandler {
 	private int validateDatabaseView(PIPOContext ctx, MTable table) 
 	{
 		Trx trx = Trx.get(getTrxName(ctx), true);
-		if (!trx.commit())
-			return 0;
+		if (MSysConfig.getBooleanValue(MSysConfig.TWOPACK_COMMIT_DDL, false)) {
+			if (!trx.commit())
+				return 0;
+		}
 
 		try {
 			DatabaseViewValidate.validateDatabaseView(ctx.ctx, table, trx.getTrxName(), null);
-			trx.commit(true);
+			if (MSysConfig.getBooleanValue(MSysConfig.TWOPACK_COMMIT_DDL, false)) {
+				trx.commit(true);
+			}
 		} catch (Exception e) {
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			trx.rollback();

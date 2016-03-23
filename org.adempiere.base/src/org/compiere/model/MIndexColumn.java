@@ -74,7 +74,7 @@ public class MIndexColumn extends X_AD_IndexColumn {
 		if (sql != null && sql.length() > 0)
 			return sql;
 		int AD_Column_ID = getAD_Column_ID();
-		return MColumn.getColumnName(getCtx(), AD_Column_ID);
+		return MColumn.getColumnName(getCtx(), AD_Column_ID, get_TrxName());
 	}
 	
 	/**

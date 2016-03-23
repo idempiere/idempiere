@@ -36,6 +36,7 @@ import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Column;
 import org.compiere.model.I_AD_Table;
 import org.compiere.model.MColumn;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_Column;
 import org.compiere.model.X_AD_Element;
@@ -260,8 +261,10 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				log.info(sql);
 
 				//make it consistent for oracle and postgresql
-				if (!trx.commit())
-					return -1;
+				if (MSysConfig.getBooleanValue(MSysConfig.TWOPACK_COMMIT_DDL, false)) {
+					if (!trx.commit())
+						return -1;
+				}
 				
 				if (sql.indexOf(DB.SQLSTATEMENT_SEPARATOR) == -1) {
 					int ret = DB.executeUpdate(sql, false, trx.getTrxName());
@@ -279,7 +282,9 @@ public class ColumnElementHandler extends AbstractElementHandler {
 						}
 					}
 				}
-				trx.commit(true);
+				if (MSysConfig.getBooleanValue(MSysConfig.TWOPACK_COMMIT_DDL, false)) {
+					trx.commit(true);
+				}
 			} else {
 				return 0;
 			}

@@ -297,8 +297,6 @@ public class PackInHandler extends DefaultHandler {
     	else
     		elementValue = uri + localName;
 
-		X_AD_Package_Imp packageImp = new X_AD_Package_Imp(m_ctx.ctx, AD_Package_Imp_ID, null);
-		packageImp.setProcessed(true);
     	if (elementValue.equals("idempiere")){
     		processDeferElements();
 
@@ -314,14 +312,8 @@ public class PackInHandler extends DefaultHandler {
     		}
     		packIn.getNotifier().addStatusLine(packageStatus);
 
-    		//Update package history log with package status
-    		packageImp.setPK_Status(packageStatus);
-    		packageImp.saveEx();
-
-    		//Update package list with package status
-    		X_AD_Package_Imp_Inst packageInst = new X_AD_Package_Imp_Inst(m_ctx.ctx, AD_Package_Imp_Inst_ID, null);
-    		packageInst.setPK_Status(packageStatus);
-    		packageInst.saveEx();
+    		updPackageImpNoTrx();
+    		updPackageImpInstNoTrx();
 
     		//reset
     		setupHandlers();
@@ -334,23 +326,34 @@ public class PackInHandler extends DefaultHandler {
     			} catch (RuntimeException re) {
     				packageStatus = "Import Failed";
     				packIn.getNotifier().addStatusLine(packageStatus);
-    				//Update package history log with package status
-    	    		packageImp.setPK_Status(packageStatus);
-    	    		packageImp.saveEx();
+    	    		updPackageImpNoTrx();
     	    		throw re;
     			} catch (SAXException se) {
     				packageStatus = "Import Failed";
     				packIn.getNotifier().addStatusLine(packageStatus);
-    				//Update package history log with package status
-    	    		packageImp.setPK_Status(packageStatus);
-    	    		packageImp.saveEx();
+    	    		updPackageImpNoTrx();
     	    		throw se;
     			}
     		}
     	}
     }   // endElement
 
-    private void processDeferElements() throws SAXException {
+    private void updPackageImpNoTrx() {
+    	// NOTE: Updating out of model to avoid change log insert that can cause locks
+		//Update package history log with package status
+    	DB.executeUpdateEx("UPDATE AD_Package_Imp SET Processed=?, PK_Status=?, UpdatedBy=?, Updated=SYSDATE WHERE AD_Package_Imp_ID=?",
+    			new Object[] {"Y", packageStatus, Env.getAD_User_ID(m_ctx.ctx), AD_Package_Imp_ID},
+    			null);
+	}
+
+    private void updPackageImpInstNoTrx() {
+    	// NOTE: Updating out of model to avoid change log insert that can cause locks
+    	DB.executeUpdateEx("UPDATE AD_Package_Imp_Inst SET PK_Status=?, UpdatedBy=?, Updated=SYSDATE WHERE AD_Package_Imp_Inst_ID=?",
+    			new Object[] {packageStatus, Env.getAD_User_ID(m_ctx.ctx), AD_Package_Imp_Inst_ID},
+    			null);
+	}
+
+	private void processDeferElements() throws SAXException {
 
     	if (defer.isEmpty()) return;
 

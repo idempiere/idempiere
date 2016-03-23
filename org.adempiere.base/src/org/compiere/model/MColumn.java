@@ -51,7 +51,12 @@ public class MColumn extends X_AD_Column
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7261365443985547106L;
+	private static final long serialVersionUID = 3082823885314140209L;
+
+	public static MColumn get (Properties ctx, int AD_Column_ID)
+	{
+		return get(ctx, AD_Column_ID, null);
+	}
 
 	/**
 	 * 	Get MColumn from Cache
@@ -59,13 +64,15 @@ public class MColumn extends X_AD_Column
 	 * 	@param AD_Column_ID id
 	 *	@return MColumn
 	 */
-	public static MColumn get (Properties ctx, int AD_Column_ID)
+	public static MColumn get(Properties ctx, int AD_Column_ID, String trxName)
 	{
 		Integer key = new Integer (AD_Column_ID);
 		MColumn retValue = (MColumn) s_cache.get (key);
-		if (retValue != null)
+		if (retValue != null) {
+			retValue.set_TrxName(trxName);
 			return retValue;
-		retValue = new MColumn (ctx, AD_Column_ID, null);
+		}
+		retValue = new MColumn (ctx, AD_Column_ID, trxName);
 		if (retValue.get_ID () != 0)
 			s_cache.put (key, retValue);
 		return retValue;
@@ -84,15 +91,21 @@ public class MColumn extends X_AD_Column
 		return  table.getColumn(columnName);
 	}	//	get
 
+	public static String getColumnName (Properties ctx, int AD_Column_ID)
+	{
+		return getColumnName (ctx, AD_Column_ID, null);
+	}
+
 	/**
 	 * 	Get Column Name
 	 *	@param ctx context
 	 *	@param AD_Column_ID id
+	 *	@param trxName transaction
 	 *	@return Column Name or null
 	 */
-	public static String getColumnName (Properties ctx, int AD_Column_ID)
+	public static String getColumnName (Properties ctx, int AD_Column_ID, String trxName)
 	{
-		MColumn col = MColumn.get(ctx, AD_Column_ID);
+		MColumn col = MColumn.get(ctx, AD_Column_ID, trxName);
 		if (col.get_ID() == 0)
 			return null;
 		return col.getColumnName();
@@ -709,9 +722,12 @@ public class MColumn extends X_AD_Column
 		} else 	if (DisplayType.Table == refid || DisplayType.Search == refid) {
 			X_AD_Reference ref = new X_AD_Reference(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
 			if (X_AD_Reference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
-				MRefTable rt = new MRefTable(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
-				if (rt != null)
-					foreignTable = rt.getAD_Table().getTableName();
+				int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_Ref_Table WHERE AD_Reference_ID=?", getAD_Reference_Value_ID());
+				if (cnt == 1) {
+					MRefTable rt = new MRefTable(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
+					if (rt != null)
+						foreignTable = rt.getAD_Table().getTableName();
+				}
 			}
 		} else 	if (DisplayType.List == refid || DisplayType.Payment == refid) {
 			foreignTable = "AD_Ref_List";
