@@ -988,7 +988,7 @@ public class MUser extends X_AD_User
 			rs = pstmt.executeQuery ();
 			if (rs.next())
 			{
-				retValue = new MUser (ctx, rs.getInt(1), null);
+				retValue = MUser.get(ctx, rs.getInt(1));
 				if (rs.next())
 					s_log.warning ("More then one user with Name/Password = " + name);
 			}

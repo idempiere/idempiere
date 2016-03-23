@@ -1647,6 +1647,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 		// filter dynamic value
 		dynamicDisplay(null);
+		
+		onQueryCallback (null);
 	}
 	
 	@Override

@@ -183,14 +183,42 @@ public class Doc_Invoice extends Doc
 					BigDecimal LineNetAmtTax = tax.calculateTax(LineNetAmt, true, getStdPrecision());
 					if (log.isLoggable(Level.FINE)) log.fine("LineNetAmt=" + LineNetAmt + " - Tax=" + LineNetAmtTax);
 					LineNetAmt = LineNetAmt.subtract(LineNetAmtTax);
-					for (int t = 0; t < m_taxes.length; t++)
-					{
-						if (m_taxes[t].getC_Tax_ID() == C_Tax_ID)
+
+					if (tax.isSummary()) {
+						BigDecimal sumChildLineNetAmtTax = Env.ZERO;
+						DocTax taxToApplyDiff = null;
+						for (MTax childTax : tax.getChildTaxes(false)) {
+							if (!childTax.isZeroTax())
+							{
+								BigDecimal childLineNetAmtTax = childTax.calculateTax(LineNetAmt, false, getStdPrecision());
+								if (log.isLoggable(Level.FINE)) log.fine("LineNetAmt=" + LineNetAmt + " - Child Tax=" + childLineNetAmtTax);
+								for (int t = 0; t < m_taxes.length; t++)
+								{
+									if (m_taxes[t].getC_Tax_ID() == childTax.getC_Tax_ID())
+									{
+										m_taxes[t].addIncludedTax(childLineNetAmtTax);
+										taxToApplyDiff = m_taxes[t];
+										sumChildLineNetAmtTax = sumChildLineNetAmtTax.add(childLineNetAmtTax);
+										break;
+									}
+								}
+							}
+						}
+						BigDecimal diffChildVsSummary = LineNetAmtTax.subtract(sumChildLineNetAmtTax);
+						if (diffChildVsSummary.signum() != 0 && taxToApplyDiff != null) {
+							taxToApplyDiff.addIncludedTax(diffChildVsSummary);
+						}
+					} else {
+						for (int t = 0; t < m_taxes.length; t++)
 						{
-							m_taxes[t].addIncludedTax(LineNetAmtTax);
-							break;
+							if (m_taxes[t].getC_Tax_ID() == C_Tax_ID)
+							{
+								m_taxes[t].addIncludedTax(LineNetAmtTax);
+								break;
+							}
 						}
 					}
+					
 					BigDecimal PriceListTax = tax.calculateTax(PriceList, true, getStdPrecision());
 					PriceList = PriceList.subtract(PriceListTax);
 				}
@@ -220,9 +248,24 @@ public class Doc_Invoice extends Doc
 					BigDecimal diff = m_taxes[i].getIncludedTaxDifference();
 					for (int j = 0; j < dls.length; j++)
 					{
-						if (dls[j].getC_Tax_ID() == m_taxes[i].getC_Tax_ID())
-						{
-							dls[j].setLineNetAmtDifference(diff);
+						MTax lineTax = MTax.get(getCtx(), dls[j].getC_Tax_ID());
+						MTax[] composingTaxes = null;
+						if (lineTax.isSummary()) {
+							composingTaxes = lineTax.getChildTaxes(false);
+						} else {
+							composingTaxes = new MTax[1];
+							composingTaxes[0] = lineTax;
+						}
+						for (MTax mTax : composingTaxes) {
+							if (mTax.getC_Tax_ID() == m_taxes[i].getC_Tax_ID())
+							{
+								dls[j].setLineNetAmtDifference(diff);
+								m_taxes[i].addIncludedTax(diff.negate());
+								diff = Env.ZERO;
+								break;
+							}
+						}
+						if (diff.signum() == 0) {
 							break;
 						}
 					}	//	for all lines

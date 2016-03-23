@@ -125,7 +125,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			setQtyCount (QtyCount);
 		if (QtyInternalUse != null && QtyInternalUse.signum() != 0)
 			setQtyInternalUse (QtyInternalUse);
-		m_isManualEntry = false;
+		// m_isManualEntry = false;
 	}	//	MInventoryLine
 
 	public MInventoryLine (MInventory inventory, 
@@ -136,7 +136,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	}
 	
 	/** Manually created				*/
-	private boolean 	m_isManualEntry = true;
+	// private boolean 	m_isManualEntry = true;
 	/** Parent							*/
 	private MInventory 	m_parent = null;
 	/** Product							*/
@@ -260,6 +260,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InventoryLine"));
 			return false;
 		}
+		/* IDEMPIERE-1770 - ASI validation must be moved to MInventory.prepareIt, saving a line without ASI is ok on draft
 		if (m_isManualEntry)
 		{
 			//	Product requires ASI
@@ -279,7 +280,8 @@ public class MInventoryLine extends X_M_InventoryLine
 				}
 			}	//	No ASI
 		}	//	manual
-		
+		*/
+
 		//	Set Line No
 		if (getLine() == 0)
 		{

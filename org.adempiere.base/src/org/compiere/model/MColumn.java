@@ -843,7 +843,7 @@ public class MColumn extends X_AD_Column
 	{
 		StringBuilder fkConstraintSql = new StringBuilder();
 
-		if (!column.isKey() && !column.getColumnName().equals(PO.getUUIDColumnName(table.getTableName())))
+		if (!column.isKey() && !column.getColumnName().equals(PO.getUUIDColumnName(table.getTableName())) && !column.isVirtualColumn())
 		{
 			int refid = column.getAD_Reference_ID();
 			if (refid != DisplayType.List && refid != DisplayType.Payment)

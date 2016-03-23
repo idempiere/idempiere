@@ -271,19 +271,19 @@ public class ReportAction implements EventListener<Event>
 		int Record_ID = 0;
 		int[] RecordIDs = null;
 		MQuery query = new MQuery(gridTab.getTableName());
-		String whereClause;
+		StringBuilder whereClause = new StringBuilder("");
 
 		if (currentRowOnly)
 		{
 			Record_ID = gridTab.getRecord_ID();
-			whereClause = gridTab.getTableModel().getWhereClause(gridTab.getCurrentRow());
-			if (whereClause==null)
-				whereClause = gridTab.getTableModel().getSelectWhereClause();
+			whereClause.append(gridTab.getTableModel().getWhereClause(gridTab.getCurrentRow()));
+			if (whereClause.length() == 0)
+				whereClause.append(gridTab.getTableModel().getSelectWhereClause());
 
 		}
 		else
 		{
-			whereClause = gridTab.getTableModel().getSelectWhereClause();
+			whereClause.append(gridTab.getTableModel().getSelectWhereClause());
 			RecordIDs = new int[gridTab.getRowCount()];
 			for(int i = 0; i < gridTab.getRowCount(); i++)
 			{
@@ -291,24 +291,34 @@ public class ReportAction implements EventListener<Event>
 			}
 		}
 
-		if (whereClause!=null && whereClause.length() > 0)
+		if (whereClause.length() > 0)
 		{
-			if (whereClause.indexOf('@') != -1) //replace variables in context
+			if (whereClause.indexOf("@") != -1) //replace variables in context
 			{
-				String context = Env.parseContext(Env.getCtx(), panel.getWindowNo(), whereClause, false);
+				String context = Env.parseContext(Env.getCtx(), panel.getWindowNo(), whereClause.toString(), false);
 				if(context != null && context.trim().length() > 0)
 				{
-					whereClause = context;
+					whereClause = new StringBuilder(context);
 				}
 				else
 				{
 					log.log(Level.WARNING, "Failed to parse where clause. whereClause= "+whereClause);
-					whereClause = ("1 = 2");
+					whereClause = new StringBuilder("1 = 2");
 				}
 			}
 		}
-				
-		query.addRestriction(whereClause);
+
+		if (!currentRowOnly && gridTab.isOnlyCurrentRows() && gridTab.getTabNo() == 0)
+		{
+			if (whereClause.length() > 0)
+				whereClause.append(" AND ");
+			//	Show only unprocessed or the one updated within x days
+			whereClause.append("(").append(gridTab.getTableName()).append(".Processed='N' OR ").append(gridTab.getTableName()).append(".Updated>");
+			whereClause.append("SysDate-1");
+			whereClause.append(")");
+		}
+
+		query.addRestriction(whereClause.toString());
 
 		PrintInfo info = new PrintInfo(pf.getName(), pf.getAD_Table_ID(), Record_ID);
 		info.setDescription(query.getInfo());
