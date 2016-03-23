@@ -139,7 +139,7 @@
     <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="https://dl.bintray.com/hieplq/generic/zkossOSGiP2/8.0.1/"/>
+      <rm:uri format="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/zk-p2/zk-8.0.1.1/"/>
     </rm:provider>
   </rm:searchPath>
 </rm:rmap>
