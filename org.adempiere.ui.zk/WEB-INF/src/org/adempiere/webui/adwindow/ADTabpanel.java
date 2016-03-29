@@ -1391,7 +1391,13 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
 		SimpleTreeModel model = (SimpleTreeModel)(TreeModel<?>) treePanel.getTree().getModel();
 		if (treePanel.getTree().getSelectedItem() != null) {
-			DefaultTreeNode<Object> treeNode = treePanel.getTree().getSelectedItem().getValue();
+			Treeitem treeItem = treePanel.getTree().getSelectedItem();
+			if (!treeItem.isLoaded()){
+				return;
+			}
+			
+			DefaultTreeNode<Object> treeNode = treeItem.getValue();
+			 
 			MTreeNode data = (MTreeNode) treeNode.getData();
 			if (data.getNode_ID() == recordId) {
 				int[] path = model.getPath(treeNode);
