@@ -17,6 +17,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.EventListener;
@@ -55,12 +56,12 @@ public class Paymentbox extends Div {
 	private void initComponents() {
 		combo = new Combobox();
 		appendChild(combo);
-		combo.setHflex("0");
+		ZKUpdateUtil.setHflex(combo, "0");
 
 		btn = new Button();
 		btn.setTabindex(-1);
 		btn.setSclass("editor-button");
-		btn.setHflex("0");
+		ZKUpdateUtil.setHflex(btn, "0");
 		appendChild(btn);
 
 		LayoutUtils.addSclass("payment-rule-editor", this);

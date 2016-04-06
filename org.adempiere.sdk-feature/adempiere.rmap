@@ -28,6 +28,15 @@
   <rm:locator pattern="^org\.apache\.ant(\..+)?" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.apache\.commons(\..+)?" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.restlet(\..+)?" searchPathRef="restlet.maven"/>
+  <rm:locator pattern="^zcommon$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zel$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zhtml$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zk$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zkbind$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zkplus$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zul$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zweb$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zjavassist$" searchPathRef="zkoss.osgi"/>
   <rm:locator searchPathRef="orbit" failOnError="false"/>
   <rm:locator searchPathRef="workspace.project" failOnError="false"/>
   <rm:locator searchPathRef="workspace.feature"/>
@@ -122,7 +131,15 @@
         <maven:entry artifactId="org.apache.felix.webconsole.plugins.memoryusage" groupId="org.apache.felix" name="org.apache.felix.webconsole.plugins.memoryusage"/>
         <maven:entry artifactId="org.apache.felix.inventory" groupId="org.apache.felix" name="org.apache.felix.inventory"/>
         <maven:entry artifactId="org.apache.felix.webconsole.plugins.packageadmin" groupId="org.apache.felix" name="org.apache.felix.webconsole.plugins.packageadmin"/>
+        <maven:entry artifactId="javassist" groupId="org.javassist" name="javassist"/>
       </maven:mappings>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="zkoss.osgi">
+    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
+      <rm:property key="buckminster.source" value="false"/>
+      <rm:property key="buckminster.mutable" value="false"/>
+      <rm:uri format="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/zk-p2/zk-8.0.1.1/"/>
     </rm:provider>
   </rm:searchPath>
 </rm:rmap>

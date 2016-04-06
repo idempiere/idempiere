@@ -6,6 +6,7 @@ package org.adempiere.webui.adwindow;
 import java.util.List;
 
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Vbox;
 
@@ -23,11 +24,11 @@ public class ProcessButtonPopup extends Window {
 	public void render(List<Button> buttons) {
 		setSclass("toolbar-popup-window process-buttons-popup");
 		//setWidth("250px");
-		setHflex("min");
+		ZKUpdateUtil.setHflex(this, "min");
 		setBorder("normal");
 		
 		Vbox vbox = new Vbox();
-		vbox.setHflex("true");
+		ZKUpdateUtil.setHflex(vbox, "true");
 		appendChild(vbox);
 		vbox.setSclass("toolbar-popup-window-cnt");
 		vbox.setAlign("stretch");
@@ -36,7 +37,7 @@ public class ProcessButtonPopup extends Window {
 			if (button.getPage() != null) {
 				button.detach();
 			}
-			button.setHflex("1");
+			ZKUpdateUtil.setHflex(button, "1");
 			vbox.appendChild(button);
 		}
 	}

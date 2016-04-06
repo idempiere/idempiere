@@ -32,6 +32,7 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.editor.WStringEditor;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MAttribute;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MRole;
@@ -136,7 +137,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 		this.appendChild(vbox);
 		
 		Grid grid = new Grid();
-		grid.setWidth("400px");
+		ZKUpdateUtil.setWidth(grid, "400px");
 		grid.setStyle("margin:0; padding:0;");
 		grid.makeNoStrip();
 		grid.setOddRowSclass("even");
@@ -172,7 +173,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 		guaranteeDateSelection.setRows(0);
 		guaranteeDateSelection.setMultiple(false);
 		guaranteeDateSelection.setMold("select");
-		guaranteeDateSelection.setWidth("150px");
+		ZKUpdateUtil.setWidth(guaranteeDateSelection, "150px");
 		guaranteeDateSelection.appendItem(s + " <", s + " <");
 		guaranteeDateSelection.appendItem(s + " =", s + " =");
 		guaranteeDateSelection.appendItem(s + " >", s + " >");
@@ -189,7 +190,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 			div.appendChild(serNoLabel);
 			row.appendChild(div);
 			row.appendChild(serNoField.getComponent());
-			serNoField.getComponent().setWidth("150px");
+			ZKUpdateUtil.setWidth(serNoField.getComponent(), "150px");
 		}
 		
 		if (isLot) {
@@ -200,7 +201,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 			div.appendChild(lotLabel);
 			row.appendChild(div);
 			row.appendChild(lotField.getComponent());
-			lotField.getComponent().setWidth("150px");
+			ZKUpdateUtil.setWidth(lotField.getComponent(), "150px");
 
 			row = new Row();
 			rows.appendChild(row);
@@ -307,7 +308,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 					field = new WStringEditor(name, false, false, true, 10, 40, null, null).getComponent();
 				}
 				
-				field.setWidth("96%");
+				ZKUpdateUtil.setWidth(field, "96%");
 				row.appendChild(field);
 				//
 				field.setId(String.valueOf(attribute_ID));
@@ -321,7 +322,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 				if (MAttribute.ATTRIBUTEVALUETYPE_Number.equals(attributeValueType))
 				{
 					fieldTo = new WNumberEditor(name, false, false, true, DisplayType.Number, name).getComponent();
-					((NumberBox) fieldTo).setWidth("150px");
+					ZKUpdateUtil.setWidth(((NumberBox) fieldTo), "150px");
 					row = new Row();
 					rows.appendChild(row);
 					div = new Div();
@@ -455,7 +456,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 		lotSelection.setRows(0);
 		lotSelection.setMultiple(false);
 		lotSelection.setMold("select");
-		lotSelection.setWidth("150px");
+		ZKUpdateUtil.setWidth(lotSelection, "150px");
 		for(int i = 0; i < items.length; i++)
 			lotSelection.appendItem(items[i].getName(), items[i]);
 	}	//	initLotSelection

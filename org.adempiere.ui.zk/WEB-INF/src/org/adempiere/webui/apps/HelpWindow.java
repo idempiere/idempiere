@@ -19,6 +19,7 @@ import java.util.Calendar;
 
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.h3;
 import org.apache.ecs.xhtml.h4;
@@ -52,15 +53,15 @@ public class HelpWindow extends Window {
 		
 		this.setTitle(Msg.getMsg(Env.getCtx(), "Help"));
 		this.gridWindow = gridWindow;
-		this.setWidth("99%");
-		this.setHeight("100%");
+		ZKUpdateUtil.setWidth(this, "99%");
+		ZKUpdateUtil.setHeight(this, "100%");
 		this.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 		this.setSclass("help-window");
 						
 		Borderlayout borderlayout = new Borderlayout();
 		this.appendChild(borderlayout);
-		borderlayout.setHflex("1");
-		borderlayout.setVflex("1");
+		ZKUpdateUtil.setHflex(borderlayout, "1");
+		ZKUpdateUtil.setVflex(borderlayout, "1");
 		
 		Center centerPane = new Center();
 		centerPane.setAutoscroll(true);

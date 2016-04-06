@@ -28,11 +28,14 @@ import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.grid.CreateFromRMA;
 import org.compiere.model.GridTab;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+
 import static org.compiere.model.SystemIDs.*;
+
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -103,8 +106,8 @@ public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListen
 		bPartnerLabel.setText(Msg.getElement(Env.getCtx(), "C_BPartner_ID"));
         
 		Borderlayout parameterLayout = new Borderlayout();
-		parameterLayout.setHeight("110px");
-		parameterLayout.setWidth("100%");
+		ZKUpdateUtil.setHeight(parameterLayout, "110px");
+		ZKUpdateUtil.setWidth(parameterLayout, "100%");
     	Panel parameterPanel = window.getParameterPanel();
 		parameterPanel.appendChild(parameterLayout);
 		

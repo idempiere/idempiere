@@ -45,7 +45,7 @@ public class LogEventInterceptor implements EventInterceptor {
 				System.out.println("Duplicate Event., event="+event.getName()+",target="+event.getTarget());
 			} else {
 				execution.setAttribute(key, Boolean.TRUE);
-				String locator = event.getTarget() != null ? event.getTarget().getWidgetAttribute("_zk_locator") : "";
+				String locator = event.getTarget() != null ? event.getTarget().getClientAttribute("_zk_locator") : "";
 				System.out.println("beforeProcessEvent, event="+event.getName()+",target="+event.getTarget()+",locator="+locator);
 			}
 		}

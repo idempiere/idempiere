@@ -18,6 +18,7 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MArchive;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -50,8 +51,8 @@ public class LabelAppletWindow extends Window implements EventListener<Event>
 		Applet applet = new Applet();
 		applet.setCode("PrintLabelApplet.class");
 		applet.setArchive("labelapplet.jar");
-		applet.setWidth("0");
-		applet.setHeight("0");
+		ZKUpdateUtil.setWidth(applet, "0");
+		ZKUpdateUtil.setHeight(applet, "0");
 		applet.setParam("size", list.size() + "");
 
 		for(int i = 0; i < list.size(); i++)

@@ -19,6 +19,7 @@ import org.adempiere.webui.component.SimpleTreeModel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.panel.TreeSearchPanel;
 import org.adempiere.webui.util.TreeUtils;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -83,13 +84,13 @@ public class ADTreePanel extends Panel implements EventListener<Event>
     private void init()
     {
     	setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "treepanel");
-    	this.setWidth("100%");
-    	this.setHeight("100%");
+    	ZKUpdateUtil.setWidth(this, "100%");
+    	ZKUpdateUtil.setHeight(this, "100%");
     	
         tree = new Tree();
         tree.setMultiple(false);
-        tree.setWidth("100%");
-        tree.setVflex(true);
+        ZKUpdateUtil.setWidth(tree, "100%");
+        ZKUpdateUtil.setVflex(tree, true);
         tree.setPageSize(-1); // Due to bug in the new paging functionality
         
         tree.setStyle("border: none");

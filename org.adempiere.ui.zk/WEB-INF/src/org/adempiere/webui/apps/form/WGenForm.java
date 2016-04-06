@@ -43,6 +43,7 @@ import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.apps.form.GenForm;
@@ -121,20 +122,20 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 			dynInit();
 			Borderlayout contentPane = new Borderlayout();
 			this.appendChild(contentPane);
-			contentPane.setWidth("99%");
-			contentPane.setHeight("100%");
+			ZKUpdateUtil.setWidth(contentPane, "99%");
+			ZKUpdateUtil.setHeight(contentPane, "100%");
 			Center center = new Center();
 			center.setStyle("border: none");
 			contentPane.appendChild(center);
 			center.appendChild(tabbedPane);
-			tabbedPane.setVflex("1");
-			tabbedPane.setHflex("1");
+			ZKUpdateUtil.setVflex(tabbedPane, "1");
+			ZKUpdateUtil.setHflex(tabbedPane, "1");
 			South south = new South();
 			south.setStyle("border: none");
 			contentPane.appendChild(south);
 			south.appendChild(statusBar);
 			LayoutUtils.addSclass("status-border", statusBar);
-			south.setHeight("22px");			
+			ZKUpdateUtil.setHeight(south, "22px");			
 		}
 		catch(Exception ex)
 		{
@@ -156,8 +157,8 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	void zkInit() throws Exception
 	{
 		//
-		selPanel.setWidth("99%");
-		selPanel.setHeight("90%");
+		ZKUpdateUtil.setWidth(selPanel, "99%");
+		ZKUpdateUtil.setHeight(selPanel, "90%");
 		selPanel.setStyle("border: none; position: absolute");
 		DesktopTabpanel tabpanel = new DesktopTabpanel();
 		tabpanel.appendChild(selPanel);
@@ -180,9 +181,9 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		Center center = new Center();
 		selPanel.appendChild(center);
 		center.appendChild(miniTable);
-		miniTable.setVflex("1");
-		miniTable.setHflex("1");
-		miniTable.setHeight("99%");
+		ZKUpdateUtil.setVflex(miniTable, "1");
+		ZKUpdateUtil.setHflex(miniTable, "1");
+		//ZKUpdateUtil.setHeight(miniTable, "99%");
 		confirmPanelSel.addActionListener(this);
 		//
 		tabpanel = new DesktopTabpanel();
@@ -191,8 +192,8 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		tab = new Tab(Msg.getMsg(Env.getCtx(), "Generate"));
 		tabs.appendChild(tab);
 		tab.setDisabled(true);
-		genPanel.setWidth("99%");
-		genPanel.setHeight("90%");
+		ZKUpdateUtil.setWidth(genPanel, "99%");
+		ZKUpdateUtil.setHeight(genPanel, "90%");
 		genPanel.setStyle("border: none; position: absolute");
 		center = new Center();
 		genPanel.appendChild(center);

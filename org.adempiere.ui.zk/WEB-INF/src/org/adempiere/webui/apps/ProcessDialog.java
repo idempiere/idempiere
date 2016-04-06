@@ -37,6 +37,7 @@ import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.model.X_AD_CtxHelp;
@@ -340,7 +341,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		if (resultPanelLayout == null){
 			resultPanelLayout = new Vlayout();
 			resultPanelLayout.setSclass("result-parameter-layout");
-			resultPanelLayout.setVflex("true");
+			ZKUpdateUtil.setVflex(resultPanelLayout, "true");
 			// reference for update late
 			messageResultContent = setHeadMessage(resultPanelLayout, null);
 			

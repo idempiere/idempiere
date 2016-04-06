@@ -29,6 +29,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MRecordAccess;
 import org.compiere.model.MRole;
 import org.compiere.util.CLogger;
@@ -65,7 +66,7 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 		setTitle(Msg.translate(Env.getCtx(), "RecordAccessDialog"));
 		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		setBorder("normal");		
-		setWidth("600px");
+		ZKUpdateUtil.setWidth(this, "600px");
 		setSizable(true);
 		
 		log.info("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);

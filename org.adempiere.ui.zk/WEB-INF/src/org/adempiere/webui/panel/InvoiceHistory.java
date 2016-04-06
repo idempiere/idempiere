@@ -35,6 +35,7 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.info.InfoProductWindow;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MDocType;
 import org.compiere.model.MPriceList;
 import org.compiere.util.CLogger;
@@ -154,25 +155,25 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		if (m_M_Product_ID != 0)
 			tabs.appendChild(new Tab(Msg.getMsg(Env.getCtx(), "ATP")));
 		
-		pricePane.setHeight("100%");
+		ZKUpdateUtil.setHeight(pricePane, "100%");
 		pricePane.appendChild(m_tablePrice);
 		tabpanels.appendChild(pricePane);
 		
-		reservedPane.setHeight("100%");
+		ZKUpdateUtil.setHeight(reservedPane, "100%");
 		reservedPane.appendChild(m_tableReserved);
 		tabpanels.appendChild(reservedPane);
 		
-		orderedPane.setHeight("100%");
+		ZKUpdateUtil.setHeight(orderedPane, "100%");
 		orderedPane.appendChild(m_tableOrdered);
 		tabpanels.appendChild(orderedPane);
 		
-		unconfirmedPane.setHeight("100%");
+		ZKUpdateUtil.setHeight(unconfirmedPane, "100%");
 		unconfirmedPane.appendChild(m_tableUnconfirmed);
 		tabpanels.appendChild(unconfirmedPane);
 		
 		if (m_M_Product_ID != 0)
 		{
-			atpPane.setHeight("100%");
+			ZKUpdateUtil.setHeight(atpPane, "100%");
 			atpPane.appendChild(m_tableAtp);
 			tabpanels.appendChild(atpPane);
 		}
@@ -182,8 +183,8 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		confirmPanel.addActionListener(this);
         
 		Borderlayout borderlayout = new Borderlayout();
-        this.setWidth("700px");
-        this.setHeight("400px");
+		ZKUpdateUtil.setWidth(this, "700px");
+		ZKUpdateUtil.setHeight(this, "400px");
         borderlayout.setStyle("border: none; position: relative");
 		this.appendChild(borderlayout);
 		this.setClosable(true);
@@ -198,8 +199,8 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		center.setAutoscroll(true);
         borderlayout.appendChild(center);
 		center.appendChild(tabbox);
-		tabbox.setVflex("1");
-		tabbox.setHflex("1");
+		ZKUpdateUtil.setVflex(tabbox, "1");
+		ZKUpdateUtil.setHflex(tabbox, "1");
 		
 		South south = new South();
 		south.setSclass("dialog-footer");

@@ -39,6 +39,7 @@ import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.event.WTableModelEvent;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MLookup;
@@ -192,13 +193,13 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 
     public void init()
     {
-    	txtDocumentNo.setHflex("1");
-    	txtDescription.setHflex("1");
-    	txtOrderRef.setHflex("1");
-    	dateFrom.setWidth("165px");
-		dateTo.setWidth("165px");
-		amountFrom.getDecimalbox().setWidth("155px");
-		amountTo.getDecimalbox().setWidth("155px");
+    	ZKUpdateUtil.setHflex(txtDocumentNo, "1");
+    	ZKUpdateUtil.setHflex(txtDescription, "1");
+    	ZKUpdateUtil.setHflex(txtOrderRef, "1");
+    	ZKUpdateUtil.setWidth(dateFrom, "165px");
+    	ZKUpdateUtil.setWidth(dateTo, "165px");
+		ZKUpdateUtil.setWidth(amountFrom.getDecimalbox(), "155px");
+		ZKUpdateUtil.setWidth(amountTo.getDecimalbox(), "155px");
 
     	Grid grid = GridFactory.newGridLayout();
 
@@ -236,8 +237,8 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 		rows.appendChild(row);
 
 		layout = new Borderlayout();
-        layout.setWidth("100%");
-        layout.setHeight("100%");
+		ZKUpdateUtil.setWidth(layout, "100%");
+		ZKUpdateUtil.setHeight(layout, "100%");
         if (!isLookup())
         {
         	layout.setStyle("position: absolute");
@@ -253,19 +254,19 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 		Div div = new Div();
 		div.appendChild(contentPanel);
 		if (isLookup())
-			contentPanel.setWidth("99%");
+			ZKUpdateUtil.setWidth(contentPanel, "99%");
         else
         	contentPanel.setStyle("width: 99%; margin: 0px auto;");
-        contentPanel.setVflex(true);
+        ZKUpdateUtil.setVflex(contentPanel, true);
 		div.setStyle("width :100%; height: 100%");
 		center.appendChild(div);
-		div.setVflex("1");
-		div.setHflex("1");
+		ZKUpdateUtil.setVflex(div, "1");
+		ZKUpdateUtil.setHflex(div, "1");
 
 		South south = new South();
 		layout.appendChild(south);
 		southBody = new Vbox();
-		southBody.setWidth("100%");
+		ZKUpdateUtil.setWidth(southBody, "100%");
 		south.appendChild(southBody);
 		southBody.appendChild(new Separator());
 		southBody.appendChild(confirmPanel);		

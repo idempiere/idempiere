@@ -22,6 +22,7 @@ import org.adempiere.base.event.EventManager;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRecentItem;
 import org.compiere.model.MRole;
@@ -92,7 +93,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		Panelchildren recentItemsContent = new Panelchildren();
 		panel.appendChild(recentItemsContent);
 		bxRecentItems = new Vbox();
-		bxRecentItems.setHflex("1");
+		ZKUpdateUtil.setHflex(bxRecentItems, "1");
 		this.setSclass("recentitems-box");
 		recentItemsContent.appendChild(bxRecentItems);
 		createRecentItemsPanel();
@@ -245,7 +246,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 			btnrecentItem.addEventListener(Events.ON_CLICK, this);
 			btnrecentItem.addEventListener(Events.ON_DROP, this);
 			btnrecentItem.setSclass("menu-href");
-			btnrecentItem.setHflex("1");
+			ZKUpdateUtil.setHflex(btnrecentItem, "1");
 			
 			riShown++;
 			if (riShown >= maxri)

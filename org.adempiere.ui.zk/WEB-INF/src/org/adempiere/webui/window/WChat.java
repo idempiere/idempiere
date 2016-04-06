@@ -30,6 +30,7 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MChat;
 import org.compiere.model.MChatEntry;
 import org.compiere.model.MUser;
@@ -145,36 +146,36 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		Center center = new Center();
 		center.setSclass("dialog-content");
 		Vlayout content = new Vlayout();
-		content.setHflex("1");
-		content.setVflex("1");
+		ZKUpdateUtil.setHflex(content, "1");
+		ZKUpdateUtil.setVflex(content, "1");
 		center.appendChild(content);
-		messageTree.setHflex("1");
-		messageTree.setVflex("1");
+		ZKUpdateUtil.setHflex(messageTree, "1");
+		ZKUpdateUtil.setVflex(messageTree, "1");
 		content.appendChild(messageTree);
 		center.setAutoscroll(true);
 		mainPanel.appendChild(center);
 		//
 		content.appendChild(newText);
 		newText.setRows(3);
-		newText.setHeight("100%");
+		ZKUpdateUtil.setHeight(newText, "100%");
 		newText.setMultiline(true);		
-		newText.setHflex("1");
-		newText.setVflex("min");
+		ZKUpdateUtil.setHflex(newText, "1");
+		ZKUpdateUtil.setVflex(newText, "min");
 		addButton = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Add")));
 		addButton.addActionListener(this);
 		content.appendChild(addButton);
 		//	South
 		South south = new South();		
-		south.setVflex("min");
+		ZKUpdateUtil.setVflex(south, "min");
 		
 		mainPanel.appendChild(south);		
 		LayoutUtils.addSclass("dialog-footer", confirmPanel);
 		confirmPanel.addActionListener(this);
 		south.appendChild(confirmPanel);
-		confirmPanel.setVflex("min");
+		ZKUpdateUtil.setVflex(confirmPanel, "min");
 
-		this.setHeight("88%");
-		this.setWidth("500px");
+		ZKUpdateUtil.setHeight(this, "88%");
+		ZKUpdateUtil.setWidth(this, "500px");
 		this.setMaximizable(true);
 		this.setSizable(true);
 		this.setBorder("normal");
@@ -318,12 +319,12 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		{
 			int CM_ChatEntry_ID = (Integer)e.getTarget().getAttribute("CM_ChatEntry_ID");
 			Div div = new Div();
-			div.setWidth("100%");
+			ZKUpdateUtil.setWidth(div, "100%");
 			Textbox replyTextbox = new Textbox();
 			replyTextbox.setMultiline(true);
 			replyTextbox.setRows(3);
-			replyTextbox.setWidth("100%");
-			replyTextbox.setHeight("100%");
+			ZKUpdateUtil.setWidth(replyTextbox, "100%");
+			ZKUpdateUtil.setHeight(replyTextbox, "100%");
 			div.appendChild(replyTextbox);
 			Button btn = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Ok")));
 			div.appendChild(btn);

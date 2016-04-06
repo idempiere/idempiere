@@ -16,6 +16,7 @@ package org.adempiere.webui;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.ShadowElement;
 import org.zkoss.zk.ui.util.UiLifeCycle;
 
 /**
@@ -65,6 +66,18 @@ public class UiLifeCycleListener implements UiLifeCycle {
 	 */
 	@Override
 	public void afterPageDetached(Page page, Desktop prevdesktop) {
+	}
+
+	@Override
+	public void afterShadowAttached(ShadowElement arg0, Component arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void afterShadowDetached(ShadowElement arg0, Component arg1) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -19,6 +19,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.grid.PaymentForm;
 import org.compiere.util.Env;
@@ -71,7 +72,7 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		this.setTitle(Msg.getMsg(Env.getCtx(), "Payment"));
 		this.setSclass("popup-dialog");
 		this.setBorder("normal");
-		this.setWidth("500px");
+		ZKUpdateUtil.setWidth(this, "500px");
 		this.setShadow(true);
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 	}
@@ -82,12 +83,12 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		Center center = new Center();
 		center.setSclass("dialog-content");
 		mainLayout.appendChild(center);
-		mainLayout.setHflex("1");
-		mainLayout.setVflex("min");	
+		ZKUpdateUtil.setHflex(mainLayout, "1");
+		ZKUpdateUtil.setVflex(mainLayout, "min");	
 		center.appendChild(centerPanel = getPanel());
 		LayoutUtils.addSclass("payment-form-content", centerPanel);
-		centerPanel.setVflex("1");
-		centerPanel.setHflex("1");
+		ZKUpdateUtil.setVflex(centerPanel, "1");
+		ZKUpdateUtil.setHflex(centerPanel, "1");
 		center.setAutoscroll(true);
 		//
 		South south = new South();

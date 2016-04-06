@@ -24,7 +24,7 @@
 
 	<!--  false to use compress js which is much smaller. change to true if you need to debug -->
 	<client-config>
-		<debug-js>false</debug-js>
+		<debug-js>true</debug-js>
 		<processing-prompt-delay>500</processing-prompt-delay>
 	</client-config>
 
@@ -96,10 +96,6 @@
 	<library-property>
     	<name>org.zkoss.zul.borderlayout.animation.disabed</name>
     	<value>true</value>
-	</library-property>
-	<library-property>
-	    <name>org.zkoss.web.util.resource.dir</name>
-	    <value>/WEB-INF/cwr</value>
 	</library-property>
 	<library-property>
 	    <name>org.zkoss.zul.grid.DataLoader.class</name>

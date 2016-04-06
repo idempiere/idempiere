@@ -32,6 +32,7 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
@@ -155,20 +156,20 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		rows.appendChild(row);
 		row.appendChild(lbl1.rightAlign());
 		row.appendChild(txt1);
-		txt1.setHflex("1");
+		ZKUpdateUtil.setHflex(txt1, "1");
 		row.appendChild(lbl2.rightAlign());
 		row.appendChild(txt2);
-		txt2.setHflex("1");
+		ZKUpdateUtil.setHflex(txt2, "1");
 		row.appendChild(lbl3.rightAlign());
 		row.appendChild(txt3);
-		txt3.setHflex("1");
+		ZKUpdateUtil.setHflex(txt3, "1");
 		row.appendChild(lbl4.rightAlign());
 		row.appendChild(txt4);
-		txt4.setHflex("1");
+		ZKUpdateUtil.setHflex(txt4, "1");
 
 		layout = new Borderlayout();
-        layout.setWidth("100%");
-        layout.setHeight("100%");
+		ZKUpdateUtil.setWidth(layout, "100%");
+		ZKUpdateUtil.setHeight(layout, "100%");
         if (!isLookup())
         {
         	layout.setStyle("position: absolute");
@@ -184,20 +185,20 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		Div div = new Div();
 		div.appendChild(contentPanel);
 		if (isLookup())
-			contentPanel.setWidth("99%");
+			ZKUpdateUtil.setWidth(contentPanel, "99%");
         else
         	contentPanel.setStyle("width: 99%; margin: 0px auto;");
-        contentPanel.setVflex(true);
+        ZKUpdateUtil.setVflex(contentPanel, true);
         contentPanel.setSizedByContent(true);
 		div.setStyle("width :100%; height: 100%");
 		center.appendChild(div);
-		div.setVflex("1");
-		div.setHflex("1");
+		ZKUpdateUtil.setVflex(div, "1");
+		ZKUpdateUtil.setHflex(div, "1");
 
 		South south = new South();
 		layout.appendChild(south);
 		southBody = new Vbox();
-		southBody.setWidth("100%");
+		ZKUpdateUtil.setWidth(southBody, "100%");
 		south.appendChild(southBody);
 		southBody.appendChild(new Separator());
 		southBody.appendChild(confirmPanel);		

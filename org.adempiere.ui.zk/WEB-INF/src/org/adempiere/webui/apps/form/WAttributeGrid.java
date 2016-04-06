@@ -37,6 +37,7 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.panel.ADForm;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MAttribute;
 import org.compiere.model.MAttributeValue;
@@ -101,20 +102,20 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 			modeCombo.appendItem(MODES[i], MODES[i]);
 		modeCombo.setMold("select");
 		
-		tabbox.setWidth("100%");
-		tabbox.setHeight("85%");
+		ZKUpdateUtil.setWidth(tabbox, "100%");
+		ZKUpdateUtil.setHeight(tabbox, "85%");
 		tabbox.appendChild(tabs);
 		tabbox.appendChild(tabpanels);
 		tabbox.addEventListener(Events.ON_SELECT, this);
 		
 		Grid gridSelection = new Grid();
-		gridSelection.setWidth("500px");
+		ZKUpdateUtil.setWidth(gridSelection, "500px");
 		gridSelection.setStyle("margin:0; padding:0;");
 		gridSelection.makeNoStrip();
 		gridSelection.setOddRowSclass("even");
 		
-		gridView.setWidth("100%");
-		gridView.setHeight("100%");
+		ZKUpdateUtil.setWidth(gridView, "100%");
+		ZKUpdateUtil.setHeight(gridView, "100%");
 		gridView.setSizedByContent(false);
         
 		Rows rows = new Rows();
@@ -127,7 +128,7 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 		div.appendChild(attributeLabel1);
 		row.appendCellChild(div, 1);
 		row.appendCellChild(attributeCombo1, 2);
-		attributeCombo1.setWidth("100%");
+		ZKUpdateUtil.setWidth(attributeCombo1, "100%");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -136,7 +137,7 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 		div.appendChild(attributeLabel2);
 		row.appendCellChild(div, 1);
 		row.appendCellChild(attributeCombo2, 2);
-		attributeCombo2.setWidth("100%");
+		ZKUpdateUtil.setWidth(attributeCombo2, "100%");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -145,7 +146,7 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 		div.appendChild(labelPriceList);
 		row.appendCellChild(div, 1);
 		row.appendCellChild(pickPriceList, 2);
-		pickPriceList.setWidth("100%");
+		ZKUpdateUtil.setWidth(pickPriceList, "100%");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -154,7 +155,7 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 		div.appendChild(labelWarehouse);
 		row.appendCellChild(div, 1);
 		row.appendCellChild(pickWarehouse, 2);
-		pickWarehouse.setWidth("100%");
+		ZKUpdateUtil.setWidth(pickWarehouse, "100%");
 		
 		div = new Div();
 		div.setStyle("text-align: center;");
@@ -184,8 +185,8 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 		tabpanels.appendChild(tabAttributeGridPanel);
 		tabs.appendChild(tabAttributeGrid);
 		
-		this.setWidth("100%");
-		this.setHeight("100%");
+		ZKUpdateUtil.setWidth(this, "100%");
+		ZKUpdateUtil.setHeight(this, "100%");
 		this.appendChild(tabbox);
 		tabbox.addEventListener(Events.ON_SELECT, this);
 		this.appendChild(confirmPanel);
@@ -456,7 +457,7 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 				if (rowIndex == 0 && colIndex == 0)
 				{
 					Vbox descr = new Vbox();
-					descr.setWidth("100%");
+					ZKUpdateUtil.setWidth(descr, "100%");
 					if (xValues != null)
 					{
 						Div div = new Div();

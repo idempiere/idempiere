@@ -38,6 +38,7 @@ import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MDashboardContent;
 import org.compiere.model.MDashboardPreference;
 import org.compiere.model.Query;
@@ -194,30 +195,30 @@ public class WGadgets extends Window implements  EventListener<Event>{
 		listHeader.setParent(listHead);
 
 		Hlayout hlayout = new Hlayout();
-		hlayout.setVflex("true");
-		hlayout.setHflex("true");
+		ZKUpdateUtil.setVflex(hlayout, "true");
+		ZKUpdateUtil.setHflex(hlayout, "true");
 		hlayout.setStyle("padding: 2px 3px;");
-		noList.setHflex("1");
-		noList.setVflex(true);
+		ZKUpdateUtil.setHflex(noList, "1");
+		ZKUpdateUtil.setVflex(noList, true);
 		hlayout.appendChild(noList);
 		Vbox vbox = new Vbox();
 		vbox.appendChild(bAdd);
 		vbox.appendChild(bRemove);
-		vbox.setWidth("50px");
+		ZKUpdateUtil.setWidth(vbox, "50px");
 		hlayout.appendChild(vbox);
 
-		yesList.setVflex(true);
-		yesList.setHflex("1");
+		ZKUpdateUtil.setVflex(yesList, true);
+		ZKUpdateUtil.setHflex(yesList, "1");
 		hlayout.appendChild(yesList);
 				
 		panel = new ConfirmPanel(true);
 		panel.setSclass("dialog-footer");
 		panel.addActionListener(Events.ON_CLICK, this);
-		panel.setVflex("min");
+		ZKUpdateUtil.setVflex(panel, "min");
 				
 		Vlayout vlayout = new Vlayout();
-		vlayout.setHeight("100%");
-		vlayout.setWidth("100%");
+		ZKUpdateUtil.setHeight(vlayout, "100%");
+		ZKUpdateUtil.setWidth(vlayout, "100%");
 		vlayout.setStyle("margin: 0px; border: none; padding: 0px");
 		vlayout.appendChild(hlayout);
 		vlayout.appendChild(panel);

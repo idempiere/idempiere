@@ -40,6 +40,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MLocator;
 import org.compiere.model.MLocatorLookup;
 import org.compiere.model.MLocatorType;
@@ -186,11 +187,11 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		
 		Column column = new Column();
 		columns.appendChild(column);
-		column.setWidth("30%");
+		ZKUpdateUtil.setWidth(column, "30%");
 		
 		column = new Column();
 		columns.appendChild(column);
-		column.setWidth("70%");
+		ZKUpdateUtil.setWidth(column, "70%");
 		
 		Rows rows = mainPanel.newRows();
 		
@@ -198,7 +199,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		rows.appendChild(row);
 		row.appendChild(lblLocator);
 		row.appendChild(lstLocator);
-		lstLocator.setHflex("1");
+		ZKUpdateUtil.setHflex(lstLocator, "1");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -209,62 +210,62 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		rows.appendChild(row);
 		row.appendChild(lblWarehouse);
 		row.appendChild(lstWarehouse);
-		lstWarehouse.setHflex("1");
+		ZKUpdateUtil.setHflex(lstWarehouse, "1");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lblWarehouse2);
 		row.appendChild(txtWarehouse);
-		txtWarehouse.setHflex("1");
+		ZKUpdateUtil.setHflex(txtWarehouse, "1");
 
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lblLocatorType);
 		row.appendChild(lstLocatorType);
-		lstLocatorType.setHflex("1");
+		ZKUpdateUtil.setHflex(lstLocatorType, "1");
 
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lblLocatorType2);
 		row.appendChild(txtLocatorType);
-		txtLocatorType.setHflex("1");
+		ZKUpdateUtil.setHflex(txtLocatorType, "1");
 
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lblAisleX);
 		row.appendChild(txtAisleX);
-		txtAisleX.setHflex("1");
+		ZKUpdateUtil.setHflex(txtAisleX, "1");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lblBinY);
 		row.appendChild(txtBinY);
-		txtBinY.setHflex("1");
+		ZKUpdateUtil.setHflex(txtBinY, "1");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lblLevelZ);
 		row.appendChild(txtLevelZ);
-		txtLevelZ.setHflex("1");
+		ZKUpdateUtil.setHflex(txtLevelZ, "1");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lblKey);
 		row.appendChild(txtKey);
-		txtKey.setHflex("1");
+		ZKUpdateUtil.setHflex(txtKey, "1");
 		
 		Borderlayout borderlayout = new Borderlayout();
 		this.appendChild(borderlayout);
-		borderlayout.setHflex("1");
-		borderlayout.setVflex("1");
+		ZKUpdateUtil.setHflex(borderlayout, "1");
+		ZKUpdateUtil.setVflex(borderlayout, "1");
 		
 		Center centerPane = new Center();
 		centerPane.setSclass("dialog-content");
 		centerPane.setAutoscroll(true);
 		borderlayout.appendChild(centerPane);
 		centerPane.appendChild(mainPanel);
-		mainPanel.setVflex("1");
-		mainPanel.setHflex("1");
+		ZKUpdateUtil.setVflex(mainPanel, "1");
+		ZKUpdateUtil.setHflex(mainPanel, "1");
 
 		South southPane = new South();
 		southPane.setSclass("dialog-footer");
@@ -275,8 +276,8 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		this.setSclass("popup-dialog");
 		this.setClosable(true);
 		this.setBorder("normal");
-		this.setWidth("260px");
-		this.setHeight("350px"); // required fixed height for ZK to auto adjust the position based on available space
+		ZKUpdateUtil.setWidth(this, "260px");
+		ZKUpdateUtil.setHeight(this, "350px"); // required fixed height for ZK to auto adjust the position based on available space
 		this.setShadow(true);
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		this.setSizable(true); // Elaine 2009/02/02 - window set to resizable

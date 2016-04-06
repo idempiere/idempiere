@@ -41,6 +41,7 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.form.TrxMaterial;
 import org.compiere.model.MLocatorLookup;
 import org.compiere.model.MLookup;
@@ -126,8 +127,8 @@ public class WTrxMaterial extends TrxMaterial
 		form.appendChild(mainPanel);
 		mainPanel.setStyle("width: 99%; height: 100%; border: none; padding: 0; margin: 0");
 		mainPanel.appendChild(mainLayout);
-		mainLayout.setWidth("100%");
-		mainLayout.setHeight("100%");
+		ZKUpdateUtil.setWidth(mainLayout, "100%");
+		ZKUpdateUtil.setHeight(mainLayout, "100%");
 		parameterPanel.appendChild(parameterLayout);
 		//
 		orgLabel.setText(Msg.translate(Env.getCtx(), "AD_Org_ID"));
@@ -144,20 +145,20 @@ public class WTrxMaterial extends TrxMaterial
 		Rows rows = parameterLayout.newRows();
 		Row row = rows.newRow();
 		row.appendCellChild(orgLabel.rightAlign());
-		orgField.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(orgField.getComponent(), "true");
 		row.appendCellChild(orgField.getComponent());
 		row.appendCellChild(mtypeLabel.rightAlign());
-		mtypeField.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(mtypeField.getComponent(), "true");
 		row.appendCellChild(mtypeField.getComponent());
 		row.appendCellChild(dateFLabel.rightAlign());
 		row.appendCellChild(dateFField.getComponent());
 
 		row = rows.newRow();
 		row.appendCellChild(locatorLabel.rightAlign());
-		locatorField.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(locatorField.getComponent(), "true");
 		row.appendCellChild(locatorField.getComponent());
 		row.appendCellChild(productLabel.rightAlign());
-		productField.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(productField.getComponent(), "true");
 		row.appendCellChild(productField.getComponent());
 		row.appendCellChild(dateTLabel.rightAlign());
 		row.appendCellChild(dateTField.getComponent());
@@ -219,8 +220,8 @@ public class WTrxMaterial extends TrxMaterial
 		Center center = new Center();
 		mainLayout.appendChild(center);
 		center.appendChild(m_gridController);
-		m_gridController.setVflex("1");
-		m_gridController.setHflex("1");
+		ZKUpdateUtil.setVflex(m_gridController, "1");
+		ZKUpdateUtil.setHflex(m_gridController, "1");
 	}   //  dynInit
 
 

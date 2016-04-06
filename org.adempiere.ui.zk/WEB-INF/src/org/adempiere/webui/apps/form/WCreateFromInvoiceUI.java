@@ -32,12 +32,15 @@ import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.grid.CreateFromInvoice;
 import org.compiere.model.GridTab;
 import org.compiere.model.MDocType;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+
 import static org.compiere.model.SystemIDs.*;
+
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -133,8 +136,8 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
         rmaLabel.setText(Msg.translate(Env.getCtx(), "M_RMA_ID"));
         
 		Borderlayout parameterLayout = new Borderlayout();
-		parameterLayout.setHeight("110px");
-		parameterLayout.setWidth("100%");
+		ZKUpdateUtil.setHeight(parameterLayout, "110px");
+		ZKUpdateUtil.setWidth(parameterLayout, "100%");
     	Panel parameterPanel = window.getParameterPanel();
 		parameterPanel.appendChild(parameterLayout);
 		
@@ -152,14 +155,14 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		if (bPartnerField != null)
 			row.appendChild(bPartnerField.getComponent());
 		row.appendChild(orderLabel.rightAlign());
-		orderField.setHflex("1");
+		ZKUpdateUtil.setHflex(orderField, "1");
 		row.appendChild(orderField);
 		
 		row = rows.newRow();
 		row.appendChild(new Space());
 		row.appendChild(new Space());
 		row.appendChild(shipmentLabel.rightAlign());
-		shipmentField.setHflex("1");
+		ZKUpdateUtil.setHflex(shipmentField, "1");
 		row.appendChild(shipmentField);				
         
         // Add RMA document selection to panel
@@ -167,7 +170,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		row.appendChild(new Space());
 		row.appendChild(new Space());
         row.appendChild(rmaLabel.rightAlign());
-        rmaField.setHflex("1");
+        ZKUpdateUtil.setHflex(rmaField, "1");
         row.appendChild(rmaField);
 	}
 

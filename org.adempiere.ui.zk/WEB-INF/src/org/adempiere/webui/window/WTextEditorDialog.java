@@ -24,6 +24,7 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.Language;
 import org.zkforge.ckez.CKeditor;
 import org.zkoss.zk.au.out.AuScript;
@@ -83,16 +84,16 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 
 	private void init() {
 		setBorder("normal");
-		setHeight("450px");
-		setWidth("800px");
+		ZKUpdateUtil.setHeight(this, "450px");
+		ZKUpdateUtil.setWidth(this, "800px");
 		setStyle("position: absolute;");
 		setSizable(false);
 		setSclass("popup-dialog");
 		
 		Vlayout vbox = new Vlayout();
 		appendChild(vbox);
-		vbox.setWidth("100%");
-		vbox.setVflex("true");
+		ZKUpdateUtil.setWidth(vbox, "100%");
+		ZKUpdateUtil.setVflex(vbox, "true");
 		vbox.setSclass("dialog-content");
 		
 		tabbox = new Tabbox();
@@ -101,8 +102,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		tabbox.appendChild(tabs);
 		Tabpanels tabPanels = new Tabpanels();
 		tabbox.appendChild(tabPanels);
-		tabbox.setVflex("1");
-		tabbox.setHflex("1");
+		ZKUpdateUtil.setVflex(tabbox, "1");
+		ZKUpdateUtil.setHflex(tabbox, "1");
 		
 		Tab tab = new Tab("Text");
 		tabs.appendChild(tab);
@@ -112,10 +113,10 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		textBox = new Textbox(text);
 		textBox.setCols(80);
 		textBox.setRows(30);
-		textBox.setHeight("100%");
+		ZKUpdateUtil.setHeight(textBox, "100%");
 		textBox.setEnabled(editable);
-		textBox.setHflex("1");
-		textBox.setVflex("1");
+		ZKUpdateUtil.setHflex(textBox, "1");
+		ZKUpdateUtil.setVflex(textBox, "1");
 		tabPanel.appendChild(textBox);
 		
 		htmlTab = new Tab("HTML");
@@ -127,8 +128,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 			createEditor(tabPanel);
 		} else {
 			Div div = new Div();
-			div.setHeight("100%");
-			div.setWidth("100%");
+			ZKUpdateUtil.setHeight(div, "100%");
+			ZKUpdateUtil.setWidth(div, "100%");
 			div.setStyle("overflow: auto; border: 1px solid");
 			tabPanel.appendChild(div);
 			Html html = new Html();

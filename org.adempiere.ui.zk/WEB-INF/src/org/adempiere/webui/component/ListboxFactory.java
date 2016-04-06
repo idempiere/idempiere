@@ -12,6 +12,8 @@
  *****************************************************************************/
 package org.adempiere.webui.component;
 
+import org.adempiere.webui.util.ZKUpdateUtil;
+
 /**
  * 
  * @author Low Heng Sin
@@ -35,10 +37,10 @@ public class ListboxFactory {
 	 */
 	public static WListbox newDataTable() {
 		WListbox dataTable = new WListbox();
-		dataTable.setWidth("100%");
-		dataTable.setHeight("100%");
+		ZKUpdateUtil.setWidth(dataTable, "100%");
+		ZKUpdateUtil.setHeight(dataTable, "100%");
 		dataTable.setSizedByContent(false);
-		dataTable.setVflex(true);
+		ZKUpdateUtil.setVflex(dataTable, true);
 		
 		return dataTable;
 	}

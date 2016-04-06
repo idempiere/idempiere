@@ -41,6 +41,7 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.IProcessParameter;
 import org.compiere.model.GridField;
@@ -107,10 +108,10 @@ public class ProcessParameterPanel extends Panel implements
 		Columns columns = new Columns();
 		centerPanel.appendChild(columns);
 		Column col = new Column();
-		col.setWidth("30%");
+		ZKUpdateUtil.setWidth(col, "30%");
 		columns.appendChild(col);
 		col = new Column();
-		col.setWidth("70%");
+		ZKUpdateUtil.setWidth(col, "70%");
 		columns.appendChild(col);
 	}
 
@@ -336,7 +337,7 @@ public class ProcessParameterPanel extends Panel implements
 			WEditor editor2 = WebEditorFactory.getEditor(mField2, false);
 			editor2.setProcessParameter(true);
 			//override attribute
-			editor2.getComponent().setWidgetAttribute("columnName", mField2.getColumnName()+"_To");
+			editor2.getComponent().setClientAttribute("columnName", mField2.getColumnName()+"_To");
 			editor2.getComponent().addEventListener(Events.ON_FOCUS, this);
 			// New Field value to be updated to editor
 			mField2.addPropertyChangeListener(editor2);

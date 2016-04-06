@@ -28,6 +28,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WLocationEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerLocation;
@@ -140,14 +141,14 @@ public class WBPartner extends Window implements EventListener<Event>, ValueChan
 	
 	void jbInit() throws Exception
 	{
-		this.setWidth("350px");
+		ZKUpdateUtil.setWidth(this, "350px");
 		this.setBorder("normal");
 		this.setClosable(true);
 		this.setSizable(true);
 		this.setTitle("Business Partner");		
 		this.appendChild(centerPanel);
 		this.appendChild(confirmPanel);
-		centerPanel.setWidth("100%");
+		ZKUpdateUtil.setWidth(confirmPanel, "100%");
 		
 		
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
@@ -239,17 +240,17 @@ public class WBPartner extends Window implements EventListener<Event>, ValueChan
 	{
 		Hlayout layout = new Hlayout(); 
 		
-		layout.setHflex("10");
+		ZKUpdateUtil.setHflex(layout, "10");
 		
 		Label label = new Label(Msg.translate(Env.getCtx(), title));
 		Span span = new Span();
-		span.setHflex("3");
+		ZKUpdateUtil.setHflex(span, "3");
 		layout.appendChild(span);
 		span.appendChild(label);
 		label.setSclass("field-label");
 
 		layout.appendChild(field);
-		((HtmlBasedComponent)field).setHflex("7");
+		ZKUpdateUtil.setHflex((HtmlBasedComponent)field, "7");
 		
 		centerPanel.appendChild(layout);
 		centerPanel.appendChild(new Separator());

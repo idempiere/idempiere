@@ -55,6 +55,7 @@ import org.adempiere.webui.panel.HelpController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.GridTabDataBinder;
 import org.adempiere.webui.util.TreeUtils;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
@@ -131,7 +132,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6108216899210485771L;
+	private static final long serialVersionUID = -3728896318124756192L;
 
 	private static final String ON_SAVE_OPEN_PREFERENCE_EVENT = "onSaveOpenPreference";
 
@@ -203,8 +204,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
 	public static final String ON_TOGGLE_EVENT = "onToggle";
 	
-	private static final String DEFAULT_PANEL_WIDTH = "300px";
-
 	private static enum SouthEvent {
     	SLIDE(),
     	OPEN(),
@@ -238,11 +237,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     {
     	LayoutUtils.addSclass("adtab-content", this);
 
-    	this.setWidth("100%");
+    	ZKUpdateUtil.setWidth(this, "100%");
     	
         form = new Grid();
-        form.setHflex("1");
-        form.setHeight(null);
+        ZKUpdateUtil.setHflex(form, "1");
+        ZKUpdateUtil.setHeight(form, null);
         form.setVflex(false);
         form.setSclass("grid-layout adwindow-form");
         form.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "form");
@@ -300,7 +299,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 				int maxHeight = browserHeight - topmarginpx;
 				if (prefHeight <= maxHeight) {
 					height = Integer.toString(prefHeight) + "px";
-					formContainer.getSouth().setHeight(height);	
+					ZKUpdateUtil.setHeight(formContainer.getSouth(), height);	
 				}
 			} catch (Exception e) {
 				// just ignore exception is harmless here, consequence is just not setting height so it will assume the default of theme
@@ -362,7 +361,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			treePanel = new ADTreePanel(windowNo, gridTab.getTabNo());
 			West west = new West();
 			west.appendChild(treePanel);
-			west.setWidth(widthTreePanel());
+			ZKUpdateUtil.setWidth(west, "300px");
 			west.setCollapsible(true);
 			west.setSplittable(true);
 			west.setAutoscroll(true);
@@ -372,8 +371,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			Vlayout div = new Vlayout();
 			div.appendChild(form);
 			center.appendChild(div);
-			div.setVflex("1");
-			div.setHflex("1");
+			ZKUpdateUtil.setVflex(div, "1");
+			ZKUpdateUtil.setHflex(div, "1");
 			div.setSclass("adtab-form");
 			div.setStyle("overflow-y: visible;");
 			div.setSpacing("0px");
@@ -389,8 +388,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			div.setSclass("adtab-form");
 			div.appendChild(form);
 			div.setStyle("overflow-y: visible;");
-			div.setVflex("1");
-			div.setWidth("100%");
+			ZKUpdateUtil.setVflex(div, "1");
+			ZKUpdateUtil.setWidth(div, "100%");
 			div.setSpacing("0px");
 						
 			Borderlayout layout = new Borderlayout();
@@ -432,7 +431,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
     	for (int h=0;h<numCols;h++){
     		Column col = new Column();
-    		col.setWidth(equalWidth + "%");
+    		ZKUpdateUtil.setWidth(col, equalWidth + "%");
     		columns.appendChild(col);
     	}
 
@@ -1173,18 +1172,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     	return height;
     }
 
-    private String widthTreePanel() {
-    	String width = null;
-    	int windowId = getGridTab().getAD_Window_ID();
-    	int adTabId = getGridTab().getAD_Tab_ID();
-    	if (windowId > 0 && adTabId > 0) {
-    		width = Env.getPreference(Env.getCtx(), windowId, adTabId+"|TreePanel.Width", false);
-    	}
-    	if (Util.isEmpty(width)) {
-    		width = DEFAULT_PANEL_WIDTH;
-    	}
-    	return width;
-    }
     private void navigateTo(DefaultTreeNode<MTreeNode> value) {
     	MTreeNode treeNode = value.getData();
     	//  We Have a TreeNode
@@ -1404,7 +1391,13 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
 		SimpleTreeModel model = (SimpleTreeModel)(TreeModel<?>) treePanel.getTree().getModel();
 		if (treePanel.getTree().getSelectedItem() != null) {
-			DefaultTreeNode<Object> treeNode = treePanel.getTree().getSelectedItem().getValue();
+			Treeitem treeItem = treePanel.getTree().getSelectedItem();
+			if (!treeItem.isLoaded()){
+				return;
+			}
+			
+			DefaultTreeNode<Object> treeNode = treeItem.getValue();
+			 
 			MTreeNode data = (MTreeNode) treeNode.getData();
 			if (data.getNode_ID() == recordId) {
 				int[] path = model.getPath(treeNode);
@@ -1574,7 +1567,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			} else {
 				attachDetailPane();
 			}
-			this.setVflex("true");
+			ZKUpdateUtil.setVflex(this, "true");
 			listPanel.setDetailPaneMode(detailPaneMode);
 		}		
 	}
@@ -1754,43 +1747,31 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		if (formContainer.getSouth() != null) {
 			if (formContainer.getSouth().isVisible() && formContainer.getSouth().isOpen()) {
 				String height = formContainer.getSouth().getHeight();
-				if (! Util.isEmpty(height))
-					savePreference("DetailPane.Height", height);
+				if (! Util.isEmpty(height)) {
+		    		int windowId = getGridTab().getAD_Window_ID();
+		    		int adTabId = getGridTab().getAD_Tab_ID();
+		    		if (windowId > 0 && adTabId > 0) {
+		    			Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), "AD_Window_ID=? AND Attribute=? AND AD_User_ID=? AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
+		    			int userId = Env.getAD_User_ID(Env.getCtx());
+		    			MPreference preference = query.setOnlyActiveRecords(true)
+		    										  .setApplyAccessFilter(true)
+		    										  .setParameters(windowId, adTabId+"|DetailPane.Height", userId)
+		    										  .first();
+		    			if (preference == null || preference.getAD_Preference_ID() <= 0) {
+		    				preference = new MPreference(Env.getCtx(), 0, null);
+		    				preference.setAD_Window_ID(windowId);
+		    				preference.set_ValueOfColumn("AD_User_ID", userId); // required set_Value for System=0 user
+		    				preference.setAttribute(adTabId+"|DetailPane.Height");
+		    			}
+	    				preference.setValue(height);
+		    			preference.saveEx();
+		    			//update current context
+		    			Env.getCtx().setProperty("P"+windowId+"|"+adTabId+"|DetailPane.Height", height);
+		    		}
+				}
 			}
 		}
-
-		if (treePanel != null && formContainer.getWest() != null) {
-			if (formContainer.getWest().isVisible() && formContainer.getWest().isOpen()) {
-				String width = formContainer.getWest().getWidth();
-				if (! Util.isEmpty(width))
-					savePreference("TreePanel.Width", width);
-			}
-		}
-
 		super.onPageDetached(page);
 	}
 
-	void savePreference(String attribute, String value)
-	{
-		int windowId = getGridTab().getAD_Window_ID();
-		int adTabId = getGridTab().getAD_Tab_ID();
-		if (windowId > 0 && adTabId > 0) {
-			Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), "AD_Window_ID=? AND Attribute=? AND AD_User_ID=? AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
-			int userId = Env.getAD_User_ID(Env.getCtx());
-			MPreference preference = query.setOnlyActiveRecords(true)
-					.setApplyAccessFilter(true)
-					.setParameters(windowId, adTabId+"|"+attribute, userId)
-					.first();
-			if (preference == null || preference.getAD_Preference_ID() <= 0) {
-				preference = new MPreference(Env.getCtx(), 0, null);
-				preference.setAD_Window_ID(windowId);
-				preference.set_ValueOfColumn("AD_User_ID", userId); // required set_Value for System=0 user
-				preference.setAttribute(adTabId+"|"+attribute);
-			}
-			preference.setValue(value);
-			preference.saveEx();
-			//update current context
-			Env.getCtx().setProperty("P"+windowId+"|"+adTabId+"|"+attribute, value);
-		}
-	}
 }

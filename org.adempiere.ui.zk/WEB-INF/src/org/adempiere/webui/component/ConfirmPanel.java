@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
@@ -245,7 +246,7 @@ public final class ConfirmPanel extends Div
         this.appendChild(pnlBtnCenter);
         this.appendChild(pnlBtnRight);
         this.setSclass("confirm-panel");
-        this.setVflex("min");
+        ZKUpdateUtil.setVflex(this, "min");
         setId("confirmPanel");
     }
 

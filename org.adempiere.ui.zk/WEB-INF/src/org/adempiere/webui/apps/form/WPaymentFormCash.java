@@ -30,6 +30,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.editor.WNumberEditor;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.grid.PaymentFormCash;
 import org.compiere.model.GridTab;
@@ -84,13 +85,13 @@ public class WPaymentFormCash extends PaymentFormCash implements EventListener<E
 		
 		Column column = new Column();
 		columns.appendChild(column);
-		column.setWidth("40%");
+		ZKUpdateUtil.setWidth(column, "40%");
 		
 		column = new Column();
 		columns.appendChild(column);
-		column.setWidth("60%");
+		ZKUpdateUtil.setWidth(column, "60%");
 		
-		bAmountField.getComponent().setWidth("150px");
+		ZKUpdateUtil.setWidth(bAmountField.getComponent(), "150px");
 		
 		Rows rows = bPanelLayout.newRows();
 		Row row = rows.newRow();

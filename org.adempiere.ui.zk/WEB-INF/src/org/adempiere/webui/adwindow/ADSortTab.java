@@ -37,6 +37,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
@@ -91,7 +92,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		this.gridTab = gridTab;
 
 		m_AD_Table_ID = gridTab.getAD_Table_ID();
-		this.setVflex("true");
+		ZKUpdateUtil.setVflex(this, "true");
 	}	//	ADSortTab
 
 	/**	Logger			*/
@@ -265,8 +266,8 @@ public class ADSortTab extends Panel implements IADTabpanel
 		noLabel.setValue("No");
 		yesLabel.setValue("Yes");
 
-		yesList.setVflex(true);
-		noList.setVflex(true);
+		ZKUpdateUtil.setVflex(yesList, true);
+		ZKUpdateUtil.setVflex(noList, true);
 
         setId(AdempiereIdGenerator.escapeId(gridTab.getName()));
 
@@ -345,16 +346,16 @@ public class ADSortTab extends Panel implements IADTabpanel
 		listHeader.setParent(listHead);
 
 		Hlayout hlayout = new Hlayout();
-		hlayout.setVflex("true");
-		hlayout.setHflex("true");
+		ZKUpdateUtil.setVflex(hlayout, "true");
+		ZKUpdateUtil.setHflex(hlayout, "true");
 		hlayout.setStyle("margin: auto;");
 		appendChild(hlayout);
-		noList.setHflex("1");
-		noList.setVflex(true);
+		ZKUpdateUtil.setHflex(noList, "1");
+		ZKUpdateUtil.setVflex(noList, true);
 		hlayout.appendChild(noList);
 
-		yesList.setVflex(true);
-		yesList.setHflex("1");
+		ZKUpdateUtil.setVflex(yesList, true);
+		ZKUpdateUtil.setHflex(yesList, "1");
 		hlayout.appendChild(yesList);
 		
 		addEventListener(ON_ACTIVATE_EVENT, new EventListener<Event>() {
@@ -964,7 +965,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	@Override
 	public void setDetailPaneMode(boolean detailMode) {
 		this.detailPaneMode = detailMode;
-		this.setVflex("true");
+		ZKUpdateUtil.setVflex(this, "true");
 	}
 	
 	public boolean isDetailPaneMode() {

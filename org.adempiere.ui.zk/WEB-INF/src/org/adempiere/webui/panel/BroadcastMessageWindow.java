@@ -25,6 +25,7 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MNote;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -96,8 +97,8 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		addEventListener("onFocus", this);
 		initialised = true;
 		
-		setWidth("30%");
-		setHeight("30%");
+		ZKUpdateUtil.setWidth(this, "30%");
+		ZKUpdateUtil.setHeight(this, "30%");
 		setPosition("right,bottom");
 		setBorder(true);
 		setShadow(false);
@@ -127,11 +128,11 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		Hbox southHLayout = new Hbox();
 		south.appendChild(southHLayout);
 		southHLayout.setSpacing("30");
-		southHLayout.setWidth("350px");
+		ZKUpdateUtil.setWidth(southHLayout, "350px");
 		
 		Cell leftCell = new Cell();
 		southHLayout.appendChild(leftCell);
-		leftCell.setHflex("1");
+		ZKUpdateUtil.setHflex(leftCell, "1");
 		//leftCell.setWidth("30%");
 		leftCell.setAlign("left");
 		swDiv = new Div();
@@ -141,9 +142,9 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		Cell rightCell = new Cell();
 		southHLayout.appendChild(rightCell);
 		rightCell.setAlign("right");
-		rightCell.setHflex("true");
+		ZKUpdateUtil.setHflex(rightCell, "true");
 		sDiv = new Div();
-		sDiv.setWidth("70px");
+		ZKUpdateUtil.setWidth(sDiv, "70px");
 		rightCell.appendChild(sDiv);
 		
 		
@@ -168,10 +169,10 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		if(mbMessages.size()<=0)
 			swDiv.setVisible(false);
 		
-		south.setHeight("22%");
+		ZKUpdateUtil.setHeight(south, "22%");
 		//south.setWidth("45%");
 		acknowledged.setParent(rightCell);
-		//acknowledged.setHflex("6");
+		//ZKUpdateUtil.setHflex(acknowledged, "6");
 		acknowledged.setLabel(Msg.getMsg(Env.getCtx(),"Acknowledge"));
 		acknowledged.addEventListener("onClick", this);
 		

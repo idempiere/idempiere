@@ -36,6 +36,7 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -162,7 +163,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         this.setComponent(comp);
         this.gridField = gridField;
         if (gridField.getGridTab() != null) {
-        	comp.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, gridField.getGridTab().getTableName()+"0"+gridField.getColumnName());
+        	comp.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, gridField.getGridTab().getTableName()+"0"+gridField.getColumnName());
         	this.gridTab = gridField.getGridTab();
         } else {
         	comp.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, gridField.getColumnName());
@@ -556,20 +557,20 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         			}
         		} else if (getComponent() instanceof Image) {
         			Image image = (Image) getComponent();
-        			image.setWidth("24px");
-        			image.setHeight("24px");
+        			ZKUpdateUtil.setWidth(image, "24px");
+        			ZKUpdateUtil.setHeight(image, "24px");
         		} else {
         			if (!tableEditor) {
 	        			if (getComponent() instanceof InputElement) {
-	        				((InputElement)getComponent()).setHflex("1");
+	        				ZKUpdateUtil.setHflex((InputElement)getComponent(), "1");
 	        			} else {
-	        				((HtmlBasedComponent)getComponent()).setWidth(width);
+	        				ZKUpdateUtil.setWidth((HtmlBasedComponent)getComponent(), width);
 	        			}
         			} else {
         				if (getComponent() instanceof Combobox) {
         					LayoutUtils.addSclass("grid-combobox-editor", (HtmlBasedComponent)getComponent());
 	        			} else {
-	        				((HtmlBasedComponent)getComponent()).setWidth(width);
+	        				ZKUpdateUtil.setWidth((HtmlBasedComponent)getComponent(), width);
 	        			}
         					
         			}

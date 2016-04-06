@@ -34,6 +34,7 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.TreeMaintenance;
 import org.compiere.model.MTree;
@@ -130,12 +131,12 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		bDelete.setImage(ThemeManager.getThemeResource("images/StepForward24.png"));
 		bDeleteAll.setImage(ThemeManager.getThemeResource("images/FastForward24.png"));
 		
-		form.setWidth("99%");
-		form.setHeight("100%");
+		ZKUpdateUtil.setWidth(form,"99%");
+		ZKUpdateUtil.setHeight(form, "100%");
 		form.setStyle("position: absolute; padding: 0; margin: 0");
 		form.appendChild (mainLayout);
-		mainLayout.setWidth("100%");
-		mainLayout.setHeight("100%");
+		ZKUpdateUtil.setWidth(mainLayout, "100%");
+		ZKUpdateUtil.setHeight(mainLayout, "100%");
 		mainLayout.setStyle("position: absolute");
 		
 		treeLabel.setText (Msg.translate(Env.getCtx(), "AD_Tree_ID"));
@@ -154,15 +155,15 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		North north = new North();
 		mainLayout.appendChild(north);
 		north.appendChild(northPanel);
-		north.setHflex("1");
-		north.setVflex("1");
-		northPanel.setWidth("100%");
+		ZKUpdateUtil.setHflex(north, "1");
+		ZKUpdateUtil.setVflex(north, "1");
+		ZKUpdateUtil.setWidth(northPanel, "100%");
 		//
 		Hbox hbox = new Hbox();
 		hbox.setStyle("padding: 3px;");
 		hbox.setAlign("center");
-		hbox.setHflex("1");
-		hbox.setVflex("1");
+		ZKUpdateUtil.setHflex(hbox, "1");
+		ZKUpdateUtil.setVflex(hbox, "1");
 		northPanel.appendChild(hbox);
 		
 		hbox.appendChild (new Space());
@@ -174,7 +175,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		Cell cell = new Cell();
 		cell.setColspan(1);
 		cell.setRowspan(1);
-		cell.setHflex("1");
+		ZKUpdateUtil.setHflex(cell, "1");
 		cell.appendChild(treeInfo);
 		hbox.appendChild (cell);
 		hbox.appendChild (new Space());
@@ -189,15 +190,15 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		searchBox.getTextbox().addEventListener(Events.ON_OK, this);
 		searchBox.getButton().setImage(ThemeManager.getThemeResource("images/Find16.png"));
 		searchBox.setToolTipText(Msg.getCleanMsg(Env.getCtx(), "TreeSearch"));
-		searchBox.setWidth("200px");
+		ZKUpdateUtil.setWidth(searchBox, "200px");
 		div.appendChild(searchBox);
 		hbox.appendChild(div);
 		//
 		Center center = new Center();
 		mainLayout.appendChild(center);	
 		center.appendChild(centerTree);
-		centerTree.setVflex("1");
-		centerTree.setHflex("1");
+		ZKUpdateUtil.setVflex(centerTree, "1");
+		ZKUpdateUtil.setHflex(centerTree, "1");
 		center.setAutoscroll(true);
 		
 		East east = new East();
@@ -205,8 +206,8 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		east.appendChild(centerList);
 		east.setCollapsible(false);
 		east.setSplittable(true);
-		east.setWidth("45%");
-		centerList.setVflex(true);
+		ZKUpdateUtil.setWidth(east, "45%");
+		ZKUpdateUtil.setVflex(centerList, true);
 		centerList.setSizedByContent(false);
 		centerList.addEventListener(Events.ON_SELECT, this);
 	}	//	jbInit

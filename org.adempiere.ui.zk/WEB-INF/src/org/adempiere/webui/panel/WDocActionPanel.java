@@ -33,6 +33,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MAllocationHdr;
@@ -259,19 +260,19 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		lstDocAction.setId("lstDocAction");
 		lstDocAction.setRows(0);
 		lstDocAction.setMold("select");
-		lstDocAction.setWidth("200px");
+		ZKUpdateUtil.setWidth(lstDocAction, "200px");
 		lstDocAction.addEventListener(Events.ON_SELECT, this);
 
         confirmPanel = new ConfirmPanel(true);
         confirmPanel.addActionListener(Events.ON_CLICK, this);
-        confirmPanel.setVflex("true");
+        ZKUpdateUtil.setVflex(confirmPanel, "true");
 	}
 
 	private void init()
 	{
 		setSclass("popup-dialog");
 		Vlayout vlayout = new Vlayout();
-		vlayout.setHflex("1");
+		ZKUpdateUtil.setHflex(vlayout, "1");
 		this.appendChild(vlayout);
 		
 		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "documentAction");
@@ -304,10 +305,10 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 	    footer.setSclass("dialog-footer");
 	    vlayout.appendChild(footer);
 	    footer.appendChild(confirmPanel);
-	    confirmPanel.setVflex("min");
+	    ZKUpdateUtil.setVflex(confirmPanel, "min");
 	    
 	    this.setTitle(Msg.translate(Env.getCtx(), "DocAction"));
-	    this.setWidth("410px");
+	    ZKUpdateUtil.setWidth(this, "410px");
 	    this.setBorder("normal");
 	    this.setZindex(1000);
 	}

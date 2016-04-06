@@ -20,6 +20,7 @@ package org.adempiere.webui.panel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.zkoss.zul.Separator;
 
 /**
@@ -48,7 +49,7 @@ public class FooterPanel extends Window
     {
     	label.setValue("2007 Posterita Limited");
     	
-    	panel.setWidth("100%");
+    	ZKUpdateUtil.setWidth(panel, "100%");
     	panel.setStyle("text-align:center");
     	panel.appendChild(label);
 

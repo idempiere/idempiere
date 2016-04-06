@@ -17,6 +17,7 @@ package org.adempiere.webui.panel;
 import java.util.Properties;
 
 import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MCtxHelpMsg;
@@ -56,8 +57,8 @@ public class HelpController
     {
 		dashboardLayout = new Anchorlayout();
         dashboardLayout.setSclass("dashboard-layout");
-        dashboardLayout.setVflex("1");
-        dashboardLayout.setHflex("1");
+        ZKUpdateUtil.setVflex(dashboardLayout, "1");
+        ZKUpdateUtil.setHflex(dashboardLayout, "1");
     }
 
 	public void render(Component parent, IDesktop desktopImpl)
@@ -69,7 +70,7 @@ public class HelpController
 		parent.appendChild(dashboardLayout);
         
         Vlayout dashboardColumnLayout = new Vlayout();
-        dashboardColumnLayout.setHflex("1");
+        ZKUpdateUtil.setHflex(dashboardColumnLayout, "1");
 
         Anchorchildren dashboardColumn = new Anchorchildren();
 		dashboardColumn.setAnchor("95% 100%");

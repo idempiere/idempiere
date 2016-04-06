@@ -23,6 +23,7 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.process.ProcessInfoLog;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
@@ -274,7 +275,7 @@ public class StatusBar extends Panel implements EventListener<Event>
 
     private void createPopup() {
 		msgPopupCnt = new Div();
-		msgPopupCnt.setVflex("1");
+		ZKUpdateUtil.setVflex(msgPopupCnt, "1");
 
 		
 		msgPopup = new Window();
@@ -282,7 +283,7 @@ public class StatusBar extends Panel implements EventListener<Event>
 		msgPopup.setClosable(true);
 		msgPopup.setSizable(true);
 		msgPopup.setContentStyle("overflow: auto");
-        msgPopup.setWidth("500px");
+		ZKUpdateUtil.setWidth(msgPopup, "500px");
         msgPopup.appendChild(msgPopupCnt);
         msgPopup.setShadow(true);
         msgPopupCaption = new Caption();

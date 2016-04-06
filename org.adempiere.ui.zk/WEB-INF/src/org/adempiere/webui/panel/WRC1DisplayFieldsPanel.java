@@ -22,6 +22,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.KeyNamePair;
@@ -65,15 +66,15 @@ public class WRC1DisplayFieldsPanel extends WRCTabPanel implements EventListener
 		m_oldLabel = new String[m_pfi.size()];
 		
 		Window wind=new Window();
-		wind.setWidth("90%");
-		wind.setHeight("100%");
-		wind.setHflex("1");
+		ZKUpdateUtil.setWidth(wind, "90%");
+		ZKUpdateUtil.setHeight(wind, "100%");
+		ZKUpdateUtil.setHflex(wind, "1");
 		
 		Grid grid = new Grid();
         //have problem moving the following out as css class
-        grid.setHflex("1");
-        grid.setHeight("90%");
-        grid.setVflex(true);
+		ZKUpdateUtil.setHflex(grid, "1");
+		ZKUpdateUtil.setHeight(grid, "90%");
+		ZKUpdateUtil.setVflex(grid, true);
         grid.setStyle("margin:0; padding:0; position: absolute");
         grid.makeNoStrip();
          
@@ -91,10 +92,10 @@ public class WRC1DisplayFieldsPanel extends WRCTabPanel implements EventListener
     	int widthTxt = widthChk*4;
 		for(int i=0;i<RENDER_IN_COLUMNS;i++){
 			cols[i] = new Column();
-			cols[i].setWidth(widthChk+"%");
+			ZKUpdateUtil.setWidth(cols[i], widthChk+"%");
 	    	columns.appendChild(cols[i]);
 	    	cols[i+1] = new Column();
-	    	cols[i+1].setWidth(widthTxt+"%");
+	    	ZKUpdateUtil.setWidth(cols[i+1], widthTxt+"%");
 	    	columns.appendChild(cols[i+1]);
 		}
 		int curCol=0;
@@ -118,7 +119,7 @@ public class WRC1DisplayFieldsPanel extends WRCTabPanel implements EventListener
 			}
 			m_oldLabel[i] = strValue;
 			m_textBoxes[i].setText(strValue);
-			m_textBoxes[i].setWidth("90%");
+			ZKUpdateUtil.setWidth(m_textBoxes[i], "90%");
 			row.appendChild(m_textBoxes[i]);
 			
 			curCol++;

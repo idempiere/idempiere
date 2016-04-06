@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.adempiere.webui.component.Label;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.I_AD_SearchDefinition;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
@@ -69,8 +70,8 @@ public class DocumentSearchController implements EventListener<Event>{
 	public void create(Component parent) {
 		layout = new Vlayout();
 		layout.setStyle("padding: 3px;");
-		layout.setWidth("100%");
-		layout.setVflex("true");
+		ZKUpdateUtil.setWidth(layout, "100%");
+		ZKUpdateUtil.setVflex(layout, "true");
 		
 		parent.appendChild(layout);
 		

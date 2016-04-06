@@ -38,6 +38,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
@@ -219,8 +220,8 @@ public class WAttachment extends Window implements EventListener<Event>
 	{
 		this.setAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "attachment");
 		this.setMaximizable(true);
-		this.setWidth("700px");
-		this.setHeight("85%");
+		ZKUpdateUtil.setWidth(this, "700px");
+		ZKUpdateUtil.setHeight(this, "85%");
 		this.setTitle(Msg.getMsg(Env.getCtx(), "Attachment"));
 		this.setClosable(true);
 		this.setSizable(true);
@@ -228,8 +229,8 @@ public class WAttachment extends Window implements EventListener<Event>
 		this.setSclass("popup-dialog");
 		this.setShadow(true);
 		this.appendChild(mainPanel);
-		mainPanel.setHeight("100%");
-		mainPanel.setWidth("100%");
+		ZKUpdateUtil.setHeight(mainPanel, "100%");
+		ZKUpdateUtil.setWidth(mainPanel, "100%");
 
 		North northPanel = new North();
 		northPanel.setStyle("padding: 4px");
@@ -252,8 +253,8 @@ public class WAttachment extends Window implements EventListener<Event>
 		Vlayout div = new Vlayout();
 		div.appendChild(toolBar);
 		text.setRows(3);
-		text.setHflex("1");
-		text.setHeight("100%");
+		ZKUpdateUtil.setHflex(text, "1");
+		ZKUpdateUtil.setHeight(text, "100%");
 		
 		div.appendChild(text);
 		northPanel.appendChild(div);
@@ -275,22 +276,22 @@ public class WAttachment extends Window implements EventListener<Event>
 		bDelete.addEventListener(Events.ON_CLICK, this);
 
 		previewPanel.appendChild(preview);
-		preview.setHeight("100%");
-		preview.setWidth("100%");
+		ZKUpdateUtil.setHeight(preview, "100%");
+		ZKUpdateUtil.setWidth(preview, "100%");
 
 		Center centerPane = new Center();
 		centerPane.setSclass("dialog-content");
 		centerPane.setAutoscroll(true);
 		mainPanel.appendChild(centerPane);
 		centerPane.appendChild(previewPanel);
-		previewPanel.setVflex("1");
-		previewPanel.setHflex("1");
+		ZKUpdateUtil.setVflex(previewPanel, "1");
+		ZKUpdateUtil.setHflex(previewPanel, "1");
 
 		South southPane = new South();
 		southPane.setSclass("dialog-footer");
 		mainPanel.appendChild(southPane);
 		southPane.appendChild(confirmPanel);
-		southPane.setVflex("min");
+		ZKUpdateUtil.setVflex(southPane, "min");
 
 		bCancel.addEventListener(Events.ON_CLICK, this);
 		bOk.addEventListener(Events.ON_CLICK, this);
@@ -304,10 +305,10 @@ public class WAttachment extends Window implements EventListener<Event>
 
 		confirmPanel.appendChild(bDeleteAll);
 		confirmPanel.appendChild(bRefresh);
-		confirmPanel.setHflex("1");
+		ZKUpdateUtil.setHflex(confirmPanel, "1");
 		Hbox hbox = new Hbox();
 		hbox.setPack("end");
-		hbox.setHflex("1");
+		ZKUpdateUtil.setHflex(hbox, "1");
 		confirmPanel.appendChild(hbox);
 		hbox.appendChild(bOk);
 		hbox.appendChild(bCancel);

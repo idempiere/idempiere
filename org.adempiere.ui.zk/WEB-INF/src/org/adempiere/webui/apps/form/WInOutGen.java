@@ -26,6 +26,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.IFormController;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.form.InOutGen;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -100,22 +101,22 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 
 		Row row = form.getParameterPanel().newRows().newRow();
 		row.appendCellChild(lWarehouse.rightAlign());
-		fWarehouse.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(fWarehouse.getComponent(), "true");
 		row.appendCellChild(fWarehouse.getComponent());
 		row.appendCellChild(new Space());
 		row.appendCellChild(lBPartner.rightAlign());
-		fBPartner.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(fBPartner.getComponent(), "true");
 		row.appendCellChild(fBPartner.getComponent());
 		row.appendCellChild(new Space());
 
 		row = new Row();
 		form.getParameterPanel().getRows().appendChild(row);
 		row.appendCellChild(lDocType.rightAlign());
-		cmbDocType.setHflex("true");
+		ZKUpdateUtil.setHflex(cmbDocType, "true");
 		row.appendCellChild(cmbDocType);
 		row.appendCellChild(new Space());
 		row.appendCellChild(lDocAction.rightAlign());
-		docAction.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(docAction.getComponent(), "true");
 		row.appendCellChild(docAction.getComponent());
 		row.appendCellChild(new Space());
 	}	//	jbInit

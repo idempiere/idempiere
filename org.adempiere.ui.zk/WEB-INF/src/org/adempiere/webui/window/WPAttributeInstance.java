@@ -27,6 +27,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.util.CLogger;
@@ -73,8 +74,8 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		this.setBorder("normal");
 		this.setSizable(true);
 		this.setMaximizable(true);
-		this.setWidth("1000px");
-		this.setHeight("550px");
+		ZKUpdateUtil.setWidth(this, "1000px");
+		ZKUpdateUtil.setHeight(this, "550px");
 		
 		init (M_Warehouse_ID, M_Locator_ID, M_Product_ID, C_BPartner_ID);
 		AEnv.showCenterScreen(this);
@@ -147,8 +148,8 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		//	Center
 		Center center = new Center();
 		center.setParent(mainLayout);
-		m_table.setHflex("true");
-		m_table.setVflex("true");
+		ZKUpdateUtil.setHflex(m_table, "true");
+		ZKUpdateUtil.setVflex(m_table, "true");
 		center.appendChild(m_table);
 		
 		//	South

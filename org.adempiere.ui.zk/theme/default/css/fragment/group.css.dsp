@@ -15,7 +15,7 @@ tr.z-group {
 	overflow: hidden !important;
 	border-bottom: 1px solid #CFCFCF !important;
 	border-top: 1px solid #CFCFCF !important;
-	padding: 4px 5px;
+	padding: 1px 2px;
 }
 
 .z-group-icon {

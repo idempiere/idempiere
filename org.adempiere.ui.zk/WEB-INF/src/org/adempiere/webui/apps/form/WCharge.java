@@ -39,6 +39,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.Charge;
 import org.compiere.util.CLogger;
@@ -251,8 +252,8 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
     {
     	Borderlayout borderlayout = new Borderlayout();
     	borderlayout.setStyle("position: absolute");
-    	borderlayout.setWidth("100%");
-    	borderlayout.setHeight("100%");
+    	ZKUpdateUtil.setWidth(borderlayout, "100%");
+    	ZKUpdateUtil.setHeight(borderlayout, "100%");
     	m_pnlAccount.appendChild(borderlayout);
 
 		North north = new North();
@@ -267,8 +268,8 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
 		center.setAutoscroll(true);
 		borderlayout.appendChild(center);
 		center.appendChild(m_tblData);
-		m_tblData.setVflex("1");
-		m_tblData.setHflex("1");
+		ZKUpdateUtil.setVflex(m_tblData, "1");
+		ZKUpdateUtil.setHflex(m_tblData, "1");
 
 		South south = new South();
 		south.setBorder("none");

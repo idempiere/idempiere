@@ -45,6 +45,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.apps.form.PayPrint;
@@ -96,8 +97,8 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			dynInit();
 			zkInit();
 			Borderlayout contentLayout = new Borderlayout();
-			contentLayout.setWidth("100%");
-			contentLayout.setHeight("100%");
+			ZKUpdateUtil.setWidth(contentLayout, "100%");
+			ZKUpdateUtil.setHeight(contentLayout, "100%");
 			form.appendChild(contentLayout);
 			Center center = new Center();
 			contentLayout.appendChild(center);
@@ -500,7 +501,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			AEnv.mergePdf(pdfList, outFile);
 			chequeViewer = new SimplePDFViewer(form.getFormName(), new FileInputStream(outFile));
 			chequeViewer.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
-			chequeViewer.setWidth("100%");
+			ZKUpdateUtil.setWidth(chequeViewer, "100%");
 		}
 		catch (Exception e)
 		{
@@ -564,7 +565,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 						String name = Msg.translate(Env.getCtx(), "Remittance");
 						remitViewer = new SimplePDFViewer(form.getFormName() + " - " + name, new FileInputStream(outFile));
 						remitViewer.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
-						remitViewer.setWidth("100%");
+						ZKUpdateUtil.setWidth(remitViewer, "100%");
 					}
 					catch (Exception e)
 					{

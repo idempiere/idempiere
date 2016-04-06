@@ -16,6 +16,7 @@ import java.io.InputStream;
 
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
@@ -37,11 +38,11 @@ public class SimplePDFViewer extends Window {
 		Iframe iframe = new Iframe();
 		iframe.setId("reportFrame");
 		int height = Double.valueOf(SessionManager.getAppDesktop().getClientInfo().desktopHeight * 0.85).intValue();
-		this.setHeight(height + "px");
+		ZKUpdateUtil.setHeight(this, height + "px");
 		
 		height = height - 30;
-		iframe.setHeight(height + "px");
-		iframe.setWidth("100%");
+		ZKUpdateUtil.setHeight(iframe, height + "px");
+		ZKUpdateUtil.setWidth(iframe, "100%");
 		AMedia media = new AMedia(getTitle(), "pdf", "application/pdf", pdfInput);
 		iframe.setContent(media);
 		
@@ -54,6 +55,6 @@ public class SimplePDFViewer extends Window {
 			this.setTitle(Msg.translate(Env.getCtx(), "PDF"));
 		
 		int width = Double.valueOf(SessionManager.getAppDesktop().getClientInfo().desktopWidth * 0.80).intValue();
-		this.setWidth(width + "px");
+		ZKUpdateUtil.setWidth(this, width + "px");
 	}
 }

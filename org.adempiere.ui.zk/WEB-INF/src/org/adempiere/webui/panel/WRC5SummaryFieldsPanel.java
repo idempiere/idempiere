@@ -22,6 +22,7 @@ import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -54,13 +55,13 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 	
 	public void init(){
 		Window wind=new Window();
-		wind.setWidth("90%");
-		wind.setHeight("100%");
-		wind.setHflex("1");
+		ZKUpdateUtil.setWidth(wind, "90%");
+		ZKUpdateUtil.setHeight(wind, "100%");
+		ZKUpdateUtil.setHflex(wind, "1");
 		
-		grid.setHflex("1");
-		grid.setHeight("90%");
-		grid.setVflex(true);
+		ZKUpdateUtil.setHflex(grid, "1");
+		ZKUpdateUtil.setHeight(grid, "90%");
+		ZKUpdateUtil.setVflex(grid, true);
 		grid.setStyle("margin:0; padding:0; position: absolute");
 		grid.makeNoStrip();
 
@@ -76,7 +77,7 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 		int width = 100/RENDER_IN_COLUMNS;
 		for(int i=0;i<RENDER_IN_COLUMNS;i++){
 			cols[i] = new Column();
-			cols[i].setWidth(width+"%");
+			ZKUpdateUtil.setWidth(cols[i], width+"%");
 			columns.appendChild(cols[i]);
 		}
 	}

@@ -62,6 +62,7 @@ import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.part.ITabOnSelectHandler;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.GridField;
@@ -275,23 +276,23 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			setClosable(true);
 			int height = SessionManager.getAppDesktop().getClientInfo().desktopHeight * 85 / 100;
     		int width = SessionManager.getAppDesktop().getClientInfo().desktopWidth * 80 / 100;
-    		setWidth(width + "px");
-    		setHeight(height + "px");
+    		ZKUpdateUtil.setWidth(this, width + "px");
+    		ZKUpdateUtil.setHeight(this, height + "px");
     		this.setContentStyle("overflow: auto");
 		}
 		else
 		{
 			setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 			setBorder("none");
-			setWidth("100%");
-			setHeight("100%");
+			ZKUpdateUtil.setWidth(this, "100%");
+			ZKUpdateUtil.setHeight(this, "100%");
 			setStyle("position: absolute");
 		}
 
 		confirmPanel = new ConfirmPanel(true, true, true, true, true, true);  // Elaine 2008/12/16 
 		confirmPanel.addComponentsLeft(confirmPanel.createButton(ConfirmPanel.A_NEW));
         confirmPanel.addActionListener(Events.ON_CLICK, this);
-        confirmPanel.setHflex("1");
+        ZKUpdateUtil.setHflex(confirmPanel, "1");
 
         // Elaine 2008/12/16
 		confirmPanel.getButton(ConfirmPanel.A_CUSTOMIZE).setVisible(hasCustomize());

@@ -24,6 +24,7 @@ import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -175,7 +176,7 @@ public class Messagebox extends Window implements EventListener<Event>
 
 		img.setSrc(imgSrc);
 
-		pnlImage.setWidth("72px");
+		ZKUpdateUtil.setWidth(pnlImage, "72px");
 		pnlImage.setAlign("center");
 		pnlImage.setPack("center");
 		pnlImage.appendChild(img);
@@ -198,7 +199,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		pnlButtons.appendChild(btnRetry);
 		pnlButtons.appendChild(btnIgnore);
 
-		pnlButtons.setWidth("100%");
+		ZKUpdateUtil.setWidth(pnlButtons, "100%");
 		this.appendChild(pnlButtons);		
 		pnlButtons.setSclass("dialog-footer");
 		

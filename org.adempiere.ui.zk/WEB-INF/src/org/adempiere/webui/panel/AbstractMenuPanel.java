@@ -26,6 +26,7 @@ import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MMenu;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTree;
@@ -90,12 +91,12 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
     protected void initComponents()
     {
     	this.setSclass("menu-panel");
-    	this.setVflex("1");
+    	ZKUpdateUtil.setVflex(this, "1");
     	
         menuTree = new Tree();
         menuTree.setMultiple(false);
         menuTree.setId("mnuMain");
-        menuTree.setVflex("1");
+        ZKUpdateUtil.setVflex(menuTree, "1");
         menuTree.setSizedByContent(false);
         menuTree.setPageSize(-1); // Due to bug in the new paging functionality        
     }

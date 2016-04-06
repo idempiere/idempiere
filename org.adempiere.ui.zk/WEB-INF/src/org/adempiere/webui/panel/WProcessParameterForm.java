@@ -26,6 +26,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MScheduler;
 import org.compiere.process.ProcessInfo;
@@ -120,17 +121,17 @@ public class WProcessParameterForm extends ADForm
 		}
 		this.setSizable(true);
 		this.setClosable(true);
-		this.setWidth("500px");
-		this.setVflex("min");
+		ZKUpdateUtil.setWidth(this, "500px");
+		ZKUpdateUtil.setVflex(this, "min");
 	}
 
 	private void initComponents() {
 		this.setBorder("normal");		
 		dialogBody = new VerticalBox();
-		dialogBody.setHflex("1");
+		ZKUpdateUtil.setHflex(dialogBody, "1");
 		Vlayout dialogContent = new Vlayout();
-		dialogContent.setHflex("1");
-		dialogContent.setVflex("1");
+		ZKUpdateUtil.setHflex(dialogContent, "1");
+		ZKUpdateUtil.setVflex(dialogContent, "1");
 		dialogContent.setSclass("dialog-content");
 		dialogBody.appendChild(dialogContent);
 		Div div = new Div();
@@ -142,7 +143,7 @@ public class WProcessParameterForm extends ADForm
 		centerPanel = new Panel();
 		dialogContent.appendChild(centerPanel);
 		Hbox hbox = new Hbox();
-		hbox.setWidth("100%");
+		ZKUpdateUtil.setWidth(hbox, "100%");
 		hbox.setSclass("dialog-footer");
 		Button btn = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
 		btn.setId("Ok");

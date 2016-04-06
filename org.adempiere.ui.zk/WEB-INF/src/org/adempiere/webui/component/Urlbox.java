@@ -16,6 +16,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.A;
@@ -53,7 +54,7 @@ public class Urlbox extends Div
     private void initComponents() {
 		txt = new Textbox();
 		appendChild(txt);
-		txt.setHflex("0");
+		ZKUpdateUtil.setHflex(txt, "0");
 		txt.setSclass("editor-input");
 
 		btn = new A();
@@ -61,7 +62,7 @@ public class Urlbox extends Div
 		btn.setTabindex(-1);
 		btn.setSclass("editor-button");
 		btn.setZclass("z-button-os");
-		btn.setHflex("0");
+		ZKUpdateUtil.setHflex(btn, "0");
 		appendChild(btn);
 
 		LayoutUtils.addSclass("editor-box", this);
@@ -159,11 +160,11 @@ public class Urlbox extends Div
 	
 	public void setTableEditorMode(boolean flag) {
 		if (flag) {
-			setHflex("0");
+			ZKUpdateUtil.setHflex(this, "0");
 			LayoutUtils.addSclass("grid-editor-input", txt);
 			LayoutUtils.addSclass("grid-editor-button", btn);
 		} else {
-			setHflex("1");
+			ZKUpdateUtil.setHflex(this, "1");
 			LayoutUtils.removeSclass("grid-editor-input", txt);
 			LayoutUtils.removeSclass("grid-editor-button", btn);
 		}

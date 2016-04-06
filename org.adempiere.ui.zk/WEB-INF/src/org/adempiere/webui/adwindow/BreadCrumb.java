@@ -29,6 +29,7 @@ import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WRecordInfo;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.MRole;
@@ -96,7 +97,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		layout.setPack("start");
 		layout.setAlign("center");
 		this.appendChild(layout);
-		layout.setHeight("100%");
+		ZKUpdateUtil.setHeight(layout, "100%");
 		layout.setStyle("float: left");
 
 		this.setVisible(false);

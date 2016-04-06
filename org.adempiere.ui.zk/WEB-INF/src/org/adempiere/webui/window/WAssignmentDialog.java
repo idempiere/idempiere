@@ -43,6 +43,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MResourceAssignment;
 import org.compiere.model.MRole;
 import org.compiere.model.MUOMConversion;
@@ -114,7 +115,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 			log.log(Level.SEVERE, "", e);
 		}
 		setDisplay();	//	from mAssignment
-		setWidth("600px");
+		ZKUpdateUtil.setWidth(this, "600px");
 		setSizable(true);
 		//		
 	}	//	VAssignmentDialog
@@ -174,7 +175,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		row = new Row();
 		row.appendCellChild(LayoutUtils.makeRightAlign(lDate), 1);
 		Div div = new Div();
-		div.setHflex("1");
+		ZKUpdateUtil.setHflex(div, "1");
 		div.appendChild(fDateFrom);
 		fDateFrom.setCols(10);
 		div.appendChild(fTimeFrom);
@@ -200,8 +201,8 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		row.appendCellChild(fDescription, 2);
 		fDescription.setMultiline(true);
 		fDescription.setRows(3);
-		fDescription.setWidth("100%");
-		fDescription.setHeight("100%");
+		ZKUpdateUtil.setWidth(fDescription, "100%");
+		ZKUpdateUtil.setHeight(fDescription, "100%");
 		rows.appendChild(row);
 		
 		row = new Row();

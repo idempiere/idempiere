@@ -49,6 +49,7 @@ import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.Lookup;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
@@ -117,8 +118,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
         this.setSclass("popup-dialog");
 		this.setClosable(true);
 		this.setBorder("normal");
-		this.setWidth("80%");
-		this.setHeight("80%");
+		ZKUpdateUtil.setWidth(this, "80%");
+		ZKUpdateUtil.setHeight(this, "80%");
 		this.setShadow(true);
 		this.setMaximizable(true);
 		this.setSizable(true);
@@ -235,16 +236,16 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		//
 				
 		Grid grid = new Grid();
-		grid.setWidth("100%");
+		ZKUpdateUtil.setWidth(grid, "100%");
         grid.setStyle("margin:0; padding:0; align: center; valign: center; border:0");
         grid.makeNoStrip();
         
         Columns columns = new Columns();
         Column column = new Column();
-        column.setWidth("30%");
+        ZKUpdateUtil.setWidth(column, "30%");
         columns.appendChild(column);
         column = new Column();
-        column.setWidth("70%");
+        ZKUpdateUtil.setWidth(column, "70%");
         columns.appendChild(column);
         grid.appendChild(columns);
         
@@ -258,7 +259,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		div.appendChild(lFrom);
 		row.appendChild(div);
 		row.appendChild(fFrom);
-		fFrom.setHflex("1");
+		ZKUpdateUtil.setHflex(fFrom, "1");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -267,13 +268,13 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		div.appendChild(lTo);
 		row.appendChild(div);
 		row.appendChild(fUser.getComponent());
-		fUser.getComponent().setHflex("1");
+		ZKUpdateUtil.setHflex(fUser.getComponent(), "1");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(isAcknowledgmentReceipt);
 		row.appendChild(fTo);
-		fTo.setHflex("1");
+		ZKUpdateUtil.setHflex(fTo, "1");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -282,13 +283,13 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		div.appendChild(lCc);
 		row.appendChild(div);
 		row.appendChild(fCcUser.getComponent());
-		fCcUser.getComponent().setHflex("1");
+		ZKUpdateUtil.setHflex(fCcUser.getComponent(), "1");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(new Label(""));
 		row.appendChild(fCc);
-		fCc.setHflex("1");
+		ZKUpdateUtil.setHflex(fCc, "1");
 				
 		row = new Row();
 		rows.appendChild(row);
@@ -297,7 +298,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		div.appendChild(lSubject);
 		row.appendChild(div);
 		row.appendChild(fSubject);
-		fSubject.setHflex("1");
+		ZKUpdateUtil.setHflex(fSubject, "1");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -311,8 +312,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		row.appendChild(cell);
 		
 		attachmentBox = new Div();
-		attachmentBox.setHflex("1");
-		attachmentBox.setVflex("1");
+		ZKUpdateUtil.setHflex(attachmentBox, "1");
+		ZKUpdateUtil.setVflex(attachmentBox, "1");
 		row.appendChild(attachmentBox);
 		for (DataSource ds : attachments) {
 			boolean removable = true;
@@ -349,7 +350,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		Borderlayout borderlayout = new Borderlayout();
 		this.appendChild(borderlayout);
-		borderlayout.setHflex("1");
+		ZKUpdateUtil.setHflex(borderlayout, "1");
 		
 		Center centerPane = new Center();
 		centerPane.setSclass("dialog-content");

@@ -35,6 +35,7 @@ import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.event.TableValueChangeEvent;
 import org.adempiere.webui.event.TableValueChangeListener;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MImage;
 import org.compiere.util.DisplayType;
@@ -459,7 +460,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
         	if (classType != null && classType.isAssignableFrom(IDColumn.class))
         	{
         		header = new ListHeader("");
-        		header.setWidth("30px");
+        		ZKUpdateUtil.setWidth(header, "30px");
         	}
         	else
         	{
@@ -505,7 +506,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 
 	            header.setStyle("min-width: " + width + "px");
         	}
-            header.setHflex("min");
+            ZKUpdateUtil.setHflex(header, "min");
             m_headers.add(header);
         }
         else

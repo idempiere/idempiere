@@ -24,6 +24,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.TreeItemAction;
 import org.adempiere.webui.util.TreeNodeAction;
 import org.adempiere.webui.util.TreeUtils;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MTreeNode;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -178,14 +179,14 @@ public class MenuSearchController implements EventListener<Event>{
 		refreshModel();
 		
 		layout = new Vlayout();
-		layout.setHeight("100%");
+		ZKUpdateUtil.setHeight(layout, "100%");
 		parent.appendChild(layout);
 		
 		listbox = new Listbox();
 		listbox.setEmptyMessage(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "FindZeroRecords")));
 		listbox.setStyle("border: none");
-		listbox.setWidth("100%");
-		listbox.setVflex("true");
+		ZKUpdateUtil.setWidth(listbox, "100%");
+		ZKUpdateUtil.setVflex(listbox, "true");
 		layout.appendChild(listbox);
 		listbox.setItemRenderer(new MenuItemRenderer());
 		listbox.addEventListener(Events.ON_SELECT, this);
@@ -195,7 +196,7 @@ public class MenuSearchController implements EventListener<Event>{
 		Listheader listheader = new Listheader();
 		listhead.appendChild(listheader);
 		listheader = new Listheader();
-		listheader.setWidth("32px");
+		ZKUpdateUtil.setWidth(listheader, "32px");
 		listhead.appendChild(listheader);
 		
 		layout.addEventListener(ON_SEARCH_ECHO, this);

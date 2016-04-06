@@ -27,6 +27,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MImage;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -121,15 +122,15 @@ public class WImageDialog extends Window implements EventListener<Event>
 	{
 		this.setSclass("popup-dialog");
 		this.setBorder("normal");
-		this.setWidth("450px");
-		this.setHeight("550px");
+		ZKUpdateUtil.setWidth(this, "450px");
+		ZKUpdateUtil.setHeight(this, "550px");
 		this.setShadow(true);
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		this.setSizable(true);
 		
 		mainLayout.setParent(this);
-		mainLayout.setHflex("1");
-		mainLayout.setVflex("1");
+		ZKUpdateUtil.setHflex(mainLayout, "1");
+		ZKUpdateUtil.setVflex(mainLayout, "1");
 		
 		fileLabel.setValue(Msg.getMsg(Env.getCtx(), "SelectFile") + ": ");
 		fileButton.setLabel("-");
@@ -154,8 +155,8 @@ public class WImageDialog extends Window implements EventListener<Event>
 		
 		Center center = new Center();
 		center.setSclass("dialog-content");
-		image.setHflex("true");
-		image.setVflex("true");
+		ZKUpdateUtil.setHflex(image, "true");
+		ZKUpdateUtil.setVflex(image, "true");
 		center.setParent(mainLayout);
 		center.appendChild(image);
 		

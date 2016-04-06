@@ -41,6 +41,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.UserPreference;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.model.MRole;
@@ -259,7 +260,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         okBtn.setWidgetListener("onClick", "zAu.cmd0.showBusy(null)");
         
         LayoutUtils.addSclass(ITheme.LOGIN_BOX_FOOTER_PANEL_CLASS, pnlButtons);
-        pnlButtons.setWidth(null);
+        ZKUpdateUtil.setWidth(pnlButtons, null);
         pnlButtons.getButton(ConfirmPanel.A_OK).setSclass(ITheme.LOGIN_BUTTON_CLASS);
         pnlButtons.getButton(ConfirmPanel.A_CANCEL).setSclass(ITheme.LOGIN_BUTTON_CLASS);
         div.appendChild(pnlButtons);
@@ -296,7 +297,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstRole.setId("lstRole");
 
         lstRole.addEventListener(Events.ON_SELECT, this);
-        lstRole.setWidth("220px");
+        ZKUpdateUtil.setWidth(lstRole, "220px");
 
         lstClient = new Combobox();
         lstClient.setAutocomplete(true);
@@ -304,7 +305,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstClient.setId("lstClient");
 
         lstClient.addEventListener(Events.ON_SELECT, this);
-        lstClient.setWidth("220px");
+        ZKUpdateUtil.setWidth(lstClient, "220px");
 
         lstOrganisation = new Combobox();
         lstOrganisation.setAutocomplete(true);
@@ -312,7 +313,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstOrganisation.setId("lstOrganisation");
 
         lstOrganisation.addEventListener(Events.ON_SELECT, this);
-        lstOrganisation.setWidth("220px");
+        ZKUpdateUtil.setWidth(lstOrganisation, "220px");
 
         lstWarehouse = new Combobox();
         lstWarehouse.setAutocomplete(true);
@@ -320,7 +321,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstWarehouse.setId("lstWarehouse");
 
         lstWarehouse.addEventListener(Events.ON_SELECT, this);
-        lstWarehouse.setWidth("220px");
+        ZKUpdateUtil.setWidth(lstWarehouse, "220px");
 
         lstDate = new WDateEditor();
         lstDate.setValue(new Timestamp(System.currentTimeMillis()));

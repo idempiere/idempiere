@@ -48,6 +48,7 @@ import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.Allocation;
 import org.compiere.model.MAllocationHdr;
@@ -155,8 +156,8 @@ public class WAllocation extends Allocation
 	{
 		//
 		form.appendChild(mainLayout);
-		mainLayout.setWidth("99%");
-		mainLayout.setHeight("100%");
+		ZKUpdateUtil.setWidth(mainLayout, "99%");
+		ZKUpdateUtil.setHeight(mainLayout, "100%");
 		dateLabel.setText(Msg.getMsg(Env.getCtx(), "Date"));
 		autoWriteOff.setSelected(false);
 		autoWriteOff.setText(Msg.getMsg(Env.getCtx(), "AutoWriteOff", true));
@@ -197,11 +198,11 @@ public class WAllocation extends Allocation
 		Rows rows = null;
 		Row row = null;
 		
-		parameterLayout.setWidth("80%");
+		ZKUpdateUtil.setWidth(parameterLayout, "80%");
 		rows = parameterLayout.newRows();
 		row = rows.newRow();
 		row.appendCellChild(bpartnerLabel.rightAlign());
-		bpartnerSearch.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(bpartnerSearch.getComponent(), "true");
 		row.appendCellChild(bpartnerSearch.getComponent(),2);
 		bpartnerSearch.showMenu();
 		Hbox box = new Hbox();
@@ -209,13 +210,13 @@ public class WAllocation extends Allocation
 		box.appendChild(dateField.getComponent());
 		row.appendCellChild(box);
 		row.appendCellChild(organizationLabel.rightAlign());
-		organizationPick.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(organizationPick.getComponent(), "true");
 		row.appendCellChild(organizationPick.getComponent(),1);
 		organizationPick.showMenu();
 		
 		row = rows.newRow();
 		row.appendCellChild(currencyLabel.rightAlign(),1);
-		currencyPick.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(currencyPick.getComponent(), "true");
 		row.appendCellChild(currencyPick.getComponent(),1);		
 		currencyPick.showMenu();
 		row.appendCellChild(multiCurrency,1);		
@@ -228,37 +229,37 @@ public class WAllocation extends Allocation
 		south.appendChild(southPanel);
 		southPanel.appendChild(allocationPanel);
 		allocationPanel.appendChild(allocationLayout);
-		allocationLayout.setHflex("min");
+		ZKUpdateUtil.setHflex(allocationLayout, "min");
 		rows = allocationLayout.newRows();
 		row = rows.newRow();
 		row.appendCellChild(differenceLabel.rightAlign());
 		row.appendCellChild(allocCurrencyLabel.rightAlign());
-		differenceField.setHflex("true");
+		ZKUpdateUtil.setHflex(differenceField, "true");
 		row.appendCellChild(differenceField);
 		row.appendCellChild(chargeLabel.rightAlign());
-		chargePick.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(chargePick.getComponent(), "true");
 		row.appendCellChild(chargePick.getComponent());
 		row.appendCellChild(DocTypeLabel.rightAlign());
 		chargePick.showMenu();
-		DocTypePick.getComponent().setHflex("true");
+		ZKUpdateUtil.setHflex(DocTypePick.getComponent(), "true");
 		row.appendCellChild(DocTypePick.getComponent());
 		DocTypePick.showMenu();
-		allocateButton.setHflex("true");
+		ZKUpdateUtil.setHflex(allocateButton, "true");
 		row.appendCellChild(allocateButton);
 		row.appendCellChild(refreshButton);
 		
 		paymentPanel.appendChild(paymentLayout);
-		paymentPanel.setWidth("100%");
-		paymentPanel.setHeight("100%");
-		paymentLayout.setWidth("100%");
-		paymentLayout.setHeight("100%");
+		ZKUpdateUtil.setWidth(paymentPanel, "100%");
+		ZKUpdateUtil.setHeight(paymentPanel, "100%");
+		ZKUpdateUtil.setWidth(paymentLayout, "100%");
+		ZKUpdateUtil.setHeight(paymentLayout, "100%");
 		paymentLayout.setStyle("border: none");
 		
 		invoicePanel.appendChild(invoiceLayout);
-		invoicePanel.setWidth("100%");
-		invoicePanel.setHeight("100%");
-		invoiceLayout.setWidth("100%");
-		invoiceLayout.setHeight("100%");
+		ZKUpdateUtil.setWidth(invoicePanel, "100%");
+		ZKUpdateUtil.setHeight(invoicePanel, "100%");
+		ZKUpdateUtil.setWidth(invoiceLayout, "100%");
+		ZKUpdateUtil.setHeight(invoiceLayout, "100%");
 		invoiceLayout.setStyle("border: none");
 		
 		north = new North();
@@ -272,8 +273,8 @@ public class WAllocation extends Allocation
 		Center center = new Center();
 		paymentLayout.appendChild(center);
 		center.appendChild(paymentTable);
-		paymentTable.setWidth("99%");
-		paymentTable.setHeight("99%");
+		ZKUpdateUtil.setWidth(paymentTable, "99%");
+		//ZKUpdateUtil.setHeight(paymentTable, "99%");
 		center.setStyle("border: none");
 		
 		north = new North();
@@ -287,23 +288,23 @@ public class WAllocation extends Allocation
 		center = new Center();
 		invoiceLayout.appendChild(center);
 		center.appendChild(invoiceTable);
-		invoiceTable.setWidth("99%");
-		invoiceTable.setHeight("99%");
+		ZKUpdateUtil.setWidth(invoiceTable, "99%");
+		//ZKUpdateUtil.setHeight(invoiceTable, "99%");
 		center.setStyle("border: none");
 		//
 		center = new Center();
 		mainLayout.appendChild(center);
 		center.appendChild(infoPanel);
-		infoPanel.setHflex("1");
-		infoPanel.setVflex("1");
+		ZKUpdateUtil.setHflex(infoPanel, "1");
+		ZKUpdateUtil.setVflex(infoPanel, "1");
 		
 		infoPanel.setStyle("border: none");
-		infoPanel.setWidth("100%");
-		infoPanel.setHeight("100%");
+		ZKUpdateUtil.setWidth(infoPanel, "100%");
+		ZKUpdateUtil.setHeight(infoPanel, "100%");
 		
 		north = new North();
 		north.setStyle("border: none");
-		north.setHeight("49%");
+		ZKUpdateUtil.setHeight(north, "49%");
 		infoPanel.appendChild(north);
 		north.appendChild(paymentPanel);
 		north.setSplittable(true);
@@ -311,8 +312,8 @@ public class WAllocation extends Allocation
 		center.setStyle("border: none");
 		infoPanel.appendChild(center);
 		center.appendChild(invoicePanel);
-		invoicePanel.setHflex("1");
-		invoicePanel.setVflex("1");
+		ZKUpdateUtil.setHflex(invoicePanel, "1");
+		ZKUpdateUtil.setVflex(invoicePanel, "1");
 	}   //  jbInit
 
 	/**
@@ -343,7 +344,7 @@ public class WAllocation extends Allocation
 
 		//  Translation
 		statusBar.appendChild(new Label(Msg.getMsg(Env.getCtx(), "AllocateStatus")));
-		statusBar.setVflex("min");
+		ZKUpdateUtil.setVflex(statusBar, "min");
 		
 		//  Date set to Login Date
 		Calendar cal = Calendar.getInstance();

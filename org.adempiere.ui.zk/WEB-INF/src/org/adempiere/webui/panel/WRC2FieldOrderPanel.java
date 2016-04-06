@@ -27,6 +27,7 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
@@ -71,16 +72,16 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 	{
 
 		Hlayout hlayout = new Hlayout();
-		hlayout.setVflex("true");
-		hlayout.setHflex("true");
+		ZKUpdateUtil.setVflex(hlayout, "true");
+		ZKUpdateUtil.setHflex(hlayout, "true");
 		hlayout.setStyle("width:80%;height:80%;border:none;margin:none;padding:none");
 		
 		sortList = new Listbox();
 		sortModel =new SimpleListModel();
-		sortList.setHeight("100%");
-		sortList.setWidth("40%");
-		sortList.setHflex("40");
-		sortList.setVflex("true");
+		ZKUpdateUtil.setHeight(sortList, "100%");
+		ZKUpdateUtil.setWidth(sortList, "40%");
+		ZKUpdateUtil.setHflex(sortList, "40");
+		ZKUpdateUtil.setVflex(sortList, "true");
 		sortList.addDoubleClickListener(this);
 		sortList.setSeltype("multiple");
 		sortList.addOnDropListener(this);
@@ -128,7 +129,7 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 		ListHead listHead = new ListHead();
 		listHead.setParent(sortList);
 		ListHeader header=new ListHeader();
-		header.setHflex("40");
+		ZKUpdateUtil.setHflex(header, "40");
 		header.setParent(listHead);
 		
 		hlayout.appendChild(sortList);
@@ -149,8 +150,8 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 		Vbox vbox = new Vbox();
 		vbox.appendChild(bUp);
 		vbox.appendChild(bDown);
-		vbox.setWidth("50px");
-		vbox.setHflex("60");
+		ZKUpdateUtil.setWidth(vbox, "50px");
+		ZKUpdateUtil.setHflex(vbox, "60");
 		hlayout.appendChild(vbox);
 		this.appendChild(hlayout);
 

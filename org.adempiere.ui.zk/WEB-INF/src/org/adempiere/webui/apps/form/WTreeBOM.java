@@ -42,6 +42,7 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.TreeUtils;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.form.TreeBOM;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
@@ -164,12 +165,12 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 	private void jbInit()
 	{
 	
-		m_frame.setWidth("99%");
-		m_frame.setHeight("100%");
+		ZKUpdateUtil.setWidth(m_frame, "99%");
+		ZKUpdateUtil.setHeight(m_frame, "100%");
 		m_frame.setStyle("position: absolute; padding: 0; margin: 0");
 		m_frame.appendChild (mainLayout);
-		mainLayout.setWidth("100%");
-		mainLayout.setHeight("100%");
+		ZKUpdateUtil.setWidth(mainLayout, "100%");
+		ZKUpdateUtil.setHeight(mainLayout, "100%");
 		mainLayout.setStyle("position: absolute");
 		northPanel.appendChild(northLayout);
 		southPanel.appendChild(southLayout);
@@ -180,8 +181,8 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 		
 		North north = new North();
 		north.appendChild(northPanel);
-		north.setHeight("6%");
-		northPanel.setWidth("100%");
+		ZKUpdateUtil.setHeight(north, "6%");
+		ZKUpdateUtil.setWidth(northPanel, "100%");
 		mainLayout.appendChild(north);
 
 		Rows rows = northLayout.newRows();
@@ -200,8 +201,8 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 
 		South south = new South();
 		south.appendChild(southPanel);
-		south.setHeight("10%");
-		southPanel.setWidth("100%");
+		ZKUpdateUtil.setHeight(south, "10%");
+		ZKUpdateUtil.setWidth(southPanel, "100%");
 		mainLayout.appendChild(south);
 		
 		Rows rows2 = southLayout.newRows();
@@ -220,7 +221,7 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 		west.appendChild(treePane);
 		treePane.appendChild(m_tree);
 		m_tree.setStyle("border: none;");
-		west.setWidth("33%");
+		ZKUpdateUtil.setWidth(west, "33%");
 		west.setAutoscroll(true);
 		m_tree.addEventListener(Events.ON_SELECT, this);
 		
@@ -228,8 +229,8 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 		mainLayout.appendChild(center);
 		center.appendChild(dataPane);
 		dataPane.appendChild(tableBOM);
-		dataPane.setHflex("1");
-		dataPane.setVflex("1");
+		ZKUpdateUtil.setHflex(dataPane, "1");
+		ZKUpdateUtil.setVflex(dataPane, "1");
 		center.setAutoscroll(true);
 	}
 	

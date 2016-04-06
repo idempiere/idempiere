@@ -27,6 +27,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -43,6 +44,8 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
+
+import com.sun.corba.se.impl.oa.poa.AOMEntry;
 
 /**
  * 
@@ -123,13 +126,13 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	
 	void staticInit() throws Exception
 	{
-		this.setWidth("500px");
-		this.setHeight("500px");
+		ZKUpdateUtil.setWidth(this, "500px");
+		ZKUpdateUtil.setHeight(this, "500px");
 		this.setClosable(true);
 		this.setBorder("normal");
 		this.appendChild(mainPanel);
-		mainPanel.setHeight("100%");
-		mainPanel.setWidth("100%");
+		ZKUpdateUtil.setHeight(mainPanel, "100%");
+		ZKUpdateUtil.setWidth(mainPanel, "100%");
 		
 		
 		North northPanel = new North();
@@ -160,20 +163,20 @@ public class WMediaDialog extends Window implements EventListener<Event>
 
 		previewPanel.appendChild(preview);
 		ZkCssHelper.appendStyle(previewPanel, "margin-top: 10px; margin-bottom: 10px;");
-		preview.setHeight("100%");
-		preview.setWidth("100%");
+		ZKUpdateUtil.setHeight(preview, "100%");
+		ZKUpdateUtil.setWidth(preview, "100%");
 			
 		Center centerPane = new Center();
 		centerPane.setAutoscroll(true);
-		previewPanel.setHflex("true");
-		previewPanel.setVflex("true");
+		ZKUpdateUtil.setHflex(previewPanel, "true");
+		ZKUpdateUtil.setVflex(previewPanel, "true");
 		mainPanel.appendChild(centerPane);
 		centerPane.appendChild(previewPanel);
 		
 		South southPane = new South();
 		mainPanel.appendChild(southPane);
 		southPane.appendChild(confirmPanel);
-		southPane.setHeight("30px");
+		ZKUpdateUtil.setHeight(southPane, "30px");
 		
 		bOk.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
 		bOk.addEventListener(Events.ON_CLICK, this);

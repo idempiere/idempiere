@@ -45,6 +45,7 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ReaderInputStream;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.apache.commons.io.FileUtils;
@@ -80,8 +81,8 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 			zkInit();
 			dynInit();
 			Borderlayout contentLayout = new Borderlayout();
-			contentLayout.setWidth("100%");
-			contentLayout.setHeight("100%");
+			ZKUpdateUtil.setWidth(contentLayout, "100%");
+			ZKUpdateUtil.setHeight(contentLayout, "100%");
 			form.appendChild(contentLayout);
 			Center center = new Center();
 			contentLayout.appendChild(center);
@@ -91,7 +92,7 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 			contentLayout.appendChild(south);
 			south.appendChild(statusBar);
 			LayoutUtils.addSclass("status-border", statusBar);
-			south.setHeight("22px");
+			ZKUpdateUtil.setHeight(south, "22px");
 		}
 		catch(Exception e)
 		{

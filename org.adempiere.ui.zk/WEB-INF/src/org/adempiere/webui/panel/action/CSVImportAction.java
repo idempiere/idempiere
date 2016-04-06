@@ -60,6 +60,7 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.util.ReaderInputStream;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridTab;
 import org.compiere.model.MImportTemplate;
 import org.compiere.util.DB;
@@ -142,7 +143,7 @@ public class CSVImportAction implements EventListener<Event>
 		{
 			winImportFile = new Window();
 			winImportFile.setTitle(Msg.getMsg(Env.getCtx(), "FileImport") + ": " + panel.getActiveGridTab().getName());
-			winImportFile.setWidth("450px");
+			ZKUpdateUtil.setWidth(winImportFile, "450px");
 			winImportFile.setClosable(true);
 			winImportFile.setBorder("normal");
 			winImportFile.setStyle("position:absolute");
@@ -150,7 +151,7 @@ public class CSVImportAction implements EventListener<Event>
 			winImportFile.setSclass("popup-dialog");
 
 			Vbox vb = new Vbox();
-			vb.setWidth("100%");
+			ZKUpdateUtil.setWidth(vb, "100%");
 			winImportFile.appendChild(vb);
 
 			Vlayout vlayout = new Vlayout();
@@ -162,10 +163,10 @@ public class CSVImportAction implements EventListener<Event>
 
 			Columns columns = new Columns();
 			Column column = new Column();
-			column.setHflex("min");
+			ZKUpdateUtil.setHflex(column, "min");
 			columns.appendChild(column);
 			column = new Column();
-			column.setHflex("1");
+			ZKUpdateUtil.setHflex(column, "1");
 			columns.appendChild(column);
 			grid.appendChild(columns);
 
@@ -179,7 +180,7 @@ public class CSVImportAction implements EventListener<Event>
 			fTemplates.setRows(0);
 			fTemplates.setTooltiptext(Msg.getElement(Env.getCtx(), "AD_ImportTemplate_ID"));
 			row.appendChild(fTemplates);
-			fTemplates.setHflex("1");
+			ZKUpdateUtil.setHflex(fTemplates, "1");
 
 			row = new Row();
 			rows.appendChild(row);
@@ -188,7 +189,7 @@ public class CSVImportAction implements EventListener<Event>
 			fImportMode.setRows(0);
 			fImportMode.setTooltiptext(Msg.getMsg(Env.getCtx(), "import.mode", false));
 			row.appendChild(fImportMode);
-			fImportMode.setHflex("1");
+			ZKUpdateUtil.setHflex(fImportMode, "1");
 
 			row = new Row();
 			rows.appendChild(row);

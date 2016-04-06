@@ -30,6 +30,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.part.WindowContainer;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.WTask;
 import org.compiere.model.MInfoWindow;
@@ -221,12 +222,12 @@ public abstract class TabbedDesktop extends AbstractDesktop {
      */
     private void addWin(Iframe fr, String title, boolean closeable)
     {
-    	fr.setWidth("100%");
-        fr.setHeight("100%");
+    	ZKUpdateUtil.setWidth(fr, "100%");
+        ZKUpdateUtil.setHeight(fr, "100%");
         fr.setStyle("padding: 0; margin: 0; border: none; position: absolute");
         Window window = new Window();
-        window.setWidth("100%");
-        window.setHeight("100%");
+        ZKUpdateUtil.setWidth(window, "100%");
+        ZKUpdateUtil.setHeight(window, "100%");
         window.setStyle("padding: 0; margin: 0; border: none");
         window.appendChild(fr);
         window.setStyle("position: absolute");

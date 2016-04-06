@@ -2,7 +2,7 @@
 <zk>
 <script defer="true">
 <![CDATA[
-    adempiere.store.set("zkTimeoutURL", "sessiontimeout.zul");
+    adempiere.set("zkTimeoutURL", "sessiontimeout.zul");
 ]]>	
 </script>
 <zscript>

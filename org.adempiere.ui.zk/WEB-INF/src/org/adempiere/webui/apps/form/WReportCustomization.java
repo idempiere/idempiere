@@ -46,6 +46,7 @@ import org.adempiere.webui.panel.WRC5SummaryFieldsPanel;
 import org.adempiere.webui.panel.WRCTabPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.ZkReportViewer;
 import org.compiere.model.MRole;
@@ -169,8 +170,8 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 		form.setStyle("width: 90%; height: 90%; position: absolute; border:none; padding:none; margin:none;");
 
-		headerPanel.setHeight("40px");
-		headerPanel.setWidth("100%");
+		//ZKUpdateUtil.setHeight(headerPanel, "40px");
+		//headerPanel.setWidth("100%"); 
 
 		headerPanel.appendChild(new Separator("vertical"));
 
@@ -222,8 +223,8 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 		headerPanel.appendChild(new Separator("horizontal"));
 
-		tabbox.setWidth("100%");		
-		tabbox.setHeight("84%");//IDEMPIERE-2476, Pritesh Shah
+		ZKUpdateUtil.setWidth(tabbox, "100%");		
+		ZKUpdateUtil.setHeight(tabbox, "84%");//IDEMPIERE-2476, Pritesh Shah
 		
 		tabfo2.addEventListener(Events.ON_CLICK, this);
 		tabsc3.addEventListener(Events.ON_CLICK, this);
@@ -309,7 +310,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		
 		foot.appendChild(confirmPanelMain);
 		confirmPanelMain.addActionListener(this);
-		confirmPanelMain.setVflex("0");
+		ZKUpdateUtil.setVflex(confirmPanelMain, "0");
 		
 		f.appendChild(foot);
 		grid.appendChild(f);
@@ -452,8 +453,8 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		{
 			winExportFile = new Window();
 			winExportFile.setTitle(Msg.getMsg(Env.getCtx(), "Export"));
-			winExportFile.setWidth("450px");
-			winExportFile.setHeight("300px");
+			ZKUpdateUtil.setWidth(winExportFile, "450px");
+			ZKUpdateUtil.setHeight(winExportFile, "300px");
 			winExportFile.setClosable(true);
 			winExportFile.setBorder("normal");
 			winExportFile.setStyle("position:absolute");
@@ -477,13 +478,13 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 			div.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType")));
 			hb.appendChild(div);
 			hb.appendChild(cboType);
-			cboType.setWidth("100%");
-			hb.setVflex("1");
+			ZKUpdateUtil.setWidth(cboType, "100%");
+			ZKUpdateUtil.setVflex(hb, "1");
 			hb.setStyle("margin-top: 10px");
 
 			Vbox vb = new Vbox();
-			vb.setVflex("1");
-			vb.setWidth("100%");
+			ZKUpdateUtil.setVflex(vb, "1");
+			ZKUpdateUtil.setWidth(vb, "100%");
 			winExportFile.appendChild(vb);
 			vb.appendChild(hb);
 			vb.appendChild(confirmPanel);
@@ -497,7 +498,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 				}
 			};
 			confirmPanel.addActionListener(exportListener);
-			confirmPanel.setVflex("0");
+			ZKUpdateUtil.setVflex(confirmPanel, "0");
 		}
 		winExportFile.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		AEnv.showWindow(winExportFile);
