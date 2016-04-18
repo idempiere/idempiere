@@ -4,7 +4,6 @@ Bundle-Name: iDempiere Core
 Bundle-SymbolicName: org.adempiere.base;singleton:=true
 Bundle-Version: 3.1.0.qualifier
 Bundle-ClassPath: base.jar,
- bsh-2.0b5.jar,
  bsh-engine.jar,
  groovy-engine.jar,
  jython-engine.jar,
@@ -19,7 +18,8 @@ Bundle-ClassPath: base.jar,
  super-csv-2.2.0.jar,
  barcode4j-2.1.jar,
  bcprov-jdk15on-1.46.jar,
- passay-1.0.jar
+ passay-1.0.jar,
+ bsh-2.0b6.jar
 Export-Package: bsh,
  bsh.classpath,
  bsh.collection,

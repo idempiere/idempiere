@@ -1,6 +1,6 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
-		<get src="http://central.maven.org/maven2/org/beanshell/bsh/2.0b5/bsh-2.0b5.jar" dest="bsh-2.0b5.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="http://central.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6.jar" dest="bsh-2.0b6.jar" usetimestamp="true" verbose="true" retries="5" />
 		<!-- bsf-all-3.0-beta3.jar replace for grovy-engine, jyyhon-enjine, bsh-engine
 	      http://mvnrepository.com/artifact/org.apache.bsf/bsf-all/3.0-beta3
 		  <get src="http://central.maven.org/maven2/org/apache/bsf/bsf-all/3.0-beta3/bsf-all-3.0-beta3.jar" dest="bsf-all-3.0-beta3.jar" usetimestamp="true" verbose="true" retries="5"/>
