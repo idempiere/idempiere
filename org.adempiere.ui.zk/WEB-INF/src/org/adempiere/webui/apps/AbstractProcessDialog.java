@@ -221,25 +221,28 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		m_pi.setTitle(m_Name);
 		
 		parameterPanel = new ProcessParameterPanel(m_WindowNo, m_pi);		
+		layout();
 		if ( !parameterPanel.init() ) {
-			if (m_ShowHelp != null && m_ShowHelp.equals("N"))
+			if (m_ShowHelp != null && MProcess.SHOWHELP_DonTShowHelp.equals(m_ShowHelp))
 				autoStart = true;
 			
 			if (autoStart)
 			{
+				bOK.setDisabled(true);
+				bCancel.setDisabled(true);
 				autoStart();
 				return true;
 			}
 		}
 
 		// Check if the process is a silent one
-		if (isValid() && m_ShowHelp != null && m_ShowHelp.equals("S"))
+		if (isValid() && m_ShowHelp != null && MProcess.SHOWHELP_RunSilently_TakeDefaults.equals(m_ShowHelp))
 		{
+			bOK.setDisabled(true);
+			bCancel.setDisabled(true);
 			autoStart();
 			return true;
 		}
-		
-		layout();
 
 		return true;
 	}

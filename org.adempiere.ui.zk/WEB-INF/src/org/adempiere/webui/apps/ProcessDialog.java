@@ -39,6 +39,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
+import org.compiere.model.MProcess;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
@@ -270,6 +271,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	}
 	
 	private void showBusyMask(Window window) {
+	  if (getParent() != null) {
 		getParent().appendChild(getMask());
 		StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
 		script.append(getParent().getUuid()).append("');");
@@ -279,6 +281,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			script.append("w.busy=true;");
 		}
 		Clients.response(new AuScript(script.toString()));
+	  }
 	}
 		
 	private void hideBusyMask() 
@@ -322,10 +325,12 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		
 		bOK.setLabel(Msg.getMsg(Env.getCtx(), "Parameter"));
 		bOK.setImage(ThemeManager.getThemeResource("images/Reset16.png"));
-		
+		bOK.setDisabled(false);
+
 		bCancel.setLabel(Msg.getMsg(Env.getCtx(), "Close"));
 		bCancel.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
-		
+		bCancel.setDisabled(false);
+
 		isParameterPage = false;
 
 		m_ids = pi.getIDs();
@@ -458,8 +463,8 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	{
 		//
 		if (!afterProcessTask()) {
-			// If the process is a silent one and no errors occured, close the dialog
-			if(getShowHelp() != null && getShowHelp().equals("S"))
+			// If the process is a silent one and no errors occurred, close the dialog
+			if(getShowHelp() != null && MProcess.SHOWHELP_RunSilently_TakeDefaults.equals(getShowHelp()))
 				this.dispose();	
 		}
 	}
@@ -570,8 +575,8 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			}
 		}
 		
-		// If the process is a silent one and no errors occured, close the dialog
-		if(getShowHelp() != null && getShowHelp().equals("S"))
+		// If the process is a silent one and no errors occurred, close the dialog
+		if(getShowHelp() != null && MProcess.SHOWHELP_RunSilently_TakeDefaults.equals(getShowHelp()))
 			this.dispose();	
 	}
 
@@ -653,8 +658,8 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			}
 		}
 		
-		// If the process is a silent one and no errors occured, close the dialog
-		if(getShowHelp() != null && getShowHelp().equals("S"))
+		// If the process is a silent one and no errors occurred, close the dialog
+		if(getShowHelp() != null && MProcess.SHOWHELP_RunSilently_TakeDefaults.equals(getShowHelp()))
 			this.dispose();	
 	}
 	

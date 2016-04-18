@@ -48,6 +48,7 @@ import org.adempiere.util.Callback;
 import org.adempiere.util.IProcessUI;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
+import org.compiere.model.MProcess;
 import org.compiere.print.ReportCtl;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
@@ -362,14 +363,14 @@ public class ProcessDialog extends CFrame
 			centerPanel.add(separator, BorderLayout.NORTH);
 			centerPanel.add(parameterPanel, BorderLayout.CENTER);
 		} else {
-			if (m_ShowHelp != null && m_ShowHelp.equals("N")) {
+			if (m_ShowHelp != null && MProcess.SHOWHELP_DonTShowHelp.equals(m_ShowHelp)) {
 				bOK.doClick();    // don't ask first click
 				// anyway show resulting window
 			}
 		}
 		
 		// Check if the process is a silent one
-		if(m_ShowHelp != null && m_ShowHelp.equals("S"))
+		if(m_ShowHelp != null && MProcess.SHOWHELP_RunSilently_TakeDefaults.equals(m_ShowHelp))
 			bOK.doClick();
 		
 		querySaved();
@@ -548,8 +549,8 @@ public class ProcessDialog extends CFrame
 		if (m_IsReport && !pi.isError())
 			bOK.doClick();
 		
-		// If the process is a silent one and no errors occured, close the dialog
-		if(m_ShowHelp != null && m_ShowHelp.equals("S"))
+		// If the process is a silent one and no errors occurred, close the dialog
+		if(m_ShowHelp != null && MProcess.SHOWHELP_RunSilently_TakeDefaults.equals(m_ShowHelp))
 			bOK.doClick();
 	}   //  unlockUI
 
@@ -560,7 +561,7 @@ public class ProcessDialog extends CFrame
 	public boolean isUILocked()
 	{
 		return m_isLocked;
-	}   //  isLoacked
+	}   //  isUILocked
 
 	/**
 	 *  Method to be executed async.
