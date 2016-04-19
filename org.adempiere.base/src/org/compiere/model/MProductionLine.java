@@ -200,7 +200,8 @@ public class MProductionLine extends X_M_ProductionLine {
 			}
 			else
 			{
-				MStorageOnHand storage = MStorageOnHand.getCreate(Env.getCtx(), getM_Locator_ID(), getM_Product_ID(), 0, date, get_TrxName(), true);
+				MStorageOnHand storage = MStorageOnHand.getCreate(Env.getCtx(), getM_Locator_ID(), getM_Product_ID(),
+						asi.get_ID(), date, get_TrxName(), true);
 				
 				BigDecimal lineQty = qtyToMove;
 				MAttributeSetInstance slASI = new MAttributeSetInstance(getCtx(),
@@ -239,6 +240,9 @@ public class MProductionLine extends X_M_ProductionLine {
 					storage.addQtyOnHand(lineQty.negate());
 					qtyToMove = qtyToMove.subtract(lineQty);
 					if (log.isLoggable(Level.FINE))log.log(Level.FINE, getLine() + " Qty moved = " + lineQty + ", Remaining = " + qtyToMove );
+				} else {
+					errorString.append( "Storage doesn't match ASI " + prod.toString() + " / "
+							+ slASIString + " vs. " + asiString + "\n");
 				}
 				
 			}
