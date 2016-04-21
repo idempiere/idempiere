@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: extra zk library
 Bundle-SymbolicName: org.idempiere.zk.extra
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: lib/calendar.jar,
  lib/ckez.jar,
  lib/gmapsz.jar,
