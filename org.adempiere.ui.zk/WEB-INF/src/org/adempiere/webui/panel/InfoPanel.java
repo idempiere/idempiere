@@ -314,6 +314,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 //        contentPanel.setSizedByContent(true);
         contentPanel.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoListbox");
         contentPanel.addEventListener("onAfterRender", this);
+        contentPanel.setSclass("z-word-nowrap");
         
         this.setSclass("info-panel");
 	}  //  init
