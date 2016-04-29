@@ -30,7 +30,7 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20151030L;
+	private static final long serialVersionUID = 20160322L;
 
     /** Standard Constructor */
     public X_AD_Package_Exp_Detail (Properties ctx, int AD_Package_Exp_Detail_ID, String trxName)
@@ -913,6 +913,8 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	public static final String TYPE_ModelValidator = "MV";
 	/** Entity Type = ET */
 	public static final String TYPE_EntityType = "ET";
+	/** SQL Mandatory = SQM */
+	public static final String TYPE_SQLMandatory = "SQM";
 	/** Set Type.
 		@param Type 
 		Type of Validation (SQL, Java Script, Java Language)

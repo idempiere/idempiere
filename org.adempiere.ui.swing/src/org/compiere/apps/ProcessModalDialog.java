@@ -33,6 +33,7 @@ import javax.swing.JSeparator;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.IProcessUI;
+import org.compiere.model.MProcess;
 import org.compiere.process.ProcessInfo;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CDialog;
@@ -310,7 +311,7 @@ public class ProcessModalDialog extends CDialog
 			centerPanel.add(separator, BorderLayout.NORTH);
 			centerPanel.add(parameterPanel, BorderLayout.CENTER);
 		} else {
-			if (m_ShowHelp != null && m_ShowHelp.equals("N")) {
+			if (m_ShowHelp != null && MProcess.SHOWHELP_DonTShowHelp.equals(m_ShowHelp)) {
 				m_autoStart = true;
 			}
 			if (m_autoStart)
@@ -318,7 +319,7 @@ public class ProcessModalDialog extends CDialog
 		}
 		
 		// Check if the process is a silent one
-		if(m_ShowHelp != null && m_ShowHelp.equals("S"))
+		if(m_ShowHelp != null && MProcess.SHOWHELP_RunSilently_TakeDefaults.equals(m_ShowHelp))
 			bOK.doClick();
 		
 		dialog.revalidate();

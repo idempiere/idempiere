@@ -90,7 +90,7 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 			// e.g. 1.0.0.qualifier, check only the "1.0.0" part
 			String bundleVersionPart = getVersion();
 			String installedVersionPart = null;
-			String where = "Name=?";
+			String where = "Name=? AND PK_Status = 'Completed successfully'";
 			Query q = new Query(Env.getCtx(), X_AD_Package_Imp.Table_Name,
 					where.toString(), null);
 			q.setParameters(new Object[] { getName() });
@@ -163,7 +163,10 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 		});		
 				
 		for(TwoPackEntry entry : list) {
-			packIn(entry.url);
+			if (!packIn(entry.url)) {
+				// stop processing further packages if one fail
+				break;
+			}
 		}
 	}
 
@@ -175,7 +178,7 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 		return v;
 	}
 
-	protected void packIn(URL packout) {
+	protected boolean packIn(URL packout) {
 		if (packout != null && service != null) {
 			String path = packout.getPath();
 			String suffix = path.substring(path.lastIndexOf("_"));
@@ -195,6 +198,7 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 				service.merge(context, zipfile);
 			} catch (Throwable e) {
 				logger.log(Level.SEVERE, "Pack in failed.", e);
+				return false;
 			} finally{
 				if (zipstream != null) {
 					try {
@@ -204,6 +208,7 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 			}
 			System.out.println(getName() + " " + packout.getPath() + " installed");
 		} 
+		return true;
 	}
 
 	protected BundleContext getContext() {

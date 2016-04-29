@@ -196,7 +196,7 @@ public class InventoryCountCreate extends SvrProcess
 			   .append(" AND COALESCE(il.M_AttributeSetInstance_ID,0)=COALESCE(s.M_AttributeSetInstance_ID,0))");
 		//	+ " AND il.M_AttributeSetInstance_ID=s.M_AttributeSetInstance_ID)");
 		//
-		sql.append(" ORDER BY l.Value, p.Value, s.QtyOnHand DESC");	//	Locator/Product
+		sql.append(" ORDER BY l.Value, p.Value, s.M_AttributeSetInstance_ID, s.DateMaterialPolicy, s.QtyOnHand DESC");	//	Locator/Product
 		//
 		int count = 0;
 		PreparedStatement pstmt = null;
@@ -279,14 +279,15 @@ public class InventoryCountCreate extends SvrProcess
 	{
 		if (QtyOnHand.signum() == 0)
 			M_AttributeSetInstance_ID = 0;
-		
+
+		// TODO???? This is not working --- must create one line and multiple MA
 		if (m_line != null 
 			&& m_line.getM_Locator_ID() == M_Locator_ID
 			&& m_line.getM_Product_ID() == M_Product_ID)
 		{
 			if (QtyOnHand.signum() == 0)
 				return 0;
-			//	Same ASI (usually 0)
+			//	Same ASI and Date
 			if (m_line.getM_AttributeSetInstance_ID() == M_AttributeSetInstance_ID && ((dateMPolicy==null && oldDateMPolicy==null) || (dateMPolicy!=null && dateMPolicy.equals(oldDateMPolicy)) || (oldDateMPolicy!=null && oldDateMPolicy.equals(dateMPolicy))))
 			{
 				m_line.setQtyBook(m_line.getQtyBook().add(QtyOnHand));
@@ -316,7 +317,7 @@ public class InventoryCountCreate extends SvrProcess
 		}
 		//	new line
 		m_line = new MInventoryLine (m_inventory, M_Locator_ID, 
-			M_Product_ID, M_AttributeSetInstance_ID, 
+			M_Product_ID, 0,
 			QtyOnHand, QtyOnHand);		//	book/count
 		
 		oldDateMPolicy = dateMPolicy;

@@ -153,6 +153,10 @@
             id="SQLStatement">
       </handler>
       <handler
+            class="org.adempiere.pipo2.handler.SQLMandatoryElementHandler"
+            id="SQLMandatory">
+      </handler>
+      <handler
             class="org.adempiere.pipo2.handler.ReferenceElementHandler"
             id="AD_Reference">
       </handler>

@@ -151,36 +151,40 @@ public class LoginPanel extends Window implements EventListener<Event>
 				try
 				{
 					int AD_Session_ID = Integer.parseInt(data[0]);
-					MSession session = new MSession(Env.getCtx(), AD_Session_ID, null);
-					if (session.get_ID() == AD_Session_ID)
+					int cnt = DB.getSQLValueEx(null, "SELECT COUNT(*) FROM AD_Session WHERE AD_Session_ID=?", AD_Session_ID);
+					if (cnt == 1)
 					{
-						int AD_User_ID = session.getCreatedBy();
-						MUser user = MUser.get(Env.getCtx(), AD_User_ID);
-						if (user != null && user.get_ID() == AD_User_ID)
+						MSession session = new MSession(Env.getCtx(), AD_Session_ID, null);
+						if (session.get_ID() == AD_Session_ID)
 						{
-						    String token = data[1];
-						    if (BrowserToken.validateToken(session, user, token))
-						    {
-						    	if (MSystem.isZKRememberUserAllowed()) {
-						    		if (email_login) {
-						    			txtUserId.setValue(user.getEMail());
-						    		} else {
-						    			if (user.getLDAPUser() != null && user.getLDAPUser().length() > 0) {
-						    				txtUserId.setValue(user.getLDAPUser());
-						    			} else {
-						    				txtUserId.setValue(user.getName());
-						    			}
-						    		}
-							    	onUserIdChange(AD_User_ID);
-							    	chkRememberMe.setChecked(true);
-						    	}
-						    	if (MSystem.isZKRememberPasswordAllowed()) {
-							    	txtPassword.setValue(token);
-							    	txtPassword.setAttribute("user.token.hash", token);
-							    	txtPassword.setAttribute("user.token.sid", AD_Session_ID);
-						    	}
-						    	chkSelectRole.setChecked(false);
-						    }
+							int AD_User_ID = session.getCreatedBy();
+							MUser user = MUser.get(Env.getCtx(), AD_User_ID);
+							if (user != null && user.get_ID() == AD_User_ID)
+							{
+							    String token = data[1];
+							    if (BrowserToken.validateToken(session, user, token))
+							    {
+							    	if (MSystem.isZKRememberUserAllowed()) {
+							    		if (email_login) {
+							    			txtUserId.setValue(user.getEMail());
+							    		} else {
+							    			if (user.getLDAPUser() != null && user.getLDAPUser().length() > 0) {
+							    				txtUserId.setValue(user.getLDAPUser());
+							    			} else {
+							    				txtUserId.setValue(user.getName());
+							    			}
+							    		}
+								    	onUserIdChange(AD_User_ID);
+								    	chkRememberMe.setChecked(true);
+							    	}
+							    	if (MSystem.isZKRememberPasswordAllowed()) {
+								    	txtPassword.setValue(token);
+								    	txtPassword.setAttribute("user.token.hash", token);
+								    	txtPassword.setAttribute("user.token.sid", AD_Session_ID);
+							    	}
+							    	chkSelectRole.setChecked(false);
+							    }
+							}
 						}
 					}
 				} catch (Exception e) {
@@ -568,7 +572,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         	// IDEMPIERE-617
             String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
             if (x_Forward_IP == null) {
-            	 x_Forward_IP = currSess.getRemoteAddr();
+            	 x_Forward_IP = Executions.getCurrent().getRemoteAddr();
             }
         	logAuthFailure.log(x_Forward_IP, "/webui", userId, loginErrMsg);
 

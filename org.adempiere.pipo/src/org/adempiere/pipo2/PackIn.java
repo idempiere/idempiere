@@ -37,6 +37,7 @@ import java.util.zip.ZipFile;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -175,10 +176,12 @@ public class PackIn {
 			}
 			msg = "End Parser";
 			log.info(msg);
-			if (handler.getUnresolvedCount() > 0)
-				handler.dumpUnresolvedElements();
 			msg = "Processed="+handler.getElementsProcessed()+" Un-Resolved="+handler.getUnresolvedCount();
 			getNotifier().addStatusLine(msg);
+			if (handler.getUnresolvedCount() > 0) {
+				handler.dumpUnresolvedElements();
+				throw new AdempiereException("Unresolved elements");
+			}
 			return msg;
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "importXML:", e);

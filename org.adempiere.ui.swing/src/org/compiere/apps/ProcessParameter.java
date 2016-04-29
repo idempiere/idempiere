@@ -555,7 +555,7 @@ public class ProcessParameter extends CDialog
 	{
 		MProcess m_process = new MProcess(Env.getCtx(),
 				m_processInfo.getAD_Process_ID(), null);
-		if(m_process.getShowHelp() != null && m_process.getShowHelp().equals("S"))
+		if(m_process.getShowHelp() != null && MProcess.SHOWHELP_RunSilently_TakeDefaults.equals(m_process.getShowHelp()))
 		{
 			// It is defined as a silent process
 			if(saveParameters())

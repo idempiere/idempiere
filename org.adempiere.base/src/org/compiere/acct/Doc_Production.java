@@ -68,6 +68,7 @@ public class Doc_Production extends Doc
 		return null;
 	}   //  loadDocumentDetails
 
+	private BigDecimal m_qtyProduced;
 	/**
 	 *	Load Invoice Line
 	 *	@param prod production
@@ -76,6 +77,7 @@ public class Doc_Production extends Doc
 	private DocLine[] loadLines(X_M_Production prod)
 	{
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
+		m_qtyProduced = Env.ZERO;
 		String sqlPL = null;
 		if (prod.isUseProductionPlan()){
 //			Production
@@ -115,6 +117,9 @@ public class Doc_Production extends Doc
 					docLine.setProductionBOM(line.getM_Product_ID() == line.getM_ProductionPlan().getM_Product_ID());
 				else
 					docLine.setProductionBOM(line.getM_Product_ID() == prod.getM_Product_ID());
+				if (docLine.isProductionBOM()) {
+					m_qtyProduced = m_qtyProduced.add(line.getMovementQty());
+				}
 				//
 				if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
 				list.add (docLine);
@@ -195,9 +200,22 @@ public class Doc_Production extends Doc
 					
 					if (!parentBomPro.equals(parentEndPro))
 						continue;
-					//pb changed this 20/10/06 
-					if (!line0.isProductionBOM())
-						bomCost = bomCost.add(line0.getProductCosts(as, line.getAD_Org_ID(), false).setScale(2,BigDecimal.ROUND_HALF_UP));
+					if (!line0.isProductionBOM()) {
+						// get cost of children
+						MCostDetail cd0 = MCostDetail.get (as.getCtx(), "M_ProductionLine_ID=?",
+								line0.get_ID(), line0.getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), getTrxName());
+						BigDecimal costs0;
+						if (cd0 != null) {
+							costs0 = cd0.getAmt();
+						} else {
+							costs0 = line0.getProductCosts(as, line0.getAD_Org_ID(), false);
+						}
+						bomCost = bomCost.add(costs0.setScale(2,BigDecimal.ROUND_HALF_UP));
+					}
+				}
+				if (line.getQty().compareTo(m_qtyProduced) != 0) {
+					BigDecimal factor = line.getQty().divide(m_qtyProduced, 12, BigDecimal.ROUND_HALF_UP);
+					bomCost = bomCost.multiply(factor).setScale(2,BigDecimal.ROUND_HALF_UP);
 				}
 				int precision = as.getStdPrecision();
 				BigDecimal variance = (costs.setScale(precision, BigDecimal.ROUND_HALF_UP)).subtract(bomCost.negate());

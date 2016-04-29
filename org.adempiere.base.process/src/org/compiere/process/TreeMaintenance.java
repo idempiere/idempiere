@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 
+import org.compiere.model.MTable;
 import org.compiere.model.MTree;
 import org.compiere.model.MTree_Base;
 import org.compiere.model.MTree_Node;
@@ -170,6 +171,41 @@ public class TreeMaintenance extends SvrProcess
 			rs = null;
 			pstmt = null;
 		}
+
+		//	Driven by Value
+		if (tree.isTreeDrivenByValue()) {
+			sql = new StringBuilder();
+			sql.append("SELECT ").append(sourceTableKey)
+				.append(" FROM ").append(sourceTableName)
+				.append(" WHERE AD_Client_ID=").append(AD_Client_ID);
+			if (C_Element_ID > 0)
+				sql.append(" AND C_Element_ID=").append(C_Element_ID);
+			if (log.isLoggable(Level.FINER)) log.finer(sql.toString());
+			//
+			MTable table = MTable.get(getCtx(), sourceTableName);
+			try
+			{
+				pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
+				rs = pstmt.executeQuery();
+				while (rs.next())
+				{
+					int Node_ID = rs.getInt(1);
+					PO rec = table.getPO(Node_ID, get_TrxName());
+					rec.update_Tree(tree.getTreeType());
+				}
+			}
+			catch (Exception e)
+			{
+				log.log(Level.SEVERE, "verifyTree", e);
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
+			}
+		}
+
 		StringBuilder msglog = new StringBuilder().append(tree.getName()).append(" Inserted");
 		addLog(0,null, new BigDecimal(inserts), msglog.toString());
 		StringBuilder msgreturn = new StringBuilder().append(tree.getName()).append((ok ? " OK" : " Error"));
