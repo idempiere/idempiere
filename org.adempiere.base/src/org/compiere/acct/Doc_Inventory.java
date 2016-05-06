@@ -23,7 +23,6 @@ import java.util.logging.Level;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
-import org.compiere.model.MClient;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCost;
 import org.compiere.model.MCostDetail;

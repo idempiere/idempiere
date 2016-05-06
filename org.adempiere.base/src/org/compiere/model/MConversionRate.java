@@ -45,8 +45,8 @@ public class MConversionRate extends X_C_Conversion_Rate
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8171829790483133141L;
-	
+	private static final long serialVersionUID = -7938144674700640228L;
+
 	/**	Logger						*/
 	private static CLogger		s_log = CLogger.getCLogger (MConversionRate.class);
 

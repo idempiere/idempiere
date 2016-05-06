@@ -3,15 +3,15 @@ SET DEFINE OFF
 
 -- IDEMPIERE-3046 Add Currency Field to Cost Adjustment Window
 -- Mar 3, 2016 3:11:22 PM SGT
-INSERT INTO AD_Val_Rule (AD_Val_Rule_ID,Name,Description,Type,Code,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Val_Rule_UU) VALUES (200091,'C_Currency in accounting schema','Available currencies are based on the schemas currency.','S','C_Currency_ID in (SELECT C_Currency_ID FROM C_AcctSchema Where AD_Client_ID = @AD_Client_ID@)',0,0,'Y',TO_DATE('2016-03-03 15:11:21','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2016-03-03 15:11:21','YYYY-MM-DD HH24:MI:SS'),100,'U','b632eb71-14ab-498f-b956-58f549082dea')
+INSERT INTO AD_Val_Rule (AD_Val_Rule_ID,Name,Description,Type,Code,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Val_Rule_UU) VALUES (200091,'C_Currency in accounting schema','Available currencies are based on the schemas currency.','S','C_Currency_ID in (SELECT C_Currency_ID FROM C_AcctSchema Where AD_Client_ID = @AD_Client_ID@)',0,0,'Y',TO_DATE('2016-03-03 15:11:21','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2016-03-03 15:11:21','YYYY-MM-DD HH24:MI:SS'),100,'D','b632eb71-14ab-498f-b956-58f549082dea')
 ;
 
 -- Mar 3, 2016 3:12:38 PM SGT
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,AD_Val_Rule_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType) VALUES (212647,0,'Currency','The Currency for this record','Indicates the Currency to be used when processing or reporting on this record',321,200091,'C_Currency_ID',22,'N','N','N','N','N',0,'N',19,0,0,'Y',TO_DATE('2016-03-03 15:12:37','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2016-03-03 15:12:37','YYYY-MM-DD HH24:MI:SS'),100,193,'Y','N','U','N','N','N','Y','a10d0295-362d-42c5-a84e-5c33ae7f0fb7','Y',0,'N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,AD_Val_Rule_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType) VALUES (212647,0,'Currency','The Currency for this record','Indicates the Currency to be used when processing or reporting on this record',321,200091,'C_Currency_ID',22,'N','N','N','N','N',0,'N',19,0,0,'Y',TO_DATE('2016-03-03 15:12:37','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2016-03-03 15:12:37','YYYY-MM-DD HH24:MI:SS'),100,193,'Y','N','D','N','N','N','Y','a10d0295-362d-42c5-a84e-5c33ae7f0fb7','Y',0,'N','N','N')
 ;
 
 -- Mar 3, 2016 3:13:00 PM SGT
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType) VALUES (212648,0,'Currency Type','Currency Conversion Rate Type','The Currency Conversion Rate Type lets you define different type of rates, e.g. Spot, Corporate and/or Sell/Buy rates.',321,'C_ConversionType_ID',22,'N','N','N','N','N',0,'N',19,0,0,'Y',TO_DATE('2016-03-03 15:12:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2016-03-03 15:12:59','YYYY-MM-DD HH24:MI:SS'),100,2278,'Y','N','U','N','N','N','Y','94ead663-3677-4bd0-ae50-152acbb36471','Y',0,'N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType) VALUES (212648,0,'Currency Type','Currency Conversion Rate Type','The Currency Conversion Rate Type lets you define different type of rates, e.g. Spot, Corporate and/or Sell/Buy rates.',321,'C_ConversionType_ID',22,'N','N','N','N','N',0,'N',19,0,0,'Y',TO_DATE('2016-03-03 15:12:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2016-03-03 15:12:59','YYYY-MM-DD HH24:MI:SS'),100,2278,'Y','N','D','N','N','N','Y','94ead663-3677-4bd0-ae50-152acbb36471','Y',0,'N','N','N')
 ;
 
 -- Mar 3, 2016 3:13:05 PM SGT
@@ -39,11 +39,11 @@ ALTER TABLE M_Inventory ADD CONSTRAINT CCurrency_MInventory FOREIGN KEY (C_Curre
 ;
 
 -- Mar 3, 2016 3:14:33 PM SGT
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,SortNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField) VALUES (204145,'Currency','The Currency for this record','Indicates the Currency to be used when processing or reporting on this record',200102,212647,'Y',0,170,0,'N','N','N','N',0,0,'Y',TO_DATE('2016-03-03 15:14:32','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2016-03-03 15:14:32','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','U','4db70d18-3eec-45a6-a023-b2e15ac2a075','Y',200,1,1,1,'N','N','N')
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,SortNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField) VALUES (204145,'Currency','The Currency for this record','Indicates the Currency to be used when processing or reporting on this record',200102,212647,'Y',0,170,0,'N','N','N','N',0,0,'Y',TO_DATE('2016-03-03 15:14:32','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2016-03-03 15:14:32','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','4db70d18-3eec-45a6-a023-b2e15ac2a075','Y',200,1,1,1,'N','N','N')
 ;
 
 -- Mar 3, 2016 3:14:49 PM SGT
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,SortNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField) VALUES (204146,'Currency Type','Currency Conversion Rate Type','The Currency Conversion Rate Type lets you define different type of rates, e.g. Spot, Corporate and/or Sell/Buy rates.',200102,212648,'Y',0,180,0,'N','N','N','N',0,0,'Y',TO_DATE('2016-03-03 15:14:48','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2016-03-03 15:14:48','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','U','2bac096b-6a89-4643-8594-4cbbbd56b829','Y',210,1,1,1,'N','N','N')
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,SortNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField) VALUES (204146,'Currency Type','Currency Conversion Rate Type','The Currency Conversion Rate Type lets you define different type of rates, e.g. Spot, Corporate and/or Sell/Buy rates.',200102,212648,'Y',0,180,0,'N','N','N','N',0,0,'Y',TO_DATE('2016-03-03 15:14:48','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2016-03-03 15:14:48','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','2bac096b-6a89-4643-8594-4cbbbd56b829','Y',210,1,1,1,'N','N','N')
 ;
 
 -- Mar 3, 2016 3:15:23 PM SGT
@@ -99,8 +99,8 @@ UPDATE AD_Field SET SeqNo=180,IsDisplayed='Y' WHERE AD_Field_ID=202315
 ;
 
 update m_inventory 
-set c_currency_id = (select a.c_currency_id from c_acctschema a 
-			inner join ad_clientinfo ci on ci.c_acctschema1_id = a.c_acctschema_id 
+set c_currency_id = (select a.c_currency_id from c_acctschema a,
+			ad_clientinfo ci where ci.c_acctschema1_id = a.c_acctschema_id 
 			and ci.ad_client_id = m_inventory.ad_client_id)
 where c_doctype_id in (select c_doctype_id from c_doctype where ad_client_id = m_inventory.ad_client_id 
 			and docsubtypeinv ='CA' and docbasetype='MMI' and isactive='Y')
@@ -157,7 +157,8 @@ END IF;
 
    return v_ad_org_id=p_ad_org_id;
 END;
+/
 
-SELECT register_migration_script('201603031539_IDEMPIERE-3046') FROM dual
+SELECT register_migration_script('201603031539_IDEMPIERE-3046.sql') FROM dual
 ;
 

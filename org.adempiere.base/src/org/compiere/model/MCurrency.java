@@ -31,7 +31,7 @@ public class MCurrency extends X_C_Currency
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5549233389514285323L;
+	private static final long serialVersionUID = 2262097171335518186L;
 
 	/**
 	 * 	Currency Constructor
