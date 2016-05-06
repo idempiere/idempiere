@@ -299,6 +299,8 @@ public class GridFieldVO implements Serializable
 					vo.NumLines=userDef.getNumLines();
 				if (userDef.getIsToolbarButton() != null)
 					vo.IsToolbarButton  = userDef.getIsToolbarButton();
+				if (userDef.getVFormat() != null)
+					vo.VFormat = userDef.getVFormat();
 				//IDEMPIERE-1120 Implement Field SeqNo customization
 				if (userDef.getSeqNo() > 0)
 				    vo.SeqNo = userDef.getSeqNo();

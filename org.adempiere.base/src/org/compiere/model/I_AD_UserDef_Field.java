@@ -443,6 +443,21 @@ public interface I_AD_UserDef_Field
 	  */
 	public int getUpdatedBy();
 
+    /** Column name VFormat */
+    public static final String COLUMNNAME_VFormat = "VFormat";
+
+	/** Set Value Format.
+	  * Format of the value;
+ Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+	  */
+	public void setVFormat (String VFormat);
+
+	/** Get Value Format.
+	  * Format of the value;
+ Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+	  */
+	public String getVFormat();
+
     /** Column name XPosition */
     public static final String COLUMNNAME_XPosition = "XPosition";
 
