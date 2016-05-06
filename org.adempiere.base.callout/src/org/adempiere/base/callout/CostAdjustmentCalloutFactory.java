@@ -75,31 +75,38 @@ public class CostAdjustmentCalloutFactory implements IColumnCalloutFactory {
 				} else {
 					MProduct product = MProduct.get(ctx, (Integer) value);					
 					MClient client = MClient.get(ctx);
-					Object asiValue = mTab.getValue(I_M_InventoryLine.COLUMNNAME_M_AttributeSetInstance_ID);
-					int M_ASI_ID = asiValue != null ? (Integer)asiValue : 0;
-					int AD_Org_ID = inventory.getAD_Org_ID();
-					int C_Currency_ID = inventory.getC_Currency_ID();
-
 					MAcctSchema as = client.getAcctSchema();
-					if (as.getC_Currency_ID() != C_Currency_ID) 
-					{
-						MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(ctx, client.get_ID());
-						for (int i = 0; i < ass.length ; i ++)
+
+					String costingLevel = product.getCostingLevel(as);
+					if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel)) {
+						mTab.setValue(I_M_InventoryLine.COLUMNNAME_CurrentCostPrice, BigDecimal.ZERO);
+						mTab.setValue(I_M_InventoryLine.COLUMNNAME_NewCostPrice, BigDecimal.ZERO);
+					}else {
+						Object asiValue = mTab.getValue(I_M_InventoryLine.COLUMNNAME_M_AttributeSetInstance_ID);
+						int M_ASI_ID = asiValue != null ? (Integer)asiValue : 0;
+						int AD_Org_ID = inventory.getAD_Org_ID();
+						int C_Currency_ID = inventory.getC_Currency_ID();
+
+						if (as.getC_Currency_ID() != C_Currency_ID) 
 						{
-							MAcctSchema a =  ass[i];
-							if (a.getC_Currency_ID() ==  C_Currency_ID) 
-								as = a ; 
+							MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(ctx, client.get_ID());
+							for (int i = 0; i < ass.length ; i ++)
+							{
+								MAcctSchema a =  ass[i];
+								if (a.getC_Currency_ID() ==  C_Currency_ID) 
+									as = a ; 
+							}
 						}
-					}
-					MCost cost = product.getCostingRecord(as, AD_Org_ID, M_ASI_ID, costingMethod);					
-					if (cost == null) {
-						if (!MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod)) {
-							mTab.setValue(mField, null);
-							return Msg.getMsg(Env.getCtx(), "NoCostingRecord");
+						MCost cost = product.getCostingRecord(as, AD_Org_ID, M_ASI_ID, costingMethod);					
+						if (cost == null) {
+							if (!MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod)) {
+								mTab.setValue(mField, null);
+								return Msg.getMsg(Env.getCtx(), "NoCostingRecord");
+							}
 						}
-					} else {
+
 						mTab.setValue(I_M_InventoryLine.COLUMNNAME_CurrentCostPrice, cost.getCurrentCostPrice());
-						mTab.setValue(I_M_InventoryLine.COLUMNNAME_NewCostPrice, cost.getCurrentCostPrice());								
+						mTab.setValue(I_M_InventoryLine.COLUMNNAME_NewCostPrice, cost.getCurrentCostPrice());	
 					}
 				}
 			}
@@ -139,6 +146,13 @@ public class CostAdjustmentCalloutFactory implements IColumnCalloutFactory {
 					}
 				}
 				MCost cost = product.getCostingRecord(as, AD_Org_ID, M_ASI_ID, costingMethod);
+				if (cost == null) {
+					if (!MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod)) {
+						mTab.setValue(mField, null);
+						return Msg.getMsg(Env.getCtx(), "NoCostingRecord");
+					}
+				}
+
 				if (cost != null) {
 					BigDecimal currentCost = (BigDecimal) mTab.getValue(I_M_InventoryLine.COLUMNNAME_CurrentCostPrice);
 					if (currentCost == null || currentCost.compareTo(cost.getCurrentCostPrice())==0) return null;
@@ -146,6 +160,7 @@ public class CostAdjustmentCalloutFactory implements IColumnCalloutFactory {
 					mTab.setValue(I_M_InventoryLine.COLUMNNAME_CurrentCostPrice, cost.getCurrentCostPrice());
 					mTab.setValue(I_M_InventoryLine.COLUMNNAME_NewCostPrice, cost.getCurrentCostPrice());
 				}
+
 			}
 			return null;
 		}
