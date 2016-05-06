@@ -183,6 +183,17 @@ public class MCurrency extends X_C_Currency
 		return msgreturn.toString();
 	}	//	toString
 
+	/**
+	 * 	Get Costing Precision.
+	 *	@param ctx Context
+	 *	@param C_Currency_ID currency
+	 *	@return Costing Precision
+	 */
+	public static int getCostingPrecision(Properties ctx, int C_Currency_ID) {
+		MCurrency c = get(ctx, C_Currency_ID);
+		return c.getCostingPrecision();
+	}
+
 
 	/*************************************************************************/
 

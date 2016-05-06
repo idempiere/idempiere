@@ -328,7 +328,7 @@ public class Doc_Inventory extends Doc
 				{
 					costDetailAmt = MConversionRate.convert (getCtx(),
 							costDetailAmt, getC_Currency_ID(), as.getC_Currency_ID(),
-							getDateAcct(), 0, getAD_Client_ID(), getAD_Org_ID());
+							getDateAcct(), 0, getAD_Client_ID(), getAD_Org_ID(), true);
 				}
 				//	Cost Detail
 				if (!MCostDetail.createInventory(as, line.getAD_Org_ID(),
