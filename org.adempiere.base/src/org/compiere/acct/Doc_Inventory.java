@@ -81,16 +81,13 @@ public class Doc_Inventory extends Doc
 		m_DocStatus = inventory.getDocStatus();
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		parentDocSubTypeInv = dt.getDocSubTypeInv();
-		if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(parentDocSubTypeInv))
+		
+		// IDEMPIERE-3046 Add Currency Field to Cost Adjustment Window 
+		if (!MDocType.DOCSUBTYPEINV_CostAdjustment.equals(parentDocSubTypeInv))
 		{
-			MClient client = MClient.get(getCtx(), inventory.getAD_Client_ID());
-			int C_Currency_ID = client.getAcctSchema().getC_Currency_ID();
-			setC_Currency_ID(C_Currency_ID);
+			setC_Currency_ID (NO_CURRENCY);	
 		}
-		else
-		{
-			setC_Currency_ID (NO_CURRENCY);
-		}
+		
 		//	Contained Objects
 		p_lines = loadLines(inventory);
 		if (log.isLoggable(Level.FINE)) log.fine("Lines=" + p_lines.length);
@@ -175,7 +172,9 @@ public class Doc_Inventory extends Doc
 	{
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
-		setC_Currency_ID(as.getC_Currency_ID());
+
+		if (!MDocType.DOCSUBTYPEINV_CostAdjustment.equals(parentDocSubTypeInv))
+			setC_Currency_ID(as.getC_Currency_ID());
 
 		//  Line pointers
 		FactLine dr = null;
