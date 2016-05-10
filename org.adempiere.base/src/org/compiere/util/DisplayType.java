@@ -50,6 +50,7 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TIME;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_URL;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_YES_NO;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_CHART;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DASHBOARD_CONTENT;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -144,6 +145,8 @@ public final class DisplayType
 	public static final int Payment  = REFERENCE_DATATYPE_PAYMENT;
 	
 	public static final int Chart = REFERENCE_DATATYPE_CHART;
+	
+	public static final int DashboardContent = REFERENCE_DATATYPE_DASHBOARD_CONTENT;
 
 	/**
 	 *	- New Display Type

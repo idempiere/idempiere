@@ -2457,6 +2457,11 @@ public class GridField
 		return m_vo.displayType == DisplayType.Button && MColumn.ISTOOLBARBUTTON_Toolbar.equals(m_vo.IsToolbarButton);
 	}
 
+	public int getPA_DashboardContent_ID()
+	{
+		return m_vo.PA_DashboardContent_ID;
+	}
+	
 	public GridField clone(Properties ctx)  
 	{
 		try {

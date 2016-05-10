@@ -18,6 +18,7 @@ import org.adempiere.webui.editor.WAssignmentEditor;
 import org.adempiere.webui.editor.WBinaryEditor;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WChartEditor;
+import org.adempiere.webui.editor.WDashboardContentEditor;
 import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.editor.WDatetimeEditor;
 import org.adempiere.webui.editor.WEditor;
@@ -126,6 +127,12 @@ public class DefaultEditorFactory implements IEditorFactory {
         	editor = new WChartEditor(gridField, (gridTab == null ? 0 : gridTab.getWindowNo()));
         }
 
+        /** Dashboard Content */
+        else if(displayType == DisplayType.DashboardContent)
+        {
+        	editor = new WDashboardContentEditor(gridField, (gridTab == null ? 0 : gridTab.getWindowNo()));
+        }
+        
         /**  Button */
         else if (displayType == DisplayType.Button)
         {
