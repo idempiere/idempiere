@@ -47,7 +47,7 @@ public class MStyle extends X_AD_Style {
 	
 	public X_AD_StyleLine[] getStyleLines() {
 		if (m_lines == null) {
-			Query query = new Query(Env.getCtx(), I_AD_StyleLine.Table_Name, "AD_Style_ID=?", null);
+			Query query = new Query(Env.getCtx(), I_AD_StyleLine.Table_Name, "AD_Style_ID=? AND InlineStyle IS NOT NULL", null);
 			List<X_AD_StyleLine> lines = query.setParameters(getAD_Style_ID()).setOnlyActiveRecords(true).setOrderBy("Line").list();
 			m_lines = lines.toArray(new X_AD_StyleLine[0]);
 		}
