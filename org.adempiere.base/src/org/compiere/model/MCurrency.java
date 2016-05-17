@@ -31,7 +31,7 @@ public class MCurrency extends X_C_Currency
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5549233389514285323L;
+	private static final long serialVersionUID = 2262097171335518186L;
 
 	/**
 	 * 	Currency Constructor
@@ -182,6 +182,17 @@ public class MCurrency extends X_C_Currency
 				.append(",Precision=").append(getStdPrecision()).append("/").append(getCostingPrecision());
 		return msgreturn.toString();
 	}	//	toString
+
+	/**
+	 * 	Get Costing Precision.
+	 *	@param ctx Context
+	 *	@param C_Currency_ID currency
+	 *	@return Costing Precision
+	 */
+	public static int getCostingPrecision(Properties ctx, int C_Currency_ID) {
+		MCurrency c = get(ctx, C_Currency_ID);
+		return c.getCostingPrecision();
+	}
 
 
 	/*************************************************************************/

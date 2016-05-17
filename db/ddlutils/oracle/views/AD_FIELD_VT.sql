@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW AD_FIELD_VT AS
    trl.NAME, trl.Description, trl.Help, f.IsDisplayed, f.DisplayLogic, f.DisplayLength, 
    f.SeqNo, f.SortNo, f.IsSameLine, f.IsHeading, f.IsFieldOnly, f.IsReadOnly, 
    f.IsEncrypted AS IsEncryptedField, f.ObscureType,
-   c.ColumnName, c.ColumnSQL, c.FieldLength, c.VFormat,
+   c.ColumnName, c.ColumnSQL, c.FieldLength, COALESCE(f.VFormat, c.VFormat) AS VFormat,
    COALESCE(f.DefaultValue, c.DefaultValue) AS DefaultValue,
    c.IsKey, c.IsParent, 
    COALESCE(f.IsMandatory, c.IsMandatory) AS IsMandatory, 

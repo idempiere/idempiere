@@ -45,8 +45,8 @@ public class MConversionRate extends X_C_Conversion_Rate
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8171829790483133141L;
-	
+	private static final long serialVersionUID = -7938144674700640228L;
+
 	/**	Logger						*/
 	private static CLogger		s_log = CLogger.getCLogger (MConversionRate.class);
 
@@ -105,6 +105,27 @@ public class MConversionRate extends X_C_Conversion_Rate
 		Timestamp ConvDate, int C_ConversionType_ID, 
 		int AD_Client_ID, int AD_Org_ID)
 	{
+		return convert(ctx,Amt, CurFrom_ID,CurTo_ID, ConvDate, C_ConversionType_ID, AD_Client_ID, AD_Org_ID, false);
+	}	//	convert
+
+	/**
+	 *	Convert an amount
+	 *	@param ctx context
+	 *  @param CurFrom_ID  The C_Currency_ID FROM
+	 *  @param CurTo_ID    The C_Currency_ID TO
+	 *  @param ConvDate conversion date - if null - use current date
+	 *  @param C_ConversionType_ID conversion rate type - if 0 - use Default
+	 *  @param Amt amount to be converted
+	 * 	@param AD_Client_ID client
+	 * 	@param AD_Org_ID organization
+	 * 	@param use for costing
+	 *  @return converted amount or null if no rate
+	 */
+	public static BigDecimal convert (Properties ctx,
+		BigDecimal Amt, int CurFrom_ID, int CurTo_ID,
+		Timestamp ConvDate, int C_ConversionType_ID, 
+		int AD_Client_ID, int AD_Org_ID, boolean isCosting)
+	{
 		if (Amt == null)
 			throw new IllegalArgumentException("Required parameter missing - Amt");
 		if (CurFrom_ID == CurTo_ID || Amt.compareTo(Env.ZERO)==0)
@@ -118,13 +139,15 @@ public class MConversionRate extends X_C_Conversion_Rate
 			
 		//	Get Amount in Currency Precision
 		retValue = retValue.multiply(Amt);
-		int stdPrecision = MCurrency.getStdPrecision(ctx, CurTo_ID);
+		int stdPrecision = isCosting ? MCurrency.getCostingPrecision(ctx, CurTo_ID): MCurrency.getStdPrecision(ctx, CurTo_ID);		
+
 		if (retValue.scale() > stdPrecision)
 			retValue = retValue.setScale(stdPrecision, BigDecimal.ROUND_HALF_UP);
 			
 		return retValue;
 	}	//	convert
 
+	
 	/**
 	 * Sets system spot conversion rate for a single day.
 	 * Checks for overlaps of spot rate is made. If an overlap is found, the overlapping

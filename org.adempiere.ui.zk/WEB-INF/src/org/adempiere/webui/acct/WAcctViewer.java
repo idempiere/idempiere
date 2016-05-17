@@ -531,7 +531,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		ZKUpdateUtil.setHflex(table, "1");
 		ZKUpdateUtil.setVflex(table, true);
 		//ZKUpdateUtil.setHeight(table, "99%");
-		table.setStyle("position: absolute;");
+		//table.setStyle("position: absolute;");
 		resultCenter.appendChild(table);
 		ZKUpdateUtil.setHflex(table, "1");
 		//ZKUpdateUtil.setVflex(table, "1");

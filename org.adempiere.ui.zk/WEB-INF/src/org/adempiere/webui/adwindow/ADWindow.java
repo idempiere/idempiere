@@ -219,7 +219,11 @@ public class ADWindow extends AbstractUIPart
 	 * @return adwindow instance for windowNo ( if any )
 	 */
 	public static ADWindow get(int windowNo) {
-		return (ADWindow) SessionManager.getAppDesktop().findWindow(windowNo);
+		Object window = SessionManager.getAppDesktop().findWindow(windowNo);
+		if (window != null && window instanceof ADWindow)
+			return (ADWindow) SessionManager.getAppDesktop().findWindow(windowNo);
+		
+		return null;
 	}
 	
 	/**

@@ -19,15 +19,19 @@ package org.compiere.process;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
+import org.compiere.model.I_C_ContactActivity;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MLocation;
 import org.compiere.model.MOpportunity;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
+import org.compiere.model.Query;
+import org.compiere.model.X_C_ContactActivity;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -140,6 +144,18 @@ public class ConvertLead extends SvrProcess {
 			op.saveEx();
 			
 			addBufferLog(op.getC_Opportunity_ID(), null, null, "@C_Opportunity_ID@ @Created@", MOpportunity.Table_ID, op.getC_Opportunity_ID());
+			
+			List<X_C_ContactActivity> activities = new Query(getCtx(), I_C_ContactActivity.Table_Name, "AD_User_ID=?", get_TrxName())
+			.setOnlyActiveRecords(true).setClient_ID()
+			.setParameters(p_AD_User_ID)
+			.list();
+			
+			for ( X_C_ContactActivity activity : activities )
+			{
+				activity.setC_Opportunity_ID(op.getC_Opportunity_ID());
+				activity.saveEx();
+			}  // for each activity
+
 		}
 		
 		lead.setIsSalesLead(false);

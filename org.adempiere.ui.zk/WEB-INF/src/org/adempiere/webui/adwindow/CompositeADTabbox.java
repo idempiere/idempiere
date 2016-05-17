@@ -789,7 +789,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 				}
 				headerTab.getDetailPane().onEdit(getSelectedDetailADTabpanel().getGridTab().isSingleRow());
 			} catch (Exception e) {
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+				throw new RuntimeException(e);
 			}
 		}
 	}

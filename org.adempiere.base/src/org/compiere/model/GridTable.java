@@ -203,7 +203,7 @@ public class GridTable extends AbstractTableModel
 	/** The SELECT clause with FROM     */
 	private String 		        m_SQL_Select;
 	/** The static where clause         */
-	private String 		        m_whereClause = "";
+	private String 		        m_whereClause = "2=3";
 	/** Show only Processed='N' and last 24h records    */
 	private boolean		        m_onlyCurrentRows = false;
 	/** Show only Not processed and x days				*/

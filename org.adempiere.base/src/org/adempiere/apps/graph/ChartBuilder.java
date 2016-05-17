@@ -40,6 +40,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.category.GroupedStackedBarRenderer;
 import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -520,7 +521,7 @@ public class ChartBuilder {
 		);
 	
 	
-	    BarRenderer renderer = new BarRenderer();
+		GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();
 	    renderer.setBarPainter(new StandardBarPainter());
 	
 		CategoryPlot plot = chart.getCategoryPlot();

@@ -87,6 +87,7 @@ import org.compiere.model.GridWindowVO;
 import org.compiere.model.I_M_Product;
 import org.compiere.model.MImage;
 import org.compiere.model.MProcess;
+import org.compiere.model.MProjectIssue;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRecentItem;
 import org.compiere.model.MRole;
@@ -2821,7 +2822,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				if (DocAction.STATUS_Completed.equals(docStatus)
 					|| DocAction.STATUS_Closed.equals(docStatus)
 					|| DocAction.STATUS_Reversed.equals(docStatus)
-					|| DocAction.STATUS_Voided.equals(docStatus))
+					|| DocAction.STATUS_Voided.equals(docStatus)
+					|| table_ID == MProjectIssue.Table_ID) // document without status
 					;
 				else
 				{

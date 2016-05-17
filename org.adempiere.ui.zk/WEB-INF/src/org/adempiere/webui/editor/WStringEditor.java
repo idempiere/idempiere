@@ -72,6 +72,10 @@ public class WStringEditor extends WEditor implements ContextMenuListener
     {
         super(gridField.isAutocomplete() ? new Combobox() : new Textbox(), gridField);
         this.tableEditor = tableEditor;
+
+        if (gridField.getVFormat() != null && !gridField.getVFormat().isEmpty())
+        	getComponent().setWidgetListener("onBind", "jq(this).mask('" + gridField.getVFormat() + "');");
+
         init(gridField.getObscureType());
     }
 
@@ -83,13 +87,16 @@ public class WStringEditor extends WEditor implements ContextMenuListener
      * @param isUpdateable
      * @param displayLength
      * @param fieldLength
-     * @param vFormat
+     * @param wVFormat
      * @param obscureType
      */
     public WStringEditor(String columnName, boolean mandatory, boolean isReadOnly, boolean isUpdateable,
-    		int displayLength, int fieldLength, String vFormat, String obscureType)
+    		int displayLength, int fieldLength, String wVFormat, String obscureType)
     {
     	super(new Textbox(), columnName, null, null, mandatory, isReadOnly,isUpdateable);
+
+    	if (wVFormat != null &&  !wVFormat.isEmpty())
+    		getComponent().setWidgetListener("onBind", "jq(this).mask('" + wVFormat + "');");
 
     	init(obscureType);
     }
