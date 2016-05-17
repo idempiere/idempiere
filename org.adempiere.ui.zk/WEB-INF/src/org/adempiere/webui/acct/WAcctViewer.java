@@ -530,7 +530,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		table.setHflex("1");
 		table.setVflex(true);
 		table.setHeight("99%");
-		table.setStyle("position: absolute;");
+		//table.setStyle("position: absolute;");
 		resultCenter.appendChild(table);
 		table.setHflex("1");
 		table.setVflex("1");
