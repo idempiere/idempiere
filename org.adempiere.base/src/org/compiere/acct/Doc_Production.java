@@ -84,10 +84,8 @@ public class Doc_Production extends Doc
 		BigDecimal qtyProduced = null;
 		Integer key = isUsePlan?line.getM_ProductionPlan_ID():line.getM_Production_ID();
 		
-		qtyProduced = mQtyProduced.get(line.getM_ProductionPlan_ID());
-
 		if (mQtyProduced.containsKey(key)){
-			qtyProduced = mQtyProduced.get(line.getM_ProductionPlan_ID());
+			qtyProduced = mQtyProduced.get(key);
 		}else{
 			qtyProduced = BigDecimal.ZERO;
 			mQtyProduced.put(key, qtyProduced);
