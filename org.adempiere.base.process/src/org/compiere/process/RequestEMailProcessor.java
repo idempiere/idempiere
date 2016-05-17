@@ -143,6 +143,8 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 	 */
 	protected String doIt() throws Exception
 	{
+		parseParameter();
+		
 		EmailSrv emailSrv = new EmailSrv(p_IMAPHost, p_IMAPUser, p_IMAPPwd, p_IMAPPort);
 		
 		checkInputParameter (emailSrv);		
@@ -155,7 +157,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 		return msgreturn.toString();
 	}	//	doIt
 	
-	protected void checkInputParameter (EmailSrv emailSrv) throws MessagingException, Exception {
+	protected void parseParameter() {
 		// === check input parameter === 
 		int portStartIndex = p_IMAPHost.lastIndexOf(":");
 		if (portStartIndex > 0){
@@ -169,6 +171,9 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 		}else if (p_IMAPHost.startsWith("imap.gmail.com")){
 			p_IMAPPort = 993;
 		}
+	}
+	
+	protected void checkInputParameter (EmailSrv emailSrv) throws MessagingException, Exception {
 		if (log.isLoggable(Level.INFO)) log.info("doIt - IMAPHost=" + p_IMAPHost +
 					   " IMAPPort=" + p_IMAPPort  +
 				       " IMAPUser=" + p_IMAPUser  +
