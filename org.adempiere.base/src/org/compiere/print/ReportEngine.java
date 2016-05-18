@@ -631,8 +631,47 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			table.setNeedClosingTag(false);
 			PrintWriter w = new PrintWriter(writer);
 			
+			if (onlyTable)
+				table.output(w);
+			else
+			{
+				XhtmlDocument doc = new XhtmlDocument();
+				doc.getHtml().setNeedClosingTag(false);
+				doc.getBody().setNeedClosingTag(false);
+				doc.appendHead("<meta charset=\"UTF-8\" />");
+				doc.appendBody(table);
+				appendInlineCss (doc);
+				if (extension != null && extension.getStyleURL() != null)
+				{
+					// maybe cache style content with key is path
+					String pathStyleFile = extension.getFullPathStyle(); // creates a temp file - delete below
+					Path path = Paths.get(pathStyleFile);
+				    List<String> styleLines = Files.readAllLines(path, Ini.getCharset());
+				    Files.delete(path); // delete temp file
+				    StringBuilder styleBuild = new StringBuilder();
+				    for (String styleLine : styleLines){
+				    	styleBuild.append(styleLine); //.append("\n");
+				    }
+				    appendInlineCss (doc, styleBuild);
+				}
+				if (extension != null && extension.getScriptURL() != null && !isExport)
+				{
+					script jslink = new script();
+					jslink.setLanguage("javascript");
+					jslink.setSrc(extension.getScriptURL());
+					doc.appendHead(jslink);
+				}
+				
+				if (extension != null && !isExport){
+					extension.setWebAttribute(doc.getBody());
+				}
+				
+				doc.output(w);
+			}
+			
 			thead thead = new thead();
 			tbody tbody = new tbody();
+			tbody.setNeedClosingTag(false);
 			
 			Boolean [] colSuppressRepeats = m_layout == null || m_layout.colSuppressRepeats == null? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
 			Object [] preValues = new Object [colSuppressRepeats.length];
@@ -654,7 +693,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						tr.setClass(cssPrefix + "-lastgrouprow");
 					}
 					// add row to table body
-					tbody.addElement(tr);
+					//tbody.addElement(tr);
 				} else {
 					// add row to table header
 					thead.addElement(tr);
@@ -792,50 +831,21 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						}
 					}	//	printed
 				}	//	for all columns
+				
+				/* output table header */
+				if (row == -1){
+					thead.output(w);
+					// output open of tbody
+					tbody.output(w);
+				}else{
+					// output row by row 
+					tr.output(w);
+				}
+				
 			}	//	for all rows
-
-			if (onlyTable)
-				table.output(w);
-			else
-			{
-				XhtmlDocument doc = new XhtmlDocument();
-				doc.getHtml().setNeedClosingTag(false);
-				doc.getBody().setNeedClosingTag(false);
-				doc.appendHead("<meta charset=\"UTF-8\" />");
-				doc.appendBody(table);
-				appendInlineCss (doc);
-				if (extension != null && extension.getStyleURL() != null)
-				{
-					// maybe cache style content with key is path
-					String pathStyleFile = extension.getFullPathStyle(); // creates a temp file - delete below
-					Path path = Paths.get(pathStyleFile);
-				    List<String> styleLines = Files.readAllLines(path, Ini.getCharset());
-				    Files.delete(path); // delete temp file
-				    StringBuilder styleBuild = new StringBuilder();
-				    for (String styleLine : styleLines){
-				    	styleBuild.append(styleLine); //.append("\n");
-				    }
-				    appendInlineCss (doc, styleBuild);
-				}
-				if (extension != null && extension.getScriptURL() != null && !isExport)
-				{
-					script jslink = new script();
-					jslink.setLanguage("javascript");
-					jslink.setSrc(extension.getScriptURL());
-					doc.appendHead(jslink);
-				}
-				
-				if (extension != null && !isExport){
-					extension.setWebAttribute(doc.getBody());
-				}
-				
-				doc.output(w);
-			}
-			
-			thead.output(w);
-			tbody.output(w);
 			
 			w.println();
+			w.println("</tbody>");
 			w.println("</table>");
 			if (!onlyTable)
 			{
