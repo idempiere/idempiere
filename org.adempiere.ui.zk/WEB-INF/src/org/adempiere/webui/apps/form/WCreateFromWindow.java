@@ -246,6 +246,16 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		confirmPanel.getOKButton().setEnabled(selectedRowCount > 0);
 	}
 	
+	public StatusBarPanel getStatusBar()
+	{
+		return statusBar;
+	}
+
+	public void setStatusBar(StatusBarPanel statusBar)
+	{
+		this.statusBar = statusBar;
+	}
+	
 	public WListbox getWListbox()
 	{
 		return dataTable;
