@@ -318,6 +318,9 @@ public class GridFieldVO implements Serializable
 				
 				if (userDef.getAD_FieldStyle_ID() > 0)
 					vo.AD_FieldStyle_ID = userDef.getAD_FieldStyle_ID();
+				
+				if (userDef.getPA_DashboardContent_ID() > 0)
+					vo.PA_DashboardContent_ID = userDef.getPA_DashboardContent_ID();
 			}
 		}
 		//

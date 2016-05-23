@@ -416,6 +416,17 @@ public interface I_AD_UserDef_Field
 	  */
 	public int getNumLines();
 
+    /** Column name PA_DashboardContent_ID */
+    public static final String COLUMNNAME_PA_DashboardContent_ID = "PA_DashboardContent_ID";
+
+	/** Set Dashboard Content	  */
+	public void setPA_DashboardContent_ID (int PA_DashboardContent_ID);
+
+	/** Get Dashboard Content	  */
+	public int getPA_DashboardContent_ID();
+
+	public org.compiere.model.I_PA_DashboardContent getPA_DashboardContent() throws RuntimeException;
+
     /** Column name ReadOnlyLogic */
     public static final String COLUMNNAME_ReadOnlyLogic = "ReadOnlyLogic";
 
