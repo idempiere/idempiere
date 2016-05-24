@@ -86,7 +86,7 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		mainLayout.setVflex("min");	
 		center.appendChild(centerPanel = getPanel());
 		LayoutUtils.addSclass("payment-form-content", centerPanel);
-		centerPanel.setVflex("1");
+		centerPanel.setVflex("min");
 		centerPanel.setHflex("1");
 		center.setAutoscroll(true);
 		//
