@@ -87,7 +87,7 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		ZKUpdateUtil.setVflex(mainLayout, "min");	
 		center.appendChild(centerPanel = getPanel());
 		LayoutUtils.addSclass("payment-form-content", centerPanel);
-		ZKUpdateUtil.setVflex(centerPanel, "1");
+		ZKUpdateUtil.setVflex(centerPanel, "min");
 		ZKUpdateUtil.setHflex(centerPanel, "1");
 		center.setAutoscroll(true);
 		//
