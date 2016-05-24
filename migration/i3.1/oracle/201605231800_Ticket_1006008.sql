@@ -67,6 +67,6 @@ ALTER TABLE AD_UserDef_Field ADD CONSTRAINT PADashboardContent_ADUserDefFi FOREI
 UPDATE AD_Column SET IsUpdateable='Y',Updated=TO_DATE('2016-05-23 20:49:33','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=212763
 ;
 
-SELECT register_migration_script('201605231800_Ticket_1006008') FROM dual
+SELECT register_migration_script('201605231800_Ticket_1006008.sql') FROM dual
 ;
 
