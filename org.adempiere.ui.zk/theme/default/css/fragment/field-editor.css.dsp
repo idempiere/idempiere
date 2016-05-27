@@ -187,3 +187,7 @@ span.grid-combobox-editor {
 	cursor: default;
 	border: none;
 }
+
+.dashboard-field-panel.z-panel, .dashboard-field-panel.z-panel > .z-panel-body,  .dashboard-field-panel.z-panel > .z-panel-body > .z-panelchildren  {
+	overflow: visible;
+}

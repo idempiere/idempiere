@@ -116,6 +116,7 @@ public class WDashboardContentEditor extends WEditor {
 
 	private void render() throws Exception {
 		Panel panel = getComponent();
+		panel.setSclass("dashboard-field-panel");
 		Panelchildren pc = panel.getPanelchildren();
 		pc.getChildren().clear();
 		Div div = new Div();		
