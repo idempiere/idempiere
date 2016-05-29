@@ -356,6 +356,14 @@ public class WPaymentEditor extends WEditor implements ListDataListener, Context
 		return LISTENER_EVENTS;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.adempiere.webui.editor.WEditor#setFieldStyle(java.lang.String)
+	 */
+	@Override
+	protected void setFieldStyle(String style) {
+		getComponent().getCombobox().setStyle(style);
+	}
+
 	@Override
 	public void onMenu(ContextMenuEvent evt) 
 	{

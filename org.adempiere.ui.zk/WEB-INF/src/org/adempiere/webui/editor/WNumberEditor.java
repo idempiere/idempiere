@@ -31,6 +31,7 @@ import org.compiere.model.GridField;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
@@ -57,7 +58,9 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 	private int displayType;
 
 	private boolean tableEditor;
-	
+
+	private String originalStyle;
+
     public WNumberEditor()
     {
     	this("Number", false, false, true, DisplayType.Number, "");
@@ -147,6 +150,8 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 		
 		popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
     	addChangeLogMenu(popupMenu);
+    	
+    	originalStyle = getComponent().getDecimalbox().getStyle();
     }
 	
 	/**
@@ -283,5 +288,17 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 		super.setTableEditor(b);
 		getComponent().setTableEditorMode(b);
 	}
-       
+
+	/* (non-Javadoc)
+	 * @see org.adempiere.webui.editor.WEditor#setFieldStyle(java.lang.String)
+	 */
+	@Override
+	protected void setFieldStyle(String style) {
+		StringBuilder s = new StringBuilder(originalStyle);
+		if (!(s.charAt(s.length()-1)==';'))
+			s.append(";");
+		if (!Util.isEmpty(style))
+			s.append(style);
+		getComponent().getDecimalbox().setStyle(s.toString());
+	}     
 }

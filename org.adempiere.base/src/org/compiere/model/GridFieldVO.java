@@ -230,6 +230,10 @@ public class GridFieldVO implements Serializable
 					vo.IsToolbarButton  = rs.getString(i);
 				else if (columnName.equalsIgnoreCase("AD_Chart_ID"))
 					vo.AD_Chart_ID = rs.getInt (i);
+				else if (columnName.equalsIgnoreCase("AD_LabelStyle_ID"))
+					vo.AD_LabelStyle_ID = rs.getInt (i);
+				else if (columnName.equalsIgnoreCase("AD_FieldStyle_ID"))
+					vo.AD_FieldStyle_ID = rs.getInt (i);
 			}
 			if (vo.Header == null)
 				vo.Header = vo.ColumnName;
@@ -306,6 +310,12 @@ public class GridFieldVO implements Serializable
 				    vo.SeqNo = userDef.getSeqNo();
 				if (userDef.getAD_Val_Rule_ID() > 0)
 					vo.ValidationCode  = MValRule.get(ctx, userDef.getAD_Val_Rule_ID()).getCode();
+				
+				if (userDef.getAD_LabelStyle_ID() > 0)
+					vo.AD_LabelStyle_ID = userDef.getAD_LabelStyle_ID();
+				
+				if (userDef.getAD_FieldStyle_ID() > 0)
+					vo.AD_FieldStyle_ID = userDef.getAD_FieldStyle_ID();
 			}
 		}
 		//
@@ -657,6 +667,10 @@ public class GridFieldVO implements Serializable
 	
 	public int AD_Chart_ID = 0;
 	
+	public int AD_LabelStyle_ID = 0;
+	
+	public int AD_FieldStyle_ID = 0;
+	
 	/**
 	 *  Set Context including contained elements
 	 *  @param newCtx new context
@@ -786,6 +800,9 @@ public class GridFieldVO implements Serializable
 		clone.MandatoryLogic = MandatoryLogic;
 		clone.ObscureType = ObscureType;
 		clone.IsDefaultFocus = IsDefaultFocus;
+		clone.AD_FieldStyle_ID = AD_FieldStyle_ID;
+		clone.AD_LabelStyle_ID = AD_LabelStyle_ID;
+		
 		//	Lookup
 		clone.ValidationCode = ValidationCode;
 		clone.AD_Reference_Value_ID = AD_Reference_Value_ID;

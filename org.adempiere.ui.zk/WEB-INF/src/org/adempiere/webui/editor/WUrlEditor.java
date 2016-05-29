@@ -131,5 +131,14 @@ public class WUrlEditor extends WEditor implements ContextMenuListener
 	public void setTableEditor(boolean b) {
 		super.setTableEditor(b);
 		getComponent().setTableEditorMode(b);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.adempiere.webui.editor.WEditor#setFieldStyle(java.lang.String)
+	 */
+	@Override
+	protected void setFieldStyle(String style) {
+		getComponent().getTextbox().setStyle(style);
 	}	
 }

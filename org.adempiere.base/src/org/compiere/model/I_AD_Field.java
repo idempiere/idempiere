@@ -92,6 +92,21 @@ public interface I_AD_Field
 	  */
 	public int getAD_Field_ID();
 
+    /** Column name AD_FieldStyle_ID */
+    public static final String COLUMNNAME_AD_FieldStyle_ID = "AD_FieldStyle_ID";
+
+	/** Set Field Style.
+	  * Field CSS Style 
+	  */
+	public void setAD_FieldStyle_ID (int AD_FieldStyle_ID);
+
+	/** Get Field Style.
+	  * Field CSS Style 
+	  */
+	public int getAD_FieldStyle_ID();
+
+	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException;
+
     /** Column name AD_Field_UU */
     public static final String COLUMNNAME_AD_Field_UU = "AD_Field_UU";
 
@@ -100,6 +115,21 @@ public interface I_AD_Field
 
 	/** Get AD_Field_UU	  */
 	public String getAD_Field_UU();
+
+    /** Column name AD_LabelStyle_ID */
+    public static final String COLUMNNAME_AD_LabelStyle_ID = "AD_LabelStyle_ID";
+
+	/** Set Label Style.
+	  * Label CSS Style
+	  */
+	public void setAD_LabelStyle_ID (int AD_LabelStyle_ID);
+
+	/** Get Label Style.
+	  * Label CSS Style
+	  */
+	public int getAD_LabelStyle_ID();
+
+	public org.compiere.model.I_AD_Style getAD_LabelStyle() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";

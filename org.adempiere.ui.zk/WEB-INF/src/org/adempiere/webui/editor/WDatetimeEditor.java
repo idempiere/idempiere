@@ -204,5 +204,15 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
 				ValuePreference.start (getComponent(), this.getGridField(), getValue());
 		}
 	}
+
+
+	/* (non-Javadoc)
+	 * @see org.adempiere.webui.editor.WEditor#setFieldStyle(java.lang.String)
+	 */
+	@Override
+	protected void setFieldStyle(String style) {
+		getComponent().getDatebox().setStyle(style);
+		getComponent().getTimebox().setStyle(style);
+	}
 	
 }

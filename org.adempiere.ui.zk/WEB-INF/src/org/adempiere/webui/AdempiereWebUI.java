@@ -456,6 +456,10 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			if (getDesktop() != null && getDesktop().getSession() != null) {
 				getDesktop().getSession().setAttribute(CLIENT_INFO, clientInfo);
 			}
+			
+			Env.setContext(Env.getCtx(), "#clientInfo_desktopWidth", clientInfo.desktopWidth);
+			Env.setContext(Env.getCtx(), "#clientInfo_desktopHeight", clientInfo.desktopHeight);
+			Env.setContext(Env.getCtx(), "#clientInfo_orientation", clientInfo.orientation);
 		}
 
 	}
