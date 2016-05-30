@@ -16,6 +16,7 @@ package org.adempiere.webui.editor;
 
 import java.util.logging.Level;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WImageDialog;
@@ -46,7 +47,7 @@ public class WImageEditor extends WEditor
     private boolean m_mandatory;
 
 	private boolean readwrite;
-    
+
     /**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(WImageEditor.class);
     
@@ -65,6 +66,7 @@ public class WImageEditor extends WEditor
     {
     	AImage img = null;
         getComponent().setContent(img);
+        getComponent().setSclass("image-field");        
     }
 
      @Override
@@ -102,10 +104,11 @@ public class WImageEditor extends WEditor
 	@Override
 	public void setReadWrite(boolean readWrite) {
 		this.readwrite = readWrite;
-		if (readWrite)
-			getComponent().setStyle("cursor: pointer; border: 1px solid;");
-		else
-			getComponent().setStyle("cursor: default; border: none;");
+		if (readwrite) {
+			LayoutUtils.removeSclass("image-field-readonly", getComponent());
+		} else {
+			LayoutUtils.addSclass("image-field-readonly", getComponent());
+		}
 	}
 
 	@Override
@@ -181,4 +184,13 @@ public class WImageEditor extends WEditor
 			});			
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see org.adempiere.webui.editor.WEditor#fillHorizontal()
+	 */
+	@Override
+	public void fillHorizontal() {
+//		getComponent().setWidth(defaultWidth);
+//		getComponent().setHeight(defaultHeight);
+	}		
 }

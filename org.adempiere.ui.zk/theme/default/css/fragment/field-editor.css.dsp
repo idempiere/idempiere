@@ -176,3 +176,12 @@ span.grid-combobox-editor {
 	position: relative; 
 	float: right;
 }
+
+.image-field {
+	cursor: pointer;
+	border: 1px solid #C5C5C5;
+}
+.image-field.image-field-readonly {
+	cursor: default;
+	border: none;
+}

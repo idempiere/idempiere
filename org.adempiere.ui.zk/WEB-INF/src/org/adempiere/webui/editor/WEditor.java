@@ -55,7 +55,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Image;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.impl.InputElement;
@@ -97,7 +96,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
 	protected WEditorPopupMenu popupMenu;
 
-	private boolean tableEditor;
+	protected boolean tableEditor;
 	
 	private boolean isProcessParameter;
 
@@ -632,10 +631,6 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	        				btn.setZclass("form-button " + zclass);
 	        			}
         			}
-        		} else if (getComponent() instanceof Image) {
-        			Image image = (Image) getComponent();
-        			image.setWidth("24px");
-        			image.setHeight("24px");
         		} else {
         			if (!tableEditor) {
 	        			if (getComponent() instanceof InputElement) {
