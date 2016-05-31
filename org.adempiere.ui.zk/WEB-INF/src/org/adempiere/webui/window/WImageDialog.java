@@ -24,27 +24,32 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
-import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
+import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.apache.commons.codec.binary.Base64;
 import org.compiere.model.MImage;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.image.AImage;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
+import org.zkoss.zul.Space;
 
 /**
  *  Base on the original Swing Image Dialog.
@@ -96,7 +101,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 			}
 		}
 		
-		fileButton.setLabel(m_mImage.getName());
+		fileNameTextbox.setValue(m_mImage.getName());
 		AEnv.showCenterScreen(this);
 	}   //  WImageDialog
 
@@ -108,12 +113,17 @@ public class WImageDialog extends Window implements EventListener<Event>
 	/** */
 	private Borderlayout mainLayout = new Borderlayout();
 	private Panel parameterPanel = new Panel();
-	private Label fileLabel = new Label();
 	private Button fileButton = new Button();
+	private Button captureButton = new Button();
 	private Image image = new Image();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true,false,true,false,false,false);
 	private boolean cancel = false;
-
+	private Textbox fileNameTextbox = new Textbox();
+ 
+	private Div captureDiv;
+	private String defaultNameForCaptureImage = "CapturedImage";
+	private Button cancelCaptureButton;
+	
 	/**
 	 *  Static Init
 	 *  @throws Exception
@@ -122,19 +132,35 @@ public class WImageDialog extends Window implements EventListener<Event>
 	{
 		this.setSclass("popup-dialog");
 		this.setBorder("normal");
-		ZKUpdateUtil.setWidth(this, "450px");
-		ZKUpdateUtil.setHeight(this, "550px");
+		ZKUpdateUtil.setWidth(this, "640px");
+		ZKUpdateUtil.setHeight(this, "540px");
 		this.setShadow(true);
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		this.setSizable(true);
+		this.setStyle("position: relative;");
+		
+		captureDiv = new Div();
+		this.appendChild(captureDiv);
+		captureDiv.setStyle("position: absolute;");
+		ZKUpdateUtil.setHeight(captureDiv, "480px");
+		ZKUpdateUtil.setWidth(captureDiv, "640px");
+		captureDiv.setVisible(false);
+		captureDiv.addEventListener("onCaptureImage", this);
+	    cancelCaptureButton = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Cancel")));
+		LayoutUtils.addSclass("txt-btn", cancelCaptureButton);
+		cancelCaptureButton.setStyle("position: absolute; bottom: 5px; right: 3px;");
+		this.appendChild(cancelCaptureButton);
+		cancelCaptureButton.addEventListener(Events.ON_CLICK, this);
+		cancelCaptureButton.setVisible(false);
 		
 		mainLayout.setParent(this);
 		ZKUpdateUtil.setHflex(mainLayout, "1");
 		ZKUpdateUtil.setVflex(mainLayout, "1");
 		
-		fileLabel.setValue(Msg.getMsg(Env.getCtx(), "SelectFile") + ": ");
-		fileButton.setLabel("-");
+		fileButton.setLabel("Upload");
 		LayoutUtils.addSclass("txt-btn", fileButton);
+		captureButton.setLabel("Capture");
+		LayoutUtils.addSclass("txt-btn", captureButton);
 		
 		North north = new North();
 		north.setParent(mainLayout);
@@ -143,8 +169,11 @@ public class WImageDialog extends Window implements EventListener<Event>
 		Hbox hbox = new Hbox();
 		hbox.setAlign("center");
 		hbox.setPack("start");
-		hbox.appendChild(fileLabel);
 		hbox.appendChild(fileButton);
+		hbox.appendChild(new Space());
+		hbox.appendChild(captureButton);
+		hbox.appendChild(new Space());
+		hbox.appendChild(fileNameTextbox);
 		
 		parameterPanel.setStyle("padding: 5px");
 		parameterPanel.appendChild(hbox);
@@ -168,6 +197,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 		//
 		fileButton.setUpload(AdempiereWebUI.getUploadSetting());
 		fileButton.addEventListener(Events.ON_UPLOAD, this);
+		captureButton.addEventListener(Events.ON_CLICK, this);
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
 		
 		addEventListener(Events.ON_UPLOAD, this);
@@ -183,6 +213,8 @@ public class WImageDialog extends Window implements EventListener<Event>
 		{
 			if (image.getContent() != null)
 			{
+				if (!Util.isEmpty(fileNameTextbox.getValue()))
+					m_mImage.setName(fileNameTextbox.getValue());
 				m_mImage.saveEx();
 			}
 			else if (m_mImage != null && m_mImage.getAD_Image_ID() > 0)
@@ -202,7 +234,50 @@ public class WImageDialog extends Window implements EventListener<Event>
 		{
 			AImage img = null;
 			image.setContent(img);
-			fileButton.setLabel("-");
+			fileNameTextbox.setValue(null);
+		}
+		else if (e.getTarget() == captureButton)
+		{
+			captureDiv.setVisible(true);
+			cancelCaptureButton.setVisible(true);
+			mainLayout.setVisible(false);
+			String script = "var wgt = zk.Widget.$('#"+captureDiv.getUuid()+"');";
+			script = script + "jq(wgt).photobooth(); ";
+			script = script + "jq(wgt).bind( 'image', function( event, dataUrl ){ zAu.send(new zk.Event(wgt, 'onCaptureImage', dataUrl, {toServer:true})); });";
+			Clients.evalJavaScript(script);
+		}
+		else if (e.getName().equals("onCaptureImage"))
+		{
+			captureDiv.setVisible(false);
+			cancelCaptureButton.setVisible(false);
+			mainLayout.setVisible(true);
+			String dataUrl = (String) e.getData();
+			if (!Util.isEmpty(dataUrl))
+			{
+				String encodingPrefix = "base64,";
+				int contentStartIndex = dataUrl.indexOf(encodingPrefix) + encodingPrefix.length();
+				byte[] imageData = Base64.decodeBase64(dataUrl.substring(contentStartIndex).getBytes());
+				AImage img = new AImage(defaultNameForCaptureImage, imageData);
+				image.setContent(img);
+				
+				if (m_mImage == null)
+					m_mImage = MImage.get (Env.getCtx(), 0);
+				m_mImage.setName(defaultNameForCaptureImage);
+				m_mImage.setBinaryData(imageData);
+				fileNameTextbox.setValue(defaultNameForCaptureImage);
+			}
+			String script = "var wgt = zk.Widget.$('#"+captureDiv.getUuid()+"');";
+			script = script + "jq(wgt).data( 'photobooth').destroy(); ";
+			Clients.evalJavaScript(script);
+		}
+		else if (e.getTarget() == cancelCaptureButton) 
+		{
+			captureDiv.setVisible(false);
+			cancelCaptureButton.setVisible(false);
+			mainLayout.setVisible(true);
+			String script = "var wgt = zk.Widget.$('#"+captureDiv.getUuid()+"');";
+			script = script + "jq(wgt).data( 'photobooth').destroy(); ";
+			Clients.evalJavaScript(script);
 		}
 	}
 	
@@ -236,7 +311,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 		}
 
 		//  OK
-		fileButton.setLabel(imageFile.getName());
+		fileNameTextbox.setValue(imageFile.getName());
 		invalidate();
 
 		//  Save info
@@ -260,4 +335,18 @@ public class WImageDialog extends Window implements EventListener<Event>
 			return m_mImage.getAD_Image_ID();
 		return 0;
 	}	//	getAD_Image_ID	
+
+	/**
+	 * @return the defaultNameForCaptureImage
+	 */
+	public String getDefaultNameForCaptureImage() {
+		return defaultNameForCaptureImage;
+	}
+
+	/**
+	 * @param defaultNameForCaptureImage the defaultNameForCaptureImage to set
+	 */
+	public void setDefaultNameForCaptureImage(String defaultNameForCaptureImage) {
+		this.defaultNameForCaptureImage = defaultNameForCaptureImage;
+	}
 }   //  WImageDialog

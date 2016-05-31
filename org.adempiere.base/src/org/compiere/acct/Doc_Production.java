@@ -20,6 +20,8 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.compiere.model.MAcctSchema;
@@ -68,7 +70,34 @@ public class Doc_Production extends Doc
 		return null;
 	}   //  loadDocumentDetails
 
-	private BigDecimal m_qtyProduced;
+	private Map<Integer, BigDecimal> mQtyProduced;
+	
+	/**
+	 * IDEMPIERE-3082
+	 * @param mQtyProduced
+	 * @param line
+	 * @param isUsePlan
+	 * @param addMoreQty when you want get value, just pass null
+	 * @return
+	 */
+	private BigDecimal manipulateQtyProduced (Map<Integer, BigDecimal> mQtyProduced, X_M_ProductionLine line, Boolean isUsePlan, BigDecimal addMoreQty){
+		BigDecimal qtyProduced = null;
+		Integer key = isUsePlan?line.getM_ProductionPlan_ID():line.getM_Production_ID();
+		
+		if (mQtyProduced.containsKey(key)){
+			qtyProduced = mQtyProduced.get(key);
+		}else{
+			qtyProduced = BigDecimal.ZERO;
+			mQtyProduced.put(key, qtyProduced);
+		}
+		
+		if (addMoreQty != null){
+			qtyProduced = qtyProduced.add(addMoreQty);
+			mQtyProduced.put(key, qtyProduced);
+		}
+			
+		return qtyProduced;
+	}
 	/**
 	 *	Load Invoice Line
 	 *	@param prod production
@@ -77,7 +106,7 @@ public class Doc_Production extends Doc
 	private DocLine[] loadLines(X_M_Production prod)
 	{
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
-		m_qtyProduced = Env.ZERO;
+		mQtyProduced = new HashMap<>(); 
 		String sqlPL = null;
 		if (prod.isUseProductionPlan()){
 //			Production
@@ -117,8 +146,9 @@ public class Doc_Production extends Doc
 					docLine.setProductionBOM(line.getM_Product_ID() == line.getM_ProductionPlan().getM_Product_ID());
 				else
 					docLine.setProductionBOM(line.getM_Product_ID() == prod.getM_Product_ID());
-				if (docLine.isProductionBOM()) {
-					m_qtyProduced = m_qtyProduced.add(line.getMovementQty());
+				
+				if (docLine.isProductionBOM()){
+					manipulateQtyProduced (mQtyProduced, line, prod.isUseProductionPlan(), line.getMovementQty());
 				}
 				//
 				if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
@@ -213,8 +243,10 @@ public class Doc_Production extends Doc
 						bomCost = bomCost.add(costs0.setScale(2,BigDecimal.ROUND_HALF_UP));
 					}
 				}
-				if (line.getQty().compareTo(m_qtyProduced) != 0) {
-					BigDecimal factor = line.getQty().divide(m_qtyProduced, 12, BigDecimal.ROUND_HALF_UP);
+				
+				BigDecimal qtyProduced = manipulateQtyProduced (mQtyProduced, endProLine, prod.isUseProductionPlan(), null);
+				if (line.getQty().compareTo(qtyProduced) != 0) {
+					BigDecimal factor = line.getQty().divide(qtyProduced, 12, BigDecimal.ROUND_HALF_UP);
 					bomCost = bomCost.multiply(factor).setScale(2,BigDecimal.ROUND_HALF_UP);
 				}
 				int precision = as.getStdPrecision();

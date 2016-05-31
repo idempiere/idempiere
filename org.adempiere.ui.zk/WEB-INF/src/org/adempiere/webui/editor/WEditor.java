@@ -41,9 +41,14 @@ import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
+import org.compiere.model.MStyle;
+import org.compiere.model.X_AD_StyleLine;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Evaluatee;
+import org.compiere.util.Evaluator;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
@@ -51,7 +56,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Image;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.impl.InputElement;
@@ -93,7 +97,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
 	protected WEditorPopupMenu popupMenu;
 
-	private boolean tableEditor;
+	protected boolean tableEditor;
 	
 	private boolean isProcessParameter;
 
@@ -531,8 +535,81 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
      */
     public void dynamicDisplay()
     {
+    	if (gridField != null)
+    	{
+    		updateStyle();
+    	}
     }
 
+	public void updateStyle() {
+		applyLabelStyles();
+		applyFieldStyles();
+	}
+
+	protected void applyLabelStyles() {
+		if (label != null) {
+			String style = (isZoomable() ? STYLE_ZOOMABLE_LABEL : "") + (isMandatoryStyle() ? STYLE_EMPTY_MANDATORY_LABEL : STYLE_NORMAL_LABEL);			
+			if (gridField.getAD_LabelStyle_ID() > 0) 
+			{
+				String s = buildStyle(gridField.getAD_LabelStyle_ID());
+				if (!Util.isEmpty(s)) {
+					style = style + s;
+				}
+				setLabelStyle(style);
+			}
+			else
+			{
+				setLabelStyle(style);
+			}
+		}
+	}
+	
+	protected  void setLabelStyle(String style) {
+		if (label != null)
+			label.setStyle(style);
+	}
+
+	protected void applyFieldStyles() {
+		if (gridField.getAD_FieldStyle_ID() > 0) 
+		{
+			String style = buildStyle(gridField.getAD_FieldStyle_ID());
+			setFieldStyle(style);
+		}
+	}
+
+	protected  void setFieldStyle(String style) {
+		HtmlBasedComponent component = (HtmlBasedComponent) getComponent();
+		if (component instanceof EditorBox)
+			((EditorBox)component).getTextbox().setStyle(style);
+		else
+			component.setStyle(style);
+	}
+
+	protected String buildStyle(int AD_Style_ID) {
+		MStyle style = MStyle.get(Env.getCtx(), AD_Style_ID);
+		X_AD_StyleLine[] lines = style.getStyleLines();
+		StringBuilder styleBuilder = new StringBuilder();
+		for (X_AD_StyleLine line : lines) 
+		{
+			String inlineStyle = line.getInlineStyle().trim();
+			String displayLogic = line.getDisplayLogic();
+			String theme = line.getTheme();
+			if (!Util.isEmpty(theme)) {
+				if (!ThemeManager.getTheme().equals(theme))
+					continue;
+			}
+			if (!Util.isEmpty(displayLogic))
+			{
+				if (!Evaluator.evaluateLogic(getStyleEvaluatee(), displayLogic)) 
+					continue;
+			}
+			if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
+				styleBuilder.append("; ");
+			styleBuilder.append(inlineStyle);
+		}
+		return styleBuilder.toString();
+	}
+	
     /**
      * Stretch editor component to fill container
      */
@@ -555,10 +632,6 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	        				btn.setZclass("form-button " + zclass);
 	        			}
         			}
-        		} else if (getComponent() instanceof Image) {
-        			Image image = (Image) getComponent();
-        			ZKUpdateUtil.setWidth(image, "24px");
-        			ZKUpdateUtil.setHeight(image, "24px");
         		} else {
         			if (!tableEditor) {
 	        			if (getComponent() instanceof InputElement) {
@@ -584,13 +657,17 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         		}
         	}
         }
+        
+        if (gridField != null) {
+        	updateStyle();
+        }
     }
 
+    /**
+     * @deprecated
+     */
 	public void updateLabelStyle() {				
-		if (getLabel() != null) {
-			String style = (isZoomable() ? STYLE_ZOOMABLE_LABEL : "") + (isMandatoryStyle() ? STYLE_EMPTY_MANDATORY_LABEL : STYLE_NORMAL_LABEL);
-			getLabel().setStyle(style.intern());			
-		}
+		updateStyle();
 	}
 	
 	public boolean isMandatoryStyle() {
@@ -697,8 +774,40 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	public Component getDisplayComponent() {
 		return null;
 	}
+
+	protected Evaluatee getStyleEvaluatee() {
+		return new EvaluateeWrapper(this, gridField, tableEditor);
+	}
 	
 	private static final String STYLE_ZOOMABLE_LABEL = "cursor: pointer; text-decoration: underline;";
 	private static final String STYLE_NORMAL_LABEL = "color: #333;";
 	private static final String STYLE_EMPTY_MANDATORY_LABEL = "color: red;";
+	
+	private static class EvaluateeWrapper implements Evaluatee {
+		
+		private GridField gridField;
+		private boolean tableEditor;
+		private WEditor editor;
+
+		private EvaluateeWrapper(WEditor editor, GridField gridField, boolean tableEditor) {
+			this.editor = editor;
+			this.gridField = gridField;
+			this.tableEditor = tableEditor;
+		}
+		
+		@Override
+		public String get_ValueAsString(String variableName) {
+			if ("_Editor_IsGridView".equals(variableName))
+				return tableEditor ? "Y" : "N";
+			else if ("_Editor_IsReadOnly".equals(variableName))
+				return editor.isReadWrite() ? "N" : "Y";
+			else if ("_Editor_IsZoomable".equals(variableName))
+				return editor.isZoomable() ? "Y" : "N";
+			else if ("_Editor_IsMandatory".equals(variableName))
+				return editor.isMandatory() ? "Y" : "N";
+			
+			return gridField.get_ValueAsString(variableName);
+		}
+		
+	}
 }

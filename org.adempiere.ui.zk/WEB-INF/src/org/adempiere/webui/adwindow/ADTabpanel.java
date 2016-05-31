@@ -567,6 +567,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         				row.appendCellChild(div,1);
         			}
         			row.appendCellChild(editor.getComponent(), field.getColumnSpan());
+        			//to support float/absolute editor
+        			row.getLastCell().setStyle("position: relative; overflow: visible;");
 
         			if (editor instanceof WButtonEditor)
         			{
@@ -716,7 +718,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			{
 				for (WEditor comp : editors)
 				{
-					comp.updateLabelStyle();
+					comp.updateStyle();
 				}
                 return;
             }
@@ -753,7 +755,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
                     comp.setVisible(false);
                 }
             }
-            comp.updateLabelStyle();
+            comp.updateStyle();
         }   //  all components
 
         //hide row if all editor within the row is invisible

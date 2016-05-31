@@ -288,6 +288,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 
 	@Override
 	public void dynamicDisplay() {
+		super.dynamicDisplay();
 		//referesh auto complete list
 		if (gridField.isAutocomplete()) {
         	Combobox combo = (Combobox)getComponent();

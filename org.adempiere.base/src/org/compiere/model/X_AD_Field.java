@@ -169,6 +169,34 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_Name)
+			.getPO(getAD_FieldStyle_ID(), get_TrxName());	}
+
+	/** Set Field Style.
+		@param AD_FieldStyle_ID 
+		Field CSS Style 
+	  */
+	public void setAD_FieldStyle_ID (int AD_FieldStyle_ID)
+	{
+		if (AD_FieldStyle_ID < 1) 
+			set_Value (COLUMNNAME_AD_FieldStyle_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_FieldStyle_ID, Integer.valueOf(AD_FieldStyle_ID));
+	}
+
+	/** Get Field Style.
+		@return Field CSS Style 
+	  */
+	public int getAD_FieldStyle_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldStyle_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set AD_Field_UU.
 		@param AD_Field_UU AD_Field_UU	  */
 	public void setAD_Field_UU (String AD_Field_UU)
@@ -181,6 +209,34 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	public String getAD_Field_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_AD_Field_UU);
+	}
+
+	public org.compiere.model.I_AD_Style getAD_LabelStyle() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_Name)
+			.getPO(getAD_LabelStyle_ID(), get_TrxName());	}
+
+	/** Set Label Style.
+		@param AD_LabelStyle_ID 
+		Label CSS Style
+	  */
+	public void setAD_LabelStyle_ID (int AD_LabelStyle_ID)
+	{
+		if (AD_LabelStyle_ID < 1) 
+			set_Value (COLUMNNAME_AD_LabelStyle_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_LabelStyle_ID, Integer.valueOf(AD_LabelStyle_ID));
+	}
+
+	/** Get Label Style.
+		@return Label CSS Style
+	  */
+	public int getAD_LabelStyle_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_LabelStyle_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
