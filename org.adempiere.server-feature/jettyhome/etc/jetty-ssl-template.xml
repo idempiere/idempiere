@@ -24,7 +24,7 @@
 
         <Set name="host"><Property name="jetty.host" default="@ADEMPIERE_APPS_SERVER@" /></Set>
         <Set name="port"><Property name="ssl.port" default="@ADEMPIERE_SSL_PORT@" /></Set>
-        <Set name="idleTimeout"><Property name="ssl.timeout" default="30000"/></Set>
+        <Set name="idleTimeout"><Property name="ssl.timeout" default="300000"/></Set>
         <Set name="soLingerTime"><Property name="ssl.soLingerTime" default="-1"/></Set>
         <Set name="acceptorPriorityDelta"><Property name="ssl.acceptorPriorityDelta" default="0"/></Set>
         <Set name="selectorPriorityDelta"><Property name="ssl.selectorPriorityDelta" default="0"/></Set>
