@@ -87,24 +87,31 @@ stop () {
     fi
     echo -n "Stopping iDempiere ERP: "
     cd $IDEMPIERE_HOME/utils
-    . $ENVFILE 
-    log_warning_msg "Trying direct kill with signal -15"
-    # try direct kill with signal 15, then signal 9
-    kill -15 -`ps ax o pgid,command | grep -v grep | grep $IDEMPIERE_HOME | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
-    sleep 5
+    . $ENVFILE
+    # try shutdown from OSGi console, then direct kill with signal 15, then signal 9
+    log_warning_msg "Trying shutdown from OSGi console"
+    ( echo exit; echo y; sleep 5 ) | telnet localhost 12612 > /dev/null 2>&1
     getidempierestatus
     if [ $IDEMPIERESTATUS -ne 0 ] ; then
-	  log_success_msg "Service stopped with kill -15"
+        log_success_msg "Service stopped with OSGi shutdown"
     else
-	  echo "Trying direct kill with signal -9"
-	  kill -9 -`ps ax o pgid,command | grep -v grep | grep $IDEMPIERE_HOME | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
-	  sleep 5
-	  getidempierestatus
-	  if [ $IDEMPIERESTATUS -ne 0 ] ; then
-	    log_success_msg "Service stopped with kill -9"
-	  else
-	    log_warning_msg "Service hasn't stopped"
-	  fi
+        log_warning_msg "Trying direct kill with signal -15"
+        kill -15 -`ps ax o pgid,command | grep -v grep | grep $IDEMPIERE_HOME | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
+        sleep 5
+        getidempierestatus
+        if [ $IDEMPIERESTATUS -ne 0 ] ; then
+            log_success_msg "Service stopped with kill -15"
+        else
+            echo "Trying direct kill with signal -9"
+            kill -9 -`ps ax o pgid,command | grep -v grep | grep $IDEMPIERE_HOME | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
+            sleep 5
+            getidempierestatus
+            if [ $IDEMPIERESTATUS -ne 0 ] ; then
+                log_success_msg "Service stopped with kill -9"
+            else
+                log_warning_msg "Service hasn't stopped"
+            fi
+        fi
     fi
     return $RETVAL
 }
