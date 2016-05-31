@@ -43,12 +43,11 @@ public class MInOutLineMA extends X_M_InOutLineMA
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4131812777103744727L;
-	
+	private static final long serialVersionUID = -2610075295914545809L;
+
 	/** Log								*/
 	private static CLogger		s_log = CLogger.getCLogger (MInOutLineMA.class);
-	public static String COLUMNNAME_ReturnedQty ="returnedQty";
-	
+
 	/**
 	 * 	Get Material Allocations for Line
 	 *	@param ctx context
@@ -237,7 +236,6 @@ public class MInOutLineMA extends X_M_InOutLineMA
 			while (rs.next())
 			{
 				MInOutLineMA lineMA = new MInOutLineMA(ctx, rs, trxName);
-				lineMA.set_Value(COLUMNNAME_ReturnedQty, rs.getBigDecimal(COLUMNNAME_ReturnedQty));
 				list.add(lineMA);
 			}
 			

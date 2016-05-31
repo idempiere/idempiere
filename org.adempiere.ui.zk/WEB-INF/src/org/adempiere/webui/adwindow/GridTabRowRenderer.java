@@ -43,6 +43,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MStyle;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_StyleLine;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -83,7 +84,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	private static final String CELL_DIV_STYLE_ALIGN_CENTER = CELL_DIV_STYLE + "text-align:center; ";
 	private static final String CELL_DIV_STYLE_ALIGN_RIGHT = CELL_DIV_STYLE + "text-align:right; ";
 	
-	private static final int MAX_TEXT_LENGTH = 60;
+	private static final int MAX_TEXT_LENGTH_DEFAULT = 60;
 	private GridTab gridTab;
 	private int windowNo;
 	private GridTabDataBinder dataBinder;
@@ -307,6 +308,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	 */
 	private void setLabelText(String text, Label label) {
 		String display = text;
+		final int MAX_TEXT_LENGTH = MSysConfig.getIntValue(MSysConfig.MAX_TEXT_LENGTH_ON_GRID_VIEW,MAX_TEXT_LENGTH_DEFAULT,Env.getAD_Client_ID(Env.getCtx()));
 		if (text != null && text.length() > MAX_TEXT_LENGTH)
 			display = text.substring(0, MAX_TEXT_LENGTH - 3) + "...";
 		// since 5.0.8, the org.zkoss.zhtml.Text is encoded by default

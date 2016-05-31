@@ -629,7 +629,7 @@ public class MLookupFactory
 		String BaseColumn, String BaseTable, int AD_Reference_Value_ID)
 	{
 		String sql = "SELECT t.TableName,ck.ColumnName AS KeyColumn,"
-			+ "cd.ColumnName AS DisplayColumn,rt.isValueDisplayed,cd.IsTranslated "
+			+ "cd.ColumnName AS DisplayColumn,rt.isValueDisplayed,cd.IsTranslated, cd.AD_Column_ID AS columnDisplay_ID "
 			+ "FROM AD_Ref_Table rt"
 			+ " INNER JOIN AD_Table t ON (rt.AD_Table_ID=t.AD_Table_ID)"
 			+ " INNER JOIN AD_Column ck ON (rt.AD_Key=ck.AD_Column_ID)"
@@ -639,6 +639,7 @@ public class MLookupFactory
 		//
 		String	KeyColumn, DisplayColumn, TableName, TableNameAlias;
 		boolean IsTranslated, isValueDisplayed;
+		Integer columnDisplay_ID = 0;
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -659,6 +660,7 @@ public class MLookupFactory
 			DisplayColumn = rs.getString(3);
 			isValueDisplayed = rs.getString(4).equals("Y");
 			IsTranslated = rs.getString(5).equals("Y");
+			columnDisplay_ID = rs.getInt(6);
 
 		}
 		catch (SQLException e)
@@ -682,15 +684,26 @@ public class MLookupFactory
 		}
 
 		StringBuilder embedSQL = new StringBuilder("SELECT ");
+
+		if (isValueDisplayed)
+			embedSQL.append(TableNameAlias).append(".Value||'-'||");
+
+		MColumn columnDisplay = new MColumn(Env.getCtx(), columnDisplay_ID, null);
+
 		boolean translated = false; 
 		//	Translated
 		if (IsTranslated && !Env.isBaseLanguage(language, TableName))
 		{
 			translated = true;
-			if (isValueDisplayed)
-				embedSQL.append(TableNameAlias).append(".Value||'-'||");
+
+			if (columnDisplay.isVirtualColumn())
+			{
+				s_log.warning("Column SQL should not be Translated");
+				return null;
+			}
+			else
 			embedSQL.append(TableName).append("_Trl.").append(DisplayColumn);
-			//
+
 			embedSQL.append(" FROM ").append(TableName).append(" ").append(TableNameAlias)
 				.append(" INNER JOIN ").append(TableName).append("_TRL ON (")
 				.append(TableNameAlias).append(".").append(KeyColumn)
@@ -701,10 +714,11 @@ public class MLookupFactory
 		//	Not Translated
 		else
 		{
-			if (isValueDisplayed)
-				embedSQL.append(TableNameAlias).append(".Value||'-'||");
+			if (columnDisplay.isVirtualColumn())
+				embedSQL.append(columnDisplay.getColumnSQL()).append(" AS ").append(KeyColumn);
+			else
 			embedSQL.append(TableNameAlias).append(".").append(DisplayColumn);
-			//
+
 			embedSQL.append(" FROM ").append(TableName).append(" ").append(TableNameAlias);
 		}
 

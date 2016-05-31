@@ -102,7 +102,13 @@ public class MProduction extends X_M_Production implements DocAction {
 
 		StringBuilder errors = new StringBuilder();
 		int processed = 0;
-
+		
+		//IDEMPIERE-3107 Check if End Product in Production Lines exist
+		if(!isHaveEndProduct(getLines())) {
+			m_processMsg = "Production does not contain End Product";
+			return DocAction.STATUS_Invalid;
+		}
+			
 		if (!isUseProductionPlan()) {
 			MProductionLine[] lines = getLines();
 			errors.append(processLines(lines));
@@ -140,6 +146,15 @@ public class MProduction extends X_M_Production implements DocAction {
 		setProcessed(true);
 		setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
+	}
+
+	private boolean isHaveEndProduct(MProductionLine[] lines) {
+		
+		for(MProductionLine line : lines) {
+			if(line.isEndProduct())
+				return true;			
+		}
+		return false;
 	}
 
 	private Object processLines(MProductionLine[] lines) {
