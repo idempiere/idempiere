@@ -1548,7 +1548,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 	@Override
     protected void executeQuery() {
-    	prepareTable();
+    	if (!isRequeryByRunSuccessProcess)
+    		prepareTable();
     	super.executeQuery();
     	if (ClientInfo.maxHeight(ClientInfo.SMALL_HEIGHT-1) ||
     		ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1)) {
