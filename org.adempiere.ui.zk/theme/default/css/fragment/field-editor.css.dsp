@@ -180,6 +180,8 @@ span.grid-combobox-editor {
 .image-field {
 	cursor: pointer;
 	border: 1px solid #C5C5C5;
+	height: 24px;
+	width: 24px;
 }
 .image-field.image-field-readonly {
 	cursor: default;

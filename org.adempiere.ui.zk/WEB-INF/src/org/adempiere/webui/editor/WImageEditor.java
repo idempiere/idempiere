@@ -190,7 +190,5 @@ public class WImageEditor extends WEditor
 	 */
 	@Override
 	public void fillHorizontal() {
-//		getComponent().setWidth(defaultWidth);
-//		getComponent().setHeight(defaultHeight);
 	}		
 }
