@@ -288,7 +288,12 @@ public class ADLookup {
 			log.log(Level.SEVERE, m_columnName + " (TableDir) - no standard/identifier columns");
 			return "";
 		}
+
 		//
+		// Enclose "OR'd" identifier lookup clause to not boolean corrupt additionally appended "AND" clauses
+		sql.insert(0,"("); 
+		sql.append(") ");
+
 		StringBuffer retValue = new StringBuffer ("SELECT ")
 			.append(m_columnName).append(" FROM ").append(m_tableName)
 			.append(" WHERE ").append(sql)
