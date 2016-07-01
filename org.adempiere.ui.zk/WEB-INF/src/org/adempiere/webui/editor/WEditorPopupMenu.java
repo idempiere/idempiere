@@ -23,6 +23,8 @@ import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.window.WFieldSuggestion;
+import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
 import org.compiere.model.MRole;
 import org.compiere.util.DB;
@@ -256,4 +258,17 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
             }
         }
     }
+
+	public void addSuggestion(final GridField field) {
+		Menuitem editor = new Menuitem(Msg.getElement(Env.getCtx(), "AD_FieldSuggestion_ID"));
+		editor.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				WFieldSuggestion fieldSuggestion = new WFieldSuggestion(field.getAD_Field_ID());
+				fieldSuggestion.setPage(WEditorPopupMenu.this.getPage());
+				fieldSuggestion.doHighlighted();
+			}
+		});
+		appendChild(editor);		
+	}	
 }

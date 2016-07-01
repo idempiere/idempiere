@@ -594,9 +594,15 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
         			//setup editor context menu
         			WEditorPopupMenu popupMenu = editor.getPopupMenu();
+        			if (popupMenu == null) 
+        			{
+        				popupMenu = new WEditorPopupMenu(false, false, false, false, false, false, null);
+        				popupMenu.addSuggestion(field);
+        			}
         			if (popupMenu != null)
         			{
-        				popupMenu.addMenuListener((ContextMenuListener)editor);
+        				if (editor instanceof ContextMenuListener)
+        					popupMenu.addMenuListener((ContextMenuListener)editor);
         				popupMenu.setId(field.getColumnName()+"-popup");
         				this.appendChild(popupMenu);
         				if (!field.isFieldOnly())
@@ -612,8 +618,9 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         					{
         						popupMenu.addContextElement((XulElement) editor.getComponent());
         					}
-        				}        				        				
-        			}
+        				} 
+        				popupMenu.addSuggestion(field);
+        			}        			
         		}
         	}
         	else // just heading

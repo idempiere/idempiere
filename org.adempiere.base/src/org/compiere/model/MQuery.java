@@ -1132,12 +1132,23 @@ class Restriction  implements Serializable
 			int pos = ColumnName.lastIndexOf('(')+1;	//	including (
 			int end = ColumnName.indexOf(')');
 			//	We have a Function in the ColumnName
-			if (pos != -1 && end != -1)
+			if (pos != -1 && end != -1 && !(pos-1==ColumnName.indexOf('(') && ColumnName.trim().startsWith("(")))
 				sb.append(ColumnName.substring(0, pos))
 					.append(tableName).append(".").append(ColumnName.substring(pos, end))
 					.append(ColumnName.substring(end));
 			else
-				sb.append(tableName).append(".").append(ColumnName);
+			{
+				int selectIndex = ColumnName.toLowerCase().indexOf("select ");
+				int fromIndex = ColumnName.toLowerCase().indexOf(" from ");
+				if (selectIndex >= 0 && fromIndex > 0) 
+				{
+					sb.append(ColumnName);
+				}
+				else
+				{
+					sb.append(tableName).append(".").append(ColumnName);
+				}
+			}
 		}
 		else
 			sb.append(ColumnName);
