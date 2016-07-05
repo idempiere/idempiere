@@ -16,10 +16,13 @@ package org.adempiere.webui.panel;
 
 import java.util.Properties;
 
+import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.WCtxHelpSuggestion;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.model.I_AD_CtxHelpMsg;
 import org.compiere.model.MCtxHelpMsg;
 import org.compiere.model.MForm;
 import org.compiere.model.MInfoWindow;
@@ -33,12 +36,17 @@ import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWorkflow;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Anchorchildren;
 import org.zkoss.zul.Anchorlayout;
 import org.zkoss.zul.Html;
+import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Style;
 import org.zkoss.zul.Vlayout;
 
@@ -221,13 +229,23 @@ public class HelpController
     	StringBuilder sb = new StringBuilder();
     	sb.append("<html>\n<body>\n<div class=\"help-content\">\n");
     	    	
-    	String ctxHelpMsg = getCtxHelpMsgList(ctxType, recordId);
+    	MCtxHelpMsg ctxHelpMsg = getCtxHelpMsg(ctxType, recordId);
     	String helpMsg, nameMsg, descMsg;
     	
-    	if (ctxHelpMsg.length() > 0)
-	    	sb.append(stripHtml(ctxHelpMsg, false) + "<br>\n");
+    	if (ctxHelpMsg != null)
+    	{
+	    	sb.append(stripHtml(ctxHelpMsg.get_Translation(I_AD_CtxHelpMsg.COLUMNNAME_MsgText), false) + "<br>\n");
+	    	ContextHelpMenupopup popup = new ContextHelpMenupopup(ctxHelpMsg);
+	    	pnlContextHelp.setAttribute("contextMenu", popup);
+	    	pnlContextHelp.setContext(popup);
+	    	popup.setPage(pnlContextHelp.getPage());
+    	}
     	else
     	{
+    		Component popup = (Component) pnlContextHelp.removeAttribute("contextMenu");
+    		if (popup != null)
+    			popup.detach();
+    		pnlContextHelp.setContext((Popup)null);
         	sb.append("<i>(" + Msg.getMsg(Env.getCtx(), "NotAvailable") + ")</i>");
 
     		if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Tab))
@@ -491,10 +509,10 @@ public class HelpController
 		return htmlString;
 	}
 
-    private String getCtxHelpMsgList(String ctxType, int recordId)
+    private MCtxHelpMsg getCtxHelpMsg(String ctxType, int recordId)
     {
     	Properties ctx = Env.getCtx();
-    	String retValue = MCtxHelpMsg.get(ctx, ctxType, recordId);
+    	MCtxHelpMsg retValue = MCtxHelpMsg.get(ctx, ctxType, recordId);
     	return retValue;
     }
 
@@ -533,4 +551,30 @@ public class HelpController
 		out.append("';}");
 		return out.toString();
 	}	//	maskHTML
+	
+	private class ContextHelpMenupopup extends Menupopup implements EventListener<Event> {
+		/**
+		 * generated serial id
+		 */
+		private static final long serialVersionUID = 5957266862632509358L;
+		private MCtxHelpMsg ctxHelpMsg;
+		private ContextHelpMenupopup(MCtxHelpMsg ctxHelpMsg) {
+			super();
+			this.ctxHelpMsg = ctxHelpMsg;
+			Menuitem item = new Menuitem();
+			if (ctxHelpMsg.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx())) {
+				item.setLabel(Msg.getMsg(Env.getCtx(), "edit"));
+			} else {
+				item.setLabel(Msg.getElement(Env.getCtx(), "AD_CtxHelpSuggestion_ID"));
+			}
+			appendChild(item);
+			item.addEventListener(Events.ON_CLICK, this);
+		}
+		@Override
+		public void onEvent(Event event) throws Exception {
+			WCtxHelpSuggestion suggestion = new WCtxHelpSuggestion(ctxHelpMsg);
+			suggestion.setPage(this.getPage());
+			suggestion.doHighlighted();
+		}
+	}
 }

@@ -43,8 +43,10 @@ public class WDashboardContentEditor extends WEditor {
 		Panelchildren pc = new Panelchildren();
 		getComponent().appendChild(pc);		
 		
-		Caption caption = new Caption(content.get_Translation(MDashboardContent.COLUMNNAME_Name));
-    	getComponent().appendChild(caption);
+		if (content.get_ID() > 0) {
+			Caption caption = new Caption(content.get_Translation(MDashboardContent.COLUMNNAME_Name));
+			getComponent().appendChild(caption);
+		}
     	getComponent().addEventListener(ON_RENDER_CONTENT, this);
 	}
 

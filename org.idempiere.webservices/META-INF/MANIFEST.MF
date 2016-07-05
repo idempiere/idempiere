@@ -217,5 +217,6 @@ Export-Package: javax.ws.rs,
  org.idempiere.webservices,
  org.idempiere.webservices.client,
  org.idempiere.webservices.fault,
- org.springframework.web.context
+ org.springframework.web.context,
+ org.springframework.web.util
 Web-ContextPath: ADInterface

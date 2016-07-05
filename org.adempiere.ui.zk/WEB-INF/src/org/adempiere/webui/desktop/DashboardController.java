@@ -281,7 +281,7 @@ public class DashboardController implements EventListener<Event> {
 		boolean empty = true;
 		
 		// HTML content
-        String htmlContent = dc.get_Translation(MDashboardContent.COLUMNNAME_HTML);
+        String htmlContent = dc.get_ID() > 0 ? dc.get_Translation(MDashboardContent.COLUMNNAME_HTML) : null;
         if(htmlContent != null)
         {
             StringBuilder result = new StringBuilder("<html><head>");
