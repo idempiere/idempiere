@@ -6,13 +6,10 @@
 	<classpathentry exported="true" kind="lib" path="looks-2.0.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="miglayout-3.7.1-swing.jar"/>
 	<classpathentry exported="true" kind="lib" path="jpedal.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
-		<accessrules>
-			<accessrule kind="accessible" pattern="sun/awt/**"/>
-		</accessrules>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

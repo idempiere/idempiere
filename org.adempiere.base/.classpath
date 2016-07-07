@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry exported="true" kind="lib" path="bsh-2.0b6.jar"/>
 	<classpathentry exported="true" kind="lib" path="passay-1.0.jar"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="bsh-engine.jar"/>
 	<classpathentry exported="true" kind="lib" path="groovy-engine.jar"/>
 	<classpathentry exported="true" kind="lib" path="jython-engine.jar"/>
@@ -18,13 +22,6 @@
 	<classpathentry exported="true" kind="lib" path="super-csv-2.2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="barcode4j-2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="bcprov-jdk15on-1.46.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
-		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
-		</attributes>
-		<accessrules>
-			<accessrule kind="accessible" pattern="com/sun/rowset/**"/>
-		</accessrules>
-	</classpathentry>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
