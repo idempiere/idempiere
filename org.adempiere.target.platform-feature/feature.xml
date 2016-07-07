@@ -34,7 +34,7 @@
 
    <includes
          id="org.adempiere.bundles.external"
-         version="3.1.0.qualifier"/>
+         version="0.0.0"/>
 
    <includes
          id="org.eclipse.ecf.core.feature"

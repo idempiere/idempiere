@@ -59,9 +59,9 @@ Import-Package: javax.activation,
  org.apache.xerces.xs.datatypes;version="2.9.0",
  org.apache.xml.serialize;version="2.9.0",
  org.osgi.framework;version="1.6.0"
-Require-Bundle: org.adempiere.base;bundle-version="3.1.0",
- org.adempiere.ui;bundle-version="3.1.0",
- org.apache.ecs;bundle-version="3.1.0"
+Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
+ org.adempiere.ui;bundle-version="0.0.0",
+ org.apache.ecs;bundle-version="0.0.0"
 Bundle-ClassPath: .,
  WEB-INF/lib/spring-osgi-extender-1.2.1.jar,
  WEB-INF/lib/spring-aop-3.0.7.RELEASE.jar,

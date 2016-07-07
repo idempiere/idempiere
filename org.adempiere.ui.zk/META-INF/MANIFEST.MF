@@ -89,19 +89,19 @@ Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  web.js.jawwa.atmosphere,
  web.js.zkforge,
  web.js.zkforge.mold
-Require-Bundle: org.adempiere.base;bundle-version="3.1.0",
- org.adempiere.ui;bundle-version="3.1.0",
- org.idempiere.zk.extra;bundle-version="1.0.0",
- zcommon;bundle-version="8.0.0",
- zel;bundle-version="8.0.0",
- zhtml;bundle-version="8.0.0",
- zk;bundle-version="8.0.0",
- zkbind;bundle-version="8.0.0",
- zkplus;bundle-version="8.0.0",
- zul;bundle-version="8.0.0",
- zweb;bundle-version="8.0.0",
- org.junit;bundle-version="4.11.0",
- org.apache.commons.io;bundle-version="1.4.0"
+Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
+ org.adempiere.ui;bundle-version="0.0.0",
+ org.idempiere.zk.extra;bundle-version="0.0.0",
+ zcommon;bundle-version="0.0.0",
+ zel;bundle-version="0.0.0",
+ zhtml;bundle-version="0.0.0",
+ zk;bundle-version="0.0.0",
+ zkbind;bundle-version="0.0.0",
+ zkplus;bundle-version="0.0.0",
+ zul;bundle-version="0.0.0",
+ zweb;bundle-version="0.0.0",
+ org.junit;bundle-version="0.0.0",
+ org.apache.commons.io;bundle-version="0.0.0"
 Bundle-Activator: org.adempiere.webui.WebUIActivator
 Eclipse-ExtensibleAPI: true
 Web-ContextPath: webui

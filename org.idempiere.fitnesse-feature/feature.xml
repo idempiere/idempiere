@@ -20,28 +20,28 @@
          id="org.idempiere.fitnesse.fixture"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.idempiere.fitnesse.server"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.idempiere.ui.zk.selenium"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.idempiere.fitrecorder"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

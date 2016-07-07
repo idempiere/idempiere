@@ -9,7 +9,7 @@ Eclipse-RegisterBuddy: org.adempiere.tools
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: compiere.model,
  test
-Fragment-Host: org.adempiere.base;bundle-version="3.1.0"
+Fragment-Host: org.adempiere.base;bundle-version="0.0.0"
 Eclipse-PatchFragment: true
 Import-Package: junit.framework;version="3.8.2",
  org.junit;version="4.8.2",

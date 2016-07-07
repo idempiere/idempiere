@@ -17,16 +17,16 @@
    </license>
 
    <requires>
-      <import feature="org.adempiere.base" version="3.1.0.qualifier"/>
-      <import feature="org.adempiere.replication" version="3.1.0.qualifier"/>
-      <import plugin="org.adempiere.server" version="3.1.0.qualifier"/>
+      <import feature="org.adempiere.base" version="0.0.0"/>
+      <import feature="org.adempiere.replication" version="0.0.0"/>
+      <import plugin="org.adempiere.server" version="0.0.0"/>
    </requires>
 
    <plugin
          id="org.adempiere.replication.server"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

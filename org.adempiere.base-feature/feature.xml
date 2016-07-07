@@ -18,50 +18,50 @@
 
    <includes
          id="org.compiere.db.provider"
-         version="3.1.0.qualifier"/>
+         version="0.0.0"/>
 
    <includes
          id="org.adempiere.payment.processor"
-         version="3.1.0.qualifier"/>
+         version="0.0.0"/>
 
    <includes
          id="org.adempiere.pipo"
-         version="3.1.0.qualifier"/>
+         version="0.0.0"/>
 
    <includes
          id="org.adempiere.replication"
-         version="3.1.0.qualifier"/>
+         version="0.0.0"/>
 
    <includes
          id="org.adempiere.report.jasper"
-         version="3.1.0.qualifier"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.adempiere.base"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.base.callout"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.base.process"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.extend"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -69,14 +69,14 @@
          id="org.adempiere.ui"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.apache.ecs"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -250,7 +250,7 @@
          id="org.adempiere.install"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.osgi.services"

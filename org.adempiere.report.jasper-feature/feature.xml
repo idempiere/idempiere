@@ -17,7 +17,7 @@
    </license>
 
    <requires>
-      <import feature="org.adempiere.base" version="3.1.0.qualifier"/>
+      <import feature="org.adempiere.base" version="0.0.0"/>
    </requires>
 
    <plugin
@@ -30,7 +30,7 @@
          id="org.adempiere.report.jasper.library"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.apache.batik.bridge"

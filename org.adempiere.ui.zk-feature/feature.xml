@@ -17,7 +17,7 @@
    </license>
 
    <requires>
-      <import feature="org.adempiere.base" version="3.1.0.qualifier"/>
+      <import feature="org.adempiere.base" version="0.0.0"/>
    </requires>
 
    <plugin

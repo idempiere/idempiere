@@ -68,12 +68,12 @@ Export-Package: com.jgoodies.looks,
  org.jdesktop.swingx.tree,
  org.jdesktop.swingx.treetable,
  org.jdesktop.swingx.util
-Require-Bundle: org.adempiere.base;bundle-version="3.1.0",
- org.adempiere.ui;bundle-version="3.1.0",
- org.restlet;bundle-version="2.1.0",
- org.restlet.ext.net;bundle-version="2.1.0",
- org.restlet.ext.servlet;bundle-version="2.1.0",
- org.restlet.ext.ssl;bundle-version="2.1.0"
+Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
+ org.adempiere.ui;bundle-version="0.0.0",
+ org.restlet;bundle-version="0.0.0",
+ org.restlet.ext.net;bundle-version="0.0.0",
+ org.restlet.ext.servlet;bundle-version="0.0.0",
+ org.restlet.ext.ssl;bundle-version="0.0.0"
 Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.adempiere.base
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

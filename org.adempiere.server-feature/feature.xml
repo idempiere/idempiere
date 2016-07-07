@@ -18,21 +18,21 @@
 
    <includes
          id="org.adempiere.replication.server"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          optional="true"/>
 
    <includes
          id="org.adempiere.ui.zk"
-         version="3.1.0.qualifier"/>
+         version="0.0.0"/>
 
    <includes
          id="org.adempiere.webstore"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          optional="true"/>
 
    <includes
          id="org.idempiere.felix.webconsole"
-         version="3.1.0.qualifier"/>
+         version="0.0.0"/>
 
    <includes
          id="org.adempiere.report.jasper"
@@ -100,14 +100,14 @@
          id="org.adempiere.report.jasper.webapp"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.server"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -142,7 +142,7 @@
          id="org.adempiere.install"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.adempiere.eclipse.equinox.http.servlet"
@@ -176,7 +176,7 @@
          id="org.idempiere.webservices"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
