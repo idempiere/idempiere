@@ -237,7 +237,7 @@ Export-Package: .,
  org.joda.time.format,
  org.joda.time.tz,
  org.w3c.tools.codec
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.apache.commons.collections,
  org.w3c.tools.codec
 DynamicImport-Package: *

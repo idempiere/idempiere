@@ -353,7 +353,7 @@ Export-Package: bsh,
  org.supercsv.io,
  org.supercsv.prefs,
  org.supercsv.util
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.sun.mail.smtp;version="1.5",
  javax.activation,
  javax.jms;version="1.1.0",

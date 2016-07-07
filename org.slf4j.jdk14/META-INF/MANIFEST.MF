@@ -4,7 +4,7 @@ Bundle-Name: SLF4J with JDK logger
 Bundle-SymbolicName: org.slf4j.jdk14
 Bundle-Version: 1.7.2.qualifier
 Fragment-Host: org.slf4j.api;bundle-version="1.7.2"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.slf4j.impl;version=1.7.2
 Import-Package: org.slf4j;version=1.7.2,
  org.slf4j.spi;version=1.7.2,org.slf4j.helpers;version=1.7.2

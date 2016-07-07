@@ -4,7 +4,7 @@ Bundle-Name: iDempiere Web Store Servlets
 Bundle-SymbolicName: org.adempiere.webstore.servlet
 Bundle-Version: 3.1.0.qualifier
 Bundle-Vendor: Adempiere.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.compiere.wstore
 Require-Bundle: org.adempiere.base;bundle-version="3.1.0"
 Import-Package: javax.servlet,

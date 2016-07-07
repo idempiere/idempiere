@@ -4,7 +4,7 @@ Bundle-Name: W3c DOM Fragment
 Bundle-SymbolicName: org.w3c.dom.fragment
 Bundle-Version: 3.0.0.qualifier
 Fragment-Host: system.bundle; extension:=framework
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: batik-ext.jar,
  .
 Export-Package: org.w3c.dom,

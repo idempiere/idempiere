@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JasperReports Swing Client
 Bundle-SymbolicName: org.adempiere.report.jasper.swing;singleton:=true
 Bundle-Version: 3.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.adempiere.base;bundle-version="3.1.0",
  org.adempiere.ui.swing;bundle-version="3.1.0",
  org.adempiere.report.jasper;bundle-version="3.1.0",
