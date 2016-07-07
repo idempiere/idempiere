@@ -10,6 +10,13 @@
   <rm:locator pattern="^org\.eclipse\.jetty\.osgi\-servlet\-api$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.felix\.webconsole(\..+)?" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.felix\.inventory" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.passay$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^com\.itextpdf$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^bcpkix$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^bcprov$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^org\.cryptacular$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^net\.sf\.supercsv\.super-csv$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^org\.atmosphere\.runtime$" searchPathRef="bundles.maven" />
   <rm:locator pattern="^javax\.websocket\-api$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^javax\.annotation\-api$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^javax\.management\.j2ee\-api$" searchPathRef="bundles.maven"/>
@@ -127,6 +134,13 @@
         <maven:entry artifactId="org.apache.felix.inventory" groupId="org.apache.felix" name="org.apache.felix.inventory"/>
         <maven:entry artifactId="org.apache.felix.webconsole.plugins.packageadmin" groupId="org.apache.felix" name="org.apache.felix.webconsole.plugins.packageadmin"/>
         <maven:entry artifactId="javassist" groupId="org.javassist" name="javassist"/>
+        <maven:entry groupId="org.passay" artifactId="passay" name="org.passay" />
+        <maven:entry groupId="com.itextpdf" artifactId="itextpdf" name="com.itextpdf" />
+        <maven:entry groupId="org.bouncycastle" artifactId="bcpkix-jdk15on" name="bcpkix" />
+        <maven:entry groupId="org.bouncycastle" artifactId="bcprov-jdk15on" name="bcprov" />
+        <maven:entry groupId="org.cryptacular" artifactId="cryptacular" name="org.cryptacular" />
+        <maven:entry groupId="net.sf.supercsv" artifactId="super-csv" name="net.sf.supercsv.super-csv" />
+        <maven:entry groupId="org.atmosphere" artifactId="atmosphere-runtime" name="org.atmosphere.runtime" />
       </maven:mappings>
     </rm:provider>
   </rm:searchPath>

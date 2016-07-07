@@ -9,14 +9,14 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
+
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
 import org.compiere.util.SecureEngine;
-
-import com.lowagie.text.pdf.codec.Base64;
 
 public final class Prop implements Serializable {
 
@@ -208,7 +208,7 @@ public final class Prop implements Serializable {
 			try {
 				fis = new URL(getProperty(TEMPLATE_PATH)+getProperty(TEMPLATE_NAME)+"/styles/template.css");
 				byte data[]=read(fis);
-				ret+=Base64.encodeBytes(data);
+				ret+=Base64.getEncoder().encode (data);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -288,7 +288,7 @@ public final class Prop implements Serializable {
 			byte data[]=read(fis);
 			if(data==null||data.length<=0)
 				return null;
-			ret+=Base64.encodeBytes(data);
+			ret+=Base64.getEncoder().encode (data);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

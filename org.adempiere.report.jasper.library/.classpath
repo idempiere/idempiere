@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/bcprov-jdk14-140.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/itext-2.1.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/joda-time-2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jasperreports-functions-5.6.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>

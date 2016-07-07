@@ -11,15 +11,11 @@
 		<get src="${url.maven2.lib}/maven2/org/python/jython/2.2.1/jython-2.2.1.jar" dest="jython.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/it/sauronsoftware/cron4j/cron4j/2.2.5/cron4j-2.2.5.jar" dest="cron4j-2.2.5.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/net/sourceforge/barbecue/barbecue/1.5-beta1/barbecue-1.5-beta1.jar" dest="barbecue-1.5-beta1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/com/lowagie/itext/2.1.7/itext-2.1.7.jar" dest="iText-2.1.7.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/org/jfree/jcommon/1.0.23/jcommon-1.0.23.jar" dest="jcommon-1.0.23.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/org/jfree/jfreechart/1.0.19/jfreechart-1.0.19.jar" dest="jfreechart-1.0.19.jar" usetimestamp="true" verbose="true" retries="5" />
  		<!-- jnlp is not used in idempiere? -->
 		<get src="${url.maven2.lib}/maven2/org/codehaus/groovy/groovy-all/1.7.5/groovy-all-1.7.5.jar" dest="groovy-all-1.7.5.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/net/sf/supercsv/super-csv/2.2.0/super-csv-2.2.0.jar" dest="super-csv-2.2.0.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/net/sf/barcode4j/barcode4j/2.1/barcode4j-2.1.jar" dest="barcode4j-2.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/bouncycastle/bcprov-jdk15on/1.46/bcprov-jdk15on-1.46.jar" dest="bcprov-jdk15on-1.46.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/passay/passay/1.0/passay-1.0.jar" dest="passay-1.0.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.srv}/jarfile/3.1/jnlp.jar" dest="jnlp.jar" usetimestamp="true" verbose="true" retries="5" />
  	</target>
  </project>

@@ -31,11 +31,7 @@ Import-Package: javax.activation,
  org.slf4j.helpers;version="1.7.2",
  org.slf4j.spi;version="1.7.2"
 DynamicImport-Package: action.images
-Bundle-ClassPath: .,
- WEB-INF/lib/atmosphere-compat-jbossweb-1.0.4.jar,
- WEB-INF/lib/atmosphere-compat-tomcat-1.0.4.jar,
- WEB-INF/lib/atmosphere-compat-tomcat7-1.0.4.jar,
- WEB-INF/lib/atmosphere-runtime-1.0.4.jar
+Bundle-ClassPath: .
 Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  metainfo.zk,
  org.adempiere.webui,
@@ -68,25 +64,7 @@ Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  org.adempiere.webui.theme,
  org.adempiere.webui.util,
  org.adempiere.webui.window,
- org.apache.catalina,
- org.apache.catalina.comet,
- org.atmosphere.cache,
- org.atmosphere.client,
- org.atmosphere.config,
- org.atmosphere.config.service,
- org.atmosphere.container,
- org.atmosphere.container.version,
- org.atmosphere.cpr,
- org.atmosphere.di,
- org.atmosphere.handler,
- org.atmosphere.interceptor,
- org.atmosphere.util,
- org.atmosphere.util.uri,
- org.atmosphere.websocket,
- org.atmosphere.websocket.protocol,
- org.jboss.servlet.http,
  org.zkforge.keylistener,
- web.js.jawwa.atmosphere,
  web.js.zkforge,
  web.js.zkforge.mold
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
@@ -101,7 +79,9 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  zul;bundle-version="0.0.0",
  zweb;bundle-version="0.0.0",
  org.junit;bundle-version="0.0.0",
- org.apache.commons.io;bundle-version="0.0.0"
+ org.apache.commons.io;bundle-version="0.0.0",
+ com.itextpdf;bundle-version="0.0.0",
+ org.atmosphere.runtime;bundle-version="0.0.0"
 Bundle-Activator: org.adempiere.webui.WebUIActivator
 Eclipse-ExtensibleAPI: true
 Web-ContextPath: webui

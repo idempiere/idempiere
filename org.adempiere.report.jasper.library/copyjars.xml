@@ -9,5 +9,7 @@
 		<get src="${url.maven2.lib}/maven2/xalan/xalan/2.7.1/xalan-2.7.1.jar" dest="lib/xalan-2.7.1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.srv}/jarfile/3.1/jasperreports-functions-5.6.1.jar" dest="lib/jasperreports-functions-5.6.1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/joda-time/joda-time/2.1/joda-time-2.1.jar" dest="lib/joda-time-2.1.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.maven2.lib}/maven2/com/lowagie/itext/2.1.7/itext-2.1.7.jar" dest="lib/itext-2.1.7.jar" usetimestamp="true" verbose="true" retries="5" />
+    <get src="${url.maven2.lib}/maven2/bouncycastle/bcprov-jdk14/140/bcprov-jdk14-140.jar" dest="lib/bcprov-jdk14-140.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>

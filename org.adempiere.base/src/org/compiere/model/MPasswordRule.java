@@ -32,25 +32,21 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.util.HistoryRuleSupportHash;
-import org.passay.AlphabeticalCharacterRule;
-import org.passay.AlphabeticalSequenceRule;
 import org.passay.CharacterCharacteristicsRule;
+import org.passay.CharacterRule;
 import org.passay.DictionarySubstringRule;
-import org.passay.DigitCharacterRule;
+import org.passay.EnglishCharacterData;
+import org.passay.EnglishSequenceData;
+import org.passay.IllegalSequenceRule;
 import org.passay.LengthRule;
-import org.passay.LowercaseCharacterRule;
 import org.passay.MessageResolver;
-import org.passay.NumericalSequenceRule;
 import org.passay.PasswordData;
 import org.passay.PasswordGenerator;
 import org.passay.PasswordValidator;
 import org.passay.PropertiesMessageResolver;
-import org.passay.QwertySequenceRule;
 import org.passay.RepeatCharacterRegexRule;
 import org.passay.Rule;
 import org.passay.RuleResult;
-import org.passay.SpecialCharacterRule;
-import org.passay.UppercaseCharacterRule;
 import org.passay.UsernameRule;
 import org.passay.WhitespaceRule;
 import org.passay.dictionary.ArrayWordList;
@@ -136,24 +132,24 @@ public class MPasswordRule extends X_AD_PasswordRule {
 		if (getDigitCharacter() > 0) {
 			// require at least n digit in passwords
 			numValidations++;
-			charRule.getRules().add(new DigitCharacterRule(getDigitCharacter()));
+			charRule.getRules().add(new CharacterRule(EnglishCharacterData.Digit, getDigitCharacter()));
 		}
 		if (getNonAlphaNumericCharacter() > 0) {
 			// require at least n non-alphanumeric char
 			numValidations++;
-			charRule.getRules().add(new SpecialCharacterRule(getNonAlphaNumericCharacter()));
+			charRule.getRules().add(new CharacterRule(EnglishCharacterData.Special, getNonAlphaNumericCharacter()));
 		}
 		if (getUppercaseCharacter() > 0) {
 			numValidations++;
-			charRule.getRules().add(new UppercaseCharacterRule(getUppercaseCharacter()));	
+			charRule.getRules().add(new CharacterRule(EnglishCharacterData.UpperCase, getUppercaseCharacter()));	
 		}
 		if (getLowercaseCharacter() > 0) {
 			numValidations++;
-			charRule.getRules().add(new LowercaseCharacterRule(getLowercaseCharacter()));
+			charRule.getRules().add(new CharacterRule(EnglishCharacterData.LowerCase, getLowercaseCharacter()));
 		}
 		if (getAlphabeticalCharacter() > 0){
 			numValidations++;
-			charRule.getRules().add(new AlphabeticalCharacterRule(getAlphabeticalCharacter()));
+			charRule.getRules().add(new CharacterRule (EnglishCharacterData.Alphabetical, getAlphabeticalCharacter()));
 		}
 		if (! charRule.getRules().isEmpty()) {
 			charRule.setNumberOfCharacteristics(numValidations);
@@ -161,14 +157,14 @@ public class MPasswordRule extends X_AD_PasswordRule {
 		}
 
 		if (getAlphabeticalSequence() > 0) {
-			ruleList.add(new AlphabeticalSequenceRule(getAlphabeticalSequence(), true));
+			ruleList.add(new IllegalSequenceRule (EnglishSequenceData.Alphabetical, getAlphabeticalSequence(), true));
 		}
 
 		if (getNumericalSequence() > 0) {
-			ruleList.add(new NumericalSequenceRule(getNumericalSequence(), true));
+			ruleList.add(new IllegalSequenceRule(EnglishSequenceData.Numerical, getNumericalSequence(), true));
 		}
 		if (getQWERTYSequence() > 0) {
-			ruleList.add(new QwertySequenceRule(getQWERTYSequence(), true));
+			ruleList.add(new IllegalSequenceRule(EnglishSequenceData.USQwerty, getQWERTYSequence(), true));
 		}
 
 		if (getRepeatCharacterRegex() > 0) {
@@ -269,24 +265,24 @@ public class MPasswordRule extends X_AD_PasswordRule {
 		if (getDigitCharacter() > 0) {
 			// require at least n digit in passwords
 			numValidations++;
-			charRule.getRules().add(new DigitCharacterRule(getDigitCharacter()));
+			charRule.getRules().add(new CharacterRule(EnglishCharacterData.Digit, getDigitCharacter()));
 		}
 		if (getNonAlphaNumericCharacter() > 0) {
 			// require at least n non-alphanumeric char
 			numValidations++;
-			charRule.getRules().add(new SpecialCharacterRule(getNonAlphaNumericCharacter()));
+			charRule.getRules().add(new CharacterRule(EnglishCharacterData.Special, getNonAlphaNumericCharacter()));
 		}
 		if (getUppercaseCharacter() > 0) {
 			numValidations++;
-			charRule.getRules().add(new UppercaseCharacterRule(getUppercaseCharacter()));	
+			charRule.getRules().add(new CharacterRule(EnglishCharacterData.UpperCase, getUppercaseCharacter()));	
 		}
 		if (getLowercaseCharacter() > 0) {
 			numValidations++;
-			charRule.getRules().add(new LowercaseCharacterRule(getLowercaseCharacter()));
+			charRule.getRules().add(new CharacterRule(EnglishCharacterData.LowerCase, getLowercaseCharacter()));
 		}
 		if (getAlphabeticalCharacter() > 0){
 			numValidations++;
-			charRule.getRules().add(new AlphabeticalCharacterRule(getAlphabeticalCharacter()));
+			charRule.getRules().add(new CharacterRule(EnglishCharacterData.Alphabetical, getAlphabeticalCharacter()));
 		}
 		if (! charRule.getRules().isEmpty()) {
 			charRule.setNumberOfCharacteristics(numValidations);

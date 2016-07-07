@@ -25,5 +25,11 @@
          download-size="0"
          install-size="0"
          version="3.1.0.qualifier"/>
-
+         
+   <plugin
+         id="org.atmosphere.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 </feature>
