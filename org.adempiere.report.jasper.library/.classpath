@@ -9,7 +9,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/jasperreports-fonts-5.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-core-2.1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xalan-2.7.1.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
