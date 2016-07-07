@@ -32,7 +32,6 @@ import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
-import org.apache.ecs.xhtml.col;
 import org.compiere.grid.PaymentFormCreditCard;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccountProcessor;

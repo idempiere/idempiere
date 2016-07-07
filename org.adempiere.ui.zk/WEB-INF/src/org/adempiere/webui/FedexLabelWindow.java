@@ -23,7 +23,6 @@ import org.adempiere.webui.component.ListboxFactory;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.apache.ecs.xhtml.center;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.util.CLogger;
 import org.zkoss.util.media.AMedia;
