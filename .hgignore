@@ -1,6 +1,7 @@
 syntax: glob
 build
 
+External Plug-in Libraries
 syntax: regexp
 ^adempiere$
 ^org\.adempiere\.install/lib$
