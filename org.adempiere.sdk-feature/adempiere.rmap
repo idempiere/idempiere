@@ -40,11 +40,12 @@
   <rm:locator searchPathRef="orbit" failOnError="false"/>
   <rm:locator searchPathRef="workspace.project" failOnError="false"/>
   <rm:locator searchPathRef="workspace.feature"/>
+  
   <rm:searchPath name="equinox">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://download.eclipse.org/eclipse/updates/4.4/"/>
+      <rm:uri format="${url.equinox}"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="workspace.project">
@@ -77,21 +78,21 @@
   </rm:searchPath>
   <rm:searchPath name="jetty">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2">
-      <rm:uri format="http://download.eclipse.org/jetty/updates/jetty-bundles-9.x"/>
+      <rm:uri format="${url.jetty}"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="orbit">
     <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository/"/>
+      <rm:uri format="${url.orbit}"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="restlet.maven">
     <rm:provider xsi:type="maven:MavenProvider" componentTypes="osgi.bundle" readerType="maven2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://maven.restlet.org"/>
+      <rm:uri format="${url.maven.restlet}"/>
       <maven:mappings>
         <maven:entry artifactId="org.restlet" groupId="org.restlet.osgi" name="org.restlet"/>
         <maven:entry artifactId="org.restlet.ext.net" groupId="org.restlet.osgi" name="org.restlet.ext.net"/>
@@ -104,7 +105,7 @@
     <rm:provider xsi:type="maven:MavenProvider" componentTypes="osgi.bundle" readerType="maven2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://central.maven.org/maven2"/>
+      <rm:uri format="${url.maven2}/maven2"/>
       <maven:mappings>
         <maven:entry artifactId="apache-jsp" groupId="org.mortbay.jasper" name="org.mortbay.jasper.apache-jsp"/>
         <maven:entry artifactId="apache-el" groupId="org.mortbay.jasper" name="org.mortbay.jasper.apache-el"/>
@@ -139,7 +140,7 @@
     <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/zk-p2/zk-8.0.1.1/"/>
+      <rm:uri format="${url.zkoss.osgi}"/>
     </rm:provider>
   </rm:searchPath>
 </rm:rmap>
