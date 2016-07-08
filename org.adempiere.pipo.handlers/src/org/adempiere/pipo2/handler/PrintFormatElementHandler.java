@@ -33,7 +33,6 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_PrintFormat;
-import org.compiere.model.I_AD_PrintFormatItem;
 import org.compiere.model.I_AD_PrintPaper;
 import org.compiere.model.I_AD_Table;
 import org.compiere.model.X_AD_Package_Exp_Detail;
@@ -65,6 +64,7 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 			return;
 		}
 
+		element.recordId = mPrintFormat.getAD_PrintFormat_ID();
 		if (mPrintFormat.is_new() || mPrintFormat.is_Changed()) {
 			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_PrintFormat.Table_Name,
 					X_AD_PrintFormat.Table_ID);		
