@@ -9,7 +9,6 @@
     <cq:property key="target.ws" value="*"/>
 
     <cq:advisorNode namePattern="^org\.objectweb\.asm(\..+)?" componentType="osgi.bundle" versionOverride="[5.0.1,6.0.0)"/>
-    <cq:advisorNode namePattern="^org\.restlet(\..+)?" componentType="osgi.bundle" versionOverride="[2.1.0,2.2.0)"/>
     <cq:advisorNode namePattern="^org\.apache\.felix\.webconsole$" useTargetPlatform="false" useWorkspace="false" versionOverride="[4.2.2,4.3.0)"/>
     <cq:advisorNode namePattern="^org\.apache\.felix\.webconsole\.plugins\.packageadmin$" useTargetPlatform="false" useWorkspace="false" versionOverride="[1.0.0,1.0.0]"/>
     <cq:advisorNode namePattern="^org\.eclipse\.jetty\.osgi-servlet-api$" useTargetPlatform="false" useWorkspace="false" versionOverride="[0.0.0,9.3.0]"/>

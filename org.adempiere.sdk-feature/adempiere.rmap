@@ -27,7 +27,7 @@
   <rm:locator pattern="^org\.slf4j(\..+)?" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.apache\.ant(\..+)?" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.apache\.commons(\..+)?" searchPathRef="orbit"/>
-  <rm:locator pattern="^org\.restlet(\..+)?" searchPathRef="restlet.maven"/>
+  <rm:locator pattern="^org\.restlet(\..+)?" searchPathRef="restlet.p2"/>
   <rm:locator pattern="^zcommon$" searchPathRef="zkoss.osgi"/>
   <rm:locator pattern="^zel$" searchPathRef="zkoss.osgi"/>
   <rm:locator pattern="^zhtml$" searchPathRef="zkoss.osgi"/>
@@ -88,17 +88,11 @@
       <rm:uri format="${url.orbit}"/>
     </rm:provider>
   </rm:searchPath>
-  <rm:searchPath name="restlet.maven">
-    <rm:provider xsi:type="maven:MavenProvider" componentTypes="osgi.bundle" readerType="maven2" source="false" mutable="false">
+  <rm:searchPath name="restlet.p2">
+    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="${url.maven.restlet}"/>
-      <maven:mappings>
-        <maven:entry artifactId="org.restlet" groupId="org.restlet.osgi" name="org.restlet"/>
-        <maven:entry artifactId="org.restlet.ext.net" groupId="org.restlet.osgi" name="org.restlet.ext.net"/>
-        <maven:entry artifactId="org.restlet.ext.servlet" groupId="org.restlet.osgi" name="org.restlet.ext.servlet"/>
-        <maven:entry artifactId="org.restlet.ext.ssl" groupId="org.restlet.osgi" name="org.restlet.ext.ssl"/>
-      </maven:mappings>
+      <rm:uri format="${url.restlet.p2}"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="bundles.maven">
