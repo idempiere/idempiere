@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rm:rmap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:maven="http://www.eclipse.org/buckminster/MavenProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
+  <rm:locator pattern="^org\.eclipse\.jetty\.http$" searchPathRef="workspace.project"/>
+  <rm:locator pattern="^org\.eclipse\.jetty\.alpn\.api$" searchPathRef="modify-bundle"/>
   <rm:locator pattern="^org\.apache\.felix\.webconsole\.plugins\.packageadmin$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.idempiere\.hazelcast\.service$" searchPathRef="workspace.feature" failOnError="false"/>
   <rm:locator pattern="^org\.idempiere\.hazelcast\.service$" searchPathRef="workspace.project"/>
@@ -169,6 +171,13 @@
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
       <rm:uri format="${url.zkoss.osgi}"/>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="modify-bundle">
+    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
+      <rm:property key="buckminster.source" value="false"/>
+      <rm:property key="buckminster.mutable" value="false"/>
+      <rm:uri format="${url.modify.bundle}"/>
     </rm:provider>
   </rm:searchPath>
 </rm:rmap>

@@ -2,6 +2,7 @@ syntax: glob
 build
 
 External Plug-in Libraries
+org.eclipse.jetty.http/bin
 syntax: regexp
 ^adempiere$
 ^org\.adempiere\.install/lib$

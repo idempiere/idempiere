@@ -1,0 +1,35 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven Bundle Plugin
+Built-By: joakim
+Build-Jdk: 1.8.0_65
+Implementation-Vendor: Eclipse.org - Jetty
+Implementation-Version: 9.3.10.v20160621
+url: http://www.eclipse.org/jetty
+Bnd-LastModified: 1457969504223
+Bundle-Classpath: .
+Bundle-Copyright: Copyright (c) 2008-2016 Mort Bay Consulting Pty. Ltd.
+Bundle-Description: Jetty module for Jetty :: Http Utility
+Bundle-DocURL: http://www.eclipse.org/jetty
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0, http://www
+ .eclipse.org/org/documents/epl-v10.php
+Bundle-ManifestVersion: 2
+Bundle-Name: Jetty :: Http Utility
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-SymbolicName: org.eclipse.jetty.http
+Bundle-Vendor: Eclipse Jetty Project
+Bundle-Version: 9.3.10.v20160621
+Export-Package: org.eclipse.jetty.http;version="9.3.10";uses:="org.ecl
+ ipse.jetty.util,org.eclipse.jetty.util.log,org.eclipse.jetty.util.res
+ ource",org.eclipse.jetty.http.pathmap;version="9.3.10";uses:="org.ecl
+ ipse.jetty.util.annotation,org.eclipse.jetty.util.component",org.ecli
+ pse.jetty.http2.hpack;version="9.3.10";uses:="org.eclipse.jetty.http,
+ org.eclipse.jetty.util.log"
+Import-Package: org.eclipse.jetty.util;version="[9.3.10,9.3.11)",org.e
+ clipse.jetty.util.annotation;version="[9.3.10,9.3.11)",org.eclipse.je
+ tty.util.component;version="[9.3.10,9.3.11)",org.eclipse.jetty.util.l
+ og;version="[9.3.10,9.3.11)",org.eclipse.jetty.util.resource;version=
+ "[9.3.10,9.3.11)"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Tool: Bnd-2.4.1.201501161923
+

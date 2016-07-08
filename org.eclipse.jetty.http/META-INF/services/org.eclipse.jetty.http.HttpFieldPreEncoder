@@ -1,0 +1,2 @@
+org.eclipse.jetty.http.Http1FieldPreEncoder
+org.eclipse.jetty.http2.hpack.HpackFieldPreEncoder
