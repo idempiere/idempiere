@@ -71,7 +71,8 @@ Export-Package: com.jgoodies.looks,
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.ui;bundle-version="0.0.0",
  org.restlet;bundle-version="0.0.0",
- org.restlet.ext.servlet;bundle-version="0.0.0"
+ org.restlet.ext.servlet;bundle-version="0.0.0",
+ groovy-all;bundle-version="0.0.0"
 Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.adempiere.base
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

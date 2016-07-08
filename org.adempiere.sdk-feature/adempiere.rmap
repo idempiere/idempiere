@@ -14,6 +14,9 @@
   <rm:locator pattern="^com\.itextpdf$" searchPathRef="bundles.maven" />
   <rm:locator pattern="^bcpkix$" searchPathRef="bundles.maven" />
   <rm:locator pattern="^bcprov$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^com\.ibm\.icu$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^groovy-all$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^joda-time$" searchPathRef="bundles.maven" />
   <rm:locator pattern="^org\.cryptacular$" searchPathRef="bundles.maven" />
   <rm:locator pattern="^net\.sf\.supercsv\.super-csv$" searchPathRef="bundles.maven" />
   <rm:locator pattern="^org\.atmosphere\.runtime$" searchPathRef="bundles.maven" />
@@ -94,6 +97,11 @@
       <rm:property key="buckminster.mutable" value="false"/>
       <rm:uri format="${url.orbit}"/>
     </rm:provider>
+    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
+      <rm:property key="buckminster.source" value="false"/>
+      <rm:property key="buckminster.mutable" value="false"/>
+      <rm:uri format="${url.orbit.neon}"/>
+    </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="restlet.p2">
     <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
@@ -141,6 +149,9 @@
         <maven:entry groupId="org.cryptacular" artifactId="cryptacular" name="org.cryptacular" />
         <maven:entry groupId="net.sf.supercsv" artifactId="super-csv" name="net.sf.supercsv.super-csv" />
         <maven:entry groupId="org.atmosphere" artifactId="atmosphere-runtime" name="org.atmosphere.runtime" />
+        <maven:entry groupId="org.codehaus.groovy" artifactId="groovy-all" name="groovy-all" />
+        <maven:entry groupId="com.ibm.icu" artifactId="icu4j" name="com.ibm.icu" />
+        <maven:entry groupId="joda-time" artifactId="joda-time" name="joda-time" />
       </maven:mappings>
     </rm:provider>
   </rm:searchPath>
