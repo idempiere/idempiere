@@ -4,6 +4,10 @@ INSERT INTO AD_Form (AD_Form_ID,Updated,Classname,Created,IsBetaFunctionality,AD
 ;
 
 -- Jul 5, 2016 8:48:55 PM MYT
+INSERT INTO AD_Window (AD_Window_ID,AD_Client_ID,AD_Org_ID,Updated,Processing,WindowType,IsSOTrx,IsDefault,IsBetaFunctionality,Created,WinHeight,WinWidth,EntityType,Name,UpdatedBy,CreatedBy,Description,AD_Window_UU,IsActive) VALUES (200088,0,0,TO_TIMESTAMP('2016-07-05 20:48:55','YYYY-MM-DD HH24:MI:SS'),'N','M','N','N','N',TO_TIMESTAMP('2016-07-05 20:48:55','YYYY-MM-DD HH24:MI:SS'),0,0,'D','Context Help Suggestion',100,100,'Review context help suggestion from tenant','09616484-7415-4b61-94f5-19ec432650a6','Y')
+;
+
+-- Jul 5, 2016 8:48:55 PM MYT
 INSERT INTO AD_Menu (AD_Menu_ID,AD_Client_ID,Updated,Created,AD_Menu_UU,IsSummary,"action",IsSOTrx,IsReadOnly,AD_Org_ID,UpdatedBy,CreatedBy,IsCentrallyMaintained,Name,IsActive,AD_Window_ID,EntityType) VALUES (200143,0,TO_TIMESTAMP('2016-07-05 20:48:55','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2016-07-05 20:48:55','YYYY-MM-DD HH24:MI:SS'),'05a76d62-2448-4629-92fd-5b17d76e7f8f','N','W','N','N',0,100,100,'Y','Context Help Suggestion','Y',200088,'D')
 ;
 
@@ -13,10 +17,6 @@ INSERT INTO AD_TreeNode (AD_Client_ID,AD_Org_ID, IsActive,Created,CreatedBy,Upda
 
 -- Jul 5, 2016 8:48:55 PM MYT
 INSERT INTO AD_TREENODEMM(AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy, Parent_ID, SeqNo, AD_Tree_ID, Node_ID)VALUES(0, 0, 0, 0, 153,28, 10, 200143)
-;
-
--- Jul 5, 2016 8:48:55 PM MYT
-INSERT INTO AD_Window (AD_Window_ID,AD_Client_ID,AD_Org_ID,Updated,Processing,WindowType,IsSOTrx,IsDefault,IsBetaFunctionality,Created,WinHeight,WinWidth,EntityType,Name,UpdatedBy,CreatedBy,Description,AD_Window_UU,IsActive) VALUES (200088,0,0,TO_TIMESTAMP('2016-07-05 20:48:55','YYYY-MM-DD HH24:MI:SS'),'N','M','N','N','N',TO_TIMESTAMP('2016-07-05 20:48:55','YYYY-MM-DD HH24:MI:SS'),0,0,'D','Context Help Suggestion',100,100,'Review context help suggestion from tenant','09616484-7415-4b61-94f5-19ec432650a6','Y')
 ;
 
 -- Jul 5, 2016 8:49:07 PM MYT
