@@ -85,6 +85,7 @@ import net.sf.jasperreports.export.SimplePrintServiceExporterConfiguration;
 import net.sf.jasperreports.export.SimpleTextExporterConfiguration;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsExporterConfiguration;
+import net.sf.jasperreports.export.SimpleXmlExporterOutput;
 
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
@@ -741,7 +742,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
             				JRXmlExporter export = new JRXmlExporter(jasperContext);
             				SimpleExporterConfiguration config = new SimpleExporterConfiguration();
             				export.setConfiguration(config);
-            				export.setExporterOutput(new SimpleWriterExporterOutput(strm));
+            				export.setExporterOutput(new SimpleXmlExporterOutput(strm));
             				exporter = export;
             			} else if (ext.equals("csv") || ext.equals("ssv") ) {
             				JRCsvExporter export = new JRCsvExporter(jasperContext);

@@ -1,0 +1,25 @@
+jasper report use some library have osgi version on maven or orbit.
+but alot not yet have osgi version or have but outdate.
+it ever use a modify version like itext
+
+guide for update:
+1. download distribute at https://sourceforge.net/projects/jasperreports/files/jasperreports/
+   download file (jasperreports-x.x.x-project.zip)
+
+2. extract it and run ant to get all dependency library
+(ant just get normal library to let Jasperreport do common job, 
+for extra like encrypt, have go to sample project to get dependency
+but just focus common job and already know extra like encrypt)
+
+3. also download jasperreports-functions-x.x.x.jar
+
+4. now edit org.adempiere.report.jasper.library follow bellow rule
+   + if library have same version with library already use on idempiere, just use import package or bundle dependency
+   + if library have osgi on net (manven, orbit,...), add to org.adempiere.base-feature or org.adempiere.report.jasper-feature to materialize it
+   + if library not yet have osgi version, push it in lib folder and use Bundle-ClassPath
+   
+note for version 6.3.0
+poi-3.10.1 haven't yet osgi version, ever on newest obit repository. so use  Bundle-ClassPath
+batik haven't yet osgi version, ever on newest obit repository. so use  Bundle-ClassPath
+current batik osgi version isn't use by other bundle, so can remove it. 
+itext is very old and have modify code from JP community, so use version from JP
