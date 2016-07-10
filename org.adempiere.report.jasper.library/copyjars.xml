@@ -1,7 +1,6 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
 		<mkdir dir="lib" />
-		<get src="${url.file.jp.lib}/antlr-2.7.5.jar" dest="lib/antlr-2.7.5.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/batik-anim-1.8.jar" dest="lib/batik-anim-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/batik-awt-util-1.8.jar" dest="lib/batik-awt-util-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/batik-bridge-1.8.jar" dest="lib/batik-bridge-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
@@ -50,7 +49,6 @@
 		<get src="${url.file.jp.lib}/spring-beans-2.5.jar" dest="lib/spring-beans-2.5.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/spring-core-2.5.jar" dest="lib/spring-core-2.5.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/velocity-1.7.jar" dest="lib/velocity-1.7.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/xalan-2.7.2.jar" dest="lib/xalan-2.7.2.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/xml-apis-ext-1.3.04.jar" dest="lib/xml-apis-ext-1.3.04.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/xmlgraphics-commons-1.5.jar" dest="lib/xmlgraphics-commons-1.5.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/xmpcore-5.1.1.jar" dest="lib/xmpcore-5.1.1.jar" usetimestamp="true" verbose="true" retries="5" />	
