@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rm:rmap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:maven="http://www.eclipse.org/buckminster/MavenProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
+  <rm:propertyElement key="extend.plugin.root">
+    <bc:replace pattern="/[^/]+$" replacement="/">
+      <bc:propertyRef key="workspace.root"/>
+    </bc:replace>
+  </rm:propertyElement>
   <rm:locator pattern="^org\.eclipse\.jetty\.http$" searchPathRef="workspace.project"/>
   <rm:locator pattern="^org\.eclipse\.jetty\.alpn\.api$" searchPathRef="modify-bundle"/>
   <rm:locator pattern="^org\.apache\.felix\.webconsole\.plugins\.packageadmin$" searchPathRef="bundles.maven"/>
@@ -56,8 +61,9 @@
   <rm:locator pattern="^zjavassist$" searchPathRef="zkoss.osgi"/>
   <rm:locator searchPathRef="orbit" failOnError="false"/>
   <rm:locator searchPathRef="workspace.project" failOnError="false"/>
-  <rm:locator searchPathRef="workspace.feature"/>
-  
+  <rm:locator searchPathRef="workspace.feature" failOnError="false"/>
+  <rm:locator searchPathRef="extend.workspace"/>
+
   <rm:searchPath name="equinox">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
@@ -179,6 +185,41 @@
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
       <rm:uri format="${url.modify.bundle}"/>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="extend.workspace">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
+      <rm:uri format="${extend.plugin.root}${buckminster.component}"/>
+    </rm:provider>
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.1}/${buckminster.component}"/>
+    </rm:provider>
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.2}/${buckminster.component}"/>
+    </rm:provider>
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.3}/${buckminster.component}"/>
+    </rm:provider>
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.4}/${buckminster.component}"/>
+    </rm:provider>
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.5}/${buckminster.component}"/>
+    </rm:provider>
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.6}/${buckminster.component}"/>
+    </rm:provider>
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.7}/${buckminster.component}"/>
+    </rm:provider>
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.8}/${buckminster.component}"/>
+    </rm:provider>
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.9}/${buckminster.component}"/>
+    </rm:provider>
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.10}/${buckminster.component}"/>
     </rm:provider>
   </rm:searchPath>
 </rm:rmap>
