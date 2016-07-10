@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><cq:componentQuery xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" resourceMap="adempiere.rmap" properties="file:/mnt/data/dev/project/me/repository/stuff/setup.idempiere/materialize.local.properties">
+<?xml version="1.0" encoding="UTF-8"?><cq:componentQuery xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" resourceMap="adempiere.rmap" properties="materialize.properties">
     <cq:rootRequest name="org.adempiere.sdk" componentType="eclipse.feature"/>
     <cq:property key="buckminster.download.source" value="true"/>
     <cq:property key="osgi.configuration.area.default" value="configuration"/>
