@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/bcprov-jdk14-139.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/batik-anim-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/batik-awt-util-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/batik-bridge-1.8.jar"/>

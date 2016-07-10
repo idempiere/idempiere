@@ -54,7 +54,8 @@ Bundle-ClassPath: lib/batik-anim-1.8.jar,
  lib/xml-apis-ext-1.3.04.jar,
  lib/xmlgraphics-commons-1.5.jar,
  lib/xmpcore-5.1.1.jar,
- .
+ .,
+ lib/bcprov-jdk14-139.jar
 Export-Package: net.sf.jasperreports.ant,
  net.sf.jasperreports.charts,
  net.sf.jasperreports.charts.base,
@@ -222,7 +223,8 @@ Require-Bundle: bcprov;bundle-version="1.54.0",
  com.fasterxml.jackson.core.jackson-databind;bundle-version="0.0.0",
  joda-time;bundle-version="0.0.0",
  com.ibm.icu;bundle-version="0.0.0",
- org.apache.xalan;bundle-version="2.7.1"
+ org.apache.xalan;bundle-version="2.7.1",
+ org.apache.xerces;bundle-version="2.9.0"
 Import-Package: bsh,
  bsh.classpath,
  bsh.collection,
