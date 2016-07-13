@@ -100,10 +100,6 @@ ALTER TABLE AD_CtxHelpSuggestion ADD COLUMN AD_Org_ID NUMERIC(10) NOT NULL
 ;
 
 -- Jul 5, 2016 8:49:13 PM MYT
-INSERT INTO AD_Element (AD_Element_ID,Updated,Created,AD_Client_ID,Name,PrintName,ColumnName,AD_Element_UU,AD_Org_ID,CreatedBy,UpdatedBy,IsActive,EntityType) VALUES (203019,TO_TIMESTAMP('2016-07-05 20:49:13','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2016-07-05 20:49:13','YYYY-MM-DD HH24:MI:SS'),0,'Tenant of User','Tenant of User','AD_UserClient_ID','fddba35b-0026-4aaf-8550-386fca53dc3d',0,100,100,'Y','D')
-;
-
--- Jul 5, 2016 8:49:13 PM MYT
 INSERT INTO AD_Column (SeqNoSelection,AD_Column_ID,IsAlwaysUpdateable,IsSyncDatabase,AD_Client_ID,AD_Org_ID,Updated,EntityType,IsSecure,IsEncrypted,IsParent,IsMandatory,IsIdentifier,SeqNo,Version,FieldLength,IsKey,IsTranslated,Created,IsUpdateable,IsAutocomplete,IsAllowLogging,CreatedBy,IsAllowCopy,ColumnName,Name,IsSelectionColumn,AD_Column_UU,UpdatedBy,IsActive,IsToolbarButton,IsUseLuceneIndex,FKConstraintType,FKConstraintName,AD_Element_ID,AD_Reference_ID,AD_Reference_Value_ID,AD_Table_ID) VALUES (0,212804,'N','Y',0,0,TO_TIMESTAMP('2016-07-05 20:49:13','YYYY-MM-DD HH24:MI:SS'),'D','N','N','N','Y','N',0,0,10,'N','N',TO_TIMESTAMP('2016-07-05 20:49:13','YYYY-MM-DD HH24:MI:SS'),'N','N','Y',100,'N','AD_UserClient_ID','Tenant of User','N','6c813190-2366-445e-a57e-c07d8ad0b039',100,'Y','N','N','N','ADUserClient_ADCtxHelpSuggesti',203019,18,129,200210)
 ;
 
@@ -187,10 +183,6 @@ ALTER TABLE AD_CtxHelpSuggestion ADD COLUMN UpdatedBy NUMERIC(10) NOT NULL
 ;
 
 -- Jul 5, 2016 8:49:19 PM MYT
-INSERT INTO AD_Element (AD_Element_ID,Updated,Created,AD_Client_ID,Description,Name,PrintName,ColumnName,AD_Element_UU,AD_Org_ID,CreatedBy,UpdatedBy,IsActive,EntityType) VALUES (203023,TO_TIMESTAMP('2016-07-05 20:49:18','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2016-07-05 20:49:18','YYYY-MM-DD HH24:MI:SS'),0,'Accept suggested changes','Accept','Accept','AcceptSuggestion','1105db44-6e5d-4ca3-b999-b6862b636e38',0,100,100,'Y','D')
-;
-
--- Jul 5, 2016 8:49:19 PM MYT
 INSERT INTO AD_Process (AD_Process_ID,Classname,Created,CreatedBy,Value,CopyFromProcess,AD_Process_UU,IsReport,AccessLevel,IsDirectPrint,IsBetaFunctionality,Updated,IsServerProcess,AD_Client_ID,ShowHelp,EntityType,Name,Statistic_Seconds,Statistic_Count,UpdatedBy,Description,IsActive,AD_Org_ID) VALUES (200096,'org.adempiere.base.process.AcceptCtxHelpSuggestion',TO_TIMESTAMP('2016-07-05 20:49:19','YYYY-MM-DD HH24:MI:SS'),100,'AcceptCtxHelpSuggestion','N','dbabdf46-c3bc-4e02-ab0a-f61f6ae60b4b','N','4','N','N',TO_TIMESTAMP('2016-07-05 20:49:19','YYYY-MM-DD HH24:MI:SS'),'N',0,'Y','D','Accept Context Help Suggestion',4,4,100,'Accept suggested changes for context help','Y',0)
 ;
 
@@ -211,10 +203,6 @@ ALTER TABLE AD_CtxHelpSuggestion ADD COLUMN AcceptSuggestion CHAR(1) DEFAULT NUL
 ;
 
 -- Jul 5, 2016 8:49:21 PM MYT
-INSERT INTO AD_Element (AD_Element_ID,Updated,Created,AD_Client_ID,Description,Name,PrintName,ColumnName,AD_Element_UU,AD_Org_ID,CreatedBy,UpdatedBy,IsActive,EntityType) VALUES (203022,TO_TIMESTAMP('2016-07-05 20:49:20','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2016-07-05 20:49:20','YYYY-MM-DD HH24:MI:SS'),0,'Reject suggested changes','Reject','Reject','RejectSuggestion','8b1c3a36-511a-4506-9d3b-cd8932034fab',0,100,100,'Y','D')
-;
-
--- Jul 5, 2016 8:49:21 PM MYT
 INSERT INTO AD_Process (AD_Process_ID,Classname,Created,CreatedBy,Value,CopyFromProcess,AD_Process_UU,IsReport,AccessLevel,IsDirectPrint,IsBetaFunctionality,Updated,IsServerProcess,AD_Client_ID,ShowHelp,EntityType,Name,Statistic_Seconds,Statistic_Count,UpdatedBy,Description,IsActive,AD_Org_ID) VALUES (200097,'org.adempiere.base.process.RejectCtxHelpSuggestion',TO_TIMESTAMP('2016-07-05 20:49:21','YYYY-MM-DD HH24:MI:SS'),100,'RejectCtxHelpSuggestion','N','9e375e8d-dfff-446d-be92-8a6104c76717','N','4','N','N',TO_TIMESTAMP('2016-07-05 20:49:21','YYYY-MM-DD HH24:MI:SS'),'N',0,'Y','D','Reject Context Help Suggestion',1,1,100,'Reject suggested changes for context help','Y',0)
 ;
 
@@ -224,10 +212,6 @@ INSERT INTO AD_Column (SeqNoSelection,AD_Column_ID,IsAlwaysUpdateable,IsSyncData
 
 -- Jul 5, 2016 8:49:21 PM MYT
 ALTER TABLE AD_CtxHelpSuggestion ADD COLUMN RejectSuggestion CHAR(1) DEFAULT NULL 
-;
-
--- Jul 5, 2016 8:49:22 PM MYT
-INSERT INTO AD_Element (AD_Element_ID,Updated,Created,AD_Client_ID,Description,Name,PrintName,ColumnName,AD_Element_UU,AD_Org_ID,CreatedBy,UpdatedBy,IsActive,EntityType) VALUES (203024,TO_TIMESTAMP('2016-07-05 20:49:22','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2016-07-05 20:49:22','YYYY-MM-DD HH24:MI:SS'),0,'Compare suggested text with original text','Compare','Compare','CompareSuggestion','aea1e79d-ca75-48ef-b806-a6290a1de6fe',0,100,100,'Y','D')
 ;
 
 -- Jul 5, 2016 8:49:22 PM MYT
