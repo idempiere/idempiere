@@ -38,6 +38,8 @@ import org.adempiere.webui.editor.WTimeEditor;
 import org.adempiere.webui.editor.WUnknownEditor;
 import org.adempiere.webui.editor.WUrlEditor;
 import org.adempiere.webui.editor.WYesNoEditor;
+import org.adempiere.webui.editor.grid.selection.WGridTabMultiSelectionEditor;
+import org.adempiere.webui.editor.grid.selection.WGridTabSingleSelectionEditor;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.util.DisplayType;
@@ -188,6 +190,14 @@ public class DefaultEditorFactory implements IEditorFactory {
         else if (displayType == DisplayType.Assignment)
         {
         	editor = new WAssignmentEditor(gridField);
+        }
+        else if (displayType == DisplayType.SingleSelectionGrid)
+        {
+        	editor = new WGridTabSingleSelectionEditor(gridField, tableEditor);
+        }
+        else if (displayType == DisplayType.MultipleSelectionGrid)
+        {
+        	editor = new WGridTabMultiSelectionEditor(gridField, tableEditor);
         }
         else
         {
