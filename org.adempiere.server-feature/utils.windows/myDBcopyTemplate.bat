@@ -7,6 +7,7 @@
 @Rem	You may want to copy it to another disk first
 @Rem	Note that the %DATE% parameter is local specific.
 @Rem	In Germany, it is %DATE:~3,2%
+@Rem    For USA, the following alternative formatting works: %date:~10,4%%date:~7,2%%date:~4,2%_%time:~0,2%%time:~3,2%%time:~6,2%
 @Rem	When called, the following files were created:
 @Rem		%IDEMPIERE_HOME%\data\ExpDat.dmp
 @Rem		%IDEMPIERE_HOME%\data\ExpDat.log
