@@ -48,7 +48,7 @@ import org.zkoss.zul.ext.Selectable;
  * @author Low Heng Sin
  *
  */
-public class GridTabSelectionListView extends Borderlayout implements EventListener<Event>
+public class GridTabSelectionListView extends Borderlayout
 {
 	/**
 	 * 
@@ -262,7 +262,6 @@ public class GridTabSelectionListView extends Borderlayout implements EventListe
 		listbox.setVflex(true);
 		listbox.setHflex("1");
 		listbox.setSizedByContent(true);
-		listbox.addEventListener(Events.ON_SELECT, this);
 		
 		updateModel();				
 		
@@ -288,17 +287,6 @@ public class GridTabSelectionListView extends Borderlayout implements EventListe
 	 * deactive panel
 	 */
 	public void deactivate() {
-	}
-
-	public void onEvent(Event event) throws Exception
-	{		
-		if (event == null)
-			return;		
-		else if (event.getTarget() == listbox)
-		{
-			int count = listbox.getSelectedCount();
-			selectedLabel.setValue(Msg.getMsg(Env.getCtx(), "Selected") + " : " + count);
-        }
 	}
 
 	/**

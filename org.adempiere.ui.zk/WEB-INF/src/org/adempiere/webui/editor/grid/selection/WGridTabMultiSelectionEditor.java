@@ -31,10 +31,12 @@ import org.compiere.model.GridTab;
 import org.compiere.model.GridTabVO;
 import org.compiere.model.GridWindow;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.ListModel;
+import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.ext.Selectable;
 
 /**
@@ -84,7 +86,7 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
     {
 		if (tableEditor)
 			setVisible(false);
-		else if (gridField != null)
+		else if (gridField != null && gridField.getGridTab() != null)
 		{
 			int AD_Tab_ID = gridField.getIncluded_Tab_ID();
 			GridWindow gridWindow = gridField.getGridTab().getGridWindow();
@@ -96,11 +98,24 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
 				{
 					GridTabVO vo = t.getVO();
 					listViewGridTab = new GridTab(vo, gridWindow);
-					listViewGridTab.setLinkColumnName(t.getLinkColumnName());
+					String lcn = t.getLinkColumnName();
+					if (Util.isEmpty(lcn)) {
+						t.setLinkColumnName(null);
+						lcn = t.getLinkColumnName();
+					}
+					listViewGridTab.setLinkColumnName(lcn);
 					getComponent().init(listViewGridTab);
 					break;
 				}
 			}
+			
+			popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
+			Menuitem clear = new Menuitem(Msg.getMsg(Env.getCtx(), "ClearSelection"), null);
+			clear.setAttribute("EVENT", "onClearSelection");
+			clear.addEventListener(Events.ON_CLICK, popupMenu);
+			popupMenu.appendChild(clear);
+			
+			getComponent().getListbox().setContext(popupMenu);
 		}
     }
 
@@ -222,6 +237,12 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
 		else if (WEditorPopupMenu.CHANGE_LOG_EVENT.equals(evt.getContextEvent()))
 		{
 			WFieldRecordInfo.start(gridField);
+		}
+		else if ("onClearSelection".equals(evt.getContextEvent()))
+		{
+			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, null);
+	        super.fireValueChange(changeEvent);
+	        oldValue = null;
 		}
 	}
 
