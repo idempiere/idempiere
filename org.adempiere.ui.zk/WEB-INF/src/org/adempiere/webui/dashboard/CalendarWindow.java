@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
 
-import javax.swing.text.StyledEditorKit.BoldAction;
 
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;

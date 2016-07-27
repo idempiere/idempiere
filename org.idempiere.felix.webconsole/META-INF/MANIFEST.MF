@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.idempiere.felix.webconsole
 Bundle-Version: 3.1.0.qualifier
 Bundle-Activator: org.idempiere.felix.webconsole.Activator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.servlet;version="2.5.0",
  javax.servlet.http;version="2.5.0",
  javax.servlet.jsp;version="2.1.0",

@@ -8,13 +8,12 @@ import javax.net.ssl.SSLSession;
 
 import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
-
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.restlet.Client;
 import org.restlet.Context;
 import org.restlet.data.Protocol;
-import org.restlet.ext.net.HttpClientHelper;
+import org.restlet.engine.connector.HttpClientHelper;
 
 public class Application implements IApplication {
 	private static CLogger log = CLogger.getCLogger(Application.class);

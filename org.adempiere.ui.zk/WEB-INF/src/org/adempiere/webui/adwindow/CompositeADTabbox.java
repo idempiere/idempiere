@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.webui.component.ADTabListModel;
@@ -69,8 +68,6 @@ public class CompositeADTabbox extends AbstractADTabbox
 
 	public static final String ON_SELECTION_CHANGED_EVENT = "onSelectionChanged";
 	
-	/** Logger                  */
-	private static CLogger  log = CLogger.getCLogger (CompositeADTabbox.class);
 
     private List<ADTabListModel.ADTabLabel> tabLabelList = new ArrayList<ADTabListModel.ADTabLabel>();
     

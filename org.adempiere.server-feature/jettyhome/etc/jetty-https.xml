@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd">
 
 <!-- ============================================================= -->
 <!-- Configure a HTTPS connector.                                  -->
@@ -8,7 +8,7 @@
 <!-- ============================================================= -->
 <Configure id="sslConnector" class="org.eclipse.jetty.server.ServerConnector">
 
-  <Call name="addConnectionFactory">
+  <Call name="addIfAbsentConnectionFactory">
     <Arg>
       <New class="org.eclipse.jetty.server.SslConnectionFactory">
         <Arg name="next">http/1.1</Arg>
@@ -16,7 +16,7 @@
       </New>
     </Arg>
   </Call>
-
+  
   <Call name="addConnectionFactory">
     <Arg>
       <New class="org.eclipse.jetty.server.HttpConnectionFactory">
@@ -24,5 +24,4 @@
       </New>
     </Arg>
   </Call>
-  
 </Configure>

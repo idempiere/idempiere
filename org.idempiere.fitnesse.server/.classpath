@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/selenium-server-standalone-2.39.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
@@ -7,7 +8,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/fitnesse.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.16.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/fitlibraryweb-2.0.jar" sourcepath="lib/fitlibraryweb-2.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/selenium-server-standalone-2.35.0.jar" sourcepath="/home/hengsin/Downloads/jetty-9.2.3.sources/apache-jsp-8.0.9.M3-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/phantomjsdriver-1.0.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

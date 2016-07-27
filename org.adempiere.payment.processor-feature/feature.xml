@@ -17,14 +17,14 @@
    </license>
 
    <requires>
-      <import feature="org.adempiere.base" version="3.1.0.qualifier"/>
+      <import feature="org.adempiere.base" version="0.0.0"/>
    </requires>
 
    <plugin
          id="org.adempiere.payment.processor"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

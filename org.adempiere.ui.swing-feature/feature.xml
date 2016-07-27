@@ -17,49 +17,27 @@
    </license>
 
    <requires>
-      <import feature="org.adempiere.base" version="3.1.0.qualifier"/>
+      <import feature="org.adempiere.base" version="0.0.0"/>
    </requires>
 
    <plugin
          id="org.adempiere.report.jasper.swing"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.adempiere.ui.swing"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"/>
-
-   <plugin
-         id="org.restlet.ext.net"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.restlet.ext.ssl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.restlet.ext.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.transaction"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
          unpack="false"/>
 
    <plugin

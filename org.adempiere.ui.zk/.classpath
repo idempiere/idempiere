@@ -3,9 +3,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="WEB-INF/src"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/atmosphere-compat-jbossweb-1.0.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/atmosphere-compat-tomcat-1.0.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/atmosphere-compat-tomcat7-1.0.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/atmosphere-runtime-1.0.4.jar" sourcepath="WEB-INF/lib/src/atmosphere-runtime-1.0.4-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.idempiere.fitnesse.server
 Bundle-Version: 3.1.0.qualifier
 Bundle-Activator: org.idempiere.fitnesse.server.Activator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.servlet;version="3.0.0",
  javax.servlet.http;version="3.0.0",
  org.adempiere.base,
@@ -18,8 +18,8 @@ Bundle-ClassPath: .,
  lib/fitnesse.jar,
  lib/log4j-1.2.16.jar,
  lib/fitlibraryweb-2.0.jar,
- lib/selenium-server-standalone-2.35.0.jar,
- lib/phantomjsdriver-1.0.3.jar
+ lib/phantomjsdriver-1.0.3.jar,
+ lib/selenium-server-standalone-2.39.0.jar
 Web-ContextPath: fitnesse
 Export-Package: fit,
  fit.decorator,

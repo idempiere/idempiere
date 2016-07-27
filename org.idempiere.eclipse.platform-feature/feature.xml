@@ -138,14 +138,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.httpcomponents.httpclient.source"
+         id="org.apache.httpcomponents.httpclient"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.httpcomponents.httpcore.source"
+         id="org.apache.httpcomponents.httpcore"
          download-size="0"
          install-size="0"
          version="0.0.0"

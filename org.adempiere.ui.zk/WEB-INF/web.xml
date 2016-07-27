@@ -17,11 +17,15 @@
       </init-param>
       <init-param>
     	<param-name>org.atmosphere.cpr.broadcasterCacheClass</param-name>
-    	<param-value>org.atmosphere.cache.HeaderBroadcasterCache</param-value>
+    	<param-value>org.atmosphere.cache.SessionBroadcasterCache</param-value>
 	  </init-param>
 	  <init-param>
     	<param-name>org.atmosphere.cpr.AtmosphereInterceptor</param-name>
     	<param-value>org.atmosphere.client.TrackMessageSizeInterceptor</param-value>
+ 	  </init-param>
+ 	  <init-param>
+    	<param-name>org.atmosphere.websocket.suppressJSR356</param-name>
+    	<param-value>true</param-value>
  	  </init-param>
       <load-on-startup>0</load-on-startup>
       <!-- Remove async-supported if you are not using Servlet 3.0 -->

@@ -10,9 +10,6 @@
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
-		<accessrules>
-			<accessrule kind="accessible" pattern="sun/awt/**"/>
-		</accessrules>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

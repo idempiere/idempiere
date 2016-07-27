@@ -45,6 +45,10 @@
 					tofile="jettyhome/etc/jetty-ssl.xml" filtering="yes" overwrite="yes"/>
 		<copy file="jettyhome/etc/jetty-selector-template.xml"
 					tofile="jettyhome/etc/jetty-selector.xml" filtering="yes" overwrite="yes"/>
+		<copy file="jettyhome/etc/jetty-ssl-context-template.xml"
+							tofile="jettyhome/etc/jetty-ssl-context.xml" filtering="yes" overwrite="yes"/>		
+		<copy file="jettyhome/etc/jetty-http-template.xml"
+							tofile="jettyhome/etc/jetty-http.xml" filtering="yes" overwrite="yes"/>
 		<copy file="hazelcast-template.xml"
 							tofile="hazelcast.xml" filtering="yes" overwrite="yes"/>
 

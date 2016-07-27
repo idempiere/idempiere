@@ -59,7 +59,6 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Vbox;
 
-import com.sun.corba.se.impl.oa.poa.AOMEntry;
 
 /**
 * Based on InfoPayment written by Jorg Janke
