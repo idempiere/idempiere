@@ -2826,7 +2826,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public String processCallout (GridField field)
 	{
 		//
-		if (isProcessed() && !field.isAlwaysUpdateable())		//	only active records
+		if (isProcessed() && !field.isAlwaysUpdateable() && !field.isKey())		//	only active records
 			return "";			//	"DocProcessed";
 
 		Object value = field.getValue();

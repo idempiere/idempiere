@@ -74,13 +74,14 @@ public class Document {
             		document.newPage();
             	}
             	
-	            final PdfTemplate tp = cb.createTemplate(w, h);
-	            final Graphics2D g2 = tp.createGraphics(w, h, mapper);
+	            PdfTemplate tp = cb.createTemplate(w, h);
+	            Graphics2D g2 = tp.createGraphics(w, h, mapper);
 	            tp.setWidth(w);
 	            tp.setHeight(h);
 	            pageable.getPrintable(page).print(g2, pf, page);
 	            g2.dispose();
 	            cb.addTemplate(tp, 0, 0);
+	            writer.releaseTemplate(tp);
             }
             document.close();
             

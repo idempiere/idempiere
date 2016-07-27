@@ -85,13 +85,13 @@ stop () {
     cd $IDEMPIERE_HOME/utils
     source $ENVFILE
     # try shutdown from OSGi console, then direct kill with signal 15, then signal 9
-    log_warning_msg "Trying shutdown from OSGi console"
+    echo "Trying shutdown from OSGi console"
     ( echo exit; echo y; sleep 5 ) | telnet localhost 12612 > /dev/null 2>&1
     getidempierestatus
     if [ $IDEMPIERESTATUS -ne 0 ] ; then
         echo_success
     else
-        log_warning_msg "Trying direct kill with signal -15"
+        echo "Trying direct kill with signal -15"
         kill -15 -`ps ax o pgid,command | grep -v grep | grep $IDEMPIERE_HOME | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
         sleep 5
         getidempierestatus

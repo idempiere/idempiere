@@ -143,6 +143,7 @@ public class PackInProcess extends SvrProcess {
 			adPackageImp.setDateProcessed(new Timestamp(System.currentTimeMillis()));
 			adPackageImp.setP_Msg(msg);
 			adPackageImp.saveEx();
+			commitEx(); // we need to commit to capture HERE when the deferred validation of foreign keys can fail
 		} catch (Exception e) {
 			adPackageImp.setP_Msg(e.getLocalizedMessage());
 			packIn.getNotifier().addStatusLine(e.getLocalizedMessage());
