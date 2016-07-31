@@ -4,6 +4,10 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 	<display-name>iDempiere Web Client</display-name>
+	<context-param>
+		<param-name>org.eclipse.jetty.servlet.SessionCookie</param-name>
+		<param-value>WEBUI_SESSIONID</param-value>
+	</context-param>
 	<servlet>
       <servlet-name>AtmosphereServlet</servlet-name>
       <servlet-class>org.atmosphere.cpr.AtmosphereServlet</servlet-class>
