@@ -264,7 +264,7 @@ CREATE OR REPLACE VIEW c_invoice_linetax_vt AS
                 LEFT JOIN c_charge c 
                 ON il.c_charge_id = c.c_charge_id 
                 LEFT JOIN c_charge_trl ct 
-                ON il.c_charge_id = ct.c_charge_id 
+                ON il.c_charge_id = ct.c_charge_id AND uomt.ad_language = ct.ad_language
                 LEFT JOIN c_bpartner_product pp 
                 ON il.m_product_id = pp.m_product_id AND i.c_bpartner_id = pp.c_bpartner_id 
                 LEFT JOIN m_product_trl pt 
@@ -534,7 +534,7 @@ CREATE OR REPLACE VIEW c_invoice_linetax_vt AS
                         ON bl.m_product_id = pt.m_product_id AND uomt.ad_language = pt.ad_language 
                         LEFT JOIN c_tax t 
                         ON il.c_tax_id = t.c_tax_id 
-                        LEFT JOIN c_tax_trl tt 
+                        LEFT JOIN c_tax_trl tt
                         ON il.c_tax_id = tt.c_tax_id AND uomt.ad_language = tt.ad_language 
                         LEFT JOIN m_attributesetinstance asi 
                         ON il.m_attributesetinstance_id = asi.m_attributesetinstance_id) 

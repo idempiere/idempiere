@@ -233,6 +233,7 @@ AS
                 ON iol.c_charge_id = c.c_charge_id
          LEFT JOIN c_charge_trl ct
                 ON iol.c_charge_id = ct.c_charge_id
+                   AND uomt.ad_language = ct.ad_language
   UNION
   SELECT iol.ad_client_id,
          iol.ad_org_id,

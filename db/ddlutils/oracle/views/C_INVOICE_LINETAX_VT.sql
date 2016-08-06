@@ -306,6 +306,7 @@ AS
                    ON il.c_charge_id = c.c_charge_id
             LEFT JOIN c_charge_trl ct
                    ON il.c_charge_id = ct.c_charge_id
+                      AND uomt.ad_language = ct.ad_language
             LEFT JOIN c_bpartner_product pp
                    ON il.m_product_id = pp.m_product_id
                       AND i.c_bpartner_id = pp.c_bpartner_id
