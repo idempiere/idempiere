@@ -40,7 +40,7 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5506706349428999742L;
+	private static final long serialVersionUID = 2158181283878369676L;
 
 	/**
 	 * 	Get Payment Schedule of the Order
@@ -229,7 +229,7 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 	{
 		if (!success)
 			return success;
-		if (is_ValueChanged("DueAmt"))
+		if (is_ValueChanged("DueAmt") || is_ValueChanged("IsActive"))
 		{
 			log.fine("afterSave");
 			getParent();
@@ -239,5 +239,15 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 		return success;
 	}	//	afterSave
 
-	
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (!success)
+			return success;
+		log.fine("afterDelete");
+		getParent();
+		m_parent.validatePaySchedule();
+		m_parent.saveEx();
+		return success;
+	}	
+
 }	//	MOrderPaySchedule
