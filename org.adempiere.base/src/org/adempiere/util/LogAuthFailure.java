@@ -35,13 +35,14 @@ public class LogAuthFailure  {
 
 	private static FileOutputStream file = null;
 	private static Writer writer;
+	public static String authFailureFilename = "AuthFailure.log";
 	/**	Logger				*/
 	private static CLogger log = CLogger.getCLogger(LogAuthFailure.class);
 
 	public LogAuthFailure() {
 
 		String path = Ini.getAdempiereHome() + File.separator + "log";
-		String name = path + File.separator + "AuthFailure.log";
+		String name = path + File.separator + authFailureFilename;
 		File fileName;
 		try {
 			fileName = new File(name);			  

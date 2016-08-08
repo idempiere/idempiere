@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.adempiere.util.LogAuthFailure;
 import org.apache.ecs.HtmlColor;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.b;
@@ -381,6 +382,8 @@ public class AdempiereMonitor extends HttpServlet
 				{
 					String fileName = logs[i].getAbsolutePath();
 					if (fileName.equals(fileHandler.getFileName()))
+						continue;
+					if (fileName.endsWith(LogAuthFailure.authFailureFilename)) // Do not delete login failure
 						continue;
 					if (logs[i].delete())
 						log.warning("Deleted: " + fileName);
