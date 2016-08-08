@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
 import org.adempiere.webui.event.ContextMenuEvent;
@@ -33,6 +34,7 @@ import org.compiere.model.GridWindow;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.ListModel;
@@ -55,6 +57,8 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
 	private GridTab listViewGridTab = null;
 
 	private String currentLinkValue = null;
+
+	private boolean readWrite;
 	
     public WGridTabMultiSelectionEditor(GridField gridField) {
     	this(gridField, false);
@@ -62,35 +66,42 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
 
     public WGridTabMultiSelectionEditor(GridField gridField, boolean tableEditor)
     {
-        super(new GridTabSelectionListView(true, gridField.getWindowNo()), gridField);
+        super(tableEditor ? new Textbox() : new GridTabSelectionListView(true, gridField.getWindowNo()), gridField);
         this.tableEditor = tableEditor;
         init();
     }
 
     @Override
-    public GridTabSelectionListView getComponent() {
-    	return (GridTabSelectionListView) component;
+    public HtmlBasedComponent getComponent() {
+    	return (HtmlBasedComponent) component;
     }
 
     @Override
 	public boolean isReadWrite() {
-		return !getComponent().getListbox().isEnabled();
+    	return readWrite;		
 	}
 
 	@Override
 	public void setReadWrite(boolean readWrite) {
-		getComponent().getListbox().setEnabled(readWrite);
+		if (getComponent() instanceof GridTabSelectionListView) {
+    		GridTabSelectionListView listView = (GridTabSelectionListView) getComponent();
+    		listView.getListbox().setEnabled(readWrite);
+    	}
+		this.readWrite = readWrite; 
 	}
 
 	private void init()
     {
 		if (tableEditor)
-			setVisible(false);
+		{
+			((Textbox)getComponent()).setReadonly(true);
+		}
 		else if (gridField != null && gridField.getGridTab() != null)
 		{
 			int AD_Tab_ID = gridField.getIncluded_Tab_ID();
 			GridWindow gridWindow = gridField.getGridTab().getGridWindow();
 			int count = gridWindow.getTabCount();
+			GridTabSelectionListView listView = (GridTabSelectionListView) getComponent();
 			for(int i = 0; i < count; i++)
 			{
 				GridTab t = gridWindow.getTab(i);
@@ -104,7 +115,7 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
 						lcn = t.getLinkColumnName();
 					}
 					listViewGridTab.setLinkColumnName(lcn);
-					getComponent().init(listViewGridTab);
+					listView.init(listViewGridTab);
 					break;
 				}
 			}
@@ -115,7 +126,7 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
 			clear.addEventListener(Events.ON_CLICK, popupMenu);
 			popupMenu.appendChild(clear);
 			
-			getComponent().getListbox().setContext(popupMenu);
+			listView.getListbox().setContext(popupMenu);
 		}
     }
 
@@ -124,7 +135,8 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
     	if (Events.ON_SELECT.equals(event.getName()))
     	{
     		Object newValue = null;
-    		Listbox listbox = getComponent().getListbox();
+    		GridTabSelectionListView listView = (GridTabSelectionListView) getComponent();
+    		Listbox listbox = listView.getListbox();
     		ListModel<GridTableRow> model = listbox.getModel();
     		if (model != null && model instanceof Selectable<?>)
     		{
@@ -142,7 +154,7 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
     		}
     		else
     		{
-	    		int[] selection = getComponent().getListbox().getSelectedIndices();
+	    		int[] selection = listView.getListbox().getSelectedIndices();
 		        StringBuilder buffer = new StringBuilder();
 		        for(int rowIndex : selection) 
 		        {
@@ -190,10 +202,14 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
     		return;
     	}
     	oldValue = value;
-        updateSlectedIndices();
+    	if (!tableEditor)
+    		updateSlectedIndices();
+    	else
+    		((Textbox)getComponent()).setValue(oldValue != null ? oldValue.toString() : "");
     }
 
 	private void updateSlectedIndices() {
+		GridTabSelectionListView listView = (GridTabSelectionListView) getComponent();
 		if (!Util.isEmpty((String)oldValue))
         {
         	List<Integer> list = new ArrayList<Integer>();
@@ -212,11 +228,11 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
         	{
         		selectedIndices[i] = list.get(i);
         	}
-        	getComponent().setSelectedIndices(selectedIndices);
+        	listView.setSelectedIndices(selectedIndices);
         }
 		else
 		{
-			getComponent().clearSelection();
+			listView.clearSelection();
 		}
 	}
 
@@ -248,14 +264,17 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
 
 	@Override
 	public void dynamicDisplay() {
-		String name = listViewGridTab.getLinkColumnName();
-		String linkValue = Env.getContext(Env.getCtx(), gridField.getWindowNo(), name);
-		if ((currentLinkValue == null && linkValue != null)
-			|| (currentLinkValue != null && linkValue == null)
-			|| (currentLinkValue != null && linkValue != null && !currentLinkValue.equals(linkValue)))
-		{
-			getComponent().refresh(listViewGridTab);
-			updateSlectedIndices();
+		if (!tableEditor && listViewGridTab != null) {
+			String name = listViewGridTab.getLinkColumnName();
+			String linkValue = Env.getContext(Env.getCtx(), gridField.getWindowNo(), name);
+			if ((currentLinkValue == null && linkValue != null)
+				|| (currentLinkValue != null && linkValue == null)
+				|| (currentLinkValue != null && linkValue != null && !currentLinkValue.equals(linkValue)))
+			{
+				GridTabSelectionListView listView = (GridTabSelectionListView) getComponent();
+				listView.refresh(listViewGridTab);
+				updateSlectedIndices();
+			}
 		}
 	}
 }
