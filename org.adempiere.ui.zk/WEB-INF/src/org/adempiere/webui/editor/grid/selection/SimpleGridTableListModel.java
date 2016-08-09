@@ -113,7 +113,11 @@ public class SimpleGridTableListModel extends AbstractListModel<GridTableRow> im
 		//use default zk comparator
 		if (cmpr instanceof ListitemComparator) {			
 			ListitemComparator lic = (ListitemComparator) cmpr;
-			tableModel.sort(lic.getListheader().getColumnIndex(), ascending);
+			Integer index = (Integer) lic.getListheader().getAttribute("ColumnIndex");
+			if (index != null && index.intValue() >= 0)
+				tableModel.sort(index.intValue(), ascending);
+			else
+				tableModel.sort(lic.getListheader().getColumnIndex(), ascending);
 		} else if (cmpr instanceof SortComparator) {
 			SortComparator sc = (SortComparator)cmpr;
 			tableModel.sort(sc.getColumnIndex(), ascending);

@@ -237,6 +237,7 @@ public class GridTabSelectionListView extends Borderlayout
 				ListHeader colHeader = new ListHeader();
 				colHeader.setSort("auto");
 				colHeader.setLabel(gridField[i].getHeader());
+				colHeader.setAttribute("ColumnIndex", getColumnIndex(gridField[i].getColumnName()));
 				if (columnWidthMap != null && columnWidthMap.get(gridField[i].getAD_Field_ID()) != null) {
 					colHeader.setWidth(columnWidthMap.get(gridField[i].getAD_Field_ID()));
 				} else {
@@ -256,6 +257,15 @@ public class GridTabSelectionListView extends Borderlayout
 		listbox.appendChild(header);
 	}
 	
+	private int getColumnIndex(String columnName) {
+		for(int i = 0; i < gridTab.getTableModel().getColumnCount(); i++) {
+			if (gridTab.getTableModel().getColumnName(i).equals(columnName)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	private void render()
 	{
 		listbox.setStyle("min-height: 200px");
