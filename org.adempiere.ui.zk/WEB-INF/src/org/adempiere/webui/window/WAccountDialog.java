@@ -1210,7 +1210,11 @@ public final class WAccountDialog extends Window
 	 */
 	public void valueChange(ValueChangeEvent evt) {
 		Object newValue = evt.getNewValue();
-		if (newValue instanceof Integer)
+		if (newValue instanceof Integer) {
 			Env.setContext(Env.getCtx(), m_WindowNo, "Account_ID", ((Integer)newValue).intValue());
+			if (f_SubAcct_ID != null) {
+				f_SubAcct_ID.dynamicDisplay();
+			}
+		}
 	}
 }	//	WAccountDialog

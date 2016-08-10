@@ -39,8 +39,7 @@ public class MAcctSchema extends X_C_AcctSchema
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7228171623905614596L;
-
+	private static final long serialVersionUID = 8940388112876468770L;
 
 	/**
 	 *  Get AccountSchema of Client
@@ -201,8 +200,6 @@ public class MAcctSchema extends X_C_AcctSchema
 	}	//	MAcctSchema
 
 
-	/** Element List       */
-	private MAcctSchemaElement[]	m_elements = null;
 	/** GL Info				*/
 	private MAcctSchemaGL			m_gl = null;
 	/** Default Info		*/
@@ -228,9 +225,7 @@ public class MAcctSchema extends X_C_AcctSchema
 	 */
 	public MAcctSchemaElement[] getAcctSchemaElements()
 	{
-		if (m_elements == null)
-			m_elements = MAcctSchemaElement.getAcctSchemaElements(this);
-		return m_elements;
+		return MAcctSchemaElement.getAcctSchemaElements(this);
 	}   //  getAcctSchemaElements
 
 	/**
@@ -240,11 +235,8 @@ public class MAcctSchema extends X_C_AcctSchema
 	 */
 	public MAcctSchemaElement getAcctSchemaElement (String elementType)
 	{
-		if (m_elements == null)
-			getAcctSchemaElements();
-		for (int i = 0; i < m_elements.length; i++)
-		{
-			MAcctSchemaElement ase = m_elements[i];
+		/** Element List       */
+		for (MAcctSchemaElement ase : getAcctSchemaElements()) {
 			if (ase.getElementType().equals(elementType))
 				return ase;
 		}
