@@ -366,7 +366,7 @@ public class MMatchInv extends X_M_MatchInv
 	 */
 	public boolean reverse(Timestamp reversalDate)  
 	{
-		if (this.isPosted() && this.getReversal_ID() == 0)
+		if (this.isProcessed() && this.getReversal_ID() == 0)
 		{		
 			MMatchInv reversal = new MMatchInv (getCtx(), 0, get_TrxName());
 			PO.copyValues(this, reversal);
