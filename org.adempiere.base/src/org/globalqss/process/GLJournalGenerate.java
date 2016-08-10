@@ -426,7 +426,7 @@ public class GLJournalGenerate extends SvrProcess
 			        j.setDateDoc(p_DateAcct);
 			        j.setDescription(journalGenerator.getDescription());
 			        j.setDocumentNo(p_DocumentNo);
-			        j.setGL_Category_ID(journalGenerator.getGL_Category_ID());
+			        j.set_ValueOfColumn("GL_Category_ID", journalGenerator.getGL_Category_ID()); // can be zero
 					j.setPostingType(journalGenerator.getPostingType());
 			        j.setC_AcctSchema_ID(as.getC_AcctSchema_ID());
 			        j.setC_ConversionType_ID(MConversionType.getDefault(as.getAD_Client_ID()));
