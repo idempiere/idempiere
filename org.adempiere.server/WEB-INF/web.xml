@@ -9,6 +9,10 @@
 		<param-name>ServerRoot</param-name>
 		<param-value>1</param-value>
 	</context-param>
+	<context-param>
+		<param-name>org.eclipse.jetty.servlet.SessionCookie</param-name>
+		<param-value>ROOT_SESSIONID</param-value>
+	</context-param> 
 	<filter>
 		<display-name>iDempiere Monitor Filter</display-name>
 		<filter-name>idempiereMonitorFilter</filter-name>

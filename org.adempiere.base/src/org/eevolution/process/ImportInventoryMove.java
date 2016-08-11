@@ -391,7 +391,7 @@ public class ImportInventoryMove extends SvrProcess
 	 */
 	private int getID(String tableName, String whereClause, Object[] values)
 	{
-		return new Query(getCtx(),tableName,whereClause,get_TrxName())
+		return new Query(getCtx(),tableName,whereClause,get_TrxName()).setClient_ID()
 		.setParameters(values).firstId();
 	}  
 	

@@ -605,6 +605,10 @@ public class GridField
 	public Object getDefault(ParseSeq seqGetDefaultValue){
 		Object defaultValue = null;
 		for (Character seqType : seqGetDefaultValue){
+			if (   seqType == '3'  // default from Expression 
+				&& m_vo.DefaultValue != null
+				&& m_vo.DefaultValue.toUpperCase().equals("NULL")) // IDEMPIERE-2678
+				return null;
 			defaultValue = getDefaultValueByType(seqType);
 			if (defaultValue != null)
 				return defaultValue;

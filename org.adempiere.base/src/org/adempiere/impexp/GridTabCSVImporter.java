@@ -958,7 +958,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 				if(idS == null && id < 0){	
 				   //it could be that record still doesn't exist if import mode is inserting or merging   	
 				   if(isUpdateMode())
-				     return new StringBuilder(Msg.getMsg(Env.getCtx(),"ForeignNotResolved",new Object[]{header.get(i),value}));
+				     return new StringBuilder(Msg.getMsg(Env.getCtx(),id==-2?"ForeignMultipleResolved":"ForeignNotResolved",new Object[]{header.get(i),value}));
 				}
 			} else {
 				// no validation here
@@ -1016,8 +1016,9 @@ public class GridTabCSVImporter implements IGridTabImporter
 			   
 			   if(isForeing && !"(null)".equals(value)){ 
 			      String foreignTable = columnName.substring(0,columnName.length()-3);
-				  if(resolveForeign(foreignTable,foreignColumn,value,null) < 0)
-				     return new StringBuilder(Msg.getMsg(Env.getCtx(), "ForeignNotResolved" ,new Object[]{header.get(j),value}));   
+			      int id = resolveForeign(foreignTable,foreignColumn,value,null);
+				  if (id < 0)
+					  return new StringBuilder(Msg.getMsg(Env.getCtx(), id==-2?"ForeignMultipleResolved":"ForeignNotResolved" ,new Object[]{header.get(j),value}));   
 			   }	   
 			   isEmptyRow=false;
 	      }	   
@@ -1118,7 +1119,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 							id = resolveForeign(foreignTable,foreignColumn,value,trx);
 						
 						if(idS == null && id < 0)	
-						   return Msg.getMsg(Env.getCtx(),"ForeignNotResolved",new Object[]{header.get(i),value});
+						   return Msg.getMsg(Env.getCtx(),id==-2?"ForeignMultipleResolved":"ForeignNotResolved",new Object[]{header.get(i),value});
 						
 						if(id >= 0)
 						   logMsg = gridTab.setValue(field,id);
@@ -1160,9 +1161,9 @@ public class GridTabCSVImporter implements IGridTabImporter
 						} else {
 							
 							int id = resolveForeign(foreignTable, foreignColumn, value,trx);
-							if(id < 0)	
-							   return Msg.getMsg(Env.getCtx(),"ForeignNotResolved",new Object[]{header.get(i),value});
-							
+							if (id < 0)
+								return Msg.getMsg(Env.getCtx(),id==-2?"ForeignMultipleResolved":"ForeignNotResolved",new Object[]{header.get(i),value});
+
 							setValue = id;
 							if (field.isParentValue()) {
 								int actualId = (Integer) field.getValue();
@@ -1278,8 +1279,8 @@ public class GridTabCSVImporter implements IGridTabImporter
 								setValue = idS;
 							} else {
 								int id = resolveForeign(foreignTable, foreignColumn, setValue,trx);
-								if(id < 0)	
-								   return Msg.getMsg(Env.getCtx(),"ForeignNotResolved",new Object[]{columnName,setValue});
+								if (id < 0)
+								   return Msg.getMsg(Env.getCtx(),id==-2?"ForeignMultipleResolved":"ForeignNotResolved",new Object[]{columnName,setValue});
 								
 								setValue = id;
 							}
@@ -1452,22 +1453,40 @@ public class GridTabCSVImporter implements IGridTabImporter
 
 	private int resolveForeign(String foreignTable, String foreignColumn, Object value,Trx trx) {
 		int id = -1;
-		String trxName = (trx!=null?trx.getTrxName():null); 
-		StringBuilder select = new StringBuilder("SELECT ")
-			.append(foreignTable).append("_ID FROM ")
-			.append(foreignTable).append(" WHERE ")
-			.append(foreignColumn).append("=? AND IsActive='Y' AND AD_Client_ID=?");
-		id = DB.getSQLValueEx(trxName, select.toString(), value, Env.getAD_Client_ID(Env.getCtx()));
-		if (id == -1 && !"AD_Client".equals(foreignTable)) {
+
+		boolean systemAccess = false;
+		if (!"AD_Client".equals(foreignTable)) {
 			MTable ft = MTable.get(Env.getCtx(), foreignTable);
 			String accessLevel = ft.getAccessLevel();
 			if (   MTable.ACCESSLEVEL_All.equals(accessLevel)
 				|| MTable.ACCESSLEVEL_SystemOnly.equals(accessLevel)
 				|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) {
-				// try System client if the table has System access
-				id = DB.getSQLValueEx(trxName, select.toString(), value, 0);
+				systemAccess = true;
 			}
 		}
+
+		String trxName = (trx!=null?trx.getTrxName():null); 
+
+		StringBuilder postSelect = new StringBuilder(" FROM ")
+			.append(foreignTable).append(" WHERE ")
+			.append(foreignColumn).append("=? AND IsActive='Y' AND AD_Client_ID");
+		if (systemAccess) {
+			postSelect.append(" IN (0,?)");
+		} else {
+			postSelect.append("=?");
+		}
+
+		StringBuilder selectCount = new StringBuilder("SELECT COUNT(*)").append(postSelect);
+		int count = DB.getSQLValueEx(trxName, selectCount.toString(), value, Env.getAD_Client_ID(Env.getCtx()));
+		if (count == 1) { // single value found, OK
+			StringBuilder selectId = new StringBuilder("SELECT ").append(foreignTable).append("_ID").append(postSelect);
+			id = DB.getSQLValueEx(trxName, selectId.toString(), value, Env.getAD_Client_ID(Env.getCtx()));
+		} else if (count > 1) { // multiple values found, error ForeignMultipleResolved
+			id = -2;
+		} else if (count == 0) { // no values found, error ForeignNotResolved
+			id = -3;
+		}
+
 		return id;
 	}
 

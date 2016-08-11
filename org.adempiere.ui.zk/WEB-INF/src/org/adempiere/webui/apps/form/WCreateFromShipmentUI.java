@@ -302,7 +302,8 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		//sameWarehouseCb
         else if (e.getTarget().equals(sameWarehouseCb))
         {
-        	initBPOrderDetails(((Integer)bPartnerField.getValue()).intValue(), false);
+        	int bpId = bPartnerField.getValue() == null?0:((Integer)bPartnerField.getValue()).intValue();
+        	initBPOrderDetails(bpId, false);
         }	
 		else if (e.getTarget().equals(upcField.getComponent()))
 		{

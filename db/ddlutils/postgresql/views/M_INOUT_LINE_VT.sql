@@ -1,4 +1,4 @@
-﻿DROP VIEW m_inout_line_vt;
+DROP VIEW m_inout_line_vt;
 
 CREATE OR REPLACE VIEW m_inout_line_vt AS 
 SELECT iol.ad_client_id,
@@ -214,7 +214,7 @@ FROM m_inoutline iol
         LEFT JOIN c_charge c 
         ON iol.c_charge_id = c.c_charge_id 
         LEFT JOIN c_charge_trl ct 
-        ON iol.c_charge_id = ct.c_charge_id 
+        ON iol.c_charge_id = ct.c_charge_id AND uomt.ad_language = ct.ad_language
         UNION SELECT iol.ad_client_id,
                 iol.ad_org_id,
                 iol.isactive,
