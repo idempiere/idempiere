@@ -390,6 +390,15 @@ public final class Env
 		ctx.setProperty(WindowNo+"|"+context, String.valueOf(value));
 	}	//	setContext
 
+	public static void setContext (Properties ctx, int WindowNo, int TabNo, String context, int value)
+	{
+		if (ctx == null || context == null)
+			return;
+		if (log.isLoggable(Level.FINER)) log.finer("Context("+WindowNo+") " + context + "==" + value);
+		//
+		ctx.setProperty(WindowNo+"|"+TabNo+"|"+context, String.valueOf(value));
+	}	//	setContext
+
 	/**
 	 *	Set Context for Window to Y/N Value
 	 *  @param ctx context

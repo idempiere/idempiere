@@ -1212,7 +1212,9 @@ public final class WAccountDialog extends Window
 		Object newValue = evt.getNewValue();
 		if (newValue instanceof Integer) {
 			Env.setContext(Env.getCtx(), m_WindowNo, "Account_ID", ((Integer)newValue).intValue());
+			Env.setContext(Env.getCtx(), m_WindowNo, 0, "Account_ID", ((Integer)newValue).intValue());
 			if (f_SubAcct_ID != null) {
+				f_SubAcct_ID.setValue(null);
 				f_SubAcct_ID.dynamicDisplay();
 			}
 		}
