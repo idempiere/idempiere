@@ -59,4 +59,12 @@ public class MCtxHelp extends X_AD_CtxHelp {
 		super(ctx, rs, trxName);
 	}	//	MCtxHelp
 
+	/* (non-Javadoc)
+	 * @see org.compiere.model.PO#setClientOrg(int, int)
+	 */
+	@Override
+	public void setClientOrg(int AD_Client_ID, int AD_Org_ID) {
+		super.setClientOrg(AD_Client_ID, AD_Org_ID);
+	}
+
 }	//	MCtxHelp
