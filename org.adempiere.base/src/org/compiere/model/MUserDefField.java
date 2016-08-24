@@ -134,6 +134,11 @@ public class MUserDefField extends X_AD_UserDef_Field
 				return false;
 			}
 		}
+		if (getAD_Reference_ID() <= 0) {
+			setAD_Reference_Value_ID(0);
+			setAD_Val_Rule_ID(0);
+			setIsToolbarButton(null);
+		}
 		return true;
 	}
 		
