@@ -47,7 +47,7 @@ public class MBPartner extends X_C_BPartner
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5503105554864289337L;
+	private static final long serialVersionUID = -803727877324075871L;
 
 	/**
 	 * 	Get Empty Template Business Partner
@@ -110,12 +110,23 @@ public class MBPartner extends X_C_BPartner
 	 *	@param Value value
 	 *	@return BPartner or null
 	 */
-	public static MBPartner get (Properties ctx, String Value)
+	public static MBPartner get (Properties ctx, String Value) {
+		return get(ctx,Value,null);		
+	}
+
+	/**
+	 * 	Get BPartner with Value in a transaction
+	 *	@param ctx context 
+	 *	@param Value value
+	 * 	@param trxName transaction
+	 *	@return BPartner or null
+	 */
+	public static MBPartner get (Properties ctx, String Value, String trxName)
 	{
 		if (Value == null || Value.length() == 0)
 			return null;
 		final String whereClause = "Value=? AND AD_Client_ID=?";
-		MBPartner retValue = new Query(ctx, I_C_BPartner.Table_Name, whereClause, null)
+		MBPartner retValue = new Query(ctx, I_C_BPartner.Table_Name, whereClause, trxName)
 		.setParameters(Value,Env.getAD_Client_ID(ctx))
 		.firstOnly();
 		return retValue;
@@ -129,8 +140,21 @@ public class MBPartner extends X_C_BPartner
 	 */
 	public static MBPartner get (Properties ctx, int C_BPartner_ID)
 	{
+		return get(ctx,C_BPartner_ID,null);
+	}
+	
+	
+	/**
+	 * 	Get BPartner with Value in a transaction
+	 *	@param ctx context 
+	 *	@param Value value
+	 * 	@param trxName transaction
+	 *	@return BPartner or null
+	 */
+	public static MBPartner get (Properties ctx, int C_BPartner_ID, String trxName)
+	{
 		final String whereClause = "C_BPartner_ID=? AND AD_Client_ID=?";
-		MBPartner retValue = new Query(ctx,I_C_BPartner.Table_Name,whereClause,null)
+		MBPartner retValue = new Query(ctx,I_C_BPartner.Table_Name,whereClause,trxName)
 		.setParameters(C_BPartner_ID,Env.getAD_Client_ID(ctx))
 		.firstOnly();
 		return retValue;
