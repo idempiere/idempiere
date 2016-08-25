@@ -254,7 +254,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 			}
 			suggestion.setAD_Language(Env.getAD_Language(Env.getCtx()));
 			suggestion.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
-			suggestion.setAD_UserClient_ID(Env.getAD_Client_ID(Env.getCtx()));
+			suggestion.set_ValueOfColumn("AD_UserClient_ID", Env.getAD_Client_ID(Env.getCtx()));
 			suggestion.setIsApproved(false);
 			suggestion.setProcessed(false);
 			suggestion.setMsgText(helpTextbox.getValue());
