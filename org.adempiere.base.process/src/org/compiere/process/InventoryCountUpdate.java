@@ -16,18 +16,12 @@
  *****************************************************************************/
 package org.compiere.process;
 
-import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.logging.Level;
 
 import org.compiere.model.MInventory;
-import org.compiere.model.MInventoryLine;
 import org.compiere.model.MInventoryLineMA;
-import org.compiere.model.MStorageOnHand;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
-import org.compiere.util.Env;
 
 /**
  *	Update existing Inventory Count List with current Book value
@@ -92,7 +86,7 @@ public class InventoryCountUpdate extends SvrProcess
 		//	ASI
 		sql = new StringBuilder("UPDATE M_InventoryLine l ")
 			.append("SET (QtyBook,QtyCount) = ")
-				.append("(SELECT QtyOnHand,QtyOnHand FROM M_StorageOnHand s ")
+				.append("(SELECT SUM(QtyOnHand),SUM(QtyOnHand) FROM M_StorageOnHand s ")
 				.append("WHERE s.M_Product_ID=l.M_Product_ID AND s.M_Locator_ID=l.M_Locator_ID")
 				.append(" AND s.M_AttributeSetInstance_ID=l.M_AttributeSetInstance_ID),")
 			.append(" Updated=SysDate,")
@@ -105,9 +99,6 @@ public class InventoryCountUpdate extends SvrProcess
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.INFO)) log.info("Update with ASI=" + no);
 
-		//	No ASI
-		int noMA = updateWithMA();
-
 		//	Set Count to Zero
 		if (p_InventoryCountSetZero)
 		{
@@ -119,71 +110,11 @@ public class InventoryCountUpdate extends SvrProcess
 		}
 		
 		if (multiple > 0){
-			StringBuilder msgreturn = new StringBuilder("@M_InventoryLine_ID@ - #").append((no + noMA)).append(" --> @InventoryProductMultiple@");
+			StringBuilder msgreturn = new StringBuilder("@M_InventoryLine_ID@ - #").append(no).append(" --> @InventoryProductMultiple@");
 			return msgreturn.toString();
 		}	
 		StringBuilder msgreturn = new StringBuilder("@M_InventoryLine_ID@ - #").append(no);
 		return msgreturn.toString();
 	}	//	doIt
 
-	/**
-	 * 	Update Inventory Lines With Material Allocation
-	 *	@return no updated
-	 */
-	private int updateWithMA()
-	{
-		int no = 0;
-		//
-		String sql = "SELECT * FROM M_InventoryLine WHERE M_Inventory_ID=? AND M_AttributeSetInstance_ID=0";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
-			pstmt.setInt (1, p_M_Inventory_ID);
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-			{
-				MInventoryLine il = new MInventoryLine (getCtx(), rs, get_TrxName());
-				BigDecimal onHand = Env.ZERO;
-				MStorageOnHand[] storages = MStorageOnHand.getAll(getCtx(), il.getM_Product_ID(), il.getM_Locator_ID(), get_TrxName());
-				MInventoryLineMA ma = null;
-				for (int i = 0; i < storages.length; i++)
-				{
-					MStorageOnHand storage = storages[i];
-					if (storage.getQtyOnHand().signum() == 0)
-						continue;
-					onHand = onHand.add(storage.getQtyOnHand());
-					//	No ASI
-					if (storage.getM_AttributeSetInstance_ID() == 0 
-						&& storages.length == 1)
-						continue;
-					//	Save ASI
-					ma = new MInventoryLineMA (il, 
-						storage.getM_AttributeSetInstance_ID(), storage.getQtyOnHand(),storage.getDateMaterialPolicy(),true);
-					if (!ma.save())
-						;
-				}
-				il.setQtyBook(onHand);
-				il.setQtyCount(onHand);
-				if (il.save())
-					no++;
-			}
-		}
-		catch (Exception e)
-		{
-			log.log (Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		//
-		if (log.isLoggable(Level.INFO)) log.info("#" + no);
-		return no;
-	}	//	updateWithMA
-	
-	
 }	//	InventoryCountUpdate
