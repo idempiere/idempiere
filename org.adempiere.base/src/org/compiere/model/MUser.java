@@ -173,7 +173,7 @@ public class MUser extends X_AD_User
 	{
 		if (name == null || name.length() == 0 || password == null || password.length() == 0)
 		{
-			s_log.warning ("Invalid Name/Password = " + name + "/" + password);
+			s_log.warning ("Invalid Name/Password = " + name);
 			return null;
 		}
 		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
