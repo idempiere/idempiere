@@ -200,6 +200,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
 		
 		addEventListener(Events.ON_UPLOAD, this);
+		addEventListener("onSave", this);
 	}   //  init
 
 	public void onEvent(Event e) throws Exception {
@@ -210,19 +211,8 @@ public class WImageDialog extends Window implements EventListener<Event>
 		}
 		else if (e.getTarget().getId().equals(ConfirmPanel.A_OK))
 		{
-			if (image.getContent() != null)
-			{
-				if (!Util.isEmpty(fileNameTextbox.getValue()))
-					m_mImage.setName(fileNameTextbox.getValue());
-				m_mImage.saveEx();
-			}
-			else if (m_mImage != null && m_mImage.getAD_Image_ID() > 0)
-			{
-				m_mImage.setBinaryData(null);
-				m_mImage.setName("-");
-				m_mImage.saveEx();
-			}
-			detach();
+			Clients.showBusy(this, Msg.getMsg(Env.getCtx(), "Processing"));
+			Events.echoEvent("onSave", this, null);			
 		}
 		else if (e.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
 		{
@@ -239,10 +229,12 @@ public class WImageDialog extends Window implements EventListener<Event>
 		{
 			captureDiv.setVisible(true);
 			cancelCaptureButton.setVisible(true);
+			cancelCaptureButton.setEnabled(true);
 			mainLayout.setVisible(false);
 			String script = "var wgt = zk.Widget.$('#"+captureDiv.getUuid()+"');";
+			script = script + "var cancelBtn=zk.Widget.$('#"+cancelCaptureButton.getUuid()+"');";
 			script = script + "jq(wgt).photobooth(); ";
-			script = script + "jq(wgt).bind( 'image', function( event, dataUrl ){ zAu.send(new zk.Event(wgt, 'onCaptureImage', dataUrl, {toServer:true})); });";
+			script = script + "jq(wgt).bind( 'image', function( event, dataUrl ){ cancelBtn.setVisible(false);zAu.send(new zk.Event(wgt, 'onCaptureImage', dataUrl, {toServer:true})); });";
 			Clients.evalJavaScript(script);
 		}
 		else if (e.getName().equals("onCaptureImage"))
@@ -278,6 +270,30 @@ public class WImageDialog extends Window implements EventListener<Event>
 			script = script + "jq(wgt).data( 'photobooth').destroy(); ";
 			Clients.evalJavaScript(script);
 		}
+		else if (e.getName().equals("onSave"))
+		{
+			try {
+				onSave();
+			} finally {
+				Clients.clearBusy(this);
+			}
+		}
+	}
+
+	private void onSave() {
+		if (image.getContent() != null)
+		{
+			if (!Util.isEmpty(fileNameTextbox.getValue()))
+				m_mImage.setName(fileNameTextbox.getValue());
+			m_mImage.saveEx();
+		}
+		else if (m_mImage != null && m_mImage.getAD_Image_ID() > 0)
+		{
+			m_mImage.setBinaryData(null);
+			m_mImage.setName("-");
+			m_mImage.saveEx();
+		}
+		detach();
 	}
 	
 	/**
