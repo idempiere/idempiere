@@ -194,9 +194,9 @@ public class Evaluator
 			secondEval = secondEval.replace('\'', ' ').replace('"', ' ').trim();	//	strip ' and "
 	
 			//	Handling of ID compare (null => 0)
-			if (first.indexOf("_ID") != -1 && firstEval.length() == 0)
+			if (first.trim().endsWith("_ID") && firstEval.length() == 0)
 				firstEval = "0";
-			if (second.indexOf("_ID") != -1 && secondEval.length() == 0)
+			if (second.trim().endsWith("_ID") && secondEval.length() == 0)
 				secondEval = "0";
 	
 			//	Logical Comparison
