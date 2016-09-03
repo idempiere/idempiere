@@ -82,7 +82,7 @@ public class POFinder {
     	String idColumn = tableName + "_ID";
     	if (element.properties.containsKey(uuidColumn)) {
     		String uuid = element.properties.get(uuidColumn).contents.toString();
-    		if (uuid != null && uuid.trim().length() == 36) {
+    		if (uuid != null && uuid.trim().length() <= 36) {
     			uuid = uuid.trim();
     			String targetUUID = Env.getAD_Client_ID(ctx.ctx) > 0 ? getTargetUUID(ctx.ctx, tableName, uuid, ctx.trx.getTrxName()) : uuid; 
     			Query query = new Query(ctx.ctx, tableName, uuidColumn+"=?", getTrxName(ctx));

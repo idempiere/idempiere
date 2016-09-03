@@ -489,7 +489,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	if (element.properties.containsKey(uuidColumn)) {
     		uuid = element.properties.get(uuidColumn).contents.toString();
     	}
-    	return (uuid != null && uuid.trim().length() == 36);
+    	return (uuid != null && uuid.trim().length() <= 36);
     }
 
     protected String getUUIDKey(PIPOContext ctx, Element element) {
@@ -497,7 +497,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
     	String uuidColumn = PO.getUUIDColumnName(tableName);
     	if (element.properties.containsKey(uuidColumn)) {
     		String uuid = element.properties.get(uuidColumn).contents.toString();
-    		if (uuid != null && uuid.trim().length() == 36)
+    		if (uuid != null && uuid.trim().length() <= 36)
     			return uuid.trim();
     	}
     	return null;
