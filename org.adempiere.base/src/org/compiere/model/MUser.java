@@ -173,7 +173,7 @@ public class MUser extends X_AD_User
 	{
 		if (name == null || name.length() == 0 || password == null || password.length() == 0)
 		{
-			s_log.warning ("Invalid Name/Password = " + name + "/" + password);
+			s_log.warning ("Invalid Name/Password = " + name);
 			return null;
 		}
 		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
@@ -198,7 +198,7 @@ public class MUser extends X_AD_User
 		
 		List<MUser> users = new Query(ctx, MUser.Table_Name, where.toString(), null)
 			.setParameters(name)
-			.setOrderBy(MUser.COLUMNNAME_AD_User_ID)
+			.setOrderBy("AD_Client_ID, AD_User_ID") // prefer first user on System
 			.list();
 		
 		if (users.size() == 0) {
@@ -223,6 +223,7 @@ public class MUser extends X_AD_User
 			
 			if (valid){
 				retValue=user;
+				break;
 			}
 		}	
 	

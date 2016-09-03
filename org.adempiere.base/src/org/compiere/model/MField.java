@@ -144,6 +144,11 @@ public class MField extends X_AD_Field
 			if (getAD_Column().getColumnName().equals("AD_Org_ID")) // AD_Org_ID can be copied
 				setIsAllowCopy("Y");
 		}
+		if (getAD_Reference_ID() <= 0) {
+			setAD_Reference_Value_ID(0);
+			setAD_Val_Rule_ID(0);
+			setIsToolbarButton(null);
+		}
 
 		return true;
 	}	//	beforeSave

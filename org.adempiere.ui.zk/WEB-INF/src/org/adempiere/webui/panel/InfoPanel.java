@@ -841,9 +841,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         isHasNextPage = false;
         if (log.isLoggable(Level.FINER))
         	log.finer(dataSql);
+        Trx trx = null;
 		try
 		{
-			m_pstmt = DB.prepareStatement(dataSql, null);
+			//https://jdbc.postgresql.org/documentation/head/query.html#query-with-cursor
+			String trxName = Trx.createTrxName("InfoPanelLoad:");
+			trx  = Trx.get(trxName, true);
+			m_pstmt = DB.prepareStatement(dataSql, trxName);
 			setParameters (m_pstmt, false);	//	no count
 			if (log.isLoggable(Level.FINE))
 				log.fine("Start query - " + (System.currentTimeMillis()-startTime) + "ms");
@@ -890,6 +894,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		finally
 		{
 			DB.close(m_rs, m_pstmt);
+			trx.close();
 		}
 
 		if (end > cacheEnd || end <= 0)

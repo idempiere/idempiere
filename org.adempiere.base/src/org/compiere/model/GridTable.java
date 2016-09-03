@@ -3543,6 +3543,7 @@ public class GridTable extends AbstractTableModel
 
 		private void openResultSet() {
 			//postgresql need trx to use cursor based resultset
+			//https://jdbc.postgresql.org/documentation/head/query.html#query-with-cursor
 			String trxName = m_virtual ? Trx.createTrxName("Loader") : null;
 			trx  = trxName != null ? Trx.get(trxName, true) : null;
 			//	open Statement (closed by Loader.close)

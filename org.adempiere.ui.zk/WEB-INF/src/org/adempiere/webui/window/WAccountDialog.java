@@ -472,8 +472,16 @@ public final class WAccountDialog extends Window
 		statusBar.setStatusDB("");
 
 		//	Initial value
-		if (m_mAccount.C_ValidCombination_ID != 0)
+		if (m_mAccount.C_ValidCombination_ID != 0) {
 			m_mTab.navigate(0);
+			if (f_Account_ID.getValue() instanceof Integer) {
+				Env.setContext(Env.getCtx(), m_WindowNo, "Account_ID", (Integer)f_Account_ID.getValue());
+				Env.setContext(Env.getCtx(), m_WindowNo, 0, "Account_ID", (Integer)f_Account_ID.getValue());
+				if (f_SubAcct_ID != null) {
+					f_SubAcct_ID.dynamicDisplay();
+				}
+			}
+		}
 
 		log.config("fini");
 		return true;
@@ -1213,7 +1221,9 @@ public final class WAccountDialog extends Window
 		Object newValue = evt.getNewValue();
 		if (newValue instanceof Integer) {
 			Env.setContext(Env.getCtx(), m_WindowNo, "Account_ID", ((Integer)newValue).intValue());
+			Env.setContext(Env.getCtx(), m_WindowNo, 0, "Account_ID", ((Integer)newValue).intValue());
 			if (f_SubAcct_ID != null) {
+				f_SubAcct_ID.setValue(null);
 				f_SubAcct_ID.dynamicDisplay();
 			}
 		}

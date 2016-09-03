@@ -1464,30 +1464,33 @@ public class GridTabCSVImporter implements IGridTabImporter
 				systemAccess = true;
 			}
 		}
+		int thisClientId = Env.getAD_Client_ID(Env.getCtx());
 
 		String trxName = (trx!=null?trx.getTrxName():null); 
 
 		StringBuilder postSelect = new StringBuilder(" FROM ")
 			.append(foreignTable).append(" WHERE ")
-			.append(foreignColumn).append("=? AND IsActive='Y' AND AD_Client_ID");
-		if (systemAccess) {
-			postSelect.append(" IN (0,?)");
-		} else {
-			postSelect.append("=?");
-		}
+			.append(foreignColumn).append("=? AND IsActive='Y' AND AD_Client_ID=?");
 
 		StringBuilder selectCount = new StringBuilder("SELECT COUNT(*)").append(postSelect);
-		int count = DB.getSQLValueEx(trxName, selectCount.toString(), value, Env.getAD_Client_ID(Env.getCtx()));
+		StringBuilder selectId = new StringBuilder("SELECT ").append(foreignTable).append("_ID").append(postSelect);
+		int count = DB.getSQLValueEx(trxName, selectCount.toString(), value, thisClientId);
 		if (count == 1) { // single value found, OK
-			StringBuilder selectId = new StringBuilder("SELECT ").append(foreignTable).append("_ID").append(postSelect);
-			id = DB.getSQLValueEx(trxName, selectId.toString(), value, Env.getAD_Client_ID(Env.getCtx()));
+			return DB.getSQLValueEx(trxName, selectId.toString(), value, thisClientId);
 		} else if (count > 1) { // multiple values found, error ForeignMultipleResolved
-			id = -2;
+			return -2;
 		} else if (count == 0) { // no values found, error ForeignNotResolved
-			id = -3;
+			if (systemAccess && thisClientId != 0) {
+				// not found in client, try with System
+				count = DB.getSQLValueEx(trxName, selectCount.toString(), value, 0 /* System */);
+				if (count == 1) { // single value found, OK
+					return DB.getSQLValueEx(trxName, selectId.toString(), value,  0 /* System */);
+				} else if (count > 1) { // multiple values found, error ForeignMultipleResolved
+					return -2;
+				}
+			}
 		}
-
-		return id;
+		return -3;   // no values found, error ForeignNotResolved
 	}
 
 	//Copy from GridTable

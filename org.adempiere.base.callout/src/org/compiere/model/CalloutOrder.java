@@ -661,9 +661,10 @@ public class CalloutOrder extends CalloutEngine
 	 *  @param mTab Grid Tab
 	 *  @param mField Grid Field
 	 *  @param value New Value
+	 *  @param readonly Read Only - do not set tab fields, just context
 	 *  @return null or error message
 	 */
-	public String priceList (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	public String priceListFill (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value, boolean readonly)
 	{
 		Integer M_PriceList_ID = (Integer) mTab.getValue("M_PriceList_ID");
 		if (M_PriceList_ID == null || M_PriceList_ID.intValue()== 0)
@@ -695,12 +696,16 @@ public class CalloutOrder extends CalloutEngine
 			if (rs.next())
 			{
 				//	Tax Included
-				mTab.setValue("IsTaxIncluded", new Boolean("Y".equals(rs.getString(1))));
+				if (!readonly) {
+					mTab.setValue("IsTaxIncluded", new Boolean("Y".equals(rs.getString(1))));
+				}
 				//	Price Limit Enforce
 				Env.setContext(ctx, WindowNo, "EnforcePriceLimit", rs.getString(2));
 				//	Currency
-				Integer ii = new Integer(rs.getInt(3));
-				mTab.setValue("C_Currency_ID", ii);
+				if (!readonly) {
+					Integer ii = new Integer(rs.getInt(3));
+					mTab.setValue("C_Currency_ID", ii);
+				}
 				//	PriceList Version
 				Env.setContext(ctx, WindowNo, "M_PriceList_Version_ID", rs.getInt(5));
 			}
@@ -718,8 +723,18 @@ public class CalloutOrder extends CalloutEngine
 		if (steps) log.warning("fini");
 
 		return "";
+	}	//	priceListFill
+
+	public String priceList (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		return priceListFill (ctx, WindowNo, mTab, mField, value, false);
 	}	//	priceList
 
+	/* IDEMPIERE-2676 - this is same callout priceList but not setting any variable, just reading and setting context, called on navigate */
+	public String priceListReadOnly (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		return priceListFill (ctx, WindowNo, mTab, mField, value, true);
+	}	//	priceListReadOnly
 	
 	/**
 	 *	Set Payment Term.

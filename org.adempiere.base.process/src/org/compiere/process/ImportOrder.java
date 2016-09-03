@@ -525,7 +525,7 @@ public class ImportOrder extends SvrProcess
 						imp.setName (imp.getBPartnerValue ());
 				}
 				//	BPartner
-				MBPartner bp = MBPartner.get (getCtx(), imp.getBPartnerValue());
+				MBPartner bp = MBPartner.get (getCtx(), imp.getBPartnerValue(), get_TrxName());
 				if (bp == null)
 				{
 					bp = new MBPartner (getCtx (), -1, get_TrxName());

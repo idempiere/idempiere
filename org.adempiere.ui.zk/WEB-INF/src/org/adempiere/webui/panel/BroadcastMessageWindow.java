@@ -54,7 +54,7 @@ import org.zkoss.zul.South;
  */
 public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup,EventListener<Event>{
 	/**
-	 * 
+	 *  
 	 */
 	private static final long serialVersionUID = 1849434312706721390L;
 
@@ -319,7 +319,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 	public MNote getMNote(MBroadcastMessage mbMessage) {
 		MNote note =null;
 		if(!mbMessage.getBroadcastType().equals(MBroadcastMessage.BROADCASTTYPE_Immediate)){
-			String sql = "SELECT * FROM AD_Note WHERE AD_BroadcastMessage_ID = ? AND AD_User_ID = ? AND AD_Client_ID = ?";
+			String sql = "SELECT * FROM AD_Note WHERE AD_BroadcastMessage_ID = ? AND AD_User_ID = ? AND AD_Client_ID in (?, 0)";
 			PreparedStatement pstmt = null;
 			ResultSet rs=null;
 			try {
