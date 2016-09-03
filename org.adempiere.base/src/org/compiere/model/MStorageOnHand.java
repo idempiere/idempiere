@@ -456,7 +456,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *	@param ctx context
 	 *	@param M_Warehouse_ID ignore if M_Locator_ID > 0
 	 *	@param M_Product_ID product
-	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve all instance
+	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve storages that don't have asi, -1 to retrieve all instance
 	 *	@param minGuaranteeDate optional minimum guarantee date if all attribute instances
 	 *	@param FiFo first in-first-out
 	 *  @param M_Locator_ID optional locator id
@@ -476,7 +476,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *	@param ctx context
 	 *	@param M_Warehouse_ID ignore if M_Locator_ID > 0
 	 *	@param M_Product_ID product
-	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve all instance
+	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve storages that don't have asi, -1 to retrieve all instance
 	 *	@param minGuaranteeDate optional minimum guarantee date if all attribute instances
 	 *	@param FiFo first in-first-out
 	 *  @param M_Locator_ID optional locator id
@@ -492,79 +492,66 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		if ((M_Warehouse_ID == 0 && M_Locator_ID == 0) || M_Product_ID == 0)
 			return new MStorageOnHand[0];
 		
-		boolean allAttributeInstances = false;
-		if (M_AttributeSetInstance_ID == 0)
-			allAttributeInstances = true;		
-		
 		ArrayList<MStorageOnHand> list = new ArrayList<MStorageOnHand>();
-		//	Specific Attribute Set Instance
 		String sql = "SELECT s.M_Product_ID,s.M_Locator_ID,s.M_AttributeSetInstance_ID,"
 			+ "s.AD_Client_ID,s.AD_Org_ID,s.IsActive,s.Created,s.CreatedBy,s.Updated,s.UpdatedBy,"
-			+ "s.QtyOnHand,s.DateLastInventory,s.DateMaterialPolicy "
+			+ "s.QtyOnHand,s.DateLastInventory,s.M_StorageOnHand_UU,s.DateMaterialPolicy "
 			+ "FROM M_StorageOnHand s"
-			+ " INNER JOIN M_Locator l ON (l.M_Locator_ID=s.M_Locator_ID) ";
+			+ " INNER JOIN M_Locator l ON (l.M_Locator_ID=s.M_Locator_ID)"
+			+ " LEFT OUTER JOIN M_AttributeSetInstance asi ON (s.M_AttributeSetInstance_ID=asi.M_AttributeSetInstance_ID) ";
 		if (M_Locator_ID > 0)
 			sql += "WHERE l.M_Locator_ID = ?";
 		else
 			sql += "WHERE l.M_Warehouse_ID=?";
-		sql += " AND s.M_Product_ID=?"
-			+ " AND COALESCE(s.M_AttributeSetInstance_ID,0)=? "
+		sql += " AND s.M_Product_ID=? "
 			+ " AND s.QtyOnHand < 0 ";
-		sql += "ORDER BY l.PriorityNo DESC, DateMaterialPolicy ";
-		if (!FiFo)
-			sql += " DESC";
-		//	All Attribute Set Instances
-		if (allAttributeInstances)
+		
+		if (minGuaranteeDate != null)
 		{
-			sql = "SELECT s.M_Product_ID,s.M_Locator_ID,s.M_AttributeSetInstance_ID,"
-				+ "s.AD_Client_ID,s.AD_Org_ID,s.IsActive,s.Created,s.CreatedBy,s.Updated,s.UpdatedBy,"
-				+ "s.QtyOnHand,s.DateLastInventory,s.M_StorageOnHand_UU,s.DateMaterialPolicy "
-				+ "FROM M_StorageOnHand s"
-				+ " INNER JOIN M_Locator l ON (l.M_Locator_ID=s.M_Locator_ID)"
-				+ " LEFT OUTER JOIN M_AttributeSetInstance asi ON (s.M_AttributeSetInstance_ID=asi.M_AttributeSetInstance_ID) ";
-			if (M_Locator_ID > 0)
-				sql += "WHERE l.M_Locator_ID = ?";
-			else
-				sql += "WHERE l.M_Warehouse_ID=?";
-			sql += " AND s.M_Product_ID=? "
-				+ " AND s.QtyOnHand < 0 ";
-			
-			if (minGuaranteeDate != null)
-			{
-				sql += "AND (asi.GuaranteeDate IS NULL OR asi.GuaranteeDate>?) ";
-			}
-			
-			MProduct product = MProduct.get(Env.getCtx(), M_Product_ID);
-			
-			if(product.isUseGuaranteeDateForMPolicy()){
-				sql += "ORDER BY l.PriorityNo DESC, " +
-					   "asi.GuaranteeDate";
-				if (!FiFo)
-					sql += " DESC";
-			}
-			else
-			{
-				sql += "ORDER BY l.PriorityNo DESC, l.M_Locator_ID, s.DateMaterialPolicy";
-				if (!FiFo)
-					sql += " DESC";
-			}
-			
-			sql += ", s.QtyOnHand DESC";
-		} 
+			sql += "AND (asi.GuaranteeDate IS NULL OR asi.GuaranteeDate>?) ";
+		}
+		
+		if (M_AttributeSetInstance_ID > 0)
+		{
+			sql += "AND s.M_AttributeSetInstance_ID=? ";
+		}
+		else if (M_AttributeSetInstance_ID == 0)
+		{
+			sql += "AND (s.M_AttributeSetInstance_ID=0 OR s.M_AttributeSetInstance_ID IS NULL) ";
+		}
+		
+		MProduct product = MProduct.get(Env.getCtx(), M_Product_ID);
+		
+		if(product.isUseGuaranteeDateForMPolicy()){
+			sql += "ORDER BY l.PriorityNo DESC, " +
+				   "asi.GuaranteeDate";
+			if (!FiFo)
+				sql += " DESC";
+		}
+		else
+		{
+			sql += "ORDER BY l.PriorityNo DESC, l.M_Locator_ID, s.DateMaterialPolicy";
+			if (!FiFo)
+				sql += " DESC";
+		}
+		
+		sql += ", s.QtyOnHand DESC";
+		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
+			int index = 0;
 			pstmt = DB.prepareStatement(sql, trxName);
-			pstmt.setInt(1, M_Locator_ID > 0 ? M_Locator_ID : M_Warehouse_ID);
-			pstmt.setInt(2, M_Product_ID);
-			if (!allAttributeInstances)
+			pstmt.setInt(++index, M_Locator_ID > 0 ? M_Locator_ID : M_Warehouse_ID);
+			pstmt.setInt(++index, M_Product_ID);
+			if (minGuaranteeDate != null)
 			{
-				pstmt.setInt(3, M_AttributeSetInstance_ID);
+				pstmt.setTimestamp(++index, minGuaranteeDate);
 			}
-			else if (minGuaranteeDate != null)
+			if (M_AttributeSetInstance_ID > 0)
 			{
-				pstmt.setTimestamp(3, minGuaranteeDate);
+				pstmt.setInt(++index, M_AttributeSetInstance_ID);
 			}
 			rs = pstmt.executeQuery();
 			while (rs.next())
