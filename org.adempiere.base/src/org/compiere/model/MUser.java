@@ -198,7 +198,7 @@ public class MUser extends X_AD_User
 		
 		List<MUser> users = new Query(ctx, MUser.Table_Name, where.toString(), null)
 			.setParameters(name)
-			.setOrderBy(MUser.COLUMNNAME_AD_User_ID)
+			.setOrderBy("AD_Client_ID, AD_User_ID") // prefer first user on System
 			.list();
 		
 		if (users.size() == 0) {
@@ -223,6 +223,7 @@ public class MUser extends X_AD_User
 			
 			if (valid){
 				retValue=user;
+				break;
 			}
 		}	
 	
