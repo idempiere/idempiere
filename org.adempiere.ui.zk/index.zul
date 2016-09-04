@@ -74,7 +74,7 @@ Copyright (C) 2007 Ashley G Ramdass.
 						var isEditting = winLayoutWg.get ("isEditting");
 						// winLayoutWg should cache to improve perfomance
 						if (isEditting == "false"){
-							zAu.send(new zk.Event(zk.Widget.$(this), 'onChange',{"value":this.$n().value}));//fire change event to move to edit
+							id.zk.Extend.fakeOnchange (this);//fire change event to move to edit
 						}
 					}
 				}
