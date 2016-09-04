@@ -15,7 +15,17 @@ Copyright (C) 2007 Ashley G Ramdass.
 		zk.afterLoad(function() {
 			zk._Erbx.push = function(msg) {
 				if (console) console.log(msg);
-			}
+			};
+			
+			zk.$package('id.zk');
+			
+			id.zk.Extend = zk.$extends(zk.Object, {}, {
+				fakeOnchange: function (wgt) {
+					// just sent fake event when control is textfield and value is not yet sync to server
+					if (wgt.$instanceof(zul.inp.Textbox) && wgt.$n().value != wgt.getText())
+						zAu.send(new zk.Event(zk.Widget.$(wgt), 'onChange',{"value":wgt.$n().value}));
+				}
+			});
 		});
 			
 		zk.afterLoad(function() {
