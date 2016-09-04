@@ -46,13 +46,20 @@ Copyright (C) 2007 Ashley G Ramdass.
 			// or ever rise other event like start editting to distinguish with true onChange event
 			zk.override(zul.inp.InputWidget.prototype, "doInput_", function (evt) {
 				this.$doInput_(evt);
-				var domElemOfLayout = jq('#' + this.$n().id).closest(".adwindow-layout");
-				if (domElemOfLayout == null){
-					;// do nothing
+				
+				if (this.get ("isOnStardardWindow") == 'false'){
+					return; // don't waste time to check component don't lay on standard window
+				}
+				
+				var domElemOfLayout = jq('#' + this.$n().id).closest(".adwindow-layout"); // return a array
+				if (domElemOfLayout.length == 0){
+					this.set ("isOnStardardWindow", "false");// next time don't waste time to check this component
+					                                         // in case, you move this component to a standard window, please update this properties at client by javascript Widget.set ()
+					                                         // or at server by java function component.setWidgetOverride 
 				}else{
 					var winLayoutWg = zk.Widget.$(domElemOfLayout);
 					if (winLayoutWg == null){
-						;// do nothing
+						;// do nothing, this case rare happen because ".adwindow-layout" always is a component
 					}else{
 						var isEditting = winLayoutWg.get ("isEditting");
 						// winLayoutWg should cache to improve perfomance
