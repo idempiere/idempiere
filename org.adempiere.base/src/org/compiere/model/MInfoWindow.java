@@ -442,7 +442,7 @@ public class MInfoWindow extends X_AD_InfoWindow
 		// try run sql
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = DB.prepareStatement(builder.toString(), null);
+			pstmt = DB.prepareStatement(builder.toString(), get_TrxName());
 			pstmt.executeQuery();
 		}catch (Exception ex){
 			log.log(Level.WARNING, ex.getMessage());

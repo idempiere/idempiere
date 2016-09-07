@@ -23,6 +23,7 @@ import org.adempiere.webui.editor.WYesNoEditor;
 import org.adempiere.webui.grid.WQuickEntry;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.MRole;
 import org.compiere.model.MUserPreference;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -66,8 +67,11 @@ public class WPreference extends WQuickEntry implements EventListener<Event> {
 			log.log(Level.SEVERE, ex.getMessage());
 		}
 
-		initPOs();
-		loadPreferences();
+		Boolean canAccessPreference = MRole.getDefault().getWindowAccess(m_AD_Window_ID);
+		if (canAccessPreference != null && canAccessPreference) {
+			initPOs();
+			loadPreferences();
+		}
 
 		this.setTitle("");
 	} //WPreference

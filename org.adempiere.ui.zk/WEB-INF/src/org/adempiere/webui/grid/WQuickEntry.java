@@ -64,7 +64,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6033101081045706748L;
+	private static final long serialVersionUID = -8530102231615195037L;
 
 	public static final String QUICK_ENTRY_MODE = "_QUICK_ENTRY_MODE_";
 
@@ -86,7 +86,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true, false, false, false, false, false);
 
-	private int m_AD_Window_ID;
+	protected int m_AD_Window_ID;
 	
 	private boolean isHasField = false;
 	/**

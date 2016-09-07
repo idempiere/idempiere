@@ -241,5 +241,10 @@ public class ADWindowContent extends AbstractADWindowContent
 				SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, content);
 			} catch (Exception e){}
 		}
+	}
+
+	@Override
+	protected void switchEditStatus(boolean editStatus) {
+		layout.setWidgetOverride("isEditting", "'" + String.valueOf(editStatus) + "'");
 	}	
 }
