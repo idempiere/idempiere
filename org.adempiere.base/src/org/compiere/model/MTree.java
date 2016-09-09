@@ -44,11 +44,11 @@ import org.compiere.util.Env;
  */
 public class MTree extends MTree_Base
 {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6412057411585787707L;
-
 
 	/**
 	 *  Default Constructor.
@@ -229,7 +229,7 @@ public class MTree extends MTree_Base
 					+ "tn.Node_ID,tn.Parent_ID,tn.SeqNo,tb.IsActive "
 					+ "FROM ").append(getNodeTableName()).append(" tn"
 							+ " LEFT OUTER JOIN AD_TreeBar tb ON (tn.AD_Tree_ID=tb.AD_Tree_ID"
-							+ " AND tn.Node_ID=tb.Node_ID "
+							+ " AND tn.Node_ID=tb.Node_ID AND tb.IsFavourite = 'Y'"
 							+ (AD_User_ID != -1 ? " AND tb.AD_User_ID=? ": "") 	//	#1 (conditional)
 							+ ") "
 							+ "WHERE tn.AD_Tree_ID=?");								//	#2

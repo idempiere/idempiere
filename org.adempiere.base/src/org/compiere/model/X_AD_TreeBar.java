@@ -30,7 +30,7 @@ public class X_AD_TreeBar extends PO implements I_AD_TreeBar, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20151030L;
+	private static final long serialVersionUID = 20160112L;
 
     /** Standard Constructor */
     public X_AD_TreeBar (Properties ctx, int AD_TreeBar_ID, String trxName)
@@ -40,6 +40,8 @@ public class X_AD_TreeBar extends PO implements I_AD_TreeBar, I_Persistent
         {
 			setAD_Tree_ID (0);
 			setAD_User_ID (0);
+			setIsFavourite (true);
+// Y
 			setNode_ID (0);
         } */
     }
@@ -140,6 +142,66 @@ public class X_AD_TreeBar extends PO implements I_AD_TreeBar, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Favourite.
+		@param IsFavourite 
+		This record is a favourite
+	  */
+	public void setIsFavourite (boolean IsFavourite)
+	{
+		set_Value (COLUMNNAME_IsFavourite, Boolean.valueOf(IsFavourite));
+	}
+
+	/** Get Favourite.
+		@return This record is a favourite
+	  */
+	public boolean isFavourite () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsFavourite);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Login automatic open sequence.
+		@param LoginOpenSeqNo 
+		Determine the order items will be automatically opened when user logs in
+	  */
+	public void setLoginOpenSeqNo (int LoginOpenSeqNo)
+	{
+		set_Value (COLUMNNAME_LoginOpenSeqNo, Integer.valueOf(LoginOpenSeqNo));
+	}
+
+	/** Get Login automatic open sequence.
+		@return Determine the order items will be automatically opened when user logs in
+	  */
+	public int getLoginOpenSeqNo () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_LoginOpenSeqNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Name.
+		@param Name 
+		Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name)
+	{
+		throw new IllegalArgumentException ("Name is virtual column");	}
+
+	/** Get Name.
+		@return Alphanumeric identifier of the entity
+	  */
+	public String getName () 
+	{
+		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Node.

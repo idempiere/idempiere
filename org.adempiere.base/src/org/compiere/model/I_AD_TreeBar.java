@@ -130,6 +130,45 @@ public interface I_AD_TreeBar
 	  */
 	public boolean isActive();
 
+    /** Column name IsFavourite */
+    public static final String COLUMNNAME_IsFavourite = "IsFavourite";
+
+	/** Set Favourite.
+	  * This record is a favourite
+	  */
+	public void setIsFavourite (boolean IsFavourite);
+
+	/** Get Favourite.
+	  * This record is a favourite
+	  */
+	public boolean isFavourite();
+
+    /** Column name LoginOpenSeqNo */
+    public static final String COLUMNNAME_LoginOpenSeqNo = "LoginOpenSeqNo";
+
+	/** Set Login automatic open sequence.
+	  * Determine the order items will be automatically opened when user logs in
+	  */
+	public void setLoginOpenSeqNo (int LoginOpenSeqNo);
+
+	/** Get Login automatic open sequence.
+	  * Determine the order items will be automatically opened when user logs in
+	  */
+	public int getLoginOpenSeqNo();
+
+    /** Column name Name */
+    public static final String COLUMNNAME_Name = "Name";
+
+	/** Set Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name);
+
+	/** Get Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public String getName();
+
     /** Column name Node_ID */
     public static final String COLUMNNAME_Node_ID = "Node_ID";
 
