@@ -32,11 +32,13 @@ public class WPasswordEditor extends WStringEditor
     {
         super(gridField);
         super.setTypePassword(true);
+        setChangeEventWhenEditing (true);
     }
 
     public WPasswordEditor(GridField gridField, boolean tableEditor)
     {
     	super(gridField, tableEditor);
     	super.setTypePassword(true);
+    	setChangeEventWhenEditing (false);
     }
 }

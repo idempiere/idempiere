@@ -117,6 +117,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 
 	private void init(String obscureType)
     {
+		setChangeEventWhenEditing (true);
 		if (gridField != null)
 		{
 	        getComponent().setMaxlength(gridField.getFieldLength());

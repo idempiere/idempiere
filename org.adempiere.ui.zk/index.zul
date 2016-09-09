@@ -57,7 +57,7 @@ Copyright (C) 2007 Ashley G Ramdass.
 			zk.override(zul.inp.InputWidget.prototype, "doInput_", function (evt) {
 				this.$doInput_(evt);
 				
-				if (this.get ("isOnStardardWindow") == 'false'){
+				if (this.get ("isOnStardardWindow") == 'false' || this.get ("isChangeEventWhenEditing") != true){
 					return; // don't waste time to check component don't lay on standard window
 				}
 				
