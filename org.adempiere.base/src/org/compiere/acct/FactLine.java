@@ -301,6 +301,25 @@ public final class FactLine extends X_Fact_Acct
 	 */
 	public void setAmtAcct(int C_Currency_ID, BigDecimal AmtAcctDr, BigDecimal AmtAcctCr)
 	{
+		if (! m_acctSchema.isAllowNegativePosting()) {
+	        // fix Debit & Credit 
+			if (AmtAcctDr != null)
+			{	
+				if (AmtAcctDr.compareTo(Env.ZERO) == -1)
+				{	
+					AmtAcctCr = AmtAcctDr.abs();
+					AmtAcctDr = Env.ZERO;
+				}
+			}
+			if (AmtAcctCr != null)
+			{	
+				if (AmtAcctCr.compareTo(Env.ZERO) == -1)
+				{	
+					AmtAcctDr = AmtAcctCr.abs();
+					AmtAcctCr = Env.ZERO;
+				}
+			}
+		}
 		setAmtAcctDr (AmtAcctDr);
 		setAmtAcctCr (AmtAcctCr);
 		//	Currency Precision
