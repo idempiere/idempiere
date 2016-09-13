@@ -3261,7 +3261,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		Env.setContext(ctx, curWindowNo, "Value", "");
     		Env.setContext(ctx, curWindowNo, "Name", "");
         }
-		
+        prevdbInfo = "";		
 	}
 
 }
