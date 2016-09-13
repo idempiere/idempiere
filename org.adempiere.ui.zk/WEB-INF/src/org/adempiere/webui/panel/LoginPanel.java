@@ -174,8 +174,6 @@ public class LoginPanel extends Window implements EventListener<Event>
 							    			}
 							    		}
 								    	onUserIdChange(AD_User_ID);
-								    	if (txtUserId.getValue().length() > 0)
-								    		txtPassword.focus();
 								    	chkRememberMe.setChecked(true);
 							    	}
 							    	if (MSystem.isZKRememberPasswordAllowed()) {

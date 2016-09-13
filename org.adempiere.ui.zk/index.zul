@@ -41,6 +41,7 @@ Copyright (C) 2007 Ashley G Ramdass.
 		});								
 		
 		zk.afterLoad('zul.wgt', function () {
+			
 			// should filter out for only component inside standard window or component wish fire this event, 
 			// or ever rise other event like start editting to distinguish with true onChange event
 			zk.override(zul.inp.InputWidget.prototype, "doInput_", function (evt) {
@@ -60,6 +61,38 @@ Copyright (C) 2007 Ashley G Ramdass.
 						}
 					}
 				}
+			});
+			
+			
+			zk.override(zk.Widget.prototype, "onAutofill", function (evt) {
+				id.zk.Extend.fakeOnchange (this);//fire change event to move to edit
+			});
+			
+			zk.override(zul.inp.Textbox.prototype, "bind_", function (dt, skipper, after) {
+				if (!this.$bind_)
+					return;
+					
+				this.$bind_(dt, skipper, after);
+				
+				if (this.getType () != "password"){
+					return;
+				}
+				
+				this.domListen_(this.$n(), "onChange", "onAutofill");
+			});
+
+
+			zk.override(zul.inp.Textbox.prototype, "unbind_", function (dt, skipper) {
+				if (!this.$unbind_)
+					return;
+				
+				this.$unbind_(dt, skipper);
+				
+				if (this.getType () != "password"){
+					return;
+				}
+				
+				this.domUnlisten_(this.$n(), "onChange", "onAutofill"); //unlisten
 			});
 			
 		});
