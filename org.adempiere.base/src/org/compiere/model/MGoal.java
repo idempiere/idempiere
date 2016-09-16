@@ -30,7 +30,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.TimeUtil;
 
 /**
  * 	Performance Goal
@@ -373,9 +372,17 @@ public class MGoal extends X_PA_Goal
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Force=" + force);
 		MMeasure measure = MMeasure.get(getCtx(), getPA_Measure_ID());
+		
+		boolean isUpdateByInterfal = false;
+		if (getDateLastRun() != null){
+			// default 30 minute 1800000
+			long interval = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_PERFORMANCE_REFRESH_INTERVAL, 1800000);
+			isUpdateByInterfal = (System.currentTimeMillis() - getDateLastRun().getTime()) > interval;
+		}
+		
 		if (force 
 			|| getDateLastRun() == null
-			|| !TimeUtil.isSameHour(getDateLastRun(), null))
+			|| isUpdateByInterfal)
 		{
 			measure.set_TrxName(get_TrxName());
 			if (measure.updateGoals())		//	saves
