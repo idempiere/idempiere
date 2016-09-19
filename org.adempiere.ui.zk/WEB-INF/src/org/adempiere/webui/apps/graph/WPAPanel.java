@@ -15,28 +15,22 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 
 public class WPAPanel extends Panel implements EventListener<Event>
-{
+{	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6491684272848160726L;
+	private static final long serialVersionUID = -6367672112341229048L;
 
-	public static WPAPanel get()
-	{
-		return get((WPerformanceIndicator.Options)null);
-	}
-	
 	/**
 	 * 	Get Panel if User has Performance Goals
 	 *	@return panel pr null
 	 */
-	public static WPAPanel get(WPerformanceIndicator.Options options)
+	public static MGoal[] loadGoal()
 	{
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
 		MGoal[] goals = MGoal.getUserGoals(Env.getCtx(), AD_User_ID);
-		if (goals.length == 0)
-			return null;
-		return new WPAPanel(goals, options);
+		return goals;
 	}
 	
 	/**************************************************************************
@@ -44,9 +38,12 @@ public class WPAPanel extends Panel implements EventListener<Event>
 	 *	@param goals
 	 * @param options 
 	 */
-	private WPAPanel (MGoal[] goals, Options options)
+	public WPAPanel ()
 	{
 		super ();
+	}
+	
+	public void setGoals (MGoal[] goals, Options options){
 		m_goals = goals;		
 		init(options);
 	}

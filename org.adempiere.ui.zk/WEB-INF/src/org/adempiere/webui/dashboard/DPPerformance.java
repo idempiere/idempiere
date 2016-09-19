@@ -13,8 +13,14 @@
  *****************************************************************************/
 package org.adempiere.webui.dashboard;
 
+import org.adempiere.util.ContextRunnable;
+import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.apps.DesktopRunnable;
 import org.adempiere.webui.apps.graph.WPAPanel;
+import org.adempiere.webui.apps.graph.WPerformanceIndicator.Options;
 import org.adempiere.webui.util.ServerPushTemplate;
+import org.compiere.Adempiere;
+import org.compiere.model.MGoal;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
 import org.zkoss.zk.au.out.AuScript;
@@ -37,27 +43,50 @@ public class DPPerformance extends DashboardPanel {
 	 */
 	private static final long serialVersionUID = -8878665031716441912L;
 
+	private WPAPanel paPanel;
+	
 	public DPPerformance()
 	{
 		super();
 		setSclass("performance-widget");
-		
-        WPAPanel paPanel = createPAPanel();
-        if (paPanel != null) 
-        {
-        	this.appendChild(paPanel);        	
-        }
+		// have to add at least a child component, other it will be remove from DashboardController
+		// and can't update when finish load data
+		paPanel = new WPAPanel();
+		appendChild(paPanel);
+		Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(new LoadPerfomanceData(this), Executions.getCurrent().getDesktop()));
 	}
+	
+	static class LoadPerfomanceData extends ContextRunnable{
+		private DPPerformance parentCtr;
+		public LoadPerfomanceData (DPPerformance parentCtr){
+			this.parentCtr = parentCtr;
+		}
+		
+		@Override
+		protected void doRun() {
+			MGoal [] performanceData = WPAPanel.loadGoal();
 
-	protected WPAPanel createPAPanel() {
-		WPAPanel paPanel = WPAPanel.get();
-		return paPanel;
+			AEnv.executeAsyncDesktopTask(new Runnable() {
+				@Override
+				public void run() {
+					if (performanceData !=  null && performanceData.length > 0){
+						parentCtr.paPanel.setGoals(performanceData, (Options)null);
+						if (parentCtr.getAttribute(ON_POST_RENDER_ATTR) == null) {
+							parentCtr.setAttribute(ON_POST_RENDER_ATTR, Boolean.TRUE);
+							Events.echoEvent("onPostRender", parentCtr, null);
+						}
+					}
+				}
+			});
+			
+		}
+		
 	}
 	
 	public void refresh(ServerPushTemplate template) {
 		super.refresh(template);
 		if (Executions.getCurrent() != null) {
-			if (this.getAttribute(ON_POST_RENDER_ATTR) == null) {
+			if (this.getAttribute(ON_POST_RENDER_ATTR) == null && paPanel.getChildren().size() > 0) {
 				setAttribute(ON_POST_RENDER_ATTR, Boolean.TRUE);
 				Events.echoEvent("onPostRender", this, null);
 			}
@@ -69,7 +98,7 @@ public class DPPerformance extends DashboardPanel {
 		super.onPageAttached(newpage, oldpage);
 		if (newpage != null) {
 			if (Executions.getCurrent() != null) {
-				if (this.getAttribute(ON_POST_RENDER_ATTR) == null) {
+				if (this.getAttribute(ON_POST_RENDER_ATTR) == null && paPanel.getChildren().size() > 0) {
 					setAttribute(ON_POST_RENDER_ATTR, Boolean.TRUE);
 					Events.echoEvent("onPostRender", this, null);
 				}
