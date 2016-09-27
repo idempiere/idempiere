@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.I_M_InOutLine;
 import org.compiere.model.I_M_RMALine;
+import org.compiere.model.MConversionRate;
 import org.compiere.model.MOrderLandedCostAllocation;
 import org.compiere.model.MTax;
 import org.compiere.model.MCurrency;
@@ -624,6 +625,15 @@ public class Doc_InOut extends Doc
 								costs = costs.subtract(costTax);
 							}
 						}	//	correct included Tax
+				    	
+				    	// different currency
+				    	if (C_Currency_ID  != originalOrderLine.getC_Currency_ID()) 
+						{
+							costs = MConversionRate.convert (getCtx(),
+									costs, originalOrderLine.getC_Currency_ID(), C_Currency_ID,
+									getDateAcct(), 0, getAD_Client_ID(), getAD_Org_ID(), true);
+						}
+
 				    	costs = costs.multiply(line.getQty());
 				    	costs = costs.negate();
 					}

@@ -58,12 +58,13 @@ import org.zkoss.zul.Vbox;
  */
 public class DPFavourites extends DashboardPanel implements EventListener<Event> {
 
-	private static final String NODE_ID_ATTR = "Node_ID";
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -481859785800845108L;
+	private static final long serialVersionUID = 8398216266900311289L;
+
+	private static final String NODE_ID_ATTR = "Node_ID";
+
 
 	public static final String FAVOURITE_DROPPABLE = "favourite";
 
@@ -180,19 +181,36 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		int AD_Org_ID = Env.getContextAsInt(Env.getCtx(), "#AD_Org_ID");
 		int AD_User_ID = Env.getContextAsInt(Env.getCtx(), "#AD_User_ID");
 		StringBuilder sql = new StringBuilder();
-		if (add)
-			sql.append("INSERT INTO AD_TreeBar "
-				+ "(AD_Tree_ID,AD_User_ID,Node_ID, "
-				+ "AD_Client_ID,AD_Org_ID, "
-				+ "IsActive,Created,CreatedBy,Updated,UpdatedBy)VALUES (")
-				.append(m_AD_Tree_ID).append(",").append(AD_User_ID).append(",").append(Node_ID).append(",")
-				.append(AD_Client_ID).append(",").append(AD_Org_ID).append(",")
-				.append("'Y',SysDate,").append(AD_User_ID).append(",SysDate,").append(AD_User_ID).append(")");
-			//	if already exist, will result in ORA-00001: unique constraint (ADEMPIERE.AD_TREEBAR_KEY)
-		else
-			sql.append("DELETE AD_TreeBar WHERE AD_Tree_ID=").append(m_AD_Tree_ID)
+		if (add) {
+			// If record already exist, we will only make an update
+			if (DB.getSQLValueEx(null, "SELECT 1 FROM AD_TreeBar WHERE AD_Tree_ID = ? AND AD_User_ID = ? AND Node_ID = ?", m_AD_Tree_ID, AD_User_ID, Node_ID) == 1) {
+				sql.append("UPDATE AD_TreeBar SET IsFavourite = 'Y', Updated = Sysdate, UpdatedBy = ").append(AD_User_ID).append(" WHERE AD_Tree_ID = ").append(m_AD_Tree_ID)
 				.append(" AND AD_User_ID=").append(AD_User_ID)
 				.append(" AND Node_ID=").append(Node_ID);
+			} 
+			else // we will create the record
+				sql.append("INSERT INTO AD_TreeBar "
+						+ "(AD_Tree_ID,AD_User_ID,Node_ID, "
+						+ "AD_Client_ID,AD_Org_ID, "
+						+ "IsActive,Created,CreatedBy,Updated,UpdatedBy)VALUES (")
+						.append(m_AD_Tree_ID).append(",").append(AD_User_ID).append(",").append(Node_ID).append(",")
+						.append(AD_Client_ID).append(",").append(AD_Org_ID).append(",")
+						.append("'Y',SysDate,").append(AD_User_ID).append(",SysDate,").append(AD_User_ID).append(")");
+			//	if already exist, will result in ORA-00001: unique constraint (ADEMPIERE.AD_TREEBAR_KEY)
+		}
+		else {
+			// if the menu entry is opened at login, we will only remove it from favourites
+			if (DB.getSQLValueEx(null, "SELECT LoginOpenSeqNo FROM AD_TreeBar WHERE AD_Tree_ID = ? AND AD_User_ID = ? AND Node_ID = ?", m_AD_Tree_ID, AD_User_ID, Node_ID) > 0) {
+
+				sql.append("UPDATE AD_TreeBar SET IsFavourite = 'N', Updated = Sysdate, UpdatedBy = ").append(AD_User_ID).append(" WHERE AD_Tree_ID = ").append(m_AD_Tree_ID)
+				.append(" AND AD_User_ID=").append(AD_User_ID)
+				.append(" AND Node_ID=").append(Node_ID);
+			}
+			else // otherwise, we remove the record
+				sql.append("DELETE AD_TreeBar WHERE AD_Tree_ID=").append(m_AD_Tree_ID)
+				.append(" AND AD_User_ID=").append(AD_User_ID)
+				.append(" AND Node_ID=").append(Node_ID);
+		}
 		int no = DB.executeUpdate(sql.toString(), false, null);
 		return no == 1;
 	}

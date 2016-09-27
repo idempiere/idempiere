@@ -113,7 +113,7 @@ public class Match
 		else if (matchToString.equals(m_matchOptions[MATCH_ORDER]))
 			matchToType = MATCH_ORDER;
 		//
-		tableInit(display, matchToType, matched);	//	sets m_sql
+		tableInit(display, matchToType, matched,null);	//	sets m_sql
 
 		//  ** Add Where Clause **
 		//  Product
@@ -241,8 +241,11 @@ public class Match
 			display = MATCH_SHIPMENT;
 		else if (displayString.equals(m_matchOptions[MATCH_ORDER]))
 			display = MATCH_ORDER;
+		
+		KeyNamePair lineMatched = (KeyNamePair)xMatchedTable.getValueAt(row, I_Line);
+		
 		//int matchToType = matchFrom.getSelectedIndex();
-		tableInit (display, matchToType, matched);	//	sets m_sql
+		tableInit (display, matchToType, matched, lineMatched);	//	sets m_sql
 		//  ** Add Where Clause **
 		KeyNamePair BPartner = (KeyNamePair)xMatchedTable.getValueAt(row, I_BPartner);
 		//KeyNamePair Org = (KeyNamePair)xMatchedTable.getValueAt(row, I_Org); //JAVIER
@@ -277,7 +280,7 @@ public class Match
 	 *  @param display (Invoice, Shipment, Order) see MATCH_*
 	 *  @param matchToType (Invoice, Shipment, Order) see MATCH_*
 	 */
-	protected void tableInit (int display, int matchToType, boolean matched)
+	protected void tableInit (int display, int matchToType, boolean matched, KeyNamePair lineMatched)
 	{
 		//boolean matched = matchMode.getSelectedIndex() == MODE_MATCHED;
 		if (log.isLoggable(Level.CONFIG)) log.config("Display=" + m_matchOptions[display]
@@ -285,6 +288,11 @@ public class Match
 			+ ", Matched=" + matched);
 
 		m_sql = new StringBuffer ();
+		int Line_ID = 0;
+		if (matched && lineMatched != null )
+		{
+			Line_ID = lineMatched.getKey();
+		}
 		if (display == MATCH_INVOICE)
 		{
 			m_dateColumn = "hdr.DateInvoiced";
@@ -300,6 +308,9 @@ public class Match
 				+ " INNER JOIN C_DocType dt ON (hdr.C_DocType_ID=dt.C_DocType_ID AND dt.DocBaseType IN ('API','APC'))"
 				+ " FULL JOIN M_MatchInv mi ON (lin.C_InvoiceLine_ID=mi.C_InvoiceLine_ID) "
 				+ "WHERE hdr.DocStatus IN ('CO','CL')");
+			if (lineMatched!= null && Line_ID > 0 )
+				m_sql.append(" AND mi.M_InOutLine_ID  = ").append(Line_ID);
+			
 			m_groupBy = " GROUP BY hdr.C_Invoice_ID,hdr.DocumentNo,hdr.DateInvoiced,bp.Name,hdr.C_BPartner_ID,"
 				+ " lin.Line,lin.C_InvoiceLine_ID,p.Name,lin.M_Product_ID,lin.QtyInvoiced, org.Name, hdr.AD_Org_ID " //JAVIER
 				+ "HAVING "
@@ -324,7 +335,9 @@ public class Match
 			m_linetype = new StringBuffer();
 			m_linetype.append( matchToType == MATCH_SHIPMENT ? "M_InOutLine_ID" : "C_InvoiceLine_ID") ;
 			if ( matched ) {
-				m_sql.append( " mo." + m_linetype + " IS NOT NULL " ) ; 
+				m_sql.append( " mo." + m_linetype + " IS NOT NULL " ) ;
+				if (lineMatched!= null && Line_ID > 0 )
+					m_sql.append( " AND mo.M_InOutLine_ID = " + Line_ID) ;
 			} else {
  				m_sql.append( " ( mo." + m_linetype + " IS NULL OR "
 				+ " (lin.QtyOrdered <>  (SELECT sum(mo1.Qty) AS Qty" 
@@ -353,11 +366,16 @@ public class Match
 				+ " INNER JOIN C_BPartner bp ON (hdr.C_BPartner_ID=bp.C_BPartner_ID)"
 				+ " INNER JOIN M_InOutLine lin ON (hdr.M_InOut_ID=lin.M_InOut_ID)"
 				+ " INNER JOIN M_Product p ON (lin.M_Product_ID=p.M_Product_ID)"
-				+ " INNER JOIN C_DocType dt ON (hdr.C_DocType_ID = dt.C_DocType_ID AND dt.DocBaseType='MMR')"
+				+ " INNER JOIN C_DocType dt ON (hdr.C_DocType_ID = dt.C_DocType_ID AND (dt.DocBaseType='MMR' OR (dt.DocBaseType='MMS' AND hdr.isSOTrx ='N')))"
 				+ " FULL JOIN ")
 				.append(matchToType == MATCH_ORDER ? "M_MatchPO" : "M_MatchInv")
 				.append(" m ON (lin.M_InOutLine_ID=m.M_InOutLine_ID) "
-				+ "WHERE hdr.DocStatus IN ('CO','CL')");
+				+ "WHERE hdr.DocStatus IN ('CO','CL')");			
+			if ( matchToType == MATCH_INVOICE &&   lineMatched!= null && Line_ID > 0 )
+				m_sql.append(" AND m.C_InvoiceLine_ID  = ").append(Line_ID);
+			if ( matchToType == MATCH_ORDER &&   lineMatched!= null && Line_ID > 0 )
+				m_sql.append(" AND m.C_OrderLine_ID  = ").append(Line_ID);
+
 			m_groupBy = " GROUP BY hdr.M_InOut_ID,hdr.DocumentNo,hdr.MovementDate,bp.Name,hdr.C_BPartner_ID,"
 				+ " lin.Line,lin.M_InOutLine_ID,p.Name,lin.M_Product_ID,lin.MovementQty, org.Name, hdr.AD_Org_ID " //JAVIER
 				+ "HAVING "

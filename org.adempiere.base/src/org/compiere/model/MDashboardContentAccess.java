@@ -60,10 +60,26 @@ public class MDashboardContentAccess extends X_PA_DashboardContent_Access {
 		   .append(" WHERE PA_DashboardContent_ID NOT IN (")
 		   .append("  SELECT PA_DashboardContent_ID ")
 		   .append("  FROM  PA_DashboardContent_Access" )
-		   .append("   WHERE AD_Client_ID IN (0, ?))")
+		   .append("   WHERE IsActive='Y' AND AD_Client_ID IN (0, ?))")
 		   .append(" AND IsShowInLogin='Y'")
-		   .append(" AND IsActive='Y' AND AD_Client_ID IN (0, ?)")
-		   .append(" UNION  ALL")
+		   .append(" AND IsActive='Y' AND AD_Client_ID IN (0, ?)");
+
+		// New part : remove dashboard if inactive records 
+		sql.append(" AND PA_DashboardContent_ID NOT IN (SELECT PA_DashboardContent_ID FROM PA_DashboardContent_Access ct2 WHERE ct2.IsActive='N' AND ct2.AD_Client_ID in (0,?)");
+		parameters.add(AD_Client_ID);
+		if (AD_Role >= 0) {
+			sql.append(" AND COALESCE(ct2.AD_Role_ID, ?) = ?");			  
+			parameters.add(AD_Role);
+			parameters.add(AD_Role);
+		}
+		if (AD_User >= 0) {
+			sql.append(" AND COALESCE(ct2.AD_User_ID, ?) = ?");
+			parameters.add(AD_User);
+			parameters.add(AD_User);
+		}
+		sql.append(")");
+
+		sql.append(" UNION  ALL")
 		   // Second part : second part is to process the dashboards configured in content access
 		   .append(" SELECT ct.PA_DashboardContent_ID,ct.ColumnNo")
 		   .append(" FROM  PA_DashboardContent ct")
@@ -85,20 +101,6 @@ public class MDashboardContentAccess extends X_PA_DashboardContent_Access {
 		sql.append(" AND cta.AD_Client_ID in (0,?)");
 		parameters.add(AD_Client_ID);
 
-		// New part : remove dashboard if inactive records 
-		sql.append(" AND ct.PA_DashboardContent_ID NOT IN (SELECT PA_DashboardContent_ID FROM PA_DashboardContent_Access WHERE IsActive='N' AND ct.AD_Client_ID in (0,?)");
-		parameters.add(AD_Client_ID);
-		if (AD_Role >= 0) {
-			sql.append(" AND COALESCE(ct.AD_Role_ID, ?) = ?");			  
-			parameters.add(AD_Role);
-			parameters.add(AD_Role);
-		}
-		if (AD_User >= 0) {
-			sql.append(" AND COALESCE(ct.AD_User_ID, ?) = ?");
-			parameters.add(AD_User);
-			parameters.add(AD_User);
-		}
-		sql.append(")");
 
         sql.append(" ORDER BY ColumnNo");
 

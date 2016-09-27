@@ -180,6 +180,16 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         this.strLabel = gridField.getHeader();
         init();
     }
+    
+    /**
+     * Normal zk component just fire onChange event when user loss focus
+     * call this method with true value let component fire event when user type first character 
+     * @param isChangeEventWhenEditing
+     */
+    public void setChangeEventWhenEditing (boolean isChangeEventWhenEditing){
+    	this.component.setWidgetOverride("isChangeEventWhenEditing", String.valueOf(isChangeEventWhenEditing));
+    }
+    
 
     /**
      * Method is used to distinguish between 2 similar WSearchEditors

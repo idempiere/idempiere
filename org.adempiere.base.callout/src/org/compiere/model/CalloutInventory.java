@@ -58,39 +58,12 @@ public class CalloutInventory extends CalloutEngine
 			docSubTypeInv = dt.getDocSubTypeInv();
 		}
 
-		Integer InventoryLine = (Integer)mTab.getValue("M_InventoryLine_ID");
-		BigDecimal bd = null;
-		
-		if (InventoryLine != null && InventoryLine.intValue() != 0) {
-			MInventoryLine _ILine = new MInventoryLine(ctx, InventoryLine, null);
-			Integer M_Product_ID = (Integer)mTab.getValue("M_Product_ID");
-			Integer M_Locator_ID = (Integer)mTab.getValue("M_Locator_ID");		
-			Integer M_AttributeSetInstance_ID = 0;
-			// if product or locator has changed recalculate Book Qty
-			if ((M_Product_ID != null && M_Product_ID != _ILine.getM_Product_ID()) || 
-					(M_Locator_ID !=null && M_Locator_ID != _ILine.getM_Locator_ID())) {
-
-				// Check ASI - if product has been changed remove old ASI
-				if (M_Product_ID == _ILine.getM_Product_ID()) {
-					M_AttributeSetInstance_ID = (Integer)mTab.getValue("M_AttributeSetInstance_ID");
-					if( M_AttributeSetInstance_ID == null )
-						M_AttributeSetInstance_ID = 0;
-				} else {
-					mTab.setValue("M_AttributeSetInstance_ID", null);
-				}
-				if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv)) {
-					try {
-						bd = setQtyBook(M_AttributeSetInstance_ID, M_Product_ID, M_Locator_ID);
-						mTab.setValue("QtyBook", bd);
-					} catch (Exception e) {
-						return e.getLocalizedMessage();
-					}
-				}
-			}
-			return "";
+		if ("M_Product_ID".equals(mField.getColumnName())) {
+			// product changed - remove old ASI
+			mTab.setValue("M_AttributeSetInstance_ID", null);
 		}
-			
-		//	New Line - Get Book Value
+
+		//	Get Book Value
 		int M_Product_ID = 0;
 		Integer Product = (Integer)mTab.getValue("M_Product_ID");
 		if (Product != null)
@@ -128,6 +101,7 @@ public class CalloutInventory extends CalloutEngine
 			
 		// Set QtyBook from first storage location
 		// kviiksaar: Call's now the extracted function
+		BigDecimal bd = null;
 		if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv)) {
 			try {
 				bd = setQtyBook(M_AttributeSetInstance_ID, M_Product_ID, M_Locator_ID);

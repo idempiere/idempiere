@@ -191,9 +191,12 @@ public class Doc_MatchInv extends Doc
 		}
 		else
 		{
+			BigDecimal effMultiplier = multiplier;
+			if (getQty().signum() < 0)
+				effMultiplier = effMultiplier.negate();
 			if (!dr.updateReverseLine (MInOut.Table_ID, 		//	Amt updated
 				m_receiptLine.getM_InOut_ID(), m_receiptLine.getM_InOutLine_ID(),
-				multiplier))
+				effMultiplier))
 			{
 				p_Error = "Mat.Receipt not posted yet";
 				return null;
@@ -241,10 +244,14 @@ public class Doc_MatchInv extends Doc
 			}
 			else
 			{
-				cr.setQty(getQty().negate());				
+				cr.setQty(getQty().negate());
+				BigDecimal effMultiplier = multiplier;
+				if (getQty().signum() < 0)
+					effMultiplier = effMultiplier.negate();
+
 				//	Set AmtAcctCr/Dr from Invoice (sets also Project)
 				if (!cr.updateReverseLine (MInvoice.Table_ID, 		//	Amt updated
-					m_invoiceLine.getC_Invoice_ID(), m_invoiceLine.getC_InvoiceLine_ID(), multiplier))
+					m_invoiceLine.getC_Invoice_ID(), m_invoiceLine.getC_InvoiceLine_ID(), effMultiplier))
 				{
 					p_Error = "Invoice not posted yet";
 					return null;

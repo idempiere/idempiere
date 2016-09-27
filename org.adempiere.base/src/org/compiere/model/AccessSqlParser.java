@@ -233,6 +233,10 @@ public class AccessSqlParser
 			from = from.replaceAll("[\r\n\t ]+LEFT[\r\n\t ]+OUTER[\r\n\t ]+JOIN[\r\n\t ]+", ", ");
 			from = from.replaceAll("[\r\n\t ]+RIGHT[\r\n\t ]+OUTER[\r\n\t ]+JOIN[\r\n\t ]+", ", ");
 			from = from.replaceAll("[\r\n\t ]+FULL[\r\n\t ]+JOIN[\r\n\t ]+", ", ");
+			from = from.replaceAll("[\r\n\t ]+LEFT[\r\n\t ]+JOIN[\r\n\t ]+", ", ");
+			from = from.replaceAll("[\r\n\t ]+RIGHT[\r\n\t ]+JOIN[\r\n\t ]+", ", ");
+			from = from.replaceAll("[\r\n\t ]+JOIN[\r\n\t ]+", ", ");
+			
 			from = from.replaceAll("[\r\n\t ]+[Oo][Nn][\r\n\t ]+", ON); // teo_sarca, BF [ 2840157 ]
 			//	Remove ON clause - assumes that there is no IN () in the clause
 			index = from.indexOf(ON);

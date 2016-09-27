@@ -15,7 +15,17 @@ Copyright (C) 2007 Ashley G Ramdass.
 		zk.afterLoad(function() {
 			zk._Erbx.push = function(msg) {
 				if (console) console.log(msg);
-			}
+			};
+			
+			zk.$package('id.zk');
+			
+			id.zk.Extend = zk.$extends(zk.Object, {}, {
+				fakeOnchange: function (wgt) {
+					// just sent fake event when control is textfield and value is not yet sync to server
+					if (wgt.$instanceof(zul.inp.Textbox) && wgt.$n().value != wgt.getText())
+						zAu.send(new zk.Event(zk.Widget.$(wgt), 'onChange',{"value":wgt.$n().value}));
+				}
+			});
 		});
 			
 		zk.afterLoad(function() {
@@ -41,25 +51,65 @@ Copyright (C) 2007 Ashley G Ramdass.
 		});								
 		
 		zk.afterLoad('zul.wgt', function () {
+			
 			// should filter out for only component inside standard window or component wish fire this event, 
 			// or ever rise other event like start editting to distinguish with true onChange event
 			zk.override(zul.inp.InputWidget.prototype, "doInput_", function (evt) {
 				this.$doInput_(evt);
-				var domElemOfLayout = jq('#' + this.$n().id).closest(".adwindow-layout");
-				if (domElemOfLayout == null){
-					;// do nothing
+				
+				if (this.get ("isOnStardardWindow") == 'false' || this.get ("isChangeEventWhenEditing") != true){
+					return; // don't waste time to check component don't lay on standard window
+				}
+				
+				var domElemOfLayout = jq('#' + this.$n().id).closest(".adwindow-layout"); // return a array
+				if (domElemOfLayout.length == 0){
+					this.set ("isOnStardardWindow", "false");// next time don't waste time to check this component
+					                                         // in case, you move this component to a standard window, please update this properties at client by javascript Widget.set ()
+					                                         // or at server by java function component.setWidgetOverride 
 				}else{
 					var winLayoutWg = zk.Widget.$(domElemOfLayout);
 					if (winLayoutWg == null){
-						;// do nothing
+						;// do nothing, this case rare happen because ".adwindow-layout" always is a component
 					}else{
 						var isEditting = winLayoutWg.get ("isEditting");
 						// winLayoutWg should cache to improve perfomance
 						if (isEditting == "false"){
-							zAu.send(new zk.Event(zk.Widget.$(this), 'onChange',{"value":this.$n().value}));//fire change event to move to edit
+							id.zk.Extend.fakeOnchange (this);//fire change event to move to edit
 						}
 					}
 				}
+			});
+			
+			
+			zk.override(zk.Widget.prototype, "onAutofill", function (evt) {
+				id.zk.Extend.fakeOnchange (this);//fire change event to move to edit
+			});
+			
+			zk.override(zul.inp.Textbox.prototype, "bind_", function (dt, skipper, after) {
+				if (!this.$bind_)
+					return;
+					
+				this.$bind_(dt, skipper, after);
+				
+				if (this.getType () != "password"){
+					return;
+				}
+				
+				this.domListen_(this.$n(), "onChange", "onAutofill");
+			});
+
+
+			zk.override(zul.inp.Textbox.prototype, "unbind_", function (dt, skipper) {
+				if (!this.$unbind_)
+					return;
+				
+				this.$unbind_(dt, skipper);
+				
+				if (this.getType () != "password"){
+					return;
+				}
+				
+				this.domUnlisten_(this.$n(), "onChange", "onAutofill"); //unlisten
 			});
 			
 		});
