@@ -365,6 +365,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		if (!m_justPrepared)
 		{
 			String status = prepareIt();
+			m_justPrepared = false;
 			if (!DocAction.STATUS_InProgress.equals(status))
 				return status;
 		}

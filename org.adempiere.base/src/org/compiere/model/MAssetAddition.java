@@ -633,6 +633,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		if (!m_justPrepared)
 		{
 			String status = prepareIt();
+			m_justPrepared = false;
 			if (!DocAction.STATUS_InProgress.equals(status))
 				return status;
 		}
