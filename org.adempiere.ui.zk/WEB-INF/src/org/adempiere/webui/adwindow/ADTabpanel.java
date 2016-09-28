@@ -1078,7 +1078,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     	}
     	else if (treePanel != null && event.getTarget() == treePanel.getTree()) {
     		Treeitem item =  treePanel.getTree().getSelectedItem();
-    		navigateTo((DefaultTreeNode<MTreeNode>)item.getValue());
+    		if (item.getValue() != null)
+    			navigateTo((DefaultTreeNode<MTreeNode>)item.getValue());
     	}
     	else if (ON_DEFER_SET_SELECTED_NODE.equals(event.getName())) {
     		removeAttribute(ON_DEFER_SET_SELECTED_NODE_ATTR);
