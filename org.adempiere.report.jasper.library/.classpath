@@ -10,7 +10,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/batik-ext-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/batik-extension-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/batik-gui-util-1.8.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/batik-gui-util-1.8batik-parser-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/batik-gvt-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/batik-parser-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/batik-script-1.8.jar"/>

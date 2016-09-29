@@ -9,7 +9,6 @@
 		<get src="${url.file.jp.lib}/batik-dom-1.8.jar" dest="lib/batik-dom-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/batik-ext-1.8.jar" dest="lib/batik-ext-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/batik-extension-1.8.jar" dest="lib/batik-extension-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-gui-util-1.8batik-parser-1.8.jar" dest="lib/batik-gui-util-1.8batik-parser-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/batik-gui-util-1.8.jar" dest="lib/batik-gui-util-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/batik-gvt-1.8.jar" dest="lib/batik-gvt-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/batik-parser-1.8.jar" dest="lib/batik-parser-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
