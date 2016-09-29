@@ -123,7 +123,10 @@ public class GridTabDataBinder implements ValueChangeListener {
 				throw new IllegalArgumentException("Multiple Selection values not available for this field. " + e.getPropertyName());
 			}
 			
-           	mTable.setValueAt (newValue, row, col);
+			if (e.isInitEdit())
+				mTable.setValueAt (newValue, row, col, false, true);
+			else
+				mTable.setValueAt (newValue, row, col);
             //  Force Callout
             if ( e.getPropertyName().equals("S_ResourceAssignment_ID") )
             {

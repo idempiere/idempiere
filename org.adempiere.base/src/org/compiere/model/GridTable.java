@@ -99,11 +99,12 @@ import org.compiere.util.ValueNamePair;
 public class GridTable extends AbstractTableModel
 	implements Serializable
 {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3993077765244392901L;
-
+	private static final long serialVersionUID = -4982992333796276205L;
+	
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 	public static final String DATA_UPDATE_COPIED_MESSAGE = "UpdateCopied";
 	public static final String DATA_INSERTED_MESSAGE = "Inserted";
@@ -1247,11 +1248,11 @@ public class GridTable extends AbstractTableModel
 	 */
 	public final void setValueAt (Object value, int row, int col)
 	{
-		setValueAt (value, row, col, false);
+		setValueAt (value, row, col, false, false);
 	}	//	setValueAt
 
 	/**
-	 * 	Set Value in data and update GridField.
+	 * 	call {@link #setValueAt(Object, int, int, boolean, boolean)} with isInitEdit = false
 	 *  (called directly or from JTable.editingStopped())
 	 *
 	 *  @param  value value to assign to cell
@@ -1260,6 +1261,21 @@ public class GridTable extends AbstractTableModel
 	 * 	@param	force force setting new value
 	 */
 	public final void setValueAt (Object value, int row, int col, boolean force)
+	{
+		setValueAt (value, row, col, force, false);
+	}	//	setValueAt
+	
+	/**
+	 * 	Set Value in data and update GridField.
+	 *  (called directly or from JTable.editingStopped())
+	 *
+	 *  @param  value value to assign to cell
+	 *  @param  row row index of cell
+	 *  @param  col column index of cell
+	 * 	@param	force force setting new value
+	 *  @param	isInitEdit indicate event rise by start edit a field. just want change status to edit, don't change anything else
+	 */
+	public final void setValueAt (Object value, int row, int col, boolean force, boolean isInitEdit)
 	{
 		//	Can we edit?
 		if (!m_open || m_readOnly       //  not accessible
@@ -1275,7 +1291,7 @@ public class GridTable extends AbstractTableModel
 
 		//	Has anything changed?
 		Object oldValue = getValueAt(row, col);
-		if (!force && !isValueChanged(oldValue, value) )
+		if (!force && !isInitEdit && !isValueChanged(oldValue, value) )
 		{
 			if (log.isLoggable(Level.FINEST)) log.finest("r=" + row + " c=" + col + " - New=" + value + "==Old=" + oldValue + " - Ignored");
 			return;
@@ -1321,6 +1337,7 @@ public class GridTable extends AbstractTableModel
 		field.setValue(value, m_inserting);
 		//  inform
 		DataStatusEvent evt = createDSE();
+		evt.setIsInitEdit(isInitEdit);
 		evt.setChangedColumn(col, field.getColumnName());
 		fireDataStatusChanged(evt);
 	}	//	setValueAt

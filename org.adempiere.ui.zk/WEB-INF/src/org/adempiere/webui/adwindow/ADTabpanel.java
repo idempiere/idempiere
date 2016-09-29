@@ -1228,7 +1228,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	public void dataStatusChanged(DataStatusEvent e)
     {
     	//ignore background event
-    	if (Executions.getCurrent() == null) return;
+    	if (Executions.getCurrent() == null || e.isInitEdit()) return;
 
         int col = e.getChangedColumn();
         if (logger.isLoggable(Level.CONFIG)) logger.config("(" + gridTab + ") Col=" + col + ": " + e.toString());
