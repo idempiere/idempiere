@@ -100,14 +100,6 @@ public class Doc_AllocationHdr extends Doc
 		{
 			MAllocationLine line = lines[i];
 			DocLine_Allocation docLine = new DocLine_Allocation(line, this);
-
-			//	Get Payment Conversion Rate
-			if (line.getC_Payment_ID() != 0)
-			{
-				MPayment payment = new MPayment (getCtx(), line.getC_Payment_ID(), getTrxName());
-				int C_ConversionType_ID = payment.getC_ConversionType_ID();
-				docLine.setC_ConversionType_ID(C_ConversionType_ID);
-			}
 			//
 			if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
 			list.add (docLine);
