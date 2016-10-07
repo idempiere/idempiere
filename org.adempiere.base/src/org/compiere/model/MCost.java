@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -690,77 +691,113 @@ public class MCost extends X_M_Cost
 	 */
 	protected static void create (MProduct product)
 	{
-			s_log.config(product.getName());
+		s_log.config(product.getName());
 
-			//	Cost Elements
-			MCostElement[] ces = MCostElement.getCostingMethods(product);
-			MCostElement ce = null;
-			for (MCostElement element : ces) {
-				if (X_M_CostElement.COSTINGMETHOD_StandardCosting.equals(element.getCostingMethod()))
-				{
-					ce = element;
-					break;
-				}
-			}
-			if (ce == null)
+		//	Cost Elements
+		MCostElement[] ces = MCostElement.getCostingMethods(product);
+		MCostElement ce = null;
+		for (MCostElement element : ces) {
+			if (X_M_CostElement.COSTINGMETHOD_StandardCosting.equals(element.getCostingMethod()))
 			{
-				s_log.fine("No Standard Costing in System");
-				return;
+				ce = element;
+				break;
 			}
+		}
+		if (ce == null)
+		{
+			s_log.fine("No Standard Costing in System");
+			return;
+		}
 
-			MAcctSchema[] mass = MAcctSchema.getClientAcctSchema(product.getCtx(),
-				product.getAD_Client_ID(), product.get_TrxName());
-			MOrg[] orgs = null;
+		MAcctSchema[] mass = MAcctSchema.getClientAcctSchema(product.getCtx(),
+			product.getAD_Client_ID(), product.get_TrxName());
+		MOrg[] orgs = null;
 
-			int M_ASI_ID = 0;		//	No Attribute
-			for (MAcctSchema as : mass)
+		int M_ASI_ID = 0;		//	No Attribute
+		for (MAcctSchema as : mass)
+		{
+			String cl = product.getCostingLevel(as);
+			//	Create Std Costing
+			if (MAcctSchema.COSTINGLEVEL_Client.equals(cl))
 			{
-				String cl = product.getCostingLevel(as);
-				//	Create Std Costing
-				if (MAcctSchema.COSTINGLEVEL_Client.equals(cl))
-					{
-						MCost cost = MCost.get (product, M_ASI_ID,
-							as, 0, ce.getM_CostElement_ID(), product.get_TrxName());
-						if (cost.is_new())
-						{
-							if (cost.save()) {
-								if (s_log.isLoggable(Level.CONFIG)) s_log.config("Std.Cost for " + product.getName()
-									+ " - " + as.getName());
-							} else {
-								s_log.warning("Not created: Std.Cost for " + product.getName()
-										+ " - " + as.getName());
-							}
-						}
-					}
-				else if (MAcctSchema.COSTINGLEVEL_Organization.equals(cl))
+				createCostingRecord(product, M_ASI_ID, as, 0,ce.getM_CostElement_ID() );
+			}
+			else if (MAcctSchema.COSTINGLEVEL_Organization.equals(cl))
+			{
+				if (as.getAD_OrgOnly_ID() > 0 && MOrg.get(product.getCtx(), as.getAD_OrgOnly_ID()).isSummary())
 				{
-					if (orgs == null)
-						orgs = MOrg.getOfClient(product);
-					for (MOrg o : orgs)
-					{
-							MCost cost = MCost.get (product, M_ASI_ID,
-								as, o.getAD_Org_ID(), ce.getM_CostElement_ID(), product.get_TrxName());
-							if (cost.is_new())
-							{
-								if (cost.save()) {
-									if (s_log.isLoggable(Level.CONFIG)) s_log.config("Std.Cost for " + product.getName()
-										+ " - " + o.getName()
-										+ " - " + as.getName());
-								} else {
-									s_log.warning("Not created: Std.Cost for " + product.getName()
-											+ " - " + o.getName()
-											+ " - " + as.getName());
-								}
-						}
-					}	//	for all orgs
+					MClient client = MClient.get(product.getCtx(), product.getAD_Client_ID());
+					MClientInfo ci = client.getInfo();
+					MTree vTree = new MTree (product.getCtx(), ci.getAD_Tree_Org_ID(), false, true, true, product.get_TrxName());
+
+					MTreeNode root = vTree.getRoot();
+					createForChildOrg(root, product, as, M_ASI_ID, ce, false);
 				}
 				else
 				{
-					s_log.warning("Not created: Std.Cost for " + product.getName()
-						+ " - Costing Level on Batch/Lot");
+					if (orgs == null)
+						orgs = MOrg.getOfClient(product);
+					
+					for (MOrg o : orgs)
+					{
+						if (o.isSummary())
+							continue;
+						if (as.getAD_OrgOnly_ID() == o.getAD_Org_ID() || as.getAD_OrgOnly_ID() == 0) 
+						{
+							createCostingRecord(product, M_ASI_ID, as, o.getAD_Org_ID(), ce.getM_CostElement_ID() );
+
+						} 
+					}
 				}
-			}	//	accounting schema loop
+
+			} 
+			else
+			{
+				s_log.warning("Not created: Std.Cost for " + product.getName()
+						+ " - Costing Level on Batch/Lot");
+			}//	accounting schema loop
+		}
 	}	//	create
+
+
+	private static void createForChildOrg(MTreeNode root, MProduct product, MAcctSchema as, int M_ASI_ID, MCostElement ce, boolean found) 
+	{
+		int parentId = root.getNode_ID();
+		if (!found)
+			found = (parentId == as.getAD_OrgOnly_ID());
+		Enumeration<?> nodeEnum = root.children();
+		MTreeNode child = null;
+		while(nodeEnum.hasMoreElements()) 
+		{
+			child = (MTreeNode)nodeEnum.nextElement();
+			if (child != null && child.getChildCount() > 0) 
+			{
+				createForChildOrg(child, product, as, M_ASI_ID, ce, found);
+			} 
+			else if (found) 
+			{
+				int orgId = child.getNode_ID();
+				MOrg org = MOrg.get(product.getCtx(), orgId);
+				if (!org.isSummary())
+					createCostingRecord(product, M_ASI_ID, as, orgId, ce.getM_CostElement_ID());
+			}
+		}
+	}
+
+	private static void createCostingRecord(MProduct product,int M_ASI_ID, MAcctSchema as, int AD_Org_ID, int M_CostElement_ID) {
+		MCost cost = MCost.get (product, M_ASI_ID,
+				as, AD_Org_ID, M_CostElement_ID, product.get_TrxName());
+		if (cost.is_new())
+		{
+			if (cost.save()) {
+				if (s_log.isLoggable(Level.CONFIG)) s_log.config("Std.Cost for " + product.getName()
+					+ " - " + as.getName());
+			} else {
+				s_log.warning("Not created: Std.Cost for " + product.getName()
+						+ " - " + as.getName());
+			}
+		}
+	}
 
 	/**
 	 * 	Delete standard Costing records for Product
