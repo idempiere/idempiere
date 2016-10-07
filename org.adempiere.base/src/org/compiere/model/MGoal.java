@@ -376,7 +376,7 @@ public class MGoal extends X_PA_Goal
 		boolean isUpdateByInterfal = false;
 		if (getDateLastRun() != null){
 			// default 30 minute 1800000
-			long interval = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_PERFORMANCE_REFRESH_INTERVAL, 1800000);
+			long interval = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_PERFORMANCE_REFRESH_INTERVAL, 1800000, Env.getAD_Client_ID(Env.getCtx()));
 			isUpdateByInterfal = (System.currentTimeMillis() - getDateLastRun().getTime()) > interval;
 		}
 		
