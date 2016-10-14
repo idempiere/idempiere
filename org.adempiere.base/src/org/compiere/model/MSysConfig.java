@@ -39,12 +39,11 @@ import org.compiere.util.DisplayType;
  */
 public class MSysConfig extends X_AD_SysConfig
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2568590773996678544L;
-	
+	private static final long serialVersionUID = 6862004813052785789L;
+
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
     public static final String ALLOCATION_DESCRIPTION = "ALLOCATION_DESCRIPTION";
