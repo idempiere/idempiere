@@ -130,12 +130,15 @@ SELECT il.ad_client_id,
     pasi.isactive                                                          AS m_attributesetinstance_isacti,
     pasi.serno                                                             AS m_attributesetinstance_serno,
     pasi.updated                                                           AS m_attributesetinstance_updated,
-    pasi.updatedby                                                         AS m_asi_updatedby 
+    pasi.updatedby                                                         AS m_asi_updatedby,
+    pc.m_product_category_parent_id
 FROM rv_c_invoice i 
         JOIN c_invoiceline il 
         ON i.c_invoice_id = il.c_invoice_id 
         LEFT JOIN m_product p 
         ON il.m_product_id = p.m_product_id 
+        LEFT JOIN m_product_category pc
+        ON p.m_product_category_id = pc.m_product_category_id 
         LEFT JOIN m_attributesetinstance pasi 
         ON il.m_attributesetinstance_id = pasi.m_attributesetinstance_id
 ;
