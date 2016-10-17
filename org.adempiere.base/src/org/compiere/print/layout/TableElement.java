@@ -1509,7 +1509,10 @@ public class TableElement extends PrintElement
 							String[] lines = Pattern.compile("\n", Pattern.MULTILINE).split(str);
 							for (int lineNo = 0; lineNo < lines.length; lineNo++)
 							{
-								aString = new AttributedString(lines[lineNo]);
+								String thisLine = lines[lineNo];
+								if (thisLine.length() == 0)
+									thisLine = " ";
+								aString = new AttributedString(thisLine);
 								aString.addAttribute(TextAttribute.FONT, getFont(row, col));
 								if (isView && printItems[index] instanceof NamePair)	//	ID
 								{
@@ -1521,7 +1524,7 @@ public class TableElement extends PrintElement
 								//
 								iter = aString.getIterator();
 								boolean fastDraw = LayoutEngine.s_FASTDRAW;
-								if (fastDraw && !isView && !Util.is8Bit(lines[lineNo]))
+								if (fastDraw && !isView && !Util.is8Bit(thisLine))
 									fastDraw = false;
 								measurer = new LineBreakMeasurer(iter, g2D.getFontRenderContext());
 								while (measurer.getPosition() < iter.getEndIndex())		//	print element

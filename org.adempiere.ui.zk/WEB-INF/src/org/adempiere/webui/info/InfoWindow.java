@@ -448,7 +448,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		isQueryByUser = true;
 		for (int i = 0; i < identifiers.size(); i++) {
 			WEditor editor = identifiers.get(i);
-			editor.setValue(queryValue);
+			try{
+				editor.setValue(queryValue);
+			}catch(Exception ex){
+				log.log(Level.SEVERE, "error", ex.getCause());
+			}
+			
 			testCount(false);
 			if (m_count > 0) {
 				break;

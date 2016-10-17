@@ -174,16 +174,20 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 
 	public void onEvent(Event event)
     {
-    	if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()))
+		boolean isStartEdit = INIT_EDIT_EVENT.equalsIgnoreCase (event.getName());
+    	if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()) || isStartEdit)
     	{
 	        String newValue = getComponent().getValue();
-	        if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
+	        if (!isStartEdit && oldValue != null && newValue != null && oldValue.equals(newValue)) {
 	    	    return;
 	    	}
-	        if (oldValue == null && newValue == null) {
+	        if (!isStartEdit && oldValue == null && newValue == null) {
 	        	return;
 	        }
 	        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
+	        
+	        changeEvent.setIsInitEdit(isStartEdit);
+	        
 	        super.fireValueChange(changeEvent);
 	        oldValue = getComponent().getValue(); // IDEMPIERE-963 - check again the value could be changed by callout
     	}

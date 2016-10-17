@@ -32,10 +32,11 @@ import org.idempiere.fa.util.Util;
  */
 public final class DataStatusEvent extends EventObject implements Serializable
 {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8126804905593738238L;
+	private static final long serialVersionUID = -1988674163839245029L;
 
 	/**
 	 *	Constructor
@@ -72,6 +73,10 @@ public final class DataStatusEvent extends EventObject implements Serializable
 	//
 	private int				m_changedColumn = -1;
 	private String			m_columnName = null;
+	
+	// IDEMPIERE-1287:indicate case user just start edit field, want update status of toolbar button (like save button) 
+	// but don't want change anything (ever value of edit field)
+	private boolean         isInitEdit = false;
 	
 	/** Created 				*/
 	public Timestamp        Created = null;
@@ -352,4 +357,19 @@ public final class DataStatusEvent extends EventObject implements Serializable
 			   e.m_currentRow == m_currentRow;
 	}
 
+
+	/**
+	 * @return indicate this event is by user start edit this field but not yet complete edit
+	 */
+	public boolean isInitEdit() {
+		return isInitEdit;
+	}
+
+	/**
+	 * @param indicate this event is by user start edit this field but not yet complete edit
+	 */
+	public void setIsInitEdit(boolean isInitEdit) {
+		this.isInitEdit = isInitEdit;
+	}
+	
 }	//	DataStatusEvent

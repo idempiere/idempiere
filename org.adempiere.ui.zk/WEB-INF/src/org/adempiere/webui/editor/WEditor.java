@@ -73,6 +73,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
     public static final int MAX_DISPLAY_LENGTH = 35;
 
+    public static final String INIT_EDIT_EVENT = "onInitEdit";
+    
     protected GridField gridField;
 
     protected GridTab gridTab;
@@ -183,7 +185,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     
     /**
      * Normal zk component just fire onChange event when user loss focus
-     * call this method with true value let component fire event when user type first character 
+     * call this method with true value let component fire event when user type first character
+     * 
+     * remark: editor set true for this method also need handle INIT_EDIT_EVENT to take effect, 
+     * can refer implement at {@link WStringEditor#onEvent(Event)}
      * @param isChangeEventWhenEditing
      */
     public void setChangeEventWhenEditing (boolean isChangeEventWhenEditing){
@@ -291,6 +296,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
             component.addEventListener(event, this);
         }
         
+        component.addEventListener(INIT_EDIT_EVENT, this);
         component.setAttribute("idempiere.editor", this);
     }
 

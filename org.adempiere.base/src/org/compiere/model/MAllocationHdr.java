@@ -498,6 +498,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		if (!m_justPrepared)
 		{
 			String status = prepareIt();
+			m_justPrepared = false;
 			if (!DocAction.STATUS_InProgress.equals(status))
 				return status;
 		}

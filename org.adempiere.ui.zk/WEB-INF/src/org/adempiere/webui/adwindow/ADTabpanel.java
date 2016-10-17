@@ -1077,7 +1077,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     	}
     	else if (treePanel != null && event.getTarget() == treePanel.getTree()) {
     		Treeitem item =  treePanel.getTree().getSelectedItem();
-    		navigateTo((DefaultTreeNode<MTreeNode>)item.getValue());
+    		if (item.getValue() != null)
+    			navigateTo((DefaultTreeNode<MTreeNode>)item.getValue());
     	}
     	else if (ON_DEFER_SET_SELECTED_NODE.equals(event.getName())) {
     		removeAttribute(ON_DEFER_SET_SELECTED_NODE_ATTR);
@@ -1214,7 +1215,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	public void dataStatusChanged(DataStatusEvent e)
     {
     	//ignore background event
-    	if (Executions.getCurrent() == null) return;
+    	if (Executions.getCurrent() == null || e.isInitEdit()) return;
 
         int col = e.getChangedColumn();
         if (logger.isLoggable(Level.CONFIG)) logger.config("(" + gridTab + ") Col=" + col + ": " + e.toString());

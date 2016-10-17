@@ -386,6 +386,7 @@ public class MMovement extends X_M_Movement implements DocAction
 		if (!m_justPrepared)
 		{
 			String status = prepareIt();
+			m_justPrepared = false;
 			if (!DocAction.STATUS_InProgress.equals(status))
 				return status;
 		}
