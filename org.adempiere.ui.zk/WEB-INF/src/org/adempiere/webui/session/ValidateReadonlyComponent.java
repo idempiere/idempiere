@@ -33,7 +33,7 @@ import org.zkoss.zul.impl.InputElement;
 /**
  * 
  * this service is interception into desktop process,
- * it will denied request to modify a readonly file or action on readonly button  
+ * it will deny request to modify a readonly field or action on readonly button  
  * @author hieplq
  *
  */
@@ -82,15 +82,15 @@ public class ValidateReadonlyComponent implements AuService {
 		Combobox comb = null;
 		Button button = null;
 		
-		if (comp instanceof Combobox){// have to check before InputElement
+		if (comp instanceof Combobox) {// have to check before InputElement
 			comb = (Combobox)comp;
-		}if (comp instanceof InputElement){
+		} else if (comp instanceof InputElement) {
 			inputComp = (InputElement)comp;// textbox, datebox, numberbox,...
-		}else if (comp instanceof Checkbox){
+		} else if (comp instanceof Checkbox) {
 			checkbox = (Checkbox)comp;
-		}if (comp instanceof Button){// have to check latest
+		} else if (comp instanceof Button) {// have to check latest
 			button = (Button)comp;
-		}else {//HtmlBasedComponent
+		} else {//HtmlBasedComponent
 			log.log(Level.SEVERE, String.format("Consider to denied event of control %1$s when it's readonly on event %2$s", comp.getClass(), cmd));
 			return false;// just log to investigate don't lock process
 		}
@@ -102,11 +102,11 @@ public class ValidateReadonlyComponent implements AuService {
 								(comb != null && (Events.ON_CHANGE.equals(cmd) || Events.ON_SELECT.equals(cmd) || Events.ON_OPEN.equals(cmd))) ||
 								(button != null && (Events.ON_CLICK.equals(cmd) || Events.ON_OK.equals(cmd) || Events.ON_UPLOAD.equals(cmd)));;
 			
-			// for combobox each change have both event onchange and onselect, so will have dupplicate message 
-			// dupplicate is acceptable for hack guy
+			// for combobox each change have both event onchange and onselect, so will have duplicate message 
+			// duplicate is acceptable for hack guy
 			if (editing){
 				comp.invalidate();
-				throw new WrongValueException ("I know you. Don't try to hack me");
+				throw new WrongValueException ("Field is read only");
 			}
 		}
         
