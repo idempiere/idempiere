@@ -1598,7 +1598,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		        {
 					code.append(SEGMENT_SEPARATOR);
 					code.append(HISTORY_SEPARATOR);
-					code.append(historyCombo.getSelectedItem().getValue());
+					code.append( (Object) historyCombo.getSelectedItem().getValue());
 		        }
 				
 				MUserQuery uq = MUserQuery.get(Env.getCtx(), m_AD_Tab_ID, name);
