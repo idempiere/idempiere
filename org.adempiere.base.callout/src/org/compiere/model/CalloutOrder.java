@@ -84,7 +84,7 @@ public class CalloutOrder extends CalloutEngine
 			int oldAD_Sequence_ID = 0;
 
 			//	Get old AD_SeqNo for comparison
-			if (!newDocNo && oldC_DocType_ID.intValue() != 0)
+			if (!newDocNo && oldC_DocType_ID != null && oldC_DocType_ID.intValue() != 0)
 			{
 				pstmt = DB.prepareStatement(sql, null);
 				pstmt.setInt(1, oldC_DocType_ID.intValue());
