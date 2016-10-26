@@ -81,7 +81,7 @@ public class MProductionLine extends X_M_ProductionLine {
 		MProduct prod = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 		if (log.isLoggable(Level.FINE))log.log(Level.FINE,"Loaded Product " + prod.toString());
 		
-		if ( prod.getProductType().compareTo(MProduct.PRODUCTTYPE_Item ) != 0 )  {
+		if ( !prod.isStocked() || prod.getProductType().compareTo(MProduct.PRODUCTTYPE_Item ) != 0 )  {
 			// no need to do any movements
 			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Production Line " + getLine() + " does not require stock movement");
 			return "";
