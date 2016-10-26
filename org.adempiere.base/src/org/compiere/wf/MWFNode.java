@@ -252,6 +252,7 @@ public class MWFNode extends X_AD_WF_Node
 	 */
 	public MWFNodeNext[] getTransitions(int AD_Client_ID)
 	{
+		loadNext();
 		ArrayList<MWFNodeNext> list = new ArrayList<MWFNodeNext>();
 		for (int i = 0; i < m_next.size(); i++)
 		{
