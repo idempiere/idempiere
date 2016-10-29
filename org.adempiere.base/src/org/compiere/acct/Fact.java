@@ -734,7 +734,7 @@ public final class Fact
 				if (!dl.isActive() || dl.getAmt().signum() == 0)
 					continue;
 				FactLine factLine = new FactLine (m_doc.getCtx(), m_doc.get_Table_ID(),
-					m_doc.get_ID(), 0, m_trxName);
+					m_doc.get_ID(), dLine.getLine_ID(), m_trxName);
 				//  Set Info & Account
 				factLine.setDocumentInfo(m_doc, dLine.getDocLine());
 				factLine.setAccount(m_acctSchema, dl.getAccount());

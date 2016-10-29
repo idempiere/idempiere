@@ -304,6 +304,8 @@ public class SessionContextListener implements ExecutionInit,
 		if(Executions.getCurrent()==null)
 			return;
 		
+		desktop.addListener(new ValidateReadonlyComponent());
+		
 		if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
     	{
 			setupExecutionContextFromSession(Executions.getCurrent());

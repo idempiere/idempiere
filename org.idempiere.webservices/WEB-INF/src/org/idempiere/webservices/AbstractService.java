@@ -446,6 +446,10 @@ public class AbstractService {
 		if (indDot == -1) {
 			if (varName.charAt(0) == '#') {
 				val = getCompiereService().getCtx().getProperty(varName);
+				if (varName.endsWith("_ID") && val != null) {
+					Integer intVal = Integer.parseInt((String) val);
+					val = intVal;
+				}
 			} else {
 				// If there is no table name, then it should be
 				// primitive data type
