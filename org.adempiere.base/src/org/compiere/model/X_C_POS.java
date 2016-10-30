@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_POS
  *  @author iDempiere (generated) 
- *  @version Release 3.1 - $Id$ */
+ *  @version Release 4.1 - $Id$ */
 public class X_C_POS extends PO implements I_C_POS, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20151030L;
+	private static final long serialVersionUID = 20161030L;
 
     /** Standard Constructor */
     public X_C_POS (Properties ctx, int C_POS_ID, String trxName)
@@ -38,7 +38,6 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
       super (ctx, C_POS_ID, trxName);
       /** if (C_POS_ID == 0)
         {
-			setC_CashBook_ID (0);
 			setC_POS_ID (0);
 			setIsModifyPrice (false);
 // N

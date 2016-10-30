@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_TreeBar
  *  @author iDempiere (generated) 
- *  @version Release 3.1
+ *  @version Release 4.1
  */
 public interface I_AD_TreeBar 
 {
@@ -48,6 +48,21 @@ public interface I_AD_TreeBar
 	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
+
+    /** Column name AD_Menu_ID */
+    public static final String COLUMNNAME_AD_Menu_ID = "AD_Menu_ID";
+
+	/** Set Menu.
+	  * Identifies a Menu
+	  */
+	public void setAD_Menu_ID (int AD_Menu_ID);
+
+	/** Get Menu.
+	  * Identifies a Menu
+	  */
+	public int getAD_Menu_ID();
+
+	public org.compiere.model.I_AD_Menu getAD_Menu() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -155,19 +170,6 @@ public interface I_AD_TreeBar
 	  * Determine the order items will be automatically opened when user logs in
 	  */
 	public int getLoginOpenSeqNo();
-
-    /** Column name Name */
-    public static final String COLUMNNAME_Name = "Name";
-
-	/** Set Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public void setName (String Name);
-
-	/** Get Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public String getName();
 
     /** Column name Node_ID */
     public static final String COLUMNNAME_Node_ID = "Node_ID";

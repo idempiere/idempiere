@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for C_CashBook_Acct
  *  @author iDempiere (generated) 
- *  @version Release 3.1 - $Id$ */
+ *  @version Release 4.1 - $Id$ */
 public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20151030L;
+	private static final long serialVersionUID = 20161030L;
 
     /** Standard Constructor */
     public X_C_CashBook_Acct (Properties ctx, int C_CashBook_Acct_ID, String trxName)
@@ -38,11 +38,6 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
       /** if (C_CashBook_Acct_ID == 0)
         {
 			setC_AcctSchema_ID (0);
-			setCB_Asset_Acct (0);
-			setCB_CashTransfer_Acct (0);
-			setCB_Differences_Acct (0);
-			setCB_Expense_Acct (0);
-			setCB_Receipt_Acct (0);
 			setC_CashBook_ID (0);
         } */
     }

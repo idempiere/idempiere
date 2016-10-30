@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BP_Group_Acct
  *  @author iDempiere (generated) 
- *  @version Release 3.1 - $Id$ */
+ *  @version Release 4.1 - $Id$ */
 public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20151030L;
+	private static final long serialVersionUID = 20161030L;
 
     /** Standard Constructor */
     public X_C_BP_Group_Acct (Properties ctx, int C_BP_Group_Acct_ID, String trxName)
@@ -46,9 +46,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 			setNotInvoicedReceipts_Acct (0);
 			setPayDiscount_Exp_Acct (0);
 			setPayDiscount_Rev_Acct (0);
-			setUnEarnedRevenue_Acct (0);
 			setV_Liability_Acct (0);
-			setV_Liability_Services_Acct (0);
 			setV_Prepayment_Acct (0);
 			setWriteOff_Acct (0);
         } */

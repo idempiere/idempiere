@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for CM_AccessStage
  *  @author iDempiere (generated) 
- *  @version Release 3.1 - $Id$ */
+ *  @version Release 4.1 - $Id$ */
 public class X_CM_AccessStage extends PO implements I_CM_AccessStage, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20151030L;
+	private static final long serialVersionUID = 20161030L;
 
     /** Standard Constructor */
     public X_CM_AccessStage (Properties ctx, int CM_AccessStage_ID, String trxName)

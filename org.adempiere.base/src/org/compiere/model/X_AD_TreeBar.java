@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_TreeBar
  *  @author iDempiere (generated) 
- *  @version Release 3.1 - $Id$ */
+ *  @version Release 4.1 - $Id$ */
 public class X_AD_TreeBar extends PO implements I_AD_TreeBar, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20160112L;
+	private static final long serialVersionUID = 20161030L;
 
     /** Standard Constructor */
     public X_AD_TreeBar (Properties ctx, int AD_TreeBar_ID, String trxName)
@@ -73,6 +73,30 @@ public class X_AD_TreeBar extends PO implements I_AD_TreeBar, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_Menu getAD_Menu() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Menu)MTable.get(getCtx(), org.compiere.model.I_AD_Menu.Table_Name)
+			.getPO(getAD_Menu_ID(), get_TrxName());	}
+
+	/** Set Menu.
+		@param AD_Menu_ID 
+		Identifies a Menu
+	  */
+	public void setAD_Menu_ID (int AD_Menu_ID)
+	{
+		throw new IllegalArgumentException ("AD_Menu_ID is virtual column");	}
+
+	/** Get Menu.
+		@return Identifies a Menu
+	  */
+	public int getAD_Menu_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Menu_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	/** Set AD_TreeBar_UU.
 		@param AD_TreeBar_UU AD_TreeBar_UU	  */
@@ -186,22 +210,6 @@ public class X_AD_TreeBar extends PO implements I_AD_TreeBar, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
-	public void setName (String Name)
-	{
-		throw new IllegalArgumentException ("Name is virtual column");	}
-
-	/** Get Name.
-		@return Alphanumeric identifier of the entity
-	  */
-	public String getName () 
-	{
-		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Node.

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Table
  *  @author iDempiere (generated) 
- *  @version Release 3.1
+ *  @version Release 4.1
  */
 public interface I_AD_Table 
 {
@@ -135,6 +135,15 @@ public interface I_AD_Table
 
 	/** Get Copy Columns From Table	  */
 	public String getCopyColumnsFromTable();
+
+    /** Column name CopyComponentsFromView */
+    public static final String COLUMNNAME_CopyComponentsFromView = "CopyComponentsFromView";
+
+	/** Set Copy Components From View	  */
+	public void setCopyComponentsFromView (String CopyComponentsFromView);
+
+	/** Get Copy Components From View	  */
+	public String getCopyComponentsFromView();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
