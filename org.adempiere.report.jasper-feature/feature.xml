@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.report.jasper"
       label="JasperReport-feature"
-      version="3.1.0.qualifier">
+      version="4.1.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -20,7 +20,7 @@
          id="org.adempiere.report.jasper"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"/>
+         version="4.1.0.qualifier"/>
 
    <plugin
          id="org.adempiere.report.jasper.library"

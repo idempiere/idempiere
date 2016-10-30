@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere extend
 Bundle-SymbolicName: org.adempiere.extend;singleton:=true
-Bundle-Version: 3.1.0.qualifier
+Bundle-Version: 4.1.0.qualifier
 Bundle-ClassPath: extend.jar,
  spiffy-with_source-all-0.05.jar
 Eclipse-RegisterBuddy: org.adempiere.tools

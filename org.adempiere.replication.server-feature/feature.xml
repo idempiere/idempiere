@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.replication.server"
       label="Replication Server-feature"
-      version="3.1.0.qualifier">
+      version="4.1.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]

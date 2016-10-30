@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.server"
       label="iDempiere Server-feature"
-      version="3.1.0.qualifier">
+      version="4.1.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere 2Pack Core
 Bundle-SymbolicName: org.adempiere.pipo;singleton:=true
-Bundle-Version: 3.1.0.qualifier
+Bundle-Version: 4.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.apache.commons.codec,
  org.apache.commons.codec.binary,

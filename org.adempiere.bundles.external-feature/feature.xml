@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.bundles.external"
       label="External bundles"
-      version="3.1.0.qualifier"
+      version="4.1.0.qualifier"
       provider-name="Adempiere.org">
 
    <description url="http://www.example.com/description">

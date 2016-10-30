@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Replication
 Bundle-SymbolicName: org.adempiere.replication;singleton:=true
-Bundle-Version: 3.1.0.qualifier
+Bundle-Version: 4.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
 Export-Package: org.adempiere.process.rpl,

@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.hazelcast.service"
       label="Hazelcast Service Feature"
-      version="3.1.0.qualifier">
+      version="4.1.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -41,7 +41,7 @@
          id="org.idempiere.hazelcast.service.config"
          download-size="0"
          install-size="0"
-         version="3.1.0"
+         version="4.1.0"
          fragment="true"/>
 
 </feature>
