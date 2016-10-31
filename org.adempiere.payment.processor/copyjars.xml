@@ -2,8 +2,8 @@
 	<target name="copy">
 		<!-- seem payment sdk is change without use verisign.jar, i can find out this lib. maybe have to update this plug-in 
 		  http://paypal.github.io/sdk/#ppo-payflow-->
-		<get src="${url.file.srv}/jarfile/3.1/jpayment.jar" dest="jpayment.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/3.1/Verisign.jar" dest="Verisign.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/3.1/payflow.jar" dest="payflow.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/4.1/jpayment.jar" dest="jpayment.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/4.1/Verisign.jar" dest="Verisign.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/4.1/payflow.jar" dest="payflow.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>

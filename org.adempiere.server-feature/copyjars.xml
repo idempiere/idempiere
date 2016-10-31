@@ -1,9 +1,9 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
 		<mkdir dir="data/seed" />
-		<get src="${url.file.srv}/database/3.1/Adempiere_pg84.jar" dest="data/seed/Adempiere_pg84.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/database/3.1/Adempiere_pg.jar" dest="data/seed/Adempiere_pg.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/database/3.1/Adempiere.jar" dest="data/seed/Adempiere.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/database/4.1/Adempiere_pg84.jar" dest="data/seed/Adempiere_pg84.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/database/4.1/Adempiere_pg.jar" dest="data/seed/Adempiere_pg.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/database/4.1/Adempiere.jar" dest="data/seed/Adempiere.jar" usetimestamp="true" verbose="true" retries="5" />
 
 		<mkdir dir="../db/ddlutils/lib" />
 		<get src="${url.maven2.lib}/maven2/ant-contrib/ant-contrib/1.0b2/ant-contrib-1.0b2.jar" dest="../db/ddlutils/lib/ant-contrib-1.0b1.jar" usetimestamp="true" verbose="true" retries="5" />
@@ -18,21 +18,21 @@
 		<get src="${url.maven2.lib}/maven2/commons-pool/commons-pool/1.2/commons-pool-1.2.jar" dest="../db/ddlutils/lib/commons-pool-1.2.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/org/apache/ddlutils/ddlutils/1.0/ddlutils-1.0.jar" dest="../db/ddlutils/lib/DdlUtils-1.0-RC1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/dom4j/dom4j/1.4/dom4j-1.4.jar" dest="../db/ddlutils/lib/dom4j-1.4.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/3.1/fyracle.jar" dest="../db/ddlutils/lib/fyracle.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/4.1/fyracle.jar" dest="../db/ddlutils/lib/fyracle.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/oro/oro/2.0.8/oro-2.0.8.jar" dest="../db/ddlutils/lib/jakarta-oro-2.0.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/3.1/oracle.jar" dest="../db/ddlutils/lib/oracle.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/3.1/postgresql.jar" dest="../db/ddlutils/lib/postgresql.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/4.1/oracle.jar" dest="../db/ddlutils/lib/oracle.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/4.1/postgresql.jar" dest="../db/ddlutils/lib/postgresql.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/stax/stax-api/1.0.1/stax-api-1.0.1.jar" dest="../db/ddlutils/lib/stax-api-1.0.1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/woodstox/wstx-asl/3.0.2/wstx-asl-3.0.2.jar" dest="../db/ddlutils/lib/wstx-asl-3.0.2.jar" usetimestamp="true" verbose="true" retries="5" />
 		<mkdir dir="../db/ddlutils/postgresql/pljava" />
 		<get src="${url.maven2.lib}/maven2/woodstox/wstx-asl/3.0.2/wstx-asl-3.0.2.jar" dest="../db/ddlutils/lib/wstx-asl-3.0.2.jar" usetimestamp="true" verbose="true" retries="5" />
 
 		<mkdir dir="../fitnesse/FitNesseRoot/FitLibraryWeb" />
-		<get src="${url.file.srv}/jarfile/3.1/101-20121212164242.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/101-20121212164242.zip" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/3.1/21-20121212154702.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/21-20121212154702.zip" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/3.1/6-20121212124109.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/6-20121212124109.zip" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/4.1/101-20121212164242.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/101-20121212164242.zip" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/4.1/21-20121212154702.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/21-20121212154702.zip" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/4.1/6-20121212124109.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/6-20121212124109.zip" usetimestamp="true" verbose="true" retries="5" />
 		<!-- maybe it's same file in org.idempiere.fitnesse.server, just diference version-->
-		<get src="${url.file.srv}/jarfile/3.1/fitnesse2.jar" dest="../fitnesse/fitnesse.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/4.1/fitnesse2.jar" dest="../fitnesse/fitnesse.jar" usetimestamp="true" verbose="true" retries="5" />
 
 		<mkdir dir="../ztl" />
 		<get src="${url.maven.zkoss.lib}/maven2/org/zkoss/ztl/ztl/2.0.0-SNAPSHOT/ztl-2.0.0-SNAPSHOT.jar" dest="../ztl/ztl-2.0.0-SNAPSHOT.jar" usetimestamp="true" verbose="true" retries="5" />

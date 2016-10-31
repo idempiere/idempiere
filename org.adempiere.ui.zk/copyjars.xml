@@ -1,7 +1,7 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
 		<mkdir dir="WEB-INF/lib" />
-		<get src="${url.file.srv}/jarfile/3.1/labelapplet.jar" dest="labelapplet.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/4.1/labelapplet.jar" dest="labelapplet.jar" usetimestamp="true" verbose="true" retries="5" />
 
 	</target>
 </project>
