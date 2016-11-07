@@ -7,10 +7,10 @@
     <cq:property key="target.arch" value="*"/>
     <cq:property key="target.os" value="*"/>
     <cq:property key="target.ws" value="*"/>
-
     <cq:advisorNode namePattern="^org\.objectweb\.asm(\..+)?" componentType="osgi.bundle" versionOverride="[5.0.1,6.0.0)"/>
     <cq:advisorNode namePattern="^org\.eclipse\.jetty\.osgi-servlet-api$" useTargetPlatform="false" useWorkspace="false" versionOverride="[0.0.0,9.3.11]"/>
     <cq:advisorNode namePattern="^org\.eclipse\.jetty\.alpn\.api$" versionOverride="[0.0.0,9.3.11)"/>
+    <cq:advisorNode namePattern="^org\.motbay\.jasper\.apache-jsp$" componentType="osgi.bundle" versionOverride="(8.0.0,8.0.33]"/>
     <cq:advisorNode namePattern="^org\.eclipse\.jetty(\..+)?" useTargetPlatform="false" useWorkspace="false" versionOverride="[9.2.0,9.3.11)"/>
     <cq:advisorNode namePattern="^.*$" useTargetPlatform="false" useWorkspace="false"/>
 </cq:componentQuery>
