@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="c3p0-0.9.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="mchange-commons-java-0.2.9.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="postgresql-9.4-1206.jdbc41.jar"/>
+	<classpathentry kind="lib" path="c3p0-0.9.5.2.jar"/>
+	<classpathentry kind="lib" path="mchange-commons-java-0.2.12.jar"/>
+	<classpathentry kind="lib" path="postgresql-9.4.1212.jre7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
