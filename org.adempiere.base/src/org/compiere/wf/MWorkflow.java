@@ -53,7 +53,9 @@ import org.compiere.util.Trx;
  * 
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>FR [ 2214883 ] Remove SQL code and Replace for Query
- * 			<li>BF [ 2665963 ] Copy Workflow name in Activity name 
+ * 			<li>BF [ 2665963 ] Copy Workflow name in Activity name
+ * @author Silvano Trinchero, www.freepath.it
+ * 			<li>IDEMPIERE-3209 changed functions to public to improve integration support
  */
 public class MWorkflow extends X_AD_Workflow
 {
@@ -355,7 +357,7 @@ public class MWorkflow extends X_AD_Workflow
 	 * 	@param AD_Client_ID client
 	 * 	@return Nodes in sequence
 	 */
-	private MWFNode[] getNodesInOrder(int AD_Client_ID)
+	public MWFNode[] getNodesInOrder(int AD_Client_ID)
 	{
 		ArrayList<MWFNode> list = new ArrayList<MWFNode>();
 		addNodesSF (list, getAD_WF_Node_ID(), AD_Client_ID);	//	start with first

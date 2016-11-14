@@ -74,6 +74,8 @@ import org.compiere.util.Util;
  *		set Node - startWork
  *
  *  @author Jorg Janke
+ *  @author Silvano Trinchero, www.freepath.it
+ *  		<li>IDEMPIERE-3209 added process-aware resultset-based constructor
  *  @version $Id: MWFActivity.java,v 1.4 2006/07/30 00:51:05 jjanke Exp $
  */
 public class MWFActivity extends X_AD_WF_Activity implements Runnable
@@ -203,7 +205,20 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		//
 		m_process = process;
 	}	//	MWFActivity
-
+	
+	/**
+	 * 	Process-aware Parent Contructor
+	 *	@param process process
+	 *	@param ctx context
+	 *	@param rs record to load
+	 *  @param trx transaction name
+	 */
+	public MWFActivity (MWFProcess process, Properties ctx, ResultSet rs, String trxName)
+	{
+		super(ctx, rs, trxName);
+		m_process = process;
+	}
+	
 	/**
 	 * 	Parent Contructor
 	 *	@param process process
