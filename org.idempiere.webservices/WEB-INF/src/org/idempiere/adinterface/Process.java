@@ -514,7 +514,7 @@ public class Process {
 				dataField = fmap.get( key+"_2" );
 				if (dataField != null && !Util.isEmpty(dataField.getVal()))
 				{
-					valueString2 = dataField.toString();
+					valueString2 = dataField.getVal();
 					if (requestCtx != null && valueString2.charAt(0) == '@') 
 					{
 						Object value = ModelADServiceImpl.parseVariable(m_cs, requestCtx, iPara.getParameterName(), valueString2);
@@ -598,12 +598,28 @@ public class Process {
 						if (pPara.isRange())
 						{
 							if (valueString2 != null && valueString2.length() > 0) {
-								if (displayType == DisplayType.DateTime)
-									d = m_cs.dateTimeFormat.parse(valueString2.toString());
-								else if (displayType == DisplayType.Time)
-									d = m_cs.timeFormat.parse(valueString2.toString());
-								else
-									d = m_cs.dateFormat.parse(valueString2.toString());
+								if (displayType == DisplayType.DateTime) {
+									try {
+										d = m_cs.dateTimeFormatJDBC.parse(valueString2);
+									} catch (ParseException e) {
+										d = m_cs.dateTimeFormat.parse(valueString2);
+									}
+								}
+								else if (displayType == DisplayType.Time) {
+									try {
+										d = m_cs.timeFormatJDBC.parse(valueString2);
+									} catch (ParseException e) {
+										d = m_cs.timeFormat.parse(valueString2);
+									}
+								}
+								else {
+									try {
+										d = m_cs.dateFormatJDBC.parse(valueString2);
+									} catch (ParseException e) {
+										d = m_cs.dateFormat.parse(valueString2);									
+									}
+								}
+									
 
 								Timestamp ts = new Timestamp(d.getTime());
 								iPara.setP_Date_To(ts);

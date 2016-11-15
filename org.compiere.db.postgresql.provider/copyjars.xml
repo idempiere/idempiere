@@ -1,7 +1,7 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
-		<get src="${url.maven2.lib}/maven2/org/postgresql/postgresql/9.4-1206-jdbc41/postgresql-9.4-1206-jdbc41.jar" dest="postgresql-9.4-1206.jdbc41.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/com/mchange/c3p0/0.9.5/c3p0-0.9.5.jar" dest="c3p0-0.9.5.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/com/mchange/mchange-commons-java/0.2.9/mchange-commons-java-0.2.9.jar" dest="mchange-commons-java-0.2.9.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.maven2.lib}/maven2/org/postgresql/postgresql/9.4.1212.jre7/postgresql-9.4.1212.jre7.jar" dest="postgresql-9.4.1212.jre7.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.maven2.lib}/maven2/com/mchange/c3p0/0.9.5.2/c3p0-0.9.5.2.jar" dest="c3p0-0.9.5.2.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.maven2.lib}/maven2/com/mchange/mchange-commons-java/0.2.12/mchange-commons-java-0.2.12.jar" dest="mchange-commons-java-0.2.12.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>
