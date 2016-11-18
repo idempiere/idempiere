@@ -343,3 +343,4 @@ Import-Package: bsh,
  org.krysalis.barcode4j.servlet,
  org.krysalis.barcode4j.tools,
  org.krysalis.barcode4j.xalan
+DynamicImport-Package: *
