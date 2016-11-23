@@ -76,10 +76,10 @@ public class OSGiScriptEngineFactory implements ScriptEngineFactory{
 	public ScriptEngine getScriptEngine() {
 		ScriptEngine engine=null;
 		if(contextClassLoader!=null){
-		ClassLoader old=Thread.currentThread().getContextClassLoader();
-		Thread.currentThread().setContextClassLoader(contextClassLoader);
-		engine=factory.getScriptEngine();
-		Thread.currentThread().setContextClassLoader(old);
+			ClassLoader old=Thread.currentThread().getContextClassLoader();
+			Thread.currentThread().setContextClassLoader(contextClassLoader);
+			engine=factory.getScriptEngine();
+			Thread.currentThread().setContextClassLoader(old);
 		}
 		else engine=factory.getScriptEngine();
 		return engine;

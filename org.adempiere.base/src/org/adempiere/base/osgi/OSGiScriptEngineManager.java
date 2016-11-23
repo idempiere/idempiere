@@ -16,12 +16,7 @@
  */
 package org.adempiere.base.osgi;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +27,7 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.SimpleBindings;
 
-import org.compiere.util.Util;
-import org.osgi.framework.Bundle;
+import org.adempiere.base.Service;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -201,63 +195,22 @@ public class OSGiScriptEngineManager extends ScriptEngineManager{
 
 	}
 
-
 	private Map<ScriptEngineManager, ClassLoader> findManagers(BundleContext context) {
+
 		Map<ScriptEngineManager, ClassLoader> managers=new HashMap<ScriptEngineManager, ClassLoader>();
-		try {
-			for(String factoryName: findFactoryCandidates(context)){
-				//We do not really need the class, but we need the classloader 
-				ClassLoader factoryLoader=Class.forName(factoryName).getClassLoader();
+
+		List<ScriptEngineFactory> seFactoryList = 
+				Service.locator().list(ScriptEngineFactory.class).getServices();
+		if (seFactoryList != null) {
+			for(ScriptEngineFactory seFactory : seFactoryList) {
+				ClassLoader factoryLoader = seFactory.getClass().getClassLoader();
 				ScriptEngineManager manager=new ScriptEngineManager(factoryLoader);
 				manager.setBindings(bindings);
 				managers.put(manager, factoryLoader);
 			}
-			return managers;
-		} catch (IOException ioe) {
-			throw new RuntimeException(ioe);
-		} catch (ClassNotFoundException cnfe) {
-			throw new RuntimeException(cnfe);
 		}
+
+		return managers;
 	}
-	/**
-	 * Iterates through all bundles to get the available @link ScriptEngineFactory classes
-	 * @return the names of the available ScriptEngineFactory classes
-	 * @throws IOException
-	 */
-	private List<String> findFactoryCandidates(BundleContext context) throws IOException{
-		Bundle[] bundles = context.getBundles();
-		List<String> factoryCandidates = new ArrayList<String>();
-		for (Bundle bundle : bundles) {
-			// IDEMPIERE-3243: removed print and small improvements on enumeration
-			// System.out.println(bundle.getSymbolicName()); 
-			if(bundle.getSymbolicName().equals("system.bundle")) continue;
-			Enumeration<URL> urls = bundle.findEntries("META-INF/services",
-					"javax.script.ScriptEngineFactory", false);
-			if (urls == null)
-				continue;
-			while (urls.hasMoreElements()) {
-				URL u = urls.nextElement();
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(u.openStream()));
-				String line;
-				while ((line = reader.readLine()) != null) 
-				{
-					// IDEMPIERE-3243: removed comment lines
-					
-					int commentIdx = line.indexOf('#');
-					
-					if(commentIdx >= 0)
-						line = line.substring(0, commentIdx);
-					
-					line = line.trim();
-					
-					if(Util.isEmpty(line) == false)
-					{
-						factoryCandidates.add(line);
-					}
-				}
-			}
-		}
-		return factoryCandidates;
-	}
+
 }

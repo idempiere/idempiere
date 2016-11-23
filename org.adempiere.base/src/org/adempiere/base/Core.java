@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 
 import org.adempiere.base.osgi.OSGiScriptEngineManager;
 import org.adempiere.model.IAddressValidation;
@@ -411,15 +410,9 @@ public class Core {
 	 */
 	public static ScriptEngine getScriptEngine(String engineName)
 	{
-		ScriptEngineManager factory = new ScriptEngineManager(Core.class.getClassLoader());
-		ScriptEngine engine = factory.getEngineByName(engineName);
-		
-		if(engine == null)
-		{
-			OSGiScriptEngineManager osgiFactory = new OSGiScriptEngineManager( FrameworkUtil.getBundle(Core.class).getBundleContext());
-			engine = osgiFactory.getEngineByName(engineName);
-		}
-		
+		OSGiScriptEngineManager osgiFactory = new OSGiScriptEngineManager( FrameworkUtil.getBundle(Core.class).getBundleContext());
+		ScriptEngine engine = osgiFactory.getEngineByName(engineName);
+
 		return engine;
 	}
 }
