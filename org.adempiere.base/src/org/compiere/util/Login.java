@@ -121,17 +121,13 @@ public class Login
 	{
 		//	Java System version check
 		String jVersion = System.getProperty("java.version");
-		//vpj-cd e-evolution support to java 6
-		if (jVersion.startsWith("1.6.0"))
-			return true;
-		//end
-		if (jVersion.startsWith("1.7.0"))
+		if (jVersion.startsWith("1.8.0"))
 			return true;
 
 		//  Error Message
 		StringBuilder msg = new StringBuilder();
 		msg.append(System.getProperty("java.vm.name")).append(" - ").append(jVersion);
-		msg.append("  <>  1.6.0 | 1.7.0");
+		msg.append("  <>  1.8.0");
 		//
 		if (isClient)
 			JOptionPane.showMessageDialog(null, msg.toString(),
