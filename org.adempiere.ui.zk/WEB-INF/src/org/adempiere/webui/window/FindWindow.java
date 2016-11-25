@@ -125,7 +125,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1264106685431608207L;
+	private static final long serialVersionUID = -5747652133096022993L;
 
 	// values and label for history combo
 	private static final String HISTORY_DAY_ALL = "All";
@@ -133,6 +133,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	private static final String HISTORY_DAY_MONTH = "Month";
 	private static final String HISTORY_DAY_WEEK = "Week";
 	private static final String HISTORY_DAY_DAY = "Day";
+	ValueNamePair[] historyItems = new ValueNamePair[] {
+			new ValueNamePair("",                " "),
+			new ValueNamePair(HISTORY_DAY_ALL,   Msg.getMsg(Env.getCtx(), HISTORY_DAY_ALL)),
+			new ValueNamePair(HISTORY_DAY_YEAR,  Msg.getMsg(Env.getCtx(), HISTORY_DAY_YEAR)),
+			new ValueNamePair(HISTORY_DAY_MONTH, Msg.getMsg(Env.getCtx(), HISTORY_DAY_MONTH)),
+			new ValueNamePair(HISTORY_DAY_WEEK,  Msg.getMsg(Env.getCtx(), HISTORY_DAY_WEEK)),
+			new ValueNamePair(HISTORY_DAY_DAY,   Msg.getMsg(Env.getCtx(), HISTORY_DAY_DAY))
+	};
 	private static final String HISTORY_LABEL= "History";
 	/** Main Window for the Lookup Panel   */
     private MultiTabPart winMain;
@@ -597,16 +605,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private void prepareHistoryCombo()
     {
     	historyCombo.setAutodrop(true);
-    	historyCombo.setAutocomplete(false);
+    	historyCombo.setAutocomplete(true);
     	historyCombo.setButtonVisible(true);
-    	historyCombo.setReadonly(true);
+    	historyCombo.setReadonly(false);
     	historyCombo.setId("historyCombo");
-    	historyCombo.appendItem(" ", "");
-    	historyCombo.appendItem((Msg.getMsg(Env.getCtx(), HISTORY_DAY_ALL)),HISTORY_DAY_ALL);
-    	historyCombo.appendItem((Msg.getMsg(Env.getCtx(), HISTORY_DAY_YEAR)), HISTORY_DAY_YEAR);
-    	historyCombo.appendItem((Msg.getMsg(Env.getCtx(), HISTORY_DAY_MONTH)), HISTORY_DAY_MONTH);
-    	historyCombo.appendItem((Msg.getMsg(Env.getCtx(), HISTORY_DAY_WEEK)), HISTORY_DAY_WEEK);
-    	historyCombo.appendItem((Msg.getMsg(Env.getCtx(), HISTORY_DAY_DAY)), HISTORY_DAY_DAY);
+    	for (ValueNamePair vnp : historyItems) {
+        	historyCombo.appendItem(vnp.getName(), vnp.getValue());
+    	}
+    	historyCombo.addEventListener(Events.ON_CHANGE, this);
     }
 
     /**
@@ -1117,7 +1123,29 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     public void onEvent(Event event) throws Exception
     {
         m_createNew  = false;
-        if (Events.ON_SELECT.equals(event.getName()))
+        if (Events.ON_CHANGE.equals(event.getName()))
+        {
+            if (event.getTarget() == historyCombo)
+            {
+            	// do not allow values out of the list
+            	String value = historyCombo.getValue();
+            	boolean valid = false;
+    			if (value == null) {
+    				valid = true;
+    			} else {
+        	    	for (ValueNamePair vnp : historyItems) {
+        	    		if (value.equals(vnp.getName())) {
+            				valid = true;
+            				break;
+        	    		}
+        	    	}
+    			}
+    			if (! valid) {
+    				historyCombo.setSelectedIndex(0);
+    			}
+            }
+        }
+        else if (Events.ON_SELECT.equals(event.getName()))
         {
             if (event.getTarget() instanceof Listbox)
             {
