@@ -33,8 +33,7 @@ public class MSalesRegion extends X_C_SalesRegion
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8582026748675153489L;
-
+	private static final long serialVersionUID = -6166934441386906620L;
 
 	/**
 	 * 	Get SalesRegion from Cache
@@ -79,18 +78,6 @@ public class MSalesRegion extends X_C_SalesRegion
 	{
 		super(ctx, rs, trxName);
 	}	//	MSalesRegion
-
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
-	protected boolean beforeSave (boolean newRecord)
-	{
-		if (getAD_Org_ID() != 0)
-			setAD_Org_ID(0);
-		return true;
-	}	//	beforeSave
 
 	/**
 	 * 	After Save.
