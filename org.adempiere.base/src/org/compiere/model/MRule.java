@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 
+import org.adempiere.base.Core;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Msg;
@@ -34,7 +34,10 @@ import org.compiere.util.Util;
 /**
  *	Persistent Rule Model
  *  @author Carlos Ruiz
+ *  @author Silvano Trinchero, www.freepath.it
+ *  		<li>IDEMPIERE-3243 refactored getScriptEngine to use Core.getScriptEngine   
  *  @version $Id: MRule.java
+ *  
  */
 public class MRule extends X_AD_Rule
 {
@@ -129,8 +132,6 @@ public class MRule extends X_AD_Rule
 	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MRule.class);
 	
-	/* Engine Manager */
-	private ScriptEngineManager factory = null;
 	/* The Engine */
 	ScriptEngine engine = null;
 	
@@ -195,10 +196,12 @@ public class MRule extends X_AD_Rule
 	 *	@return ScriptEngine
 	 */
 	public ScriptEngine getScriptEngine() {
-		factory = new ScriptEngineManager(getClass().getClassLoader());
+		
 		String engineName = getEngineName();
-		if (engineName != null)
-			engine = factory.getEngineByName(getEngineName());
+		
+		if(engineName != null)
+			engine = Core.getScriptEngine(engineName);
+		
 		return engine;
 	}
 

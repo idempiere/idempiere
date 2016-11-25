@@ -253,6 +253,18 @@ public final class Fact
 		//  No lines -> balanced
 		if (m_lines.size() == 0 || m_doc.isMultiCurrency())
 			return true;
+		
+		// If there is more than 1 currency in fact lines, it is a multi currency doc
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for (int i = 0; i < m_lines.size(); i++){
+			FactLine line = (FactLine)m_lines.get(i);
+			if (line.getC_Currency_ID() > 0 && !list.contains(line.getC_Currency_ID()))
+				list.add(line.getC_Currency_ID());
+	
+		}
+		if (list.size() > 1 )
+			return true;
+				
 		BigDecimal balance = getSourceBalance();
 		boolean retValue = balance.signum() == 0;
 		if (retValue) {
@@ -328,7 +340,17 @@ public final class Fact
 		//  No lines -> balanced
 		if (m_lines.size() == 0 || m_doc.isMultiCurrency())
 			return true;
-
+		
+		// If there is more than 1 currency in fact lines, it is a multi currency doc
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for (int i = 0; i < m_lines.size(); i++){
+			FactLine line = (FactLine)m_lines.get(i);
+			if (line.getC_Currency_ID() > 0 && !list.contains(line.getC_Currency_ID()))
+				list.add(line.getC_Currency_ID());
+		}
+		if (list.size() > 1 )
+			return true;
+			
 		MAcctSchemaElement[] elements = m_acctSchema.getAcctSchemaElements();
 		//  check all balancing segments
 		for (int i = 0; i < elements.length; i++)

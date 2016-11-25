@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import javax.script.ScriptEngine;
+
+import org.adempiere.base.osgi.OSGiScriptEngineManager;
 import org.adempiere.model.IAddressValidation;
 import org.adempiere.model.IShipmentProcessor;
 import org.adempiere.model.ITaxProvider;
@@ -43,6 +46,7 @@ import org.compiere.model.StandardTaxProvider;
 import org.compiere.process.ProcessCall;
 import org.compiere.util.CLogger;
 import org.compiere.util.ReplenishInterface;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * This is a facade class for the Service Locator.
@@ -50,6 +54,8 @@ import org.compiere.util.ReplenishInterface;
  *
  * @author viola
  * @author hengsin
+ * @author Silvano Trinchero, www.freepath.it
+ *  		<li>IDEMPIERE-3243 added getScriptEngine to manage both registered engines and engines provided by osgi bundles 
  */
 public class Core {
 
@@ -394,5 +400,19 @@ public class Core {
 		}
 		
 		return myReplenishInstance;
+	}
+	
+
+	/** Get script engine, checking classpath first, and then osgi plugins 
+	 * 
+	 * @param engineName
+	 * @return ScriptEngine found, or null
+	 */
+	public static ScriptEngine getScriptEngine(String engineName)
+	{
+		OSGiScriptEngineManager osgiFactory = new OSGiScriptEngineManager( FrameworkUtil.getBundle(Core.class).getBundleContext());
+		ScriptEngine engine = osgiFactory.getEngineByName(engineName);
+
+		return engine;
 	}
 }
