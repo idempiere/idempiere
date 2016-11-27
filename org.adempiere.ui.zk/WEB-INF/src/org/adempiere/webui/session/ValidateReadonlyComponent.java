@@ -48,7 +48,7 @@ public class ValidateReadonlyComponent implements AuService {
 		
 		// event is reason change value of component
 		boolean considerEvent = Events.ON_CHANGE.equals(cmd) || Events.ON_CHECK.equals(cmd) || 
-								Events.ON_SELECT.equals(cmd) || Events.ON_OPEN.equals(cmd) ||
+								Events.ON_SELECT.equals(cmd) ||
 								Events.ON_CLICK.equals(cmd) || Events.ON_DOUBLE_CLICK.equals(cmd) || Events.ON_OK.equals(cmd) || Events.ON_UPLOAD.equals(cmd); 
 		
 		if (!considerEvent){
@@ -99,7 +99,7 @@ public class ValidateReadonlyComponent implements AuService {
 		if (isCannotEdit){
 			boolean editing = (inputComp != null && Events.ON_CHANGE.equals(cmd)) || 
 								(checkbox != null && Events.ON_CHECK.equals(cmd)) ||
-								(comb != null && (Events.ON_CHANGE.equals(cmd) || Events.ON_SELECT.equals(cmd) || Events.ON_OPEN.equals(cmd))) ||
+								(comb != null && (Events.ON_CHANGE.equals(cmd) || Events.ON_SELECT.equals(cmd))) ||
 								(button != null && (Events.ON_CLICK.equals(cmd) || Events.ON_OK.equals(cmd) || Events.ON_UPLOAD.equals(cmd)));;
 			
 			// for combobox each change have both event onchange and onselect, so will have duplicate message 
