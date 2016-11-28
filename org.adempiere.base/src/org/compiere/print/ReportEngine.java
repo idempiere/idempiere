@@ -2084,10 +2084,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		}
 	}
 	
-	public void cleanTempObj (){
-		m_layout = null;
-	}
-	
 	/**
 	 * store info of report column,
 	 * now just use index to create css selector, but for later maybe will construct a complex class name
