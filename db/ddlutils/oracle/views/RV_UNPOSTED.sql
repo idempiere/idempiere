@@ -88,8 +88,9 @@ as
     WHERE Posted <> 'Y' AND DocStatus <> 'VO'
    UNION
    SELECT AD_Client_ID, AD_Org_ID, Created, CreatedBy, Updated, UpdatedBy,
-          IsActive, DocumentNo, DateRequired, DateRequired, 702,
+          IsActive, DocumentNo, DateDoc, DateDoc, 702,
           M_Requisition_ID, 'N', posted, processing, processed, docstatus, processedon
      from M_REQUISITION
     WHERE Posted <> 'Y' AND DocStatus <> 'VO'
 ;
+

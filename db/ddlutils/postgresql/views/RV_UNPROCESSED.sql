@@ -310,8 +310,8 @@ AS
             UpdatedBy,
             IsActive,
             DocumentNo,
-            DateRequired,
-            DateRequired,
+            DateDoc,
+            DateDoc,
             702,
             M_Requisition_ID,
             'N',
@@ -320,9 +320,6 @@ AS
             processed,
             docstatus
      FROM   M_REQUISITION
-    WHERE   DocStatus NOT IN ('CO','CL','VO','RE');
-    
--- Jul 24, 2009 12:44:54 PM COT
--- 2815134-Window My Unprocessed Documents
-INSERT INTO AD_Window (AD_Client_ID,AD_Org_ID,AD_Window_ID,Created,CreatedBy,Description,EntityType,Help,IsActive,IsBetaFunctionality,IsDefault,IsSOTrx,Name,Processing,Updated,UpdatedBy,WindowType) VALUES (0,0,53086,TO_TIMESTAMP('2009-07-24 12:44:53','YYYY-MM-DD HH24:MI:SS'),100,'My UnProcessed Documents','D','View my unprocessed documents','Y','N','N','Y','My UnProcessed Documents','N',TO_TIMESTAMP('2009-07-24 12:44:53','YYYY-MM-DD HH24:MI:SS'),100,'Q')
+    WHERE   DocStatus NOT IN ('CO','CL','VO','RE')
 ;
+
