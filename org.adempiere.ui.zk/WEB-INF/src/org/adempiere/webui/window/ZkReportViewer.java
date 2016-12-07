@@ -532,8 +532,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			reportLink.setLabel(media.getName());
 			revalidate();
 		} finally {
-			if (m_reportEngine != null)
-				m_reportEngine.cleanTempObj();
 			hideBusyDialog();
 			future = null;
 		}
