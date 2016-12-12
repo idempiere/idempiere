@@ -96,6 +96,11 @@ public class DefaultFeedbackService implements IFeedbackService {
 			showEmailDialog(imageBytes);
 		}
 		
+		protected String getFeedbackSubject() {
+			String feedBackHeader = Msg.getMsg(Env.getCtx(), "FeedBackHeader");
+			return Env.parseContext(Env.getCtx(), 0, feedBackHeader, false, false);
+		}
+		
 		protected void showEmailDialog(byte[] imageBytes) {
 			DataSource ds = FeedbackManager.getLogAttachment(errorOnly);
 			
@@ -103,7 +108,7 @@ public class DefaultFeedbackService implements IFeedbackService {
 				Msg.getMsg(Env.getCtx(), "EMailSupport"),
 				MUser.get(Env.getCtx()),
 				"",			//	to
-				MSystem.get(Env.getCtx()).getName() + " " + Msg.getMsg(Env.getCtx(), "TraceInfo"),
+				getFeedbackSubject(),
 				"", ds);
 			dialog.setAttribute(Window.MODE_KEY, Mode.OVERLAPPED);			
 			
