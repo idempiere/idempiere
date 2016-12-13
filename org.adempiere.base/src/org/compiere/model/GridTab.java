@@ -229,6 +229,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public static final String CTX_SQL = "_TabInfo_SQL";
 	public static final String CTX_IsSortTab = "_TabInfo_IsSortTab";
 
+	//private HashMap<Integer,Integer>	m_PostIts = null;
 
 	/**************************************************************************
 	 *  Tab loader for Tabs > 0
@@ -2186,6 +2187,23 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		int recordID = m_mTable.getKeyID(m_currentRow);
 		return MChat.getID(m_vo.AD_Table_ID, recordID);
 	}	//	getCM_ChatID
+	
+	public boolean hasPostIt()
+	{
+		return getAD_PostIt_ID() > 0;
+	}	//	hasChat
+
+	/**
+	 *	Get PostItID for this record.
+	 *	@return ID or 0, if not found
+	 */
+	public int getAD_PostIt_ID()
+	{
+		if (!canHaveAttachment())
+			return 0;
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MPostIt.getID(m_vo.AD_Table_ID, recordID);
+	}	//	getAD_PostIt_ID
 
 
 	/**

@@ -90,6 +90,7 @@ import org.compiere.grid.VSortTab;
 import org.compiere.grid.VTabbedPane;
 import org.compiere.grid.ed.VButton;
 import org.compiere.grid.ed.VDocAction;
+import org.compiere.grid.ed.VPostIt;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridField;
@@ -337,8 +338,8 @@ public final class APanel extends CPanel
 	private AppsAction	    aReport, aEnd, aHome, aHelp, aProduct, aLogout,
 							aAccount, aCalculator, aCalendar, aEditor, aPreference, aScript,
 							aOnline, aMailSupport, aAbout, aPrintScr, aScrShot, aExit, aBPartner,
-							aDeleteSelection, aShowAllWindow;
-
+							aDeleteSelection, aShowAllWindow, aPostIt;
+	
 	private SwitchAction aSwitchLinesDownAction, aSwitchLinesUpAction;
 
 	private WindowMenu m_WindowMenu;
@@ -446,6 +447,7 @@ public final class APanel extends CPanel
 
 		mView.addSeparator();
 		aAttachment = addAction("Attachment",	mView, 	KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0),	true);		//	toggle
+		aPostIt = addAction("PostIt",	mView, 	null,	true);
 		aChat = addAction("Chat",				mView, 	null,	true);		//	toggle
 		aHistory = 	addAction("History",		mView, 	KeyStroke.getKeyStroke(KeyEvent.VK_F9, 0),	true);		//	toggle
 		mView.addSeparator();
@@ -518,6 +520,7 @@ public final class APanel extends CPanel
 		toolBar.add(aRefresh.getButton());      //  F5
 		toolBar.add(aFind.getButton());
 		toolBar.add(aAttachment.getButton());
+		toolBar.add(aPostIt.getButton());
 		toolBar.add(aChat.getButton());
 		toolBar.add(aMulti.getButton());
 		toolBar.addSeparator();
@@ -1275,12 +1278,15 @@ public final class APanel extends CPanel
 		{
 			aAttachment.setEnabled(true);
 			aAttachment.setPressed(m_curTab.hasAttachment());
+			aPostIt.setEnabled(true);
+			aPostIt.setPressed(m_curTab.hasPostIt());
 			aChat.setEnabled(true);
 			aChat.setPressed(m_curTab.hasChat());
 		}
 		else
 		{
 			aAttachment.setEnabled(false);
+			aPostIt.setEnabled(false);
 			aChat.setEnabled(false);
 		}
 		//	Lock Indicator
@@ -1582,6 +1588,7 @@ public final class APanel extends CPanel
 			aFind.setEnabled(false);
 			aRefresh.setEnabled(false);
 			aAttachment.setEnabled(false);
+			aPostIt.setEnabled(false);
 			aChat.setEnabled(false);
 		}
 		else	//	Grid Tab
@@ -1591,6 +1598,7 @@ public final class APanel extends CPanel
 			aFind.setEnabled(true);
 			aRefresh.setEnabled(true);
 			aAttachment.setEnabled(true);
+			aPostIt.setEnabled(true);
 			aChat.setEnabled(true);
 			
 			// IDEMPIERE-587 - Swing: Toolbar Button to start Process from button fields
@@ -1762,6 +1770,8 @@ public final class APanel extends CPanel
 			//	View
 			else if (cmd.equals(aAttachment.getName()))
 				cmd_attachment();
+			else if (cmd.equals(aPostIt.getName()))
+				cmd_postIt();
 			else if (cmd.equals(aChat.getName()))
 				cmd_chat();
 			else if (cmd.equals(aHistory.getName()))
@@ -2630,6 +2640,35 @@ public final class APanel extends CPanel
 		new AExport(this);
 	}
 
+	private void cmd_postIt()
+	{
+		int record_ID = m_curTab.getRecord_ID();
+		if (log.isLoggable(Level.INFO)) log.info("Record_ID=" + record_ID);
+		if (record_ID == -1)	//	No Key
+		{
+			aChat.setEnabled(false);
+			return;
+		}
+		//		Find display
+		String infoName = null;
+		String infoDisplay = null;
+		for (int i = 0; i < m_curTab.getFieldCount(); i++)
+		{
+			GridField field = m_curTab.getField(i);
+			if (field.isKey())
+				infoName = field.getHeader();
+			if ((field.getColumnName().equals("Name") || field.getColumnName().equals("DocumentNo") )
+					&& field.getValue() != null)
+				infoDisplay = field.getValue().toString();
+			if (infoName != null && infoDisplay != null)
+				break;
+		}
+		String header = infoName + ": " + infoDisplay;
+		//
+
+		new VPostIt (AEnv.getFrame(this), header, m_curTab.getAD_PostIt_ID(), m_curTab.getAD_Table_ID(), record_ID, null);
+		aPostIt.setPressed(m_curTab.hasPostIt());
+	}	//	cmd_postIt
 
 	/**************************************************************************
 	 *	Start Button Process

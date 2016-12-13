@@ -75,6 +75,7 @@ import org.adempiere.webui.window.CustomizeGridViewDialog;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.FindWindow;
 import org.adempiere.webui.window.WChat;
+import org.adempiere.webui.window.WPostIt;
 import org.adempiere.webui.window.WRecordAccessDialog;
 import org.compiere.grid.ICreateFrom;
 import org.compiere.model.DataStatusEvent;
@@ -1022,6 +1023,47 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	chat.showWindow();
     }
 
+    public void onPostIt()
+    {
+    	int recordId = adTabbox.getSelectedGridTab().getRecord_ID();
+    	logger.info("Record_ID=" + recordId);
+
+    	if (recordId== -1)	//	No Key
+    	{
+    		return;
+    	}
+
+    	//	Find display
+    	String infoName = null;
+    	String infoDisplay = null;
+    	for (int i = 0; i < adTabbox.getSelectedGridTab().getFieldCount(); i++)
+    	{
+    		GridField field = adTabbox.getSelectedGridTab().getField(i);
+    		if (field.isKey())
+    			infoName = field.getHeader();
+    		if ((field.getColumnName().equals("Name") || field.getColumnName().equals("DocumentNo") )
+    				&& field.getValue() != null)
+    			infoDisplay = field.getValue().toString();
+    		if (infoName != null && infoDisplay != null)
+    			break;
+    	}
+    	String header = infoName + ": " + infoDisplay;
+
+    	WPostIt postit = new WPostIt(header, adTabbox.getSelectedGridTab().getAD_PostIt_ID(), adTabbox.getSelectedGridTab().getAD_Table_ID(), recordId, null);
+    	postit.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+    		@Override
+    		public void onEvent(Event event) throws Exception {
+    			hideBusyMask();
+    			toolbar.getButton("PostIt").setPressed(adTabbox.getSelectedGridTab().hasPostIt());
+    			focusToActivePanel();
+    		}
+    	});
+    	getComponent().getParent().appendChild(postit);
+    	showBusyMask(postit);    	    	
+    	LayoutUtils.openOverlappedWindow(getComponent(), postit, "middle_center");
+    	postit.showWindow();
+    }
+
     /**
      * @see ToolbarListener#onToggle()
      */
@@ -1291,6 +1333,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		toolbar.enableTabNavigation(breadCrumb.hasParentLink(), adTabbox.getSelectedDetailADTabpanel() != null);
 
 		toolbar.getButton("Attachment").setPressed(adTabbox.getSelectedGridTab().hasAttachment());
+		toolbar.getButton("PostIt").setPressed(adTabbox.getSelectedGridTab().hasPostIt());
 		toolbar.getButton("Chat").setPressed(adTabbox.getSelectedGridTab().hasChat());
 		toolbar.getButton("Find").setPressed(adTabbox.getSelectedGridTab().isQueryActive());
 
@@ -1627,7 +1670,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             toolbar.enableAttachment(false);
         }
 
-        // Check Chat
+        // Check Chat and PostIt
         boolean canHaveChat = true;
         if (e.isLoading() &&
                 adTabbox.getSelectedGridTab().getCurrentRow() > e.getLoadedRows())
@@ -1642,10 +1685,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         {
             toolbar.enableChat(true);
             toolbar.getButton("Chat").setPressed(adTabbox.getSelectedGridTab().hasChat());
+            toolbar.enablePostIt(true);
+            toolbar.getButton("PostIt").setPressed(adTabbox.getSelectedGridTab().hasPostIt());
         }
         else
         {
         	toolbar.enableChat(false);
+        	toolbar.enablePostIt(false);
         }
 
         toolbar.getButton("Find").setPressed(adTabbox.getSelectedGridTab().isQueryActive());

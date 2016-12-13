@@ -96,6 +96,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     private ToolBarButton btnZoomAcross, btnActiveWorkflows, btnRequests, btnProductInfo;
 
     private ToolBarButton btnChat;
+    
+    private ToolBarButton btnPostIt;
 
     private ToolBarButton btnCustomize;
 
@@ -167,6 +169,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btnFind = createButton("Find", "Find", "Find");
         btnFind.setTooltiptext(btnFind.getTooltiptext()+ "    Alt+F");
         btnAttachment = createButton("Attachment", "Attachment", "Attachment");
+        btnPostIt = createButton("PostIt", "PostIt", "PostIt");
         btnChat = createButton("Chat", "Chat", "Chat");
         btnGridToggle = createButton("Toggle", "Multi", "Multi");
         btnGridToggle.setTooltiptext(btnGridToggle.getTooltiptext()+ "    Alt+T");
@@ -558,6 +561,11 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     	String imgURL = "images/"+ (this.btnLock.isPressed() ? "LockX" : "Lock") + "24.png";
     	imgURL = ThemeManager.getThemeResource(imgURL);
 		this.btnLock.setImage(imgURL);
+    }
+
+    public void enablePostIt(boolean enabled)
+    {
+        this.btnPostIt.setDisabled(!enabled);
     }
 
     public Event getEvent()
