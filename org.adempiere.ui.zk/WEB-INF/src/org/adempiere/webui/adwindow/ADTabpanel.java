@@ -1274,7 +1274,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         		boolean refresh=true;      		
         		Treeitem item = treePanel.getTree().getSelectedItem();
         		SimpleTreeModel model = (SimpleTreeModel)(TreeModel<?>) treePanel.getTree().getModel();
-        		if (item != null)
+        		if (item != null && item.getValue() != null)
         		{
         			@SuppressWarnings("unchecked")
 					MTreeNode treeNode = ((DefaultTreeNode<MTreeNode>) item.getValue()).getData();        		
