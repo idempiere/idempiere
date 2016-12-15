@@ -155,10 +155,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	// The window of this tab
 	private GridWindow			m_window;
 
-	public GridWindow getGridWindow() {
-		return m_window;
-	}
-
 	/** The Table Model for Query   */
 	private GridTable          	m_mTable = null;
 
