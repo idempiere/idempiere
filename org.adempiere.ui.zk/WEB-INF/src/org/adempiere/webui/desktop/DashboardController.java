@@ -211,197 +211,7 @@ public class DashboardController implements EventListener<Event> {
 
 	            boolean panelEmpty = true;
 
-	            // HTML content
-	            String htmlContent = dc.get_Translation(MDashboardContent.COLUMNNAME_HTML);
-	            if(htmlContent != null)
-	            {
-		            StringBuilder result = new StringBuilder("<html><head>");
-
-		    		URL url = getClass().getClassLoader().getResource("org/compiere/css/PAPanel.css");
-					InputStreamReader ins;
-					BufferedReader bufferedReader = null;
-					try {
-						ins = new InputStreamReader(url.openStream());
-						bufferedReader = new BufferedReader( ins );
-						String cssLine;
-						result.append("<style type=\"text/css\">");
-						while ((cssLine = bufferedReader.readLine()) != null)
-							result.append(cssLine + "\n");
-						result.append("</style>");
-					} catch (Exception e1) {
-						logger.log(Level.SEVERE, e1.getLocalizedMessage(), e1);
-					}
-					finally{
-						if (bufferedReader != null) {
-							try {
-								bufferedReader.close();
-							} catch (Exception e) {}
-							bufferedReader = null;
-						}
-					}
-					result.append("</head><body><div class=\"content\">\n");
-
-//	            	if(description != null)
-//	            		result.append("<h2>" + description + "</h2>\n");
-	            	result.append(stripHtml(htmlContent, false) + "<br>\n");
-	            	result.append("</div>\n</body>\n</html>");
-
-		            Html html = new Html();
-		            html.setContent(result.toString());
-		            content.appendChild(html);
-		            panelEmpty = false;
-	            }
-
-	        	// Window
-	        	int AD_Window_ID = dc.getAD_Window_ID();
-	        	if(AD_Window_ID > 0)
-	        	{
-		        	int AD_Menu_ID = dc.getAD_Menu_ID();
-		        	Div div = new Div();
-					ToolBarButton btn = new ToolBarButton(String.valueOf(AD_Menu_ID));
-					I_AD_Menu menu = dc.getAD_Menu();
-					btn.setLabel(menu.getName());
-					btn.setAttribute("AD_Menu_ID", AD_Menu_ID);
-					btn.addEventListener(Events.ON_CLICK, this);
-					div.appendChild(btn);
-					content.appendChild(div);
-					panelEmpty = false;
-	        	}
-	        	
-	        	//Report & Process
-	        	int AD_Process_ID = dc.getAD_Process_ID();
-	        	if(AD_Process_ID > 0)
-	        	{
-		        	String sql = "SELECT AD_MENU_ID FROM AD_MENU WHERE AD_Process_ID=?";
-		        	int AD_Menu_ID = DB.getSQLValue(null, sql, AD_Process_ID);
-					ToolBarButton btn = new ToolBarButton();
-					MMenu menu = new MMenu(Env.getCtx(), AD_Menu_ID, null);					
-					btn.setAttribute("AD_Menu_ID", AD_Menu_ID);
-					btn.addEventListener(Events.ON_CLICK, this);					
-					panelEmpty = false;
-					
-					if (dc.isEmbedReportContent()) 
-					{
-						String processParameters = dc.getProcessParameters();
-						embedReport(content, AD_Process_ID, processParameters);
-						
-						Toolbar toolbar = new Toolbar();
-						content.appendChild(toolbar);
-						btn.setLabel("Open run dialog");						
-						toolbar.appendChild(btn);
-						
-						btn = new ToolBarButton();
-						btn.setAttribute("AD_Process_ID", AD_Process_ID);
-						btn.setAttribute("ProcessParameters", processParameters);
-						btn.addEventListener(Events.ON_CLICK, this);
-						btn.setLabel("View report in new tab");
-						toolbar.appendChild(new Separator("vertical"));
-						toolbar.appendChild(btn);
-					}
-					else
-					{
-						btn.setLabel(menu.getName());
-						content.appendChild(btn);
-					}
-	        	}
-
-	        	// Goal
-	        	int PA_Goal_ID = dc.getPA_Goal_ID();
-	        	if(PA_Goal_ID > 0)
-	        	{
-	        		//link to open performance detail
-	        		Div div = new Div();
-	        		Toolbarbutton link = new Toolbarbutton();
-		            link.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
-		            link.setAttribute("PA_Goal_ID", PA_Goal_ID);
-		            link.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-						public void onEvent(Event event) throws Exception {
-							int PA_Goal_ID = (Integer)event.getTarget().getAttribute("PA_Goal_ID");
-							MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
-							new WPerformanceDetail(goal);
-						}
-		            });
-		            div.appendChild(link);
-		            content.appendChild(div);
-
-		            String goalDisplay = dc.getGoalDisplay();
-		            MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
-		            WGraph graph = new WGraph(goal, 55, false, true,
-		            		!(MDashboardContent.GOALDISPLAY_Chart.equals(goalDisplay)),
-		            		MDashboardContent.GOALDISPLAY_Chart.equals(goalDisplay));
-		            content.appendChild(graph);
-		            panelEmpty = false;
-	        	}
-
-	            // ZUL file url
-	        	String url = dc.getZulFilePath();
-	        	if(url != null)
-	        	{
-		        	try {
-		        		
-		                Component component = null;
-		                List<IDashboardGadgetFactory> f = Service.locator().list(IDashboardGadgetFactory.class).getServices();
-                        for (IDashboardGadgetFactory factory : f) {
-                                component = factory.getGadget(url.toString(),content);
-                                if(component != null)
-                                        break;
-                        }
-		                
-                        if(component != null)
-		                {
-		                	if (component instanceof Include)
-		                		component = component.getFirstChild();
-		                	
-		                	if (component instanceof DashboardPanel)
-		                	{
-			                	DashboardPanel dashboardPanel = (DashboardPanel) component;
-			                	if (!dashboardPanel.getChildren().isEmpty()) {
-			                		content.appendChild(dashboardPanel);
-			                		dashboardRunnable.add(dashboardPanel);
-			                		panelEmpty = false;
-			                	}
-		                	}
-		                	else
-		                	{
-		                		content.appendChild(component);
-		                		panelEmpty = false;
-		                	}
-		                }
-					} catch (Exception e) {
-						logger.log(Level.WARNING, "Failed to create components. zul="+url, e);
-						throw new AdempiereException(e);
-					}
-	        	}
-
-	        	//chart
-	        	final int AD_Chart_ID = dc.getAD_Chart_ID();
-	        	if (AD_Chart_ID > 0) {
-	        		final Div chartPanel = new Div();	        	
-	        		chartPanel.setSclass("chart-gadget");
-	        		final MChart chartModel = new MChart(Env.getCtx(), AD_Chart_ID, null);
-	        		content.appendChild(chartPanel);
-	        		panelEmpty = false;	        		
-	        		chartPanel.addEventListener(Events.ON_AFTER_SIZE, new EventListener<AfterSizeEvent>() {
-						@Override
-						public void onEvent(AfterSizeEvent event) throws Exception {
-			        		int width = event.getWidth()*90/100;
-			        		int height = event.getHeight();
-			        		//set normal height
-			        		if (height == 0) {
-			        			height = width * 85 / 100;
-			        			ZKUpdateUtil.setHeight(chartPanel, height+"px");
-			        		}
-			        		chartPanel.getChildren().clear();
-			        		ChartModel model = new ChartModel();
-			        		model.chart = chartModel;
-			        		List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
-			        		for (IChartRendererService renderer : list) {
-			        			if (renderer.renderChart(chartPanel, width, height, model))
-			        				break;
-			        		}
-						}
-					});
-	        	}
+	            panelEmpty = !render(content, dc, dashboardRunnable);	            		
 	        	
 	        	if (panelEmpty)
 	        		panel.detach();	        	
@@ -467,6 +277,205 @@ public class DashboardController implements EventListener<Event> {
 		}
 	}
 
+	public  boolean render(Component content, MDashboardContent dc, DashboardRunnable dashboardRunnable) throws Exception {
+		boolean empty = true;
+		
+		// HTML content
+        String htmlContent = dc.get_Translation(MDashboardContent.COLUMNNAME_HTML);
+        if(htmlContent != null)
+        {
+            StringBuilder result = new StringBuilder("<html><head>");
+
+    		URL url = getClass().getClassLoader().getResource("org/compiere/css/PAPanel.css");
+			InputStreamReader ins;
+			BufferedReader bufferedReader = null;
+			try {
+				ins = new InputStreamReader(url.openStream());
+				bufferedReader = new BufferedReader( ins );
+				String cssLine;
+				result.append("<style type=\"text/css\">");
+				while ((cssLine = bufferedReader.readLine()) != null)
+					result.append(cssLine + "\n");
+				result.append("</style>");
+			} catch (Exception e1) {
+				logger.log(Level.SEVERE, e1.getLocalizedMessage(), e1);
+			}
+			finally{
+				if (bufferedReader != null) {
+					try {
+						bufferedReader.close();
+					} catch (Exception e) {}
+					bufferedReader = null;
+				}
+			}
+			result.append("</head><body><div class=\"content\">\n");
+
+//        	if(description != null)
+//        		result.append("<h2>" + description + "</h2>\n");
+        	result.append(stripHtml(htmlContent, false) + "<br>\n");
+        	result.append("</div>\n</body>\n</html>");
+
+            Html html = new Html();
+            html.setContent(result.toString());
+            content.appendChild(html);
+            empty = false;
+        }
+
+    	// Window
+    	int AD_Window_ID = dc.getAD_Window_ID();
+    	if(AD_Window_ID > 0)
+    	{
+        	int AD_Menu_ID = dc.getAD_Menu_ID();
+        	Div div = new Div();
+			ToolBarButton btn = new ToolBarButton(String.valueOf(AD_Menu_ID));
+			I_AD_Menu menu = dc.getAD_Menu();
+			btn.setLabel(menu.getName());
+			btn.setAttribute("AD_Menu_ID", AD_Menu_ID);
+			btn.addEventListener(Events.ON_CLICK, this);
+			div.appendChild(btn);
+			content.appendChild(div);
+			empty = false;
+    	}
+    	
+    	//Report & Process
+    	int AD_Process_ID = dc.getAD_Process_ID();
+    	if(AD_Process_ID > 0)
+    	{
+        	String sql = "SELECT AD_MENU_ID FROM AD_MENU WHERE AD_Process_ID=?";
+        	int AD_Menu_ID = DB.getSQLValue(null, sql, AD_Process_ID);
+			ToolBarButton btn = new ToolBarButton();
+			MMenu menu = new MMenu(Env.getCtx(), AD_Menu_ID, null);					
+			btn.setAttribute("AD_Menu_ID", AD_Menu_ID);
+			btn.addEventListener(Events.ON_CLICK, this);					
+			empty = false;
+			
+			if (dc.isEmbedReportContent()) 
+			{
+				String processParameters = dc.getProcessParameters();
+				embedReport(content, AD_Process_ID, processParameters);
+				
+				Toolbar toolbar = new Toolbar();
+				content.appendChild(toolbar);
+				btn.setLabel("Open run dialog");						
+				toolbar.appendChild(btn);
+				
+				btn = new ToolBarButton();
+				btn.setAttribute("AD_Process_ID", AD_Process_ID);
+				btn.setAttribute("ProcessParameters", processParameters);
+				btn.addEventListener(Events.ON_CLICK, this);
+				btn.setLabel("View report in new tab");
+				toolbar.appendChild(new Separator("vertical"));
+				toolbar.appendChild(btn);
+			}
+			else
+			{
+				btn.setLabel(menu.getName());
+				content.appendChild(btn);
+			}
+    	}
+
+    	// Goal
+    	int PA_Goal_ID = dc.getPA_Goal_ID();
+    	if(PA_Goal_ID > 0)
+    	{
+    		//link to open performance detail
+    		Div div = new Div();
+    		Toolbarbutton link = new Toolbarbutton();
+            link.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
+            link.setAttribute("PA_Goal_ID", PA_Goal_ID);
+            link.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+				public void onEvent(Event event) throws Exception {
+					int PA_Goal_ID = (Integer)event.getTarget().getAttribute("PA_Goal_ID");
+					MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
+					new WPerformanceDetail(goal);
+				}
+            });
+            div.appendChild(link);
+            content.appendChild(div);
+
+            String goalDisplay = dc.getGoalDisplay();
+            MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
+            WGraph graph = new WGraph(goal, 55, false, true,
+            		!(MDashboardContent.GOALDISPLAY_Chart.equals(goalDisplay)),
+            		MDashboardContent.GOALDISPLAY_Chart.equals(goalDisplay));
+            content.appendChild(graph);
+            empty = false;
+    	}
+
+        // ZUL file url
+    	String url = dc.getZulFilePath();
+    	if(url != null)
+    	{
+        	try {
+        		
+                Component component = null;
+                List<IDashboardGadgetFactory> f = Service.locator().list(IDashboardGadgetFactory.class).getServices();
+                for (IDashboardGadgetFactory factory : f) {
+                        component = factory.getGadget(url.toString(),content);
+                        if(component != null)
+                                break;
+                }
+                
+                if(component != null)
+                {
+                	if (component instanceof Include)
+                		component = component.getFirstChild();
+                	
+                	if (component instanceof DashboardPanel)
+                	{
+	                	DashboardPanel dashboardPanel = (DashboardPanel) component;
+	                	if (!dashboardPanel.getChildren().isEmpty()) {
+	                		content.appendChild(dashboardPanel);
+	                		if (dashboardRunnable != null)
+	                			dashboardRunnable.add(dashboardPanel);
+	                		empty = false;
+	                	}
+                	}
+                	else
+                	{
+                		content.appendChild(component);
+                		empty = false;
+                	}
+                }
+			} catch (Exception e) {
+				logger.log(Level.WARNING, "Failed to create components. zul="+url, e);
+				throw new AdempiereException(e);
+			}
+    	}
+
+    	//chart
+    	final int AD_Chart_ID = dc.getAD_Chart_ID();
+    	if (AD_Chart_ID > 0) {
+    		final Div chartPanel = new Div();	        	
+    		chartPanel.setSclass("chart-gadget");
+    		final MChart chartModel = new MChart(Env.getCtx(), AD_Chart_ID, null);
+    		content.appendChild(chartPanel);
+    		empty = false;	        		
+    		chartPanel.addEventListener(Events.ON_AFTER_SIZE, new EventListener<AfterSizeEvent>() {
+				@Override
+				public void onEvent(AfterSizeEvent event) throws Exception {
+	        		int width = event.getWidth()*90/100;
+	        		int height = event.getHeight();
+	        		//set normal height
+	        		if (height == 0) {
+	        			height = width * 85 / 100;
+	        			chartPanel.setHeight(height+"px");
+	        		}
+	        		chartPanel.getChildren().clear();
+	        		ChartModel model = new ChartModel();
+	        		model.chart = chartModel;
+	        		List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
+	        		for (IChartRendererService renderer : list) {
+	        			if (renderer.renderChart(chartPanel, width, height, model))
+	        				break;
+	        		}
+				}
+			});
+    	}
+    	
+    	return !empty;
+	}
+	
 	public void onEvent(Event event) throws Exception {
 		Component comp = event.getTarget();
         String eventName = event.getName();

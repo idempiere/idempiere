@@ -792,7 +792,7 @@ public class GridField
 				if (defStr.equals("@SysDate@"))				//	System Time
 					return new Timestamp (System.currentTimeMillis());
 				else if (defStr.indexOf('@') != -1)			//	it is a variable
-					defStr = Env.getContext(m_vo.ctx, m_vo.WindowNo, defStr.replace('@',' ').trim());
+					defStr = Env.parseContext(m_vo.ctx, m_vo.WindowNo, defStr.trim(), false, false);
 				else if (defStr.indexOf("'") != -1)			//	it is a 'String'
 					defStr = defStr.replace('\'', ' ').trim();
 
@@ -2457,6 +2457,11 @@ public class GridField
 		return m_vo.displayType == DisplayType.Button && MColumn.ISTOOLBARBUTTON_Toolbar.equals(m_vo.IsToolbarButton);
 	}
 
+	public int getPA_DashboardContent_ID()
+	{
+		return m_vo.PA_DashboardContent_ID;
+	}
+	
 	public GridField clone(Properties ctx)  
 	{
 		try {

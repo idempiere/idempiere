@@ -155,10 +155,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	// The window of this tab
 	private GridWindow			m_window;
 
-	public GridWindow getGridWindow() {
-		return m_window;
-	}
-
 	/** The Table Model for Query   */
 	private GridTable          	m_mTable = null;
 
@@ -1287,6 +1283,11 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		return m_keyColumnName;
 	}	//	getKeyColumnName
+	
+	public int getKeyColumnIndex()
+	{
+		return m_mTable.getKeyColumnIndex();
+	}
 
 	/**
 	 * Set Name of the Key Column
@@ -3356,4 +3357,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		selection.clear();
 	}
 
+	public GridWindow getGridWindow()
+	{
+		return this.m_window;
+	}
+	
+	public GridTabVO getVO() 
+	{
+		return m_vo;
+	}
 }	//	GridTab

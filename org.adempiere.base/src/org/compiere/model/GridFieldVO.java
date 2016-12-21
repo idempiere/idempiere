@@ -234,6 +234,8 @@ public class GridFieldVO implements Serializable
 					vo.AD_LabelStyle_ID = rs.getInt (i);
 				else if (columnName.equalsIgnoreCase("AD_FieldStyle_ID"))
 					vo.AD_FieldStyle_ID = rs.getInt (i);
+				else if (columnName.equalsIgnoreCase("PA_DashboardContent_ID"))
+					vo.PA_DashboardContent_ID = rs.getInt (i);
 			}
 			if (vo.Header == null)
 				vo.Header = vo.ColumnName;
@@ -316,6 +318,9 @@ public class GridFieldVO implements Serializable
 				
 				if (userDef.getAD_FieldStyle_ID() > 0)
 					vo.AD_FieldStyle_ID = userDef.getAD_FieldStyle_ID();
+				
+				if (userDef.getPA_DashboardContent_ID() > 0)
+					vo.PA_DashboardContent_ID = userDef.getPA_DashboardContent_ID();
 			}
 		}
 		//
@@ -671,6 +676,8 @@ public class GridFieldVO implements Serializable
 	
 	public int AD_FieldStyle_ID = 0;
 	
+	public int PA_DashboardContent_ID = 0;
+	
 	/**
 	 *  Set Context including contained elements
 	 *  @param newCtx new context
@@ -802,6 +809,7 @@ public class GridFieldVO implements Serializable
 		clone.IsDefaultFocus = IsDefaultFocus;
 		clone.AD_FieldStyle_ID = AD_FieldStyle_ID;
 		clone.AD_LabelStyle_ID = AD_LabelStyle_ID;
+		clone.PA_DashboardContent_ID = PA_DashboardContent_ID;
 		
 		//	Lookup
 		clone.ValidationCode = ValidationCode;

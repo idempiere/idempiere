@@ -188,6 +188,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         	Env.setContext(ctx, Env.LANGUAGE, langSession);
         }
 
+        MSystem system = MSystem.get(Env.getCtx());
+        Env.setContext(ctx, "#System_Name", system.getName());
+        
         // Validate language
 		Language language = Language.getLanguage(langLogin);
 		String locale = Env.getContext(ctx, AEnv.LOCALE);

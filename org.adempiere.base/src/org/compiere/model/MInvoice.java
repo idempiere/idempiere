@@ -994,7 +994,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				setC_PaymentTerm_ID (ii);
 			else
 			{
-				String sql = "SELECT C_PaymentTerm_ID FROM C_PaymentTerm WHERE AD_Client_ID=? AND IsDefault='Y'";
+				String sql = "SELECT C_PaymentTerm_ID FROM C_PaymentTerm WHERE AD_Client_ID=? AND IsDefault='Y' AND IsActive='Y'";
 				ii = DB.getSQLValue(null, sql, getAD_Client_ID());
 				if (ii != 0)
 					setC_PaymentTerm_ID (ii);

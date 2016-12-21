@@ -25,6 +25,8 @@
 
 package org.adempiere.pipo2;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -34,6 +36,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.WebUtil;
 
 /**
  *	PackIn Notifier
@@ -105,7 +108,13 @@ public class PackInNotifier {
 		} else {
 			status = "Failure";
 		}
-		subject.append(status).append("* Result for PackIn ").append(getFileName());
+		String serverName = null;
+		try {
+			serverName = InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+			serverName = WebUtil.getHostIP();
+		}
+		subject.append(status).append("* ").append(serverName).append(" - Result for PackIn ").append(getFileName());
 		if (getPluginName() != null) {
 			subject.append(" from ").append(getPluginName());
 		}

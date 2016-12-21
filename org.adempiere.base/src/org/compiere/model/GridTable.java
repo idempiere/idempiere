@@ -3948,4 +3948,8 @@ public class GridTable extends AbstractTableModel
 		m_lastSortColumnIndex = -1;
 		m_lastSortedAscending = true;
 	}
+
+	public int getKeyColumnIndex() {
+		return m_indexKeyColumn;
+	}
 }

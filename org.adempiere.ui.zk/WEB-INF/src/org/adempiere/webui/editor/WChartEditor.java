@@ -23,8 +23,10 @@ import org.compiere.model.GridField;
 import org.compiere.model.MChart;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.zkoss.zk.ui.event.AfterSizeEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 
@@ -40,6 +42,12 @@ public class WChartEditor extends WEditor
     private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     
 	private MChart  chartModel = null;
+
+	private int chartWidth;
+
+	private int chartHeight;
+
+	private Div chartDiv;
     
     /**	Logger			*/
 	@SuppressWarnings("unused")
@@ -54,21 +62,16 @@ public class WChartEditor extends WEditor
     }
 
     private void createChart() {
-        Panel panel = getComponent();
-        if (panel.getPanelchildren() != null) {
-			panel.getPanelchildren().getChildren().clear();
-		} else {
-			Panelchildren pc = new Panelchildren();
-			panel.appendChild(pc);
-			pc.setSclass("chart-field");
-		}
-        ChartModel model = new ChartModel();
-        model.chart = chartModel;
-        List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
-		for (IChartRendererService renderer : list) {
-			if (renderer.renderChart(panel.getPanelchildren(), 400, chartModel.getWinHeight(), model))
-				break;
-		}
+    	if (chartHeight > 0 && chartWidth > 0) {
+	        chartDiv.getChildren().clear();
+	        ChartModel model = new ChartModel();
+	        model.chart = chartModel;
+	        List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
+			for (IChartRendererService renderer : list) {
+				if (renderer.renderChart(chartDiv, chartWidth, chartHeight, model))
+					break;
+			}
+    	}
     }
     
     @Override
@@ -77,10 +80,16 @@ public class WChartEditor extends WEditor
     }
     
     private void init()
-    {
+    {    	
+    	Panelchildren pc = new Panelchildren();
+		getComponent().appendChild(pc);
+		pc.setSclass("chart-field");
+		chartDiv = new Div();
+		chartDiv.addEventListener(Events.ON_AFTER_SIZE, this);
+		pc.appendChild(chartDiv);
     }
 
-     @Override
+	@Override
     public String getDisplay()
     {
     	 return chartModel.get_Translation(MChart.COLUMNNAME_Name);
@@ -129,11 +138,43 @@ public class WChartEditor extends WEditor
 
 	public void onEvent(Event event) throws Exception 
 	{
+		if (event instanceof AfterSizeEvent)
+		{
+			AfterSizeEvent ase = (AfterSizeEvent) event;
+			chartWidth = ase.getWidth();
+			if (chartWidth == 0) {
+				chartWidth = 400;
+			}
+			chartHeight = 0;
+			if (chartDiv.getStyle() != null && chartDiv.getStyle().contains("height"))
+				chartHeight = ase.getHeight();
+    		//set default height
+    		if (chartHeight == 0) {
+    			chartHeight = chartModel.getWinHeight();
+    			chartDiv.setHeight(chartHeight+"px");
+    		}
+    		chartDiv.getChildren().clear();
+    		ChartModel model = new ChartModel();
+    		model.chart = chartModel;
+    		List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
+    		for (IChartRendererService renderer : list) {
+    			if (renderer.renderChart(chartDiv, chartWidth, chartHeight, model))
+    				break;
+    		}
+		}
 	}
 
 	@Override
 	public void dynamicDisplay() {
 		super.dynamicDisplay();
 		createChart();		
+	}
+	
+   /* (non-Javadoc)
+	 * @see org.adempiere.webui.editor.WEditor#setFieldStyle(java.lang.String)
+	 */
+	@Override
+	protected void setFieldStyle(String style) {
+		chartDiv.setStyle(style);
 	}
 }
