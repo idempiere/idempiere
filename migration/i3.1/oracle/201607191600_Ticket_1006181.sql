@@ -14,135 +14,135 @@ INSERT INTO AD_Reference (AD_Reference_ID,Name,AD_Reference_UU,IsOrderByValue,AD
 ;
 
 -- Jul 15, 2016 6:24:20 PM MYT
-UPDATE AD_Field SET SeqNo=120,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=6432
+UPDATE AD_Field SET SeqNo=120,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=6432
 ;
 
 -- Jul 15, 2016 6:24:20 PM MYT
-UPDATE AD_Field SET SeqNo=130,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=132
+UPDATE AD_Field SET SeqNo=130,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=132
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=140,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=200276
+UPDATE AD_Field SET SeqNo=140,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=200276
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=150,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=200771
+UPDATE AD_Field SET SeqNo=150,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=200771
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=160,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=924
+UPDATE AD_Field SET SeqNo=160,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=924
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=170,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=133
+UPDATE AD_Field SET SeqNo=170,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=133
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=180,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=137
+UPDATE AD_Field SET SeqNo=180,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=137
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=190,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=200274
+UPDATE AD_Field SET SeqNo=190,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=200274
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=200,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=138
+UPDATE AD_Field SET SeqNo=200,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=138
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=210,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=202362
+UPDATE AD_Field SET SeqNo=210,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=202362
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=220,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=142
+UPDATE AD_Field SET SeqNo=220,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=142
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=230,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=8343
+UPDATE AD_Field SET SeqNo=230,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=8343
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=240,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=140
+UPDATE AD_Field SET SeqNo=240,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=140
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=250,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=202341
+UPDATE AD_Field SET SeqNo=250,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=202341
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=260,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=141
+UPDATE AD_Field SET SeqNo=260,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=141
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=270,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=200350
+UPDATE AD_Field SET SeqNo=270,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=200350
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=280,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=200348
+UPDATE AD_Field SET SeqNo=280,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=200348
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=290,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=200349
+UPDATE AD_Field SET SeqNo=290,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=200349
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=300,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=204213
+UPDATE AD_Field SET SeqNo=300,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=204213
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=310,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=204214
+UPDATE AD_Field SET SeqNo=310,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=204214
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=320,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=13425
+UPDATE AD_Field SET SeqNo=320,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=13425
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=330,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=200837
+UPDATE AD_Field SET SeqNo=330,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=200837
 ;
 
 -- Jul 15, 2016 6:24:21 PM MYT
-UPDATE AD_Field SET SeqNo=340,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=54402
+UPDATE AD_Field SET SeqNo=340,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=54402
 ;
 
 -- Jul 15, 2016 6:24:22 PM MYT
-UPDATE AD_Field SET SeqNo=350,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=54401
+UPDATE AD_Field SET SeqNo=350,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=54401
 ;
 
 -- Jul 15, 2016 6:24:22 PM MYT
-UPDATE AD_Field SET SeqNo=360,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=200838
+UPDATE AD_Field SET SeqNo=360,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=200838
 ;
 
 -- Jul 15, 2016 6:24:22 PM MYT
-UPDATE AD_Field SET SeqNo=370,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=200834
+UPDATE AD_Field SET SeqNo=370,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=200834
 ;
 
 -- Jul 15, 2016 6:24:22 PM MYT
-UPDATE AD_Field SET SeqNo=380,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=13424
+UPDATE AD_Field SET SeqNo=380,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=13424
 ;
 
 -- Jul 15, 2016 6:24:22 PM MYT
-UPDATE AD_Field SET SeqNo=390,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=62468
+UPDATE AD_Field SET SeqNo=390,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=62468
 ;
 
 -- Jul 15, 2016 6:24:22 PM MYT
-UPDATE AD_Field SET SeqNo=400,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=53280
+UPDATE AD_Field SET SeqNo=400,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=53280
 ;
 
 -- Jul 15, 2016 6:24:22 PM MYT
-UPDATE AD_Field SET SeqNo=410,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=200836
+UPDATE AD_Field SET SeqNo=410,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=200836
 ;
 
 -- Jul 15, 2016 6:24:22 PM MYT
-UPDATE AD_Field SET SeqNo=420,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=200835
+UPDATE AD_Field SET SeqNo=420,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=200835
 ;
 
 -- Jul 15, 2016 6:24:22 PM MYT
-UPDATE AD_Field SET SeqNo=430,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=136
+UPDATE AD_Field SET SeqNo=430,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=136
 ;
 
 -- Jul 15, 2016 6:24:22 PM MYT
-UPDATE AD_Field SET SeqNo=440,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=139
+UPDATE AD_Field SET SeqNo=440,IsDisplayed='Y', Updated=Sysdate, UpdatedBy=100 WHERE AD_Field_ID=139
 ;
 
 -- Jul 15, 2016 6:27:18 PM MYT
