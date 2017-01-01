@@ -28,7 +28,7 @@
   <rm:locator pattern="^bcprov$" searchPathRef="bundles.maven" />
   <rm:locator pattern="^com\.ibm\.icu$" searchPathRef="bundles.maven" />
   <rm:locator pattern="^groovy-all$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^joda-time$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^joda-time$" searchPathRef="modify-bundle" />
   <rm:locator pattern="^org\.cryptacular$" searchPathRef="bundles.maven" />
   <rm:locator pattern="^net\.sf\.supercsv\.super-csv$" searchPathRef="bundles.maven" />
   <rm:locator pattern="^org\.atmosphere\.runtime$" searchPathRef="bundles.maven" />
