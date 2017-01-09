@@ -17,10 +17,10 @@ package org.adempiere.webui.session;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.ext.Disable;
 import org.zkoss.zk.ui.ext.Readonly;
@@ -102,11 +102,13 @@ public class ValidateReadonlyComponent implements AuService {
 								(comb != null && (Events.ON_CHANGE.equals(cmd) || Events.ON_SELECT.equals(cmd))) ||
 								(button != null && (Events.ON_CLICK.equals(cmd) || Events.ON_OK.equals(cmd) || Events.ON_UPLOAD.equals(cmd)));;
 			
-			// for combobox each change have both event onchange and onselect, so will have duplicate message 
-			// duplicate is acceptable for hack guy
+			// for combobox each change have both event onchange and onselect
 			if (editing){
 				comp.invalidate();
-				throw new WrongValueException ("Field is read only");
+				String user = Env.getContext(Env.getCtx(), "#AD_User_Name") + "[" + Env.getContext(Env.getCtx(), "#AD_User_ID") + "]";
+				log.log(Level.WARNING, String.format("Detected UI interaction with a read-only element: %1$s on event %2$s from user %3$s",
+						comp.getClass(), cmd, user));
+				return true;
 			}
 		}
         
