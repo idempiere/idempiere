@@ -34,7 +34,7 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3486055138810301789L;
+	private static final long serialVersionUID = -1880961891234637133L;
 
 	/**
 	 * 	Standard Constructor
@@ -55,6 +55,7 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 			setOpenAmt(Env.ZERO);
 			setPayAmt (Env.ZERO);
 			setDiscountAmt(Env.ZERO);
+			setWriteOffAmt (Env.ZERO);
 			setDifferenceAmt (Env.ZERO);
 			setIsManual (false);
 		}
@@ -97,16 +98,32 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	 *	@param OpenAmt open
 	 *	@param DiscountAmt discount
 	 */
-	public void setInvoice (int C_Invoice_ID, boolean isSOTrx, BigDecimal OpenAmt, 
+	public void xsetInvoice (int C_Invoice_ID, boolean isSOTrx, BigDecimal OpenAmt, 
 		BigDecimal PayAmt, BigDecimal DiscountAmt)
+	{
+		setInvoice(C_Invoice_ID, isSOTrx, OpenAmt, PayAmt, DiscountAmt, Env.ZERO);
+	}	//	setInvoive
+
+	/**
+	 * 	Set Invoice Info
+	 *	@param C_Invoice_ID invoice
+	 *	@param isSOTrx sales trx
+	 *	@param PayAmt payment
+	 *	@param OpenAmt open
+	 *	@param DiscountAmt discount
+	 *	@param WriteOffAmt writeoff
+	 */
+	public void setInvoice (int C_Invoice_ID, boolean isSOTrx, BigDecimal OpenAmt, 
+		BigDecimal PayAmt, BigDecimal DiscountAmt, BigDecimal WriteOffAmt)
 	{
 		setC_Invoice_ID (C_Invoice_ID);
 		setIsSOTrx(isSOTrx);
 		setOpenAmt(OpenAmt);
 		setPayAmt (PayAmt);
 		setDiscountAmt(DiscountAmt);
-		setDifferenceAmt(OpenAmt.subtract(PayAmt).subtract(DiscountAmt));
-	}	//	setInvoive
+		setWriteOffAmt(WriteOffAmt);
+		setDifferenceAmt(OpenAmt.subtract(PayAmt).subtract(DiscountAmt).subtract(WriteOffAmt));
+	}	//	setInvoice
 
 	/**
 	 * 	Get Invoice
@@ -126,7 +143,7 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		setDifferenceAmt(getOpenAmt().subtract(getPayAmt()).subtract(getDiscountAmt()));
+		setDifferenceAmt(getOpenAmt().subtract(getPayAmt()).subtract(getDiscountAmt()).subtract(getWriteOffAmt()));
 		return true;
 	}	//	beforeSave
 	

@@ -303,4 +303,17 @@ public interface I_C_PaySelectionLine
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name WriteOffAmt */
+    public static final String COLUMNNAME_WriteOffAmt = "WriteOffAmt";
+
+	/** Set Write-off Amount.
+	  * Amount to write-off
+	  */
+	public void setWriteOffAmt (BigDecimal WriteOffAmt);
+
+	/** Get Write-off Amount.
+	  * Amount to write-off
+	  */
+	public BigDecimal getWriteOffAmt();
 }

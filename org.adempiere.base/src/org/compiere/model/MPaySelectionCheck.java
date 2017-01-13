@@ -130,6 +130,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 		psc.setIsReceipt(payment.isReceipt());
 		psc.setPayAmt (payment.getPayAmt());
 		psc.setDiscountAmt(payment.getDiscountAmt());
+		psc.setWriteOffAmt(payment.getWriteOffAmt());
 		psc.setQty (1);
 		psc.setDocumentNo(payment.getDocumentNo());
 		psc.setProcessed(true);
@@ -148,6 +149,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 			psl.setOpenAmt(payment.getPayAmt().add(payment.getDiscountAmt()));
 			psl.setPayAmt (payment.getPayAmt());
 			psl.setDiscountAmt(payment.getDiscountAmt());
+			psl.setWriteOffAmt(payment.getWriteOffAmt());
 			psl.setDifferenceAmt (Env.ZERO);
 			psl.setC_PaySelectionCheck_ID(psc.getC_PaySelectionCheck_ID());
 			psl.setProcessed(true);
@@ -170,6 +172,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 						psla.setOpenAmt(pAlloc.getAmount().add(pAlloc.getDiscountAmt()));
 						psla.setPayAmt (pAlloc.getAmount());
 						psla.setDiscountAmt(pAlloc.getDiscountAmt());
+						psla.setWriteOffAmt(pAlloc.getWriteOffAmt());
 						psla.setDifferenceAmt (Env.ZERO);
 						psla.setC_PaySelectionCheck_ID(psc.getC_PaySelectionCheck_ID());
 						psla.setProcessed(true);
@@ -310,6 +313,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 				payment.setTrxType(X_C_Payment.TRXTYPE_CreditPayment);
 				payment.setAmount(check.getParent().getC_Currency_ID(), check.getPayAmt());
 				payment.setDiscountAmt(check.getDiscountAmt());
+				payment.setWriteOffAmt(check.getWriteOffAmt());
 				payment.setDateTrx(check.getParent().getPayDate());
 				payment.setDateAcct(payment.getDateTrx()); // globalqss [ 2030685 ]
 				payment.setC_BPartner_ID(check.getC_BPartner_ID());
@@ -330,14 +334,16 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 					//
 					payment.setC_Invoice_ID (psl.getC_Invoice_ID());
 					payment.setDiscountAmt (psl.getDiscountAmt());
-					payment.setWriteOffAmt(psl.getDifferenceAmt());
+					payment.setWriteOffAmt (psl.getWriteOffAmt());
 					BigDecimal overUnder = psl.getOpenAmt().subtract(psl.getPayAmt())
-						.subtract(psl.getDiscountAmt()).subtract(psl.getDifferenceAmt());
+						.subtract(psl.getDiscountAmt()).subtract(psl.getWriteOffAmt()).subtract(psl.getDifferenceAmt());
 					payment.setOverUnderAmt(overUnder);
 				}
 				else
+				{
+					payment.setWriteOffAmt(Env.ZERO);
 					payment.setDiscountAmt(Env.ZERO);
-				payment.setWriteOffAmt(Env.ZERO);
+				}
 				payment.saveEx();
 				//
 				int C_Payment_ID = payment.get_ID();
@@ -450,6 +456,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 		//	setPaymentRule (null);
 			setPayAmt (Env.ZERO);
 			setDiscountAmt(Env.ZERO);
+			setWriteOffAmt(Env.ZERO);
 			setIsPrinted (false);
 			setIsReceipt (false);
 			setQty (0);
@@ -511,6 +518,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 		setIsReceipt(line.isSOTrx());
 		setPayAmt (line.getPayAmt());
 		setDiscountAmt(line.getDiscountAmt());
+		setWriteOffAmt(line.getWriteOffAmt());
 		setQty (1);
 	}	//	MPaySelectionCheck
 
@@ -541,17 +549,19 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 	public void addLine (MPaySelectionLine line)
 	{
 		if (getC_BPartner_ID() != line.getInvoice().getC_BPartner_ID())
-			throw new IllegalArgumentException("Line for fifferent BPartner");
+			throw new IllegalArgumentException("Line for different BPartner");
 		//
 		if (isReceipt() == line.isSOTrx())
 		{
 			setPayAmt (getPayAmt().add(line.getPayAmt()));
 			setDiscountAmt(getDiscountAmt().add(line.getDiscountAmt()));
+			setWriteOffAmt(getWriteOffAmt().add(line.getWriteOffAmt()));
 		}
 		else
 		{
 			setPayAmt (getPayAmt().subtract(line.getPayAmt()));
 			setDiscountAmt(getDiscountAmt().subtract(line.getDiscountAmt()));
+			setWriteOffAmt(getWriteOffAmt().subtract(line.getWriteOffAmt()));
 		}
 		setQty (getQty()+1);
 	}	//	addLine

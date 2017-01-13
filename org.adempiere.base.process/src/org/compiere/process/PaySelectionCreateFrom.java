@@ -117,14 +117,15 @@ public class PaySelectionCreateFrom extends SvrProcess
 		
 	//	psel.getPayDate();
 
-		StringBuilder sql = new StringBuilder("SELECT C_Invoice_ID,")
+		StringBuilder sql = new StringBuilder("SELECT C_Invoice_ID,") // 1
 			//	Open
 			.append(" currencyConvert(invoiceOpen(i.C_Invoice_ID, i.C_InvoicePaySchedule_ID)")
-				.append(",i.C_Currency_ID, ?,?, i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID) AS PayAmt,")	//	##1/2 Currency_To,PayDate
+				.append(",i.C_Currency_ID, ?,?, i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID) AS PayAmt,")	//	2 ##p1/p2 Currency_To,PayDate
 			//	Discount
-			.append(" currencyConvert(invoiceDiscount(i.C_Invoice_ID,?,i.C_InvoicePaySchedule_ID)")	//	##3 PayDate
-				.append(",i.C_Currency_ID, ?,?,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID) AS DiscountAmt,")	//	##4/5 Currency_To,PayDate
-			.append(" PaymentRule, IsSOTrx ")		//	4..6
+			.append(" currencyConvert(invoiceDiscount(i.C_Invoice_ID,?,i.C_InvoicePaySchedule_ID)")	//	##p3 PayDate
+				.append(",i.C_Currency_ID, ?,?,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID) AS DiscountAmt,")	//	3 ##p4/p5 Currency_To,PayDate
+			.append(" PaymentRule, IsSOTrx, ") // 4..5
+			.append(" currencyConvert(invoiceWriteOff(i.C_Invoice_ID) AS WriteOffAmt,")	// 6
 			.append("FROM C_Invoice_v i WHERE ");
 		if (X_C_Order.PAYMENTRULE_DirectDebit.equals(p_PaymentRule))
 			sql.append("IsSOTrx='Y'");
@@ -228,13 +229,14 @@ public class PaySelectionCreateFrom extends SvrProcess
 				if (C_Invoice_ID == 0 || Env.ZERO.compareTo(PayAmt) == 0)
 					continue;
 				BigDecimal DiscountAmt = rs.getBigDecimal(3);
+				BigDecimal WriteOffAmt = rs.getBigDecimal(6);
 				String PaymentRule  = rs.getString(4);
 				boolean isSOTrx = "Y".equals(rs.getString(5));
 				//
 				lines++;
 				MPaySelectionLine pselLine = new MPaySelectionLine (psel, lines*10, PaymentRule);
 				pselLine.setInvoice (C_Invoice_ID, isSOTrx,
-					PayAmt, PayAmt.subtract(DiscountAmt), DiscountAmt);
+					PayAmt, PayAmt.subtract(DiscountAmt).subtract(WriteOffAmt), DiscountAmt, WriteOffAmt);
 				if (!pselLine.save())
 				{
 					throw new IllegalStateException ("Cannot save MPaySelectionLine");

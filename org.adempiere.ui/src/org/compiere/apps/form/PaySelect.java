@@ -226,12 +226,13 @@ public class PaySelect
 			new ColumnInfo(Msg.translate(ctx, "C_BPartner_ID"), "bp.Name", KeyNamePair.class, true, false, "i.C_BPartner_ID"),
 			new ColumnInfo(Msg.translate(ctx, "DocumentNo"), "i.DocumentNo", String.class),
 			new ColumnInfo(Msg.translate(ctx, "C_Currency_ID"), "c.ISO_Code", KeyNamePair.class, true, false, "i.C_Currency_ID"),
-			// 5..9
+			// 5..10
 			new ColumnInfo(Msg.translate(ctx, "GrandTotal"), "i.GrandTotal", BigDecimal.class),
 			new ColumnInfo(Msg.translate(ctx, "DiscountAmt"), "invoiceDiscount(i.C_Invoice_ID,?,i.C_InvoicePaySchedule_ID)", BigDecimal.class),
+			new ColumnInfo(Msg.translate(ctx, "WriteOffAmt"), "invoiceWriteOff(i.C_Invoice_ID)", BigDecimal.class),
 			new ColumnInfo(Msg.getMsg(ctx, "DiscountDate"), "COALESCE((SELECT discountdate from C_InvoicePaySchedule ips WHERE ips.C_InvoicePaySchedule_ID=i.C_InvoicePaySchedule_ID),i.DateInvoiced+p.DiscountDays+p.GraceDays) AS DiscountDate", Timestamp.class),
 			new ColumnInfo(Msg.getMsg(ctx, "AmountDue"), "currencyConvert(invoiceOpen(i.C_Invoice_ID,i.C_InvoicePaySchedule_ID),i.C_Currency_ID, ?,?,i.C_ConversionType_ID, i.AD_Client_ID,i.AD_Org_ID) AS AmountDue", BigDecimal.class),
-			new ColumnInfo(Msg.getMsg(ctx, "AmountPay"), "currencyConvert(invoiceOpen(i.C_Invoice_ID,i.C_InvoicePaySchedule_ID)-invoiceDiscount(i.C_Invoice_ID,?,i.C_InvoicePaySchedule_ID),i.C_Currency_ID, ?,?,i.C_ConversionType_ID, i.AD_Client_ID,i.AD_Org_ID) AS AmountPay", BigDecimal.class)
+			new ColumnInfo(Msg.getMsg(ctx, "AmountPay"), "currencyConvert(invoiceOpen(i.C_Invoice_ID,i.C_InvoicePaySchedule_ID)-invoiceDiscount(i.C_Invoice_ID,?,i.C_InvoicePaySchedule_ID)-invoiceWriteOff(i.C_Invoice_ID),i.C_Currency_ID, ?,?,i.C_ConversionType_ID, i.AD_Client_ID,i.AD_Org_ID) AS AmountPay", BigDecimal.class)
 			},
 			//	FROM
 			"C_Invoice_v i"
@@ -442,14 +443,16 @@ public class PaySelect
 					line += 10;
 					MPaySelectionLine psl = new MPaySelectionLine (m_ps, line, PaymentRule);
 					int C_Invoice_ID = id.getRecord_ID().intValue();
-					BigDecimal OpenAmt = (BigDecimal)miniTable.getValueAt(i, 8);
-					BigDecimal PayAmt = (BigDecimal)miniTable.getValueAt(i, 9);
+					BigDecimal OpenAmt = (BigDecimal)miniTable.getValueAt(i, 9);
+					BigDecimal DiscountAmt = (BigDecimal)miniTable.getValueAt(i, 6);
+					BigDecimal WriteOffAmt = (BigDecimal)miniTable.getValueAt(i, 7);
+					BigDecimal PayAmt = (BigDecimal)miniTable.getValueAt(i, 10);
 					boolean isSOTrx = false;
 					if (paymentRule != null && X_C_Order.PAYMENTRULE_DirectDebit.equals(paymentRule.getValue()))
 						isSOTrx = true;
 					//
 					psl.setInvoice(C_Invoice_ID, isSOTrx,
-						OpenAmt, PayAmt, OpenAmt.subtract(PayAmt));
+						OpenAmt, PayAmt, DiscountAmt, WriteOffAmt);
 					psl.saveEx(trxName);
 					if (log.isLoggable(Level.FINE)) log.fine("C_Invoice_ID=" + C_Invoice_ID + ", PayAmt=" + PayAmt);
 				}

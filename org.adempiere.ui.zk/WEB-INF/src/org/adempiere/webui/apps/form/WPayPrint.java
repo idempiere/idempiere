@@ -334,6 +334,8 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	 */
 	protected void cmd_export()
 	{
+		if (fPaymentRule.getSelectedItem() == null)
+			return;
 		String PaymentRule = fPaymentRule.getSelectedItem().toValueNamePair().getValue();
 		log.info(PaymentRule);
 		if (!getChecks(PaymentRule))

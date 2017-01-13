@@ -2329,7 +2329,7 @@ public class MPayment extends X_C_Payment
 		alloc.setDateAcct(getDateAcct()); // in case date acct is different from datetrx in payment
 		
 		String sql = "SELECT psc.C_BPartner_ID, psl.C_Invoice_ID, psl.IsSOTrx, "	//	1..3
-			+ " psl.PayAmt, psl.DiscountAmt, psl.DifferenceAmt, psl.OpenAmt "
+			+ " psl.PayAmt, psl.DiscountAmt, psl.DifferenceAmt, psl.OpenAmt, psl.WriteOffAmt "  // 4..8
 			+ "FROM C_PaySelectionLine psl"
 			+ " INNER JOIN C_PaySelectionCheck psc ON (psl.C_PaySelectionCheck_ID=psc.C_PaySelectionCheck_ID) "
 			+ "WHERE psc.C_Payment_ID=?";
@@ -2349,7 +2349,7 @@ public class MPayment extends X_C_Payment
 				boolean isSOTrx = "Y".equals(rs.getString(3));
 				BigDecimal PayAmt = rs.getBigDecimal(4);
 				BigDecimal DiscountAmt = rs.getBigDecimal(5);
-				BigDecimal WriteOffAmt = Env.ZERO;
+				BigDecimal WriteOffAmt = rs.getBigDecimal(8);
 				BigDecimal OpenAmt = rs.getBigDecimal(7);
 				BigDecimal OverUnderAmt = OpenAmt.subtract(PayAmt)
 					.subtract(DiscountAmt).subtract(WriteOffAmt);
