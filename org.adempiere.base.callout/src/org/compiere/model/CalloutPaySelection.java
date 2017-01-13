@@ -104,9 +104,14 @@ public class CalloutPaySelection extends CalloutEngine
 		BigDecimal OpenAmt = Env.ZERO;
 		BigDecimal DiscountAmt = Env.ZERO;
 		Boolean IsSOTrx = Boolean.FALSE;
-		String sql = "SELECT currencyConvert(invoiceOpen(i.C_Invoice_ID, 0), i.C_Currency_ID,"
-				+ "ba.C_Currency_ID, i.DateInvoiced, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID),"
-			+ " paymentTermDiscount(i.GrandTotal,i.C_Currency_ID,i.C_PaymentTerm_ID,i.DateInvoiced, ?), i.IsSOTrx "
+		String sql = "SELECT"
+			+ " currencyConvert("
+				+ "invoiceOpen(i.C_Invoice_ID, 0)"
+				+ ", i.C_Currency_ID,ba.C_Currency_ID, i.DateInvoiced, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID),"
+			+ " currencyConvert("
+			    + "paymentTermDiscount(i.GrandTotal,i.C_Currency_ID,i.C_PaymentTerm_ID,i.DateInvoiced, ?)"
+			    + ", i.C_Currency_ID, ba.C_Currency_ID, i.DateInvoiced, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID)"
+			+ ", i.IsSOTrx "
 			+ "FROM C_Invoice_v i, C_BankAccount ba "
 			+ "WHERE i.C_Invoice_ID=? AND ba.C_BankAccount_ID=?";	//	#1..2
 		ResultSet rs = null;
