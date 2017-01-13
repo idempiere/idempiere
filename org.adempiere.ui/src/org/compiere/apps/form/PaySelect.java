@@ -228,8 +228,8 @@ public class PaySelect
 			new ColumnInfo(Msg.translate(ctx, "C_Currency_ID"), "c.ISO_Code", KeyNamePair.class, true, false, "i.C_Currency_ID"),
 			// 5..10
 			new ColumnInfo(Msg.translate(ctx, "GrandTotal"), "i.GrandTotal", BigDecimal.class),
-			new ColumnInfo(Msg.translate(ctx, "DiscountAmt"), "invoiceDiscount(i.C_Invoice_ID,?,i.C_InvoicePaySchedule_ID)", BigDecimal.class),
-			new ColumnInfo(Msg.translate(ctx, "WriteOffAmt"), "invoiceWriteOff(i.C_Invoice_ID)", BigDecimal.class),
+			new ColumnInfo(Msg.translate(ctx, "DiscountAmt"), "currencyConvert(invoiceDiscount(i.C_Invoice_ID,?,i.C_InvoicePaySchedule_ID),i.C_Currency_ID, ?,?,i.C_ConversionType_ID, i.AD_Client_ID,i.AD_Org_ID)", BigDecimal.class),
+			new ColumnInfo(Msg.translate(ctx, "WriteOffAmt"), "currencyConvert(invoiceWriteOff(i.C_Invoice_ID),i.C_Currency_ID, ?,?,i.C_ConversionType_ID, i.AD_Client_ID,i.AD_Org_ID)", BigDecimal.class),
 			new ColumnInfo(Msg.getMsg(ctx, "DiscountDate"), "COALESCE((SELECT discountdate from C_InvoicePaySchedule ips WHERE ips.C_InvoicePaySchedule_ID=i.C_InvoicePaySchedule_ID),i.DateInvoiced+p.DiscountDays+p.GraceDays) AS DiscountDate", Timestamp.class),
 			new ColumnInfo(Msg.getMsg(ctx, "AmountDue"), "currencyConvert(invoiceOpen(i.C_Invoice_ID,i.C_InvoicePaySchedule_ID),i.C_Currency_ID, ?,?,i.C_ConversionType_ID, i.AD_Client_ID,i.AD_Org_ID) AS AmountDue", BigDecimal.class),
 			new ColumnInfo(Msg.getMsg(ctx, "AmountPay"), "currencyConvert(invoiceOpen(i.C_Invoice_ID,i.C_InvoicePaySchedule_ID)-invoiceDiscount(i.C_Invoice_ID,?,i.C_InvoicePaySchedule_ID)-invoiceWriteOff(i.C_Invoice_ID),i.C_Currency_ID, ?,?,i.C_ConversionType_ID, i.AD_Client_ID,i.AD_Org_ID) AS AmountPay", BigDecimal.class)
@@ -340,6 +340,10 @@ public class PaySelect
 			int index = 1;
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setTimestamp(index++, payDate);		//	DiscountAmt
+			pstmt.setInt(index++, bi.C_Currency_ID);
+			pstmt.setTimestamp(index++, payDate);
+			pstmt.setInt(index++, bi.C_Currency_ID);	//	WriteOffAmt
+			pstmt.setTimestamp(index++, payDate);
 			pstmt.setInt(index++, bi.C_Currency_ID);	//	DueAmt
 			pstmt.setTimestamp(index++, payDate);
 			pstmt.setTimestamp(index++, payDate);		//	PayAmt
