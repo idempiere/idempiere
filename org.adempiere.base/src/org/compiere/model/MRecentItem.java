@@ -42,7 +42,7 @@ import org.osgi.service.event.Event;
 public class MRecentItem extends X_AD_RecentItem
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 6899554875745832L;
 
@@ -258,7 +258,7 @@ public class MRecentItem extends X_AD_RecentItem
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean delete(boolean force) {
 		Integer ii = new Integer (getAD_RecentItem_ID());
@@ -301,13 +301,13 @@ public class MRecentItem extends X_AD_RecentItem
 			if (! Util.isEmpty(titleLogic))
 				recordIdentifier.append(" ").append(titleLogic);
 		}
-		
+
 		if (recordIdentifier.length() == 0) {
-			if (po.get_ColumnIndex("DocumentNo") > 0)
+			if (po.get_ColumnIndex("DocumentNo") != -1)
 				recordIdentifier.append(" ").append(po.get_ValueAsString("DocumentNo"));
-			if (po.get_ColumnIndex("Value") > 0)
+			if (po.get_ColumnIndex("Value") != -1)
 				recordIdentifier.append(" ").append(po.get_ValueAsString("Value"));
-			if (po.get_ColumnIndex("Name") > 0)
+			if (po.get_ColumnIndex("Name") != -1)
 				recordIdentifier.append(" ").append(po.get_ValueAsString("Name"));
 			if (recordIdentifier.length() == 0)
 				recordIdentifier.append(" ").append(po.toString());
