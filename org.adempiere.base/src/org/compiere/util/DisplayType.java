@@ -58,12 +58,14 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 
 import org.adempiere.base.IDisplayTypeFactory;
 import org.adempiere.base.Service;
+import org.compiere.model.MCurrency;
 
 /**
  *	System Display Types.
@@ -735,5 +737,21 @@ public final class DisplayType
 		//
 		return "UNKNOWN DisplayType=" + displayType;
 	}	//	getDescription
+
+	/**
+	 *	Helper method to get a currency format in a language (multi-currency and multi-language system)
+	 *  @param language locale code
+	 *  @param currency code
+	 *  @return number format
+	 */
+	public static NumberFormat getCurrencyFormat(String langcode, String currencyCode)
+	{
+		Locale locale = Language.getLocale(langcode);
+	    NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+	    Currency currency = Currency.getInstance(currencyCode);
+	    currencyFormatter.setCurrency(currency);
+		return currencyFormatter;
+	}   //  getCurrencyFormat
+
 
 }	//	DisplayType
