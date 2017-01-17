@@ -280,17 +280,18 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	}
 
 	private void start(MWFNode wfn) {
-		if (wfn.getAD_Window_ID() > 0) {
+		String action = wfn.getAction();
+		if (MWFNode.ACTION_UserWindow.equals(action) && wfn.getAD_Window_ID() > 0) {
 			SessionManager.getAppDesktop().openWindow(wfn.getAD_Window_ID(), null);
-		} else if (wfn.getAD_Form_ID() > 0) {
+		} else if (MWFNode.ACTION_UserForm.equals(action) && wfn.getAD_Form_ID() > 0) {
 			SessionManager.getAppDesktop().openForm(wfn.getAD_Form_ID());
-		} else if (wfn.getAD_Process_ID() > 0) {
+		} else if (MWFNode.ACTION_AppsProcess.equals(action) && wfn.getAD_Process_ID() > 0) {
 			SessionManager.getAppDesktop().openProcessDialog(wfn.getAD_Process_ID(), false);
-		} else if (wfn.getAD_Task_ID() > 0) {
+		} else if (MWFNode.ACTION_AppsTask.equals(action) && wfn.getAD_Task_ID() > 0) {
 			SessionManager.getAppDesktop().openTask(wfn.getAD_Task_ID());
-		} else if (wfn.getWorkflow_ID() > 0) {
+		} else if (MWFNode.ACTION_SubWorkflow.equals(action) && wfn.getWorkflow_ID() > 0) {
 			SessionManager.getAppDesktop().openWorkflow(wfn.getWorkflow_ID());
-		} 		
+		}
 	}
 
 }	//	WFPanel
