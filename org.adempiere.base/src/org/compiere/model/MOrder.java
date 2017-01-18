@@ -2065,6 +2065,8 @@ public class MOrder extends X_C_Order implements DocAction
 			payment.setC_BankAccount_ID(ba.getC_BankAccount_ID());
 			payment.setRoutingNo(pp.getRoutingNo());
 			payment.setAccountNo(pp.getAccountNo());
+			payment.setSwiftCode(pp.getSwiftCode());
+			payment.setIBAN(pp.getIBAN());
 			payment.setCheckNo(pp.getCheckNo());
 			payment.setMicr(pp.getMicr());
 			payment.setIsPrepayment(false);

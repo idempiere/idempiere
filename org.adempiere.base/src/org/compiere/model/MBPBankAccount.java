@@ -171,6 +171,18 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	}	//	getRoutingNo
 
 	/**
+	 * 	Get SwiftCode
+	 *	@return SwiftCode
+	 */
+	public String getSwiftCode() 
+	{
+		MBank bank = getBank();
+		if (bank != null)
+			return bank.getSwiftCode();
+		return null;
+	}	//	getSwiftCode
+	
+	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true

@@ -278,6 +278,8 @@ public class MPayment extends X_C_Payment
 		MBPBankAccount ba = new MBPBankAccount (preparedPayment.getCtx(), C_BP_BankAccount_ID, null);
 		setRoutingNo(ba.getRoutingNo());
 		setAccountNo(ba.getAccountNo());
+		setIBAN(ba.getIBAN());
+		setSwiftCode(ba.getSwiftCode()) ;
 		setDescription(preparedPayment.getC_PaySelection().getName());
 		setIsReceipt (X_C_Order.PAYMENTRULE_DirectDebit.equals	//	AR only
 				(preparedPayment.getPaymentRule()));
@@ -403,7 +405,7 @@ public class MPayment extends X_C_Payment
 			return;
 		setC_BankAccount_ID(C_BankAccount_ID);
 		//
-		String sql = "SELECT b.RoutingNo, ba.AccountNo "
+		String sql = "SELECT b.RoutingNo, ba.AccountNo, ba.IBAN, b.SwiftCode "
 			+ "FROM C_BankAccount ba"
 			+ " INNER JOIN C_Bank b ON (ba.C_Bank_ID=b.C_Bank_ID) "
 			+ "WHERE C_BankAccount_ID=?";
@@ -418,6 +420,8 @@ public class MPayment extends X_C_Payment
 			{
 				setRoutingNo (rs.getString(1));
 				setAccountNo (rs.getString(2));
+				setIBAN(rs.getString(3)) ;
+				setSwiftCode(rs.getString(4)) ;
 			}
 		}
 		catch (SQLException e)
@@ -1380,6 +1384,10 @@ public class MPayment extends X_C_Payment
 			setAccountNo(ba.getAccountNo());
 		if (ba.getRoutingNo() != null)
 			setRoutingNo(ba.getRoutingNo());
+		if (ba.getIBAN() != null)
+			setIBAN(ba.getIBAN());
+		if (ba.getSwiftCode() != null)
+			setSwiftCode(ba.getSwiftCode()) ;
 	}	//	setBP_BankAccount
 
 	/**
@@ -1411,6 +1419,8 @@ public class MPayment extends X_C_Payment
 			ba.setAccountNo(getAccountNo());
 		if (getRoutingNo() != null)
 			ba.setRoutingNo(getRoutingNo());
+		if (getIBAN() != null)
+			ba.setIBAN(getIBAN());
 		//	Trx
 		ba.setR_AvsAddr(getR_AvsAddr());
 		ba.setR_AvsZip(getR_AvsZip());
@@ -2889,6 +2899,7 @@ public class MPayment extends X_C_Payment
 		paymentTransaction.setA_Street(getA_Street());
 		paymentTransaction.setA_Zip(getA_Zip());
 		paymentTransaction.setAccountNo(getAccountNo());
+		paymentTransaction.setIBAN(getIBAN());
 		paymentTransaction.setAD_Org_ID(getAD_Org_ID());
 		paymentTransaction.setC_BankAccount_ID(getC_BankAccount_ID());
 		paymentTransaction.setC_BP_BankAccount_ID(getC_BP_BankAccount_ID());
@@ -2932,6 +2943,7 @@ public class MPayment extends X_C_Payment
 		paymentTransaction.setR_Result(getR_Result());
 		paymentTransaction.setR_VoidMsg(getR_VoidMsg());
 		paymentTransaction.setRoutingNo(getRoutingNo());
+		paymentTransaction.setSwiftCode(getSwiftCode());
 		paymentTransaction.setTaxAmt(getTaxAmt());
 		paymentTransaction.setTenderType(getTenderType());
 		paymentTransaction.setTrxType(getTrxType());

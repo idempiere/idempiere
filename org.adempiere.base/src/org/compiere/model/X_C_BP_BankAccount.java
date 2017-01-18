@@ -30,7 +30,7 @@ public class X_C_BP_BankAccount extends PO implements I_C_BP_BankAccount, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20170114L;
 
     /** Standard Constructor */
     public X_C_BP_BankAccount (Properties ctx, int C_BP_BankAccount_ID, String trxName)
@@ -576,6 +576,23 @@ public class X_C_BP_BankAccount extends PO implements I_C_BP_BankAccount, I_Pers
 	public String getCustomerPaymentProfileID () 
 	{
 		return (String)get_Value(COLUMNNAME_CustomerPaymentProfileID);
+	}
+
+	/** Set IBAN.
+		@param IBAN 
+		International Bank Account Number
+	  */
+	public void setIBAN (String IBAN)
+	{
+		set_Value (COLUMNNAME_IBAN, IBAN);
+	}
+
+	/** Get IBAN.
+		@return International Bank Account Number
+	  */
+	public String getIBAN () 
+	{
+		return (String)get_Value(COLUMNNAME_IBAN);
 	}
 
 	/** Set ACH.

@@ -32,7 +32,7 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20170114L;
 
     /** Standard Constructor */
     public X_C_PaymentTransaction (Properties ctx, int C_PaymentTransaction_ID, String trxName)
@@ -965,6 +965,23 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	/** Set IBAN.
+		@param IBAN 
+		International Bank Account Number
+	  */
+	public void setIBAN (String IBAN)
+	{
+		set_Value (COLUMNNAME_IBAN, IBAN);
+	}
+
+	/** Get IBAN.
+		@return International Bank Account Number
+	  */
+	public String getIBAN () 
+	{
+		return (String)get_Value(COLUMNNAME_IBAN);
+	}
+
 	/** Set Approved.
 		@param IsApproved 
 		Indicates if this document requires approval
@@ -1416,6 +1433,23 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	public String getR_VoidMsg () 
 	{
 		return (String)get_Value(COLUMNNAME_R_VoidMsg);
+	}
+
+	/** Set Swift code.
+		@param SwiftCode 
+		Swift Code or BIC
+	  */
+	public void setSwiftCode (String SwiftCode)
+	{
+		set_Value (COLUMNNAME_SwiftCode, SwiftCode);
+	}
+
+	/** Get Swift code.
+		@return Swift Code or BIC
+	  */
+	public String getSwiftCode () 
+	{
+		return (String)get_Value(COLUMNNAME_SwiftCode);
 	}
 
 	/** Set Tax Amount.
