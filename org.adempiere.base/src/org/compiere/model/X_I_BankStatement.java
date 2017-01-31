@@ -32,7 +32,7 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20170131L;
 
     /** Standard Constructor */
     public X_I_BankStatement (Properties ctx, int I_BankStatement_ID, String trxName)
@@ -638,6 +638,23 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	public Timestamp getEftValutaDate () 
 	{
 		return (Timestamp)get_Value(COLUMNNAME_EftValutaDate);
+	}
+
+	/** Set IBAN.
+		@param IBAN 
+		International Bank Account Number
+	  */
+	public void setIBAN (String IBAN)
+	{
+		set_Value (COLUMNNAME_IBAN, IBAN);
+	}
+
+	/** Get IBAN.
+		@return International Bank Account Number
+	  */
+	public String getIBAN () 
+	{
+		return (String)get_Value(COLUMNNAME_IBAN);
 	}
 
 	/** Set Import Bank Statement.

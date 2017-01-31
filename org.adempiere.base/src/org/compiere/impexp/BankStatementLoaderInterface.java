@@ -109,6 +109,12 @@ public interface BankStatementLoaderInterface
 	public String getBankAccountNo();
 	
 	/**
+	 * The IBAN of the bank account for the statement line.
+	 * @return IBAN
+	 */
+	public String getIBAN() ;
+	
+	/**
 	 * Additional reference information
 	 * Statement level reference information. If a specific loader class
 	 * does not provided this, it is allowed to return null.

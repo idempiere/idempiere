@@ -351,6 +351,14 @@ public abstract class OFXBankStatementHandler extends DefaultHandler
 	}
 	
 	/**
+	 * Method getIBAN
+	 * @return String
+	 */
+	public String getIBAN() {
+		return null;
+	}
+	
+	/**
 	 * Method getStatementReference
 	 * @return String
 	 */

@@ -454,6 +454,19 @@ public interface I_I_BankStatement
 	  */
 	public Timestamp getEftValutaDate();
 
+    /** Column name IBAN */
+    public static final String COLUMNNAME_IBAN = "IBAN";
+
+	/** Set IBAN.
+	  * International Bank Account Number
+	  */
+	public void setIBAN (String IBAN);
+
+	/** Get IBAN.
+	  * International Bank Account Number
+	  */
+	public String getIBAN();
+
     /** Column name I_BankStatement_ID */
     public static final String COLUMNNAME_I_BankStatement_ID = "I_BankStatement_ID";
 

@@ -214,6 +214,8 @@ import org.compiere.impexp.BankStatementLoaderInterface;
 		imp.setBankAccountNo(m_loader.getBankAccountNo());
 		if (log.isLoggable(Level.CONFIG))log.config( "MBankStatementLoader.importLine Routing No=" + m_loader.getRoutingNo());
 		imp.setRoutingNo(m_loader.getRoutingNo());
+		if (log.isLoggable(Level.CONFIG))log.config( "MBankStatementLoader.importLine IBAN=" + m_loader.getIBAN());
+		imp.setIBAN(m_loader.getIBAN());
 		
 		//	Statement fields	
 		if (log.isLoggable(Level.CONFIG))log.config( "MBankStatementLoader.importLine EFT Statement Reference No=" + m_loader.getStatementReference());
