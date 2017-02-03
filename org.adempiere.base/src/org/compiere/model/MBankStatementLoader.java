@@ -17,11 +17,15 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.compiere.impexp.BankStatementLoaderInterface;
+import org.compiere.util.Env;
+import org.compiere.util.Util;
  
  
 /**
@@ -72,7 +76,11 @@ import org.compiere.impexp.BankStatementLoaderInterface;
 	/**	File name from process parameter							*/
 	private String localFileName = null;
 
+	/** List of own bank accounts to lookup id */
+	private List<X_C_BankAccount> bankAccountList;
 	
+	/** Map of currency ISO-Codes to lookup id */
+	private HashMap<String,Integer> currencyMap;
 	
 	/**
 	 * 	Create a Statement Loader
@@ -167,6 +175,19 @@ import org.compiere.impexp.BankStatementLoaderInterface;
 		{
 			errorMessage = "ClassNotLoaded";
 			return result;
+		}
+		// Initialize lookup lists
+		MTable table = MTable.get(Env.getCtx(), X_C_BankAccount.Table_ID);
+		Query query = table.createQuery("IsActive='Y'", null);
+		bankAccountList = query.list();
+
+		table = MTable.get(Env.getCtx(), X_C_Currency.Table_ID);
+		query = table.createQuery("IsActive='Y'", null);
+		List<X_C_Currency> currencyList = query.list();
+		currencyMap = new HashMap<String,Integer>() ;
+		
+		for (X_C_Currency currency : currencyList) {
+			currencyMap.put(currency.getISO_Code(), currency.get_ID()) ;
 		}
 		//	Initialize the Loader 
 		if (!m_loader.init(this))
@@ -263,6 +284,23 @@ import org.compiere.impexp.BankStatementLoaderInterface;
 		imp.setChargeName(m_loader.getChargeName());
 		if (log.isLoggable(Level.CONFIG))log.config( "MBankStatementLoader.importLine Charge Amount=" + m_loader.getChargeAmt());
 		imp.setChargeAmt(m_loader.getChargeAmt());
+		
+		// Lookup Bank Account
+		for (X_C_BankAccount bankAccount : bankAccountList) {
+			if ((!Util.isEmpty(imp.getIBAN()) && imp.getIBAN().equalsIgnoreCase(bankAccount.getIBAN()))
+					|| (!Util.isEmpty(imp.getBankAccountNo()) && !Util.isEmpty(imp.getRoutingNo())
+							&& imp.getBankAccountNo().equalsIgnoreCase(bankAccount.getAccountNo())
+							&& imp.getRoutingNo().equalsIgnoreCase(bankAccount.getC_Bank().getRoutingNo()))) {
+				imp.setC_BankAccount_ID(bankAccount.get_ID());
+				break;
+			}
+		}
+
+		// Lookup Currency
+		if (!Util.isEmpty(imp.getEftCurrency())) {
+			imp.setC_Currency_ID(currencyMap.get(imp.getEftCurrency()));
+		}
+				
 		imp.setProcessed(false);
 		imp.setI_IsImported(false);
 		
