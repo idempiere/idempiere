@@ -255,25 +255,33 @@ public class MTax extends X_C_Tax
 		//	Null Tax
 		if (isZeroTax())
 			return Env.ZERO;
-		
-		BigDecimal multiplier = getRate().divide(Env.ONEHUNDRED, 12, BigDecimal.ROUND_HALF_UP);		
 
-		BigDecimal tax = null;		
-		if (!taxIncluded)	//	$100 * 6 / 100 == $6 == $100 * 0.06
-		{
-			tax = amount.multiply (multiplier);
+		MTax[] taxarray;
+		if (isSummary())
+			taxarray = getChildTaxes(false);
+		else
+			taxarray = new MTax[] {this};
+
+		BigDecimal tax = Env.ZERO;		
+		for (MTax taxc : taxarray) {
+			BigDecimal multiplier = taxc.getRate().divide(Env.ONEHUNDRED, 12, BigDecimal.ROUND_HALF_UP);		
+			if (!taxIncluded)	//	$100 * 6 / 100 == $6 == $100 * 0.06
+			{
+				BigDecimal itax = amount.multiply(multiplier).setScale(scale, BigDecimal.ROUND_HALF_UP);
+				tax = tax.add(itax);
+			}
+			else			//	$106 - ($106 / (100+6)/100) == $6 == $106 - ($106/1.06)
+			{
+				multiplier = multiplier.add(Env.ONE);
+				BigDecimal base = amount.divide(multiplier, 12, BigDecimal.ROUND_HALF_UP); 
+				BigDecimal itax = amount.subtract(base).setScale(scale, BigDecimal.ROUND_HALF_UP);
+				tax = tax.add(itax);
+			}
 		}
-		else			//	$106 - ($106 / (100+6)/100) == $6 == $106 - ($106/1.06)
-		{
-			multiplier = multiplier.add(Env.ONE);
-			BigDecimal base = amount.divide(multiplier, 12, BigDecimal.ROUND_HALF_UP); 
-			tax = amount.subtract(base);
-		}
-		BigDecimal finalTax = tax.setScale(scale, BigDecimal.ROUND_HALF_UP);
 		if (log.isLoggable(Level.FINE)) log.fine("calculateTax " + amount 
-			+ " (incl=" + taxIncluded + ",mult=" + multiplier + ",scale=" + scale 
-			+ ") = " + finalTax + " [" + tax + "]");
-		return finalTax;
+			+ " (incl=" + taxIncluded + ",scale=" + scale 
+			+ ") = " + tax + " [" + tax + "]");
+		return tax;
 	}	//	calculateTax
 
 	@Override
