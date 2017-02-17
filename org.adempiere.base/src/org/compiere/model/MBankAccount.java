@@ -21,6 +21,8 @@ import java.util.Properties;
 
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.compiere.util.IBAN;
+import org.compiere.util.Util;
 
 
 /**
@@ -133,5 +135,23 @@ public class MBankAccount extends X_C_BankAccount
 			return insert_Accounting("C_BankAccount_Acct", "C_AcctSchema_Default", null);
 		return success;
 	}	//	afterSave
+	
+	protected boolean beforeSave (boolean newRecord)
+	{
+		if (!Util.isEmpty(getIBAN())) {
+			setIBAN(getIBAN().trim().replace(" ", ""));
+			try {
+				if (!IBAN.isCheckDigitValid(getIBAN())) {
+					log.saveError("Error", "IBAN is invalid");
+					return false;
+				}
+			} catch (Exception e) {
+				log.saveError("Error", "IBAN is invalid");
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 }	//	MBankAccount
