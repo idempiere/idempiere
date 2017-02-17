@@ -37,7 +37,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2580706419593695062L;
+	private static final long serialVersionUID = 6826961806519015878L;
 
 	/**
 	 * 	Get Accounts Of BPartner
@@ -210,8 +210,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 				setCreditCardVV(encrpytedCvv);
 		}
 		
-		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, false,
-				Env.getContextAsInt(Env.getCtx(), "#AD_Client_ID"))) {
+		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, true, Env.getAD_Client_ID(Env.getCtx()))) {
 			if (!Util.isEmpty(getIBAN())) {
 				setIBAN(IBAN.normalizeIBAN(getIBAN()));
 				if (!IBAN.isCheckDigitValid(getIBAN())) {
@@ -220,7 +219,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 				}
 			}
 		}
-		
+
 		return true;
 	}	//	beforeSave
 	

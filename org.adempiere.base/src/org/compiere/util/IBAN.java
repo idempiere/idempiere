@@ -1,3 +1,6 @@
+// adapted from http://how-blogz.blogspot.de/2007/08/java-iban-check-digit-validation.html
+// soastation.banking.IBAN
+
 package org.compiere.util;
 
 import java.math.BigInteger;

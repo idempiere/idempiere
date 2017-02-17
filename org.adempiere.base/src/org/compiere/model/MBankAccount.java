@@ -36,7 +36,7 @@ public class MBankAccount extends X_C_BankAccount
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2392818253347168347L;
+	private static final long serialVersionUID = -110709935374907275L;
 
 	/**
 	 * 	Get BankAccount from Cache
@@ -132,8 +132,7 @@ public class MBankAccount extends X_C_BankAccount
 	
 	protected boolean beforeSave(boolean newRecord) {
 
-		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, false,
-				Env.getContextAsInt(Env.getCtx(), "#AD_Client_ID"))) {
+		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, true, Env.getAD_Client_ID(Env.getCtx()))) {
 			if (!Util.isEmpty(getIBAN())) {
 				setIBAN(IBAN.normalizeIBAN(getIBAN()));
 				if (!IBAN.isCheckDigitValid(getIBAN())) {

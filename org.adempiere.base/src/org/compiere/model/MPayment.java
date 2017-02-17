@@ -798,8 +798,7 @@ public class MPayment extends X_C_Payment
 			}
 		}
 
-		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, false,
-				Env.getContextAsInt(Env.getCtx(), "#AD_Client_ID"))) {
+		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, true, Env.getAD_Client_ID(Env.getCtx()))) {
 			if (!Util.isEmpty(getIBAN())) {
 				setIBAN(IBAN.normalizeIBAN(getIBAN()));
 				if (!IBAN.isCheckDigitValid(getIBAN())) {
