@@ -84,6 +84,7 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String ENABLE_PAYMENTBOX_BUTTON = "ENABLE_PAYMENTBOX_BUTTON";
 	public static final String GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = "GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS";
 	public static final String HTML_REPORT_THEME = "HTML_REPORT_THEME";
+    public static final String IBAN_VALIDATION = "IBAN_VALIDATION" ;
     public static final String Invoice_ReverseUseNewNumber = "Invoice_ReverseUseNewNumber";
     public static final String JASPER_SWAP_MAX_PAGES = "JASPER_SWAP_MAX_PAGES";
     public static final String LASTRUN_RECORD_COUNT = "LASTRUN_RECORD_COUNT";

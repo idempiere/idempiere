@@ -22,6 +22,9 @@ import java.util.Properties;
 
 import org.adempiere.util.PaymentUtil;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
+import org.compiere.util.IBAN;
+import org.compiere.util.Util;
 
 /**
  *  BP Bank Account Model
@@ -205,6 +208,17 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 			String encrpytedCvv = PaymentUtil.encrpytCvv(getCreditCardVV());
 			if (!encrpytedCvv.equals(getCreditCardVV()))
 				setCreditCardVV(encrpytedCvv);
+		}
+		
+		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, false,
+				Env.getContextAsInt(Env.getCtx(), "#AD_Client_ID"))) {
+			if (!Util.isEmpty(getIBAN())) {
+				setIBAN(IBAN.normalizeIBAN(getIBAN()));
+				if (!IBAN.isCheckDigitValid(getIBAN())) {
+					log.saveError("Error", "IBAN is invalid");
+					return false;
+				}
+			}
 		}
 		
 		return true;

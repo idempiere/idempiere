@@ -26,8 +26,10 @@ import org.compiere.process.DocAction;
 import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
+import org.compiere.util.IBAN;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 
 /**
  * 
@@ -79,6 +81,17 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 			String encrpytedCvv = PaymentUtil.encrpytCvv(getCreditCardVV());
 			if (!encrpytedCvv.equals(getCreditCardVV()))
 				setCreditCardVV(encrpytedCvv);
+		}
+		
+		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, false,
+				Env.getContextAsInt(Env.getCtx(), "#AD_Client_ID"))) {
+			if (!Util.isEmpty(getIBAN())) {
+				setIBAN(IBAN.normalizeIBAN(getIBAN()));
+				if (!IBAN.isCheckDigitValid(getIBAN())) {
+					log.saveError("Error", "IBAN is invalid");
+					return false;
+				}
+			}
 		}
 		
 		return true;

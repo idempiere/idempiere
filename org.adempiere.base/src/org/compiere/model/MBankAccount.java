@@ -123,6 +123,29 @@ public class MBankAccount extends X_C_BankAccount
 		return msgreturn.toString();
 	}	//	getName
 	
+	
+	/**
+	 *  Before Save
+	 *	@param newRecord new record
+	 *	@return success  
+	 */
+	
+	protected boolean beforeSave(boolean newRecord) {
+
+		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, false,
+				Env.getContextAsInt(Env.getCtx(), "#AD_Client_ID"))) {
+			if (!Util.isEmpty(getIBAN())) {
+				setIBAN(IBAN.normalizeIBAN(getIBAN()));
+				if (!IBAN.isCheckDigitValid(getIBAN())) {
+					log.saveError("Error", "IBAN is invalid");
+					return false;
+				}
+			}
+		}
+
+		return true;
+	} // beforeSave
+
 	/**
 	 * 	After Save
 	 *	@param newRecord new record
@@ -135,23 +158,5 @@ public class MBankAccount extends X_C_BankAccount
 			return insert_Accounting("C_BankAccount_Acct", "C_AcctSchema_Default", null);
 		return success;
 	}	//	afterSave
-	
-	protected boolean beforeSave (boolean newRecord)
-	{
-		if (!Util.isEmpty(getIBAN())) {
-			setIBAN(getIBAN().trim().replace(" ", ""));
-			try {
-				if (!IBAN.isCheckDigitValid(getIBAN())) {
-					log.saveError("Error", "IBAN is invalid");
-					return false;
-				}
-			} catch (Exception e) {
-				log.saveError("Error", "IBAN is invalid");
-				return false;
-			}
-		}
-
-		return true;
-	}
 
 }	//	MBankAccount

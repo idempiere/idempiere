@@ -38,8 +38,10 @@ import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.IBAN;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 
 /**
@@ -796,6 +798,17 @@ public class MPayment extends X_C_Payment
 			}
 		}
 
+		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, false,
+				Env.getContextAsInt(Env.getCtx(), "#AD_Client_ID"))) {
+			if (!Util.isEmpty(getIBAN())) {
+				setIBAN(IBAN.normalizeIBAN(getIBAN()));
+				if (!IBAN.isCheckDigitValid(getIBAN())) {
+					log.saveError("Error", "IBAN is invalid");
+					return false;
+				}
+			}
+		}
+		
 		return true;
 	}	//	beforeSave
 
