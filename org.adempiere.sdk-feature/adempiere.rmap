@@ -162,7 +162,6 @@
         <maven:entry groupId="org.cryptacular" artifactId="cryptacular" name="org.cryptacular" />
         <maven:entry groupId="net.sf.supercsv" artifactId="super-csv" name="net.sf.supercsv.super-csv" />
         <maven:entry groupId="org.atmosphere" artifactId="atmosphere-runtime" name="org.atmosphere.runtime" />
-        <maven:entry artifactId="alpn-boot" groupId="org.mortbay.jetty.alpn" name="org.mortbay.jetty.alpn.boot"/>
         <maven:entry artifactId="jetty-alpn-server" groupId="org.eclipse.jetty" name="org.eclipse.jetty.alpn.server"/>
         <maven:entry artifactId="alpn-api" groupId="org.eclipse.jetty.alpn" name="org.eclipse.jetty.alpn.api"/>
         <maven:entry groupId="org.codehaus.groovy" artifactId="groovy-all" name="groovy-all" />

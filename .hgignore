@@ -3,6 +3,7 @@ build
 
 External Plug-in Libraries
 org.eclipse.jetty.http/bin
+alpn-boot.jar
 syntax: regexp
 ^adempiere$
 ^org\.adempiere\.install/lib$
