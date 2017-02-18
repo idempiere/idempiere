@@ -32,7 +32,7 @@ public class X_I_Payment extends PO implements I_I_Payment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20170114L;
 
     /** Standard Constructor */
     public X_I_Payment (Properties ctx, int I_Payment_ID, String trxName)
@@ -723,6 +723,23 @@ public class X_I_Payment extends PO implements I_I_Payment, I_Persistent
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
 
+	/** Set IBAN.
+		@param IBAN 
+		International Bank Account Number
+	  */
+	public void setIBAN (String IBAN)
+	{
+		set_Value (COLUMNNAME_IBAN, IBAN);
+	}
+
+	/** Get IBAN.
+		@return International Bank Account Number
+	  */
+	public String getIBAN () 
+	{
+		return (String)get_Value(COLUMNNAME_IBAN);
+	}
+
 	/** Set Import Error Message.
 		@param I_ErrorMsg 
 		Messages generated from import process
@@ -1191,6 +1208,23 @@ public class X_I_Payment extends PO implements I_I_Payment, I_Persistent
 	public String getR_Result () 
 	{
 		return (String)get_Value(COLUMNNAME_R_Result);
+	}
+
+	/** Set Swift code.
+		@param SwiftCode 
+		Swift Code or BIC
+	  */
+	public void setSwiftCode (String SwiftCode)
+	{
+		set_Value (COLUMNNAME_SwiftCode, SwiftCode);
+	}
+
+	/** Get Swift code.
+		@return Swift Code or BIC
+	  */
+	public String getSwiftCode () 
+	{
+		return (String)get_Value(COLUMNNAME_SwiftCode);
 	}
 
 	/** Set Swipe.

@@ -32,7 +32,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20170113L;
 
     /** Standard Constructor */
     public X_C_PaySelectionLine (Properties ctx, int C_PaySelectionLine_ID, String trxName)
@@ -55,6 +55,8 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 // S
 			setProcessed (false);
 // N
+			setWriteOffAmt (Env.ZERO);
+// 0
         } */
     }
 
@@ -436,5 +438,25 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Write-off Amount.
+		@param WriteOffAmt 
+		Amount to write-off
+	  */
+	public void setWriteOffAmt (BigDecimal WriteOffAmt)
+	{
+		set_ValueNoCheck (COLUMNNAME_WriteOffAmt, WriteOffAmt);
+	}
+
+	/** Get Write-off Amount.
+		@return Amount to write-off
+	  */
+	public BigDecimal getWriteOffAmt () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_WriteOffAmt);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 }

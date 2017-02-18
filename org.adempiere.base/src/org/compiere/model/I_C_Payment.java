@@ -699,6 +699,19 @@ public interface I_C_Payment
 	  */
 	public String getDocumentNo();
 
+    /** Column name IBAN */
+    public static final String COLUMNNAME_IBAN = "IBAN";
+
+	/** Set IBAN.
+	  * International Bank Account Number
+	  */
+	public void setIBAN (String IBAN);
+
+	/** Get IBAN.
+	  * International Bank Account Number
+	  */
+	public String getIBAN();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -1141,6 +1154,19 @@ public interface I_C_Payment
 
 	/** Get Void Message	  */
 	public String getR_VoidMsg();
+
+    /** Column name SwiftCode */
+    public static final String COLUMNNAME_SwiftCode = "SwiftCode";
+
+	/** Set Swift code.
+	  * Swift Code or BIC
+	  */
+	public void setSwiftCode (String SwiftCode);
+
+	/** Get Swift code.
+	  * Swift Code or BIC
+	  */
+	public String getSwiftCode();
 
     /** Column name Swipe */
     public static final String COLUMNNAME_Swipe = "Swipe";

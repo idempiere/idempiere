@@ -2762,16 +2762,22 @@ public abstract class PO
 				set_ValueNoCheck(columnName, value);
 			}
 		}
-		//	Set empty Value
-		columnName = "Value";
-		index = p_info.getColumnIndex(columnName);
-		if (index != -1)
-		{
-			String value = (String)get_Value(index);
-			if (value == null || value.length() == 0)
+		// ticket 1007459 - exclude M_AttributeInstance from filling Value column
+		if (! MAttributeInstance.Table_Name.equals(get_TableName())) {
+			//	Set empty Value
+			columnName = "Value";
+			index = p_info.getColumnIndex(columnName);
+			if (index != -1)
 			{
-				value = DB.getDocumentNo (getAD_Client_ID(), p_info.getTableName(), m_trxName, this);
-				set_ValueNoCheck(columnName, value);
+				if (!p_info.isVirtualColumn(index))
+				{
+					String value = (String)get_Value(index);
+					if (value == null || value.length() == 0)
+					{
+						value = DB.getDocumentNo (getAD_Client_ID(), p_info.getTableName(), m_trxName, this);
+						set_ValueNoCheck(columnName, value);
+					}
+				}
 			}
 		}
 

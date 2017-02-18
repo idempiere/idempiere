@@ -26,8 +26,10 @@ import org.compiere.process.DocAction;
 import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
+import org.compiere.util.IBAN;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 
 /**
  * 
@@ -79,6 +81,16 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 			String encrpytedCvv = PaymentUtil.encrpytCvv(getCreditCardVV());
 			if (!encrpytedCvv.equals(getCreditCardVV()))
 				setCreditCardVV(encrpytedCvv);
+		}
+		
+		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, true, Env.getAD_Client_ID(Env.getCtx()))) {
+			if (!Util.isEmpty(getIBAN())) {
+				setIBAN(IBAN.normalizeIBAN(getIBAN()));
+				if (!IBAN.isCheckDigitValid(getIBAN())) {
+					log.saveError("Error", "IBAN is invalid");
+					return false;
+				}
+			}
 		}
 		
 		return true;
@@ -450,6 +462,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		payment.setA_Street(getA_Street());
 		payment.setA_Zip(getA_Zip());
 		payment.setAccountNo(getAccountNo());
+		payment.setIBAN(getIBAN());
 		payment.setAD_Org_ID(getAD_Org_ID());
 		payment.setC_BankAccount_ID(getC_BankAccount_ID());
 		payment.setC_BP_BankAccount_ID(getC_BP_BankAccount_ID());
@@ -493,6 +506,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		payment.setR_Result(getR_Result());
 		payment.setR_VoidMsg(getR_VoidMsg());
 		payment.setRoutingNo(getRoutingNo());
+		payment.setSwiftCode(getSwiftCode());
 		payment.setTaxAmt(getTaxAmt());
 		payment.setTenderType(getTenderType());
 		payment.setTrxType(getTrxType());
@@ -558,6 +572,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		to.setA_Street(from.getA_Street());
 		to.setA_Zip(from.getA_Zip());
 		to.setAccountNo(from.getAccountNo());
+		to.setIBAN(from.getIBAN());
 		to.setAD_Org_ID(from.getAD_Org_ID());
 		to.setC_BankAccount_ID(from.getC_BankAccount_ID());
 		to.setC_BP_BankAccount_ID(from.getC_BP_BankAccount_ID());
@@ -601,6 +616,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		to.setR_Result(null);
 		to.setR_VoidMsg(null);
 		to.setRoutingNo(from.getRoutingNo());
+		to.setSwiftCode(from.getSwiftCode());
 		to.setTaxAmt(from.getTaxAmt());
 		to.setTenderType(from.getTenderType());
 		to.setTrxType(trxType);

@@ -126,7 +126,7 @@ public class Evaluator
 				retValue = retValue | temp;
 			else
 			{
-				s_log.log(Level.SEVERE, "Logic operant '|' or '&' expected => " + logic);
+				s_log.log(Level.SEVERE, "Logic operand '|' or '&' expected => " + logic);
 				return false;
 			}
 		}	// hasMoreTokens
@@ -289,6 +289,8 @@ public class Evaluator
 		//	log.fine( variable);
 			if (variable.startsWith("~")) 
 				variable = variable.substring(1);
+			// strip also @tabno|
+			variable = variable.replaceFirst("[0-9][0-9]*\\|", "");
 			if (variable.indexOf(".") > 0)
 				variable = variable.substring(0, variable.indexOf("."));
 			list.add(variable);

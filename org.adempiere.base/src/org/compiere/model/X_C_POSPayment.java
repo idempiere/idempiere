@@ -32,7 +32,7 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20170114L;
 
     /** Standard Constructor */
     public X_C_POSPayment (Properties ctx, int C_POSPayment_ID, String trxName)
@@ -370,6 +370,23 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
+	/** Set IBAN.
+		@param IBAN 
+		International Bank Account Number
+	  */
+	public void setIBAN (String IBAN)
+	{
+		set_Value (COLUMNNAME_IBAN, IBAN);
+	}
+
+	/** Get IBAN.
+		@return International Bank Account Number
+	  */
+	public String getIBAN () 
+	{
+		return (String)get_Value(COLUMNNAME_IBAN);
+	}
+
 	/** Set Post Dated.
 		@param IsPostDated Post Dated	  */
 	public void setIsPostDated (boolean IsPostDated)
@@ -467,6 +484,23 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 	public String getRoutingNo () 
 	{
 		return (String)get_Value(COLUMNNAME_RoutingNo);
+	}
+
+	/** Set Swift code.
+		@param SwiftCode 
+		Swift Code or BIC
+	  */
+	public void setSwiftCode (String SwiftCode)
+	{
+		set_Value (COLUMNNAME_SwiftCode, SwiftCode);
+	}
+
+	/** Get Swift code.
+		@return Swift Code or BIC
+	  */
+	public String getSwiftCode () 
+	{
+		return (String)get_Value(COLUMNNAME_SwiftCode);
 	}
 
 	/** TenderType AD_Reference_ID=214 */

@@ -227,11 +227,14 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 		for (int i = 0; i < attributes.length; i++)
 		{
 			MAttributeInstance mai = attributes[i].getMAttributeInstance(getM_AttributeSetInstance_ID());
-			if (mai != null && mai.getValue() != null)
+			if (mai != null)
 			{
 				if (sb.length() > 0)
 					sb.append("_");
-				sb.append(mai.getValue());
+				if (mai.getValue() != null)
+					sb.append(mai.getValue());
+				else
+					sb.append("");
 			}
 		}
 		setDescription (sb.toString());

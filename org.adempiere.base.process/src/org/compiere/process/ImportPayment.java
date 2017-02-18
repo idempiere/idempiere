@@ -442,6 +442,8 @@ public class ImportPayment extends SvrProcess
 				payment.setC_BankAccount_ID(imp.getC_BankAccount_ID());
 				payment.setRoutingNo(imp.getRoutingNo());
 				payment.setAccountNo(imp.getAccountNo());
+				payment.setIBAN(imp.getIBAN());
+				payment.setSwiftCode(imp.getSwiftCode());
 				payment.setCheckNo(imp.getCheckNo());
 				payment.setMicr(imp.getMicr());
 				

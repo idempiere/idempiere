@@ -25,6 +25,8 @@ import java.util.logging.Level;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.compiere.util.Language;
 import org.compiere.util.Msg;
 
 /**
@@ -131,39 +133,54 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 	 */
 	public static String getValueQuery (String elementType)
 	{
-		if (elementType.equals(ELEMENTTYPE_Organization))
+		String baseLanguage = Language.getBaseAD_Language(); 
+		String language = Language.getLoginLanguage().getAD_Language();
+		boolean translated = Env.isMultiLingualDocument(Env.getCtx()) && ! language.equalsIgnoreCase(baseLanguage);
+		if (elementType.equals(ELEMENTTYPE_Organization)) {
 			return "SELECT Value,Name FROM AD_Org WHERE AD_Org_ID=";
-		else if (elementType.equals(ELEMENTTYPE_Account))
-			return "SELECT Value,Name FROM C_ElementValue WHERE C_ElementValue_ID=";
-		else if (elementType.equals(ELEMENTTYPE_SubAccount))
+		} else if (   elementType.equals(ELEMENTTYPE_Account)
+				   || elementType.equals(ELEMENTTYPE_UserElementList1)
+				   || elementType.equals(ELEMENTTYPE_UserElementList2)) {
+			if (translated)
+				return "SELECT o.Value,t.Name FROM C_ElementValue o JOIN C_ElementValue_Trl t ON (o.C_ElementValue_ID=t.C_ElementValue_ID AND t.AD_Language=" + DB.TO_STRING(language)+ ") WHERE o.C_ElementValue_ID=";
+			else
+				return "SELECT Value,Name FROM C_ElementValue WHERE C_ElementValue_ID=";
+		} else if (elementType.equals(ELEMENTTYPE_SubAccount)) {
 			return "SELECT Value,Name FROM C_SubAccount WHERE C_SubAccount_ID=";
-		else if (elementType.equals(ELEMENTTYPE_BPartner))
+		} else if (elementType.equals(ELEMENTTYPE_BPartner)) {
 			return "SELECT Value,Name FROM C_BPartner WHERE C_BPartner_ID=";
-		else if (elementType.equals(ELEMENTTYPE_Product))
-			return "SELECT Value,Name FROM M_Product WHERE M_Product_ID=";
-		else if (elementType.equals(ELEMENTTYPE_Activity))
-			return "SELECT Value,Name FROM C_Activity WHERE C_Activity_ID=";
-		else if (elementType.equals(ELEMENTTYPE_LocationFrom))
+		} else if (elementType.equals(ELEMENTTYPE_Product)) {
+			if (translated)
+				return "SELECT o.Value,t.Name FROM M_Product o JOIN M_Product_Trl t ON (o.M_Product_ID=t.M_Product_ID AND t.AD_Language=" + DB.TO_STRING(language)+ ") WHERE o.M_Product_ID=";
+			else
+				return "SELECT Value,Name FROM M_Product WHERE M_Product_ID=";
+		} else if (elementType.equals(ELEMENTTYPE_Activity)) {
+			if (translated)
+				return "SELECT Value,Name FROM C_Activity o JOIN C_Activity_Trl t ON (o.C_Activity_ID=t.C_Activity_ID AND t.AD_Language=" + DB.TO_STRING(language)+ ") WHERE o.C_Activity_ID=";
+			else
+				return "SELECT Value,Name FROM C_Activity WHERE C_Activity_ID=";
+		} else if (   elementType.equals(ELEMENTTYPE_LocationFrom)
+				   || elementType.equals(ELEMENTTYPE_LocationTo)) {
 			return "SELECT City,Address1 FROM C_Location WHERE C_Location_ID=";
-		else if (elementType.equals(ELEMENTTYPE_LocationTo))
-			return "SELECT City,Address1 FROM C_Location WHERE C_Location_ID=";
-		else if (elementType.equals(ELEMENTTYPE_Campaign))
-			return "SELECT Value,Name FROM C_Campaign WHERE C_Campaign_ID=";
-		else if (elementType.equals(ELEMENTTYPE_OrgTrx))
+		} else if (elementType.equals(ELEMENTTYPE_Campaign)) {
+			if (translated)
+				return "SELECT Value,Name FROM C_Campaign o JOIN C_Campaign_Trl t ON (o.C_Campaign_ID=t.C_Campaign_ID AND t.AD_Language=" + DB.TO_STRING(language)+ ") WHERE o.C_Campaign_ID=";
+			else
+				return "SELECT Value,Name FROM C_Campaign WHERE C_Campaign_ID=";
+		} else if (elementType.equals(ELEMENTTYPE_OrgTrx)) {
 			return "SELECT Value,Name FROM AD_Org WHERE AD_Org_ID=";
-		else if (elementType.equals(ELEMENTTYPE_Project))
+		} else if (elementType.equals(ELEMENTTYPE_Project)) {
 			return "SELECT Value,Name FROM C_Project WHERE C_Project_ID=";
-		else if (elementType.equals(ELEMENTTYPE_SalesRegion))
-			return "SELECT Value,Name FROM C_SalesRegion WHERE C_SalesRegion_ID="; // ADEMPIERE-119 / Freepath
-		else if (elementType.equals(ELEMENTTYPE_UserElementList1))
-			return "SELECT Value,Name FROM C_ElementValue WHERE C_ElementValue_ID=";
-		else if (elementType.equals(ELEMENTTYPE_UserElementList2))
-			return "SELECT Value,Name FROM C_ElementValue WHERE C_ElementValue_ID=";
+		} else if (elementType.equals(ELEMENTTYPE_SalesRegion)) {
+			if (translated)
+				return "SELECT Value,Name FROM C_SalesRegion o JOIN C_SalesRegion_Trl t ON (o.C_SalesRegion_ID=t.C_SalesRegion_ID AND t.AD_Language=" + DB.TO_STRING(language)+ ") WHERE o.C_SalesRegion_ID="; // ADEMPIERE-119 / Freepath
+			else
+				return "SELECT Value,Name FROM C_SalesRegion WHERE C_SalesRegion_ID="; // ADEMPIERE-119 / Freepath
 		//
-		else if (elementType.equals(ELEMENTTYPE_UserColumn1))
+		} else if (   elementType.equals(ELEMENTTYPE_UserColumn1)
+				   || elementType.equals(ELEMENTTYPE_UserColumn2)) {
 			return null;
-		else if (elementType.equals(ELEMENTTYPE_UserColumn2))
-			return null;
+		}
 		//
 		return "";
 	}   //  getColumnName

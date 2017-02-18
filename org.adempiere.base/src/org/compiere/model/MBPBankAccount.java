@@ -22,6 +22,9 @@ import java.util.Properties;
 
 import org.adempiere.util.PaymentUtil;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
+import org.compiere.util.IBAN;
+import org.compiere.util.Util;
 
 /**
  *  BP Bank Account Model
@@ -34,7 +37,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2580706419593695062L;
+	private static final long serialVersionUID = 6826961806519015878L;
 
 	/**
 	 * 	Get Accounts Of BPartner
@@ -171,6 +174,18 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	}	//	getRoutingNo
 
 	/**
+	 * 	Get SwiftCode
+	 *	@return SwiftCode
+	 */
+	public String getSwiftCode() 
+	{
+		MBank bank = getBank();
+		if (bank != null)
+			return bank.getSwiftCode();
+		return null;
+	}	//	getSwiftCode
+	
+	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
@@ -195,6 +210,16 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 				setCreditCardVV(encrpytedCvv);
 		}
 		
+		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, true, Env.getAD_Client_ID(Env.getCtx()))) {
+			if (!Util.isEmpty(getIBAN())) {
+				setIBAN(IBAN.normalizeIBAN(getIBAN()));
+				if (!IBAN.isCheckDigitValid(getIBAN())) {
+					log.saveError("Error", "IBAN is invalid");
+					return false;
+				}
+			}
+		}
+
 		return true;
 	}	//	beforeSave
 	

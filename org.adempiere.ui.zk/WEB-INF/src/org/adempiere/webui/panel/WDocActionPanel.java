@@ -98,7 +98,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		DocStatus = (String)gridTab.getValue("DocStatus");
 		DocAction = (String)gridTab.getValue("DocAction");
 
-		m_AD_Table_ID = Env.getContextAsInt(Env.getCtx(), gridTab.getWindowNo(), "BaseTable_ID");
+		m_AD_Table_ID = mgridTab.getAD_Table_ID();
 
 		readReference();
 		initComponents();

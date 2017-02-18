@@ -246,6 +246,19 @@ public interface I_C_POSPayment
 	  */
 	public String getHelp();
 
+    /** Column name IBAN */
+    public static final String COLUMNNAME_IBAN = "IBAN";
+
+	/** Set IBAN.
+	  * International Bank Account Number
+	  */
+	public void setIBAN (String IBAN);
+
+	/** Get IBAN.
+	  * International Bank Account Number
+	  */
+	public String getIBAN();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -319,6 +332,19 @@ public interface I_C_POSPayment
 	  * Bank Routing Number
 	  */
 	public String getRoutingNo();
+
+    /** Column name SwiftCode */
+    public static final String COLUMNNAME_SwiftCode = "SwiftCode";
+
+	/** Set Swift code.
+	  * Swift Code or BIC
+	  */
+	public void setSwiftCode (String SwiftCode);
+
+	/** Get Swift code.
+	  * Swift Code or BIC
+	  */
+	public String getSwiftCode();
 
     /** Column name TenderType */
     public static final String COLUMNNAME_TenderType = "TenderType";

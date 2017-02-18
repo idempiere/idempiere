@@ -66,9 +66,10 @@ public class CalloutPaySelection extends CalloutEngine
 		BigDecimal OpenAmt = (BigDecimal)mTab.getValue("OpenAmt");
 		BigDecimal PayAmt = (BigDecimal)mTab.getValue("PayAmt");
 		BigDecimal DiscountAmt = (BigDecimal)mTab.getValue("DiscountAmt");
-		BigDecimal DifferenceAmt = OpenAmt.subtract(PayAmt).subtract(DiscountAmt);
+		BigDecimal WriteOffAmt = (BigDecimal)mTab.getValue("WriteOffAmt");
+		BigDecimal DifferenceAmt = OpenAmt.subtract(PayAmt).subtract(DiscountAmt).subtract(WriteOffAmt);
 		if (log.isLoggable(Level.FINE)) log.fine(" - OpenAmt=" + OpenAmt + " - PayAmt=" + PayAmt
-			+ ", Discount=" + DiscountAmt + ", Difference=" + DifferenceAmt);
+			+ ", Discount=" + DiscountAmt + ", WriteOff=" + WriteOffAmt + ", Difference=" + DifferenceAmt);
 		
 		mTab.setValue("DifferenceAmt", DifferenceAmt);
 
@@ -103,9 +104,14 @@ public class CalloutPaySelection extends CalloutEngine
 		BigDecimal OpenAmt = Env.ZERO;
 		BigDecimal DiscountAmt = Env.ZERO;
 		Boolean IsSOTrx = Boolean.FALSE;
-		String sql = "SELECT currencyConvert(invoiceOpen(i.C_Invoice_ID, 0), i.C_Currency_ID,"
-				+ "ba.C_Currency_ID, i.DateInvoiced, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID),"
-			+ " paymentTermDiscount(i.GrandTotal,i.C_Currency_ID,i.C_PaymentTerm_ID,i.DateInvoiced, ?), i.IsSOTrx "
+		String sql = "SELECT"
+			+ " currencyConvert("
+				+ "invoiceOpen(i.C_Invoice_ID, 0)"
+				+ ", i.C_Currency_ID,ba.C_Currency_ID, i.DateInvoiced, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID),"
+			+ " currencyConvert("
+			    + "paymentTermDiscount(i.GrandTotal,i.C_Currency_ID,i.C_PaymentTerm_ID,i.DateInvoiced, ?)"
+			    + ", i.C_Currency_ID, ba.C_Currency_ID, i.DateInvoiced, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID)"
+			+ ", i.IsSOTrx "
 			+ "FROM C_Invoice_v i, C_BankAccount ba "
 			+ "WHERE i.C_Invoice_ID=? AND ba.C_BankAccount_ID=?";	//	#1..2
 		ResultSet rs = null;

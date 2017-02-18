@@ -508,6 +508,19 @@ public interface I_I_Payment
 	  */
 	public String getDocumentNo();
 
+    /** Column name IBAN */
+    public static final String COLUMNNAME_IBAN = "IBAN";
+
+	/** Set IBAN.
+	  * International Bank Account Number
+	  */
+	public void setIBAN (String IBAN);
+
+	/** Get IBAN.
+	  * International Bank Account Number
+	  */
+	public String getIBAN();
+
     /** Column name I_ErrorMsg */
     public static final String COLUMNNAME_I_ErrorMsg = "I_ErrorMsg";
 
@@ -824,6 +837,19 @@ public interface I_I_Payment
 	  * Result of transmission
 	  */
 	public String getR_Result();
+
+    /** Column name SwiftCode */
+    public static final String COLUMNNAME_SwiftCode = "SwiftCode";
+
+	/** Set Swift code.
+	  * Swift Code or BIC
+	  */
+	public void setSwiftCode (String SwiftCode);
+
+	/** Get Swift code.
+	  * Swift Code or BIC
+	  */
+	public String getSwiftCode();
 
     /** Column name Swipe */
     public static final String COLUMNNAME_Swipe = "Swipe";

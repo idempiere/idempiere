@@ -390,6 +390,19 @@ public interface I_C_BP_BankAccount
 	/** Get Customer Payment Profile ID	  */
 	public String getCustomerPaymentProfileID();
 
+    /** Column name IBAN */
+    public static final String COLUMNNAME_IBAN = "IBAN";
+
+	/** Set IBAN.
+	  * International Bank Account Number
+	  */
+	public void setIBAN (String IBAN);
+
+	/** Get IBAN.
+	  * International Bank Account Number
+	  */
+	public String getIBAN();
+
     /** Column name IsACH */
     public static final String COLUMNNAME_IsACH = "IsACH";
 
