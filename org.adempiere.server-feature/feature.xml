@@ -468,13 +468,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.mortbay.jetty.alpn.boot"
-         download-size="0"
-         install-size="0"
-         version="8.1.7.v20160121"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.jetty.alpn.server"
          download-size="0"
          install-size="0"
