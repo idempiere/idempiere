@@ -549,7 +549,7 @@ public final class Env
 		if (s == null)
 		{
 			//	Explicit Base Values
-			if (context.startsWith("#") || context.startsWith("$"))
+			if (context.startsWith("#") || context.startsWith("$") || context.startsWith("P|"))
 				return getContext(ctx, context);
 			if (onlyWindow)			//	no Default values
 				return "";

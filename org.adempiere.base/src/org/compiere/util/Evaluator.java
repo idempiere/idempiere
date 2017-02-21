@@ -98,7 +98,7 @@ public class Evaluator
 		}
 
 		String exprStrand = st.nextToken().trim();		
-		if (exprStrand.matches("^@\\d+$"))
+		if (exprStrand.matches("^@\\d+$") || "@P".equals(exprStrand))
 		{
 			exprStrand = exprStrand.concat(st.nextToken());
 			exprStrand = exprStrand.concat(st.nextToken());			
@@ -112,7 +112,7 @@ public class Evaluator
 			//boolean temp = evaluateLogicTuple(source, st.nextToken());			
 
 			exprStrand = st.nextToken().trim();		
-			if (exprStrand.matches("^@\\d+$"))
+			if (exprStrand.matches("^@\\d+$") || "@P".equals(exprStrand))
 			{
 				exprStrand = exprStrand.concat(st.nextToken());
 				exprStrand = exprStrand.concat(st.nextToken());				
