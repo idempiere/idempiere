@@ -5,59 +5,59 @@
       <bc:propertyRef key="workspace.root"/>
     </bc:replace>
   </rm:propertyElement>
-  <rm:locator pattern="^org\.eclipse\.jetty\.http$" searchPathRef="workspace.project"/>
-  <rm:locator pattern="^org\.apache\.felix\.webconsole\.plugins\.packageadmin$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.idempiere\.hazelcast\.service$" searchPathRef="workspace.feature" failOnError="false"/>
-  <rm:locator pattern="^org\.idempiere\.hazelcast\.service$" searchPathRef="workspace.project"/>
-  <rm:locator pattern="^org\.apache\.poi$" searchPathRef="orbit"/>
-  <rm:locator pattern="^org\.eclipse\.jdt\.core\.compiler\.batch$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.apache\.commons\.collections4$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.apache\.commons\.configuration$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.eclipse\.jetty\.http(\.source)?$" searchPathRef="workspace.project"/>
+  <rm:locator pattern="^org\.apache\.felix\.webconsole\.plugins\.packageadmin(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.idempiere\.hazelcast\.service(\.source)?$" searchPathRef="workspace.feature" failOnError="false"/>
+  <rm:locator pattern="^org\.idempiere\.hazelcast\.service(\.source)?$" searchPathRef="workspace.project"/>
+  <rm:locator pattern="^org\.apache\.poi(\.source)?$" searchPathRef="orbit"/>
+  <rm:locator pattern="^org\.eclipse\.jdt\.core\.compiler\.batch(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.commons\.collections4(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.commons\.configuration(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.mortbay\.jasper(\..+)?" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.eclipse\.jetty\.apache\-jsp$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.eclipse\.jetty\.osgi\-servlet\-api$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.eclipse\.jetty\.alpn\.api$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.mortbay\.jetty\.alpn\.boot$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.eclipse\.jetty\.alpn\.server$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.eclipse\.jetty\.apache\-jsp(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.eclipse\.jetty\.osgi\-servlet\-api(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.eclipse\.jetty\.alpn\.api(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.mortbay\.jetty\.alpn\.boot(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.eclipse\.jetty\.alpn\.server(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.felix\.webconsole(\..+)?" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.apache\.felix\.inventory" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.passay$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^com\.itextpdf$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^bcpkix$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^bcprov$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^com\.ibm\.icu$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^groovy-all$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^joda-time$" searchPathRef="modify-bundle" />
-  <rm:locator pattern="^org\.cryptacular$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^net\.sf\.supercsv\.super-csv$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^org\.atmosphere\.runtime$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^javax\.websocket\-api$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^javax\.annotation\-api$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^javax\.management\.j2ee\-api$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^com\.sun\.mail\.javax\.mail$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.felix\.inventory(\.source)?" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.passay(\.source)?$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^com\.itextpdf(\.source)?$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^bcpkix(\.source)?$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^bcprov(\.source)?$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^com\.ibm\.icu(\.source)?$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^groovy-all(\.source)?$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^joda-time(\.source)?$" searchPathRef="modify-bundle" />
+  <rm:locator pattern="^org\.cryptacular(\.source)?$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^net\.sf\.supercsv\.super-csv(\.source)?$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^org\.atmosphere\.runtime(\.source)?$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^javax\.websocket\-api(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^javax\.annotation\-api(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^javax\.management\.j2ee\-api(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^com\.sun\.mail\.javax\.mail(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.objectweb\.asm(\..+)?" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.taglibs(\..+)?" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.aries(\..+)?" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.apache\.servicemix\.bundles\.cglib$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.servicemix\.bundles\.cglib(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.activemq(\..+)?" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.eclipse\.jetty(\..+)?" searchPathRef="jetty"/>
-  <rm:locator pattern="^javax\.security\.auth\.message$" searchPathRef="jetty"/>
+  <rm:locator pattern="^javax\.security\.auth\.message(\.source)?$" searchPathRef="jetty"/>
   <rm:locator pattern="^org\.eclipse(\..+)?" searchPathRef="equinox" failOnError="false"/>
   <rm:locator pattern="^org\.sat4j(\..+)?" searchPathRef="equinox"/>
-  <rm:locator pattern="^org\.slf4j\.jdk14$" searchPathRef="workspace.project"/>
+  <rm:locator pattern="^org\.slf4j\.jdk14(\.source)?$" searchPathRef="workspace.project"/>
   <rm:locator pattern="^org\.slf4j(\..+)?" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.apache\.ant(\..+)?" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.apache\.commons(\..+)?" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.restlet(\..+)?" searchPathRef="restlet.p2"/>
-  <rm:locator pattern="^zcommon$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zel$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zhtml$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zk$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zkbind$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zkplus$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zul$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zweb$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zjavassist$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zcommon(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zel(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zhtml(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zk(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zkbind(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zkplus(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zul(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zweb(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zjavassist(\.source)?$" searchPathRef="zkoss.osgi"/>
   <rm:locator searchPathRef="orbit" failOnError="false"/>
   <rm:locator searchPathRef="extend.workspace" failOnError="false"/>
   <rm:locator searchPathRef="workspace.project" failOnError="false"/>
