@@ -6,7 +6,6 @@
     </bc:replace>
   </rm:propertyElement>
   <rm:locator pattern="^org\.eclipse\.jetty\.http$" searchPathRef="workspace.project"/>
-  <rm:locator pattern="^org\.eclipse\.jetty\.alpn\.api$" searchPathRef="modify-bundle"/>
   <rm:locator pattern="^org\.apache\.felix\.webconsole\.plugins\.packageadmin$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.idempiere\.hazelcast\.service$" searchPathRef="workspace.feature" failOnError="false"/>
   <rm:locator pattern="^org\.idempiere\.hazelcast\.service$" searchPathRef="workspace.project"/>
