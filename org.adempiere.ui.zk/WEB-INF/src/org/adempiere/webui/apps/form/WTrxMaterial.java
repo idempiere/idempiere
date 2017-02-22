@@ -66,12 +66,6 @@ import org.zkoss.zul.Separator;
 public class WTrxMaterial extends TrxMaterial
 	implements IFormController, EventListener<Event>, ValueChangeListener
 {
-	/**
-	 * 
-	 */
-	@SuppressWarnings("unused")
-	private static final long serialVersionUID = -2141669182129214237L;
-	
 	private CustomForm form = new CustomForm();	
 
 	/** GridController          */
@@ -285,7 +279,7 @@ public class WTrxMaterial extends TrxMaterial
 		super.zoom();
 
 		//  Zoom
-		AEnv.zoom(AD_Window_ID, query);
+		AEnv.zoom(AD_Table_ID, Record_ID);
 	}   //  zoom
 	
 	public ADForm getForm() 

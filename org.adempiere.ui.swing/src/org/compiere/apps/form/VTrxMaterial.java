@@ -32,7 +32,6 @@ import java.util.logging.Level;
 import javax.swing.JLabel;
 
 import org.compiere.apps.AEnv;
-import org.compiere.apps.AWindow;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.apps.StatusBar;
 import org.compiere.grid.GridController;
@@ -285,17 +284,7 @@ public class VTrxMaterial extends TrxMaterial
 		super.zoom();
 
 		//  Zoom
-		panel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		AWindow frame = new AWindow(panel.getGraphicsConfiguration());
-		if (!frame.initWindow(AD_Window_ID, query))
-		{
-			panel.setCursor(Cursor.getDefaultCursor());
-			return;
-		}
-		AEnv.addToWindowManager(frame);
-		AEnv.showCenterScreen(frame);
-		frame = null;
-		panel.setCursor(Cursor.getDefaultCursor());
+		AEnv.zoom(AD_Table_ID, Record_ID);
 	}   //  zoom
 
 }   //  VTrxMaterial

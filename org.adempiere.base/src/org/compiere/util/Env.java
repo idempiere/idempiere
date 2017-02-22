@@ -2015,9 +2015,9 @@ public final class Env
 	public static int getZoomWindowID(int AD_Table_ID, int Record_ID, int windowNo)
 	{
 		int AD_Window_ID = MZoomCondition.findZoomWindowByTableId(AD_Table_ID, Record_ID, windowNo);
-		MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
 		if (AD_Window_ID <= 0)
 		{
+			MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
 			AD_Window_ID = table.getAD_Window_ID();
 			//  Nothing to Zoom to
 			if (AD_Window_ID == 0)
