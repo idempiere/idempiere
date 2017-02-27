@@ -402,9 +402,12 @@ public class Doc_MatchInv extends Doc
 		}
 		
 		String costingMethod = m_pc.getProduct().getCostingMethod(as);
+		MAccount account = m_pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+		if (m_pc.isService())
+			account = m_pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 		if (X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod)) {
-			MAccount account = zeroQty ? m_pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as) : m_pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-			
+			if (zeroQty)
+				account = m_pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
 			FactLine line = fact.createLine(null,
 					m_pc.getAccount(ProductCost.ACCTTYPE_P_IPV, as),
 					as.getC_Currency_ID(), ipv.negate());
@@ -413,8 +416,6 @@ public class Doc_MatchInv extends Doc
 			line = fact.createLine(null, account, as.getC_Currency_ID(), ipv);
 			updateFactLine(line);
 		} else if (X_M_Cost.COSTINGMETHOD_AverageInvoice.equals(costingMethod) && !zeroQty) {
-			MAccount account = m_pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-			
 			FactLine line = fact.createLine(null,
 					m_pc.getAccount(ProductCost.ACCTTYPE_P_IPV, as),
 					as.getC_Currency_ID(), ipv.negate());
