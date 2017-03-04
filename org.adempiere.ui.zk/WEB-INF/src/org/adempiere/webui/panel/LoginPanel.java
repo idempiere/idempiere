@@ -528,6 +528,16 @@ public class LoginPanel extends Window implements EventListener<Event>
     	Env.verifyLanguage(ctx, language);
     	Env.setContext(ctx, Env.LANGUAGE, language.getAD_Language());
     	Env.setContext(ctx, AEnv.LOCALE, language.getLocale().toString());
+
+    	//cph::erp added this in order to get the processing dialog in the correct language
+    	 Locale locale = language.getLocale();
+    	 try {
+				Clients.reloadMessages(locale);
+			} catch (IOException e) {
+				logger.log(Level.WARNING, e.getLocalizedMessage(), e);
+			}
+         Locales.setThreadLocal(locale);
+    	// cph::erp end
 		return language;
 	}
     /**
