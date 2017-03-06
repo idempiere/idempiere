@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -901,11 +902,16 @@ public class Doc_Invoice extends Doc
 			
 				BigDecimal allocationAmt =  lca.getAmt();																		
 				BigDecimal estimatedAmt = BigDecimal.ZERO;
+				int oCurrencyId = 0;
+				boolean usesSchemaCurrency = false;
+				Timestamp oDateAcct = getDateAcct();
 				if (lca.getM_InOutLine_ID() > 0)
 				{
 					I_M_InOutLine iol = lca.getM_InOutLine();
 					if (iol.getC_OrderLine_ID() > 0)
 					{
+						oCurrencyId =  iol.getC_OrderLine().getC_Currency_ID();
+						oDateAcct = iol.getC_OrderLine().getC_Order().getDateAcct();
 						MOrderLandedCostAllocation[] allocations = MOrderLandedCostAllocation.getOfOrderLine(iol.getC_OrderLine_ID(), getTrxName());
 						for(MOrderLandedCostAllocation allocation : allocations)
 						{
@@ -945,7 +951,24 @@ public class Doc_Invoice extends Doc
 							//add back since the sum above would include the original trx
 							estimatedAmt = estimatedAmt.add(allocationAmt.negate());
 						}
-					}				
+					}	
+					//added for IDEMPIERE-3014
+					//convert to accounting schema currency
+					if (estimatedAmt.signum() > 0 && oCurrencyId != getC_Currency_ID())
+					{
+						estimatedAmt = MConversionRate.convert(getCtx(), estimatedAmt,
+								oCurrencyId, as.getC_Currency_ID(),
+								oDateAcct, getC_ConversionType_ID(),
+								getAD_Client_ID(), getAD_Org_ID());
+
+						allocationAmt = MConversionRate.convert(getCtx(), allocationAmt,
+								getC_Currency_ID(), as.getC_Currency_ID(),
+								getDateAcct(), getC_ConversionType_ID(),
+								getAD_Client_ID(), getAD_Org_ID());
+						setC_Currency_ID(as.getC_Currency_ID());
+						usesSchemaCurrency = true;
+					}
+
 					if (estimatedAmt.signum() > 0)
 					{						
 						if (allocationAmt.signum() > 0)
@@ -1073,7 +1096,9 @@ public class Doc_Invoice extends Doc
 						fl.setM_Product_ID(lca.getM_Product_ID());
 						fl.setQty(line.getQty());
 					}
-				}
+				}				
+				if (usesSchemaCurrency)
+					setC_Currency_ID(line.getC_Currency_ID());
 			} 
 			else 
 			{
