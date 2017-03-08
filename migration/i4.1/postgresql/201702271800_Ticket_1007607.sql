@@ -42,8 +42,8 @@ OR EXISTS (
 	WHERE C_UOM.C_UOM_ID=c.C_UOM_TO_ID AND @M_Product_ID@=p.M_Product_ID
 	AND NOT EXISTS (
 		SELECT *
-		FROM M_Product p1 INNER JOIN C_UOM_Conversion c1 ON (p1.C_UOM_ID=c1.C_UOM_ID AND p1.M_PRODUCT_ID=c1.M_Product_ID AND c1.IsActive =''Y'' )
-		WHERE c.C_UOM_ID=c1.C_UOM_TO_ID AND c.C_UOM_TO_ID=c1.C_UOM_TO_ID AND p1.M_Product_ID=@M_Product_ID@
+		FROM M_Product p1 INNER JOIN C_UOM_Conversion c1 ON (p1.C_UOM_ID=c1.C_UOM_ID AND p1.M_PRODUCT_ID=c1.M_Product_ID AND c1.IsActive =''N'' )
+		WHERE c.C_UOM_ID=c1.C_UOM_ID AND c.C_UOM_TO_ID=c1.C_UOM_TO_ID AND p1.M_Product_ID=@M_Product_ID@
 	)
 )
 )',Updated=TO_TIMESTAMP('2017-02-27 12:49:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=210
