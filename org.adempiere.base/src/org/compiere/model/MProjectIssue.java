@@ -167,8 +167,9 @@ public class MProjectIssue extends X_C_ProjectIssue
 		Timestamp dateMPolicy = getMovementDate();
 		
 		if(getM_AttributeSetInstance_ID()>0){
-			MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), getM_AttributeSetInstance_ID(), get_TrxName());
-			dateMPolicy = asi.getCreated();
+			Timestamp t = MStorageOnHand.getDateMaterialPolicy(getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
+			if (t != null)
+				dateMPolicy = t;
 		}
 		
 		if (MStorageOnHand.add(getCtx(), loc.getM_Warehouse_ID(), getM_Locator_ID(), 

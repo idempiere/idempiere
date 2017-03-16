@@ -1452,10 +1452,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					if (dateMPolicy == null && storages.length > 0)
 						dateMPolicy = storages[0].getDateMaterialPolicy();
 
-					if (dateMPolicy==null && sLine.getM_AttributeSetInstance_ID()!=0) {
-						I_M_AttributeSetInstance asi = sLine.getM_AttributeSetInstance();
-						dateMPolicy = asi.getCreated();
-					} else if(dateMPolicy==null)
+					if(dateMPolicy==null)
 						dateMPolicy = getMovementDate();
 					
 					//	Fallback: Update Storage - see also VMatch.createMatchRecord

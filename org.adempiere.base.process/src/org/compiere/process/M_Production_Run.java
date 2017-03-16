@@ -21,7 +21,6 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MClient;
 import org.compiere.model.MLocator;
 import org.compiere.model.MProduct;
@@ -158,10 +157,9 @@ public class M_Production_Run extends SvrProcess {
 						
 							Timestamp dateMPolicy = production.getMovementDate();
 							if(pline.getM_AttributeSetInstance_ID()>0){
-								if(pline.getM_AttributeSetInstance_ID()>0){
-									MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), pline.getM_AttributeSetInstance_ID(), get_TrxName());
-									dateMPolicy = asi.getCreated();
-								}
+								Timestamp t = MStorageOnHand.getDateMaterialPolicy(pline.getM_Product_ID(), pline.getM_AttributeSetInstance_ID(), get_TrxName());
+								if (t != null)
+									dateMPolicy = t;
 							}
 							
 							if (!MStorageOnHand.add(getCtx(), locator.getM_Warehouse_ID(),
