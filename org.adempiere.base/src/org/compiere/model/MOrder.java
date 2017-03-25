@@ -39,6 +39,7 @@ import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -1355,7 +1356,10 @@ public class MOrder extends X_C_Order implements DocAction
 			lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);
 		if (!reserveStock(dt, lines))
 		{
+			String innerMsg = CLogger.retrieveErrorString("");
 			m_processMsg = "Cannot reserve Stock";
+			if (! Util.isEmpty(innerMsg))
+				m_processMsg = m_processMsg + " -> " + innerMsg;
 			return DocAction.STATUS_Invalid;
 		}
 		if (!calculateTaxTotal())
