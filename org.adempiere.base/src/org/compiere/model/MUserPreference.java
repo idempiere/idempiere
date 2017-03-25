@@ -34,7 +34,7 @@ public class MUserPreference extends X_AD_UserPreference{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4653362918831026642L;
+	private static final long serialVersionUID = -5816348717625872665L;
 
 	public MUserPreference(Properties ctx, int AD_UserPreference_ID,
 			String trxName) {
@@ -55,21 +55,25 @@ public class MUserPreference extends X_AD_UserPreference{
 			super.setAD_User_ID(AD_User_ID);
 	} //setAD_User_ID
 	
-	private static MUserPreference createUserPreferences(int AD_User_ID, int AD_Client_ID){
-		MUserPreference preferences = new MUserPreference(Env.getCtx(), 0, null);
+	private static MUserPreference createUserPreferences(int AD_User_ID, int AD_Client_ID, String trxName){
+		MUserPreference preferences = new MUserPreference(Env.getCtx(), 0, trxName);
 		preferences.setAD_User_ID(AD_User_ID);
 		preferences.setAD_Client_ID(AD_Client_ID);
 		preferences.saveEx();
 		
 		return preferences;
 	} //createUserPreferences
-	
+
 	public static MUserPreference getUserPreference(int AD_User_ID, int AD_Client_ID){
-		Query query = new Query(Env.getCtx(), MUserPreference.Table_Name, "AD_User_ID=? AND AD_Client_ID=?", null);
+		return getUserPreference(AD_User_ID, AD_Client_ID, null);
+	}
+
+	public static MUserPreference getUserPreference(int AD_User_ID, int AD_Client_ID, String trxName){
+		Query query = new Query(Env.getCtx(), MUserPreference.Table_Name, "AD_User_ID=? AND AD_Client_ID=?", trxName);
 		MUserPreference preferences = query.setParameters(new Object[]{AD_User_ID, AD_Client_ID}).firstOnly();
 		
 		if(preferences==null){
-			preferences = createUserPreferences(AD_User_ID, AD_Client_ID);
+			preferences = createUserPreferences(AD_User_ID, AD_Client_ID, trxName);
 		}
 		
 		return preferences;
