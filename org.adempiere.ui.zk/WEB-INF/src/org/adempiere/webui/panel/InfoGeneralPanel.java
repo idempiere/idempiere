@@ -470,7 +470,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 	private void addSQLWhere(StringBuffer sql, int index, String value)
 	{
-		if (!(value.equals("") || value.equals("%")) && index < m_queryColumns.size())
+		if (!(value.equals("")) && index < m_queryColumns.size())
 		{
 			// Angelo Dabala' (genied) nectosoft: [2893220] avoid to append string parameters directly because of special chars like quote(s)
 			sql.append(" AND UPPER(").append(m_queryColumnsSql.get(index).toString()).append(") LIKE ?");
