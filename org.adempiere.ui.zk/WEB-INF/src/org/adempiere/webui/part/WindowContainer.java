@@ -247,8 +247,19 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
      */
     public Tab insertBefore(Tab refTab, Component comp, String title, boolean closeable, boolean enable, DecorateInfo decorateInfo)
     {
-        @SuppressWarnings("serial")
-		final Tab tab = new Tab() {
+        final Menupopup popupClose = new Menupopup();
+        final Tab tab = new Tab() {
+        	/**
+			 * 
+			 */
+			private static final long serialVersionUID = 2387473442130217806L;
+
+			@Override
+        	public void close() {
+        		super.close();
+        		popupClose.detach();
+        	}
+
 			@Override
 			public void onPageDetached(Page page) {
 				super.onPageDetached(page);
@@ -334,8 +345,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         	else
         		setSelectedTab(tab);
         }
-        
-        Menupopup popupClose = new Menupopup();
+
         Menuitem mi;
         if(tab.getIndex()!=0){
         	mi = new Menuitem(Msg.getMsg(Env.getCtx(), "Close"));
