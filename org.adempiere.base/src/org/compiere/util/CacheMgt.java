@@ -18,8 +18,10 @@ package org.compiere.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -66,6 +68,7 @@ public class CacheMgt
 	/** Logger							*/
 	private static CLogger		log = CLogger.getCLogger(CacheMgt.class);
 
+	private final static int MAX_SIZE = 2000;
 	
 	/**************************************************************************
 	 * 	Create Cache Instance
@@ -94,7 +97,18 @@ public class CacheMgt
 		
 		if (map == null)
 		{
-			map = new ConcurrentHashMap<K, V>();
+			map = Collections.synchronizedMap(new LinkedHashMap<K, V>() {
+				/**
+				 * generated serial id
+				 */
+				private static final long serialVersionUID = -9111152673370957054L;
+
+				@Override
+				protected boolean removeEldestEntry(Entry<K, V> eldest) {
+					return size() > MAX_SIZE;
+				}
+				
+			});
 		}		
 		return map;
 	}	//	register
