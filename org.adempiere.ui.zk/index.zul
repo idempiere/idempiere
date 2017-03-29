@@ -24,7 +24,8 @@ Copyright (C) 2007 Ashley G Ramdass.
 					// just sent fake event when control is textfield and value is not yet sync to server
 					if (wgt.$instanceof(zul.inp.Textbox) && wgt.$n().value != wgt.getText())
 						zAu.send(new zk.Event(zk.Widget.$(wgt), 'onChange',{"value":wgt.$n().value}));
-					else if (wgt.$instanceof(ckez.CKeditor)){
+
+					else if (zk.$import("ckez.CKeditor") != undefined && wgt.$instanceof(ckez.CKeditor)){//https://www.zkoss.org/javadoc/latest/jsdoc/_global_/zk.html#$import(_global_.String)
                         // CKEditor extend from zul.Widget not from wget zul.inp.InputWidget
                         // so some behavior is not same standard input
                         // this code bring from ckez.CKeditor.onBlur
