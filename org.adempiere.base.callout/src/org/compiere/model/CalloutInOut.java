@@ -719,4 +719,21 @@ public class CalloutInOut extends CalloutEngine
 		return "";
 	}	//	asi
 
+	public String navigateInOutLine(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		if (isCalloutActive() || value == null)
+			return "";
+
+		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
+		//	No Product
+		if (M_Product_ID != 0) {
+			MProduct product = MProduct.get(ctx, M_Product_ID);
+			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
+			boolean conversion = (C_UOM_To_ID != product.getC_UOM_ID());
+			Env.setContext(ctx, WindowNo, "UOMConversion", conversion ? "Y" : "N");
+		}
+		return "";
+	}	//	navigateInOutLine
+
+	
 }	//	CalloutInOut
