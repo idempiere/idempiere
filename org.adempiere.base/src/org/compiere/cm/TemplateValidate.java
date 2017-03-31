@@ -52,7 +52,7 @@ public class TemplateValidate extends SvrProcess
 	{
 		MTemplate thisTemplate = new MTemplate(getCtx (), getRecord_ID (), get_TrxName ());
 		thisTemplate.setIsValid (true);
-		thisTemplate.save ();
+		thisTemplate.saveEx();
 		return null;
 	}
 	

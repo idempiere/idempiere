@@ -295,7 +295,7 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 					thisBPartner.setSOCreditStatus (X_C_BPartner.SOCREDITSTATUS_CreditStop);
 				if (level.isSetPaymentTerm ())
 					thisBPartner.setC_PaymentTerm_ID (level.getC_PaymentTerm_ID ());
-				thisBPartner.save ();
+				thisBPartner.saveEx();
 			}
 		}
 		return true;

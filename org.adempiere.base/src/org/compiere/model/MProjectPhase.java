@@ -159,8 +159,8 @@ public class MProjectPhase extends X_C_ProjectPhase
 				PO.copyValues (fromLines[i], toLine, getAD_Client_ID (), getAD_Org_ID ());
 				toLine.setC_Project_ID(getC_Project_ID ());
 				toLine.setC_ProjectPhase_ID (getC_ProjectPhase_ID ());
-				if (toLine.save ())
-					count++;
+				toLine.saveEx();
+				count++;
 		}
 		if (fromLines.length != count)
 			log.warning("Count difference - ProjectLine=" + fromLines.length + " <> Saved=" + count);
@@ -209,11 +209,10 @@ public class MProjectPhase extends X_C_ProjectPhase
 				MProjectTask toTask = new MProjectTask (getCtx (), 0, get_TrxName());
 				PO.copyValues (fromTasks[i], toTask, getAD_Client_ID (), getAD_Org_ID ());
 				toTask.setC_ProjectPhase_ID (getC_ProjectPhase_ID ());
-				if (toTask.save ()){
-					count++;
-					//BF 3067850 - monhate
-					countLine += toTask.copyLinesFrom(fromTasks[i]);
-				}
+				toTask.saveEx();
+				count++;
+				//BF 3067850 - monhate
+				countLine += toTask.copyLinesFrom(fromTasks[i]);
 			}
 		}
 		if (fromTasks.length != count)

@@ -810,7 +810,7 @@ public class Allocation
 		}
 		MBPartner bpartner = new MBPartner(Env.getCtx(), m_C_BPartner_ID, trxName);
 		bpartner.setTotalOpenBalance();
-		bpartner.save();
+		bpartner.saveEx();
 		paymentList.clear();
 		amountList.clear();
 		

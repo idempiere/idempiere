@@ -72,7 +72,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		}
 
 		MMovementConfirm confirm = new MMovementConfirm (move);
-		confirm.save(move.get_TrxName());
+		confirm.saveEx(move.get_TrxName());
 		MMovementLine[] moveLines = move.getLines(false);
 		for (int i = 0; i < moveLines.length; i++)
 		{

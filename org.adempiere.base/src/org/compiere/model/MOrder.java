@@ -1620,7 +1620,7 @@ public class MOrder extends X_C_Order implements DocAction
 							newLine.setDescription (bomline.getDescription ());
 						//
 						newLine.setPrice ();
-						newLine.save (get_TrxName());
+						newLine.saveEx(get_TrxName());
 					}
 				}	*/
 
@@ -1633,7 +1633,7 @@ public class MOrder extends X_C_Order implements DocAction
 					if (bom.getDescription() != null)
 						newLine.setDescription(bom.getDescription());
 					newLine.setPrice();
-					newLine.save(get_TrxName());
+					newLine.saveEx(get_TrxName());
 				}
 				
 				//	Convert into Comment Line
@@ -1651,7 +1651,7 @@ public class MOrder extends X_C_Order implements DocAction
 				if (line.getDescription () != null)
 					description += " " + line.getDescription ();
 				line.setDescription (description);
-				line.save (get_TrxName());
+				line.saveEx(get_TrxName());
 			}	//	for all lines with BOM
 
 			m_lines = null;		//	force requery

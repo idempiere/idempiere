@@ -323,7 +323,7 @@ public class AssetServlet extends HttpServlet
 				if (msg.length () > 120)
 					msg = msg.substring (0, 119);
 				ad.setDeliveryConfirmation (msg);
-				ad.save ();
+				ad.saveEx();
 			//	asset.saveEx();	not delivered
 			}
 			catch (Exception ex1)

@@ -93,7 +93,7 @@ public class MContainer extends X_CM_Container
 		if (cc == null) // new
 			cc = new MContainer (stage.getCtx (), 0, stage.get_TrxName ());
 		cc.setStage (project, stage, path);
-		cc.save ();
+		cc.saveEx();
 		if (!stage.isSummary ())
 		{
 			cc.updateElements (project, stage, stage.get_TrxName ());
@@ -315,7 +315,7 @@ public class MContainer extends X_CM_Container
 				// PO.copyValues(new
 				// X_CM_CStage_Element(project.getCtx(),tableKeys[i],trxName),
 				// thisContainerElement);
-				thisContainerElement.save (trxName);
+				thisContainerElement.saveEx(trxName);
 				// Remove Container from cache
 				thisHandler.cleanContainerElement (thisContainerElement
 					.get_ID ());
@@ -391,7 +391,7 @@ public class MContainer extends X_CM_Container
 				thisContainerTTable.setCM_Container_ID (stage.get_ID ());
 				PO.copyValues (new X_CM_CStageTTable (project.getCtx (),
 					tableKeys[i], trxName), thisContainerTTable);
-				thisContainerTTable.save (trxName);
+				thisContainerTTable.saveEx(trxName);
 			}
 		}
 	}

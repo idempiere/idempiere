@@ -1581,7 +1581,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					if (bom.getDescription() != null)
 						newLine.setDescription(bom.getDescription());
 					newLine.setPrice();
-					newLine.save(get_TrxName());
+					newLine.saveEx(get_TrxName());
 				}
 
 				//	Convert into Comment Line
@@ -2506,28 +2506,26 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			msgall.toString(),
 			get_TrxName());
 		alloc.setAD_Org_ID(getAD_Org_ID());
-		if (alloc.save())
-		{
-			//	Amount
-			BigDecimal gt = getGrandTotal(true);
-			if (!isSOTrx())
-				gt = gt.negate();
-			//	Orig Line
-			MAllocationLine aLine = new MAllocationLine (alloc, gt,
+		alloc.saveEx();
+		//	Amount
+		BigDecimal gt = getGrandTotal(true);
+		if (!isSOTrx())
+			gt = gt.negate();
+		//	Orig Line
+		MAllocationLine aLine = new MAllocationLine (alloc, gt,
 				Env.ZERO, Env.ZERO, Env.ZERO);
-			aLine.setC_Invoice_ID(getC_Invoice_ID());
-			aLine.saveEx();
-			//	Reversal Line
-			MAllocationLine rLine = new MAllocationLine (alloc, gt.negate(),
+		aLine.setC_Invoice_ID(getC_Invoice_ID());
+		aLine.saveEx();
+		//	Reversal Line
+		MAllocationLine rLine = new MAllocationLine (alloc, gt.negate(),
 				Env.ZERO, Env.ZERO, Env.ZERO);
-			rLine.setC_Invoice_ID(reversal.getC_Invoice_ID());
-			rLine.saveEx();
-			// added AdempiereException by zuhri
-			if (!alloc.processIt(DocAction.ACTION_Complete))
-				throw new AdempiereException("Failed when processing document - " + alloc.getProcessMsg());
-			// end added
-				alloc.saveEx();
-		}
+		rLine.setC_Invoice_ID(reversal.getC_Invoice_ID());
+		rLine.saveEx();
+		// added AdempiereException by zuhri
+		if (!alloc.processIt(DocAction.ACTION_Complete))
+			throw new AdempiereException("Failed when processing document - " + alloc.getProcessMsg());
+		// end added
+		alloc.saveEx();
 		
 		return reversal;
 	}
