@@ -58,7 +58,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5714780894880069158L;
+	private static final long serialVersionUID = 2142502910734162453L;
 
 	private static final String BTN_PROCESS_ID = "BtnProcess";
 
