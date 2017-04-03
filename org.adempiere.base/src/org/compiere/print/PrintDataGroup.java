@@ -95,7 +95,7 @@ public class PrintDataGroup
 	 * 	@param value column value
 	 * 	@return null if no group change otherwise old value
 	 */
-	public Object groupChange (String groupColumnName, Object value)
+	public Object groupChange (String groupColumnName, Object value, boolean force)
 	{
 		if (!isGroupColumn(groupColumnName))
 			return null;
@@ -106,7 +106,7 @@ public class PrintDataGroup
 		if (m_groupMap.containsKey(groupColumnName))
 		{
 			Object oldValue = m_groupMap.get(groupColumnName);
-			if (newValue.equals(oldValue))
+			if (newValue.equals(oldValue) && !force )
 				return null;
 			m_groupMap.put(groupColumnName, newValue);
 			return oldValue;
