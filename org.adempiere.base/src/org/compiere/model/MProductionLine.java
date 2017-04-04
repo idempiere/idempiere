@@ -99,7 +99,9 @@ public class MProductionLine extends X_M_ProductionLine {
 			
 			Timestamp dateMPolicy = date;
 			if(getM_AttributeSetInstance_ID()>0){
-				dateMPolicy = asi.getCreated();
+				Timestamp t = MStorageOnHand.getDateMaterialPolicy(getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
+				if (t != null)
+					dateMPolicy = t;
 			}
 			
 			dateMPolicy = Util.removeTime(dateMPolicy);

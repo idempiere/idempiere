@@ -94,7 +94,7 @@ public class MCash extends X_C_Cash implements DocAction
 		
 		//	Create New Journal
 		retValue = new MCash (cb, dateAcct);
-		retValue.save(trxName);
+		retValue.saveEx(trxName);
 		return retValue;
 	}	//	get
 

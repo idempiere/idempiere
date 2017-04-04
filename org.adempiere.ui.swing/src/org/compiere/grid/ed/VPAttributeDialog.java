@@ -746,7 +746,7 @@ public class VPAttributeDialog extends CDialog
 		//	New Instance
 		if (m_changed || m_masi.getM_AttributeSetInstance_ID() == 0)
 		{
-			m_masi.save ();
+			m_masi.saveEx();
 			m_M_AttributeSetInstance_ID = m_masi.getM_AttributeSetInstance_ID ();
 			m_M_AttributeSetInstanceName = m_masi.getDescription();
 		}
@@ -789,7 +789,7 @@ public class VPAttributeDialog extends CDialog
 		if (m_changed)
 		{
 			m_masi.setDescription ();
-			m_masi.save ();
+			m_masi.saveEx();
 		}
 		m_M_AttributeSetInstance_ID = m_masi.getM_AttributeSetInstance_ID ();
 		m_M_AttributeSetInstanceName = m_masi.getDescription();

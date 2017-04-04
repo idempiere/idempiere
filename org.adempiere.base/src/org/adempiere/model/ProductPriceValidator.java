@@ -108,7 +108,7 @@ public class ProductPriceValidator implements ModelValidator {
 									{
 										pp1.setPrices(priceList, priceStd, priceLimit);
 										pp1.setIsActive(isActive);
-										pp1.save(po.get_TrxName());
+										pp1.saveEx(po.get_TrxName());
 									}									
 								}
 								else if (type == TYPE_AFTER_DELETE)

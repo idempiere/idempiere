@@ -497,11 +497,6 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		if (M_Product_ID == 0)
 			return null;
 		MUOMConversion[] rates = getProductConversions(ctx, M_Product_ID);
-		if (rates.length == 0)
-		{
-			s_log.fine("None found");
-			return null;
-		}
 		
 		for (int i = 0; i < rates.length; i++)
 		{
@@ -509,7 +504,17 @@ public class MUOMConversion extends X_C_UOM_Conversion
 			if (rate.getC_UOM_To_ID() == C_UOM_To_ID)
 				return rate.getMultiplyRate();
 		}
-		s_log.fine("None applied");
+		
+		List<MUOMConversion> conversions = new Query(ctx, Table_Name, "C_UOM_ID=? AND C_UOM_TO_ID=?", null)
+				.setParameters(MProduct.get(ctx, M_Product_ID).getC_UOM_ID(), C_UOM_To_ID)
+				.setOnlyActiveRecords(true)
+				.list();
+		for (int i = 0; i < conversions.size(); i++)
+		{
+			MUOMConversion rate = conversions.get(i);
+			if (rate.getC_UOM_To_ID() == C_UOM_To_ID)
+				return rate.getMultiplyRate();
+		}
 		return null;
 	}	//	getProductRateTo
 
@@ -563,11 +568,6 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		int M_Product_ID, int C_UOM_To_ID)
 	{
 		MUOMConversion[] rates = getProductConversions(ctx, M_Product_ID);
-		if (rates.length == 0)
-		{
-			s_log.fine("getProductRateFrom - none found");
-			return null;
-		}
 		
 		for (int i = 0; i < rates.length; i++)
 		{
@@ -575,7 +575,18 @@ public class MUOMConversion extends X_C_UOM_Conversion
 			if (rate.getC_UOM_To_ID() == C_UOM_To_ID)
 				return rate.getDivideRate();
 		}
-		s_log.fine("None applied");
+	
+		List<MUOMConversion> conversions = new Query(ctx, Table_Name, "C_UOM_ID=? AND C_UOM_TO_ID=?", null)
+				.setParameters(MProduct.get(ctx, M_Product_ID).getC_UOM_ID(), C_UOM_To_ID)
+				.setOnlyActiveRecords(true)
+				.list();
+		for (int i = 0; i < conversions.size(); i++)
+		{
+			MUOMConversion rate = conversions.get(i);
+			if (rate.getC_UOM_To_ID() == C_UOM_To_ID)
+				return rate.getDivideRate();
+		}
+		
 		return null;
 	}	//	getProductRateFrom
 

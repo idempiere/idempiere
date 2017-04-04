@@ -184,7 +184,7 @@ public class WebProjectDeploy extends SvrProcess
 				thisHandler.cleanContainer(cc.get_ID());
 				// Reset Modified flag...
 				stage.setIsModified(false);
-				stage.save(stage.get_TrxName());
+				stage.saveEx(stage.get_TrxName());
 			}
 			if (child.isSummary())
 				copyStage (child, path + stage.getRelativeURL() + "/");

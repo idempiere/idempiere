@@ -248,7 +248,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		for (int i = 0; i < m_schedule.length; i++)
 		{
 			ips = new MInvoicePaySchedule (invoice, m_schedule[i]);
-			ips.save(invoice.get_TrxName());
+			ips.saveEx(invoice.get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine(ips.toString());
 			remainder = remainder.subtract(ips.getDueAmt());
 		}	//	for all schedules
@@ -256,7 +256,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		if (remainder.compareTo(Env.ZERO) != 0 && ips != null)
 		{
 			ips.setDueAmt(ips.getDueAmt().add(remainder));
-			ips.save(invoice.get_TrxName());
+			ips.saveEx(invoice.get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Remainder=" + remainder + " - " + ips);
 		}
 		
@@ -357,7 +357,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		for (int i = 0; i < m_schedule.length; i++)
 		{
 			ops = new MOrderPaySchedule (order, m_schedule[i]);
-			ops.save(order.get_TrxName());
+			ops.saveEx(order.get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine(ops.toString());
 			remainder = remainder.subtract(ops.getDueAmt());
 		}	//	for all schedules
@@ -365,7 +365,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		if (remainder.compareTo(Env.ZERO) != 0 && ops != null)
 		{
 			ops.setDueAmt(ops.getDueAmt().add(remainder));
-			ops.save(order.get_TrxName());
+			ops.saveEx(order.get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Remainder=" + remainder + " - " + ops);
 		}
 		

@@ -294,7 +294,7 @@ public class PaymentServlet  extends HttpServlet
 			{
 				if (log.isLoggable(Level.FINE)) log.fine(payment.getErrorMessage());
 				String errMsg = payment.getErrorMessage();
-				payment.save ();
+				payment.saveEx();
 				payment.setErrorMessage(errMsg);
 				request.getSession().setAttribute(WebSessionCtx.HDR_MESSAGE, errMsg);
 				//

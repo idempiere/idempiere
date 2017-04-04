@@ -111,7 +111,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5446672147679386907L;
+	private static final long serialVersionUID = -2946624717834888117L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -1582,6 +1582,17 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			return false;
 		return m_vo.IsInsertRecord;
 	}	//	isInsertRecord
+
+	/**
+	 *	Can we Delete Records?
+	 *  @return true not read only and allowed
+	 */
+	public boolean isDeleteRecord()
+	{
+		if (isReadOnly())
+			return false;
+		return m_vo.IsDeleteable;
+	}	//	isDeleteRecord
 
 	/**
 	 *	Is the Tab Visible.

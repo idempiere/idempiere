@@ -741,8 +741,8 @@ public class MPeriod extends X_C_Period
 				if (baseTypes.contains(DocBaseType))
 					continue;
 				MPeriodControl pc = new MPeriodControl(this, DocBaseType);
-				if (pc.save())
-					count++;
+				pc.saveEx();
+				count++;
 				baseTypes.add (DocBaseType);
 			}
 			if (log.isLoggable(Level.FINE)) log.fine("PeriodControl #" + count);

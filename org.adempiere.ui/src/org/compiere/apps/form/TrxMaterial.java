@@ -13,9 +13,8 @@
  *****************************************************************************/
 package org.compiere.apps.form;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import static org.compiere.model.SystemIDs.WINDOW_MATERIALTRANSACTIONS_INDIRECTUSER;
+
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
@@ -23,10 +22,14 @@ import org.compiere.apps.IStatusBar;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
+import org.compiere.model.I_C_ProjectIssue;
+import org.compiere.model.I_M_InOutLine;
+import org.compiere.model.I_M_InventoryLine;
+import org.compiere.model.I_M_MovementLine;
+import org.compiere.model.I_M_ProductionLine;
+import org.compiere.model.I_M_Transaction;
 import org.compiere.model.MQuery;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -108,9 +111,8 @@ public class TrxMaterial {
 		statusBar.setStatusDB(Integer.toString(no));
 	}   //  refresh
 	
-	public int AD_Window_ID;
-	public MQuery query;
-	
+	public int AD_Table_ID;
+	public int Record_ID;
 	/**
 	 *  Zoom
 	 */
@@ -118,85 +120,33 @@ public class TrxMaterial {
 	{
 		log.info("");
 		//
-		AD_Window_ID = 0;
-		String ColumnName = null;
-		String SQL = null;
-		//
-		int lineID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "M_InOutLine_ID");
-		if (lineID != 0)
-		{
-			if (log.isLoggable(Level.FINE)) log.fine("M_InOutLine_ID=" + lineID);
-			if (Env.getContext(Env.getCtx(), m_WindowNo, "MovementType").startsWith("C"))
-				AD_Window_ID = WINDOW_SHIPMENT_CUSTOMER;     //  Customer
-			else
-				AD_Window_ID = WINDOW_MATERIALRECEIPT;     //  Vendor
-			ColumnName = "M_InOut_ID";
-			SQL = "SELECT M_InOut_ID FROM M_InOutLine WHERE M_InOutLine_ID=?";
-		}
-		else
-		{
-			lineID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "M_InventoryLine_ID");
-			if (lineID != 0)
-			{
-				if (log.isLoggable(Level.FINE)) log.fine("M_InventoryLine_ID=" + lineID);
-				AD_Window_ID = WINDOW_PHYSICALINVENTORY;
-				ColumnName = "M_Inventory_ID";
-				SQL = "SELECT M_Inventory_ID FROM M_InventoryLine WHERE M_InventoryLine_ID=?";
-			}
-			else
-			{
-				lineID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "M_MovementLine_ID");
-				if (lineID != 0)
-				{
-					if (log.isLoggable(Level.FINE)) log.fine("M_MovementLine_ID=" + lineID);
-					AD_Window_ID = WINDOW_INVENTORYMOVE;
-					ColumnName = "M_Movement_ID";
-					SQL = "SELECT M_Movement_ID FROM M_MovementLine WHERE M_MovementLine_ID=?";
-				}
-				else
-				{
-					lineID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "M_ProductionLine_ID");
-					if (lineID != 0)
-					{
-						if (log.isLoggable(Level.FINE)) log.fine("M_ProductionLine_ID=" + lineID);
-						AD_Window_ID = WINDOW_PRODUCTION;
-						ColumnName = "M_Production_ID";
-						SQL = "SELECT M_Production_ID FROM M_ProductionLine WHERE M_ProductionLine_ID=?";
+		AD_Table_ID = 0;
+		Record_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, I_M_Transaction.COLUMNNAME_M_InOutLine_ID);
+		if (Record_ID != 0) {
+			AD_Table_ID = I_M_InOutLine.Table_ID;
+		} else {
+			Record_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, I_M_Transaction.COLUMNNAME_M_InventoryLine_ID);
+			if (Record_ID != 0) {
+				AD_Table_ID = I_M_InventoryLine.Table_ID;
+			} else {
+				Record_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, I_M_Transaction.COLUMNNAME_M_MovementLine_ID);
+				if (Record_ID != 0) {
+					AD_Table_ID = I_M_MovementLine.Table_ID;
+				} else {
+					Record_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, I_M_Transaction.COLUMNNAME_M_ProductionLine_ID);
+					if (Record_ID != 0) {
+						AD_Table_ID = I_M_ProductionLine.Table_ID;
+					} else {
+						Record_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, I_M_Transaction.COLUMNNAME_C_ProjectIssue_ID);
+						if (Record_ID != 0) {
+							AD_Table_ID = I_C_ProjectIssue.Table_ID;
+						} else {
+							log.warning("Not found zoom table WindowNo=" + m_WindowNo);
+						}
 					}
-					else
-						if (log.isLoggable(Level.FINE)) log.fine("Not found WindowNo=" + m_WindowNo);
 				}
 			}
 		}
-		if (AD_Window_ID == 0)
-			return;
-
-		//  Get Parent ID
-		int parentID = 0;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(SQL, null);
-			pstmt.setInt(1, lineID);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-				parentID = rs.getInt(1);
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, SQL, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		query = MQuery.getEqualQuery(ColumnName, parentID);
-		if (log.isLoggable(Level.CONFIG)) log.config("AD_Window_ID=" + AD_Window_ID + " - " + query);
-		if (parentID == 0)
-			log.log(Level.SEVERE, "No ParentValue - " + SQL + " - " + lineID);
 	}   //  zoom
 
 

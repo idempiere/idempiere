@@ -277,7 +277,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 			}
 		}
 		attach.m_items.remove(index);
-		attach.save(); // must save here as the operation cannot be rolled back on filesystem
+		attach.saveEx(); // must save here as the operation cannot be rolled back on filesystem
 		if (log.isLoggable(Level.CONFIG)) log.config("Index=" + index + " - NewSize=" + attach.m_items.size());
 		return true;
 	}

@@ -19,13 +19,18 @@
 @sqlplus %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\Utils\%ADEMPIERE_DB_PATH%\CreateUser.sql %2 %3
 
 @echo -------------------------------------
+@echo Re-Create DataPump directory
+@echo -------------------------------------
+@sqlplus %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\Utils\%ADEMPIERE_DB_PATH%\CreateDataPumpDir.sql %IDEMPIERE_HOME%\data\seed
+
+@echo -------------------------------------
 @echo Import Adempiere.dmp
 @echo -------------------------------------
-@imp %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% FILE=%IDEMPIERE_HOME%\data\seed\Adempiere.dmp FROMUSER=(reference) TOUSER=%2 STATISTICS=RECALCULATE
+@impdp %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=Adempiere.dmp REMAP_SCHEMA=reference:%2
 
 @echo --------========--------========--------========--------
-@echo System Check - The Import phase showed warnings.
-@echo This is OK as long as the following does not show errors
+@echo Check System
+@echo Import may show some warnings. This is OK as long as the following does not show errors
 @echo --------========--------========--------========--------
 @sqlplus %2/%3@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\Utils\%ADEMPIERE_DB_PATH%\AfterImport.sql
 

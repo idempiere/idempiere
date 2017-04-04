@@ -127,8 +127,8 @@ public class MCalendar extends X_C_Calendar
 		if (get_ID() == 0)
 			return null;
 		MYear year = new MYear (this);
-		if (year.save())
-			year.createStdPeriods(locale);
+		year.saveEx();
+		year.createStdPeriods(locale);
 		//
 		return year;
 	}	//	createYear

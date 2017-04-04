@@ -93,7 +93,7 @@ public class MPackage extends X_M_Package
 		}	//	lines
 		
 		retValue.setBoxCount(1);
-		retValue.save();
+		retValue.saveEx();
 		
 		return retValue;
 	}	//	create

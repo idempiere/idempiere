@@ -358,13 +358,11 @@ public class MProject extends X_C_Project
 				toPhase.setC_Project_ID (getC_Project_ID ());
 				toPhase.setC_Order_ID (0);
 				toPhase.setIsComplete (false);
-				if (toPhase.save ())
-				{
-					count++;
-					taskCount += toPhase.copyTasksFrom (fromPhases[i]);
-					//BF 3067850 - monhate
-					lineCount += toPhase.copyLinesFrom(fromPhases[i]);
-				}
+				toPhase.saveEx();
+				count++;
+				taskCount += toPhase.copyTasksFrom (fromPhases[i]);
+				//BF 3067850 - monhate
+				lineCount += toPhase.copyLinesFrom(fromPhases[i]);
 			}
 		}
 		if (fromPhases.length != count)

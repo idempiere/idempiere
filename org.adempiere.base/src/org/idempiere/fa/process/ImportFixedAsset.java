@@ -253,7 +253,7 @@ public class ImportFixedAsset extends SvrProcess
 					if (!bpl.save ())
 						continue;
 				}
-				ifa.save ();
+				ifa.saveEx();
 			}	//	for all new BPartners
 			rs.close ();
 			pstmt.close ();
@@ -311,7 +311,7 @@ public class ImportFixedAsset extends SvrProcess
 				}
 				ifa.setM_Product_ID (product.getM_Product_ID());
 				
-				ifa.save ();
+				ifa.saveEx();
 			}	//	for all new Products
 			rs.close ();
 			pstmt.close ();

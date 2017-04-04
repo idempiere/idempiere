@@ -522,7 +522,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 		access.setR_InterestArea_ID (R_InterestArea_ID);
 		access.setIsError (error != null);
 		access.setSummary (info);
-		access.save ();
+		access.saveEx();
 	}	//	logAccess
 
 	@Override

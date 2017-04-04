@@ -132,7 +132,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			}
 			//	Create Line
 			if (retValue.get_ID() == 0)	//	not saved yet
-				retValue.save(trxName);
+				retValue.saveEx(trxName);
 			//	Create a line until qty is reached
 			for (int ll = 0; ll < storages.length; ll++)
 			{
@@ -148,11 +148,11 @@ public class MInOut extends X_M_InOut implements DocAction
 						.multiply(oLines[i].getQtyEntered())
 						.divide(oLines[i].getQtyOrdered(), 12, BigDecimal.ROUND_HALF_UP));
 				line.setC_Project_ID(oLines[i].getC_Project_ID());
-				line.save(trxName);
+				line.saveEx(trxName);
 				//	Delivered everything ?
 				qty = qty.subtract(lineQty);
 			//	storage[ll].changeQtyOnHand(lineQty, !order.isSOTrx());	// Credit Memo not considered
-			//	storage[ll].save(get_TrxName());
+			//	storage[ll].saveEx(get_TrxName());
 				if (qty.signum() == 0)
 					break;
 			}
@@ -1452,10 +1452,7 @@ public class MInOut extends X_M_InOut implements DocAction
 					if (dateMPolicy == null && storages.length > 0)
 						dateMPolicy = storages[0].getDateMaterialPolicy();
 
-					if (dateMPolicy==null && sLine.getM_AttributeSetInstance_ID()!=0) {
-						I_M_AttributeSetInstance asi = sLine.getM_AttributeSetInstance();
-						dateMPolicy = asi.getCreated();
-					} else if(dateMPolicy==null)
+					if(dateMPolicy==null)
 						dateMPolicy = getMovementDate();
 					
 					//	Fallback: Update Storage - see also VMatch.createMatchRecord

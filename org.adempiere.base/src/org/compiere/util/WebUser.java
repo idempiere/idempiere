@@ -488,7 +488,7 @@ public class WebUser
 
 			//	save Location			***************************************
 			if (log.isLoggable(Level.FINE)) log.fine("LOC=" + m_loc);
-			m_loc.save ();
+			m_loc.saveEx();
 
 			//	save BP Location		***************************************
 			if (m_bpl.getC_BPartner_ID () != m_bp.getC_BPartner_ID())

@@ -80,15 +80,6 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			sqlWhere += "(M_AttributeSetInstance_ID=? OR M_AttributeSetInstance_ID IS NULL)";
 		else
 			sqlWhere += "M_AttributeSetInstance_ID=?";
-	
-		if (dateMPolicy == null)
-		{
-			if (M_AttributeSetInstance_ID > 0)
-			{
-				MAttributeSetInstance asi = new MAttributeSetInstance(ctx, M_AttributeSetInstance_ID, trxName);
-				dateMPolicy = asi.getCreated();
-			}
-		}
 
 		if (dateMPolicy != null)
 			sqlWhere += " AND DateMaterialPolicy=trunc(cast(? as date))";
@@ -629,12 +620,10 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		if (M_Locator_ID == 0)
 			throw new IllegalArgumentException("M_Locator_ID=0");
 		if (M_Product_ID == 0)
-			throw new IllegalArgumentException("M_Product_ID=0");
-		if (dateMPolicy == null)
-			dateMPolicy = new Timestamp(new Date().getTime());
-		
-		dateMPolicy = Util.removeTime(dateMPolicy);
-		
+			throw new IllegalArgumentException("M_Product_ID=0");		
+		if (dateMPolicy != null)
+			dateMPolicy = Util.removeTime(dateMPolicy);
+
 		MStorageOnHand retValue = get(ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID,dateMPolicy, trxName);
 		if (retValue != null)
 		{
@@ -648,6 +637,11 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		if (locator.get_ID() != M_Locator_ID)
 			throw new IllegalArgumentException("Not found M_Locator_ID=" + M_Locator_ID);
 		//
+		if (dateMPolicy == null)
+		{
+			dateMPolicy = new Timestamp(new Date().getTime());		
+			dateMPolicy = Util.removeTime(dateMPolicy);
+		}
 		retValue = new MStorageOnHand (locator, M_Product_ID, M_AttributeSetInstance_ID,dateMPolicy);
 		retValue.saveEx(trxName);
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("New " + retValue);
@@ -696,21 +690,9 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		if (diffQtyOnHand == null || diffQtyOnHand.signum() == 0)
 			return true;
 
-		if (dateMPolicy == null)
-		{
-			if (M_AttributeSetInstance_ID > 0)
-			{
-				MAttributeSetInstance asi = new MAttributeSetInstance(ctx, M_AttributeSetInstance_ID, trxName);
-				dateMPolicy = asi.getCreated();
-			}
-			else
-			{
-				dateMPolicy = new Timestamp(System.currentTimeMillis());
-			}
-		}
-		
-		dateMPolicy = Util.removeTime(dateMPolicy);
-		
+		if (dateMPolicy != null)
+			dateMPolicy = Util.removeTime(dateMPolicy);
+
 		//	Get Storage
 		MStorageOnHand storage = getCreate (ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, dateMPolicy, trxName, true, 120);
 		//	Verify
@@ -1039,6 +1021,9 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 * @return
 	 */
 	public static Timestamp getDateMaterialPolicy(int M_Product_ID, int M_AttributeSetInstance_ID,String trxName){
+		
+		if (M_Product_ID <= 0  || M_AttributeSetInstance_ID <= 0)
+			return null;
 		
 		String sql = "SELECT dateMaterialPolicy FROM M_StorageOnHand WHERE M_Product_ID=? and M_AttributeSetInstance_ID=?";
 		

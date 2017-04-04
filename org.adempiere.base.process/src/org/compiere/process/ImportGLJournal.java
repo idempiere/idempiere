@@ -514,7 +514,7 @@ public class ImportGLJournal extends SvrProcess
 		//	Set TrxOrg
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append("SET AD_OrgTrx_ID=(SELECT o.AD_Org_ID FROM AD_Org o")
-			.append(" WHERE o.Value=i.OrgValue AND o.IsSummary='N' AND i.AD_Client_ID=o.AD_Client_ID) ")
+			.append(" WHERE o.Value=i.OrgTrxValue AND o.IsSummary='N' AND i.AD_Client_ID=o.AD_Client_ID) ")
 			.append("WHERE AD_OrgTrx_ID IS NULL AND OrgTrxValue IS NOT NULL")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());

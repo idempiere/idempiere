@@ -134,8 +134,8 @@ public class MProjectTask extends X_C_ProjectTask
 				toLine.setC_Project_ID(getC_Project_ID(false));
 				toLine.setC_ProjectPhase_ID (getC_ProjectPhase_ID ());
 				toLine.setC_ProjectTask_ID(getC_ProjectTask_ID ());
-				if (toLine.save ())
-					count++;
+				toLine.saveEx();
+				count++;
 		}
 		if (fromLines.length != count)
 			log.warning("Count difference - ProjectLine=" + fromLines.length + " <> Saved=" + count);

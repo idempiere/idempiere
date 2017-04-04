@@ -2136,36 +2136,25 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			{
 				String tmp = colsql.substring(0, lastSpaceIdx).trim();
 				char last = tmp.charAt(tmp.length() - 1);
-				if (tmp.toLowerCase().endsWith("as"))
+
+				String alias = colsql.substring(lastSpaceIdx).trim();
+				boolean hasAlias = alias.matches("^[a-zA-Z_][a-zA-Z0-9_]*$"); // valid SQL alias - starts with letter then digits, letters, underscore
+
+				if (tmp.toLowerCase().endsWith("as") && hasAlias)
 				{
-					colsql = colsql.substring(lastSpaceIdx).trim();
+					colsql = alias;
 				}
 				else if (!(last == '*' || last == '-' || last == '+' || last == '/' || last == '>' || last == '<' || last == '='))
 				{
-					tmp = colsql.substring(lastSpaceIdx).trim();
-					if (tmp.startsWith("\"") && tmp.endsWith("\""))
+					if (alias.startsWith("\"") && alias.endsWith("\""))
 					{
-						colsql = colsql.substring(lastSpaceIdx).trim();
+						colsql = alias;
 					}
 					else
 					{
-						boolean hasAlias = true;
-						for(int i = 0; i < tmp.length(); i++)
-						{
-							char c = tmp.charAt(i);
-							if (Character.isLetterOrDigit(c))
-							{
-								continue;
-							}
-							else
-							{
-								hasAlias = false;
-								break;
-							}
-						}
 						if (hasAlias)
 						{
-							colsql = colsql.substring(lastSpaceIdx).trim();
+							colsql = alias;
 						}
 					}
 				}

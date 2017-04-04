@@ -167,10 +167,9 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 		{
 			if (M_AttributeSetInstance_ID > 0)
 			{
-				MAttributeSetInstance asi = new MAttributeSetInstance(parent.getCtx(), M_AttributeSetInstance_ID, parent.get_TrxName());
-				DateMaterialPolicy = asi.getCreated();
+				DateMaterialPolicy = MStorageOnHand.getDateMaterialPolicy(parent.getM_Product_ID(), M_AttributeSetInstance_ID, parent.get_TrxName());
 			}
-			else
+			if (DateMaterialPolicy == null)
 			{
 				DateMaterialPolicy = parent.getParent().getMovementDate();
 			}
@@ -244,7 +243,7 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 			Timestamp dateMPolicy = null;
 			if(getM_AttributeSetInstance_ID()>0)
 			{
-				dateMPolicy = getM_AttributeSetInstance().getCreated();
+				dateMPolicy = MStorageOnHand.getDateMaterialPolicy(line.getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
 			}
 			
 			if(dateMPolicy == null)

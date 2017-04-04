@@ -466,7 +466,7 @@ public class WebLogin
     		thisBPBankAccount.setA_Name (WebUtil.getParamOrNull (m_request, "A_Name"));
     		thisBPBankAccount.setAccountNo (WebUtil.getParamOrNull (m_request, "AccountNo"));
     		thisBPBankAccount.setRoutingNo (WebUtil.getParamOrNull (m_request, "RoutingNo"));
-    		thisBPBankAccount.save ();
+    		thisBPBankAccount.saveEx();
         }
 		else
 			log.log(Level.WARNING, "Unknown request='" + m_mode + "'");
