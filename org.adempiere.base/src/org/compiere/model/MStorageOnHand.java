@@ -706,11 +706,6 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		}
 
 		storage.addQtyOnHand(diffQtyOnHand);
-		if (storage.getQtyOnHand().signum() == -1) {
-			if (MWarehouse.get(Env.getCtx(), M_Warehouse_ID).isDisallowNegativeInv()) {
-				throw new AdempiereException(Msg.getMsg(ctx, "NegativeInventoryDisallowed"));
-			}
-		}
 		if (s_log.isLoggable(Level.FINE)) {
 			StringBuilder diffText = new StringBuilder("(OnHand=").append(diffQtyOnHand).append(") -> ").append(storage.toString());
 			s_log.fine(diffText.toString());
@@ -729,6 +724,12 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			new Object[] {addition, Env.getAD_User_ID(Env.getCtx()), getM_Product_ID(), getM_Locator_ID(), getM_AttributeSetInstance_ID(), getDateMaterialPolicy()}, 
 			get_TrxName());
 		load(get_TrxName());
+		if (getQtyOnHand().signum() == -1) {
+			MWarehouse wh = MWarehouse.get(Env.getCtx(), getM_Warehouse_ID());
+			if (wh.isDisallowNegativeInv()) {
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "NegativeInventoryDisallowed"));
+			}
+		}
 	}
 
 	/**************************************************************************
