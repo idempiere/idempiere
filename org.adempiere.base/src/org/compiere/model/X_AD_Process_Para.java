@@ -30,7 +30,7 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20170408L;
 
     /** Standard Constructor */
     public X_AD_Process_Para (Properties ctx, int AD_Process_Para_ID, String trxName)
@@ -495,6 +495,20 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Mandatory Logic.
+		@param MandatoryLogic Mandatory Logic	  */
+	public void setMandatoryLogic (String MandatoryLogic)
+	{
+		set_Value (COLUMNNAME_MandatoryLogic, MandatoryLogic);
+	}
+
+	/** Get Mandatory Logic.
+		@return Mandatory Logic	  */
+	public String getMandatoryLogic () 
+	{
+		return (String)get_Value(COLUMNNAME_MandatoryLogic);
 	}
 
 	/** Set Name.

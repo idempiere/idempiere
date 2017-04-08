@@ -371,7 +371,7 @@ public class GridFieldVO implements Serializable
 			vo.ReadOnlyLogic = rs.getString("ReadOnlyLogic");
 			vo.DisplayLogic= rs.getString("DisplayLogic");
 			vo.IsEncryptedField=rs.getString("IsEncrypted").equals("Y");
-			
+			vo.MandatoryLogic = rs.getString("MandatoryLogic");
 		}
 		catch (SQLException e)
 		{

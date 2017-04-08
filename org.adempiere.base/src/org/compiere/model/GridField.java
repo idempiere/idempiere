@@ -352,7 +352,15 @@ public class GridField
 //	  Do we have a mandatory rule
 		if (checkContext && m_vo.MandatoryLogic.length() > 0)
 		{
-			boolean retValue = Evaluator.evaluateLogic(this, m_vo.MandatoryLogic);
+			boolean retValue  = false;
+			if (m_vo.MandatoryLogic != null && m_vo.MandatoryLogic.startsWith("@SQL=")) {
+				retValue = mandatorySqlStatement();
+
+			} else{
+				retValue= Evaluator.evaluateLogic(this, m_vo.MandatoryLogic);
+
+			}
+			
 			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " Mandatory(" + m_vo.MandatoryLogic + ") => Mandatory-" + retValue);
 			if (retValue)
 				return true;
@@ -377,6 +385,32 @@ public class GridField
 		//  Mandatory if displayed
 		return isDisplayed (checkContext);
 	}	//	isMandatory
+
+	private boolean mandatorySqlStatement() {
+		String sql = m_vo.MandatoryLogic.substring(5); // w/o tag
+		sql = Env.parseContext(m_vo.ctx, m_vo.WindowNo, sql, false, false); // replace
+
+		// variables
+		if (sql.equals("")) {
+			log.log(Level.WARNING,"(" + m_vo.ColumnName + ") - Mandatory SQL variable parse failed: " + m_vo.MandatoryLogic);
+		} else {
+			PreparedStatement stmt = null;
+			ResultSet rs = null;
+			try {
+				stmt = DB.prepareStatement(sql, null);
+				rs = stmt.executeQuery();
+				if (rs.next())
+					return true;
+			} catch (SQLException e) {
+				log.log(Level.WARNING, "(" + m_vo.ColumnName + ") " + sql, e);
+			} finally {
+				DB.close(rs, stmt);
+				rs = null;
+				stmt = null;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 *	Is parameter Editable - checks if parameter is Read Only
