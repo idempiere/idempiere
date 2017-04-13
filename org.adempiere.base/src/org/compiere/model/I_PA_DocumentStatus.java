@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_DocumentStatus
- *  @author Adempiere (generated) 
- *  @version 1.04.1rc19
+ *  @author iDempiere (generated) 
+ *  @version Release 4.1
  */
 public interface I_PA_DocumentStatus 
 {
@@ -30,8 +30,8 @@ public interface I_PA_DocumentStatus
     /** TableName=PA_DocumentStatus */
     public static final String Table_Name = "PA_DocumentStatus";
 
-    /** AD_Table_ID=53898 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    /** AD_Table_ID=200216 */
+    public static final int Table_ID = 200216;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,18 +62,18 @@ public interface I_PA_DocumentStatus
 	  */
 	public int getAD_Form_ID();
 
-	public I_AD_Form getAD_Form() throws RuntimeException;
+	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
-	/** Set Organisation.
-	  * Organisational entity within client
+	/** Set Organization.
+	  * Organizational entity within client
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
-	/** Get Organisation.
-	  * Organisational entity within client
+	/** Get Organization.
+	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
 
@@ -90,7 +90,7 @@ public interface I_PA_DocumentStatus
 	  */
 	public int getAD_Role_ID();
 
-	public I_AD_Role getAD_Role() throws RuntimeException;
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name AD_Table_ID */
     public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
@@ -105,7 +105,7 @@ public interface I_PA_DocumentStatus
 	  */
 	public int getAD_Table_ID();
 
-	public I_AD_Table getAD_Table() throws RuntimeException;
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
@@ -120,7 +120,7 @@ public interface I_PA_DocumentStatus
 	  */
 	public int getAD_User_ID();
 
-	public I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name AD_Window_ID */
     public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
@@ -135,7 +135,7 @@ public interface I_PA_DocumentStatus
 	  */
 	public int getAD_Window_ID();
 
-	public I_AD_Window getAD_Window() throws RuntimeException;
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name C_Project_ID */
     public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
@@ -150,7 +150,7 @@ public interface I_PA_DocumentStatus
 	  */
 	public int getC_Project_ID();
 
-	public I_C_Project getC_Project() throws RuntimeException;
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -210,46 +210,64 @@ public interface I_PA_DocumentStatus
     /** Column name Name_PrintColor_ID */
     public static final String COLUMNNAME_Name_PrintColor_ID = "Name_PrintColor_ID";
 
-	/** Set Name Colour	  */
+	/** Set Print Color for Name	  */
 	public void setName_PrintColor_ID (int Name_PrintColor_ID);
 
-	/** Get Name Colour	  */
+	/** Get Print Color for Name	  */
 	public int getName_PrintColor_ID();
 
-	public I_AD_PrintColor getName_PrintColor() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintColor getName_PrintColor() throws RuntimeException;
 
     /** Column name Name_PrintFont_ID */
     public static final String COLUMNNAME_Name_PrintFont_ID = "Name_PrintFont_ID";
 
-	/** Set Name Font	  */
+	/** Set Print Font for Name	  */
 	public void setName_PrintFont_ID (int Name_PrintFont_ID);
 
-	/** Get Name Font	  */
+	/** Get Print Font for Name	  */
 	public int getName_PrintFont_ID();
 
-	public I_AD_PrintFont getName_PrintFont() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFont getName_PrintFont() throws RuntimeException;
 
     /** Column name Number_PrintColor_ID */
     public static final String COLUMNNAME_Number_PrintColor_ID = "Number_PrintColor_ID";
 
-	/** Set Number Colour	  */
+	/** Set Print Color for Number	  */
 	public void setNumber_PrintColor_ID (int Number_PrintColor_ID);
 
-	/** Get Number Colour	  */
+	/** Get Print Color for Number	  */
 	public int getNumber_PrintColor_ID();
 
-	public I_AD_PrintColor getNumber_PrintColor() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintColor getNumber_PrintColor() throws RuntimeException;
 
     /** Column name Number_PrintFont_ID */
     public static final String COLUMNNAME_Number_PrintFont_ID = "Number_PrintFont_ID";
 
-	/** Set Number Font	  */
+	/** Set Print Font for Number	  */
 	public void setNumber_PrintFont_ID (int Number_PrintFont_ID);
 
-	/** Get Number Font	  */
+	/** Get Print Font for Number	  */
 	public int getNumber_PrintFont_ID();
 
-	public I_AD_PrintFont getNumber_PrintFont() throws RuntimeException;
+	public org.compiere.model.I_AD_PrintFont getNumber_PrintFont() throws RuntimeException;
+
+    /** Column name PA_DocumentStatus_ID */
+    public static final String COLUMNNAME_PA_DocumentStatus_ID = "PA_DocumentStatus_ID";
+
+	/** Set Document Status	  */
+	public void setPA_DocumentStatus_ID (int PA_DocumentStatus_ID);
+
+	/** Get Document Status	  */
+	public int getPA_DocumentStatus_ID();
+
+    /** Column name PA_DocumentStatus_UU */
+    public static final String COLUMNNAME_PA_DocumentStatus_UU = "PA_DocumentStatus_UU";
+
+	/** Set PA_DocumentStatus_UU	  */
+	public void setPA_DocumentStatus_UU (String PA_DocumentStatus_UU);
+
+	/** Get PA_DocumentStatus_UU	  */
+	public String getPA_DocumentStatus_UU();
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";
@@ -265,15 +283,6 @@ public interface I_PA_DocumentStatus
  lowest number comes first
 	  */
 	public int getSeqNo();
-
-    /** Column name PA_DocumentStatus_ID */
-    public static final String COLUMNNAME_PA_DocumentStatus_ID = "PA_DocumentStatus_ID";
-
-	/** Set Document Status Indicator	  */
-	public void setPA_DocumentStatus_ID (int PA_DocumentStatus_ID);
-
-	/** Get Document Status Indicator	  */
-	public int getPA_DocumentStatus_ID();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

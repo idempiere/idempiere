@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2007 ComPiere, Inc. All Rights Reserved.                *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -19,18 +19,17 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_DocumentStatus
- *  @author Adempiere (generated) 
- *  @version 1.04.1rc19 - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 4.1 - $Id$ */
 public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20151116L;
+	private static final long serialVersionUID = 20170413L;
 
     /** Standard Constructor */
     public X_PA_DocumentStatus (Properties ctx, int PA_DocumentStatus_ID, String trxName)
@@ -40,12 +39,8 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
         {
 			setAD_Table_ID (0);
 			setName (null);
-			setName_PrintColor_ID (0);
-			setName_PrintFont_ID (0);
-			setNumber_PrintColor_ID (0);
-			setNumber_PrintFont_ID (0);
-			setSeqNo (0);
 			setPA_DocumentStatus_ID (0);
+			setSeqNo (0);
         } */
     }
 
@@ -77,9 +72,9 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
       return sb.toString();
     }
 
-	public I_AD_Form getAD_Form() throws RuntimeException
+	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
     {
-		return (I_AD_Form)MTable.get(getCtx(), I_AD_Form.Table_Name)
+		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_Name)
 			.getPO(getAD_Form_ID(), get_TrxName());	}
 
 	/** Set Special Form.
@@ -105,9 +100,9 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 		return ii.intValue();
 	}
 
-	public I_AD_Role getAD_Role() throws RuntimeException
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
     {
-		return (I_AD_Role)MTable.get(getCtx(), I_AD_Role.Table_Name)
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
 			.getPO(getAD_Role_ID(), get_TrxName());	}
 
 	/** Set Role.
@@ -117,9 +112,9 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
 		if (AD_Role_ID < 0) 
-			set_Value (COLUMNNAME_AD_Role_ID, null);
+			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
 		else 
-			set_Value (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
+			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
@@ -133,9 +128,9 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 		return ii.intValue();
 	}
 
-	public I_AD_Table getAD_Table() throws RuntimeException
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
     {
-		return (I_AD_Table)MTable.get(getCtx(), I_AD_Table.Table_Name)
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
 			.getPO(getAD_Table_ID(), get_TrxName());	}
 
 	/** Set Table.
@@ -161,9 +156,9 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 		return ii.intValue();
 	}
 
-	public I_AD_User getAD_User() throws RuntimeException
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
-		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.
@@ -173,9 +168,9 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 	public void setAD_User_ID (int AD_User_ID)
 	{
 		if (AD_User_ID < 1) 
-			set_Value (COLUMNNAME_AD_User_ID, null);
+			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
 		else 
-			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
+			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
@@ -189,9 +184,9 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 		return ii.intValue();
 	}
 
-	public I_AD_Window getAD_Window() throws RuntimeException
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
     {
-		return (I_AD_Window)MTable.get(getCtx(), I_AD_Window.Table_Name)
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
 			.getPO(getAD_Window_ID(), get_TrxName());	}
 
 	/** Set Window.
@@ -217,9 +212,9 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 		return ii.intValue();
 	}
 
-	public I_C_Project getC_Project() throws RuntimeException
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
     {
-		return (I_C_Project)MTable.get(getCtx(), I_C_Project.Table_Name)
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
 			.getPO(getC_Project_ID(), get_TrxName());	}
 
 	/** Set Project.
@@ -229,9 +224,9 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 	public void setC_Project_ID (int C_Project_ID)
 	{
 		if (C_Project_ID < 1) 
-			set_Value (COLUMNNAME_C_Project_ID, null);
+			set_ValueNoCheck (COLUMNNAME_C_Project_ID, null);
 		else 
-			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
+			set_ValueNoCheck (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
@@ -279,21 +274,13 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair() 
+	public org.compiere.model.I_AD_PrintColor getName_PrintColor() throws RuntimeException
     {
-        return new KeyNamePair(get_ID(), getName());
-    }
-
-	public I_AD_PrintColor getName_PrintColor() throws RuntimeException
-    {
-		return (I_AD_PrintColor)MTable.get(getCtx(), I_AD_PrintColor.Table_Name)
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
 			.getPO(getName_PrintColor_ID(), get_TrxName());	}
 
-	/** Set Name Colour.
-		@param Name_PrintColor_ID Name Colour	  */
+	/** Set Print Color for Name.
+		@param Name_PrintColor_ID Print Color for Name	  */
 	public void setName_PrintColor_ID (int Name_PrintColor_ID)
 	{
 		if (Name_PrintColor_ID < 1) 
@@ -302,8 +289,8 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			set_Value (COLUMNNAME_Name_PrintColor_ID, Integer.valueOf(Name_PrintColor_ID));
 	}
 
-	/** Get Name Colour.
-		@return Name Colour	  */
+	/** Get Print Color for Name.
+		@return Print Color for Name	  */
 	public int getName_PrintColor_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Name_PrintColor_ID);
@@ -312,13 +299,13 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 		return ii.intValue();
 	}
 
-	public I_AD_PrintFont getName_PrintFont() throws RuntimeException
+	public org.compiere.model.I_AD_PrintFont getName_PrintFont() throws RuntimeException
     {
-		return (I_AD_PrintFont)MTable.get(getCtx(), I_AD_PrintFont.Table_Name)
+		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_Name)
 			.getPO(getName_PrintFont_ID(), get_TrxName());	}
 
-	/** Set Name Font.
-		@param Name_PrintFont_ID Name Font	  */
+	/** Set Print Font for Name.
+		@param Name_PrintFont_ID Print Font for Name	  */
 	public void setName_PrintFont_ID (int Name_PrintFont_ID)
 	{
 		if (Name_PrintFont_ID < 1) 
@@ -327,8 +314,8 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			set_Value (COLUMNNAME_Name_PrintFont_ID, Integer.valueOf(Name_PrintFont_ID));
 	}
 
-	/** Get Name Font.
-		@return Name Font	  */
+	/** Get Print Font for Name.
+		@return Print Font for Name	  */
 	public int getName_PrintFont_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Name_PrintFont_ID);
@@ -337,13 +324,13 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 		return ii.intValue();
 	}
 
-	public I_AD_PrintColor getNumber_PrintColor() throws RuntimeException
+	public org.compiere.model.I_AD_PrintColor getNumber_PrintColor() throws RuntimeException
     {
-		return (I_AD_PrintColor)MTable.get(getCtx(), I_AD_PrintColor.Table_Name)
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
 			.getPO(getNumber_PrintColor_ID(), get_TrxName());	}
 
-	/** Set Number Colour.
-		@param Number_PrintColor_ID Number Colour	  */
+	/** Set Print Color for Number.
+		@param Number_PrintColor_ID Print Color for Number	  */
 	public void setNumber_PrintColor_ID (int Number_PrintColor_ID)
 	{
 		if (Number_PrintColor_ID < 1) 
@@ -352,8 +339,8 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			set_Value (COLUMNNAME_Number_PrintColor_ID, Integer.valueOf(Number_PrintColor_ID));
 	}
 
-	/** Get Number Colour.
-		@return Number Colour	  */
+	/** Get Print Color for Number.
+		@return Print Color for Number	  */
 	public int getNumber_PrintColor_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Number_PrintColor_ID);
@@ -362,13 +349,13 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 		return ii.intValue();
 	}
 
-	public I_AD_PrintFont getNumber_PrintFont() throws RuntimeException
+	public org.compiere.model.I_AD_PrintFont getNumber_PrintFont() throws RuntimeException
     {
-		return (I_AD_PrintFont)MTable.get(getCtx(), I_AD_PrintFont.Table_Name)
+		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_Name)
 			.getPO(getNumber_PrintFont_ID(), get_TrxName());	}
 
-	/** Set Number Font.
-		@param Number_PrintFont_ID Number Font	  */
+	/** Set Print Font for Number.
+		@param Number_PrintFont_ID Print Font for Number	  */
 	public void setNumber_PrintFont_ID (int Number_PrintFont_ID)
 	{
 		if (Number_PrintFont_ID < 1) 
@@ -377,14 +364,48 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			set_Value (COLUMNNAME_Number_PrintFont_ID, Integer.valueOf(Number_PrintFont_ID));
 	}
 
-	/** Get Number Font.
-		@return Number Font	  */
+	/** Get Print Font for Number.
+		@return Print Font for Number	  */
 	public int getNumber_PrintFont_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Number_PrintFont_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Document Status.
+		@param PA_DocumentStatus_ID Document Status	  */
+	public void setPA_DocumentStatus_ID (int PA_DocumentStatus_ID)
+	{
+		if (PA_DocumentStatus_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_PA_DocumentStatus_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_PA_DocumentStatus_ID, Integer.valueOf(PA_DocumentStatus_ID));
+	}
+
+	/** Get Document Status.
+		@return Document Status	  */
+	public int getPA_DocumentStatus_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PA_DocumentStatus_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set PA_DocumentStatus_UU.
+		@param PA_DocumentStatus_UU PA_DocumentStatus_UU	  */
+	public void setPA_DocumentStatus_UU (String PA_DocumentStatus_UU)
+	{
+		set_Value (COLUMNNAME_PA_DocumentStatus_UU, PA_DocumentStatus_UU);
+	}
+
+	/** Get PA_DocumentStatus_UU.
+		@return PA_DocumentStatus_UU	  */
+	public String getPA_DocumentStatus_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_PA_DocumentStatus_UU);
 	}
 
 	/** Set Sequence.
@@ -402,26 +423,6 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 	public int getSeqNo () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Document Status Indicator.
-		@param PA_DocumentStatus_ID Document Status Indicator	  */
-	public void setPA_DocumentStatus_ID (int PA_DocumentStatus_ID)
-	{
-		if (PA_DocumentStatus_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_PA_DocumentStatus_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_PA_DocumentStatus_ID, Integer.valueOf(PA_DocumentStatus_ID));
-	}
-
-	/** Get Document Status Indicator.
-		@return Document Status Indicator	  */
-	public int getPA_DocumentStatus_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PA_DocumentStatus_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

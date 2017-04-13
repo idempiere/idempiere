@@ -21,6 +21,7 @@
 *                                                                     *
 * Contributors:                                                       *
 * - Adaxa                                                             *
+* - Deepak Pansheriya                                                 *
 * - Murilo Ht                                                         *
 * - Carlos Ruiz                                                       *
 **********************************************************************/
@@ -92,33 +93,47 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 		appendChild(div);
 		Label nameLabel = new Label();
 		nameLabel.setText(m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Name) + ": ");
-		int AD_PrintColor_ID = m_documentStatus.getName_PrintColor_ID();
-		MPrintColor printColor = MPrintColor.get(Env.getCtx(), AD_PrintColor_ID);
-		String color = ZkCssHelper.createHexColorString(printColor.getColor());
+		String nameColorStyle = "";
+		int Name_PrintColor_ID = m_documentStatus.getName_PrintColor_ID();
+		if (Name_PrintColor_ID > 0) {
+			MPrintColor printColor = MPrintColor.get(Env.getCtx(), Name_PrintColor_ID);
+			String color = ZkCssHelper.createHexColorString(printColor.getColor());
+			nameColorStyle = "color:#"+color+";";
+		}
 		int AD_PrintFont_ID = m_documentStatus.getName_PrintFont_ID();
-		MPrintFont printFont = MPrintFont.get(AD_PrintFont_ID);
-		String family = printFont.getFont().getFamily();
-		boolean bold = printFont.getFont().isBold();
-		boolean italic = printFont.getFont().isItalic();
-		int pointSize = printFont.getFont().getSize();
-		String fontStyle = "font-family:'"+family+"';font-weight:"+(bold ? "bold" : "normal")+";font-style:"+(italic ? "italic" : "normal")+";font-size:"+pointSize+"pt";
-		nameLabel.setStyle("color:#"+color+";"+fontStyle);
+		String nameFontStyle = "";
+		if (AD_PrintFont_ID > 0) {
+			MPrintFont printFont = MPrintFont.get(AD_PrintFont_ID);
+			String family = printFont.getFont().getFamily();
+			boolean bold = printFont.getFont().isBold();
+			boolean italic = printFont.getFont().isItalic();
+			int pointSize = printFont.getFont().getSize();
+			nameFontStyle = "font-family:'"+family+"';font-weight:"+(bold ? "bold" : "normal")+";font-style:"+(italic ? "italic" : "normal")+";font-size:"+pointSize+"pt";
+		}
+		nameLabel.setStyle(nameColorStyle+nameFontStyle);
 		div.appendChild(nameLabel);
 
 		statusLabel = new Label();		
-		AD_PrintColor_ID = m_documentStatus.getNumber_PrintColor_ID();
-		printColor = MPrintColor.get(Env.getCtx(), AD_PrintColor_ID);
-		color = ZkCssHelper.createHexColorString(printColor.getColor());
-		AD_PrintFont_ID = m_documentStatus.getNumber_PrintFont_ID();
-		printFont = MPrintFont.get(AD_PrintFont_ID);
-		family = printFont.getFont().getFamily();
-		bold = printFont.getFont().isBold();
-		italic = printFont.getFont().isItalic();
-		pointSize = printFont.getFont().getSize();
-		fontStyle = "font-family:'"+family+"';font-weight:"+(bold ? "bold" : "normal")+";font-style:"+(italic ? "italic" : "normal")+";font-size:"+pointSize+"pt";
-		int margin = pointSize;
-		String marginStyle = "margin-top:"+margin+"pt;"+"margin-bottom:"+margin+"pt;";
-		statusLabel.setStyle("color:#"+color+";"+fontStyle+";"+marginStyle);
+		String numberColorStyle = "";
+		int Number_PrintColor_ID = m_documentStatus.getNumber_PrintColor_ID();
+		if (Number_PrintColor_ID > 0) {
+			MPrintColor printColor = MPrintColor.get(Env.getCtx(), Number_PrintColor_ID);
+			String color = ZkCssHelper.createHexColorString(printColor.getColor());
+			numberColorStyle = "color:#"+color+";";
+		}
+		String numberFontStyle = "";
+		int Number_PrintFont_ID = m_documentStatus.getNumber_PrintFont_ID();
+		if (Number_PrintFont_ID > 0) {
+			MPrintFont printFont = MPrintFont.get(Number_PrintFont_ID);
+			String family = printFont.getFont().getFamily();
+			boolean bold = printFont.getFont().isBold();
+			boolean italic = printFont.getFont().isItalic();
+			int pointSize = printFont.getFont().getSize();
+			numberFontStyle = "font-family:'"+family+"';font-weight:"+(bold ? "bold" : "normal")+";font-style:"+(italic ? "italic" : "normal")+";font-size:"+pointSize+"pt;";
+			int margin = pointSize;
+			numberFontStyle += "margin-top:"+margin+"pt;"+"margin-bottom:"+margin+"pt;";
+		}
+		statusLabel.setStyle(numberColorStyle+numberFontStyle);
 		div.appendChild(statusLabel);
 
 		this.addEventListener(Events.ON_CLICK, this);

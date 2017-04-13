@@ -1,0 +1,68 @@
+-- IDEMPIERE-3338 Document Status Indicator
+-- Apr 13, 2017 1:36:25 PM CEST
+UPDATE AD_Column SET IsMandatory='N',Updated=TO_TIMESTAMP('2017-04-13 13:36:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=212997
+;
+
+-- Apr 13, 2017 1:36:26 PM CEST
+INSERT INTO t_alter_column values('pa_documentstatus','Name_PrintColor_ID','NUMERIC(10)',null,'NULL')
+;
+
+-- Apr 13, 2017 1:36:26 PM CEST
+INSERT INTO t_alter_column values('pa_documentstatus','Name_PrintColor_ID',null,'NULL',null)
+;
+
+-- Apr 13, 2017 1:36:34 PM CEST
+UPDATE AD_Column SET IsMandatory='N',Updated=TO_TIMESTAMP('2017-04-13 13:36:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=212998
+;
+
+-- Apr 13, 2017 1:36:35 PM CEST
+INSERT INTO t_alter_column values('pa_documentstatus','Name_PrintFont_ID','NUMERIC(10)',null,'NULL')
+;
+
+-- Apr 13, 2017 1:36:35 PM CEST
+INSERT INTO t_alter_column values('pa_documentstatus','Name_PrintFont_ID',null,'NULL',null)
+;
+
+-- Apr 13, 2017 1:36:40 PM CEST
+UPDATE AD_Column SET IsMandatory='N',Updated=TO_TIMESTAMP('2017-04-13 13:36:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=212999
+;
+
+-- Apr 13, 2017 1:36:41 PM CEST
+INSERT INTO t_alter_column values('pa_documentstatus','Number_PrintColor_ID','NUMERIC(10)',null,'NULL')
+;
+
+-- Apr 13, 2017 1:36:41 PM CEST
+INSERT INTO t_alter_column values('pa_documentstatus','Number_PrintColor_ID',null,'NULL',null)
+;
+
+-- Apr 13, 2017 1:36:47 PM CEST
+UPDATE AD_Column SET IsMandatory='N',Updated=TO_TIMESTAMP('2017-04-13 13:36:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=213000
+;
+
+-- Apr 13, 2017 1:36:48 PM CEST
+INSERT INTO t_alter_column values('pa_documentstatus','Number_PrintFont_ID','NUMERIC(10)',null,'NULL')
+;
+
+-- Apr 13, 2017 1:36:48 PM CEST
+INSERT INTO t_alter_column values('pa_documentstatus','Number_PrintFont_ID',null,'NULL',null)
+;
+
+-- Apr 13, 2017 1:49:23 PM CEST
+UPDATE PA_DocumentStatus SET Name_PrintColor_ID=NULL, Name_PrintFont_ID=NULL, Number_PrintColor_ID=NULL, Number_PrintFont_ID=NULL,Updated=TO_TIMESTAMP('2017-04-13 13:49:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200002
+;
+
+-- Apr 13, 2017 1:49:30 PM CEST
+UPDATE PA_DocumentStatus SET Name_PrintColor_ID=NULL, Name_PrintFont_ID=NULL, Number_PrintColor_ID=NULL, Number_PrintFont_ID=NULL,Updated=TO_TIMESTAMP('2017-04-13 13:49:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200003
+;
+
+-- Apr 13, 2017 1:49:36 PM CEST
+UPDATE PA_DocumentStatus SET Name_PrintColor_ID=NULL, Name_PrintFont_ID=NULL, Number_PrintColor_ID=NULL, Number_PrintFont_ID=NULL,Updated=TO_TIMESTAMP('2017-04-13 13:49:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200004
+;
+
+-- Apr 13, 2017 1:49:43 PM CEST
+UPDATE PA_DocumentStatus SET Name_PrintColor_ID=NULL, Name_PrintFont_ID=NULL, Number_PrintColor_ID=NULL, Number_PrintFont_ID=NULL,Updated=TO_TIMESTAMP('2017-04-13 13:49:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200005
+;
+
+SELECT register_migration_script('201704131337_IDEMPIERE-3338.sql') FROM dual
+;
+
