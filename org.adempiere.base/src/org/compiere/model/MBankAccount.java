@@ -135,7 +135,7 @@ public class MBankAccount extends X_C_BankAccount
 		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, true, Env.getAD_Client_ID(Env.getCtx()))) {
 			if (!Util.isEmpty(getIBAN())) {
 				setIBAN(IBAN.normalizeIBAN(getIBAN()));
-				if (!IBAN.isCheckDigitValid(getIBAN())) {
+				if (!IBAN.isValid(getIBAN())) {
 					log.saveError("Error", "IBAN is invalid");
 					return false;
 				}

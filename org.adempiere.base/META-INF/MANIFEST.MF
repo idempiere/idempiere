@@ -12,7 +12,8 @@ Bundle-ClassPath: base.jar,
  jfreechart-1.0.19.jar,
  jnlp.jar,
  barcode4j-2.1.jar,
- bsh-2.0b6.jar
+ bsh-2.0b6.jar,
+ commons-validator-1.6.jar
 Export-Package: bsh,
  bsh.classpath,
  bsh.collection,
