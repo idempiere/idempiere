@@ -21,6 +21,7 @@
 *                                                                     *
 * Contributors:                                                       *
 * - Adaxa                                                             *
+* - Ashley Ramdass                                                    *
 * - Deepak Pansheriya                                                 *
 * - Murilo Ht                                                         *
 * - Carlos Ruiz                                                       *
