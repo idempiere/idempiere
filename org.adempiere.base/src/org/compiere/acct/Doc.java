@@ -812,8 +812,8 @@ public abstract class Doc
 	{
 		if (DocumentType != null)
 			m_DocumentType = DocumentType;
-		//  No Document Type defined
-		if (m_DocumentType == null && getC_DocType_ID() != 0)
+		//  IDEMPIERE-3342 - prefer the category defined for the doctype if there is such column in the table
+		if (p_po.get_ColumnIndex("C_DocType_ID") >= 0 && getC_DocType_ID() != 0)
 		{
 			String sql = "SELECT DocBaseType, GL_Category_ID FROM C_DocType WHERE C_DocType_ID=?";
 			PreparedStatement pstmt = null;
