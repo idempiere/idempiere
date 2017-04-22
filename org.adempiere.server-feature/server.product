@@ -61,6 +61,10 @@
       <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.jetty.apache-jsp" autoStart="true" startLevel="3" />
+      <plugin id="org.eclipse.jetty.http" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.jetty.http2.common" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.jetty.http2.hpack" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.jetty.http2.server" autoStart="false" startLevel="0" />
       <plugin id="org.eclipse.jetty.osgi.boot" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.osgi.httpservice" autoStart="false" startLevel="0" />
       <plugin id="org.eclipse.jetty.websocket.javax.websocket.server" autoStart="true" startLevel="0" />

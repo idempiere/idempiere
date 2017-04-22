@@ -5,7 +5,6 @@
       <bc:propertyRef key="workspace.root"/>
     </bc:replace>
   </rm:propertyElement>
-  <rm:locator pattern="^org\.eclipse\.jetty\.http(\.source)?$" searchPathRef="workspace.project"/>
   <rm:locator pattern="^org\.apache\.felix\.webconsole\.plugins\.packageadmin(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.idempiere\.hazelcast\.service(\.source)?$" searchPathRef="workspace.feature" failOnError="false"/>
   <rm:locator pattern="^org\.idempiere\.hazelcast\.service(\.source)?$" searchPathRef="workspace.project"/>
