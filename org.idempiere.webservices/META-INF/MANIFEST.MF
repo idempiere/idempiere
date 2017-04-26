@@ -220,3 +220,4 @@ Export-Package: javax.ws.rs,
  org.springframework.web.context,
  org.springframework.web.util
 Web-ContextPath: ADInterface
+Bundle-ActivationPolicy: lazy

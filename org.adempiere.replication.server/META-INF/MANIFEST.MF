@@ -10,3 +10,4 @@ Require-Bundle: org.adempiere.server;bundle-version="0.0.0",
 Import-Package: javax.jms;version="1.1.0",
  org.apache.activemq
 Service-Component: OSGI-INF/serverfactory.xml
+Bundle-ActivationPolicy: lazy
