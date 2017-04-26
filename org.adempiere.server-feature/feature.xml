@@ -495,7 +495,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.jetty.http2.hpack"
          download-size="0"

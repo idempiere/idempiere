@@ -108,11 +108,6 @@
       <rm:property key="buckminster.mutable" value="false"/>
       <rm:uri format="${url.orbit}"/>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
-      <rm:property key="buckminster.source" value="false"/>
-      <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="${url.orbit.neon}"/>
-    </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="restlet.p2">
     <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
@@ -165,7 +160,7 @@
         <maven:entry groupId="org.codehaus.groovy" artifactId="groovy-all" name="groovy-all" />
         <maven:entry groupId="com.ibm.icu" artifactId="icu4j" name="com.ibm.icu" />
         <maven:entry groupId="joda-time" artifactId="joda-time" name="joda-time" />
-	<maven:entry groupId="commons-configuration" artifactId="commons-configuration" name="org.apache.commons.configuration"/>
+        <maven:entry groupId="commons-configuration" artifactId="commons-configuration" name="org.apache.commons.configuration"/>
         <maven:entry artifactId="commons-collections4" groupId="org.apache.commons" name="org.apache.commons.collections4"/>
       </maven:mappings>
     </rm:provider>
