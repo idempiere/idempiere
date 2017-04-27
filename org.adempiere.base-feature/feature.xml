@@ -36,10 +36,6 @@
          id="org.adempiere.report.jasper"
          version="0.0.0"/>
 
-   <includes
-         id="org.idempiere.customize"
-         version="0.0.0"/>
-
    <plugin
          id="org.adempiere.base"
          download-size="0"
