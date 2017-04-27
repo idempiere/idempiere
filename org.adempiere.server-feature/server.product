@@ -35,21 +35,8 @@
 
    <features>
       <feature id="org.adempiere.server"/>
-      <feature id="org.compiere.db.provider"/>
-      <feature id="org.adempiere.report.jasper"/>
-      <feature id="org.adempiere.base"/>
-      <feature id="org.idempiere.zk"/>
-      <feature id="org.adempiere.pipo"/>
-      <feature id="org.adempiere.replication"/>
-      <feature id="org.idempiere.hazelcast.service"/>
-      <feature id="org.adempiere.ui.zk"/>
-      <feature id="org.adempiere.payment.processor"/>
-      <feature id="org.adempiere.replication.server"/>
-      <feature id="org.adempiere.webstore"/>
-      <feature id="org.idempiere.felix.webconsole"/>
       <feature id="org.adempiere.target.platform"/>
       <feature id="org.idempiere.eclipse.platform"/>
-      <feature id="org.idempiere.customize"/>
    </features>
 
    <configurations>
