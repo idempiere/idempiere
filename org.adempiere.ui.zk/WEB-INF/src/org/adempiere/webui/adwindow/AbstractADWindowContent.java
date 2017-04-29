@@ -1669,7 +1669,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         }
 
         boolean isNewRow = adTabbox.getSelectedGridTab().getRowCount() == 0 || adTabbox.getSelectedGridTab().isNew();
-        toolbar.enableProcessButton(!isNewRow);
+    	ADTabpanel adtab = (ADTabpanel) adTabbox.getSelectedTabpanel();
+        toolbar.enableProcessButton(!isNewRow && adtab != null && adtab.getToolbarButtons().size() > 0);
         toolbar.enableArchive(!isNewRow);
         toolbar.enableZoomAcross(!isNewRow);
         toolbar.enableActiveWorkflows(!isNewRow);
@@ -1685,7 +1686,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         
         //Deepak-Enabling customize button IDEMPIERE-364
         if(!(adTabbox.getSelectedTabpanel() instanceof ADSortTab))
-        	toolbar.enableCustomize(((ADTabpanel)adTabbox.getSelectedTabpanel()).isGridView());
+        	toolbar.enableCustomize(adtab.isGridView());
     }
 
     /**
