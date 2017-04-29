@@ -137,6 +137,7 @@
 	width: 100%;
 	margin: auto;
 	padding: 0px 14px;
+	cursor: pointer;
 }
 
 .activities-box .z-vbox {
