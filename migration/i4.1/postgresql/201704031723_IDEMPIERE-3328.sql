@@ -4,15 +4,19 @@ INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,Cr
 ;
 
 -- Apr 3, 2017 5:19:13 PM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure) VALUES (212971,0,'Loads directly all nodes','If checked, all nodes are loaded before tree is displayed',288,'IsLoadAllNodesImmediately','N',1,'N','N','Y','N','N',0,'N',20,0,0,'Y',TO_TIMESTAMP('2017-04-03 17:19:13','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2017-04-03 17:19:13','YYYY-MM-DD HH24:MI:SS'),100,203064,'Y','N','D','N','N','N','Y','692e44f6-4653-4a06-b68e-05fa3382202d','N',0,'N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure) VALUES (212971,0,'Loads directly all nodes','If checked, all nodes are loaded before tree is displayed',288,'IsLoadAllNodesImmediately','Y',1,'N','N','Y','N','N',0,'N',20,0,0,'Y',TO_TIMESTAMP('2017-04-03 17:19:13','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2017-04-03 17:19:13','YYYY-MM-DD HH24:MI:SS'),100,203064,'Y','N','D','N','N','N','Y','692e44f6-4653-4a06-b68e-05fa3382202d','N',0,'N','N')
+;
+
+-- May 3, 2017 5:34:24 PM CEST
+ALTER TABLE AD_Tree ADD COLUMN IsLoadAllNodesImmediately CHAR(1) DEFAULT 'Y' CHECK (IsLoadAllNodesImmediately IN ('Y','N')) NOT NULL
 ;
 
 -- Apr 3, 2017 5:19:18 PM CEST
-INSERT INTO t_alter_column values('ad_tree','IsLoadAllNodesImmediately','CHAR(1)',null,'N')
+INSERT INTO t_alter_column values('ad_tree','IsLoadAllNodesImmediately','CHAR(1)',null,'Y')
 ;
 
 -- Apr 3, 2017 5:19:18 PM CEST
-UPDATE AD_Tree SET IsLoadAllNodesImmediately='N' WHERE IsLoadAllNodesImmediately IS NULL
+UPDATE AD_Tree SET IsLoadAllNodesImmediately='Y' WHERE IsLoadAllNodesImmediately IS NULL
 ;
 
 -- Apr 3, 2017 5:19:47 PM CEST

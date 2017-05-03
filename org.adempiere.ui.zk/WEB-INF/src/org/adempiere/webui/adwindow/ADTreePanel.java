@@ -75,7 +75,8 @@ public class ADTreePanel extends Panel implements EventListener<Event>
     	{
 	    	this.AD_Tree_ID = AD_Tree_ID;
 	    	SimpleTreeModel.initADTree(tree, AD_Tree_ID, windowNo);
-	    	if (MTree_Base.isLoadAllNodesImmediately(AD_Tree_ID, null))
+	    	MTree_Base tb = MTree_Base.get(Env.getCtx(), AD_Tree_ID, null);
+	    	if (tb.isLoadAllNodesImmediately())
 	    		TreeUtils.collapseTree(tree, true);
 	    	pnlSearch.initialise();
 	    	return true;

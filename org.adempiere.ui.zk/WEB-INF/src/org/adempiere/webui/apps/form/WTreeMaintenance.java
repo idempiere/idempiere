@@ -40,7 +40,6 @@ import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.TreeMaintenance;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
-import org.compiere.model.MTree_Base;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -326,8 +325,8 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 			centerTree.getTreechildren().detach();
 
 		SimpleTreeModel.initADTree(centerTree, m_tree.getAD_Tree_ID(), m_WindowNo);
-		if (MTree_Base.isLoadAllNodesImmediately(m_tree.getAD_Tree_ID(), null))
-			TreeUtils.collapseTree(centerTree, false);
+		if (m_tree.isLoadAllNodesImmediately())
+			TreeUtils.collapseTree(centerTree, true);
 
 	}	//	action_fillTree
 	
