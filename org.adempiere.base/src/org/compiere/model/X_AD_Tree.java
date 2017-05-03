@@ -30,7 +30,7 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20170403L;
 
     /** Standard Constructor */
     public X_AD_Tree (Properties ctx, int AD_Tree_ID, String trxName)
@@ -41,6 +41,8 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 			setAD_Tree_ID (0);
 			setIsAllNodes (false);
 			setIsDefault (false);
+// N
+			setIsLoadAllNodesImmediately (false);
 // N
 			setIsTreeDrivenByValue (false);
 // N
@@ -198,6 +200,30 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	public boolean isDefault () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Loads directly all nodes.
+		@param IsLoadAllNodesImmediately 
+		If checked, all nodes are loaded before tree is displayed
+	  */
+	public void setIsLoadAllNodesImmediately (boolean IsLoadAllNodesImmediately)
+	{
+		set_Value (COLUMNNAME_IsLoadAllNodesImmediately, Boolean.valueOf(IsLoadAllNodesImmediately));
+	}
+
+	/** Get Loads directly all nodes.
+		@return If checked, all nodes are loaded before tree is displayed
+	  */
+	public boolean isLoadAllNodesImmediately () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsLoadAllNodesImmediately);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

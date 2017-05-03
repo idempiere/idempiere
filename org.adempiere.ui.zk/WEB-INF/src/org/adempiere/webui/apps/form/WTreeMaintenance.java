@@ -34,11 +34,13 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.TreeMaintenance;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
+import org.compiere.model.MTree_Base;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -322,8 +324,11 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 			centerTree.getTreefoot().detach();
 		if (centerTree.getTreechildren() != null)
 			centerTree.getTreechildren().detach();
-		
+
 		SimpleTreeModel.initADTree(centerTree, m_tree.getAD_Tree_ID(), m_WindowNo);
+		if (MTree_Base.isLoadAllNodesImmediately(m_tree.getAD_Tree_ID(), null))
+			TreeUtils.collapseTree(centerTree, false);
+
 	}	//	action_fillTree
 	
 	/**

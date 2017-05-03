@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.DB;
 
 /**
  *	Base Tree Model.
@@ -397,5 +398,10 @@ public class MTree_Base extends X_AD_Tree
 		
 		return success;
 	}	//	afterSave
-	
+
+	/** Returns true if should load all tree nodes immediately */
+	public static boolean isLoadAllNodesImmediately(int treeID, String trxName) {
+		return DB.getSQLValueStringEx(trxName, "SELECT IsLoadAllNodesImmediately FROM AD_Tree WHERE AD_Tree_ID = ?", treeID).equals("Y");
+	}
+
 }	//	MTree_Base

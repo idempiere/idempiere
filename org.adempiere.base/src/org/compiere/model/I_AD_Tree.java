@@ -167,6 +167,19 @@ public interface I_AD_Tree
 	  */
 	public boolean isDefault();
 
+    /** Column name IsLoadAllNodesImmediately */
+    public static final String COLUMNNAME_IsLoadAllNodesImmediately = "IsLoadAllNodesImmediately";
+
+	/** Set Loads directly all nodes.
+	  * If checked, all nodes are loaded before tree is displayed
+	  */
+	public void setIsLoadAllNodesImmediately (boolean IsLoadAllNodesImmediately);
+
+	/** Get Loads directly all nodes.
+	  * If checked, all nodes are loaded before tree is displayed
+	  */
+	public boolean isLoadAllNodesImmediately();
+
     /** Column name IsTreeDrivenByValue */
     public static final String COLUMNNAME_IsTreeDrivenByValue = "IsTreeDrivenByValue";
 
