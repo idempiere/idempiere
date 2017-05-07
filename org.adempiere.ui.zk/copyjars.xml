@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project>
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
 		<mkdir dir="WEB-INF/lib" />
