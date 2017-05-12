@@ -139,7 +139,7 @@ INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexCol
 ;
 
 -- Apr 29, 2017 7:31:24 PM CEST
-CREATE UNIQUE INDEX asp_clientlevel_unq ON ASP_ClientLevel (AD_Client_ID,ASP_Module_ID)
+CREATE UNIQUE INDEX asp_clientlevel_unq ON ASP_ClientLevel (AD_Client_ID,ASP_Level_ID)
 ;
 
 -- Apr 29, 2017 7:33:18 PM CEST
