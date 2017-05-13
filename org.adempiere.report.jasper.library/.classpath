@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/core-3.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jasperreports-6.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jasperreports-fonts-6.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jasperreports-functions-6.3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bcprov-jdk14-139.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/batik-anim-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/batik-awt-util-1.8.jar"/>
@@ -23,13 +27,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/castor-xml-1.3.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-digester-2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-javaflow-20160505.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/core-2.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/fop-transcoder-allinone-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hibernate-core-3.3.2.GA.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/itext-2.1.7.js5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jasperreports-6.3.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jasperreports-fonts-6.3.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jasperreports-functions-6.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jaxen-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jcommon-1.0.23.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jfreechart-1.0.19.jar"/>

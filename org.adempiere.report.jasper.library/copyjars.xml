@@ -23,13 +23,13 @@
 		<get src="${url.file.jp.lib}/castor-xml-1.3.3.jar" dest="lib/castor-xml-1.3.3.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/commons-digester-2.1.jar" dest="lib/commons-digester-2.1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/commons-javaflow-20160505.jar" dest="lib/commons-javaflow-20160505.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/core-2.3.0.jar" dest="lib/core-2.3.0.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.jp.lib}/core-3.2.1.jar" dest="lib/core-3.2.1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/fop-transcoder-allinone-1.1.jar" dest="lib/fop-transcoder-allinone-1.1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/hibernate-core-3.3.2.GA.jar" dest="lib/hibernate-core-3.3.2.GA.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/itext-2.1.7.js5.jar" dest="lib/itext-2.1.7.js5.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/jasperreports-6.3.0.jar" dest="lib/jasperreports-6.3.0.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/jasperreports-fonts-6.3.0.jar" dest="lib/jasperreports-fonts-6.3.0.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/jasperreports-functions-6.3.0.jar" dest="lib/jasperreports-functions-6.3.0.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.jp.lib}/jasperreports-6.3.1.jar" dest="lib/jasperreports-6.3.1.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.jp.lib}/jasperreports-fonts-6.3.1.jar" dest="lib/jasperreports-fonts-6.3.1.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.jp.lib}/jasperreports-functions-6.3.1.jar" dest="lib/jasperreports-functions-6.3.1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/jaxen-1.1.1.jar" dest="lib/jaxen-1.1.1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/jcommon-1.0.23.jar" dest="lib/jcommon-1.0.23.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/jfreechart-1.0.19.jar" dest="lib/jfreechart-1.0.19.jar" usetimestamp="true" verbose="true" retries="5" />
