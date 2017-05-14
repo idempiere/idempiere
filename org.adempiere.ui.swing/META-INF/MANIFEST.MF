@@ -72,7 +72,8 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.ui;bundle-version="0.0.0",
  org.restlet;bundle-version="0.0.0",
  org.restlet.ext.servlet;bundle-version="0.0.0",
- groovy-all;bundle-version="0.0.0"
+ groovy-all;bundle-version="0.0.0",
+ org.jfree.chart-osgi;bundle-version="1.0.19"
 Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.adempiere.base
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -84,6 +85,7 @@ Import-Package: javax.net.ssl,
  org.compiere.css,
  org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.equinox.app,
+ org.jfree.ui;version="1.0.23",
  org.osgi.framework;version="1.5.0"
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy

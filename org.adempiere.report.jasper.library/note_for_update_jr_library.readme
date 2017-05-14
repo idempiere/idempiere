@@ -23,3 +23,17 @@ poi-3.10.1 haven't yet osgi version, ever on newest obit repository. so use  Bun
 batik haven't yet osgi version, ever on newest obit repository. so use  Bundle-ClassPath
 current batik osgi version isn't use by other bundle, so can remove it. 
 itext is very old and have modify code from JP community, so use version from JP
+
+==========================
+note for p2
+
+1. use jasper report at jasperreports-6.3.1/dist to create p2
+
+2. use TIBCOJaspersoftStudio-6.3.1.final/plugins to create extra p2 for jasperreport, it provide almost dependency osgi version
+
+3. have to run ${ECLIPSE_FOLDER}/eclipse -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher for TIBCOJaspersoftStudio-6.3.1.final/plugins
+
+4. com.jaspersoft.studio.bundles.itext_2.1.7.js5 need package from bcprov. idempiere already have osgi of bcprov at version 1.56
+but after 1.50 bcprov change some package like org.bouncycastle.ocsp to org.bouncycastle.cert.ocsp
+success to run both version bcprov 1.50 and bcprov 1.56 but it make start progress take long time (about 2 minute)
+so better use Bundle-ClassPath for bcprov-jdk14-139 go with jasperreport

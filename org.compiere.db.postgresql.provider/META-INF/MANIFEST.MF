@@ -11,6 +11,7 @@ Bundle-ClassPath: .,
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.install;bundle-version="0.0.0"
 Import-Package: junit.framework;version="3.8.2",
+ org.jfree.io;version="1.0.23",
  org.junit;version="4.8.1",
  org.osgi.framework,
  org.slf4j;version="1.7.2"
