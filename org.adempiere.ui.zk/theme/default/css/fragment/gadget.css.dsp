@@ -136,7 +136,8 @@
 .activities-box {
 	width: 100%;
 	margin: auto;
-	padding: 1px 0px 1px 0px;
+	padding: 0px 14px;
+	cursor: pointer;
 }
 
 .activities-box .z-vbox {

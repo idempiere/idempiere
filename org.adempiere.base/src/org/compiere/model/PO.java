@@ -1909,7 +1909,7 @@ public abstract class PO
 												+ ", ID=" + m_IDs[0]);
 		}
 
-		String key = get_TableName() + "." + columnName + "|" + get_ID() + "|" + AD_Language;
+		String key = getTrlCacheKey(columnName, AD_Language);
 		String retValue = null;
 		if (! reload && trl_cache.containsKey(key)) {
 			retValue = trl_cache.get(key);
@@ -1941,6 +1941,11 @@ public abstract class PO
 		//
 		return retValue;
 	}	//	get_Translation
+
+	/** Return the key used in the translation cache */
+	private String getTrlCacheKey(String columnName, String AD_Language) {
+		return get_TableName() + "." + columnName + "|" + get_ID() + "|" + AD_Language;
+	}
 
 	/**
 	 * Get Translation of column
@@ -3645,6 +3650,14 @@ public abstract class PO
 				else
 					sqlcols.append(value.toString());
 				sqlcols.append(",");
+
+				// Reset of related translation cache entries
+		        String[] availableLanguages = Language.getNames();
+		        for (String langName : availableLanguages) {
+		    		Language language = Language.getLanguage(langName);
+					String key = getTrlCacheKey(columnName, language.getAD_Language());
+					trl_cache.remove(key);
+				}
 			}
 		}
 		StringBuilder whereid = new StringBuilder(" WHERE ").append(keyColumn).append("=").append(get_ID());

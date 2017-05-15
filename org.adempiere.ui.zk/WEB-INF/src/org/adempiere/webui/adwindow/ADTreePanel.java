@@ -20,6 +20,7 @@ import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.panel.TreeSearchPanel;
 import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.MTree_Base;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -42,8 +43,7 @@ public class ADTreePanel extends Panel implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6868506934553777046L;
-
+	private static final long serialVersionUID = 164816320839461191L;
 	private static final String ON_EXPAND_MENU_EVENT = "onExpandMenu";
 	private TreeSearchPanel pnlSearch;
     private Tree tree;
@@ -75,6 +75,9 @@ public class ADTreePanel extends Panel implements EventListener<Event>
     	{
 	    	this.AD_Tree_ID = AD_Tree_ID;
 	    	SimpleTreeModel.initADTree(tree, AD_Tree_ID, windowNo);
+	    	MTree_Base tb = MTree_Base.get(Env.getCtx(), AD_Tree_ID, null);
+	    	if (tb.isLoadAllNodesImmediately())
+	    		TreeUtils.collapseTree(tree, true);
 	    	pnlSearch.initialise();
 	    	return true;
     	}

@@ -15,6 +15,7 @@
 	<classpathentry exported="true" kind="lib" path="jfreechart-1.0.19.jar"/>
 	<classpathentry exported="true" kind="lib" path="jnlp.jar"/>
 	<classpathentry exported="true" kind="lib" path="barcode4j-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-validator-1.6.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

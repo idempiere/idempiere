@@ -346,6 +346,15 @@ public interface I_AD_Process_Para
 	  */
 	public boolean isRange();
 
+    /** Column name MandatoryLogic */
+    public static final String COLUMNNAME_MandatoryLogic = "MandatoryLogic";
+
+	/** Set Mandatory Logic	  */
+	public void setMandatoryLogic (String MandatoryLogic);
+
+	/** Get Mandatory Logic	  */
+	public String getMandatoryLogic();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 

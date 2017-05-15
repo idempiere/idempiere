@@ -2086,6 +2086,9 @@ public class MInvoice extends X_C_Invoice implements DocAction
 						}					
 					}
 				}
+				if (testAllocation(true)) {
+					saveEx();
+				}
 			}
 		}
 

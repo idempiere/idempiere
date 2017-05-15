@@ -172,9 +172,9 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         	comp.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, gridField.getGridTab().getTableName()+"0"+gridField.getColumnName());
         	this.gridTab = gridField.getGridTab();
         } else {
-        	comp.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, gridField.getColumnName());
+        	comp.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, gridField.getColumnName());
         }
-        this.setMandatory(gridField.isMandatory(false));
+        this.setMandatory(gridField.isMandatory(true));
         this.readOnly = gridField.isReadOnly();
         this.description = gridField.getDescription();
         this.updateable = gridField.isUpdateable();

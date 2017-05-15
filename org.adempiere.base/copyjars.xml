@@ -11,6 +11,7 @@
 		<get src="${url.maven2.lib}/maven2/net/sourceforge/barbecue/barbecue/1.5-beta1/barbecue-1.5-beta1.jar" dest="barbecue-1.5-beta1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/org/jfree/jcommon/1.0.23/jcommon-1.0.23.jar" dest="jcommon-1.0.23.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/org/jfree/jfreechart/1.0.19/jfreechart-1.0.19.jar" dest="jfreechart-1.0.19.jar" usetimestamp="true" verbose="true" retries="5" />
+ 		<get src="${url.maven2.lib}/maven2/commons-validator/commons-validator/1.6/commons-validator-1.6.jar" dest="commons-validator-1.6.jar" usetimestamp="true" verbose="true" retries="5" />
  		<!-- jnlp is not used in idempiere? -->
 		<get src="${url.maven2.lib}/maven2/net/sf/barcode4j/barcode4j/2.1/barcode4j-2.1.jar" dest="barcode4j-2.1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.srv}/jarfile/4.1/jnlp.jar" dest="jnlp.jar" usetimestamp="true" verbose="true" retries="5" />

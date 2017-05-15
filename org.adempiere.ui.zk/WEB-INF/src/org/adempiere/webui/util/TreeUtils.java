@@ -13,11 +13,17 @@
  *****************************************************************************/
 package org.adempiere.webui.util;
 
+import java.util.Collection;
+import java.util.Iterator;
+
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
+import org.zkoss.zul.TreeNode;
 import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.ext.TreeOpenableModel;
 
 /**
  * 
@@ -136,5 +142,75 @@ public class TreeUtils {
 			return ((Boolean)tree.getAttribute(ATTR_ON_INIT_RENDER_POSTED)).booleanValue();
 		}
 		return false;
+	}
+
+	/**
+	 * travel all node of tree, at selected node, call callback function
+	 * @param tree
+	 * @param nodeModel
+	 * @param isRootNode
+	 * @param processNode
+	 */
+	static public void collapseTree (Component treeObject, boolean isOpen){
+		if (treeObject instanceof Tree) {
+			Tree tree = (Tree)treeObject;
+			if (tree.getModel() != null && tree.getModel() instanceof TreeOpenableModel){
+				collapseTreeModel ((TreeOpenableModel)tree.getModel(), isOpen, null);
+				return;
+			}
+		}
+
+		if (treeObject instanceof Treeitem) {// Tree also is Treeitem
+			Treeitem treeitem = (Treeitem) treeObject;
+			treeitem.setOpen(isOpen);
+		}
+		Collection<?> com = treeObject.getChildren();
+		if (com != null) {
+			for (Iterator<?> iterator = com.iterator(); iterator.hasNext();) {
+				collapseTree((Component) iterator.next(), isOpen);
+
+			}
+		}
+	}
+
+	static protected <T> void collapseTreeModel (TreeOpenableModel treeModelOpenable, boolean isOpen, T treeNode){
+		if (!isOpen){
+			treeModelOpenable.clearOpen();
+			return;//done, easy to close all node
+		}else{
+			if (!(treeModelOpenable instanceof TreeModel<?>)){
+				return;//model have to be a instance of TreeModel. because it provide method to add open object
+			}
+
+			if (treeNode != null && !(treeNode instanceof TreeNode<?>)){
+				return; //don't support, at least it's TreeNode to travel child node
+			}
+
+			@SuppressWarnings("unchecked")
+			TreeModel<T> treeModel = (TreeModel<T>)treeModelOpenable;
+
+			if (treeNode == null){// get from model
+				Object rootNode = treeModel.getRoot();
+				if (!(rootNode instanceof TreeNode<?>)){
+					return;//don't support, at least it's TreeNode to travel child node 
+				}
+
+				@SuppressWarnings("unchecked")
+				TreeNode<T> node = (TreeNode<T>)rootNode;
+				collapseTreeModel (treeModelOpenable, isOpen, node);
+			}else{//child node
+
+				TreeNode<?> node = (TreeNode<?>)treeNode;
+
+				treeModelOpenable.addOpenPath(treeModel.getPath(treeNode));
+
+
+				if (node.getChildren() != null) {
+					for (TreeNode<?> childNode : node.getChildren()){
+						collapseTreeModel (treeModelOpenable, isOpen, childNode);
+					}
+				}
+			}
+		}
 	}
 }
