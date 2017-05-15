@@ -26,6 +26,7 @@
          id="org.adempiere.report.jasper.library"
          download-size="0"
          install-size="0"
+         fragment="true"
          version="0.0.0"/>
 
    <plugin
