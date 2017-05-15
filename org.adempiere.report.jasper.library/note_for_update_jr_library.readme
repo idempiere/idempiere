@@ -47,3 +47,5 @@ manifest of jasperreports-6.3.1.jar already have osgi metadata and bundle name i
 so just change file name to net.sf.jasperreports.engine_6.3.1.jar and run ${ECLIPSE_FOLDER}/eclipse -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher
 
 note: net.sf.jasperreports.engine_6.3.1.jar use package dynamic import 
+
+6. com.jaspersoft.studio.bundles.itext_2.1.7.js5 already have bcprov-jdk14-139 on Bundle-ClassPath, but manifest still import package from bcprov-jdk14-139. so i modify its manifest before call ${ECLIPSE_FOLDER}/eclipse -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher

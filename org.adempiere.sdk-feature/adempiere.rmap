@@ -12,6 +12,7 @@
   <rm:locator pattern="^org\.eclipse\.jdt\.core\.compiler\.batch(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.commons\.collections4(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.commons\.configuration(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.commons\.digester(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.mortbay\.jasper(\..+)?" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.eclipse\.jetty\.apache\-jsp(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.eclipse\.jetty\.osgi\-servlet\-api(\.source)?$" searchPathRef="bundles.maven"/>
@@ -173,6 +174,7 @@
         <maven:entry groupId="org.bouncycastle" artifactId="bcmail-jdk15on" name="bcmail" />
         <maven:entry groupId="org.bouncycastle" artifactId="bctsp-jdk15on" name="bctsp" />
         <maven:entry groupId="org.apache.velocity" artifactId="velocity" name="org.apache.velocity" />
+        <maven:entry groupId="commons-digester" artifactId="commons-digester" name="org.apache.commons.digester" />
         <maven:entry groupId="com.google.code.maven-play-plugin.org.apache.commons" artifactId="commons-javaflow" name="org.apache.commons.javaflow" />
         <maven:entry groupId="org.cryptacular" artifactId="cryptacular" name="org.cryptacular" />
         <maven:entry groupId="net.sf.supercsv" artifactId="super-csv" name="net.sf.supercsv.super-csv" />

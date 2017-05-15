@@ -9,13 +9,10 @@
 		<get src="${url.file.jp.lib}/jasperreports-chart-customizers-6.3.1.jar" dest="lib/jasperreports-chart-customizers-6.3.1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/jasperreports-functions-6.3.1.jar" dest="lib/jasperreports-functions-6.3.1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/js.jar" dest="lib/js.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/mondrian-3.1.1.12687.jar" dest="lib/mondrian-3.1.1.12687.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/olap4j-0.9.7.309-JS-3.jar" dest="lib/olap4j-0.9.7.309-JS-3.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/persistence-api-1.0.jar" dest="lib/persistence-api-1.0.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/spring-beans-2.5.jar" dest="lib/spring-beans-2.5.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/spring-core-2.5.jar" dest="lib/spring-core-2.5.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/xml-apis-ext-1.3.04.jar" dest="lib/xml-apis-ext-1.3.04.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/xmpcore-5.1.1.jar" dest="lib/xmpcore-5.1.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/bcprov-jdk14-139.jar" dest="lib/bcprov-jdk14-139.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>
