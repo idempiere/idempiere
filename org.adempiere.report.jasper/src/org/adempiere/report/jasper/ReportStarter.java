@@ -562,7 +562,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
         	params.put("AD_ROLE_NAME", Env.getContext(Env.getCtx(), "#AD_Role_Name"));
         	params.put("AD_USER_NAME", Env.getContext(Env.getCtx(), "#AD_User_Name"));
         	params.put("AD_ORG_NAME", Env.getContext(Env.getCtx(), "#AD_Org_Name"));
-        	params.put("BASE_DIR", reportPath);
+        	params.put("BASE_DIR", REPORT_HOME.getAbsolutePath());
         	//params.put("HeaderLogo", reportPath);
         	//params.put("LoginLogo", reportPath);
         	
