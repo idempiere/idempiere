@@ -90,7 +90,7 @@ public class MAcctSchema extends X_C_AcctSchema
 	 *  @param trxName optional trx 
 	 *  @return Array of AcctSchema of Client
 	 */
-	public static MAcctSchema[] getClientAcctSchema (Properties ctx, int AD_Client_ID, String trxName)
+	public static synchronized MAcctSchema[] getClientAcctSchema (Properties ctx, int AD_Client_ID, String trxName)
 	{
 		//  Check Cache
 		Integer key = new Integer(AD_Client_ID);
