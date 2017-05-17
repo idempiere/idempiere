@@ -65,11 +65,11 @@ public class PipoDictionaryService implements IDictionaryService {
 			//get package version from file name suffix or bundle header
 			String packageVersion = null;
 			String fileName = packageFile.getName();
-			int versionSeparatorPos = fileName.lastIndexOf("_");
+			int versionSeparatorPos = fileName.lastIndexOf("2Pack_");
 			if (versionSeparatorPos > 0) {
 				int dotPos = fileName.lastIndexOf(".");
 				if (dotPos > 0 && dotPos > versionSeparatorPos) {
-					String version = fileName.substring(versionSeparatorPos+1, dotPos);
+					String version = fileName.substring(versionSeparatorPos+"2Pack_".length(), dotPos);
 					if (version.split("[.]").length == 3) {
 						packageVersion = version;
 					}
