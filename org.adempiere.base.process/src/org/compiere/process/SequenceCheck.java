@@ -137,7 +137,7 @@ public class SequenceCheck extends SvrProcess
 		//	Sync Table Name case
 		sql = "UPDATE AD_Sequence s "
 			+ "SET Name = (SELECT TableName FROM AD_Table t "
-				+ "WHERE t.IsView='N' AND UPPER(s.Name)=UPPER(t.TableName)) "
+				+ "WHERE t.IsView='N' AND t.IsActive='Y' AND UPPER(s.Name)=UPPER(t.TableName)) "
 			+ "WHERE s.IsTableID='Y'"
 			+ " AND EXISTS (SELECT * FROM AD_Table t "
 				+ "WHERE t.IsActive='Y' AND t.IsView='N'"
