@@ -142,7 +142,7 @@ public class SequenceCheck extends SvrProcess
 			+ " AND EXISTS (SELECT * FROM AD_Table t "
 				+ "WHERE t.IsActive='Y' AND t.IsView='N'"
 				+ " AND UPPER(s.Name)=UPPER(t.TableName) AND s.Name<>t.TableName)";
-		int no = DB.executeUpdate(sql, trxName);
+		int no = DB.executeUpdateEx(sql, trxName);
 		if (no > 0)
 		{
 			if (sp != null){
