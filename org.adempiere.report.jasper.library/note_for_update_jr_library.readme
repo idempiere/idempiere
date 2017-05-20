@@ -49,3 +49,5 @@ so just change file name to net.sf.jasperreports.engine_6.3.1.jar and run ${ECLI
 note: net.sf.jasperreports.engine_6.3.1.jar use package dynamic import 
 
 6. com.jaspersoft.studio.bundles.itext_2.1.7.js5 already have bcprov-jdk14-139 on Bundle-ClassPath, but manifest still import package from bcprov-jdk14-139. so i modify its manifest before call ${ECLIPSE_FOLDER}/eclipse -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher
+
+7. org.krysalis.barcode4j_2.1.0.jar have osgi version on maven but it dependency to org.apache.avalon, so use version from jasper report. it modify manifest.mf to don't depend to org.apache.avalon 

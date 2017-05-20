@@ -68,8 +68,6 @@
   <rm:locator pattern="^org\.apache\.servicemix\.bundles\.jaxen(\..+)?$" searchPathRef="jasper.osgi"/>
   <rm:locator pattern="^org\.apache\.servicemix\.bundles\.rhino(\..+)?$" searchPathRef="jasper.osgi"/>
   <rm:locator pattern="^org\.apache\.servicemix\.bundles\.xmlbeans(\..+)?$" searchPathRef="jasper.osgi"/>
-  <rm:locator pattern="^org\.dom4j(\..+)?$" searchPathRef="jasper.osgi"/>
-  <rm:locator pattern="^org\.w3c\.dom\.svg\.patch(\..+)?$" searchPathRef="jasper.osgi"/>
   <rm:locator pattern="^com\.jaspersoft\.studio\.bundles\.zxing(\..+)?$" searchPathRef="jasper.osgi"/>
   <rm:locator pattern="^org\.jfree\.jcommon-osgi(\..+)?$" searchPathRef="jasper.osgi"/>
   <rm:locator pattern="^org\.jfree\.chart-osgi(\..+)?$" searchPathRef="jasper.osgi"/>
