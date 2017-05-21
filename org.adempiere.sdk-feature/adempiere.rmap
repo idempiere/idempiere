@@ -31,7 +31,7 @@
   <rm:locator pattern="^org\.apache\.commons\.javaflow(\.source)?$" searchPathRef="bundles.maven" />
   <rm:locator pattern="^com\.ibm\.icu(\.source)?$" searchPathRef="bundles.maven" />
   <rm:locator pattern="^groovy-all(\.source)?$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^joda-time(\.source)?$" searchPathRef="modify-bundle" />
+  <rm:locator pattern="^joda-time(\.source)?$" searchPathRef="bundles.maven" />
   <rm:locator pattern="^org\.cryptacular(\.source)?$" searchPathRef="bundles.maven" />
   <rm:locator pattern="^net\.sf\.supercsv\.super-csv(\.source)?$" searchPathRef="bundles.maven" />
   <rm:locator pattern="^org\.atmosphere\.runtime(\.source)?$" searchPathRef="bundles.maven" />
