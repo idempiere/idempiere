@@ -245,7 +245,7 @@ public class AmtInWords_VI implements AmtInWords
 			place++;
 			number /= 1000;
 		}
-		while (number > 1000);
+		while (number >= 1000);
 		long m = number % 1000; //see Note 2, this rule does not apply for biggest major name 
 		if (m != 0)
 		{
@@ -372,6 +372,14 @@ public class AmtInWords_VI implements AmtInWords
 		aiw.print ("1.093.201.034.578");
 		aiw.print ("100,932,010,345,780");
 		aiw.print ("109.320.103,48");
+		aiw.print ("1,000");
+		aiw.print ("1,000,000");
+		aiw.print ("1,000,000,000");
+		aiw.print ("1,000,001,000");
+		aiw.print ("9,000,001,000");
+		aiw.print ("9,000,000,000");
+		aiw.print ("9,000,000,001");
+		
 	}	//	main
 	
 }	//	AmtInWords_VI
