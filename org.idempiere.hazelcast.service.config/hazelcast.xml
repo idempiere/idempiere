@@ -135,7 +135,7 @@
 			automatically evicted from the map. Entry is touched if get, put or containsKey is called.
 			Any integer between 0 and Integer.MAX_VALUE. 0 means infinite. Default is 0.
 		-->
-        <max-idle-seconds>0</max-idle-seconds>
+        <max-idle-seconds>1800</max-idle-seconds>
         <!--
             Valid values are:
             NONE (no eviction),
@@ -150,7 +150,7 @@
             Any integer between 0 and Integer.MAX_VALUE. 0 means
             Integer.MAX_VALUE. Default is 0.
         -->
-        <max-size policy="cluster_wide_map_size">2000</max-size>
+        <max-size policy="cluster_wide_map_size">1000</max-size>
         <!--
             When max. size is reached, specified percentage of
             the map will be evicted. Any integer between 0 and 100.

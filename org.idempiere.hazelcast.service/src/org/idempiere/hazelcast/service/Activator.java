@@ -15,9 +15,11 @@ package org.idempiere.hazelcast.service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -30,6 +32,8 @@ import org.osgi.framework.BundleContext;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.config.FileSystemXmlConfig;
+import com.hazelcast.config.MapConfig;
+import com.hazelcast.config.UrlXmlConfig;
 import com.hazelcast.core.*;
 
 /**
@@ -123,12 +127,36 @@ public class Activator implements BundleActivator {
 						Config config = new FileSystemXmlConfig(file);
 						config.setClassLoader(getClass().getClassLoader());
 						hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+						MapConfig mc = config.getMapConfig("default");
+						if (mc != null) {
+							System.out.println("Hazelcast Max Size Config: "+mc.getMaxSizeConfig().getMaxSizePolicy() + " " + mc.getMaxSizeConfig().getSize());
+						}
 						return;
 					} catch (FileNotFoundException e) {}
 				}
+				
+				Enumeration<URL> entries = getContext().getBundle().findEntries("/", "hazelcast.xml", false);
+				URL url = entries.hasMoreElements() ? entries.nextElement() : null;
+				if (url != null) {
+					try {
+						Config config = new UrlXmlConfig(url);
+						config.setClassLoader(getClass().getClassLoader());
+						hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+						MapConfig mc = config.getMapConfig("default");
+						if (mc != null) {
+							System.out.println("Hazelcast Max Size Config: "+mc.getMaxSizeConfig().getMaxSizePolicy() + " " + mc.getMaxSizeConfig().getSize());
+						}
+						return;
+					} catch (IOException e) {}
+				}
+				
 				Config config = new Config();
 				config.setClassLoader(getClass().getClassLoader());
-				hazelcastInstance = Hazelcast.newHazelcastInstance(config);		
+				hazelcastInstance = Hazelcast.newHazelcastInstance(config);	
+				MapConfig mc = config.getMapConfig("default");
+				if (mc != null) {
+					System.out.println("Hazelcast Max Size Config: "+mc.getMaxSizeConfig().getMaxSizePolicy() + " " + mc.getMaxSizeConfig().getSize());
+				}
 			}
 		});
 	}

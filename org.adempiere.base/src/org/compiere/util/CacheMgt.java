@@ -68,7 +68,24 @@ public class CacheMgt
 	/** Logger							*/
 	private static CLogger		log = CLogger.getCLogger(CacheMgt.class);
 
-	private final static int MAX_SIZE = 2000;
+	private static int MAX_SIZE = 1000;
+	static 
+	{
+		try 
+		{
+			String maxSize = System.getProperty("Cache.MaxSize");
+			if (maxSize != null && maxSize.trim().length() > 0)
+			{
+				int max = 0;
+				try
+				{
+					max = Integer.parseInt(maxSize.trim());
+				} catch (Throwable t) {}
+				if (max > 0)
+					MAX_SIZE = max;
+			}
+		} catch (Throwable t) {}
+	}
 	
 	/**************************************************************************
 	 * 	Create Cache Instance
