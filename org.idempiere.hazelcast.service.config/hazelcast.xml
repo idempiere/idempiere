@@ -117,7 +117,7 @@
             then all entries of the map will be copied to another JVM for
             fail-safety. 0 means no backup.
         -->
-        <backup-count>1</backup-count>
+        <backup-count>0</backup-count>
         <!--
             Number of async backups. 0 means no backup.
         -->

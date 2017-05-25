@@ -52,6 +52,8 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	@SuppressWarnings("unused")
 	private boolean m_distributed;
 	
+	private int m_maxSize = 0;
+	
 	public CCache (String name, int initialCapacity)
 	{
 		this(name, name, initialCapacity);
@@ -67,6 +69,11 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		this(name, name, initialCapacity, expireMinutes, distributed);
 	}
 	
+	public CCache (String name, int initialCapacity, int expireMinutes, boolean distributed, int maxSize)
+	{
+		this(name, name, initialCapacity, expireMinutes, distributed, maxSize);
+	}
+	
 	/**
 	 * 	Adempiere Cache - expires after 2 hours
 	 * 	@param name (table) name of the cache
@@ -79,20 +86,28 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 
 	public CCache (String tableName, String name, int initialCapacity, boolean distributed)
 	{
-		this (tableName, name, initialCapacity, 120, distributed);
+		this (tableName, name, initialCapacity, 60, distributed);
 	}		
+	
+	public CCache (String tableName, String name, int initialCapacity, int expireMinutes, boolean distributed)
+	{
+		this(tableName, name, initialCapacity, expireMinutes, distributed, CacheMgt.MAX_SIZE);
+	}
 	
 	/**
 	 * 	Adempiere Cache
 	 * 	@param name (table) name of the cache
 	 * 	@param initialCapacity initial capacity
 	 * 	@param expireMinutes expire after minutes (0=no expire)
+	 *  @param distributed
+	 *  @param maxSize ignore if distributed=true
 	 */
-	public CCache (String tableName, String name, int initialCapacity, int expireMinutes, boolean distributed)
+	public CCache (String tableName, String name, int initialCapacity, int expireMinutes, boolean distributed, int maxSize)
 	{
 		m_name = name;
 		m_tableName = tableName;
 		setExpireMinutes(expireMinutes);
+		m_maxSize = maxSize; 
 		cache = CacheMgt.get().register(this, distributed);
 		m_distributed = distributed;
 		if (distributed) {
@@ -407,5 +422,9 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 
 	@Override
 	public void newRecord(int record_ID) {
+	}
+
+	public int getMaxSize() {
+		return m_maxSize;
 	}
 }	//	CCache

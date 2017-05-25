@@ -172,7 +172,7 @@ public class MPriceList extends X_M_PriceList
 	}	//	getPricePrecision
 	
 	/** Cache of Price Lists			*/
-	private static CCache<Integer,MPriceList> s_cache = new CCache<Integer,MPriceList>(Table_Name, 5);
+	private static CCache<Integer,MPriceList> s_cache = new CCache<Integer,MPriceList>(Table_Name, 5, 5);
 	
 	
 	/**************************************************************************

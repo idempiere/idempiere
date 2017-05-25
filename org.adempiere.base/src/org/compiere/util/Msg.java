@@ -108,7 +108,7 @@ public final class Msg
 		if (retValue != null && retValue.size() > 0)
 			return retValue;
 
-		retValue = new CCache<String, String>("element", 100);
+		retValue = new CCache<String, String>("element", 100, 0, false, 0);
 		m_elementCache.put(AD_Language, retValue);
 		return retValue;
 	}
@@ -124,7 +124,7 @@ public final class Msg
 	private CCache<String,String> initMsg (String AD_Language)
 	{
 	//	Trace.printStack();
-		CCache<String,String> msg = new CCache<String,String>(I_AD_Message.Table_Name, MAP_SIZE, 0);
+		CCache<String,String> msg = new CCache<String,String>(I_AD_Message.Table_Name, MAP_SIZE, 0, false, 0);
 		//
 		if (!DB.isConnected())
 		{

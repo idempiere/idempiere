@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -68,7 +67,7 @@ public class CacheMgt
 	/** Logger							*/
 	private static CLogger		log = CLogger.getCLogger(CacheMgt.class);
 
-	private static int MAX_SIZE = 1000;
+	public static int MAX_SIZE = 1000;
 	static 
 	{
 		try 
@@ -114,18 +113,7 @@ public class CacheMgt
 		
 		if (map == null)
 		{
-			map = Collections.synchronizedMap(new LinkedHashMap<K, V>() {
-				/**
-				 * generated serial id
-				 */
-				private static final long serialVersionUID = -9111152673370957054L;
-
-				@Override
-				protected boolean removeEldestEntry(Entry<K, V> eldest) {
-					return size() > MAX_SIZE;
-				}
-				
-			});
+			map = Collections.synchronizedMap(new MaxSizeHashMap<K, V>(instance.getMaxSize()));
 		}		
 		return map;
 	}	//	register
@@ -395,5 +383,22 @@ public class CacheMgt
 
 	public void newRecord(String tableName, int recordId) {
 		clusterNewRecord(tableName, recordId);
+	}
+	
+	private static class MaxSizeHashMap<K, V> extends LinkedHashMap<K, V> {
+	    /**
+		 * generated serial id
+		 */
+		private static final long serialVersionUID = 5532596165440544235L;
+		private final int maxSize;
+
+	    public MaxSizeHashMap(int maxSize) {
+	        this.maxSize = maxSize;
+	    }
+
+	    @Override
+	    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+	        return maxSize <= 0 ? false : size() > maxSize;
+	    }
 	}
 }	//	CCache
