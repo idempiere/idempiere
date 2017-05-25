@@ -485,7 +485,9 @@ public class GridTabCSVExporter implements IGridTabExporter
 			}else if ( ! ("AD_Language".equals(foreignTable) || "AD_EntityType".equals(foreignTable) || "AD_Ref_List".equals(foreignTable))) {
 				MTable fTable = MTable.get(Env.getCtx(), foreignTable);
 				// Hardcoded / do not check for Value on AD_Org, AD_User and AD_Ref_List, must use name for these two tables
-				if (! ("AD_Org".equals(foreignTable) || "AD_User".equals(foreignTable)) && fTable.getColumn("Value") != null) {
+				if ("AD_Element".equals(foreignTable)){
+					name.append("[ColumnName]"); // ColumnName is unique value IDEMPIERE-3375
+				}else if (! ("AD_Org".equals(foreignTable) || "AD_User".equals(foreignTable)) && fTable.getColumn("Value") != null) {
 					name.append("[Value]"); // fully qualified
 				} else if (fTable.getColumn("Name") != null) {
 					name.append("[Name]");
