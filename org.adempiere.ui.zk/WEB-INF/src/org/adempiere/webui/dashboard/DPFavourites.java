@@ -39,17 +39,17 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.A;
-import org.zkoss.zul.Box;
-import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Layout;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
-import org.zkoss.zul.Vbox;
+import org.zkoss.zul.Vlayout;
 
 /**
  * Dashboard item: User favourites
@@ -70,7 +70,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 
 	public static final String DELETE_FAV_DROPPABLE = "deleteFav";
 
-	private Box bxFav;
+	private Layout bxFav;
 	
 	private Label lblMsg;
 	
@@ -85,7 +85,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		
 		Panelchildren favContent = new Panelchildren();
 		panel.appendChild(favContent);
-		bxFav = new Vbox();
+		bxFav = new Vlayout();
 		this.setSclass("favourites-box");
 		favContent.appendChild(bxFav);
 		createFavouritesPanel();
@@ -140,7 +140,8 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 	}
 
 	protected void addNode(int nodeId, String label, String description, String imageSrc, boolean addNewBtn) {
-		Hbox hbox = new Hbox();
+		Layout hbox = new Hlayout();
+		hbox.setSclass("favourites-item");
 		hbox.setSpacing("0px");
 		bxFav.appendChild(hbox);
 		
@@ -319,7 +320,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 			int Node_ID = Integer.valueOf(value.toString());
 			if(barDBupdate(false, Node_ID))
 			{
-				if (btn.getParent() instanceof Hbox)
+				if (btn.getParent() instanceof Hlayout)
 					bxFav.removeChild(btn.getParent());
 //				bxFav.removeChild(btn);
 				
