@@ -325,7 +325,8 @@ public abstract class CreateFromShipment extends CreateFrom
         }
 	    sqlStmt.append("WHERE rl.M_RMA_ID=? ");
 	    sqlStmt.append("AND rl.C_Charge_ID IS NOT NULL AND rl.M_InOutLine_ID IS NULL");
-	         
+	    sqlStmt.append(" ORDER BY 2");
+     
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 	    try
