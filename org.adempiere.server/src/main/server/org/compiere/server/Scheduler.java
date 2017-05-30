@@ -118,7 +118,7 @@ public class Scheduler extends AdempiereServer
 			m_summary.append(runProcess(process));
 			m_trx.commit(true);
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
 			if (m_trx != null)
 				m_trx.rollback();
