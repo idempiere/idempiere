@@ -121,19 +121,19 @@ public class InvoiceGen extends GenForm
 	{
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT rma.M_RMA_ID, org.Name, dt.Name, rma.DocumentNo, bp.Name, rma.Created, rma.Amt ");
-		sql.append("FROM M_RMA rma INNER JOIN AD_Org org ON rma.AD_Org_ID=org.AD_Org_ID ");
-		sql.append("INNER JOIN C_DocType dt ON rma.C_DocType_ID=dt.C_DocType_ID ");
-		sql.append("INNER JOIN C_BPartner bp ON rma.C_BPartner_ID=bp.C_BPartner_ID ");
-		sql.append("INNER JOIN M_InOut io ON rma.InOut_ID=io.M_InOut_ID ");
+		sql.append("FROM M_RMA rma INNER JOIN AD_Org org ON (rma.AD_Org_ID=org.AD_Org_ID) ");
+		sql.append("INNER JOIN C_DocType dt ON (rma.C_DocType_ID=dt.C_DocType_ID) ");
+		sql.append("INNER JOIN C_BPartner bp ON (rma.C_BPartner_ID=bp.C_BPartner_ID) ");
+		sql.append("INNER JOIN M_InOut io ON (rma.InOut_ID=io.M_InOut_ID) ");
 		sql.append("WHERE rma.DocStatus='CO' ");
 		sql.append("AND dt.DocBaseType = 'SOO' ");
-		sql.append("AND NOT EXISTS (SELECT * FROM C_Invoice i ");
-		sql.append("WHERE i.M_RMA_ID=rma.M_RMA_ID AND i.DocStatus IN ('IP', 'CO', 'CL')) ");
-		sql.append("AND EXISTS (SELECT * FROM C_InvoiceLine il INNER JOIN M_InOutLine iol ");
-		sql.append("ON il.M_InOutLine_ID=iol.M_InOutLine_ID INNER JOIN C_Invoice i ");
-		sql.append("ON i.C_Invoice_ID=il.C_Invoice_ID WHERE i.DocStatus IN ('CO', 'CL') ");
+		sql.append("AND NOT EXISTS (SELECT * from C_Invoice i ");
+		sql.append("where i.M_RMA_ID=rma.M_RMA_ID AND i.DocStatus IN ('IP', 'CO', 'CL')) ");
+		sql.append("AND EXISTS (SELECT * from C_InvoiceLine il inner join M_InOutLine iol ");
+		sql.append("on il.M_InOutLine_ID=iol.M_InOutLine_ID inner join C_Invoice i ");
+		sql.append("on i.C_Invoice_ID=il.C_Invoice_ID where i.DocStatus IN ('CO', 'CL') ");
 		sql.append("AND iol.M_InOutLine_ID IN ");
-		sql.append("(SELECT M_InOutLine_ID FROM M_RMALine rl WHERE rl.M_RMA_ID=rma.M_RMA_ID ");
+		sql.append("(SELECT M_InOutLine_ID from M_RMALine rl where rl.M_RMA_ID=rma.M_RMA_ID ");
 		sql.append("AND rl.M_InOutLine_ID IS NOT NULL)) ");
 		sql.append("AND rma.AD_Client_ID=?");
 
