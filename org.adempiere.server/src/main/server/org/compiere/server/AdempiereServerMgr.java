@@ -237,6 +237,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		try
 		{
 			//	replace
+			server.getServer().recalculateSleepMS();
 			server.start();
 		}
 		catch (Exception e)
