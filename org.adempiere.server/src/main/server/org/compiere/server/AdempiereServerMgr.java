@@ -501,8 +501,13 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 
 		@Override
 		public void run() {
-			server.run();
-			scheduleFuture = Adempiere.getThreadPoolExecutor().schedule(this, server.getSleepMS(), TimeUnit.MILLISECONDS);
+			if (server.isSleeping()) {
+				server.run();
+				scheduleFuture = Adempiere.getThreadPoolExecutor().schedule(this, server.getSleepMS(), TimeUnit.MILLISECONDS);
+			}  else {
+				//server busy, try again after one minute
+				scheduleFuture = Adempiere.getThreadPoolExecutor().schedule(this, 60 * 1000, TimeUnit.MILLISECONDS);
+			}
 		}
 		
 		public AdempiereServer getServer() {
