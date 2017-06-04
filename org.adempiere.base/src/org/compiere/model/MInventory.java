@@ -696,8 +696,74 @@ public class MInventory extends X_M_Inventory implements DocAction
 				
 				if(qtyDiff.compareTo(Env.ZERO)>0)
 				{
-					MInventoryLineMA lineMA =  MInventoryLineMA.addOrCreate(line, 0, qtyDiff.negate(), getMovementDate(),true);
-					lineMA.saveEx();
+					//AttributeSetInstance enable
+					I_M_AttributeSet as = line.getM_Product().getM_AttributeSet();
+					if (as != null && as.isInstanceAttribute())
+					{
+						//add quantity to last attributesetinstance
+						storages = MStorageOnHand.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0, null,
+								false, true, 0, get_TrxName());
+						for (MStorageOnHand storage : storages)
+						{
+							BigDecimal maQty = qtyDiff;
+							//backward compatibility: -ve in MA is incoming trx, +ve in MA is outgoing trx 
+							MInventoryLineMA lineMA =  new MInventoryLineMA(line, storage.getM_AttributeSetInstance_ID(), maQty.negate(), storage.getDateMaterialPolicy(),true);
+							lineMA.saveEx();
+							qtyDiff = qtyDiff.subtract(maQty);
+							storage.addQtyOnHand(maQty.negate());
+
+							if (qtyDiff.compareTo(Env.ZERO)==0)
+								break;
+							
+						}
+					} 
+					if(qtyDiff.compareTo(Env.ZERO)>0)
+					{
+						MClientInfo m_clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
+						MAcctSchema acctSchema = new MAcctSchema(getCtx(), m_clientInfo.getC_AcctSchema1_ID(), get_TrxName());
+						if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(acctSchema)) )
+						{
+							String sqlWhere = "M_Product_ID=? AND M_Locator_ID=? AND QtyOnHand = 0 AND M_AttributeSetInstance_ID > 0 ";
+							MStorageOnHand storage = new Query(getCtx(), MStorageOnHand.Table_Name, sqlWhere, get_TrxName())
+									.setParameters(line.getM_Product_ID(), line.getM_Locator_ID())
+									.setOrderBy(MStorageOnHand.COLUMNNAME_DateMaterialPolicy+","+ MStorageOnHand.COLUMNNAME_M_AttributeSetInstance_ID)
+									.first();
+								
+							if (storage != null )
+							{
+								MInventoryLineMA lineMA =  MInventoryLineMA.addOrCreate(line, storage.getM_AttributeSetInstance_ID(), qtyDiff.negate(), getMovementDate(),true);
+								lineMA.saveEx();
+							} 
+							else
+							{
+								String costingMethod = product.getCostingMethod(acctSchema);
+								StringBuilder localWhereClause = new StringBuilder("M_Product_ID =?" )
+										.append(" AND C_AcctSchema_ID=?")
+										.append(" AND ce.CostingMethod = ? ")
+										.append(" AND CurrentCostPrice <> 0 ");
+								MCost cost = new Query(getCtx(),I_M_Cost.Table_Name,localWhereClause.toString(),get_TrxName())
+									.setParameters(line.getM_Product_ID(), acctSchema.get_ID(), costingMethod)
+									.addJoinClause(" INNER JOIN M_CostElement ce ON (M_Cost.M_CostElement_ID =ce.M_CostElement_ID ) ")
+									.setOrderBy("Updated DESC")
+									.first();
+								if (cost != null)
+								{
+									MInventoryLineMA lineMA =  MInventoryLineMA.addOrCreate(line, cost.getM_AttributeSetInstance_ID(), qtyDiff.negate(), getMovementDate(),true);
+									lineMA.saveEx();
+								} 
+								else
+								{
+									m_processMsg = "Cannot retrieve cost of Inventory " ;
+								}
+							}
+							
+						} else
+						{
+							MInventoryLineMA lineMA =  MInventoryLineMA.addOrCreate(line, 0, qtyDiff.negate(), getMovementDate(),true);
+							lineMA.saveEx();
+						}
+						
+					}
 				}				
 			}
 			else	//	Outgoing Trx

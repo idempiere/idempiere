@@ -182,7 +182,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		}
 		else
 		{
-			query.setOrderBy(MStorageOnHand.COLUMNNAME_DateMaterialPolicy);
+			query.setOrderBy(MStorageOnHand.COLUMNNAME_DateMaterialPolicy+","+ MStorageOnHand.COLUMNNAME_M_AttributeSetInstance_ID);
 		}
 		if (forUpdate)
 		{
@@ -335,7 +335,9 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		}
 		sql += "ORDER BY l.PriorityNo DESC, DateMaterialPolicy ";
 		if (!FiFo)
-			sql += " DESC";
+			sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
+		else
+			sql += ", s.M_AttributeSetInstance_ID ";
 		//	All Attribute Set Instances
 		if (allAttributeInstances)
 		{
@@ -369,13 +371,17 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			if(product.isUseGuaranteeDateForMPolicy()){
 				sql += "ORDER BY l.PriorityNo DESC, COALESCE(asi.GuaranteeDate,s.DateMaterialPolicy)";
 				if (!FiFo)
-					sql += " DESC";
+					sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
+				else
+					sql += ", s.M_AttributeSetInstance_ID ";
 			}
 			else
 			{
 				sql += "ORDER BY l.PriorityNo DESC, l.M_Locator_ID, s.DateMaterialPolicy";
 				if (!FiFo)
-					sql += " DESC";
+					sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
+				else
+					sql += ", s.M_AttributeSetInstance_ID ";
 			}
 			
 			sql += ", s.QtyOnHand DESC";
@@ -523,7 +529,9 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		{
 			sql += "ORDER BY l.PriorityNo DESC, l.M_Locator_ID, s.DateMaterialPolicy";
 			if (!FiFo)
-				sql += " DESC";
+				sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
+			else
+				sql += ", s.M_AttributeSetInstance_ID ";
 		}
 		
 		sql += ", s.QtyOnHand DESC";
@@ -890,6 +898,12 @@ public class MStorageOnHand extends X_M_StorageOnHand
 				
 				if (getQtyOnHand().compareTo(BigDecimal.ZERO) < 0 ||
 						QtyOnHand.compareTo(Env.ZERO) < 0)
+				{
+					log.saveError("Error", Msg.getMsg(getCtx(), "NegativeInventoryDisallowed"));
+					return false;
+				}
+				
+				if (getM_AttributeSetInstance_ID() > 0 && getQtyOnHand().signum() < 0)
 				{
 					log.saveError("Error", Msg.getMsg(getCtx(), "NegativeInventoryDisallowed"));
 					return false;

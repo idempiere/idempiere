@@ -407,4 +407,28 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 		asi.saveEx();
 		return asi;
 	}
+	
+	/**
+	 * AutoGerate & save a new ASI for given product.
+	 * Automatically creates Lot#
+	 * @param ctx
+	 * @param product
+	 * @param trxName
+	 * @return newly created ASI
+	 */
+	public static MAttributeSetInstance generateLot(Properties ctx, MProduct product, String trxName)
+	{
+		MAttributeSetInstance asi = new MAttributeSetInstance(ctx, 0, trxName);
+		asi.setClientOrg(product.getAD_Client_ID(), 0);
+		asi.setM_AttributeSet_ID(product.getM_AttributeSet_ID());
+		// Create new Lot
+		if (asi.getM_AttributeSet_ID() > 0)
+		{
+			asi.getLot(true, product.get_ID());
+		}
+		//
+		asi.setDescription();
+		asi.saveEx();
+		return asi;
+	}
 }	//	MAttributeSetInstance

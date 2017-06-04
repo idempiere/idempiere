@@ -711,6 +711,25 @@ public class MProduction extends X_M_Production implements DocAction {
 		reversal.addDescription(msgadd.toString());
 		reversal.setReversal_ID(getM_Production_ID());
 		reversal.saveEx(get_TrxName());
+		
+		// Reverse Line Qty
+		MProductionLine[] sLines = getLines();
+		MProductionLine[] tLines = reversal.getLines();
+		for (int i = 0; i < sLines.length; i++)
+		{		
+			//	We need to copy MA
+			if (sLines[i].getM_AttributeSetInstance_ID() == 0)
+			{
+				MProductionLineMA mas[] = MProductionLineMA.get(getCtx(), sLines[i].get_ID(), get_TrxName());
+				for (int j = 0; j < mas.length; j++)
+				{
+					MProductionLineMA ma = new MProductionLineMA (tLines[i],
+						mas[j].getM_AttributeSetInstance_ID(),
+						mas[j].getMovementQty().negate(),mas[j].getDateMaterialPolicy());
+					ma.saveEx(get_TrxName());					
+				}
+			}
+		}
 
 		if (!reversal.processIt(DocAction.ACTION_Complete))
 		{

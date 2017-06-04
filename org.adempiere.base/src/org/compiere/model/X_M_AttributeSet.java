@@ -30,7 +30,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20170417L;
 
     /** Standard Constructor */
     public X_M_AttributeSet (Properties ctx, int M_AttributeSet_ID, String trxName)
@@ -512,6 +512,27 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 		{
 			 if (oo instanceof Boolean) 
 				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+	
+	/** Set Auto Generated.
+	@param IsAutoGenerateLot Auto Generate Lot	  */
+	public void setIsAutoGenerateLot (boolean IsAutoGenerateLot)
+	{
+		set_ValueNoCheck (COLUMNNAME_IsAutoGenerateLot, Boolean.valueOf(IsAutoGenerateLot));
+	}
+
+	/** Get Auto Generate Lot.
+	@return Auto Generate Lot	  */
+	public boolean isAutoGenerateLot () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsAutoGenerateLot);
+		if (oo != null) 
+		{
+				if (oo instanceof Boolean) 
+					return ((Boolean)oo).booleanValue(); 
 			return "Y".equals(oo);
 		}
 		return false;

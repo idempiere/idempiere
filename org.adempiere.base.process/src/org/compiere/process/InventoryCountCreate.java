@@ -296,7 +296,7 @@ public class InventoryCountCreate extends SvrProcess
 				return 0;
 			}
 			//	Save Old Line info
-			else if (m_line.getM_AttributeSetInstance_ID() != 0 || oldDateMPolicy != null)
+			else if (m_line.getM_AttributeSetInstance_ID() != 0 )
 			{
 				MInventoryLineMA ma = new MInventoryLineMA (m_line, 
 					m_line.getM_AttributeSetInstance_ID(), m_line.getQtyBook(),oldDateMPolicy,true);
@@ -317,7 +317,7 @@ public class InventoryCountCreate extends SvrProcess
 		}
 		//	new line
 		m_line = new MInventoryLine (m_inventory, M_Locator_ID, 
-			M_Product_ID, 0,
+			M_Product_ID, M_AttributeSetInstance_ID,
 			QtyOnHand, QtyOnHand);		//	book/count
 		
 		oldDateMPolicy = dateMPolicy;
