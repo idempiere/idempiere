@@ -392,7 +392,7 @@ public class MAcctSchema extends X_C_AcctSchema
 	 * Get Only Org Children
 	 * @return array of AD_Org_ID
 	 */
-	public Integer[] getOnlyOrgs()
+	public synchronized Integer[] getOnlyOrgs()
 	{
 		if (m_onlyOrgs == null)
 		{
@@ -408,7 +408,7 @@ public class MAcctSchema extends X_C_AcctSchema
 	 *	@param AD_Org_ID
 	 *	@return true if to skip
 	 */
-	public boolean isSkipOrg (int AD_Org_ID)
+	public synchronized boolean isSkipOrg (int AD_Org_ID)
 	{
 		if (getAD_OrgOnly_ID() == 0)
 			return false;
