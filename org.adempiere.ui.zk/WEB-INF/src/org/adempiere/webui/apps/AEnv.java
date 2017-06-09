@@ -47,7 +47,6 @@ import org.compiere.acct.Doc;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.I_AD_Window;
 import org.compiere.model.Lookup;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MLanguage;
 import org.compiere.model.MLookup;
@@ -340,11 +339,7 @@ public final class AEnv
 			+ ", AD_Table_ID=" + AD_Table_ID + "/" + Record_ID
 			+ ", Force=" + force);
 
-		String error = null;
-		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), AD_Client_ID);
-		error = Doc.postImmediate(ass, AD_Table_ID, Record_ID, force, null);
-
-		return error;
+		return Doc.manualPosting(WindowNo, AD_Client_ID, AD_Table_ID, Record_ID, force);
 	}   //  postImmediate
 
 	/**
