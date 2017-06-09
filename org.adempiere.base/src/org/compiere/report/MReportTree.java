@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MHierarchy;
+import org.compiere.model.MRole;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.util.CCache;
@@ -49,8 +50,14 @@ public class MReportTree
 	 *	@return tree
 	 */
 	public static MReportTree get (Properties ctx, int PA_Hierarchy_ID, String ElementType)
-	{
-		String key = Env.getAD_Client_ID(ctx) + "_" + PA_Hierarchy_ID + ElementType;
+	{	
+		MRole role = MRole.getDefault();
+		String key = Env.getAD_Client_ID(ctx) + "_" + role.getAD_Role_ID() + "_" + PA_Hierarchy_ID + "_" + ElementType;
+		if (!role.isAccessAllOrgs() && role.isUseUserOrgAccess() ) 
+		{
+			key = Env.getAD_Client_ID(ctx) + "_" + Env.getAD_User_ID(ctx) + "_" + role.getAD_Role_ID() + "_" + PA_Hierarchy_ID + "_" + ElementType;
+		}
+		
 		MReportTree tree = (MReportTree)s_trees.get(key);
 		if (tree == null)
 		{
