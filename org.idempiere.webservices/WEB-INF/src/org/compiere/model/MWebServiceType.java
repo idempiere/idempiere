@@ -29,13 +29,12 @@
 
 package org.compiere.model;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -51,10 +50,10 @@ public class MWebServiceType extends X_WS_WebServiceType
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 134887822892217528L;
+	private static final long serialVersionUID = 7216001796414414950L;
 
 	/**	Parameters	*/
-	private X_WS_WebService_Para[]	m_para = null;
+	private MWebServicePara[]	m_para = null;
 	
 	/**	Allowed input columns	*/
 	private String[]	m_inputcolumnnames = null;
@@ -75,34 +74,17 @@ public class MWebServiceType extends X_WS_WebServiceType
 	 *	@param requery requery
 	 *	@return array of methods
 	 */
-	public X_WS_WebService_Para[] getParameters (boolean requery)
+	public MWebServicePara[] getParameters (boolean requery)
 	{
 		if (m_para != null && !requery)
 			return m_para;
-		String sql = "SELECT * FROM WS_WebService_Para WHERE WS_WebServiceType_ID=? AND IsActive='Y' ORDER BY ParameterName";
-		ArrayList<X_WS_WebService_Para> list = new ArrayList<X_WS_WebService_Para>();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
-			pstmt.setInt (1, getWS_WebServiceType_ID());
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-				list.add (new X_WS_WebService_Para (getCtx(), rs, get_TrxName()));
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		//
-		m_para = new X_WS_WebService_Para[list.size ()];
+		List<MWebServicePara> list = new Query(getCtx(), MWebServicePara.Table_Name,
+				"WS_WebService_Para.WS_WebServiceType_ID=? AND WS_WebService_Para.AD_Client_ID=WS_WebServiceType.AD_Client_ID", get_TrxName())
+				.addJoinClause("JOIN WS_WebServiceType ON (WS_WebServiceType.WS_WebServiceType_ID=WS_WebService_Para.WS_WebServiceType_ID)")
+				.setOnlyActiveRecords(true)
+				.setParameters(getWS_WebServiceType_ID())
+				.list();
+		m_para = new MWebServicePara[list.size ()];
 		list.toArray (m_para);
 		return m_para;
 	}	//	getParameters
@@ -135,36 +117,22 @@ public class MWebServiceType extends X_WS_WebServiceType
 	{
 		if (m_inputcolumnnames != null && !requery)
 			return m_inputcolumnnames;
-		String sql = "SELECT c.ColumnName FROM WS_WebServiceFieldInput f, AD_Column c " +
-				"WHERE f.WS_WebServiceType_ID=? " +
-				"AND c.AD_Column_ID=f.AD_Column_ID " +
-				"AND c.IsActive='Y' " +
-				"AND f.IsActive='Y' " +
-				"ORDER BY c.ColumnName";
-		ArrayList<String> list = new ArrayList<String>();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
-			pstmt.setInt (1, getWS_WebServiceType_ID());
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-				list.add (rs.getString(1));
+		final String sql = ""
+				+ "SELECT c.ColumnName FROM WS_WebServiceFieldInput f "
+				+ "  JOIN AD_Column c ON (c.AD_Column_ID=f.AD_Column_ID) "
+				+ "  JOIN WS_WebServiceType t ON t.WS_WebServiceType_ID=f.WS_WebServiceType_ID "
+				+ "WHERE f.WS_WebServiceType_ID=? "
+				+ "  AND f.AD_Client_ID=t.AD_Client_ID "
+				+ "  AND c.IsActive='Y' "
+				+ "  AND f.IsActive='Y' "
+				+ "ORDER BY c.ColumnName";
+		List<Object> list = DB.getSQLValueObjectsEx(get_TrxName(), sql, getWS_WebServiceType_ID());
+		if (list == null) {
+			m_inputcolumnnames = new String[0];
+		} else {
+			m_inputcolumnnames = new String[list.size ()];
+			list.toArray (m_inputcolumnnames);
 		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		//
-		m_inputcolumnnames = new String[list.size ()];
-		list.toArray (m_inputcolumnnames);
 		return m_inputcolumnnames;
 	}	//	getInputColumnNames
 
@@ -196,36 +164,22 @@ public class MWebServiceType extends X_WS_WebServiceType
 	{
 		if (m_outputcolumnnames != null && !requery)
 			return m_outputcolumnnames;
-		String sql = "SELECT c.ColumnName FROM WS_WebServiceFieldOutput f, AD_Column c " +
-				"WHERE f.WS_WebServiceType_ID=? " +
-				"AND c.AD_Column_ID=f.AD_Column_ID " +
-				"AND c.IsActive='Y' " +
-				"AND f.IsActive='Y' " +
-				"ORDER BY c.ColumnName";
-		ArrayList<String> list = new ArrayList<String>();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
-			pstmt.setInt (1, getWS_WebServiceType_ID());
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-				list.add (rs.getString(1));
+		final String sql = ""
+				+ "SELECT c.ColumnName FROM WS_WebServiceFieldOutput f "
+				+ "  JOIN AD_Column c ON (c.AD_Column_ID=f.AD_Column_ID) "
+				+ "  JOIN WS_WebServiceType t ON t.WS_WebServiceType_ID=f.WS_WebServiceType_ID "
+				+ "WHERE f.WS_WebServiceType_ID=? "
+				+ "  AND f.AD_Client_ID=t.AD_Client_ID "
+				+ "  AND c.IsActive='Y' "
+				+ "  AND f.IsActive='Y' "
+				+ "ORDER BY c.ColumnName";
+		List<Object> list = DB.getSQLValueObjectsEx(get_TrxName(), sql, getWS_WebServiceType_ID());
+		if (list == null) {
+			m_outputcolumnnames = new String[0];
+		} else {
+			m_outputcolumnnames = new String[list.size ()];
+			list.toArray (m_outputcolumnnames);
 		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		//
-		m_outputcolumnnames = new String[list.size ()];
-		list.toArray (m_outputcolumnnames);
 		return m_outputcolumnnames;
 	}	//	getOutputColumnNames
 
@@ -299,41 +253,28 @@ public class MWebServiceType extends X_WS_WebServiceType
 			m_keyColumns = new ArrayList<String>();
 		else
 			m_keyColumns.clear();
-			
-		
-		String sql = "SELECT coalesce(c.ColumnName,f.ColumnName),f.* FROM WS_WebServiceFieldInput f left join AD_Column c on c.AD_Column_ID=f.AD_Column_ID " +
-				"WHERE f.WS_WebServiceType_ID=? " +
-				"AND (c.IsActive='Y' OR c.IsActive is null)" +
-				"AND f.IsActive='Y' " +
-				"ORDER BY c.ColumnName";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
-			pstmt.setInt (1, getWS_WebServiceType_ID());
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-			{
-				String colName =  rs.getString(1);
-				X_WS_WebServiceFieldInput inputField = new X_WS_WebServiceFieldInput(getCtx(), rs, null);
-				if(inputField.isIdentifier())
-					m_keyColumns.add(colName);
-				
-				m_inputFieldMap.put(colName,inputField );
+		List<X_WS_WebServiceFieldInput> list = new Query(getCtx(), X_WS_WebServiceFieldInput.Table_Name,
+				"WS_WebServiceFieldInput.WS_WebServiceType_ID=? AND WS_WebServiceFieldInput.AD_Client_ID=WS_WebServiceFieldInput.AD_Client_ID",
+				get_TrxName())
+				.addJoinClause("JOIN WS_WebServiceType ON (WS_WebServiceType.WS_WebServiceType_ID=WS_WebServiceFieldInput.WS_WebServiceType_ID)")
+				.addJoinClause("LEFT JOIN AD_Column ON (AD_Column.AD_Column_ID=WS_WebServiceFieldInput.AD_Column_ID)")
+				.setOnlyActiveRecords(true)
+				.setOrderBy("AD_Column.ColumnName")
+				.setParameters(getWS_WebServiceType_ID())
+				.list();
+		for (X_WS_WebServiceFieldInput inputField : list) {
+			String colName = inputField.getColumnName();
+			if (inputField.getAD_Column_ID() > 0) {
+				MColumn col = MColumn.get(getCtx(), inputField.getAD_Column_ID());
+				if (! col.isActive()) {
+					continue;
+				}
+				colName = col.getColumnName();
 			}
+			if(inputField.isIdentifier())
+				m_keyColumns.add(colName);
+			m_inputFieldMap.put(colName,inputField );
 		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}	
-		
 	}
 	
 	public X_WS_WebServiceFieldInput getFieldInput(String colName){
