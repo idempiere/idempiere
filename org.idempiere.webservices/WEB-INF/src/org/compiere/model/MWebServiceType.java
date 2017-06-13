@@ -126,12 +126,14 @@ public class MWebServiceType extends X_WS_WebServiceType
 				+ "  AND c.IsActive='Y' "
 				+ "  AND f.IsActive='Y' "
 				+ "ORDER BY c.ColumnName";
-		List<Object> list = DB.getSQLValueObjectsEx(get_TrxName(), sql, getWS_WebServiceType_ID());
+		List<List<Object>> list = DB.getSQLArrayObjectsEx(get_TrxName(), sql, getWS_WebServiceType_ID());
 		if (list == null) {
 			m_inputcolumnnames = new String[0];
 		} else {
-			m_inputcolumnnames = new String[list.size ()];
-			list.toArray (m_inputcolumnnames);
+			m_inputcolumnnames = new String[list.size()];
+			for (int idx = 0; idx < list.size(); idx++) {
+				m_inputcolumnnames[idx] = (String) list.get(idx).get(0);
+			}
 		}
 		return m_inputcolumnnames;
 	}	//	getInputColumnNames
@@ -173,12 +175,14 @@ public class MWebServiceType extends X_WS_WebServiceType
 				+ "  AND c.IsActive='Y' "
 				+ "  AND f.IsActive='Y' "
 				+ "ORDER BY c.ColumnName";
-		List<Object> list = DB.getSQLValueObjectsEx(get_TrxName(), sql, getWS_WebServiceType_ID());
+		List<List<Object>> list = DB.getSQLArrayObjectsEx(get_TrxName(), sql, getWS_WebServiceType_ID());
 		if (list == null) {
 			m_outputcolumnnames = new String[0];
 		} else {
-			m_outputcolumnnames = new String[list.size ()];
-			list.toArray (m_outputcolumnnames);
+			m_outputcolumnnames = new String[list.size()];
+			for (int idx = 0; idx < list.size(); idx++) {
+				m_outputcolumnnames[idx] = (String) list.get(idx).get(0);
+			}
 		}
 		return m_outputcolumnnames;
 	}	//	getOutputColumnNames
