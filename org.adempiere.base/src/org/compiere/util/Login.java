@@ -1079,10 +1079,37 @@ public class Login
 		//	User Login
 		String uid = Ini.getProperty(Ini.P_UID);
 		String pwd = Ini.getProperty(Ini.P_PWD);
-		KeyNamePair[] roles = getRoles (uid, pwd);
-		if (roles == null || roles.length == 0)
+		
+		String client = Ini.getProperty(Ini.P_CLIENT);
+		KeyNamePair[] clients = getClients(uid, pwd);
+		if (clients == null || clients.length == 0)
 		{
 			log.severe("User/Password invalid: " + uid);
+			return false;
+		}
+		KeyNamePair clientPP = null;
+		for (KeyNamePair pair : clients)
+		{
+			if (pair.getName().equalsIgnoreCase(client))
+			{
+				clientPP = pair;
+				break;
+			}
+		}
+		if (clientPP == null)
+		{
+			log.severe("Client invalid: " + client);
+			if (log.isLoggable(Level.INFO)) {
+				for (KeyNamePair pair : clients)
+					log.info("Option: " + pair);
+			}
+			return false;
+		}
+		
+		KeyNamePair[] roles = getRoles(uid, clientPP);
+		if (roles == null || roles.length == 0)
+		{
+			log.severe("No Roles for client: " + client);
 			return false;
 		}
 		if (log.isLoggable(Level.INFO)) log.info("User: " + uid);
@@ -1090,9 +1117,8 @@ public class Login
 		//	Role
 		String role = Ini.getProperty(Ini.P_ROLE);
 		KeyNamePair rolePP = null;
-		for (int i = 0; i < roles.length; i++)
+		for (KeyNamePair pair : roles)
 		{
-			KeyNamePair pair = roles[i];
 			if (pair.getName().equalsIgnoreCase(role))
 			{
 				rolePP = pair;
@@ -1110,46 +1136,17 @@ public class Login
 		}
 		if (log.isLoggable(Level.INFO)) log.info("Role: " + role);
 		
-		//	Clients
-		String client = Ini.getProperty(Ini.P_CLIENT);
-		KeyNamePair[] clients = getClients(rolePP);
-		if (clients == null || clients.length == 0)
-		{
-			log.severe("No Clients for Role: " + role);
-			return false;
-		}
-		KeyNamePair clientPP = null;
-		for (int i = 0; i < clients.length; i++)
-		{
-			KeyNamePair pair = clients[i];
-			if (pair.getName().equalsIgnoreCase(client))
-			{
-				clientPP = pair;
-				break;
-			}
-		}
-		if (clientPP == null)
-		{
-			log.severe("Client invalid: " + client);
-			if (log.isLoggable(Level.INFO)) {
-				for (int i = 0; i < clients.length; i++)
-					log.info("Option: " + clients[i]);
-			}
-			return false;
-		}
-		
 		//	Organization
 		String org = Ini.getProperty(Ini.P_ORG);
-		KeyNamePair[] orgs = getOrgs(clientPP);
+		KeyNamePair[] orgs = getOrgs(rolePP);
 		if (orgs == null || orgs.length == 0)
 		{
-			log.severe("No Orgs for Client: " + client);
+			log.severe("No Orgs for Role: " + role);
 			return false;
 		}
 		KeyNamePair orgPP = null;
-		for (int i = 0; i < orgs.length; i++)
+		for (KeyNamePair pair : orgs)
 		{
-			KeyNamePair pair = orgs[i];
 			if (pair.getName().equalsIgnoreCase(org))
 			{
 				orgPP = pair;
@@ -1165,36 +1162,36 @@ public class Login
 			}
 			return false;
 		}
-		String error = validateLogin(orgPP);
-		if (error != null && error.length() > 0)
-			return false;
 		
 		//	Warehouse
 		String wh = Ini.getProperty(Ini.P_WAREHOUSE);
-		KeyNamePair[] whs = getWarehouses(orgPP);
-		if (whs == null || whs.length == 0)
-		{
-			log.severe("No Warehouses for Org: " + org);
-			return false;
-		}
 		KeyNamePair whPP = null;
-		for (int i = 0; i < whs.length; i++)
-		{
-			KeyNamePair pair = whs[i];
-			if (pair.getName().equalsIgnoreCase(wh))
+		
+		if (orgPP.getKey() != 0) {
+			KeyNamePair[] whs = getWarehouses(orgPP);
+			if (whs == null || whs.length == 0)
 			{
-				whPP = pair;
-				break;
+				log.severe("No Warehouses for Org: " + org);
+				return false;
 			}
-		}
-		if (whPP == null)
-		{
-			log.severe("Warehouse invalid: " + wh);
-			if (log.isLoggable(Level.INFO)) {
-				for (int i = 0; i < whs.length; i++)
-					log.info("Option: " + whs[i]);
+			for (int i = 0; i < whs.length; i++)
+			{
+				KeyNamePair pair = whs[i];
+				if (pair.getName().equalsIgnoreCase(wh))
+				{
+					whPP = pair;
+					break;
+				}
 			}
-			return false;
+			if (whPP == null)
+			{
+				log.severe("Warehouse invalid: " + wh);
+				if (log.isLoggable(Level.INFO)) {
+					for (int i = 0; i < whs.length; i++)
+						log.info("Option: " + whs[i]);
+				}
+				return false;
+			}
 		}
 
 		//	Language
@@ -1212,6 +1209,10 @@ public class Login
 		if (loginDate == null)
 			loginDate = new java.sql.Timestamp(System.currentTimeMillis());
 		loadPreferences(orgPP, whPP, loginDate, printerName);
+		
+		String error = validateLogin(orgPP);
+		if (error != null && error.length() > 0)
+			return false;
 		//
 		if (log.isLoggable(Level.INFO)) log.info("complete");
 		return true;
