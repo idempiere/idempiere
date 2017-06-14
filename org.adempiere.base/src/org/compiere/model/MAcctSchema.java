@@ -396,9 +396,8 @@ public class MAcctSchema extends X_C_AcctSchema
 	{
 		if (m_onlyOrgs == null)
 		{
-			m_onlyOrgs = MReportTree.getChildIDs(getCtx(), 
-					0, MAcctSchemaElement.ELEMENTTYPE_Organization, 
-					getAD_OrgOnly_ID());
+			MReportTree tree = new MReportTree (getCtx(), 0, true, MAcctSchemaElement.ELEMENTTYPE_Organization);
+			m_onlyOrgs = tree.getChildIDs(getAD_OrgOnly_ID());
 		}
 		return m_onlyOrgs;
 	}	//	getOnlyOrgs
