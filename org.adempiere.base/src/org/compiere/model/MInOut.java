@@ -1848,9 +1848,9 @@ public class MInOut extends X_M_InOut implements DocAction
 						MInOutLineMA shipmentMAS[] = MInOutLineMA.getNonReturned(getCtx(), rmaLine.getM_InOutLine_ID(), get_TrxName());
 						
 						for(MInOutLineMA sMA : shipmentMAS){
-							BigDecimal lineMAQty = qtyToReturn;
-							if(lineMAQty.compareTo(Env.ZERO)>0){
-								lineMAQty = Env.ZERO;
+							BigDecimal lineMAQty = sMA.getMovementQty();
+							if(lineMAQty.compareTo(qtyToReturn)>0){
+								lineMAQty = qtyToReturn;
 							}
 							
 							MInOutLineMA ma = MInOutLineMA.addOrCreate(line, sMA.getM_AttributeSetInstance_ID(), lineMAQty, sMA.getDateMaterialPolicy(),true); 

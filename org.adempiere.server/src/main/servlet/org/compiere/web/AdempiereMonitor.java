@@ -69,6 +69,7 @@ import org.compiere.model.MStore;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.Query;
+import org.compiere.server.AdempiereServer;
 import org.compiere.server.AdempiereServerGroup;
 import org.compiere.server.AdempiereServerMgr;
 import org.compiere.server.AdempiereServerMgr.ServerWrapper;
@@ -268,7 +269,32 @@ public class AdempiereMonitor extends HttpServlet
 			return false;
 		}
 		//
-		server.getServer().runNow();
+		AdempiereServer serverInstance = server.getServer();
+		if (serverInstance.isSleeping())
+		{
+			serverInstance.runNow();
+		}
+		else
+		{
+			int count = 0;
+			while(!serverInstance.isSleeping() && count < 5)
+			{
+				count++;
+				try {
+					Thread.sleep(60000);
+				} catch (InterruptedException e) {
+					Thread.interrupted();
+				}				
+			}
+			if (serverInstance.isSleeping())
+				serverInstance.runNow();
+			else
+			{
+				m_message = new p();
+				m_message.addElement(new strong("Timeout waiting for server process  to be available for execution."));
+				m_message.addElement(serverID);
+			}
+		}
 		//
 		return true;
 	}	//	processRunParameter

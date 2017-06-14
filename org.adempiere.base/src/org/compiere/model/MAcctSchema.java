@@ -90,7 +90,7 @@ public class MAcctSchema extends X_C_AcctSchema
 	 *  @param trxName optional trx 
 	 *  @return Array of AcctSchema of Client
 	 */
-	public static MAcctSchema[] getClientAcctSchema (Properties ctx, int AD_Client_ID, String trxName)
+	public static synchronized MAcctSchema[] getClientAcctSchema (Properties ctx, int AD_Client_ID, String trxName)
 	{
 		//  Check Cache
 		Integer key = new Integer(AD_Client_ID);
@@ -392,13 +392,12 @@ public class MAcctSchema extends X_C_AcctSchema
 	 * Get Only Org Children
 	 * @return array of AD_Org_ID
 	 */
-	public Integer[] getOnlyOrgs()
+	public synchronized Integer[] getOnlyOrgs()
 	{
 		if (m_onlyOrgs == null)
 		{
-			m_onlyOrgs = MReportTree.getChildIDs(getCtx(), 
-					0, MAcctSchemaElement.ELEMENTTYPE_Organization, 
-					getAD_OrgOnly_ID());
+			MReportTree tree = new MReportTree (getCtx(), 0, true, MAcctSchemaElement.ELEMENTTYPE_Organization);
+			m_onlyOrgs = tree.getChildIDs(getAD_OrgOnly_ID());
 		}
 		return m_onlyOrgs;
 	}	//	getOnlyOrgs
@@ -408,7 +407,7 @@ public class MAcctSchema extends X_C_AcctSchema
 	 *	@param AD_Org_ID
 	 *	@return true if to skip
 	 */
-	public boolean isSkipOrg (int AD_Org_ID)
+	public synchronized boolean isSkipOrg (int AD_Org_ID)
 	{
 		if (getAD_OrgOnly_ID() == 0)
 			return false;

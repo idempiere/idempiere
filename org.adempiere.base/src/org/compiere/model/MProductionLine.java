@@ -1,12 +1,16 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -74,10 +78,12 @@ public class MProductionLine extends X_M_ProductionLine {
 	 * @return "" for success, error string if failed
 	 */
 	public String createTransactions(Timestamp date, boolean mustBeStocked) {
-		// delete existing ASI records
-		int deleted = deleteMA();
-		if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Deleted " + deleted + " attribute records ");
-		
+		if (getParent().getReversal_ID() <= 0  )
+		{
+			// delete existing ASI records
+			int deleted = deleteMA();
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Deleted " + deleted + " attribute records ");
+		}
 		MProduct prod = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 		if (log.isLoggable(Level.FINE))log.log(Level.FINE,"Loaded Product " + prod.toString());
 		
@@ -89,6 +95,10 @@ public class MProductionLine extends X_M_ProductionLine {
 		StringBuilder errorString = new StringBuilder();
 		
 		MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), getM_AttributeSetInstance_ID(), get_TrxName());
+		I_M_AttributeSet attributeset = prod.getM_AttributeSet();
+		boolean isAutoGenerateLot = false;
+		if (attributeset != null)
+			isAutoGenerateLot = attributeset.isAutoGenerateLot();		
 		String asiString = asi.getDescription();
 		if ( asiString == null )
 			asiString = "";
@@ -96,7 +106,11 @@ public class MProductionLine extends X_M_ProductionLine {
 		if (log.isLoggable(Level.FINEST))	log.log(Level.FINEST, "asi Description is: " + asiString);
 		// create transactions for finished goods
 		if ( getM_Product_ID() == getEndProduct_ID()) {
-			
+			if (getParent().getReversal_ID() <= 0  && isAutoGenerateLot && getM_AttributeSetInstance_ID() == 0)
+			{
+				asi = MAttributeSetInstance.generateLot(getCtx(), (MProduct)getM_Product(), get_TrxName());
+				setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
+			} 
 			Timestamp dateMPolicy = date;
 			if(getM_AttributeSetInstance_ID()>0){
 				Timestamp t = MStorageOnHand.getDateMaterialPolicy(getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
@@ -170,7 +184,7 @@ public class MProductionLine extends X_M_ProductionLine {
 						}
 						matTrx = new MTransaction (getCtx(), getAD_Org_ID(), 
 								"P-", 
-								getM_Locator_ID(), getM_Product_ID(), asi.get_ID(), 
+								getM_Locator_ID(), getM_Product_ID(), lineMA.getM_AttributeSetInstance_ID(), 
 								lineQty.negate(), date, get_TrxName());
 						matTrx.setM_ProductionLine_ID(get_ID());
 						if ( !matTrx.save(get_TrxName()) ) {
@@ -190,6 +204,55 @@ public class MProductionLine extends X_M_ProductionLine {
 					break;
 				
 			} // for available storages
+		}
+		else if (qtyToMove.signum() < 0 )
+		{
+		
+			MClientInfo m_clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
+			MAcctSchema acctSchema = new MAcctSchema(getCtx(), m_clientInfo.getC_AcctSchema1_ID(), get_TrxName());				
+			if (asi.get_ID() == 0 && MAcctSchema.COSTINGLEVEL_BatchLot.equals(prod.getCostingLevel(acctSchema)) )
+			{
+				//add quantity to last attributesetinstance
+				String sqlWhere = "M_Product_ID=? AND M_Locator_ID=? AND M_AttributeSetInstance_ID > 0 ";
+				MStorageOnHand storage = new Query(getCtx(), MStorageOnHand.Table_Name, sqlWhere, get_TrxName())
+						.setParameters(getM_Product_ID(), getM_Locator_ID())
+						.setOrderBy(MStorageOnHand.COLUMNNAME_DateMaterialPolicy+" DESC,"+ MStorageOnHand.COLUMNNAME_M_AttributeSetInstance_ID +" DESC")
+						.first();
+			
+				if (storage != null)
+				{
+					setM_AttributeSetInstance_ID(storage.getM_AttributeSetInstance_ID());
+					asi = new MAttributeSetInstance(getCtx(), storage.getM_AttributeSetInstance_ID(), get_TrxName());
+					asiString = asi.getDescription();
+				} 
+				else
+				{	
+					String costingMethod = prod.getCostingMethod(acctSchema);
+					StringBuilder localWhereClause = new StringBuilder("M_Product_ID =?" )
+							.append(" AND C_AcctSchema_ID=?")
+							.append(" AND ce.CostingMethod = ? ")
+							.append(" AND CurrentCostPrice <> 0 ");
+						MCost cost = new Query(getCtx(),I_M_Cost.Table_Name,localWhereClause.toString(),get_TrxName())
+						.setParameters(getM_Product_ID(), acctSchema.get_ID(), costingMethod)
+						.addJoinClause(" INNER JOIN M_CostElement ce ON (M_Cost.M_CostElement_ID =ce.M_CostElement_ID ) ")
+						.setOrderBy("Updated DESC")
+						.first();
+					if (cost != null)
+					{
+						setM_AttributeSetInstance_ID(cost.getM_AttributeSetInstance_ID());
+						asi = new MAttributeSetInstance(getCtx(), cost.getM_AttributeSetInstance_ID(), get_TrxName());
+						asiString = asi.getDescription();
+						
+					} 
+					else
+					{
+						log.log(Level.SEVERE, "Cannot retrieve cost of Product r " + prod.toString());
+						errorString.append( "Cannot retrieve cost of Product " +prod.toString() ) ;
+					}
+
+				}			
+			
+			}
 		}
 		
 		
@@ -330,5 +393,52 @@ public class MProductionLine extends X_M_ProductionLine {
 		deleteMA();
 		return true;
 	}
-	
+
+
+	/**
+	 * 	Get Parent
+	 *	@return parent
+	 */
+	public MProduction getParent() 	{
+		if (productionParent == null)
+			productionParent = new MProduction (getCtx(), getM_Production_ID(), get_TrxName());
+		return productionParent;
+	}	//	getParent
+
+	/**
+	 * 
+	 * @return
+	 */
+	public MProductionLineMA[] getLineMAs() {
+		ArrayList<MProductionLineMA> list = new ArrayList<MProductionLineMA>();
+		
+		String sql = "SELECT pl.M_ProductionLine_ID, pl,M_AttributeSetInstance_ID , pl.MovementQty, pl.DateMaterialPolicy "
+			+ "FROM M_ProductionLineMA pl "
+			+ "WHERE pl.M_ProductionLine_ID = ?";
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, get_TrxName());
+			pstmt.setInt(1, get_ID());			
+			rs = pstmt.executeQuery();
+			while (rs.next())
+				list.add( new MProductionLineMA( this, rs.getInt(2), rs.getBigDecimal(3), rs.getTimestamp(4) ) );	
+		}
+		catch (SQLException ex)
+		{
+			throw new AdempiereException("Unable to load production lines", ex);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}
+		
+		MProductionLineMA[] retValue = new MProductionLineMA[list.size()];
+		list.toArray(retValue);
+		return retValue;
+	}
 }

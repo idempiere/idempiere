@@ -161,6 +161,12 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 		if (m_GridTab != null) {
 			M_Product_ID = Env.getContextAsInt (Env.getCtx (), m_WindowNo, m_GridTab.getTabNo(), "M_Product_ID");
 			M_ProductBOM_ID = Env.getContextAsInt (Env.getCtx (), m_WindowNo, m_GridTab.getTabNo(), "M_ProductBOM_ID");
+			//For third level tab (e.g, LineMA), should take M_Product_ID from Line instead of from Header
+			if (m_GridTab.getTabLevel() > 1 && m_GridTab.getParentTab() != null && m_GridTab.getField("M_Product_ID")==null) {
+				int tmp = Env.getContextAsInt (Env.getCtx (), m_WindowNo, m_GridTab.getParentTab().getTabNo(), "M_Product_ID");
+				if (tmp > 0)
+					M_Product_ID = tmp;
+			}
 		} else {
 			M_Product_ID = Env.getContextAsInt (Env.getCtx (), m_WindowNo, "M_Product_ID");
 			M_ProductBOM_ID = Env.getContextAsInt (Env.getCtx (), m_WindowNo, "M_ProductBOM_ID");

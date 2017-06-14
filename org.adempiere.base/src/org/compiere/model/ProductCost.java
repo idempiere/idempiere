@@ -434,4 +434,10 @@ public class ProductCost
 		return sb.toString ();
 	}	//	toString
 	
+	/**
+	 * @param M_AttributeSetInstance_ID the m_M_AttributeSetInstance_ID to set
+	 */
+	public void setM_M_AttributeSetInstance_ID(int M_AttributeSetInstance_ID) {
+		this.m_M_AttributeSetInstance_ID = M_AttributeSetInstance_ID;
+	}
 }	//	ProductCost

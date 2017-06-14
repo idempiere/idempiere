@@ -186,6 +186,7 @@ public class PoFiller{
 				return 0;
 			}
 		} else {
+			po.set_ValueNoCheck(columnName, null);
 			return 0;
 		}
 	}

@@ -85,6 +85,8 @@ public class MBPartner extends X_C_BPartner
 			Timestamp ts = new Timestamp(System.currentTimeMillis());
 			template.set_ValueNoCheck("Created", ts);
 			template.set_ValueNoCheck("Updated", ts);
+			template.set_ValueNoCheck("CreatedBy", Env.getAD_User_ID(ctx));
+			template.set_ValueNoCheck("UpdatedBy", Env.getAD_User_ID(ctx));
 		}
 		return template;
 	}	//	getTemplate

@@ -74,12 +74,14 @@ public abstract class CreateFromRMA extends CreateFrom {
         sqlStmt.append("COALESCE(p.Name, c.Name) AS ProductName, "); 
         sqlStmt.append("iol.QtyEntered, "); 
         sqlStmt.append("iol.movementQty-(SELECT COALESCE((SELECT SUM(rmal.qty) FROM M_RMALine rmal JOIN M_RMA rma ON rma.M_RMA_ID=rmal.M_RMA_ID WHERE rmal.M_InOutLine_ID=iol.M_InOutLine_ID AND rma.DocStatus IN ('CO','CL')),0)) AS MovementQty, ");
-        sqlStmt.append("CASE WHEN iol.M_AttributeSetInstance_ID IS NOT NULL THEN (SELECT SerNo FROM M_AttributeSetInstance asi WHERE asi.M_AttributeSetInstance_ID=iol.M_AttributeSetInstance_ID) END as ASI ");
+        sqlStmt.append("CASE WHEN iol.M_AttributeSetInstance_ID IS NOT NULL THEN (SELECT SerNo FROM M_AttributeSetInstance asi WHERE asi.M_AttributeSetInstance_ID=iol.M_AttributeSetInstance_ID) END as ASI, ");
+        sqlStmt.append("iol.Description " );
         sqlStmt.append("FROM M_InOutLine iol ");
         sqlStmt.append("LEFT JOIN M_Product p ON p.M_Product_ID = iol.M_Product_ID ");
         sqlStmt.append("LEFT JOIN C_Charge c ON c.C_Charge_ID = iol.C_Charge_ID ");
         sqlStmt.append("WHERE M_InOut_ID=? ");
         sqlStmt.append("AND iol.M_InOutLine_ID NOT IN (SELECT rmal.M_InOutLine_ID FROM M_RMALine rmal WHERE rmal.M_RMA_ID=?)");
+        sqlStmt.append(" ORDER BY iol.Line " );
         
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -91,7 +93,7 @@ public abstract class CreateFromRMA extends CreateFrom {
             rs = pstmt.executeQuery();
             while (rs.next())
             {
-                Vector<Object> line = new Vector<Object>(7);
+                Vector<Object> line = new Vector<Object>(8);
                 line.add(new Boolean(false));           //  0-Selection
                 
                 KeyNamePair lineKNPair = new KeyNamePair(rs.getInt(1), rs.getString(2)); // 1-Line
@@ -105,7 +107,7 @@ public abstract class CreateFromRMA extends CreateFrom {
                 line.add(qtyEntered);  //4-Qty
                 line.add(movementQty); //5-Movement Qty
                 
-                
+                line.add(rs.getString(7)); // 6 - Description
                 data.add(line);
             }
         }
@@ -137,7 +139,8 @@ public abstract class CreateFromRMA extends CreateFrom {
 		miniTable.setColumnClass(3, String.class, true);        //  3-ASI
 		miniTable.setColumnClass(4, BigDecimal.class, true);        //  4-Qty
 		miniTable.setColumnClass(5, BigDecimal.class, false);        //  5-Delivered Qty
-        
+		miniTable.setColumnClass(6, String.class, true);        //  6-Description
+
         //  Table UI
 		miniTable.autoSize();
 	}
@@ -167,6 +170,7 @@ public abstract class CreateFromRMA extends CreateFrom {
                 rmaLine.setM_InOutLine_ID(inOutLineId);
                 rmaLine.setQty(d);
                 rmaLine.setAD_Org_ID(rma.getAD_Org_ID());
+                rmaLine.setDescription((String)miniTable.getValueAt(i, 6));
                 if (!rmaLine.save())
                 {
                     throw new IllegalStateException("Could not create RMA Line");
@@ -187,7 +191,8 @@ public abstract class CreateFromRMA extends CreateFrom {
         columnNames.add(Msg.translate(Env.getCtx(), "SerNo"));
         columnNames.add(Msg.translate(Env.getCtx(), "Quantity"));
         columnNames.add(Msg.getElement(Env.getCtx(), "QtyDelivered", false));
-	    
+        columnNames.add(Msg.translate(Env.getCtx(), "Description"));
+
 	    return columnNames;
 	}
 }

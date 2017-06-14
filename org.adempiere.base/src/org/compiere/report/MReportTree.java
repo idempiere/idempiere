@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MHierarchy;
+import org.compiere.model.MRole;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.util.CCache;
@@ -49,8 +50,14 @@ public class MReportTree
 	 *	@return tree
 	 */
 	public static MReportTree get (Properties ctx, int PA_Hierarchy_ID, String ElementType)
-	{
-		String key = Env.getAD_Client_ID(ctx) + "_" + PA_Hierarchy_ID + ElementType;
+	{	
+		MRole role = MRole.getDefault();
+		String key = Env.getAD_Client_ID(ctx) + "_" + role.getAD_Role_ID() + "_" + PA_Hierarchy_ID + "_" + ElementType;
+		if (!role.isAccessAllOrgs() && role.isUseUserOrgAccess() ) 
+		{
+			key = Env.getAD_Client_ID(ctx) + "_" + Env.getAD_User_ID(ctx) + "_" + role.getAD_Role_ID() + "_" + PA_Hierarchy_ID + "_" + ElementType;
+		}
+		
 		MReportTree tree = (MReportTree)s_trees.get(key);
 		if (tree == null)
 		{
@@ -93,14 +100,19 @@ public class MReportTree
 	/**	Map with Tree				*/
 	private static CCache<String,MReportTree> s_trees = new CCache<String,MReportTree>(null, "MReportTree", 20, false);
 
-
+	public MReportTree (Properties ctx, int PA_Hierarchy_ID, String ElementType)
+	{
+		this(ctx, PA_Hierarchy_ID, false, ElementType);
+	}
+	
 	/**************************************************************************
 	 * 	Report Tree
 	 *	@param ctx context
 	 *	@param PA_Hierarchy_ID optional hierarchy
+	 *  @param allNodes true to always get full tree
 	 *	@param ElementType Account Schema Element Type
 	 */
-	public MReportTree (Properties ctx, int PA_Hierarchy_ID, String ElementType)
+	public MReportTree (Properties ctx, int PA_Hierarchy_ID, boolean allNodes, String ElementType)
 	{
 		m_ElementType = ElementType;
 		m_TreeType = m_ElementType;
@@ -120,7 +132,7 @@ public class MReportTree
 				+ ", PA_Hierarchy_ID=" + PA_Hierarchy_ID);
 		//
 		boolean clientTree = true;
-		m_tree = new MTree (ctx, AD_Tree_ID, true, clientTree, null);  // include inactive and empty summary nodes
+		m_tree = new MTree (ctx, AD_Tree_ID, true, clientTree, allNodes, null);  // include inactive and empty summary nodes
 		// remove summary nodes without children
 		m_tree.trimTree();
 	}	//	MReportTree

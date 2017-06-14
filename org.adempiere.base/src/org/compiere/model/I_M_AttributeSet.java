@@ -362,4 +362,14 @@ public interface I_M_AttributeSet
 
 	/** Get Use Guarantee Date for Material Policy	  */
 	public boolean isUseGuaranteeDateForMPolicy();
+	
+	  /** Column name IsAutoGenerateLot */
+	public static final String COLUMNNAME_IsAutoGenerateLot = "IsAutoGenerateLot";
+
+	/** Set Auto Generate Lot  */
+	public void setIsAutoGenerateLot (boolean IsAutoGenerateLot);
+
+	/** Get Auto Generate Lot	  */
+	public boolean isAutoGenerateLot();
+	
 }

@@ -261,7 +261,7 @@ public class ServerReportCtl {
 			String TableName = MTable.getTableName(ctx, format.getAD_Table_ID());
 			MQuery query = MQuery.get (ctx, pi.getAD_PInstance_ID(), TableName);
 			PrintInfo info = new PrintInfo(pi);
-			re = new ReportEngine(ctx, format, query, info);
+			re = new ReportEngine(ctx, format, query, info, pi.getTransactionName());
 			if (pi.isPrintPreview() && pi.isBatch())
 			{
 				pi.setPDFReport(re.getPDF());

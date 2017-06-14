@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +32,9 @@ import org.compiere.model.MAcctProcessorLog;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MCost;
+import org.compiere.model.MOrgInfo;
+import org.compiere.model.MRole;
+import org.compiere.model.MUser;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -70,6 +74,26 @@ public class AcctProcessor extends AdempiereServer
 	protected void doWork ()
 	{
 		m_summary = new StringBuffer();
+		
+		// Prepar ctx
+		Env.setContext(getCtx(), "#AD_Client_ID", m_client.getAD_Client_ID());
+		Env.setContext(getCtx(), "#AD_Language", m_client.getAD_Language());
+		Env.setContext(getCtx(), "#AD_Org_ID", m_model.getAD_Org_ID());
+		if (m_model.getAD_Org_ID() != 0) {
+			MOrgInfo schedorg = MOrgInfo.get(getCtx(), m_model.getAD_Org_ID(), null);
+			if (schedorg.getM_Warehouse_ID() > 0)
+				Env.setContext(getCtx(), "#M_Warehouse_ID", schedorg.getM_Warehouse_ID());
+		}
+		Env.setContext(getCtx(), "#AD_User_ID", getAD_User_ID());
+		Env.setContext(getCtx(), "#SalesRep_ID", getAD_User_ID());
+		MUser scheduser = MUser.get(getCtx(), getAD_User_ID());
+		MRole[] schedroles = scheduser.getRoles(m_model.getAD_Org_ID());
+		if (schedroles != null && schedroles.length > 0)
+			Env.setContext(getCtx(), "#AD_Role_ID", schedroles[0].getAD_Role_ID()); // first role, ordered by AD_Role_ID
+		Timestamp ts = new Timestamp(System.currentTimeMillis());
+		SimpleDateFormat dateFormat4Timestamp = new SimpleDateFormat("yyyy-MM-dd"); 
+		Env.setContext(getCtx(), "#Date", dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
+				
 		//	Get Schemata
 		if (m_model.getC_AcctSchema_ID() == 0)
 			m_ass = MAcctSchema.getClientAcctSchema(getCtx(), m_model.getAD_Client_ID());
@@ -88,6 +112,19 @@ public class AcctProcessor extends AdempiereServer
 		pLog.saveEx();
 	}	//	doWork
 
+	private int getAD_User_ID() {
+		int AD_User_ID;
+		if (m_model.getSupervisor_ID() > 0)
+			AD_User_ID = m_model.getSupervisor_ID();
+		else if (m_model.getCreatedBy() > 0)
+			AD_User_ID = m_model.getCreatedBy();
+		else if (m_model.getUpdatedBy() > 0)
+			AD_User_ID = m_model.getUpdatedBy();
+		else
+			AD_User_ID = 100; //fall back to SuperUser
+		return AD_User_ID;
+	}
+	
 	/**
 	 * 	Post Session
 	 */

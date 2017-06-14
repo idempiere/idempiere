@@ -48,6 +48,7 @@ import javax.swing.JFrame;
 import org.adempiere.base.Core;
 import org.adempiere.base.IResourceFinder;
 import org.adempiere.util.IProcessUI;
+import org.adempiere.util.ServerContext;
 import org.adempiere.util.ServerContextProvider;
 import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
@@ -244,6 +245,11 @@ public final class Env
 	{
 		if (ctx == null)
 			throw new IllegalArgumentException ("Require Context");
+		
+		//nothing to do if ctx is already the current context
+		if (ServerContext.getCurrentInstance() == ctx)
+			return;
+		
 		getCtx().clear();
 		getCtx().putAll(ctx);
 	}   //  setCtx

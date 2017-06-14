@@ -47,6 +47,7 @@ import javax.swing.RepaintManager;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import org.compiere.acct.Doc;
 import org.compiere.db.CConnection;
 import org.compiere.grid.ed.Calculator;
 import org.compiere.interfaces.Server;
@@ -54,7 +55,6 @@ import org.compiere.model.MMenu;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
-import org.compiere.process.DocumentEngine;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CFrame;
 import org.compiere.swing.CMenuItem;
@@ -874,9 +874,7 @@ public final class AEnv
 			+ ", AD_Table_ID=" + AD_Table_ID + "/" + Record_ID
 			+ ", Force=" + force);
 
-		String error = DocumentEngine.postImmediate(Env.getCtx(), AD_Client_ID, AD_Table_ID, Record_ID, force, null);
-
-		return error;
+		return Doc.manualPosting(WindowNo, AD_Client_ID, AD_Table_ID, Record_ID, force);
 	}   //  postImmediate
 
 	/**

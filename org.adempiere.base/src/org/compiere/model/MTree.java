@@ -253,7 +253,9 @@ public class MTree extends MTree_Base
 			if (!m_editable)
 				sql.append(" AND tn.IsActive='Y'");
 			sql.append(" ORDER BY COALESCE(tn.Parent_ID, -1), tn.SeqNo");
-			sql = new StringBuffer(MRole.getDefault().addAccessSQL(sql.toString(), "st", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO));	// SQL_RO for Org_ID = 0
+			//do not check access if allNodes
+			if (AD_User_ID != -1)
+				sql = new StringBuffer(MRole.getDefault().addAccessSQL(sql.toString(), "st", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO));	// SQL_RO for Org_ID = 0
 		}
 		if (log.isLoggable(Level.FINEST)) log.finest(sql.toString());
 		//  The Node Loop

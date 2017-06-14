@@ -578,7 +578,16 @@ public class MInOutLine extends X_M_InOutLine
 	        }
 	        
 		}
-
+		I_M_AttributeSet attributeset = getM_Product().getM_AttributeSet();
+		boolean isAutoGenerateLot = false;
+		if (attributeset != null)
+			isAutoGenerateLot = attributeset.isAutoGenerateLot();
+		if (getReversalLine_ID() == 0 && !getParent().isSOTrx() && !getParent().getMovementType().equals(MInOut.MOVEMENTTYPE_VendorReturns) && isAutoGenerateLot
+				&& getM_AttributeSetInstance_ID() == 0)
+		{
+			MAttributeSetInstance asi = MAttributeSetInstance.generateLot(getCtx(), (MProduct)getM_Product(), get_TrxName());
+			setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
+		}
 	//	if (getC_Charge_ID() == 0 && getM_Product_ID() == 0)
 	//		;
 
