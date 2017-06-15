@@ -1301,15 +1301,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !adTabbox.getSelectedGridTab().isNew());
 
+        boolean isNewRow = adTabbox.getSelectedGridTab().getRowCount() == 0 || adTabbox.getSelectedGridTab().isNew();
         //Deepak-Enabling customize button IDEMPIERE-364
-        if(!(adTabbox.getSelectedTabpanel() instanceof ADSortTab))
-        {
-        	toolbar.enableCustomize(((ADTabpanel)adTabbox.getSelectedTabpanel()).isGridView());
-        }
-        else 
-        {
+        if(adTabbox.getSelectedTabpanel() instanceof ADSortTab){//consistent with dataStatusChanged
+        	toolbar.enableProcessButton (false);
         	toolbar.enableCustomize(false);
-        	toolbar.enableProcessButton(false);
+        }else{
+        	ADTabpanel adtab = (ADTabpanel) adTabbox.getSelectedTabpanel();
+            toolbar.enableProcessButton(!isNewRow && adtab != null && adtab.getToolbarButtons().size() > 0);
+            toolbar.enableCustomize(adtab.isGridView());
         }
 
 	}
