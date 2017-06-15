@@ -1769,6 +1769,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	{
     		sortColumn.setSortDirection("natural");
     	}
+    	if (gridTab.isSortTab()) { // refresh is not refreshing sort tabs
+    		IADTabpanel tabPanel = adTabbox.getSelectedTabpanel();
+    		tabPanel.query(false, 0, 0);
+    	}
     }
 
     private Column findCurrentSortColumn() {
