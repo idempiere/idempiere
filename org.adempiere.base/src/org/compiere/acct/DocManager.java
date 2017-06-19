@@ -19,7 +19,6 @@ package org.compiere.acct;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -295,23 +294,17 @@ public class DocManager {
 				Doc doc = Doc.get (as, AD_Table_ID, rs, trxName);
 				if (doc != null)
 				{
-					Savepoint savepoint = trx.setSavepoint(null);
 					error = doc.post (force, repost);	//	repost
 					status = doc.getPostStatus();
 					if (error != null && error.trim().length() > 0)
 					{
-						trx.rollback(savepoint);
-						break;
-					}
-					else
-					{
-						try {
-							trx.releaseSavepoint(savepoint);
-						} catch (Exception e) {}
+						trx.rollback();
+						return error;
 					}
 				}
 				else
 				{
+					trx.rollback();
 					return "NoDoc";
 				}
 			}
