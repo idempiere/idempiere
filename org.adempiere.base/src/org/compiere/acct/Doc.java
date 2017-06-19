@@ -260,8 +260,25 @@ public abstract class Doc
 		Trx trx = Trx.get(Trx.createTrxName("ManulPosting"), true);
 		try
 		{
-			error = postImmediate(ass, AD_Table_ID, Record_ID, force, trx.getTrxName());
-			//Average Costing: Post MatchPO and MatchInv together with MR and Invoice
+			//Costing: Post MatchPO before MR
+			if (AD_Table_ID == MInOut.Table_ID)
+			{
+				MMatchPO[] matchPos  = MMatchPO.getInOut(Env.getCtx(), Record_ID, trx.getTrxName());
+				for (MMatchPO matchPo : matchPos) 
+				{
+					if (!matchPo.isPosted())
+					{
+						error = postImmediate(ass, matchPo.get_Table_ID(), matchPo.get_ID(), force, matchPo.get_TrxName());
+						if (!Util.isEmpty(error))
+							break;
+					}
+				}	
+			}
+			if (Util.isEmpty(error))
+			{
+				error = postImmediate(ass, AD_Table_ID, Record_ID, force, trx.getTrxName());
+			}
+			//Costing: Post MatchInv after Invoice
 			if (Util.isEmpty(error))
 			{
 				if (AD_Table_ID == MInvoice.Table_ID)
@@ -272,20 +289,6 @@ public abstract class Doc
 						if (!matchInv.isPosted())
 						{
 							error = postImmediate(ass, matchInv.get_Table_ID(), matchInv.get_ID(), force, matchInv.get_TrxName());
-							if (!Util.isEmpty(error))
-								break;
-						}
-					}	
-	
-				} 
-				else if (AD_Table_ID == MInOut.Table_ID)
-				{
-					MMatchPO[] matchPos  = MMatchPO.getInOut(Env.getCtx(), Record_ID, trx.getTrxName());
-					for (MMatchPO matchPo : matchPos) 
-					{
-						if (!matchPo.isPosted())
-						{
-							error = postImmediate(ass, matchPo.get_Table_ID(), matchPo.get_ID(), force, matchPo.get_TrxName());
 							if (!Util.isEmpty(error))
 								break;
 						}
