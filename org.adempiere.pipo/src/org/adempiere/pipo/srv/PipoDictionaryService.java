@@ -13,8 +13,6 @@ package org.adempiere.pipo.srv;
 
 import java.io.File;
 import java.sql.Timestamp;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.base.IDictionaryService;
@@ -32,11 +30,8 @@ public class PipoDictionaryService implements IDictionaryService {
 
 	CLogger logger = CLogger.getCLogger(PipoDictionaryService.class.getName());
 
-	private final Semaphore semaphore;
-	
 	public PipoDictionaryService() {
 		super();
-		semaphore = new Semaphore(1, true);
 	}
 
 	@Override
@@ -49,12 +44,6 @@ public class PipoDictionaryService implements IDictionaryService {
 		X_AD_Package_Imp_Proc adPackageImp = null;
 		PackIn packIn = null;
 		try {
-			try {
-				semaphore.tryAcquire(120, TimeUnit.SECONDS);
-			} catch (InterruptedException e) {
-				semaphore.release();
-				semaphore.acquire();
-			}
 			trxName = Trx.createTrxName("PipoDS");
 			packIn = new PackIn();
 			packIn.setPackageName(context.getBundle().getSymbolicName());
@@ -116,7 +105,6 @@ public class PipoDictionaryService implements IDictionaryService {
 			try {
 				Trx.get(trxName, false).close();
 			} catch (Exception e) {}
-			semaphore.release();
 			adPackageImp.save(); // ignoring exceptions
 
 			if (adPackageImp != null && packIn != null) {

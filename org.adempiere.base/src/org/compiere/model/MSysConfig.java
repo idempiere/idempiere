@@ -198,6 +198,10 @@ public class MSysConfig extends X_AD_SysConfig
 	/** Cache			*/
 	private static CCache<String, String> s_cache = new CCache<String, String>(Table_Name, 40, 0, true);
 	
+	public static final String AUTOMATIC_PACKIN_PROCESSING = "AUTOMATIC_PACKIN_PROCESSING";
+	public static final String AUTOMATIC_PACKIN_TIMEOUT = "AUTOMATIC_PACKIN_TIMEOUT";
+	public static final String AUTOMATIC_PACKIN_RETRIES = "AUTOMATIC_PACKIN_RETRIES";
+
 	/**
 	 * Get system configuration property of type string
 	 * @param Name

@@ -35,23 +35,18 @@ import org.compiere.model.X_AD_Package_Imp;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * 
  * @author hengsin
  *
  */
-public class Incremental2PackActivator implements BundleActivator, ServiceTrackerCustomizer<IDictionaryService, IDictionaryService> {
+public class Incremental2PackActivator extends AbstractActivator {
 
 	protected final static CLogger logger = CLogger.getCLogger(Incremental2PackActivator.class.getName());
-	private BundleContext context;
-	private ServiceTracker<IDictionaryService, IDictionaryService> serviceTracker;
-	private IDictionaryService service;
 
 	@Override
 	public void start(BundleContext context) throws Exception {
@@ -189,13 +184,18 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 			}
 		});		
 				
-		for(TwoPackEntry entry : list) {
-			if (!installedVersions.contains(entry.version)) {
-				if (!packIn(entry.url)) {
-					// stop processing further packages if one fail
-					break;
+		if (getDBLock()) {
+			for(TwoPackEntry entry : list) {
+				if (!installedVersions.contains(entry.version)) {
+					if (!packIn(entry.url)) {
+						// stop processing further packages if one fail
+						break;
+					}
 				}
 			}
+			releaseLock();
+		} else {
+			logger.log(Level.SEVERE, "Could not acquire the DB lock to install:" + getName());
 		}
 	}
 
@@ -224,7 +224,8 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 			    	zipstream.write(buffer, 0, read);
 			    }
 			    // call 2pack
-				service.merge(context, zipfile);
+				if (!merge(zipfile, extractVersionString(packout)))
+					return false;
 			} catch (Throwable e) {
 				logger.log(Level.SEVERE, "Pack in failed.", e);
 				return false;
