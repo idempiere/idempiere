@@ -138,8 +138,10 @@ public final class Prop implements Serializable {
 		}
 		catch (FileNotFoundException e)
 		{
-			log.warning(filename + " not found");
-			log.warning("!!WARNING:Please locate yout custom home.properties on iDEMPIERE_HOME.");
+			if (log.isLoggable(Level.INFO)) {
+				log.info(filename + " not found");
+				log.info("!!WARNING:Please locate your custom home.properties on IDEMPIERE_HOME.");
+			}
 			loadOK = false;
 			try {
 				fis = Prop.class.getResourceAsStream(HOME_PROPERTY_FILE);
