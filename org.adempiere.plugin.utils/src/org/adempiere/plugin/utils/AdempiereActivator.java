@@ -14,6 +14,7 @@ import org.compiere.model.Query;
 import org.compiere.model.ServerStateChangeEvent;
 import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.X_AD_Package_Imp;
+import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.osgi.framework.BundleContext;
@@ -56,14 +57,18 @@ public class AdempiereActivator extends AbstractActivator {
 			q.setParameters(new Object[] { getName(), version + "%" });
 			X_AD_Package_Imp pkg = q.first();
 			if (pkg == null) {
-				if (getDBLock()) {
-					System.out.println("Installing " + getName() + " " + version + " ...");
-					packIn();
-					install();
-					releaseLock();
-					System.out.println(getName() + " " + version + " installed.");
-				} else {
-					logger.log(Level.SEVERE, "Could not acquire the DB lock to install:" + getName());
+				try {
+					if (getDBLock()) {
+						System.out.println("Installing " + getName() + " " + version + " ...");
+						packIn();
+						install();
+						releaseLock();
+						System.out.println(getName() + " " + version + " installed.");
+					} else {
+						logger.log(Level.SEVERE, "Could not acquire the DB lock to install:" + getName());
+					}
+				} catch (AdempiereSystemError e) {
+					e.printStackTrace();
 				}
 			} else {
 				if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + version + " was installed: "

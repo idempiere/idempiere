@@ -32,6 +32,7 @@ import org.compiere.model.Query;
 import org.compiere.model.ServerStateChangeEvent;
 import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.X_AD_Package_Imp;
+import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
@@ -184,18 +185,22 @@ public class Incremental2PackActivator extends AbstractActivator {
 			}
 		});		
 				
-		if (getDBLock()) {
-			for(TwoPackEntry entry : list) {
-				if (!installedVersions.contains(entry.version)) {
-					if (!packIn(entry.url)) {
-						// stop processing further packages if one fail
-						break;
+		try {
+			if (getDBLock()) {
+				for(TwoPackEntry entry : list) {
+					if (!installedVersions.contains(entry.version)) {
+						if (!packIn(entry.url)) {
+							// stop processing further packages if one fail
+							break;
+						}
 					}
 				}
+				releaseLock();
+			} else {
+				logger.log(Level.SEVERE, "Could not acquire the DB lock to install:" + getName());
 			}
-			releaseLock();
-		} else {
-			logger.log(Level.SEVERE, "Could not acquire the DB lock to install:" + getName());
+		} catch (AdempiereSystemError e) {
+			e.printStackTrace();
 		}
 	}
 

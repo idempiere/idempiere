@@ -21,6 +21,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Imp;
+import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -68,7 +69,7 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 
 	public abstract String getName();
 
-	public boolean getDBLock() {
+	public boolean getDBLock() throws AdempiereSystemError {
 		int timeout = MSysConfig.getIntValue(MSysConfig.AUTOMATIC_PACKIN_TIMEOUT, 120);
 		int maxAttempts = MSysConfig.getIntValue(MSysConfig.AUTOMATIC_PACKIN_RETRIES, 5);
 		boolean lockAcquired = false;
@@ -86,15 +87,19 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 		Trx.get(trxName, false).close();
 	}
 
-	private boolean getDBLock(int timeout) {
+	private boolean getDBLock(int timeout) throws AdempiereSystemError {
 		return DB.getDatabase().forUpdate(getLockPO(), timeout);
 	}
 
-	private PO getLockPO() {
+	private PO getLockPO() throws AdempiereSystemError {
 		MSysConfig sysconfig = new Query(Env.getCtx(), MSysConfig.Table_Name, 
 				"Name=? AND AD_Client_ID=0", null)
 				.setParameters(MSysConfig.AUTOMATIC_PACKIN_PROCESSING)
-				.first();
+				.firstOnly();
+		if (sysconfig == null) {
+			 throw new AdempiereSystemError(MSysConfig.AUTOMATIC_PACKIN_PROCESSING + " SysConfig does not exist");
+		}
+		
 		trxName = Trx.createTrxName("ActSysTrx");
 		sysconfig.set_TrxName(trxName);
 		return sysconfig;
