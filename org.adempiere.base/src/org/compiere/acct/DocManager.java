@@ -19,6 +19,7 @@ package org.compiere.acct;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -286,8 +287,10 @@ public class DocManager {
 		
 		Trx trx = Trx.get(trxName, true);
 		String error = null;
+		Savepoint savepoint = null;
 		try
 		{
+			savepoint = localTrxName == null ? trx.setSavepoint(null) : null;
 			String status = "";
 			for(MAcctSchema as : ass)
 			{
@@ -298,13 +301,19 @@ public class DocManager {
 					status = doc.getPostStatus();
 					if (error != null && error.trim().length() > 0)
 					{
-						trx.rollback();
+						if (savepoint != null)
+							trx.rollback(savepoint);
+						else
+							trx.rollback();
 						return error;
 					}
 				}
 				else
 				{
-					trx.rollback();
+					if (savepoint != null)
+						trx.rollback(savepoint);
+					else
+						trx.rollback();
 					return "NoDoc";
 				}
 			}
@@ -319,15 +328,27 @@ public class DocManager {
 				if (localTrxName != null) {
 					if (trx != null)
 						trx.rollback();
+				} else if (trx != null && savepoint != null) {
+					trx.rollback(savepoint);
+					savepoint = null;
 				}
 				if (dbError != null)
 					error = dbError.getValue();
 				else
 					error = "SaveError";
 			}
-			if (localTrxName != null) {
-				if (trx != null)
+			if (savepoint != null)
+			{
+				try
+				{
+					trx.releaseSavepoint(savepoint);
+				} catch (SQLException e1) {}
+				savepoint = null;
+			}
+			if (localTrxName != null && error == null) {
+				if (trx != null) {
 					trx.commit();
+				}
 			}
 		}
 		catch (Exception e)
@@ -335,6 +356,10 @@ public class DocManager {
 			if (localTrxName != null) {
 				if (trx != null)
 					trx.rollback();
+			} else if (trx != null && savepoint != null) {
+				try {
+					trx.rollback(savepoint);
+				} catch (SQLException e1) {}
 			}
 			if (e instanceof RuntimeException)
 				throw (RuntimeException) e;
