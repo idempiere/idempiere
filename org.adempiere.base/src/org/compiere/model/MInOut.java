@@ -1428,20 +1428,10 @@ public class MInOut extends X_M_InOut implements DocAction
 				if (mtrx == null)
 				{
 					Timestamp dateMPolicy= null;
-					MStorageOnHand[] storages = null;
-					if (sLine.getMovementQty().compareTo(Env.ZERO) > 0) {
-						// Find Date Material Policy bases on ASI
-						storages = MStorageOnHand.getWarehouse(getCtx(), 0,
-								sLine.getM_Product_ID(), sLine.getM_AttributeSetInstance_ID(), null,
-								MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
-								sLine.getM_Locator_ID(), get_TrxName());
-					} else {
-						//Case of reversal
-						storages = MStorageOnHand.getWarehouse(getCtx(), 0,
-								sLine.getM_Product_ID(), sLine.getM_AttributeSetInstance_ID(), null,
-								MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
-								sLine.getM_Locator_ID(), get_TrxName());
-					}
+					MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), 0,
+							sLine.getM_Product_ID(), sLine.getM_AttributeSetInstance_ID(), null,
+							MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+							sLine.getM_Locator_ID(), get_TrxName());
 					for (MStorageOnHand storage : storages) {
 						if (storage.getQtyOnHand().compareTo(sLine.getMovementQty()) >= 0) {
 							dateMPolicy = storage.getDateMaterialPolicy();
