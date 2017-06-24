@@ -89,6 +89,8 @@ public class Obscure extends Object
 	public static final String OBSCURETYPE_ObscureAlphaNumericButFirstLast4 = "A44";
 	/** Obscure AlphaNumeric but last 4 = A04 */
 	public static final String OBSCURETYPE_ObscureAlphaNumericButLast4 = "A04";
+	/** Obscure by asterisk character, use for EncryptedField */
+	public static final String OBSCURETYPE_ObscureAllAsterisk = "AA";
 
 	/** Obscure Type			*/
 	private String 	m_type = OBSCURETYPE_ObscureDigitsButLast4;
@@ -103,7 +105,8 @@ public class Obscure extends Object
 	 */
 	public void setType (String obscureType)
 	{
-		if (obscureType == null || obscureType.equals("904") || obscureType.equals("944") || obscureType.equals("A44") || obscureType.equals("A04"))
+		if (obscureType == null || obscureType.equals("904") || obscureType.equals("944") || obscureType.equals("A44") || obscureType.equals("A04") || 
+				OBSCURETYPE_ObscureAllAsterisk.equals(obscureType))
 		{
 			m_type = obscureType;
 			m_obscuredValue = null;
@@ -161,6 +164,11 @@ public class Obscure extends Object
 			return m_obscuredValue;
 		if (m_clearValue == null || m_clearValue.length() == 0)
 			return m_clearValue;	
+		
+		if (OBSCURETYPE_ObscureAllAsterisk.equals(m_type)){
+			return "**********";
+		}
+
 		//
 		boolean alpha = m_type.charAt(0) == 'A';
 		int clearStart = Integer.parseInt(m_type.substring(1,2));

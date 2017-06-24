@@ -258,6 +258,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 	    	txtSecurityQuestion.setVisible(false);
 	        
 	    	txtAnswer = new Textbox();
+	    	txtAnswer.setType("password");
 	    	txtAnswer.setId("txtAnswer");
 	//        txtAnswer.setType("password");
 	        txtAnswer.setCols(25);
