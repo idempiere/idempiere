@@ -94,7 +94,7 @@ public class Textbox extends org.zkoss.zul.Textbox implements EventListener<Even
 
 	@Override
 	public void setValue(String value) throws WrongValueException {
-		if (m_obscure != null && !m_infocus)
+		if (m_obscure != null && ("password".equals(getType()) || !m_infocus))
 		{
 			super.setValue(m_obscure.getObscuredValue(value));
 		}
