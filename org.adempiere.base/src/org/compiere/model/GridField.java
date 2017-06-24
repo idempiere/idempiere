@@ -80,11 +80,10 @@ import org.idempiere.util.ParseSeq;
 public class GridField 
 	implements Serializable, Evaluatee, Cloneable
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7739433012288022819L;
+	private static final long serialVersionUID = 2703129833179761682L;
 
 	/**
 	 *  Field Constructor.
@@ -1069,6 +1068,7 @@ public class GridField
 	 */
 	public boolean validateValueNoDirect()
 	{
+		refreshLookup();
 		//  null
 		if (m_value == null || m_value.toString().length() == 0)
 		{
@@ -1118,12 +1118,13 @@ public class GridField
 		setValue(null, m_inserting);
 		m_error = true;
 		return false;
-	}   //  validateValue
+	}   //  validateValueNoDirect
 
 	/**
 	 *  Validate initial Field Value.  Push direct value if it doesn't exist
 	 * 	Called from GridTab.setCurrentRow when inserting
 	 *  @return true if valid
+	 *  @deprecated use validateValueNoDirect instead
 	 */
 	public boolean validateValue()
 	{
@@ -1166,7 +1167,7 @@ public class GridField
 		setValue(null, m_inserting);
 		m_error = true;
 		return false;
-	}   //  validateValuePushDirect
+	}   //  validateValue
 
 	/**************************************************************************
 	 *	Is the Column Visible ?

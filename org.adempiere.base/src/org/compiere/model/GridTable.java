@@ -2618,11 +2618,17 @@ public class GridTable extends AbstractTableModel
 						  || (hasDocTypeTargetField && field.getColumnName().equals("C_DocType_ID"))
 						  || ! field.isAllowCopy())
 				{
-					rowData[i] = field.getDefault();
-					field.setValue(rowData[i], m_inserting);
+					Object value = field.getDefault();
+					field.setValue(value, m_inserting);
+					field.validateValueNoDirect();
+					rowData[i] = field.getValue();
 				}
-				else
-					rowData[i] = origData[i];
+				else {
+					Object value = origData[i];
+					field.setValue(value, m_inserting);
+					field.validateValueNoDirect();
+					rowData[i] = field.getValue();
+				}
 			}
 		}
 		else	//	new
@@ -2630,8 +2636,10 @@ public class GridTable extends AbstractTableModel
 			for (int i = 0; i < size; i++)
 			{
 				GridField field = (GridField)m_fields.get(i);
-				rowData[i] = field.getDefault();
-				field.setValue(rowData[i], m_inserting);
+				Object value = field.getDefault();
+				field.setValue(value, m_inserting);
+				field.validateValueNoDirect();
+				rowData[i] = field.getValue();
 			}
 		}
 		
