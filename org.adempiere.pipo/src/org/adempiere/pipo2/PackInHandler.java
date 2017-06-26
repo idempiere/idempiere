@@ -312,8 +312,8 @@ public class PackInHandler extends DefaultHandler {
     		}
     		packIn.getNotifier().addStatusLine(packageStatus);
 
-    		updPackageImpNoTrx();
-    		updPackageImpInstNoTrx();
+    		updPackageImp(m_ctx.trx.getTrxName()); // do not set success until commit on PackInProcess, still can fail
+    		updPackageImpInst(m_ctx.trx.getTrxName());
 
     		//reset
     		setupHandlers();
@@ -326,31 +326,31 @@ public class PackInHandler extends DefaultHandler {
     			} catch (RuntimeException re) {
     				packageStatus = "Import Failed";
     				packIn.getNotifier().addStatusLine(packageStatus);
-    	    		updPackageImpNoTrx();
+    	    		updPackageImp(null);
     	    		throw re;
     			} catch (SAXException se) {
     				packageStatus = "Import Failed";
     				packIn.getNotifier().addStatusLine(packageStatus);
-    	    		updPackageImpNoTrx();
+    	    		updPackageImp(null);
     	    		throw se;
     			}
     		}
     	}
     }   // endElement
 
-    private void updPackageImpNoTrx() {
+    private void updPackageImp(String trxName) {
     	// NOTE: Updating out of model to avoid change log insert that can cause locks
 		//Update package history log with package status
     	DB.executeUpdateEx("UPDATE AD_Package_Imp SET Processed=?, PK_Status=?, UpdatedBy=?, Updated=SYSDATE WHERE AD_Package_Imp_ID=?",
     			new Object[] {"Y", packageStatus, Env.getAD_User_ID(m_ctx.ctx), AD_Package_Imp_ID},
-    			null);
+    			trxName);
 	}
 
-    private void updPackageImpInstNoTrx() {
+    private void updPackageImpInst(String trxName) {
     	// NOTE: Updating out of model to avoid change log insert that can cause locks
     	DB.executeUpdateEx("UPDATE AD_Package_Imp_Inst SET PK_Status=?, UpdatedBy=?, Updated=SYSDATE WHERE AD_Package_Imp_Inst_ID=?",
     			new Object[] {packageStatus, Env.getAD_User_ID(m_ctx.ctx), AD_Package_Imp_Inst_ID},
-    			null);
+    			trxName);
 	}
 
 	private void processDeferElements() throws SAXException {
