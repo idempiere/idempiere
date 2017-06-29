@@ -453,15 +453,17 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 			MPeriod.testPeriodOpen(getCtx(), getStatementDate(), MDocType.DOCBASETYPE_BankStatement, getAD_Org_ID());
 			MFactAcct.deleteEx(Table_ID, getC_BankStatement_ID(), get_TrxName());
 		}
-		
-		//Added Lines by AZ Goodwill
-		//Restore Bank Account Balance
-		MBankAccount ba = getBankAccount();
-		ba.load(get_TrxName());
-		ba.setCurrentBalance(ba.getCurrentBalance().subtract(getStatementDifference()));
-		ba.saveEx();
-		//End of Added Lines
-			
+
+		if (isProcessed()) {
+			//Added Lines by AZ Goodwill
+			//Restore Bank Account Balance
+			MBankAccount ba = getBankAccount();
+			ba.load(get_TrxName());
+			ba.setCurrentBalance(ba.getCurrentBalance().subtract(getStatementDifference()));
+			ba.saveEx();
+			//End of Added Lines
+		}
+
 		//	Set lines to 0
 		MBankStatementLine[] lines = getLines(true);
 		for (int i = 0; i < lines.length; i++)
