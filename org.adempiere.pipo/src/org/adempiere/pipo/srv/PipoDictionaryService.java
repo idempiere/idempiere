@@ -94,7 +94,7 @@ public class PipoDictionaryService implements IDictionaryService {
 			adPackageImp.setDateProcessed(new Timestamp(System.currentTimeMillis()));
 			adPackageImp.setP_Msg(msg);
 			
-			Trx.get(trxName, false).commit();
+			Trx.get(trxName, false).commit(true);
 			if (logger.isLoggable(Level.INFO)) logger.info("commit " + trxName);
 		} catch (Exception e) {
 			adPackageImp.setP_Msg(e.getLocalizedMessage());
