@@ -239,6 +239,7 @@ public class RunProcess extends TableFixture {
 				if (process.isJavaProcess() && !jasperreport)
 				{
 					Trx trx = Trx.get(Trx.createTrxName("FixturePrc"), true);
+					trx.setDisplayName(getClass().getName()+"_doStaticTable");
 					try
 					{
 						processOK = process.processIt(pi, trx);

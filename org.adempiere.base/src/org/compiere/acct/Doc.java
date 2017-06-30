@@ -258,6 +258,7 @@ public abstract class Doc
 		String error = null;
 		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), AD_Client_ID);
 		Trx trx = Trx.get(Trx.createTrxName("ManulPosting"), true);
+		trx.setDisplayName(Doc.class.getName()+"_manualPosting");
 		try
 		{
 			//Costing: Post MatchPO before MR

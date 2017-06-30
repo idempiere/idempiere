@@ -97,6 +97,7 @@ public class SetDocAction extends TableFixture {
 				}
 
 				Trx trx = Trx.get(Trx.createTrxName("FixtureSetDocAction"), true);
+				trx.setDisplayName(getClass().getName()+"_doStaticTable");
 
 				gpo = table.getPO(recordID, trx.getTrxName());
 				if (gpo == null) {

@@ -847,6 +847,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			//https://jdbc.postgresql.org/documentation/head/query.html#query-with-cursor
 			String trxName = Trx.createTrxName("InfoPanelLoad:");
 			trx  = Trx.get(trxName, true);
+			trx.setDisplayName(getClass().getName()+"_readLine");
 			m_pstmt = DB.prepareStatement(dataSql, trxName);
 			setParameters (m_pstmt, false);	//	no count
 			if (log.isLoggable(Level.FINE))

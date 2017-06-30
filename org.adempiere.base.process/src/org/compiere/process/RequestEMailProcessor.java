@@ -209,6 +209,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 		Trx trxRequest = null;
 		try {			
 			trxRequest = Trx.get(Trx.createTrxName("SvrProcess-makerequest"), true);
+			trxRequest.setDisplayName(getClass().getName()+"_processEmailContent");
 			trxRequest.start();
 			
 			createRequest(emailHeader, trxRequest.getTrxName());

@@ -194,7 +194,7 @@ public class Trx
 		}
 		if (!isActive())
 			start();
-		if (MSysConfig.getBooleanValue("TRACE_ALL_TRX_CONNECTION_GET", false))
+		if (MSysConfig.getBooleanValue(MSysConfig.TRACE_ALL_TRX_CONNECTION_GET, false))
 			trace = new Exception();
 		return m_connection;
 	}	//	getConnection
