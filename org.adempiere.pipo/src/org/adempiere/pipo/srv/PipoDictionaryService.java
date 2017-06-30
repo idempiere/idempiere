@@ -45,6 +45,7 @@ public class PipoDictionaryService implements IDictionaryService {
 		PackIn packIn = null;
 		try {
 			trxName = Trx.createTrxName("PipoDS");
+			Trx.get(trxName, true).setDisplayName(getClass().getName()+"_merge");
 			packIn = new PackIn();
 			packIn.setPackageName(context.getBundle().getSymbolicName());
 			

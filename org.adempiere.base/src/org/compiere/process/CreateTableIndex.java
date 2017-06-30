@@ -192,6 +192,7 @@ public class CreateTableIndex extends SvrProcess {
 			addLog(Msg.getMsg(getCtx(), "CreateTableIndexCreateTableIndex") + dbTableIndex.indexName);
 
 			Trx trx = Trx.get(Trx.createTrxName("CreateTableIndex"), true);
+			trx.setDisplayName(getClass().getName()+"_process_createMTableIndex");
 			try {
 				MTableIndex tableIndex = new MTableIndex(getCtx(), 0, get_TrxName());
 				tableIndex.setAD_Table_ID(table.getAD_Table_ID());
@@ -244,6 +245,7 @@ public class CreateTableIndex extends SvrProcess {
 			addLog(Msg.getMsg(getCtx(), "CreateTableIndexValidateTableIndex") + tableIndex.getName());
 			addLog(tableIndex.getAD_TableIndex_ID(), null, null, tableIndex.toString(), tableIndex.get_Table_ID(), tableIndex.getAD_TableIndex_ID());
 			Trx trx = Trx.get(Trx.createTrxName("ValidateTableIndex"), true);
+			trx.setDisplayName(getClass().getName()+"_process_validateTableIndex");
 			try {
 				String result = TableIndexValidate.validateTableIndex(getCtx(), tableIndex, trx.getTrxName(), getProcessInfo());
 				addLog(result);

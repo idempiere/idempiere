@@ -286,6 +286,8 @@ public class DocManager {
 		}
 		
 		Trx trx = Trx.get(trxName, true);
+		if (localTrxName != null)
+			trx.setDisplayName(DocManager.class.getName()+"_postDocument");
 		String error = null;
 		Savepoint savepoint = null;
 		try

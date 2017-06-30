@@ -678,7 +678,10 @@ public class MWorkflow extends X_AD_Workflow
 		MWFProcess retValue = null;
 		Trx localTrx = null;
 		if (trxName == null)
+		{
 			localTrx = Trx.get(Trx.createTrxName("WFP"), true);
+			localTrx.setDisplayName(getClass().getName()+"_start");
+		}
 		try
 		{
 			retValue = new MWFProcess (this, pi, trxName != null ? trxName : localTrx.getTrxName());

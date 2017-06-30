@@ -260,6 +260,7 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 
 	protected void saveRequest() throws IOException {
 		Trx trx = Trx.get(Trx.createTrxName("SaveNewRequest"), true);
+		trx.setDisplayName(getClass().getName()+"_saveRequest");
 		try {
 			trx.start();
 			MRequest request = createMRequest(trx);

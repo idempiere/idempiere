@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
@@ -32,6 +34,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 
 /**
@@ -84,6 +87,10 @@ public class Trx
 	private static final Trx.TrxMonitor s_monitor = new Trx.TrxMonitor();
 	
 	private List<TrxEventListener> listeners = new ArrayList<TrxEventListener>();
+	
+	protected Exception trace;
+	
+	private String m_displayName;
 
 	public static void startTrxMonitor()
 	{
@@ -187,6 +194,8 @@ public class Trx
 		}
 		if (!isActive())
 			start();
+		if (MSysConfig.getBooleanValue("TRACE_ALL_TRX_CONNECTION_GET", false))
+			trace = new Exception();
 		return m_connection;
 	}	//	getConnection
 
@@ -208,6 +217,7 @@ public class Trx
 		{
 			log.log(Level.SEVERE, "connection", e);
 		}
+		trace = new Exception();
 	}	//	setConnection
 
 	/**
@@ -470,6 +480,7 @@ public class Trx
 			}
 		}
 		m_connection = null;
+		trace = null;
 		m_active = false;
 		fireAfterCloseEvent();
 		log.config(m_trxName);
@@ -538,7 +549,7 @@ public class Trx
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("Trx[");
-		sb.append(getTrxName())
+		sb.append(getDisplayName())
 			.append(",Active=").append(isActive())
 			.append("]");
 		return sb.toString();
@@ -664,6 +675,31 @@ public class Trx
 		}
 	}
 	
+	public String getStrackTrace()
+	{
+		if (trace != null)
+		{
+			StringWriter stringWriter = new StringWriter();
+			PrintWriter printWriter = new PrintWriter(stringWriter);
+			trace.printStackTrace(printWriter);
+			return stringWriter.getBuffer().toString();
+		}
+		else
+		{
+			return "";
+		}
+	}
+	
+	public String getDisplayName()
+	{
+		return m_displayName != null ? m_displayName : m_trxName;
+	}
+	
+	public void setDisplayName(String displayName)
+	{
+		m_displayName = displayName;
+	}
+	
 	static class TrxMonitor implements Runnable
 	{
 
@@ -681,6 +717,10 @@ public class Trx
 					if (since > trxs[i].getTimeout() * 1000)
 					{
 						trxs[i].log.log(Level.WARNING, "Transaction timeout. Name="+trxs[i].getTrxName() + ", timeout(sec)="+(since / 1000));
+						if (trxs[i].trace != null)
+						{
+							trxs[i].log.log(Level.WARNING, "Transaction timeout. Trace:\n" + trxs[i].getStrackTrace());
+						}
 						trxs[i].rollbackAndCloseOnTimeout();
 					}
 				}
@@ -695,4 +735,21 @@ public class Trx
 			;
 	}
 
+	@Override
+	protected void finalize() throws Throwable {
+		if (m_connection != null && trace != null) {
+			final Trx me = this;
+			Adempiere.getThreadPoolExecutor().schedule(new Runnable() {					
+				@Override
+				public void run() {
+					if (me.m_connection != null && me.trace != null) {
+						log.log(Level.WARNING, "Trx Not Close: " + me.getStrackTrace());
+						me.trace = null;
+						me.close();
+					}
+				}
+			}, 2, TimeUnit.SECONDS);
+		}
+		super.finalize();
+	}
 }	//	Trx

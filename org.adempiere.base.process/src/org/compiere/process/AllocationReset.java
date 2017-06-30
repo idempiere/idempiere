@@ -104,6 +104,7 @@ public class AllocationReset extends SvrProcess
 			throw new AdempiereUserError(Msg.parseTranslation(getCtx(), "@Mandatory@: @C_AllocationHdr_ID@"));
 
 		m_trx = Trx.get(Trx.createTrxName("AllocReset"), true);
+		m_trx.setDisplayName(getClass().getName()+"_doIt");
 		int count = 0;
 
 		if (p_C_AllocationHdr_ID != 0)

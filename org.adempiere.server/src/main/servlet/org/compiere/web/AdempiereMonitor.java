@@ -957,8 +957,13 @@ public class AdempiereMonitor extends HttpServlet
 			{
 				line = new tr();
 				line.addElement(new th().addElement("Active Transaction "));
-				line.addElement(new td().addElement("Name="+trx.getTrxName() 
-					+ ", StartTime=" + trx.getStartTime()));
+				td td = new td();
+				td.setOnClick("var newwindow=window.open('','Popup', 'width=800,height=600');newwindow.document.write('<title>"  + escapeEcmaScript(trx.getDisplayName()) +"</title>"
+						+ "<pre>" + escapeEcmaScript(trx.getStrackTrace()) + "</pre>')");
+				td.addElement("Name="+trx.getDisplayName() + ", StartTime=" + trx.getStartTime());
+				td.setTitle("Click to see stack trace");
+				td.setStyle("text-decoration: underline; color: blue");
+				line.addElement(td);
 				table.addElement(line);
 			}
 		}
@@ -1247,4 +1252,14 @@ public class AdempiereMonitor extends HttpServlet
 				
 		return dirAccessList;
 	}
+	
+	private static final String escapeEcmaScript(String input) {
+		input = input.replace("'", "\\'");
+		input = input.replace("\"", "\\\"");
+		input = input.replace("\\", "\\\\");
+		input = input.replace("/", "\\/");
+		input = input.replace("\n", "\\n");
+		input = input.replace("\t", "\\t");
+		return input;
+	 }
 }	//	AdempiereMonitor

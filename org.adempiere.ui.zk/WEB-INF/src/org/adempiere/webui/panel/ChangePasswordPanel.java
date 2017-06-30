@@ -316,6 +316,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     	{
         	String trxName = Trx.createTrxName("ChangePasswordTrx");
     		trx = Trx.get(trxName, true);
+    		trx.setDisplayName(getClass().getName()+"_validateChangePassword");
     		
 	    	for (KeyNamePair clientKNPair : m_clientKNPairs)
 	    	{	    		

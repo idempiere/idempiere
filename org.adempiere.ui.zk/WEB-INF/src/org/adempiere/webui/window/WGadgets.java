@@ -101,6 +101,7 @@ public class WGadgets extends Window implements  EventListener<Event>{
 			 if (panel.getButton("Ok").equals(event.getTarget()))
 			 {
 				 Trx trx = Trx.get(Trx.createTrxName("ManagedGadgets"), true);
+				 trx.setDisplayName(getClass().getName()+"_onEvent_onOk");
 				 try {
 					 trx.start();
 					 for(MDashboardPreference pre : dirtyList.values()) {

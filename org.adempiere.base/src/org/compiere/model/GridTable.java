@@ -3571,6 +3571,8 @@ public class GridTable extends AbstractTableModel
 			//https://jdbc.postgresql.org/documentation/head/query.html#query-with-cursor
 			String trxName = m_virtual ? Trx.createTrxName("Loader") : null;
 			trx  = trxName != null ? Trx.get(trxName, true) : null;
+			if (trx != null)
+				trx.setDisplayName(getClass().getName()+"_openResultSet");
 			//	open Statement (closed by Loader.close)
 			try
 			{

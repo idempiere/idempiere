@@ -208,6 +208,7 @@ public class UUIDGenerator extends SvrProcess {
 		Trx trx = trxName != null ? Trx.get(trxName, false) : null;
 		if (trx == null) {
 			trx = Trx.get(Trx.createTrxName(), true);
+			trx.setDisplayName(UUIDGenerator.class.getName()+"_updateUUID");
 			localTrx = true;
 		}
 		try {				

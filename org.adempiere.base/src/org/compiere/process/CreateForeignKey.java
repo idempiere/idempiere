@@ -264,6 +264,7 @@ public class CreateForeignKey extends SvrProcess {
 						Trx trx = null;
 						try {
 							trx = Trx.get(Trx.createTrxName("CreateForeignKey"), true);
+							trx.setDisplayName(getClass().getName()+"_process_dropConstraint");
 							int rvalue = DB.executeUpdate(sql.toString(), (Object[]) null, true, trx.getTrxName());
 							addLog(0, null, new BigDecimal(rvalue), sql.toString());
 						} catch (Exception e) {
@@ -302,6 +303,7 @@ public class CreateForeignKey extends SvrProcess {
 					Trx trx = null;
 					try {
 						trx = Trx.get(Trx.createTrxName("CreateForeignKey"), true);
+						trx.setDisplayName(getClass().getName()+"_process_addConstraint");
 						int rvalue = DB.executeUpdate(sql.toString(), (Object[]) null, true, trx.getTrxName());
 						addLog(0, null, new BigDecimal(rvalue), sql.toString());
 						if (rvalue == -1)

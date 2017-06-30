@@ -114,8 +114,9 @@ public class Merge
 		try
 		{
 			m_trx = Trx.get(Trx.createTrxName("merge"), true);
+			m_trx.setDisplayName(getClass().getName()+"_merge");
 			//
-			pstmt = DB.prepareStatement(sql, Trx.createTrxName());
+			pstmt = DB.prepareStatement(sql, m_trx.getTrxName());
 			pstmt.setString(1, ColumnName);
 			pstmt.setString(2, ColumnName);
 			rs = pstmt.executeQuery();

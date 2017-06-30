@@ -778,6 +778,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		setErrorMessage(null);
 		
 		Trx trx = Trx.get(Trx.createTrxName("avt-"), true);
+		trx.setDisplayName(getClass().getName()+"_processOnline");
 		boolean ok = false;
 		try
 		{			

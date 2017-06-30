@@ -101,6 +101,7 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 		}
 		
 		trxName = Trx.createTrxName("ActSysTrx");
+		Trx.get(trxName, true).setDisplayName(getClass().getName()+"_getLockPO");
 		sysconfig.set_TrxName(trxName);
 		return sysconfig;
 	}

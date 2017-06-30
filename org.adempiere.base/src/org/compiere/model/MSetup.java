@@ -116,6 +116,7 @@ public final class MSetup
 		String adminEmail, String userEmail, boolean isSetInitialPassword)
 	{
 		log.info(clientName);
+		m_trx.setDisplayName(getClass().getName()+"_createClient");
 		m_trx.start();
 		
 		//  info header

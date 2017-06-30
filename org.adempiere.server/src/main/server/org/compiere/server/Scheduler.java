@@ -115,6 +115,7 @@ public class Scheduler extends AdempiereServer
 		try
 		{
 			m_trx = Trx.get(Trx.createTrxName("Scheduler"), true);
+			m_trx.setDisplayName(getClass().getName()+"_"+getModel().getName()+"_doWork");
 			m_summary.append(runProcess(process));
 			m_trx.commit(true);
 		}

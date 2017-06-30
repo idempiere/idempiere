@@ -247,6 +247,7 @@ public class InvoiceGen extends GenForm
 		String info = "";
 		String trxName = Trx.createTrxName("IVG");
 		Trx trx = Trx.get(trxName, true);	//trx needs to be committed too
+		trx.setDisplayName(getClass().getName()+"_generate");
 		
 		setSelectionActive(false);  //  prevents from being called twice
 		statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "InvGenerateGen"));

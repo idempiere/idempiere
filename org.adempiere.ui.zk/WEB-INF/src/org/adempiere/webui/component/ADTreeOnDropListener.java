@@ -160,6 +160,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 
 		//	***	Save changes to disk
 		Trx trx = Trx.get (Trx.createTrxName("ADTree"), true);
+		trx.setDisplayName(getClass().getName()+"_moveNode");
 		try
 		{
 			@SuppressWarnings("unused")
