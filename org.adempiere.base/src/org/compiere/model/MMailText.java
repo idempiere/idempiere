@@ -40,7 +40,7 @@ public class MMailText extends X_R_MailText
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3278575461023934790L;
+	private static final long serialVersionUID = -5088779317275846829L;
 
 	/**
 	 * 	Standard Constructor
@@ -412,6 +412,26 @@ public class MMailText extends X_R_MailText
 	public void setLanguage(String language)
 	{
 		m_language = language;
+	}
+
+	public PO getPO()
+	{
+		return m_po;
+	}
+
+	public MBPartner getBPartner()
+	{
+		return m_bpartner;
+	}
+
+	public String getLanguage()
+	{
+		return m_language;
+	}
+
+	public MUser getUser()
+	{
+		return m_user;
 	}
 
 }	//	MMailText
