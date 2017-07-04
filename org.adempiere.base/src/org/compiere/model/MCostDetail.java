@@ -1263,11 +1263,11 @@ public class MCostDetail extends X_M_CostDetail
 				}
 				else if (addition)
 				{
-					MProductionLine productionLine = (MProductionLine) getM_ProductionLine();
-					if (productionLine.getProductionReversalId() <= 0)
-						cost.add(amt, qty);
+					MProductionLine productionLine = getM_ProductionLine_ID() > 0 ? new MProductionLine(getCtx(), getM_ProductionLine_ID(), get_TrxName()) : null;
+					if (productionLine != null && productionLine.getProductionReversalId() > 0)
+						cost.setCurrentQty(cost.getCurrentQty().add(qty));						
 					else
-						cost.setCurrentQty(cost.getCurrentQty().add(qty));
+						cost.add(amt, qty);
 
 					//	Initial
 					if (cost.getCurrentCostPrice().signum() == 0
