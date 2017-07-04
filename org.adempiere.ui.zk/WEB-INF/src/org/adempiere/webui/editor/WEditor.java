@@ -93,8 +93,6 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
     private boolean readOnly;
 
-    private boolean updateable;
-
     private String columnName;
 
 	protected WEditorPopupMenu popupMenu;
@@ -177,7 +175,6 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         this.setMandatory(gridField.isMandatory(true));
         this.readOnly = gridField.isReadOnly();
         this.description = gridField.getDescription();
-        this.updateable = gridField.isUpdateable();
         this.columnName = gridField.getColumnName();
         this.strLabel = gridField.getHeader();
         init();
@@ -227,7 +224,6 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     	this.setMandatory(mandatory);
         this.readOnly = readonly;
         this.description = description;
-        this.updateable = updateable;
         this.strLabel = label;
         init();
     }
@@ -253,7 +249,6 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     	this.setMandatory(mandatory);
         this.readOnly = readonly;
         this.description = description;
-        this.updateable = updateable;
         this.strLabel = label;
         this.columnName = columnName;
         init();
@@ -277,15 +272,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         label.setMandatory(mandatory);
         
         this.setMandatory (mandatory);
-
-        if (readOnly || !updateable)
-        {
-            this.setReadWrite(false);
-        }
-        else
-        {
-            this.setReadWrite(true);
-        }
+        this.setReadWrite(!readOnly);
 
         ((HtmlBasedComponent)component).setTooltiptext(description);
         label.setTooltiptext(description);
