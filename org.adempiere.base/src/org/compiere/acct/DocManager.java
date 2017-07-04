@@ -304,18 +304,27 @@ public class DocManager {
 					if (error != null && error.trim().length() > 0)
 					{
 						if (savepoint != null)
+						{
 							trx.rollback(savepoint);
+							savepoint = null;
+						}
 						else
 							trx.rollback();
-						return error;
+						s_log.info("Error Posting " + doc + " to " + as + " Error: " + error);
+						break;
 					}
 				}
 				else
 				{
 					if (savepoint != null)
+					{
 						trx.rollback(savepoint);
+						savepoint = null;
+					}
 					else
 						trx.rollback();
+
+					s_log.info("Error Posting " + doc + " to " + as + " Error:  NoDoc");
 					return "NoDoc";
 				}
 			}
