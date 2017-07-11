@@ -166,7 +166,7 @@ public class Obscure extends Object
 			return m_clearValue;	
 		
 		if (OBSCURETYPE_ObscureAllAsterisk.equals(m_type)){
-			return "**********";
+			return "*";
 		}
 
 		//
