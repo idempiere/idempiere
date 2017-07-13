@@ -86,7 +86,7 @@ public class Textbox extends org.zkoss.zul.Textbox implements EventListener<Even
 		String value = super.getValue();
 		if (m_obscure != null && value != null && value.length() > 0)
 		{
-			if (!isReadonly() && value.equals(m_obscure.getObscuredValue()))
+			if (!isReadonly() && value.equals(m_obscure.getObscuredValue(getMaxlength())))
 				value = m_obscure.getClearValue();
 		}
 		return value;
@@ -96,7 +96,7 @@ public class Textbox extends org.zkoss.zul.Textbox implements EventListener<Even
 	public void setValue(String value) throws WrongValueException {
 		if (m_obscure != null && ("password".equals(getType()) || !m_infocus))
 		{
-			super.setValue(m_obscure.getObscuredValue(value));
+			super.setValue(m_obscure.getObscuredValue(value, getMaxlength()));
 		}
 		else
 		{
@@ -122,7 +122,7 @@ public class Textbox extends org.zkoss.zul.Textbox implements EventListener<Even
 	@Override
 	public void setType(String type) throws WrongValueException {
 		if ("password".equals(type))
-			setObscureType(Obscure.OBSCURETYPE_ObscureAllAsterisk);
+			setObscureType(Obscure.OBSCURETYPE_ObscureMaskMax10Asterisk);
 		super.setType(type);
 	}
 

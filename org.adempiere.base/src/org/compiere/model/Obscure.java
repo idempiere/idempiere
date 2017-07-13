@@ -89,8 +89,8 @@ public class Obscure extends Object
 	public static final String OBSCURETYPE_ObscureAlphaNumericButFirstLast4 = "A44";
 	/** Obscure AlphaNumeric but last 4 = A04 */
 	public static final String OBSCURETYPE_ObscureAlphaNumericButLast4 = "A04";
-	/** Obscure by asterisk character, use for EncryptedField */
-	public static final String OBSCURETYPE_ObscureAllAsterisk = "AA";
+	/** Obscure by max 10 asterisk characters, use for EncryptedField - internal, not in the list of obscure type field */
+	public static final String OBSCURETYPE_ObscureMaskMax10Asterisk = "AA";
 
 	/** Obscure Type			*/
 	private String 	m_type = OBSCURETYPE_ObscureDigitsButLast4;
@@ -105,14 +105,18 @@ public class Obscure extends Object
 	 */
 	public void setType (String obscureType)
 	{
-		if (obscureType == null || obscureType.equals("904") || obscureType.equals("944") || obscureType.equals("A44") || obscureType.equals("A04") || 
-				OBSCURETYPE_ObscureAllAsterisk.equals(obscureType))
+		if (   obscureType == null
+			|| OBSCURETYPE_ObscureDigitsButLast4.equals(obscureType)
+			|| OBSCURETYPE_ObscureDigitsButFirstLast4.equals(obscureType)
+			|| OBSCURETYPE_ObscureAlphaNumericButFirstLast4.equals(obscureType)
+			|| OBSCURETYPE_ObscureAlphaNumericButLast4.equals(obscureType)
+			|| OBSCURETYPE_ObscureMaskMax10Asterisk.equals(obscureType))
 		{
 			m_type = obscureType;
 			m_obscuredValue = null;
 			return;
 		}
-		throw new IllegalArgumentException ("ObscureType Invalid value - Reference_ID=291 - 904 - 944 - A44 - A04");
+		throw new IllegalArgumentException ("ObscureType Invalid value - Reference_ID=291 - 904 - 944 - A44 - A04 - AA");
 	}	//	setType
 
 	/**
@@ -146,6 +150,17 @@ public class Obscure extends Object
 	/**
 	 *	Get Obscured Value
 	 *	@param clearValue The clearValue to set.
+	 *  @param maxlength maximum length of the obscured value
+	 *	@return Returns the obscuredValue.
+	 */
+	public String getObscuredValue(String clearValue, int maxlength) {
+		setClearValue(clearValue);
+		return getObscuredValue(maxlength);
+	}
+
+	/**
+	 *	Get Obscured Value
+	 *	@param clearValue The clearValue to set.
 	 *	@return Returns the obscuredValue.
 	 */
 	public String getObscuredValue (String clearValue)
@@ -153,6 +168,19 @@ public class Obscure extends Object
 		setClearValue(clearValue);
 		return getObscuredValue();
 	}	//	getObscuredValue
+
+	/**
+	 *	Get Obscured Value with a max length
+	 *  @param maxlength maximum length of the obscured value
+	 *	@return Returns the obscuredValue.
+	 */
+	public String getObscuredValue(int maxlength) {
+		String obs = getObscuredValue();
+		if (maxlength > 0 && obs.length() > maxlength) {
+			obs = obs.substring(0, maxlength);
+		}
+		return obs;
+	}
 
 	/**
 	 *	Get Obscured Value
@@ -165,8 +193,8 @@ public class Obscure extends Object
 		if (m_clearValue == null || m_clearValue.length() == 0)
 			return m_clearValue;	
 		
-		if (OBSCURETYPE_ObscureAllAsterisk.equals(m_type)){
-			return "*";
+		if (OBSCURETYPE_ObscureMaskMax10Asterisk.equals(m_type)){
+			return "**********";
 		}
 
 		//
@@ -206,5 +234,4 @@ public class Obscure extends Object
 		System.out.println (Obscure.obscure("1a2b3c4d5e6f7g8h9"));
 	}	//	main
 
-	
-}	//	Obscrure
+}	//	Obscure
