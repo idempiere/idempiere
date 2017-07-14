@@ -65,10 +65,6 @@
 }
 
 .desktop-tabbox .z-tab {
-	margin-right: 2px;
-}
-
-.desktop-tabbox .z-tab {
 	height: 24px;
 }
 
