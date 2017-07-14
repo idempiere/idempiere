@@ -73,6 +73,7 @@ public class WindowContainer extends AbstractUIPart
     protected Component doCreatePart(Component parent)
     {
         tabbox = new Tabbox();
+        tabbox.setSupportTabDragDrop(true);
         tabbox.setSclass("desktop-tabbox");
         tabbox.setId("desktop_tabbox");
         tabbox.setMaximalHeight(true);
