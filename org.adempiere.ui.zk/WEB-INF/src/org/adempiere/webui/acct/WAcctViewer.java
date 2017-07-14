@@ -227,6 +227,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			init();
 			dynInit (AD_Table_ID, Record_ID);
 			setAttribute(MODE_KEY, MODE_EMBEDDED);
+			setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
 			AEnv.showWindow(this);
 		}
 		catch(Exception e)
