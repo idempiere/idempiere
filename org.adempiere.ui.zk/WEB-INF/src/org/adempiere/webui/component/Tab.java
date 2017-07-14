@@ -32,11 +32,13 @@ import org.zkoss.zul.impl.LabelImageElement;
  */
 public class Tab extends org.zkoss.zul.Tab
 {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5146887728183695020L;
-
+	private static final long serialVersionUID = -7504310693884092219L;
+	private boolean isDisableDraggDrop = false;
+	
 	public Tab(String str)
     {
     	this.setLabel(str);
@@ -58,6 +60,19 @@ public class Tab extends org.zkoss.zul.Tab
 		if (tp != null) {
 			tp.onClose();
 		}
+	}
+
+	public boolean isDisableDraggDrop() {
+		return isDisableDraggDrop;
+	}
+
+	/**
+	 * home tab don't want to drag and drop. 
+	 * {@link Tab} like that can be set true for this properties
+	 * @param isDisableDraggDrop
+	 */
+	public void setDisableDraggDrop(boolean isDisableDraggDrop) {
+		this.isDisableDraggDrop = isDisableDraggDrop;
 	}
 
 	/**

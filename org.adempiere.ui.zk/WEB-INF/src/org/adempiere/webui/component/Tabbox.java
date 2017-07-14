@@ -33,7 +33,7 @@ public class Tabbox extends org.zkoss.zul.Tabbox
 	 * 
 	 */
 	private static final long serialVersionUID = 1400484283064851775L;
-	private boolean isSupportTabDragDrop;
+	private boolean isSupportTabDragDrop = false;
 	
 	public Tabpanel getTabpanel(int index)
     {

@@ -174,6 +174,12 @@ public class Tabs extends org.zkoss.zul.Tabs implements EventListener<Event>
 		if ((dropComp instanceof Tab && this != dropComp.getParent()) || this != draggComp.getParent())// make sure drag and drop on same tabbox
 			return false;
 		
+		if ((dropComp instanceof org.adempiere.webui.component.Tab && ((org.adempiere.webui.component.Tab)dropComp).isDisableDraggDrop())
+				|| (draggComp instanceof org.adempiere.webui.component.Tab && ((org.adempiere.webui.component.Tab)draggComp).isDisableDraggDrop())
+				) {
+			return false;
+		}
+		
 		return true;
 	}
 }
