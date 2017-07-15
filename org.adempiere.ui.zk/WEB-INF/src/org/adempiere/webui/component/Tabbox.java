@@ -17,6 +17,8 @@
 
 package org.adempiere.webui.component;
 
+import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabpanels;
 
@@ -66,4 +68,16 @@ public class Tabbox extends org.zkoss.zul.Tabbox
 		this.isSupportTabDragDrop = isSupportTabDragDrop;
 	}
 
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		Events.sendEvent("onPageAttached", this, null);
+		
+	}
+	
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		Events.sendEvent("onPageDetached", this, null);
+	}
 }

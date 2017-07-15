@@ -247,7 +247,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 		keyListener = new Keylistener();
 		keyListener.setPage(this.getPage());
-		keyListener.setCtrlKeys("@a@c@d@e@f@h@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter^u@u");
+		keyListener.setCtrlKeys("@a@c@d@e@f@h@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup");
 		keyListener.setAutoBlur(false);
 		
 		//create new desktop
