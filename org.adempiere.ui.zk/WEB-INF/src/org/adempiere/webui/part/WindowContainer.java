@@ -450,11 +450,11 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 			} catch (Exception e) {}
 		}else if (Events.ON_CTRL_KEY.equals(event.getName())) {
 			KeyEvent keyEvent = (KeyEvent) event;
-			if (keyEvent.isAltKey() && keyEvent.getKeyCode() == KeyEvent.PAGE_UP
+			if (keyEvent.isAltKey() && keyEvent.getKeyCode() == KeyEvent.PAGE_DOWN
 					&& tabbox.getSelectedTab() != null && tabbox.getSelectedTab().getNextSibling() != null) {
 				tabbox.setSelectedTab((org.zkoss.zul.Tab)tabbox.getSelectedTab().getNextSibling());
 				keyEvent.stopPropagation();
-			}else if (keyEvent.isAltKey() && keyEvent.getKeyCode() == KeyEvent.PAGE_DOWN
+			}else if (keyEvent.isAltKey() && keyEvent.getKeyCode() == KeyEvent.PAGE_UP
 					&& tabbox.getSelectedTab() != null && tabbox.getSelectedTab().getPreviousSibling() != null) {
 				tabbox.setSelectedTab((org.zkoss.zul.Tab)tabbox.getSelectedTab().getPreviousSibling());
 				keyEvent.stopPropagation();

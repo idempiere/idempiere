@@ -300,6 +300,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         homeTab = new Tabpanel();
         windowContainer.addWindow(homeTab, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Home")), false, null);
         homeTab.getLinkedTab().setSclass("desktop-hometab");
+        ((Tab)homeTab.getLinkedTab()).setDisableDraggDrop(true);
         homeTab.setSclass("desktop-home-tabpanel");
         BusyDialog busyDialog = new BusyDialog();
         busyDialog.setShadow(false);
