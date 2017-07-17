@@ -16,7 +16,28 @@ Copyright (C) 2007 Ashley G Ramdass.
 			zk._Erbx.push = function(msg) {
 				if (console) console.log(msg);
 			};
-			
+
+            // default non th, tr, td use clone method to create ghost element
+            // this code implement same behavior for li to get drag-drop effect
+            // still have room for improve: https://www.zkoss.org/wiki/ZK_Client-side_Reference/Customization/Drag-and-Drop_Effects  
+			var superghost = zk.DnD.ghost;
+            zk.DnD.ghost = function (drag, ofs, msg) {
+                if (msg == null && drag.node){
+                    var dragNode = jq(drag.node)[0];
+                    var dragWg = zk.Widget.$(dragNode);
+                    
+                    var textNote = dragWg.$n('real') || dragWg.getCaveNode();
+                    
+                    if (jq.nodeName(dragNode, 'li')){
+                        msg = textNote ? textNote.textContent || textNote.innerText || '' : '';
+                    }
+                }
+                
+                return superghost(drag, ofs, msg);
+            };
+            
+            
+
 			zk.$package('id.zk');
 			
 			id.zk.Extend = zk.$extends(zk.Object, {}, {
