@@ -163,6 +163,24 @@ Copyright (C) 2007 Ashley G Ramdass.
 				this.domUnlisten_(this.$n(), "onChange", "onAutofill"); //unlisten
 			});
 			
+			zk.override(zul.inp.Combobox.prototype, "doKeyDown_", function (evt) {
+                // avoid confuse of idempiere shortcut key and function key of combobox
+                if ( (evt.altKey || evt.ctrlKey || evt.shiftKey)  && 
+                        (evt.keyCode == 33 || evt.keyCode == 34 || evt.keyCode == 35 || evt.keyCode == 36 || evt.keyCode == 38 || evt.keyCode == 40 || evt.keyCode == 37 || evt.keyCode == 39) ){//page up | page down | end | home | up | down | left | write
+                    
+                    if (this.isOpen())//close drop down if already open. it will let combobox select current item, it's consistent with lost focus
+                        this.close({sendOnOpen: true});
+                        
+                    return;
+                    // TODO:current idempiere use alt + down/up to move child parrent tab, but combobox also use it to open, close drop down
+                    // at the moment, idempiere shortcut is more useful, so just get it work
+                }else{
+                    this.$doKeyDown_(evt);
+                }
+                
+            });
+                
+			
 		});
 		
 		zk.afterLoad('zul.mesh', function () {
