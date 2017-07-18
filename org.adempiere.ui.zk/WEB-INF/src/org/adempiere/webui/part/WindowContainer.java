@@ -77,6 +77,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         tabbox.addEventListener("onPageAttached", this);
         tabbox.addEventListener("onPageDetached", this);
         tabbox.setSupportTabDragDrop(true);
+        tabbox.setActiveBySeq(true);
         tabbox.setSclass("desktop-tabbox");
         tabbox.setId("desktop_tabbox");
         tabbox.setMaximalHeight(true);

@@ -151,8 +151,12 @@ public class Tab extends org.zkoss.zul.Tab
 		//Cache panel before detach , or we couldn't get it after tab is detached.
 		final org.zkoss.zul.Tabpanel panel = getLinkedPanel();
 
-		detach();
+		if (getTabbox() instanceof Tabbox) {
+			((Tabbox)getTabbox()).removeTabFromActiveSeq(this);
+		}
 
+		detach();
+		
 		if (panel != null) {
 			// B60-ZK-1160: Exception when closing tab with included content
 			// Must clean up included content before detaching tab panel
@@ -170,6 +174,19 @@ public class Tab extends org.zkoss.zul.Tab
 	 * @return
 	 */
 	protected org.zkoss.zul.Tab selectNextTabWR() {
+		Tabbox idTabbox = null;
+		if (getTabbox() instanceof Tabbox) {
+			idTabbox = (Tabbox)getTabbox();
+		}
+		
+		if (idTabbox != null && idTabbox.isActiveBySeq()) {
+			org.zkoss.zul.Tab nextActiveTab = idTabbox.getNextActiveBySeq();
+			if (nextActiveTab != null) {
+				nextActiveTab.setSelected(true);
+				return nextActiveTab;
+			}
+		}
+		
 		for (org.zkoss.zul.Tab tab = (org.zkoss.zul.Tab) getPreviousSibling(); tab != null; tab = (org.zkoss.zul.Tab) tab.getPreviousSibling())
 			if (!tab.isDisabled()) {
 				tab.setSelected(true);
