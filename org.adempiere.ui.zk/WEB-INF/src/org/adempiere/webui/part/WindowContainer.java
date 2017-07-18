@@ -213,6 +213,9 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 			public void onEvent(Event event) throws Exception {
 				Tab tab = (Tab)event.getTarget();
 				org.zkoss.zul.Tabpanel panel = tab.getLinkedPanel();
+				if (panel == null) {
+					System.console().printf("error");
+				}
 				Component component = panel.getFirstChild();
 				if (component != null && component.getAttribute(ITabOnSelectHandler.ATTRIBUTE_KEY) instanceof ITabOnSelectHandler)
 				{

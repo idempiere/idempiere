@@ -148,14 +148,20 @@ public class Tabs extends org.zkoss.zul.Tabs implements EventListener<Event>
 		int draggIndex = this.getChildren().indexOf(draggComp);
 		Component draggPanel = tabpanels.getChildren().get(draggIndex);
 		
-		if (dropIndex == -1 || draggIndex > dropIndex) {//drop to end or to before drop tab
-			insertBefore(draggComp, dropComp);
-			tabpanels.insertBefore(draggPanel, dropPanel);
-		}else {
-			insertBefore(dropComp, draggComp);
-			tabpanels.insertBefore(dropPanel, draggPanel);
+		if (dropIndex != -1 && draggIndex < dropIndex) {
+			if (dropComp.getNextSibling() == null) {
+				dropIndex = -1;// drop to end
+				dropComp = null;
+				dropPanel = null;
+			}else {
+				dropIndex = dropIndex + 1;// insert before of tab next to drop tab
+				dropComp = dropComp.getNextSibling();
+				dropPanel = tabpanels.getChildren().get(dropIndex);
+			}
 		}
 		
+		insertBefore(draggComp, dropComp);
+		tabpanels.insertBefore(draggPanel, dropPanel);
 	}
 	
 	/**
