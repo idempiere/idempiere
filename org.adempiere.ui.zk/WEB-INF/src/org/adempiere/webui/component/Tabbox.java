@@ -119,7 +119,7 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 	 */
 	@Override
 	public void setSelectedTab(Tab tab) {
-		if (getSelectedTab() != null) {
+		if (getSelectedTab() != null && getSelectedTab() != tab && isActiveBySeq()) {//DEFER SET SELECTED TAB
 			activeTabSeq.push(getSelectedTab());
 		}
 		super.setSelectedTab(tab);
@@ -137,7 +137,7 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 	 * select next active tab by order store on stack folow FILO
 	 * @return
 	 */
-	public Tab getNextActiveBySeq () {
+	public Tab getNextActiveBySeq (Tab currentTab) {
 		Tab cadidateTabActive = null;
 		while ((cadidateTabActive = activeTabSeq.peek()) != null) {
 			boolean canNotActive = cadidateTabActive.isDisabled() || !cadidateTabActive.isVisible();
@@ -145,7 +145,7 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 				// move disable item to last stack it can be active late
 				cadidateTabActive = activeTabSeq.pop();
 				activeTabSeq.addLast(cadidateTabActive);
-			}else if (cadidateTabActive.getParent() == null) {
+			}else if (cadidateTabActive.getParent() == null || currentTab == cadidateTabActive) {// when call close other tab menu, remain tab = first tab on stack, so have to ignore it when find next tab
 				activeTabSeq.pop();// this tab is close by code or by close at unselected state so just remove it from stack
 			}else {
 				return activeTabSeq.pop();

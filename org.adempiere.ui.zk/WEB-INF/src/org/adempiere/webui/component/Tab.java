@@ -180,7 +180,7 @@ public class Tab extends org.zkoss.zul.Tab
 		}
 		
 		if (idTabbox != null && idTabbox.isActiveBySeq()) {
-			org.zkoss.zul.Tab nextActiveTab = idTabbox.getNextActiveBySeq();
+			org.zkoss.zul.Tab nextActiveTab = idTabbox.getNextActiveBySeq(this);
 			if (nextActiveTab != null) {
 				nextActiveTab.setSelected(true);
 				return nextActiveTab;
