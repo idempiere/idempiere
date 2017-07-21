@@ -217,7 +217,8 @@ public class MPasswordRule extends X_AD_PasswordRule {
 		// validator all rule
 		if (!ruleList.isEmpty()) {
 			PasswordValidator validator = new PasswordValidator(getCustomResolver(), ruleList);
-			PasswordData passwordData =  PasswordData.newInstance(newPassword, username, historyData);
+			PasswordData passwordData = new PasswordData(username, newPassword); 
+			passwordData.setPasswordReferences(historyData);
 			RuleResult result = validator.validate(passwordData);
 			if (!result.isValid()) {
 				StringBuilder error = new StringBuilder(Msg.getMsg(getCtx(), "PasswordErrors"));
