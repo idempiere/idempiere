@@ -1779,6 +1779,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             {
             	updateListSelected();
             	int pgNo = paging.getActivePage();
+            	if (pgNo == paging.getPageCount()-1  && !isLoadPageNumber()) {
+            		testCount();
+            		paging.setTotalSize(m_count);
+            		pgNo = paging.getActivePage();
+            	}
 
             	if (pageNo != pgNo)
             	{
