@@ -13,8 +13,6 @@ package org.adempiere.pipo.srv;
 
 import java.io.File;
 import java.sql.Timestamp;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.base.IDictionaryService;
@@ -32,11 +30,8 @@ public class PipoDictionaryService implements IDictionaryService {
 
 	CLogger logger = CLogger.getCLogger(PipoDictionaryService.class.getName());
 
-	private final Semaphore semaphore;
-	
 	public PipoDictionaryService() {
 		super();
-		semaphore = new Semaphore(1, true);
 	}
 
 	@Override
@@ -49,13 +44,8 @@ public class PipoDictionaryService implements IDictionaryService {
 		X_AD_Package_Imp_Proc adPackageImp = null;
 		PackIn packIn = null;
 		try {
-			try {
-				semaphore.tryAcquire(120, TimeUnit.SECONDS);
-			} catch (InterruptedException e) {
-				semaphore.release();
-				semaphore.acquire();
-			}
 			trxName = Trx.createTrxName("PipoDS");
+			Trx.get(trxName, true).setDisplayName(getClass().getName()+"_merge");
 			packIn = new PackIn();
 			packIn.setPackageName(context.getBundle().getSymbolicName());
 			
@@ -65,11 +55,11 @@ public class PipoDictionaryService implements IDictionaryService {
 			//get package version from file name suffix or bundle header
 			String packageVersion = null;
 			String fileName = packageFile.getName();
-			int versionSeparatorPos = fileName.lastIndexOf("_");
+			int versionSeparatorPos = fileName.lastIndexOf("2Pack_");
 			if (versionSeparatorPos > 0) {
 				int dotPos = fileName.lastIndexOf(".");
 				if (dotPos > 0 && dotPos > versionSeparatorPos) {
-					String version = fileName.substring(versionSeparatorPos+1, dotPos);
+					String version = fileName.substring(versionSeparatorPos+"2Pack_".length(), dotPos);
 					if (version.split("[.]").length == 3) {
 						packageVersion = version;
 					}
@@ -105,7 +95,7 @@ public class PipoDictionaryService implements IDictionaryService {
 			adPackageImp.setDateProcessed(new Timestamp(System.currentTimeMillis()));
 			adPackageImp.setP_Msg(msg);
 			
-			Trx.get(trxName, false).commit();
+			Trx.get(trxName, false).commit(true);
 			if (logger.isLoggable(Level.INFO)) logger.info("commit " + trxName);
 		} catch (Exception e) {
 			adPackageImp.setP_Msg(e.getLocalizedMessage());
@@ -116,7 +106,6 @@ public class PipoDictionaryService implements IDictionaryService {
 			try {
 				Trx.get(trxName, false).close();
 			} catch (Exception e) {}
-			semaphore.release();
 			adPackageImp.save(); // ignoring exceptions
 
 			if (adPackageImp != null && packIn != null) {

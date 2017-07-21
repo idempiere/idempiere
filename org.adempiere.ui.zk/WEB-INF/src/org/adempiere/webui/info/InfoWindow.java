@@ -68,6 +68,7 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MProcess;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_InfoColumn;
 import org.compiere.util.DB;
@@ -464,12 +465,13 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		boolean splitValue = false;
 		if (m_count <= 0) {			
-			String[] values = queryValue.split("[_]");
+			String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
+			String[] values = queryValue.split("[" + separator.trim()+"]");
 			if (values.length == 2) {
 				splitValue = true;
 				for(int i = 0; i < values.length && i < identifiers.size(); i++) {
 					WEditor editor = identifiers.get(i);
-					editor.setValue(values[i]);
+					editor.setValue(values[i].trim());
 				}
 				testCount(false);
 			} 

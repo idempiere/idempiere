@@ -296,7 +296,7 @@ public class MPeriod extends X_C_Period
 			idxdate = po.get_ColumnIndex("DateAcct");
 		}
 		if (idxdate < 0) {
-			s_log.warning("Could not find DateAcct for " + table.getTableName());
+			if (s_log.isLoggable(Level.INFO)) s_log.info("Could not find DateAcct for " + table.getTableName());
 			return true;
 		}
 		Timestamp dateAcct = null;

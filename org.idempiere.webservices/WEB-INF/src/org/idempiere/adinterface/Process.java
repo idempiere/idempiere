@@ -340,6 +340,8 @@ public class Process {
 		if (process.isJavaProcess() && !jasperreport)
 		{
 			Trx trx = trxName == null ? Trx.get(Trx.createTrxName("WebPrc"), true) : Trx.get(trxName, true);
+			if (trxName == null)
+				trx.setDisplayName(Process.class.getName()+"_runProcess");
 			try
 			{
 				processOK = process.processIt(pi, trx, false);

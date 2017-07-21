@@ -846,6 +846,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	{
 		String trxName = Trx.createTrxName("BDP");	
 		Trx localTrx = Trx.get(trxName, true);	//trx needs to be committed too
+		localTrx.setDisplayName(getClass().getName()+"_onSave");
 		try
 		{
 			if (cmd_save(localTrx)) 

@@ -456,8 +456,11 @@ public class MMatchPO extends X_M_MatchPO
 					}
 					if (iLine != null)
 						mpo.setC_InvoiceLine_ID(iLine);
-					if (sLine != null)
+					if (sLine != null){
 						mpo.setM_InOutLine_ID(sLine.getM_InOutLine_ID());
+						if (!mpo.isPosted())
+							mpo.setDateAcct(sLine.getParent().getDateAcct());
+					}
 					
 					if (!mpo.save())
 					{

@@ -247,6 +247,7 @@ public class InOutGen extends GenForm
 		if (log.isLoggable(Level.INFO)) log.info("M_Warehouse_ID=" + m_M_Warehouse_ID);
 		String trxName = Trx.createTrxName("IOG");	
 		Trx trx = Trx.get(trxName, true);	//trx needs to be committed too
+		trx.setDisplayName(getClass().getName()+"_generate");
 		
 		setSelectionActive(false);  //  prevents from being called twice
 		statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "InOutGenerateGen"));

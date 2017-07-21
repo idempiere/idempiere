@@ -279,6 +279,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 			localTrx = true;
 			trxName = Trx.createTrxName("ConfirmPrintSingle");
 			trx = Trx.get(trxName, true);
+			trx.setDisplayName(MPaySelectionCheck.class.getName()+"_confirmPrint");
 			check.set_TrxName(trxName);
 		}
 		try {
@@ -397,6 +398,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 			localTrx = true;
 			trxName = Trx.createTrxName("ConfirmPrintMulti");
 			trx = Trx.get(trxName, true);
+			trx.setDisplayName(MPaySelectionCheck.class.getName()+"_confirmPrints");
 		}
 		int lastDocumentNo = 0;
 		try {

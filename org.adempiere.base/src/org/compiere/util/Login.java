@@ -1444,7 +1444,7 @@ public class Login
 				user.setFailedLoginCount(0);
 				user.setDateLastLogin(new Timestamp(now));
 				if (!user.save())
-					log.severe("Failed to update user record with date last login");
+					log.severe("Failed to update user record with date last login (" + user.getName() + " / clientID = " + user.getAD_Client_ID() + ")");
 			}
 		}
 		else if (validButLocked)

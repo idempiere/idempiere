@@ -77,6 +77,7 @@ public class OrderTest implements Runnable
 		for (int i = 0; i < m_numberOrders; i++)
 		{
 			Trx trx = Trx.get(Trx.createTrxName("Test" + m_no + "_" + i),true);
+			trx.setDisplayName(getClass().getName()+"_run");
 			trx.start();
 			//
 			MOrder order = new MOrder(Env.getCtx(),0,trx.getTrxName());

@@ -422,6 +422,7 @@ public class PaySelect
 		try {
 			trxName = Trx.createTrxName("PaySelect");
 			trx = Trx.get(trxName, true);
+			trx.setDisplayName(getClass().getName()+"_generatePaySelect");
 
 			String PaymentRule = paymentRule.getValue();
 

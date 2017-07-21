@@ -844,6 +844,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		}
 
 		trx = Trx.get(get_TrxName(), true);
+		if (localTrx)
+			trx.setDisplayName(getClass().getName()+"_run");
 
 		Savepoint savepoint = null;
 

@@ -915,6 +915,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 	private boolean action_OK()
 	{
 		Trx trx = Trx.get(Trx.createTrxName("WLocationDialog"), true);
+		trx.setDisplayName(getClass().getName()+"_action_Ok");
 		m_location.set_TrxName(trx.getTrxName());
 		m_location.setAddress1(txtAddress1.getValue());
 		m_location.setAddress2(txtAddress2.getValue());

@@ -565,6 +565,7 @@ public class MPayment extends X_C_Payment
 		setIsApproved(approved);
 		
 		Trx trx = Trx.get(Trx.createTrxName("ppt-"), true);
+		trx.setDisplayName(getClass().getName()+"_processOnline");
 		
 		try
 		{

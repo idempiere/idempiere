@@ -283,6 +283,7 @@ public class MPackage extends X_M_Package
 		setErrorMessage(null);
 
 		Trx trx = Trx.get(Trx.createTrxName("spt-"), true);
+		trx.setDisplayName(getClass().getName()+"_processOnline");
 		boolean ok = false;
 		try
 		{			

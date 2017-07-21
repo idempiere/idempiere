@@ -23,6 +23,7 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.Env;
@@ -338,7 +339,12 @@ public class Messagebox extends Window implements EventListener<Event>
 			returnValue = IGNORE;
 		}
 
-		this.detach();
+		try {
+			this.detach();
+		} catch (NullPointerException npe) {
+			if (! (SessionManager.getSessionApplication() == null)) // IDEMPIERE-1937 - ignore when session was closed
+				throw npe;
+		}
 	}
 
 	@SuppressWarnings("unchecked")

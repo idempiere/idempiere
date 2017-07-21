@@ -854,7 +854,11 @@ public class MLookupFactory
 		for (int i = 0; i < size; i++)
 		{
 			if (i > 0)
-				displayColumn.append(" ||'_'|| " );
+			{
+				displayColumn.append(" ||'")
+					.append(MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx())))
+					.append("'|| " );
+			}
 			LookupDisplayColumn ldc = (LookupDisplayColumn)list.get(i);
 			StringBuilder msg = new StringBuilder().append(TableName).append(".").append(ldc.ColumnName);
 			String columnSQL = ldc.IsVirtual ? ldc.ColumnSQL : msg.toString();

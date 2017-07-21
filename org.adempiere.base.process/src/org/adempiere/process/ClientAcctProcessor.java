@@ -221,6 +221,7 @@ public class ClientAcctProcessor extends SvrProcess
 					// Run every posting document in own transaction
 					String innerTrxName = Trx.createTrxName("CAP");
 					Trx innerTrx = Trx.get(innerTrxName, true);
+					innerTrx.setDisplayName(getClass().getName()+"_postSession");
 
 					try
 					{

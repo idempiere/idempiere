@@ -638,6 +638,7 @@ public class MCost extends X_M_Cost
 		{
 			trxNameUsed = Trx.createTrxName("Cost");
 			trx = Trx.get(trxNameUsed, true);
+			trx.setDisplayName(MCost.class.getName()+"_create");
 		}
 		boolean success = true;
 		//	For all Products

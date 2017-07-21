@@ -634,6 +634,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		Trx trx = null;
 		try {
 			trx = Trx.get(Trx.createTrxName("FWFA"), true);
+			trx.setDisplayName(getClass().getName()+"_onOK");
 			m_activity.set_TrxName(trx.getTrxName());
 
 			if (forward != null)

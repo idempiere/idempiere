@@ -225,8 +225,10 @@ public final class ProcessUtil {
 			MRule.setContext(engine, ctx, 0);  // no window
 			// now add the method arguments to the engine
 			engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", ctx);
-			if (trx == null)
+			if (trx == null) {
 				trx = Trx.get(Trx.createTrxName(pi.getTitle()+"_"+pi.getAD_PInstance_ID()), true);
+				trx.setDisplayName(ProcessUtil.class.getName()+"_startScriptProcess");
+			}
 			engine.put(MRule.ARGUMENTS_PREFIX + "Trx", trx);
 			engine.put(MRule.ARGUMENTS_PREFIX + "TrxName", trx.getTrxName());
 			engine.put(MRule.ARGUMENTS_PREFIX + "Record_ID", pi.getRecord_ID());

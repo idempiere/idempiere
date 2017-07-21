@@ -14,20 +14,16 @@ import org.compiere.model.Query;
 import org.compiere.model.ServerStateChangeEvent;
 import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.X_AD_Package_Imp;
+import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
-public class AdempiereActivator implements BundleActivator, ServiceTrackerCustomizer<IDictionaryService, IDictionaryService> {
+public class AdempiereActivator extends AbstractActivator {
 
 	protected final static CLogger logger = CLogger.getCLogger(AdempiereActivator.class.getName());
-	private BundleContext context;
-	private ServiceTracker<IDictionaryService, IDictionaryService> serviceTracker;
-	private IDictionaryService service;
 
 	@Override
 	public void start(BundleContext context) throws Exception {
@@ -53,27 +49,7 @@ public class AdempiereActivator implements BundleActivator, ServiceTrackerCustom
 
 	private void installPackage() {
 			// e.g. 1.0.0.qualifier, check only the "1.0.0" part
-			String version = getVersion();
-			if (version != null)
-			{
-				int count = 0;
-				int index = -1;
-				for(int i = 0; i < version.length(); i++)
-				{
-					if(version.charAt(i) == '.')
-						count++;
-					
-					if (count == 3)
-					{
-						index = i;
-						break;
-					}
-				}
-				
-				if (index == -1)
-					index = version.length();
-				version = version.substring(0,  index);
-			}
+			String version = getPKVersion();
 			
 			String where = "Name=? AND PK_Version LIKE ?";
 			Query q = new Query(Env.getCtx(), X_AD_Package_Imp.Table_Name,
@@ -81,14 +57,48 @@ public class AdempiereActivator implements BundleActivator, ServiceTrackerCustom
 			q.setParameters(new Object[] { getName(), version + "%" });
 			X_AD_Package_Imp pkg = q.first();
 			if (pkg == null) {
-				System.out.println("Installing " + getName() + " " + version + " ...");
-				packIn();
-				install();
-				System.out.println(getName() + " " + version + " installed.");
+				try {
+					if (getDBLock()) {
+						System.out.println("Installing " + getName() + " " + version + " ...");
+						packIn();
+						install();
+						releaseLock();
+						System.out.println(getName() + " " + version + " installed.");
+					} else {
+						logger.log(Level.SEVERE, "Could not acquire the DB lock to install:" + getName());
+					}
+				} catch (AdempiereSystemError e) {
+					e.printStackTrace();
+				}
 			} else {
 				if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + version + " was installed: "
 						+ pkg.getCreated());
 			}
+	}
+	
+	private String getPKVersion() {
+		String version = getVersion();
+		if (version != null)
+		{
+			int count = 0;
+			int index = -1;
+			for(int i = 0; i < version.length(); i++)
+			{
+				if(version.charAt(i) == '.')
+					count++;
+				
+				if (count == 3)
+				{
+					index = i;
+					break;
+				}
+			}
+			
+			if (index == -1)
+				index = version.length();
+			version = version.substring(0,  index);
+		}
+		return version;
 	}
 
 	protected void packIn() {
@@ -106,7 +116,7 @@ public class AdempiereActivator implements BundleActivator, ServiceTrackerCustom
 			    	zipstream.write(buffer, 0, read);
 			    }
 			    // call 2pack
-				service.merge(context, zipfile);
+				merge(zipfile, getPKVersion());
 			} catch (Throwable e) {
 				logger.log(Level.SEVERE, "Pack in failed.", e);
 			}

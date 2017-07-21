@@ -78,7 +78,8 @@ public class MProductionLine extends X_M_ProductionLine {
 	 * @return "" for success, error string if failed
 	 */
 	public String createTransactions(Timestamp date, boolean mustBeStocked) {
-		if (getParent().getReversal_ID() <= 0  )
+		int reversalId = getProductionReversalId ();
+		if (reversalId <= 0  )
 		{
 			// delete existing ASI records
 			int deleted = deleteMA();
@@ -106,7 +107,7 @@ public class MProductionLine extends X_M_ProductionLine {
 		if (log.isLoggable(Level.FINEST))	log.log(Level.FINEST, "asi Description is: " + asiString);
 		// create transactions for finished goods
 		if ( getM_Product_ID() == getEndProduct_ID()) {
-			if (getParent().getReversal_ID() <= 0  && isAutoGenerateLot && getM_AttributeSetInstance_ID() == 0)
+			if (reversalId <= 0  && isAutoGenerateLot && getM_AttributeSetInstance_ID() == 0)
 			{
 				asi = MAttributeSetInstance.generateLot(getCtx(), (MProduct)getM_Product(), get_TrxName());
 				setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
@@ -394,16 +395,16 @@ public class MProductionLine extends X_M_ProductionLine {
 		return true;
 	}
 
-
 	/**
-	 * 	Get Parent
-	 *	@return parent
+	 * 	Get Reversal_ID of parent production
+	 *	@return Reversal_ID
 	 */
-	public MProduction getParent() 	{
-		if (productionParent == null)
-			productionParent = new MProduction (getCtx(), getM_Production_ID(), get_TrxName());
-		return productionParent;
-	}	//	getParent
+	public int getProductionReversalId() {
+		if (getM_Production_ID() > 0)
+			return DB.getSQLValueEx(get_TrxName(), "SELECT Reversal_ID FROM M_Production WHERE M_Production_ID=?", getM_Production_ID());
+		else
+			return DB.getSQLValueEx(get_TrxName(), "SELECT p.Reversal_ID FROM M_ProductionPlan pp INNER JOIN M_Production p ON (pp.M_Production_ID = p.M_Production_ID) WHERE pp.M_ProductionPlan_ID=?", getM_ProductionPlan_ID());
+	}
 
 	/**
 	 * 

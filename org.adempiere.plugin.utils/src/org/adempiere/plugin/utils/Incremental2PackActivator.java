@@ -32,26 +32,22 @@ import org.compiere.model.Query;
 import org.compiere.model.ServerStateChangeEvent;
 import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.X_AD_Package_Imp;
+import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
-import org.compiere.util.Util;
-import org.osgi.framework.BundleActivator;
+import org.compiere.util.Trx;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * 
  * @author hengsin
  *
  */
-public class Incremental2PackActivator implements BundleActivator, ServiceTrackerCustomizer<IDictionaryService, IDictionaryService> {
+public class Incremental2PackActivator extends AbstractActivator {
 
 	protected final static CLogger logger = CLogger.getCLogger(Incremental2PackActivator.class.getName());
-	private BundleContext context;
-	private ServiceTracker<IDictionaryService, IDictionaryService> serviceTracker;
-	private IDictionaryService service;
 
 	@Override
 	public void start(BundleContext context) throws Exception {
@@ -87,38 +83,24 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 	}
 
 	private void installPackage() {
-			// e.g. 1.0.0.qualifier, check only the "1.0.0" part
-			String bundleVersionPart = getVersion();
-			String installedVersionPart = null;
-			String where = "Name=? AND PK_Status = 'Completed successfully'";
-			Query q = new Query(Env.getCtx(), X_AD_Package_Imp.Table_Name,
-					where.toString(), null);
-			q.setParameters(new Object[] { getName() });
-			List<X_AD_Package_Imp> pkgs = q.list();
-			if (pkgs != null && !pkgs.isEmpty()) {
-				for(X_AD_Package_Imp pkg : pkgs) {
-					String packageVersionPart = pkg.getPK_Version();
-					String[] part = packageVersionPart.split("[.]");
-					if (installedVersionPart == null) {
-						if (part.length > 3) {
-							installedVersionPart = part[0]+"."+part[1]+"."+part[2];
-						} else {
-							installedVersionPart = packageVersionPart;
-						}
-					} else {
-						Version installedVersion = new Version(installedVersionPart);
-						if (part.length > 3) {
-							packageVersionPart = part[0]+"."+part[1]+"."+part[2];
-						}
-						Version packageVersion = new Version(packageVersionPart);
-						if (packageVersion.compareTo(installedVersion) > 0) {
-							installedVersionPart = packageVersionPart;
-						}
-					}
+		String where = "Name=? AND PK_Status = 'Completed successfully'";
+		Query q = new Query(Env.getCtx(), X_AD_Package_Imp.Table_Name,
+				where.toString(), null);
+		q.setParameters(new Object[] { getName() });
+		List<X_AD_Package_Imp> pkgs = q.list();
+		List<String> installedVersions = new ArrayList<String>();
+		if (pkgs != null && !pkgs.isEmpty()) {
+			for(X_AD_Package_Imp pkg : pkgs) {
+				String packageVersionPart = pkg.getPK_Version();
+				String[] part = packageVersionPart.split("[.]");
+				if (part.length > 3 && (packageVersionPart.indexOf(".v") > 0 || packageVersionPart.indexOf(".qualifier") > 0)) {
+					packageVersionPart = part[0]+"."+part[1]+"."+part[2];
 				}
+				installedVersions.add(packageVersionPart);				
 			}
-			packIn(installedVersionPart, bundleVersionPart);
-			afterPackIn();
+		}
+		packIn(installedVersions);
+		afterPackIn();
 	}
 	
 	private static class TwoPackEntry {
@@ -130,31 +112,73 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 		}
 	}
 	
-	protected void packIn(String installedVersionPart, String bundleVersionPart) {
+	protected void packIn(List<String> installedVersions) {
 		List<TwoPackEntry> list = new ArrayList<TwoPackEntry>();
 				
 		//2Pack_1.0.0.zip, 2Pack_1.0.1.zip, etc
 		Enumeration<URL> urls = context.getBundle().findEntries("/META-INF", "2Pack_*.zip", false);
-		Version bundleVersion = new Version(bundleVersionPart);
-		if (!Util.isEmpty(installedVersionPart)) {
-			Version installedVersion = new Version(installedVersionPart);
-			while(urls.hasMoreElements()) {
-				URL u = urls.nextElement();
-				String version = extractVersionString(u);
-				Version packageVersion = new Version(version);
-				if (packageVersion.compareTo(bundleVersion) <= 0 && packageVersion.compareTo(installedVersion) > 0)
-					list.add(new TwoPackEntry(u, version));
-			}
-		} else {
-			while(urls.hasMoreElements()) {
-				URL u = urls.nextElement();
-				String version = extractVersionString(u);
-				Version packageVersion = new Version(version);
-				if (packageVersion.compareTo(bundleVersion) <= 0)
-					list.add(new TwoPackEntry(u, version));
-			}
+		while(urls.hasMoreElements()) {
+			URL u = urls.nextElement();
+			String version = extractVersionString(u);
+			list.add(new TwoPackEntry(u, version));
 		}
 		
+		X_AD_Package_Imp firstImp = new Query(Env.getCtx(), X_AD_Package_Imp.Table_Name, "Name=? AND PK_Version=? AND PK_Status=?", null)
+				.setParameters(getName(), "0.0.0", "Completed successfully")
+				.setClient_ID()
+				.first();
+		if (firstImp == null) {
+			Trx trx = Trx.get(Trx.createTrxName(), true);
+			trx.setDisplayName(getClass().getName()+"_packIn");
+			try {
+				Env.getCtx().put("#AD_Client_ID", 0);
+				
+				firstImp = new X_AD_Package_Imp(Env.getCtx(), 0, trx.getTrxName());
+				firstImp.setName(getName());
+				firstImp.setPK_Version("0.0.0");
+				firstImp.setPK_Status("Completed successfully");
+				firstImp.setProcessed(true);
+				firstImp.saveEx();
+				
+				if (list.size() > 0 && installedVersions.size() > 0) {
+					List<TwoPackEntry> newList = new ArrayList<TwoPackEntry>();
+					for(TwoPackEntry entry : list) {
+						boolean patch = false;
+						for(String v : installedVersions) {
+							Version v1 = new Version(entry.version);
+							Version v2 = new Version(v);
+							int c = v2.compareTo(v1);
+							if (c == 0) {
+								patch = false;
+								break;
+							} else if (c > 0) {
+								patch = true;
+							}
+						}
+						if (patch) {
+							System.out.println("Patch Meta Data for " + getName() + " " + entry.version + " ...");
+							
+							X_AD_Package_Imp pi = new X_AD_Package_Imp(Env.getCtx(), 0, trx.getTrxName());
+							pi.setName(getName());
+							pi.setPK_Version(entry.version);
+							pi.setPK_Status("Completed successfully");
+							pi.setProcessed(true);
+							pi.saveEx();
+													
+						} else {
+							newList.add(entry);
+						}
+					}
+					list = newList;
+				}
+				trx.commit(true);
+			} catch (Exception e) {
+				trx.rollback();
+				logger.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			} finally {
+				trx.close();
+			}
+		}
 		Collections.sort(list, new Comparator<TwoPackEntry>() {
 			@Override
 			public int compare(TwoPackEntry o1, TwoPackEntry o2) {
@@ -162,32 +186,43 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 			}
 		});		
 				
-		for(TwoPackEntry entry : list) {
-			if (!packIn(entry.url)) {
-				// stop processing further packages if one fail
-				break;
+		try {
+			if (getDBLock()) {
+				for(TwoPackEntry entry : list) {
+					if (!installedVersions.contains(entry.version)) {
+						if (!packIn(entry.url)) {
+							// stop processing further packages if one fail
+							break;
+						}
+					}
+				}
+				releaseLock();
+			} else {
+				logger.log(Level.SEVERE, "Could not acquire the DB lock to install:" + getName());
 			}
+		} catch (AdempiereSystemError e) {
+			e.printStackTrace();
 		}
 	}
 
 	private String extractVersionString(URL u) {
 		String p = u.getPath();
-		int upos=p.lastIndexOf("_");
+		int upos=p.lastIndexOf("2Pack_");
 		int dpos=p.lastIndexOf(".");
-		String v = p.substring(upos+1, dpos);
+		String v = p.substring(upos+"2Pack_".length(), dpos);
 		return v;
 	}
 
 	protected boolean packIn(URL packout) {
 		if (packout != null && service != null) {
 			String path = packout.getPath();
-			String suffix = path.substring(path.lastIndexOf("_"));
+			String suffix = "_"+path.substring(path.lastIndexOf("2Pack_"));
 			System.out.println("Installing " + getName() + " " + path + " ...");
 			FileOutputStream zipstream = null;
 			try {
 				// copy the resource to a temporary file to process it with 2pack
 				InputStream stream = packout.openStream();
-				File zipfile = File.createTempFile(getName(), suffix);
+				File zipfile = File.createTempFile(getName()+"_", suffix);
 				zipstream = new FileOutputStream(zipfile);
 			    byte[] buffer = new byte[1024];
 			    int read;
@@ -195,7 +230,8 @@ public class Incremental2PackActivator implements BundleActivator, ServiceTracke
 			    	zipstream.write(buffer, 0, read);
 			    }
 			    // call 2pack
-				service.merge(context, zipfile);
+				if (!merge(zipfile, extractVersionString(packout)))
+					return false;
 			} catch (Throwable e) {
 				logger.log(Level.SEVERE, "Pack in failed.", e);
 				return false;

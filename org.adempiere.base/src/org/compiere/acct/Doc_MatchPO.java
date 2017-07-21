@@ -187,9 +187,6 @@ public class Doc_MatchPO extends Doc
 		MInOut inOut = receiptLine.getParent();
 		boolean isReturnTrx = inOut.getMovementType().equals(X_M_InOut.MOVEMENTTYPE_VendorReturns);
 
-		// calculate po cost
-		BigDecimal deliveredCost = poCost.multiply(getQty());			//	Delivered so far
-
 		Map<Integer, BigDecimal> landedCostMap = new LinkedHashMap<Integer, BigDecimal>();
 		BigDecimal landedCost = BigDecimal.ZERO;
 		int C_OrderLine_ID = m_oLine.getC_OrderLine_ID();
@@ -230,8 +227,7 @@ public class Doc_MatchPO extends Doc
 			}
 			landedCostMap.put(elementId, elementAmt);
 		}		
-		BigDecimal totalCost = deliveredCost.add(landedCost);
-		
+			
 		//	Different currency
 		if (m_oLine.getC_Currency_ID() != as.getC_Currency_ID())
 		{
@@ -257,6 +253,10 @@ public class Doc_MatchPO extends Doc
 			p_Error = costingError;
 			return null;
 		}
+		
+		// calculate po cost
+		BigDecimal deliveredCost = poCost.multiply(getQty());			//	Delivered so far
+		BigDecimal totalCost = deliveredCost.add(landedCost);
 		
 		//	Calculate PPV for standard costing
 		MProduct product = MProduct.get(getCtx(), getM_Product_ID());

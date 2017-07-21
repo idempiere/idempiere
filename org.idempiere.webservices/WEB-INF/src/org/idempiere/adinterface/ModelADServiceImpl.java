@@ -214,6 +214,8 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			}
 	
 			trx = Trx.get(trxName, true);
+			if (manageTrx)
+				trx.setDisplayName(getClass().getName()+"_"+webServiceName+"_setDocAction");
 			
 			Map<String, Object> requestCtx = getRequestCtx();
 	
@@ -698,6 +700,8 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			}
 	
 			trx = Trx.get(trxName, true);
+			if (manageTrx)
+				trx.setDisplayName(getClass().getName()+"_"+webServiceName+"_deleteData");
 	
 			// get the PO for the tablename and record ID
 			MTable table = MTable.get(ctx, tableName);
@@ -780,6 +784,8 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	    	}
 	    		
 	    	trx = Trx.get(trxName, true);
+	    	if (manageTrx)
+	    		trx.setDisplayName(getClass().getName()+"_"+webServiceName+"_createData");
 	    	
 	    	
 	    	// get the PO for the tablename and record ID
@@ -892,6 +898,8 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				manageTrx = true;
 			}
 			trx = Trx.get(trxName, true);
+			if (manageTrx)
+				trx.setDisplayName(getClass().getName()+"_"+webServiceName+"_createUpdateData");
 	
 			// get the PO for the tablename and record ID
 			MTable table = MTable.get(ctx, tableName);
@@ -1272,6 +1280,8 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	    	}
 	    	
 	    	trx = Trx.get(trxName, true);
+	    	if (manageTrx)
+	    		trx.setDisplayName(getClass().getName()+"_"+webServiceName+"_updateData");
 	    	
 	    	
 	    	
@@ -1464,6 +1474,8 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				manageTrx = true;
 			}
 			trx = Trx.get(trxName, true);
+			if (manageTrx)
+				trx.setDisplayName(getClass().getName()+"_"+webServiceName+"_queryData");
 			
 	    	StringBuilder sqlBuilder = new StringBuilder(role.addAccessSQL("SELECT * FROM " + tableName, tableName, true, true));
 			

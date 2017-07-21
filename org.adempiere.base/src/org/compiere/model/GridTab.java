@@ -1180,11 +1180,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			return retValue;
 		setCurrentRow(m_currentRow + 1, true);
 
-		//  check validity of defaults
-		for (GridField field : getFields()) {
-			field.refreshLookup();
-			field.validateValueNoDirect();
-		}
 		//  process all Callouts (no dependency check - assumed that settings are valid)
 		for (int i = 0; i < getFieldCount(); i++)
 			processCallout(getField(i));
@@ -2585,8 +2580,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			{
 				Object value = m_mTable.getValueAt(m_currentRow, i);
 				mField.setValue(value, m_mTable.isInserting());
-				if (m_mTable.isInserting())		//	set invalid values to null
-					mField.validateValue();
 				if (mField.isKey())
 					keyCalloutDelayed = mField;
 			}

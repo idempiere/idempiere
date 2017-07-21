@@ -286,32 +286,45 @@ public class DocManager {
 		}
 		
 		Trx trx = Trx.get(trxName, true);
+		if (localTrxName != null)
+			trx.setDisplayName(DocManager.class.getName()+"_postDocument");
 		String error = null;
+		Savepoint savepoint = null;
 		try
 		{
+			savepoint = localTrxName == null ? trx.setSavepoint(null) : null;
 			String status = "";
 			for(MAcctSchema as : ass)
 			{
 				Doc doc = Doc.get (as, AD_Table_ID, rs, trxName);
 				if (doc != null)
 				{
-					Savepoint savepoint = trx.setSavepoint(null);
 					error = doc.post (force, repost);	//	repost
 					status = doc.getPostStatus();
 					if (error != null && error.trim().length() > 0)
 					{
-						trx.rollback(savepoint);
+						if (savepoint != null)
+						{
+							trx.rollback(savepoint);
+							savepoint = null;
+						}
+						else
+							trx.rollback();
+						s_log.info("Error Posting " + doc + " to " + as + " Error: " + error);
 						break;
-					}
-					else
-					{
-						try {
-							trx.releaseSavepoint(savepoint);
-						} catch (Exception e) {}
 					}
 				}
 				else
 				{
+					if (savepoint != null)
+					{
+						trx.rollback(savepoint);
+						savepoint = null;
+					}
+					else
+						trx.rollback();
+
+					s_log.info("Error Posting " + doc + " to " + as + " Error:  NoDoc");
 					return "NoDoc";
 				}
 			}
@@ -326,15 +339,27 @@ public class DocManager {
 				if (localTrxName != null) {
 					if (trx != null)
 						trx.rollback();
+				} else if (trx != null && savepoint != null) {
+					trx.rollback(savepoint);
+					savepoint = null;
 				}
 				if (dbError != null)
 					error = dbError.getValue();
 				else
 					error = "SaveError";
 			}
-			if (localTrxName != null) {
-				if (trx != null)
+			if (savepoint != null)
+			{
+				try
+				{
+					trx.releaseSavepoint(savepoint);
+				} catch (SQLException e1) {}
+				savepoint = null;
+			}
+			if (localTrxName != null && error == null) {
+				if (trx != null) {
 					trx.commit();
+				}
 			}
 		}
 		catch (Exception e)
@@ -342,6 +367,10 @@ public class DocManager {
 			if (localTrxName != null) {
 				if (trx != null)
 					trx.rollback();
+			} else if (trx != null && savepoint != null) {
+				try {
+					trx.rollback(savepoint);
+				} catch (SQLException e1) {}
 			}
 			if (e instanceof RuntimeException)
 				throw (RuntimeException) e;

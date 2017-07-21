@@ -149,6 +149,7 @@ public class GridTabDataBinder implements ValueChangeListener {
 				int recordId = gridTab.getKeyID(gridTab.getCurrentRow());
 				
 				Trx trx = Trx.get(Trx.createTrxName(), true);
+				trx.setDisplayName(getClass().getName()+"_valueChange");
 				trx.start();
 				try
 				{

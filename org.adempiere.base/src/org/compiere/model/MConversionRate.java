@@ -163,6 +163,7 @@ public class MConversionRate extends X_C_Conversion_Rate
 		
 		String trxName = Trx.createTrxName();
 		Trx trx = Trx.get(trxName, true);
+		trx.setDisplayName(MConversionRate.class.getName()+"_setRate");
 		Properties ctx = Env.getCtx();
 		MCurrency curFrom = MCurrency.get(ctx, CurFrom_ISO);
 		if (curFrom==null) throw new Exception("Invalid currency " + CurFrom_ISO);

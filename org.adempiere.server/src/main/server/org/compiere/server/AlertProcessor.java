@@ -270,6 +270,7 @@ public class AlertProcessor extends AdempiereServer
 				Trx trx = null;
 				try {
 					trx = Trx.get(Trx.createTrxName("AP_NU"), true);
+					trx.setDisplayName(getClass().getName()+"_"+m_model.getName()+"_notifyUsers");
 					// Notice
 					int AD_Message_ID = 52244;  /* TODO - Hardcoded message=notes */
 					MNote note = new MNote(getCtx(), AD_Message_ID, user_id, trx.getTrxName());

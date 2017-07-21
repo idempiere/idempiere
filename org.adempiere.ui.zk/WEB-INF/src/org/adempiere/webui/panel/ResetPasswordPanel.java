@@ -258,6 +258,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 	    	txtSecurityQuestion.setVisible(false);
 	        
 	    	txtAnswer = new Textbox();
+	    	txtAnswer.setType("password");
 	    	txtAnswer.setId("txtAnswer");
 	//        txtAnswer.setType("password");
 	        txtAnswer.setCols(25);
@@ -449,6 +450,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
     	{
         	String trxName = Trx.createTrxName("ResetPasswordTrx");
     		trx = Trx.get(trxName, true);
+    		trx.setDisplayName(getClass().getName()+"_validateResetPassword");
     		
 			for (MUser user : users)
 			{

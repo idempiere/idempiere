@@ -744,10 +744,12 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
                     }
                     else
                     {
-                    	comp.dynamicDisplay();
                         boolean rw = mField.isEditable(true);   //  r/w - check Context
+                        if (rw && !comp.isReadWrite()) // IDEMPIERE-3421 - if it was read-only the list can contain direct values
+                        	mField.refreshLookup();
                         comp.setReadWrite(rw);
                         comp.setMandatory(mField.isMandatory(true));    //  check context
+                    	comp.dynamicDisplay();
                     }
                 }
                 else if (comp.isVisible())

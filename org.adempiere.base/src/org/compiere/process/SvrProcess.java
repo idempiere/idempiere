@@ -124,7 +124,10 @@ public abstract class SvrProcess implements ProcessCall
 		//***	Trx
 		boolean localTrx = m_trx == null;
 		if (localTrx)
+		{
 			m_trx = Trx.get(Trx.createTrxName("SvrProcess"), true);
+			m_trx.setDisplayName(getClass().getName()+"_startProcess");
+		}
 		//
 		ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
 		ClassLoader processLoader = getClass().getClassLoader();

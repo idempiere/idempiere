@@ -1344,15 +1344,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !adTabbox.getSelectedGridTab().isNew());
 
+        boolean isNewRow = adTabbox.getSelectedGridTab().getRowCount() == 0 || adTabbox.getSelectedGridTab().isNew();
         //Deepak-Enabling customize button IDEMPIERE-364
-        if(!(adTabbox.getSelectedTabpanel() instanceof ADSortTab))
-        {
-        	toolbar.enableCustomize(((ADTabpanel)adTabbox.getSelectedTabpanel()).isGridView());
-        }
-        else 
-        {
+        if(adTabbox.getSelectedTabpanel() instanceof ADSortTab){//consistent with dataStatusChanged
+        	toolbar.enableProcessButton (false);
         	toolbar.enableCustomize(false);
-        	toolbar.enableProcessButton(false);
+        }else{
+        	ADTabpanel adtab = (ADTabpanel) adTabbox.getSelectedTabpanel();
+            toolbar.enableProcessButton(!isNewRow && adtab != null && adtab.getToolbarButtons().size() > 0);
+            toolbar.enableCustomize(adtab.isGridView());
         }
 
 	}
@@ -1715,8 +1715,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         }
 
         boolean isNewRow = adTabbox.getSelectedGridTab().getRowCount() == 0 || adTabbox.getSelectedGridTab().isNew();
-    	ADTabpanel adtab = (ADTabpanel) adTabbox.getSelectedTabpanel();
-        toolbar.enableProcessButton(!isNewRow && adtab != null && adtab.getToolbarButtons().size() > 0);
         toolbar.enableArchive(!isNewRow);
         toolbar.enableZoomAcross(!isNewRow);
         toolbar.enableActiveWorkflows(!isNewRow);
@@ -1731,8 +1729,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         toolbar.enableTabNavigation(breadCrumb.hasParentLink(), adTabbox.getSelectedDetailADTabpanel() != null);
         
         //Deepak-Enabling customize button IDEMPIERE-364
-        if(!(adTabbox.getSelectedTabpanel() instanceof ADSortTab))
-        	toolbar.enableCustomize(adtab.isGridView());
+        if(adTabbox.getSelectedTabpanel() instanceof ADSortTab){//consistent with updateToolbar
+        	toolbar.enableProcessButton (false);
+        	toolbar.enableCustomize(false);
+        }else{
+        	ADTabpanel adtab = (ADTabpanel) adTabbox.getSelectedTabpanel();
+            toolbar.enableProcessButton(!isNewRow && adtab != null && adtab.getToolbarButtons().size() > 0);
+            toolbar.enableCustomize(adtab.isGridView());
+        }
     }
 
     /**
@@ -1810,6 +1814,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	if (sortColumn != null)
     	{
     		sortColumn.setSortDirection("natural");
+    	}
+    	if (gridTab.isSortTab()) { // refresh is not refreshing sort tabs
+    		IADTabpanel tabPanel = adTabbox.getSelectedTabpanel();
+    		tabPanel.query(false, 0, 0);
     	}
     }
 
