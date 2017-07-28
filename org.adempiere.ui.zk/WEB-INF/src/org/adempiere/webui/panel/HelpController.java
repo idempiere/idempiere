@@ -702,9 +702,10 @@ public class HelpController
 	
 	private class ContextHelpMenupopup extends Menupopup implements EventListener<Event> {
 		/**
-		 * generated serial id
+		 * 
 		 */
-		private static final long serialVersionUID = 5957266862632509358L;
+		private static final long serialVersionUID = 5430991475805225567L;
+
 		private MCtxHelpMsg ctxHelpMsg;
 		private PO po;
 		private String baseContent, translatedContent;

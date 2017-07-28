@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_FieldSuggestion
  *  @author iDempiere (generated) 
- *  @version Release 2.0
+ *  @version Release 4.1
  */
 public interface I_AD_FieldSuggestion 
 {
@@ -121,6 +121,21 @@ public interface I_AD_FieldSuggestion
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Tab_ID */
+    public static final String COLUMNNAME_AD_Tab_ID = "AD_Tab_ID";
+
+	/** Set Tab.
+	  * Tab within a Window
+	  */
+	public void setAD_Tab_ID (int AD_Tab_ID);
+
+	/** Get Tab.
+	  * Tab within a Window
+	  */
+	public int getAD_Tab_ID();
+
+	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
+
     /** Column name AD_UserClient_ID */
     public static final String COLUMNNAME_AD_UserClient_ID = "AD_UserClient_ID";
 
@@ -144,6 +159,21 @@ public interface I_AD_FieldSuggestion
 	public int getAD_User_ID();
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
+
+    /** Column name AD_Window_ID */
+    public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
+
+	/** Set Window.
+	  * Data entry or display window
+	  */
+	public void setAD_Window_ID (int AD_Window_ID);
+
+	/** Get Window.
+	  * Data entry or display window
+	  */
+	public int getAD_Window_ID();
+
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name CompareSuggestion */
     public static final String COLUMNNAME_CompareSuggestion = "CompareSuggestion";

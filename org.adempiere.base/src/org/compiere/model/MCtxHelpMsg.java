@@ -43,7 +43,7 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7892179461720143685L;
+	private static final long serialVersionUID = -7208965344525556184L;
 
 	/**	Logging								*/
 	private static CLogger		s_log = CLogger.getCLogger(MCtxHelpMsg.class);

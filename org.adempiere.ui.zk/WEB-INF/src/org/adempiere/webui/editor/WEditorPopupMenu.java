@@ -47,7 +47,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7826535512581441259L;
+	private static final long serialVersionUID = -1632375949585292635L;
 
 	public static final String EVENT_ATTRIBUTE = "EVENT";
     public static final String ZOOM_EVENT = "ZOOM";

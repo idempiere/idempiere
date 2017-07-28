@@ -107,7 +107,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2997116608353367498L;
+	private static final long serialVersionUID = -6777678451696979575L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
