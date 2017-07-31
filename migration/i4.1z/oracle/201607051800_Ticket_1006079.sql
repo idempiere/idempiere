@@ -27,11 +27,7 @@ INSERT INTO AD_Table (AD_Table_ID,AD_Client_ID,ImportTable,CopyColumnsFromTable,
 ;
 
 -- Jul 5, 2016 8:49:08 PM MYT
-INSERT INTO AD_Sequence (AD_Sequence_ID,AD_Org_ID,Updated,UpdatedBy,CreatedBy,IsTableID,CurrentNext,IsAutoSequence,StartNo,IsAudited,CurrentNextSys,AD_Client_ID,Created,Name,Description,IncrementNo,StartNewYear,AD_Sequence_UU,IsActive) VALUES (1000525,0,TO_DATE('2016-07-05 20:49:08','YYYY-MM-DD HH24:MI:SS'),100,100,'Y',1000000,'Y',1000000,'N',200000,0,TO_DATE('2016-07-05 20:49:08','YYYY-MM-DD HH24:MI:SS'),'AD_CtxHelpSuggestion','Table AD_CtxHelpSuggestion',1,'N','bdbdb075-36e3-4046-89ad-e15a84fe6502','Y')
-;
-
--- Jul 5, 2016 8:49:08 PM MYT
-CREATE SEQUENCE AD_CTXHELPSUGGESTION_SQ INCREMENT BY 1 MINVALUE 1000000 MAXVALUE 2147483647 START WITH 1000000
+INSERT INTO AD_Sequence (AD_Sequence_ID,AD_Org_ID,Updated,UpdatedBy,CreatedBy,IsTableID,CurrentNext,IsAutoSequence,StartNo,IsAudited,CurrentNextSys,AD_Client_ID,Created,Name,Description,IncrementNo,StartNewYear,AD_Sequence_UU,IsActive) VALUES (200289,0,TO_DATE('2016-07-05 20:49:08','YYYY-MM-DD HH24:MI:SS'),100,100,'Y',1000000,'Y',1000000,'N',200000,0,TO_DATE('2016-07-05 20:49:08','YYYY-MM-DD HH24:MI:SS'),'AD_CtxHelpSuggestion','Table AD_CtxHelpSuggestion',1,'N','bdbdb075-36e3-4046-89ad-e15a84fe6502','Y')
 ;
 
 -- Jul 5, 2016 8:49:09 PM MYT
@@ -311,7 +307,6 @@ INSERT INTO AD_Field (ColumnSpan,NumLines,AD_Field_ID,IsQuickEntry,AD_Client_ID,
 -- Jul 5, 2016 8:49:29 PM MYT
 INSERT INTO AD_Field (ColumnSpan,NumLines,AD_Field_ID,IsQuickEntry,AD_Client_ID,AD_Org_ID,Updated,IsHeading,IsDisplayed,IsFieldOnly,IsSameLine,IsDisplayedGrid,SeqNo,IsReadOnly,IsCentrallyMaintained,Created,EntityType,CreatedBy,UpdatedBy,Name,Description,IsEncrypted,DisplayLength,AD_Field_UU,IsActive,XPosition,IsAdvancedField,IsDefaultFocus,AD_Column_ID,AD_Tab_ID) VALUES (2,1,204260,'N',0,0,TO_DATE('2016-07-05 20:49:28','YYYY-MM-DD HH24:MI:SS'),'N','Y','N','N','Y',110,'N','Y',TO_DATE('2016-07-05 20:49:28','YYYY-MM-DD HH24:MI:SS'),'D',100,100,'Accept','Accept suggested changes','N',1,'c0c7dcde-67ee-4b93-8587-1396dd215355','Y',5,'N','N',212814,200216)
 ;
-
 
 -- Jul 5, 2016 8:49:30 PM MYT
 ALTER TABLE AD_CtxHelpSuggestion ADD CONSTRAINT ADCtxHelp_ADCtxHelpSuggestion FOREIGN KEY (AD_CtxHelp_ID) REFERENCES ad_ctxhelp(ad_ctxhelp_id) DEFERRABLE INITIALLY DEFERRED

@@ -24,11 +24,7 @@ INSERT INTO AD_Table (AD_Table_ID,AD_Client_ID,ImportTable,CopyColumnsFromTable,
 ;
 
 -- Jul 5, 2016 8:49:08 PM MYT
-INSERT INTO AD_Sequence (AD_Sequence_ID,AD_Org_ID,Updated,UpdatedBy,CreatedBy,IsTableID,CurrentNext,IsAutoSequence,StartNo,IsAudited,CurrentNextSys,AD_Client_ID,Created,Name,Description,IncrementNo,StartNewYear,AD_Sequence_UU,IsActive) VALUES (1000525,0,TO_TIMESTAMP('2016-07-05 20:49:08','YYYY-MM-DD HH24:MI:SS'),100,100,'Y',1000000,'Y',1000000,'N',200000,0,TO_TIMESTAMP('2016-07-05 20:49:08','YYYY-MM-DD HH24:MI:SS'),'AD_CtxHelpSuggestion','Table AD_CtxHelpSuggestion',1,'N','bdbdb075-36e3-4046-89ad-e15a84fe6502','Y')
-;
-
--- Jul 5, 2016 8:49:08 PM MYT
-CREATE SEQUENCE AD_CTXHELPSUGGESTION_SQ INCREMENT 1 MINVALUE 1000000 MAXVALUE 2147483647 START 1000000
+INSERT INTO AD_Sequence (AD_Sequence_ID,AD_Org_ID,Updated,UpdatedBy,CreatedBy,IsTableID,CurrentNext,IsAutoSequence,StartNo,IsAudited,CurrentNextSys,AD_Client_ID,Created,Name,Description,IncrementNo,StartNewYear,AD_Sequence_UU,IsActive) VALUES (200289,0,TO_TIMESTAMP('2016-07-05 20:49:08','YYYY-MM-DD HH24:MI:SS'),100,100,'Y',1000000,'Y',1000000,'N',200000,0,TO_TIMESTAMP('2016-07-05 20:49:08','YYYY-MM-DD HH24:MI:SS'),'AD_CtxHelpSuggestion','Table AD_CtxHelpSuggestion',1,'N','bdbdb075-36e3-4046-89ad-e15a84fe6502','Y')
 ;
 
 -- Jul 5, 2016 8:49:09 PM MYT
