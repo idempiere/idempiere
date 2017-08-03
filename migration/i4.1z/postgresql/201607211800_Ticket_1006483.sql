@@ -1,22 +1,22 @@
 -- Jul 21, 2016 5:51:17 PM MYT
 -- 1006483 Ease edit of Field label, description and Help
-UPDATE AD_Field SET SeqNo=130,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=204236
+UPDATE AD_Field SET SeqNo=130,IsDisplayed='Y', Updated=statement_timestamp(), UpdatedBy=100 WHERE AD_Field_ID=204236
 ;
 
 -- Jul 21, 2016 5:51:17 PM MYT
-UPDATE AD_Field SET SeqNo=140,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=204237
+UPDATE AD_Field SET SeqNo=140,IsDisplayed='Y', Updated=statement_timestamp(), UpdatedBy=100 WHERE AD_Field_ID=204237
 ;
 
 -- Jul 21, 2016 5:51:17 PM MYT
-UPDATE AD_Field SET SeqNo=150,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=204240
+UPDATE AD_Field SET SeqNo=150,IsDisplayed='Y', Updated=statement_timestamp(), UpdatedBy=100 WHERE AD_Field_ID=204240
 ;
 
 -- Jul 21, 2016 5:51:17 PM MYT
-UPDATE AD_Field SET SeqNo=160,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=204241
+UPDATE AD_Field SET SeqNo=160,IsDisplayed='Y', Updated=statement_timestamp(), UpdatedBy=100 WHERE AD_Field_ID=204241
 ;
 
 -- Jul 21, 2016 5:51:17 PM MYT
-UPDATE AD_Field SET SeqNo=170,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=204242
+UPDATE AD_Field SET SeqNo=170,IsDisplayed='Y', Updated=statement_timestamp(), UpdatedBy=100 WHERE AD_Field_ID=204242
 ;
 
 -- Jul 21, 2016 6:03:18 PM MYT
