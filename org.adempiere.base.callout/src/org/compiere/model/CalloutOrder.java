@@ -745,7 +745,9 @@ public class CalloutOrder extends CalloutEngine
 	 *	@param mField field
 	 *	@param value value
 	 *	@return null or error message
+	 *  @Deprecated - business logic moved to MOrder.beforeSave - must not create/delete external records with callouts
 	 */
+	@Deprecated
 	public String paymentTerm (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		Integer C_PaymentTerm_ID = (Integer)value;

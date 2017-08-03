@@ -927,6 +927,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	}	//	validatePaySchedule
 
 
+	private volatile static boolean recursiveCall = false;
 	/**************************************************************************
 	 * 	Before Save
 	 *	@param newRecord new
@@ -1025,6 +1026,19 @@ public class MInvoice extends X_C_Invoice implements DocAction
 						return false;
 					}
 				}
+			}
+		}
+
+		if (! recursiveCall && (newRecord || is_ValueChanged(COLUMNNAME_C_PaymentTerm_ID))) {
+			recursiveCall = true;
+			try {
+				MPaymentTerm pt = new MPaymentTerm (getCtx(), getC_PaymentTerm_ID(), get_TrxName());
+				boolean valid = pt.apply(this);
+				setIsPayScheduleValid(valid);
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				recursiveCall = false;
 			}
 		}
 

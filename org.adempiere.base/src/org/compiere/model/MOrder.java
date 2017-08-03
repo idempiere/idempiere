@@ -71,7 +71,7 @@ public class MOrder extends X_C_Order implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4032643956656204341L;
+	private static final long serialVersionUID = -7784588474522162502L;
 
 	/**
 	 * 	Create new Order by copying
@@ -921,6 +921,7 @@ public class MOrder extends X_C_Order implements DocAction
 	}	//	validatePaySchedule
 
 	
+	private volatile static boolean recursiveCall = false;
 	/**************************************************************************
 	 * 	Before Save
 	 *	@param newRecord new
@@ -1086,6 +1087,19 @@ public class MOrder extends X_C_Order implements DocAction
 						return false;
 					}
 				}
+			}
+		}
+
+		if (! recursiveCall && (newRecord || is_ValueChanged(COLUMNNAME_C_PaymentTerm_ID))) {
+			recursiveCall = true;
+			try {
+				MPaymentTerm pt = new MPaymentTerm (getCtx(), getC_PaymentTerm_ID(), get_TrxName());
+				boolean valid = pt.applyOrder(this);
+				setIsPayScheduleValid(valid);
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				recursiveCall = false;
 			}
 		}
 
