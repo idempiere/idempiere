@@ -49,6 +49,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserRoles;
+import org.compiere.model.MWFActivityApprover;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import static org.compiere.model.SystemIDs.*;
@@ -1217,6 +1218,17 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 								break;
 							}
 						}
+					}
+					else if(resp.isManual()) {
+					    MWFActivityApprover[] approvers = MWFActivityApprover.getOfActivity(getCtx(), getAD_WF_Activity_ID(), get_TrxName());
+                        for (int i = 0; i < approvers.length; i++)
+                        {
+                            if(approvers[i].getAD_User_ID() == Env.getAD_User_ID(getCtx()))
+                            {
+                                autoApproval = true;
+                                break;
+                            }
+                        }
 					}
 					else if(resp.isOrganization())
 					{

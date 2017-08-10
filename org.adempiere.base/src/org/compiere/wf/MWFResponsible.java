@@ -34,12 +34,11 @@ import org.compiere.util.Msg;
 public class MWFResponsible extends X_AD_WF_Responsible
 {
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8662580480797818563L;
+     * long - serialVersionUID.
+     */
+    private static final long serialVersionUID = 4167967243996935999L;
 
-
-	/**
+    /**
 	 * 	Get WF Responsible from Cache
 	 *	@param ctx context
 	 *	@param AD_WF_Responsible_ID id
@@ -89,7 +88,7 @@ public class MWFResponsible extends X_AD_WF_Responsible
 	 */
 	public boolean isInvoker()
 	{
-		return getAD_User_ID() == 0 && getAD_Role_ID() == 0;
+		return getAD_User_ID() == 0 && getAD_Role_ID() == 0 && !isManual();
 	}	//	isInvoker
 	
 	/**
@@ -157,6 +156,10 @@ public class MWFResponsible extends X_AD_WF_Responsible
 		if (!RESPONSIBLETYPE_Role.equals(getResponsibleType()) && getAD_Role_ID() > 0)
 			setAD_Role_ID(0);
 		
+		if (RESPONSIBLETYPE_Manual.equals(getResponsibleType())) {
+		    setAD_User_ID(0);
+		    setAD_Role_ID(0);
+		}
 		return true;
 	}	//	beforeSave
 	
@@ -177,5 +180,9 @@ public class MWFResponsible extends X_AD_WF_Responsible
 		sb.append ("]");
 		return sb.toString ();
 	}	//	toString
+	
+	public boolean isManual() {
+	    return RESPONSIBLETYPE_Manual.equals(getResponsibleType());
+	}
 	
 }	//	MWFResponsible
