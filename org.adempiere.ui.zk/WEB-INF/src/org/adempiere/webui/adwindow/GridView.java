@@ -24,6 +24,7 @@ import javax.swing.table.AbstractTableModel;
 
 import org.adempiere.base.Core;
 import org.adempiere.model.MTabCustomization;
+import org.adempiere.util.Callback;
 import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Checkbox;
@@ -1188,5 +1189,11 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 			if (paging != null)
 				paging.setDetailed(true);			
 		}
+	}
+
+	@Override
+	public void editorTraverse(Callback<WEditor> editorTaverseCallback) {
+		editorTraverse(editorTaverseCallback, renderer.getEditors());
+		
 	}
 }

@@ -13,6 +13,9 @@
  *****************************************************************************/
 package org.adempiere.webui.adwindow;
 
+import java.util.Collection;
+
+import org.adempiere.util.Callback;
 import org.adempiere.webui.editor.WEditor;
 
 /**
@@ -31,4 +34,22 @@ public interface IFieldEditorContainer {
 	 * @param ref
 	 */
 	public void focusToNextEditor(WEditor ref);
+	
+	/**
+	 * helper method to loop thru editor collection of panel <br/>
+	 * can use on callout to check relative editor
+	 * @param editorTaverseCallback
+	 */
+	public void editorTraverse (Callback<WEditor> editorTaverseCallback);
+	
+	/**
+	 * default implement for {@link #editorTraverse(Callback)}
+	 * @param editorTaverseCallback
+	 * @param editors
+	 */
+	default void editorTraverse (Callback<WEditor> editorTaverseCallback, Collection<WEditor> editors) {
+		for (WEditor editor : editors) {
+			editorTaverseCallback.onCallback(editor);
+		}
+	}
 }

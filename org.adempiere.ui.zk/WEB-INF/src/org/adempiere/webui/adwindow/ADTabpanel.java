@@ -27,6 +27,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
@@ -1784,6 +1785,12 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			}
 		}
 		super.onPageDetached(page);
+	}
+
+	@Override
+	public void editorTraverse(Callback<WEditor> editorTaverseCallback) {
+		editorTraverse(editorTaverseCallback, editors);
+		
 	}
 
 }
