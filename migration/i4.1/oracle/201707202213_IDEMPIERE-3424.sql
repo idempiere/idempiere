@@ -6,9 +6,7 @@ SET DEFINE OFF
 ALTER TABLE m_movement DROP CONSTRAINT cbpartnerlocation_mmovement
 ;
 
-ALTER TABLE m_movement ADD CONSTRAINT cbpartnerlocation_mmovement FOREIGN KEY (c_bpartner_location_id)
-      REFERENCES c_bpartner_location (c_bpartner_location_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY DEFERRED
+ALTER TABLE M_Movement ADD CONSTRAINT cbpartnerlocation_mmovement FOREIGN KEY (C_BPartner_Location_ID) REFERENCES c_bpartner_location(c_bpartner_location_id) DEFERRABLE INITIALLY DEFERRED
 ;
 
 
