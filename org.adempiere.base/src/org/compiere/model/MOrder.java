@@ -2468,6 +2468,8 @@ public class MOrder extends X_C_Order implements DocAction
 		if (m_processMsg != null)
 			return false;
 		
+		setTotalLines(Env.ZERO);
+		setGrandTotal(Env.ZERO);
 		setProcessed(true);
 		setDocAction(DOCACTION_None);
 		return true;
