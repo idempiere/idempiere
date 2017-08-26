@@ -26,6 +26,7 @@ FOR %%c in (plugins\org.eclipse.equinox.launcher_1.*.jar) DO set JARFILE=%%c
 @Set VMOPTS=%VMOPTS% -Dorg.osgi.framework.bootdelegation=sun.security.ssl,org.eclipse.jetty.alpn
 @Set VMOPTS=%VMOPTS% -Dosgi.compatibility.bootdelegation=true
 @Set VMOPTS=%VMOPTS% -Djetty.home=jettyhome
+@Set VMOPTS=%VMOPTS% -Djetty.base=jettyhome
 @Set VMOPTS=%VMOPTS% -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-deployer.xml,etc/jetty-ssl.xml,etc/jetty-ssl-context.xml,etc/jetty-http.xml,etc/jetty-alpn.xml,etc/jetty-http2.xml,etc/jetty-https.xml
 @Set VMOPTS=%VMOPTS% -Dosgi.console=localhost:12612
 @Set VMOPTS=%VMOPTS% -Dmail.mime.encodefilename=true
