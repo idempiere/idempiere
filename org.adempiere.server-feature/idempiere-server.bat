@@ -17,5 +17,20 @@ goto START
 @Echo Starting iDempiere Server ...
 @Echo =======================================
 
+CALL utils\myEnvironment.bat Server
+
 FOR %%c in (plugins\org.eclipse.equinox.launcher_1.*.jar) DO set JARFILE=%%c
-@"%JAVA%" -Dosgi.console=localhost:12612 -Djetty.home=jettyhome -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-selector.xml,etc/jetty-ssl.xml,etc/jetty-https.xml,etc/jetty-deployer.xml -XX:MaxPermSize=192m -Dmail.mime.encodefilename=true -Dmail.mime.decodefilename=true -Dmail.mime.encodeparameters=true -Dmail.mime.decodeparameters=true -jar %JARFILE% -application org.adempiere.server.application
+
+@Set VMOPTS=-Xbootclasspath/p:alpn-boot.jar
+@Set VMOPTS=%VMOPTS% -Xbootclasspath/p:alpn-boot.jar
+@Set VMOPTS=%VMOPTS% -Dorg.osgi.framework.bootdelegation=sun.security.ssl,org.eclipse.jetty.alpn
+@Set VMOPTS=%VMOPTS% -Dosgi.compatibility.bootdelegation=true
+@Set VMOPTS=%VMOPTS% -Djetty.home=jettyhome
+@Set VMOPTS=%VMOPTS% -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-deployer.xml,etc/jetty-ssl.xml,etc/jetty-ssl-context.xml,etc/jetty-http.xml,etc/jetty-alpn.xml,etc/jetty-http2.xml,etc/jetty-https.xml
+@Set VMOPTS=%VMOPTS% -Dosgi.console=localhost:12612
+@Set VMOPTS=%VMOPTS% -Dmail.mime.encodefilename=true
+@Set VMOPTS=%VMOPTS% -Dmail.mime.decodefilename=true
+@Set VMOPTS=%VMOPTS% -Dmail.mime.encodeparameters=true
+@Set VMOPTS=%VMOPTS% -Dmail.mime.decodeparameters=true
+
+@"%JAVA%" %IDEMPIERE_JAVA_OPTIONS% %VMOPTS% -jar %JARFILE% -application org.adempiere.server.application

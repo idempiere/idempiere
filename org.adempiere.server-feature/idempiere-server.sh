@@ -18,5 +18,18 @@ echo Starting iDempiere Server
 echo ===================================
 
 unset DISPLAY
-BASE=`dirname $( readlink -f idempiere-server.sh )`
-$JAVA ${DEBUG} -Xbootclasspath/p:alpn-boot.jar -Dorg.osgi.framework.bootdelegation=sun.security.ssl,org.eclipse.jetty.alpn -Dosgi.compatibility.bootdelegation=true -Djetty.home=$BASE/jettyhome -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-deployer.xml,etc/jetty-ssl.xml,etc/jetty-ssl-context.xml,etc/jetty-http.xml,etc/jetty-alpn.xml,etc/jetty-http2.xml,etc/jetty-https.xml -Dosgi.console=localhost:12612 -Dmail.mime.encodefilename=true -Dmail.mime.decodefilename=true -Dmail.mime.encodeparameters=true -Dmail.mime.decodeparameters=true -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application
+BASE=`dirname $( readlink -f $0 )`
+. $BASE/utils/myEnvironment.sh Server
+
+VMOPTS="-Xbootclasspath/p:alpn-boot.jar
+-Dorg.osgi.framework.bootdelegation=sun.security.ssl,org.eclipse.jetty.alpn
+-Dosgi.compatibility.bootdelegation=true
+-Djetty.home=$BASE/jettyhome
+-Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-deployer.xml,etc/jetty-ssl.xml,etc/jetty-ssl-context.xml,etc/jetty-http.xml,etc/jetty-alpn.xml,etc/jetty-http2.xml,etc/jetty-https.xml
+-Dosgi.console=localhost:12612
+-Dmail.mime.encodefilename=true
+-Dmail.mime.decodefilename=true
+-Dmail.mime.encodeparameters=true
+-Dmail.mime.decodeparameters=true"
+
+$JAVA ${DEBUG} $IDEMPIERE_JAVA_OPTIONS $VMOPTS -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application
