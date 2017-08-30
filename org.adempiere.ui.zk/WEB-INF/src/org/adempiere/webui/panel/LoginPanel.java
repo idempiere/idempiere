@@ -365,10 +365,11 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtPassword = new Textbox();
         txtPassword.setId("txtPassword");
         txtPassword.setType("password");
-        
         txtPassword.setCols(25);
 //        txtPassword.setMaxlength(40);
         ZKUpdateUtil.setWidth(txtPassword, "220px");
+        if (MSysConfig.getBooleanValue(MSysConfig.ZK_LOGIN_ALLOW_CHROME_SAVE_PASSWORD, true))
+        	txtPassword.setClientAttribute("autocomplete", null);
 
         lstLanguage = new Combobox();
         lstLanguage.setAutocomplete(true);

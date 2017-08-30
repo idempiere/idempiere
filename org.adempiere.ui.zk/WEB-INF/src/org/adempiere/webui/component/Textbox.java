@@ -124,6 +124,7 @@ public class Textbox extends org.zkoss.zul.Textbox implements EventListener<Even
 		if ("password".equals(type))
 			setObscureType(Obscure.OBSCURETYPE_ObscureMaskMax10Asterisk);
 		super.setType(type);
+        setClientAttribute("autocomplete", "new-password");
 	}
 
 }
