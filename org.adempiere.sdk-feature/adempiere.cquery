@@ -11,7 +11,7 @@
     <cq:advisorNode namePattern="^org\.eclipse\.jetty\.osgi-servlet-api$" useTargetPlatform="false" useWorkspace="false" versionOverride="[0.0.0,9.5.0)"/>
     <cq:advisorNode namePattern="^org\.eclipse\.jetty\.alpn\.api$" versionOverride="[0.0.0,9.5.0)"/>
     <cq:advisorNode namePattern="^org\.mortbay\.jasper\.apache-jsp$" componentType="osgi.bundle" versionOverride="(8.0.0,9.5.0)"/>
-    <cq:advisorNode namePattern="^org\.eclipse\.jetty(\..+)?" useTargetPlatform="false" useWorkspace="false" versionOverride="[9.2.0,9.4.4.v20170414]"/>
+    <cq:advisorNode namePattern="^org\.eclipse\.jetty(\..+)?" useTargetPlatform="false" useWorkspace="false" versionOverride="[9.2.0,9.5.0)"/>
     <cq:advisorNode namePattern="^org\.atmosphere\.runtime$" componentType="osgi.bundle" useTargetPlatform="false" useWorkspace="false" versionOverride="[0.0.0,3.0.0)"/>
     <cq:advisorNode namePattern="^.*$" useTargetPlatform="false" useWorkspace="false"/>
 </cq:componentQuery>
