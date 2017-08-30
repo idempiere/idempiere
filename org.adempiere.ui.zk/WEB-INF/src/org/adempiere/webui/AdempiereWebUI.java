@@ -266,15 +266,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		//update session context
 		currSess.setAttribute(SessionContextListener.SESSION_CTX, ServerContext.getCurrentInstance());
 		
-		if ("Y".equalsIgnoreCase(Env.getContext(ctx, BrowserToken.REMEMBER_ME)) && MSystem.isZKRememberUserAllowed())
-		{
-			MUser user = MUser.get(ctx);
-			BrowserToken.save(mSession, user);
-		}
-		else
-		{
-			BrowserToken.remove();
-		}
+		MUser user = MUser.get(ctx);
+		BrowserToken.save(mSession, user);
 		
 		Env.setContext(ctx, "#UIClient", "zk");
 		StringBuilder localHttpAddr = new StringBuilder(Executions.getCurrent().getScheme());
@@ -508,7 +501,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(properties, Env.AD_ROLE_ID, Env.getAD_Role_ID(Env.getCtx()));
 		Env.setContext(properties, Env.AD_ORG_NAME, Env.getContext(Env.getCtx(), Env.AD_ORG_NAME));
 		Env.setContext(properties, Env.M_WAREHOUSE_ID, Env.getContext(Env.getCtx(), Env.M_WAREHOUSE_ID));
-		Env.setContext(properties, BrowserToken.REMEMBER_ME, Env.getContext(Env.getCtx(), BrowserToken.REMEMBER_ME));
 		Env.setContext(properties, UserPreference.LANGUAGE_NAME, Env.getContext(Env.getCtx(), UserPreference.LANGUAGE_NAME));
 		Env.setContext(properties, Env.LANGUAGE, Env.getContext(Env.getCtx(), Env.LANGUAGE));
 		Env.setContext(properties, AEnv.LOCALE, Env.getContext(Env.getCtx(), AEnv.LOCALE));
