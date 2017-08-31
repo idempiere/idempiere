@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.wf;
 
+import static org.compiere.model.SystemIDs.MESSAGE_WORKFLOWRESULT;
+
 import java.io.File;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -52,12 +54,12 @@ import org.compiere.model.MUserRoles;
 import org.compiere.model.MWFActivityApprover;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.model.X_AD_WF_Activity;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.StateEngine;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -1286,9 +1288,43 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			dbValue = new Boolean("Y".equals(value));
 		else if (DisplayType.isNumeric(displayType))
 			dbValue = new BigDecimal (value);
+		else if (DisplayType.isID(displayType)) {
+			MColumn column = MColumn.get(Env.getCtx(), getNode().getAD_Column_ID());
+			String referenceTableName = column.getReferenceTableName();
+			if (referenceTableName != null) {
+				MTable refTable = MTable.get(Env.getCtx(), referenceTableName);
+				dbValue = Integer.valueOf(value);
+				boolean validValue = true;
+				PO po = refTable.getPO((Integer)dbValue, trx.getTrxName());
+				if (po == null || po.get_ID() == 0) {
+					// foreign key does not exist
+					validValue = false;
+				}
+				if (validValue && po.getAD_Client_ID() != Env.getAD_Client_ID(Env.getCtx())) {
+					validValue = false;
+					if (po.getAD_Client_ID() == 0) {
+						String accessLevel = refTable.getAccessLevel();
+						if (   MTable.ACCESSLEVEL_All.equals(accessLevel)
+							|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) {
+							// client foreign keys are OK if the table has reference All or System+Client
+							validValue = true;
+						}
+					}
+				}
+				if (! validValue) {
+					throw new Exception("Persistent Object not updated - AD_Table_ID="
+							+ getAD_Table_ID() + ", Record_ID=" + getRecord_ID()
+							+ " - Value=" + value + " is not valid for a foreign key");
+				}
+			}
+		}
 		else
 			dbValue = value;
-		m_po.set_ValueOfColumn(getNode().getAD_Column_ID(), dbValue);
+		if (!m_po.set_ValueOfColumnReturningBoolean(getNode().getAD_Column_ID(), dbValue)) {
+			throw new Exception("Persistent Object not updated - AD_Table_ID="
+					+ getAD_Table_ID() + ", Record_ID=" + getRecord_ID()
+					+ " - Value=" + value + " error : " + CLogger.retrieveErrorString("check logs"));
+		}
 		m_po.saveEx();
 		if (dbValue != null && !dbValue.equals(m_po.get_ValueOfColumn(getNode().getAD_Column_ID())))
 			throw new Exception("Persistent Object not updated - AD_Table_ID="
