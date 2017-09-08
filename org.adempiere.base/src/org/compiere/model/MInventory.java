@@ -710,7 +710,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 							MInventoryLineMA lineMA =  new MInventoryLineMA(line, storage.getM_AttributeSetInstance_ID(), maQty.negate(), storage.getDateMaterialPolicy(),true);
 							lineMA.saveEx();
 							qtyDiff = qtyDiff.subtract(maQty);
-							storage.addQtyOnHand(maQty.negate());
 
 							if (qtyDiff.compareTo(Env.ZERO)==0)
 								break;

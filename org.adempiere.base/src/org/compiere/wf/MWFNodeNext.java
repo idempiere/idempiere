@@ -25,6 +25,7 @@ import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_NodeNext;
 import org.compiere.process.DocAction;
+import org.compiere.util.Env;
 
 /**
  *	Workflow Node Next - Transition
@@ -127,9 +128,9 @@ public class MWFNodeNext extends X_AD_WF_NodeNext
 		if (!requery && m_conditions != null)
 			return m_conditions;
 		//
-		final String whereClause = MWFNextCondition.COLUMNNAME_AD_WF_NodeNext_ID+"=?";
+		final String whereClause = "AD_WF_NodeNext_ID=? AND AD_Client_ID IN (0,?)";
 		List<MWFNextCondition> list = new Query(getCtx(), MWFNextCondition.Table_Name, whereClause, get_TrxName())
-				.setParameters(new Object[]{getAD_WF_NodeNext_ID()})
+				.setParameters(new Object[]{getAD_WF_NodeNext_ID(), Env.getAD_Client_ID(Env.getCtx())})
 				.setOnlyActiveRecords(true)
 				.setOrderBy(MWFNextCondition.COLUMNNAME_SeqNo)
 				.list();

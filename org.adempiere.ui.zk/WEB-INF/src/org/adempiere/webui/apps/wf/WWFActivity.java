@@ -329,7 +329,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 			pstmt.setInt (2, AD_User_ID);
 			pstmt.setInt (3, AD_User_ID);
 			pstmt.setInt (4, AD_User_ID);
-			pstmt.setInt (5, AD_Client_ID);
+			pstmt.setInt (5, AD_User_ID);
+			pstmt.setInt (6, AD_Client_ID);
 			rs = pstmt.executeQuery ();
 			if (rs.next ()) {
 				count = rs.getInt(1);
@@ -378,8 +379,10 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 			pstmt.setInt (2, AD_User_ID);
 			pstmt.setInt (3, AD_User_ID);
 			pstmt.setInt (4, AD_User_ID);
-			pstmt.setInt (5, AD_Client_ID);
-			rs = pstmt.executeQuery ();
+			pstmt.setInt (5, AD_User_ID);
+			pstmt.setInt (6, AD_Client_ID);
+            
+			rs = pstmt.executeQuery();
 			while (rs.next ())
 			{
 				MWFActivity activity = new MWFActivity(Env.getCtx(), rs, null);
@@ -449,8 +452,10 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 			+ " AND r.ResponsibleType='H' AND r.AD_User_ID=?)"		//	#3
 			//	Responsible Role
 			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r INNER JOIN AD_User_Roles ur ON (r.AD_Role_ID=ur.AD_Role_ID)"
-			+ " WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID AND r.ResponsibleType='R' AND ur.AD_User_ID=?)"	//	#4
-			//
+			+ " WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID AND r.ResponsibleType='R' AND ur.AD_User_ID=? AND ur.isActive = 'Y')"	//	#4
+			///* Manual Responsible */ 
+			+ " OR EXISTS (SELECT * FROM AD_WF_ActivityApprover r "
+			+ " WHERE a.AD_WF_Activity_ID=r.AD_WF_Activity_ID AND r.AD_User_ID=? AND r.isActive = 'Y')" 
 			+ ") AND a.AD_Client_ID=?";	//	#5
 		return where;
 	}

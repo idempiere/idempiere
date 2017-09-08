@@ -324,7 +324,7 @@ public class MOrderLine extends X_C_OrderLine
 	protected MProductPricing getProductPricing (int M_PriceList_ID)
 	{
 		m_productPrice = new MProductPricing (getM_Product_ID(), 
-			getC_BPartner_ID(), getQtyOrdered(), m_IsSOTrx);
+			getC_BPartner_ID(), getQtyOrdered(), m_IsSOTrx, get_TrxName());
 		m_productPrice.setM_PriceList_ID(M_PriceList_ID);
 		m_productPrice.setPriceDate(getDateOrdered());
 		//

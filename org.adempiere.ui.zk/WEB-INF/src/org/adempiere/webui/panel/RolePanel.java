@@ -143,6 +143,14 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         this.setId("rolePanel");
         this.setSclass("login-box");
 
+        if (! m_show) {
+        	// check if all mandatory fields are ok to not show
+        	if (   lstRole.getSelectedItem() == null || lstRole.getSelectedItem().getValue() == null
+       			|| lstClient.getSelectedItem() == null || lstClient.getSelectedItem().getValue() == null
+       			|| lstOrganisation.getSelectedItem() == null || lstOrganisation.getSelectedItem().getValue() == null) {
+        		m_show = true;
+        	}
+        }
         if (m_show) {
         	AuFocus auf = null;
             if (lstClient.getItemCount() > 1) {

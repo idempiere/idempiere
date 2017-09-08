@@ -22,6 +22,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.model.PO;
+import org.compiere.util.Env;
 import org.compiere.model.X_AD_WF_NextCondition;
 
 /**
@@ -130,15 +131,20 @@ public class MWFNextCondition extends X_AD_WF_NextCondition
 	{		
 		String sRet = sValue;
 		
-		if(sValue != null && sValue.startsWith("@"))
+		if (sValue == null)
+			;
+		else if (sValue.startsWith("@COL="))
 		{
-			if(sValue.startsWith("@COL="))
-			{
-				Object o = po.get_Value(sValue.substring(5));  
-				
-				if(o != null)
-					sRet = o.toString();
-			}
+			Object o = po.get_Value(sValue.substring(5));  
+			//
+			if(o != null)
+				sRet = o.toString();
+		}
+		else if (sValue.startsWith("@") 
+				&& sValue.endsWith("@")
+				&& sValue.length() > 1)
+		{
+			sRet = Env.parseVariable (sValue, po, null, false);
 		}
 		
 		return sRet;

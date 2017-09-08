@@ -147,7 +147,7 @@ public class MRMALine extends X_M_RMALine
         }
         else if (getM_Product_ID() != 0)
         {
-        	MProductPricing pp = new MProductPricing (getM_Product_ID(), getParent().getC_BPartner_ID(), Env.ONE, getParent().isSOTrx());
+        	MProductPricing pp = new MProductPricing (getM_Product_ID(), getParent().getC_BPartner_ID(), Env.ONE, getParent().isSOTrx(), get_TrxName());
         	
         	MInvoice invoice = getParent().getOriginalInvoice();
         	if (invoice != null)

@@ -52,6 +52,7 @@ import org.adempiere.exceptions.DBException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.Adempiere;
 import org.compiere.acct.Doc;
+import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
@@ -1000,7 +1001,7 @@ public abstract class PO
 	{
 		int index = p_info.getColumnIndex(AD_Column_ID);
 		if (index < 0)
-			log.log(Level.SEVERE, "Not found - AD_Column_ID=" + AD_Column_ID);
+			throw new AdempiereUserError("Not found - AD_Column_ID=" + AD_Column_ID);
 		String ColumnName = p_info.getColumnName(index);
 		if (ColumnName.equals("IsApproved"))
 			return set_ValueNoCheck(ColumnName, value);

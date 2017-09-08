@@ -55,7 +55,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 		String language = getStringValue(element, "AD_Language");
 		MLanguage lang = MLanguage.get(ctx.ctx, language);
 		// skip if not system installed language
-		if (! lang.isSystemLanguage())
+		if (lang == null || ! lang.isSystemLanguage())
 			return;
 
 		if (log.isLoggable(Level.INFO)) log.info(elementValue+" "+getStringValue(element, "Name"));

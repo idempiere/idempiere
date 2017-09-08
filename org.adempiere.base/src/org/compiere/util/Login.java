@@ -992,8 +992,6 @@ public class Login
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		//
-		Ini.saveProperties(Ini.isClient());
 		//	Country
 		Env.setContext(m_ctx, "#C_Country_ID", MCountry.getDefault(m_ctx).getC_Country_ID());
 		// Call ModelValidators afterLoadPreferences - teo_sarca FR [ 1670025 ]

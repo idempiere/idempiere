@@ -51,7 +51,7 @@ public class MColumn extends X_AD_Column
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3082823885314140209L;
+	private static final long serialVersionUID = -6914331394933196295L;
 
 	public static MColumn get (Properties ctx, int AD_Column_ID)
 	{
@@ -1131,6 +1131,21 @@ public class MColumn extends X_AD_Column
 		}
 		
 		return "";
+	}
+
+	/**
+	 * 	Is Advanced
+	 *	@return true if the column has any field marked as advanced or part of an advanced tab
+	 */
+	public boolean isAdvanced() {
+		final String sql = ""
+				+ "SELECT COUNT(*) "
+				+ "FROM   AD_Tab t "
+				+ "       JOIN AD_Field f ON ( f.AD_Tab_ID = t.AD_Tab_ID ) "
+				+ "WHERE  f.AD_Column_ID = ? "
+				+ "       AND ( t.IsAdvancedTab = 'Y' OR f.IsAdvancedField = 'Y' )";
+		int cnt = DB.getSQLValueEx(get_TrxName(), sql, getAD_Column_ID());
+		return cnt > 0;
 	}
 
 }	//	MColumn

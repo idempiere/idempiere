@@ -164,6 +164,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 							    String token = data[1];
 							    if (BrowserToken.validateToken(session, user, token))
 							    {
+							    	onUserIdChange(AD_User_ID);
 							    	if (MSystem.isZKRememberUserAllowed()) {
 							    		if (email_login) {
 							    			txtUserId.setValue(user.getEMail());
@@ -174,7 +175,6 @@ public class LoginPanel extends Window implements EventListener<Event>
 							    				txtUserId.setValue(user.getName());
 							    			}
 							    		}
-								    	onUserIdChange(AD_User_ID);
 								    	chkRememberMe.setChecked(true);
 							    	}
 							    	if (MSystem.isZKRememberPasswordAllowed()) {
@@ -365,10 +365,11 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtPassword = new Textbox();
         txtPassword.setId("txtPassword");
         txtPassword.setType("password");
-        
         txtPassword.setCols(25);
 //        txtPassword.setMaxlength(40);
         ZKUpdateUtil.setWidth(txtPassword, "220px");
+        if (MSysConfig.getBooleanValue(MSysConfig.ZK_LOGIN_ALLOW_CHROME_SAVE_PASSWORD, true))
+        	txtPassword.setClientAttribute("autocomplete", null);
 
         lstLanguage = new Combobox();
         lstLanguage.setAutocomplete(true);
@@ -566,8 +567,6 @@ public class LoginPanel extends Window implements EventListener<Event>
         		}
         	}
         }
-
-        Env.setContext(ctx, BrowserToken.REMEMBER_ME, chkRememberMe.isChecked());
 
         Session currSess = Executions.getCurrent().getDesktop().getSession();
         
