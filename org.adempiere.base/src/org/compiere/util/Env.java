@@ -1673,7 +1673,14 @@ public final class Env
 					outStr.append("@");
 				}
 			}
-
+			else if (keepUnparseable)
+			{
+				outStr.append("@"+token);
+				if (format.length() > 0)
+					outStr.append("<"+format+">");
+				outStr.append("@");
+			}
+			
 			inStr = inStr.substring(j+1, inStr.length());	// from second @
 			i = inStr.indexOf('@');
 		}
