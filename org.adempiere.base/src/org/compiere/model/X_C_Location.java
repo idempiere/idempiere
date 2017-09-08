@@ -30,7 +30,7 @@ public class X_C_Location extends PO implements I_C_Location, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20170908L;
 
     /** Standard Constructor */
     public X_C_Location (Properties ctx, int C_Location_ID, String trxName)
@@ -137,6 +137,23 @@ public class X_C_Location extends PO implements I_C_Location, I_Persistent
 	public String getAddress4 () 
 	{
 		return (String)get_Value(COLUMNNAME_Address4);
+	}
+
+	/** Set Address 5.
+		@param Address5 
+		Address Line 5 for the location
+	  */
+	public void setAddress5 (String Address5)
+	{
+		set_Value (COLUMNNAME_Address5, Address5);
+	}
+
+	/** Get Address 5.
+		@return Address Line 5 for the location
+	  */
+	public String getAddress5 () 
+	{
+		return (String)get_Value(COLUMNNAME_Address5);
 	}
 
 	public org.compiere.model.I_C_AddressValidation getC_AddressValidation() throws RuntimeException
@@ -280,6 +297,23 @@ public class X_C_Location extends PO implements I_C_Location, I_Persistent
 	public String getC_Location_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_C_Location_UU);
+	}
+
+	/** Set Comments.
+		@param Comments 
+		Comments or additional information
+	  */
+	public void setComments (String Comments)
+	{
+		set_Value (COLUMNNAME_Comments, Comments);
+	}
+
+	/** Get Comments.
+		@return Comments or additional information
+	  */
+	public String getComments () 
+	{
+		return (String)get_Value(COLUMNNAME_Comments);
 	}
 
 	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException

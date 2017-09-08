@@ -34,6 +34,8 @@ public class Postcode implements AddressInterface
 	private String Street2;
 	private String Street3;
 	private String Street4;
+	private String Street5;
+	private String Comments;
 	private String City;
 	private String Region;
 	private String Postcode;
@@ -96,6 +98,24 @@ public class Postcode implements AddressInterface
 	public void setStreet4(String newStreet4)
 	{
 		Street4 = newStreet4;
+	}
+	public String getStreet5()
+	{
+		return Street5;
+	}
+	
+	public void setStreet5(String newStreet5)
+	{
+		Street4 = newStreet5;
+	}
+	public String getComments()
+	{
+		return Comments;
+	}
+	
+	public void setComments(String newComments)
+	{
+		Street4 = newComments;
 	}
 	
 	public String getCity()
