@@ -36,23 +36,31 @@ import org.compiere.util.Trace;
 public class MProductPricing
 {
 	
-	String trxName=null;
+	private String trxName=null;
 	
+	/**
+	 * 	Constructor
+	 * 	@param M_Product_ID product
+	 * 	@param C_BPartner_ID partner
+	 * 	@param Qty quantity
+	 * 	@param isSOTrx SO or PO
+	 *  @param trxName the transaction
+	 */
 	public MProductPricing (int M_Product_ID, int C_BPartner_ID, 
 			BigDecimal Qty, boolean isSOTrx, String trxName)
-		{
-			this.trxName=trxName;
-			
-			m_M_Product_ID = M_Product_ID;
-			m_C_BPartner_ID = C_BPartner_ID;
-			if (Qty != null && Env.ZERO.compareTo(Qty) != 0)
-				m_Qty = Qty;
-			m_isSOTrx = isSOTrx;
-			int thereAreVendorBreakRecords = DB.getSQLValue(trxName, 
-					"SELECT count(M_Product_ID) FROM M_ProductPriceVendorBreak WHERE M_Product_ID=? AND (C_BPartner_ID=? OR C_BPartner_ID is NULL)",
-					m_M_Product_ID, m_C_BPartner_ID);
-			m_useVendorBreak = thereAreVendorBreakRecords > 0;
-		}
+	{
+		this.trxName=trxName;
+
+		m_M_Product_ID = M_Product_ID;
+		m_C_BPartner_ID = C_BPartner_ID;
+		if (Qty != null && Env.ZERO.compareTo(Qty) != 0)
+			m_Qty = Qty;
+		m_isSOTrx = isSOTrx;
+		int thereAreVendorBreakRecords = DB.getSQLValue(trxName, 
+				"SELECT count(M_Product_ID) FROM M_ProductPriceVendorBreak WHERE M_Product_ID=? AND (C_BPartner_ID=? OR C_BPartner_ID is NULL)",
+				m_M_Product_ID, m_C_BPartner_ID);
+		m_useVendorBreak = thereAreVendorBreakRecords > 0;
+	}
 
 
 	/**
