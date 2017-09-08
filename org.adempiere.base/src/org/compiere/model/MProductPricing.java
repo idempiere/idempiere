@@ -35,6 +35,25 @@ import org.compiere.util.Trace;
  */
 public class MProductPricing
 {
+	
+	String trxName=null;
+	
+	public MProductPricing (int M_Product_ID, int C_BPartner_ID, 
+			BigDecimal Qty, boolean isSOTrx, String trxName)
+		{
+			this.trxName=trxName;
+			
+			m_M_Product_ID = M_Product_ID;
+			m_C_BPartner_ID = C_BPartner_ID;
+			if (Qty != null && Env.ZERO.compareTo(Qty) != 0)
+				m_Qty = Qty;
+			m_isSOTrx = isSOTrx;
+			int thereAreVendorBreakRecords = DB.getSQLValue(trxName, 
+					"SELECT count(M_Product_ID) FROM M_ProductPriceVendorBreak WHERE M_Product_ID=? AND (C_BPartner_ID=? OR C_BPartner_ID is NULL)",
+					m_M_Product_ID, m_C_BPartner_ID);
+			m_useVendorBreak = thereAreVendorBreakRecords > 0;
+		}
+
 
 	/**
 	 * 	Constructor
@@ -42,19 +61,12 @@ public class MProductPricing
 	 * 	@param C_BPartner_ID partner
 	 * 	@param Qty quantity
 	 * 	@param isSOTrx SO or PO
+	 *  @deprecated Use constructor with explicit trxName parameter
 	 */
 	public MProductPricing (int M_Product_ID, int C_BPartner_ID, 
 		BigDecimal Qty, boolean isSOTrx)
 	{
-		m_M_Product_ID = M_Product_ID;
-		m_C_BPartner_ID = C_BPartner_ID;
-		if (Qty != null && Env.ZERO.compareTo(Qty) != 0)
-			m_Qty = Qty;
-		m_isSOTrx = isSOTrx;
-		int thereAreVendorBreakRecords = DB.getSQLValue(null, 
-				"SELECT count(M_Product_ID) FROM M_ProductPriceVendorBreak WHERE M_Product_ID=? AND (C_BPartner_ID=? OR C_BPartner_ID is NULL)",
-				m_M_Product_ID, m_C_BPartner_ID);
-		m_useVendorBreak = thereAreVendorBreakRecords > 0;
+		this(M_Product_ID,C_BPartner_ID,Qty,isSOTrx,null);
 	}	//	MProductPricing
 
 	private int 		m_M_Product_ID;
@@ -167,7 +179,7 @@ public class MProductPricing
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, m_M_Product_ID);
 			pstmt.setInt(2, m_M_PriceList_Version_ID);
 			rs = pstmt.executeQuery();
@@ -286,7 +298,7 @@ public class MProductPricing
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, m_M_Product_ID);
 			pstmt.setInt(2, m_M_PriceList_ID);
 			rs = pstmt.executeQuery();
@@ -367,7 +379,7 @@ public class MProductPricing
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, m_M_Product_ID);
 			pstmt.setInt(2, m_M_PriceList_ID);
 			rs = pstmt.executeQuery();
@@ -448,7 +460,7 @@ public class MProductPricing
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, m_M_Product_ID);
 			pstmt.setInt(2, m_M_PriceList_Version_ID);
 			pstmt.setInt(3, m_C_BPartner_ID);
@@ -571,7 +583,7 @@ public class MProductPricing
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, m_M_Product_ID);
 			pstmt.setInt(2, m_M_PriceList_ID);
 			pstmt.setInt(3, m_C_BPartner_ID);
@@ -656,7 +668,7 @@ public class MProductPricing
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, m_M_Product_ID);
 			pstmt.setInt(2, m_M_PriceList_ID);
 			pstmt.setInt(3, m_C_BPartner_ID);
@@ -755,7 +767,7 @@ public class MProductPricing
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, null);
+			pstmt = DB.prepareStatement (sql, trxName);
 			pstmt.setInt (1, m_C_BPartner_ID);
 			rs = pstmt.executeQuery ();
 			if (rs.next ())
