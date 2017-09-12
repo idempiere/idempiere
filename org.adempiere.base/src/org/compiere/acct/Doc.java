@@ -555,6 +555,12 @@ public abstract class Doc
 		p_Error = loadDocumentDetails();
 		if (p_Error != null)
 			return p_Error;
+		if (isDeferPosting())
+		{
+			unlock();
+			p_Status = STATUS_NotPosted;
+			return null;
+		}			
 
 		Trx trx = Trx.get(getTrxName(), true);
 		//  Delete existing Accounting
@@ -2303,5 +2309,12 @@ public abstract class Doc
 	 */
 	public ArrayList<Fact> getFacts() {
 		return m_fact;
+	}
+	
+	/**
+	 * Return document whether need to defer posting or not
+	 */
+	public boolean isDeferPosting() {
+		return false;
 	}
 }   //  Doc
