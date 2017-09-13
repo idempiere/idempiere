@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MCostDetail;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
@@ -156,6 +157,20 @@ public class Doc_ProjectIssue extends Doc
 			as.getC_Currency_ID(), null, cost);
 		cr.setM_Locator_ID(m_line.getM_Locator_ID());
 		cr.setLocationFromLocator(m_line.getM_Locator_ID(), true);	// from Loc
+		//
+		if (product != null && product.get_ID() > 0 && !product.isService() && product.isStocked()) {
+			BigDecimal costDetailQty = m_line.getQty();
+			BigDecimal costDetailAmt = cost;
+			if (!MCostDetail.createProjectIssue(as, m_line.getAD_Org_ID(),
+				m_line.getM_Product_ID(), m_line.getM_AttributeSetInstance_ID(),
+				m_line.get_ID(), 0,
+				costDetailAmt, costDetailQty,
+				m_line.getDescription(), getTrxName()))
+			{
+				p_Error = "Failed to create cost detail record";
+				return null;
+			}
+		}
 		//
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		facts.add(fact);

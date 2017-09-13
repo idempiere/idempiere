@@ -529,6 +529,70 @@ public class MCostDetail extends X_M_CostDetail
 		return ok;
 	}	//	createMatchInvoice
 	
+	/**
+	 * 	Create Cost Detail for Project Issue.
+	 * 	Called from Doc_ProjectIssue
+	 *	@param as accounting schema
+	 *	@param AD_Org_ID org
+	 *	@param M_Product_ID product
+	 *	@param M_AttributeSetInstance_ID asi
+	 *	@param C_ProjectIssue_ID project issue line
+	 *	@param M_CostElement_ID optional cost element
+	 *	@param Amt amt total amount
+	 *	@param Qty qty
+	 *	@param Description optional description
+	 *	@param trxName transaction
+	 *	@return true if no error
+	 */
+	public static boolean createProjectIssue(MAcctSchema as, int AD_Org_ID, 
+		int M_Product_ID, int M_AttributeSetInstance_ID,
+		int C_ProjectIssue_ID, int M_CostElement_ID, 
+		BigDecimal Amt, BigDecimal Qty,
+		String Description, String trxName)
+	{
+		MCostDetail cd = get (as.getCtx(), "C_ProjectIssue_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
+				C_ProjectIssue_ID, M_AttributeSetInstance_ID, as.getC_AcctSchema_ID(), trxName);
+		//
+		if (cd == null)		//	createNew
+		{
+			cd = new MCostDetail (as, AD_Org_ID, 
+				M_Product_ID, M_AttributeSetInstance_ID, 
+				M_CostElement_ID, 
+				Amt, Qty, Description, trxName);
+			cd.setC_ProjectIssue_ID(C_ProjectIssue_ID);
+		}
+		else
+		{
+			if (cd.isProcessed())
+			{
+				cd.setDeltaAmt(Amt.subtract(cd.getAmt()));
+				cd.setDeltaQty(Qty.subtract(cd.getQty()));
+			}
+			else
+			{
+				cd.setDeltaAmt(BigDecimal.ZERO);
+				cd.setDeltaQty(BigDecimal.ZERO);
+				cd.setAmt(Amt);
+				cd.setQty(Qty);
+			}
+			if (cd.isDelta())
+			{
+				cd.setProcessed(false);
+				cd.setAmt(Amt);
+				cd.setQty(Qty);
+			}
+			else if (cd.isProcessed())
+				return true;	//	nothing to do
+		}
+		boolean ok = cd.save();
+		if (ok && !cd.isProcessed())
+		{
+			ok = cd.process();
+		}
+		if (s_log.isLoggable(Level.CONFIG)) s_log.config("(" + ok + ") " + cd);
+		return ok;
+	}	//	createProjectIssue
+	
 	/**************************************************************************
 	 * 	Get Cost Detail
 	 *	@param ctx context
