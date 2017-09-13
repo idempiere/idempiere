@@ -78,37 +78,6 @@ public class InfoBPartnerWindow extends InfoWindow {
 		ih = null;
 	}	//	showHistory
 
-	/**
-	 * {@inheritDoc}
-	 * set value of checkbox IsVendor and IsCustomer by IsSOTrx flag
-	 */
-	@Override
-	protected void initParameters() {
-		String isSOTrx = Env.getContext(Env.getCtx(), p_WindowNo, "IsSOTrx");
-		if (!isLookup() && Util.isEmpty(isSOTrx)) {
-			isSOTrx = "Y";
-		}
-		
-		if (!Util.isEmpty(isSOTrx)) {
-			if ("Y".equals(isSOTrx)) {
-				// set value of IsCustomer checkbox
-				for (WEditor editor : editors) {
-					if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("IsCustomer")) {
-						editor.setValue("Y");
-						break;
-					}
-				}
-			} else if ("N".equals(isSOTrx)) {
-				// set value of IsVendor checkbox
-				for (WEditor editor : editors) {
-					if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("IsVendor")) {
-						editor.setValue("Y");
-						break;
-					}
-				}
-			}
-		}
-	}
 	
 	@Override
 	protected void saveSelectionDetail() {
