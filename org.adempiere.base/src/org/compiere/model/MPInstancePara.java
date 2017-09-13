@@ -232,4 +232,19 @@ public class MPInstancePara extends X_AD_PInstance_Para
 		}
 		return -1;
 	}
+	
+	/**
+	 * Get existing AD_PInstance_Para record or create a new one if not found
+	 * @param ctx
+	 * @param AD_PInstance_ID
+	 * @param SeqNo
+	 */
+	public static MPInstancePara getOrCreate(Properties ctx, int AD_PInstance_ID, int SeqNo)
+	{
+		Query query = new Query(ctx, Table_Name, "AD_PInstance_ID=? AND SeqNo=?", null);
+		MPInstancePara para = query.setParameters(AD_PInstance_ID, SeqNo).first();
+		if (para == null)
+			para = new MPInstancePara(ctx, AD_PInstance_ID, SeqNo);
+		return para;
+	}
 }	//	MPInstance_Para
