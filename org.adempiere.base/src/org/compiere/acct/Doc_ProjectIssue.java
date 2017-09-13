@@ -203,6 +203,8 @@ public class Doc_ProjectIssue extends Doc
 			DB.close(rs, pstmt);
 			pstmt = null; rs = null;
 		}
+		if (retValue != null)
+			retValue = retValue.multiply(m_line.getQty());
 		return retValue;
 	}	//	getPOCost();
 
