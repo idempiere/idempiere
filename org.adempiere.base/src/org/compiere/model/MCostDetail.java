@@ -1383,10 +1383,14 @@ public class MCostDetail extends X_M_CostDetail
 			log.warning("Unknown Type: " + toString());
 			return false;
 		}
-		setCurrentCostPrice(cost.getCurrentCostPrice());
-		setCurrentQty(cost.getCurrentQty());
-		setCumulatedAmt(cost.getCumulatedAmt());
-		setCumulatedQty(cost.getCumulatedQty());
+		
+		//Should only update cost detail with value from as costing method
+		if(as.getCostingMethod().equals(ce.getCostingMethod())) {
+			setCurrentCostPrice(cost.getCurrentCostPrice());
+			setCurrentQty(cost.getCurrentQty());
+			setCumulatedAmt(cost.getCumulatedAmt());
+			setCumulatedQty(cost.getCumulatedQty());
+		}
 		
 		//update history
 		history.setNewQty(cost.getCurrentQty());
