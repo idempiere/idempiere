@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
@@ -416,6 +417,7 @@ public class MMovement extends X_M_Movement implements DocAction
 			approveIt();
 		if (log.isLoggable(Level.INFO)) log.info(toString());
 		
+		StringBuilder errors = new StringBuilder();
 		//
 		MMovementLine[] lines = getLines(false);
 		for (int i = 0; i < lines.length; i++)
@@ -425,174 +427,190 @@ public class MMovement extends X_M_Movement implements DocAction
 			
 			//Stock Movement - Counterpart MOrder.reserveStock
 			MProduct product = line.getProduct();
-			if (product != null 
-					&& product.isStocked() )
+			try
 			{
-				//Ignore the Material Policy when is Reverse Correction
-				if(!isReversal()){
-					BigDecimal qtyOnLineMA = MMovementLineMA.getManualQty(line.getM_MovementLine_ID(), get_TrxName());
-					BigDecimal movementQty = line.getMovementQty();
-
-					if(qtyOnLineMA.compareTo(movementQty)>0)
-					{
-						// More then line qty on attribute tab for line 10
-						m_processMsg = "@Over_Qty_On_Attribute_Tab@ " + line.getLine();
-						return DOCSTATUS_Invalid;
-					}
-					
-					checkMaterialPolicy(line,movementQty.subtract(qtyOnLineMA));
-				}
-					
-
-				if (line.getM_AttributeSetInstance_ID() == 0)
+				if (product != null 
+					&& product.isStocked() )
 				{
-					MMovementLineMA mas[] = MMovementLineMA.get(getCtx(),
-							line.getM_MovementLine_ID(), get_TrxName());
-					for (int j = 0; j < mas.length; j++)
+					//Ignore the Material Policy when is Reverse Correction
+					if(!isReversal()){
+						BigDecimal qtyOnLineMA = MMovementLineMA.getManualQty(line.getM_MovementLine_ID(), get_TrxName());
+						BigDecimal movementQty = line.getMovementQty();
+	
+						if(qtyOnLineMA.compareTo(movementQty)>0)
+						{
+							// More then line qty on attribute tab for line 10
+							m_processMsg = "@Over_Qty_On_Attribute_Tab@ " + line.getLine();
+							return DOCSTATUS_Invalid;
+						}
+						
+						checkMaterialPolicy(line,movementQty.subtract(qtyOnLineMA));
+					}
+						
+	
+					if (line.getM_AttributeSetInstance_ID() == 0)
 					{
-						MMovementLineMA ma = mas[j];
-						//
+						MMovementLineMA mas[] = MMovementLineMA.get(getCtx(),
+								line.getM_MovementLine_ID(), get_TrxName());
+						for (int j = 0; j < mas.length; j++)
+						{
+							MMovementLineMA ma = mas[j];
+							//
+							MLocator locator = new MLocator (getCtx(), line.getM_Locator_ID(), get_TrxName());
+							//Update Storage 
+							if (!MStorageOnHand.add(getCtx(),locator.getM_Warehouse_ID(),
+									line.getM_Locator_ID(),
+									line.getM_Product_ID(), 
+									ma.getM_AttributeSetInstance_ID(),
+									ma.getMovementQty().negate(),ma.getDateMaterialPolicy(), get_TrxName()))
+							{
+								String lastError = CLogger.retrieveErrorString("");
+								m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
+								return DocAction.STATUS_Invalid;
+							}
+	
+							int M_AttributeSetInstanceTo_ID = line.getM_AttributeSetInstanceTo_ID();
+							//only can be same asi if locator is different
+							if (M_AttributeSetInstanceTo_ID == 0 && line.getM_Locator_ID() != line.getM_LocatorTo_ID())
+							{
+								M_AttributeSetInstanceTo_ID = ma.getM_AttributeSetInstance_ID();
+							}
+							//Update Storage 
+							MLocator locatorTo = new MLocator (getCtx(), line.getM_LocatorTo_ID(), get_TrxName());
+							if (!MStorageOnHand.add(getCtx(),locatorTo.getM_Warehouse_ID(),
+									line.getM_LocatorTo_ID(),
+									line.getM_Product_ID(), 
+									M_AttributeSetInstanceTo_ID,
+									ma.getMovementQty(),ma.getDateMaterialPolicy(), get_TrxName()))
+							{
+								String lastError = CLogger.retrieveErrorString("");
+								m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
+								return DocAction.STATUS_Invalid;
+							}
+	
+							//
+							trxFrom = new MTransaction (getCtx(), line.getAD_Org_ID(), 
+									MTransaction.MOVEMENTTYPE_MovementFrom,
+									line.getM_Locator_ID(), line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+									ma.getMovementQty().negate(), getMovementDate(), get_TrxName());
+							trxFrom.setM_MovementLine_ID(line.getM_MovementLine_ID());
+							if (!trxFrom.save())
+							{
+								m_processMsg = "Transaction From not inserted (MA)";
+								return DocAction.STATUS_Invalid;
+							}
+							//
+							MTransaction trxTo = new MTransaction (getCtx(), line.getAD_Org_ID(), 
+									MTransaction.MOVEMENTTYPE_MovementTo,
+									line.getM_LocatorTo_ID(), line.getM_Product_ID(), M_AttributeSetInstanceTo_ID,
+									ma.getMovementQty(), getMovementDate(), get_TrxName());
+							trxTo.setM_MovementLine_ID(line.getM_MovementLine_ID());
+							if (!trxTo.save())
+							{
+								m_processMsg = "Transaction To not inserted (MA)";
+								return DocAction.STATUS_Invalid;
+							}
+						}
+					}
+					//	Fallback - We have ASI
+					if (trxFrom == null)
+					{
+						Timestamp dateMPolicy= null;
+						MStorageOnHand[] storages = null;
+						if (line.getMovementQty().compareTo(Env.ZERO) > 0) {
+							// Find Date Material Policy bases on ASI
+							storages = MStorageOnHand.getWarehouse(getCtx(), 0,
+									line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), null,
+									MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+									line.getM_Locator_ID(), get_TrxName());
+						} else {
+							//Case of reversal
+							storages = MStorageOnHand.getWarehouse(getCtx(), 0,
+									line.getM_Product_ID(), line.getM_AttributeSetInstanceTo_ID(), null,
+									MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+									line.getM_LocatorTo_ID(), get_TrxName());
+						}
+						for (MStorageOnHand storage : storages) {
+							if (storage.getQtyOnHand().compareTo(line.getMovementQty()) >= 0) {
+								dateMPolicy = storage.getDateMaterialPolicy();
+								break;
+							}
+						}
+	
+						if (dateMPolicy == null && storages.length > 0)
+							dateMPolicy = storages[0].getDateMaterialPolicy();
+						
 						MLocator locator = new MLocator (getCtx(), line.getM_Locator_ID(), get_TrxName());
 						//Update Storage 
+						Timestamp effDateMPolicy = dateMPolicy;
+						if (dateMPolicy == null && line.getMovementQty().negate().signum() > 0)
+							effDateMPolicy = getMovementDate();
 						if (!MStorageOnHand.add(getCtx(),locator.getM_Warehouse_ID(),
 								line.getM_Locator_ID(),
 								line.getM_Product_ID(), 
-								ma.getM_AttributeSetInstance_ID(),
-								ma.getMovementQty().negate(),ma.getDateMaterialPolicy(), get_TrxName()))
+								line.getM_AttributeSetInstance_ID(),
+								line.getMovementQty().negate(),effDateMPolicy, get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
 							m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
-
-						int M_AttributeSetInstanceTo_ID = line.getM_AttributeSetInstanceTo_ID();
-						//only can be same asi if locator is different
-						if (M_AttributeSetInstanceTo_ID == 0 && line.getM_Locator_ID() != line.getM_LocatorTo_ID())
-						{
-							M_AttributeSetInstanceTo_ID = ma.getM_AttributeSetInstance_ID();
-						}
-						//Update Storage 
+	
+						//Update Storage
+						effDateMPolicy = dateMPolicy;
+						if (dateMPolicy == null && line.getMovementQty().signum() > 0)
+							effDateMPolicy = getMovementDate();
 						MLocator locatorTo = new MLocator (getCtx(), line.getM_LocatorTo_ID(), get_TrxName());
 						if (!MStorageOnHand.add(getCtx(),locatorTo.getM_Warehouse_ID(),
 								line.getM_LocatorTo_ID(),
 								line.getM_Product_ID(), 
-								M_AttributeSetInstanceTo_ID,
-								ma.getMovementQty(),ma.getDateMaterialPolicy(), get_TrxName()))
+								line.getM_AttributeSetInstanceTo_ID(),
+								line.getMovementQty(),effDateMPolicy, get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
 							m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
-
+	
 						//
 						trxFrom = new MTransaction (getCtx(), line.getAD_Org_ID(), 
 								MTransaction.MOVEMENTTYPE_MovementFrom,
-								line.getM_Locator_ID(), line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
-								ma.getMovementQty().negate(), getMovementDate(), get_TrxName());
+								line.getM_Locator_ID(), line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+								line.getMovementQty().negate(), getMovementDate(), get_TrxName());
 						trxFrom.setM_MovementLine_ID(line.getM_MovementLine_ID());
 						if (!trxFrom.save())
 						{
-							m_processMsg = "Transaction From not inserted (MA)";
+							m_processMsg = "Transaction From not inserted";
 							return DocAction.STATUS_Invalid;
 						}
 						//
 						MTransaction trxTo = new MTransaction (getCtx(), line.getAD_Org_ID(), 
 								MTransaction.MOVEMENTTYPE_MovementTo,
-								line.getM_LocatorTo_ID(), line.getM_Product_ID(), M_AttributeSetInstanceTo_ID,
-								ma.getMovementQty(), getMovementDate(), get_TrxName());
+								line.getM_LocatorTo_ID(), line.getM_Product_ID(), line.getM_AttributeSetInstanceTo_ID(),
+								line.getMovementQty(), getMovementDate(), get_TrxName());
 						trxTo.setM_MovementLine_ID(line.getM_MovementLine_ID());
 						if (!trxTo.save())
 						{
-							m_processMsg = "Transaction To not inserted (MA)";
+							m_processMsg = "Transaction To not inserted";
 							return DocAction.STATUS_Invalid;
 						}
-					}
-				}
-				//	Fallback - We have ASI
-				if (trxFrom == null)
-				{
-					Timestamp dateMPolicy= null;
-					MStorageOnHand[] storages = null;
-					if (line.getMovementQty().compareTo(Env.ZERO) > 0) {
-						// Find Date Material Policy bases on ASI
-						storages = MStorageOnHand.getWarehouse(getCtx(), 0,
-								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), null,
-								MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
-								line.getM_Locator_ID(), get_TrxName());
-					} else {
-						//Case of reversal
-						storages = MStorageOnHand.getWarehouse(getCtx(), 0,
-								line.getM_Product_ID(), line.getM_AttributeSetInstanceTo_ID(), null,
-								MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
-								line.getM_LocatorTo_ID(), get_TrxName());
-					}
-					for (MStorageOnHand storage : storages) {
-						if (storage.getQtyOnHand().compareTo(line.getMovementQty()) >= 0) {
-							dateMPolicy = storage.getDateMaterialPolicy();
-							break;
-						}
-					}
-
-					if (dateMPolicy == null && storages.length > 0)
-						dateMPolicy = storages[0].getDateMaterialPolicy();
-					
-					MLocator locator = new MLocator (getCtx(), line.getM_Locator_ID(), get_TrxName());
-					//Update Storage 
-					Timestamp effDateMPolicy = dateMPolicy;
-					if (dateMPolicy == null && line.getMovementQty().negate().signum() > 0)
-						effDateMPolicy = getMovementDate();
-					if (!MStorageOnHand.add(getCtx(),locator.getM_Warehouse_ID(),
-							line.getM_Locator_ID(),
-							line.getM_Product_ID(), 
-							line.getM_AttributeSetInstance_ID(),
-							line.getMovementQty().negate(),effDateMPolicy, get_TrxName()))
-					{
-						String lastError = CLogger.retrieveErrorString("");
-						m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
-						return DocAction.STATUS_Invalid;
-					}
-
-					//Update Storage
-					effDateMPolicy = dateMPolicy;
-					if (dateMPolicy == null && line.getMovementQty().signum() > 0)
-						effDateMPolicy = getMovementDate();
-					MLocator locatorTo = new MLocator (getCtx(), line.getM_LocatorTo_ID(), get_TrxName());
-					if (!MStorageOnHand.add(getCtx(),locatorTo.getM_Warehouse_ID(),
-							line.getM_LocatorTo_ID(),
-							line.getM_Product_ID(), 
-							line.getM_AttributeSetInstanceTo_ID(),
-							line.getMovementQty(),effDateMPolicy, get_TrxName()))
-					{
-						String lastError = CLogger.retrieveErrorString("");
-						m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
-						return DocAction.STATUS_Invalid;
-					}
-
-					//
-					trxFrom = new MTransaction (getCtx(), line.getAD_Org_ID(), 
-							MTransaction.MOVEMENTTYPE_MovementFrom,
-							line.getM_Locator_ID(), line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
-							line.getMovementQty().negate(), getMovementDate(), get_TrxName());
-					trxFrom.setM_MovementLine_ID(line.getM_MovementLine_ID());
-					if (!trxFrom.save())
-					{
-						m_processMsg = "Transaction From not inserted";
-						return DocAction.STATUS_Invalid;
-					}
-					//
-					MTransaction trxTo = new MTransaction (getCtx(), line.getAD_Org_ID(), 
-							MTransaction.MOVEMENTTYPE_MovementTo,
-							line.getM_LocatorTo_ID(), line.getM_Product_ID(), line.getM_AttributeSetInstanceTo_ID(),
-							line.getMovementQty(), getMovementDate(), get_TrxName());
-					trxTo.setM_MovementLine_ID(line.getM_MovementLine_ID());
-					if (!trxTo.save())
-					{
-						m_processMsg = "Transaction To not inserted";
-						return DocAction.STATUS_Invalid;
-					}
-				}	//	Fallback
-			} // product stock	
+					}	//	Fallback
+				} // product stock	
+			}
+			catch (NegativeInventoryDisallowedException e)
+			{
+				log.severe(e.getMessage());
+				errors.append(Msg.getElement(getCtx(), "Line")).append(" ").append(line.getLine()).append(": ");
+				errors.append(e.getMessage()).append("\n");
+			}
 		}	//	for all lines
+		
+		if (errors.toString().length() > 0)
+		{
+			m_processMsg = errors.toString();
+			return DocAction.STATUS_Invalid;
+		}
+		
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)

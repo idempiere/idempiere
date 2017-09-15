@@ -22,8 +22,11 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  * 	Project Issue Model
@@ -172,23 +175,35 @@ public class MProjectIssue extends X_C_ProjectIssue
 				dateMPolicy = t;
 		}
 		
-		if (MStorageOnHand.add(getCtx(), loc.getM_Warehouse_ID(), getM_Locator_ID(), 
-				getM_Product_ID(), getM_AttributeSetInstance_ID(),
-				getMovementQty().negate(),dateMPolicy, get_TrxName()))
+		try
 		{
-			if (mTrx.save(get_TrxName()))
+			if (MStorageOnHand.add(getCtx(), loc.getM_Warehouse_ID(), getM_Locator_ID(), 
+					getM_Product_ID(), getM_AttributeSetInstance_ID(),
+					getMovementQty().negate(),dateMPolicy, get_TrxName()))
 			{
-				setProcessed (true);
-				if (save())
-					return true;
+				if (mTrx.save(get_TrxName()))
+				{
+					setProcessed (true);
+					if (save())
+						return true;
+					else
+						log.log(Level.SEVERE, "Issue not saved");		//	requires trx !!
+				}
 				else
-					log.log(Level.SEVERE, "Issue not saved");		//	requires trx !!
+					log.log(Level.SEVERE, "Transaction not saved");	//	requires trx !!
 			}
 			else
-				log.log(Level.SEVERE, "Transaction not saved");	//	requires trx !!
+				log.log(Level.SEVERE, "Storage not updated");			//	OK
 		}
-		else
-			log.log(Level.SEVERE, "Storage not updated");			//	OK
+		catch (NegativeInventoryDisallowedException e)
+		{
+			log.severe(e.getMessage());
+			StringBuilder error = new StringBuilder();
+			error.append(Msg.getElement(getCtx(), "Line")).append(" ").append(getLine()).append(": ");
+			error.append(e.getMessage()).append("\n");
+			throw new AdempiereException(error.toString());
+		}
+		
 		//
 		return false;
 	}	//	process
