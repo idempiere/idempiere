@@ -146,6 +146,8 @@ public class WFNodeWidget extends Widget {
 			return "Form";
 		else if (MWFNode.ACTION_UserWindow.equals(action))
 			return "Window";
+		else if (MWFNode.ACTION_UserInfo.equals(action))
+			return "Info";
 		else if (MWFNode.ACTION_WaitSleep.equals(action))
 			return "Sleep:WaitTime=" + node.getWaitTime();
 		return "";

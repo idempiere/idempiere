@@ -1261,6 +1261,12 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			if (log.isLoggable(Level.FINE)) log.fine("Window:AD_Window_ID=" + m_node.getAD_Window_ID());
 			return false;
 		}
+		/******	User Info					******/
+		else if (MWFNode.ACTION_UserInfo.equals(action))
+		{
+			if (log.isLoggable(Level.FINE)) log.fine("InfoWindow:AD_InfoWindow_ID=" + m_node.getAD_InfoWindow_ID());
+			return false;
+		}
 		//
 		throw new IllegalArgumentException("Invalid Action (Not Implemented) =" + action);
 	}	//	performWork

@@ -360,6 +360,8 @@ public class MWFNode extends X_AD_WF_Node
 			return "Form:AD_Form_ID=" + getAD_Form_ID();
 		else if (ACTION_UserWindow.equals(action))
 			return "Window:AD_Window_ID=" + getAD_Window_ID();
+		else if (ACTION_UserInfo.equals(action))
+			return "Window:AD_InfoWindow_ID=" + getAD_InfoWindow_ID();
 		else if (ACTION_WaitSleep.equals(action))
 			return "Sleep:WaitTime=" + getWaitTime();
 		return "??";
@@ -426,6 +428,7 @@ public class MWFNode extends X_AD_WF_Node
 	{
 		if (ACTION_UserForm.equals(getAction())
 			|| ACTION_UserWindow.equals(getAction())
+			|| ACTION_UserInfo.equals(getAction())
 			/*|| ACTION_UserWorkbench.equals(getAction())*/)
 			return true;
 		return false;
@@ -644,6 +647,14 @@ public class MWFNode extends X_AD_WF_Node
 			if (getAD_Window_ID() == 0)
 			{
 				log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Window_ID"));
+				return false;
+			}
+		}
+		else if (action.equals(ACTION_UserInfo)) 
+		{
+			if (getAD_InfoWindow_ID() == 0)
+			{
+				log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_InfoWindow_ID"));
 				return false;
 			}
 		}

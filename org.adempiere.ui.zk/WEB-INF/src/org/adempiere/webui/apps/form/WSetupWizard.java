@@ -600,6 +600,8 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 				ADForm form = ADForm.openForm(AD_Form_ID);
 				form.setAttribute(Window.MODE_KEY, form.getWindowMode());
 				AEnv.showWindow(form);
+			}else if (MWFNode.ACTION_UserInfo.equals(m_node.getAction())){
+				SessionManager.getAppDesktop().openInfo(m_node.getAD_InfoWindow_ID());
 			}
 		}
 	}

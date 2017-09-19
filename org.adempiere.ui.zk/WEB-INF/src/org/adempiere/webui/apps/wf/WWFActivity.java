@@ -38,6 +38,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.StatusBarPanel;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
@@ -556,7 +557,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		}
 		//	--
 		else if (MWFNode.ACTION_UserWindow.equals(node.getAction())
-			|| MWFNode.ACTION_UserForm.equals(node.getAction()))
+			|| MWFNode.ACTION_UserForm.equals(node.getAction())
+			|| MWFNode.ACTION_UserInfo.equals(node.getAction()))
 		{
 			fAnswerButton.setLabel(node.getName());
 			fAnswerButton.setTooltiptext(node.getDescription());
@@ -611,6 +613,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 			ADForm form = ADForm.openForm(AD_Form_ID);
 			form.setAttribute(Window.MODE_KEY, form.getWindowMode());
 			AEnv.showWindow(form);
+		}else if (MWFNode.ACTION_UserInfo.equals(node.getAction())){
+			SessionManager.getAppDesktop().openInfo(node.getAD_InfoWindow_ID());
 		}
 		else
 			log.log(Level.SEVERE, "No User Action:" + node.getAction());

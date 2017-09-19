@@ -268,7 +268,8 @@ public class MTreeNode extends DefaultMutableTreeNode
 		if (imageIndicator == null)
 			;
 		else if (imageIndicator.equals(MWFNode.ACTION_UserWindow)		//	Window 
-			|| imageIndicator.equals(MWFNode.ACTION_UserForm))
+			|| imageIndicator.equals(MWFNode.ACTION_UserForm)
+			|| imageIndicator.equals(MWFNode.ACTION_UserInfo))
 			imageIndex = TYPE_WINDOW;
 		else if (imageIndicator.equals(MWFNode.ACTION_AppsReport))		//	Report
 			imageIndex = TYPE_REPORT;
