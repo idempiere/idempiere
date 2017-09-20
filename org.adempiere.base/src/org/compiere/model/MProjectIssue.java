@@ -175,25 +175,46 @@ public class MProjectIssue extends X_C_ProjectIssue
 				dateMPolicy = t;
 		}
 		
+		boolean ok = true;
 		try
 		{
-			if (MStorageOnHand.add(getCtx(), loc.getM_Warehouse_ID(), getM_Locator_ID(), 
-					getM_Product_ID(), getM_AttributeSetInstance_ID(),
-					getMovementQty().negate(),dateMPolicy, get_TrxName()))
+			if (getMovementQty().negate().signum() < 0)
 			{
-				if (mTrx.save(get_TrxName()))
+				String MMPolicy = product.getMMPolicy();
+				Timestamp minGuaranteeDate = getMovementDate();
+				int M_Warehouse_ID = getM_Locator_ID() > 0 ? getM_Locator().getM_Warehouse_ID() : getC_Project().getM_Warehouse_ID();
+				MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), M_Warehouse_ID, getM_Product_ID(), getM_AttributeSetInstance_ID(),
+						minGuaranteeDate, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, getM_Locator_ID(), get_TrxName(), true);
+				BigDecimal qtyToIssue = getMovementQty();
+				for (MStorageOnHand storage: storages)
 				{
-					setProcessed (true);
-					if (save())
-						return true;
+					if (storage.getQtyOnHand().compareTo(qtyToIssue) >= 0)
+					{
+						storage.addQtyOnHand(qtyToIssue.negate());
+						qtyToIssue = BigDecimal.ZERO;
+					}
 					else
-						log.log(Level.SEVERE, "Issue not saved");		//	requires trx !!
+					{
+						qtyToIssue = qtyToIssue.subtract(storage.getQtyOnHand());
+						storage.addQtyOnHand(storage.getQtyOnHand().negate());
+					}
+
+					if (qtyToIssue.signum() == 0)
+						break;
 				}
-				else
-					log.log(Level.SEVERE, "Transaction not saved");	//	requires trx !!
+				if (qtyToIssue.signum() > 0)
+				{
+					ok = MStorageOnHand.add(getCtx(), loc.getM_Warehouse_ID(), getM_Locator_ID(), 
+							getM_Product_ID(), getM_AttributeSetInstance_ID(),
+							qtyToIssue.negate(),dateMPolicy, get_TrxName());
+				}
+			} 
+			else 
+			{
+				ok = MStorageOnHand.add(getCtx(), loc.getM_Warehouse_ID(), getM_Locator_ID(), 
+						getM_Product_ID(), getM_AttributeSetInstance_ID(),
+						getMovementQty().negate(),dateMPolicy, get_TrxName());				
 			}
-			else
-				log.log(Level.SEVERE, "Storage not updated");			//	OK
 		}
 		catch (NegativeInventoryDisallowedException e)
 		{
@@ -204,6 +225,21 @@ public class MProjectIssue extends X_C_ProjectIssue
 			throw new AdempiereException(error.toString());
 		}
 		
+		if (ok)
+		{
+			if (mTrx.save(get_TrxName()))
+			{
+				setProcessed (true);
+				if (save())
+					return true;
+				else
+					log.log(Level.SEVERE, "Issue not saved");		//	requires trx !!
+			}
+			else
+				log.log(Level.SEVERE, "Transaction not saved");	//	requires trx !!
+		}
+		else
+			log.log(Level.SEVERE, "Storage not updated");			//	OK
 		//
 		return false;
 	}	//	process
