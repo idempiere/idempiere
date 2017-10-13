@@ -2514,7 +2514,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	
 	private boolean isSearchLike(GridField field)
 	{
-		return DisplayType.isText(field.getDisplayType())
+		return DisplayType.isText(field.getDisplayType()) && !field.isVirtualColumn()
 		&& (field.isSelectionColumn() || MColumn.isSuggestSelectionColumn(field.getColumnName(), true));
 	}
 
