@@ -520,7 +520,7 @@ public class ProcessParameterPanel extends Panel implements
 				result2 = editor2.getValue();
 
 			// Create Parameter
-			MPInstancePara para = new MPInstancePara(Env.getCtx(),
+			MPInstancePara para = MPInstancePara.getOrCreate(Env.getCtx(),
 					m_processInfo.getAD_PInstance_ID(), i);
 			GridField mField = (GridField) m_mFields.get(i);
 			para.setParameterName(mField.getColumnName());			

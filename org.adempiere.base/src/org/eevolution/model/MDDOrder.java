@@ -27,6 +27,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MDocType;
@@ -847,6 +848,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 		BigDecimal Volume = Env.ZERO;
 		BigDecimal Weight = Env.ZERO;
 		
+		StringBuilder errors = new StringBuilder();
 		//	Always check and (un) Reserve Inventory		
 		for (MDDOrderLine line : lines)
 		{
@@ -874,34 +876,46 @@ public class MDDOrder extends X_DD_Order implements DocAction
 			MProduct product = line.getProduct();
 			if (product != null) 
 			{
-				if (product.isStocked())
+				try
 				{
-					//	Update Storage
-					if (!MStorageOnHand.add(getCtx(), locator_to.getM_Warehouse_ID(), locator_to.getM_Locator_ID(), 
-						line.getM_Product_ID(), 
-						line.getM_AttributeSetInstance_ID(),
-						Env.ZERO,null, get_TrxName()))
+					if (product.isStocked())
 					{
-						throw new AdempiereException();
-					}
-					
-					if (!MStorageOnHand.add(getCtx(), locator_from.getM_Warehouse_ID(), locator_from.getM_Locator_ID(), 
-						line.getM_Product_ID(), 
-						line.getM_AttributeSetInstanceTo_ID(),
-						Env.ZERO,null, get_TrxName()))
-					{
-						throw new AdempiereException();
-					}
-					
-				}	//	stockec
-				//	update line
-				line.setQtyReserved(line.getQtyReserved().add(reserved_ordered));
-				line.saveEx();
-				//
-				Volume = Volume.add(product.getVolume().multiply(line.getQtyOrdered()));
-				Weight = Weight.add(product.getWeight().multiply(line.getQtyOrdered()));
+						//	Update Storage
+						if (!MStorageOnHand.add(getCtx(), locator_to.getM_Warehouse_ID(), locator_to.getM_Locator_ID(), 
+							line.getM_Product_ID(), 
+							line.getM_AttributeSetInstance_ID(),
+							Env.ZERO,null, get_TrxName()))
+						{
+							throw new AdempiereException();
+						}
+						
+						if (!MStorageOnHand.add(getCtx(), locator_from.getM_Warehouse_ID(), locator_from.getM_Locator_ID(), 
+							line.getM_Product_ID(), 
+							line.getM_AttributeSetInstanceTo_ID(),
+							Env.ZERO,null, get_TrxName()))
+						{
+							throw new AdempiereException();
+						}
+						
+					}	//	stockec
+					//	update line
+					line.setQtyReserved(line.getQtyReserved().add(reserved_ordered));
+					line.saveEx();
+					//
+					Volume = Volume.add(product.getVolume().multiply(line.getQtyOrdered()));
+					Weight = Weight.add(product.getWeight().multiply(line.getQtyOrdered()));
+				}
+				catch (NegativeInventoryDisallowedException e)
+				{
+					log.severe(e.getMessage());
+					errors.append(Msg.getElement(getCtx(), "Line")).append(" ").append(line.getLine()).append(": ");
+					errors.append(e.getMessage()).append("\n");
+				}
 			}	//	product
 		}	//	reverse inventory
+		
+		if (errors.toString().length() > 0)
+			throw new AdempiereException(errors.toString());
 		
 		setVolume(Volume);
 		setWeight(Weight);

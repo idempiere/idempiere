@@ -224,6 +224,13 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         boolean menuCollapsed= pref.isPropertyBool(UserPreference.P_MENU_COLLAPSED);
         w.setOpen(!menuCollapsed);
         
+        boolean mobile = Executions.getCurrent().getBrowser("mobile") !=null;
+    	w.setCollapsible(true);
+
+        if (mobile) {
+        	w.setOpen(false);
+        }
+
         East e = layout.getEast();
         e.addEventListener(Events.ON_OPEN, new EventListener<Event>() {
 			@Override
@@ -292,6 +299,11 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         e.setVisible(!helpCollapsed);
                 
         helpController.render(e, this);
+
+        if (mobile) {
+        	e.setVisible(false);
+        	e.setOpen(false);
+        }
 
         Center windowArea = layout.getCenter();
 

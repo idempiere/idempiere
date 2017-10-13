@@ -1,7 +1,7 @@
 <!-- ====================================================== -->
-<!-- Adempiere Distribution Setup                            -->
+<!-- iDempiere Distribution Setup                            -->
 <!-- ====================================================== -->
-<!-- $Header: /cvs/adempiere/install/Adempiere/build.xml,v 1.4 2006/07/03 16:51:31 jjanke Exp $-->
+<!-- $Header: org.adempiere.server-feature/build.xml $-->
 
 <project name="setup" default="setup" basedir=".">
 
@@ -52,6 +52,8 @@
 		<copy file="hazelcast-template.xml"
 							tofile="hazelcast.xml" filtering="yes" overwrite="yes"/>
 
+		<mkdir dir="jettyhome/work"/>
+		<mkdir dir="log"/>
 	</target>
 
 	<!-- ==================================================== -->
@@ -110,6 +112,6 @@
 	<!-- Setup (Main)                                         -->
 	<!-- ==================================================== -->
 	<target name="setup" depends="setupInit, setupWin, setupNonWin"
-		description="Setup Adempiere">
+		description="Setup iDempiere">
 	</target>
 </project>

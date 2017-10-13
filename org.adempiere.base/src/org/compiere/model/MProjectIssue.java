@@ -22,8 +22,11 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  * 	Project Issue Model
@@ -172,9 +175,57 @@ public class MProjectIssue extends X_C_ProjectIssue
 				dateMPolicy = t;
 		}
 		
-		if (MStorageOnHand.add(getCtx(), loc.getM_Warehouse_ID(), getM_Locator_ID(), 
-				getM_Product_ID(), getM_AttributeSetInstance_ID(),
-				getMovementQty().negate(),dateMPolicy, get_TrxName()))
+		boolean ok = true;
+		try
+		{
+			if (getMovementQty().negate().signum() < 0)
+			{
+				String MMPolicy = product.getMMPolicy();
+				Timestamp minGuaranteeDate = getMovementDate();
+				int M_Warehouse_ID = getM_Locator_ID() > 0 ? getM_Locator().getM_Warehouse_ID() : getC_Project().getM_Warehouse_ID();
+				MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), M_Warehouse_ID, getM_Product_ID(), getM_AttributeSetInstance_ID(),
+						minGuaranteeDate, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, getM_Locator_ID(), get_TrxName(), true);
+				BigDecimal qtyToIssue = getMovementQty();
+				for (MStorageOnHand storage: storages)
+				{
+					if (storage.getQtyOnHand().compareTo(qtyToIssue) >= 0)
+					{
+						storage.addQtyOnHand(qtyToIssue.negate());
+						qtyToIssue = BigDecimal.ZERO;
+					}
+					else
+					{
+						qtyToIssue = qtyToIssue.subtract(storage.getQtyOnHand());
+						storage.addQtyOnHand(storage.getQtyOnHand().negate());
+					}
+
+					if (qtyToIssue.signum() == 0)
+						break;
+				}
+				if (qtyToIssue.signum() > 0)
+				{
+					ok = MStorageOnHand.add(getCtx(), loc.getM_Warehouse_ID(), getM_Locator_ID(), 
+							getM_Product_ID(), getM_AttributeSetInstance_ID(),
+							qtyToIssue.negate(),dateMPolicy, get_TrxName());
+				}
+			} 
+			else 
+			{
+				ok = MStorageOnHand.add(getCtx(), loc.getM_Warehouse_ID(), getM_Locator_ID(), 
+						getM_Product_ID(), getM_AttributeSetInstance_ID(),
+						getMovementQty().negate(),dateMPolicy, get_TrxName());				
+			}
+		}
+		catch (NegativeInventoryDisallowedException e)
+		{
+			log.severe(e.getMessage());
+			StringBuilder error = new StringBuilder();
+			error.append(Msg.getElement(getCtx(), "Line")).append(" ").append(getLine()).append(": ");
+			error.append(e.getMessage()).append("\n");
+			throw new AdempiereException(error.toString());
+		}
+		
+		if (ok)
 		{
 			if (mTrx.save(get_TrxName()))
 			{

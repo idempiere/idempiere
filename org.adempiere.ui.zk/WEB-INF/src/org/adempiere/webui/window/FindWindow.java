@@ -76,6 +76,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.GridTab;
+import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -92,9 +93,11 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.SecureEngine;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -122,10 +125,14 @@ import org.zkoss.zul.Vlayout;
  */
 public class FindWindow extends Window implements EventListener<Event>, ValueChangeListener, DialogEvents
 {
+	private static final String FIND_ROW_EDITOR = "find.row.editor";
+
+	private static final String FIND_ROW_EDITOR_TO = "find.row.editor.to";
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5747652133096022993L;
+	private static final long serialVersionUID = -4461202150492732658L;
 
 	// values and label for history combo
 	private static final String HISTORY_DAY_ALL = "All";
@@ -221,7 +228,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	
 	private Combobox historyCombo = new Combobox();
 
-	private Properties m_findCtx;
+	private Properties m_simpleCtx;
+	private Properties m_advanceCtx;
 	
 	private static final String ON_POST_VISIBLE_ATTR = "onPostVisible.Event.Posted";
 
@@ -251,7 +259,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         m_minRecords = minRecords;
         m_isCancel = true;
         //
-        m_findCtx = new Properties(Env.getCtx());
+        m_simpleCtx = new Properties(Env.getCtx());
+        m_advanceCtx = new Properties(Env.getCtx());
         
         this.setBorder("normal");
         this.setShadow(false);
@@ -634,7 +643,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			if (mField.getVO().displayType == DisplayType.YesNo) {
 				// Make Yes-No searchable as list
 				GridFieldVO vo = mField.getVO();
-				GridFieldVO ynvo = vo.clone(vo.ctx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
+				GridFieldVO ynvo = vo.clone(m_simpleCtx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
 				ynvo.IsDisplayed = true;
 				ynvo.displayType = DisplayType.List;
 				ynvo.AD_Reference_Value_ID = REFERENCE_YESNO;
@@ -642,6 +651,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				ynvo.lookupInfo = MLookupFactory.getLookupInfo (ynvo.ctx, ynvo.WindowNo, ynvo.AD_Column_ID, ynvo.displayType,
 						Env.getLanguage(ynvo.ctx), ynvo.ColumnName, ynvo.AD_Reference_Value_ID,
 						ynvo.IsParent, ynvo.ValidationCode);
+				ynvo.lookupInfo.tabNo = TABNO;
 
 				GridField ynfield = new GridField(ynvo);
 
@@ -653,13 +663,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				GridFieldVO vo = mField.getVO();
 				if ( vo.AD_Reference_Value_ID > 0 )
 				{
-					GridFieldVO postedvo = vo.clone(vo.ctx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
+					GridFieldVO postedvo = vo.clone(m_simpleCtx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
 					postedvo.IsDisplayed = true;
 					postedvo.displayType = DisplayType.List;
 
 					postedvo.lookupInfo = MLookupFactory.getLookupInfo (postedvo.ctx, postedvo.WindowNo, postedvo.AD_Column_ID, postedvo.displayType,
 							Env.getLanguage(postedvo.ctx), postedvo.ColumnName, postedvo.AD_Reference_Value_ID,
 							postedvo.IsParent, postedvo.ValidationCode);
+					postedvo.lookupInfo.tabNo = TABNO;
 
 					GridField postedfield = new GridField(postedvo);
 
@@ -669,7 +680,15 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				}
 			} else {
 				// clone the field and clean gridtab - IDEMPIERE-1105
-		        GridField findField = (GridField) mField.clone(m_findCtx);        
+		        GridField findField = (GridField) mField.clone(m_simpleCtx);
+		        if (findField.isLookup()) {
+		        	Lookup lookup = findField.getLookup();
+		        	if (lookup != null && lookup instanceof MLookup) {
+		        		MLookup mLookup = (MLookup) lookup;
+		        		mLookup.getLookupInfo().ctx = m_simpleCtx;
+		        		mLookup.getLookupInfo().tabNo = TABNO;
+		        	}
+		        }
 		        findField.setGridTab(null);
 				m_findFields[i] = findField;
 				mField = findField;
@@ -1058,6 +1077,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         editor.setMandatory(false);
         editor.setReadWrite(true);
         editor.dynamicDisplay();
+        editor.addValueChangeListener(this);
         Label label = editor.getLabel();
         Component fieldEditor = editor.getComponent();
 
@@ -1075,6 +1095,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             editorTo.setMandatory(false);
             editorTo.setReadWrite(true);
             editorTo.dynamicDisplay();
+            editorTo.addValueChangeListener(this);
             //
             if (displayLength > 0)      //  set it back
                 mField.setDisplayLength(displayLength);
@@ -1916,7 +1937,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         GridField field = getTargetMField(columnName);        
         if(field == null) return new Label("");
 
-        GridField findField = (GridField) field.clone(m_findCtx);        
+        GridField findField = (GridField) field.clone(m_advanceCtx);        
         findField.setGridTab(null);
         WEditor editor = null;
         if (findField.isKey() 
@@ -1928,6 +1949,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         {
 			if (findField.getAD_Reference_Value_ID() > 0) {		
 				MLookupInfo info = MLookupFactory.getLookup_List(Env.getLanguage(Env.getCtx()), findField.getAD_Reference_Value_ID());
+				info.tabNo = TABNO;
 				MLookup mLookup = new MLookup(info, 0);
 				editor = new WTableDirEditor(columnName, false,false, true, mLookup);
         		findField.addPropertyChangeListener(editor);
@@ -1945,7 +1967,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	//reload lookupinfo for find window
         	if (DisplayType.isLookup(findField.getDisplayType()) ) 
         	{        		
-        		findField.loadLookupNoValidate();        		
+        		findField.loadLookupNoValidate(); 
+        		Lookup lookup = findField.getLookup();
+        		if (lookup != null && lookup instanceof MLookup)
+        		{
+        			MLookup mLookup = (MLookup) lookup;
+        			mLookup.getLookupInfo().tabNo = TABNO;
+        		}
         		editor = WebEditorFactory.getEditor(findField, true);
         		findField.addPropertyChangeListener(editor);
         	} 
@@ -1970,6 +1998,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	((WPaymentEditor)editor).getComponent().setEnabled(true, false);
         }
         //
+        if (to)
+        	row.setAttribute(FIND_ROW_EDITOR_TO, editor);
+        else
+        	row.setAttribute(FIND_ROW_EDITOR, editor);
         return editor.getComponent();
 
     }   //  getTableCellEditorComponent
@@ -2358,19 +2390,91 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         {
             WEditor editor = (WEditor)evt.getSource();
             // Editor component
-            Component component = editor.getComponent();
-            ListCell listcell = (ListCell)component.getParent();
-            listcell.setAttribute("value", evt.getNewValue());
-            if (evt.getNewValue() == null)
-            	Env.setContext(m_findCtx, m_targetWindowNo, editor.getColumnName(), "");
-            else if (evt.getNewValue() instanceof Boolean)
-            	Env.setContext(m_findCtx, m_targetWindowNo, editor.getColumnName(), (Boolean)evt.getNewValue());
-            else if (evt.getNewValue() instanceof Timestamp)
-            	Env.setContext(m_findCtx, m_targetWindowNo, editor.getColumnName(), (Timestamp)evt.getNewValue());
+            ListCell listcell = null;
+            Properties ctx = null;
+            if (winMain.getComponent().getSelectedIndex() == 1)
+            {
+	            Component component = editor.getComponent();
+	            listcell = (ListCell)component.getParent();
+	            listcell.setAttribute("value", evt.getNewValue());
+	            ctx = m_advanceCtx;
+            }
             else
-            	Env.setContext(m_findCtx, m_targetWindowNo, editor.getColumnName(), evt.getNewValue().toString());
+            {
+            	ctx = m_simpleCtx;
+            }
+            if (evt.getNewValue() == null)
+            {
+            	Env.setContext(ctx, m_targetWindowNo, editor.getColumnName(), "");
+            	Env.setContext(ctx, m_targetWindowNo, TABNO, editor.getColumnName(), "");
+            }
+            else if (evt.getNewValue() instanceof Boolean)
+            {
+            	Env.setContext(ctx, m_targetWindowNo, editor.getColumnName(), (Boolean)evt.getNewValue());
+            	Env.setContext(ctx, m_targetWindowNo, TABNO, editor.getColumnName(), (Boolean)evt.getNewValue());
+            }
+            else if (evt.getNewValue() instanceof Timestamp)
+            {
+            	Env.setContext(ctx, m_targetWindowNo, editor.getColumnName(), (Timestamp)evt.getNewValue());
+            	Env.setContext(ctx, m_targetWindowNo, TABNO + "|" + editor.getColumnName(), (Timestamp)evt.getNewValue());
+            }
+            else
+            {
+            	Env.setContext(ctx, m_targetWindowNo, editor.getColumnName(), evt.getNewValue().toString());
+            	Env.setContext(ctx, m_targetWindowNo, TABNO, editor.getColumnName(), evt.getNewValue().toString());
+            }
+            
+            dynamicDisplay(editor, listcell);
         }
     }
+
+	private void dynamicDisplay(WEditor editor, ListCell listcell) {
+		if (winMain.getComponent().getSelectedIndex() == 1)
+		{
+			 List<?> rowList = advancedPanel.getChildren();
+
+		     for (int rowIndex = 1; rowIndex < rowList.size() ; rowIndex++)
+		     {
+		         //  Column
+		         ListItem row = (ListItem)rowList.get(rowIndex);
+		         if (Components.isAncestor(row, listcell))
+		        	 continue;
+		         WEditor other = (WEditor) row.getAttribute(FIND_ROW_EDITOR);
+		         if (other != null && other.getGridField() != null && other.getGridField().isLookup())
+		         {
+		        	 Lookup lookup = other.getGridField().getLookup();
+		        	 if (!Util.isEmpty(lookup.getValidation()))
+		        	 {
+		        		 other.dynamicDisplay();
+		        		 other = (WEditor) row.getAttribute(FIND_ROW_EDITOR_TO);
+		        		 if (other != null)
+		        			 other.dynamicDisplay();
+		        	 }
+		         }
+		     }
+		}
+		else
+		{
+			for (int i = 0; i < m_sEditors.size(); i++)
+		    {
+		        WEditor wed = (WEditor)m_sEditors.get(i);
+		        if (wed == editor)
+		        	continue;
+		        if (wed.getGridField() != null && wed.getGridField().isLookup())
+		        {
+		        	Lookup lookup = wed.getGridField().getLookup();
+		        	if (!Util.isEmpty(lookup.getValidation()))
+		        	{
+		        		wed.dynamicDisplay();
+		        		wed = m_sEditorsTo.get(i);
+		                if (wed != null && wed != editor)
+		                	wed.dynamicDisplay();
+		        	}
+		        }
+		        
+		    }
+		}
+	}
 
 	public void OnPostVisible() {
 		removeAttribute(ON_POST_VISIBLE_ATTR);
@@ -2410,7 +2514,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	
 	private boolean isSearchLike(GridField field)
 	{
-		return DisplayType.isText(field.getDisplayType())
+		return DisplayType.isText(field.getDisplayType()) && !field.isVirtualColumn()
 		&& (field.isSelectionColumn() || MColumn.isSuggestSelectionColumn(field.getColumnName(), true));
 	}
 

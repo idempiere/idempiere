@@ -1326,6 +1326,8 @@ public class GridTabCSVImporter implements IGridTabImporter
 			return (new Optional(new ParseBigDecimal(new DecimalFormatSymbols(Language.getLoginLanguage().getLocale()))));
 		} else if (DisplayType.YesNo == field.getDisplayType()) {
 			return (new Optional(new ParseBool("y", "n")));
+		} else if (DisplayType.TextLong == field.getDisplayType()) {
+			return (new Optional(new StrMinMax(1, Long.MAX_VALUE)));
 		} else if (DisplayType.isText(field.getDisplayType())) {
 			return (new Optional(new StrMinMax(1, field.getFieldLength())));
 		} else {  // optional lookups and text

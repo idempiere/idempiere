@@ -26,6 +26,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
@@ -1286,6 +1287,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		if (log.isLoggable(Level.INFO)) log.info(toString());
 		StringBuilder info = new StringBuilder();
 
+		StringBuilder errors = new StringBuilder();
 		//	For all lines
 		MInOutLine[] lines = getLines(false);
 		for (int lineIndex = 0; lineIndex < lines.length; lineIndex++)
@@ -1293,353 +1295,326 @@ public class MInOut extends X_M_InOut implements DocAction
 			MInOutLine sLine = lines[lineIndex];
 			MProduct product = sLine.getProduct();
 
-			//	Qty & Type
-			String MovementType = getMovementType();
-			BigDecimal Qty = sLine.getMovementQty();
-			if (MovementType.charAt(1) == '-')	//	C- Customer Shipment - V- Vendor Return
-				Qty = Qty.negate();
-
-			//	Update Order Line
-			MOrderLine oLine = null;
-			if (sLine.getC_OrderLine_ID() != 0)
+			try
 			{
-				oLine = new MOrderLine (getCtx(), sLine.getC_OrderLine_ID(), get_TrxName());
-				if (log.isLoggable(Level.FINE)) log.fine("OrderLine - Reserved=" + oLine.getQtyReserved()
-					+ ", Delivered=" + oLine.getQtyDelivered());
-			}
-
-
-            // Load RMA Line
-            MRMALine rmaLine = null;
-
-            if (sLine.getM_RMALine_ID() != 0)
-            {
-                rmaLine = new MRMALine(getCtx(), sLine.getM_RMALine_ID(), get_TrxName());
-            }
-
-			if (log.isLoggable(Level.INFO)) log.info("Line=" + sLine.getLine() + " - Qty=" + sLine.getMovementQty());
-
-			//	Stock Movement - Counterpart MOrder.reserveStock
-			if (product != null
-				&& product.isStocked() )
-			{
-				//Ignore the Material Policy when is Reverse Correction
-				if(!isReversal())
+				//	Qty & Type
+				String MovementType = getMovementType();
+				BigDecimal Qty = sLine.getMovementQty();
+				if (MovementType.charAt(1) == '-')	//	C- Customer Shipment - V- Vendor Return
+					Qty = Qty.negate();
+	
+				//	Update Order Line
+				MOrderLine oLine = null;
+				if (sLine.getC_OrderLine_ID() != 0)
 				{
-					BigDecimal movementQty = sLine.getMovementQty();
-					BigDecimal qtyOnLineMA = MInOutLineMA.getManualQty(sLine.getM_InOutLine_ID(), get_TrxName());
-
-					if (   (movementQty.signum() != 0 && qtyOnLineMA.signum() != 0 && movementQty.signum() != qtyOnLineMA.signum()) // must have same sign
-						|| (qtyOnLineMA.abs().compareTo(movementQty.abs())>0)) { // compare absolute values
-						// More then line qty on attribute tab for line 10
-						m_processMsg = "@Over_Qty_On_Attribute_Tab@ " + sLine.getLine();
-						return DOCSTATUS_Invalid;
-					}
-					
-					checkMaterialPolicy(sLine,movementQty.subtract(qtyOnLineMA));
+					oLine = new MOrderLine (getCtx(), sLine.getC_OrderLine_ID(), get_TrxName());
+					if (log.isLoggable(Level.FINE)) log.fine("OrderLine - Reserved=" + oLine.getQtyReserved()
+						+ ", Delivered=" + oLine.getQtyDelivered());
 				}
-
-				log.fine("Material Transaction");
-				MTransaction mtrx = null;
-				
-				//
-				BigDecimal overReceipt = BigDecimal.ZERO;
-				if (!isReversal()) 
+	
+	
+	            // Load RMA Line
+	            MRMALine rmaLine = null;
+	
+	            if (sLine.getM_RMALine_ID() != 0)
+	            {
+	                rmaLine = new MRMALine(getCtx(), sLine.getM_RMALine_ID(), get_TrxName());
+	            }
+	
+				if (log.isLoggable(Level.INFO)) log.info("Line=" + sLine.getLine() + " - Qty=" + sLine.getMovementQty());
+	
+				//	Stock Movement - Counterpart MOrder.reserveStock
+				if (product != null
+					&& product.isStocked() )
 				{
-					if (oLine != null) 
+					//Ignore the Material Policy when is Reverse Correction
+					if(!isReversal())
 					{
-						BigDecimal toDelivered = oLine.getQtyOrdered()
-								.subtract(oLine.getQtyDelivered());
-						if (toDelivered.signum() < 0) // IDEMPIERE-2889
-							toDelivered = Env.ZERO;
-						if (sLine.getMovementQty().compareTo(toDelivered) > 0)
-							overReceipt = sLine.getMovementQty().subtract(
-									toDelivered);
-						if (overReceipt.signum() != 0) 
-						{
-							sLine.setQtyOverReceipt(overReceipt);
-							sLine.saveEx();
+						BigDecimal movementQty = sLine.getMovementQty();
+						BigDecimal qtyOnLineMA = MInOutLineMA.getManualQty(sLine.getM_InOutLine_ID(), get_TrxName());
+	
+						if (   (movementQty.signum() != 0 && qtyOnLineMA.signum() != 0 && movementQty.signum() != qtyOnLineMA.signum()) // must have same sign
+							|| (qtyOnLineMA.abs().compareTo(movementQty.abs())>0)) { // compare absolute values
+							// More then line qty on attribute tab for line 10
+							m_processMsg = "@Over_Qty_On_Attribute_Tab@ " + sLine.getLine();
+							return DOCSTATUS_Invalid;
 						}
+						
+						checkMaterialPolicy(sLine,movementQty.subtract(qtyOnLineMA));
 					}
-				} 
-				else 
-				{
-					overReceipt = sLine.getQtyOverReceipt();
-				}
-				BigDecimal orderedQtyToUpdate = sLine.getMovementQty().subtract(overReceipt);
-				//
-				if (sLine.getM_AttributeSetInstance_ID() == 0)
-				{
-					MInOutLineMA mas[] = MInOutLineMA.get(getCtx(),
-						sLine.getM_InOutLine_ID(), get_TrxName());
-					for (int j = 0; j < mas.length; j++)
+	
+					log.fine("Material Transaction");
+					MTransaction mtrx = null;
+					
+					//
+					BigDecimal overReceipt = BigDecimal.ZERO;
+					if (!isReversal()) 
 					{
-						MInOutLineMA ma = mas[j];
-						BigDecimal QtyMA = ma.getMovementQty();
-						if (MovementType.charAt(1) == '-')	//	C- Customer Shipment - V- Vendor Return
-							QtyMA = QtyMA.negate();
-
-						//	Update Storage - see also VMatch.createMatchRecord
+						if (oLine != null) 
+						{
+							BigDecimal toDelivered = oLine.getQtyOrdered()
+									.subtract(oLine.getQtyDelivered());
+							if (toDelivered.signum() < 0) // IDEMPIERE-2889
+								toDelivered = Env.ZERO;
+							if (sLine.getMovementQty().compareTo(toDelivered) > 0)
+								overReceipt = sLine.getMovementQty().subtract(
+										toDelivered);
+							if (overReceipt.signum() != 0) 
+							{
+								sLine.setQtyOverReceipt(overReceipt);
+								sLine.saveEx();
+							}
+						}
+					} 
+					else 
+					{
+						overReceipt = sLine.getQtyOverReceipt();
+					}
+					BigDecimal orderedQtyToUpdate = sLine.getMovementQty().subtract(overReceipt);
+					//
+					if (sLine.getM_AttributeSetInstance_ID() == 0)
+					{
+						MInOutLineMA mas[] = MInOutLineMA.get(getCtx(),
+							sLine.getM_InOutLine_ID(), get_TrxName());
+						for (int j = 0; j < mas.length; j++)
+						{
+							MInOutLineMA ma = mas[j];
+							BigDecimal QtyMA = ma.getMovementQty();
+							if (MovementType.charAt(1) == '-')	//	C- Customer Shipment - V- Vendor Return
+								QtyMA = QtyMA.negate();
+	
+							//	Update Storage - see also VMatch.createMatchRecord
+							if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
+								sLine.getM_Locator_ID(),
+								sLine.getM_Product_ID(),
+								ma.getM_AttributeSetInstance_ID(),
+								QtyMA,ma.getDateMaterialPolicy(),
+								get_TrxName()))
+							{
+								String lastError = CLogger.retrieveErrorString("");
+								m_processMsg = "Cannot correct Inventory OnHand (MA) [" + product.getValue() + "] - " + lastError;
+								return DocAction.STATUS_Invalid;
+							}					
+							
+							//	Create Transaction
+							mtrx = new MTransaction (getCtx(), sLine.getAD_Org_ID(),
+								MovementType, sLine.getM_Locator_ID(),
+								sLine.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+								QtyMA, getMovementDate(), get_TrxName());
+							mtrx.setM_InOutLine_ID(sLine.getM_InOutLine_ID());
+							if (!mtrx.save())
+							{
+								m_processMsg = "Could not create Material Transaction (MA) [" + product.getValue() + "]";
+								return DocAction.STATUS_Invalid;
+							}
+						}
+						
+						if (oLine!=null && mtrx!=null && oLine.getQtyOrdered().signum() > 0)
+						{					
+							if (sLine.getC_OrderLine_ID() != 0)
+							{
+								if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
+										sLine.getM_Product_ID(),
+										oLine.getM_AttributeSetInstance_ID(),
+										orderedQtyToUpdate.negate(),
+										isSOTrx(),
+										get_TrxName()))
+								{
+									String lastError = CLogger.retrieveErrorString("");
+									m_processMsg = "Cannot correct Inventory " + (isSOTrx()? "Reserved" : "Ordered") + " (MA) - [" + product.getValue() + "] - " + lastError;
+									return DocAction.STATUS_Invalid;
+								}
+							}
+						}
+						
+					}
+					//	sLine.getM_AttributeSetInstance_ID() != 0
+					if (mtrx == null)
+					{
+						Timestamp dateMPolicy= null;
+						MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), 0,
+								sLine.getM_Product_ID(), sLine.getM_AttributeSetInstance_ID(), null,
+								MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+								sLine.getM_Locator_ID(), get_TrxName());
+						for (MStorageOnHand storage : storages) {
+							if (storage.getQtyOnHand().compareTo(sLine.getMovementQty()) >= 0) {
+								dateMPolicy = storage.getDateMaterialPolicy();
+								break;
+							}
+						}
+	
+						if (dateMPolicy == null && storages.length > 0)
+							dateMPolicy = storages[0].getDateMaterialPolicy();
+	
+						if(dateMPolicy==null)
+							dateMPolicy = getMovementDate();
+						
+						//	Fallback: Update Storage - see also VMatch.createMatchRecord
 						if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 							sLine.getM_Locator_ID(),
 							sLine.getM_Product_ID(),
-							ma.getM_AttributeSetInstance_ID(),
-							QtyMA,ma.getDateMaterialPolicy(),
-							get_TrxName()))
+							sLine.getM_AttributeSetInstance_ID(),
+							Qty,dateMPolicy,get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
-							m_processMsg = "Cannot correct Inventory OnHand (MA) [" + product.getValue() + "] - " + lastError;
-							return DocAction.STATUS_Invalid;
-						}					
-						
-						//	Create Transaction
-						mtrx = new MTransaction (getCtx(), sLine.getAD_Org_ID(),
-							MovementType, sLine.getM_Locator_ID(),
-							sLine.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
-							QtyMA, getMovementDate(), get_TrxName());
-						mtrx.setM_InOutLine_ID(sLine.getM_InOutLine_ID());
-						if (!mtrx.save())
-						{
-							m_processMsg = "Could not create Material Transaction (MA) [" + product.getValue() + "]";
+							m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
-					}
-					
-					if (oLine!=null && mtrx!=null && oLine.getQtyOrdered().signum() > 0)
-					{					
-						if (sLine.getC_OrderLine_ID() != 0)
+						if (oLine!=null && oLine.getQtyOrdered().signum() > 0)  
 						{
 							if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
 									sLine.getM_Product_ID(),
 									oLine.getM_AttributeSetInstance_ID(),
-									orderedQtyToUpdate.negate(),
-									isSOTrx(),
-									get_TrxName()))
+									orderedQtyToUpdate.negate(), isSOTrx(), get_TrxName()))
 							{
-								String lastError = CLogger.retrieveErrorString("");
-								m_processMsg = "Cannot correct Inventory " + (isSOTrx()? "Reserved" : "Ordered") + " (MA) - [" + product.getValue() + "] - " + lastError;
+								m_processMsg = "Cannot correct Inventory Reserved " + (isSOTrx()? "Reserved [" :"Ordered [") + product.getValue() + "]";
 								return DocAction.STATUS_Invalid;
 							}
 						}
-					}
-					
-				}
-				//	sLine.getM_AttributeSetInstance_ID() != 0
-				if (mtrx == null)
-				{
-					Timestamp dateMPolicy= null;
-					MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), 0,
-							sLine.getM_Product_ID(), sLine.getM_AttributeSetInstance_ID(), null,
-							MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
-							sLine.getM_Locator_ID(), get_TrxName());
-					for (MStorageOnHand storage : storages) {
-						if (storage.getQtyOnHand().compareTo(sLine.getMovementQty()) >= 0) {
-							dateMPolicy = storage.getDateMaterialPolicy();
-							break;
-						}
-					}
-
-					if (dateMPolicy == null && storages.length > 0)
-						dateMPolicy = storages[0].getDateMaterialPolicy();
-
-					if(dateMPolicy==null)
-						dateMPolicy = getMovementDate();
-					
-					//	Fallback: Update Storage - see also VMatch.createMatchRecord
-					if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
-						sLine.getM_Locator_ID(),
-						sLine.getM_Product_ID(),
-						sLine.getM_AttributeSetInstance_ID(),
-						Qty,dateMPolicy,get_TrxName()))
-					{
-						String lastError = CLogger.retrieveErrorString("");
-						m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
-						return DocAction.STATUS_Invalid;
-					}
-					if (oLine!=null && oLine.getQtyOrdered().signum() > 0)  
-					{
-						if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
-								sLine.getM_Product_ID(),
-								oLine.getM_AttributeSetInstance_ID(),
-								orderedQtyToUpdate.negate(), isSOTrx(), get_TrxName()))
+						
+						//	FallBack: Create Transaction
+						mtrx = new MTransaction (getCtx(), sLine.getAD_Org_ID(),
+							MovementType, sLine.getM_Locator_ID(),
+							sLine.getM_Product_ID(), sLine.getM_AttributeSetInstance_ID(),
+							Qty, getMovementDate(), get_TrxName());
+						mtrx.setM_InOutLine_ID(sLine.getM_InOutLine_ID());
+						if (!mtrx.save())
 						{
-							m_processMsg = "Cannot correct Inventory Reserved " + (isSOTrx()? "Reserved [" :"Ordered [") + product.getValue() + "]";
+							m_processMsg = CLogger.retrieveErrorString("Could not create Material Transaction [" + product.getValue() + "]");
 							return DocAction.STATUS_Invalid;
 						}
 					}
-					
-					//	FallBack: Create Transaction
-					mtrx = new MTransaction (getCtx(), sLine.getAD_Org_ID(),
-						MovementType, sLine.getM_Locator_ID(),
-						sLine.getM_Product_ID(), sLine.getM_AttributeSetInstance_ID(),
-						Qty, getMovementDate(), get_TrxName());
-					mtrx.setM_InOutLine_ID(sLine.getM_InOutLine_ID());
-					if (!mtrx.save())
+				}	//	stock movement
+	
+				//	Correct Order Line
+				if (product != null && oLine != null)		//	other in VMatch.createMatchRecord
+				{
+					oLine.setQtyReserved(oLine.getQtyReserved().subtract(sLine.getMovementQty().subtract(sLine.getQtyOverReceipt())));
+				}
+	
+				//	Update Sales Order Line
+				if (oLine != null)
+				{
+					if (isSOTrx()							//	PO is done by Matching
+						|| sLine.getM_Product_ID() == 0)	//	PO Charges, empty lines
 					{
-						m_processMsg = CLogger.retrieveErrorString("Could not create Material Transaction [" + product.getValue() + "]");
+						if (isSOTrx())
+							oLine.setQtyDelivered(oLine.getQtyDelivered().subtract(Qty));
+						else
+							oLine.setQtyDelivered(oLine.getQtyDelivered().add(Qty));
+						oLine.setDateDelivered(getMovementDate());	//	overwrite=last
+					}
+					if (!oLine.save())
+					{
+						m_processMsg = "Could not update Order Line";
 						return DocAction.STATUS_Invalid;
 					}
-				}
-			}	//	stock movement
-
-			//	Correct Order Line
-			if (product != null && oLine != null)		//	other in VMatch.createMatchRecord
-			{
-				oLine.setQtyReserved(oLine.getQtyReserved().subtract(sLine.getMovementQty().subtract(sLine.getQtyOverReceipt())));
-			}
-
-			//	Update Sales Order Line
-			if (oLine != null)
-			{
-				if (isSOTrx()							//	PO is done by Matching
-					|| sLine.getM_Product_ID() == 0)	//	PO Charges, empty lines
-				{
-					if (isSOTrx())
-						oLine.setQtyDelivered(oLine.getQtyDelivered().subtract(Qty));
 					else
-						oLine.setQtyDelivered(oLine.getQtyDelivered().add(Qty));
-					oLine.setDateDelivered(getMovementDate());	//	overwrite=last
+						if (log.isLoggable(Level.FINE)) log.fine("OrderLine -> Reserved=" + oLine.getQtyReserved()
+							+ ", Delivered=" + oLine.getQtyReserved());
 				}
-				if (!oLine.save())
+	            //  Update RMA Line Qty Delivered
+	            else if (rmaLine != null)
+	            {
+	                if (isSOTrx())
+	                {
+	                    rmaLine.setQtyDelivered(rmaLine.getQtyDelivered().add(Qty));
+	                }
+	                else
+	                {
+	                    rmaLine.setQtyDelivered(rmaLine.getQtyDelivered().subtract(Qty));
+	                }
+	                if (!rmaLine.save())
+	                {
+	                    m_processMsg = "Could not update RMA Line";
+	                    return DocAction.STATUS_Invalid;
+	                }
+	            }
+	
+				//	Create Asset for SO
+				if (product != null
+					&& isSOTrx()
+					&& product.isCreateAsset()
+					&& !product.getM_Product_Category().getA_Asset_Group().isFixedAsset()
+					&& sLine.getMovementQty().signum() > 0
+					&& !isReversal())
 				{
-					m_processMsg = "Could not update Order Line";
-					return DocAction.STATUS_Invalid;
-				}
-				else
-					if (log.isLoggable(Level.FINE)) log.fine("OrderLine -> Reserved=" + oLine.getQtyReserved()
-						+ ", Delivered=" + oLine.getQtyReserved());
-			}
-            //  Update RMA Line Qty Delivered
-            else if (rmaLine != null)
-            {
-                if (isSOTrx())
-                {
-                    rmaLine.setQtyDelivered(rmaLine.getQtyDelivered().add(Qty));
-                }
-                else
-                {
-                    rmaLine.setQtyDelivered(rmaLine.getQtyDelivered().subtract(Qty));
-                }
-                if (!rmaLine.save())
-                {
-                    m_processMsg = "Could not update RMA Line";
-                    return DocAction.STATUS_Invalid;
-                }
-            }
-
-			//	Create Asset for SO
-			if (product != null
-				&& isSOTrx()
-				&& product.isCreateAsset()
-				&& !product.getM_Product_Category().getA_Asset_Group().isFixedAsset()
-				&& sLine.getMovementQty().signum() > 0
-				&& !isReversal())
-			{
-				log.fine("Asset");
-				info.append("@A_Asset_ID@: ");
-				int noAssets = sLine.getMovementQty().intValue();
-				if (!product.isOneAssetPerUOM())
-					noAssets = 1;
-				for (int i = 0; i < noAssets; i++)
-				{
-					if (i > 0)
-						info.append(" - ");
-					int deliveryCount = i+1;
+					log.fine("Asset");
+					info.append("@A_Asset_ID@: ");
+					int noAssets = sLine.getMovementQty().intValue();
 					if (!product.isOneAssetPerUOM())
-						deliveryCount = 0;
-					MAsset asset = new MAsset (this, sLine, deliveryCount);
-					if (!asset.save(get_TrxName()))
+						noAssets = 1;
+					for (int i = 0; i < noAssets; i++)
 					{
-						m_processMsg = "Could not create Asset";
-						return DocAction.STATUS_Invalid;
-					}
-					info.append(asset.getValue());
-				}
-			}	//	Asset
-
-
-			//	Matching
-			if (!isSOTrx()
-				&& sLine.getM_Product_ID() != 0
-				&& !isReversal())
-			{
-				BigDecimal matchQty = sLine.getMovementQty();
-				//	Invoice - Receipt Match (requires Product)
-				MInvoiceLine iLine = MInvoiceLine.getOfInOutLine (sLine);
-				if (iLine != null && iLine.getM_Product_ID() != 0)
-				{
-					if (matchQty.compareTo(iLine.getQtyInvoiced())>0)
-						matchQty = iLine.getQtyInvoiced();
-
-					MMatchInv[] matches = MMatchInv.get(getCtx(),
-						sLine.getM_InOutLine_ID(), iLine.getC_InvoiceLine_ID(), get_TrxName());
-					if (matches == null || matches.length == 0)
-					{
-						MMatchInv inv = new MMatchInv (iLine, getMovementDate(), matchQty);
-						if (sLine.getM_AttributeSetInstance_ID() != iLine.getM_AttributeSetInstance_ID())
+						if (i > 0)
+							info.append(" - ");
+						int deliveryCount = i+1;
+						if (!product.isOneAssetPerUOM())
+							deliveryCount = 0;
+						MAsset asset = new MAsset (this, sLine, deliveryCount);
+						if (!asset.save(get_TrxName()))
 						{
-							iLine.setM_AttributeSetInstance_ID(sLine.getM_AttributeSetInstance_ID());
-							iLine.saveEx();	//	update matched invoice with ASI
-							inv.setM_AttributeSetInstance_ID(sLine.getM_AttributeSetInstance_ID());
-						}
-						if (!inv.save(get_TrxName()))
-						{
-							m_processMsg = CLogger.retrieveErrorString("Could not create Inv Matching");
+							m_processMsg = "Could not create Asset";
 							return DocAction.STATUS_Invalid;
 						}
-						addDocsPostProcess(inv);
+						info.append(asset.getValue());
 					}
-				}
-
-				//	Link to Order
-				if (sLine.getC_OrderLine_ID() != 0)
+				}	//	Asset
+	
+	
+				//	Matching
+				if (!isSOTrx()
+					&& sLine.getM_Product_ID() != 0
+					&& !isReversal())
 				{
-					log.fine("PO Matching");
-					//	Ship - PO
-					MMatchPO po = MMatchPO.create (null, sLine, getMovementDate(), matchQty);
-					if (po != null) {
-						if (!po.save(get_TrxName()))
+					BigDecimal matchQty = sLine.getMovementQty();
+					//	Invoice - Receipt Match (requires Product)
+					MInvoiceLine iLine = MInvoiceLine.getOfInOutLine (sLine);
+					if (iLine != null && iLine.getM_Product_ID() != 0)
+					{
+						if (matchQty.compareTo(iLine.getQtyInvoiced())>0)
+							matchQty = iLine.getQtyInvoiced();
+	
+						MMatchInv[] matches = MMatchInv.get(getCtx(),
+							sLine.getM_InOutLine_ID(), iLine.getC_InvoiceLine_ID(), get_TrxName());
+						if (matches == null || matches.length == 0)
 						{
-							m_processMsg = "Could not create PO Matching";
-							return DocAction.STATUS_Invalid;
-						}
-						if (!po.isPosted())
-							addDocsPostProcess(po);
-						MMatchInv matchInvCreated = po.getMatchInvCreated();
-						if (matchInvCreated != null) {
-							addDocsPostProcess(matchInvCreated);
+							MMatchInv inv = new MMatchInv (iLine, getMovementDate(), matchQty);
+							if (sLine.getM_AttributeSetInstance_ID() != iLine.getM_AttributeSetInstance_ID())
+							{
+								iLine.setM_AttributeSetInstance_ID(sLine.getM_AttributeSetInstance_ID());
+								iLine.saveEx();	//	update matched invoice with ASI
+								inv.setM_AttributeSetInstance_ID(sLine.getM_AttributeSetInstance_ID());
+							}
+							if (!inv.save(get_TrxName()))
+							{
+								m_processMsg = CLogger.retrieveErrorString("Could not create Inv Matching");
+								return DocAction.STATUS_Invalid;
+							}
+							addDocsPostProcess(inv);
 						}
 					}
-					//	Update PO with ASI
-					if (   oLine != null && oLine.getM_AttributeSetInstance_ID() == 0
-						&& sLine.getMovementQty().compareTo(oLine.getQtyOrdered()) == 0) //  just if full match [ 1876965 ]
+	
+					//	Link to Order
+					if (sLine.getC_OrderLine_ID() != 0)
 					{
-						oLine.setM_AttributeSetInstance_ID(sLine.getM_AttributeSetInstance_ID());
-						oLine.saveEx(get_TrxName());
-					}
-				}
-				else	//	No Order - Try finding links via Invoice
-				{
-					//	Invoice has an Order Link
-					if (iLine != null && iLine.getC_OrderLine_ID() != 0)
-					{
-						//	Invoice is created before  Shipment
-						log.fine("PO(Inv) Matching");
-						//	Ship - Invoice
-						MMatchPO po = MMatchPO.create (iLine, sLine,
-							getMovementDate(), matchQty);
+						log.fine("PO Matching");
+						//	Ship - PO
+						MMatchPO po = MMatchPO.create (null, sLine, getMovementDate(), matchQty);
 						if (po != null) {
 							if (!po.save(get_TrxName()))
 							{
-								m_processMsg = "Could not create PO(Inv) Matching";
+								m_processMsg = "Could not create PO Matching";
 								return DocAction.STATUS_Invalid;
 							}
 							if (!po.isPosted())
 								addDocsPostProcess(po);
+							MMatchInv matchInvCreated = po.getMatchInvCreated();
+							if (matchInvCreated != null) {
+								addDocsPostProcess(matchInvCreated);
+							}
 						}
-						
 						//	Update PO with ASI
-						oLine = new MOrderLine (getCtx(), iLine.getC_OrderLine_ID(), get_TrxName());
 						if (   oLine != null && oLine.getM_AttributeSetInstance_ID() == 0
 							&& sLine.getMovementQty().compareTo(oLine.getQtyOrdered()) == 0) //  just if full match [ 1876965 ]
 						{
@@ -1647,11 +1622,52 @@ public class MInOut extends X_M_InOut implements DocAction
 							oLine.saveEx(get_TrxName());
 						}
 					}
-				}	//	No Order
-			}	//	PO Matching
-
+					else	//	No Order - Try finding links via Invoice
+					{
+						//	Invoice has an Order Link
+						if (iLine != null && iLine.getC_OrderLine_ID() != 0)
+						{
+							//	Invoice is created before  Shipment
+							log.fine("PO(Inv) Matching");
+							//	Ship - Invoice
+							MMatchPO po = MMatchPO.create (iLine, sLine,
+								getMovementDate(), matchQty);
+							if (po != null) {
+								if (!po.save(get_TrxName()))
+								{
+									m_processMsg = "Could not create PO(Inv) Matching";
+									return DocAction.STATUS_Invalid;
+								}
+								if (!po.isPosted())
+									addDocsPostProcess(po);
+							}
+							
+							//	Update PO with ASI
+							oLine = new MOrderLine (getCtx(), iLine.getC_OrderLine_ID(), get_TrxName());
+							if (   oLine != null && oLine.getM_AttributeSetInstance_ID() == 0
+								&& sLine.getMovementQty().compareTo(oLine.getQtyOrdered()) == 0) //  just if full match [ 1876965 ]
+							{
+								oLine.setM_AttributeSetInstance_ID(sLine.getM_AttributeSetInstance_ID());
+								oLine.saveEx(get_TrxName());
+							}
+						}
+					}	//	No Order
+				}	//	PO Matching
+			}
+			catch (NegativeInventoryDisallowedException e)
+			{
+				log.severe(e.getMessage());
+				errors.append(Msg.getElement(getCtx(), "Line")).append(" ").append(sLine.getLine()).append(": ");
+				errors.append(e.getMessage()).append("\n");
+			}
 		}	//	for all lines
 
+		if (errors.toString().length() > 0)
+		{
+			m_processMsg = errors.toString();
+			return DocAction.STATUS_Invalid;
+		}
+		
 		//	Counter Documents
 		MInOut counter = createCounterDoc();
 		if (counter != null)
