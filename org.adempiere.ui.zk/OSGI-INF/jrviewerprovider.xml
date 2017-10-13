@@ -3,5 +3,6 @@
    <implementation class="org.adempiere.webui.window.ZkJRViewerProvider"/>
    <service>
       <provide interface="org.adempiere.report.jasper.JRViewerProvider"/>
+      <provide interface="org.adempiere.report.jasper.JRViewerProviderList"/>
    </service>
 </scr:component>

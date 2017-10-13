@@ -139,7 +139,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 		previewType.setMold("select");
 		attachment = null;  // Added by Martin Augustine - Ntier software Services 09/10/2013
-		if (isCanExport && !isList) {
+		if (isCanExport) {
 			previewType.appendItem("PDF", "PDF");
 			previewType.appendItem("HTML", "HTML");
 			previewType.appendItem("Excel", "XLS");
@@ -318,7 +318,11 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 			} else if ("HTML".equals(reportType)) {
 				String path = System.getProperty("java.io.tmpdir");
-				String prefix = makePrefix(jasperPrint.getName());
+				String prefix = null;
+				if (isList)
+					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
+				else
+					prefix = makePrefix(jasperPrint.getName());
 				if (log.isLoggable(Level.FINE))
 				{
 					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
@@ -340,7 +344,11 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				media = new AMedia(m_title, "html", "text/html", file, false);
 			} else if ("XLS".equals(reportType)) {
 				String path = System.getProperty("java.io.tmpdir");
-				String prefix = makePrefix(jasperPrint.getName());
+				String prefix = null;
+				if (isList)
+					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
+				else
+					prefix = makePrefix(jasperPrint.getName());
 				if (log.isLoggable(Level.FINE))
 				{
 					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
@@ -365,7 +373,11 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 			}else if ("CSV".equals(reportType)) {
 				String path = System.getProperty("java.io.tmpdir");
-				String prefix = makePrefix(jasperPrint.getName());
+				String prefix = null;
+				if (isList)
+					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
+				else
+					prefix = makePrefix(jasperPrint.getName());
 				if (log.isLoggable(Level.FINE))
 				{
 					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
@@ -385,7 +397,11 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 			}else if ("SSV".equals(reportType)) {
 				String path = System.getProperty("java.io.tmpdir");
-				String prefix = makePrefix(jasperPrint.getName());
+				String prefix = null;
+				if (isList)
+					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
+				else
+					prefix = makePrefix(jasperPrint.getName());
 				if (log.isLoggable(Level.FINE))
 				{
 					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
