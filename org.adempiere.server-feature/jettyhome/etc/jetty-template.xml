@@ -159,4 +159,5 @@
       <Arg>org.eclipse.jetty.server.Request.maxFormContentSize</Arg>
       <Arg>1048576</Arg>
     </Call>
+    <Set class="org.eclipse.jetty.util.resource.Resource" name="defaultUseCaches">false</Set>
 </Configure>

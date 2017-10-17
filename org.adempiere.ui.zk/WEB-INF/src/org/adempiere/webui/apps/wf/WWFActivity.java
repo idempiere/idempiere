@@ -38,6 +38,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.StatusBarPanel;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
@@ -329,7 +330,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 			pstmt.setInt (2, AD_User_ID);
 			pstmt.setInt (3, AD_User_ID);
 			pstmt.setInt (4, AD_User_ID);
-			pstmt.setInt (5, AD_Client_ID);
+			pstmt.setInt (5, AD_User_ID);
+			pstmt.setInt (6, AD_Client_ID);
 			rs = pstmt.executeQuery ();
 			if (rs.next ()) {
 				count = rs.getInt(1);
@@ -378,8 +380,10 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 			pstmt.setInt (2, AD_User_ID);
 			pstmt.setInt (3, AD_User_ID);
 			pstmt.setInt (4, AD_User_ID);
-			pstmt.setInt (5, AD_Client_ID);
-			rs = pstmt.executeQuery ();
+			pstmt.setInt (5, AD_User_ID);
+			pstmt.setInt (6, AD_Client_ID);
+            
+			rs = pstmt.executeQuery();
 			while (rs.next ())
 			{
 				MWFActivity activity = new MWFActivity(Env.getCtx(), rs, null);
@@ -449,8 +453,10 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 			+ " AND r.ResponsibleType='H' AND r.AD_User_ID=?)"		//	#3
 			//	Responsible Role
 			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r INNER JOIN AD_User_Roles ur ON (r.AD_Role_ID=ur.AD_Role_ID)"
-			+ " WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID AND r.ResponsibleType='R' AND ur.AD_User_ID=?)"	//	#4
-			//
+			+ " WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID AND r.ResponsibleType='R' AND ur.AD_User_ID=? AND ur.isActive = 'Y')"	//	#4
+			///* Manual Responsible */ 
+			+ " OR EXISTS (SELECT * FROM AD_WF_ActivityApprover r "
+			+ " WHERE a.AD_WF_Activity_ID=r.AD_WF_Activity_ID AND r.AD_User_ID=? AND r.isActive = 'Y')" 
 			+ ") AND a.AD_Client_ID=?";	//	#5
 		return where;
 	}
@@ -551,7 +557,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		}
 		//	--
 		else if (MWFNode.ACTION_UserWindow.equals(node.getAction())
-			|| MWFNode.ACTION_UserForm.equals(node.getAction()))
+			|| MWFNode.ACTION_UserForm.equals(node.getAction())
+			|| MWFNode.ACTION_UserInfo.equals(node.getAction()))
 		{
 			fAnswerButton.setLabel(node.getName());
 			fAnswerButton.setTooltiptext(node.getDescription());
@@ -606,6 +613,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 			ADForm form = ADForm.openForm(AD_Form_ID);
 			form.setAttribute(Window.MODE_KEY, form.getWindowMode());
 			AEnv.showWindow(form);
+		}else if (MWFNode.ACTION_UserInfo.equals(node.getAction())){
+			SessionManager.getAppDesktop().openInfo(node.getAD_InfoWindow_ID());
 		}
 		else
 			log.log(Level.SEVERE, "No User Action:" + node.getAction());

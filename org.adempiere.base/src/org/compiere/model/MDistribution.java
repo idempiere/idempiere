@@ -40,7 +40,7 @@ public class MDistribution extends X_GL_Distribution
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -906547096682610205L;
+	private static final long serialVersionUID = 3782058638272715005L;
 
 	/**
 	 * 	Get Distribution for combination
@@ -90,7 +90,7 @@ public class MDistribution extends X_GL_Distribution
 		int C_SalesRegion_ID, int C_LocTo_ID, int C_LocFrom_ID,
 		int User1_ID, int User2_ID)
 	{
-		MDistribution[] acctList = get (ctx, Account_ID);
+		MDistribution[] acctList = getAll(ctx);
 		if (acctList == null || acctList.length == 0)
 			return null;
 		//
@@ -157,16 +157,32 @@ public class MDistribution extends X_GL_Distribution
 		MDistribution[] retValue = (MDistribution[])s_accounts.get(key);
 		if (retValue != null)
 			return retValue;
-		final String whereClause = "Account_ID=?";
-
+		String whereClause = "";
+		Object[] parameters = null;
+		if (Account_ID >= 0) {
+			whereClause = "Account_ID=?";
+			parameters = new Object[]{Account_ID};
+		}
 		List<MDistribution> list = new Query(ctx,I_GL_Distribution.Table_Name,whereClause,null)
-		.setParameters(Account_ID)
-		.list();
+			.setClient_ID()
+			.setParameters(parameters)
+			.list();
 		//
 		retValue = new MDistribution[list.size ()];
 		list.toArray (retValue);
 		s_accounts.put(key, retValue);
 		return retValue;
+	}	//	get
+	
+	/**
+	 * 	Get All Distributions
+	 *	@param ctx context
+	 *	@param Account_ID id
+	 *	@return array of distributions
+	 */
+	public static MDistribution[] getAll (Properties ctx)
+	{
+		return get(ctx, -1);
 	}	//	get
 	
 	/**	Static Logger	*/

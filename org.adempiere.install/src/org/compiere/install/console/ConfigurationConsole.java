@@ -463,25 +463,25 @@ public class ConfigurationConsole {
 		{
 			writer.println("Database Type ["+(dbTypeSelected+1)+"]");
 			String input = reader.readLine();
-			if (input != null && input.trim().length() > 0)
+			try
 			{
-				try
+				if (input == null || input.trim().length() == 0)
 				{
-					int inputIndex = Integer.parseInt(input);
-					if (inputIndex <= 0 || inputIndex > ConfigurationData.DBTYPE.length)
-					{
-						writer.println("Invalid input, please enter numeric value of 1 to " + ConfigurationData.DBTYPE.length);
-						continue;
-					}
-					data.initDatabase(ConfigurationData.DBTYPE[inputIndex-1]);
-					data.setDatabaseType(ConfigurationData.DBTYPE[inputIndex-1]);
-					break;
+					input = Integer.toString(dbTypeSelected+1);
 				}
-				catch (NumberFormatException e){
+				int inputIndex = Integer.parseInt(input);
+				if (inputIndex <= 0 || inputIndex > ConfigurationData.DBTYPE.length)
+				{
 					writer.println("Invalid input, please enter numeric value of 1 to " + ConfigurationData.DBTYPE.length);
+					continue;
 				}
+				data.initDatabase(ConfigurationData.DBTYPE[inputIndex-1]);
+				data.setDatabaseType(ConfigurationData.DBTYPE[inputIndex-1]);
+				break;
 			}
-			break;
+			catch (NumberFormatException e){
+				writer.println("Invalid input, please enter numeric value of 1 to " + ConfigurationData.DBTYPE.length);
+			}
 		}
 	}
 }

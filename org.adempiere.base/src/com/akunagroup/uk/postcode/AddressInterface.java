@@ -43,6 +43,10 @@ public interface AddressInterface
 	public void setStreet3(String newStreet3);
 	public String getStreet4();
 	public void setStreet4(String newStreet4);
+	public String getStreet5();
+	public void setStreet5(String newStreet5);
+	public String getComments();
+	public void setComments(String newComments);
 	public String getCity();
 	public void setCity(String newCity);
 	public String getRegion();

@@ -27,20 +27,32 @@ public class WindowValidatorManager implements BundleActivator, ServiceTrackerCu
 	public WindowValidator addingService(
 			ServiceReference<WindowValidator> reference) {
 		WindowValidator service = context.getService(reference);
-		String uuid = (String) reference.getProperty("AD_Window_UU");
-		if (uuid == null || "*".equals(uuid)) {
-			globalValidators.add(service);
-			return service;
+
+		Object obj = reference.getProperty("AD_Window_UU");
+
+		if (obj instanceof String) {
+			String uuid = (String) reference.getProperty("AD_Window_UU");
+			if (uuid == null || "*".equals(uuid)) {
+				globalValidators.add(service);
+				return service;
+			}
+			addService(service, uuid);
 		}
-		
+		else if (obj instanceof String []) {
+			String[] uuids = (String []) reference.getProperty("AD_Window_UU");
+			for (String uuid : uuids)
+				addService(service, uuid);
+		}
+		return service;
+	}
+
+	void addService(WindowValidator service, String uuid) {
 		List<WindowValidator> list = validatorMap.get(uuid);
 		if (list == null) {
 			list = new ArrayList<WindowValidator>();
 			validatorMap.put(uuid, list);
 		}
-		list.add(service);				
-		
-		return service;
+		list.add(service);
 	}
 
 	@Override
@@ -51,14 +63,28 @@ public class WindowValidatorManager implements BundleActivator, ServiceTrackerCu
 	@Override
 	public void removedService(ServiceReference<WindowValidator> reference,
 			WindowValidator service) {
-		String uuid = (String) reference.getProperty("AD_Window_UU");
-		if (uuid == null || "*".equals(uuid)) {
-			globalValidators.remove(service);
-		} else {
-			List<WindowValidator> list = validatorMap.get(uuid);
-			if (list != null) {
-				list.remove(service);
+		
+		Object obj = reference.getProperty("AD_Window_UU");
+		
+		if (obj instanceof String) {
+			String uuid = (String) reference.getProperty("AD_Window_UU");
+			if (uuid == null || "*".equals(uuid)) {
+				globalValidators.remove(service);
 			}
+			else
+				removeService(service, uuid);
+		}
+		else if (obj instanceof String []) {
+			String[] uuids = (String []) reference.getProperty("AD_Window_UU");
+			for (String uuid : uuids)
+				removeService(service, uuid);
+		}
+	}
+
+	void removeService(WindowValidator service, String uuid) {
+		List<WindowValidator> list = validatorMap.get(uuid);
+		if (list != null) {
+			list.remove(service);
 		}
 	}
 

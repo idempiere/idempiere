@@ -644,6 +644,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 						saveReportOptionToInstance(savedParams.get(i));
 						
 						savedParams.get(i).saveEx();
+						
+						getProcessInfo().setAD_PInstance_ID(0);
 					}
 				}
 			}

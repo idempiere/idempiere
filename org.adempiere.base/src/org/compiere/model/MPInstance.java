@@ -406,6 +406,7 @@ public class MPInstance extends X_AD_PInstance
 			int cnt = 0;
 			try {
 				pstmt = DB.prepareStatement(sql, null);
+				pstmt.setFetchSize(lastRunCount);
 				pstmt.setInt(1, AD_Process_ID);
 				pstmt.setInt(2, AD_User_ID);
 				pstmt.setInt(3, Env.getAD_Client_ID(ctx));

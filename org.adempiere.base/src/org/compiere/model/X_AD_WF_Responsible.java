@@ -30,7 +30,7 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20170809L;
 
     /** Standard Constructor */
     public X_AD_WF_Responsible (Properties ctx, int AD_WF_Responsible_ID, String trxName)
@@ -41,7 +41,7 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 			setAD_Role_ID (0);
 			setAD_WF_Responsible_ID (0);
 			setEntityType (null);
-// U
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
 			setName (null);
 			setResponsibleType (null);
         } */
@@ -240,6 +240,8 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 	public static final String RESPONSIBLETYPE_Role = "R";
 	/** System Resource = S */
 	public static final String RESPONSIBLETYPE_SystemResource = "S";
+	/** Manual = M */
+	public static final String RESPONSIBLETYPE_Manual = "M";
 	/** Set Responsible Type.
 		@param ResponsibleType 
 		Type of the Responsibility for a workflow

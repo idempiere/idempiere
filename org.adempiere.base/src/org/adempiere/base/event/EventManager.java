@@ -72,7 +72,7 @@ public class EventManager implements IEventManager {
 	 */
 	public static IEventManager getInstance() {
 		synchronized (mutex) {
-			if (instance == null) {
+			while (instance == null) {
 				try {
 					mutex.wait(10000);
 				} catch (InterruptedException e) {

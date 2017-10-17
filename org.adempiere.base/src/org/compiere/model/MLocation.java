@@ -538,6 +538,8 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		{
 			//	City, Region, Postal
 			retStr.append(", ").append(parseCRP (getCountry()));
+			if (getAddress5() != null && getAddress5().length() > 0)
+				retStr.append(", ").append(getAddress5());
 			if (getAddress4() != null && getAddress4().length() > 0)
 				retStr.append(", ").append(getAddress4());
 			if (getAddress3() != null && getAddress3().length() > 0)
@@ -557,6 +559,8 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 				retStr.append(", ").append(getAddress3());
 			if (getAddress4() != null && getAddress4().length() > 0)
 				retStr.append(", ").append(getAddress4());
+			if (getAddress5() != null && getAddress5().length() > 0)
+				retStr.append(", ").append(getAddress5());
 			//	City, Region, Postal
 			retStr.append(", ").append(parseCRP (getCountry()));
 			//	Add Country would come here
@@ -575,6 +579,8 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		{
 			//	City, Region, Postal
 			retStr.append(parseCRP (getCountry()));
+			if (getAddress5() != null && getAddress5().length() > 0)
+				retStr.append("\n").append(getAddress5());
 			if (getAddress4() != null && getAddress4().length() > 0)
 				retStr.append("\n").append(getAddress4());
 			if (getAddress3() != null && getAddress3().length() > 0)
@@ -594,6 +600,8 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 				retStr.append("\n").append(getAddress3());
 			if (getAddress4() != null && getAddress4().length() > 0)
 				retStr.append("\n").append(getAddress4());
+			if (getAddress5() != null && getAddress5().length() > 0)
+				retStr.append("\n").append(getAddress5());
 			//	City, Region, Postal
 			retStr.append("\n").append(parseCRP (getCountry()));
 			//	Add Country would come here
@@ -731,6 +739,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		StringBuilder address = new StringBuilder();
 		address.append((getAddress1() != null ? getAddress1() + ", " : ""));
 		address.append((getAddress2() != null ? getAddress2() + ", " : ""));
+		address.append((getAddress3() != null ? getAddress3() + ", " : ""));
 		address.append((getCity() != null ? getCity() + ", " : ""));
 		address.append((region.getName() != null ? region.getName() + ", " : ""));
 		address.append((getCountryName() != null ? getCountryName() : ""));
@@ -826,6 +835,8 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		at.setAddress2(location.getAddress2());
 		at.setAddress3(location.getAddress3());
 		at.setAddress4(location.getAddress4());
+		at.setAddress5(location.getAddress5());
+		at.setComments(location.getComments());
 		at.setC_AddressValidation_ID(C_AddressValidation_ID);
 		at.setC_Location_ID(location.getC_Location_ID());		
 		at.setCity(location.getCity());

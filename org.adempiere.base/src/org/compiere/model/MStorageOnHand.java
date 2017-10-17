@@ -27,11 +27,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -735,7 +734,8 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		if (getQtyOnHand().signum() == -1) {
 			MWarehouse wh = MWarehouse.get(Env.getCtx(), getM_Warehouse_ID());
 			if (wh.isDisallowNegativeInv()) {
-				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "NegativeInventoryDisallowed"));
+				throw new NegativeInventoryDisallowedException(getCtx(), getM_Warehouse_ID(), getM_Product_ID(), getM_AttributeSetInstance_ID(), getM_Locator_ID(),
+						getQtyOnHand().subtract(addition), addition.negate());
 			}
 		}
 	}
@@ -899,13 +899,15 @@ public class MStorageOnHand extends X_M_StorageOnHand
 				if (getQtyOnHand().compareTo(BigDecimal.ZERO) < 0 ||
 						QtyOnHand.compareTo(Env.ZERO) < 0)
 				{
-					log.saveError("Error", Msg.getMsg(getCtx(), "NegativeInventoryDisallowed"));
+					log.saveError("Error", new NegativeInventoryDisallowedException(getCtx(), getM_Warehouse_ID(), getM_Product_ID(), 
+							getM_AttributeSetInstance_ID(), getM_Locator_ID(), QtyOnHand.subtract(getQtyOnHand()), getQtyOnHand().negate()));
 					return false;
 				}
 				
 				if (getM_AttributeSetInstance_ID() > 0 && getQtyOnHand().signum() < 0)
 				{
-					log.saveError("Error", Msg.getMsg(getCtx(), "NegativeInventoryDisallowed"));
+					log.saveError("Error", new NegativeInventoryDisallowedException(getCtx(), getM_Warehouse_ID(), getM_Product_ID(), 
+							getM_AttributeSetInstance_ID(), getM_Locator_ID(), QtyOnHand.subtract(getQtyOnHand()), getQtyOnHand().negate()));
 					return false;
 				}
 			}

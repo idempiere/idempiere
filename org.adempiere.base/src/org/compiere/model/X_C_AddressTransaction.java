@@ -30,7 +30,7 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20170908L;
 
     /** Standard Constructor */
     public X_C_AddressTransaction (Properties ctx, int C_AddressTransaction_ID, String trxName)
@@ -143,6 +143,23 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
 		return (String)get_Value(COLUMNNAME_Address4);
 	}
 
+	/** Set Address 5.
+		@param Address5 
+		Address Line 5 for the location
+	  */
+	public void setAddress5 (String Address5)
+	{
+		set_Value (COLUMNNAME_Address5, Address5);
+	}
+
+	/** Get Address 5.
+		@return Address Line 5 for the location
+	  */
+	public String getAddress5 () 
+	{
+		return (String)get_Value(COLUMNNAME_Address5);
+	}
+
 	/** Set Address Transaction.
 		@param C_AddressTransaction_ID Address Transaction	  */
 	public void setC_AddressTransaction_ID (int C_AddressTransaction_ID)
@@ -253,6 +270,23 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Comments.
+		@param Comments 
+		Comments or additional information
+	  */
+	public void setComments (String Comments)
+	{
+		set_Value (COLUMNNAME_Comments, Comments);
+	}
+
+	/** Get Comments.
+		@return Comments or additional information
+	  */
+	public String getComments () 
+	{
+		return (String)get_Value(COLUMNNAME_Comments);
 	}
 
 	/** Set Country.

@@ -272,9 +272,11 @@ public class WPaySelect extends PaySelect
 	 */
 	private void loadBankInfo()
 	{		
-		BankInfo bi = (BankInfo)fieldBankAccount.getSelectedItem().getValue();
-		if (bi == null)
+		if (fieldBankAccount.getItemCount() == 0)
 			return;
+		
+		BankInfo bi = (BankInfo)fieldBankAccount.getSelectedItem().getValue();
+		
 		labelCurrency.setText(bi.Currency);
 		labelBalance.setText(m_format.format(bi.Balance));
 
@@ -301,7 +303,13 @@ public class WPaySelect extends PaySelect
 		miniTable.setColorCompare(payDate);
 		if (log.isLoggable(Level.CONFIG)) log.config("PayDate=" + payDate);
 		
-		BankInfo bi = (BankInfo)fieldBankAccount.getSelectedItem().getValue();
+		if (fieldBankAccount.getItemCount() == 0) {
+			FDialog.error(m_WindowNo, form, "VPaySelectNoBank");
+			return;
+		}
+			
+		
+		BankInfo bi = fieldBankAccount.getSelectedItem().getValue();
 		
 		ValueNamePair paymentRule = (ValueNamePair) fieldPaymentRule.getSelectedItem().getValue();
 		KeyNamePair bpartner = (KeyNamePair) fieldBPartner.getSelectedItem().getValue();

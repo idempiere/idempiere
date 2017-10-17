@@ -101,6 +101,19 @@ public interface I_C_AddressTransaction
 	  */
 	public String getAddress4();
 
+    /** Column name Address5 */
+    public static final String COLUMNNAME_Address5 = "Address5";
+
+	/** Set Address 5.
+	  * Address Line 5 for the location
+	  */
+	public void setAddress5 (String Address5);
+
+	/** Get Address 5.
+	  * Address Line 5 for the location
+	  */
+	public String getAddress5();
+
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
@@ -170,6 +183,19 @@ public interface I_C_AddressTransaction
 	public int getC_Location_ID();
 
 	public I_C_Location getC_Location() throws RuntimeException;
+
+    /** Column name Comments */
+    public static final String COLUMNNAME_Comments = "Comments";
+
+	/** Set Comments.
+	  * Comments or additional information
+	  */
+	public void setComments (String Comments);
+
+	/** Get Comments.
+	  * Comments or additional information
+	  */
+	public String getComments();
 
     /** Column name Country */
     public static final String COLUMNNAME_Country = "Country";

@@ -146,7 +146,7 @@ public class CalloutRMA extends CalloutEngine {
 			return "";
 
 		MRMA rma = new MRMA(ctx, M_RMA_ID, null);
-		MProductPricing pp = new MProductPricing(M_Product_ID, rma.getC_BPartner_ID(), Env.ONE, rma.isSOTrx());
+		MProductPricing pp = new MProductPricing(M_Product_ID, rma.getC_BPartner_ID(), Env.ONE, rma.isSOTrx(), null);
 		int taxId = 0;
 		int precision = 0;
 

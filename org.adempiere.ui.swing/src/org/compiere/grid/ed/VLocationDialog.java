@@ -180,6 +180,8 @@ public class VLocationDialog extends CDialog
 	private CLabel		lAddress2   = new CLabel(Msg.getElement(Env.getCtx(), "Address2"));
 	private CLabel		lAddress3   = new CLabel(Msg.getElement(Env.getCtx(), "Address3"));
 	private CLabel		lAddress4   = new CLabel(Msg.getElement(Env.getCtx(), "Address4"));
+	private CLabel		lAddress5   = new CLabel(Msg.getElement(Env.getCtx(), "Address5"));
+	private CLabel		lComments   = new CLabel(Msg.getElement(Env.getCtx(), "Comments"));
 	private CLabel		lCity       = new CLabel(Msg.getMsg(Env.getCtx(), "City"));
 	private CLabel		lCountry    = new CLabel(Msg.getMsg(Env.getCtx(), "Country"));
 	private CLabel		lRegion     = new CLabel(Msg.getMsg(Env.getCtx(), "Region"));
@@ -190,6 +192,8 @@ public class VLocationDialog extends CDialog
 	private CTextField	fAddress2 = new CTextField(20);		//	length=60
 	private CTextField	fAddress3 = new CTextField(20);		//	length=60
 	private CTextField	fAddress4 = new CTextField(20);		//	length=60
+	private CTextField	fAddress5 = new CTextField(20);		//	length=60
+	private CTextField	fComments = new CTextField(20);		//	length=2000
 	private CTextField	fCity  = new CTextField(20);		//	length=60
 	private CityAutoCompleter	fCityAutoCompleter;
 	private CComboBoxEditable<Object>	fCountry;
@@ -208,6 +212,8 @@ public class VLocationDialog extends CDialog
 	private boolean isAddress2Mandatory = false;
 	private boolean isAddress3Mandatory = false;
 	private boolean isAddress4Mandatory = false;
+	private boolean isAddress5Mandatory = false;
+	private boolean isCommentsMandatory = false;
 	private boolean isPostalMandatory = false;
 	private boolean isPostalAddMandatory = false;
 
@@ -337,6 +343,8 @@ public class VLocationDialog extends CDialog
 		isAddress2Mandatory = false;
 		isAddress3Mandatory = false;
 		isAddress4Mandatory = false;
+		isAddress5Mandatory = false;
+		isCommentsMandatory = false;
 		isPostalMandatory = false;
 		isPostalAddMandatory = false;
 		StringTokenizer st = new StringTokenizer(ds, "@", false);
@@ -350,6 +358,9 @@ public class VLocationDialog extends CDialog
 				if (m_location.getCountry().isPostcodeLookup()) {
 					addLine(line++, lOnline, fOnline);
 				}
+			} else if (s.startsWith("Com")) {
+				addLine(line++, lComments, fComments);
+				isCommentsMandatory = s.endsWith("!");
 			} else if (s.startsWith("A1")) {
 				addLine(line++, lAddress1, fAddress1);
 				isAddress1Mandatory = s.endsWith("!");
@@ -362,6 +373,9 @@ public class VLocationDialog extends CDialog
 			} else if (s.startsWith("A4")) {
 				addLine(line++, lAddress4, fAddress4);
 				isAddress4Mandatory = s.endsWith("!");
+			} else if (s.startsWith("A5")) {
+				addLine(line++, lAddress5, fAddress5);
+				isAddress5Mandatory = s.endsWith("!");
 			} else if (s.startsWith("C")) {
 				addLine(line++, lCity, fCity);
 				isCityMandatory = s.endsWith("!");
@@ -384,6 +398,8 @@ public class VLocationDialog extends CDialog
 			fAddress2.setText(m_location.getAddress2());
 			fAddress3.setText(m_location.getAddress3());
 			fAddress4.setText(m_location.getAddress4());
+			fAddress5.setText(m_location.getAddress5());
+			fComments.setText(m_location.getComments());
 			fCity.setText(m_location.getCity());
 			fPostal.setText(m_location.getPostal());
 			fPostalAdd.setText(m_location.getPostal_Add());
@@ -643,6 +659,8 @@ public class VLocationDialog extends CDialog
 			m_location.setAddress2(fAddress2.getText());
 			m_location.setAddress3(fAddress3.getText());
 			m_location.setAddress4(fAddress4.getText());
+			m_location.setAddress5(fAddress5.getText());
+			m_location.setComments(fComments.getText());
 			m_location.setCity(fCity.getText());
 			m_location.setC_City_ID(fCityAutoCompleter.getC_City_ID());
 			m_location.setPostal(fPostal.getText());
@@ -704,6 +722,12 @@ public class VLocationDialog extends CDialog
 		if (isAddress4Mandatory && fAddress4.getText().trim().length() == 0) {
 			fields = fields + " " + "@Address4@, ";
 		}
+		if (isAddress5Mandatory && fAddress5.getText().trim().length() == 0) {
+			fields = fields + " " + "@Address5@, ";
+		}
+		if (isCommentsMandatory && fComments.getText().trim().length() == 0) {
+			fields = fields + " " + "@Comments@, ";
+		}
 		if (isCityMandatory && fCity.getText().trim().length() == 0) {
 			fields = fields + " " + "@C_City_ID@, ";
 		}
@@ -734,6 +758,8 @@ public class VLocationDialog extends CDialog
 		m_location.setAddress2(fAddress2.getText());
 		m_location.setAddress3(fAddress3.getText());
 		m_location.setAddress4(fAddress4.getText());
+		m_location.setAddress5(fAddress5.getText());
+		m_location.setComments(fComments.getText());
 		m_location.setCity(fCity.getText());
 		m_location.setC_City_ID(fCityAutoCompleter.getC_City_ID());
 		m_location.setPostal(fPostal.getText());
@@ -863,9 +889,13 @@ public class VLocationDialog extends CDialog
 	private void fillLocation(HashMap<String, Object> postcodeData, MCountry country) {
  
 		// If it's not empty warn the user.
-		if (fAddress1 != null || fAddress2 != null
+		if (fAddress1 != null 
+				|| fAddress2 != null
 				|| fAddress3 != null
-				|| fAddress4 != null || fCity != null) {
+				|| fAddress4 != null
+				|| fAddress5 != null
+				|| fComments != null
+				|| fCity != null) {
 			String warningMsg = "Existing address information will be overwritten. Proceed?";
 			String warningTitle = "Warning";
 			int response = JOptionPane.showConfirmDialog(null, warningMsg,
@@ -902,6 +932,8 @@ public class VLocationDialog extends CDialog
 				fAddress2.setText(values.getStreet2());
 				fAddress3.setText(values.getStreet3());
 				fAddress4.setText(values.getStreet4());
+				fAddress5.setText(values.getStreet5());
+				fComments.setText(values.getComments());
 				fCity.setText(values.getCity());
 				fPostal.setText(values.getPostcode());
 
@@ -964,6 +996,8 @@ public class VLocationDialog extends CDialog
 		String address = "";
 		address = address + (fAddress1.getText() != null ? fAddress1.getText() + ", " : "");
 		address = address + (fAddress2.getText() != null ? fAddress2.getText() + ", " : "");
+		address = address + (fAddress3.getText() != null ? fAddress3.getText() + ", " : "");
+		address = address + (fAddress4.getText() != null ? fAddress4.getText() + ", " : "");
 		address = address + (fCity.getText() != null ? fCity.getText() + ", " : "");
 		if (region != null)
 			address = address + (region.getName() != null ? region.getName() + ", " : "");

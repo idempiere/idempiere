@@ -145,7 +145,8 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        }
 	        else
 	            getComponent().setMultiline(false);
-	        getComponent().setRows(gridField.getNumLines() <= 0 || tableEditor ? 1 : gridField.getNumLines());	        
+	        if (! gridField.isAutocomplete()) // avoid -> Combobox doesn't support multiple rows
+	        	getComponent().setRows(gridField.getNumLines() <= 0 || tableEditor ? 1 : gridField.getNumLines());
 	        if (getComponent().getRows() > 1)
 	        	ZKUpdateUtil.setHeight(getComponent(), "100%");
 
@@ -154,7 +155,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 
 
 	        if(!(this instanceof WPasswordEditor)){ // check password field
-	        	popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
+	        	popupMenu = new WEditorPopupMenu(false, gridField.isAutocomplete(), isShowPreference());
 	        	addTextEditorMenu(popupMenu);
 	        	addChangeLogMenu(popupMenu);
 	        }
@@ -289,23 +290,28 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 		{
 			WFieldRecordInfo.start(gridField);
 		}
+		else if (WEditorPopupMenu.REQUERY_EVENT.equals(evt.getContextEvent()))
+		{
+			actionRefresh();
+		}
 	}
-
+    
 	@Override
 	public void dynamicDisplay() {
 		super.dynamicDisplay();
-		//referesh auto complete list
+		actionRefresh();
+	}
+
+	public void actionRefresh() {
+		//refresh auto complete list
 		if (gridField.isAutocomplete()) {
-        	Combobox combo = (Combobox)getComponent();
-        	List<String> items = gridField.getEntries();
-        	if (items.size() != combo.getItemCount())
-        	{
-        		combo.removeAllItems();
-        		for(String s : items) {
-            		combo.appendItem(s);
-            	}
-        	}
-        }
+			Combobox combo = (Combobox)getComponent();
+			List<String> items = gridField.getEntries();
+			combo.removeAllItems();
+			for(String s : items) {
+				combo.appendItem(s);
+			}
+		}
 	}
 
 	private AbstractADWindowContent findADWindowContent() {

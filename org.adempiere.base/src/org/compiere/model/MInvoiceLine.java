@@ -379,7 +379,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		//
 		if (log.isLoggable(Level.FINE)) log.fine("M_PriceList_ID=" + M_PriceList_ID);
 		m_productPricing = new MProductPricing (getM_Product_ID(),
-			C_BPartner_ID, getQtyInvoiced(), m_IsSOTrx);
+			C_BPartner_ID, getQtyInvoiced(), m_IsSOTrx, get_TrxName());
 		m_productPricing.setM_PriceList_ID(M_PriceList_ID);
 		m_productPricing.setPriceDate(m_DateInvoiced);
 		//

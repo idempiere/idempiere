@@ -17,24 +17,21 @@ package org.adempiere.webui;
 import java.util.Locale;
 import java.util.Properties;
 
-import javax.servlet.ServletRequest;
-
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.LoginWindow;
-import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.East;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.West;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.Window;
 
 /**
@@ -82,15 +79,13 @@ public class WLogin extends AbstractUIPart
         	browserWarningWindow.doOverlapped();
         }
         
-        String ua = Servlets.getUserAgent((ServletRequest) Executions.getCurrent().getNativeRequest());
-		ua = ua.toLowerCase();
-		boolean mobile = ua.indexOf("ipad") >= 0 || ua.indexOf("iphone") >= 0 || ua.indexOf("android") >= 0;
-    	
+        boolean mobile = Executions.getCurrent().getBrowser("mobile") !=null;
     	
         West west = layout.getWest();
         if (west.getFirstChild() != null && west.getFirstChild().getFirstChild() != null) {
+    		west.setCollapsible(true);
+    		west.setSplittable(true);
         	if (mobile) {    		
-        		west.setCollapsible(true);
         		west.setOpen(false);
         	}
         } else {

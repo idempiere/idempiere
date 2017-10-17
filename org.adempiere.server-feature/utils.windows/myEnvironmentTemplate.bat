@@ -46,9 +46,9 @@
 
 @Rem	Java
 @SET ADEMPIERE_JAVA=@JAVA_HOME@\bin\java
-@SET ADEMPIERE_JAVA_OPTIONS=@ADEMPIERE_JAVA_OPTIONS@ -DIDEMPIERE_HOME=@IDEMPIERE_HOME@
+@SET IDEMPIERE_JAVA_OPTIONS=@IDEMPIERE_JAVA_OPTIONS@ -DIDEMPIERE_HOME=@IDEMPIERE_HOME@
 @SET CLASSPATH="@IDEMPIERE_HOME@\lib\Adempiere.jar;@IDEMPIERE_HOME@\lib\AdempiereCLib.jar;"
 
 @Rem Save Environment file
-@if (%1) == () copy myEnvironment.bat myEnvironment_%RANDOM%.bat /Y 
+@if (%1) == () copy utils\myEnvironment.bat utils\myEnvironment_%RANDOM%.bat /Y 
 

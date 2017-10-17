@@ -34,6 +34,7 @@ import org.compiere.model.MClient;
 import org.compiere.model.MCost;
 import org.compiere.model.MOrgInfo;
 import org.compiere.model.MRole;
+import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -224,7 +225,6 @@ public class AcctProcessor extends AdempiereServer
 				rs = pstmt.executeQuery();
 				while (!isInterrupted() && rs.next())
 				{
-					count[i]++;
 					boolean ok = true;
 					try
 					{
@@ -238,6 +238,17 @@ public class AcctProcessor extends AdempiereServer
 					}
 					if (!ok)
 						countError[i]++;
+					else // only count the posted record.
+					{
+						MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
+						int Record_ID = rs.getInt(table.getKeyColumns()[0]);
+						sql = new StringBuffer("SELECT COUNT(*) FROM ").append(table.getTableName());
+						sql.append(" WHERE Posted='Y' AND ").append(table.getTableName()).append("_ID=").append(Record_ID);
+						int no = DB.getSQLValue(null, sql.toString());
+						if (no > 0 )
+							count[i]++;
+
+					}
 				}
 			}
 			catch (Exception e)

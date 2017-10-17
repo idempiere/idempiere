@@ -33,7 +33,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20170919L;
 
     /** Standard Constructor */
     public X_AD_WF_Node (Properties ctx, int AD_WF_Node_ID, String trxName)
@@ -48,7 +48,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 			setCost (Env.ZERO);
 			setDuration (0);
 			setEntityType (null);
-// 'U'
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
 			setIsCentrallyMaintained (true);
 // Y
 			setJoinElement (null);
@@ -118,6 +118,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	public static final String ACTION_EMail = "M";
 	/** User Workbench = B */
 	public static final String ACTION_UserWorkbench = "B";
+	/** User Info = I */
+	public static final String ACTION_UserInfo = "I";
 	/** Set Action.
 		@param Action 
 		Indicates the Action to be performed
@@ -240,6 +242,34 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	public int getAD_Image_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Image_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());	}
+
+	/** Set Info Window.
+		@param AD_InfoWindow_ID 
+		Info and search/select Window
+	  */
+	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID)
+	{
+		if (AD_InfoWindow_ID < 1) 
+			set_Value (COLUMNNAME_AD_InfoWindow_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_InfoWindow_ID, Integer.valueOf(AD_InfoWindow_ID));
+	}
+
+	/** Get Info Window.
+		@return Info and search/select Window
+	  */
+	public int getAD_InfoWindow_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoWindow_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

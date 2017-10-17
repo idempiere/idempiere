@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MColumn;
+import org.compiere.model.MRole;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_Node;
 import org.compiere.util.CCache;
@@ -359,6 +360,8 @@ public class MWFNode extends X_AD_WF_Node
 			return "Form:AD_Form_ID=" + getAD_Form_ID();
 		else if (ACTION_UserWindow.equals(action))
 			return "Window:AD_Window_ID=" + getAD_Window_ID();
+		else if (ACTION_UserInfo.equals(action))
+			return "Window:AD_InfoWindow_ID=" + getAD_InfoWindow_ID();
 		else if (ACTION_WaitSleep.equals(action))
 			return "Sleep:WaitTime=" + getWaitTime();
 		return "??";
@@ -425,6 +428,7 @@ public class MWFNode extends X_AD_WF_Node
 	{
 		if (ACTION_UserForm.equals(getAction())
 			|| ACTION_UserWindow.equals(getAction())
+			|| ACTION_UserInfo.equals(getAction())
 			/*|| ACTION_UserWorkbench.equals(getAction())*/)
 			return true;
 		return false;
@@ -603,6 +607,16 @@ public class MWFNode extends X_AD_WF_Node
 				log.saveError("FillMandatory", Msg.getElement(getCtx(), "AttributeValue"));
 				return false;
 			}
+			if (getAD_Column_ID() > 0) {
+				// validate that just advanced roles can manipulate secure content via workflows
+				MColumn column = MColumn.get(getCtx(), getAD_Column_ID());
+				if (column.isSecure() || column.isAdvanced()) {
+					if (! MRole.getDefault().isAccessAdvanced()) {
+						log.saveError("AccessTableNoUpdate", Msg.getElement(getCtx(), column.getColumnName()));
+						return false;
+					}
+				}
+			}
 		}
 		else if (action.equals(ACTION_SubWorkflow))
 		{
@@ -633,6 +647,14 @@ public class MWFNode extends X_AD_WF_Node
 			if (getAD_Window_ID() == 0)
 			{
 				log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Window_ID"));
+				return false;
+			}
+		}
+		else if (action.equals(ACTION_UserInfo)) 
+		{
+			if (getAD_InfoWindow_ID() == 0)
+			{
+				log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_InfoWindow_ID"));
 				return false;
 			}
 		}

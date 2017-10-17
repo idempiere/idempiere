@@ -23,9 +23,7 @@ if exist jettyhome\etc\jetty-selector.xml (
    copy jettyhome\etc\jetty-selector.xml jetty-selector.xml.sav
 )
 
-FOR %%c in (plugins\org.eclipse.equinox.launcher_1.*.jar) DO set JARFILE=%%c
-java -Dorg.eclipse.ecf.provider.filetransfer.excludeContributors=org.eclipse.ecf.provider.filetransfer.httpclient4 -Djava.net.preferIPv4Stack=true -jar %JARFILE% -install director -configuration director/configuration -application org.eclipse.equinox.p2.director -consoleLog -profileProperties org.eclipse.update.install.features=true -destination %DESTINATION% -repository %1% -u org.adempiere.server.product
-java -Dorg.eclipse.ecf.provider.filetransfer.excludeContributors=org.eclipse.ecf.provider.filetransfer.httpclient4 -Djava.net.preferIPv4Stack=true -jar %JARFILE% -install director -configuration director/configuration -application org.eclipse.equinox.p2.director -consoleLog -profileProperties org.eclipse.update.install.features=true -destination %DESTINATION% -repository %1% -i org.adempiere.server.product
+@call %DESTINATION%\update-prd %1% org.adempiere.server.product
 
 copy idempiere.ini.sav idempiere.ini
 
@@ -43,4 +41,3 @@ if exist jetty-selector.xml.sav (
    copy jetty-selector.xml.sav jettyhome\etc\jetty-selector.xml 
    del /q jetty-selector.xml.sav
 )
-

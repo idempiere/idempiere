@@ -361,7 +361,7 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 					}
 				}
 				if (X_AD_User.NOTIFICATIONTYPE_Notice.equals(NotificationType)
-					&& AD_Role_ID >= 0)
+					&& AD_Role_ID < 0)
 				{
 					if (s_log.isLoggable(Level.CONFIG)) s_log.config("No internal User: " + Name);
 					continue;
