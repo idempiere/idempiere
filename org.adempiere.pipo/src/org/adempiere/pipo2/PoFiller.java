@@ -48,6 +48,17 @@ public class PoFiller{
 		value = "".equals(value) ? null : value;
 		return value;
 	}
+	
+	protected boolean isBlobOnPackinFile (String columnName){
+		String value = getStringValue(columnName);
+		if(value == null)
+			return false;
+		
+		String strParts [] = value.split("[|]");
+		return strParts.length == 2;
+
+	}
+	
 	/**
 	 *
 	 * @param columnName
@@ -292,7 +303,7 @@ public class PoFiller{
 				} else if (info.getColumnClass(index) == Timestamp.class) {
 					setTimestamp(qName);
 				}else if(DisplayType.TextLong == info.getColumnDisplayType(index)) {// export column from system have type is normal string, but import to system have this column but type is textlong (mean blob)
-					if (getStringValue (qName) != null) {
+					if (getStringValue (qName) != null || !isBlobOnPackinFile(qName)) {
 						setString(qName);
 					}else {
 						setBlob(qName);
