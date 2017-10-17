@@ -13,7 +13,8 @@
  *                                                                            *
  *  Contributors:                                                             *
  *    Carlos Ruiz - GlobalQSS:                                                *
- *      FR 3132033 - Make payment export class configurable per bank          *
+ *      FR 3132033 - Make payment export class configurable per bank
+ *    Markus Bozem:  IDEMPIERE-1546 / IDEMPIERE-3286        				  *
  *****************************************************************************/
 package org.compiere.apps.form;
 
@@ -24,8 +25,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.base.IPaymentExporterFactory;
+import org.adempiere.base.Service;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MPaySelectionCheck;
@@ -34,6 +38,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.PaymentExport;
 import org.compiere.util.ValueNamePair;
 
 public class PayPrint {
@@ -57,6 +62,7 @@ public class PayPrint {
 	public String bank;
 	public String currency;
 	public BigDecimal balance;
+	protected PaymentExport m_PaymentExport;
 	
 	/**
 	 *  PaySelect changed - load Bank
@@ -157,7 +163,8 @@ public class PayPrint {
 	
 	public String noPayments;
 	public Integer documentNo;
-	
+	public Double sumPayments;
+	public Integer printFormatId;
 
 	/**
 	 *  PaymentRule changed - load DocumentNo, NoPayments,
@@ -167,19 +174,23 @@ public class PayPrint {
 	{
 		String msg = null;
 		
-		String sql = "SELECT COUNT(*) "
+		String sql = "SELECT COUNT(*),SUM(payamt) "
 			+ "FROM C_PaySelectionCheck "
-			+ "WHERE C_PaySelection_ID=?";
+			+ "WHERE C_PaySelection_ID=? AND PaymentRule=?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, C_PaySelection_ID);
+			pstmt.setString(2, PaymentRule);
 			rs = pstmt.executeQuery();
 			//
 			if (rs.next())
+			{
 				noPayments = String.valueOf(rs.getInt(1));
+				sumPayments = rs.getDouble(2);
+			}   
 		}
 		catch (SQLException e)
 		{
@@ -192,8 +203,11 @@ public class PayPrint {
 			pstmt = null;
 		}
 
+		printFormatId = null;
+		documentNo = null;
+		
 		//  DocumentNo
-		sql = "SELECT CurrentNext "
+		sql = "SELECT CurrentNext, Check_PrintFormat_ID "
 			+ "FROM C_BankAccountDoc "
 			+ "WHERE C_BankAccount_ID=? AND PaymentRule=? AND IsActive='Y'";
 		try
@@ -204,7 +218,10 @@ public class PayPrint {
 			rs = pstmt.executeQuery();
 			//
 			if (rs.next())
+			{
 				documentNo = new Integer(rs.getInt(1));
+				printFormatId = new Integer(rs.getInt(2));
+			}
 			else
 			{
 				log.log(Level.SEVERE, "VPayPrint.loadPaymentRuleInfo - No active BankAccountDoc for C_BankAccount_ID="
@@ -225,4 +242,50 @@ public class PayPrint {
 		
 		return msg;
 	}   //  loadPaymentRuleInfo
+	
+	protected int loadPaymentExportClass (StringBuffer err)
+	{
+		m_PaymentExport = null ;
+		
+		if (m_PaymentExportClass == null || m_PaymentExportClass.trim().length() == 0) {
+			m_PaymentExportClass = "org.compiere.util.GenericPaymentExport";
+		}
+		try
+		{
+			List<IPaymentExporterFactory> factories = Service.locator().list(IPaymentExporterFactory.class).getServices();
+			if (factories != null && !factories.isEmpty()) {
+				for(IPaymentExporterFactory factory : factories) {
+					m_PaymentExport = factory.newPaymentExporterInstance(m_PaymentExportClass);
+					if (m_PaymentExport != null)
+						break;
+				}
+			}
+			
+			if (m_PaymentExport == null)
+			{
+				Class<?> clazz = Class.forName (m_PaymentExportClass);
+				m_PaymentExport = (PaymentExport)clazz.newInstance();
+			}
+			
+		}
+		catch (ClassNotFoundException e)
+		{
+			if (err!=null)
+			{
+				err.append("No custom PaymentExport class " + m_PaymentExportClass + " - " + e.toString());
+				log.log(Level.SEVERE, err.toString(), e);
+			}
+			return -1;
+		}
+		catch (Exception e)
+		{
+			if (err!=null)
+			{
+				err.append("Error in " + m_PaymentExportClass + " check log, " + e.toString());
+				log.log(Level.SEVERE, err.toString(), e);
+			}
+			return -1;
+		}
+		return 0 ;
+	} // loadPaymentExportClass
 }
