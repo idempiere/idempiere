@@ -35,6 +35,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -45,6 +46,34 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.JobName;
+
+import org.adempiere.base.Service;
+import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.DBException;
+import org.adempiere.util.IProcessUI;
+import org.compiere.model.MAttachment;
+import org.compiere.model.MAttachmentEntry;
+import org.compiere.model.MProcess;
+import org.compiere.model.MQuery;
+import org.compiere.model.MSysConfig;
+import org.compiere.model.MTable;
+import org.compiere.model.PrintInfo;
+import org.compiere.model.X_AD_PInstance_Para;
+import org.compiere.print.MPrintFormat;
+import org.compiere.print.PrintUtil;
+import org.compiere.print.ServerReportCtl;
+import org.compiere.process.ClientProcess;
+import org.compiere.process.ProcessCall;
+import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.util.CLogger;
+import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.compiere.util.Ini;
+import org.compiere.util.Language;
+import org.compiere.util.Trx;
+import org.compiere.util.Util;
+import org.compiere.utils.DigestOfFile;
 
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
@@ -86,34 +115,6 @@ import net.sf.jasperreports.export.SimpleTextExporterConfiguration;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsExporterConfiguration;
 import net.sf.jasperreports.export.SimpleXmlExporterOutput;
-
-import org.adempiere.base.Service;
-import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.exceptions.DBException;
-import org.adempiere.util.IProcessUI;
-import org.compiere.model.MAttachment;
-import org.compiere.model.MAttachmentEntry;
-import org.compiere.model.MProcess;
-import org.compiere.model.MQuery;
-import org.compiere.model.MSysConfig;
-import org.compiere.model.MTable;
-import org.compiere.model.PrintInfo;
-import org.compiere.model.X_AD_PInstance_Para;
-import org.compiere.print.MPrintFormat;
-import org.compiere.print.PrintUtil;
-import org.compiere.print.ServerReportCtl;
-import org.compiere.process.ClientProcess;
-import org.compiere.process.ProcessCall;
-import org.compiere.process.ProcessInfo;
-import org.compiere.process.ProcessInfoParameter;
-import org.compiere.util.CLogger;
-import org.compiere.util.DB;
-import org.compiere.util.Env;
-import org.compiere.util.Ini;
-import org.compiere.util.Language;
-import org.compiere.util.Trx;
-import org.compiere.util.Util;
-import org.compiere.utils.DigestOfFile;
 
 /**
  * @author rlemeill
@@ -185,8 +186,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 				log.warning("404 not found: Report cannot be found on server "+ e.getMessage());
     		return null;
     	} catch (IOException e) {
-			log.severe("I/O error when trying to download (sub)report from server "+ e.getMessage());
-    		return null;
+			throw new AdempiereException("I/O error when trying to download (sub)report from server "+ e.getLocalizedMessage());
     	}
     }
 
@@ -285,8 +285,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 
     	}
     	catch (Exception e) {
-    		log.severe("Unknown exception: "+ e.getMessage());
-    		return null;
+			throw new AdempiereException("Unknown exception: "+ e.getLocalizedMessage());
     	}
     	return reportFile;
     }
@@ -311,8 +310,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
     		String hash = new String(baos.toByteArray());
     		return hash;
     	} catch (IOException e) {
-			log.severe("I/O error when trying to download (sub)report from server "+ e.getMessage());
-    		return null;
+			throw new AdempiereException("I/O error when trying to download (sub)report from server "+ e.getLocalizedMessage());
     	}
 	}
 
@@ -379,7 +377,12 @@ public class ReportStarter implements ProcessCall, ClientProcess
             return false;
         }
 
-        String reportPath = reportData.getReportFilePath();
+      List<JasperPrint> jasperPrintList = new ArrayList<JasperPrint>();
+      String reportFilePath = reportData.getReportFilePath();
+      String[]  reportPathList = reportFilePath.split(";");
+      for (int idx = 0; idx < reportPathList.length; idx++) {
+
+        String reportPath = reportPathList[idx];
         if (Util.isEmpty(reportPath, true))
 		{
             reportResult(AD_PInstance_ID, "Can not find report", trxName);
@@ -702,9 +705,20 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	                    	}
 	                    }	
 	                } else {
-	                    if (log.isLoggable(Level.INFO)) log.info( "ReportStarter.startProcess run report -"+jasperPrint.getName());
-	                    JRViewerProvider viewerLauncher = Service.locator().locate(JRViewerProvider.class).getService();
-	                    viewerLauncher.openViewer(jasperPrint, pi.getTitle());
+	                	if (reportPathList.length == 1) {
+		                    if (log.isLoggable(Level.INFO)) log.info( "ReportStarter.startProcess run report -"+jasperPrint.getName());
+		                    JRViewerProvider viewerLauncher = Service.locator().locate(JRViewerProvider.class).getService();
+		                    viewerLauncher.openViewer(jasperPrint, pi.getTitle());
+	                	} else {
+	                		jasperPrintList.add(jasperPrint);
+	                		if (idx+1 == reportPathList.length) {
+			                    JRViewerProviderList viewerLauncher = Service.locator().locate(JRViewerProviderList.class).getService();
+			                    if (viewerLauncher == null) {
+			                    	throw new AdempiereException("Can not find a viewer provider for multiple jaspers");
+			                    }
+			                    viewerLauncher.openViewer(jasperPrintList, pi.getTitle());
+	                		}
+	                	}
 	                }
                 }
                 else
@@ -786,7 +800,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
                 	}
                 }
             } catch (JRException e) {
-                log.severe("ReportStarter.startProcess: Can not run report - "+ e.getMessage());
+                throw new AdempiereException(e.getLocalizedMessage() + (e.getCause() != null ? " -> " + e.getCause().getLocalizedMessage() : ""));
             } finally {
             	if (conn != null) {
 					try {
@@ -796,6 +810,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
             	}
             }
         }
+
+      } // for reportPathList
 
         if (onrows != null && onrows instanceof Integer) {
         	nrows = (Integer) onrows;
@@ -1275,7 +1291,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
         }
         catch (SQLException e)
         {
-//            log.severe("Execption; sql = "+sql+"; e.getMessage() = " +e.getMessage());
             throw new DBException(e, sql);
         }
         finally
@@ -1373,8 +1388,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
         catch (SQLException e)
         {
         	throw new DBException(e, sql);
-//        	log.severe("sql = "+sql+"; e.getMessage() = "+ e.getMessage());
-//        	return null;
         }
         finally
         {

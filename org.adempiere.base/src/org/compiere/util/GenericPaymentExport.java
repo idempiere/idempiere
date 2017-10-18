@@ -21,6 +21,7 @@ import java.io.FileWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 
 import org.compiere.model.MCurrency;
@@ -67,11 +68,13 @@ public class GenericPaymentExport implements PaymentExport
 	/**************************************************************************
 	 *  Export to File
 	 *  @param checks array of checks
+	 *  @param depositBatch book the payments as single position
+	 *  @param paymentRule selected payment rule
 	 *  @param file file to export checks
 	 *  @return number of lines
 	 */
-	public int exportToFile (MPaySelectionCheck[] checks, File file, StringBuffer err)
-	{
+	public int exportToFile(MPaySelectionCheck[] checks, boolean depositBatch, String paymentRule, File file,
+			StringBuffer err) {
 		if (checks == null || checks.length == 0)
 			return 0;
 		//  Must be a file
@@ -115,6 +118,7 @@ public class GenericPaymentExport implements PaymentExport
 				.append(x).append("PayDate").append(x).append(",")
 				.append(x).append("Currency").append(x).append(",")
 				.append(x).append("PayAmount").append(x).append(",")
+				.append(x).append("DepositBatch").append(x).append(",")
 				.append(x).append("Comment").append(x)
 				.append(Env.NL);
 			fw.write(line.toString());
@@ -154,6 +158,7 @@ public class GenericPaymentExport implements PaymentExport
 					.append(mpp.getParent().getPayDate()).append(",")               // PayDate
 					.append(x).append(MCurrency.getISO_Code(Env.getCtx(), mpp.getParent().getC_Currency_ID())).append(x).append(",")    // Currency
 					.append(mpp.getPayAmt()).append(",")                // PayAmount
+					.append(x).append(depositBatch).append(x).append(",")
 					.append(x).append(comment.toString()).append(x)     // Comment
 					.append(Env.NL);
 				fw.write(line.toString());
@@ -249,5 +254,35 @@ public class GenericPaymentExport implements PaymentExport
 		return bp;
 	}   //  getBPartnerInfo
 
+	@Override
+	public String getFilenamePrefix() {
+		String creationDate = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis()) ;
+		return "payments-" + creationDate ;
+	}
+
+	@Override
+	public String getFilenameSuffix() {
+		return ".csv";
+	}
+
+	@Override
+	public String getContentType() {
+		return "text/csv";
+	}
+
+	@Override
+	public boolean supportsDepositBatch() {
+		return true;
+	}
+
+	@Override
+	public boolean supportsSeparateBooking() {
+		return true;
+	}
+
+	@Override
+	public boolean getDefaultDepositBatch() {
+		return false;
+	}
 	
-}	//	PaymentExport
+}	//	PaymentExporterInterface

@@ -45,6 +45,7 @@ import org.compiere.model.PaymentProcessor;
 import org.compiere.model.StandardTaxProvider;
 import org.compiere.process.ProcessCall;
 import org.compiere.util.CLogger;
+import org.compiere.util.PaymentExport;
 import org.compiere.util.ReplenishInterface;
 import org.osgi.framework.FrameworkUtil;
 
@@ -415,4 +416,38 @@ public class Core {
 
 		return engine;
 	}
+	
+	/**
+	 * get PaymentExporter instance
+	 * 
+	 * @param className
+	 * @return instance of the PaymentExporterInterface or null
+	 */
+	public static PaymentExport getPaymentExporter (String className){
+		if (className == null || className.length() == 0) {
+			s_log.log(Level.SEVERE, "No PaymentExporter class name");
+			return null;
+		}
+
+		PaymentExport myPaymentExporter = null;
+		
+		List<IPaymentExporterFactory> factoryList = 
+				Service.locator().list(IPaymentExporterFactory.class).getServices();
+		if (factoryList != null) {
+			for(IPaymentExporterFactory factory : factoryList) {
+				PaymentExport exporter = factory.newPaymentExporterInstance(className);
+				if (exporter != null) {
+					myPaymentExporter = exporter;
+					break;
+				}
+			}
+		}
+		
+		if (myPaymentExporter == null) {
+			s_log.log(Level.CONFIG, className + " not found in service/extension registry and classpath");
+			return null;
+		}
+		
+		return myPaymentExporter;
+	}	
 }

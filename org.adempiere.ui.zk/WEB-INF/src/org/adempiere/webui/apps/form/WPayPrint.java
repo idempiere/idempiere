@@ -39,6 +39,7 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.editor.WSearchEditor;
+import org.adempiere.webui.editor.WYesNoEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.panel.ADForm;
@@ -61,7 +62,6 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.PaymentExport;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -80,6 +80,7 @@ import com.itextpdf.text.pdf.PdfReader;
  * 
  *  Contributors:
  *    Carlos Ruiz - GlobalQSS - FR 3132033 - Make payment export class configurable per bank 
+ *    Markus Bozem:  IDEMPIERE-1546 / IDEMPIERE-3286 
 */
 public class WPayPrint extends PayPrint implements IFormController, EventListener<Event>, ValueChangeListener
 {
@@ -136,7 +137,12 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	protected WNumberEditor fBalance = new WNumberEditor();
 	protected Label lCurrency = new Label();
 	protected Label fCurrency = new Label();
+	protected Label lDepositBatch = new Label();
+	protected WYesNoEditor fDepositBatch = new WYesNoEditor("", "", "Book as one post", false, false, true) ;
+	protected Label lSumPayments = new Label();
+	protected WNumberEditor fSumPayments = new WNumberEditor();
 
+	
 	/**
 	 *  Static Init
 	 *  @throws Exception
@@ -168,6 +174,10 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		fBalance.setReadWrite(false);
 		fBalance.getComponent().setIntegral(false);
 		lCurrency.setText(Msg.translate(Env.getCtx(), "C_Currency_ID"));
+		lDepositBatch.setText(Msg.translate(Env.getCtx(), "C_DepositBatch_ID"));
+		lSumPayments.setText(Msg.getMsg(Env.getCtx(), "Sum"));
+		fSumPayments.setReadWrite(false);
+		fSumPayments.getComponent().setIntegral(false);
 		//
 		southPanel.addButton(bExport);
 		southPanel.addButton(bPrint);
@@ -195,8 +205,18 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		row.appendChild(fDocumentNo.getComponent());
 		row.appendChild(lNoPayments.rightAlign());
 		row.appendChild(fNoPayments);
+		
+		row = rows.newRow();
+		row.appendChild(lDepositBatch.rightAlign()) ;
+		row.appendChild(fDepositBatch.getComponent()) ;
+		row.appendChild(lSumPayments.rightAlign()) ;
+		row.appendChild(fSumPayments.getComponent()) ;
 
 		southPanel.getButton(ConfirmPanel.A_OK).setVisible(false);
+		bExport.setDisabled(true);
+		bPrint.setDisabled(true);
+		fDepositBatch.setReadWrite(false);
+		fDocumentNo.setReadWrite(false);
 	}   //  VPayPrint
 
 	/**
@@ -318,6 +338,9 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 
 		if(noPayments != null)
 			fNoPayments.setText(noPayments);
+		
+		if(sumPayments != null)
+			fSumPayments.setValue(sumPayments);
 
 		bProcess.setEnabled(PaymentRule.equals("T"));
 
@@ -326,9 +349,45 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 
 		if(msg != null && msg.length() > 0)
 			FDialog.error(m_WindowNo, form, msg);
+		
+		getPluginFeatures();
 	}   //  loadPaymentRuleInfo
 
 
+	protected void getPluginFeatures()
+	{
+		if (m_C_PaySelection_ID!=0)
+		{
+			if (loadPaymentExportClass (null)>=0)
+			{
+				bExport.setDisabled(false);
+				
+				fDepositBatch.setValue(m_PaymentExport.getDefaultDepositBatch());
+				if (m_PaymentExport.supportsDepositBatch() && m_PaymentExport.supportsSeparateBooking())
+				{
+					fDepositBatch.setReadWrite(true);
+				}
+				else
+				{
+					fDepositBatch.setReadWrite(false);
+				}
+			}
+			else
+			{
+				bExport.setDisabled(true);
+			}
+			if (printFormatId!=null && printFormatId!=0)
+			{
+				bPrint.setEnabled(true);
+			}
+			else
+			{
+				bPrint.setEnabled(false);
+			}
+		}
+	}   // getPluginFeatures 
+	
+	
 	/**************************************************************************
 	 *  Export payments to file
 	 */
@@ -343,37 +402,28 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 
 		try
 		{
-			//  Get File Info
-			File tempFile = File.createTempFile("paymentExport", ".txt");
-
-			//  Create File
 			int no = 0;
 			StringBuffer err = new StringBuffer("");
 			if (m_PaymentExportClass == null || m_PaymentExportClass.trim().length() == 0) {
 				m_PaymentExportClass = "org.compiere.util.GenericPaymentExport";
 			}
-			//	Get Payment Export Class
-			PaymentExport custom = null;
-			try
+			
+			File tempFile = null;
+			String filenameForDownload = "";
+			
+			no = loadPaymentExportClass(err) ;
+			
+			if (no >= 0)
 			{
-				Class<?> clazz = Class.forName(m_PaymentExportClass);
-				custom = (PaymentExport)clazz.newInstance();
-				no = custom.exportToFile(m_checks, tempFile, err);
+				//  Get File Info
+				tempFile = File.createTempFile(m_PaymentExport.getFilenamePrefix(), m_PaymentExport.getFilenameSuffix());
+				filenameForDownload = m_PaymentExport.getFilenamePrefix() + m_PaymentExport.getFilenameSuffix();
+				
+				no = m_PaymentExport.exportToFile(m_checks,(Boolean) fDepositBatch.getValue(),PaymentRule, tempFile, err);
 			}
-			catch (ClassNotFoundException e)
-			{
-				no = -1;
-				err.append("No custom PaymentExport class " + m_PaymentExportClass + " - " + e.toString());
-				log.log(Level.SEVERE, err.toString(), e);
-			}
-			catch (Exception e)
-			{
-				no = -1;
-				err.append("Error in " + m_PaymentExportClass + " check log, " + e.toString());
-				log.log(Level.SEVERE, err.toString(), e);
-			}
+			
 			if (no >= 0) {
-				Filedownload.save(new FileInputStream(tempFile), "plain/text", "paymentExport.txt");
+				Filedownload.save(new FileInputStream(tempFile), m_PaymentExport.getContentType(), filenameForDownload);
 				FDialog.info(m_WindowNo, form, "Saved",
 						Msg.getMsg(Env.getCtx(), "NoOfLines") + "=" + no);
 
@@ -384,7 +434,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 					{
 						if (result)
 						{
-							MPaySelectionCheck.confirmPrint (m_checks, m_batch);
+							MPaySelectionCheck.confirmPrint (m_checks, m_batch, (Boolean) fDepositBatch.getValue());
 							//	document No not updated
 						}
 						

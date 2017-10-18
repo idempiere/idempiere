@@ -1705,6 +1705,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 		countSql = MRole.getDefault().addAccessSQL	(countSql, getTableName(),
 													MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
+		// Fix GroupBy On InfoWindow
+		String otherClause = infoWindow.getOtherClause();
+    	if (otherClause !=null)
+    		countSql = countSql+" "+otherClause;
 		
 		countSql = "SELECT COUNT(*) FROM ( " + countSql + " ) a";			
 		
