@@ -240,11 +240,3 @@
 	padding: 3px 3px;
 }
 
-@media screen and (max-height: 767px) {
-	.adtab-form-borderlayout.z-borderlayout > div > .z-south-collapsed > .z-borderlayout-icon.z-icon-chevron-up {
-		display: none;
-	}
-	.adtab-form-borderlayout.z-borderlayout > div > .adwindow-gridview-detail.z-south {
-		height: 80%;
-	}
-}

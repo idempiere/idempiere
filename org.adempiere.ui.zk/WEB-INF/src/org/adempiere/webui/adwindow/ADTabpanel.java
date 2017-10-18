@@ -364,6 +364,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			Borderlayout layout = new Borderlayout();
 			layout.setParent(this);
 			layout.setSclass("adtab-form-borderlayout");
+			if (ClientInfo.isMobile())
+				LayoutUtils.addSclass("mobile", layout);
 			
 			treePanel = new ADTreePanel(windowNo, gridTab.getTabNo());
 			West west = new West();
@@ -407,6 +409,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			Borderlayout layout = new Borderlayout();
 			layout.setParent(this);
 			layout.setSclass("adtab-form-borderlayout");
+			if (ClientInfo.isMobile())
+				LayoutUtils.addSclass("mobile", layout);
 						
 			Center center = new Center();
 			layout.appendChild(center);
