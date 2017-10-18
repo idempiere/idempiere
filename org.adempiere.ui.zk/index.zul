@@ -6,10 +6,13 @@ Copyright (C) 2007 Ashley G Ramdass.
 <?init zscript="theme.zs" ?>
 <?meta http-equiv="X-UA-Compatible" content="IE=edge" ?>
 <?meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" ?>
+<?meta name="apple-mobile-web-app-capable" content="yes"?>
+<?meta name="mobile-web-app-capable" content="yes"?>
 <?link rel="icon" type="image/png" href="${browserIcon}"?>
 <?link rel="stylesheet" type="text/css" href="${themeStyleSheet}"?>
 <?link rel="stylesheet" type="text/css" href="${themeStyleSheetByBrowser}"?>
 <?link rel="stylesheet" type="text/css" href="css/PAPanel.css"?>
+<?link rel="manifest" href="manifest.json"?>
 <zk>
 	<script><![CDATA[
 		zk.afterLoad(function() {

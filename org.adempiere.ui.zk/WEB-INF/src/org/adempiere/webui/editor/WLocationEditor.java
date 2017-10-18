@@ -21,6 +21,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.component.Locationbox;
@@ -29,6 +30,7 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WLocationDialog;
 import org.compiere.model.GridField;
@@ -90,7 +92,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
     	
     	popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
     	popupMenu.addMenuListener(this);
-    	addChangeLogMenu(popupMenu);
+    	addChangeLogMenu(popupMenu);    	
     }
     
 	@Override
@@ -208,6 +210,25 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 			});
             ld.setTitle(null);
             LayoutUtils.openPopupWindow(getComponent(), ld);
+            if (ClientInfo.isMobile())
+    		{
+            	ld.setAttribute("mobile.orientation", ClientInfo.get().orientation);
+    			ClientInfo.onClientInfo(ld, () -> {
+    				if (ld.getPage() != null) {
+    					String orientation = (String) ld.getAttribute("mobile.orientation");
+    					String newOrientation = ClientInfo.get().orientation;
+    					if (!newOrientation.equals(orientation)) {
+    						ld.setAttribute("mobile.orientation", newOrientation);
+    						
+    						ZKUpdateUtil.setCSSHeight(ld);
+    						ZKUpdateUtil.setCSSWidth(ld);    						
+    						ld.invalidate();
+    						LayoutUtils.openPopupWindow(getComponent(), ld, 100);
+    						
+    					}	    				
+    				}
+    			});
+    		}
         }
     }
     

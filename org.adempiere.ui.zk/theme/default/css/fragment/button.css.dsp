@@ -81,6 +81,9 @@
 .z-button.btn-small {
 	padding: 1px 5px;
 }
+.z-button.btn-medium {
+	padding: 2px 10px;
+}
 
 .z-button-disabled {
 	color: black; cursor: default; opacity: .6; -moz-opacity: .6; -khtml-opacity: .6; filter: alpha(opacity=60);

@@ -1,5 +1,6 @@
 CKEDITOR.editorConfig = function(config) {
     config.resize_enabled = false;
+    config.toolbarCanCollapse = true;
     config.toolbar = 'MyToolbar';
     config.toolbar_MyToolbar =
 [
@@ -8,5 +9,6 @@ CKEDITOR.editorConfig = function(config) {
 	{ name: 'clipboard', items : [ 'Undo','Redo' ] },
 	{ name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
 	{ name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock' ] },
+	{ name: 'tools', items : [ 'Maximize' ] }
 ];
 };

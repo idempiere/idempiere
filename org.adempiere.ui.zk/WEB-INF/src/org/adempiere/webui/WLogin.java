@@ -17,11 +17,14 @@ package org.adempiere.webui;
 import java.util.Locale;
 import java.util.Properties;
 
+import javax.servlet.ServletRequest;
+
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.part.AbstractUIPart;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.LoginWindow;
+import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -79,7 +82,15 @@ public class WLogin extends AbstractUIPart
         	browserWarningWindow.doOverlapped();
         }
         
-        boolean mobile = Executions.getCurrent().getBrowser("mobile") !=null;
+        boolean mobile = false;        
+		if (Executions.getCurrent().getBrowser("mobile") !=null) {
+			mobile = true;
+		} else {
+			String ua = Servlets.getUserAgent((ServletRequest) Executions.getCurrent().getNativeRequest());
+			ua = ua.toLowerCase();
+			if (ua.contains("ipad") || ua.contains("iphone") || ua.contains("android"))
+				mobile = true;
+		}
     	
         West west = layout.getWest();
         if (west.getFirstChild() != null && west.getFirstChild().getFirstChild() != null) {

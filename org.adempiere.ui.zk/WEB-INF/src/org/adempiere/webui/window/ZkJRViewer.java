@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import javax.activation.FileDataSource;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Listbox;
@@ -29,12 +30,14 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
+import org.zkoss.zk.ui.ext.render.DynamicMedia;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Iframe;
@@ -43,6 +46,8 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Toolbar;
+import org.zkoss.zul.impl.Utils;
+import org.zkoss.zul.impl.XulElement;
 
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
@@ -85,7 +90,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	private KeyEvent prevKeyEvent;
 
 	private String m_title; // local title - embedded windows clear the title
-
+	
+	private int mediaVersion = 0;
+	
 	public ZkJRViewer(JasperPrint jasperPrint, String title) {
 		super();
 		this.setTitle(title);
@@ -458,6 +465,19 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	}
 
 	public void onRenderReport() {
+		if (ClientInfo.isMobile()) {
+			Listitem selected = previewType.getSelectedItem();
+			String reportType=selected.getValue();
+			if ( "PDF".equals( reportType ) ) {
+				mediaVersion++;
+				String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());
+				String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+				iframe.setContent(null);
+				iframe.setSrc(pdfJsUrl);				
+				return;
+			}
+		}
+		iframe.setSrc(null);
 		iframe.setContent(media);
 	}
 
@@ -485,6 +505,21 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			SessionManager.getAppDesktop().unregisterWindow(m_WindowNo);
 			jasperPrint = null;
 			m_WindowNo = -1;
+		}
+	}
+	
+	//-- ComponentCtrl --//
+	public Object getExtraCtrl() {
+		return new ExtraCtrl();
+	}
+	/** A utility class to implement {@link #getExtraCtrl}.
+	 * It is used only by component developers.
+	 */
+	protected class ExtraCtrl extends XulElement.ExtraCtrl
+	implements DynamicMedia {
+		//-- DynamicMedia --//
+		public Media getMedia(String pathInfo) {
+			return media;
 		}
 	}
 

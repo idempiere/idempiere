@@ -38,6 +38,7 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
@@ -463,11 +464,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         ListHeader lstHAndOr = new ListHeader();
         lstHAndOr.setLabel(Msg.getMsg(Env.getCtx(), "And/Or"));
-        ZKUpdateUtil.setWidth(lstHAndOr, "10%");
+        ZKUpdateUtil.setWidth(lstHAndOr, "60px");
 
         ListHeader lstHLeftBracket = new ListHeader();
         lstHLeftBracket.setLabel("(");
-        ZKUpdateUtil.setWidth(lstHLeftBracket, "6%");
+        lstHLeftBracket.setAlign("center");
+        ZKUpdateUtil.setWidth(lstHLeftBracket, "50px");
 
         ListHeader lstHColumn = new ListHeader();
         lstHColumn.setLabel(Msg.translate(Env.getCtx(), "AD_Column_ID"));
@@ -475,6 +477,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         ListHeader lstHOperator = new ListHeader();
         lstHOperator.setLabel(Msg.getMsg(Env.getCtx(), "Operator"));
+        ZKUpdateUtil.setWidth(lstHOperator, "70px");
 
         ListHeader lstHQueryValue = new ListHeader();
         lstHQueryValue.setLabel(Msg.getMsg(Env.getCtx(), "QueryValue"));
@@ -486,7 +489,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         ListHeader lstHRightBracket = new ListHeader();
         lstHRightBracket.setLabel(")");
-        ZKUpdateUtil.setWidth(lstHRightBracket, "6%");
+        lstHRightBracket.setAlign("center");
+        ZKUpdateUtil.setWidth(lstHRightBracket, "50px");
+        
+        if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1)) {        	
+        	ZKUpdateUtil.setWidth(lstHColumn, "200px");
+        	ZKUpdateUtil.setWidth(lstHQueryValue, "200px");
+        	ZKUpdateUtil.setWidth(lstHQueryTo, "200px");
+        }
 
         listhead.appendChild(lstHAndOr);
         listhead.appendChild(lstHLeftBracket);
@@ -566,7 +576,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		fQueryName.addEventListener(Events.ON_SELECT, this);
 		
 		Label label = new Label(Msg.getMsg(Env.getCtx(), "SavedQuery"));
-		label.setStyle("vertical-align: middle;");
+		if (ClientInfo.maxWidth(639))
+			label.setStyle("vertical-align: middle;display: block; padding-left: 4px; padding-top: 4px;");
+		else
+			label.setStyle("vertical-align: middle;");
 		div.appendChild(label);
 		div.appendChild(fQueryName);
         div.appendChild(btnSave);
@@ -580,7 +593,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         // adding history combo
         prepareHistoryCombo();
         Label labelHistory = new Label(Msg.getMsg(Env.getCtx(), HISTORY_LABEL));
-        labelHistory.setStyle("vertical-align: middle;");
+        if (ClientInfo.maxWidth(639))
+        	labelHistory.setStyle("vertical-align: middle; display: block;padding-left: 4px; padding-top: 4px;");
+        else
+        	labelHistory.setStyle("vertical-align: middle;");
         div.appendChild(labelHistory);
         div.appendChild(historyCombo);
         historyCombo.setStyle("margin-left: 3px; margin-right: 3px; position: relative; vertical-align: middle;");

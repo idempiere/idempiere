@@ -108,9 +108,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	{
 		super ();
 		this.setTitle(Msg.translate(Env.getCtx(), "M_AttributeSetInstance_ID"));
-		ZKUpdateUtil.setWidth(this, "500px");
-		this.setSclass("popup-dialog");
-//		ZKUpdateUtil.setHeight(this, "600px");
+		if (!ThemeManager.isUseCSSForWindowSize())
+			ZKUpdateUtil.setWindowWidthX(this, 500);
+		this.setSclass("popup-dialog pattribute-dialog");
 		this.setBorder("normal");
 		this.setShadow(true);
 		this.setSizable(true);

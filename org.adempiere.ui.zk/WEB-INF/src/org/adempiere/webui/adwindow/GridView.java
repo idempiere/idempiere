@@ -26,7 +26,7 @@ import org.adempiere.base.Core;
 import org.adempiere.model.MTabCustomization;
 import org.adempiere.util.Callback;
 import org.adempiere.util.GridRowCtx;
-import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
@@ -83,6 +83,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 
 	private static final int DEFAULT_DETAIL_PAGE_SIZE = 10;
 
+	private static final int DEFAULT_MOBILE_PAGE_SIZE = 20;
+	
 	private static final int DEFAULT_PAGE_SIZE = 20;
 
 	private static final int MIN_COLUMN_WIDTH = 100;
@@ -158,10 +160,14 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		ZKUpdateUtil.setVflex(gridFooter, "0");
 		
 		//default paging size
-		if (AEnv.isTablet())
+		if (ClientInfo.isMobile())
 		{
-			//anything more than 20 is very slow on a tablet
-			pageSize = 10;
+			//Shoud be <= 20 on mobile
+			pageSize = MSysConfig.getIntValue(MSysConfig.ZK_MOBILE_PAGING_SIZE, DEFAULT_MOBILE_PAGE_SIZE, Env.getAD_Client_ID(Env.getCtx()));
+			String limit = Library.getProperty(CustomGridDataLoader.GRID_DATA_LOADER_LIMIT);
+			if (limit == null || !(limit.equals(Integer.toString(pageSize)))) {
+				Library.setProperty(CustomGridDataLoader.GRID_DATA_LOADER_LIMIT, Integer.toString(pageSize));
+			}
 		}
 		else
 		{
@@ -173,7 +179,10 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		}		
 		
 		//default true for better UI experience
-		modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_EDIT_MODELESS, true);
+		if (ClientInfo.isMobile())
+			modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_EDIT_MODELESS, false);
+		else
+			modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_EDIT_MODELESS, true);
 		
 		appendChild(listbox);
 		appendChild(gridFooter);								
@@ -294,10 +303,16 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		} else {
 			ArrayList<GridField> gridFieldList = new ArrayList<GridField>();
 			
+			//limit number of columns on mobile for better performance
+			int max = 0;
+			if (ClientInfo.isMobile())
+				max = MSysConfig.getIntValue(MSysConfig.ZK_GRID_MOBILE_MAX_COLUMNS, 10, Env.getAD_Client_ID(Env.getCtx()));
 			for(GridField field:tmpFields){
 				if(field.isDisplayedGrid() && !field.isToolbarOnlyButton()) {
 					gridFieldList.add(field);
 				}
+				if (max > 0 && gridFieldList.size() >= max)
+					break;
 			}
 			
 			Collections.sort(gridFieldList, new Comparator<GridField>() {
@@ -458,7 +473,7 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 		Columns columns = new Columns();
 		
 		//frozen not working well on tablet devices yet
-		if (!AEnv.isTablet())
+		if (!ClientInfo.isMobile())
 		{
 			Frozen frozen = new Frozen();
 			//freeze selection and indicator column

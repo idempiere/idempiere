@@ -7,6 +7,7 @@ import org.adempiere.webui.adwindow.GridView;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.CustomizeGridViewPanel;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -36,11 +37,18 @@ public class CustomizeGridViewDialog extends Window {
 	
 	private void initComponent(int windowNo, int AD_Tab_ID, int AD_User_ID, Map<Integer, String> columnsWidth,ArrayList<Integer> gridFieldIds) {
 		customizePanel = new CustomizeGridViewPanel(windowNo, AD_Tab_ID, AD_User_ID, columnsWidth,gridFieldIds);
-		this.setStyle("position : absolute;");
-		ZKUpdateUtil.setWidth(this, "600px");
-		ZKUpdateUtil.setHeight(this, "500px");
+		this.setStyle("position : relative;");
+		if (!ThemeManager.isUseCSSForWindowSize()) {
+			ZKUpdateUtil.setWindowWidthX(this, 600);
+			ZKUpdateUtil.setWindowHeightX(this, 500);
+		} else {
+			addCallback(AFTER_PAGE_ATTACHED, t-> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+			});
+		}
 		this.setBorder("normal");
-		this.setSclass("popup-dialog");
+		this.setSclass("popup-dialog customize-grid-view-dialog");
 		appendChild(customizePanel);
 		customizePanel.createUI();
 		customizePanel.query();
@@ -71,6 +79,5 @@ public class CustomizeGridViewDialog extends Window {
 		customizeWindow.setGridPanel(gridPanel);
 		AEnv.showWindow(customizeWindow);
 		return customizeWindow.isSaved();
-	}   //  showProduct
-    
+	}   //  showProduct    
 }

@@ -34,6 +34,7 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridField;
@@ -390,9 +391,12 @@ public class ValuePreference extends Window implements EventListener<Event>
 		this.setBorder("normal");
 		setLayout.makeNoStrip();
 		setLayout.setOddRowSclass("even");
-		
-		ZKUpdateUtil.setWidth(this, "500px");
+			
+		if (!ThemeManager.isUseCSSForWindowSize()) {			
+			ZKUpdateUtil.setWindowWidthX(this, 500);
+		}
 		this.setSizable(true);
+		this.setSclass("value-preference-dialog");
 	}   //  jbInit
 
 	/**

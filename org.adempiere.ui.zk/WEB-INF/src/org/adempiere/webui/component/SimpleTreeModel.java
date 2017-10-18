@@ -18,6 +18,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.util.CLogger;
@@ -160,12 +161,16 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 		if(ti.getTreerow()==null){
 			tr = new Treerow();			
 			tr.setParent(ti);
-			if (isItemDraggable()) {
-				tr.setDraggable("true");
-			}
-			if (!onDropListners.isEmpty()) {
-				tr.setDroppable("true");
-				tr.addEventListener(Events.ON_DROP, this);
+			//zk's dnd doesn't work well on touch device with vertical scroll enable
+			//need different approach
+			if (!ClientInfo.isMobile()) {
+				if (isItemDraggable()) {
+					tr.setDraggable("true");
+				}
+				if (!onDropListners.isEmpty()) {
+					tr.setDroppable("true");
+					tr.addEventListener(Events.ON_DROP, this);
+				}
 			}
 
 			// Color

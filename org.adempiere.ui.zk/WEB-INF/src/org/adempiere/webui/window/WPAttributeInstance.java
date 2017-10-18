@@ -27,6 +27,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
@@ -74,8 +75,19 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		this.setBorder("normal");
 		this.setSizable(true);
 		this.setMaximizable(true);
-		ZKUpdateUtil.setWidth(this, "1000px");
-		ZKUpdateUtil.setHeight(this, "550px");
+		if (!ThemeManager.isUseCSSForWindowSize())
+		{
+			ZKUpdateUtil.setWindowWidthX(this, 1000);
+			ZKUpdateUtil.setWindowHeightX(this, 550);
+		}
+		else
+		{
+			addCallback(AFTER_PAGE_ATTACHED, t-> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+			});
+		}
+		this.setSclass("pattribute-instance-dialog");
 		
 		init (M_Warehouse_ID, M_Locator_ID, M_Product_ID, C_BPartner_ID);
 		AEnv.showCenterScreen(this);
@@ -384,7 +396,5 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 	{
 		return m_M_Locator_ID;
 	}	//	getM_Locator_ID
-
-	
 
 }	//	PAttributeInstance

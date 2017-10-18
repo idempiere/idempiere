@@ -29,3 +29,6 @@
 	background-color: #FFFFFF;
 }
 
+.info-panel.z-window .z-borderlayout > div > .z-north {
+	max-height: 50%;
+}

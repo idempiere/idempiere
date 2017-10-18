@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 import javax.activation.DataSource;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.AttachmentItem;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -115,17 +116,23 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	{
 		super();
         this.setTitle(title);
-        this.setSclass("popup-dialog");
+        this.setSclass("popup-dialog email-dialog");
 		this.setClosable(true);
 		this.setBorder("normal");
-		ZKUpdateUtil.setWidth(this, "80%");
-		ZKUpdateUtil.setHeight(this, "80%");
+		if (!ThemeManager.isUseCSSForWindowSize())
+		{
+			ZKUpdateUtil.setWidth(this, "80%");
+			ZKUpdateUtil.setHeight(this, "80%");
+		}
 		this.setShadow(true);
 		this.setMaximizable(true);
 		this.setSizable(true);
 		        
 		fMessage = new CKeditor();
-		fMessage.setCustomConfigurationsPath("/js/ckeditor/config.js");
+		if (ClientInfo.isMobile())
+			fMessage.setCustomConfigurationsPath("/js/ckeditor/config-min.js");
+		else
+			fMessage.setCustomConfigurationsPath("/js/ckeditor/config.js");
 		fMessage.setToolbar("MyToolbar");
 		Map<String,Object> lang = new HashMap<String,Object>();
 		lang.put("language", Language.getLoginLanguage().getAD_Language());
@@ -218,6 +225,11 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 
 		if (MUser.get(Env.getCtx()).isAddMailTextAutomatically()) {
 			addMailText();
+		}
+		if (newpage != null && ThemeManager.isUseCSSForWindowSize()) {
+			ZKUpdateUtil.setCSSHeight(this);
+			ZKUpdateUtil.setCSSWidth(this);
+			this.invalidate();
 		}
 	}
 
@@ -835,5 +847,4 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			
 		}
 	}
-
 }	//	WEMailDialog

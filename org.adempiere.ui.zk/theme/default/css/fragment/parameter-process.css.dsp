@@ -19,6 +19,9 @@ when detect side effect, fix to only apply for parameter window*/
 .bottom-container{
 	width: 100%;
 }
+.report-option-container {
+	overflow-x: auto;
+}
 .top-parameter-layout{
 	overflow: auto;
 }
@@ -38,20 +41,29 @@ when detect side effect, fix to only apply for parameter window*/
 }
 
 .bottom-container{
-	overflow: auto;
+	overflow: hidden;
 }
 
 .button-container{
 	float: right;
+	overflow: hidden;
+	padding: 4px;
 }
 
 .save-parameter-container{
-	float: left;
+	overflow-x: auto;
+	overflow-y: hidden;
 }
 
 .popup-dialog.z-window.z-window-overlapped.z-window-shadow,
 .popup-dialog.z-window.z-window-noborder.z-window-highlighted.z-window-shadow{
 	width:600px;
+}
+@media screen and (max-width: 600px) {
+	.popup-dialog.z-window.z-window-overlapped.z-window-shadow,
+	.popup-dialog.z-window.z-window-noborder.z-window-highlighted.z-window-shadow{
+		width:100%;
+	}
 }
 
 .input-paramenter-layout{

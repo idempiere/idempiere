@@ -20,6 +20,11 @@
 	width: 100%;
 	height: 46px;
 	border-bottom: 1px solid #C5C5C5 !important;
+	padding-left: 4px;
+}
+.desktop-header.mobile {
+	height: 36px;
+	padding: 4px 4px;
 }
 
 .desktop-header-font {
@@ -52,6 +57,9 @@
 .desktop-user-panel {
 	float: right;
 }
+.desktop-user-panel.mobile .desktop-header-font.desktop-header-username {
+	font-weight: 600;
+}
 
 .desktop-layout {
 	position: absolute; 
@@ -70,6 +78,11 @@
 
 .desktop-tabbox .z-tab {
 	height: 24px;
+}
+@media screen and (max-width: 360px) {
+	.desktop-tabbox .z-tab {
+		max-width: 190px;
+	}
 }
 
 .desktop-tabbox .z-tab-selected {
@@ -222,34 +235,16 @@
 
 <%-- window container --%>
 .window-container-toolbar-btn .z-toolbarbutton-content img {
-	width: 22px;
-	height: 22px;
-}
-
-.window-container-toolbar-btn.context-help-btn .z-toolbarbutton-content img {
 	width: 16px;
 	height: 16px;
 	padding: 3px 3px;
 }
-@media screen and (min-width: 720px) {
-	.desktop-header  > .z-hlayout-inner  {
-	    width: 50%;
-	    height: 100%;
+
+@media screen and (max-height: 767px) {
+	.adtab-form-borderlayout.z-borderlayout > div > .z-south-collapsed > .z-borderlayout-icon.z-icon-chevron-up {
+		display: none;
 	}
-}
-@media screen and (max-width: 720px) {
-	.desktop-header {	
-		width: 100%;
-		height: 100%;
-		
+	.adtab-form-borderlayout.z-borderlayout > div > .adwindow-gridview-detail.z-south {
+		height: 80%;
 	}
-	.desktop-user-panel {
-		float: none;
-	}
-	.desktop-header  > .z-hlayout-inner {
-        width: 100%;
-        height: 40%;
-        display: block;
-    }
-    
 }

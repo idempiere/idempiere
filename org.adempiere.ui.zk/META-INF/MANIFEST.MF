@@ -4,7 +4,8 @@ Bundle-Name: iDempiere Web Client
 Bundle-SymbolicName: org.adempiere.ui.zk;singleton:=true
 Bundle-Version: 4.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: javax.activation,
+Import-Package: groovy.transform.stc;version="2.4.7",
+ javax.activation,
  javax.annotation;version="1.2.0",
  javax.annotation.processing,
  javax.annotation.security;version="1.2.0",
@@ -90,3 +91,5 @@ Bundle-Activator: org.adempiere.webui.WebUIActivator
 Eclipse-ExtensibleAPI: true
 Web-ContextPath: webui
 Service-Component: OSGI-INF/reportviewerprovider.xml, OSGI-INF/defaultinfofactory.xml, OSGI-INF/defaulteditorfactory.xml, OSGI-INF/jrviewerprovider.xml, OSGI-INF/resourcefinder.xml, OSGI-INF/defaultpaymentformfactory.xml, OSGI-INF/processfactory.xml, OSGI-INF/defaultprintshippinglabel.xml, OSGI-INF/defaultcreatefromfactory.xml, OSGI-INF/defaultformfactory.xml, OSGI-INF/feedbackservice.xml, OSGI-INF/zulgadgetfactory.xml, OSGI-INF/jfgchartrenderer.xml
+Bundle-ActivationPolicy: lazy
+Eclipse-RegisterBuddy: org.idempiere.zk.extra

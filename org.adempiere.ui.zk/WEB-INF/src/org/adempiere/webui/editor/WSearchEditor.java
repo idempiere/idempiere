@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.adwindow.ADWindow;
@@ -500,7 +501,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		vqe.setSizable(true);
 		adwindow = ADWindow.findADWindow(getComponent());
-		if (adwindow != null) {
+		if (adwindow != null && !ClientInfo.isMobile()) {
 			ADWindowContent content = adwindow.getADWindowContent();				
 			content.getComponent().getParent().appendChild(vqe);
 			content.showBusyMask(vqe);

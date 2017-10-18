@@ -28,6 +28,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.apps.graph.WGraph;
@@ -63,6 +64,7 @@ import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.AfterSizeEvent;
 import org.zkoss.zk.ui.event.DropEvent;
@@ -91,16 +93,19 @@ import org.zkoss.zul.Vlayout;
  */
 public class DashboardController implements EventListener<Event> {
 
+	private static final String PANEL_EMPTY_ATTR = "panel.empty";
 	private final static CLogger logger = CLogger.getCLogger(DashboardController.class);
 	private Component prevParent;
 	private Component prevNext;
 
 	private List<Panel> panelList = new ArrayList<Panel>();
-	private List<Anchorchildren> columnList = new ArrayList<Anchorchildren>();
+	private List<Anchorchildren> columnList;
 	private Anchorlayout dashboardLayout;
 	private Anchorchildren maximizedHolder;	
 	private DashboardRunnable dashboardRunnable;
 	private Timer dashboardTimer;
+	private boolean isShowInDashboard;
+	private int noOfCols;
 	
 	private final static int DEFAULT_DASHBOARD_WIDTH = 95;
 	
@@ -116,13 +121,24 @@ public class DashboardController implements EventListener<Event> {
 	}
 	
 	public void render(Component parent, IDesktop desktopImpl, boolean isShowInDashboard) {
-		parent.appendChild(dashboardLayout);
+		render(parent, desktopImpl, isShowInDashboard, false);
+	}
+	
+	protected void render(Component parent, IDesktop desktopImpl, boolean isShowInDashboard, boolean update) {
+		this.isShowInDashboard = isShowInDashboard;
+		if (!update)
+			parent.appendChild(dashboardLayout);
+		if (!update && isShowInDashboard)
+			((HtmlBasedComponent)parent).setStyle("overflow-x: auto;");
 		dashboardLayout.getChildren().clear();
         
         if (!dashboardLayout.getDesktop().isServerPushEnabled())
         	dashboardLayout.getDesktop().enableServerPush(true);
         
-        dashboardRunnable = new DashboardRunnable(parent.getDesktop());
+        if (!update)
+        	dashboardRunnable = new DashboardRunnable(parent.getDesktop());
+        
+        columnList = new ArrayList<Anchorchildren>();
         
         // Dashboard content
         Vlayout dashboardColumnLayout = null;
@@ -148,7 +164,17 @@ public class DashboardController implements EventListener<Event> {
         		}
         	}
         	               
-        	noOfCols = MDashboardPreference.getForSessionColumnCount(isShowInDashboard, AD_User_ID, AD_Role_ID);
+        	noOfCols = MDashboardPreference.getForSessionColumnCount(isShowInDashboard, AD_User_ID, AD_Role_ID);        	
+        	if (ClientInfo.isMobile() && isShowInDashboard) {
+	        	if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1)) {
+	        		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1)) {
+	        			noOfCols = 1;
+	        		} else if (noOfCols > 2) {
+	        			noOfCols = 2;
+	        		}
+	        	}
+        	}
+        	this.noOfCols = noOfCols;
             
         	int dashboardWidth = isShowInDashboard ? DEFAULT_DASHBOARD_WIDTH : 100;
             width = noOfCols <= 0 ? dashboardWidth : dashboardWidth / noOfCols;
@@ -164,57 +190,75 @@ public class DashboardController implements EventListener<Event> {
             	MDashboardContent dc = new MDashboardContent(dp.getCtx(), dp.getPA_DashboardContent_ID(), dp.get_TrxName());
             	
 	        	int columnNo = dp.getColumnNo();
-	        	if(dashboardColumnLayout == null || currentColumnNo != columnNo)
+	        	int effColumn = columnNo;
+	        	if (effColumn+1 > noOfCols)
+	        		effColumn = noOfCols-1;
+	        	if(dashboardColumnLayout == null || currentColumnNo != effColumn)
 	        	{
 	        		dashboardColumnLayout = new Vlayout();
+	        		dashboardColumnLayout.setSclass("dashboard-column");
 	        		dashboardColumnLayout.setAttribute("ColumnNo", columnNo);
 	        		dashboardColumnLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
 	        		dashboardColumnLayout.setAttribute("IsAdditionalColumn", false);
 	        		Anchorchildren dashboardColumn = new Anchorchildren();
 	        		dashboardColumn.setAnchor(width + "%" + " 100%");
-	        		dashboardColumn.setDroppable("true");
-	        		dashboardColumn.addEventListener(Events.ON_DROP, this);
+	        		if (!ClientInfo.isMobile())
+	        		{
+		        		dashboardColumn.setDroppable("true");
+		        		dashboardColumn.addEventListener(Events.ON_DROP, this);
+	        		}
 	        		dashboardColumn.appendChild(dashboardColumnLayout);
 	        		columnList.add(dashboardColumn);
 	                dashboardLayout.appendChild(dashboardColumn);
 	                ZKUpdateUtil.setHflex(dashboardColumnLayout, "1");
 
-	                currentColumnNo = columnNo;
+	                currentColumnNo = effColumn;
 	        	}
 
-	        	Panel panel = new Panel();
-	        	Caption caption = new Caption(dc.get_Translation(MDashboardContent.COLUMNNAME_Name));
-	        	panel.appendChild(caption);
-	        	panel.setAttribute("PA_DashboardContent_ID", dp.getPA_DashboardContent_ID());
-	        	panel.setAttribute("PA_DashboardPreference_ID", dp.getPA_DashboardPreference_ID());
-	        	panelList.add(panel);
-	        	panel.addEventListener(Events.ON_MAXIMIZE, this);
-	        	panel.setSclass("dashboard-widget");
-	        	panel.setMaximizable(true);
+	        	Panel panel = null;
+	        	if (update) {
+	        		panel = findPanel(dp.getPA_DashboardContent_ID(), dp.getPA_DashboardPreference_ID());
+	        	} else {
+		        	panel = new Panel();
+		        	Caption caption = new Caption(dc.get_Translation(MDashboardContent.COLUMNNAME_Name));
+		        	panel.appendChild(caption);
+		        	panel.setAttribute("PA_DashboardContent_ID", dp.getPA_DashboardContent_ID());
+		        	panel.setAttribute("PA_DashboardPreference_ID", dp.getPA_DashboardPreference_ID());
+		        	panelList.add(panel);
+		        	panel.addEventListener(Events.ON_MAXIMIZE, this);
+		        	panel.setSclass("dashboard-widget");
+		        	panel.setMaximizable(true);	        	
 	        	
-	        	String description = dc.get_Translation(MDashboardContent.COLUMNNAME_Description);
-            	if(description != null)
-            		panel.setTooltiptext(description);
-
-            	panel.setCollapsible(dc.isCollapsible());
-            	panel.setOpen(!dp.isCollapsedByDefault());
-            	panel.addEventListener(Events.ON_OPEN, this);
-            	
-            	panel.setDroppable("true");
-            	panel.getCaption().setDraggable("true");
-            	panel.addEventListener(Events.ON_DROP, this);
-
-	        	panel.setBorder("normal");
-	        	dashboardColumnLayout.appendChild(panel);
-	            Panelchildren content = new Panelchildren();
-	            panel.appendChild(content);
-
-	            boolean panelEmpty = true;
-
-	            panelEmpty = !render(content, dc, dashboardRunnable);	            		
-	        	
-	        	if (panelEmpty)
-	        		panel.detach();	        	
+		        	String description = dc.get_Translation(MDashboardContent.COLUMNNAME_Description);
+	            	if(description != null)
+	            		panel.setTooltiptext(description);
+	
+	            	panel.setCollapsible(dc.isCollapsible());
+	            	panel.setOpen(!dp.isCollapsedByDefault());
+	            	panel.addEventListener(Events.ON_OPEN, this);
+	            	
+	            	if (!ClientInfo.isMobile()) {
+	            		panel.setDroppable("true");
+	            		panel.getCaption().setDraggable("true");	            	
+	            		panel.addEventListener(Events.ON_DROP, this);
+	            	}
+		        	panel.setBorder("normal");
+	        	}
+	        	if (panel != null && panel.getAttribute(PANEL_EMPTY_ATTR) == null)
+	        		dashboardColumnLayout.appendChild(panel);
+	        	if (!update) {
+		            Panelchildren content = new Panelchildren();
+		            panel.appendChild(content);
+	
+		            boolean panelEmpty = true;
+	
+		            panelEmpty = !render(content, dc, dashboardRunnable);	            		
+		        	
+		        	if (panelEmpty) {
+		        		panel.detach();
+		        		panel.setAttribute(PANEL_EMPTY_ATTR, Boolean.TRUE);
+		        	}
+	        	}
 	        }
             
             if (dps.length == 0)
@@ -225,8 +269,11 @@ public class DashboardController implements EventListener<Event> {
         		dashboardColumnLayout.setAttribute("IsAdditionalColumn", true);
         		Anchorchildren dashboardColumn = new Anchorchildren();
         		dashboardColumn.setAnchor((width-5) + "%" + " 100%");
-        		dashboardColumn.setDroppable("true");
-        		dashboardColumn.addEventListener(Events.ON_DROP, this);
+        		if (!ClientInfo.isMobile())
+        		{
+        			dashboardColumn.setDroppable("true");
+        			dashboardColumn.addEventListener(Events.ON_DROP, this);
+        		}
         		dashboardColumn.appendChild(dashboardColumnLayout);
         		columnList.add(dashboardColumn);
                 dashboardLayout.appendChild(dashboardColumn);
@@ -242,8 +289,11 @@ public class DashboardController implements EventListener<Event> {
         		dashboardColumnLayout.setAttribute("IsAdditionalColumn", true);
         		Anchorchildren dashboardColumn = new Anchorchildren();
         		dashboardColumn.setAnchor(extraWidth + "% 100%");
-        		dashboardColumn.setDroppable("true");
-        		dashboardColumn.addEventListener(Events.ON_DROP, this);
+        		if (!ClientInfo.isMobile())
+        		{
+        			dashboardColumn.setDroppable("true");
+        			dashboardColumn.addEventListener(Events.ON_DROP, this);
+        		}
         		dashboardColumn.appendChild(dashboardColumnLayout);
         		columnList.add(dashboardColumn);
                 dashboardLayout.appendChild(dashboardColumn);
@@ -256,7 +306,7 @@ public class DashboardController implements EventListener<Event> {
 		}
         //
                 
-        if (!dashboardRunnable.isEmpty())
+        if (!update && !dashboardRunnable.isEmpty())
         {
         	dashboardRunnable.refreshDashboard(false);
 
@@ -275,6 +325,20 @@ public class DashboardController implements EventListener<Event> {
 			});
 			dashboardTimer.setPage(parent.getPage());
 		}
+	}
+
+	private Panel findPanel(int PA_DashboardContent_ID, int PA_DashboardPreference_ID) {
+		for(Panel panel : panelList) {
+			Object value1 = panel.getAttribute("PA_DashboardContent_ID");
+			Object value2 = panel.getAttribute("PA_DashboardPreference_ID");
+			if (value1 != null && value1 instanceof Number && value2 != null && value2 instanceof Number) {
+				int id1 = ((Number)value1).intValue();
+				int id2 = ((Number)value2).intValue();
+				if (id1 == PA_DashboardContent_ID && id2 == PA_DashboardPreference_ID)
+					return panel;
+			}
+		}
+		return null;
 	}
 
 	public  boolean render(Component content, MDashboardContent dc, DashboardRunnable dashboardRunnable) throws Exception {
@@ -704,8 +768,10 @@ public class DashboardController implements EventListener<Event> {
 			        		dashboardColumnLayout.setAttribute("IsAdditionalColumn", true);
 			        		Anchorchildren dashboardColumn = new Anchorchildren();
 			        		dashboardColumn.setAnchor(extraWidth + "% 100%");
-			        		dashboardColumn.setDroppable("true");
-			        		dashboardColumn.addEventListener(Events.ON_DROP, this);
+			        		if (!ClientInfo.isMobile()) {
+			        			dashboardColumn.setDroppable("true");
+			        			dashboardColumn.addEventListener(Events.ON_DROP, this);
+			        		}
 			        		dashboardColumn.appendChild(dashboardColumnLayout);
 			        		columnList.add(dashboardColumn);
 			                dashboardLayout.appendChild(dashboardColumn);
@@ -881,5 +947,24 @@ public class DashboardController implements EventListener<Event> {
 				
 			}
 		}				
+	}
+	
+	public void updateLayout(ClientInfo clientInfo) {
+		if (isShowInDashboard) {
+			if (ClientInfo.isMobile()) {
+				int n = 0;
+	        	if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1)) {	        		
+	        		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1)) {
+	        			n = 1;
+	        		} else {
+	        			n = 2;
+	        		}
+	        	}
+	        	if (noOfCols > 0 && n > 0 && noOfCols != n) {
+	        		render(null, null, true, true);
+	        		dashboardLayout.invalidate();
+	        	}
+        	}
+		}			
 	}
 }

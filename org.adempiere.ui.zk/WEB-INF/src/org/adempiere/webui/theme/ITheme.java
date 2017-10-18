@@ -50,4 +50,6 @@ public interface ITheme {
 	
 	//theme preference
 	public static final String THEME_PREFERENCE = "/preference.zul";
+	
+	public static final String USE_CSS_FOR_WINDOW_SIZE = "#THEME_USE_CSS_FOR_WINDOW_SIZE";
 }

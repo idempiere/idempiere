@@ -22,17 +22,14 @@ import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
-import org.adempiere.webui.component.Grid;
-import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListModelTable;
 import org.adempiere.webui.component.ListboxFactory;
 import org.adempiere.webui.component.Panel;
-import org.adempiere.webui.component.Row;
-import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.SimpleTreeModel;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.editor.WSearchEditor;
@@ -61,8 +58,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.DefaultTreeNode;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.North;
-import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Tree;
@@ -94,8 +91,8 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private WListbox tableBOM = ListboxFactory.newDataTable();
 	private Vector<Vector<Object>> dataBOM = new Vector<Vector<Object>>();
-	private Grid northLayout = GridFactory.newGridLayout();
-	private Grid southLayout = GridFactory.newGridLayout();
+	private Hlayout northLayout = new Hlayout();
+	private Hlayout southLayout = new Hlayout();
 	private mySimpleTreeNode  	m_root = null;
 	private boolean reload = false;
 	private Checkbox treeExpand = new Checkbox();
@@ -169,11 +166,12 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 		ZKUpdateUtil.setHeight(m_frame, "100%");
 		m_frame.setStyle("position: absolute; padding: 0; margin: 0");
 		m_frame.appendChild (mainLayout);
-		ZKUpdateUtil.setWidth(mainLayout, "100%");
+		ZKUpdateUtil.setHflex(mainLayout, "1");
 		ZKUpdateUtil.setHeight(mainLayout, "100%");
-		mainLayout.setStyle("position: absolute");
 		northPanel.appendChild(northLayout);
 		southPanel.appendChild(southLayout);
+		ZKUpdateUtil.setVflex(southPanel, "min");
+		
 		
 		labelProduct.setText (Msg.getElement(Env.getCtx(), "M_Product_ID"));
 		implosion.setText (Msg.getElement(Env.getCtx(), "Implosion"));
@@ -181,39 +179,47 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 		
 		North north = new North();
 		north.appendChild(northPanel);
-		ZKUpdateUtil.setHeight(north, "6%");
+		ZKUpdateUtil.setVflex(north, "min");
 		ZKUpdateUtil.setWidth(northPanel, "100%");
 		mainLayout.appendChild(north);
 
-		Rows rows = northLayout.newRows();
-
-		Row north_row = rows.newRow();
-		north_row.appendChild(labelProduct.rightAlign());
-		north_row.appendChild(fieldProduct.getComponent());
-		north_row.appendChild(new Separator());		
-		north_row.appendChild(implosion);
-		north_row.appendChild(new Space());
-		north_row.appendChild(new Separator());
-		north_row.appendChild(new Space());
-		north_row.appendChild(treeInfo);
+		northLayout.setValign("middle");
+		northLayout.setStyle("padding: 4px;");
+		northLayout.appendChild(labelProduct.rightAlign());
+		if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH-1))
+			ZKUpdateUtil.setWidth(fieldProduct.getComponent(), "150px");
+		else if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
+			ZKUpdateUtil.setWidth(fieldProduct.getComponent(), "200px");
+		else if (ClientInfo.minWidth(ClientInfo.MEDIUM_WIDTH))
+			ZKUpdateUtil.setWidth(fieldProduct.getComponent(), "400px");
+		else
+			ZKUpdateUtil.setWidth(fieldProduct.getComponent(), "300px");
+		northLayout.appendChild(fieldProduct.getComponent());
+		northLayout.appendChild(new Space());
+		northLayout.appendChild(implosion);
+		northLayout.appendChild(new Space());
+		northLayout.appendChild(treeInfo);
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
+			treeInfo.setVisible(false);
 		
 		treeExpand.setText(Msg.getMsg(Env.getCtx(), "ExpandTree"));
 
 		South south = new South();
 		south.appendChild(southPanel);
-		ZKUpdateUtil.setHeight(south, "10%");
+		ZKUpdateUtil.setVflex(south, "min");
 		ZKUpdateUtil.setWidth(southPanel, "100%");
 		mainLayout.appendChild(south);
 		
-		Rows rows2 = southLayout.newRows();
-		
-		Row south_row = rows2.newRow();
-
-		south_row.appendChild(treeExpand);
-		south_row.appendChild(new Space());
-		south_row.appendChild(new Separator());
-		south_row.appendChild(new Space());
-		south_row.appendChild(confirmPanel);
+		southLayout.setValign("middle");
+		southLayout.setStyle("padding: 4px");
+		ZKUpdateUtil.setHflex(southLayout, "1");
+		ZKUpdateUtil.setVflex(southLayout, "min");
+		southLayout.appendChild(treeExpand);
+		ZKUpdateUtil.setHflex(treeExpand, "1");
+		treeExpand.setStyle("float: left;");
+		southLayout.appendChild(confirmPanel);
+		ZKUpdateUtil.setHflex(confirmPanel, "1");
+		confirmPanel.setStyle("float: right;");
 		confirmPanel.addActionListener(this);
 		
 		mainLayout.appendChild(west);

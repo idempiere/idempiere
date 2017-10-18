@@ -22,16 +22,16 @@
   <rm:locator pattern="^org\.eclipse\.jetty\.alpn\.server$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.felix\.webconsole(\..+)?" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.felix\.inventory" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.passay$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^com\.itextpdf$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^bcpkix$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^bcprov$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^com\.ibm\.icu$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^groovy-all$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^joda-time$" searchPathRef="modify-bundle" />
-  <rm:locator pattern="^org\.cryptacular$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^net\.sf\.supercsv\.super-csv$" searchPathRef="bundles.maven" />
-  <rm:locator pattern="^org\.atmosphere\.runtime$" searchPathRef="bundles.maven" />
+  <rm:locator pattern="^org\.passay$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^com\.itextpdf$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^bcpkix$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^bcprov$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^com\.ibm\.icu$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^groovy-all$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^joda-time$" searchPathRef="modify-bundle"/>
+  <rm:locator pattern="^org\.cryptacular$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^net\.sf\.supercsv\.super-csv$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.atmosphere\.runtime$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^javax\.websocket\-api$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^javax\.annotation\-api$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^javax\.management\.j2ee\-api$" searchPathRef="bundles.maven"/>
@@ -63,7 +63,6 @@
   <rm:locator searchPathRef="extend.workspace" failOnError="false"/>
   <rm:locator searchPathRef="workspace.project" failOnError="false"/>
   <rm:locator searchPathRef="workspace.feature"/>
-
   <rm:searchPath name="equinox">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
@@ -155,26 +154,26 @@
         <maven:entry artifactId="org.apache.felix.inventory" groupId="org.apache.felix" name="org.apache.felix.inventory"/>
         <maven:entry artifactId="org.apache.felix.webconsole.plugins.packageadmin" groupId="org.apache.felix" name="org.apache.felix.webconsole.plugins.packageadmin"/>
         <maven:entry artifactId="javassist" groupId="org.javassist" name="javassist"/>
-        <maven:entry groupId="org.passay" artifactId="passay" name="org.passay" />
-        <maven:entry groupId="com.itextpdf" artifactId="itextpdf" name="com.itextpdf" />
-        <maven:entry groupId="org.bouncycastle" artifactId="bcpkix-jdk15on" name="bcpkix" />
-        <maven:entry groupId="org.bouncycastle" artifactId="bcprov-jdk15on" name="bcprov" />
-        <maven:entry groupId="org.cryptacular" artifactId="cryptacular" name="org.cryptacular" />
-        <maven:entry groupId="net.sf.supercsv" artifactId="super-csv" name="net.sf.supercsv.super-csv" />
-        <maven:entry groupId="org.atmosphere" artifactId="atmosphere-runtime" name="org.atmosphere.runtime" />
+        <maven:entry artifactId="passay" groupId="org.passay" name="org.passay"/>
+        <maven:entry artifactId="itextpdf" groupId="com.itextpdf" name="com.itextpdf"/>
+        <maven:entry artifactId="bcpkix-jdk15on" groupId="org.bouncycastle" name="bcpkix"/>
+        <maven:entry artifactId="bcprov-jdk15on" groupId="org.bouncycastle" name="bcprov"/>
+        <maven:entry artifactId="cryptacular" groupId="org.cryptacular" name="org.cryptacular"/>
+        <maven:entry artifactId="super-csv" groupId="net.sf.supercsv" name="net.sf.supercsv.super-csv"/>
+        <maven:entry artifactId="atmosphere-runtime" groupId="org.atmosphere" name="org.atmosphere.runtime"/>
         <maven:entry artifactId="jetty-alpn-server" groupId="org.eclipse.jetty" name="org.eclipse.jetty.alpn.server"/>
         <maven:entry artifactId="alpn-api" groupId="org.eclipse.jetty.alpn" name="org.eclipse.jetty.alpn.api"/>
-        <maven:entry groupId="org.codehaus.groovy" artifactId="groovy-all" name="groovy-all" />
-        <maven:entry groupId="com.ibm.icu" artifactId="icu4j" name="com.ibm.icu" />
-        <maven:entry groupId="joda-time" artifactId="joda-time" name="joda-time" />
-	<maven:entry groupId="commons-configuration" artifactId="commons-configuration" name="org.apache.commons.configuration"/>
+        <maven:entry artifactId="groovy-all" groupId="org.codehaus.groovy" name="groovy-all"/>
+        <maven:entry artifactId="icu4j" groupId="com.ibm.icu" name="com.ibm.icu"/>
+        <maven:entry artifactId="joda-time" groupId="joda-time" name="joda-time"/>
+        <maven:entry artifactId="commons-configuration" groupId="commons-configuration" name="org.apache.commons.configuration"/>
         <maven:entry artifactId="commons-collections4" groupId="org.apache.commons" name="org.apache.commons.collections4"/>
       </maven:mappings>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="zkoss.osgi">
-    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
-      <rm:property key="buckminster.source" value="false"/>
+    <rm:provider componentTypes="osgi.bundle" readerType="p2" mutable="false">
+      <rm:property key="buckminster.source" value="true"/>
       <rm:property key="buckminster.mutable" value="false"/>
       <rm:uri format="${url.zkoss.osgi}"/>
     </rm:provider>
@@ -189,63 +188,63 @@
   <rm:searchPath name="extend.workspace">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
       <rm:uri format="${extend.plugin.root}${extend.bundle.folder.1}/${buckminster.component}"/>
-    </rm:provider>    
+    </rm:provider>
     <rm:provider componentTypes="eclipse.feature" readerType="local">
-      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.1}/${buckminster.component}-feature" />
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.1}/${buckminster.component}-feature"/>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
       <rm:uri format="${extend.plugin.root}${extend.bundle.folder.2}/${buckminster.component}"/>
     </rm:provider>
     <rm:provider componentTypes="eclipse.feature" readerType="local">
-      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.2}/${buckminster.component}-feature" />
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.2}/${buckminster.component}-feature"/>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
       <rm:uri format="${extend.plugin.root}${extend.bundle.folder.3}/${buckminster.component}"/>
     </rm:provider>
     <rm:provider componentTypes="eclipse.feature" readerType="local">
-      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.3}/${buckminster.component}-feature" />
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.3}/${buckminster.component}-feature"/>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
       <rm:uri format="${extend.plugin.root}${extend.bundle.folder.4}/${buckminster.component}"/>
     </rm:provider>
     <rm:provider componentTypes="eclipse.feature" readerType="local">
-      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.4}/${buckminster.component}-feature" />
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.4}/${buckminster.component}-feature"/>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
       <rm:uri format="${extend.plugin.root}${extend.bundle.folder.5}/${buckminster.component}"/>
     </rm:provider>
     <rm:provider componentTypes="eclipse.feature" readerType="local">
-      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.5}/${buckminster.component}-feature" />
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.5}/${buckminster.component}-feature"/>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
       <rm:uri format="${extend.plugin.root}${extend.bundle.folder.6}/${buckminster.component}"/>
     </rm:provider>
     <rm:provider componentTypes="eclipse.feature" readerType="local">
-      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.6}/${buckminster.component}-feature" />
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.6}/${buckminster.component}-feature"/>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
       <rm:uri format="${extend.plugin.root}${extend.bundle.folder.7}/${buckminster.component}"/>
     </rm:provider>
     <rm:provider componentTypes="eclipse.feature" readerType="local">
-      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.7}/${buckminster.component}-feature" />
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.7}/${buckminster.component}-feature"/>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
       <rm:uri format="${extend.plugin.root}${extend.bundle.folder.8}/${buckminster.component}"/>
     </rm:provider>
     <rm:provider componentTypes="eclipse.feature" readerType="local">
-      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.8}/${buckminster.component}-feature" />
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.8}/${buckminster.component}-feature"/>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
       <rm:uri format="${extend.plugin.root}${extend.bundle.folder.9}/${buckminster.component}"/>
     </rm:provider>
     <rm:provider componentTypes="eclipse.feature" readerType="local">
-      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.9}/${buckminster.component}-feature" />
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.9}/${buckminster.component}-feature"/>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
       <rm:uri format="${extend.plugin.root}${extend.bundle.folder.10}/${buckminster.component}"/>
     </rm:provider>
     <rm:provider componentTypes="eclipse.feature" readerType="local">
-      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.10}/${buckminster.component}-feature" />
+      <rm:uri format="${extend.plugin.root}${extend.bundle.folder.10}/${buckminster.component}-feature"/>
     </rm:provider>
   </rm:searchPath>
 </rm:rmap>

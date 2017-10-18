@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -72,6 +73,7 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Vbox;
+import org.zkoss.zul.Vlayout;
 
 /**
  *	Dialog to enter Account Info
@@ -87,7 +89,7 @@ public final class WAccountDialog extends Window
 	private static final long serialVersionUID = 3041802296879719489L;
 
 	private Callback<Integer> m_callback;
-
+	
 	/**
 	 * 	Constructor
 	 *  @param title title
@@ -99,8 +101,19 @@ public final class WAccountDialog extends Window
 	{
 		super ();
 		this.setTitle(title);
-		ZKUpdateUtil.setHeight(this, "500px");
-		ZKUpdateUtil.setWidth(this, "750px");
+		if (!ThemeManager.isUseCSSForWindowSize())
+		{
+			ZKUpdateUtil.setWindowHeightX(this, 500);
+			ZKUpdateUtil.setWindowWidthX(this, 750);
+		}
+		else
+		{
+			addCallback(AFTER_PAGE_ATTACHED, t-> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+				this.invalidate();
+			});
+		}
 
 		if (log.isLoggable(Level.CONFIG)) log.config("C_AcctSchema_ID=" + C_AcctSchema_ID
 			+ ", C_ValidCombination_ID=" + mAccount.C_ValidCombination_ID);
@@ -179,6 +192,8 @@ public final class WAccountDialog extends Window
 	private Row m_row;
 	private Rows m_rows;
 
+	private boolean m_smallWidth;
+
 
 
 	/**
@@ -200,11 +215,11 @@ public final class WAccountDialog extends Window
 		//
 		Caption caption = new Caption(Msg.getMsg(Env.getCtx(),"Parameter"));
 		parameterPanel.appendChild(caption);
-		ZKUpdateUtil.setHflex(parameterPanel, "95");
+		ZKUpdateUtil.setHflex(parameterPanel, "min");
 		parameterPanel.setStyle("background-color: transparent;");
 		toolBar.setOrient("vertical");
-		toolBar.setStyle("border: none; margin: 5px");
-		ZKUpdateUtil.setHflex(toolBar, "5");
+		toolBar.setStyle("border: none; padding: 5px");
+		ZKUpdateUtil.setHflex(toolBar, "min");
 
 		bSave.setImage(ThemeManager.getThemeResource("images/Save24.png"));
 		bSave.setTooltiptext(Msg.getMsg(Env.getCtx(),"AccountNewUpdate"));
@@ -222,7 +237,6 @@ public final class WAccountDialog extends Window
 		//
 
 		northPanel.appendChild(parameterPanel);
-		ZKUpdateUtil.setWidth(parameterPanel, "95%");
 		northPanel.appendChild(toolBar);
 		ZKUpdateUtil.setWidth(northPanel, "100%");
 
@@ -232,21 +246,26 @@ public final class WAccountDialog extends Window
 		layout.setParent(this);
 		ZKUpdateUtil.setHeight(layout, "100%");
 		ZKUpdateUtil.setWidth(layout, "100%");
-		layout.setStyle("background-color: transparent;");
+		layout.setStyle("background-color: transparent; position: relative;");
 
 		North nRegion = new North();
 		nRegion.setParent(layout);
 		ZKUpdateUtil.setHflex(northPanel, "false");
-		ZKUpdateUtil.setVflex(northPanel, "false");
+		ZKUpdateUtil.setVflex(northPanel, "min");
+		ZKUpdateUtil.setVflex(parameterPanel, "min");
 		nRegion.appendChild(northPanel);
 		nRegion.setStyle("background-color: transparent; border: none");
 		northPanel.setStyle("background-color: transparent;");
+		nRegion.setCollapsible(true);
+		nRegion.setSplittable(true);
+		nRegion.setAutoscroll(true);
 
 		Center cRegion = new Center();
 		cRegion.setParent(layout);
 		ZKUpdateUtil.setHflex(m_adTabPanel, "true");
 		ZKUpdateUtil.setVflex(m_adTabPanel, "true");
 		cRegion.appendChild(m_adTabPanel);
+		ZKUpdateUtil.setVflex(cRegion, "min");
 
 		South sRegion = new South();
 		sRegion.setParent(layout);
@@ -256,6 +275,10 @@ public final class WAccountDialog extends Window
 		div.appendChild(statusBar);
 		sRegion.appendChild(div);
 		sRegion.setStyle("background-color: transparent; border: none");
+		ZKUpdateUtil.setVflex(sRegion, "min");
+		ZKUpdateUtil.setVflex(div, "min");
+		ZKUpdateUtil.setVflex(confirmPanel, "min");
+		ZKUpdateUtil.setVflex(statusBar, "min");
 
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
 
@@ -263,6 +286,11 @@ public final class WAccountDialog extends Window
 		this.setClosable(false);
 
 		this.setSizable(true);
+		this.setSclass("account-dialog");
+		
+		if (ClientInfo.isMobile()) {
+			ClientInfo.onClientInfo(this, this::onClientInfo);
+		}
 	}	//	jbInit
 
 	/**
@@ -320,133 +348,7 @@ public final class WAccountDialog extends Window
 		parameterLayout.setParent(parameterPanel);
 		parameterLayout.setStyle("background-color: transparent; margin:none; border:none; padding:none;");
 
-		m_rows = new Rows();
-		m_rows.setParent(parameterLayout);
-
-		//	Alias
-		if (s_AcctSchema.isHasAlias())
-		{
-			GridField alias = m_mTab.getField("Alias");
-			f_Alias = WebEditorFactory.getEditor(alias, false);
-			addLine(alias, f_Alias, false);
-		}	//	Alias
-
-		//	Combination
-		GridField combination = m_mTab.getField("Combination");
-		f_Combination = WebEditorFactory.getEditor(combination, false);
-		addLine(combination, f_Combination, false);
-		m_newRow = true;
-
-		/**
-		 *	Create Fields in Element Order
-		 */
-		MAcctSchemaElement[] elements = s_AcctSchema.getAcctSchemaElements();
-		for (int i = 0; i < elements.length; i++)
-		{
-			MAcctSchemaElement ase = elements[i];
-			String type = ase.getElementType();
-			boolean isMandatory = ase.isMandatory();
-			//
-			if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Organization))
-			{
-				GridField field = m_mTab.getField("AD_Org_ID");
-				f_AD_Org_ID = WebEditorFactory.getEditor(field, false);
-				addLine(field, f_AD_Org_ID, isMandatory);
-			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Account))
-			{
-				GridField field = m_mTab.getField("Account_ID");
-				f_Account_ID = WebEditorFactory.getEditor(field, false);
-			//	((VLookup)f_Account_ID).setWidth(400);
-				addLine(field, f_Account_ID, isMandatory);
-				f_Account_ID.addValueChangeListener(this);
-			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_SubAccount))
-			{
-				GridField field = m_mTab.getField("C_SubAcct_ID");
-				f_SubAcct_ID = WebEditorFactory.getEditor(field, false);
-			//	((VLookup)f_SubAcct_ID).setWidth(400);
-				addLine(field, f_SubAcct_ID, isMandatory);
-			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Product))
-			{
-				GridField field = m_mTab.getField("M_Product_ID");
-				f_M_Product_ID = WebEditorFactory.getEditor(field, false);
-				addLine(field, f_M_Product_ID, isMandatory);
-			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_BPartner))
-			{
-				GridField field = m_mTab.getField("C_BPartner_ID");
-				f_C_BPartner_ID = WebEditorFactory.getEditor(field, false);
-				addLine(field, f_C_BPartner_ID, isMandatory);
-			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Campaign))
-			{
-				GridField field = m_mTab.getField("C_Campaign_ID");
-				f_C_Campaign_ID = WebEditorFactory.getEditor(field, false);
-				addLine(field, f_C_Campaign_ID, isMandatory);
-			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_LocationFrom))
-			{
-				GridField field = m_mTab.getField("C_LocFrom_ID");
-				f_C_LocFrom_ID = WebEditorFactory.getEditor(field, false);
-				addLine(field, f_C_LocFrom_ID, isMandatory);
-			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_LocationTo))
-			{
-				GridField field = m_mTab.getField("C_LocTo_ID");
-				f_C_LocTo_ID = WebEditorFactory.getEditor(field, false);
-				addLine(field, f_C_LocTo_ID, isMandatory);
-			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Project))
-			{
-				GridField field = m_mTab.getField("C_Project_ID");
-				f_C_Project_ID = WebEditorFactory.getEditor(field, false);
-				addLine(field, f_C_Project_ID, isMandatory);
-			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_SalesRegion))
-			{
-				GridField field = m_mTab.getField("C_SalesRegion_ID");
-				f_C_SalesRegion_ID = WebEditorFactory.getEditor(field, false);
-				addLine(field, f_C_SalesRegion_ID, isMandatory);
-			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_OrgTrx))
-			{
-				GridField field = m_mTab.getField("AD_OrgTrx_ID");
-				f_AD_OrgTrx_ID = WebEditorFactory.getEditor(field, false);
-				addLine(field, f_AD_OrgTrx_ID, isMandatory);
-			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Activity))
-			{
-				GridField field = m_mTab.getField("C_Activity_ID");
-				f_C_Activity_ID = WebEditorFactory.getEditor(field, false);
-				addLine(field, f_C_Activity_ID, isMandatory);
-			}
-			//	User1
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList1))
-			{
-				GridField field = m_mTab.getField("User1_ID");
-				f_User1_ID = WebEditorFactory.getEditor(field, false);
-				addLine(field, f_User1_ID, isMandatory);
-			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList2))
-			{
-				GridField field = m_mTab.getField("User2_ID");
-				f_User2_ID = WebEditorFactory.getEditor(field, false);
-				addLine(field, f_User2_ID, isMandatory);
-			}
-		}	//	Create Fields in Element Order
-
-		//	Add description
-		m_newRow = true;
-		Row row = new Row();
-		f_Description.setStyle("font-decoration: italic;");
-		Cell cell = new Cell();
-		cell.setColspan(4);
-		cell.appendChild(f_Description);
-		row.appendChild(cell);
-		row.setStyle("background-color: transparent; padding: 10px");
-		m_rows.appendChild(row);
+		layoutParameters();
 
 		//	Finish
 		m_query = new MQuery();
@@ -487,6 +389,154 @@ public final class WAccountDialog extends Window
 		return true;
 	}	//	initAccount
 
+	protected void layoutParameters() {
+		m_smallWidth = ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1);
+		
+		m_rows = new Rows();
+		m_rows.setParent(parameterLayout);
+
+		//	Alias
+		if (s_AcctSchema.isHasAlias())
+		{
+			GridField alias = m_mTab.getField("Alias");
+			if (f_Alias == null)
+				f_Alias = WebEditorFactory.getEditor(alias, false);
+			addLine(alias, f_Alias, false);
+		}	//	Alias
+
+		//	Combination
+		GridField combination = m_mTab.getField("Combination");
+		if (f_Combination == null)
+			f_Combination = WebEditorFactory.getEditor(combination, false);
+		addLine(combination, f_Combination, false);
+		m_newRow = true;
+
+		/**
+		 *	Create Fields in Element Order
+		 */
+		MAcctSchemaElement[] elements = s_AcctSchema.getAcctSchemaElements();
+		for (int i = 0; i < elements.length; i++)
+		{
+			MAcctSchemaElement ase = elements[i];
+			String type = ase.getElementType();
+			boolean isMandatory = ase.isMandatory();
+			//
+			if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Organization))
+			{
+				GridField field = m_mTab.getField("AD_Org_ID");
+				if (f_AD_Org_ID == null)
+					f_AD_Org_ID = WebEditorFactory.getEditor(field, false);
+				addLine(field, f_AD_Org_ID, isMandatory);
+			}
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Account))
+			{
+				GridField field = m_mTab.getField("Account_ID");
+				if (f_Account_ID == null)
+				{
+					f_Account_ID = WebEditorFactory.getEditor(field, false);
+					f_Account_ID.addValueChangeListener(this);
+				}
+				addLine(field, f_Account_ID, isMandatory);				
+			}
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_SubAccount))
+			{
+				GridField field = m_mTab.getField("C_SubAcct_ID");
+				if (f_SubAcct_ID == null)
+					f_SubAcct_ID = WebEditorFactory.getEditor(field, false);
+				addLine(field, f_SubAcct_ID, isMandatory);
+			}
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Product))
+			{
+				GridField field = m_mTab.getField("M_Product_ID");
+				if (f_M_Product_ID == null)
+					f_M_Product_ID = WebEditorFactory.getEditor(field, false);
+				addLine(field, f_M_Product_ID, isMandatory);
+			}
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_BPartner))
+			{
+				GridField field = m_mTab.getField("C_BPartner_ID");
+				if (f_C_BPartner_ID == null)
+					f_C_BPartner_ID = WebEditorFactory.getEditor(field, false);
+				addLine(field, f_C_BPartner_ID, isMandatory);
+			}
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Campaign))
+			{
+				GridField field = m_mTab.getField("C_Campaign_ID");
+				if (f_C_Campaign_ID == null)
+					f_C_Campaign_ID = WebEditorFactory.getEditor(field, false);
+				addLine(field, f_C_Campaign_ID, isMandatory);
+			}
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_LocationFrom))
+			{
+				GridField field = m_mTab.getField("C_LocFrom_ID");
+				if (f_C_LocFrom_ID == null)
+					f_C_LocFrom_ID = WebEditorFactory.getEditor(field, false);
+				addLine(field, f_C_LocFrom_ID, isMandatory);
+			}
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_LocationTo))
+			{
+				GridField field = m_mTab.getField("C_LocTo_ID");
+				if (f_C_LocTo_ID == null)
+					f_C_LocTo_ID = WebEditorFactory.getEditor(field, false);
+				addLine(field, f_C_LocTo_ID, isMandatory);
+			}
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Project))
+			{
+				GridField field = m_mTab.getField("C_Project_ID");
+				if (f_C_Project_ID == null)
+					f_C_Project_ID = WebEditorFactory.getEditor(field, false);
+				addLine(field, f_C_Project_ID, isMandatory);
+			}
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_SalesRegion))
+			{
+				GridField field = m_mTab.getField("C_SalesRegion_ID");
+				if (f_C_SalesRegion_ID == null)
+					f_C_SalesRegion_ID = WebEditorFactory.getEditor(field, false);
+				addLine(field, f_C_SalesRegion_ID, isMandatory);
+			}
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_OrgTrx))
+			{
+				GridField field = m_mTab.getField("AD_OrgTrx_ID");
+				if (f_AD_OrgTrx_ID == null)
+					f_AD_OrgTrx_ID = WebEditorFactory.getEditor(field, false);
+				addLine(field, f_AD_OrgTrx_ID, isMandatory);
+			}
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Activity))
+			{
+				GridField field = m_mTab.getField("C_Activity_ID");
+				if (f_C_Activity_ID == null)
+					f_C_Activity_ID = WebEditorFactory.getEditor(field, false);
+				addLine(field, f_C_Activity_ID, isMandatory);
+			}
+			//	User1
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList1))
+			{
+				GridField field = m_mTab.getField("User1_ID");
+				if (f_User1_ID == null)
+					f_User1_ID = WebEditorFactory.getEditor(field, false);
+				addLine(field, f_User1_ID, isMandatory);
+			}
+			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList2))
+			{
+				GridField field = m_mTab.getField("User2_ID");
+				if (f_User2_ID == null)
+					f_User2_ID = WebEditorFactory.getEditor(field, false);
+				addLine(field, f_User2_ID, isMandatory);
+			}
+		}	//	Create Fields in Element Order
+
+		//	Add description
+		m_newRow = true;
+		Row row = new Row();
+		f_Description.setStyle("font-decoration: italic;");
+		Cell cell = new Cell();
+		cell.setColspan(4);
+		cell.appendChild(f_Description);
+		row.appendChild(cell);
+		row.setStyle("background-color: transparent; padding: 10px");
+		m_rows.appendChild(row);
+	}
+
 	/**
 	 *	Add Editor to parameterPanel alernative right/left depending on m_newRow.
 	 *  Field Value changes update Editors
@@ -512,14 +562,27 @@ public final class WAccountDialog extends Window
 		}
 //		else
 //			m_gbc.gridx = 2;
-		Div div = new Div();
-		div.setStyle("text-align: right");
-		div.appendChild(label);
-		m_row.appendChild(div);
-
-		m_row.appendChild(editor.getComponent());
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
+		{
+			Vlayout vlayout = new Vlayout();
+			vlayout.setHflex("1");
+			vlayout.setSpacing("0px");
+			vlayout.appendChild(label);
+			vlayout.appendChild(editor.getComponent());
+			m_row.appendCellChild(vlayout, 2);
+		}
+		else
+		{
+			Div div = new Div();
+			div.setStyle("text-align: right");
+			div.appendChild(label);
+			m_row.appendChild(div);
+	
+			m_row.appendChild(editor.getComponent());
+		}
 		editor.fillHorizontal();
 		editor.dynamicDisplay();		
+		
 		//
 		m_newRow = !m_newRow;
 	}	//	addLine
@@ -1225,6 +1288,21 @@ public final class WAccountDialog extends Window
 			if (f_SubAcct_ID != null) {
 				f_SubAcct_ID.setValue(null);
 				f_SubAcct_ID.dynamicDisplay();
+			}
+		}
+	}
+		
+	protected void onClientInfo() {
+		if (parameterLayout != null && parameterLayout.getRows() != null) {
+			boolean smallWidth = ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1);
+			if (smallWidth != m_smallWidth) {
+				parameterLayout.getRows().detach();
+				layoutParameters();
+				if (ThemeManager.isUseCSSForWindowSize()) {
+					ZKUpdateUtil.setCSSHeight(this);
+					ZKUpdateUtil.setCSSWidth(this);
+				}
+				this.invalidate();
 			}
 		}
 	}

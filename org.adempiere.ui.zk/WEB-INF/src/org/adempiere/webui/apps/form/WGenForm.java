@@ -122,20 +122,20 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 			dynInit();
 			Borderlayout contentPane = new Borderlayout();
 			this.appendChild(contentPane);
-			ZKUpdateUtil.setWidth(contentPane, "99%");
+			ZKUpdateUtil.setWidth(contentPane, "100%");
 			ZKUpdateUtil.setHeight(contentPane, "100%");
 			Center center = new Center();
-			center.setStyle("border: none");
+			center.setBorder("none");
 			contentPane.appendChild(center);
 			center.appendChild(tabbedPane);
 			ZKUpdateUtil.setVflex(tabbedPane, "1");
 			ZKUpdateUtil.setHflex(tabbedPane, "1");
 			South south = new South();
-			south.setStyle("border: none");
+			south.setBorder("none");
 			contentPane.appendChild(south);
 			south.appendChild(statusBar);
 			LayoutUtils.addSclass("status-border", statusBar);
-			ZKUpdateUtil.setHeight(south, "22px");			
+			ZKUpdateUtil.setVflex(south, "min");
 		}
 		catch(Exception ex)
 		{
@@ -157,9 +157,9 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	void zkInit() throws Exception
 	{
 		//
-		ZKUpdateUtil.setWidth(selPanel, "99%");
-		ZKUpdateUtil.setHeight(selPanel, "90%");
-		selPanel.setStyle("border: none; position: absolute");
+		ZKUpdateUtil.setWidth(selPanel, "100%");
+		ZKUpdateUtil.setHeight(selPanel, "100%");
+		selPanel.setStyle("border: none; position: relative");
 		DesktopTabpanel tabpanel = new DesktopTabpanel();
 		tabpanel.appendChild(selPanel);
 		Tabpanels tabPanels = new Tabpanels();
@@ -173,6 +173,9 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		North north = new North();
 		selPanel.appendChild(north);
 		north.appendChild(selNorthPanel);
+		north.setCollapsible(true);
+		north.setSplittable(true);
+		LayoutUtils.addSlideSclass(north);
 		
 		South south = new South();
 		selPanel.appendChild(south);
@@ -192,9 +195,9 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		tab = new Tab(Msg.getMsg(Env.getCtx(), "Generate"));
 		tabs.appendChild(tab);
 		tab.setDisabled(true);
-		ZKUpdateUtil.setWidth(genPanel, "99%");
-		ZKUpdateUtil.setHeight(genPanel, "90%");
-		genPanel.setStyle("border: none; position: absolute");
+		ZKUpdateUtil.setWidth(genPanel, "100%");
+		ZKUpdateUtil.setHeight(genPanel, "100%");
+		genPanel.setStyle("border: none; position: relative");
 		center = new Center();
 		genPanel.appendChild(center);
 		messageDiv = new Div();
@@ -576,4 +579,5 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		}
     	messageDiv.appendChild(logMessageTable);
 	}
-		}
+	
+}

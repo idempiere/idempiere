@@ -31,6 +31,7 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WTableDirEditor;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MColumn;
@@ -47,7 +48,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.North;
+import org.zkoss.zul.Center;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Timebox;
 
@@ -87,8 +88,16 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		Properties ctx = Env.getCtx();
 		setTitle(Msg.getMsg(Env.getCtx(),"Event"));
 		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-		ZKUpdateUtil.setWidth(this, "400px");
-		this.setSclass("popup-dialog");
+		if (!ThemeManager.isUseCSSForWindowSize()) {
+			ZKUpdateUtil.setWindowWidthX(this, 400);
+			ZKUpdateUtil.setWindowHeightX(this, 550);
+		} else {
+			addCallback(AFTER_PAGE_ATTACHED, t -> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+			});
+		}
+		this.setSclass("popup-dialog request-dialog");
 		this.setBorder("normal");
 		this.setShadow(true);
 		this.setClosable(true);
@@ -248,16 +257,17 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		Borderlayout borderlayout = new Borderlayout();
 		this.appendChild(borderlayout);
 		ZKUpdateUtil.setHflex(borderlayout, "1");
-		ZKUpdateUtil.setVflex(borderlayout, "min");
+		ZKUpdateUtil.setVflex(borderlayout, "1");
 		
-		North northPane = new North();
-		northPane.setSclass("dialog-content");
-		northPane.setAutoscroll(true);
-		borderlayout.appendChild(northPane);
+		Center centerPane = new Center();
+		centerPane.setSclass("dialog-content");
+		centerPane.setAutoscroll(true);
+		borderlayout.appendChild(centerPane);
 		
-		northPane.appendChild(grid);
-		ZKUpdateUtil.setVflex(grid, "1");
+		centerPane.appendChild(grid);
+		ZKUpdateUtil.setVflex(grid, "min");
 		ZKUpdateUtil.setHflex(grid, "1");
+		ZKUpdateUtil.setVflex(centerPane, "min");
 
 		South southPane = new South();
 		southPane.setSclass("dialog-footer");
@@ -353,5 +363,5 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		} else {
 			return false;
 		}	
-	}
+	}	
 }

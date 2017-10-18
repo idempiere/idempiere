@@ -81,8 +81,8 @@ public class FolderBrowser extends Window implements EventListener<Event>
 		this.browseForFolder = browseForFolder;
 
 		setTitle(browseForFolder ? "Directory Browser" : "File Browser");
-		ZKUpdateUtil.setWidth(this, "500px");
-		ZKUpdateUtil.setHeight(this, "500px");
+		ZKUpdateUtil.setWindowWidthX(this, 500);
+		ZKUpdateUtil.setWindowHeightX(this, 500);
 		setBorder("normal");
 		
 		Borderlayout contentLayout = new Borderlayout();

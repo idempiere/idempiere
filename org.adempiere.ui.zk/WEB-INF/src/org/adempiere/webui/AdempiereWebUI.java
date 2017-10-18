@@ -118,7 +118,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
     public AdempiereWebUI()
     {
-    	this.addEventListener(Events.ON_CLIENT_INFO, this);
     	this.setVisible(false);
 
     	userPreference = new UserPreference();
@@ -146,6 +145,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         {
             loginDesktop = new WLogin(this);
             loginDesktop.createPart(this.getPage());
+            loginDesktop.getComponent().getRoot().addEventListener(Events.ON_CLIENT_INFO, this);
         }
         else
         {
@@ -176,6 +176,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     {
     	if (loginDesktop != null)
     	{
+    		loginDesktop.getComponent().getRoot().removeEventListener(Events.ON_CLIENT_INFO, this);
     		loginDesktop.detach();
     		loginDesktop = null;
     	}
@@ -255,6 +256,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		appDesktop.setClientInfo(clientInfo);
 		appDesktop.createPart(this.getPage());
 		this.getPage().getDesktop().setAttribute(APPLICATION_DESKTOP_KEY, new WeakReference<IDesktop>(appDesktop));
+		appDesktop.getComponent().getRoot().addEventListener(Events.ON_CLIENT_INFO, this);
 		
 		//track browser tab per session
 		SessionContextListener.addDesktopId(mSession.getAD_Session_ID(), getPage().getDesktop().getId());
@@ -278,8 +280,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		}
 		Env.setContext(ctx, "#LocalHttpAddr", localHttpAddr.toString());		
 		Clients.response(new AuScript("zAu.cmd0.clearBusy()"));
-
-		processParameters();
+		
+		processParameters();	
     }
 
     private void processParameters() {
@@ -441,14 +443,16 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			clientInfo.desktopXOffset = c.getDesktopXOffset();
 			clientInfo.desktopYOffset = c.getDesktopYOffset();
 			clientInfo.orientation = c.getOrientation();
-			clientInfo.timeZone = c.getTimeZone();
-			IDesktop appDesktop = getAppDeskop();
-			if (appDesktop != null)
-				appDesktop.setClientInfo(clientInfo);
+			clientInfo.timeZone = c.getTimeZone();			
 			String ua = Servlets.getUserAgent((ServletRequest) Executions.getCurrent().getNativeRequest());
 			clientInfo.userAgent = ua;
 			ua = ua.toLowerCase();
-			clientInfo.tablet = Executions.getCurrent().getBrowser("mobile") !=null;
+			clientInfo.tablet = false;
+			if (Executions.getCurrent().getBrowser("mobile") !=null) {
+				clientInfo.tablet = true;
+			} else if (ua.contains("ipad") || ua.contains("iphone") || ua.contains("android")) {
+				clientInfo.tablet = true;
+			}
 			if (getDesktop() != null && getDesktop().getSession() != null) {
 				getDesktop().getSession().setAttribute(CLIENT_INFO, clientInfo);
 			}
@@ -457,6 +461,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			Env.setContext(Env.getCtx(), "#clientInfo_desktopHeight", clientInfo.desktopHeight);
 			Env.setContext(Env.getCtx(), "#clientInfo_orientation", clientInfo.orientation);
 			Env.setContext(Env.getCtx(), "#clientInfo_mobile", clientInfo.tablet);
+			
+			IDesktop appDesktop = getAppDeskop();
+			if (appDesktop != null)
+				appDesktop.setClientInfo(clientInfo);
+
 		}
 
 	}
@@ -469,6 +478,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		loginDesktop = new WLogin(this);
         loginDesktop.createPart(this.getPage());
         loginDesktop.changeRole(locale, properties);
+        loginDesktop.getComponent().getRoot().addEventListener(Events.ON_CLIENT_INFO, this);
 		
 	}
 

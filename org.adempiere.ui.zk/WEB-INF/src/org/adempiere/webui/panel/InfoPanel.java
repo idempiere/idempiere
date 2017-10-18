@@ -39,6 +39,7 @@ import org.adempiere.model.IInfoColumn;
 import org.adempiere.model.MInfoProcess;
 import org.adempiere.model.MInfoRelated;
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
@@ -274,10 +275,20 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 			setBorder("normal");
 			setClosable(true);
-			int height = SessionManager.getAppDesktop().getClientInfo().desktopHeight * 85 / 100;
-    		int width = SessionManager.getAppDesktop().getClientInfo().desktopWidth * 80 / 100;
-    		ZKUpdateUtil.setWidth(this, width + "px");
-    		ZKUpdateUtil.setHeight(this, height + "px");
+			int height = ClientInfo.get().desktopHeight;
+			int width = ClientInfo.get().desktopWidth;
+			if (width <= ClientInfo.MEDIUM_WIDTH)
+			{
+				ZKUpdateUtil.setWidth(this, "100%");
+				ZKUpdateUtil.setHeight(this, "100%");
+			}
+			else
+			{
+				height = height * 85 / 100;
+	    		width = width * 80 / 100;
+	    		ZKUpdateUtil.setWidth(this, width + "px");
+	    		ZKUpdateUtil.setHeight(this, height + "px");
+			}
     		this.setContentStyle("overflow: auto");
 		}
 		else
@@ -293,6 +304,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		confirmPanel.addComponentsLeft(confirmPanel.createButton(ConfirmPanel.A_NEW));
         confirmPanel.addActionListener(Events.ON_CLICK, this);
         ZKUpdateUtil.setHflex(confirmPanel, "1");
+        if (ClientInfo.isMobile())
+        {
+        	if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH) || ClientInfo.maxHeight(ClientInfo.SMALL_HEIGHT))
+        	{
+        		confirmPanel.addButtonSclass("btn-small small-img-btn");
+        	}
+        }
 
         // Elaine 2008/12/16
 		confirmPanel.getButton(ConfirmPanel.A_CUSTOMIZE).setVisible(hasCustomize());
@@ -1065,7 +1083,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			countSql = countSql.trim();
 			countSql = countSql.substring(0, countSql.length() - 5);
 		}
-		String otherClause = infoWindow.getOtherClause(); // Fix otherClause on count 
+		String otherClause = infoWindow != null ? infoWindow.getOtherClause() : null; // Fix otherClause on count 
     	if (otherClause != null)
     		countSql = countSql+" "+otherClause;
 

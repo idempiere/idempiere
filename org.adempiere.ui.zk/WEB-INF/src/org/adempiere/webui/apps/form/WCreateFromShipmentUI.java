@@ -21,8 +21,12 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -113,6 +117,10 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	protected WLocatorEditor locatorField = new WLocatorEditor();
 	protected Label upcLabel = new Label();
 	protected WStringEditor upcField = new WStringEditor();
+
+	private Grid parameterStdLayout;
+
+	private int noOfParameterColumn;
     
 	/**
 	 *  Dynamic Init
@@ -157,13 +165,16 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
         upcLabel.setText(Msg.getElement(Env.getCtx(), "UPC", false));
 
 		Vlayout vlayout = new Vlayout();
-		ZKUpdateUtil.setVflex(vlayout, "1");
+		ZKUpdateUtil.setVflex(vlayout, "min");
 		ZKUpdateUtil.setWidth(vlayout, "100%");
     	Panel parameterPanel = window.getParameterPanel();
 		parameterPanel.appendChild(vlayout);
 		
-		Grid parameterStdLayout = GridFactory.newGridLayout();
+		parameterStdLayout = GridFactory.newGridLayout();
     	vlayout.appendChild(parameterStdLayout);
+    	ZKUpdateUtil.setVflex(vlayout, "parameterStdLayout");
+    	
+    	setupColumns(parameterStdLayout);
 		
 		Rows rows = (Rows) parameterStdLayout.newRows();
 		Row row = rows.newRow();
@@ -194,12 +205,19 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		row = rows.newRow();
 		row.appendChild(upcLabel.rightAlign());
 		row.appendChild(upcField.getComponent());
+		ZKUpdateUtil.setHflex(upcField.getComponent(), "1");
     	if (isRMAWindow) {
             // Add RMA document selection to panel
             row.appendChild(rmaLabel.rightAlign());
             row.appendChild(rmaField);
             ZKUpdateUtil.setHflex(rmaField, "1");
     	}
+    	
+    	if (ClientInfo.isMobile()) {    		
+    		if (noOfParameterColumn == 2)
+				LayoutUtils.compactTo(parameterStdLayout, 2);		
+			ClientInfo.onClientInfo(window, this::onClientInfo);
+		}
 	}
 
 	private boolean 	m_actionActive = false;
@@ -558,5 +576,61 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	@Override
 	public Object getWindow() {
 		return window;
+	}
+	
+	protected void setupColumns(Grid parameterGrid) {
+		noOfParameterColumn = ClientInfo.maxWidth((ClientInfo.EXTRA_SMALL_WIDTH+ClientInfo.SMALL_WIDTH)/2) ? 2 : 4;
+		Columns columns = new Columns();
+		parameterGrid.appendChild(columns);
+		if (ClientInfo.maxWidth((ClientInfo.EXTRA_SMALL_WIDTH+ClientInfo.SMALL_WIDTH)/2))
+		{
+			Column column = new Column();
+			ZKUpdateUtil.setWidth(column, "35%");
+			columns.appendChild(column);
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "65%");
+			columns.appendChild(column);
+		}
+		else
+		{
+			Column column = new Column();
+			columns.appendChild(column);		
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "15%");
+			columns.appendChild(column);
+			ZKUpdateUtil.setWidth(column, "35%");
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "15%");
+			columns.appendChild(column);
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "35%");
+			columns.appendChild(column);
+		}
+	}
+	
+	protected void onClientInfo()
+	{
+		if (ClientInfo.isMobile() && parameterStdLayout != null && parameterStdLayout.getRows() != null)
+		{
+			int nc = ClientInfo.maxWidth((ClientInfo.EXTRA_SMALL_WIDTH+ClientInfo.SMALL_WIDTH)/2) ? 2 : 4;
+			int cc = noOfParameterColumn;
+			if (nc == cc)
+				return;
+			
+			parameterStdLayout.getColumns().detach();
+			setupColumns(parameterStdLayout);
+			if (cc > nc)
+			{
+				LayoutUtils.compactTo(parameterStdLayout, nc);
+			}
+			else
+			{
+				LayoutUtils.expandTo(parameterStdLayout, nc, false);
+			}
+			
+			ZKUpdateUtil.setCSSHeight(window);
+			ZKUpdateUtil.setCSSWidth(window);
+			window.invalidate();			
+		}
 	}
 }

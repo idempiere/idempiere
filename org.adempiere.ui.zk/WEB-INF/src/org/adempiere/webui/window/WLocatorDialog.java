@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
@@ -40,6 +41,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MLocator;
 import org.compiere.model.MLocatorLookup;
@@ -273,14 +275,32 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		southPane.appendChild(confirmPanel);
 		
 		this.setTitle(title);
-		this.setSclass("popup-dialog");
+		this.setSclass("popup-dialog locator-dialog");
 		this.setClosable(true);
 		this.setBorder("normal");
-		ZKUpdateUtil.setWidth(this, "260px");
-		ZKUpdateUtil.setHeight(this, "350px"); // required fixed height for ZK to auto adjust the position based on available space
+		if (!ThemeManager.isUseCSSForWindowSize()) 
+		{
+			ZKUpdateUtil.setWindowWidthX(this, 260);
+			ZKUpdateUtil.setWindowHeightX(this, 350); // required fixed height for ZK to auto adjust the position based on available space
+		}
+		else
+		{
+			addCallback(AFTER_PAGE_ATTACHED, t -> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+			});
+		}
 		this.setShadow(true);
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		this.setSizable(true); // Elaine 2009/02/02 - window set to resizable
+		
+		if (ClientInfo.isMobile())
+		{
+			ClientInfo.onClientInfo(this, () -> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+			});
+		}
 	}
 	
 	private void initLocator()

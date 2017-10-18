@@ -19,6 +19,14 @@ package org.adempiere.webui;
 import java.io.Serializable;
 import java.util.TimeZone;
 
+import org.adempiere.webui.session.SessionManager;
+import org.compiere.util.Env;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.sys.ComponentCtrl;
+
 /**
  * 
  * @author Low Heng Sin
@@ -42,6 +50,16 @@ public class ClientInfo implements Serializable {
 	public String userAgent;
 	public boolean tablet;
 	public double devicePixelRatio;
+	
+	public static final int LARGE_WIDTH = 1200;
+	public static final int MEDIUM_WIDTH = 1000;
+	public static final int SMALL_WIDTH = 700;
+	public static final int EXTRA_SMALL_WIDTH = 500;
+	
+	public static final int LARGE_HEIGHT = 1000;
+	public static final int MEDIUM_HEIGHT = 700;
+	public static final int SMALL_HEIGHT = 500;
+	public static final int EXTRA_SMALL_HEIGHT = 360;
 	
 	@Override
 	public String toString() {
@@ -73,6 +91,70 @@ public class ClientInfo implements Serializable {
 		
 		return builder.toString();
 	}
+
+	/**
+	 * @return true if mobile browser
+	 */
+	public static boolean isMobile() {
+		return "Y".equals(Env.getContext(Env.getCtx(), "#clientInfo_mobile"));
+	}
+
+	/**
+	 * @return the current clientinfo instance
+	 */
+	public static ClientInfo get() {
+		return SessionManager.getAppDesktop().getClientInfo();
+	}
 	
+	/**
+	 * 
+	 * @param minWidth
+	 * @return true if desktopWidth >= minWidth
+	 */
+	public static boolean minWidth(int minWidth) {
+		return ClientInfo.get().desktopWidth > 0 && ClientInfo.get().desktopWidth >= minWidth;
+	}
 	
+	/**
+	 * 
+	 * @param maxWidth
+	 * @return true if desktopWidth <= maxWidth
+	 */
+	public static boolean maxWidth(int maxWidth) {
+		return ClientInfo.get().desktopWidth > 0 && ClientInfo.get().desktopWidth <= maxWidth;
+	}	
+	
+	/**
+	 * 
+	 * @param minHeight
+	 * @return true if desktopHeight >= minHeight
+	 */
+	public static boolean minHeight(int minHeight) {
+		return ClientInfo.get().desktopHeight > 0 && ClientInfo.get().desktopHeight >= minHeight;
+	}
+	
+	/**
+	 * 
+	 * @param maxHeight
+	 * @return true if desktopHeight <= maxHeight
+	 */
+	public static boolean maxHeight(int maxHeight) {
+		return ClientInfo.get().desktopHeight > 0 && ClientInfo.get().desktopHeight <= maxHeight;
+	}
+
+	private static String AFTER_PAGE_DETACHED = "afterPageDetached";
+	
+	/**
+	 * Call runnable on client info update
+	 * @param component
+	 * @param runnable
+	 */
+	public static void onClientInfo(Component component, Runnable runnable) {
+		ComponentCtrl ctrl = (ComponentCtrl) component;		
+		EventListener<Event> eventListener = evt -> runnable.run();
+		
+		Component root = SessionManager.getAppDesktop().getComponent().getRoot();
+		root.addEventListener(Events.ON_CLIENT_INFO, eventListener);
+		ctrl.addCallback(AFTER_PAGE_DETACHED, t -> root.removeEventListener(Events.ON_CLIENT_INFO, eventListener));
+	}
 }

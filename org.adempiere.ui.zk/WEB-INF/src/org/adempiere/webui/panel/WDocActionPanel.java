@@ -33,6 +33,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
@@ -270,7 +271,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 
 	private void init()
 	{
-		setSclass("popup-dialog");
+		setSclass("popup-dialog doc-action-dialog");
 		Vlayout vlayout = new Vlayout();
 		ZKUpdateUtil.setHflex(vlayout, "1");
 		this.appendChild(vlayout);
@@ -308,7 +309,8 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 	    ZKUpdateUtil.setVflex(confirmPanel, "min");
 	    
 	    this.setTitle(Msg.translate(Env.getCtx(), "DocAction"));
-	    ZKUpdateUtil.setWidth(this, "410px");
+	    if (!ThemeManager.isUseCSSForWindowSize())
+	    	ZKUpdateUtil.setWindowWidthX(this, 410);
 	    this.setBorder("normal");
 	    this.setZindex(1000);
 	}

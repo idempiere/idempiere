@@ -15,6 +15,7 @@ package org.adempiere.webui.window;
 
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
@@ -157,8 +158,16 @@ public class WPreference extends WQuickEntry implements EventListener<Event> {
 				gadgets = new WGadgets();
 				gadgets.setClosable(true);
 				gadgets.setSizable(true);
-				ZKUpdateUtil.setWidth(gadgets, "40%");
-				ZKUpdateUtil.setHeight(gadgets, "60%");
+				if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
+					ZKUpdateUtil.setWidth(gadgets, "90%");
+				else if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1))
+					ZKUpdateUtil.setWidth(gadgets, "70%");
+				else
+					ZKUpdateUtil.setWidth(gadgets, "50%");
+				if (ClientInfo.maxHeight(ClientInfo.MEDIUM_HEIGHT-1))
+					ZKUpdateUtil.setHeight(gadgets, "80%");
+				else
+					ZKUpdateUtil.setHeight(gadgets, "60%");
 				gadgets.setTitle( Msg.translate(Env.getCtx(), "DashboardGadgets"));
 				gadgets.setAttribute(Window.MODE_KEY, Mode.HIGHLIGHTED);
 				AEnv.showWindow(gadgets);

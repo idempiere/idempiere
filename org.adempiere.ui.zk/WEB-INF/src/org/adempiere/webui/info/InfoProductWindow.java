@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -336,6 +337,11 @@ public class InfoProductWindow extends InfoWindow {
 			}
 		});
 		south.setSclass("south-collapsible-with-title");
+		if (ClientInfo.maxHeight(ClientInfo.MEDIUM_HEIGHT-1))
+		{
+			south.setOpen(false);
+			ZKUpdateUtil.setHeight(south, "100%");
+		}
 		contentBorderLayout.appendChild(south);
 		tabbedPane.setSclass("info-product-tabbedpane");
 		south.appendChild(tabbedPane);
@@ -355,7 +361,8 @@ public class InfoProductWindow extends InfoWindow {
 					for(int i = 0; i < columnInfos.length; i++) {
 						if (columnInfos[i].getGridField() != null && columnInfos[i].getGridField().getColumnName().equals("Value")) {
 							refresh(M_Warehouse_ID, M_PriceList_Version_ID);
-		        			contentBorderLayout.getSouth().setOpen(true);
+							if (ClientInfo.minHeight(ClientInfo.MEDIUM_HEIGHT))
+								contentBorderLayout.getSouth().setOpen(true);
 		        			break;
 						}
 					}

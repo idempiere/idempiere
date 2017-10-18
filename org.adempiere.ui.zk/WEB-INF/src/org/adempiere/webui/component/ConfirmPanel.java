@@ -22,9 +22,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
@@ -106,6 +108,8 @@ public final class ConfirmPanel extends Div
         Button button = ButtonFactory.createNamedButton(name, m_withText, m_withImage);        
         button.setId(name);
         buttonMap.put(name, button);
+        if (!Util.isEmpty(extraButtonSClass))
+        	LayoutUtils.addSclass(extraButtonSClass, button);
 
         return button;
     }
@@ -225,6 +229,8 @@ public final class ConfirmPanel extends Div
     private Hlayout pnlBtnLeft;
     // IDEMPIERE-1334 center panel, contain all process button
     private Hlayout pnlBtnCenter;
+
+	private String extraButtonSClass;
 
     /**
      * initialise components
@@ -523,4 +529,16 @@ public final class ConfirmPanel extends Div
 		return getButton(A_OK);
 	}
 
+	public void addButtonSclass(String cls) {
+		for(Button btn : buttonMap.values()) {
+			LayoutUtils.addSclass(cls, btn);
+		}
+		extraButtonSClass = cls;
+	}
+	
+	public void removeButtonSclass(String cls) {
+		for(Button btn : buttonMap.values()) {
+			LayoutUtils.removeSclass(cls, btn);
+		}
+	}
 }   //  ConfirmPanel

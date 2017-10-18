@@ -45,6 +45,7 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 	private static final long serialVersionUID = 1400484283064851775L;
 	private boolean isSupportTabDragDrop = false;
 	private boolean isActiveBySeq = false;
+	private boolean isCheckVisibleOnlyForNextActive = true;
 
 	private Deque<Tab> activeTabSeq = new ArrayDeque<>();
 	public Tabbox () {
@@ -140,7 +141,7 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 	public Tab getNextActiveBySeq (Tab currentTab) {
 		Tab cadidateTabActive = null;
 		while ((cadidateTabActive = activeTabSeq.peek()) != null) {
-			boolean canNotActive = cadidateTabActive.isDisabled() || !cadidateTabActive.isVisible();
+			boolean canNotActive = cadidateTabActive.isDisabled() || (!cadidateTabActive.isVisible() && isCheckVisibleOnlyForNextActive());
 			if (canNotActive) {
 				// move disable item to last stack it can be active late
 				cadidateTabActive = activeTabSeq.pop();
@@ -162,5 +163,17 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 	 */
 	public void removeTabFromActiveSeq (Tab closeTab) {
 		activeTabSeq.remove(closeTab);
+	}
+	
+	public boolean isCheckVisibleOnlyForNextActive() {
+		return isCheckVisibleOnlyForNextActive;
+	}
+	
+	/**
+	 * Ignore invisible tab for next active by seq
+	 * @param isVisibleOnly
+	 */
+	public void setCheckVisibleOnlyForNextActive(boolean isVisibleOnly) {
+		isCheckVisibleOnlyForNextActive = isVisibleOnly;
 	}
 }

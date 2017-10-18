@@ -112,8 +112,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		if (createNew)
 		{
 			setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-			ZKUpdateUtil.setWidth(this, "700px");
-			ZKUpdateUtil.setHeight(this, "600px");
+			ZKUpdateUtil.setWindowWidthX(this, 700);
+			ZKUpdateUtil.setWindowHeightX(this, 600);
 			this.setSizable(true);
 		}
 		else

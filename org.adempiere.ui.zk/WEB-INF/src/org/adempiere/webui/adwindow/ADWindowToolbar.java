@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.adempiere.base.IServiceHolder;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
@@ -50,11 +51,15 @@ import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.event.AfterSizeEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
+import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.A;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Toolbarbutton;
@@ -132,6 +137,14 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
 	private KeyEvent prevKeyEvent;
 
+	private A overflowButton;
+
+	private ArrayList<ToolBarButton> overflows;
+
+	private Popup overflowPopup;
+	
+	private int prevWidth;
+
 	/**	Last Modifier of Action Event					*/
 //	public int 				lastModifiers;
 	//
@@ -144,6 +157,9 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     public ADWindowToolbar(int windowNo) {
     	setWindowNo(windowNo);
         init();
+        if (ClientInfo.isMobile()) {
+        	mobileInit();
+        }
 	}
 
 	private void init()
@@ -673,6 +689,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	}
 
 	private boolean ToolBarMenuRestictionLoaded = false;
+
 	public void updateToolbarAccess(int xAD_Window_ID) {
 		if (ToolBarMenuRestictionLoaded)
 			return;
@@ -782,5 +799,113 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		if (newpage != null) {
 			SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
 		}
+	}
+	
+	private void mobileInit() {	
+		LayoutUtils.addSclass("mobile", this);
+		addEventListener("onOverflowButton", evt -> onOverflowButton(evt));
+		this.setWidgetOverride("toolbarScrollable", "function (wgt) {\n" + 
+				"	var total = jq(wgt.$n()).width();\n" + 
+				"	var w = wgt.firstChild;\n" + 
+				"\n" + 
+				"	// make sure all images are loaded.\n" + 
+				"	if (zUtl.isImageLoading()) {\n" + 
+				"		var f = arguments.callee;\n" + 
+				"		setTimeout(function () {\n" + 
+				"			return f(wgt);\n" + 
+				"		}, 20);\n" + 
+				"		return;\n" + 
+				"	}\n" + 
+				"	for (; w; w = w.nextSibling) {\n" + 
+				"		total -= jq(w.$n()).outerWidth(true);\n" + 
+				"		if (total < 0 && w.className == 'zul.wgt.Toolbarbutton') {\n" + 
+				"			break;\n" + 
+				"		}\n" + 
+				"	}\n" + 
+				"	if (w) {\n" + 
+				"       var event = new zk.Event(wgt, 'onOverflowButton', w.uuid, {toServer: true}); \n" +
+				"       zAu.send(event); \n" +
+				"	}\n" + 
+				"}");
+		addEventListener(Events.ON_AFTER_SIZE, (AfterSizeEvent evt) -> onAfterSize(evt));
+		
+	}
+
+	private void onAfterSize(AfterSizeEvent evt) {
+		int width = evt.getWidth();
+		if (width != prevWidth) {
+			prevWidth = width;
+			if (overflowButton != null)
+				overflowButton.detach();	
+			if (overflowPopup != null)
+				overflowPopup.detach();
+			if (overflows != null) {
+				for (ToolBarButton btn : overflows) {
+					appendChild(btn);
+				}
+				overflows = null;
+			}
+			Events.postEvent("onPostAfterSize", this, null);
+		}
+	}
+
+	private void onOverflowButton(Event evt) {
+		overflows = new ArrayList<>();
+		String uuid = (String) evt.getData();
+		boolean overflowStarted = false;
+		for(Component comp : getChildren()) {
+			if (comp instanceof ToolBarButton) {
+				if (overflowStarted) {
+					overflows.add((ToolBarButton) comp);
+				} else if (comp.getUuid().equals(uuid)) {
+					overflows.add((ToolBarButton) comp);
+					overflowStarted = true;
+				}
+			}
+		}
+		if (overflows.size() > 0) {
+			overflowButton = new A();
+			overflowButton.setIconSclass("z-icon-angle-double-down");
+			overflowButton.setStyle("position: absolute; right: 2px; bottom: 6px; font-size: 12px; font-weight: 500;");
+			appendChild(overflowButton);
+			overflowPopup = new Popup();
+			overflowPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
+				if (!oe.isOpen()) {
+					overflowPopup.setAttribute("popup.close", System.currentTimeMillis());
+				}
+			});
+			appendChild(overflowPopup);
+			for(ToolBarButton btn : overflows) {
+				overflowPopup.appendChild(btn);
+			}			
+			overflowButton.addEventListener(Events.ON_CLICK, e -> {
+				Long ts = (Long) overflowPopup.removeAttribute("popup.close");
+				if (ts != null) {
+					if (System.currentTimeMillis() - ts.longValue() < 500) {
+						return;
+					}
+				}
+				overflowPopup.open(overflowButton, "after_end");
+			});
+			
+			int cnt = 0;
+			for(Component c : getChildren()) {
+				if (c instanceof ToolBarButton)
+					cnt++;
+			}
+			if (overflows.size() >= cnt) {
+				String script = "var e = jq('#" + getUuid() + "');";
+				script = script + "var b=zk.Widget.$('#" + overflowPopup.getUuid() + "'); ";
+				script = script + "b.setWidth(e.css('width'));";
+				Clients.evalJavaScript(script);
+			} else {
+				overflowPopup.setWidth(null);
+			}
+		}
+	}
+	
+	public void onPostAfterSize() {
+		String script = "var w = zk.Widget.$('#" + getUuid() + "'); w.toolbarScrollable(w);";
+		Clients.evalJavaScript(script);
 	}
 }

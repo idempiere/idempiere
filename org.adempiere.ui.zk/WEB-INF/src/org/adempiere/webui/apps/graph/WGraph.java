@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.adempiere.apps.graph.GraphColumn;
 import org.adempiere.base.Service;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.graph.model.GoalModel;
 import org.adempiere.webui.editor.WTableDirEditor;
@@ -181,7 +182,7 @@ public class WGraph extends Div implements IdSpace {
 		if (m_renderTable && m_renderChart) {
 			layout = new Borderlayout();
 			appendChild(layout);
-			layout.setStyle("height: 100%; width: 100%; position: absolute;");
+			layout.setStyle("height: 100%; width: 100%; position: relative;");
 			Center center = new Center();
 			layout.appendChild(center);
 			center.appendChild(panel);
@@ -196,6 +197,11 @@ public class WGraph extends Div implements IdSpace {
 			if (m_renderChart) {
 				East east = new East();
 				east.setAutoscroll(true);
+				if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1)) {
+					east.setOpen(false);
+					east.setSplittable(true);
+					east.setCollapsible(true);
+				}
 				layout.appendChild(east);
 				renderTable(east);
 			} else {
@@ -251,12 +257,17 @@ public class WGraph extends Div implements IdSpace {
 	private void renderChart(String type) {
 		int width = 560;
 		int height = 400;
+		if (ClientInfo.maxWidth(width-1)) {
+			width = ClientInfo.get().desktopWidth;
+			height = (int)(width * (400f / 560f));
+		}
 		if (panel.getPanelchildren() != null) {
 			panel.getPanelchildren().getChildren().clear();
 		} else {
 			Panelchildren pc = new Panelchildren();
 			panel.appendChild(pc);
 		}
+		panel.getPanelchildren().setStyle("overflow: auto;");
 		GoalModel goalModel = new GoalModel();
 		goalModel.goal = m_goal;
 		goalModel.chartType = type != null ? type : m_goal.getChartType();

@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
@@ -27,6 +28,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.compiere.model.MImage;
@@ -130,10 +132,20 @@ public class WImageDialog extends Window implements EventListener<Event>
 	 */
 	void init() throws Exception
 	{
-		this.setSclass("popup-dialog");
+		this.setSclass("popup-dialog image-dialog");
 		this.setBorder("normal");
-		ZKUpdateUtil.setWidth(this, "640px");
-		ZKUpdateUtil.setHeight(this, "540px");
+		if (!ThemeManager.isUseCSSForWindowSize()) 
+		{
+			ZKUpdateUtil.setWindowWidthX(this, 640);
+			ZKUpdateUtil.setWindowHeightX(this, 540);
+		}
+		else
+		{
+			addCallback(AFTER_PAGE_ATTACHED, t-> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+			});
+		}
 		this.setShadow(true);
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		this.setSizable(true);
@@ -142,8 +154,14 @@ public class WImageDialog extends Window implements EventListener<Event>
 		captureDiv = new Div();
 		this.appendChild(captureDiv);
 		captureDiv.setStyle("position: absolute;");
-		ZKUpdateUtil.setHeight(captureDiv, "480px");
-		ZKUpdateUtil.setWidth(captureDiv, "640px");
+		if (ClientInfo.maxHeight(539))
+			ZKUpdateUtil.setHeight(captureDiv, (ClientInfo.get().desktopHeight-60)+ "px");
+		else
+			ZKUpdateUtil.setHeight(captureDiv, "480px");
+		if (ClientInfo.maxWidth(639))
+			ZKUpdateUtil.setWidth(captureDiv, ClientInfo.get().desktopWidth + "px");
+		else
+			ZKUpdateUtil.setWidth(captureDiv, "640px");
 		captureDiv.setVisible(false);
 		captureDiv.addEventListener("onCaptureImage", this);
 	    cancelCaptureButton = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Cancel")));
@@ -364,5 +382,5 @@ public class WImageDialog extends Window implements EventListener<Event>
 	 */
 	public void setDefaultNameForCaptureImage(String defaultNameForCaptureImage) {
 		this.defaultNameForCaptureImage = defaultNameForCaptureImage;
-	}
+	}	
 }   //  WImageDialog

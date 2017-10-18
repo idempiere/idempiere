@@ -17,6 +17,8 @@
 
 package org.adempiere.webui.component;
 
+import java.util.Collection;
+
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.ShowMaskWrapper;
 import org.adempiere.webui.event.DialogEvents;
@@ -25,6 +27,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Callback;
 
 /**
  *
@@ -76,6 +79,7 @@ public class Window extends org.zkoss.zul.Window implements ISupportMask
 	/* (non-Javadoc)
 	 * @see org.zkoss.zul.Window#onPageDetached(org.zkoss.zk.ui.Page)
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void onPageDetached(Page page) {
 		super.onPageDetached(page);
@@ -83,8 +87,14 @@ public class Window extends org.zkoss.zul.Window implements ISupportMask
 				Executions.getCurrent().getDesktop().getExecution() != null) {
 			Events.sendEvent(this, new Event(DialogEvents.ON_WINDOW_CLOSE, this, null));
 		}
+		//org.zkoss.zul.Window.onPageDetached doesn't call super.onPageDetached, bug ?
+		Collection<Callback> callbacks = getCallback(AFTER_PAGE_DETACHED);
+		for (Callback callback : callbacks) {
+			callback.call(this);
+		}
 	}
 
+	
 	/**
 	 * Get the window mode attribute
 	 * @return Window.Mode

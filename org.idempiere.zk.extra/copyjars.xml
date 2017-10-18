@@ -1,7 +1,7 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
 		<mkdir dir="lib" />
-		<get src="${url.maven.zkoss.lib}/maven2/org/zkoss/zkforge/ckez/4.4.6.2/ckez-4.4.6.2.jar" dest="lib/ckez.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.maven.zkoss.lib}/maven2/org/zkoss/zkforge/ckez/4.7.0.0/ckez-4.7.0.0.jar" dest="lib/ckez.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven.zkoss.lib}/maven2/org/zkoss/zkforge/gmapsz/3.0.3/gmapsz-3.0.3.jar" dest="lib/gmapsz.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven.zkoss.lib}/maven2/org/zkoss/zkforge/timelinez/2.3.1_50/timelinez-2.3.1_50.jar" dest="lib/timelinez.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven.zkoss.lib}/maven2/org/zkoss/zkforge/timeplotz/1.1_50/timeplotz-1.1_50.jar" dest="lib/timeplotz.jar" usetimestamp="true" verbose="true" retries="5" />

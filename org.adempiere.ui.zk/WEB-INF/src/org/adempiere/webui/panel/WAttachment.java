@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -113,6 +114,8 @@ public class WAttachment extends Window implements EventListener<Event>
 	private Hlayout confirmPanel = new Hlayout();
 
 	private int displayIndex;
+
+	private String orientation;
 
 	private static List<String> autoPreviewList;
 
@@ -220,13 +223,23 @@ public class WAttachment extends Window implements EventListener<Event>
 	{
 		this.setAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "attachment");
 		this.setMaximizable(true);
-		ZKUpdateUtil.setWidth(this, "700px");
-		ZKUpdateUtil.setHeight(this, "85%");
+		if (!ThemeManager.isUseCSSForWindowSize())
+		{
+			ZKUpdateUtil.setWindowWidthX(this, 700);
+			ZKUpdateUtil.setHeight(this, "85%");
+		}
+		else
+		{
+			addCallback(AFTER_PAGE_ATTACHED, t -> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+			});
+		}
 		this.setTitle(Msg.getMsg(Env.getCtx(), "Attachment"));
 		this.setClosable(true);
 		this.setSizable(true);
 		this.setBorder("normal");
-		this.setSclass("popup-dialog");
+		this.setSclass("popup-dialog attachment-dialog");
 		this.setShadow(true);
 		this.appendChild(mainPanel);
 		ZKUpdateUtil.setHeight(mainPanel, "100%");
@@ -314,7 +327,28 @@ public class WAttachment extends Window implements EventListener<Event>
 		hbox.appendChild(bCancel);
 		
 
-		text.setTooltiptext(Msg.getElement(Env.getCtx(), "TextMsg"));		
+		text.setTooltiptext(Msg.getElement(Env.getCtx(), "TextMsg"));
+		
+		if (ClientInfo.isMobile())
+		{
+			orientation = ClientInfo.get().orientation;
+			ClientInfo.onClientInfo(this, this::onClientInfo);
+		}
+	}
+	
+	protected void onClientInfo()
+	{		
+		if (getPage() != null)
+		{
+			String newOrienation = ClientInfo.get().orientation;
+			if (!newOrienation.equals(orientation))
+			{
+				orientation = newOrienation;
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+				invalidate();
+			}
+		}
 	}
 
 	/**
@@ -690,5 +724,5 @@ public class WAttachment extends Window implements EventListener<Event>
 			}
 		}
 		return "UTF-8";
-	}
+	}	
 }

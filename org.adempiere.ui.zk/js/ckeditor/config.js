@@ -1,5 +1,6 @@
 CKEDITOR.editorConfig = function(config) {
     config.resize_enabled = false;
+    config.toolbarCanCollapse = true;
     config.toolbar = 'MyToolbar';
     config.toolbar_MyToolbar =
 [

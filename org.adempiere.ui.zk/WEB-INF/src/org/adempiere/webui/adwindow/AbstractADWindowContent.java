@@ -34,6 +34,7 @@ import java.util.logging.Level;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.WArchive;
 import org.adempiere.webui.WRequest;
@@ -758,7 +759,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		findWindow.setBorder("none");	
 		findWindow.setStyle("position: absolute; border-bottom: 2px solid #484848; padding: 2px; background-color: #fff;");
 		ZKUpdateUtil.setWidth(findWindow, "100%");
-		ZKUpdateUtil.setHeight(findWindow, "60%");
+		if (ClientInfo.maxHeight(ClientInfo.MEDIUM_HEIGHT-1))
+			ZKUpdateUtil.setHeight(findWindow, "100%");
+		else
+			ZKUpdateUtil.setHeight(findWindow, "60%");
 		findWindow.setZindex(1000);
 		findWindow.setSizable(false);
 		findWindow.setContentStyle("background-color: #fff; width: 99%; margin: auto;");
@@ -3039,8 +3043,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						onRefresh(true, false);						
 					}
 				});
-				showBusyMask(form);
-				LayoutUtils.openOverlappedWindow(getComponent(), form, "middle_center");
+				form.setPage(getComponent().getPage());
+				form.doHighlighted();
 				form.focus();
 			}
 			else {

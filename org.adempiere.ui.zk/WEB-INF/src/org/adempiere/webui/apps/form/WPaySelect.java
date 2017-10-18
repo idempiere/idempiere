@@ -28,10 +28,14 @@ import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.util.IProcessUI;
+import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
@@ -160,6 +164,7 @@ public class WPaySelect extends PaySelect
 		//
 		labelBankAccount.setText(Msg.translate(Env.getCtx(), "C_BankAccount_ID"));
 		fieldBankAccount.addActionListener(this);
+		ZKUpdateUtil.setHflex(fieldBankAccount, "1");
 		labelBPartner.setText(Msg.translate(Env.getCtx(), "C_BPartner_ID"));
 		fieldBPartner.addActionListener(this);
 		bRefresh.addActionListener(this);
@@ -168,6 +173,7 @@ public class WPaySelect extends PaySelect
 		fieldPaymentRule.addActionListener(this);
 		labelDtype.setText(Msg.translate(Env.getCtx(), "C_DocType_ID"));
 		fieldDtype.addActionListener(this);
+		ZKUpdateUtil.setHflex(fieldDtype, "1");
 		//
 		labelBankBalance.setText(Msg.translate(Env.getCtx(), "CurrentBalance"));
 		labelBalance.setText("0");
@@ -176,6 +182,7 @@ public class WPaySelect extends PaySelect
 		dataStatus.setPre(true);
 		onlyDue.addActionListener(this);
 		fieldPayDate.addValueChangeListener(this);
+		ZKUpdateUtil.setHflex(fieldPayDate.getComponent(), "1");
 
 		//IDEMPIERE-2657, pritesh shah
 		bGenerate.setEnabled(false);
@@ -183,14 +190,44 @@ public class WPaySelect extends PaySelect
 		bCancel.addActionListener(this);
 		//
 		North north = new North();
-		north.setStyle("border: none");
+		north.setStyle("border: none; max-height: 60%;");
 		mainLayout.appendChild(north);
-		north.appendChild(parameterPanel);
+		north.appendChild(parameterPanel);		
+		north.setSplittable(true);
+		north.setCollapsible(true);
+		north.setAutoscroll(true);
+		LayoutUtils.addSlideSclass(north);
+		
+		if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1))
+		{
+			Columns cols = new Columns();
+			parameterLayout.appendChild(cols);
+			Column col = new Column();
+			col.setHflex("min");
+			cols.appendChild(col);
+			col = new Column();
+			col.setHflex("1");
+			cols.appendChild(col);
+			col = new Column();
+			col.setHflex("min");
+			cols.appendChild(col);
+			if (ClientInfo.minWidth(ClientInfo.SMALL_WIDTH))
+			{
+				col = new Column();
+				col.setWidth("20%");
+				cols.appendChild(col);
+			}
+		}
 		
 		Rows rows = parameterLayout.newRows();
 		Row row = rows.newRow();
 		row.appendChild(labelBankAccount.rightAlign());
 		row.appendChild(fieldBankAccount);
+		if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1))
+		{			
+			row.appendChild(new Space());
+			row = rows.newRow();
+		}
 		row.appendChild(labelBankBalance.rightAlign());
 		Panel balancePanel = new Panel();
 		balancePanel.appendChild(labelCurrency);
@@ -201,7 +238,12 @@ public class WPaySelect extends PaySelect
 		row = rows.newRow();
 		row.appendChild(labelBPartner.rightAlign());
 		row.appendChild(fieldBPartner);
-		row.appendChild(new Space());
+		if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1))
+		{		
+			row.appendChild(new Space());
+			row = rows.newRow();
+		}
+		row.appendChild(new Space());		
 		row.appendChild(onlyDue);
 		row.appendChild(new Space());
 		
@@ -209,15 +251,25 @@ public class WPaySelect extends PaySelect
 		row.appendChild(labelDtype.rightAlign());
 		row.appendChild(fieldDtype);
 		row.appendChild(new Space());
-		row.appendChild(new Space());
-		row.appendChild(new Space());
+		if (ClientInfo.minWidth(ClientInfo.MEDIUM_WIDTH))
+		{			
+			row.appendChild(new Space());
+			row.appendChild(new Space());
+		}
 		
 		row = rows.newRow();
 		row.appendChild(labelPayDate.rightAlign());
 		row.appendChild(fieldPayDate.getComponent());
+		if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1))
+		{			
+			row.appendChild(new Space());
+			row = rows.newRow();
+		}
 		row.appendChild(labelPaymentRule.rightAlign());
 		row.appendChild(fieldPaymentRule);
 		row.appendChild(bRefresh);
+		if (ClientInfo.minWidth(ClientInfo.SMALL_WIDTH))
+			LayoutUtils.expandTo(parameterLayout, 4, true);
 
 		South south = new South();
 		south.setStyle("border: none");
@@ -318,6 +370,11 @@ public class WPaySelect extends PaySelect
 		loadTableInfo(bi, payDate, paymentRule, onlyDue.isSelected(), bpartner, docType, miniTable);
 		
 		calculateSelection();
+		if (ClientInfo.maxHeight(ClientInfo.MEDIUM_HEIGHT-1))
+		{
+			mainLayout.getNorth().setOpen(false);
+			LayoutUtils.addSclass("slide", mainLayout.getNorth());
+		}
 	}   //  loadTableInfo
 
 	/**

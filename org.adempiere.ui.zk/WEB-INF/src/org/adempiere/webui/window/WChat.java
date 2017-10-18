@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -30,6 +31,7 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MChat;
 import org.compiere.model.MChatEntry;
@@ -130,13 +132,15 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	private Map<Integer, Component> entryMap = new HashMap<Integer, Component>();
 	private SimpleDateFormat m_format;
 
+	private String orientation;
+
 	/**
 	 * 	Static Init.
 	 *	@throws Exception
 	 */
 	private void staticInit () throws Exception
 	{
-		this.setSclass("popup-dialog");
+		this.setSclass("popup-dialog chat-dialog");
 		this.setStyle("position: absolute");
 		this.setAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "chat");
 		this.appendChild(mainPanel);
@@ -174,14 +178,45 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		south.appendChild(confirmPanel);
 		ZKUpdateUtil.setVflex(confirmPanel, "min");
 
-		ZKUpdateUtil.setHeight(this, "88%");
-		ZKUpdateUtil.setWidth(this, "500px");
+		if (!ThemeManager.isUseCSSForWindowSize())
+		{
+			ZKUpdateUtil.setHeight(this, "88%");
+			ZKUpdateUtil.setWindowWidthX(this, 500);
+		}
+		else
+		{
+			addCallback(AFTER_PAGE_ATTACHED, t -> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+			});
+		}
 		this.setMaximizable(true);
 		this.setSizable(true);
 		this.setBorder("normal");
 		this.setClosable(true);
-	}	//	staticInit
-
+		
+		if (ClientInfo.isMobile())
+		{
+			orientation = ClientInfo.get().orientation;
+			ClientInfo.onClientInfo(this, this::onClientInfo);
+		}
+	}
+	
+	protected void onClientInfo()
+	{		
+		if (getPage() != null)
+		{
+			String newOrienation = ClientInfo.get().orientation;
+			if (!newOrienation.equals(orientation))
+			{
+				orientation = newOrienation;
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+				invalidate();
+			}
+		}
+	}
+	
 	/**
 	 * 	Load Chat
 	 */
@@ -359,5 +394,4 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	public void onEvent(Event event) throws Exception {
 		actionPerformed(event);
 	}
-
-}	//	AChat
+}	//	WChat

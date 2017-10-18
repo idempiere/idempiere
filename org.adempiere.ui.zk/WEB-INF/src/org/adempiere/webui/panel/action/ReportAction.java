@@ -96,7 +96,7 @@ public class ReportAction implements EventListener<Event>
 		if(winReport == null)
 		{
 			winReport = new Window();
-			ZKUpdateUtil.setWidth(winReport, "450px");
+			ZKUpdateUtil.setWindowWidthX(winReport, 450);
 			winReport.setClosable(true);
 			winReport.setBorder("normal");
 			winReport.setStyle("position:absolute");

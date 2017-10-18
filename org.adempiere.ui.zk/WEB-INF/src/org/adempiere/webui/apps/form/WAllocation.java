@@ -25,8 +25,12 @@ import java.util.Calendar;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.DocumentLink;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
@@ -64,12 +68,13 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.North;
-import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Space;
+
+import static org.adempiere.webui.ClientInfo.*;
 
 /**
  * Allocation Form
@@ -84,7 +89,7 @@ public class WAllocation extends Allocation
 {
 
 	private CustomForm form = new CustomForm();
-
+	
 	/**
 	 *	Initialize Panel
 	 *  @param WindowNo window
@@ -98,20 +103,23 @@ public class WAllocation extends Allocation
 			super.dynInit();
 			dynInit();
 			zkInit();
-			calculate();
-			southPanel.appendChild(new Separator());
-			southPanel.appendChild(statusBar);
+			calculate();			
 		}
 		catch(Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
+		}
+		
+		if (ClientInfo.isMobile()) 
+		{
+			ClientInfo.onClientInfo(form, this::onClientInfo);
 		}
 	}	//	init
 	
 	//
 	private Borderlayout mainLayout = new Borderlayout();
 	private Panel parameterPanel = new Panel();
-	private Panel allocationPanel = new Panel();
+	private Panel allocationPanel = new Panel(); //footer
 	private Grid parameterLayout = GridFactory.newGridLayout();
 	private Label bpartnerLabel = new Label();
 	private WSearchEditor bpartnerSearch = null;
@@ -145,9 +153,8 @@ public class WAllocation extends Allocation
 	private Checkbox autoWriteOff = new Checkbox();
 	private Label organizationLabel = new Label();
 	private WTableDirEditor organizationPick;
+	private int noOfColumn;
 	
-	private Panel southPanel = new Panel();
-
 	/**
 	 *  Static Init
 	 *  @throws Exception
@@ -155,9 +162,16 @@ public class WAllocation extends Allocation
 	private void zkInit() throws Exception
 	{
 		//
-		form.appendChild(mainLayout);
-		ZKUpdateUtil.setWidth(mainLayout, "99%");
-		ZKUpdateUtil.setHeight(mainLayout, "100%");
+		Div div = new Div();
+		div.setStyle("height: 100%; width: 100%; overflow: auto;");
+		div.appendChild(mainLayout);
+		form.appendChild(div);
+		ZKUpdateUtil.setWidth(mainLayout, "100%");
+		
+		/////
+		mainLayout.setStyle("min-height: 600px");
+		/////
+		
 		dateLabel.setText(Msg.getMsg(Env.getCtx(), "Date"));
 		autoWriteOff.setSelected(false);
 		autoWriteOff.setText(Msg.getMsg(Env.getCtx(), "AutoWriteOff", true));
@@ -190,108 +204,71 @@ public class WAllocation extends Allocation
 		
 		organizationLabel.setText(Msg.translate(Env.getCtx(), "AD_Org_ID"));
 		
+		// parameters layout
 		North north = new North();
-		north.setStyle("border: none");
+		north.setBorder("none");
+		north.setSplittable(true);
+		north.setCollapsible(true);
 		mainLayout.appendChild(north);
 		north.appendChild(parameterPanel);
 		
-		Rows rows = null;
-		Row row = null;
+		layoutParameterAndSummary();
 		
-		ZKUpdateUtil.setWidth(parameterLayout, "80%");
-		rows = parameterLayout.newRows();
-		row = rows.newRow();
-		row.appendCellChild(bpartnerLabel.rightAlign());
-		ZKUpdateUtil.setHflex(bpartnerSearch.getComponent(), "true");
-		row.appendCellChild(bpartnerSearch.getComponent(),2);
-		bpartnerSearch.showMenu();
-		Hbox box = new Hbox();
-		box.appendChild(dateLabel.rightAlign());
-		box.appendChild(dateField.getComponent());
-		row.appendCellChild(box);
-		row.appendCellChild(organizationLabel.rightAlign());
-		ZKUpdateUtil.setHflex(organizationPick.getComponent(), "true");
-		row.appendCellChild(organizationPick.getComponent(),1);
-		organizationPick.showMenu();
-		
-		row = rows.newRow();
-		row.appendCellChild(currencyLabel.rightAlign(),1);
-		ZKUpdateUtil.setHflex(currencyPick.getComponent(), "true");
-		row.appendCellChild(currencyPick.getComponent(),1);		
-		currencyPick.showMenu();
-		row.appendCellChild(multiCurrency,1);		
-		row.appendCellChild(autoWriteOff,2);
-		row.appendCellChild(new Space(),1);		
-		
-		South south = new South();
-		south.setStyle("border: none");
-		mainLayout.appendChild(south);
-		south.appendChild(southPanel);
-		southPanel.appendChild(allocationPanel);
-		allocationPanel.appendChild(allocationLayout);
-		ZKUpdateUtil.setHflex(allocationLayout, "min");
-		rows = allocationLayout.newRows();
-		row = rows.newRow();
-		row.appendCellChild(differenceLabel.rightAlign());
-		row.appendCellChild(allocCurrencyLabel.rightAlign());
-		ZKUpdateUtil.setHflex(differenceField, "true");
-		row.appendCellChild(differenceField);
-		row.appendCellChild(chargeLabel.rightAlign());
-		ZKUpdateUtil.setHflex(chargePick.getComponent(), "true");
-		row.appendCellChild(chargePick.getComponent());
-		row.appendCellChild(DocTypeLabel.rightAlign());
-		chargePick.showMenu();
-		ZKUpdateUtil.setHflex(DocTypePick.getComponent(), "true");
-		row.appendCellChild(DocTypePick.getComponent());
-		DocTypePick.showMenu();
-		ZKUpdateUtil.setHflex(allocateButton, "true");
-		row.appendCellChild(allocateButton);
-		row.appendCellChild(refreshButton);
-		
+		// payment layout
 		paymentPanel.appendChild(paymentLayout);
 		ZKUpdateUtil.setWidth(paymentPanel, "100%");
-		ZKUpdateUtil.setHeight(paymentPanel, "100%");
 		ZKUpdateUtil.setWidth(paymentLayout, "100%");
-		ZKUpdateUtil.setHeight(paymentLayout, "100%");
-		paymentLayout.setStyle("border: none");
+		ZKUpdateUtil.setVflex(paymentPanel, "1");
+		ZKUpdateUtil.setVflex(paymentLayout, "1");
 		
+		// invoice layout
 		invoicePanel.appendChild(invoiceLayout);
 		ZKUpdateUtil.setWidth(invoicePanel, "100%");
-		ZKUpdateUtil.setHeight(invoicePanel, "100%");
 		ZKUpdateUtil.setWidth(invoiceLayout, "100%");
-		ZKUpdateUtil.setHeight(invoiceLayout, "100%");
-		invoiceLayout.setStyle("border: none");
+		ZKUpdateUtil.setVflex(invoicePanel, "1");
+		ZKUpdateUtil.setVflex(invoiceLayout, "1");
 		
+		// payment layout north - label
 		north = new North();
-		north.setStyle("border: none");
+		north.setBorder("none");
 		paymentLayout.appendChild(north);
 		north.appendChild(paymentLabel);
-		south = new South();
-		south.setStyle("border: none");
+		ZKUpdateUtil.setVflex(paymentLabel, "min");
+		// payment layout south - sum
+		South south = new South();
+		south.setBorder("none");
 		paymentLayout.appendChild(south);
 		south.appendChild(paymentInfo.rightAlign());
+		ZKUpdateUtil.setVflex(paymentInfo, "min");
+		//payment layout center - payment list
 		Center center = new Center();
 		paymentLayout.appendChild(center);
 		center.appendChild(paymentTable);
-		ZKUpdateUtil.setWidth(paymentTable, "99%");
-		//ZKUpdateUtil.setHeight(paymentTable, "99%");
-		center.setStyle("border: none");
+		ZKUpdateUtil.setWidth(paymentTable, "100%");
+		ZKUpdateUtil.setVflex(paymentTable, "1");
+		center.setBorder("none");
 		
+		// invoice layout north - label
 		north = new North();
-		north.setStyle("border: none");
+		north.setBorder("none");
 		invoiceLayout.appendChild(north);
 		north.appendChild(invoiceLabel);
+		ZKUpdateUtil.setVflex(invoiceLabel, "min");
+		// invoice layout south - sum
 		south = new South();
-		south.setStyle("border: none");
+		south.setBorder("none");
 		invoiceLayout.appendChild(south);
 		south.appendChild(invoiceInfo.rightAlign());
+		ZKUpdateUtil.setVflex(invoiceInfo, "min");
+		// invoice layout center - invoice list
 		center = new Center();
 		invoiceLayout.appendChild(center);
 		center.appendChild(invoiceTable);
-		ZKUpdateUtil.setWidth(invoiceTable, "99%");
-		//ZKUpdateUtil.setHeight(invoiceTable, "99%");
+		ZKUpdateUtil.setWidth(invoiceTable, "100%");
+		ZKUpdateUtil.setVflex(invoiceTable, "1");
 		center.setStyle("border: none");
-		//
+		
+		// mainlayout center - payment + invoice 
 		center = new Center();
 		mainLayout.appendChild(center);
 		center.appendChild(infoPanel);
@@ -300,21 +277,154 @@ public class WAllocation extends Allocation
 		
 		infoPanel.setStyle("border: none");
 		ZKUpdateUtil.setWidth(infoPanel, "100%");
-		ZKUpdateUtil.setHeight(infoPanel, "100%");
 		
+		// north of mainlayout center - payment
 		north = new North();
-		north.setStyle("border: none");
-		ZKUpdateUtil.setHeight(north, "49%");
+		north.setBorder("none");
 		infoPanel.appendChild(north);
 		north.appendChild(paymentPanel);
+		north.setAutoscroll(true);
 		north.setSplittable(true);
+		north.setSize("50%");
+		north.setCollapsible(true);
+
+		// center of mainlayout center - invoice
 		center = new Center();
-		center.setStyle("border: none");
+		center.setBorder("none");
 		infoPanel.appendChild(center);
 		center.appendChild(invoicePanel);
-		ZKUpdateUtil.setHflex(invoicePanel, "1");
-		ZKUpdateUtil.setVflex(invoicePanel, "1");
+		center.setAutoscroll(true);
+		infoPanel.setStyle("min-height: 300px;");
 	}   //  jbInit
+
+	protected void layoutParameterAndSummary() {
+		Rows rows = null;
+		Row row = null;
+		
+		setupParameterColumns();
+		
+		rows = parameterLayout.newRows();
+		row = rows.newRow();
+		row.appendCellChild(bpartnerLabel.rightAlign());
+		ZKUpdateUtil.setHflex(bpartnerSearch.getComponent(), "true");
+		row.appendCellChild(bpartnerSearch.getComponent(),1);
+		bpartnerSearch.showMenu();
+		row.appendChild(dateLabel.rightAlign());
+		row.appendChild(dateField.getComponent());
+		
+		row.appendCellChild(organizationLabel.rightAlign());
+		ZKUpdateUtil.setHflex(organizationPick.getComponent(), "true");
+		row.appendCellChild(organizationPick.getComponent(),1);
+		organizationPick.showMenu();		
+		
+		row = rows.newRow();
+		row.appendCellChild(currencyLabel.rightAlign(),1);
+		ZKUpdateUtil.setHflex(currencyPick.getComponent(), "true");
+		row.appendCellChild(currencyPick.getComponent(),1);		
+		currencyPick.showMenu();
+		
+		Hbox cbox = new Hbox();
+		cbox.setWidth("100%");
+		if (noOfColumn == 6)
+			cbox.setPack("center");
+		else
+			cbox.setPack("end");
+		cbox.appendChild(multiCurrency);
+		cbox.appendChild(autoWriteOff);
+		row.appendCellChild(cbox, 2);		
+		if (noOfColumn < 6)		
+			LayoutUtils.compactTo(parameterLayout, noOfColumn);
+		else
+			LayoutUtils.expandTo(parameterLayout, noOfColumn, true);
+		
+		// footer/allocations layout
+		South south = new South();
+		south.setBorder("none");
+		mainLayout.appendChild(south);
+		south.appendChild(allocationPanel);
+		allocationPanel.appendChild(allocationLayout);
+		allocationPanel.appendChild(statusBar);
+		ZKUpdateUtil.setWidth(allocationLayout, "100%");
+		ZKUpdateUtil.setHflex(allocationPanel, "1");
+		ZKUpdateUtil.setVflex(allocationPanel, "min");
+		ZKUpdateUtil.setVflex(allocationLayout, "min");
+		ZKUpdateUtil.setVflex(statusBar, "min");
+		ZKUpdateUtil.setVflex(south, "min");
+		rows = allocationLayout.newRows();
+		row = rows.newRow();
+		if (maxWidth(SMALL_WIDTH-1))
+		{
+			Hbox box = new Hbox();
+			box.setWidth("100%");
+			box.setPack("end");
+			box.appendChild(differenceLabel.rightAlign());
+			box.appendChild(allocCurrencyLabel.rightAlign());
+			row.appendCellChild(box);
+		}
+		else
+		{
+			Hlayout box = new Hlayout();
+			box.setStyle("float: right");
+			box.appendChild(differenceLabel.rightAlign());
+			box.appendChild(allocCurrencyLabel.rightAlign());
+			row.appendCellChild(box);
+		}
+		ZKUpdateUtil.setHflex(differenceField, "true");
+		row.appendCellChild(differenceField);
+		if (maxWidth(SMALL_WIDTH-1))
+			row = rows.newRow();
+		row.appendCellChild(chargeLabel.rightAlign());
+		ZKUpdateUtil.setHflex(chargePick.getComponent(), "true");
+		row.appendCellChild(chargePick.getComponent());
+		if (maxWidth(SMALL_WIDTH-1))
+			row = rows.newRow();
+		row.appendCellChild(DocTypeLabel.rightAlign());
+		chargePick.showMenu();
+		ZKUpdateUtil.setHflex(DocTypePick.getComponent(), "true");
+		row.appendCellChild(DocTypePick.getComponent());
+		DocTypePick.showMenu();
+		if (maxWidth(SMALL_WIDTH-1))
+		{
+			row = rows.newRow();
+			Hbox box = new Hbox();
+			box.setWidth("100%");
+			box.setPack("end");
+			box.appendChild(allocateButton);
+			box.appendChild(refreshButton);
+			row.appendCellChild(box, 2);
+		}
+		else
+		{
+			Hbox box = new Hbox();
+			box.setPack("end");
+			box.appendChild(allocateButton);
+			box.appendChild(refreshButton);
+			ZKUpdateUtil.setHflex(box, "1");
+			row.appendCellChild(box, 2);
+		}
+	}
+
+	protected void setupParameterColumns() {
+		noOfColumn = 6;
+		if (maxWidth(MEDIUM_WIDTH-1))
+		{
+			if (maxWidth(SMALL_WIDTH-1))
+				noOfColumn = 2;
+			else
+				noOfColumn = 4;
+		}
+		if (noOfColumn == 2)
+		{
+			Columns columns = new Columns();
+			Column column = new Column();
+			column.setWidth("35%");
+			columns.appendChild(column);
+			column = new Column();
+			column.setWidth("65%");
+			columns.appendChild(column);
+			parameterLayout.appendChild(columns);
+		}
+	}
 
 	/**
 	 *  Dynamic Init (prepare dynamic fields)
@@ -372,6 +482,36 @@ public class WAllocation extends Allocation
 			DocTypePick.addValueChangeListener(this);
 			
 	}   //  dynInit
+	
+	protected void onClientInfo()
+	{
+		if (ClientInfo.isMobile() && form.getPage() != null) 
+		{
+			if (noOfColumn > 0 && parameterLayout.getRows() != null)
+			{
+				int t = 6;
+				if (maxWidth(MEDIUM_WIDTH-1))
+				{
+					if (maxWidth(SMALL_WIDTH-1))
+						t = 2;
+					else
+						t = 4;
+				}
+				if (t != noOfColumn)
+				{
+					parameterLayout.getRows().detach();
+					if (parameterLayout.getColumns() != null)
+						parameterLayout.getColumns().detach();
+					if (mainLayout.getSouth() != null)
+						mainLayout.getSouth().detach();
+					if (allocationLayout.getRows() != null)
+						allocationLayout.getRows().detach();
+					layoutParameterAndSummary();
+					form.invalidate();
+				}
+			}
+		}
+	}
 	
 	/**************************************************************************
 	 *  Action Listener.

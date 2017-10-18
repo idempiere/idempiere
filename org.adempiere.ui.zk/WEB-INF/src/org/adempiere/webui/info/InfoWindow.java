@@ -18,6 +18,7 @@ import org.adempiere.model.IInfoColumn;
 import org.adempiere.model.MInfoProcess;
 import org.adempiere.model.MInfoRelated;
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
@@ -139,6 +140,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * Menu contail process menu item
 	 */
 	protected Menupopup ipMenu;
+	private int noOfParameterColumn;
 	/**
 	 * @param WindowNo
 	 * @param tableName
@@ -212,6 +214,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				prepareTable();
 				processQueryValue();
 			}			
+		}
+		
+		if (ClientInfo.isMobile()) {
+			ClientInfo.onClientInfo(this, this::onClientInfo);
 		}
 		
 	}
@@ -1100,7 +1106,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		ZKUpdateUtil.setHeight(layout, "100%");
         if (!isLookup())
         {
-        	layout.setStyle("position: absolute");
+        	layout.setStyle("position: relative");
         }
         this.appendChild(layout);
 		
@@ -1113,6 +1119,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         contentPanel.setSpan(true);
         
         North north = new North();
+        north.setCollapsible(true);
+        north.setSplittable(true);
+        north.setAutoscroll(true);
+        LayoutUtils.addSlideSclass(north);
         layout.appendChild(north);
         renderParameterPane(north);
         
@@ -1172,10 +1182,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		ZKUpdateUtil.setWidth(inner, "100%");
 		ZKUpdateUtil.setHeight(inner, "100%");
 		int height = SessionManager.getAppDesktop().getClientInfo().desktopHeight * 90 / 100;
-		if (isLookup())
-			inner.setStyle("border: none; position: relative; ");
-		else
-			inner.setStyle("border: none; position: absolute; ");
+		inner.setStyle("border: none; position: relative; ");
 		inner.appendCenter(div);
 		//true will conflict with listbox scrolling
 		inner.getCenter().setAutoscroll(false);
@@ -1220,12 +1227,21 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 
 	protected void createParameterPanel() {
-		parameterGrid = GridFactory.newGridLayout();
-		parameterGrid.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoParameterPanel");
-		parameterGrid.setStyle("width: 95%; margin: auto !important;");
+		layoutParameterGrid(false);
+	}
+	
+	protected void layoutParameterGrid(boolean update) {
+		if (!update) {
+			parameterGrid = GridFactory.newGridLayout();
+			parameterGrid.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoParameterPanel");
+			parameterGrid.setStyle("width: 95%; margin: auto !important;");
+		}
+		if (parameterGrid.getColumns() != null)
+			parameterGrid.getColumns().detach();
 		Columns columns = new Columns();
 		parameterGrid.appendChild(columns);
-		for(int i = 0; i < 6; i++)
+		noOfParameterColumn = getNoOfParameterColumns();
+		for(int i = 0; i < noOfParameterColumn; i++)
 			columns.appendChild(new Column());
 		
 		Column column = new Column();
@@ -1233,11 +1249,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		column.setAlign("right");
 		columns.appendChild(column);
 		
+		if (parameterGrid.getRows() != null)
+			parameterGrid.getRows().detach();
 		Rows rows = new Rows();
 		parameterGrid.appendChild(rows);
 		
-		editors = new ArrayList<WEditor>();
-		identifiers = new ArrayList<WEditor>();
+		if (!update) {
+			editors = new ArrayList<WEditor>();
+			identifiers = new ArrayList<WEditor>();
+		}
 		TreeMap<Integer, List<Object[]>> tree = new TreeMap<Integer, List<Object[]>>();
 		for (int i = 0; i < infoColumns.length; i++)
 		{
@@ -1254,7 +1274,16 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		for (Integer i : tree.keySet()) {
 			List<Object[]> list = tree.get(i);
 			for(Object[] value : list) {
-				addSelectionColumn((MInfoColumn)value[0], (GridField)value[1]);
+				if (update) {
+					for (WEditor editor : editors) {
+						if (editor.getGridField() == value[1]) {
+							addSearchParameter(editor.getLabel(), editor.getComponent());
+							break;
+						}
+					}
+				} else {
+					addSelectionColumn((MInfoColumn)value[0], (GridField)value[1]);
+				}
 			}
 		}
 		
@@ -1271,10 +1300,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			}
 		}
 		evalDisplayLogic();
-		initParameters();
+		if (!update)
+			initParameters();
 		dynamicDisplay(null);
 	}
-
+	
 	protected void evalDisplayLogic() {
 		for(WEditor editor : editors) {
         	if (editor.getGridField() != null && !editor.getGridField().isDisplayed(true)) {        		
@@ -1364,7 +1394,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         else
         {
         	panel = (Row) parameterGrid.getRows().getLastChild();
-        	if (panel.getChildren().size() == 6)
+        	if (panel.getChildren().size() == getNoOfParameterColumns())
         	{
         		if (parameterGrid.getRows().getChildren().size() == 1) 
         		{
@@ -1396,6 +1426,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         Div outerParent = new Div();
         outerParent.appendChild(fieldEditor);
         panel.appendChild(outerParent);
+	}
+
+	protected int getNoOfParameterColumns() {
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
+			return 2;
+		else if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1))
+			return 4;
+		else
+			return 6;
 	}
 
 	protected void createAndCheckbox() {
@@ -1503,6 +1542,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     protected void executeQuery() {
     	prepareTable();
     	super.executeQuery();
+    	if (ClientInfo.maxHeight(ClientInfo.SMALL_HEIGHT-1) ||
+    		ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1)) {
+    		layout.getNorth().setOpen(false);
+    		LayoutUtils.addSclass("slide", layout.getNorth());
+    	}
     }
     
 	@Override
@@ -1676,6 +1720,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 	}
 	
+	protected void onClientInfo() {
+		int t = getNoOfParameterColumns();
+		if (t > 0 && noOfParameterColumn > 0 && t != noOfParameterColumn) {
+			layoutParameterGrid(true);
+			this.invalidate();
+		}
+	}
+
 	/**
 	 * 	Test Row Count
 	 *	@return true if display
@@ -2055,7 +2107,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		// eval only mandatory field
 		if (validateGrid.isMandatory(true)){
 			// update color of field
-			wEditor.updateLabelStyle();
+			wEditor.updateStyle();
 			Object data = wEditor.getValue();
 			if (data == null || data.toString().length() == 0) {				
 				return false;

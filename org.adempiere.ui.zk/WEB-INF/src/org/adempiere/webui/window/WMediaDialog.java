@@ -105,7 +105,7 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		{
 			log.log(Level.SEVERE, "", ex);
 		}		
-	} // WAttachment
+	} // WMediaDialog
 
 	/**
 	 *	Static setup.
@@ -125,9 +125,19 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	
 	void staticInit() throws Exception
 	{
-		ZKUpdateUtil.setWidth(this, "500px");
-		ZKUpdateUtil.setHeight(this, "500px");
+		if (!ThemeManager.isUseCSSForWindowSize())
+		{
+			ZKUpdateUtil.setWindowWidthX(this, 500);
+			ZKUpdateUtil.setWindowHeightX(this, 500);
+		}
+		else
+		{
+			addCallback("afterPageAttached", t -> afterPageAttached());
+		}
+		this.setSclass("media-dialog");
 		this.setClosable(true);
+		this.setSizable(true);
+		this.setMaximizable(true);
 		this.setBorder("normal");
 		this.appendChild(mainPanel);
 		ZKUpdateUtil.setHeight(mainPanel, "100%");
@@ -184,9 +194,16 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		bCancel.addEventListener(Events.ON_CLICK, this);
 		
 		confirmPanel.appendChild(bOk);
-		confirmPanel.appendChild(bCancel);		
+		confirmPanel.appendChild(bCancel);
+		confirmPanel.setStyle("float: right;");
 	}
 	
+	private void  afterPageAttached() {
+		ZKUpdateUtil.setCSSHeight(this);
+		ZKUpdateUtil.setCSSWidth(this);
+		
+	}
+
 	/**
 	 * 	Dispose
 	 */
@@ -351,5 +368,6 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	public Object getData() {
 		return m_data;
 	}
+	
 	
 }

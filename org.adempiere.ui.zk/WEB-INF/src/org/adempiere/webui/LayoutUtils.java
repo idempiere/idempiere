@@ -14,6 +14,8 @@ package org.adempiere.webui;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Mask;
@@ -26,9 +28,18 @@ import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.LayoutRegion;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
+import org.zkoss.zul.Space;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.Window.Mode;
 
@@ -92,13 +103,21 @@ public final class LayoutUtils {
 		return div;
 	}
 
+	public static void openPopupWindow(Component ref, Window window) {
+		openPopupWindow(ref, window, 0);
+	}
+	
 	/**
 	 * open popup window overlapping the ref component
 	 * @param ref
 	 * @param window
 	 */
-	public static void openPopupWindow(Component ref, Window window) {
-		openPopupWindow(ref, window, "overlap");
+	public static void openPopupWindow(Component ref, Window window, int delayMs) {
+		openPopupWindow(ref, window, "overlap", delayMs);
+	}
+	
+	public static void openPopupWindow(Component ref, Window window, String position) {
+		openPopupWindow(ref, window, position, 0);
 	}
 	
 	/**
@@ -107,17 +126,24 @@ public final class LayoutUtils {
 	 * @param window
 	 * @param position
 	 */
-	public static void openPopupWindow(Component ref, Window window, String position) {
+	public static void openPopupWindow(Component ref, Window window, String position, int delayMs) {
 		if (window.getPage() == null)
 			window.setPage(ref.getPage());
 		StringBuilder script = new StringBuilder();
+		if (delayMs > 0) {
+			script.append("setTimeout(function() { ");
+		}
 		script.append("_idempiere_popup_window('#")
 			.append(ref.getUuid())
 			.append("','#")
 			.append(window.getUuid())
 			.append("','")
 			.append(position)
-			.append("');");
+			.append("'); ");
+		script.append("zk.Widget.$('#").append(window.getUuid()).append("').focus(); ");
+		if (delayMs > 0) {
+			script.append(" }, ").append(delayMs).append(");");
+		}
 		window.doPopup();
 		Clients.response("_openPopupWindow_", new AuScript(window, script.toString()));
 		window.focus();
@@ -317,5 +343,136 @@ public final class LayoutUtils {
 			}
 		}
 		return trueParent;
+	}
+	
+	/**
+	 * Compact grid to limit (for e.g, to max of 2 column)
+	 * Note: doesn't handle row span
+	 * @param grid
+	 * @param limit
+	 */
+	public static void compactTo(Grid grid, int limit) {
+		Rows rows = grid.getRows();
+		if (rows == null) return;
+		Row currentRow = (Row)rows.getFirstChild();
+		while (currentRow != null) {
+			int size = 0;
+			int extraStart = 0;
+			for (Component component : currentRow.getChildren()) {
+				if (component instanceof Cell) {
+					Cell cell = (Cell) component;
+					size += cell.getColspan();
+				} else {
+					size++;
+				}
+				if (size > limit && extraStart == 0)
+					extraStart = currentRow.getChildren().indexOf(component);
+			}
+			Row nextRow = (Row) currentRow.getNextSibling();
+			if (size > limit) {
+				List<Component> extras = new ArrayList<>();
+				for(int i = extraStart; i < currentRow.getChildren().size(); i++) {
+					extras.add(currentRow.getChildren().get(i));
+				}				
+				org.adempiere.webui.component.Row newRow = new org.adempiere.webui.component.Row();
+				int spanOffset = 0;
+				while (!extras.isEmpty()) {
+					Component component = extras.remove(0);
+					if (component instanceof Cell) {
+						spanOffset += (((Cell)component).getColspan()-1);
+					}
+					newRow.appendChild(component);
+					if (newRow.getChildren().size()+spanOffset >= limit) {
+						if (nextRow != null)
+							rows.insertBefore(newRow, nextRow);
+						else
+							rows.appendChild(newRow);
+						newRow = new org.adempiere.webui.component.Row();
+					}
+				}
+				if (newRow.getChildren().size() > 0) {
+					if (nextRow != null)
+						rows.insertBefore(newRow, nextRow);
+					else
+						rows.appendChild(newRow);
+				}				
+			}
+			currentRow = nextRow;
+		}
+	}
+	
+	public static void expandTo(Grid grid, int min) {
+		expandTo(grid, min, false);
+	}
+	
+	/**
+	 * Expand grid to min (for e.g, to min of 2 column)
+	 * Note: doesn't handle row span
+	 * @param grid
+	 * @param min
+	 * @param fillWithSpace if true, fill up row with space instead of 
+	 * moving element from next row
+	 */
+	public static void expandTo(Grid grid, int min, boolean fillWithSpace) {
+		Rows rows = grid.getRows();
+		if (rows == null) return;
+		Row currentRow = (Row)rows.getFirstChild();
+		while (currentRow != null) {
+			int size = 0;
+			for (Component component : currentRow.getChildren()) {
+				if (component instanceof Cell) {
+					Cell cell = (Cell) component;
+					size += cell.getColspan();
+				} else {
+					size++;
+				}
+			}
+			Row nextRow = (Row) currentRow.getNextSibling();
+			if (size < min) {
+				if (fillWithSpace) {
+					Cell cell = new Cell();
+					cell.setColspan(min-size);
+					cell.appendChild(new Space());
+					currentRow.appendChild(cell);
+				} else {
+					while (size < min && nextRow != null) {
+						List<Component> toAdd = new ArrayList<>();
+						for (Component c : nextRow.getChildren()) {
+							toAdd.add(c);
+							if (c instanceof Cell)
+								size += ((Cell)c).getColspan();
+							else
+								size++;
+							if (size >= min)
+								break;
+						}
+						for(Component c : toAdd) {
+							currentRow.appendChild(c);
+						}					
+					}
+					if (nextRow != null && nextRow.getChildren().isEmpty()) {
+						nextRow.detach();
+						continue;
+					}
+				}
+			}
+			currentRow = nextRow;
+		}
+	}
+	
+	private static final EventListener<OpenEvent> addSlideEventListener = (OpenEvent evt) -> {
+		if (evt.isOpen())
+			LayoutUtils.removeSclass("slide", (HtmlBasedComponent) evt.getTarget());
+		else
+			LayoutUtils.addSclass("slide", (HtmlBasedComponent) evt.getTarget());
+		evt.getTarget().invalidate();
+	};
+	
+	/**
+	 * enable slide sclass ( when slide out ) for collapsible region
+	 * @param region
+	 */
+	public static void addSlideSclass(LayoutRegion region) {
+		region.addEventListener(Events.ON_OPEN, addSlideEventListener);
 	}
 }

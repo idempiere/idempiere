@@ -79,8 +79,18 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		super ();
 		this.setTitle(title);
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-		ZKUpdateUtil.setWidth(this, "640px");
-		ZKUpdateUtil.setHeight(this, "480px");
+		if (!ThemeManager.isUseCSSForWindowSize())
+		{
+			ZKUpdateUtil.setWindowWidthX(this, 640);
+			ZKUpdateUtil.setWindowHeightX(this, 480);
+		}
+		else
+		{
+			addCallback(AFTER_PAGE_ATTACHED, t-> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+			});
+		}
 		this.setBorder("normal");
 		this.setSizable(true);
 		this.setClosable(true);
@@ -153,6 +163,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		south.appendChild(confirmPanel);
 		
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
+		setSclass("field-record-info-dialog");
 	}	//	init
 	
 	
@@ -378,5 +389,4 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
         
         popupMenu.appendChild(changeLogItem);
 	}
-
 }	// WFieldRecordInfo

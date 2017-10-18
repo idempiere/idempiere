@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.ListModelTable;
@@ -25,6 +26,7 @@ import org.adempiere.webui.event.WTableModelEvent;
 import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.StatusBarPanel;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.CreateFromForm;
@@ -69,6 +71,11 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 	{
 		super();
 		this.form = createFrom;
+		
+		setSizable(true);
+		setMaximizable(true);
+		setBorder("normal");		
+		setSclass("create-from-form");
 	}
 		
 	protected void initForm() 
@@ -95,6 +102,10 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		North north = new North();
 		contentPane.appendChild(north);
 		north.appendChild(parameterPanel);
+		north.setAutoscroll(true);
+		north.setSplittable(true);
+		north.setCollapsible(true);
+		LayoutUtils.addSlideSclass(north);
 		
 		Center center = new Center();
         contentPane.appendChild(center);
@@ -115,12 +126,21 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		southPanel.appendChild(new Separator());
 		southPanel.appendChild(statusBar);
 		
-		ZKUpdateUtil.setWidth(this,"750px");
-		ZKUpdateUtil.setHeight(this, "550px");
-		setSizable(true);
-		setBorder("normal");
+		if (!ThemeManager.isUseCSSForWindowSize())
+		{
+			ZKUpdateUtil.setWindowWidthX(this, 750);
+			ZKUpdateUtil.setWindowHeightX(this, 550);
+		}
+		else
+		{
+			addCallback(AFTER_PAGE_ATTACHED, t -> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+			});
+		}
+		
 		ZKUpdateUtil.setWidth(contentPane, "100%");
-		ZKUpdateUtil.setHeight(contentPane, "100%");
+		ZKUpdateUtil.setHeight(contentPane, "100%");		
 	}
 
 	public void onEvent(Event e) throws Exception
@@ -270,5 +290,5 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		 if (visible && getProcessInfo() != null)
 			 form.initForm();
 		 return ok;
-	}
+	}	
 }

@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.event.TableValueChangeEvent;
 import org.adempiere.webui.event.TableValueChangeListener;
@@ -279,8 +280,10 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 						numberbox.setEnabled(true);
 						numberbox.setStyle("text-align:right; width: 96%;"
 										+ listcell.getStyle());
-						numberbox.addEventListener(Events.ON_CHANGE, this);
+						numberbox.addEventListener(Events.ON_CHANGE, this);						
 						listcell.appendChild(numberbox);
+						if (ClientInfo.isMobile())
+							numberbox.getButton().setVisible(false);
 					}
 					else
 					{
@@ -461,6 +464,8 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
         	{
         		header = new ListHeader("");
         		ZKUpdateUtil.setWidth(header, "30px");
+        		header.setAlign("center");
+        		header.setValign("middle");
         	}
         	else
         	{

@@ -23,6 +23,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Button;
@@ -118,26 +119,34 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		
 		// when field have label, add action zoom when click to label, and show menu when right click to label
 		if (!readOnly)
-		{				
-			if (popupMenu.isZoomEnabled() && this instanceof IZoomableEditor)
+		{		
+			//long press conflict with text selection gesture on mobile
+			if (ClientInfo.isMobile())
 			{
-				// add action zoom when click to label
-				label.addEventListener(Events.ON_CLICK, new EventListener<Event> (){
-					public void onEvent(Event event) throws Exception {
-						if (Events.ON_CLICK.equals(event.getName())) {
-							((IZoomableEditor)WEditor.this).actionZoom();
-						}
-
-					}
-				});
+				label.addEventListener(Events.ON_CLICK, evt-> popupMenu.open(label, "after_end"));
 			}
-
-			// show menu when right click to label
-			popupMenu.addContextElement(label);
-			
-			if (component instanceof XulElement) 
+			else
 			{
-				popupMenu.addContextElement((XulElement) component);
+				if (popupMenu.isZoomEnabled() && this instanceof IZoomableEditor)
+				{
+					// add action zoom when click to label
+					label.addEventListener(Events.ON_CLICK, new EventListener<Event> (){
+						public void onEvent(Event event) throws Exception {
+							if (Events.ON_CLICK.equals(event.getName())) {
+								((IZoomableEditor)WEditor.this).actionZoom();
+							}
+	
+						}
+					});
+				}
+	
+				// show menu when right click to label
+				popupMenu.addContextElement(label);
+				
+				if (component instanceof XulElement) 
+				{
+					popupMenu.addContextElement((XulElement) component);
+				}
 			}
 		}
 		
@@ -551,7 +560,13 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
 	protected void applyLabelStyles() {
 		if (label != null) {
-			String style = (isZoomable() ? STYLE_ZOOMABLE_LABEL : "") + (isMandatoryStyle() ? STYLE_EMPTY_MANDATORY_LABEL : STYLE_NORMAL_LABEL);			
+			boolean zoomable = isZoomable();
+			String style = (zoomable ? STYLE_ZOOMABLE_LABEL : "") + (isMandatoryStyle() ? STYLE_EMPTY_MANDATORY_LABEL : STYLE_NORMAL_LABEL);
+			if (ClientInfo.isMobile()) {
+				if (!zoomable && popupMenu != null) {
+					style = style + STYLE_MOBILE_ZOOMABLE;
+				}
+			}
 			if (gridField.getAD_LabelStyle_ID() > 0) 
 			{
 				String s = buildStyle(gridField.getAD_LabelStyle_ID());
@@ -785,6 +800,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	private static final String STYLE_ZOOMABLE_LABEL = "cursor: pointer; text-decoration: underline;";
 	private static final String STYLE_NORMAL_LABEL = "color: #333;";
 	private static final String STYLE_EMPTY_MANDATORY_LABEL = "color: red;";
+	private static final String STYLE_MOBILE_ZOOMABLE = "cursor: pointer;";
 	
 	private static class EvaluateeWrapper implements Evaluatee {
 		

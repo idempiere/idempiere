@@ -16,14 +16,21 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
+import static org.adempiere.webui.ClientInfo.MEDIUM_WIDTH;
+import static org.adempiere.webui.ClientInfo.SMALL_WIDTH;
+import static org.adempiere.webui.ClientInfo.maxWidth;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -63,6 +70,7 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
+import org.zkoss.zul.Vlayout;
 
 /**
  *  Manual Matching
@@ -109,6 +117,11 @@ public class WMatch extends Match
 		catch(Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
+		}
+		
+		if (ClientInfo.isMobile()) 
+		{
+			ClientInfo.onClientInfo(form, this::onClientInfo);
 		}
 	}	//	init
 
@@ -182,7 +195,8 @@ public class WMatch extends Match
 	private Checkbox sameProduct = new Checkbox();
 	private Checkbox sameBPartner = new Checkbox();
 	private Checkbox sameQty = new Checkbox();
-
+	private int noOfColumn;
+	
 	/**
 	 *  Static Init.
 	 *  <pre>
@@ -199,10 +213,11 @@ public class WMatch extends Match
 	private void zkInit() throws Exception
 	{
 		form.appendChild(mainPanel);
-		mainPanel.setStyle("width: 99%; height: 100%; padding: 0; margin: 0");
+		mainPanel.setStyle("width: 100%; height: 100%; padding: 0; margin: 0; overflow: auto;");
 		mainPanel.appendChild(mainLayout);
 		ZKUpdateUtil.setWidth(mainLayout, "100%");
 		ZKUpdateUtil.setHeight(mainLayout, "100%");
+		mainLayout.setStyle("min-height: 750px");
 		northPanel.appendChild(northLayout);
 		matchFromLabel.setText(Msg.translate(Env.getCtx(), "MatchFrom"));
 		matchToLabel.setText(Msg.translate(Env.getCtx(), "MatchTo"));
@@ -225,9 +240,64 @@ public class WMatch extends Match
 		sameQty.setSelected(false);
 		sameQty.setText(Msg.translate(Env.getCtx(), "SameQty"));
 		
+		// north - parameters
 		North north = new North();
 		mainLayout.appendChild(north);
 		north.appendChild(northPanel);
+		north.setCollapsible(true);
+		north.setSplittable(true);
+		
+		layoutParameterAndSummary();
+		
+		// center - match from and match to list
+		Center center = new Center();
+		center.setAutoscroll(true);
+		mainLayout.appendChild(center);
+		center.appendChild(centerPanel);
+		ZKUpdateUtil.setHflex(centerPanel, "1");
+		ZKUpdateUtil.setVflex(centerPanel, "1");
+		ZKUpdateUtil.setWidth(centerLayout, "100%");
+		ZKUpdateUtil.setHeight(centerLayout, "100%");
+		north = new North();
+		centerLayout.appendChild(north);
+		north.setStyle("border: none");
+		Panel p = new Panel();
+		p.appendChild(xMatchedBorder);
+		p.appendChild(xMatchedTable);
+		ZKUpdateUtil.setWidth(xMatchedTable, "100%");
+		p.setStyle("width: 100%; height: 100%; padding: 0; margin: 0");
+		north.appendChild(p);
+		ZKUpdateUtil.setHeight(north, "45%");
+		north.setSplittable(true);
+		north.setCollapsible(true);
+						
+		center = new Center();
+		centerLayout.appendChild(center);
+		center.setBorder("none");
+		Vlayout vlayout = new Vlayout();
+		vlayout.setVflex("1");
+		vlayout.setHflex("1");
+		center.appendChild(vlayout);
+		ZKUpdateUtil.setVflex(xPanel, "1");
+		ZKUpdateUtil.setHflex(xPanel, "1");
+		xPanel.appendChild(sameBPartner);
+		xPanel.appendChild(new Space());
+		xPanel.appendChild(sameProduct);
+		xPanel.appendChild(new Space());
+		xPanel.appendChild(sameQty);
+		ZKUpdateUtil.setVflex(xPanel, "min");
+		xPanel.appendChild(new Separator());
+		vlayout.appendChild(xPanel);
+		vlayout.appendChild(xMatchedToBorder);
+		ZKUpdateUtil.setWidth(xMatchedToTable, "100%");
+		vlayout.appendChild(xMatchedToTable);
+		ZKUpdateUtil.setVflex(xMatchedTable, true);
+				
+		centerPanel.setStyle("min-height: 300px;");
+	}   //  jbInit
+
+	protected void layoutParameterAndSummary() {
+		setupParameterColumns();
 		
 		Rows rows = northLayout.newRows();
 		Row row = rows.newRow();
@@ -235,27 +305,31 @@ public class WMatch extends Match
 		row.appendChild(matchFrom);
 		row.appendChild(matchToLabel.rightAlign());
 		row.appendChild(matchTo);
-		row.appendChild(new Space());
 		
 		row = rows.newRow();
 		row.appendCellChild(matchModeLabel.rightAlign(), 1);
 		row.appendCellChild(matchMode, 1);
-		row.appendCellChild(new Space(), 3);
 		
 		row = rows.newRow();
 		row.appendChild(onlyVendorLabel.rightAlign());
 		row.appendChild(onlyVendor.getComponent());
 		row.appendChild(onlyProductLabel.rightAlign());
-		row.appendChild(onlyProduct.getComponent());
-		row.appendChild(new Space());
+		row.appendChild(onlyProduct.getComponent());	
 		
 		row = rows.newRow();
 		row.appendChild(dateFromLabel.rightAlign());		
 		row.appendChild(dateFrom.getComponent());
 		row.appendChild(dateToLabel.rightAlign());
 		row.appendChild(dateTo.getComponent());
-		row.appendChild(bSearch);
+		bSearch.setStyle("float: right");
+		int r = row.getChildren().size() % noOfColumn;
+		row.appendCellChild(bSearch, noOfColumn-r);
+		if (noOfColumn < 6)
+			LayoutUtils.compactTo(northLayout, noOfColumn);
+		else
+			LayoutUtils.expandTo(northLayout, noOfColumn, true);
 		
+		// south - summary	
 		South south = new South();
 		mainLayout.appendChild(south);
 		south.appendChild(southPanel);
@@ -269,51 +343,48 @@ public class WMatch extends Match
 		row.appendChild(xMatchedTo.getComponent());
 		row.appendChild(differenceLabel.rightAlign());
 		row.appendChild(difference.getComponent());
-		row.appendChild(bProcess);
 		
-		Center center = new Center();
-		mainLayout.appendChild(center);
-		center.appendChild(centerPanel);
-		ZKUpdateUtil.setHflex(centerPanel, "1");
-		ZKUpdateUtil.setVflex(centerPanel, "1");
-		ZKUpdateUtil.setWidth(centerLayout, "100%");
-		ZKUpdateUtil.setHeight(centerLayout, "100%");
-		north = new North();
-		centerLayout.appendChild(north);
-		north.setStyle("border: none");
-		Panel p = new Panel();
-		p.appendChild(xMatchedBorder);
-		p.appendChild(xMatchedTable);
-		ZKUpdateUtil.setWidth(xMatchedTable, "99%");
-		//ZKUpdateUtil.setHeight(xMatchedTable, "85%");
-		p.setStyle("width: 100%; height: 100%; padding: 0; margin: 0");
-		north.appendChild(p);
-		ZKUpdateUtil.setHeight(north, "44%");
-		
-		south = new South();
-		centerLayout.appendChild(south);
-		south.setStyle("border: none");
-		ZKUpdateUtil.setWidth(xMatchedToTable, "99%");
-		//ZKUpdateUtil.setHeight(xMatchedToTable, "99%");
-		south.appendChild(xMatchedToTable);
-		ZKUpdateUtil.setHeight(south, "44%");
-		
-		center = new Center();
-		centerLayout.appendChild(center);
-		center.setStyle("border: none");
-//		ZKUpdateUtil.setHeight(center, "6%");
-		center.appendChild(xPanel);
-		ZKUpdateUtil.setVflex(xPanel, "1");
-		ZKUpdateUtil.setHflex(xPanel, "1");
-		xPanel.appendChild(sameBPartner);
-		xPanel.appendChild(new Space());
-		xPanel.appendChild(sameProduct);
-		xPanel.appendChild(new Space());
-		xPanel.appendChild(sameQty);
-		ZKUpdateUtil.setHeight(xPanel, "50px");
-		xPanel.appendChild(new Separator());
-		xPanel.appendChild(xMatchedToBorder);
-	}   //  jbInit
+		row = rows.newRow();
+		row.appendCellChild(bProcess, noOfColumn);
+		bProcess.setStyle("float: right");
+		if (noOfColumn < 6)
+			LayoutUtils.compactTo(southLayout, noOfColumn);
+	}
+
+	protected void setupParameterColumns() {
+		noOfColumn = 6;
+		if (maxWidth(MEDIUM_WIDTH-1))
+		{
+			if (maxWidth(SMALL_WIDTH-1))
+				noOfColumn = 2;
+			else
+				noOfColumn = 4;
+		}
+		Columns columns = new Columns();
+		Column column = new Column();
+		column.setWidth(noOfColumn == 2 ? "35%" : (noOfColumn == 4 ? "15%" : "10%"));
+		columns.appendChild(column);
+		column = new Column();
+		column.setWidth(noOfColumn == 2 ? "65%" : "35%");
+		columns.appendChild(column);
+		if (noOfColumn > 2) {
+			column = new Column();
+			column.setWidth(noOfColumn == 4 ? "15%" : "10%");
+			columns.appendChild(column);
+			column = new Column();
+			column.setWidth("35%");
+			columns.appendChild(column);
+		}
+		if (noOfColumn == 6) {
+			column = new Column();
+			column.setWidth("5%");
+			columns.appendChild(column);
+			column = new Column();
+			column.setWidth("5%");
+			columns.appendChild(column);
+		}
+		northLayout.appendChild(columns);
+	}
 
 	/**
 	 *  Dynamic Init.
@@ -372,6 +443,36 @@ public class WMatch extends Match
 		SessionManager.getAppDesktop().closeActiveWindow();
 	}	//	dispose
 
+	
+	protected void onClientInfo()
+	{
+		if (ClientInfo.isMobile() && form.getPage() != null) 
+		{
+			if (noOfColumn > 0 && northLayout.getRows() != null)
+			{
+				int t = 6;
+				if (maxWidth(MEDIUM_WIDTH-1))
+				{
+					if (maxWidth(SMALL_WIDTH-1))
+						t = 2;
+					else
+						t = 4;
+				}
+				if (t != noOfColumn)
+				{
+					northLayout.getRows().detach();
+					if (northLayout.getColumns() != null)
+						northLayout.getColumns().detach();
+					if (mainLayout.getSouth() != null)
+						mainLayout.getSouth().detach();
+					if (southLayout.getRows() != null)
+						southLayout.getRows().detach();
+					layoutParameterAndSummary();
+					form.invalidate();
+				}
+			}
+		}
+	}
 	
 	/**************************************************************************
 	 *  Action Listener

@@ -65,7 +65,6 @@ import java.util.logging.Level;
 
 import org.adempiere.base.IDisplayTypeFactory;
 import org.adempiere.base.Service;
-import org.compiere.model.MCurrency;
 
 /**
  *	System Display Types.
@@ -271,7 +270,7 @@ public final class DisplayType
 			|| displayType == TextLong || displayType == Memo
 			|| displayType == FilePath || displayType == FileName
 			|| displayType == URL || displayType == PrinterName
-			|| displayType == SingleSelectionGrid
+			|| displayType == SingleSelectionGrid || displayType == Color
 			|| displayType == MultipleSelectionGrid)
 			return true;
 		

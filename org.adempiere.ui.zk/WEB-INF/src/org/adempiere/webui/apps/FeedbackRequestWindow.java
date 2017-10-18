@@ -59,8 +59,8 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
 /**
@@ -90,11 +90,20 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		
 		setTitle(Msg.getMsg(Env.getCtx(), "RequestNew"));
 		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-		ZKUpdateUtil.setWidth(this, "400px");
-		this.setSclass("popup-dialog");
+		if (!ThemeManager.isUseCSSForWindowSize()) {
+			ZKUpdateUtil.setWindowWidthX(this, 400);
+			ZKUpdateUtil.setWindowHeightX(this, 600);
+		} else {
+			addCallback(AFTER_PAGE_ATTACHED, t -> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+			});
+		}
+		this.setSclass("popup-dialog feedback-request-dialog");
 		this.setBorder("normal");
 		this.setShadow(true);
 		this.setClosable(true);
+		this.setMaximizable(true);
 		
 		boolean readOnly = !MRole.getDefault().canUpdate(
 				Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()), 
@@ -144,7 +153,7 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		
 		
 		Grid grid = GridFactory.newGridLayout();
-		ZKUpdateUtil.setVflex(grid, "min");
+		ZKUpdateUtil.setVflex(grid, "1");
 		
 		Rows rows = new Rows();
 		grid.appendChild(rows);
@@ -196,14 +205,14 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		Borderlayout borderlayout = new Borderlayout();
 		this.appendChild(borderlayout);
 		ZKUpdateUtil.setHflex(borderlayout, "1");
-		ZKUpdateUtil.setVflex(borderlayout, "min");
+		ZKUpdateUtil.setVflex(borderlayout, "1");
 		
-		North northPane = new North();
-		northPane.setSclass("dialog-content");
-		northPane.setAutoscroll(true);
-		borderlayout.appendChild(northPane);
+		Center centerPane = new Center();
+		centerPane.setSclass("dialog-content");
+		centerPane.setAutoscroll(true);
+		borderlayout.appendChild(centerPane);
 		
-		northPane.appendChild(grid);
+		centerPane.appendChild(grid);
 		ZKUpdateUtil.setVflex(grid, "1");
 		ZKUpdateUtil.setHflex(grid, "1");
 

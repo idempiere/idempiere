@@ -107,7 +107,7 @@ public class ExportAction implements EventListener<Event>
 		{
 			winExportFile = new Window();
 			winExportFile.setTitle(Msg.getMsg(Env.getCtx(), "Export") + ": " + panel.getActiveGridTab().getName());
-			ZKUpdateUtil.setWidth(winExportFile, "450px");
+			ZKUpdateUtil.setWindowWidthX(winExportFile, 450);
 			winExportFile.setClosable(true);
 			winExportFile.setBorder("normal");
 			winExportFile.setStyle("position:absolute");

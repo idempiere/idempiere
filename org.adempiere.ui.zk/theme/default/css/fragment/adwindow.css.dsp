@@ -18,6 +18,9 @@
 .adwindow-form > .z-grid-body {
 	background-color: #F9F9F9;
 }
+.adwindow-form.z-grid > .z-grid-body {
+	overflow: visible !important;
+}
 
 .adwindow-layout {
 	position:absolute; 
@@ -74,9 +77,13 @@
 .adwindow-toolbar {
 	border: 0px;
 	padding: 2px 4px;
-	height: 26px;
+	height: 30px;
 	background-image: none;
 	background-color: #fff;
+}
+.adwindow-toolbar.mobile {
+	position: relative;
+	overflow: hidden;
 }
 
 .adwindow-breadcrumb {

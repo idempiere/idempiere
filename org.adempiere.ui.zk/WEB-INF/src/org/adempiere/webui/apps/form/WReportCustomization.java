@@ -453,8 +453,8 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		{
 			winExportFile = new Window();
 			winExportFile.setTitle(Msg.getMsg(Env.getCtx(), "Export"));
-			ZKUpdateUtil.setWidth(winExportFile, "450px");
-			ZKUpdateUtil.setHeight(winExportFile, "300px");
+			ZKUpdateUtil.setWindowWidthX(winExportFile, 450);
+			ZKUpdateUtil.setWindowHeightX(winExportFile, 300);
 			winExportFile.setClosable(true);
 			winExportFile.setBorder("normal");
 			winExportFile.setStyle("position:absolute");

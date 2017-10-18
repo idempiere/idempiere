@@ -19,6 +19,9 @@
 	width: 100%;
 	height: 21px;
 }
+.editor-input.mobile.z-decimalbox {
+	padding-right: 5px;
+}
 
 .editor-input:focus {
 	border: 1px solid #0000ff;

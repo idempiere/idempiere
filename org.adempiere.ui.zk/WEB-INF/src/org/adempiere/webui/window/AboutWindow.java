@@ -108,7 +108,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		
 		this.setPosition("center");
 		this.setTitle(ThemeManager.getBrowserTitle());
-		this.setSclass("popup-dialog");
+		this.setSclass("popup-dialog about-window");
 		this.setClosable(true);
 		this.setMaximizable(true);
 		this.setSizable(true);
@@ -146,8 +146,18 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		southPane.appendChild(btnOk);
 
 		this.setBorder("normal");
-		ZKUpdateUtil.setWidth(this, "600px");
-		ZKUpdateUtil.setHeight(this, "450px");
+		if (!ThemeManager.isUseCSSForWindowSize())
+		{
+			ZKUpdateUtil.setWindowWidthX(this, 600);
+			ZKUpdateUtil.setWindowHeightX(this, 450);
+		}
+		else
+		{
+			addCallback(AFTER_PAGE_ATTACHED, t-> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+			});
+		}
 		this.setShadow(true);
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 	}
@@ -555,8 +565,8 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		w.setClosable(true);
 		w.setMaximizable(true);
 		w.setSizable(true);
-		ZKUpdateUtil.setWidth(w, "600px");
-		ZKUpdateUtil.setHeight(w, "500px");
+		ZKUpdateUtil.setWindowWidthX(w, 600);
+		ZKUpdateUtil.setWindowHeightX(w, 500);
 		Textarea textbox = new Textarea();
 		textbox.setDynamicProperty("readonly", "true");
 		textbox.setStyle("width:99%; height: 99%; margin: auto; display: inline-block;");
