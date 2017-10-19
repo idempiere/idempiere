@@ -20,6 +20,7 @@ package org.adempiere.webui.editor;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.NumberBox;
@@ -153,6 +154,9 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
     	addChangeLogMenu(popupMenu);
     	
     	originalStyle = getComponent().getDecimalbox().getStyle();
+    	getComponent().getDecimalbox().setClientAttribute("type", "number");
+    	if (ClientInfo.isMobile())
+    		getComponent().getButton().setVisible(false);
     }
 	
 	/**

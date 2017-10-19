@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Listbox;
@@ -29,6 +29,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Searchbox;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.SimpleTreeModel;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
@@ -48,12 +49,11 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.DefaultTreeNode;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.East;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Space;
@@ -77,12 +77,11 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	private Panel 			northPanel	= new Panel ();
 	private Label			treeLabel	= new Label ();
 	private Listbox			treeField;
-	private Button			bAddAll		= new Button ();
-	private Button			bAdd		= new Button ();
-	private Button			bDelete		= new Button ();
-	private Button			bDeleteAll	= new Button ();
+	private ToolBarButton	bAddAll		= new ToolBarButton ();
+	private ToolBarButton	bAdd		= new ToolBarButton ();
+	private ToolBarButton	bDelete		= new ToolBarButton ();
+	private ToolBarButton	bDeleteAll	= new ToolBarButton ();
 	private Checkbox		cbAllNodes	= new Checkbox ();
-	private Label			treeInfo	= new Label ();
 	private Searchbox      searchBox   = new Searchbox();
 	//
 	@SuppressWarnings("unused")
@@ -132,33 +131,32 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		bDelete.setImage(ThemeManager.getThemeResource("images/StepForward24.png"));
 		bDeleteAll.setImage(ThemeManager.getThemeResource("images/FastForward24.png"));
 		
-		ZKUpdateUtil.setWidth(form,"99%");
+		ZKUpdateUtil.setWidth(form,"100%");
 		ZKUpdateUtil.setHeight(form, "100%");
-		form.setStyle("position: absolute; padding: 0; margin: 0");
+		form.setStyle("position: relative; padding: 0; margin: 0");
 		form.appendChild (mainLayout);
 		ZKUpdateUtil.setWidth(mainLayout, "100%");
 		ZKUpdateUtil.setHeight(mainLayout, "100%");
-		mainLayout.setStyle("position: absolute");
 		
 		treeLabel.setText (Msg.translate(Env.getCtx(), "AD_Tree_ID"));
 		cbAllNodes.setEnabled (false);
 		cbAllNodes.setText (Msg.translate(Env.getCtx(), "IsAllNodes"));
-		treeInfo.setText (" ");
 		bAdd.setTooltiptext(Msg.getMsg(Env.getCtx(), "AddToTree"));
 		bAddAll.setTooltiptext(Msg.getMsg(Env.getCtx(), "AddAllToTree"));
 		bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "DeleteFromTree"));
 		bDeleteAll.setTooltiptext(Msg.getMsg(Env.getCtx(), "DeleteAllFromTree"));
-		bAdd.addActionListener(this);
-		bAddAll.addActionListener(this);
-		bDelete.addActionListener(this);
-		bDeleteAll.addActionListener(this);
+		bAdd.addEventListener(Events.ON_CLICK, this);
+		bAddAll.addEventListener(Events.ON_CLICK, this);
+		bDelete.addEventListener(Events.ON_CLICK, this);
+		bDeleteAll.addEventListener(Events.ON_CLICK, this);
 		
 		North north = new North();
 		mainLayout.appendChild(north);
 		north.appendChild(northPanel);
 		ZKUpdateUtil.setHflex(north, "1");
-		ZKUpdateUtil.setVflex(north, "1");
+		ZKUpdateUtil.setVflex(north, "min");
 		ZKUpdateUtil.setWidth(northPanel, "100%");
+		ZKUpdateUtil.setVflex(northPanel, "min");
 		//
 		Hbox hbox = new Hbox();
 		hbox.setStyle("padding: 3px;");
@@ -167,31 +165,43 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		ZKUpdateUtil.setVflex(hbox, "1");
 		northPanel.appendChild(hbox);
 		
-		hbox.appendChild (new Space());
+		if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH-1))
+			treeField.setStyle("max-width: 200px");
 		hbox.appendChild (treeLabel);
 		hbox.appendChild (treeField);
 		hbox.appendChild (new Space());
-		hbox.appendChild (cbAllNodes);
-		hbox.appendChild (new Space());
-		Cell cell = new Cell();
-		cell.setColspan(1);
-		cell.setRowspan(1);
-		ZKUpdateUtil.setHflex(cell, "1");
-		cell.appendChild(treeInfo);
-		hbox.appendChild (cell);
-		hbox.appendChild (new Space());
+		hbox.appendChild (cbAllNodes);		
 
-		Div div = new Div();
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
+		{
+			hbox = new Hbox();
+			hbox.setAlign("center");
+			hbox.setStyle("padding-top: 3px; padding-bottom: 3px;");
+			ZKUpdateUtil.setWidth(hbox, "100%");
+			ZKUpdateUtil.setVflex(hbox, "min");
+			northPanel.appendChild(hbox);
+		}
+		else
+		{
+			hbox.appendChild (new Space());
+		}
+		
+		Hlayout div = new Hlayout();
 		div.appendChild (bAddAll);
 		div.appendChild (bAdd);
 		div.appendChild (bDelete);
 		div.appendChild (bDeleteAll);
+		ZKUpdateUtil.setVflex(div, "min");
 
 		searchBox.addEventListener(Events.ON_CLICK, this);
 		searchBox.getTextbox().addEventListener(Events.ON_OK, this);
 		searchBox.getButton().setImage(ThemeManager.getThemeResource("images/Find16.png"));
 		searchBox.setToolTipText(Msg.getCleanMsg(Env.getCtx(), "TreeSearch"));
-		ZKUpdateUtil.setWidth(searchBox, "200px");
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
+			ZKUpdateUtil.setHflex(searchBox, "1");
+		else
+			ZKUpdateUtil.setWidth(searchBox, "200px");
+		ZKUpdateUtil.setVflex(searchBox, "min");
 		div.appendChild(searchBox);
 		hbox.appendChild(div);
 		//
@@ -289,10 +299,10 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		//	Tree
 		m_tree = new MTree (Env.getCtx(), tree.getKey(), null);
 		cbAllNodes.setSelected(m_tree.isAllNodes());
-		bAddAll.setEnabled(!m_tree.isAllNodes());
-		bAdd.setEnabled(!m_tree.isAllNodes());
-		bDelete.setEnabled(!m_tree.isAllNodes());
-		bDeleteAll.setEnabled(!m_tree.isAllNodes());
+		bAddAll.setDisabled(m_tree.isAllNodes());
+		bAdd.setDisabled(m_tree.isAllNodes());
+		bDelete.setDisabled(m_tree.isAllNodes());
+		bDeleteAll.setDisabled(m_tree.isAllNodes());
 		
 		//	List
 		SimpleListModel model = new SimpleListModel();
@@ -356,7 +366,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 				Treeitem ti = centerTree.renderItemByPath(path);
 				ti.setSelected(true);
 			}
-			bAdd.setEnabled(stn == null);
+			bAdd.setDisabled(stn != null);
 		}
 	}	//	valueChanged
 	

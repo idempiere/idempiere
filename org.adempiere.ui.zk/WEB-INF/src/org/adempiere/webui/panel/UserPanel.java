@@ -20,6 +20,7 @@ package org.adempiere.webui.panel;
 import java.util.Properties;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Menupopup;
@@ -32,16 +33,23 @@ import org.compiere.model.MClient;
 import org.compiere.model.MOrg;
 import org.compiere.model.MRole;
 import org.compiere.model.MUser;
+import org.compiere.model.MWarehouse;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
+import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Popup;
+import org.zkoss.zul.Space;
+import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.impl.LabelImageElement;
 
 /**
@@ -66,6 +74,10 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 	protected Menupopup feedbackMenu;
 
 	protected Component component;
+	
+	protected Component userPanelLinksContainer;
+
+	private Popup popup;
 
 	private static final String ON_DEFER_CHANGE_ROLE = "onDeferChangeRole";
 	private static final String ON_DEFER_LOGOUT = "onDeferLogout";
@@ -81,7 +93,15 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     	String s = Msg.getMsg(Env.getCtx(), "CloseTabFromBrowser?").replace("\n", "<br>");
     	Clients.confirmClose(s);
     	lblUserNameValue = (Label) component.getFellowIfAny("loginUserAndRole", true);
-    	lblUserNameValue.setValue(getUserName() + "@" + getClientName() + "." + getOrgName()+"/"+this.getRoleName());
+    	if (isMobile())
+    	{
+    		lblUserNameValue.setValue(getUserName());
+    		LayoutUtils.addSclass("mobile", (HtmlBasedComponent) component);
+    	}
+    	else
+    	{
+	    	lblUserNameValue.setValue(getUserName() + "@" + getClientName() + "." + getOrgName()+"/"+this.getRoleName());	    	
+    	}
     	lblUserNameValue.addEventListener(Events.ON_CLICK, this);
 
     	feedback = (LabelImageElement) component.getFellowIfAny("feedback", true);
@@ -115,9 +135,19 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 
     	component.addEventListener(ON_DEFER_LOGOUT, this);
     	component.addEventListener(ON_DEFER_CHANGE_ROLE, this);
+    	
+    	userPanelLinksContainer = component.getFellowIfAny("userPanelLinksContainer", true);
+    	if (isMobile() && userPanelLinksContainer != null)
+    	{
+    		userPanelLinksContainer.detach();
+    	}
     }
 
-    private String getUserName()
+    private boolean isMobile() {
+		return ClientInfo.isMobile();
+	}
+
+	private String getUserName()
     {
         MUser user = MUser.get(ctx);
         return user.getName();
@@ -173,9 +203,16 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
         }
 		else if (lblUserNameValue == event.getTarget())
 		{
-			String roleInfo = MRole.getDefault().toStringX(Env.getCtx());
-			roleInfo = roleInfo.replace(Env.NL, "<br>");
-			Messagebox.showDialog(roleInfo, Msg.getMsg(ctx, "RoleInfo"), Messagebox.OK, Messagebox.INFORMATION);
+			if (isMobile())
+			{
+				openMobileUserPanelPopup();
+			}
+			else
+			{
+				String roleInfo = MRole.getDefault().toStringX(Env.getCtx());
+				roleInfo = roleInfo.replace(Env.NL, "<br>");
+				Messagebox.showDialog(roleInfo, Msg.getMsg(ctx, "RoleInfo"), Messagebox.OK, Messagebox.INFORMATION);
+			}
 		}
 		else if (changeRole == event.getTarget())
 		{
@@ -253,6 +290,65 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 			SessionManager.changeRole(user);
 		}
 
+	}
+
+	protected void openMobileUserPanelPopup() {
+		if (popup != null) {
+			Object value = popup.removeAttribute(popup.getUuid());
+			if (value != null && value instanceof Long) {
+				long ts = ((Long)value).longValue();
+				long since = System.currentTimeMillis() - ts;
+				if (since < 500) {
+					popup.detach();
+					popup = null;
+					return;
+				}
+			}
+			popup.detach();
+		}
+		popup = new Popup();
+		Vlayout layout = new Vlayout();
+		layout.setStyle("padding: 8px 16px");		
+		String email = getUserEmail();
+		if (!Util.isEmpty(email))
+		{
+			layout.appendChild(new Label(getUserName() + " <" + email  +">"));
+		}
+		else
+		{
+			layout.appendChild(new Label(getUserName()));
+		}
+		layout.appendChild(new Label(getRoleName()));
+		layout.appendChild(new Label(getClientName() + "." + getOrgName()));
+		String warehouse = getWarehouseName();
+		if (!Util.isEmpty(warehouse))
+			layout.appendChild(new Label(warehouse));
+		layout.appendChild(new Space());
+		layout.appendChild(userPanelLinksContainer);
+		
+		popup.appendChild(layout);
+		popup.setPage(component.getPage());
+		popup.setVflex("min");
+		popup.setHflex("min");
+		popup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
+			if (!oe.isOpen())
+				popup.setAttribute(popup.getUuid(), System.currentTimeMillis());
+		});
+		popup.open(lblUserNameValue, "after_start");		
+		
+	}
+
+	private String getUserEmail() {
+		 MUser user = MUser.get(ctx);
+		return user.getEMail();
+	}
+
+	private String getWarehouseName() {
+		int id = Env.getContextAsInt(Env.getCtx(), Env.M_WAREHOUSE_ID);
+		if (id > 0) {
+			return MWarehouse.get(Env.getCtx(), id).getName();
+		}
+		return null;
 	}
 
 	@Override

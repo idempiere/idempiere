@@ -228,6 +228,8 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
 		North north = new North();
 		contentPane.appendChild(north);
 		north.appendChild(m_grdNew);
+		north.setCollapsible(true);
+		north.setSplittable(true);
 
 		Center center = new Center();
         contentPane.appendChild(center);
@@ -251,10 +253,12 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
     private void createAccountPanel()
     {
     	Borderlayout borderlayout = new Borderlayout();
-    	borderlayout.setStyle("position: absolute");
+    	borderlayout.setStyle("position: relative");
     	ZKUpdateUtil.setWidth(borderlayout, "100%");
     	ZKUpdateUtil.setHeight(borderlayout, "100%");
     	m_pnlAccount.appendChild(borderlayout);
+    	ZKUpdateUtil.setWidth(m_pnlAccount, "100%");
+    	ZKUpdateUtil.setHeight(m_pnlAccount, "100%");
 
 		North north = new North();
 		north.setBorder("none");
@@ -319,15 +323,17 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
 
     	row = new Row();
         rows.appendChild(row);
-        row.appendChild(m_lblValue);
+        row.appendChild(m_lblValue.rightAlign());
         row.appendChild(m_txbValueField);
         row.appendChild(m_chbIsExpense);
+        ZKUpdateUtil.setHflex(m_txbValueField, "1");
 
         row = new Row();
         rows.appendChild(row);
-        row.appendChild(m_lblName);
+        row.appendChild(m_lblName.rightAlign());
         row.appendChild(m_txbNameField);
         row.appendChild(m_btnNew);
+        ZKUpdateUtil.setHflex(m_txbNameField, "1");
 
         row = new Row();
         rows.appendChild(row);

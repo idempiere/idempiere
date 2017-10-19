@@ -17,7 +17,11 @@ import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -46,10 +50,9 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Center;
 import org.zkoss.zul.Space;
 
 public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventListener<Event>, ValueChangeListener
@@ -99,6 +102,8 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
     protected Label rmaLabel = new Label();
     /** Combo box for selecting RMA document */
     protected Listbox rmaField = ListboxFactory.newDropdownListbox();
+
+	private Grid parameterStdLayout;
 	
 	/**
 	 *  Dynamic Init
@@ -135,19 +140,16 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		shipmentLabel.setText(Msg.getElement(Env.getCtx(), "M_InOut_ID", isSOTrx));
         rmaLabel.setText(Msg.translate(Env.getCtx(), "M_RMA_ID"));
         
-		Borderlayout parameterLayout = new Borderlayout();
-		ZKUpdateUtil.setHeight(parameterLayout, "110px");
-		ZKUpdateUtil.setWidth(parameterLayout, "100%");
     	Panel parameterPanel = window.getParameterPanel();
-		parameterPanel.appendChild(parameterLayout);
 		
-		Grid parameterStdLayout = GridFactory.newGridLayout();
+		parameterStdLayout = GridFactory.newGridLayout();
     	Panel parameterStdPanel = new Panel();
 		parameterStdPanel.appendChild(parameterStdLayout);
+		
+		setupColumns(parameterStdLayout);
 
-		Center center = new Center();
-		parameterLayout.appendChild(center);
-		center.appendChild(parameterStdPanel);
+		parameterPanel.appendChild(parameterStdPanel);
+		ZKUpdateUtil.setVflex(parameterStdLayout, "min");
 		
 		Rows rows = (Rows) parameterStdLayout.newRows();
 		Row row = rows.newRow();
@@ -172,9 +174,46 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
         row.appendChild(rmaLabel.rightAlign());
         ZKUpdateUtil.setHflex(rmaField, "1");
         row.appendChild(rmaField);
+        
+        if (ClientInfo.isMobile()) {    		
+    		if (noOfParameterColumn == 2)
+				LayoutUtils.compactTo(parameterStdLayout, 2);		
+			ClientInfo.onClientInfo(window, this::onClientInfo);
+		}
+        
+        hideEmptyRow(rows);
+	}
+
+	private void hideEmptyRow(org.zkoss.zul.Rows rows) {
+		for(Component a : rows.getChildren()) {
+			Row row = (Row) a;
+			boolean visible = false;
+			for(Component b : row.getChildren()) {
+				if (b instanceof Space)
+					continue;
+				else if (!b.isVisible()) {
+					continue;
+				} else {
+					if (!b.getChildren().isEmpty()) {
+						for (Component c : b.getChildren()) {
+							if (c.isVisible()) {
+								visible = true;
+								break;
+							}
+						}
+					} else {
+						visible = true;
+						break;
+					}
+				}
+			}
+			row.setVisible(visible);
+		}
 	}
 
 	private boolean 	m_actionActive = false;
+
+	private int noOfParameterColumn;
 	
 	/**
 	 *  Action Listener
@@ -387,5 +426,62 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	@Override
 	public Object getWindow() {
 		return window;
+	}
+	
+	protected void setupColumns(Grid parameterGrid) {
+		noOfParameterColumn = ClientInfo.maxWidth((ClientInfo.EXTRA_SMALL_WIDTH+ClientInfo.SMALL_WIDTH)/2) ? 2 : 4;
+		Columns columns = new Columns();
+		parameterGrid.appendChild(columns);
+		if (ClientInfo.maxWidth((ClientInfo.EXTRA_SMALL_WIDTH+ClientInfo.SMALL_WIDTH)/2))
+		{
+			Column column = new Column();
+			ZKUpdateUtil.setWidth(column, "35%");
+			columns.appendChild(column);
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "65%");
+			columns.appendChild(column);
+		}
+		else
+		{
+			Column column = new Column();
+			columns.appendChild(column);		
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "15%");
+			columns.appendChild(column);
+			ZKUpdateUtil.setWidth(column, "35%");
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "15%");
+			columns.appendChild(column);
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "35%");
+			columns.appendChild(column);
+		}
+	}
+	
+	protected void onClientInfo()
+	{
+		if (ClientInfo.isMobile() && parameterStdLayout != null && parameterStdLayout.getRows() != null)
+		{
+			int nc = ClientInfo.maxWidth((ClientInfo.EXTRA_SMALL_WIDTH+ClientInfo.SMALL_WIDTH)/2) ? 2 : 4;
+			int cc = noOfParameterColumn;
+			if (nc == cc)
+				return;
+			
+			parameterStdLayout.getColumns().detach();
+			setupColumns(parameterStdLayout);
+			if (cc > nc)
+			{
+				LayoutUtils.compactTo(parameterStdLayout, nc);
+			}
+			else
+			{
+				LayoutUtils.expandTo(parameterStdLayout, nc, false);
+			}
+			hideEmptyRow(parameterStdLayout.getRows());
+			
+			ZKUpdateUtil.setCSSHeight(window);
+			ZKUpdateUtil.setCSSWidth(window);
+			window.invalidate();			
+		}
 	}
 }

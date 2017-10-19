@@ -17,6 +17,8 @@
 
 package org.adempiere.webui.panel;
 
+import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.GlobalSearch;
 import org.adempiere.webui.apps.MenuSearchController;
 import org.adempiere.webui.component.Panel;
@@ -31,6 +33,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.impl.LabelImageElement;
@@ -57,7 +60,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     public HeaderPanel()
     {
         super();
-        addEventListener(Events.ON_CREATE, this);
+        addEventListener(Events.ON_CREATE, this);              
     }
 
     protected void onCreate()
@@ -72,8 +75,13 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	createSearchPanel();
 
     	btnMenu = (LabelImageElement) getFellow("menuButton");
-    	btnMenu.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")));
+    	btnMenu.setIconSclass("z-icon-sitemap");
+    	btnMenu.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")));
     	btnMenu.addEventListener(Events.ON_CLICK, this);
+    	if (ClientInfo.isMobile()) {
+    		LayoutUtils.addSclass("mobile", this);
+    		ClientInfo.onClientInfo(this, this::onClientInfo);
+    	}
     }
 
 	protected void createPopupMenu() {
@@ -82,8 +90,13 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 		menuTreePanel = new MenuTreePanel(popMenu);
     	popMenu.setSclass("desktop-menu-popup");
     	ZKUpdateUtil.setHeight(popMenu, "90%");
-    	ZKUpdateUtil.setWidth(popMenu, "600px");
+    	ZKUpdateUtil.setWindowWidthX(popMenu, 600);
     	popMenu.setPage(this.getPage());
+    	popMenu.addEventListener(Events.ON_OPEN, (OpenEvent evt) -> popMenuOpenEvent(evt));
+	}
+
+	private void popMenuOpenEvent(OpenEvent evt) {
+		popMenu.setAttribute(popMenu.getUuid(), System.currentTimeMillis());
 	}
 
 	protected void createSearchPanel() {
@@ -104,6 +117,11 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 			}
 			else if(event.getTarget() == btnMenu )
 			{
+				Long ts = (Long) popMenu.removeAttribute(popMenu.getUuid());
+				if (ts != null) {
+					if ((System.currentTimeMillis()-ts.longValue()) < 500)
+						return;
+				}
 				popMenu.open(btnMenu, "after_start");
 			}
 		} else if (Events.ON_CREATE.equals(event.getName())) {
@@ -131,5 +149,20 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 			popMenu.setPage(null);
 	}
 	
+	public Image getLogo() {
+		return image;
+	}
 	
+	public void closeSearchPopup() {
+		Component c = getFellow("menuLookup");
+		if (c != null && c instanceof GlobalSearch)
+			((GlobalSearch)c).closePopup();
+	}
+	
+	protected void onClientInfo() {
+		ZKUpdateUtil.setWindowWidthX(popMenu, 600);
+		Component c = getFellow("menuLookup");
+		if (c != null && c instanceof GlobalSearch)
+			((GlobalSearch)c).onClientInfo();
+	}
 }

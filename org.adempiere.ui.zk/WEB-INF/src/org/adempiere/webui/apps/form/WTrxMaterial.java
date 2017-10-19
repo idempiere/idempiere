@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.apps.AEnv;
@@ -55,7 +56,6 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Separator;
 
 /**
  * Material Transaction History
@@ -92,6 +92,8 @@ public class WTrxMaterial extends TrxMaterial
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true, true, false, false, false, true, false);
 	private StatusBarPanel statusBar = new StatusBarPanel();
 
+	private int noOfColumns;
+
 
 	/**
 	 *	Initialize Panel
@@ -104,7 +106,9 @@ public class WTrxMaterial extends TrxMaterial
 			m_WindowNo = form.getWindowNo();
 			dynParameter();
 			zkInit();
-			dynInit();			
+			dynInit();		
+			if (ClientInfo.isMobile())
+				ClientInfo.onClientInfo(form, this::onClientInfo);
 		}
 		catch(Exception ex)
 		{
@@ -119,7 +123,7 @@ public class WTrxMaterial extends TrxMaterial
 	void zkInit() throws Exception
 	{
 		form.appendChild(mainPanel);
-		mainPanel.setStyle("width: 99%; height: 100%; border: none; padding: 0; margin: 0");
+		mainPanel.setStyle("width: 100%; height: 100%; border: none; padding: 0; margin: 0");
 		mainPanel.appendChild(mainLayout);
 		ZKUpdateUtil.setWidth(mainLayout, "100%");
 		ZKUpdateUtil.setHeight(mainLayout, "100%");
@@ -135,38 +139,84 @@ public class WTrxMaterial extends TrxMaterial
 		North north = new North();
 		mainLayout.appendChild(north);
 		north.appendChild(parameterPanel);
+		north.setSplittable(true);
+		north.setCollapsible(true);
+		north.setAutoscroll(true);
+		LayoutUtils.addSlideSclass(north);
 		
-		Rows rows = parameterLayout.newRows();
-		Row row = rows.newRow();
-		row.appendCellChild(orgLabel.rightAlign());
-		ZKUpdateUtil.setHflex(orgField.getComponent(), "true");
-		row.appendCellChild(orgField.getComponent());
-		row.appendCellChild(mtypeLabel.rightAlign());
-		ZKUpdateUtil.setHflex(mtypeField.getComponent(), "true");
-		row.appendCellChild(mtypeField.getComponent());
-		row.appendCellChild(dateFLabel.rightAlign());
-		row.appendCellChild(dateFField.getComponent());
-
-		row = rows.newRow();
-		row.appendCellChild(locatorLabel.rightAlign());
-		ZKUpdateUtil.setHflex(locatorField.getComponent(), "true");
-		row.appendCellChild(locatorField.getComponent());
-		row.appendCellChild(productLabel.rightAlign());
-		ZKUpdateUtil.setHflex(productField.getComponent(), "true");
-		row.appendCellChild(productField.getComponent());
-		row.appendCellChild(dateTLabel.rightAlign());
-		row.appendCellChild(dateTField.getComponent());
+		layoutParameters();
 		//
 		southPanel.appendChild(confirmPanel);
-		southPanel.appendChild(new Separator());
 		southPanel.appendChild(statusBar);
 		South south = new South();
 		south.setStyle("border: none");
 		mainLayout.appendChild(south);
 		south.appendChild(southPanel);
+		ZKUpdateUtil.setHeight(southPanel, "64px");
+		ZKUpdateUtil.setHeight(south, "64px");
+		ZKUpdateUtil.setHeight(confirmPanel, "32px");
+		ZKUpdateUtil.setHeight(statusBar, "32px");
+		
+		ZKUpdateUtil.setWidth(southPanel, "100%");
+		ZKUpdateUtil.setWidth(confirmPanel, "100%");
+		ZKUpdateUtil.setWidth(statusBar, "100%");
 		
 		LayoutUtils.addSclass("status-border", statusBar);
 	}   //  jbInit
+
+	protected void layoutParameters() {
+		noOfColumns = 6;
+		if (ClientInfo.maxWidth(639))
+			noOfColumns = 2;
+		else if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1))
+			noOfColumns = 4;
+		
+		int childCnt = 0;
+		Rows rows = parameterLayout.newRows();
+		Row row = rows.newRow();
+		row.appendCellChild(orgLabel.rightAlign());
+		ZKUpdateUtil.setHflex(orgField.getComponent(), "true");
+		row.appendCellChild(orgField.getComponent());
+		childCnt += 2;
+		if ((childCnt % noOfColumns) ==0 )
+			row = rows.newRow();
+		row.appendCellChild(mtypeLabel.rightAlign());
+		ZKUpdateUtil.setHflex(mtypeField.getComponent(), "true");
+		row.appendCellChild(mtypeField.getComponent());
+		childCnt += 2;
+		if ((childCnt % noOfColumns) ==0 )
+			row = rows.newRow();
+		if (noOfColumns == 6)
+		{
+			row.appendCellChild(dateFLabel.rightAlign());
+			row.appendCellChild(dateFField.getComponent());
+			childCnt += 2;
+			if ((childCnt % noOfColumns) ==0 )
+				row = rows.newRow();
+		}
+		row.appendCellChild(locatorLabel.rightAlign());
+		ZKUpdateUtil.setHflex(locatorField.getComponent(), "true");		
+		row.appendCellChild(locatorField.getComponent());
+		childCnt += 2;
+		if ((childCnt % noOfColumns) ==0 )
+			row = rows.newRow();
+		row.appendCellChild(productLabel.rightAlign());
+		ZKUpdateUtil.setHflex(productField.getComponent(), "true");
+		row.appendCellChild(productField.getComponent());
+		childCnt +=2;
+		if ((childCnt % noOfColumns) ==0 )
+			row = rows.newRow();
+		if (noOfColumns < 6)
+		{
+			row.appendCellChild(dateFLabel.rightAlign());
+			row.appendCellChild(dateFField.getComponent());
+			childCnt += 2;
+			if ((childCnt % noOfColumns) ==0 )
+				row = rows.newRow();
+		}
+		row.appendCellChild(dateTLabel.rightAlign());
+		row.appendCellChild(dateTField.getComponent());
+	}
 
 	/**
 	 *  Initialize Parameter fields
@@ -269,6 +319,8 @@ public class WTrxMaterial extends TrxMaterial
 		Timestamp movementDateTo = (Timestamp)dateTField.getValue();
 		
 		refresh(organization, locator, product, movementType, movementDateFrom, movementDateTo, statusBar);
+		if (ClientInfo.maxHeight(ClientInfo.MEDIUM_HEIGHT-1))
+			mainLayout.getNorth().setOpen(false);
 	}   //  refresh
 
 	/**
@@ -287,4 +339,21 @@ public class WTrxMaterial extends TrxMaterial
 		return form;
 	}
 
+	protected void onClientInfo() 
+	{
+		if (noOfColumns > 0 && parameterLayout.getRows() != null)
+		{
+			int n = 6;
+			if (ClientInfo.maxWidth(639))
+				n = 2;
+			else if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1))
+				n = 4;
+			if (n != noOfColumns)
+			{
+				parameterLayout.getRows().detach();
+				layoutParameters();
+				form.invalidate();
+			}
+		}
+	}
 }   //  VTrxMaterial

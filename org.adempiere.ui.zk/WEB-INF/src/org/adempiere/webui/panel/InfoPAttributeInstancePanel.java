@@ -67,9 +67,12 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
 	{
 		super();
 		setTitle(Msg.getMsg(Env.getCtx(), "PAttributeInstance"));
-		ZKUpdateUtil.setWidth(this, "700px");
-		ZKUpdateUtil.setHeight(this, "400px");
+		ZKUpdateUtil.setWindowWidthX(this, 700);
+		ZKUpdateUtil.setWindowHeightX(this, 400);
 		setSclass("popup-dialog");
+		setBorder("normal");
+		setSizable(true);
+		setMaximizable(true);
 		
 		init (M_Warehouse_ID, M_Locator_ID, M_Product_ID, C_BPartner_ID);
 		AEnv.showCenterWindow(parent, this);

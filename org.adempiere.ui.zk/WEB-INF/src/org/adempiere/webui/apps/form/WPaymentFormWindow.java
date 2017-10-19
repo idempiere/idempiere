@@ -19,6 +19,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.grid.PaymentForm;
@@ -70,9 +71,10 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		}
 		
 		this.setTitle(Msg.getMsg(Env.getCtx(), "Payment"));
-		this.setSclass("popup-dialog");
+		this.setSclass("popup-dialog payment-form-dialog");
 		this.setBorder("normal");
-		ZKUpdateUtil.setWidth(this, "500px");
+		if (!ThemeManager.isUseCSSForWindowSize())
+			ZKUpdateUtil.setWindowWidthX(this, 500);
 		this.setShadow(true);
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 	}

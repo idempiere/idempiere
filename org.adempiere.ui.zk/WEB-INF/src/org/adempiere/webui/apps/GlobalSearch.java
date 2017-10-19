@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.apps;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.DocumentSearchController.SearchResult;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Tab;
@@ -76,7 +77,7 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		bandbox = new Bandbox();
 		bandbox.setSclass("global-search-box");
 		appendChild(bandbox);
-		ZKUpdateUtil.setWidth(bandbox, "100%");
+//		ZKUpdateUtil.setWidth(bandbox, "100%");
 		bandbox.setAutodrop(true);
 		bandbox.addEventListener(Events.ON_CHANGING, this);
 		bandbox.addEventListener(Events.ON_CHANGE, this);
@@ -84,7 +85,7 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		bandbox.addEventListener(Events.ON_CTRL_KEY, this);
 		
 		Bandpopup popup = new Bandpopup();
-		ZKUpdateUtil.setHeight(popup, "500px");
+		ZKUpdateUtil.setWindowHeightX(popup, ClientInfo.get().desktopHeight-50);
 		bandbox.appendChild(popup);		
 		
 		tabbox = new Tabbox();
@@ -208,5 +209,15 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 	public void onPageAttached(Page newpage, Page oldpage) {
 		super.onPageAttached(newpage, oldpage);
 		Events.echoEvent(ON_CREATE_ECHO, this, null);		
+	}
+	
+	public void closePopup() {
+		if (bandbox != null) {
+			bandbox.close();
+		}
+	}
+	
+	public void onClientInfo() {
+		ZKUpdateUtil.setWindowHeightX(bandbox.getDropdown(), ClientInfo.get().desktopHeight-50);	
 	}
 }

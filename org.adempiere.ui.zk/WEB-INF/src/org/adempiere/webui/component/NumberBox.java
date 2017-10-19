@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -87,7 +88,7 @@ public class NumberBox extends Div
     	ZKUpdateUtil.setHflex(decimalBox, "0");
     	decimalBox.setSclass("editor-input");
         decimalBox.setId(decimalBox.getUuid());
-
+        
         char separatorChar = DisplayType.getNumberFormat(DisplayType.Number, Env.getLanguage(Env.getCtx())).getDecimalFormatSymbols().getDecimalSeparator();
         String separator = Character.toString(separatorChar);
         boolean processDotKeypad = MSysConfig.getBooleanValue(MSysConfig.ZK_DECIMALBOX_PROCESS_DOTKEYPAD, true, Env.getAD_Client_ID(Env.getCtx()));
@@ -138,6 +139,13 @@ public class NumberBox extends Div
      
         LayoutUtils.addSclass("number-box", this);	     
         LayoutUtils.addSclass("editor-box", this);
+        
+        if (ClientInfo.isMobile())
+        {
+        	LayoutUtils.addSclass("mobile", decimalBox);
+        	btn.setVisible(false);
+        }
+
     }
     
     /**

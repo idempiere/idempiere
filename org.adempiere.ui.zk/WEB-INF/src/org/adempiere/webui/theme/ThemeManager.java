@@ -145,5 +145,9 @@ public final class ThemeManager {
 		} else {
 			return null;
 		}
+	}
+	
+	public static boolean isUseCSSForWindowSize() {
+		return "Y".equals(Env.getContext(Env.getCtx(), ITheme.USE_CSS_FOR_WINDOW_SIZE));
 	}	
 }

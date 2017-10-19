@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -537,6 +538,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		ZKUpdateUtil.setHflex(table, "1");
 		//ZKUpdateUtil.setVflex(table, "1");
 		table.addEventListener(Events.ON_DOUBLE_CLICK, this);
+		if (ClientInfo.isMobile())
+			table.setSizedByContent(true);
 
 		pagingPanel = new South();
 		resultPanel.appendChild(pagingPanel);

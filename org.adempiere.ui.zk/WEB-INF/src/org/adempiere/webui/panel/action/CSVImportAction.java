@@ -143,7 +143,7 @@ public class CSVImportAction implements EventListener<Event>
 		{
 			winImportFile = new Window();
 			winImportFile.setTitle(Msg.getMsg(Env.getCtx(), "FileImport") + ": " + panel.getActiveGridTab().getName());
-			ZKUpdateUtil.setWidth(winImportFile, "450px");
+			ZKUpdateUtil.setWindowWidthX(winImportFile, 450);
 			winImportFile.setClosable(true);
 			winImportFile.setBorder("normal");
 			winImportFile.setStyle("position:absolute");

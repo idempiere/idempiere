@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -43,9 +44,11 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.North;
@@ -85,6 +88,8 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 	private ArrayList<String> m_queryColumnsSql = new ArrayList<String>();
 	private Borderlayout layout;
 	private Vbox southBody;
+
+	private int noOfParameterColumn;
 
 	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean isSOTrx, String whereClause)
 	{
@@ -142,58 +147,42 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
             executeQuery();
             renderItems();
         }
-
+		
+		if (ClientInfo.isMobile()) {
+			ClientInfo.onClientInfo(this, this::onClientInfo);
+		}
 	}
 
 	private void initComponents()
 	{
 		Grid grid = GridFactory.newGridLayout();
+		ZKUpdateUtil.setWidth(grid, "100%");
+		ZKUpdateUtil.setVflex(grid, "min");
 
-		Rows rows = new Rows();
-		grid.appendChild(rows);
-
-		Row row = new Row();
-		rows.appendChild(row);
-		row.appendChild(lbl1.rightAlign());
-		row.appendChild(txt1);
-		ZKUpdateUtil.setHflex(txt1, "1");
-		row.appendChild(lbl2.rightAlign());
-		row.appendChild(txt2);
-		ZKUpdateUtil.setHflex(txt2, "1");
-		row.appendChild(lbl3.rightAlign());
-		row.appendChild(txt3);
-		ZKUpdateUtil.setHflex(txt3, "1");
-		row.appendChild(lbl4.rightAlign());
-		row.appendChild(txt4);
-		ZKUpdateUtil.setHflex(txt4, "1");
+		layoutParameterGrid(grid);
 
 		layout = new Borderlayout();
 		ZKUpdateUtil.setWidth(layout, "100%");
 		ZKUpdateUtil.setHeight(layout, "100%");
-        if (!isLookup())
-        {
-        	layout.setStyle("position: absolute");
-        }
+        layout.setStyle("position: relative");
         this.appendChild(layout);
 
         North north = new North();
         layout.appendChild(north);
 		north.appendChild(grid);
+		ZKUpdateUtil.setVflex(north, "min");
 
         Center center = new Center();
 		layout.appendChild(center);
 		Div div = new Div();
 		div.appendChild(contentPanel);
-		if (isLookup())
-			ZKUpdateUtil.setWidth(contentPanel, "99%");
-        else
-        	contentPanel.setStyle("width: 99%; margin: 0px auto;");
+		ZKUpdateUtil.setWidth(contentPanel, "100%");
         ZKUpdateUtil.setVflex(contentPanel, true);
         contentPanel.setSizedByContent(true);
-		div.setStyle("width :100%; height: 100%");
 		center.appendChild(div);
 		ZKUpdateUtil.setVflex(div, "1");
 		ZKUpdateUtil.setHflex(div, "1");
+		ZKUpdateUtil.setVflex(center, "1");
 
 		South south = new South();
 		layout.appendChild(south);
@@ -203,6 +192,63 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		southBody.appendChild(new Separator());
 		southBody.appendChild(confirmPanel);		
 		southBody.appendChild(statusBar);
+		ZKUpdateUtil.setVflex(south, "min");
+	}
+
+	protected void layoutParameterGrid(Grid grid) {
+		noOfParameterColumn = getNoOfParameterColumn();
+		Rows rows = new Rows();
+		grid.appendChild(rows);
+
+		Row row = new Row();
+		rows.appendChild(row);
+		row.appendChild(lbl1.rightAlign());
+		row.appendChild(txt1);
+		ZKUpdateUtil.setHflex(txt1, "1");
+		if (row.getChildren().size() % noOfParameterColumn == 0)
+			row = rows.newRow();
+		row.appendChild(lbl2.rightAlign());
+		row.appendChild(txt2);		
+		ZKUpdateUtil.setHflex(txt2, "1");
+		if (row.getChildren().size() % noOfParameterColumn == 0)
+			row = rows.newRow();
+		Cell cell = new Cell();
+		cell.setAlign("right");
+		cell.setValign("middle");
+		Div ldiv = new Div();
+		ldiv.appendChild(lbl3);
+		cell.appendChild(ldiv);
+		row.appendChild(cell);
+		cell = new Cell();
+		cell.setValign("middle");
+		cell.appendChild(txt3);
+		row.appendChild(cell);		
+		ZKUpdateUtil.setHflex(txt3, "1");
+		if (row.getChildren().size() % noOfParameterColumn == 0)
+			row = rows.newRow();
+		cell = new Cell();
+		cell.setAlign("right");
+		cell.setValign("middle");
+		ldiv = new Div();
+		ldiv.appendChild(lbl4);
+		cell.appendChild(ldiv);
+		row.appendChild(cell);
+		cell = new Cell();
+		cell.setValign("middle");
+		cell.appendChild(txt4);
+		row.appendChild(cell);
+		ZKUpdateUtil.setHflex(txt4, "1");
+	}
+
+	private int getNoOfParameterColumn() {
+		if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH-1))
+			return 2;
+		else if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
+			return 4;
+		else if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1))
+			return 6;
+		else
+			return 8;
 	}
 
 	private void init()
@@ -258,6 +304,8 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		{
 			lbl3.setVisible(false);
 			txt3.setVisible(false);
+			hideCell(lbl3);
+			hideCell(txt3);
 		}
 
 		if (m_queryColumns.size() > 3)
@@ -268,8 +316,23 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		{
 			lbl4.setVisible(false);
 			txt4.setVisible(false);
+			hideCell(lbl4);
+			hideCell(txt4);
 		}
 		return true;
+	}
+
+	private void hideCell(Component comp) {
+		Component p = comp.getParent();
+		while (p != null)
+		{
+			if (p instanceof Cell)
+			{
+				p.setVisible(false);
+				break;
+			}
+			p = p.getParent();
+		}
 	}
 
 	private boolean initInfoTable ()
@@ -517,4 +580,16 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		southBody.insertBefore(paging, southBody.getFirstChild());
 		layout.invalidate();
     }
+    
+	protected void onClientInfo() {
+		if (layout != null && layout.getNorth() != null && layout.getNorth().getFirstChild() instanceof Grid) {
+			int t = getNoOfParameterColumn();
+			if (t > 0 && noOfParameterColumn > 0 && t != noOfParameterColumn) {
+				Grid grid = (Grid) layout.getNorth().getFirstChild();
+				grid.getRows().detach();
+				layoutParameterGrid(grid);
+				this.invalidate();
+			}
+		}
+	}
 }

@@ -16,6 +16,7 @@ package org.adempiere.webui.apps.form;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
@@ -40,8 +41,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Center;
 
 public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListener
 {
@@ -105,25 +104,24 @@ public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListen
 	{
 		bPartnerLabel.setText(Msg.getElement(Env.getCtx(), "C_BPartner_ID"));
         
-		Borderlayout parameterLayout = new Borderlayout();
-		ZKUpdateUtil.setHeight(parameterLayout, "110px");
-		ZKUpdateUtil.setWidth(parameterLayout, "100%");
     	Panel parameterPanel = window.getParameterPanel();
-		parameterPanel.appendChild(parameterLayout);
 		
 		Grid parameterStdLayout = GridFactory.newGridLayout();
     	Panel parameterStdPanel = new Panel();
 		parameterStdPanel.appendChild(parameterStdLayout);
 
-		Center center = new Center();
-		parameterLayout.appendChild(center);
-		center.appendChild(parameterStdPanel);
+		parameterPanel.appendChild(parameterStdPanel);
+		ZKUpdateUtil.setVflex(parameterStdLayout, "min");
 		
 		Rows rows = (Rows) parameterStdLayout.newRows();
 		Row row = rows.newRow();
 		row.appendChild(bPartnerLabel.rightAlign());
 		if (bPartnerField != null)
 			row.appendChild(bPartnerField.getComponent());
+		
+		if (ClientInfo.isMobile()) {
+			ClientInfo.onClientInfo(window, this::onClientInfo);
+		}
 	}
 	
 	/**
@@ -195,5 +193,11 @@ public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListen
 	@Override
 	public Object getWindow() {
 		return window;
+	}
+	
+	protected void onClientInfo() {
+		ZKUpdateUtil.setCSSHeight(window);
+		ZKUpdateUtil.setCSSWidth(window);
+		window.invalidate();
 	}
 }

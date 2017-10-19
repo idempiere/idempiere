@@ -32,6 +32,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.GridTab;
@@ -93,13 +94,24 @@ public class WRecordInfo extends Window implements EventListener<Event>
 	{
 		super ();
 		this.setTitle(title);
-		ZKUpdateUtil.setWidth(this, "500px");
-		ZKUpdateUtil.setHeight(this, "400px");
+		if (!ThemeManager.isUseCSSForWindowSize())
+		{
+			ZKUpdateUtil.setWindowWidthX(this, 500);
+			ZKUpdateUtil.setWindowHeightX(this, 400);
+		}
+		else
+		{
+			addCallback(AFTER_PAGE_ATTACHED, t-> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+			});
+		}
 		this.setBorder("normal");
 		this.setSizable(true);
 		this.setClosable(true);
+		this.setMaximizable(true);
 		this.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "recordInfo");
-		this.setSclass("popup-dialog");
+		this.setSclass("popup-dialog record-info-dialog");
 		
 		try
 		{

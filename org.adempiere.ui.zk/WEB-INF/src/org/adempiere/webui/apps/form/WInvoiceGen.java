@@ -16,6 +16,10 @@ package org.adempiere.webui.apps.form;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
@@ -38,10 +42,11 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Space;
+import org.zkoss.zul.North;
 
 /**
  * Generate Invoice (manual) view class
@@ -63,11 +68,13 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 	private Label   lDocAction = new Label();
 	private WTableDirEditor docAction;
 
+	private int noOfColumn;
+	
 	public WInvoiceGen()
 	{
 		log.info("");
 
-		form = new WGenForm(this);
+		form = new WGenForm(this);		
 		Env.setContext(Env.getCtx(), form.getWindowNo(), "IsSOTrx", "Y");
 
 		try
@@ -82,6 +89,8 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 		{
 			log.log(Level.SEVERE, "init", ex);
 		}
+		
+		ClientInfo.onClientInfo(form, this::onClientInfo);
 	}	//	init
 
 	/**
@@ -97,6 +106,8 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 	 */
 	void zkInit() throws Exception
 	{
+		setupColumns();
+		
 		lOrg.setText(Msg.translate(Env.getCtx(), "AD_Org_ID"));
 		lBPartner.setText(Msg.translate(Env.getCtx(), "C_BPartner_ID"));
 
@@ -104,23 +115,45 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 		row.appendCellChild(lOrg.rightAlign());
 		ZKUpdateUtil.setHflex(fOrg.getComponent(), "true");
 		row.appendCellChild(fOrg.getComponent());
-		row.appendCellChild(new Space());
 		row.appendCellChild(lBPartner.rightAlign());
 		ZKUpdateUtil.setHflex(fBPartner.getComponent(), "true");
 		row.appendCellChild(fBPartner.getComponent());
-		row.appendCellChild(new Space());
 
 		row = new Row();
 		form.getParameterPanel().getRows().appendChild(row);
 		row.appendCellChild(lDocType.rightAlign());
 		ZKUpdateUtil.setHflex(cmbDocType, "true");
 		row.appendCellChild(cmbDocType);
-		row.appendCellChild(new Space());
 		row.appendCellChild(lDocAction.rightAlign());
 		ZKUpdateUtil.setHflex(docAction.getComponent(), "true");
 		row.appendCellChild(docAction.getComponent());
-		row.appendCellChild(new Space());
+		if (noOfColumn < 6)
+			LayoutUtils.compactTo(form.getParameterPanel(), noOfColumn);
+		else
+			LayoutUtils.expandTo(form.getParameterPanel(), noOfColumn, true);
 	}	//	jbInit
+
+	protected void setupColumns() {
+		noOfColumn = 6;
+		if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1))
+		{
+			if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
+				noOfColumn = 2;
+			else
+				noOfColumn = 4;
+		}
+		if (noOfColumn == 2)
+		{
+			Columns columns = new Columns();
+			Column column = new Column();
+			column.setWidth("35%");
+			columns.appendChild(column);
+			column = new Column();
+			column.setWidth("65%");
+			columns.appendChild(column);
+			form.getParameterPanel().appendChild(columns);
+		}
+	}
 
 	/**
 	 *	Fill Picks.
@@ -164,10 +197,44 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 	{
 		KeyNamePair docTypeKNPair = cmbDocType.getSelectedItem().toKeyNamePair();
 		executeQuery(docTypeKNPair, form.getMiniTable());
+		if (ClientInfo.maxHeight(ClientInfo.SMALL_HEIGHT-1))
+		{
+			Component comp = form.getParameterPanel().getParent();
+			if (comp instanceof North)
+				((North)comp).setOpen(false);
+		}
 		form.getMiniTable().repaint();
 		form.invalidate();
 	}   //  executeQuery
 
+	protected void onClientInfo()
+	{
+		if (ClientInfo.isMobile() && form.getPage() != null) 
+		{
+			if (noOfColumn > 0 && form.getParameterPanel().getRows() != null)
+			{
+				int t = 6;
+				if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1))
+				{
+					if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
+						t = 2;
+					else
+						t = 4;
+				}
+				if (t != noOfColumn)
+				{
+					form.getParameterPanel().getRows().detach();
+					if (form.getParameterPanel().getColumns() != null)
+						form.getParameterPanel().getColumns().detach();
+					try {
+						zkInit();
+						form.invalidate();
+					} catch (Exception e1) {}
+				}
+			}
+		}
+	}
+	
 	/**
 	 *	Action Listener
 	 *  @param e event

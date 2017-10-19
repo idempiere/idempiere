@@ -35,6 +35,7 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.info.InfoProductWindow;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MDocType;
 import org.compiere.model.MPriceList;
@@ -95,7 +96,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 			log.log(Level.SEVERE, "", ex);
 		}
 		
-		this.setSclass("popup-dialog");
+		this.setSclass("popup-dialog invoice-history-dialog");
 		AEnv.showCenterWindow(parent, this);
 		if (parent instanceof InfoProductWindow)
 			showDetailATP = ((InfoProductWindow)parent).isShowDetailATP();
@@ -182,12 +183,26 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 		tabbox.addEventListener(Events.ON_SELECT, this);
 		confirmPanel.addActionListener(this);
         
-		Borderlayout borderlayout = new Borderlayout();
-		ZKUpdateUtil.setWidth(this, "700px");
-		ZKUpdateUtil.setHeight(this, "400px");
+		Borderlayout borderlayout = new Borderlayout();	
+		if (!ThemeManager.isUseCSSForWindowSize())
+		{
+			ZKUpdateUtil.setWindowWidthX(this, 700);
+			ZKUpdateUtil.setWindowHeightX(this, 400);
+		}
+		else
+		{
+			addCallback(AFTER_PAGE_ATTACHED, t-> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+				this.invalidate();
+			});
+		}
         borderlayout.setStyle("border: none; position: relative");
 		this.appendChild(borderlayout);
 		this.setClosable(true);
+		this.setSizable(true);
+		this.setMaximizable(true);
+		this.setBorder("normal");
 		
 		North north = new North();
 		north.setStyle("border: none");

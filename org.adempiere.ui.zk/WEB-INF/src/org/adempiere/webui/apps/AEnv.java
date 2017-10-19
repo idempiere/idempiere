@@ -34,9 +34,9 @@ import java.util.logging.Level;
 
 import javax.servlet.ServletRequest;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.component.Window;
-import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.session.SessionManager;
@@ -762,11 +762,11 @@ public final class AEnv
 	}
 	
 	/**
+	 * @deprecated replace by ClientInfo.isMobile()
 	 * @return true if running on a tablet
 	 */
 	public static boolean isTablet() {
-		IDesktop appDesktop = SessionManager.getAppDesktop();
-		return appDesktop != null ? appDesktop.getClientInfo().tablet : false;
+		return ClientInfo.isMobile();
 	}
 	
 	/**

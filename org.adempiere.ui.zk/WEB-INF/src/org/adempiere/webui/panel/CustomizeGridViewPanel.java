@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.model.MTabCustomization;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.GridView;
 import org.adempiere.webui.component.Button;
@@ -184,8 +185,11 @@ public class CustomizeGridViewPanel extends Panel
 		EventListener<Event> crossListMouseListener = new DragListener();
 		yesList.addOnDropListener(crossListMouseListener);
 		noList.addOnDropListener(crossListMouseListener);
-		yesList.setItemDraggable(true);
-		noList.setItemDraggable(true);
+		if (!ClientInfo.isMobile()) 
+		{
+			yesList.setItemDraggable(true);
+			noList.setItemDraggable(true);
+		}
 
 		actionListener = new EventListener<Event>()
 		{
@@ -262,7 +266,8 @@ public class CustomizeGridViewPanel extends Panel
 		chkSaveWidth.setLabel(Msg.getMsg(Env.getCtx(), "SaveColumnWidth"));
 
 		sep = new Separator("vertical");
-		sep.setSpacing("200px");
+		if (ClientInfo.minWidth(ClientInfo.SMALL_WIDTH))
+			sep.setSpacing("200px");
 		southPanel.appendChild(sep);
 		lblGridMode.setValue(Msg.getMsg(Env.getCtx(), "OpenInGridMode"));
 		southPanel.appendChild(lblGridMode);

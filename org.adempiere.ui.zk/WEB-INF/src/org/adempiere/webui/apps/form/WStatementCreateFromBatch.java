@@ -19,6 +19,8 @@ import java.sql.Timestamp;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
@@ -53,8 +55,6 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Center;
 import org.zkoss.zul.Hbox;
 
 /**
@@ -123,6 +123,8 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 	protected WDateEditor dateFromField = new WDateEditor("DateFrom", false, false, true, Msg.translate(Env.getCtx(), "DateFrom"));
 	protected Label dateToLabel = new Label("-");
 	protected WDateEditor dateToField = new WDateEditor("DateTo", false, false, true, Msg.translate(Env.getCtx(), "DateTo"));
+	
+	protected Grid parameterBankLayout;
 
 	/**
 	 *  Dynamic Init
@@ -177,6 +179,31 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		return true;
 	}   //  dynInit
 	
+	protected void onClientInfo()
+	{
+		if (ClientInfo.isMobile() && parameterBankLayout != null && parameterBankLayout.getColumns() != null)
+		{
+			org.zkoss.zul.Rows rows = parameterBankLayout.getRows();
+			if (rows != null)
+			{
+				int nc = ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH) ? 2 : 4;
+				int cc = rows.getFirstChild().getChildren().size();
+				if (cc != nc)
+				{
+					parameterBankLayout.getColumns().detach();
+					setupColumns(parameterBankLayout);
+					if (cc > nc)
+						LayoutUtils.compactTo(parameterBankLayout, nc);
+					else
+						LayoutUtils.expandTo(parameterBankLayout, nc);
+					ZKUpdateUtil.setCSSHeight(form);
+					ZKUpdateUtil.setCSSWidth(form);
+					form.invalidate();
+				}				
+			}
+		}
+	}
+
 	protected void zkInit() throws Exception
 	{
 		bankAccountLabel.setText(Msg.translate(Env.getCtx(), "C_BankAccount_ID"));
@@ -191,34 +218,13 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
     	amtFromField.getComponent().setTooltiptext(Msg.translate(Env.getCtx(), "AmtFrom"));
     	amtToField.getComponent().setTooltiptext(Msg.translate(Env.getCtx(), "AmtTo"));
     	
-    	Borderlayout parameterLayout = new Borderlayout();
-    	ZKUpdateUtil.setHeight(parameterLayout, "130px");
-    	ZKUpdateUtil.setWidth(parameterLayout, "100%");
     	Panel parameterPanel = form.getParameterPanel();
-		parameterPanel.appendChild(parameterLayout);
 		
-		Grid parameterBankLayout = GridFactory.newGridLayout();
-    	Panel parameterBankPanel = new Panel();
-    	parameterBankPanel.appendChild(parameterBankLayout);
+		parameterBankLayout = GridFactory.newGridLayout();
+		ZKUpdateUtil.setVflex(parameterBankLayout, "min");
+    	parameterPanel.appendChild(parameterBankLayout);
 
-		Center center = new Center();
-		parameterLayout.appendChild(center);
-		center.appendChild(parameterBankPanel);
-		
-		Columns columns = new Columns();
-		parameterBankLayout.appendChild(columns);
-		Column column = new Column();
-		columns.appendChild(column);		
-		column = new Column();
-		ZKUpdateUtil.setWidth(column, "15%");
-		columns.appendChild(column);
-		ZKUpdateUtil.setWidth(column, "35%");
-		column = new Column();
-		ZKUpdateUtil.setWidth(column, "15%");
-		columns.appendChild(column);
-		column = new Column();
-		ZKUpdateUtil.setWidth(column, "35%");
-		columns.appendChild(column);
+    	setupColumns(parameterBankLayout);
 		
 		Rows rows = (Rows) parameterBankLayout.newRows();
 		Row row = rows.newRow();
@@ -254,8 +260,43 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		hbox.appendChild(dateToLabel.rightAlign());
 		hbox.appendChild(dateToField.getComponent());
 		row.appendChild(hbox);
+		
+		if (ClientInfo.isMobile()) {
+			if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH))
+				LayoutUtils.compactTo(parameterBankLayout, 2);		
+			ClientInfo.onClientInfo(form, this::onClientInfo);
+		}
 	}
 
+	protected void setupColumns(Grid parameterBankLayout) {
+		Columns columns = new Columns();
+		parameterBankLayout.appendChild(columns);
+		if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH))
+		{
+			Column column = new Column();
+			ZKUpdateUtil.setWidth(column, "35%");
+			columns.appendChild(column);
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "65%");
+			columns.appendChild(column);
+		}
+		else
+		{
+			Column column = new Column();
+			columns.appendChild(column);		
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "15%");
+			columns.appendChild(column);
+			ZKUpdateUtil.setWidth(column, "35%");
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "15%");
+			columns.appendChild(column);
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "35%");
+			columns.appendChild(column);
+		}
+	}
+	
 	/**
 	 *  Action Listener
 	 *  @param e event

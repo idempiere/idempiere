@@ -43,6 +43,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MResourceAssignment;
 import org.compiere.model.MRole;
@@ -115,8 +116,11 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 			log.log(Level.SEVERE, "", e);
 		}
 		setDisplay();	//	from mAssignment
-		ZKUpdateUtil.setWidth(this, "600px");
+		if (!ThemeManager.isUseCSSForWindowSize())
+			ZKUpdateUtil.setWindowWidthX(this, 600);
 		setSizable(true);
+		setMaximizable(true);
+		setSclass("assignment-dialog");
 		//		
 	}	//	VAssignmentDialog
 

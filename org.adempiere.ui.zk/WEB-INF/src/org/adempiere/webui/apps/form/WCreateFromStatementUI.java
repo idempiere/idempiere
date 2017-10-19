@@ -19,6 +19,8 @@ import java.sql.Timestamp;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
@@ -53,8 +55,6 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Center;
 import org.zkoss.zul.Hbox;
 
 /**
@@ -124,6 +124,8 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	protected Label dateToLabel = new Label("-");
 	protected WDateEditor dateToField = new WDateEditor("DateTo", false, false, true, Msg.translate(Env.getCtx(), "DateTo"));
 
+	protected Grid parameterBankLayout;
+
 	/**
 	 *  Dynamic Init
 	 *  @throws Exception if Lookups cannot be initialized
@@ -179,6 +181,8 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	
 	protected void zkInit() throws Exception
 	{
+		LayoutUtils.addSclass("create-from-bank-statement", window);
+		
 		bankAccountLabel.setText(Msg.translate(Env.getCtx(), "C_BankAccount_ID"));
     	authorizationLabel.setText(Msg.translate(Env.getCtx(), "R_AuthCode"));
     	
@@ -191,34 +195,13 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
     	amtFromField.getComponent().setTooltiptext(Msg.translate(Env.getCtx(), "AmtFrom"));
     	amtToField.getComponent().setTooltiptext(Msg.translate(Env.getCtx(), "AmtTo"));
     	
-    	Borderlayout parameterLayout = new Borderlayout();
-    	ZKUpdateUtil.setHeight(parameterLayout, "130px");
-    	ZKUpdateUtil.setWidth(parameterLayout, "100%");
     	Panel parameterPanel = window.getParameterPanel();
-		parameterPanel.appendChild(parameterLayout);
 		
-		Grid parameterBankLayout = GridFactory.newGridLayout();
-    	Panel parameterBankPanel = new Panel();
-    	parameterBankPanel.appendChild(parameterBankLayout);
+		parameterBankLayout = GridFactory.newGridLayout();
+    	ZKUpdateUtil.setVflex(parameterBankLayout, "min");
+    	parameterPanel.appendChild(parameterBankLayout);
 
-		Center center = new Center();
-		parameterLayout.appendChild(center);
-		center.appendChild(parameterBankPanel);
-		
-		Columns columns = new Columns();
-		parameterBankLayout.appendChild(columns);
-		Column column = new Column();
-		columns.appendChild(column);		
-		column = new Column();
-		ZKUpdateUtil.setWidth(column, "15%");
-		columns.appendChild(column);
-		ZKUpdateUtil.setWidth(column, "35%");
-		column = new Column();
-		ZKUpdateUtil.setWidth(column, "15%");
-		columns.appendChild(column);
-		column = new Column();
-		ZKUpdateUtil.setWidth(column, "35%");
-		columns.appendChild(column);
+		setupColumns(parameterBankLayout);
 		
 		Rows rows = (Rows) parameterBankLayout.newRows();
 		Row row = rows.newRow();
@@ -254,6 +237,41 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		hbox.appendChild(dateToLabel.rightAlign());
 		hbox.appendChild(dateToField.getComponent());
 		row.appendChild(hbox);
+		
+		if (ClientInfo.isMobile()) {
+			if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH))
+				LayoutUtils.compactTo(parameterBankLayout, 2);		
+			ClientInfo.onClientInfo(window, this::onClientInfo);
+		}
+	}
+
+	protected void setupColumns(Grid parameterBankLayout) {
+		Columns columns = new Columns();
+		parameterBankLayout.appendChild(columns);
+		if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH))
+		{
+			Column column = new Column();
+			ZKUpdateUtil.setWidth(column, "35%");
+			columns.appendChild(column);
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "65%");
+			columns.appendChild(column);
+		}
+		else
+		{
+			Column column = new Column();
+			columns.appendChild(column);		
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "15%");
+			columns.appendChild(column);
+			ZKUpdateUtil.setWidth(column, "35%");
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "15%");
+			columns.appendChild(column);
+			column = new Column();
+			ZKUpdateUtil.setWidth(column, "35%");
+			columns.appendChild(column);
+		}
 	}
 
 	/**
@@ -308,5 +326,31 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	public Object getWindow() 
 	{
 		return window;
+	}
+	
+	protected void onClientInfo()
+	{
+		if (ClientInfo.isMobile() && parameterBankLayout != null && parameterBankLayout.getColumns() != null)
+		{
+			org.zkoss.zul.Rows rows = parameterBankLayout.getRows();
+			if (rows != null)
+			{
+				int nc = ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH) ? 2 : 4;
+				int cc = rows.getFirstChild().getChildren().size();
+				if (cc != nc)
+				{
+					parameterBankLayout.getColumns().detach();
+					setupColumns(parameterBankLayout);
+					if (cc > nc)
+						LayoutUtils.compactTo(parameterBankLayout, nc);
+					else
+						LayoutUtils.expandTo(parameterBankLayout, nc);
+					
+					ZKUpdateUtil.setCSSHeight(window);
+					ZKUpdateUtil.setCSSWidth(window);
+					window.invalidate();
+				}				
+			}
+		}
 	}
 }

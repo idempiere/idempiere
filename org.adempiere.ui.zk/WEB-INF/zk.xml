@@ -109,6 +109,10 @@
        <name>org.zkoss.zk.ui.EventListener.duplicateIgnored</name>
        <value>true</value>
     </library-property>
+    <library-property>
+    	<name>org.zkoss.zul.nativebar</name>
+    	<value>true</value>
+    </library-property>
     
 	<preference>
     	<name>org.zkoss.zk.ui.WebApp.name</name>

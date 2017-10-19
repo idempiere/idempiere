@@ -70,7 +70,7 @@ public class DefaultEditorFactory implements IEditorFactory {
 
         /** String (clear/password) */
         if (displayType == DisplayType.String
-            || displayType == DisplayType.PrinterName
+            || displayType == DisplayType.PrinterName || displayType == DisplayType.Color
             || (tableEditor && (displayType == DisplayType.Text || displayType == DisplayType.TextLong)))
         {
             if (gridField.isEncryptedField())
@@ -81,6 +81,9 @@ public class DefaultEditorFactory implements IEditorFactory {
             {
                 editor = new WStringEditor(gridField, tableEditor);
             }
+            //enable html5 color input type
+            if (displayType == DisplayType.Color)
+            	((WStringEditor)editor).getComponent().setClientAttribute("type", "color");
         }
         /** File */
         else if (displayType == DisplayType.FileName)

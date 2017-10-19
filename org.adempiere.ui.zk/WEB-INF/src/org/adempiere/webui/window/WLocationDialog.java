@@ -28,6 +28,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -44,6 +45,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.MAddressValidation;
@@ -204,10 +206,20 @@ public class WLocationDialog extends Window implements EventListener<Event>
 
 		setRegion();
 		initLocation();
-		//               
-		ZKUpdateUtil.setWidth(this, "380px");
-		ZKUpdateUtil.setHeight(this, "420px"); // required fixed height for ZK to auto adjust the position based on available space
-		this.setSclass("popup-dialog");
+		//
+		if (!ThemeManager.isUseCSSForWindowSize()) 
+		{
+			ZKUpdateUtil.setWindowWidthX(this, 380);
+			ZKUpdateUtil.setWindowHeightX(this, 420); // required fixed height for ZK to auto adjust the position based on available space
+		}
+		else
+		{
+			addCallback(AFTER_PAGE_ATTACHED, t -> {
+				ZKUpdateUtil.setCSSHeight(this);
+				ZKUpdateUtil.setCSSWidth(this);
+			});
+		}
+		this.setSclass("popup-dialog location-dialog");
 		this.setClosable(true);
 		this.setBorder("normal");
 		this.setShadow(true);
@@ -316,6 +328,14 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		lstAddressValidation.setRows(0);		
 
 		mainPanel = GridFactory.newGridLayout();
+		
+		if (ClientInfo.isMobile())
+		{
+			if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH) || ClientInfo.maxHeight(ClientInfo.SMALL_HEIGHT))
+			{
+				confirmPanel.addButtonSclass("btn-medium small-image-btn");
+			}
+		}
 	}
 
 	private void init()

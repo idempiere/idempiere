@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pdf.Document;
 import org.adempiere.util.ContextRunnable;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
@@ -105,16 +106,19 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.North;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Vbox;
+import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.impl.Utils;
 import org.zkoss.zul.impl.XulElement;
 
@@ -201,6 +205,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	
 	private final static String ON_RENDER_REPORT_EVENT = "onRenderReport";
 	
+	private Popup toolbarPopup;
+	
 	//private static final String REPORT = "org.idempiere.ui.report";
 	
 	/**
@@ -264,6 +270,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		this.setStyle("width: 100%; height: 100%; position: absolute; border:none; padding:none; margin:none;");
 
 		ZKUpdateUtil.setHeight(toolBar, "32px");
+		
 		ZKUpdateUtil.setWidth(toolBar, "100%");
 		
 		previewType.setMold("select");
@@ -277,6 +284,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		toolBar.appendChild(previewType);		
 		previewType.addEventListener(Events.ON_SELECT, this);
+		
 		toolBar.appendChild(new Separator("vertical"));
 		
 		int pTypeIndex = 0;
@@ -307,27 +315,61 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		previewType.setSelectedIndex(pTypeIndex);
 		
-		labelDrill.setValue(Msg.getMsg(Env.getCtx(), "Drill") + ": ");
-		toolBar.appendChild(labelDrill);
+		Vlayout toolbarPopupLayout = null;
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
+		{
+			toolbarPopup = new Popup();
+			appendChild(toolbarPopup);	
+			toolbarPopupLayout = new Vlayout();
+			toolbarPopup.appendChild(toolbarPopupLayout);
+		}
 		
+		labelDrill.setValue(Msg.getMsg(Env.getCtx(), "Drill") + ": ");		
 		comboDrill.setMold("select");
 		comboDrill.setTooltiptext(Msg.getMsg(Env.getCtx(), "Drill"));
-		toolBar.appendChild(comboDrill);
+		if (toolbarPopup != null)
+		{
+			Hlayout hl = new Hlayout();
+			hl.setValign("middle");
+			hl.appendChild(labelDrill);
+			hl.appendChild(comboDrill);
+			toolbarPopupLayout.appendChild(hl);
+		}
+		else 
+		{
+			toolBar.appendChild(labelDrill);		
+			toolBar.appendChild(comboDrill);
+		}
 		
-		toolBar.appendChild(new Separator("vertical"));
+		if (toolbarPopup == null)
+			toolBar.appendChild(new Separator("vertical"));
 		
 		comboReport.setMold("select");
 		comboReport.setTooltiptext(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
-		toolBar.appendChild(comboReport);
 		
-		toolBar.appendChild(new Separator("vertical"));
+		if (toolbarPopup != null)
+		{
+			toolbarPopupLayout.appendChild(comboReport);
+		}
+		else
+		{
+			toolBar.appendChild(comboReport);		
+			toolBar.appendChild(new Separator("vertical"));
+		}
 		
 		MClient client = MClient.get(m_ctx);
 		if (client.isMultiLingualDocument()){
 			try {
 				wLanguage = AEnv.getListDocumentLanguage(client);
 				wLanguage.getComponent().setTooltiptext(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
-				toolBar.appendChild(wLanguage.getComponent());
+				if (toolbarPopup != null)
+				{
+					toolbarPopupLayout.appendChild(wLanguage.getComponent());
+				}
+				else
+				{
+					toolBar.appendChild(wLanguage.getComponent());
+				}
 				wLanguage.setValue(m_reportEngine.getLanguageID());
 				wLanguage.getComponent().addEventListener(Events.ON_SELECT, this);
 			} catch (Exception e) {
@@ -335,42 +377,76 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			}
 		}
 		
-		toolBar.appendChild(new Separator("vertical"));
+		if (toolbarPopup == null && client.isMultiLingualDocument())
+			toolBar.appendChild(new Separator("vertical"));
 		
-		summary.setText(Msg.getMsg(Env.getCtx(), "Summary"));
-		toolBar.appendChild(summary);
+		summary.setText(Msg.getMsg(Env.getCtx(), "Summary"));		
 		summary.setChecked(m_reportEngine.isSummary());
-		toolBar.appendChild(new Separator("vertical"));
+		if (toolbarPopup != null)
+		{
+			toolbarPopupLayout.appendChild(summary);
+		}
+		else
+		{
+			toolBar.appendChild(summary);
+			toolBar.appendChild(new Separator("vertical"));
+		}
 		
 		bCustomize.setName("Customize");
 		bCustomize.setImage(ThemeManager.getThemeResource("images/Preference24.png"));
 		bCustomize.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "PrintCustomize")));
-		toolBar.appendChild(bCustomize);
+		if (toolbarPopup != null)
+		{
+			toolbarPopupLayout.appendChild(bCustomize);
+			bCustomize.setLabel(bCustomize.getTooltiptext());
+		}
+		else
+			toolBar.appendChild(bCustomize);
 		bCustomize.addEventListener(Events.ON_CLICK, this);
 		
 		
 		
 		bFind.setName("Find");
 		bFind.setImage(ThemeManager.getThemeResource("images/Find24.png"));
-		bFind.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Find")));
-		toolBar.appendChild(bFind);
+		bFind.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Find")));		
 		bFind.addEventListener(Events.ON_CLICK, this);
 		if (getAD_Tab_ID(m_reportEngine.getPrintFormat().getAD_Table_ID()) <= 0) {
 			bFind.setVisible(false); // IDEMPIERE-1185
 		}
 		
-		toolBar.appendChild(new Separator("vertical"));
+		if (toolbarPopup != null)
+		{
+			toolbarPopupLayout.appendChild(bFind);
+			bFind.setLabel(bFind.getTooltiptext());
+		}
+		else
+		{
+			toolBar.appendChild(bFind);
+			toolBar.appendChild(new Separator("vertical"));
+		}
 		
 		bSendMail.setName("SendMail");
 		bSendMail.setImage(ThemeManager.getThemeResource("images/SendMail24.png"));
 		bSendMail.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "SendMail")));
-		toolBar.appendChild(bSendMail);
+		if (toolbarPopup != null)
+		{
+			toolbarPopupLayout.appendChild(bSendMail);
+			bSendMail.setLabel(bSendMail.getTooltiptext());
+		}
+		else
+			toolBar.appendChild(bSendMail);
 		bSendMail.addEventListener(Events.ON_CLICK, this);
 		
 		bArchive.setName("Archive");
 		bArchive.setImage(ThemeManager.getThemeResource("images/Archive24.png"));
 		bArchive.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Archive")));
-		toolBar.appendChild(bArchive);
+		if (toolbarPopup != null)
+		{
+			toolbarPopupLayout.appendChild(bArchive);
+			bArchive.setLabel(bArchive.getTooltiptext());
+		}
+		else
+			toolBar.appendChild(bArchive);
 		bArchive.addEventListener(Events.ON_CLICK, this);
 		
 		if ( m_isCanExport )
@@ -378,23 +454,53 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			bExport.setName("Export");
 			bExport.setImage(ThemeManager.getThemeResource("images/Export24.png"));
 			bExport.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Export")));
-			toolBar.appendChild(bExport);
+			if (toolbarPopup != null)
+			{
+				toolbarPopupLayout.appendChild(bExport);
+				bExport.setLabel(bExport.getTooltiptext());
+			}
+			else
+				toolBar.appendChild(bExport);
 			bExport.addEventListener(Events.ON_CLICK, this);
 		}
 		
-		toolBar.appendChild(new Separator("vertical"));
+		if (toolbarPopup == null)
+			toolBar.appendChild(new Separator("vertical"));
 		
 		bRefresh.setName("Refresh");
 		bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
 		bRefresh.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
-		toolBar.appendChild(bRefresh);
+		if (toolbarPopup != null)
+		{
+			toolbarPopupLayout.appendChild(bRefresh);
+			bRefresh.setLabel(bRefresh.getTooltiptext());
+		}
+		else
+			toolBar.appendChild(bRefresh);
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 
 		bWizard.setImage(ThemeManager.getThemeResource("images/Wizard24.png"));
 		bWizard.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "PrintWizard")));
-		toolBar.appendChild(bWizard);
+		if (toolbarPopup != null)
+		{
+			toolbarPopupLayout.appendChild(bWizard);
+			bWizard.setLabel(bWizard.getTooltiptext());
+		}
+		else
+			toolBar.appendChild(bWizard);
 		bWizard.addEventListener(Events.ON_CLICK, this);
 
+		if (toolbarPopup != null)
+		{
+			ToolBarButton more = new ToolBarButton();
+			more.setImage(ThemeManager.getThemeResource("images/expand-header.png"));
+			more.setStyle("float: right;");
+			toolBar.appendChild(more);
+			more.addEventListener(Events.ON_CLICK, evt -> {
+				toolbarPopup.open(more, "before_end");
+			});
+		}
+		
 		North north = new North();
 		layout.appendChild(north);
 		north.appendChild(toolBar);
@@ -411,12 +517,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		center.appendChild(iframe);
 		
 		South south = new South();
-		ZKUpdateUtil.setHeight(south, "34px");
+		ZKUpdateUtil.setHeight(south, "50px");
 		layout.appendChild(south);
 		reportLink = new A();
 		reportLink.setTarget("_blank");
 		Div linkDiv = new Div();
-		linkDiv.setStyle("width:100%; height: 30px; padding-top: 2px;");
+		linkDiv.setStyle("width:100%; height: 40px; padding-top: 4px; padding-bottom: 4px;");
 		linkDiv.appendChild(reportLink);
 		south.appendChild(linkDiv);
 		//m_WindowNo
@@ -523,13 +629,32 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				}
 			}
 			mediaVersion++;
-			String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());
-			iframe.setContent(media);
+			String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());	
+			String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
 			HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
 			if (url.startsWith(request.getContextPath() + "/"))
 				url = url.substring((request.getContextPath() + "/").length());
 			reportLink.setHref(url);
-			reportLink.setLabel(media.getName());
+			reportLink.setLabel(media.getName());			
+			
+			if (ClientInfo.isMobile()) {
+				Listitem selected = previewType.getSelectedItem();
+				if (selected == null || "PDF".equals(selected.getValue())) {					
+					iframe.setSrc(pdfJsUrl);
+				} else if ("HTML".equals(previewType.getSelectedItem().getValue())) {
+					iframe.setSrc(null);
+					iframe.setContent(media);
+				} else {
+					iframe.setSrc(null);
+					iframe.setContent(null);					
+					String script = "zk.Widget.$('#" + reportLink.getUuid()+"').$n().click();";
+					Clients.evalJavaScript(script);
+				}
+			} else {
+				iframe.setSrc(null);
+				iframe.setContent(media);
+			}
+			
 			revalidate();
 		} finally {
 			hideBusyDialog();
@@ -718,6 +843,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				(   m_reportEngine.getPrintFormat() == null
 				 || (m_reportEngine.getPrintFormat().getAD_Client_ID() == 0 && Env.getAD_Client_ID(Env.getCtx()) != 0)
 				 || m_reportEngine.getPrintFormat().isForm()));
+		
+		this.invalidate();
 	}	//	revalidate
 
 	/**
@@ -946,8 +1073,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		{
 			winExportFile = new Window();
 			winExportFile.setTitle(Msg.getMsg(Env.getCtx(), "Export") + ": " + getTitle());
-			ZKUpdateUtil.setWidth(winExportFile, "450px");
-			ZKUpdateUtil.setHeight(winExportFile, "150px");
+			ZKUpdateUtil.setWindowWidthX(winExportFile, 450);
+			ZKUpdateUtil.setWindowHeightX(winExportFile, 150);
 			winExportFile.setClosable(true);
 			winExportFile.setBorder("normal");
 			winExportFile.setSclass("popup-dialog");

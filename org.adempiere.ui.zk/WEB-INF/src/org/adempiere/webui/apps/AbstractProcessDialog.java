@@ -29,6 +29,7 @@ import org.adempiere.util.Callback;
 import org.adempiere.util.ContextRunnable;
 import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ServerContext;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
@@ -398,8 +399,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			return;//if not a report not need show this pannel
 		
 		// option control
-		HtmlBasedComponent reportOptionLayout = new Hlayout();
+		Hlayout reportOptionLayout = new Hlayout();
 		reportOptionLayout.setSclass("report-option-container");
+		reportOptionLayout.setValign("middle");
 		bottomParameterLayout.appendChild(reportOptionLayout);
 		
 		freportType = new Listbox();
@@ -438,7 +440,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	protected void savePrameterLayout(HtmlBasedComponent bottomParameterLayout) {
-		HtmlBasedComponent savePrameterLayout = new Div();
+		HtmlBasedComponent savePrameterLayout = new Hlayout();
 		savePrameterLayout.setSclass("save-parameter-container");
 		bottomParameterLayout.appendChild(savePrameterLayout);
 		
@@ -455,6 +457,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		bDelete.setEnabled(false);
 		bDelete.addActionListener(this);
 		savePrameterLayout.appendChild(bDelete);
+
+		LayoutUtils.addSclass("btn-small", bSave);
+		LayoutUtils.addSclass("btn-small", bDelete);
 		
 		querySaved();
 	}
@@ -483,6 +488,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		bOK.setId("Ok");
 		bOK.addEventListener(Events.ON_CLICK, this);
 		confParaPanel.appendChild(bOK);
+		confParaPanel.appendChild(new Space());
 		
 		bCancel = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL, true, true);
 		bCancel.setId("Cancel");

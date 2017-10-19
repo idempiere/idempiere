@@ -78,8 +78,8 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
          m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 
          ZKUpdateUtil.setWidth(this, "100%");
-         ZKUpdateUtil.setHeight(this, "95%");
-         this.setStyle("position:absolute");
+         ZKUpdateUtil.setHeight(this, "99%");
+         this.setStyle("position:relative");
          this.setContentSclass("adform-content");
     }
 

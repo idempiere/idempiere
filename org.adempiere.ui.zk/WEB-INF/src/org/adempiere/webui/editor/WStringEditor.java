@@ -170,6 +170,8 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        		combo.appendItem(s);
 	        	}
 	        }
+	        if ("email".equalsIgnoreCase(gridField.getColumnName()))
+	        	getComponent().setClientAttribute("type", "email");
 		}
     }
 

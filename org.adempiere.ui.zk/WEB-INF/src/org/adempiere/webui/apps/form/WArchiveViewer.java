@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
@@ -47,6 +48,7 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
@@ -65,14 +67,20 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.OpenEvent;
+import org.zkoss.zk.ui.ext.render.DynamicMedia;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Space;
+import org.zkoss.zul.impl.Utils;
+import org.zkoss.zul.impl.XulElement;
 
 /**
  * 	Archive Viewer
@@ -83,7 +91,52 @@ import org.zkoss.zul.Space;
 
 public class WArchiveViewer extends Archive implements IFormController, EventListener<Event>
 {
-	private CustomForm form = new CustomForm();	
+	private static final String ONCLOSE_TIMESTAMP_ATTR = "onclose.timestamp";
+
+	private class WArchiveViewerForm extends CustomForm
+	{
+		/**
+		 * generated serial id
+		 */
+		private static final long serialVersionUID = 4919349386488325L;
+		//-- ComponentCtrl --//
+		public Object getExtraCtrl() {
+			return new ExtraCtrl();
+		}
+		/** A utility class to implement {@link #getExtraCtrl}.
+		 * It is used only by component developers.
+		 */
+		protected class ExtraCtrl extends XulElement.ExtraCtrl
+		implements DynamicMedia {
+			//-- DynamicMedia --//
+			public Media getMedia(String pathInfo) {
+				return media;
+			}
+		}
+		
+		@Override
+		public void onPageAttached(Page newpage, Page oldpage) {
+			super.onPageAttached(newpage, oldpage);
+			if (newpage != null) {
+				try {
+					dynInit();
+					jbInit();
+					if (ClientInfo.isMobile()) {
+						if (media != null && iframe.getSrc() == null) {
+							String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
+							String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+							iframe.setSrc(pdfJsUrl);
+						}
+					}
+				}
+				catch(Exception e)
+				{
+					log.log(Level.SEVERE, "init", e);
+				}
+			}
+		}
+	};
+	private CustomForm form;
 	
 //	private Vbox queryPanel = new Vbox();
 	private Checkbox reportField = new Checkbox();
@@ -131,29 +184,14 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	private Button bRefresh = new Button();
 	private boolean showQuery = true;
 
+	private int mediaVersion = 0;
+	private AMedia media;
+
 	public WArchiveViewer()
 	{
 		log.info("");
 
-		form = new CustomForm() {
-			private static final long serialVersionUID = 7226661630651936293L;
-
-			@Override
-			public void onPageAttached(Page newpage, Page oldpage) {
-				super.onPageAttached(newpage, oldpage);
-				if (newpage != null)
-					try {
-						dynInit();
-						jbInit();
-					}
-				catch(Exception e)
-				{
-					log.log(Level.SEVERE, "init", e);
-				}
-
-			}
-
-		};
+		form = new WArchiveViewerForm();
 
 		m_WindowNo = form.getWindowNo();
 	}
@@ -185,10 +223,29 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 				Env.getCtx(), "C_BPartner_ID"), "", true, false, true);
 	}	//	dynInit
 
-	private void reportViewer(byte[] data)
-	{
-		AMedia media = new AMedia("Archive Viewer", "pdf", "application/pdf", data);
-		iframe.setContent(media);
+	private void reportViewer(String name, byte[] data)
+	{	
+		media = new AMedia(name + ".pdf", "pdf", "application/pdf", data);
+		if (ClientInfo.isMobile())
+		{
+			mediaVersion ++;
+			if (form.getDesktop() == null)
+			{
+				iframe.setContent(null);
+				iframe.setSrc(null);
+			}
+			else
+			{
+				String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
+				String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+				iframe.setContent(null);
+				iframe.setSrc(pdfJsUrl);
+			}
+		}
+		else
+		{			
+			iframe.setContent(media);
+		}
 		iframe.invalidate();
 	}
 	
@@ -452,13 +509,44 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		ZKUpdateUtil.setWidth(boxViewSeparator, "100%");
 		ZKUpdateUtil.setHeight(boxViewSeparator, "100%");			
 		cell = new Cell();
-		ZKUpdateUtil.setWidth(cell, "70%");
 		cell.appendChild(iframe);
 		boxViewSeparator.appendChild(cell);
-		cell = new Cell();
-		ZKUpdateUtil.setWidth(cell, "30%");
-		cell.appendChild(gridView);
-		boxViewSeparator.appendChild(cell);
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
+		{
+			ZKUpdateUtil.setHflex(cell, "1");
+			cell = new Cell();
+			ZKUpdateUtil.setHflex(cell, "min");
+			ToolBarButton more = new ToolBarButton();
+			more.setImage(ThemeManager.getThemeResource("images/expand-header.png"));
+			cell.appendChild(more);
+			boxViewSeparator.appendChild(cell);
+			Popup sidePopup = new Popup();
+			sidePopup.setWidth("300px");
+			sidePopup.setVflex("min");
+			sidePopup.setStyle("max-height: 100%; overflow-y: auto;");
+			sidePopup.addEventListener(Events.ON_OPEN, (OpenEvent evt) -> {
+				if (!evt.isOpen())
+					sidePopup.setAttribute(ONCLOSE_TIMESTAMP_ATTR, System.currentTimeMillis());
+			});			
+			tabViewPanel.appendChild(sidePopup);
+			sidePopup.appendChild(gridView);
+			more.addEventListener(Events.ON_CLICK, evt -> { 
+				Long ts = (Long) sidePopup.removeAttribute(ONCLOSE_TIMESTAMP_ATTR);
+				if (ts != null) {
+					if ((System.currentTimeMillis()-ts.longValue()) < 500)
+						return;
+				}
+				sidePopup.open(more, "after_end");				
+			});
+		}
+		else
+		{
+			ZKUpdateUtil.setWidth(cell, "70%");			
+			cell = new Cell();
+			ZKUpdateUtil.setWidth(cell, "30%");
+			cell.appendChild(gridView);
+			boxViewSeparator.appendChild(cell);
+		}
 		tabViewPanel.appendChild(boxViewSeparator);
 
 		tabs.appendChild(tabView);
@@ -611,7 +699,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			InputStream in = ar.getInputStream();
 			//pdfViewer.setScale(reportField.isSelected() ? 50 : 75);
 			if (in != null)
-				reportViewer(ar.getBinaryData());//pdfViewer.loadPDF(in);
+				reportViewer(ar.getName(), ar.getBinaryData());//pdfViewer.loadPDF(in);
 			else
 				iframe.getChildren().clear();//pdfViewer.clearDocument();
 		}

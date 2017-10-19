@@ -46,6 +46,7 @@ import static org.compiere.model.SystemIDs.*;
 import org.compiere.plaf.CompiereColor;
 import org.compiere.print.ReportCtl;
 import org.compiere.print.ReportEngine;
+import org.compiere.swing.CCheckBox;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CLabel;
 import org.compiere.swing.CPanel;
@@ -54,7 +55,6 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
-import org.compiere.util.PaymentExport;
 import org.compiere.util.ValueNamePair;
 
 /**
@@ -65,6 +65,7 @@ import org.compiere.util.ValueNamePair;
  * 
  *  Contributors:
  *    Carlos Ruiz - GlobalQSS - FR 3132033 - Make payment export class configurable per bank
+ *    Markus Bozem:  IDEMPIERE-1546 / IDEMPIERE-3286 
  */
 public class VPayPrint extends PayPrint implements FormPanel, ActionListener, VetoableChangeListener
 {
@@ -120,7 +121,10 @@ public class VPayPrint extends PayPrint implements FormPanel, ActionListener, Ve
 	private VNumber fBalance = new VNumber();
 	private CLabel lCurrency = new CLabel();
 	private CLabel fCurrency = new CLabel();
-
+	private CLabel lDepositBatch = new CLabel();
+	private CCheckBox fDepositBatch = new CCheckBox();
+	private CLabel lSumPayments = new CLabel();
+	private VNumber fSumPayments = new VNumber();
 	/**
 	 *  Static Init
 	 *  @throws Exception
@@ -133,6 +137,8 @@ public class VPayPrint extends PayPrint implements FormPanel, ActionListener, Ve
 		southLayout.setAlignment(FlowLayout.RIGHT);
 		centerPanel.setLayout(centerLayout);
 		//
+		bPrint.setEnabled(false);
+		bExport.setEnabled(false);
 		bPrint.addActionListener(this);
 		bExport.addActionListener(this);
 		bCancel.addActionListener(this);
@@ -156,6 +162,10 @@ public class VPayPrint extends PayPrint implements FormPanel, ActionListener, Ve
 		fBalance.setReadWrite(false);
 		fBalance.setDisplayType(DisplayType.Amount);
 		lCurrency.setText(Msg.translate(Env.getCtx(), "C_Currency_ID"));
+		lDepositBatch.setText(Msg.translate(Env.getCtx(), "C_DepositBatch_ID"));
+		lSumPayments.setText(Msg.getMsg(Env.getCtx(), "Sum"));
+		fSumPayments.setReadWrite(false);
+		fSumPayments.setDisplayType(DisplayType.Amount);
 		//
 		southPanel.add(bCancel, null);
 		southPanel.add(bExport, null);
@@ -190,6 +200,15 @@ public class VPayPrint extends PayPrint implements FormPanel, ActionListener, Ve
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 12, 12, 5), 0, 0));
 		centerPanel.add(fCurrency,   new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0
 			,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 12, 12), 0, 0));
+		
+		centerPanel.add(lDepositBatch,   new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0
+				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 12, 5, 5), 0, 0));
+		centerPanel.add(fDepositBatch,    new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0
+				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 5, 12), 0, 0));
+		centerPanel.add(lSumPayments,   new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0
+				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 12, 5, 5), 0, 0));
+		centerPanel.add(fSumPayments,    new GridBagConstraints(3, 4, 1, 1, 0.0, 0.0
+				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 5, 12), 0, 0));
 	}   //  VPayPrint
 
 	/**
@@ -311,6 +330,9 @@ public class VPayPrint extends PayPrint implements FormPanel, ActionListener, Ve
 		if(noPayments != null)
 			fNoPayments.setText(noPayments);
 		
+		if(sumPayments != null)
+			fSumPayments.setValue(sumPayments);
+		
 		bProcess.setEnabled(PaymentRule.equals("T"));
 		
 		if(documentNo != null)
@@ -318,9 +340,44 @@ public class VPayPrint extends PayPrint implements FormPanel, ActionListener, Ve
 		
 		if(msg != null && msg.length() > 0)
 			ADialog.error(m_WindowNo, panel, msg);
+		
+		getPluginFeatures();
 	}   //  loadPaymentRuleInfo
 
-
+	protected void getPluginFeatures()
+	{
+		if (m_C_PaySelection_ID!=0)
+		{
+			if (loadPaymentExportClass (null)>=0)
+			{
+				bExport.setEnabled(true);
+				
+				fDepositBatch.setValue(m_PaymentExport.getDefaultDepositBatch());
+				if (m_PaymentExport.supportsDepositBatch() && m_PaymentExport.supportsSeparateBooking())
+				{
+					fDepositBatch.setReadWrite(true);
+				}
+				else
+				{
+					fDepositBatch.setReadWrite(false);
+				}
+			}
+			else
+			{
+				bExport.setEnabled(false);
+			}
+			if (printFormatId!=null && printFormatId!=0)
+			{
+				bPrint.setEnabled(true);
+			}
+			else
+			{
+				bPrint.setEnabled(false);
+			}
+		}
+		
+	}   // getPluginFeatures 
+	
 	/**************************************************************************
 	 *  Export payments to file
 	 */
@@ -339,7 +396,8 @@ public class VPayPrint extends PayPrint implements FormPanel, ActionListener, Ve
 		fc.setDialogTitle(Msg.getMsg(Env.getCtx(), "Export"));
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setMultiSelectionEnabled(false);
-		fc.setSelectedFile(new java.io.File("paymentExport.txt"));
+		String filename = m_PaymentExport.getFilenamePrefix() + m_PaymentExport.getFilenameSuffix();
+		fc.setSelectedFile(new java.io.File(filename));
 		if (fc.showSaveDialog(panel) != JFileChooser.APPROVE_OPTION)
 			return;
 
@@ -349,26 +407,14 @@ public class VPayPrint extends PayPrint implements FormPanel, ActionListener, Ve
 		if (m_PaymentExportClass == null || m_PaymentExportClass.trim().length() == 0) {
 			m_PaymentExportClass = "org.compiere.util.GenericPaymentExport";
 		}
-		//	Get Payment Export Class
-		PaymentExport custom = null;
-		try
+		
+		no = loadPaymentExportClass(err) ;
+			
+		if (no >= 0)
 		{
-			Class<?> clazz = Class.forName(m_PaymentExportClass);
-			custom = (PaymentExport)clazz.newInstance();
-			no = custom.exportToFile(m_checks, fc.getSelectedFile(), err);
+			no = m_PaymentExport.exportToFile(m_checks,(Boolean) fDepositBatch.getValue(),PaymentRule, fc.getSelectedFile(), err);
 		}
-		catch (ClassNotFoundException e)
-		{
-			no = -1;
-			err.append("No custom PaymentExport class " + m_PaymentExportClass + " - " + e.toString());
-			log.log(Level.SEVERE, err.toString(), e);
-		}
-		catch (Exception e)
-		{
-			no = -1;
-			err.append("Error in " + m_PaymentExportClass + " check log, " + e.toString());
-			log.log(Level.SEVERE, err.toString(), e);
-		}
+		
 		if (no >= 0) {
 			ADialog.info(m_WindowNo, panel, "Saved",
 					fc.getSelectedFile().getAbsolutePath() + "\n"
@@ -377,7 +423,7 @@ public class VPayPrint extends PayPrint implements FormPanel, ActionListener, Ve
 			if (ADialog.ask(m_WindowNo, panel, "VPayPrintSuccess?"))
 			{
 				//	int lastDocumentNo = 
-				MPaySelectionCheck.confirmPrint (m_checks, m_batch);
+				MPaySelectionCheck.confirmPrint (m_checks, m_batch, (Boolean) fDepositBatch.getValue());
 				//	document No not updated
 			}
 		} else {

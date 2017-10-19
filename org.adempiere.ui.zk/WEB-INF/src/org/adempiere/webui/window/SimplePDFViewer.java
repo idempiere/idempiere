@@ -14,13 +14,17 @@ package org.adempiere.webui.window;
 
 import java.io.InputStream;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.Window;
-import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.ext.render.DynamicMedia;
 import org.zkoss.zul.Iframe;
+import org.zkoss.zul.impl.Utils;
+import org.zkoss.zul.impl.XulElement;
 
 /**
  * 
@@ -33,28 +37,70 @@ public class SimplePDFViewer extends Window {
 	 * 
 	 */
 	private static final long serialVersionUID = -6417954023873414350L;
+	private AMedia media;
+	private int mediaVersion = 0;
 
 	public SimplePDFViewer(String title, InputStream pdfInput) {
 		Iframe iframe = new Iframe();
 		iframe.setId("reportFrame");
-		int height = Double.valueOf(SessionManager.getAppDesktop().getClientInfo().desktopHeight * 0.85).intValue();
+		int height = 0;
+		if (ClientInfo.maxHeight((ClientInfo.SMALL_HEIGHT + ClientInfo.EXTRA_SMALL_HEIGHT)/2)) {
+			height = ClientInfo.get().desktopHeight;
+		} else {
+			height = Double.valueOf(ClientInfo.get().desktopHeight * 0.85).intValue();			
+		}
 		ZKUpdateUtil.setHeight(this, height + "px");
-		
 		height = height - 30;
 		ZKUpdateUtil.setHeight(iframe, height + "px");
 		ZKUpdateUtil.setWidth(iframe, "100%");
-		AMedia media = new AMedia(getTitle(), "pdf", "application/pdf", pdfInput);
-		iframe.setContent(media);
+		media = new AMedia(getTitle(), "pdf", "application/pdf", pdfInput);
+		if (ClientInfo.isMobile()) {
+			if (getPage() != null) {
+				showMobileViewer(iframe);
+			} else {
+				addCallback(AFTER_PAGE_ATTACHED, t -> showMobileViewer(iframe));
+			}
+		} else {
+			iframe.setContent(media);
+		}
 		
 		this.setBorder("normal");
 		this.appendChild(iframe);
 		this.setClosable(true);
+		this.setMaximizable(true);
 		if (title != null && title.trim().length() > 0)
 			this.setTitle(title);
 		else
 			this.setTitle(Msg.translate(Env.getCtx(), "PDF"));
 		
-		int width = Double.valueOf(SessionManager.getAppDesktop().getClientInfo().desktopWidth * 0.80).intValue();
+		int width = 0;
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1)) {
+			width = ClientInfo.get().desktopWidth;
+		} else {
+			width = Double.valueOf(ClientInfo.get().desktopWidth * 0.80).intValue();
+		}
 		ZKUpdateUtil.setWidth(this, width + "px");
+	}
+
+	protected void showMobileViewer(Iframe iframe) {
+		mediaVersion++;
+		String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());	
+		String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+		iframe.setSrc(pdfJsUrl);
+	}
+	
+	//-- ComponentCtrl --//
+	public Object getExtraCtrl() {
+		return new ExtraCtrl();
+	}
+	/** A utility class to implement {@link #getExtraCtrl}.
+	 * It is used only by component developers.
+	 */
+	protected class ExtraCtrl extends XulElement.ExtraCtrl
+	implements DynamicMedia {
+		//-- DynamicMedia --//
+		public Media getMedia(String pathInfo) {
+			return media;
+		}
 	}
 }

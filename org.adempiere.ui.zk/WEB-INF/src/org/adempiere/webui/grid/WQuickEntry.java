@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Window;
@@ -28,6 +29,7 @@ import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridField;
@@ -89,6 +91,8 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	protected int m_AD_Window_ID;
 	
 	private boolean isHasField = false;
+
+	private String orientation;
 	/**
 	 *	Constructor.
 	 *	Requires call loadRecord
@@ -136,7 +140,16 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 
 	private void jbInit() throws Exception
 	{
-		ZKUpdateUtil.setWidth(this, "350px");
+		if (!ThemeManager.isUseCSSForWindowSize()) {
+			ZKUpdateUtil.setWindowWidthX(this, 350);
+		} else {
+			addCallback(AFTER_PAGE_ATTACHED, t -> {
+				ZKUpdateUtil.setCSSWidth(this);
+				ZKUpdateUtil.setCSSHeight(this);
+			});
+		}
+		
+		this.setSclass("quick-entry-dialog");
 		this.setBorder("normal");
 		this.setClosable(true);
 		this.setSizable(true);
@@ -145,8 +158,31 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 		ZKUpdateUtil.setWidth(centerPanel, "100%");
 
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
+		
+		if (ClientInfo.isMobile())
+		{
+			if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH) || ClientInfo.maxHeight(ClientInfo.SMALL_HEIGHT))
+			{
+				confirmPanel.addButtonSclass("btn-small small-image-btn");
+			}
+			orientation = ClientInfo.get().orientation;
+			ClientInfo.onClientInfo(this, this::onClientInfo);
+		}
 	}
 
+	protected void onClientInfo()
+	{
+		if (getPage() != null) {
+			String newOrientation = ClientInfo.get().orientation;
+			if (!newOrientation.equals(orientation)) {
+				orientation = newOrientation;
+				ZKUpdateUtil.setCSSWidth(this);
+				ZKUpdateUtil.setCSSHeight(this);
+				this.invalidate();
+			}			
+		}
+	}
+	
 	/**
 	 *	Dynamic Init
 	 */

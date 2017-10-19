@@ -8,6 +8,8 @@ import java.util.Calendar;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -168,9 +170,13 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		
 		// Parameter Panel
 		North north = new North();
-		north.setStyle("border: none");
+		north.setStyle("border: none; max-height: 60%;");
 		mainLayout.appendChild(north);
 		north.appendChild(parameterPanel);
+		north.setCollapsible(true);
+		north.setSplittable(true);
+		north.setAutoscroll(true);
+		LayoutUtils.addSlideSclass(north);
 		
 		Rows rows = null;
 		Row row = null;
@@ -205,12 +211,17 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		row.appendCellChild(fieldDateAcct2.getComponent(), 2);
 		row = rows.newRow();
 		row.appendChild(bRefresh);
+		if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH-1))
+		{
+			LayoutUtils.compactTo(parameterLayout, 3);
+			LayoutUtils.addSclass("btn-small small-img-btn", bRefresh);
+		}
 		
 		// Data Panel
 		Center center = new Center();
 		mainLayout.appendChild(center);
 		center.appendChild(miniTable);
-		ZKUpdateUtil.setWidth(miniTable, "99%");
+		ZKUpdateUtil.setWidth(miniTable, "100%");
 		//ZKUpdateUtil.setHeight(miniTable, "99%");
 		center.setStyle("border: none");
 		
@@ -220,22 +231,38 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		mainLayout.appendChild(south);
 		south.appendChild(commandPanel);
 		commandPanel.appendChild(commandLayout);
-		ZKUpdateUtil.setWidth(commandLayout, "90%");
+		ZKUpdateUtil.setWidth(commandLayout, "100%");
 		rows = commandLayout.newRows();
 		row = rows.newRow();
-		row.appendCellChild(bZoom, 2);
+		row.appendCellChild(bZoom, 1);
 		ZKUpdateUtil.setHflex(bZoom, "true");
 		ZKUpdateUtil.setWidth(bZoom, "100%");
 		row.appendCellChild(differenceLabel.rightAlign());
 		ZKUpdateUtil.setHflex(differenceLabel, "true");
 		row.appendCellChild(differenceField, 2);
 		ZKUpdateUtil.setHflex(differenceField, "true");
-		row.appendCellChild(bGenerate, 2);
+		row.appendCellChild(bGenerate, 1);
 		ZKUpdateUtil.setHflex(bGenerate, "true");
-		row.appendCellChild(bReset, 2);
+		row.appendCellChild(bReset, 1);
 		ZKUpdateUtil.setHflex(bReset, "true");
 		row.appendCellChild(bCancel);
 		ZKUpdateUtil.setHflex(bCancel, "true");
+		if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1)) 
+		{
+			bZoom.setTooltiptext(bZoom.getLabel());
+			bZoom.setLabel(null);
+			bGenerate.setTooltiptext(bGenerate.getLabel());
+			bGenerate.setLabel(null);
+			bReset.setTooltiptext(bReset.getLabel());
+			bReset.setLabel(null);
+			if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH-1))
+			{
+				LayoutUtils.addSclass("btn-small small-img-btn", bZoom);
+				LayoutUtils.addSclass("btn-small small-img-btn", bGenerate);
+				LayoutUtils.addSclass("btn-small small-img-btn", bReset);
+				LayoutUtils.addSclass("btn-small small-img-btn", bCancel);
+			}
+		}
 	}
 	
 	/**

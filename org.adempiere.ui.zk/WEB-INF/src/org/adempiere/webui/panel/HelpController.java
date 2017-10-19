@@ -124,7 +124,7 @@ public class HelpController
         		"if (typeof description=='string' && description.length > 0) {s=s+'<br><br><i>'+description+'</i>';}" +
         		"if (typeof help=='string' && help.length > 0) {s=s+'<br><br>'+help;}}" +
         		"s=s+'</div></body></html>';this.setContent(s);}");
-        Clients.response(new AuScript(htmlToolTip, "var w=zk.Widget.$('#"+htmlToolTip.getUuid()+"');zWatch.listen({onFieldTooltip: w});"));
+        setupFieldTooltip();
         
         pnlContextHelp = new Panel();
         pnlContextHelp.setSclass("dashboard-widget");
@@ -142,6 +142,10 @@ public class HelpController
         renderCtxHelp(X_AD_CtxHelp.CTXTYPE_Home, 0);
         renderQuickInfo(null);
     }
+
+	public void setupFieldTooltip() {
+		Clients.response("helpControllerFieldTooltip", new AuScript(htmlToolTip, "var w=zk.Widget.$('#"+htmlToolTip.getUuid()+"');zWatch.listen({onFieldTooltip: w});"));
+	}
     
 	/**
 	 * Make tooltip content for a field 

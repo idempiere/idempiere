@@ -11,6 +11,7 @@ import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MField;
 import org.compiere.model.MFieldSuggestion;
 import org.compiere.util.Env;
@@ -119,11 +120,12 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		this.setSclass("popup-dialog");
 		this.setClosable(true);
 		this.setBorder("normal");
-		this.setWidth("550px");
-		this.setHeight("350px");
+		ZKUpdateUtil.setWindowWidthX(this, 550);
+		ZKUpdateUtil.setWindowHeightX(this, 350);
 		this.setShadow(true);
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		this.setSizable(true);
+		this.setMaximizable(true);
 	}
 
 	@Override

@@ -12,6 +12,10 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Tab;
@@ -24,6 +28,7 @@ import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
 import org.compiere.model.MPostIt;
 import org.compiere.util.Env;
+import org.compiere.util.Language;
 import org.zkforge.ckez.CKeditor;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -83,11 +88,13 @@ public class WPostIt extends Window implements EventListener<Event>{
 
 	private void init() {
 		setBorder("normal");
+		setMaximizable(true);
 
 		VerticalBox vbox = new VerticalBox();
 		appendChild(vbox);
 
 		tabbox = new Tabbox();
+		tabbox.setMaximalHeight(true);
 		vbox.appendChild(tabbox);
 		Tabs tabs = new Tabs();
 		tabbox.appendChild(tabs);
@@ -103,8 +110,14 @@ public class WPostIt extends Window implements EventListener<Event>{
 		textBox.setCols(80);
 		textBox.setRows(30);
 		textBox.setEnabled(editable);
-		textBox.setWidth("700px");
-		textBox.setHeight("500px");
+		if (ClientInfo.minWidth(730))
+			textBox.setWidth("700px");
+		else
+			textBox.setWidth(ClientInfo.get().desktopWidth-30 + "px");
+		if (ClientInfo.minHeight(700))
+			textBox.setHeight("500px");
+		else
+			textBox.setHeight(ClientInfo.get().desktopHeight-190 +"px");
 		tabPanel.appendChild(textBox);
 
 		tab = new Tab("HTML");
@@ -115,9 +128,20 @@ public class WPostIt extends Window implements EventListener<Event>{
 
 		editor = new CKeditor();
 		tabPanel.appendChild(editor);
-		editor.setWidth("700px");
-		editor.setHeight("500px");
+		if (ClientInfo.minWidth(730))
+			editor.setWidth("700px");
+		else
+			editor.setWidth(ClientInfo.get().desktopWidth-30 + "px");
+		editor.setVflex("1");
 		editor.setValue(note);
+		if (ClientInfo.isMobile())
+			editor.setCustomConfigurationsPath("/js/ckeditor/config-min.js");
+		else
+			editor.setCustomConfigurationsPath("/js/ckeditor/config.js");
+		editor.setToolbar("MyToolbar");
+		Map<String,Object> lang = new HashMap<String,Object>();
+		lang.put("language", Language.getLoginLanguage().getAD_Language());
+		editor.setConfig(lang);
 
 		vbox.appendChild(new Separator());
 		createdBox = new Label();	

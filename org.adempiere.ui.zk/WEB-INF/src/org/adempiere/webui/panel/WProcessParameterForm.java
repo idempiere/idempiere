@@ -26,6 +26,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MScheduler;
@@ -121,7 +122,11 @@ public class WProcessParameterForm extends ADForm
 		}
 		this.setSizable(true);
 		this.setClosable(true);
-		ZKUpdateUtil.setWidth(this, "500px");
+		if (!ThemeManager.isUseCSSForWindowSize()) {
+			ZKUpdateUtil.setWindowWidthX(this, 500);
+		} else {
+			ZKUpdateUtil.setWidth(this, null);			
+		}
 		ZKUpdateUtil.setVflex(this, "min");
 	}
 
@@ -157,8 +162,8 @@ public class WProcessParameterForm extends ADForm
 		hbox.appendChild(btn);
 		hbox.setPack("end");
 		dialogBody.appendChild(hbox);
-		this.appendChild(dialogBody);
-		this.setSclass("popup-dialog");
+		this.appendChild(dialogBody);		
+		this.setSclass("popup-dialog process-parameter-form-dialog");
 	}
 	
 	/**
@@ -234,4 +239,10 @@ public class WProcessParameterForm extends ADForm
 
 		return true;
 	}	//	init
+
+	@Override
+	public void setWidth(String width) {
+		super.setWidth(width);
+	}
+	
 }

@@ -202,6 +202,8 @@ public class WSchedule extends Window implements EventListener<Event>
 		this.appendChild(button);
 		
 		divTabClicked(7);
+		
+		addEventListener("onAfterReCreate", this);
 	}	//	jbInit
 
 	/**
@@ -214,7 +216,7 @@ public class WSchedule extends Window implements EventListener<Event>
 		this.S_Resource_ID = S_Resource_ID;
 		calendars.setCurrentDate(date);
 		
-		updateModel();
+		Events.echoEvent("onAfterReCreate", this, null);
 	}	//	recreate
 
 	private void updateModel() {
@@ -296,6 +298,8 @@ public class WSchedule extends Window implements EventListener<Event>
 			String text = String.valueOf(event.getData());
 			int days = Msg.getMsg(Env.getCtx(),"Day").equals(text) ? 1: Msg.getMsg(Env.getCtx(),"5Days").equals(text) ? 5: Msg.getMsg(Env.getCtx(),"Week" ).equals(text) ? 7: 0;
 			divTabClicked(days);
+		} else if (type.equals("onAfterReCreate")) {
+			updateModel();
 		} else {
 			Events.sendEvent(this, event);
 		}
