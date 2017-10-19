@@ -54,6 +54,11 @@
          id="org.idempiere.zk"
          version="0.0.0"/>
 
+   <includes
+         id="org.idempiere.customize"
+         version="0.0.0"
+         optional="true"/>
+
    <plugin
          id="org.apache.taglibs.taglibs-standard-spec"
          download-size="0"
@@ -495,7 +500,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.jetty.http2.hpack"
          download-size="0"

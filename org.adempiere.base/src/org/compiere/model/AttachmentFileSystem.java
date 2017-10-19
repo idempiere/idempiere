@@ -76,6 +76,8 @@ public class AttachmentFileSystem implements IAttachmentStore {
 					if (log.isLoggable(Level.FINE)) log.fine("move file: " + path);
 					FileChannel in = null;
 					FileChannel out = null;
+					FileInputStream fis = null;
+					FileOutputStream fos = null;
 					try {
 						//create destination folder
 						StringBuilder msgfile = new StringBuilder().append(attachmentPathRoot).append(File.separator).append(getAttachmentPathSnippet(attach));
@@ -88,11 +90,11 @@ public class AttachmentFileSystem implements IAttachmentStore {
 						msgfile = new StringBuilder().append(attachmentPathRoot).append(File.separator)
 								.append(getAttachmentPathSnippet(attach)).append(File.separator).append(entryFile.getName());
 						final File destFile = new File(msgfile.toString());
-						in = new FileInputStream(entryFile).getChannel();
-						out = new FileOutputStream(destFile).getChannel();
+						fis = new FileInputStream(entryFile);
+						in = fis.getChannel();
+						fos = new FileOutputStream(destFile);
+						out = fos.getChannel();
 						in.transferTo(0, in.size(), out);
-						in.close();
-						out.close();
 						/* IDEMPIERE-2864
 						if(entryFile.exists()){
 							if(!entryFile.delete()){
@@ -107,11 +109,19 @@ public class AttachmentFileSystem implements IAttachmentStore {
 								+ attachmentPathRoot + File.separator + 
 								getAttachmentPathSnippet(attach) + File.separator + entryFile.getName());
 					} finally {
-						if (in != null && in.isOpen()) {
-							in.close();
+						if (fis != null) {
+							try{
+								fis.close();
+							}catch(Exception e) {
+								//do nothing
+							}
 						}
-						if (out != null && out.isOpen()) {
-							out.close();
+						if (fos != null) {
+							try{
+								fos.close();
+							}catch(Exception e) {
+								//do nothing
+							}
 						}
 					}
 				}

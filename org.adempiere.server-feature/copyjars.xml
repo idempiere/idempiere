@@ -34,9 +34,6 @@
 		<!-- maybe it's same file in org.idempiere.fitnesse.server, just diference version-->
 		<get src="${url.file.srv}/jarfile/4.1/fitnesse2.jar" dest="../fitnesse/fitnesse.jar" usetimestamp="true" verbose="true" retries="5" />
 
-		<mkdir dir="../ztl" />
-		<get src="${url.maven.zkoss.lib}/maven2/org/zkoss/ztl/ztl/2.0.0-SNAPSHOT/ztl-2.0.0-SNAPSHOT.jar" dest="../ztl/ztl-2.0.0-SNAPSHOT.jar" usetimestamp="true" verbose="true" retries="5" />
-		
 		<get src="${url.alpn.boot}" dest="../alpn-boot.jar" usetimestamp="true" verbose="true" retries="5" />
 		
 	</target>

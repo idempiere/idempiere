@@ -1,55 +1,18 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
 		<mkdir dir="lib" />
-		<get src="${url.file.jp.lib}/batik-anim-1.8.jar" dest="lib/batik-anim-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-awt-util-1.8.jar" dest="lib/batik-awt-util-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-bridge-1.8.jar" dest="lib/batik-bridge-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-codec-1.8.jar" dest="lib/batik-codec-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-css-1.8.jar" dest="lib/batik-css-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-dom-1.8.jar" dest="lib/batik-dom-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-ext-1.8.jar" dest="lib/batik-ext-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-extension-1.8.jar" dest="lib/batik-extension-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-gui-util-1.8.jar" dest="lib/batik-gui-util-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-gvt-1.8.jar" dest="lib/batik-gvt-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-parser-1.8.jar" dest="lib/batik-parser-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-script-1.8.jar" dest="lib/batik-script-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-svg-dom-1.8.jar" dest="lib/batik-svg-dom-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-svggen-1.8.jar" dest="lib/batik-svggen-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-swing-1.8.jar" dest="lib/batik-swing-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-transcoder-1.8.jar" dest="lib/batik-transcoder-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-util-1.8.jar" dest="lib/batik-util-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/batik-xml-1.8.jar" dest="lib/batik-xml-1.8.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/castor-core-1.3.3.jar" dest="lib/castor-core-1.3.3.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/castor-xml-1.3.3.jar" dest="lib/castor-xml-1.3.3.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/commons-digester-2.1.jar" dest="lib/commons-digester-2.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/commons-javaflow-20160505.jar" dest="lib/commons-javaflow-20160505.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/core-2.3.0.jar" dest="lib/core-2.3.0.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/fop-transcoder-allinone-1.1.jar" dest="lib/fop-transcoder-allinone-1.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/hibernate-core-3.3.2.GA.jar" dest="lib/hibernate-core-3.3.2.GA.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/itext-2.1.7.js5.jar" dest="lib/itext-2.1.7.js5.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/jasperreports-6.3.0.jar" dest="lib/jasperreports-6.3.0.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/jasperreports-fonts-6.3.0.jar" dest="lib/jasperreports-fonts-6.3.0.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/jasperreports-functions-6.3.0.jar" dest="lib/jasperreports-functions-6.3.0.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/jaxen-1.1.1.jar" dest="lib/jaxen-1.1.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/jcommon-1.0.23.jar" dest="lib/jcommon-1.0.23.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/jfreechart-1.0.19.jar" dest="lib/jfreechart-1.0.19.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.jp.lib}/jasperreports-fonts-6.3.1.jar" dest="lib/jasperreports-fonts-6.3.1.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.jp.lib}/jasperreports-chart-themes-6.3.1.jar" dest="lib/jasperreports-chart-themes-6.3.1.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.jp.lib}/jasperreports-chart-customizers-6.3.1.jar" dest="lib/jasperreports-chart-customizers-6.3.1.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.jp.lib}/jasperreports-functions-6.3.1.jar" dest="lib/jasperreports-functions-6.3.1.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/js.jar" dest="lib/js.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/jxl-2.6.10.jar" dest="lib/jxl-2.6.10.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/lucene-analyzers-common-4.5.1.jar" dest="lib/lucene-analyzers-common-4.5.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/lucene-core-4.5.1.jar" dest="lib/lucene-core-4.5.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/lucene-queryparser-4.5.1.jar" dest="lib/lucene-queryparser-4.5.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/mondrian-3.1.1.12687.jar" dest="lib/mondrian-3.1.1.12687.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/olap4j-0.9.7.309-JS-3.jar" dest="lib/olap4j-0.9.7.309-JS-3.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/persistence-api-1.0.jar" dest="lib/persistence-api-1.0.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/poi-3.10.1.jar" dest="lib/poi-3.10.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/poi-ooxml-3.10.1.jar" dest="lib/poi-ooxml-3.10.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/rhino-1.7.6.jar" dest="lib/rhino-1.7.6.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/spring-beans-2.5.jar" dest="lib/spring-beans-2.5.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/spring-core-2.5.jar" dest="lib/spring-core-2.5.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/velocity-1.7.jar" dest="lib/velocity-1.7.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/xml-apis-ext-1.3.04.jar" dest="lib/xml-apis-ext-1.3.04.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/xmlgraphics-commons-1.5.jar" dest="lib/xmlgraphics-commons-1.5.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.jp.lib}/xmpcore-5.1.1.jar" dest="lib/xmpcore-5.1.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/bcprov-jdk14-139.jar" dest="lib/bcprov-jdk14-139.jar" usetimestamp="true" verbose="true" retries="5" />		
 	</target>
 </project>

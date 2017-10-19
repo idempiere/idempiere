@@ -5,12 +5,13 @@ Bundle-SymbolicName: org.adempiere.report.jasper;singleton:=true
 Bundle-Version: 4.1.0.qualifier
 Bundle-ClassPath: JasperReports.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.apache.commons.codec,
+Import-Package: net.sourceforge.barbecue;version="1.5.0.beta1",
+ org.apache.commons.codec,
  org.apache.commons.codec.binary,
  org.apache.commons.logging;version="1.1.1",
  org.apache.commons.logging.impl;version="1.1.1"
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
- org.adempiere.report.jasper.library;bundle-version="0.0.0"
+ net.sf.jasperreports.engine;bundle-version="6.3.1"
 Service-Component: OSGI-INF/processfactory.xml
 Export-Package: org.adempiere.report.jasper
 Bundle-ActivationPolicy: lazy

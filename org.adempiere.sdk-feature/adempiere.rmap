@@ -5,64 +5,80 @@
       <bc:propertyRef key="workspace.root"/>
     </bc:replace>
   </rm:propertyElement>
-  <rm:locator pattern="^org\.eclipse\.jetty\.http$" searchPathRef="workspace.project"/>
-  <rm:locator pattern="^org\.eclipse\.jetty\.alpn\.api$" searchPathRef="modify-bundle"/>
-  <rm:locator pattern="^org\.apache\.felix\.webconsole\.plugins\.packageadmin$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.idempiere\.hazelcast\.service$" searchPathRef="workspace.feature" failOnError="false"/>
-  <rm:locator pattern="^org\.idempiere\.hazelcast\.service$" searchPathRef="workspace.project"/>
-  <rm:locator pattern="^org\.apache\.poi$" searchPathRef="orbit"/>
-  <rm:locator pattern="^org\.eclipse\.jdt\.core\.compiler\.batch$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.apache\.commons\.collections4$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.apache\.commons\.configuration$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.felix\.webconsole\.plugins\.packageadmin(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.idempiere\.hazelcast\.service(\.source)?$" searchPathRef="workspace.feature" failOnError="false"/>
+  <rm:locator pattern="^org\.idempiere\.hazelcast\.service(\.source)?$" searchPathRef="workspace.project"/>
+  <rm:locator pattern="^org\.apache\.poi(\.source)?$" searchPathRef="orbit"/>
+  <rm:locator pattern="^org\.eclipse\.jdt\.core\.compiler\.batch(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.commons\.collections4(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.commons\.configuration(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.commons\.digester(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.mortbay\.jasper(\..+)?" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.eclipse\.jetty\.apache\-jsp$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.eclipse\.jetty\.osgi\-servlet\-api$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.eclipse\.jetty\.alpn\.api$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.mortbay\.jetty\.alpn\.boot$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.eclipse\.jetty\.alpn\.server$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.eclipse\.jetty\.apache\-jsp(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.eclipse\.jetty\.osgi\-servlet\-api(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.eclipse\.jetty\.alpn\.api(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.mortbay\.jetty\.alpn\.boot(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.eclipse\.jetty\.alpn\.server(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.felix\.webconsole(\..+)?" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.apache\.felix\.inventory" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.passay$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^com\.itextpdf$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^bcpkix$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^bcprov$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^com\.ibm\.icu$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^groovy-all$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^joda-time$" searchPathRef="modify-bundle"/>
-  <rm:locator pattern="^org\.cryptacular$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^net\.sf\.supercsv\.super-csv$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.atmosphere\.runtime$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^javax\.websocket\-api$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^javax\.annotation\-api$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^javax\.management\.j2ee\-api$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^com\.sun\.mail\.javax\.mail$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.felix\.inventory(\.source)?" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.passay(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^com\.itextpdf(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^bcpkix(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^bcprov(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^bcmail(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^bctsp(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.velocity(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.commons\.javaflow(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^com\.ibm\.icu(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^groovy-all(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^joda-time(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.cryptacular(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^net\.sf\.supercsv\.super-csv(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.atmosphere\.runtime(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^javax\.websocket\-api(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^javax\.annotation\-api(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^javax\.management\.j2ee\-api(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^com\.sun\.mail\.javax\.mail(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.objectweb\.asm(\..+)?" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.taglibs(\..+)?" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.aries(\..+)?" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.apache\.servicemix\.bundles\.cglib$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.servicemix\.bundles\.cglib(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.activemq(\..+)?" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.eclipse\.jetty(\..+)?" searchPathRef="jetty"/>
-  <rm:locator pattern="^javax\.security\.auth\.message$" searchPathRef="jetty"/>
+  <rm:locator pattern="^javax\.security\.auth\.message(\.source)?$" searchPathRef="jetty"/>
   <rm:locator pattern="^org\.eclipse(\..+)?" searchPathRef="equinox" failOnError="false"/>
   <rm:locator pattern="^org\.sat4j(\..+)?" searchPathRef="equinox"/>
-  <rm:locator pattern="^org\.slf4j\.jdk14$" searchPathRef="workspace.project"/>
+  <rm:locator pattern="^org\.slf4j\.jdk14(\.source)?$" searchPathRef="workspace.project"/>
   <rm:locator pattern="^org\.slf4j(\..+)?" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.apache\.ant(\..+)?" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.apache\.commons(\..+)?" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.restlet(\..+)?" searchPathRef="restlet.p2"/>
-  <rm:locator pattern="^zcommon$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zel$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zhtml$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zk$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zkbind$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zkplus$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zul$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zweb$" searchPathRef="zkoss.osgi"/>
-  <rm:locator pattern="^zjavassist$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zcommon(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zel(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zhtml(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zk(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zkbind(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zkplus(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zul(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zweb(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^zjavassist(\.source)?$" searchPathRef="zkoss.osgi"/>
+  <rm:locator pattern="^com\.jaspersoft\.studio(\..+)?$" searchPathRef="jasper.osgi"/>
+  <rm:locator pattern="^org\.krysalis\.barcode4j(\..+)?$" searchPathRef="jasper.osgi"/>
+  <rm:locator pattern="^org\.apache\.servicemix\.bundles\.antlr(\..+)?$" searchPathRef="jasper.osgi"/>
+  <rm:locator pattern="^org\.apache\.servicemix\.bundles\.jaxen(\..+)?$" searchPathRef="jasper.osgi"/>
+  <rm:locator pattern="^org\.apache\.servicemix\.bundles\.rhino(\..+)?$" searchPathRef="jasper.osgi"/>
+  <rm:locator pattern="^org\.apache\.servicemix\.bundles\.xmlbeans(\..+)?$" searchPathRef="jasper.osgi"/>
+  <rm:locator pattern="^com\.jaspersoft\.studio\.bundles\.zxing(\..+)?$" searchPathRef="jasper.osgi"/>
+  <rm:locator pattern="^org\.jfree\.jcommon-osgi(\..+)?$" searchPathRef="jasper.osgi"/>
+  <rm:locator pattern="^org\.jfree\.chart-osgi(\..+)?$" searchPathRef="jasper.osgi"/>
+  <rm:locator pattern="^org\.apache\.commons\.collections(\..+)?$" searchPathRef="jasper.osgi"/>
   <rm:locator searchPathRef="orbit" failOnError="false"/>
+  <rm:locator searchPathRef="equinox" failOnError="false"/>
+  <rm:locator searchPathRef="jasper.osgi" failOnError="false"/>
   <rm:locator searchPathRef="extend.workspace" failOnError="false"/>
   <rm:locator searchPathRef="workspace.project" failOnError="false"/>
   <rm:locator searchPathRef="workspace.feature"/>
+
   <rm:searchPath name="equinox">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
@@ -109,11 +125,6 @@
       <rm:property key="buckminster.mutable" value="false"/>
       <rm:uri format="${url.orbit}"/>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
-      <rm:property key="buckminster.source" value="false"/>
-      <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="${url.orbit.neon}"/>
-    </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="restlet.p2">
     <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
@@ -154,19 +165,24 @@
         <maven:entry artifactId="org.apache.felix.inventory" groupId="org.apache.felix" name="org.apache.felix.inventory"/>
         <maven:entry artifactId="org.apache.felix.webconsole.plugins.packageadmin" groupId="org.apache.felix" name="org.apache.felix.webconsole.plugins.packageadmin"/>
         <maven:entry artifactId="javassist" groupId="org.javassist" name="javassist"/>
-        <maven:entry artifactId="passay" groupId="org.passay" name="org.passay"/>
-        <maven:entry artifactId="itextpdf" groupId="com.itextpdf" name="com.itextpdf"/>
-        <maven:entry artifactId="bcpkix-jdk15on" groupId="org.bouncycastle" name="bcpkix"/>
-        <maven:entry artifactId="bcprov-jdk15on" groupId="org.bouncycastle" name="bcprov"/>
-        <maven:entry artifactId="cryptacular" groupId="org.cryptacular" name="org.cryptacular"/>
-        <maven:entry artifactId="super-csv" groupId="net.sf.supercsv" name="net.sf.supercsv.super-csv"/>
-        <maven:entry artifactId="atmosphere-runtime" groupId="org.atmosphere" name="org.atmosphere.runtime"/>
+        <maven:entry groupId="org.passay" artifactId="passay" name="org.passay"/>
+        <maven:entry groupId="com.itextpdf" artifactId="itextpdf" name="com.itextpdf"/>
+        <maven:entry groupId="org.bouncycastle" artifactId="bcpkix-jdk15on" name="bcpkix"/>
+        <maven:entry groupId="org.bouncycastle" artifactId="bcprov-jdk15on" name="bcprov"/>
+        <maven:entry groupId="org.bouncycastle" artifactId="bcmail-jdk15on" name="bcmail"/>
+        <maven:entry groupId="org.bouncycastle" artifactId="bctsp-jdk15on" name="bctsp"/>
+        <maven:entry groupId="org.apache.velocity" artifactId="velocity" name="org.apache.velocity"/>
+        <maven:entry groupId="commons-digester" artifactId="commons-digester" name="org.apache.commons.digester"/>
+        <maven:entry groupId="com.google.code.maven-play-plugin.org.apache.commons" artifactId="commons-javaflow" name="org.apache.commons.javaflow"/>
+        <maven:entry groupId="org.cryptacular" artifactId="cryptacular" name="org.cryptacular"/>
+        <maven:entry groupId="net.sf.supercsv" artifactId="super-csv" name="net.sf.supercsv.super-csv"/>
+        <maven:entry groupId="org.atmosphere" artifactId="atmosphere-runtime" name="org.atmosphere.runtime"/>
         <maven:entry artifactId="jetty-alpn-server" groupId="org.eclipse.jetty" name="org.eclipse.jetty.alpn.server"/>
         <maven:entry artifactId="alpn-api" groupId="org.eclipse.jetty.alpn" name="org.eclipse.jetty.alpn.api"/>
-        <maven:entry artifactId="groovy-all" groupId="org.codehaus.groovy" name="groovy-all"/>
-        <maven:entry artifactId="icu4j" groupId="com.ibm.icu" name="com.ibm.icu"/>
-        <maven:entry artifactId="joda-time" groupId="joda-time" name="joda-time"/>
-        <maven:entry artifactId="commons-configuration" groupId="commons-configuration" name="org.apache.commons.configuration"/>
+        <maven:entry groupId="org.codehaus.groovy" artifactId="groovy-all" name="groovy-all"/>
+        <maven:entry groupId="com.ibm.icu" artifactId="icu4j" name="com.ibm.icu"/>
+        <maven:entry groupId="joda-time" artifactId="joda-time" name="joda-time"/>
+        <maven:entry groupId="commons-configuration" artifactId="commons-configuration" name="org.apache.commons.configuration"/>
         <maven:entry artifactId="commons-collections4" groupId="org.apache.commons" name="org.apache.commons.collections4"/>
       </maven:mappings>
     </rm:provider>
@@ -183,6 +199,13 @@
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
       <rm:uri format="${url.modify.bundle}"/>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="jasper.osgi">
+    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false">
+      <rm:property key="buckminster.source" value="false"/>
+      <rm:property key="buckminster.mutable" value="false"/>
+      <rm:uri format="${url.jp.p2}"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="extend.workspace">
