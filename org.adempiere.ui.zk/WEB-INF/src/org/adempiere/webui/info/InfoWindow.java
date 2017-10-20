@@ -2055,7 +2055,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		// eval only mandatory field
 		if (validateGrid.isMandatory(true)){
 			// update color of field
-			wEditor.updateLabelStyle();
+			wEditor.updateStyle();
 			Object data = wEditor.getValue();
 			if (data == null || data.toString().length() == 0) {				
 				return false;
