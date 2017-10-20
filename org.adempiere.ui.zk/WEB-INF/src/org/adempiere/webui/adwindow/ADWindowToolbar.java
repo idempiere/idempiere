@@ -905,7 +905,9 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	}
 	
 	public void onPostAfterSize() {
-		String script = "var w = zk.Widget.$('#" + getUuid() + "'); w.toolbarScrollable(w);";
-		Clients.evalJavaScript(script);
+		if (this.getPage() != null) {
+			String script = "var w = zk.Widget.$('#" + getUuid() + "'); w.toolbarScrollable(w);";
+			Clients.evalJavaScript(script);
+		}
 	}
 }
