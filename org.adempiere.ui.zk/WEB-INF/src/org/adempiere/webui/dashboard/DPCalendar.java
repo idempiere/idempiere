@@ -30,6 +30,9 @@ import org.adempiere.base.Service;
 import org.adempiere.base.event.AbstractEventHandler;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventTopics;
+import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
@@ -70,11 +73,12 @@ import org.zkoss.zul.impl.LabelImageElement;
  */
 public class DPCalendar extends DashboardPanel implements EventListener<Event>, EventHandler {
 
-
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -224914882522997787L;
+	private static final String ON_MOBILE_SET_SELECTED_TAB_ECHO = "onMobileSetSelectedTabEcho";
 	private Calendars calendars;
 	private SimpleCalendarModel scm;
 	private LabelImageElement btnCal, btnRefresh;	
@@ -137,6 +141,26 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 				DPCalendar.this.cleanup();
 			}
 		};
+		
+		if (ClientInfo.isMobile()) {
+			addCallback(AFTER_PAGE_ATTACHED, t -> afterPageAttached());
+			addEventListener(ON_MOBILE_SET_SELECTED_TAB_ECHO, evt -> calendars.invalidate());
+		}
+	}
+
+	private void afterPageAttached() {
+		Component p = getParent();
+		while (p != null) {
+			if (p instanceof Tabpanel) {
+				p.addEventListener(WindowContainer.ON_MOBILE_SET_SELECTED_TAB, evt -> onMobileSelected());
+				break;
+			}
+			p = p.getParent();
+		}
+	}
+
+	private void onMobileSelected() {
+		Events.echoEvent(ON_MOBILE_SET_SELECTED_TAB_ECHO, this, null);
 	}
 
 	private synchronized void createStaticListeners() {

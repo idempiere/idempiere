@@ -49,6 +49,8 @@ import org.zkoss.zul.Menuitem;
  */
 public class WindowContainer extends AbstractUIPart implements EventListener<Event>
 {
+	public static final String ON_MOBILE_SET_SELECTED_TAB = "onMobileSetSelectedTab";
+
 	private static final String ON_AFTER_TAB_CLOSE = "onAfterTabClose";
 
 	private static final String ON_DEFER_SET_SELECTED_TAB = "onDeferSetSelectedTab";
@@ -100,8 +102,11 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 			}
 		});
         tabbox.addEventListener(ON_AFTER_TAB_CLOSE, evt -> {
-        	updateMobileTabState(tabbox.getSelectedTab());
-        	updateTabListButton();
+        	if (isMobile()) {
+	        	updateMobileTabState(tabbox.getSelectedTab());
+	        	updateTabListButton();
+	        	tabbox.getTabs().invalidate();
+        	}
         });
         
         Tabpanels tabpanels = new Tabpanels();
@@ -474,8 +479,11 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
      */
     public void setSelectedTab(org.zkoss.zul.Tab tab)
     {
-    	tabbox.setSelectedTab(tab);
-    	updateMobileTabState(tab);
+    	if (isMobile())
+    		updateMobileTabState(tab);
+    	tabbox.setSelectedTab(tab); 
+    	if (isMobile())
+    		tabbox.getTabs().invalidate();
     }
 
 	private void updateMobileTabState(org.zkoss.zul.Tab tab) {
@@ -486,10 +494,12 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     			if (c instanceof Tab) {
     				Tab t = (Tab) c;
     				t.setVisible(t == tab);
-    				t.getLinkedPanel().setVisible(t == tab);    				
+    				t.getLinkedPanel().setVisible(t == tab);
+    				if (t.isVisible()) {
+    					Events.postEvent(ON_MOBILE_SET_SELECTED_TAB, t.getLinkedPanel(), null);
+    				}
     			}
-    		}
-    		tabbox.getTabs().invalidate();
+    		}    		
     	}
 	}
 

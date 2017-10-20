@@ -215,6 +215,42 @@ Copyright (C) 2007 Ashley G Ramdass.
 							return '[ ' + (acp * psz + 1) + dash + ' / ' + tsz + ' ]';
 					  });	  
 			});
+			
+		zk.afterLoad('calendar', function () {
+			zk.override(calendar.Event.prototype, "calculate_", function () {
+				if (typeof this.event === "undefined" || this.event == null) {
+					return;
+				}
+				this.$calculate_.apply(this, arguments);
+			});
+			
+			zk.override(calendar.Event.prototype, "unbind_", function() {
+				var node = this.$n();
+				if (typeof node === "undefined") {
+					return;
+				}
+				if (typeof this.$unbind_ === "undefined") {
+					return;
+				}
+				this.$unbind_.apply(this, arguments);
+			});
+			
+			zk.override(calendar.CalendarsMonth.prototype, "onSize", function () {
+				var cmp = this.$n();
+				if (typeof cmp  === "undefined" || cmp == null) {
+					return;
+				}
+				this.$onSize.apply(this, arguments);
+			});
+			
+			zk.override(calendar.CalendarsDefault.prototype, "onSize", function () {
+				var cmp = this.$n();
+				if (typeof cmp  === "undefined" || cmp == null) {
+					return;
+				}
+				this.$onSize.apply(this, arguments);
+			});
+		});
 		
 	]]>
 	</script>
