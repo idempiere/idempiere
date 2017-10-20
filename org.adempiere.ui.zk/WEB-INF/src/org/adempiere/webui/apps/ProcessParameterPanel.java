@@ -328,7 +328,9 @@ public class ProcessParameterPanel extends Panel implements
 		//
 		if (voF.isRange) {
 			Hbox box = new Hbox();
+			ZKUpdateUtil.setHflex(box, "1");
 			box.appendChild(editor.getComponent());
+			editor.fillHorizontal();
 			//
 			GridFieldVO voF2 = GridFieldVO.createParameter(voF);
 			GridField mField2 = new GridField(voF2);

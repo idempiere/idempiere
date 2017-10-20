@@ -69,6 +69,16 @@ when detect side effect, fix to only apply for parameter window*/
 .input-paramenter-layout{
 	width: 70%;
 }
+@media screen and (max-width: 700px) {
+	.input-paramenter-layout{
+		width: 90%;
+	}
+}
+@media screen and (max-width: 500px) {
+	.input-paramenter-layout{
+		width: 100%;
+	}
+}
 
 .popup-dialog .input-paramenter-layout{
 	width: 90%;

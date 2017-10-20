@@ -375,7 +375,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			
 			row.appendChild(notificationTypeField.getComponent());
 			runAsJobField.setChecked(MSysConfig.getBooleanValue(MSysConfig.BACKGROUND_JOB_BY_DEFAULT, false));
-			notificationTypeField.getComponent().getParent().setVisible(runAsJobField.isChecked());			
+			notificationTypeField.getComponent().getParent().setVisible(runAsJobField.isChecked());
+			notificationTypeField.fillHorizontal();
 		}
 	}
 	
