@@ -248,7 +248,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}
 		
 		layout();
-
+		
 		return true;
 	}
 	
@@ -406,13 +406,13 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		bottomParameterLayout.appendChild(reportOptionLayout);
 		
 		freportType = new Listbox();
-		freportType.setSclass("option-input-parameter");
+		freportType.setSclass("option-input-parameter view-report-list");
 		chbIsSummary = new Checkbox();
 		chbIsSummary.setSclass("option-input-parameter");
 		Label lPrintFormat = new Label(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
-		lPrintFormat.setSclass("option-input-parameter");
+		lPrintFormat.setSclass("option-input-parameter print-format-label");
 		Label lreportType = new Label(Msg.translate(Env.getCtx(), "view.report"));
-		lreportType.setSclass("option-input-parameter");
+		lreportType.setSclass("option-input-parameter view-report-label");
 		Label lIsSummary = new Label(Msg.translate(Env.getCtx(), "Summary"));
 		lIsSummary.setSclass("option-input-parameter");
 		
@@ -427,7 +427,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			reportOptionLayout.appendChild(fLanguageType.getComponent());
 			((Combobox)fLanguageType.getComponent()).setSclass("option-input-parameter");
 		}
-		fPrintFormat.getComponent().setSclass("option-input-parameter");
+		fPrintFormat.getComponent().setSclass("option-input-parameter print-format-list");
+		fPrintFormat.getComponent().setPlaceholder(lPrintFormat.getValue());
 		reportOptionLayout.appendChild(lreportType);
 		reportOptionLayout.appendChild(freportType);	
 		reportOptionLayout.appendChild(lIsSummary);
@@ -441,15 +442,19 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	protected void savePrameterLayout(HtmlBasedComponent bottomParameterLayout) {
-		HtmlBasedComponent savePrameterLayout = new Hlayout();
+		Hlayout savePrameterLayout = new Hlayout();
 		savePrameterLayout.setSclass("save-parameter-container");
 		bottomParameterLayout.appendChild(savePrameterLayout);
+		savePrameterLayout.setValign("middle");
 		
 		lSaved = new Label(Msg.getMsg(Env.getCtx(), "SavedParameter"));
+		lSaved.setClass("saved-parameter-label");
 		savePrameterLayout.appendChild(lSaved);
 		fSavedName = new Combobox();
 		fSavedName.addEventListener(Events.ON_CHANGE, this);
 		savePrameterLayout.appendChild(fSavedName);
+		fSavedName.setPlaceholder(lSaved.getValue());
+		fSavedName.setSclass("saved-parameter-list");
 
 		bSave.setEnabled(false);
 		bSave.addActionListener(this);
@@ -610,6 +615,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		if (component == runAsJobField && event.getName().equals(Events.ON_CHECK))
 		{
 			notificationTypeField.getComponent().getParent().setVisible(runAsJobField.isChecked());
+			mainParameterLayout.invalidate();
 
 		}
 		else if (event.getName().equals(ON_COMPLETE))

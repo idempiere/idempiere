@@ -62,8 +62,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Space;
+import org.zkoss.zul.impl.InputElement;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -131,7 +132,7 @@ public class ProcessParameterPanel extends Panel implements
 																		// ranges
 	private ArrayList<GridField> m_mFields = new ArrayList<GridField>();
 	private ArrayList<GridField> m_mFields2 = new ArrayList<GridField>();
-	private ArrayList<Label> m_separators = new ArrayList<Label>();
+	private ArrayList<Space> m_separators = new ArrayList<Space>();
 	//
 	private Grid centerPanel = null;
 
@@ -327,10 +328,11 @@ public class ProcessParameterPanel extends Panel implements
 
 		//
 		if (voF.isRange) {
-			Hbox box = new Hbox();
-			ZKUpdateUtil.setHflex(box, "1");
+			Div box = new Div();
+			ZKUpdateUtil.setWidth(box, "100%");
 			box.appendChild(editor.getComponent());
-			editor.fillHorizontal();
+			ZKUpdateUtil.setWidth((HtmlBasedComponent) editor.getComponent(), "49%");
+			setEditorPlaceHolder(editor, Msg.getMsg(Env.getCtx(), "From"));
 			//
 			GridFieldVO voF2 = GridFieldVO.createParameter(voF);
 			GridField mField2 = new GridField(voF2);
@@ -344,7 +346,8 @@ public class ProcessParameterPanel extends Panel implements
 			// New Field value to be updated to editor
 			mField2.addPropertyChangeListener(editor2);
 			editor2.dynamicDisplay();
-			editor2.fillHorizontal();
+			ZKUpdateUtil.setWidth((HtmlBasedComponent) editor2.getComponent(), "49%");
+			setEditorPlaceHolder(editor2, Msg.getMsg(Env.getCtx(), "To"));
 			// setup editor context menu
 			popupMenu = editor2.getPopupMenu();
 			if (popupMenu != null) {
@@ -356,7 +359,8 @@ public class ProcessParameterPanel extends Panel implements
 			mField2.setValue(defaultObject2, true);
 			//
 			m_wEditors2.add(editor2);
-			Label separator = new Label(" - ");
+			Space separator = new Space();
+			separator.setSpacing("2%");
 			m_separators.add(separator);
 			box.appendChild(separator);
 			box.appendChild(editor2.getComponent());
@@ -369,6 +373,21 @@ public class ProcessParameterPanel extends Panel implements
 		}
 		rows.appendChild(row);
 	} // createField
+
+	private void setEditorPlaceHolder(WEditor editor, String msg) {
+		Component c = editor.getComponent();
+		if (c instanceof InputElement) {
+			((InputElement) c).setPlaceholder(msg);
+		} else {
+			for (Component e : c.getChildren()) {
+				if (e instanceof InputElement) {
+					((InputElement) e).setPlaceholder(msg);
+					break;
+				}
+			}
+		}
+		
+	}
 
 	/**
 	 * Validate Parameter values

@@ -31,8 +31,10 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
 import org.adempiere.webui.component.FToolbar;
+import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.ToolbarListener;
+import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -829,6 +831,18 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 				"}");
 		addEventListener(Events.ON_AFTER_SIZE, (AfterSizeEvent evt) -> onAfterSize(evt));
 		
+		addCallback(AFTER_PAGE_ATTACHED, t -> afterPageAttached());
+	}
+
+	private void afterPageAttached() {
+		Component p = getParent();
+		while (p != null) {
+			if (p instanceof Tabpanel) {
+				p.addEventListener(WindowContainer.ON_MOBILE_SET_SELECTED_TAB, evt -> this.invalidate());
+				break;
+			}
+			p = p.getParent();
+		}
 	}
 
 	private void onAfterSize(AfterSizeEvent evt) {
