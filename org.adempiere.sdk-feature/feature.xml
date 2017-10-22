@@ -38,6 +38,10 @@
          id="org.idempiere.fitnesse"
          version="0.0.0"/>
 
+   <includes
+         id="org.idempiere.equinox.p2.director"
+         version="0.0.0"/>
+
    <plugin
          id="org.eclipse.swt"
          download-size="0"
