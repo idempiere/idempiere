@@ -23,6 +23,7 @@ import java.util.Properties;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.apps.MenuSearchController;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -205,6 +206,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 link.setSclass("menu-href");
                 
                 treeitem.getTreerow().setDraggable("favourite"); // Elaine 2008/07/24
+                treeitem.setAttribute(MenuSearchController.M_TREE_NODE_ATTR, mChildNode);
             }
         }
     }

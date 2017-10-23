@@ -35,6 +35,7 @@ import org.adempiere.webui.component.DrillCommand;
 import org.adempiere.webui.component.TokenCommand;
 import org.adempiere.webui.component.ZoomCommand;
 import org.adempiere.webui.desktop.DefaultDesktop;
+import org.adempiere.webui.desktop.FavouriteController;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
@@ -233,7 +234,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			mSession.saveEx();
 		}
 
-		 currSess.setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
+		currSess.setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
 
 		//enable full interface, relook into this when doing preference
 		Env.setContext(ctx, "#ShowTrl", true);
@@ -280,6 +281,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		}
 		Env.setContext(ctx, "#LocalHttpAddr", localHttpAddr.toString());		
 		Clients.response(new AuScript("zAu.cmd0.clearBusy()"));
+		
+		//init favorite
+		FavouriteController.getInstance(currSess);
 		
 		processParameters();	
     }
