@@ -216,6 +216,10 @@ public class MMailText extends X_R_MailText
 	 */
 	private String parseVariable (String variable, PO po)
 	{
+		if (variable.contains("<") && variable.contains(">")) { // IDEMPIERE-3096
+			return Env.parseVariable("@"+variable+"@", po, get_TrxName(), true);
+		}
+		// special default formatting cases for dates/times/boolean in mail text not covered by Env.parseVariable
 		int index = po.get_ColumnIndex(variable);
 		if (index == -1){
 			StringBuilder msgreturn = new StringBuilder("@").append(variable).append("@");
