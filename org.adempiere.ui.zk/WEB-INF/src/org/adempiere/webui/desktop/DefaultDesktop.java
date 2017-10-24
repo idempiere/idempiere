@@ -24,6 +24,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventManager;
@@ -925,6 +927,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		return AD_Tree_ID;
 	}
 	private void automaticOpen(Properties ctx) {
+		if (isActionURL())  // IDEMPIERE-2334 vs IDEMPIERE-3000 - do not open windows when coming from an action URL
+			return;
 
 		StringBuilder sql = new StringBuilder("SELECT m.Action, COALESCE(m.AD_Window_ID, m.AD_Process_ID, m.AD_Form_ID, m.AD_Workflow_ID, m.AD_Task_ID, AD_InfoWindow_ID) ")
 		.append(" FROM AD_TreeBar tb")
@@ -973,5 +977,17 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 				}
 			}
 		}
-	}    
+	}
+
+    private boolean isActionURL() {
+		ConcurrentMap<String, String[]> parameters = new ConcurrentHashMap<String, String[]>(Executions.getCurrent().getParameterMap());
+    	String action = "";
+    	if (parameters != null) {
+        	String[] strs = parameters.get("Action");
+        	if (strs != null && strs.length == 1 && strs[0] != null)
+        		action = strs[0];
+    	}
+		return ! Util.isEmpty(action);
+    }
+
 }
