@@ -99,6 +99,8 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 
 	private Hlayout moveItemBox;
 
+	private ToolBarButton moveItemBtn;
+
 	private static final String PREFIX_DOCUMENT_SEARCH = "/";
 
 	/**
@@ -185,10 +187,12 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         //move selected treeitem for mobile, alternative to dnd
         if (ClientInfo.isMobile())
         {
-	        ToolBarButton btn = new ToolBarButton();
-	        btn.setIconSclass("z-icon-arrows-alt");
-	        layout.appendChild(btn);
-	        btn.addEventListener(Events.ON_CLICK, evt -> onMoveBtnClicked());
+	        moveItemBtn = new ToolBarButton();
+	        moveItemBtn.setSclass("tree-moveitem-btn");
+	        moveItemBtn.setIconSclass("z-icon-arrows-alt");
+	        layout.appendChild(moveItemBtn);
+	        moveItemBtn.addEventListener(Events.ON_CLICK, evt -> onMoveBtnClicked());
+	        tree.addEventListener("onPostMove", evt -> onPostMove(evt));
         }
         this.appendChild(layout);
         
@@ -207,11 +211,39 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 			DropEvent event = new DropEvent(Events.ON_DROP, selectedRow, dragged, 0, 0, 0, 0, 0);	
 			moveItemBox.detach();
 			moveItemBox = null;
+			moveItemBtn.setSclass("tree-moveitem-btn");
+			moveItemBtn.setAttribute("draggedComponent", dragged);
 			Events.postEvent(event);
+			Events.postEvent("onPostMove", tree, selected);						
 		}
 	}
+    
+    private void onPostMove(Event evt) {
+    	Treeitem item = (Treeitem) evt.getData();
+    	Treerow dragged = (Treerow) moveItemBtn.getAttribute("draggedComponent");
+    	if (dragged == null) return;
+    	Treeitem draggedItem = (Treeitem) dragged.getParent();
+    	if (item.getNextSibling() != null) {
+    		Treeitem next = (Treeitem) item.getNextSibling();
+    		if (next.getValue().equals(draggedItem.getValue())) {
+	    		tree.setSelectedItem(next);
+	        	next.focus();
+	        	Events.postEvent(Events.ON_SELECT, tree, next);
+    		}
+    	}    	
+    }
 
 	private void onMoveBtnClicked() {
+		if (moveItemBox != null) {
+			moveItemBox.detach();
+			moveItemBox = null;
+			moveItemBtn.setSclass("tree-moveitem-btn");
+			Treeitem ti = tree.getSelectedItem();
+			if (ti != null)
+				ti.focus();
+			return;
+		}
+		moveItemBtn.setSclass("tree-moveitem-btn pressed");
 		Treeitem ti = tree.getSelectedItem();
 		if (ti == null) return;
 		Treerow tr = ti.getTreerow();
@@ -229,13 +261,16 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 		btn.addEventListener(Events.ON_CLICK, e -> {
 			moveItemBox.detach();
 			moveItemBox = null;
+			moveItemBtn.setSclass("tree-moveitem-btn");
+			if (tree.getSelectedItem() != null)
+				tree.getSelectedItem().focus();
 		});
 		this.insertBefore(moveItemBox, layout);
 		String script = "var w=zk.Widget.$('#" + moveItemBox.getUuid() + "'); ";
 		script += "var e=jq('#" + layout.getUuid() + "'); "; 
 		script += "w.setWidth(e.css('width')); ";
-		script += "w.setHeight(e.css('height')); ";
 		Clients.response(new AuScript(script));
+		ti.focus();
 	}
 
 	protected void addTreeItem(Treeitem treeItem)
