@@ -68,6 +68,8 @@ public class InvoicePrint extends SvrProcess
 	protected int		m_C_Invoice_ID = 0;
 	protected String		m_DocumentNo_From = null;
 	protected String		m_DocumentNo_To = null;
+	private String		p_IsPaid = null;
+	private int			m_C_DocType_ID = 0;
 
 	protected volatile StringBuffer sql = new StringBuffer();
 	protected volatile List<Object> params = new ArrayList<Object>();
@@ -101,6 +103,10 @@ public class InvoicePrint extends SvrProcess
 				m_DocumentNo_From = (String)para[i].getParameter();
 				m_DocumentNo_To = (String)para[i].getParameter_To();
 			}
+			else if (name.equals("IsPaid"))
+				p_IsPaid = (String)para[i].getParameter();
+			else if (name.equals("C_DocType_ID"))
+				m_C_DocType_ID = para[i].getParameterAsInt();
 			else
 				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
 		}
@@ -124,7 +130,9 @@ public class InvoicePrint extends SvrProcess
 			+ ", C_Invoice_ID=" + m_C_Invoice_ID
 			+ ", EmailPDF=" + p_EMailPDF + ",R_MailText_ID=" + p_R_MailText_ID
 			+ ", DateInvoiced=" + m_dateInvoiced_From + "-" + m_dateInvoiced_To
-			+ ", DocumentNo=" + m_DocumentNo_From + "-" + m_DocumentNo_To);
+			+ ", DocumentNo=" + m_DocumentNo_From + "-" + m_DocumentNo_To
+			+ ", IsPaid=" + p_IsPaid
+			+ ", C_DocType_ID=" + m_C_DocType_ID);
 		
 		MMailText mText = null;
 		if (p_R_MailText_ID != 0)
@@ -376,6 +384,14 @@ public class InvoicePrint extends SvrProcess
 			{
 				/* if emailed to customer only select COmpleted & CLosed invoices */ 
 				sql.append(" AND i.DocStatus IN ('CO','CL') "); 
+			}
+			if (p_IsPaid != null && p_IsPaid.length() == 1)
+			{ 
+				sql.append(" AND i.IsPaid='").append(p_IsPaid).append("'"); 
+			}
+			if (m_C_DocType_ID != 0)
+			{
+				sql.append (" AND i.C_DocTypeTarget_ID=").append(m_C_DocType_ID);
 			}
 		}
 		String orgWhere = MRole.getDefault(getCtx(), false).getOrgWhere(MRole.SQL_RO);
