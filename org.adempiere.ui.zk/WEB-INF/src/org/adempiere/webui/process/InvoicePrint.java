@@ -387,11 +387,13 @@ public class InvoicePrint extends SvrProcess
 			}
 			if (p_IsPaid != null && p_IsPaid.length() == 1)
 			{ 
-				sql.append(" AND i.IsPaid='").append(p_IsPaid).append("'"); 
+				sql.append(" AND i.IsPaid=?");
+				params.add(p_IsPaid);
 			}
 			if (m_C_DocType_ID != 0)
 			{
-				sql.append (" AND i.C_DocTypeTarget_ID=").append(m_C_DocType_ID);
+				sql.append (" AND i.C_DocTypeTarget_ID=?");
+				params.add(m_C_DocType_ID);
 			}
 		}
 		String orgWhere = MRole.getDefault(getCtx(), false).getOrgWhere(MRole.SQL_RO);

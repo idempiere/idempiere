@@ -105,7 +105,7 @@ public class OrderBatchProcess extends SvrProcess
 		StringBuilder sql = new StringBuilder("SELECT * FROM C_Order o ")
 			.append(" WHERE o.C_DocTypeTarget_ID=? AND o.DocStatus=? ");
 		if (p_IsSelfService != null && p_IsSelfService.length() == 1)
-			sql.append(" AND o.IsSelfService='").append(p_IsSelfService).append("'");
+			sql.append(" AND o.IsSelfService=").append(DB.TO_STRING(p_IsSelfService));
 		if (p_C_BPartner_ID != 0)
 			sql.append(" AND o.C_BPartner_ID=").append(p_C_BPartner_ID);
 		if (p_DateOrdered_From != null)
