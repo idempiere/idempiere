@@ -400,7 +400,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     }
 
 	private void updateTabListButton() {
-		if (isMobile()) {
+		if (isMobile() && tabListBtn != null) {
 			int cnt = tabbox.getTabs().getChildren().size()-1;
 			if (cnt > 0) {
 				tabListBtn.setLabel(Integer.toString(cnt));
@@ -487,7 +487,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     }
 
 	private void updateMobileTabState(org.zkoss.zul.Tab tab) {
-		if (isMobile())
+		if (isMobile() && tabListBtn != null)
     	{
     		List<Component> tabs = tabbox.getTabs().getChildren();
     		for(Component c: tabs) {
