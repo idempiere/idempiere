@@ -23,7 +23,9 @@ if exist jettyhome\etc\jetty-selector.xml (
    copy jettyhome\etc\jetty-selector.xml jetty-selector.xml.sav
 )
 
-@call %DESTINATION%\update-prd %1% org.adempiere.server.product
+set UNINSTALL_UI="org.adempiere.server.product, org.idempiere.fitnesse.feature.group"
+set INSTALL_UI="org.adempiere.server.product, org.eclipse.equinox.p2.director, org.idempiere.fitnesse.feature.group, org.idempiere.equinox.p2.director.feature.group"
+@call %DESTINATION%\update-prd %1 %INSTALL_UI% %UNINSTALL_UI%
 
 copy idempiere.ini.sav idempiere.ini
 

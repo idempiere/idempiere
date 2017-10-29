@@ -21,10 +21,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.AutoComplete;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.DocumentSearch;
 import org.adempiere.webui.util.TreeItemAction;
@@ -39,6 +41,7 @@ import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
+import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -51,6 +54,7 @@ import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.Treerow;
 import org.zkoss.zul.event.TreeDataEvent;
 import org.zkoss.zul.event.TreeDataListener;
 import org.zkoss.zul.impl.LabelElement;
@@ -64,6 +68,8 @@ import org.zkoss.zul.impl.LabelImageElement;
  */
 public class TreeSearchPanel extends Panel implements EventListener<Event>, TreeDataListener, IdSpace
 {
+	public static final String TREE_ROW_MOVABLE = "tree.row.movable";
+
 	/**
 	 * 
 	 */
@@ -90,6 +96,10 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 	private int m_tabno = 0;
 	private Treeitem selectedItem;
 	protected Hlayout layout;
+
+	private Hlayout moveItemBox;
+
+	private ToolBarButton moveItemBtn;
 
 	private static final String PREFIX_DOCUMENT_SEARCH = "/";
 
@@ -173,13 +183,97 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         }
 
         layout.appendChild(lblSearch);
-        layout.appendChild(cmbSearch);        
+        layout.appendChild(cmbSearch);
+        //move selected treeitem for mobile, alternative to dnd
+        if (ClientInfo.isMobile())
+        {
+	        moveItemBtn = new ToolBarButton();
+	        moveItemBtn.setSclass("tree-moveitem-btn");
+	        moveItemBtn.setIconSclass("z-icon-arrows-alt");
+	        layout.appendChild(moveItemBtn);
+	        moveItemBtn.addEventListener(Events.ON_CLICK, evt -> onMoveBtnClicked());
+	        tree.addEventListener("onPostMove", evt -> onPostMove(evt));
+        }
         this.appendChild(layout);
         
         addEventListener(ON_POST_FIRE_TREE_EVENT, this);
+        
+        if (ClientInfo.isMobile()) {
+        	tree.addEventListener(Events.ON_SELECT, evt -> onSelect(evt));
+        }
     }
 
-    protected void addTreeItem(Treeitem treeItem)
+    private void onSelect(Event evt) {
+		if (moveItemBox != null) {
+			Treeitem selected = tree.getSelectedItem();
+			Treerow selectedRow = selected.getTreerow();
+			Component dragged = (Component) moveItemBox.getAttribute("draggedComponent");
+			DropEvent event = new DropEvent(Events.ON_DROP, selectedRow, dragged, 0, 0, 0, 0, 0);	
+			moveItemBox.detach();
+			moveItemBox = null;
+			moveItemBtn.setSclass("tree-moveitem-btn");
+			moveItemBtn.setAttribute("draggedComponent", dragged);
+			Events.postEvent(event);
+			Events.postEvent("onPostMove", tree, selected);						
+		}
+	}
+    
+    private void onPostMove(Event evt) {
+    	Treeitem item = (Treeitem) evt.getData();
+    	Treerow dragged = (Treerow) moveItemBtn.getAttribute("draggedComponent");
+    	if (dragged == null) return;
+    	Treeitem draggedItem = (Treeitem) dragged.getParent();
+    	if (item.getNextSibling() != null) {
+    		Treeitem next = (Treeitem) item.getNextSibling();
+    		if (next.getValue().equals(draggedItem.getValue())) {
+	    		tree.setSelectedItem(next);
+	        	next.focus();
+	        	Events.postEvent(Events.ON_SELECT, tree, next);
+    		}
+    	}    	
+    }
+
+	private void onMoveBtnClicked() {
+		if (moveItemBox != null) {
+			moveItemBox.detach();
+			moveItemBox = null;
+			moveItemBtn.setSclass("tree-moveitem-btn");
+			Treeitem ti = tree.getSelectedItem();
+			if (ti != null)
+				ti.focus();
+			return;
+		}
+		moveItemBtn.setSclass("tree-moveitem-btn pressed");
+		Treeitem ti = tree.getSelectedItem();
+		if (ti == null) return;
+		Treerow tr = ti.getTreerow();
+		if (tr == null) return;
+		if (tr.getAttribute(TREE_ROW_MOVABLE) == null) return;
+		moveItemBox = new Hlayout();
+		Label l = new Label(Msg.getMsg(Env.getCtx(), "MoveSelectedTreeItem"));
+		l.setStyle("font-weight: 600");
+		moveItemBox.appendChild(l);
+		moveItemBox.setValign("middle");
+		ToolBarButton btn = new ToolBarButton();
+		btn.setIconSclass("z-icon-remove");
+		moveItemBox.appendChild(btn);
+		moveItemBox.setAttribute("draggedComponent", tr);
+		btn.addEventListener(Events.ON_CLICK, e -> {
+			moveItemBox.detach();
+			moveItemBox = null;
+			moveItemBtn.setSclass("tree-moveitem-btn");
+			if (tree.getSelectedItem() != null)
+				tree.getSelectedItem().focus();
+		});
+		this.insertBefore(moveItemBox, layout);
+		String script = "var w=zk.Widget.$('#" + moveItemBox.getUuid() + "'); ";
+		script += "var e=jq('#" + layout.getUuid() + "'); "; 
+		script += "w.setWidth(e.css('width')); ";
+		Clients.response(new AuScript(script));
+		ti.focus();
+	}
+
+	protected void addTreeItem(Treeitem treeItem)
     {
         StringBuilder key = new StringBuilder(getLabel(treeItem)).append(".").append(treeItem.getAttribute("menu.type"));
         treeNodeItemMap.put(key.toString(), treeItem);

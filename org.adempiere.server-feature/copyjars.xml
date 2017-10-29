@@ -1,7 +1,6 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
 		<mkdir dir="data/seed" />
-		<get src="${url.file.srv}/database/4.1/Adempiere_pg84.jar" dest="data/seed/Adempiere_pg84.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.srv}/database/4.1/Adempiere_pg.jar" dest="data/seed/Adempiere_pg.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.file.srv}/database/4.1/Adempiere.jar" dest="data/seed/Adempiere.jar" usetimestamp="true" verbose="true" retries="5" />
 

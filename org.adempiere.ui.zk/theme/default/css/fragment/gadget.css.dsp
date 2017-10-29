@@ -1,7 +1,4 @@
 .fav-new-btn {
-	margin-left: 4px;
-	margin-bottom: 3px;
-	padding-left: 1px;
 }
 
 .fav-new-btn img {

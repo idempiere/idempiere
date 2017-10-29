@@ -373,3 +373,9 @@
 		height: 100%;
 	}
 }
+
+@media screen and (max-height: 600px) {
+	.popup-dialog.process-modal-dialog {
+		height: 100%;
+	}
+}

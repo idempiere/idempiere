@@ -28,10 +28,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
 
-
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
+import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -80,6 +81,7 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 	 * 
 	 */
 	private static final long serialVersionUID = 1576992746053720647L;
+	private static final String ON_MOBILE_SET_SELECTED_TAB_ECHO = "onMobileSetSelectedTabEcho";
 
 	private Calendars calendars;
 	private SimpleCalendarModel scm;
@@ -187,13 +189,33 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		calendars.addEventListener("onEventUpdate", this);
 		calendars.addEventListener("onMouseOver", this);
 
+		if (ClientInfo.isMobile()) {
+			addCallback(AFTER_PAGE_ATTACHED, t -> afterPageAttached());
+			addEventListener(ON_MOBILE_SET_SELECTED_TAB_ECHO, evt -> calendars.invalidate());
+		}
+		
 		SessionManager.getAppDesktop().showWindow(this);
 
 		// IDEMPIERE-1457: when show this window on tab, handle event close to remove calendars away scm
 		Component parentTab = this.getParent();
 		if (parentTab != null && parentTab.getClass().equals(Tabpanel.class)) {
 			((Tabpanel)parentTab).setOnCloseHandler(this);
+		}				
+	}
+
+	private void afterPageAttached() {
+		Component p = getParent();
+		while (p != null) {
+			if (p instanceof Tabpanel) {
+				p.addEventListener(WindowContainer.ON_MOBILE_SET_SELECTED_TAB, evt -> onMobileSelected());
+				break;
+			}
+			p = p.getParent();
 		}
+	}
+
+	private void onMobileSelected() {
+		Events.echoEvent(ON_MOBILE_SET_SELECTED_TAB_ECHO, this, null);
 	}
 
 	public void onClose(Tabpanel tabPanel){

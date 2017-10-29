@@ -24,9 +24,12 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
+import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -69,6 +72,7 @@ public class WSchedule extends Window implements EventListener<Event>
 	 * 
 	 */
 	private static final long serialVersionUID = -4819513326165148245L;
+	private static final String ON_MOBILE_SET_SELECTED_TAB_ECHO = "onMobileSetSelectedTabEcho";
 
 	@SuppressWarnings("unused")
 	private InfoSchedule infoSchedule;
@@ -204,7 +208,27 @@ public class WSchedule extends Window implements EventListener<Event>
 		divTabClicked(7);
 		
 		addEventListener("onAfterReCreate", this);
-	}	//	jbInit
+		
+		if (ClientInfo.isMobile()) {
+			addCallback(AFTER_PAGE_ATTACHED, t -> afterPageAttached());
+			addEventListener(ON_MOBILE_SET_SELECTED_TAB_ECHO, evt -> calendars.invalidate());
+		}
+	}
+
+	private void afterPageAttached() {
+		Component p = getParent();
+		while (p != null) {
+			if (p instanceof Tabpanel) {
+				p.addEventListener(WindowContainer.ON_MOBILE_SET_SELECTED_TAB, evt -> onMobileSelected());
+				break;
+			}
+			p = p.getParent();
+		}
+	}
+
+	private void onMobileSelected() {
+		Events.echoEvent(ON_MOBILE_SET_SELECTED_TAB_ECHO, this, null);
+	}
 
 	/**
 	 * 	Recreate View
