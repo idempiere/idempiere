@@ -3060,8 +3060,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				//dialog.setWidth("500px");
 				dialog.setBorder("normal");				
 				getComponent().getParent().appendChild(dialog);
-				showBusyMask(dialog);
-				LayoutUtils.openOverlappedWindow(getComponent(), dialog, "middle_center");
+				if (ClientInfo.isMobile())
+				{
+					dialog.doHighlighted();
+				}
+				else
+				{
+					showBusyMask(dialog);
+					LayoutUtils.openOverlappedWindow(getComponent(), dialog, "middle_center");
+				}
 				dialog.focus();
 			}
 			else

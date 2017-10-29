@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE zk>
+<zk>
+    <library-property>
+       <name>org.zkoss.web.classWebResource.cache</name>
+       <value>false</value>
+    </library-property>
+    <library-property>
+       <name>org.zkoss.zk.WPD.cache</name>
+       <value>false</value>
+    </library-property>
+    <library-property>
+       <name>org.zkoss.zk.WCS.cache</name>
+       <value>false</value>
+    </library-property>
+
+    <client-config>
+      <debug-js>true</debug-js>
+    </client-config>
+</zk>

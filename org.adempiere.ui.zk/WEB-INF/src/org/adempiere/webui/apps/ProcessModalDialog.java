@@ -18,14 +18,16 @@ package org.adempiere.webui.apps;
 
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
-import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
@@ -49,6 +51,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ProcessModalDialog.class);
 	//
+	private String orientation;
 
 	/**
 	 * @param aProcess
@@ -82,8 +85,28 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		{
 			init(Env.getCtx(), WindowNo, pi.getAD_Process_ID(), pi, autoStart, true);
 			if (mainParameterLayout != null)// when auto start it's null
-				mainParameterLayout.setStyle("max-height:" + (SessionManager.getAppDesktop().getClientInfo().desktopHeight - 150) + "px");
-			this.setSclass("popup-dialog");
+			{
+				mainParameterLayout.setStyle("max-height:" + ClientInfo.get().desktopHeight + "px");
+				ZKUpdateUtil.setVflex(mainParameterLayout, "min");
+			}
+			if (topParameterLayout != null)
+			{
+				topParameterLayout.setStyle("max-height:" + (ClientInfo.get().desktopHeight-130) + "px");
+			}
+			if (bottomParameterLayout != null)
+			{
+				for(Component c : bottomParameterLayout.getChildren())
+				{
+					if (c instanceof HtmlBasedComponent)
+						ZKUpdateUtil.setVflex((HtmlBasedComponent) c, "min");
+				}
+			}			
+			this.setSclass("popup-dialog process-modal-dialog");
+			if (ClientInfo.isMobile())
+			{
+				orientation = ClientInfo.get().orientation;
+				ClientInfo.onClientInfo(this, this::onClientInfo);
+			}
 		}
 		catch(Exception ex)
 		{
@@ -183,5 +206,23 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		}else {
 			super.onEvent(event);
 		}
-	}		
+	}	
+	
+	protected void onClientInfo() {
+		if (getPage() != null) {
+			String newOrientation = ClientInfo.get().orientation;
+			if (!newOrientation.equals(orientation)) {
+				orientation = newOrientation;
+				if (mainParameterLayout != null)// when auto start it's null
+				{
+					mainParameterLayout.setStyle("max-height:" + ClientInfo.get().desktopHeight + "px");
+				}
+				if (topParameterLayout != null)
+				{
+					topParameterLayout.setStyle("max-height:" + (ClientInfo.get().desktopHeight-130) + "px");
+				}
+				this.invalidate();
+			}
+		}
+	}
 }	//	ProcessModalDialog

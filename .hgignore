@@ -4,6 +4,9 @@ build
 External Plug-in Libraries
 org.eclipse.jetty.http/bin
 alpn-boot.jar
+.sonarlint
+org.adempiere.webstore/bin
+org.idempiere.hazelcast.service.config/bin
 syntax: regexp
 ^adempiere$
 ^org\.adempiere\.install/lib$

@@ -11,7 +11,8 @@ Bundle-ClassPath: .,
  c3p0-0.9.5.jar,
  c3p0-oracle-thin-extras-0.9.5.jar,
  mchange-commons-java-0.2.9.jar
-Import-Package: org.osgi.framework,
+Import-Package: org.jfree.io;version="1.0.23",
+ org.osgi.framework,
  org.slf4j;version="1.7.2"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.adempiere.db.oracle.OracleBundleActivator

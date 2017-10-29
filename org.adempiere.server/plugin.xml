@@ -18,10 +18,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.adempiere.server.application"
-            name="Adempiere Server">
+            name="iDempiere Server">
          <property
                name="appName"
-               value="Adempiere Server">
+               value="iDempiere Server">
          </property>
       </product>
    </extension>

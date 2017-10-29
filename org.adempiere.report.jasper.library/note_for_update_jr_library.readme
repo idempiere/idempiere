@@ -23,3 +23,31 @@ poi-3.10.1 haven't yet osgi version, ever on newest obit repository. so use  Bun
 batik haven't yet osgi version, ever on newest obit repository. so use  Bundle-ClassPath
 current batik osgi version isn't use by other bundle, so can remove it. 
 itext is very old and have modify code from JP community, so use version from JP
+
+==========================
+note for p2
+
+1. use jasper report at jasperreports-6.3.1/dist to create p2
+
+2. use TIBCOJaspersoftStudio-6.3.1.final/plugins to create extra p2 for jasperreport, it provide almost dependency osgi version
+
+3. have to run ${ECLIPSE_FOLDER}/eclipse -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher for TIBCOJaspersoftStudio-6.3.1.final/plugins
+
+4. com.jaspersoft.studio.bundles.itext_2.1.7.js5 need package from bcprov. idempiere already have osgi of bcprov at version 1.56
+but after 1.50 bcprov change some package like org.bouncycastle.ocsp to org.bouncycastle.cert.ocsp
+success to run both version bcprov 1.50 and bcprov 1.56 but it make start progress take long time (about 2 minute)
+so better use Bundle-ClassPath for bcprov-jdk14-139 go with jasperreport
+
+5. TIBCOJaspersoftStudio-6.3.1.final/plugins also have osgi version of jasper report runtime, bundle name net.sf.jasperreports, file name net.sf.jasperreports_6.3.1.final
+but it use bundle dependency, so have to use all bundle package by jasper ever it already have osgi version on idempiere
+it ever force us to use a old version of beanshell (bsh-2.0b4) with a security issue
+
+so i like to create osgi version from jasperreports-6.3.1/dist/jasperreports-6.3.1.jar
+manifest of jasperreports-6.3.1.jar already have osgi metadata and bundle name is net.sf.jasperreports.engine
+so just change file name to net.sf.jasperreports.engine_6.3.1.jar and run ${ECLIPSE_FOLDER}/eclipse -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher
+
+note: net.sf.jasperreports.engine_6.3.1.jar use package dynamic import 
+
+6. com.jaspersoft.studio.bundles.itext_2.1.7.js5 already have bcprov-jdk14-139 on Bundle-ClassPath, but manifest still import package from bcprov-jdk14-139. so i modify its manifest before call ${ECLIPSE_FOLDER}/eclipse -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher
+
+7. org.krysalis.barcode4j_2.1.0.jar have osgi version on maven but it dependency to org.apache.avalon, so use version from jasper report. it modify manifest.mf to don't depend to org.apache.avalon 

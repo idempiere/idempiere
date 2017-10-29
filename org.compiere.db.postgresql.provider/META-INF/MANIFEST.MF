@@ -5,12 +5,13 @@ Bundle-SymbolicName: org.compiere.db.postgresql.provider;singleton:=true
 Bundle-Version: 4.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: .,
- postgresql-9.4.1212.jre7.jar,
  c3p0-0.9.5.2.jar,
- mchange-commons-java-0.2.12.jar
+ mchange-commons-java-0.2.12.jar,
+ postgresql-42.1.4.jar
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.install;bundle-version="0.0.0"
 Import-Package: junit.framework;version="3.8.2",
+ org.jfree.io;version="1.0.23",
  org.junit;version="4.8.1",
  org.osgi.framework,
  org.slf4j;version="1.7.2"

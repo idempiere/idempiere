@@ -10,11 +10,7 @@
 	<classpathentry exported="true" kind="lib" path="jython-engine.jar"/>
 	<classpathentry exported="true" kind="lib" path="jython.jar"/>
 	<classpathentry exported="true" kind="lib" path="cron4j-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="barbecue-1.5-beta1.jar"/>
-	<classpathentry exported="true" kind="lib" path="jcommon-1.0.23.jar"/>
-	<classpathentry exported="true" kind="lib" path="jfreechart-1.0.19.jar"/>
 	<classpathentry exported="true" kind="lib" path="jnlp.jar"/>
-	<classpathentry exported="true" kind="lib" path="barcode4j-2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="commons-validator-1.6.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>

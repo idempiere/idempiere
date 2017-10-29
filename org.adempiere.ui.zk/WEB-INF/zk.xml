@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE zk>
 
 	<!--
 		zk.xml Copyright (C) 2006 Potix Corporation. All Rights Reserved.
@@ -24,7 +25,6 @@
 
 	<!--  false to use compress js which is much smaller. change to true if you need to debug -->
 	<client-config>
-		<debug-js>true</debug-js>
 		<processing-prompt-delay>500</processing-prompt-delay>
 	</client-config>
 

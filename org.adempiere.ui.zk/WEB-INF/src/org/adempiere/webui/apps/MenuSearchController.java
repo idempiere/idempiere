@@ -20,6 +20,8 @@ import java.util.List;
 import org.adempiere.webui.component.ListHead;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.desktop.FavouriteController;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.TreeItemAction;
 import org.adempiere.webui.util.TreeNodeAction;
@@ -47,7 +49,6 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.ListitemRendererExt;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
@@ -61,14 +62,21 @@ import org.zkoss.zul.impl.LabelImageElement;
  */
 public class MenuSearchController implements EventListener<Event>{
 
+	public static final String M_TREE_NODE_ATTR = "MTreeNode";
+	
+	private static final String Z_ICON_STAR_O = "z-icon-star-o";
+	private static final String Z_ICON_STAR = "z-icon-star";
 	private static final String ON_SEARCH_ECHO = "onSearchEcho";
 	private static final String ON_LOAD_MORE = "onLoadMore";
 	private static final String ONSELECT_TIMESTAMP = "onselect.timestamp";
+	private static final String STAR_BUTTON_NAME = "Star";
+	private static final String NEW_BUTTON_NAME = "New";
 	private Tree tree;
 	private Listbox listbox;
 	private ListModelList<MenuItem> model;
 	private Vlayout layout;
 	private ListModelList<MenuItem> fullModel;
+	private boolean inStarEvent;
 
 	private static final String ON_POST_SELECT_TREEITEM_EVENT = "onPostSelectTreeitem";
 	
@@ -196,12 +204,21 @@ public class MenuSearchController implements EventListener<Event>{
 		Listheader listheader = new Listheader();
 		listhead.appendChild(listheader);
 		listheader = new Listheader();
-		ZKUpdateUtil.setWidth(listheader, "32px");
+		listheader.setAlign("center");
+		ZKUpdateUtil.setWidth(listheader, "28px");
+		listhead.appendChild(listheader);
+		listheader = new Listheader();
+		listheader.setAlign("center");
+		ZKUpdateUtil.setWidth(listheader, "28px");
 		listhead.appendChild(listheader);
 		
 		layout.addEventListener(ON_SEARCH_ECHO, this);
 		layout.addEventListener(ON_LOAD_MORE, this);
 		updateListboxModel(model);
+		
+		FavouriteController controller = FavouriteController.getInstance(Executions.getCurrent().getSession());
+		controller.addDeletedCallback(t -> onDeletedCallback(t));
+		controller.addInsertedCallback(t -> onInsertedCallback(t));
 	}
 
 	@Override
@@ -221,18 +238,34 @@ public class MenuSearchController implements EventListener<Event>{
 	        	} else if (System.currentTimeMillis() - onSelect.longValue() > 1000) {
 	        		onSelect(item, Boolean.FALSE);
 	        	}
-        	} else if (event.getTarget() instanceof Toolbarbutton) {
-        		ListItem item = null;
-        		Component parent = event.getTarget();
-        		while (parent != null) {
-        			if (parent instanceof ListItem) {
-        				item = (ListItem) parent;
-        				break;
+        	} else if (event.getTarget() instanceof ToolBarButton) {
+        		ToolBarButton btn = (ToolBarButton) event.getTarget();
+        		if (NEW_BUTTON_NAME.equals(btn.getName())) { 
+        			ListItem item = null;
+        			Component parent = event.getTarget();
+        			while (parent != null) {
+        				if (parent instanceof ListItem) {
+        					item = (ListItem) parent;
+        					break;
+        				}
+        				parent = parent.getParent();
         			}
-        			parent = parent.getParent();
-        		}
-        		if (item != null) {
-        			onSelect(item, Boolean.TRUE);
+        			if (item != null) {
+        				onSelect(item, Boolean.TRUE);
+        			}
+        		} else if (STAR_BUTTON_NAME.equals(btn.getName())) {
+        			inStarEvent = true;
+        			FavouriteController controller = FavouriteController.getInstance(Executions.getCurrent().getSession());
+        			if (Z_ICON_STAR_O.equals(btn.getIconSclass())) {
+        				btn.setIconSclass(Z_ICON_STAR);
+        				btn.setTooltiptext(Msg.getMsg(Env.getCtx(), "RemoveFromFavourites"));
+        				controller.addNode((MTreeNode) btn.getAttribute(M_TREE_NODE_ATTR));
+        			} else if (Z_ICON_STAR.equals(btn.getIconSclass())) {
+        				btn.setIconSclass(Z_ICON_STAR_O);
+        				btn.setTooltiptext(Msg.getMsg(Env.getCtx(), "AddToFavourites"));
+        				controller.removeNode(((MTreeNode) btn.getAttribute(M_TREE_NODE_ATTR)).getNode_ID());
+        			}
+        			inStarEvent = false;
         		}
         	}
         } else if (event.getName().equals(ON_SEARCH_ECHO)) {
@@ -240,6 +273,20 @@ public class MenuSearchController implements EventListener<Event>{
         } else if (event.getName().equals(ON_LOAD_MORE)) {
         	loadMore();
         }	
+	}
+	
+	private void onInsertedCallback(MTreeNode node) {
+		if (inStarEvent) return;
+		ListModel<?> t = listbox.getModel();
+        listbox.setModel((ListModel<?>)null);
+        listbox.setModel(t);
+	}
+	
+	private void onDeletedCallback(Integer nodeId) {
+		if (inStarEvent) return;
+		ListModel<?> t = listbox.getModel();
+        listbox.setModel((ListModel<?>)null);
+        listbox.setModel(t);
 	}
 
 	private void onSelect(ListItem selected, Boolean newRecord) {
@@ -438,6 +485,9 @@ public class MenuSearchController implements EventListener<Event>{
 	}
 	
 	private class MenuItemRenderer implements ListitemRenderer<MenuItem>, ListitemRendererExt {
+		private static final String REMOVE_FROM_FAVOURITES_MSG = "RemoveFromFavourites";
+		private static final String ADD_TO_FAVOURITES_MSG = "AddToFavourites";		
+
 		@Override
 		public Listitem newListitem(org.zkoss.zul.Listbox listbox) {
 			return new ListItem();
@@ -466,13 +516,41 @@ public class MenuSearchController implements EventListener<Event>{
 			item.appendChild(cell);
 			boolean isWindow = data.getType() != null && data.getType().equals("window");
 			if (isWindow) {
-				Toolbarbutton newBtn = new Toolbarbutton(null, ThemeManager.getThemeResource("images/New16.png"));
+				ToolBarButton newBtn = new ToolBarButton();
+				newBtn.setImage(ThemeManager.getThemeResource("images/New16.png"));
 				newBtn.addEventListener(Events.ON_CLICK, MenuSearchController.this);
 				newBtn.setSclass("fav-new-btn");
-				newBtn.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "New")));
+				newBtn.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), NEW_BUTTON_NAME)));
+				newBtn.setName(NEW_BUTTON_NAME);
 				cell.appendChild(newBtn);
 			}
-		}
 		
+			cell = new Listcell();
+			item.appendChild(cell);
+			MTreeNode node = null;
+			if (data.getData() instanceof MTreeNode) {
+				node = (MTreeNode) data.getData();
+			} else if (data.getData() instanceof Treeitem) {
+				Treeitem value = (Treeitem) data.getData();
+				if (value != null) {
+					node = (MTreeNode) value.getAttribute(M_TREE_NODE_ATTR);
+				}
+			}
+			if (node != null) {
+				FavouriteController controller = FavouriteController.getInstance(Executions.getCurrent().getSession());
+				ToolBarButton starBtn = new ToolBarButton();
+				starBtn.setAttribute(M_TREE_NODE_ATTR, node);
+				starBtn.setName(STAR_BUTTON_NAME);
+				if (controller.hasNode(node.getNode_ID())) {
+					starBtn.setIconSclass(Z_ICON_STAR);
+					starBtn.setTooltiptext(Msg.getMsg(Env.getCtx(), REMOVE_FROM_FAVOURITES_MSG));
+				} else {
+					starBtn.setIconSclass(Z_ICON_STAR_O);
+					starBtn.setTooltiptext(Msg.getMsg(Env.getCtx(), ADD_TO_FAVOURITES_MSG));
+				}
+				cell.appendChild(starBtn);
+				starBtn.addEventListener(Events.ON_CLICK, MenuSearchController.this);
+			}			
+		}			
 	}	
 }

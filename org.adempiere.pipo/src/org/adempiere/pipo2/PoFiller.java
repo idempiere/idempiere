@@ -41,16 +41,30 @@ public class PoFiller{
 		this.handler = handler;
 	}
 
+	protected String getStringValue (String columnName){
+		Element e = element.properties.get(columnName);
+		String value = e != null ? e.contents.toString() : null;
+
+		value = "".equals(value) ? null : value;
+		return value;
+	}
+	
+	protected boolean isBlobOnPackinFile (String columnName){
+		String value = getStringValue(columnName);
+		if(value == null)
+			return false;
+		
+		String strParts [] = value.split("[|]");
+		return strParts.length == 2;
+
+	}
+	
 	/**
 	 *
 	 * @param columnName
 	 */
 	public void setString(String columnName){
-
-		Element e = element.properties.get(columnName);
-		String value = e != null ? e.contents.toString() : null;
-
-		value = "".equals(value) ? null : value;
+		String value = getStringValue(columnName);
 
 		Object oldValue = po.get_Value(columnName);
 		if (value == null && oldValue == null)
@@ -288,6 +302,12 @@ public class PoFiller{
 					setInteger(qName);
 				} else if (info.getColumnClass(index) == Timestamp.class) {
 					setTimestamp(qName);
+				}else if(DisplayType.TextLong == info.getColumnDisplayType(index)) {// export column from system have type is normal string, but import to system have this column but type is textlong (mean blob)
+					if (getStringValue (qName) != null || !isBlobOnPackinFile(qName)) {
+						setString(qName);
+					}else {
+						setBlob(qName);
+					}
 				} else if (DisplayType.isLOB(info.getColumnDisplayType(index))) {
 					setBlob(qName);
 				} else {
