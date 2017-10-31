@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BP_Group_Acct
  *  @author iDempiere (generated) 
- *  @version Release 4.1 - $Id$ */
+ *  @version Release 5.1 - $Id$ */
 public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20171031L;
 
     /** Standard Constructor */
     public X_C_BP_Group_Acct (Properties ctx, int C_BP_Group_Acct_ID, String trxName)

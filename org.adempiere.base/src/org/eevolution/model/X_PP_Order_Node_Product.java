@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for PP_Order_Node_Product
  *  @author iDempiere (generated) 
- *  @version Release 4.1 - $Id$ */
+ *  @version Release 5.1 - $Id$ */
 public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Product, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20171031L;
 
     /** Standard Constructor */
     public X_PP_Order_Node_Product (Properties ctx, int PP_Order_Node_Product_ID, String trxName)

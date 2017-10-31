@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportColumnSet
  *  @author iDempiere (generated) 
- *  @version Release 4.1 - $Id$ */
+ *  @version Release 5.1 - $Id$ */
 public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20171031L;
 
     /** Standard Constructor */
     public X_PA_ReportColumnSet (Properties ctx, int PA_ReportColumnSet_ID, String trxName)

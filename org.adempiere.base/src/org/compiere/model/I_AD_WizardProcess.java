@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_WizardProcess
  *  @author iDempiere (generated) 
- *  @version Release 4.1
+ *  @version Release 5.1
  */
 public interface I_AD_WizardProcess 
 {

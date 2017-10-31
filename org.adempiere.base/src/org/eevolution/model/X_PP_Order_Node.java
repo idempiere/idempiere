@@ -27,14 +27,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order_Node
  *  @author iDempiere (generated) 
- *  @version Release 4.1 - $Id$ */
+ *  @version Release 5.1 - $Id$ */
 public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20171031L;
 
     /** Standard Constructor */
     public X_PP_Order_Node (Properties ctx, int PP_Order_Node_ID, String trxName)
@@ -48,7 +48,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 			setAD_Workflow_ID (0);
 			setCost (Env.ZERO);
 			setEntityType (null);
-// U
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
 			setIsCentrallyMaintained (false);
 			setJoinElement (null);
 // X
@@ -122,6 +122,8 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	public static final String ACTION_EMail = "M";
 	/** User Workbench = B */
 	public static final String ACTION_UserWorkbench = "B";
+	/** User Info = I */
+	public static final String ACTION_UserInfo = "I";
 	/** Set Action.
 		@param Action 
 		Indicates the Action to be performed

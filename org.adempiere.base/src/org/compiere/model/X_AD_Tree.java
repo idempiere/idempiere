@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Tree
  *  @author iDempiere (generated) 
- *  @version Release 4.1 - $Id$ */
+ *  @version Release 5.1 - $Id$ */
 public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20170403L;
+	private static final long serialVersionUID = 20171031L;
 
     /** Standard Constructor */
     public X_AD_Tree (Properties ctx, int AD_Tree_ID, String trxName)
@@ -42,8 +42,8 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 			setIsAllNodes (false);
 			setIsDefault (false);
 // N
-			setIsLoadAllNodesImmediately (false);
-// N
+			setIsLoadAllNodesImmediately (true);
+// Y
 			setIsTreeDrivenByValue (false);
 // N
 			setName (null);

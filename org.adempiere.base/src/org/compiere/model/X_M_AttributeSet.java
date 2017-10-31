@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeSet
  *  @author iDempiere (generated) 
- *  @version Release 4.1 - $Id$ */
+ *  @version Release 5.1 - $Id$ */
 public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20170417L;
+	private static final long serialVersionUID = 20171031L;
 
     /** Standard Constructor */
     public X_M_AttributeSet (Properties ctx, int M_AttributeSet_ID, String trxName)
@@ -114,6 +114,27 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set IsAutoGenerateLot.
+		@param IsAutoGenerateLot IsAutoGenerateLot	  */
+	public void setIsAutoGenerateLot (boolean IsAutoGenerateLot)
+	{
+		set_Value (COLUMNNAME_IsAutoGenerateLot, Boolean.valueOf(IsAutoGenerateLot));
+	}
+
+	/** Get IsAutoGenerateLot.
+		@return IsAutoGenerateLot	  */
+	public boolean isAutoGenerateLot () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsAutoGenerateLot);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Guarantee Date.
@@ -512,27 +533,6 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 		{
 			 if (oo instanceof Boolean) 
 				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-	
-	/** Set Auto Generated.
-	@param IsAutoGenerateLot Auto Generate Lot	  */
-	public void setIsAutoGenerateLot (boolean IsAutoGenerateLot)
-	{
-		set_ValueNoCheck (COLUMNNAME_IsAutoGenerateLot, Boolean.valueOf(IsAutoGenerateLot));
-	}
-
-	/** Get Auto Generate Lot.
-	@return Auto Generate Lot	  */
-	public boolean isAutoGenerateLot () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsAutoGenerateLot);
-		if (oo != null) 
-		{
-				if (oo instanceof Boolean) 
-					return ((Boolean)oo).booleanValue(); 
 			return "Y".equals(oo);
 		}
 		return false;

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_CtxHelpSuggestion
  *  @author iDempiere (generated) 
- *  @version Release 4.1
+ *  @version Release 5.1
  */
 public interface I_AD_CtxHelpSuggestion 
 {
@@ -137,6 +137,8 @@ public interface I_AD_CtxHelpSuggestion
 	/** Get Tenant of User	  */
 	public int getAD_UserClient_ID();
 
+	public org.compiere.model.I_AD_AllClients_V getAD_UserClient() throws RuntimeException;
+
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
 
@@ -150,7 +152,7 @@ public interface I_AD_CtxHelpSuggestion
 	  */
 	public int getAD_User_ID();
 
-	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_AllUsers_V getAD_User() throws RuntimeException;
 
     /** Column name CompareSuggestion */
     public static final String COLUMNNAME_CompareSuggestion = "CompareSuggestion";

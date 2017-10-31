@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ModelValidator
  *  @author iDempiere (generated) 
- *  @version Release 4.1 - $Id$ */
+ *  @version Release 5.1 - $Id$ */
 public class X_AD_ModelValidator extends PO implements I_AD_ModelValidator, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20171031L;
 
     /** Standard Constructor */
     public X_AD_ModelValidator (Properties ctx, int AD_ModelValidator_ID, String trxName)
@@ -40,6 +40,7 @@ public class X_AD_ModelValidator extends PO implements I_AD_ModelValidator, I_Pe
         {
 			setAD_ModelValidator_ID (0);
 			setEntityType (null);
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
 			setModelValidationClass (null);
 			setName (null);
         } */

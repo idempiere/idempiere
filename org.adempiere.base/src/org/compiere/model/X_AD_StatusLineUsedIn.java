@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_StatusLineUsedIn
  *  @author iDempiere (generated) 
- *  @version Release 4.1 - $Id$ */
+ *  @version Release 5.1 - $Id$ */
 public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20171031L;
 
     /** Standard Constructor */
     public X_AD_StatusLineUsedIn (Properties ctx, int AD_StatusLineUsedIn_ID, String trxName)
