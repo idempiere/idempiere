@@ -114,17 +114,21 @@ public class MProductionLine extends X_M_ProductionLine {
 			} 
 			Timestamp dateMPolicy = date;
 			if(getM_AttributeSetInstance_ID()>0){
-				Timestamp t = MStorageOnHand.getDateMaterialPolicy(getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
+				Timestamp t = MStorageOnHand.getDateMaterialPolicy(getM_Product_ID(), getM_AttributeSetInstance_ID(), getM_Locator_ID(), get_TrxName());
 				if (t != null)
 					dateMPolicy = t;
 			}
 			
 			dateMPolicy = Util.removeTime(dateMPolicy);
-			MProductionLineMA lineMA = new MProductionLineMA( this,
-					asi.get_ID(), getMovementQty(),dateMPolicy);
-			if ( !lineMA.save(get_TrxName()) ) {
-				log.log(Level.SEVERE, "Could not save MA for " + toString());
-				errorString.append("Could not save MA for " + toString() + "\n" );
+			//for reversal, keep the ma copy from original trx
+			if (reversalId <= 0  ) 
+			{
+				MProductionLineMA lineMA = new MProductionLineMA( this,
+						asi.get_ID(), getMovementQty(),dateMPolicy);
+				if ( !lineMA.save(get_TrxName()) ) {
+					log.log(Level.SEVERE, "Could not save MA for " + toString());
+					errorString.append("Could not save MA for " + toString() + "\n" );
+				}
 			}
 			MTransaction matTrx = new MTransaction (getCtx(), getAD_Org_ID(), 
 					"P+", 

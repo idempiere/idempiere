@@ -107,11 +107,11 @@ import org.zkoss.zul.Vbox;
  * @contributor xolali 	IDEMPIERE-1045 Sub-Info Tabs  (reviewed by red1)
  */
 public class InfoWindow extends InfoPanel implements ValueChangeListener, EventListener<Event> {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8358292103127594383L;
+	private static final long serialVersionUID = 1672005382454423850L;
+
 	protected Grid parameterGrid;
 	private Borderlayout layout;
 	private Vbox southBody;
@@ -1513,16 +1513,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         dataSql = MRole.getDefault().addAccessSQL(dataSql, getTableName(),
             MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
         
-        if (infoWindow.getOtherClause() != null && infoWindow.getOtherClause().trim().length() > 0) {
-        	String otherClause = infoWindow.getOtherClause();
-        	if (otherClause.indexOf("@") >= 0) {
-        		String s = Env.parseContext(infoContext, p_WindowNo, otherClause, true, false);
-        		if (s.length() == 0) {
-        			log.severe("Failed to parse other clause. " + otherClause);
-        		} else {
-        			otherClause = s;
-        		}
-        	}
+        String otherClause = getOtherClauseParsed();
+        if (otherClause.length() > 0) {
         	dataSql = dataSql + " " + otherClause;
         }
         
@@ -1537,8 +1529,24 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         }
 		return dataSql;
 	}
-    
-    @Override
+
+    private String getOtherClauseParsed() {
+    	String otherClause = "";
+        if (infoWindow != null && infoWindow.getOtherClause() != null && infoWindow.getOtherClause().trim().length() > 0) {
+        	otherClause = infoWindow.getOtherClause();
+        	if (otherClause.indexOf("@") >= 0) {
+        		String s = Env.parseContext(infoContext, p_WindowNo, otherClause, true, false);
+        		if (s.length() == 0) {
+        			log.severe("Failed to parse other clause. " + otherClause);
+        		} else {
+        			otherClause = s;
+        		}
+        	}
+        }
+    	return otherClause;
+	}
+
+	@Override
     protected void executeQuery() {
     	prepareTable();
     	super.executeQuery();
@@ -1757,10 +1765,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 		countSql = MRole.getDefault().addAccessSQL	(countSql, getTableName(),
 													MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
-		// Fix GroupBy On InfoWindow
-		String otherClause = infoWindow.getOtherClause();
-    	if (otherClause !=null)
-    		countSql = countSql+" "+otherClause;
+		// IDEMPIERE-3521
+		String otherClause = getOtherClauseParsed();
+        if (otherClause.length() > 0) {
+    		countSql = countSql + " " + otherClause;
+        }
 		
 		countSql = "SELECT COUNT(*) FROM ( " + countSql + " ) a";			
 		

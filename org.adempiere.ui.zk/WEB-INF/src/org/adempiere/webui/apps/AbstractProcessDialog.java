@@ -104,7 +104,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4807787318205732697L;
+	private static final long serialVersionUID = 8307953279095577359L;
 	private static final String ON_COMPLETE = "onComplete";
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
 	
@@ -522,16 +522,23 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 				MPrintFormat format = new MPrintFormat(m_ctx, pr.getAD_PrintFormat_ID(), null);
 				table_ID = format.getAD_Table_ID();
 			}
-			String valCode = null;
+			StringBuilder valCode = new StringBuilder();
 			if (table_ID > 0)
 			{
-				valCode = "AD_PrintFormat.AD_Table_ID=" + table_ID;
+				valCode.append("AD_PrintFormat.AD_Table_ID=").append(table_ID);
 				m_isCanExport = MRole.getDefault().isCanExport(table_ID);
 			}
+
+			if (pr.getAD_ReportView_ID() > 0 && MSysConfig.getBooleanValue(MSysConfig.ZK_REPORT_ONLY_PRINTFORMAT_LINKEDTO_REPORTVIEW, false, client.getAD_Client_ID())) {
+				if (valCode.length() > 0)
+					valCode.append(" AND ");
+				valCode.append("AD_PrintFormat.AD_ReportView_ID=").append(pr.getAD_ReportView_ID());
+			}
+
 			Lookup lookup = MLookupFactory.get (Env.getCtx(), m_WindowNo, 
 					AD_Column_ID, DisplayType.TableDir,
 					Env.getLanguage(Env.getCtx()), "AD_PrintFormat_ID", 0, false,
-					valCode);
+					valCode.toString());
 			
 			fPrintFormat = new WTableDirEditor("AD_PrintFormat_ID", false, false, true, lookup);
 			

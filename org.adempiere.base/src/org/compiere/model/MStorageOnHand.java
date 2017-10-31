@@ -1035,7 +1035,8 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 * 
 	 * @param M_Product_ID
 	 * @param M_AttributeSetInstance_ID
-	 * @return
+	 * @param trxName
+	 * @return datempolicy timestamp
 	 */
 	public static Timestamp getDateMaterialPolicy(int M_Product_ID, int M_AttributeSetInstance_ID,String trxName){
 		
@@ -1058,6 +1059,49 @@ public class MStorageOnHand extends X_M_StorageOnHand
 				return rs.getTimestamp(1);
 			}
 		}catch (SQLException ex)
+		{
+			s_log.log(Level.SEVERE, sql, ex);
+			
+		}finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
+		
+		return null;
+	}  //getDateMaterialPolicy
+	
+	/**
+	 * 
+	 * @param M_Product_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param M_Locator_ID
+	 * @param trxName
+	 * @return datempolicy timestamp
+	 */
+	public static Timestamp getDateMaterialPolicy(int M_Product_ID, int M_AttributeSetInstance_ID, int M_Locator_ID, String trxName){
+		
+		if (M_Product_ID <= 0  || M_AttributeSetInstance_ID <= 0)
+			return null;
+		
+		String sql = "SELECT dateMaterialPolicy FROM M_StorageOnHand WHERE M_Product_ID=? and M_AttributeSetInstance_ID=? AND M_Locator_ID=?";
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, trxName);
+			pstmt.setInt(1, M_Product_ID);
+			pstmt.setInt(2, M_AttributeSetInstance_ID);
+			pstmt.setInt(3, M_Locator_ID);
+			
+			rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				return rs.getTimestamp(1);
+			}
+		} catch (SQLException ex)
 		{
 			s_log.log(Level.SEVERE, sql, ex);
 			

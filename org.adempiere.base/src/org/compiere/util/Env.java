@@ -1663,6 +1663,9 @@ public final class Env
 								outStr.append(mf.format(v));
 							}
 						} else {
+							if (colToken != null && colToken.isSecure()) {
+								v = "********";
+							}
 							outStr.append(v.toString());
 						}
 					}
