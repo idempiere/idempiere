@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Web Store
 Bundle-SymbolicName: org.adempiere.webstore;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.1.0.qualifier
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.report.jasper.webapp;bundle-version="0.0.0",
  org.eclipse.jdt.core.compiler.batch;bundle-version="0.0.0"
