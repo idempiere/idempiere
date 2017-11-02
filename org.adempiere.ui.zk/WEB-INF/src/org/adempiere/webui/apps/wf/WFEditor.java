@@ -88,7 +88,7 @@ public class WFEditor extends ADForm {
 	protected void initForm() {
 		ZKUpdateUtil.setHeight(this, "100%");
 		Borderlayout layout = new Borderlayout();
-		layout.setStyle("width: 100%; height: 100%; position: absolute;");
+		layout.setStyle("width: 100%; height: 100%; position: relative;");
 		appendChild(layout);
 		String sql;
 		boolean isBaseLanguage = Env.isBaseLanguage(Env.getCtx(), "AD_Workflow");
@@ -113,22 +113,30 @@ public class WFEditor extends ADForm {
 		ToolBar toolbar = new ToolBar();
 		north.appendChild(toolbar);
 		toolbar.appendChild(workflowList);
-		workflowList.setStyle("margin-left: 10px; margin-top: 5px; margin-right:5px;");
 		// Zoom
 		zoomButton = new Toolbarbutton();
-		zoomButton.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			zoomButton.setIconSclass("z-icon-Zoom");
+		else
+			zoomButton.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
 		toolbar.appendChild(zoomButton);
 		zoomButton.addEventListener(Events.ON_CLICK, this);
 		zoomButton.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")));
 		// New Node
 		newButton = new Toolbarbutton();
-		newButton.setImage(ThemeManager.getThemeResource("images/New16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			newButton.setIconSclass("z-icon-New");
+		else
+			newButton.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		toolbar.appendChild(newButton);
 		newButton.addEventListener(Events.ON_CLICK, this);
 		newButton.setTooltiptext(Msg.getMsg(Env.getCtx(), "CreateNewNode"));
 		// Refresh
 		refreshButton = new Toolbarbutton();
-		refreshButton.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			refreshButton.setIconSclass("z-icon-Refresh");
+		else
+			refreshButton.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
 		toolbar.appendChild(refreshButton);
 		refreshButton.addEventListener(Events.ON_CLICK, this);
 		refreshButton.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));

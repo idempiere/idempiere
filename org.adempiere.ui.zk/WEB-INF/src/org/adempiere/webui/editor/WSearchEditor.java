@@ -173,19 +173,31 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		if (columnName.equals("C_BPartner_ID"))
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), true, true, false, lookup);
-			imageUrl = ThemeManager.getThemeResource("images/BPartner16.png");
+			if (ThemeManager.isUseFontIconForImage())
+				imageUrl = "z-icon-BPartner";
+			else
+				imageUrl = ThemeManager.getThemeResource("images/BPartner16.png");
 		}
 		else if (columnName.equals("M_Product_ID"))
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, lookup);
-			imageUrl = ThemeManager.getThemeResource("images/Product16.png");
+			if (ThemeManager.isUseFontIconForImage())
+				imageUrl = "z-icon-Product";
+			else
+				imageUrl = ThemeManager.getThemeResource("images/Product16.png");
 		}
 		else
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, lookup);
-			imageUrl = ThemeManager.getThemeResource("images/PickOpen16.png");
+			if (ThemeManager.isUseFontIconForImage())
+				imageUrl = "z-icon-More";
+			else
+				imageUrl = ThemeManager.getThemeResource("images/PickOpen16.png");
 		}
-		getComponent().getButton().setImage(imageUrl);
+		if (ThemeManager.isUseFontIconForImage())
+			getComponent().getButton().setIconSclass(imageUrl);
+		else
+			getComponent().getButton().setImage(imageUrl);
 
 		addChangeLogMenu(popupMenu);
 
@@ -402,7 +414,10 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 	private void resetButtonState() {
 		getComponent().getButton().setEnabled(true);
-		getComponent().getButton().setImage(imageUrl);
+		if (ThemeManager.isUseFontIconForImage())
+			getComponent().getButton().setIconSclass(imageUrl);
+		else
+			getComponent().getButton().setImage(imageUrl);
 		getComponent().invalidate();
 	}
 
@@ -943,9 +958,15 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			super.onPageAttached(newpage, oldpage);
 			if (newpage != null) {
 				String w = "try{var btn=jq('#'+this.parent.uuid+' @button').zk.$();}catch(err){}";
-				getTextbox().setWidgetListener("onChange", "try{"+w+"btn.setImage(\""
+				if (ThemeManager.isUseFontIconForImage()) {
+					String sclass = "z-icon-spinner z-icon-spin";
+					getTextbox().setWidgetListener("onChange", "try{"+w+"btn.setIconSclass('" + sclass + "');"
+							+ "btn.setDisabled(true, {adbs: false, skip: false});}catch(err){}");
+				} else {
+					getTextbox().setWidgetListener("onChange", "try{"+w+"btn.setImage(\""
 						+ Executions.getCurrent().encodeURL(IN_PROGRESS_IMAGE)+"\");"
 						+ "btn.setDisabled(true, {adbs: false, skip: false});}catch(err){}");
+				}
 			}
 		}
 		

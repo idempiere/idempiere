@@ -3,8 +3,6 @@
 <%-- breadcrumb --%>
 .breadcrumb-toolbar-button {
 	background-color: transparent; 
-	display:inline-block; 
-	width: 22px; 
 	height: 22px;
 }
 .breadcrumb-toolbar-button img {
@@ -13,6 +11,10 @@
 }
 .breadcrumb-record-info {
 	font-size: 12px;
+}
+.breadcrumb-toolbar-button [class^="z-icon-"] {
+	padding-left: 4px;
+	padding-right: 4px;
 }
 
 .adwindow-form > .z-grid-body {
@@ -77,7 +79,7 @@
 .adwindow-toolbar {
 	border: 0px;
 	padding: 2px 4px;
-	height: 30px;
+	height: 36px;
 	background-image: none;
 	background-color: #fff;
 }

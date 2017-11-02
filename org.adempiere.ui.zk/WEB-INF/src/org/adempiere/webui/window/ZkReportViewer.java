@@ -122,7 +122,6 @@ import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.impl.Utils;
 import org.zkoss.zul.impl.XulElement;
 
-
 /**
  *	Print View Frame
  *
@@ -393,7 +392,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
 		
 		bCustomize.setName("Customize");
-		bCustomize.setImage(ThemeManager.getThemeResource("images/Preference24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bCustomize.setIconSclass("z-icon-Preference");
+		else
+			bCustomize.setImage(ThemeManager.getThemeResource("images/Preference24.png"));
 		bCustomize.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "PrintCustomize")));
 		if (toolbarPopup != null)
 		{
@@ -403,11 +405,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		else
 			toolBar.appendChild(bCustomize);
 		bCustomize.addEventListener(Events.ON_CLICK, this);
-		
-		
+		if (ThemeManager.isUseFontIconForImage())
+			LayoutUtils.addSclass("medium-toolbarbutton", bCustomize);		
 		
 		bFind.setName("Find");
-		bFind.setImage(ThemeManager.getThemeResource("images/Find24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bFind.setIconSclass("z-icon-Find");
+		else
+			bFind.setImage(ThemeManager.getThemeResource("images/Find24.png"));
 		bFind.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Find")));		
 		bFind.addEventListener(Events.ON_CLICK, this);
 		if (getAD_Tab_ID(m_reportEngine.getPrintFormat().getAD_Table_ID()) <= 0) {
@@ -424,9 +429,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			toolBar.appendChild(bFind);
 			toolBar.appendChild(new Separator("vertical"));
 		}
+		if (ThemeManager.isUseFontIconForImage())
+			LayoutUtils.addSclass("medium-toolbarbutton", bFind);
 		
 		bSendMail.setName("SendMail");
-		bSendMail.setImage(ThemeManager.getThemeResource("images/SendMail24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bSendMail.setIconSclass("z-icon-SendMail");
+		else
+			bSendMail.setImage(ThemeManager.getThemeResource("images/SendMail24.png"));
 		bSendMail.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "SendMail")));
 		if (toolbarPopup != null)
 		{
@@ -436,9 +446,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		else
 			toolBar.appendChild(bSendMail);
 		bSendMail.addEventListener(Events.ON_CLICK, this);
+		if (ThemeManager.isUseFontIconForImage())
+			LayoutUtils.addSclass("medium-toolbarbutton", bSendMail);
 		
 		bArchive.setName("Archive");
-		bArchive.setImage(ThemeManager.getThemeResource("images/Archive24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bArchive.setIconSclass("z-icon-Archive");
+		else
+			bArchive.setImage(ThemeManager.getThemeResource("images/Archive24.png"));
 		bArchive.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Archive")));
 		if (toolbarPopup != null)
 		{
@@ -448,11 +463,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		else
 			toolBar.appendChild(bArchive);
 		bArchive.addEventListener(Events.ON_CLICK, this);
+		if (ThemeManager.isUseFontIconForImage())
+			LayoutUtils.addSclass("medium-toolbarbutton", bArchive);
 		
 		if ( m_isCanExport )
 		{
 			bExport.setName("Export");
-			bExport.setImage(ThemeManager.getThemeResource("images/Export24.png"));
+			if (ThemeManager.isUseFontIconForImage())
+				bExport.setIconSclass("z-icon-Export");
+			else
+				bExport.setImage(ThemeManager.getThemeResource("images/Export24.png"));
 			bExport.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Export")));
 			if (toolbarPopup != null)
 			{
@@ -462,13 +482,18 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			else
 				toolBar.appendChild(bExport);
 			bExport.addEventListener(Events.ON_CLICK, this);
+			if (ThemeManager.isUseFontIconForImage())
+				LayoutUtils.addSclass("medium-toolbarbutton", bExport);
 		}
 		
 		if (toolbarPopup == null)
 			toolBar.appendChild(new Separator("vertical"));
 		
 		bRefresh.setName("Refresh");
-		bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bRefresh.setIconSclass("z-icon-Refresh");
+		else
+			bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
 		bRefresh.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
 		if (toolbarPopup != null)
 		{
@@ -478,8 +503,13 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		else
 			toolBar.appendChild(bRefresh);
 		bRefresh.addEventListener(Events.ON_CLICK, this);
+		if (ThemeManager.isUseFontIconForImage())
+			LayoutUtils.addSclass("medium-toolbarbutton", bRefresh);
 
-		bWizard.setImage(ThemeManager.getThemeResource("images/Wizard24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bWizard.setIconSclass("z-icon-Wizard");
+		else
+			bWizard.setImage(ThemeManager.getThemeResource("images/Wizard24.png"));
 		bWizard.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "PrintWizard")));
 		if (toolbarPopup != null)
 		{
@@ -489,13 +519,19 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		else
 			toolBar.appendChild(bWizard);
 		bWizard.addEventListener(Events.ON_CLICK, this);
+		if (ThemeManager.isUseFontIconForImage())
+			LayoutUtils.addSclass("medium-toolbarbutton", bWizard);
 
 		if (toolbarPopup != null)
 		{
 			ToolBarButton more = new ToolBarButton();
-			more.setImage(ThemeManager.getThemeResource("images/expand-header.png"));
-			more.setStyle("float: right;");
+			if (ThemeManager.isUseFontIconForImage())
+				more.setIconSclass("z-icon-Expand");
+			else
+				more.setImage(ThemeManager.getThemeResource("images/expand-header.png"));
+//			more.setStyle("float: right;");
 			toolBar.appendChild(more);
+			LayoutUtils.addSclass("space-between-content", toolBar);
 			more.addEventListener(Events.ON_CLICK, evt -> {
 				toolbarPopup.open(more, "before_end");
 			});

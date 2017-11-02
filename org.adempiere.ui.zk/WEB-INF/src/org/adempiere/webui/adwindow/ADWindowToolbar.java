@@ -297,18 +297,27 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btn.setId(btn.getName());
         if (image != null) 
         {
-        	Executions.createComponents(ThemeManager.getPreference(), this, null);
-        	String size = Env.getContext(Env.getCtx(), "#ZK_Toolbar_Button_Size");
-        	String suffix = "24.png";
-        	if (!Util.isEmpty(size)) 
+        	if (ThemeManager.isUseFontIconForImage()) 
         	{
-        		suffix = size + ".png";
+        		String iconSclass = "z-icon-" + image;
+        		btn.setIconSclass(iconSclass);
+        		LayoutUtils.addSclass("font-icon-toolbar-button", btn);
         	}
-        	btn.setImage(ThemeManager.getThemeResource("images/"+image + suffix));
+        	else
+        	{
+	        	Executions.createComponents(ThemeManager.getPreference(), this, null);
+	        	String size = Env.getContext(Env.getCtx(), "#ZK_Toolbar_Button_Size");
+	        	String suffix = "24.png";
+	        	if (!Util.isEmpty(size)) 
+	        	{
+	        		suffix = size + ".png";
+	        	}
+	        	btn.setImage(ThemeManager.getThemeResource("images/"+image + suffix));
+        	}
         }
         btn.setTooltiptext(Msg.getMsg(Env.getCtx(),tooltip));
-        btn.setSclass("toolbar-button");
-
+        LayoutUtils.addSclass("toolbar-button", btn);
+        
         buttons.put(name, btn);
         //make toolbar button last to receive focus
         btn.setTabindex(0);

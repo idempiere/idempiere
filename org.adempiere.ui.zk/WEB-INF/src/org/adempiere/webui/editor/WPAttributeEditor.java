@@ -69,7 +69,10 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 	}
 
 	private void initComponents() {
-		getComponent().setButtonImage(ThemeManager.getThemeResource("images/PAttribute16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			getComponent().getButton().setIconSclass("z-icon-PAttribute");
+		else
+			getComponent().setButtonImage(ThemeManager.getThemeResource("images/PAttribute16.png"));
 		// getComponent().addEventListener(Events.ON_CLICK, this); // IDEMPIERE-426 - dup listener, already set at WEditor
 
 		m_WindowNo = gridField.getWindowNo();

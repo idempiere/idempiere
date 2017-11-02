@@ -185,12 +185,35 @@ public class Messagebox extends Window implements EventListener<Event>
 
 		Hbox pnlImage = new Hbox();
 
-		img.setSrc(imgSrc);
+		String iconSclass = null;
+		Label label = null;
+		if (ThemeManager.isUseFontIconForImage()) 
+		{
+			if (imgSrc.equals(QUESTION))
+				iconSclass = "z-icon-QuestionMessageBox";
+			else if (imgSrc.equals(EXCLAMATION))
+				iconSclass = "z-icon-ExclamationMessageBox";
+			else if (imgSrc.equals(INFORMATION))
+				iconSclass = "z-icon-InformationMessageBox";
+			else if (imgSrc.equals(ERROR))
+				iconSclass = "z-icon-ErrorMessageBox";
+		}
+			
+		if (ThemeManager.isUseFontIconForImage() && iconSclass != null)
+		{
+			label = new Label();
+			label.setSclass(iconSclass);
+		}
+		else
+			img.setSrc(imgSrc);
 
 		ZKUpdateUtil.setWidth(pnlImage, "72px");
 		pnlImage.setAlign("center");
 		pnlImage.setPack("center");
-		pnlImage.appendChild(img);
+		if (ThemeManager.isUseFontIconForImage() && iconSclass != null)
+			pnlImage.appendChild(label);
+		else
+			pnlImage.appendChild(img);
 				
 		Hbox north = new Hbox();
 		north.setAlign("center");

@@ -420,7 +420,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	        showHeader.setImage(ThemeManager.getThemeResource(IMAGES_THREELINE_MENU_PNG));
 	        showHeader.addEventListener(Events.ON_CLICK, this);
 	        showHeader.setSclass("window-container-toolbar-btn");
-	        showHeader.setStyle("cursor: pointer; border: 1px solid transparent; padding: 2px;");
 	        showHeader.setVisible(false);
 	        
 	        max = new ToolBarButton();
@@ -428,15 +427,16 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	        max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
 	        max.addEventListener(Events.ON_CLICK, this);
 	        max.setSclass("window-container-toolbar-btn");
-	        max.setStyle("cursor: pointer; border: 1px solid transparent; padding: 2px;");
 		}
         
         contextHelp = new ToolBarButton();
         toolbar.appendChild(contextHelp);
-        contextHelp.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
+        if (ThemeManager.isUseFontIconForImage())
+        	contextHelp.setIconSclass("z-icon-Help");
+        else
+        	contextHelp.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
         contextHelp.addEventListener(Events.ON_CLICK, this);
         contextHelp.setSclass("window-container-toolbar-btn context-help-btn");
-        contextHelp.setStyle("cursor: pointer; border: 1px solid transparent; padding: 2px;");
         contextHelp.setTooltiptext(Util.cleanAmp(Msg.getElement(Env.getCtx(), "AD_CtxHelp_ID")));
         contextHelp.setVisible(!e.isVisible());
         

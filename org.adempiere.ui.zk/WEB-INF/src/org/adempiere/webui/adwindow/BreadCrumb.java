@@ -387,7 +387,10 @@ public class BreadCrumb extends Div implements EventListener<Event> {
     	{
     		suffix = size + ".png";
     	}
-        btn.setImage(ThemeManager.getThemeResource("images/"+image + suffix));
+    	if (ThemeManager.isUseFontIconForImage())
+    		btn.setIconSclass("z-icon-"+image+"Record");
+    	else
+    		btn.setImage(ThemeManager.getThemeResource("images/"+image + suffix));
         btn.setTooltiptext(Msg.getMsg(Env.getCtx(),tooltip));
         btn.setSclass("breadcrumb-toolbar-button");
         

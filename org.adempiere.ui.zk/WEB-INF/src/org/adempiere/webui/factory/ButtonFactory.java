@@ -74,21 +74,30 @@ public class ButtonFactory {
         	button.setLabel(text);
         	if (withImage) 
         	{
-        		button.setImage(ThemeManager.getThemeResource("images/"+name+"16.png"));        	
+        		if (ThemeManager.isUseFontIconForImage())
+        			button.setIconSclass("z-icon-"+name);
+        		else
+        			button.setImage(ThemeManager.getThemeResource("images/"+name+"16.png"));        	
         	}
         	LayoutUtils.addSclass("txt-btn", button);
         }
         else
         {
-        	button.setImage(ThemeManager.getThemeResource("images/"+name+"24.png"));
+        	if (ThemeManager.isUseFontIconForImage())
+    			button.setIconSclass("z-icon-"+name);
+        	else
+        		button.setImage(ThemeManager.getThemeResource("images/"+name+"24.png"));
+        	
         	if (text != null)
         		button.setTooltiptext(text);
         	LayoutUtils.addSclass("img-btn", button);
         }
-        
+                
         //add named class for further customization option 
         String className = "btn-" + name.toLowerCase();
         LayoutUtils.addSclass(className, button);
+        if (ThemeManager.isUseFontIconForImage())
+        	LayoutUtils.addSclass("font-icon-button", button);
 
         return button;
     }

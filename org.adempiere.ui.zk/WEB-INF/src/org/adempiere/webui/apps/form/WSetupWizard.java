@@ -358,19 +358,31 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		ZKUpdateUtil.setHeight(mainLayout, "100%");
 		mainLayout.setStyle("position: absolute");
 
-		bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bRefresh.setIconSclass("z-icon-Refresh");
+		else
+			bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
 		bRefresh.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "Refresh"));
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 
-		bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bOK.setIconSclass("z-icon-Ok");
+		else
+			bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 		bOK.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "Update"));
 		bOK.addEventListener(Events.ON_CLICK, this);
 
-		bNext.setImage(ThemeManager.getThemeResource("images/Next16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bNext.setIconSclass("z-icon-Next");
+		else
+			bNext.setImage(ThemeManager.getThemeResource("images/Next16.png"));
 		bNext.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "Next"));
 		bNext.addEventListener(Events.ON_CLICK, this);
 		
-		bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bZoom.setIconSclass("z-icon-Zoom");
+		else
+			bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
 		bZoom.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "Zoom"));
 		bZoom.addEventListener(Events.ON_CLICK, this);
 		

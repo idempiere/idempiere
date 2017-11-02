@@ -149,3 +149,32 @@
 	}
 }
 
+.menu-href [class^="z-icon-"] {
+	font-size: larger;
+	color: #333;	
+	padding-right: 4px;
+	text-align: center;
+}
+.menu-href [class^="z-icon-"]:before {
+	width: 14px;
+}
+.menu-href-newbtn.z-toolbarbutton [class^="z-icon-"] {
+	font-size: smaller;
+	color: #333;
+}
+.menu-href-newbtn.z-toolbarbutton,
+.menu-href-newbtn.z-toolbarbutton .z-toolbarbutton-content {
+	justify-content: center;
+	align-items: center;
+	display: inline-flex;
+}
+
+.menu-search-list-toolbar-cell.z-listcell > div.z-listcell-content {
+	display: inline-flex; 
+	align-items: center;
+	justify-content: center;
+}
+.menu-search-list-toolbar-cell.z-listcell .fav-new-btn.z-toolbarbutton [class^="z-icon-"] {
+	font-size: larger;
+}
+

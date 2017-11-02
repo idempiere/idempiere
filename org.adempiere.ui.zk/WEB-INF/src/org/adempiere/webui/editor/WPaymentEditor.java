@@ -69,7 +69,10 @@ public class WPaymentEditor extends WEditor implements ListDataListener, Context
         getComponent().getCombobox().setAutocomplete(true);
         getComponent().getCombobox().setAutodrop(true);
         getComponent().getCombobox().addEventListener(Events.ON_BLUR, this);
-        getComponent().setButtonImage(ThemeManager.getThemeResource("images/Payment16.png"));        
+        if (ThemeManager.isUseFontIconForImage())
+        	getComponent().getButton().setIconSclass("z-icon-Payment");
+        else
+        	getComponent().setButtonImage(ThemeManager.getThemeResource("images/Payment16.png"));        
         getComponent().getButton().addActionListener(this);
 
         if (lookup != null)

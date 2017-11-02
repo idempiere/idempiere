@@ -15,6 +15,7 @@ package org.adempiere.webui.dashboard;
 
 import java.util.List;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
@@ -64,9 +65,14 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			ToolBarButton btnViewItem = new ToolBarButton("InfoAccount");
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoAccount")));
-			btnViewItem.setImage(ThemeManager.getThemeResource("images/InfoAccount16.png"));
+			if (ThemeManager.isUseFontIconForImage())
+				btnViewItem.setIconSclass("z-icon-InfoAccount");
+			else
+				btnViewItem.setImage(ThemeManager.getThemeResource("images/InfoAccount16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
+			if (ThemeManager.isUseFontIconForImage())
+				LayoutUtils.addSclass("medium-toolbarbutton toolbarbutton-with-text", btnViewItem);
 		}
 		if (MSysConfig.getBooleanValue(MSysConfig.DPVIEWS_SHOWINFOSCHEDULE, true, Env.getAD_Client_ID(Env.getCtx()))
 				&& MRole.getDefault().isAllow_Info_Schedule())
@@ -74,9 +80,14 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			ToolBarButton btnViewItem = new ToolBarButton("InfoSchedule");
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoSchedule")));
-			btnViewItem.setImage(ThemeManager.getThemeResource("images/InfoSchedule16.png"));
+			if (ThemeManager.isUseFontIconForImage())
+				btnViewItem.setIconSclass("z-icon-InfoSchedule");
+			else
+				btnViewItem.setImage(ThemeManager.getThemeResource("images/InfoSchedule16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
+			if (ThemeManager.isUseFontIconForImage())
+				LayoutUtils.addSclass("medium-toolbarbutton toolbarbutton-with-text", btnViewItem);
 		}
 
 		List<MInfoWindow> list = new Query(Env.getCtx(), MInfoWindow.Table_Name, "IsValid='Y' AND IsShowInDashboard='Y'", null)
@@ -94,9 +105,20 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 				ToolBarButton btnViewItem = new ToolBarButton(info.getName());
 				btnViewItem.setSclass("link");
 				btnViewItem.setLabel(info.get_Translation("Name"));
-				btnViewItem.setImage(ThemeManager.getThemeResource("images/" + (Util.isEmpty(info.getImageURL()) ? "Info16.png" : info.getImageURL())));
+				String image = (Util.isEmpty(info.getImageURL()) ? "Info16.png" : info.getImageURL());
+				if (ThemeManager.isUseFontIconForImage())
+				{
+					image = image.replace("16.png", "");
+					btnViewItem.setIconSclass("z-icon-"+image);
+				}
+				else
+				{
+					btnViewItem.setImage(ThemeManager.getThemeResource("images/" + image));
+				}
 				btnViewItem.addEventListener(Events.ON_CLICK, this);
 				vbox.appendChild(btnViewItem);
+				if (ThemeManager.isUseFontIconForImage())
+					LayoutUtils.addSclass("medium-toolbarbutton toolbarbutton-with-text", btnViewItem);
 			}
 		}
 

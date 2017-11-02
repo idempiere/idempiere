@@ -150,4 +150,8 @@ public final class ThemeManager {
 	public static boolean isUseCSSForWindowSize() {
 		return "Y".equals(Env.getContext(Env.getCtx(), ITheme.USE_CSS_FOR_WINDOW_SIZE));
 	}	
+	
+	public static boolean isUseFontIconForImage() {
+		return "Y".equals(Env.getContext(Env.getCtx(), ITheme.USE_FONT_ICON_FOR_IMAGE));
+	}	
 }

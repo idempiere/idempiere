@@ -123,7 +123,10 @@ public class NumberBox extends Div
         appendChild(decimalBox);
 		
 		btn = new Button();
-        btn.setImage(ThemeManager.getThemeResource("images/Calculator16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			btn.setIconSclass("z-icon-Calculator");
+		else
+			btn.setImage(ThemeManager.getThemeResource("images/Calculator16.png"));
 		btn.setTabindex(-1);
 		ZKUpdateUtil.setHflex(btn, "0");
 		btn.setWidgetListener("onClick", "try{var id=this.getPopup(); zk.Widget.$(id.substring(5, id.length - 1)).focus_(100);" +

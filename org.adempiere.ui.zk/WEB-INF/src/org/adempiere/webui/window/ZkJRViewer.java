@@ -191,7 +191,10 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		// Added BY Martin - Ntier Software Services 09/10/2013
 		toolbar.appendChild(new Separator("vertical"));
 		bSendMail.setName("SendMail");  // ?? Msg
-		bSendMail.setImage(ThemeManager.getThemeResource("images/SendMail24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bSendMail.setIconSclass("z-icon-SendMail");
+		else
+			bSendMail.setImage(ThemeManager.getThemeResource("images/SendMail24.png"));
 		bSendMail.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "SendMail")));
 		toolbar.appendChild(bSendMail);
 		bSendMail.addEventListener(Events.ON_CLICK, this);

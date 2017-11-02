@@ -425,13 +425,19 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private void initAdvanced()
     {
         ToolBarButton btnNew = new ToolBarButton();
-        btnNew.setImage(ThemeManager.getThemeResource("images/New24.png"));
+        if (ThemeManager.isUseFontIconForImage())
+        	btnNew.setIconSclass("z-icon-New");
+        else
+        	btnNew.setImage(ThemeManager.getThemeResource("images/New24.png"));
         btnNew.setAttribute("name", "btnNewAdv");
         btnNew.addEventListener(Events.ON_CLICK, this);
 
         ToolBarButton btnDelete = new ToolBarButton();
         btnDelete.setAttribute("name","btnDeleteAdv");
-        btnDelete.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
+        if (ThemeManager.isUseFontIconForImage())
+        	btnDelete.setIconSclass("z-icon-Delete");
+        else
+        	btnDelete.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
         btnDelete.addEventListener(Events.ON_CLICK, this);
 
         Button btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
@@ -559,10 +565,15 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	
     	btnSave = new ToolBarButton();
         btnSave.setAttribute("name","btnSaveAdv");
-        btnSave.setImage(ThemeManager.getThemeResource("images/Save24.png"));
+        if (ThemeManager.isUseFontIconForImage())
+        	btnSave.setIconSclass("z-icon-Save");
+        else
+        	btnSave.setImage(ThemeManager.getThemeResource("images/Save24.png"));
         btnSave.addEventListener(Events.ON_CLICK, this);
         btnSave.setId("btnSave");
         btnSave.setStyle("vertical-align: middle;");
+        if (ThemeManager.isUseFontIconForImage())
+        	LayoutUtils.addSclass("large-toolbarbutton", btnSave);
 
         fQueryName = new Combobox();
         fQueryName.setTooltiptext(Msg.getMsg(Env.getCtx(),"QueryName"));

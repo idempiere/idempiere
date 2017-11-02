@@ -480,6 +480,9 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		cell.addEventListener(Events.ON_CLICK, this);
 		cell.setStyle("border: none;");
 		cell.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "EditRecord")));
+		if (ThemeManager.isUseFontIconForImage())
+			cell.appendChild(new Label());
+		cell.setValign("middle");
 		
 		row.appendChild(cell);
 		
@@ -592,12 +595,21 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			Cell cell = (Cell) currentRow.getChildren().get(1);
 			if (cell != null) {
 				cell.setSclass("row-indicator");
+				if (cell.getFirstChild() != null)
+					((Label)cell.getFirstChild()).setSclass("");
 			}
 		}
 		currentRow = row;
 		Cell cell = (Cell) currentRow.getChildren().get(1);
 		if (cell != null) {
-			cell.setSclass("row-indicator-selected");
+			if (ThemeManager.isUseFontIconForImage()) 
+//				cell.setSclass("row-indicator-selected z-icon-Edit");
+			{
+				Label l = (Label) cell.getFirstChild();
+				l.setSclass("row-indicator-selected z-icon-Edit");
+			}
+			else
+				cell.setSclass("row-indicator-selected");
 		}
 		currentRowIndex = gridTab.getCurrentRow();
 		

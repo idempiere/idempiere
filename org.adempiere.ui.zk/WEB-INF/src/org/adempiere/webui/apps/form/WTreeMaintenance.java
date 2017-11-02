@@ -195,7 +195,10 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 
 		searchBox.addEventListener(Events.ON_CLICK, this);
 		searchBox.getTextbox().addEventListener(Events.ON_OK, this);
-		searchBox.getButton().setImage(ThemeManager.getThemeResource("images/Find16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			searchBox.getButton().setIconSclass("z-icon-Search");
+		else
+			searchBox.getButton().setImage(ThemeManager.getThemeResource("images/Find16.png"));
 		searchBox.setToolTipText(Msg.getCleanMsg(Env.getCtx(), "TreeSearch"));
 		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
 			ZKUpdateUtil.setHflex(searchBox, "1");

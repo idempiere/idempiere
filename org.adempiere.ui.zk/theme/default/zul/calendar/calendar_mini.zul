@@ -13,7 +13,7 @@
 <calendars firstDayOfWeek="Monday" mold="month" id="cal" xmlns:w="client" w:onBind="try{_overrideMsgCal(); var me=this; setTimeout(function(){me.onSize();},50); }catch(error){} ">
 	<toolbar sclass="calendar-toolbar">
 		<div class="float-left">
-			<hbox>
+			<hbox align="center">
 				<divarrow id="divArrowLeft" type="arrow-left"/>
 				<divarrow id="divArrowRight" type="arrow-right"/>
 				<div>
