@@ -272,6 +272,10 @@
 	content: "\f14c";
 }
 
+.z-icon-ZoomAcross:before {	
+	content: "\f00e";
+}
+
 .z-icon-Request:before {	
 	content: "\f046";
 }
