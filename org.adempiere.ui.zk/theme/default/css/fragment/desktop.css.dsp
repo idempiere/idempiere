@@ -43,6 +43,7 @@
 
 .desktop-header-popup .desktop-header {
 	border: none;
+	height: 100% !important;
 }
 
 .desktop-header-username {
