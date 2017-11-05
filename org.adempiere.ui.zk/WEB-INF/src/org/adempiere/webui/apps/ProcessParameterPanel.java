@@ -329,6 +329,7 @@ public class ProcessParameterPanel extends Panel implements
 		//
 		if (voF.isRange) {
 			Div box = new Div();
+			box.setStyle("display: flex; align-items: center;");
 			ZKUpdateUtil.setWidth(box, "100%");
 			box.appendChild(editor.getComponent());
 			ZKUpdateUtil.setWidth((HtmlBasedComponent) editor.getComponent(), "49%");
@@ -360,7 +361,7 @@ public class ProcessParameterPanel extends Panel implements
 			//
 			m_wEditors2.add(editor2);
 			Space separator = new Space();
-			separator.setSpacing("2%");
+			separator.setStyle("margin:0; width: 2%;");
 			m_separators.add(separator);
 			box.appendChild(separator);
 			box.appendChild(editor2.getComponent());
