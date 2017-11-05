@@ -154,7 +154,6 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
     	addChangeLogMenu(popupMenu);
     	
     	originalStyle = getComponent().getDecimalbox().getStyle();
-    	getComponent().getDecimalbox().setClientAttribute("type", "number");
     	if (ClientInfo.isMobile())
     		getComponent().getButton().setVisible(false);
     }
