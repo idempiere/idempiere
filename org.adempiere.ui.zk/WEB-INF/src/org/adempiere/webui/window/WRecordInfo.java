@@ -57,9 +57,11 @@ import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.A;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.North;
@@ -83,7 +85,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8325604065202356483L;
+	private static final long serialVersionUID = -7436682051825360216L;
 
 	/**
 	 *	Record Info
@@ -135,6 +137,8 @@ public class WRecordInfo extends Window implements EventListener<Event>
 	private Vector<Vector<String>>	m_data = new Vector<Vector<String>>();
 	/** Info			*/
 	private StringBuffer	m_info = new StringBuffer();
+	/** Permalink			*/
+	private A				m_permalink = new A();
 
 	/** Date Time Format		*/
 	private SimpleDateFormat	m_dateTimeFormat = DisplayType.getDateFormat
@@ -196,7 +200,17 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		South south = new South();
 		south.setSclass("dialog-footer");
 		south.setParent(layout);
-		south.appendChild(confirmPanel);
+		//
+		m_permalink.setTarget("_blank");
+		m_permalink.setLabel(Msg.getMsg(Env.getCtx(), "Permalink"));
+		m_permalink.setTooltiptext(Msg.getMsg(Env.getCtx(), "Permalink_tooltip"));
+		Hbox hbox = new Hbox();
+		hbox.setWidth("100%");
+		south.appendChild(hbox);
+		ZKUpdateUtil.setHflex(m_permalink, "true");
+		hbox.appendChild(m_permalink);
+		ZKUpdateUtil.setHflex(confirmPanel, "true");
+		hbox.appendChild(confirmPanel);
 		
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
 	}	//	jbInit
@@ -251,6 +265,8 @@ public class WRecordInfo extends Window implements EventListener<Event>
 				String uuid = po.get_ValueAsString(uuidcol);
 				if (!Util.isEmpty(uuid))
 					m_info.append("\n ").append(uuidcol).append("=").append(uuid);
+				m_permalink.setHref(AEnv.getZoomUrlTableID(po));
+				m_permalink.setVisible(po.get_KeyColumns().length == 1);
 			}
 		}
 		
