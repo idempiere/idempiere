@@ -62,14 +62,14 @@ public interface I_AD_PostIt
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AD_Postit_ID */
-    public static final String COLUMNNAME_AD_Postit_ID = "AD_Postit_ID";
+    /** Column name AD_PostIt_ID */
+    public static final String COLUMNNAME_AD_PostIt_ID = "AD_PostIt_ID";
 
 	/** Set Post-it	  */
-	public void setAD_Postit_ID (int AD_Postit_ID);
+	public void setAD_PostIt_ID (int AD_PostIt_ID);
 
 	/** Get Post-it	  */
-	public int getAD_Postit_ID();
+	public int getAD_PostIt_ID();
 
     /** Column name AD_PostIt_UU */
     public static final String COLUMNNAME_AD_PostIt_UU = "AD_PostIt_UU";
