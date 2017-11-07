@@ -346,12 +346,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 
 		//  OK
 		fileNameTextbox.setValue(imageFile.getName());
-		invalidate();
-		if (ThemeManager.isUseCSSForWindowSize()) 
-		{
-			ZKUpdateUtil.setCSSHeight(this);
-			ZKUpdateUtil.setCSSWidth(this);
-		}
+		mainLayout.invalidate();
 
 		//  Save info
 		if (m_mImage == null)
