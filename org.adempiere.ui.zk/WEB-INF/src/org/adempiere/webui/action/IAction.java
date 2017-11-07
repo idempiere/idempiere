@@ -13,6 +13,8 @@
  *****************************************************************************/
 package org.adempiere.webui.action;
 
+import org.zkoss.zul.Toolbarbutton;
+
 /**
  * Custom UI action provided through OSGi service. Implementation must be thread safe.   
  * @author hengsin
@@ -24,4 +26,12 @@ public interface IAction {
 	 * @param target
 	 */
 	public void execute(Object target);
+	
+	/**
+	 * you can customize toolbar button like add style, client javascript,...
+	 * @param toolbarButton
+	 */
+	public default void decorate(Toolbarbutton toolbarButton) {
+		
+	}
 }

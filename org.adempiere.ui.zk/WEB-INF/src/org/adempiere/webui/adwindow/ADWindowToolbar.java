@@ -245,7 +245,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         		if (button.isCustomization()) {
         			String actionId = button.getActionClassName();
         			IServiceHolder<IAction> serviceHolder = Actions.getAction(actionId);
-        			if (serviceHolder != null && serviceHolder.getService() != null) {
+        			IAction action = serviceHolder.getService();
+        			if (serviceHolder != null && action != null) {
         				String labelKey = actionId + ".label";
         				String tooltipKey = actionId + ".tooltip";
         				String label = Msg.getMsg(Env.getCtx(), labelKey);
@@ -273,6 +274,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         				toolbarCustomButtons.add(toolbarCustomBtn);
 
         				this.appendChild(btn);
+        				action.decorate(btn);
         			}
         		}
         		if (buttons.get(button.getComponentName()) != null) {
