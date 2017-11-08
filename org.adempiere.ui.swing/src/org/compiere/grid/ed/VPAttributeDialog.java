@@ -744,7 +744,7 @@ public class VPAttributeDialog extends CDialog
 
 		//	***	Save Attributes ***
 		//	New Instance
-		if (m_changed || m_masi.getM_AttributeSetInstance_ID() == 0)
+		if (mandatory.isEmpty() && (m_changed || m_masi.getM_AttributeSetInstance_ID() == 0))
 		{
 			m_masi.saveEx();
 			m_M_AttributeSetInstance_ID = m_masi.getM_AttributeSetInstance_ID ();
@@ -785,8 +785,13 @@ public class VPAttributeDialog extends CDialog
 			m_changed = true;
 		}	//	for all attributes
 		
+		if (mandatory.length() > 0)
+		{
+			ADialog.error(m_WindowNo, this, "FillMandatory", mandatory);
+			return false;
+		}
 		//	Save Model
-		if (m_changed)
+		else if (m_changed)
 		{
 			m_masi.setDescription ();
 			m_masi.saveEx();
@@ -794,11 +799,6 @@ public class VPAttributeDialog extends CDialog
 		m_M_AttributeSetInstance_ID = m_masi.getM_AttributeSetInstance_ID ();
 		m_M_AttributeSetInstanceName = m_masi.getDescription();
 		//
-		if (mandatory.length() > 0)
-		{
-			ADialog.error(m_WindowNo, this, "FillMandatory", mandatory);
-			return false;
-		}
 		return true;
 	}	//	saveSelection
 
