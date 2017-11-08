@@ -3,10 +3,8 @@
  */
 package org.adempiere.webui.info;
 
-import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.panel.InvoiceHistory;
 import org.compiere.util.Env;
-import org.compiere.util.Util;
 
 /**
  * @author hengsin
@@ -16,7 +14,7 @@ public class InfoBPartnerWindow extends InfoWindow {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5291476382115985651L;
+	private static final long serialVersionUID = 240758053410996182L;
 
 	/**
 	 * @param WindowNo
