@@ -47,7 +47,11 @@ public class PipoDictionaryService implements IDictionaryService {
 			trxName = Trx.createTrxName("PipoDS");
 			Trx.get(trxName, true).setDisplayName(getClass().getName()+"_merge");
 			packIn = new PackIn();
-			packIn.setPackageName(context.getBundle().getSymbolicName());
+			//external files must not start with "2Pack" prefix in order to work correctly
+			if ("org.adempiere.pipo".equals(context.getBundle().getSymbolicName())  &&  !packageFile.getName().startsWith("2Pack"))  
+				packIn.setPackageName(packageFile.getName());
+			else
+				packIn.setPackageName(context.getBundle().getSymbolicName());
 			
 			if (Env.getCtx().getProperty("#AD_Client_ID") == null) {
 				Env.getCtx().put("#AD_Client_ID", 0);

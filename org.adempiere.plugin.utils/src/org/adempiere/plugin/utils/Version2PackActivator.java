@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import org.adempiere.base.IDictionaryService;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
+import org.compiere.model.MSession;
 import org.compiere.model.Query;
 import org.compiere.model.ServerStateChangeEvent;
 import org.compiere.model.ServerStateChangeListener;
@@ -160,6 +161,8 @@ public class Version2PackActivator extends AbstractActivator {
 				
 		try {
 			if (getDBLock()) {
+				//Create Session to be able to create records in AD_ChangeLog
+				MSession.get(Env.getCtx(), true);
 				for(TwoPackEntry entry : list) {
 					if (!packIn(entry.url)) {
 						// stop processing further packages if one fail
@@ -304,6 +307,7 @@ public class Version2PackActivator extends AbstractActivator {
 
 	protected void setupPackInContext() {
 		Properties serverContext = new Properties();
+		serverContext.setProperty("#AD_Client_ID", "0");
 		ServerContext.setCurrentInstance(serverContext);
 	};
 }

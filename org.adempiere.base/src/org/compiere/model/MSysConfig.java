@@ -39,10 +39,10 @@ import org.compiere.util.DisplayType;
  */
 public class MSysConfig extends X_AD_SysConfig
 {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -7805174199114873428L;
+	private static final long serialVersionUID = -4917976995339273240L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -59,10 +59,12 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String APPLICATION_MAIN_VERSION = "APPLICATION_MAIN_VERSION";
     public static final String APPLICATION_MAIN_VERSION_SHOWN = "APPLICATION_MAIN_VERSION_SHOWN";
     public static final String APPLICATION_OS_INFO_SHOWN = "APPLICATION_OS_INFO_SHOWN";
-	public static final String AUTOMATIC_PACKIN_PROCESSING = "AUTOMATIC_PACKIN_PROCESSING";
-	public static final String AUTOMATIC_PACKIN_TIMEOUT = "AUTOMATIC_PACKIN_TIMEOUT";
-	public static final String AUTOMATIC_PACKIN_RETRIES = "AUTOMATIC_PACKIN_RETRIES";
-	public static final String ATTACH_EMBEDDED_2PACK = "ATTACH_EMBEDDED_2PACK";
+    public static final String ATTACH_EMBEDDED_2PACK = "ATTACH_EMBEDDED_2PACK";
+    public static final String AUTOMATIC_PACKIN_FOLDERS = null;
+    public static final String AUTOMATIC_PACKIN_INITIAL_DELAY = null;
+    public static final String AUTOMATIC_PACKIN_PROCESSING = "AUTOMATIC_PACKIN_PROCESSING";
+    public static final String AUTOMATIC_PACKIN_RETRIES = "AUTOMATIC_PACKIN_RETRIES";
+    public static final String AUTOMATIC_PACKIN_TIMEOUT = "AUTOMATIC_PACKIN_TIMEOUT";
     public static final String BACKGROUND_JOB_ALLOWED = "BACKGROUND_JOB_ALLOWED";
     public static final String BACKGROUND_JOB_BY_DEFAULT = "BACKGROUND_JOB_BY_DEFAULT";
     public static final String BACKGROUND_JOB_MAX_IN_SYSTEM = "BACKGROUND_JOB_MAX_IN_SYSTEM";
@@ -83,10 +85,10 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String DOCACTIONBUTTON_SHOWACTIONNAME = "DOCACTIONBUTTON_SHOWACTIONNAME";
     public static final String DPVIEWS_SHOWINFOACCOUNT = "DPViews_ShowInfoAccount";
     public static final String DPVIEWS_SHOWINFOSCHEDULE = "DPViews_ShowInfoSchedule";
-	public static final String EMAIL_NOTIFY_2PACK = "EMAIL_NOTIFY_2PACK";
-	public static final String ENABLE_PAYMENTBOX_BUTTON = "ENABLE_PAYMENTBOX_BUTTON";
-	public static final String GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = "GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS";
-	public static final String HTML_REPORT_THEME = "HTML_REPORT_THEME";
+    public static final String EMAIL_NOTIFY_2PACK = "EMAIL_NOTIFY_2PACK";
+    public static final String ENABLE_PAYMENTBOX_BUTTON = "ENABLE_PAYMENTBOX_BUTTON";
+    public static final String GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = "GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS";
+    public static final String HTML_REPORT_THEME = "HTML_REPORT_THEME";
     public static final String IBAN_VALIDATION = "IBAN_VALIDATION" ;
     public static final String IDENTIFIER_SEPARATOR = "IDENTIFIER_SEPARATOR" ;
     public static final String Invoice_ReverseUseNewNumber = "Invoice_ReverseUseNewNumber";
@@ -99,12 +101,12 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String LOCATION_MAX_CITY_ROWS = "LOCATION_MAX_CITY_ROWS";
     public static final String LOGIN_HELP_URL = "LOGIN_HELP_URL";
     public static final String LOGIN_SHOW_RESETPASSWORD = "LOGIN_SHOW_RESETPASSWORD";
-	public static final String MAIL_DONT_SEND_TO_ADDRESS = "MAIL_DONT_SEND_TO_ADDRESS";
+    public static final String MAIL_DONT_SEND_TO_ADDRESS = "MAIL_DONT_SEND_TO_ADDRESS";
     public static final String MAIL_SEND_BCC_TO_ADDRESS = "MAIL_SEND_BCC_TO_ADDRESS";
     public static final String MAIL_SEND_BCC_TO_FROM = "MAIL_SEND_BCC_TO_FROM";
     public static final String MAIL_SEND_CREDENTIALS = "MAIL_SEND_CREDENTIALS";
     public static final String MAX_ACTIVITIES_IN_LIST = "MAX_ACTIVITIES_IN_LIST";
-	public static final String MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER = "MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER";
+    public static final String MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER = "MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER";
     public static final String MAX_TEXT_LENGTH_ON_GRID_VIEW = "MAX_TEXT_LENGTH_ON_GRID_VIEW";
     public static final String MENU_INFOUPDATER_SLEEP_MS = "MENU_INFOUPDATER_SLEEP_MS";
     public static final String MFG_ValidateCostsDifferenceOnCreate = "MFG_ValidateCostsDifferenceOnCreate";
@@ -112,7 +114,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT";
     public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_RECEIPT = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_RECEIPT";
     public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CREDIT_CARD = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CREDIT_CARD";
-	public static final String PAYMENT_SELECTION_MANUAL_ASK_INVOKE_GENERATE = "PAYMENT_SELECTION_MANUAL_ASK_INVOKE_GENERATE";
+    public static final String PAYMENT_SELECTION_MANUAL_ASK_INVOKE_GENERATE = "PAYMENT_SELECTION_MANUAL_ASK_INVOKE_GENERATE";
     public static final String PDF_FONT_DIR = "PDF_FONT_DIR";
     public static final String ProductUOMConversionRateValidate = "ProductUOMConversionRateValidate";
     public static final String ProductUOMConversionUOMValidate = "ProductUOMConversionUOMValidate";
@@ -127,7 +129,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String RecentItems_MaxShown = "RecentItems_MaxShown";
     public static final String REPORT_SWAP_MAX_ROWS = "REPORT_SWAP_MAX_ROWS";
     public static final String SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE = "SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE";
-	public static final String STANDARD_REPORT_FOOTER_TRADEMARK_TEXT = "STANDARD_REPORT_FOOTER_TRADEMARK_TEXT";
+    public static final String STANDARD_REPORT_FOOTER_TRADEMARK_TEXT = "STANDARD_REPORT_FOOTER_TRADEMARK_TEXT";
     public static final String START_VALUE_BPLOCATION_NAME = "START_VALUE_BPLOCATION_NAME";
     public static final String SWING_LOGIN_ALLOW_REMEMBER_ME = "SWING_LOGIN_ALLOW_REMEMBER_ME";
     public static final String SWING_OVERRIDE_TEXT_AREA_BEHAVIOUR = "SWING_OVERRIDE_TEXT_AREA_BEHAVIOUR";
@@ -136,7 +138,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String SYSTEM_IN_MAINTENANCE_MODE = "SYSTEM_IN_MAINTENANCE_MODE";
     public static final String SYSTEM_INSERT_CHANGELOG = "SYSTEM_INSERT_CHANGELOG";
     public static final String SYSTEM_NATIVE_SEQUENCE = "SYSTEM_NATIVE_SEQUENCE";
-	public static final String TRACE_ALL_TRX_CONNECTION_GET = "TRACE_ALL_TRX_CONNECTION_GET";
+    public static final String TRACE_ALL_TRX_CONNECTION_GET = "TRACE_ALL_TRX_CONNECTION_GET";
     public static final String TWOPACK_COMMIT_DDL = "2PACK_COMMIT_DDL";
     public static final String TWOPACK_HANDLE_TRANSLATIONS = "2PACK_HANDLE_TRANSLATIONS";
     public static final String USE_EMAIL_FOR_LOGIN = "USE_EMAIL_FOR_LOGIN";
@@ -151,10 +153,10 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_BROWSER_TITLE = "ZK_BROWSER_TITLE";
     public static final String ZK_BUTTON_STYLE = "ZK_BUTTON_STYLE";
     public static final String ZK_DASHBOARD_CALENDAR_REQUEST_DISPLAY_MODE = "ZK_DASHBOARD_CALENDAR_REQUEST_DISPLAY_MODE";
-	public static final String ZK_DASHBOARD_PERFORMANCE_TIMEOUT = "ZK_DASHBOARD_PERFORMANCE_TIMEOUT";
-	public static final String ZK_DASHBOARD_PERFORMANCE_REFRESH_INTERVAL = "ZK_DASHBOARD_PERFORMANCE_REFRESH_INTERVAL";
+    public static final String ZK_DASHBOARD_PERFORMANCE_REFRESH_INTERVAL = "ZK_DASHBOARD_PERFORMANCE_REFRESH_INTERVAL";
+    public static final String ZK_DASHBOARD_PERFORMANCE_TIMEOUT = "ZK_DASHBOARD_PERFORMANCE_TIMEOUT";
     public static final String ZK_DASHBOARD_REFRESH_INTERVAL = "ZK_DASHBOARD_REFRESH_INTERVAL";
-	public static final String ZK_DECIMALBOX_PROCESS_DOTKEYPAD = "ZK_DECIMALBOX_PROCESS_DOTKEYPAD";
+    public static final String ZK_DECIMALBOX_PROCESS_DOTKEYPAD = "ZK_DECIMALBOX_PROCESS_DOTKEYPAD";
     public static final String ZK_DESKTOP_CLASS = "ZK_DESKTOP_CLASS";
     public static final String ZK_FOOTER_SERVER_DATETIME_FORMAT = "ZK_FOOTER_SERVER_DATETIME_FORMAT";
     public static final String ZK_FOOTER_SERVER_MSG = "ZK_FOOTER_SERVER_MSG";
@@ -175,7 +177,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_REPORT_TABLE_OUTPUT_TYPE = "ZK_REPORT_TABLE_OUTPUT_TYPE";
     public static final String ZK_ROOT_FOLDER_BROWSER = "ZK_ROOT_FOLDER_BROWSER";
     public static final String ZK_SEQ_DEFAULT_VALUE_PANEL = "ZK_SEQ_DEFAULT_VALUE_PANEL";
-	public static final String ZK_SESSION_TIMEOUT_IN_SECONDS = "ZK_SESSION_TIMEOUT_IN_SECONDS";
+    public static final String ZK_SESSION_TIMEOUT_IN_SECONDS = "ZK_SESSION_TIMEOUT_IN_SECONDS";
     public static final String ZK_THEME = "ZK_THEME";
 
 	/**
