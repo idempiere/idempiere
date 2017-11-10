@@ -29,7 +29,7 @@ public class X_AD_PostIt extends PO implements I_AD_PostIt, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171031L;
+	private static final long serialVersionUID = 20171107L;
 
     /** Standard Constructor */
     public X_AD_PostIt (Properties ctx, int AD_PostIt_ID, String trxName)
@@ -37,7 +37,7 @@ public class X_AD_PostIt extends PO implements I_AD_PostIt, I_Persistent
       super (ctx, AD_PostIt_ID, trxName);
       /** if (AD_PostIt_ID == 0)
         {
-			setAD_Postit_ID (0);
+			setAD_PostIt_ID (0);
         } */
     }
 
@@ -70,20 +70,20 @@ public class X_AD_PostIt extends PO implements I_AD_PostIt, I_Persistent
     }
 
 	/** Set Post-it.
-		@param AD_Postit_ID Post-it	  */
-	public void setAD_Postit_ID (int AD_Postit_ID)
+		@param AD_PostIt_ID Post-it	  */
+	public void setAD_PostIt_ID (int AD_PostIt_ID)
 	{
-		if (AD_Postit_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_AD_Postit_ID, null);
+		if (AD_PostIt_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_AD_PostIt_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_AD_Postit_ID, Integer.valueOf(AD_Postit_ID));
+			set_ValueNoCheck (COLUMNNAME_AD_PostIt_ID, Integer.valueOf(AD_PostIt_ID));
 	}
 
 	/** Get Post-it.
 		@return Post-it	  */
-	public int getAD_Postit_ID () 
+	public int getAD_PostIt_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Postit_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PostIt_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

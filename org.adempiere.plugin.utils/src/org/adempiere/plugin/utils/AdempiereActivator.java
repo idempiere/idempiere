@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import org.adempiere.base.IDictionaryService;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
+import org.compiere.model.MSession;
 import org.compiere.model.Query;
 import org.compiere.model.ServerStateChangeEvent;
 import org.compiere.model.ServerStateChangeListener;
@@ -104,6 +105,8 @@ public class AdempiereActivator extends AbstractActivator {
 	protected void packIn() {
 		URL packout = context.getBundle().getEntry("/META-INF/2Pack.zip");
 		if (packout != null && service != null) {
+			//Create Session to be able to create records in AD_ChangeLog
+			MSession.get(Env.getCtx(), true);
 			FileOutputStream zipstream = null;
 			try {
 				// copy the resource to a temporary file to process it with 2pack
@@ -211,6 +214,7 @@ public class AdempiereActivator extends AbstractActivator {
 
 	protected void setupPackInContext() {
 		Properties serverContext = new Properties();
+		serverContext.setProperty("#AD_Client_ID", "0");
 		ServerContext.setCurrentInstance(serverContext);
 	};
 }

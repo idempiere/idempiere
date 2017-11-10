@@ -3,9 +3,7 @@
  */
 package org.adempiere.webui.info;
 
-import org.adempiere.webui.editor.WEditor;
 import org.compiere.util.Env;
-import org.compiere.util.Util;
 
 /**
  * @author hengsin
@@ -15,7 +13,7 @@ public class InfoInvoiceWindow extends InfoWindow {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3169476148884310274L;
+	private static final long serialVersionUID = -5175983673145977830L;
 
 	/**
 	 * @param WindowNo
@@ -48,37 +46,6 @@ public class InfoInvoiceWindow extends InfoWindow {
 			int AD_InfoWindow_ID, boolean lookup) {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
 				whereClause, AD_InfoWindow_ID, lookup);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initParameters() {
-		String isSOTrx = Env.getContext(Env.getCtx(), p_WindowNo, "IsSOTrx");
-		if (!isLookup() && Util.isEmpty(isSOTrx)) {
-			isSOTrx = "Y";
-		}
-		
-		//Set Defaults
-        String bp = Env.getContext(Env.getCtx(), p_WindowNo, "C_BPartner_ID");
-        if (!Util.isEmpty(bp)) {
-        	for (WEditor editor : editors) {
-				if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("C_BPartner_ID")) {
-					editor.setValue(new Integer(bp));
-					break;
-				}
-			}
-        }
-        
-		if (!Util.isEmpty(isSOTrx)) {
-			for (WEditor editor : editors) {
-				if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("IsSOTrx")) {
-					editor.setValue(isSOTrx);
-					break;
-				}
-			}
-		}
 	}
 
 	@Override
