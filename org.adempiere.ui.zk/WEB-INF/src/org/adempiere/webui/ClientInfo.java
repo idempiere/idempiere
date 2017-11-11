@@ -103,7 +103,7 @@ public class ClientInfo implements Serializable {
 	 * @return the current clientinfo instance
 	 */
 	public static ClientInfo get() {
-		return SessionManager.getAppDesktop().getClientInfo();
+		return SessionManager.getSessionApplication().getClientInfo();
 	}
 	
 	/**

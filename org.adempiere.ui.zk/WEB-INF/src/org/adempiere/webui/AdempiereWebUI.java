@@ -459,6 +459,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			}
 			if (getDesktop() != null && getDesktop().getSession() != null) {
 				getDesktop().getSession().setAttribute(CLIENT_INFO, clientInfo);
+			} else if (Executions.getCurrent() != null){
+				Executions.getCurrent().getSession().setAttribute(CLIENT_INFO, clientInfo);
 			}
 			
 			Env.setContext(Env.getCtx(), "#clientInfo_desktopWidth", clientInfo.desktopWidth);
@@ -538,6 +540,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		properties.setProperty(SessionContextListener.SERVLET_SESSION_ID, newSession.getId());
 		
 		Executions.sendRedirect("index.zul");
+	}
+	
+	@Override
+	public ClientInfo getClientInfo() {
+		return clientInfo;
 	}
 	
 	/**
