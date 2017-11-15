@@ -996,7 +996,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			return;
 		}
 		if (AD_Table_ID != 0)
-			new WReport (AD_Table_ID, query, component, 0);
+			new WReport (AD_Table_ID, query, component, m_WindowNo);
 		else
 			log.warning("No Table found for " + query.getWhereClause(true));
 	}	//	executeDrill

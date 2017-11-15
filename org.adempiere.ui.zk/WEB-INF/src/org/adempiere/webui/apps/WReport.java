@@ -167,8 +167,20 @@ public class WReport implements EventListener<Event> {
 	private void launchReport (MPrintFormat pf)
 	{
 		int Record_ID = 0;
-		if (m_query.getRestrictionCount()==1 && m_query.getCode(0) instanceof Integer)
-			Record_ID = ((Integer)m_query.getCode(0)).intValue();
+		if (m_query.getRestrictionCount() == 1) {
+			if (m_query.getColumnName(0).equals(m_query.getTableName()+"_ID")) {
+				Object vrec = m_query.getCode(0);
+				if (vrec instanceof Integer) {
+					Record_ID = ((Integer)m_query.getCode(0)).intValue();
+				} else {
+					try {
+						Record_ID = Integer.parseInt(m_query.getCode(0).toString());
+					} catch (NumberFormatException e) {
+						log.info(e.getMessage());
+					}
+				}
+			}
+		}
 		PrintInfo info = new PrintInfo(
 			pf.getName(),
 			pf.getAD_Table_ID(),
