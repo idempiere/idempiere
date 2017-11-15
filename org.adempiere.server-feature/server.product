@@ -38,6 +38,7 @@
 
    <configurations>
       <plugin id="org.adempiere.eclipse.equinox.http.servlet" autoStart="true" startLevel="0" />
+      <plugin id="org.adempiere.pipo" autoStart="true" startLevel="0" />
       <plugin id="org.adempiere.server" autoStart="true" startLevel="0" />
       <plugin id="org.adempiere.ui.zk" autoStart="true" startLevel="0" />
       <plugin id="org.apache.aries.spifly.dynamic.bundle" autoStart="true" startLevel="0" />
