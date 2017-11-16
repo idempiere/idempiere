@@ -6,5 +6,6 @@
 		<get src="${url.maven.zkoss.lib}/maven2/org/zkoss/zkforge/timeplotz/1.1_50/timeplotz-1.1_50.jar" dest="lib/timeplotz.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven.zkoss.lib}/maven2/org/zkoss/calendar/calendar/2.1.5/calendar-2.1.5.jar" dest="lib/calendar.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven.zkoss.lib}/maven2/org/zkoss/theme/breeze/8.5.0/breeze-8.5.0.jar" dest="lib/breeze.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.maven2.lib}/maven2/com/google/javascript/closure-compiler/v20171112/closure-compiler-v20171112.jar" dest="lib/closure-compiler.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target> 
 </project>
