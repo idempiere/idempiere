@@ -813,9 +813,9 @@ public final class AEnv
 
 	private static String m_ApplicationUrl = null;
 	public static String getApplicationUrl() {
-		String url = MSysConfig.getValue("APPLICATION_URL", Env.getAD_Client_ID(Env.getCtx()));
+		String url = MSysConfig.getValue(MSysConfig.APPLICATION_URL, Env.getAD_Client_ID(Env.getCtx()));
 		if (!Util.isEmpty(url) && !url.equals("USE_HARDCODED"))
-			return MSysConfig.getValue("APPLICATION_URL", Env.getAD_Client_ID(Env.getCtx()));
+			return MSysConfig.getValue(MSysConfig.APPLICATION_URL, Env.getAD_Client_ID(Env.getCtx()));
 		if (m_ApplicationUrl != null)
 			return m_ApplicationUrl;
 		int port = Executions.getCurrent().getServerPort();

@@ -20,6 +20,7 @@ package org.adempiere.webui.editor;
 import java.beans.PropertyChangeEvent;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Properties;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -40,6 +41,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MLocation;
+import org.compiere.model.MLookup;
 import org.compiere.model.MTable;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -656,11 +658,17 @@ ContextMenuListener, IZoomableEditor
 	}
 	
 	@Override
-	public void dynamicDisplay()
-    {    	
+	public void dynamicDisplay(Properties ctx) 
+	{
+		if (lookup instanceof MLookup) 
+		{
+			((MLookup) lookup).getLookupInfo().ctx = ctx;
+		}
 		if ((lookup != null) && (!lookup.isValidated() || !lookup.isLoaded()
 			|| (isReadWrite() && lookup.getSize() != getComponent().getItemCount())))
 			this.actionRefresh();
+		
+		super.dynamicDisplay(ctx);
     }
 	
 	private static class EditorCombobox extends Combobox {

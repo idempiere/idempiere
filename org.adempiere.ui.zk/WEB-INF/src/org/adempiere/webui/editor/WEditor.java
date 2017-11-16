@@ -21,6 +21,7 @@ import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
@@ -542,10 +543,15 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         return this.mandatory;
     }
 
+    public void dynamicDisplay()
+    {
+    	dynamicDisplay(gridField != null ? gridField.getVO().ctx : Env.getCtx());
+    }
+    
     /**
      * allow subclass to perform dynamic loading of data
      */
-    public void dynamicDisplay()
+    public void dynamicDisplay(Properties ctx)
     {
     	if (gridField != null)
     	{

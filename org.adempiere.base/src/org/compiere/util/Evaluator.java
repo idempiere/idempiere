@@ -293,6 +293,8 @@ public class Evaluator
 			variable = variable.replaceFirst("[0-9][0-9]*\\|", "");
 			if (variable.indexOf(".") > 0)
 				variable = variable.substring(0, variable.indexOf("."));
+			if (variable.indexOf(":") > 0)
+				variable = variable.substring(0, variable.indexOf(":"));
 			list.add(variable);
 		}
 	}   //  parseDepends
