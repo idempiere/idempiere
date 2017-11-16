@@ -685,7 +685,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		            }		            
 		            
 		            
-		            Properties ctx = isDetailPane() ? new GridRowCtx(Env.getCtx(), gridTab, gridTab.getCurrentRow()) 
+		            Properties ctx = isDetailPane() ? new GridRowCtx(Env.getCtx(), gridTab) 
 		            	: gridPanelFields[i].getVO().ctx;
 		            //check context
 					if (!gridPanelFields[i].isDisplayed(ctx, true)){

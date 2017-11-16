@@ -1006,6 +1006,9 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
             GridField mField = comp.getGridField();
             if (mField != null)
             {
+            	Properties ctx = isDetailPane() ? new GridRowCtx(Env.getCtx(), gridTab) 
+                		: mField.getVO().ctx;
+            	
                 if (noData)
                 {
                     comp.setReadWrite(false);
@@ -1017,11 +1020,8 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
                     	mField.refreshLookup();
                     comp.setReadWrite(rw);
                     comp.setMandatory(mField.isMandatory(true));    //  check context
-                	comp.dynamicDisplay();
+                	comp.dynamicDisplay(ctx);
                 }
-                
-                Properties ctx = isDetailPane() ? new GridRowCtx(Env.getCtx(), gridTab, gridTab.getCurrentRow()) 
-            		: mField.getVO().ctx;
                 
                 comp.setVisible((isHasCustomizeData || mField.isDisplayedGrid()) && mField.isDisplayed(ctx, true));
             }

@@ -24,6 +24,7 @@ import java.beans.PropertyChangeEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.webui.ClientInfo;
@@ -931,6 +932,16 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		return null;
 	}
 	
+	
+	@Override
+	public void dynamicDisplay(Properties ctx) {
+		if (lookup instanceof MLookup) {
+			((MLookup) lookup).getLookupInfo().ctx = ctx;
+		}
+		super.dynamicDisplay(ctx);
+	}
+
+
 	static class CustomSearchBox extends Searchbox {
 
 		/**

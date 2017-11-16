@@ -5,9 +5,12 @@ package org.adempiere.util;
 
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Vector;
 
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -31,27 +34,20 @@ implements Evaluatee
 
 	private final Properties ctx;
 	private final GridTab gridTab;
-	private final GridTable gridTable;
 	private final int windowNo;
 	private final int row;
 
+	public GridRowCtx(Properties ctx, GridTab tab)
+	{
+		this(ctx, tab, -1);
+	}
+	
 	public GridRowCtx(Properties ctx, GridTab tab, int row)
 	{
 		super();
 		this.ctx = ctx;
 		this.gridTab = tab;
-		this.gridTable = tab.getTableModel();
 		this.windowNo = tab.getWindowNo();
-		this.row = row;
-	}
-
-	public GridRowCtx(Properties ctx, GridTable table, int windowNo, int row)
-	{
-		super();
-		this.ctx = ctx;
-		this.gridTab = null;
-		this.gridTable = table;
-		this.windowNo = windowNo;
 		this.row = row;
 	}
 
@@ -82,12 +78,13 @@ implements Evaluatee
 		{
 			return ctx.get(key);
 		}
+		GridTable gridTable = gridTab.getTableModel();
 		int col = gridTable.findColumn(columnName);
 		if (col == -1)
 		{
 			return ctx.get(key);
 		}
-		Object value = gridTable.getValueAt(row, col);
+		Object value = gridTable.getValueAt(getRow(), col);
 		if (value == null)
 		{
 			value = "";
@@ -107,6 +104,10 @@ implements Evaluatee
 		return value.toString();
 	}
 
+	private int getRow() {
+		return row >= 0 ? row : gridTab.getCurrentRow();
+	}
+
 	@Override
 	public synchronized void clear() {
 		ctx.clear();
@@ -115,22 +116,19 @@ implements Evaluatee
 	@Override
 	public synchronized Object clone() {
 		final GridRowCtx grc;
-		if (this.gridTab != null)
-			grc = new GridRowCtx((Properties)this.ctx.clone(), this.gridTab, this.row);
-		else
-			grc = new GridRowCtx((Properties)this.ctx.clone(), this.gridTable, this.windowNo, this.row);
+		grc = new GridRowCtx((Properties)this.ctx.clone(), this.gridTab, this.row);
 		return grc;
 	}
 
 	@Override
 	public synchronized boolean contains(Object value) {
-		// TODO: check if that value exists in one of our GridFields
-		return this.ctx.contains(value);
+		return this.containsValue(value);
 	}
 
 	@Override
 	public synchronized boolean containsKey(Object key)
 	{
+		GridTable gridTable = gridTab.getTableModel();
 		String columnName = getColumnName(key);
 		if (columnName != null && gridTable.findColumn(columnName) != -1)
 			return true;
@@ -139,20 +137,42 @@ implements Evaluatee
 
 	@Override
 	public boolean containsValue(Object value) {
-		// TODO: check if that value exists in one of our GridFields
+		if (value != null) {
+			GridField[] fields = gridTab.getFields();
+			for(GridField field : fields) {
+				Object fieldValue = gridTab.getValue(getRow(), field.getColumnName());
+				if (fieldValue != null && fieldValue.equals(value)) {
+					return true;
+				}
+			}
+		}
 		return ctx.containsValue(value);
 	}
 
 	@Override
 	public synchronized Enumeration<Object> elements() {
-		// TODO: implement for GridField values too
-		return ctx.elements();
+		Vector<Object> list = new Vector<>(ctx.values());
+		GridField[] fields = gridTab.getFields();
+		for(GridField field : fields) {
+			Object fieldValue = gridTab.getValue(getRow(), field.getColumnName());
+			if (fieldValue != null) {
+				list.add(fieldValue);
+			}
+		}
+		return list.elements();
 	}
 
 	@Override
 	public Set<java.util.Map.Entry<Object, Object>> entrySet() {
-		// TODO: implement for GridField values too
-		return ctx.entrySet();
+		Set<java.util.Map.Entry<Object, Object>> set = new HashSet<>(ctx.entrySet());
+		GridField[] fields = gridTab.getFields();
+		Map<Object, Object> fieldMap = new LinkedHashMap<>();
+		for(GridField field : fields) {
+			Object fieldValue = gridTab.getValue(getRow(), field.getColumnName());
+			fieldMap.put(field.getColumnName(), fieldValue); 
+		}
+		set.addAll(fieldMap.entrySet());
+		return set;
 	}
 
 	@Override
@@ -162,38 +182,28 @@ implements Evaluatee
 
 	@Override
 	public synchronized Enumeration<Object> keys() {
-		// TODO: implement for GridField values too
-		return ctx.keys();
+		Vector<Object> list = new Vector<Object>(ctx.keySet());
+		GridField[] fields = gridTab.getFields();
+		for(GridField field : fields) {
+			list.add(field.getColumnName());
+		}
+		return list.elements();
 	}
 
 	@Override
 	public Set<Object> keySet() {
-		// TODO: implement for GridField values too
-		return ctx.keySet();
+		Set<Object> set = new HashSet<>(ctx.keySet());
+		GridField[] fields = gridTab.getFields();
+		for(GridField field : fields) {
+			set.add(field.getColumnName());
+		}
+		return set;
 	}
 
 	@Override
 	public synchronized Object put(Object key, Object value)
 	{
-		if (gridTab == null)
-			throw new IllegalStateException("Method not supported (gridTab is null)");
-		if (gridTab.getCurrentRow() != row)
-		{
-			return ctx.put(key, value);
-		}
-		String columnName = getColumnName(key);
-		if (columnName == null)
-		{
-			return ctx.put(key, value);
-		}
-		GridField field = gridTab.getField(columnName);
-		if (field == null)
-		{
-			return ctx.put(key, value);
-		}
-		Object valueOld = field.getValue();
-		field.setValue(value, false);
-		return valueOld;
+		return ctx.put(key, value);
 	}
 
 	@Override
@@ -204,20 +214,37 @@ implements Evaluatee
 
 	@Override
 	public synchronized Object remove(Object key) {
-		// TODO: implement for GridField values too
 		return ctx.remove(key);
 	}
 
 	@Override
 	public synchronized int size() {
-		// TODO: implement for GridField values too
-		return ctx.size();
+		return ctx.size() + gridTab.getFieldCount();
 	}
 
 	@Override
 	public synchronized String toString() {
-		// TODO: implement for GridField values too
-		return ctx.toString();
+		StringBuilder builder = new StringBuilder(ctx.toString());
+		if (builder.length() > 0) {
+			builder.deleteCharAt(builder.length()-1);
+			if (builder.length() > 1) {
+				builder.append(", ");
+			}
+		} else {
+			builder.append("{");
+		}
+		GridField[] fields = gridTab.getFields();
+		for(int i = 0; i < fields.length; i++) {
+			builder.append(fields[i].getColumnName()).append("=");
+			Object value = gridTab.getValue(getRow(), fields[i].getColumnName());
+			builder.append(value==null ? "" : value.toString());
+			if (i == fields.length-1) {
+				builder.append("}");
+			} else {
+				builder.append(", ");
+			}
+		}
+		return builder.toString();
 	}
 
 	@Override
