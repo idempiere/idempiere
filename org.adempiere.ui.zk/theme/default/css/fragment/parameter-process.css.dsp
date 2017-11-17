@@ -76,12 +76,12 @@ when detect side effect, fix to only apply for parameter window*/
 }
 @media screen and (max-width: 700px) {
 	.input-paramenter-layout{
-		width: 90%;
+		width: 90% !important;
 	}
 }
 @media screen and (max-width: 500px) {
 	.input-paramenter-layout{
-		width: 100%;
+		width: 100% !important;
 	}
 }
 
