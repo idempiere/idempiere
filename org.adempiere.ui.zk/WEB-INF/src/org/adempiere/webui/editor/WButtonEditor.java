@@ -55,7 +55,9 @@ import org.zkoss.zk.ui.event.Events;
  */
 public class WButtonEditor extends WEditor implements IProcessButton
 {
-    private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
+    public static final String EDITOR_ATTRIBUTE = "editor";
+
+	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     
     private static final CLogger logger;
     
@@ -91,6 +93,7 @@ public class WButtonEditor extends WEditor implements IProcessButton
         m_text = gridField.getHeader();
         AD_Process_ID = gridField.getAD_Process_ID();
         gridfield = gridField;
+        getComponent().setAttribute(EDITOR_ATTRIBUTE, this);
         init();
 	}
 

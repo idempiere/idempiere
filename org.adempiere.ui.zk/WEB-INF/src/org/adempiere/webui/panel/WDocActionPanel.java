@@ -241,6 +241,10 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 			DocAction = DocumentEngine.ACTION_Close;
 	}
 
+	public List<Listitem> getDocActionItems() {
+		return (List<Listitem>)lstDocAction.getItems();
+	}
+	
 	private boolean checkStatus (String TableName, int Record_ID, String DocStatus)
 	{
 		String sql = "SELECT 2 FROM " + TableName
@@ -331,39 +335,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		{
 			if (confirmPanel.getButton("Ok").equals(event.getTarget()))
 			{				
-				MClientInfo clientInfo = MClientInfo.get(Env.getCtx());
-				if(clientInfo.isConfirmOnDocClose() || clientInfo.isConfirmOnDocVoid())
-				{
-					String selected = lstDocAction.getSelectedItem().getValue().toString();
-					if((selected.equals(org.compiere.process.DocAction.ACTION_Close) && clientInfo.isConfirmOnDocClose())  
-						|| (selected.equals(org.compiere.process.DocAction.ACTION_Void) && clientInfo.isConfirmOnDocVoid())
-						|| (selected.equals(org.compiere.process.DocAction.ACTION_Reverse_Accrual) && clientInfo.isConfirmOnDocVoid())
-						|| (selected.equals(org.compiere.process.DocAction.ACTION_Reverse_Correct) && clientInfo.isConfirmOnDocVoid()))
-					{
-						String docAction = lstDocAction.getSelectedItem().getLabel();
-						MessageFormat mf = new MessageFormat(Msg.getMsg(Env.getAD_Language(Env.getCtx()), "ConfirmOnDocAction"));
-						Object[] arguments = new Object[]{docAction};
-						FDialog.ask(0, this, "", mf.format(arguments), new Callback<Boolean>() {
-							@Override
-							public void onCallback(Boolean result) {
-								if(result)
-								{
-									setValueAndClose();
-								}
-								else
-									return;
-							}
-						});
-					}
-					else
-					{
-						setValueAndClose();
-					}
-				}
-				else
-				{
-					setValueAndClose();
-				}
+				onOk(null);
 			}
 			else if (confirmPanel.getButton("Cancel").equals(event.getTarget()))
 			{
@@ -379,6 +351,63 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 				label.setValue(s_description[getSelectedIndex()]);
 			}
 		}
+	}
+
+	public void setSelectedItem(String value) {
+		lstDocAction.setSelectedIndex(-1);
+		List<Listitem> lst = (List<Listitem>)lstDocAction.getItems();
+		for(Listitem item: lst) {
+			if (value.equals(item.getValue())) {
+				item.setSelected(true);
+				break;
+			}
+		}
+	}
+	
+	public void onOk(final Callback<Boolean> callback) {
+		MClientInfo clientInfo = MClientInfo.get(Env.getCtx());
+		if(clientInfo.isConfirmOnDocClose() || clientInfo.isConfirmOnDocVoid())
+		{
+			String selected = lstDocAction.getSelectedItem().getValue().toString();
+			if((selected.equals(org.compiere.process.DocAction.ACTION_Close) && clientInfo.isConfirmOnDocClose())  
+				|| (selected.equals(org.compiere.process.DocAction.ACTION_Void) && clientInfo.isConfirmOnDocVoid())
+				|| (selected.equals(org.compiere.process.DocAction.ACTION_Reverse_Accrual) && clientInfo.isConfirmOnDocVoid())
+				|| (selected.equals(org.compiere.process.DocAction.ACTION_Reverse_Correct) && clientInfo.isConfirmOnDocVoid()))
+			{
+				String docAction = lstDocAction.getSelectedItem().getLabel();
+				MessageFormat mf = new MessageFormat(Msg.getMsg(Env.getAD_Language(Env.getCtx()), "ConfirmOnDocAction"));
+				Object[] arguments = new Object[]{docAction};
+				FDialog.ask(0, this, mf.format(arguments), new Callback<Boolean>() {
+					@Override
+					public void onCallback(Boolean result) {
+						if(result)
+						{
+							setValueAndClose();
+							if (callback != null)
+								callback.onCallback(Boolean.TRUE);
+						}
+						else
+						{
+							if (callback != null)
+								callback.onCallback(Boolean.FALSE);
+							return;
+						}
+					}
+				});
+			}
+			else
+			{
+				setValueAndClose();
+				if (callback != null)
+					callback.onCallback(Boolean.TRUE);
+			}
+		}
+		else
+		{
+			setValueAndClose();
+			if (callback != null)
+				callback.onCallback(Boolean.TRUE);
+		}		
 	}
 
 	private void setValueAndClose() {

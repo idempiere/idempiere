@@ -178,3 +178,13 @@
 	font-size: larger;
 }
 
+.z-menu-noimage.z-menupopup .z-menu-content > img.z-menu-image {
+	display: none;
+}
+.z-menu-noimage.z-menupopup .z-menuitem-content > img.z-menuitem-image {
+	display: none;
+}
+.z-menu-noimage.z-menupopup > .z-menupopup-separator {
+	display: none;
+}
+

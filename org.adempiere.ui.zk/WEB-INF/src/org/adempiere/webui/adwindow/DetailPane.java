@@ -434,8 +434,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		ProcessButtonPopup popup = new ProcessButtonPopup();
 		ADTabpanel adtab = (ADTabpanel) getSelectedADTabpanel();
 		popup.render(adtab.getToolbarButtons());
-		
-		LayoutUtils.openPopupWindow(button, popup, "after_start");		
+		if (popup.getChildren().size() > 0) {
+			popup.setPage(button.getPage());
+			popup.open(button, "after_start");
+		}
 	}
 
 	/**
