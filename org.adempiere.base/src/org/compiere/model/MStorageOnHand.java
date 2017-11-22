@@ -1043,7 +1043,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		if (M_Product_ID <= 0  || M_AttributeSetInstance_ID <= 0)
 			return null;
 		
-		String sql = "SELECT dateMaterialPolicy FROM M_StorageOnHand WHERE M_Product_ID=? and M_AttributeSetInstance_ID=?";
+		String sql = "SELECT dateMaterialPolicy FROM M_StorageOnHand WHERE M_Product_ID=? and M_AttributeSetInstance_ID=? ORDER BY QtyOnHand DESC";
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1085,7 +1085,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		if (M_Product_ID <= 0  || M_AttributeSetInstance_ID <= 0)
 			return null;
 		
-		String sql = "SELECT dateMaterialPolicy FROM M_StorageOnHand WHERE M_Product_ID=? and M_AttributeSetInstance_ID=? AND M_Locator_ID=?";
+		String sql = "SELECT dateMaterialPolicy FROM M_StorageOnHand WHERE M_Product_ID=? and M_AttributeSetInstance_ID=? AND M_Locator_ID=? ORDER BY QtyOnHand DESC";
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
