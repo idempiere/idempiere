@@ -14,6 +14,8 @@
 
 package org.adempiere.webui.panel;
 
+import static org.compiere.model.SystemIDs.REFERENCE_SQLORDERBY;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,11 +32,13 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.MRefList;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -42,6 +46,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Vbox;
 
 public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener<Event>
@@ -49,8 +55,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3178046711328450398L;
-
+	private static final long serialVersionUID = 6470498382547293013L;
 	//	UI variables
 	private Label noLabel = new Label();
 	private Label yesLabel = new Label();
@@ -65,6 +70,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 	Listbox yesList = new Listbox();
 	ArrayList<MPrintFormatItem> yesItems =new ArrayList<MPrintFormatItem>();
 	ArrayList<MPrintFormatItem> noItems =new ArrayList<MPrintFormatItem>();
+	private final String asc_desc = "asc_desc";
 
 	public WRC3SortCriteriaPanel() {
 		super();
@@ -99,6 +105,9 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 				migrateValueAcrossLists(event);
 			}
 		};
+
+		yesList.addEventListener(Events.ON_RIGHT_CLICK, this);
+
 		yesList.setSeltype("multiple");
 		noList.setSeltype("multiple");
 
@@ -169,6 +178,27 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 	@Override
 	public void onEvent(Event event) throws Exception {
 
+		if (event.getTarget() == yesList) {
+			if (yesList.getSelectedItems().size() > 1) // Only one item
+				return;
+
+			Menupopup m_popup = new Menupopup();
+			Menuitem menuItem = new Menuitem(yesItems.get(yesList.getSelectedIndex()).isDesc() ? (getOrderByDesc() + " -> " + getOrderByAsc()) : (getOrderByAsc() + " -> " + getOrderByDesc()));
+			menuItem.setValue(asc_desc);
+			menuItem.addEventListener(Events.ON_CLICK, this);
+			m_popup.appendChild(menuItem);
+			m_popup.setPage(yesList.getPage());
+			m_popup.open(yesList);
+		}
+		else if (event.getTarget() instanceof Menuitem) {
+			Menuitem menuItem = (Menuitem) event.getTarget();
+			if (!Util.isEmpty(menuItem.getValue()) && menuItem.getValue().equals(asc_desc)) {
+				MPrintFormatItem pfi = yesItems.get(yesList.getSelectedIndex());
+				pfi.setIsDesc(!pfi.isDesc());
+				pfi.saveEx();
+				refresh();
+			}
+		}
 	}
 	
 	public void setListsColumns() {
@@ -203,7 +233,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 			yesModel.removeAllElements();
 			for (int i=0 ; i < yesItems.size() ; i++) {				 
 				 int ID= yesItems.get(i).get_ID();
-				 String name = yesItems.get(i).getPrintName()==null? yesItems.get(i).getName():yesItems.get(i).getPrintName();
+				 String name = getName(yesItems.get(i));
 				 yesList.addItem(new KeyNamePair(ID, name));
 				 yesModel.addElement(new ListElement(ID, name, yesItems.get(i).getSortNo(), true, yesItems.get(i).getAD_Client_ID(), yesItems.get(i).getAD_Org_ID()));	
 			}
@@ -220,6 +250,20 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 				 noModel.add(i,new ListElement(ID, name, noItems.get(i).getSortNo(), false, noItems.get(i).getAD_Client_ID(), noItems.get(i).getAD_Org_ID()));
 			}
 		}
+	}
+
+	String getName(MPrintFormatItem pfi) {
+		StringBuilder name = new StringBuilder(Util.isEmpty(pfi.getPrintName()) ? pfi.getName() : pfi.getPrintName())
+		.append(" (").append(pfi.isDesc() ? getOrderByDesc() : getOrderByAsc()).append(")");
+		return name.toString();
+	}
+
+	String getOrderByAsc() {
+		return MRefList.getListName(Env.getCtx(), REFERENCE_SQLORDERBY, "A");
+	}
+
+	String getOrderByDesc() {
+		return MRefList.getListName(Env.getCtx(), REFERENCE_SQLORDERBY, "D");
 	}
 
 	@Override
