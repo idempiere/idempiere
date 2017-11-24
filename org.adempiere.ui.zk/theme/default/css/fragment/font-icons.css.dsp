@@ -223,14 +223,14 @@
 	color: green;
 	font-family: FontAwesome;
 }
-.z-icon-Request:before {	
-	content: "\f046";
-}
 .z-icon-Refresh:before {
 	content: "\f021";
 }
 .z-icon-Report:before {	
 	content: "\f1ea";
+}
+.z-icon-Request:before {	
+	content: "\f046";
 }
 .z-icon-Reset:before {
 	content: "\f0e2";
@@ -265,6 +265,9 @@
 .z-icon-Window:before {
 	content: "\f022";
 }
+.z-icon-Wizard:before {
+	content: "\f0d0";
+}
 .z-icon-WorkFlow:before {	
 	content: "\f126";
 }
@@ -274,12 +277,4 @@
 
 .z-icon-ZoomAcross:before {	
 	content: "\f00e";
-}
-
-.z-icon-Request:before {	
-	content: "\f046";
-}
-
-.z-icon-WorkFlow:before {	
-	content: "\f126";
 }
