@@ -253,3 +253,12 @@
 	align-items: center;
 	justify-content: center; 
 }
+
+.user-panel-popup .z-popup-content {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+.user-panel-popup .z-popup-content > .z-vlayout {
+	overflow-x: auto;
+	padding: 8px;
+}

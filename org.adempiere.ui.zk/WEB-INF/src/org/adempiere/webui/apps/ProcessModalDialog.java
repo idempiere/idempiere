@@ -87,7 +87,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 			if (mainParameterLayout != null)// when auto start it's null
 			{
 				mainParameterLayout.setStyle("max-height:" + ClientInfo.get().desktopHeight + "px");
-				ZKUpdateUtil.setVflex(mainParameterLayout, "min");
+				ZKUpdateUtil.setVflex(mainParameterLayout, "1");
 			}
 			if (topParameterLayout != null)
 			{
