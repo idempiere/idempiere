@@ -33,10 +33,7 @@ then
    cp jettyhome/etc/jetty-selector.xml jetty-selector.xml.sav
 fi
 
-UNINSTALL_UI="org.adempiere.server.product, org.idempiere.fitnesse.feature.group"
-INSTALL_UI="org.adempiere.server.product, org.eclipse.equinox.p2.director, org.idempiere.fitnesse.feature.group, org.idempiere.equinox.p2.director.feature.group"
-
-$DESTINATION/update-prd.sh $1 "$INSTALL_UI" "$UNINSTALL_UI"
+$DESTINATION/update-prd.sh $1 org.adempiere.server.product,org.idempiere.fitnesse.feature.group
 
 cp idempiere.ini.sav idempiere.ini
 
