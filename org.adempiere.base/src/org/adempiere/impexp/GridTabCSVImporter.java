@@ -1463,8 +1463,6 @@ public class GridTabCSVImporter implements IGridTabImporter
 	}
 
 	private int resolveForeign(String foreignTable, String foreignColumn, Object value,Trx trx) {
-		int id = -1;
-
 		boolean systemAccess = false;
 		if (!"AD_Client".equals(foreignTable)) {
 			MTable ft = MTable.get(Env.getCtx(), foreignTable);
