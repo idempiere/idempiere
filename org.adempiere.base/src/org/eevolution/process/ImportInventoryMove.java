@@ -333,13 +333,13 @@ public class ImportInventoryMove extends SvrProcess
 	{
 		for(X_I_Movement imove : getRecords(false, m_IsImportOnlyNoErrors))
 		{
-			//if(imov.getAD_Org_ID()==0)
+			if(imove.getAD_Org_ID()==0)
 				imove.setAD_Org_ID(getID(MOrg.Table_Name,"Value = ?", new Object[]{imove.getOrgValue()}));
 			if(imove.getM_Product_ID()==0)
 				imove.setM_Product_ID(getID(MProduct.Table_Name,"Value = ?", new Object[]{imove.getProductValue()}));
-			//if(imov.getM_Locator_ID()==0)
+			if(imove.getM_Locator_ID()==0)
 				imove.setM_Locator_ID(getID(MLocator.Table_Name,"Value = ?", new Object[]{imove.getLocatorValue()}));
-			//if(imov.getM_LocatorTo_ID()==0)
+			if(imove.getM_LocatorTo_ID()==0)
 				imove.setM_LocatorTo_ID(getID(MLocator.Table_Name,"Value = ?", new Object[]{imove.getLocatorToValue()}));
 			if(imove.getC_DocType_ID()==0)
 				imove.setC_DocType_ID(getID(MDocType.Table_Name,"Name=?", new Object[]{imove.getDocTypeName()}));
