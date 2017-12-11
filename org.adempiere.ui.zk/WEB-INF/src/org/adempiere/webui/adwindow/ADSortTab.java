@@ -680,7 +680,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 			.append(" SET ").append(m_ColumnSortName).append("=0");
 			if (m_ColumnYesNoName != null)
 				sql.append(",").append(m_ColumnYesNoName).append("='N'");
-			sql.append(", Updated=Now(), UpdatedBy=").append(Env.getAD_User_ID(Env.getCtx()));
+			sql.append(", Updated=sysdate, UpdatedBy=").append(Env.getAD_User_ID(Env.getCtx()));
 			sql.append(" WHERE ").append(m_KeyColumnName).append("=").append(pp.getKey());
 			if (DB.executeUpdate(sql.toString(), null) == 1) {
 				pp.setSortNo(0);
@@ -710,7 +710,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 			.append(" SET ").append(m_ColumnSortName).append("=").append(index);
 			if (m_ColumnYesNoName != null)
 				sql.append(",").append(m_ColumnYesNoName).append("='Y'");
-			sql.append(", Updated=Now(), UpdatedBy=").append(Env.getAD_User_ID(Env.getCtx()));
+			sql.append(", Updated=sysdate, UpdatedBy=").append(Env.getAD_User_ID(Env.getCtx()));
 			sql.append(" WHERE ").append(m_KeyColumnName).append("=").append(pp.getKey());
 			if (DB.executeUpdate(sql.toString(), null) == 1) {
 				pp.setSortNo(index);
