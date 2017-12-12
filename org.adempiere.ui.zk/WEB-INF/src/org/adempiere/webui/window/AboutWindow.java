@@ -19,6 +19,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.WebUIActivator;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -28,6 +29,7 @@ import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListHead;
 import org.adempiere.webui.component.ListHeader;
+import org.adempiere.webui.component.ListModelTable;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
 import org.adempiere.webui.component.Row;
@@ -39,6 +41,7 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
@@ -53,6 +56,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zhtml.Pre;
 import org.zkoss.zhtml.Text;
@@ -81,16 +86,18 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -305598686065143269L;
+	private static final long serialVersionUID = -137266702660831515L;
 
 	private Checkbox bErrorsOnly;
 	private Listbox logTable;
+	private WListbox pluginsTable;
 	private Tabbox tabbox;
 	protected Tabpanels tabPanels;
 	protected Button btnDownload;
 	protected Button btnErrorEmail;
 	protected Button btnViewLog;
 	protected Tab tabLog;
+	protected Tab tabPlugins;
 
 	protected Button btnAdempiereLog;
 
@@ -191,6 +198,16 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		tab.setParent(tabs);
 		tabPanel = createTrace();
 		tabPanel.setParent(tabPanels);
+
+		//Plugins
+		tab = new Tab();
+		tab.setLabel("Plugins");
+		tabPlugins= tab;
+		tabPanel = createPlugins();
+		if (tabPanel != null) {
+			tab.setParent(tabs);
+			tabPanel.setParent(tabPanels);
+		}
 	}
 
 	protected Tabpanel createTrace() {
@@ -309,6 +326,73 @@ public class AboutWindow extends Window implements EventListener<Event> {
 			tabLog.setLabel(Msg.getMsg(Env.getCtx(), "Errors") + " (" + data.size() + ")");
 		else
 			tabLog.setLabel(Msg.getMsg(Env.getCtx(), "TraceInfo") + " (" + data.size() + ")");
+	}
+
+	protected Tabpanel createPlugins() {
+		MUser user = MUser.get(Env.getCtx());
+		Tabpanel tabPanel = null;
+		if (Env.getAD_Client_ID(Env.getCtx()) == 0 && user.isAdministrator()) {
+			tabPanel = new Tabpanel();
+			Vbox vbox = new Vbox();
+			vbox.setParent(tabPanel);
+			ZKUpdateUtil.setHflex(vbox, "1");
+			ZKUpdateUtil.setVflex(vbox, "1");
+
+			Vector<String> columnNames = new Vector<String>();
+			columnNames.add(Msg.getMsg(Env.getCtx(), "Id"));
+			columnNames.add(Msg.getMsg(Env.getCtx(), "State"));
+			columnNames.add(Msg.getCleanMsg(Env.getCtx(), "Name"));
+			columnNames.add(Msg.getMsg(Env.getCtx(), "Version"));
+
+			pluginsTable = ListboxFactory.newDataTableAutoSize();
+
+			Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+			BundleContext ctx = WebUIActivator.getBundleContext();
+			for (Bundle bundle : ctx.getBundles()) {
+				Vector<Object> line = new Vector<Object>();
+				Integer bundl = new Long(bundle.getBundleId()).intValue(); // potential problem converting Long to Integer, but WListBox cannot order Long
+				line.add(bundl);
+				line.add(state(bundle.getState()));
+				line.add(bundle.getSymbolicName());
+				line.add(bundle.getVersion());
+				data.add(line);
+			}
+			
+			ListModelTable model = new ListModelTable(data);
+			pluginsTable.setData(model, columnNames);
+			int i = 0;
+			pluginsTable.setColumnClass(i++, Integer.class, true);         //  0-bundleId
+			pluginsTable.setColumnClass(i++, String.class, true);          //  1-State
+			pluginsTable.setColumnClass(i++, String.class, true);          //  2-SymbolicName
+			pluginsTable.setColumnClass(i++, String.class, true);          //  3-Version
+			pluginsTable.autoSize();
+			vbox.appendChild(pluginsTable);
+			ZKUpdateUtil.setVflex(pluginsTable, "1");
+			ZKUpdateUtil.setHflex(pluginsTable, "1");
+			
+			tabPlugins.setLabel(Msg.getMsg(Env.getCtx(), "Plugins") + " (" + data.size() + ")");
+		}
+
+		return tabPanel;
+	}
+
+	private String state(int state) {
+		switch (state) {
+		case Bundle.ACTIVE:
+			return "ACTIVE";
+		case Bundle.INSTALLED:
+			return "INSTALLED";
+		case Bundle.RESOLVED:
+			return "RESOLVED";
+		case Bundle.STARTING:
+			return "STARTING";
+		case Bundle.STOPPING:
+			return "STOPPING";
+		case Bundle.UNINSTALLED:
+			return "UNINSTALLED";
+		default:
+			return "UNKNOWN";
+		}
 	}
 
 	protected Tabpanel createInfo() {
