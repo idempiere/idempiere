@@ -219,6 +219,15 @@ public interface I_C_BPartner_Location
 	  */
 	public boolean isPayFrom();
 
+    /** Column name IsPreserveCustomName */
+    public static final String COLUMNNAME_IsPreserveCustomName = "IsPreserveCustomName";
+
+	/** Set Preserve custom name	  */
+	public void setIsPreserveCustomName (boolean IsPreserveCustomName);
+
+	/** Get Preserve custom name	  */
+	public boolean isPreserveCustomName();
+
     /** Column name IsRemitTo */
     public static final String COLUMNNAME_IsRemitTo = "IsRemitTo";
 

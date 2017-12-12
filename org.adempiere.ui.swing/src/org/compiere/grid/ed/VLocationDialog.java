@@ -92,7 +92,7 @@ public class VLocationDialog extends CDialog
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8870275797513554720L;
+	private static final long serialVersionUID = -8325818864115049548L;
 
 	/** Lookup result header */
 	private Object[] header = null;
@@ -787,13 +787,14 @@ public class VLocationDialog extends CDialog
 		{
             // IDEMPIERE-417 Force Update BPLocation.Name
         	if (m_GridField != null && m_GridField.getGridTab() != null
-        			&& "C_BPartner_Location".equals(m_GridField.getGridTab().getTableName()))
+        			&& "C_BPartner_Location".equals(m_GridField.getGridTab().getTableName())
+	        		&& !m_GridField.getGridTab().getValueAsBoolean("IsPreserveCustomName"))
     		{
         		m_GridField.getGridTab().setValue("Name", ".");
 				success = true;
     		} else {
     			//Update BP_Location name IDEMPIERE 417
-    			int bplID = DB.getSQLValueEx(trx.getTrxName(), "SELECT C_BPartner_Location_ID FROM C_BPartner_Location WHERE C_Location_ID = " + m_location.getC_Location_ID());
+    			int bplID = DB.getSQLValueEx(trx.getTrxName(), MLocation.updateBPLocName, m_location.getC_Location_ID());
     			if (bplID>0)
     			{
     				MBPartnerLocation bpl = new MBPartnerLocation(Env.getCtx(), bplID, trx.getTrxName());

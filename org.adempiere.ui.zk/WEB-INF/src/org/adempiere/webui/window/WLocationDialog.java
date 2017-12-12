@@ -92,8 +92,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5368065537791919302L;
-	
+	private static final long serialVersionUID = -490669500974096990L;
 	private static final String LABEL_STYLE = "white-space: nowrap;";
 	/** Logger          */
 	private static CLogger log = CLogger.getCLogger(WLocationDialog.class);
@@ -1034,12 +1033,13 @@ public class WLocationDialog extends Window implements EventListener<Event>
 				|| (bplocname >= 3 && changedRegion)
 				) {
 	        	if (   m_GridField != null && m_GridField.getGridTab() != null
-	        		&& "C_BPartner_Location".equals(m_GridField.getGridTab().getTableName()))
+	        		&& "C_BPartner_Location".equals(m_GridField.getGridTab().getTableName()) 
+	        		&& !m_GridField.getGridTab().getValueAsBoolean("IsPreserveCustomName"))
 	    		{
 	        		m_GridField.getGridTab().setValue("Name", ".");
 	    		} else {
 	    			//Update BP_Location name IDEMPIERE 417
-	    			int bplID = DB.getSQLValueEx(trx.getTrxName(), "SELECT C_BPartner_Location_ID FROM C_BPartner_Location WHERE C_Location_ID = " + m_location.getC_Location_ID());
+	    			int bplID = DB.getSQLValueEx(trx.getTrxName(), MLocation.updateBPLocName, m_location.getC_Location_ID());
 	    			if (bplID>0)
 	    			{
 	    				MBPartnerLocation bpl = new MBPartnerLocation(Env.getCtx(), bplID, trx.getTrxName());

@@ -165,7 +165,7 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 			return false;
 
 		// Set New Name
-		if (".".equals(getName())) {
+		if (".".equals(getName()) && !isPreserveCustomName()) {
 			MLocation address = getLocation(true);
 			setName(getBPLocName(address));
 		}
@@ -224,6 +224,10 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	} // makeUnique
 
 	public String getBPLocName(MLocation address) {
+
+		if (isPreserveCustomName())
+			return getName();
+
 		m_uniqueName = getName();
 		m_unique = MSysConfig.getIntValue(MSysConfig.START_VALUE_BPLOCATION_NAME, 0,
 				getAD_Client_ID(), getAD_Org_ID());
