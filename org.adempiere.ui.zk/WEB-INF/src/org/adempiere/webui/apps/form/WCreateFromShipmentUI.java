@@ -394,7 +394,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 				C_BPartner_ID = ((Integer)e.getNewValue()).intValue();
 			}
 			
-			initBPOrderDetails (C_BPartner_ID, true);
+			initBPOrderDetails (C_BPartner_ID, false);
 		}
 		window.tableChanged(null);
 	}   //  vetoableChange
@@ -464,7 +464,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		orderField.addActionListener(this);
 
 		initBPDetails(C_BPartner_ID);
-	}   //  initBPartnerOIS
+	}   //  initBPOrderDetails
 	
 	public void initBPDetails(int C_BPartner_ID) 
 	{
