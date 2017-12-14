@@ -351,7 +351,7 @@ public class MRMALine extends X_M_RMALine
         }
         
         // Set default amount and qty for product
-        if (this.getM_Product_ID() != 0 && this.getQty().doubleValue() <= 0)
+        if (this.getM_Product_ID() != 0 && this.getQty().doubleValue() <= 0 && !MRMA.DOCACTION_Void.equals(getParent().getDocAction()))
         {
             if (getQty().signum() == 0)
                 this.setQty(Env.ONE);
@@ -360,7 +360,7 @@ public class MRMALine extends X_M_RMALine
         }
 
         // Set default amount and qty for charge
-        if (this.getC_Charge_ID() != 0 && this.getQty().doubleValue() <= 0)
+        if (this.getC_Charge_ID() != 0 && this.getQty().doubleValue() <= 0 && !MRMA.DOCACTION_Void.equals(getParent().getDocAction()))
         {
             if (getQty().signum() == 0)
                 this.setQty(Env.ONE);
@@ -369,7 +369,7 @@ public class MRMALine extends X_M_RMALine
         }
         
         // Set amount for products
-        if (this.getM_InOutLine_ID() != 0)
+        if (this.getM_InOutLine_ID() != 0 && !MRMA.DOCACTION_Void.equals(getParent().getDocAction()))
         {
         	this.setM_Product_ID(m_ioLine.getM_Product_ID());
         	this.setC_Charge_ID(m_ioLine.getC_Charge_ID());
