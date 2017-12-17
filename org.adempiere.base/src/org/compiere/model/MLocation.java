@@ -537,7 +537,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		if (isAddressLinesReverse())
 		{
 			//	City, Region, Postal
-			retStr.append(", ").append(parseCRP (getCountry()));
+			retStr.append(parseCRP (getCountry()));
 			if (getAddress5() != null && getAddress5().length() > 0)
 				retStr.append(", ").append(getAddress5());
 			if (getAddress4() != null && getAddress4().length() > 0)
@@ -547,7 +547,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 			if (getAddress2() != null && getAddress2().length() > 0)
 				retStr.append(", ").append(getAddress2());
 			if (getAddress1() != null)
-				retStr.append(getAddress1());
+				retStr.append(", ").append(getAddress1());
 		}
 		else
 		{
@@ -564,6 +564,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 			//	City, Region, Postal
 			retStr.append(", ").append(parseCRP (getCountry()));
 			//	Add Country would come here
+			// retStr.append(", ").append(getCountry());
 		}
 		return retStr.toString();
 	}	//	toString
