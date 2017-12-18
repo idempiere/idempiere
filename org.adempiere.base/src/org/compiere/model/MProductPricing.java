@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
+import org.adempiere.base.AbstractProductPricing;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -33,13 +34,19 @@ import org.compiere.util.Trace;
  *  @author Jorg Janke
  *  @version $Id: MProductPricing.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
-public class MProductPricing
+public class MProductPricing extends AbstractProductPricing
 {
 	
 	private String trxName=null;
+
+	/**
+	 * New constructor to be used with the ProductPriceFactories
+	 */
+	public MProductPricing() {}
 	
 	/**
-	 * 	Constructor
+	 * 	Old Constructor to keep backward
+	 *  compatibility
 	 * 	@param M_Product_ID product
 	 * 	@param C_BPartner_ID partner
 	 * 	@param Qty quantity
@@ -49,17 +56,7 @@ public class MProductPricing
 	public MProductPricing (int M_Product_ID, int C_BPartner_ID, 
 			BigDecimal Qty, boolean isSOTrx, String trxName)
 	{
-		this.trxName=trxName;
-
-		m_M_Product_ID = M_Product_ID;
-		m_C_BPartner_ID = C_BPartner_ID;
-		if (Qty != null && Env.ZERO.compareTo(Qty) != 0)
-			m_Qty = Qty;
-		m_isSOTrx = isSOTrx;
-		int thereAreVendorBreakRecords = DB.getSQLValue(trxName, 
-				"SELECT count(M_Product_ID) FROM M_ProductPriceVendorBreak WHERE M_Product_ID=? AND (C_BPartner_ID=? OR C_BPartner_ID is NULL)",
-				m_M_Product_ID, m_C_BPartner_ID);
-		m_useVendorBreak = thereAreVendorBreakRecords > 0;
+		setInitialValues(M_Product_ID, C_BPartner_ID, Qty, isSOTrx, trxName);
 	}
 
 
@@ -76,13 +73,20 @@ public class MProductPricing
 	{
 		this(M_Product_ID,C_BPartner_ID,Qty,isSOTrx,null);
 	}	//	MProductPricing
+	
+	@Override
+	public void setInitialValues(int M_Product_ID, int C_BPartner_ID, BigDecimal qty, boolean isSOTrx, String trxName) {
+		super.setInitialValues(M_Product_ID, C_BPartner_ID, qty, isSOTrx, trxName);
+		checkVendorBreak();
+	}
+	
+	private void checkVendorBreak() {
+		int thereAreVendorBreakRecords = DB.getSQLValue(trxName, 
+				"SELECT count(M_Product_ID) FROM M_ProductPriceVendorBreak WHERE M_Product_ID=? AND (C_BPartner_ID=? OR C_BPartner_ID is NULL)",
+				m_M_Product_ID, m_C_BPartner_ID);
+		m_useVendorBreak = thereAreVendorBreakRecords > 0;
+	}
 
-	private int 		m_M_Product_ID;
-	private int 		m_C_BPartner_ID;
-	private BigDecimal 	m_Qty = Env.ONE;
-	private boolean		m_isSOTrx = true;
-	//
-	private int			m_M_PriceList_ID = 0;
 	private int 		m_M_PriceList_Version_ID = 0;
 	private Timestamp 	m_PriceDate;	
 	/** Precision -1 = no rounding		*/
@@ -828,32 +832,13 @@ public class MProductPricing
 
 
 	
-
-	/**************************************************************************
-	 * 	Get Product ID
-	 *	@return id
-	 */
-	public int getM_Product_ID()
-	{
-		return m_M_Product_ID;
-	}
-	
-	/**
-	 * 	Get PriceList ID
-	 *	@return pl
-	 */
-	public int getM_PriceList_ID()
-	{
-		return m_M_PriceList_ID;
-	}	//	getM_PriceList_ID
-	
 	/**
 	 * 	Set PriceList
 	 *	@param M_PriceList_ID pl
 	 */
 	public void setM_PriceList_ID( int M_PriceList_ID)
 	{
-		m_M_PriceList_ID = M_PriceList_ID;
+		super.setM_PriceList_ID(M_PriceList_ID);
 		m_calculated = false;
 	}	//	setM_PriceList_ID
 	
@@ -872,18 +857,9 @@ public class MProductPricing
 	 */
 	public void setM_PriceList_Version_ID (int M_PriceList_Version_ID)
 	{
-		m_M_PriceList_Version_ID = M_PriceList_Version_ID;
+		super.setM_PriceList_Version_ID(M_PriceList_Version_ID);
 		m_calculated = false;
 	}	//	setM_PriceList_Version_ID
-	
-	/**
-	 * 	Get Price Date
-	 *	@return date
-	 */
-	public Timestamp getPriceDate()
-	{
-		return m_PriceDate;
-	}	//	getPriceDate
 	
 	/**
 	 * 	Set Price Date
@@ -891,7 +867,7 @@ public class MProductPricing
 	 */
 	public void setPriceDate(Timestamp priceDate)
 	{
-		m_PriceDate = priceDate;
+		super.setPriceDate(priceDate);
 		m_calculated = false;
 	}	//	setPriceDate
 	
@@ -1005,5 +981,35 @@ public class MProductPricing
 	{
 		return m_calculated;
 	}	//	isCalculated
+	
+	@Override
+	public void setOrderLine(I_C_OrderLine orderLine, String trxName) {
+		super.setOrderLine(orderLine, trxName);
+		checkVendorBreak();
+	}
+	
+	@Override
+	public void setInvoiceLine(I_C_InvoiceLine invoiceLine, String trxName) {
+		super.setInvoiceLine(invoiceLine, trxName);
+		checkVendorBreak();
+	}
+	
+	@Override
+	public void setProjectLine(I_C_ProjectLine projectLine, String trxName) {
+		super.setProjectLine(projectLine, trxName);
+		checkVendorBreak();
+	}
+	
+	@Override
+	public void setRequisitionLine(I_M_RequisitionLine reqLine, String trxName) {
+		super.setRequisitionLine(reqLine, trxName);
+		checkVendorBreak();
+	}
+	
+	@Override
+	public void setRMALine(I_M_RMALine rmaLine, String trxName) {
+		super.setRMALine(rmaLine, trxName);
+		checkVendorBreak();
+	}
 	
 }	//	MProductPrice

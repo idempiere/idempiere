@@ -21,6 +21,8 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
+import org.adempiere.base.IProductPricing;
 import org.adempiere.model.GridTabWrapper;
 import org.compiere.util.Env;
 
@@ -100,7 +102,8 @@ public class CalloutRequisition extends CalloutEngine
 		int C_BPartner_ID = line.getC_BPartner_ID();
 		BigDecimal Qty = line.getQty();
 		boolean isSOTrx = false;
-		MProductPricing pp = new MProductPricing (line.getM_Product_ID(), C_BPartner_ID, Qty, isSOTrx, null);
+		IProductPricing pp = Core.getProductPricing();
+		pp.setInitialValues(line.getM_Product_ID(), C_BPartner_ID, Qty, isSOTrx, null);
 		//
 		int M_PriceList_ID = req.getM_PriceList_ID();
 		pp.setM_PriceList_ID(M_PriceList_ID);

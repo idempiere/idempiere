@@ -22,6 +22,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.IProductPricing;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.ITaxProvider;
 import org.compiere.util.DB;
@@ -147,7 +148,8 @@ public class MRMALine extends X_M_RMALine
         }
         else if (getM_Product_ID() != 0)
         {
-        	MProductPricing pp = new MProductPricing (getM_Product_ID(), getParent().getC_BPartner_ID(), Env.ONE, getParent().isSOTrx(), get_TrxName());
+        	IProductPricing pp = Core.getProductPricing();
+    		pp.setRMALine(this, get_TrxName());
         	
         	MInvoice invoice = getParent().getOriginalInvoice();
         	if (invoice != null)

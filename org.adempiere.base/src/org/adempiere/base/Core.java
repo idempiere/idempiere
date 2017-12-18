@@ -450,4 +450,26 @@ public class Core {
 		
 		return myPaymentExporter;
 	}	
+
+	/**
+	 * get ProductPricing instance
+	 * 
+	 * @return instance of the IProductPricing or null
+	 */
+	public static IProductPricing getProductPricing() {
+
+		List<IProductPricingFactory> factoryList = 
+				Service.locator().list(IProductPricingFactory.class).getServices();
+		if (factoryList != null) {
+			for(IProductPricingFactory factory : factoryList) {
+				IProductPricing myProductPricing = factory.newProductPricingInstance();
+				if (myProductPricing != null) {
+					return myProductPricing;
+				}
+			}
+		}
+
+		return null;
+	}
+
 }
