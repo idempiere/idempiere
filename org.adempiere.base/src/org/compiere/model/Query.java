@@ -83,6 +83,16 @@ public class Query
 	private int queryTimeout = 0;
 	private List<String> joinClauseList = new ArrayList<String>();
 	
+    /**
+     * Limit current query rows return.
+     */
+    private int pageSize;
+
+    /**
+     * Number of pages will be skiped on query run.
+     */
+    private int skip;
+	
 	/**
 	 * 
 	 * @param table
@@ -753,9 +763,86 @@ public class Query
 			if (DB.isPostgreSQL())
 				sql = sql + " OF " + table.getTableName();
 		}
-		if (log.isLoggable(Level.FINEST)) log.finest("TableName = "+table.getTableName()+"... SQL = " +sql); //red1  - to assist in debugging SQL
-		return sql;
-	}
+		
+		// If have pagination
+        if (pageSize > 0) {
+            sql = appendPagination(sql);
+        }
+
+        if (log.isLoggable(Level.FINEST))
+            log.finest("TableName = " + table.getTableName() + "... SQL = " + sql); // red1 - to assist in debugging SQL
+
+        return sql;
+    }
+
+    /**
+     * Set the pagination of the query.
+     * 
+     * @param pPageSize
+     *            Limit current query rows return.
+     * 
+     * @return current Query
+     */
+    public Query setPageSize(int pPageSize) {
+        this.pageSize = pPageSize;
+        return this;
+    }
+
+    /**
+     * Set the pagination of the query.
+     * 
+     * @param pPageSize
+     *            Limit current query rows return.
+     * 
+     * @param pSkip
+     *            Number of pages will be skiped on query run. ZERO to first page
+     * 
+     * @return current Query
+     */
+    public Query setPage(int pPageSize, int pSkip) {
+        this.pageSize = pPageSize;
+        this.skip = pSkip;
+        return this;
+    }
+
+    /**
+     * If top is bigger than 0 set the pagination on query
+     * 
+     * @param query
+     *            SQL String
+     * @param pageSize
+     *            number
+     * @param skip
+     *            number
+     */
+    private String appendPagination(String pQuery) {
+
+        String query = pQuery;
+
+        if (pageSize > 0) {
+
+            StringBuilder sql = new StringBuilder();
+
+            if (DB.isOracle()) {
+
+                sql.append("select * from (");
+                sql.append("   select ROWNUM pRow, tb.* from (");
+                sql.append(query);
+                sql.append(") tb) where pRow > ");
+                sql.append(pageSize * skip);
+                sql.append(" AND pRow <= ");
+                sql.append(((pageSize * skip) + pageSize));
+
+                return sql.toString();
+
+            }
+            else {
+                query = query.concat(" FETCH FIRST " + pageSize + " ROWS ONLY OFFSET " + (pageSize * skip));
+            }
+        }
+
+        return query;
+    }
 	
 	private final ResultSet createResultSet (PreparedStatement pstmt) throws SQLException
 	{
