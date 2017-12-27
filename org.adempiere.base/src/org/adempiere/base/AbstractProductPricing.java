@@ -67,6 +67,11 @@ public abstract class AbstractProductPricing implements IProductPricing {
 	public void setM_PriceList_Version_ID(int M_PriceList_Version_ID) {
 		m_M_PriceList_Version_ID = M_PriceList_Version_ID;
 	}
+	
+	@Override
+	public void setQty(BigDecimal qty) {
+		m_Qty = qty;
+	}
 
 	@Override
 	public Timestamp getPriceDate() {
@@ -94,7 +99,8 @@ public abstract class AbstractProductPricing implements IProductPricing {
 	public void setInvoiceLine(I_C_InvoiceLine invoiceLine, String trxName) {
 		m_M_Product_ID = invoiceLine.getM_Product_ID();
 		m_C_BPartner_ID = invoiceLine.getC_Invoice().getC_BPartner_ID();
-		BigDecimal qty = invoiceLine.getQtyInvoiced();
+		BigDecimal qty = invoiceLine.getQtyInvoiced() != null ? 
+				invoiceLine.getQtyInvoiced() : invoiceLine.getQtyEntered();
 		if (qty != null && Env.ZERO.compareTo(qty) != 0)
 			m_Qty = qty;
 		m_isSOTrx = invoiceLine.getC_Invoice().isSOTrx();

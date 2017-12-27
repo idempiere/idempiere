@@ -59,6 +59,8 @@ public interface IProductPricing {
 	
 	void setM_PriceList_Version_ID(int M_PriceList_Version_ID);
 	
+	void setQty(BigDecimal qty);
+	
 	/**
 	 * 	Get Price Date
 	 *	@return date
