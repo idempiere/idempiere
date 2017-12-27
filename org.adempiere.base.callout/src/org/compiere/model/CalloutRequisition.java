@@ -28,7 +28,6 @@ import org.compiere.util.Env;
 
 /**
  *	Requisition Callouts
- *	
  *  @author Jorg Janke
  *  @version $Id: CalloutRequisition.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
@@ -49,7 +48,7 @@ public class CalloutRequisition extends CalloutEngine
 		Integer M_Product_ID = (Integer)value;
 		if (M_Product_ID == null || M_Product_ID.intValue() == 0)
 			return "";
-		final I_M_Requisition req = GridTabWrapper.create(mTab, I_M_Requisition.class);
+		final I_M_Requisition req = GridTabWrapper.create(mTab.getParentTab(), I_M_Requisition.class);
 		final I_M_RequisitionLine line = GridTabWrapper.create(mTab, I_M_RequisitionLine.class);
 		setPrice(ctx, WindowNo, req, line);
 		MProduct product = MProduct.get(ctx, M_Product_ID);
@@ -73,7 +72,7 @@ public class CalloutRequisition extends CalloutEngine
 		if (isCalloutActive() || value == null)
 			return "";
 		
-		final I_M_Requisition req = GridTabWrapper.create(mTab, I_M_Requisition.class);
+		final I_M_Requisition req = GridTabWrapper.create(mTab.getParentTab(), I_M_Requisition.class);
 		final I_M_RequisitionLine line = GridTabWrapper.create(mTab, I_M_RequisitionLine.class);
 		//	Qty changed - recalc price
 		if (mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_Qty) 
