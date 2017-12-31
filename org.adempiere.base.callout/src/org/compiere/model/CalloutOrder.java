@@ -184,13 +184,7 @@ public class CalloutOrder extends CalloutEngine
 					//	PaymentRule
 					String s = rs.getString(IsSOTrx ? "PaymentRule" : "PaymentRulePO");
 					if (s != null && s.length() != 0)
-					{
-						if (IsSOTrx && (s.equals("B") || s.equals("S") || s.equals("U")))	//	No Cash/Check/Transfer for SO_Trx
-							s = "P";										//  Payment Term
-						if (!IsSOTrx && (s.equals("B")))					//	No Cash for PO_Trx
-							s = "P";										//  Payment Term
 						mTab.setValue("PaymentRule", s);
-					}
 					//	Payment Term
 					Integer ii =new Integer(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
 					if (!rs.wasNull())
@@ -404,13 +398,7 @@ public class CalloutOrder extends CalloutEngine
 					//	PaymentRule
 					s = rs.getString(IsSOTrx ? "PaymentRule" : "PaymentRulePO");
 					if (s != null && s.length() != 0)
-					{
-						if (s.equals("B"))				//	No Cache in Non POS
-							s = "P";
-						if (IsSOTrx && (s.equals("S") || s.equals("U")))	//	No Check/Transfer for SO_Trx
-							s = "P";										//  Payment Term
 						mTab.setValue("PaymentRule", s);
-					}
 					//	Payment Term
 					ii = new Integer(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
 					if (!rs.wasNull())
@@ -592,13 +580,7 @@ public class CalloutOrder extends CalloutEngine
 					//	PaymentRule
 					s = rs.getString(IsSOTrx ? "PaymentRule" : "PaymentRulePO");
 					if (s != null && s.length() != 0)
-					{
-						if (s.equals("B"))				//	No Cache in Non POS
-							s = "P";
-						if (IsSOTrx && (s.equals("S") || s.equals("U")))	//	No Check/Transfer for SO_Trx
-							s = "P";										//  Payment Term
 						mTab.setValue("PaymentRule", s);
-					}
 					//	Payment Term
 					ii = new Integer(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
 					if (!rs.wasNull())

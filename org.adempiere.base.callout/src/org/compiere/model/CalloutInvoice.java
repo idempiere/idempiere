@@ -90,9 +90,9 @@ public class CalloutInvoice extends CalloutEngine
 				Env.setContext(ctx, WindowNo, "DocBaseType", s);
 				//  AP Check & AR Credit Memo
 				if (s.startsWith("AP"))
-					mTab.setValue("PaymentRule", "S");    //  Check
+					mTab.setValue("PaymentRule", X_C_Invoice.PAYMENTRULE_Check);
 				else if (s.endsWith("C"))
-					mTab.setValue("PaymentRule", "P");    //  OnCredit
+					mTab.setValue("PaymentRule", X_C_Invoice.PAYMENTRULE_OnCredit);
 			}
 		}
 		catch (SQLException e)
@@ -186,13 +186,9 @@ public class CalloutInvoice extends CalloutEngine
 				//	PaymentRule
 				String s = rs.getString(IsSOTrx ? "PaymentRule" : "PaymentRulePO");
 				if (s != null && s.length() != 0)
-				{
-					if (Env.getContext(ctx, WindowNo, "DocBaseType").endsWith("C"))	//	Credits are Payment Term
-						s = "P";
-					else if (IsSOTrx && (s.equals("S") || s.equals("U")))	//	No Check/Transfer for SO_Trx
-						s = "P";											//  Payment Term
 					mTab.setValue("PaymentRule", s);
-				}
+				if (Env.getContext(ctx, WindowNo, "DocBaseType").endsWith("C"))	//	Credits are Payment Term
+					s = X_C_Invoice.PAYMENTRULE_OnCredit;
 				//  Payment Term
 				ii = new Integer(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
 				if (!rs.wasNull())
