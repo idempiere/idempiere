@@ -121,4 +121,5 @@ Require-Bundle: org.eclipse.equinox.app;bundle-version="0.0.0",
  com.itextpdf;bundle-version="0.0.0",
  net.sf.supercsv.super-csv;bundle-version="0.0.0",
  bcprov;bundle-version="1.54.0",
- groovy-all;bundle-version="[2.4.7,2.5.0)"
+ groovy-all;bundle-version="[2.4.7,2.5.0)",
+ org.krysalis.barcode4j;bundle-version="2.1.0"
