@@ -587,15 +587,24 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     {
     	this.btnLock.setPressed(locked);
 
-  		String size = Env.getContext(Env.getCtx(), "#ZK_Toolbar_Button_Size");
-  		String suffix = "24.png";
-  		if (!Util.isEmpty(size))
-  		{
-  			suffix = size + ".png";
-  		}
-  		String imgURL = "images/"+ (this.btnLock.isPressed() ? "LockX" : "Lock") + suffix;
-    	imgURL = ThemeManager.getThemeResource(imgURL);
-		this.btnLock.setImage(imgURL);
+      	if (ThemeManager.isUseFontIconForImage())
+      	{
+      		String iconSclass = "z-icon-" + (this.btnLock.isPressed() ? "lock" : "unlock") ;
+      		this.btnLock.setIconSclass(iconSclass);
+      		LayoutUtils.addSclass("font-icon-toolbar-button", this.btnLock);
+      	}
+      	else
+      	{
+      		String size = Env.getContext(Env.getCtx(), "#ZK_Toolbar_Button_Size");
+      		String suffix = "24.png";
+      		if (!Util.isEmpty(size))
+      		{
+      			suffix = size + ".png";
+      		}
+      		String imgURL = "images/"+ (this.btnLock.isPressed() ? "LockX" : "Lock") + suffix;
+        	imgURL = ThemeManager.getThemeResource(imgURL);
+    		this.btnLock.setImage(imgURL);
+      	}
     }
 
     public void enablePostIt(boolean enabled)
