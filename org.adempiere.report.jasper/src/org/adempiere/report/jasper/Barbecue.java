@@ -2,10 +2,12 @@ package org.adempiere.report.jasper;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 
-import net.sf.jasperreports.engine.JRAbstractSvgRenderer;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperReportsContext;
+import net.sf.jasperreports.renderers.AbstractRenderToImageDataRenderer;
 import net.sourceforge.barbecue.Barcode;
 
-public class Barbecue extends JRAbstractSvgRenderer
+public class Barbecue extends AbstractRenderToImageDataRenderer
 {
 
 	private static final long serialVersionUID = 5112469398754718739L;
@@ -29,7 +31,8 @@ public class Barbecue extends JRAbstractSvgRenderer
         m_barcode.setDrawingText(showDrawingText);
     }
 
-	public void render(Graphics2D grx, Rectangle2D rectangle) 
+    @Override
+	public void render(JasperReportsContext jasperReportsContext, Graphics2D grx, Rectangle2D rectangle) throws JRException
 	{
 		try
 		{

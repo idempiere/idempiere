@@ -21,6 +21,8 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
+import org.adempiere.base.IProductPricing;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -146,9 +148,8 @@ public class MProjectLine extends X_C_ProjectLine
 			return limitPrice;
 		if (getProject() == null)
 			return limitPrice;
-		boolean isSOTrx = true;
-		MProductPricing pp = new MProductPricing (getM_Product_ID(),
-			m_parent.getC_BPartner_ID(), getPlannedQty(), isSOTrx, get_TrxName());
+		IProductPricing pp = Core.getProductPricing();
+		pp.setProjectLine(this, get_TrxName());
 		pp.setM_PriceList_ID(m_parent.getM_PriceList_ID());
 		if (pp.calculatePrice())
 			limitPrice = pp.getPriceLimit();

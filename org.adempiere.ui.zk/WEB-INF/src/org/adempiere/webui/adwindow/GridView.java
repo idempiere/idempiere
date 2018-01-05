@@ -63,7 +63,7 @@ import org.zkoss.zul.Frozen;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Tabpanel;
-import org.zkoss.zul.Vbox;
+import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.impl.CustomGridDataLoader;
 
@@ -72,8 +72,9 @@ import org.zkoss.zul.impl.CustomGridDataLoader;
  * @author Low Heng Sin
  *
  */
-public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFieldEditorContainer, StateChangeListener
+public class GridView extends Vlayout implements EventListener<Event>, IdSpace, IFieldEditorContainer, StateChangeListener
 {
+
 	/**
 	 * 
 	 */
@@ -243,7 +244,10 @@ public class GridView extends Vbox implements EventListener<Event>, IdSpace, IFi
 
 		setupColumns();
 		render();
-
+		if (listbox.getFrozen() != null){
+			listbox.getFrozen().setWidgetOverride("syncScroll", "function (){syncScrollOVR(this);}");
+		}
+		
 		updateListIndex();
 
 		this.init = true;

@@ -46,7 +46,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -8110247807841690907L;
+	private static final long serialVersionUID = 2068729997836800852L;
 
 	private ConfirmPanel confirmPanel;
 
@@ -239,7 +239,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 					} else {
 						StringBuilder insert = new StringBuilder("Insert Into AD_CtxHelpMsg_Trl (AD_Client_ID, AD_Org_ID, AD_CtxHelpMsg_ID, IsActive, IsTranslated, AD_Language, MsgText,");
 						insert.append("Created, CreatedBy, Updated, UpdatedBy, AD_CtxHelpMsg_Trl_UU)")
-							.append(" Values (?, ?, ?, 'Y', 'N', ?, ?, now(), ?, now(), ?, generate_uuid()) ");
+							.append(" Values (?, ?, ?, 'Y', 'N', ?, ?, sysdate, ?, sysdate, ?, generate_uuid()) ");
 						List<Object> params = new ArrayList<Object>();
 						params.add(0);
 						params.add(0);

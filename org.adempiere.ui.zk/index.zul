@@ -250,8 +250,44 @@ Copyright (C) 2007 Ashley G Ramdass.
 				}
 				this.$onSize.apply(this, arguments);
 			});
-		});
+		});	
 		
+		// overload for recalculate width of scroll when has frozen control
+		function syncScrollOVR (wgt){
+			var parent = wgt.parent;
+			
+			if (parent.eheadtbl && parent._nativebar) {
+				var scroll = wgt.$n('scrollX');
+				var cells = parent._getFirstRowCells(parent.eheadrows);
+				var totalcols = cells.length;
+				var columns = wgt._columns;
+				var scrollScale = totalcols - columns - 1; 
+				var leftWidth = 0;
+				
+				var headerWidth = 0; 
+				for (var i = 0; i < columns; i++)
+					headerWidth += cells[i].offsetWidth;
+				
+				var bodyWidth = parent.$n('body').offsetWidth;
+				var extraWidth = parent.$n('body').offsetWidth - headerWidth;
+				var extraColumnNum = 0;
+				for (var i = totalcols - 1; i >= columns; i--){
+					extraWidth -= cells[i].offsetWidth;
+					if (cells[i].offsetWidth == 0)// when scroll to right, column at left has width = 0
+						continue;
+					if (extraWidth >= 0){
+						extraColumnNum++;
+					}else{
+						break;
+					}
+				}
+				
+				
+				scroll.firstChild.style.width = jq.px0(bodyWidth + 50 * (scrollScale - extraColumnNum));
+			}
+			
+			wgt.$syncScroll ()
+		}
 	]]>
 	</script>
     <include src="${themePreference}"/>

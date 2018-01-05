@@ -105,13 +105,9 @@ public class CalloutInvoiceBatch extends CalloutEngine
 				//	PaymentRule
 				String s = rs.getString(IsSOTrx ? "PaymentRule" : "PaymentRulePO");
 				if (s != null && s.length() != 0)
-				{
-					if (Env.getContext(ctx, WindowNo, "DocBaseType").endsWith("C"))	//	Credits are Payment Term
-						s = "P";
-					else if (IsSOTrx && (s.equals("S") || s.equals("U")))	//	No Check/Transfer for SO_Trx
-						s = "P";											//  Payment Term
-			//		mTab.setValue("PaymentRule", s);
-				}
+					mTab.setValue("PaymentRule", s);
+				if (Env.getContext(ctx, WindowNo, "DocBaseType").endsWith("C"))	//	Credits are Payment Term
+					s = X_C_Invoice.PAYMENTRULE_OnCredit;
 				//  Payment Term
 				Integer ii = new Integer(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
 				if (!rs.wasNull())

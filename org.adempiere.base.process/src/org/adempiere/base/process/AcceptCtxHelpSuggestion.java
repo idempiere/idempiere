@@ -127,7 +127,7 @@ public class AcceptCtxHelpSuggestion extends SvrProcess {
 		} else {			
 			StringBuilder insert = new StringBuilder("Insert Into AD_CtxHelpMsg_Trl (AD_Client_ID, AD_Org_ID, AD_CtxHelpMsg_ID, IsActive, IsTranslated, AD_Language, MsgText,");
 			insert.append("Created, CreatedBy, Updated, UpdatedBy, AD_CtxHelpMsg_Trl_UU)")
-				.append(" Values (?, ?, ?, 'Y', 'N', ?, ?, now(), ?, now(), ?, generate_uuid()) ");
+				.append(" Values (?, ?, ?, 'Y', 'N', ?, ?, sysdate, ?, sysdate, ?, generate_uuid()) ");
 			List<Object> params = new ArrayList<Object>();
 			params.add(AD_Client_ID);
 			params.add(0);

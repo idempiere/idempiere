@@ -465,6 +465,8 @@ public class EMailProcessor
 			int c;
 			while ((c = is.read()) != -1)
 				sb.append((char)c);
+			
+			is.close();
 			deliveryMessage = sb.toString().trim();
 		}
 		else
@@ -674,6 +676,7 @@ public class EMailProcessor
 				int c;
 				while ((c = is.read()) != -1)
 					System.out.write(c);
+				is.close();
 			}
 			else
 			{
