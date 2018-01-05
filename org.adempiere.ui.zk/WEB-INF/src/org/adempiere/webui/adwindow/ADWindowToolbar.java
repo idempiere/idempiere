@@ -576,7 +576,13 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     {
     	this.btnLock.setPressed(locked);
 
-    	String imgURL = "images/"+ (this.btnLock.isPressed() ? "LockX" : "Lock") + "24.png";
+  		String size = Env.getContext(Env.getCtx(), "#ZK_Toolbar_Button_Size");
+  		String suffix = "24.png";
+  		if (!Util.isEmpty(size))
+  		{
+  			suffix = size + ".png";
+  		}
+  		String imgURL = "images/"+ (this.btnLock.isPressed() ? "LockX" : "Lock") + suffix;
     	imgURL = ThemeManager.getThemeResource(imgURL);
 		this.btnLock.setImage(imgURL);
     }
