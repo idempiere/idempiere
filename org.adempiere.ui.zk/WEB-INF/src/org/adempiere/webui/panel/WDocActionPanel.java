@@ -46,7 +46,6 @@ import org.compiere.model.MProduction;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.process.DocAction;
-import org.compiere.process.DocOptions;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -172,11 +171,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 
 		String[] docActionHolder = new String[]{DocAction};
 		index = DocumentEngine.getValidActions(DocStatus, Processing, OrderType, IsSOTrx,
-				m_AD_Table_ID, docActionHolder, options, periodOpen);
-
-		if (po instanceof DocOptions)
-			index = ((DocOptions) po).customizeValidActions(DocStatus, Processing, OrderType, IsSOTrx,
-					m_AD_Table_ID, docActionHolder, options, index);
+				m_AD_Table_ID, docActionHolder, options, periodOpen, po);
 
 		Integer doctypeId = (Integer)gridTab.getValue("C_DocTypeTarget_ID");
 		if(doctypeId==null || doctypeId.intValue()==0){
