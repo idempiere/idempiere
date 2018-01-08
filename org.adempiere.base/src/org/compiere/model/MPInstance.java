@@ -32,6 +32,7 @@ import org.adempiere.base.event.EventManager;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
@@ -219,8 +220,15 @@ public class MPInstance extends X_AD_PInstance
 		{
 			MRole role = MRole.get(getCtx(), AD_Role_ID);
 			Boolean access = role.getProcessAccess(AD_Process_ID);
-			if (access == null || !access.booleanValue())
-				throw new IllegalStateException(Msg.getMsg(getCtx(), "CannotAccessProcess", new Object[] {AD_Process_ID, role.getName()}));
+			if (access == null || !access.booleanValue()) {
+				MProcess proc = MProcess.get(getCtx(), AD_Process_ID);
+				StringBuilder procMsg = new StringBuilder("[");
+				if (! Language.isBaseLanguage (Env.getAD_Language(getCtx()))) {
+					procMsg.append(proc.get_Translation("Name")).append(" / ");
+				}
+				procMsg.append(proc.getName()).append("]");
+				throw new IllegalStateException(Msg.getMsg(getCtx(), "CannotAccessProcess", new Object[] {procMsg.toString(), role.getName()}));
+			}
 		}
 		super.setAD_Process_ID (AD_Process_ID);
 	}	//	setAD_Process_ID
