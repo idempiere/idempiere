@@ -178,9 +178,9 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 			index = ((DocOptions) po).customizeValidActions(DocStatus, Processing, OrderType, IsSOTrx,
 					m_AD_Table_ID, docActionHolder, options, index);
 
-		Integer doctypeId = (Integer)gridTab.getValue("C_DocType_ID");
+		Integer doctypeId = (Integer)gridTab.getValue("C_DocTypeTarget_ID");
 		if(doctypeId==null || doctypeId.intValue()==0){
-			doctypeId = (Integer)gridTab.getValue("C_DocTypeTarget_ID");
+			doctypeId = (Integer)gridTab.getValue("C_DocType_ID");
 		}
 		if (doctypeId == null && MAllocationHdr.Table_ID == m_AD_Table_ID) {
 			doctypeId = MDocType.getDocType(MDocType.DOCBASETYPE_PaymentAllocation);
