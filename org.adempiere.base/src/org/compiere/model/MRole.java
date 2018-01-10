@@ -3174,9 +3174,26 @@ public final class MRole extends X_AD_Role
 					+ "WHERE  AD_Table_ID = ? "
 					+ "       AND iw.IsActive = 'Y' "
 					+ "       AND iwa.IsActive = 'Y' "
-					+ "       AND iwa.AD_Role_ID = ?";
-			int cnt = DB.getSQLValueEx(null, sql, I_M_Product.Table_ID, getAD_Role_ID());
+					+ "       AND (iwa.AD_Role_ID = ? OR iwa.AD_Role_ID IN"
+					+ "       		(SELECT ri.Included_Role_ID FROM AD_Role_Included ri WHERE ri.IsActive='Y' AND ri.AD_Role_ID=?))";
+			int cnt = DB.getSQLValueEx(get_TrxName(), sql, I_M_Product.Table_ID, getAD_Role_ID(), getAD_Role_ID());
 			m_canAccess_Info_Product = new Boolean(cnt > 0);
+
+			// Verify if is excluded in the specific role (it can be allowed in included role and inactive in specific role)
+			if (m_canAccess_Info_Product) {
+				String sqlInactive = ""
+						+ "SELECT COUNT(*) "
+						+ "FROM   AD_InfoWindow iw "
+						+ "       JOIN AD_InfoWindow_Access iwa "
+						+ "         ON ( iwa.AD_InfoWindow_ID = iw.AD_InfoWindow_ID ) "
+						+ "WHERE  AD_Table_ID = ? "
+						+ "       AND iw.IsActive = 'Y' "
+						+ "       AND iwa.IsActive = 'N' "
+						+ "       AND iwa.AD_Role_ID = ?";
+				int cntInactive = DB.getSQLValueEx(get_TrxName(), sqlInactive, I_M_Product.Table_ID, getAD_Role_ID());
+				if (cntInactive > 0)
+					m_canAccess_Info_Product = new Boolean(false);
+			}
 		}
 		return m_canAccess_Info_Product.booleanValue();
 	}
