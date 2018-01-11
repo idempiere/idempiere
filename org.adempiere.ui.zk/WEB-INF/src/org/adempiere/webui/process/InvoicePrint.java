@@ -70,6 +70,10 @@ public class InvoicePrint extends SvrProcess
 	protected String		m_DocumentNo_To = null;
 	private String		p_IsPaid = null;
 	private int			m_C_DocType_ID = 0;
+	private String		p_IsPrinted = null;
+	private String		m_PaymentRule = null;
+	private int	  	    m_C_PaymentTerm_ID = 0;
+	private String		m_DocStatus = null;
 
 	protected volatile StringBuffer sql = new StringBuffer();
 	protected volatile List<Object> params = new ArrayList<Object>();
@@ -107,6 +111,14 @@ public class InvoicePrint extends SvrProcess
 				p_IsPaid = (String)para[i].getParameter();
 			else if (name.equals("C_DocType_ID"))
 				m_C_DocType_ID = para[i].getParameterAsInt();
+			else if (name.equals("IsPrinted"))
+				p_IsPrinted = (String)para[i].getParameter();
+			else if (name.equals("PaymentRule"))
+				m_PaymentRule = (String)para[i].getParameter();
+			else if (name.equals("C_PaymentTerm_ID"))
+				m_C_PaymentTerm_ID = para[i].getParameterAsInt();
+			else if (name.equals("DocStatus"))
+				m_DocStatus = (String)para[i].getParameter();
 			else
 				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
 		}
@@ -132,7 +144,11 @@ public class InvoicePrint extends SvrProcess
 			+ ", DateInvoiced=" + m_dateInvoiced_From + "-" + m_dateInvoiced_To
 			+ ", DocumentNo=" + m_DocumentNo_From + "-" + m_DocumentNo_To
 			+ ", IsPaid=" + p_IsPaid
-			+ ", C_DocType_ID=" + m_C_DocType_ID);
+			+ ", C_DocType_ID=" + m_C_DocType_ID
+			+ ", IsPrinted=" + p_IsPrinted
+			+ ", PaymentRule=" + m_PaymentRule
+			+ ", C_PaymentTerm_ID=" + m_C_PaymentTerm_ID
+			+ ", DocStatus=" + m_DocStatus);
 		
 		MMailText mText = null;
 		if (p_R_MailText_ID != 0)
@@ -144,7 +160,8 @@ public class InvoicePrint extends SvrProcess
 
 		//	Too broad selection
 		if (m_C_BPartner_ID == 0 && m_C_Invoice_ID == 0 && m_dateInvoiced_From == null && m_dateInvoiced_To == null
-			&& m_DocumentNo_From == null && m_DocumentNo_To == null)
+			&& m_DocumentNo_From == null && m_DocumentNo_To == null && m_PaymentRule == null && m_C_PaymentTerm_ID == 0
+			&& m_DocStatus == null)
 			throw new AdempiereUserError ("@RestrictSelection@");
 
 		MClient client = MClient.get(getCtx());
@@ -394,6 +411,26 @@ public class InvoicePrint extends SvrProcess
 			{
 				sql.append (" AND i.C_DocTypeTarget_ID=?");
 				params.add(m_C_DocType_ID);
+			}
+			if (p_IsPrinted != null && p_IsPrinted.length() == 1)
+			{
+				sql.append (" AND i.IsPrinted=?");
+				params.add(p_IsPrinted);
+			}
+			if (m_PaymentRule != null)
+			{
+				sql.append (" AND i.PaymentRule=?");
+				params.add(m_PaymentRule);
+			}
+			if (m_C_PaymentTerm_ID != 0)
+			{
+				sql.append (" AND i.C_PaymentTerm_ID=?");
+				params.add(m_C_PaymentTerm_ID);
+			}
+			if (m_DocStatus != null)
+			{
+				sql.append (" AND i.DocStatus=?");
+				params.add(m_DocStatus);
 			}
 		}
 		String orgWhere = MRole.getDefault(getCtx(), false).getOrgWhere(MRole.SQL_RO);
