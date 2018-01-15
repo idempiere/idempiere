@@ -99,12 +99,11 @@ import org.compiere.util.ValueNamePair;
 public class GridTable extends AbstractTableModel
 	implements Serializable
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4982992333796276205L;
-	
+	private static final long serialVersionUID = -4651516342985623070L;
+
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 	public static final String DATA_UPDATE_COPIED_MESSAGE = "UpdateCopied";
 	public static final String DATA_INSERTED_MESSAGE = "Inserted";
@@ -3877,6 +3876,15 @@ public class GridTable extends AbstractTableModel
 					break;
 			}
 		return tabNo;
+	}
+
+	/**
+	 * get Tab No
+	 * @return Tab No
+	 */
+	public int getTabNo()
+	{
+		return m_TabNo;
 	}
 	
 	private boolean isNotNullAndIsEmpty (Object value) {

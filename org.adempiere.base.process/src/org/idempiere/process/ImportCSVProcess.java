@@ -43,6 +43,7 @@ import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.model.GridTable;
 import org.compiere.model.GridWindow;
 import org.compiere.model.MImportTemplate;
 import org.compiere.model.MLookup;
@@ -75,6 +76,7 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 		}
 	}
 
+	GridWindow m_gridWindow = null;
 	GridTab m_gridTab = null;
 	List<GridTab> m_Childs = null;
 
@@ -101,15 +103,15 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 		if (!m_importTemplate.isAllowed(p_ImportMode, Env.getAD_Role_ID(Env.getCtx())))
 			throw new AdempiereException("Template/Mode not allowed for this role");
 
-		GridWindow gWin = GridWindow.get(getCtx(), -1, l_AD_Window_ID);
-		Env.setContext(getCtx(), -1, "IsSOTrx", gWin.isSOTrx());
+		m_gridWindow = GridWindow.get(getCtx(), -1, l_AD_Window_ID);
+		Env.setContext(getCtx(), -1, "IsSOTrx", m_gridWindow.isSOTrx());
 		m_Childs = new ArrayList<GridTab>();
-		for (int i = 0; i < gWin.getTabCount(); i++) {
-			GridTab gridtab = gWin.getTab(i);
+		for (int i = 0; i < m_gridWindow.getTabCount(); i++) {
+			GridTab gridtab = m_gridWindow.getTab(i);
 			if (!gridtab.isLoadComplete())
-				gWin.initTab(i);
-			if (gWin.getTab(i).getAD_Tab_ID() == l_AD_Tab_ID) {
-				m_gridTab  = gWin.getTab(i);
+				m_gridWindow.initTab(i);
+			if (m_gridWindow.getTab(i).getAD_Tab_ID() == l_AD_Tab_ID) {
+				m_gridTab  = m_gridWindow.getTab(i);
 			} else {
 				if (m_gridTab != null && gridtab.getTabLevel() > m_gridTab.getTabLevel())
 					m_Childs.add(gridtab);
@@ -119,6 +121,8 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 		if (m_gridTab == null)
 			throw new Exception("No Active Tab");
 		m_gridTab.addDataStatusListener(this);
+		for (GridTab childTab : m_Childs)
+			childTab.addDataStatusListener(this);
 	}
 
 	protected IGridTabImporter initImporter() throws Exception {
@@ -161,23 +165,33 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 	public void dataStatusChanged(DataStatusEvent e)
     {
         int col = e.getChangedColumn();
-        if (log.isLoggable(Level.CONFIG)) log.config("(" + m_gridTab + ") Col=" + col + ": " + e.toString());
+        if (col < 0)
+        	return;
+
+        GridTab l_gridTab = null;
+        if (e.getSource() != null && e.getSource() instanceof GridTable) {
+        	GridTable gt = (GridTable) e.getSource();
+        	l_gridTab = m_gridWindow.getTab(gt.getTabNo());
+        	if (l_gridTab.getAD_Table_ID() != e.AD_Table_ID)
+        		throw new RuntimeException("Table doesn't match with updated tab");
+        }
+        if (log.isLoggable(Level.CONFIG)) log.config("(" + l_gridTab + ") Col=" + col + ": " + e.toString());
 
         //  Process Callout
-        GridField mField = m_gridTab.getField(col);
+        GridField mField = l_gridTab.getField(col);
         if (mField != null
             && (mField.getCallout().length() > 0
-            		|| (Core.findCallout(m_gridTab.getTableName(), mField.getColumnName())).size()>0
-            		|| m_gridTab.hasDependants(mField.getColumnName())))
+            		|| (Core.findCallout(l_gridTab.getTableName(), mField.getColumnName())).size()>0
+            		|| l_gridTab.hasDependants(mField.getColumnName())))
         {
-            String msg = m_gridTab.processFieldChange(mField);     //  Dependencies & Callout
+            String msg = l_gridTab.processFieldChange(mField);     //  Dependencies & Callout
             if (msg.length() > 0)
             {
             	log.warning(msg);
             }
 
             // Refresh the list on dependant fields
-    		for (GridField dependentField : m_gridTab.getDependantFields(mField.getColumnName()))
+    		for (GridField dependentField : l_gridTab.getDependantFields(mField.getColumnName()))
     		{
     			//  if the field has a lookup
     			if (dependentField != null && dependentField.getLookup() instanceof MLookup)
