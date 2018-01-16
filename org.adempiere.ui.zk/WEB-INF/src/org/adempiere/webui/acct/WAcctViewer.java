@@ -1118,6 +1118,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 		table.setItemRenderer(new WListItemRenderer());
 		table.setModel(listmodeltable);
+		table.setSizedByContent(true);
 
 		resultPanel.invalidate();
 
