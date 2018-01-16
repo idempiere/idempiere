@@ -559,12 +559,17 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     	}
     }
 
-	public void updateStyle() {
-		applyLabelStyles();
-		applyFieldStyles();
+	public void updateStyle(boolean applyDictionaryStyle) {
+		applyLabelStyles(applyDictionaryStyle);
+		applyFieldStyles(applyDictionaryStyle);
 	}
 
-	protected void applyLabelStyles() {
+	public void updateStyle() {
+		applyLabelStyles(true);
+		applyFieldStyles(true);
+	}
+
+	protected void applyLabelStyles(boolean applyDictionaryStyle) {
 		if (label != null) {
 			boolean zoomable = isZoomable();
 			String style = (zoomable ? STYLE_ZOOMABLE_LABEL : "") + (isMandatoryStyle() ? STYLE_EMPTY_MANDATORY_LABEL : STYLE_NORMAL_LABEL);
@@ -573,7 +578,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 					style = style + STYLE_MOBILE_ZOOMABLE;
 				}
 			}
-			if (gridField.getAD_LabelStyle_ID() > 0) 
+			if (applyDictionaryStyle && gridField.getAD_LabelStyle_ID() > 0) 
 			{
 				String s = buildStyle(gridField.getAD_LabelStyle_ID());
 				if (!Util.isEmpty(s)) {
@@ -593,12 +598,13 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 			label.setStyle(style);
 	}
 
-	protected void applyFieldStyles() {
-		if (gridField.getAD_FieldStyle_ID() > 0) 
+	protected void applyFieldStyles(boolean applyDictionaryStyle) {
+		String style = null;
+		if (applyDictionaryStyle && gridField.getAD_FieldStyle_ID() > 0) 
 		{
-			String style = buildStyle(gridField.getAD_FieldStyle_ID());
-			setFieldStyle(style);
+			style = buildStyle(gridField.getAD_FieldStyle_ID());
 		}
+		setFieldStyle(style);
 	}
 
 	protected  void setFieldStyle(String style) {
