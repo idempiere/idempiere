@@ -29,7 +29,7 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171031L;
+	private static final long serialVersionUID = 20180119L;
 
     /** Standard Constructor */
     public X_AD_UserPreference (Properties ctx, int AD_UserPreference_ID, String trxName)
@@ -185,6 +185,27 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	public boolean isAutoNew () 
 	{
 		Object oo = get_Value(COLUMNNAME_AutoNew);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Detailed Zoom Across.
+		@param IsDetailedZoomAcross Detailed Zoom Across	  */
+	public void setIsDetailedZoomAcross (boolean IsDetailedZoomAcross)
+	{
+		set_Value (COLUMNNAME_IsDetailedZoomAcross, Boolean.valueOf(IsDetailedZoomAcross));
+	}
+
+	/** Get Detailed Zoom Across.
+		@return Detailed Zoom Across	  */
+	public boolean isDetailedZoomAcross () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsDetailedZoomAcross);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

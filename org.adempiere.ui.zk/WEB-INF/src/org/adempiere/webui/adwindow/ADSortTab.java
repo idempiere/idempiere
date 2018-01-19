@@ -937,6 +937,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	}
 
 	public void refresh() {
+		createUI();
 		loadData();
 	}
 

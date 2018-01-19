@@ -155,6 +155,15 @@ public interface I_AD_UserPreference
 	  */
 	public boolean isActive();
 
+    /** Column name IsDetailedZoomAcross */
+    public static final String COLUMNNAME_IsDetailedZoomAcross = "IsDetailedZoomAcross";
+
+	/** Set Detailed Zoom Across	  */
+	public void setIsDetailedZoomAcross (boolean IsDetailedZoomAcross);
+
+	/** Get Detailed Zoom Across	  */
+	public boolean isDetailedZoomAcross();
+
     /** Column name ToggleOnDoubleClick */
     public static final String COLUMNNAME_ToggleOnDoubleClick = "ToggleOnDoubleClick";
 
