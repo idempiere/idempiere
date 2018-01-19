@@ -1287,12 +1287,20 @@ public class DB_Oracle implements AdempiereDatabase
 	}
 
 	public String addPagingSQL(String sql, int start, int end) {
-		//not supported, too many corner case that doesn't work using rownum. to investigate later
-		return sql;
+		StringBuilder newSql = new StringBuilder("select * from (")
+				.append("   select tb.*, ROWNUM oracle_native_rownum_ from (")
+				.append(sql)
+				.append(") tb) where oracle_native_rownum_ >= ")
+				.append(start)
+				.append(" AND oracle_native_rownum_ <= ")
+				.append(end)
+				.append(" order by oracle_native_rownum_");
+
+		return newSql.toString();
 	}
 
 	public boolean isPagingSupported() {
-		return false;
+		return true;
 	}
 
 	private int getIntProperty(Properties properties, String key, int defaultValue)

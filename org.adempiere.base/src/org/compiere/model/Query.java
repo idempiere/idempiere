@@ -89,9 +89,9 @@ public class Query
     private int pageSize;
 
     /**
-     * Number of pages will be skiped on query run.
+     * Number of pages will be skipped on query run.
      */
-    private int skip;
+    private int pagesToSkip;
 	
 	/**
 	 * 
@@ -794,14 +794,14 @@ public class Query
      * @param pPageSize
      *            Limit current query rows return.
      * 
-     * @param pSkip
-     *            Number of pages will be skiped on query run. ZERO to first page
+     * @param pPagesToSkip
+     *            Number of pages will be skipped on query run. ZERO for first page
      * 
      * @return current Query
      */
-    public Query setPage(int pPageSize, int pSkip) {
+    public Query setPage(int pPageSize, int pPagesToSkip) {
         this.pageSize = pPageSize;
-        this.skip = pSkip;
+        this.pagesToSkip = pPagesToSkip;
         return this;
     }
 
@@ -820,25 +820,11 @@ public class Query
         String query = pQuery;
 
         if (pageSize > 0) {
-
-            StringBuilder sql = new StringBuilder();
-
-            if (DB.isOracle()) {
-
-                sql.append("select * from (");
-                sql.append("   select ROWNUM pRow, tb.* from (");
-                sql.append(query);
-                sql.append(") tb) where pRow > ");
-                sql.append(pageSize * skip);
-                sql.append(" AND pRow <= ");
-                sql.append(((pageSize * skip) + pageSize));
-
-                return sql.toString();
-
-            }
-            else {
-                query = query.concat(" FETCH FIRST " + pageSize + " ROWS ONLY OFFSET " + (pageSize * skip));
-            }
+        	if (DB.getDatabase().isPagingSupported()) {
+        		query = DB.getDatabase().addPagingSQL(query, (pageSize*pagesToSkip) + 1, pageSize * (pagesToSkip+1));
+        	} else {
+        		throw new IllegalArgumentException("Pagination not supported by database");
+        	}
         }
 
         return query;
