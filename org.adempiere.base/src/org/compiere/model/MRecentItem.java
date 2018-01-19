@@ -64,9 +64,11 @@ public class MRecentItem extends X_AD_RecentItem
 	{
 	      super (ctx, AD_RecentItem_ID, trxName);
 	      if (AD_RecentItem_ID > 0) {
-				Integer key = new Integer (AD_RecentItem_ID);
-				if (!s_cache.containsKey(key))
-					s_cache.put (key, this);
+	    	  synchronized (MRecentItem.class) {
+	    		  Integer key = new Integer (AD_RecentItem_ID);
+	    		  if (!s_cache.containsKey(key))
+	    			  s_cache.put (key, this);
+	    	  }
 	      }
 	}	//	MRecentItem
 
@@ -85,8 +87,10 @@ public class MRecentItem extends X_AD_RecentItem
 		} catch (SQLException e) {
 			throw new AdempiereException(e);
 		}
-		if (key != null && !s_cache.containsKey(key))
-			s_cache.put (key, this);
+		synchronized (MRecentItem.class) {
+			if (key != null && !s_cache.containsKey(key))
+				s_cache.put (key, this);
+		}
 	}	//	MRecentItem
 
 	/**
@@ -95,7 +99,7 @@ public class MRecentItem extends X_AD_RecentItem
 	 *	@param AD_RecentItem_ID id
 	 *	@return recent item
 	 */
-	public static MRecentItem get (Properties ctx, int AD_RecentItem_ID)
+	public static synchronized MRecentItem get (Properties ctx, int AD_RecentItem_ID)
 	{
 		Integer ii = new Integer (AD_RecentItem_ID);
 		MRecentItem ri = (MRecentItem)s_cache.get(ii);
@@ -111,7 +115,7 @@ public class MRecentItem extends X_AD_RecentItem
 	 *	@param Record_ID recordID
 	 *	@return recent item
 	 */
-	public static MRecentItem get (Properties ctx, int AD_Table_ID, int Record_ID, int AD_User_ID)
+	public static synchronized MRecentItem get (Properties ctx, int AD_Table_ID, int Record_ID, int AD_User_ID)
 	{
 		Iterator<MRecentItem> it = s_cache.values().iterator();
 		while (it.hasNext())
@@ -262,7 +266,9 @@ public class MRecentItem extends X_AD_RecentItem
 	@Override
 	public boolean delete(boolean force) {
 		Integer ii = new Integer (getAD_RecentItem_ID());
-		s_cache.remove(ii);
+		synchronized (MRecentItem.class) {
+			s_cache.remove(ii);
+		}
 		return super.delete(force);
 	}
 
