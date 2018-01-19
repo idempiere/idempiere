@@ -2164,7 +2164,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		vqe.loadRecord (0);								
 		
-		final ISupportMask parent = LayoutUtils.showWindowWithMask(vqe, this, LayoutUtils.OVERLAP_TAB_PANEL);
+		final ISupportMask parent = LayoutUtils.showWindowWithMask(vqe, this, LayoutUtils.OVERLAP_SELF);
 		
 		vqe.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {								
 			@Override							

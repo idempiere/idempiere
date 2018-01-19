@@ -574,7 +574,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 						Timestamp dateMPolicy= qtyDiff.signum() > 0 ? getMovementDate() : null;
 						if (line.getM_AttributeSetInstance_ID() > 0)
 						{
-							Timestamp t = MStorageOnHand.getDateMaterialPolicy(line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), line.get_TrxName());
+							Timestamp t = MStorageOnHand.getDateMaterialPolicy(line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), line.getM_Locator_ID(), line.get_TrxName());
 							if (t != null)
 								dateMPolicy = t;
 						}

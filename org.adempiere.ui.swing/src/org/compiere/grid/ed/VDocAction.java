@@ -42,7 +42,6 @@ import org.compiere.model.MProduction;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.process.DocAction;
-import org.compiere.process.DocOptions;
 import org.compiere.process.DocumentEngine;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CDialog;
@@ -245,11 +244,7 @@ public class VDocAction extends CDialog
 
 		String[] docActionHolder = new String[] {DocAction};
 		index = DocumentEngine.getValidActions(DocStatus, Processing, OrderType, IsSOTrx, m_AD_Table_ID, 
-				docActionHolder, options, periodOpen);
-
-		if (po instanceof DocOptions)
-			index = ((DocOptions) po).customizeValidActions(DocStatus, Processing, OrderType, IsSOTrx,
-					m_AD_Table_ID, docActionHolder, options, index);
+				docActionHolder, options, periodOpen, po);
 
 		Integer doctypeId = (Integer)m_mTab.getValue("C_DocType_ID");
 		if(doctypeId==null || doctypeId.intValue()==0){

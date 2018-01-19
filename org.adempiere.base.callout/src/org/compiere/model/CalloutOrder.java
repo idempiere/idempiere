@@ -833,6 +833,8 @@ public class CalloutOrder extends CalloutEngine
 			if (product.isStocked() && Env.getContext(ctx, WindowNo, "IsDropShip").equals("N"))
 			{
 				BigDecimal QtyOrdered = (BigDecimal)mTab.getValue("QtyOrdered");
+				if (QtyOrdered == null)
+					QtyOrdered = Env.ZERO;
 				int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
 				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_AttributeSetInstance_ID");
 				BigDecimal available = MStorageReservation.getQtyAvailable
@@ -1036,7 +1038,11 @@ public class CalloutOrder extends CalloutEngine
 		BigDecimal QtyEntered, QtyOrdered, PriceEntered, PriceActual, PriceLimit, Discount, PriceList;
 		//	get values
 		QtyEntered = (BigDecimal)mTab.getValue("QtyEntered");
+		if (QtyEntered == null)
+			QtyEntered = Env.ZERO;
 		QtyOrdered = (BigDecimal)mTab.getValue("QtyOrdered");
+		if (QtyOrdered == null)
+			QtyOrdered = Env.ZERO;
 		if (log.isLoggable(Level.FINE)) log.fine("QtyEntered=" + QtyEntered + ", Ordered=" + QtyOrdered + ", UOM=" + C_UOM_To_ID);
 		//
 		PriceEntered = (BigDecimal)mTab.getValue("PriceEntered");
