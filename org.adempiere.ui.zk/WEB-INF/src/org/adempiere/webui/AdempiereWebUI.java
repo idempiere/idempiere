@@ -50,6 +50,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserPreference;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
@@ -273,6 +274,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		BrowserToken.save(mSession, user);
 		
 		Env.setContext(ctx, "#UIClient", "zk");
+		Env.setContext(ctx, "#DBType", DB.getDatabase().getName());
 		StringBuilder localHttpAddr = new StringBuilder(Executions.getCurrent().getScheme());
 		localHttpAddr.append("://").append(Executions.getCurrent().getLocalAddr());
 		int port = Executions.getCurrent().getLocalPort();
