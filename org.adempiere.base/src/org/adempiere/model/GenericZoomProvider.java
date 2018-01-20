@@ -87,7 +87,7 @@ public class GenericZoomProvider implements IZoomProvider {
 			+ "JOIN AD_Window_Trl w ON (w.AD_Window_ID=w0.AD_Window_ID AND w.AD_Language=?) "
 			+ "JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID AND c.IsActive='Y' AND c.IsKey='N' AND c.IsParent='N' AND c.ColumnSQL IS NULL) "
 			+ "JOIN AD_Field f0 ON (f0.AD_Column_ID=c.AD_Column_ID AND f0.AD_Tab_ID=tt0.AD_Tab_ID AND f0.IsActive='Y' AND f0.IsDisplayed='Y') "
-			+ "JOIN AD_Field_Trl f ON (f.AD_Field_ID=f0.AD_Field_ID) ");
+			+ "JOIN AD_Field_Trl f ON (f.AD_Field_ID=f0.AD_Field_ID AND f.AD_Language=?) ");
 		}
 		sqlb.append(
 			  "LEFT JOIN AD_Ref_Table r ON (c.AD_Reference_Value_ID=r.AD_Reference_ID) "
@@ -112,6 +112,7 @@ public class GenericZoomProvider implements IZoomProvider {
 
 			int index = 1;
 			if (!baseLanguage) {
+				pstmt.setString(index++, Env.getAD_Language(Env.getCtx()));
 				pstmt.setString(index++, Env.getAD_Language(Env.getCtx()));
 				pstmt.setString(index++, Env.getAD_Language(Env.getCtx()));
 			}
