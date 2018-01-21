@@ -1154,13 +1154,17 @@ public class MInOut extends X_M_InOut implements DocAction
 						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
 					return DocAction.STATUS_Invalid;
 				}
-				BigDecimal notInvoicedAmt = MBPartner.getNotInvoicedAmt(getC_BPartner_ID());
-				if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus(notInvoicedAmt)))
+				if (!MBPartner.SOCREDITSTATUS_NoCreditCheck.equals(bp.getSOCreditStatus())
+						&& Env.ZERO.compareTo(bp.getSO_CreditLimit()) != 0)
 				{
-					m_processMsg = "@BPartnerOverSCreditHold@ - @TotalOpenBalance@="
-						+ bp.getTotalOpenBalance() + ", @NotInvoicedAmt@=" + notInvoicedAmt
-						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
-					return DocAction.STATUS_Invalid;
+					BigDecimal notInvoicedAmt = MBPartner.getNotInvoicedAmt(getC_BPartner_ID());
+					if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus(notInvoicedAmt)))
+					{
+						m_processMsg = "@BPartnerOverSCreditHold@ - @TotalOpenBalance@="
+							+ bp.getTotalOpenBalance() + ", @NotInvoicedAmt@=" + notInvoicedAmt
+							+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
+						return DocAction.STATUS_Invalid;
+					}
 				}
 			}
 		}
