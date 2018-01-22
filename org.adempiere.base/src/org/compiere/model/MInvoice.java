@@ -1778,7 +1778,10 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			payment.setC_Invoice_ID(getC_Invoice_ID());
 			payment.setC_Currency_ID(getC_Currency_ID());			
 			payment.setC_DocType_ID(doctype.getC_DocType_ID());
-			payment.setPayAmt(getGrandTotal());
+			if (isCreditMemo())
+				payment.setPayAmt(getGrandTotal().negate());
+			else
+				payment.setPayAmt(getGrandTotal());
 			payment.setIsPrepayment(false);					
 			payment.setDateAcct(getDateAcct());
 			payment.setDateTrx(getDateInvoiced());
