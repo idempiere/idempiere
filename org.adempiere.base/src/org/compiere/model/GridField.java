@@ -30,7 +30,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -353,7 +355,7 @@ public class GridField
 		{
 			boolean retValue  = false;
 			if (m_vo.MandatoryLogic != null && m_vo.MandatoryLogic.startsWith("@SQL=")) {
-				retValue = mandatorySqlStatement();
+				retValue = parseSQLLogic(m_vo.MandatoryLogic);
 
 			} else{
 				retValue= Evaluator.evaluateLogic(this, m_vo.MandatoryLogic);
@@ -385,21 +387,46 @@ public class GridField
 		return isDisplayed (checkContext);
 	}	//	isMandatory
 
-	private boolean mandatorySqlStatement() {
-		String sql = m_vo.MandatoryLogic.substring(5); // w/o tag
-		sql = Env.parseContext(m_vo.ctx, m_vo.WindowNo, sql, false, false); // replace
+	private boolean parseSQLLogic(String sqlLogic) {
+		String sql = sqlLogic.substring(5); // remove @SQL=
+		boolean reverse = false;
+		if (sql.startsWith("!")) {
+			reverse = true;
+			sql = sql.substring(1); //remove !
+		}
+		sql = Env.parseContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, sql, false, false); // replace
 
 		// variables
 		if (sql.equals("")) {
-			log.log(Level.WARNING,"(" + m_vo.ColumnName + ") - Mandatory SQL variable parse failed: " + m_vo.MandatoryLogic);
+			log.log(Level.WARNING,"(" + m_vo.ColumnName + ") - SQL variable parse failed: " + sqlLogic);
 		} else {
+			SQLLogicResult cache = sqlLogicCache.get(sql);
+			if (cache != null) {
+				long since = System.currentTimeMillis() - cache.timestamp;
+				if (since <= 500) {
+					cache.timestamp = System.currentTimeMillis();
+					if (cache.value)
+						return reverse ? false : true;
+					else
+						return reverse ? true : false;
+				}
+			}
 			PreparedStatement stmt = null;
 			ResultSet rs = null;
 			try {
 				stmt = DB.prepareStatement(sql, null);
 				rs = stmt.executeQuery();
-				if (rs.next())
-					return true;
+				boolean hasNext = rs.next();
+				if (cache == null) {
+					cache = new SQLLogicResult();
+					sqlLogicCache.put(sql, cache);
+				}
+				cache.value = hasNext;
+				cache.timestamp = System.currentTimeMillis();					
+				if (hasNext)
+					return reverse ? false : true;
+				else
+					return reverse ? true : false;
 			} catch (SQLException e) {
 				log.log(Level.WARNING, "(" + m_vo.ColumnName + ") " + sql, e);
 			} finally {
@@ -419,10 +446,19 @@ public class GridField
 	public boolean isEditablePara(boolean checkContext) {
 		if (checkContext && m_vo.ReadOnlyLogic.length() > 0)
 		{
-			boolean retValue = !Evaluator.evaluateLogic(this, m_vo.ReadOnlyLogic);
-			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " R/O(" + m_vo.ReadOnlyLogic + ") => R/W-" + retValue);
-			if (!retValue)
-				return false;
+			if (m_vo.ReadOnlyLogic.startsWith("@SQL="))
+			{
+				boolean retValue = !parseSQLLogic(m_vo.ReadOnlyLogic);
+				if (!retValue)
+					return false;
+			}
+			else
+			{
+				boolean retValue = !Evaluator.evaluateLogic(this, m_vo.ReadOnlyLogic);
+				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " R/O(" + m_vo.ReadOnlyLogic + ") => R/W-" + retValue);
+				if (!retValue)
+					return false;
+			}
 		}
 
 		//  ultimately visibility decides
@@ -522,10 +558,19 @@ public class GridField
 		//  Do we have a readonly rule
 		if (checkContext && m_vo.ReadOnlyLogic.length() > 0)
 		{
-			boolean retValue = !Evaluator.evaluateLogic(this, m_vo.ReadOnlyLogic);
-			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " R/O(" + m_vo.ReadOnlyLogic + ") => R/W-" + retValue);
-			if (!retValue)
-				return false;
+			if (m_vo.ReadOnlyLogic.startsWith("@SQL="))
+			{
+				boolean retValue = !parseSQLLogic(m_vo.ReadOnlyLogic);
+				if (!retValue)
+					return false;
+			}
+			else
+			{
+				boolean retValue = !Evaluator.evaluateLogic(this, m_vo.ReadOnlyLogic);
+				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " R/O(" + m_vo.ReadOnlyLogic + ") => R/W-" + retValue);
+				if (!retValue)
+					return false;
+			}
 		}
 		
 		//BF [ 2910368 ]
@@ -2516,4 +2561,10 @@ public class GridField
 		return m_lookupEditorSettingValue;
 	}
 
+	private final Map<String, SQLLogicResult> sqlLogicCache = new HashMap<>();
+	
+	private class SQLLogicResult {
+		long timestamp;
+		boolean value;
+	}
 }   //  GridField
