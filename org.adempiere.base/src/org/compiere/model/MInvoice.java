@@ -679,7 +679,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			whereClauseFinal += whereClause;
 		List<MInvoiceLine> list = new Query(getCtx(), I_C_InvoiceLine.Table_Name, whereClauseFinal, get_TrxName())
 										.setParameters(getC_Invoice_ID())
-										.setOrderBy(I_C_InvoiceLine.COLUMNNAME_Line)
+										.setOrderBy("Line, C_InvoiceLine_ID")
 										.list();
 		return list.toArray(new MInvoiceLine[list.size()]);
 	}	//	getLines
@@ -2450,17 +2450,23 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		reversal.setReversal(true);
 
 		//	Reverse Line Qty
+		MInvoiceLine[] oLines = getLines(false);
 		MInvoiceLine[] rLines = reversal.getLines(true);
 		for (int i = 0; i < rLines.length; i++)
 		{
 			MInvoiceLine rLine = rLines[i];
-			rLine.setQtyEntered(rLine.getQtyEntered().negate());
-			rLine.setQtyInvoiced(rLine.getQtyInvoiced().negate());
-			rLine.setLineNetAmt(rLine.getLineNetAmt().negate());
-			if (rLine.getTaxAmt() != null && rLine.getTaxAmt().compareTo(Env.ZERO) != 0)
-				rLine.setTaxAmt(rLine.getTaxAmt().negate());
-			if (rLine.getLineTotalAmt() != null && rLine.getLineTotalAmt().compareTo(Env.ZERO) != 0)
-				rLine.setLineTotalAmt(rLine.getLineTotalAmt().negate());
+			rLine.getParent().setReversal(true);
+			MInvoiceLine oLine = oLines[i];
+			rLine.setQtyEntered(oLine.getQtyEntered().negate());
+			rLine.setQtyInvoiced(oLine.getQtyInvoiced().negate());
+			rLine.setLineNetAmt(oLine.getLineNetAmt().negate());
+			rLine.setTaxAmt(oLine.getTaxAmt().negate());
+			rLine.setLineTotalAmt(oLine.getLineTotalAmt().negate());
+			rLine.setPriceActual(oLine.getPriceActual());
+			rLine.setPriceList(oLine.getPriceList());
+			rLine.setPriceLimit(oLine.getPriceLimit());
+			rLine.setPriceEntered(oLine.getPriceEntered());
+			rLine.setC_UOM_ID(oLine.getC_UOM_ID());
 			if (!rLine.save(get_TrxName()))
 			{
 				m_processMsg = "Could not correct Invoice Reversal Line";
