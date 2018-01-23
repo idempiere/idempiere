@@ -14,8 +14,8 @@
 package org.idempiere.hazelcast.service;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -25,6 +25,7 @@ import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
 
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.Member;
 
 /**
@@ -43,7 +44,7 @@ public class ClusterServiceImpl implements IClusterService {
 		if (instance != null) {
 			Set<Member> members = instance.getCluster().getMembers();
 			for(Member member : members) {
-				clusterMembers.add(new ClusterMember(member.getUuid(), member.getSocketAddress().getAddress(), member.getSocketAddress().getPort()));
+				clusterMembers.add(new ClusterMember(member));
 			}
 		}
 		return clusterMembers;
@@ -57,7 +58,7 @@ public class ClusterServiceImpl implements IClusterService {
 		HazelcastInstance instance = Activator.getHazelcastInstance();
 		if (instance != null) {
 			Member member = instance.getCluster().getLocalMember();
-			return new ClusterMember(member.getUuid(), member.getSocketAddress().getAddress(), member.getSocketAddress().getPort());
+			return new ClusterMember(member);
 		} else {
 			return null;
 		}
@@ -73,7 +74,8 @@ public class ClusterServiceImpl implements IClusterService {
 			Set<Member> members = instance.getCluster().getMembers();
 			for(Member member : members) {
 				if (member.getUuid().equals(clusterMember.getId())) {
-					return Activator.getHazelcastInstance().getExecutorService("default").submitToMember(task, member);
+					IExecutorService service = Activator.getHazelcastInstance().getExecutorService("default");
+					return service.submitToMember(task, member);
 				}
 			}
 		}
@@ -100,13 +102,13 @@ public class ClusterServiceImpl implements IClusterService {
 				}
 			}
 			if (selectedMembers.size() > 0) {
-				Map<Member, Future<V>> maps = Activator.getHazelcastInstance().getExecutorService("default").submitToMembers(task, selectedMembers);
-				Map<IClusterMember, Future<V>> result = new HashMap<IClusterMember, Future<V>>();
-				for(Member m : maps.keySet()) {
-					ClusterMember cm = new ClusterMember(m.getUuid(), m.getSocketAddress().getAddress(), m.getSocketAddress().getPort());
-					result.put(cm, maps.get(m));
+				IExecutorService service = Activator.getHazelcastInstance().getExecutorService("default");
+				Map<Member, Future<V>> map = service.submitToMembers(task, selectedMembers);
+				Map<IClusterMember, Future<V>> futureMap = new LinkedHashMap<>();
+				for(Member member : map.keySet()) {
+					futureMap.put(new ClusterMember(member), map.get(member));
 				}
-				return result;
+				return futureMap;
 			}
 		}
 		return null;

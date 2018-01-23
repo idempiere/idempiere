@@ -166,9 +166,9 @@ public class CacheMgt
 				int total = 0;
 				try {
 					Collection<Future<Integer>> results = futureMap.values();
-					for(Future<Integer> future : results) {						
-						Integer i = future.get();
-						total += i.intValue();
+					for(Future<Integer> i : results) 
+					{
+						total += i.get();
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();

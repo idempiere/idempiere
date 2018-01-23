@@ -191,7 +191,11 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
     	m_desktop.addListener(this);
     	//subscribing to broadcast event
     	bindEventManager();
-    	ZKBroadCastManager.getBroadCastMgr();
+    	try {
+    		ZKBroadCastManager.getBroadCastMgr();
+    	} catch (Throwable e) {
+    		e.printStackTrace();
+    	}
     	
     	EventQueue<Event> queue = EventQueues.lookup(ACTIVITIES_EVENT_QUEUE, true);
     	queue.subscribe(this);
