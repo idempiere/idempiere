@@ -842,12 +842,16 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("New=" + newRecord);
-		if (newRecord && getParent().isComplete()) {
+		boolean parentComplete = getParent().isComplete();
+		boolean isReversal = getParent().isReversal();
+		if (newRecord && parentComplete) {
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_InvoiceLine"));
 			return false;
 		}
 		// Re-set invoice header (need to update m_IsSOTrx flag) - phib [ 1686773 ]
 		setInvoice(getParent());
+
+	  if (!parentComplete && !isReversal) {  // do not change things when parent is complete
 		//	Charge
 		if (getC_Charge_ID() != 0)
 		{
@@ -916,6 +920,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				return false;
 			}
 		}
+	  }
 		
 		return true;
 	}	//	beforeSave
