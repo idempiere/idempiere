@@ -30,11 +30,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import org.adempiere.base.ILookupFactory;
@@ -2561,7 +2561,7 @@ public class GridField
 		return m_lookupEditorSettingValue;
 	}
 
-	private final Map<String, SQLLogicResult> sqlLogicCache = new HashMap<>();
+	private static final Map<String, SQLLogicResult> sqlLogicCache = new ConcurrentHashMap<>();
 	
 	private class SQLLogicResult {
 		long timestamp;
