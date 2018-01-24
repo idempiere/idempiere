@@ -593,9 +593,18 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		}
 	}
 	
-	protected  void setLabelStyle(String style) {
-		if (label != null)
-			label.setStyle(style);
+	protected void setLabelStyle(String style) {
+		if (label != null) {
+			if (style != null && style.toLowerCase().startsWith(MStyle.SCLASS_PREFIX)) {
+				String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
+				label.setSclass(sclass);
+			} else if (style != null && style.toLowerCase().startsWith(MStyle.ZCLASS_PREFIX)) {
+				String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
+				label.setZclass(zclass);
+			} else {
+				label.setStyle(style);
+			}
+		}
 	}
 
 	protected void applyFieldStyles(boolean applyDictionaryStyle) {
@@ -607,12 +616,26 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		setFieldStyle(style);
 	}
 
-	protected  void setFieldStyle(String style) {
+	protected void setFieldStyle(String style) {
 		HtmlBasedComponent component = (HtmlBasedComponent) getComponent();
-		if (component instanceof EditorBox)
-			((EditorBox)component).getTextbox().setStyle(style);
-		else
-			component.setStyle(style);
+		if (style != null && style.startsWith(MStyle.SCLASS_PREFIX)) {
+			String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
+			if (component instanceof EditorBox)
+				((EditorBox)component).getTextbox().setSclass(sclass);
+			else
+				component.setSclass(sclass);
+		} else if (style != null && style.startsWith(MStyle.ZCLASS_PREFIX)) {
+			String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
+			if (component instanceof EditorBox)
+				((EditorBox)component).getTextbox().setZclass(zclass);
+			else
+				component.setZclass(zclass);
+		} else {
+			if (component instanceof EditorBox)
+				((EditorBox)component).getTextbox().setStyle(style);
+			else
+				component.setStyle(style);
+		}
 	}
 
 	protected String buildStyle(int AD_Style_ID) {

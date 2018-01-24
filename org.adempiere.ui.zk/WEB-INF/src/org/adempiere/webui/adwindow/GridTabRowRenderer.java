@@ -299,7 +299,28 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				styleBuilder.append("; ");
 			styleBuilder.append(inlineStyle);
 		}
-		component.setStyle(styleBuilder.toString());
+		setComponentStyle(component, styleBuilder.toString());
+	}
+
+	protected  void setComponentStyle(HtmlBasedComponent component, String style) {
+		if (style != null && style.startsWith(MStyle.SCLASS_PREFIX)) {
+			String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
+			if (component instanceof EditorBox)
+				((EditorBox)component).getTextbox().setSclass(sclass);
+			else
+				component.setSclass(sclass);
+		} else if (style != null && style.startsWith(MStyle.ZCLASS_PREFIX)) {
+			String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
+			if (component instanceof EditorBox)
+				((EditorBox)component).getTextbox().setZclass(zclass);
+			else
+				component.setZclass(zclass);
+		} else {
+			if (component instanceof EditorBox)
+				((EditorBox)component).getTextbox().setStyle(style);
+			else
+				component.setStyle(style);
+		}
 	}
 
 	/**
