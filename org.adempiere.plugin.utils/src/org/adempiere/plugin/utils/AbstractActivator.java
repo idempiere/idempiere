@@ -64,7 +64,7 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 		Query q = new Query(Env.getCtx(), X_AD_Package_Imp.Table_Name,
 				where.toString(), null);
 		q.setParameters(params);
-		return q.first() != null;
+		return q.match();
 	}
 
 	public abstract String getName();

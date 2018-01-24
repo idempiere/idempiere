@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for ASP_Process
  *  @author iDempiere (generated) 
- *  @version Release 4.1 - $Id$ */
+ *  @version Release 5.1 - $Id$ */
 public class X_ASP_Process extends PO implements I_ASP_Process, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20171031L;
 
     /** Standard Constructor */
     public X_ASP_Process (Properties ctx, int ASP_Process_ID, String trxName)
@@ -41,7 +41,7 @@ public class X_ASP_Process extends PO implements I_ASP_Process, I_Persistent
 			setAD_Process_ID (0);
 			setASP_Level_ID (0);
 			setASP_Status (null);
-// U
+// S
         } */
     }
 

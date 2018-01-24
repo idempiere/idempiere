@@ -1,6 +1,6 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
-		<get src="${url.file.srv}/jarfile/4.1/spiffy-with_source-all-0.05.jar" dest="spiffy-with_source-all-0.05.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/4.1/extend.jar" dest="extend.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/5.1/spiffy-with_source-all-0.05.jar" dest="spiffy-with_source-all-0.05.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/5.1/extend.jar" dest="extend.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>

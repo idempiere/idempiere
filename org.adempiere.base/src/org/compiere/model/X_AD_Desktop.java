@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Desktop
  *  @author iDempiere (generated) 
- *  @version Release 4.1 - $Id$ */
+ *  @version Release 5.1 - $Id$ */
 public class X_AD_Desktop extends PO implements I_AD_Desktop, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20171031L;
 
     /** Standard Constructor */
     public X_AD_Desktop (Properties ctx, int AD_Desktop_ID, String trxName)
@@ -75,23 +75,17 @@ public class X_AD_Desktop extends PO implements I_AD_Desktop, I_Persistent
 		@param AD_Color_ID 
 		Color for backgrounds or indicators
 	  */
-	public void setAD_Color_ID (int AD_Color_ID)
+	public void setAD_Color_ID (String AD_Color_ID)
 	{
-		if (AD_Color_ID < 1) 
-			set_Value (COLUMNNAME_AD_Color_ID, null);
-		else 
-			set_Value (COLUMNNAME_AD_Color_ID, Integer.valueOf(AD_Color_ID));
+		set_Value (COLUMNNAME_AD_Color_ID, AD_Color_ID);
 	}
 
 	/** Get System Color.
 		@return Color for backgrounds or indicators
 	  */
-	public int getAD_Color_ID () 
+	public String getAD_Color_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Color_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		return (String)get_Value(COLUMNNAME_AD_Color_ID);
 	}
 
 	/** Set Desktop.

@@ -30,6 +30,7 @@ import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MInvoicePaySchedule;
+import org.compiere.model.MMatchInv;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrderPaySchedule;
@@ -495,7 +496,12 @@ public abstract class CreateFromInvoice extends CreateFrom
 						for (int j = 0; j < lines.length; j++)
 						{
 							MInOutLine line = lines[j];
-							if (line.getQtyEntered().compareTo(QtyEntered) == 0)
+							// qty matched
+							BigDecimal qtyMatched = Env.ZERO;
+							for (MMatchInv match : MMatchInv.getInOutLine(Env.getCtx(), line.getM_InOutLine_ID(), trxName)) {
+								qtyMatched = qtyMatched.add(match.getQty());
+							}
+							if (line.getQtyEntered().subtract(qtyMatched).compareTo(QtyEntered) == 0)
 							{
 								inoutLine = line;
 								M_InOutLine_ID = inoutLine.getM_InOutLine_ID();

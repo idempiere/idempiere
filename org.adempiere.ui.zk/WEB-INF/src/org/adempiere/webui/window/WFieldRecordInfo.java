@@ -383,7 +383,10 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 	public static void addMenu(WEditorPopupMenu popupMenu) {
 		Menuitem changeLogItem = new Menuitem();
         changeLogItem.setLabel(Msg.getElement(Env.getCtx(), "AD_ChangeLog_ID"));
-        changeLogItem.setImage(ThemeManager.getThemeResource("images/ChangeLog16.png"));
+        if (ThemeManager.isUseFontIconForImage())
+        	changeLogItem.setIconSclass("z-icon-ChangeLog");
+        else
+        	changeLogItem.setImage(ThemeManager.getThemeResource("images/ChangeLog16.png"));
         changeLogItem.setAttribute(WEditorPopupMenu.EVENT_ATTRIBUTE, WEditorPopupMenu.CHANGE_LOG_EVENT);
         changeLogItem.addEventListener(Events.ON_CLICK, popupMenu);
         

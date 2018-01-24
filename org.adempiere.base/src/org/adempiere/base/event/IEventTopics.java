@@ -91,6 +91,9 @@ public interface IEventTopics {
 
 	public static final String PREF_AFTER_LOAD = "adempiere/pref/afterLoad";
 	
+	/** Called after next document actions are set */
+	public static final String DOCACTION = "adempiere/docAction";
+
 	public static final String BROADCAST_MESSAGE = "idempiere/broadcastMsg";
 	
 	public static final String REQUEST_SEND_EMAIL = "idempiere/requestSendEMail";

@@ -125,17 +125,28 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         	tabbox.setPage(page);
         
         toolbar = new ToolBar();
+        toolbar.setSclass("window-container-toolbar");
         tabbox.appendChild(toolbar);
         if (isMobile())
         {
         	ToolBarButton homeButton = new ToolBarButton();
-        	homeButton.setImage(ThemeManager.getThemeResource("images/Home16.png"));
+        	if (ThemeManager.isUseFontIconForImage())
+        		homeButton.setIconSclass("z-icon-Home");
+        	else
+        		homeButton.setImage(ThemeManager.getThemeResource("images/Home16.png"));
         	homeButton.setSclass("window-container-toolbar-btn");
         	homeButton.addEventListener(Events.ON_CLICK, evt -> setSelectedTab(tabbox.getTabpanel(0).getLinkedTab()));
         	toolbar.appendChild(homeButton);
         	
         	tabListBtn = new ToolBarButton();
-        	tabListBtn.setImage(ThemeManager.getThemeResource("images/expand-header.png"));
+        	if (ThemeManager.isUseFontIconForImage()) 
+        	{
+        		tabListBtn.setIconSclass("z-icon-Expand");
+        	} 
+        	else 
+        	{
+        		tabListBtn.setImage(ThemeManager.getThemeResource("images/expand-header.png"));
+        	}
         	tabListBtn.setSclass("window-container-toolbar-btn");
         	tabListBtn.addEventListener(Events.ON_CLICK, evt -> showTabList());
         	tabListBtn.setVisible(false);

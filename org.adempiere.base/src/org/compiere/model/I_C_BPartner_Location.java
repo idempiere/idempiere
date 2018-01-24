@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BPartner_Location
  *  @author iDempiere (generated) 
- *  @version Release 4.1
+ *  @version Release 5.1
  */
 public interface I_C_BPartner_Location 
 {
@@ -218,6 +218,15 @@ public interface I_C_BPartner_Location
 	  * Business Partner pays from that address and we'll send dunning letters there
 	  */
 	public boolean isPayFrom();
+
+    /** Column name IsPreserveCustomName */
+    public static final String COLUMNNAME_IsPreserveCustomName = "IsPreserveCustomName";
+
+	/** Set Preserve custom name	  */
+	public void setIsPreserveCustomName (boolean IsPreserveCustomName);
+
+	/** Get Preserve custom name	  */
+	public boolean isPreserveCustomName();
 
     /** Column name IsRemitTo */
     public static final String COLUMNNAME_IsRemitTo = "IsRemitTo";

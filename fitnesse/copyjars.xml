@@ -1,6 +1,6 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
 		<!-- maybe it's same file in org.idempiere.fitnesse.server, just diference version-->
-		<get src="http://downloads.sourceforge.net/project/idempiere/binary.file/jarfile/4.1/fitnesse2.jar" dest="fitnesse2.jar" usetimestamp="true" verbose="true" retries="5"/>
+		<get src="http://downloads.sourceforge.net/project/idempiere/binary.file/jarfile/5.1/fitnesse2.jar" dest="fitnesse2.jar" usetimestamp="true" verbose="true" retries="5"/>
 	</target>
 </project>

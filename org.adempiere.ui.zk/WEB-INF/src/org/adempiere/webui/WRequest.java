@@ -103,7 +103,10 @@ public class WRequest implements EventListener<Event>
 	private void getRequests (Component invoker)
 	{
 		m_new = new Menuitem(Msg.getMsg(Env.getCtx(), "RequestNew"));
-		m_new.setImage(ThemeManager.getThemeResource("images/New16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			m_new.setIconSclass("z-icon-New");
+		else
+			m_new.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		m_new.addEventListener(Events.ON_CLICK, this);
 		m_popup.appendChild(m_new);
 		//

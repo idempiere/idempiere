@@ -34,6 +34,7 @@ import javax.activation.DataSource;
 
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.AttachmentItem;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -345,11 +346,16 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		confirmPanel.addActionListener(this);
 		
 		Button btn = new Button();
-		btn.setImage(ThemeManager.getThemeResource("images/Attachment24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			btn.setIconSclass("z-icon-Attachment");
+		else
+			btn.setImage(ThemeManager.getThemeResource("images/Attachment24.png"));
 		btn.setUpload(AdempiereWebUI.getUploadSetting());
 		btn.addEventListener(Events.ON_UPLOAD, this);
 		btn.setTooltiptext(Msg.getMsg(Env.getCtx(), "Attachment"));
 		confirmPanel.addComponentsLeft(btn);
+		if (ThemeManager.isUseFontIconForImage())
+			LayoutUtils.addSclass("large-toolbarbutton", btn);
 
 		bAddDefaultMailText = new Button();
 		bAddDefaultMailText.setImage(ThemeManager.getThemeResource("images/DefaultMailText.png"));

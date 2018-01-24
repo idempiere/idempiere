@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_AttributeSet
  *  @author iDempiere (generated) 
- *  @version Release 4.1
+ *  @version Release 5.1
  */
 public interface I_M_AttributeSet 
 {
@@ -116,6 +116,15 @@ public interface I_M_AttributeSet
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsAutoGenerateLot */
+    public static final String COLUMNNAME_IsAutoGenerateLot = "IsAutoGenerateLot";
+
+	/** Set IsAutoGenerateLot	  */
+	public void setIsAutoGenerateLot (boolean IsAutoGenerateLot);
+
+	/** Get IsAutoGenerateLot	  */
+	public boolean isAutoGenerateLot();
 
     /** Column name IsGuaranteeDate */
     public static final String COLUMNNAME_IsGuaranteeDate = "IsGuaranteeDate";
@@ -362,14 +371,4 @@ public interface I_M_AttributeSet
 
 	/** Get Use Guarantee Date for Material Policy	  */
 	public boolean isUseGuaranteeDateForMPolicy();
-	
-	  /** Column name IsAutoGenerateLot */
-	public static final String COLUMNNAME_IsAutoGenerateLot = "IsAutoGenerateLot";
-
-	/** Set Auto Generate Lot  */
-	public void setIsAutoGenerateLot (boolean IsAutoGenerateLot);
-
-	/** Get Auto Generate Lot	  */
-	public boolean isAutoGenerateLot();
-	
 }

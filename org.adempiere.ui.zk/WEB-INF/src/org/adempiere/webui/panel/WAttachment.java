@@ -274,11 +274,17 @@ public class WAttachment extends Window implements EventListener<Event>
 
 		bSave.setEnabled(false);
 		bSave.setSclass("img-btn");
-		bSave.setImage(ThemeManager.getThemeResource("images/Export24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bSave.setIconSclass("z-icon-Export");
+		else
+			bSave.setImage(ThemeManager.getThemeResource("images/Export24.png"));
 		bSave.setTooltiptext(Msg.getMsg(Env.getCtx(), "AttachmentSave"));
 		bSave.addEventListener(Events.ON_CLICK, this);
 
-		bLoad.setImage(ThemeManager.getThemeResource("images/Import24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bLoad.setIconSclass("z-icon-Import");
+		else
+			bLoad.setImage(ThemeManager.getThemeResource("images/Import24.png"));
 		bLoad.setSclass("img-btn");
 		bLoad.setId("bLoad");
 //		bLoad.setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);
@@ -309,7 +315,10 @@ public class WAttachment extends Window implements EventListener<Event>
 		bCancel.addEventListener(Events.ON_CLICK, this);
 		bOk.addEventListener(Events.ON_CLICK, this);
 
-		bDeleteAll.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bDeleteAll.setIconSclass("z-icon-Delete");
+		else
+			bDeleteAll.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
 		bDeleteAll.setSclass("img-btn");
 		bDeleteAll.addEventListener(Events.ON_CLICK, this);
 		bDeleteAll.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "DeleteAll")));

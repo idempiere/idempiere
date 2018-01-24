@@ -50,8 +50,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8462972029898383163L;
-
+	private static final long serialVersionUID = -4100591609253985073L;
 	// http://jira.idempiere.com/browse/IDEMPIERE-147
 	public static String LOCATION_MAPS_URL_PREFIX     = MSysConfig.getValue(MSysConfig.LOCATION_MAPS_URL_PREFIX);
 	public static String LOCATION_MAPS_ROUTE_PREFIX   = MSysConfig.getValue(MSysConfig.LOCATION_MAPS_ROUTE_PREFIX);
@@ -537,7 +536,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		if (isAddressLinesReverse())
 		{
 			//	City, Region, Postal
-			retStr.append(", ").append(parseCRP (getCountry()));
+			retStr.append(parseCRP (getCountry()));
 			if (getAddress5() != null && getAddress5().length() > 0)
 				retStr.append(", ").append(getAddress5());
 			if (getAddress4() != null && getAddress4().length() > 0)
@@ -547,7 +546,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 			if (getAddress2() != null && getAddress2().length() > 0)
 				retStr.append(", ").append(getAddress2());
 			if (getAddress1() != null)
-				retStr.append(getAddress1());
+				retStr.append(", ").append(getAddress1());
 		}
 		else
 		{
@@ -564,6 +563,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 			//	City, Region, Postal
 			retStr.append(", ").append(parseCRP (getCountry()));
 			//	Add Country would come here
+			// retStr.append(", ").append(getCountry());
 		}
 		return retStr.toString();
 	}	//	toString
@@ -675,7 +675,9 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		}
 		return true;
 	}	//	beforeSave
-	
+
+	public final static String updateBPLocName = "SELECT C_BPartner_Location_ID FROM C_BPartner_Location WHERE C_Location_ID = ? AND IsPreserveCustomName = 'N'";
+
 	/**
 	 * 	After Save
 	 *	@param newRecord new
@@ -700,7 +702,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		
 		//Update BP_Location name IDEMPIERE 417
 		if (get_TrxName().startsWith(PO.LOCAL_TRX_PREFIX)) { // saved without trx
-			int bplID = DB.getSQLValueEx(get_TrxName(), "SELECT C_BPartner_Location_ID FROM C_BPartner_Location WHERE C_Location_ID = " + getC_Location_ID());
+			int bplID = DB.getSQLValueEx(get_TrxName(), updateBPLocName, getC_Location_ID());
 			if (bplID>0)
 			{
 				// just trigger BPLocation name change when the location change affects the name:

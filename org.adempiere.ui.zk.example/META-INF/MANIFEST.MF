@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.adempiere.ui.zk.example
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.adempiere.ui.zk.example.Activator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.adempiere.base,
  org.adempiere.base.equinox,
  org.adempiere.exceptions,

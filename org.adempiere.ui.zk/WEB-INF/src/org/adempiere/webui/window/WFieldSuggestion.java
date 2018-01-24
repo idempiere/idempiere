@@ -33,7 +33,7 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -6676085940275829510L;
+	private static final long serialVersionUID = 6696533431007741092L;
 	
 	private ConfirmPanel confirmPanel;
 
@@ -81,7 +81,7 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		Rows rows = grid.newRows();
 		Row row = rows.newRow();
 		row.appendCellChild(new Label(Msg.getElement(Env.getCtx(), "AD_Field_ID")));
-		row.appendCellChild(new Label(field.getName()));
+		row.appendCellChild(new Label(field.get_Translation("Name")));
 		
 		row = rows.newRow();
 		row.appendCellChild(new Label(Msg.getElement(Env.getCtx(), "Name")));

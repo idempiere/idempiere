@@ -61,6 +61,8 @@ public class ImportInventoryMove extends SvrProcess
 
 	private boolean			m_IsImportOnlyNoErrors = true;
 	
+	private boolean			m_ErrorsFound = false;
+
 	private String			m_docAction = MMovement.DOCACTION_Prepare;
 	
 	private boolean 		isImported = false;
@@ -127,13 +129,18 @@ public class ImportInventoryMove extends SvrProcess
 	
 	private void importRecords()
 	{
+		if (m_IsImportOnlyNoErrors && m_ErrorsFound)
+			return; // not importing because error were found
+
 		isImported = false;
-		
-		for(X_I_Movement imove : getRecords(false,m_IsImportOnlyNoErrors))
+
+		for(X_I_Movement imove : getRecords(false,true))
 		{
 			MMovement mov = importMInventoryMove(imove);			
 			if(mov!= null)
 			{    
+				imove.setM_Movement_ID(mov.getM_Movement_ID());
+				imove.saveEx();
 				isImported = importMInventoryMoveLine(mov,imove);
 			}	
 			else
@@ -143,7 +150,6 @@ public class ImportInventoryMove extends SvrProcess
 			
 			if(isImported)
 			{
-				imove.setM_Movement_ID(mov.getM_Movement_ID());
 				imove.setI_IsImported(true);
 				imove.setProcessed(true);
 				imove.saveEx();
@@ -156,7 +162,7 @@ public class ImportInventoryMove extends SvrProcess
 			else
 			{
 				imove.setI_IsImported(false);
-				imove.setProcessed(true);
+				imove.setProcessed(false);
 				imove.saveEx();
 				notimported++;
 			}
@@ -331,15 +337,20 @@ public class ImportInventoryMove extends SvrProcess
 	 */
 	private void fillIDValues()
 	{
-		for(X_I_Movement imove : getRecords(false, m_IsImportOnlyNoErrors))
+		m_ErrorsFound = false;
+		for(X_I_Movement imove : getRecords(false, false))
 		{
-			//if(imov.getAD_Org_ID()==0)
-				imove.setAD_Org_ID(getID(MOrg.Table_Name,"Value = ?", new Object[]{imove.getOrgValue()}));
+			if(imove.getAD_Org_ID()==0) {
+				int orgId = getID(MOrg.Table_Name,"Value = ?", new Object[]{imove.getOrgValue()});
+				if (orgId >= 0) {
+					imove.setAD_Org_ID(orgId);
+				}
+			}
 			if(imove.getM_Product_ID()==0)
 				imove.setM_Product_ID(getID(MProduct.Table_Name,"Value = ?", new Object[]{imove.getProductValue()}));
-			//if(imov.getM_Locator_ID()==0)
+			if(imove.getM_Locator_ID()==0)
 				imove.setM_Locator_ID(getID(MLocator.Table_Name,"Value = ?", new Object[]{imove.getLocatorValue()}));
-			//if(imov.getM_LocatorTo_ID()==0)
+			if(imove.getM_LocatorTo_ID()==0)
 				imove.setM_LocatorTo_ID(getID(MLocator.Table_Name,"Value = ?", new Object[]{imove.getLocatorToValue()}));
 			if(imove.getC_DocType_ID()==0)
 				imove.setC_DocType_ID(getID(MDocType.Table_Name,"Name=?", new Object[]{imove.getDocTypeName()}));
@@ -353,10 +364,7 @@ public class ImportInventoryMove extends SvrProcess
 				imove.setC_Campaign_ID(getID(MCampaign.Table_Name, "Value = ?", new Object[]{imove.getCampaignValue()}));
 			if(imove.getAD_OrgTrx_ID()==0)
 				imove.setAD_OrgTrx_ID(getID(MOrg.Table_Name, "Value = ?", new Object[]{imove.getOrgTrxValue()}));
-				
-			
-			imove.saveEx();
-			
+
 			StringBuilder err = new StringBuilder("");
 			if(imove.getAD_Org_ID() <=0)
 				err.append(" @AD_Org_ID@ @NotFound@,");
@@ -373,12 +381,17 @@ public class ImportInventoryMove extends SvrProcess
 			if(imove.getC_DocType_ID()<=0)
 				err.append(" @C_DocType_ID@ @NotFound@,");
 			
-			if(err.toString()!=null && err.toString().length()>0)
-			{
+			if (imove.getMovementQty().signum() == 0)
+				err.append(" @MovementQty@ @NotFound@,");
+
+			if(err.toString()!=null && err.toString().length()>0) {
 				notimported++;
+				m_ErrorsFound = true;
 				imove.setI_ErrorMsg(Msg.parseTranslation(getCtx(), err.toString()));
-				imove.saveEx();
-			}		
+			} else {
+				imove.setI_ErrorMsg(null);
+			}
+			imove.saveEx();
 		}
 	}
 	
@@ -397,17 +410,17 @@ public class ImportInventoryMove extends SvrProcess
 	
 	
 	/**
-	 * get all records in X_I_ProductPlanning table
+	 * get all records in X_I_Movement table
 	 * @param imported boolean
-	 * @param isWithError boolean
-	 * @return collection of X_I_ProductPlanning records
+	 * @param isWithoutError boolean
+	 * @return collection of X_I_Movement records
 	 */
-	private Collection<X_I_Movement> getRecords(boolean imported, boolean isWithError)
+	private Collection<X_I_Movement> getRecords(boolean imported, boolean isWithoutError)
 	{
 		final StringBuffer whereClause = new StringBuffer(X_I_Movement.COLUMNNAME_I_IsImported)
 		.append("=?"); 
 		
-		if(isWithError)
+		if(isWithoutError)
 		{
 		    whereClause.append(" AND ").append(X_I_Movement.COLUMNNAME_I_ErrorMsg).append(" IS NULL");
 		}		

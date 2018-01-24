@@ -24,6 +24,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventManager;
@@ -418,7 +420,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	        showHeader.setImage(ThemeManager.getThemeResource(IMAGES_THREELINE_MENU_PNG));
 	        showHeader.addEventListener(Events.ON_CLICK, this);
 	        showHeader.setSclass("window-container-toolbar-btn");
-	        showHeader.setStyle("cursor: pointer; border: 1px solid transparent; padding: 2px;");
 	        showHeader.setVisible(false);
 	        
 	        max = new ToolBarButton();
@@ -426,15 +427,16 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	        max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
 	        max.addEventListener(Events.ON_CLICK, this);
 	        max.setSclass("window-container-toolbar-btn");
-	        max.setStyle("cursor: pointer; border: 1px solid transparent; padding: 2px;");
 		}
         
         contextHelp = new ToolBarButton();
         toolbar.appendChild(contextHelp);
-        contextHelp.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
+        if (ThemeManager.isUseFontIconForImage())
+        	contextHelp.setIconSclass("z-icon-Help");
+        else
+        	contextHelp.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
         contextHelp.addEventListener(Events.ON_CLICK, this);
         contextHelp.setSclass("window-container-toolbar-btn context-help-btn");
-        contextHelp.setStyle("cursor: pointer; border: 1px solid transparent; padding: 2px;");
         contextHelp.setTooltiptext(Util.cleanAmp(Msg.getElement(Env.getCtx(), "AD_CtxHelp_ID")));
         contextHelp.setVisible(!e.isVisible());
         
@@ -1063,6 +1065,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		return AD_Tree_ID;
 	}
 	private void automaticOpen(Properties ctx) {
+		if (isActionURL())  // IDEMPIERE-2334 vs IDEMPIERE-3000 - do not open windows when coming from an action URL
+			return;
 
 		StringBuilder sql = new StringBuilder("SELECT m.Action, COALESCE(m.AD_Window_ID, m.AD_Process_ID, m.AD_Form_ID, m.AD_Workflow_ID, m.AD_Task_ID, AD_InfoWindow_ID) ")
 		.append(" FROM AD_TreeBar tb")
@@ -1130,4 +1134,16 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		if (eastPopup != null && eastPopup.getChildren().size() > 1)
 			setSidePopupWidth(eastPopup);
 	}  
+
+    private boolean isActionURL() {
+		ConcurrentMap<String, String[]> parameters = new ConcurrentHashMap<String, String[]>(Executions.getCurrent().getParameterMap());
+    	String action = "";
+    	if (parameters != null) {
+        	String[] strs = parameters.get("Action");
+        	if (strs != null && strs.length == 1 && strs[0] != null)
+        		action = strs[0];
+    	}
+		return ! Util.isEmpty(action);
+    }
+
 }

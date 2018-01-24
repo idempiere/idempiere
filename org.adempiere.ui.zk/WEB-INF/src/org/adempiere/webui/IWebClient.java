@@ -67,5 +67,8 @@ public interface IWebClient {
 	 * @return keylistener
 	 */
 	public abstract Keylistener getKeylistener();
-
+	
+	default ClientInfo getClientInfo() {
+		return getAppDeskop().getClientInfo();
+	}
 }

@@ -177,7 +177,10 @@ public class MenuSearchController implements EventListener<Event>{
         		treeItem.getTreerow().getFirstChild().getFirstChild() instanceof LabelImageElement)
         	{
         		LabelImageElement element = (LabelImageElement) treeItem.getTreerow().getFirstChild().getFirstChild();
-        		image = element.getImage();
+        		if (ThemeManager.isUseFontIconForImage() && element.getIconSclass() != null)
+        			image = element.getIconSclass();
+        		else
+        			image = element.getImage();
         	}
         }
         return image != null ? image.intern() : null;
@@ -205,10 +208,12 @@ public class MenuSearchController implements EventListener<Event>{
 		listhead.appendChild(listheader);
 		listheader = new Listheader();
 		listheader.setAlign("center");
+		listheader.setValign("middle");
 		ZKUpdateUtil.setWidth(listheader, "28px");
 		listhead.appendChild(listheader);
 		listheader = new Listheader();
 		listheader.setAlign("center");
+		listheader.setValign("middle");
 		ZKUpdateUtil.setWidth(listheader, "28px");
 		listhead.appendChild(listheader);
 		
@@ -507,17 +512,25 @@ public class MenuSearchController implements EventListener<Event>{
 		public void render(Listitem item, MenuItem data, int index)
 				throws Exception {
 			Listcell cell = new Listcell(data.getLabel(), data.getImage());
+			if (ThemeManager.isUseFontIconForImage() && data.getImage() != null && data.getImage().startsWith("z-icon")) {
+				cell.setImage(null);
+				cell.setIconSclass(data.getImage());
+			}
 			item.appendChild(cell);
 			cell.setTooltip(data.getDescription());
 			item.setValue(data);
 			item.addEventListener(Events.ON_CLICK, MenuSearchController.this);
 			
 			cell = new Listcell();
+			cell.setSclass("menu-search-list-toolbar-cell");
 			item.appendChild(cell);
 			boolean isWindow = data.getType() != null && data.getType().equals("window");
 			if (isWindow) {
 				ToolBarButton newBtn = new ToolBarButton();
-				newBtn.setImage(ThemeManager.getThemeResource("images/New16.png"));
+				if (ThemeManager.isUseFontIconForImage())
+					newBtn.setIconSclass("z-icon-New");
+				else
+					newBtn.setImage(ThemeManager.getThemeResource("images/New16.png"));
 				newBtn.addEventListener(Events.ON_CLICK, MenuSearchController.this);
 				newBtn.setSclass("fav-new-btn");
 				newBtn.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), NEW_BUTTON_NAME)));
@@ -526,6 +539,7 @@ public class MenuSearchController implements EventListener<Event>{
 			}
 		
 			cell = new Listcell();
+			cell.setSclass("menu-search-list-toolbar-cell");
 			item.appendChild(cell);
 			MTreeNode node = null;
 			if (data.getData() instanceof MTreeNode) {
@@ -550,6 +564,7 @@ public class MenuSearchController implements EventListener<Event>{
 				}
 				cell.appendChild(starBtn);
 				starBtn.addEventListener(Events.ON_CLICK, MenuSearchController.this);
+				starBtn.setSclass("fav-new-btn");
 			}			
 		}			
 	}	

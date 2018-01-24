@@ -346,7 +346,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 
 		//  OK
 		fileNameTextbox.setValue(imageFile.getName());
-		invalidate();
+		mainLayout.invalidate();
 
 		//  Save info
 		if (m_mImage == null)

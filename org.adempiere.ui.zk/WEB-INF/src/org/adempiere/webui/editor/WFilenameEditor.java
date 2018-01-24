@@ -48,7 +48,10 @@ public class WFilenameEditor extends WEditor
 	public WFilenameEditor(GridField gridField)
 	{
 		super(new FilenameBox(), gridField);
-		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Open16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			getComponent().getButton().setIconSclass("z-icon-Open");
+		else
+			getComponent().setButtonImage(ThemeManager.getThemeResource("images/Open16.png"));
 		getComponent().addEventListener(Events.ON_UPLOAD, this);
 		getComponent().getButton().setUpload(AdempiereWebUI.getUploadSetting());
 		getComponent().getButton().setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);

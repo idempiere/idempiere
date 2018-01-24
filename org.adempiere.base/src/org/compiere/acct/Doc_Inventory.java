@@ -107,6 +107,9 @@ public class Doc_Inventory extends Doc
 		for (int i = 0; i < lines.length; i++)
 		{
 			MInventoryLine line = lines[i];
+			if (!line.isActive())
+				continue;
+
 			String docSubTypeInv;
 			if (Util.isEmpty(parentDocSubTypeInv)) {
 				// IDEMPIERE-675: for backward compatibility - to post old documents that could have subtypeinv empty

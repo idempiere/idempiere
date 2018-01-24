@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BPartner_Location
  *  @author iDempiere (generated) 
- *  @version Release 4.1 - $Id$ */
+ *  @version Release 5.1 - $Id$ */
 public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20171211L;
 
     /** Standard Constructor */
     public X_C_BPartner_Location (Properties ctx, int C_BPartner_Location_ID, String trxName)
@@ -45,6 +45,8 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 // Y
 			setIsPayFrom (true);
 // Y
+			setIsPreserveCustomName (false);
+// N
 			setIsRemitTo (true);
 // Y
 			setIsShipTo (true);
@@ -290,6 +292,27 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 	public boolean isPayFrom () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsPayFrom);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Preserve custom name.
+		@param IsPreserveCustomName Preserve custom name	  */
+	public void setIsPreserveCustomName (boolean IsPreserveCustomName)
+	{
+		set_Value (COLUMNNAME_IsPreserveCustomName, Boolean.valueOf(IsPreserveCustomName));
+	}
+
+	/** Get Preserve custom name.
+		@return Preserve custom name	  */
+	public boolean isPreserveCustomName () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsPreserveCustomName);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

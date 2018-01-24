@@ -22,9 +22,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
+import org.adempiere.base.event.EventManager;
+import org.adempiere.base.event.EventProperty;
+import org.adempiere.base.event.IEventTopics;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.acct.Doc;
 import org.compiere.model.MAcctSchema;
@@ -55,6 +60,7 @@ import org.eevolution.model.I_DD_Order;
 import org.eevolution.model.I_HR_Process;
 import org.eevolution.model.I_PP_Cost_Collector;
 import org.eevolution.model.I_PP_Order;
+import org.osgi.service.event.Event;
 
 /**
  *	Document Action Engine
@@ -907,7 +913,7 @@ public class DocumentEngine implements DocAction
 	 * @return Number of valid options
 	 */
 	public static int getValidActions(String docStatus, Object processing,
-			String orderType, String isSOTrx, int AD_Table_ID, String[] docAction, String[] options, boolean periodOpen)
+			String orderType, String isSOTrx, int AD_Table_ID, String[] docAction, String[] options, boolean periodOpen, PO po)
 	{
 		if (options == null)
 			throw new IllegalArgumentException("Option array parameter is null");
@@ -1214,6 +1220,25 @@ public class DocumentEngine implements DocAction
 				options[index++] = DocumentEngine.ACTION_Void;
 			}
 		}
+
+		if (po instanceof DocOptions)
+			index = ((DocOptions) po).customizeValidActions(docStatus, processing, orderType, isSOTrx,
+					AD_Table_ID, docAction, options, index);
+
+		AtomicInteger indexObj = new AtomicInteger(index);
+		ArrayList<String> docActionsArray = new ArrayList<String>(Arrays.asList(docAction));
+		ArrayList<String> optionsArray = new ArrayList<String>(Arrays.asList(options));
+		DocActionEventData eventData = new DocActionEventData(docStatus, processing, orderType, isSOTrx, AD_Table_ID, docActionsArray, optionsArray, indexObj, po);
+		Event event = EventManager.newEvent(IEventTopics.DOCACTION,
+				new EventProperty(EventManager.EVENT_DATA, eventData),
+				new EventProperty("tableName", po.get_TableName()));
+		EventManager.getInstance().sendEvent(event);
+		index = indexObj.get();
+		for (int i = 0; i < optionsArray.size(); i++)
+			options[i] = optionsArray.get(i);
+		for (int i = 0; i < docActionsArray.size(); i++)
+			docAction[i] = docActionsArray.get(i);
+
 		return index;
 	}
 

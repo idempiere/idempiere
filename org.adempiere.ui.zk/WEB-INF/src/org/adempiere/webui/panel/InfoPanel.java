@@ -1083,10 +1083,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			countSql = countSql.trim();
 			countSql = countSql.substring(0, countSql.length() - 5);
 		}
-		String otherClause = infoWindow != null ? infoWindow.getOtherClause() : null; // Fix otherClause on count 
-    	if (otherClause != null)
-    		countSql = countSql+" "+otherClause;
-
 		countSql = MRole.getDefault().addAccessSQL	(countSql, getTableName(),
 													MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 		if (log.isLoggable(Level.FINER))

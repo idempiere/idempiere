@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.MInfoProcess;
 import org.adempiere.model.MInfoRelated;
 import org.compiere.model.AccessSqlParser.TableInfo;
@@ -446,7 +447,7 @@ public class MInfoWindow extends X_AD_InfoWindow
 			pstmt.executeQuery();
 		}catch (Exception ex){
 			log.log(Level.WARNING, ex.getMessage());
-			return;
+			throw new AdempiereException(ex);
 		} finally {
 			DB.close(pstmt);
 		}

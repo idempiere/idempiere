@@ -15,9 +15,9 @@ package org.adempiere.exceptions;
 
 import java.text.DateFormat;
 
+import org.adempiere.base.IProductPricing;
 import org.compiere.model.MPriceList;
 import org.compiere.model.MProduct;
-import org.compiere.model.MProductPricing;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 
@@ -36,12 +36,12 @@ public class ProductNotOnPriceListException extends AdempiereException
 	
 	public static final String AD_Message = "ProductNotOnPriceList";
 	
-	public ProductNotOnPriceListException(MProductPricing productPricing, int documentLineNo)
+	public ProductNotOnPriceListException(IProductPricing productPricing, int documentLineNo)
 	{
 		super(buildMessage(productPricing, documentLineNo));
 	}
 
-	private static final String buildMessage (MProductPricing pp, int documentLineNo)
+	private static final String buildMessage (IProductPricing pp, int documentLineNo)
 	{
 		StringBuilder sb = new StringBuilder();
 		if (documentLineNo > 0)

@@ -75,7 +75,7 @@ public class WPostIt extends Window implements EventListener<Event>{
 			m_postIt = new MPostIt (Env.getCtx(), tableID, recordID, trxName);
 
 		String created = null;
-		if (m_postIt.getAD_Postit_ID() > 0)
+		if (m_postIt.getAD_PostIt_ID() > 0)
 			created = m_postIt.getCreatedString();
 		String updated = m_postIt.getUpdatedString();
 

@@ -19,10 +19,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.apache.felix.scr.Component;
-import org.apache.felix.scr.ScrService;
 import org.compiere.util.Ini;
 import org.compiere.util.Util;
 import org.osgi.framework.BundleContext;
@@ -30,6 +29,8 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentConstants;
+import org.osgi.service.component.runtime.ServiceComponentRuntime;
+import org.osgi.service.component.runtime.dto.ComponentDescriptionDTO;
 
 /**
  * @author hengsin
@@ -37,11 +38,11 @@ import org.osgi.service.component.ComponentConstants;
  */
 public class ComponentBlackListService implements ServiceListener {
 
-	private ScrService scrService = null;
+	private ServiceComponentRuntime scrService = null;
 	private List<String> blackListComponentNames = null;
 	
 	protected ComponentBlackListService(BundleContext context) {
-		ServiceReference<ScrService> ref = context.getServiceReference(ScrService.class);
+		ServiceReference<ServiceComponentRuntime> ref = context.getServiceReference(ServiceComponentRuntime.class);
 		scrService = context.getService(ref);
 		blackListComponentNames = new ArrayList<String>();
 		retrieveBlacklistCandidates();
@@ -89,20 +90,20 @@ public class ComponentBlackListService implements ServiceListener {
 
 	private void disableComponents()
 	{
-		Component[] comps = scrService.getComponents();
-		for (Component comp : comps) {
-			if (blackListComponentNames.contains(comp.getName())) {
-				comp.disable();
+		Collection<ComponentDescriptionDTO> comps = scrService.getComponentDescriptionDTOs();
+		for (ComponentDescriptionDTO comp : comps) {
+			if (blackListComponentNames.contains(comp.name)) {
+				scrService.disableComponent(comp);
 			}
 		}
 	}
 	
 	private void disableComponent(String componentName)
 	{
-		Component[] comps = scrService.getComponents();
-		for (Component comp : comps) {
-			if (comp.getName().equals(componentName)) {
-				comp.disable();
+		Collection<ComponentDescriptionDTO> comps = scrService.getComponentDescriptionDTOs();
+		for (ComponentDescriptionDTO comp : comps) {
+			if (comp.name.equals(componentName)) {
+				scrService.disableComponent(comp);
 				break;
 			}
 		}

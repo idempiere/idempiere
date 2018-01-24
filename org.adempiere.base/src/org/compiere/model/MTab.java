@@ -38,11 +38,10 @@ import org.compiere.util.DB;
  */
 public class MTab extends X_AD_Tab
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4946144044358216142L;
+	private static final long serialVersionUID = -2964171360368660043L;
 
 	/**
 	 * 	Standard Constructor
@@ -208,5 +207,24 @@ public class MTab extends X_AD_Tab
 		return retValue;
 	}
 	//end vpj-cd e-evolution
-	
+
+    public int getParentTabID() {
+    	int parentTabID = -1;
+
+    	if (getTabLevel() == 0)
+    		return parentTabID; // tab level 0 doesn't have parent
+
+    	final String sql = ""
+    		+ "SELECT AD_Tab_ID "
+    		+ "FROM   AD_Tab "
+    		+ "WHERE  AD_Window_ID = ? "
+    		+ "       AND SeqNo < ? "
+    		+ "       AND TabLevel = ? "
+    		+ "       AND IsActive = 'Y' "
+    		+ "ORDER  BY SeqNo DESC";
+    	parentTabID = DB.getSQLValue(get_TrxName(), sql, getAD_Window_ID(), getSeqNo(), getTabLevel()-1);
+    	return parentTabID;
+    }
+
+
 }	//	M_Tab

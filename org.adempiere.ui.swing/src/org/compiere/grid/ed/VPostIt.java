@@ -98,7 +98,7 @@ public class VPostIt extends CDialog implements ChangeListener, ActionListener, 
 		textPane.setBackground(AdempierePLAF.getFieldBackground_Inactive());
 
 		String createdupdated = null;
-		if (m_postIt.getAD_Postit_ID() > 0)
+		if (m_postIt.getAD_PostIt_ID() > 0)
 			createdupdated = m_postIt.getCreatedString();
 		String updated = m_postIt.getUpdatedString();
 

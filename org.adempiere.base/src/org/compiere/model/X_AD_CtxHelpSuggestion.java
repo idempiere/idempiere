@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_CtxHelpSuggestion
  *  @author iDempiere (generated) 
- *  @version Release 4.1 - $Id$ */
+ *  @version Release 5.1 - $Id$ */
 public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20170728L;
+	private static final long serialVersionUID = 20171031L;
 
     /** Standard Constructor */
     public X_AD_CtxHelpSuggestion (Properties ctx, int AD_CtxHelpSuggestion_ID, String trxName)
@@ -203,6 +203,11 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 		return (String)get_Value(COLUMNNAME_AD_Language);
 	}
 
+	public org.compiere.model.I_AD_AllClients_V getAD_UserClient() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_AllClients_V)MTable.get(getCtx(), org.compiere.model.I_AD_AllClients_V.Table_Name)
+			.getPO(getAD_UserClient_ID(), get_TrxName());	}
+
 	/** Set Tenant of User.
 		@param AD_UserClient_ID Tenant of User	  */
 	public void setAD_UserClient_ID (int AD_UserClient_ID)
@@ -223,9 +228,9 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
+	public org.compiere.model.I_AD_AllUsers_V getAD_User() throws RuntimeException
     {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+		return (org.compiere.model.I_AD_AllUsers_V)MTable.get(getCtx(), org.compiere.model.I_AD_AllUsers_V.Table_Name)
 			.getPO(getAD_User_ID(), get_TrxName());	}
 
 	/** Set User/Contact.

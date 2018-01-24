@@ -4,7 +4,7 @@
 		${url.maven2.lib}/maven2/org/codeartisans/thirdparties/swing/org-netbeans-api-visual/2.23.1/org-netbeans-api-visual-2.23.1.jar
 		${url.maven2.lib}/maven2/org/codeartisans/thirdparties/swing/org-openide-util/8.6.2/org-openide-util-8.6.2.jar
 		-->
-		<get src="${url.file.srv}/jarfile/4.1/org-netbeans-api-visual.jar" dest="org-netbeans-api-visual.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/4.1/org-openide-util.jar" dest="org-openide-util.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/5.1/org-netbeans-api-visual.jar" dest="org-netbeans-api-visual.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/5.1/org-openide-util.jar" dest="org-openide-util.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>

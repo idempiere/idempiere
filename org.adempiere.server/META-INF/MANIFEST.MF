@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Server
 Bundle-SymbolicName: org.adempiere.server;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.1.0.qualifier
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.eclipse.equinox.app;bundle-version="0.0.0",
  org.eclipse.jetty.apache-jsp;bundle-version="0.0.0"

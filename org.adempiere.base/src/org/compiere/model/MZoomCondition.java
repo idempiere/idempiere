@@ -189,7 +189,9 @@ public class MZoomCondition extends X_AD_ZoomCondition
 				{
 					window.initTab(gTab.getTabNo());				
 					GridTab parentTab = gTab.getParentTab();
-					int parentId = DB.getSQLValue(null, "SELECT " + gTab.getLinkColumnName() + " FROM " + gTab.getTableName() + " WHERE " + query.getWhereClause());
+					int parentId = -1;
+					if (!Util.isEmpty(gTab.getLinkColumnName()))
+						parentId = DB.getSQLValue(null, "SELECT " + gTab.getLinkColumnName() + " FROM " + gTab.getTableName() + " WHERE " + query.getWhereClause());
 					if (parentId <= 0) {
 						if (Util.isEmpty(parentTab.getKeyColumnName()))
 							parentTab.initTab(false);

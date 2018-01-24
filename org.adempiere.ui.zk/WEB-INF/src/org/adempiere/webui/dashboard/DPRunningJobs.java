@@ -21,6 +21,7 @@ import java.util.Properties;
 import org.adempiere.base.Service;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -91,12 +92,24 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 		
 		Toolbar jobsToolbar = new Toolbar();
 		this.appendChild(jobsToolbar);
-
-		Image imgr = new Image(ThemeManager.getThemeResource("images/Refresh24.png"));
-		jobsToolbar.appendChild(imgr);
-		imgr.setStyle("text-align: right; cursor: pointer; width:24px; height:24px;");
-		imgr.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Refresh")));
-		imgr.addEventListener(Events.ON_CLICK, this);
+		
+		if (ThemeManager.isUseFontIconForImage())
+		{
+			ToolBarButton btn = new ToolBarButton();
+			btn.setIconSclass("z-icon-Refresh");
+			btn.setSclass("trash-toolbarbutton");
+			jobsToolbar.appendChild(btn);
+			btn.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Refresh")));
+			btn.addEventListener(Events.ON_CLICK, this);
+		}
+		else
+		{
+			Image imgr = new Image(ThemeManager.getThemeResource("images/Refresh24.png"));
+			jobsToolbar.appendChild(imgr);
+			imgr.setStyle("text-align: right; cursor: pointer; width:24px; height:24px;");
+			imgr.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Refresh")));
+			imgr.addEventListener(Events.ON_CLICK, this);
+		}
 		
 		createTopicSubscriber();
 		
@@ -159,7 +172,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 				AEnv.zoom(MPInstance.Table_ID, AD_PInstance_ID);
 		}
 		
-		if (comp instanceof Image) // Refresh button
+		if (comp instanceof Image || comp instanceof ToolBarButton) // Refresh button
 		{
 			refresh();
 		}

@@ -15,9 +15,9 @@
 		<get src="${url.maven2.lib}/maven2/org/apache/neethi/neethi/3.0.2/neethi-3.0.2.jar" dest="WEB-INF/lib/neethi-3.0.2.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/org/apache/ws/xmlschema/xmlschema-core/2.0.3/xmlschema-core-2.0.3.jar" dest="WEB-INF/lib/xmlschema-core-2.0.3.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/org/apache/cxf/cxf-rt-frontend-jaxws/2.6.1/cxf-rt-frontend-jaxws-2.6.1.jar" dest="WEB-INF/lib/cxf-rt-frontend-jaxws-2.6.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/4.1/xmlbeans-2.5.0.jar" dest="WEB-INF/lib/xmlbeans-2.5.0.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/5.1/xmlbeans-2.5.0.jar" dest="WEB-INF/lib/xmlbeans-2.5.0.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0.jar" dest="WEB-INF/lib/aopalliance-1.0.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/4.1/idempiere-xmlbeans-1.0.jar" dest="WEB-INF/lib/idempiere-xmlbeans-1.0.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/5.1/idempiere-xmlbeans-1.0.jar" dest="WEB-INF/lib/idempiere-xmlbeans-1.0.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/org/apache/axis/axis/1.4/axis-1.4.jar" dest="WEB-INF/lib/axis.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/commons-discovery/commons-discovery/0.5/commons-discovery-0.5.jar" dest="WEB-INF/lib/commons-discovery-0.5.jar" usetimestamp="true" verbose="true" retries="5" />
 		<get src="${url.maven2.lib}/maven2/javax/ws/rs/jsr311-api/1.1/jsr311-api-1.1.jar" dest="WEB-INF/lib/jsr311-api-1.1.jar" usetimestamp="true" verbose="true" retries="5" />

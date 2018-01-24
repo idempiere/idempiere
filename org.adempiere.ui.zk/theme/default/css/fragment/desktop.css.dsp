@@ -43,6 +43,7 @@
 
 .desktop-header-popup .desktop-header {
 	border: none;
+	height: 100% !important;
 }
 
 .desktop-header-username {
@@ -234,9 +235,30 @@
 }
 
 <%-- window container --%>
-.window-container-toolbar-btn .z-toolbarbutton-content img {
+.window-container-toolbar-btn.z-toolbarbutton .z-toolbarbutton-content img {
 	width: 16px;
 	height: 16px;
 	padding: 3px 3px;
 }
+.window-container-toolbar-btn.z-toolbarbutton .z-toolbarbutton-content [class^="z-icon"] {
+	width: 22px;
+	height: 22px;
+	padding: 3px 3px;
+}
+.window-container-toolbar > .z-toolbar-content,
+.window-container-toolbar-btn.z-toolbarbutton, 
+.window-container-toolbar-btn.z-toolbarbutton .z-toolbarbutton-content,
+.window-container-toolbar-btn.z-toolbarbutton .z-toolbarbutton-content [class^="z-icon"] {
+	display:inline-flex;
+	align-items: center;
+	justify-content: center; 
+}
 
+.user-panel-popup .z-popup-content {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+.user-panel-popup .z-popup-content > .z-vlayout {
+	overflow-x: auto;
+	padding: 8px;
+}

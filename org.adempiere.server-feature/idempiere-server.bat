@@ -1,5 +1,6 @@
 @Echo off
 
+CALL utils\myEnvironment.bat Server
 
 @if not "%JAVA_HOME%" == "" goto JAVA_HOME_OK
 @Set JAVA=java
@@ -16,8 +17,6 @@ goto START
 @Echo =======================================
 @Echo Starting iDempiere Server ...
 @Echo =======================================
-
-CALL utils\myEnvironment.bat Server
 
 FOR %%c in (plugins\org.eclipse.equinox.launcher_1.*.jar) DO set JARFILE=%%c
 

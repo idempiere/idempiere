@@ -106,7 +106,10 @@ public class MenuTreePanel extends AbstractMenuPanel
         pc.appendChild(filterPanel);
 
         filterBtn = new Toolbarbutton();
-        filterBtn.setImage(ThemeManager.getThemeResource("images/Preference16.png"));
+        if (ThemeManager.isUseFontIconForImage())
+        	filterBtn.setIconSclass("z-icon-Preference");
+        else
+        	filterBtn.setImage(ThemeManager.getThemeResource("images/Preference16.png"));
         filterBtn.addEventListener(Events.ON_CLICK, this);
         toolbar.appendChild(filterBtn);        
     }

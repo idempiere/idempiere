@@ -16,6 +16,7 @@ package org.adempiere.webui.window;
 import java.util.logging.Level;
 
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
@@ -129,11 +130,16 @@ public class WPreference extends WQuickEntry implements EventListener<Event> {
 		this.appendChild(toolbar);
 		ToolBarButton btn = new ToolBarButton("");
 		btn.setName("btnSave");
-		btn.setImage(ThemeManager.getThemeResource("images/Save24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			btn.setIconSclass("z-icon-Save");
+		else
+			btn.setImage(ThemeManager.getThemeResource("images/Save24.png"));
 		btn.setTooltiptext(Msg.getMsg(Env.getCtx(),"Save"));
 		btn.addEventListener(Events.ON_CLICK, this);
 		toolbar.appendChild(btn);
 		toolbar.setStyle("border: none");
+		if (ThemeManager.isUseFontIconForImage())
+        	LayoutUtils.addSclass("large-toolbarbutton", btn);
 
 		div = new Div();
 		div.setStyle("background-color: transparent !important; border: none; margin: 5px;");

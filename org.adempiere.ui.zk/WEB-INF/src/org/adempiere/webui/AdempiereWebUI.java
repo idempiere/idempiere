@@ -50,6 +50,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserPreference;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
@@ -126,7 +127,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	m_URLParameters = new ConcurrentHashMap<String, String[]>(Executions.getCurrent().getParameterMap());
     }
 
-    public void onCreate()
+	public void onCreate()
     {
         this.getPage().setTitle(ThemeManager.getBrowserTitle());
         
@@ -273,6 +274,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		BrowserToken.save(mSession, user);
 		
 		Env.setContext(ctx, "#UIClient", "zk");
+		Env.setContext(ctx, "#DBType", DB.getDatabase().getName());
 		StringBuilder localHttpAddr = new StringBuilder(Executions.getCurrent().getScheme());
 		localHttpAddr.append("://").append(Executions.getCurrent().getLocalAddr());
 		int port = Executions.getCurrent().getLocalPort();
@@ -459,6 +461,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			}
 			if (getDesktop() != null && getDesktop().getSession() != null) {
 				getDesktop().getSession().setAttribute(CLIENT_INFO, clientInfo);
+			} else if (Executions.getCurrent() != null){
+				Executions.getCurrent().getSession().setAttribute(CLIENT_INFO, clientInfo);
 			}
 			
 			Env.setContext(Env.getCtx(), "#clientInfo_desktopWidth", clientInfo.desktopWidth);
@@ -483,7 +487,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         loginDesktop.createPart(this.getPage());
         loginDesktop.changeRole(locale, properties);
         loginDesktop.getComponent().getRoot().addEventListener(Events.ON_CLIENT_INFO, this);
-		
 	}
 
 	/**
@@ -539,6 +542,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		properties.setProperty(SessionContextListener.SERVLET_SESSION_ID, newSession.getId());
 		
 		Executions.sendRedirect("index.zul");
+	}
+	
+	@Override
+	public ClientInfo getClientInfo() {
+		return clientInfo;
 	}
 	
 	/**

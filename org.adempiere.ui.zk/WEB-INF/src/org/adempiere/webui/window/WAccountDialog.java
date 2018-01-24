@@ -25,6 +25,7 @@ import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -221,15 +222,30 @@ public final class WAccountDialog extends Window
 		toolBar.setStyle("border: none; padding: 5px");
 		ZKUpdateUtil.setHflex(toolBar, "min");
 
-		bSave.setImage(ThemeManager.getThemeResource("images/Save24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bSave.setIconSclass("z-icon-Save");
+		else
+			bSave.setImage(ThemeManager.getThemeResource("images/Save24.png"));
 		bSave.setTooltiptext(Msg.getMsg(Env.getCtx(),"AccountNewUpdate"));
 		bSave.addEventListener(Events.ON_CLICK, this);
-		bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bRefresh.setIconSclass("z-icon-Refresh");
+		else
+			bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
 		bRefresh.setTooltiptext(Msg.getMsg(Env.getCtx(),"Refresh"));
 		bRefresh.addEventListener(Events.ON_CLICK, this);
-		bIgnore.setImage(ThemeManager.getThemeResource("images/Ignore24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bIgnore.setIconSclass("z-icon-Ignore");
+		else
+			bIgnore.setImage(ThemeManager.getThemeResource("images/Ignore24.png"));
 		bIgnore.setTooltiptext(Msg.getMsg(Env.getCtx(),"Ignore"));
 		bIgnore.addEventListener(Events.ON_CLICK, this);
+		if (ThemeManager.isUseFontIconForImage())
+		{
+			LayoutUtils.addSclass("medium-toolbarbutton", bSave);
+			LayoutUtils.addSclass("medium-toolbarbutton", bRefresh);
+			LayoutUtils.addSclass("medium-toolbarbutton", bIgnore);
+		}
 		//
 		toolBar.appendChild(bRefresh);
 		toolBar.appendChild(bIgnore);
@@ -286,6 +302,7 @@ public final class WAccountDialog extends Window
 		this.setClosable(false);
 
 		this.setSizable(true);
+		this.setMaximizable(true);
 		this.setSclass("account-dialog");
 		
 		if (ClientInfo.isMobile()) {

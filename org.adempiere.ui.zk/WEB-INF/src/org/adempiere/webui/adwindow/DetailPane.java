@@ -273,8 +273,11 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		tp.setSclass("adwindow-detailpane-tabpanel");
 		ToolBar toolbar = new ToolBar();
 		tp.appendChild(toolbar);
-		btnNew = new ToolBarButton();		
-		btnNew.setImage(ThemeManager.getThemeResource(NEW_IMAGE));
+		btnNew = new ToolBarButton();
+		if (ThemeManager.isUseFontIconForImage())
+			btnNew.setIconSclass("z-icon-New");
+		else
+			btnNew.setImage(ThemeManager.getThemeResource(NEW_IMAGE));
 		btnNew.setId(BTN_NEW_ID);
 		btnNew.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
@@ -288,7 +291,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		ToolBarButton button = new ToolBarButton();
 		
 		button = new ToolBarButton();
-		button.setImage(ThemeManager.getThemeResource(EDIT_IMAGE));
+		if (ThemeManager.isUseFontIconForImage())
+			button.setIconSclass("z-icon-Edit");
+		else
+			button.setImage(ThemeManager.getThemeResource(EDIT_IMAGE));
 		button.setId(BTN_EDIT_ID);
 		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
@@ -300,7 +306,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         buttons.put(BTN_EDIT_ID.substring(3, BTN_EDIT_ID.length()), button);
 
 		button = new ToolBarButton();
-		button.setImage(ThemeManager.getThemeResource(DELETE_IMAGE));
+		if (ThemeManager.isUseFontIconForImage())
+			button.setIconSclass("z-icon-Delete");
+		else
+			button.setImage(ThemeManager.getThemeResource(DELETE_IMAGE));
 		button.setId(BTN_DELETE_ID);
 		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
@@ -313,7 +322,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         buttons.put(BTN_DELETE_ID.substring(3, BTN_DELETE_ID.length()), button);
 
 		button = new ToolBarButton();
-		button.setImage(ThemeManager.getThemeResource(SAVE_IMAGE));
+		if (ThemeManager.isUseFontIconForImage())
+			button.setIconSclass("z-icon-Save");
+		else
+			button.setImage(ThemeManager.getThemeResource(SAVE_IMAGE));
 		button.setId(BTN_SAVE_ID);
 		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
@@ -328,7 +340,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		
 		if (!tabPanel.getGridTab().isSortTab()) {
 			button = new ToolBarButton();
-			button.setImage(ThemeManager.getThemeResource(PROCESS_IMAGE));
+			if (ThemeManager.isUseFontIconForImage())
+				button.setIconSclass("z-icon-Process");
+			else
+				button.setImage(ThemeManager.getThemeResource(PROCESS_IMAGE));
 			button.setId(BTN_PROCESS_ID);
 			button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 				@Override
@@ -419,8 +434,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		ProcessButtonPopup popup = new ProcessButtonPopup();
 		ADTabpanel adtab = (ADTabpanel) getSelectedADTabpanel();
 		popup.render(adtab.getToolbarButtons());
-		
-		LayoutUtils.openPopupWindow(button, popup, "after_start");		
+		if (popup.getChildren().size() > 0) {
+			popup.setPage(button.getPage());
+			popup.open(button, "after_start");
+		}
 	}
 
 	/**

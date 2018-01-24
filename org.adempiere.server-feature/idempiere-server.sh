@@ -1,5 +1,8 @@
 #!/bin/sh
 #
+unset DISPLAY
+BASE=`dirname $( readlink -f $0 )`
+. $BASE/utils/myEnvironment.sh Server
 if [ $JAVA_HOME ]; then
   JAVA=$JAVA_HOME/bin/java
 else
@@ -17,9 +20,6 @@ echo ===================================
 echo Starting iDempiere Server
 echo ===================================
 
-unset DISPLAY
-BASE=`dirname $( readlink -f $0 )`
-. $BASE/utils/myEnvironment.sh Server
 
 VMOPTS="-Xbootclasspath/p:alpn-boot.jar
 -Dorg.osgi.framework.bootdelegation=sun.security.ssl,org.eclipse.jetty.alpn

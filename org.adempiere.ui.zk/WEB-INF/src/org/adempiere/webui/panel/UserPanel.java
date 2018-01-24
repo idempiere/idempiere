@@ -307,8 +307,8 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 			popup.detach();
 		}
 		popup = new Popup();
+		popup.setSclass("user-panel-popup");
 		Vlayout layout = new Vlayout();
-		layout.setStyle("padding: 8px 16px");		
 		String email = getUserEmail();
 		if (!Util.isEmpty(email))
 		{
@@ -330,6 +330,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		popup.setPage(component.getPage());
 		popup.setVflex("min");
 		popup.setHflex("min");
+		popup.setStyle("max-width: " + ClientInfo.get().desktopWidth + "px");
 		popup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
 			if (!oe.isOpen())
 				popup.setAttribute(popup.getUuid(), System.currentTimeMillis());

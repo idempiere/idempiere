@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Form
  *  @author iDempiere (generated) 
- *  @version Release 4.1 - $Id$ */
+ *  @version Release 5.1 - $Id$ */
 public class X_AD_Form extends PO implements I_AD_Form, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20171031L;
 
     /** Standard Constructor */
     public X_AD_Form (Properties ctx, int AD_Form_ID, String trxName)
@@ -41,7 +41,7 @@ public class X_AD_Form extends PO implements I_AD_Form, I_Persistent
 			setAccessLevel (null);
 			setAD_Form_ID (0);
 			setEntityType (null);
-// U
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
 			setIsBetaFunctionality (false);
 			setName (null);
         } */

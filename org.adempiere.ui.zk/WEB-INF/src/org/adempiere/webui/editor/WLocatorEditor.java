@@ -96,7 +96,10 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 		
 		setColumnName(columnName);
 		m_mLocator = mLocator;
-		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Locator16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			getComponent().getButton().setIconSclass("z-icon-Locator");
+		else
+			getComponent().setButtonImage(ThemeManager.getThemeResource("images/Locator16.png"));
 		getComponent().getTextbox().setReadonly(true);
 
 		m_WindowNo = windowNo;	//Yvonne: move it b4 setDefault_Locator_ID()
@@ -110,7 +113,10 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 		super(new EditorBox(), gridField);
 		m_mLocator = (MLocatorLookup)gridField.getLookup();
 		
-		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Locator16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			getComponent().getButton().setIconSclass("z-icon-Locator");
+		else
+			getComponent().setButtonImage(ThemeManager.getThemeResource("images/Locator16.png"));
 		getComponent().getTextbox().setReadonly(true);
 		
 		setDefault_Locator_ID(); // set default locator, teo_sarca [ 1661546 ]

@@ -2974,7 +2974,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		Clients.response(new AuScript(script.toString()));
 	}
 
-	private void executeButtonProcess(final IProcessButton wButton,
+	public void executeButtonProcess(final IProcessButton wButton,
 			final boolean startWOasking, final int table_ID, final int record_ID,
 			boolean isProcessMandatory) {
 		/**
@@ -3271,8 +3271,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		popup.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "processButtonPopup");
 		ADTabpanel adtab = (ADTabpanel) adTabbox.getSelectedTabpanel();
 		popup.render(adtab.getToolbarButtons());
-
-		LayoutUtils.openPopupWindow(toolbar.getButton("Process"), popup, "after_start");
+		if (popup.getChildren().size() > 0) {
+			popup.setPage(this.getComponent().getPage());
+			popup.open(getToolbar().getButton("Process"), "after_start");
+		}
 	}
 
 	@Override

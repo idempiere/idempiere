@@ -19,6 +19,7 @@ import java.util.Properties;
 
 import org.adempiere.base.Service;
 import org.adempiere.base.event.EventManager;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
@@ -46,6 +47,7 @@ import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Box;
 import org.zkoss.zul.Image;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Toolbar;
@@ -101,19 +103,43 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		Toolbar recentItemsToolbar = new Toolbar();
 		this.appendChild(recentItemsToolbar);
 
-		Image imgr = new Image(ThemeManager.getThemeResource("images/Refresh24.png"));
-		recentItemsToolbar.appendChild(imgr);
-		imgr.setStyle("text-align: right; cursor: pointer; width:24px; height:24px;");
-		imgr.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Refresh")));
-		imgr.addEventListener(Events.ON_CLICK, this);
+		if (ThemeManager.isUseFontIconForImage())
+		{
+			ToolBarButton btn = new ToolBarButton();
+			btn.setIconSclass("z-icon-Refresh");
+			btn.setSclass("trash-toolbarbutton");
+			recentItemsToolbar.appendChild(btn);
+			btn.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Refresh")));
+			btn.addEventListener(Events.ON_CLICK, this);
+		}
+		else
+		{
+			Image imgr = new Image(ThemeManager.getThemeResource("images/Refresh24.png"));
+			recentItemsToolbar.appendChild(imgr);
+			imgr.setStyle("text-align: right; cursor: pointer; width:24px; height:24px;");
+			imgr.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Refresh")));
+			imgr.addEventListener(Events.ON_CLICK, this);
+		}
 		//
 
-		Image img = new Image(ThemeManager.getThemeResource("images/Delete24.png"));
-		recentItemsToolbar.appendChild(img);
-		img.setStyle("text-align: right; width:24px; height:24px;");
-		img.setDroppable(DELETE_RECENTITEMS_DROPPABLE);
-		img.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Delete")));
-		img.addEventListener(Events.ON_DROP, this);
+		if (ThemeManager.isUseFontIconForImage())
+		{
+			Label deleteLabel = new Label();
+			recentItemsToolbar.appendChild(deleteLabel);
+			deleteLabel.setSclass("z-icon-Trash trash-font-icon");
+			deleteLabel.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Delete")));
+			deleteLabel.setDroppable(DELETE_RECENTITEMS_DROPPABLE);		
+			deleteLabel.addEventListener(Events.ON_DROP, this);
+		}
+		else
+		{
+			Image img = new Image(ThemeManager.getThemeResource("images/Delete24.png"));
+			recentItemsToolbar.appendChild(img);
+			img.setStyle("text-align: right; width:24px; height:24px;");
+			img.setDroppable(DELETE_RECENTITEMS_DROPPABLE);
+			img.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Delete")));
+			img.addEventListener(Events.ON_DROP, this);
+		}
 		//						
 		createTopicSubscriber();
 		
@@ -171,7 +197,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
         	DropEvent de = (DropEvent) event;
         	Component dragged = de.getDragged();
 
-        	if(comp instanceof Image)
+        	if(comp instanceof Image || comp instanceof Label)
         	{
         		if(dragged instanceof A)
         		{
@@ -203,7 +229,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 				SessionManager.getAppDesktop().openWindow(ri.getAD_Window_ID(), query, null);
 			}
 		}
-		if (comp instanceof Image) // Refresh button
+		if (comp instanceof Image || comp instanceof ToolBarButton) // Refresh button
 		{
 			refresh();
 		}
@@ -241,7 +267,10 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 			btnrecentItem.setAttribute(AD_RECENT_ITEM_ID_ATTR, String.valueOf(ri.getAD_RecentItem_ID()));
 			bxRecentItems.appendChild(btnrecentItem);
 			btnrecentItem.setLabel(label);
-			btnrecentItem.setImage(ThemeManager.getThemeResource(getIconFile()));
+			if (ThemeManager.isUseFontIconForImage())
+				btnrecentItem.setIconSclass(getIconFile());
+			else
+				btnrecentItem.setImage(ThemeManager.getThemeResource(getIconFile()));
 			btnrecentItem.setDraggable(DELETE_RECENTITEMS_DROPPABLE);
 			btnrecentItem.addEventListener(Events.ON_CLICK, this);
 			btnrecentItem.addEventListener(Events.ON_DROP, this);
@@ -268,7 +297,10 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 	}
 
 	private String getIconFile() {
-		return "images/mWindow.png";
+		if (ThemeManager.isUseFontIconForImage())
+			return "z-icon-Window";
+		else
+			return "images/mWindow.png";
 	}
 
 	@Override

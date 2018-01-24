@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.process.DocAction;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -329,7 +330,7 @@ public class MInventoryLine extends X_M_InventoryLine
 				log.saveError("Quantity", Msg.getElement(getCtx(), COLUMNNAME_QtyCount));
 				return false;
 			}
-			if (getQtyInternalUse().signum() == 0) {
+			if (getQtyInternalUse().signum() == 0 && !getParent().getDocAction().equals(DocAction.ACTION_Void)) {
 				log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_QtyInternalUse));
 				return false;
 			}

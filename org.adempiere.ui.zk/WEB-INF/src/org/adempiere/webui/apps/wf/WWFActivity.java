@@ -133,8 +133,14 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
         fAnswerList.setMold("select");
 
-    	bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
-    	bOK.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
+        if (ThemeManager.isUseFontIconForImage())
+        	bZoom.setIconSclass("z-icon-Zoom");
+        else
+        	bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
+        if (ThemeManager.isUseFontIconForImage())
+        	bOK.setIconSclass("z-icon-Ok");
+        else
+        	bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 
         MLookup lookup = MLookupFactory.get(Env.getCtx(), m_WindowNo,
                 0, 10443, DisplayType.Search);
@@ -471,7 +477,10 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		fAnswerText.setVisible(false);
 		fAnswerList.setVisible(false);
 		fAnswerButton.setVisible(false);
-		fAnswerButton.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			fAnswerButton.setIconSclass("z-icon-Window");
+		else
+			fAnswerButton.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
 		fTextMsg.setReadonly(!(selIndex >= 0));
 		bZoom.setEnabled(selIndex >= 0);
 		bOK.setEnabled(selIndex >= 0);

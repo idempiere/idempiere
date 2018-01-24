@@ -55,7 +55,10 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 	public WAccountEditor(GridField gridField)
 	{
 		super(new Combinationbox(), gridField);
-		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Account16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			getComponent().getButton().setIconSclass("z-icon-Account");
+		else
+			getComponent().setButtonImage(ThemeManager.getThemeResource("images/Account16.png"));
 
 		m_mAccount = new MAccountLookup (gridField.getVO().ctx, gridField.getWindowNo());
 		

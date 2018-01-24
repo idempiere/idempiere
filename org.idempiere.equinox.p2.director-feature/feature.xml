@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.equinox.p2.director"
       label="Idempiere P2 Director"
-      version="4.1.0.qualifier"
+      version="5.1.0.qualifier"
       provider-name="www.idempiere.org">
 
    <description url="http://www.example.com/description">

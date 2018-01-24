@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Workbench
  *  @author iDempiere (generated) 
- *  @version Release 4.1
+ *  @version Release 5.1
  */
 public interface I_AD_Workbench 
 {
@@ -55,12 +55,12 @@ public interface I_AD_Workbench
 	/** Set System Color.
 	  * Color for backgrounds or indicators
 	  */
-	public void setAD_Color_ID (int AD_Color_ID);
+	public void setAD_Color_ID (String AD_Color_ID);
 
 	/** Get System Color.
 	  * Color for backgrounds or indicators
 	  */
-	public int getAD_Color_ID();
+	public String getAD_Color_ID();
 
     /** Column name AD_Column_ID */
     public static final String COLUMNNAME_AD_Column_ID = "AD_Column_ID";

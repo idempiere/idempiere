@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserPreference
  *  @author iDempiere (generated) 
- *  @version Release 4.1
+ *  @version Release 5.1
  */
 public interface I_AD_UserPreference 
 {
@@ -154,6 +154,15 @@ public interface I_AD_UserPreference
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsDetailedZoomAcross */
+    public static final String COLUMNNAME_IsDetailedZoomAcross = "IsDetailedZoomAcross";
+
+	/** Set Detailed Zoom Across	  */
+	public void setIsDetailedZoomAcross (boolean IsDetailedZoomAcross);
+
+	/** Get Detailed Zoom Across	  */
+	public boolean isDetailedZoomAcross();
 
     /** Column name ToggleOnDoubleClick */
     public static final String COLUMNNAME_ToggleOnDoubleClick = "ToggleOnDoubleClick";

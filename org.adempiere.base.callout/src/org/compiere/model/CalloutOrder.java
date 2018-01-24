@@ -24,6 +24,9 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
+import org.adempiere.base.IProductPricing;
+import org.adempiere.model.GridTabWrapper;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -181,13 +184,7 @@ public class CalloutOrder extends CalloutEngine
 					//	PaymentRule
 					String s = rs.getString(IsSOTrx ? "PaymentRule" : "PaymentRulePO");
 					if (s != null && s.length() != 0)
-					{
-						if (IsSOTrx && (s.equals("B") || s.equals("S") || s.equals("U")))	//	No Cash/Check/Transfer for SO_Trx
-							s = "P";										//  Payment Term
-						if (!IsSOTrx && (s.equals("B")))					//	No Cash for PO_Trx
-							s = "P";										//  Payment Term
 						mTab.setValue("PaymentRule", s);
-					}
 					//	Payment Term
 					Integer ii =new Integer(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
 					if (!rs.wasNull())
@@ -401,13 +398,7 @@ public class CalloutOrder extends CalloutEngine
 					//	PaymentRule
 					s = rs.getString(IsSOTrx ? "PaymentRule" : "PaymentRulePO");
 					if (s != null && s.length() != 0)
-					{
-						if (s.equals("B"))				//	No Cache in Non POS
-							s = "P";
-						if (IsSOTrx && (s.equals("S") || s.equals("U")))	//	No Check/Transfer for SO_Trx
-							s = "P";										//  Payment Term
 						mTab.setValue("PaymentRule", s);
-					}
 					//	Payment Term
 					ii = new Integer(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
 					if (!rs.wasNull())
@@ -589,13 +580,7 @@ public class CalloutOrder extends CalloutEngine
 					//	PaymentRule
 					s = rs.getString(IsSOTrx ? "PaymentRule" : "PaymentRulePO");
 					if (s != null && s.length() != 0)
-					{
-						if (s.equals("B"))				//	No Cache in Non POS
-							s = "P";
-						if (IsSOTrx && (s.equals("S") || s.equals("U")))	//	No Check/Transfer for SO_Trx
-							s = "P";										//  Payment Term
 						mTab.setValue("PaymentRule", s);
-					}
 					//	Payment Term
 					ii = new Integer(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
 					if (!rs.wasNull())
@@ -797,10 +782,9 @@ public class CalloutOrder extends CalloutEngine
 			mTab.setValue("M_AttributeSetInstance_ID", null);
 
 		/*****	Price Calculation see also qty	****/
-		int C_BPartner_ID = Env.getContextAsInt(ctx, WindowNo, "C_BPartner_ID");
-		BigDecimal Qty = (BigDecimal)mTab.getValue("QtyOrdered");
-		boolean IsSOTrx = Env.getContext(ctx, WindowNo, "IsSOTrx").equals("Y");
-		MProductPricing pp = new MProductPricing (M_Product_ID.intValue(), C_BPartner_ID, Qty, IsSOTrx, null);
+		I_C_OrderLine orderLine = GridTabWrapper.create(mTab, I_C_OrderLine.class);
+		IProductPricing pp = Core.getProductPricing();
+		pp.setOrderLine(orderLine, null);
 		//
 		int M_PriceList_ID = Env.getContextAsInt(ctx, WindowNo, "M_PriceList_ID");
 		pp.setM_PriceList_ID(M_PriceList_ID);
@@ -821,7 +805,6 @@ public class CalloutOrder extends CalloutEngine
 				Env.setContext(ctx, WindowNo, "M_PriceList_Version_ID", M_PriceList_Version_ID );
 		}
 		pp.setM_PriceList_Version_ID(M_PriceList_Version_ID);
-		pp.setPriceDate(orderDate);
 		//
 		mTab.setValue("PriceList", pp.getPriceList());
 		mTab.setValue("PriceLimit", pp.getPriceLimit());
@@ -850,6 +833,8 @@ public class CalloutOrder extends CalloutEngine
 			if (product.isStocked() && Env.getContext(ctx, WindowNo, "IsDropShip").equals("N"))
 			{
 				BigDecimal QtyOrdered = (BigDecimal)mTab.getValue("QtyOrdered");
+				if (QtyOrdered == null)
+					QtyOrdered = Env.ZERO;
 				int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
 				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_AttributeSetInstance_ID");
 				BigDecimal available = MStorageReservation.getQtyAvailable
@@ -1053,7 +1038,11 @@ public class CalloutOrder extends CalloutEngine
 		BigDecimal QtyEntered, QtyOrdered, PriceEntered, PriceActual, PriceLimit, Discount, PriceList;
 		//	get values
 		QtyEntered = (BigDecimal)mTab.getValue("QtyEntered");
+		if (QtyEntered == null)
+			QtyEntered = Env.ZERO;
 		QtyOrdered = (BigDecimal)mTab.getValue("QtyOrdered");
+		if (QtyOrdered == null)
+			QtyOrdered = Env.ZERO;
 		if (log.isLoggable(Level.FINE)) log.fine("QtyEntered=" + QtyEntered + ", Ordered=" + QtyOrdered + ", UOM=" + C_UOM_To_ID);
 		//
 		PriceEntered = (BigDecimal)mTab.getValue("PriceEntered");
@@ -1089,19 +1078,18 @@ public class CalloutOrder extends CalloutEngine
 			|| mField.getColumnName().equals("M_Product_ID"))
 			&& !"N".equals(Env.getContext(ctx, WindowNo, "DiscountSchema")))
 		{
-			int C_BPartner_ID = Env.getContextAsInt(ctx, WindowNo, "C_BPartner_ID");
 			if (mField.getColumnName().equals("QtyEntered"))
 				QtyOrdered = MUOMConversion.convertProductFrom (ctx, M_Product_ID,
 					C_UOM_To_ID, QtyEntered);
 			if (QtyOrdered == null)
 				QtyOrdered = QtyEntered;
-			boolean IsSOTrx = Env.getContext(ctx, WindowNo, "IsSOTrx").equals("Y");
-			MProductPricing pp = new MProductPricing (M_Product_ID, C_BPartner_ID, QtyOrdered, IsSOTrx, null);
+			I_C_OrderLine orderLine = GridTabWrapper.create(mTab, I_C_OrderLine.class);
+			IProductPricing pp = Core.getProductPricing();
+			pp.setOrderLine(orderLine, null);
+			pp.setQty(QtyOrdered);
 			pp.setM_PriceList_ID(M_PriceList_ID);
 			int M_PriceList_Version_ID = Env.getContextAsInt(ctx, WindowNo, "M_PriceList_Version_ID");
 			pp.setM_PriceList_Version_ID(M_PriceList_Version_ID);
-			Timestamp date = (Timestamp)mTab.getValue("DateOrdered");
-			pp.setPriceDate(date);
 			//
 			PriceEntered = MUOMConversion.convertProductFrom (ctx, M_Product_ID,
 				C_UOM_To_ID, pp.getPriceStd());
@@ -1422,10 +1410,9 @@ public class CalloutOrder extends CalloutEngine
 		}
 
 		/*****	Price Calculation see also qty	****/
-		int C_BPartner_ID = Env.getContextAsInt(ctx, WindowNo, "C_BPartner_ID");
-		BigDecimal Qty = (BigDecimal)mTab.getValue("QtyOrdered");
-		boolean IsSOTrx = Env.getContext(ctx, WindowNo, "IsSOTrx").equals("Y");
-		MProductPricing pp = new MProductPricing (M_Product_ID.intValue(), C_BPartner_ID, Qty, IsSOTrx, null);
+		I_C_OrderLine orderLine = GridTabWrapper.create(mTab, I_C_OrderLine.class);
+		IProductPricing pp = Core.getProductPricing();
+		pp.setOrderLine(orderLine, null);
 		//
 		int M_PriceList_ID = Env.getContextAsInt(ctx, WindowNo, "M_PriceList_ID");
 		pp.setM_PriceList_ID(M_PriceList_ID);
@@ -1446,7 +1433,6 @@ public class CalloutOrder extends CalloutEngine
 				Env.setContext(ctx, WindowNo, "M_PriceList_Version_ID", M_PriceList_Version_ID );
 		}
 		pp.setM_PriceList_Version_ID(M_PriceList_Version_ID);
-		pp.setPriceDate(orderDate);
 		//
 		Env.setContext(ctx, WindowNo, "EnforcePriceLimit", pp.isEnforcePriceLimit() ? "Y" : "N");
 		Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");

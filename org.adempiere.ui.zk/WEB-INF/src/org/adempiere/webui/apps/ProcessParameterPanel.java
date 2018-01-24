@@ -329,10 +329,11 @@ public class ProcessParameterPanel extends Panel implements
 		//
 		if (voF.isRange) {
 			Div box = new Div();
+			box.setStyle("display: flex; align-items: center;");
 			ZKUpdateUtil.setWidth(box, "100%");
 			box.appendChild(editor.getComponent());
 			ZKUpdateUtil.setWidth((HtmlBasedComponent) editor.getComponent(), "49%");
-			setEditorPlaceHolder(editor, Msg.getMsg(Env.getCtx(), "From"));
+			setEditorPlaceHolder(editor, Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom"));
 			//
 			GridFieldVO voF2 = GridFieldVO.createParameter(voF);
 			GridField mField2 = new GridField(voF2);
@@ -347,7 +348,7 @@ public class ProcessParameterPanel extends Panel implements
 			mField2.addPropertyChangeListener(editor2);
 			editor2.dynamicDisplay();
 			ZKUpdateUtil.setWidth((HtmlBasedComponent) editor2.getComponent(), "49%");
-			setEditorPlaceHolder(editor2, Msg.getMsg(Env.getCtx(), "To"));
+			setEditorPlaceHolder(editor2, Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo"));
 			// setup editor context menu
 			popupMenu = editor2.getPopupMenu();
 			if (popupMenu != null) {
@@ -360,7 +361,7 @@ public class ProcessParameterPanel extends Panel implements
 			//
 			m_wEditors2.add(editor2);
 			Space separator = new Space();
-			separator.setSpacing("2%");
+			separator.setStyle("margin:0; width: 2%;");
 			m_separators.add(separator);
 			box.appendChild(separator);
 			box.appendChild(editor2.getComponent());
@@ -416,7 +417,7 @@ public class ProcessParameterPanel extends Panel implements
 						sb.append(", ");
 					sb.append(field.getHeader());
 					if (m_wEditors2.get(i) != null) // is a range
-						sb.append(" (").append(Msg.getMsg(Env.getCtx(), "From")).append(")");
+						sb.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom")).append(")");
 				} else
 					field.setError(false);
 				// Check for Range
@@ -432,7 +433,7 @@ public class ProcessParameterPanel extends Panel implements
 						if (sb.length() > 0)
 							sb.append(", ");
 						sb.append(field2.getHeader());
-						sb.append(" (").append(Msg.getMsg(Env.getCtx(), "To")).append(")");
+						sb.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo")).append(")");
 					} else
 						field2.setError(false);
 				} // range field

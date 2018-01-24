@@ -320,7 +320,7 @@ public class ConfigurationData
 			initAppsServer();
 			setAppsServer(hostName);
 			//	Database Server
-			initDatabase("");
+			initDatabase(Database.DB_POSTGRESQL);
 			String connectionName = getDatabaseDiscovered();
 			if (connectionName != null && connectionName.trim().length() > 0) {
 				setDatabaseName(resolveDatabaseName(connectionName));
@@ -1169,7 +1169,10 @@ public class ConfigurationData
 		}
 		else
 		{
-			m_databaseConfig[index].init(this);
+			if (   ! p_properties.containsKey(ADEMPIERE_DB_NAME)
+				&& ! p_properties.containsKey(ADEMPIERE_DB_PORT)) {
+				m_databaseConfig[index].init(this);
+			}
 
 			if (p_panel != null)
 			{

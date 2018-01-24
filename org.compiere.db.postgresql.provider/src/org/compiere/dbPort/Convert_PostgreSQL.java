@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import org.compiere.db.DB_PostgreSQL;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
@@ -35,7 +36,7 @@ import org.compiere.util.Util;
  */
 public class Convert_PostgreSQL extends Convert_SQL92 {
 	/**
-	 * Cosntructor
+	 * Constructor
 	 */
 	public Convert_PostgreSQL() {
 		m_map = ConvertMap_PostgreSQL.getConvertMap();
@@ -79,6 +80,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 		
 		String statement = replaceQuotedStrings(sqlStatement, retVars);
 		statement = convertWithConvertMap(statement);
+		statement = convertSimilarTo(statement);
 		statement = statement.replace(DB_PostgreSQL.NATIVE_MARKER, "");
 		
 		String cmpString = statement.toUpperCase();
@@ -121,6 +123,25 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 		}
 		return result;
 	} // convertStatement
+
+	private String convertSimilarTo(String statement) {
+		String retValue = statement;
+		boolean useSimilarTo = "Y".equals(Env.getContext(Env.getCtx(), "P|IsUseSimilarTo"));
+		if (useSimilarTo) {
+			String regex = "\\bLIKE\\b";
+			String replacement = "SIMILAR TO";
+			try {
+				Pattern p = Pattern.compile(regex, REGEX_FLAGS);
+				Matcher m = p.matcher(retValue);
+				retValue = m.replaceAll(replacement);
+			} catch (Exception e) {
+				String error = "Error expression: " + regex + " - " + e;
+				log.info(error);
+				m_conversionError = error;
+			}
+		}
+		return retValue;
+	}
 
 	@Override
 	protected String escapeQuotedString(String in)

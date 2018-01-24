@@ -424,6 +424,8 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			reqprocess.setADRecordID(modelRunProcess.getADRecordID());
 			reqprocess.setDocAction(modelRunProcess.getDocAction());
 			RunProcessResponseDocument response = Process.runProcess(getCompiereService(), docprocess, getRequestCtx(), localTrxName);
+			if (response != null && response.getRunProcessResponse() != null && response.getRunProcessResponse().getIsError())
+				log.warning("Error running webservice " + serviceType + " -> " + response.getRunProcessResponse().getError());
 			Map<String, Object> requestCtx = getRequestCtx();
 			requestCtx.put(serviceType+"_Summary", response.getRunProcessResponse().getSummary());
 			return response;

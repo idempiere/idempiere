@@ -55,7 +55,9 @@ import org.zkoss.zk.ui.event.Events;
  */
 public class WButtonEditor extends WEditor implements IProcessButton
 {
-    private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
+    public static final String EDITOR_ATTRIBUTE = "editor";
+
+	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     
     private static final CLogger logger;
     
@@ -91,6 +93,7 @@ public class WButtonEditor extends WEditor implements IProcessButton
         m_text = gridField.getHeader();
         AD_Process_ID = gridField.getAD_Process_ID();
         gridfield = gridField;
+        getComponent().setAttribute(EDITOR_ATTRIBUTE, this);
         init();
 	}
 
@@ -118,26 +121,41 @@ public class WButtonEditor extends WEditor implements IProcessButton
         if (columnName.equals("PaymentRule"))
         {
             readReference(REFERENCE_PAYMENTRULE);
-            getComponent().setImage(ThemeManager.getThemeResource("images/Payment16.png"));    //  29*14
+            if (ThemeManager.isUseFontIconForImage())
+            	getComponent().setIconSclass("z-icon-Payment");
+            else
+            	getComponent().setImage(ThemeManager.getThemeResource("images/Payment16.png"));    //  29*14
         }
         else if (columnName.equals("DocAction"))
         {
             readReference(REFERENCE_DOCUMENTACTION);
-            getComponent().setImage(ThemeManager.getThemeResource("images/Process16.png"));    //  16*16
+            if (ThemeManager.isUseFontIconForImage())
+            	getComponent().setIconSclass("z-icon-Process");
+            else
+            	getComponent().setImage(ThemeManager.getThemeResource("images/Process16.png"));    //  16*16
         }
         else if (columnName.equals("CreateFrom"))
         {
-            getComponent().setImage(ThemeManager.getThemeResource("images/Copy16.png"));       //  16*16
+        	if (ThemeManager.isUseFontIconForImage())
+        		getComponent().setIconSclass("z-icon-CreateFrom");
+        	else
+        		getComponent().setImage(ThemeManager.getThemeResource("images/Copy16.png"));       //  16*16
         }
         else if (columnName.equals("Record_ID"))
         {
-            getComponent().setImage(ThemeManager.getThemeResource("images/Zoom16.png"));       //  16*16
+        	if (ThemeManager.isUseFontIconForImage())
+        		getComponent().setIconSclass("z-icon-Zoom");
+        	else
+        		getComponent().setImage(ThemeManager.getThemeResource("images/Zoom16.png"));       //  16*16
             getComponent().setLabel(Msg.getMsg(Env.getCtx(), "ZoomDocument"));
         }
         else if (columnName.equals("Posted"))
         {
             readReference(REFERENCE_POSTED);
-            getComponent().setImage(ThemeManager.getThemeResource("images/InfoAccount16.png"));    //  16*16
+            if (ThemeManager.isUseFontIconForImage())
+            	getComponent().setIconSclass("z-icon-InfoAccount");
+            else
+            	getComponent().setImage(ThemeManager.getThemeResource("images/InfoAccount16.png"));    //  16*16
         }
         
         if (gridField.getColumnName().endsWith("_ID") && !gridField.getColumnName().equals("Record_ID"))

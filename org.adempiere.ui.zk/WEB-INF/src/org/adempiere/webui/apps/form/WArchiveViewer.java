@@ -28,6 +28,7 @@ import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
@@ -271,25 +272,42 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		createdByQField.setMold("select");
 		createdByQField.setRows(1);
 		
-		updateArchive.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			updateArchive.setIconSclass("z-icon-Ok");
+		else
+			updateArchive.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
 		updateArchive.setTooltiptext(Msg.getMsg(Env.getCtx(), "Update"));
 		updateArchive.addEventListener(Events.ON_CLICK, this);
 		
-		deleteArchive.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			deleteArchive.setIconSclass("z-icon-Delete");
+		else
+			deleteArchive.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
 		deleteArchive.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
 		deleteArchive.addEventListener(Events.ON_CLICK, this);
 		
-		bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bRefresh.setIconSclass("z-icon-Refresh");
+		else
+			bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
 		bRefresh.setTooltiptext(Msg.getMsg(Env.getCtx(), "Refresh"));
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 		
-		bBack.setImage(ThemeManager.getThemeResource("images/wfBack24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bBack.setIconSclass("z-icon-Previous");
+		else
+			bBack.setImage(ThemeManager.getThemeResource("images/wfBack24.png"));
 		bBack.setTooltiptext(Msg.getMsg(Env.getCtx(), "Previous"));
 		bBack.addEventListener(Events.ON_CLICK, this);
+		LayoutUtils.addSclass("btn-medium", bBack);
 		
-		bNext.setImage(ThemeManager.getThemeResource("images/wfNext24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bNext.setIconSclass("z-icon-Next");
+		else
+			bNext.setImage(ThemeManager.getThemeResource("images/wfNext24.png"));
 		bNext.setTooltiptext(Msg.getMsg(Env.getCtx(), "Next"));
 		bNext.addEventListener(Events.ON_CLICK, this);
+		LayoutUtils.addSclass("btn-medium", bNext);
 		
 		nameField.addEventListener(Events.ON_CHANGE, this);
 		descriptionField.addEventListener(Events.ON_CHANGE, this);
@@ -517,7 +535,10 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			cell = new Cell();
 			ZKUpdateUtil.setHflex(cell, "min");
 			ToolBarButton more = new ToolBarButton();
-			more.setImage(ThemeManager.getThemeResource("images/expand-header.png"));
+			if (ThemeManager.isUseFontIconForImage())
+				more.setIconSclass("z-icon-Expand");
+			else
+				more.setImage(ThemeManager.getThemeResource("images/expand-header.png"));
 			cell.appendChild(more);
 			boxViewSeparator.appendChild(cell);
 			Popup sidePopup = new Popup();

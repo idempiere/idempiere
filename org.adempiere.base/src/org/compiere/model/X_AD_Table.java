@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Table
  *  @author iDempiere (generated) 
- *  @version Release 4.1 - $Id$ */
+ *  @version Release 5.1 - $Id$ */
 public class X_AD_Table extends PO implements I_AD_Table, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20161030L;
+	private static final long serialVersionUID = 20171031L;
 
     /** Standard Constructor */
     public X_AD_Table (Properties ctx, int AD_Table_ID, String trxName)
@@ -42,8 +42,9 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 // 4
 			setAD_Table_ID (0);
 			setEntityType (null);
-// U
-			setIsChangeLog (false);
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+			setIsChangeLog (true);
+// Y
 			setIsDeleteable (true);
 // Y
 			setIsHighVolume (false);

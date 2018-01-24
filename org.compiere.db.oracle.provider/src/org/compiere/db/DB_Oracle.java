@@ -663,6 +663,7 @@ public class DB_Oracle implements AdempiereDatabase
 		boolean testConnectionOnCheckout = getBooleanProperty(poolProperties, "TestConnectionOnCheckout", false);
 		String mlogClass = getStringProperty(poolProperties, "com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
 		int checkoutTimeout = getIntProperty(poolProperties, "CheckoutTimeout", 0);
+		int statementCacheNumDeferredCloseThreads = getIntProperty(poolProperties, "StatementCacheNumDeferredCloseThreads", 1);
         try
         {
         	System.setProperty("com.mchange.v2.log.MLog", mlogClass);
@@ -681,7 +682,7 @@ public class DB_Oracle implements AdempiereDatabase
             cpds.setTestConnectionOnCheckout(testConnectionOnCheckout);
             if (checkoutTimeout > 0)
             	cpds.setCheckoutTimeout(checkoutTimeout);
-
+            cpds.setStatementCacheNumDeferredCloseThreads(statementCacheNumDeferredCloseThreads);
             cpds.setMaxIdleTimeExcessConnections(maxIdleTimeExcessConnections);
             cpds.setMaxIdleTime(maxIdleTime);
             if (Ini.isClient())
@@ -1287,12 +1288,20 @@ public class DB_Oracle implements AdempiereDatabase
 	}
 
 	public String addPagingSQL(String sql, int start, int end) {
-		//not supported, too many corner case that doesn't work using rownum. to investigate later
-		return sql;
+		StringBuilder newSql = new StringBuilder("select * from (")
+				.append("   select tb.*, ROWNUM oracle_native_rownum_ from (")
+				.append(sql)
+				.append(") tb) where oracle_native_rownum_ >= ")
+				.append(start)
+				.append(" AND oracle_native_rownum_ <= ")
+				.append(end)
+				.append(" order by oracle_native_rownum_");
+
+		return newSql.toString();
 	}
 
 	public boolean isPagingSupported() {
-		return false;
+		return true;
 	}
 
 	private int getIntProperty(Properties properties, String key, int defaultValue)

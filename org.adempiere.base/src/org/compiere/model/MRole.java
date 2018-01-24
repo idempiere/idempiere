@@ -61,7 +61,7 @@ public final class MRole extends X_AD_Role
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3608297024439006903L;
+	private static final long serialVersionUID = 8952907008982481439L;
 
 	/**
 	 * 	Get Default (Client) Role
@@ -1488,7 +1488,7 @@ public final class MRole extends X_AD_Role
 	 *	@param AD_Window_ID window
 	 *	@return null in no access, TRUE if r/w and FALSE if r/o
 	 */
-	public Boolean getWindowAccess (int AD_Window_ID)
+	public synchronized Boolean getWindowAccess (int AD_Window_ID)
 	{
 		if (m_windowAccess == null)
 		{
@@ -1575,7 +1575,7 @@ public final class MRole extends X_AD_Role
 	 *	@param AD_Process_ID process
 	 *	@return null in no access, TRUE if r/w and FALSE if r/o
 	 */
-	public Boolean getProcessAccess (int AD_Process_ID)
+	public synchronized Boolean getProcessAccess (int AD_Process_ID)
 	{
 		if (m_processAccess == null)
 		{
@@ -1657,7 +1657,7 @@ public final class MRole extends X_AD_Role
 	 *	@param AD_Task_ID task
 	 *	@return null in no access, TRUE if r/w and FALSE if r/o
 	 */
-	public Boolean getTaskAccess (int AD_Task_ID)
+	public synchronized Boolean getTaskAccess (int AD_Task_ID)
 	{
 		if (m_taskAccess == null)
 		{
@@ -1737,7 +1737,7 @@ public final class MRole extends X_AD_Role
 	 *	@param AD_Form_ID form
 	 *	@return null in no access, TRUE if r/w and FALSE if r/o
 	 */
-	public Boolean getFormAccess (int AD_Form_ID)
+	public synchronized Boolean getFormAccess (int AD_Form_ID)
 	{
 		if (m_formAccess == null)
 		{
@@ -1817,7 +1817,7 @@ public final class MRole extends X_AD_Role
 	 *	@param AD_Workflow_ID workflow
 	 *	@return null in no access, TRUE if r/w and FALSE if r/o
 	 */
-	public Boolean getWorkflowAccess (int AD_Workflow_ID)
+	public synchronized Boolean getWorkflowAccess (int AD_Workflow_ID)
 	{
 		if (m_workflowAccess == null)
 		{
@@ -3086,7 +3086,7 @@ public final class MRole extends X_AD_Role
 		return whereClause.toString();
 	}
 
-	public Boolean getInfoAccess(int AD_InfoWindow_ID) {
+	public synchronized Boolean getInfoAccess(int AD_InfoWindow_ID) {
 		if (m_infoAccess == null)
 		{
 			m_infoAccess = new HashMap<Integer,Boolean>(20);
@@ -3174,9 +3174,26 @@ public final class MRole extends X_AD_Role
 					+ "WHERE  AD_Table_ID = ? "
 					+ "       AND iw.IsActive = 'Y' "
 					+ "       AND iwa.IsActive = 'Y' "
-					+ "       AND iwa.AD_Role_ID = ?";
-			int cnt = DB.getSQLValueEx(null, sql, I_M_Product.Table_ID, getAD_Role_ID());
+					+ "       AND (iwa.AD_Role_ID = ? OR iwa.AD_Role_ID IN"
+					+ "       		(SELECT ri.Included_Role_ID FROM AD_Role_Included ri WHERE ri.IsActive='Y' AND ri.AD_Role_ID=?))";
+			int cnt = DB.getSQLValueEx(get_TrxName(), sql, I_M_Product.Table_ID, getAD_Role_ID(), getAD_Role_ID());
 			m_canAccess_Info_Product = new Boolean(cnt > 0);
+
+			// Verify if is excluded in the specific role (it can be allowed in included role and inactive in specific role)
+			if (m_canAccess_Info_Product) {
+				String sqlInactive = ""
+						+ "SELECT COUNT(*) "
+						+ "FROM   AD_InfoWindow iw "
+						+ "       JOIN AD_InfoWindow_Access iwa "
+						+ "         ON ( iwa.AD_InfoWindow_ID = iw.AD_InfoWindow_ID ) "
+						+ "WHERE  AD_Table_ID = ? "
+						+ "       AND iw.IsActive = 'Y' "
+						+ "       AND iwa.IsActive = 'N' "
+						+ "       AND iwa.AD_Role_ID = ?";
+				int cntInactive = DB.getSQLValueEx(get_TrxName(), sqlInactive, I_M_Product.Table_ID, getAD_Role_ID());
+				if (cntInactive > 0)
+					m_canAccess_Info_Product = new Boolean(false);
+			}
 		}
 		return m_canAccess_Info_Product.booleanValue();
 	}

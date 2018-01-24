@@ -32,6 +32,7 @@ import org.adempiere.webui.panel.ChangePasswordPanel;
 import org.adempiere.webui.panel.LoginPanel;
 import org.adempiere.webui.panel.ResetPasswordPanel;
 import org.adempiere.webui.panel.RolePanel;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
@@ -39,9 +40,11 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Login;
 import org.zkoss.util.Locales;
 import org.zkoss.web.Attributes;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zk.ui.util.Clients;
 
 /**
@@ -180,6 +183,11 @@ public class LoginWindow extends FWindow implements EventListener<Event>
     public void changeRole(Locale locale, Properties ctx)
     {
     	Env.setCtx(ctx);
+    	
+    	//reload theme preference
+    	PageDefinition pageDefintion = Executions.getCurrent().getPageDefinition(ThemeManager.getThemeResource("preference.zul"));
+        Executions.createComponents(pageDefintion, this, null);
+        
     	getDesktop().getSession().setAttribute(Attributes.PREFERRED_LOCALE, locale);
     	Locales.setThreadLocal(locale);    	
     	Login login = new Login(Env.getCtx());

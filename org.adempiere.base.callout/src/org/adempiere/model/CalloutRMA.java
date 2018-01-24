@@ -20,6 +20,8 @@ package org.adempiere.model;
 import java.math.BigDecimal;
 import java.util.Properties;
 
+import org.adempiere.base.Core;
+import org.adempiere.base.IProductPricing;
 import org.compiere.model.CalloutEngine;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -30,7 +32,6 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
-import org.compiere.model.MProductPricing;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
 import org.compiere.model.Query;
@@ -146,7 +147,8 @@ public class CalloutRMA extends CalloutEngine {
 			return "";
 
 		MRMA rma = new MRMA(ctx, M_RMA_ID, null);
-		MProductPricing pp = new MProductPricing(M_Product_ID, rma.getC_BPartner_ID(), Env.ONE, rma.isSOTrx(), null);
+		IProductPricing pp = Core.getProductPricing();
+		pp.setInitialValues(M_Product_ID, rma.getC_BPartner_ID(), Env.ONE, rma.isSOTrx(), null);
 		int taxId = 0;
 		int precision = 0;
 

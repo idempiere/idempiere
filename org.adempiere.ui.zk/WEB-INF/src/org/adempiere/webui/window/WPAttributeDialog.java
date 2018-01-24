@@ -977,7 +977,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 
 		//	***	Save Attributes ***
 		//	New Instance
-		if (m_changed || m_masi.getM_AttributeSetInstance_ID() == 0)
+		if (mandatory.isEmpty() && (m_changed || m_masi.getM_AttributeSetInstance_ID() == 0))
 		{
 			m_masi.saveEx();
 			m_M_AttributeSetInstance_ID = m_masi.getM_AttributeSetInstance_ID ();
@@ -1021,13 +1021,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			}
 			m_changed = true;
 		}	//	for all attributes
-		
-		//	Save Model
-		if (m_changed)
-		{
-			m_masi.setDescription ();
-			m_masi.saveEx();
-		}
 		m_M_AttributeSetInstance_ID = m_masi.getM_AttributeSetInstance_ID ();
 		m_M_AttributeSetInstanceName = m_masi.getDescription();
 		//
@@ -1035,6 +1028,12 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		{
 			FDialog.error(m_WindowNo, this, "FillMandatory", mandatory);
 			return false;
+		}
+		//	Save Model
+		else if (m_changed)
+		{
+			m_masi.setDescription ();
+			m_masi.saveEx();
 		}
 		return true;
 	}	//	saveSelection

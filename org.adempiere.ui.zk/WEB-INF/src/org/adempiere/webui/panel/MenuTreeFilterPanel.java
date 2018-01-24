@@ -35,32 +35,54 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 		Vbox box = new Vbox();
 
 		Checkbox report = new Checkbox();
-		report.setImage(ThemeManager.getThemeResource("images/mReport.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			report.setIconSclass("z-icon-Report");
+		else
+			report.setImage(ThemeManager.getThemeResource("images/mReport.png"));		
 		report.setChecked(true);
 		report.setId("report");
 		report.addEventListener(Events.ON_CHECK, this);
 		box.appendChild(report);
 
 		Checkbox process = new Checkbox();
-		process.setImage(ThemeManager.getThemeResource("images/mProcess.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			process.setIconSclass("z-icon-Process");
+		else
+			process.setImage(ThemeManager.getThemeResource("images/mProcess.png"));
 		process.setChecked(true);
 		process.setId("process");
 		process.addEventListener(Events.ON_CHECK, this);
 		box.appendChild(process);
 
 		Checkbox workflow = new Checkbox();
-		workflow.setImage(ThemeManager.getThemeResource("images/mWorkFlow.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			workflow.setIconSclass("z-icon-WorkFlow");
+		else
+			workflow.setImage(ThemeManager.getThemeResource("images/mWorkFlow.png"));
 		workflow.setChecked(true);
 		workflow.setId("workflow");
 		workflow.addEventListener(Events.ON_CHECK, this);
 		box.appendChild(workflow);
 
 		Checkbox window = new Checkbox();
-		window.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			window.setIconSclass("z-icon-Window");
+		else
+			window.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
 		window.setChecked(true);
 		window.setId("window");
 		window.addEventListener(Events.ON_CHECK, this);
 		box.appendChild(window);
+		
+		Checkbox form = new Checkbox();
+		if (ThemeManager.isUseFontIconForImage())
+			form.setIconSclass("z-icon-Form");
+		else
+			form.setImage(ThemeManager.getThemeResource("images/mForm.png"));
+		form.setChecked(true);
+		form.setId("form");
+		form.addEventListener(Events.ON_CHECK, this);
+		box.appendChild(form);
 
 		Checkbox single = new Checkbox();
 		single.setLabel(Msg.getMsg(Env.getCtx(), "FlatView"));
@@ -161,8 +183,6 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 				if (treeItem.getAttribute("menu.type") != null)
 				{
 					String menuType = (String) treeItem.getAttribute("menu.type");
-					if (menuType.equals("form"))
-						menuType = "window"; // treat forms as windows on filtering the menu
 					if (chk.isChecked())
 					{
 						if (chk.getId().equals(menuType))
