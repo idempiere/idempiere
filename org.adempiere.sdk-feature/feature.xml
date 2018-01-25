@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.adempiere.sdk"
+      id="org.adempiere.sdk.feature"
       label="Adempiere SDK"
       version="5.1.0.qualifier"
       provider-name="Adempiere.org">
@@ -18,28 +18,28 @@
    </license>
 
    <includes
-         id="org.adempiere.target.platform"
+         id="org.adempiere.target.platform.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.adempiere.server"
+         id="org.adempiere.server.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.adempiere.ui.swing"
+         id="org.adempiere.ui.swing.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.idempiere.hazelcast.service"
+         id="org.idempiere.hazelcast.service.feature"
          version="0.0.0"
          optional="true"/>
 
    <includes
-         id="org.idempiere.fitnesse"
+         id="org.idempiere.fitnesse.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.idempiere.equinox.p2.director"
+         id="org.idempiere.equinox.p2.director.feature"
          version="0.0.0"/>
 
    <plugin

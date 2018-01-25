@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.idempiere.hazelcast.service"
+      id="org.idempiere.hazelcast.service.feature"
       label="Hazelcast Service Feature"
       version="5.1.0.qualifier">
 
@@ -41,7 +41,7 @@
          id="org.idempiere.hazelcast.service.config"
          download-size="0"
          install-size="0"
-         version="5.1.0"
+         version="0.0.0"
          fragment="true"/>
 
 </feature>

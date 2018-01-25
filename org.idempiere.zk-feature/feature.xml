@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.idempiere.zk"
+      id="org.idempiere.zk.feature"
       label="Materialize zk osgi libary"
-      version="1.0.0.qualifier">
+      version="5.1.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -85,19 +85,19 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.apache.commons.fileupload"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-  <plugin
+
+   <plugin
          id="org.apache.commons.io"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
+
 </feature>

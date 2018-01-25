@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.adempiere.payment.processor"
+      id="org.adempiere.payment.processor.feature"
       label="Payment Processor"
       version="5.1.0.qualifier">
 

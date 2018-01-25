@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.adempiere.replication.server"
+      id="org.adempiere.replication.server.feature"
       label="Replication Server-feature"
       version="5.1.0.qualifier">
 
@@ -17,8 +17,8 @@
    </license>
 
    <requires>
-      <import feature="org.adempiere.base" version="0.0.0"/>
-      <import feature="org.adempiere.replication" version="0.0.0"/>
+      <import feature="org.adempiere.base.feature" version="0.0.0"/>
+      <import feature="org.adempiere.replication.feature" version="0.0.0"/>
       <import plugin="org.adempiere.server" version="0.0.0"/>
    </requires>
 

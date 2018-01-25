@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.adempiere.server"
+      id="org.adempiere.server.feature"
       label="iDempiere Server-feature"
       version="5.1.0.qualifier">
 
@@ -17,47 +17,42 @@
    </license>
 
    <includes
-         id="org.adempiere.replication.server"
+         id="org.adempiere.replication.server.feature"
          version="0.0.0"
          optional="true"/>
 
    <includes
-         id="org.adempiere.ui.zk"
+         id="org.adempiere.ui.zk.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.adempiere.webstore"
+         id="org.adempiere.webstore.feature"
          version="0.0.0"
          optional="true"/>
 
    <includes
-         id="org.idempiere.felix.webconsole"
+         id="org.idempiere.felix.webconsole.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.adempiere.report.jasper"
+         id="org.adempiere.report.jasper.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.adempiere.pipo"
+         id="org.adempiere.pipo.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.idempiere.hazelcast.service"
+         id="org.idempiere.hazelcast.service.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.adempiere.base"
+         id="org.adempiere.base.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.idempiere.zk"
+         id="org.idempiere.zk.feature"
          version="0.0.0"/>
-
-   <includes
-         id="org.idempiere.customize"
-         version="0.0.0"
-         optional="true"/>
 
    <plugin
          id="org.apache.taglibs.taglibs-standard-spec"
