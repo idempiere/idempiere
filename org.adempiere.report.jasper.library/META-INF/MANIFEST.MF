@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Library
 Bundle-SymbolicName: org.adempiere.report.jasper.library;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 5.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Fragment-Host: net.sf.jasperreports.engine;bundle-version="6.3.1"
 Bundle-ClassPath: .,
