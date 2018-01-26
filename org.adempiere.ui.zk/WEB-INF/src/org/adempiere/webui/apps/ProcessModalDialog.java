@@ -30,6 +30,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 
 /**
  *
@@ -48,6 +49,9 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	 * 
 	 */
 	private static final long serialVersionUID = -6227339628038418701L;
+	
+	private static final String ON_OK_ECHO = "onOkEcho";
+	
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ProcessModalDialog.class);
 	//
@@ -112,6 +116,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		{
 			log.log(Level.SEVERE, "", ex);
 		}
+		addEventListener(ON_OK_ECHO, this);
 	}
 
 	public ProcessModalDialog (int WindowNo, int AD_Process_ID, int tableId, int recordId, boolean autoStart)
@@ -199,13 +204,24 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		Component component = event.getTarget();
 		if (component.equals(bOK)) {
 			super.onEvent(event);
-			startProcess();
+			onOk();
+		} else if (event.getName().equals(ON_OK_ECHO)) {
+			onOk();
 		} else if (component.equals(bCancel)) {
 			super.onEvent(event);
 			cancelProcess();
 		}else {
 			super.onEvent(event);
 		}
+	}
+
+	private void onOk() {
+		if (getParameterPanel().isWaitingForDialog())
+		{
+			Events.echoEvent(ON_OK_ECHO, this, null);
+			return;
+		}
+		startProcess();
 	}	
 	
 	protected void onClientInfo() {

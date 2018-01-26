@@ -37,6 +37,7 @@ import org.adempiere.webui.component.Urlbox;
 import org.adempiere.webui.editor.IZoomableEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
+import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -930,6 +931,26 @@ public class ProcessParameterPanel extends Panel implements
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * @return true if editor is showing dialog awaiting user action
+	 */
+	public boolean isWaitingForDialog() {
+		for (int i = 0; i < m_mFields.size(); i++) {
+			// Get Values
+			WEditor editor = (WEditor) m_wEditors.get(i);
+			WEditor editor2 = (WEditor) m_wEditors2.get(i);
+			if (editor != null && editor instanceof WSearchEditor) {
+				if (((WSearchEditor)editor).isShowingDialog())
+					return true;
+			} else if (editor2 != null && editor2 instanceof WSearchEditor) {
+				if (((WSearchEditor)editor2).isShowingDialog())
+					return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	static class ZoomListener implements EventListener<Event> {
