@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere JasperReport integration
 Bundle-SymbolicName: org.adempiere.report.jasper;singleton:=true
 Bundle-Version: 5.1.0.qualifier
-Bundle-ClassPath: JasperReports.jar
+Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: net.sourceforge.barbecue;version="1.5.0.beta1",
  org.apache.commons.codec,
