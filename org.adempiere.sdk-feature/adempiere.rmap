@@ -108,9 +108,12 @@
   </rm:searchPath>
   <rm:searchPath name="workspace.feature">
     <rm:provider componentTypes="eclipse.feature" readerType="local">
-      <rm:uri format="{0}/{1}-feature">
+      <rm:uri format="{0}/{1}">
         <bc:propertyRef key="workspace.root"/>
-        <bc:propertyRef key="buckminster.component"/>
+		    <bc:replace pattern=".feature" replacement="-feature">
+		      <bc:propertyRef key="buckminster.component"/>
+		    </bc:replace>
+			  
       </rm:uri>
     </rm:provider>
   </rm:searchPath>

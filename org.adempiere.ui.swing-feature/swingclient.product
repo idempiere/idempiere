@@ -7,13 +7,15 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>--launcher.XXMaxPermSize 192m</programArgs>
-      <vmArgs>-Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -Dosgi.compatibility.bootdelegation=true</vmArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+      <programArgs>--launcher.XXMaxPermSize 192m
+      </programArgs>
+      <vmArgs>-Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -Dosgi.compatibility.bootdelegation=true
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
    </launcherArgs>
 
    <launcher name="adempiere-client">
-      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -26,10 +28,10 @@
    </plugins>
 
    <features>
-      <feature id="org.adempiere.base" version="5.1.0.qualifier"/>
-      <feature id="org.adempiere.ui.swing" version="5.1.0.qualifier"/>
-      <feature id="org.idempiere.hazelcast.service" version="5.1.0.qualifier"/>
-      <feature id="org.adempiere.pipo" version="5.1.0.qualifier"/>
+      <feature id="org.adempiere.base.feature" version="5.1.0.qualifier"/>
+      <feature id="org.adempiere.pipo.feature" version="5.1.0.qualifier"/>
+      <feature id="org.adempiere.ui.swing.feature" version="5.1.0.qualifier"/>
+      <feature id="org.idempiere.hazelcast.service.feature" version="5.1.0.qualifier"/>
    </features>
 
    <configurations>

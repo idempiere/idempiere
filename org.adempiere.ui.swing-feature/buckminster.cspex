@@ -5,7 +5,7 @@
 	xmlns="http://www.eclipse.org/buckminster/CSpec-1.0">
 	<dependencies>
 		<!-- Place your Dependencies here -->
-		<dependency name="org.idempiere.eclipse.platform" componentType="eclipse.feature"/>
+		<dependency name="org.idempiere.eclipse.platform.feature" componentType="eclipse.feature"/>
 	</dependencies>
 	<generators>
 		<!-- Place your Generators here -->
@@ -57,11 +57,8 @@
 		<!-- Place your Action alterations here -->
 	</alterActions>
 	<alterGroups>
-		<public name="bundle.jars">
-			<attribute name="bundle.jars" component="org.idempiere.eclipse.platform"/>
-		</public>
 		<public name="feature.references">
-			<attribute name="feature.jars" component="org.idempiere.eclipse.platform"/>
+			<attribute name="feature.jars" component="org.idempiere.eclipse.platform.feature"/>
         </public>
 	</alterGroups>
 </cspecExtension>

@@ -5,8 +5,8 @@
 	xmlns="http://www.eclipse.org/buckminster/CSpec-1.0">
 	<dependencies>
 		<!-- Place your Dependencies here -->
-		<dependency name="org.idempiere.equinox.p2.director" componentType="eclipse.feature"/>
-		<dependency name="org.idempiere.fitnesse" componentType="eclipse.feature"/>
+		<dependency name="org.idempiere.equinox.p2.director.feature" componentType="eclipse.feature"/>
+		<dependency name="org.idempiere.fitnesse.feature" componentType="eclipse.feature"/>
 		<dependency name="org.idempiere.fitnesse.fixture" componentType="osgi.bundle"/>
 		<dependency name="org.idempiere.fitnesse.server" componentType="osgi.bundle"/>
 		<dependency name="org.idempiere.fitrecorder" componentType="osgi.bundle"/>
@@ -76,13 +76,12 @@
 		<public name="bundle.jars">
 			<attribute name="bundle.jars" component="org.idempiere.fitnesse.fixture"/>
 			<attribute name="bundle.jars" component="org.idempiere.fitnesse.server"/>
-			<attribute name="bundle.jars" component="org.idempiere.fitnesse"/>
 			<attribute name="bundle.jars" component="org.idempiere.fitrecorder"/>
 			<attribute name="bundle.jars" component="org.idempiere.ui.zk.selenium"/>
 		</public>
 		<public name="feature.references">
-		    <attribute name="feature.jars" component="org.idempiere.equinox.p2.director"/>
-			<attribute name="feature.jars" component="org.idempiere.fitnesse"/>
+		    <attribute name="feature.jars" component="org.idempiere.equinox.p2.director.feature"/>
+			<attribute name="feature.jars" component="org.idempiere.fitnesse.feature"/>
         </public>
 	</alterGroups>
 </cspecExtension>

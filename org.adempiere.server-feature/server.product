@@ -3,6 +3,7 @@
 
 <product name="iDempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.server_product" application="org.adempiere.server.application" version="5.1.0.qualifier" useFeatures="true" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
@@ -17,23 +18,26 @@
 
    <windowImages/>
 
+
    <launcher name="idempiere">
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
 
+
    <vm>
       <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</linux>
    </vm>
+
 
    <plugins>
    </plugins>
 
    <features>
-      <feature id="org.adempiere.server"/>
-      <feature id="org.adempiere.target.platform"/>
-      <feature id="org.idempiere.eclipse.platform"/>
+      <feature id="org.adempiere.server.feature"/>
+      <feature id="org.adempiere.target.platform.feature"/>
+      <feature id="org.idempiere.eclipse.platform.feature"/>
    </features>
 
    <configurations>
