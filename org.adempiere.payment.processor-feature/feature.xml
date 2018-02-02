@@ -16,10 +16,6 @@
       [Enter License Description here.]
    </license>
 
-   <requires>
-      <import feature="org.adempiere.base.feature" version="0.0.0"/>
-   </requires>
-
    <plugin
          id="org.adempiere.payment.processor"
          download-size="0"
