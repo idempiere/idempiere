@@ -1,9 +1,10 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
-		<get src="${url.maven2.lib}/maven2/org/swinglabs/swingx/1.6/swingx-1.6.jar" dest="swingx-1.6.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/com/jgoodies/looks/2.0.4/looks-2.0.4.jar" dest="looks-2.0.4.jar" usetimestamp="true" verbose="true" retries="5" />
+		<mkdir dir="lib" />
+		<get src="${url.maven2.lib}/maven2/org/swinglabs/swingx/1.6/swingx-1.6.jar" dest="lib/swingx.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.maven2.lib}/maven2/com/jgoodies/looks/2.0.4/looks-2.0.4.jar" dest="lib/looks.jar" usetimestamp="true" verbose="true" retries="5" />
 		<!-- old version is only for swing, but can't find out old version, so use jar for Swing, SWT and JavaFX to keep same version -->
-		<get src="${url.maven2.lib}/maven2/com/miglayout/miglayout/3.7.1/miglayout-3.7.1.jar" dest="miglayout-3.7.1-swing.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/5.1/jpedal.jar" dest="jpedal.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.maven2.lib}/maven2/com/miglayout/miglayout/3.7.1/miglayout-3.7.1.jar" dest="lib/miglayout.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.file.srv}/jarfile/5.1/jpedal.jar" dest="lib/jpedal.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>

@@ -4,12 +4,12 @@ Bundle-Name: iDempiere Core
 Bundle-SymbolicName: org.adempiere.base;singleton:=true
 Bundle-Version: 5.1.0.qualifier
 Bundle-ClassPath: .,
- jython-engine.jar,
- jython.jar,
- cron4j-2.2.5.jar,
- jnlp.jar,
- bsh-2.0b6.jar,
- commons-validator-1.6.jar
+ lib/bsh.jar,
+ lib/commons-validator.jar,
+ lib/cron4j.jar,
+ lib/jnlp.jar,
+ lib/jython-engine.jar,
+ lib/jython.jar
 Export-Package: bsh,
  bsh.classpath,
  bsh.collection,

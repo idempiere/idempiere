@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/bsh.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-validator.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/cron4j.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jnlp.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jython-engine.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jython.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry exported="true" kind="lib" path="bsh-2.0b6.jar"/>
-	<classpathentry exported="true" kind="lib" path="jython-engine.jar"/>
-	<classpathentry exported="true" kind="lib" path="jython.jar"/>
-	<classpathentry exported="true" kind="lib" path="cron4j-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="jnlp.jar"/>
-	<classpathentry exported="true" kind="lib" path="commons-validator-1.6.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

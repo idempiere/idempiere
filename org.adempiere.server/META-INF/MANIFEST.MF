@@ -8,9 +8,9 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.eclipse.jetty.apache-jsp;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Web-ContextPath: /
-Bundle-ClassPath: WEB-INF/lib/jardiff.jar,
- WEB-INF/lib/jnlp-servlet.jar,
- .
+Bundle-ClassPath: .,
+ WEB-INF/lib/jardiff.jar,
+ WEB-INF/lib/jnlp-servlet.jar
 Import-Package: javax.jms;version="1.1.0",
  javax.mail;version="1.5",
  javax.servlet;version="3.0.0",

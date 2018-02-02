@@ -15,5 +15,3 @@ Import-Package: junit.framework;version="3.8.2",
  org.junit.runners;version="4.8.2",
  org.supercsv.io,
  org.supercsv.prefs
-Bundle-ClassPath: .,
- spiffy-with_source-all-0.05.jar

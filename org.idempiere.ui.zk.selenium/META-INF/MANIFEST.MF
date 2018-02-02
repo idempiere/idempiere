@@ -341,4 +341,3 @@ Import-Package: fit,
  org.w3c.dom.views,
  org.w3c.dom.xpath
 Service-Component: OSGI-INF/fitfixturefactory.xml
-Bundle-ClassPath: .

@@ -4,13 +4,13 @@ Bundle-Name: extra zk library
 Bundle-SymbolicName: org.idempiere.zk.extra
 Bundle-Version: 5.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-ClassPath: lib/calendar.jar,
+Bundle-ClassPath: .,
+ lib/breeze.jar,
+ lib/calendar.jar,
+ lib/closure-compiler.jar,
  lib/gmapsz.jar,
  lib/timelinez.jar,
- lib/timeplotz.jar,
- lib/breeze.jar,
- lib/closure-compiler.jar,
- .
+ lib/timeplotz.jar
 Export-Package: com.google.common.annotations,
  com.google.common.base,
  com.google.common.cache,

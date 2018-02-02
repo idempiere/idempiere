@@ -8,4 +8,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.slf4j.impl;version=1.7.2
 Import-Package: org.slf4j;version=1.7.2,
  org.slf4j.spi;version=1.7.2,org.slf4j.helpers;version=1.7.2
-Bundle-ClassPath: slf4j-jdk14-1.7.2.jar
+Bundle-ClassPath: lib/slf4j-jdk14.jar

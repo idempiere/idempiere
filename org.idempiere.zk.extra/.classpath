@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/closure-compiler.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/breeze.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/calendar.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/closure-compiler.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gmapsz.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/timelinez.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/timeplotz.jar"/>

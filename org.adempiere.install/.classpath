@@ -7,6 +7,5 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="ant-contrib-1.0b3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

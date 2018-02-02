@@ -5,8 +5,8 @@ Bundle-SymbolicName: org.adempiere.payment.processor;singleton:=true
 Bundle-Version: 5.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
-Bundle-ClassPath: jpayment.jar,
- payflow.jar,
- Verisign.jar,
- .
+Bundle-ClassPath: .,
+ lib/jpayment.jar,
+ lib/payflow.jar,
+ lib/Verisign.jar
 
