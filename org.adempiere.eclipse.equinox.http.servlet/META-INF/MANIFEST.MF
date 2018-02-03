@@ -8,7 +8,7 @@ Eclipse-SourceReferences: scm:cvs:pserver:dev.eclipse.org:/cvsroot/rt:
  et;tag=v20100503
 Bundle-Activator: org.eclipse.equinox.http.servlet.internal.Activator
 Export-Package: org.eclipse.equinox.http.servlet;version="1.1.0"
-Bundle-Version: 1.1.0.v20100503
+Bundle-Version: 5.1.0.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
 Bundle-Name: %bundleName

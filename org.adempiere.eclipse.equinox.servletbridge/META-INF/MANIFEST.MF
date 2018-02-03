@@ -7,7 +7,7 @@ Bundle-SymbolicName: org.adempiere.eclipse.equinox.servletbridge;singleton:=true
 Eclipse-SourceReferences: scm:cvs:pserver:dev.eclipse.org:/cvsroot/rt:
  org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.servletbr
  idge;tag=v20100503
-Bundle-Version: 1.2.0.v20100503
+Bundle-Version: 5.1.0.qualifier
 Export-Package: org.eclipse.equinox.servletbridge;version="1.1.0"
 Import-Package: javax.servlet;version="2.3.0",
  javax.servlet.http;version="2.3.0",
