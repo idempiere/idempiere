@@ -11,7 +11,7 @@
         <get src="${url.maven2}/org/springframework/spring-asm/3.0.7.RELEASE/spring-asm-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-asm.jar" usetimestamp="true" verbose="true" retries="5" />
         <get src="${url.maven2}/org/springframework/spring-expression/3.0.7.RELEASE/spring-expression-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-expression.jar" usetimestamp="true" verbose="true" retries="5" />
         <get src="${url.maven2}/wsdl4j/wsdl4j/1.6.2/wsdl4j-1.6.2.jar" dest="WEB-INF/lib/wsdl4j.jar" usetimestamp="true" verbose="true" retries="5" />
-        <get src="${url.maven2}/org/apache/cxf/cxf-bundle/2.6.2/cxf-bundle-2.6.2.jar" dest="WEB-INF/lib/cxf.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/apache/cxf/cxf-bundle/2.6.2/cxf-bundle-2.6.2.jar" dest="WEB-INF/lib/cxf-bundle.jar" usetimestamp="true" verbose="true" retries="5" />
         <get src="${url.maven2}/org/apache/neethi/neethi/3.0.2/neethi-3.0.2.jar" dest="WEB-INF/lib/neethi.jar" usetimestamp="true" verbose="true" retries="5" />
         <get src="${url.maven2}/org/apache/ws/xmlschema/xmlschema-core/2.0.3/xmlschema-core-2.0.3.jar" dest="WEB-INF/lib/xmlschema-core.jar" usetimestamp="true" verbose="true" retries="5" />
         <get src="${url.maven2}/org/apache/cxf/cxf-rt-frontend-jaxws/2.6.1/cxf-rt-frontend-jaxws-2.6.1.jar" dest="WEB-INF/lib/cxf-rt-frontend-jaxws.jar" usetimestamp="true" verbose="true" retries="5" />

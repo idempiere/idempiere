@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="WEB-INF/src/"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/aopalliance.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/axis.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/commons-discovery.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/cxf-bundle.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/cxf-rt-frontend-jaxws.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/cxf.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/idempiere-xmlbeans.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/jsr311-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/neethi.jar"/>
@@ -23,5 +20,8 @@
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/wsdl4j.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/xmlbeans.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/xmlschema-core.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="WEB-INF/src/"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
