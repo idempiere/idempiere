@@ -1,9 +1,9 @@
 <project name="zklibrary" basedir="." default="copy">
 	<mkdir dir="lib" />
 	<target name="copy">
-		<get src="${url.maven2.lib}/maven2/com/mchange/c3p0/0.9.5/c3p0-0.9.5.jar" dest="lib/c3p0.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/com/mchange/mchange-commons-java/0.2.9/mchange-commons-java-0.2.9.jar" dest="lib/mchange-commons-java.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/com/google/code/maven-play-plugin/com/mchange/c3p0-oracle-thin-extras/0.9.5/c3p0-oracle-thin-extras-0.9.5.jar" dest="lib/c3p0-oracle-thin-extras.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/5.1/ojdbc7.jar" dest="lib/ojdbc7.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/com/mchange/c3p0/0.9.5/c3p0-0.9.5.jar" dest="lib/c3p0.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/com/mchange/mchange-commons-java/0.2.9/mchange-commons-java-0.2.9.jar" dest="lib/mchange-commons-java.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/com/google/code/maven-play-plugin/com/mchange/c3p0-oracle-thin-extras/0.9.5/c3p0-oracle-thin-extras-0.9.5.jar" dest="lib/c3p0-oracle-thin-extras.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/5.1/ojdbc7.jar" dest="lib/ojdbc7.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>

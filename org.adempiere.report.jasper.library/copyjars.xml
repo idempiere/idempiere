@@ -3,16 +3,16 @@
 <project name="zklibrary" basedir="." default="copy">
 	<mkdir dir="lib" />
 	<target name="copy">
-		<get src="${url.file.jp.lib}/castor-core-1.3.3.jar" dest="lib/castor-core.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/castor-xml-1.3.3.jar" dest="lib/castor-xml.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/jasperreports-chart-themes-6.3.1.jar" dest="lib/jasperreports-chart-themes.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/jasperreports-chart-customizers-6.3.1.jar" dest="lib/jasperreports-chart-customizers.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/jasperreports-functions-6.3.1.jar" dest="lib/jasperreports-functions.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/js.jar" dest="lib/rhino.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/olap4j-0.9.7.309-JS-3.jar" dest="lib/olap4j.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/spring-beans-2.5.jar" dest="lib/spring-beans.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/spring-core-2.5.jar" dest="lib/spring-core.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/xml-apis-ext-1.3.04.jar" dest="lib/xml-apis-ext.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.jp.lib}/xmpcore-5.1.1.jar" dest="lib/xmpcore.jar" usetimestamp="true" verbose="true" retries="5" />
+      <get src="${url.maven2}/org/codehaus/castor/castor-core/1.3.3/castor-core-1.3.3.jar" dest="lib/castor-core.jar" usetimestamp="true" verbose="true" retries="5" />
+      <get src="${url.maven2}/org/codehaus/castor/castor-xml/1.3.3/castor-xml-1.3.3.jar" dest="lib/castor-xml.jar" usetimestamp="true" verbose="true" retries="5" />
+      <get src="${url.maven2.jp}/net/sf/jasperreports/jasperreports-chart-themes/${jp-verion}/jasperreports-chart-themes-${jp-verion}.jar" dest="lib/jasperreports-chart-themes.jar" usetimestamp="true" verbose="true" retries="5" />
+      <get src="${url.maven2.jp}/net/sf/jasperreports/jasperreports-chart-customizers/${jp-verion}/jasperreports-chart-customizers-${jp-verion}.jar" dest="lib/jasperreports-chart-customizers.jar" usetimestamp="true" verbose="true" retries="5" />
+      <get src="${url.maven2.jp}/net/sf/jasperreports/jasperreports-functions/${jp-verion}/jasperreports-functions-${jp-verion}.jar" dest="lib/jasperreports-functions.jar" usetimestamp="true" verbose="true" retries="5" />
+      <get src="${url.maven2}/org/mozilla/rhino/1.7.6/rhino-1.7.6.jar" dest="lib/rhino.jar" usetimestamp="true" verbose="true" retries="5" />
+      <get src="${url.maven2.jp.other}/org/olap4j/olap4j/0.9.7.309-JS-3/olap4j-0.9.7.309-JS-3.jar" dest="lib/olap4j.jar" usetimestamp="true" verbose="true" retries="5" />
+      <get src="${url.maven2}/org/springframework/spring-beans/2.5/spring-beans-2.5.jar" dest="lib/spring-beans.jar" usetimestamp="true" verbose="true" retries="5" />
+      <get src="${url.maven2}/org/springframework/spring-core/2.5/spring-core-2.5.jar" dest="lib/spring-core.jar" usetimestamp="true" verbose="true" retries="5" />
+      <get src="${url.maven2}/xml-apis/xml-apis-ext/1.3.04/xml-apis-ext-1.3.04.jar" dest="lib/xml-apis-ext.jar" usetimestamp="true" verbose="true" retries="5" />
+      <get src="${url.maven2}/com/adobe/xmp/xmpcore/5.1.1/xmpcore-5.1.1.jar" dest="lib/xmpcore.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>

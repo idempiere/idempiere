@@ -1,26 +1,26 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
 		<mkdir dir="WEB-INF/lib" />
-		<get src="${url.maven2.lib}/maven2/org/springframework/osgi/spring-osgi-extender/1.2.1/spring-osgi-extender-1.2.1.jar" dest="WEB-INF/lib/spring-osgi-extender.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/springframework/spring-aop/3.0.7.RELEASE/spring-aop-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-aop.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/codehaus/woodstox/stax2-api/3.1.1/stax2-api-3.1.1.jar" dest="WEB-INF/lib/stax2-api.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/springframework/spring-web/3.0.7.RELEASE/spring-web-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-web.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/springframework/spring-context/3.0.7.RELEASE/spring-context-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-context.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/springframework/spring-beans/3.0.7.RELEASE/spring-beans-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-beans.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/springframework/spring-core/3.0.7.RELEASE/spring-core-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-core.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/springframework/spring-asm/3.0.7.RELEASE/spring-asm-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-asm.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/springframework/spring-expression/3.0.7.RELEASE/spring-expression-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-expression.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/wsdl4j/wsdl4j/1.6.2/wsdl4j-1.6.2.jar" dest="WEB-INF/lib/wsdl4j.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/apache/cxf/cxf-bundle/2.6.2/cxf-bundle-2.6.2.jar" dest="WEB-INF/lib/cxf.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/apache/neethi/neethi/3.0.2/neethi-3.0.2.jar" dest="WEB-INF/lib/neethi.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/apache/ws/xmlschema/xmlschema-core/2.0.3/xmlschema-core-2.0.3.jar" dest="WEB-INF/lib/xmlschema-core.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/apache/cxf/cxf-rt-frontend-jaxws/2.6.1/cxf-rt-frontend-jaxws-2.6.1.jar" dest="WEB-INF/lib/cxf-rt-frontend-jaxws.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/apache/xmlbeans/xmlbeans/2.5.0/xmlbeans-2.5.0.jar" dest="WEB-INF/lib/xmlbeans.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0.jar" dest="WEB-INF/lib/aopalliance.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/5.1/idempiere-xmlbeans-1.0.jar" dest="WEB-INF/lib/idempiere-xmlbeans.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/apache/axis/axis/1.4/axis-1.4.jar" dest="WEB-INF/lib/axis.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/commons-discovery/commons-discovery/0.5/commons-discovery-0.5.jar" dest="WEB-INF/lib/commons-discovery.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/javax/ws/rs/jsr311-api/1.1/jsr311-api-1.1.jar" dest="WEB-INF/lib/jsr311-api.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/springframework/osgi/spring-osgi-extender/1.2.1/spring-osgi-extender-1.2.1.jar" dest="WEB-INF/lib/spring-osgi-extender.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/springframework/spring-aop/3.0.7.RELEASE/spring-aop-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-aop.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/codehaus/woodstox/stax2-api/3.1.1/stax2-api-3.1.1.jar" dest="WEB-INF/lib/stax2-api.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/springframework/spring-web/3.0.7.RELEASE/spring-web-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-web.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/springframework/spring-context/3.0.7.RELEASE/spring-context-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-context.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/springframework/spring-beans/3.0.7.RELEASE/spring-beans-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-beans.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/springframework/spring-core/3.0.7.RELEASE/spring-core-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-core.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/springframework/spring-asm/3.0.7.RELEASE/spring-asm-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-asm.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/springframework/spring-expression/3.0.7.RELEASE/spring-expression-3.0.7.RELEASE.jar" dest="WEB-INF/lib/spring-expression.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/wsdl4j/wsdl4j/1.6.2/wsdl4j-1.6.2.jar" dest="WEB-INF/lib/wsdl4j.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/apache/cxf/cxf-bundle/2.6.2/cxf-bundle-2.6.2.jar" dest="WEB-INF/lib/cxf.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/apache/neethi/neethi/3.0.2/neethi-3.0.2.jar" dest="WEB-INF/lib/neethi.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/apache/ws/xmlschema/xmlschema-core/2.0.3/xmlschema-core-2.0.3.jar" dest="WEB-INF/lib/xmlschema-core.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/apache/cxf/cxf-rt-frontend-jaxws/2.6.1/cxf-rt-frontend-jaxws-2.6.1.jar" dest="WEB-INF/lib/cxf-rt-frontend-jaxws.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/apache/xmlbeans/xmlbeans/2.5.0/xmlbeans-2.5.0.jar" dest="WEB-INF/lib/xmlbeans.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/aopalliance/aopalliance/1.0/aopalliance-1.0.jar" dest="WEB-INF/lib/aopalliance.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/5.1/idempiere-xmlbeans-1.0.jar" dest="WEB-INF/lib/idempiere-xmlbeans.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/apache/axis/axis/1.4/axis-1.4.jar" dest="WEB-INF/lib/axis.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/commons-discovery/commons-discovery/0.5/commons-discovery-0.5.jar" dest="WEB-INF/lib/commons-discovery.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/javax/ws/rs/jsr311-api/1.1/jsr311-api-1.1.jar" dest="WEB-INF/lib/jsr311-api.jar" usetimestamp="true" verbose="true" retries="5" />
 
 	</target>
 </project>
