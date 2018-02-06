@@ -70,8 +70,8 @@ syntax: regexp
 ^work/.*$
 ^hazelcast\.xml$
 
-swingclient.product.*
-server.product.*
+swingclient.product.*\.launch
+server.product.*\.launch
 
 ^org\.zkoss\.zk\.library/bin$
 \.class$
