@@ -92,7 +92,10 @@ public class OrderRePrice extends SvrProcess
 			for (int i = 0; i < lines.length; i++)
 			{
 				lines[i].setPrice(invoice.getM_PriceList_ID(), invoice.getC_BPartner_ID());
-				lines[i].saveEx();
+				if (lines[i].is_Changed()) {
+					lines[i].setTaxAmt();
+					lines[i].saveEx();
+				}
 			}
 			invoice = new MInvoice (getCtx(), p_C_Invoice_ID, null);
 			BigDecimal newPrice = invoice.getGrandTotal();
