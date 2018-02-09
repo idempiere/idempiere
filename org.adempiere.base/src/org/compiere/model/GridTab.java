@@ -1312,9 +1312,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public void setLinkColumnName (String linkColumnName)
 	{
 		// set parent column name
-		String sql = "SELECT ColumnName FROM AD_Column WHERE AD_Column_ID=?";
 		if (m_vo.Parent_Column_ID > 0)
-			m_parentColumnName = DB.getSQLValueString(null, sql, m_vo.Parent_Column_ID );
+			m_parentColumnName = MColumn.getColumnName(m_vo.ctx, m_vo.Parent_Column_ID);
 		if ( m_parentColumnName == null )
 			m_parentColumnName = "";
 
@@ -1329,27 +1328,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			//	we have a link column identified (primary parent column)
 			else
 			{
-				String SQL = "SELECT ColumnName FROM AD_Column WHERE AD_Column_ID=?";
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				try
-				{
-					pstmt = DB.prepareStatement(SQL, null);
-					pstmt.setInt(1, m_vo.AD_Column_ID);		//	Parent Link Column
-					rs = pstmt.executeQuery();
-					if (rs.next())
-						m_linkColumnName = rs.getString(1);
-				}
-				catch (SQLException e)
-				{
-					log.log(Level.SEVERE, "", e);
-				}
-				finally
-				{
-					DB.close(rs, pstmt);
-					rs = null;
-					pstmt = null;
-				}
+				m_linkColumnName = MColumn.getColumnName(m_vo.ctx, m_vo.AD_Column_ID);		//	Parent Link Column
 				if (log.isLoggable(Level.FINE)) log.fine("AD_Column_ID=" + m_vo.AD_Column_ID + " - " + m_linkColumnName);
 			}
 		}
