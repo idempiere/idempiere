@@ -24,7 +24,7 @@ Import-Package: javax.crypto,
  org.osgi.framework;version="1.3.0",
  org.slf4j;version="1.6.1",
  org.w3c.dom
-DynamicImport-Package: *
+DynamicImport-Package: org.*, com.*, javax.*
 Bundle-ClassPath: .,
  hazelcast-3.9.3.jar,
  hazelcast-aws-2.1.0.jar
