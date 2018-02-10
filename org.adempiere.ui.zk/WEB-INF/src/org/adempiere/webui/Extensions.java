@@ -23,6 +23,8 @@ package org.adempiere.webui;
 import java.util.List;
 
 import org.adempiere.base.Service;
+import org.adempiere.base.ServiceQuery;
+import org.adempiere.webui.apps.IProcessParameterListener;
 import org.adempiere.webui.factory.IFormFactory;
 import org.adempiere.webui.panel.ADForm;
 
@@ -49,5 +51,19 @@ public class Extensions {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * 
+	 * @param processClass
+	 * @param columnName
+	 * @return list of parameter listener
+	 */
+	public static List<IProcessParameterListener> getProcessParameterListeners(String processClass, String columnName) {
+		ServiceQuery query = new ServiceQuery();
+		query.put("ProcessClass", processClass);
+		if (columnName != null)
+			query.put("|ColumnName", columnName+"|"+columnName+",*|"+"*,"+columnName+",*|"+"*,"+columnName);
+		return Service.locator().list(IProcessParameterListener.class, null, query).getServices();
 	}
 }

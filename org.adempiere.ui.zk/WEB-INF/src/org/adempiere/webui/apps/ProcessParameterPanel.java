@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
@@ -36,6 +37,7 @@ import org.adempiere.webui.component.Urlbox;
 import org.adempiere.webui.editor.IZoomableEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
+import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -50,12 +52,14 @@ import org.compiere.model.MClient;
 import org.compiere.model.MLookup;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
+import org.compiere.model.MProcess;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
@@ -99,6 +103,7 @@ public class ProcessParameterPanel extends Panel implements
 		//
 		initComponent();
 		addEventListener("onDynamicDisplay", this);
+		addEventListener("onPostEditorValueChange", this);
 	} // ProcessParameterPanel
 	
 	private void initComponent() {
@@ -445,6 +450,18 @@ public class ProcessParameterPanel extends Panel implements
 			return false;
 		}
 
+		if (m_processInfo.getAD_Process_ID() > 0) {
+			String className = MProcess.get(Env.getCtx(), m_processInfo.getAD_Process_ID()).getClassname();
+			List<IProcessParameterListener> listeners = Extensions.getProcessParameterListeners(className, null);
+			for(IProcessParameterListener listener : listeners) {
+				String error = listener.validate(this);
+				if (!Util.isEmpty(error)) {
+					FDialog.error(m_WindowNo, this, error);
+					return false;
+				}
+			}
+		}
+		
 		return true;
 	}	//	validateParameters
 	
@@ -703,6 +720,7 @@ public class ProcessParameterPanel extends Panel implements
 				processDependencies (changedField);
 				// future processCallout (changedField);
 			}
+			Events.postEvent("onPostEditorValueChange", this, evt.getSource());
 		}
 		processNewValue(evt.getNewValue(), evt.getPropertyName());
 	}
@@ -731,8 +749,21 @@ public class ProcessParameterPanel extends Panel implements
     	else if (event.getName().equals("onDynamicDisplay")) {
     		dynamicDisplay();
     	}
+    	else if (event.getName().equals("onPostEditorValueChange")) {
+    		onPostEditorValueChange((WEditor)event.getData());
+    	}
 	}
 
+	private void onPostEditorValueChange(WEditor editor) {
+		if (m_processInfo.getAD_Process_ID() > 0) {
+			String className = MProcess.get(Env.getCtx(), m_processInfo.getAD_Process_ID()).getClassname();
+			List<IProcessParameterListener> listeners = Extensions.getProcessParameterListeners(className, editor.getColumnName());
+			for(IProcessParameterListener listener : listeners) {
+				listener.onChange(this, editor.getColumnName(), editor);
+			}
+		}
+	}
+	
 	/**
 	 *  Evaluate Dependencies
 	 *  @param changedField changed field
@@ -872,6 +903,54 @@ public class ProcessParameterPanel extends Panel implements
 			c = ((Urlbox)c).getTextbox();
 		}
 		((HtmlBasedComponent)c).focus();		
+	}
+	
+	/**
+	 * Get parameter field editor by column name
+	 * @param columnName
+	 * @return editor
+	 */
+	public WEditor getEditor(String columnName) {
+		for(int i = 0; i < m_mFields.size(); i++) {
+			if (m_mFields.get(i).getColumnName().equals(columnName)) {
+				return m_wEditors.get(i);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Get parameter field value to editor by column name
+	 * @param columnName
+	 * @return editor
+	 */
+	public WEditor getEditorTo(String columnName) {
+		for(int i = 0; i < m_mFields.size(); i++) {
+			if (m_mFields.get(i).getColumnName().equals(columnName)) {
+				return m_wEditors2.get(i);
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * @return true if editor is showing dialog awaiting user action
+	 */
+	public boolean isWaitingForDialog() {
+		for (int i = 0; i < m_mFields.size(); i++) {
+			// Get Values
+			WEditor editor = (WEditor) m_wEditors.get(i);
+			WEditor editor2 = (WEditor) m_wEditors2.get(i);
+			if (editor != null && editor instanceof WSearchEditor) {
+				if (((WSearchEditor)editor).isShowingDialog())
+					return true;
+			} else if (editor2 != null && editor2 instanceof WSearchEditor) {
+				if (((WSearchEditor)editor2).isShowingDialog())
+					return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	static class ZoomListener implements EventListener<Event> {
