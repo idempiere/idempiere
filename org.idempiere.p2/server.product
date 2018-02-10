@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="iDempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.server_product" application="org.adempiere.server.application" version="5.1.0.qualifier" useFeatures="true" includeLaunchers="true">
+
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-console
+      </programArgs>
+      <vmArgs>-Xbootclasspath/p:alpn-boot.jar -Declipse.product=org.adempiere.server.product -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -Dorg.osgi.framework.bootdelegation=sun.security.ssl,org.eclipse.jetty.alpn -Dosgi.compatibility.bootdelegation=true -Djetty.home=jettyhome -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-deployer.xml,etc/jetty-ssl.xml,etc/jetty-ssl-context.xml,etc/jetty-http.xml,etc/jetty-alpn.xml,etc/jetty-http2.xml,etc/jetty-https.xml -Dmail.mime.encodefilename=true -Dmail.mime.decodefilename=true -Dmail.mime.encodeparameters=true -Dmail.mime.decodeparameters=true -Dhazelcast.config=hazelcast.xml -Dorg.zkoss.zk.config.path=file://${workspace_loc}/zk.xml
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+
+   <launcher name="idempiere">
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+
+   <vm>
+      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</linux>
+   </vm>
+
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.adempiere.server.feature"/>
+      <feature id="org.adempiere.target.platform.feature"/>
+      <feature id="org.idempiere.eclipse.platform.feature"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.adempiere.eclipse.equinox.http.servlet" autoStart="true" startLevel="0" />
+      <plugin id="org.adempiere.pipo" autoStart="true" startLevel="0" />
+      <plugin id="org.adempiere.server" autoStart="true" startLevel="0" />
+      <plugin id="org.adempiere.ui.zk" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.aries.spifly.dynamic.bundle" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.felix.webconsole" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.cm" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.jetty.alpn.api" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.alpn.server" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.apache-jsp" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.http" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.http2.common" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.http2.hpack" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.http2.server" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.osgi.boot" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.osgi.httpservice" autoStart="true" startLevel="0" />
+      <plugin id="org.idempiere.felix.webconsole" autoStart="true" startLevel="0" />
+      <plugin id="org.mortbay.jasper.apache-el" autoStart="true" startLevel="0" />
+      <plugin id="org.mortbay.jasper.apache-jsp" autoStart="true" startLevel="0" />
+      <plugin id="org.restlet" autoStart="true" startLevel="0" />
+      <property name="eclipse.product" value="org.adempiere.server.product" />
+      <property name="org.eclipse.equinox.simpleconfigurator.exclusiveInstallation" value="false" />
+      <property name="org.eclipse.update.reconcile" value="false" />
+      <property name="osgi.compatibility.bootdelegation" value="true" />
+      <property name="osgi.console.enable.builtin" value="false" />
+      <property name="osgi.framework.activeThreadType" value="normal" />
+      <property name="osgi.instance.area.default" value="@config.dir/../workspace" />
+      <property name="osgi.noShutdown" value="true" />
+   </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
+
+</product>

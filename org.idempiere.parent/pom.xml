@@ -492,6 +492,11 @@
 					<artifactId>download-maven-plugin</artifactId>
 					<version>${download-maven-version}</version>
 				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-p2-director-plugin</artifactId>
+					<version>${tycho.extras.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>

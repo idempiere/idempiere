@@ -70,6 +70,7 @@
 		<module>org.idempiere.hazelcast.service-feature</module>
 		<module>org.adempiere.payment.processor-feature</module>
 		<module>org.idempiere.zk-feature</module>
+		<module>org.idempiere.p2</module>
 	</modules>
 
 </project>
