@@ -16,3 +16,4 @@ Import-Package: javax.mail;version="1.5",
  org.osgi.framework
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.adempiere.install.InstallBundleActivator
+Bundle-ClassPath: .

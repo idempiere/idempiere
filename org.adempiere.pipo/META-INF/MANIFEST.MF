@@ -17,3 +17,4 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.plugin.utils;bundle-version="0.0.0"
 Service-Component: OSGI-INF/dictionaryservice.xml
 Bundle-Activator: org.adempiere.plugin.utils.PackInApplicationActivator
+Bundle-ClassPath: .

@@ -11,5 +11,6 @@ Import-Package: javax.servlet;version="2.5.0",
  javax.servlet.jsp;version="2.1.0",
  org.apache.commons.codec,
  org.apache.commons.codec.binary
+Bundle-ClassPath: .
 
 

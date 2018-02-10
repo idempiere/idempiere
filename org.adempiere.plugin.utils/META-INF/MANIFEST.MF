@@ -47,3 +47,4 @@ Import-Package: org.adempiere.base,
  org.osgi.framework;version="1.5.0",
  org.osgi.util.tracker;version="1.5.0"
 Export-Package: org.adempiere.plugin.utils
+Bundle-ClassPath: .

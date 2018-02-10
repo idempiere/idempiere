@@ -14,3 +14,4 @@ Import-Package: net.sf.jasperreports.engine,
  org.osgi.framework
 Service-Component: OSGI-INF/jrviewerprovider.xml
 Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .

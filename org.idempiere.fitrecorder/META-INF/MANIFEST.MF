@@ -12,3 +12,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: plugin.xml
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
 Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .

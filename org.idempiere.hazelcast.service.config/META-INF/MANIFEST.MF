@@ -5,3 +5,4 @@ Bundle-SymbolicName: org.idempiere.hazelcast.service.config
 Bundle-Version: 5.1.0.qualifier
 Fragment-Host: org.idempiere.hazelcast.service;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ClassPath: .

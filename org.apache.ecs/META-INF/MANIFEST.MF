@@ -12,3 +12,4 @@ Export-Package: org.apache.ecs;uses:="org.apache.ecs.xhtml",
  org.apache.ecs.storage,
  org.apache.ecs.xhtml;uses:="org.apache.ecs",
  org.apache.ecs.xml;uses:="org.apache.ecs"
+Bundle-ClassPath: .

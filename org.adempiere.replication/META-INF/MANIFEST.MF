@@ -11,3 +11,4 @@ Export-Package: org.adempiere.process.rpl,
 Import-Package: javax.jms;version="1.1.0",
  org.apache.activemq;version="5.3.0"
 Eclipse-RegisterBuddy: org.adempiere.base
+Bundle-ClassPath: .
