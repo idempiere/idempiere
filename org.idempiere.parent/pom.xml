@@ -147,7 +147,7 @@
 
 		<repository>
 			<id>jp-third-party-ce</id>
-			<url>${idempiere-maven-jr-ce-releases-url}</url>
+			<url>${idempiere-maven-jp-third-party-ce-url}</url>
 		</repository>
 
 		<repository>
