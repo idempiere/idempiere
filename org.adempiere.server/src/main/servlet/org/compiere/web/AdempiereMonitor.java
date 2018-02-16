@@ -1047,6 +1047,8 @@ public class AdempiereMonitor extends HttpServlet
 		for (int i = 0; i < clients.length; i++)
 		{
 			MClient client = clients[i];
+			if (!client.isActive())
+				continue;
 			if (i > 0)
 				p.addElement(" - ");
 			p.addElement(new a("idempiereMonitor?EMail=" + client.getAD_Client_ID(), client.getName()));
