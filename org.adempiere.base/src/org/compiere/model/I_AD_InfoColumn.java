@@ -361,6 +361,15 @@ public interface I_AD_InfoColumn
 	  */
 	public String getName();
 
+    /** Column name Placeholder */
+    public static final String COLUMNNAME_Placeholder = "Placeholder";
+
+	/** Set Placeholder	  */
+	public void setPlaceholder (String Placeholder);
+
+	/** Get Placeholder	  */
+	public String getPlaceholder();
+
     /** Column name QueryFunction */
     public static final String COLUMNNAME_QueryFunction = "QueryFunction";
 

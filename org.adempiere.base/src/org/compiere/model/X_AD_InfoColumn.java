@@ -30,7 +30,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171031L;
+	private static final long serialVersionUID = 20180217L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -538,6 +538,20 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Placeholder.
+		@param Placeholder Placeholder	  */
+	public void setPlaceholder (String Placeholder)
+	{
+		set_Value (COLUMNNAME_Placeholder, Placeholder);
+	}
+
+	/** Get Placeholder.
+		@return Placeholder	  */
+	public String getPlaceholder () 
+	{
+		return (String)get_Value(COLUMNNAME_Placeholder);
+	}
 
 	/** Set Query Function.
 		@param QueryFunction 

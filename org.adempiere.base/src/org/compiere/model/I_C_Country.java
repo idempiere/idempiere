@@ -429,6 +429,87 @@ public interface I_C_Country
 	  */
 	public String getName();
 
+    /** Column name PlaceholderAddress1 */
+    public static final String COLUMNNAME_PlaceholderAddress1 = "PlaceholderAddress1";
+
+	/** Set Placeholder for Address 1	  */
+	public void setPlaceholderAddress1 (String PlaceholderAddress1);
+
+	/** Get Placeholder for Address 1	  */
+	public String getPlaceholderAddress1();
+
+    /** Column name PlaceholderAddress2 */
+    public static final String COLUMNNAME_PlaceholderAddress2 = "PlaceholderAddress2";
+
+	/** Set Placeholder for Address 2	  */
+	public void setPlaceholderAddress2 (String PlaceholderAddress2);
+
+	/** Get Placeholder for Address 2	  */
+	public String getPlaceholderAddress2();
+
+    /** Column name PlaceholderAddress3 */
+    public static final String COLUMNNAME_PlaceholderAddress3 = "PlaceholderAddress3";
+
+	/** Set Placeholder for Address 3	  */
+	public void setPlaceholderAddress3 (String PlaceholderAddress3);
+
+	/** Get Placeholder for Address 3	  */
+	public String getPlaceholderAddress3();
+
+    /** Column name PlaceholderAddress4 */
+    public static final String COLUMNNAME_PlaceholderAddress4 = "PlaceholderAddress4";
+
+	/** Set Placeholder for Address 4	  */
+	public void setPlaceholderAddress4 (String PlaceholderAddress4);
+
+	/** Get Placeholder for Address 4	  */
+	public String getPlaceholderAddress4();
+
+    /** Column name PlaceholderAddress5 */
+    public static final String COLUMNNAME_PlaceholderAddress5 = "PlaceholderAddress5";
+
+	/** Set Placeholder for Address 5	  */
+	public void setPlaceholderAddress5 (String PlaceholderAddress5);
+
+	/** Get Placeholder for Address 5	  */
+	public String getPlaceholderAddress5();
+
+    /** Column name PlaceholderCity */
+    public static final String COLUMNNAME_PlaceholderCity = "PlaceholderCity";
+
+	/** Set Placeholder for city	  */
+	public void setPlaceholderCity (String PlaceholderCity);
+
+	/** Get Placeholder for city	  */
+	public String getPlaceholderCity();
+
+    /** Column name PlaceholderComments */
+    public static final String COLUMNNAME_PlaceholderComments = "PlaceholderComments";
+
+	/** Set Placeholder for comments	  */
+	public void setPlaceholderComments (String PlaceholderComments);
+
+	/** Get Placeholder for comments	  */
+	public String getPlaceholderComments();
+
+    /** Column name PlaceholderPostal */
+    public static final String COLUMNNAME_PlaceholderPostal = "PlaceholderPostal";
+
+	/** Set Placeholder for postal	  */
+	public void setPlaceholderPostal (String PlaceholderPostal);
+
+	/** Get Placeholder for postal	  */
+	public String getPlaceholderPostal();
+
+    /** Column name PlaceholderPostal_Add */
+    public static final String COLUMNNAME_PlaceholderPostal_Add = "PlaceholderPostal_Add";
+
+	/** Set Placeholder for additional zip	  */
+	public void setPlaceholderPostal_Add (String PlaceholderPostal_Add);
+
+	/** Get Placeholder for additional zip	  */
+	public String getPlaceholderPostal_Add();
+
     /** Column name RegionName */
     public static final String COLUMNNAME_RegionName = "RegionName";
 

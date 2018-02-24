@@ -581,6 +581,15 @@ public interface I_AD_Column
 
 	public org.compiere.model.I_PA_DashboardContent getPA_DashboardContent() throws RuntimeException;
 
+    /** Column name Placeholder */
+    public static final String COLUMNNAME_Placeholder = "Placeholder";
+
+	/** Set Placeholder	  */
+	public void setPlaceholder (String Placeholder);
+
+	/** Get Placeholder	  */
+	public String getPlaceholder();
+
     /** Column name ReadOnlyLogic */
     public static final String COLUMNNAME_ReadOnlyLogic = "ReadOnlyLogic";
 

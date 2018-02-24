@@ -95,7 +95,9 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
     	
     	popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
     	popupMenu.addMenuListener(this);
-    	addChangeLogMenu(popupMenu);    	
+    	addChangeLogMenu(popupMenu);
+		if (gridField != null)
+    		getComponent().getTextbox().setPlaceholder(gridField.getPlaceholder());
     }
     
 	@Override

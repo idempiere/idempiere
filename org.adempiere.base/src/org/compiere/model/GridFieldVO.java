@@ -47,7 +47,7 @@ public class GridFieldVO implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5633655630654835665L;
+	private static final long serialVersionUID = -3894697577296104861L;
 
 	/**
 	 *  Return the SQL statement used for the MFieldVO.create
@@ -236,6 +236,8 @@ public class GridFieldVO implements Serializable
 					vo.AD_FieldStyle_ID = rs.getInt (i);
 				else if (columnName.equalsIgnoreCase("PA_DashboardContent_ID"))
 					vo.PA_DashboardContent_ID = rs.getInt (i);
+				else if (columnName.equalsIgnoreCase("placeholder"))
+					vo.Placeholder = rs.getString(i);
 			}
 			if (vo.Header == null)
 				vo.Header = vo.ColumnName;
@@ -321,6 +323,9 @@ public class GridFieldVO implements Serializable
 				
 				if (userDef.getPA_DashboardContent_ID() > 0)
 					vo.PA_DashboardContent_ID = userDef.getPA_DashboardContent_ID();
+
+				if (userDef.getPlaceholder() != null)
+					vo.Placeholder = userDef.getPlaceholder();
 			}
 		}
 		//
@@ -372,6 +377,8 @@ public class GridFieldVO implements Serializable
 			vo.DisplayLogic= rs.getString("DisplayLogic");
 			vo.IsEncryptedField=rs.getString("IsEncrypted").equals("Y");
 			vo.MandatoryLogic = rs.getString("MandatoryLogic");
+			vo.Placeholder = rs.getString("Placeholder");
+			vo.Placeholder2 = rs.getString("Placeholder2");
 		}
 		catch (SQLException e)
 		{
@@ -381,6 +388,9 @@ public class GridFieldVO implements Serializable
 		vo.initFinish();
 		if (vo.DefaultValue2 == null)
 			vo.DefaultValue2 = "";
+		if (vo.Placeholder2 == null)
+			vo.Placeholder2 = "";
+
 		return vo;
 	}   //  createParameter
 
@@ -409,6 +419,7 @@ public class GridFieldVO implements Serializable
 		voT.FieldLength = voF.FieldLength;
 		voT.DisplayLength = voF.FieldLength;
 		voT.DefaultValue = voF.DefaultValue2;
+		voT.Placeholder2 = voF.Placeholder2;
 		voT.VFormat = voF.VFormat;
 		voT.FormatPattern = voF.FormatPattern;
 		voT.ValueMin = voF.ValueMin;
@@ -444,7 +455,7 @@ public class GridFieldVO implements Serializable
 	 */
 	public static GridFieldVO createParameter (Properties ctx, int WindowNo, int WindowIDOfPanel, int infoWindowID,
 			int AD_Column_ID, String ColumnName, String Name, int AD_Reference_ID, int AD_Reference_Value_ID, 
-			boolean IsMandatory, boolean IsEncrypted)
+			boolean IsMandatory, boolean IsEncrypted, String Placeholder)
 	{
 		GridFieldVO vo = new GridFieldVO (ctx, WindowNo, 0, 0, 0, false);
 		vo.isProcess = true;
@@ -461,6 +472,7 @@ public class GridFieldVO implements Serializable
 		vo.IsEncryptedField= IsEncrypted;			
 		vo.AD_Infowindow_ID = infoWindowID;
 		vo.AD_Window_ID_Of_Panel = WindowIDOfPanel;
+		vo.Placeholder = Placeholder;
 		//
 		vo.initFinish();
 		return vo;
@@ -677,6 +689,9 @@ public class GridFieldVO implements Serializable
 	public int AD_FieldStyle_ID = 0;
 	
 	public int PA_DashboardContent_ID = 0;
+
+	public String Placeholder = "";
+	public String Placeholder2 = "";
 	
 	/**
 	 *  Set Context including contained elements
@@ -713,6 +728,8 @@ public class GridFieldVO implements Serializable
 			ReadOnlyLogic = "";
 		if (MandatoryLogic == null)
 			MandatoryLogic = "";
+		if (Placeholder == null)
+			Placeholder = "";
 
 
 		//  Create Lookup, if not ID
@@ -810,6 +827,7 @@ public class GridFieldVO implements Serializable
 		clone.AD_FieldStyle_ID = AD_FieldStyle_ID;
 		clone.AD_LabelStyle_ID = AD_LabelStyle_ID;
 		clone.PA_DashboardContent_ID = PA_DashboardContent_ID;
+		clone.Placeholder = Placeholder;
 		
 		//	Lookup
 		clone.ValidationCode = ValidationCode;
@@ -819,6 +837,7 @@ public class GridFieldVO implements Serializable
 		//  Process Parameter
 		clone.isRange = isRange;
 		clone.DefaultValue2 = DefaultValue2;
+		clone.Placeholder2 = Placeholder2;
 		clone.AD_Process_ID_Of_Panel = AD_Process_ID_Of_Panel;
 		clone.AD_Window_ID_Of_Panel = AD_Window_ID_Of_Panel;
 		clone.AD_Infowindow_ID = AD_Infowindow_ID;

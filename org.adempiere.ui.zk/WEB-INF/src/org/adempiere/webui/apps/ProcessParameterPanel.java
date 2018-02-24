@@ -84,7 +84,7 @@ public class ProcessParameterPanel extends Panel implements
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6190176000439901932L;
+	private static final long serialVersionUID = 2388338147222636369L;
 
 	/**
 	 * Dynamic generated Parameter panel.
@@ -208,7 +208,7 @@ public class ProcessParameterPanel extends Panel implements
 					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.ColumnName, "
 					+ "p.DefaultValue, p.DefaultValue2, p.VFormat, p.ValueMin, p.ValueMax, "
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
-					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern, p.MandatoryLogic "
+					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern, p.MandatoryLogic, p.Placeholder, p.Placeholder2 "
 					+ "FROM AD_Process_Para p"
 					+ " LEFT OUTER JOIN AD_Val_Rule vr ON (p.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) "
 					+ "WHERE p.AD_Process_ID=?" // 1
@@ -219,7 +219,7 @@ public class ProcessParameterPanel extends Panel implements
 					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.ColumnName, "
 					+ "p.DefaultValue, p.DefaultValue2, p.VFormat, p.ValueMin, p.ValueMax, "
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
-					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern,p.MandatoryLogic "
+					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern,p.MandatoryLogic, t.Placeholder, t.Placeholder2 "
 					+ "FROM AD_Process_Para p"
 					+ " INNER JOIN AD_Process_Para_Trl t ON (p.AD_Process_Para_ID=t.AD_Process_Para_ID)"
 					+ " LEFT OUTER JOIN AD_Val_Rule vr ON (p.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) "
@@ -338,7 +338,6 @@ public class ProcessParameterPanel extends Panel implements
 			ZKUpdateUtil.setWidth(box, "100%");
 			box.appendChild(editor.getComponent());
 			ZKUpdateUtil.setWidth((HtmlBasedComponent) editor.getComponent(), "49%");
-			setEditorPlaceHolder(editor, Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom"));
 			//
 			GridFieldVO voF2 = GridFieldVO.createParameter(voF);
 			GridField mField2 = new GridField(voF2);
@@ -353,7 +352,7 @@ public class ProcessParameterPanel extends Panel implements
 			mField2.addPropertyChangeListener(editor2);
 			editor2.dynamicDisplay();
 			ZKUpdateUtil.setWidth((HtmlBasedComponent) editor2.getComponent(), "49%");
-			setEditorPlaceHolder(editor2, Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo"));
+			setEditorPlaceHolder(editor2, mField2.getPlaceholder2());
 			// setup editor context menu
 			popupMenu = editor2.getPopupMenu();
 			if (popupMenu != null) {
