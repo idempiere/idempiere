@@ -91,42 +91,18 @@ public class MLookupFactory
 	
 	public static MLookupInfo getLookupInfo(Properties ctx, int WindowNo, int TabNo, int Column_ID, int AD_Reference_ID)
 	{
-		String ColumnName = "";
-		int AD_Reference_Value_ID = 0;
-		boolean IsParent = false;
+		MColumn column = MColumn.get(ctx, Column_ID);
+		if (column.get_ID() == 0)
+			s_log.log(Level.SEVERE, "Column Not Found - AD_Column_ID=" + Column_ID);
+
+		String ColumnName = column.getColumnName();
+		int AD_Reference_Value_ID = column.getAD_Reference_Value_ID();
+		boolean IsParent = column.isParent();
 		String ValidationCode = "";
-		//
-		String sql = "SELECT c.ColumnName, c.AD_Reference_Value_ID, c.IsParent, vr.Code "
-			+ "FROM AD_Column c"
-			+ " LEFT OUTER JOIN AD_Val_Rule vr ON (c.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) "
-			+ "WHERE c.AD_Column_ID=?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, Column_ID);
-			//
-			rs = pstmt.executeQuery();
-			if (rs.next())
-			{
-				ColumnName = rs.getString(1);
-				AD_Reference_Value_ID = rs.getInt(2);
-				IsParent = "Y".equals(rs.getString(3));
-				ValidationCode = rs.getString(4);
-			}
-			else
-				s_log.log(Level.SEVERE, "Column Not Found - AD_Column_ID=" + Column_ID);
-		}
-		catch (SQLException ex)
-		{
-			s_log.log(Level.SEVERE, "create", ex);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
+
+		if (column.getAD_Val_Rule_ID() > 0) {
+			MValRule valRule = MValRule.get(ctx, column.getAD_Val_Rule_ID());
+			ValidationCode = valRule.getCode();
 		}
 		//
 		MLookupInfo info = getLookupInfo (ctx, WindowNo, TabNo, Column_ID, AD_Reference_ID,
@@ -993,41 +969,12 @@ public class MLookupFactory
 	}	//  getLookup_TableDirEmbed
 
 	private static ArrayList<LookupDisplayColumn> getListIdentifiers(String TableName) {
-		//	get display column name (first identifier column)
-		String sql = "SELECT c.ColumnName,c.IsTranslated,c.AD_Reference_ID,c.AD_Reference_Value_ID "
-			+ ", c.ColumnSQL " // 5
-			+ "FROM AD_Table t INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID) "
-			+ "WHERE TableName=?"
-			+ " AND c.IsIdentifier='Y' "
-			+ "ORDER BY c.SeqNo";
-		//
 		ArrayList<LookupDisplayColumn> list = new ArrayList<LookupDisplayColumn>();
-		//
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setString(1, TableName);
-			rs = pstmt.executeQuery();
-			while (rs.next())
-			{
-				LookupDisplayColumn ldc = new LookupDisplayColumn (rs.getString(1),
-					rs.getString(5),
-					"Y".equals(rs.getString(2)), rs.getInt(3), rs.getInt(4));
-				list.add (ldc);
-			}
-		}
-		catch (SQLException e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
-			return null;
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
+		MTable table = MTable.get(Env.getCtx(), TableName);
+		for (String idColumnName : table.getIdentifierColumns()) {
+			MColumn column = table.getColumn(idColumnName);
+			LookupDisplayColumn ldc = new LookupDisplayColumn(column.getColumnName(), column.getColumnSQL(), column.isTranslated(), column.getAD_Reference_ID(), column.getAD_Reference_Value_ID());
+			list.add (ldc);
 		}
 		return list;
 	}

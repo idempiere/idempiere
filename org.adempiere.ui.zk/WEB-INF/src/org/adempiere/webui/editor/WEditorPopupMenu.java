@@ -27,6 +27,8 @@ import org.adempiere.webui.window.WFieldSuggestion;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
 import org.compiere.model.MRole;
+import org.compiere.model.MTable;
+import org.compiere.model.MZoomCondition;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -134,16 +136,14 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     	    	this.updateEnabled = false;
 
     			// check possible zoom conditions to enable back zoom
-    			for (int zoomCondWinID : 
-    				DB.getIDsEx(null, 
-    						"SELECT AD_Window_ID FROM AD_ZoomCondition WHERE IsActive='Y' AND AD_Table_ID IN (SELECT AD_Table_ID FROM AD_Table WHERE TableName=?)",
-    						tableName)) {
-    	    		Boolean canAccessZoom = MRole.getDefault().getWindowAccess(zoomCondWinID);
+    	    	MTable table = MTable.get(Env.getCtx(), tableName);
+    	    	for (MZoomCondition zoomCondition : MZoomCondition.getConditions(table.getAD_Table_ID())) {
+    	    		Boolean canAccessZoom = MRole.getDefault().getWindowAccess(zoomCondition.getAD_Window_ID());
     	    		if (canAccessZoom != null && canAccessZoom) {
     	    	    	this.zoomEnabled = true;
     	    			break;
     	    		}
-    			}
+    	    	}
     		} else {
     			int cnt = DB.getSQLValueEx(null,
     					"SELECT COUNT(*) "

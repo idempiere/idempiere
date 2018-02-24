@@ -457,7 +457,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		BigDecimal TaxAmt = Env.ZERO;
 		if (getC_Tax_ID() == 0)
 			return;
-	//	setLineNetAmt();
+		setLineNetAmt();
 		MTax tax = MTax.get (getCtx(), getC_Tax_ID());
 		if (tax.isDocumentLevel() && m_IsSOTrx)		//	AR Inv Tax
 			return;

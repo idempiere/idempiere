@@ -20,6 +20,8 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -33,6 +35,7 @@ import org.adempiere.model.GenericPO;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.KeyNamePair;
 
 /**
  *	Persistent Table Model
@@ -356,19 +359,26 @@ public class MTable extends X_AD_Table
 	 * 	Get Identifier Columns of Table
 	 *	@return Identifier columns
 	 */
-	public String[] getIdentifierColumns()
-	{
-		getColumns(false);
-		ArrayList<String> list = new ArrayList<String>();
-		//
-		for (int i = 0; i < m_columns.length; i++)
-		{
-			MColumn column = m_columns[i];
+	public String[] getIdentifierColumns() {
+		ArrayList<KeyNamePair> listkn = new ArrayList<KeyNamePair>();
+		for (MColumn column : getColumns(false)) {
 			if (column.isIdentifier())
-				list.add(column.getColumnName());
+				listkn.add(new KeyNamePair(column.getSeqNo(), column.getColumnName()));
 		}
-		String[] retValue = new String[list.size()];
-		retValue = list.toArray(retValue);
+		// Order by SeqNo
+		Collections.sort(listkn, new Comparator<KeyNamePair>(){
+			public int compare(KeyNamePair s1,KeyNamePair s2){
+				if (s1.getKey() < s2.getKey())
+					return -1;
+				else if (s1.getKey() > s2.getKey())
+					return 1;
+				else
+					return 0;
+			}});
+		String[] retValue = new String[listkn.size()];
+		for (int i = 0; i < listkn.size(); i++) {
+			retValue[i] = listkn.get(i).getName();
+		}
 		return retValue;
 	}	//	getIdentifierColumns
 

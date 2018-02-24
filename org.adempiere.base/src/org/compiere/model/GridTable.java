@@ -49,6 +49,7 @@ import java.util.logging.Level;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
@@ -3542,7 +3543,7 @@ public class GridTable extends AbstractTableModel
 				if (DBException.isInvalidIdentifierError(e0))
 					log.warning("Count - " + e0.getLocalizedMessage() + "\nSQL=" + m_SQL_Count);
 				else
-					log.log(Level.SEVERE, "Count SQL=" + m_SQL_Count, e0);
+					throw new AdempiereException(e0);
 				return 0;
 			}
 			finally
