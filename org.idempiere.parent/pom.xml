@@ -271,6 +271,11 @@
 					<artifactId>copy-rename-maven-plugin</artifactId>
 					<version>1.0.1</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>3.1.0</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -305,7 +310,112 @@
 							</requirement>
 						</extraRequirements>
 					</dependency-resolution>
+					<target>
+						<artifact>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>org.idempiere.p2.targetplatform</artifactId>
+							<version>${project.version}</version>
+						</artifact>
+					</target>
+					<filters>
+						<filter>
+							<type>eclipse-plugin</type>
+							<id>com.ibm.icu</id>
+							<restrictTo>
+								<versionRange>[60.2.0,61.0.0)</versionRange>
+							</restrictTo>
+						</filter>
+						<filter>
+							<type>eclipse-plugin</type>
+							<id>ch.qos.logback.classic</id>
+							<restrictTo>
+								<versionRange>[
+									1.1.2.v20160208-0839,2.0.0)</versionRange>
+							</restrictTo>
+						</filter>
+						<filter>
+							<type>eclipse-plugin</type>
+							<id>ch.qos.logback.core</id>
+							<restrictTo>
+								<versionRange>[
+									1.1.2.v20160208-0839,2.0.0)</versionRange>
+							</restrictTo>
+						</filter>
+						<filter>
+							<type>eclipse-plugin</type>
+							<id>ch.qos.logback.slf4j</id>
+							<restrictTo>
+								<versionRange>[
+									1.1.2.v20160301-0943,2.0.0)</versionRange>
+							</restrictTo>
+						</filter>
+						<filter>
+							<type>eclipse-plugin</type>
+							<id>com.fasterxml.jackson.core.jackson-annotations</id>
+							<restrictTo>
+								<versionRange>[
+									2.6.2.v20161117-2150,3.0.0)</versionRange>
+							</restrictTo>
+						</filter>
+						<filter>
+							<type>eclipse-plugin</type>
+							<id>com.fasterxml.jackson.core.jackson-core</id>
+							<restrictTo>
+								<versionRange>[
+									2.6.2.v20161117-2150,3.0.0)</versionRange>
+							</restrictTo>
+						</filter>
+						<filter>
+							<type>eclipse-plugin</type>
+							<id>com.fasterxml.jackson.core.jackson-databind</id>
+							<restrictTo>
+								<versionRange>[
+									2.6.2.v20161117-2150,3.0.0)</versionRange>
+							</restrictTo>
+						</filter>
+						<filter>
+							<type>eclipse-plugin</type>
+							<id>com.google.gson</id>
+							<restrictTo>
+								<versionRange>[
+									2.7.0.v20170129-0911,3.0.0)</versionRange>
+							</restrictTo>
+						</filter>
+						<filter>
+							<type>eclipse-plugin</type>
+							<id>com.google.guava</id>
+							<restrictTo>
+								<versionRange>[
+									21.0.0.v20170206-1425,22.0.0)</versionRange>
+							</restrictTo>
+						</filter>
+						<filter>
+							<type>eclipse-plugin</type>
+							<id>com.ibm.icu.base</id>
+							<restrictTo>
+								<versionRange>[
+									58.2.0.v20170418-1837,61.0.0)</versionRange>
+							</restrictTo>
+						</filter>
+						<filter>
+							<type>eclipse-plugin</type>
+							<id>org.apache.lucene.core</id>
+							<restrictTo>
+								<versionRange>[
+									3.5.0,4.0.0)</versionRange>
+							</restrictTo>
+						</filter>
+						<filter>
+							<type>eclipse-plugin</type>
+							<id>
+								groovy-all</id>
+							<restrictTo>
+								<versionRange>[
+									2.4.7,3.0.0)</versionRange>
+							</restrictTo>
+						</filter>
 
+					</filters>
 					<!-- configure the p2 target environments for multi-platform build -->
 					<environments>
 						<environment>
