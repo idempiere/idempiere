@@ -15,7 +15,6 @@
 
 	<build>
 		<plugins>
-
 			<plugin>
 				<groupId>org.reficio</groupId>
 				<artifactId>p2-maven-plugin</artifactId>
@@ -48,7 +47,8 @@
 										</artifact>
 										<artifact>
 											<id>org.mortbay.jasper:apache-jsp:jar:8.5.23</id>
-											<source>true</source>
+											<!-- https://github.com/jetty-project/jasper-jsp/issues/5 -->
+											<source>false</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
@@ -86,6 +86,7 @@
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
+										<!--
 										<artifact>
 											<id>org.ow2.asm:asm-commons:jar:6.0</id>
 											<source>true</source>
@@ -100,7 +101,7 @@
 											<id>org.ow2.asm:asm:jar:6.0</id>
 											<source>true</source>
 											<transitive>false</transitive>
-										</artifact>
+										</artifact>-->
 										<artifact>
 											<id>org.apache.taglibs:taglibs-standard-impl:jar:1.2.5</id>
 											<source>true</source>
@@ -276,7 +277,7 @@
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zkplus;version="${project.version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zkplus;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zkplus</Bundle-SymbolicName>
 												<Bundle-Name>zkplus.source</Bundle-Name>
 											</instructions>
@@ -286,7 +287,7 @@
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zweb;version="${project.version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zweb;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zweb</Bundle-SymbolicName>
 												<Bundle-Name>zweb.source</Bundle-Name>
 											</instructions>
@@ -296,7 +297,7 @@
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zul;version="${project.version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zul;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zul</Bundle-SymbolicName>
 												<Bundle-Name>zul.source</Bundle-Name>
 											</instructions>
@@ -306,7 +307,7 @@
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zk;version="${project.version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zk;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zk</Bundle-SymbolicName>
 												<Bundle-Name>zk.source</Bundle-Name>
 											</instructions>
@@ -316,7 +317,7 @@
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zhtml;version="${project.version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zhtml;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zhtml</Bundle-SymbolicName>
 												<Bundle-Name>zhtml.source</Bundle-Name>
 											</instructions>
@@ -326,7 +327,7 @@
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zkbind;version="${project.version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zkbind;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zkbind</Bundle-SymbolicName>
 												<Bundle-Name>zkbind.source</Bundle-Name>
 											</instructions>
@@ -336,7 +337,7 @@
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zel;version="${project.version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zel;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zel</Bundle-SymbolicName>
 												<Bundle-Name>zel.source</Bundle-Name>
 											</instructions>
@@ -346,7 +347,7 @@
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zcommon;version="${project.version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zcommon;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zcommon</Bundle-SymbolicName>
 												<Bundle-Name>zcommon.source</Bundle-Name>
 											</instructions>
@@ -356,7 +357,7 @@
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zjavassist;version="${project.version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zjavassist;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zjavassist</Bundle-SymbolicName>
 												<Bundle-Version>${zk-version}</Bundle-Version>
 												<Bundle-Name>zjavassist.source</Bundle-Name>
@@ -579,6 +580,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<!-- update P2 after add zk lib -->
 			<plugin>
 				<groupId>org.eclipse.tycho.extras</groupId>
