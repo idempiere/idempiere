@@ -83,7 +83,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:47:47 AM CET
-ALTER TABLE AD_Column ADD Placeholder VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE AD_Column ADD Placeholder NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:48:14 AM CET
@@ -91,7 +91,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:48:16 AM CET
-ALTER TABLE AD_Column_Trl ADD Placeholder VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE AD_Column_Trl ADD Placeholder NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:48:47 AM CET
@@ -99,7 +99,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:48:49 AM CET
-ALTER TABLE AD_Element ADD Placeholder VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE AD_Element ADD Placeholder NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:49:09 AM CET
@@ -107,7 +107,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:49:11 AM CET
-ALTER TABLE AD_Element_Trl ADD Placeholder VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE AD_Element_Trl ADD Placeholder NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:49:45 AM CET
@@ -115,7 +115,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:49:46 AM CET
-ALTER TABLE AD_Field ADD Placeholder VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE AD_Field ADD Placeholder NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:50:13 AM CET
@@ -123,7 +123,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:50:14 AM CET
-ALTER TABLE AD_Field_Trl ADD Placeholder VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE AD_Field_Trl ADD Placeholder NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:50:58 AM CET
@@ -131,7 +131,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:50:59 AM CET
-ALTER TABLE AD_InfoColumn ADD Placeholder VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE AD_InfoColumn ADD Placeholder NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:51:17 AM CET
@@ -139,7 +139,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:51:18 AM CET
-ALTER TABLE AD_InfoColumn_Trl ADD Placeholder VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE AD_InfoColumn_Trl ADD Placeholder NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:51:48 AM CET
@@ -147,7 +147,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:51:50 AM CET
-ALTER TABLE AD_UserDef_Field ADD Placeholder VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE AD_UserDef_Field ADD Placeholder NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:52:20 AM CET
@@ -155,7 +155,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:52:22 AM CET
-ALTER TABLE C_Country ADD PlaceholderAddress1 VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country ADD PlaceholderAddress1 NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:52:32 AM CET
@@ -163,7 +163,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:52:33 AM CET
-ALTER TABLE C_Country ADD PlaceholderAddress2 VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country ADD PlaceholderAddress2 NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:52:45 AM CET
@@ -171,7 +171,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:52:46 AM CET
-ALTER TABLE C_Country ADD PlaceholderAddress3 VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country ADD PlaceholderAddress3 NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:52:56 AM CET
@@ -179,7 +179,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:52:57 AM CET
-ALTER TABLE C_Country ADD PlaceholderAddress4 VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country ADD PlaceholderAddress4 NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:53:08 AM CET
@@ -187,7 +187,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:53:10 AM CET
-ALTER TABLE C_Country ADD PlaceholderAddress5 VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country ADD PlaceholderAddress5 NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:53:31 AM CET
@@ -195,7 +195,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:53:32 AM CET
-ALTER TABLE C_Country ADD PlaceholderCity VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country ADD PlaceholderCity NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:53:45 AM CET
@@ -203,7 +203,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:53:47 AM CET
-ALTER TABLE C_Country ADD PlaceholderComments VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country ADD PlaceholderComments NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:54:02 AM CET
@@ -211,7 +211,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:54:03 AM CET
-ALTER TABLE C_Country ADD PlaceholderPostal VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country ADD PlaceholderPostal NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:54:13 AM CET
@@ -219,7 +219,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:54:14 AM CET
-ALTER TABLE C_Country ADD PlaceholderPostal_Add VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country ADD PlaceholderPostal_Add NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:55:13 AM CET
@@ -227,7 +227,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:55:14 AM CET
-ALTER TABLE C_Country_Trl ADD PlaceholderAddress1 VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country_Trl ADD PlaceholderAddress1 NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:55:24 AM CET
@@ -235,7 +235,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:55:25 AM CET
-ALTER TABLE C_Country_Trl ADD PlaceholderAddress2 VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country_Trl ADD PlaceholderAddress2 NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:55:34 AM CET
@@ -243,7 +243,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:55:36 AM CET
-ALTER TABLE C_Country_Trl ADD PlaceholderAddress3 VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country_Trl ADD PlaceholderAddress3 NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:55:54 AM CET
@@ -251,7 +251,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:55:55 AM CET
-ALTER TABLE C_Country_Trl ADD PlaceholderAddress4 VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country_Trl ADD PlaceholderAddress4 NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:56:07 AM CET
@@ -259,7 +259,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:56:08 AM CET
-ALTER TABLE C_Country_Trl ADD PlaceholderAddress5 VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country_Trl ADD PlaceholderAddress5 NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:56:29 AM CET
@@ -267,7 +267,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:56:30 AM CET
-ALTER TABLE C_Country_Trl ADD PlaceholderCity VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country_Trl ADD PlaceholderCity NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:56:39 AM CET
@@ -275,7 +275,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:56:41 AM CET
-ALTER TABLE C_Country_Trl ADD PlaceholderComments VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country_Trl ADD PlaceholderComments NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:56:53 AM CET
@@ -283,7 +283,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:56:55 AM CET
-ALTER TABLE C_Country_Trl ADD PlaceholderPostal VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country_Trl ADD PlaceholderPostal NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:57:04 AM CET
@@ -292,7 +292,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 
 -- IDEMPIERE-3639 Placeholders for every fields
 -- Feb 17, 2018 8:39:48 PM CET
-ALTER TABLE C_Country_Trl ADD PlaceholderPostal_Add VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_Country_Trl ADD PlaceholderPostal_Add NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:58:25 AM CET
@@ -300,7 +300,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:58:27 AM CET
-ALTER TABLE AD_Process_Para ADD Placeholder VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE AD_Process_Para ADD Placeholder NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:58:36 AM CET
@@ -308,7 +308,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:58:37 AM CET
-ALTER TABLE AD_Process_Para ADD Placeholder2 VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE AD_Process_Para ADD Placeholder2 NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:59:09 AM CET
@@ -324,7 +324,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:59:34 AM CET
-ALTER TABLE AD_Process_Para_Trl ADD Placeholder VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE AD_Process_Para_Trl ADD Placeholder NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 8:59:44 AM CET
@@ -332,7 +332,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Feb 15, 2018 8:59:45 AM CET
-ALTER TABLE AD_Process_Para_Trl ADD Placeholder2 VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE AD_Process_Para_Trl ADD Placeholder2 NVARCHAR2(255) DEFAULT NULL 
 ;
 
 -- Feb 15, 2018 9:00:04 AM CET
