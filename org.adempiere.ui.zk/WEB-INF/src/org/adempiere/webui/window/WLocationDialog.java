@@ -92,7 +92,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -490669500974096990L;
+	private static final long serialVersionUID = -9116270523919373406L;
 	private static final String LABEL_STYLE = "white-space: nowrap;";
 	/** Logger          */
 	private static CLogger log = CLogger.getCLogger(WLocationDialog.class);
@@ -633,6 +633,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			}
 		}
 
+		setPlaceholders();
 		//      Fill it
 		if (m_location.getC_Location_ID() != 0)
 		{
@@ -1095,4 +1096,17 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		address = address + (c.getName() != null ? c.getName() : "");
 		return address.replace(" ", "+");
 	}	
+
+	void setPlaceholders() {
+		txtAddress1.setPlaceholder(MCountry.get(Env.getCtx(), s_oldCountry_ID).get_Translation("PlaceholderAddress1"));
+		txtAddress2.setPlaceholder(MCountry.get(Env.getCtx(), s_oldCountry_ID).get_Translation("PlaceholderAddress2"));
+		txtAddress3.setPlaceholder(MCountry.get(Env.getCtx(), s_oldCountry_ID).get_Translation("PlaceholderAddress3"));
+		txtAddress4.setPlaceholder(MCountry.get(Env.getCtx(), s_oldCountry_ID).get_Translation("PlaceholderAddress4"));
+		txtAddress5.setPlaceholder(MCountry.get(Env.getCtx(), s_oldCountry_ID).get_Translation("PlaceholderAddress5"));
+		txtComments.setPlaceholder(MCountry.get(Env.getCtx(), s_oldCountry_ID).get_Translation("PlaceholderComments"));
+		txtCity.setPlaceholder(MCountry.get(Env.getCtx(), s_oldCountry_ID).get_Translation("PlaceholderCity"));
+		txtPostal.setPlaceholder(MCountry.get(Env.getCtx(), s_oldCountry_ID).get_Translation("PlaceholderPostal"));
+		txtPostalAdd.setPlaceholder(MCountry.get(Env.getCtx(), s_oldCountry_ID).get_Translation("PlaceholderPostal_Add"));
+		// TODO set the placeholder for Region (ATM, lstRegion doesn't handle placeholder)	
+	}
 }

@@ -106,6 +106,8 @@ public class WDateEditor extends WEditor implements ContextMenuListener
 		popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
 		popupMenu.addMenuListener(this);
 		addChangeLogMenu(popupMenu);
+		if (gridField != null)
+			getComponent().setPlaceholder(gridField.getPlaceholder());
 	}
 
 	

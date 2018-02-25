@@ -109,10 +109,10 @@ public class SynchronizeTerminology extends SvrProcess
 			log.info("Adding missing Element Translations");
 			sql="INSERT INTO AD_ELEMENT_TRL (AD_Element_ID, AD_LANGUAGE, AD_Client_ID, AD_Org_ID,"
 				+" IsActive, Created, CreatedBy, Updated, UpdatedBy,"
-				+" Name, PrintName, Description, Help, IsTranslated)"
+				+" Name, PrintName, Description, Help, Placeholder, IsTranslated)"
 				+" SELECT m.AD_Element_ID, l.AD_LANGUAGE, m.AD_Client_ID, m.AD_Org_ID,"
 				+" m.IsActive, m.Created, m.CreatedBy, m.Updated, m.UpdatedBy,"
-				+" m.Name, m.PrintName, m.Description, m.Help, 'N'"
+				+" m.Name, m.PrintName, m.Description, m.Help, m.Placeholder,'N'"
 				+" FROM	AD_ELEMENT m, AD_LANGUAGE l"
 				+" WHERE	l.IsActive = 'Y' AND l.IsSystemLanguage = 'Y'"
 				+" AND	AD_Element_ID || AD_LANGUAGE NOT IN "
@@ -159,14 +159,15 @@ public class SynchronizeTerminology extends SvrProcess
 			//	Columns
 			log.info("Synchronize Column");
 			sql=" 	UPDATE AD_COLUMN c"
-				+" 		SET	(ColumnName, Name, Description, Help) =" 
-				+" 	           (SELECT ColumnName, Name, Description, Help" 
+				+" 		SET	(ColumnName, Name, Description, Help, Placeholder) =" 
+				+" 	           (SELECT ColumnName, Name, Description, Help, Placeholder" 
 				+" 	            FROM AD_ELEMENT e WHERE c.AD_Element_ID=e.AD_Element_ID),"
 				+" 			Updated = SYSDATE"
 				+" 	WHERE EXISTS (SELECT 1 FROM AD_ELEMENT e "
 				+" 				WHERE c.AD_Element_ID=e.AD_Element_ID"
 				+" 				  AND (c.ColumnName <> e.ColumnName OR c.Name <> e.Name "
-				+" 					OR NVL(c.Description,' ') <> NVL(e.Description,' ') OR NVL(c.Help,' ') <> NVL(e.Help,' ')))";
+				+" 					OR NVL(c.Description,' ') <> NVL(e.Description,' ') OR NVL(c.Help,' ') <> NVL(e.Help,' ')"
+				+" 					 OR NVL(c.Placeholder,' ') <> NVL(e.Placeholder,' ')))";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
@@ -174,15 +175,16 @@ public class SynchronizeTerminology extends SvrProcess
 			//	Info Columns
 			log.info("Synchronize Info Column");
 			sql=" 	UPDATE AD_INFOCOLUMN c"
-				+" 		SET	(ColumnName, Name, Description, Help) =" 
-				+" 	           (SELECT ColumnName, Name, Description, Help" 
+				+" 		SET	(ColumnName, Name, Description, Help, Placeholder) =" 
+				+" 	           (SELECT ColumnName, Name, Description, Help, Placeholder" 
 				+" 	            FROM AD_ELEMENT e WHERE c.AD_Element_ID=e.AD_Element_ID),"
 				+" 			Updated = SYSDATE"
 				+" 	WHERE c.IsCentrallyMaintained='Y' AND c.IsActive='Y'"
 				+" 	 AND EXISTS (SELECT 1 FROM AD_ELEMENT e "
 				+" 				WHERE c.AD_Element_ID=e.AD_Element_ID"
 				+" 				  AND (c.ColumnName <> e.ColumnName OR c.Name <> e.Name "
-				+" 					OR NVL(c.Description,' ') <> NVL(e.Description,' ') OR NVL(c.Help,' ') <> NVL(e.Help,' ')))";
+				+" 					OR NVL(c.Description,' ') <> NVL(e.Description,' ') OR NVL(c.Help,' ') <> NVL(e.Help,' ')"
+				+" 					OR NVL(c.Placeholder,' ') <> NVL(e.Placeholder,' ')))";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
@@ -190,8 +192,8 @@ public class SynchronizeTerminology extends SvrProcess
 			//	Fields should now be synchronized
 			log.info("Synchronize Field");
 			sql=" 	UPDATE AD_FIELD f"
-				+" 		SET (Name, Description, Help) = "
-				+" 	            (SELECT e.Name, e.Description, e.Help"
+				+" 		SET (Name, Description, Help, Placeholder) = "
+				+" 	            (SELECT e.Name, e.Description, e.Help, e.Placeholder"
 				+" 	            FROM AD_ELEMENT e, AD_COLUMN c"
 				+" 	    	    WHERE e.AD_Element_ID=c.AD_Element_ID AND c.AD_Column_ID=f.AD_Column_ID),"
 				+" 			Updated = SYSDATE"
@@ -199,7 +201,8 @@ public class SynchronizeTerminology extends SvrProcess
 				+" 	 AND EXISTS (SELECT 1 FROM AD_ELEMENT e, AD_COLUMN c"
 				+" 				WHERE f.AD_Column_ID=c.AD_Column_ID"
 				+" 				  AND c.AD_Element_ID=e.AD_Element_ID AND c.AD_Process_ID IS NULL"
-				+" 				  AND (f.Name <> e.Name OR NVL(f.Description,' ') <> NVL(e.Description,' ') OR NVL(f.Help,' ') <> NVL(e.Help,' ')))";
+				+" 				  AND (f.Name <> e.Name OR NVL(f.Description,' ') <> NVL(e.Description,' ') OR NVL(f.Help,' ') <> NVL(e.Help,' ')"
+				+"   				OR NVL(f.Placeholder,' ') <> NVL(e.Placeholder,' ')))";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
@@ -216,6 +219,9 @@ public class SynchronizeTerminology extends SvrProcess
 				+"	Help = (SELECT e.Help FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f"
 				+"			WHERE e.AD_LANGUAGE=trl.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID "
 				+"			  AND c.AD_Column_ID=f.AD_Column_ID AND f.AD_Field_ID=trl.AD_Field_ID),"
+				+"	Placeholder = (SELECT e.Placeholder FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f"
+				+"			WHERE e.AD_LANGUAGE=trl.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID "
+				+"			  AND c.AD_Column_ID=f.AD_Column_ID AND f.AD_Field_ID=trl.AD_Field_ID),"
 				+"	IsTranslated = (SELECT e.IsTranslated FROM AD_ELEMENT_TRL e, AD_COLUMN c, AD_FIELD f"
 				+"			WHERE e.AD_LANGUAGE=trl.AD_LANGUAGE AND e.AD_Element_ID=c.AD_Element_ID "
 				+"			  AND c.AD_Column_ID=f.AD_Column_ID AND f.AD_Field_ID=trl.AD_Field_ID),"
@@ -226,7 +232,8 @@ public class SynchronizeTerminology extends SvrProcess
 				+"		  AND c.AD_Element_ID=e.AD_Element_ID AND c.AD_Process_ID IS NULL"
 				+"		  AND trl.AD_LANGUAGE=e.AD_LANGUAGE"
 				+"		  AND f.IsCentrallyMaintained='Y' AND f.IsActive='Y'"
-				+"		  AND (trl.Name <> e.Name OR NVL(trl.Description,' ') <> NVL(e.Description,' ') OR NVL(trl.Help,' ') <> NVL(e.Help,' ')))";
+				+"		  AND (trl.Name <> e.Name OR NVL(trl.Description,' ') <> NVL(e.Description,' ') OR NVL(trl.Help,' ') <> NVL(e.Help,' ')"
+				+"         OR NVL(trl.Placeholder,' ') <> NVL(e.Placeholder,' ')))";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
@@ -362,11 +369,13 @@ public class SynchronizeTerminology extends SvrProcess
 				+" 			WHERE e.ColumnName=f.ColumnName),"
 				+" 	Help = (SELECT e.Help FROM AD_ELEMENT e"
 				+" 			WHERE e.ColumnName=f.ColumnName),"
+				+" 	Placeholder = (SELECT e.Placeholder FROM AD_ELEMENT e"
+				+" 			WHERE e.ColumnName=f.ColumnName),"
 				+" 	Updated = SYSDATE"
 				+" WHERE f.IsCentrallyMaintained='Y' AND f.IsActive='Y'"
 				+" AND EXISTS (SELECT 1 FROM AD_ELEMENT e"
 				+" 		WHERE e.ColumnName=f.ColumnName"
-				+" 		  AND (f.Name <> e.Name OR NVL(f.Description,' ') <> NVL(e.Description,' ') OR NVL(f.Help,' ') <> NVL(e.Help,' ')))";
+				+" 		  AND (f.Name <> e.Name OR NVL(f.Description,' ') <> NVL(e.Description,' ') OR NVL(f.Help,' ') <> NVL(e.Help,' ') OR NVL(f.Placeholder,' ') <> NVL(e.Placeholder,' ')))";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
@@ -383,6 +392,9 @@ public class SynchronizeTerminology extends SvrProcess
 				+" 	Help = (SELECT et.Help FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_PROCESS_PARA f"
 				+" 			WHERE et.AD_LANGUAGE=trl.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID"
 				+" 			  AND e.ColumnName=f.ColumnName AND f.AD_Process_Para_ID=trl.AD_Process_Para_ID),"
+				+" 	Placeholder = (SELECT et.Placeholder FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_PROCESS_PARA f"
+				+" 			WHERE et.AD_LANGUAGE=trl.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID"
+				+" 			  AND e.ColumnName=f.ColumnName AND f.AD_Process_Para_ID=trl.AD_Process_Para_ID),"
 				+" 	IsTranslated = (SELECT et.IsTranslated FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_PROCESS_PARA f"
 				+" 			WHERE et.AD_LANGUAGE=trl.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID"
 				+" 			  AND e.ColumnName=f.ColumnName AND f.AD_Process_Para_ID=trl.AD_Process_Para_ID),"
@@ -391,7 +403,7 @@ public class SynchronizeTerminology extends SvrProcess
 				+" 			WHERE et.AD_LANGUAGE=trl.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID"
 				+" 			  AND e.ColumnName=f.ColumnName AND f.AD_Process_Para_ID=trl.AD_Process_Para_ID"
 				+" 			  AND f.IsCentrallyMaintained='Y' AND f.IsActive='Y'"
-				+" 			  AND (trl.Name <> et.Name OR NVL(trl.Description,' ') <> NVL(et.Description,' ') OR NVL(trl.Help,' ') <> NVL(et.Help,' ')))";
+				+" 			  AND (trl.Name <> et.Name OR NVL(trl.Description,' ') <> NVL(et.Description,' ') OR NVL(trl.Help,' ') <> NVL(et.Help,' ') OR NVL(trl.Placeholder,' ') <> NVL(et.Placeholder,' ')))";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
@@ -408,6 +420,9 @@ public class SynchronizeTerminology extends SvrProcess
 				+" 	Help = (SELECT et.Help FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_INFOCOLUMN f"
 				+" 			WHERE et.AD_LANGUAGE=trl.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID"
 				+" 			  AND e.ColumnName=f.ColumnName AND f.AD_InfoColumn_ID=trl.AD_InfoColumn_ID),"
+				+" 	Placeholder = (SELECT et.Placeholder FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_INFOCOLUMN f"
+				+" 			WHERE et.AD_LANGUAGE=trl.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID"
+				+" 			  AND e.ColumnName=f.ColumnName AND f.AD_InfoColumn_ID=trl.AD_InfoColumn_ID),"
 				+" 	IsTranslated = (SELECT et.IsTranslated FROM AD_ELEMENT_TRL et, AD_ELEMENT e, AD_INFOCOLUMN f"
 				+" 			WHERE et.AD_LANGUAGE=trl.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID"
 				+" 			  AND e.ColumnName=f.ColumnName AND f.AD_InfoColumn_ID=trl.AD_InfoColumn_ID),"
@@ -416,7 +431,7 @@ public class SynchronizeTerminology extends SvrProcess
 				+" 			WHERE et.AD_LANGUAGE=trl.AD_LANGUAGE AND et.AD_Element_ID=e.AD_Element_ID"
 				+" 			  AND e.ColumnName=f.ColumnName AND f.AD_InfoColumn_ID=trl.AD_InfoColumn_ID"
 				+" 			  AND f.IsCentrallyMaintained='Y' AND f.IsActive='Y'"
-				+" 			  AND (trl.Name <> et.Name OR NVL(trl.Description,' ') <> NVL(et.Description,' ') OR NVL(trl.Help,' ') <> NVL(et.Help,' ')))";
+				+" 			  AND (trl.Name <> et.Name OR NVL(trl.Description,' ') <> NVL(et.Description,' ') OR NVL(trl.Help,' ') <> NVL(et.Help,' ') OR NVL(trl.Placeholder,' ') <> NVL(et.Placeholder,' ')))";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);

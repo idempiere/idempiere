@@ -181,6 +181,8 @@ public class DBException extends AdempiereException
      * @param e exception
      */
     public static boolean isInvalidIdentifierError(Exception e) {
+    	if (DB.isPostgreSQL())
+    		return isSQLState(e, "42P01");
     	return isErrorCode(e, 904);
     }
 

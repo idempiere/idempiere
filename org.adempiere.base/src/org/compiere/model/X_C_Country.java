@@ -30,7 +30,7 @@ public class X_C_Country extends PO implements I_C_Country, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171031L;
+	private static final long serialVersionUID = 20180217L;
 
     /** Standard Constructor */
     public X_C_Country (Properties ctx, int C_Country_ID, String trxName)
@@ -583,6 +583,132 @@ public class X_C_Country extends PO implements I_C_Country, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Placeholder for Address 1.
+		@param PlaceholderAddress1 Placeholder for Address 1	  */
+	public void setPlaceholderAddress1 (String PlaceholderAddress1)
+	{
+		set_Value (COLUMNNAME_PlaceholderAddress1, PlaceholderAddress1);
+	}
+
+	/** Get Placeholder for Address 1.
+		@return Placeholder for Address 1	  */
+	public String getPlaceholderAddress1 () 
+	{
+		return (String)get_Value(COLUMNNAME_PlaceholderAddress1);
+	}
+
+	/** Set Placeholder for Address 2.
+		@param PlaceholderAddress2 Placeholder for Address 2	  */
+	public void setPlaceholderAddress2 (String PlaceholderAddress2)
+	{
+		set_Value (COLUMNNAME_PlaceholderAddress2, PlaceholderAddress2);
+	}
+
+	/** Get Placeholder for Address 2.
+		@return Placeholder for Address 2	  */
+	public String getPlaceholderAddress2 () 
+	{
+		return (String)get_Value(COLUMNNAME_PlaceholderAddress2);
+	}
+
+	/** Set Placeholder for Address 3.
+		@param PlaceholderAddress3 Placeholder for Address 3	  */
+	public void setPlaceholderAddress3 (String PlaceholderAddress3)
+	{
+		set_Value (COLUMNNAME_PlaceholderAddress3, PlaceholderAddress3);
+	}
+
+	/** Get Placeholder for Address 3.
+		@return Placeholder for Address 3	  */
+	public String getPlaceholderAddress3 () 
+	{
+		return (String)get_Value(COLUMNNAME_PlaceholderAddress3);
+	}
+
+	/** Set Placeholder for Address 4.
+		@param PlaceholderAddress4 Placeholder for Address 4	  */
+	public void setPlaceholderAddress4 (String PlaceholderAddress4)
+	{
+		set_Value (COLUMNNAME_PlaceholderAddress4, PlaceholderAddress4);
+	}
+
+	/** Get Placeholder for Address 4.
+		@return Placeholder for Address 4	  */
+	public String getPlaceholderAddress4 () 
+	{
+		return (String)get_Value(COLUMNNAME_PlaceholderAddress4);
+	}
+
+	/** Set Placeholder for Address 5.
+		@param PlaceholderAddress5 Placeholder for Address 5	  */
+	public void setPlaceholderAddress5 (String PlaceholderAddress5)
+	{
+		set_Value (COLUMNNAME_PlaceholderAddress5, PlaceholderAddress5);
+	}
+
+	/** Get Placeholder for Address 5.
+		@return Placeholder for Address 5	  */
+	public String getPlaceholderAddress5 () 
+	{
+		return (String)get_Value(COLUMNNAME_PlaceholderAddress5);
+	}
+
+	/** Set Placeholder for city.
+		@param PlaceholderCity Placeholder for city	  */
+	public void setPlaceholderCity (String PlaceholderCity)
+	{
+		set_Value (COLUMNNAME_PlaceholderCity, PlaceholderCity);
+	}
+
+	/** Get Placeholder for city.
+		@return Placeholder for city	  */
+	public String getPlaceholderCity () 
+	{
+		return (String)get_Value(COLUMNNAME_PlaceholderCity);
+	}
+
+	/** Set Placeholder for comments.
+		@param PlaceholderComments Placeholder for comments	  */
+	public void setPlaceholderComments (String PlaceholderComments)
+	{
+		set_Value (COLUMNNAME_PlaceholderComments, PlaceholderComments);
+	}
+
+	/** Get Placeholder for comments.
+		@return Placeholder for comments	  */
+	public String getPlaceholderComments () 
+	{
+		return (String)get_Value(COLUMNNAME_PlaceholderComments);
+	}
+
+	/** Set Placeholder for postal.
+		@param PlaceholderPostal Placeholder for postal	  */
+	public void setPlaceholderPostal (String PlaceholderPostal)
+	{
+		set_Value (COLUMNNAME_PlaceholderPostal, PlaceholderPostal);
+	}
+
+	/** Get Placeholder for postal.
+		@return Placeholder for postal	  */
+	public String getPlaceholderPostal () 
+	{
+		return (String)get_Value(COLUMNNAME_PlaceholderPostal);
+	}
+
+	/** Set Placeholder for additional zip.
+		@param PlaceholderPostal_Add Placeholder for additional zip	  */
+	public void setPlaceholderPostal_Add (String PlaceholderPostal_Add)
+	{
+		set_Value (COLUMNNAME_PlaceholderPostal_Add, PlaceholderPostal_Add);
+	}
+
+	/** Get Placeholder for additional zip.
+		@return Placeholder for additional zip	  */
+	public String getPlaceholderPostal_Add () 
+	{
+		return (String)get_Value(COLUMNNAME_PlaceholderPostal_Add);
+	}
 
 	/** Set Region.
 		@param RegionName 

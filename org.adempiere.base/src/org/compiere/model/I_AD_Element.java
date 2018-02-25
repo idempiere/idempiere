@@ -180,6 +180,15 @@ public interface I_AD_Element
 	  */
 	public String getName();
 
+    /** Column name Placeholder */
+    public static final String COLUMNNAME_Placeholder = "Placeholder";
+
+	/** Set Placeholder	  */
+	public void setPlaceholder (String Placeholder);
+
+	/** Get Placeholder	  */
+	public String getPlaceholder();
+
     /** Column name PO_Description */
     public static final String COLUMNNAME_PO_Description = "PO_Description";
 

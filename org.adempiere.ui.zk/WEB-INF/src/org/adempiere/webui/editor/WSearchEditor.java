@@ -201,7 +201,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			getComponent().getButton().setImage(imageUrl);
 
 		addChangeLogMenu(popupMenu);
-
+		if (gridField != null)
+			getComponent().getTextbox().setPlaceholder(gridField.getPlaceholder());
 		return;
 	}
 

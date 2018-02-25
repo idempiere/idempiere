@@ -368,6 +368,24 @@ public interface I_AD_Process_Para
 	  */
 	public String getName();
 
+    /** Column name Placeholder */
+    public static final String COLUMNNAME_Placeholder = "Placeholder";
+
+	/** Set Placeholder	  */
+	public void setPlaceholder (String Placeholder);
+
+	/** Get Placeholder	  */
+	public String getPlaceholder();
+
+    /** Column name Placeholder2 */
+    public static final String COLUMNNAME_Placeholder2 = "Placeholder2";
+
+	/** Set Placeholder2	  */
+	public void setPlaceholder2 (String Placeholder2);
+
+	/** Get Placeholder2	  */
+	public String getPlaceholder2();
+
     /** Column name ReadOnlyLogic */
     public static final String COLUMNNAME_ReadOnlyLogic = "ReadOnlyLogic";
 

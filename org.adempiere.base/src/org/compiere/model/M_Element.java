@@ -220,6 +220,7 @@ public class M_Element extends X_AD_Element
 			if (   is_ValueChanged(M_Element.COLUMNNAME_Name)
 				|| is_ValueChanged(M_Element.COLUMNNAME_Description)
 				|| is_ValueChanged(M_Element.COLUMNNAME_Help)
+				|| is_ValueChanged(M_Element.COLUMNNAME_Placeholder)
 				|| is_ValueChanged(M_Element.COLUMNNAME_ColumnName)
 				) {
 				//	Column
@@ -228,6 +229,7 @@ public class M_Element extends X_AD_Element
 					.append(", Name=").append(DB.TO_STRING(getName()))
 					.append(", Description=").append(DB.TO_STRING(getDescription()))
 					.append(", Help=").append(DB.TO_STRING(getHelp()))
+					.append(", Placeholder=").append(DB.TO_STRING(getPlaceholder()))
 					.append(" WHERE AD_Element_ID=").append(get_ID());
 				no = DB.executeUpdate(sql.toString(), get_TrxName());
 				if (log.isLoggable(Level.FINE)) log.fine("afterSave - Columns updated #" + no);
@@ -249,6 +251,7 @@ public class M_Element extends X_AD_Element
 					.append(", Name=").append(DB.TO_STRING(getName()))
 					.append(", Description=").append(DB.TO_STRING(getDescription()))
 					.append(", Help=").append(DB.TO_STRING(getHelp()))
+					.append(", Placeholder=").append(DB.TO_STRING(getPlaceholder()))
 					.append(" WHERE AD_Element_ID=").append(get_ID())
 					.append(" AND IsCentrallyMaintained='Y'");
 				no += DB.executeUpdate(sql.toString(), get_TrxName());
@@ -260,6 +263,7 @@ public class M_Element extends X_AD_Element
 					.append(", Name=").append(DB.TO_STRING(getName()))
 					.append(", Description=").append(DB.TO_STRING(getDescription()))
 					.append(", Help=").append(DB.TO_STRING(getHelp()))
+					.append(", Placeholder=").append(DB.TO_STRING(getPlaceholder()))
 					.append(" WHERE AD_Element_ID=").append(get_ID())
 					.append(" AND IsCentrallyMaintained='Y'");
 				no += DB.executeUpdate(sql.toString(), get_TrxName());
@@ -269,12 +273,14 @@ public class M_Element extends X_AD_Element
 			if (   is_ValueChanged(M_Element.COLUMNNAME_Name)
 				|| is_ValueChanged(M_Element.COLUMNNAME_Description)
 				|| is_ValueChanged(M_Element.COLUMNNAME_Help)
+				|| is_ValueChanged(M_Element.COLUMNNAME_Placeholder)
 				) {
 				//	Field
 				sql = new StringBuilder("UPDATE AD_Field SET Name=")
 					.append(DB.TO_STRING(getName()))
 					.append(", Description=").append(DB.TO_STRING(getDescription()))
 					.append(", Help=").append(DB.TO_STRING(getHelp()))
+					.append(", Placeholder=").append(DB.TO_STRING(getPlaceholder()))
 					.append(" WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=")
 					.append(get_ID())
 					.append(") AND IsCentrallyMaintained='Y'");

@@ -85,7 +85,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2703129833179761682L;
+	private static final long serialVersionUID = -5866251928705632328L;
 
 	/**
 	 *  Field Constructor.
@@ -2529,7 +2529,19 @@ public class GridField
 	{
 		return m_vo.PA_DashboardContent_ID;
 	}
-	
+
+	public String getPlaceholder() {
+		return m_vo.Placeholder;
+	}
+
+	public String getPlaceholder2() {
+		return m_vo.Placeholder2;
+	}
+
+	public void setPlaceholder(String placeholder) {
+		m_vo.Placeholder = placeholder;
+	}
+
 	public GridField clone(Properties ctx)  
 	{
 		try {

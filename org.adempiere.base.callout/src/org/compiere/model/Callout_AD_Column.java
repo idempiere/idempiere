@@ -140,6 +140,7 @@ public class Callout_AD_Column extends CalloutEngine
 			column.setName(element.getName());
 			column.setDescription(element.getDescription());
 			column.setHelp(element.getHelp());
+			column.setPlaceholder(element.getPlaceholder());
 		}
 
 		return "";

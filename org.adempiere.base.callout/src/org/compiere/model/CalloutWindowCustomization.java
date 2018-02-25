@@ -114,6 +114,7 @@ public class CalloutWindowCustomization extends CalloutEngine
 		ud_field.setName(field.get_Translation("Name", lang));
 		ud_field.setDescription(field.get_Translation("Description", lang));
 		ud_field.setHelp(field.get_Translation("Help", lang));
+		ud_field.setPlaceholder(field.get_Translation("PlaceHolder", lang));
 		//IDEMPIERE-163 / do not inherit configuration from field - all configuration was made nullable, if null it inherit the field/column config
 
 		return NO_ERROR;

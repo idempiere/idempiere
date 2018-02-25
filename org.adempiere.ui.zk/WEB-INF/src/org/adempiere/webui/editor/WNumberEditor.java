@@ -156,6 +156,9 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
     	originalStyle = getComponent().getDecimalbox().getStyle();
     	if (ClientInfo.isMobile())
     		getComponent().getButton().setVisible(false);
+
+    	if (gridField != null)
+    		getComponent().getDecimalbox().setPlaceholder(gridField.getPlaceholder());
     }
 	
 	/**

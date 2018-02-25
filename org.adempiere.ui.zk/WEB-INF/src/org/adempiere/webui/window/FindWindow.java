@@ -667,7 +667,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             GridField mField = m_findFields[i];
             boolean isDisplayed = mField.isDisplayed();
             
-			if (mField.getVO().displayType == DisplayType.YesNo) {
+            if (DisplayType.isText(mField.getVO().displayType)) {
+            	// for string fields allow searching long strings - useful for like and similar to searches
+            	mField.getVO().FieldLength = 32767;  // a conservative max literal string - like oracle extended
+            	mField.getVO().DisplayLength = mField.getVO().FieldLength;
+            }
+            if (mField.getVO().displayType == DisplayType.YesNo) {
 				// Make Yes-No searchable as list
 				GridFieldVO vo = mField.getVO();
 				GridFieldVO ynvo = vo.clone(m_simpleCtx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);

@@ -15,16 +15,18 @@ import org.compiere.util.Env;
  *
  */
 public class MStyle extends X_AD_Style {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5183438249097292583L;
+	private static final long serialVersionUID = 4988653330824933725L;
 
 	/**	Cache					*/
 	private static  CCache<Integer,MStyle> s_cache = new CCache<Integer,MStyle>(Table_Name, 30, 60);
 	private X_AD_StyleLine[] m_lines = null;
 	
+    public static final String SCLASS_PREFIX = "@sclass=";
+    public static final String ZCLASS_PREFIX = "@zclass=";
+
 	public MStyle(Properties ctx, int AD_Style_ID, String trxName) {
 		super(ctx, AD_Style_ID, trxName);
 	}

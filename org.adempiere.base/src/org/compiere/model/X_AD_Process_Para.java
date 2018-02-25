@@ -30,7 +30,7 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171031L;
+	private static final long serialVersionUID = 20180217L;
 
     /** Standard Constructor */
     public X_AD_Process_Para (Properties ctx, int AD_Process_Para_ID, String trxName)
@@ -535,6 +535,34 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Placeholder.
+		@param Placeholder Placeholder	  */
+	public void setPlaceholder (String Placeholder)
+	{
+		set_Value (COLUMNNAME_Placeholder, Placeholder);
+	}
+
+	/** Get Placeholder.
+		@return Placeholder	  */
+	public String getPlaceholder () 
+	{
+		return (String)get_Value(COLUMNNAME_Placeholder);
+	}
+
+	/** Set Placeholder2.
+		@param Placeholder2 Placeholder2	  */
+	public void setPlaceholder2 (String Placeholder2)
+	{
+		set_Value (COLUMNNAME_Placeholder2, Placeholder2);
+	}
+
+	/** Get Placeholder2.
+		@return Placeholder2	  */
+	public String getPlaceholder2 () 
+	{
+		return (String)get_Value(COLUMNNAME_Placeholder2);
+	}
 
 	/** Set Read Only Logic.
 		@param ReadOnlyLogic 
