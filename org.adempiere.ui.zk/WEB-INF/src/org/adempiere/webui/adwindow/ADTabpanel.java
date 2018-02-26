@@ -208,7 +208,9 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	private int numberOfFormColumns;
 
 	public static final String ON_TOGGLE_EVENT = "onToggle";
-	
+
+	private static final String DEFAULT_PANEL_WIDTH = "300px";
+
 	private static enum SouthEvent {
     	SLIDE(),
     	OPEN(),
@@ -370,7 +372,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			treePanel = new ADTreePanel(windowNo, gridTab.getTabNo());
 			West west = new West();
 			west.appendChild(treePanel);
-			ZKUpdateUtil.setWidth(west, "300px");
+			ZKUpdateUtil.setWidth(west, widthTreePanel());
 			west.setCollapsible(true);
 			west.setSplittable(true);
 			west.setAutoscroll(true);
@@ -1302,6 +1304,15 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     	return height;
     }
 
+    private String widthTreePanel() {
+    	String width = null;
+    	int windowId = getGridTab().getAD_Window_ID();
+    	int adTabId = getGridTab().getAD_Tab_ID();
+    	if (windowId > 0 && adTabId > 0)
+    		width = Env.getPreference(Env.getCtx(), windowId, adTabId+"|TreePanel.Width", false);
+    	return Util.isEmpty(width) ? DEFAULT_PANEL_WIDTH : width;
+    }
+
     private void navigateTo(DefaultTreeNode<MTreeNode> value) {
     	MTreeNode treeNode = value.getData();
     	//  We Have a TreeNode
@@ -1877,33 +1888,44 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		if (formContainer.getSouth() != null) {
 			if (formContainer.getSouth().isVisible() && formContainer.getSouth().isOpen()) {
 				String height = formContainer.getSouth().getHeight();
-				if (! Util.isEmpty(height)) {
-		    		int windowId = getGridTab().getAD_Window_ID();
-		    		int adTabId = getGridTab().getAD_Tab_ID();
-		    		if (windowId > 0 && adTabId > 0) {
-		    			Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), "AD_Window_ID=? AND Attribute=? AND AD_User_ID=? AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
-		    			int userId = Env.getAD_User_ID(Env.getCtx());
-		    			MPreference preference = query.setOnlyActiveRecords(true)
-		    										  .setApplyAccessFilter(true)
-		    										  .setParameters(windowId, adTabId+"|DetailPane.Height", userId)
-		    										  .first();
-		    			if (preference == null || preference.getAD_Preference_ID() <= 0) {
-		    				preference = new MPreference(Env.getCtx(), 0, null);
-		    				preference.setAD_Window_ID(windowId);
-		    				preference.set_ValueOfColumn("AD_User_ID", userId); // required set_Value for System=0 user
-		    				preference.setAttribute(adTabId+"|DetailPane.Height");
-		    			}
-	    				preference.setValue(height);
-		    			preference.saveEx();
-		    			//update current context
-		    			Env.getCtx().setProperty("P"+windowId+"|"+adTabId+"|DetailPane.Height", height);
-		    		}
-				}
+				if (! Util.isEmpty(height))
+					savePreference("DetailPane.Height", height);
+			}
+		}
+		if (treePanel != null && formContainer.getWest() != null) {
+			if (formContainer.getWest().isVisible() && formContainer.getWest().isOpen()) {
+				String width = formContainer.getWest().getWidth();
+				if (! Util.isEmpty(width))
+					savePreference("TreePanel.Width", width);
 			}
 		}
 		super.onPageDetached(page);
 	}
-	
+
+	void savePreference(String attribute, String value)
+	{
+		int windowId = getGridTab().getAD_Window_ID();
+		int adTabId = getGridTab().getAD_Tab_ID();
+		if (windowId > 0 && adTabId > 0) {
+			Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), I_AD_Preference.Table_ID), "AD_Window_ID=? AND Attribute=? AND AD_User_ID=? AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
+			int userId = Env.getAD_User_ID(Env.getCtx());
+			MPreference preference = query.setOnlyActiveRecords(true)
+					.setApplyAccessFilter(true)
+					.setParameters(windowId, adTabId+"|"+attribute, userId)
+					.first();
+			if (preference == null || preference.getAD_Preference_ID() <= 0) {
+				preference = new MPreference(Env.getCtx(), 0, null);
+				preference.setAD_Window_ID(windowId);
+				preference.set_ValueOfColumn("AD_User_ID", userId); // required set_Value for System=0 user
+				preference.setAttribute(adTabId+"|"+attribute);
+			}
+			preference.setValue(value);
+			preference.saveEx();
+			//update current context
+			Env.getCtx().setProperty("P"+windowId+"|"+adTabId+"|"+attribute, value);
+		}
+	}
+
 	protected void onClientInfo() {
 		if (!uiCreated || gridTab == null) return;
 		int numCols=gridTab.getNumColumns();
