@@ -71,7 +71,6 @@
 		<module>org.adempiere.payment.processor-feature</module>
 		<module>org.idempiere.zk-feature</module>
 		<module>org.idempiere.p2</module>
-		<module>org.idempiere.maven.to.p2</module>
 		<module>${idempiere.target}</module>
 	</modules>
 
