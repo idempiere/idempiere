@@ -72,7 +72,7 @@
 		<module>org.idempiere.zk-feature</module>
 		<module>org.idempiere.p2</module>
 		<module>org.idempiere.maven.to.p2</module>
-		<module>org.idempiere.p2.targetplatform</module>
+		<module>${idempiere.target}</module>
 	</modules>
 
 </project>

@@ -19,6 +19,7 @@
 		<maven-dependency-version>3.0.2</maven-dependency-version>
 		<download-maven-version>1.4.0</download-maven-version>
 		<lifecycle-mapping-version>1.0.0</lifecycle-mapping-version>
+		<idempiere.target>org.idempiere.p2.targetplatform</idempiere.target>
 
 		<idempiere-repository-url>https://sourceforge.net/projects/idempiere/files/binary.file/jarfile</idempiere-repository-url>
 		<idempiere-jasper-url>${idempiere-repository-url}/jp-p2/jp-${jp-version}</idempiere-jasper-url>
@@ -64,6 +65,7 @@
 				<idempiere-maven-zkoss-url>${idempiere-repository-url}/zkoss</idempiere-maven-zkoss-url>
 				<idempiere-maven-jenkins-url>${idempiere-repository-url}/zkoss</idempiere-maven-jenkins-url>
 				<url.file.srv>${idempiere-repository-url}/binary.file</url.file.srv>
+				<idempiere.target>org.idempiere.p2.targetplatform.offline</idempiere.target>
 			</properties>
 		</profile>
 
@@ -103,6 +105,7 @@
 				<idempiere-maven-zkoss-url>http://mavensync.zkoss.org/maven2</idempiere-maven-zkoss-url>
 				<idempiere-maven-jenkins-url>http://repo.jenkins-ci.org/releases</idempiere-maven-jenkins-url>
 				<url.file.srv>http://downloads.sourceforge.net/project/idempiere/binary.file</url.file.srv>
+				<idempiere.target>org.idempiere.p2.targetplatform</idempiere.target>
 			</properties>
 		</profile>
 	</profiles>
@@ -313,7 +316,7 @@
 					<target>
 						<artifact>
 							<groupId>${project.groupId}</groupId>
-							<artifactId>org.idempiere.p2.targetplatform</artifactId>
+							<artifactId>${idempiere.target}</artifactId>
 							<version>${project.version}</version>
 						</artifact>
 					</target>
