@@ -223,7 +223,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.eclipse.jetty:jetty-alpn-server:jar:${jetty-version}</id>
+											<id>org.eclipse.jetty:jetty-alpn-server:jar:${jetty.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -273,93 +273,93 @@
 									<generateSourceFeature>true</generateSourceFeature>
 									<artifacts>
 										<artifact>
-											<id>org.zkoss.zk:zkplus:jar:sources:${zk-version}</id>
+											<id>org.zkoss.zk:zkplus:jar:sources:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zkplus;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zkplus;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zkplus</Bundle-SymbolicName>
 												<Bundle-Name>zkplus.source</Bundle-Name>
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.zkoss.common:zweb:jar:sources:${zk-version}</id>
+											<id>org.zkoss.common:zweb:jar:sources:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zweb;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zweb;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zweb</Bundle-SymbolicName>
 												<Bundle-Name>zweb.source</Bundle-Name>
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.zkoss.zk:zul:jar:sources:${zk-version}</id>
+											<id>org.zkoss.zk:zul:jar:sources:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zul;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zul;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zul</Bundle-SymbolicName>
 												<Bundle-Name>zul.source</Bundle-Name>
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.zkoss.zk:zk:jar:sources:${zk-version}</id>
+											<id>org.zkoss.zk:zk:jar:sources:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zk;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zk;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zk</Bundle-SymbolicName>
 												<Bundle-Name>zk.source</Bundle-Name>
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.zkoss.zk:zhtml:jar:sources:${zk-version}</id>
+											<id>org.zkoss.zk:zhtml:jar:sources:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zhtml;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zhtml;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zhtml</Bundle-SymbolicName>
 												<Bundle-Name>zhtml.source</Bundle-Name>
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.zkoss.zk:zkbind:jar:sources:${zk-version}</id>
+											<id>org.zkoss.zk:zkbind:jar:sources:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zkbind;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zkbind;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zkbind</Bundle-SymbolicName>
 												<Bundle-Name>zkbind.source</Bundle-Name>
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.zkoss.common:zel:jar:sources:${zk-version}</id>
+											<id>org.zkoss.common:zel:jar:sources:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zel;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zel;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zel</Bundle-SymbolicName>
 												<Bundle-Name>zel.source</Bundle-Name>
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.zkoss.common:zcommon:jar:sources:${zk-version}</id>
+											<id>org.zkoss.common:zcommon:jar:sources:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zcommon;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zcommon;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zcommon</Bundle-SymbolicName>
 												<Bundle-Name>zcommon.source</Bundle-Name>
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.javassist:javassist:jar:sources:${zk-javassist-src-version}</id>
+											<id>org.javassist:javassist:jar:sources:${zk.javassist.src.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
-												<Eclipse-SourceBundle>zjavassist;version="${zk-version}";roots:="."</Eclipse-SourceBundle>
+												<Eclipse-SourceBundle>zjavassist;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zjavassist</Bundle-SymbolicName>
-												<Bundle-Version>${zk-version}</Bundle-Version>
+												<Bundle-Version>${zk.version}</Bundle-Version>
 												<Bundle-Name>zjavassist.source</Bundle-Name>
 											</instructions>
 										</artifact>
@@ -377,7 +377,7 @@
 									<generateSourceFeature>true</generateSourceFeature>
 									<artifacts>
 										<artifact>
-											<id>org.zkoss.zk:zkplus:${zk-version}</id>
+											<id>org.zkoss.zk:zkplus:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
@@ -386,7 +386,7 @@
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.zkoss.common:zweb:${zk-version}</id>
+											<id>org.zkoss.common:zweb:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
@@ -395,7 +395,7 @@
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.zkoss.zk:zul:${zk-version}</id>
+											<id>org.zkoss.zk:zul:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
@@ -404,7 +404,7 @@
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.zkoss.zk:zk:${zk-version}</id>
+											<id>org.zkoss.zk:zk:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
@@ -413,7 +413,7 @@
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.zkoss.zk:zhtml:${zk-version}</id>
+											<id>org.zkoss.zk:zhtml:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
@@ -422,7 +422,7 @@
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.zkoss.zk:zkbind:${zk-version}</id>
+											<id>org.zkoss.zk:zkbind:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
@@ -431,7 +431,7 @@
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.zkoss.common:zel:${zk-version}</id>
+											<id>org.zkoss.common:zel:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
@@ -440,7 +440,7 @@
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.zkoss.common:zcommon:${zk-version}</id>
+											<id>org.zkoss.common:zcommon:${zk.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<instructions>
@@ -462,7 +462,7 @@
 									<generateSourceFeature>true</generateSourceFeature>
 									<artifacts>
 										<artifact>
-											<id>net.sf.jasperreports:jasperreports:jar:${jp-version}</id>
+											<id>net.sf.jasperreports:jasperreports:jar:${jp.version}</id>
 											<source>false</source>
 											<transitive>false</transitive>
 											<override>true</override>
@@ -477,18 +477,18 @@
 
 							<artifacts>
 								<artifact>
-									<id>org.javassist:javassist:${zk-javassist-src-version}</id>
+									<id>org.javassist:javassist:${zk.javassist.src.version}</id>
 									<source>false</source>
 									<transitive>false</transitive>
 									<override>true</override>
 									<instructions>
 										<Bundle-SymbolicName>zjavassist</Bundle-SymbolicName>
 										<Bundle-Name>zjavassist</Bundle-Name>
-										<!-- this work-around can generate bundle with version is ${zk-version}, 
-											but feature still use version from artifact id, mean ${zk-javassist-src-version}, 
+										<!-- this work-around can generate bundle with version is ${zk.version}, 
+											but feature still use version from artifact id, mean ${zk.javassist.src.version}, 
 											it let target recognize wrong bundle -->
 										<!-- need to adjust feature at next step -->
-										<Bundle-Version>${zk-version}</Bundle-Version>
+										<Bundle-Version>${zk.version}</Bundle-Version>
 									</instructions>
 								</artifact>
 							</artifacts>
@@ -511,7 +511,7 @@
 						<configuration>
 							<url>${zk-osgi-zip-file}</url>
 							<unpack>true</unpack>
-							<outputFileName>zk-bin-osgi-${zk-version}.zip</outputFileName>
+							<outputFileName>zk-bin-osgi-${zk.version}.zip</outputFileName>
 							<outputDirectory>${project.build.directory}</outputDirectory>
 							<retries>5</retries>
 						</configuration>
@@ -532,40 +532,40 @@
 						<configuration>
 							<fileSets>
 								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk-version}/dist/lib/zcommon.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zcommon_${zk-version}.jar</destinationFile>
+									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zcommon.osgi.jar</sourceFile>
+									<destinationFile>${project.build.directory}/repository/plugins/zcommon_${zk.version}.jar</destinationFile>
 								</fileSet>
 								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk-version}/dist/lib/zel.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zel_${zk-version}.jar</destinationFile>
+									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zel.osgi.jar</sourceFile>
+									<destinationFile>${project.build.directory}/repository/plugins/zel_${zk.version}.jar</destinationFile>
 								</fileSet>
 								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk-version}/dist/lib/zhtml.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zhtml_${zk-version}.jar</destinationFile>
+									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zhtml.osgi.jar</sourceFile>
+									<destinationFile>${project.build.directory}/repository/plugins/zhtml_${zk.version}.jar</destinationFile>
 								</fileSet>
 								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk-version}/dist/lib/zjavassist.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zjavassist_${zk-version}.jar</destinationFile>
+									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zjavassist.osgi.jar</sourceFile>
+									<destinationFile>${project.build.directory}/repository/plugins/zjavassist_${zk.version}.jar</destinationFile>
 								</fileSet>
 								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk-version}/dist/lib/zk.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zk_${zk-version}.jar</destinationFile>
+									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zk.osgi.jar</sourceFile>
+									<destinationFile>${project.build.directory}/repository/plugins/zk_${zk.version}.jar</destinationFile>
 								</fileSet>
 								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk-version}/dist/lib/zkbind.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zkbind_${zk-version}.jar</destinationFile>
+									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zkbind.osgi.jar</sourceFile>
+									<destinationFile>${project.build.directory}/repository/plugins/zkbind_${zk.version}.jar</destinationFile>
 								</fileSet>
 								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk-version}/dist/lib/zkplus.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zkplus_${zk-version}.jar</destinationFile>
+									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zkplus.osgi.jar</sourceFile>
+									<destinationFile>${project.build.directory}/repository/plugins/zkplus_${zk.version}.jar</destinationFile>
 								</fileSet>
 								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk-version}/dist/lib/zul.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zul_${zk-version}.jar</destinationFile>
+									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zul.osgi.jar</sourceFile>
+									<destinationFile>${project.build.directory}/repository/plugins/zul_${zk.version}.jar</destinationFile>
 								</fileSet>
 								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk-version}/dist/lib/zweb.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zweb_${zk-version}.jar</destinationFile>
+									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zweb.osgi.jar</sourceFile>
+									<destinationFile>${project.build.directory}/repository/plugins/zweb_${zk.version}.jar</destinationFile>
 								</fileSet>
 								<fileSet>
 									<sourceFile>${project.build.directory}/repository/artifacts.jar</sourceFile>

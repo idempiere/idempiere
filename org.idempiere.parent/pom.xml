@@ -9,36 +9,20 @@
 	<name>Maven parent project for idempiere</name>
 
 	<properties>
-		<tycho-version>1.1.0</tycho-version>
-		<tycho.extras.version>${tycho-version}</tycho.extras.version>
+		<tycho.version>1.1.0</tycho.version>
+		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jetty-version>9.4.7.v20170914</jetty-version>
-		<jp-version>6.3.1</jp-version>
-		<zk-version>8.5.0</zk-version>
-		<zk-javassist-src-version>3.18.2-GA</zk-javassist-src-version>
-		<maven-dependency-version>3.0.2</maven-dependency-version>
-		<download-maven-version>1.4.0</download-maven-version>
-		<lifecycle-mapping-version>1.0.0</lifecycle-mapping-version>
+		<jetty.version>9.4.7.v20170914</jetty.version>
+		<jp.version>6.3.1</jp.version>
+		<zk.version>8.5.0</zk.version>
+		<zk.javassist.src.version>3.18.2-GA</zk.javassist.src.version>
+		<maven.dependency.version>3.0.2</maven.dependency.version>
+		<download.maven.version>1.4.0</download.maven.version>
+		<lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
+		
+		<!-- default value of properties, use when run without profile -->
 		<idempiere.target>org.idempiere.p2.targetplatform</idempiere.target>
-
-		<idempiere-repository-url>https://sourceforge.net/projects/idempiere/files/binary.file/jarfile</idempiere-repository-url>
-		<idempiere-jasper-url>${idempiere-repository-url}/jp-p2/jp-${jp-version}</idempiere-jasper-url>
-		<idempiere-zkoss-url>${idempiere-repository-url}/zk-p2/zk-${zk-version}</idempiere-zkoss-url>
-		<!-- <idempiere-modifyBundle-url>${idempiere-repository-url}/modifyBundle-1.0.0</idempiere-modifyBundle-url> -->
 		<idempiere-equinox-url>http://download.eclipse.org/eclipse/updates/4.7</idempiere-equinox-url>
-		<idempiere-jetty-url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x</idempiere-jetty-url>
-		<idempiere-orbit-url>http://download.eclipse.org/tools/orbit/downloads/drops/R20170919201930/repository</idempiere-orbit-url>
-		<idempiere-restlet-url>http://p2.restlet.com/2.3</idempiere-restlet-url>
-		<idempiere-maven-central-url>http://central.maven.org/maven2</idempiere-maven-central-url>
-		<idempiere-maven-redhat-ga-url>https://maven.repository.redhat.com/ga</idempiere-maven-redhat-ga-url>
-		<idempiere-maven-opennms-url>http://repo.opennms.org/maven2</idempiere-maven-opennms-url>
-		<idempiere-maven-jr-ce-releases-url>https://jaspersoft.jfrog.io/jaspersoft/jr-ce-releases</idempiere-maven-jr-ce-releases-url>
-		<idempiere-maven-jp-third-party-ce-url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts</idempiere-maven-jp-third-party-ce-url>
-		<idempiere-maven-netbeans-url>http://bits.netbeans.org/maven2</idempiere-maven-netbeans-url>
-		<idempiere-maven-clojars-url>http://clojars.org/repo</idempiere-maven-clojars-url>
-		<idempiere-maven-atlassian-3rdparty-url>https://maven.atlassian.com/3rdparty</idempiere-maven-atlassian-3rdparty-url>
-		<idempiere-maven-zkoss-url>http://mavensync.zkoss.org/maven2</idempiere-maven-zkoss-url>
-		<idempiere-maven-jenkins-url>http://repo.jenkins-ci.org/releases</idempiere-maven-jenkins-url>
 		<url.file.srv>http://downloads.sourceforge.net/project/idempiere/binary.file</url.file.srv>
 	</properties>
 
@@ -47,63 +31,16 @@
 			<id>local</id>
 			<properties>
 				<idempiere-repository-url>http://localhost</idempiere-repository-url>
-				<idempiere-jasper-url>${idempiere-repository-url}/binary.file/jarfile/jp-p2/jp-${jp-version}</idempiere-jasper-url>
-				<idempiere-zkoss-url>${idempiere-repository-url}/binary.file/jarfile/zk-p2/zk-8.5.0</idempiere-zkoss-url>
-				<!-- <idempiere-modifyBundle-url>${idempiere-repository-url}/binary.file/jarfile/modifyBundle-1.0.0</idempiere-modifyBundle-url> -->
 				<idempiere-equinox-url>${idempiere-repository-url}/eclipse-4.7.1</idempiere-equinox-url>
-				<idempiere-jetty-url>${idempiere-repository-url}/jetty-9.4.7</idempiere-jetty-url>
-				<idempiere-orbit-url>${idempiere-repository-url}/orbit-buildrepo-R20170919201930</idempiere-orbit-url>
-				<idempiere-restlet-url>${idempiere-repository-url}/restlet-2.3</idempiere-restlet-url>
-				<idempiere-maven-central-url>${idempiere-repository-url}/Central</idempiere-maven-central-url>
-				<idempiere-maven-redhat-ga-url>${idempiere-repository-url}/Redhat-GA</idempiere-maven-redhat-ga-url>
-				<idempiere-maven-opennms-url>${idempiere-repository-url}/OpenNMS</idempiere-maven-opennms-url>
-				<idempiere-maven-jr-ce-releases-url>${idempiere-repository-url}/jr-ce-releases</idempiere-maven-jr-ce-releases-url>
-				<idempiere-maven-jp-third-party-ce-url>${idempiere-repository-url}/third-party-ce-artifacts</idempiere-maven-jp-third-party-ce-url>
-				<idempiere-maven-netbeans-url>${idempiere-repository-url}/third-party-ce-artifacts</idempiere-maven-netbeans-url>
-				<idempiere-maven-clojars-url>${idempiere-repository-url}/Clojars</idempiere-maven-clojars-url>
-				<idempiere-maven-atlassian-3rdparty-url>${idempiere-repository-url}/atlassian-3rdparty</idempiere-maven-atlassian-3rdparty-url>
-				<idempiere-maven-zkoss-url>${idempiere-repository-url}/zkoss</idempiere-maven-zkoss-url>
-				<idempiere-maven-jenkins-url>${idempiere-repository-url}/zkoss</idempiere-maven-jenkins-url>
 				<url.file.srv>${idempiere-repository-url}/binary.file</url.file.srv>
 				<idempiere.target>org.idempiere.p2.targetplatform.offline</idempiere.target>
 			</properties>
 		</profile>
 
 		<profile>
-			<id>offline-file</id>
-			<properties>
-				<idempiere-repository-url>file:///mnt/data/dev/project/material/localRepository</idempiere-repository-url>
-				<idempiere-jasper-url>${idempiere-repository-url}/binary.file/jarfile/jp-p2/jp-${jp-version}</idempiere-jasper-url>
-				<idempiere-zkoss-url>${idempiere-repository-url}/binary.file/jarfile/zk-p2/zk-8.5.0</idempiere-zkoss-url>
-				<!-- <idempiere-modifyBundle-url>${idempiere-repository-url}/binary.file/jarfile/modifyBundle-1.0.0</idempiere-modifyBundle-url> -->
-				<idempiere-equinox-url>${idempiere-repository-url}/eclipse-4.7.1</idempiere-equinox-url>
-				<idempiere-jetty-url>${idempiere-repository-url}/jetty-9.4.7</idempiere-jetty-url>
-				<idempiere-orbit-url>${idempiere-repository-url}/orbit-buildrepo-R20170919201930</idempiere-orbit-url>
-				<idempiere-restlet-url>${idempiere-repository-url}/restlet-2.3</idempiere-restlet-url>
-			</properties>
-		</profile>
-
-		<profile>
 			<id>online</id>
 			<properties>
-				<idempiere-repository-url>https://sourceforge.net/projects/idempiere/files/binary.file/jarfile</idempiere-repository-url>
-				<idempiere-jasper-url>${idempiere-repository-url}/jp-p2/jp-${jp-version}</idempiere-jasper-url>
-				<idempiere-zkoss-url>${idempiere-repository-url}/zk-p2/zk-8.5.0</idempiere-zkoss-url>
-				<!-- <idempiere-modifyBundle-url>${idempiere-repository-url}/modifyBundle-1.0.0</idempiere-modifyBundle-url> -->
 				<idempiere-equinox-url>http://download.eclipse.org/eclipse/updates/4.7</idempiere-equinox-url>
-				<idempiere-jetty-url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x</idempiere-jetty-url>
-				<idempiere-orbit-url>http://download.eclipse.org/tools/orbit/downloads/drops/R20170919201930/repository</idempiere-orbit-url>
-				<idempiere-restlet-url>http://p2.restlet.com/2.3</idempiere-restlet-url>
-				<idempiere-maven-central-url>http://central.maven.org/maven2</idempiere-maven-central-url>
-				<idempiere-maven-redhat-ga-url>https://maven.repository.redhat.com/ga</idempiere-maven-redhat-ga-url>
-				<idempiere-maven-opennms-url>http://repo.opennms.org/maven2</idempiere-maven-opennms-url>
-				<idempiere-maven-jr-ce-releases-url>https://jaspersoft.jfrog.io/jaspersoft/jr-ce-releases</idempiere-maven-jr-ce-releases-url>
-				<idempiere-maven-jp-third-party-ce-url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts</idempiere-maven-jp-third-party-ce-url>
-				<idempiere-maven-netbeans-url>http://bits.netbeans.org/maven2</idempiere-maven-netbeans-url>
-				<idempiere-maven-clojars-url>http://clojars.org/repo</idempiere-maven-clojars-url>
-				<idempiere-maven-atlassian-3rdparty-url>https://maven.atlassian.com/3rdparty</idempiere-maven-atlassian-3rdparty-url>
-				<idempiere-maven-zkoss-url>http://mavensync.zkoss.org/maven2</idempiere-maven-zkoss-url>
-				<idempiere-maven-jenkins-url>http://repo.jenkins-ci.org/releases</idempiere-maven-jenkins-url>
 				<url.file.srv>http://downloads.sourceforge.net/project/idempiere/binary.file</url.file.srv>
 				<idempiere.target>org.idempiere.p2.targetplatform</idempiere.target>
 			</properties>
@@ -111,93 +48,54 @@
 	</profiles>
 
 	<repositories>
-		<!-- tycho don't support old style P2, so need to recreate P2 repository 
-			like restlet-2.3, orbit http://tonnymadsen.blogspot.hu/2013/05/tycho-and-pre-p2-update-sites.html -->
-		<repository>
-			<id>equinox</id>
-			<layout>p2</layout>
-			<url>${idempiere-equinox-url}</url>
-		</repository>
-
-		<repository>
-			<id>jetty</id>
-			<layout>p2</layout>
-			<url>${idempiere-jetty-url}</url>
-		</repository>
-
-		<repository>
-			<id>orbit</id>
-			<layout>p2</layout>
-			<url>${idempiere-orbit-url}</url>
-		</repository>
-
-		<repository>
-			<id>restlet</id>
-			<layout>p2</layout>
-			<url>${idempiere-restlet-url}</url>
-		</repository>
-
-		<repository>
-			<id>jasper</id>
-			<layout>p2</layout>
-			<url>${idempiere-jasper-url}</url>
-		</repository>
-
-		<repository>
-			<id>zkoss-p2</id>
-			<layout>p2</layout>
-			<url>${idempiere-zkoss-url}</url>
-		</repository>
-		<!-- <repository> <id>modifyBundle</id> <layout>p2</layout> <url>${idempiere-modifyBundle-url}</url> 
-			</repository> -->
 		<repository>
 			<id>Central</id>
-			<url>${idempiere-maven-central-url}</url>
+			<url>http://central.maven.org/maven2</url>
 		</repository>
 
 		<repository>
 			<id>Redhat-GA</id>
-			<url>${idempiere-maven-redhat-ga-url}</url>
+			<url>https://maven.repository.redhat.com/ga</url>
 		</repository>
 
 		<repository>
 			<id>OpenNMS</id>
-			<url>${idempiere-maven-opennms-url}</url>
+			<url>http://repo.opennms.org/maven2</url>
 		</repository>
 
 		<repository>
 			<id>jr-ce-releases</id>
-			<url>${idempiere-maven-jr-ce-releases-url}</url>
+			<url>https://jaspersoft.jfrog.io/jaspersoft/jr-ce-releases</url>
 		</repository>
 
 		<repository>
 			<id>jp-third-party-ce</id>
-			<url>${idempiere-maven-jp-third-party-ce-url}</url>
+			<url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts</url>
 		</repository>
 
 		<repository>
 			<id>NetBeans</id>
-			<url>${idempiere-maven-netbeans-url}</url>
+			<url>http://bits.netbeans.org/maven2</url>
 		</repository>
 
 		<repository>
 			<id>Clojars</id>
-			<url>${idempiere-maven-clojars-url}</url>
+			<url>http://clojars.org/repo</url>
 		</repository>
 
 		<repository>
 			<id>atlassian-3rdparty</id>
-			<url>${idempiere-maven-atlassian-3rdparty-url}</url>
+			<url>https://maven.atlassian.com/3rdparty</url>
 		</repository>
 
 		<repository>
 			<id>zkoss</id>
-			<url>${idempiere-maven-zkoss-url}</url>
+			<url>http://mavensync.zkoss.org/maven2</url>
 		</repository>
 
 		<repository>
 			<id>jenkins</id>
-			<url>${idempiere-maven-jenkins-url}</url>
+			<url>http://repo.jenkins-ci.org/releases</url>
 		</repository>
 	</repositories>
 
@@ -208,7 +106,7 @@
 					<!-- https://www.eclipse.org/m2e/documentation/m2e-execution-not-covered.html -->
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
-					<version>${lifecycle-mapping-version}</version>
+					<version>${lifecycle.mapping.version}</version>
 					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
@@ -232,27 +130,27 @@
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-compiler-plugin</artifactId>
-					<version>${tycho-version}</version>
+					<version>${tycho.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
-					<version>${tycho-version}</version>
+					<version>${tycho.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>com.googlecode.maven-download-plugin</groupId>
 					<artifactId>download-maven-plugin</artifactId>
-					<version>${download-maven-version}</version>
+					<version>${download.maven.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-p2-director-plugin</artifactId>
-					<version>${tycho-version}</version>
+					<version>${tycho.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-p2-repository-plugin</artifactId>
-					<version>${tycho-version}</version>
+					<version>${tycho.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho.extras</groupId>
@@ -279,6 +177,11 @@
 					<artifactId>maven-shade-plugin</artifactId>
 					<version>3.1.0</version>
 				</plugin>
+				<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${maven.dependency.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -286,13 +189,13 @@
 				<!-- enable the Tycho build extension -->
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho-version}</version>
+				<version>${tycho.version}</version>
 				<extensions>true</extensions>
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
-				<version>${tycho-version}</version>
+				<version>${tycho.version}</version>
 				<configuration>
 					<targetDefinitionIncludeSource>honor</targetDefinitionIncludeSource>
 
@@ -320,105 +223,7 @@
 							<version>${project.version}</version>
 						</artifact>
 					</target>
-					<filters>
-						<filter>
-							<type>eclipse-plugin</type>
-							<id>com.ibm.icu</id>
-							<restrictTo>
-								<versionRange>[60.2.0,61.0.0)</versionRange>
-							</restrictTo>
-						</filter>
-						<filter>
-							<type>eclipse-plugin</type>
-							<id>ch.qos.logback.classic</id>
-							<restrictTo>
-								<versionRange>[
-									1.1.2.v20160208-0839,2.0.0)</versionRange>
-							</restrictTo>
-						</filter>
-						<filter>
-							<type>eclipse-plugin</type>
-							<id>ch.qos.logback.core</id>
-							<restrictTo>
-								<versionRange>[
-									1.1.2.v20160208-0839,2.0.0)</versionRange>
-							</restrictTo>
-						</filter>
-						<filter>
-							<type>eclipse-plugin</type>
-							<id>ch.qos.logback.slf4j</id>
-							<restrictTo>
-								<versionRange>[
-									1.1.2.v20160301-0943,2.0.0)</versionRange>
-							</restrictTo>
-						</filter>
-						<filter>
-							<type>eclipse-plugin</type>
-							<id>com.fasterxml.jackson.core.jackson-annotations</id>
-							<restrictTo>
-								<versionRange>[
-									2.6.2.v20161117-2150,3.0.0)</versionRange>
-							</restrictTo>
-						</filter>
-						<filter>
-							<type>eclipse-plugin</type>
-							<id>com.fasterxml.jackson.core.jackson-core</id>
-							<restrictTo>
-								<versionRange>[
-									2.6.2.v20161117-2150,3.0.0)</versionRange>
-							</restrictTo>
-						</filter>
-						<filter>
-							<type>eclipse-plugin</type>
-							<id>com.fasterxml.jackson.core.jackson-databind</id>
-							<restrictTo>
-								<versionRange>[
-									2.6.2.v20161117-2150,3.0.0)</versionRange>
-							</restrictTo>
-						</filter>
-						<filter>
-							<type>eclipse-plugin</type>
-							<id>com.google.gson</id>
-							<restrictTo>
-								<versionRange>[
-									2.7.0.v20170129-0911,3.0.0)</versionRange>
-							</restrictTo>
-						</filter>
-						<filter>
-							<type>eclipse-plugin</type>
-							<id>com.google.guava</id>
-							<restrictTo>
-								<versionRange>[
-									21.0.0.v20170206-1425,22.0.0)</versionRange>
-							</restrictTo>
-						</filter>
-						<filter>
-							<type>eclipse-plugin</type>
-							<id>com.ibm.icu.base</id>
-							<restrictTo>
-								<versionRange>[
-									58.2.0.v20170418-1837,61.0.0)</versionRange>
-							</restrictTo>
-						</filter>
-						<filter>
-							<type>eclipse-plugin</type>
-							<id>org.apache.lucene.core</id>
-							<restrictTo>
-								<versionRange>[
-									3.5.0,4.0.0)</versionRange>
-							</restrictTo>
-						</filter>
-						<filter>
-							<type>eclipse-plugin</type>
-							<id>
-								groovy-all</id>
-							<restrictTo>
-								<versionRange>[
-									2.4.7,3.0.0)</versionRange>
-							</restrictTo>
-						</filter>
-
-					</filters>
+					
 					<!-- configure the p2 target environments for multi-platform build -->
 					<environments>
 						<environment>
@@ -438,7 +243,7 @@
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-source-plugin</artifactId>
-				<version>${tycho-version}</version>
+				<version>${tycho.version}</version>
 				<executions>
 					<execution>
 						<id>plugin-source</id>

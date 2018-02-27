@@ -36,17 +36,17 @@
 								<artifactItem>
 									<groupId>net.sf.jasperreports</groupId>
 									<artifactId>jasperreports-chart-themes</artifactId>
-									<version>${jp-version}</version>
+									<version>${jp.version}</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>net.sf.jasperreports</groupId>
 									<artifactId>jasperreports-chart-customizers</artifactId>
-									<version>${jp-version}</version>
+									<version>${jp.version}</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>net.sf.jasperreports</groupId>
 									<artifactId>jasperreports-functions</artifactId>
-									<version>${jp-version}</version>
+									<version>${jp.version}</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.mozilla</groupId>
