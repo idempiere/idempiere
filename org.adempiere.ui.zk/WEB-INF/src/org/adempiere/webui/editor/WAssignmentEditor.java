@@ -64,6 +64,8 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 		popupMenu = new WEditorPopupMenu(true, false, false);
 		popupMenu.addMenuListener(this);
 		addChangeLogMenu(popupMenu);
+		if (gridField != null)
+			getComponent().getTextbox().setPlaceholder(gridField.getPlaceholder());
 	}
 
 	

@@ -55,6 +55,8 @@ public class WFilenameEditor extends WEditor
 		getComponent().addEventListener(Events.ON_UPLOAD, this);
 		getComponent().getButton().setUpload(AdempiereWebUI.getUploadSetting());
 		getComponent().getButton().setAttribute("org.zkoss.zul.image.preload", Boolean.TRUE);
+		if (gridField != null)
+			getComponent().getTextbox().setPlaceholder(gridField.getPlaceholder());
 	}
 
 	@Override

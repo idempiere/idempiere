@@ -127,6 +127,7 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
         {
         	popupMenu = new WEditorPopupMenu(true, true, isShowPreference());
         	addChangeLogMenu(popupMenu);
+        	getComponent().getTextbox().setPlaceholder(gridField.getPlaceholder());
         }					
 	}
 

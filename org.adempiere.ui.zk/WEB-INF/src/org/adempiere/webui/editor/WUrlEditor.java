@@ -46,6 +46,8 @@ public class WUrlEditor extends WEditor implements ContextMenuListener
 		addChangeLogMenu(popupMenu);
 		
 		getComponent().getTextbox().setClientAttribute("type", "url");
+		if (gridField != null)
+			getComponent().getTextbox().setPlaceholder(gridField.getPlaceholder());
 	}
 
 
