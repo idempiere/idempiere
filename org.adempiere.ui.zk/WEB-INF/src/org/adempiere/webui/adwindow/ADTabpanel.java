@@ -135,7 +135,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3728896318124756192L;
+	private static final long serialVersionUID = -1639104320722589666L;
 
 	private static final String ON_SAVE_OPEN_PREFERENCE_EVENT = "onSaveOpenPreference";
 
@@ -1343,7 +1343,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(),"RecordIsNotInCurrentSearch"));
 		}
 
-		windowPanel.onTreeNavigate(row);				
+		windowPanel.onTreeNavigate(gridTab, row);				
 	}
 
     /**
