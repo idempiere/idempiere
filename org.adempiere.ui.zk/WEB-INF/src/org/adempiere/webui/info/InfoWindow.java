@@ -110,7 +110,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8676586407450465012L;
+	private static final long serialVersionUID = 5041961608373943362L;
 
 	protected Grid parameterGrid;
 	private Borderlayout layout;
@@ -2177,6 +2177,21 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 										
 		vqe.setVisible(true);								
 					
+	}
+
+	/** Allow to show or hide the sub panel (detail) programmatically */
+	protected void setSouthVisible(boolean visible) {
+		Component comp = layout.getCenter();
+		for (Component c : comp.getChildren()) {
+			if (c instanceof Borderlayout) {
+				for (Component c1 : c.getChildren()) {
+					if (c1 instanceof South) {
+						c1.setVisible(visible);
+						break;
+					}
+				}
+			}
+		}
 	}
 
 }
