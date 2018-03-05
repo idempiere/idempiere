@@ -460,6 +460,9 @@ public class ProcessParameterPanel extends Panel implements
 		{
 			GridField mField = (GridField)m_mFields.get(j);
 
+			if (!mField.isEditablePara(true))
+				continue; // Saved parameters must not change read-only parameters
+
 			//	Get Values
 			WEditor editor = (WEditor)m_wEditors.get(j);
 			WEditor editor2 = (WEditor)m_wEditors2.get(j);
@@ -473,7 +476,6 @@ public class ProcessParameterPanel extends Panel implements
 				MPInstancePara para = params[i];
 				if ( mField.getColumnName().equals(para.getParameterName()) )
 				{
-
 					if (para.getP_Date() != null || para.getP_Date_To() != null )
 					{
 						editor.setValue(para.getP_Date());
