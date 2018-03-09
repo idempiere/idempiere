@@ -13,7 +13,7 @@ CREATE OR REPLACE VIEW ad_field_vt AS
    LEFT JOIN ad_fieldgroup fg ON f.ad_fieldgroup_id = fg.ad_fieldgroup_id
    LEFT JOIN ad_fieldgroup_trl fgt ON f.ad_fieldgroup_id = fgt.ad_fieldgroup_id AND trl.ad_language::text = fgt.ad_language::text
    LEFT JOIN ad_column c ON f.ad_column_id = c.ad_column_id
-   LEFT JOIN ad_column_trl ct ON f.ad_column_id = ct.ad_column_id
+   LEFT JOIN ad_column_trl ct ON f.ad_column_id = ct.ad_column_id AND trl.ad_language::text = ct.ad_language::text
    JOIN ad_table tbl ON c.ad_table_id = tbl.ad_table_id
    LEFT JOIN ad_val_rule vr ON vr.ad_val_rule_id = COALESCE(f.ad_val_rule_id, c.ad_val_rule_id)
   WHERE f.isactive = 'Y' AND c.isactive = 'Y'

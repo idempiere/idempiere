@@ -65,6 +65,8 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 		popupMenu = new WEditorPopupMenu(false, false, true);
 		popupMenu.addMenuListener(this);
 		addChangeLogMenu(popupMenu);
+		if (gridField != null)
+			getComponent().getTextbox().setPlaceholder(gridField.getPlaceholder());
 	}
 
 	@Override

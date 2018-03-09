@@ -207,7 +207,7 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 					+ "p.AD_Reference_ID, p.AD_Process_Para_ID, "
 					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.ColumnName, "
 					+ "p.DefaultValue, p.DefaultValue2, p.VFormat, p.ValueMin, p.ValueMax, "
-					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern, p.MandatoryLogic "
+					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern, p.MandatoryLogic, p.Placeholder, p.Placeholder2 "
 					+ "FROM AD_Process_Para p"
 					+ " LEFT OUTER JOIN AD_Val_Rule vr ON (p.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) "
 					+ "WHERE p.AD_Process_ID=?"		//	1
@@ -218,7 +218,7 @@ public class ProcessParameterPanel extends CPanel implements VetoableChangeListe
 					+ "p.AD_Reference_ID, p.AD_Process_Para_ID, "
 					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.ColumnName, "
 					+ "p.DefaultValue, p.DefaultValue2, p.VFormat, p.ValueMin, p.ValueMax, "
-					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern, p.MandatoryLogic "
+					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern, p.MandatoryLogic, t.Placeholder, p.Placeholder2 "
 					+ "FROM AD_Process_Para p"
 					+ " INNER JOIN AD_Process_Para_Trl t ON (p.AD_Process_Para_ID=t.AD_Process_Para_ID)"
 					+ " LEFT OUTER JOIN AD_Val_Rule vr ON (p.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) "

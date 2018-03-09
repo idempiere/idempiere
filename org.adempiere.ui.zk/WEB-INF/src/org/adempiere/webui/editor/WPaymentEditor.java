@@ -88,6 +88,8 @@ public class WPaymentEditor extends WEditor implements ListDataListener, Context
         }
     	popupMenu = new WEditorPopupMenu(false, true, isShowPreference());
     	addChangeLogMenu(popupMenu);
+    	if (gridField != null)
+    		getComponent().getCombobox().setPlaceholder(gridField.getPlaceholder());
     }
 	
 	@Override

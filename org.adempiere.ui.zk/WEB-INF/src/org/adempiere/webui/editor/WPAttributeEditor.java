@@ -84,6 +84,9 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 		addChangeLogMenu(popupMenu);
 		
 		getComponent().getTextbox().setReadonly(true);
+
+		if (gridField != null)
+			getComponent().getTextbox().setPlaceholder(gridField.getPlaceholder());
 	}
 
 	@Override

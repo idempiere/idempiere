@@ -30,14 +30,22 @@
 package org.adempiere.webui.dashboard;
 
 import org.adempiere.webui.apps.graph.WDocumentStatusPanel;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Image;
+import org.zkoss.zul.Toolbar;
 
-public class DPDocumentStatus extends DashboardPanel {
+public class DPDocumentStatus extends DashboardPanel implements EventListener<Event> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2089844018551832142L;
-
+	private static final long serialVersionUID = 8569879231642492255L;
 	private WDocumentStatusPanel statusPanel;
 
 	@Override
@@ -54,8 +62,27 @@ public class DPDocumentStatus extends DashboardPanel {
 	public DPDocumentStatus()
 	{
 		super();
-        
-        statusPanel = WDocumentStatusPanel.get();
-        if (statusPanel != null) this.appendChild(statusPanel);
+
+		statusPanel = WDocumentStatusPanel.get();
+		if (statusPanel != null)
+			this.appendChild(statusPanel);
+
+		Toolbar recentItemsToolbar = new Toolbar();
+		this.appendChild(recentItemsToolbar);
+
+		Image imgr = new Image(ThemeManager.getThemeResource("images/Refresh24.png"));
+		recentItemsToolbar.appendChild(imgr);
+		imgr.setStyle("text-align: right; cursor: pointer; width:24px; height:24px;");
+		imgr.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
+		imgr.addEventListener(Events.ON_CLICK, this);
+	}
+
+	public void onEvent(Event event) throws Exception {
+		String eventName = event.getName();
+
+		if (eventName.equals(Events.ON_CLICK)) {
+			statusPanel.refresh();
+			statusPanel.updateUI();
+		}
 	}	
 }
