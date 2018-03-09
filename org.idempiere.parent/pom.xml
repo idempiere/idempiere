@@ -19,11 +19,13 @@
 		<maven.dependency.version>3.0.2</maven.dependency.version>
 		<download.maven.version>1.4.0</download.maven.version>
 		<lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
-		
+
 		<!-- default value of properties, use when run without profile -->
 		<idempiere.target>org.idempiere.p2.targetplatform</idempiere.target>
 		<idempiere-equinox-url>http://download.eclipse.org/eclipse/updates/4.7</idempiere-equinox-url>
 		<url.file.srv>http://downloads.sourceforge.net/project/idempiere/binary.file</url.file.srv>
+		<extra.ui.install>org.eclipse.equinox.p2.director, org.idempiere.equinox.p2.director.feature.feature.group, org.idempiere.fitnesse.feature.feature.group</extra.ui.install>
+		<idempiere.product.id>org.adempiere.server.product</idempiere.product.id>
 	</properties>
 
 	<profiles>
@@ -166,6 +168,231 @@
 					<groupId>org.eclipse.tycho.extras</groupId>
 					<artifactId>tycho-eclipserun-plugin</artifactId>
 					<version>${tycho.extras.version}</version>
+					<configuration>
+						<repositories>
+							<repository>
+								<id>juno</id>
+								<layout>p2</layout>
+								<url>${idempiere-equinox-url}</url>
+							</repository>
+
+						</repositories>
+						<dependencies>
+							<dependency>
+								<artifactId>org.eclipse.ecf</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.util</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.ds</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.garbagecollector</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.frameworkadmin.equinox</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.publisher.eclipse</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.ecf.provider.filetransfer.httpclient4.ssl</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.apache.commons.logging</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.ecf.provider.filetransfer.httpclient4</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.director</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.common</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.metadata</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.tukaani.xz</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.core</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.core.net</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+
+							<dependency>
+								<artifactId>org.eclipse.equinox.concurrent</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.core.contenttype</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.updatesite</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.apache.httpcomponents.httpcore</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.touchpoint.eclipse</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.core.jobs</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.preferences</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.registry</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.simpleconfigurator.manipulator</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.security</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.jarprocessor</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.engine</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.ecf.identity</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.app</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.apache.felix.scr</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.repository</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.apache.httpcomponents.httpclient</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.artifact.repository</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.osgi.compatibility.state</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.ecf.provider.filetransfer</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.launcher</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.osgi.util</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.frameworkadmin</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.repository.tools</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.publisher</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.touchpoint.natives</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.apache.commons.codec</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.osgi.services</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.ecf.filetransfer</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.ecf.provider.filetransfer.ssl</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.ecf.ssl</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.sat4j.core</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.core.runtime</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.transport.ecf</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.director.app</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.sat4j.pb</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.metadata.repository</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.simpleconfigurator</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+						</dependencies>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>com.coderplus.maven.plugins</groupId>
@@ -178,9 +405,9 @@
 					<version>3.1.0</version>
 				</plugin>
 				<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>${maven.dependency.version}</version>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>${maven.dependency.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -223,7 +450,7 @@
 							<version>${project.version}</version>
 						</artifact>
 					</target>
-					
+
 					<!-- configure the p2 target environments for multi-platform build -->
 					<environments>
 						<environment>

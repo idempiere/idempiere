@@ -12,6 +12,29 @@
 
 	<build>
 		<plugins>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<executions>
+					<execution>
+						<!-- install the product using the p2 director -->
+						<id>build-site-p2</id>
+						<goals>
+							<goal>assemble-repository</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- from import package maven can lookup bundle from all repositorys 
+						declare on target platform, also maven local so default generated site-p2 
+						don't include that bundle. this configuration change default behavior -->
+					<includeAllDependencies>true</includeAllDependencies>
+					<!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=512396 -->
+					<xzCompress>false</xzCompress>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-p2-director-plugin</artifactId>
@@ -23,23 +46,33 @@
 							<goal>materialize-products</goal>
 						</goals>
 					</execution>
-					<execution>
-						<!-- create zip file with the installed product -->
-						<id>archive-products</id>
-						<goals>
-							<goal>archive-products</goal>
-						</goals>
-					</execution>
 				</executions>
 				<configuration>
+					<source>repository</source>
 					<products>
 						<product>
 							<!-- The uid in the .product file, NOT the name of the .product file -->
-							<id>org.adempiere.server.product</id>
+							<id>${idempiere.product.id}</id>
 							<archiveFileName>idempiere-server-${unqualifiedVersion}-${buildQualifier}</archiveFileName>
 						</product>
 					</products>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-eclipserun-plugin</artifactId>
+				<configuration>
+					<appArgLine>-application org.eclipse.equinox.p2.director -repository file:${project.build.directory}/repository -destination ${project.build.directory}/products/${idempiere.product.id}/${tycho.env.osgi.os}/${tycho.env.osgi.ws}/${tycho.env.osgi.arch} -installIU "${extra.ui.install}" -profileProperties org.eclipse.update.install.features=true -p2.os ${tycho.env.osgi.os} -p2.ws ${tycho.env.osgi.ws} -p2.arch ${tycho.env.osgi.arch} -consoleLog -roaming</appArgLine>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>eclipse-run</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
