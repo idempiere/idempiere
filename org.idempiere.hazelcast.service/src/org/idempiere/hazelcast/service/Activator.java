@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import org.compiere.Adempiere;
 import org.compiere.model.ServerStateChangeEvent;
 import org.compiere.model.ServerStateChangeListener;
+import org.eclipse.osgi.framework.console.CommandProvider;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -67,6 +68,7 @@ public class Activator implements BundleActivator {
 				}
 			});
 		}
+        bundleContext.registerService(CommandProvider.class.getName(), new CacheConsoleProvider(), null);
 	}
 
 	private static synchronized void createHazelCastInstance() {
