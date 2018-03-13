@@ -49,19 +49,22 @@
                     <member>127.0.0.1</member>
                 </member-list>
             </tcp-ip>
-            <aws enabled="false">
-                <access-key>my-access-key</access-key>
-                <secret-key>my-secret-key</secret-key>
-                <!--optional, default is us-east-1 -->
-                <region>us-west-1</region>
-                <!--optional, default is ec2.amazonaws.com. If set, region shouldn't be set as it will override this property -->
-                <host-header>ec2.amazonaws.com</host-header>
-                <!-- optional, only instances belonging to this group will be discovered, default will try all running instances -->
-                <security-group-name>hazelcast-sg</security-group-name>
-                <tag-key>type</tag-key>
-                <tag-value>hz-nodes</tag-value>
-            </aws>
+            <aws enabled="false"/>
             <discovery-strategies>
+                <discovery-strategy enabled="false" class="com.hazelcast.aws.AwsDiscoveryStrategy">
+                    <properties>
+                       <property name="access-key">my-access-key</property>
+                       <property name="secret-key">my-secret-key</property>
+                       <!--optional, default is us-east-1 -->
+                       <property name="region">us-east-1</property>
+                       <property name="host-header">ec2.amazonaws.com</property>
+                       <!-- optional, only instances belonging to this group will be discovered, default will try all running instances -->
+                       <property name="security-group-name">hazelcast-sg</property>
+                       <property name="tag-key">type</property>
+                       <property name="tag-value">hz-nodes</property>
+                       <property name="connection-timeout-seconds">30</property>
+                    </properties>
+                </discovery-strategy>
             </discovery-strategies>
         </join>
         <interfaces enabled="false">

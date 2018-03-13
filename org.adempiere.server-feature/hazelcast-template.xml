@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2008-2013, Hazelcast, Inc. All Rights Reserved.
+  ~ Copyright (c) 2008-2017, Hazelcast, Inc. All Rights Reserved.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
   -->
 
 <!--
-    The default Hazelcast configuration. This is used when:
-
-    - no hazelcast.xml if present
-
+    The default Hazelcast configuration. This is used when no hazelcast.xml is present.
+    Please see the schema for how to configure Hazelcast at https://hazelcast.com/schema/config/hazelcast-config-3.9.xsd
+    or the documentation at https://hazelcast.org/documentation/
 -->
-<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.5.xsd"
+<!--suppress XmlDefaultAttributeValue -->
+<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.9.xsd"
            xmlns="http://www.hazelcast.com/schema/config"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <group>
@@ -45,19 +45,27 @@
             </multicast>
             <tcp-ip enabled="false">
                 <interface>127.0.0.1</interface>
+                <member-list>
+                    <member>127.0.0.1</member>
+                </member-list>
             </tcp-ip>
-            <aws enabled="false">
-                <access-key>my-access-key</access-key>
-                <secret-key>my-secret-key</secret-key>
-                <!--optional, default is us-east-1 -->
-                <region>us-west-1</region>
-                <!--optional, default is ec2.amazonaws.com. If set, region shouldn't be set as it will override this property -->
-                <host-header>ec2.amazonaws.com</host-header>
-                <!-- optional, only instances belonging to this group will be discovered, default will try all running instances -->
-                <security-group-name>hazelcast-sg</security-group-name>
-                <tag-key>type</tag-key>
-                <tag-value>hz-nodes</tag-value>
-            </aws>
+            <aws enabled="false"/>
+            <discovery-strategies>
+                <discovery-strategy enabled="false" class="com.hazelcast.aws.AwsDiscoveryStrategy">
+                    <properties>
+                       <property name="access-key">my-access-key</property>
+                       <property name="secret-key">my-secret-key</property>
+                       <!--optional, default is us-east-1 -->
+                       <property name="region">us-east-1</property>
+                       <property name="host-header">ec2.amazonaws.com</property>
+                       <!-- optional, only instances belonging to this group will be discovered, default will try all running instances -->
+                       <property name="security-group-name">hazelcast-sg</property>
+                       <property name="tag-key">type</property>
+                       <property name="tag-value">hz-nodes</property>
+                       <property name="connection-timeout-seconds">30</property>
+                    </properties>
+                </discovery-strategy>
+            </discovery-strategies>
         </join>
         <interfaces enabled="false">
             <interface>10.10.1.*</interface>
@@ -126,7 +134,7 @@
             then all entries of the map will be copied to another JVM for
             fail-safety. 0 means no backup.
         -->
-        <backup-count>1</backup-count>
+        <backup-count>0</backup-count>
         <!--
             Number of async backups. 0 means no backup.
         -->
@@ -144,7 +152,7 @@
 			automatically evicted from the map. Entry is touched if get, put or containsKey is called.
 			Any integer between 0 and Integer.MAX_VALUE. 0 means infinite. Default is 0.
 		-->
-        <max-idle-seconds>0</max-idle-seconds>
+        <max-idle-seconds>1800</max-idle-seconds>
         <!--
             Valid values are:
             NONE (no eviction),
@@ -152,25 +160,26 @@
             LFU (Least Frequently Used).
             NONE is the default.
         -->
-        <eviction-policy>NONE</eviction-policy>
+        <eviction-policy>LRU</eviction-policy>
         <!--
             Maximum size of the map. When max size is reached,
             map is evicted based on the policy defined.
             Any integer between 0 and Integer.MAX_VALUE. 0 means
             Integer.MAX_VALUE. Default is 0.
         -->
-        <max-size policy="PER_NODE">0</max-size>
+        <max-size policy="PER_NODE">1000</max-size>
         <!--
-            When max. size is reached, specified percentage of
-            the map will be evicted. Any integer between 0 and 100.
-            If 25 is set for example, 25% of the entries will
-            get evicted.
+            `eviction-percentage` property is deprecated and will be ignored when it is set.
+
+            As of version 3.7, eviction mechanism changed.
+            It uses a probabilistic algorithm based on sampling. Please see documentation for further details
         -->
         <eviction-percentage>25</eviction-percentage>
         <!--
-            Minimum time in milliseconds which should pass before checking
-            if a partition of this map is evictable or not.
-            Default value is 100 millis.
+            `min-eviction-check-millis` property is deprecated  and will be ignored when it is set.
+
+            As of version 3.7, eviction mechanism changed.
+            It uses a probabilistic algorithm based on sampling. Please see documentation for further details
         -->
         <min-eviction-check-millis>100</min-eviction-check-millis>
         <!--
@@ -188,9 +197,35 @@
             com.hazelcast.map.merge.HigherHitsMapMergePolicy ; entry with the higher hits wins.
             com.hazelcast.map.merge.LatestUpdateMapMergePolicy ; entry with the latest update wins.
         -->
-        <merge-policy>com.hazelcast.map.merge.PassThroughMergePolicy</merge-policy>
+        <merge-policy>com.hazelcast.map.merge.PutIfAbsentMapMergePolicy</merge-policy>
+
+        <!--
+           Control caching of de-serialized values. Caching makes query evaluation faster, but it cost memory.
+           Possible Values:
+                        NEVER: Never cache deserialized object
+                        INDEX-ONLY: Caches values only when they are inserted into an index.
+                        ALWAYS: Always cache deserialized values.
+        -->
+        <cache-deserialized-values>INDEX-ONLY</cache-deserialized-values>
 
     </map>
+
+    <!--
+           Configuration for an event journal. The event journal keeps events related
+           to a specific partition and data structure. For instance, it could keep
+           map add, update, remove, merge events along with the key, old value, new value and so on.
+        -->
+    <event-journal enabled="false">
+        <mapName>mapName</mapName>
+        <capacity>10000</capacity>
+        <time-to-live-seconds>0</time-to-live-seconds>
+    </event-journal>
+
+    <event-journal enabled="false">
+        <cacheName>cacheName</cacheName>
+        <capacity>10000</capacity>
+        <time-to-live-seconds>0</time-to-live-seconds>
+    </event-journal>
 
     <multimap name="default">
         <backup-count>1</backup-count>
@@ -226,19 +261,21 @@
         <topic-overload-policy>BLOCK</topic-overload-policy>
         <statistics-enabled>true</statistics-enabled>
     </reliable-topic>
-    
+
     <ringbuffer name="default">
         <capacity>10000</capacity>
         <backup-count>1</backup-count>
         <async-backup-count>0</async-backup-count>
-        <time-to-live-seconds>30</time-to-live-seconds>
+        <time-to-live-seconds>0</time-to-live-seconds>
         <in-memory-format>BINARY</in-memory-format>
     </ringbuffer>
-    
+
     <serialization>
         <portable-version>0</portable-version>
     </serialization>
 
     <services enable-defaults="true"/>
+
+    <lite-member enabled="false"/>
 
 </hazelcast>
