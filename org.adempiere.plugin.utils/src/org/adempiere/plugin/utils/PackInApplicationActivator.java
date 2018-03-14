@@ -137,7 +137,7 @@ public class PackInApplicationActivator extends AbstractActivator {
 		File[] fileArray = getFilesToProcess(folders);
 		
 		if (fileArray.length <= 0) {
-			System.out.println("No zip files to process");
+			logger.info("No zip files to process");
 			return;
 		}
 
@@ -162,9 +162,9 @@ public class PackInApplicationActivator extends AbstractActivator {
 		}
 		
 		if (filesToProcess.size() > 0) {
-			System.out.println("The following packages were not applied: ");
+			logger.warning("The following packages were not applied: ");
 			for (File file : filesToProcess) {
-				System.out.println(file.getName());
+				logger.warning(file.getName());
 			}
 		}
 	}
@@ -172,7 +172,7 @@ public class PackInApplicationActivator extends AbstractActivator {
 	private boolean packIn(File packinFile) {
 		if (packinFile != null && service != null) {
 			String fileName = packinFile.getName();
-			System.out.println("Installing " + fileName + " ...");
+			logger.warning("Installing " + fileName + " ...");
 
 			// The convention for package names is: yyyymmddHHMM_ClientValue_InformationalDescription.zip
 			String [] parts = fileName.split("_");
@@ -194,7 +194,7 @@ public class PackInApplicationActivator extends AbstractActivator {
 				logger.log(Level.SEVERE, "Pack in failed.", e);
 				return false;
 			}
-			System.out.println(packinFile.getPath() + " installed");
+			logger.warning(packinFile.getPath() + " installed");
 		}
 
 		return true;
@@ -254,7 +254,7 @@ public class PackInApplicationActivator extends AbstractActivator {
 			boolean found = false;
 			for (File fileToProcess : toProcess.listFiles(filter)) {
 				if (!found) {
-					System.out.println("*** Creating list from folder " + toProcess.toString());
+					logger.info("*** Creating list from folder " + toProcess.toString());
 					found = true;
 				}
 				if (fileToProcess.isDirectory())
@@ -263,7 +263,7 @@ public class PackInApplicationActivator extends AbstractActivator {
 					filesToProcess.add(fileToProcess);
 			}
 			if (!found) {
-				logger.log(Level.SEVERE, toProcess.getName() + " does not have .zip files or subfolders");
+				logger.log(Level.FINE, toProcess.getName() + " does not have .zip files or subfolders");
 				return;
 			}
 		} else {
@@ -283,7 +283,7 @@ public class PackInApplicationActivator extends AbstractActivator {
 	}
 	
 	private MClient getClient(String clientValue) {
-		String where = "upper(Value) = upper(?)";
+		String where = "Value = ?";
 		Query q = new Query(Env.getCtx(), MClient.Table_Name,
 				where, null)
 				.setParameters(new Object[] {clientValue})
