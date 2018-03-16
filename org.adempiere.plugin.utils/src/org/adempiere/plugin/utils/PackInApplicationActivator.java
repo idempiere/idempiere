@@ -15,6 +15,7 @@ package org.adempiere.plugin.utils;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -34,6 +35,8 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.Query;
 import org.compiere.model.ServerStateChangeEvent;
 import org.compiere.model.ServerStateChangeListener;
+import org.compiere.model.X_AD_Package_Imp;
+import org.compiere.model.X_AD_Package_Imp_Proc;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -88,7 +91,9 @@ public class PackInApplicationActivator extends AbstractActivator {
 			Adempiere.getThreadPoolExecutor().execute(new Runnable() {			
 				@Override
 				public void run() {
-					automaticPackin();
+					int timeout = MSysConfig.getIntValue(MSysConfig.AUTOMATIC_PACKIN_INITIAL_DELAY, 120) * 1000;
+					String folders = MSysConfig.getValue(MSysConfig.AUTOMATIC_PACKIN_FOLDERS);
+					automaticPackin(timeout, folders, true);
 				}
 			});
 		} else {
@@ -96,7 +101,9 @@ public class PackInApplicationActivator extends AbstractActivator {
 				@Override
 				public void stateChange(ServerStateChangeEvent event) {
 					if (event.getEventType() == ServerStateChangeEvent.SERVER_START && service != null) {
-						automaticPackin();
+						int timeout = MSysConfig.getIntValue(MSysConfig.AUTOMATIC_PACKIN_INITIAL_DELAY, 120) * 1000;
+						String folders = MSysConfig.getValue(MSysConfig.AUTOMATIC_PACKIN_FOLDERS);
+						automaticPackin(timeout, folders, true);
 					}					
 				}
 			});
@@ -104,73 +111,90 @@ public class PackInApplicationActivator extends AbstractActivator {
 		return null;
 	}
 	
-	private void automaticPackin() {
-		//Initial delay
-		Timer t = new Timer();
-		t.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				ClassLoader cl = Thread.currentThread().getContextClassLoader();
-				try {
-					Thread.currentThread().setContextClassLoader(PackInApplicationActivator.class.getClassLoader());
-					setupPackInContext();
-					installPackages();
-				} finally {
-					ServerContext.dispose();
-					service = null;
-					Thread.currentThread().setContextClassLoader(cl);
+	public void automaticPackin(int timeout, String folders, boolean fromService) {
+		if (fromService) {
+			//Initial delay - starting from service
+			Timer t = new Timer();
+			t.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					ClassLoader cl = Thread.currentThread().getContextClassLoader();
+					try {
+						Thread.currentThread().setContextClassLoader(PackInApplicationActivator.class.getClassLoader());
+						setupPackInContext();
+						installPackages(folders);
+					} finally {
+						ServerContext.dispose();
+						service = null;
+						Thread.currentThread().setContextClassLoader(cl);
+					}
+					t.cancel();
 				}
-				t.cancel();
+			}, timeout);
+		} else {
+			// No delay - starting from process
+			ClassLoader cl = Thread.currentThread().getContextClassLoader();
+			try {
+				Thread.currentThread().setContextClassLoader(PackInApplicationActivator.class.getClassLoader());
+				setupPackInContext();
+				installPackages(folders);
+			} finally {
+				ServerContext.dispose();
+				Thread.currentThread().setContextClassLoader(cl);
 			}
-		}, MSysConfig.getIntValue(MSysConfig.AUTOMATIC_PACKIN_INITIAL_DELAY, 120) * 1000);
+		}
 	}
 	
-	private void installPackages() {
-		
-		String folders = MSysConfig.getValue(MSysConfig.AUTOMATIC_PACKIN_FOLDERS);
-		
+	private void installPackages(String folders) {
 		if (Util.isEmpty(folders, true)) {
-			logger.log(Level.INFO, "Not specified folders for automatic packin");
+			setSummary(Level.INFO, "Not specified folders for automatic packin");
 			return;
 		}
 		
 		File[] fileArray = getFilesToProcess(folders);
 		
 		if (fileArray.length <= 0) {
-			logger.info("No zip files to process");
+			setSummary(Level.INFO, "No zip files to process");
 			return;
 		}
 
 		try {
 			if (getDBLock()) {
 				//Create Session to be able to create records in AD_ChangeLog
-				MSession.get(Env.getCtx(), true);
+				if (Env.getContextAsInt(Env.getCtx(), "#AD_Session_ID") <= 0)
+					MSession.get(Env.getCtx(), true);
 				for(File zipFile : fileArray) {
 					currentFile = zipFile;
 					if (!packIn(zipFile)) {
 						// stop processing further packages if one fail
+						addLog(Level.SEVERE, "Failed application of " + zipFile);
 						break;
 					}
+					addLog(Level.INFO, "Successful application of " + zipFile);
 					filesToProcess.remove(zipFile);
 				}
-				releaseLock();
 			} else {
-				logger.log(Level.SEVERE, "Could not acquire the DB lock to automatically install the packins");
+				addLog(Level.SEVERE, "Could not acquire the DB lock to automatically install the packins");
+				return;
 			}
 		} catch (AdempiereSystemError e) {
 			e.printStackTrace();
+			addLog(Level.SEVERE, e.getLocalizedMessage());
+		} finally {
+			releaseLock();
 		}
 		
 		if (filesToProcess.size() > 0) {
-			logger.warning("The following packages were not applied: ");
+			StringBuilder pending = new StringBuilder("The following packages were not applied: ");
 			for (File file : filesToProcess) {
-				logger.warning(file.getName());
+				pending.append("\n").append(file.getName());
 			}
+			addLog(Level.WARNING, pending.toString());
 		}
 	}
 	
 	private boolean packIn(File packinFile) {
-		if (packinFile != null && service != null) {
+		if (packinFile != null) {
 			String fileName = packinFile.getName();
 			logger.warning("Installing " + fileName + " ...");
 
@@ -178,23 +202,86 @@ public class PackInApplicationActivator extends AbstractActivator {
 			String [] parts = fileName.split("_");
 			String clientValue = parts[1];
 			
-			MClient client = getClient(clientValue);
-			if (client == null) {
-				logger.log(Level.SEVERE, "Client does not exist: " + clientValue);
-				return false;
+			boolean allClients = clientValue.startsWith("ALL-CLIENTS");
+			
+			int[] clientIDs;
+			if (allClients) {
+				int[] seedClientIDs = new int[0];
+				String seedClientValue = "";
+				if (clientValue.startsWith("ALL-CLIENTS-")) {
+					seedClientValue = clientValue.split("-")[2];
+					seedClientIDs = getClientIDs(seedClientValue);				
+					if (seedClientIDs.length == 0) {
+						logger.log(Level.SEVERE, "Seed client does not exist: " + seedClientValue);
+						return false;
+					}
+				}
+				int[] allClientIDs = new Query(Env.getCtx(), MClient.Table_Name, "AD_Client_ID>0 AND Value!=?", null)
+						.setOnlyActiveRecords(true)
+						.setParameters(seedClientValue)
+						.setOrderBy("AD_Client_ID")
+						.getIDs();
+				// Process first the seed client, put seed in front of the array
+				int shift = 0;
+				if (seedClientIDs.length > 0)
+					shift = 1;
+				clientIDs = new int[allClientIDs.length + shift];
+				if (seedClientIDs.length > 0)
+					clientIDs[0] = seedClientIDs[0];
+				for (int i = 0; i < allClientIDs.length; i++) {
+					clientIDs[i+shift] = allClientIDs[i];
+				}
+			} else {
+				clientIDs = getClientIDs(clientValue);
+				if (clientIDs.length == 0) {
+					logger.log(Level.SEVERE, "Client does not exist: " + clientValue);
+					return false;
+				}
 			}
 
-			Env.setContext(Env.getCtx(), "#AD_Client_ID", client.getAD_Client_ID());
-			
-			try {
-			    // call 2pack
-				if (!merge(packinFile, null))
+			for (int clientID : clientIDs) {
+				MClient client = MClient.get(Env.getCtx(), clientID);
+				if  (allClients) {
+					String message = "Installing " + fileName + " in client " + client.getValue() + "/" + client.getName();
+					statusUpdate(message);
+				}
+				Env.setContext(Env.getCtx(), "#AD_Client_ID", client.getAD_Client_ID());
+				try {
+				    // call 2pack
+					if (service != null) {
+						if (!merge(packinFile, null)) {
+							return false;
+						}
+					} else {
+						if (!directMerge(packinFile, null)) {
+							return false;
+						}
+					}
+				} catch (Throwable e) {
+					logger.log(Level.SEVERE, "Pack in failed.", e);
 					return false;
-			} catch (Throwable e) {
-				logger.log(Level.SEVERE, "Pack in failed.", e);
-				return false;
+				} finally {
+					Env.setContext(Env.getCtx(), "#AD_Client_ID", 0);
+				}
+				logger.warning(packinFile.getPath() + " installed");
 			}
-			logger.warning(packinFile.getPath() + " installed");
+			if (allClients ) {
+				// when arriving here it means an ALL-CLIENTS 2pack was processed successfully
+				// register a record on System to avoid future reprocesses of the same file
+				X_AD_Package_Imp_Proc pimpr = new X_AD_Package_Imp_Proc(Env.getCtx(), 0, null);
+				pimpr.setName(fileName);
+				pimpr.setDateProcessed(new Timestamp(System.currentTimeMillis()));
+				pimpr.setP_Msg("This ALL-CLIENT 2Pack was applied successfully in all tenants");
+				pimpr.setAD_Package_Source_Type(X_AD_Package_Imp_Proc.AD_PACKAGE_SOURCE_TYPE_File);
+				pimpr.saveEx();
+				X_AD_Package_Imp pimp = new X_AD_Package_Imp(Env.getCtx(), 0, null);
+				pimp.setAD_Package_Imp_Proc_ID(pimpr.getAD_Package_Imp_Proc_ID());
+				pimp.setName(fileName);
+				pimp.setPK_Status("Completed successfully");
+				pimp.setDescription("This ALL-CLIENT 2Pack was applied successfully in all tenants");
+				pimp.setProcessed(true);
+				pimp.saveEx();
+			}
 		}
 
 		return true;
@@ -282,14 +369,12 @@ public class PackInApplicationActivator extends AbstractActivator {
 		}
 	}
 	
-	private MClient getClient(String clientValue) {
+	private int[] getClientIDs(String clientValue) {
 		String where = "Value = ?";
-		Query q = new Query(Env.getCtx(), MClient.Table_Name,
-				where, null)
-				.setParameters(new Object[] {clientValue})
+		Query q = new Query(Env.getCtx(), MClient.Table_Name, where, null)
+				.setParameters(clientValue)
 				.setOnlyActiveRecords(true);
-		
-		return q.first();
+		return q.getIDs();
 	}
 	
 	@Override
@@ -312,6 +397,6 @@ public class PackInApplicationActivator extends AbstractActivator {
 		Properties serverContext = new Properties();
 		serverContext.setProperty("#AD_Client_ID", "0");
 		ServerContext.setCurrentInstance(serverContext);
-	};
+	}
 
 }
