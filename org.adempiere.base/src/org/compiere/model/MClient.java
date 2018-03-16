@@ -56,7 +56,7 @@ public class MClient extends X_AD_Client
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4420908648355523008L;
+	private static final long serialVersionUID = 8418331925351272377L;
 
 	/**
 	 * 	Get client
@@ -799,8 +799,8 @@ public class MClient extends X_AD_Client
 	/************
 	 * 	Create EMail from Request User
 	 *	@param to recipient
-	 *	@param subject sunject
-	 *	@param message nessage
+	 *	@param subject subject
+	 *	@param message message
 	 *	@return EMail
 	 */
 	public EMail createEMail (String to,
@@ -812,8 +812,8 @@ public class MClient extends X_AD_Client
 	/************
 	 * 	Create EMail from Request User
 	 *	@param to recipient
-	 *	@param subject sunject
-	 *	@param message nessage
+	 *	@param subject subject
+	 *	@param message message
 	 *  @param html
 	 *	@return EMail
 	 */
@@ -834,12 +834,43 @@ public class MClient extends X_AD_Client
 		return email;
 	}	//	createEMail
 
+	/************
+	 * 	Create EMail with a specific from address
+	 *	@param from recipient
+	 *	@param to recipient
+	 *	@param subject subject
+	 *	@param message message
+	 *  @param html
+	 *	@return EMail
+	 */
+	public EMail createEMailFrom (String from, String to,
+		String subject, String message, boolean html)
+	{
+		if (from == null || from.length() == 0)
+		{
+			log.warning("No From");
+			return null;
+		}
+		if (to == null || to.length() == 0)
+		{
+			log.warning("No To");
+			return null;
+		}
+		//
+		EMail email = new EMail (this,
+				   from, to,
+				   subject, message, html);
+		if (isSmtpAuthorization())
+			email.createAuthenticator (getRequestUser(), getRequestUserPW());
+		return email;
+	}	//	createEMailFrom
+
 	/**
 	 * 	Create EMail from User
 	 * 	@param from optional sender
 	 *	@param to recipient
-	 *	@param subject sunject
-	 *	@param message nessage
+	 *	@param subject subject
+	 *	@param message message
 	 *	@return EMail
 	 */
 	public EMail createEMail (MUser from, MUser to,
@@ -852,8 +883,8 @@ public class MClient extends X_AD_Client
 	 * 	Create EMail from User
 	 * 	@param from optional sender
 	 *	@param to recipient
-	 *	@param subject sunject
-	 *	@param message nessage
+	 *	@param subject subject
+	 *	@param message message
 	 *  @param html
 	 *	@return EMail
 	 */
@@ -877,8 +908,8 @@ public class MClient extends X_AD_Client
 	 * 	Create EMail from User
 	 * 	@param from optional sender
 	 *	@param to recipient
-	 *	@param subject sunject
-	 *	@param message nessage
+	 *	@param subject subject
+	 *	@param message message
 	 *	@return EMail
 	 */
 	public EMail createEMail (MUser from, String to,
@@ -891,8 +922,8 @@ public class MClient extends X_AD_Client
 	 * 	Create EMail from User
 	 * 	@param from optional sender
 	 *	@param to recipient
-	 *	@param subject sunject
-	 *	@param message nessage
+	 *	@param subject subject
+	 *	@param message message
 	 *  @param html
 	 *	@return EMail
 	 */
