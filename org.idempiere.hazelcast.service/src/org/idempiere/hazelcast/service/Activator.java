@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import org.compiere.Adempiere;
 import org.compiere.model.ServerStateChangeEvent;
 import org.compiere.model.ServerStateChangeListener;
+import org.compiere.util.CLogger;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -43,6 +44,7 @@ import com.hazelcast.core.HazelcastInstance;
 public class Activator implements BundleActivator {
 
 	private static BundleContext context;
+	protected final static CLogger logger = CLogger.getCLogger(Activator.class.getName());
 
 	static BundleContext getContext() {
 		return context;
@@ -120,10 +122,11 @@ public class Activator implements BundleActivator {
 				try {
 					Config config = new FileSystemXmlConfig(file);
 					config.setClassLoader(Activator.class.getClassLoader());
+					logger.warning("Starting hazelcast with configuration from file " + file.getName());
 					hazelcastInstance = Hazelcast.newHazelcastInstance(config);
 					MapConfig mc = config.getMapConfig("default");
 					if (mc != null) {
-						System.out.println("Hazelcast Max Size Config: "+mc.getMaxSizeConfig().getMaxSizePolicy() + " " + mc.getMaxSizeConfig().getSize());
+						logger.info("Hazelcast Max Size Config: "+mc.getMaxSizeConfig().getMaxSizePolicy() + " " + mc.getMaxSizeConfig().getSize());
 					}
 					return;
 				} catch (FileNotFoundException e) {}
@@ -135,10 +138,11 @@ public class Activator implements BundleActivator {
 				try {
 					Config config = new UrlXmlConfig(url);
 					config.setClassLoader(Activator.class.getClassLoader());
+					logger.warning("Starting hazelcast with configuration from URL " + url.toString());
 					hazelcastInstance = Hazelcast.newHazelcastInstance(config);
 					MapConfig mc = config.getMapConfig("default");
 					if (mc != null) {
-						System.out.println("Hazelcast Max Size Config: "+mc.getMaxSizeConfig().getMaxSizePolicy() + " " + mc.getMaxSizeConfig().getSize());
+						logger.info("Hazelcast Max Size Config: "+mc.getMaxSizeConfig().getMaxSizePolicy() + " " + mc.getMaxSizeConfig().getSize());
 					}
 					return;
 				} catch (IOException e) {}
@@ -147,9 +151,10 @@ public class Activator implements BundleActivator {
 			Config config = new Config();
 			config.setClassLoader(Activator.class.getClassLoader());
 			hazelcastInstance = Hazelcast.newHazelcastInstance(config);	
+			logger.warning("Starting hazelcast with default configuration");
 			MapConfig mc = config.getMapConfig("default");
 			if (mc != null) {
-				System.out.println("Hazelcast Max Size Config: "+mc.getMaxSizeConfig().getMaxSizePolicy() + " " + mc.getMaxSizeConfig().getSize());
+				logger.info("Hazelcast Max Size Config: "+mc.getMaxSizeConfig().getMaxSizePolicy() + " " + mc.getMaxSizeConfig().getSize());
 			}
 	}
 
