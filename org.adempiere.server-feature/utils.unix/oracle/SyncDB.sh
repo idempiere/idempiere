@@ -46,7 +46,7 @@ select name from ad_migrationscript;" | $SILENTCMD | sed -e 's:^ ::' | grep -v '
 find -type d -name $ADEMPIERE_DB_PATH | grep -v "./processes_post_migration/$ADEMPIERE_DB_PATH" | while read FOLDER
 do
     cd "${FOLDER}"
-    ls *.sql >> $TMPFOLDER/lisFS_$$.txt
+    ls *.sql 2>/dev/null >> $TMPFOLDER/lisFS_$$.txt
     cd $IDEMPIERE_HOME/migration
 done
 sort -o $TMPFOLDER/lisFS_$$.txt $TMPFOLDER/lisFS_$$.txt
