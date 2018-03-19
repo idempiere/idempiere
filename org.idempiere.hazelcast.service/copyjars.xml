@@ -1,7 +1,7 @@
 <project name="zklibrary" basedir="." default="copy">
 	<mkdir dir="lib" />
 	<target name="copy">
-        <get src="${url.maven2}/com/hazelcast/hazelcast/3.5.3/hazelcast-3.5.3.jar" dest="lib/hazelcast.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/com/hazelcast/hazelcast/3.9.3/hazelcast-3.9.3.jar" dest="lib/hazelcast.jar" usetimestamp="true" verbose="true" retries="5" />
         <get src="${url.maven2}/com/hazelcast/hazelcast-aws/2.1.0/hazelcast-aws-2.1.0.jar" dest="lib/hazelcast-aws.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>
