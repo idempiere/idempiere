@@ -43,6 +43,7 @@ Import-Package: org.adempiere.base,
  org.compiere,
  org.compiere.db,
  org.compiere.model,
+ org.compiere.process,
  org.compiere.util,
  org.osgi.framework;version="1.5.0",
  org.osgi.util.tracker;version="1.5.0"

@@ -31,7 +31,7 @@ public class ZKBroadCastManager implements ITopicSubscriber<BroadCastMsg>{
 	public static ZKBroadCastManager getBroadCastMgr()  {		
 		return broadCastMgr;
 	}
-	
+		
 	private ZKBroadCastManager(){
 		BroadCastUtil.subscribe(this);
 	}

@@ -35,5 +35,13 @@
             class="org.adempiere.pipo2.PackRollProcess">
       </process>
    </extension>
+   <extension
+         id="org.adempiere.pipo2.PackInFolder"
+         name="PackIn Folder"
+         point="org.adempiere.base.Process">
+      <process
+            class="org.adempiere.pipo2.PackInFolder">
+      </process>
+   </extension>
 
 </plugin>

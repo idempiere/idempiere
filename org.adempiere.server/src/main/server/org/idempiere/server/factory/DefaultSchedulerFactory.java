@@ -39,7 +39,7 @@ public class DefaultSchedulerFactory implements IServerFactory<Scheduler, MSched
 		List<Scheduler> list = new ArrayList<Scheduler>();
 		for (MScheduler pModel : schedulerModels)
 		{
-			Scheduler server = new Scheduler(pModel);
+			Scheduler server = create(ctx, pModel);
 			list.add(server);
 		}
 		return list.toArray(new Scheduler[0]);
@@ -48,6 +48,11 @@ public class DefaultSchedulerFactory implements IServerFactory<Scheduler, MSched
 	@Override
 	public Class<MScheduler> getProcessorClass() {
 		return MScheduler.class;
+	}
+
+	@Override
+	public Scheduler create(Properties ctx, MScheduler serverModel) {
+		return new Scheduler(serverModel);
 	}
 
 }

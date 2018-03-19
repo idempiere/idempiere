@@ -34,6 +34,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.db.CConnection;
 import org.compiere.db.Database;
 import org.compiere.db.LDAP;
+import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -64,24 +65,25 @@ public class MSystem extends X_AD_System
 	 */
 	public synchronized static MSystem get (Properties ctx)
 	{
-		if (s_system != null)
-			return s_system;
+		if (s_system.get(0) != null)
+			return s_system.get(0);
 		//
-		s_system = new Query(ctx, Table_Name, null, null)
+		MSystem system = new Query(ctx, Table_Name, null, null)
 						.setOrderBy(COLUMNNAME_AD_System_ID)
 						.firstOnly();
-		if (s_system == null)
+		if (system == null)
 			return null;
 		//
-		if (!Ini.isClient() && s_system.setInfo())
+		if (!Ini.isClient() && system.setInfo())
 		{
-			s_system.saveEx();
+			system.saveEx();
 		}
-		return s_system;
+		s_system.put(0, system);
+		return system;
 	}	//	get
 	
 	/** System - cached					*/
-	private static MSystem		s_system = null;
+	private static CCache<Integer,MSystem>	s_system = new CCache<Integer,MSystem>(Table_Name, 1, -1, true);
 	
 	/**************************************************************************
 	 * 	Default Constructor
@@ -94,8 +96,8 @@ public class MSystem extends X_AD_System
 		super(ctx, 0, mtrxName);
 		String trxName = null;
 		load(trxName);	//	load ID=0
-		if (s_system == null)
-			s_system = this;
+		if (s_system.get(0) == null)
+			s_system.put(0, this);
 	}	//	MSystem
 
 	/**
@@ -107,8 +109,8 @@ public class MSystem extends X_AD_System
 	public MSystem (Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);
-		if (s_system == null)
-			s_system = this;
+		if (s_system.get(0) == null)
+			s_system.put(0, this);
 	}	//	MSystem
 
 	/**

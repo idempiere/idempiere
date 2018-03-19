@@ -191,6 +191,7 @@ public class CLogErrorBuffer extends Handler
 				if (methodName == null)
 					methodName = "";
 				if (DB.isConnected(false)
+					&& methodName != null
 					&& !methodName.equals("saveError")
 					&& !methodName.equals("get_Value")
 					&& !methodName.equals("dataSave")
@@ -213,7 +214,8 @@ public class CLogErrorBuffer extends Handler
 				else
 				{
 					//display to user if database connection not available
-					if (!methodName.equals("saveError")
+					if (methodName != null
+						&& !methodName.equals("saveError")
 						&& !methodName.equals("get_Value")
 						&& !methodName.equals("dataSave")
 						&& loggerName.indexOf("Issue") == -1

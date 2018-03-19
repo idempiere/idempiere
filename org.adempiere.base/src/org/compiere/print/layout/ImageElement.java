@@ -124,9 +124,9 @@ public class ImageElement extends PrintElement
 		return new ImageElement(image.getImage());
 	}	//	get
 	
-	/**	60 minute Cache						*/
+	/**	10 minute Cache						*/
 	private static CCache<Object,ImageElement>	s_cache 
-		= new CCache<Object,ImageElement>(null, "ImageElement", 10, 60, false);
+		= new CCache<Object,ImageElement>(null, "ImageElement", 10, 10, false);
 	
 	/**************************************************************************
 	 *	Create from existing Image

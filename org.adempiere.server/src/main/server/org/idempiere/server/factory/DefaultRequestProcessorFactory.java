@@ -42,7 +42,7 @@ public class DefaultRequestProcessorFactory implements IServerFactory<RequestPro
 		List<RequestProcessor> list = new ArrayList<RequestProcessor>();
 		for (MRequestProcessor pModel : requestModels)
 		{
-			RequestProcessor processor = new RequestProcessor(pModel);
+			RequestProcessor processor = create(ctx, pModel);
 			list.add(processor);
 		}
 		return list.toArray(new RequestProcessor[0]);
@@ -51,5 +51,10 @@ public class DefaultRequestProcessorFactory implements IServerFactory<RequestPro
 	@Override
 	public Class<MRequestProcessor> getProcessorClass() {
 		return MRequestProcessor.class;
+	}
+
+	@Override
+	public RequestProcessor create(Properties ctx, MRequestProcessor serverModel) {
+		return new RequestProcessor(serverModel);
 	}
 }

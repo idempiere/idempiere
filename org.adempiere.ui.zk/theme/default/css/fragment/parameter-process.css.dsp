@@ -36,7 +36,7 @@ when detect side effect, fix to only apply for parameter window*/
 }
 
 .message-paramenter{
-	max-height: 150pt; 
+	max-height: 300pt; 
 	overflow: hidden; 
 	margin: 10px;
 }
