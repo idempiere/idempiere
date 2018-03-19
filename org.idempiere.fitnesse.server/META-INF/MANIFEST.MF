@@ -14,12 +14,12 @@ Import-Package: javax.servlet;version="3.0.0",
  org.slf4j.helpers;version="1.6.1",
  org.slf4j.spi;version="1.6.1"
 Bundle-ClassPath: .,
- lib/fitlibrary-2.0.jar,
+ lib/fitlibrary.jar,
+ lib/fitlibraryweb.jar,
  lib/fitnesse.jar,
- lib/log4j-1.2.16.jar,
- lib/fitlibraryweb-2.0.jar,
- lib/phantomjsdriver-1.0.3.jar,
- lib/selenium-server-standalone-2.39.0.jar
+ lib/log4j.jar,
+ lib/phantomjsdriver.jar,
+ lib/selenium-server-standalone.jar
 Web-ContextPath: fitnesse
 Export-Package: fit,
  fit.decorator,

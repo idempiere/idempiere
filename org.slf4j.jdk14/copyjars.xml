@@ -1,5 +1,6 @@
 <project name="zklibrary" basedir="." default="copy">
+	<mkdir dir="lib" />
 	<target name="copy">
-		<get src="${url.maven2.lib}/maven2/org/slf4j/slf4j-jdk14/1.7.2/slf4j-jdk14-1.7.2.jar" dest="slf4j-jdk14-1.7.2.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.maven2}/org/slf4j/slf4j-jdk14/1.7.2/slf4j-jdk14-1.7.2.jar" dest="lib/slf4j-jdk14.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<psf version="2.0">
+<provider id="com.vectrace.MercurialEclipse.team.MercurialTeamProvider">
+<project reference="MercurialEclipseProjectSet|org.adempiere.base|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.base"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.base-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.base-feature"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.base.callout|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.base.callout"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.base.process|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.base.process"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.bundles.external-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.bundles.external-feature"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.eclipse.equinox.http.servlet|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.eclipse.equinox.http.servlet"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.eclipse.equinox.http.servletbridge|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.eclipse.equinox.http.servletbridge"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.eclipse.equinox.servletbridge|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.eclipse.equinox.servletbridge"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.extend|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.extend"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.install|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.install"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.payment.processor|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.payment.processor"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.payment.processor-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.payment.processor-feature"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.pipo|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.pipo"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.pipo-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.pipo-feature"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.pipo.handlers|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.pipo.handlers"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.plugin.utils|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.plugin.utils"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.replication|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.replication"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.replication-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.replication-feature"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.replication.server|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.replication.server"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.replication.server-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.replication.server-feature"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.report.jasper|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.report.jasper"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.report.jasper-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.report.jasper-feature"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.report.jasper.library|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.report.jasper.library"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.report.jasper.swing|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.report.jasper.swing"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.report.jasper.webapp|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.report.jasper.webapp"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.sdk-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.sdk-feature"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.server|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.server"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.server-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.server-feature"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.target.platform-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.target.platform-feature"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.ui|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.ui"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.ui.swing|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.ui.swing"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.ui.swing-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.ui.swing-feature"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.ui.zk|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.ui.zk"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.ui.zk-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.ui.zk-feature"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.webstore|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.webstore"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.webstore-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.webstore-feature"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.webstore.resource|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.webstore.resource"/>
+<project reference="MercurialEclipseProjectSet|org.adempiere.webstore.servlet|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.webstore.servlet"/>
+<project reference="MercurialEclipseProjectSet|org.apache.ecs|/mnt/data/dev/project/working-project/maventycho/idempiere|org.apache.ecs"/>
+<project reference="MercurialEclipseProjectSet|org.compiere.db.oracle.provider|/mnt/data/dev/project/working-project/maventycho/idempiere|org.compiere.db.oracle.provider"/>
+<project reference="MercurialEclipseProjectSet|org.compiere.db.postgresql.provider|/mnt/data/dev/project/working-project/maventycho/idempiere|org.compiere.db.postgresql.provider"/>
+<project reference="MercurialEclipseProjectSet|org.compiere.db.provider-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.compiere.db.provider-feature"/>
+<project reference="MercurialEclipseProjectSet|org.idempiere.eclipse.platform-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.idempiere.eclipse.platform-feature"/>
+<project reference="MercurialEclipseProjectSet|org.idempiere.equinox.p2.director-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.idempiere.equinox.p2.director-feature"/>
+<project reference="MercurialEclipseProjectSet|org.idempiere.felix.webconsole|/mnt/data/dev/project/working-project/maventycho/idempiere|org.idempiere.felix.webconsole"/>
+<project reference="MercurialEclipseProjectSet|org.idempiere.felix.webconsole-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.idempiere.felix.webconsole-feature"/>
+<project reference="MercurialEclipseProjectSet|org.idempiere.fitnesse-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.idempiere.fitnesse-feature"/>
+<project reference="MercurialEclipseProjectSet|org.idempiere.fitnesse.fixture|/mnt/data/dev/project/working-project/maventycho/idempiere|org.idempiere.fitnesse.fixture"/>
+<project reference="MercurialEclipseProjectSet|org.idempiere.fitnesse.server|/mnt/data/dev/project/working-project/maventycho/idempiere|org.idempiere.fitnesse.server"/>
+<project reference="MercurialEclipseProjectSet|org.idempiere.fitrecorder|/mnt/data/dev/project/working-project/maventycho/idempiere|org.idempiere.fitrecorder"/>
+<project reference="MercurialEclipseProjectSet|org.idempiere.hazelcast.service|/mnt/data/dev/project/working-project/maventycho/idempiere|org.idempiere.hazelcast.service"/>
+<project reference="MercurialEclipseProjectSet|org.idempiere.hazelcast.service-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.idempiere.hazelcast.service-feature"/>
+<project reference="MercurialEclipseProjectSet|org.idempiere.hazelcast.service.config|/mnt/data/dev/project/working-project/maventycho/idempiere|org.idempiere.hazelcast.service.config"/>
+<project reference="MercurialEclipseProjectSet|org.idempiere.ui.zk.selenium|/mnt/data/dev/project/working-project/maventycho/idempiere|org.idempiere.ui.zk.selenium"/>
+<project reference="MercurialEclipseProjectSet|org.idempiere.webservices|/mnt/data/dev/project/working-project/maventycho/idempiere|org.idempiere.webservices"/>
+<project reference="MercurialEclipseProjectSet|org.idempiere.zk-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.idempiere.zk-feature"/>
+<project reference="MercurialEclipseProjectSet|org.idempiere.zk.extra|/mnt/data/dev/project/working-project/maventycho/idempiere|org.idempiere.zk.extra"/>
+<project reference="MercurialEclipseProjectSet|org.slf4j.jdk14|/mnt/data/dev/project/working-project/maventycho/idempiere|org.slf4j.jdk14"/>
+</provider>
+<workingSets editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" id="1517568407962_3" label="core-plugin" name="core-plugin">
+<item elementID="=org.adempiere.replication.server" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.report.jasper.library" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.compiere.db.postgresql.provider" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.server" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.webstore" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.idempiere.felix.webconsole" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.eclipse.equinox.servletbridge" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.base.callout" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.idempiere.hazelcast.service" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.ui.zk" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.base.process" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.eclipse.equinox.http.servlet" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.replication" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.idempiere.hazelcast.service.config" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.install" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.apache.ecs" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.report.jasper" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.webstore.servlet" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.pipo" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.report.jasper.webapp" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.webstore.resource" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.eclipse.equinox.http.servletbridge" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.idempiere.zk.extra" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.base" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.pipo.handlers" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.plugin.utils" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.adempiere.ui" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.compiere.db.oracle.provider" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.slf4j.jdk14" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.idempiere.webservices" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+</workingSets>
+<workingSets editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" id="1517568916369_19" label="feature" name="feature">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.webstore-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.payment.processor-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.idempiere.zk-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.idempiere.equinox.p2.director-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.replication-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.idempiere.hazelcast.service-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.sdk-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.idempiere.fitnesse-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.bundles.external-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.replication.server-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.report.jasper-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.server-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.compiere.db.provider-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.pipo-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.target.platform-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.base-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.ui.zk-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.idempiere.eclipse.platform-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.idempiere.felix.webconsole-feature" type="4"/>
+</workingSets>
+<workingSets editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" id="1517568644004_9" label="swing-bundle" name="swing-bundle">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.ui.swing" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.report.jasper.swing" type="4"/>
+<item elementID="=org.adempiere.report.jasper.swing" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.ui.swing-feature" type="4"/>
+</workingSets>
+<workingSets editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" id="1517568569365_7" label="test-plugin" name="test-plugin">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.extend" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.idempiere.fitnesse.server" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.adempiere.payment.processor" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.idempiere.fitrecorder" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.idempiere.fitnesse.fixture" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.idempiere.ui.zk.selenium" type="4"/>
+</workingSets>
+</psf>

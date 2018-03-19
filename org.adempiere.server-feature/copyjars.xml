@@ -1,39 +1,41 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
-		<mkdir dir="data/seed" />
-		<get src="${url.file.srv}/database/5.1/Adempiere_pg.jar" dest="data/seed/Adempiere_pg.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/database/5.1/Adempiere.jar" dest="data/seed/Adempiere.jar" usetimestamp="true" verbose="true" retries="5" />
+        <mkdir dir="data/seed" />
+        <get src="${url.file.srv}/database/5.1/Adempiere_pg.jar" dest="data/seed/Adempiere_pg.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/database/5.1/Adempiere.jar" dest="data/seed/Adempiere.jar" usetimestamp="true" verbose="true" retries="5" />
+    
+        <mkdir dir="../db/ddlutils/lib" />
+        <get src="${url.maven2}/ant-contrib/ant-contrib/1.0b2/ant-contrib-1.0b2.jar" dest="../db/ddlutils/lib/ant-contrib.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar" dest="../db/ddlutils/lib/commons-beanutils.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/commons-betwixt/commons-betwixt/0.8/commons-betwixt-0.8.jar" dest="../db/ddlutils/lib/commons-betwixt.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/commons-codec/commons-codec/1.3/commons-codec-1.3.jar" dest="../db/ddlutils/lib/commons-codec.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/commons-collections/commons-collections/3.1/commons-collections-3.1.jar" dest="../db/ddlutils/lib/commons-collections.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/commons-dbcp/commons-dbcp/1.2.1/commons-dbcp-1.2.1.jar" dest="../db/ddlutils/lib/commons-dbcp.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/commons-digester/commons-digester/1.7/commons-digester-1.7.jar" dest="../db/ddlutils/lib/commons-digester.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/commons-lang/commons-lang/2.1/commons-lang-2.1.jar" dest="../db/ddlutils/lib/commons-lang.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar" dest="../db/ddlutils/lib/commons-logging.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/commons-pool/commons-pool/1.2/commons-pool-1.2.jar" dest="../db/ddlutils/lib/commons-pool.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/apache/ddlutils/ddlutils/1.0/ddlutils-1.0.jar" dest="../db/ddlutils/lib/DdlUtils.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/dom4j/dom4j/1.4/dom4j-1.4.jar" dest="../db/ddlutils/lib/dom4j.jar" usetimestamp="true" verbose="true" retries="5" />
+        <!-- it's fyracle db, not yet support on idempiere
+        https://it.wikipedia.org/wiki/Fyracle
+        http://www.biz-wise.nl/compiere_dl.html
+        <get src="${url.file.srv}/jarfile/5.1/fyracle.jar" dest="../db/ddlutils/lib/fyracle.jar" usetimestamp="true" verbose="true" retries="5" />
+        -->
+        <get src="${url.maven2}/oro/oro/2.0.8/oro-2.0.8.jar" dest="../db/ddlutils/lib/jakarta-oro.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/5.1/oracle.jar" dest="../db/ddlutils/lib/oracle.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/5.1/postgresql.jar" dest="../db/ddlutils/lib/postgresql.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/stax/stax-api/1.0.1/stax-api-1.0.1.jar" dest="../db/ddlutils/lib/stax-api.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/woodstox/wstx-asl/3.0.2/wstx-asl-3.0.2.jar" dest="../db/ddlutils/lib/wstx-asl.jar" usetimestamp="true" verbose="true" retries="5" />
 
-		<mkdir dir="../db/ddlutils/lib" />
-		<get src="${url.maven2.lib}/maven2/ant-contrib/ant-contrib/1.0b2/ant-contrib-1.0b2.jar" dest="../db/ddlutils/lib/ant-contrib-1.0b1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar" dest="../db/ddlutils/lib/commons-beanutils-1.7.0.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/commons-betwixt/commons-betwixt/0.8/commons-betwixt-0.8.jar" dest="../db/ddlutils/lib/commons-betwixt-0.8-RC1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/commons-codec/commons-codec/1.3/commons-codec-1.3.jar" dest="../db/ddlutils/lib/commons-codec-1.3.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/commons-collections/commons-collections/3.1/commons-collections-3.1.jar" dest="../db/ddlutils/lib/commons-collections-3.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/commons-dbcp/commons-dbcp/1.2.1/commons-dbcp-1.2.1.jar" dest="../db/ddlutils/lib/commons-dbcp-1.2.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/commons-digester/commons-digester/1.7/commons-digester-1.7.jar" dest="../db/ddlutils/lib/commons-digester-1.7.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/commons-lang/commons-lang/2.1/commons-lang-2.1.jar" dest="../db/ddlutils/lib/commons-lang-2.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar" dest="../db/ddlutils/lib/commons-logging-1.0.4.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/commons-pool/commons-pool/1.2/commons-pool-1.2.jar" dest="../db/ddlutils/lib/commons-pool-1.2.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/apache/ddlutils/ddlutils/1.0/ddlutils-1.0.jar" dest="../db/ddlutils/lib/DdlUtils-1.0-RC1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/dom4j/dom4j/1.4/dom4j-1.4.jar" dest="../db/ddlutils/lib/dom4j-1.4.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/5.1/fyracle.jar" dest="../db/ddlutils/lib/fyracle.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/oro/oro/2.0.8/oro-2.0.8.jar" dest="../db/ddlutils/lib/jakarta-oro-2.0.8.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/5.1/oracle.jar" dest="../db/ddlutils/lib/oracle.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/5.1/postgresql.jar" dest="../db/ddlutils/lib/postgresql.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/stax/stax-api/1.0.1/stax-api-1.0.1.jar" dest="../db/ddlutils/lib/stax-api-1.0.1.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/woodstox/wstx-asl/3.0.2/wstx-asl-3.0.2.jar" dest="../db/ddlutils/lib/wstx-asl-3.0.2.jar" usetimestamp="true" verbose="true" retries="5" />
-		<mkdir dir="../db/ddlutils/postgresql/pljava" />
-		<get src="${url.maven2.lib}/maven2/woodstox/wstx-asl/3.0.2/wstx-asl-3.0.2.jar" dest="../db/ddlutils/lib/wstx-asl-3.0.2.jar" usetimestamp="true" verbose="true" retries="5" />
-
-		<mkdir dir="../fitnesse/FitNesseRoot/FitLibraryWeb" />
-		<get src="${url.file.srv}/jarfile/5.1/101-20121212164242.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/101-20121212164242.zip" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/5.1/21-20121212154702.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/21-20121212154702.zip" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/5.1/6-20121212124109.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/6-20121212124109.zip" usetimestamp="true" verbose="true" retries="5" />
-		<!-- maybe it's same file in org.idempiere.fitnesse.server, just diference version-->
-		<get src="${url.file.srv}/jarfile/5.1/fitnesse2.jar" dest="../fitnesse/fitnesse.jar" usetimestamp="true" verbose="true" retries="5" />
-
-		<get src="${url.alpn.boot}" dest="../alpn-boot.jar" usetimestamp="true" verbose="true" retries="5" />
+        <mkdir dir="../fitnesse/FitNesseRoot/FitLibraryWeb" />
+        <get src="${url.file.srv}/jarfile/5.1/101-20121212164242.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/101-20121212164242.zip" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/5.1/21-20121212154702.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/21-20121212154702.zip" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/5.1/6-20121212124109.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/6-20121212124109.zip" usetimestamp="true" verbose="true" retries="5" />
+        <!-- maybe it's same file in org.idempiere.fitnesse.server, just diference version-->
+        <get src="${url.file.srv}/jarfile/5.1/fitnesse2.jar" dest="../fitnesse/fitnesse.jar" usetimestamp="true" verbose="true" retries="5" />
+    
+        <get src="${url.alpn.boot}" dest="../alpn-boot.jar" usetimestamp="true" verbose="true" retries="5" />
 		
 	</target>
 </project>

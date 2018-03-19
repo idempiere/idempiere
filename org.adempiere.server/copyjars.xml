@@ -1,7 +1,7 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
 		<mkdir dir="WEB-INF/lib" />
-		<get src="${url.file.srv}/jarfile/5.1/jardiff.jar" dest="WEB-INF/lib/jardiff.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/5.1/jnlp-servlet.jar" dest="WEB-INF/lib/jnlp-servlet.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.maven2.opennms}/javax/samples/jnlp/jnlp-jardiff/1.6.0/jnlp-jardiff-1.6.0.jar" dest="WEB-INF/lib/jnlp-jardiff.jar" usetimestamp="true" verbose="true" retries="5" />
+		<get src="${url.maven2.opennms}/javax/samples/jnlp/jnlp-servlet/1.6.0/jnlp-servlet-1.6.0.jar" dest="WEB-INF/lib/jnlp-servlet.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>

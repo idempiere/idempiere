@@ -78,10 +78,10 @@ Import-Package: javax.servlet;version="3.0.0",
  org.apache.xerces.xs;version="2.9.0",
  org.apache.xerces.xs.datatypes;version="2.9.0",
  org.apache.xml.serialize;version="2.9.0",
- org.compiere.wstore,
  org.osgi.framework;version="1.7.0",
  org.osgi.service.http;version="1.2.1"
 Bundle-Activator: org.adempiere.webstore.Activator
+Bundle-ClassPath: .
 
 
 

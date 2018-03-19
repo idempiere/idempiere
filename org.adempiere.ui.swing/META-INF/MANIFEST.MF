@@ -3,11 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Swing Client
 Bundle-SymbolicName: org.adempiere.ui.swing;singleton:=true
 Bundle-Version: 5.1.0.qualifier
-Bundle-ClassPath: client.jar,
- swingx-1.6.jar,
- looks-2.0.4.jar,
- miglayout-3.7.1-swing.jar,
- jpedal.jar
+Bundle-ClassPath: .,
+ lib/jpedal.jar,
+ lib/looks.jar,
+ lib/miglayout.jar,
+ lib/swingx.jar
 Export-Package: com.jgoodies.looks,
  com.jgoodies.looks.common,
  com.jgoodies.looks.plastic,

@@ -27,8 +27,8 @@ Import-Package: javax.crypto,
  org.w3c.dom
 DynamicImport-Package: org.*, com.*, javax.*
 Bundle-ClassPath: .,
- hazelcast-3.9.3.jar,
- hazelcast-aws-2.1.0.jar
+ lib/hazelcast-aws.jar,
+ lib/hazelcast.jar
 Service-Component: OSGI-INF/clusterservice.xml, OSGI-INF/cacheservice.xml, OSGI-INF/messageservice.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.osgi

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.adempiere.target.platform"
+      id="org.adempiere.target.platform.feature"
       label="Adempiere Target Platform"
       version="5.1.0.qualifier"
       provider-name="Adempiere.org">
@@ -33,11 +33,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.adempiere.bundles.external"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.ecf.core.feature"
+         id="org.adempiere.bundles.external.feature"
          version="0.0.0"/>
 
    <includes
@@ -46,6 +42,10 @@
 
    <includes
          id="org.eclipse.osgi.compatibility.plugins.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.ecf.core.feature"
          version="0.0.0"/>
 
    <plugin

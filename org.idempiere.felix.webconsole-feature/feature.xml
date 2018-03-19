@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.idempiere.felix.webconsole"
+      id="org.idempiere.felix.webconsole.feature"
       label="Felix Web Console Feature"
       version="5.1.0.qualifier">
 

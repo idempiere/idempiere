@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.idempiere.eclipse.platform"
+      id="org.idempiere.eclipse.platform.feature"
       label="Eclipse Platform for iDempiere"
       version="5.1.0.qualifier"
       provider-name="www.idempiere.org">

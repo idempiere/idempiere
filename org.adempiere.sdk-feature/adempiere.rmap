@@ -108,9 +108,12 @@
   </rm:searchPath>
   <rm:searchPath name="workspace.feature">
     <rm:provider componentTypes="eclipse.feature" readerType="local">
-      <rm:uri format="{0}/{1}-feature">
+      <rm:uri format="{0}/{1}">
         <bc:propertyRef key="workspace.root"/>
-        <bc:propertyRef key="buckminster.component"/>
+		    <bc:replace pattern=".feature" replacement="-feature">
+		      <bc:propertyRef key="buckminster.component"/>
+		    </bc:replace>
+			  
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
@@ -137,7 +140,7 @@
     <rm:provider xsi:type="maven:MavenProvider" componentTypes="osgi.bundle" readerType="maven2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="${url.maven2}/maven2"/>
+      <rm:uri format="${url.maven2}"/>
       <maven:mappings>
         <maven:entry artifactId="apache-jsp" groupId="org.mortbay.jasper" name="org.mortbay.jasper.apache-jsp"/>
         <maven:entry artifactId="apache-el" groupId="org.mortbay.jasper" name="org.mortbay.jasper.apache-el"/>

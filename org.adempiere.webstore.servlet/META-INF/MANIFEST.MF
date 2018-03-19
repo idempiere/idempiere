@@ -17,3 +17,4 @@ Import-Package: javax.servlet,
  org.apache.ecs.xhtml,
  org.apache.taglibs.standard.tag.el.core
 Fragment-Host: org.adempiere.webstore;bundle-version="0.0.0"
+Bundle-ClassPath: .

@@ -1,15 +1,16 @@
  <project name="zklibrary" basedir="." default="copy">
+ 	<mkdir dir="lib" />
  	<target name="copy">
-		<get src="${url.maven2.lib}/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6.jar" dest="bsh-2.0b6.jar" usetimestamp="true" verbose="true" retries="5" />
- 		<!-- bsf-all-3.0-beta3.jar replace for grovy-engine, jyyhon-enjine, bsh-engine
- 	      http://mvnrepository.com/artifact/org.apache.bsf/bsf-all/3.0-beta3
-                <get src="${url.maven2.lib}/maven2/org/apache/bsf/bsf-all/3.0-beta3/bsf-all-3.0-beta3.jar" dest="bsf-all-3.0-beta3.jar" usetimestamp="true" verbose="true" retries="5"/>
- 		  -->
-		<get src="${url.file.srv}/jarfile/5.1/jython-engine.jar" dest="jython-engine.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/org/python/jython/2.2.1/jython-2.2.1.jar" dest="jython.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/it/sauronsoftware/cron4j/cron4j/2.2.5/cron4j-2.2.5.jar" dest="cron4j-2.2.5.jar" usetimestamp="true" verbose="true" retries="5" />
- 		<get src="${url.maven2.lib}/maven2/commons-validator/commons-validator/1.6/commons-validator-1.6.jar" dest="commons-validator-1.6.jar" usetimestamp="true" verbose="true" retries="5" />
- 		<!-- jnlp is not used in idempiere? -->
-		<get src="${url.file.srv}/jarfile/5.1/jnlp.jar" dest="jnlp.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6.jar" dest="lib/bsh.jar" usetimestamp="true" verbose="true" retries="5" />
+        <!-- bsf-all-3.0-beta3.jar replace for grovy-engine, jyyhon-enjine, bsh-engine
+          http://mvnrepository.com/artifact/org.apache.bsf/bsf-all/3.0-beta3
+                <get src="${url.maven2}/org/apache/bsf/bsf-all/3.0-beta3/bsf-all-3.0-beta3.jar" dest="bsf-all-3.0-beta3.jar" usetimestamp="true" verbose="true" retries="5"/>
+          -->
+        <get src="${url.maven2.ga}/com/sun/script/jython-engine/20080611/jython-engine-20080611.jar" dest="lib/jython-engine.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/python/jython/2.2.1/jython-2.2.1.jar" dest="lib/jython.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/it/sauronsoftware/cron4j/cron4j/2.2.5/cron4j-2.2.5.jar" dest="lib/cron4j.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/commons-validator/commons-validator/1.6/commons-validator-1.6.jar" dest="lib/commons-validator.jar" usetimestamp="true" verbose="true" retries="5" />
+        <!-- jnlp is not used in idempiere? -->
+        <get src="${url.maven2.opennms}/javax/jnlp/jnlp/1.5.0/jnlp-1.5.0.jar" dest="lib/jnlp.jar" usetimestamp="true" verbose="true" retries="5" />
  	</target>
  </project>

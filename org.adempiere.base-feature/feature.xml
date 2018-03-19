@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.adempiere.base"
+      id="org.adempiere.base.feature"
       label="Adempiere Base"
       version="5.1.0.qualifier">
 
@@ -17,23 +17,23 @@
    </license>
 
    <includes
-         id="org.compiere.db.provider"
+         id="org.compiere.db.provider.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.adempiere.payment.processor"
+         id="org.adempiere.payment.processor.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.adempiere.pipo"
+         id="org.adempiere.pipo.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.adempiere.replication"
+         id="org.adempiere.replication.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.adempiere.report.jasper"
+         id="org.adempiere.report.jasper.feature"
          version="0.0.0"/>
 
    <plugin
@@ -340,7 +340,7 @@
          id="groovy-all"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.4.13"
          unpack="false"/>
 
    <plugin
@@ -409,6 +409,13 @@
 
    <plugin
          id="org.apache.xalan"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.lang3"
          download-size="0"
          install-size="0"
          version="0.0.0"

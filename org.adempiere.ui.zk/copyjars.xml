@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE project>
 <project name="zklibrary" basedir="." default="copy">
-	<target name="copy">
+	<target name="copy"> 
 		<mkdir dir="WEB-INF/lib" />
-		<get src="${url.file.srv}/jarfile/5.1/labelapplet.jar" dest="labelapplet.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/5.1/daisydiff-min.jar" dest="WEB-INF/lib/daisydiff-min.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven.zkoss.lib}/maven2/org/zkoss/zkforge/ckez/4.7.0.0/ckez-4.7.0.0.jar" dest="WEB-INF/lib/ckez.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/5.1/labelapplet.jar" dest="labelapplet.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2.atlassian.3rdparty}/org/outerj/daisy/daisydiff/1.1.14-atlassian-hosted/daisydiff-1.1.14-atlassian-hosted.jar" dest="WEB-INF/lib/daisydiff.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven.zkoss}/org/zkoss/zkforge/ckez/4.7.0.0/ckez-4.7.0.0.jar" dest="WEB-INF/lib/ckez.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>

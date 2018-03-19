@@ -25,6 +25,6 @@ Export-Package: org.compiere.apps,
  org.netbeans.api.visual.model,
  org.netbeans.api.visual.router,
  org.netbeans.api.visual.widget
-Bundle-ClassPath: org-netbeans-api-visual.jar,
- org-openide-util.jar,
- .
+Bundle-ClassPath: .,
+ lib/org-netbeans-api-visual.jar,
+ lib/org-openide-util.jar

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>org.idempiere.main</artifactId>
+	<packaging>pom</packaging>
+	<parent>
+		<groupId>org.idempiere</groupId>
+		<artifactId>org.idempiere.parent</artifactId>
+		<version>5.1.0-SNAPSHOT</version>
+		<relativePath>org.idempiere.parent/pom.xml</relativePath>
+	</parent>
+	<modules>
+		<module>org.adempiere.base</module>
+		<module>org.adempiere.base.callout</module>
+		<module>org.adempiere.base.process</module>
+		<module>org.adempiere.extend</module>
+		<module>org.adempiere.payment.processor</module>
+		<module>org.adempiere.eclipse.equinox.http.servlet</module>
+		<module>org.adempiere.eclipse.equinox.http.servletbridge</module>
+		<module>org.adempiere.eclipse.equinox.servletbridge</module>
+		<module>org.adempiere.install</module>
+		<module>org.adempiere.pipo</module>
+		<module>org.adempiere.pipo.handlers</module>
+		<module>org.adempiere.plugin.utils</module>
+		<module>org.adempiere.replication</module>
+		<module>org.adempiere.replication.server</module>
+		<module>org.adempiere.report.jasper.library</module>
+		<module>org.adempiere.report.jasper</module>
+		<module>org.adempiere.report.jasper.swing</module>
+		<module>org.adempiere.report.jasper.webapp</module>
+		<module>org.adempiere.server</module>
+		<module>org.adempiere.ui.swing</module>
+		<module>org.adempiere.ui</module>
+		<module>org.adempiere.ui.zk</module>
+		<module>org.adempiere.webstore</module>
+		<module>org.adempiere.webstore.resource</module>
+		<module>org.adempiere.webstore.servlet</module>
+		<module>org.apache.ecs</module>
+		<module>org.compiere.db.oracle.provider</module>
+		<module>org.compiere.db.postgresql.provider</module>
+		<module>org.idempiere.felix.webconsole</module>
+		<module>org.idempiere.fitnesse.fixture</module>
+		<module>org.idempiere.fitnesse.server</module>
+		<module>org.idempiere.fitrecorder</module>
+		<module>org.idempiere.hazelcast.service</module>
+		<module>org.idempiere.hazelcast.service.config</module>
+		<module>org.idempiere.ui.zk.selenium</module>
+		<module>org.idempiere.webservices</module>
+		<module>org.idempiere.zk.extra</module>
+		<module>org.slf4j.jdk14</module>
+		<module>org.adempiere.report.jasper-feature</module>
+		<module>org.adempiere.bundles.external-feature</module>
+		<module>org.adempiere.base-feature</module>
+		<module>org.adempiere.replication-feature</module>
+		<module>org.adempiere.pipo-feature</module>
+		<module>org.adempiere.replication.server-feature</module>
+		<module>org.adempiere.sdk-feature</module>
+		<module>org.adempiere.server-feature</module>
+		<module>org.adempiere.target.platform-feature</module>
+		<module>org.adempiere.ui.swing-feature</module>
+		<module>org.adempiere.ui.zk-feature</module>
+		<module>org.adempiere.webstore-feature</module>
+		<module>org.compiere.db.provider-feature</module>
+		<module>org.idempiere.eclipse.platform-feature</module>
+		<module>org.idempiere.equinox.p2.director-feature</module>
+		<module>org.idempiere.felix.webconsole-feature</module>
+		<module>org.idempiere.fitnesse-feature</module>
+		<module>org.idempiere.hazelcast.service-feature</module>
+		<module>org.adempiere.payment.processor-feature</module>
+		<module>org.idempiere.zk-feature</module>
+		<module>org.idempiere.p2</module>
+		<module>${idempiere.target}</module>
+	</modules>
+
+</project>

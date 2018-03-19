@@ -1,16 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project>
 <project name="zklibrary" basedir="." default="copy">
+	<mkdir dir="lib" />
 	<target name="copy">
-		<mkdir dir="lib" />
-		<get src="${url.file.srv}/jarfile/5.1/fitlibrary-2.0.jar" dest="lib/fitlibrary-2.0.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/5.1/fitnesse.jar" dest="lib/fitnesse.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.file.srv}/jarfile/5.1/fitlibraryweb-2.0.jar" dest="lib/fitlibraryweb-2.0.jar" usetimestamp="true" verbose="true" retries="5" />
-		<!--old version is 2.35, can't find out in maven also homepage.
-		when host old version (2.35) to bitbucket.org can't donwload by ant, maybe big file (even it's download normal with browse). 
-		
-		not sure why use a standalone (full) version.
-		in case use lib version, we can download at maven, it's small ${url.maven2.lib}/maven2/org/seleniumhq/selenium/selenium-server/2.35.0/selenium-server-2.35.0.jar-->
-		<get src="${url.file.srv}/jarfile/5.1/selenium-server-standalone-2.39.0.jar" dest="lib/selenium-server-standalone-2.39.0.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/log4j/log4j/1.2.16/log4j-1.2.16.jar" dest="lib/log4j-1.2.16.jar" usetimestamp="true" verbose="true" retries="5" />
-		<get src="${url.maven2.lib}/maven2/com/github/detro/ghostdriver/phantomjsdriver/1.0.3/phantomjsdriver-1.0.3.jar" dest="lib/phantomjsdriver-1.0.3.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/5.1/fitlibrary-2.0.jar" dest="lib/fitlibrary.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/org/fitnesse/fitnesse/20111025/fitnesse-20111025.jar" dest="lib/fitnesse.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/5.1/fitlibraryweb-2.0.jar" dest="lib/fitlibraryweb.jar" usetimestamp="true" verbose="true" retries="5" />
+        <!--old version is 2.35, can't find out in maven also homepage.
+        when host old version (2.35) to bitbucket.org can't donwload by ant, maybe big file (even it's download normal with browse). 
+        
+        not sure why use a standalone (full) version.
+        in case use lib version, we can download at maven, it's small ${url.maven2}/org/seleniumhq/selenium/selenium-server/2.35.0/selenium-server-2.35.0.jar-->
+        <get src="${url.maven2.jenkins}/org/seleniumhq/selenium/selenium-server-standalone/2.39.0/selenium-server-standalone-2.39.0.jar" dest="lib/selenium-server-standalone.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/log4j/log4j/1.2.16/log4j-1.2.16.jar" dest="lib/log4j.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.maven2}/com/github/detro/ghostdriver/phantomjsdriver/1.0.3/phantomjsdriver-1.0.3.jar" dest="lib/phantomjsdriver.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>
