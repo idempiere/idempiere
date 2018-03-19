@@ -18,8 +18,9 @@ package org.compiere.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -66,6 +67,24 @@ public class CacheMgt
 	/** Logger							*/
 	private static CLogger		log = CLogger.getCLogger(CacheMgt.class);
 
+	public static int MAX_SIZE = 1000;
+	static 
+	{
+		try 
+		{
+			String maxSize = System.getProperty("Cache.MaxSize");
+			if (maxSize != null && maxSize.trim().length() > 0)
+			{
+				int max = 0;
+				try
+				{
+					max = Integer.parseInt(maxSize.trim());
+				} catch (Throwable t) {}
+				if (max > 0)
+					MAX_SIZE = max;
+			}
+		} catch (Throwable t) {}
+	}
 	
 	/**************************************************************************
 	 * 	Create Cache Instance
@@ -94,7 +113,7 @@ public class CacheMgt
 		
 		if (map == null)
 		{
-			map = new ConcurrentHashMap<K, V>();
+			map = Collections.synchronizedMap(new MaxSizeHashMap<K, V>(instance.getMaxSize()));
 		}		
 		return map;
 	}	//	register
@@ -147,9 +166,9 @@ public class CacheMgt
 				int total = 0;
 				try {
 					Collection<Future<Integer>> results = futureMap.values();
-					for(Future<Integer> future : results) {						
-						Integer i = future.get();
-						total += i.intValue();
+					for(Future<Integer> i : results) 
+					{
+						total += i.get();
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -364,5 +383,22 @@ public class CacheMgt
 
 	public void newRecord(String tableName, int recordId) {
 		clusterNewRecord(tableName, recordId);
+	}
+	
+	private static class MaxSizeHashMap<K, V> extends LinkedHashMap<K, V> {
+	    /**
+		 * generated serial id
+		 */
+		private static final long serialVersionUID = 5532596165440544235L;
+		private final int maxSize;
+
+	    public MaxSizeHashMap(int maxSize) {
+	        this.maxSize = maxSize;
+	    }
+
+	    @Override
+	    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+	        return maxSize <= 0 ? false : size() > maxSize;
+	    }
 	}
 }	//	CCache

@@ -17,6 +17,7 @@ package org.adempiere.base;
 
 import java.io.File;
 
+import org.compiere.model.X_AD_Package_Imp_Proc;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -28,4 +29,8 @@ import org.osgi.framework.BundleContext;
  */
 public interface IDictionaryService {
 	void merge(BundleContext context, File packageFile) throws Exception;
+	
+	default public X_AD_Package_Imp_Proc getAD_Package_Imp_Proc() {
+		return null;
+	};
 }

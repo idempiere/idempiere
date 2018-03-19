@@ -245,7 +245,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		lSubject.setValue(Msg.getMsg(Env.getCtx(), "Subject") + ":");
 		lAttachment.setValue(Msg.getMsg(Env.getCtx(), "Attachment") + ":");
 		fFrom.setReadonly(true);
-		isAcknowledgmentReceipt.setLabel(Msg.getMsg(Env.getCtx(), "Acknowledge"));
+		isAcknowledgmentReceipt.setLabel(Msg.getMsg(Env.getCtx(), "RequestReadReceipt"));
 		//
 				
 		Grid grid = new Grid();
@@ -255,10 +255,10 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
         
         Columns columns = new Columns();
         Column column = new Column();
-        ZKUpdateUtil.setWidth(column, "30%");
+        ZKUpdateUtil.setWidth(column, "10%");
         columns.appendChild(column);
         column = new Column();
-        ZKUpdateUtil.setWidth(column, "70%");
+        ZKUpdateUtil.setWidth(column, "90%");
         columns.appendChild(column);
         grid.appendChild(columns);
         
@@ -285,7 +285,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.appendChild(isAcknowledgmentReceipt);
+		row.appendChild(new Label(""));
 		row.appendChild(fTo);
 		ZKUpdateUtil.setHflex(fTo, "1");
 		
@@ -303,6 +303,11 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		row.appendChild(new Label(""));
 		row.appendChild(fCc);
 		ZKUpdateUtil.setHflex(fCc, "1");
+		
+		row = new Row();
+		rows.appendChild(row);
+		row.appendChild(new Label(""));
+		row.appendChild(isAcknowledgmentReceipt);
 				
 		row = new Row();
 		rows.appendChild(row);

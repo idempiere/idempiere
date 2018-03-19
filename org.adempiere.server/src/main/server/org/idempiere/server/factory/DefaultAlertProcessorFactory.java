@@ -39,7 +39,7 @@ public class DefaultAlertProcessorFactory implements IServerFactory<AlertProcess
 		List<AlertProcessor> list = new ArrayList<AlertProcessor>();
 		for (MAlertProcessor pModel : alertModels)
 		{
-			AlertProcessor server = new AlertProcessor(pModel);
+			AlertProcessor server = create(ctx, pModel);
 			list.add(server);
 		}
 		return list.toArray(new AlertProcessor[0]);
@@ -48,6 +48,11 @@ public class DefaultAlertProcessorFactory implements IServerFactory<AlertProcess
 	@Override
 	public Class<MAlertProcessor> getProcessorClass() {
 		return MAlertProcessor.class;
+	}
+
+	@Override
+	public AlertProcessor create(Properties ctx, MAlertProcessor serverModel) {
+		return new AlertProcessor(serverModel);
 	}
 
 }

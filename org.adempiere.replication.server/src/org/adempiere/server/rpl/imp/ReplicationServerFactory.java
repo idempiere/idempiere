@@ -32,7 +32,7 @@ public class ReplicationServerFactory implements IServerFactory<ReplicationProce
 		MIMPProcessor[] importModels = MIMPProcessor.getActive(ctx);
 		for (MIMPProcessor lp : importModels)
 		{
-			ReplicationProcessor server = new ReplicationProcessor(lp);
+			ReplicationProcessor server = create(ctx, lp);
 			list.add(server);
 		}
 		ReplicationProcessor[] servers = list.toArray(new ReplicationProcessor[0]);
@@ -42,6 +42,11 @@ public class ReplicationServerFactory implements IServerFactory<ReplicationProce
 	@Override
 	public Class<MIMPProcessor> getProcessorClass() {
 		return MIMPProcessor.class;
+	}
+
+	@Override
+	public ReplicationProcessor create(Properties ctx, MIMPProcessor serverModel) {
+		return new ReplicationProcessor(serverModel);
 	}
 
 }

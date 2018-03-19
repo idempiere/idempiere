@@ -54,6 +54,7 @@ import org.adempiere.exceptions.DBException;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -2118,6 +2119,9 @@ public class GridTable extends AbstractTableModel
 			rs = null; 
 			pstmt = null;
 		}
+		
+		CacheMgt.get().reset(m_tableName);
+		
 		//	everything ok
 		m_rowData = null;
 		m_changed = false;

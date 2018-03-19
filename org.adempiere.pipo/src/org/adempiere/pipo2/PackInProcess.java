@@ -45,6 +45,7 @@ public class PackInProcess extends SvrProcess {
 	private String m_packageDirectory = null;
 	public int p_PackIn_ID = 0;
 
+	@SuppressWarnings("unused")
 	private String packageName = null;
 	private String packageVersion = null;
 
@@ -130,7 +131,7 @@ public class PackInProcess extends SvrProcess {
 
 		PackIn packIn = new PackIn();
 		packIn.setPackageDirectory(m_packageDirectory);
-		packIn.setPackageName(packageName);
+		packIn.setPackageName(adPackageImp.getName());
 		packIn.setPackageVersion(packageVersion);
 		packIn.setUpdateDictionary(m_UpdateDictionary);
 		packIn.getNotifier().setFileName(zipFilepath.getName());

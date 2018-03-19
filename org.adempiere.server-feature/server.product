@@ -58,7 +58,7 @@
       <plugin id="org.eclipse.jetty.http2.hpack" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.http2.server" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.osgi.boot" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.jetty.osgi.httpservice" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.osgi.httpservice" autoStart="true" startLevel="10" />
       <plugin id="org.idempiere.felix.webconsole" autoStart="true" startLevel="0" />
       <plugin id="org.mortbay.jasper.apache-el" autoStart="true" startLevel="0" />
       <plugin id="org.mortbay.jasper.apache-jsp" autoStart="true" startLevel="0" />

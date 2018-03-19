@@ -154,7 +154,13 @@ public class PackInNotifier {
 
 		StringTokenizer st = new StringTokenizer(emailList, " ,;", false);
 		String to = st.nextToken();
-		EMail email = client.createEMail(null, to, subject.toString(), message.toString());
+		String from = client.getRequestEMail();
+		if (from == null && client.getAD_Client_ID() != 0 && MClient.isSendCredentialsSystem()) {
+			MClient sysclient = MClient.get(Env.getCtx(), 0);
+			from = sysclient.getRequestEMail();
+		}
+
+		EMail email = client.createEMailFrom(from, to, subject.toString(), message.toString(), false);
 		if (email != null)
 		{
 			if (!packIn.isSuccess()) {

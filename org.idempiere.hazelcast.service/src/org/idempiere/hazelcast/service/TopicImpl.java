@@ -14,7 +14,9 @@
 package org.idempiere.hazelcast.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.idempiere.distributed.ITopic;
 import org.idempiere.distributed.ITopicSubscriber;
@@ -31,6 +33,7 @@ public class TopicImpl<E> implements ITopic<E> {
 	private com.hazelcast.core.ITopic<E> topic;
 	
 	private List<TopicSubscriberAdapter<E>> adapters;
+	private Map<TopicSubscriberAdapter<E>, String> registrationMap;
 
 	/**
 	 * 
@@ -38,6 +41,7 @@ public class TopicImpl<E> implements ITopic<E> {
 	public TopicImpl(com.hazelcast.core.ITopic<E> topic) {
 		this.topic = topic;
 		adapters = new ArrayList<TopicSubscriberAdapter<E>>();
+		registrationMap = new HashMap<>();
 	}
 
 	@Override
@@ -48,8 +52,9 @@ public class TopicImpl<E> implements ITopic<E> {
 	@Override
 	public void subscribe(final ITopicSubscriber<E> subscriber) {
 		TopicSubscriberAdapter<E> adapter = new TopicSubscriberAdapter<E>(subscriber);
-		adapter.setListenerId(topic.addMessageListener(adapter));
+		String registrationId = topic.addMessageListener(adapter);
 		adapters.add(adapter);
+		registrationMap.put(adapter, registrationId);
 	}
 
 	@Override
@@ -58,7 +63,9 @@ public class TopicImpl<E> implements ITopic<E> {
 		for(TopicSubscriberAdapter<E> adapter : adapters) {
 			if (adapter.subscriber == subscriber) {
 				found = adapter;
-				topic.removeMessageListener(adapter.getListenerId()); 
+				String registrationId = registrationMap.get(adapter);
+				if (topic.removeMessageListener(registrationId))
+					registrationMap.remove(adapter);
 				break;
 			}
 		}
@@ -73,18 +80,9 @@ public class TopicImpl<E> implements ITopic<E> {
 
 	class TopicSubscriberAdapter<T> implements MessageListener<T> {
 		protected ITopicSubscriber<T> subscriber;
-		private String listenerId;
 
 		protected TopicSubscriberAdapter(ITopicSubscriber<T> subscriber) {
 			this.subscriber = subscriber;
-		}
-
-		public void setListenerId(String listenerId) {
-			this.listenerId = listenerId;
-		}
-		
-		public String getListenerId() {
-			return listenerId;
 		}
 
 		@Override

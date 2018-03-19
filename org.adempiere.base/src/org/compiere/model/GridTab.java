@@ -2352,7 +2352,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			return;  // avoid NPE below
 		}
 		DataStatusListener[] listeners = m_listenerList.getListeners(DataStatusListener.class);
-		if (listeners.length == 0)
+		if (listeners.length == 0 || e == null)
 			return;
 		if (log.isLoggable(Level.FINE)) log.fine(e.toString());
 		//  WHO Info

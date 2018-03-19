@@ -334,4 +334,12 @@ public class WButtonEditor extends WEditor implements IProcessButton
 	public IADTabpanel getADTabpanel() {
 		return adTabpanel;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.adempiere.webui.editor.WEditor#isSearchable()
+	 */
+	@Override
+	public boolean isSearchable() {
+		return false;
+	}
 }

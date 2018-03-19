@@ -34,24 +34,28 @@ public class PipoDictionaryService implements IDictionaryService {
 		super();
 	}
 
+	X_AD_Package_Imp_Proc adPackageImp = null;
+
 	@Override
 	public void merge(BundleContext context, File packageFile) throws Exception {
 		if (packageFile == null || !packageFile.exists()) {
 			logger.info("No PackIn Model found");
 			return;
 		}
+		String symbolicName = "org.adempiere.pipo";
+		if (context != null)
+			symbolicName = context.getBundle().getSymbolicName();
 		String trxName = null;
-		X_AD_Package_Imp_Proc adPackageImp = null;
 		PackIn packIn = null;
 		try {
 			trxName = Trx.createTrxName("PipoDS");
 			Trx.get(trxName, true).setDisplayName(getClass().getName()+"_merge");
 			packIn = new PackIn();
 			//external files must not start with "2Pack" prefix in order to work correctly
-			if ("org.adempiere.pipo".equals(context.getBundle().getSymbolicName())  &&  !packageFile.getName().startsWith("2Pack"))  
+			if ("org.adempiere.pipo".equals(symbolicName)  &&  !packageFile.getName().startsWith("2Pack"))  
 				packIn.setPackageName(packageFile.getName());
 			else
-				packIn.setPackageName(context.getBundle().getSymbolicName());
+				packIn.setPackageName(symbolicName);
 			
 			if (Env.getCtx().getProperty("#AD_Client_ID") == null) {
 				Env.getCtx().put("#AD_Client_ID", 0);
@@ -70,13 +74,13 @@ public class PipoDictionaryService implements IDictionaryService {
 				}
 			}
 			//no version string from file name suffix, get it from bundle header
-			if (packageVersion == null)
+			if (packageVersion == null && context != null)
 				packageVersion = (String) context.getBundle().getHeaders().get("Bundle-Version");
 			
 			packIn.setPackageVersion(packageVersion);
 			packIn.setUpdateDictionary(false);
 			packIn.getNotifier().setFileName(packageFile.getName());
-			packIn.getNotifier().setPluginName(context.getBundle().getSymbolicName() + " v" + packageVersion);
+			packIn.getNotifier().setPluginName(symbolicName + " v" + packageVersion);
 
 			adPackageImp = new X_AD_Package_Imp_Proc(Env.getCtx(), 0, null);
 			if (logger.isLoggable(Level.INFO)) logger.info("zipFilepath->" + packageFile);
@@ -143,5 +147,10 @@ public class PipoDictionaryService implements IDictionaryService {
 		}
 		return result;
 	}*/
+
+	@Override
+	public X_AD_Package_Imp_Proc getAD_Package_Imp_Proc() {
+		return adPackageImp;
+	};
 
 }

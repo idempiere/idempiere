@@ -171,8 +171,7 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 			}
 		}
 
-		String sql = "SELECT AD_WF_Node_ID FROM AD_WF_Node WHERE AD_Workflow_ID = "
-						+ AD_Workflow_ID;
+		String sql = "SELECT AD_WF_Node_ID FROM AD_WF_Node WHERE AD_Workflow_ID=? AND AD_Client_ID=?";
 
 		PreparedStatement pstmt = null;
 		PreparedStatement psNodeNext = null;
@@ -182,20 +181,26 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 		ResultSet nodeNConditionrs = null;
 		try {
 			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
+			pstmt.setInt(1, AD_Workflow_ID);
+			pstmt.setInt(2, Env.getAD_Client_ID(ctx.ctx));
 			// Generated workflowNodeNext(s) and
 			// workflowNodeNextCondition(s)
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				int nodeId = rs.getInt("AD_WF_Node_ID");
 				createNode(ctx, document, nodeId);
-				sql = "SELECT ad_wf_nodenext_id from ad_wf_nodenext WHERE ad_wf_node_id =" +nodeId;
+				sql = "SELECT ad_wf_nodenext_id from ad_wf_nodenext WHERE ad_wf_node_id=? AND AD_Client_ID=?";
 				psNodeNext = DB.prepareStatement(sql, getTrxName(ctx));
+				psNodeNext.setInt(1, nodeId);
+				psNodeNext.setInt(2, Env.getAD_Client_ID(ctx.ctx));
 				nodeNextrs  = psNodeNext.executeQuery();
 				while (nodeNextrs.next()){  	
 					ad_wf_nodenext_id = nodeNextrs.getInt("AD_WF_NodeNext_ID");
 					createNodeNext(ctx, document, ad_wf_nodenext_id);
-					sql = "SELECT ad_wf_nextcondition_id from ad_wf_nextcondition WHERE ad_wf_nodenext_id =" + ad_wf_nodenext_id;
+					sql = "SELECT ad_wf_nextcondition_id from ad_wf_nextcondition WHERE ad_wf_nodenext_id=? AND AD_Client_ID=?";
 					psNCondition = DB.prepareStatement(sql, getTrxName(ctx));
+					psNCondition.setInt(1, ad_wf_nodenext_id);
+					psNCondition.setInt(2, Env.getAD_Client_ID(ctx.ctx));
 					nodeNConditionrs = psNCondition.executeQuery();
 					while (nodeNConditionrs.next()) {
 						ad_wf_nodenextcondition_id= nodeNConditionrs.getInt("AD_WF_NextCondition_ID");

@@ -42,7 +42,7 @@ public class DefaultAcctProcessorFactory implements IServerFactory<AcctProcessor
 		List<AcctProcessor> list = new ArrayList<AcctProcessor>();
 		for (MAcctProcessor pModel : acctModels)
 		{
-			AcctProcessor processor = new AcctProcessor(pModel);
+			AcctProcessor processor = create(ctx, pModel);
 			list.add(processor);
 		}
 		return list.toArray(new AcctProcessor[0]);
@@ -51,6 +51,11 @@ public class DefaultAcctProcessorFactory implements IServerFactory<AcctProcessor
 	@Override
 	public Class<MAcctProcessor> getProcessorClass() {
 		return MAcctProcessor.class;
+	}
+
+	@Override
+	public AcctProcessor create(Properties ctx, MAcctProcessor serverModel) {
+		return new AcctProcessor(serverModel);
 	}
 
 }

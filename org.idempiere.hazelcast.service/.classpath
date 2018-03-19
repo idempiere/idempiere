@@ -3,7 +3,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="hazelcast-3.5.3.jar"/>
-	<classpathentry kind="lib" path="hazelcast-cloud-3.5.3.jar"/>
+	<classpathentry kind="lib" path="hazelcast-3.9.3.jar"/>
+	<classpathentry kind="lib" path="hazelcast-aws-2.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

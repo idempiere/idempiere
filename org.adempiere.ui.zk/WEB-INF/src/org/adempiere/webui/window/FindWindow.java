@@ -317,7 +317,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	{
     		for(int i = 0; i < findFields.length; i++)
     		{
-    			if (findFields[i].getAD_Field_ID() != m_findFields[i].getAD_Field_ID()) return false;
+    			if (m_findFields[i] != null && findFields[i].getAD_Field_ID() != m_findFields[i].getAD_Field_ID()) return false;
     		}
     	}
     	
@@ -725,6 +725,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				m_findFields[i] = findField;
 				mField = findField;
 			}
+			
 			if (mField.isSelectionColumn()) {
             	gridFieldList.add(mField); // isSelectionColumn 
             } else {
@@ -767,9 +768,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			}
 		});
         
+        List<GridField> excludes = new ArrayList<GridField>();
         // adding sorted columns
         for(GridField field:gridFieldList){
-        	addSelectionColumn (field);
+        	if (!addSelectionColumn (field))
+        		excludes.add(field);
 		} 
         
         //add ... link to show the rest of the columns
@@ -781,9 +784,21 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			cell.setColspan(3);
 			cell.setAlign("left");
         	for(GridField field:moreFieldList){
-            	addSelectionColumn (field, rowg);
+            	if (!addSelectionColumn (field, rowg))
+            		excludes.add(field);
     		}
         	rowg.setOpen(false);
+        }
+        
+        if (!excludes.isEmpty()) {
+        	for(GridField field : excludes) {
+        		for(int i = 0; i < m_findFields.length; i++) {
+        			if (m_findFields[i] == field) {
+        				m_findFields[i] = null;
+        				break;
+        			}
+        		}
+        	}
         }
         
         if (m_sEditors.isEmpty()) {
@@ -1015,6 +1030,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         for (int c = 0; c < m_findFields.length; c++)
         {
             GridField field = m_findFields[c];
+            if (field == null) continue;
             
             String columnName = field.getColumnName();
             String header = field.getHeader();
@@ -1084,16 +1100,16 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      *  Add Selection Column to first Tab
      *  @param mField field
     **/
-    public void addSelectionColumn(GridField mField)
+    public boolean addSelectionColumn(GridField mField)
     {
-    	addSelectionColumn(mField, null);
+    	return addSelectionColumn(mField, null);
     }
     
     /**
      *  Add Selection Column to first Tab
      *  @param mField field
     **/
-    public void addSelectionColumn(GridField mField, Group group)
+    public boolean addSelectionColumn(GridField mField, Group group)
     {
         if (log.isLoggable(Level.CONFIG)) log.config(mField.getHeader());
         int displayLength = mField.getDisplayLength();
@@ -1106,6 +1122,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         WEditor editor = null;
         //false will use hflex which is render 1 pixel too width on firefox
         editor = WebEditorFactory.getEditor(mField, true);
+        if (!editor.isSearchable()) {
+        	return false;
+        }
         editor.setMandatory(false);
         editor.setReadWrite(true);
         editor.dynamicDisplay();
@@ -1174,6 +1193,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         m_sEditors.add(editor);
 
         fieldEditor.addEventListener(Events.ON_OK,this);
+        return true;
     }   // addSelectionColumn
     
     public void onEvent(Event event) throws Exception
@@ -2054,7 +2074,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         for (int c = 0; c < m_findFields.length; c++)
         {
             GridField field = m_findFields[c];
-            if (columnName.equals(field.getColumnName()))
+            if (field != null && columnName.equals(field.getColumnName()))
                 return field;
         }
         return null;

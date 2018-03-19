@@ -32,6 +32,14 @@ public interface IServerFactory<S extends AdempiereServer, M extends AdempierePr
 	public S[] create (Properties ctx);
 	
 	/**
+	 * 
+	 * @param ctx
+	 * @param serverModel
+	 * @return server
+	 */
+	public S create(Properties ctx, M serverModel);
+	
+	/**
 	 * The Adempiere Server Manager will used this to avoid running duplicate server for the same 
 	 * AdempiereProcessor model.
 	 * @return Fully qualified AdempiereProcessor model class name

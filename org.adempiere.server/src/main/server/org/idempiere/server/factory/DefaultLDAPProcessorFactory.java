@@ -39,7 +39,7 @@ public class DefaultLDAPProcessorFactory implements IServerFactory<LdapProcessor
 		List<LdapProcessor> list = new ArrayList<LdapProcessor>();
 		for (MLdapProcessor lp : ldapModels)
 		{
-			LdapProcessor server = new LdapProcessor(lp);
+			LdapProcessor server = create(ctx, lp);
 			list.add(server);
 		}
 		return list.toArray(new LdapProcessor[0]);
@@ -48,5 +48,10 @@ public class DefaultLDAPProcessorFactory implements IServerFactory<LdapProcessor
 	@Override
 	public Class<MLdapProcessor> getProcessorClass() {
 		return MLdapProcessor.class;
+	}
+
+	@Override
+	public LdapProcessor create(Properties ctx, MLdapProcessor serverModel) {
+		return new LdapProcessor(serverModel);
 	}
 }

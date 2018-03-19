@@ -17,6 +17,8 @@ import java.net.InetAddress;
 
 import org.idempiere.distributed.IClusterMember;
 
+import com.hazelcast.core.Member;
+
 /**
  * @author hengsin
  *
@@ -37,6 +39,12 @@ public class ClusterMember implements IClusterMember {
 		this.port = port;
 	}
 
+	public ClusterMember(Member member) {
+		this.id = member.getUuid();
+		this.address = member.getSocketAddress().getAddress();
+		this.port = member.getSocketAddress().getPort();
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.idempiere.distributed.IClusterMember#getId()
 	 */
