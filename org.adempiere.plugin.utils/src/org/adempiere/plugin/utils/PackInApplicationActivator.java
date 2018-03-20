@@ -299,7 +299,7 @@ public class PackInApplicationActivator extends AbstractActivator {
 		for (String filePath : filePaths) {
 			File toProcess = new File(filePath.trim());
 			if (!toProcess.exists()) {
-				logger.log(Level.SEVERE, filePath + " does not exist");
+				addLog(Level.SEVERE, filePath + " does not exist");
 				continue;
 			}
 			
@@ -322,14 +322,14 @@ public class PackInApplicationActivator extends AbstractActivator {
 	}
 	
 	private void processFilePath(File toProcess) {
-		if (toProcess.isFile()) {
+		if (toProcess.isFile() && toProcess.canRead()) {
 			if (toProcess.getName().toLowerCase().endsWith(".zip"))
 				filesToProcess.add(toProcess);
 			else {
 				logger.log(Level.SEVERE, toProcess.getName() + " is not a valid .zip file");
 				return;
 			}
-		} else if (toProcess.isDirectory()) {
+		} else if (toProcess.isDirectory() && toProcess.canRead()) {
 			FileFilter filter = new FileFilter() {
 				public boolean accept(File file) {
 					if (file.getName().toUpperCase().endsWith(".ZIP") || file.isDirectory())
@@ -344,17 +344,22 @@ public class PackInApplicationActivator extends AbstractActivator {
 					logger.info("*** Creating list from folder " + toProcess.toString());
 					found = true;
 				}
-				if (fileToProcess.isDirectory())
+				if (fileToProcess.isDirectory()) {
 					processFilePath(fileToProcess);
-				else
-					filesToProcess.add(fileToProcess);
+				} else {
+					if (fileToProcess.canRead()) {
+						filesToProcess.add(fileToProcess);
+					} else {
+						addLog(Level.SEVERE, fileToProcess.getName() + " not readable");
+					}
+				}
 			}
 			if (!found) {
 				logger.log(Level.FINE, toProcess.getName() + " does not have .zip files or subfolders");
 				return;
 			}
 		} else {
-			logger.log(Level.SEVERE, toProcess.getName() + " not a file or folder");
+			addLog(Level.SEVERE, toProcess.getName() + " not a file or folder or not readable");
 		}
 	}
 	
