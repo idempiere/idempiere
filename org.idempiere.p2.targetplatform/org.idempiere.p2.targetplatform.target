@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="idempiere" sequenceNumber="84">
+<?pde version="3.8"?><target name="idempiere" sequenceNumber="88">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="com.jaspersoft.studio.bundles.barbecue" version="1.5.0.beta1"/>
@@ -168,6 +168,82 @@
 <unit id="org.restlet.ext.xstream.feature.group" version="2.3.2.v20150501-1520"/>
 <unit id="org.restlet.feature.group" version="2.3.2.v20150501-1520"/>
 <repository location="http://p2.restlet.com/2.3"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.core.runtime.feature.feature.group" version="1.2.1.v20170928-1321"/>
+<unit id="org.eclipse.cvs.feature.group" version="1.4.402.v20171130-0510"/>
+<unit id="org.eclipse.cvs.source.feature.group" version="1.4.402.v20171130-0510"/>
+<unit id="org.eclipse.e4.core.tools.feature.feature.group" version="4.7.0.v20170515-1617"/>
+<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.7.0.v20170515-1617"/>
+<unit id="org.eclipse.e4.rcp.feature.group" version="1.6.2.v20171129-0543"/>
+<unit id="org.eclipse.e4.rcp.source.feature.group" version="1.6.2.v20171129-0543"/>
+<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.4.0.v20170516-2248"/>
+<unit id="org.eclipse.ecf.core.feature.source.feature.group" version="1.4.0.v20170516-2248"/>
+<unit id="org.eclipse.ecf.core.ssl.feature.feature.group" version="1.1.0.v20170110-1317"/>
+<unit id="org.eclipse.ecf.core.ssl.feature.source.feature.group" version="1.1.0.v20170110-1317"/>
+<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="3.13.7.v20170516-2248"/>
+<unit id="org.eclipse.ecf.filetransfer.feature.source.feature.group" version="3.13.7.v20170516-2248"/>
+<unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.feature.group" version="3.13.7.v20170516-2248"/>
+<unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.source.feature.group" version="3.13.7.v20170516-2248"/>
+<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.feature.group" version="1.1.0.v20170110-1317"/>
+<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.source.feature.group" version="1.1.0.v20170110-1317"/>
+<unit id="org.eclipse.ecf.filetransfer.ssl.feature.feature.group" version="1.1.0.v20170110-1317"/>
+<unit id="org.eclipse.ecf.filetransfer.ssl.feature.source.feature.group" version="1.1.0.v20170110-1317"/>
+<unit id="org.eclipse.emf.common.feature.group" version="2.13.0.v20170609-0707"/>
+<unit id="org.eclipse.emf.common.source.feature.group" version="2.13.0.v20170609-0707"/>
+<unit id="org.eclipse.emf.ecore.feature.group" version="2.13.0.v20170609-0707"/>
+<unit id="org.eclipse.emf.ecore.source.feature.group" version="2.13.0.v20170609-0707"/>
+<unit id="org.eclipse.equinox.compendium.sdk.feature.group" version="3.13.1.v20170811-1407"/>
+<unit id="org.eclipse.equinox.core.feature.feature.group" version="1.4.1.v20170928-1321"/>
+<unit id="org.eclipse.equinox.core.sdk.feature.group" version="3.13.1.v20170928-1321"/>
+<unit id="org.eclipse.equinox.executable" version="3.7.2.v20171108-1834"/>
+<unit id="org.eclipse.equinox.executable.feature.group" version="3.7.2.v20171108-1834"/>
+<unit id="org.eclipse.equinox.p2.core.feature.feature.group" version="1.4.1.v20170928-1405"/>
+<unit id="org.eclipse.equinox.p2.core.feature.source.feature.group" version="1.4.1.v20170928-1405"/>
+<unit id="org.eclipse.equinox.p2.discovery.feature.feature.group" version="1.1.1.v20170906-1259"/>
+<unit id="org.eclipse.equinox.p2.extras.feature.feature.group" version="1.3.1.v20170928-1405"/>
+<unit id="org.eclipse.equinox.p2.extras.feature.source.feature.group" version="1.3.1.v20170928-1405"/>
+<unit id="org.eclipse.equinox.p2.rcp.feature.feature.group" version="1.3.2.v20171108-1343"/>
+<unit id="org.eclipse.equinox.p2.rcp.feature.source.feature.group" version="1.3.2.v20171108-1343"/>
+<unit id="org.eclipse.equinox.p2.sdk.feature.group" version="3.10.2.v20171108-1343"/>
+<unit id="org.eclipse.equinox.p2.user.ui.feature.group" version="2.3.2.v20171108-1343"/>
+<unit id="org.eclipse.equinox.p2.user.ui.source.feature.group" version="2.3.2.v20171108-1343"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.13.2.v20171108-1834"/>
+<unit id="org.eclipse.equinox.server.core.feature.group" version="1.5.2.v20171108-1350"/>
+<unit id="org.eclipse.equinox.server.jetty.feature.group" version="1.4.2.v20171108-1350"/>
+<unit id="org.eclipse.equinox.server.p2.feature.group" version="1.3.1.v20170928-1405"/>
+<unit id="org.eclipse.equinox.serverside.sdk.feature.group" version="3.13.2.v20171108-1350"/>
+<unit id="org.eclipse.help.feature.group" version="2.2.102.v20171130-0510"/>
+<unit id="org.eclipse.help.source.feature.group" version="2.2.102.v20171130-0510"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.13.2.v20171130-0906"/>
+<unit id="org.eclipse.jdt.source.feature.group" version="3.13.2.v20171130-0906"/>
+<unit id="org.eclipse.osgi.compatibility.plugins.feature.feature.group" version="1.1.1.v20170811-1325"/>
+<unit id="org.eclipse.pde.api.tools.ee.feature.feature.group" version="1.0.200.v20170515-0910"/>
+<unit id="org.eclipse.pde.feature.group" version="3.13.2.v20171130-0510"/>
+<unit id="org.eclipse.pde.source.feature.group" version="3.13.2.v20171130-0510"/>
+<unit id="org.eclipse.platform.feature.group" version="4.7.2.v20171130-0510"/>
+<unit id="org.eclipse.platform.ide" version="4.7.2.M20171130-0510"/>
+<unit id="org.eclipse.platform.sdk" version="4.7.2.M20171130-0510"/>
+<unit id="org.eclipse.platform.source.feature.group" version="4.7.2.v20171130-0510"/>
+<unit id="org.eclipse.rcp.configuration.feature.group" version="1.1.2.v20171130-0510"/>
+<unit id="org.eclipse.rcp.feature.group" version="4.7.2.v20171130-0510"/>
+<unit id="org.eclipse.rcp.id" version="4.7.2.M20171130-0510"/>
+<unit id="org.eclipse.rcp.sdk.id" version="4.7.2.M20171130-0510"/>
+<unit id="org.eclipse.rcp.source.feature.group" version="4.7.2.v20171130-0510"/>
+<unit id="org.eclipse.releng.tools.feature.group" version="3.9.100.v20170516-0717"/>
+<unit id="org.eclipse.sdk.examples.feature.group" version="3.6.2.v20171130-0510"/>
+<unit id="org.eclipse.sdk.examples.source.feature.group" version="3.6.2.v20171130-0510"/>
+<unit id="org.eclipse.sdk.feature.group" version="4.7.2.v20171130-0906"/>
+<unit id="org.eclipse.sdk.ide" version="4.7.2.M20171130-0510"/>
+<unit id="org.eclipse.sdk.tests.feature.group" version="4.7.2.v20171130-0510"/>
+<unit id="org.eclipse.swt.tools.feature.feature.group" version="3.106.0.v20170503-0851"/>
+<unit id="org.eclipse.test.feature.group" version="3.7.200.v20170511-1043"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.7"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.jetty.bundles.f.feature.group" version="9.4.7.201709211338"/>
+<unit id="org.eclipse.jetty.bundles.f.source.feature.group" version="9.4.7.201709211338"/>
+<repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.7.v20170914"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="ca.odell.glazedlists" version="1.9.0.v201303080712"/>
@@ -902,82 +978,6 @@
 <unit id="scannotation" version="1.0.2.v201205170710"/>
 <unit id="scannotation.source" version="1.0.2.v201205170710"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20170919201930/repository/"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.core.runtime.feature.feature.group" version="1.2.1.v20170928-1321"/>
-<unit id="org.eclipse.cvs.feature.group" version="1.4.402.v20171130-0510"/>
-<unit id="org.eclipse.cvs.source.feature.group" version="1.4.402.v20171130-0510"/>
-<unit id="org.eclipse.e4.core.tools.feature.feature.group" version="4.7.0.v20170515-1617"/>
-<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.7.0.v20170515-1617"/>
-<unit id="org.eclipse.e4.rcp.feature.group" version="1.6.2.v20171129-0543"/>
-<unit id="org.eclipse.e4.rcp.source.feature.group" version="1.6.2.v20171129-0543"/>
-<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.4.0.v20170516-2248"/>
-<unit id="org.eclipse.ecf.core.feature.source.feature.group" version="1.4.0.v20170516-2248"/>
-<unit id="org.eclipse.ecf.core.ssl.feature.feature.group" version="1.1.0.v20170110-1317"/>
-<unit id="org.eclipse.ecf.core.ssl.feature.source.feature.group" version="1.1.0.v20170110-1317"/>
-<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="3.13.7.v20170516-2248"/>
-<unit id="org.eclipse.ecf.filetransfer.feature.source.feature.group" version="3.13.7.v20170516-2248"/>
-<unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.feature.group" version="3.13.7.v20170516-2248"/>
-<unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.source.feature.group" version="3.13.7.v20170516-2248"/>
-<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.feature.group" version="1.1.0.v20170110-1317"/>
-<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.source.feature.group" version="1.1.0.v20170110-1317"/>
-<unit id="org.eclipse.ecf.filetransfer.ssl.feature.feature.group" version="1.1.0.v20170110-1317"/>
-<unit id="org.eclipse.ecf.filetransfer.ssl.feature.source.feature.group" version="1.1.0.v20170110-1317"/>
-<unit id="org.eclipse.emf.common.feature.group" version="2.13.0.v20170609-0707"/>
-<unit id="org.eclipse.emf.common.source.feature.group" version="2.13.0.v20170609-0707"/>
-<unit id="org.eclipse.emf.ecore.feature.group" version="2.13.0.v20170609-0707"/>
-<unit id="org.eclipse.emf.ecore.source.feature.group" version="2.13.0.v20170609-0707"/>
-<unit id="org.eclipse.equinox.compendium.sdk.feature.group" version="3.13.1.v20170811-1407"/>
-<unit id="org.eclipse.equinox.core.feature.feature.group" version="1.4.1.v20170928-1321"/>
-<unit id="org.eclipse.equinox.core.sdk.feature.group" version="3.13.1.v20170928-1321"/>
-<unit id="org.eclipse.equinox.executable" version="3.7.2.v20171108-1834"/>
-<unit id="org.eclipse.equinox.executable.feature.group" version="3.7.2.v20171108-1834"/>
-<unit id="org.eclipse.equinox.p2.core.feature.feature.group" version="1.4.1.v20170928-1405"/>
-<unit id="org.eclipse.equinox.p2.core.feature.source.feature.group" version="1.4.1.v20170928-1405"/>
-<unit id="org.eclipse.equinox.p2.discovery.feature.feature.group" version="1.1.1.v20170906-1259"/>
-<unit id="org.eclipse.equinox.p2.extras.feature.feature.group" version="1.3.1.v20170928-1405"/>
-<unit id="org.eclipse.equinox.p2.extras.feature.source.feature.group" version="1.3.1.v20170928-1405"/>
-<unit id="org.eclipse.equinox.p2.rcp.feature.feature.group" version="1.3.2.v20171108-1343"/>
-<unit id="org.eclipse.equinox.p2.rcp.feature.source.feature.group" version="1.3.2.v20171108-1343"/>
-<unit id="org.eclipse.equinox.p2.sdk.feature.group" version="3.10.2.v20171108-1343"/>
-<unit id="org.eclipse.equinox.p2.user.ui.feature.group" version="2.3.2.v20171108-1343"/>
-<unit id="org.eclipse.equinox.p2.user.ui.source.feature.group" version="2.3.2.v20171108-1343"/>
-<unit id="org.eclipse.equinox.sdk.feature.group" version="3.13.2.v20171108-1834"/>
-<unit id="org.eclipse.equinox.server.core.feature.group" version="1.5.2.v20171108-1350"/>
-<unit id="org.eclipse.equinox.server.jetty.feature.group" version="1.4.2.v20171108-1350"/>
-<unit id="org.eclipse.equinox.server.p2.feature.group" version="1.3.1.v20170928-1405"/>
-<unit id="org.eclipse.equinox.serverside.sdk.feature.group" version="3.13.2.v20171108-1350"/>
-<unit id="org.eclipse.help.feature.group" version="2.2.102.v20171130-0510"/>
-<unit id="org.eclipse.help.source.feature.group" version="2.2.102.v20171130-0510"/>
-<unit id="org.eclipse.jdt.feature.group" version="3.13.2.v20171130-0906"/>
-<unit id="org.eclipse.jdt.source.feature.group" version="3.13.2.v20171130-0906"/>
-<unit id="org.eclipse.osgi.compatibility.plugins.feature.feature.group" version="1.1.1.v20170811-1325"/>
-<unit id="org.eclipse.pde.api.tools.ee.feature.feature.group" version="1.0.200.v20170515-0910"/>
-<unit id="org.eclipse.pde.feature.group" version="3.13.2.v20171130-0510"/>
-<unit id="org.eclipse.pde.source.feature.group" version="3.13.2.v20171130-0510"/>
-<unit id="org.eclipse.platform.feature.group" version="4.7.2.v20171130-0510"/>
-<unit id="org.eclipse.platform.ide" version="4.7.2.M20171130-0510"/>
-<unit id="org.eclipse.platform.sdk" version="4.7.2.M20171130-0510"/>
-<unit id="org.eclipse.platform.source.feature.group" version="4.7.2.v20171130-0510"/>
-<unit id="org.eclipse.rcp.configuration.feature.group" version="1.1.2.v20171130-0510"/>
-<unit id="org.eclipse.rcp.feature.group" version="4.7.2.v20171130-0510"/>
-<unit id="org.eclipse.rcp.id" version="4.7.2.M20171130-0510"/>
-<unit id="org.eclipse.rcp.sdk.id" version="4.7.2.M20171130-0510"/>
-<unit id="org.eclipse.rcp.source.feature.group" version="4.7.2.v20171130-0510"/>
-<unit id="org.eclipse.releng.tools.feature.group" version="3.9.100.v20170516-0717"/>
-<unit id="org.eclipse.sdk.examples.feature.group" version="3.6.2.v20171130-0510"/>
-<unit id="org.eclipse.sdk.examples.source.feature.group" version="3.6.2.v20171130-0510"/>
-<unit id="org.eclipse.sdk.feature.group" version="4.7.2.v20171130-0906"/>
-<unit id="org.eclipse.sdk.ide" version="4.7.2.M20171130-0510"/>
-<unit id="org.eclipse.sdk.tests.feature.group" version="4.7.2.v20171130-0510"/>
-<unit id="org.eclipse.swt.tools.feature.feature.group" version="3.106.0.v20170503-0851"/>
-<unit id="org.eclipse.test.feature.group" version="3.7.200.v20170511-1043"/>
-<repository location="http://download.eclipse.org/eclipse/updates/4.7"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.jetty.bundles.f.feature.group" version="9.4.7.201709211338"/>
-<unit id="org.eclipse.jetty.bundles.f.source.feature.group" version="9.4.7.201709211338"/>
-<repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.7.v20170914"/>
 </location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
