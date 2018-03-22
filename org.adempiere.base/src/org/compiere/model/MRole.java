@@ -371,7 +371,7 @@ public final class MRole extends X_AD_Role
 			MUserRoles su = new MUserRoles(getCtx(), SUPERUSER_USER_ID, getAD_Role_ID(), get_TrxName());
 			su.saveEx();
 			//	Add Role to User
-			if (getCreatedBy() != SUPERUSER_USER_ID)
+			if (getCreatedBy() != SUPERUSER_USER_ID && MSysConfig.getBooleanValue(MSysConfig.AUTO_ASSIGN_ROLE_TO_CREATOR_USER, false, getAD_Client_ID()))
 			{
 				MUserRoles ur = new MUserRoles(getCtx(), getCreatedBy(), getAD_Role_ID(), get_TrxName());
 				ur.saveEx();
