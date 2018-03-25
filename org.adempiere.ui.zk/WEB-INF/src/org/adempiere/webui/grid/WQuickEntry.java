@@ -69,6 +69,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	private static final long serialVersionUID = -8530102231615195037L;
 
 	public static final String QUICK_ENTRY_MODE = "_QUICK_ENTRY_MODE_";
+	public static final String QUICK_ENTRY_CALLER_WINDOW = "_QUICK_ENTRY_CALLER_WINDOW_";
 
 	private static CLogger log = CLogger.getCLogger(WQuickEntry.class);
 
@@ -119,6 +120,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 		}
 
 		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_MODE, "Y");
+		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_CALLER_WINDOW, parent_WindowNo);
 		initPOs();
 
 	}	//	WQuickEntry
