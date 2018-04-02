@@ -3,13 +3,14 @@
  */
 package org.adempiere.webui.info;
 
-import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -32,7 +33,6 @@ import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
-import org.adempiere.webui.component.ListModelTable;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
@@ -95,10 +95,12 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.North;
+import org.zkoss.zul.Paging;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Vbox;
+import org.zkoss.zul.Vlayout;
 
 /**
  * AD_InfoWindow implementation
@@ -123,6 +125,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     /** embedded Panel **/
     Tabbox embeddedPane = new Tabbox();
     ArrayList <EmbedWinInfo> embeddedWinList = new ArrayList <EmbedWinInfo>();
+    Map<Integer, RelatedInfoWindow> relatedMap = new HashMap<>();
 
 	/** Max Length of Fields */
     public static final int FIELDLENGTH = 20;
@@ -236,11 +239,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					// get index of link column
 					indexData = p_layout.length + columnDataIndex.get(embed.getParentLinkColumnID());
 				}
-				refresh(contentPanel.getValueAt(row,indexData),embed);
+				RelatedInfoWindow relatedInfoWindow = relatedMap.get(embed.getInfowin().getAD_InfoWindow_ID());
+				relatedInfoWindow.refresh(contentPanel.getValueAt(row,indexData));
 			}// refresh for all
 		}else{
 			for (EmbedWinInfo embed : embeddedWinList) {
-				refresh(embed);
+				reset(embed);
 			}
 		}
 	}
@@ -630,6 +634,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				String s_sqlFrom = embedInfo.getFromClause();
 				/** Where Clause						*/
 				String s_sqlWhere = relatedInfo.getLinkColumnName() + "=?";
+				String s_sqlCount = "SELECT COUNT(*) FROM " + s_sqlFrom + " WHERE " + s_sqlWhere;
 				m_sqlEmbedded = embeddedTbl.prepareTable(s_layoutEmbedded, s_sqlFrom, s_sqlWhere, false, tableName);
 
 				embeddedTbl.setMultiSelection(false);
@@ -639,10 +644,19 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				embeddedTbl.getModel().addTableModelListener(this);
 				ZKUpdateUtil.setVflex(embeddedTbl, "1");
 
-				
+				Paging embeddedPaging = new Paging();
+				embeddedPaging.setPageSize(pageSize);
+				embeddedPaging.setTotalSize(0);
+				ZKUpdateUtil.setHflex(embeddedPaging, "1");
+				embeddedPaging.setMold("os");
+				embeddedPaging.setVisible(false);
+				embeddedPaging.setSclass("infowindow-related-paging");
+
 				//Xolali - add embeddedTbl to list, add m_sqlembedded to list
 				EmbedWinInfo ewinInfo = new EmbedWinInfo(embedInfo,embeddedTbl,m_sqlEmbedded,relatedInfo.getLinkColumnName(), relatedInfo.getLinkInfoColumn(), relatedInfo.getParentRelatedColumn_ID());
 				embeddedWinList.add(ewinInfo);
+				RelatedInfoWindow relatedInfoWindow = new RelatedInfoWindow(ewinInfo, this, embeddedPaging, s_sqlCount, s_layoutEmbedded);
+				relatedMap.put(embedInfo.getAD_InfoWindow_ID(), relatedInfoWindow);
 
 				MInfoWindow riw = (MInfoWindow) relatedInfo.getRelatedInfo();
 				String tabTitle;
@@ -655,7 +669,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				Tabpanel desktopTabPanel = new Tabpanel();
 				//desktopTabPanel.
 				ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
-				desktopTabPanel.appendChild(embeddedTbl);
+				Vlayout vlayout = new Vlayout();
+				ZKUpdateUtil.setVflex(vlayout, "1");
+				desktopTabPanel.appendChild(vlayout);
+				vlayout.appendChild(embeddedPaging);
+				vlayout.appendChild(embeddedTbl);				
 				tabPanels.appendChild(desktopTabPanel);
 			}
 
@@ -1055,7 +1073,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * or parentLink of infoRelateWindow.
 	 * 
 	 * this function just add column name of hidden infoWindow to end of query
-	 * @param sqlMain main sql to append column 
+	 * @param sqlMain main sql to append column
 	 * @param listInfoColumn list of PO contain infoColumnID, this infoColumnID will add to query
 	 * @return sql after append column
 	 */
@@ -1176,7 +1194,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		div.setStyle("width :100%; height: 100%");
 		ZKUpdateUtil.setVflex(div, "1");
 		ZKUpdateUtil.setHflex(div, "1");
-		div.appendChild(contentPanel);				
+		div.appendChild(contentPanel);
 
 		Borderlayout inner = new Borderlayout();
 		ZKUpdateUtil.setWidth(inner, "100%");
@@ -1889,94 +1907,16 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 
 	/**
-	 * @author xolali IDEMPIERE-1045
-	 * refresh(Object obj, EmbedWinInfo relatedInfo)
+	 * reset to empty
+	 * @param relatedInfo
 	 */
-	protected void refresh(Object obj, EmbedWinInfo relatedInfo)
-	{
-		StringBuilder sql = new StringBuilder();
-		sql.append(relatedInfo.getInfoSql()); // delete get sql method from MInfoWindow
-		if (log.isLoggable(Level.FINEST))
-			log.finest(sql.toString());
-		
-		Object linkPara = null;
-		if (obj != null && obj instanceof IDColumn){
-			IDColumn ID = (IDColumn) obj;
-			linkPara = ID.getRecord_ID();
-		}else if (obj != null){
-			linkPara = obj.toString();
-		}else {
-			//TODO:hard case
-		}
-		
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(relatedInfo.getInfoSql(), null);
-			//TODO: implicit type conversion. will exception in some case must recheck
-			if (relatedInfo.getTypeDataOfLink().equals(String.class)){
-				pstmt.setString(1, (String)linkPara);
-			}else if (relatedInfo.getTypeDataOfLink().equals(int.class)){				
-				pstmt.setInt(1, Integer.parseInt(linkPara.toString()));
-				
-			}else{
-				pstmt.setObject(1, linkPara);
-			}
-			
-			rs = pstmt.executeQuery();
-			loadEmbedded(rs, relatedInfo);
-		}
-		catch (Exception e)
-		{
-			log.log(Level.WARNING, sql.toString(), e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-	}	//	refresh
-
-	protected void refresh(EmbedWinInfo relatedInfo){
+	protected void reset(EmbedWinInfo relatedInfo){
 		if (relatedInfo.getInfoTbl() != null){
 			if (((WListbox)relatedInfo.getInfoTbl()).getModel() != null)
 				((WListbox)relatedInfo.getInfoTbl()).getModel().clear();
 			else
 				((WListbox)relatedInfo.getInfoTbl()).clear();
 		}
-	}
-	
-	/**
-	 * @author xolali IDEMPIERE-1045
-	 * loadEmbedded(ResultSet rs, EmbedWinInfo info)
-	 */
-	public void loadEmbedded(ResultSet rs, EmbedWinInfo info) throws SQLException{
-
-		ListModelTable model;
-		ArrayList<ColumnInfo> list = new ArrayList<ColumnInfo>();
-		list = getInfoColumnslayout(info.getInfowin());
-
-		//  Convert ArrayList to Array
-		ColumnInfo[] s_layoutEmbedded  = new ColumnInfo[list.size()];
-		list.toArray(s_layoutEmbedded);	
-		List<Object> data = new ArrayList<Object>();
-		ArrayList<Object> lines =  new ArrayList<Object>();
-
-		while (rs.next())
-		{
-			try {
-				data = readData(rs, s_layoutEmbedded);
-			} catch (SQLException e) {
-				//Xolali - Auto-generated catch block
-				e.printStackTrace();
-			}
-			lines.add(data);
-		}
-		model = new ListModelTable(lines);
-
-		WListbox content = (WListbox) info.getInfoTbl();
-		content.setData(model, null);
 	}
 
 	/**
@@ -2005,79 +1945,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return gridField;
 	}
 
-	protected  ArrayList<Object> readData(ResultSet rs, ColumnInfo[] p_layout) throws SQLException {
-
-		int colOffset = 1;  //  columns start with 1
-		ArrayList<Object> data = new ArrayList<Object>();
-		for (int col = 0; col < p_layout.length; col++)
-		{
-			Object value = null;
-			Class<?> c = p_layout[col].getColClass();
-			int colIndex = col + colOffset;
-			if (c == IDColumn.class)
-			{
-				value = new IDColumn(rs.getInt(colIndex));
-			}
-			else if (c == Boolean.class)
-				value = new Boolean("Y".equals(rs.getString(colIndex)));
-			else if (c == Timestamp.class)
-				value = rs.getTimestamp(colIndex);
-			else if (c == BigDecimal.class)
-				value = rs.getBigDecimal(colIndex);
-			else if (c == Double.class)
-				value = new Double(rs.getDouble(colIndex));
-			else if (c == Integer.class)
-				value = new Integer(rs.getInt(colIndex));
-			else if (c == KeyNamePair.class)
-			{
-				if (p_layout[col].isKeyPairCol())
-				{
-					String display = rs.getString(colIndex);
-					int key = rs.getInt(colIndex+1);
-					if (! rs.wasNull()) {
-						value = new KeyNamePair(key, display);
-					}
-					colOffset++;
-				}
-				else
-				{
-					int key = rs.getInt(colIndex);
-					if (! rs.wasNull()) {
-						WEditor editor = editorMap.get(p_layout[col].getColSQL()); // rework this, it will fail
-						if (editor != null)
-						{
-							editor.setValue(key);
-							value = new KeyNamePair(key, editor.getDisplayTextForGridView(key));
-						}
-						else
-						{
-							value = new KeyNamePair(key, Integer.toString(key));
-						}
-					}
-				}
-			}
-			else if (c == ValueNamePair.class)
-			{
-				String key = rs.getString(colIndex);
-				WEditor editor = editorMap.get(p_layout[col].getColSQL());
-				if (editor != null)
-				{
-					value = new ValueNamePair(key, editor.getDisplayTextForGridView(key));
-				}
-				else
-				{
-					value = new ValueNamePair(key, key);
-				}
-			}
-			else
-			{
-				value = rs.getString(colIndex);
-			}
-			data.add(value);
-		}
-
-		return data;
-	}
 
 	
 	/**
@@ -2093,7 +1960,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			// cancel editor not display
 			if (wEditor == null || !wEditor.isVisible() || wEditor.getGridField() == null){
 				continue;
-}
+			}
 			
 			isValid = isValid & validateField (wEditor);
 		}

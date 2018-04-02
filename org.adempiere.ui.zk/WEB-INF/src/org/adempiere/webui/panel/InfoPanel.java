@@ -2285,5 +2285,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	public void setGridfield(GridField m_gridfield) {
 		this.m_gridfield = m_gridfield;
 	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
 }	//	Info
 
