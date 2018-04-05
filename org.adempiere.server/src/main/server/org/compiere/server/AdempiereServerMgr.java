@@ -176,6 +176,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	 * @param scheduler
 	 * @return true
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public boolean addScheduler(MScheduler scheduler) {
 		String serverId = scheduler.getServerID();
 		if (getServer(serverId) != null)
@@ -226,6 +227,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 					continue;
 				//	Do start
 				//	replace
+				server.getServer().recalculateSleepMS();
 				server.start();
 			}
 			catch (Exception e)
