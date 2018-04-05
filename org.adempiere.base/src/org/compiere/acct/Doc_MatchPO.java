@@ -444,9 +444,12 @@ public class Doc_MatchPO extends Doc
 				if (mPO[i].getM_AttributeSetInstance_ID() == mMatchPO.getM_AttributeSetInstance_ID()
 					&& mPO[i].getM_MatchPO_ID() != mMatchPO.getM_MatchPO_ID())
 				{
-					BigDecimal qty = (isReturnTrx ? mPO[i].getQty().negate() : mPO[i].getQty()); 
-					tQty = tQty.add(qty);
-					tAmt = tAmt.add(poCost.multiply(qty));
+					BigDecimal qty = (isReturnTrx ? mPO[i].getQty().negate() : mPO[i].getQty());
+					if (mPO[i].getM_InOutLine_ID() > 0)
+					{
+						tQty = tQty.add(qty);
+						tAmt = tAmt.add(poCost.multiply(qty));
+					}
 				}
 			}
 			
