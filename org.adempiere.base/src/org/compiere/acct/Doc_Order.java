@@ -734,7 +734,7 @@ public class Doc_Order extends Doc
 	 *	@param multiplier 1 for accrual
 	 *	@return Fact
 	 */
-	protected static Fact getCommitmentSalesRelease(MAcctSchema as, Doc doc,
+	public static Fact getCommitmentSalesRelease(MAcctSchema as, Doc doc,
 		BigDecimal Qty, int M_InOutLine_ID, BigDecimal multiplier)
 	{
 		Fact fact = new Fact(doc, as, Fact.POST_Commitment);

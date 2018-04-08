@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.base.Core;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
@@ -34,6 +33,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.model.GridTable;
 import org.compiere.model.GridWindow;
 import org.compiere.model.MField;
 import org.compiere.model.MLookup;
@@ -66,9 +66,10 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8530102231615195037L;
+	private static final long serialVersionUID = -1397302187339942732L;
 
 	public static final String QUICK_ENTRY_MODE = "_QUICK_ENTRY_MODE_";
+	public static final String QUICK_ENTRY_CALLER_WINDOW = "_QUICK_ENTRY_CALLER_WINDOW_";
 
 	private static CLogger log = CLogger.getCLogger(WQuickEntry.class);
 
@@ -119,6 +120,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 		}
 
 		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_MODE, "Y");
+		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_CALLER_WINDOW, parent_WindowNo);
 		initPOs();
 
 	}	//	WQuickEntry
@@ -530,12 +532,16 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 				WEditor editor = quickEditors.get(idx);
 				GridTab gridTab = field.getGridTab();
 				String columnName = field.getColumnName();
+				GridTable mTable = gridTab.getTableModel();
+				int row = gridTab.getCurrentRow();
+				int col = mTable.findColumn(columnName);
 				// process dependencies and callouts for the changed field
 				if (evt.getSource() instanceof WLocationEditor && evt.getNewValue() == null && editor.getValue() != null) {
 					// ignore first call of WLocationEditor valuechange set to null
 					// it will be called later with correct value
 					// see WLocationEditor firing twice ValueChangeEvent (first with null and then with value)
 				} else {
+					mTable.setValueAt(evt.getNewValue(), row, col);
 					field.setValue(evt.getNewValue(), field.getGridTab().getTableModel().isInserting());
 					gridTab.processFieldChange(field);
 				}
@@ -553,12 +559,8 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	    					mLookup.refresh();
 	    				}
 	    			}
-	    		}   //  for all dependent fields
-				if (   dependants.size() > 0
-					|| field.getCallout().length() > 0
-					|| Core.findCallout(gridTab.getTableName(), columnName).size() > 0) {
-					dynamicDisplay();
-	            }
+	    		}
+	    		dynamicDisplay();
 			}
 		}
 	}
@@ -570,8 +572,13 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	{
 		for (int idxf = 0; idxf < quickFields.size(); idxf++) {
 			GridField field = quickFields.get(idxf);
+			GridTab gridTab = field.getGridTab();
+			String columnName = field.getColumnName();
+			GridTable mTable = gridTab.getTableModel();
+			int row = gridTab.getCurrentRow();
+			int col = mTable.findColumn(columnName);
 			WEditor editor = quickEditors.get(idxf);
-			editor.setValue(field.getValue());
+			editor.setValue(mTable.getValueAt(row, col)); //In case a callout changed the value and it is not reflected in field yet
 			editor.setReadWrite(field.isEditable(true));
 			editor.setVisible(field.isDisplayed(true));
 		}

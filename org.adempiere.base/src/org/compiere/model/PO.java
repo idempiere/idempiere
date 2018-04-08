@@ -2846,7 +2846,8 @@ public abstract class PO
 			if (DisplayType.isLOB(dt))
 			{
 				lobAdd (value, i, dt);
-				continue;
+				if (!p_info.isColumnMandatory(i))
+					continue;
 			}
 
 			//	** add column **
@@ -2885,7 +2886,16 @@ public abstract class PO
 					else if (c == String.class)
 						sqlValues.append (encrypt(i,DB.TO_STRING ((String)value)));
 					else if (DisplayType.isLOB(dt))
-						sqlValues.append("null");		//	no db dependent stuff here
+					{
+						if (p_info.isColumnMandatory(i))
+						{
+							sqlValues.append("''");		//	no db dependent stuff here -- at this point value is known to be not null
+						}
+						else
+						{
+							sqlValues.append("null");
+						}
+					}
 					else
 						sqlValues.append (saveNewSpecial (value, i));
 				}
@@ -2910,7 +2920,17 @@ public abstract class PO
 							
 				if (DisplayType.isLOB(dt))
 				{
-					params.add(null);
+					if (p_info.isColumnMandatory(i))
+					{
+						if (dt == DisplayType.Binary)
+							params.add(new byte[] {0}); // -- at this point value is known to be not null
+						else
+							params.add(""); // -- at this point value is known to be not null
+					}
+					else
+					{
+						params.add(null);
+					}
 				}
 				else if (value == null || value.equals (Null.NULL))
 				{
