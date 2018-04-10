@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -592,27 +593,43 @@ public final class AEnv
 			DocumentException, FileNotFoundException {
 		Document document = null;
 		PdfWriter copy = null;
-		for (File f : pdfList)
-		{
-			PdfReader reader = new PdfReader(f.getAbsolutePath());
-			if (document == null)
+		
+		List<PdfReader> pdfReaders = new ArrayList<PdfReader>();
+		
+		try
+		{		
+			for (File f : pdfList)
 			{
-				document = new Document(reader.getPageSizeWithRotation(1));
-				copy = PdfWriter.getInstance(document, new FileOutputStream(outFile));
-				document.open();
+				PdfReader reader = new PdfReader(f.getAbsolutePath());
+				
+				pdfReaders.add(reader);
+				
+				if (document == null)
+				{
+					document = new Document(reader.getPageSizeWithRotation(1));
+					copy = PdfWriter.getInstance(document, new FileOutputStream(outFile));
+					document.open();
+				}
+				int pages = reader.getNumberOfPages();
+				PdfContentByte cb = copy.getDirectContent();
+				for (int i = 1; i <= pages; i++) {
+					document.newPage();
+					copy.newPage();
+					PdfImportedPage page = copy.getImportedPage(reader, i);
+					cb.addTemplate(page, 0, 0);
+					copy.releaseTemplate(page);
+				}
 			}
-			int pages = reader.getNumberOfPages();
-			PdfContentByte cb = copy.getDirectContent();
-			for (int i = 1; i <= pages; i++) {
-				document.newPage();
-				copy.newPage();
-				PdfImportedPage page = copy.getImportedPage(reader, i);
-				cb.addTemplate(page, 0, 0);
-				copy.releaseTemplate(page);
+			document.close();
+		}
+		finally
+		{
+			for(PdfReader reader:pdfReaders)
+			{
+				reader.close();
 			}
 		}
-		document.close();
-    }
+   }
 
     /**
 	 *	Get window title
