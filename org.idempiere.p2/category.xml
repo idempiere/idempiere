@@ -57,7 +57,7 @@
    <feature url="features/org.eclipse.equinox.executable_3.7.2.v20171108-1834.jar" id="org.eclipse.equinox.executable" version="3.7.2.v20171108-1834">
       <category name="idempiere.core"/>
    </feature>
-   <feature url="features/org.eclipse.equinox.server.core_1.5.2.v20171108-1350.jar" id="org.eclipse.equinox.server.core" version="1.5.2.v20171108-1350">
+   <feature url="features/org.eclipse.equinox.server.core_1.5.3.v20180210-1608.jar" id="org.eclipse.equinox.server.core" version="1.5.3.v20180210-1608">
       <category name="idempiere.core"/>
    </feature>
    <feature url="features/org.eclipse.equinox.server.p2_1.3.1.v20170928-1405.jar" id="org.eclipse.equinox.server.p2" version="1.3.1.v20170928-1405">
