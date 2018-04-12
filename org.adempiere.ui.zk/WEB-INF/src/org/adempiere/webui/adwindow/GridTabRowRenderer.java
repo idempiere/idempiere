@@ -567,7 +567,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				}
 				
 				GridRowCtx ctx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
-				if (!gridPanelFields[i].isDisplayed(ctx, true)){
+				if (! (gridPanelFields[i].isDisplayed(ctx, true) || gridPanelFields[i].isDisplayedGrid())){
 					// IDEMPIERE-2253 
 					component.setVisible(false);
 				}
