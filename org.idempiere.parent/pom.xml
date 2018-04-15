@@ -13,14 +13,16 @@
 		<tycho.version>1.1.0</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jetty.version>9.4.7.v20170914</jetty.version>
+		<jetty.version>9.4.9.v20180320</jetty.version>
 		<jp.version>6.3.1</jp.version>
 		<zk.version>8.5.0</zk.version>
 		<zk.javassist.src.version>3.18.2-GA</zk.javassist.src.version>
 		<maven.dependency.version>3.0.2</maven.dependency.version>
 		<download.maven.version>1.4.0</download.maven.version>
 		<lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
-		<asm.version>5.2.0.v20180228-1718</asm.version>
+		<asm.version>6.0.0.v20180116-1719</asm.version>
+		<!-- https://www.eclipse.org/jetty/documentation/9.3.x/alpn-chapter.html#alpn-versions -->
+		<jetty.alpn-boot.version>8.1.12.v20180117</jetty.alpn-boot.version>
 
 		<!-- default value of properties, use when run without profile -->
 		<idempiere.target>org.idempiere.p2.targetplatform</idempiere.target>
