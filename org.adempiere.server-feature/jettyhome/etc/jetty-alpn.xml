@@ -25,7 +25,4 @@
     </Arg>
   </Call>
 
-  <!-- ALPN debugging on System.err -->
-  <Set class="org.eclipse.jetty.alpn.ALPN" name="debug" type="boolean"><Property name="jetty.alpn.debug" default="true" /></Set>
-
 </Configure>

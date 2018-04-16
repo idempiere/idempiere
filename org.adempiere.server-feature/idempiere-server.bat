@@ -20,9 +20,7 @@ goto START
 
 FOR %%c in (plugins\org.eclipse.equinox.launcher_1.*.jar) DO set JARFILE=%%c
 
-@Set VMOPTS=-Xbootclasspath/p:alpn-boot.jar
-@Set VMOPTS=%VMOPTS% -Xbootclasspath/p:alpn-boot.jar
-@Set VMOPTS=%VMOPTS% -Dorg.osgi.framework.bootdelegation=sun.security.ssl,org.eclipse.jetty.alpn
+@Set VMOPTS=%VMOPTS% -Dorg.osgi.framework.bootdelegation=sun.security.ssl
 @Set VMOPTS=%VMOPTS% -Dosgi.compatibility.bootdelegation=true
 @Set VMOPTS=%VMOPTS% -Djetty.home=jettyhome
 @Set VMOPTS=%VMOPTS% -Djetty.base=jettyhome
