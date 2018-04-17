@@ -43,19 +43,19 @@ import org.adempiere.base.IGridTabImporter;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ProcessUtil;
-import org.apache.commons.lang.StringUtils;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.MColumn;
-import org.compiere.model.MField;
 import org.compiere.model.MLocation;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRefList;
+import org.compiere.model.MRefTable;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.model.Query;
 import org.compiere.process.ProcessInfo;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
@@ -65,6 +65,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.compiere.wf.MWFProcess;
 import org.supercsv.cellprocessor.Optional;
@@ -1484,12 +1485,28 @@ public class GridTabCSVImporter implements IGridTabImporter
 		StringBuilder postSelect = new StringBuilder(" FROM ")
 			.append(foreignTable).append(" WHERE ")
 			.append(foreignColumn).append("=? AND IsActive='Y' AND AD_Client_ID=?");
-		if (StringUtils.isNotBlank(field.getVO().ValidationCode)) {
+		if (!Util.isEmpty(field.getVO().ValidationCode)) {
 			String dynamicValid = Env.parseContext(Env.getCtx(), field.getWindowNo(), field.getGridTab().getTabNo(), field.getVO().ValidationCode, false);
-			if (StringUtils.isBlank(dynamicValid)) {
+			if (Util.isEmpty(dynamicValid)) {
 				return 0;// it's parse error but simple consider like ForeignNotResolved
 			}else {
-				postSelect.append(" AND ").append(dynamicValid);
+				postSelect.append(" AND (").append(dynamicValid).append(")");
+			}
+		}
+		int ref = field.getVO().displayType;
+		int refval = field.getVO().AD_Reference_Value_ID;
+		if (refval > 0 && (ref == DisplayType.Table || ref == DisplayType.Search)) {
+			final MRefTable refTable = new Query(Env.getCtx(), MRefTable.Table_Name, "AD_Reference_ID=?", trxName)
+					.setParameters(refval)
+					.firstOnly();
+			String whereClause = refTable.getWhereClause();
+			if (!Util.isEmpty(whereClause)) {
+				String dynamicValid = Env.parseContext(Env.getCtx(), field.getWindowNo(), field.getGridTab().getTabNo(), whereClause, false);
+				if (Util.isEmpty(dynamicValid)) {
+					return 0;// it's parse error but simple consider like ForeignNotResolved
+				}else {
+					postSelect.append(" AND (").append(dynamicValid).append(")");
+				}
 			}
 		}
 		StringBuilder selectCount = new StringBuilder("SELECT COUNT(*)").append(postSelect);
