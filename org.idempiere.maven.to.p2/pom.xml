@@ -16,6 +16,7 @@
 		<jetty.jsp.version>8.5.24.2</jetty.jsp.version>
 		<jetty.conscrypt.version>8.1.12.v20180117</jetty.conscrypt.version>
 		<jetty.osgi.servlet.api.version>3.1.0.M3</jetty.osgi.servlet.api.version>
+		<jetty.conscrypt.openjdk.uber.version>1.1.0</jetty.conscrypt.openjdk.uber.version>
 		
 		
 	</properties>
@@ -194,7 +195,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.commons:commons-digester3:jar:3.2</id>
+											<id>commons-digester:commons-digester:jar:2.1</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -257,6 +258,16 @@
 											<id>org.eclipse.jetty:jetty-alpn-openjdk8-server:jar:${jetty.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.conscrypt:conscrypt-openjdk-uber:jar:${jetty.conscrypt.openjdk.uber.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+											<instructions>
+        										<Export-Package>org.conscrypt;version="${jetty.conscrypt.openjdk.uber.version}"</Export-Package>
+        										<Bundle-Name>org.idempiere.org.conscrypt.openjdk-uber</Bundle-Name>
+        										<Bundle-SymbolicName>org.idempiere.org.conscrypt.openjdk-uber</Bundle-SymbolicName>
+    										</instructions>
 										</artifact>
 									</artifacts>
 								</feature>
