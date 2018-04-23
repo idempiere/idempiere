@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -34,6 +35,7 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -339,9 +341,20 @@ public abstract class AbstractExcelExporter
 		// Sheet Footer
 		HSSFFooter footer = sheet.getFooter();
 		footer.setLeft(Env.getStandardReportFooterTrademarkText());
-		footer.setCenter(Env.getHeader(getCtx(), 0));
+
+		String s = MSysConfig.getValue(MSysConfig.ZK_FOOTER_SERVER_MSG, "", Env.getAD_Client_ID(Env.getCtx()));
+		if (Util.isEmpty(s))
+			footer.setCenter(Env.getHeader(getCtx(), 0));	
+		else
+			footer.setCenter(Msg.parseTranslation(Env.getCtx(), s));
+
 		Timestamp now = new Timestamp(System.currentTimeMillis());
-		footer.setRight(DisplayType.getDateFormat(DisplayType.DateTime, getLanguage()).format(now));
+		s = MSysConfig.getValue(MSysConfig.ZK_FOOTER_SERVER_DATETIME_FORMAT, Env.getAD_Client_ID(Env.getCtx()));
+		if (!Util.isEmpty(s))
+			footer.setRight(new SimpleDateFormat(s).format(System.currentTimeMillis()));
+		else
+			footer.setRight(DisplayType.getDateFormat(DisplayType.DateTime, getLanguage()).format(now));
+
 	}
 
 	protected void formatPage(HSSFSheet sheet)
