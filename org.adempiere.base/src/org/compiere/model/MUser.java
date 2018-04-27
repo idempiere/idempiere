@@ -936,15 +936,14 @@ public class MUser extends X_AD_User
 					}
 					pwdrule.validate((getLDAPUser() != null ? getLDAPUser() : getName()), getPassword(), passwordHistorys);
 				}
-					
+				setDatePasswordChanged(new Timestamp(new Date().getTime()));
 			}
 
 			// Hash password - IDEMPIERE-347
 			boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
 			if (hash_password)
 				setPassword(getPassword());
-			
-			setDatePasswordChanged(new Timestamp(new Date().getTime()));
+
 		}
 		
 		return true;
