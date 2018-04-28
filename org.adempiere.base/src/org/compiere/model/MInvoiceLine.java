@@ -44,10 +44,6 @@ import org.compiere.util.Msg;
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>BF [ 2804142 ] MInvoice.setRMALine should work only for CreditMemo invoices
  * 				https://sourceforge.net/tracker/?func=detail&aid=2804142&group_id=176962&atid=879332
- * @author Michael Judd, www.akunagroup.com
- * 			<li>BF [ 1733602 ] Price List including Tax Error - when a user changes the orderline or
- * 				invoice line for a product on a price list that includes tax, the net amount is
- * 				incorrectly calculated.
  * @author red1 FR: [ 2214883 ] Remove SQL code and Replace for Query
  */
 public class MInvoiceLine extends X_C_InvoiceLine
@@ -478,47 +474,6 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	{
 		//	Calculations & Rounding
 		BigDecimal bd = getPriceActual().multiply(getQtyInvoiced());
-		
-		boolean documentLevel = getTax().isDocumentLevel();
-
-		//	juddm: Tax Exempt & Tax Included in Price List & not Document Level - Adjust Line Amount
-		//  http://sourceforge.net/tracker/index.php?func=detail&aid=1733602&group_id=176962&atid=879332
-		if (isTaxIncluded() && !documentLevel)	{
-			BigDecimal taxStdAmt = Env.ZERO, taxThisAmt = Env.ZERO;
-			
-			MTax invoiceTax = getTax();
-			MTax stdTax = null;
-			
-			if (getProduct() == null)
-			{
-				if (getCharge() != null)	// Charge 
-				{
-					stdTax = new MTax (getCtx(), 
-							((MTaxCategory) getCharge().getC_TaxCategory()).getDefaultTax().getC_Tax_ID(),
-							get_TrxName());
-				}
-					
-			}
-			else	// Product
-				stdTax = new MTax (getCtx(), 
-							((MTaxCategory) getProduct().getC_TaxCategory()).getDefaultTax().getC_Tax_ID(), 
-							get_TrxName());
-
-			if (stdTax != null)
-			{
-				
-				if (log.isLoggable(Level.FINE)) log.fine("stdTax rate is " + stdTax.getRate());
-				if (log.isLoggable(Level.FINE)) log.fine("invoiceTax rate is " + invoiceTax.getRate());
-				
-				taxThisAmt = taxThisAmt.add(invoiceTax.calculateTax(bd, isTaxIncluded(), getPrecision()));
-				taxStdAmt = taxStdAmt.add(stdTax.calculateTax(bd, isTaxIncluded(), getPrecision()));
-				
-				bd = bd.subtract(taxStdAmt).add(taxThisAmt);
-				
-				if (log.isLoggable(Level.FINE)) log.fine("Price List includes Tax and Tax Changed on Invoice Line: New Tax Amt: " 
-						+ taxThisAmt + " Standard Tax Amt: " + taxStdAmt + " Line Net Amt: " + bd);	
-			}
-		}
 		int precision = getPrecision();
 		if (bd.scale() > precision)
 			bd = bd.setScale(precision, BigDecimal.ROUND_HALF_UP);
