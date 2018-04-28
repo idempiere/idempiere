@@ -348,7 +348,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 				Env.getAD_Client_ID(Env.getCtx()), gridTab.getKeyColumnName());
 
 		StringBuilder cssContent = new StringBuilder();
-		cssContent.append(".adtab-form-borderlayout .z-south-colpsd:before { ");
+		cssContent.append(".adtab-form-borderlayout .z-south-collapsed:before { ");
 		cssContent.append("content: \"");
 		cssContent.append(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Detail")));
 		cssContent.append("\"; ");
