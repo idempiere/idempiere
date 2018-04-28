@@ -1347,12 +1347,7 @@ public class MOrder extends X_C_Order implements DocAction
 			if (line.getM_Product_ID() > 0 && line.getM_AttributeSetInstance_ID() == 0) {
 				MProduct product = line.getProduct();
 				if (product.isASIMandatory(isSOTrx())) {
-					if(product.getAttributeSet()==null){
-						m_processMsg = "@NoAttributeSet@=" + product.getValue();
-						return DocAction.STATUS_Invalid;
-
-					}
-					if (! product.getAttributeSet().excludeTableEntry(MOrderLine.Table_ID, isSOTrx())) {
+					if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MOrderLine.Table_ID, isSOTrx())) {
 						StringBuilder msg = new StringBuilder("@M_AttributeSet_ID@ @IsMandatory@ (@Line@ #")
 							.append(line.getLine())
 							.append(", @M_Product_ID@=")
