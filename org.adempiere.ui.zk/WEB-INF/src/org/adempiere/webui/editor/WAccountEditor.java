@@ -166,6 +166,9 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, C_AcctSchema_ID);
+			boolean useSimilarTo = "Y".equals(Env.getContext(Env.getCtx(), "P|IsUseSimilarTo"));
+			if (useSimilarTo && text.contains("*"))
+				text = text.replaceAll("\\*", "\\\\*");
 			pstmt.setString(2, text.toUpperCase());
 			pstmt.setString(3, text.toUpperCase());
 			rs = pstmt.executeQuery();
