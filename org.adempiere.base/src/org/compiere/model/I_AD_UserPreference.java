@@ -164,6 +164,15 @@ public interface I_AD_UserPreference
 	/** Get Detailed Zoom Across	  */
 	public boolean isDetailedZoomAcross();
 
+    /** Column name IsUseSimilarTo */
+    public static final String COLUMNNAME_IsUseSimilarTo = "IsUseSimilarTo";
+
+	/** Set Use Similar To	  */
+	public void setIsUseSimilarTo (boolean IsUseSimilarTo);
+
+	/** Get Use Similar To	  */
+	public boolean isUseSimilarTo();
+
     /** Column name ToggleOnDoubleClick */
     public static final String COLUMNNAME_ToggleOnDoubleClick = "ToggleOnDoubleClick";
 
