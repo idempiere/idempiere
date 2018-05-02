@@ -42,7 +42,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2698648078997788547L;
+	private static final long serialVersionUID = 8623809160538454497L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -79,20 +79,23 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String CHECK_CREDIT_ON_PREPAY_ORDER = "CHECK_CREDIT_ON_PREPAY_ORDER";
     public static final String CLIENT_ACCOUNTING = "CLIENT_ACCOUNTING";
     public static final String DEFAULT_COA_PATH = "DEFAULT_COA_PATH";
+    public static final String DEFAULT_ENTITYTYPE = "DEFAULT_ENTITYTYPE"; // used as default in entity type columns with get_sysconfig
     public static final String DICTIONARY_ID_COMMENTS = "DICTIONARY_ID_COMMENTS";
     public static final String DICTIONARY_ID_PASSWORD = "DICTIONARY_ID_PASSWORD";
     public static final String DICTIONARY_ID_USE_CENTRALIZED_ID = "DICTIONARY_ID_USE_CENTRALIZED_ID";
     public static final String DICTIONARY_ID_USER = "DICTIONARY_ID_USER";
     public static final String DICTIONARY_ID_WEBSITE = "DICTIONARY_ID_WEBSITE";
     public static final String DOCACTIONBUTTON_SHOWACTIONNAME = "DOCACTIONBUTTON_SHOWACTIONNAME";
-    public static final String DPVIEWS_SHOWINFOACCOUNT = "DPViews_ShowInfoAccount";
-    public static final String DPVIEWS_SHOWINFOSCHEDULE = "DPViews_ShowInfoSchedule";
+    public static final String DPViews_ShowInfoAccount = "DPViews_ShowInfoAccount";
+    public static final String DPViews_ShowInfoSchedule = "DPViews_ShowInfoSchedule";
     public static final String EMAIL_NOTIFY_2PACK = "EMAIL_NOTIFY_2PACK";
     public static final String ENABLE_PAYMENTBOX_BUTTON = "ENABLE_PAYMENTBOX_BUTTON";
     public static final String GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = "GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS";
     public static final String HTML_REPORT_THEME = "HTML_REPORT_THEME";
-    public static final String IBAN_VALIDATION = "IBAN_VALIDATION" ;
-    public static final String IDENTIFIER_SEPARATOR = "IDENTIFIER_SEPARATOR" ;
+    public static final String IBAN_VALIDATION = "IBAN_VALIDATION";
+    public static final String IDENTIFIER_SEPARATOR = "IDENTIFIER_SEPARATOR";
+    public static final String INFO_DEFAULTSELECTED = "INFO_DEFAULTSELECTED";
+    public static final String INFO_DOUBLECLICKTOGGLESSELECTION = "INFO_DOUBLECLICKTOGGLESSELECTION";
     public static final String Invoice_ReverseUseNewNumber = "Invoice_ReverseUseNewNumber";
     public static final String JASPER_SWAP_MAX_PAGES = "JASPER_SWAP_MAX_PAGES";
     public static final String LASTRUN_RECORD_COUNT = "LASTRUN_RECORD_COUNT";
@@ -135,8 +138,6 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String START_VALUE_BPLOCATION_NAME = "START_VALUE_BPLOCATION_NAME";
     public static final String SWING_LOGIN_ALLOW_REMEMBER_ME = "SWING_LOGIN_ALLOW_REMEMBER_ME";
     public static final String SWING_OVERRIDE_TEXT_AREA_BEHAVIOUR = "SWING_OVERRIDE_TEXT_AREA_BEHAVIOUR";
-    public static final String SYSCONFIG_INFO_DEFAULTSELECTED = "SYSCONFIG_INFO_DEFAULTSELECTED";
-    public static final String SYSCONFIG_INFO_DOUBLECLICKTOGGLESSELECTION = "SYSCONFIG_INFO_DOUBLECLICKTOGGLESSELECTION";
     public static final String SYSTEM_IN_MAINTENANCE_MODE = "SYSTEM_IN_MAINTENANCE_MODE";
     public static final String SYSTEM_INSERT_CHANGELOG = "SYSTEM_INSERT_CHANGELOG";
     public static final String SYSTEM_NATIVE_SEQUENCE = "SYSTEM_NATIVE_SEQUENCE";
@@ -182,6 +183,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_SEQ_DEFAULT_VALUE_PANEL = "ZK_SEQ_DEFAULT_VALUE_PANEL";
     public static final String ZK_SESSION_TIMEOUT_IN_SECONDS = "ZK_SESSION_TIMEOUT_IN_SECONDS";
     public static final String ZK_THEME = "ZK_THEME";
+    public static final String ZOOM_ACROSS_QUERY_TIMEOUT = "ZOOM_ACROSS_QUERY_TIMEOUT";
 
 	/**
 	 * 	Standard Constructor

@@ -58,7 +58,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 	{
 		Vbox vbox = new Vbox();
 
-		if (MSysConfig.getBooleanValue(MSysConfig.DPVIEWS_SHOWINFOACCOUNT, true, Env.getAD_Client_ID(Env.getCtx()))
+		if (MSysConfig.getBooleanValue(MSysConfig.DPViews_ShowInfoAccount, true, Env.getAD_Client_ID(Env.getCtx()))
 				&& MRole.getDefault().isShowAcct() && MRole.getDefault().isAllow_Info_Account())
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoAccount");
@@ -68,7 +68,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
 			vbox.appendChild(btnViewItem);
 		}
-		if (MSysConfig.getBooleanValue(MSysConfig.DPVIEWS_SHOWINFOSCHEDULE, true, Env.getAD_Client_ID(Env.getCtx()))
+		if (MSysConfig.getBooleanValue(MSysConfig.DPViews_ShowInfoSchedule, true, Env.getAD_Client_ID(Env.getCtx()))
 				&& MRole.getDefault().isAllow_Info_Schedule())
 		{
 			ToolBarButton btnViewItem = new ToolBarButton("InfoSchedule");

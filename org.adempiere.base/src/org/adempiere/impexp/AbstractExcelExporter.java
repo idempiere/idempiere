@@ -343,14 +343,14 @@ public abstract class AbstractExcelExporter
 		footer.setLeft(Env.getStandardReportFooterTrademarkText());
 
 		String s = MSysConfig.getValue(MSysConfig.ZK_FOOTER_SERVER_MSG, "", Env.getAD_Client_ID(Env.getCtx()));
-		if (Util.isEmpty(s))
+		if (Util.isEmpty(s, true))
 			footer.setCenter(Env.getHeader(getCtx(), 0));	
 		else
 			footer.setCenter(Msg.parseTranslation(Env.getCtx(), s));
 
 		Timestamp now = new Timestamp(System.currentTimeMillis());
 		s = MSysConfig.getValue(MSysConfig.ZK_FOOTER_SERVER_DATETIME_FORMAT, Env.getAD_Client_ID(Env.getCtx()));
-		if (!Util.isEmpty(s))
+		if (!Util.isEmpty(s, true))
 			footer.setRight(new SimpleDateFormat(s).format(System.currentTimeMillis()));
 		else
 			footer.setRight(DisplayType.getDateFormat(DisplayType.DateTime, getLanguage()).format(now));

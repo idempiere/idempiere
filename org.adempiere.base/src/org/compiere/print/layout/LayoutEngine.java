@@ -975,7 +975,9 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		element.setLocation(ft);
 		m_headerFooter.addElement(element);
 		//
-		String s = MSysConfig.getValue(MSysConfig.ZK_FOOTER_SERVER_MSG, "@*Header@", Env.getAD_Client_ID(Env.getCtx()));
+		String s = MSysConfig.getValue(MSysConfig.ZK_FOOTER_SERVER_MSG, "", Env.getAD_Client_ID(Env.getCtx()));
+		if (Util.isEmpty(s, true))
+			s = "@*Header@";
 		element = new StringElement(s, font, color, null, true);
 		element.layout (m_footer.width, 0, true, MPrintFormatItem.FIELDALIGNMENTTYPE_Center);
 		element.setLocation(ft);
@@ -983,7 +985,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		//
 		String timestamp = "";
 		s = MSysConfig.getValue(MSysConfig.ZK_FOOTER_SERVER_DATETIME_FORMAT, Env.getAD_Client_ID(Env.getCtx()));
-		if (!Util.isEmpty(s))
+		if (!Util.isEmpty(s, true))
 			timestamp = new SimpleDateFormat(s).format(System.currentTimeMillis());
 		else
 			timestamp = "@*CurrentDateTime@";
