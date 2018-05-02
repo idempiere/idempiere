@@ -173,7 +173,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		String sqlWhere = "M_Product_ID=? AND M_Locator_ID=? AND QtyOnHand <> 0";
 		Query query = new Query(ctx, MStorageOnHand.Table_Name, sqlWhere, trxName)
 								.setParameters(M_Product_ID, M_Locator_ID);
-		MProduct product = new MProduct(ctx, M_Product_ID, trxName);
+		MProduct product = MProduct.get(ctx, M_Product_ID);
 		if (product.isUseGuaranteeDateForMPolicy()) 
 		{
 			query.addJoinClause(" LEFT OUTER JOIN M_AttributeSetInstance asi ON (M_StorageOnHand.M_AttributeSetInstance_ID=asi.M_AttributeSetInstance_ID) ")
