@@ -352,10 +352,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		cssContent.append("content: \"");
 		cssContent.append(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Detail")));
 		cssContent.append("\"; ");
-		cssContent.append("position: relative; font-size: 12px; font-weight: bold; ");
-		cssContent.append("top: 3px; ");
-		cssContent.append("left: 4px; ");
-		cssContent.append("z-index: -1; ");
 		cssContent.append("} ");
 		Style style = new Style();
 		style.setContent(cssContent.toString());
