@@ -6,7 +6,7 @@ Bundle-Version: 5.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
 Eclipse-RegisterBuddy: org.adempiere.base
-Service-Component: OSGI-INF/costadjustmentcalloutfactory.xml
+Service-Component: OSGI-INF/costadjustmentcalloutfactory.xml, OSGI-INF/bpartnerquickentrycalloutFactory.xml
 Bundle-ActivationPolicy: lazy
 Export-Package: org.compiere.model
 Bundle-ClassPath: .
