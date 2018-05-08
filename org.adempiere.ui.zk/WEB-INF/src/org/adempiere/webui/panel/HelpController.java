@@ -16,8 +16,10 @@ package org.adempiere.webui.panel;
 
 import java.util.Properties;
 
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WCtxHelpSuggestion;
 import org.compiere.model.GridField;
@@ -30,6 +32,7 @@ import org.compiere.model.MCtxHelpMsg;
 import org.compiere.model.MForm;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MProcess;
+import org.compiere.model.MQuery;
 import org.compiere.model.MTab;
 import org.compiere.model.MTask;
 import org.compiere.model.PO;
@@ -103,7 +106,20 @@ public class HelpController
     	dashboardColumnLayout.appendChild(pnlQuickInfo);
     	content = new Panelchildren();
     	pnlQuickInfo.appendChild(content);
-        content.appendChild(htmlQuickInfo = new Html());         
+        content.appendChild(htmlQuickInfo = new Html());
+		Env.setContext(Env.getCtx(), "#clientInfo_QuickInfoComponentId", htmlQuickInfo.getUuid());
+    	htmlQuickInfo.addEventListener(ZoomEvent.EVENT_NAME, new EventListener<Event>() {
+			public void onEvent(Event event) throws Exception {
+				if (event instanceof ZoomEvent) {
+					Clients.clearBusy();
+					ZoomEvent ze = (ZoomEvent) event;
+					if (ze.getData() != null && ze.getData() instanceof MQuery) {
+						AEnv.zoom((MQuery) ze.getData());
+					}
+				}
+				
+			}
+		});
 
         pnlToolTip = new Panel();
         pnlToolTip.setSclass("dashboard-widget");
