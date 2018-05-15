@@ -312,23 +312,25 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		}
 		//	Lines
 		BigDecimal total = Env.ZERO;
-		Timestamp minDate = getStatementDate();
-		Timestamp maxDate = minDate;
+		// IDEMPIERE-480 changed the way accounting is posted, now lines post just with the accounting date of the statement header
+		// so, it is unnecessary to validate the period of lines
+		// Timestamp minDate = getStatementDate();
+		// Timestamp maxDate = minDate;
 		for (int i = 0; i < lines.length; i++)
 		{
 			MBankStatementLine line = lines[i];
 			if (!line.isActive())
 				continue;
 			total = total.add(line.getStmtAmt());
-			if (line.getDateAcct().before(minDate))
-				minDate = line.getDateAcct(); 
-			if (line.getDateAcct().after(maxDate))
-				maxDate = line.getDateAcct(); 
+			// if (line.getDateAcct().before(minDate))
+				// minDate = line.getDateAcct(); 
+			// if (line.getDateAcct().after(maxDate))
+				// maxDate = line.getDateAcct(); 
 		}
 		setStatementDifference(total);
 		setEndingBalance(getBeginningBalance().add(total));
-		MPeriod.testPeriodOpen(getCtx(), minDate, MDocType.DOCBASETYPE_BankStatement, 0);
-		MPeriod.testPeriodOpen(getCtx(), maxDate, MDocType.DOCBASETYPE_BankStatement, 0);
+		// MPeriod.testPeriodOpen(getCtx(), minDate, MDocType.DOCBASETYPE_BankStatement, getAD_Org_ID());
+		// MPeriod.testPeriodOpen(getCtx(), maxDate, MDocType.DOCBASETYPE_BankStatement, getAD_Org_ID());
 
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 		if (m_processMsg != null)
