@@ -21,7 +21,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -237,28 +236,10 @@ public class MUser extends X_AD_User
 	 */
 	public static String getNameOfUser (int AD_User_ID)
 	{
-		String name = "?";
-		//	Get ID
-		String sql = "SELECT Name FROM AD_User WHERE AD_User_ID=?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, AD_User_ID);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-				name = rs.getString(1);
-		}
-		catch (SQLException e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-		}
-		return name;
+		MUser user = get(Env.getCtx(), AD_User_ID);
+		if (user.getAD_User_ID() != AD_User_ID)
+			return "?";
+		return user.getName();
 	}	//	getNameOfUser
 
 	
