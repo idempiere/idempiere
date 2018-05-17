@@ -208,22 +208,6 @@ public class MMovementLine extends X_M_MovementLine
 		if (newRecord || is_ValueChanged(COLUMNNAME_MovementQty))
 			setMovementQty(getMovementQty());
 
-		//      Mandatory Instance
-		/* IDEMPIERE-1770 - ASI validation must be moved to MMovement.prepareIt, saving a line without ASI is ok on draft
-		MProduct product = getProduct();
-		if (getM_AttributeSetInstance_ID() == 0) {
-			if (product != null && product.isASIMandatory(true)) {
-				if (product.getAttributeSet()==null) {
-					log.saveError("NoAttributeSet", product.getValue());
-					return false;
-				}
-				if (! product.getAttributeSet().excludeTableEntry(MMovementLine.Table_ID, true)) {  // outgoing
-					log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_M_AttributeSetInstance_ID));
-					return false;
-				}
-			}
-		}
-		*/
 		if (getM_AttributeSetInstanceTo_ID() == 0)
 		{
 			//instance id default to same for movement between locator 
@@ -233,19 +217,6 @@ public class MMovementLine extends X_M_MovementLine
 					setM_AttributeSetInstanceTo_ID(getM_AttributeSetInstance_ID());
 			}
 
-			/* IDEMPIERE-1770 - ASI validation must be moved to MMovement.prepareIt, saving a line without ASI is ok on draft
-			if (product != null && product.isASIMandatory(false) && getM_AttributeSetInstanceTo_ID() == 0)
-			{
-				if (product.getAttributeSet()==null) {
-					log.saveError("NoAttributeSet", product.getValue());
-					return false;
-				}
-				if (! product.getAttributeSet().excludeTableEntry(MMovementLine.Table_ID, false)) { // incoming
-					log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_M_AttributeSetInstanceTo_ID));
-					return false;
-				}
-			}
-			*/
 		}       //      ASI
 
 		return true;

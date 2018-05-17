@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.adempiere.util.ServerContext;
 import org.compiere.model.MSession;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -271,7 +272,12 @@ public class CompiereService {
 		m_AD_Role_ID = AD_Role_ID;
 		m_M_Warehouse_ID = M_Warehouse_ID;
 		m_locale = Lang;
-		m_userName = MUser.getNameOfUser(m_AD_User_ID);
+		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+		MUser user = MUser.get(getCtx(), m_AD_User_ID);
+		if (email_login)
+			m_userName = user.getEMail();
+		else
+			m_userName = user.getName();
 		
 		Env.setContext( getCtx(), "#AD_Language", Lang);
 		m_language = Language.getLanguage(Lang);

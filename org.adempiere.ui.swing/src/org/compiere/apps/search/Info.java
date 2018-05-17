@@ -327,9 +327,9 @@ public abstract class Info extends CDialog
 	/** Enable more than one selection  */
 	protected boolean			p_multiSelection;
 	/** Specify if the records should be checked(selected) by default (multi selection mode only) */
-	private boolean				p_isDefaultSelected = MSysConfig.getBooleanValue(MSysConfig.SYSCONFIG_INFO_DEFAULTSELECTED, false, Env.getAD_Client_ID(Env.getCtx()));
+	private boolean				p_isDefaultSelected = MSysConfig.getBooleanValue(MSysConfig.INFO_DEFAULTSELECTED, false, Env.getAD_Client_ID(Env.getCtx()));
 	/** True if double click on a row toggles if row is selected (multi selection mode only) */
-	private boolean				p_doubleClickTogglesSelection = MSysConfig.getBooleanValue(MSysConfig.SYSCONFIG_INFO_DOUBLECLICKTOGGLESSELECTION, false, Env.getAD_Client_ID(Env.getCtx()));
+	private boolean				p_doubleClickTogglesSelection = MSysConfig.getBooleanValue(MSysConfig.INFO_DOUBLECLICKTOGGLESSELECTION, false, Env.getAD_Client_ID(Env.getCtx()));
 	/** Initial WHERE Clause    */
 	protected String			p_whereClause = "";
 

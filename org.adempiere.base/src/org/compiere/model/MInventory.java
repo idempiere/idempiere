@@ -343,7 +343,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 				MProduct product = MProduct.get(getCtx(), line.getM_Product_ID());
 				if (product != null && product.isASIMandatory(line.isSOTrx()))
 				{
-					if (! product.getAttributeSet().excludeTableEntry(MInventoryLine.Table_ID, line.isSOTrx())) {
+					if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MInventoryLine.Table_ID, line.isSOTrx())) {
 						MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 						String docSubTypeInv = dt.getDocSubTypeInv();
 						BigDecimal qtyDiff = line.getQtyInternalUse();

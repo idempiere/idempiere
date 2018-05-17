@@ -1967,7 +1967,7 @@ public final class Env
 	 */
 	public static String getStandardReportFooterTrademarkText() {
 		String s = MSysConfig.getValue(MSysConfig.STANDARD_REPORT_FOOTER_TRADEMARK_TEXT, Env.getAD_Client_ID(Env.getCtx()));
-		if (Util.isEmpty(s))
+		if (Util.isEmpty(s, true))
 			s = Env.getContext(Env.getCtx(), STANDARD_REPORT_FOOTER_TRADEMARK_TEXT);
 		if (Util.isEmpty(s))
 			s = Adempiere.ADEMPIERE_R;

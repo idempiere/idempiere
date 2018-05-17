@@ -48,7 +48,7 @@ public class ProductCost
 	{
 		m_M_Product_ID = M_Product_ID;
 		if (m_M_Product_ID != 0)
-			m_product = new MProduct(ctx, M_Product_ID, trxName);
+			m_product = MProduct.get(ctx, M_Product_ID);
 		m_M_AttributeSetInstance_ID = M_AttributeSetInstance_ID;
 		m_trxName = trxName;
 	}	//	ProductCost

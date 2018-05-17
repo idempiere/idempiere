@@ -1154,13 +1154,17 @@ public class MInOut extends X_M_InOut implements DocAction
 						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
 					return DocAction.STATUS_Invalid;
 				}
-				BigDecimal notInvoicedAmt = MBPartner.getNotInvoicedAmt(getC_BPartner_ID());
-				if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus(notInvoicedAmt)))
+				if (!MBPartner.SOCREDITSTATUS_NoCreditCheck.equals(bp.getSOCreditStatus())
+						&& Env.ZERO.compareTo(bp.getSO_CreditLimit()) != 0)
 				{
-					m_processMsg = "@BPartnerOverSCreditHold@ - @TotalOpenBalance@="
-						+ bp.getTotalOpenBalance() + ", @NotInvoicedAmt@=" + notInvoicedAmt
-						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
-					return DocAction.STATUS_Invalid;
+					BigDecimal notInvoicedAmt = MBPartner.getNotInvoicedAmt(getC_BPartner_ID());
+					if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus(notInvoicedAmt)))
+					{
+						m_processMsg = "@BPartnerOverSCreditHold@ - @TotalOpenBalance@="
+							+ bp.getTotalOpenBalance() + ", @NotInvoicedAmt@=" + notInvoicedAmt
+							+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
+						return DocAction.STATUS_Invalid;
+					}
 				}
 			}
 		}
@@ -1190,12 +1194,7 @@ public class MInOut extends X_M_InOut implements DocAction
 				continue;
 			if (product != null && product.isASIMandatory(isSOTrx()))
 			{
-				if(product.getAttributeSet()==null){
-					m_processMsg = "@NoAttributeSet@=" + product.getValue();
-					return DocAction.STATUS_Invalid;
-
-				}
-				if (! product.getAttributeSet().excludeTableEntry(MInOutLine.Table_ID, isSOTrx())) {
+				if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MInOutLine.Table_ID, isSOTrx())) {
 					m_processMsg = "@M_AttributeSet_ID@ @IsMandatory@ (@Line@ #" + lines[i].getLine() +
 									", @M_Product_ID@=" + product.getValue() + ")";
 					return DocAction.STATUS_Invalid;

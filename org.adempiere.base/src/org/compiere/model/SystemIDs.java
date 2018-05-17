@@ -34,7 +34,7 @@ public class SystemIDs
 	public final static int COLUMN_C_PAYSELECTIONCHECK_C_PAYSELECTION_ID = 7670;
 	public final static int COLUMN_FACT_ACCT_C_ACCTSCHEMA_ID = 2513;	
 	public final static int COLUMN_FACT_ACCT_M_PRODUCT_ID = 2527;	
-	public final static int COLUMN_M_MOVEMENTLINE_M_ATTRIBUTESETINSTANCE_ID = 8851;
+	public final static int COLUMN_M_MOVEMENTLINE_M_ATTRIBUTESETINSTANCE_ID = 8551;
 	public final static int COLUMN_M_PRODUCT_M_ATTRIBUTESETINSTANCE_ID = 8418;
 	public final static int COLUMN_S_RESOURCE_S_RESOURCETYPE_ID = 6851;
 	public final static int COLUMN_S_RESOURCEASSIGNMENT_S_RESOURCE_ID = 6826;
