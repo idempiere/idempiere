@@ -45,13 +45,9 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 	}
 
 	private void override() {
-		this.setWidgetOverride("slideDown_", "function(pp) {"
-				+ " if (this.isReadonly()) return; "
-				+ " this.$slideDown_(pp); "
-				+ "}");
-		this.setWidgetOverride("doKeyDown_", "function(evt) {"
-				+ " if (this.isReadonly()) return; "
-				+ " this.$doKeyDown_(evt); "
+		// idempiere always want to show context ever on disable control
+		this.setWidgetOverride("shallIgnoreClick_", "function(evt) {"
+				+ " return false; "
 				+ "}");
 	}
 	
@@ -62,7 +58,7 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 
 	public void setEnabled(boolean enabled)
     {
-		this.setReadonly(!enabled);
+		this.setDisabled(!enabled);
         if (!enabled) {
         	//ensure list is close and not on focus
         	if (this.getPage() != null) 
