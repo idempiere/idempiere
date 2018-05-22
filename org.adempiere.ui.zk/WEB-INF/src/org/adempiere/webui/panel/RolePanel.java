@@ -645,15 +645,17 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 		}
 
         // See if a popup should encourage user to change its password
-        int notifyDay = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_PASSWORD_NOTIFY_DAY, 0);
-        int pwdAgeDay = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_PASSWORD_AGE_DAY, 0);
-        if (notifyDay > 0 && pwdAgeDay > 0) {
-        	Timestamp limit = TimeUtil.addDays(MUser.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx())).getDatePasswordChanged(), pwdAgeDay);
-        	Timestamp notifyAfter = TimeUtil.addDays(limit, -notifyDay);
-        	Timestamp now = TimeUtil.getDay(null);
+        if (!MUser.get(Env.getCtx()).isNoPasswordReset()) {
+            int notifyDay = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_PASSWORD_NOTIFY_DAY, 0);
+            int pwdAgeDay = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_PASSWORD_AGE_DAY, 0);
+            if (notifyDay > 0 && pwdAgeDay > 0) {
+            	Timestamp limit = TimeUtil.addDays(MUser.get(Env.getCtx()).getDatePasswordChanged(), pwdAgeDay);
+            	Timestamp notifyAfter = TimeUtil.addDays(limit, -notifyDay);
+            	Timestamp now = TimeUtil.getDay(null);
 
-        	if (now.after(notifyAfter))
-        		FDialog.warn(0, null, "", Msg.getMsg(Env.getCtx(), "YourPasswordWillExpireInDays", new Object[] {TimeUtil.getDaysBetween(now, limit)}));
+            	if (now.after(notifyAfter))
+            		FDialog.warn(0, null, "", Msg.getMsg(Env.getCtx(), "YourPasswordWillExpireInDays", new Object[] {TimeUtil.getDaysBetween(now, limit)}));
+            }
         }
 
         wndLogin.loginCompleted();
