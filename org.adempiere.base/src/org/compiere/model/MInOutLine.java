@@ -578,7 +578,9 @@ public class MInOutLine extends X_M_InOutLine
 	        }
 	        
 		}
-		I_M_AttributeSet attributeset = MProduct.get(getCtx(), getM_Product_ID()).getM_AttributeSet();
+		I_M_AttributeSet attributeset = null;
+		if (getM_Product_ID() > 0)
+			attributeset = MProduct.get(getCtx(), getM_Product_ID()).getM_AttributeSet();
 		boolean isAutoGenerateLot = false;
 		if (attributeset != null)
 			isAutoGenerateLot = attributeset.isAutoGenerateLot();
