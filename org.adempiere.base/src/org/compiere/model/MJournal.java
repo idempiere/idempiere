@@ -29,6 +29,7 @@ import org.compiere.process.DocumentEngine;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
 
 /**
  *  GL Journal Model
@@ -631,7 +632,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			if (this.getProcessedOn().signum() == 0) {
-				setDateDoc(new Timestamp (System.currentTimeMillis()));
+				setDateDoc(TimeUtil.getDay(0));
 				if (getDateAcct().before(getDateDoc())) {
 					setDateAcct(getDateDoc());
 					MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());

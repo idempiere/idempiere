@@ -43,6 +43,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 
 
@@ -2125,7 +2126,7 @@ public class MOrder extends X_C_Order implements DocAction
 		if (dt.isOverwriteDateOnComplete()) {
 			/* a42niem - BF IDEMPIERE-63 - check if document has been completed before */ 
 			if (this.getProcessedOn().signum() == 0) {
-				setDateOrdered(new Timestamp (System.currentTimeMillis()));
+				setDateOrdered(TimeUtil.getDay(0));
 				if (getDateAcct().before(getDateOrdered())) {
 					setDateAcct(getDateOrdered());
 					MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());

@@ -33,6 +33,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 
 /**
@@ -658,7 +659,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	private void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
-			setMovementDate(new Timestamp (System.currentTimeMillis()));
+			setMovementDate(TimeUtil.getDay(0));
 			MPeriod.testPeriodOpen(getCtx(), getMovementDate(), MDocType.DOCBASETYPE_MaterialPhysicalInventory, getAD_Org_ID());
 		}
 		if (dt.isOverwriteSeqOnComplete()) {

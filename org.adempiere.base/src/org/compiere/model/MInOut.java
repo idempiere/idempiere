@@ -38,6 +38,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
 
 /**
  *  Shipment Model
@@ -1780,7 +1781,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	protected void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
-			setMovementDate(new Timestamp (System.currentTimeMillis()));
+			setMovementDate(TimeUtil.getDay(0));
 			if (getDateAcct().before(getMovementDate())) {
 				setDateAcct(getMovementDate());
 				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
