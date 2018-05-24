@@ -1785,7 +1785,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     // Be more permissive for String columns
                     if (isSearchLike(field))
                     {
-                        StringBuilder valueStr = new StringBuilder(value.toString().toUpperCase());
+                    	StringBuilder valueStr = new StringBuilder(value.toString());
                         if (!valueStr.toString().endsWith("%"))
                             valueStr.append("%");
                         //

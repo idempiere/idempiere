@@ -860,8 +860,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				}
 				builder.append(columnClause)
 					   .append(" ")
-					   .append(mInfoColumn.getQueryOperator())
-					   .append(" ?");				
+					   .append(mInfoColumn.getQueryOperator());
+				if (columnClause.toUpperCase().startsWith("UPPER(")) {
+					builder.append(" UPPER(?)");
+				} else {
+					builder.append(" ?");
+				}
 			}
 		}	
 		if (count > 0 && !checkAND.isChecked()) {
@@ -979,20 +983,20 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @throws SQLException
 	 */
 	protected void setParameter (PreparedStatement pstmt, int parameterIndex, Object value, String queryOperator) throws SQLException{
-				if (value instanceof Boolean) {					
-					pstmt.setString(parameterIndex, ((Boolean) value).booleanValue() ? "Y" : "N");
-				} else if (value instanceof String) {
+		if (value instanceof Boolean) {					
+			pstmt.setString(parameterIndex, ((Boolean) value).booleanValue() ? "Y" : "N");
+		} else if (value instanceof String) {
 			if (queryOperator.equals(X_AD_InfoColumn.QUERYOPERATOR_Like)) {
-						StringBuilder valueStr = new StringBuilder(value.toString().toUpperCase());
-	                    if (!valueStr.toString().endsWith("%"))
-	                        valueStr.append("%");
-	                    pstmt.setString(parameterIndex, valueStr.toString());
-					} else {
-						pstmt.setString(parameterIndex, (String)value);
-					}
-				} else {
-					pstmt.setObject(parameterIndex, value);
-				}
+				StringBuilder valueStr = new StringBuilder(value.toString());
+				if (!valueStr.toString().endsWith("%"))
+					valueStr.append("%");
+				pstmt.setString(parameterIndex, valueStr.toString());
+			} else {
+				pstmt.setString(parameterIndex, (String)value);
+			}
+		} else {
+			pstmt.setObject(parameterIndex, value);
+		}
 	}
 
 	@Override
