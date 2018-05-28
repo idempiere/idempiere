@@ -55,9 +55,9 @@ import org.compiere.util.Msg;
 public abstract class CreateFromShipment extends CreateFrom 
 {
 	/**  Loaded Invoice             */
-	private MInvoice		m_invoice = null;
+	protected MInvoice		m_invoice = null;
 	/**  Loaded RMA             */
-	private MRMA            m_rma = null;
+	protected MRMA            m_rma = null;
 	private int defaultLocator_ID=0;
 
 	/**
