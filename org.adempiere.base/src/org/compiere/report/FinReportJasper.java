@@ -76,6 +76,7 @@ public class FinReportJasper extends FinReport
 	    poInfo.setRecord_ID(getRecord_ID());
 	    poInfo.setAD_Process_ID(proc.getAD_Process_ID());
 	    poInfo.setAD_PInstance_ID(instance.getAD_PInstance_ID());
+	    poInfo.setAD_Process_UU(proc.getAD_Process_UU());	
 
 	    // need to commit in order to allow jasper to view the data
 	    Trx trx = Trx.get(get_TrxName(), true);

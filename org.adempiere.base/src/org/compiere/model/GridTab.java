@@ -111,7 +111,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2946624717834888117L;
+	private static final long serialVersionUID = -3115353522698098211L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -3300,7 +3300,16 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public boolean isNew() {
 		return isOpen() && getCurrentRow() >= 0 && getCurrentRow() == m_mTable.getNewRow();
 	}
-	
+
+	public String getAD_Tab_UU() {
+		return m_vo.AD_Tab_UU;
+	}
+
+	public String getAD_Process_UU()
+	{
+		return m_vo.AD_Process_UU;
+	}
+
 	public boolean isUpdateWindowContext() 
 	{
 		return m_updateWindowContext ;

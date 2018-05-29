@@ -49,6 +49,8 @@ import org.compiere.grid.ed.VComboBox;
 import org.compiere.grid.ed.VDate;
 import org.compiere.minigrid.MiniTable;
 import static org.compiere.model.SystemIDs.*;
+
+import org.compiere.model.MProcess;
 import org.compiere.model.X_C_PaySelection;
 import org.compiere.plaf.CompiereColor;
 import org.compiere.process.ProcessInfo;
@@ -373,6 +375,7 @@ public class VPaySelect extends PaySelect implements FormPanel, ActionListener, 
 			X_C_PaySelection.Table_ID, m_ps.getC_PaySelection_ID());
 		pi.setAD_User_ID (Env.getAD_User_ID(Env.getCtx()));
 		pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
+		pi.setAD_Process_UU(new MProcess(Env.getCtx(), AD_Proces_ID, null).getAD_Process_UU());		
 		
 		ProcessParameterPanel pp = new ProcessParameterPanel(m_WindowNo, pi);
 		//	Execute Process

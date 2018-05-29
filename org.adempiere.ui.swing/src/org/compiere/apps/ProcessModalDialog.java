@@ -111,6 +111,7 @@ public class ProcessModalDialog extends CDialog
 	private StringBuffer	m_messageText = new StringBuffer();
 	private String          m_ShowHelp = null; // Determine if a Help Process Window is shown
 	private boolean m_valid = true;
+	private String			m_AD_Process_UU;
 	
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ProcessDialog.class);
@@ -247,11 +248,11 @@ public class ProcessModalDialog extends CDialog
 		log.config("");
 		//
 		boolean trl = !Env.isBaseLanguage(m_ctx, "AD_Process");
-		String sql = "SELECT Name, Description, Help, IsReport, ShowHelp "
+		String sql = "SELECT Name, Description, Help, IsReport, ShowHelp, AD_Process_UU "
 				+ "FROM AD_Process "
 				+ "WHERE AD_Process_ID=?";
 		if (trl)
-			sql = "SELECT t.Name, t.Description, t.Help, p.IsReport, p.ShowHelp "
+			sql = "SELECT t.Name, t.Description, t.Help, p.IsReport, p.ShowHelp, AD_Process_UU "
 				+ "FROM AD_Process p, AD_Process_Trl t "
 				+ "WHERE p.AD_Process_ID=t.AD_Process_ID"
 				+ " AND p.AD_Process_ID=? AND t.AD_Language=?";
@@ -280,6 +281,8 @@ public class ProcessModalDialog extends CDialog
 				s = rs.getString(3);			//	Help
 				if (!rs.wasNull())
 					m_messageText.append("<p>").append(s).append("</p>");
+
+				m_AD_Process_UU = rs.getString(6);
 			}
 		}
 		catch (SQLException e)
@@ -301,6 +304,7 @@ public class ProcessModalDialog extends CDialog
 
 		//	Move from APanel.actionButton
 		m_pi = new ProcessInfo(m_Name, m_AD_Process_ID, m_tableId, m_recordId);
+		m_pi.setAD_Process_UU(m_AD_Process_UU);
 		m_pi.setAD_User_ID (Env.getAD_User_ID(Env.getCtx()));
 		m_pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
 		parameterPanel = new ProcessParameterPanel(m_WindowNo, m_pi);

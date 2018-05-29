@@ -40,11 +40,10 @@ import org.compiere.util.Util;
  */
 public class ProcessInfo implements Serializable
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7810177110347837681L;
+	private static final long serialVersionUID = 2167823616151648814L;
 
 	/**
 	 *  Constructor
@@ -64,6 +63,9 @@ public class ProcessInfo implements Serializable
 		else
 			m_printPreview = false;
 	}   //  ProcessInfo
+
+	/** Process UUID			*/
+	private String				m_AD_Process_UU;
 
 	/**
 	 *  Constructor
@@ -694,6 +696,15 @@ public class ProcessInfo implements Serializable
 		return m_transactionName;
 	}
 
+	public String getAD_Process_UU()
+	{
+		return m_AD_Process_UU;
+	}
+
+	public void setAD_Process_UU(String AD_Process_UU)
+	{
+		m_AD_Process_UU = AD_Process_UU;
+	}
 	/**
 	 * Set transaction name from this process
 	 * @param trxName
