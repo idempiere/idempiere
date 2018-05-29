@@ -1156,8 +1156,13 @@ class Restriction  implements Serializable
 		sb.append(Operator);
 		if ( ! (Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL)))
 		{
-			if (Code instanceof String)
-				sb.append(DB.TO_STRING(Code.toString()));
+			if (Code instanceof String) {
+				if (ColumnName.toUpperCase().startsWith("UPPER(")) {
+					sb.append("UPPER("+DB.TO_STRING(Code.toString())+")");
+				} else {
+					sb.append(DB.TO_STRING(Code.toString()));
+				}
+			}
 			else if (Code instanceof Timestamp)
 				sb.append(DB.TO_DATE((Timestamp)Code, false));
 			else

@@ -32,6 +32,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
 
 /**
  *	Inventory Movement Model
@@ -631,7 +632,7 @@ public class MMovement extends X_M_Movement implements DocAction
 	private void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
-			setMovementDate(new Timestamp (System.currentTimeMillis()));
+			setMovementDate(TimeUtil.getDay(0));
 			MPeriod.testPeriodOpen(getCtx(), getMovementDate(), getC_DocType_ID(), getAD_Org_ID());
 		}
 		if (dt.isOverwriteSeqOnComplete()) {

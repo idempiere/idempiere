@@ -171,20 +171,22 @@ public class Doc_Payment extends Doc
 
 		// Avoid usage of clearing accounts
 		// If both accounts and orgs are the same then remove the posting
-		MAccount acct_dr = dr.getAccount();
-		MAccount acct_cr = cr.getAccount();
-		int org_dr = dr.getAD_Org_ID();
-		int org_cr = cr.getAD_Org_ID();
-		if (!as.isPostIfClearingEqual() && acct_dr!=null && acct_dr.equals(acct_cr) && org_dr == org_cr) {
+		if (dr != null && cr != null) {
+			MAccount acct_dr = dr.getAccount();
+			MAccount acct_cr = cr.getAccount();
+			int org_dr = dr.getAD_Org_ID();
+			int org_cr = cr.getAD_Org_ID();
+			if (!as.isPostIfClearingEqual() && acct_dr!=null && acct_dr.equals(acct_cr) && org_dr == org_cr) {
 
-			BigDecimal debit = dr.getAmtSourceDr();
-			BigDecimal credit = cr.getAmtSourceCr();
+				BigDecimal debit = dr.getAmtSourceDr();
+				BigDecimal credit = cr.getAmtSourceCr();
 
-			if (debit.compareTo(credit) == 0) {
-				fact.remove(dr);
-				fact.remove(cr);
+				if (debit.compareTo(credit) == 0) {
+					fact.remove(dr);
+					fact.remove(cr);
+				}
+
 			}
-
 		}
 		// End Avoid usage of clearing accounts
 		//

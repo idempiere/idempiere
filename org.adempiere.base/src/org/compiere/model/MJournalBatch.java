@@ -32,6 +32,7 @@ import org.compiere.process.DocumentEngine;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
 
 /**
  *  Journal Batch Model
@@ -509,7 +510,7 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 	private void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
-			setDateDoc(new Timestamp (System.currentTimeMillis()));
+			setDateDoc(TimeUtil.getDay(0));
 			if (getDateAcct().before(getDateDoc())) {
 				setDateAcct(getDateDoc());
 				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());

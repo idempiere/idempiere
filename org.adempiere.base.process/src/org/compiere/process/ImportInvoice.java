@@ -655,7 +655,7 @@ public class ImportInvoice extends SvrProcess
 			int lineNo = 0;
 			while (rs.next ())
 			{
-				X_I_Invoice imp = new X_I_Invoice (getCtx (), rs, null);
+				X_I_Invoice imp = new X_I_Invoice (getCtx (), rs, get_TrxName());
 				String cmpDocumentNo = imp.getDocumentNo();
 				if (cmpDocumentNo == null)
 					cmpDocumentNo = "";
@@ -680,7 +680,7 @@ public class ImportInvoice extends SvrProcess
 					if (oldDocumentNo == null)
 						oldDocumentNo = "";
 					//
-					invoice = new MInvoice (getCtx(), 0, null);
+					invoice = new MInvoice (getCtx(), 0, get_TrxName());
 					invoice.setClientOrg (imp.getAD_Client_ID(), imp.getAD_Org_ID());
 					invoice.setC_DocTypeTarget_ID(imp.getC_DocType_ID());
 					invoice.setIsSOTrx(imp.isSOTrx());

@@ -211,6 +211,11 @@
         -->
         <cache-deserialized-values>INDEX-ONLY</cache-deserialized-values>
 
+        <near-cache name="localNearCache">
+            <in-memory-format>OBJECT</in-memory-format>
+            <cache-local-entries>true</cache-local-entries>
+        </near-cache>
+
     </map>
 
     <!--
