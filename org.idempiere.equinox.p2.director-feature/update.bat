@@ -23,7 +23,7 @@ if exist jettyhome\etc\jetty-selector.xml (
    copy jettyhome\etc\jetty-selector.xml jetty-selector.xml.sav
 )
 
-@call %DESTINATION%\update-prd %1% org.adempiere.server.product,org.idempiere.fitnesse.feature.group
+@call %DESTINATION%\update-prd %1% "org.adempiere.server.product,org.idempiere.fitnesse.feature.group"
 
 copy idempiere.ini.sav idempiere.ini
 
