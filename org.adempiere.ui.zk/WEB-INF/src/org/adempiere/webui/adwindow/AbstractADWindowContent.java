@@ -699,8 +699,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
                     .append(mTab.getTableName());
             if (where.length() > 0)
                 sql.append(" WHERE ").append(where);
-            // Does not consider security
-            int no = DB.getSQLValue(null, sql.toString());
+            String finalSQL = MRole.getDefault().addAccessSQL(sql.toString(),
+            		mTab.getTableName(), MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
+            int no = DB.getSQLValue(null, finalSQL.toString());
             //
             require = MRole.getDefault().isQueryRequire(no);
         }
