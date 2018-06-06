@@ -545,7 +545,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	}
 
 
-	protected void showInfoPanel(final InfoPanel ip) {
+	public void showInfoPanel(final InfoPanel ip) {
 		ip.setVisible(true);
 		ip.setStyle("border: 2px");
 		ip.setClosable(true);
