@@ -435,7 +435,7 @@ public class MWorkflow extends X_AD_Workflow
 			for (int i = 0; i < nexts.length; i++)
 			{
 				MWFNode child = getNode (nexts[i].getAD_WF_Next_ID());
-				if (!child.isActive())
+				if (child == null || !child.isActive())
 					continue;
 				if (child.getAD_Client_ID() == 0
 					|| child.getAD_Client_ID() == AD_Client_ID)
