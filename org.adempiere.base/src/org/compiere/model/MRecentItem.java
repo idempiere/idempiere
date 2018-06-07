@@ -16,11 +16,13 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.base.Service;
 import org.adempiere.base.event.EventManager;
@@ -42,17 +44,19 @@ import org.osgi.service.event.Event;
 public class MRecentItem extends X_AD_RecentItem
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 6899554875745832L;
+	private static final long serialVersionUID = -311416268128338337L;
 
 	public static final String ON_RECENT_ITEM_CHANGED_TOPIC = "onRecentItemChanged";
 
 	/**	Recent Item Cache				*/
-	private static CCache<Integer,MRecentItem>	s_cache = new CCache<Integer,MRecentItem>(Table_Name, 10);
+	private static CCache<String,MRecentItem>	s_cache = new CCache<String,MRecentItem>(Table_Name, 10);
 	/**	Logger			*/
-	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MRecentItem.class);
+
+	/* Recent Item cached Label */
+	private String m_label;
 
 	/**************************************************************************
 	 * 	Standard Constructor
@@ -65,12 +69,16 @@ public class MRecentItem extends X_AD_RecentItem
 	      super (ctx, AD_RecentItem_ID, trxName);
 	      if (AD_RecentItem_ID > 0) {
 	    	  synchronized (MRecentItem.class) {
-	    		  Integer key = new Integer (AD_RecentItem_ID);
+	    		  String key = getCacheKey(AD_RecentItem_ID, ctx);
 	    		  if (!s_cache.containsKey(key))
 	    			  s_cache.put (key, this);
 	    	  }
 	      }
 	}	//	MRecentItem
+
+	private static String getCacheKey(int AD_RecentItem_ID, Properties ctx) {
+		return AD_RecentItem_ID + "|" + Env.getAD_Language(ctx);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -81,9 +89,9 @@ public class MRecentItem extends X_AD_RecentItem
 	public MRecentItem (Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
-		Integer key = null;
+		String key = null;
 		try {
-			key = new Integer (rs.getInt("AD_RecentItem_ID"));
+			key = getCacheKey(rs.getInt("AD_RecentItem_ID"), ctx);
 		} catch (SQLException e) {
 			throw new AdempiereException(e);
 		}
@@ -101,7 +109,7 @@ public class MRecentItem extends X_AD_RecentItem
 	 */
 	public static synchronized MRecentItem get (Properties ctx, int AD_RecentItem_ID)
 	{
-		Integer ii = new Integer (AD_RecentItem_ID);
+		String ii = getCacheKey(AD_RecentItem_ID, ctx);
 		MRecentItem ri = (MRecentItem)s_cache.get(ii);
 		if (ri == null)
 			ri = new MRecentItem (ctx, AD_RecentItem_ID, null);
@@ -123,7 +131,8 @@ public class MRecentItem extends X_AD_RecentItem
 			MRecentItem retValue = it.next();
 			if (retValue.getAD_Table_ID() == AD_Table_ID
 					&& retValue.getRecord_ID() == Record_ID
-					&& retValue.getCtx() == ctx
+					&& retValue.getAD_User_ID() == AD_User_ID
+					&& Env.getAD_Language(ctx).equals(Env.getAD_Language(retValue.getCtx()))
 					)
 			{
 				return retValue;
@@ -155,7 +164,7 @@ public class MRecentItem extends X_AD_RecentItem
 
 		if (retValue != null)
 		{
-			Integer key = new Integer (retValue.getAD_RecentItem_ID());
+			String key = getCacheKey(retValue.getAD_RecentItem_ID(), ctx);
 			s_cache.put (key, retValue);
 		}
 		return retValue;
@@ -265,7 +274,7 @@ public class MRecentItem extends X_AD_RecentItem
 
 	@Override
 	public boolean delete(boolean force) {
-		Integer ii = new Integer (getAD_RecentItem_ID());
+		String ii = getCacheKey(getAD_RecentItem_ID(), getCtx());
 		synchronized (MRecentItem.class) {
 			s_cache.remove(ii);
 		}
@@ -273,16 +282,23 @@ public class MRecentItem extends X_AD_RecentItem
 	}
 
 	public static List<MRecentItem> getFromUser(Properties ctx, int AD_User_ID) {
-		List<MRecentItem> ris = new Query(ctx, MRecentItem.Table_Name, "NVL(AD_User_ID,0)=?", null)
+		int[] ids = new Query(ctx, MRecentItem.Table_Name, "NVL(AD_User_ID,0)=?", null)
 			.setOnlyActiveRecords(true)
 			.setClient_ID()
 			.setParameters(AD_User_ID)
 			.setOrderBy("Updated DESC")
-			.list();
+			.getIDs();
+		List<MRecentItem> ris = new ArrayList<MRecentItem>();
+		for (int id : ids) {
+			ris.add(MRecentItem.get(ctx, id));
+		}
 		return ris;
 	}
 
 	public String getLabel() {
+		if (m_label != null) {
+			return m_label;
+		}
 		String windowName;
 		MWindow win = MWindow.get(getCtx(), getAD_Window_ID());
 		MUserDefWin userDef = MUserDefWin.getBestMatch(getCtx(), getAD_Window_ID());
@@ -322,7 +338,29 @@ public class MRecentItem extends X_AD_RecentItem
 			if (recordIdentifier.length() == 0)
 				recordIdentifier.append(" [no identifier]");
 		}
-		return windowName + ": " + recordIdentifier.substring(1);
+		m_label = windowName + ": " + recordIdentifier.substring(1);
+        if (s_log.isLoggable(Level.INFO)) s_log.info(m_label);
+		return m_label;
+	}
+
+	public static void clearLabel(int AD_Table_ID, int Record_ID) {
+		Iterator<MRecentItem> it = s_cache.values().iterator();
+		while (it.hasNext()) {
+			MRecentItem retValue = it.next();
+			if (retValue.getAD_Table_ID() == AD_Table_ID && retValue.getRecord_ID() == Record_ID) {
+				retValue.clearLabel();
+			}
+		}
+	}
+
+	private void clearLabel() {
+		m_label = null;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder("MRecentItem[").append(get_ID()).append("]=").append(getLabel());
+		return sb.toString();
 	}
 
 }	//	MRecentItem

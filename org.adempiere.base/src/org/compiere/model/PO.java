@@ -2341,9 +2341,10 @@ public abstract class PO
 			m_newValues = new Object[size];
 			m_createNew = false;
 		}
-		if (!newRecord)
+		if (!newRecord) {
 			CacheMgt.get().reset(p_info.getTableName());
-		else if (get_ID() > 0 && success)
+			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID());
+		} else if (get_ID() > 0 && success)
 			CacheMgt.get().newRecord(p_info.getTableName(), get_ID());
 		
 		return success;
