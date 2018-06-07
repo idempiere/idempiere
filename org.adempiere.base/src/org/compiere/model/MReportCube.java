@@ -63,8 +63,7 @@ public class MReportCube extends X_PA_ReportCube {
 			 "INNER JOIN Fact_Acct fact ON (fact.dateacct between p.startdate and p.enddate " +
              "                      and fact.ad_client_id = c.ad_client_id) " +
 			 "WHERE c.PA_ReportCube_ID = ? " +
-			 "AND fact.updated > c.LastRecalculated " +
-			 "AND p.periodtype='S' ";
+			 "AND fact.updated > c.LastRecalculated";
 
 			log.log (Level.FINE, sql);
 
@@ -130,10 +129,9 @@ public class MReportCube extends X_PA_ReportCube {
 					"p.c_period_id,	p.StartDate, COALESCE(SUM(AmtAcctDr),0), COALESCE(SUM(AmtAcctCr),0), " +
 			"COALESCE(SUM(Qty),0)");
 			String from = " FROM fact_acct f " +
-			" INNER JOIN C_Period p ON ( f.DateAcct BETWEEN p.StartDate AND p.EndDate ) " +
+			" INNER JOIN C_Period p ON ( f.C_Period_ID = p.C_Period_ID ) " +
 			" INNER JOIN C_Year y ON ( p.C_Year_ID = y.C_Year_ID ) " +
-			" WHERE p.PeriodType = 'S' " +
-			" AND y.C_Calendar_ID = ? AND f.AD_Client_ID = ? ";
+			" WHERE y.C_Calendar_ID = ? AND f.AD_Client_ID = ? ";
 			if ( getLastRecalculated() != null && !reset )
 				from += "AND  p.C_Period_ID IN " + periods;
 
