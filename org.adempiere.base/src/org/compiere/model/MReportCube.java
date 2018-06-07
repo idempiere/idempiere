@@ -133,7 +133,7 @@ public class MReportCube extends X_PA_ReportCube {
 			" INNER JOIN C_Period p ON ( f.DateAcct BETWEEN p.StartDate AND p.EndDate ) " +
 			" INNER JOIN C_Year y ON ( p.C_Year_ID = y.C_Year_ID ) " +
 			" WHERE p.PeriodType = 'S' " +
-			" AND y.C_Calendar_ID = ? ";
+			" AND y.C_Calendar_ID = ? AND f.AD_Client_ID = ? ";
 			if ( getLastRecalculated() != null && !reset )
 				from += "AND  p.C_Period_ID IN " + periods;
 
@@ -190,7 +190,7 @@ public class MReportCube extends X_PA_ReportCube {
 
 			String sql = insert.append(select.toString()).append(from).append(groups.toString()).toString();
 			if (log.isLoggable(Level.FINE))log.log(Level.FINE, sql);
-			Object[] params = new Object[] { getPA_ReportCube_ID(), getC_Calendar_ID() };
+			Object[] params = new Object[] { getPA_ReportCube_ID(), getC_Calendar_ID(), getAD_Client_ID() };
 
 			start = System.currentTimeMillis();
 			int rows = DB.executeUpdateEx(sql, params, get_TrxName());
