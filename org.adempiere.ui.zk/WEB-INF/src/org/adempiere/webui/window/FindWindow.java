@@ -232,6 +232,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	private Properties m_simpleCtx;
 	private Properties m_advanceCtx;
 	
+	private int rowCount;
+	
 	private static final String ON_POST_VISIBLE_ATTR = "onPostVisible.Event.Posted";
 
     /**
@@ -831,7 +833,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	if (null!=fields && fields.length>=1 && fields[0].contains(HISTORY_SEPARATOR))
     			return;
         ListItem listItem = new ListItem();
-        listItem.setId("Row"+advancedPanel.getItemCount());
+        listItem.setId("Row"+ rowCount++);
 
         Listbox listColumn = new Listbox();
         listColumn.setId("listColumn"+listItem.getId());
