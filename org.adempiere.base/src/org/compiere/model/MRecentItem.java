@@ -343,7 +343,7 @@ public class MRecentItem extends X_AD_RecentItem
 		return m_label;
 	}
 
-	public static void clearLabel(int AD_Table_ID, int Record_ID) {
+	public static synchronized void clearLabel(int AD_Table_ID, int Record_ID) {
 		Iterator<MRecentItem> it = s_cache.values().iterator();
 		while (it.hasNext()) {
 			MRecentItem retValue = it.next();
