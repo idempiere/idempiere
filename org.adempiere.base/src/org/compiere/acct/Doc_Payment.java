@@ -116,16 +116,14 @@ public class Doc_Payment extends Doc
 			return facts;
 		}
 
-		FactLine dr = null;
-		FactLine cr = null;
 		int AD_Org_ID = getBank_Org_ID();		//	Bank Account Org
 		if (getDocumentType().equals(DOCTYPE_ARReceipt))
 		{
 			//	Asset
-			dr = fact.createLine(null, getAccount(Doc.ACCTTYPE_BankInTransit, as),
+			FactLine fl = fact.createLine(null, getAccount(Doc.ACCTTYPE_BankInTransit, as),
 				getC_Currency_ID(), getAmount(), null);
-			if (dr != null && AD_Org_ID != 0)
-				dr.setAD_Org_ID(AD_Org_ID);
+			if (fl != null && AD_Org_ID != 0)
+				fl.setAD_Org_ID(AD_Org_ID);
 			//
 			MAccount acct = null;
 			if (getC_Charge_ID() != 0)
@@ -134,11 +132,11 @@ public class Doc_Payment extends Doc
 				acct = getAccount(Doc.ACCTTYPE_C_Prepayment, as);
 			else
 				acct = getAccount(Doc.ACCTTYPE_UnallocatedCash, as);
-			cr = fact.createLine(null, acct,
+			fl = fact.createLine(null, acct,
 				getC_Currency_ID(), null, getAmount());
-			if (cr != null && AD_Org_ID != 0
+			if (fl != null && AD_Org_ID != 0
 				&& getC_Charge_ID() == 0)		//	don't overwrite charge
-				cr.setAD_Org_ID(AD_Org_ID);
+				fl.setAD_Org_ID(AD_Org_ID);
 		}
 		//  APP
 		else if (getDocumentType().equals(DOCTYPE_APPayment))
@@ -150,17 +148,17 @@ public class Doc_Payment extends Doc
 				acct = getAccount(Doc.ACCTTYPE_V_Prepayment, as);
 			else
 				acct = getAccount(Doc.ACCTTYPE_PaymentSelect, as);
-			dr = fact.createLine(null, acct,
+			FactLine fl = fact.createLine(null, acct,
 				getC_Currency_ID(), getAmount(), null);
-			if (dr != null && AD_Org_ID != 0
+			if (fl != null && AD_Org_ID != 0
 				&& getC_Charge_ID() == 0)		//	don't overwrite charge
-				dr.setAD_Org_ID(AD_Org_ID);
+				fl.setAD_Org_ID(AD_Org_ID);
 
 			//	Asset
-			cr = fact.createLine(null, getAccount(Doc.ACCTTYPE_BankInTransit, as),
+			fl = fact.createLine(null, getAccount(Doc.ACCTTYPE_BankInTransit, as),
 				getC_Currency_ID(), null, getAmount());
-			if (cr != null && AD_Org_ID != 0)
-				cr.setAD_Org_ID(AD_Org_ID);
+			if (fl != null && AD_Org_ID != 0)
+				fl.setAD_Org_ID(AD_Org_ID);
 		}
 		else
 		{
@@ -168,25 +166,6 @@ public class Doc_Payment extends Doc
 			log.log(Level.SEVERE, p_Error);
 			fact = null;
 		}
-
-		// Avoid usage of clearing accounts
-		// If both accounts and orgs are the same then remove the posting
-		MAccount acct_dr = dr.getAccount();
-		MAccount acct_cr = cr.getAccount();
-		int org_dr = dr.getAD_Org_ID();
-		int org_cr = cr.getAD_Org_ID();
-		if (!as.isPostIfClearingEqual() && acct_dr!=null && acct_dr.equals(acct_cr) && org_dr == org_cr) {
-
-			BigDecimal debit = dr.getAmtSourceDr();
-			BigDecimal credit = cr.getAmtSourceCr();
-
-			if (debit.compareTo(credit) == 0) {
-				fact.remove(dr);
-				fact.remove(cr);
-			}
-
-		}
-		// End Avoid usage of clearing accounts
 		//
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		facts.add(fact);
