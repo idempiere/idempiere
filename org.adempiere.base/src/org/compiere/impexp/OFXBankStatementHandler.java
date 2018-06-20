@@ -23,7 +23,11 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.StringTokenizer;
+import java.util.TimeZone;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -216,7 +220,7 @@ public abstract class OFXBankStatementHandler extends DefaultHandler
 		try
 		{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-			reader.mark(HEADER_SIZE + 100);
+			reader.mark(HEADER_SIZE + 20000);
 			StringBuilder header = new StringBuilder();
 			for (int i = 0; i < HEADER_SIZE; i++)
 			{
@@ -748,6 +752,87 @@ public abstract class OFXBankStatementHandler extends DefaultHandler
 	}	//	endElement
 	
 	
+	/*
+	 * Copyright 2008 Web Cohesion
+	 *
+	 * Licensed under the Apache License, Version 2.0 (the "License");
+	 * you may not use this file except in compliance with the License.
+	 * You may obtain a copy of the License at
+	 *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing, software
+	 * distributed under the License is distributed on an "AS IS" BASIS,
+	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 * See the License for the specific language governing permissions and
+	 * limitations under the License.
+	 * 
+	 * source: https://github.com/stoicflame/ofx4j/blob/a604e4f6ffefea61403434cf853bbd1b20740386/src/main/java/com/webcohesion/ofx4j/io/DefaultStringConversion.java
+	 * 
+	 */
+	  /**
+	   * Parse the timezone offset of the form [HOURS_OFF_GMT:TZ_ID]
+	   *
+	   * @param tzoffset The offset pattern.
+	   * @return The timezone.
+	   */
+	  protected TimeZone parseTimeZone(String tzoffset) {
+	    StringTokenizer tokenizer = new StringTokenizer(tzoffset, "[]:");
+	    TimeZone tz = GMT_TIME_ZONE;
+	    if (tokenizer.hasMoreTokens()) {
+	      String hoursOff = tokenizer.nextToken();
+	      tz = TimeZone.getTimeZone("GMT" + hoursOff);
+	    }
+
+	    return tz;
+	}	
+	
+	public static final TimeZone GMT_TIME_ZONE = TimeZone.getTimeZone("GMT");
+	public static final int DATE_FORMAT_LENGTH = "yyyyMMddHHmmss.SSS".length();
+	public static final int TIME_FORMAT_LENGTH = "HHmmss.SSS".length();	
+	
+	  /**
+	   * Parses a date according to OFX.
+	   *
+	   * @param value The value of the date.
+	   * @return The date value.
+	   */
+	protected Date parseDate(String value) {
+	    char[] parseableDate = new char[DATE_FORMAT_LENGTH];
+	    Arrays.fill(parseableDate, '0');
+	    parseableDate[parseableDate.length - 4] = '.';
+	    char[] valueChars = value.toCharArray();
+	    int index = 0;
+	    while (index < valueChars.length && valueChars[index] != '[') {
+	      if (index < DATE_FORMAT_LENGTH) {
+	        parseableDate[index] = valueChars[index];
+	      }
+	      
+	      index++;
+	    }
+
+	    int year = Integer.parseInt(new String(parseableDate, 0, 4));
+	    int month = Integer.parseInt(new String(parseableDate, 4, 2)) - 1; //java month numberss are zero-based
+	    int day = Integer.parseInt(new String(parseableDate, 6, 2));
+	    int hour = Integer.parseInt(new String(parseableDate, 8, 2));
+	    int minute = Integer.parseInt(new String(parseableDate, 10, 2));
+	    int second = Integer.parseInt(new String(parseableDate, 12, 2));
+	    int milli = Integer.parseInt(new String(parseableDate, 15, 3));
+
+	    //set up a new calendar at zero, then set all the fields.
+	    GregorianCalendar calendar = new GregorianCalendar(year, month, day, hour, minute, second);
+	    if (index < valueChars.length && valueChars[index] == '[') {
+	      String tzoffset = value.substring(index);
+	      calendar.setTimeZone(parseTimeZone(tzoffset));
+	    }
+	    else {
+	      calendar.setTimeZone(GMT_TIME_ZONE);
+	    }
+	    calendar.add(GregorianCalendar.MILLISECOND, milli);
+
+	    return calendar.getTime();
+	}
+	  
 	/**
 	 * Method parseOfxDate
 	 * @param value String
@@ -758,9 +843,7 @@ public abstract class OFXBankStatementHandler extends DefaultHandler
 	{
 		try
 		{
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-			sdf.setLenient(false);
-			return new Timestamp (sdf.parse(value).getTime());
+			return new Timestamp (parseDate(value).getTime());
 		}
 		catch(Exception e)
 		{
