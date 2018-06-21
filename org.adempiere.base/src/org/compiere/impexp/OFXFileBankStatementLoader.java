@@ -17,7 +17,6 @@
 package org.compiere.impexp;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 
 import org.compiere.model.MBankStatementLoader;
 import org.xml.sax.SAXException;
@@ -38,6 +37,9 @@ public final class OFXFileBankStatementLoader extends OFXBankStatementHandler im
 	 * @return boolean
 	 * @see org.compiere.impexp.BankStatementLoaderInterface#init(MBankStatementLoader)
 	 */
+	//m_stream is not closed because the BufferedReader in the parent class is closed and according to the Java docs: 
+	//Calling close() on the BufferedReader closes the underlying stream by default implementation
+	@SuppressWarnings("resource")  
 	public boolean init(MBankStatementLoader controller)
 	{
 		boolean result = false;
@@ -72,13 +74,6 @@ public final class OFXFileBankStatementLoader extends OFXBankStatementHandler im
 		{
 			m_errorMessage = new StringBuffer("ErrorReadingData");
 			m_errorDescription = new StringBuffer();
-		}finally{
-			if (m_stream != null)
-				try {
-					m_stream.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 		}
 
 		return result;

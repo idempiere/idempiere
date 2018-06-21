@@ -202,6 +202,10 @@ public abstract class OFXBankStatementHandler extends DefaultHandler
 			m_errorMessage = new StringBuffer("ErrorInitializingParser");
 			m_errorDescription = new StringBuffer("Unable to initialize SAX parser: ").append(e.getMessage());
 		}
+		
+		if (!result)
+			closeBufferedReader();
+		
 		return result;
 	}	//	init
 	
@@ -256,6 +260,7 @@ public abstract class OFXBankStatementHandler extends DefaultHandler
 		{
 			m_errorMessage = new StringBuffer("ErrorReadingData");
 			m_errorDescription = new StringBuffer(e.getMessage());
+			closeBufferedReader();
 			return result;
 		}
 
@@ -322,10 +327,21 @@ public abstract class OFXBankStatementHandler extends DefaultHandler
 		{
 			m_errorMessage = new StringBuffer("ErrorReadingData");
 			m_errorDescription = new StringBuffer(e.getMessage());
+		} finally {
+			closeBufferedReader();
 		}
 		return result;
 		
 	}	//	loadLines
+	
+	private void closeBufferedReader() {
+		if (m_reader != null)
+			try {
+				m_reader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	}
 	
 	/**
 	 * Method getDateLastRun
