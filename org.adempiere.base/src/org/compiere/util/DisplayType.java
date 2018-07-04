@@ -199,7 +199,7 @@ public final class DisplayType
 		if (displayType == ID || displayType == Table || displayType == TableDir
 			|| displayType == Search || displayType == Location || displayType == Locator
 			|| displayType == Account || displayType == Assignment || displayType == PAttribute
-			|| displayType == Image || displayType == Chart || displayType == Color)
+			|| displayType == Image || displayType == Chart)
 			return true;
 		
 		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
@@ -622,13 +622,8 @@ public final class DisplayType
 			else
 				return "VARCHAR2(" + fieldLength + ")";
 		}
-		if (displayType == DisplayType.Color) // this condition is never reached - filtered above in isID
-		{
-			if (columnName.endsWith("_ID"))
-				return "NUMBER(10)";
-			else
-				return "CHAR(" + fieldLength + ")";
-		}
+		if (displayType == DisplayType.Color)
+			return "VARCHAR2(" + fieldLength + ")";
 		if (displayType == DisplayType.Button)
 		{
 			if (columnName.endsWith("_ID"))
