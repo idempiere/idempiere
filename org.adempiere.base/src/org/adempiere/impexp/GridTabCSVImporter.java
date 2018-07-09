@@ -1485,6 +1485,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 		StringBuilder postSelect = new StringBuilder(" FROM ")
 			.append(foreignTable).append(" WHERE ")
 			.append(foreignColumn).append("=? AND IsActive='Y' AND AD_Client_ID=?");
+	  if (field != null ) {
 		if (!Util.isEmpty(field.getVO().ValidationCode)) {
 			String dynamicValid = Env.parseContext(Env.getCtx(), field.getWindowNo(), field.getGridTab().getTabNo(), field.getVO().ValidationCode, false);
 			if (Util.isEmpty(dynamicValid)) {
@@ -1509,6 +1510,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 				}
 			}
 		}
+	  }
 		StringBuilder selectCount = new StringBuilder("SELECT COUNT(*)").append(postSelect);
 		StringBuilder selectId = new StringBuilder("SELECT ").append(foreignTable).append("_ID").append(postSelect);
 		int count = DB.getSQLValueEx(trxName, selectCount.toString(), value, thisClientId);
