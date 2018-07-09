@@ -35,6 +35,7 @@ public class CompiereUtil {
 		
 		try
 		{
+			if (log.isLoggable(Level.INFO)) log.info("Starting webservices iDempiere session");
 			s_initOK = Adempiere.startup(false);
 		}
 		catch (Exception ex)

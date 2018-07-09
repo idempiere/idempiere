@@ -1324,6 +1324,7 @@ public class Login
 						user.setIsLocked(false);
 						user.setDateAccountLocked(null);
 						user.setFailedLoginCount(0);
+						Env.setContext(Env.getCtx(), "#AD_Client_ID", user.getAD_Client_ID());
 						if (!user.save())
 							log.severe("Failed to unlock user account");
 					}
@@ -1337,6 +1338,7 @@ public class Login
 				{
 					user.setIsLocked(true);
 					user.setDateAccountLocked(new Timestamp(now));
+					Env.setContext(Env.getCtx(), "#AD_Client_ID", user.getAD_Client_ID());
 					if (!user.save())
 						log.severe("Failed to lock user account");
 				}
@@ -1441,6 +1443,7 @@ public class Login
 			{
 				user.setFailedLoginCount(0);
 				user.setDateLastLogin(new Timestamp(now));
+				Env.setContext(Env.getCtx(), "#AD_Client_ID", user.getAD_Client_ID());
 				if (!user.save())
 					log.severe("Failed to update user record with date last login (" + user.getName() + " / clientID = " + user.getAD_Client_ID() + ")");
 			}
@@ -1490,6 +1493,7 @@ public class Login
 				user.setFailedLoginCount(count);
 				user.setIsLocked(reachMaxAttempt);
 				user.setDateAccountLocked(user.isLocked() ? new Timestamp(now) : null);
+				Env.setContext(Env.getCtx(), "#AD_Client_ID", user.getAD_Client_ID());
 				if (!user.save())
 					log.severe("Failed to update user record with increase failed login count");
 			}
