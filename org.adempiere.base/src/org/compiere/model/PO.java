@@ -2069,7 +2069,10 @@ public abstract class PO
 				l_trxname.setLength(23);
 			m_trxName = Trx.createTrxName(l_trxname.toString());
 			localTrx = Trx.get(m_trxName, true);
-			localTrx.setDisplayName(getClass().getName()+"_save");
+			if (newRecord)
+				localTrx.setDisplayName(getClass().getName() + "_insert");
+			else
+				localTrx.setDisplayName(getClass().getName() + "_update_ID" + get_ID());
 			localTrx.getConnection();
 		}
 		else
@@ -3216,7 +3219,7 @@ public abstract class PO
 			{
 				localTrxName = Trx.createTrxName("POdel");
 				localTrx = Trx.get(localTrxName, true);
-				localTrx.setDisplayName(getClass().getName()+"_delete");
+				localTrx.setDisplayName(getClass().getName()+ "_delete_ID" + get_ID());
 				localTrx.getConnection();
 				m_trxName = localTrxName;
 			}
