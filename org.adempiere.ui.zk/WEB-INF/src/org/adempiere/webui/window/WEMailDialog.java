@@ -524,7 +524,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 				return;
 			}
 
-			StringTokenizer st = new StringTokenizer(getTo(), " ,;", false);
+			StringTokenizer st = new StringTokenizer(getTo(), ",;", false);
 			String to = st.nextToken();
 			EMail email = m_client.createEMail(getFrom(), to, getSubject(), replaceBASE64Img(getMessage()), true);
 			String status = "Check Setup";
@@ -533,7 +533,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 				while (st.hasMoreTokens())
 					email.addTo(st.nextToken());
 				// cc
-				StringTokenizer stcc = new StringTokenizer(getCc(), " ,;", false);
+				StringTokenizer stcc = new StringTokenizer(getCc(), ",;", false);
 				while (stcc.hasMoreTokens())
 				{
 					String cc = stcc.nextToken();
