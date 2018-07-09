@@ -294,11 +294,10 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 			}
 			else if (field instanceof Timestamp)
 			{
-				SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.Date, AEnv.getLanguage(Env.getCtx()));
-
-				if (m_tableColumns.get(columnIndex).getAD_Reference_ID()==DisplayType.DateTime) {
-			 		dateFormat = DisplayType.getDateFormat(DisplayType.DateTime, AEnv.getLanguage(Env.getCtx()),"dd/M/yyyy hh:mm");
-				}		
+				int refId = m_tableColumns.get(columnIndex).getAD_Reference_ID();
+				if (refId == 0)
+					refId = DisplayType.Date;
+				SimpleDateFormat dateFormat = DisplayType.getDateFormat(refId, AEnv.getLanguage(Env.getCtx()));
 				listcell.setValue(dateFormat.format((Timestamp)field));
 				if (isCellEditable)
 				{
