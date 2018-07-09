@@ -104,11 +104,12 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4651516342985623070L;
+	private static final long serialVersionUID = -1022887214226173483L;
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 	public static final String DATA_UPDATE_COPIED_MESSAGE = "UpdateCopied";
 	public static final String DATA_INSERTED_MESSAGE = "Inserted";
+	public static final String DATA_IGNORED_MESSAGE = "Ignored";
 
 	/**
 	 *	JDBC Based Buffered Table
@@ -2858,7 +2859,7 @@ public class GridTable extends AbstractTableModel
 		//	fireTableRowsUpdated(m_rowChanged, m_rowChanged); >> messes up display?? (clearSelection)
 		}
 		m_newRow = -1;
-		fireDataStatusIEvent("Ignored", "");
+		fireDataStatusIEvent(DATA_IGNORED_MESSAGE, "");
 	}	//	dataIgnore
 
 
