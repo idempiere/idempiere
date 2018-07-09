@@ -82,6 +82,7 @@ public class ColumnInfo
 	private GridField m_gridField;
 	
 	private String colDescription;
+	private int AD_Reference_ID;
 
 	/**
 	 * 	Get Col Class
@@ -213,5 +214,13 @@ public class ColumnInfo
 
 	public void setColDescription(String colDescription) {
 		this.colDescription = colDescription;
+	}
+	
+	public int getAD_Reference_ID() {
+		return AD_Reference_ID;
+	}
+
+	public void setAD_Reference_ID(int AD_Reference_ID) {
+		this.AD_Reference_ID = AD_Reference_ID;
 	}
 }   //  infoColumn

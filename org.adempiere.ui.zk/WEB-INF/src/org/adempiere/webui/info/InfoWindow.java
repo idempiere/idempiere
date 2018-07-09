@@ -710,6 +710,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), colSQL, DisplayType.getClass(infoColumn.getAD_Reference_ID(), true));
 				}
 				columnInfo.setColDescription(infoColumn.get_Translation("Description"));
+				columnInfo.setAD_Reference_ID(infoColumn.getAD_Reference_ID());
 				columnInfo.setGridField(gridFields.get(i));
 				list.add(columnInfo);
 				
