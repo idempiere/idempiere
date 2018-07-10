@@ -174,6 +174,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
         {
             if (log.isLoggable(Level.CONFIG)) log.config( "actionPerformed - " + m_value);
             final WLocationDialog ld = new WLocationDialog(Msg.getMsg(Env.getCtx(), "Location"), m_value, gridField);
+            final int oldValue = m_value == null ? 0 : m_value.getC_Location_ID();
             ld.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 
 				@Override
@@ -189,10 +190,8 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 		            if (m_value != null)
 		                C_Location_ID = m_value.getC_Location_ID();
 		            Integer ii = new Integer(C_Location_ID);
-		            //  force Change - user does not realize that embedded object is already saved.
-		            ValueChangeEvent valuechange = new ValueChangeEvent(WLocationEditor.this,getColumnName(),null,null);
-		            fireValueChange(valuechange);   //  resets m_mLocation
-		            if (C_Location_ID != 0)
+
+		            if (C_Location_ID != 0 && oldValue == 0)
 		            {
 		                ValueChangeEvent vc = new ValueChangeEvent(WLocationEditor.this,getColumnName(),null,ii);
 		                fireValueChange(vc);
