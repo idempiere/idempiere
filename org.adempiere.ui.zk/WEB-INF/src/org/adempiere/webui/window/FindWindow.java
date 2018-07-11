@@ -71,6 +71,7 @@ import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.part.MultiTabPart;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -235,6 +236,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	private int rowCount;
 	
 	private static final String ON_POST_VISIBLE_ATTR = "onPostVisible.Event.Posted";
+
+	/** START DEVCOFFEE **/
+	private StatusBarPanel statusBar = new StatusBarPanel();
+	/** END DEVCOFFEE **/
 
     /**
      * FindPanel Constructor
@@ -622,6 +627,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         winMain.addTab(tabPanel, Msg.getMsg(Env.getCtx(), "Advanced").replaceAll("&", ""), false, false);
         initSimple();
         initAdvanced();
+        /** START DEVCOFFEE **/
+        layout.appendChild(statusBar);
+        /** START DEVCOFFEE **/
 
     } // initPanel
     
@@ -801,6 +809,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         gridFieldList = null;
         m_total = getNoOfRecords(null, false);
 
+        /** START DEVCOFFEE **/
+    	//	Get Total
+		setStatusDB (m_total);
+		statusBar.setStatusLine("");
+		/** END DEVCOFFEE **/
     }   //  initFind
 
     /**
@@ -2568,6 +2581,18 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	public boolean isValid()
 	{
 		return isvalid;
-	}	
-	
+	}
+
+	/** START DEVCOFFEE **/
+	/**
+	 *	Display current count
+	 *  @param currentCount String representation of current/total
+	 */
+	private void setStatusDB (int currentCount)
+	{
+		StringBuilder text = new StringBuilder(" ").append(currentCount).append(" / ").append(m_total).append(" ");
+		statusBar.setStatusDB(text.toString());
+	}	//	setDtatusDB
+	/** END DEVCOFFEE **/
+
 }   //  FindPanel
