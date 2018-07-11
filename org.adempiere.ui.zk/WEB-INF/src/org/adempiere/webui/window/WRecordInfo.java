@@ -35,6 +35,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.DataStatusEvent;
+import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
 import org.compiere.model.MChangeLog;
@@ -248,14 +249,19 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		
 		//get uuid
 		GridTable gridTable = null;
+		String tabName = null;
 		if (dse.getSource() instanceof GridTab) 
 		{
 			GridTab gridTab = (GridTab) dse.getSource();
 			gridTable = gridTab.getTableModel();
+			tabName = gridTab.getName();
 		}
 		else if (dse.getSource() instanceof GridTable)
 		{
-			gridTable = (GridTable) dse.getSource();			
+			gridTable = (GridTable) dse.getSource();
+			GridField firstField = gridTable.getField(0);
+			if (firstField != null && firstField.getGridTab() != null)
+				tabName = firstField.getGridTab().getName();
 		}
 		if (gridTable != null && dse.getCurrentRow() >= 0 && dse.getCurrentRow() < gridTable.getRowCount())
 		{
@@ -271,11 +277,12 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		}
 		
 		//	Title
-		if (dse.AD_Table_ID != 0)
+		if (tabName == null && dse.AD_Table_ID != 0)
 		{
 			MTable table1 = MTable.get (Env.getCtx(), dse.AD_Table_ID);
-			setTitle(title + " - " + table1.getName());
+			tabName = table1.getName();
 		}
+		setTitle(title + " - " + tabName);
 
 		//	Only Client Preference can view Change Log
 		if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType()))

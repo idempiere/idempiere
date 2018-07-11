@@ -104,7 +104,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1022887214226173483L;
+	private static final long serialVersionUID = -2741647620577906242L;
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 	public static final String DATA_UPDATE_COPIED_MESSAGE = "UpdateCopied";
@@ -550,7 +550,7 @@ public class GridTable extends AbstractTableModel
 	 *  @param index index
 	 *  @return GridField
 	 */
-	protected GridField getField (int index)
+	public GridField getField (int index)
 	{
 		if (index < 0 || index >= m_fields.size())
 			return null;
