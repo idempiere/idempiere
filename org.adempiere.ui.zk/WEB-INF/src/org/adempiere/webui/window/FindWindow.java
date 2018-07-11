@@ -675,7 +675,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             	mField.getVO().FieldLength = 32767;  // a conservative max literal string - like oracle extended
             	mField.getVO().DisplayLength = mField.getVO().FieldLength;
             }
-            if (mField.getVO().displayType == DisplayType.YesNo || mField.isEncrypted()) {
+            if (mField.getVO().displayType == DisplayType.YesNo || mField.isEncrypted() || mField.isEncryptedColumn()) {
 				// Make Yes-No searchable as list
 				GridFieldVO vo = mField.getVO();
 				GridFieldVO ynvo = vo.clone(m_simpleCtx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
@@ -1965,12 +1965,19 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     {
     	String columnName = column.getValue().toString();
     	int referenceType = -1;
+		boolean isEncrypted = false;
     	if (columnName != null) {
     		MTable table = MTable.get(Env.getCtx(), m_tableName);
     		MColumn col = table.getColumn(columnName);
     		referenceType = col.getAD_Reference_ID();
+    		GridField field = getTargetMField(columnName);
+    		isEncrypted = (col.isEncrypted() || field.isEncrypted());
     	}
-        if (DisplayType.isLookup(referenceType)
+    	if (isEncrypted)
+    	{
+        	addOperators(MQuery.OPERATORS_ENCRYPTED, listOperator);
+    	}
+    	else if (DisplayType.isLookup(referenceType)
         		|| DisplayType.YesNo == referenceType
         		|| DisplayType.Button == referenceType)
         {
