@@ -1403,7 +1403,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	           ) {
 
 		        String prefix = null;
-		        if (dbInfo.contains("*"))
+		        if (dbInfo.contains("*") || dbInfo.contains("?")) // ? used when not-autosave
 		        	prefix = "*";
 
 		        String titleLogic = null;
