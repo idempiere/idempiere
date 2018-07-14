@@ -651,58 +651,31 @@ public class CalloutOrder extends CalloutEngine
 		Integer M_PriceList_ID = (Integer) mTab.getValue("M_PriceList_ID");
 		if (M_PriceList_ID == null || M_PriceList_ID.intValue()== 0)
 			return "";
-		if (steps) log.warning("init");
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = "SELECT pl.IsTaxIncluded,pl.EnforcePriceLimit,pl.C_Currency_ID,c.StdPrecision,"
-			+ "plv.M_PriceList_Version_ID,plv.ValidFrom "
-			+ "FROM M_PriceList pl,C_Currency c,M_PriceList_Version plv "
-			+ "WHERE pl.C_Currency_ID=c.C_Currency_ID"
-			+ " AND pl.M_PriceList_ID=plv.M_PriceList_ID"
-			+ " AND pl.M_PriceList_ID=? "						//	1
-			+ " AND plv.ValidFrom <= ? "
-			+ "ORDER BY plv.ValidFrom DESC";
-		//	Use newest price list - may not be future
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, M_PriceList_ID.intValue());
-			Timestamp date = new Timestamp(System.currentTimeMillis());
+
+		MPriceList pl = MPriceList.get(ctx, M_PriceList_ID, null);
+		if (pl != null && pl.getM_PriceList_ID() == M_PriceList_ID) {
+			if (!readonly) {
+				//	Tax Included
+				mTab.setValue("IsTaxIncluded", pl.isTaxIncluded());
+				//	Currency
+				mTab.setValue("C_Currency_ID", pl.getC_Currency_ID());
+			}
+			//	Price Limit Enforce
+			Env.setContext(ctx, WindowNo, "EnforcePriceLimit", pl.isEnforcePriceLimit());
+
+			//	PriceList Version
+			Timestamp date = null;
 			if (mTab.getAD_Table_ID() == I_C_Order.Table_ID)
 				date = Env.getContextAsDate(ctx, WindowNo, "DateOrdered");
 			else if (mTab.getAD_Table_ID() == I_C_Invoice.Table_ID)
 				date = Env.getContextAsDate(ctx, WindowNo, "DateInvoiced");
-			pstmt.setTimestamp(2, date);
-
-			rs = pstmt.executeQuery();
-			if (rs.next())
-			{
-				//	Tax Included
-				if (!readonly) {
-					mTab.setValue("IsTaxIncluded", new Boolean("Y".equals(rs.getString(1))));
-				}
-				//	Price Limit Enforce
-				Env.setContext(ctx, WindowNo, "EnforcePriceLimit", rs.getString(2));
-				//	Currency
-				if (!readonly) {
-					Integer ii = new Integer(rs.getInt(3));
-					mTab.setValue("C_Currency_ID", ii);
-				}
-				//	PriceList Version
-				Env.setContext(ctx, WindowNo, "M_PriceList_Version_ID", rs.getInt(5));
+			MPriceListVersion plv = pl.getPriceListVersion(date);
+			if (plv != null && plv.getM_PriceList_Version_ID() > 0) {
+				Env.setContext(ctx, WindowNo, "M_PriceList_Version_ID", plv.getM_PriceList_Version_ID());
+			} else {
+				Env.setContext(ctx, WindowNo, "M_PriceList_Version_ID", (String) null);
 			}
 		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-			return e.getLocalizedMessage();
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-		if (steps) log.warning("fini");
 
 		return "";
 	}	//	priceListFill

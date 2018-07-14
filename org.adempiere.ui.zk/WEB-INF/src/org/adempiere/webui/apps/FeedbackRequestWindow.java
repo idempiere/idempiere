@@ -114,10 +114,10 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 			throw new RuntimeException(Msg.getMsg(Env.getCtx(), "AccessTableNoUpdate"));
 		}
 		
-		Label lblRequestType = new Label("Request Type");
-		Label lblPriority = new Label("Priority");
-		Label lblSummary = new Label("Summary");
-		Label lblSalesRep = new Label("Sales Representative");
+		Label lblRequestType = new Label(Msg.getElement(Env.getCtx(), "R_RequestType_ID"));
+		Label lblPriority = new Label(Msg.getElement(Env.getCtx(), "Priority"));
+		Label lblSummary = new Label(Msg.getElement(Env.getCtx(), "Summary"));
+		Label lblSalesRep = new Label(Msg.getElement(Env.getCtx(), "SalesRep_ID"));
 		
 		int columnID = MColumn.getColumn_ID(MRequest.Table_Name, MRequest.COLUMNNAME_R_RequestType_ID);
 		MLookup lookup = MLookupFactory.get(Env.getCtx(), 0, 0, columnID, DisplayType.TableDir);

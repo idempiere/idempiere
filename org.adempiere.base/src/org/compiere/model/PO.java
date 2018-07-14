@@ -2069,7 +2069,10 @@ public abstract class PO
 				l_trxname.setLength(23);
 			m_trxName = Trx.createTrxName(l_trxname.toString());
 			localTrx = Trx.get(m_trxName, true);
-			localTrx.setDisplayName(getClass().getName()+"_save");
+			if (newRecord)
+				localTrx.setDisplayName(getClass().getName() + "_insert");
+			else
+				localTrx.setDisplayName(getClass().getName() + "_update_ID" + get_ID());
 			localTrx.getConnection();
 		}
 		else
@@ -2341,9 +2344,10 @@ public abstract class PO
 			m_newValues = new Object[size];
 			m_createNew = false;
 		}
-		if (!newRecord)
+		if (!newRecord) {
 			CacheMgt.get().reset(p_info.getTableName());
-		else if (get_ID() > 0 && success)
+			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID());
+		} else if (get_ID() > 0 && success)
 			CacheMgt.get().newRecord(p_info.getTableName(), get_ID());
 		
 		return success;
@@ -3215,7 +3219,7 @@ public abstract class PO
 			{
 				localTrxName = Trx.createTrxName("POdel");
 				localTrx = Trx.get(localTrxName, true);
-				localTrx.setDisplayName(getClass().getName()+"_delete");
+				localTrx.setDisplayName(getClass().getName()+ "_delete_ID" + get_ID());
 				localTrx.getConnection();
 				m_trxName = localTrxName;
 			}

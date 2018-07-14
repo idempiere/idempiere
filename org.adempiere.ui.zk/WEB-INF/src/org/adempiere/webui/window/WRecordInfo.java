@@ -35,6 +35,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.DataStatusEvent;
+import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
 import org.compiere.model.MChangeLog;
@@ -248,21 +249,51 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		
 		//get uuid
 		GridTable gridTable = null;
+		String tabName = null;
 		if (dse.getSource() instanceof GridTab) 
 		{
 			GridTab gridTab = (GridTab) dse.getSource();
 			gridTable = gridTab.getTableModel();
+			tabName = gridTab.getName();
 		}
 		else if (dse.getSource() instanceof GridTable)
 		{
-			gridTable = (GridTable) dse.getSource();			
+			gridTable = (GridTable) dse.getSource();
+			GridField firstField = gridTable.getField(0);
+			if (firstField != null && firstField.getGridTab() != null)
+				tabName = firstField.getGridTab().getName();
 		}
+
+		int Record_ID = -1;
+		if (dse.Record_ID instanceof Integer)
+			Record_ID = ((Integer)dse.Record_ID).intValue();
+		else
+			log.info("dynInit - Invalid Record_ID=" + dse.Record_ID);
+
+		MTable dbtable = null;
+		if (dse.AD_Table_ID != 0)
+			dbtable = MTable.get(Env.getCtx(), dse.AD_Table_ID);
+
 		if (gridTable != null && dse.getCurrentRow() >= 0 && dse.getCurrentRow() < gridTable.getRowCount())
 		{
 			PO po = gridTable.getPO(dse.getCurrentRow());
 			if (po != null) {
 				String uuidcol = po.getUUIDColumnName();
-				String uuid = po.get_ValueAsString(uuidcol);
+				String uuid = null;
+				if (po.is_new()) {
+					if (Record_ID == 0 && MTable.isZeroIDTable(dbtable.getTableName())) {
+						StringBuilder sql = new StringBuilder("SELECT ")
+								.append(uuidcol)
+								.append(" FROM ")
+								.append(dbtable.getTableName())
+								.append(" WHERE ")
+								.append(dbtable.getTableName())
+								.append("_ID=0");
+						uuid = DB.getSQLValueString(null, sql.toString());
+					}
+				} else {
+					uuid = po.get_ValueAsString(uuidcol);
+				}
 				if (!Util.isEmpty(uuid))
 					m_info.append("\n ").append(uuidcol).append("=").append(uuid);
 				m_permalink.setHref(AEnv.getZoomUrlTableID(po));
@@ -271,22 +302,17 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		}
 		
 		//	Title
-		if (dse.AD_Table_ID != 0)
+		if (tabName == null && dse.AD_Table_ID != 0)
 		{
-			MTable table1 = MTable.get (Env.getCtx(), dse.AD_Table_ID);
-			setTitle(title + " - " + table1.getName());
+			tabName = dbtable.getName();
 		}
+		setTitle(title + " - " + tabName);
 
 		//	Only Client Preference can view Change Log
 		if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType()))
 			return false;
 		
-		int Record_ID = 0;
-		if (dse.Record_ID instanceof Integer)
-			Record_ID = ((Integer)dse.Record_ID).intValue();
-		else
-			log.info("dynInit - Invalid Record_ID=" + dse.Record_ID);
-		if (Record_ID == 0)
+		if (Record_ID <= 0)
 			return false;
 		
 		//	Data

@@ -294,8 +294,14 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 			}
 			else if (field instanceof Timestamp)
 			{
+				int refId = 0;
+				if (m_tableColumns != null && columnIndex < m_tableColumns.size()) {
+					refId = m_tableColumns.get(columnIndex).getAD_Reference_ID();
+				}
 
-				SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.Date, AEnv.getLanguage(Env.getCtx()));
+				if (refId == 0)
+					refId = DisplayType.Date;
+				SimpleDateFormat dateFormat = DisplayType.getDateFormat(refId, AEnv.getLanguage(Env.getCtx()));
 				listcell.setValue(dateFormat.format((Timestamp)field));
 				if (isCellEditable)
 				{
@@ -396,7 +402,10 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	{
 		addColumn(header, null);
 	}
-	
+	public void addColumn(String header, String description)
+	{
+		addColumn(header, description, 0);
+	}
 	/**
 	 *  Add Table Column.
 	 *  after adding a column, you need to set the column classes again
@@ -405,13 +414,14 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	 *  @param header The header text for the column
 	 *  @param description
 	 */
-	public void addColumn(String header, String description)
+	public void addColumn(String header, String description, int AD_Reference_ID)
 	{
 		WTableColumn tableColumn;
 
 		tableColumn = new WTableColumn();
 		tableColumn.setHeaderValue(Util.cleanAmp(header));
 		tableColumn.setTooltipText(description);
+		tableColumn.setAD_Reference_ID(AD_Reference_ID);
 		m_tableColumns.add(tableColumn);
 
 		return;

@@ -925,7 +925,6 @@ public class DB_Oracle implements AdempiereDatabase
                 //  IDs
                 case DisplayType.Account:
                 case DisplayType.Assignment:
-                case DisplayType.Color:
                 case DisplayType.ID:
                 case DisplayType.Location:
                 case DisplayType.Locator:
@@ -979,6 +978,7 @@ public class DB_Oracle implements AdempiereDatabase
                     break;
 
                 //  NVARCHAR
+                case DisplayType.Color:
                 case DisplayType.Memo:
                 case DisplayType.String:
                 case DisplayType.Text:

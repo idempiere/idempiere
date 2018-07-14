@@ -743,8 +743,6 @@ public class MColumn extends X_AD_Column
 			foreignTable = "S_ResourceAssignment";
 		} else if (DisplayType.Image == refid) {
 			foreignTable = "AD_Image";
-		} else if (DisplayType.Color == refid) {
-			foreignTable = "AD_Color";
 		} else if (DisplayType.Chart == refid) {
 			foreignTable = "AD_Chart";
 		}

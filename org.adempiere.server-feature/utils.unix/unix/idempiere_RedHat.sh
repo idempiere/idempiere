@@ -25,11 +25,11 @@ IDEMPIEREUSER=idempiere
  
 RETVAL=0
 IDEMPIERESTATUS=
-MAXITERATIONS=60 # 2 seconds every iteration, max wait 2 minutes)
+MAXITERATIONS=60 # 2 seconds every iteration, max wait 2 minutes
 
 getidempierestatus() {
-    IDEMPIERESTATUSSTRING=$(ps ax | grep -v grep | grep $IDEMPIERE_HOME)
-    echo $IDEMPIERESTATUSSTRING | grep -q $IDEMPIERE_HOME
+    IDEMPIERESTATUSSTRING=$(ps ax | grep java | grep org.adempiere.server.application | grep -v grep)
+    echo $IDEMPIERESTATUSSTRING | grep -q org.adempiere.server.application
     IDEMPIERESTATUS=$?
 }
 
@@ -78,7 +78,7 @@ start () {
 stop () {
     getidempierestatus
     if [ $IDEMPIERESTATUS -ne 0 ] ; then
-	  echo "idempiere is already stopped"
+	  echo "iDempiere is already stopped"
 	  return 1
     fi
     echo -n "Stopping iDempiere ERP: "
@@ -92,14 +92,14 @@ stop () {
         echo_success
     else
         echo "Trying direct kill with signal -15"
-        kill -15 -`ps ax o pgid,command | grep -v grep | grep $IDEMPIERE_HOME | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
+        kill -15 -`ps ax o pgid,command | grep org.adempiere.server.application | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
         sleep 5
         getidempierestatus
         if [ $IDEMPIERESTATUS -ne 0 ] ; then
             echo_success
         else
             echo "Trying direct kill with signal -9"
-            kill -9 -`ps ax o pgid,command | grep -v grep | grep $IDEMPIERE_HOME | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
+            kill -9 -`ps ax o pgid,command | grep org.adempiere.server.application | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
             sleep 5
             getidempierestatus
             if [ $IDEMPIERESTATUS -ne 0 ] ; then
@@ -130,11 +130,11 @@ status () {
     getidempierestatus
     if [ $IDEMPIERESTATUS -eq 0 ] ; then
 	echo
-	echo "idempiere is running:"
-	ps ax | grep -v grep | grep $IDEMPIERE_HOME | sed 's/^[[:space:]]*\([[:digit:]]*\).*:[[:digit:]][[:digit:]][[:space:]]\(.*\)/\1 \2/'
+	echo "iDempiere is running:"
+	ps ax | grep org.adempiere.server.application | grep -v grep | sed 's/^[[:space:]]*\([[:digit:]]*\).*:[[:digit:]][[:digit:]][[:space:]]\(.*\)/\1 \2/'
 	echo
     else
-	echo "idempiere is stopped"
+	echo "iDempiere is stopped"
     fi
 }
 
