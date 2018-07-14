@@ -294,7 +294,11 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 			}
 			else if (field instanceof Timestamp)
 			{
-				int refId = m_tableColumns.get(columnIndex).getAD_Reference_ID();
+				int refId = 0;
+				if (m_tableColumns != null && columnIndex < m_tableColumns.size()) {
+					refId = m_tableColumns.get(columnIndex).getAD_Reference_ID();
+				}
+
 				if (refId == 0)
 					refId = DisplayType.Date;
 				SimpleDateFormat dateFormat = DisplayType.getDateFormat(refId, AEnv.getLanguage(Env.getCtx()));
