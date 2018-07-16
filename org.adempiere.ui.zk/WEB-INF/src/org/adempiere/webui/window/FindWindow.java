@@ -112,6 +112,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.North;
+import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Tab;
@@ -364,7 +365,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         btnCancel.addEventListener(Events.ON_CLICK,this);
 
         Panel pnlButtonRight = new Panel();
-        pnlButtonRight.appendChild(btnClear);
         pnlButtonRight.appendChild(btnOk);
         pnlButtonRight.appendChild(btnCancel);
         pnlButtonRight.setStyle("text-align:right");
@@ -373,6 +373,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         Panel pnlButtonLeft = new Panel();
         pnlButtonLeft.appendChild(btnNew);
+        Separator sep = new Separator("vertical");
+        sep.setWidth("2px");
+        pnlButtonLeft.appendChild(sep);
+        pnlButtonLeft.appendChild(btnClear);
         ZKUpdateUtil.setHflex(pnlButtonLeft, "1");
 
         Hbox hboxButton = new Hbox();
