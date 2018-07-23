@@ -47,7 +47,7 @@ public class GridFieldVO implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3894697577296104861L;
+	private static final long serialVersionUID = -1752172363171842152L;
 
 	/**
 	 *  Return the SQL statement used for the MFieldVO.create
@@ -238,6 +238,8 @@ public class GridFieldVO implements Serializable
 					vo.PA_DashboardContent_ID = rs.getInt (i);
 				else if (columnName.equalsIgnoreCase("placeholder"))
 					vo.Placeholder = rs.getString(i);
+				else if (columnName.equalsIgnoreCase("IsHtml"))
+					vo.IsHtml = "Y".equals(rs.getString(i));
 			}
 			if (vo.Header == null)
 				vo.Header = vo.ColumnName;
@@ -692,6 +694,8 @@ public class GridFieldVO implements Serializable
 
 	public String Placeholder = "";
 	public String Placeholder2 = "";
+	/* Is HTML String */
+	public boolean		IsHtml = false;
 	
 	/**
 	 *  Set Context including contained elements
@@ -828,6 +832,7 @@ public class GridFieldVO implements Serializable
 		clone.AD_LabelStyle_ID = AD_LabelStyle_ID;
 		clone.PA_DashboardContent_ID = PA_DashboardContent_ID;
 		clone.Placeholder = Placeholder;
+		clone.IsHtml = IsHtml;
 		
 		//	Lookup
 		clone.ValidationCode = ValidationCode;

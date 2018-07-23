@@ -85,7 +85,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5866251928705632328L;
+	private static final long serialVersionUID = 8599010602475684052L;
 
 	/**
 	 *  Field Constructor.
@@ -1645,6 +1645,14 @@ public class GridField
 	public boolean isSelectionColumn()
 	{
 		return m_vo.IsSelectionColumn;
+	}
+	/**
+	 * 	Is HTML Field (display)
+	 *	@return html field
+	 */
+	public boolean isHtml()
+	{
+		return m_vo.IsHtml;
 	}
 	/**
 	 * 	Selection column sequence
