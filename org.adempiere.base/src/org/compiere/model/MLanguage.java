@@ -305,6 +305,38 @@ public class MLanguage extends X_AD_Language
 				return false;
 			}
 		}
+		String tp = getTimePattern();
+		if (is_ValueChanged("TimePattern") && tp != null && tp.length() > 0)
+		{
+			if (tp.indexOf("HH") == -1 && tp.indexOf("hh") == -1)
+			{
+				log.saveError("Error", Msg.parseTranslation(getCtx(), "@Error@ @TimePattern@ - No Hour (HH/hh)"));
+				return false;
+			}
+			if (tp.indexOf("mm") == -1)
+			{
+				log.saveError("Error", Msg.parseTranslation(getCtx(), "@Error@ @TimePattern@ - No Minute (mm)"));
+				return false;
+			}
+			if (tp.indexOf("ss") == -1)
+			{
+				log.saveError("Error", Msg.parseTranslation(getCtx(), "@Error@ @TimePattern@ - No Second (ss)"));
+				return false;
+			}
+			
+			m_dateFormat = (SimpleDateFormat)DateFormat.getTimeInstance
+				(DateFormat.SHORT, getLocale());
+			try
+			{
+				m_dateFormat.applyPattern(tp);
+			}
+			catch (Exception e)
+			{
+				log.saveError("Error", Msg.parseTranslation(getCtx(), "@Error@ @TimePattern@ - " + e.getMessage()));
+				m_dateFormat = null;
+				return false;
+			}
+		}
 		if (newRecord)
 			setAD_Language_ID();
 		return true;

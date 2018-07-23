@@ -65,6 +65,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.IDisplayTypeFactory;
 import org.adempiere.base.Service;
+import org.compiere.model.MLanguage;
 
 /**
  *	System Display Types.
@@ -498,11 +499,20 @@ public final class DisplayType
 			}
 		}
 
-		if (displayType == DateTime)
+		MLanguage lang = MLanguage.get(Env.getCtx(), myLanguage);
+
+		if (displayType == DateTime) {
+			if (!Util.isEmpty(lang.getDatePattern()) && !Util.isEmpty(lang.getTimePattern()))
+				return new SimpleDateFormat(lang.getDatePattern() + " " + lang.getTimePattern());
 			return myLanguage.getDateTimeFormat();
-		else if (displayType == Time)
+		}
+		else if (displayType == Time) {
+			if (!Util.isEmpty(lang.getTimePattern()))
+				return new SimpleDateFormat(lang.getTimePattern());
 			return myLanguage.getTimeFormat();
-		else{
+		}
+
+		else {
 			List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
 			for(IDisplayTypeFactory factory : factoryList){
 				SimpleDateFormat osgiFormat = factory.getDateFormat(displayType, myLanguage, pattern);
@@ -510,8 +520,11 @@ public final class DisplayType
 					return osgiFormat;
 			}
 		}
-		
-	//	else if (displayType == Date)
+
+		//	Date
+		if (!Util.isEmpty(lang.getDatePattern()))
+			return new SimpleDateFormat(lang.getDatePattern());
+
 		return myLanguage.getDateFormat();		//	default
 	}	//	getDateFormat
 
