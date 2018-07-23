@@ -297,7 +297,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 			} else {
 				if (Record_ID > 0) {
 					String columnname = gridtab.getTableName() + "_ID";
-					id = Env.getContextAsInt(Env.getCtx(), parent_WindowNo, columnname);
+					id = Env.getContextAsInt(Env.getCtx(), parent_WindowNo, columnname, true);
 				}
 			}
 			MQuery query = new MQuery(gridtab.getAD_Table_ID());
