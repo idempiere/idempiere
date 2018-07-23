@@ -10,7 +10,7 @@
   <rm:locator pattern="^org\.idempiere\.hazelcast\.service(\.source)?$" searchPathRef="workspace.project"/>
   <rm:locator pattern="^org\.apache\.poi(\.source)?$" searchPathRef="orbit"/>
   <rm:locator pattern="^org\.eclipse\.jdt\.core\.compiler\.batch(\.source)?$" searchPathRef="bundles.maven"/>
-  <rm:locator pattern="^org\.apache\.commons\.collections4(\.source)?$" searchPathRef="bundles.maven"/>
+  <rm:locator pattern="^org\.apache\.commons\.commons-collections4(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.commons\.configuration(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.apache\.commons\.digester(\.source)?$" searchPathRef="bundles.maven"/>
   <rm:locator pattern="^org\.mortbay\.jasper(\..+)?" searchPathRef="bundles.maven"/>
@@ -183,7 +183,7 @@
         <maven:entry groupId="com.ibm.icu" artifactId="icu4j" name="com.ibm.icu"/>
         <maven:entry groupId="joda-time" artifactId="joda-time" name="joda-time"/>
         <maven:entry groupId="commons-configuration" artifactId="commons-configuration" name="org.apache.commons.configuration"/>
-        <maven:entry artifactId="commons-collections4" groupId="org.apache.commons" name="org.apache.commons.collections4"/>
+        <maven:entry artifactId="commons-collections4" groupId="org.apache.commons" name="org.apache.commons.commons-collections4"/>
       </maven:mappings>
     </rm:provider>
   </rm:searchPath>
