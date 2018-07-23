@@ -144,9 +144,9 @@ public class CompiereService {
 	public void disconnect() 
 	{
 		// TODO: create a thread that checks expired connected compiereservices and log them out
-		if (! isExpired()) {
-			// do not close, save session in cache
-			if (! csMap.containsValue(this)) {
+		if (isExpired()) {
+			synchronized (csMap) {
+				//save session in cache
 				String key = getKey(m_AD_Client_ID,
 						m_AD_Org_ID,
 						m_userName,
@@ -155,13 +155,12 @@ public class CompiereService {
 						m_locale,
 						m_password,
 						m_IPAddress);
-				csMap.put(key.toString(), this);
-				Properties savedCache = new Properties();
-				savedCache.putAll(Env.getCtx());
-				ctxMap.put(key.toString(), savedCache);
-				if (log.isLoggable(Level.INFO)) log.info("Saving " + this + " in cache");
+				if (csMap.containsKey(key)) {				
+					csMap.remove(key.toString());
+					ctxMap.remove(key.toString());
+				}
 			}
-		}
+		}		
 	}
 	
 	/**
@@ -315,6 +314,26 @@ public class CompiereService {
 		session.saveEx();
 				
 		m_loggedin = true;		
+		
+		synchronized (csMap) {
+			//save session in cache
+			String key = getKey(m_AD_Client_ID,
+					m_AD_Org_ID,
+					m_userName,
+					m_AD_Role_ID,
+					m_M_Warehouse_ID,
+					m_locale,
+					m_password,
+					m_IPAddress);
+			if (! csMap.containsKey(key)) {				
+				csMap.put(key.toString(), this);
+				Properties savedCache = new Properties();
+				savedCache.putAll(Env.getCtx());
+				ctxMap.put(key.toString(), savedCache);
+				if (log.isLoggable(Level.INFO)) log.info("Saving " + this + " in cache");
+			}
+		}		
+		
 		return true;
 	}
 
@@ -404,17 +423,19 @@ public class CompiereService {
 				loginRequest.getPass(),
 				req.getRemoteAddr());
 		CompiereService l_cs = null;
-		if (csMap.containsKey(key)) {
-			l_cs = csMap.get(key);
-			if (l_cs != null) {
-				if (l_cs.isExpired()) {
-					csMap.remove(key);
-					ctxMap.remove(key);
-					l_cs = null;
-				} else {
-					Properties cachedCtx = ctxMap.get(key);
-					Env.getCtx().putAll(cachedCtx);
-					if (log.isLoggable(Level.INFO)) log.info("Reusing " + l_cs);
+		synchronized (csMap) {
+			if (csMap.containsKey(key)) {
+				l_cs = csMap.get(key);
+				if (l_cs != null) {
+					if (l_cs.isExpired()) {
+						csMap.remove(key);
+						ctxMap.remove(key);
+						l_cs = null;
+					} else {
+						Properties cachedCtx = ctxMap.get(key);
+						Env.getCtx().putAll(cachedCtx);
+						if (log.isLoggable(Level.INFO)) log.info("Reusing " + l_cs);
+					}
 				}
 			}
 		}
