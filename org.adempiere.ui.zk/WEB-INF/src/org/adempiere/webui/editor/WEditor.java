@@ -756,14 +756,14 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	 * @return boolean
 	 */
 	protected boolean isShowPreference() {
-		return MRole.getDefault().isShowPreference() && gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn();
+		return MRole.getDefault().isShowPreference() && gridField != null && !gridField.isEncrypted() && !gridField.isEncryptedColumn() && !gridField.isVirtualColumn();
 	}
 
 	/**
 	 * @param popupMenu
 	 */
     protected void addChangeLogMenu(WEditorPopupMenu popupMenu) {
-		if (popupMenu != null && gridField != null && gridField.getGridTab() != null)
+		if (popupMenu != null && gridField != null && gridField.getGridTab() != null && !gridField.isVirtualColumn())
 		{
 			WFieldRecordInfo.addMenu(popupMenu);
 		}

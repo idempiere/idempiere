@@ -35,6 +35,7 @@ import org.compiere.util.CLogger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
 
@@ -82,9 +83,13 @@ public class WHtmlEditor extends WEditor implements ContextMenuListener
     	if (gridField != null)
     	{
 			Div div = (Div) getComponent();
-			div.setHeight("100px");
+			if (gridField.getNumLines() > 1) {
+				int height = 24 * gridField.getNumLines();
+				div.setHeight(height + "px");
+			}
 			div.setWidth("100%");
 			LayoutUtils.addSclass("html-field", div);
+			div.addEventListener(Events.ON_DOUBLE_CLICK, this);
 
 			box = new Html();
 			box.setParent(div);
@@ -170,40 +175,44 @@ public class WHtmlEditor extends WEditor implements ContextMenuListener
 		}
 		else if (WEditorPopupMenu.EDITOR_EVENT.equals(evt.getContextEvent()))
 		{
-			adwindowContent = findADWindowContent();
-			final WTextEditorDialog dialog = new WTextEditorDialog(gridField.getVO().Header, getDisplay(),
-					isReadWrite(), gridField.getFieldLength(), true);
-			dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-				@Override
-				public void onEvent(Event event) throws Exception {
-					if (adwindowContent != null) {
-						adwindowContent.hideBusyMask();
-					}
-					if (!dialog.isCancelled()) {
-						box.setContent(dialog.getText());
-						String newText = box.getContent();
-				        ValueChangeEvent changeEvent = new ValueChangeEvent(WHtmlEditor.this, WHtmlEditor.this.getColumnName(), oldValue, newText);
-				        WHtmlEditor.super.fireValueChange(changeEvent);
-				        oldValue = newText;
-					}
-				}
-			});
-			if (adwindowContent != null) 
-			{
-				adwindowContent.getComponent().getParent().appendChild(dialog);
-				adwindowContent.showBusyMask(dialog);
-				LayoutUtils.openOverlappedWindow(adwindowContent.getComponent().getParent(), dialog, "middle_center");
-			}
-			else
-			{
-				SessionManager.getAppDesktop().showWindow(dialog);
-			}			
-			dialog.focus();
+			editorEvent();
 		}
 		else if (WEditorPopupMenu.CHANGE_LOG_EVENT.equals(evt.getContextEvent()))
 		{
 			WFieldRecordInfo.start(gridField);
 		}
+	}
+
+	private void editorEvent() {
+		adwindowContent = findADWindowContent();
+		final WTextEditorDialog dialog = new WTextEditorDialog(gridField.getVO().Header, getDisplay(),
+				isReadWrite(), gridField.getFieldLength(), true);
+		dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				if (adwindowContent != null) {
+					adwindowContent.hideBusyMask();
+				}
+				if (!dialog.isCancelled()) {
+					box.setContent(dialog.getText());
+					String newText = box.getContent();
+			        ValueChangeEvent changeEvent = new ValueChangeEvent(WHtmlEditor.this, WHtmlEditor.this.getColumnName(), oldValue, newText);
+			        WHtmlEditor.super.fireValueChange(changeEvent);
+			        oldValue = newText;
+				}
+			}
+		});
+		if (adwindowContent != null) 
+		{
+			adwindowContent.getComponent().getParent().appendChild(dialog);
+			adwindowContent.showBusyMask(dialog);
+			LayoutUtils.openOverlappedWindow(adwindowContent.getComponent().getParent(), dialog, "middle_center");
+		}
+		else
+		{
+			SessionManager.getAppDesktop().showWindow(dialog);
+		}			
+		dialog.focus();
 	}
 
 	private AbstractADWindowContent findADWindowContent() {
@@ -220,7 +229,9 @@ public class WHtmlEditor extends WEditor implements ContextMenuListener
 
 	@Override
 	public void onEvent(Event event) throws Exception {
-		
+		if (Events.ON_DOUBLE_CLICK.equals(event.getName()) && readwrite) {
+			editorEvent();
+		}
 	}
 
 }
