@@ -85,7 +85,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8599010602475684052L;
+	private static final long serialVersionUID = -1871840570764036802L;
 
 	/**
 	 *  Field Constructor.
@@ -307,6 +307,9 @@ public class GridField
 		Evaluator.parseDepends(list, m_vo.DisplayLogic);
 		Evaluator.parseDepends(list, m_vo.ReadOnlyLogic);
 		Evaluator.parseDepends(list, m_vo.MandatoryLogic);
+		// Virtual UI Column
+		if (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith("@SQL="))
+			Evaluator.parseDepends(list, m_vo.ColumnSQL.substring(5));
 		//  Lookup
 		if (m_lookup != null)
 			Evaluator.parseDepends(list, m_lookup.getValidation());
@@ -1365,10 +1368,15 @@ public class GridField
 	{
 		if (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0)
 		{
-			if (withAS)
-				return m_vo.ColumnSQL + " AS " + m_vo.ColumnName;
+			String query;
+			if (m_vo.ColumnSQL.startsWith("@SQL="))
+				query = "NULL";
 			else
-				return m_vo.ColumnSQL;
+				query = m_vo.ColumnSQL;
+			if (withAS)
+				return query + " AS " + m_vo.ColumnName;
+			else
+				return query;
 		}
 		return m_vo.ColumnName;
 	}	//	getColumnSQL
@@ -1379,10 +1387,26 @@ public class GridField
 	 */
 	public boolean isVirtualColumn()
 	{
-		if (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0)
-			return true; 
-		return false;
-	}	//	isColumnVirtual
+		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0);
+	}	//	isVirtualColumn
+	
+	/**
+	 *  Is Virtual DB Column
+	 *  @return column is virtual DB
+	 */
+	public boolean isVirtualDBColumn()
+	{
+		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && !m_vo.ColumnSQL.startsWith("@SQL="));
+	}	//	isVirtualDBColumn
+	
+	/**
+	 *  Is Virtual UI Column
+	 *  @return column is virtual UI
+	 */
+	public boolean isVirtualUIColumn()
+	{
+		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith("@SQL="));
+	}	//	isVirtualUIColumn
 	
 	/**
 	 * 	Get Header
@@ -2586,5 +2610,27 @@ public class GridField
 	private class SQLLogicResult {
 		long timestamp;
 		boolean value;
+	}
+
+	public void processUIVirtualColumn() {
+		String sql = m_vo.ColumnSQL.substring(5);
+		sql = Env.parseContext(Env.getCtx(), getWindowNo(), sql, false);
+		if (Util.isEmpty(sql)) {
+			setValue(null, false);
+		} else {
+			if (DisplayType.isDate(m_vo.displayType)) {
+				Timestamp valueTS = DB.getSQLValueTSEx(null, sql, new Object[] {});
+				setValue(valueTS, false);
+			} else if (DisplayType.isNumeric(m_vo.displayType)) {
+				BigDecimal valueBD = DB.getSQLValueBDEx(null, sql, new Object[] {});
+				setValue(valueBD, false);
+			} else if (DisplayType.isID(m_vo.displayType)) {
+				int valueInt = DB.getSQLValueEx(null, sql, new Object[] {});
+				setValue(valueInt, false);
+			} else { // default to String
+				String valueStr = DB.getSQLValueStringEx(null, sql);
+				setValue(valueStr, false);
+			}
+		}
 	}
 }   //  GridField

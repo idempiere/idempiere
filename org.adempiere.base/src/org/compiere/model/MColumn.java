@@ -51,7 +51,7 @@ public class MColumn extends X_AD_Column
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6914331394933196295L;
+	private static final long serialVersionUID = 7215660422231054443L;
 
 	public static MColumn get (Properties ctx, int AD_Column_ID)
 	{
@@ -207,7 +207,27 @@ public class MColumn extends X_AD_Column
 		String s = getColumnSQL();
 		return s != null && s.length() > 0;
 	}	//	isVirtualColumn
-	
+
+	/**
+	 * 	Is Virtual DB Column
+	 *	@return true if virtual DB column
+	 */
+	public boolean isVirtualDBColumn()
+	{
+		String s = getColumnSQL();
+		return s != null && s.length() > 0 && !s.startsWith("@SQL=");
+	}	//	isVirtualDBColumn
+
+	/**
+	 * 	Is Virtual UI Column
+	 *	@return true if virtual UI column
+	 */
+	public boolean isVirtualUIColumn()
+	{
+		String s = getColumnSQL();
+		return s != null && s.length() > 0 && s.startsWith("@SQL=");
+	}	//	isVirtualUIColumn
+
 	/**
 	 * 	Is the Column Encrypted?
 	 *	@return true if encrypted
@@ -305,6 +325,8 @@ public class MColumn extends X_AD_Column
 				setIsMandatory(false);
 			if (isUpdateable())
 				setIsUpdateable(false);
+			if (isVirtualUIColumn() && isIdentifier())
+				setIsIdentifier(false);
 		}
 		//	Updateable
 		if (isParent() || isKey())
@@ -1144,6 +1166,15 @@ public class MColumn extends X_AD_Column
 				+ "       AND ( t.IsAdvancedTab = 'Y' OR f.IsAdvancedField = 'Y' )";
 		int cnt = DB.getSQLValueEx(get_TrxName(), sql, getAD_Column_ID());
 		return cnt > 0;
+	}
+
+	public String getColumnSQL(boolean nullForUI) {
+		String query = getColumnSQL();
+		if (query != null && query.length() > 0) {
+			if (query.startsWith("@SQL=") && nullForUI)
+				query = "NULL";
+		}
+		return query;
 	}
 
 }	//	MColumn

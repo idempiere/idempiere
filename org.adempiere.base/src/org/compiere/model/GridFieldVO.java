@@ -202,7 +202,7 @@ public class GridFieldVO implements Serializable
 					vo.ValidationCode = rs.getString(i);
 				else if (columnName.equalsIgnoreCase("ColumnSQL")) {
 					vo.ColumnSQL = rs.getString(i);
-					if (vo.ColumnSQL != null && vo.ColumnSQL.contains("@")) {
+					if (vo.ColumnSQL != null && !vo.ColumnSQL.startsWith("@SQL=") && vo.ColumnSQL.contains("@")) {
 						// NOTE: cannot use window context because this is set globally on the query, not per record
 						vo.ColumnSQL = Env.parseContext(ctx, -1, vo.ColumnSQL, false, true);
 					}

@@ -2116,6 +2116,11 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				fFax.setVFormat(phone_frm);
 		}
 
+		// Load virtual UI columns
+		for (GridField field : getFields()) {
+			if (field.isVirtualUIColumn())
+				field.processUIVirtualColumn();
+		}
 	}   //  loadDependentInfo
 
 	/**
@@ -2781,6 +2786,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					//  invalidate current selection
 					setValue(dependentField, null);
 				}
+			}
+			//  if the field is a Virtual UI Column
+			if (dependentField.isVirtualUIColumn()) {
+				dependentField.processUIVirtualColumn();
 			}
 		}   //  for all dependent fields
 	}   //  processDependencies

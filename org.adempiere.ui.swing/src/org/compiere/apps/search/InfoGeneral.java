@@ -256,6 +256,8 @@ public class InfoGeneral extends Info
 			{
 				m_queryColumns.add(rs.getString(1));
 				String columnSql = rs.getString(4);
+				if (columnSql != null && columnSql.length() > 0 && columnSql.contains("@"))
+					columnSql = "NULL";
 				if (columnSql != null && columnSql.contains("@"))
 					columnSql = Env.parseContext(Env.getCtx(), -1, columnSql, false, true);
 				if (columnSql != null && columnSql.length() > 0)
@@ -327,6 +329,8 @@ public class InfoGeneral extends Info
 				int AD_Reference_Value_ID = rs.getInt(5);
 				// teo_sarca
 				String columnSql = rs.getString(6);
+				if (columnSql != null && columnSql.length() > 0 && columnSql.contains("@"))
+					columnSql = "NULL";
 				if (columnSql != null && columnSql.contains("@"))
 					columnSql = Env.parseContext(Env.getCtx(), -1, columnSql, false, true);
 				if (columnSql == null || columnSql.length() == 0)

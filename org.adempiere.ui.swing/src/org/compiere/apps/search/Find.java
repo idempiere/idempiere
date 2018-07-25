@@ -1054,6 +1054,8 @@ public final class Find extends CDialog
 				// globalqss - Carlos Ruiz - 20060711
 				// fix a bug with virtualColumn + isSelectionColumn not yielding results
 				GridField field = getTargetMField(ColumnName.toString());
+				if (field.isVirtualUIColumn())
+					continue;
 				boolean isProductCategoryField = isProductCategoryField(field.getAD_Column_ID());
 				StringBuilder ColumnSQL = new StringBuilder().append(field.getColumnSQL(false));
                 //
@@ -1159,7 +1161,7 @@ public final class Find extends CDialog
 			String infoName = column.toString();
 			//
 			GridField field = getTargetMField(ColumnName.toString());
-			if (field == null)
+			if (field == null || field.isVirtualUIColumn())
 				continue;
 			boolean isProductCategoryField = isProductCategoryField(field.getAD_Column_ID());
 			String ColumnSQL = field.getColumnSQL(false);

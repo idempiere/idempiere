@@ -434,7 +434,9 @@ public class MLookupFactory
 				ZoomWindowPO = rs.getInt(9);
 				//AD_Table_ID = rs.getInt(10);
 				displayColumnSQL = rs.getString(11);
-				if (displayColumnSQL != null && displayColumnSQL.contains("@"))
+				if (displayColumnSQL != null && displayColumnSQL.length() > 0 && displayColumnSQL.startsWith("@SQL="))
+					displayColumnSQL = "NULL";
+				if (displayColumnSQL != null && displayColumnSQL.contains("@") && displayColumnSQL.startsWith("@SQL="))
 					displayColumnSQL = Env.parseContext(Env.getCtx(), -1, displayColumnSQL, false, true);
 				overrideZoomWindow = rs.getInt(12);
 				infoWindowId = rs.getInt(13);
@@ -665,6 +667,11 @@ public class MLookupFactory
 			embedSQL.append(TableNameAlias).append(".Value||'-'||");
 
 		MColumn columnDisplay = new MColumn(Env.getCtx(), columnDisplay_ID, null);
+		if (columnDisplay.isVirtualUIColumn())
+		{
+			s_log.warning("Virtual UI Column must not be used as display");
+			return null;
+		}
 
 		boolean translated = false; 
 		//	Translated
@@ -678,7 +685,7 @@ public class MLookupFactory
 				return null;
 			}
 			else
-			embedSQL.append(TableName).append("_Trl.").append(DisplayColumn);
+				embedSQL.append(TableName).append("_Trl.").append(DisplayColumn);
 
 			embedSQL.append(" FROM ").append(TableName).append(" ").append(TableNameAlias)
 				.append(" INNER JOIN ").append(TableName).append("_TRL ON (")
@@ -691,9 +698,9 @@ public class MLookupFactory
 		else
 		{
 			if (columnDisplay.isVirtualColumn())
-				embedSQL.append(columnDisplay.getColumnSQL()).append(" AS ").append(KeyColumn);
+				embedSQL.append(columnDisplay.getColumnSQL(true)).append(" AS ").append(KeyColumn);
 			else
-			embedSQL.append(TableNameAlias).append(".").append(DisplayColumn);
+				embedSQL.append(TableNameAlias).append(".").append(DisplayColumn);
 
 			embedSQL.append(" FROM ").append(TableName).append(" ").append(TableNameAlias);
 		}
@@ -708,9 +715,9 @@ public class MLookupFactory
 			embedSQL.append(BaseTable).append(".").append(BaseColumn);
 			embedSQL.append("=").append(TableNameAlias).append(".").append(KeyColumn);
 		} else if (translated) {
-			embedSQL.append(TableNameAlias).append(".").append(KeyColumn).append("=").append(column.getColumnSQL());
+			embedSQL.append(TableNameAlias).append(".").append(KeyColumn).append("=").append(column.getColumnSQL(true));
 		} else {
-			embedSQL.append(KeyColumn).append("=").append(column.getColumnSQL());
+			embedSQL.append(KeyColumn).append("=").append(column.getColumnSQL(true));
 		}
 
 		return embedSQL.toString();
@@ -973,7 +980,7 @@ public class MLookupFactory
 		MTable table = MTable.get(Env.getCtx(), TableName);
 		for (String idColumnName : table.getIdentifierColumns()) {
 			MColumn column = table.getColumn(idColumnName);
-			LookupDisplayColumn ldc = new LookupDisplayColumn(column.getColumnName(), column.getColumnSQL(), column.isTranslated(), column.getAD_Reference_ID(), column.getAD_Reference_Value_ID());
+			LookupDisplayColumn ldc = new LookupDisplayColumn(column.getColumnName(), column.getColumnSQL(true), column.isTranslated(), column.getAD_Reference_ID(), column.getAD_Reference_Value_ID());
 			list.add (ldc);
 		}
 		return list;
