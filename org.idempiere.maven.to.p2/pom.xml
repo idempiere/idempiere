@@ -245,7 +245,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.commons:commons-collections4:jar:4.1</id>
+											<id>org.apache.commons:commons-collections4:jar:4.2</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
