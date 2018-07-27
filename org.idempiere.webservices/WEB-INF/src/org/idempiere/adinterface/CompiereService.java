@@ -471,11 +471,25 @@ public class CompiereService {
 			   );
 		if (m_connected && expired) 
 		{
-			if (log.isLoggable(Level.INFO)) log.info("Closing expired/invalid " + this);
-			Env.logout();
-			ServerContext.dispose();
-			m_loggedin = false;
-			m_connected = false;
+			synchronized (csMap) {
+				String key = getKey(m_AD_Client_ID,
+						m_AD_Org_ID,
+						m_userName,
+						m_AD_Role_ID,
+						m_M_Warehouse_ID,
+						m_locale,
+						m_password,
+						m_IPAddress);
+				if (ctxMap.containsKey(key)) {
+					Properties cachedCtx = ctxMap.get(key);
+					Env.getCtx().putAll(cachedCtx);
+				}
+				if (log.isLoggable(Level.INFO)) log.info("Closing expired/invalid " + this);
+				Env.logout();
+				ServerContext.dispose();
+				m_loggedin = false;
+				m_connected = false;
+			}
 		}
 		return expired;
 	}
