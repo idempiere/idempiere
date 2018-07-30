@@ -76,7 +76,7 @@ public class MWebService extends X_WS_WebService
 	 *	@param webServiceValue
 	 *	@return Table
 	 */
-	public static MWebService get (Properties ctx, String webServiceValue)
+	public static synchronized MWebService get (Properties ctx, String webServiceValue)
 	{
 		if (webServiceValue == null)
 			return null;
