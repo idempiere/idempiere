@@ -96,7 +96,11 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 	 */
 	public void cmd_button()
 	{
-		int C_AcctSchema_ID = Env.getContextAsInt(Env.getCtx(), gridField.getWindowNo(), "C_AcctSchema_ID");
+		int C_AcctSchema_ID;
+		if (gridField.getGridTab() != null)
+			C_AcctSchema_ID = Env.getContextAsInt(Env.getCtx(), gridField.getWindowNo(), gridField.getGridTab().getTabNo(), "C_AcctSchema_ID");
+		else
+			C_AcctSchema_ID = Env.getContextAsInt(Env.getCtx(), gridField.getWindowNo(), "C_AcctSchema_ID");
 		// Try to get C_AcctSchema_ID from global context - teo_sarca BF [ 1830531 ]
 		if (C_AcctSchema_ID <= 0)
 		{
