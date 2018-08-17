@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/jasperreports-fonts-6.3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jasperreports-chart-customizers-6.3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jasperreports-chart-themes-6.3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jasperreports-functions-6.3.1.jar"/>
