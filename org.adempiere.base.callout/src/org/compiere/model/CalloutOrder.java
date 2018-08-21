@@ -453,8 +453,6 @@ public class CalloutOrder extends CalloutEngine
 	 */
 	public String bPartnerBill (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
-		if (isCalloutActive())
-			return "";
 		Integer bill_BPartner_ID = (Integer)value;
 		if (bill_BPartner_ID == null || bill_BPartner_ID.intValue() == 0)
 			return "";
