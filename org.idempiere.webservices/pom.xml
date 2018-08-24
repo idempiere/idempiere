@@ -96,7 +96,7 @@
 								<artifactItem>
 									<groupId>org.apache.xmlbeans</groupId>
 									<artifactId>xmlbeans</artifactId>
-									<version>2.5.0</version>
+									<version>3.0.0</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>aopalliance</groupId>
