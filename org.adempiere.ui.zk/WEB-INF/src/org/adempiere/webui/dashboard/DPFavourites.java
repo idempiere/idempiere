@@ -60,7 +60,8 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8398216266900311289L;
+	private static final long serialVersionUID = -5643724086406354232L;
+
 
 	private static final String NODE_ID_ATTR = "Node_ID";
 
@@ -351,6 +352,8 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 			return "images/mProcess.png";
 		if (mt.isWorkFlow())
 			return "images/mWorkFlow.png";
+		if (mt.isForm())
+			return "images/mForm.png";
 		return "images/mWindow.png";
 	}
 }
