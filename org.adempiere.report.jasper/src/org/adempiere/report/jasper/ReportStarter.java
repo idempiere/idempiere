@@ -1353,7 +1353,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
             jasperFile.setLastModified( reportFile.lastModified()); //Synchronize Dates
             compiledJasperReport =  (JasperReport)JRLoader.loadObject(jasperFile);
         } catch (JRException e) {
-            log.log(Level.SEVERE, "Error", e);
+            throw new AdempiereException(e);
         }
         return compiledJasperReport;                
     }
