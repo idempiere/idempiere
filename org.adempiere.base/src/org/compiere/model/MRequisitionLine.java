@@ -288,7 +288,7 @@ public class MRequisitionLine extends X_M_RequisitionLine
 		 * IDEMPIERE-178 Orders and Invoices must disallow amount lines without product/charge
 		 */
 		if (getParent().getC_DocType().isChargeOrProductMandatory()) {
-			if (getC_Charge_ID() == 0 && getM_Product_ID() == 0 && getPriceActual().signum() != 0) {
+			if (getC_Charge_ID() == 0 && getM_Product_ID() == 0 && (getPriceActual().signum() != 0 || getQty().signum() != 0)) {
 				log.saveError("FillMandatory", Msg.translate(getCtx(), "ChargeOrProductMandatory"));
 				return false;
 			}
