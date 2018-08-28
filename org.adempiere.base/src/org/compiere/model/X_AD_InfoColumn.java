@@ -30,7 +30,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20180719L;
+	private static final long serialVersionUID = 20180828L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -369,6 +369,23 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
+	
+	/** Set Input field validation.
+		@param InputFieldValidation 
+		Input field validaton query
+	  */
+	public void setInputFieldValidation (String InputFieldValidation)
+	{
+		set_Value (COLUMNNAME_InputFieldValidation, InputFieldValidation);
+	}
+	
+	/** Get Input field validation.
+		@return Input field validaton query
+	*/
+	public String getInputFieldValidation () 
+	{
+		return (String)get_Value(COLUMNNAME_InputFieldValidation);
+	}		
 
 	/** Set Centrally maintained.
 		@param IsCentrallyMaintained 
@@ -413,6 +430,31 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 		{
 			 if (oo instanceof Boolean) 
 				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+	
+	/**
+	 * Set Read Only.
+	 * 
+	 * @param IsReadOnly
+	 * Determines, if this field is Read Only
+	 */
+	public void setIsReadOnly(boolean IsReadOnly) {
+		set_Value(COLUMNNAME_IsReadOnly, Boolean.valueOf(IsReadOnly));
+	}
+
+	/**
+	 * Get Read Only.
+	 * 
+	 * @return Determines, if this field is Read Only
+	 */
+	public boolean isReadOnly() {
+		Object oo = get_Value(COLUMNNAME_IsReadOnly);
+		if (oo != null) {
+			if (oo instanceof Boolean)
+				return ((Boolean) oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

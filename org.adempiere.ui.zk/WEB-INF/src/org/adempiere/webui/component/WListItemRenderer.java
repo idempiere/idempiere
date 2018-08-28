@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
@@ -197,7 +198,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	 * @param columnIndex	The column in which the cell is to be placed.
 	 * @return	The list cell component.
 	 */
-	private Listcell getCellComponent(WListbox table, Object field,
+	protected Listcell getCellComponent(WListbox table, Object field,
 									  int rowIndex, int columnIndex)
 	{
 		ListCell listcell = new ListCell();
@@ -863,6 +864,10 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 		{
 			m_tableColumns.get(index).setColumnClass(classType);
 		}
+	}
+	
+	public List<WTableColumn> getTableColumns() {
+		return Collections.unmodifiableList(m_tableColumns);
 	}
 
 	class CellListener implements EventListener<Event> {

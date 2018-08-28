@@ -17,6 +17,7 @@
 
 package org.adempiere.webui.panel;
 
+import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,8 +27,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -89,7 +92,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
-import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Comboitem;
@@ -129,6 +131,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	// attribute key of info process
 	protected final static String ATT_INFO_PROCESS_KEY = "INFO_PROCESS";
 	protected int pageSize;
+	public LinkedHashMap<KeyNamePair,LinkedHashMap<String, Object>> m_values = null;
 	protected MInfoRelated[] relatedInfoList;
 	// for test disable load all record when num of record < 1000
 	protected boolean isIgnoreCacheAll = true;
@@ -391,7 +394,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private boolean m_useDatabasePaging = false;
 	private BusyDialog progressWindow;
 	// in case double click to item. this store clicked item (maybe it's un-select item)
-	private Listitem m_lastOnSelectItem;
+	private int m_lastSelectedIndex = -1;
 	protected GridField m_gridfield;
 
 	/**
@@ -1348,14 +1351,28 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			if (recordSelectedData.containsKey(keyViewValue)){
 				// TODO: maybe add logic to check value of current record (focus only to viewKeys value) is same as value save in lsSelectedKeyValue
 				// because record can change by other user
-				lsSelectionRecord.add(contentPanel.getModel().get(rowIndex));
+				Object row = contentPanel.getModel().get(rowIndex);
+								
+				if(onRestoreSelectedItemIndexInPage(keyViewValue, rowIndex, row)) // F3P: provide an hook for operations on restored index
+					lsSelectionRecord.add(row);
 			}
 		}
 		
 		contentPanel.getModel().setSelection(lsSelectionRecord);
 	}
 	
-	
+	/** Hook to intercept 'restore selection' actions 
+	 * 
+	 * @param keyViewValue row view key
+	 * @param rowIndex row index
+	 * @param row row
+	 * @return false to skip restore selection
+	 */
+	public boolean onRestoreSelectedItemIndexInPage(Integer keyViewValue, int rowIndex, Object row)
+	{
+		return true;
+	}
+		
 	protected AdempiereException getKeyNullException (){
 		String errorMessage = String.format("has null value at column %1$s use as key of view in info window %2$s", 
 				keyColumnOfView == null ? p_keyColumn : keyColumnOfView, infoWindow.getName());
@@ -1697,11 +1714,14 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             else if (event.getTarget() == contentPanel && event.getName().equals(Events.ON_SELECT))
             {
             	setStatusSelected ();
-            	m_lastOnSelectItem = null;
+            	
             	SelectEvent<?, ?> selectEvent = (SelectEvent<?, ?>) event;
             	if (selectEvent.getReference() != null && selectEvent.getReference() instanceof Listitem)
-            		m_lastOnSelectItem = (Listitem) selectEvent.getReference();
-        }else if (event.getTarget() == contentPanel && event.getName().equals("onAfterRender")){        	
+            	{
+            		Listitem m_lastOnSelectItem = (Listitem) selectEvent.getReference();
+            		m_lastSelectedIndex = m_lastOnSelectItem.getIndex();
+            		}
+            }else if (event.getTarget() == contentPanel && event.getName().equals("onAfterRender")){           	
         	//IDEMPIERE-1334 at this event selected item from listBox and model is sync
         	enableButtons();
             }
@@ -1710,18 +1730,34 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             	if (event.getClass().equals(MouseEvent.class)){
             		return;
             	}
-            	if (contentPanel.isMultiple()) {
-            		//un-select all selected column
-            		if (m_lastOnSelectItem != null){
-            			contentPanel.getModel().clearSelection();
-            			int clickItemIndex = contentPanel.getIndexOfItem(m_lastOnSelectItem);
-            			Object selectedItemModle = contentPanel.getModel().get(clickItemIndex);
-            			contentPanel.getModel().addToSelection(selectedItemModle);
-            		}
-            		// clean selected record in cache
-            		recordSelectedData.clear();
+            	if (contentPanel.isMultiple() && m_lastSelectedIndex >= 0) {
+					
+            		contentPanel.setSelectedIndex(m_lastSelectedIndex);
+					
+            		model.clearSelection();
+					List<Object> lsSelectedItem = new ArrayList<Object>();
+					lsSelectedItem.add(model.getElementAt(m_lastSelectedIndex));
+					model.setSelection(lsSelectedItem);
+					
+					int m_keyColumnIndex = contentPanel.getKeyColumnIndex();
+					for (int i = 0; i < contentPanel.getRowCount(); i++) {
+						// Find the IDColumn Key
+						Object data = contentPanel.getModel().getValueAt(i, m_keyColumnIndex);
+						if (data instanceof IDColumn) {
+							IDColumn dataColumn = (IDColumn) data;
+	
+							if (i == m_lastSelectedIndex) {
+								dataColumn.setSelected(true);
+							}
+							else {
+								dataColumn.setSelected(false);
+							}
+						}
+					}
             	}
             	onDoubleClick();
+            	contentPanel.repaint();
+            	m_lastSelectedIndex = -1;
             }
             else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_REFRESH)))
             {
@@ -1903,7 +1939,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 * Update relate info when selection in main info change
 	 */
-	protected void updateSubcontent (){};
+	protected void updateSubcontent (){ updateSubcontent(-1);};
+	
+	/**
+	 * Update relate info for a specific row, if targetRow < 0 update using selected row
+	 */
+	protected void updateSubcontent (int targetRow){};
+
 
 	/**
 	 * Reset parameter to default value or to empty value? implement at
@@ -1950,8 +1992,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				if (DialogEvents.ON_BEFORE_RUN_PROCESS.equals(event.getName())){
 					updateListSelected();
 					// store in T_Selection table selected rows for Execute Process that retrieves from T_Selection in code.
-					DB.createT_SelectionNew(pInstanceID, getSaveKeys(getInfoColumnIDFromProcess(processModalDialog.getAD_Process_ID())), 
-						null);					
+					DB.createT_SelectionNew(pInstanceID, getSaveKeys(getInfoColumnIDFromProcess(processModalDialog.getAD_Process_ID())),
+						null);	
+					saveResultSelection(getInfoColumnIDFromProcess(processModalDialog.getAD_Process_ID()));
+					createT_Selection_InfoWindow(pInstanceID);
 				}else if (ProcessModalDialog.ON_WINDOW_CLOSE.equals(event.getName())){ 
 					if (processModalDialog.isCancel()){
 						//clear back 
@@ -1975,6 +2019,147 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		});   		
     }
    
+    
+    /**
+	 * save result values
+	 */
+	protected void saveResultSelection(int infoColumnId) {
+		int m_keyColumnIndex = contentPanel.getKeyColumnIndex();
+		if (m_keyColumnIndex == -1) {
+			return;
+		}
+
+		m_values = new LinkedHashMap<KeyNamePair,LinkedHashMap<String,Object>>();
+		
+		if (p_multipleSelection) {
+				
+			Map <Integer, List<Object>> selectedRow = getSelectedRowInfo();
+			
+			// for selected rows
+            for (Entry<Integer, List<Object>> selectedInfo : selectedRow.entrySet())
+            {
+            	// get key and viewID
+                Integer keyData = selectedInfo.getKey();
+                KeyNamePair kp = null;
+                
+                if (infoColumnId > 0){
+                	int dataIndex = columnDataIndex.get(infoColumnId) + p_layout.length;
+                	Object viewIDValue = selectedInfo.getValue().get(dataIndex);
+                	kp = new KeyNamePair(keyData, viewIDValue == null ? null : viewIDValue.toString());
+                }else{
+                	kp = new KeyNamePair(keyData, null);
+                }
+                
+                // get Data
+				LinkedHashMap<String, Object> values = new LinkedHashMap<String, Object>();
+				for(int col  = 0 ; col < p_layout.length; col ++)
+				{
+					// layout has same columns as selectedInfo
+					if (!p_layout[col].isReadOnly())
+						values.put(p_layout[col].getColumnName(), selectedInfo.getValue().get(col));
+				}
+				if(values.size() > 0)
+					m_values.put(kp, values);
+            }
+		}
+	} // saveResultSelection
+	
+	/**
+	 * Insert result values
+	 * @param AD_PInstance_ID
+	 */
+	public void createT_Selection_InfoWindow(int AD_PInstance_ID)
+	{
+		StringBuilder insert = new StringBuilder();
+		insert.append("INSERT INTO T_Selection_InfoWindow (AD_PINSTANCE_ID, T_SELECTION_ID, COLUMNNAME , VALUE_STRING, VALUE_NUMBER , VALUE_DATE ) VALUES(?,?,?,?,?,?) ");
+		for (Entry<KeyNamePair,LinkedHashMap<String, Object>> records : m_values.entrySet()) {
+			//set Record ID
+			
+				LinkedHashMap<String, Object> fields = records.getValue();
+				for(Entry<String, Object> field : fields.entrySet())
+				{
+					List<Object> parameters = new ArrayList<Object>();
+					parameters.add(AD_PInstance_ID);
+					
+					Object key = records.getKey();
+					
+					if(key instanceof KeyNamePair)
+					{
+						KeyNamePair knp = (KeyNamePair)key;
+						parameters.add(knp.getKey());
+					}
+					else
+					{
+						parameters.add(key);
+					}
+
+					parameters.add(field.getKey());
+					
+					Object data = field.getValue();
+					// set Values					
+					if (data instanceof IDColumn)
+					{
+						IDColumn id = (IDColumn) data;
+						parameters.add(null);
+						parameters.add(id.getRecord_ID());
+						parameters.add(null);
+					}					
+					else if (data instanceof String)
+					{
+						parameters.add(data);
+						parameters.add(null);
+						parameters.add(null);
+					}
+					else if (data instanceof BigDecimal || data instanceof Integer || data instanceof Double)
+					{
+						parameters.add(null);
+						if(data instanceof Double)
+						{	
+							BigDecimal value = BigDecimal.valueOf((Double)data);
+							parameters.add(value);
+						}	
+						else	
+							parameters.add(data);
+						parameters.add(null);
+					}
+					else if (data instanceof Integer)
+					{
+						parameters.add(null);
+						parameters.add((Integer)data);
+						parameters.add(null);
+					}
+					else if (data instanceof Timestamp || data instanceof Date)
+					{
+						parameters.add(null);
+						parameters.add(null);
+						if(data instanceof Date)
+						{
+							Timestamp value = new Timestamp(((Date)data).getTime());
+							parameters.add(value);
+						}
+						else 
+						parameters.add(data);
+					}
+					else if(data instanceof KeyNamePair)
+					{
+						KeyNamePair knpData = (KeyNamePair)data;
+						
+						parameters.add(null);
+						parameters.add(knpData.getKey());
+						parameters.add(null);						
+					}
+					else
+					{
+						parameters.add(data);
+						parameters.add(null);
+						parameters.add(null);
+					}
+					DB.executeUpdateEx(insert.toString(),parameters.toArray() , null);
+						
+				}
+		}
+	} // createT_Selection_InfoWindow
+	
     /**
      * Get InfoColumnID of infoProcess have processID is processId
      * @param processId
