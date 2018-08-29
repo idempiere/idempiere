@@ -26,8 +26,8 @@
          id="org.adempiere.report.jasper.library"
          download-size="0"
          install-size="0"
-         fragment="true"
-         version="0.0.0"/>
+         version="0.0.0"
+         fragment="true"/>
 
    <plugin
          id="com.jaspersoft.studio.bundles.itext"
@@ -208,6 +208,14 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.w3c.dom.svg.patch"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
 </feature>

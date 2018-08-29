@@ -16,7 +16,6 @@ Bundle-ClassPath: .,
  lib/rhino.jar,
  lib/spring-beans.jar,
  lib/spring-core.jar,
- lib/xml-apis-ext.jar,
  lib/xmpcore.jar
 Import-Package: bsh,
  bsh.classpath,

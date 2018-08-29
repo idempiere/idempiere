@@ -12,7 +12,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/rhino.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-beans.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-core.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/xml-apis-ext.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmpcore.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

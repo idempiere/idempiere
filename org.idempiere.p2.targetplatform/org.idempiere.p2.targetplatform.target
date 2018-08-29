@@ -1,25 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="idempiere" sequenceNumber="107">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere" sequenceNumber="107">
 <locations>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="com.jaspersoft.studio.bundles.barbecue" version="1.5.0.beta1"/>
-<unit id="com.jaspersoft.studio.bundles.batik" version="1.8.0.js01"/>
-<unit id="com.jaspersoft.studio.bundles.commons-digester" version="2.1.0.201503161008"/>
-<unit id="com.jaspersoft.studio.bundles.itext" version="2.1.7.js5"/>
-<unit id="com.jaspersoft.studio.bundles.jxl" version="2.6.10"/>
-<unit id="com.jaspersoft.studio.bundles.poi" version="3.10.1.201502161145"/>
-<unit id="com.jaspersoft.studio.bundles.zxing" version="2.3.0"/>
-<unit id="net.sf.jasperreports.engine" version="6.3.1"/>
-<unit id="net.sf.jasperreports.engine.source" version="6.3.1"/>
-<unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
-<unit id="org.apache.servicemix.bundles.jaxen" version="1.1.1.2"/>
-<unit id="org.apache.servicemix.bundles.rhino" version="1.7.6.1"/>
-<unit id="org.apache.servicemix.bundles.xmlbeans" version="2.5.0.2"/>
-<unit id="org.jfree.chart-osgi" version="1.0.19"/>
-<unit id="org.jfree.jcommon-osgi" version="1.0.23"/>
-<unit id="org.krysalis.barcode4j" version="2.1.0"/>
-<repository location="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/jp-p2/jp-6.3.1/"/>
-</location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.restlet.example.feature.group" version="2.3.2.v20150501-1520"/>
 <unit id="org.restlet.ext.apispark.feature.group" version="2.3.2.v20150501-1520"/>
@@ -969,6 +949,26 @@
 <unit id="zweb.sources" version="8.5.0"/>
 <repository location="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/maven-p2-R20180726"/>
 </location>
+	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		<unit id="com.jaspersoft.studio.bundles.barbecue" version="1.5.0.beta1"/>
+		<unit id="com.jaspersoft.studio.bundles.batik" version="1.8.0.js01"/>
+		<unit id="com.jaspersoft.studio.bundles.commons-digester" version="2.1.0.201503161008"/>
+		<unit id="com.jaspersoft.studio.bundles.itext" version="2.1.7.js5"/>
+		<unit id="com.jaspersoft.studio.bundles.jxl" version="2.6.10"/>
+		<unit id="com.jaspersoft.studio.bundles.poi" version="3.10.1.201502161145"/>
+		<unit id="com.jaspersoft.studio.bundles.zxing" version="2.3.0"/>
+		<unit id="net.sf.jasperreports.engine" version="6.3.1"/>
+		<unit id="net.sf.jasperreports.engine.source" version="6.3.1"/>
+		<unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
+		<unit id="org.apache.servicemix.bundles.jaxen" version="1.1.1.2"/>
+		<unit id="org.apache.servicemix.bundles.rhino" version="1.7.6.1"/>
+		<unit id="org.apache.servicemix.bundles.xmlbeans" version="2.5.0.2"/>
+		<unit id="org.jfree.chart-osgi" version="1.0.19"/>
+		<unit id="org.jfree.jcommon-osgi" version="1.0.23"/>
+		<unit id="org.krysalis.barcode4j" version="2.1.0"/>
+		<repository location="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/jp-p2/jp-6.3.1/"/>
+		<unit id="org.w3c.dom.svg.patch" version="1.1.0"/>
+	</location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 </target>
