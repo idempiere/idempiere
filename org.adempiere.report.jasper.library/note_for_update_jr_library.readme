@@ -11,7 +11,7 @@ guide for update:
 for extra like encrypt, have go to sample project to get dependency
 but just focus common job and already know extra like encrypt)
 
-3. also download jasperreports-functions-x.x.x.jar
+3. also download jasperreports-functions-x.x.x.jar and jasperreports-fonts-x.x.x.jar
 
 4. now edit org.adempiere.report.jasper.library follow bellow rule
    + if library have same version with library already use on idempiere, just use import package or bundle dependency

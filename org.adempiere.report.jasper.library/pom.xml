@@ -87,6 +87,26 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>com.googlecode.maven-download-plugin</groupId>
+				<artifactId>download-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>download-db-seed-oracle</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>${url.file.srv}/jarfile/jp-6.3.1/jasperreports-fonts-6.3.1.jar</url>
+							<unpack>false</unpack>
+							<outputDirectory>lib</outputDirectory>
+							<outputFileName>jasperreports-fonts.jar</outputFileName>
+							<retries>5</retries>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>

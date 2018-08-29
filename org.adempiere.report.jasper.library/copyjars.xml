@@ -5,6 +5,7 @@
 	<target name="copy">
       <get src="${url.maven2}/org/codehaus/castor/castor-core/1.3.3/castor-core-1.3.3.jar" dest="lib/castor-core.jar" usetimestamp="true" verbose="true" retries="5" />
       <get src="${url.maven2}/org/codehaus/castor/castor-xml/1.3.3/castor-xml-1.3.3.jar" dest="lib/castor-xml.jar" usetimestamp="true" verbose="true" retries="5" />
+      <get src="${url.file.jp.lib}/jasperreports-fonts-${jp-verion}.jar" dest="lib/jasperreports-fonts.jar" usetimestamp="true" verbose="true" retries="5" />
       <get src="${url.maven2.jp}/net/sf/jasperreports/jasperreports-chart-themes/${jp-verion}/jasperreports-chart-themes-${jp-verion}.jar" dest="lib/jasperreports-chart-themes.jar" usetimestamp="true" verbose="true" retries="5" />
       <get src="${url.maven2.jp}/net/sf/jasperreports/jasperreports-chart-customizers/${jp-verion}/jasperreports-chart-customizers-${jp-verion}.jar" dest="lib/jasperreports-chart-customizers.jar" usetimestamp="true" verbose="true" retries="5" />
       <get src="${url.maven2.jp}/net/sf/jasperreports/jasperreports-functions/${jp-verion}/jasperreports-functions-${jp-verion}.jar" dest="lib/jasperreports-functions.jar" usetimestamp="true" verbose="true" retries="5" />
