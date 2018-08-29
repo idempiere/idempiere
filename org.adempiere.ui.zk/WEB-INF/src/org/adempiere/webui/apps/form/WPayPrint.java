@@ -118,7 +118,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		{
 			log.log(Level.SEVERE, "", e);
 		}
-	}	//	init
+	}	//	WPayPrint
 
 	//  Static Variables
 	protected Panel centerPanel = new Panel();
@@ -234,8 +234,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		bExport.setDisabled(true);
 		bPrint.setDisabled(true);
 		fDepositBatch.setReadWrite(false);
-		fDocumentNo.setReadWrite(false);
-	}   //  VPayPrint
+	}   //  zkInit
 
 	/**
 	 *  Dynamic Init

@@ -445,14 +445,41 @@ public class Doc_MatchPO extends Doc
 					&& mPO[i].getM_MatchPO_ID() != mMatchPO.getM_MatchPO_ID())
 				{
 					BigDecimal qty = (isReturnTrx ? mPO[i].getQty().negate() : mPO[i].getQty());
+					BigDecimal orderCost = BigDecimal.ZERO;
 					if (mPO[i].getM_InOutLine_ID() > 0)
 					{
 						tQty = tQty.add(qty);
-						tAmt = tAmt.add(poCost.multiply(qty));
+						//IDEMPIERE-3742  Wrong product cost for partial MR
+						if (m_oLine.getC_Currency_ID() != as.getC_Currency_ID())
+						{
+							MOrder order = m_oLine.getParent();
+							if(MAcctSchema.COSTINGMETHOD_AveragePO.equals(as.getCostingMethod())) 
+							{
+								orderCost = mPO[i].getM_InOutLine().getC_OrderLine().getPriceActual();
+								Timestamp dateAcct = mPO[i].getM_InOutLine().getM_InOut().getDateAcct();
+								BigDecimal rate = MConversionRate.getRate(
+									order.getC_Currency_ID(), as.getC_Currency_ID(),
+									dateAcct, order.getC_ConversionType_ID(),
+									m_oLine.getAD_Client_ID(), m_oLine.getAD_Org_ID());
+
+								if (rate == null)
+								{
+									p_Error = "Purchase Order not convertible - " + as.getName();
+									return null;
+								}
+									orderCost = orderCost.multiply(rate);
+									tAmt = tAmt.add(orderCost.multiply(qty));
+
+							} else {
+								tAmt = tAmt.add(poCost.multiply(qty));
+							}
+						}  //IDEMPIERE-3742  Wrong product cost for partial MR
+						else {
+							tAmt = tAmt.add(poCost.multiply(qty));
+						}
 					}
 				}
-			}
-			
+			}			
 			poCost = poCost.multiply(getQty());			//	Delivered so far
 			tAmt = tAmt.add(isReturnTrx ? poCost.negate() : poCost);
 			tQty = tQty.add(isReturnTrx ? getQty().negate() : getQty());

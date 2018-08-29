@@ -26,7 +26,7 @@ public class IBAN {
 	{
 		if (iban!=null)
 		{
-			return iban.trim().replace(" ", "") ;
+			return iban.trim().replace(" ", "").toUpperCase() ;
 		}
 		return null ;
 	}

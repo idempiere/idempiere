@@ -804,7 +804,7 @@ public class MPayment extends X_C_Payment
 			if (!Util.isEmpty(getIBAN())) {
 				setIBAN(IBAN.normalizeIBAN(getIBAN()));
 				if (!IBAN.isValid(getIBAN())) {
-					log.saveError("Error", "IBAN is invalid");
+					log.saveError("Error", Msg.getMsg(getCtx(), "InvalidIBAN"));
 					return false;
 				}
 			}

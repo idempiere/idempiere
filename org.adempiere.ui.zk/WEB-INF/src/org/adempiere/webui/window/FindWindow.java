@@ -2649,7 +2649,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	 */
 	private void setStatusDB (int currentCount)
 	{
-		StringBuilder text = new StringBuilder(" ").append(currentCount).append(" / ").append(m_total).append(" ");
+		StringBuilder text = new StringBuilder(" ").append(Msg.getMsg(Env.getCtx(), "Records")).append(" = ").append(m_total).append(" ");
 		statusBar.setStatusDB(text.toString());
 	}	//	setDtatusDB
 	/** END DEVCOFFEE **/

@@ -282,7 +282,8 @@ public class MPeriod extends X_C_Period
 		int idxdate = -1;
 		if (   tableID == MInventory.Table_ID
 				|| tableID == MMovement.Table_ID
-				|| tableID == MProduction.Table_ID) {
+				|| tableID == MProduction.Table_ID
+				|| tableID == MProjectIssue.Table_ID) {
 			idxdate = po.get_ColumnIndex("MovementDate");
 		} else if (   tableID == MRequisition.Table_ID) {
 			idxdate = po.get_ColumnIndex("DateDoc");
@@ -333,6 +334,8 @@ public class MPeriod extends X_C_Period
 			} else if (   tableID == MAssetDisposed.Table_ID
 					|| tableID == MDepreciationExp.Table_ID) {
 				docBaseType = MDocType.DOCBASETYPE_GLDocument; // seems like a bug of fixed assets - must use GLJournal instead of GLDocument?
+			} else if (tableID == MProjectIssue.Table_ID) {
+				docBaseType = MDocType.DOCBASETYPE_ProjectIssue;
 			} else {
 				s_log.warning("Could not find C_DocType_ID for " + table.getTableName());
 				return true;

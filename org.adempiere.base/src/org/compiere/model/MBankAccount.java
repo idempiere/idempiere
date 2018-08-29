@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.IBAN;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 
@@ -136,7 +137,7 @@ public class MBankAccount extends X_C_BankAccount
 			if (!Util.isEmpty(getIBAN())) {
 				setIBAN(IBAN.normalizeIBAN(getIBAN()));
 				if (!IBAN.isValid(getIBAN())) {
-					log.saveError("Error", "IBAN is invalid");
+					log.saveError("Error", Msg.getMsg(getCtx(), "InvalidIBAN"));
 					return false;
 				}
 			}

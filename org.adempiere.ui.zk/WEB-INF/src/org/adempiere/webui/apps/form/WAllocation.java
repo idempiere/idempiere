@@ -533,7 +533,7 @@ public class WAllocation extends Allocation
 			allocateButton.setEnabled(true);
 			if (allocation != null) 
 			{
-				DocumentLink link = new DocumentLink(allocation.getDocumentNo(), allocation.get_Table_ID(), allocation.get_ID());				
+				DocumentLink link = new DocumentLink(Msg.getElement(Env.getCtx(), MAllocationHdr.COLUMNNAME_C_AllocationHdr_ID) + ": " + allocation.getDocumentNo(), allocation.get_Table_ID(), allocation.get_ID());				
 				statusBar.appendChild(link);
 			}					
 		}

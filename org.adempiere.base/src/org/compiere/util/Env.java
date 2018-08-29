@@ -871,14 +871,8 @@ public final class Env
 			throw new IllegalArgumentException ("Require Context");
 		String s = getContext(ctx, WindowNo, context, false);
 		//	JDBC Format YYYY-MM-DD	example 2000-09-11 00:00:00.0
-		if (s == null || s.equals(""))
-		{
-			if (!"#date".equalsIgnoreCase(context))
-			{
-				log.log(Level.WARNING, "No value for: " + context);
-			}
+		if (Util.isEmpty(s))
 			return new Timestamp(System.currentTimeMillis());
-		}
 
 		// BUG:3075946 KTU - Fix Thai Date
 		/*

@@ -65,11 +65,8 @@ public class CompositeServiceImpl extends AbstractService implements CompositeSe
 	 */
 	@Override
 	public CompositeResponsesDocument compositeOperation(CompositeRequestDocument reqs) {
-		boolean connected = getCompiereService().isConnected();
-		
 		try {
-			if (!connected)
-				getCompiereService().connect();
+			getCompiereService().connect();
 			
 			CompositeResponsesDocument ret = CompositeResponsesDocument.Factory.newInstance();
 			CompositeResponses resps = ret.addNewCompositeResponses();
@@ -124,8 +121,7 @@ public class CompositeServiceImpl extends AbstractService implements CompositeSe
 	
 			return ret;
 		} finally {
-			if (!connected)
-				getCompiereService().disconnect();
+			getCompiereService().disconnect();
 		}
 	}
 
