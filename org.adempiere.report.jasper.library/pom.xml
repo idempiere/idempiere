@@ -49,11 +49,6 @@
 									<version>${jp.version}</version>
 								</artifactItem>
 								<artifactItem>
-									<groupId>org.mozilla</groupId>
-									<artifactId>rhino</artifactId>
-									<version>1.7.6</version>
-								</artifactItem>
-								<artifactItem>
 									<groupId>org.olap4j</groupId>
 									<artifactId>olap4j</artifactId>
 									<version>0.9.7.309-JS-3</version>
@@ -93,7 +88,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/jarfile/jp-6.3.1/jasperreports-fonts-6.3.1.jar</url>
+							<url>${url.file.srv}/jarfile/jp-${jp.version}/jasperreports-fonts-${jp.version}.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>lib</outputDirectory>
 							<outputFileName>jasperreports-fonts.jar</outputFileName>

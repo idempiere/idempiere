@@ -21,7 +21,7 @@ echo Starting iDempiere Server
 echo ===================================
 
 
-VMOPTS="-Dorg.osgi.framework.bootdelegation=sun.security.ssl
+VMOPTS="-Dorg.osgi.framework.bootdelegation=sun.security.ssl,org.w3c.dom.events
 -Dosgi.compatibility.bootdelegation=true
 -Djetty.home=$BASE/jettyhome
 -Djetty.base=$BASE/jettyhome

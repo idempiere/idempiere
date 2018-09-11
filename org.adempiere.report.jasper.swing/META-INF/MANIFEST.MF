@@ -9,6 +9,7 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.report.jasper;bundle-version="0.0.0"
 Import-Package: net.sf.jasperreports.engine,
  net.sf.jasperreports.engine.export,
+ net.sf.jasperreports.swing,
  net.sf.jasperreports.view,
  org.adempiere.report.jasper,
  org.osgi.framework

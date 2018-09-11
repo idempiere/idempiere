@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.idempiere</groupId>
 		<artifactId>org.idempiere.parent</artifactId>
 		<version>5.1.0-SNAPSHOT</version>
 		<relativePath>../../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
+	<modelVersion>4.0.0</modelVersion>
 	<artifactId>org.idempiere.maven.to.p2</artifactId>
 	<packaging>pom</packaging>
 	<properties>
@@ -17,9 +17,29 @@
 		<jetty.conscrypt.version>8.1.12.v20180117</jetty.conscrypt.version>
 		<jetty.osgi.servlet.api.version>3.1.0.M3</jetty.osgi.servlet.api.version>
 		<jetty.conscrypt.openjdk.uber.version>1.1.0</jetty.conscrypt.openjdk.uber.version>
-		
-		
+        <jackson.version>2.9.5</jackson.version> <!--it up to version of jasperreport engine-->
+        <stax2.api.version>3.1.4</stax2.api.version> <!--it up to version of jasperreport engine-->
+        <validation.api.version>1.1.0.Final</validation.api.version> <!--it up to version of jasperreport engine-->
+        <woodstox.core.version>5.0.3</woodstox.core.version> <!--it up to version of jasperreport engine-->
+        <json.version>20171018</json.version> <!--it up to version of jackson-datatype-json-org-->
 	</properties>
+	
+    <repositories>
+        <repository>
+            <id>orbit-photon-R20180531190352</id><!--only this repository have bakik 1.9-->
+            <url>http://download.eclipse.org/tools/orbit/downloads/drops2/R20180531190352/repository</url>
+            <layout>p2</layout>
+        </repository>
+        <repository>
+	        <id>org.jfree.chart</id>
+	        <url>http://nexus.orbisgis.org/content/repositories/osgi-maven</url>
+        </repository>
+        <repository>
+	        <id>jasperstudio-6.6.0</id>
+	        <url>https://sourceforge.net/projects/jasperstudio/files/updatesite/6.6.0</url>
+            <layout>p2</layout>
+        </repository>
+    </repositories>
 
 	<build>
 		<plugins>
@@ -475,18 +495,158 @@
 									<artifacts>
 										<artifact>
 											<id>net.sf.jasperreports:jasperreports:jar:${jp.version}</id>
-											<source>false</source>
+											<source>true</source>
 											<transitive>false</transitive>
-											<override>true</override>
+										</artifact>
+										<artifact>
+											<id>commons-digester:commons-digester:jar:2.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.google.zxing:core:jar:3.2.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.jaxen:jar:1.1.1_2</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.rhino:jar:1.7.6_1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.jfree:jfreechart-osgi:jar:1.0.19</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.jfree:jcommon-osgi:jar:1.0.23</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.poi:poi:jar:3.15</id>
+											<source>true</source>
+											<transitive>false</transitive>
+                                            <override>true</override>
 											<instructions>
-												<Bundle-SymbolicName>net.sf.jasperreports.engine</Bundle-SymbolicName>
-												<Bundle-Name>net.sf.jasperreports.engine</Bundle-Name>
+												<Bundle-SymbolicName>org.apache.poi.poi</Bundle-SymbolicName>
+												<Bundle-Name>poi-ooxml</Bundle-Name>
+                                                <Import-Package>*;resolution:=optional</Import-Package>
+                                                <Export-Package>*</Export-Package>
 											</instructions>
+										</artifact>
+										<artifact>
+											<id>org.apache.poi:poi-ooxml:jar:3.15</id>
+											<source>true</source>
+											<transitive>false</transitive>
+                                            <override>true</override>
+											<instructions>
+												<Bundle-SymbolicName>org.apache.poi.poi-ooxml</Bundle-SymbolicName>
+												<Bundle-Name>poi-ooxml</Bundle-Name>
+                                                <Import-Package>*;resolution:=optional</Import-Package>
+                                                <Export-Package>*</Export-Package>
+											</instructions>
+										</artifact>
+										<artifact>
+											<id>org.apache.poi:poi-ooxml-schemas:jar:3.15</id>
+											<source>true</source>
+											<transitive>false</transitive>
+                                            <override>true</override>
+											<instructions>
+												<Bundle-SymbolicName>org.apache.poi.poi-ooxml-schemas</Bundle-SymbolicName>
+												<Bundle-Name>poi-ooxml-schemas</Bundle-Name>
+                                                <Import-Package>*;resolution:=optional</Import-Package>
+                                                <Export-Package>*</Export-Package>
+											</instructions>
+										</artifact>
+										<artifact>
+											<id>com.fasterxml.jackson.core:jackson-core:jar:${jackson.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.fasterxml.jackson.core:jackson-annotations:jar:${jackson.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.fasterxml.jackson.core:jackson-databind:jar:${jackson.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.fasterxml.jackson.dataformat:jackson-dataformat-xml:jar:${jackson.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.fasterxml.jackson.datatype:jackson-datatype-guava:jar:${jackson.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.fasterxml.jackson.datatype:jackson-datatype-joda:jar:${jackson.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.fasterxml.jackson.datatype:jackson-datatype-json-org:jar:${jackson.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:jar:${jackson.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:jar:${jackson.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.fasterxml.jackson.jaxrs:jackson-jaxrs-xml-provider:jar:${jackson.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.fasterxml.jackson.module:jackson-module-jaxb-annotations:jar:${jackson.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.fasterxml.jackson.module:jackson-module-jsonSchema:jar:${jackson.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.woodstox:stax2-api:jar:${stax2.api.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>javax.validation:validation-api:jar:${validation.api.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.fasterxml.woodstox:woodstox-core:jar:${woodstox.core.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.json:json:jar:${json.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
 										</artifact>
 									</artifacts>
 								</feature>
 							</featureDefinitions>
-
 							<artifacts>
 								<artifact>
 									<id>org.javassist:javassist:${zk.javassist.src.version}</id>
@@ -504,7 +664,83 @@
 									</instructions>
 								</artifact>
 							</artifacts>
-
+                            <p2>
+                                <artifact>
+                                    <id>org.apache.batik.anim:1.9.1.v20180528-1434</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.bridge:1.9.1.v20180313-1559</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.codec:1.9.1.v20180313-1559</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.constants:1.9.1.v20180227-1645</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.css:1.9.1.v20180313-1559</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.dom:1.9.1.v20180528-1434</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.dom.svg:1.9.1.v20180313-1559</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.ext.awt:1.9.1.v20180227-1645</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.extension:1.9.1.v20180313-1559</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.gvt:1.9.1.v20180227-1645</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.i18n:1.9.1.v20180227-1645</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.parser:1.9.1.v20180313-1559</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.pdf:1.9.1.v20180417-1407</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.script:1.9.1.v20180313-1559</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.svggen:1.9.1.v20180313-1559</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.swing:1.9.1.v20180313-1559</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.transcoder:1.9.1.v20180313-1559</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.util:1.9.1.v20180227-1645</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.util.gui:1.9.1.v20180227-1645</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.batik.xml:1.9.1.v20180227-1645</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.apache.xmlgraphics:2.2.0.v20180410-1551</id>
+                                </artifact>
+                                <artifact>
+                                    <id>com.jaspersoft.studio.bundles.barbecue:1.5.0.beta1_b02</id>
+                                </artifact>
+                                <artifact>
+                                    <id>com.jaspersoft.studio.bundles.itext:2.1.7.js6_b02</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.w3c.dom.svg.patch:1.1.0.b02</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.krysalis.barcode4j:2.1.0</id>
+                                </artifact>
+                            </p2>
 						</configuration>
 					</execution>
 				</executions>
@@ -539,7 +775,7 @@
 						<id>rename-file</id>
 						<phase>package</phase>
 						<goals>
-							<goal>rename</goal>
+							<goal>copy</goal>
 						</goals>
 						<configuration>
 							<fileSets>
@@ -607,9 +843,25 @@
 
 						</goals>
 						<configuration>
-							<append>false</append>
+							<append>true</append>
 							<sourceLocation>${project.build.directory}/repository</sourceLocation>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-eclipserun-plugin</artifactId>
+				<configuration>
+					<appArgLine>-application org.eclipse.equinox.p2.publisher.CategoryPublisher -artifactRepository file:${project.build.directory}/repository -metadataRepository file:${project.build.directory}/repository -categoryDefinition file:${project.build.directory}/repository/category.xml -categoryQualifier -compress</appArgLine>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>eclipse-run</goal>
+						</goals>
+						<phase>package</phase>
 					</execution>
 				</executions>
 			</plugin>

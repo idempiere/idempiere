@@ -10,11 +10,11 @@
 	<name>Maven parent project for idempiere</name>
 
 	<properties>
-		<tycho.version>1.1.0</tycho.version>
+		<tycho.version>1.2.0</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jetty.version>9.4.11.v20180605</jetty.version>
-		<jp.version>6.3.1</jp.version>
+		<jp.version>6.7.0</jp.version>
 		<zk.version>8.5.0</zk.version>
 		<zk.javassist.src.version>3.18.2-GA</zk.javassist.src.version>
 		<maven.dependency.version>3.0.2</maven.dependency.version>
@@ -493,6 +493,8 @@
 						            <arch>x86_64</arch>
 					            </environment>
 				            </environments>
+                            <executionEnvironmentDefault>JavaSE-1.8</executionEnvironmentDefault>
+                            <executionEnvironment>JavaSE-1.8</executionEnvironment>
 			            </configuration>
 		            </plugin>
                 </plugins>

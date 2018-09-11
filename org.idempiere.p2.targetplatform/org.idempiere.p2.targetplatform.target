@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere" sequenceNumber="107">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-180911" sequenceNumber="107">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.restlet.example.feature.group" version="2.3.2.v20150501-1520"/>
@@ -47,136 +47,12 @@
 <unit id="org.restlet.ext.xstream.feature.group" version="2.3.2.v20150501-1520"/>
 <unit id="org.restlet.feature.group" version="2.3.2.v20150501-1520"/>
 <repository location="http://p2.restlet.com/2.3"/>
+</location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.jetty.bundles.f.feature.group" version="9.4.11.v20180605"/>
 <unit id="org.eclipse.jetty.bundles.f.source.feature.group" version="9.4.11.v20180605"/>
 <repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.11.v20180605"/>
 </location>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="bcmail" version="1.58.0"/>
-<unit id="bcmail.source" version="1.58.0"/>
-<unit id="bcpkix" version="1.58.0"/>
-<unit id="bcpkix.source" version="1.58.0"/>
-<unit id="bcprov" version="1.58.0"/>
-<unit id="bcprov.source" version="1.58.0"/>
-<unit id="bctsp" version="1.46.0"/>
-<unit id="bctsp.source" version="1.46.0"/>
-<unit id="com.ibm.icu" version="60.2.0"/>
-<unit id="com.ibm.icu.source" version="60.2.0"/>
-<unit id="com.itextpdf" version="5.5.12"/>
-<unit id="com.itextpdf.source" version="5.5.12"/>
-<unit id="com.sun.mail.javax.mail" version="1.6.0"/>
-<unit id="com.sun.mail.javax.mail.source" version="1.6.0"/>
-<unit id="groovy-all" version="2.4.13"/>
-<unit id="groovy-all.source" version="2.4.13"/>
-<unit id="javax.annotation-api" version="1.3.1"/>
-<unit id="javax.annotation-api.source" version="1.3.1"/>
-<unit id="javax.management.j2ee-api" version="1.1.1"/>
-<unit id="javax.management.j2ee-api.source" version="1.1.1"/>
-<unit id="javax.websocket-api" version="1.1.0"/>
-<unit id="javax.websocket-api.source" version="1.1.0"/>
-<unit id="joda-time" version="2.9.9"/>
-<unit id="joda-time.source" version="2.9.9"/>
-<unit id="net.sf.jasperreports.engine" version="6.3.1"/>
-<unit id="net.sf.supercsv.super-csv" version="2.4.0"/>
-<unit id="net.sf.supercsv.super-csv.source" version="2.4.0"/>
-<unit id="org.apache.activemq.activemq-core" version="5.7.0"/>
-<unit id="org.apache.activemq.activemq-core.source" version="5.7.0"/>
-<unit id="org.apache.activemq.kahadb" version="5.7.0"/>
-<unit id="org.apache.activemq.kahadb.source" version="5.7.0"/>
-<unit id="org.apache.aries.spifly.dynamic.bundle" version="1.0.10"/>
-<unit id="org.apache.aries.spifly.dynamic.bundle.source" version="1.0.10"/>
-<unit id="org.apache.aries.util" version="1.1.3"/>
-<unit id="org.apache.aries.util.source" version="1.1.3"/>
-<unit id="org.apache.commons.commons-collections4" version="4.2.0"/>
-<unit id="org.apache.commons.commons-collections4.source" version="4.2.0"/>
-<unit id="org.apache.commons.configuration" version="2.2.0"/>
-<unit id="org.apache.commons.configuration.source" version="2.2.0"/>
-<unit id="org.apache.commons.digester" version="2.1.0"/>
-<unit id="org.apache.commons.digester.source" version="2.1.0"/>
-<unit id="org.apache.commons.javaflow" version="1590792.0.0"/>
-<unit id="org.apache.commons.javaflow.source" version="1590792.0.0"/>
-<unit id="org.apache.felix.inventory" version="1.0.6"/>
-<unit id="org.apache.felix.inventory.source" version="1.0.6"/>
-<unit id="org.apache.felix.webconsole" version="4.3.4"/>
-<unit id="org.apache.felix.webconsole.plugins.ds" version="2.0.8"/>
-<unit id="org.apache.felix.webconsole.plugins.ds.source" version="2.0.8"/>
-<unit id="org.apache.felix.webconsole.plugins.memoryusage" version="1.0.6"/>
-<unit id="org.apache.felix.webconsole.plugins.memoryusage.source" version="1.0.6"/>
-<unit id="org.apache.felix.webconsole.plugins.packageadmin" version="1.0.4"/>
-<unit id="org.apache.felix.webconsole.plugins.packageadmin.source" version="1.0.4"/>
-<unit id="org.apache.felix.webconsole.source" version="4.3.4"/>
-<unit id="org.apache.servicemix.bundles.cglib" version="3.2.5.1"/>
-<unit id="org.apache.servicemix.bundles.cglib.source" version="3.2.5.1"/>
-<unit id="org.apache.taglibs.standard-impl" version="1.2.5"/>
-<unit id="org.apache.taglibs.standard-impl.source" version="1.2.5"/>
-<unit id="org.apache.taglibs.standard-jstlel" version="1.2.5"/>
-<unit id="org.apache.taglibs.standard-jstlel.source" version="1.2.5"/>
-<unit id="org.apache.taglibs.taglibs-standard-spec" version="1.2.5"/>
-<unit id="org.apache.taglibs.taglibs-standard-spec.source" version="1.2.5"/>
-<unit id="org.apache.velocity" version="1.7.0"/>
-<unit id="org.apache.velocity.source" version="1.7.0"/>
-<unit id="org.atmosphere.runtime" version="2.4.16"/>
-<unit id="org.atmosphere.runtime.source" version="2.4.16"/>
-<unit id="org.cryptacular" version="1.2.1"/>
-<unit id="org.cryptacular.source" version="1.2.1"/>
-<unit id="org.eclipse.jdt.core.compiler.batch" version="3.8.2.v20130121-145325"/>
-<unit id="org.eclipse.jdt.core.compiler.batch.source" version="3.8.2.v20130121-145325"/>
-<unit id="org.eclipse.jetty.alpn.api" version="1.1.3.v20160715"/>
-<unit id="org.eclipse.jetty.alpn.api.source" version="1.1.3.v20160715"/>
-<unit id="org.eclipse.jetty.alpn.conscrypt.server" version="9.4.9.v20180320"/>
-<unit id="org.eclipse.jetty.alpn.conscrypt.server.source" version="9.4.9.v20180320"/>
-<unit id="org.eclipse.jetty.alpn.openjdk8.server" version="9.4.9.v20180320"/>
-<unit id="org.eclipse.jetty.alpn.openjdk8.server.source" version="9.4.9.v20180320"/>
-<unit id="org.eclipse.jetty.osgi-servlet-api" version="3.1.0.M3"/>
-<unit id="org.eclipse.jetty.osgi-servlet-api.source" version="3.1.0.M3"/>
-<unit id="org.idempiere.org.conscrypt.openjdk-uber" version="1.1.0"/>
-<unit id="org.idempiere.org.conscrypt.openjdk-uber.source" version="1.1.0"/>
-<unit id="org.mortbay.jasper.apache-el" version="8.5.24"/>
-<unit id="org.mortbay.jasper.apache-el.source" version="8.5.24"/>
-<unit id="org.mortbay.jasper.apache-jsp" version="8.5.24"/>
-<unit id="org.passay" version="1.3.0"/>
-<unit id="org.passay.source" version="1.3.0"/>
-<unit id="zcommon" version="8.5.0"/>
-<unit id="zcommon.sources" version="8.5.0"/>
-<unit id="zel" version="8.5.0"/>
-<unit id="zel.sources" version="8.5.0"/>
-<unit id="zhtml" version="8.5.0"/>
-<unit id="zhtml.sources" version="8.5.0"/>
-<unit id="zjavassist" version="8.5.0"/>
-<unit id="zjavassist.sources" version="8.5.0"/>
-<unit id="zk" version="8.5.0"/>
-<unit id="zk.sources" version="8.5.0"/>
-<unit id="zkbind" version="8.5.0"/>
-<unit id="zkbind.sources" version="8.5.0"/>
-<unit id="zkplus" version="8.5.0"/>
-<unit id="zkplus.sources" version="8.5.0"/>
-<unit id="zul" version="8.5.0"/>
-<unit id="zul.sources" version="8.5.0"/>
-<unit id="zweb" version="8.5.0"/>
-<unit id="zweb.sources" version="8.5.0"/>
-<repository location="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/maven-p2-R20180726"/>
-</location>
-	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		<unit id="com.jaspersoft.studio.bundles.barbecue" version="1.5.0.beta1"/>
-		<unit id="com.jaspersoft.studio.bundles.batik" version="1.8.0.js01"/>
-		<unit id="com.jaspersoft.studio.bundles.commons-digester" version="2.1.0.201503161008"/>
-		<unit id="com.jaspersoft.studio.bundles.itext" version="2.1.7.js5"/>
-		<unit id="com.jaspersoft.studio.bundles.jxl" version="2.6.10"/>
-		<unit id="com.jaspersoft.studio.bundles.poi" version="3.10.1.201502161145"/>
-		<unit id="com.jaspersoft.studio.bundles.zxing" version="2.3.0"/>
-		<unit id="net.sf.jasperreports.engine" version="6.3.1"/>
-		<unit id="net.sf.jasperreports.engine.source" version="6.3.1"/>
-		<unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
-		<unit id="org.apache.servicemix.bundles.jaxen" version="1.1.1.2"/>
-		<unit id="org.apache.servicemix.bundles.rhino" version="1.7.6.1"/>
-		<unit id="org.apache.servicemix.bundles.xmlbeans" version="2.5.0.2"/>
-		<unit id="org.jfree.chart-osgi" version="1.0.19"/>
-		<unit id="org.jfree.jcommon-osgi" version="1.0.23"/>
-		<unit id="org.krysalis.barcode4j" version="2.1.0"/>
-		<repository location="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/jp-p2/jp-6.3.1/"/>
-		<unit id="org.w3c.dom.svg.patch" version="1.1.0"/>
-	</location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.8.0.v20180512-1132"/>
 		<unit id="org.eclipse.pde.api.tools.ee.feature.feature.group" version="1.0.300.v20180221-1224"/>
@@ -920,6 +796,181 @@
 		<unit id="scannotation" version="1.0.2.v201205170710"/>
 		<unit id="scannotation.source" version="1.0.2.v201205170710"/>
 		<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20180606145124/repository"/>
+	</location>
+	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		<unit id="bcmail" version="1.58.0"/>
+		<unit id="bcmail.source" version="1.58.0"/>
+		<unit id="bcpkix" version="1.58.0"/>
+		<unit id="bcpkix.source" version="1.58.0"/>
+		<unit id="bcprov" version="1.58.0"/>
+		<unit id="bcprov.source" version="1.58.0"/>
+		<unit id="bctsp" version="1.46.0"/>
+		<unit id="bctsp.source" version="1.46.0"/>
+		<unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.core.jackson-annotations.source" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.core.jackson-core" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.core.jackson-core.source" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.core.jackson-databind.source" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.dataformat.jackson-dataformat-xml" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.dataformat.jackson-dataformat-xml.source" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-guava" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-guava.source" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-joda" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-joda.source" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-json-org" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-json-org.source" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base.source" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider.source" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider.source" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.module.jackson-module-jaxb-annotations" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.module.jackson-module-jaxb-annotations.source" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.module.jackson-module-jsonSchema" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.module.jackson-module-jsonSchema.source" version="2.9.5"/>
+		<unit id="com.fasterxml.woodstox.woodstox-core" version="5.0.3"/>
+		<unit id="com.fasterxml.woodstox.woodstox-core.source" version="5.0.3"/>
+		<unit id="com.google.zxing.core" version="3.2.1"/>
+		<unit id="com.google.zxing.core.source" version="3.2.1"/>
+		<unit id="com.ibm.icu" version="60.2.0"/>
+		<unit id="com.ibm.icu.source" version="60.2.0"/>
+		<unit id="com.itextpdf" version="5.5.12"/>
+		<unit id="com.itextpdf.source" version="5.5.12"/>
+		<unit id="com.jaspersoft.studio.bundles.barbecue" version="1.5.0.beta1_b02"/>
+		<unit id="com.jaspersoft.studio.bundles.itext" version="2.1.7.js6_b02"/>
+		<unit id="com.sun.mail.javax.mail" version="1.6.0"/>
+		<unit id="com.sun.mail.javax.mail.source" version="1.6.0"/>
+		<unit id="groovy-all" version="2.4.13"/>
+		<unit id="groovy-all.source" version="2.4.13"/>
+		<unit id="javax.annotation-api" version="1.3.1"/>
+		<unit id="javax.annotation-api.source" version="1.3.1"/>
+		<unit id="javax.management.j2ee-api" version="1.1.1"/>
+		<unit id="javax.management.j2ee-api.source" version="1.1.1"/>
+		<unit id="javax.validation.api" version="1.1.0.Final"/>
+		<unit id="javax.validation.api.source" version="1.1.0.Final"/>
+		<unit id="javax.websocket-api" version="1.1.0"/>
+		<unit id="javax.websocket-api.source" version="1.1.0"/>
+		<unit id="joda-time" version="2.9.9"/>
+		<unit id="joda-time.source" version="2.9.9"/>
+		<unit id="json" version="20171018.0.0"/>
+		<unit id="json.source" version="20171018.0.0"/>
+		<unit id="net.sf.jasperreports.engine" version="6.6.0"/>
+		<unit id="net.sf.jasperreports.engine.source" version="6.6.0"/>
+		<unit id="net.sf.supercsv.super-csv" version="2.4.0"/>
+		<unit id="net.sf.supercsv.super-csv.source" version="2.4.0"/>
+		<unit id="org.apache.activemq.activemq-core" version="5.7.0"/>
+		<unit id="org.apache.activemq.activemq-core.source" version="5.7.0"/>
+		<unit id="org.apache.activemq.kahadb" version="5.7.0"/>
+		<unit id="org.apache.activemq.kahadb.source" version="5.7.0"/>
+		<unit id="org.apache.aries.spifly.dynamic.bundle" version="1.0.10"/>
+		<unit id="org.apache.aries.spifly.dynamic.bundle.source" version="1.0.10"/>
+		<unit id="org.apache.aries.util" version="1.1.3"/>
+		<unit id="org.apache.aries.util.source" version="1.1.3"/>
+		<unit id="org.apache.batik.anim" version="1.9.1.v20180528-1434"/>
+		<unit id="org.apache.batik.bridge" version="1.9.1.v20180313-1559"/>
+		<unit id="org.apache.batik.codec" version="1.9.1.v20180313-1559"/>
+		<unit id="org.apache.batik.constants" version="1.9.1.v20180227-1645"/>
+		<unit id="org.apache.batik.css" version="1.9.1.v20180313-1559"/>
+		<unit id="org.apache.batik.dom" version="1.9.1.v20180528-1434"/>
+		<unit id="org.apache.batik.dom.svg" version="1.9.1.v20180313-1559"/>
+		<unit id="org.apache.batik.ext.awt" version="1.9.1.v20180227-1645"/>
+		<unit id="org.apache.batik.extension" version="1.9.1.v20180313-1559"/>
+		<unit id="org.apache.batik.gvt" version="1.9.1.v20180227-1645"/>
+		<unit id="org.apache.batik.i18n" version="1.9.1.v20180227-1645"/>
+		<unit id="org.apache.batik.parser" version="1.9.1.v20180313-1559"/>
+		<unit id="org.apache.batik.pdf" version="1.9.1.v20180417-1407"/>
+		<unit id="org.apache.batik.script" version="1.9.1.v20180313-1559"/>
+		<unit id="org.apache.batik.svggen" version="1.9.1.v20180313-1559"/>
+		<unit id="org.apache.batik.swing" version="1.9.1.v20180313-1559"/>
+		<unit id="org.apache.batik.transcoder" version="1.9.1.v20180313-1559"/>
+		<unit id="org.apache.batik.util" version="1.9.1.v20180227-1645"/>
+		<unit id="org.apache.batik.util.gui" version="1.9.1.v20180227-1645"/>
+		<unit id="org.apache.batik.xml" version="1.9.1.v20180227-1645"/>
+		<unit id="org.apache.commons.commons-collections4" version="4.2.0"/>
+		<unit id="org.apache.commons.commons-collections4.source" version="4.2.0"/>
+		<unit id="org.apache.commons.configuration" version="2.2.0"/>
+		<unit id="org.apache.commons.configuration.source" version="2.2.0"/>
+		<unit id="org.apache.commons.digester" version="2.1.0"/>
+		<unit id="org.apache.commons.digester.source" version="2.1.0"/>
+		<unit id="org.apache.commons.javaflow" version="1590792.0.0"/>
+		<unit id="org.apache.commons.javaflow.source" version="1590792.0.0"/>
+		<unit id="org.apache.felix.inventory" version="1.0.6"/>
+		<unit id="org.apache.felix.inventory.source" version="1.0.6"/>
+		<unit id="org.apache.felix.webconsole" version="4.3.4"/>
+		<unit id="org.apache.felix.webconsole.plugins.ds" version="2.0.8"/>
+		<unit id="org.apache.felix.webconsole.plugins.ds.source" version="2.0.8"/>
+		<unit id="org.apache.felix.webconsole.plugins.memoryusage" version="1.0.6"/>
+		<unit id="org.apache.felix.webconsole.plugins.memoryusage.source" version="1.0.6"/>
+		<unit id="org.apache.felix.webconsole.plugins.packageadmin" version="1.0.4"/>
+		<unit id="org.apache.felix.webconsole.plugins.packageadmin.source" version="1.0.4"/>
+		<unit id="org.apache.felix.webconsole.source" version="4.3.4"/>
+		<unit id="org.apache.poi.poi" version="3.15.0"/>
+		<unit id="org.apache.poi.poi-ooxml" version="3.15.0"/>
+		<unit id="org.apache.poi.poi-ooxml-schemas" version="3.15.0"/>
+		<unit id="org.apache.poi.poi-ooxml.source" version="3.15.0"/>
+		<unit id="org.apache.poi.poi.source" version="3.15.0"/>
+		<unit id="org.apache.servicemix.bundles.cglib" version="3.2.5.1"/>
+		<unit id="org.apache.servicemix.bundles.cglib.source" version="3.2.5.1"/>
+		<unit id="org.apache.servicemix.bundles.jaxen" version="1.1.1.2"/>
+		<unit id="org.apache.servicemix.bundles.rhino" version="1.7.6.1"/>
+		<unit id="org.apache.servicemix.bundles.rhino.source" version="1.7.6.1"/>
+		<unit id="org.apache.taglibs.standard-impl" version="1.2.5"/>
+		<unit id="org.apache.taglibs.standard-impl.source" version="1.2.5"/>
+		<unit id="org.apache.taglibs.standard-jstlel" version="1.2.5"/>
+		<unit id="org.apache.taglibs.standard-jstlel.source" version="1.2.5"/>
+		<unit id="org.apache.taglibs.taglibs-standard-spec" version="1.2.5"/>
+		<unit id="org.apache.taglibs.taglibs-standard-spec.source" version="1.2.5"/>
+		<unit id="org.apache.velocity" version="1.7.0"/>
+		<unit id="org.apache.velocity.source" version="1.7.0"/>
+		<unit id="org.apache.xmlgraphics" version="2.2.0.v20180410-1551"/>
+		<unit id="org.atmosphere.runtime" version="2.4.16"/>
+		<unit id="org.atmosphere.runtime.source" version="2.4.16"/>
+		<unit id="org.cryptacular" version="1.2.1"/>
+		<unit id="org.cryptacular.source" version="1.2.1"/>
+		<unit id="org.eclipse.jdt.core.compiler.batch" version="3.8.2.v20130121-145325"/>
+		<unit id="org.eclipse.jdt.core.compiler.batch.source" version="3.8.2.v20130121-145325"/>
+		<unit id="org.eclipse.jetty.alpn.api" version="1.1.3.v20160715"/>
+		<unit id="org.eclipse.jetty.alpn.api.source" version="1.1.3.v20160715"/>
+		<unit id="org.eclipse.jetty.alpn.conscrypt.server" version="9.4.11.v20180605"/>
+		<unit id="org.eclipse.jetty.alpn.conscrypt.server.source" version="9.4.11.v20180605"/>
+		<unit id="org.eclipse.jetty.alpn.openjdk8.server" version="9.4.11.v20180605"/>
+		<unit id="org.eclipse.jetty.alpn.openjdk8.server.source" version="9.4.11.v20180605"/>
+		<unit id="org.eclipse.jetty.osgi-servlet-api" version="3.1.0.M3"/>
+		<unit id="org.eclipse.jetty.osgi-servlet-api.source" version="3.1.0.M3"/>
+		<unit id="org.idempiere.org.conscrypt.openjdk-uber" version="1.1.0"/>
+		<unit id="org.idempiere.org.conscrypt.openjdk-uber.source" version="1.1.0"/>
+		<unit id="org.jfree.chart-osgi" version="1.0.19"/>
+		<unit id="org.jfree.jcommon-osgi" version="1.0.23"/>
+		<unit id="org.krysalis.barcode4j" version="2.1.0"/>
+		<unit id="org.mortbay.jasper.apache-el" version="8.5.24"/>
+		<unit id="org.mortbay.jasper.apache-el.source" version="8.5.24"/>
+		<unit id="org.mortbay.jasper.apache-jsp" version="8.5.24"/>
+		<unit id="org.passay" version="1.3.0"/>
+		<unit id="org.passay.source" version="1.3.0"/>
+		<unit id="org.w3c.dom.svg.patch" version="1.1.0.b02"/>
+		<unit id="stax2-api" version="3.1.4"/>
+		<unit id="stax2-api.source" version="3.1.4"/>
+		<unit id="zcommon" version="8.5.0"/>
+		<unit id="zcommon.sources" version="8.5.0"/>
+		<unit id="zel" version="8.5.0"/>
+		<unit id="zel.sources" version="8.5.0"/>
+		<unit id="zhtml" version="8.5.0"/>
+		<unit id="zhtml.sources" version="8.5.0"/>
+		<unit id="zjavassist" version="8.5.0"/>
+		<unit id="zjavassist.sources" version="8.5.0"/>
+		<unit id="zk" version="8.5.0"/>
+		<unit id="zk.sources" version="8.5.0"/>
+		<unit id="zkbind" version="8.5.0"/>
+		<unit id="zkbind.sources" version="8.5.0"/>
+		<unit id="zkplus" version="8.5.0"/>
+		<unit id="zkplus.sources" version="8.5.0"/>
+		<unit id="zul" version="8.5.0"/>
+		<unit id="zul.sources" version="8.5.0"/>
+		<unit id="zweb" version="8.5.0"/>
+		<unit id="zweb.sources" version="8.5.0"/>
+		<repository location="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/maven-p2-R20180911"/>
 	</location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
