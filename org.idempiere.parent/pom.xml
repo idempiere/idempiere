@@ -20,7 +20,6 @@
 		<maven.dependency.version>3.0.2</maven.dependency.version>
 		<download.maven.version>1.4.0</download.maven.version>
 		<lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
-		<asm.version>6.0.0.v20180116-1719</asm.version>
 		<!-- https://www.eclipse.org/jetty/documentation/9.3.x/alpn-chapter.html#alpn-versions -->
 		<jetty.alpn-boot.version>8.1.12.v20180117</jetty.alpn-boot.version>
 
@@ -494,80 +493,6 @@
 						            <arch>x86_64</arch>
 					            </environment>
 				            </environments>
-				            <filters>
-					            <!-- filter out eclipse bundle from eclipse repository. it's version 
-						            9.4.8.v20171121 https://idempiere.atlassian.net/browse/IDEMPIERE-3531?focusedCommentId=42202&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-42202 -->
-					            <filter>
-						            <type>eclipse-plugin</type>
-						            <id>org.eclipse.jetty.http</id>
-						            <restrictTo>
-							            <version>${jetty.version}</version>
-						            </restrictTo>
-					            </filter>
-					            <filter>
-						            <type>eclipse-plugin</type>
-						            <id>org.eclipse.jetty.io</id>
-						            <restrictTo>
-							            <version>${jetty.version}</version>
-						            </restrictTo>
-					            </filter>
-					            <filter>
-						            <type>eclipse-plugin</type>
-						            <id>org.eclipse.jetty.security</id>
-						            <restrictTo>
-							            <version>${jetty.version}</version>
-						            </restrictTo>
-					            </filter>
-					            <filter>
-						            <type>eclipse-plugin</type>
-						            <id>org.eclipse.jetty.server</id>
-						            <restrictTo>
-							            <version>${jetty.version}</version>
-						            </restrictTo>
-					            </filter>
-					            <filter>
-						            <type>eclipse-plugin</type>
-						            <id>org.eclipse.jetty.servlet</id>
-						            <restrictTo>
-							            <version>${jetty.version}</version>
-						            </restrictTo>
-					            </filter>
-					            <filter>
-						            <type>eclipse-plugin</type>
-						            <id>org.eclipse.jetty.util</id>
-						            <restrictTo>
-							            <version>${jetty.version}</version>
-						            </restrictTo>
-					            </filter>
-					            <filter>
-						            <type>eclipse-plugin</type>
-						            <id>org.objectweb.asm.tree</id>
-						            <restrictTo>
-							            <version>${asm.version}</version>
-						            </restrictTo>
-					            </filter>
-					            <filter>
-						            <type>eclipse-plugin</type>
-						            <id>org.objectweb.asm</id>
-						            <restrictTo>
-							            <version>${asm.version}</version>
-						            </restrictTo>
-					            </filter>
-					            <filter>
-						            <type>eclipse-plugin</type>
-						            <id>org.objectweb.asm.commons</id>
-						            <restrictTo>
-							            <version>${asm.version}</version>
-						            </restrictTo>
-					            </filter>
-					            <filter>
-						            <type>eclipse-plugin</type>
-						            <id>org.objectweb.asm.commons</id>
-						            <restrictTo>
-							            <version>${asm.version}</version>
-						            </restrictTo>
-					            </filter>
-				            </filters>
 			            </configuration>
 		            </plugin>
                 </plugins>
