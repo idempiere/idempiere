@@ -9,3 +9,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.compiere.wstore
 Jetty-WarPatchFragmentFolderPath: /
 Bundle-ClassPath: .
+Automatic-Module-Name: org.adempiere.webstore.resource

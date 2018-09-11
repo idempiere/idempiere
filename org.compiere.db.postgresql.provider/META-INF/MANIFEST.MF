@@ -18,3 +18,4 @@ Import-Package: junit.framework;version="3.8.2",
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.adempiere.db.postgresql.PostgreSQLBundleActivator
 Service-Component: OSGI-INF/pgprovider.xml
+Automatic-Module-Name: org.compiere.db.postgresql.provider

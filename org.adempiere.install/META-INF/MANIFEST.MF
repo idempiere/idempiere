@@ -17,3 +17,4 @@ Import-Package: javax.mail;version="1.5",
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.adempiere.install.InstallBundleActivator
 Bundle-ClassPath: .
+Automatic-Module-Name: org.adempiere.install

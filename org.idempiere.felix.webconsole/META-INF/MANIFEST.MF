@@ -28,3 +28,4 @@ Import-Package: javax.servlet;version="2.5.0",
 Web-ContextPath: osgi
 Service-Component: OSGI-INF/securityprovider.xml
 Bundle-ClassPath: .
+Automatic-Module-Name: org.idempiere.felix.webconsole

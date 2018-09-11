@@ -17,4 +17,5 @@ Import-Package: org.jfree.io;version="1.0.23",
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.adempiere.db.oracle.OracleBundleActivator
 Service-Component: OSGI-INF/oracleprovider.xml
+Automatic-Module-Name: org.compiere.db.oracle.provider
 

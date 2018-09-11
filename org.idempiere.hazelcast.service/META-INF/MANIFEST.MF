@@ -32,3 +32,4 @@ Bundle-ClassPath: .,
 Service-Component: OSGI-INF/clusterservice.xml, OSGI-INF/cacheservice.xml, OSGI-INF/messageservice.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.osgi
+Automatic-Module-Name: org.idempiere.hazelcast.service

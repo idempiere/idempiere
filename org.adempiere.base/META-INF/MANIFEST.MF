@@ -123,3 +123,4 @@ Require-Bundle: org.eclipse.equinox.app;bundle-version="0.0.0",
  bcprov;bundle-version="1.54.0",
  groovy-all;bundle-version="0.0.0",
  org.krysalis.barcode4j;bundle-version="0.0.0"
+Automatic-Module-Name: org.adempiere.base

@@ -15,3 +15,4 @@ Service-Component: OSGI-INF/processfactory.xml
 Export-Package: org.adempiere.report.jasper
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
+Automatic-Module-Name: org.adempiere.report.jasper

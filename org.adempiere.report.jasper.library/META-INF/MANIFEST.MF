@@ -103,3 +103,4 @@ Import-Package: bsh,
  org.apache.tools.zip,
  org.apache.xml.serializer;version="2.7.1"
 DynamicImport-Package: *
+Automatic-Module-Name: org.adempiere.report.jasper.library

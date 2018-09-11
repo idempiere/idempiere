@@ -28,3 +28,4 @@ Export-Package: org.compiere.apps,
 Bundle-ClassPath: .,
  lib/org-netbeans-api-visual.jar,
  lib/org-openide-util.jar
+Automatic-Module-Name: org.adempiere.ui
