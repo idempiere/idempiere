@@ -174,6 +174,10 @@ public class MAttributeInstance extends X_M_AttributeInstance
 					new MAttribute(getCtx(), getM_Attribute_ID(), get_TrxName()).getDateFormat());
 			setValue(sdf.format(valueDate));
 		}
+		else
+		{
+			setValue(null);
+		}
 	}
 
 	/**

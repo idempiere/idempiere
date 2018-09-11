@@ -38,5 +38,5 @@ INSERT INTO AD_Field (IsEncrypted,AD_Tab_ID,DisplayLength,IsSameLine,IsHeading,S
 UPDATE AD_Field SET DisplayLogic='@AttributeValueType@=''D''', MandatoryLogic='@AttributeValueType@=''D''',Updated=TO_DATE('2014-11-18 15:43:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=203472
 ;
 
-SELECT register_migration_script('201411140854_IDEMPIERE-2315.sql') FROM dual
+SELECT register_migration_script('201411190748_IDEMPIERE-2319.sql') FROM dual
 ;

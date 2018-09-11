@@ -642,9 +642,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		if(instance != null)
 			editor.setValue(instance.getValueDate());
 		else
-			editor.setValue(Env.getContextAsDate(Env.getCtx(), "#Date"));
-	
-		
+			editor.setValue(null);
 	}
 
 	private void setListAttribute(MAttribute attribute, Listbox editor) {
@@ -988,13 +986,17 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		{
 			return true;
 		}
-		String trxName = Trx.createTrxName("WPAttributeDialog_SaveSelection");
+		Trx trx = null;
+		String mandatory = "";
+	  try {
+		String trxName = Trx.createTrxName("WPAD");
+		trx = Trx.get(trxName, false);
+		trx.setDisplayName(getClass().getName()+"_saveSelection");
 		m_masi.set_TrxName(trxName);
 		as.set_TrxName(trxName);
 		
 		//
 		m_changed = false;
-		String mandatory = "";
 		if (!m_productWindow && as.isLot())
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Lot=" + fieldLotString.getText ());
@@ -1084,18 +1086,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		}	//	for all attributes
 		m_M_AttributeSetInstance_ID = m_masi.getM_AttributeSetInstance_ID ();
 		m_M_AttributeSetInstanceName = m_masi.getDescription();
-		
-		if (!m_changed || mandatory.length() > 0)
-		{
-			// Rollback
-			Trx.get(trxName, false).rollback();
-		}
-		else
-		{
-			// Commit
-			Trx.get(trxName, false).commit();
-		}
-		Trx.get(trxName, false).close();
 		//
 		if (mandatory.length() > 0)
 		{
@@ -1108,6 +1098,23 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			m_masi.setDescription ();
 			m_masi.saveEx();
 		}
+	  }
+	  finally {
+		  if (trx != null) {
+				if (!m_changed || mandatory.length() > 0)
+				{
+					// Rollback
+					trx.rollback();
+				}
+				else
+				{
+					// Commit
+					trx.commit();
+				}
+				trx.close();
+				trx = null;
+		  }
+	  }
 		return true;
 	}	//	saveSelection
 
