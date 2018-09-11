@@ -48,9 +48,9 @@
 <unit id="org.restlet.feature.group" version="2.3.2.v20150501-1520"/>
 <repository location="http://p2.restlet.com/2.3"/>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.jetty.bundles.f.feature.group" version="9.4.9.201803201811"/>
-<unit id="org.eclipse.jetty.bundles.f.source.feature.group" version="9.4.9.201803201811"/>
-<repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.9.v20180320"/>
+<unit id="org.eclipse.jetty.bundles.f.feature.group" version="9.4.11.v20180605"/>
+<unit id="org.eclipse.jetty.bundles.f.source.feature.group" version="9.4.11.v20180605"/>
+<repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.11.v20180605"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="bcmail" version="1.58.0"/>
