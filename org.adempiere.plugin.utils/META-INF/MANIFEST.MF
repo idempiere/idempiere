@@ -49,3 +49,4 @@ Import-Package: org.adempiere.base,
  org.osgi.util.tracker;version="1.5.0"
 Export-Package: org.adempiere.plugin.utils
 Bundle-ClassPath: .
+Automatic-Module-Name: org.adempiere.plugin.utils

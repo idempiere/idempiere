@@ -41,10 +41,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.osgi.compatibility.plugins.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.ecf.core.feature"
          version="0.0.0"/>
 

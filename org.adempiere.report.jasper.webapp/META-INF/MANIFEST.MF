@@ -12,5 +12,6 @@ Import-Package: javax.servlet;version="2.5.0",
  org.apache.commons.codec,
  org.apache.commons.codec.binary
 Bundle-ClassPath: .
+Automatic-Module-Name: org.adempiere.report.jasper.webapp
 
 

@@ -4,12 +4,11 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry exported="true" kind="lib" path="lib/castor-core.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/castor-xml.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jasperreports-fonts.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jasperreports-chart-customizers.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jasperreports-chart-themes.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jasperreports-fonts.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jasperreports-functions.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/olap4j.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/rhino.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-beans.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-core.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmpcore.jar"/>

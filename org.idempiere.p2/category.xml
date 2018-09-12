@@ -36,36 +36,6 @@
    <feature url="features/org.compiere.db.provider.feature_5.1.0.qualifier.jar" id="org.compiere.db.provider.feature" version="5.1.0.qualifier">
       <category name="idempiere.core"/>
    </feature>
-   <feature url="features/org.eclipse.ecf.core.feature_1.4.0.v20170516-2248.jar" id="org.eclipse.ecf.core.feature" version="1.4.0.v20170516-2248">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.ecf.core.ssl.feature_1.1.0.v20170110-1317.jar" id="org.eclipse.ecf.core.ssl.feature" version="1.1.0.v20170110-1317">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.ecf.filetransfer.feature_3.13.7.v20170516-2248.jar" id="org.eclipse.ecf.filetransfer.feature" version="3.13.7.v20170516-2248">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.ecf.filetransfer.httpclient4.feature_3.13.7.v20170516-2248.jar" id="org.eclipse.ecf.filetransfer.httpclient4.feature" version="3.13.7.v20170516-2248">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.ecf.filetransfer.httpclient4.ssl.feature_1.1.0.v20170110-1317.jar" id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature" version="1.1.0.v20170110-1317">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.ecf.filetransfer.ssl.feature_1.1.0.v20170110-1317.jar" id="org.eclipse.ecf.filetransfer.ssl.feature" version="1.1.0.v20170110-1317">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.equinox.executable_3.7.2.v20171108-1834.jar" id="org.eclipse.equinox.executable" version="3.7.2.v20171108-1834">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.equinox.server.core_1.5.3.v20180210-1608.jar" id="org.eclipse.equinox.server.core" version="1.5.3.v20180210-1608">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.equinox.server.p2_1.3.1.v20170928-1405.jar" id="org.eclipse.equinox.server.p2" version="1.3.1.v20170928-1405">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.osgi.compatibility.plugins.feature_1.1.1.v20170811-1325.jar" id="org.eclipse.osgi.compatibility.plugins.feature" version="1.1.1.v20170811-1325">
-      <category name="idempiere.core"/>
-   </feature>
    <feature url="features/org.idempiere.eclipse.platform.feature_5.1.0.qualifier.jar" id="org.idempiere.eclipse.platform.feature" version="5.1.0.qualifier">
       <category name="idempiere.core"/>
    </feature>
@@ -82,6 +52,33 @@
       <category name="idempiere.core"/>
    </feature>
    <feature url="features/org.idempiere.zk.feature_5.1.0.qualifier.jar" id="org.idempiere.zk.feature" version="5.1.0.qualifier">
+      <category name="idempiere.core"/>
+   </feature>
+   <feature url="features/org.eclipse.ecf.core.feature_1.5.0.v20180426-1936.jar" id="org.eclipse.ecf.core.feature" version="1.5.0.v20180426-1936">
+      <category name="idempiere.core"/>
+   </feature>
+   <feature url="features/org.eclipse.ecf.core.ssl.feature_1.1.100.v20180301-0201.jar" id="org.eclipse.ecf.core.ssl.feature" version="1.1.100.v20180301-0201">
+      <category name="idempiere.core"/>
+   </feature>
+   <feature url="features/org.eclipse.ecf.filetransfer.feature_3.14.0.v20180306-0429.jar" id="org.eclipse.ecf.filetransfer.feature" version="3.14.0.v20180306-0429">
+      <category name="idempiere.core"/>
+   </feature>
+   <feature url="features/org.eclipse.ecf.filetransfer.httpclient4.feature_3.14.0.v20180301-0132.jar" id="org.eclipse.ecf.filetransfer.httpclient4.feature" version="3.14.0.v20180301-0132">
+      <category name="idempiere.core"/>
+   </feature>
+   <feature url="features/org.eclipse.ecf.filetransfer.httpclient4.ssl.feature_1.1.100.v20180301-0132.jar" id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature" version="1.1.100.v20180301-0132">
+      <category name="idempiere.core"/>
+   </feature>
+   <feature url="features/org.eclipse.ecf.filetransfer.ssl.feature_1.1.100.v20180301-0132.jar" id="org.eclipse.ecf.filetransfer.ssl.feature" version="1.1.100.v20180301-0132">
+      <category name="idempiere.core"/>
+   </feature>
+   <feature url="features/org.eclipse.equinox.executable_3.8.0.v20180518-2029.jar" id="org.eclipse.equinox.executable" version="3.8.0.v20180518-2029">
+      <category name="idempiere.core"/>
+   </feature>
+   <feature url="features/org.eclipse.equinox.server.core_1.6.0.v20180502-1828.jar" id="org.eclipse.equinox.server.core" version="1.6.0.v20180502-1828">
+      <category name="idempiere.core"/>
+   </feature>
+   <feature url="features/org.eclipse.equinox.server.p2_1.4.0.v20180515-2149.jar" id="org.eclipse.equinox.server.p2" version="1.4.0.v20180515-2149">
       <category name="idempiere.core"/>
    </feature>
    <category-def name="idempiere.core" label="idempiere core"/>

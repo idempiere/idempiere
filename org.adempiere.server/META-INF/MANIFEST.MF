@@ -40,3 +40,4 @@ Export-Package: org.adempiere.server,
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/acctprocessorfactory.xml, OSGI-INF/alertprocessorfactory.xml, OSGI-INF/ldapprocessorfactory.xml, OSGI-INF/requestprocessorfactory.xml, OSGI-INF/schedulerfactory.xml, OSGI-INF/workflowprocessorfactory.xml
 Bundle-Activator: org.adempiere.server.AdempiereServerActivator
+Automatic-Module-Name: org.adempiere.server

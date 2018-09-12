@@ -9,4 +9,5 @@ Bundle-ClassPath: .,
  lib/jpayment.jar,
  lib/payflow.jar,
  lib/Verisign.jar
+Automatic-Module-Name: org.adempiere.payment.processor
 

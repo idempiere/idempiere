@@ -13,3 +13,4 @@ Service-Component: plugin.xml
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
+Automatic-Module-Name: org.idempiere.fitrecorder

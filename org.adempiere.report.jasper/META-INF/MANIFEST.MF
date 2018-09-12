@@ -4,7 +4,7 @@ Bundle-Name: iDempiere JasperReport integration
 Bundle-SymbolicName: org.adempiere.report.jasper;singleton:=true
 Bundle-Version: 5.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: net.sourceforge.barbecue;version="1.5.0.beta1",
+Import-Package: net.sourceforge.barbecue,
  org.apache.commons.codec,
  org.apache.commons.codec.binary,
  org.apache.commons.logging;version="1.1.1",
@@ -15,3 +15,4 @@ Service-Component: OSGI-INF/processfactory.xml
 Export-Package: org.adempiere.report.jasper
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
+Automatic-Module-Name: org.adempiere.report.jasper

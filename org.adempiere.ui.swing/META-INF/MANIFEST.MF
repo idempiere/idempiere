@@ -89,3 +89,4 @@ Import-Package: javax.net.ssl,
  org.osgi.framework;version="1.5.0"
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: org.adempiere.ui.swing

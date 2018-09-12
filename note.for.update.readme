@@ -1,0 +1,26 @@
+1. cache repository:
+	- org.idempiere.p2.targetplatform.target
+		when update url of repository on target file, should change name of target also. format suggest idempiere-yymmdd
+	- repository on POM file (org.idempiere.parent/pom.xml)
+		each repository link should have unique id
+			<repository>
+            	<id>${idempiere-equinox-repository-id}</id>
+            	<url>${idempiere-equinox-url}</url>
+                <layout>p2</layout>
+            </repository>
+
+        when change value of url change value of id also
+
+2. feature
+	when feature list on org.idempiere.p2/category.xml change (version, delete, add,...) do update this file before build
+
+3. build
+	maven to p2 ([idempiere-root]/org.idempiere.maven.to.p2) build with profile buildP2FromMaven
+	mvn verify -P buildP2FromMaven
+
+4. equinox repository link
+on org.idempiere.parent/pom.xml have two link idempiere-equinox-url, idempiere-orbit-url
+it for run tycho-eclipserun-plugin and target for run standalone bom like org.idempiere.maven.to.p2
+
+it's don't need up to date and don't need same to link on org.idempiere.p2.targetplatform.target
+but better make it same
