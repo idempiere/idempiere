@@ -90,13 +90,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.slf4j.api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.adempiere.report.jasper.webapp"
          download-size="0"
          install-size="0"
@@ -126,13 +119,6 @@
 
    <plugin
          id="javax.persistence"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.slf4j.jcl"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -504,13 +490,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.slf4j.jdk14"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"/>
-
-   <plugin
          id="org.eclipse.jetty.alpn.conscrypt.server"
          download-size="0"
          install-size="0"
@@ -522,6 +501,21 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="slf4j.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="slf4j.jcl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
 </feature>

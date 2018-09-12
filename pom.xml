@@ -49,7 +49,6 @@
 		<module>org.idempiere.ui.zk.selenium</module>
 		<module>org.idempiere.webservices</module>
 		<module>org.idempiere.zk.extra</module>
-		<module>org.slf4j.jdk14</module>
 		<module>org.adempiere.report.jasper-feature</module>
 		<module>org.adempiere.bundles.external-feature</module>
 		<module>org.adempiere.base-feature</module>
