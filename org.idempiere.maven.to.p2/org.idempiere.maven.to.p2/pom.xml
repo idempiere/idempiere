@@ -831,6 +831,19 @@
 									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zweb.osgi.jar</sourceFile>
 									<destinationFile>${project.build.directory}/repository/plugins/zweb_${zk.version}.jar</destinationFile>
 								</fileSet>
+							</fileSets>
+						</configuration>
+					</execution>
+
+                    <!-- delete metadata file to update md5 -->
+					<execution>
+						<id>move-file</id>
+						<phase>package</phase>
+						<goals>
+							<goal>rename</goal>
+						</goals>
+						<configuration>
+							<fileSets>
 								<fileSet>
 									<sourceFile>${project.build.directory}/repository/artifacts.jar</sourceFile>
 									<destinationFile>${project.build.directory}/artifacts.jar</destinationFile>
@@ -859,7 +872,7 @@
 
 						</goals>
 						<configuration>
-							<append>true</append>
+							<append>false</append>
 							<sourceLocation>${project.build.directory}/repository</sourceLocation>
 						</configuration>
 					</execution>
