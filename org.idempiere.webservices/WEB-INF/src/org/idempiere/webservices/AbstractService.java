@@ -14,6 +14,8 @@
 package org.idempiere.webservices;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,8 +40,9 @@ import org.compiere.model.MWebService;
 import org.compiere.model.MWebServiceType;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
-import org.compiere.model.Query;
 import org.compiere.model.X_WS_WebServiceMethod;
+import org.compiere.model.X_WS_WebServiceTypeAccess;
+import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -64,7 +67,9 @@ import org.idempiere.webservices.fault.IdempiereServiceFault;
  */
 public class AbstractService {
 
-	private static final String ROLE_ACCESS_SQL = "SELECT IsActive FROM WS_WebServiceTypeAccess WHERE AD_Role_ID=? "
+	private static final String ROLE_ACCESS_SQL = "SELECT IsActive FROM WS_WebServiceTypeAccess WHERE AD_Role_ID IN ("
+			+ "SELECT AD_Role_ID FROM AD_Role WHERE AD_Role_ID=? UNION "
+			+ "SELECT Included_Role_ID as AD_Role_ID FROM AD_Role_Included WHERE AD_Role_ID=?) "
 	        + "AND WS_WebServiceType_ID=?";
 	private static final String COMPIERE_SERVICE = "CompiereService";
 	@Resource
@@ -91,6 +96,7 @@ public class AbstractService {
 			if (cachedCs != null) {
 				m_cs = cachedCs;
 				req.setAttribute(COMPIERE_SERVICE, cachedCs);
+				m_cs.connectCacheInstance();
 				return authenticate(webService, method, serviceType, cachedCs); // already logged with same data
 			}
 		}
@@ -201,6 +207,9 @@ public class AbstractService {
 		return authenticate(webService, method, serviceType, m_cs);
 	}
 
+	private static CCache<String,MWebServiceType> s_WebServiceTypeCache	= new CCache<String,MWebServiceType>(MWebServiceType.Table_Name, 10, 60);	//60 minutes
+	private static CCache<String,Boolean> s_RoleAccessCache = new CCache<>(X_WS_WebServiceTypeAccess.Table_Name, 60, 60);
+
 	/**
 	 * Authenticate user for requested service type
 	 * @param webServiceValue
@@ -219,28 +228,59 @@ public class AbstractService {
 		if (m_webservicemethod == null || !m_webservicemethod.isActive())
 			return "Method " + methodValue + " not registered";
 
-		MWebServiceType m_webservicetype = new Query(m_cs.getCtx(), MWebServiceType.Table_Name,
-				"AD_Client_ID IN (0,?) AND WS_WebService_ID=? AND WS_WebServiceMethod_ID=? AND Value=?",
-				null)
-				.setOnlyActiveRecords(true)
-				.setParameters(m_cs.getAD_Client_ID(), m_webservice.getWS_WebService_ID(), m_webservicemethod.getWS_WebServiceMethod_ID(), serviceTypeValue)
-				.setOrderBy("AD_Client_ID DESC") // IDEMPIERE-3394 give precedence to tenant defined if there are system+tenant
-				.first();
+		MWebServiceType m_webservicetype = null;
+		String key = m_cs.getAD_Client_ID() + "|" + m_webservice.getWS_WebService_ID() + "|" 
+				+ m_webservicemethod.getWS_WebServiceMethod_ID() + "|" + serviceTypeValue;
+		synchronized (s_WebServiceTypeCache) {
+			m_webservicetype = s_WebServiceTypeCache.get(key);
+			if (m_webservicetype == null) {
+				final String sql = "SELECT * FROM WS_WebServiceType " + "WHERE AD_Client_ID=? " + "AND WS_WebService_ID=? "
+						+ "AND WS_WebServiceMethod_ID=? " + "AND Value=? " + "AND IsActive='Y'";
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				try {
+					pstmt = DB.prepareStatement(sql, null);
+					pstmt.setInt(1, m_cs.getAD_Client_ID());
+					pstmt.setInt(2, m_webservice.getWS_WebService_ID());
+					pstmt.setInt(3, m_webservicemethod.getWS_WebServiceMethod_ID());
+					pstmt.setString(4, serviceTypeValue);
+					rs = pstmt.executeQuery();
+					if (rs.next()) {
+						m_webservicetype = new MWebServiceType(m_cs.getCtx(), rs, null);
+						s_WebServiceTypeCache.put(key, m_webservicetype);
+					}
+				} catch (Exception e) {
+					throw new IdempiereServiceFault(e.getClass().toString() + " " + e.getMessage() + " sql=" + sql, e.getCause(), new QName(
+							"authenticate"));
+				} finally {
+					DB.close(rs, pstmt);
+					rs = null;
+					pstmt = null;
+				}
+			}
+		}
 
 		if (m_webservicetype == null)
 			return "Service type " + serviceTypeValue + " not configured";
 
 		getHttpServletRequest().setAttribute("MWebServiceType", m_webservicetype);
 		
-		// Check if role has access on web-service
-        String hasAccess = DB.getSQLValueStringEx(null, ROLE_ACCESS_SQL,
-                Env.getAD_Role_ID( m_cs.getCtx()),
-                m_webservicetype.get_ID());
-
-        if (!"Y".equals(hasAccess))
-        {
-            return "Web Service Error: Login role does not have access to the service type";
-        }
+		int AD_Role_ID = Env.getAD_Role_ID( m_cs.getCtx());
+		key = AD_Role_ID + "|" + m_webservicetype.get_ID();
+		synchronized (s_RoleAccessCache) {
+			Boolean bAccess = s_RoleAccessCache.get(key);
+			if (bAccess == null) {
+				// Check if role has access on web-service
+		        String hasAccess = DB.getSQLValueStringEx(null, ROLE_ACCESS_SQL,
+		                AD_Role_ID, AD_Role_ID, m_webservicetype.get_ID());
+		        bAccess = "Y".equals(hasAccess);
+		        s_RoleAccessCache.put(key, bAccess);
+			}
+	        if (!bAccess.booleanValue())
+	        {
+	            return "Web Service Error: Login role does not have access to the service type";
+	        }			
+		}
         
 		String ret=invokeLoginValidator(null, m_cs.getCtx(), m_webservicetype, IWSValidator.TIMING_ON_AUTHORIZATION);
 		if(ret!=null && ret.length()>0)

@@ -69,11 +69,6 @@
 									<version>2.5</version>
 								</artifactItem>
 								<artifactItem>
-									<groupId>xml-apis</groupId>
-									<artifactId>xml-apis-ext</artifactId>
-									<version>1.3.04</version>
-								</artifactItem>
-								<artifactItem>
 									<groupId>com.adobe.xmp</groupId>
 									<artifactId>xmpcore</artifactId>
 									<version>5.1.1</version>
@@ -83,6 +78,26 @@
 							<stripVersion>true</stripVersion>
 							<overWriteReleases>true</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.googlecode.maven-download-plugin</groupId>
+				<artifactId>download-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>download-db-seed-oracle</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>${url.file.srv}/jarfile/jp-6.3.1/jasperreports-fonts-6.3.1.jar</url>
+							<unpack>false</unpack>
+							<outputDirectory>lib</outputDirectory>
+							<outputFileName>jasperreports-fonts.jar</outputFileName>
+							<retries>5</retries>
 						</configuration>
 					</execution>
 				</executions>

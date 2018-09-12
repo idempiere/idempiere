@@ -1,10 +1,14 @@
-create or replace function altercolumn(tablename name, columnname name, datatype name,
-nullclause varchar, defaultclause varchar) returns void as $$
+CREATE OR REPLACE FUNCTION adempiere.altercolumn(tablename name, columnname name, datatype name, nullclause character varying, defaultclause character varying, namespace name)
+ RETURNS void
+ LANGUAGE plpgsql
+AS $function$
 declare
    command text;
    viewtext text[];
    viewname name[];
    dropviews name[];
+   perms   text[];
+   privs text;
    i int;
    j int;
    v record;
@@ -15,12 +19,14 @@ begin
    if datatype is not null then
 	select pg_type.typname, format_type(pg_type.oid, pg_attribute.atttypmod)
             into typename, sqltype
-            from pg_class, pg_attribute, pg_type
+            from pg_class, pg_attribute, pg_type, pg_namespace
             where relname = lower(tablename)
                 and relkind = 'r'
                 and pg_class.oid = pg_attribute.attrelid
                 and attname = lower(columnname)
-                and atttypid = pg_type.oid;
+                and atttypid = pg_type.oid
+                and pg_class.relnamespace = pg_namespace.oid
+                and pg_namespace.nspname = lower(namespace);
         sqltype_short := sqltype;
         if typename = 'numeric' then
 	   sqltype_short := replace(sqltype, ',0', '');
@@ -34,7 +40,7 @@ begin
 		for v in
 	        with recursive depv(relname, viewoid, depth) as (
 		    select distinct a.relname, a.oid, 1
-		        from pg_class a, pg_depend b, pg_depend c, pg_class d, pg_attribute e
+		        from pg_class a, pg_depend b, pg_depend c, pg_class d, pg_attribute e, pg_namespace
 		        where a.oid = b.refobjid
 			    and b.objid = c.objid
 			    and b.refobjid <> c.refobjid
@@ -46,6 +52,8 @@ begin
 			    and e.attname = lower(columnname)
 			    and c.refobjsubid = e.attnum
 			    and a.relkind = 'v'
+			    and a.relnamespace = pg_namespace.oid
+			    and pg_namespace.nspname = lower(namespace)
 	          union all
 		    select distinct dependee.relname, dependee.oid, depv.depth+1
 		        from pg_depend 
@@ -54,9 +62,12 @@ begin
 			    join pg_class as dependent on pg_depend.refobjid = dependent.oid 
 			    join pg_attribute ON pg_depend.refobjid = pg_attribute.attrelid and pg_depend.refobjsubid = pg_attribute.attnum and pg_attribute.attnum > 0
 			    join depv on dependent.relname = depv.relname
+			    join pg_namespace on dependee.relnamespace = pg_namespace.oid
+			where pg_namespace.nspname = lower(namespace)
 	        )
 	        select relname, viewoid, max(depth) from depv group by relname, viewoid order by 3 desc
 		loop
+		    raise notice 'view -> % %', v.relname, v.viewoid;
 		    i := i + 1;
 		    viewtext[i] := pg_get_viewdef(v.viewoid);
 		    viewname[i] := v.relname;
@@ -64,6 +75,11 @@ begin
 		if i > 0 then
 		   begin
 		     for j in 1 .. i loop
+			SELECT String_agg('grant ' || privilege_type || ' on ' || viewname[j] || ' to ' || grantee, '; ') 
+				into privs
+				FROM information_schema.role_table_grants 
+				WHERE table_name=viewname[j];
+			perms[j] := privs;
 		        command := 'drop view ' || viewname[j];
 			raise notice 'executing -> %', command;
 		        execute command;
@@ -90,6 +106,9 @@ begin
 		   for j in reverse i .. 1 loop
 		     command := 'create or replace view ' || dropviews[j] || ' as ' || viewtext[j];
 		     raise notice 'executing -> %', 'create view ' || dropviews[j];
+		     execute command;
+		     command := perms[j];
+		     raise notice 'executing -> %', 'grant ' || perms[j];
 		     execute command;
 		   end loop;
 		end if;
@@ -122,7 +141,7 @@ begin
       end if;
    end if;
 end;
-$$ language plpgsql;
+$function$
 
 /*
 create table t_alter_column

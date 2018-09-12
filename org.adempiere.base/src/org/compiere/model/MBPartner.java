@@ -65,6 +65,8 @@ public class MBPartner extends X_C_BPartner
 		{
 			template.set_ValueNoCheck ("C_BPartner_ID", new Integer(0));
 			template.set_ValueNoCheck ("C_BPartner_UU", (String)null);
+			template.setAD_OrgBP_ID(0);
+			template.setLogo_ID(0);
 			template.setValue ("");
 			template.setName ("");
 			template.setName2 (null);

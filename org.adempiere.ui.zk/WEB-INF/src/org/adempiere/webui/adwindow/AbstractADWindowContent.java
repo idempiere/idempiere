@@ -699,8 +699,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
                     .append(mTab.getTableName());
             if (where.length() > 0)
                 sql.append(" WHERE ").append(where);
-            // Does not consider security
-            int no = DB.getSQLValue(null, sql.toString());
+            String finalSQL = MRole.getDefault().addAccessSQL(sql.toString(),
+            		mTab.getTableName(), MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
+            int no = DB.getSQLValue(null, finalSQL.toString());
             //
             require = MRole.getDefault().isQueryRequire(no);
         }
@@ -806,7 +807,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			@Override
 			public void onCallback(Boolean result) {
 				if (result) {
-					adTabbox.getSelectedGridTab().navigate(0);
+					adTabbox.getSelectedGridTab().navigate(-1); // not zero because of IDEMPIERE-3736 
 			        focusToActivePanel();
 				}
 			}
@@ -1397,11 +1398,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	        	|| GridTab.DEFAULT_STATUS_MESSAGE.equals(adInfo)
 	        	|| GridTable.DATA_REFRESH_MESSAGE.equals(adInfo)
 	        	|| GridTable.DATA_INSERTED_MESSAGE.equals(adInfo)
+	        	|| GridTable.DATA_IGNORED_MESSAGE.equals(adInfo)
 	        	|| GridTable.DATA_UPDATE_COPIED_MESSAGE.equals(adInfo)
 	           ) {
 
 		        String prefix = null;
-		        if (dbInfo.contains("*"))
+		        if (dbInfo.contains("*") || dbInfo.contains("?")) // ? used when not-autosave
 		        	prefix = "*";
 
 		        String titleLogic = null;

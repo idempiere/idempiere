@@ -19,7 +19,6 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IProductPricing;
@@ -248,51 +247,6 @@ public class MRMALine extends X_M_RMALine
     public BigDecimal getTotalAmt()
     {
         BigDecimal bd = getAmt().multiply(getQty()); 
-		
-		boolean documentLevel = getTax().isDocumentLevel();
-		
-		//	juddm: Tax Exempt & Tax Included in Price List & not Document Level - Adjust Line Amount
-		//  http://sourceforge.net/tracker/index.php?func=detail&aid=1733602&group_id=176962&atid=879332
-		if (getParent().isTaxIncluded() && !documentLevel)	
-		{
-			BigDecimal taxStdAmt = Env.ZERO, taxThisAmt = Env.ZERO;
-			
-			MTax orderTax = getTax();
-			MTax stdTax = null;
-			
-			//	get the standard tax
-			if (getProduct() == null)
-			{
-				if (getCharge() != null)	// Charge 
-				{
-					stdTax = new MTax (getCtx(), 
-							((MTaxCategory) getCharge().getC_TaxCategory()).getDefaultTax().getC_Tax_ID(),
-							get_TrxName());
-				}
-					
-			}
-			else	// Product
-				stdTax = new MTax (getCtx(), 
-							((MTaxCategory) getProduct().getC_TaxCategory()).getDefaultTax().getC_Tax_ID(), 
-							get_TrxName());
-
-			if (stdTax != null)
-			{
-				if (log.isLoggable(Level.FINE)){
-					log.fine("stdTax rate is " + stdTax.getRate());
-					log.fine("orderTax rate is " + orderTax.getRate());
-				}				
-				
-				taxThisAmt = taxThisAmt.add(orderTax.calculateTax(bd, getParent().isTaxIncluded(), getPrecision()));
-				taxStdAmt = taxStdAmt.add(stdTax.calculateTax(bd, getParent().isTaxIncluded(), getPrecision()));
-				
-				bd = bd.subtract(taxStdAmt).add(taxThisAmt);
-				
-				if (log.isLoggable(Level.FINE)) log.fine("Price List includes Tax and Tax Changed on Order Line: New Tax Amt: " 
-						+ taxThisAmt + " Standard Tax Amt: " + taxStdAmt + " Line Net Amt: " + bd);	
-			}
-			
-		}
 		int precision = getPrecision();
 		if (bd.scale() > precision)
 			bd = bd.setScale(precision, BigDecimal.ROUND_HALF_UP);

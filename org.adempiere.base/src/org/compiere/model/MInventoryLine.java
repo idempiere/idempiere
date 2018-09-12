@@ -261,27 +261,6 @@ public class MInventoryLine extends X_M_InventoryLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InventoryLine"));
 			return false;
 		}
-		/* IDEMPIERE-1770 - ASI validation must be moved to MInventory.prepareIt, saving a line without ASI is ok on draft
-		if (m_isManualEntry)
-		{
-			//	Product requires ASI
-			if (getM_AttributeSetInstance_ID() == 0)
-			{
-				MProduct product = MProduct.get(getCtx(), getM_Product_ID());
-				if (product != null && product.isASIMandatory(isSOTrx()))
-				{
-					if(product.getAttributeSet()==null){
-						log.saveError("NoAttributeSet", product.getValue());
-						return false;
-					}
-					if (! product.getAttributeSet().excludeTableEntry(MInventoryLine.Table_ID, isSOTrx())) {
-						log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_M_AttributeSetInstance_ID));
-						return false;
-					}
-				}
-			}	//	No ASI
-		}	//	manual
-		*/
 
 		//	Set Line No
 		if (getLine() == 0)

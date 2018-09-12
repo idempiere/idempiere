@@ -2439,6 +2439,7 @@ public final class APanel extends CPanel
 		pi.setAD_User_ID (Env.getAD_User_ID(m_ctx));
 		pi.setAD_Client_ID (Env.getAD_Client_ID(m_ctx));
 		pi.setPrintPreview(printPreview);
+		pi.setAD_Process_UU(m_curTab.getAD_Process_UU());
 
 		ClientProcessCtrl.process(this, m_curWindowNo, pi, null); //  calls lockUI, unlockUI
 		statusBar.setStatusLine(pi.getSummary(), pi.isError());
@@ -2872,6 +2873,7 @@ public final class APanel extends CPanel
 			ProcessInfo pi = new ProcessInfo (title, processID, table_ID, record_ID);
 			pi.setAD_User_ID (Env.getAD_User_ID(m_ctx));
 			pi.setAD_Client_ID (Env.getAD_Client_ID(m_ctx));
+			pi.setAD_Process_UU(pr.getAD_Process_UU());
 			ff.setProcessInfo(pi);
 			ff.openForm(form_ID, m_curTab);
 			ff.pack();

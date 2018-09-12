@@ -16,9 +16,13 @@ package org.adempiere.base;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import org.compiere.model.I_C_Invoice;
 import org.compiere.model.I_C_InvoiceLine;
+import org.compiere.model.I_C_Order;
 import org.compiere.model.I_C_OrderLine;
+import org.compiere.model.I_C_Project;
 import org.compiere.model.I_C_ProjectLine;
+import org.compiere.model.I_M_RMA;
 import org.compiere.model.I_M_RMALine;
 import org.compiere.model.I_M_RequisitionLine;
 import org.compiere.util.Env;
@@ -86,11 +90,14 @@ public abstract class AbstractProductPricing implements IProductPricing {
 	@Override
 	public void setOrderLine(I_C_OrderLine orderLine, String trxName) {
 		m_M_Product_ID = orderLine.getM_Product_ID();
+		if (orderLine.getC_Order_ID() > 0) {
+			I_C_Order order = orderLine.getC_Order();
+			m_isSOTrx = order.isSOTrx();
+		}
 		m_C_BPartner_ID = orderLine.getC_BPartner_ID();
 		BigDecimal qty = orderLine.getQtyOrdered();
 		if (qty != null && Env.ZERO.compareTo(qty) != 0)
 			m_Qty = qty;
-		m_isSOTrx = orderLine.getC_Order().isSOTrx();
 		m_PriceDate = orderLine.getDateOrdered();
 		this.trxName = trxName;
 	}
@@ -98,20 +105,26 @@ public abstract class AbstractProductPricing implements IProductPricing {
 	@Override
 	public void setInvoiceLine(I_C_InvoiceLine invoiceLine, String trxName) {
 		m_M_Product_ID = invoiceLine.getM_Product_ID();
-		m_C_BPartner_ID = invoiceLine.getC_Invoice().getC_BPartner_ID();
+		if (invoiceLine.getC_Invoice_ID() > 0) {
+			I_C_Invoice invoice = invoiceLine.getC_Invoice();
+			m_C_BPartner_ID = invoice.getC_BPartner_ID();
+			m_isSOTrx = invoice.isSOTrx();
+			m_PriceDate = invoice.getDateInvoiced();
+		}
 		BigDecimal qty = invoiceLine.getQtyInvoiced() != null ? 
 				invoiceLine.getQtyInvoiced() : invoiceLine.getQtyEntered();
 		if (qty != null && Env.ZERO.compareTo(qty) != 0)
 			m_Qty = qty;
-		m_isSOTrx = invoiceLine.getC_Invoice().isSOTrx();
-		m_PriceDate = invoiceLine.getC_Invoice().getDateInvoiced();
 		this.trxName = trxName;
 	}
 	
 	@Override
 	public void setProjectLine(I_C_ProjectLine projectLine, String trxName) {
 		m_M_Product_ID = projectLine.getM_Product_ID();
-		m_C_BPartner_ID = projectLine.getC_Project().getC_BPartner_ID();
+		if (projectLine.getC_Project_ID() > 0) {
+			I_C_Project project = projectLine.getC_Project();
+			m_C_BPartner_ID = project.getC_BPartner_ID();
+		}
 		BigDecimal qty = projectLine.getPlannedQty();
 		if (qty != null && Env.ZERO.compareTo(qty) != 0)
 			m_Qty = qty;
@@ -133,9 +146,12 @@ public abstract class AbstractProductPricing implements IProductPricing {
 	@Override
 	public void setRMALine(I_M_RMALine rmaLine, String trxName) {
 		m_M_Product_ID = rmaLine.getM_Product_ID();
-		m_C_BPartner_ID = rmaLine.getM_RMA().getC_BPartner_ID();
+		if (rmaLine.getM_RMA_ID() > 0) {
+			I_M_RMA rma = rmaLine.getM_RMA();
+			m_C_BPartner_ID = rma.getC_BPartner_ID();
+			m_isSOTrx = rma.isSOTrx();
+		}
 		m_Qty = Env.ONE;
-		m_isSOTrx = rmaLine.getM_RMA().isSOTrx();
 		this.trxName = trxName;
 	}
 }

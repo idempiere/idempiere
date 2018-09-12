@@ -231,7 +231,7 @@ public class GenericZoomProvider implements IZoomProvider {
 		if (queries.containsKey(sql)) {
 			count = queries.get(sql);
 		} else {
-			int timeout = MSysConfig.getIntValue("ZOOM_ACROSS_QUERY_TIMEOUT", 5, Env.getAD_Client_ID(Env.getCtx())); // default 5 seconds
+			int timeout = MSysConfig.getIntValue(MSysConfig.ZOOM_ACROSS_QUERY_TIMEOUT, 5, Env.getAD_Client_ID(Env.getCtx())); // default 5 seconds
 			count = getSQLValueTimeout(null, sql, timeout);
 			queries.put(sql, count);
 		}

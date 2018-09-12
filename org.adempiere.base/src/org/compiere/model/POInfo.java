@@ -199,6 +199,8 @@ public class POInfo implements Serializable
 				//
 				m_AccessLevel = rs.getString(18);
 				String ColumnSQL = rs.getString(19);
+				if (ColumnSQL != null && ColumnSQL.length() > 0 && ColumnSQL.startsWith("@SQL="))
+					ColumnSQL = "NULL";
 				if (ColumnSQL != null && ColumnSQL.contains("@"))
 					ColumnSQL = Env.parseContext(Env.getCtx(), -1, ColumnSQL, false, true);
 				boolean IsEncrypted = "Y".equals(rs.getString(20));
@@ -375,8 +377,11 @@ public class POInfo implements Serializable
 	{
 		if (index < 0 || index >= m_columns.length)
 			return null;
-		if (m_columns[index].ColumnSQL != null && m_columns[index].ColumnSQL.length() > 0)
+		if (m_columns[index].ColumnSQL != null && m_columns[index].ColumnSQL.length() > 0) {
+			if (m_columns[index].ColumnSQL.startsWith("@SQL="))
+				return "NULL AS " + m_columns[index].ColumnName;
 			return m_columns[index].ColumnSQL + " AS " + m_columns[index].ColumnName;
+		}
 		return m_columns[index].ColumnName;
 	}   //  getColumnSQL
 
@@ -392,6 +397,34 @@ public class POInfo implements Serializable
 		return m_columns[index].ColumnSQL != null 
 			&& m_columns[index].ColumnSQL.length() > 0;
 	}   //  isVirtualColumn
+
+	/**
+	 *  Is Column Virtual DB?
+	 *  @param index index
+	 *  @return true if column is virtual DB
+	 */
+	public boolean isVirtualDBColumn (int index)
+	{
+		if (index < 0 || index >= m_columns.length)
+			return true;
+		return m_columns[index].ColumnSQL != null 
+			&& m_columns[index].ColumnSQL.length() > 0
+			&& !m_columns[index].ColumnSQL.startsWith("@SQL=");
+	}   //  isVirtualDBColumn
+
+	/**
+	 *  Is Column Virtual UI?
+	 *  @param index index
+	 *  @return true if column is virtual UI
+	 */
+	public boolean isVirtualUIColumn (int index)
+	{
+		if (index < 0 || index >= m_columns.length)
+			return true;
+		return m_columns[index].ColumnSQL != null 
+			&& m_columns[index].ColumnSQL.length() > 0
+			&& m_columns[index].ColumnSQL.startsWith("@SQL=");
+	}   //  isVirtualUIColumn
 
 	/**
 	 *  Get Column Label

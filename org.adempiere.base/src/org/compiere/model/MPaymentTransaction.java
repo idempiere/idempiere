@@ -87,7 +87,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 			if (!Util.isEmpty(getIBAN())) {
 				setIBAN(IBAN.normalizeIBAN(getIBAN()));
 				if (!IBAN.isValid(getIBAN())) {
-					log.saveError("Error", "IBAN is invalid");
+					log.saveError("Error", Msg.getMsg(getCtx(), "InvalidIBAN"));
 					return false;
 				}
 			}

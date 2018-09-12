@@ -32,8 +32,8 @@ IDEMPIERESTATUS=
 MAXITERATIONS=60 
 
 getidempierestatus() {
-    IDEMPIERESTATUSSTRING=$(ps ax | grep -v grep | grep $IDEMPIERE_HOME)
-    echo $IDEMPIERESTATUSSTRING | grep -q $IDEMPIERE_HOME
+    IDEMPIERESTATUSSTRING=$(ps ax | grep java | grep org.adempiere.server.application | grep -v grep)
+    echo $IDEMPIERESTATUSSTRING | grep -q org.adempiere.server.application
     IDEMPIERESTATUS=$?
 }
 
@@ -96,14 +96,14 @@ stop () {
         log_success_msg "Service stopped with OSGi shutdown"
     else
         log_warning_msg "Trying direct kill with signal -15"
-        kill -15 -`ps ax o pgid,command | grep -v grep | grep $IDEMPIERE_HOME | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
+        kill -15 -`ps ax o pgid,command | grep org.adempiere.server.application | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
         sleep 5
         getidempierestatus
         if [ $IDEMPIERESTATUS -ne 0 ] ; then
             log_success_msg "Service stopped with kill -15"
         else
             log_warning_msg "Trying direct kill with signal -9"
-            kill -9 -`ps ax o pgid,command | grep -v grep | grep $IDEMPIERE_HOME | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
+            kill -9 -`ps ax o pgid,command | grep org.adempiere.server.application | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
             sleep 5
             getidempierestatus
             if [ $IDEMPIERESTATUS -ne 0 ] ; then
@@ -118,7 +118,7 @@ stop () {
 
 restart () {
     stop
-    sleep 1
+    sleep 2
     start
 }
 
@@ -134,7 +134,7 @@ status () {
     if [ $IDEMPIERESTATUS -eq 0 ] ; then
 		echo
 		echo "iDempiere is running:"
-		ps ax | grep -v grep | grep $IDEMPIERE_HOME | sed 's/^[[:space:]]*\([[:digit:]]*\).*:[[:digit:]][[:digit:]][[:space:]]\(.*\)/\1 \2/'
+		ps ax | grep org.adempiere.server.application | grep -v grep | sed 's/^[[:space:]]*\([[:digit:]]*\).*:[[:digit:]][[:digit:]][[:space:]]\(.*\)/\1 \2/'
 		echo
 	    else
 		echo "iDempiere is stopped"

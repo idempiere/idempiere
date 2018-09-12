@@ -117,13 +117,21 @@ public abstract class AdempiereServer implements Runnable
 		}
 		m_sleepMS = 0;
 		m_nextWork = 0;
-		
-		Timestamp lastRun = new Timestamp(System.currentTimeMillis());
-		m_nextWork = MSchedule.getNextRunMS(lastRun.getTime(),
-				p_model.getScheduleType(), p_model.getFrequencyType(),
-				p_model.getFrequency(), p_model.getCronPattern());
+		Timestamp dateNextRun = getDateNextRun(true);
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		if (dateNextRun != null)
+		{
+			m_nextWork = dateNextRun.getTime();
+		}
+		else
+		{			
+			m_nextWork = MSchedule.getNextRunMS(now.getTime(),
+					p_model.getScheduleType(), p_model.getFrequencyType(),
+					p_model.getFrequency(), p_model.getCronPattern());
+		}
 
-		m_sleepMS = m_nextWork - lastRun.getTime();
+		if (m_nextWork > now.getTime())
+			m_sleepMS = m_nextWork - now.getTime();
 		if (log.isLoggable(Level.INFO)) log.info(" Next run: " + new Timestamp(m_nextWork) + " sleep " + m_sleepMS);
 		//
 		p_model.setDateNextRun(new Timestamp(m_nextWork));

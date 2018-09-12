@@ -176,6 +176,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	 * @param scheduler
 	 * @return true
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public boolean addScheduler(MScheduler scheduler) {
 		String serverId = scheduler.getServerID();
 		if (getServer(serverId) != null)
@@ -226,6 +227,8 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 					continue;
 				//	Do start
 				//	replace
+				Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, server.getServer().getModel().getAD_Client_ID());
+				server.getServer().recalculateSleepMS();
 				server.start();
 			}
 			catch (Exception e)
@@ -233,6 +236,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 				log.log(Level.SEVERE, "Server: " + server, e);
 			}
 		}	//	for all servers
+		Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, 0);
 		
 		//	Final Check
 		int noRunning = 0;
@@ -279,6 +283,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		try
 		{
 			//	replace
+			Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, server.getServer().getModel().getAD_Client_ID());
 			server.getServer().recalculateSleepMS();
 			server.start();
 		}
@@ -286,6 +291,10 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		{
 			log.log(Level.SEVERE, "Server=" + serverID, e);
 			return false;
+		}
+		finally
+		{
+			Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, 0);
 		}
 		if (log.isLoggable(Level.INFO)) log.info(server.toString());
 		return (server.scheduleFuture != null && !server.scheduleFuture.isDone());

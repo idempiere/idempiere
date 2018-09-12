@@ -418,6 +418,19 @@ public interface I_AD_Column
 	  */
 	public String getIsEncrypted();
 
+    /** Column name IsHtml */
+    public static final String COLUMNNAME_IsHtml = "IsHtml";
+
+	/** Set HTML.
+	  * Text has HTML tags
+	  */
+	public void setIsHtml (boolean IsHtml);
+
+	/** Get HTML.
+	  * Text has HTML tags
+	  */
+	public boolean isHtml();
+
     /** Column name IsIdentifier */
     public static final String COLUMNNAME_IsIdentifier = "IsIdentifier";
 

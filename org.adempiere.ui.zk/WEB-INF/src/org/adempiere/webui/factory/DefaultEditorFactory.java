@@ -24,6 +24,7 @@ import org.adempiere.webui.editor.WDatetimeEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WFileDirectoryEditor;
 import org.adempiere.webui.editor.WFilenameEditor;
+import org.adempiere.webui.editor.WHtmlEditor;
 import org.adempiere.webui.editor.WImageEditor;
 import org.adempiere.webui.editor.WLocationEditor;
 import org.adempiere.webui.editor.WLocatorEditor;
@@ -79,7 +80,10 @@ public class DefaultEditorFactory implements IEditorFactory {
             }
             else
             {
-                editor = new WStringEditor(gridField, tableEditor);
+            	if (gridField.isHtml())
+            		editor = new WHtmlEditor(gridField);
+            	else
+            		editor = new WStringEditor(gridField, tableEditor);
             }
             //enable html5 color input type
             if (displayType == DisplayType.Color)
@@ -112,7 +116,10 @@ public class DefaultEditorFactory implements IEditorFactory {
         /** Text */
         else if (displayType == DisplayType.Text || displayType == DisplayType.Memo || displayType == DisplayType.TextLong || displayType == DisplayType.ID)
         {
-            editor = new WStringEditor(gridField, tableEditor);
+        	if (gridField.isHtml())
+        		editor = new WHtmlEditor(gridField);
+        	else
+        		editor = new WStringEditor(gridField, tableEditor);
         }
 
         /** Date */

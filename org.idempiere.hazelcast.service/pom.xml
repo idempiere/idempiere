@@ -26,7 +26,7 @@
 								<artifactItem>
 									<groupId>com.hazelcast</groupId>
 									<artifactId>hazelcast</artifactId>
-									<version>3.5.3</version>
+									<version>3.9.3</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.hazelcast</groupId>

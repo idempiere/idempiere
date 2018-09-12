@@ -42,6 +42,10 @@ public class PipoDictionaryService implements IDictionaryService {
 			logger.info("No PackIn Model found");
 			return;
 		}
+		if (! packageFile.canRead()) {
+			logger.severe("Cannot read file " + packageFile.getName());
+			return;
+		}
 		String symbolicName = "org.adempiere.pipo";
 		if (context != null)
 			symbolicName = context.getBundle().getSymbolicName();

@@ -186,7 +186,8 @@ public class MWFNode extends X_AD_WF_Node
 	 */
 	private void loadNext()
 	{
-		m_next = new Query(getCtx(), MWFNodeNext.Table_Name, "AD_WF_Node_ID=?", get_TrxName())
+		m_next = new Query(getCtx(), MWFNodeNext.Table_Name, "AD_WF_NodeNext.AD_WF_Node_ID=?", get_TrxName())
+								.addJoinClause(" JOIN AD_WF_Node ON (AD_WF_Node.AD_WF_Node_ID=AD_WF_NodeNext.AD_WF_Next_ID AND AD_WF_Node.IsActive='Y')")
 								.setParameters(new Object[]{get_ID()})
 								.setOnlyActiveRecords(true)
 								.setOrderBy(MWFNodeNext.COLUMNNAME_SeqNo)

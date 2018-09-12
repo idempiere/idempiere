@@ -32,7 +32,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20180217L;
+	private static final long serialVersionUID = 20180723L;
 
     /** Standard Constructor */
     public X_AD_Column (Properties ctx, int AD_Column_ID, String trxName)
@@ -656,6 +656,30 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public String getIsEncrypted () 
 	{
 		return (String)get_Value(COLUMNNAME_IsEncrypted);
+	}
+
+	/** Set HTML.
+		@param IsHtml 
+		Text has HTML tags
+	  */
+	public void setIsHtml (boolean IsHtml)
+	{
+		set_Value (COLUMNNAME_IsHtml, Boolean.valueOf(IsHtml));
+	}
+
+	/** Get HTML.
+		@return Text has HTML tags
+	  */
+	public boolean isHtml () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsHtml);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Identifier.

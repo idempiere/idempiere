@@ -34,6 +34,7 @@ import org.adempiere.model.MTabCustomization;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
+import org.compiere.model.MColumn;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.Query;
@@ -614,6 +615,8 @@ public class MPrintFormat extends X_AD_PrintFormat
 		int seqNo = 1;
 		for (GridField gridField : gridFields)
 		{
+			if (gridField.isVirtualUIColumn())
+				continue;
 			MPrintFormatItem pfi = MPrintFormatItem.createFromGridField(pf, gridField, seqNo++);
 			if (pfi != null)
 			{
@@ -859,7 +862,11 @@ public class MPrintFormat extends X_AD_PrintFormat
 			int seqNo = 1;
 			while (rs.next())
 			{
-				MPrintFormatItem pfi = MPrintFormatItem.createFromColumn (format, rs.getInt(1), seqNo++);
+				int columnID = rs.getInt(1);
+				MColumn column = MColumn.get(ctx, columnID);
+				if (column.isVirtualUIColumn())
+					continue;
+				MPrintFormatItem pfi = MPrintFormatItem.createFromColumn (format, columnID, seqNo++);
 				if (pfi != null)
 				{
 					list.add (pfi);
@@ -897,7 +904,11 @@ public class MPrintFormat extends X_AD_PrintFormat
 				int seqNo = 1;
 				while (rs.next())
 				{
-					MPrintFormatItem pfi = MPrintFormatItem.createFromColumn (format, rs.getInt(1), seqNo++);
+					int columnID = rs.getInt(1);
+					MColumn column = MColumn.get(ctx, columnID);
+					if (column.isVirtualUIColumn())
+						continue;
+					MPrintFormatItem pfi = MPrintFormatItem.createFromColumn (format, columnID, seqNo++);
 					if (pfi != null)
 					{
 						list.add (pfi);

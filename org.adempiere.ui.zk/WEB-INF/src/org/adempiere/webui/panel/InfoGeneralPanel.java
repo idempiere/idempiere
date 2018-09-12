@@ -383,6 +383,8 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			{
 				m_queryColumns.add(rs.getString(1));
 				String columnSql = rs.getString(4);
+				if (columnSql != null && columnSql.length() > 0 && columnSql.contains("@"))
+					columnSql = "NULL";
 				if (columnSql != null && columnSql.contains("@"))
 					columnSql = Env.parseContext(Env.getCtx(), -1, columnSql, false, true);
 				String qualified = p_tableName+"."+rs.getString(1);
@@ -462,11 +464,13 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 				boolean isDisplayed = rs.getString(4).equals("Y");
 				int AD_Reference_Value_ID = rs.getInt(5);
 				String columnSql = rs.getString(6);
-				int AD_Column_ID = rs.getInt(7);
+				if (columnSql != null && columnSql.length() > 0 && columnSql.contains("@"))
+					columnSql = "NULL";
 				if (columnSql != null && columnSql.contains("@"))
 					columnSql = Env.parseContext(Env.getCtx(), -1, columnSql, false, true);
 				if (columnSql == null || columnSql.length() == 0)
 					columnSql = tableName+"."+columnName;
+				int AD_Column_ID = rs.getInt(7);
 
 				//  Default
 				StringBuffer colSql = new StringBuffer(columnSql);

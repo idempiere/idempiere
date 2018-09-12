@@ -34,6 +34,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.GridField;
+import org.compiere.model.I_R_MailText;
 import org.compiere.util.DisplayType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -258,7 +259,8 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 				 || gridField.getDisplayType() == DisplayType.TextLong
 				 || gridField.getDisplayType() == DisplayType.Memo)
 				&& adwindowContent != null
-				&& adwindowContent.getActiveGridTab() != null) {
+				&& adwindowContent.getActiveGridTab() != null
+				&& adwindowContent.getActiveGridTab().getAD_Table_ID() == I_R_MailText.Table_ID) {
 				isHtml = adwindowContent.getActiveGridTab().getValueAsBoolean("IsHtml");
 			}
 			final WTextEditorDialog dialog = new WTextEditorDialog(gridField.getVO().Header, getDisplay(),

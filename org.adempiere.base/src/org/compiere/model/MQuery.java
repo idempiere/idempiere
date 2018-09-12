@@ -46,6 +46,11 @@ import org.compiere.util.ValueNamePair;
 public class MQuery implements Serializable
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 481623650333512326L;
+
+	/**
 	 *	Get Query from Parameter
 	 *	@param ctx context (to determine language)
 	 *  @param AD_PInstance_ID instance
@@ -357,9 +362,6 @@ public class MQuery implements Serializable
 		m_TableName = MTable.getTableName (Env.getCtx(), AD_Table_ID);
 	}	//	MQuery
 
-	/**	Serialization Info	**/
-	private static final long serialVersionUID = 4883859385509199306L;
-
 	/**	Table Name					*/
 	private String		m_TableName = "";
 	/** PInstance					*/
@@ -445,6 +447,11 @@ public class MQuery implements Serializable
 	public static final ValueNamePair[]	OPERATORS_LOOKUP = new ValueNamePair[] {
 		new ValueNamePair (EQUAL,			" = "),
 		new ValueNamePair (NOT_EQUAL,		" != "),
+		new ValueNamePair (NULL,			" NULL "),
+		new ValueNamePair (NOT_NULL,		" !NULL ")
+	};
+	/**	Operators for encrypted fields								*/
+	public static final ValueNamePair[]	OPERATORS_ENCRYPTED = new ValueNamePair[] {
 		new ValueNamePair (NULL,			" NULL "),
 		new ValueNamePair (NOT_NULL,		" !NULL ")
 	};
@@ -1114,7 +1121,7 @@ class Restriction  implements Serializable
 			MTable table = MTable.get(Env.getCtx(), tableName);
 			if (table != null) {
 				for (MColumn col : table.getColumns(false)) {
-					String colSQL = col.getColumnSQL();
+					String colSQL = col.getColumnSQL(true);
 					if (colSQL != null && colSQL.contains("@"))
 						colSQL = Env.parseContext(Env.getCtx(), -1, colSQL, false, true);
 					if (ColumnName.equals(colSQL)) {
@@ -1156,8 +1163,13 @@ class Restriction  implements Serializable
 		sb.append(Operator);
 		if ( ! (Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL)))
 		{
-			if (Code instanceof String)
-				sb.append(DB.TO_STRING(Code.toString()));
+			if (Code instanceof String) {
+				if (ColumnName.toUpperCase().startsWith("UPPER(")) {
+					sb.append("UPPER("+DB.TO_STRING(Code.toString())+")");
+				} else {
+					sb.append(DB.TO_STRING(Code.toString()));
+				}
+			}
 			else if (Code instanceof Timestamp)
 				sb.append(DB.TO_DATE((Timestamp)Code, false));
 			else

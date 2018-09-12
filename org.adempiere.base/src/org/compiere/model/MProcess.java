@@ -26,6 +26,7 @@ import org.compiere.process.ProcessInfo;
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.compiere.wf.MWFNode;
 
 /**
@@ -43,8 +44,7 @@ public class MProcess extends X_AD_Process
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6665942554198058466L;
-
+	private static final long serialVersionUID = -7234986583327689692L;
 
 	/**
 	 * 	Get MProcess from Cache
@@ -64,6 +64,24 @@ public class MProcess extends X_AD_Process
 		return retValue;
 	}	//	get
 	
+	/**
+	 * 	Get MProcess from Cache based on UUID
+	 *	@param ctx context
+	 *	@param AD_Process_UU UUID
+	 *	@return MProcess
+	 */
+	public static MProcess get (Properties ctx, String AD_Process_UU)
+	{
+		MProcess retValue = s_cacheUU.get(AD_Process_UU);
+		if (retValue != null)
+			return retValue;
+		int id = DB.getSQLValueEx(null, "SELECT AD_Process_ID FROM AD_Process WHERE AD_Process_UU = ? ", AD_Process_UU);
+		retValue = new MProcess (ctx, id, null);
+		if (!Util.isEmpty(retValue.getAD_Process_UU()))
+			s_cacheUU.put (retValue.getAD_Process_UU(), retValue);
+		return retValue;
+	}	//	get
+
 	/**
 	 * 	Get MProcess from Menu
 	 *	@param ctx context
@@ -85,8 +103,10 @@ public class MProcess extends X_AD_Process
 	}	//	getFromMenu
 
 
-	/**	Cache						*/
+	/**	Cache ID						*/
 	private static CCache<Integer,MProcess>	s_cache	= new CCache<Integer,MProcess>(Table_Name, 20);
+	/**	Cache UUID						*/
+	private static CCache<String,MProcess>	s_cacheUU	= new CCache<String,MProcess>(Table_Name, 20);
 	
 	
 	/**************************************************************************

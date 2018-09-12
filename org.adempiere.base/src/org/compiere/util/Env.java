@@ -871,14 +871,8 @@ public final class Env
 			throw new IllegalArgumentException ("Require Context");
 		String s = getContext(ctx, WindowNo, context, false);
 		//	JDBC Format YYYY-MM-DD	example 2000-09-11 00:00:00.0
-		if (s == null || s.equals(""))
-		{
-			if (!"#date".equalsIgnoreCase(context))
-			{
-				log.log(Level.WARNING, "No value for: " + context);
-			}
+		if (Util.isEmpty(s))
 			return new Timestamp(System.currentTimeMillis());
-		}
 
 		// BUG:3075946 KTU - Fix Thai Date
 		/*
@@ -1967,7 +1961,7 @@ public final class Env
 	 */
 	public static String getStandardReportFooterTrademarkText() {
 		String s = MSysConfig.getValue(MSysConfig.STANDARD_REPORT_FOOTER_TRADEMARK_TEXT, Env.getAD_Client_ID(Env.getCtx()));
-		if (Util.isEmpty(s))
+		if (Util.isEmpty(s, true))
 			s = Env.getContext(Env.getCtx(), STANDARD_REPORT_FOOTER_TRADEMARK_TEXT);
 		if (Util.isEmpty(s))
 			s = Adempiere.ADEMPIERE_R;

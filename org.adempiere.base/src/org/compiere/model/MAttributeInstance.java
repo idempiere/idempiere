@@ -18,6 +18,8 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 /**
@@ -101,15 +103,24 @@ public class MAttributeInstance extends X_M_AttributeInstance
 	 * 	@param Value String representation for fast display
 	 *	@param trxName transaction
 	 */
-	public MAttributeInstance (Properties ctx, int M_Attribute_ID, 
-		int M_AttributeSetInstance_ID, int M_AttributeValue_ID, String Value, String trxName)
+	public MAttributeInstance(Properties ctx, int M_Attribute_ID, int M_AttributeSetInstance_ID,
+			int M_AttributeValue_ID, String Value, String trxName)
 	{
 		super(ctx, 0, trxName);
-		setM_Attribute_ID (M_Attribute_ID);
-		setM_AttributeSetInstance_ID (M_AttributeSetInstance_ID);
-		setM_AttributeValue_ID (M_AttributeValue_ID);
-		setValue (Value);
-	}	//	MAttributeInstance
+		setM_Attribute_ID(M_Attribute_ID);
+		setM_AttributeSetInstance_ID(M_AttributeSetInstance_ID);
+		setM_AttributeValue_ID(M_AttributeValue_ID);
+		setValue(Value);
+	} // MAttributeInstance
+
+	public MAttributeInstance(Properties ctx, int m_Attribute_ID, int m_AttributeSetInstance_ID, Timestamp value,
+			String trxName)
+	{
+		super(ctx, 0, trxName);
+		setM_Attribute_ID(m_Attribute_ID);
+		setM_AttributeSetInstance_ID(m_AttributeSetInstance_ID);
+		setValueDate(value);
+	}
 
 	
 	/**
@@ -152,9 +163,23 @@ public class MAttributeInstance extends X_M_AttributeInstance
 			}
 		}			
 		setValue(display.toString());
-	}	//	setValueNumber
-	
-	
+	} // setValueNumber
+
+	public void setValueDate(Timestamp valueDate)
+	{
+		super.setValueDate(valueDate);
+		if (valueDate != null)
+		{
+			SimpleDateFormat sdf = new SimpleDateFormat(
+					new MAttribute(getCtx(), getM_Attribute_ID(), get_TrxName()).getDateFormat());
+			setValue(sdf.format(valueDate));
+		}
+		else
+		{
+			setValue(null);
+		}
+	}
+
 	/**
 	 *	String Representation
 	 * 	@return info

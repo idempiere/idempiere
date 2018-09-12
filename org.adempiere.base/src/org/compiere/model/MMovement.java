@@ -32,6 +32,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
 
 /**
  *	Inventory Movement Model
@@ -298,7 +299,7 @@ public class MMovement extends X_M_Movement implements DocAction
 			MProduct product = line.getProduct();
 			if (line.getM_AttributeSetInstance_ID() == 0) {
 				if (product != null && product.isASIMandatory(true)) {
-					if (! product.getAttributeSet().excludeTableEntry(MMovementLine.Table_ID, true)) {  // outgoing
+					if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MMovementLine.Table_ID, true)) {  // outgoing
 						BigDecimal qtyDiff = line.getMovementQty();
 						// verify if the ASIs are captured on lineMA
 						MMovementLineMA mas[] = MMovementLineMA.get(getCtx(),
@@ -320,7 +321,7 @@ public class MMovement extends X_M_Movement implements DocAction
 			{
 				if (product != null && product.isASIMandatory(false) && line.getM_AttributeSetInstanceTo_ID() == 0)
 				{
-					if (! product.getAttributeSet().excludeTableEntry(MMovementLine.Table_ID, false)) { // incoming
+					if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MMovementLine.Table_ID, false)) { // incoming
 						m_processMsg = "@Line@ " + line.getLine() + ": @FillMandatory@ @M_AttributeSetInstanceTo_ID@";
 						return DocAction.STATUS_Invalid;
 					}
@@ -631,7 +632,7 @@ public class MMovement extends X_M_Movement implements DocAction
 	private void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
-			setMovementDate(new Timestamp (System.currentTimeMillis()));
+			setMovementDate(TimeUtil.getDay(0));
 			MPeriod.testPeriodOpen(getCtx(), getMovementDate(), getC_DocType_ID(), getAD_Org_ID());
 		}
 		if (dt.isOverwriteSeqOnComplete()) {

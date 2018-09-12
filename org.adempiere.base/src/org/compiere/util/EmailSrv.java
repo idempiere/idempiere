@@ -114,7 +114,7 @@ public class EmailSrv {
 		if (lsContentTypeRaw != null){
 			for (String contentType : lsContentTypeRaw){
 				emailPartLogInfo.append (contentType);
-				emailPartLogInfo.append (msg.getHeader("; "));
+				emailPartLogInfo.append ("; ");
 			}
 		}
 		emailPartLogInfo.append ("\r\n");

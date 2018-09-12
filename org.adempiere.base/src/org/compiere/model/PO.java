@@ -2069,7 +2069,10 @@ public abstract class PO
 				l_trxname.setLength(23);
 			m_trxName = Trx.createTrxName(l_trxname.toString());
 			localTrx = Trx.get(m_trxName, true);
-			localTrx.setDisplayName(getClass().getName()+"_save");
+			if (newRecord)
+				localTrx.setDisplayName(getClass().getName() + "_insert");
+			else
+				localTrx.setDisplayName(getClass().getName() + "_update_ID" + get_ID());
 			localTrx.getConnection();
 		}
 		else
@@ -2341,9 +2344,10 @@ public abstract class PO
 			m_newValues = new Object[size];
 			m_createNew = false;
 		}
-		if (!newRecord)
+		if (!newRecord) {
 			CacheMgt.get().reset(p_info.getTableName());
-		else if (get_ID() > 0 && success)
+			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID());
+		} else if (get_ID() > 0 && success)
 			CacheMgt.get().newRecord(p_info.getTableName(), get_ID());
 		
 		return success;
@@ -2846,7 +2850,8 @@ public abstract class PO
 			if (DisplayType.isLOB(dt))
 			{
 				lobAdd (value, i, dt);
-				continue;
+				if (!p_info.isColumnMandatory(i))
+					continue;
 			}
 
 			//	** add column **
@@ -2885,7 +2890,16 @@ public abstract class PO
 					else if (c == String.class)
 						sqlValues.append (encrypt(i,DB.TO_STRING ((String)value)));
 					else if (DisplayType.isLOB(dt))
-						sqlValues.append("null");		//	no db dependent stuff here
+					{
+						if (p_info.isColumnMandatory(i))
+						{
+							sqlValues.append("''");		//	no db dependent stuff here -- at this point value is known to be not null
+						}
+						else
+						{
+							sqlValues.append("null");
+						}
+					}
 					else
 						sqlValues.append (saveNewSpecial (value, i));
 				}
@@ -2910,7 +2924,17 @@ public abstract class PO
 							
 				if (DisplayType.isLOB(dt))
 				{
-					params.add(null);
+					if (p_info.isColumnMandatory(i))
+					{
+						if (dt == DisplayType.Binary)
+							params.add(new byte[] {0}); // -- at this point value is known to be not null
+						else
+							params.add(""); // -- at this point value is known to be not null
+					}
+					else
+					{
+						params.add(null);
+					}
 				}
 				else if (value == null || value.equals (Null.NULL))
 				{
@@ -3195,7 +3219,7 @@ public abstract class PO
 			{
 				localTrxName = Trx.createTrxName("POdel");
 				localTrx = Trx.get(localTrxName, true);
-				localTrx.setDisplayName(getClass().getName()+"_delete");
+				localTrx.setDisplayName(getClass().getName()+ "_delete_ID" + get_ID());
 				localTrx.getConnection();
 				m_trxName = localTrxName;
 			}

@@ -72,7 +72,7 @@ public final class EMail implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2489441683920482601L;
+	private static final long serialVersionUID = 5355436165040508855L;
 
 	//use in server bean
 	public final static String HTML_MAIL_MARKER = "ContentType=text/html;";
@@ -602,7 +602,7 @@ public final class EMail implements Serializable
 		}
 		try
 		{
-			m_from = new InternetAddress (newFrom, true);
+			m_from = createInternetAddress(newFrom);
 			if (MSysConfig.getBooleanValue(MSysConfig.MAIL_SEND_BCC_TO_FROM, false, Env.getAD_Client_ID(Env.getCtx())))
 				addBcc(newFrom);
 		}
@@ -628,7 +628,7 @@ public final class EMail implements Serializable
 		InternetAddress ia = null;
 		try
 		{
-			ia = new InternetAddress (newTo, true);
+			ia = createInternetAddress(newTo);
 		}
 		catch (Exception e)
 		{
@@ -679,7 +679,7 @@ public final class EMail implements Serializable
 		InternetAddress ia = null;
 		try
 		{
-			ia = new InternetAddress (newCc, true);
+			ia = createInternetAddress(newCc);
 		}
 		catch (Exception e)
 		{
@@ -719,7 +719,7 @@ public final class EMail implements Serializable
 			InternetAddress ia = null;
 			try
 			{
-				ia = new InternetAddress (bccAddress, true);
+				ia = createInternetAddress(bccAddress);
 			}
 			catch (Exception e)
 			{
@@ -758,7 +758,7 @@ public final class EMail implements Serializable
 		InternetAddress ia = null;
 		try
 		{
-			ia = new InternetAddress (newTo, true);
+			ia = createInternetAddress(newTo);
 		}
 		catch (Exception e)
 		{
@@ -1219,6 +1219,23 @@ public final class EMail implements Serializable
 	}   //  main
 	public void setHeader(String name, String value) {
 		additionalHeaders.add(new ValueNamePair(value, name));
+	}
+
+	/**
+	 * Create an internet address with personal if the email address is formatted as "Personal <email>"
+	 * @param email
+	 * @return internet address with personal if defined
+	 * @throws Exception
+	 */
+	public static InternetAddress createInternetAddress(String email) throws Exception {
+		InternetAddress ia = new InternetAddress (email, true);
+		if (email.contains("<") && email.contains(">")) {
+			int idx = email.lastIndexOf("<");
+			String personal = email.substring(0, idx).trim();
+			if (! personal.isEmpty())
+				ia.setPersonal(personal);
+		}
+		return ia;
 	}
 
 }	//	EMail

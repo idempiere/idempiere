@@ -40,7 +40,8 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2102597724705225997L;
+	private static final long serialVersionUID = -3713350125429939476L;
+
 	private List<EventListener<Event>> doubleClickListeners = new ArrayList<EventListener<Event>>();
     private List<EventListener<Event>> onDropListeners = new ArrayList<EventListener<Event>>();
 	private boolean draggable;
@@ -333,5 +334,17 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener<Even
 		items.append("]");
 		return items.toString();
 	}
-	
+
+	/** 
+	 * Get selected item for the list box based on the value of list item
+	 * @return Value of selected ListItem
+	 */
+	public Object getValue()
+	{
+		ListItem item = getSelectedItem();
+
+		return item.getValue();
+
+	}
+
 }

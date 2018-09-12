@@ -257,6 +257,19 @@ public interface I_AD_InfoColumn
 	  */
 	public String getHelp();
 
+    /** Column name InputFieldValidation */
+    public static final String COLUMNNAME_InputFieldValidation = "InputFieldValidation";
+
+	/** Set Input field validation.
+	  * Input field validaton query
+	  */
+	public void setInputFieldValidation (String InputFieldValidation);
+
+	/** Get Input field validation.
+	  * Input field validaton query
+	  */
+	public String getInputFieldValidation();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -347,6 +360,19 @@ public interface I_AD_InfoColumn
 	  * The column is also used as a query criteria
 	  */
 	public boolean isQueryCriteria();
+
+    /** Column name IsReadOnly */
+    public static final String COLUMNNAME_IsReadOnly = "IsReadOnly";
+
+	/** Set Read Only.
+	  * Field is read only
+	  */
+	public void setIsReadOnly (boolean IsReadOnly);
+
+	/** Get Read Only.
+	  * Field is read only
+	  */
+	public boolean isReadOnly();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

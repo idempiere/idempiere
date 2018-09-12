@@ -93,30 +93,36 @@ public class MStatusLine extends X_AD_StatusLine
 		}
 
 		String sql = ""
-				+ "SELECT AD_StatusLine_ID "
-				+ "FROM   AD_StatusLineUsedIn "
-				+ "WHERE  IsActive = 'Y' "
-				+ "       AND IsStatusLine = 'Y' "
-				+ "       AND AD_Window_ID = ? "
-				+ "       AND AD_Tab_ID = ?";
+				+ "SELECT slu.AD_StatusLine_ID "
+				+ "FROM   AD_StatusLineUsedIn slu "
+				+ "JOIN AD_StatusLine sl ON (sl.AD_StatusLine_ID = slu.AD_StatusLine_ID) "
+				+ "WHERE  slu.IsActive = 'Y' "
+				+ "       AND sl.IsActive = 'Y' "
+				+ "       AND slu.IsStatusLine = 'Y' "
+				+ "       AND slu.AD_Window_ID = ? "
+				+ "       AND slu.AD_Tab_ID = ?";
 		int slid = DB.getSQLValueEx(null, sql, window_ID, tab_ID);
 		if (slid <= 0) {
 			sql = ""
-					+ "SELECT AD_StatusLine_ID "
-					+ "FROM   AD_StatusLineUsedIn "
-					+ "WHERE  IsActive = 'Y' "
-					+ "       AND IsStatusLine = 'Y' "
-					+ "       AND AD_Window_ID = ? "
-					+ "       AND AD_Tab_ID IS NULL";
+					+ "SELECT slu.AD_StatusLine_ID "
+					+ "FROM   AD_StatusLineUsedIn slu "
+					+ "JOIN AD_StatusLine sl ON (sl.AD_StatusLine_ID = slu.AD_StatusLine_ID) "
+					+ "WHERE  slu.IsActive = 'Y' "
+					+ "       AND sl.IsActive = 'Y' "
+					+ "       AND slu.IsStatusLine = 'Y' "
+					+ "       AND slu.AD_Window_ID = ? "
+					+ "       AND slu.AD_Tab_ID IS NULL";
 			slid = DB.getSQLValueEx(null, sql, window_ID);
 		}
 		if (slid <= 0) {
 			sql = ""
-					+ "SELECT AD_StatusLine_ID "
-					+ "FROM   AD_StatusLineUsedIn "
-					+ "WHERE  IsActive = 'Y' "
-					+ "       AND IsStatusLine = 'Y' "
-					+ "       AND AD_Table_ID = ?";
+					+ "SELECT slu.AD_StatusLine_ID "
+					+ "FROM   AD_StatusLineUsedIn slu "
+					+ "JOIN AD_StatusLine sl ON (sl.AD_StatusLine_ID = slu.AD_StatusLine_ID) "
+					+ "WHERE  slu.IsActive = 'Y' "
+					+ "       AND sl.IsActive = 'Y' "
+					+ "       AND slu.IsStatusLine = 'Y' "
+					+ "       AND slu.AD_Table_ID = ?";
 			slid = DB.getSQLValueEx(null, sql, table_ID);
 		}
 		if (slid > 0) {
@@ -145,12 +151,14 @@ public class MStatusLine extends X_AD_StatusLine
 		}
 
 		final String sql = ""
-				+ "SELECT DISTINCT AD_StatusLine_ID, SeqNo "
-				+ "FROM   AD_StatusLineUsedIn "
-				+ "WHERE  IsActive = 'Y' "
-				+ "       AND IsStatusLine = 'N' "
-				+ "       AND (AD_Table_ID = ? OR (AD_Window_ID=? AND AD_Tab_ID=?) OR (AD_Window_ID=? AND AD_Tab_ID IS NULL)) "
-				+ "ORDER BY SeqNo";
+				+ "SELECT DISTINCT slu.AD_StatusLine_ID, slu.SeqNo "
+				+ "FROM   AD_StatusLineUsedIn slu "
+				+ "JOIN AD_StatusLine sl ON (sl.AD_StatusLine_ID = slu.AD_StatusLine_ID) "
+				+ "WHERE  slu.IsActive = 'Y' "
+				+ "       AND sl.IsActive = 'Y' "
+				+ "       AND slu.IsStatusLine = 'N' "
+				+ "       AND (slu.AD_Table_ID = ? OR (slu.AD_Window_ID=? AND slu.AD_Tab_ID=?) OR (slu.AD_Window_ID=? AND slu.AD_Tab_ID IS NULL)) "
+				+ "ORDER BY slu.SeqNo";
 		int[] wlids = DB.getIDsEx(null, sql, table_ID, window_ID, tab_ID, window_ID);
 		if (wlids.length > 0) {
 	        ArrayList<MStatusLine> list = new ArrayList<MStatusLine>();

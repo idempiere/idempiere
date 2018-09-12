@@ -43,6 +43,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 
 
@@ -1347,12 +1348,7 @@ public class MOrder extends X_C_Order implements DocAction
 			if (line.getM_Product_ID() > 0 && line.getM_AttributeSetInstance_ID() == 0) {
 				MProduct product = line.getProduct();
 				if (product.isASIMandatory(isSOTrx())) {
-					if(product.getAttributeSet()==null){
-						m_processMsg = "@NoAttributeSet@=" + product.getValue();
-						return DocAction.STATUS_Invalid;
-
-					}
-					if (! product.getAttributeSet().excludeTableEntry(MOrderLine.Table_ID, isSOTrx())) {
+					if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MOrderLine.Table_ID, isSOTrx())) {
 						StringBuilder msg = new StringBuilder("@M_AttributeSet_ID@ @IsMandatory@ (@Line@ #")
 							.append(line.getLine())
 							.append(", @M_Product_ID@=")
@@ -2130,7 +2126,7 @@ public class MOrder extends X_C_Order implements DocAction
 		if (dt.isOverwriteDateOnComplete()) {
 			/* a42niem - BF IDEMPIERE-63 - check if document has been completed before */ 
 			if (this.getProcessedOn().signum() == 0) {
-				setDateOrdered(new Timestamp (System.currentTimeMillis()));
+				setDateOrdered(TimeUtil.getDay(0));
 				if (getDateAcct().before(getDateOrdered())) {
 					setDateAcct(getDateOrdered());
 					MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());

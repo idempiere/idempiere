@@ -59,7 +59,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -706774424788688953L;
+	private static final long serialVersionUID = -5501893389366975849L;
 
 	/**	Logger. */
 	private static CLogger logger = CLogger.getCLogger(WListbox.class);
@@ -81,6 +81,9 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	private int m_colorColumnIndex = -1;
 	/** Color Column compare data.       */
 	private Object m_colorDataCompare = Env.ZERO;
+	
+	// F3P: support IDColumn for selection
+	private boolean allowIDColumnForReadWrite = false;
 
 	/**
 	 * Default constructor.
@@ -194,11 +197,26 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	public boolean isCellEditable(int row, int column)
 	{
 		//  if the first column holds a boolean and it is false, it is not editable
-		if (column != 0
-			&& (getValueAt(row, 0) instanceof Boolean)
-			&& !((Boolean)getValueAt(row, 0)).booleanValue())
+		
+		// F3P: If allowed, use idcolumn as a switch for read/write
+		
+		if (column != 0)
+			return false;
+		
+		Object val = getValueAt(row, 0); 
+		
+		if ((val instanceof Boolean)
+			&& !((Boolean)val).booleanValue())
 		{
 			return false;
+		}
+		
+		if(val instanceof IDColumn)
+		{
+			IDColumn idc = (IDColumn)val;
+			
+			if(!idc.isSelected())
+				return false;
 		}
 
 		//  is the column read/write?
@@ -371,7 +389,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
             }
 
             //  add to model
-            addColumn(layout[columnIndex].getColHeader(), layout[columnIndex].getColDescription());
+            addColumn(layout[columnIndex].getColHeader(), layout[columnIndex].getColDescription(), layout[columnIndex].getAD_Reference_ID());
 
             // set the colour column
             if (layout[columnIndex].isColorColumn())
@@ -438,16 +456,20 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		addColumn(header, null);
 	}
 	
+	public void addColumn (String header, String description)
+	{
+		addColumn(header, description, 0);
+	}
 	/**
 	 *  Add Table Column and specify the column header.
 	 *
 	 *  @param header	name of column header
 	 *  @param description
 	 */
-	public void addColumn (String header, String description)
+	public void addColumn (String header, String description, int AD_Reference_ID)
 	{
 		WListItemRenderer renderer = (WListItemRenderer)getItemRenderer();
-		renderer.addColumn(Util.cleanAmp(header), description);
+		renderer.addColumn(Util.cleanAmp(header), description, AD_Reference_ID);
 		getModel().addColumn();
 
 		return;
@@ -1222,6 +1244,16 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 			}	
 			
 		}
+	}
+
+	public boolean isAllowIDColumnForReadWrite()
+	{
+		return allowIDColumnForReadWrite;
+	}
+
+	public void setAllowIDColumnForReadWrite(boolean allowIDColumnForReadWrite)
+	{
+		this.allowIDColumnForReadWrite = allowIDColumnForReadWrite;
 	}
 
 }

@@ -139,8 +139,8 @@ public class ServerProcessCtl implements Runnable {
 		//
 		String sql = "SELECT p.Name, p.ProcedureName,p.ClassName, p.AD_Process_ID,"		//	1..4
 			+ " p.isReport,p.IsDirectPrint,p.AD_ReportView_ID,p.AD_Workflow_ID,"		//	5..8
-			+ " CASE WHEN COALESCE(p.Statistic_Count,0)=0 THEN 0 ELSE p.Statistic_Seconds/p.Statistic_Count END CASE,"
-			+ " p.IsServerProcess, p.JasperReport " 
+			+ " CASE WHEN COALESCE(p.Statistic_Count,0)=0 THEN 0 ELSE p.Statistic_Seconds/p.Statistic_Count END CASE,"	//	9
+			+ " p.IsServerProcess, p.JasperReport, p.AD_Process_UU " 	//	10..12
 			+ "FROM AD_Process p"
 			+ " INNER JOIN AD_PInstance i ON (p.AD_Process_ID=i.AD_Process_ID) "
 			+ "WHERE p.IsActive='Y'"
@@ -148,8 +148,8 @@ public class ServerProcessCtl implements Runnable {
 		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Process"))
 			sql = "SELECT t.Name, p.ProcedureName,p.ClassName, p.AD_Process_ID,"		//	1..4
 				+ " p.isReport, p.IsDirectPrint,p.AD_ReportView_ID,p.AD_Workflow_ID,"	//	5..8
-				+ " CASE WHEN COALESCE(p.Statistic_Count,0)=0 THEN 0 ELSE p.Statistic_Seconds/p.Statistic_Count END CASE,"
-				+ " p.IsServerProcess, p.JasperReport "
+				+ " CASE WHEN COALESCE(p.Statistic_Count,0)=0 THEN 0 ELSE p.Statistic_Seconds/p.Statistic_Count END CASE,"	//	9
+				+ " p.IsServerProcess, p.JasperReport, p.AD_Process_UU " 	//	10..12
 				+ "FROM AD_Process p"
 				+ " INNER JOIN AD_PInstance i ON (p.AD_Process_ID=i.AD_Process_ID) "
 				+ " INNER JOIN AD_Process_Trl t ON (p.AD_Process_ID=t.AD_Process_ID"
@@ -171,6 +171,7 @@ public class ServerProcessCtl implements Runnable {
 				ProcedureName = rs.getString(2);
 				m_pi.setClassName (rs.getString(3));
 				m_pi.setAD_Process_ID (rs.getInt(4));
+				m_pi.setAD_Process_UU (rs.getString(12));
 				//	Report
 				if ("Y".equals(rs.getString(5)))
 				{

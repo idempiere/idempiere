@@ -91,6 +91,19 @@ public interface I_M_Attribute
 	  */
 	public int getCreatedBy();
 
+    /** Column name DateFormat */
+    public static final String COLUMNNAME_DateFormat = "DateFormat";
+
+	/** Set Date Format.
+	  * Date format used in the input format
+	  */
+	public void setDateFormat (String DateFormat);
+
+	/** Get Date Format.
+	  * Date format used in the input format
+	  */
+	public String getDateFormat();
+
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 

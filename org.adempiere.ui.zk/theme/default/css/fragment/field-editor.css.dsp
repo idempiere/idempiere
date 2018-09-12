@@ -191,6 +191,12 @@ span.grid-combobox-editor {
 	border: none;
 }
 
+.html-field {
+	cursor: pointer;
+	border: 1px solid #C5C5C5;
+	overflow: auto;
+}
+
 .dashboard-field-panel.z-panel, .dashboard-field-panel.z-panel > .z-panel-body,  .dashboard-field-panel.z-panel > .z-panel-body > .z-panelchildren  {
 	overflow: visible;
 }

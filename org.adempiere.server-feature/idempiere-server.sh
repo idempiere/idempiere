@@ -21,8 +21,7 @@ echo Starting iDempiere Server
 echo ===================================
 
 
-VMOPTS="-Xbootclasspath/p:alpn-boot.jar
--Dorg.osgi.framework.bootdelegation=sun.security.ssl,org.eclipse.jetty.alpn
+VMOPTS="-Dorg.osgi.framework.bootdelegation=sun.security.ssl
 -Dosgi.compatibility.bootdelegation=true
 -Djetty.home=$BASE/jettyhome
 -Djetty.base=$BASE/jettyhome

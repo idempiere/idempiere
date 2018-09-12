@@ -373,7 +373,7 @@ public class FDialog
 	 *	@return true, if OK
 	 */
     
-    public static boolean ask(String title, int windowNo, Component comp, String adMessage, final Callback<Boolean> callback)
+    public static boolean ask(String title, int windowNo, Component comp, String adMessage, final Callback<Boolean> callback, Object ... args)
     {
     	Callback<Integer> msgCallback = null;
     	if (callback != null) 
@@ -386,7 +386,12 @@ public class FDialog
 				}
 			};
     	}
-    	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
+    	String s;
+    	if (args != null && args.length > 0)
+    		s = Msg.getMsg(Env.getCtx(), adMessage, args);
+    	else
+    		s = Msg.getMsg(Env.getCtx(), adMessage);
+    	s = s.replace("\n", "<br>");
         int response = Messagebox.showDialog(s, title, 
         		Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, msgCallback, (msgCallback == null));
 

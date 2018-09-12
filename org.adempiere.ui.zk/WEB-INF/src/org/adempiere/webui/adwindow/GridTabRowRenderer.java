@@ -574,7 +574,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				}
 				
 				GridRowCtx ctx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
-				if (!gridPanelFields[i].isDisplayed(ctx, true)){
+				if (! (gridPanelFields[i].isDisplayed(ctx, true) || gridPanelFields[i].isDisplayedGrid())){
 					// IDEMPIERE-2253 
 					component.setVisible(false);
 				}
@@ -594,7 +594,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		row.setStyle("cursor:pointer");
 		row.addEventListener(Events.ON_CLICK, rowListener);
 		row.addEventListener(Events.ON_OK, rowListener);
-		row.setTooltiptext("Row " + (rowIndex+1));
+		row.setTooltiptext(Msg.getMsg(Env.getCtx(), "Row") + " " + (rowIndex+1));
 		
 		if (isActive == null) {
 			Object isActiveValue = gridTab.getValue(rowIndex, "IsActive");

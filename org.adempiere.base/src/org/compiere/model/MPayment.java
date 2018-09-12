@@ -40,6 +40,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.IBAN;
 import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
@@ -803,7 +804,7 @@ public class MPayment extends X_C_Payment
 			if (!Util.isEmpty(getIBAN())) {
 				setIBAN(IBAN.normalizeIBAN(getIBAN()));
 				if (!IBAN.isValid(getIBAN())) {
-					log.saveError("Error", "IBAN is invalid");
+					log.saveError("Error", Msg.getMsg(getCtx(), "InvalidIBAN"));
 					return false;
 				}
 			}
@@ -2117,7 +2118,7 @@ public class MPayment extends X_C_Payment
 	private void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
-			setDateTrx(new Timestamp (System.currentTimeMillis()));
+			setDateTrx(TimeUtil.getDay(0));
 			if (getDateAcct().before(getDateTrx())) {
 				setDateAcct(getDateTrx());
 				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());

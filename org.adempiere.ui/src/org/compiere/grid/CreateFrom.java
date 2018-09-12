@@ -99,14 +99,19 @@ public abstract class CreateFrom implements ICreateFrom
 			.append(DB.TO_CHAR("o.GrandTotal", DisplayType.Amount, Env.getAD_Language(Env.getCtx())));
 		//
 		String column = "ol.QtyDelivered";
+		String colBP = "o.C_BPartner_ID";
 		if (forInvoice)
+		{
 			column = "ol.QtyInvoiced";
-		StringBuffer sql = new StringBuffer("SELECT o.C_Order_ID,").append(display)
-			.append(" FROM C_Order o "
-			+ "WHERE o.C_BPartner_ID=? AND o.IsSOTrx=? AND o.DocStatus IN ('CL','CO')"
-			+ " AND o.C_Order_ID IN "
-				  + "(SELECT ol.C_Order_ID FROM C_OrderLine ol"
-				  + " WHERE ol.QtyOrdered - ").append(column).append(" != 0) ");
+			colBP = "o.Bill_BPartner_ID";
+		}
+		StringBuffer sql = new StringBuffer("SELECT o.C_Order_ID,")
+			.append(display)
+			.append(" FROM C_Order o WHERE ")
+			.append(colBP)
+			.append("=? AND o.IsSOTrx=? AND o.DocStatus IN ('CL','CO') AND o.C_Order_ID IN (SELECT ol.C_Order_ID FROM C_OrderLine ol WHERE ol.QtyOrdered-")
+			.append(column)
+			.append("!=0) ");
 		if(sameWarehouseOnly)
 		{
 			sql = sql.append(" AND o.M_Warehouse_ID=? ");

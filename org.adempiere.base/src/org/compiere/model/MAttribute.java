@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -219,6 +220,17 @@ public class MAttribute extends X_M_Attribute
 	}	//	setAttributeInstance
 	
 	
+	public void setMAttributeInstance(int M_AttributeSetInstance_ID, Timestamp value)
+	{
+		MAttributeInstance instance = getMAttributeInstance(M_AttributeSetInstance_ID);
+		if (instance == null)
+			instance = new MAttributeInstance(getCtx(), getM_Attribute_ID(), M_AttributeSetInstance_ID, value,
+					get_TrxName());
+		else
+			instance.setValueDate(value);
+		instance.saveEx();
+	}// setAttributeInstance
+
 	/**
 	 * 	String Representation
 	 *	@return info

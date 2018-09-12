@@ -85,8 +85,8 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 	@Override
 	public Object getValue()
 	{
-		//if (m_mAccount.C_ValidCombination_ID == 0)
-		//	return null;
+		if (m_mAccount.C_ValidCombination_ID == 0)
+			return null;
 		return new Integer (m_mAccount.C_ValidCombination_ID);
 	}
 
@@ -101,7 +101,11 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 	 */
 	public void cmd_button()
 	{
-		int C_AcctSchema_ID = Env.getContextAsInt(Env.getCtx(), gridField.getWindowNo(), "C_AcctSchema_ID");
+		int C_AcctSchema_ID;
+		if (gridField.getGridTab() != null)
+			C_AcctSchema_ID = Env.getContextAsInt(Env.getCtx(), gridField.getWindowNo(), gridField.getGridTab().getTabNo(), "C_AcctSchema_ID");
+		else
+			C_AcctSchema_ID = Env.getContextAsInt(Env.getCtx(), gridField.getWindowNo(), "C_AcctSchema_ID");
 		// Try to get C_AcctSchema_ID from global context - teo_sarca BF [ 1830531 ]
 		if (C_AcctSchema_ID <= 0)
 		{
@@ -171,6 +175,9 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, C_AcctSchema_ID);
+			boolean useSimilarTo = "Y".equals(Env.getContext(Env.getCtx(), "P|IsUseSimilarTo"));
+			if (useSimilarTo && text.contains("*"))
+				text = text.replaceAll("\\*", "\\\\*");
 			pstmt.setString(2, text.toUpperCase());
 			pstmt.setString(3, text.toUpperCase());
 			rs = pstmt.executeQuery();

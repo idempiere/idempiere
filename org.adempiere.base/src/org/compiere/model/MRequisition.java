@@ -30,6 +30,7 @@ import org.compiere.process.DocumentEngine;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
 
 /**
  *	Requisition Model
@@ -364,7 +365,7 @@ public class MRequisition extends X_M_Requisition implements DocAction
 	private void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
-			setDateDoc(new Timestamp (System.currentTimeMillis()));
+			setDateDoc(TimeUtil.getDay(0));
 			MPeriod.testPeriodOpen(getCtx(), getDateDoc(), MDocType.DOCBASETYPE_PurchaseRequisition, getAD_Org_ID());
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
