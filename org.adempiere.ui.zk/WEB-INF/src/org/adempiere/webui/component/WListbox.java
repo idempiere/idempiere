@@ -198,25 +198,24 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	{
 		//  if the first column holds a boolean and it is false, it is not editable
 		
-		// F3P: If allowed, use idcolumn as a switch for read/write
-		
-		if (column != 0)
-			return false;
-		
 		Object val = getValueAt(row, 0); 
 		
-		if ((val instanceof Boolean)
+		//  if the first column holds a boolean and it is false, it is not editable
+		if (column != 0
+			&& (val instanceof Boolean)
 			&& !((Boolean)val).booleanValue())
 		{
 			return false;
 		}
 		
-		if(val instanceof IDColumn)
+		// F3P: If allowed, use idcolumn as a switch for read/write (Some logic as boolean)
+		
+		if(allowIDColumnForReadWrite 
+			&& column != 0
+			&& val instanceof IDColumn 
+			&& ((IDColumn)val).isSelected() == false)
 		{
-			IDColumn idc = (IDColumn)val;
-			
-			if(!idc.isSelected())
-				return false;
+			return false;
 		}
 
 		//  is the column read/write?
