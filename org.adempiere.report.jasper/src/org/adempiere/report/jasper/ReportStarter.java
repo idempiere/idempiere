@@ -84,6 +84,8 @@ import net.sf.jasperreports.engine.JRVariable;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperReportsContext;
+import net.sf.jasperreports.engine.SimpleJasperReportsContext;
 import net.sf.jasperreports.engine.design.JRDesignQuery;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.HtmlExporter;
@@ -98,7 +100,6 @@ import net.sf.jasperreports.engine.fill.JRFiller;
 import net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.util.JRSwapFile;
-import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.engine.xml.JRXmlWriter;
 import net.sf.jasperreports.export.Exporter;
@@ -136,7 +137,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	/** Logger */
 	private static CLogger log = CLogger.getCLogger(ReportStarter.class);
 	private static File REPORT_HOME = null;
-
+    public static final JasperReportsContext jasperReportStartContext;
+	
     static {
         String reportPath = System.getProperty("org.compiere.report.path");
         if (reportPath == null) {
@@ -144,6 +146,16 @@ public class ReportStarter implements ProcessCall, ClientProcess
         } else {
 			REPORT_HOME = new File(reportPath);
         }
+        
+        // SimpleJasperReportsContext just same like DefaultJasperReportsContext, but DefaultJasperReportsContext is singleton, 
+        // every thing setting for ReportStarter will effect to other "customize" jasper engine
+        jasperReportStartContext = new SimpleJasperReportsContext();
+         	
+        // http://jasperreports.sourceforge.net/sample.reference/groovy/index.html#javaCompilers
+        // http://jasperreports.sourceforge.net/api/net/sf/jasperreports/engine/JasperCompileManager.html
+        // default is 1.8 but jasper will don't understand and break autobox feature
+        // other value (org.eclipse.jdt.core.compiler.compliance, org.eclipse.jdt.core.compiler.codegen.targetPlatform) still keep 1.8
+        jasperReportStartContext.setProperty("org.eclipse.jdt.core.compiler.source", "1.5");
     }
 
 	private ProcessInfo processInfo;
@@ -492,9 +504,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
                 			    newQuery.setText(newQueryText);
                 			    jasperDesign.setQuery(newQuery);
                 			    
-                			    LocalJasperReportsContext context = new LocalJasperReportsContext(DefaultJasperReportsContext.getInstance());
-                	        	context.setClassLoader(JasperReport.class.getClassLoader());
-                	        	JasperCompileManager manager = JasperCompileManager.getInstance(context);
+                	        	JasperCompileManager manager = JasperCompileManager.getInstance(jasperReportStartContext);
                 	        	JasperReport newJasperReport = manager.compile(jasperDesign);
                 			    if (newJasperReport != null)
                 			    {
@@ -698,10 +708,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	                    		} else {
 		                    		PDF = File.createTempFile(makePrefix(jasperPrint.getName()), ".pdf");
 	                    		}
-	                    		DefaultJasperReportsContext jrContext = DefaultJasperReportsContext.getInstance();
-	                    		LocalJasperReportsContext ljrContext = new LocalJasperReportsContext(jrContext);
-	                    		ljrContext.setClassLoader(this.getClass().getClassLoader());
-	                    		JRPdfExporter exporter = new JRPdfExporter(ljrContext);                    		
+	                    		
+	                    		JRPdfExporter exporter = new JRPdfExporter(jasperReportStartContext);                    		
 	                    		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 	                    		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(PDF.getAbsolutePath()));
 	                    		exporter.exportReport();
@@ -738,9 +746,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
                 			ext = "pdf";
                 		
                 		File file = File.createTempFile(makePrefix(jasperPrint.getName()), "." + ext);
-                		DefaultJasperReportsContext jrContext = DefaultJasperReportsContext.getInstance();
-                		LocalJasperReportsContext ljrContext = new LocalJasperReportsContext(jrContext);
-                		ljrContext.setClassLoader(this.getClass().getClassLoader());
 
                 		FileOutputStream strm = new FileOutputStream(file);
 
@@ -748,7 +753,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 
             			//JRExporter<?, ?, ?, ?> exporter = null;
                 		if (ext.equals("pdf")) {
-                			JRPdfExporter export = new JRPdfExporter(ljrContext);
+                			JRPdfExporter export = new JRPdfExporter(jasperReportStartContext);
                 			SimplePdfExporterConfiguration config = new SimplePdfExporterConfiguration();
             				export.setConfiguration(config);
             				export.setExporterOutput(new SimpleOutputStreamExporterOutput(strm));
@@ -795,7 +800,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
             			}
                 		
                 		if (exporter == null)
-            				exporter = new JRPdfExporter(ljrContext);
+            				exporter = new JRPdfExporter(jasperReportStartContext);
                 		
             			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 
@@ -827,9 +832,9 @@ public class ReportStarter implements ProcessCall, ClientProcess
         }
         reportResult( AD_PInstance_ID, null, trxName);
         return true;
-    }
-
-	private String makePrefix(String name) {
+    }	
+	
+    private String makePrefix(String name) {
 		StringBuilder prefix = new StringBuilder();
 		char[] nameArray = name.toCharArray();
 		for (char ch : nameArray) {
@@ -1344,11 +1349,9 @@ public class ReportStarter implements ProcessCall, ClientProcess
      */
     private JasperReport compileReport( File reportFile, File jasperFile)
     {
-        JasperReport compiledJasperReport = null;
+    	JasperReport compiledJasperReport = null;
         try {
-        	LocalJasperReportsContext context = new LocalJasperReportsContext(DefaultJasperReportsContext.getInstance());
-        	context.setClassLoader(JasperReport.class.getClassLoader());
-        	JasperCompileManager manager = JasperCompileManager.getInstance(context);
+        	JasperCompileManager manager = JasperCompileManager.getInstance(jasperReportStartContext);
         	manager.compileToFile(reportFile.getAbsolutePath(), jasperFile.getAbsolutePath() );
             jasperFile.setLastModified( reportFile.lastModified()); //Synchronize Dates
             compiledJasperReport =  (JasperReport)JRLoader.loadObject(jasperFile);
