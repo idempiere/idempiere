@@ -2420,12 +2420,19 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				
 				if (mPO[i].getM_InOutLine_ID() == 0)
 				{
-					if (!mPO[i].reverse(reversalDate)) 
+					if(mPO[i].isPosted())
 					{
-						m_processMsg = "Could not Reverse MatchPO";
-						return null;
+						if (!mPO[i].reverse(reversalDate)) 
+						{
+							m_processMsg = "Could not Reverse MatchPO";
+							return null;
+						}
+						addDocsPostProcess(new MMatchPO(Env.getCtx(), mPO[i].getReversal_ID(), get_TrxName()));
+					} 
+					else
+					{
+						mPO[i].deleteEx(true);						
 					}
-					addDocsPostProcess(new MMatchPO(Env.getCtx(), mPO[i].getReversal_ID(), get_TrxName()));
 				}
 				else
 				{

@@ -1356,6 +1356,7 @@ public class CalloutOrder extends CalloutEngine
 		return "";
 	}	//	SalesOrderTenderType
 
+	/* Called from AD_Org_ID in tables C_Order, M_InOut, M_Inventory, M_Requisition */
 	public String organization(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value){
 		
 		//Return if Organization field is empty
