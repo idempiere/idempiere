@@ -31,7 +31,7 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171031L;
+	private static final long serialVersionUID = 20180927L;
 
     /** Standard Constructor */
     public X_AD_HouseKeeping (Properties ctx, int AD_HouseKeeping_ID, String trxName)
@@ -40,7 +40,6 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
       /** if (AD_HouseKeeping_ID == 0)
         {
 			setAD_HouseKeeping_ID (0);
-			setAD_Table_ID (0);
 			setName (null);
 			setValue (null);
         } */
@@ -304,6 +303,23 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set DB Table Name.
+		@param TableName 
+		Name of the table in the database
+	  */
+	public void setTableName (String TableName)
+	{
+		set_Value (COLUMNNAME_TableName, TableName);
+	}
+
+	/** Get DB Table Name.
+		@return Name of the table in the database
+	  */
+	public String getTableName () 
+	{
+		return (String)get_Value(COLUMNNAME_TableName);
 	}
 
 	/** Set Search Key.

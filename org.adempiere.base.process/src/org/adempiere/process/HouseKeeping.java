@@ -39,8 +39,8 @@ import java.util.Date;
 import java.util.logging.Level;
 
 import org.adempiere.model.GenericPO;
+import org.compiere.model.MHouseKeeping;
 import org.compiere.model.MTable;
-import org.compiere.model.X_AD_HouseKeeping;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereSystemError;
@@ -73,10 +73,15 @@ public class HouseKeeping extends SvrProcess{
 
 	protected String doIt() throws Exception {
 		
-		X_AD_HouseKeeping houseKeeping = new X_AD_HouseKeeping(getCtx(), p_AD_HouseKeeping_ID,get_TrxName());
+		MHouseKeeping houseKeeping = new MHouseKeeping(getCtx(), p_AD_HouseKeeping_ID,get_TrxName());
+		String tableName = null;
 		int tableID = houseKeeping.getAD_Table_ID();
-		MTable table = new MTable(getCtx(), tableID, get_TrxName());
-		String tableName = table.getTableName();	
+		if (tableID > 0) {
+			MTable table = new MTable(getCtx(), tableID, get_TrxName());
+			tableName = table.getTableName();	
+		} else {
+			tableName = houseKeeping.getTableName();
+		}
 		String whereClause = houseKeeping.getWhereClause();	
 		int noins = 0;
 		int noexp = 0;
@@ -93,7 +98,7 @@ public class HouseKeeping extends SvrProcess{
 		} //saveInHistoric
 
 		Date date = new Date();
-		if (houseKeeping.isExportXMLBackup()){
+		if (houseKeeping.isExportXMLBackup() && houseKeeping.getAD_Table_ID() > 0){
 			String pathFile = houseKeeping.getBackupFolder();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 			String dateString = dateFormat.format(date);

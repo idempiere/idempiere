@@ -221,6 +221,19 @@ public interface I_AD_HouseKeeping
 	/** Get Process Now	  */
 	public boolean isProcessing();
 
+    /** Column name TableName */
+    public static final String COLUMNNAME_TableName = "TableName";
+
+	/** Set DB Table Name.
+	  * Name of the table in the database
+	  */
+	public void setTableName (String TableName);
+
+	/** Get DB Table Name.
+	  * Name of the table in the database
+	  */
+	public String getTableName();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
