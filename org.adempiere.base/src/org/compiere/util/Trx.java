@@ -624,7 +624,6 @@ public class Trx
 				}
 				catch (SQLException e2) {;}
 			}
-			trx = null;
 			// Throw exception
 			if (e instanceof RuntimeException)
 			{
