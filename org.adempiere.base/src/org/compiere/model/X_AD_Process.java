@@ -30,7 +30,7 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171031L;
+	private static final long serialVersionUID = 20181002L;
 
     /** Standard Constructor */
     public X_AD_Process (Properties ctx, int AD_Process_ID, String trxName)
@@ -353,6 +353,30 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	public String getEntityType () 
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
+	}
+	
+	/** ExecutionType AD_Reference_ID=200157 */
+	public static final int EXECUTIONTYPE_AD_Reference_ID=200157;
+	/** Force Background = B */
+	public static final String EXECUTIONTYPE_ForceBackground = "B";
+	/** Force Foreground = F */
+	public static final String EXECUTIONTYPE_ForceForeground = "F";
+	/** Set Execution Type.
+		@param ExecutionType 
+		Execution Type defines whether the report/process will always run in background or foreground. 
+	  */
+	public void setExecutionType (String ExecutionType)
+	{
+
+		set_Value (COLUMNNAME_ExecutionType, ExecutionType);
+	}
+
+	/** Get Execution Type.
+		@return Execution Type defines whether the report/process will always run in background or foreground. 
+	  */
+	public String getExecutionType () 
+	{
+		return (String)get_Value(COLUMNNAME_ExecutionType);
 	}
 
 	/** Set Comment/Help.

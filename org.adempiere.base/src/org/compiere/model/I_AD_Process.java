@@ -237,6 +237,19 @@ public interface I_AD_Process
  Determines ownership and synchronization
 	  */
 	public String getEntityType();
+	
+    /** Column name ExecutionType */
+    public static final String COLUMNNAME_ExecutionType = "ExecutionType";
+
+	/** Set Execution Type.
+	  * Execution Type defines whether the report/process will always run in background or foreground. 
+	  */
+	public void setExecutionType (String ExecutionType);
+
+	/** Get Execution Type.
+	  * Execution Type defines whether the report/process will always run in background or foreground. 
+	  */
+	public String getExecutionType();
 
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";

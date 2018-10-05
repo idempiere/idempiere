@@ -309,6 +309,24 @@ public class MProcess extends X_AD_Process
 	}	//	is JavaProcess
 	
 	/**
+	 * 	Is Force Background
+	 *	@return true if force background
+	 */
+	public boolean isForceBackground()
+	{
+		return EXECUTIONTYPE_ForceBackground.equals(getExecutionType());
+	}
+	
+	/**
+	 * 	Is Force Foreground
+	 *	@return true if force foreground
+	 */
+	public boolean isForceForeground()
+	{
+		return EXECUTIONTYPE_ForceForeground.equals(getExecutionType());
+	}
+	
+	/**
 	 *  Start Database Process
 	 *  @param ProcedureName PL/SQL procedure name
 	 *  @param pInstance process instance
