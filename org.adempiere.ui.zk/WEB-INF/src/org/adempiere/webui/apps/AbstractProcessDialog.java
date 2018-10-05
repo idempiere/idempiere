@@ -780,6 +780,12 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	
 	protected void startProcess()
 	{
+		if (m_pi.isProcessRunning(parameterPanel.getParameters())) {
+			FDialog.error(getWindowNo(), "ProcessAlreadyRunning");
+			log.log(Level.WARNING, "Abort process " + m_AD_Process_ID + " because it is already running");
+			return;
+		}
+
 		if (!parameterPanel.validateParameters())
 			return;
 		

@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -231,6 +232,27 @@ public class MPInstancePara extends X_AD_PInstance_Para
 			}
 		}
 		return -1;
+	}
+	
+	public boolean equalParameter(MPInstancePara param) {
+		
+		if (param == null)
+			return false;
+		
+		if (!Objects.equals(getP_String(),param.getP_String()) && !Objects.equals(getP_String_To(),param.getP_String_To()))
+			return false;
+		
+		BigDecimal bd = (BigDecimal)get_Value("P_Number");
+		BigDecimal bdParam = (BigDecimal)param.get_Value("P_Number");
+		BigDecimal bd2 = (BigDecimal)get_Value("P_Number_To");
+		BigDecimal bd2Param = (BigDecimal)param.get_Value("P_Number_To");
+		if (!Objects.equals(bd,bdParam) && !Objects.equals(bd2,bd2Param))
+			return false;
+			
+		if (!Objects.equals(getP_Date(),param.getP_Date()) && !Objects.equals(getP_Date_To(),param.getP_Date_To()))
+			return false;
+
+		return true;
 	}
 	
 	/**

@@ -283,6 +283,30 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 			 return 0;
 		return ii.intValue();
 	}
+	
+	/** AllowMultipleExecution AD_Reference_ID=200158 */
+	public static final int ALLOWMULTIPLEEXECUTION_AD_Reference_ID=200158;
+	/** Disallow multiple executions = N */
+	public static final String ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutions = "N";
+	/** Disallow multiple executions with the same parameters = P */
+	public static final String ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutionsWithTheSameParameters = "P";
+	/** Set Multiple Execution.
+		@param AllowMultipleExecution 
+		Allow or disallow executing a process/report multiple times.
+	  */
+	public void setAllowMultipleExecution (String AllowMultipleExecution)
+	{
+
+		set_Value (COLUMNNAME_AllowMultipleExecution, AllowMultipleExecution);
+	}
+
+	/** Get Multiple Execution.
+		@return Allow or disallow executing a process/report multiple times.
+	  */
+	public String getAllowMultipleExecution () 
+	{
+		return (String)get_Value(COLUMNNAME_AllowMultipleExecution);
+	}
 
 	/** Set Classname.
 		@param Classname 

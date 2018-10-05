@@ -167,6 +167,19 @@ public interface I_AD_Process
 	public int getAD_Workflow_ID();
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
+	
+    /** Column name AllowMultipleExecution */
+    public static final String COLUMNNAME_AllowMultipleExecution = "AllowMultipleExecution";
+
+	/** Set Multiple Execution.
+	  * Allow or disallow executing a process/report multiple times.
+	  */
+	public void setAllowMultipleExecution (String AllowMultipleExecution);
+
+	/** Get Multiple Execution.
+	  * Allow or disallow executing a process/report multiple times.
+	  */
+	public String getAllowMultipleExecution();
 
     /** Column name Classname */
     public static final String COLUMNNAME_Classname = "Classname";
