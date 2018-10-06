@@ -176,6 +176,7 @@ public class MPInstance extends X_AD_PInstance
 					 if (!instanceParameter.equalParameter(para)) {
 						 return false;
 					 }
+					 break;
 				}
 			}
 		}
