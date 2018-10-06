@@ -387,6 +387,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			} else if (process.isForceForeground()) {
 				runAsJobField.setChecked(false);
 				runAsJobField.setEnabled(false);
+				runAsJobField.setVisible(false);
 			}
 			notificationTypeField.getComponent().getParent().setVisible(runAsJobField.isChecked());
 			notificationTypeField.fillHorizontal();
