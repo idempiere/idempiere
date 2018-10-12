@@ -69,16 +69,16 @@ public class ResetLockedAccount extends SvrProcess {
 			if (DB.isPostgreSQL())
 			{
 				if (MAX_ACCOUNT_LOCK_MINUTES > 0)
-					sql.append( " AND EXTRACT(MINUTE FROM (now()-DateAccountLocked)) * 24 * 60 > ").append(MAX_ACCOUNT_LOCK_MINUTES);
+					sql.append(" AND EXTRACT(EPOCH FROM (now()-DateAccountLocked)) / 60 > ").append(MAX_ACCOUNT_LOCK_MINUTES);
 				if (MAX_INACTIVE_PERIOD > 0)
-					sql.append(" AND EXTRACT(DAY FROM (now()-DateLastLogin)) * 24 <= ").append(MAX_INACTIVE_PERIOD);
+					sql.append(" AND EXTRACT(EPOCH FROM (now()-DateLastLogin)) / 86400 <= ").append(MAX_INACTIVE_PERIOD);
 			}
 			else
 			{
 				if (MAX_ACCOUNT_LOCK_MINUTES > 0)
-					sql.append(" AND (SysDate-DateAccountLocked) * 24 * 60 > ").append(MAX_ACCOUNT_LOCK_MINUTES);
+					sql.append(" AND (SysDate-DateAccountLocked) * 1440 > ").append(MAX_ACCOUNT_LOCK_MINUTES);
 				if (MAX_INACTIVE_PERIOD > 0)
-					sql.append(" AND (SysDate-DateLastLogin) * 24 <= ").append(MAX_INACTIVE_PERIOD);
+					sql.append(" AND (SysDate-DateLastLogin) <= ").append(MAX_INACTIVE_PERIOD);
 			}
 			
 			int no = DB.executeUpdate(sql.toString(), p_AD_Client_ID, get_TrxName());
