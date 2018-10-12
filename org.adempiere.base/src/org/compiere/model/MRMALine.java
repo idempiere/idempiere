@@ -40,7 +40,7 @@ public class MRMALine extends X_M_RMALine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3459158383642518763L;
+	private static final long serialVersionUID = 3088864372141663734L;
 
 	/**
 	 * 	Standard Constructor
@@ -73,25 +73,25 @@ public class MRMALine extends X_M_RMALine
 	}	//	MRMALine
 	
 	/**	Shipment Line			*/
-	private MInOutLine	m_ioLine = null;
+	protected MInOutLine	m_ioLine = null;
 	/**	Product					*/
-	private MProduct	m_product = null;
+	protected MProduct	m_product = null;
 	/**	Charge					*/
-	private MCharge		m_charge = null;
+	protected MCharge		m_charge = null;
 	/** Tax							*/
-	private MTax 		m_tax = null;
+	protected MTax 		m_tax = null;
 	/** Parent                  */
-	private MRMA		m_parent = null;
+	protected MRMA		m_parent = null;
     
-    private int precision = 0;
-    private BigDecimal unitAmount = Env.ZERO;
-    private BigDecimal originalQty = Env.ZERO;
-    private int taxId = 0;
+    protected int precision = 0;
+    protected BigDecimal unitAmount = Env.ZERO;
+    protected BigDecimal originalQty = Env.ZERO;
+    protected int taxId = 0;
     
     /**
      * Initialise parameters that are required
      */
-    private void init()
+    protected void init()
     {
         getShipLine();
         
@@ -223,7 +223,7 @@ public class MRMALine extends X_M_RMALine
      * Retrieves the invoiceLine Id associated with the Shipment/Receipt Line
      * @return Invoice Line ID
      */
-    private int getInvoiceLineId()
+    protected int getInvoiceLineId()
     {
     	int invoiceLine_ID = new Query(getCtx(), I_C_InvoiceLine.Table_Name, "M_InOutLine_ID=?", get_TrxName())
     	.setParameters(getM_InOutLine_ID())

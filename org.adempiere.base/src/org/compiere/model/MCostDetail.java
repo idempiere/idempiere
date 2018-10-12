@@ -50,9 +50,9 @@ public class MCostDetail extends X_M_CostDetail
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -448632684360931078L;
+	private static final long serialVersionUID = -3896161579785627935L;
 
-	private static final String INOUTLINE_DOCBASETYPE_SQL =
+	protected static final String INOUTLINE_DOCBASETYPE_SQL =
 		    "SELECT c.DocBaseType From M_InOut io " +
 			"INNER JOIN M_InOutLine iol ON io.M_InOut_ID=iol.M_InOut_ID " +
 			"INNER JOIN C_DocType c ON io.C_DocType_ID=c.C_DocType_ID " +
@@ -982,7 +982,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param M_ASI_ID - asi corrected for costing level
 	 *	@return true if cost ok
 	 */
-	private boolean process (MAcctSchema as, MProduct product, MCostElement ce, 
+	protected boolean process (MAcctSchema as, MProduct product, MCostElement ce, 
 		int Org_ID, int M_ASI_ID)
 	{
 		//handle compatibility issue between average invoice and average po

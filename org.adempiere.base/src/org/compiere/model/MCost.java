@@ -59,7 +59,7 @@ public class MCost extends X_M_Cost
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8904980122276406878L;
+	private static final long serialVersionUID = -9054858267574839079L;
 
 	/**
 	 * 	Retrieve/Calculate Current Cost Price
@@ -123,7 +123,7 @@ public class MCost extends X_M_Cost
 	 *	@param trxName trx
 	 *	@return cost price or null
 	 */
-	private static BigDecimal getCurrentCost (MProduct product, int M_ASI_ID,
+	protected static BigDecimal getCurrentCost (MProduct product, int M_ASI_ID,
 		MAcctSchema as, int Org_ID, int M_CostType_ID,
 		String costingMethod, BigDecimal qty, int C_OrderLine_ID,
 		boolean zeroCostsOK, String trxName)
@@ -420,7 +420,7 @@ public class MCost extends X_M_Cost
 	}	//	getSeedCosts
 
 
-	private static BigDecimal getSeedCostFromPriceList(MProduct product,
+	protected static BigDecimal getSeedCostFromPriceList(MProduct product,
 			MAcctSchema as, int orgID) {
 		String sql = "SELECT pp.PriceList, pp.PriceStd FROM M_ProductPrice pp" +
 				" INNER JOIN M_PriceList_Version plv ON (pp.M_PriceList_Version_ID = plv.M_PriceList_Version_ID AND plv.ValidFrom <= trunc(sysdate))" +
@@ -1485,7 +1485,7 @@ public class MCost extends X_M_Cost
 	}	//	MCost
 
 	/** Data is entered Manually		*/
-	private boolean m_manual = true;
+	protected boolean m_manual = true;
 
 	/**
 	 * 	Add Cumulative Amt/Qty and Current Qty
@@ -1571,7 +1571,7 @@ public class MCost extends X_M_Cost
 	 * 	Get Costing Precision
 	 *	@return precision (6)
 	 */
-	private int getPrecision()
+	protected int getPrecision()
 	{
 		MAcctSchema as = MAcctSchema.get(getCtx(), getC_AcctSchema_ID());
 		if (as != null)

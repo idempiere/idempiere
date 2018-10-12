@@ -48,7 +48,7 @@ public class MMatchInv extends X_M_MatchInv
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3668871839074170205L;
+	private static final long serialVersionUID = -6673764788466220541L;
 
 
 	/**
@@ -310,7 +310,7 @@ public class MMatchInv extends X_M_MatchInv
 	
 	//
 	//AZ Goodwill
-	private String deleteMatchInvCostDetail()
+	protected String deleteMatchInvCostDetail()
 	{
 		// Get Account Schemas to delete MCostDetail
 		MAcctSchema[] acctschemas = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID());

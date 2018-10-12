@@ -39,7 +39,7 @@ public class MJournalLine extends X_GL_JournalLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7584093911055786835L;
+	private static final long serialVersionUID = 253571209449736797L;
 
 	/**
 	 * 	Standard Constructor
@@ -95,7 +95,7 @@ public class MJournalLine extends X_GL_JournalLine
 	}	//	MJournalLine
 
 	/** Parent					*/
-	private MJournal	m_parent = null;
+	protected MJournal	m_parent = null;
 	
 	/**
 	 * 	Get Parent
@@ -110,11 +110,11 @@ public class MJournalLine extends X_GL_JournalLine
 	
 
 	/**	Currency Precision		*/
-	private int					m_precision = 2;
+	protected int					m_precision = 2;
 	/**	Account Combination		*/
-	private MAccount		 	m_account = null;
+	protected MAccount		 	m_account = null;
 	/** Account Element			*/
-	private MElementValue		m_accountElement = null;
+	protected MElementValue		m_accountElement = null;
 	
 	/**
 	 * 	Set Currency Info
@@ -354,7 +354,7 @@ public class MJournalLine extends X_GL_JournalLine
 	 * 	Update Journal and Batch Total
 	 *	@return true if success
 	 */
-	private boolean updateJournalTotal()
+	protected boolean updateJournalTotal()
 	{
 		//	Update Journal Total
 		StringBuilder sql = new StringBuilder("UPDATE GL_Journal j")
@@ -382,7 +382,7 @@ public class MJournalLine extends X_GL_JournalLine
 	}	//	updateJournalTotal
 
 	/** Update combination and optionally **/
-	private boolean getOrCreateCombination()
+	protected boolean getOrCreateCombination()
 	{
 		if (getC_ValidCombination_ID() == 0
 				|| (!is_new() && (is_ValueChanged("Account_ID")
@@ -458,7 +458,7 @@ public class MJournalLine extends X_GL_JournalLine
 	}	//	getOrCreateCombination
 
 	/** Fill Accounting Dimensions from line combination **/
-	private void fillDimensionsFromCombination()
+	protected void fillDimensionsFromCombination()
 	{
 		if (getC_ValidCombination_ID() > 0)
 		{

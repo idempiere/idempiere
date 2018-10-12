@@ -54,7 +54,7 @@ public class MMovement extends X_M_Movement implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1628932946440487727L;
+	private static final long serialVersionUID = 3201199540429467933L;
 
 	/**
 	 * 	Standard Constructor
@@ -90,9 +90,9 @@ public class MMovement extends X_M_Movement implements DocAction
 	}	//	MMovement
 
 	/**	Lines						*/
-	private MMovementLine[]		m_lines = null;
+	protected MMovementLine[]		m_lines = null;
 	/** Confirmations				*/
-	private MMovementConfirm[]	m_confirms = null;
+	protected MMovementConfirm[]	m_confirms = null;
 	/** Reversal Indicator			*/
 	public static String	REVERSE_INDICATOR = "^";
 	
@@ -242,9 +242,9 @@ public class MMovement extends X_M_Movement implements DocAction
 	}	//	processIt
 	
 	/**	Process Message 			*/
-	private String		m_processMsg = null;
+	protected String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
-	private boolean		m_justPrepared = false;
+	protected boolean		m_justPrepared = false;
 
 	/**
 	 * 	Unlock Document.
@@ -346,7 +346,7 @@ public class MMovement extends X_M_Movement implements DocAction
 	/**
 	 * 	Create Movement Confirmation
 	 */
-	private void createConfirmation()
+	protected void createConfirmation()
 	{
 		MMovementConfirm[] confirmations = getConfirmations(false);
 		if (confirmations.length > 0)
@@ -629,7 +629,7 @@ public class MMovement extends X_M_Movement implements DocAction
 	/**
 	 * 	Set the definite document number after completed
 	 */
-	private void setDefiniteDocumentNo() {
+	protected void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			setMovementDate(TimeUtil.getDay(0));
@@ -646,7 +646,7 @@ public class MMovement extends X_M_Movement implements DocAction
 	 * 	Check Material Policy
 	 * 	Sets line ASI
 	 */
-	private void checkMaterialPolicy(MMovementLine line,BigDecimal qtyToDeliver)
+	protected void checkMaterialPolicy(MMovementLine line,BigDecimal qtyToDeliver)
 	{
 		
 		int no = MMovementLineMA.deleteMovementLineMA(line.getM_MovementLine_ID(), get_TrxName());
@@ -825,7 +825,7 @@ public class MMovement extends X_M_Movement implements DocAction
 		return true;
 	}	//	reverseCorrectionIt
 	
-	private MMovement reverse(boolean accrual)
+	protected MMovement reverse(boolean accrual)
 	{
 		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getMovementDate();
 		if (reversalDate == null) {
@@ -1014,13 +1014,13 @@ public class MMovement extends X_M_Movement implements DocAction
 	}	//	getC_Currency_ID
 	
 	/** Reversal Flag		*/
-	private boolean m_reversal = false;
+	protected boolean m_reversal = false;
 	
 	/**
 	 * 	Set Reversal
 	 *	@param reversal reversal
 	 */
-	private void setReversal(boolean reversal)
+	protected void setReversal(boolean reversal)
 	{
 		m_reversal = reversal;
 	}	//	setReversal
@@ -1028,7 +1028,7 @@ public class MMovement extends X_M_Movement implements DocAction
 	 * 	Is Reversal
 	 *	@return reversal
 	 */
-	private boolean isReversal()
+	protected boolean isReversal()
 	{
 		return m_reversal;
 	}	//	isReversal

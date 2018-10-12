@@ -40,7 +40,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3864175464877913555L;
+	private static final long serialVersionUID = 7083622834698840042L;
 
 	/**
 	 * 	Get Inventory Line with parameters
@@ -137,11 +137,11 @@ public class MInventoryLine extends X_M_InventoryLine
 	}
 	
 	/** Manually created				*/
-	// private boolean 	m_isManualEntry = true;
+	//protected boolean 	m_isManualEntry = true;
 	/** Parent							*/
-	private MInventory 	m_parent = null;
+	protected MInventory 	m_parent = null;
 	/** Product							*/
-	private MProduct 	m_product = null;
+	protected MProduct 	m_product = null;
 	
 	/**
 	 * 	Get Product
@@ -388,7 +388,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	/**
 	 * 	Create Material Allocations for new Instances
 	 */
-	/*private void createMA()
+	/*protected void createMA()
 	{
 		MStorageOnHand[] storages = MStorageOnHand.getAll(getCtx(), getM_Product_ID(), 
 			getM_Locator_ID(), get_TrxName());

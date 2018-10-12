@@ -59,7 +59,7 @@ public class MMatchPO extends X_M_MatchPO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3669451656879485463L;
+	private static final long serialVersionUID = 487498668807522050L;
 
 	/**
 	 * 	Get PO Match with order/invoice
@@ -341,7 +341,7 @@ public class MMatchPO extends X_M_MatchPO
 		}
 	}
 	
-	private static MMatchPO create(Properties ctx, MInvoiceLine iLine,
+	protected static MMatchPO create(Properties ctx, MInvoiceLine iLine,
 			MInOutLine sLine, int C_OrderLine_ID, Timestamp dateTrx,
 			BigDecimal qty, String trxName) {
 		MMatchPO retValue = null;
@@ -631,13 +631,13 @@ public class MMatchPO extends X_M_MatchPO
 	}	//	create
 	
 
-	private MMatchInv m_matchInv;
+	protected MMatchInv m_matchInv;
 
 	/**
 	 * Register the match inv created for immediate accounting purposes
 	 * @param matchInv
 	 */
-	private void setMatchInvCreated(MMatchInv matchInv) {
+	protected void setMatchInvCreated(MMatchInv matchInv) {
 		m_matchInv = matchInv;
 	}
 
@@ -732,13 +732,13 @@ public class MMatchPO extends X_M_MatchPO
 	}	//	MMatchPO
 	
 	/** Invoice Changed			*/
-	private boolean m_isInvoiceLineChange = false;
+	protected boolean m_isInvoiceLineChange = false;
 	/** InOut Changed			*/
-	private boolean m_isInOutLineChange = false;
+	protected boolean m_isInOutLineChange = false;
 	/** Order Line				*/
-	private MOrderLine		m_oLine = null;
+	protected MOrderLine		m_oLine = null;
 	/** Invoice Line			*/
-	private MInvoiceLine	m_iLine = null;
+	protected MInvoiceLine	m_iLine = null;
 	
 	
 	/**

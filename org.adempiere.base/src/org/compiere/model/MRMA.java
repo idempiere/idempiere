@@ -47,7 +47,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6449007672684459651L;
+	private static final long serialVersionUID = 6196067840638153414L;
 
 	/**
 	 * 	Standard Constructor
@@ -83,11 +83,11 @@ public class MRMA extends X_M_RMA implements DocAction
 	}	//	MRMA
 
 	/** Lines					*/
-	private MRMALine[]		m_lines = null;
+	protected MRMALine[]		m_lines = null;
 	/**	Tax Lines					*/
-	private MRMATax[] 		m_taxes = null;
+	protected MRMATax[] 		m_taxes = null;
 	/** The Shipment			*/
-	private MInOut			m_inout = null;
+	protected MInOut			m_inout = null;
 
 	/**
 	 * 	Get Lines
@@ -300,9 +300,9 @@ public class MRMA extends X_M_RMA implements DocAction
 	}	//	process
 
 	/**	Process Message 			*/
-	private String		m_processMsg = null;
+	protected String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
-	private boolean		m_justPrepared = false;
+	protected boolean		m_justPrepared = false;
 
 	/**
 	 * 	Unlock Document.
@@ -474,7 +474,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	/**
 	 * 	Set the definite document number after completed
 	 */
-	private void setDefiniteDocumentNo() {
+	protected void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		/* No Document Date on RMA
 		if (dt.isOverwriteDateOnComplete()) {
@@ -492,7 +492,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	 * 	Create Counter Document
 	 * 	@return InOut
 	 */
-	private MRMA createCounterDoc()
+	protected MRMA createCounterDoc()
 	{
 		//	Is this a counter doc ?
 		if (getRef_RMA_ID() > 0)

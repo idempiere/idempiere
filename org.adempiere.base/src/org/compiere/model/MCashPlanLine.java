@@ -32,7 +32,7 @@ public class MCashPlanLine extends X_C_CashPlanLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3897658515979106674L;
+	private static final long serialVersionUID = -5535407146793681944L;
 
 	/**	Logger			*/
 	@SuppressWarnings("unused")
@@ -110,7 +110,7 @@ public class MCashPlanLine extends X_C_CashPlanLine
 	 *	Update Header
 	 *	@return true if header updated
 	 */
-	private boolean updateHeader()
+	protected boolean updateHeader()
 	{
 		//	Update Cash Plan Header
 		StringBuilder sql = new StringBuilder("UPDATE C_CashPlan ")

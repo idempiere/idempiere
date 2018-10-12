@@ -38,7 +38,7 @@ public class MMovementLine extends X_M_MovementLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4078367839033015886L;
+	private static final long serialVersionUID = -5753062311388766921L;
 
 	/**
 	 * 	Standard Cosntructor
@@ -144,7 +144,7 @@ public class MMovementLine extends X_M_MovementLine
 	}	//	setMovementQty
 	
 	/** Parent							*/
-	private MMovement m_parent = null;
+	protected MMovement m_parent = null;
 	
 	/**
 	 * get Parent

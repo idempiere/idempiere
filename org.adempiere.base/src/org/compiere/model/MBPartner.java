@@ -47,7 +47,7 @@ public class MBPartner extends X_C_BPartner
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -803727877324075871L;
+	private static final long serialVersionUID = -3098526308112073395L;
 
 	/**
 	 * 	Get Empty Template Business Partner
@@ -308,24 +308,24 @@ public class MBPartner extends X_C_BPartner
 	
 	
 	/** Users							*/
-	private MUser[]					m_contacts = null;
+	protected MUser[]				m_contacts = null;
 	/** Addressed						*/
-	private MBPartnerLocation[]		m_locations = null;
+	protected MBPartnerLocation[]	m_locations = null;
 	/** BP Bank Accounts				*/
-	private MBPBankAccount[]		m_accounts = null;
+	protected MBPBankAccount[]		m_accounts = null;
 	/** Prim Address					*/
-	private Integer					m_primaryC_BPartner_Location_ID = null;
+	protected Integer				m_primaryC_BPartner_Location_ID = null;
 	/** Prim User						*/
-	private Integer					m_primaryAD_User_ID = null;
+	protected Integer				m_primaryAD_User_ID = null;
 	/** BP Group						*/
-	private MBPGroup				m_group = null;
+	protected MBPGroup				m_group = null;
 	
 	/**
 	 * 	Load Default BPartner
 	 * 	@param AD_Client_ID client
 	 * 	@return true if loaded
 	 */
-	private boolean initTemplate (int AD_Client_ID)
+	protected boolean initTemplate (int AD_Client_ID)
 	{
 		if (AD_Client_ID == 0)
 			throw new IllegalArgumentException ("Client_ID=0");

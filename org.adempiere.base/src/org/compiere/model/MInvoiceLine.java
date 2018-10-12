@@ -51,7 +51,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6174490999732876285L;
+	private static final long serialVersionUID = -1590896898028805978L;
 
 	/**
 	 * 	Get Invoice Line referencing InOut Line
@@ -101,10 +101,10 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	}
 
 	/**	Static Logger	*/
-	private static CLogger	s_log	= CLogger.getCLogger (MInvoiceLine.class);
+	protected static CLogger	s_log	= CLogger.getCLogger (MInvoiceLine.class);
 
 	/** Tax							*/
-	private MTax 		m_tax = null;
+	protected MTax 		m_tax = null;
 	
 	
 	/**************************************************************************
@@ -159,24 +159,24 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		super(ctx, rs, trxName);
 	}	//	MInvoiceLine
 
-	private int			m_M_PriceList_ID = 0;
-	private Timestamp	m_DateInvoiced = null;
-	private int			m_C_BPartner_ID = 0;
-	private int			m_C_BPartner_Location_ID = 0;
-	private boolean		m_IsSOTrx = true;
-	private boolean		m_priceSet = false;
-	private MProduct	m_product = null;
+	protected int			m_M_PriceList_ID = 0;
+	protected Timestamp	m_DateInvoiced = null;
+	protected int			m_C_BPartner_ID = 0;
+	protected int			m_C_BPartner_Location_ID = 0;
+	protected boolean		m_IsSOTrx = true;
+	protected boolean		m_priceSet = false;
+	protected MProduct	m_product = null;
 	/**	Charge					*/
-	private MCharge 		m_charge = null;
+	protected MCharge 		m_charge = null;
 	
 	/**	Cached Name of the line		*/
-	private String		m_name = null;
+	protected String		m_name = null;
 	/** Cached Precision			*/
-	private Integer		m_precision = null;
+	protected Integer		m_precision = null;
 	/** Product Pricing				*/
-	private IProductPricing	m_productPricing = null;
+	protected IProductPricing	m_productPricing = null;
 	/** Parent						*/
-	private MInvoice	m_parent = null;
+	protected MInvoice	m_parent = null;
 
 	/**
 	 * 	Set Defaults from Order.
@@ -1187,7 +1187,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	/**
 	 * 	Allocate Landed Cost - Enforce Rounding
 	 */
-	private void allocateLandedCostRounding()
+	protected void allocateLandedCostRounding()
 	{
 		MLandedCostAllocation[] allocations = MLandedCostAllocation.getOfInvoiceLine(
 			getCtx(), getC_InvoiceLine_ID(), get_TrxName());

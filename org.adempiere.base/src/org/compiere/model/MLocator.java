@@ -39,7 +39,7 @@ public class MLocator extends X_M_Locator
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3649134803161895263L;
+	private static final long serialVersionUID = -4502919527066173270L;
 
 	/**
 	 * 	Get oldest Default Locator of warehouse with locator
@@ -191,7 +191,7 @@ public class MLocator extends X_M_Locator
 	} //	get
 
 	/**	Cache						*/
-	private volatile static CCache<Integer,MLocator> s_cache; 
+	protected volatile static CCache<Integer,MLocator> s_cache; 
 	 
 	/**	Logger						*/
 	private static CLogger		s_log = CLogger.getCLogger (MLocator.class);

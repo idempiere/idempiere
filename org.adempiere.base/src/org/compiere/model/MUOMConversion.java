@@ -48,7 +48,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8449239579085422641L;
+	private static final long serialVersionUID = 3555218774291122619L;
 
 
 	/**
@@ -146,7 +146,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 	 * 	@param p Point with from(x) - to(y) C_UOM_ID
 	 * 	@return conversion multiplier or null
 	 */
-	static private BigDecimal getRate (Properties ctx, Point p)
+	static protected BigDecimal getRate (Properties ctx, Point p)
 	{
 		BigDecimal retValue = null;
 		if (Ini.isClient())
@@ -167,7 +167,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 	 * 	Create Conversion Matrix (Client)
 	 * 	@param ctx context
 	 */
-	private static void createRates (Properties ctx)
+	protected static void createRates (Properties ctx)
 	{
 		s_conversions = new CCache<Point,BigDecimal>(Table_Name, 20);
 		//
@@ -631,11 +631,11 @@ public class MUOMConversion extends X_C_UOM_Conversion
 	/** Static Logger					*/
 	private static final CLogger s_log = CLogger.getCLogger(MUOMConversion.class);
 	/**	Indicator for Rate					*/
-	private static final BigDecimal GETRATE = BigDecimal.valueOf(123.456);
+	protected static final BigDecimal GETRATE = BigDecimal.valueOf(123.456);
 	/**	Conversion Map: Key=Point(from,to) Value=BigDecimal	*/
-	private static CCache<Point,BigDecimal>	s_conversions = null;
+	protected static CCache<Point,BigDecimal>	s_conversions = null;
 	/** Product Conversion Map					*/
-	private static final CCache<Integer,MUOMConversion[]>	s_conversionProduct 
+	protected static final CCache<Integer,MUOMConversion[]>	s_conversionProduct 
 		= new CCache<Integer,MUOMConversion[]>(Table_Name, Table_Name+"_Of_Product", 20); 
 	
 	
