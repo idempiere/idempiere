@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -905,16 +906,20 @@ public class GridTabCSVImporter implements IGridTabImporter
 			String columnName = header.get(i);	
 			Object value = tmpRow.get(i); 	
 			//Validate Address
-			if(header.get(i).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID)) && !isAddressValidated){
-			   StringBuilder specialColumns = new StringBuilder();
-			   specialColumns = validateSpecialFields(gridTab,header,tmpRow,i,"C_Location_ID");
-			   isAddressValidated = true;
-			   if(specialColumns==null)
-				  continue;   
-			   else
-				  return specialColumns;     
-			}else if (header.get(i).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID)) && isAddressValidated){
-				continue;
+			if (!"C_Location".equals(gridTab.getTableName()))
+			{
+				//Validate Address
+				if(header.get(i).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID)) && !isAddressValidated){
+				   StringBuilder specialColumns = new StringBuilder();
+				   specialColumns = validateSpecialFields(gridTab,header,tmpRow,i,"C_Location_ID");
+				   isAddressValidated = true;
+				   if(specialColumns==null)
+					  continue;   
+				   else
+					  return specialColumns;     
+				}else if (header.get(i).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID)) && isAddressValidated){
+					continue;
+				}
 			}
 			
 			if(value!=null)
@@ -1067,7 +1072,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 			if(isForeing) 
 			   foreignColumn = header.get(i).substring(header.get(i).indexOf("[")+1,header.get(i).indexOf("]"));
 			
-			if(header.get(i).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID))){
+			if(!"C_Location".equals(gridTab.getTableName()) && header.get(i).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID))){
 		    
 				if(address == null){
 				    if(isInsertMode()){
@@ -1173,7 +1178,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 						} else {
 							
 							int id = resolveForeign(foreignTable, foreignColumn, value,field,trx);
-							if (id < 0)
+							if(id < 0)	
 								return Msg.getMsg(Env.getCtx(),id==-2?"ForeignMultipleResolved":"ForeignNotResolved",new Object[]{header.get(i),value});
 
 							setValue = id;
@@ -1219,7 +1224,17 @@ public class GridTabCSVImporter implements IGridTabImporter
 							 }else{
 								 return Msg.getMsg(Env.getCtx(),"Invalid") + " Column ["+column.getColumnName()+"]";   
 							 } 
-						  }  
+						  }  else if (DisplayType.isNumeric(field.getDisplayType()) || DisplayType.isID(field.getDisplayType())) {
+							  if (columnName.endsWith("_ID")) {
+								  if (!(value instanceof Integer)) {
+									  Integer idValue = Integer.valueOf(value.toString());
+									  value = idValue;
+								  }
+							  } else if (!(value instanceof BigDecimal)) {
+								  BigDecimal decValue = new BigDecimal(value.toString());
+								  value = decValue;
+							  }
+						  }
 						  setValue = value;
 						  isThereRow =true;
 					   }
@@ -1349,7 +1364,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 		//Process columnKeys + Foreign to add restrictions.
 		for (int i = startindx ; i < endindx + 1 ; i++){					  
 		    boolean isKeyColumn = header.get(i).indexOf("/") > 0 && ( header.get(i).endsWith("K") || header.get(i).endsWith("KT"));	
-			if(isKeyColumn && !header.get(i).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID))){  
+		    if(isKeyColumn && ("C_Location".equals(gridTab.getTableName()) || !header.get(i).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID)))){  
 			   boolean isForeing = header.get(i).indexOf("[") > 0 && header.get(i).indexOf("]")>0;
 			   boolean isDetail  = header.get(i).indexOf(">") > 0;
 			   columnwithKey = getColumnName(isKeyColumn,isForeing,isDetail,header.get(i));
