@@ -147,7 +147,8 @@ public class PackInProcess extends SvrProcess {
 			commitEx(); // we need to commit to capture HERE when the deferred validation of foreign keys can fail
 		} catch (Exception e) {
 			adPackageImp.setP_Msg(e.getLocalizedMessage());
-			packIn.getNotifier().addStatusLine(e.getLocalizedMessage());
+			packIn.getNotifier().addFailureLine(e.getLocalizedMessage());
+			packIn.setSuccess(false);
 			log.log(Level.SEVERE, "importXML:", e);
 			throw e;
 		} finally {
