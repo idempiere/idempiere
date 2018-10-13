@@ -100,11 +100,18 @@ public class CleanOrphanCascade extends SvrProcess
 					int refTableID = ((BigDecimal) row.get(0)).intValue();
 					String refTableName = row.get(1).toString();
 
+					MTable refTable = MTable.get(getCtx(), refTableID);
+					if (refTable.getKeyColumns().length != 1) {
+						log.warning("Wrong reference for table " + tableName + " -> " + refTableName);
+						continue;
+					}
+					String colRef = refTable.getKeyColumns()[0];
+					
 					StringBuilder whereClause = new StringBuilder();
 					whereClause.append("AD_Table_ID = ").append(refTableID);
-					whereClause.append(" AND NOT EXISTS (SELECT ").append(refTableName).append("_ID ");
+					whereClause.append(" AND NOT EXISTS (SELECT ").append(colRef);
 					whereClause.append("                FROM   ").append(refTableName).append(" ");
-					whereClause.append("                WHERE  ").append(refTableName).append(".").append(refTableName).append("_ID = ").append(tableName).append(".Record_ID)");
+					whereClause.append("                WHERE  ").append(refTableName).append(".").append(colRef).append(" = ").append(tableName).append(".Record_ID)");
 
 					int noDel = 0;
 					if (MAttachment.Table_Name.equals(tableName)) {
