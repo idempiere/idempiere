@@ -193,8 +193,9 @@ public class CLogMgt
 		setFormatter(CLogFormatter.get());
 		setFilter(CLogFilter.get());
 	
-		mgr.removePropertyChangeListener(listener);
-		mgr.addPropertyChangeListener(listener);
+		//TODO: hieplq it's remove on java https://bugs.openjdk.java.net/browse/JDK-8029805
+		//mgr.removePropertyChangeListener(listener);
+		//mgr.addPropertyChangeListener(listener);
 	}	//	initialize
 
 
