@@ -4,7 +4,7 @@ Bundle-Name: iDempiere Webservices
 Bundle-SymbolicName: org.idempiere.webservices;singleton:=true
 Bundle-Version: 5.1.0.qualifier
 Bundle-Activator: org.idempiere.webservices.Activator
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-10
 Service-Component: OSGI-INF/ws_modelfactory.xml
 Import-Package: javax.activation,
  javax.mail.internet;version="1.5",

@@ -945,5 +945,5 @@
 		<unit id="org.objectweb.asm.xml.source" version="6.2.1.v20180823-1831"/>
 	</location>
 </locations>
-<targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+<targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-10"/>
 </target>

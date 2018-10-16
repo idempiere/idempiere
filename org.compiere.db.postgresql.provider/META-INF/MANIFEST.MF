@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Postgresql Provider
 Bundle-SymbolicName: org.compiere.db.postgresql.provider;singleton:=true
 Bundle-Version: 5.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-10
 Bundle-ClassPath: .,
  lib/c3p0.jar,
  lib/mchange-commons-java.jar,

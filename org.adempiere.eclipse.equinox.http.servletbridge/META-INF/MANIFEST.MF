@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-10
 Bundle-Name: %bundleName
 Bundle-SymbolicName: org.adempiere.eclipse.equinox.http.servletbridge;singleton:=true
 Eclipse-SourceReferences: scm:cvs:pserver:dev.eclipse.org:/cvsroot/rt:

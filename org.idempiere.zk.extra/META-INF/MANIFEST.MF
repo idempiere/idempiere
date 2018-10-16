@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: extra zk library
 Bundle-SymbolicName: org.idempiere.zk.extra
 Bundle-Version: 5.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-10
 Bundle-ClassPath: .,
  lib/breeze.jar,
  lib/calendar.jar,

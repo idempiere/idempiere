@@ -76,7 +76,7 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.jfree.chart-osgi;bundle-version="1.0.19"
 Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.adempiere.base
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-10
 Import-Package: javax.net.ssl,
  net.sf.jasperreports.engine,
  org.apache.ecs,
