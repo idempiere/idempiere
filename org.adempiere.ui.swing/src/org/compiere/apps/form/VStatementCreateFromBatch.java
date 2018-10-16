@@ -302,7 +302,7 @@ public class VStatementCreateFromBatch extends StatementCreateFromBatch implemen
 				m_frame.getGridTab()));
 	}
 	
-	protected void loadTableOIS (Vector<?> data)
+	protected void loadTableOIS (Vector<? extends Vector> data)
 	{
 		//  Remove previous listeners
 		form.getMiniTable().getModel().removeTableModelListener(form);

@@ -304,7 +304,7 @@ public class VCreateFromStatementUI extends CreateFromStatement implements Actio
 				documentTypeField.getValue(), tenderTypeField.getValue(), authorizationField.getText()));
 	}
 	
-	protected void loadTableOIS (Vector<?> data)
+	protected void loadTableOIS (Vector<? extends Vector> data)
 	{
 		//  Remove previous listeners
 		dialog.getMiniTable().getModel().removeTableModelListener(dialog);
