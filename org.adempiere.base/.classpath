@@ -3,6 +3,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-10">
 		<attributes>
 			<attribute name="module" value="true"/>
+			<attribute name="add-exports" value="java.sql.rowset/com.sun.rowset=ALL-UNNAMED"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
