@@ -75,7 +75,7 @@ public class ConfigVM extends Config
 		System.setProperty(ConfigurationData.JAVA_HOME, javaHome.getAbsolutePath());
 
 		//	Java Version
-		final String[] versions = new String[]{"1.7.0", "1.8.0"};
+		final String[] versions = new String[]{"1.7.0", "1.8.0", "10.", "11.", "12."};
 		pass = false;
 		String thisJV = System.getProperty("java.version");
 		for(String version : versions) 
