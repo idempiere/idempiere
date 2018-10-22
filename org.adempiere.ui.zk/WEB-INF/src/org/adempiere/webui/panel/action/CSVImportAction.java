@@ -291,6 +291,13 @@ public class CSVImportAction implements EventListener<Event>
 
 	private void importFile() {
 		try {
+			MQuery query = panel.getActiveGridTab().getQuery();
+			MQuery detailQuery = null;
+			if (panel.getADTab() != null && panel.getADTab().getSelectedDetailADTabpanel() != null
+					&& panel.getADTab().getSelectedDetailADTabpanel().getGridTab() != null)
+				detailQuery = panel.getADTab().getSelectedDetailADTabpanel().getGridTab().getQuery();
+
+
 			IADTabbox adTab = panel.getADTab();
 			int selected = adTab.getSelectedIndex();
 			int tabLevel = panel.getActiveGridTab().getTabLevel();
@@ -335,6 +342,19 @@ public class CSVImportAction implements EventListener<Event>
 			media = new AMedia(theCSVImporter.getSuggestedFileName(panel.getActiveGridTab()), null, theCSVImporter.getContentType(), outFile, true);
 			Filedownload.save(media);
 
+			if (query != null) {
+	        	query.addRestriction("1=1");
+	        	panel.getActiveGridTab().setQuery(query);
+	        	panel.getADTab().getSelectedTabpanel().query(false, 0, MRole.getDefault().getMaxQueryRecords());
+	        }
+	        panel.getActiveGridTab().dataRefresh(false);
+	        
+	        if (detailQuery != null){
+	        	detailQuery.addRestriction("1=1");
+	        	panel.getADTab().getSelectedDetailADTabpanel().getGridTab().setQuery(detailQuery);	        	
+	        	panel.getADTab().getSelectedDetailADTabpanel().query(false, 0, MRole.getDefault().getMaxQueryRecords());
+		        panel.getADTab().getSelectedDetailADTabpanel().getGridTab().dataRefresh(false);
+	        }
 		} catch (Exception e) {
 			throw new AdempiereException(e);
 		} finally {
