@@ -13,8 +13,6 @@ Bundle-ClassPath: .,
  lib/jasperreports-fonts.jar,
  lib/jasperreports-functions.jar,
  lib/olap4j.jar,
- lib/spring-beans.jar,
- lib/spring-core.jar,
  lib/xmpcore.jar
 DynamicImport-Package: *
 Import-Package: org.w3c.dom.events;version="[3.0.0,4.0.0)"

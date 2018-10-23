@@ -28,6 +28,7 @@
         <slf4j.version>1.7.25</slf4j.version>
 		<xml.ws.version>2.3.1</xml.ws.version>
 		<apache.cxf.version>3.2.6</apache.cxf.version>
+		<spring.version>5.1.1.RELEASE</spring.version>
 	</properties>
 	
     <repositories>
@@ -397,7 +398,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>com.sun.activation:javax.activation:jar:1.2.0</id>
+											<id>javax.activation:javax.activation-api:jar:1.2.0</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -524,7 +525,32 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
+											<id>javax.xml.soap:javax.xml.soap-api:jar:1.4.0</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>javax.xml.rpc:javax.xml.rpc-api:jar:1.1.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
 											<id>org.codehaus.woodstox:stax2-api:jar:4.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.springframework:spring-beans:jar:${spring.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.springframework:spring-core:jar:${spring.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.springframework:spring-jcl:jar:${spring.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>

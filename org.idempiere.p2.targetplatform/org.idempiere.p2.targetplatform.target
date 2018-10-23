@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-181018" sequenceNumber="107">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-181023" sequenceNumber="107">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.restlet.example.feature.group" version="2.3.2.v20150501-1520"/>
@@ -806,8 +806,6 @@
 		<unit id="com.itextpdf.source" version="5.5.13"/>
 		<unit id="com.jaspersoft.studio.bundles.barbecue" version="1.5.0.beta1_b02"/>
 		<unit id="com.jaspersoft.studio.bundles.itext" version="2.1.7.js6_b02"/>
-		<unit id="com.sun.activation.javax.activation" version="1.2.0"/>
-		<unit id="com.sun.activation.javax.activation.source" version="1.2.0"/>
 		<unit id="com.sun.mail.javax.mail" version="1.6.2"/>
 		<unit id="com.sun.mail.javax.mail.source" version="1.6.2"/>
 		<unit id="com.sun.xml.bind.jaxb-core" version="2.3.0.1"/>
@@ -1027,6 +1025,18 @@
 		<unit id="stax2-api.source" version="4.1.0"/>
 		<unit id="javax.jws-api" version="1.1.0"/>
 		<unit id="javax.jws-api.source" version="1.1.0"/>
+		<unit id="javax.xml.soap-api" version="1.4.0"/>
+		<unit id="javax.xml.soap-api.source" version="1.4.0"/>
+		<unit id="org.springframework.spring-beans" version="5.1.1.RELEASE"/>
+		<unit id="org.springframework.spring-beans.source" version="5.1.1.RELEASE"/>
+		<unit id="org.springframework.spring-core" version="5.1.1.RELEASE"/>
+		<unit id="org.springframework.spring-core.source" version="5.1.1.RELEASE"/>
+		<unit id="org.springframework.spring-jcl" version="5.1.1.RELEASE"/>
+		<unit id="org.springframework.spring-jcl.source" version="5.1.1.RELEASE"/>
+		<unit id="javax.xml.rpc-api" version="1.1.1"/>
+		<unit id="javax.xml.rpc-api.source" version="1.1.1"/>
+		<unit id="javax.activation-api" version="1.2.0"/>
+		<unit id="javax.activation-api.source" version="1.2.0"/>
 	</location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-10"/>
