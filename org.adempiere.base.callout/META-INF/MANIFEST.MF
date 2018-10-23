@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Callout
 Bundle-SymbolicName: org.adempiere.base.callout
 Bundle-Version: 5.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-10
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
 Eclipse-RegisterBuddy: org.adempiere.base
 Service-Component: OSGI-INF/costadjustmentcalloutfactory.xml, OSGI-INF/bpartnerquickentrycalloutFactory.xml

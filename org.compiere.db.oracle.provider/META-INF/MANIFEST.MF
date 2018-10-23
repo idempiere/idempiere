@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Oracle Provider
 Bundle-SymbolicName: org.compiere.db.oracle.provider;singleton:=true
 Bundle-Version: 5.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-10
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.install;bundle-version="0.0.0"
 Bundle-ClassPath: .,

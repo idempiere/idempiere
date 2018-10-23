@@ -519,6 +519,11 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
+											<id>javax.jws:javax.jws-api:jar:1.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
 											<id>org.codehaus.woodstox:stax2-api:jar:4.1</id>
 											<source>true</source>
 											<transitive>false</transitive>

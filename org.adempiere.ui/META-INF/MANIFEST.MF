@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere UI base
 Bundle-SymbolicName: org.adempiere.ui;singleton:=true
 Bundle-Version: 5.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-10
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.apache.xerces;bundle-version="0.0.0",
  org.eclipse.equinox.app;bundle-version="0.0.0"

@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.adempiere.webstore.resource
 Bundle-Version: 5.1.0.qualifier
 Bundle-Vendor: Adempiere.org
 Fragment-Host: org.adempiere.webstore;bundle-version="0.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-10
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Import-Package: org.compiere.wstore
 Jetty-WarPatchFragmentFolderPath: /
 Bundle-ClassPath: .
