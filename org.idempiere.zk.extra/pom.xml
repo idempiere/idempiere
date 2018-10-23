@@ -52,7 +52,7 @@
 								<artifactItem>
 									<groupId>com.google.javascript</groupId>
 									<artifactId>closure-compiler</artifactId>
-									<version>v20171112</version>
+									<version>v20181008</version>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>

@@ -26,12 +26,12 @@
 								<artifactItem>
 									<groupId>com.mchange</groupId>
 									<artifactId>c3p0</artifactId>
-									<version>0.9.5</version>
+									<version>0.9.5.2</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.mchange</groupId>
 									<artifactId>mchange-commons-java</artifactId>
-									<version>0.2.9</version>
+									<version>0.2.15</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.google.code.maven-play-plugin.com.mchange</groupId>

@@ -13,16 +13,17 @@
 		<tycho.version>1.2.0</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jetty.version>9.4.11.v20180605</jetty.version>
+		<jetty.version>9.4.12.v20180830</jetty.version>
 		<jp.version>6.7.0</jp.version>
 		<zk.version>8.5.0</zk.version>
-		<zk.javassist.src.version>3.18.2-GA</zk.javassist.src.version>
-		<maven.dependency.version>3.0.2</maven.dependency.version>
-		<download.maven.version>1.4.0</download.maven.version>
+		<zk.javassist.src.version>3.23.1-GA</zk.javassist.src.version>
+		<maven.dependency.version>3.1.1</maven.dependency.version>
+		<download.maven.version>1.4.1</download.maven.version>
 		<lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
+		<springframework.version>5.1.1.RELEASE</springframework.version>
 		<!-- https://www.eclipse.org/jetty/documentation/9.3.x/alpn-chapter.html#alpn-versions -->
 		<jetty.alpn-boot.version>8.1.12.v20180117</jetty.alpn-boot.version>
-
+		<netbeans.lib.version>RELEASE731</netbeans.lib.version>
 		<!-- default value of properties, use when run without profile -->
 		<idempiere.target>org.idempiere.p2.targetplatform</idempiere.target>
 		<idempiere-equinox-url>http://download.eclipse.org/eclipse/updates/4.9</idempiere-equinox-url>
@@ -315,6 +316,9 @@
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-compiler-plugin</artifactId>
 					<version>${tycho.version}</version>
+                    <configuration>
+                        <verbose>true</verbose>
+                    </configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
@@ -354,7 +358,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-shade-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>3.2.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

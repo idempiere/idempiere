@@ -34,12 +34,17 @@
 								<artifactItem>
 									<groupId>org.netbeans.api</groupId>
 									<artifactId>org-netbeans-api-visual</artifactId>
-									<version>RELEASE65</version>
+									<version>${netbeans.lib.version}</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.netbeans.api</groupId>
 									<artifactId>org-openide-util</artifactId>
-									<version>RELEASE65</version>
+									<version>${netbeans.lib.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.netbeans.api</groupId>
+									<artifactId>org-openide-util-lookup</artifactId>
+									<version>${netbeans.lib.version}</version>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>

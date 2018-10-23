@@ -426,12 +426,12 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+<!-- jasper use older version than other so need to define version to load both stax2-api-->
    <plugin
          id="stax2-api"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.1.4"
          unpack="false"/>
 
    <plugin

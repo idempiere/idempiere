@@ -27,5 +27,6 @@ Export-Package: org.compiere.apps,
  org.netbeans.api.visual.widget
 Bundle-ClassPath: .,
  lib/org-netbeans-api-visual.jar,
- lib/org-openide-util.jar
+ lib/org-openide-util.jar,
+ lib/org-openide-util-lookup.jar
 Automatic-Module-Name: org.adempiere.ui
