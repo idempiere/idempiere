@@ -24,14 +24,8 @@
  **********************************************************************/
 package org.adempiere.webui.panel.action;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -63,6 +57,8 @@ import org.adempiere.webui.util.ReaderInputStream;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridTab;
 import org.compiere.model.MImportTemplate;
+import org.compiere.model.MQuery;
+import org.compiere.model.MRole;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -330,7 +326,7 @@ public class CSVImportAction implements EventListener<Event>
 				return;
 
 			String iMode = (String)importItem.getValue();
-			m_file_istream = validateFile(m_file_istream, theTemplate);
+			m_file_istream = theTemplate.validateFile(m_file_istream);
 			File outFile = theCSVImporter.fileImport(panel.getActiveGridTab(), childs, m_file_istream, charset,iMode);
 			winImportFile.onClose();
 			winImportFile = null;
@@ -345,59 +341,6 @@ public class CSVImportAction implements EventListener<Event>
 			if (winImportFile != null)
 				winImportFile.onClose();
 		}
-	}
-
-	private InputStream validateFile(InputStream in, MImportTemplate template) {
-		// because the input stream cannot be reset we need to copy here the file to a new one (replacing the header if it's the alias)
-		Charset charset = Charset.forName(template.getCharacterSet());
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in, charset));
-		File tmpfile = null;
-		InputStream is = null;
-		BufferedWriter bw = null;
-		try {
-			tmpfile = File.createTempFile("CSVImportAction", "csv");
-			bw = new BufferedWriter(new FileWriter(tmpfile));
-			String firstLine = null;
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				if (firstLine == null) {
-					firstLine = line;
-					/* Validate that m_file_istream header is CSVHeader or AliasCSVHeader */
-					if (   firstLine.equals(template.getCSVHeader())
-						|| firstLine.equals(template.getCSVAliasHeader())) {
-						bw.write(template.getCSVHeader());
-					} else {
-						reader.close();
-						throw new AdempiereException(Msg.getMsg(Env.getCtx(), "WrongCSVHeader"));
-					}
-				} else {
-					bw.write(line);
-				}
-				bw.write('\n');
-			}
-			is = new FileInputStream(tmpfile);
-		} catch (IOException e) {
-			throw new AdempiereException(e);
-		} finally {
-			if (in != null)
-				try {
-					in.close();
-				} catch (IOException e) {
-				}
-			
-			if (bw != null)
-				try {
-					bw.close();
-				} catch (IOException e) {
-				}
-			
-			if (reader != null)
-				try {
-					reader.close();
-				} catch (IOException e) {
-				}
-		}
-		return is;
 	}
 
 }
