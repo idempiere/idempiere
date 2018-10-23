@@ -33,6 +33,10 @@
 		<url.file.srv>http://downloads.sourceforge.net/project/idempiere/binary.file</url.file.srv>
 		<extra.ui.install>org.eclipse.equinox.p2.director, org.idempiere.equinox.p2.director.feature.feature.group, org.idempiere.fitnesse.feature.feature.group</extra.ui.install>
 		<idempiere.product.id>org.adempiere.server.product</idempiere.product.id>
+		<codehaus.plexus>2.8.5</codehaus.plexus>
+		<!-- override from tycho to get latest version of jdt -->
+		<jdtVersion>3.15.0</jdtVersion>
+		<jdtAptVersion>1.3.300</jdtAptVersion>
 	</properties>
 
 	<build>
@@ -319,6 +323,29 @@
                     <configuration>
                         <verbose>true</verbose>
                     </configuration>
+				        <dependencies>
+                            <!-- overrider tycho to get latest for compiler ~/.m2/repository/org/eclipse/tycho/tycho-compiler-jdt/1.2.0/tycho-compiler-jdt-1.2.0.pom-->
+		                    <dependency>
+			                    <groupId>org.codehaus.plexus</groupId>
+			                    <artifactId>plexus-utils</artifactId>
+					            <version>3.1.0</version>
+		                    </dependency>
+		                    <dependency>
+			                    <groupId>org.codehaus.plexus</groupId>
+			                    <artifactId>plexus-compiler-manager</artifactId>
+					            <version>${codehaus.plexus}</version>
+		                    </dependency>
+		                    <dependency>
+			                    <groupId>org.codehaus.plexus</groupId>
+			                    <artifactId>plexus-compiler-api</artifactId>
+					            <version>${codehaus.plexus}</version>
+		                    </dependency>
+		                    <dependency>
+		                        <groupId>org.apache.commons</groupId>
+		                        <artifactId>commons-exec</artifactId>
+					            <version>1.3</version>
+		                    </dependency>
+				        </dependencies>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
@@ -497,8 +524,8 @@
 						            <arch>x86_64</arch>
 					            </environment>
 				            </environments>
-                            <executionEnvironmentDefault>JavaSE-1.8</executionEnvironmentDefault>
-                            <executionEnvironment>JavaSE-1.8</executionEnvironment>
+                            <executionEnvironmentDefault>JavaSE-10</executionEnvironmentDefault>
+                            <executionEnvironment>JavaSE-10</executionEnvironment>
 			            </configuration>
 		            </plugin>
                 </plugins>

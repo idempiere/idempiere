@@ -97,7 +97,7 @@
 										</artifact>
 										<artifact>
 										    <!-- it's maintain and up to date than org.eclipse.jdt.core.compiler.batch -->
-											<id>org.eclipse.jdt:org.eclipse.jdt.core:jar:3.15.0</id>
+											<id>org.eclipse.jdt:org.eclipse.jdt.core:jar:${jdtVersion}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
