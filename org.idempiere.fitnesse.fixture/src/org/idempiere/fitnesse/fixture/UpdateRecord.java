@@ -200,9 +200,9 @@ public class UpdateRecord extends TableFixture {
 									continue;
 								} else if (columnClass == Boolean.class) {
 									if ("Y".equalsIgnoreCase(value_evaluated) || "true".equalsIgnoreCase(value_evaluated))
-										value = new Boolean(true);
+										value = Boolean.TRUE;
 									else if ("N".equalsIgnoreCase(value_evaluated) || "false".equalsIgnoreCase(value_evaluated))
-										value = new Boolean(false);
+										value = Boolean.FALSE;
 									else {
 										exception(getCell(i, 1), new Exception("Wrong value for boolean, allowed Y/N/true/false"));
 										continue;

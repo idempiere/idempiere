@@ -94,7 +94,7 @@ public abstract class CreateFromRMA extends CreateFrom {
             while (rs.next())
             {
                 Vector<Object> line = new Vector<Object>(8);
-                line.add(new Boolean(false));           //  0-Selection
+                line.add(Boolean.FALSE);           //  0-Selection
                 
                 KeyNamePair lineKNPair = new KeyNamePair(rs.getInt(1), rs.getString(2)); // 1-Line
                 line.add(lineKNPair);

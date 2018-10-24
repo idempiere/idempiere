@@ -1632,17 +1632,17 @@ public abstract class PO
 			else if (colName.equals(p_info.getTableName() + "_ID"))    //  KeyColumn
 				m_newValues[i] = I_ZERO;
 			else if (colName.equals("IsActive"))
-				m_newValues[i] = new Boolean(true);
+				m_newValues[i] = Boolean.TRUE;
 			else if (colName.equals("AD_Client_ID"))
 				m_newValues[i] = new Integer(Env.getAD_Client_ID(p_ctx));
 			else if (colName.equals("AD_Org_ID"))
 				m_newValues[i] = new Integer(Env.getAD_Org_ID(p_ctx));
 			else if (colName.equals("Processed"))
-				m_newValues[i] = new Boolean(false);
+				m_newValues[i] = Boolean.FALSE;
 			else if (colName.equals("Processing"))
-				m_newValues[i] = new Boolean(false);
+				m_newValues[i] = Boolean.FALSE;
 			else if (colName.equals("Posted"))
-				m_newValues[i] = new Boolean(false);
+				m_newValues[i] = Boolean.FALSE;
 		}
 	}   //  setDefaults
 

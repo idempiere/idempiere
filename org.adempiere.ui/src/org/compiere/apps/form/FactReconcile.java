@@ -162,7 +162,7 @@ public class FactReconcile {
 				//line.add(rs.getBigDecimal(1));	// 1-Amt
 				line.add(rs.getBigDecimal(2));	// 2-AmtAcct
 				line.add(rs.getString(3));		// 3-DR/CR
-				line.add(new Boolean(false));	// 4-Fact_Acct_ID
+				line.add(Boolean.FALSE);	// 4-Fact_Acct_ID
 				line.add(rs.getString(5));		// 5-BP
 				line.add(rs.getTimestamp(6));	// 6-DateAcct
 				line.add(rs.getString(7));		// 7-GL Category

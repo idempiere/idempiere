@@ -3192,7 +3192,7 @@ public final class MRole extends X_AD_Role
 						+ "       AND iwa.AD_Role_ID = ?";
 				int cntInactive = DB.getSQLValueEx(get_TrxName(), sqlInactive, I_M_Product.Table_ID, getAD_Role_ID());
 				if (cntInactive > 0)
-					m_canAccess_Info_Product = new Boolean(false);
+					m_canAccess_Info_Product = Boolean.FALSE;
 			}
 		}
 		return m_canAccess_Info_Product.booleanValue();
