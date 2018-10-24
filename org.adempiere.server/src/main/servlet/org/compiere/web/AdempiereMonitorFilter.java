@@ -51,7 +51,7 @@ public class AdempiereMonitorFilter implements Filter
 	public AdempiereMonitorFilter ()
 	{
 		super ();
-		m_authorization = new Long (System.currentTimeMillis());
+		m_authorization = Long.valueOf(System.currentTimeMillis());
 	}	//	AdempiereMonitorFilter
 
 	/**	Logger			*/
