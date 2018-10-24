@@ -28,7 +28,6 @@
         <slf4j.version>1.7.25</slf4j.version>
 		<xml.ws.version>2.3.1</xml.ws.version>
 		<apache.cxf.version>3.2.6</apache.cxf.version>
-		<spring.version>5.1.1.RELEASE</spring.version>
 	</properties>
 	
     <repositories>
@@ -398,7 +397,8 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>javax.activation:javax.activation-api:jar:1.2.0</id>
+											<!-- better javax.activation:javax.activation-api because include extra package -->
+											<id>com.sun.activation:javax.activation:jar:1.2.0</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -540,17 +540,37 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.springframework:spring-beans:jar:${spring.version}</id>
+											<id>org.springframework:spring-beans:jar:${springframework.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.springframework:spring-core:jar:${spring.version}</id>
+											<id>org.springframework:spring-core:jar:${springframework.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.springframework:spring-jcl:jar:${spring.version}</id>
+											<id>org.springframework:spring-jcl:jar:${springframework.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.springframework:spring-context:jar:${springframework.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.springframework:spring-expression:jar:${springframework.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.springframework:spring-aop:jar:${springframework.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.springframework:spring-web:jar:${springframework.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>

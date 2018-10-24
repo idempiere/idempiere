@@ -79,17 +79,18 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.apache.cxf.cxf-rt-wsdl;bundle-version="3.2.6",
  jaxws-api;bundle-version="0.0.0",
  javax.jws-api;bundle-version="1.1.0",
- javax.xml.soap-api;bundle-version="1.4.0"
+ javax.xml.soap-api;bundle-version="1.4.0",
+ org.springframework.spring-aop;bundle-version="5.1.1",
+ org.springframework.spring-beans;bundle-version="5.1.1",
+ org.springframework.spring-context;bundle-version="5.1.1",
+ org.springframework.spring-core;bundle-version="5.1.1",
+ org.springframework.spring-expression;bundle-version="5.1.1",
+ org.springframework.spring-jcl;bundle-version="5.1.1",
+ org.springframework.spring-web;bundle-version="5.1.1"
 Bundle-ClassPath: .,
  WEB-INF/lib/aopalliance.jar,
  WEB-INF/lib/axis.jar,
  WEB-INF/lib/idempiere-xmlbeans.jar,
- WEB-INF/lib/spring-aop.jar,
- WEB-INF/lib/spring-beans.jar,
- WEB-INF/lib/spring-context.jar,
- WEB-INF/lib/spring-core.jar,
- WEB-INF/lib/spring-expression.jar,
- WEB-INF/lib/spring-web.jar,
  WEB-INF/lib/xmlbeans.jar
 Export-Package: org.apache.axis,
  org.apache.axis.attachments,
@@ -196,9 +197,7 @@ Export-Package: org.apache.axis,
  org.idempiere.adinterface,
  org.idempiere.webservices,
  org.idempiere.webservices.client,
- org.idempiere.webservices.fault,
- org.springframework.web.context,
- org.springframework.web.util
+ org.idempiere.webservices.fault
 Web-ContextPath: ADInterface
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.idempiere.webservices

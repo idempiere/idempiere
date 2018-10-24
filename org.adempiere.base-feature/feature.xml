@@ -365,13 +365,6 @@
          unpack="false"/>
 
    <plugin
-         id="com.sun.activation.javax.activation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="jaxws-api"
          download-size="0"
          install-size="0"
@@ -507,6 +500,13 @@
 
    <plugin
          id="javax.jws-api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.sun.activation.javax.activation"
          download-size="0"
          install-size="0"
          version="0.0.0"

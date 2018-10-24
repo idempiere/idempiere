@@ -24,36 +24,6 @@
 						<configuration>
 							<artifactItems>
 								<artifactItem>
-									<groupId>org.springframework</groupId>
-									<artifactId>spring-aop</artifactId>
-									<version>${springframework.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.springframework</groupId>
-									<artifactId>spring-web</artifactId>
-									<version>${springframework.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.springframework</groupId>
-									<artifactId>spring-context</artifactId>
-									<version>${springframework.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.springframework</groupId>
-									<artifactId>spring-beans</artifactId>
-									<version>${springframework.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.springframework</groupId>
-									<artifactId>spring-core</artifactId>
-									<version>${springframework.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.springframework</groupId>
-									<artifactId>spring-expression</artifactId>
-									<version>${springframework.version}</version>
-								</artifactItem>
-								<artifactItem>
 									<groupId>wsdl4j</groupId>
 									<artifactId>wsdl4j</artifactId>
 									<version>1.6.3</version>
