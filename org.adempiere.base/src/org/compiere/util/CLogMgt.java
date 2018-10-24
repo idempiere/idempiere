@@ -16,8 +16,6 @@
  *****************************************************************************/
 package org.compiere.util;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -62,15 +60,12 @@ public class CLogMgt
 	
 	private static final Map<String, Level> levelMap = new HashMap<String, Level>();
 	
-	private final static PropertyChangeListener listener = new PropertyChangeListener() {			
+	private final static Runnable configurationListener = new Runnable() {
 		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName() == null) {
-				reInit();
-			}
+		public void run() {
+			reInit();
 		}
-	};	
-	
+	};
 	
 	private static synchronized void reInit() {
 		CLogMgt.initialize(Ini.isClient());
@@ -193,9 +188,8 @@ public class CLogMgt
 		setFormatter(CLogFormatter.get());
 		setFilter(CLogFilter.get());
 	
-		//TODO: hieplq it's remove on java https://bugs.openjdk.java.net/browse/JDK-8029805
-		//mgr.removePropertyChangeListener(listener);
-		//mgr.addPropertyChangeListener(listener);
+		mgr.removeConfigurationListener(configurationListener);
+		mgr.addConfigurationListener(configurationListener);
 	}	//	initialize
 
 
