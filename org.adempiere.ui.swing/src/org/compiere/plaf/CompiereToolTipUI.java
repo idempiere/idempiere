@@ -79,7 +79,7 @@ public class CompiereToolTipUI extends MetalToolTipUI
 			int condition = comp.getConditionForKeyStroke (keys[i]);
 			if (condition == JComponent.WHEN_IN_FOCUSED_WINDOW)
 			{
-				String prefix = KeyEvent.getKeyModifiersText (mod);
+				String prefix = KeyEvent.getModifiersExText (mod);
 				if (prefix.length() > 1)
 				{
 					if (controlKeyStr.length() > 0)

@@ -165,7 +165,7 @@ public class VLookup extends JComponent
             Action action = (binding==null) ? null : am.get(binding);
             if(action!=null){
                 return SwingUtilities.notifyAction(action, ks, e, editorComp,
-                        e.getModifiers());
+                        e.getModifiersEx());
             }
         }
         return false;

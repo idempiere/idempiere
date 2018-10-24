@@ -825,7 +825,7 @@ public final class VNumber extends JComponent
 		int modifiers = 0;
 		AWTEvent currentEvent = EventQueue.getCurrentEvent();
 		if (currentEvent instanceof InputEvent)
-			modifiers = ((InputEvent)currentEvent).getModifiers();
+			modifiers = ((InputEvent)currentEvent).getModifiersEx();
 		else if (currentEvent instanceof ActionEvent)
 			modifiers = ((ActionEvent)currentEvent).getModifiers();
 		ActionEvent ae = new ActionEvent (this, ActionEvent.ACTION_PERFORMED,
