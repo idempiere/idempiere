@@ -358,7 +358,7 @@ public class ReplenishReport extends SvrProcess
 				if(custom==null){
 					// if no OSGi plugin is found try the legacy way (in my own classpath)
 					Class<?> clazz = Class.forName(className);
-					custom = (ReplenishInterface) clazz.newInstance();
+					custom = (ReplenishInterface) clazz.getDeclaredConstructor().newInstance();
 				}
 			}
 			catch (Exception e)

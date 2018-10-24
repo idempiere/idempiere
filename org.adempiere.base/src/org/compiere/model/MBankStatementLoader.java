@@ -132,7 +132,7 @@ import org.compiere.util.Util;
 			if(m_loader==null){
 				// if no OSGi plugin is found try the legacy way (in my own classpath)
 				Class<?> bsrClass = Class.forName(getStmtLoaderClass());
-				m_loader = (BankStatementLoaderInterface) bsrClass.newInstance();
+				m_loader = (BankStatementLoaderInterface) bsrClass.getDeclaredConstructor().newInstance();
 			}
 		}
 		catch(Exception e)

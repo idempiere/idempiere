@@ -147,7 +147,7 @@ public final class DB
 		try
 		{
 			Class<?> clazz = Class.forName("org.compiere.MigrateData");
-			clazz.newInstance();
+			clazz.getDeclaredConstructor().newInstance();
 		}
 		catch (Exception e)
 		{

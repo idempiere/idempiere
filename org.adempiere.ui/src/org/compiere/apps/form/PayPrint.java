@@ -264,7 +264,7 @@ public class PayPrint {
 			if (m_PaymentExport == null)
 			{
 				Class<?> clazz = Class.forName (m_PaymentExportClass);
-				m_PaymentExport = (PaymentExport)clazz.newInstance();
+				m_PaymentExport = (PaymentExport)clazz.getDeclaredConstructor().newInstance();
 			}
 			
 		}

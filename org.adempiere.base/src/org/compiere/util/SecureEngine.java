@@ -193,7 +193,7 @@ public class SecureEngine
 		try
 		{
 			Class<?> clazz = Class.forName(realClass);
-			implementation = (SecureInterface)clazz.newInstance();
+			implementation = (SecureInterface)clazz.getDeclaredConstructor().newInstance();
 		}
 		catch (Exception e)
 		{

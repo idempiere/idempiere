@@ -134,7 +134,7 @@ public class MSLACriteria extends X_PA_SLA_Criteria
 		try
 		{
 			Class<?> clazz = Class.forName(getClassname());
-			SLACriteria retValue = (SLACriteria)clazz.newInstance();
+			SLACriteria retValue = (SLACriteria)clazz.getDeclaredConstructor().newInstance();
 			return retValue;
 		}
 		catch (Exception e)

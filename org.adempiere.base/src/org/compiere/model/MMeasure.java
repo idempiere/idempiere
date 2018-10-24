@@ -634,7 +634,7 @@ public class MMeasure extends X_PA_Measure
 					try
 					{
 						Class<?> clazz = Class.forName(cmd);
-						custom = (MeasureInterface)clazz.newInstance();
+						custom = (MeasureInterface)clazz.getDeclaredConstructor().newInstance();
 					}
 					catch (Exception e)
 					{

@@ -43,7 +43,7 @@ public class DefaultShipmentProcessorFactory implements IShipmentProcessorFactor
 			{
 				Class<?> ppClass = Class.forName(className);
 				if (ppClass != null)
-					myProcessor = (IShipmentProcessor) ppClass.newInstance();
+					myProcessor = (IShipmentProcessor) ppClass.getDeclaredConstructor().newInstance();
 			} 
 			catch (Error e1) 
 			{   //  NoClassDefFound

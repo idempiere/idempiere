@@ -86,7 +86,7 @@ public class DefaultFormFactory implements IFormFactory {
     			if (clazz != null) {
     				try
 		    		{
-		    			form = clazz.newInstance();
+		    			form = clazz.getDeclaredConstructor().newInstance();
 		    		}
 		    		catch (Exception e)
 		    		{

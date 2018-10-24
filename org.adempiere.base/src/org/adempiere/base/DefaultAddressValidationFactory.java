@@ -44,7 +44,7 @@ public class DefaultAddressValidationFactory implements IAddressValidationFactor
 			{
 				Class<?> ppClass = Class.forName(className);
 				if (ppClass != null)
-					myProcessor = (IAddressValidation) ppClass.newInstance();
+					myProcessor = (IAddressValidation) ppClass.getDeclaredConstructor().newInstance();
 			} 
 			catch (Error e1) 
 			{   //  NoClassDefFound

@@ -2927,7 +2927,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 							if (call == null) {
 								//no match from factory, check java classpath
 								Class<?> cClass = Class.forName(className);
-								call = (Callout)cClass.newInstance();
+								call = (Callout)cClass.getDeclaredConstructor().newInstance();
 							}
 						}
 					}
