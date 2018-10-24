@@ -252,7 +252,7 @@ public class InfoInvoice extends Info
 		//  Set Defaults
 		String bp = Env.getContext(Env.getCtx(), p_WindowNo, "C_BPartner_ID");
 		if (bp != null && bp.length() != 0)
-			fBPartner_ID.setValue(new Integer(bp));
+			fBPartner_ID.setValue(Integer.valueOf(bp));
 
 		//  prepare table
 		StringBuilder where = new StringBuilder("i.IsActive='Y'");

@@ -101,7 +101,7 @@ public final class MLookup extends Lookup implements Serializable
 	/** Number of max rows to load	*/
 	private static final int	MAX_ROWS = 5000;
 	/**	Indicator for Null			*/
-	private static Integer 		MINUS_ONE = new Integer(-1);
+	private static Integer 		MINUS_ONE = Integer.valueOf(-1);
 
 	/** The Lookup Info Value Object        */
 	private MLookupInfo         m_info = null;
@@ -539,7 +539,7 @@ public final class MLookup extends Lookup implements Serializable
 					int keyValue = rs.getInt(1);
 					KeyNamePair p = new KeyNamePair(keyValue, name.toString());
 					if (saveInCache)		//	save if
-						m_lookup.put(new Integer(keyValue), p);
+						m_lookup.put(Integer.valueOf(keyValue), p);
 					directValue = p;
 				}
 				else
@@ -878,7 +878,7 @@ public final class MLookup extends Lookup implements Serializable
 					{
 						int key = rs.getInt(1);
 						KeyNamePair p = new KeyNamePair(key, name.toString());
-						m_lookup.put(new Integer(key), p);
+						m_lookup.put(Integer.valueOf(key), p);
 					}
 					else
 					{

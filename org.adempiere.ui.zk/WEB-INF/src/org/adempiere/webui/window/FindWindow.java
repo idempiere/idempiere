@@ -1516,7 +1516,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				|| (DisplayType.isID(dt) && field.getColumnName().endsWith("_ID")))
 			{
 				int i = Integer.parseInt(in);
-		        editor.setValue(new Integer(i));
+		        editor.setValue(Integer.valueOf(i));
 			}
 			//	Return BigDecimal
 			else if (DisplayType.isNumeric(dt))
@@ -2427,7 +2427,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 if (in instanceof Integer)
                     return in;
                 int i = Integer.parseInt(in.toString());
-                return new Integer(i);
+                return Integer.valueOf(i);
             }
             //  Return BigDecimal
             else if (DisplayType.isNumeric(dt))

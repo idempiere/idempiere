@@ -478,7 +478,7 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener, TreeS
 		
 		Vector<Object> line = new Vector<Object>(10);
 		line.add( Boolean.valueOf(M_Product.isActive()));   //  0 IsActive
-		line.add( new Integer(0).toString()); // 1 Line
+		line.add( Integer.valueOf(0).toString()); // 1 Line
 		KeyNamePair pp = new KeyNamePair(M_Product.getM_Product_ID(),M_Product.getValue().concat("_").concat(M_Product.getName()));
 		line.add(pp); //  2 M_Product_ID
 		MUOM u = new MUOM(M_Product.getCtx(), M_Product.getC_UOM_ID(), M_Product.get_TrxName());
@@ -561,7 +561,7 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener, TreeS
 
 		Vector<Object> line = new Vector<Object>(10);
 		line.add( Boolean.valueOf(bomline.isActive()));   //  0 IsActive
-		line.add( new Integer(bomline.getLine()).toString()); // 1 Line
+		line.add( Integer.valueOf(bomline.getLine()).toString()); // 1 Line
 		KeyNamePair pp = new KeyNamePair(M_Product.getM_Product_ID(),M_Product.getValue().concat("_").concat(M_Product.getName()));
 		line.add(pp); //  2 M_Product_ID
 		MUOM u = new MUOM(M_Product.getCtx(), M_Product.getC_UOM_ID(), M_Product.get_TrxName());
@@ -589,7 +589,7 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener, TreeS
 
 		Vector<Object> line = new Vector<Object>(10);
 		line.add( Boolean.valueOf(M_Product.isActive()));   //  0 IsActive
-		line.add( new Integer(bom.getLine()).toString()); // 1 Line
+		line.add( Integer.valueOf(bom.getLine()).toString()); // 1 Line
 		KeyNamePair pp = new KeyNamePair(M_Product.getM_Product_ID(),M_Product.getValue().concat("_").concat(M_Product.getName()));
 		line.add(pp); //  2 M_Product_ID
 		MUOM u = new MUOM(M_Product.getCtx(), M_Product.getC_UOM_ID(), M_Product.get_TrxName());

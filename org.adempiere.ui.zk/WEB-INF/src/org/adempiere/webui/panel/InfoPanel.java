@@ -599,7 +599,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			else if (c == Double.class)
 		        value = Double.valueOf(rs.getDouble(colIndex));
 			else if (c == Integer.class)
-		        value = new Integer(rs.getInt(colIndex));
+		        value = Integer.valueOf(rs.getInt(colIndex));
 			else if (c == KeyNamePair.class)
 			{				
 				if (p_layout[col].isKeyPairCol())

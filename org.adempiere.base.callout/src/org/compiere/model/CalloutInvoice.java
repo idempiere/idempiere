@@ -161,7 +161,7 @@ public class CalloutInvoice extends CalloutEngine
 				}
 				
 				//	PriceList & IsTaxIncluded & Currency
-				Integer ii = new Integer(rs.getInt(IsSOTrx ? "M_PriceList_ID" : "PO_PriceList_ID"));
+				Integer ii = Integer.valueOf(rs.getInt(IsSOTrx ? "M_PriceList_ID" : "PO_PriceList_ID"));
 				if (!rs.wasNull())
 					mTab.setValue("M_PriceList_ID", ii);
 				else
@@ -171,13 +171,13 @@ public class CalloutInvoice extends CalloutEngine
 					{
 						MPriceList pl = new MPriceList(ctx, i, null);
 						if (IsSOTrx == pl.isSOPriceList())
-							mTab.setValue("M_PriceList_ID", new Integer(i));
+							mTab.setValue("M_PriceList_ID", Integer.valueOf(i));
 						else
 						{
 							String sql2 = "SELECT M_PriceList_ID FROM M_PriceList WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive='Y' ORDER BY IsDefault DESC";
 							ii = DB.getSQLValue (null, sql2, Env.getAD_Client_ID(ctx), IsSOTrx);
 							if (ii != 0)
-								mTab.setValue("M_PriceList_ID", new Integer(ii));
+								mTab.setValue("M_PriceList_ID", Integer.valueOf(ii));
 						}
 					}
 				}
@@ -189,7 +189,7 @@ public class CalloutInvoice extends CalloutEngine
 				if (Env.getContext(ctx, WindowNo, "DocBaseType").endsWith("C"))	//	Credits are Payment Term
 					s = X_C_Invoice.PAYMENTRULE_OnCredit;
 				//  Payment Term
-				ii = new Integer(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
+				ii = Integer.valueOf(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
 				if (!rs.wasNull())
 					mTab.setValue("C_PaymentTerm_ID", ii);
 
@@ -206,7 +206,7 @@ public class CalloutInvoice extends CalloutEngine
 				if (locID == 0)
 					mTab.setValue("C_BPartner_Location_ID", null);
 				else
-					mTab.setValue("C_BPartner_Location_ID", new Integer(locID));
+					mTab.setValue("C_BPartner_Location_ID", Integer.valueOf(locID));
 
 				//	Contact - overwritten by InfoBP selection
 				int contID = rs.getInt("AD_User_ID");
@@ -219,7 +219,7 @@ public class CalloutInvoice extends CalloutEngine
 				if (contID == 0)
 					mTab.setValue("AD_User_ID", null);
 				else
-					mTab.setValue("AD_User_ID", new Integer(contID));
+					mTab.setValue("AD_User_ID", Integer.valueOf(contID));
 
 				//	CreditAvailable
 				if (IsSOTrx)
@@ -358,9 +358,9 @@ public class CalloutInvoice extends CalloutEngine
 		mTab.setValue("PriceLimit", pp.getPriceLimit());
 		mTab.setValue("PriceActual", pp.getPriceStd());
 		mTab.setValue("PriceEntered", pp.getPriceStd());
-		mTab.setValue("C_Currency_ID", new Integer(pp.getC_Currency_ID()));
+		mTab.setValue("C_Currency_ID", Integer.valueOf(pp.getC_Currency_ID()));
 	//	mTab.setValue("Discount", pp.getDiscount());
-		mTab.setValue("C_UOM_ID", new Integer(pp.getC_UOM_ID()));
+		mTab.setValue("C_UOM_ID", Integer.valueOf(pp.getC_UOM_ID()));
 		Env.setContext(ctx, WindowNo, "EnforcePriceLimit", pp.isEnforcePriceLimit() ? "Y" : "N");
 		Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");
 		//
@@ -393,7 +393,7 @@ public class CalloutInvoice extends CalloutEngine
 		}
 		mTab.setValue("M_AttributeSetInstance_ID", null);
 		mTab.setValue("S_ResourceAssignment_ID", null);
-		mTab.setValue("C_UOM_ID", new Integer(100));	//	EA
+		mTab.setValue("C_UOM_ID", Integer.valueOf(100));	//	EA
 
 		Env.setContext(ctx, WindowNo, "DiscountSchema", "N");
 		String sql = "SELECT ChargeAmt FROM C_Charge WHERE C_Charge_ID=?";
@@ -490,7 +490,7 @@ public class CalloutInvoice extends CalloutEngine
 		if (C_Tax_ID == 0)
 			mTab.fireDataStatusEEvent(CLogger.retrieveError());
 		else
-			mTab.setValue("C_Tax_ID", new Integer(C_Tax_ID));
+			mTab.setValue("C_Tax_ID", Integer.valueOf(C_Tax_ID));
 		//
 		return amt (ctx, WindowNo, mTab, mField, value);
 	}	//	tax

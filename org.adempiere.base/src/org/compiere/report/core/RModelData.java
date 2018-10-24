@@ -150,7 +150,7 @@ public class RModelData
 					else if (rc.getColClass() == Double.class)
 						row.add(Double.valueOf(rs.getDouble(index++)));
 					else if (rc.getColClass() == Integer.class)
-						row.add(new Integer(rs.getInt(index++)));
+						row.add(Integer.valueOf(rs.getInt(index++)));
 					else if (rc.getColClass() == Timestamp.class)
 						row.add(rs.getTimestamp(index++));
 					else if (rc.getColClass() == Boolean.class)
@@ -290,7 +290,7 @@ public class RModelData
 						}
 					}   //  for all columns
 					//
-					m_groupRows.add(new Integer(rows.size())); //  group row indicator
+					m_groupRows.add(Integer.valueOf(rows.size())); //  group row indicator
 					rows.add(newRow);
 					groupBysValue[level] = row.get(idx);
 				}
@@ -347,7 +347,7 @@ public class RModelData
 			//  remove empty row added earlier to force group change
 			if (gSize > 0)
 				rows.remove(rows.size()-1);
-			m_groupRows.add(new Integer(rows.size())); //  group row indicator
+			m_groupRows.add(Integer.valueOf(rows.size())); //  group row indicator
 			rows.add(newRow);
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("End Rows=" + rows.size());
@@ -367,7 +367,7 @@ public class RModelData
 		{
 			m_groupRowsIndicator = new ArrayList<Boolean>(rows.size());
 			for (int r = 0; r < rows.size(); r++)
-				m_groupRowsIndicator.add(Boolean.valueOf(m_groupRows.contains(new Integer(r))));
+				m_groupRowsIndicator.add(Boolean.valueOf(m_groupRows.contains(Integer.valueOf(r))));
 		}
 		if (row < 0 || row >= m_groupRowsIndicator.size())
 			return false;

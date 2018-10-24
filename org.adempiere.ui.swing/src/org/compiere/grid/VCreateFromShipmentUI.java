@@ -307,7 +307,7 @@ public class VCreateFromShipmentUI extends CreateFromShipment implements ActionL
 		bPartnerField = new VLookup ("C_BPartner_ID", true, false, true, lookup);
 		//
 		int C_BPartner_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_BPartner_ID");
-		bPartnerField.setValue(new Integer(C_BPartner_ID));
+		bPartnerField.setValue(Integer.valueOf(C_BPartner_ID));
 
 		//  initial loading
 		initBPOrderDetails(C_BPartner_ID, forInvoice);

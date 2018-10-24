@@ -128,9 +128,9 @@ public class ImportHelper {
 			throw new Exception(Msg.getMsg(ctx, "XMLVersionAttributeMandatory"));
 		}
 		///Getting Attributes.
-		int ReplicationMode = new Integer(rootElement.getAttribute("ReplicationMode"));
+		int ReplicationMode = Integer.valueOf(rootElement.getAttribute("ReplicationMode"));
 		String ReplicationType = rootElement.getAttribute("ReplicationType");
-		int ReplicationEvent = new Integer(rootElement.getAttribute("ReplicationEvent"));
+		int ReplicationEvent = Integer.valueOf(rootElement.getAttribute("ReplicationEvent"));
 		
 		MClient client = null;
 		client = getAD_ClientByValue(ctx, AD_Client_Value, trxName);
@@ -354,7 +354,7 @@ public class ImportHelper {
 			{
 				refRecord_ID = getID(ctx, referencedExpFormat, referencedNode, line.getValue(), po.get_TrxName());
 				if (log.isLoggable(Level.INFO)) log.info("refRecord_ID = " + refRecord_ID);
-				value = new Integer(refRecord_ID);
+				value = Integer.valueOf(refRecord_ID);
 			}
 			else
 			{
@@ -485,7 +485,7 @@ public class ImportHelper {
 						if (! Util.isEmpty(value.toString()))
 						{
 							int intValue = Integer.parseInt(value.toString());
-							value = new Integer( intValue );
+							value = Integer.valueOf( intValue );
 						}else
 						{
 							value=null;
@@ -654,7 +654,7 @@ public class ImportHelper {
 
 				if (log.isLoggable(Level.INFO)) log.info("record_ID = " + record_ID);
 				
-				cols[col] = new Integer(record_ID);
+				cols[col] = Integer.valueOf(record_ID);
 			} 
 			else 
 			{
@@ -680,7 +680,7 @@ public class ImportHelper {
 				if (!Util.isEmpty(value.toString()))
 				{
 					//double doubleValue = Double.parseDouble(value.toString());
-					value = new Integer(value.toString());
+					value = Integer.valueOf(value.toString());
 					if (DisplayType.ID	==	column.getAD_Reference_ID())
 					{
 						replication_id = (Integer) value;

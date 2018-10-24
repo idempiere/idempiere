@@ -250,7 +250,7 @@ public abstract class PaymentFormDirect extends PaymentForm {
 			if (m_mPayment.getC_Payment_ID() == 0)
 				getGridTab().setValue("C_Payment_ID", null);
 			else
-				getGridTab().setValue("C_Payment_ID", new Integer(m_mPayment.getC_Payment_ID()));
+				getGridTab().setValue("C_Payment_ID", Integer.valueOf(m_mPayment.getC_Payment_ID()));
 		}
 		
 		return true;

@@ -434,7 +434,7 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 			else if (c == Double.class)
 				value = Double.valueOf(rs.getDouble(colIndex));
 			else if (c == Integer.class)
-				value = new Integer(rs.getInt(colIndex));
+				value = Integer.valueOf(rs.getInt(colIndex));
 			else if (c == KeyNamePair.class)
 			{
 				if (columnsLayout[col].isKeyPairCol())

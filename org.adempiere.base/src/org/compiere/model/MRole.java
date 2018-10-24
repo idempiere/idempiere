@@ -902,7 +902,7 @@ public final class MRole extends X_AD_Role
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				Integer ii = new Integer(rs.getInt(1));
+				Integer ii = Integer.valueOf(rs.getInt(1));
 				m_tableAccessLevel.put(ii, rs.getString(2));
 				String tableName = rs.getString(3); 
 				m_tableName.put(tableName, ii);
@@ -1345,7 +1345,7 @@ public final class MRole extends X_AD_Role
 		//	AccessLevel
 		//		1 = Org - 2 = Client - 4 = System
 		//		3 = Org+Client - 6 = Client+System - 7 = All
-		String roleAccessLevel = (String)m_tableAccessLevel.get(new Integer(AD_Table_ID));
+		String roleAccessLevel = (String)m_tableAccessLevel.get(Integer.valueOf(AD_Table_ID));
 		if (roleAccessLevel == null)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("NO - No AccessLevel - AD_Table_ID=" + AD_Table_ID);
@@ -1542,7 +1542,7 @@ public final class MRole extends X_AD_Role
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					Integer winId = new Integer(rs.getInt(1));
+					Integer winId = Integer.valueOf(rs.getInt(1));
 					if ("N".equals(rs.getString(3))) {
 						// inactive window on direct access
 						if (m_windowAccess.containsKey(winId)) {
@@ -1627,7 +1627,7 @@ public final class MRole extends X_AD_Role
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					Integer procId = new Integer(rs.getInt(1));
+					Integer procId = Integer.valueOf(rs.getInt(1));
 					if ("N".equals(rs.getString(3))) {
 						// inactive process on direct access
 						if (m_processAccess.containsKey(procId)) {
@@ -1707,7 +1707,7 @@ public final class MRole extends X_AD_Role
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					Integer taskId = new Integer(rs.getInt(1));
+					Integer taskId = Integer.valueOf(rs.getInt(1));
 					if ("N".equals(rs.getString(3))) {
 						// inactive task on direct access
 						if (m_taskAccess.containsKey(taskId)) {
@@ -1787,7 +1787,7 @@ public final class MRole extends X_AD_Role
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					Integer formId = new Integer(rs.getInt(1));
+					Integer formId = Integer.valueOf(rs.getInt(1));
 					if ("N".equals(rs.getString(3))) {
 						// inactive form on direct access
 						if (m_formAccess.containsKey(formId)) {
@@ -1867,7 +1867,7 @@ public final class MRole extends X_AD_Role
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					Integer formId = new Integer(rs.getInt(1));
+					Integer formId = Integer.valueOf(rs.getInt(1));
 					if ("N".equals(rs.getString(3))) {
 						// inactive workflow on direct access
 						if (m_workflowAccess.containsKey(formId)) {
@@ -3137,7 +3137,7 @@ public final class MRole extends X_AD_Role
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					Integer infoId = new Integer(rs.getInt(1));
+					Integer infoId = Integer.valueOf(rs.getInt(1));
 					if ("N".equals(rs.getString(2))) {
 						// inactive info on direct access
 						if (m_infoAccess.containsKey(infoId)) {

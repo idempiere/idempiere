@@ -192,7 +192,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		m_C_BPartner_ID = invoice.getC_BPartner_ID();
 		m_C_BPartner_Location_ID = invoice.getC_BPartner_Location_ID();
 		m_IsSOTrx = invoice.isSOTrx();
-		m_precision = new Integer(invoice.getPrecision());
+		m_precision = Integer.valueOf(invoice.getPrecision());
 	}	//	setOrder
 
 	/**
@@ -343,7 +343,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
 		if (M_AttributeSetInstance_ID == 0)		//	 0 is valid ID
-			set_Value("M_AttributeSetInstance_ID", new Integer(0));
+			set_Value("M_AttributeSetInstance_ID", Integer.valueOf(0));
 		else
 			super.setM_AttributeSetInstance_ID (M_AttributeSetInstance_ID);
 	}	//	setM_AttributeSetInstance_ID
@@ -768,7 +768,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			log.warning("getPrecision = " + i + " - set to 2");
 			i = 2;
 		}
-		m_precision = new Integer(i);
+		m_precision = Integer.valueOf(i);
 		return m_precision.intValue();
 	}	//	getPrecision
 

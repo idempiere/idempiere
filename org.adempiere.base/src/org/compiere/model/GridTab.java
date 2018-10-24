@@ -1818,7 +1818,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				if (rs.next())
 				{
 					//	{0} - Number of lines
-					Integer lines = new Integer(rs.getInt(1));
+					Integer lines = Integer.valueOf(rs.getInt(1));
 					arguments[0] = lines;
 					//	{1} - Line net
 					Double net = Double.valueOf(rs.getDouble(2));
@@ -1905,7 +1905,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				if (rs.next())
 				{
 					//	{0} - Number of lines
-					Integer lines = new Integer(rs.getInt(1));
+					Integer lines = Integer.valueOf(rs.getInt(1));
 					arguments[0] = lines;
 					//	{1} - Line toral
 					Double lineTotal = Double.valueOf(rs.getDouble(3));
@@ -1979,7 +1979,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				if (rs.next())
 				{
 					//	{0} - Number of lines
-					Integer lines = new Integer(rs.getInt(1));
+					Integer lines = Integer.valueOf(rs.getInt(1));
 					arguments[0] = lines;
 					//	{1} - Line total
 					Double total = Double.valueOf(rs.getDouble(2));
@@ -2234,7 +2234,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				Integer key = new Integer(rs.getInt(1));
+				Integer key = Integer.valueOf(rs.getInt(1));
 				m_Lock.add(key);
 			}
 		}
@@ -2264,7 +2264,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (m_Lock == null || m_Lock.isEmpty())
 			return false;
 		//
-		Integer key = new Integer(m_mTable.getKeyID (m_currentRow));
+		Integer key = Integer.valueOf(m_mTable.getKeyID (m_currentRow));
 		return m_Lock.contains(key);
 	}	//	isLocked
 
@@ -3190,9 +3190,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			lineNoCurrentRow = (Integer) m_mTable.getValueAt(from, lineCol);
 			lineNoNextRow = (Integer) m_mTable.getValueAt(to, lineCol);
 		} else if (m_mTable.getValueAt(from, lineCol) instanceof BigDecimal) {
-			lineNoCurrentRow = new Integer(((BigDecimal) m_mTable.getValueAt(from, lineCol))
+			lineNoCurrentRow = Integer.valueOf(((BigDecimal) m_mTable.getValueAt(from, lineCol))
 					.intValue());
-			lineNoNextRow = new Integer(((BigDecimal) m_mTable.getValueAt(to, lineCol))
+			lineNoNextRow = Integer.valueOf(((BigDecimal) m_mTable.getValueAt(to, lineCol))
 					.intValue());
 		} else {
 			log.fine("unknown value format - return");

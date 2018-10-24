@@ -406,7 +406,7 @@ public class GenerateModelJPA
 					sb.append("if (").append (columnName).append (" <= 0) ")
 						.append(setValue).append(" (\"").append(columnName).append("\", null); else \n");
 			}
-			sb.append(setValue).append(" (\"").append(columnName).append("\", new Integer(").append(columnName).append("));");
+			sb.append(setValue).append(" (\"").append(columnName).append("\", Integer.valueOf(").append(columnName).append("));");
 		}
 		else if (clazz.equals(Boolean.class))
 			sb.append(setValue).append(" (\"").append(columnName).append("\", Boolean.valueOf(").append(columnName).append("));");

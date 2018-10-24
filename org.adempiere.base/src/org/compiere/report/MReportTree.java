@@ -303,7 +303,7 @@ public class MReportTree
 				MTreeNode nn = (MTreeNode)en.nextElement();
 				if (!nn.isSummary())
 				{
-					list.add(new Integer(nn.getNode_ID()));
+					list.add(Integer.valueOf(nn.getNode_ID()));
 					if (log.isLoggable(Level.FINEST)) log.finest("- " + nn);
 				}
 				else
@@ -311,7 +311,7 @@ public class MReportTree
 			}
 		}
 		else	//	not found or not summary 
-			list.add(new Integer(ID));
+			list.add(Integer.valueOf(ID));
 		//
 		Integer[] retValue = new Integer[list.size()];
 		list.toArray(retValue);

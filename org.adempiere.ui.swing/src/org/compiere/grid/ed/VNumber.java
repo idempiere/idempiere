@@ -443,7 +443,7 @@ public final class VNumber extends JComponent
 			if (!m_modified)
 				return null;
 			if (m_displayType == DisplayType.Integer)
-				return new Integer(0);
+				return Integer.valueOf(0);
 			return Env.ZERO;
 		}
 		if (value.equals(".") || value.equals(",") || value.equals("-"))
@@ -459,7 +459,7 @@ public final class VNumber extends JComponent
 			value = number.toString();      //	converts it to US w/o thousands
 			BigDecimal bd = new BigDecimal(value);
 			if (m_displayType == DisplayType.Integer)
-				return new Integer(bd.intValue());
+				return Integer.valueOf(bd.intValue());
 			if (bd.signum() == 0)
 				return bd;
 			return bd.setScale(m_format.getMaximumFractionDigits(), BigDecimal.ROUND_HALF_UP);
@@ -470,7 +470,7 @@ public final class VNumber extends JComponent
 		}
 		m_text.setText(m_format.format(0));
 		if (m_displayType == DisplayType.Integer)
-			return new Integer(0);
+			return Integer.valueOf(0);
 		return Env.ZERO;
 	}	//	getValue
 
@@ -503,7 +503,7 @@ public final class VNumber extends JComponent
 		if (value == null)
 		{
 			if (m_displayType == DisplayType.Integer)
-				value = new Integer(0);
+				value = Integer.valueOf(0);
 			else
 				value = Env.ZERO;
 		}
@@ -511,7 +511,7 @@ public final class VNumber extends JComponent
 		if (value instanceof BigDecimal)
 			value = ((BigDecimal)value).add(Env.ONE);
 		else
-			value = new Integer(((Integer)value).intValue() + 1);
+			value = Integer.valueOf(((Integer)value).intValue() + 1);
 		//
 		setValue(value);
 		return value;
@@ -529,7 +529,7 @@ public final class VNumber extends JComponent
 		if (value == null)
 		{
 			if (m_displayType == DisplayType.Integer)
-				value = new Integer(minimum);
+				value = Integer.valueOf(minimum);
 			else
 				value = new BigDecimal(minimum);
 			setValue(value);
@@ -552,7 +552,7 @@ public final class VNumber extends JComponent
 			i--;
 			if (i < minimum)
 				i = minimum;
-			value = new Integer(i);
+			value = Integer.valueOf(i);
 		}
 		//
 		setValue(value);
@@ -672,12 +672,12 @@ public final class VNumber extends JComponent
 				if (ii  < m_minValue)
 				{
 					error = oo + " < " + m_minValue;
-					oo = new Integer(m_minValue.intValue());
+					oo = Integer.valueOf(m_minValue.intValue());
 				}
 				else if (ii > m_maxValue)
 				{
 					error = oo + " > " + m_maxValue;
-					oo = new Integer(m_maxValue.intValue());
+					oo = Integer.valueOf(m_maxValue.intValue());
 				}
 			}
 			else if (oo instanceof BigDecimal)

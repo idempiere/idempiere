@@ -219,8 +219,8 @@ public class PayPrint {
 			//
 			if (rs.next())
 			{
-				documentNo = new Integer(rs.getInt(1));
-				printFormatId = new Integer(rs.getInt(2));
+				documentNo = Integer.valueOf(rs.getInt(1));
+				printFormatId = Integer.valueOf(rs.getInt(2));
 			}
 			else
 			{

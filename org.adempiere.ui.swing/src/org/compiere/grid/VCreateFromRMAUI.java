@@ -160,7 +160,7 @@ public class VCreateFromRMAUI extends CreateFromRMA implements VetoableChangeLis
 		bPartnerField = new VLookup ("C_BPartner_ID", true, false, true, lookup);
 		//
 		int C_BPartner_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_BPartner_ID");
-		bPartnerField.setValue(new Integer(C_BPartner_ID));
+		bPartnerField.setValue(Integer.valueOf(C_BPartner_ID));
 	}   //  initBPartner
 	
 	protected void loadRMA()

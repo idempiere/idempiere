@@ -392,7 +392,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		if (log.isLoggable(Level.FINE))
 			log.fine(getColumnName() + " - Unique ID=" + id);
 
-		actionCombo(new Integer(id));          //  data binding
+		actionCombo(Integer.valueOf(id));          //  data binding
 		
 		Searchbox comp = getComponent();
 		Component parent = comp.getParent();
@@ -507,9 +507,9 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 					return;
 
 				//  Maybe new Record - put in cache
-				lookup.getDirect(new Integer(result), false, true);
-				setValue(new Integer(result));
-				actionCombo (new Integer(result));      //  data binding
+				lookup.getDirect(Integer.valueOf(result), false, true);
+				setValue(Integer.valueOf(result));
+				actionCombo (Integer.valueOf(result));      //  data binding
 				lookup.refresh();
 
 				//setValue(getValue());				

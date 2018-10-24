@@ -402,7 +402,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 			{
 				initDefault=m_userpreference.getProperty( UserPreference.P_ROLE );
 			}
-            KeyNamePair clientKNPair = new KeyNamePair(new Integer((String)lstItemClient.getValue()), lstItemClient.getLabel());
+            KeyNamePair clientKNPair = new KeyNamePair(Integer.valueOf((String)lstItemClient.getValue()), lstItemClient.getLabel());
             KeyNamePair roleKNPairs[] = login.getRoles(m_userName, clientKNPair);
             if (roleKNPairs != null && roleKNPairs.length > 0)
             {
@@ -457,7 +457,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 			{
 				initDefault=m_userpreference.getProperty( UserPreference.P_ORG );
 			}
-            KeyNamePair RoleKNPair = new KeyNamePair(new Integer((String)lstItemRole.getValue()), lstItemRole.getLabel());
+            KeyNamePair RoleKNPair = new KeyNamePair(Integer.valueOf((String)lstItemRole.getValue()), lstItemRole.getLabel());
             KeyNamePair orgKNPairs[] = login.getOrgs(RoleKNPair);
             if(orgKNPairs != null && orgKNPairs.length > 0)
             {
@@ -496,7 +496,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 			{
 				initDefault=m_userpreference.getProperty( UserPreference.P_WAREHOUSE );
 			}
-            KeyNamePair organisationKNPair = new KeyNamePair(new Integer((String)lstItemOrganisation.getValue()), lstItemOrganisation.getLabel());
+            KeyNamePair organisationKNPair = new KeyNamePair(Integer.valueOf((String)lstItemOrganisation.getValue()), lstItemOrganisation.getLabel());
             KeyNamePair warehouseKNPairs[] = login.getWarehouses(organisationKNPair);
             if(warehouseKNPairs != null && warehouseKNPairs.length > 0)
             {

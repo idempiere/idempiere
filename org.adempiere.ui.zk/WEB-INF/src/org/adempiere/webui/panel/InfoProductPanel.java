@@ -810,12 +810,12 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		ResultSet rs = null;
 		try
 		{
-			pickPriceList.appendItem("",new Integer(0));
+			pickPriceList.appendItem("",Integer.valueOf(0));
 			pstmt = DB.prepareStatement(SQL, null);
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				pickPriceList.appendItem(rs.getString(2),new Integer(rs.getInt(1)));
+				pickPriceList.appendItem(rs.getString(2),Integer.valueOf(rs.getInt(1)));
 			}
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
@@ -827,12 +827,12 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 				+ "WHERE IsActive='Y'",
 					"M_Warehouse", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO)
 				+ " ORDER BY Value";
-			pickWarehouse.appendItem("", new Integer(0));
+			pickWarehouse.appendItem("", Integer.valueOf(0));
 			pstmt = DB.prepareStatement(SQL, null);
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				pickWarehouse.appendItem(rs.getString("ValueName"), new Integer(rs.getInt("M_Warehouse_ID")));
+				pickWarehouse.appendItem(rs.getString("ValueName"), Integer.valueOf(rs.getInt("M_Warehouse_ID")));
 			}
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;

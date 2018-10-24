@@ -171,7 +171,7 @@ public class MRMATax extends X_M_RMATax
 	 */
 	protected void setPrecision (int precision)
 	{
-		m_precision = new Integer(precision);
+		m_precision = Integer.valueOf(precision);
 	}	//	setPrecision
 
 	/**

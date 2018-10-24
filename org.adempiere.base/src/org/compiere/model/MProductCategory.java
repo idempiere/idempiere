@@ -86,7 +86,7 @@ public class MProductCategory extends X_M_Product_Category
 			pstmt.setInt (1, M_Product_ID);
 			rs = pstmt.executeQuery ();
 			if (rs.next ())
-				category = new Integer(rs.getInt(1));
+				category = Integer.valueOf(rs.getInt(1));
 		}
 		catch (Exception e)
 		{

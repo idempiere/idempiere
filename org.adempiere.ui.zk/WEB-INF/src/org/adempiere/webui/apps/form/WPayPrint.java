@@ -267,7 +267,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			return;
 		//
 		m_C_PaySelection_ID = C_PaySelection_ID;
-		paySelectSearch.setValue(new Integer(m_C_PaySelection_ID));
+		paySelectSearch.setValue(Integer.valueOf(m_C_PaySelection_ID));
 		loadPaySelectInfo();
 	}	//	setsetPaySelection
 

@@ -152,7 +152,7 @@ public class VCreateFromStatementUI extends CreateFromStatement implements Actio
 		bankAccountField = new VLookup ("C_BankAccount_ID", true, true, true, lookup);
 		//  Set Default
 		int C_BankAccount_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_BankAccount_ID");
-		bankAccountField.setValue(new Integer(C_BankAccount_ID));
+		bankAccountField.setValue(Integer.valueOf(C_BankAccount_ID));
 		bankAccountField.addActionListener(this);
 		//  initial Loading
 		authorizationField = new VString ("authorization", false, false, true, 10, 30, null, null);

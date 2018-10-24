@@ -420,7 +420,7 @@ public final class VAccount extends JComponent
 		//	We have a Value
 		if (C_ValidCombination_ID > 0)
 		{
-			Integer newValue = new Integer(C_ValidCombination_ID);
+			Integer newValue = Integer.valueOf(C_ValidCombination_ID);
 
 			//	set & redisplay
 			setValue(newValue);

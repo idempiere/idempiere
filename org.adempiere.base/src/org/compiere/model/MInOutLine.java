@@ -283,7 +283,7 @@ public class MInOutLine extends X_M_InOutLine
 		if (M_Locator_ID < 0)
 			throw new IllegalArgumentException ("M_Locator_ID is mandatory.");
 		//	set to 0 explicitly to reset
-		set_Value (COLUMNNAME_M_Locator_ID, new Integer(M_Locator_ID));
+		set_Value (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
 	}	//	setM_Locator_ID
 
 	/**

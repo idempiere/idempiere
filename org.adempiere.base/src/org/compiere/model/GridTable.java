@@ -1303,8 +1303,8 @@ public class GridTable extends AbstractTableModel
 
 		//  Save old value
 		m_oldValue = new Object[3];
-		m_oldValue[0] = new Integer(row);
-		m_oldValue[1] = new Integer(col);
+		m_oldValue[0] = Integer.valueOf(row);
+		m_oldValue[1] = Integer.valueOf(col);
 		m_oldValue[2] = oldValue;
 
 		//	Set Data item
@@ -1894,7 +1894,7 @@ public class GridTable extends AbstractTableModel
 								if (dd instanceof Integer)
 									iii = (Integer)dd;
 								else
-									iii = new Integer(dd.toString());
+									iii = Integer.valueOf(dd.toString());
 								if (encrypted)
 									iii = (Integer)encrypt(iii, getAD_Client_ID());
 								if (manualUpdate)
@@ -3242,7 +3242,7 @@ public class GridTable extends AbstractTableModel
 				//	Integer, ID, Lookup
 				if (displayType == DisplayType.Integer || (DisplayType.isID(displayType) && !(columnName.equals("EntityType") || columnName.equals("AD_Language"))))
 				{
-					rowData[j] = new Integer(rs.getInt(j+1));	//	Integer
+					rowData[j] = Integer.valueOf(rs.getInt(j+1));	//	Integer
 					if (rs.wasNull())
 						rowData[j] = null;
 				}

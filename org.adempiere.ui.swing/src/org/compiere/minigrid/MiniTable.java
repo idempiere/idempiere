@@ -211,7 +211,7 @@ public class MiniTable extends CTable implements IMiniTable
 			return false;
 
 		//  is the column RW?
-		if (m_readWriteColumn.contains(new Integer(column)))
+		if (m_readWriteColumn.contains(Integer.valueOf(column)))
 			return true;
 		return false;
 	}   //  isCellEditable
@@ -224,7 +224,7 @@ public class MiniTable extends CTable implements IMiniTable
 	public void setColumnReadOnly (int column, boolean readOnly)
 	{
 		//  Column is ReadWrite
-		if (m_readWriteColumn.contains(new Integer(column)))
+		if (m_readWriteColumn.contains(Integer.valueOf(column)))
 		{
 			//  Remove from list
 			if (readOnly)
@@ -242,7 +242,7 @@ public class MiniTable extends CTable implements IMiniTable
 		}
 		//  current column is R/O - ReadWrite - add to list
 		else if (!readOnly)
-			m_readWriteColumn.add(new Integer(column));
+			m_readWriteColumn.add(Integer.valueOf(column));
 	}   //  setColumnReadOnly
 
 	
@@ -367,7 +367,7 @@ public class MiniTable extends CTable implements IMiniTable
 			{
 				tc.setCellEditor(new ROCellEditor());
 			}
-			m_minWidth.add(new Integer(10));
+			m_minWidth.add(Integer.valueOf(10));
 			tc.setMaxWidth(20);
 			tc.setPreferredWidth(20);
 			tc.setResizable(false);
@@ -387,7 +387,7 @@ public class MiniTable extends CTable implements IMiniTable
 				check.setHorizontalAlignment(SwingConstants.CENTER);
 				tc.setCellEditor(new DefaultCellEditor(check));
 			}
-			m_minWidth.add(new Integer(30));
+			m_minWidth.add(Integer.valueOf(30));
 			
 			tc.setHeaderRenderer(new VHeaderRenderer(DisplayType.YesNo));
 		}
@@ -399,7 +399,7 @@ public class MiniTable extends CTable implements IMiniTable
 				tc.setCellEditor(new ROCellEditor());
 			else
 				tc.setCellEditor(new MiniCellEditor(c));
-			m_minWidth.add(new Integer(30));
+			m_minWidth.add(Integer.valueOf(30));
 			
 			tc.setHeaderRenderer(new VHeaderRenderer(DisplayType.DateTime));
 		}
@@ -410,12 +410,12 @@ public class MiniTable extends CTable implements IMiniTable
 			if (readOnly)
 			{
 				tc.setCellEditor(new ROCellEditor());
-				m_minWidth.add(new Integer(70));
+				m_minWidth.add(Integer.valueOf(70));
 			}
 			else
 			{
 				tc.setCellEditor(new MiniCellEditor(c));
-				m_minWidth.add(new Integer(80));
+				m_minWidth.add(Integer.valueOf(80));
 			}
 			
 			tc.setHeaderRenderer(new VHeaderRenderer(DisplayType.Number));
@@ -427,12 +427,12 @@ public class MiniTable extends CTable implements IMiniTable
 			if (readOnly)
 			{
 				tc.setCellEditor(new ROCellEditor());
-				m_minWidth.add(new Integer(70));
+				m_minWidth.add(Integer.valueOf(70));
 			}
 			else
 			{
 				tc.setCellEditor(new MiniCellEditor(c));
-				m_minWidth.add(new Integer(80));
+				m_minWidth.add(Integer.valueOf(80));
 			}
 			
 			tc.setHeaderRenderer(new VHeaderRenderer(DisplayType.Number));
@@ -445,7 +445,7 @@ public class MiniTable extends CTable implements IMiniTable
 				tc.setCellEditor(new ROCellEditor());
 			else
 				tc.setCellEditor(new MiniCellEditor(c));
-			m_minWidth.add(new Integer(30));
+			m_minWidth.add(Integer.valueOf(30));
 			
 			tc.setHeaderRenderer(new VHeaderRenderer(DisplayType.Number));
 		}
@@ -457,7 +457,7 @@ public class MiniTable extends CTable implements IMiniTable
 				tc.setCellEditor(new ROCellEditor());
 			else
 				tc.setCellEditor(new MiniCellEditor(String.class));
-			m_minWidth.add(new Integer(30));
+			m_minWidth.add(Integer.valueOf(30));
 			
 			tc.setHeaderRenderer(new VHeaderRenderer(DisplayType.String));
 		}

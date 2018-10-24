@@ -80,7 +80,7 @@ public class WImageEditor extends WEditor
     {
     	if (m_mImage == null || m_mImage.get_ID() == 0)
 			return null;
-		return new Integer(m_mImage.get_ID());
+		return Integer.valueOf(m_mImage.get_ID());
     }
 
     @Override

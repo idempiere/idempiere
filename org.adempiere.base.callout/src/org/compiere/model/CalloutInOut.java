@@ -61,28 +61,28 @@ public class CalloutInOut extends CalloutEngine
 		{
 			mTab.setValue("DateOrdered", order.getDateOrdered());
 			mTab.setValue("POReference", order.getPOReference());
-			mTab.setValue("AD_Org_ID", new Integer(order.getAD_Org_ID()));
-			mTab.setValue("AD_OrgTrx_ID", new Integer(order.getAD_OrgTrx_ID()));
-			mTab.setValue("C_Activity_ID", new Integer(order.getC_Activity_ID()));
-			mTab.setValue("C_Campaign_ID", new Integer(order.getC_Campaign_ID()));
-			mTab.setValue("C_Project_ID", new Integer(order.getC_Project_ID()));
-			mTab.setValue("User1_ID", new Integer(order.getUser1_ID()));
-			mTab.setValue("User2_ID", new Integer(order.getUser2_ID()));
-			mTab.setValue("M_Warehouse_ID", new Integer(order.getM_Warehouse_ID()));
+			mTab.setValue("AD_Org_ID", Integer.valueOf(order.getAD_Org_ID()));
+			mTab.setValue("AD_OrgTrx_ID", Integer.valueOf(order.getAD_OrgTrx_ID()));
+			mTab.setValue("C_Activity_ID", Integer.valueOf(order.getC_Activity_ID()));
+			mTab.setValue("C_Campaign_ID", Integer.valueOf(order.getC_Campaign_ID()));
+			mTab.setValue("C_Project_ID", Integer.valueOf(order.getC_Project_ID()));
+			mTab.setValue("User1_ID", Integer.valueOf(order.getUser1_ID()));
+			mTab.setValue("User2_ID", Integer.valueOf(order.getUser2_ID()));
+			mTab.setValue("M_Warehouse_ID", Integer.valueOf(order.getM_Warehouse_ID()));
 			//
 			mTab.setValue("DeliveryRule", order.getDeliveryRule());
 			mTab.setValue("DeliveryViaRule", order.getDeliveryViaRule());
-			mTab.setValue("M_Shipper_ID", new Integer(order.getM_Shipper_ID()));
+			mTab.setValue("M_Shipper_ID", Integer.valueOf(order.getM_Shipper_ID()));
 			mTab.setValue("FreightCostRule", order.getFreightCostRule());
 			mTab.setValue("FreightAmt", order.getFreightAmt());
 
-			mTab.setValue("C_BPartner_ID", new Integer(order.getC_BPartner_ID()));
+			mTab.setValue("C_BPartner_ID", Integer.valueOf(order.getC_BPartner_ID()));
 
 			//[ 1867464 ]
-			mTab.setValue("C_BPartner_Location_ID", new Integer(order.getC_BPartner_Location_ID()));
+			mTab.setValue("C_BPartner_Location_ID", Integer.valueOf(order.getC_BPartner_Location_ID()));
 			
 			if (order.getAD_User_ID() > 0)
-				mTab.setValue("AD_User_ID", new Integer(order.getAD_User_ID()));
+				mTab.setValue("AD_User_ID", Integer.valueOf(order.getAD_User_ID()));
 			else
 				mTab.setValue("AD_User_ID", null);
 		}
@@ -128,28 +128,28 @@ public class CalloutInOut extends CalloutEngine
 		{
 			mTab.setValue("DateOrdered", originalReceipt.getDateOrdered());
 			mTab.setValue("POReference", originalReceipt.getPOReference());
-			mTab.setValue("AD_Org_ID", new Integer(originalReceipt.getAD_Org_ID()));
-			mTab.setValue("AD_OrgTrx_ID", new Integer(originalReceipt.getAD_OrgTrx_ID()));
-			mTab.setValue("C_Activity_ID", new Integer(originalReceipt.getC_Activity_ID()));
-			mTab.setValue("C_Campaign_ID", new Integer(originalReceipt.getC_Campaign_ID()));
-			mTab.setValue("C_Project_ID", new Integer(originalReceipt.getC_Project_ID()));
-			mTab.setValue("User1_ID", new Integer(originalReceipt.getUser1_ID()));
-			mTab.setValue("User2_ID", new Integer(originalReceipt.getUser2_ID()));
-			mTab.setValue("M_Warehouse_ID", new Integer(originalReceipt.getM_Warehouse_ID()));
+			mTab.setValue("AD_Org_ID", Integer.valueOf(originalReceipt.getAD_Org_ID()));
+			mTab.setValue("AD_OrgTrx_ID", Integer.valueOf(originalReceipt.getAD_OrgTrx_ID()));
+			mTab.setValue("C_Activity_ID", Integer.valueOf(originalReceipt.getC_Activity_ID()));
+			mTab.setValue("C_Campaign_ID", Integer.valueOf(originalReceipt.getC_Campaign_ID()));
+			mTab.setValue("C_Project_ID", Integer.valueOf(originalReceipt.getC_Project_ID()));
+			mTab.setValue("User1_ID", Integer.valueOf(originalReceipt.getUser1_ID()));
+			mTab.setValue("User2_ID", Integer.valueOf(originalReceipt.getUser2_ID()));
+			mTab.setValue("M_Warehouse_ID", Integer.valueOf(originalReceipt.getM_Warehouse_ID()));
 			//
 			mTab.setValue("DeliveryRule", originalReceipt.getDeliveryRule());
 			mTab.setValue("DeliveryViaRule", originalReceipt.getDeliveryViaRule());
-			mTab.setValue("M_Shipper_ID", new Integer(originalReceipt.getM_Shipper_ID()));
+			mTab.setValue("M_Shipper_ID", Integer.valueOf(originalReceipt.getM_Shipper_ID()));
 			mTab.setValue("FreightCostRule", originalReceipt.getFreightCostRule());
 			mTab.setValue("FreightAmt", originalReceipt.getFreightAmt());
 
-			mTab.setValue("C_BPartner_ID", new Integer(originalReceipt.getC_BPartner_ID()));
+			mTab.setValue("C_BPartner_ID", Integer.valueOf(originalReceipt.getC_BPartner_ID()));
 
 			//[ 1867464 ]
-			mTab.setValue("C_BPartner_Location_ID", new Integer(originalReceipt.getC_BPartner_Location_ID()));
+			mTab.setValue("C_BPartner_Location_ID", Integer.valueOf(originalReceipt.getC_BPartner_Location_ID()));
 
 			if (originalReceipt.getAD_User_ID() > 0)
-				mTab.setValue("AD_User_ID", new Integer(originalReceipt.getAD_User_ID()));
+				mTab.setValue("AD_User_ID", Integer.valueOf(originalReceipt.getAD_User_ID()));
 			else
 				mTab.setValue("AD_User_ID", null);
 		}
@@ -290,13 +290,13 @@ public class CalloutInOut extends CalloutEngine
 				if (!IsSOTrx)
 				{
 					//	Location
-					Integer ii = new Integer(rs.getInt("C_BPartner_Location_ID"));
+					Integer ii = Integer.valueOf(rs.getInt("C_BPartner_Location_ID"));
 					if (rs.wasNull())
 						mTab.setValue("C_BPartner_Location_ID", null);
 					else
 						mTab.setValue("C_BPartner_Location_ID", ii);
 					//	Contact
-					ii = new Integer(rs.getInt("AD_User_ID"));
+					ii = Integer.valueOf(rs.getInt("AD_User_ID"));
 					if (rs.wasNull())
 						mTab.setValue("AD_User_ID", null);
 					else
@@ -361,12 +361,12 @@ public class CalloutInOut extends CalloutEngine
 			if (rs.next())
 			{
 				//	Org
-				Integer ii = new Integer(rs.getInt(1));
+				Integer ii = Integer.valueOf(rs.getInt(1));
 				int AD_Org_ID = Env.getContextAsInt(ctx, WindowNo, "AD_Org_ID");
 				if (AD_Org_ID != ii.intValue())
 					mTab.setValue("AD_Org_ID", ii);
 				//	Locator
-				ii = new Integer(rs.getInt(2));
+				ii = Integer.valueOf(rs.getInt(2));
 				if (rs.wasNull())
 					Env.setContext(ctx, WindowNo, 0, "M_Locator_ID", null);
 				else
@@ -416,17 +416,17 @@ public class CalloutInOut extends CalloutEngine
 		if (ol.get_ID() != 0)
 		{
 			if (ol.getC_Charge_ID() > 0 && ol.getM_Product_ID() <= 0) {
-				mTab.setValue("C_Charge_ID", new Integer(ol.getC_Charge_ID()));
+				mTab.setValue("C_Charge_ID", Integer.valueOf(ol.getC_Charge_ID()));
 				mTab.setValue("M_Product_ID", null);
 				mTab.setValue("M_AttributeSetInstance_ID", null);
 			}
 			else {
-				mTab.setValue("M_Product_ID", new Integer(ol.getM_Product_ID()));
-				mTab.setValue("M_AttributeSetInstance_ID", new Integer(ol.getM_AttributeSetInstance_ID()));
+				mTab.setValue("M_Product_ID", Integer.valueOf(ol.getM_Product_ID()));
+				mTab.setValue("M_AttributeSetInstance_ID", Integer.valueOf(ol.getM_AttributeSetInstance_ID()));
 				mTab.setValue("C_Charge_ID", null);
 			}
 			//
-			mTab.setValue("C_UOM_ID", new Integer(ol.getC_UOM_ID()));
+			mTab.setValue("C_UOM_ID", Integer.valueOf(ol.getC_UOM_ID()));
 			BigDecimal MovementQty = ol.getQtyOrdered().subtract(ol.getQtyDelivered());
 			BigDecimal runningqty = DB.getSQLValueBDEx(null, "SELECT SUM(MovementQty) FROM M_InOutLine WHERE M_InOut_ID=? AND M_InOutLine_ID!=? AND C_OrderLine_ID=?",
 					Env.getContextAsInt(ctx, WindowNo, "M_InOut_ID"),
@@ -442,14 +442,14 @@ public class CalloutInOut extends CalloutEngine
 					.divide(ol.getQtyOrdered(), 12, BigDecimal.ROUND_HALF_UP);
 			mTab.setValue("QtyEntered", QtyEntered);
 			//
-			mTab.setValue("C_Activity_ID", new Integer(ol.getC_Activity_ID()));
-			mTab.setValue("C_Campaign_ID", new Integer(ol.getC_Campaign_ID()));
-			mTab.setValue("C_Project_ID", new Integer(ol.getC_Project_ID()));
-			mTab.setValue("C_ProjectPhase_ID", new Integer(ol.getC_ProjectPhase_ID()));
-			mTab.setValue("C_ProjectTask_ID", new Integer(ol.getC_ProjectTask_ID()));
-			mTab.setValue("AD_OrgTrx_ID", new Integer(ol.getAD_OrgTrx_ID()));
-			mTab.setValue("User1_ID", new Integer(ol.getUser1_ID()));
-			mTab.setValue("User2_ID", new Integer(ol.getUser2_ID()));
+			mTab.setValue("C_Activity_ID", Integer.valueOf(ol.getC_Activity_ID()));
+			mTab.setValue("C_Campaign_ID", Integer.valueOf(ol.getC_Campaign_ID()));
+			mTab.setValue("C_Project_ID", Integer.valueOf(ol.getC_Project_ID()));
+			mTab.setValue("C_ProjectPhase_ID", Integer.valueOf(ol.getC_ProjectPhase_ID()));
+			mTab.setValue("C_ProjectTask_ID", Integer.valueOf(ol.getC_ProjectTask_ID()));
+			mTab.setValue("AD_OrgTrx_ID", Integer.valueOf(ol.getAD_OrgTrx_ID()));
+			mTab.setValue("User1_ID", Integer.valueOf(ol.getUser1_ID()));
+			mTab.setValue("User2_ID", Integer.valueOf(ol.getUser2_ID()));
 		}
 		return "";
 	}	//	orderLine
@@ -474,30 +474,30 @@ public class CalloutInOut extends CalloutEngine
 		if (rl.get_ID() != 0)
 		{
 			if (rl.getC_Charge_ID() > 0 && rl.getM_Product_ID() <= 0) {
-				mTab.setValue("C_Charge_ID", new Integer(rl.getC_Charge_ID()));
+				mTab.setValue("C_Charge_ID", Integer.valueOf(rl.getC_Charge_ID()));
 				mTab.setValue("M_Product_ID", null);
 				mTab.setValue("M_AttributeSetInstance_ID", null);
 			}
 			else {
-				mTab.setValue("M_Product_ID", new Integer(rl.getM_Product_ID()));
-				mTab.setValue("M_AttributeSetInstance_ID", new Integer(rl.getM_AttributeSetInstance_ID()));
+				mTab.setValue("M_Product_ID", Integer.valueOf(rl.getM_Product_ID()));
+				mTab.setValue("M_AttributeSetInstance_ID", Integer.valueOf(rl.getM_AttributeSetInstance_ID()));
 				mTab.setValue("C_Charge_ID", null);
 			}
 			//
-			mTab.setValue("C_UOM_ID", new Integer(rl.getC_UOM_ID()));
+			mTab.setValue("C_UOM_ID", Integer.valueOf(rl.getC_UOM_ID()));
 			BigDecimal MovementQty = rl.getQty().subtract(rl.getQtyDelivered());
 			mTab.setValue("MovementQty", MovementQty);
 			BigDecimal QtyEntered = MovementQty;
 			mTab.setValue("QtyEntered", QtyEntered);
 			//
-			mTab.setValue("C_Activity_ID", new Integer(rl.getC_Activity_ID()));
-			mTab.setValue("C_Campaign_ID", new Integer(rl.getC_Campaign_ID()));
-			mTab.setValue("C_Project_ID", new Integer(rl.getC_Project_ID()));
-			mTab.setValue("C_ProjectPhase_ID", new Integer(rl.getC_ProjectPhase_ID()));
-			mTab.setValue("C_ProjectTask_ID", new Integer(rl.getC_ProjectTask_ID()));
-			mTab.setValue("AD_OrgTrx_ID", new Integer(rl.getAD_OrgTrx_ID()));
-			mTab.setValue("User1_ID", new Integer(rl.getUser1_ID()));
-			mTab.setValue("User2_ID", new Integer(rl.getUser2_ID()));
+			mTab.setValue("C_Activity_ID", Integer.valueOf(rl.getC_Activity_ID()));
+			mTab.setValue("C_Campaign_ID", Integer.valueOf(rl.getC_Campaign_ID()));
+			mTab.setValue("C_Project_ID", Integer.valueOf(rl.getC_Project_ID()));
+			mTab.setValue("C_ProjectPhase_ID", Integer.valueOf(rl.getC_ProjectPhase_ID()));
+			mTab.setValue("C_ProjectTask_ID", Integer.valueOf(rl.getC_ProjectTask_ID()));
+			mTab.setValue("AD_OrgTrx_ID", Integer.valueOf(rl.getAD_OrgTrx_ID()));
+			mTab.setValue("User1_ID", Integer.valueOf(rl.getUser1_ID()));
+			mTab.setValue("User2_ID", Integer.valueOf(rl.getUser2_ID()));
 		}
 		return "";
 	}	//	rmaLine
@@ -525,10 +525,10 @@ public class CalloutInOut extends CalloutEngine
 			&& Env.getContextAsInt(ctx, WindowNo, Env.TAB_INFO, "M_AttributeSetInstance_ID") != 0)
 		{
 			mTab.setValue("M_AttributeSetInstance_ID",
-				new Integer(Env.getContextAsInt(ctx, WindowNo, Env.TAB_INFO, "M_AttributeSetInstance_ID")));
+				Integer.valueOf(Env.getContextAsInt(ctx, WindowNo, Env.TAB_INFO, "M_AttributeSetInstance_ID")));
 			M_Locator_ID = Env.getContextAsInt(ctx, WindowNo, Env.TAB_INFO, "M_Locator_ID");
 			if (M_Locator_ID != 0)
-				mTab.setValue("M_Locator_ID", new Integer(M_Locator_ID));
+				mTab.setValue("M_Locator_ID", Integer.valueOf(M_Locator_ID));
 		}
 		else
 			mTab.setValue("M_AttributeSetInstance_ID", null);
