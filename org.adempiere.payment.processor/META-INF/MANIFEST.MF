@@ -10,4 +10,5 @@ Bundle-ClassPath: .,
  lib/payflow.jar,
  lib/Verisign.jar
 Automatic-Module-Name: org.adempiere.payment.processor
+Bundle-Vendor: iDempiere Community
 

@@ -83,6 +83,7 @@ Import-Package: javax.servlet;version="3.0.0",
 Bundle-Activator: org.adempiere.webstore.Activator
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.webstore
+Bundle-Vendor: iDempiere Community
 
 
 

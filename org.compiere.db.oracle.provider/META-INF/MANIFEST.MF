@@ -18,4 +18,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.adempiere.db.oracle.OracleBundleActivator
 Service-Component: OSGI-INF/oracleprovider.xml
 Automatic-Module-Name: org.compiere.db.oracle.provider
+Bundle-Vendor: iDempiere Community
 

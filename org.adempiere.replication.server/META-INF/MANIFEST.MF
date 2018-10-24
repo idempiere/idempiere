@@ -13,3 +13,4 @@ Service-Component: OSGI-INF/serverfactory.xml
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.replication.server
+Bundle-Vendor: iDempiere Community

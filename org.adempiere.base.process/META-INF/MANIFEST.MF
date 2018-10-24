@@ -16,3 +16,4 @@ Import-Package: javax.mail;version="1.5",
 Eclipse-RegisterBuddy: org.adempiere.base
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.base.process
+Bundle-Vendor: iDempiere Community

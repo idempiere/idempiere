@@ -50,3 +50,4 @@ Import-Package: org.adempiere.base,
 Export-Package: org.adempiere.plugin.utils
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.plugin.utils
+Bundle-Vendor: iDempiere Community

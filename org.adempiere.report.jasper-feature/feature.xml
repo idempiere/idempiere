@@ -2,7 +2,8 @@
 <feature
       id="org.adempiere.report.jasper.feature"
       label="JasperReport-feature"
-      version="5.1.0.qualifier">
+      version="5.1.0.qualifier"
+      provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -426,7 +427,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-<!-- jasper use older version than other so need to define version to load both stax2-api-->
+
    <plugin
          id="stax2-api"
          download-size="0"

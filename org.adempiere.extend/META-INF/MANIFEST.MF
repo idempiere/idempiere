@@ -17,3 +17,4 @@ Import-Package: junit.framework;version="3.8.2",
  org.supercsv.prefs
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.extend
+Bundle-Vendor: iDempiere Community

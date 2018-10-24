@@ -18,3 +18,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.adempiere.install.InstallBundleActivator
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.install
+Bundle-Vendor: iDempiere Community

@@ -201,3 +201,4 @@ Export-Package: org.apache.axis,
 Web-ContextPath: ADInterface
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.idempiere.webservices
+Bundle-Vendor: iDempiere Community

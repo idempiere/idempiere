@@ -122,3 +122,4 @@ Import-Package: groovy.beans;version="2.5.3",
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.adempiere.ui.swing
+Bundle-Vendor: iDempiere Community

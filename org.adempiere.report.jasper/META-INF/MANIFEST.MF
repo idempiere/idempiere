@@ -16,3 +16,4 @@ Export-Package: org.adempiere.report.jasper
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.report.jasper
+Bundle-Vendor: iDempiere Community

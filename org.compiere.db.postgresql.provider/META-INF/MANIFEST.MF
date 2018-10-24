@@ -19,3 +19,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.adempiere.db.postgresql.PostgreSQLBundleActivator
 Service-Component: OSGI-INF/pgprovider.xml
 Automatic-Module-Name: org.compiere.db.postgresql.provider
+Bundle-Vendor: iDempiere Community

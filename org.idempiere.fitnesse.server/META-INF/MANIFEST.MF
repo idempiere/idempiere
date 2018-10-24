@@ -329,3 +329,4 @@ Export-Package: fit,
  org.openqa.selenium.support.pagefactory.internal,
  org.openqa.selenium.support.ui
 Automatic-Module-Name: org.idempiere.fitnesse.server
+Bundle-Vendor: iDempiere Community

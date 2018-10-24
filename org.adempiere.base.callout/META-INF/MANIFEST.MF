@@ -11,4 +11,5 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.compiere.model
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.base.callout
+Bundle-Vendor: iDempiere Community
 

@@ -30,3 +30,4 @@ Bundle-ClassPath: .,
  lib/org-openide-util.jar,
  lib/org-openide-util-lookup.jar
 Automatic-Module-Name: org.adempiere.ui
+Bundle-Vendor: iDempiere Community

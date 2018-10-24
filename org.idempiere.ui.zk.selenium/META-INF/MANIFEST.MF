@@ -343,3 +343,4 @@ Import-Package: fit,
 Service-Component: OSGI-INF/fitfixturefactory.xml
 Bundle-ClassPath: .
 Automatic-Module-Name: org.idempiere.ui.zk.selenium
+Bundle-Vendor: iDempiere Community

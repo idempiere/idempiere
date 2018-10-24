@@ -8,3 +8,4 @@ Require-Bundle: org.adempiere.pipo;bundle-version="0.0.0",
  org.adempiere.base;bundle-version="0.0.0"
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.pipo.handlers
+Bundle-Vendor: iDempiere Community

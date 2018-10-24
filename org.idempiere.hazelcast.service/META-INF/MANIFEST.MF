@@ -33,3 +33,4 @@ Service-Component: OSGI-INF/clusterservice.xml, OSGI-INF/cacheservice.xml, OSGI-
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Require-Bundle: org.eclipse.osgi
 Automatic-Module-Name: org.idempiere.hazelcast.service
+Bundle-Vendor: iDempiere Community

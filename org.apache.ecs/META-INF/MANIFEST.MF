@@ -14,3 +14,4 @@ Export-Package: org.apache.ecs;uses:="org.apache.ecs.xhtml",
  org.apache.ecs.xml;uses:="org.apache.ecs"
 Bundle-ClassPath: .
 Automatic-Module-Name: org.apache.ecs
+Bundle-Vendor: iDempiere Community

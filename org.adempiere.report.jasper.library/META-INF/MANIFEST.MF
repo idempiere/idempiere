@@ -17,3 +17,4 @@ Bundle-ClassPath: .,
 DynamicImport-Package: *
 Import-Package: org.w3c.dom.events;version="[3.0.0,4.0.0)"
 Automatic-Module-Name: org.adempiere.report.jasper.library
+Bundle-Vendor: iDempiere Community
