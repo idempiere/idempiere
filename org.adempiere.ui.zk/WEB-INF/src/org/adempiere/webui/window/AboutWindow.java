@@ -502,7 +502,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		BundleContext bundleCtx = WebUIActivator.getBundleContext();
 		for (Bundle bundle : bundleCtx.getBundles()) {
 			Vector<Object> line = new Vector<Object>();
-			Integer bundl = new Long(bundle.getBundleId()).intValue(); // potential problem converting Long to Integer, but WListBox cannot order Long
+			Integer bundl = Long.valueOf(bundle.getBundleId()).intValue(); // potential problem converting Long to Integer, but WListBox cannot order Long
 			line.add(new IDColumn(bundl));
 			line.add(bundl);
 			line.add(state(bundle.getState()));
