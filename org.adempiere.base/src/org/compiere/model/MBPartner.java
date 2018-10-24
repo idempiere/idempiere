@@ -660,7 +660,7 @@ public class MBPartner extends X_C_BPartner
 	 */
 	public void setPrimaryC_BPartner_Location_ID(int C_BPartner_Location_ID)
 	{
-		m_primaryC_BPartner_Location_ID = new Integer (C_BPartner_Location_ID);
+		m_primaryC_BPartner_Location_ID = Integer.valueOf(C_BPartner_Location_ID);
 	}	//	setPrimaryC_BPartner_Location_ID
 	
 	/**
@@ -669,7 +669,7 @@ public class MBPartner extends X_C_BPartner
 	 */
 	public void setPrimaryAD_User_ID(int AD_User_ID)
 	{
-		m_primaryAD_User_ID = new Integer (AD_User_ID);
+		m_primaryAD_User_ID = Integer.valueOf(AD_User_ID);
 	}	//	setPrimaryAD_User_ID
 	
 	

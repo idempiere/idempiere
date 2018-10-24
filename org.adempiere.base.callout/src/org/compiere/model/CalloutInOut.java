@@ -542,7 +542,7 @@ public class CalloutInOut extends CalloutEngine
 
 		//	Set UOM/Locator/Qty
 		MProduct product = MProduct.get(ctx, M_Product_ID.intValue());
-		mTab.setValue("C_UOM_ID", new Integer (product.getC_UOM_ID()));
+		mTab.setValue("C_UOM_ID", Integer.valueOf(product.getC_UOM_ID()));
 		BigDecimal QtyEntered = (BigDecimal)mTab.getValue("QtyEntered");
 		mTab.setValue("MovementQty", QtyEntered);
 		if (M_Locator_ID != 0)
@@ -551,7 +551,7 @@ public class CalloutInOut extends CalloutEngine
 		{
 			MLocator loc = MLocator.get(ctx, product.getM_Locator_ID());
 			if (M_Warehouse_ID == loc.getM_Warehouse_ID())
-				mTab.setValue("M_Locator_ID", new Integer (product.getM_Locator_ID()));
+				mTab.setValue("M_Locator_ID", Integer.valueOf(product.getM_Locator_ID()));
 			else
 				if (log.isLoggable(Level.FINE)) log.fine("No Locator for M_Product_ID=" + M_Product_ID + " and M_Warehouse_ID=" + M_Warehouse_ID);
 		}
@@ -704,7 +704,7 @@ public class CalloutInOut extends CalloutEngine
 			if (selectedM_Locator_ID != 0)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("Selected M_Locator_ID=" + selectedM_Locator_ID);
-				mTab.setValue("M_Locator_ID", new Integer (selectedM_Locator_ID));
+				mTab.setValue("M_Locator_ID", Integer.valueOf(selectedM_Locator_ID));
 			}
 		}
 		MAttributeSetInstance asi = MAttributeSetInstance.get(ctx, M_ASI_ID.intValue(), 0);

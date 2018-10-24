@@ -61,7 +61,7 @@ public class MClientInfo extends X_AD_ClientInfo
 	 */
 	public static MClientInfo get (Properties ctx, int AD_Client_ID, String trxName)
 	{
-		Integer key = new Integer (AD_Client_ID);
+		Integer key = Integer.valueOf(AD_Client_ID);
 		MClientInfo info = (MClientInfo)s_cache.get(key);
 		if (info != null)
 			return info;

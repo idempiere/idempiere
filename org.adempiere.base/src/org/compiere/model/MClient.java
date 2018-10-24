@@ -66,7 +66,7 @@ public class MClient extends X_AD_Client
 	 */
 	public static MClient get (Properties ctx, int AD_Client_ID)
 	{
-		Integer key = new Integer (AD_Client_ID);
+		Integer key = Integer.valueOf(AD_Client_ID);
 		MClient client = (MClient)s_cache.get(key);
 		if (client != null)
 			return client;
@@ -97,7 +97,7 @@ public class MClient extends X_AD_Client
 		.setOrderBy(orderBy)
 		.list();
 		for(MClient client:list ){
-			s_cache.put (new Integer (client.getAD_Client_ID()), client);
+			s_cache.put (Integer.valueOf(client.getAD_Client_ID()), client);
 		}
 		MClient[] retValue = new MClient[list.size ()];
 		list.toArray (retValue);

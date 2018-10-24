@@ -87,7 +87,7 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 	{
 		if (m_mAccount.C_ValidCombination_ID == 0)
 			return null;
-		return new Integer (m_mAccount.C_ValidCombination_ID);
+		return Integer.valueOf(m_mAccount.C_ValidCombination_ID);
 	}
 
 	@Override

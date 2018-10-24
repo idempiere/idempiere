@@ -814,7 +814,7 @@ public abstract class PO
 			//  Integer can be set as BigDecimal
 			else if (value.getClass() == BigDecimal.class
 				&& p_info.getColumnClass(index) == Integer.class)
-				m_newValues[index] = new Integer (((BigDecimal)value).intValue());
+				m_newValues[index] = Integer.valueOf(((BigDecimal)value).intValue());
 			//	Set Boolean
 			else if (p_info.getColumnClass(index) == Boolean.class
 				&& ("Y".equals(value) || "N".equals(value)) )
@@ -1626,7 +1626,7 @@ public abstract class PO
 			String colName = p_info.getColumnName(i);
 			//  Set Standard Values
 			if (colName.endsWith("tedBy"))
-				m_newValues[i] = new Integer (Env.getContextAsInt(p_ctx, "#AD_User_ID"));
+				m_newValues[i] = Integer.valueOf(Env.getContextAsInt(p_ctx, "#AD_User_ID"));
 			else if (colName.equals("Created") || colName.equals("Updated"))
 				m_newValues[i] = new Timestamp (System.currentTimeMillis());
 			else if (colName.equals(p_info.getTableName() + "_ID"))    //  KeyColumn

@@ -579,7 +579,7 @@ public final class VAccountDialog extends CDialog
 		if (rs.wasNull())
 			editor.setValue(null);
 		else
-			editor.setValue(new Integer (intValue));
+			editor.setValue(Integer.valueOf(intValue));
 	}	//	loadInfoOf
 
 

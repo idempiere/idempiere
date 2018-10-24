@@ -51,7 +51,7 @@ public class MStatus extends X_R_Status
 	{
 		if (R_Status_ID == 0)
 			return null;
-		Integer key = new Integer (R_Status_ID);
+		Integer key = Integer.valueOf(R_Status_ID);
 		MStatus retValue = (MStatus)s_cache.get(key);
 		if (retValue == null)
 		{

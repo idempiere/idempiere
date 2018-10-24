@@ -401,7 +401,7 @@ public class MOrderLine extends X_C_OrderLine
 			MCurrency cur = MCurrency.get(getCtx(), getC_Currency_ID());
 			if (cur.get_ID() != 0)
 			{
-				m_precision = new Integer (cur.getStdPrecision());
+				m_precision = Integer.valueOf(cur.getStdPrecision());
 				return m_precision.intValue();
 			}
 		}

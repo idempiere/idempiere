@@ -673,7 +673,7 @@ public final class WAccountDialog extends Window
 		if (rs.wasNull())
 			editor.setValue(null);
 		else
-			editor.setValue(new Integer (intValue));
+			editor.setValue(Integer.valueOf(intValue));
 	}	//	loadInfoOf
 
 

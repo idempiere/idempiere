@@ -142,7 +142,7 @@ public class MWFNode extends X_AD_WF_Node
 		//	Save to Cache
 		String key = null;
 		try {
-			Integer wfnodeid = new Integer (rs.getInt("AD_WF_Node_ID"));
+			Integer wfnodeid = Integer.valueOf(rs.getInt("AD_WF_Node_ID"));
 			if (wfnodeid != null && wfnodeid.intValue() > 0)
 				key = Env.getAD_Language(ctx) + "_" + wfnodeid;
 		} catch (SQLException e) {

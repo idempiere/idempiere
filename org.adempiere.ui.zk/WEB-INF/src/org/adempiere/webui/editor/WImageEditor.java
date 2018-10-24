@@ -171,7 +171,7 @@ public class WImageEditor extends WEditor
 						Object oldValue = getValue();
 						Integer newValue = null;
 						if (AD_Image_ID != 0)
-							newValue = new Integer (AD_Image_ID);
+							newValue = Integer.valueOf(AD_Image_ID);
 						//
 						m_mImage = null;	//	force reload
 						setValue(newValue);	//	set explicitly

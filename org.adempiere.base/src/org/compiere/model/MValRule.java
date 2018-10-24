@@ -50,7 +50,7 @@ public class MValRule extends X_AD_Val_Rule
 	 */
 	public static MValRule get (Properties ctx, int AD_Val_Rule_ID)
 	{
-		Integer key = new Integer (AD_Val_Rule_ID);
+		Integer key = Integer.valueOf(AD_Val_Rule_ID);
 		MValRule retValue = (MValRule) s_cache.get (key);
 		if (retValue != null)
 			return retValue;
