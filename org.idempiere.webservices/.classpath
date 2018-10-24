@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-10">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="WEB-INF/src"/>
+	<classpathentry kind="src" path="WEB-INF/src/"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/aopalliance.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/axis.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/idempiere-xmlbeans.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/spring-aop.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/spring-beans.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/spring-context.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/spring-core.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/spring-expression.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/spring-web.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/xmlbeans.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
