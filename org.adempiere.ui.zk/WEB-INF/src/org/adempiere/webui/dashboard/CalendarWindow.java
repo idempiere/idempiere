@@ -359,7 +359,7 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 			String key = (String) keys.nextElement();
 			BigDecimal value = ht.get(key);
 			String name = (String) htTypes.get(key);
-			pieDataset.setValue(name == null ? "" : name, new Double(size > 0 ? value.doubleValue()/size*100 : 0));
+			pieDataset.setValue(name == null ? "" : name, Double.valueOf(size > 0 ? value.doubleValue()/size*100 : 0));
 		}
 		
 		JFreeChart chart = ChartFactory.createPieChart3D(Msg.getMsg(Env.getCtx(),"EventsAnalysis"), pieDataset, true, true, true);

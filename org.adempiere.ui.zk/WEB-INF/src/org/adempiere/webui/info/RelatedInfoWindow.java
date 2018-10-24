@@ -432,7 +432,7 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 			else if (c == BigDecimal.class)
 				value = rs.getBigDecimal(colIndex);
 			else if (c == Double.class)
-				value = new Double(rs.getDouble(colIndex));
+				value = Double.valueOf(rs.getDouble(colIndex));
 			else if (c == Integer.class)
 				value = new Integer(rs.getInt(colIndex));
 			else if (c == KeyNamePair.class)

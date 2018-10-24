@@ -510,7 +510,7 @@ public class ImportHelper {
 						{
 							value=null;
 						}
-						//value = new Double( doubleValue );
+						//value = Double.valueOf( doubleValue );
 						
 						if (log.isLoggable(Level.INFO)) log.info("About to set BigDecimal value of column ["+column.getColumnName()+"]=["+value+"]");
 						

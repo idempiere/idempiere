@@ -1821,10 +1821,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					Integer lines = new Integer(rs.getInt(1));
 					arguments[0] = lines;
 					//	{1} - Line net
-					Double net = new Double(rs.getDouble(2));
+					Double net = Double.valueOf(rs.getDouble(2));
 					arguments[1] = net;
 					//	{2} - Line net
-					Double total = new Double(rs.getDouble(3));
+					Double total = Double.valueOf(rs.getDouble(3));
 					arguments[2] = total;
 					filled = true;
 				}
@@ -1908,16 +1908,16 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					Integer lines = new Integer(rs.getInt(1));
 					arguments[0] = lines;
 					//	{1} - Line toral
-					Double lineTotal = new Double(rs.getDouble(3));
+					Double lineTotal = Double.valueOf(rs.getDouble(3));
 					arguments[1] = lineTotal;
 					//	{2} - Grand total (including tax, etc.)
-					Double grandTotal = new Double(rs.getDouble(4));
+					Double grandTotal = Double.valueOf(rs.getDouble(4));
 					arguments[2] = grandTotal;
 					//	{3} - Currency
 					String currency = rs.getString(2);
 					arguments[3] = currency;
 					//	(4) - Grand total converted to Euro
-					Double grandEuro = new Double(rs.getDouble(5));
+					Double grandEuro = Double.valueOf(rs.getDouble(5));
 					arguments[4] = grandEuro;
 					filled = true;
 				}
@@ -1982,7 +1982,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					Integer lines = new Integer(rs.getInt(1));
 					arguments[0] = lines;
 					//	{1} - Line total
-					Double total = new Double(rs.getDouble(2));
+					Double total = Double.valueOf(rs.getDouble(2));
 					arguments[1] = total;
 					//	{3} - Currency
 					arguments[2] = " ";
