@@ -126,3 +126,4 @@ Require-Bundle: org.eclipse.equinox.app;bundle-version="0.0.0",
  groovy,
  javax.xml;bundle-version="1.3.4"
 Automatic-Module-Name: org.adempiere.base
+Bundle-Vendor: iDempiere Community
