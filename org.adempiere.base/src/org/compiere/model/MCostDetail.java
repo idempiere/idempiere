@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -1047,7 +1048,7 @@ public class MCostDetail extends X_M_CostDetail
 		int precision = as.getCostingPrecision();
 		BigDecimal price = amt;
 		if (qty.signum() != 0)
-			price = amt.divide(qty, precision, BigDecimal.ROUND_HALF_UP);
+			price = amt.divide(qty, precision, RoundingMode.HALF_UP);
 		
 		/** All Costing Methods
 		if (ce.isAverageInvoice())

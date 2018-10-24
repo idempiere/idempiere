@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
@@ -305,7 +306,7 @@ public class MOrderLine extends X_C_OrderLine
 			setPriceEntered(getPriceActual());
 		else
 			setPriceEntered(getPriceActual().multiply(getQtyOrdered()
-				.divide(getQtyEntered(), 12, BigDecimal.ROUND_HALF_UP)));	//	recision
+				.divide(getQtyEntered(), 12, RoundingMode.HALF_UP)));	//	recision
 		
 		//	Calculate Discount
 		setDiscount(m_productPrice.getDiscount());
@@ -356,7 +357,7 @@ public class MOrderLine extends X_C_OrderLine
 		BigDecimal bd = getPriceActual().multiply(getQtyOrdered()); 
 		int precision = getPrecision();
 		if (bd.scale() > precision)
-			bd = bd.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			bd = bd.setScale(precision, RoundingMode.HALF_UP);
 		super.setLineNetAmt (bd);
 	}	//	setLineNetAmt
 	
@@ -676,7 +677,7 @@ public class MOrderLine extends X_C_OrderLine
 			return;
 		BigDecimal discount = list.subtract(getPriceActual())
 			.multiply(Env.ONEHUNDRED)
-			.divide(list, getPrecision(), BigDecimal.ROUND_HALF_UP);
+			.divide(list, getPrecision(), RoundingMode.HALF_UP);
 		setDiscount(discount);
 	}	//	setDiscount
 
@@ -717,7 +718,7 @@ public class MOrderLine extends X_C_OrderLine
 		if (QtyEntered != null && getC_UOM_ID() != 0)
 		{
 			int precision = MUOM.getPrecision(getCtx(), getC_UOM_ID());
-			QtyEntered = QtyEntered.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			QtyEntered = QtyEntered.setScale(precision, RoundingMode.HALF_UP);
 		}
 		super.setQtyEntered (QtyEntered);
 	}	//	setQtyEntered
@@ -732,7 +733,7 @@ public class MOrderLine extends X_C_OrderLine
 		if (QtyOrdered != null && product != null)
 		{
 			int precision = product.getUOMPrecision();
-			QtyOrdered = QtyOrdered.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			QtyOrdered = QtyOrdered.setScale(precision, RoundingMode.HALF_UP);
 		}
 		super.setQtyOrdered(QtyOrdered);
 	}	//	setQtyOrdered

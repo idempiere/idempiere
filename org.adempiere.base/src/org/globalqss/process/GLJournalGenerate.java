@@ -26,6 +26,7 @@ package org.globalqss.process;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -543,11 +544,11 @@ public class GLJournalGenerate extends SvrProcess
 		if (roundFactor < 0) {
 			BigDecimal divisor = BigDecimal.valueOf(Math.pow(10, -roundFactor));
 			sourceAmt = sourceAmt.divide(divisor, MathContext.UNLIMITED);
-			sourceAmt = sourceAmt.setScale(0, BigDecimal.ROUND_HALF_UP);
+			sourceAmt = sourceAmt.setScale(0, RoundingMode.HALF_UP);
 			sourceAmt = sourceAmt.multiply(divisor, MathContext.UNLIMITED);
-			sourceAmt = sourceAmt.setScale(0, BigDecimal.ROUND_HALF_UP);
+			sourceAmt = sourceAmt.setScale(0, RoundingMode.HALF_UP);
 		} else {
-			sourceAmt = sourceAmt.setScale(roundFactor, BigDecimal.ROUND_HALF_UP);
+			sourceAmt = sourceAmt.setScale(roundFactor, RoundingMode.HALF_UP);
 		}
 		return sourceAmt;
 	}

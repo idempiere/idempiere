@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -439,7 +440,7 @@ public class CalloutInOut extends CalloutEngine
 			BigDecimal QtyEntered = MovementQty;
 			if (ol.getQtyEntered().compareTo(ol.getQtyOrdered()) != 0)
 				QtyEntered = QtyEntered.multiply(ol.getQtyEntered())
-					.divide(ol.getQtyOrdered(), 12, BigDecimal.ROUND_HALF_UP);
+					.divide(ol.getQtyOrdered(), 12, RoundingMode.HALF_UP);
 			mTab.setValue("QtyEntered", QtyEntered);
 			//
 			mTab.setValue("C_Activity_ID", Integer.valueOf(ol.getC_Activity_ID()));
@@ -591,7 +592,7 @@ public class CalloutInOut extends CalloutEngine
 		{
 			int C_UOM_To_ID = ((Integer)value).intValue();
 			QtyEntered = (BigDecimal)mTab.getValue("QtyEntered");
-			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), BigDecimal.ROUND_HALF_UP);
+			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), RoundingMode.HALF_UP);
 			if (QtyEntered.compareTo(QtyEntered1) != 0)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("Corrected QtyEntered Scale UOM=" + C_UOM_To_ID
@@ -622,7 +623,7 @@ public class CalloutInOut extends CalloutEngine
 		{
 			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
 			QtyEntered = (BigDecimal)value;
-			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), BigDecimal.ROUND_HALF_UP);
+			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), RoundingMode.HALF_UP);
 			if (QtyEntered.compareTo(QtyEntered1) != 0)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("Corrected QtyEntered Scale UOM=" + C_UOM_To_ID
@@ -648,7 +649,7 @@ public class CalloutInOut extends CalloutEngine
 			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
 			MovementQty = (BigDecimal)value;
 			int precision = MProduct.get(ctx, M_Product_ID).getUOMPrecision();
-			BigDecimal MovementQty1 = MovementQty.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			BigDecimal MovementQty1 = MovementQty.setScale(precision, RoundingMode.HALF_UP);
 			if (MovementQty.compareTo(MovementQty1) != 0)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("Corrected MovementQty "

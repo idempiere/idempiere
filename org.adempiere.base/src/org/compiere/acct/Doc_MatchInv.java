@@ -17,6 +17,7 @@
 package org.compiere.acct;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
@@ -167,7 +168,7 @@ public class Doc_MatchInv extends Doc
 		//  NotInvoicedReceipt      DR
 		//  From Receipt
 		BigDecimal multiplier = getQty()
-			.divide(m_receiptLine.getMovementQty(), 12, BigDecimal.ROUND_HALF_UP)
+			.divide(m_receiptLine.getMovementQty(), 12, RoundingMode.HALF_UP)
 			.abs();
 		FactLine dr = fact.createLine (null,
 			getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
@@ -212,7 +213,7 @@ public class Doc_MatchInv extends Doc
 			expense = m_pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 		BigDecimal LineNetAmt = m_invoiceLine.getLineNetAmt();
 		multiplier = getQty()
-			.divide(m_invoiceLine.getQtyInvoiced(), 12, BigDecimal.ROUND_HALF_UP)
+			.divide(m_invoiceLine.getQtyInvoiced(), 12, RoundingMode.HALF_UP)
 			.abs();
 		if (multiplier.compareTo(Env.ONE) != 0)
 			LineNetAmt = LineNetAmt.multiply(multiplier);
@@ -453,7 +454,7 @@ public class Doc_MatchInv extends Doc
 			
 			BigDecimal LineNetAmt = m_invoiceLine.getLineNetAmt();
 			BigDecimal multiplier = getQty()
-				.divide(m_invoiceLine.getQtyInvoiced(), 12, BigDecimal.ROUND_HALF_UP)
+				.divide(m_invoiceLine.getQtyInvoiced(), 12, RoundingMode.HALF_UP)
 				.abs();
 			if (multiplier.compareTo(Env.ONE) != 0)
 				LineNetAmt = LineNetAmt.multiply(multiplier);
@@ -469,7 +470,7 @@ public class Doc_MatchInv extends Doc
 				{
 					tQty = tQty.add(mInv[i].getQty());
 					multiplier = mInv[i].getQty()
-						.divide(m_invoiceLine.getQtyInvoiced(), 12, BigDecimal.ROUND_HALF_UP).abs();
+						.divide(m_invoiceLine.getQtyInvoiced(), 12, RoundingMode.HALF_UP).abs();
 					tAmt = tAmt.add(m_invoiceLine.getLineNetAmt().multiply(multiplier));
 				}
 			}
@@ -516,7 +517,7 @@ public class Doc_MatchInv extends Doc
 			{
 				BigDecimal totalAmt = allocation.getAmt();
 				BigDecimal totalQty = allocation.getQty();
-				BigDecimal amt = totalAmt.multiply(tQty).divide(totalQty, 12, BigDecimal.ROUND_HALF_UP);			
+				BigDecimal amt = totalAmt.multiply(tQty).divide(totalQty, 12, RoundingMode.HALF_UP);			
 				if (orderLine.getC_Currency_ID() != as.getC_Currency_ID())
 				{
 					I_C_Order order = orderLine.getC_Order();
@@ -532,7 +533,7 @@ public class Doc_MatchInv extends Doc
 					}
 					amt = amt.multiply(rate);
 					if (amt.scale() > as.getCostingPrecision())
-						amt = amt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
+						amt = amt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 				}
 				int elementId = allocation.getC_OrderLandedCost().getM_CostElement_ID();
 				BigDecimal elementAmt = landedCostMap.get(elementId);

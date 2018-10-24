@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -203,7 +204,7 @@ public class MDiscountSchema extends X_M_DiscountSchema
 		//
 		BigDecimal onehundred = Env.ONEHUNDRED;
 		BigDecimal multiplier = (onehundred).subtract(discount);
-		multiplier = multiplier.divide(onehundred, 6, BigDecimal.ROUND_HALF_UP);
+		multiplier = multiplier.divide(onehundred, 6, RoundingMode.HALF_UP);
 		BigDecimal newPrice = Price.multiply(multiplier);
 		if (log.isLoggable(Level.FINE)) log.fine("=>" + newPrice);
 		return newPrice;

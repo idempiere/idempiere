@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
@@ -220,7 +221,7 @@ public class MBPGroup extends X_C_BP_Group
 	{
 		BigDecimal bd = super.getCreditWatchPercent();
 		if (bd.compareTo(Env.ZERO) != 0)
-			return bd.divide(Env.ONEHUNDRED, 2, BigDecimal.ROUND_HALF_UP);
+			return bd.divide(Env.ONEHUNDRED, 2, RoundingMode.HALF_UP);
 		return BigDecimal.valueOf(0.90);
 	}	//	getCreditWatchRatio
 

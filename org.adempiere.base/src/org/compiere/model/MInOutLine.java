@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
@@ -335,7 +336,7 @@ public class MInOutLine extends X_M_InOutLine
 		if (QtyEntered != null && getC_UOM_ID() != 0)
 		{
 			int precision = MUOM.getPrecision(getCtx(), getC_UOM_ID());
-			QtyEntered = QtyEntered.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			QtyEntered = QtyEntered.setScale(precision, RoundingMode.HALF_UP);
 		}
 		super.setQtyEntered (QtyEntered);
 	}	//	setQtyEntered
@@ -350,7 +351,7 @@ public class MInOutLine extends X_M_InOutLine
 		if (MovementQty != null && product != null)
 		{
 			int precision = product.getUOMPrecision();
-			MovementQty = MovementQty.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			MovementQty = MovementQty.setScale(precision, RoundingMode.HALF_UP);
 		}
 		super.setMovementQty(MovementQty);
 	}	//	setMovementQty

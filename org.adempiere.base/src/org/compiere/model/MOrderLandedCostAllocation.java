@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
@@ -63,7 +64,7 @@ public class MOrderLandedCostAllocation extends X_C_OrderLandedCostAllocation {
 	{
 		BigDecimal bd = BigDecimal.valueOf(Amt);
 		if (bd.scale() > precision)
-			bd = bd.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			bd = bd.setScale(precision, RoundingMode.HALF_UP);
 		super.setAmt(bd);
 	}	//	setAmt
 	

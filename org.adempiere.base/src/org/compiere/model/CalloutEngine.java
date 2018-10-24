@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -303,7 +304,7 @@ public class CalloutEngine implements Callout
 		BigDecimal rate2 = Env.ZERO;
 
 		if (rate1.signum() != 0.0)	//	no divide by zero
-			rate2 = Env.ONE.divide(rate1, 12, BigDecimal.ROUND_HALF_UP);
+			rate2 = Env.ONE.divide(rate1, 12, RoundingMode.HALF_UP);
 		//
 		if (mField.getColumnName().equals("MultiplyRate"))
 			mTab.setValue("DivideRate", rate2);

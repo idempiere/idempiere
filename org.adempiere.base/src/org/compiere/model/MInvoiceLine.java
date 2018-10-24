@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -387,7 +388,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			setPriceEntered(getPriceActual());
 		else
 			setPriceEntered(getPriceActual().multiply(getQtyInvoiced()
-				.divide(getQtyEntered(), 6, BigDecimal.ROUND_HALF_UP)));	//	precision
+				.divide(getQtyEntered(), 6, RoundingMode.HALF_UP)));	//	precision
 		//
 		if (getC_UOM_ID() == 0)
 			setC_UOM_ID(m_productPricing.getC_UOM_ID());
@@ -476,7 +477,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		BigDecimal bd = getPriceActual().multiply(getQtyInvoiced());
 		int precision = getPrecision();
 		if (bd.scale() > precision)
-			bd = bd.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			bd = bd.setScale(precision, RoundingMode.HALF_UP);
 		super.setLineNetAmt (bd);
 	}	//	setLineNetAmt
 	/**
@@ -528,7 +529,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		if (QtyEntered != null && getC_UOM_ID() != 0)
 		{
 			int precision = MUOM.getPrecision(getCtx(), getC_UOM_ID());
-			QtyEntered = QtyEntered.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			QtyEntered = QtyEntered.setScale(precision, RoundingMode.HALF_UP);
 		}
 		super.setQtyEntered (QtyEntered);
 	}	//	setQtyEntered
@@ -543,7 +544,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		if (QtyInvoiced != null && product != null)
 		{
 			int precision = product.getUOMPrecision();
-			QtyInvoiced = QtyInvoiced.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			QtyInvoiced = QtyInvoiced.setScale(precision, RoundingMode.HALF_UP);
 		}
 		super.setQtyInvoiced(QtyInvoiced);
 	}	//	setQtyInvoiced

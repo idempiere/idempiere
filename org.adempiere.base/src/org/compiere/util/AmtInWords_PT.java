@@ -13,6 +13,7 @@
 package org.compiere.util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  *	Portuguese Amount in Words
@@ -248,7 +249,7 @@ public class AmtInWords_PT implements AmtInWords
 	
 	public String getAmtInWords (BigDecimal amount) throws Exception
 	{	
-		amount = amount.setScale(2, BigDecimal.ROUND_HALF_UP);
+		amount = amount.setScale(2, RoundingMode.HALF_UP);
 		
 		String samount = amount.toString();
 		samount = samount.replaceAll("\\.", ",");

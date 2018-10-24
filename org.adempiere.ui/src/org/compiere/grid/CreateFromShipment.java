@@ -15,6 +15,7 @@
 package org.compiere.grid;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -595,7 +596,7 @@ public abstract class CreateFromShipment extends CreateFrom
 					MProduct product = MProduct.get(Env.getCtx(), M_Product_ID);
 					precision = product.getUOMPrecision();
 				}
-				QtyEntered = QtyEntered.setScale(precision, BigDecimal.ROUND_HALF_DOWN);
+				QtyEntered = QtyEntered.setScale(precision, RoundingMode.HALF_DOWN);
 				//
 				if (log.isLoggable(Level.FINE)) log.fine("Line QtyEntered=" + QtyEntered
 						+ ", Product=" + M_Product_ID 
@@ -620,7 +621,7 @@ public abstract class CreateFromShipment extends CreateFrom
 					{
 						iol.setMovementQty(QtyEntered
 								.multiply(ol.getQtyOrdered())
-								.divide(ol.getQtyEntered(), 12, BigDecimal.ROUND_HALF_UP));
+								.divide(ol.getQtyEntered(), 12, RoundingMode.HALF_UP));
 						iol.setC_UOM_ID(ol.getC_UOM_ID());
 					}
 					iol.setM_AttributeSetInstance_ID(ol.getM_AttributeSetInstance_ID());
@@ -641,7 +642,7 @@ public abstract class CreateFromShipment extends CreateFrom
 					{
 						iol.setQtyEntered(QtyEntered
 								.multiply(il.getQtyInvoiced())
-								.divide(il.getQtyEntered(), 12, BigDecimal.ROUND_HALF_UP));
+								.divide(il.getQtyEntered(), 12, RoundingMode.HALF_UP));
 						iol.setC_UOM_ID(il.getC_UOM_ID());
 					}
 					iol.setDescription(il.getDescription());

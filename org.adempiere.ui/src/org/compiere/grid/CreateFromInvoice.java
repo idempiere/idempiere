@@ -14,6 +14,7 @@
 package org.compiere.grid;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -448,7 +449,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 					product = MProduct.get(Env.getCtx(), M_Product_ID);
 					precision = product.getUOMPrecision();
 				}
-				QtyEntered = QtyEntered.setScale(precision, BigDecimal.ROUND_HALF_DOWN);
+				QtyEntered = QtyEntered.setScale(precision, RoundingMode.HALF_DOWN);
 				//
 				if (log.isLoggable(Level.FINE)) log.fine("Line QtyEntered=" + QtyEntered
 					+ ", Product_ID=" + M_Product_ID
@@ -586,7 +587,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 				BigDecimal igt = invoice.getGrandTotal();
 				BigDecimal percent = Env.ONE;
 				if (ogt.compareTo(igt) != 0)
-					percent = igt.divide(ogt, 10, BigDecimal.ROUND_HALF_UP);
+					percent = igt.divide(ogt, 10, RoundingMode.HALF_UP);
 				MCurrency cur = MCurrency.get(p_order.getCtx(), p_order.getC_Currency_ID());
 				int scale = cur.getStdPrecision();
 			
@@ -596,7 +597,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 					if (percent != Env.ONE) {
 						BigDecimal propDueAmt = ops.getDueAmt().multiply(percent);
 						if (propDueAmt.scale() > scale)
-							propDueAmt = propDueAmt.setScale(scale, BigDecimal.ROUND_HALF_UP);
+							propDueAmt = propDueAmt.setScale(scale, RoundingMode.HALF_UP);
 						ips.setDueAmt(propDueAmt);
 					}
 					ips.setC_Invoice_ID(invoice.getC_Invoice_ID());

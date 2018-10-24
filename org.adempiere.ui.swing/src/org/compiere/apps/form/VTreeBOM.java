@@ -28,6 +28,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -718,7 +719,7 @@ class myJTree extends JTree
 		sb.append(" ["+((KeyNamePair) userObject.elementAt(3)).getName().trim()+"]");
 		//BOMQty
 		BigDecimal BOMQty = (BigDecimal)(userObject.elementAt(4));
-		sb.append("x"+BOMQty.setScale(2, BigDecimal.ROUND_HALF_UP).stripTrailingZeros());		
+		sb.append("x"+BOMQty.setScale(2, RoundingMode.HALF_UP).stripTrailingZeros());		
 		
 		return sb.toString();
 	}

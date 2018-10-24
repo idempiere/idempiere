@@ -18,6 +18,7 @@ package org.compiere.wf;
 
 import java.awt.Point;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -496,7 +497,7 @@ public class MWFNode extends X_AD_WF_Node
 			return 0;
 		//
 		BigDecimal change = new BigDecimal (seconds)
-			.divide(divide, BigDecimal.ROUND_DOWN)
+			.divide(divide, RoundingMode.DOWN)
 			.multiply(getDynPriorityChange());
 		return change.intValue();
 	}	//	calculateDynamicPriority

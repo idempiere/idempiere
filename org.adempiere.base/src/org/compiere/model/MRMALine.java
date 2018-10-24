@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.Properties;
 
@@ -249,7 +250,7 @@ public class MRMALine extends X_M_RMALine
         BigDecimal bd = getAmt().multiply(getQty()); 
 		int precision = getPrecision();
 		if (bd.scale() > precision)
-			bd = bd.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			bd = bd.setScale(precision, RoundingMode.HALF_UP);
 		
         return bd;
     }   //  getAmt

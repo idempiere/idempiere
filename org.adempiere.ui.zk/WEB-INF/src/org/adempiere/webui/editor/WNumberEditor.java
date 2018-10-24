@@ -18,6 +18,7 @@
 package org.adempiere.webui.editor;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import org.adempiere.webui.ClientInfo;
@@ -221,7 +222,7 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
     		divisor = BigDecimal.TEN;
     	else
     		divisor = BigDecimal.TEN.pow(decimalPlaces);
-    	BigDecimal newValue = oldValue.divide(divisor, decimalPlaces, BigDecimal.ROUND_HALF_UP);
+    	BigDecimal newValue = oldValue.divide(divisor, decimalPlaces, RoundingMode.HALF_UP);
     	return newValue;
     } //getAddDecimalPlaces
 

@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -1119,7 +1120,7 @@ public class CalloutOrder extends CalloutEngine
 			if ( PriceList.doubleValue() != 0 )
 				PriceActual = BigDecimal.valueOf((100.0 - Discount.doubleValue()) / 100.0 * PriceList.doubleValue());
 			if (PriceActual.scale() > StdPrecision)
-				PriceActual = PriceActual.setScale(StdPrecision, BigDecimal.ROUND_HALF_UP);
+				PriceActual = PriceActual.setScale(StdPrecision, RoundingMode.HALF_UP);
 			PriceEntered = MUOMConversion.convertProductFrom (ctx, M_Product_ID,
 				C_UOM_To_ID, PriceActual);
 			if (PriceEntered == null)
@@ -1135,7 +1136,7 @@ public class CalloutOrder extends CalloutEngine
 			else
 				Discount = BigDecimal.valueOf((PriceList.doubleValue() - PriceActual.doubleValue()) / PriceList.doubleValue() * 100.0);
 			if (Discount.scale() > 2)
-				Discount = Discount.setScale(2, BigDecimal.ROUND_HALF_UP);
+				Discount = Discount.setScale(2, RoundingMode.HALF_UP);
 			mTab.setValue("Discount", Discount);
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("PriceEntered=" + PriceEntered + ", Actual=" + PriceActual + ", Discount=" + Discount);
@@ -1163,7 +1164,7 @@ public class CalloutOrder extends CalloutEngine
 			{
 				Discount = BigDecimal.valueOf((PriceList.doubleValue () - PriceActual.doubleValue ()) / PriceList.doubleValue () * 100.0);
 				if (Discount.scale () > 2)
-					Discount = Discount.setScale (2, BigDecimal.ROUND_HALF_UP);
+					Discount = Discount.setScale (2, RoundingMode.HALF_UP);
 				mTab.setValue ("Discount", Discount);
 			}
 		}
@@ -1171,7 +1172,7 @@ public class CalloutOrder extends CalloutEngine
 		//	Line Net Amt
 		BigDecimal LineNetAmt = QtyOrdered.multiply(PriceActual);
 		if (LineNetAmt.scale() > StdPrecision)
-			LineNetAmt = LineNetAmt.setScale(StdPrecision, BigDecimal.ROUND_HALF_UP);
+			LineNetAmt = LineNetAmt.setScale(StdPrecision, RoundingMode.HALF_UP);
 		if (log.isLoggable(Level.INFO)) log.info("LineNetAmt=" + LineNetAmt);
 		mTab.setValue("LineNetAmt", LineNetAmt);
 		//
@@ -1210,7 +1211,7 @@ public class CalloutOrder extends CalloutEngine
 		{
 			int C_UOM_To_ID = ((Integer)value).intValue();
 			QtyEntered = (BigDecimal)mTab.getValue("QtyEntered");
-			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), BigDecimal.ROUND_HALF_UP);
+			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), RoundingMode.HALF_UP);
 			if (QtyEntered.compareTo(QtyEntered1) != 0)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("Corrected QtyEntered Scale UOM=" + C_UOM_To_ID
@@ -1241,7 +1242,7 @@ public class CalloutOrder extends CalloutEngine
 		{
 			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
 			QtyEntered = (BigDecimal)value;
-			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), BigDecimal.ROUND_HALF_UP);
+			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), RoundingMode.HALF_UP);
 			if (QtyEntered.compareTo(QtyEntered1) != 0)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("Corrected QtyEntered Scale UOM=" + C_UOM_To_ID
@@ -1267,7 +1268,7 @@ public class CalloutOrder extends CalloutEngine
 			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
 			QtyOrdered = (BigDecimal)value;
 			int precision = MProduct.get(ctx, M_Product_ID).getUOMPrecision();
-			BigDecimal QtyOrdered1 = QtyOrdered.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			BigDecimal QtyOrdered1 = QtyOrdered.setScale(precision, RoundingMode.HALF_UP);
 			if (QtyOrdered.compareTo(QtyOrdered1) != 0)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("Corrected QtyOrdered Scale "

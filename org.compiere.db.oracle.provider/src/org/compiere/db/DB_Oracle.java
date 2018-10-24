@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -514,7 +515,7 @@ public class DB_Oracle implements AdempiereDatabase
         {
             try
             {
-                result = number.setScale(scale, BigDecimal.ROUND_HALF_UP);
+                result = number.setScale(scale, RoundingMode.HALF_UP);
             }
             catch (Exception e)
             {

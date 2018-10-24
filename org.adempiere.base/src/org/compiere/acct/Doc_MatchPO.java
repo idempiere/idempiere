@@ -233,7 +233,7 @@ public class Doc_MatchPO extends Doc
 			amt = amt.divide(getQty(), 12, RoundingMode.HALF_UP);
 			landedCost = landedCost.add(amt);
 			if (landedCost.scale() > as.getCostingPrecision())
-				landedCost = landedCost.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
+				landedCost = landedCost.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 			int elementId = allocation.getC_OrderLandedCost().getM_CostElement_ID();
 			BigDecimal elementAmt = landedCostMap.get(elementId);
 			if (elementAmt == null) 
@@ -263,7 +263,7 @@ public class Doc_MatchPO extends Doc
 			}
 			poCost = poCost.multiply(rate);
 			if (poCost.scale() > as.getCostingPrecision())
-				poCost = poCost.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
+				poCost = poCost.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 		}
 
 		String costingError = createMatchPOCostDetail(as, poCost, landedCostMap);
@@ -492,7 +492,7 @@ public class Doc_MatchPO extends Doc
 			}
 			
 			if (tAmt.scale() > as.getCostingPrecision())
-				tAmt = tAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
+				tAmt = tAmt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 			// Set Total Amount and Total Quantity from Matched PO 
 			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
 					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
@@ -523,7 +523,7 @@ public class Doc_MatchPO extends Doc
 			BigDecimal amt = landedCostMap.get(elementId);
 			amt = amt.multiply(tQty);
 			if (amt.scale() > as.getCostingPrecision())
-				amt = amt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
+				amt = amt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
 					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
 					m_oLine.getC_OrderLine_ID(), elementId,
