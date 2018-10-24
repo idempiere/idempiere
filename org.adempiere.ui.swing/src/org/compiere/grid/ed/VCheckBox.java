@@ -190,7 +190,7 @@ public class VCheckBox extends CCheckBox
 	 */
 	public Object getValue()
 	{
-		return new Boolean (isSelected());
+		return Boolean.valueOf(isSelected());
 	}	//	getValue
 
 	/**

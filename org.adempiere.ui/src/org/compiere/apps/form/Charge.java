@@ -86,7 +86,7 @@ public class Charge
 				line.add(pp);                       //  1-Value
 				line.add(rs.getString(3));          //  2-Name
 				boolean isExpenseType = rs.getString(4).equals("E");
-				line.add(new Boolean(isExpenseType));   //  3-Expense
+				line.add(Boolean.valueOf(isExpenseType));   //  3-Expense
 				data.add(line);
 			}
 		}

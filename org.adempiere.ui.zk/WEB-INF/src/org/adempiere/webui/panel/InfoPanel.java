@@ -591,7 +591,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 			}
 			else if (c == Boolean.class)
-		        value = new Boolean("Y".equals(rs.getString(colIndex)));
+		        value = Boolean.valueOf("Y".equals(rs.getString(colIndex)));
 			else if (c == Timestamp.class)
 		        value = rs.getTimestamp(colIndex);
 			else if (c == BigDecimal.class)

@@ -1215,7 +1215,7 @@ public abstract class Info extends CDialog
 								((IDColumn)data).setSelected(isDefaultSelected());
 						}
 						else if (c == Boolean.class)
-							data = new Boolean("Y".equals(m_rs.getString(colIndex)));
+							data = Boolean.valueOf("Y".equals(m_rs.getString(colIndex)));
 						else if (c == Timestamp.class)
 							data = m_rs.getTimestamp(colIndex);
 						else if (c == BigDecimal.class)

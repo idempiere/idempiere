@@ -477,7 +477,7 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener, TreeS
 		treeInfo.setText ("Selected Product: "+M_Product.getValue());
 		
 		Vector<Object> line = new Vector<Object>(10);
-		line.add( new Boolean(M_Product.isActive()));   //  0 IsActive
+		line.add( Boolean.valueOf(M_Product.isActive()));   //  0 IsActive
 		line.add( new Integer(0).toString()); // 1 Line
 		KeyNamePair pp = new KeyNamePair(M_Product.getM_Product_ID(),M_Product.getValue().concat("_").concat(M_Product.getName()));
 		line.add(pp); //  2 M_Product_ID
@@ -560,7 +560,7 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener, TreeS
 		MProduct M_Product = MProduct.get(getCtx(), bomline.getM_ProductBOM_ID());
 
 		Vector<Object> line = new Vector<Object>(10);
-		line.add( new Boolean(bomline.isActive()));   //  0 IsActive
+		line.add( Boolean.valueOf(bomline.isActive()));   //  0 IsActive
 		line.add( new Integer(bomline.getLine()).toString()); // 1 Line
 		KeyNamePair pp = new KeyNamePair(M_Product.getM_Product_ID(),M_Product.getValue().concat("_").concat(M_Product.getName()));
 		line.add(pp); //  2 M_Product_ID
@@ -588,7 +588,7 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener, TreeS
 		MProduct M_Product = MProduct.get(getCtx(), bom.getM_Product_ID());
 
 		Vector<Object> line = new Vector<Object>(10);
-		line.add( new Boolean(M_Product.isActive()));   //  0 IsActive
+		line.add( Boolean.valueOf(M_Product.isActive()));   //  0 IsActive
 		line.add( new Integer(bom.getLine()).toString()); // 1 Line
 		KeyNamePair pp = new KeyNamePair(M_Product.getM_Product_ID(),M_Product.getValue().concat("_").concat(M_Product.getName()));
 		line.add(pp); //  2 M_Product_ID

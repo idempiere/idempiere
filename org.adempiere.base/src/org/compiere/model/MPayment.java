@@ -1526,7 +1526,7 @@ public class MPayment extends X_C_Payment
 				pstmt.setInt(1, getC_Invoice_ID());
 				rs = pstmt.executeQuery();
 				if (rs.next())
-					documentSO = new Boolean ("Y".equals(rs.getString(1)));
+					documentSO = Boolean.valueOf("Y".equals(rs.getString(1)));
 			}
 			catch (Exception e)
 			{
@@ -1553,7 +1553,7 @@ public class MPayment extends X_C_Payment
 				pstmt.setInt(1, getC_Order_ID());
 				rs = pstmt.executeQuery();
 				if (rs.next())
-					documentSO = new Boolean ("Y".equals(rs.getString(1)));
+					documentSO = Boolean.valueOf("Y".equals(rs.getString(1)));
 			}
 			catch (Exception e)
 			{
@@ -1591,7 +1591,7 @@ public class MPayment extends X_C_Payment
 									return false;
 								}
 							} else {
-								documentSO = new Boolean ("Y".equals(rs.getString(1)));
+								documentSO = Boolean.valueOf("Y".equals(rs.getString(1)));
 							}
 						}
 					}
@@ -1622,7 +1622,7 @@ public class MPayment extends X_C_Payment
 			pstmt.setInt(1, getC_DocType_ID());
 			rs = pstmt.executeQuery();
 			if (rs.next())
-				paymentSO = new Boolean ("Y".equals(rs.getString(1)));
+				paymentSO = Boolean.valueOf("Y".equals(rs.getString(1)));
 		}
 		catch (Exception e)
 		{

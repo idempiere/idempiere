@@ -154,7 +154,7 @@ public class RModelData
 					else if (rc.getColClass() == Timestamp.class)
 						row.add(rs.getTimestamp(index++));
 					else if (rc.getColClass() == Boolean.class)
-						row.add(new Boolean("Y".equals(rs.getString(index++))));
+						row.add(Boolean.valueOf("Y".equals(rs.getString(index++))));
 					else    //  should not happen
 					{
 						row.add(rs.getString(index++));
@@ -367,7 +367,7 @@ public class RModelData
 		{
 			m_groupRowsIndicator = new ArrayList<Boolean>(rows.size());
 			for (int r = 0; r < rows.size(); r++)
-				m_groupRowsIndicator.add(new Boolean(m_groupRows.contains(new Integer(r))));
+				m_groupRowsIndicator.add(Boolean.valueOf(m_groupRows.contains(new Integer(r))));
 		}
 		if (row < 0 || row >= m_groupRowsIndicator.size())
 			return false;

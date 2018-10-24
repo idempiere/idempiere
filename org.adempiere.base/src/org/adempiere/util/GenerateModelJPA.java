@@ -409,7 +409,7 @@ public class GenerateModelJPA
 			sb.append(setValue).append(" (\"").append(columnName).append("\", new Integer(").append(columnName).append("));");
 		}
 		else if (clazz.equals(Boolean.class))
-			sb.append(setValue).append(" (\"").append(columnName).append("\", new Boolean(").append(columnName).append("));");
+			sb.append(setValue).append(" (\"").append(columnName).append("\", Boolean.valueOf(").append(columnName).append("));");
 		else
 		{
 			if (isMandatory && AD_Reference_ID == 0)	//	does not apply to int/boolean

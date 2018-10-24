@@ -3261,7 +3261,7 @@ public class GridTable extends AbstractTableModel
 					String str = rs.getString(j+1);
 					if (field.isEncryptedColumn())
 						str = (String)decrypt(str, getAD_Client_ID(rs));
-					rowData[j] = new Boolean ("Y".equals(str));	//	Boolean
+					rowData[j] = Boolean.valueOf("Y".equals(str));	//	Boolean
 				}
 				//	LOB
 				else if (DisplayType.isLOB(displayType))

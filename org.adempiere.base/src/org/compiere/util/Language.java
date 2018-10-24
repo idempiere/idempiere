@@ -443,7 +443,7 @@ public class Language implements Serializable
 	{
 		if (m_leftToRight == null)
 			//  returns true if language not iw, ar, fa, ur
-			m_leftToRight = new Boolean(ComponentOrientation.getOrientation(m_locale).isLeftToRight());
+			m_leftToRight = Boolean.valueOf(ComponentOrientation.getOrientation(m_locale).isLeftToRight());
 		return m_leftToRight.booleanValue();
 	}   //  isLeftToRight
 
@@ -456,7 +456,7 @@ public class Language implements Serializable
 		if (m_decimalPoint == null)
 		{
 			DecimalFormatSymbols dfs = new DecimalFormatSymbols(m_locale);
-			m_decimalPoint = new Boolean(dfs.getDecimalSeparator() == '.');
+			m_decimalPoint = Boolean.valueOf(dfs.getDecimalSeparator() == '.');
 		}
 		return m_decimalPoint.booleanValue();
 	}   //  isDecimalPoint

@@ -1549,7 +1549,7 @@ public final class MRole extends X_AD_Role
 							m_windowAccess.remove(winId);
 						}
 					} else {
-						directAccess.put(winId, new Boolean("Y".equals(rs.getString(2))));
+						directAccess.put(winId, Boolean.valueOf("Y".equals(rs.getString(2))));
 					}
 				}
 			}
@@ -1634,7 +1634,7 @@ public final class MRole extends X_AD_Role
 							m_processAccess.remove(procId);
 						}
 					} else {
-						directAccess.put(procId, new Boolean("Y".equals(rs.getString(2))));
+						directAccess.put(procId, Boolean.valueOf("Y".equals(rs.getString(2))));
 					}
 				}
 			}
@@ -1714,7 +1714,7 @@ public final class MRole extends X_AD_Role
 							m_taskAccess.remove(taskId);
 						}
 					} else {
-						directAccess.put(taskId, new Boolean("Y".equals(rs.getString(2))));
+						directAccess.put(taskId, Boolean.valueOf("Y".equals(rs.getString(2))));
 					}
 				}
 			}
@@ -1794,7 +1794,7 @@ public final class MRole extends X_AD_Role
 							m_formAccess.remove(formId);
 						}
 					} else {
-						directAccess.put(formId, new Boolean("Y".equals(rs.getString(2))));
+						directAccess.put(formId, Boolean.valueOf("Y".equals(rs.getString(2))));
 					}
 				}
 			}
@@ -1874,7 +1874,7 @@ public final class MRole extends X_AD_Role
 							m_workflowAccess.remove(formId);
 						}
 					} else {
-						directAccess.put(formId, new Boolean("Y".equals(rs.getString(2))));
+						directAccess.put(formId, Boolean.valueOf("Y".equals(rs.getString(2))));
 					}
 				}
 			}
@@ -3177,7 +3177,7 @@ public final class MRole extends X_AD_Role
 					+ "       AND (iwa.AD_Role_ID = ? OR iwa.AD_Role_ID IN"
 					+ "       		(SELECT ri.Included_Role_ID FROM AD_Role_Included ri WHERE ri.IsActive='Y' AND ri.AD_Role_ID=?))";
 			int cnt = DB.getSQLValueEx(get_TrxName(), sql, I_M_Product.Table_ID, getAD_Role_ID(), getAD_Role_ID());
-			m_canAccess_Info_Product = new Boolean(cnt > 0);
+			m_canAccess_Info_Product = Boolean.valueOf(cnt > 0);
 
 			// Verify if is excluded in the specific role (it can be allowed in included role and inactive in specific role)
 			if (m_canAccess_Info_Product) {

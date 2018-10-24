@@ -426,7 +426,7 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 				value = new IDColumn(rs.getInt(colIndex));
 			}
 			else if (c == Boolean.class)
-				value = new Boolean("Y".equals(rs.getString(colIndex)));
+				value = Boolean.valueOf("Y".equals(rs.getString(colIndex)));
 			else if (c == Timestamp.class)
 				value = rs.getTimestamp(colIndex);
 			else if (c == BigDecimal.class)

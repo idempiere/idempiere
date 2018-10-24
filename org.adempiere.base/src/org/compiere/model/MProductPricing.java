@@ -160,7 +160,7 @@ public class MProductPricing extends AbstractProductPricing
 			calculateDiscount();
 		setPrecision();		//	from Price List
 		//
-		m_found = new Boolean (m_calculated);
+		m_found = Boolean.valueOf(m_calculated);
 		return m_calculated;
 	}	//	calculatePrice
 
