@@ -429,6 +429,7 @@
 											<override>true</override>
 											<instructions>
 												<Bundle-SymbolicName>jaxws-api</Bundle-SymbolicName>
+												<Bundle-Version>${xml.ws.version}</Bundle-Version>
 											</instructions>
 										</artifact>
 										<artifact>
