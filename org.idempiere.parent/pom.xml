@@ -345,6 +345,21 @@
 		                        <artifactId>commons-exec</artifactId>
 					            <version>1.3</version>
 		                    </dependency>
+		                    <dependency>
+		                    	<groupId>org.eclipse.jdt</groupId>
+		                    	<artifactId>org.eclipse.jdt.compiler.tool</artifactId>
+		                    	<version>1.2.300</version>
+		                    </dependency>
+		                    <dependency>
+		                    	<groupId>org.eclipse.jdt</groupId>
+		                    	<artifactId>org.eclipse.jdt.core</artifactId>
+		                    	<version>${jdtVersion}</version>
+		                    </dependency>
+		                    <dependency>
+		                    	<groupId>org.eclipse.jdt</groupId>
+		                    	<artifactId>org.eclipse.jdt.compiler.apt</artifactId>
+		                    	<version>${jdtAptVersion}</version>
+		                    </dependency>
 				        </dependencies>
 				</plugin>
 				<plugin>
@@ -485,6 +500,72 @@
 			            <version>${tycho.version}</version>
 			            <configuration>
 				            <targetDefinitionIncludeSource>honor</targetDefinitionIncludeSource>
+				            <filters>
+				            	<filter>
+				            		<type>java-package</type>
+				            		<id>javax.xml.ws</id>
+				            		<restrictTo>
+				            			<type>eclipse-plugin</type>
+				            			<id>jaxws-api</id>
+				            		</restrictTo>
+				            	</filter>
+				            	<filter>
+				            		<type>java-package</type>
+				            		<id>javax.xml.ws.handler</id>
+				            		<restrictTo>
+				            			<type>eclipse-plugin</type>
+				            			<id>jaxws-api</id>
+				            		</restrictTo>
+				            	</filter>
+				            	<filter>
+				            		<type>java-package</type>
+				            		<id>javax.xml.ws.handler.soap</id>
+				            		<restrictTo>
+				            			<type>eclipse-plugin</type>
+				            			<id>jaxws-api</id>
+				            		</restrictTo>
+				            	</filter>
+				            	<filter>
+				            		<type>java-package</type>
+				            		<id>javax.xml.ws.http</id>
+				            		<restrictTo>
+				            			<type>eclipse-plugin</type>
+				            			<id>jaxws-api</id>
+				            		</restrictTo>
+				            	</filter>
+				            	<filter>
+				            		<type>java-package</type>
+				            		<id>javax.xml.ws.soap</id>
+				            		<restrictTo>
+				            			<type>eclipse-plugin</type>
+				            			<id>jaxws-api</id>
+				            		</restrictTo>
+				            	</filter>
+				            	<filter>
+				            		<type>java-package</type>
+				            		<id>javax.xml.ws.spi</id>
+				            		<restrictTo>
+				            			<type>eclipse-plugin</type>
+				            			<id>jaxws-api</id>
+				            		</restrictTo>
+				            	</filter>
+				            	<filter>
+				            		<type>java-package</type>
+				            		<id>javax.xml.ws.spi.http</id>
+				            		<restrictTo>
+				            			<type>eclipse-plugin</type>
+				            			<id>jaxws-api</id>
+				            		</restrictTo>
+				            	</filter>
+				            	<filter>
+				            		<type>java-package</type>
+				            		<id>javax.xml.ws.wsadressing</id>
+				            		<restrictTo>
+				            			<type>eclipse-plugin</type>
+				            			<id>jaxws-api</id>
+				            		</restrictTo>
+				            	</filter>
+				           	</filters>
 
 				            <!-- work-around for split package message error "Missing Constraint: 
 					            Bundle-RequiredExecutionEnvironment" track:https://bugs.eclipse.org/bugs/show_bug.cgi?id=403196 

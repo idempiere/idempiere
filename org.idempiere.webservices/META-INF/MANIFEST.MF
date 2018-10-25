@@ -6,9 +6,7 @@ Bundle-Version: 5.1.0.qualifier
 Bundle-Activator: org.idempiere.webservices.Activator
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Service-Component: OSGI-INF/ws_modelfactory.xml
-Import-Package: javax.activation,
- javax.annotation,
- javax.mail;version="1.4.1",
+Import-Package: javax.mail;version="1.4.1",
  javax.mail.internet;version="1.5",
  javax.servlet;version="3.0.0",
  javax.servlet.http;version="3.0.0",
@@ -86,7 +84,9 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.springframework.spring-core;bundle-version="5.1.1",
  org.springframework.spring-expression;bundle-version="5.1.1",
  org.springframework.spring-jcl;bundle-version="5.1.1",
- org.springframework.spring-web;bundle-version="5.1.1"
+ org.springframework.spring-web;bundle-version="5.1.1",
+ javax.annotation-api;bundle-version="1.3.2",
+ com.sun.activation.javax.activation;bundle-version="1.2.0"
 Bundle-ClassPath: .,
  WEB-INF/lib/aopalliance.jar,
  WEB-INF/lib/axis.jar,

@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.adempiere.ui.zk;singleton:=true
 Bundle-Version: 5.1.0.qualifier
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Import-Package: groovy.transform.stc;version="2.4.7",
- javax.activation,
  javax.annotation,
  javax.annotation.processing,
  javax.annotation.security;version="1.2.0",
@@ -15,7 +14,6 @@ Import-Package: groovy.transform.stc;version="2.4.7",
  javax.servlet.http,
  javax.servlet.jsp.resources;version="2.3.0",
  javax.servlet.resources;version="3.1.0",
- javax.xml.bind,
  net.sf.jasperreports.engine,
  net.sf.jasperreports.engine.export,
  net.sf.jasperreports.engine.util,
@@ -154,7 +152,9 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.junit;bundle-version="0.0.0",
  org.apache.commons.io;bundle-version="0.0.0",
  com.itextpdf;bundle-version="0.0.0",
- org.atmosphere.runtime;bundle-version="0.0.0"
+ org.atmosphere.runtime;bundle-version="0.0.0",
+ com.sun.activation.javax.activation;bundle-version="1.2.0",
+ jaxb-api;bundle-version="2.3.1"
 Bundle-Activator: org.adempiere.webui.WebUIActivator
 Eclipse-ExtensibleAPI: true
 Web-ContextPath: webui
