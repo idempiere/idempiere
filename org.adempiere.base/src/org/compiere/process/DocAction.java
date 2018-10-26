@@ -61,7 +61,7 @@ public interface DocAction
 	/** Invalidate = IN */
 	public static final String ACTION_Invalidate = "IN";
 	/** ReOpen = OP */
-	public static final String ACTION_ReOpen = "OP";
+	// public static final String ACTION_ReOpen = "OP";
 
 	/** Drafted = DR */
 	public static final String STATUS_Drafted = "DR";

@@ -147,8 +147,8 @@ public class GridTabCSVExporter implements IGridTabExporter
 				 
 				 if(detail.getDisplayLogic()!=null){
 				    //if(!currentRowOnly)
-				       //numOfTabs--;	
-					 //TODO: it's need? DisplayLogic is evaluated when call detail.isDisplayed() 
+				       //numOfTabs--;
+					//TODO: it's need? DisplayLogic is evaluated when call detail.isDisplayed() 
 				    if(currentRowOnly && !Evaluator.evaluateLogic(detail,detail.getDisplayLogic()))
 					   continue;
 				 }
@@ -223,7 +223,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 				int index =0;
 				int rowDetail=0;  
 				int record_Id = 0;
-				boolean isActiveRow = true;
+//				boolean isActiveRow = true;
 				gridTab.setCurrentRow(idxrow);
 				for(GridField field : getFields(gridTab)){   
 					MColumn column = MColumn.get(Env.getCtx(), field.getAD_Column_ID());
@@ -241,16 +241,16 @@ public class GridTabCSVExporter implements IGridTabExporter
 					   value = resolveValue(gridTab, table, column, idxrow, headName);
 					}
 					//Ignore row 
-					if("IsActive".equals(headName) && value!=null && Boolean.valueOf((Boolean)value)==false){
-						isActiveRow=false;	
-						break;
-					}
+//					if("IsActive".equals(headName) && value!=null && Boolean.valueOf((Boolean)value)==false){
+//						isActiveRow=false;	
+//						break;
+//					}
 					row.put(headName,value);
 					idxfld++;
 					index++;
 				} 
-			    if(!isActiveRow) 	
-			       continue;
+//			    if(!isActiveRow) 	
+//			       continue;
 			    	
 				if(specialHDispayType > 0 && record_Id > 0){
 				   switch(specialHDispayType) {
@@ -336,8 +336,8 @@ public class GridTabCSVExporter implements IGridTabExporter
 		if (tab.isReadOnly())
 		   result = Msg.getMsg(Env.getCtx(),"FieldIsReadOnly", new Object[] {gridTab.getName()});
 		
-		if (gridTab.getTableName().endsWith("_Acct"))
-		   result = "Accounting Tab are not exported by default: "+ gridTab.getName();
+//		if (gridTab.getTableName().endsWith("_Acct"))
+//		   result = "Accounting Tab are not exported by default: "+ gridTab.getName();
 		
 		return result;
 	}
@@ -354,10 +354,10 @@ public class GridTabCSVExporter implements IGridTabExporter
 		
 		for(Map.Entry<GridTab, GridField[]> childTabDetail : tabMapDetails.entrySet()) {		
 		    GridTab childTab = childTabDetail.getKey();
-		    //String  whereCla = getWhereClause (childTab, parentGrid, currentParentIndex);
+		    //String  whereCla = getWhereClause (childTab ,record_Id ,keyColumnParent);
 		    //childTab.getTableModel().dataRequery(whereCla, false, 0);
 			Map<String,Object> row = new HashMap<String,Object>();
-			boolean isActiveRow = true;
+//			boolean isActiveRow = true;
 		    if (childTab.getRowCount() > 0) {
 		    	int specialRecordId = 0;
 		    	for(GridField field : childTabDetail.getValue()){
@@ -374,19 +374,19 @@ public class GridTabCSVExporter implements IGridTabExporter
 				    String headName = headArray.get(headArray.indexOf(childTab.getTableName()+">"+resolveColumnName(tableDetail,column))); 
 				    value = resolveValue(childTab, MTable.get(Env.getCtx(),childTab.getTableName()), column, currentDetRow, headName.substring(headName.indexOf(">")+ 1,headName.length()));
 				    
-				    if(DisplayType.Payment == field.getDisplayType())
+				    if(DisplayType.Payment == field.getDisplayType() && value != null)
 					   value = MRefList.getListName(Env.getCtx(),REFERENCE_PAYMENTRULE, value.toString()); 
 					   
 				    row.put(headName,value);
 				    if(value!=null)
 				       hasDetails = true;
 					//Ignore row 
-					if(headName.contains("IsActive")&& value!=null && Boolean.valueOf((Boolean)value)==false){
-					   isActiveRow=false;	
-					   break;
-					}				    
+//					if(headName.contains("IsActive")&& value!=null && Boolean.valueOf((Boolean)value)==false){
+//					   isActiveRow=false;	
+//					   break;
+//					}				    
 			    }	
-				if(isActiveRow && specialDetDispayType > 0 && specialRecordId > 0){
+				if(/* isActiveRow && */ specialDetDispayType > 0 && specialRecordId > 0){
 					MLocation address = new MLocation (Env.getCtx(),specialRecordId,null);  
 					for(String specialHeader:resolveSpecialColumnName(specialDetDispayType)){
 						String columnName = specialHeader.substring(specialHeader.indexOf(">")+1,specialHeader.length());		
@@ -411,7 +411,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 					}	
 				}
 		    }
-		    if(isActiveRow)
+//		    if(isActiveRow)
 		       activeRow.putAll(row);
 		}
 		if (hasDetails)
@@ -495,6 +495,8 @@ public class GridTabCSVExporter implements IGridTabExporter
 					name.append("[DocumentNo]");
 				}
 			}
+		} else if (DisplayType.Account == column.getAD_Reference_ID()) {
+			name.append("[Combination]");
 		}
 		return name.toString();
 	}
@@ -588,11 +590,11 @@ public class GridTabCSVExporter implements IGridTabExporter
 				if (DisplayType.Button == MColumn.get(Env.getCtx(),field.getAD_Column_ID()).getAD_Reference_ID())
 					continue;
 				if (   field.isVirtualColumn()
-					|| field.isEncrypted()
-					|| field.isEncryptedColumn()
-					|| !(field.isDisplayed() || field.isDisplayedGrid()))
-					continue;
-				if (field.isParentValue() || (!field.isReadOnly() && field.isDisplayedGrid()))
+						|| field.isEncrypted()
+						|| field.isEncryptedColumn()
+						|| !(field.isDisplayed() || field.isDisplayedGrid()))
+						continue;
+				if (field.isParentValue() || (!field.isReadOnly() && field.isDisplayedGrid()) || field.isParentColumn())
 					gridFieldList.add(field);
 			}
 			

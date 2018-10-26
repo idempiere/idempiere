@@ -228,7 +228,6 @@ public abstract class AbstractExcelExporter
 		String key = "cell-"+col+"-"+displayType;
 		HSSFCellStyle cs = m_styles.get(key);
 		if (cs == null) {
-			boolean isHighlightNegativeNumbers = true;
 			cs = m_workbook.createCellStyle();
 			HSSFFont font = getFont(false);
 			cs.setFont(font);
@@ -238,17 +237,27 @@ public abstract class AbstractExcelExporter
 			cs.setBorderRight((short)1);
 			cs.setBorderBottom((short)1);
 			//
-			if (DisplayType.isDate(displayType)) {
-				cs.setDataFormat(m_dataFormat.getFormat(DisplayType.getDateFormat(getLanguage()).toPattern()));
-			}
-			else if (DisplayType.isNumeric(displayType)) {
-				DecimalFormat df = DisplayType.getNumberFormat(displayType, getLanguage());
-				String format = getFormatString(df, isHighlightNegativeNumbers);
-				cs.setDataFormat(m_dataFormat.getFormat(format));
-			}
+			String cellFormat = getCellFormat(row, col);
+			if (cellFormat != null)
+				cs.setDataFormat(m_dataFormat.getFormat(cellFormat));
 			m_styles.put(key, cs);
 		}
 		return cs;
+	}
+	
+	protected String getCellFormat(int row, int col) {
+		boolean isHighlightNegativeNumbers = true;
+		int displayType = getDisplayType(row, col);
+		String cellFormat = null;
+		
+		if (DisplayType.isDate(displayType)) {
+			cellFormat = DisplayType.getDateFormat(getLanguage()).toPattern();
+		} else if (DisplayType.isNumeric(displayType)) {
+			DecimalFormat df = DisplayType.getNumberFormat(displayType, getLanguage());
+			cellFormat = getFormatString(df, isHighlightNegativeNumbers);
+		}
+		
+		return cellFormat;
 	}
 
 	private HSSFCellStyle getHeaderStyle(int col)

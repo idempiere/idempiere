@@ -692,7 +692,7 @@ public class DocumentEngine implements DocAction
 				ACTION_Post, ACTION_Void};
 
 		if (isClosed())
-			return new String[] {ACTION_Post, ACTION_ReOpen};
+			return new String[] {ACTION_Post, ACTION_ReActivate};
 
 		if (isReversed() || isVoided())
 			return new String[] {ACTION_Post};
@@ -965,11 +965,13 @@ public class DocumentEngine implements DocAction
 			options[index++] = DocumentEngine.ACTION_Void;
 			options[index++] = DocumentEngine.ACTION_Prepare;
 		}
+		/*  IDEMPIERE-3599 - commented to allow adding options to these terminal status
 		//	Closed, Voided, REversed    ..  CL/VO/RE
 		else if (docStatus.equals(DocumentEngine.STATUS_Closed)
 			|| docStatus.equals(DocumentEngine.STATUS_Voided)
 			|| docStatus.equals(DocumentEngine.STATUS_Reversed))
 			return 0;
+		*/
 
 		/********************
 		 *  Order

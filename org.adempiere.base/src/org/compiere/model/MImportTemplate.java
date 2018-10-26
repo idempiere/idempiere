@@ -13,11 +13,20 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -131,6 +140,66 @@ public class MImportTemplate extends X_AD_ImportTemplate
 
 		int cnt = DB.getSQLValueEx(get_TrxName(), sql.toString(), getAD_ImportTemplate_ID(), roleID, roleID);
 		return cnt > 0;
+	}
+	
+	/**
+	 * Validate that InputStream header is CSVHeader or AliasCSVHeader
+	 * If the header is AliasCSVHeader it replaces it with the CSVHeader so it can be
+	 * processed
+	 * @param in input file
+	 * @return InputStream with the CSVHeader that can be processed by CsvMapReader
+	 */
+	public InputStream validateFile(InputStream in) {
+		// because the input stream cannot be reset we need to copy here the file to a new one (replacing the header if it's the alias)
+		Charset charset = Charset.forName(getCharacterSet());
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in, charset));
+		File tmpfile = null;
+		InputStream is = null;
+		BufferedWriter bw = null;
+		try {
+			tmpfile = File.createTempFile("CSVImportAction", "csv");
+			bw = new BufferedWriter(new FileWriter(tmpfile));
+			String firstLine = null;
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				if (firstLine == null) {
+					firstLine = line;
+					/* Validate that m_file_istream header is CSVHeader or AliasCSVHeader */
+					if (   firstLine.equals(getCSVHeader())
+						|| firstLine.equals(getCSVAliasHeader())) {
+						bw.write(getCSVHeader());
+					} else {
+						reader.close();
+						throw new AdempiereException(Msg.getMsg(Env.getCtx(), "WrongCSVHeader"));
+					}
+				} else {
+					bw.write(line);
+				}
+				bw.write('\n');
+			}
+			is = new FileInputStream(tmpfile);
+		} catch (IOException e) {
+			throw new AdempiereException(e);
+		} finally {
+			if (in != null)
+				try {
+					in.close();
+				} catch (IOException e) {
+				}
+			
+			if (bw != null)
+				try {
+					bw.close();
+				} catch (IOException e) {
+				}
+			
+			if (reader != null)
+				try {
+					reader.close();
+				} catch (IOException e) {
+				}
+		}
+		return is;
 	}
 
 }	//	MImportTemplate

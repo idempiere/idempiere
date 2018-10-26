@@ -144,6 +144,7 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 	protected void importFile(String filePath, IGridTabImporter csvImporter, GridTab activeTab, List<GridTab> childTabs) throws Exception {
 		m_file_istream = new FileInputStream(filePath);
 
+		m_file_istream = m_importTemplate.validateFile(m_file_istream);
 		File outFile = csvImporter.fileImport(activeTab, childTabs, m_file_istream, Charset.forName(m_importTemplate.getCharacterSet()), p_ImportMode, processUI);
 		// TODO: Potential improvement - traverse the outFile and call addLog with the results
 
