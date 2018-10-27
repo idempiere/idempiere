@@ -876,8 +876,8 @@
 		<unit id="javax.xml.soap-api.source" version="1.4.0"/>
 		<unit id="jaxb-api" version="2.3.1"/>
 		<unit id="jaxb-api.source" version="2.3.1"/>
-		<unit id="jaxws-api" version="0.0.0"/>
-		<unit id="jaxws-api.source" version="0.0.0"/>
+		<unit id="jaxws-api" version="2.3.1"/>
+		<unit id="jaxws-api.source" version="2.3.1"/>
 		<unit id="joda-time" version="2.10.0"/>
 		<unit id="joda-time.source" version="2.10.0"/>
 		<unit id="json" version="20171018.0.0"/>
