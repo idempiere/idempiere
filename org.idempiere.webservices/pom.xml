@@ -23,46 +23,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>wsdl4j</groupId>
-									<artifactId>wsdl4j</artifactId>
-									<version>1.6.3</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.apache.xmlbeans</groupId>
-									<artifactId>xmlbeans</artifactId>
-									<version>3.0.1</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>aopalliance</groupId>
-									<artifactId>aopalliance</artifactId>
-									<version>1.0</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.apache.axis</groupId>
-									<artifactId>axis</artifactId>
-									<version>1.4</version>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>WEB-INF/lib</outputDirectory>
-							<stripVersion>true</stripVersion>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>com.googlecode.maven-download-plugin</groupId>
 				<artifactId>download-maven-plugin</artifactId>
 				<executions>

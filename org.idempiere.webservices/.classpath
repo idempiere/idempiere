@@ -7,9 +7,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="WEB-INF/src/"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/aopalliance.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/axis.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/idempiere-xmlbeans.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/xmlbeans.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

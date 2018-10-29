@@ -97,6 +97,11 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
+											<id>org.eclipse.jetty:jetty-continuation:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
 										    <!-- it's maintain and up to date than org.eclipse.jdt.core.compiler.batch -->
 											<id>org.eclipse.jdt:org.eclipse.jdt.core:jar:${jdtVersion}</id>
 											<source>true</source>
@@ -472,6 +477,11 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
+											<id>org.apache.cxf:cxf-rt-transports-http-jetty:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
 											<id>org.apache.cxf:cxf-rt-bindings-soap:jar:${apache.cxf.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
@@ -492,7 +502,67 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
+											<id>org.apache.cxf:cxf-spring-boot-autoconfigure:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-rs-http-sci:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
 											<id>org.apache.cxf:cxf-rt-databinding-jaxb:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-ws-addr:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-ws-policy:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-rs-extension-providers:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-rs-service-description:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-management:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-ws-transfer:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-databinding-xmlbeans:jar:3.1.17</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-bindings-object:jar:3.1.17</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlbeans:xmlbeans:jar:3.0.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.wsdl4j:jar:1.6.3_1</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>

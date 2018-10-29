@@ -500,14 +500,14 @@
          unpack="false"/>
 
    <plugin
-         id="javax.jws-api"
+         id="com.sun.activation.javax.activation"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.sun.activation.javax.activation"
+         id="javax.jws"
          download-size="0"
          install-size="0"
          version="0.0.0"
