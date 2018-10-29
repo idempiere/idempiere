@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-181012" sequenceNumber="107">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-181029" sequenceNumber="107">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.restlet.example.feature.group" version="2.3.2.v20150501-1520"/>
@@ -1001,20 +1001,22 @@
 		<unit id="org.mortbay.jasper.apache-jsp" version="8.5.33"/>
 		<unit id="org.passay" version="1.3.1"/>
 		<unit id="org.passay.source" version="1.3.1"/>
-		<unit id="org.springframework.spring-aop" version="5.1.1.RELEASE"/>
-		<unit id="org.springframework.spring-aop.source" version="5.1.1.RELEASE"/>
-		<unit id="org.springframework.spring-beans" version="5.1.1.RELEASE"/>
-		<unit id="org.springframework.spring-beans.source" version="5.1.1.RELEASE"/>
-		<unit id="org.springframework.spring-context" version="5.1.1.RELEASE"/>
-		<unit id="org.springframework.spring-context.source" version="5.1.1.RELEASE"/>
-		<unit id="org.springframework.spring-core" version="5.1.1.RELEASE"/>
-		<unit id="org.springframework.spring-core.source" version="5.1.1.RELEASE"/>
-		<unit id="org.springframework.spring-expression" version="5.1.1.RELEASE"/>
-		<unit id="org.springframework.spring-expression.source" version="5.1.1.RELEASE"/>
-		<unit id="org.springframework.spring-jcl" version="5.1.1.RELEASE"/>
-		<unit id="org.springframework.spring-jcl.source" version="5.1.1.RELEASE"/>
-		<unit id="org.springframework.spring-web" version="5.1.1.RELEASE"/>
-		<unit id="org.springframework.spring-web.source" version="5.1.1.RELEASE"/>
+		<unit id="org.springframework.aop" version="3.1.4.RELEASE"/>
+		<unit id="org.springframework.aop.source" version="3.1.4.RELEASE"/>
+		<unit id="org.springframework.beans" version="3.1.4.RELEASE"/>
+		<unit id="org.springframework.beans.source" version="3.1.4.RELEASE"/>
+		<unit id="org.springframework.core" version="3.1.4.RELEASE"/>
+		<unit id="org.springframework.core.source" version="3.1.4.RELEASE"/>
+		<unit id="org.springframework.expression" version="3.1.4.RELEASE"/>
+		<unit id="org.springframework.expression.source" version="3.1.4.RELEASE"/>
+		<unit id="org.springframework.osgi.core" version="1.2.1"/>
+		<unit id="org.springframework.osgi.core.source" version="1.2.1"/>
+		<unit id="org.springframework.osgi.extender" version="1.2.1"/>
+		<unit id="org.springframework.osgi.extender.source" version="1.2.1"/>
+		<unit id="org.springframework.osgi.io" version="1.2.1"/>
+		<unit id="org.springframework.osgi.io.source" version="1.2.1"/>
+		<unit id="org.springframework.web" version="3.1.4.RELEASE"/>
+		<unit id="org.springframework.web.source" version="3.1.4.RELEASE"/>
 		<unit id="org.w3c.dom.svg.patch" version="1.1.0.b02"/>
 		<unit id="slf4j.api" version="1.7.25"/>
 		<unit id="slf4j.api.source" version="1.7.25"/>
@@ -1045,6 +1047,12 @@
 		<unit id="zweb" version="8.5.0"/>
 		<unit id="zweb.sources" version="8.5.0"/>
 		<repository location="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/maven-p2-R20181021"/>
+		<unit id="aopalliance" version="1.0.0"/>
+		<unit id="aopalliance.source" version="1.0.0"/>
+		<unit id="org.springframework.asm" version="3.1.4.RELEASE"/>
+		<unit id="org.springframework.asm.source" version="3.1.4.RELEASE"/>
+		<unit id="org.springframework.context" version="3.1.4.RELEASE"/>
+		<unit id="org.springframework.context.source" version="3.1.4.RELEASE"/>
 	</location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-10"/>

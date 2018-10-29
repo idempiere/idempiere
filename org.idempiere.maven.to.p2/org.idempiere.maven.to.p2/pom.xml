@@ -28,6 +28,7 @@
         <slf4j.version>1.7.25</slf4j.version>
 		<xml.ws.version>2.3.1</xml.ws.version>
 		<apache.cxf.version>3.2.6</apache.cxf.version>
+		<spring.osgi.version>1.2.1</spring.osgi.version>
 	</properties>
 	
     <repositories>
@@ -550,13 +551,19 @@
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
-										<artifact>
+<!--										<artifact>
 											<id>org.springframework:spring-jcl:jar:${springframework.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
+-->
 										<artifact>
 											<id>org.springframework:spring-context:jar:${springframework.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.springframework:spring-asm:jar:${springframework.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -572,6 +579,21 @@
 										</artifact>
 										<artifact>
 											<id>org.springframework:spring-web:jar:${springframework.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.springframework.osgi:spring-osgi-extender:jar:${spring.osgi.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.springframework.osgi:spring-osgi-core:jar:${spring.osgi.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.springframework.osgi:spring-osgi-io:jar:${spring.osgi.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>

@@ -20,7 +20,7 @@
 		<maven.dependency.version>3.1.1</maven.dependency.version>
 		<download.maven.version>1.4.1</download.maven.version>
 		<lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
-		<springframework.version>5.1.1.RELEASE</springframework.version>
+		<springframework.version>3.1.4.RELEASE</springframework.version>
 		<!-- https://www.eclipse.org/jetty/documentation/9.3.x/alpn-chapter.html#alpn-versions -->
 		<jetty.alpn-boot.version>8.1.12.v20180117</jetty.alpn-boot.version>
 		<netbeans.lib.version>RELEASE731</netbeans.lib.version>
