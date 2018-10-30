@@ -366,13 +366,6 @@
          unpack="false"/>
 
    <plugin
-         id="jaxws-api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="javax.transaction-api"
          download-size="0"
          install-size="0"
@@ -402,13 +395,6 @@
 
    <plugin
          id="org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.annotation"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -500,14 +486,14 @@
          unpack="false"/>
 
    <plugin
-         id="com.sun.activation.javax.activation"
+         id="javax.jws"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="javax.jws"
+         id="javax.activation"
          download-size="0"
          install-size="0"
          version="0.0.0"
