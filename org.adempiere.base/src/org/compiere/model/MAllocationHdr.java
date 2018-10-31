@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -1066,7 +1067,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 					//	Round
 					int precision = MCurrency.getStdPrecision(getCtx(), client.getC_Currency_ID());
 					if (openBalanceDiff.scale() > precision)
-						openBalanceDiff = openBalanceDiff.setScale(precision, BigDecimal.ROUND_HALF_UP);
+						openBalanceDiff = openBalanceDiff.setScale(precision, RoundingMode.HALF_UP);
 				}
 			}			
 			

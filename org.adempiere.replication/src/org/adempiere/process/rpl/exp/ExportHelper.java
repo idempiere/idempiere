@@ -170,7 +170,7 @@ public class ExportHelper {
 		String javaClass = expProcessor_Type.getJavaClass();
 		try {
 			Class<?> clazz = Class.forName(javaClass);
-			IExportProcessor exportProcessor = (IExportProcessor)clazz.newInstance();
+			IExportProcessor exportProcessor = (IExportProcessor)clazz.getDeclaredConstructor().newInstance();
 
 			exportProcessor.process(po.getCtx(), mExportProcessor, outDocument, Trx.get( po.get_TrxName(), false ));
 
@@ -473,11 +473,11 @@ public class ExportHelper {
 		if (variableName != null && !"".equals(variableName) ) {
 			Integer var = variableMap.get(variableName);
 			if (var == null) {
-				var = new Integer(0);
+				var = Integer.valueOf(0);
 			}
 			int intValue = var.intValue();
 			intValue++;
-			variableMap.put(variableName, new Integer(intValue));
+			variableMap.put(variableName, Integer.valueOf(intValue));
 		}
 	}
 

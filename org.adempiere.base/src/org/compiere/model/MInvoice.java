@@ -247,7 +247,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public static MInvoice get (Properties ctx, int C_Invoice_ID)
 	{
-		Integer key = new Integer (C_Invoice_ID);
+		Integer key = Integer.valueOf(C_Invoice_ID);
 		MInvoice retValue = (MInvoice) s_cache.get (key);
 		if (retValue != null)
 			return retValue;

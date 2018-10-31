@@ -26,7 +26,7 @@
 package org.compiere.swing;
 
 import java.awt.Color;
-import java.awt.event.InputEvent;
+import java.awt.event.ActionEvent;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -266,7 +266,7 @@ public class CCheckBox extends JCheckBox implements CEditor {
 	public Object getValue() {
 		if (m_value instanceof String)
 			return super.isSelected() ? "Y" : "N";
-		return new Boolean(isSelected());
+		return Boolean.valueOf(isSelected());
 	} // getValue
 
 	/**
@@ -334,10 +334,10 @@ public class CCheckBox extends JCheckBox implements CEditor {
 		}
 		map.clear();
 		String className = this.getClass().getName();
-		int mask = InputEvent.ALT_MASK; // Default Buttons
+		int mask = ActionEvent.ALT_MASK; // Default Buttons
 		if (this instanceof JCheckBox // In Tab
 				|| className.indexOf("VButton") != -1)
-			mask = InputEvent.SHIFT_MASK + InputEvent.CTRL_MASK;
+			mask = ActionEvent.SHIFT_MASK + ActionEvent.CTRL_MASK;
 		map.put(KeyStroke.getKeyStroke(mnemonic, mask, false), "pressed");
 		map.put(KeyStroke.getKeyStroke(mnemonic, mask, true), "released");
 		map.put(KeyStroke.getKeyStroke(mnemonic, 0, true), "released");

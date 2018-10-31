@@ -252,9 +252,9 @@ public class PrintData implements Serializable
 	{
 		m_matrix.addRow(nodes);
 		if (functionRow)
-			m_functionRows.add(new Integer(m_matrix.getRowIndex()));
+			m_functionRows.add(Integer.valueOf(m_matrix.getRowIndex()));
 		if (m_hasLevelNo && levelNo != 0)
-			addNode(new PrintDataElement(LEVEL_NO, new Integer(levelNo), DisplayType.Integer, null));
+			addNode(new PrintDataElement(LEVEL_NO, Integer.valueOf(levelNo), DisplayType.Integer, null));
 	}	//	addRow
 
 	/**
@@ -301,7 +301,7 @@ public class PrintData implements Serializable
 	 */
 	public boolean isFunctionRow (int row)
 	{
-		return m_functionRows.contains(new Integer(row));
+		return m_functionRows.contains(Integer.valueOf(row));
 	}	//	isFunctionRow
 
 	/**
@@ -310,7 +310,7 @@ public class PrintData implements Serializable
 	 */
 	public boolean isFunctionRow ()
 	{
-		return m_functionRows.contains(new Integer(m_matrix.getRowIndex()));
+		return m_functionRows.contains(Integer.valueOf(m_matrix.getRowIndex()));
 	}	//	isFunctionRow
 
 	/**

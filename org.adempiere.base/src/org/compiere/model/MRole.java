@@ -902,7 +902,7 @@ public final class MRole extends X_AD_Role
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				Integer ii = new Integer(rs.getInt(1));
+				Integer ii = Integer.valueOf(rs.getInt(1));
 				m_tableAccessLevel.put(ii, rs.getString(2));
 				String tableName = rs.getString(3); 
 				m_tableName.put(tableName, ii);
@@ -1345,7 +1345,7 @@ public final class MRole extends X_AD_Role
 		//	AccessLevel
 		//		1 = Org - 2 = Client - 4 = System
 		//		3 = Org+Client - 6 = Client+System - 7 = All
-		String roleAccessLevel = (String)m_tableAccessLevel.get(new Integer(AD_Table_ID));
+		String roleAccessLevel = (String)m_tableAccessLevel.get(Integer.valueOf(AD_Table_ID));
 		if (roleAccessLevel == null)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("NO - No AccessLevel - AD_Table_ID=" + AD_Table_ID);
@@ -1542,14 +1542,14 @@ public final class MRole extends X_AD_Role
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					Integer winId = new Integer(rs.getInt(1));
+					Integer winId = Integer.valueOf(rs.getInt(1));
 					if ("N".equals(rs.getString(3))) {
 						// inactive window on direct access
 						if (m_windowAccess.containsKey(winId)) {
 							m_windowAccess.remove(winId);
 						}
 					} else {
-						directAccess.put(winId, new Boolean("Y".equals(rs.getString(2))));
+						directAccess.put(winId, Boolean.valueOf("Y".equals(rs.getString(2))));
 					}
 				}
 			}
@@ -1627,14 +1627,14 @@ public final class MRole extends X_AD_Role
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					Integer procId = new Integer(rs.getInt(1));
+					Integer procId = Integer.valueOf(rs.getInt(1));
 					if ("N".equals(rs.getString(3))) {
 						// inactive process on direct access
 						if (m_processAccess.containsKey(procId)) {
 							m_processAccess.remove(procId);
 						}
 					} else {
-						directAccess.put(procId, new Boolean("Y".equals(rs.getString(2))));
+						directAccess.put(procId, Boolean.valueOf("Y".equals(rs.getString(2))));
 					}
 				}
 			}
@@ -1707,14 +1707,14 @@ public final class MRole extends X_AD_Role
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					Integer taskId = new Integer(rs.getInt(1));
+					Integer taskId = Integer.valueOf(rs.getInt(1));
 					if ("N".equals(rs.getString(3))) {
 						// inactive task on direct access
 						if (m_taskAccess.containsKey(taskId)) {
 							m_taskAccess.remove(taskId);
 						}
 					} else {
-						directAccess.put(taskId, new Boolean("Y".equals(rs.getString(2))));
+						directAccess.put(taskId, Boolean.valueOf("Y".equals(rs.getString(2))));
 					}
 				}
 			}
@@ -1787,14 +1787,14 @@ public final class MRole extends X_AD_Role
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					Integer formId = new Integer(rs.getInt(1));
+					Integer formId = Integer.valueOf(rs.getInt(1));
 					if ("N".equals(rs.getString(3))) {
 						// inactive form on direct access
 						if (m_formAccess.containsKey(formId)) {
 							m_formAccess.remove(formId);
 						}
 					} else {
-						directAccess.put(formId, new Boolean("Y".equals(rs.getString(2))));
+						directAccess.put(formId, Boolean.valueOf("Y".equals(rs.getString(2))));
 					}
 				}
 			}
@@ -1867,14 +1867,14 @@ public final class MRole extends X_AD_Role
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					Integer formId = new Integer(rs.getInt(1));
+					Integer formId = Integer.valueOf(rs.getInt(1));
 					if ("N".equals(rs.getString(3))) {
 						// inactive workflow on direct access
 						if (m_workflowAccess.containsKey(formId)) {
 							m_workflowAccess.remove(formId);
 						}
 					} else {
-						directAccess.put(formId, new Boolean("Y".equals(rs.getString(2))));
+						directAccess.put(formId, Boolean.valueOf("Y".equals(rs.getString(2))));
 					}
 				}
 			}
@@ -3137,7 +3137,7 @@ public final class MRole extends X_AD_Role
 				pstmt.setInt(1, getAD_Role_ID());
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					Integer infoId = new Integer(rs.getInt(1));
+					Integer infoId = Integer.valueOf(rs.getInt(1));
 					if ("N".equals(rs.getString(2))) {
 						// inactive info on direct access
 						if (m_infoAccess.containsKey(infoId)) {
@@ -3177,7 +3177,7 @@ public final class MRole extends X_AD_Role
 					+ "       AND (iwa.AD_Role_ID = ? OR iwa.AD_Role_ID IN"
 					+ "       		(SELECT ri.Included_Role_ID FROM AD_Role_Included ri WHERE ri.IsActive='Y' AND ri.AD_Role_ID=?))";
 			int cnt = DB.getSQLValueEx(get_TrxName(), sql, I_M_Product.Table_ID, getAD_Role_ID(), getAD_Role_ID());
-			m_canAccess_Info_Product = new Boolean(cnt > 0);
+			m_canAccess_Info_Product = Boolean.valueOf(cnt > 0);
 
 			// Verify if is excluded in the specific role (it can be allowed in included role and inactive in specific role)
 			if (m_canAccess_Info_Product) {
@@ -3192,7 +3192,7 @@ public final class MRole extends X_AD_Role
 						+ "       AND iwa.AD_Role_ID = ?";
 				int cntInactive = DB.getSQLValueEx(get_TrxName(), sqlInactive, I_M_Product.Table_ID, getAD_Role_ID());
 				if (cntInactive > 0)
-					m_canAccess_Info_Product = new Boolean(false);
+					m_canAccess_Info_Product = Boolean.FALSE;
 			}
 		}
 		return m_canAccess_Info_Product.booleanValue();

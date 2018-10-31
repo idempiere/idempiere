@@ -101,7 +101,7 @@ public abstract class PaymentFormOnCredit extends PaymentForm {
 	public boolean save(int newC_PaymentTerm_ID)
 	{
 		if (newC_PaymentTerm_ID != m_C_PaymentTerm_ID)
-			getGridTab().setValue("C_PaymentTerm_ID", new Integer(newC_PaymentTerm_ID));
+			getGridTab().setValue("C_PaymentTerm_ID", Integer.valueOf(newC_PaymentTerm_ID));
 		return true;
 	}
 }

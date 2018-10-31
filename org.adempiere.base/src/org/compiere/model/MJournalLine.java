@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
@@ -308,11 +309,11 @@ public class MJournalLine extends X_GL_JournalLine
 		BigDecimal rate = getCurrencyRate();
 		BigDecimal amt = rate.multiply(getAmtSourceDr());
 		if (amt.scale() > getPrecision())
-			amt = amt.setScale(getPrecision(), BigDecimal.ROUND_HALF_UP);
+			amt = amt.setScale(getPrecision(), RoundingMode.HALF_UP);
 		setAmtAcctDr(amt);
 		amt = rate.multiply(getAmtSourceCr());
 		if (amt.scale() > getPrecision())
-			amt = amt.setScale(getPrecision(), BigDecimal.ROUND_HALF_UP);
+			amt = amt.setScale(getPrecision(), RoundingMode.HALF_UP);
 		setAmtAcctCr(amt);
 		//	Set Line Org to Doc Org if still not set
 		if(getAD_Org_ID() <= 0) 

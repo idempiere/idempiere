@@ -14,7 +14,6 @@
 
 package org.compiere.pos;
 
-import java.awt.Event;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -131,7 +130,7 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener, Focus
 		
 		String buttonSize = "w 50!, h 50!,";
 		//
-		f_bSearch = createButtonAction ("Product", KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.CTRL_MASK));
+		f_bSearch = createButtonAction ("Product", KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
 		f_bSearch.setName("ProductSearch");
 		add (f_bSearch, buttonSize );
 		
@@ -179,7 +178,7 @@ public class SubCurrentLine extends PosSubPanel implements ActionListener, Focus
 		add (f_down, buttonSize);
 
 		
-		f_delete = createButtonAction("Cancel", KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, Event.SHIFT_MASK));
+		f_delete = createButtonAction("Cancel", KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, ActionEvent.SHIFT_MASK));
 		add (f_delete, buttonSize);
 		
 		//

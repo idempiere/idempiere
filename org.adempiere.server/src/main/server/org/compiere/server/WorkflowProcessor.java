@@ -381,7 +381,7 @@ public class WorkflowProcessor extends AdempiereServer
 		//	To Activity Owner
 		if (m_client.sendEMail(activity.getAD_User_ID(), subject, message, pdf))
 			counter++;
-		list.add (new Integer(activity.getAD_User_ID()));
+		list.add (Integer.valueOf(activity.getAD_User_ID()));
 
 		//	To Process Owner
 		if (toProcess
@@ -389,7 +389,7 @@ public class WorkflowProcessor extends AdempiereServer
 		{
 			if (m_client.sendEMail(process.getAD_User_ID(), subject, message, pdf))
 				counter++;
-			list.add (new Integer(process.getAD_User_ID()));
+			list.add (Integer.valueOf(process.getAD_User_ID()));
 		}
 		
 		//	To Activity Responsible
@@ -409,11 +409,11 @@ public class WorkflowProcessor extends AdempiereServer
 		//	Processor SuperVisor
 		if (toSupervisor 
 			&& m_model.getSupervisor_ID() != 0
-			&& !list.contains(new Integer(m_model.getSupervisor_ID())))
+			&& !list.contains(Integer.valueOf(m_model.getSupervisor_ID())))
 		{
 			if (m_client.sendEMail(m_model.getSupervisor_ID(), subject, message, pdf))
 				counter++;
-			list.add (new Integer(m_model.getSupervisor_ID()));
+			list.add (Integer.valueOf(m_model.getSupervisor_ID()));
 		}
 
 		return counter;
@@ -439,11 +439,11 @@ public class WorkflowProcessor extends AdempiereServer
 		//	Human
 		else if (MWFResponsible.RESPONSIBLETYPE_Human.equals(responsible.getResponsibleType())
 			&& responsible.getAD_User_ID() != 0
-			&& !list.contains(new Integer(responsible.getAD_User_ID())))
+			&& !list.contains(Integer.valueOf(responsible.getAD_User_ID())))
 		{
 			if (m_client.sendEMail(responsible.getAD_User_ID(), subject, message, pdf))
 				counter++;
-			list.add (new Integer(responsible.getAD_User_ID()));
+			list.add (Integer.valueOf(responsible.getAD_User_ID()));
 		}
 		//	Org of the Document
 		else if (MWFResponsible.RESPONSIBLETYPE_Organization.equals(responsible.getResponsibleType()))
@@ -453,11 +453,11 @@ public class WorkflowProcessor extends AdempiereServer
 			{
 				MOrgInfo org = MOrgInfo.get (getCtx(), document.getAD_Org_ID(), null);
 				if (org.getSupervisor_ID() != 0
-					&& !list.contains(new Integer(org.getSupervisor_ID())))
+					&& !list.contains(Integer.valueOf(org.getSupervisor_ID())))
 				{
 					if (m_client.sendEMail(org.getSupervisor_ID(), subject, message, pdf))
 						counter++;
-					list.add (new Integer(org.getSupervisor_ID()));
+					list.add (Integer.valueOf(org.getSupervisor_ID()));
 				}
 			}
 		}
@@ -472,11 +472,11 @@ public class WorkflowProcessor extends AdempiereServer
 				if (!roles.isActive())
 					continue;
 				int AD_User_ID = roles.getAD_User_ID();
-				if (!list.contains(new Integer(AD_User_ID)))
+				if (!list.contains(Integer.valueOf(AD_User_ID)))
 				{
 					if (m_client.sendEMail(AD_User_ID, subject, message, pdf))
 						counter++;
-					list.add (new Integer(AD_User_ID));
+					list.add (Integer.valueOf(AD_User_ID));
 				}
 			}
 		}

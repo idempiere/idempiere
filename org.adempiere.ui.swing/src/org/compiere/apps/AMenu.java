@@ -19,7 +19,6 @@ package org.compiere.apps;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Event;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -427,10 +426,10 @@ public final class AMenu extends CFrame
 		JMenu mFile = AEnv.getMenu("File");
 		menuBar.add(mFile);
 		AEnv.addMenuItem("PrintScreen", null, KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN, 0), mFile, this);
-		AEnv.addMenuItem("ScreenShot", null, KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN, KeyEvent.SHIFT_MASK), mFile, this);
+		AEnv.addMenuItem("ScreenShot", null, KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN, ActionEvent.SHIFT_MASK), mFile, this);
 		mFile.addSeparator();
-		AEnv.addMenuItem("Logout", null, KeyStroke.getKeyStroke(KeyEvent.VK_L, Event.SHIFT_MASK+Event.ALT_MASK), mFile, this);
-		AEnv.addMenuItem("Exit", null, KeyStroke.getKeyStroke(KeyEvent.VK_X, Event.SHIFT_MASK+Event.ALT_MASK), mFile, this);
+		AEnv.addMenuItem("Logout", null, KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.SHIFT_MASK + ActionEvent.ALT_MASK), mFile, this);
+		AEnv.addMenuItem("Exit", null, KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.SHIFT_MASK+ActionEvent.ALT_MASK), mFile, this);
 
 		//      View
 		JMenu mView = AEnv.getMenu("View");
@@ -438,15 +437,15 @@ public final class AMenu extends CFrame
 		
 		if (MRole.getDefault().isAllow_Info_Product())
 		{
-			AEnv.addMenuItem("InfoProduct", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.ALT_MASK), mView, this);			
+			AEnv.addMenuItem("InfoProduct", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK), mView, this);			
 		}
 		if (MRole.getDefault().isAllow_Info_BPartner())
 		{
-			AEnv.addMenuItem("InfoBPartner", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.ALT_MASK+Event.CTRL_MASK), mView, this);
+			AEnv.addMenuItem("InfoBPartner", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK+ActionEvent.CTRL_MASK), mView, this);
 		}
 		if (MRole.getDefault().isShowAcct() && MRole.getDefault().isAllow_Info_Account())
 		{
-			AEnv.addMenuItem("InfoAccount", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.ALT_MASK+Event.CTRL_MASK), mView, this);
+			AEnv.addMenuItem("InfoAccount", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK+ActionEvent.CTRL_MASK), mView, this);
 		}
 		if (MRole.getDefault().isAllow_Info_Schedule())
 		{
@@ -511,7 +510,7 @@ public final class AMenu extends CFrame
 		//Window Menu
 		m_WindowMenu = new WindowMenu(windowManager, this);
 		menuBar.add(m_WindowMenu);
-		KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_MASK);
+		KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK);
 		this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "ShowAllWindow");
 		AppsAction action = new AppsAction("ShowAllWindow", ks, false);
 		this.getRootPane().getActionMap().put("ShowAllWindow", action);

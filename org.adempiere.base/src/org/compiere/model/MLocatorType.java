@@ -50,7 +50,7 @@ public class MLocatorType extends X_M_LocatorType {
 	public static MLocatorType get (Properties ctx, int M_LocatorType_ID) {
 		if (s_cache == null)
 			s_cache	= new CCache<Integer,MLocatorType>(Table_Name, 20);
-		Integer key = new Integer (M_LocatorType_ID);
+		Integer key = Integer.valueOf(M_LocatorType_ID);
 		MLocatorType retValue = (MLocatorType) s_cache.get (key);
 		if (retValue != null)
 			return retValue;

@@ -527,7 +527,7 @@ public abstract class SvrProcess implements ProcessCall
 		try
 		{
 			Class<?> clazz = Class.forName(className);
-			Object object = clazz.newInstance();
+			Object object = clazz.getDeclaredConstructor().newInstance();
 			Method[] methods = clazz.getMethods();
 			for (int i = 0; i < methods.length; i++)
 			{

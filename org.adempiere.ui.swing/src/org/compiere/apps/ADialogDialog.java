@@ -19,7 +19,6 @@ package org.compiere.apps;
 import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.awt.Dimension;
-import java.awt.Event;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -173,14 +172,14 @@ public final class ADialogDialog extends CDialog implements ActionListener
 		mPrintScreen.addActionListener(this);
 		mScreenShot.setIcon(Env.getImageIcon("ScreenShot16.gif"));
 		mScreenShot.setText(Msg.getMsg(Env.getCtx(), "ScreenShot"));
-		mScreenShot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN, Event.SHIFT_MASK));
+		mScreenShot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN, ActionEvent.SHIFT_MASK));
 		mScreenShot.addActionListener(this);
 		mPreference.setIcon(Env.getImageIcon("Preference16.gif"));
 		mPreference.setText(Msg.getMsg(Env.getCtx(), "Preference"));
 		mPreference.addActionListener(this);
 		mEnd.setIcon(Env.getImageIcon("End16.gif"));
 		mEnd.setText(Msg.getMsg(Env.getCtx(), "End"));
-		mEnd.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, Event.ALT_MASK));
+		mEnd.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.ALT_MASK));
 		mEnd.addActionListener(this);
 		//
 		westPanel.setLayout(westLayout);

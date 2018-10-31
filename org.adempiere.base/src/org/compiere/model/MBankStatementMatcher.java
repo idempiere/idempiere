@@ -141,7 +141,7 @@ public class MBankStatementMatcher extends X_C_BankStatementMatcher
 			if(m_matcher==null){
 				// if no OSGi plugin is found try the legacy way (in my own classpath)
 				Class<?> bsrClass = Class.forName(className);
-				m_matcher = (BankStatementMatcherInterface) bsrClass.newInstance();
+				m_matcher = (BankStatementMatcherInterface) bsrClass.getDeclaredConstructor().newInstance();
 			}
 			m_matcherValid = Boolean.TRUE;
 		}

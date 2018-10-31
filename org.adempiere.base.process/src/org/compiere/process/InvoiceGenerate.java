@@ -17,6 +17,7 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -300,7 +301,7 @@ public class InvoiceGenerate extends SvrProcess
 							if (oLine.getQtyEntered().compareTo(oLine.getQtyOrdered()) != 0)
 								qtyEntered = toInvoice
 									.multiply(oLine.getQtyEntered())
-									.divide(oLine.getQtyOrdered(), 12, BigDecimal.ROUND_HALF_UP);
+									.divide(oLine.getQtyOrdered(), 12, RoundingMode.HALF_UP);
 							createLine (order, oLine, toInvoice, qtyEntered);
 						}
 						else if (!completeOrder)
@@ -492,7 +493,7 @@ public class InvoiceGenerate extends SvrProcess
 					BigDecimal igt = m_invoice.getGrandTotal();
 					BigDecimal percent = Env.ONE;
 					if (ogt.compareTo(igt) != 0)
-						percent = igt.divide(ogt, 10, BigDecimal.ROUND_HALF_UP);
+						percent = igt.divide(ogt, 10, RoundingMode.HALF_UP);
 					MCurrency cur = MCurrency.get(order.getCtx(), order.getC_Currency_ID());
 					int scale = cur.getStdPrecision();
 				
@@ -502,7 +503,7 @@ public class InvoiceGenerate extends SvrProcess
 						if (percent != Env.ONE) {
 							BigDecimal propDueAmt = ops.getDueAmt().multiply(percent);
 							if (propDueAmt.scale() > scale)
-								propDueAmt = propDueAmt.setScale(scale, BigDecimal.ROUND_HALF_UP);
+								propDueAmt = propDueAmt.setScale(scale, RoundingMode.HALF_UP);
 							ips.setDueAmt(propDueAmt);
 						}
 						ips.setC_Invoice_ID(m_invoice.getC_Invoice_ID());

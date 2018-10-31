@@ -18,6 +18,7 @@
 package org.adempiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Properties;
 
 import org.adempiere.base.Core;
@@ -101,7 +102,7 @@ public class CalloutRMA extends CalloutEngine {
 			BigDecimal lineNetAmt = invoiceLine.getQtyEntered().multiply(invoiceLine.getPriceEntered());
 			int precision = invoiceLine.getPrecision();
 			if (lineNetAmt.scale() > precision)
-				lineNetAmt = lineNetAmt.setScale(precision, BigDecimal.ROUND_HALF_UP);
+				lineNetAmt = lineNetAmt.setScale(precision, RoundingMode.HALF_UP);
 			mTab.setValue(MRMALine.COLUMNNAME_LineNetAmt, lineNetAmt);
 		} 
 		else if (iol.getC_OrderLine_ID() != 0) 
@@ -122,7 +123,7 @@ public class CalloutRMA extends CalloutEngine {
 			BigDecimal lineNetAmt = orderLine.getQtyEntered().multiply(orderLine.getPriceEntered());
 			int precision = orderLine.getPrecision();
 			if (lineNetAmt.scale() > precision)
-				lineNetAmt = lineNetAmt.setScale(precision, BigDecimal.ROUND_HALF_UP);
+				lineNetAmt = lineNetAmt.setScale(precision, RoundingMode.HALF_UP);
 			mTab.setValue(MRMALine.COLUMNNAME_LineNetAmt, lineNetAmt);
 		}
 
@@ -193,7 +194,7 @@ public class CalloutRMA extends CalloutEngine {
 		
 		BigDecimal lineNetAmt = Env.ONE.multiply(pp.getPriceStd());
 		if (lineNetAmt.scale() > precision)
-			lineNetAmt = lineNetAmt.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			lineNetAmt = lineNetAmt.setScale(precision, RoundingMode.HALF_UP);
 		mTab.setValue(MRMALine.COLUMNNAME_LineNetAmt, lineNetAmt);
 
 		return "";
@@ -246,7 +247,7 @@ public class CalloutRMA extends CalloutEngine {
 		
 		BigDecimal lineNetAmt = Env.ONE.multiply(charge.getChargeAmt());
 		if (lineNetAmt.scale() > precision)
-			lineNetAmt = lineNetAmt.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			lineNetAmt = lineNetAmt.setScale(precision, RoundingMode.HALF_UP);
 		mTab.setValue(MRMALine.COLUMNNAME_LineNetAmt, lineNetAmt);		
 
 		return "";

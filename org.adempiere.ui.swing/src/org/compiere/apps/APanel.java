@@ -28,13 +28,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Event;
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.sql.PreparedStatement;
@@ -44,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -357,28 +356,28 @@ public final class APanel extends CPanel
 		JMenu mFile = AEnv.getMenu("File");
 		menuBar.add(mFile);
 		aPrintScr =	addAction("PrintScreen",	mFile,	KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN, 0), 	false);
-		aScrShot =	addAction("ScreenShot",		mFile,	KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN, Event.SHIFT_MASK), 	false);
+		aScrShot =	addAction("ScreenShot",		mFile,	KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN, ActionEvent.SHIFT_MASK), 	false);
 		aReport = 	addAction("Report",			mFile, 	KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0),	false);
 		aPrint = 	addAction("Print",			mFile, 	KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0),	false);
-		aPrintPreview = addAction("PrintPreview",	mFile, KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.SHIFT_MASK+Event.ALT_MASK), false);
+		aPrintPreview = addAction("PrintPreview",	mFile, KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.SHIFT_MASK+ActionEvent.ALT_MASK), false);
 		if (MRole.getDefault().isCanExport())
 		{
 			aExport = addAction("Export", mFile, null, false);
 		}
 		mFile.addSeparator();
-		aEnd =	 	addAction("End",			mFile, 	KeyStroke.getKeyStroke(KeyEvent.VK_X, Event.ALT_MASK),	false);
-		aLogout = 	addAction("Logout", 		mFile, 	KeyStroke.getKeyStroke(KeyEvent.VK_L, Event.SHIFT_MASK+Event.ALT_MASK), false);
-		aExit =		addAction("Exit",			mFile, 	KeyStroke.getKeyStroke(KeyEvent.VK_X, Event.SHIFT_MASK+Event.ALT_MASK),	false);
+		aEnd =	 	addAction("End",			mFile, 	KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.ALT_MASK),	false);
+		aLogout = 	addAction("Logout", 		mFile, 	KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.SHIFT_MASK+ActionEvent.ALT_MASK), false);
+		aExit =		addAction("Exit",			mFile, 	KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.SHIFT_MASK+ActionEvent.ALT_MASK),	false);
 		//								Edit
 		JMenu mEdit = AEnv.getMenu("Edit");
 		menuBar.add(mEdit);
 		aNew = 		addAction("New", 			mEdit, 	KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0), false);
 		aSave = 	addAction("Save",			mEdit, 	KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0),	false);
-		aSaveAndCreate = addAction("SaveCreate", mEdit, KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_MASK), false);
+		aSaveAndCreate = addAction("SaveCreate", mEdit, KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK), false);
 		mEdit.addSeparator();
-		aCopy =		addAction("Copy", 			mEdit, 	KeyStroke.getKeyStroke(KeyEvent.VK_F2, Event.SHIFT_MASK),	false);
+		aCopy =		addAction("Copy", 			mEdit, 	KeyStroke.getKeyStroke(KeyEvent.VK_F2, ActionEvent.SHIFT_MASK),	false);
 		aDelete = 	addAction("Delete",			mEdit, 	KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0),	false);
-		aDeleteSelection = addAction("DeleteSelection", mEdit, KeyStroke.getKeyStroke(KeyEvent.VK_D, Event.CTRL_MASK), false);
+		aDeleteSelection = addAction("DeleteSelection", mEdit, KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK), false);
 		aIgnore = 	addAction("Ignore",			mEdit, 	KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),	false);
 		aRefresh = 	addAction("Refresh",		mEdit, 	KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0),	false);
 		mEdit.addSeparator();
@@ -390,15 +389,15 @@ public final class APanel extends CPanel
 		menuBar.add(mView);
 		if (MRole.getDefault().isAllow_Info_Product())
 		{
-			aProduct =	addAction("InfoProduct",	mView, 	KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.ALT_MASK),	false);
+			aProduct =	addAction("InfoProduct",	mView, 	KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK),	false);
 		}
 		if (MRole.getDefault().isAllow_Info_BPartner())
 		{
-			aBPartner =	addAction("InfoBPartner",	mView, 	KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.SHIFT_MASK+Event.ALT_MASK),	false);
+			aBPartner =	addAction("InfoBPartner",	mView, 	KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.SHIFT_MASK+ActionEvent.ALT_MASK),	false);
 		}
 		if (MRole.getDefault().isShowAcct() && MRole.getDefault().isAllow_Info_Account())
 		{
-			aAccount =  addAction("InfoAccount",mView, 	KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.ALT_MASK+Event.CTRL_MASK),	false);
+			aAccount =  addAction("InfoAccount",mView, 	KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK+ActionEvent.CTRL_MASK),	false);
 		}
 		if (MRole.getDefault().isAllow_Info_Schedule())
 		{
@@ -455,13 +454,13 @@ public final class APanel extends CPanel
 		//								Go
 		JMenu mGo = AEnv.getMenu("Go");
 		menuBar.add(mGo);
-		aFirst =	addAction("First", 			mGo, 	KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, Event.ALT_MASK),	false);
-		aPrevious = addAction("Previous", 		mGo, 	KeyStroke.getKeyStroke(KeyEvent.VK_UP, Event.ALT_MASK),	false);
-		aNext = 	addAction("Next", 			mGo, 	KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, Event.ALT_MASK),	false);
-		aLast =		addAction("Last",	 		mGo, 	KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, Event.ALT_MASK),	false);
+		aFirst =	addAction("First", 			mGo, 	KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, ActionEvent.ALT_MASK),	false);
+		aPrevious = addAction("Previous", 		mGo, 	KeyStroke.getKeyStroke(KeyEvent.VK_UP, ActionEvent.ALT_MASK),	false);
+		aNext = 	addAction("Next", 			mGo, 	KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, ActionEvent.ALT_MASK),	false);
+		aLast =		addAction("Last",	 		mGo, 	KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, ActionEvent.ALT_MASK),	false);
 		mGo.addSeparator();
-		aParent =	addAction("Parent", 		mGo, 	KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, Event.ALT_MASK),	false);
-		aDetail =	addAction("Detail", 		mGo,	KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, Event.ALT_MASK),	false);
+		aParent =	addAction("Parent", 		mGo, 	KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, ActionEvent.ALT_MASK),	false);
+		aDetail =	addAction("Detail", 		mGo,	KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, ActionEvent.ALT_MASK),	false);
 		mGo.addSeparator();
 		aZoomAcross = addAction("ZoomAcross",	mGo, 	null,	false);
 		aRequest =  addAction("Request",		mGo, 	null,	false);
@@ -490,7 +489,7 @@ public final class APanel extends CPanel
 		AMenu aMenu = (AMenu)AEnv.getWindow(0);
 		m_WindowMenu = new WindowMenu(aMenu.getWindowManager(), m_window);
 		menuBar.add(m_WindowMenu);
-		aShowAllWindow = addAction("ShowAllWindow", null, KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_MASK),	false);
+		aShowAllWindow = addAction("ShowAllWindow", null, KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK),	false);
 
 		//								Help
 		JMenu mHelp = AEnv.getMenu("Help");
@@ -856,7 +855,7 @@ public final class APanel extends CPanel
 						//	Is this tab included?
 						if (includedMap.size() > 0)
 						{
-							GridController parent = (GridController)includedMap.get(new Integer(gTab.getAD_Tab_ID()));
+							GridController parent = (GridController)includedMap.get(Integer.valueOf(gTab.getAD_Tab_ID()));
 							if (parent != null)
 							{
 								// FR [ 1757088 ]
@@ -2042,10 +2041,10 @@ public final class APanel extends CPanel
 		if(okCancel != null && okCancel == JOptionPane.OK_OPTION)
 		{
 			log.fine("ok");
-			Object[] selectedValues = list.getSelectedValues();
-			for (int i = 0; i < selectedValues.length; i++)
+			List<Object> selectedValues = list.getSelectedValuesList();
+			for (int i = 0; i < selectedValues.size(); i++)
 			{
-				if (log.isLoggable(Level.FINE)) log.fine(selectedValues[i].toString());
+				if (log.isLoggable(Level.FINE)) log.fine(selectedValues.get(i).toString());
 			}
 			int[] indices = list.getSelectedIndices();
 			Arrays.sort(indices);
@@ -2333,7 +2332,7 @@ public final class APanel extends CPanel
 		{
 			if (queryColumn.endsWith("_ID"))
 				query.addRestriction(queryColumn, MQuery.EQUAL,
-					new Integer(Env.getContextAsInt(m_ctx, m_curWindowNo, queryColumn)),
+					Integer.valueOf(Env.getContextAsInt(m_ctx, m_curWindowNo, queryColumn)),
 					infoName, infoDisplay);
 			else
 				query.addRestriction(queryColumn, MQuery.EQUAL,
@@ -2366,7 +2365,7 @@ public final class APanel extends CPanel
 		{
 			if (link.endsWith("_ID"))
 				query.addRestriction(link, MQuery.EQUAL,
-					new Integer(Env.getContextAsInt(m_ctx, m_curWindowNo, link)));
+					Integer.valueOf(Env.getContextAsInt(m_ctx, m_curWindowNo, link)));
 			else
 				query.addRestriction(link, MQuery.EQUAL,
 					Env.getContext(m_ctx, m_curWindowNo, link));
@@ -2540,7 +2539,7 @@ public final class APanel extends CPanel
 		if (record_ID == -1)	//	No Key
 			return;
 		//	Control Pressed
-		if ((m_lastModifiers & InputEvent.CTRL_MASK) != 0)
+		if ((m_lastModifiers & ActionEvent.CTRL_MASK) != 0)
 		{
 			new RecordAccessDialog(AEnv.getFrame(this), m_curTab.getAD_Table_ID(), record_ID);
 		}
@@ -3072,26 +3071,26 @@ public final class APanel extends CPanel
 	 */
 	private void initSwitchLineAction() {
 		aSwitchLinesDownAction = new SwitchAction("switchLinesDown", KeyStroke.getKeyStroke(
-				KeyEvent.VK_DOWN, Event.SHIFT_MASK), this);
+				KeyEvent.VK_DOWN, ActionEvent.SHIFT_MASK), this);
 		aSwitchLinesUpAction = new SwitchAction("switchLinesUp", KeyStroke.getKeyStroke(
-				KeyEvent.VK_UP, Event.SHIFT_MASK), this);
+				KeyEvent.VK_UP, ActionEvent.SHIFT_MASK), this);
 
 		JTable table = m_curGC.getTable();
 		table.getInputMap(CPanel.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, Event.SHIFT_MASK), "none");
+				KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, ActionEvent.SHIFT_MASK), "none");
 		table.getInputMap(CPanel.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_UP, Event.SHIFT_MASK), "none");
+				KeyStroke.getKeyStroke(KeyEvent.VK_UP, ActionEvent.SHIFT_MASK), "none");
 		table.getInputMap(CPanel.WHEN_FOCUSED).put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, Event.SHIFT_MASK), "none");
+				KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, ActionEvent.SHIFT_MASK), "none");
 		table.getInputMap(CPanel.WHEN_FOCUSED).put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_UP, Event.SHIFT_MASK), "none");
+				KeyStroke.getKeyStroke(KeyEvent.VK_UP, ActionEvent.SHIFT_MASK), "none");
 
 		getInputMap(CPanel.WHEN_IN_FOCUSED_WINDOW).put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, Event.SHIFT_MASK),
+				KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, ActionEvent.SHIFT_MASK),
 				aSwitchLinesDownAction.getName());
 		getActionMap().put(aSwitchLinesDownAction.getName(), aSwitchLinesDownAction);
 		getInputMap(CPanel.WHEN_IN_FOCUSED_WINDOW).put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_UP, Event.SHIFT_MASK),
+				KeyStroke.getKeyStroke(KeyEvent.VK_UP, ActionEvent.SHIFT_MASK),
 				aSwitchLinesUpAction.getName());
 		getActionMap().put(aSwitchLinesUpAction.getName(), aSwitchLinesUpAction);
 	}

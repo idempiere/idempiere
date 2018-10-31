@@ -276,7 +276,7 @@ public class InvoiceHistory extends CDialog
 				//	0-Name, 1-PriceActual, 2-QtyInvoiced, 3-Discount, 4-DocumentNo, 5-DateInvoiced
 				line.add(rs.getString(1));      //  Name
 				line.add(rs.getBigDecimal(2));  //	Price
-				line.add(new Double(rs.getDouble(4)));      //  Qty
+				line.add(Double.valueOf(rs.getDouble(4)));      //  Qty
 				BigDecimal discountBD = rs.getBigDecimal(8);
 				if (discountBD == null) {
 					double priceList = rs.getDouble(3);
@@ -505,9 +505,9 @@ public class InvoiceHistory extends CDialog
 				Vector<Object> line = new Vector<Object>(6);
 				//	1-Name, 2-MovementQty, 3-MovementDate, 4-IsSOTrx, 5-DocumentNo
 				line.add(rs.getString(1));      		//  Name
-				line.add(new Double(rs.getDouble(2)));  //  Qty
+				line.add(Double.valueOf(rs.getDouble(2)));  //  Qty
 				line.add(rs.getTimestamp(3));   		//  Date
-				line.add(new Boolean("Y".equals(rs.getString(4))));	//  IsSOTrx
+				line.add(Boolean.valueOf("Y".equals(rs.getString(4))));	//  IsSOTrx
 				line.add(rs.getString(5));				//  DocNo
 				line.add(rs.getString(6));				//  Warehouse
 				data.add(line);
@@ -598,10 +598,10 @@ public class InvoiceHistory extends CDialog
 				line.add(null);							//  Date
 				double qtyOnHand = rs.getDouble(1);
 				qty += qtyOnHand;
-				line.add(new Double(qtyOnHand));  		//  Qty
+				line.add(Double.valueOf(qtyOnHand));  		//  Qty
 				line.add(null);							//  BPartner
-				line.add(new Double(rs.getDouble(3)));  //  QtyOrdered
-				line.add(new Double(rs.getDouble(2)));  //  QtyReserved
+				line.add(Double.valueOf(rs.getDouble(3)));  //  QtyOrdered
+				line.add(Double.valueOf(rs.getDouble(2)));  //  QtyReserved
 				line.add(rs.getString(7));      		//  Locator
 				String asi = rs.getString(4);
 				if (showDetail && (asi == null || asi.length() == 0))
@@ -657,15 +657,15 @@ public class InvoiceHistory extends CDialog
 				Double qtyOrdered = null;
 				if (MDocType.DOCBASETYPE_PurchaseOrder.equals(DocBaseType))
 				{
-					qtyOrdered = new Double(oq);
+					qtyOrdered = Double.valueOf(oq);
 					qty += oq;
 				}
 				else
 				{
-					qtyReserved = new Double(oq);
+					qtyReserved = Double.valueOf(oq);
 					qty -= oq;
 				}
-				line.add(new Double(qty)); 		 		//  Qty
+				line.add(Double.valueOf(qty)); 		 		//  Qty
 				line.add(rs.getString(6));				//  BPartner
 				line.add(qtyOrdered);					//  QtyOrdered
 				line.add(qtyReserved);					//  QtyReserved

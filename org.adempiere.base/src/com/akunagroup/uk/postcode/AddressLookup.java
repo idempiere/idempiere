@@ -252,7 +252,7 @@ public class AddressLookup implements AddressLookupInterface {
 						NodeList firstValueList = firstElement.getElementsByTagName("Value");
 						Element ValueElement = (Element) firstValueList.item(0);
 						if (log.isLoggable(Level.FINE)){log.log(Level.FINE, "Value: "  + ValueElement.getChildNodes().item(0).getNodeValue().replaceAll("\n","").trim() + " Node: " + i);}
-						resultCode = (int) new Integer(ValueElement.getChildNodes().item(0).getNodeValue().replaceAll("\n","").trim());
+						resultCode = (int) Integer.valueOf(ValueElement.getChildNodes().item(0).getNodeValue().replaceAll("\n","").trim());
 					}
 						
 			}

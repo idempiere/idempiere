@@ -17,7 +17,6 @@
 package org.compiere.apps.form;
 
 import java.awt.Cursor;
-import java.awt.Event;
 import java.awt.GraphicsConfiguration;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -148,11 +147,11 @@ public class FormFrame extends CFrame
 		JMenu mFile = AEnv.getMenu("File");
 		menuBar.add(mFile);
 		AEnv.addMenuItem("PrintScreen", null, KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN, 0), mFile, this);
-		AEnv.addMenuItem("ScreenShot", null, KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN, Event.SHIFT_MASK), mFile, this);
-		AEnv.addMenuItem("Report", null, KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.ALT_MASK), mFile, this);
+		AEnv.addMenuItem("ScreenShot", null, KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN, ActionEvent.SHIFT_MASK), mFile, this);
+		AEnv.addMenuItem("Report", null, KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.ALT_MASK), mFile, this);
 		mFile.addSeparator();
-		AEnv.addMenuItem("End", null, KeyStroke.getKeyStroke(KeyEvent.VK_X, Event.ALT_MASK), mFile, this);
-		AEnv.addMenuItem("Exit", null, KeyStroke.getKeyStroke(KeyEvent.VK_X, Event.SHIFT_MASK+Event.ALT_MASK), mFile, this);
+		AEnv.addMenuItem("End", null, KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.ALT_MASK), mFile, this);
+		AEnv.addMenuItem("Exit", null, KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.SHIFT_MASK+ActionEvent.ALT_MASK), mFile, this);
 
 		//      View
 		JMenu mView = AEnv.getMenu("View");
@@ -160,15 +159,15 @@ public class FormFrame extends CFrame
 
 		if (MRole.getDefault().isAllow_Info_Product())
 		{
-			AEnv.addMenuItem("InfoProduct", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.ALT_MASK), mView, this);
+			AEnv.addMenuItem("InfoProduct", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK), mView, this);
 		}
 		if (MRole.getDefault().isAllow_Info_BPartner())
 		{
-			AEnv.addMenuItem("InfoBPartner", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.ALT_MASK+Event.CTRL_MASK), mView, this);
+			AEnv.addMenuItem("InfoBPartner", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK+ActionEvent.CTRL_MASK), mView, this);
 		}
 		if (MRole.getDefault().isShowAcct() && MRole.getDefault().isAllow_Info_Account())
 		{
-			AEnv.addMenuItem("InfoAccount", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.ALT_MASK+Event.CTRL_MASK), mView, this);
+			AEnv.addMenuItem("InfoAccount", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK+ActionEvent.CTRL_MASK), mView, this);
 		}
 		if (MRole.getDefault().isAllow_Info_Schedule())
 		{

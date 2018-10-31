@@ -200,7 +200,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 			while(rs.next())
 			{
 				Vector<Object> line = new Vector<Object>(5);
-				line.add(new Boolean(false));       //  0-Selection
+				line.add(Boolean.FALSE);       //  0-Selection
 				line.add(rs.getTimestamp(3));       //  1-DateDeposit
 				KeyNamePair pp = new KeyNamePair(rs.getInt(1), rs.getString(2));
 				line.add(pp);                       //  2-C_DepositBatch  

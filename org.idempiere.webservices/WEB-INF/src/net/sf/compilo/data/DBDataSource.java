@@ -108,7 +108,7 @@ public class DBDataSource extends compiereDataSource
 				}
 				else if (clazz.equals(java.lang.Byte.class))
 				{
-					objValue = new Byte(m_resultSet.getByte(field.getName()));
+					objValue = Byte.valueOf(m_resultSet.getByte(field.getName()));
 					if(m_resultSet.wasNull())
 					{
 						objValue = null;
@@ -140,7 +140,7 @@ public class DBDataSource extends compiereDataSource
 				}
 				else if (clazz.equals(java.lang.Double.class))
 				{
-					objValue = new Double(m_resultSet.getDouble(field.getName()));
+					objValue = Double.valueOf(m_resultSet.getDouble(field.getName()));
 					if(m_resultSet.wasNull())
 					{
 						objValue = null;
@@ -148,7 +148,7 @@ public class DBDataSource extends compiereDataSource
 				}
 				else if (clazz.equals(java.lang.Float.class))
 				{
-					objValue = new Float(m_resultSet.getFloat(field.getName()));
+					objValue = Float.valueOf(m_resultSet.getFloat(field.getName()));
 					if(m_resultSet.wasNull())
 					{
 						objValue = null;
@@ -156,7 +156,7 @@ public class DBDataSource extends compiereDataSource
 				}
 				else if (clazz.equals(java.lang.Integer.class))
 				{
-					objValue = new Integer(m_resultSet.getInt(field.getName()));
+					objValue = Integer.valueOf(m_resultSet.getInt(field.getName()));
 					if(m_resultSet.wasNull())
 					{
 						objValue = null;
@@ -164,7 +164,7 @@ public class DBDataSource extends compiereDataSource
 				}
 				else if (clazz.equals(java.lang.Long.class))
 				{
-					objValue = new Long(m_resultSet.getLong(field.getName()));
+					objValue = Long.valueOf(m_resultSet.getLong(field.getName()));
 					if(m_resultSet.wasNull())
 					{
 						objValue = null;
@@ -172,7 +172,7 @@ public class DBDataSource extends compiereDataSource
 				}
 				else if (clazz.equals(java.lang.Short.class))
 				{
-					objValue = new Short(m_resultSet.getShort(field.getName()));
+					objValue = Short.valueOf(m_resultSet.getShort(field.getName()));
 					if(m_resultSet.wasNull())
 					{
 						objValue = null;

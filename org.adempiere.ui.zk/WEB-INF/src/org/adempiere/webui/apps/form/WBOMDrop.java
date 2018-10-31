@@ -573,7 +573,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		productPanel.appendChild(rightInden);
 
 		//	Add to List
-		m_productList.add (new Integer(M_Product_ID));
+		m_productList.add (Integer.valueOf(M_Product_ID));
 
 		// add product name
 		selectPanel = createDivPanel(200);

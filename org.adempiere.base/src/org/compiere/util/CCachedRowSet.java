@@ -188,6 +188,7 @@ public class CCachedRowSet extends CachedRowSetImpl implements CachedRowSet
 	 */
 	public static void main (String[] args)
 	{
+		CachedRowSetImpl rs = null;
 		try
 		{
 			Locale.setDefault(Locale.CANADA);
@@ -195,12 +196,18 @@ public class CCachedRowSet extends CachedRowSetImpl implements CachedRowSet
 			System.out.println("OK 1");
 			get();
 			System.out.println("OK 1a");
-			new CachedRowSetImpl();
+			rs = new CachedRowSetImpl();
 			System.out.println("OK 2");
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			if (rs != null)
+				try {
+					rs.close();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
 		}
 	}	//	main
 	

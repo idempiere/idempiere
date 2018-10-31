@@ -749,6 +749,5 @@ public class Trx
 				}
 			}, 2, TimeUnit.SECONDS);
 		}
-		super.finalize();
 	}
 }	//	Trx

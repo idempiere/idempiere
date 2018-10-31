@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.idempiere.ui.zk.selenium
 Bundle-Version: 5.1.0.qualifier
 Bundle-Activator: org.idempiere.ui.zk.selenium.fitnesse.Activator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Import-Package: fit,
  fit.decorator,
  fit.decorator.exceptions,
@@ -343,3 +343,4 @@ Import-Package: fit,
 Service-Component: OSGI-INF/fitfixturefactory.xml
 Bundle-ClassPath: .
 Automatic-Module-Name: org.idempiere.ui.zk.selenium
+Bundle-Vendor: iDempiere Community

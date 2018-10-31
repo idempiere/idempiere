@@ -148,8 +148,8 @@ public class AdempiereTestCase extends TestCase
 
 		//m_Ctx = new Properties();
 		m_Ctx = Env.getCtx();
-		m_Ctx.setProperty("#AD_User_ID", new Integer(AD_User_ID_Value).toString());
-		m_Ctx.setProperty("#AD_Client_ID", new Integer(AD_Client_ID_Value).toString());
+		m_Ctx.setProperty("#AD_User_ID", Integer.valueOf(AD_User_ID_Value).toString());
+		m_Ctx.setProperty("#AD_Client_ID", Integer.valueOf(AD_Client_ID_Value).toString());
 
 		if (fileName_Value.length() < 1) {
 			assertEquals("Please specify path to idempiere.properties file!", true, false);

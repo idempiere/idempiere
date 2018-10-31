@@ -591,15 +591,15 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 			}
 			else if (c == Boolean.class)
-		        value = new Boolean("Y".equals(rs.getString(colIndex)));
+		        value = Boolean.valueOf("Y".equals(rs.getString(colIndex)));
 			else if (c == Timestamp.class)
 		        value = rs.getTimestamp(colIndex);
 			else if (c == BigDecimal.class)
 		        value = rs.getBigDecimal(colIndex);
 			else if (c == Double.class)
-		        value = new Double(rs.getDouble(colIndex));
+		        value = Double.valueOf(rs.getDouble(colIndex));
 			else if (c == Integer.class)
-		        value = new Integer(rs.getInt(colIndex));
+		        value = Integer.valueOf(rs.getInt(colIndex));
 			else if (c == KeyNamePair.class)
 			{				
 				if (p_layout[col].isKeyPairCol())

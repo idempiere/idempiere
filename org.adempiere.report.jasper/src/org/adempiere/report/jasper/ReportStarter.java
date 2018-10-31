@@ -560,16 +560,16 @@ public class ReportStarter implements ProcessCall, ClientProcess
             }
 
             if (Record_ID > 0)
-            	params.put("RECORD_ID", new Integer( Record_ID));
+            	params.put("RECORD_ID", Integer.valueOf( Record_ID));
 
         	// contribution from Ricardo (ralexsander)
             // in iReports you can 'SELECT' AD_Client_ID, AD_Org_ID and AD_User_ID using only AD_PINSTANCE_ID
-            params.put("AD_PINSTANCE_ID", new Integer( AD_PInstance_ID));
+            params.put("AD_PINSTANCE_ID", Integer.valueOf( AD_PInstance_ID));
 
             // FR [3123850] - Add continuosly needed parameters to Jasper Starter - Carlos Ruiz - GlobalQSS
-        	params.put("AD_CLIENT_ID", new Integer( Env.getAD_Client_ID(Env.getCtx())));
-        	params.put("AD_ROLE_ID", new Integer( Env.getAD_Role_ID(Env.getCtx())));
-        	params.put("AD_USER_ID", new Integer( Env.getAD_User_ID(Env.getCtx())));
+        	params.put("AD_CLIENT_ID", Integer.valueOf( Env.getAD_Client_ID(Env.getCtx())));
+        	params.put("AD_ROLE_ID", Integer.valueOf( Env.getAD_Role_ID(Env.getCtx())));
+        	params.put("AD_USER_ID", Integer.valueOf( Env.getAD_User_ID(Env.getCtx())));
 
         	params.put("AD_CLIENT_NAME", Env.getContext(Env.getCtx(), "#AD_Client_Name"));
         	params.put("AD_ROLE_NAME", Env.getContext(Env.getCtx(), "#AD_Role_Name"));

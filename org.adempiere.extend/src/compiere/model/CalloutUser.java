@@ -112,7 +112,7 @@ public class CalloutUser extends CalloutEngine
 				if (locID == 0)
 					mTab.setValue("C_BPartner_Location_ID", null);
 				else
-					mTab.setValue("C_BPartner_Location_ID", new Integer(locID));
+					mTab.setValue("C_BPartner_Location_ID", Integer.valueOf(locID));
 
 				//	Contact - overwritten by InfoBP selection
 				int contID = rs.getInt("AD_User_ID");
@@ -125,7 +125,7 @@ public class CalloutUser extends CalloutEngine
 				if (contID == 0)
 					mTab.setValue("AD_User_ID", null);
 				else
-					mTab.setValue("AD_User_ID", new Integer(contID));
+					mTab.setValue("AD_User_ID", Integer.valueOf(contID));
 			}
 		}
 		catch (SQLException e)

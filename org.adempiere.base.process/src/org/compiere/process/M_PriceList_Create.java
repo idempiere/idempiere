@@ -20,6 +20,7 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -544,7 +545,7 @@ public class M_PriceList_Create extends SvrProcess {
 							}
 							if (conversion != null)
 							{
-								price = price.divide(conversion.getDivideRate(), precision, BigDecimal.ROUND_HALF_DOWN);
+								price = price.divide(conversion.getDivideRate(), precision, RoundingMode.HALF_DOWN);
 								StringBuilder sqlupdate = new StringBuilder();
 								sqlupdate.append("UPDATE M_ProductPrice SET PriceList=").append(price).append(" WHERE M_PriceList_Version_ID=").append(p_PriceList_Version_ID)
 									.append(" AND M_Product_ID= ").append(product_id);

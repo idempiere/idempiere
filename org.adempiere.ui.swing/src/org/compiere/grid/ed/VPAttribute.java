@@ -204,7 +204,7 @@ public class VPAttribute extends JComponent
 	private int					m_AD_Column_ID = 0;
 	private GridField m_mField;
 	/**	No Instance Key					*/
-	private static Integer		NO_INSTANCE = new Integer(0);
+	private static Integer		NO_INSTANCE = Integer.valueOf(0);
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(VPAttribute.class);
 		
@@ -452,7 +452,7 @@ public class VPAttribute extends JComponent
 			if (M_AttributeSetInstance_ID == 0)
 				setValue(null);
 			else
-				setValue(new Integer(M_AttributeSetInstance_ID));
+				setValue(Integer.valueOf(M_AttributeSetInstance_ID));
 			// Change Locator
 			if (m_GridTab != null && M_Locator_ID > 0)
 			{

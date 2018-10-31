@@ -282,7 +282,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
         //  Set Defaults
         String bp = Env.getContext(Env.getCtx(), p_WindowNo, "C_BPartner_ID");
         if (bp != null && bp.length() != 0)
-            editorBPartner.setValue(new Integer(bp));
+            editorBPartner.setValue(Integer.valueOf(bp));
 
         //  prepare table
         StringBuilder where = new StringBuilder("o.IsActive='Y'");

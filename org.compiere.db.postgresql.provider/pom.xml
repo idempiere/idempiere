@@ -31,12 +31,12 @@
 								<artifactItem>
 									<groupId>com.mchange</groupId>
 									<artifactId>mchange-commons-java</artifactId>
-									<version>0.2.12</version>
+									<version>0.2.15</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.postgresql</groupId>
 									<artifactId>postgresql</artifactId>
-									<version>42.1.4</version>
+									<version>42.2.5</version>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>

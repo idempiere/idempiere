@@ -216,7 +216,7 @@ public abstract class AbstractDocumentSearch {
 					rsSO = pstmtSO.executeQuery();
 					Vector<Integer> idSO = new Vector<Integer>();
 					while (rsSO.next()) {
-						idSO.add(new Integer(rsSO.getInt(1)));
+						idSO.add(Integer.valueOf(rsSO.getInt(1)));
 					}
 					if (role.getWindowAccess(msd.getAD_Window_ID()) != null) {
 						msglog = new StringBuilder("Open Window: ").append(msd.getAD_Window_ID()).append(" / Table: ")
@@ -225,7 +225,7 @@ public abstract class AbstractDocumentSearch {
 
 						if (idSO.size() == 0 && (searchString == null || searchString.trim().length() == 0)) {
 							// No search string - open the window with new record
-							idSO.add(new Integer(0));
+							idSO.add(Integer.valueOf(0));
 						}
 
 						openWindow(idSO, table.getTableName(), msd.getAD_Window_ID());
@@ -239,7 +239,7 @@ public abstract class AbstractDocumentSearch {
 					rsPO = pstmtPO.executeQuery();
 					Vector<Integer> idPO = new Vector<Integer>();
 					while (rsPO.next()) {
-						idPO.add(new Integer(rsPO.getInt(1)));
+						idPO.add(Integer.valueOf(rsPO.getInt(1)));
 					}
 					if (role.getWindowAccess(msd.getPO_Window_ID()) != null) {
 						msglog = new StringBuilder("Open Window: ").append(msd.getPO_Window_ID()).append(" / Table: ")

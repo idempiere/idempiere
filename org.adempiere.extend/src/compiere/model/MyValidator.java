@@ -168,7 +168,7 @@ public class MyValidator implements ModelValidator
 		//	Calculate Discount
 		BigDecimal discountPercent = new BigDecimal(3);	//	3% example
 		BigDecimal discountAmt = totalLines.multiply(discountPercent);
-		discountAmt = discountAmt.divide(Env.ONEHUNDRED, order.getPrecision(), BigDecimal.ROUND_HALF_UP);
+		discountAmt = discountAmt.divide(Env.ONEHUNDRED, order.getPrecision(), RoundingMode.HALF_UP);
 		discountLine.setPrice(discountAmt.negate());
 		if (!discountLine.save())
 			return "Could not save discount line";

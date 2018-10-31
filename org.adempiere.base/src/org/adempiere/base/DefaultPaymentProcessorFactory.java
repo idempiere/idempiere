@@ -45,7 +45,7 @@ public class DefaultPaymentProcessorFactory implements IPaymentProcessorFactory 
 			try {
 				Class<?> ppClass = Class.forName(className);
 				if (ppClass != null)
-					myProcessor = (PaymentProcessor)ppClass.newInstance();
+					myProcessor = (PaymentProcessor)ppClass.getDeclaredConstructor().newInstance();
 			} catch (Error e1) {   //  NoClassDefFound
 				s_log.log(Level.SEVERE, className + " - Error=" + e1.getMessage());
 				return null;

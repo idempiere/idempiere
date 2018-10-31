@@ -404,7 +404,7 @@ public abstract class PaymentFormCash extends PaymentForm {
 			if (m_mPayment.getC_Payment_ID() == 0)
 				getGridTab().setValue("C_Payment_ID", null);
 			else
-				getGridTab().setValue("C_Payment_ID", new Integer(m_mPayment.getC_Payment_ID()));
+				getGridTab().setValue("C_Payment_ID", Integer.valueOf(m_mPayment.getC_Payment_ID()));
 		}
 		//	Set Cash
 		if (newC_CashLine_ID != m_C_CashLine_ID)
@@ -412,7 +412,7 @@ public abstract class PaymentFormCash extends PaymentForm {
 			if (newC_CashLine_ID == 0)
 				getGridTab().setValue("C_CashLine_ID", null);
 			else
-				getGridTab().setValue("C_CashLine_ID", new Integer(newC_CashLine_ID));
+				getGridTab().setValue("C_CashLine_ID", Integer.valueOf(newC_CashLine_ID));
 		}
 		return true;
 	}

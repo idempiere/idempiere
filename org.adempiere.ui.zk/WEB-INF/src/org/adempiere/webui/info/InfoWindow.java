@@ -337,7 +337,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    			}
    			
    			// save process_id, handle event will use
-   			btProcess.setAttribute(PROCESS_ID_KEY, new Integer(infoProcess.getAD_Process_ID()));
+   			btProcess.setAttribute(PROCESS_ID_KEY, Integer.valueOf(infoProcess.getAD_Process_ID()));
    			btProcess.addEventListener(Events.ON_CLICK, this);
    			// save info process to use in handle event
    			btProcess.setAttribute(ATT_INFO_PROCESS_KEY, process);

@@ -147,7 +147,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		{
 			//	Sort Order and Column must be > 0
 			if (m_items[i].getSortNo() != 0 && m_items[i].getAD_Column_ID() != 0)
-				map.put(new Integer(m_items[i].getSortNo()), new Integer(m_items[i].getAD_Column_ID()));
+				map.put(Integer.valueOf(m_items[i].getSortNo()), Integer.valueOf(m_items[i].getAD_Column_ID()));
 		}
 		//	Get SortNo and Sort them
 		Integer[] keys = new Integer[map.keySet().size()];
@@ -174,7 +174,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		for (int i = 0; i < m_items.length; i++)
 		{
 			if (m_items[i].getAD_Column_ID() != 0 && m_items[i].isPrinted())
-				list.add(new Integer(m_items[i].getAD_Column_ID()));
+				list.add(Integer.valueOf(m_items[i].getAD_Column_ID()));
 		}
 		//	Convert
 		int[] retValue = new int[list.size()];
@@ -1087,7 +1087,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	 */
 	static public MPrintFormat get (Properties ctx, int AD_PrintFormat_ID, boolean readFromDisk)
 	{
-		Integer key = new Integer(AD_PrintFormat_ID);
+		Integer key = Integer.valueOf(AD_PrintFormat_ID);
 		MPrintFormat pf = null;
 		if (!readFromDisk)
 			pf = (MPrintFormat)s_formats.get(key);
@@ -1154,7 +1154,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	 */
 	static public void deleteFromCache (int AD_PrintFormat_ID)
 	{
-		Integer key = new Integer(AD_PrintFormat_ID);
+		Integer key = Integer.valueOf(AD_PrintFormat_ID);
 		s_formats.put(key, null);
 	}	//	deleteFromCache
 
@@ -1197,9 +1197,9 @@ public class MPrintFormat extends X_AD_PrintFormat
 		// add sql parameter
 		List<Object> lsParameter = new ArrayList<Object>();
 
-		lsParameter.add(new Integer(AD_Table_ID));
+		lsParameter.add(Integer.valueOf(AD_Table_ID));
 		if (AD_Window_ID > 0)
-			lsParameter.add(new Integer(AD_Window_ID));		
+			lsParameter.add(Integer.valueOf(AD_Window_ID));		
 		
 		// init query
 		Query query = new Query(Env.getCtx(), MPrintFormat.Table_Name, sqlWhere, trxName);

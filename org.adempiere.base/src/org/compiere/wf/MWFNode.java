@@ -18,6 +18,7 @@ package org.compiere.wf;
 
 import java.awt.Point;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -142,7 +143,7 @@ public class MWFNode extends X_AD_WF_Node
 		//	Save to Cache
 		String key = null;
 		try {
-			Integer wfnodeid = new Integer (rs.getInt("AD_WF_Node_ID"));
+			Integer wfnodeid = Integer.valueOf(rs.getInt("AD_WF_Node_ID"));
 			if (wfnodeid != null && wfnodeid.intValue() > 0)
 				key = Env.getAD_Language(ctx) + "_" + wfnodeid;
 		} catch (SQLException e) {
@@ -496,7 +497,7 @@ public class MWFNode extends X_AD_WF_Node
 			return 0;
 		//
 		BigDecimal change = new BigDecimal (seconds)
-			.divide(divide, BigDecimal.ROUND_DOWN)
+			.divide(divide, RoundingMode.DOWN)
 			.multiply(getDynPriorityChange());
 		return change.intValue();
 	}	//	calculateDynamicPriority

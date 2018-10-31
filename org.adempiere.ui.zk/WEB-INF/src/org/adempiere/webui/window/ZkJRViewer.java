@@ -53,11 +53,12 @@ import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperReportsContext;
+import net.sf.jasperreports.engine.SimpleJasperReportsContext;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
-import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
 import net.sf.jasperreports.export.SimpleCsvExporterConfiguration;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
@@ -454,8 +455,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 		}
 		File file = new File(FileUtil.getTempMailName(prefix, ".pdf"));
-		LocalJasperReportsContext context = new LocalJasperReportsContext(DefaultJasperReportsContext.getInstance());
-		context.setClassLoader(JRPdfExporter.class.getClassLoader());
+		JasperReportsContext context = new SimpleJasperReportsContext(DefaultJasperReportsContext.getInstance());
 		JRPdfExporter exporter = new JRPdfExporter(context);
 		if (!isList){
 			jasperPrintList = new ArrayList<>();

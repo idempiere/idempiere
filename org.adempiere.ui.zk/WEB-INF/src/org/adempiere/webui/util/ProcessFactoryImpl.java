@@ -36,7 +36,7 @@ public class ProcessFactoryImpl implements IProcessFactory {
 		ProcessCall process = null;
 		try {
 			Class<?> clazz = getClass().getClassLoader().loadClass(className);
-			process =  (ProcessCall) clazz.newInstance();
+			process =  (ProcessCall) clazz.getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
 		}
 		return process;
