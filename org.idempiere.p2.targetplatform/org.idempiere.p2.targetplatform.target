@@ -46,7 +46,7 @@
 <unit id="org.restlet.ext.xml.feature.group" version="2.3.2.v20150501-1520"/>
 <unit id="org.restlet.ext.xstream.feature.group" version="2.3.2.v20150501-1520"/>
 <unit id="org.restlet.feature.group" version="2.3.2.v20150501-1520"/>
-<repository location="http://localhost:8081/artifactory/restlet"/>
+<repository location="http://p2.restlet.com/2.3"/>
 </location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.9.0.v20180823-1503"/>
@@ -61,7 +61,7 @@
 		<unit id="org.eclipse.sdk.tests.feature.group" version="4.9.0.v20180906-0745"/>
 		<unit id="org.eclipse.swt.tools.feature.feature.group" version="3.107.100.v20180821-0933"/>
 		<unit id="org.eclipse.test.feature.group" version="3.7.400.v20180822-0818"/>
-		<repository location="http://localhost:8081/artifactory/eclipse-root/4.9"/>
+		<repository location="http://download.eclipse.org/eclipse/updates/4.9"/>
 		<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.5.1.v20180810-0833"/>
 		<unit id="org.eclipse.ecf.core.ssl.feature.feature.group" version="1.1.100.v20180301-0201"/>
 		<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="3.14.2.v20180801-2237"/>
@@ -744,7 +744,7 @@
 		<unit id="osgi.enterprise.source" version="4.2.0.v201108120515"/>
 		<unit id="scannotation" version="1.0.2.v201205170710"/>
 		<unit id="scannotation.source" version="1.0.2.v201205170710"/>
-		<repository location="http://localhost:8081/artifactory/orbit-root/drops/R20180905201904/repository"/>
+		<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20180905201904/repository"/>
 		<unit id="org.objectweb.asm" version="6.2.1.v20180823-1831"/>
 		<unit id="org.objectweb.asm.analysis" version="6.2.1.v20180823-1831"/>
 		<unit id="org.objectweb.asm.analysis.source" version="6.2.1.v20180823-1831"/>
@@ -761,7 +761,7 @@
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="org.eclipse.jetty.bundles.f.feature.group" version="9.4.12.v20180830"/>
 		<unit id="org.eclipse.jetty.bundles.f.source.feature.group" version="9.4.12.v20180830"/>
-		<repository location="http://localhost:8081/artifactory/jetty-9.4.12.v20180830"/>
+		<repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.12.v20180830"/>
 	</location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.9.5"/>
@@ -855,7 +855,7 @@
 		<unit id="zul.sources" version="8.5.0"/>
 		<unit id="zweb" version="8.5.0"/>
 		<unit id="zweb.sources" version="8.5.0"/>
-		<repository location="file:/home/hieplq/1Dev/project/native/idempiere-dev-11/org.idempiere.maven.to.p2/org.idempiere.maven.to.p2/target/repository/"/>
+		<repository location="https://sourceforge.net/projects/idempiere/files/binary.file/jarfile/maven-p2-R20181031"/>
 		<unit id="bcmail" version="1.60.0"/>
 		<unit id="bcmail.source" version="1.60.0"/>
 		<unit id="bcpkix" version="1.60.0"/>
