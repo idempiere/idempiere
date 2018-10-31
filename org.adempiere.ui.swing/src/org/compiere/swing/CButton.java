@@ -26,7 +26,7 @@
 package org.compiere.swing;
 
 import java.awt.Color;
-import java.awt.event.InputEvent;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.Action;
@@ -331,7 +331,7 @@ public class CButton extends JButton implements CEditor {
 					JComponent.WHEN_IN_FOCUSED_WINDOW, map);
 		}
 		map.clear();
-		int mask = InputEvent.ALT_MASK + InputEvent.CTRL_MASK; // Default
+		int mask = ActionEvent.ALT_MASK + ActionEvent.CTRL_MASK; // Default
 																// Buttons
 		map.put(KeyStroke.getKeyStroke(mnemonic, mask, false), "pressed");
 		map.put(KeyStroke.getKeyStroke(mnemonic, mask, true), "released");

@@ -66,7 +66,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 */
 	public static MInventory get (Properties ctx, int M_Inventory_ID)
 	{
-		Integer key = new Integer (M_Inventory_ID);
+		Integer key = Integer.valueOf(M_Inventory_ID);
 		MInventory retValue = (MInventory) s_cache.get (key);
 		if (retValue != null)
 			return retValue;

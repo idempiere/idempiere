@@ -17,6 +17,7 @@
 package org.compiere.acct;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -318,7 +319,7 @@ public class Doc_Production extends Doc
 										costMap.put(line0.get_ID()+ "_"+ ma.getM_AttributeSetInstance_ID(),maCost);
 										costs0 = costs0.add(maCost);
 									}						
-									bomCost = bomCost.add(costs0.setScale(2,BigDecimal.ROUND_HALF_UP));
+									bomCost = bomCost.add(costs0.setScale(2,RoundingMode.HALF_UP));
 								} 
 								else
 									p_Error = "Failed to post - No Attribute Set for line";
@@ -339,7 +340,7 @@ public class Doc_Production extends Doc
 									costs0 = line0.getProductCosts(as, line0.getAD_Org_ID(), false);
 								}
 								costMap.put(line0.get_ID()+ "_"+ line0.getM_AttributeSetInstance_ID(),costs0);
-								bomCost = bomCost.add(costs0.setScale(2,BigDecimal.ROUND_HALF_UP));	
+								bomCost = bomCost.add(costs0.setScale(2,RoundingMode.HALF_UP));	
 							}
 							
 						}  
@@ -358,7 +359,7 @@ public class Doc_Production extends Doc
 								costs0 = line0.getProductCosts(as, line0.getAD_Org_ID(), false);
 							}
 							costMap.put(line0.get_ID()+ "_"+ line0.getM_AttributeSetInstance_ID(),costs0);
-							bomCost = bomCost.add(costs0.setScale(2,BigDecimal.ROUND_HALF_UP));
+							bomCost = bomCost.add(costs0.setScale(2,RoundingMode.HALF_UP));
 						}
 					}
 				}
@@ -366,8 +367,8 @@ public class Doc_Production extends Doc
 				qtyProduced = manipulateQtyProduced (mQtyProduced, endProLine, prod.isUseProductionPlan(), null);
 				if (line.getQty().compareTo(qtyProduced) != 0) 
 				{
-					BigDecimal factor = line.getQty().divide(qtyProduced, 12, BigDecimal.ROUND_HALF_UP);
-					bomCost = bomCost.multiply(factor).setScale(2,BigDecimal.ROUND_HALF_UP);
+					BigDecimal factor = line.getQty().divide(qtyProduced, 12, RoundingMode.HALF_UP);
+					bomCost = bomCost.multiply(factor).setScale(2,RoundingMode.HALF_UP);
 				}
 				
 				if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
@@ -386,7 +387,7 @@ public class Doc_Production extends Doc
 				else
 				{
 					int precision = as.getStdPrecision();
-					BigDecimal variance = (costs.setScale(precision, BigDecimal.ROUND_HALF_UP)).subtract(bomCost.negate());
+					BigDecimal variance = (costs.setScale(precision, RoundingMode.HALF_UP)).subtract(bomCost.negate());
 					// only post variance if it's not zero 
 					if (variance.signum() != 0) 
 					{

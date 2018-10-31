@@ -429,7 +429,7 @@ public final class Msg
 		{
 			className += language.getLanguageCode().toUpperCase();
 			Class<?> clazz = Class.forName(className);
-			AmtInWords aiw = (AmtInWords)clazz.newInstance();
+			AmtInWords aiw = (AmtInWords)clazz.getDeclaredConstructor().newInstance();
 			return aiw.getAmtInWords(amount);
 		}
 		catch (ClassNotFoundException e)

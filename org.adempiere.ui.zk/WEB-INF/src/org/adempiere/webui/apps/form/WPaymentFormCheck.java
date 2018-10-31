@@ -160,7 +160,7 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		}
 		
 		//	Is the currency an EMU currency?
-		Integer C_Currency_ID = new Integer(m_C_Currency_ID);
+		Integer C_Currency_ID = Integer.valueOf(m_C_Currency_ID);
 		if (s_Currencies.containsKey(C_Currency_ID))
 		{
 			Enumeration<Integer> en = s_Currencies.keys();

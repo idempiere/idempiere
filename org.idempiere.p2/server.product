@@ -9,7 +9,7 @@
    <launcherArgs>
       <programArgs>-console
       </programArgs>
-      <vmArgs>-Declipse.product=org.adempiere.server.product -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -Dorg.osgi.framework.bootdelegation=sun.security.ssl,org.w3c.dom.events -Dosgi.compatibility.bootdelegation=true -Djetty.home=jettyhome -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-deployer.xml,etc/jetty-ssl.xml,etc/jetty-ssl-context.xml,etc/jetty-http.xml,etc/jetty-alpn.xml,etc/jetty-http2.xml,etc/jetty-https.xml -Dmail.mime.encodefilename=true -Dmail.mime.decodefilename=true -Dmail.mime.encodeparameters=true -Dmail.mime.decodeparameters=true -Dhazelcast.config=hazelcast.xml -Dorg.zkoss.zk.config.path=file://${workspace_loc}/zk.xml
+      <vmArgs>--add-exports java.desktop/sun.awt=ALL-UNNAMED --add-exports java.sql.rowset/com.sun.rowset=ALL-UNNAMED --add-exports java.naming/com.sun.jndi.ldap=ALL-UNNAMED -Declipse.product=org.adempiere.server.product -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -Dorg.osgi.framework.bootdelegation=sun.security.ssl,org.w3c.dom.events -Dosgi.compatibility.bootdelegation=true -Djetty.home=jettyhome -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-deployer.xml,etc/jetty-ssl.xml,etc/jetty-ssl-context.xml,etc/jetty-http.xml,etc/jetty-alpn.xml,etc/jetty-http2.xml,etc/jetty-https.xml -Dmail.mime.encodefilename=true -Dmail.mime.decodefilename=true -Dmail.mime.encodeparameters=true -Dmail.mime.decodeparameters=true -Dhazelcast.config=hazelcast.xml -Dorg.zkoss.zk.config.path=file://${workspace_loc}/zk.xml
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
@@ -24,7 +24,7 @@
    </launcher>
 
    <vm>
-      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</linux>
+      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-10</linux>
    </vm>
 
    <plugins>

@@ -22,7 +22,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Event;
 import java.awt.GraphicsConfiguration;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -339,7 +338,7 @@ public class Viewer extends CFrame
 		summary.addActionListener(this);
 		//	Max Page
 		m_pageMax = m_viewPanel.getPageCount();
-		spinnerModel.setMaximum(new Integer(m_pageMax));
+		spinnerModel.setMaximum(Integer.valueOf(m_pageMax));
 		spinner.addChangeListener(this);
 
 		fillComboReport(m_reportEngine.getPrintFormat().get_ID());
@@ -490,7 +489,7 @@ public class Viewer extends CFrame
 	public void revalidate()
 	{
 		m_pageMax = m_viewPanel.getPageCount();
-		spinnerModel.setMaximum(new Integer(m_pageMax));
+		spinnerModel.setMaximum(Integer.valueOf(m_pageMax));
 
 		//	scroll area (page size dependent)
 		centerScrollPane.setPreferredSize(new Dimension
@@ -522,21 +521,21 @@ public class Viewer extends CFrame
 		JMenu mFile = AEnv.getMenu("File");
 		menuBar.add(mFile);
 		AEnv.addMenuItem("PrintScreen", null, KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN, 0), mFile, this);
-		AEnv.addMenuItem("ScreenShot", null, KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN, Event.SHIFT_MASK), mFile, this);
-		AEnv.addMenuItem("Report", null, KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.ALT_MASK), mFile, this);
+		AEnv.addMenuItem("ScreenShot", null, KeyStroke.getKeyStroke(KeyEvent.VK_PRINTSCREEN, ActionEvent.SHIFT_MASK), mFile, this);
+		AEnv.addMenuItem("Report", null, KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.ALT_MASK), mFile, this);
 		mFile.addSeparator();
 		AEnv.addMenuItem("PrintCustomize", "Preference", null, mFile, this);
 		AEnv.addMenuItem("Translate", null, null, mFile, this);
-		AEnv.addMenuItem("Find", null, KeyStroke.getKeyStroke(KeyEvent.VK_F, Event.CTRL_MASK), mFile, this);
+		AEnv.addMenuItem("Find", null, KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK), mFile, this);
 		mFile.addSeparator();
 		AEnv.addMenuItem("PageSetup", null, null, mFile, this);
-		AEnv.addMenuItem("Print", null, KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.CTRL_MASK), mFile, this);
+		AEnv.addMenuItem("Print", null, KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK), mFile, this);
 		if (m_isCanExport)
 			AEnv.addMenuItem("Export", null, null, mFile, this);
 		mFile.addSeparator();
-		AEnv.addMenuItem("End", null, KeyStroke.getKeyStroke(KeyEvent.VK_X, Event.ALT_MASK), mFile, this);
-		AEnv.addMenuItem("Logout", null, KeyStroke.getKeyStroke(KeyEvent.VK_L, Event.SHIFT_MASK+Event.ALT_MASK), mFile, this);
-		AEnv.addMenuItem("Exit", null, KeyStroke.getKeyStroke(KeyEvent.VK_X, Event.SHIFT_MASK+Event.ALT_MASK), mFile, this);
+		AEnv.addMenuItem("End", null, KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.ALT_MASK), mFile, this);
+		AEnv.addMenuItem("Logout", null, KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.SHIFT_MASK+ActionEvent.ALT_MASK), mFile, this);
+		AEnv.addMenuItem("Exit", null, KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.SHIFT_MASK+ActionEvent.ALT_MASK), mFile, this);
 
 		//      View
 		JMenu mView = AEnv.getMenu("View");
@@ -544,15 +543,15 @@ public class Viewer extends CFrame
 
 		if (MRole.getDefault().isAllow_Info_Product())
 		{
-			AEnv.addMenuItem("InfoProduct", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.ALT_MASK), mView, this);			
+			AEnv.addMenuItem("InfoProduct", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK), mView, this);			
 		}
 		if (MRole.getDefault().isAllow_Info_BPartner())
 		{
-			AEnv.addMenuItem("InfoBPartner", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.ALT_MASK+Event.CTRL_MASK), mView, this);
+			AEnv.addMenuItem("InfoBPartner", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK+ActionEvent.CTRL_MASK), mView, this);
 		}
 		if (MRole.getDefault().isShowAcct() && MRole.getDefault().isAllow_Info_Account())
 		{
-			AEnv.addMenuItem("InfoAccount", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.ALT_MASK+Event.CTRL_MASK), mView, this);
+			AEnv.addMenuItem("InfoAccount", null, KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK+ActionEvent.CTRL_MASK), mView, this);
 		}
 		if (MRole.getDefault().isAllow_Info_Schedule())
 		{
@@ -601,10 +600,10 @@ public class Viewer extends CFrame
 		//		Go
 		JMenu mGo = AEnv.getMenu("Go");
 		menuBar.add(mGo);
-		AEnv.addMenuItem("First", "First", KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, Event.ALT_MASK),	mGo, this);
-		AEnv.addMenuItem("PreviousPage", "Previous", KeyStroke.getKeyStroke(KeyEvent.VK_UP, Event.ALT_MASK), mGo, this);
-		AEnv.addMenuItem("NextPage", "Next", KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, Event.ALT_MASK), mGo, this);
-		AEnv.addMenuItem("Last", "Last", KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, Event.ALT_MASK), mGo, this);
+		AEnv.addMenuItem("First", "First", KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, ActionEvent.ALT_MASK),	mGo, this);
+		AEnv.addMenuItem("PreviousPage", "Previous", KeyStroke.getKeyStroke(KeyEvent.VK_UP, ActionEvent.ALT_MASK), mGo, this);
+		AEnv.addMenuItem("NextPage", "Next", KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, ActionEvent.ALT_MASK), mGo, this);
+		AEnv.addMenuItem("Last", "Last", KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, ActionEvent.ALT_MASK), mGo, this);
 
 		//      Tools
 		JMenu mTools = AEnv.getMenu("Tools");
@@ -791,7 +790,7 @@ public class Viewer extends CFrame
 	//	System.out.println("scrollTo " + pageRectangle);
 
 		//	Set Page
-		spinnerModel.setValue(new Integer(m_pageNo));
+		spinnerModel.setValue(Integer.valueOf(m_pageNo));
 		StringBuffer sb = new StringBuffer (Msg.getMsg(m_ctx, "Page"))
 			.append(" ").append(m_pageNo)
 			.append(m_viewPanel.getPageInfo(m_pageNo))
@@ -1359,7 +1358,7 @@ public class Viewer extends CFrame
 		Login.initTest(true);
 
 		MQuery q = new MQuery("C_Invoice");
-		q.addRestriction("C_Invoice_ID", MQuery.EQUAL, new Integer(103));
+		q.addRestriction("C_Invoice_ID", MQuery.EQUAL, Integer.valueOf(103));
 
 		//	102 = Invoice - 100 = Order
 		PrintInfo i = new PrintInfo("test", X_C_Invoice.Table_ID, 102, 0);

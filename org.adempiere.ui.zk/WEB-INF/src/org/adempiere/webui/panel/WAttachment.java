@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -416,7 +417,7 @@ public class WAttachment extends Window implements EventListener<Event>
 				size = size.divide(new BigDecimal("1024"));
 				unit = " MB";
 			}
-			size = size.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+			size = size.setScale(2, RoundingMode.HALF_EVEN);
 			sizeLabel.setText(size.toPlainString() + unit);
 
 			bSave.setEnabled(true);

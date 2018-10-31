@@ -94,7 +94,7 @@ public class MPrivateAccess extends X_AD_Private_Access
 			pstmt.setInt(2, AD_User_ID);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
-				list.add(new Integer(rs.getInt(1))); 
+				list.add(Integer.valueOf(rs.getInt(1))); 
 			rs.close();
 			pstmt.close();
 			pstmt = null;

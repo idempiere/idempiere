@@ -134,7 +134,7 @@ public class WindowMenu extends JMenu {
             }
         });
         setEnvText(expose, "ShowAllWindow");
-        expose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_MASK));
+        expose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
         setEnvText(closeOthers, "CloseOtherWindows");
         addMenuListener(new MenuListener() {
             public void menuCanceled (MenuEvent e) {}

@@ -40,7 +40,7 @@ public class AdempiereComboPopup extends BasicComboPopup
 	 *  Constructor
 	 *  @param combo
 	 */
-	public AdempiereComboPopup(JComboBox<?> combo)
+	public AdempiereComboPopup(JComboBox<Object> combo)
 	{
 		super(combo);
 	}   //  AdempiereComboPopup

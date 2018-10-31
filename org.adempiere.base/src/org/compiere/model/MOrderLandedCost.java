@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -146,7 +147,7 @@ public class MOrderLandedCost extends X_C_OrderLandedCost {
 				if (base.signum() != 0)
 				{
 					BigDecimal result = getAmt().multiply(base);
-					result = result.divide(total, orderLine.getParent().getC_Currency().getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
+					result = result.divide(total, orderLine.getParent().getC_Currency().getCostingPrecision(), RoundingMode.HALF_UP);
 					allocation.setAmt(result.doubleValue(), orderLine.getParent().getC_Currency().getCostingPrecision());
 				}
 				allocation.saveEx();	

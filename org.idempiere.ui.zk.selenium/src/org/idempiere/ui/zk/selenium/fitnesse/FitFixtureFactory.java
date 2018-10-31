@@ -13,6 +13,8 @@
  *****************************************************************************/
 package org.idempiere.ui.zk.selenium.fitnesse;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.idempiere.fitnesse.server.fit.IFitFixtureFactory;
 
 import fit.FixtureName;
@@ -41,22 +43,23 @@ public class FitFixtureFactory implements IFitFixtureFactory {
 		Object obj = null;
 		try {
 			Class<?> clazz = getClass().getClassLoader().loadClass(className);
-			obj = clazz.newInstance();
+			obj = clazz.getDeclaredConstructor().newInstance();
 			return obj;
 		} catch (ClassNotFoundException e) {
 		} catch (InstantiationException e) {
-		} catch (IllegalAccessException e) {
+		} catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
 		}
 		
 		if (!fixtureName.isFullyQualified()) {
 			className = DEFAULT_PACKAGE + "." + fixtureName.toString();
 			try {
 				Class<?> clazz = (Class<?>) getClass().getClassLoader().loadClass(className);
-				obj = clazz.newInstance();
+				obj = clazz.getDeclaredConstructor().newInstance();
 				return obj;
 			} catch (ClassNotFoundException e) {
 			} catch (InstantiationException e) {
 			} catch (IllegalAccessException e) {
+			} catch (InvocationTargetException | NoSuchMethodException ex) {
 			}
 		}
 		return null;

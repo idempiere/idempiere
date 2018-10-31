@@ -77,7 +77,7 @@ public class DefaultProcessFactory implements IProcessFactory {
 			//Get Process
 			try
 			{
-				process = (ProcessCall)processClass.newInstance();
+				process = (ProcessCall)processClass.getDeclaredConstructor().newInstance();
 			}
 			catch (Exception ex)
 			{

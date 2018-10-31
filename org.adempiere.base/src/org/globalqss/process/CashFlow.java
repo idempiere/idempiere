@@ -17,6 +17,7 @@
 package org.globalqss.process;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -229,7 +230,7 @@ public class CashFlow  extends SvrProcess {
 					open = open.subtract(paid);
 				}
 				if (open.scale() > curr.getStdPrecision())
-					open = open.setScale(curr.getStdPrecision(), BigDecimal.ROUND_HALF_UP);
+					open = open.setScale(curr.getStdPrecision(), RoundingMode.HALF_UP);
 				BigDecimal invoiced = order.getGrandTotal().subtract(open);
 				if (isPaySchedule) {
 					MOrderPaySchedule[] schedule = MOrderPaySchedule.getOrderPaySchedule(getCtx(), order_id, 0, get_TrxName());

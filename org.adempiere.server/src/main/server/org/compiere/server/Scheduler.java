@@ -586,7 +586,7 @@ public class Scheduler extends AdempiereServer
 	 */
 	protected static MScheduler get(Properties ctx, int AD_Scheduler_ID)
 	{
-		Integer key = new Integer(AD_Scheduler_ID);
+		Integer key = Integer.valueOf(AD_Scheduler_ID);
 		MScheduler retValue = (MScheduler)s_cache.get(key);
 		if (retValue == null)
 		{

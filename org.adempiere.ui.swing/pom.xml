@@ -16,8 +16,12 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-compiler-plugin</artifactId>
 				<configuration>
-					<!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=367431 -->
-					<compilerArgument>-warn:+forbidden</compilerArgument>
+					<compilerArgs>
+						<!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=367431 -->
+						<arg>-warn:+forbidden</arg>
+		      			<arg>--add-exports</arg>
+		      			<arg>java.desktop/sun.awt=ALL-UNNAMED</arg>
+					</compilerArgs>
 				</configuration>
 			</plugin>
 			<plugin>

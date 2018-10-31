@@ -219,8 +219,8 @@ public class PayPrint {
 			//
 			if (rs.next())
 			{
-				documentNo = new Integer(rs.getInt(1));
-				printFormatId = new Integer(rs.getInt(2));
+				documentNo = Integer.valueOf(rs.getInt(1));
+				printFormatId = Integer.valueOf(rs.getInt(2));
 			}
 			else
 			{
@@ -264,7 +264,7 @@ public class PayPrint {
 			if (m_PaymentExport == null)
 			{
 				Class<?> clazz = Class.forName (m_PaymentExportClass);
-				m_PaymentExport = (PaymentExport)clazz.newInstance();
+				m_PaymentExport = (PaymentExport)clazz.getDeclaredConstructor().newInstance();
 			}
 			
 		}

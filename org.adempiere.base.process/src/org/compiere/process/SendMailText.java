@@ -252,7 +252,7 @@ public class SendMailText extends SvrProcess
 	private Boolean sendIndividualMail (String Name, int AD_User_ID, StringBuilder unsubscribe)
 	{
 		//	Prevent two email
-		Integer ii = new Integer (AD_User_ID);
+		Integer ii = Integer.valueOf(AD_User_ID);
 		if (m_list.contains(ii))
 			return null;
 		m_list.add(ii);
@@ -290,7 +290,7 @@ public class SendMailText extends SvrProcess
 		}
 		StringBuilder msglog = new StringBuilder((OK ? "@OK@" : "@ERROR@")).append(" - ").append(to.getEMail());
 		addLog(0, null, null, msglog.toString());
-		return new Boolean(OK);
+		return Boolean.valueOf(OK);
 	}	//	sendIndividualMail
 
 }	//	SendMailText

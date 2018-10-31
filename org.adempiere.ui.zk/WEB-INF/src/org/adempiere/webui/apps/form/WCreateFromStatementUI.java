@@ -155,7 +155,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		bankAccountField = new WTableDirEditor ("C_BankAccount_ID", true, false, true, lookup);
 		//  Set Default
 		int C_BankAccount_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_BankAccount_ID");
-		bankAccountField.setValue(new Integer(C_BankAccount_ID));
+		bankAccountField.setValue(Integer.valueOf(C_BankAccount_ID));
 		//  initial Loading
 		authorizationField = new WStringEditor ("authorization", false, false, true, 10, 30, null, null);
 		authorizationField.getComponent().addEventListener(Events.ON_CHANGE, this);

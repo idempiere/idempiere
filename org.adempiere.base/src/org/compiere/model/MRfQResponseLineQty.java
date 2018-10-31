@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.Comparator;
 import java.util.Properties;
@@ -148,7 +149,7 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
 		//	Calculate
 	//	double result = price.doubleValue() * (100.0 - discount.doubleValue()) / 100.0;
 		BigDecimal factor = Env.ONEHUNDRED.subtract(discount);
-		return price.multiply(factor).divide(Env.ONEHUNDRED, 2, BigDecimal.ROUND_HALF_UP);  
+		return price.multiply(factor).divide(Env.ONEHUNDRED, 2, RoundingMode.HALF_UP);  
 	}	//	getNetAmt
 
 	

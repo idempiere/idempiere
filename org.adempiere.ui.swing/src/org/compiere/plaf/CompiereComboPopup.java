@@ -39,7 +39,7 @@ public class CompiereComboPopup extends BasicComboPopup
 	 *  Constructor
 	 *  @param combo
 	 */
-	public CompiereComboPopup(JComboBox<?> combo)
+	public CompiereComboPopup(JComboBox<Object> combo)
 	{
 		super(combo);
 	}   //  AdempiereComboPopup

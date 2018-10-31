@@ -37,7 +37,7 @@ public class MStyle extends X_AD_Style {
 
 	public static MStyle get (Properties ctx, int AD_Style_ID)
 	{
-		Integer key = new Integer(AD_Style_ID);
+		Integer key = Integer.valueOf(AD_Style_ID);
 		MStyle retValue = (MStyle)s_cache.get(key);
 		if (retValue == null)
 		{

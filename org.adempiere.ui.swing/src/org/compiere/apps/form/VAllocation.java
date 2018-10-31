@@ -255,7 +255,7 @@ public class VAllocation extends Allocation
 		int AD_Column_ID = COLUMN_C_INVOICE_C_CURRENCY_ID;    //  C_Invoice.C_Currency_ID
 		MLookup lookupCur = MLookupFactory.get (Env.getCtx(), m_WindowNo, 0, AD_Column_ID, DisplayType.TableDir);
 		currencyPick = new VLookup("C_Currency_ID", true, false, true, lookupCur);
-		currencyPick.setValue(new Integer(m_C_Currency_ID));
+		currencyPick.setValue(Integer.valueOf(m_C_Currency_ID));
 		currencyPick.addVetoableChangeListener(this);
 
 		// Organization filter selection
@@ -283,7 +283,7 @@ public class VAllocation extends Allocation
 		AD_Column_ID = 61804;    //  C_AllocationLine.C_Charge_ID
 		MLookup lookupCharge = MLookupFactory.get (Env.getCtx(), m_WindowNo, 0, AD_Column_ID, DisplayType.TableDir);
 		chargePick = new VLookup("C_Charge_ID", false, false, true, lookupCharge);
-		chargePick.setValue(new Integer(m_C_Charge_ID));
+		chargePick.setValue(Integer.valueOf(m_C_Charge_ID));
 		chargePick.addVetoableChangeListener(this);
 	}   //  dynInit
 	

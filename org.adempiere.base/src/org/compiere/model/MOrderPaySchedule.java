@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -152,10 +153,10 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 		else
 		{
 			due = due.multiply(paySchedule.getPercentage())
-				.divide(Env.ONEHUNDRED, scale, BigDecimal.ROUND_HALF_UP);
+				.divide(Env.ONEHUNDRED, scale, RoundingMode.HALF_UP);
 			setDueAmt (due);
 			BigDecimal discount = due.multiply(paySchedule.getDiscount())
-				.divide(Env.ONEHUNDRED, scale, BigDecimal.ROUND_HALF_UP);
+				.divide(Env.ONEHUNDRED, scale, RoundingMode.HALF_UP);
 			setDiscountAmt (discount);
 			setIsValid(true);
 		}

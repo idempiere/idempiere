@@ -187,7 +187,7 @@ public class QueryDataLookup extends Lookup {
 					}
 					if (key != null && display != null)
 					{
-						Integer id = new Integer(key);
+						Integer id = Integer.valueOf(key);
 						dataMap.put(id, new KeyNamePair(id, display));
 					}
 				}

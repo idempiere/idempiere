@@ -984,7 +984,7 @@ public class DataEngine
 								if (!rs.wasNull())
 								{
 									boolean b = s.equals("Y");
-									pde = new PrintDataElement(pdc.getColumnName(), new Boolean(b), pdc.getDisplayType(), pdc.getFormatPattern());
+									pde = new PrintDataElement(pdc.getColumnName(), Boolean.valueOf(b), pdc.getDisplayType(), pdc.getFormatPattern());
 								}
 							}
 							else if (pdc.getDisplayType() == DisplayType.TextLong)

@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Hashtable;
@@ -2183,7 +2184,7 @@ public class MOrder extends X_C_Order implements DocAction
 			if (oLine.getQtyEntered().compareTo(oLine.getQtyOrdered()) != 0)
 				ioLine.setQtyEntered(MovementQty
 					.multiply(oLine.getQtyEntered())
-					.divide(oLine.getQtyOrdered(), 6, BigDecimal.ROUND_HALF_UP));
+					.divide(oLine.getQtyOrdered(), 6, RoundingMode.HALF_UP));
 			if (!ioLine.save(get_TrxName()))
 			{
 				m_processMsg = "Could not create Shipment Line";
@@ -2270,7 +2271,7 @@ public class MOrder extends X_C_Order implements DocAction
 					iLine.setQtyEntered(iLine.getQtyInvoiced());
 				else
 					iLine.setQtyEntered(iLine.getQtyInvoiced().multiply(oLine.getQtyEntered())
-						.divide(oLine.getQtyOrdered(), 12, BigDecimal.ROUND_HALF_UP));
+						.divide(oLine.getQtyOrdered(), 12, RoundingMode.HALF_UP));
 				if (!iLine.save(get_TrxName()))
 				{
 					m_processMsg = "Could not create Invoice Line from Order Line";

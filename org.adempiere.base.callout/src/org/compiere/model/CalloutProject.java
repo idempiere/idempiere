@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -61,7 +62,7 @@ public class CalloutProject extends CalloutEngine
 		//
 		BigDecimal PlannedAmt = PlannedQty.multiply(PlannedPrice);
 		if (PlannedAmt.scale() > StdPrecision)
-			PlannedAmt = PlannedAmt.setScale(StdPrecision, BigDecimal.ROUND_HALF_UP);
+			PlannedAmt = PlannedAmt.setScale(StdPrecision, RoundingMode.HALF_UP);
 		//
 		if (log.isLoggable(Level.FINE)) log.fine("PlannedQty=" + PlannedQty + " * PlannedPrice=" + PlannedPrice + " -> PlannedAmt=" + PlannedAmt + " (Precision=" + StdPrecision+ ")");
 		mTab.setValue("PlannedAmt", PlannedAmt);

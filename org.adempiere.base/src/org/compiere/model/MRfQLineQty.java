@@ -48,7 +48,7 @@ public class MRfQLineQty extends X_C_RfQLineQty
 	 */
 	public static MRfQLineQty get (Properties ctx, int C_RfQLineQty_ID, String trxName)
 	{
-		Integer key = new Integer (C_RfQLineQty_ID);
+		Integer key = Integer.valueOf(C_RfQLineQty_ID);
 		MRfQLineQty retValue = (MRfQLineQty) s_cache.get (key);
 		if (retValue != null)
 			return retValue;

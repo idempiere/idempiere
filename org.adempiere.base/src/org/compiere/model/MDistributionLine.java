@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.Properties;
 
@@ -193,7 +194,7 @@ public class MDistributionLine extends X_GL_DistributionLine
 	public void calculateAmt (BigDecimal amt, int precision)
 	{
 		m_amt = amt.multiply(getPercent());
-		m_amt = m_amt.divide(Env.ONEHUNDRED, precision, BigDecimal.ROUND_HALF_UP);
+		m_amt = m_amt.divide(Env.ONEHUNDRED, precision, RoundingMode.HALF_UP);
 	}	//	setAmt
 
 	/**
@@ -203,7 +204,7 @@ public class MDistributionLine extends X_GL_DistributionLine
 	public void calculateQty (BigDecimal qty)
 	{
 		m_qty = qty.multiply(getPercent());
-		m_qty = m_qty.divide(Env.ONEHUNDRED, BigDecimal.ROUND_HALF_UP);
+		m_qty = m_qty.divide(Env.ONEHUNDRED, RoundingMode.HALF_UP);
 	}	//	setAmt
 
 	

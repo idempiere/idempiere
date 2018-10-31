@@ -221,7 +221,7 @@ public class MWFNodeNext extends X_AD_WF_NodeNext
 	 */
 	public void setFromSplitAnd (boolean fromSplitAnd)
 	{
-		m_fromSplitAnd = new Boolean(fromSplitAnd);
+		m_fromSplitAnd = Boolean.valueOf(fromSplitAnd);
 	}	//	setFromSplitAnd
 
 	/**
@@ -246,7 +246,7 @@ public class MWFNodeNext extends X_AD_WF_NodeNext
 	 */
 	private void setToJoinAnd (boolean toJoinAnd)
 	{
-		m_toJoinAnd = new Boolean(toJoinAnd);
+		m_toJoinAnd = Boolean.valueOf(toJoinAnd);
 	}	//	setToJoinAnd
 
 }	//	MWFNodeNext

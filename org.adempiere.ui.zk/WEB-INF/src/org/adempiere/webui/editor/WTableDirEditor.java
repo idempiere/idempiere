@@ -565,9 +565,9 @@ ContextMenuListener, IZoomableEditor
 					return;
 
 				//  Maybe new Record - put in cache
-				Object newValue = new Integer(result);
+				Object newValue = Integer.valueOf(result);
 				lookup.getDirect(newValue, false, true);
-				setValue(new Integer(result));
+				setValue(Integer.valueOf(result));
 		        ValueChangeEvent changeEvent = new ValueChangeEvent(this, getColumnName(), oldValue, newValue);
 		        fireValueChange(changeEvent);
 		        oldValue = newValue;

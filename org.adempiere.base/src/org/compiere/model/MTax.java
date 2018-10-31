@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
@@ -91,7 +92,7 @@ public class MTax extends X_C_Tax
 	 */
 	public static MTax get (Properties ctx, int C_Tax_ID)
 	{
-		Integer key = new Integer (C_Tax_ID);
+		Integer key = Integer.valueOf(C_Tax_ID);
 		MTax retValue = (MTax) s_cache.get (key);
 		if (retValue != null)
 			return retValue;
@@ -264,17 +265,17 @@ public class MTax extends X_C_Tax
 
 		BigDecimal tax = Env.ZERO;		
 		for (MTax taxc : taxarray) {
-			BigDecimal multiplier = taxc.getRate().divide(Env.ONEHUNDRED, 12, BigDecimal.ROUND_HALF_UP);		
+			BigDecimal multiplier = taxc.getRate().divide(Env.ONEHUNDRED, 12, RoundingMode.HALF_UP);		
 			if (!taxIncluded)	//	$100 * 6 / 100 == $6 == $100 * 0.06
 			{
-				BigDecimal itax = amount.multiply(multiplier).setScale(scale, BigDecimal.ROUND_HALF_UP);
+				BigDecimal itax = amount.multiply(multiplier).setScale(scale, RoundingMode.HALF_UP);
 				tax = tax.add(itax);
 			}
 			else			//	$106 - ($106 / (100+6)/100) == $6 == $106 - ($106/1.06)
 			{
 				multiplier = multiplier.add(Env.ONE);
-				BigDecimal base = amount.divide(multiplier, 12, BigDecimal.ROUND_HALF_UP); 
-				BigDecimal itax = amount.subtract(base).setScale(scale, BigDecimal.ROUND_HALF_UP);
+				BigDecimal base = amount.divide(multiplier, 12, RoundingMode.HALF_UP); 
+				BigDecimal itax = amount.subtract(base).setScale(scale, RoundingMode.HALF_UP);
 				tax = tax.add(itax);
 			}
 		}

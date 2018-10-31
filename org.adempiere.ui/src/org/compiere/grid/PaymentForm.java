@@ -186,7 +186,7 @@ public abstract class PaymentForm implements IPaymentForm {
 			{
 				int id = rs.getInt(1);
 				String name = rs.getString(2);
-				s_Currencies.put(new Integer(id), new KeyNamePair(id, name));
+				s_Currencies.put(Integer.valueOf(id), new KeyNamePair(id, name));
 			}
 		}
 		catch (SQLException e)

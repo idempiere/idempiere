@@ -514,7 +514,7 @@ public final class VTreePanel extends CPanel
 
 		//  *** Tree ***
 		if (e.getSource() instanceof JTree
-			|| (e.getSource() == treeSearch && e.getModifiers() != 0))	//	InputEvent.CTRL_MASK
+			|| (e.getSource() == treeSearch && e.getModifiersEx() != 0))	//	InputEvent.CTRL_MASK
 		{
 			TreePath tp = tree.getSelectionPath();
 			if (tp == null)

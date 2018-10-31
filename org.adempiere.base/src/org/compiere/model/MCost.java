@@ -18,6 +18,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -243,15 +244,15 @@ public class MCost extends X_M_Cost
 		if (percentage.signum() == 0)	//	no percentages
 		{
 			if (costs.scale() > precision)
-				costs = costs.setScale(precision, BigDecimal.ROUND_HALF_UP);
+				costs = costs.setScale(precision, RoundingMode.HALF_UP);
 			return costs;
 		}
 		//
 		BigDecimal percentCost = costs.multiply(percentage);
-		percentCost = percentCost.divide(Env.ONEHUNDRED, precision, BigDecimal.ROUND_HALF_UP);
+		percentCost = percentCost.divide(Env.ONEHUNDRED, precision, RoundingMode.HALF_UP);
 		costs = costs.add(percentCost);
 		if (costs.scale() > precision)
-			costs = costs.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			costs = costs.setScale(precision, RoundingMode.HALF_UP);
 		if (s_log.isLoggable(Level.FINER)) s_log.finer("Sum Costs = " + costs + " (Add=" + percentCost + ")");
 		return costs;
 	}	//	getCurrentCost
@@ -921,8 +922,8 @@ public class MCost extends X_M_Cost
 				BigDecimal averageCurrent = oldStockQty.multiply(oldAverageAmt);
 				BigDecimal averageIncrease = matchQty.multiply(cost);
 				BigDecimal newAmt = averageCurrent.add(averageIncrease);
-				newAmt = newAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
-				newAverageAmt = newAmt.divide(newStockQty, as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
+				newAmt = newAmt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
+				newAverageAmt = newAmt.divide(newStockQty, as.getCostingPrecision(), RoundingMode.HALF_UP);
 				if (s_log.isLoggable(Level.FINER)) s_log.finer("Movement=" + movementQty + ", StockQty=" + newStockQty
 					+ ", Match=" + matchQty + ", Cost=" + cost + ", NewAvg=" + newAverageAmt);
 			}
@@ -1017,8 +1018,8 @@ public class MCost extends X_M_Cost
 				BigDecimal averageCurrent = oldStockQty.multiply(oldAverageAmt);
 				BigDecimal averageIncrease = matchQty.multiply(cost);
 				BigDecimal newAmt = averageCurrent.add(averageIncrease);
-				newAmt = newAmt.setScale(as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
-				newAverageAmt = newAmt.divide(newStockQty, as.getCostingPrecision(), BigDecimal.ROUND_HALF_UP);
+				newAmt = newAmt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
+				newAverageAmt = newAmt.divide(newStockQty, as.getCostingPrecision(), RoundingMode.HALF_UP);
 				if (s_log.isLoggable(Level.FINER)) s_log.finer("Movement=" + movementQty + ", StockQty=" + newStockQty
 					+ ", Match=" + matchQty + ", Cost=" + cost + ", NewAvg=" + newAverageAmt);
 			}
@@ -1539,12 +1540,12 @@ public class MCost extends X_M_Cost
 		if (sumQty.signum() != 0)
 		{
 			BigDecimal oldSum = getCurrentCostPrice().multiply(getCurrentQty());
-			BigDecimal oldCost = oldSum.divide(sumQty, 12, BigDecimal.ROUND_HALF_UP);
-			BigDecimal newCost = amt.divide(sumQty, 12, BigDecimal.ROUND_HALF_UP); //amt is total already
+			BigDecimal oldCost = oldSum.divide(sumQty, 12, RoundingMode.HALF_UP);
+			BigDecimal newCost = amt.divide(sumQty, 12, RoundingMode.HALF_UP); //amt is total already
 			BigDecimal cost = oldCost.add(newCost);
 			if (cost.scale() > (getPrecision()*2))
 			{
-				cost = cost.setScale((getPrecision()*2), BigDecimal.ROUND_HALF_UP);
+				cost = cost.setScale((getPrecision()*2), RoundingMode.HALF_UP);
 			}
 			setCurrentCostPrice(cost);
 		}
@@ -1562,7 +1563,7 @@ public class MCost extends X_M_Cost
 		BigDecimal cost = amtUnit;
 		if (cost.scale() > (getPrecision()*2))
 		{
-			cost = cost.setScale((getPrecision()*2), BigDecimal.ROUND_HALF_UP);
+			cost = cost.setScale((getPrecision()*2), RoundingMode.HALF_UP);
 		}
 		setCurrentCostPrice(cost);
 	}	//	setWeightedAverageInitial
@@ -1601,7 +1602,7 @@ public class MCost extends X_M_Cost
 		if (getCumulatedQty().signum() != 0
 			&& getCumulatedAmt().signum() != 0)
 			retValue = getCumulatedAmt()
-				.divide(getCumulatedQty(), getPrecision(), BigDecimal.ROUND_HALF_UP);
+				.divide(getCumulatedQty(), getPrecision(), RoundingMode.HALF_UP);
 		return retValue;
 	}	//	getHistoryAverage
 
