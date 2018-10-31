@@ -92,7 +92,14 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.apache.axis;bundle-version="1.4.0",
  javax.xml.soap;bundle-version="1.3.0",
  jaxws-api;bundle-version="2.3.1",
- javax.annotation-api;bundle-version="1.3.2"
+ javax.annotation-api;bundle-version="1.3.2",
+ org.glassfish.jersey.core.jersey-common;bundle-version="2.22.1",
+ org.apache.cxf.cxf-rt-rs-service-description;bundle-version="3.2.6",
+ org.glassfish.hk2.osgi-resource-locator;bundle-version="2.5.0",
+ org.glassfish.hk2.api;bundle-version="2.5.0",
+ org.glassfish.hk2.locator;bundle-version="2.5.0",
+ org.glassfish.hk2.utils;bundle-version="2.5.0",
+ org.glassfish.jersey.bundles.repackaged.jersey-guava;bundle-version="2.22.1"
 Bundle-ClassPath: .,
  WEB-INF/lib/idempiere-xmlbeans.jar
 Export-Package: org.compiere.model,
