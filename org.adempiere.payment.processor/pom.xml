@@ -22,7 +22,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/jarfile/5.1/jpayment.jar</url>
+							<url>${url.file.srv}/jarfile/6.1/jpayment.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>lib</outputDirectory>
 							<retries>5</retries>
@@ -35,7 +35,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/jarfile/5.1/Verisign.jar</url>
+							<url>${url.file.srv}/jarfile/6.1/Verisign.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>lib</outputDirectory>
 							<retries>5</retries>
@@ -48,7 +48,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/jarfile/5.1/payflow.jar</url>
+							<url>${url.file.srv}/jarfile/6.1/payflow.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>lib</outputDirectory>
 							<retries>5</retries>

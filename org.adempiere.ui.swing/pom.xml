@@ -69,7 +69,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/jarfile/5.1/jpedal.jar</url>
+							<url>${url.file.srv}/jarfile/6.1/jpedal.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>lib</outputDirectory>
 							<retries>5</retries>

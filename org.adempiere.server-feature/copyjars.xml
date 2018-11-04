@@ -1,8 +1,8 @@
 <project name="zklibrary" basedir="." default="copy">
 	<target name="copy">
         <mkdir dir="data/seed" />
-        <get src="${url.file.srv}/database/5.1/Adempiere_pg.jar" dest="data/seed/Adempiere_pg.jar" usetimestamp="true" verbose="true" retries="5" />
-        <get src="${url.file.srv}/database/5.1/Adempiere.jar" dest="data/seed/Adempiere.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/database/6.1/Adempiere_pg.jar" dest="data/seed/Adempiere_pg.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/database/6.1/Adempiere.jar" dest="data/seed/Adempiere.jar" usetimestamp="true" verbose="true" retries="5" />
     
         <mkdir dir="../db/ddlutils/lib" />
         <get src="${url.maven2}/ant-contrib/ant-contrib/1.0b2/ant-contrib-1.0b2.jar" dest="../db/ddlutils/lib/ant-contrib.jar" usetimestamp="true" verbose="true" retries="5" />
@@ -20,20 +20,20 @@
         <!-- it's fyracle db, not yet support on idempiere
         https://it.wikipedia.org/wiki/Fyracle
         http://www.biz-wise.nl/compiere_dl.html
-        <get src="${url.file.srv}/jarfile/5.1/fyracle.jar" dest="../db/ddlutils/lib/fyracle.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/6.1/fyracle.jar" dest="../db/ddlutils/lib/fyracle.jar" usetimestamp="true" verbose="true" retries="5" />
         -->
         <get src="${url.maven2}/oro/oro/2.0.8/oro-2.0.8.jar" dest="../db/ddlutils/lib/jakarta-oro.jar" usetimestamp="true" verbose="true" retries="5" />
-        <get src="${url.file.srv}/jarfile/5.1/oracle.jar" dest="../db/ddlutils/lib/oracle.jar" usetimestamp="true" verbose="true" retries="5" />
-        <get src="${url.file.srv}/jarfile/5.1/postgresql.jar" dest="../db/ddlutils/lib/postgresql.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/6.1/oracle.jar" dest="../db/ddlutils/lib/oracle.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/6.1/postgresql.jar" dest="../db/ddlutils/lib/postgresql.jar" usetimestamp="true" verbose="true" retries="5" />
         <get src="${url.maven2}/stax/stax-api/1.0.1/stax-api-1.0.1.jar" dest="../db/ddlutils/lib/stax-api.jar" usetimestamp="true" verbose="true" retries="5" />
         <get src="${url.maven2}/woodstox/wstx-asl/3.0.2/wstx-asl-3.0.2.jar" dest="../db/ddlutils/lib/wstx-asl.jar" usetimestamp="true" verbose="true" retries="5" />
 
         <mkdir dir="../fitnesse/FitNesseRoot/FitLibraryWeb" />
-        <get src="${url.file.srv}/jarfile/5.1/101-20121212164242.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/101-20121212164242.zip" usetimestamp="true" verbose="true" retries="5" />
-        <get src="${url.file.srv}/jarfile/5.1/21-20121212154702.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/21-20121212154702.zip" usetimestamp="true" verbose="true" retries="5" />
-        <get src="${url.file.srv}/jarfile/5.1/6-20121212124109.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/6-20121212124109.zip" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/6.1/101-20121212164242.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/101-20121212164242.zip" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/6.1/21-20121212154702.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/21-20121212154702.zip" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/6.1/6-20121212124109.zip" dest="../fitnesse/FitNesseRoot/FitLibraryWeb/6-20121212124109.zip" usetimestamp="true" verbose="true" retries="5" />
         <!-- maybe it's same file in org.idempiere.fitnesse.server, just diference version-->
-        <get src="${url.file.srv}/jarfile/5.1/fitnesse2.jar" dest="../fitnesse/fitnesse.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/6.1/fitnesse2.jar" dest="../fitnesse/fitnesse.jar" usetimestamp="true" verbose="true" retries="5" />
     
         <get src="${url.alpn.boot}" dest="../alpn-boot.jar" usetimestamp="true" verbose="true" retries="5" />
 		

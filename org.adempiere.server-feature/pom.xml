@@ -158,7 +158,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/database/5.1/Adempiere_pg.jar</url>
+							<url>${url.file.srv}/database/6.1/Adempiere_pg.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>data/seed</outputDirectory>
 							<retries>5</retries>
@@ -171,7 +171,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/database/5.1/Adempiere.jar</url>
+							<url>${url.file.srv}/database/6.1/Adempiere.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>data/seed</outputDirectory>
 							<retries>5</retries>
@@ -184,7 +184,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/jarfile/5.1/101-20121212164242.zip</url>
+							<url>${url.file.srv}/jarfile/6.1/101-20121212164242.zip</url>
 							<unpack>false</unpack>
 							<outputDirectory>../fitnesse/FitNesseRoot/FitLibraryWeb</outputDirectory>
 							<retries>5</retries>
@@ -197,7 +197,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/jarfile/5.1/21-20121212154702.zip</url>
+							<url>${url.file.srv}/jarfile/6.1/21-20121212154702.zip</url>
 							<unpack>false</unpack>
 							<outputDirectory>../fitnesse/FitNesseRoot/FitLibraryWeb</outputDirectory>
 							<retries>5</retries>
@@ -210,7 +210,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/jarfile/5.1/6-20121212124109.zip</url>
+							<url>${url.file.srv}/jarfile/6.1/6-20121212124109.zip</url>
 							<unpack>false</unpack>
 							<outputDirectory>../fitnesse/FitNesseRoot/FitLibraryWeb</outputDirectory>
 							<retries>5</retries>
