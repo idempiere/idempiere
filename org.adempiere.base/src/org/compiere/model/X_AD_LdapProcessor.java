@@ -24,14 +24,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_LdapProcessor
  *  @author iDempiere (generated) 
- *  @version Release 5.1 - $Id$ */
+ *  @version Release 6.1 - $Id$ */
 public class X_AD_LdapProcessor extends PO implements I_AD_LdapProcessor, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171031L;
+	private static final long serialVersionUID = 20181104L;
 
     /** Standard Constructor */
     public X_AD_LdapProcessor (Properties ctx, int AD_LdapProcessor_ID, String trxName)

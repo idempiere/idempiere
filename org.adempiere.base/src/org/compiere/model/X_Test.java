@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for Test
  *  @author iDempiere (generated) 
- *  @version Release 5.1 - $Id$ */
+ *  @version Release 6.1 - $Id$ */
 public class X_Test extends PO implements I_Test, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171031L;
+	private static final long serialVersionUID = 20181104L;
 
     /** Standard Constructor */
     public X_Test (Properties ctx, int Test_ID, String trxName)
@@ -215,6 +215,20 @@ public class X_Test extends PO implements I_Test, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Color.
+		@param Color Color	  */
+	public void setColor (String Color)
+	{
+		set_Value (COLUMNNAME_Color, Color);
+	}
+
+	/** Get Color.
+		@return Color	  */
+	public String getColor () 
+	{
+		return (String)get_Value(COLUMNNAME_Color);
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException

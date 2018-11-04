@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserBPAccess
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 6.1
  */
 public interface I_AD_UserBPAccess 
 {

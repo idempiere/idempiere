@@ -24,14 +24,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_ShipperPackaging
  *  @author iDempiere (generated) 
- *  @version Release 5.1 - $Id$ */
+ *  @version Release 6.1 - $Id$ */
 public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171031L;
+	private static final long serialVersionUID = 20181104L;
 
     /** Standard Constructor */
     public X_M_ShipperPackaging (Properties ctx, int M_ShipperPackaging_ID, String trxName)

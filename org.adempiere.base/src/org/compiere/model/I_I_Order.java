@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_Order
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 6.1
  */
 public interface I_I_Order 
 {

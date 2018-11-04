@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Process
  *  @author iDempiere (generated) 
- *  @version Release 5.1 - $Id$ */
+ *  @version Release 6.1 - $Id$ */
 public class X_AD_Process extends PO implements I_AD_Process, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20181002L;
+	private static final long serialVersionUID = 20181104L;
 
     /** Standard Constructor */
     public X_AD_Process (Properties ctx, int AD_Process_ID, String trxName)
@@ -283,7 +283,7 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 			 return 0;
 		return ii.intValue();
 	}
-	
+
 	/** AllowMultipleExecution AD_Reference_ID=200158 */
 	public static final int ALLOWMULTIPLEEXECUTION_AD_Reference_ID=200158;
 	/** Disallow multiple executions = N */
@@ -378,7 +378,7 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
-	
+
 	/** ExecutionType AD_Reference_ID=200157 */
 	public static final int EXECUTIONTYPE_AD_Reference_ID=200157;
 	/** Force Background = B */

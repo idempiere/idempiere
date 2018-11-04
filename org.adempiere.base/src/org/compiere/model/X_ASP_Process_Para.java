@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Process_Para
  *  @author iDempiere (generated) 
- *  @version Release 5.1 - $Id$ */
+ *  @version Release 6.1 - $Id$ */
 public class X_ASP_Process_Para extends PO implements I_ASP_Process_Para, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171031L;
+	private static final long serialVersionUID = 20181104L;
 
     /** Standard Constructor */
     public X_ASP_Process_Para (Properties ctx, int ASP_Process_Para_ID, String trxName)

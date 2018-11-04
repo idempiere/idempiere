@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Process
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 6.1
  */
 public interface I_AD_Process 
 {
@@ -167,7 +167,7 @@ public interface I_AD_Process
 	public int getAD_Workflow_ID();
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
-	
+
     /** Column name AllowMultipleExecution */
     public static final String COLUMNNAME_AllowMultipleExecution = "AllowMultipleExecution";
 
@@ -250,7 +250,7 @@ public interface I_AD_Process
  Determines ownership and synchronization
 	  */
 	public String getEntityType();
-	
+
     /** Column name ExecutionType */
     public static final String COLUMNNAME_ExecutionType = "ExecutionType";
 

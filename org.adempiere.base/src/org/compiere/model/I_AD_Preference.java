@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Preference
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 6.1
  */
 public interface I_AD_Preference 
 {
@@ -127,7 +127,7 @@ public interface I_AD_Preference
 	  */
 	public int getAD_User_ID();
 
-	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_AllUsers_V getAD_User() throws RuntimeException;
 
     /** Column name AD_Window_ID */
     public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
