@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Hazelcast Service Configuration
 Bundle-SymbolicName: org.idempiere.hazelcast.service.config
-Bundle-Version: 5.1.0.qualifier
+Bundle-Version: 6.1.0.qualifier
 Fragment-Host: org.idempiere.hazelcast.service;bundle-version="0.0.0"
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Bundle-ClassPath: .

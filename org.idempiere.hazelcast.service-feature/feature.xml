@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.hazelcast.service.feature"
       label="Hazelcast Service Feature"
-      version="5.1.0.qualifier"
+      version="6.1.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
