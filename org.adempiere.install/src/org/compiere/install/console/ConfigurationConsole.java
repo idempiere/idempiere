@@ -55,6 +55,7 @@ public class ConfigurationConsole {
 
 			dbExists(reader, writer);
 			dbType(reader, writer);
+
 			dbHostname(reader, writer);
 			dbPort(reader, writer);
 			dbName(reader, writer);
@@ -475,6 +476,8 @@ public class ConfigurationConsole {
 					writer.println("Invalid input, please enter numeric value of 1 to " + ConfigurationData.DBTYPE.length);
 					continue;
 				}
+				if (dbTypeSelected+1 != inputIndex)
+					data.dbChanged();
 				data.initDatabase(ConfigurationData.DBTYPE[inputIndex-1]);
 				data.setDatabaseType(ConfigurationData.DBTYPE[inputIndex-1]);
 				break;

@@ -411,7 +411,10 @@ public class DB_Oracle implements AdempiereDatabase
      */
     public String getSystemUser()
     {
-        return "system";
+    	String systemUser = System.getProperty("ADEMPIERE_DB_SYSTEM_USER");
+    	if (systemUser == null)
+    		systemUser = "system";
+        return systemUser;
     }   //  getSystemUser
 
     /**

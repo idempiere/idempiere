@@ -383,7 +383,10 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	 */
 	public String getSystemUser()
 	{
-		return "postgres";
+    	String systemUser = System.getProperty("ADEMPIERE_DB_SYSTEM_USER");
+    	if (systemUser == null)
+    		systemUser = "postgres";
+        return systemUser;
 	}	//	getSystemUser
 
 	/**
