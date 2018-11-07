@@ -655,6 +655,9 @@ public final class DisplayType
 		if (!DisplayType.isText(displayType))
 			s_log.severe("Unhandled Data Type = " + displayType);
 
+		if (columnName.endsWith("_ID"))
+			return "NUMBER(10)";
+
 		return "VARCHAR2(" + fieldLength + ")";
 	}	//	getSQLDataType
 
