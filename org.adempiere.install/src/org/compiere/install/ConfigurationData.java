@@ -1569,4 +1569,10 @@ public class ConfigurationData
 	{
 		p_properties.setProperty(key, value);
 	}	//	setProperty
+
+	public void dbChanged() {
+		p_properties.remove(ADEMPIERE_DB_NAME);
+		p_properties.remove(ADEMPIERE_DB_PORT);
+	}
+
 }	//	ConfigurationData
