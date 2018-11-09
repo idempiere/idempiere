@@ -105,7 +105,12 @@ BEGIN
            || 'WHERE Name = '''
            || r.tablename
            || ''' AND istableid = ''Y''';
-        EXECUTE IMMEDIATE cmdseq INTO currentseq, currentseqsys;
+        BEGIN
+          EXECUTE IMMEDIATE cmdseq INTO currentseq, currentseqsys;
+        EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE ('Sequence does not exist for table '|| r.tablename);
+        END;
       END IF;
 
       IF currentnextsys <> currentseqsys OR (currentnext <> currentseq AND Isnativeseqon ='N')
