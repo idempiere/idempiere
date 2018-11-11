@@ -43,7 +43,7 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 	protected BundleContext context;
 	protected ServiceTracker<IDictionaryService, IDictionaryService> serviceTracker;
 	protected IDictionaryService service;
-	private   String trxName = "";
+	private String trxName = null;
 	private ProcessInfo m_processInfo = null;
 	private IProcessUI m_processUI = null;
 
@@ -54,7 +54,7 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 			service.merge(context, zipfile);
 			success = true;
 		} else {
-			logger.log(Level.SEVERE, "The file was previously installed: " + zipfile.getName());
+			logger.log(Level.WARNING, "The file was previously installed: " + zipfile.getName());
 		}
 
 		return success;
@@ -77,7 +77,7 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 				addLog(Level.SEVERE, "Could not find an IDictionaryService to process the zip files");
 			}
 		} else {
-			addLog(Level.SEVERE, "The file was previously installed: " + zipfile.getName());
+			addLog(Level.WARNING, "The file was previously installed: " + zipfile.getName());
 			success = true;
 		}
 
@@ -107,15 +107,24 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 
 		while(maxAttempts > 0 && !lockAcquired) {
 			maxAttempts --;
-			if (getDBLock(timeout))
-				lockAcquired = true;
+			if (logger.isLoggable(Level.INFO)) logger.log(Level.INFO, "Acquiring lock with timeout " + timeout + " for " + getName() + " / remaining attempts " + maxAttempts);
+			try {
+				if (getDBLock(timeout))
+					lockAcquired = true;
+			} catch (Exception e) {
+				// Timeout throws DBException, ignore and try again
+				releaseLock();
+			}
 		}
 
 		return lockAcquired;
 	}
 
 	public void releaseLock() {
-		Trx.get(trxName, false).close();
+		if (trxName != null) {
+			Trx.get(trxName, false).close();
+			trxName = null;
+		}
 	}
 
 	private boolean getDBLock(int timeout) throws AdempiereSystemError {
