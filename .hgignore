@@ -9,6 +9,7 @@ org.adempiere.webstore/bin
 org.idempiere.hazelcast.service.config/bin
 */target
 runtime-server.product
+org.idempiere.fitnesse.server/FitNesseRoot
 syntax: regexp
 ^adempiere$
 ^org\.adempiere\.install/lib$
