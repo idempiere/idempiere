@@ -15,6 +15,7 @@ package org.adempiere.webui.panel;
 
 import java.util.ArrayList;
 
+import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
@@ -29,6 +30,7 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Row;
 
@@ -36,7 +38,7 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2231369601903381581L;
+	private static final long serialVersionUID = 4660623126634851224L;
 
 	private static final int RENDER_IN_COLUMNS=10;
 	Checkbox m_chkSum[]=null;
@@ -65,10 +67,17 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 		grid.setStyle("margin:0; padding:0; position: absolute");
 		grid.makeNoStrip();
 
+		Borderlayout borderlayout = new Borderlayout();
+		wind.appendChild(borderlayout);
+		ZKUpdateUtil.setHflex(borderlayout, "1");
+		Center center = new Center();
+		center.setAutoscroll(true);
+		borderlayout.appendChild(center);
+
 		Div div = new Div();
 		div.setStyle("width:90%;height:100%;border:none;margin:none;padding:none");
 		div.appendChild(grid);
-		wind.appendChild(div);
+		center.appendChild(div);
 		this.appendChild(wind);
 
 		Columns columns = new Columns();

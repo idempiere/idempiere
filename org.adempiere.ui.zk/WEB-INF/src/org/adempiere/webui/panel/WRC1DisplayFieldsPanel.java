@@ -14,6 +14,7 @@
 
 package org.adempiere.webui.panel;
 
+import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
@@ -30,6 +31,7 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 
 
@@ -38,7 +40,7 @@ public class WRC1DisplayFieldsPanel extends WRCTabPanel implements EventListener
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2097631726230470398L;
+	private static final long serialVersionUID = -4595966853507636969L;
 
 	private static final int RENDER_IN_COLUMNS=4;
 	private MPrintFormat m_printFormat;
@@ -60,7 +62,7 @@ public class WRC1DisplayFieldsPanel extends WRCTabPanel implements EventListener
 	}
 
 	public void init() {
-		
+
 		m_chkboxes = new Checkbox[m_pfi.size()];
 		m_textBoxes = new Textbox[m_pfi.size()];
 		m_oldLabel = new String[m_pfi.size()];
@@ -69,6 +71,13 @@ public class WRC1DisplayFieldsPanel extends WRCTabPanel implements EventListener
 		ZKUpdateUtil.setWidth(wind, "90%");
 		ZKUpdateUtil.setHeight(wind, "100%");
 		ZKUpdateUtil.setHflex(wind, "1");
+		
+		Borderlayout borderlayout = new Borderlayout();
+		wind.appendChild(borderlayout);
+		ZKUpdateUtil.setHflex(borderlayout, "1");
+		Center center = new Center();
+		center.setAutoscroll(true);
+		borderlayout.appendChild(center);
 		
 		Grid grid = new Grid();
         //have problem moving the following out as css class
@@ -81,7 +90,7 @@ public class WRC1DisplayFieldsPanel extends WRCTabPanel implements EventListener
         Div div = new Div();
 		div.setStyle("width:90%;height:100%;border:none;margin:none;padding:none");
 		div.appendChild(grid);
-		wind.appendChild(div);
+		center.appendChild(div);
 		this.appendChild(wind);
 		
 		Columns columns = new Columns();
