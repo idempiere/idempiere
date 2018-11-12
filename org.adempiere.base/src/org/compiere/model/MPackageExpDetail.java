@@ -119,6 +119,8 @@ public class MPackageExpDetail extends X_AD_Package_Exp_Detail
 			return getAD_Workflow_ID();
 		} else if (TYPE_EntityType.equals(type)) {
 			return getAD_EntityType_ID();
+		} else if (TYPE_InfoWindow.equals(type)) {
+			return getAD_InfoWindow_ID();
 		} else {
 			return 0;
 		}

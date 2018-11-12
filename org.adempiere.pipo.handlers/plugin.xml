@@ -207,7 +207,27 @@
       <handler
             class="org.adempiere.pipo2.handler.ViewColumnElementHandler"
             id="AD_ViewColumn">
-      </handler>            
+      </handler>
+      <handler
+            class="org.adempiere.pipo2.handler.InfoWindowElementHandler"
+            id="AD_InfoWindow">
+      </handler>
+      <handler
+            class="org.adempiere.pipo2.handler.InfoColumnElementHandler"
+            id="AD_InfoColumn ">
+      </handler>
+      <handler
+            class="org.adempiere.pipo2.handler.InfoProcessElementHandler"
+            id="AD_InfoProcess ">
+      </handler>
+      <handler
+            class="org.adempiere.pipo2.handler.InfoRelatedElementHandler"
+            id="AD_InfoRelated ">
+      </handler>
+      <handler
+            class="org.adempiere.pipo2.handler.InfoWindowAccessElementHandler"
+            id="AD_InfoWindow_Access">
+      </handler>
    </extension>
 
 </plugin>

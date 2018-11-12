@@ -30,7 +30,7 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20181104L;
+	private static final long serialVersionUID = 20181112L;
 
     /** Standard Constructor */
     public X_AD_Package_Exp_Detail (Properties ctx, int AD_Package_Exp_Detail_ID, String trxName)
@@ -149,6 +149,34 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	public int getAD_ImpFormat_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ImpFormat_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());	}
+
+	/** Set Info Window.
+		@param AD_InfoWindow_ID 
+		Info and search/select Window
+	  */
+	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID)
+	{
+		if (AD_InfoWindow_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_AD_InfoWindow_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_AD_InfoWindow_ID, Integer.valueOf(AD_InfoWindow_ID));
+	}
+
+	/** Get Info Window.
+		@return Info and search/select Window
+	  */
+	public int getAD_InfoWindow_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoWindow_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -915,6 +943,8 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	public static final String TYPE_EntityType = "ET";
 	/** SQL Mandatory = SQM */
 	public static final String TYPE_SQLMandatory = "SQM";
+	/** Info Window = IW */
+	public static final String TYPE_InfoWindow = "IW";
 	/** Set Type.
 		@param Type 
 		Type of Validation (SQL, Java Script, Java Language)
