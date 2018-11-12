@@ -171,7 +171,7 @@ public class InfoWindowElementHandler extends AbstractElementHandler {
 					ElementHandler handler = packOut.getHandler(I_AD_Process.Table_Name);
 					handler.packOut(packOut,document,null,infoProcess.getAD_Process_ID());
 				}
-				createInfoProcess(ctx, document, infoProcess.getAD_InfoColumn_ID());
+				createInfoProcess(ctx, document, infoProcess.getAD_InfoProcess_ID());
 			}
 
 			Query queryRel= new Query(ctx.ctx, "AD_InfoRelated", "AD_InfoWindow_ID = ?", getTrxName(ctx));
