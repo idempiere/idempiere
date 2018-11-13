@@ -303,7 +303,7 @@ public class PoFiller{
 				} else if (info.getColumnClass(index) == Timestamp.class) {
 					setTimestamp(qName);
 				}else if(DisplayType.TextLong == info.getColumnDisplayType(index)) {// export column from system have type is normal string, but import to system have this column but type is textlong (mean blob)
-					if (getStringValue (qName) != null || !isBlobOnPackinFile(qName)) {
+					if (getStringValue (qName) != null && !isBlobOnPackinFile(qName)) {
 						setString(qName);
 					}else {
 						setBlob(qName);
