@@ -12,6 +12,7 @@
 	<properties>
 		<zk-osgi-zip-file>https://sourceforge.net/projects/zk1/files/ZK/zk-8.6.0/zk-bin-osgi-8.6.0.zip</zk-osgi-zip-file>
 		<!-- https://github.com/eclipse/jetty.project/blob/jetty-9.4.9.v20180320/pom.xml up to verison of jetty -->
+		<jetty.version>9.4.13.v20181111</jetty.version>
 		<jetty.alpn.api.version>1.1.3.v20160715</jetty.alpn.api.version>
 		<jetty.jsp.version>8.5.33</jetty.jsp.version>
 		<jetty.conscrypt.version>8.1.12.v20180117</jetty.conscrypt.version>
@@ -32,6 +33,7 @@
 		<apache.cxf.databinding.version>3.1.17</apache.cxf.databinding.version>
 		<activation.version>1.2.0</activation.version>
 		<annotation.version>1.3.2</annotation.version>
+		<asm.version>7.0</asm.version>
 	</properties>
 	
     <repositories>
@@ -48,6 +50,10 @@
 	        <id>jasperstudio-6.6.0</id>
 	        <url>https://sourceforge.net/projects/jasperstudio/files/updatesite/6.6.0</url>
             <layout>p2</layout>
+        </repository>
+        <repository>
+            <id>zkoss</id>
+            <url>http://mavensync.zkoss.org/maven2</url>
         </repository>
     </repositories>
 
@@ -126,11 +132,6 @@
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
-										<!-- <artifact> <id>org.ow2.asm:asm-commons:jar:6.0</id> <source>true</source> 
-											<transitive>false</transitive> </artifact> <artifact> <id>org.ow2.asm:asm-tree:jar:6.0</id> 
-											<source>true</source> <transitive>false</transitive> </artifact> <artifact> 
-											<id>org.ow2.asm:asm:jar:6.0</id> <source>true</source> <transitive>false</transitive> 
-											</artifact> -->
 										<artifact>
 											<id>org.apache.taglibs:taglibs-standard-impl:jar:${org.apache.taglibs.version}</id>
 											<source>true</source>
@@ -147,7 +148,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle:jar:1.0.14</id>
+											<id>org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle:jar:1.1</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -1195,6 +1196,273 @@ it also resolve issue confilic between eclipse runtime and tycho build
 										</artifact>
 									</artifacts>
 								</feature>
+								<feature>
+									<id>org.idempiere.asm.feature</id>
+									<version>${asm.version}</version>
+									<label>Idempiere asm ${asm.version} feature</label>
+									<providerName>Idempiere</providerName>
+									<description>feature group asm osgi bundle get from maven</description>
+									<copyright>Idempiere</copyright>
+									<license>GPL v2.1</license>
+									<generateSourceFeature>true</generateSourceFeature>
+
+									<artifacts>
+										<artifact>
+											<id>org.ow2.asm:asm-commons:jar:${asm.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.ow2.asm:asm-tree:jar:${asm.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.ow2.asm:asm:jar:${asm.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.ow2.asm:asm-analysis:jar:${asm.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.ow2.asm:asm-util:jar:${asm.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+									</artifacts>
+								</feature>
+
+								<feature>
+									<id>org.idempiere.jetty.feature</id>
+									<version>${jetty.version}</version>
+									<label>Idempiere jetty ${jetty.version} feature</label>
+									<providerName>Idempiere</providerName>
+									<description>feature group jetty osgi bundle get from maven</description>
+									<copyright>Idempiere</copyright>
+									<license>GPL v2.1</license>
+									<generateSourceFeature>true</generateSourceFeature>
+
+									<artifacts>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-alpn-conscrypt-server:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-alpn-openjdk8-server:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-alpn-server:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-alpn-client:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-annotations:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:apache-jsp:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-client:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-continuation:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-deploy:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-http:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.http2:http2-client:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.http2:http2-server:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.http2:http2-common:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.http2:http2-hpack:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.http2:http2-http-client-transport:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-io:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-jaas:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-jmx:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-jndi:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.osgi:jetty-osgi-boot:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.osgi:jetty-osgi-alpn:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.osgi:jetty-osgi-boot-jsp:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.osgi:jetty-osgi-boot-warurl:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.osgi:jetty-httpservice:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-plus:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-proxy:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-rewrite:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-security:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-jaspi:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-server:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-servlet:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-servlets:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-util:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-util-ajax:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-webapp:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty:jetty-xml:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.websocket:websocket-api:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.websocket:websocket-client:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.websocket:websocket-common:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.websocket:websocket-server:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.websocket:websocket-servlet:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.websocket:javax-websocket-server-impl:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.eclipse.jetty.websocket:javax-websocket-client-impl:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+									</artifacts>
+								</feature>
 							</featureDefinitions>
 							<artifacts>
 								<artifact>
@@ -1409,7 +1677,7 @@ it also resolve issue confilic between eclipse runtime and tycho build
 					    	<!-- binary of org.apache.aries.spifly.dynamic.bundle combine from org.apache.aries.spifly.core-internal org.apache.aries.spifly.weaver-internal and org.apache.aries.spifly.dynamic.bundle but on maven source come only org.apache.aries.spifly.dynamic.bundle
 					    	so i recreate source bundle to help debug
 					    	https://issues.apache.org/jira/browse/ARIES-1859 -->
-						    <url>${url.file.srv}/jarfile/6.1/org.apache.aries.spifly.dynamic.bundle.source_1.0.14.jar</url>
+						    <url>${url.file.srv}/jarfile/6.1/org.apache.aries.spifly.dynamic.bundle.source_1.1.jar</url>
 						    <unpack>false</unpack>
 						    <outputDirectory>${project.build.directory}/repository/plugins</outputDirectory>
 						    <skipCache>true</skipCache>
