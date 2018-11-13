@@ -204,7 +204,7 @@ public class MTree_Base extends X_AD_Tree
 	 */
 	public static MTree_Base get (Properties ctx, int AD_Tree_ID, String trxName)
 	{
-		Integer key = new Integer (AD_Tree_ID);
+		Integer key = Integer.valueOf(AD_Tree_ID);
 		MTree_Base retValue = (MTree_Base) s_cache.get (key);
 		if (retValue != null)
 			return retValue;

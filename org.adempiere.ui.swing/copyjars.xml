@@ -5,6 +5,6 @@
         <get src="${url.maven2}/com/jgoodies/looks/2.0.4/looks-2.0.4.jar" dest="lib/looks.jar" usetimestamp="true" verbose="true" retries="5" />
         <!-- old version is only for swing, but can't find out old version, so use jar for Swing, SWT and JavaFX to keep same version -->
         <get src="${url.maven2}/com/miglayout/miglayout/3.7.1/miglayout-3.7.1.jar" dest="lib/miglayout.jar" usetimestamp="true" verbose="true" retries="5" />
-        <get src="${url.file.srv}/jarfile/5.1/jpedal.jar" dest="lib/jpedal.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/6.1/jpedal.jar" dest="lib/jpedal.jar" usetimestamp="true" verbose="true" retries="5" />
 	</target>
 </project>

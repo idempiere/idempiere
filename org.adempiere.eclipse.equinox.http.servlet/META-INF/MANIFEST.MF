@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Bundle-SymbolicName: org.adempiere.eclipse.equinox.http.servlet
 Eclipse-LazyStart: true
 Eclipse-SourceReferences: scm:cvs:pserver:dev.eclipse.org:/cvsroot/rt:
@@ -8,7 +8,7 @@ Eclipse-SourceReferences: scm:cvs:pserver:dev.eclipse.org:/cvsroot/rt:
  et;tag=v20100503
 Bundle-Activator: org.eclipse.equinox.http.servlet.internal.Activator
 Export-Package: org.eclipse.equinox.http.servlet;version="1.1.0"
-Bundle-Version: 5.1.0.qualifier
+Bundle-Version: 6.1.0.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
 Bundle-Name: %bundleName

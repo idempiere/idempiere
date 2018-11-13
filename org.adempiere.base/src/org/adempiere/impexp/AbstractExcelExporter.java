@@ -35,6 +35,7 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -166,13 +167,13 @@ public abstract class AbstractExcelExporter
 		if (isHeader) {
 			if (m_fontHeader == null) {
 				m_fontHeader = m_workbook.createFont();
-				m_fontHeader.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+				m_fontHeader.setBold(true);
 			}
 			font = m_fontHeader;
 		}
 		else if (isFunctionRow()) {
 			font = m_workbook.createFont();
-			font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+			font.setBold(true);
 			font.setItalic(true);
 		}
 		else {
@@ -228,27 +229,36 @@ public abstract class AbstractExcelExporter
 		String key = "cell-"+col+"-"+displayType;
 		HSSFCellStyle cs = m_styles.get(key);
 		if (cs == null) {
-			boolean isHighlightNegativeNumbers = true;
 			cs = m_workbook.createCellStyle();
 			HSSFFont font = getFont(false);
 			cs.setFont(font);
 			// Border
-			cs.setBorderLeft((short)1);
-			cs.setBorderTop((short)1);
-			cs.setBorderRight((short)1);
-			cs.setBorderBottom((short)1);
+			cs.setBorderLeft(BorderStyle.THIN);
+			cs.setBorderTop(BorderStyle.THIN);
+			cs.setBorderRight(BorderStyle.THIN);
+			cs.setBorderBottom(BorderStyle.THIN);
 			//
-			if (DisplayType.isDate(displayType)) {
-				cs.setDataFormat(m_dataFormat.getFormat(DisplayType.getDateFormat(getLanguage()).toPattern()));
-			}
-			else if (DisplayType.isNumeric(displayType)) {
-				DecimalFormat df = DisplayType.getNumberFormat(displayType, getLanguage());
-				String format = getFormatString(df, isHighlightNegativeNumbers);
-				cs.setDataFormat(m_dataFormat.getFormat(format));
-			}
+			String cellFormat = getCellFormat(row, col);
+			if (cellFormat != null)
+				cs.setDataFormat(m_dataFormat.getFormat(cellFormat));
 			m_styles.put(key, cs);
 		}
 		return cs;
+	}
+	
+	protected String getCellFormat(int row, int col) {
+		boolean isHighlightNegativeNumbers = true;
+		int displayType = getDisplayType(row, col);
+		String cellFormat = null;
+		
+		if (DisplayType.isDate(displayType)) {
+			cellFormat = DisplayType.getDateFormat(getLanguage()).toPattern();
+		} else if (DisplayType.isNumeric(displayType)) {
+			DecimalFormat df = DisplayType.getNumberFormat(displayType, getLanguage());
+			cellFormat = getFormatString(df, isHighlightNegativeNumbers);
+		}
+		
+		return cellFormat;
 	}
 
 	private HSSFCellStyle getHeaderStyle(int col)
@@ -259,10 +269,10 @@ public abstract class AbstractExcelExporter
 			HSSFFont font_header = getFont(true);
 			cs_header = m_workbook.createCellStyle();
 			cs_header.setFont(font_header);
-			cs_header.setBorderLeft((short)2);
-			cs_header.setBorderTop((short)2);
-			cs_header.setBorderRight((short)2);
-			cs_header.setBorderBottom((short)2);
+			cs_header.setBorderLeft(BorderStyle.MEDIUM);
+			cs_header.setBorderTop(BorderStyle.MEDIUM);
+			cs_header.setBorderRight(BorderStyle.MEDIUM);
+			cs_header.setBorderBottom(BorderStyle.MEDIUM);
 			cs_header.setDataFormat(HSSFDataFormat.getBuiltinFormat("text"));
 			cs_header.setWrapText(true);
 			m_styles.put(key, cs_header);

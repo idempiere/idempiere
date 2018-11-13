@@ -2,7 +2,8 @@
 <feature
       id="org.adempiere.server.feature"
       label="iDempiere Server-feature"
-      version="5.1.0.qualifier">
+      version="6.1.0.qualifier"
+      provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -83,13 +84,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.jdt.core.compiler.batch"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.adempiere.report.jasper.webapp"
          download-size="0"
          install-size="0"
@@ -105,13 +99,6 @@
 
    <plugin
          id="org.restlet.ext.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.annotation-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -160,13 +147,6 @@
 
    <plugin
          id="org.idempiere.webservices"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.sun.mail.javax.mail"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -461,13 +441,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.jetty.xml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.jetty.osgi.alpn.fragment"
          download-size="0"
          install-size="0"
@@ -516,6 +489,55 @@
          install-size="0"
          version="0.0.0"
          fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jdt.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.resources"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.expressions"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.filesystem"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.text"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.commands"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jetty.continuation"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

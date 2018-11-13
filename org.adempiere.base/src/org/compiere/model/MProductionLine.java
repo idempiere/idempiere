@@ -20,9 +20,9 @@ public class MProductionLine extends X_M_ProductionLine {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5939914729719167512L;
+	private static final long serialVersionUID = 3720901152312853611L;
 
-	private MProduction productionParent;
+	protected MProduction productionParent;
 
 
 	/**
@@ -323,7 +323,7 @@ public class MProductionLine extends X_M_ProductionLine {
 		
 	}
 
-	private int getEndProduct_ID() {
+	protected int getEndProduct_ID() {
 		if (productionParent != null) {
 			return productionParent.getM_Product_ID();
 		} else if (getM_Production_ID() > 0) {
@@ -333,7 +333,7 @@ public class MProductionLine extends X_M_ProductionLine {
 		}
 	}
 
-	private int deleteMA() {
+	protected int deleteMA() {
 		String sql = "DELETE FROM M_ProductionLineMA WHERE M_ProductionLine_ID = " + get_ID();
 		int count = DB.executeUpdateEx( sql, get_TrxName() );
 		return count;

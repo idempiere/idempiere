@@ -213,7 +213,6 @@ public class SwapFile
 	protected void finalize() throws Throwable //NOSONAR
 	{
 		dispose();
-		super.finalize();
 	}
 
 

@@ -17,6 +17,7 @@
 package org.compiere.acct;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -780,7 +781,7 @@ public class Doc_AllocationHdr extends Doc
 			//	Round
 			int precision = as.getStdPrecision();
 			if (invoiceDifference.scale() > precision)
-				invoiceDifference = invoiceDifference.setScale(precision, BigDecimal.ROUND_HALF_UP);
+				invoiceDifference = invoiceDifference.setScale(precision, RoundingMode.HALF_UP);
 			StringBuilder d2 = new StringBuilder("(partial) = ").append(invoiceDifference).append(" - Multiplier=").append(multiplier);
 			if (log.isLoggable(Level.FINE)) log.fine(d2.toString());
 			descriptionInv.append(" - ").append(d2);
@@ -847,7 +848,7 @@ public class Doc_AllocationHdr extends Doc
 				//	Round
 				int precision = as.getStdPrecision();
 				if (paymentDifference.scale() > precision)
-					paymentDifference = paymentDifference.setScale(precision, BigDecimal.ROUND_HALF_UP);
+					paymentDifference = paymentDifference.setScale(precision, RoundingMode.HALF_UP);
 				StringBuilder d2 = new StringBuilder("(partial) = ").append(paymentDifference).append(" - Multiplier=").append(multiplier);
 				if (log.isLoggable(Level.FINE)) log.fine(d2.toString());
 				descriptionPay.append(" - ").append(d2);
@@ -1193,10 +1194,10 @@ class Doc_AllocationTax
 			|| amt.signum() == 0)
 			return Env.ZERO;
 		//
-		BigDecimal multiplier = tax.divide(total, 10, BigDecimal.ROUND_HALF_UP);
+		BigDecimal multiplier = tax.divide(total, 10, RoundingMode.HALF_UP);
 		BigDecimal retValue = multiplier.multiply(amt);
 		if (retValue.scale() > precision)
-			retValue = retValue.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			retValue = retValue.setScale(precision, RoundingMode.HALF_UP);
 		if (log.isLoggable(Level.FINE)) log.fine(retValue + " (Mult=" + multiplier + "(Prec=" + precision + ")");
 		return retValue;
 	}	//	calcAmount

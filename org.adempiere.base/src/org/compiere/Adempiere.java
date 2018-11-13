@@ -67,11 +67,11 @@ public final class Adempiere
 	/** Timestamp                   */
 	static public final String	ID				= "$Id: Adempiere.java,v 1.8 2006/08/11 02:58:14 jjanke Exp $";
 	/** Main Version String         */
-	static public String	MAIN_VERSION	= "Release 5.1";
+	static public String	MAIN_VERSION	= "Release 6.1";
 	/** Detail Version as date      Used for Client/Server		*/
-	static public String	DATE_VERSION	= "2017-10-31";
+	static public String	DATE_VERSION	= "2018-11-04";
 	/** Database Version as date    Compared with AD_System		*/
-	static public String	DB_VERSION		= "2017-10-31";
+	static public String	DB_VERSION		= "2018-11-04";
 
 	/** Product Name            */
 	static public final String	NAME 			= "iDempiere\u00AE";
@@ -92,7 +92,7 @@ public final class Adempiere
 	/** Subtitle                */
 	static public final String	SUB_TITLE		= "Smart Suite ERP, CRM and SCM";
 	static public final String	ADEMPIERE_R		= "iDempiere\u00AE";
-	static public final String	COPYRIGHT		= "\u00A9 1999-2016 iDempiere\u00AE";
+	static public final String	COPYRIGHT		= "\u00A9 1999-2018 iDempiere\u00AE";
 
 	static private String		s_ImplementationVersion = null;
 	static private String		s_ImplementationVendor = null;

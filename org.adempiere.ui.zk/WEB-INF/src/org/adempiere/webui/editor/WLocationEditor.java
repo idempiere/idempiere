@@ -111,7 +111,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
     {
         if (m_value == null)
             return null;
-        return new Integer(m_value.getC_Location_ID());
+        return Integer.valueOf(m_value.getC_Location_ID());
     }
 
     @Override
@@ -194,7 +194,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 		            int C_Location_ID = 0;
 		            if (m_value != null)
 		                C_Location_ID = m_value.getC_Location_ID();
-		            Integer ii = new Integer(C_Location_ID);
+		            Integer ii = Integer.valueOf(C_Location_ID);
 
 		            if (C_Location_ID != 0 && oldValue == 0)
 		            {

@@ -25,7 +25,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -531,7 +530,7 @@ public final class Find extends CDialog
 			/**/
 
 			//  TargetFields
-			m_targetFields.put (new Integer(mField.getAD_Column_ID()), mField);
+			m_targetFields.put (Integer.valueOf(mField.getAD_Column_ID()), mField);
 		}   //  for all target tab fields
 
 		//	Disable simple query fields
@@ -646,7 +645,7 @@ public final class Find extends CDialog
             }
         };
         advancedTable.getActionMap().put(im.get(tab), tabActionWrapper);
-        KeyStroke shiftTab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.SHIFT_MASK);
+        KeyStroke shiftTab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, ActionEvent.SHIFT_MASK);
         final Action shiftTabAction = advancedTable.getActionMap().get(im.get(shiftTab));
 		Action shiftTabActionWrapper = new AbstractAction()
         {
@@ -1444,7 +1443,7 @@ public final class Find extends CDialog
 				if (in instanceof Integer)
 					return in;
 				int i = Integer.parseInt(in.toString());
-				return new Integer(i);
+				return Integer.valueOf(i);
 			}
 			//	Return BigDecimal
 			else if (DisplayType.isNumeric(dt))
@@ -1512,7 +1511,7 @@ public final class Find extends CDialog
 				|| (DisplayType.isID(dt) && field.getColumnName().endsWith("_ID")))
 			{
 				int i = Integer.parseInt(in);
-				return new Integer(i);
+				return Integer.valueOf(i);
 			}
 			//	Return BigDecimal
 			else if (DisplayType.isNumeric(dt))

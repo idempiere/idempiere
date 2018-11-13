@@ -26,7 +26,6 @@ import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
-import org.compiere.util.TimeUtil;
 
 /**
  *	Template for DocAction

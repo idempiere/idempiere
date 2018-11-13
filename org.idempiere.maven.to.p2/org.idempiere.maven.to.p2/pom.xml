@@ -3,26 +3,35 @@
 	<parent>
 		<groupId>org.idempiere</groupId>
 		<artifactId>org.idempiere.parent</artifactId>
-		<version>5.1.0-SNAPSHOT</version>
+		<version>6.1.0-SNAPSHOT</version>
 		<relativePath>../../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>org.idempiere.maven.to.p2</artifactId>
 	<packaging>pom</packaging>
 	<properties>
-		<zk-osgi-zip-file>https://www.zkoss.org/zkdownload/downloadEvalFile?id=1245081552</zk-osgi-zip-file>
+		<zk-osgi-zip-file>https://sourceforge.net/projects/zk1/files/ZK/zk-8.5.0/zk-bin-osgi-8.5.0.zip</zk-osgi-zip-file>
 		<!-- https://github.com/eclipse/jetty.project/blob/jetty-9.4.9.v20180320/pom.xml up to verison of jetty -->
 		<jetty.alpn.api.version>1.1.3.v20160715</jetty.alpn.api.version>
-		<jetty.jsp.version>8.5.24.2</jetty.jsp.version>
+		<jetty.jsp.version>8.5.33</jetty.jsp.version>
 		<jetty.conscrypt.version>8.1.12.v20180117</jetty.conscrypt.version>
 		<jetty.osgi.servlet.api.version>3.1.0.M3</jetty.osgi.servlet.api.version>
-		<jetty.conscrypt.openjdk.uber.version>1.1.0</jetty.conscrypt.openjdk.uber.version>
+		<org.apache.taglibs.version>1.2.5</org.apache.taglibs.version>
+		<groovy.version>2.5.3</groovy.version>
+		<org.bouncycastle.version>1.60</org.bouncycastle.version>
+		<jetty.conscrypt.openjdk.uber.version>1.4.0</jetty.conscrypt.openjdk.uber.version>
         <jackson.version>2.9.5</jackson.version> <!--it up to version of jasperreport engine-->
         <stax2.api.version>3.1.4</stax2.api.version> <!--it up to version of jasperreport engine-->
         <validation.api.version>1.1.0.Final</validation.api.version> <!--it up to version of jasperreport engine-->
         <woodstox.core.version>5.0.3</woodstox.core.version> <!--it up to version of jasperreport engine-->
         <json.version>20171018</json.version> <!--it up to version of jackson-datatype-json-org-->
         <slf4j.version>1.7.25</slf4j.version>
+		<xml.ws.version>2.3.1</xml.ws.version>
+		<xml.ws.export.version>2.4</xml.ws.export.version>
+		<apache.cxf.version>3.2.6</apache.cxf.version>
+		<apache.cxf.databinding.version>3.1.17</apache.cxf.databinding.version>
+		<activation.version>1.2.0</activation.version>
+		<annotation.version>1.3.2</annotation.version>
 	</properties>
 	
     <repositories>
@@ -70,7 +79,7 @@
 									<generateSourceFeature>true</generateSourceFeature>
 									<artifacts>
 										<artifact>
-											<id>org.passay:passay:jar:1.3.0</id>
+											<id>org.passay:passay:jar:1.3.1</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -91,7 +100,13 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.eclipse.jetty.orbit:org.eclipse.jdt.core:jar:3.8.2.v20130121</id>
+											<id>org.eclipse.jetty:jetty-continuation:jar:${jetty.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+										    <!-- it's maintain and up to date than org.eclipse.jdt.core.compiler.batch -->
+											<id>org.eclipse.jdt:org.eclipse.jdt.core:jar:${jdtVersion}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -101,17 +116,13 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>javax.annotation:javax.annotation-api:jar:1.3.1</id>
+											<id>javax.annotation:javax.annotation-api:jar:${annotation.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>javax.management.j2ee:javax.management.j2ee-api:jar:1.1.1</id>
-											<source>true</source>
-											<transitive>false</transitive>
-										</artifact>
-										<artifact>
-											<id>com.sun.mail:javax.mail:jar:1.6.0</id>
+<!--consider to move to javax.mail:javax.mail-api:jar less dependency, but not sure full function-->
+											<id>com.sun.mail:javax.mail:jar:1.6.2</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -121,22 +132,22 @@
 											<id>org.ow2.asm:asm:jar:6.0</id> <source>true</source> <transitive>false</transitive> 
 											</artifact> -->
 										<artifact>
-											<id>org.apache.taglibs:taglibs-standard-impl:jar:1.2.5</id>
+											<id>org.apache.taglibs:taglibs-standard-impl:jar:${org.apache.taglibs.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.taglibs:taglibs-standard-spec:jar:1.2.5</id>
+											<id>org.apache.taglibs:taglibs-standard-spec:jar:${org.apache.taglibs.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.taglibs:taglibs-standard-jstlel:jar:1.2.5</id>
+											<id>org.apache.taglibs:taglibs-standard-jstlel:jar:${org.apache.taglibs.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle:jar:1.0.10</id>
+											<id>org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle:jar:1.0.14</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -146,7 +157,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.cglib:jar:3.2.5_1</id>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.cglib:jar:3.2.6_1</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -161,17 +172,17 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.felix:org.apache.felix.webconsole:jar:4.3.4</id>
+											<id>org.apache.felix:org.apache.felix.webconsole:jar:4.3.8</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.felix:org.apache.felix.webconsole.plugins.ds:jar:2.0.8</id>
+											<id>org.apache.felix:org.apache.felix.webconsole.plugins.ds:jar:2.1.0</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.felix:org.apache.felix.webconsole.plugins.memoryusage:jar:1.0.6</id>
+											<id>org.apache.felix:org.apache.felix.webconsole.plugins.memoryusage:jar:1.0.8</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -186,22 +197,22 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>com.itextpdf:itextpdf:jar:5.5.12</id>
+											<id>com.itextpdf:itextpdf:jar:5.5.13</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.bouncycastle:bcpkix-jdk15on:jar:1.58</id>
+											<id>org.bouncycastle:bcpkix-jdk15on:jar:${org.bouncycastle.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.bouncycastle:bcprov-jdk15on:jar:1.58</id>
+											<id>org.bouncycastle:bcprov-jdk15on:jar:${org.bouncycastle.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.bouncycastle:bcmail-jdk15on:jar:1.58</id>
+											<id>org.bouncycastle:bcmail-jdk15on:jar:${org.bouncycastle.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -226,7 +237,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.cryptacular:cryptacular:jar:1.2.1</id>
+											<id>org.cryptacular:cryptacular:jar:1.2.2</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -236,7 +247,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.atmosphere:atmosphere-runtime:jar:2.4.16</id>
+											<id>org.atmosphere:atmosphere-runtime:jar:2.5.0</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -246,22 +257,107 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.codehaus.groovy:groovy-all:jar:2.4.13</id>
+											<id>org.codehaus.groovy:groovy:jar:${groovy.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>com.ibm.icu:icu4j:jar:60.2</id>
+											<id>org.codehaus.groovy:groovy-ant:jar:${groovy.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>joda-time:joda-time:jar:2.9.9</id>
+											<id>org.codehaus.groovy:groovy-cli-commons:jar:${groovy.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.commons:commons-configuration2:jar:2.2</id>
+											<id>org.codehaus.groovy:groovy-cli-picocli:jar:${groovy.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.groovy:groovy-console:jar:${groovy.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.groovy:groovy-datetime:jar:${groovy.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.groovy:groovy-docgenerator:jar:${groovy.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.groovy:groovy-groovydoc:jar:${groovy.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.groovy:groovy-groovysh:jar:${groovy.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.groovy:groovy-jmx:jar:${groovy.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.groovy:groovy-json:jar:${groovy.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.groovy:groovy-jsr223:jar:${groovy.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.groovy:groovy-macro:jar:${groovy.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.groovy:groovy-nio:jar:${groovy.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.groovy:groovy-servlet:jar:${groovy.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.groovy:groovy-sql:jar:${groovy.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.groovy:groovy-swing:jar:${groovy.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.groovy:groovy-xml:jar:${groovy.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.ibm.icu:icu4j:jar:63.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>joda-time:joda-time:jar:2.10</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.commons:commons-configuration2:jar:2.3</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -302,6 +398,703 @@
 										</artifact>
 										<artifact>
 											<id>org.slf4j:slf4j-jcl:jar:${slf4j.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>javax.transaction:javax.transaction-api:jar:1.3</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<!-- better javax.activation:javax.activation-api because include extra package -->
+											<id>com.sun.activation:javax.activation:jar:${activation.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>javax.xml.bind:jaxb-api:jar:${xml.ws.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.sun.xml.bind:jaxb-core:jar:2.3.0.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.sun.xml.bind:jaxb-impl:jar:${xml.ws.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.sun.xml.ws:jaxws-rt:jar:${xml.ws.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>javax.xml.ws:jaxws-api:jar:${xml.ws.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+											<override>true</override>
+											<instructions>
+												<Bundle-SymbolicName>jaxws-api</Bundle-SymbolicName>
+												<Bundle-Version>${xml.ws.version}</Bundle-Version>
+<!--Export-Package keep same original, copy here because tool will remake it-->
+												<Export-Package>javax.xml.ws;version="${xml.ws.export.version}";uses:="javax.xml.bind,javax.xml.bind.anno
+ tation,javax.xml.namespace,javax.xml.transform,javax.xml.ws.handler,j
+ avax.xml.ws.spi,javax.xml.ws.spi.http,org.w3c.dom",javax.xml.ws.handl
+ er;version="${xml.ws.export.version}";uses:="javax.xml.namespace,javax.xml.ws",javax.xml.ws.handler.soap
+ ;version="${xml.ws.export.version}";uses:="javax.xml.bind,javax.xml.namespace,javax.xml.soap,javax.xml.w
+ s.handler",javax.xml.ws.http;version="${xml.ws.export.version}";uses:="javax.xml.ws",javax.xml.ws.soap;version="${xml.ws.export.version}";u
+ ses:="javax.xml.soap,javax.xml.ws,javax.xml.ws.spi",javax.xml.ws.spi;version="${xml.ws.export.version}";
+ uses:="javax.xml.bind,javax.xml.namespace,javax.xml.transform,javax.x
+ ml.ws,javax.xml.ws.handler,javax.xml.ws.wsaddressing,org.w3c.dom",jav
+ ax.xml.ws.spi.http;version="${xml.ws.export.version}",javax.xml.ws.wsaddressing;version="${xml.ws.export.version}";uses:="javax.xml.bind.an
+ notation,javax.xml.namespace,javax.xml.transform,javax.xml.ws,org.w3c
+ .dom"</Export-Package>
+<!--keep same original, copy here because tool will remake it-->
+												<DynamicImport-Package>org.glassfish.hk2.osgiresourcelocator</DynamicImport-Package>
+<!--refe:note 1-->
+												<Import-Package>javax.xml.bind;version="[2.3,3)",javax.xml.bind.annota
+ tion;version="[2.3,3)",javax.xml.namespace,javax.xml.soap;version="[1
+ .4,2)",javax.xml.transform,javax.xml.transform.stream,org.w3c.dom</Import-Package>
+											    <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=9.0))"</Require-Capability>
+											</instructions>
+										</artifact>
+										<artifact>
+											<id>javax.interceptor:javax.interceptor-api:jar:1.2.2</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>javax.enterprise:cdi-api:jar:2.0.SP1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<!-- from https://mvnrepository.com/artifact/org.apache.activemq/activemq-core/5.7.0
+                                            this one correct than javax.management.j2ee, it let ejb is option import -->
+											<id>org.apache.geronimo.specs:geronimo-j2ee-management_1.1_spec:jar:1.0.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<!-- move from service plugin, it help get latest version -->
+										<artifact>
+											<id>org.apache.cxf:cxf-core:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-frontend-jaxws:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-frontend-jaxrs:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-transports-http:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-transports-http-jetty:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-bindings-soap:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-bindings-xml:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-frontend-simple:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-wsdl:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-spring-boot-autoconfigure:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-rs-http-sci:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-databinding-jaxb:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-ws-addr:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-ws-policy:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-rs-service-description:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-management:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-ws-transfer:jar:${apache.cxf.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-rs-extension-providers:jar:${apache.cxf.databinding.version}</id>
+											<!-- the latest is ${apache.cxf.version} (3.2.6) but hasn't XMLBeansElementProvider so use ${apache.cxf.databinding.version} 3.1.17
+											maybe it's on transite progress-->
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-databinding-xmlbeans:jar:${apache.cxf.databinding.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.cxf:cxf-rt-bindings-object:jar:${apache.cxf.databinding.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlbeans:xmlbeans:jar:3.0.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.wsdl4j:jar:1.6.3_1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.neethi:neethi:jar:3.1.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.ws.xmlschema:xmlschema-core:jar:2.2.3</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>commons-discovery:commons-discovery:jar:0.5</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>javax.ws.rs:jsr311-api:jar:1.1.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>javax.ws.rs:javax.ws.rs-api:jar:2.1.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>javax.jws:javax.jws-api:jar:1.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>javax.xml.soap:javax.xml.soap-api:jar:1.4.0</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>javax.xml.rpc:javax.xml.rpc-api:jar:1.1.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.codehaus.woodstox:stax2-api:jar:4.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-beans:jar:${springframework.version}</id>
+											<source>false</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-beans:jar:sources:${springframework.version}</id>
+											<source>false</source>
+											<transitive>false</transitive>
+                                            <override>true</override>
+											    <!-- source bundle also export package, so zk.ui detect wrong
+											    sometime it bind with source package, sometime it bind with binary but get import from source, so see package but don't see class
+											    -->
+											<instructions>
+											    <Export-Package/>
+											    <Private-Package/>
+											    <Private-Package/>
+											    <Bundle-SymbolicName>org.apache.servicemix.bundles.spring-beans.source</Bundle-SymbolicName>
+											    <Bundle-Name>spring-expression.source</Bundle-Name>
+												<Eclipse-SourceBundle>org.apache.servicemix.bundles.spring-beans;version="${springframework.version}";roots:="."</Eclipse-SourceBundle>
+											</instructions>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-core:jar:${springframework.version}</id>
+											<source>false</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-core:jar:sources:${springframework.version}</id>
+											<source>false</source>
+											<transitive>false</transitive>
+                                            <override>true</override>
+											    <!-- source bundle also export package, so zk.ui detect wrong
+											    sometime it bind with source package, sometime it bind with binary but get import from source, so see package but don't see class
+											    -->
+											<instructions>
+											    <Export-Package/>
+											    <Private-Package/>
+											    <Private-Package/>
+											    <Bundle-SymbolicName>org.apache.servicemix.bundles.spring-core.source</Bundle-SymbolicName>
+											    <Bundle-Name>spring-expression.source</Bundle-Name>
+												<Eclipse-SourceBundle>org.apache.servicemix.bundles.spring-core;version="${springframework.version}";roots:="."</Eclipse-SourceBundle>
+											</instructions>
+										</artifact>
+<!--										<artifact>
+											<id>org.springframework:spring-jcl:jar:${springframework.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+-->
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-context:jar:${springframework.version}</id>
+											<source>false</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-context:jar:sources:${springframework.version}</id>
+											<source>false</source>
+											<transitive>false</transitive>
+                                            <override>true</override>
+											    <!-- source bundle also export package, so zk.ui detect wrong
+											    sometime it bind with source package, sometime it bind with binary but get import from source, so see package but don't see class
+											    -->
+											<instructions>
+											    <Export-Package/>
+											    <Private-Package/>
+											    <Private-Package/>
+											    <Bundle-SymbolicName>org.apache.servicemix.bundles.spring-context.source</Bundle-SymbolicName>
+											    <Bundle-Name>spring-expression.source</Bundle-Name>
+												<Eclipse-SourceBundle>org.apache.servicemix.bundles.spring-context;version="${springframework.version}";roots:="."</Eclipse-SourceBundle>
+											</instructions>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-expression:jar:${springframework.version}</id>
+											<source>false</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-expression:jar:sources:${springframework.version}</id>
+											<source>false</source>
+											<transitive>false</transitive>
+                                            <override>true</override>
+											    <!-- source bundle also export package, so zk.ui detect wrong
+											    sometime it bind with source package, sometime it bind with binary but get import from source, so see package but don't see class
+											    -->
+											<instructions>
+											    <Export-Package/>
+											    <Private-Package/>
+											    <Private-Package/>
+											    <Bundle-SymbolicName>org.apache.servicemix.bundles.spring-expression.source</Bundle-SymbolicName>
+											    <Bundle-Name>spring-expression.source</Bundle-Name>
+												<Eclipse-SourceBundle>org.apache.servicemix.bundles.spring-expression;version="${springframework.version}";roots:="."</Eclipse-SourceBundle>
+											</instructions>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-aop:jar:sources:${springframework.version}</id>
+											<source>false</source>
+											<transitive>false</transitive>
+                                            <override>true</override>
+											    <!-- source bundle also export package, so zk.ui detect wrong
+											    sometime it bind with source package, sometime it bind with binary but get import from source, so see package but don't see class
+											    -->
+											<instructions>
+											    <Export-Package/>
+											    <Private-Package/>
+											    <Private-Package/>
+											    <Bundle-SymbolicName>org.apache.servicemix.bundles.spring-aop.source</Bundle-SymbolicName>
+											    <Bundle-Name>spring-aop.source</Bundle-Name>
+												<Eclipse-SourceBundle>org.apache.servicemix.bundles.spring-aop;version="${springframework.version}";roots:="."</Eclipse-SourceBundle>
+											</instructions>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-aop:jar:${springframework.version}</id>
+											<source>false</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-web:jar:sources:${springframework.version}</id>
+											<source>false</source>
+											<transitive>false</transitive>
+                                            <override>true</override>
+											    <!-- source bundle also export package, so zk.ui detect wrong
+											    sometime it bind with source package, sometime it bind with binary but get import from source, so see package but don't see class
+											    -->
+											<instructions>
+											    <Export-Package/>
+											    <Private-Package/>
+											    <Private-Package/>
+											    <Bundle-SymbolicName>org.apache.servicemix.bundles.spring-web.source</Bundle-SymbolicName>
+											    <Bundle-Name>spring-web.source</Bundle-Name>
+												<Eclipse-SourceBundle>org.apache.servicemix.bundles.spring-web;version="${springframework.version}";roots:="."</Eclipse-SourceBundle>
+											</instructions>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-web:jar:${springframework.version}</id>
+											<source>false</source>
+											<transitive>false</transitive>
+											<override>true</override>
+											<instructions>
+<!--export keep same original, copy here because tool will remake it-->
+											    <Export-Package>org.springframework.http;version="4.3.19.RELEASE";uses
+ :="org.springframework.core.io,org.springframework.core.io.support,or
+ g.springframework.util",org.springframework.http.client;version="4.3.
+ 19.RELEASE";uses:="com.squareup.okhttp,io.netty.channel,io.netty.chan
+ nel.socket,io.netty.handler.ssl,okhttp3,org.apache.http.client,org.ap
+ ache.http.client.config,org.apache.http.client.methods,org.apache.htt
+ p.impl.client,org.apache.http.impl.nio.client,org.apache.http.nio.cli
+ ent,org.apache.http.protocol,org.springframework.beans.factory,org.sp
+ ringframework.core.task,org.springframework.http,org.springframework.
+ util.concurrent",org.springframework.http.client.support;version="4.3
+ .19.RELEASE";uses:="org.apache.commons.logging,org.springframework.be
+ ans.factory,org.springframework.http,org.springframework.http.client"
+ ,org.springframework.http.converter;version="4.3.19.RELEASE";uses:="j
+ avax.imageio,org.apache.commons.logging,org.springframework.core,org.
+ springframework.core.convert,org.springframework.core.io,org.springfr
+ amework.core.io.support,org.springframework.http,org.springframework.
+ util",org.springframework.http.converter.feed;version="4.3.19.RELEASE
+ ";uses:="com.rometools.rome.feed,com.rometools.rome.feed.atom,com.rom
+ etools.rome.feed.rss,org.springframework.http,org.springframework.htt
+ p.converter",org.springframework.http.converter.json;version="4.3.19.
+ RELEASE";uses:="com.fasterxml.jackson.annotation,com.fasterxml.jackso
+ n.core,com.fasterxml.jackson.databind,com.fasterxml.jackson.databind.
+ cfg,com.fasterxml.jackson.databind.deser,com.fasterxml.jackson.databi
+ nd.introspect,com.fasterxml.jackson.databind.jsontype,com.fasterxml.j
+ ackson.databind.ser,com.fasterxml.jackson.databind.util,com.google.gs
+ on,com.google.gson.reflect,org.springframework.beans.factory,org.spri
+ ngframework.beans.factory.config,org.springframework.context,org.spri
+ ngframework.http,org.springframework.http.converter",org.springframew
+ ork.http.converter.protobuf;version="4.3.19.RELEASE";uses:="com.googl
+ e.protobuf,org.springframework.http,org.springframework.http.converte
+ r",org.springframework.http.converter.support;version="4.3.19.RELEASE
+ ";uses:="org.springframework.http.converter",org.springframework.http
+ .converter.xml;version="4.3.19.RELEASE";uses:="com.fasterxml.jackson.
+ databind,javax.xml.bind,javax.xml.stream,javax.xml.transform,org.spri
+ ngframework.http,org.springframework.http.converter,org.springframewo
+ rk.http.converter.json,org.springframework.oxm",org.springframework.h
+ ttp.server;version="4.3.19.RELEASE";uses:="javax.servlet,javax.servle
+ t.http,org.springframework.http",org.springframework.remoting.caucho;
+ version="4.3.19.RELEASE";uses:="com.caucho.burlap.client,com.caucho.h
+ essian.client,com.caucho.hessian.io,com.caucho.hessian.server,com.sun
+ .net.httpserver,javax.servlet,javax.servlet.http,org.aopalliance.inte
+ rcept,org.springframework.beans.factory,org.springframework.remoting,
+ org.springframework.remoting.support,org.springframework.web",org.spr
+ ingframework.remoting.httpinvoker;version="4.3.19.RELEASE";uses:="com
+ .sun.net.httpserver,javax.servlet,javax.servlet.http,org.aopalliance.
+ intercept,org.apache.commons.logging,org.apache.http,org.apache.http.
+ client,org.apache.http.client.config,org.apache.http.client.methods,o
+ rg.springframework.beans.factory,org.springframework.remoting,org.spr
+ ingframework.remoting.rmi,org.springframework.remoting.support,org.sp
+ ringframework.web",org.springframework.remoting.jaxws;version="4.3.19
+ .RELEASE";uses:="com.sun.net.httpserver,javax.jws,javax.xml.namespace
+ ,javax.xml.soap,javax.xml.ws,javax.xml.ws.handler,javax.xml.ws.soap,o
+ rg.aopalliance.intercept,org.apache.commons.logging,org.springframewo
+ rk.beans.factory,org.springframework.core.io,org.springframework.remo
+ ting.soap",org.springframework.web;version="4.3.19.RELEASE";uses:="ja
+ vax.servlet,javax.servlet.annotation,javax.servlet.http,org.springfra
+ mework.http",org.springframework.web.accept;version="4.3.19.RELEASE";
+ uses:="javax.servlet,org.springframework.beans.factory,org.springfram
+ ework.core.io,org.springframework.http,org.springframework.web,org.sp
+ ringframework.web.context,org.springframework.web.context.request,org
+ .springframework.web.util",org.springframework.web.bind;version="4.3.
+ 19.RELEASE";uses:="javax.servlet,org.springframework.beans,org.spring
+ framework.core,org.springframework.validation,org.springframework.web
+ .multipart,org.springframework.web.util",org.springframework.web.bind
+ .annotation;version="4.3.19.RELEASE";uses:="org.springframework.core.
+ annotation,org.springframework.http,org.springframework.stereotype",o
+ rg.springframework.web.bind.annotation.support;version="4.3.19.RELEAS
+ E";uses:="org.springframework.core,org.springframework.http,org.sprin
+ gframework.http.converter,org.springframework.ui,org.springframework.
+ web.bind,org.springframework.web.bind.annotation,org.springframework.
+ web.bind.support,org.springframework.web.context.request",org.springf
+ ramework.web.bind.support;version="4.3.19.RELEASE";uses:="javax.valid
+ ation,org.springframework.beans,org.springframework.core,org.springfr
+ amework.core.convert,org.springframework.validation,org.springframewo
+ rk.web.bind,org.springframework.web.context,org.springframework.web.c
+ ontext.request",org.springframework.web.client;version="4.3.19.RELEAS
+ E";uses:="org.springframework.core,org.springframework.core.task,org.
+ springframework.http,org.springframework.http.client,org.springframew
+ ork.http.client.support,org.springframework.http.converter,org.spring
+ framework.util.concurrent,org.springframework.web.util",org.springfra
+ mework.web.client.support;version="4.3.19.RELEASE";uses:="org.apache.
+ commons.logging,org.springframework.http.client,org.springframework.w
+ eb.client",org.springframework.web.context;version="4.3.19.RELEASE";u
+ ses:="javax.servlet,org.apache.commons.logging,org.springframework.be
+ ans.factory,org.springframework.context,org.springframework.core.env,
+ org.springframework.web",org.springframework.web.context.annotation;v
+ ersion="4.3.19.RELEASE";uses:="org.springframework.context.annotation
+ ,org.springframework.core.annotation",org.springframework.web.context
+ .request;version="4.3.19.RELEASE";uses:="javax.faces.context,javax.se
+ rvlet,javax.servlet.http,org.apache.log4j,org.springframework.beans.f
+ actory,org.springframework.beans.factory.config,org.springframework.h
+ ttp,org.springframework.ui",org.springframework.web.context.request.a
+ sync;version="4.3.19.RELEASE";uses:="javax.servlet,javax.servlet.http
+ ,org.springframework.beans.factory,org.springframework.core.task,org.
+ springframework.web.context.request",org.springframework.web.context.
+ support;version="4.3.19.RELEASE";uses:="groovy.lang,javax.servlet,jav
+ ax.servlet.http,org.apache.commons.logging,org.springframework.beans,
+ org.springframework.beans.factory,org.springframework.beans.factory.c
+ onfig,org.springframework.beans.factory.groovy,org.springframework.be
+ ans.factory.support,org.springframework.beans.factory.xml,org.springf
+ ramework.context,org.springframework.context.annotation,org.springfra
+ mework.context.support,org.springframework.core.env,org.springframewo
+ rk.core.io,org.springframework.core.io.support,org.springframework.ui
+ .context,org.springframework.web.context",org.springframework.web.cor
+ s;version="4.3.19.RELEASE";uses:="javax.servlet.http,org.springframew
+ ork.http,org.springframework.http.server,org.springframework.util,org
+ .springframework.web.util",org.springframework.web.filter;version="4.
+ 3.19.RELEASE";uses:="javax.servlet,javax.servlet.http,org.apache.comm
+ ons.logging,org.apache.log4j,org.springframework.beans,org.springfram
+ ework.beans.factory,org.springframework.context,org.springframework.c
+ ore.env,org.springframework.http,org.springframework.http.converter,o
+ rg.springframework.web.context,org.springframework.web.cors",org.spri
+ ngframework.web.jsf;version="4.3.19.RELEASE";uses:="javax.faces.appli
+ cation,javax.faces.context,javax.faces.event,org.springframework.bean
+ s.factory,org.springframework.web.context",org.springframework.web.js
+ f.el;version="4.3.19.RELEASE";uses:="javax.el,org.apache.commons.logg
+ ing,org.springframework.beans.factory,org.springframework.beans.facto
+ ry.access.el,org.springframework.web.context",org.springframework.web
+ .method;version="4.3.19.RELEASE";uses:="org.apache.commons.logging,or
+ g.springframework.beans.factory,org.springframework.context,org.sprin
+ gframework.core,org.springframework.core.annotation,org.springframewo
+ rk.http,org.springframework.util",org.springframework.web.method.anno
+ tation;version="4.3.19.RELEASE";uses:="javax.servlet,org.apache.commo
+ ns.logging,org.springframework.beans,org.springframework.beans.factor
+ y.config,org.springframework.core,org.springframework.core.convert,or
+ g.springframework.util,org.springframework.web.bind,org.springframewo
+ rk.web.bind.support,org.springframework.web.context.request,org.sprin
+ gframework.web.method,org.springframework.web.method.support,org.spri
+ ngframework.web.util",org.springframework.web.method.support;version=
+ "4.3.19.RELEASE";uses:="org.apache.commons.logging,org.springframewor
+ k.core,org.springframework.core.convert,org.springframework.http,org.
+ springframework.ui,org.springframework.web.bind.support,org.springfra
+ mework.web.context.request,org.springframework.web.method,org.springf
+ ramework.web.util",org.springframework.web.multipart;version="4.3.19.
+ RELEASE";uses:="javax.servlet.http,org.springframework.core,org.sprin
+ gframework.core.io,org.springframework.http,org.springframework.util"
+ ,org.springframework.web.multipart.commons;version="4.3.19.RELEASE";u
+ ses:="javax.servlet,javax.servlet.http,org.apache.commons.fileupload,
+ org.apache.commons.fileupload.disk,org.apache.commons.logging,org.spr
+ ingframework.core.io,org.springframework.util,org.springframework.web
+ .context,org.springframework.web.multipart",org.springframework.web.m
+ ultipart.support;version="4.3.19.RELEASE";uses:="javax.servlet,javax.
+ servlet.http,org.springframework.beans.propertyeditors,org.springfram
+ ework.core,org.springframework.http,org.springframework.http.server,o
+ rg.springframework.util,org.springframework.web.filter,org.springfram
+ ework.web.multipart",org.springframework.web.util;version="4.3.19.REL
+ EASE";uses:="javax.servlet,javax.servlet.http,javax.servlet.jsp.tagex
+ t,org.apache.commons.logging,org.springframework.http,org.springframe
+ work.util"</Export-Package>
+<!--refe: note 1-->
+											    <Import-Package>com.squareup.okhttp.internal.http;resolution:=optional
+ ,javax.net.ssl,okhttp3.internal.http;resolution:=optional,com.caucho.
+ burlap.client;version="[4,5)";resolution:=optional,com.caucho.burlap.
+ io;version="[4,5)";resolution:=optional,com.caucho.burlap.server;vers
+ ion="[4,5)";resolution:=optional,com.caucho.hessian;version="[4,5)";r
+ esolution:=optional,com.caucho.hessian.client;version="[4,5)";resolut
+ ion:=optional,com.caucho.hessian.io;version="[4,5)";resolution:=optio
+ nal,com.caucho.hessian.server;version="[4,5)";resolution:=optional,co
+ m.fasterxml.jackson.annotation;version="[2,3)";resolution:=optional,c
+ om.fasterxml.jackson.core;version="[2,3)";resolution:=optional,com.fa
+ sterxml.jackson.core.util;version="[2,3)";resolution:=optional,com.fa
+ sterxml.jackson.databind;version="[2,3)";resolution:=optional,com.fas
+ terxml.jackson.databind.cfg;version="[2,3)";resolution:=optional,com.
+ fasterxml.jackson.databind.deser;version="[2,3)";resolution:=optional
+ ,com.fasterxml.jackson.databind.introspect;version="[2,3)";resolution
+ :=optional,com.fasterxml.jackson.databind.jsontype;version="[2,3)";re
+ solution:=optional,com.fasterxml.jackson.databind.module;version="[2,
+ 3)";resolution:=optional,com.fasterxml.jackson.databind.ser;version="
+ [2,3)";resolution:=optional,com.fasterxml.jackson.databind.type;versi
+ on="[2,3)";resolution:=optional,com.fasterxml.jackson.databind.util;v
+ ersion="[2,3)";resolution:=optional,com.fasterxml.jackson.dataformat.
+ xml;version="[2,3)";resolution:=optional,com.google.gson;version="[2.
+ 3,3)";resolution:=optional,com.google.gson.reflect;version="[2.3,3)";
+ resolution:=optional,com.google.protobuf;version="[2.6,3)";resolution
+ :=optional,com.googlecode.protobuf.format;resolution:=optional,com.sq
+ uareup.okhttp;version="[2.4,3)";resolution:=optional,com.rometools.ro
+ me.feed;version="[1.5,2)";resolution:=optional,com.rometools.rome.fee
+ d.atom;version="[1.5,2)";resolution:=optional,com.rometools.rome.feed
+ .rss;version="[1.5,2)";resolution:=optional,com.rometools.rome.io;ver
+ sion="[1.5,2)";resolution:=optional,com.sun.net.httpserver;resolution
+ :=optional,groovy.lang;version="[2.4,3)";resolution:=optional,io.nett
+ y.bootstrap;resolution:=optional,io.netty.buffer;resolution:=optional
+ ,io.netty.channel;resolution:=optional,io.netty.channel.nio;resolutio
+ n:=optional,io.netty.channel.socket;resolution:=optional,io.netty.cha
+ nnel.socket.nio;resolution:=optional,io.netty.handler.codec.http;reso
+ lution:=optional,io.netty.handler.ssl;resolution:=optional,io.netty.h
+ andler.timeout;resolution:=optional,io.netty.util.concurrent;resoluti
+ on:=optional,javax.activation;resolution:=optional,javax.el;resolutio
+ n:=optional,javax.faces.application;resolution:=optional,javax.faces.
+ component;resolution:=optional,javax.faces.context;resolution:=option
+ al,javax.faces.event;resolution:=optional,javax.imageio;resolution:=o
+ ptional,javax.imageio.metadata;resolution:=optional,javax.imageio.str
+ eam;resolution:=optional,javax.jws;resolution:=optional,javax.mail.in
+ ternet;resolution:=optional,javax.portlet;resolution:=optional,javax.
+ servlet,javax.servlet.http,javax.servlet.annotation;resolution:=optio
+ nal,javax.servlet.jsp.tagext;resolution:=optional,javax.validation;re
+ solution:=optional,javax.xml.bind;resolution:=optional,javax.xml.bind
+ .annotation;resolution:=optional,javax.xml.namespace;resolution:=opti
+ onal,javax.xml.parsers;resolution:=optional,javax.xml.soap;resolution
+ :=optional,javax.xml.stream;resolution:=optional,javax.xml.transform;
+ resolution:=optional,javax.xml.transform.dom;resolution:=optional,jav
+ ax.xml.transform.sax;resolution:=optional,javax.xml.transform.stax;re
+ solution:=optional,javax.xml.transform.stream;resolution:=optional,ja
+ vax.xml.ws;resolution:=optional,javax.xml.ws.handler;resolution:=opti
+ onal,javax.xml.ws.soap;resolution:=optional,okhttp3;resolution:=optio
+ nal,org.aopalliance.aop;version="[1,2)",org.aopalliance.intercept;ver
+ sion="[1,2)",org.apache.commons.fileupload;version="[1.3,2)";resoluti
+ on:=optional,org.apache.commons.fileupload.disk;version="[1.3,2)";res
+ olution:=optional,org.apache.commons.fileupload.servlet;version="[1.3
+ ,2)";resolution:=optional,org.apache.commons.logging;version="[1.1.1,
+ 2)",org.apache.http;version="[4,5)";resolution:=optional,org.apache.h
+ ttp.client;version="[4,5)";resolution:=optional,org.apache.http.clien
+ t.config;version="[4,5)";resolution:=optional,org.apache.http.client.
+ methods;version="[4,5)";resolution:=optional,org.apache.http.client.p
+ rotocol;version="[4,5)";resolution:=optional,org.apache.http.concurre
+ nt;version="[4,5)";resolution:=optional,org.apache.http.config;versio
+ n="[4,5)";resolution:=optional,org.apache.http.conn;version="[4,5)";r
+ esolution:=optional,org.apache.http.conn.socket;version="[4,5)";resol
+ ution:=optional,org.apache.http.conn.ssl;version="[4,5)";resolution:=
+ optional,org.apache.http.entity;version="[4,5)";resolution:=optional,
+ org.apache.http.impl.client;version="[4,5)";resolution:=optional,org.
+ apache.http.impl.conn;version="[4,5)";resolution:=optional,org.apache
+ .http.impl.nio.client;version="[4,5)";resolution:=optional,org.apache
+ .http.message;version="[4,5)";resolution:=optional,org.apache.http.ni
+ o.client;version="[4,5)";resolution:=optional,org.apache.http.nio.ent
+ ity;version="[4,5)";resolution:=optional,org.apache.http.params;versi
+ on="[4,5)";resolution:=optional,org.apache.http.protocol;version="[4,
+ 5)";resolution:=optional,org.apache.http.util;version="[4,5)";resolut
+ ion:=optional,org.apache.log4j;version="[1.2,2)";resolution:=optional
+ ,org.springframework.aop.framework;version="[4.3.19.RELEASE,4.4)",org
+ .springframework.aop.support;version="[4.3.19.RELEASE,4.4)",org.sprin
+ gframework.beans;version="[4.3.19.RELEASE,4.4)",org.springframework.b
+ eans.factory;version="[4.3.19.RELEASE,4.4)",org.springframework.beans
+ .factory.access;version="[4.3.19.RELEASE,4.4)",org.springframework.be
+ ans.factory.access.el;version="[4.3.19.RELEASE,4.4)",org.springframew
+ ork.beans.factory.annotation;version="[4.3.19.RELEASE,4.4)",org.sprin
+ gframework.beans.factory.config;version="[4.3.19.RELEASE,4.4)",org.sp
+ ringframework.beans.factory.groovy;version="[4.3.19.RELEASE,4.4)",org
+ .springframework.beans.factory.support;version="[4.3.19.RELEASE,4.4)"
+ ,org.springframework.beans.factory.xml;version="[4.3.19.RELEASE,4.4)"
+ ,org.springframework.beans.propertyeditors;version="[4.3.19.RELEASE,4
+ .4)",org.springframework.context;version="[4.3.19.RELEASE,4.4)",org.s
+ pringframework.context.access;version="[4.3.19.RELEASE,4.4)",org.spri
+ ngframework.context.annotation;version="[4.3.19.RELEASE,4.4)",org.spr
+ ingframework.context.i18n;version="[4.3.19.RELEASE,4.4)",org.springfr
+ amework.context.support;version="[4.3.19.RELEASE,4.4)",org.springfram
+ ework.core;version="[4.3.19.RELEASE,4.4)",org.springframework.core.an
+ notation;version="[4.3.19.RELEASE,4.4)",org.springframework.core.conv
+ ert;version="[4.3.19.RELEASE,4.4)",org.springframework.core.env;versi
+ on="[4.3.19.RELEASE,4.4)",org.springframework.core.io;version="[4.3.1
+ 9.RELEASE,4.4)",org.springframework.core.io.support;version="[4.3.19.
+ RELEASE,4.4)",org.springframework.core.task;version="[4.3.19.RELEASE,
+ 4.4)",org.springframework.format.support;version="[4.3.19.RELEASE,4.4
+ )";resolution:=optional,org.springframework.jndi;version="[4.3.19.REL
+ EASE,4.4)";resolution:=optional,org.springframework.oxm;version="[4.3
+ .19.RELEASE,4.4)";resolution:=optional,org.springframework.remoting;v
+ ersion="[4.3.19.RELEASE,4.4)";resolution:=optional,org.springframewor
+ k.remoting.rmi;version="[4.3.19.RELEASE,4.4)";resolution:=optional,or
+ g.springframework.remoting.soap;version="[4.3.19.RELEASE,4.4)";resolu
+ tion:=optional,org.springframework.remoting.support;version="[4.3.19.
+ RELEASE,4.4)";resolution:=optional,org.springframework.stereotype;ver
+ sion="[4.3.19.RELEASE,4.4)";resolution:=optional,org.springframework.
+ ui;version="[4.3.19.RELEASE,4.4)",org.springframework.ui.context;vers
+ ion="[4.3.19.RELEASE,4.4)",org.springframework.ui.context.support;ver
+ sion="[4.3.19.RELEASE,4.4)",org.springframework.util;version="[4.3.19
+ .RELEASE,4.4)",org.springframework.util.comparator;version="[4.3.19.R
+ ELEASE,4.4)",org.springframework.util.concurrent;version="[4.3.19.REL
+ EASE,4.4)",org.springframework.validation;version="[4.3.19.RELEASE,4.
+ 4)",org.springframework.validation.annotation;version="[4.3.19.RELEAS
+ E,4.4)",org.springframework.validation.support;version="[4.3.19.RELEA
+ SE,4.4)",org.xml.sax;resolution:=optional,org.xml.sax.helpers;resolut
+ ion:=optional,org.w3c.dom;resolution:=optional,org.joda.time;version=
+ "[2,3)";resolution:=optional,org.joda.time.format;version="[2,3)";res
+ olution:=optional
+											    </Import-Package>
+<!-- 
+note 1: about javax.activity,javax.jws and javax.xml.ws
+javax.jws is depricate package, so need replace with javax.jws-api
+but eclipse auto add \-\-add-modules=ALL-SYSTEM to command line, jdk-10 still have this package so mean jdk have it.
+spring-web import javax.jws at option, so when it see javax.jws from jdk it will bind to jdk version
+
+idempiere webservice need to use javax.jws-api to build with tycho and run without add-modules=ALL-SYSTEM
+so it make two dependency chains when resolve dependency
+
+solution add version to import javax.jws;version="1.1.0"
+to force priority from javax.jws-api
+
+same for javax.xml.ws.*
+
+it also resolve issue confilic between eclipse runtime and tycho build
+
+-->
+											</instructions>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-context-support:jar:sources:${springframework.version}</id>
+											<source>false</source>
+											<transitive>false</transitive>
+                                            <override>true</override>
+											    <!-- source bundle also export package, so zk.ui detect wrong
+											    sometime it bind with source package, sometime it bind with binary but get import from source, so see package but don't see class
+											    -->
+											<instructions>
+											    <Export-Package/>
+											    <Private-Package/>
+											    <Private-Package/>
+											    <Bundle-SymbolicName>org.apache.servicemix.bundles.spring-context-support.source</Bundle-SymbolicName>
+											    <Bundle-Name>spring-context-support.source</Bundle-Name>
+												<Eclipse-SourceBundle>org.apache.servicemix.bundles.spring-context-support;version="${springframework.version}";roots:="."</Eclipse-SourceBundle>
+											</instructions>
+										</artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-context-support:jar:${springframework.version}</id>
+											<source>false</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.springframework:spring-jcl:jar:5.1.1.RELEASE</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -767,7 +1560,7 @@
 				<artifactId>download-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>download-db-seed-pg</id>
+						<id>download-zk-package</id>
 						<phase>package</phase>
 						<goals>
 							<goal>wget</goal>

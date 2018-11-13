@@ -123,7 +123,11 @@ public class MSequence extends X_AD_Sequence
 			+ "FROM AD_Sequence "
 			+ "WHERE Name=?"
 			+ " AND IsActive='Y' AND IsTableID='Y' AND IsAutoSequence='Y' ";
-
+			
+			if(adempiereSys)
+				selectSQL += " FOR UPDATE OF CurrentNextSys";
+			else
+				selectSQL += " FOR UPDATE OF CurrentNext";
 		}
 		if (!DB.isOracle() && !DB.isPostgreSQL())
 			selectSQL = DB.getDatabase().convertStatement(selectSQL);
@@ -365,14 +369,27 @@ public class MSequence extends X_AD_Sequence
 					+ "AND s.IsActive='Y' AND s.IsTableID='N' AND s.IsAutoSequence='Y' "
 					+ "ORDER BY s.AD_Client_ID DESC";
 		}
-		if (DB.isPostgreSQL())
+		if (DB.isOracle() == false)
 		{
-			if ( ( isStartNewYear || isUseOrgLevel ) && !adempiereSys ) {
+			if ( isStartNewYear || isUseOrgLevel  ) {
 				selectSQL = selectSQL + " FOR UPDATE OF y";
 			} else {
 				selectSQL = selectSQL + " FOR UPDATE OF s";
 			}
 		}
+		else
+		{
+			if (isStartNewYear || isUseOrgLevel) {
+				selectSQL = selectSQL + " FOR UPDATE OF y.";
+			} else {
+				selectSQL = selectSQL + " FOR UPDATE OF s.";
+			}
+			
+			if(adempiereSys)
+				selectSQL = selectSQL + "CurrentNextSys";
+			else
+				selectSQL = selectSQL + "CurrentNext";
+		}		
 		if (!DB.isOracle() && !DB.isPostgreSQL())
 			selectSQL = DB.getDatabase().convertStatement(selectSQL);
 		Connection conn = null;
@@ -1212,7 +1229,7 @@ public class MSequence extends X_AD_Sequence
 				try
 				{
 					int no = DB.getNextID(0, "Test", null);
-					s_list.add(new Integer(no));
+					s_list.add(Integer.valueOf(no));
 				//	System.out.println("#" + m_i + ": " + no);
 				}
 				catch (Exception e)

@@ -17,6 +17,7 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.logging.Level;
 
 import org.compiere.model.MBPartner;
@@ -129,7 +130,7 @@ public class RfQCreateSO extends SvrProcess
 							{
 								margin = margin.add(Env.ONEHUNDRED);
 								price = price.multiply(margin)
-									.divide(Env.ONEHUNDRED, 2, BigDecimal.ROUND_HALF_UP);
+									.divide(Env.ONEHUNDRED, 2, RoundingMode.HALF_UP);
 							}
 						}
 					}	//	price

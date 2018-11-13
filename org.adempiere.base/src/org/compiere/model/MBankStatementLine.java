@@ -44,7 +44,7 @@ import org.compiere.util.Msg;
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1914411222159254809L;
+	private static final long serialVersionUID = 3809130336412385420L;
 
 	/**
 	 * 	Standard Constructor
@@ -210,7 +210,7 @@ import org.compiere.util.Msg;
 	}	//	beforeSave
 	
 	/** Parent					*/
-	private MBankStatement			m_parent = null;
+	protected MBankStatement m_parent = null;
 	
 	/**
 	 * 	Get Parent
@@ -251,7 +251,7 @@ import org.compiere.util.Msg;
 	/**
 	 * 	Update Header
 	 */
-	private boolean updateHeader()
+	protected boolean updateHeader()
 	{
 		StringBuilder sql = new StringBuilder("UPDATE C_BankStatement bs")
 			.append(" SET StatementDifference=(SELECT COALESCE(SUM(StmtAmt),0) FROM C_BankStatementLine bsl ")

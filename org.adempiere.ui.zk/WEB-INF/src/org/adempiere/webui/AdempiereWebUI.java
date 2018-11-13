@@ -350,7 +350,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			try
 			{
 				Class<?> clazz = this.getClass().getClassLoader().loadClass(className);
-				appDesktop = (IDesktop) clazz.newInstance();
+				appDesktop = (IDesktop) clazz.getDeclaredConstructor().newInstance();
 			}
 			catch (Throwable t)
 			{

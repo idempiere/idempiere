@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Replication Server
 Bundle-SymbolicName: org.adempiere.replication.server;singleton:=true
-Bundle-Version: 5.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Version: 6.1.0.qualifier
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Require-Bundle: org.adempiere.server;bundle-version="0.0.0",
  org.adempiere.replication;bundle-version="0.0.0",
  org.adempiere.base;bundle-version="0.0.0"
@@ -13,3 +13,4 @@ Service-Component: OSGI-INF/serverfactory.xml
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.replication.server
+Bundle-Vendor: iDempiere Community

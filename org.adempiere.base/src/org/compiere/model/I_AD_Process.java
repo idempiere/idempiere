@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Process
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 6.1
  */
 public interface I_AD_Process 
 {
@@ -168,6 +168,19 @@ public interface I_AD_Process
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
+    /** Column name AllowMultipleExecution */
+    public static final String COLUMNNAME_AllowMultipleExecution = "AllowMultipleExecution";
+
+	/** Set Multiple Execution.
+	  * Allow or disallow executing a process/report multiple times.
+	  */
+	public void setAllowMultipleExecution (String AllowMultipleExecution);
+
+	/** Get Multiple Execution.
+	  * Allow or disallow executing a process/report multiple times.
+	  */
+	public String getAllowMultipleExecution();
+
     /** Column name Classname */
     public static final String COLUMNNAME_Classname = "Classname";
 
@@ -237,6 +250,19 @@ public interface I_AD_Process
  Determines ownership and synchronization
 	  */
 	public String getEntityType();
+
+    /** Column name ExecutionType */
+    public static final String COLUMNNAME_ExecutionType = "ExecutionType";
+
+	/** Set Execution Type.
+	  * Execution Type defines whether the report/process will always run in background or foreground. 
+	  */
+	public void setExecutionType (String ExecutionType);
+
+	/** Get Execution Type.
+	  * Execution Type defines whether the report/process will always run in background or foreground. 
+	  */
+	public String getExecutionType();
 
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";

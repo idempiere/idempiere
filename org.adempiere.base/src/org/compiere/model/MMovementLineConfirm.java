@@ -34,7 +34,7 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2406580342096137696L;
+	private static final long serialVersionUID = -5447921784818655144L;
 
 	/**
 	 * 	Standard Constructor
@@ -79,7 +79,7 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 	}	//	MMovementLineConfirm
 
 	/**	Movement Line			*/
-	private MMovementLine 	m_line = null;
+	protected MMovementLine 	m_line = null;
 	
 	/**
 	 * 	Set Movement Line

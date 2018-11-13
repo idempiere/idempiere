@@ -729,7 +729,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						{
 							td td = new td();
 							tr.addElement(td);
-							Object obj = m_printData.getNode(new Integer(item.getAD_Column_ID()));
+							Object obj = m_printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
 							if (obj == null){
 								td.addElement("&nbsp;");
 								if (colSuppressRepeats[printColIndex]){
@@ -945,7 +945,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						else
 						{
 							printColIndex++;
-							Object obj = m_printData.getNode(new Integer(item.getAD_Column_ID()));
+							Object obj = m_printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
 							String data = "";
 							if (obj == null){
 								if (colSuppressRepeats[printColIndex]){

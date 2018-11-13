@@ -14,6 +14,7 @@
 package org.adempiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -295,7 +296,7 @@ public class PromotionRule {
 		nol.setC_Charge_ID(C_Charge_ID);
 		nol.setQty(qty);
 		if (discount.scale() > 2)
-			discount = discount.setScale(2, BigDecimal.ROUND_HALF_UP);
+			discount = discount.setScale(2, RoundingMode.HALF_UP);
 		nol.setPriceEntered(discount.negate());
 		nol.setPriceActual(discount.negate());
 		if (ol != null && Integer.toString(ol.getLine()).endsWith("0")) {

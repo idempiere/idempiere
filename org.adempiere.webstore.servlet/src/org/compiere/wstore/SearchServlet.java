@@ -445,7 +445,7 @@ public class SearchServlet extends HttpServlet
 			while (rs.next ())
 			{
 				MBPartner partner = new MBPartner (ctx, rs, null);
-				//s_cache.put (new Integer (partner.getAD_Client_ID()), partner);
+				//s_cache.put (Integer.valueOf(partner.getAD_Client_ID()), partner);
 				list.add (partner);
 			}
 		}

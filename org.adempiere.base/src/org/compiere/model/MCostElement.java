@@ -44,7 +44,7 @@ public class MCostElement extends X_M_CostElement
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3196322266971717530L;
+	private static final long serialVersionUID = 3423495977508725440L;
 
 
 	/**
@@ -186,7 +186,7 @@ public class MCostElement extends X_M_CostElement
 	 */
 	public static MCostElement get (Properties ctx, int M_CostElement_ID)
 	{
-		Integer key = new Integer (M_CostElement_ID);
+		Integer key = Integer.valueOf(M_CostElement_ID);
 		MCostElement retValue = (MCostElement) s_cache.get (key);
 		if (retValue != null)
 			return retValue;
@@ -232,7 +232,7 @@ public class MCostElement extends X_M_CostElement
 	}	
 
 	/**	Cache						*/
-	private static CCache<Integer,MCostElement>	s_cache	= new CCache<Integer,MCostElement>(Table_Name, 20);
+	protected static CCache<Integer,MCostElement>	s_cache	= new CCache<Integer,MCostElement>(Table_Name, 20);
 	
 	/**	Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MCostElement.class);

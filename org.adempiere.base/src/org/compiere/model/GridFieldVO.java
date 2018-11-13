@@ -870,7 +870,7 @@ public class GridFieldVO implements Serializable
 	public static class SeqNoComparator implements Comparator<GridFieldVO> {
 		@Override
 		public int compare(GridFieldVO gf1, GridFieldVO gf2) {
-			return (new Integer(gf1.SeqNo)).compareTo(new Integer(gf2.SeqNo));
+			return (Integer.valueOf(gf1.SeqNo)).compareTo(Integer.valueOf(gf2.SeqNo));
 		}
 	}
 

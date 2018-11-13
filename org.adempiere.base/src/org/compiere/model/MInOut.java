@@ -18,7 +18,10 @@ package org.compiere.model;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.print.MPrintFormat;
@@ -148,7 +152,7 @@ public class MInOut extends X_M_InOut implements DocAction
 				if (oLines[i].getQtyEntered().compareTo(oLines[i].getQtyOrdered()) != 0)
 					line.setQtyEntered(lineQty
 						.multiply(oLines[i].getQtyEntered())
-						.divide(oLines[i].getQtyOrdered(), 12, BigDecimal.ROUND_HALF_UP));
+						.divide(oLines[i].getQtyOrdered(), 12, RoundingMode.HALF_UP));
 				line.setC_Project_ID(oLines[i].getC_Project_ID());
 				line.saveEx(trxName);
 				//	Delivered everything ?
@@ -2239,6 +2243,34 @@ public class MInOut extends X_M_InOut implements DocAction
 				asset.setIsActive(false);
 				asset.setDescription(asset.getDescription() + " (" + reversal.getDocumentNo() + " #" + rLine.getLine() + "<-)");
 				asset.saveEx();
+			}
+			// Un-Link inoutline to Invoiceline
+			String sql = "SELECT C_InvoiceLine_ID FROM C_InvoiceLine WHERE M_InOutLine_ID=?";
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
+			{
+				pstmt = DB.prepareStatement(sql, get_TrxName());
+				pstmt.setInt(1, sLines[i].getM_InOutLine_ID());
+				rs = pstmt.executeQuery();
+				while (rs.next())
+				{
+					int invoiceLineId = rs.getInt(1);
+					if (invoiceLineId > 0 ){
+						MInvoiceLine iLine = new MInvoiceLine(getCtx(),invoiceLineId , get_TrxName());
+						iLine.setM_InOutLine_ID(0);
+						iLine.saveEx();
+					}
+				}
+			}
+			catch (SQLException e)
+			{
+				throw new DBException(e, sql);
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null; pstmt = null;
 			}
 		}
 		reversal.setC_Order_ID(getC_Order_ID());

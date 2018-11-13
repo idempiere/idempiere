@@ -80,7 +80,7 @@ public class DefaultCalloutFactory implements ICalloutFactory {
 			//Get callout
 			try
 			{
-				callout = (Callout)calloutClass.newInstance();
+				callout = (Callout)calloutClass.getDeclaredConstructor().newInstance();
 			}
 			catch (Exception ex)
 			{

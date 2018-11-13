@@ -378,6 +378,17 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			
 			row.appendChild(notificationTypeField.getComponent());
 			runAsJobField.setChecked(MSysConfig.getBooleanValue(MSysConfig.BACKGROUND_JOB_BY_DEFAULT, false));
+			
+			//Check force background
+			MProcess process = MProcess.get(Env.getCtx(), m_AD_Process_ID);
+			if (process.isForceBackground()) {
+				runAsJobField.setChecked(true);
+				runAsJobField.setEnabled(false);
+			} else if (process.isForceForeground()) {
+				runAsJobField.setChecked(false);
+				runAsJobField.setEnabled(false);
+				runAsJobField.setVisible(false);
+			}
 			notificationTypeField.getComponent().getParent().setVisible(runAsJobField.isChecked());
 			notificationTypeField.fillHorizontal();
 		}
@@ -769,6 +780,12 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	
 	protected void startProcess()
 	{
+		if (m_pi.isProcessRunning(parameterPanel.getParameters())) {
+			FDialog.error(getWindowNo(), "ProcessAlreadyRunning");
+			log.log(Level.WARNING, "Abort process " + m_AD_Process_ID + " because it is already running");
+			return;
+		}
+
 		if (!parameterPanel.validateParameters())
 			return;
 		

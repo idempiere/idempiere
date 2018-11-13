@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.util;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  *	Amount in Words for Zh_CN (CNY in Simplified Chinese) 
@@ -139,7 +140,7 @@ public class AmtInWords_ZH implements AmtInWords
 		}
 		
 		// round to 1/100, get long number ,eg -5432.135 = 543214
-		long lnumber = number.movePointRight(2).setScale(0, BigDecimal.ROUND_HALF_UP).abs().longValue();
+		long lnumber = number.movePointRight(2).setScale(0, RoundingMode.HALF_UP).abs().longValue();
 		
 		// number must less 10000000000000 (10^13)
 		if (lnumber >= 1000000000000000L) {		

@@ -98,7 +98,8 @@ public abstract class AbstractElementHandler implements ElementHandler {
 		detail.setName(objectName);
 		detail.setAction(action);
 		detail.setSuccess(result);
-		detail.setRecord_ID(objectID);
+		if (objectID >= 0)
+			detail.setRecord_ID(objectID);
 		ctx.packIn.addImportDetail(detail);
 		StringBuilder msg = new StringBuilder(action).append(" ");
 		if (detail.getTableName() != null)

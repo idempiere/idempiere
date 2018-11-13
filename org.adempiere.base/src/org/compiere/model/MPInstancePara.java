@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -231,6 +232,35 @@ public class MPInstancePara extends X_AD_PInstance_Para
 			}
 		}
 		return -1;
+	}
+	
+	public boolean equalParameter(MPInstancePara param) {
+		
+		if (param == null)
+			return false;
+
+		String str = getP_String() == null ? "" : getP_String();
+		String strParam = param.getP_String() == null ? "" : param.getP_String();
+		String str2 = getP_String_To() == null ? "" : getP_String_To();
+		String str2Param = param.getP_String_To() == null ? "" : param.getP_String_To();
+		if (!Objects.equals(str, strParam) || !Objects.equals(str2, str2Param))
+			return false;
+
+		BigDecimal bd = getP_Number();
+		BigDecimal bdParam = param.getP_Number();
+		BigDecimal bd2 = getP_Number_To();
+		BigDecimal bd2Param = param.getP_Number_To();
+		if (!Objects.equals(bd, bdParam) || !Objects.equals(bd2, bd2Param))
+			return false;
+
+		Timestamp ts = getP_Date();
+		Timestamp tsParam = param.getP_Date();
+		Timestamp ts2 = getP_Date_To();
+		Timestamp ts2Param = param.getP_Date_To();
+		if (!Objects.equals(ts, tsParam) || !Objects.equals(ts2, ts2Param))
+			return false;
+
+		return true;
 	}
 	
 	/**

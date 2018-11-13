@@ -127,7 +127,7 @@ public class CalloutPaySelection extends CalloutEngine
 			{
 				OpenAmt = rs.getBigDecimal(1);
 				DiscountAmt = rs.getBigDecimal(2);
-				IsSOTrx = new Boolean ("Y".equals(rs.getString(3)));
+				IsSOTrx = Boolean.valueOf ("Y".equals(rs.getString(3)));
 			}
 		}
 		catch (SQLException e)

@@ -24,7 +24,6 @@ import java.awt.HeadlessException;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -255,7 +254,7 @@ public class CDialog extends JDialog
 	protected static DialogAction	s_dialogAction = new DialogAction(ACTION_DISPOSE);
 	/** ALT-EXCAPE						*/
 	protected static KeyStroke		s_disposeKeyStroke = 
-		KeyStroke.getKeyStroke(KeyEvent.VK_PAUSE, InputEvent.ALT_MASK);
+		KeyStroke.getKeyStroke(KeyEvent.VK_PAUSE, ActionEvent.ALT_MASK);
 	
 	/**
 	 * 	Adempiere Dialog Action

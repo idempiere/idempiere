@@ -154,7 +154,7 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		bankAccountField = new WTableDirEditor ("C_BankAccount_ID", true, false, true, lookup);
 		//  Set Default
 		int C_BankAccount_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_BankAccount_ID");
-		bankAccountField.setValue(new Integer(C_BankAccount_ID));
+		bankAccountField.setValue(Integer.valueOf(C_BankAccount_ID));
 		//  initial Loading
 		authorizationField = new WStringEditor ("authorization", false, false, true, 10, 30, null, null);
 //		authorizationField.getComponent().addEventListener(Events.ON_CHANGE, this);
@@ -162,7 +162,7 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, MColumn.getColumn_ID(MPayment.Table_Name, MPayment.COLUMNNAME_C_DocType_ID), DisplayType.TableDir);
 		documentTypeField = new WTableDirEditor (MPayment.COLUMNNAME_C_DocType_ID,false,false,true,lookup);
 		int C_DocType_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_DocType_ID");
-		documentTypeField.setValue(new Integer(C_DocType_ID));
+		documentTypeField.setValue(Integer.valueOf(C_DocType_ID));
 //		documentTypeField.getComponent().addEventListener(Events.ON_CHANGE, this);
 		
 		lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, MColumn.getColumn_ID(MPayment.Table_Name, MPayment.COLUMNNAME_TenderType), DisplayType.List);

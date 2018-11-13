@@ -160,7 +160,7 @@ public class VCreateFromRMAUI extends CreateFromRMA implements VetoableChangeLis
 		bPartnerField = new VLookup ("C_BPartner_ID", true, false, true, lookup);
 		//
 		int C_BPartner_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_BPartner_ID");
-		bPartnerField.setValue(new Integer(C_BPartner_ID));
+		bPartnerField.setValue(Integer.valueOf(C_BPartner_ID));
 	}   //  initBPartner
 	
 	protected void loadRMA()
@@ -172,7 +172,7 @@ public class VCreateFromRMAUI extends CreateFromRMA implements VetoableChangeLis
 	 *  Load Order/Invoice/Shipment data into Table
 	 *  @param data data
 	 */
-	protected void loadTableOIS (Vector<?> data)
+	protected void loadTableOIS (Vector<? extends Vector> data)
 	{
 		//  Remove previous listeners
 		dialog.getMiniTable().getModel().removeTableModelListener(dialog);

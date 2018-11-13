@@ -103,7 +103,7 @@ public class ShowMaskWrapper implements ISupportMask {
 	 * @param comp
 	 */
 	public static void setFlagShowMask (Component comp){
-		comp.setAttribute(ISupportMask.READY_SHOW_MASK_FLAG, new Integer(1), Component.REQUEST_SCOPE);
+		comp.setAttribute(ISupportMask.READY_SHOW_MASK_FLAG, Integer.valueOf(1), Component.REQUEST_SCOPE);
 	}
 	
 	/**

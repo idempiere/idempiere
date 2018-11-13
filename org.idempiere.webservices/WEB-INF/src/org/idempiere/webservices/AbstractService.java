@@ -522,10 +522,10 @@ public class AbstractService {
 		if (columnClass == Boolean.class) {
 			if ("Y".equalsIgnoreCase(strValue)
 					|| "true".equalsIgnoreCase(strValue))
-				value = new Boolean(true);
+				value = Boolean.TRUE;
 			else if ("N".equalsIgnoreCase(strValue)
 					|| "false".equalsIgnoreCase(strValue))
-				value = new Boolean(false);
+				value = Boolean.FALSE;
 			else
 				throw new IdempiereServiceFault(" input column " + colName
 						+ " wrong value " + strValue, new QName(

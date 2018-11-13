@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere UI base
 Bundle-SymbolicName: org.adempiere.ui;singleton:=true
-Bundle-Version: 5.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Version: 6.1.0.qualifier
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.apache.xerces;bundle-version="0.0.0",
  org.eclipse.equinox.app;bundle-version="0.0.0"
@@ -27,5 +27,7 @@ Export-Package: org.compiere.apps,
  org.netbeans.api.visual.widget
 Bundle-ClassPath: .,
  lib/org-netbeans-api-visual.jar,
- lib/org-openide-util.jar
+ lib/org-openide-util.jar,
+ lib/org-openide-util-lookup.jar
 Automatic-Module-Name: org.adempiere.ui
+Bundle-Vendor: iDempiere Community

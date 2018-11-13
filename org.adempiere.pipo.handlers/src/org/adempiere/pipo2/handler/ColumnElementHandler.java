@@ -163,7 +163,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				throw new POSaveFailedException("Failed to save column " + mColumn.getName());
 			}
 
-			if (recreateColumn || syncDatabase) {
+			if (mColumn.isActive() && (recreateColumn || syncDatabase)) {
 				deferFK(element, mColumn);
 				syncColumn(ctx, mColumn, action, recreateColumn);
 			}

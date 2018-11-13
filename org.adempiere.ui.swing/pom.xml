@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.idempiere</groupId>
 		<artifactId>org.idempiere.parent</artifactId>
-		<version>5.1.0-SNAPSHOT</version>
+		<version>6.1.0-SNAPSHOT</version>
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>org.adempiere.ui.swing</artifactId>
@@ -16,8 +16,12 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-compiler-plugin</artifactId>
 				<configuration>
-					<!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=367431 -->
-					<compilerArgument>-warn:+forbidden</compilerArgument>
+					<compilerArgs>
+						<!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=367431 -->
+						<arg>-warn:+forbidden</arg>
+		      			<arg>--add-exports</arg>
+		      			<arg>java.desktop/sun.awt=ALL-UNNAMED</arg>
+					</compilerArgs>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -65,7 +69,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/jarfile/5.1/jpedal.jar</url>
+							<url>${url.file.srv}/jarfile/6.1/jpedal.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>lib</outputDirectory>
 							<retries>5</retries>

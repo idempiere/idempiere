@@ -157,7 +157,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 	private boolean hasEditable = false;
 	private Map<Integer, List<Object>> cacheOriginalValues = new HashMap<>();
-	private Map<Integer, List<Object>> temporarySelectedData = new HashMap<>(); 
+	private Map<Integer, List<Object>> temporarySelectedData = new HashMap<>(); 	
+	private WInfoWindowListItemRenderer infoWindowListItemRenderer = null;
 	
 	// F3P: export 
 	
@@ -336,7 +337,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    			}
    			
    			// save process_id, handle event will use
-   			btProcess.setAttribute(PROCESS_ID_KEY, new Integer(infoProcess.getAD_Process_ID()));
+   			btProcess.setAttribute(PROCESS_ID_KEY, Integer.valueOf(infoProcess.getAD_Process_ID()));
    			btProcess.addEventListener(Events.ON_CLICK, this);
    			// save info process to use in handle event
    			btProcess.setAttribute(ATT_INFO_PROCESS_KEY, process);
@@ -630,10 +631,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				
 				if(hasEditable)
 				{
-					WInfoWindowListItemRenderer renderer = new WInfoWindowListItemRenderer(this, infoColumns, gridFields);
-					contentPanel.setItemRenderer(renderer);
+					infoWindowListItemRenderer = new WInfoWindowListItemRenderer(this);
+					contentPanel.setItemRenderer(infoWindowListItemRenderer);
 					contentPanel.setAllowIDColumnForReadWrite(true);
-					renderer.addTableValueChangeListener(contentPanel); // Replicated from WListbox constructor
+					infoWindowListItemRenderer.addTableValueChangeListener(contentPanel); // Replicated from WListbox constructor
 				}					
 			}			
 			
@@ -766,6 +767,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		String keySelectClause = keyTableAlias+"."+p_keyColumn;
 		list.add(new ColumnInfo(" ", keySelectClause, IDColumn.class, true, false, null, p_keyColumn));
 		
+		List<MInfoColumn> gridDisplayedIC = new ArrayList<>();				
+		gridDisplayedIC.add(null); // First column does not have any matching info column		
+		
 		boolean haveNotProcess = !haveProcess; // A field is editabile only if is not readonly and theres a process
 				
 		int i = 0;
@@ -809,6 +813,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				columnInfo.setGridField(gridFields.get(i));
 				columnInfo.setColumnName(infoColumn.getColumnName());
 				list.add(columnInfo);
+				gridDisplayedIC.add(infoColumn);
 				
 				if (keyColumnOfView == infoColumn){
 					if (columnInfo.getColClass().equals(IDColumn.class)) 
@@ -824,6 +829,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 		
 		columnInfos = list.toArray(new ColumnInfo[0]);
+		MInfoColumn gridDisplayedInfoColumns[] = gridDisplayedIC.toArray(new MInfoColumn[gridDisplayedIC.size()]);
+		
+		if(infoWindowListItemRenderer != null)
+			infoWindowListItemRenderer.setGridDisplaydInfoColumns(gridDisplayedInfoColumns,columnInfos);
 		
 		prepareTable(columnInfos, infoWindow.getFromClause(), p_whereClause, infoWindow.getOrderByClause());		
 	}

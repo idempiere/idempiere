@@ -18,6 +18,7 @@
 package org.compiere.impexp;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -309,7 +310,7 @@ public final class ImpFormatRow
 				if (methodStart != -1)      //  no class
 				{
 					Class<?> cClass = Class.forName(callout.substring(0,methodStart));
-					m_callout = (Callout)cClass.newInstance();
+					m_callout = (Callout)cClass.getDeclaredConstructor().newInstance();
 					m_method = callout.substring(methodStart+1);
 				}
 			}
@@ -525,7 +526,7 @@ public final class ImpFormatRow
 			bd = BigDecimal.ZERO;
 		
 		if (m_divideBy100)					//	assumed two decimal scale
-			bd = bd.divide(Env.ONEHUNDRED, 2, BigDecimal.ROUND_HALF_UP);
+			bd = bd.divide(Env.ONEHUNDRED, 2, RoundingMode.HALF_UP);
 		return bd.toString();
 	}	//	parseNumber
 

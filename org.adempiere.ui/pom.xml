@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.idempiere</groupId>
 		<artifactId>org.idempiere.parent</artifactId>
-		<version>5.1.0-SNAPSHOT</version>
+		<version>6.1.0-SNAPSHOT</version>
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>org.adempiere.ui</artifactId>
@@ -34,12 +34,17 @@
 								<artifactItem>
 									<groupId>org.netbeans.api</groupId>
 									<artifactId>org-netbeans-api-visual</artifactId>
-									<version>RELEASE65</version>
+									<version>${netbeans.lib.version}</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.netbeans.api</groupId>
 									<artifactId>org-openide-util</artifactId>
-									<version>RELEASE65</version>
+									<version>${netbeans.lib.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.netbeans.api</groupId>
+									<artifactId>org-openide-util-lookup</artifactId>
+									<version>${netbeans.lib.version}</version>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>

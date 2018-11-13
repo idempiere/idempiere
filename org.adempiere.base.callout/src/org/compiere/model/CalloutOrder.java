@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -186,7 +187,7 @@ public class CalloutOrder extends CalloutEngine
 					if (s != null && s.length() != 0)
 						mTab.setValue("PaymentRule", s);
 					//	Payment Term
-					Integer ii =new Integer(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
+					Integer ii =Integer.valueOf(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
 					if (!rs.wasNull())
 						mTab.setValue("C_PaymentTerm_ID", ii);
 					//	InvoiceRule
@@ -278,7 +279,7 @@ public class CalloutOrder extends CalloutEngine
 				}
 
 				//	PriceList (indirect: IsTaxIncluded & Currency)
-				Integer ii = new Integer(rs.getInt(IsSOTrx ? "M_PriceList_ID" : "PO_PriceList_ID"));
+				Integer ii = Integer.valueOf(rs.getInt(IsSOTrx ? "M_PriceList_ID" : "PO_PriceList_ID"));
 				if (!rs.wasNull())
 					mTab.setValue("M_PriceList_ID", ii);
 				else
@@ -288,13 +289,13 @@ public class CalloutOrder extends CalloutEngine
 					{
 						MPriceList pl = new MPriceList(ctx, i, null);
 						if (IsSOTrx == pl.isSOPriceList())
-							mTab.setValue("M_PriceList_ID", new Integer(i));
+							mTab.setValue("M_PriceList_ID", Integer.valueOf(i));
 						else
 						{
 							String sql2 = "SELECT M_PriceList_ID FROM M_PriceList WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive='Y' ORDER BY IsDefault DESC";
 							ii = DB.getSQLValue (null, sql2, Env.getAD_Client_ID(ctx), IsSOTrx);
 							if (ii != 0)
-								mTab.setValue("M_PriceList_ID", new Integer(ii));
+								mTab.setValue("M_PriceList_ID", Integer.valueOf(ii));
 						}
 					}
 				}
@@ -325,7 +326,7 @@ public class CalloutOrder extends CalloutEngine
 				if (bill_Location_ID == 0)
 					mTab.setValue("Bill_Location_ID", null);
 				else
-					mTab.setValue("Bill_Location_ID", new Integer(bill_Location_ID));
+					mTab.setValue("Bill_Location_ID", Integer.valueOf(bill_Location_ID));
 				// Ship-To Location
 				if (shipTo_ID == 0)
 					shipTo_ID = rs.getInt("C_BPartner_Location_ID");
@@ -333,7 +334,7 @@ public class CalloutOrder extends CalloutEngine
 				if (shipTo_ID == 0)
 					mTab.setValue("C_BPartner_Location_ID", null);
 				else
-					mTab.setValue("C_BPartner_Location_ID", new Integer(shipTo_ID));
+					mTab.setValue("C_BPartner_Location_ID", Integer.valueOf(shipTo_ID));
 
 				//	Contact - overwritten by InfoBP selection
 				int contID = rs.getInt("AD_User_ID");
@@ -347,8 +348,8 @@ public class CalloutOrder extends CalloutEngine
 					mTab.setValue("AD_User_ID", null);
 				else
 				{
-					mTab.setValue("AD_User_ID", new Integer(contID));
-					mTab.setValue("Bill_User_ID", new Integer(contID));
+					mTab.setValue("AD_User_ID", Integer.valueOf(contID));
+					mTab.setValue("Bill_User_ID", Integer.valueOf(contID));
 				}
 
 				//	CreditAvailable
@@ -399,7 +400,7 @@ public class CalloutOrder extends CalloutEngine
 					if (s != null && s.length() != 0)
 						mTab.setValue("PaymentRule", s);
 					//	Payment Term
-					ii = new Integer(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
+					ii = Integer.valueOf(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
 					if (!rs.wasNull())
 						mTab.setValue("C_PaymentTerm_ID", ii);
 					//	InvoiceRule
@@ -479,7 +480,7 @@ public class CalloutOrder extends CalloutEngine
 			if (rs.next())
 			{
 				//	PriceList (indirect: IsTaxIncluded & Currency)
-				Integer ii = new Integer(rs.getInt(IsSOTrx ? "M_PriceList_ID" : "PO_PriceList_ID"));
+				Integer ii = Integer.valueOf(rs.getInt(IsSOTrx ? "M_PriceList_ID" : "PO_PriceList_ID"));
 				if (!rs.wasNull())
 					mTab.setValue("M_PriceList_ID", ii);
 				else
@@ -489,13 +490,13 @@ public class CalloutOrder extends CalloutEngine
 					{
 						MPriceList pl = new MPriceList(ctx, i, null);
 						if (IsSOTrx == pl.isSOPriceList())
-							mTab.setValue("M_PriceList_ID", new Integer(i));
+							mTab.setValue("M_PriceList_ID", Integer.valueOf(i));
 						else
 						{
 							String sql2 = "SELECT M_PriceList_ID FROM M_PriceList WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive='Y' ORDER BY IsDefault DESC";
 							ii = DB.getSQLValue (null, sql2, Env.getAD_Client_ID(ctx), IsSOTrx);
 							if (ii != 0)
-								mTab.setValue("M_PriceList_ID", new Integer(ii));
+								mTab.setValue("M_PriceList_ID", Integer.valueOf(ii));
 						}
 					}
 				}
@@ -518,7 +519,7 @@ public class CalloutOrder extends CalloutEngine
 				if (bill_Location_ID == 0)
 					mTab.setValue("Bill_Location_ID", null);
 				else
-					mTab.setValue("Bill_Location_ID", new Integer(bill_Location_ID));
+					mTab.setValue("Bill_Location_ID", Integer.valueOf(bill_Location_ID));
 
 				//	Contact - overwritten by InfoBP selection
 				int contID = rs.getInt("AD_User_ID");
@@ -531,7 +532,7 @@ public class CalloutOrder extends CalloutEngine
 				if (contID == 0)
 					mTab.setValue("Bill_User_ID", null);
 				else
-					mTab.setValue("Bill_User_ID", new Integer(contID));
+					mTab.setValue("Bill_User_ID", Integer.valueOf(contID));
 
 				//	CreditAvailable
 				if (IsSOTrx)
@@ -577,7 +578,7 @@ public class CalloutOrder extends CalloutEngine
 					if (s != null && s.length() != 0)
 						mTab.setValue("PaymentRule", s);
 					//	Payment Term
-					ii = new Integer(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
+					ii = Integer.valueOf(rs.getInt(IsSOTrx ? "C_PaymentTerm_ID" : "PO_PaymentTerm_ID"));
 					if (!rs.wasNull())
 						mTab.setValue("C_PaymentTerm_ID", ii);
 					//	InvoiceRule
@@ -783,9 +784,9 @@ public class CalloutOrder extends CalloutEngine
 		mTab.setValue("PriceLimit", pp.getPriceLimit());
 		mTab.setValue("PriceActual", pp.getPriceStd());
 		mTab.setValue("PriceEntered", pp.getPriceStd());
-		mTab.setValue("C_Currency_ID", new Integer(pp.getC_Currency_ID()));
+		mTab.setValue("C_Currency_ID", Integer.valueOf(pp.getC_Currency_ID()));
 		mTab.setValue("Discount", pp.getDiscount());
-		mTab.setValue("C_UOM_ID", new Integer(pp.getC_UOM_ID()));
+		mTab.setValue("C_UOM_ID", Integer.valueOf(pp.getC_UOM_ID()));
 		mTab.setValue("QtyOrdered", mTab.getValue("QtyEntered"));
 		Env.setContext(ctx, WindowNo, "EnforcePriceLimit", pp.isEnforcePriceLimit() ? "Y" : "N");
 		Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");
@@ -795,7 +796,7 @@ public class CalloutOrder extends CalloutEngine
 		//	Integer wh = (Integer)mTab.getValue("M_Warehouse_ID");
 		//	if (wh.intValue() != M_Warehouse_ID)
 		//	{
-		//		mTab.setValue("M_Warehouse_ID", new Integer(M_Warehouse_ID));
+		//		mTab.setValue("M_Warehouse_ID", Integer.valueOf(M_Warehouse_ID));
 		//		ADialog.warn(,WindowNo, "WarehouseChanged");
 		//	}
 
@@ -822,7 +823,7 @@ public class CalloutOrder extends CalloutEngine
 				{
 					Integer C_OrderLine_ID = (Integer)mTab.getValue("C_OrderLine_ID");
 					if (C_OrderLine_ID == null)
-						C_OrderLine_ID = new Integer(0);
+						C_OrderLine_ID = Integer.valueOf(0);
 					BigDecimal notReserved = MOrderLine.getNotReserved(ctx,
 						M_Warehouse_ID, M_Product_ID, M_AttributeSetInstance_ID,
 						C_OrderLine_ID.intValue());
@@ -869,7 +870,7 @@ public class CalloutOrder extends CalloutEngine
 		}
 		mTab.setValue("M_AttributeSetInstance_ID", null);
 		mTab.setValue("S_ResourceAssignment_ID", null);
-		mTab.setValue("C_UOM_ID", new Integer(100));	//	EA
+		mTab.setValue("C_UOM_ID", Integer.valueOf(100));	//	EA
 
 		Env.setContext(ctx, WindowNo, "DiscountSchema", "N");
 		String sql = "SELECT ChargeAmt FROM C_Charge WHERE C_Charge_ID=?";
@@ -976,7 +977,7 @@ public class CalloutOrder extends CalloutEngine
 		if (C_Tax_ID == 0)
 			mTab.fireDataStatusEEvent(CLogger.retrieveError());
 		else
-			mTab.setValue("C_Tax_ID", new Integer(C_Tax_ID));
+			mTab.setValue("C_Tax_ID", Integer.valueOf(C_Tax_ID));
 		//
 		if (steps) log.warning("fini");
 		return amt(ctx, WindowNo, mTab, mField, value);
@@ -1119,7 +1120,7 @@ public class CalloutOrder extends CalloutEngine
 			if ( PriceList.doubleValue() != 0 )
 				PriceActual = BigDecimal.valueOf((100.0 - Discount.doubleValue()) / 100.0 * PriceList.doubleValue());
 			if (PriceActual.scale() > StdPrecision)
-				PriceActual = PriceActual.setScale(StdPrecision, BigDecimal.ROUND_HALF_UP);
+				PriceActual = PriceActual.setScale(StdPrecision, RoundingMode.HALF_UP);
 			PriceEntered = MUOMConversion.convertProductFrom (ctx, M_Product_ID,
 				C_UOM_To_ID, PriceActual);
 			if (PriceEntered == null)
@@ -1135,7 +1136,7 @@ public class CalloutOrder extends CalloutEngine
 			else
 				Discount = BigDecimal.valueOf((PriceList.doubleValue() - PriceActual.doubleValue()) / PriceList.doubleValue() * 100.0);
 			if (Discount.scale() > 2)
-				Discount = Discount.setScale(2, BigDecimal.ROUND_HALF_UP);
+				Discount = Discount.setScale(2, RoundingMode.HALF_UP);
 			mTab.setValue("Discount", Discount);
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("PriceEntered=" + PriceEntered + ", Actual=" + PriceActual + ", Discount=" + Discount);
@@ -1163,7 +1164,7 @@ public class CalloutOrder extends CalloutEngine
 			{
 				Discount = BigDecimal.valueOf((PriceList.doubleValue () - PriceActual.doubleValue ()) / PriceList.doubleValue () * 100.0);
 				if (Discount.scale () > 2)
-					Discount = Discount.setScale (2, BigDecimal.ROUND_HALF_UP);
+					Discount = Discount.setScale (2, RoundingMode.HALF_UP);
 				mTab.setValue ("Discount", Discount);
 			}
 		}
@@ -1171,7 +1172,7 @@ public class CalloutOrder extends CalloutEngine
 		//	Line Net Amt
 		BigDecimal LineNetAmt = QtyOrdered.multiply(PriceActual);
 		if (LineNetAmt.scale() > StdPrecision)
-			LineNetAmt = LineNetAmt.setScale(StdPrecision, BigDecimal.ROUND_HALF_UP);
+			LineNetAmt = LineNetAmt.setScale(StdPrecision, RoundingMode.HALF_UP);
 		if (log.isLoggable(Level.INFO)) log.info("LineNetAmt=" + LineNetAmt);
 		mTab.setValue("LineNetAmt", LineNetAmt);
 		//
@@ -1210,7 +1211,7 @@ public class CalloutOrder extends CalloutEngine
 		{
 			int C_UOM_To_ID = ((Integer)value).intValue();
 			QtyEntered = (BigDecimal)mTab.getValue("QtyEntered");
-			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), BigDecimal.ROUND_HALF_UP);
+			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), RoundingMode.HALF_UP);
 			if (QtyEntered.compareTo(QtyEntered1) != 0)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("Corrected QtyEntered Scale UOM=" + C_UOM_To_ID
@@ -1241,7 +1242,7 @@ public class CalloutOrder extends CalloutEngine
 		{
 			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
 			QtyEntered = (BigDecimal)value;
-			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), BigDecimal.ROUND_HALF_UP);
+			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), RoundingMode.HALF_UP);
 			if (QtyEntered.compareTo(QtyEntered1) != 0)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("Corrected QtyEntered Scale UOM=" + C_UOM_To_ID
@@ -1267,7 +1268,7 @@ public class CalloutOrder extends CalloutEngine
 			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
 			QtyOrdered = (BigDecimal)value;
 			int precision = MProduct.get(ctx, M_Product_ID).getUOMPrecision();
-			BigDecimal QtyOrdered1 = QtyOrdered.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			BigDecimal QtyOrdered1 = QtyOrdered.setScale(precision, RoundingMode.HALF_UP);
 			if (QtyOrdered.compareTo(QtyOrdered1) != 0)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("Corrected QtyOrdered Scale "
@@ -1315,7 +1316,7 @@ public class CalloutOrder extends CalloutEngine
 				{
 					Integer C_OrderLine_ID = (Integer)mTab.getValue("C_OrderLine_ID");
 					if (C_OrderLine_ID == null)
-						C_OrderLine_ID = new Integer(0);
+						C_OrderLine_ID = Integer.valueOf(0);
 					BigDecimal notReserved = MOrderLine.getNotReserved(ctx,
 						M_Warehouse_ID, M_Product_ID, M_AttributeSetInstance_ID,
 						C_OrderLine_ID.intValue());
@@ -1356,6 +1357,7 @@ public class CalloutOrder extends CalloutEngine
 		return "";
 	}	//	SalesOrderTenderType
 
+	/* Called from AD_Org_ID in tables C_Order, M_InOut, M_Inventory, M_Requisition */
 	public String organization(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value){
 		
 		//Return if Organization field is empty

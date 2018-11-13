@@ -226,7 +226,7 @@ public class RModel implements Serializable
 		if (log.isLoggable(Level.CONFIG)) log.config( "RModel.setGroup col=" + col);
 		if (col < 0 || col >= m_data.cols.size())
 			return;
-		Integer ii = new Integer(col);
+		Integer ii = Integer.valueOf(col);
 		if (!m_data.groups.contains(ii))
 			m_data.groups.add(ii);
 	}   //  setGroup
@@ -262,7 +262,7 @@ public class RModel implements Serializable
 		if (log.isLoggable(Level.CONFIG)) log.config( "RModel.setFunction col=" + col + " - " + function);
 		if (col < 0 || col >= m_data.cols.size())
 			return;
-		m_data.functions.put(new Integer(col), function);
+		m_data.functions.put(Integer.valueOf(col), function);
 	}   //  setFunction
 
 	/*************************************************************************/

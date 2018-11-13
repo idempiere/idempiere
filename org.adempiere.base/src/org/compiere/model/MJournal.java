@@ -53,7 +53,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -364132249042527640L;
+	private static final long serialVersionUID = 6116307358915557651L;
 
 	/**
 	 * 	Standard Constructor
@@ -372,7 +372,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 * 	Update Batch total
 	 *	@return true if ok
 	 */
-	private boolean updateBatch()
+	protected boolean updateBatch()
 	{
 		if (getGL_JournalBatch_ID()!=0) {	// idempiere 344 - nmicoud
 			StringBuilder sql = new StringBuilder("UPDATE GL_JournalBatch jb")
@@ -401,9 +401,9 @@ public class MJournal extends X_GL_Journal implements DocAction
 	}	//	process
 	
 	/**	Process Message 			*/
-	private String		m_processMsg = null;
+	protected String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
-	private boolean		m_justPrepared = false;
+	protected boolean		m_justPrepared = false;
 
 	/**
 	 * 	Unlock Document.
@@ -628,7 +628,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	/**
 	 * 	Set the definite document number after completed
 	 */
-	private void setDefiniteDocumentNo() {
+	protected void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			if (this.getProcessedOn().signum() == 0) {

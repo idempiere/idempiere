@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Postgresql Provider
 Bundle-SymbolicName: org.compiere.db.postgresql.provider;singleton:=true
-Bundle-Version: 5.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Version: 6.1.0.qualifier
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Bundle-ClassPath: .,
  lib/c3p0.jar,
  lib/mchange-commons-java.jar,
@@ -19,3 +19,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.adempiere.db.postgresql.PostgreSQLBundleActivator
 Service-Component: OSGI-INF/pgprovider.xml
 Automatic-Module-Name: org.compiere.db.postgresql.provider
+Bundle-Vendor: iDempiere Community

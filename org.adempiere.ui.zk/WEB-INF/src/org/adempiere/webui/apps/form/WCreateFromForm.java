@@ -178,7 +178,7 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 			int rows = model.getSize();
 			for (int i = 0; i < rows; i++)
 			{
-				model.setValueAt(new Boolean(true), i, 0);
+				model.setValueAt(Boolean.TRUE, i, 0);
 			}
 			//refresh
 			dataTable.setModel(model);

@@ -39,6 +39,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 
 import javax.swing.DefaultListCellRenderer;
@@ -525,11 +526,11 @@ public class VSortTab extends CPanel implements APanelTab
 	void migrateValueAcrossLists (AWTEvent event)
 	{
 		Object source = event.getSource();
-		Object[] selObjects = (source == bAdd || source == noList) ?
-				noList.getSelectedValues() : yesList.getSelectedValues();
-		for (int i = 0; i < selObjects.length; i++)
+		List<Object> selObjects = (source == bAdd || source == noList) ?
+				noList.getSelectedValuesList() : yesList.getSelectedValuesList();
+		for (int i = 0; i < selObjects.size(); i++)
 		{
-			ListItem selObject = (ListItem)selObjects[i];
+			ListItem selObject = (ListItem)selObjects.get(i);
 			if (selObject == null || !selObject.isUpdateable())
 				continue;
 
@@ -554,10 +555,10 @@ public class VSortTab extends CPanel implements APanelTab
 	 */
 	void migrateValueWithinYesList (AWTEvent event)
 	{
-		Object[] selObjects = yesList.getSelectedValues();
+		List<Object> selObjects = yesList.getSelectedValuesList();
 		if (selObjects == null)
 			return;
-		int length = selObjects.length;
+		int length = selObjects.size();
 		if (length == 0)
 			return;
 //		Object selObject = selObjects[0];
@@ -572,7 +573,7 @@ public class VSortTab extends CPanel implements APanelTab
 		if (source == bUp)
 		{
 			for (int i = 0; i < length; i++) {
-				ListItem selObject = (ListItem)selObjects[i];
+				ListItem selObject = (ListItem)selObjects.get(i);
 				int index = indices[i];
 				if (index == 0)
 					break;
@@ -589,7 +590,7 @@ public class VSortTab extends CPanel implements APanelTab
 		else if (source == bDown)
 		{
 			for (int i = length - 1; i >= 0; i--) {
-				ListItem selObject = (ListItem)selObjects[i];
+				ListItem selObject = (ListItem)selObjects.get(i);
 				int index = indices[i];
 				if (index  >= yesModel.size () - 1)
 					break;

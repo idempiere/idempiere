@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Fitnesse Fixture
 Bundle-SymbolicName: org.idempiere.fitnesse.fixture
-Bundle-Version: 5.1.0.qualifier
+Bundle-Version: 6.1.0.qualifier
 Bundle-Activator: org.idempiere.fitnesse.fixture.Activator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Import-Package: fit,
  fit.decorator,
  fit.decorator.exceptions,
@@ -65,3 +65,4 @@ Service-Component: OSGI-INF/fitfixturefactory.xml, OSGI-INF/slimfixturefactory.x
 Export-Package: org.idempiere.fitnesse.fixture
 Bundle-ClassPath: .
 Automatic-Module-Name: org.idempiere.fitnesse.fixture
+Bundle-Vendor: iDempiere Community

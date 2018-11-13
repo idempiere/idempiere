@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for Test
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 6.1
  */
 public interface I_Test 
 {
@@ -143,6 +143,15 @@ public interface I_Test
 	public int getC_Location_ID();
 
 	public I_C_Location getC_Location() throws RuntimeException;
+
+    /** Column name Color */
+    public static final String COLUMNNAME_Color = "Color";
+
+	/** Set Color	  */
+	public void setColor (String Color);
+
+	/** Get Color	  */
+	public String getColor();
 
     /** Column name C_Payment_ID */
     public static final String COLUMNNAME_C_Payment_ID = "C_Payment_ID";

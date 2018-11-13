@@ -145,7 +145,7 @@ public class VComboBox extends CComboBox<Object>
 		{
 			if (p.getID() == null)	//	-1 return null
 				return null;
-			return new Integer(((KeyNamePair)p).getID());
+			return Integer.valueOf(((KeyNamePair)p).getID());
 		}
 		return p.getID();
 	}	//	getValue

@@ -1291,7 +1291,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		if (value == null)
 			;
 		else if (displayType == DisplayType.YesNo)
-			dbValue = new Boolean("Y".equals(value));
+			dbValue = Boolean.valueOf("Y".equals(value));
 		else if (DisplayType.isNumeric(displayType))
 			dbValue = new BigDecimal (value);
 		else if (DisplayType.isID(displayType)) {

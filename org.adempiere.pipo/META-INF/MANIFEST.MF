@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere 2Pack Core
 Bundle-SymbolicName: org.adempiere.pipo;singleton:=true
-Bundle-Version: 5.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Version: 6.1.0.qualifier
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Import-Package: org.apache.commons.codec,
  org.apache.commons.codec.binary,
  org.apache.tools.ant,
@@ -19,3 +19,4 @@ Service-Component: OSGI-INF/dictionaryservice.xml
 Bundle-Activator: org.adempiere.plugin.utils.PackInApplicationActivator
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.pipo
+Bundle-Vendor: iDempiere Community

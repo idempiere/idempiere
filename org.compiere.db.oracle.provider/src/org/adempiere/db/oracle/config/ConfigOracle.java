@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import org.adempiere.install.DBConfigStatus;
 import org.adempiere.install.IDBConfigMonitor;
 import org.adempiere.install.IDatabaseConfig;
+import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
 import org.compiere.install.ConfigurationData;
 import org.compiere.util.CLogger;
@@ -59,6 +60,8 @@ public class ConfigOracle implements IDatabaseConfig
 	private Connection			m_con = null;
 	/** Express Edition			*/
 	private boolean 			m_XE = false;
+
+	private AdempiereDatabase p_db = Database.getDatabase(Database.DB_ORACLE);
 
 	/**
 	 * 	Init
@@ -356,14 +359,19 @@ public class ConfigOracle implements IDatabaseConfig
 		String url = "jdbc:oracle:thin:@//" + databaseServer.getHostName()
 			+ ":" + databasePort
 			+ "/" + databaseName;
-		pass = testJDBC(url, "system", systemPassword);
+		pass = testJDBC(url, p_db.getSystemUser(), systemPassword);
 		error = "Error connecting: " + url
-			+ " - as system/" + systemPassword;
+			+ " - as "+ p_db.getSystemUser() + "/" + systemPassword;
 		if (monitor != null)
 			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SYSTEM_PASSWORD, "ErrorJDBC",
 				pass, true, error));
-		if (!pass)
-			return error;
+		if (!pass) {
+			if (isDBExists) {
+				log.warning(error);
+			} else {
+				return error;
+			}
+		}
 		if (log.isLoggable(Level.INFO)) log.info("OK: Connection = " + url);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_URL, url);
 		if (log.isLoggable(Level.INFO)) log.info("OK: Database System User " + databaseName);
@@ -421,7 +429,7 @@ public class ConfigOracle implements IDatabaseConfig
 		}
 		if (testFile != null) {
 			//	TNS Name Info via sqlplus
-			String sqlplus = "sqlplus system/" + systemPassword + "@"
+			String sqlplus = "sqlplus " + p_db.getSystemUser() + "/" + systemPassword + "@"
 				+ "//" + databaseServer.getHostName()
 				+ ":" + databasePort
 				+ "/" + databaseName
@@ -444,7 +452,7 @@ public class ConfigOracle implements IDatabaseConfig
 		if (System.getProperty("TestOCI", "N").equals("Y"))
 		{
 			url = "jdbc:oracle:oci8:@" + databaseName;
-			pass = testJDBC(url, "system", systemPassword);
+			pass = testJDBC(url, p_db.getSystemUser(), systemPassword);
 			if (pass) {
 				if (log.isLoggable(Level.INFO)) log.info("OK: Connection = " + url);
 			} else {

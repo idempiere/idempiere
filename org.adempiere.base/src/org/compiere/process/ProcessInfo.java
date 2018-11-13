@@ -22,8 +22,14 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.compiere.model.MPInstance;
+import org.compiere.model.MPInstancePara;
+import org.compiere.model.MProcess;
+import org.compiere.model.MSession;
 import org.compiere.model.PO;
+import org.compiere.model.Query;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
@@ -541,7 +547,7 @@ public class ProcessInfo implements Serializable
 	 */
 	public void setAD_Client_ID (int AD_Client_ID)
 	{
-		m_AD_Client_ID = new Integer (AD_Client_ID);
+		m_AD_Client_ID = Integer.valueOf(AD_Client_ID);
 	}
 	/**
 	 * Method getAD_Client_ID
@@ -558,7 +564,7 @@ public class ProcessInfo implements Serializable
 	 */
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		m_AD_User_ID = new Integer (AD_User_ID);
+		m_AD_User_ID = Integer.valueOf(AD_User_ID);
 	}
 	/**
 	 * Method getAD_User_ID
@@ -859,5 +865,58 @@ public class ProcessInfo implements Serializable
 	public void setPDFFileName(String fileName) {
 		this.m_PDFfileName = fileName;
 	}
+	
+	/**
+	 * Validates to inform a user running again a process that is already in execution.
+	 * @return true if the same process is already running
+	 */
+	public boolean isProcessRunning(MPInstancePara[] params) {
+		MProcess process = MProcess.get(Env.getCtx(), getAD_Process_ID());
+		
+		String multipleExecutions = process.getAllowMultipleExecution();
+		if (multipleExecutions == null || multipleExecutions.isEmpty())
+			return false;
+		
+		Timestamp lastRebootDate = getLastServerRebootDate();
+		if (lastRebootDate == null)
+			return false;
+		
+		List<MPInstance> processInstanceList = new Query(Env.getCtx(), MPInstance.Table_Name, " AD_Process_ID=? AND AD_User_ID=? AND IsProcessing='Y' AND record_ID = ? AND Created > ? ", null)
+				.setParameters(getAD_Process_ID(), getAD_User_ID(), getRecord_ID(), lastRebootDate)
+				.setClient_ID()
+				.setOnlyActiveRecords(true)
+				.list();
+		
+		if (processInstanceList == null || processInstanceList.isEmpty())
+			return false;
+		
+		//Never allow multiple executions
+		if (multipleExecutions.equals(MProcess.ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutions)) 
+			return true;
+		
+		//Disallow multiple executions with the same params
+		if (multipleExecutions.equals(MProcess.ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutionsWithTheSameParameters)) {
+			for (MPInstance instance : processInstanceList) {
+				if (instance.equalParameters(params))
+					return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private Timestamp getLastServerRebootDate() {
+		MSession currentSession = MSession.get(Env.getCtx(), false);
+		if (currentSession == null)
+			return null;
+		
+		MSession lastServerSession = new Query(Env.getCtx(), MSession.Table_Name, " serverName=? AND websession=?", null)
+				.setParameters(currentSession.getServerName(), "Server")
+				.setOrderBy("AD_Session_ID desc")
+				.setOnlyActiveRecords(true)
+				.first();
 
+		return lastServerSession.getCreated();
+	}
+	
 }   //  ProcessInfo

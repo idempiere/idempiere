@@ -42,7 +42,7 @@ public class DefaultPaymentExporterFactory implements IPaymentExporterFactory {
 			try {
 				Class<?> peClass = Class.forName(className);
 				if (peClass != null)
-					myExporter = (PaymentExport)peClass.newInstance();
+					myExporter = (PaymentExport)peClass.getDeclaredConstructor().newInstance();
 			} catch (Error e1) {   //  NoClassDefFound
 				s_log.log(Level.SEVERE, className + " - Error=" + e1.getMessage());
 				return null;

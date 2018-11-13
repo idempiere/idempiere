@@ -368,7 +368,7 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 				}
 
 				//	Check duplicate receivers
-				Integer ii = new Integer (AD_User_ID);
+				Integer ii = Integer.valueOf(AD_User_ID);
 				if (userList.contains(ii))
 					continue;
 				userList.add(ii);

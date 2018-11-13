@@ -41,7 +41,7 @@ public class MWarehouse extends X_M_Warehouse
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2696705459515717619L;
+	private static final long serialVersionUID = -3065089372599460372L;
 
 	/**
 	 * 	Get from Cache
@@ -63,7 +63,7 @@ public class MWarehouse extends X_M_Warehouse
 	 */
 	public static MWarehouse get (Properties ctx, int M_Warehouse_ID, String trxName)
 	{
-		Integer key = new Integer(M_Warehouse_ID);
+		Integer key = Integer.valueOf(M_Warehouse_ID);
 		MWarehouse retValue = (MWarehouse)s_cache.get(key);
 		if (retValue != null)
 			return retValue;
@@ -109,7 +109,7 @@ public class MWarehouse extends X_M_Warehouse
 	}	//	get
 	
 	/**	Cache					*/
-	private static CCache<Integer,MWarehouse> s_cache = new CCache<Integer,MWarehouse>(Table_Name, 50 );	
+	protected static CCache<Integer,MWarehouse> s_cache = new CCache<Integer,MWarehouse>(Table_Name, 50 );	
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -154,7 +154,7 @@ public class MWarehouse extends X_M_Warehouse
 	}	//	MWarehouse
 
 	/**	Warehouse Locators				*/
-	private MLocator[]	m_locators = null;
+	protected MLocator[]	m_locators = null;
 	
 	/**
 	 * 	Get Locators

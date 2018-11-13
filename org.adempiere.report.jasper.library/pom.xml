@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.idempiere</groupId>
 		<artifactId>org.idempiere.parent</artifactId>
-		<version>5.1.0-SNAPSHOT</version>
+		<version>6.1.0-SNAPSHOT</version>
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>org.adempiere.report.jasper.library</artifactId>
@@ -52,16 +52,6 @@
 									<groupId>org.olap4j</groupId>
 									<artifactId>olap4j</artifactId>
 									<version>0.9.7.309-JS-3</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.springframework</groupId>
-									<artifactId>spring-beans</artifactId>
-									<version>2.5</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.springframework</groupId>
-									<artifactId>spring-core</artifactId>
-									<version>2.5</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.adobe.xmp</groupId>

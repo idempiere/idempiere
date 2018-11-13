@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Replication
 Bundle-SymbolicName: org.adempiere.replication;singleton:=true
-Bundle-Version: 5.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Version: 6.1.0.qualifier
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
 Export-Package: org.adempiere.process.rpl,
  org.adempiere.process.rpl.exp,
@@ -13,3 +13,4 @@ Import-Package: javax.jms;version="1.1.0",
 Eclipse-RegisterBuddy: org.adempiere.base
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.replication
+Bundle-Vendor: iDempiere Community

@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Server
 Bundle-SymbolicName: org.adempiere.server;singleton:=true
-Bundle-Version: 5.1.0.qualifier
+Bundle-Version: 6.1.0.qualifier
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.eclipse.equinox.app;bundle-version="0.0.0",
  org.eclipse.jetty.apache-jsp;bundle-version="0.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Web-ContextPath: /
 Bundle-ClassPath: .,
  WEB-INF/lib/jnlp-jardiff.jar,
@@ -41,3 +41,4 @@ Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/acctprocessorfactory.xml, OSGI-INF/alertprocessorfactory.xml, OSGI-INF/ldapprocessorfactory.xml, OSGI-INF/requestprocessorfactory.xml, OSGI-INF/schedulerfactory.xml, OSGI-INF/workflowprocessorfactory.xml
 Bundle-Activator: org.adempiere.server.AdempiereServerActivator
 Automatic-Module-Name: org.adempiere.server
+Bundle-Vendor: iDempiere Community

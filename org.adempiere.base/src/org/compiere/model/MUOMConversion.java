@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.awt.Point;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,7 +49,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8449239579085422641L;
+	private static final long serialVersionUID = 3555218774291122619L;
 
 
 	/**
@@ -146,7 +147,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 	 * 	@param p Point with from(x) - to(y) C_UOM_ID
 	 * 	@return conversion multiplier or null
 	 */
-	static private BigDecimal getRate (Properties ctx, Point p)
+	static protected BigDecimal getRate (Properties ctx, Point p)
 	{
 		BigDecimal retValue = null;
 		if (Ini.isClient())
@@ -167,7 +168,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 	 * 	Create Conversion Matrix (Client)
 	 * 	@param ctx context
 	 */
-	private static void createRates (Properties ctx)
+	protected static void createRates (Properties ctx)
 	{
 		s_conversions = new CCache<Point,BigDecimal>(Table_Name, 20);
 		//
@@ -191,7 +192,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 					s_conversions.put(p, mr);
 				//	reverse
 				if (dr == null && mr != null)
-					dr = Env.ONE.divide(mr, BigDecimal.ROUND_HALF_UP);
+					dr = Env.ONE.divide(mr, RoundingMode.HALF_UP);
 				if (dr != null)
 					s_conversions.put(new Point(p.y,p.x), dr);
 			}
@@ -445,7 +446,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		//	Calculate & Scale
 		retValue = retValue.multiply(qty);
 		if (retValue.scale() > precision)
-			retValue = retValue.setScale(precision, BigDecimal.ROUND_HALF_UP);
+			retValue = retValue.setScale(precision, RoundingMode.HALF_UP);
 		return retValue;
 	}   //  convert
 
@@ -601,7 +602,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 	{
 		if (M_Product_ID == 0)
 			return new MUOMConversion[0];
-		Integer key = new Integer (M_Product_ID);
+		Integer key = Integer.valueOf(M_Product_ID);
 		MUOMConversion[] result = (MUOMConversion[])s_conversionProduct.get(key);
 		if (result != null)
 			return result;
@@ -631,11 +632,11 @@ public class MUOMConversion extends X_C_UOM_Conversion
 	/** Static Logger					*/
 	private static final CLogger s_log = CLogger.getCLogger(MUOMConversion.class);
 	/**	Indicator for Rate					*/
-	private static final BigDecimal GETRATE = BigDecimal.valueOf(123.456);
+	protected static final BigDecimal GETRATE = BigDecimal.valueOf(123.456);
 	/**	Conversion Map: Key=Point(from,to) Value=BigDecimal	*/
-	private static CCache<Point,BigDecimal>	s_conversions = null;
+	protected static CCache<Point,BigDecimal>	s_conversions = null;
 	/** Product Conversion Map					*/
-	private static final CCache<Integer,MUOMConversion[]>	s_conversionProduct 
+	protected static final CCache<Integer,MUOMConversion[]>	s_conversionProduct 
 		= new CCache<Integer,MUOMConversion[]>(Table_Name, Table_Name+"_Of_Product", 20); 
 	
 	

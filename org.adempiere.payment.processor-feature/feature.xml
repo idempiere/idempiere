@@ -2,7 +2,8 @@
 <feature
       id="org.adempiere.payment.processor.feature"
       label="Payment Processor"
-      version="5.1.0.qualifier">
+      version="6.1.0.qualifier"
+      provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]

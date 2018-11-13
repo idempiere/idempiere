@@ -152,7 +152,7 @@ public class VCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		bankAccountField = new VLookup ("C_BankAccount_ID", true, true, true, lookup);
 		//  Set Default
 		int C_BankAccount_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_BankAccount_ID");
-		bankAccountField.setValue(new Integer(C_BankAccount_ID));
+		bankAccountField.setValue(Integer.valueOf(C_BankAccount_ID));
 		bankAccountField.addActionListener(this);
 		//  initial Loading
 		authorizationField = new VString ("authorization", false, false, true, 10, 30, null, null);
@@ -161,7 +161,7 @@ public class VCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		MLookup lookupDocument = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, MColumn.getColumn_ID(MPayment.Table_Name, MPayment.COLUMNNAME_C_DocType_ID), DisplayType.TableDir);
 		documentTypeField = new VLookup (MPayment.COLUMNNAME_C_DocType_ID,false,false,true,lookupDocument);
 		int C_DocType_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_DocType_ID");
-		documentTypeField.setValue(new Integer(C_DocType_ID));
+		documentTypeField.setValue(Integer.valueOf(C_DocType_ID));
 		documentTypeField.addActionListener(this);
 		
 		MLookup lookupTender = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, MColumn.getColumn_ID(MPayment.Table_Name, MPayment.COLUMNNAME_TenderType), DisplayType.List);
@@ -306,7 +306,7 @@ public class VCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 				documentTypeField.getValue(), tenderTypeField.getValue(), authorizationField.getText()));
 	}
 	
-	protected void loadTableOIS (Vector<?> data)
+	protected void loadTableOIS (Vector<? extends Vector> data)
 	{
 		//  Remove previous listeners
 		dialog.getMiniTable().getModel().removeTableModelListener(dialog);

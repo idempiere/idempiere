@@ -151,7 +151,38 @@ public class MPInstance extends X_AD_PInstance
 		list.toArray(m_parameters);
 		return m_parameters;
 	}	//	getParameters
-
+	
+	/**
+	 * Validate that a set of process instance parameters are equal or not
+	 * to the current instance parameter
+	 * @param param array of parameters to compare
+	 * @return true if the process instance parameters are the same as the  array ones
+	 */
+	public boolean equalParameters(MPInstancePara[] params) {		
+		
+		//No parameters
+		if ((getParameters() == null || getParameters().length == 0) && (params == null || params.length == 0))
+				return true;
+		
+		//Different number of parameters
+		if (getParameters().length != params.length)
+			return false;
+		
+		int comparedParams = 0;
+		for (MPInstancePara instanceParameter : getParameters()) {
+			for (MPInstancePara para : params) {
+				if (instanceParameter.getParameterName().equals(para.getParameterName())) {
+					comparedParams++;
+					 if (!instanceParameter.equalParameter(para)) {
+						 return false;
+					 }
+					 break;
+				}
+			}
+		}
+		
+		return comparedParams == getParameters().length; //all the compared parameters have the same name and value 
+	}
 
 	/**	Log Entries					*/
 	private ArrayList<MPInstanceLog>	m_log	= new ArrayList<MPInstanceLog>();
@@ -245,7 +276,7 @@ public class MPInstance extends X_AD_PInstance
 			if (log.isLoggable(Level.INFO)) log.info("Set to 0 from " + Record_ID);
 			Record_ID = 0;
 		}
-		set_ValueNoCheck ("Record_ID", new Integer(Record_ID));
+		set_ValueNoCheck ("Record_ID", Integer.valueOf(Record_ID));
 	}	//	setRecord_ID
 
 	/**

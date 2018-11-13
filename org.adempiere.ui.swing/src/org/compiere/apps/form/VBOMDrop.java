@@ -422,7 +422,7 @@ public class VBOMDrop extends CPanel
 			this.add(b, new ALayoutConstraint(m_bomLine++, 0));
 		}
 		//	Add to List & display
-		m_productList.add (new Integer(M_Product_ID));
+		m_productList.add (Integer.valueOf(M_Product_ID));
 		VNumber qty = new VNumber ("Qty", true, false, true, DisplayType.Quantity, name);
 		qty.setValue(lineQty);
 		qty.setReadWrite(selected);

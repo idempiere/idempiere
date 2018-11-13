@@ -153,7 +153,7 @@ public class MDistribution extends X_GL_Distribution
 	 */
 	public static MDistribution[] get (Properties ctx, int Account_ID)
 	{
-		Integer key = new Integer (Account_ID);
+		Integer key = Integer.valueOf(Account_ID);
 		MDistribution[] retValue = (MDistribution[])s_accounts.get(key);
 		if (retValue != null)
 			return retValue;

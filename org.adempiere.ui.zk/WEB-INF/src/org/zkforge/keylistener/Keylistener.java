@@ -112,7 +112,7 @@ public class Keylistener extends HtmlBasedComponent {
 				}
 				if (k == j + 1)
 					throw new WrongValueException(MCommon.UNEXPECTED_CHARACTER,
-							new Object[] { new Character(cc), keys });
+							new Object[] { Character.valueOf(cc), keys });
 
 				final String s = keys.substring(j + 1, k).toLowerCase();
 				if ("pgup".equals(s))
@@ -166,7 +166,7 @@ public class Keylistener extends HtmlBasedComponent {
 				if (sbcur == null
 						|| ((cc > 'Z' || cc < 'A') && (cc > 'z' || cc < 'a') && (cc > '9' || cc < '0')))
 					throw new WrongValueException(MCommon.UNEXPECTED_CHARACTER,
-							new Object[] { new Character(cc), keys });
+							new Object[] { Character.valueOf(cc), keys });
 				if (sbcur == sbsft)
 					throw new WrongValueException("$" + cc + " not supported: "
 							+ keys);

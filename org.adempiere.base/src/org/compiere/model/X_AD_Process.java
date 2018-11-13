@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Process
  *  @author iDempiere (generated) 
- *  @version Release 5.1 - $Id$ */
+ *  @version Release 6.1 - $Id$ */
 public class X_AD_Process extends PO implements I_AD_Process, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171031L;
+	private static final long serialVersionUID = 20181104L;
 
     /** Standard Constructor */
     public X_AD_Process (Properties ctx, int AD_Process_ID, String trxName)
@@ -284,6 +284,30 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 		return ii.intValue();
 	}
 
+	/** AllowMultipleExecution AD_Reference_ID=200158 */
+	public static final int ALLOWMULTIPLEEXECUTION_AD_Reference_ID=200158;
+	/** Disallow multiple executions = N */
+	public static final String ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutions = "N";
+	/** Disallow multiple executions with the same parameters = P */
+	public static final String ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutionsWithTheSameParameters = "P";
+	/** Set Multiple Execution.
+		@param AllowMultipleExecution 
+		Allow or disallow executing a process/report multiple times.
+	  */
+	public void setAllowMultipleExecution (String AllowMultipleExecution)
+	{
+
+		set_Value (COLUMNNAME_AllowMultipleExecution, AllowMultipleExecution);
+	}
+
+	/** Get Multiple Execution.
+		@return Allow or disallow executing a process/report multiple times.
+	  */
+	public String getAllowMultipleExecution () 
+	{
+		return (String)get_Value(COLUMNNAME_AllowMultipleExecution);
+	}
+
 	/** Set Classname.
 		@param Classname 
 		Java Classname
@@ -353,6 +377,30 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	public String getEntityType () 
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
+	}
+
+	/** ExecutionType AD_Reference_ID=200157 */
+	public static final int EXECUTIONTYPE_AD_Reference_ID=200157;
+	/** Force Background = B */
+	public static final String EXECUTIONTYPE_ForceBackground = "B";
+	/** Force Foreground = F */
+	public static final String EXECUTIONTYPE_ForceForeground = "F";
+	/** Set Execution Type.
+		@param ExecutionType 
+		Execution Type defines whether the report/process will always run in background or foreground. 
+	  */
+	public void setExecutionType (String ExecutionType)
+	{
+
+		set_Value (COLUMNNAME_ExecutionType, ExecutionType);
+	}
+
+	/** Get Execution Type.
+		@return Execution Type defines whether the report/process will always run in background or foreground. 
+	  */
+	public String getExecutionType () 
+	{
+		return (String)get_Value(COLUMNNAME_ExecutionType);
 	}
 
 	/** Set Comment/Help.

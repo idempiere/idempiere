@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_HouseKeeping
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 6.1
  */
 public interface I_AD_HouseKeeping 
 {
@@ -220,6 +220,19 @@ public interface I_AD_HouseKeeping
 
 	/** Get Process Now	  */
 	public boolean isProcessing();
+
+    /** Column name TableName */
+    public static final String COLUMNNAME_TableName = "TableName";
+
+	/** Set DB Table Name.
+	  * Name of the table in the database
+	  */
+	public void setTableName (String TableName);
+
+	/** Get DB Table Name.
+	  * Name of the table in the database
+	  */
+	public String getTableName();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

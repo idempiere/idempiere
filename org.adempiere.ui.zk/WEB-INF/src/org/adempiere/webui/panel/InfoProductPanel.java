@@ -810,12 +810,12 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		ResultSet rs = null;
 		try
 		{
-			pickPriceList.appendItem("",new Integer(0));
+			pickPriceList.appendItem("",Integer.valueOf(0));
 			pstmt = DB.prepareStatement(SQL, null);
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				pickPriceList.appendItem(rs.getString(2),new Integer(rs.getInt(1)));
+				pickPriceList.appendItem(rs.getString(2),Integer.valueOf(rs.getInt(1)));
 			}
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
@@ -827,12 +827,12 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 				+ "WHERE IsActive='Y'",
 					"M_Warehouse", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO)
 				+ " ORDER BY Value";
-			pickWarehouse.appendItem("", new Integer(0));
+			pickWarehouse.appendItem("", Integer.valueOf(0));
 			pstmt = DB.prepareStatement(SQL, null);
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				pickWarehouse.appendItem(rs.getString("ValueName"), new Integer(rs.getInt("M_Warehouse_ID")));
+				pickWarehouse.appendItem(rs.getString("ValueName"), Integer.valueOf(rs.getInt("M_Warehouse_ID")));
 			}
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
@@ -1506,10 +1506,10 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 				line.add(null);							//  Date
 				double qtyOnHand = rs.getDouble(1);
 				qty += qtyOnHand;
-				line.add(new Double(qtyOnHand));  		//  Qty
+				line.add(Double.valueOf(qtyOnHand));  		//  Qty
 				line.add(null);							//  BPartner
-				line.add(new Double(rs.getDouble(3)));  //  QtyOrdered
-				line.add(new Double(rs.getDouble(2)));  //  QtyReserved
+				line.add(Double.valueOf(rs.getDouble(3)));  //  QtyOrdered
+				line.add(Double.valueOf(rs.getDouble(2)));  //  QtyReserved
 				line.add(rs.getString(7));      		//  Locator
 				String asi = rs.getString(4);
 				if (showDetail && (asi == null || asi.length() == 0))
@@ -1565,15 +1565,15 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 				Double qtyOrdered = null;
 				if (MDocType.DOCBASETYPE_PurchaseOrder.equals(DocBaseType))
 				{
-					qtyOrdered = new Double(oq);
+					qtyOrdered = Double.valueOf(oq);
 					qty += oq;
 				}
 				else
 				{
-					qtyReserved = new Double(oq);
+					qtyReserved = Double.valueOf(oq);
 					qty -= oq;
 				}
-				line.add(new Double(qty)); 		 		//  Qty
+				line.add(Double.valueOf(qty)); 		 		//  Qty
 				line.add(rs.getString(6));				//  BPartner
 				line.add(qtyOrdered);					//  QtyOrdered
 				line.add(qtyReserved);					//  QtyReserved

@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_PostIt
  *  @author iDempiere (generated) 
- *  @version Release 5.1 - $Id$ */
+ *  @version Release 6.1 - $Id$ */
 public class X_AD_PostIt extends PO implements I_AD_PostIt, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171107L;
+	private static final long serialVersionUID = 20181104L;
 
     /** Standard Constructor */
     public X_AD_PostIt (Properties ctx, int AD_PostIt_ID, String trxName)

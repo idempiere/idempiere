@@ -81,12 +81,12 @@ public class Charge
 			while (rs.next())
 			{
 				Vector<Object> line = new Vector<Object>(4);
-				line.add(new Boolean(false));       //  0-Selection
+				line.add(Boolean.FALSE);       //  0-Selection
 				KeyNamePair pp = new KeyNamePair(rs.getInt(1), rs.getString(2));
 				line.add(pp);                       //  1-Value
 				line.add(rs.getString(3));          //  2-Name
 				boolean isExpenseType = rs.getString(4).equals("E");
-				line.add(new Boolean(isExpenseType));   //  3-Expense
+				line.add(Boolean.valueOf(isExpenseType));   //  3-Expense
 				data.add(line);
 			}
 		}
@@ -400,7 +400,7 @@ public class Charge
 					listCreated.append(name);
 				}
 				//  reset selection
-				dataTable.setValueAt(new Boolean(false), i, 0);
+				dataTable.setValueAt(Boolean.FALSE, i, 0);
 			}
 		}
 	}   //  createAccount

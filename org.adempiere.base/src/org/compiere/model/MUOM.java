@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.Iterator;
 import java.util.List;
@@ -38,7 +39,7 @@ public class MUOM extends X_C_UOM
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7248044516358949324L;
+	private static final long serialVersionUID = 3119054530389871561L;
 	/** X12 Element 355 Code	Second	*/
 	public static final String		X12_SECOND = "03";
 	/** X12 Element 355 Code	Minute	*/
@@ -97,7 +98,7 @@ public class MUOM extends X_C_UOM
 	/*************************************************************************/
 
 	/**	UOM Cache				*/
-	private static CCache<Integer,MUOM>	s_cache = new CCache<Integer,MUOM>(Table_Name, 30);
+	protected static CCache<Integer,MUOM>	s_cache = new CCache<Integer,MUOM>(Table_Name, 30);
 
 	/**
 	 * 	Get UOM from Cache
@@ -150,7 +151,7 @@ public class MUOM extends X_C_UOM
 	 * 	Load All UOMs
 	 * 	@param ctx context
 	 */
-	private static void loadUOMs (Properties ctx)
+	protected static void loadUOMs (Properties ctx)
 	{
 		List<MUOM> list = new Query(ctx, Table_Name, "IsActive='Y'", null)
 								.setApplyAccessFilter(MRole.SQL_NOTQUALIFIED, MRole.SQL_RO)
@@ -216,7 +217,7 @@ public class MUOM extends X_C_UOM
 		if (!stdPrecision)
 			precision = getCostingPrecision();
 		if (qty.scale() > precision)
-			return qty.setScale(getStdPrecision(), BigDecimal.ROUND_HALF_UP);
+			return qty.setScale(getStdPrecision(), RoundingMode.HALF_UP);
 		return qty;
 	}	//	round
 

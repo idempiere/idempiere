@@ -2,12 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Payment Processor
 Bundle-SymbolicName: org.adempiere.payment.processor;singleton:=true
-Bundle-Version: 5.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Version: 6.1.0.qualifier
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
 Bundle-ClassPath: .,
  lib/jpayment.jar,
  lib/payflow.jar,
  lib/Verisign.jar
 Automatic-Module-Name: org.adempiere.payment.processor
+Bundle-Vendor: iDempiere Community
 

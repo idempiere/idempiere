@@ -16,7 +16,7 @@
  *****************************************************************************/
 package org.compiere.plaf;
 
-import java.awt.event.InputEvent;
+import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 
 import javax.swing.AbstractButton;
@@ -86,10 +86,10 @@ public class CompiereButtonListener extends BasicButtonListener
     	    }
     	    map.clear();
     	    String className = b.getClass().getName();
-    	    int mask = InputEvent.ALT_MASK;		//	Default Buttons
+    	    int mask = ActionEvent.ALT_MASK;		//	Default Buttons
     	    if (b instanceof JCheckBox 			//	In Tab
     	    	|| className.indexOf("VButton") != -1)
-    	    	mask = InputEvent.SHIFT_MASK + InputEvent.CTRL_MASK;
+    	    	mask = ActionEvent.SHIFT_MASK + ActionEvent.CTRL_MASK;
     	    map.put(KeyStroke.getKeyStroke(m, mask, false), "pressed");
     	    map.put(KeyStroke.getKeyStroke(m, mask, true), "released");
     	    map.put(KeyStroke.getKeyStroke(m, 0, true), "released");

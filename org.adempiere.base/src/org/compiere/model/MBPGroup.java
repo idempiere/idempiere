@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
@@ -49,7 +50,7 @@ public class MBPGroup extends X_C_BP_Group
 	 */
 	public static MBPGroup get (Properties ctx, int C_BP_Group_ID)
 	{
-		Integer key = new Integer (C_BP_Group_ID);
+		Integer key = Integer.valueOf(C_BP_Group_ID);
 		MBPGroup retValue = (MBPGroup) s_cache.get (key);
 		if (retValue != null)
 			return retValue;
@@ -82,7 +83,7 @@ public class MBPGroup extends X_C_BP_Group
 	public static MBPGroup getDefault (Properties ctx)
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
-		Integer key = new Integer (AD_Client_ID);
+		Integer key = Integer.valueOf(AD_Client_ID);
 		MBPGroup retValue = (MBPGroup) s_cacheDefault.get (key);
 		if (retValue != null)
 			return retValue;
@@ -141,7 +142,7 @@ public class MBPGroup extends X_C_BP_Group
 			if (rs.next ())
 			{
 				retValue = new MBPGroup (ctx, rs, null);
-				Integer key = new Integer (retValue.getC_BP_Group_ID());
+				Integer key = Integer.valueOf(retValue.getC_BP_Group_ID());
 				if (retValue.get_ID () != 0)
 					s_cache.put (key, retValue);
 			}
@@ -220,7 +221,7 @@ public class MBPGroup extends X_C_BP_Group
 	{
 		BigDecimal bd = super.getCreditWatchPercent();
 		if (bd.compareTo(Env.ZERO) != 0)
-			return bd.divide(Env.ONEHUNDRED, 2, BigDecimal.ROUND_HALF_UP);
+			return bd.divide(Env.ONEHUNDRED, 2, RoundingMode.HALF_UP);
 		return BigDecimal.valueOf(0.90);
 	}	//	getCreditWatchRatio
 

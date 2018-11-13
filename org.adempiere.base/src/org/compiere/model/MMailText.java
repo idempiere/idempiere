@@ -40,7 +40,7 @@ public class MMailText extends X_R_MailText
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5088779317275846829L;
+	private static final long serialVersionUID = -6458808409321394821L;
 
 	/**
 	 * 	Standard Constructor
@@ -65,22 +65,22 @@ public class MMailText extends X_R_MailText
 	}	//	MMailText
 
 	/**	Parse User			*/
-	private MUser		m_user = null;
+	protected MUser		m_user = null;
 	/** Parse BPartner		*/
-	private MBPartner	m_bpartner = null;
+	protected MBPartner	m_bpartner = null;
 	/** Parse PO			*/
-	private PO			m_po = null;
+	protected PO			m_po = null;
 	/** Translated Header	*/
-	private String		m_MailHeader = null;
+	protected String		m_MailHeader = null;
 	/** Translated Text		*/
-	private String		m_MailText = null;
+	protected String		m_MailText = null;
 	/** Translated Text 2	*/
-	private String		m_MailText2 = null;
+	protected String		m_MailText2 = null;
 	/** Translated Text 3	*/
-	private String		m_MailText3 = null;
+	protected String		m_MailText3 = null;
 	/** Translation Cache	*/
-	private static CCache<String,MMailTextTrl> s_cacheTrl = new CCache<String,MMailTextTrl> (Table_Name, 20);
-	private String m_language = null;
+	protected static CCache<String,MMailTextTrl> s_cacheTrl = new CCache<String,MMailTextTrl> (Table_Name, 20);
+	protected String m_language = null;
 	
 	/**
 	 * 	Get parsed/translated Mail Text
@@ -155,7 +155,7 @@ public class MMailText extends X_R_MailText
 	 *	@param text text
 	 *	@return parsed text
 	 */
-	private String parse (String text)
+	protected String parse (String text)
 	{
 		if (Util.isEmpty(text) || text.indexOf('@') == -1)
 			return text;
@@ -175,7 +175,7 @@ public class MMailText extends X_R_MailText
 	 *	@param po object
 	 *	@return parsed text
 	 */
-	private String parse (String text, PO po)
+	protected String parse (String text, PO po)
 	{
 		if (po == null || Util.isEmpty(text) || text.indexOf('@') == -1)
 			return text;
@@ -214,7 +214,7 @@ public class MMailText extends X_R_MailText
 	 *	@param po po
 	 *	@return translated variable or if not found the original tag
 	 */
-	private String parseVariable (String variable, PO po)
+	protected String parseVariable (String variable, PO po)
 	{
 		if (variable.contains("<") && variable.contains(">")) { // IDEMPIERE-3096
 			return Env.parseVariable("@"+variable+"@", po, get_TrxName(), true);
@@ -327,7 +327,7 @@ public class MMailText extends X_R_MailText
 	/**
 	 * 	Translate to BPartner Language
 	 */
-	private void translate()
+	protected void translate()
 	{
 		//	Default if no Translation
 		m_MailHeader = super.getMailHeader();
@@ -360,7 +360,7 @@ public class MMailText extends X_R_MailText
 	 *	@param AD_Language language
 	 *	@return trl
 	 */
-	private MMailTextTrl getTranslation (String AD_Language)
+	protected MMailTextTrl getTranslation (String AD_Language)
 	{
 		MMailTextTrl trl = null;
 		PreparedStatement pstmt = null;

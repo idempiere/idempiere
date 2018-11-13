@@ -301,7 +301,7 @@ public class PerformanceIndicator extends JPanel
         	//	Lazily create the event:
         	if (e == null) 
         		e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
-        			"pi", event.getWhen(), event.getModifiers());
+        			"pi", event.getWhen(), event.getModifiersEx());
         	listeners[i].actionPerformed(e);
         }
     }	//	fireActionPerformed

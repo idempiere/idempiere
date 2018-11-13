@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -50,9 +51,9 @@ public class MCostDetail extends X_M_CostDetail
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -448632684360931078L;
+	private static final long serialVersionUID = -3896161579785627935L;
 
-	private static final String INOUTLINE_DOCBASETYPE_SQL =
+	protected static final String INOUTLINE_DOCBASETYPE_SQL =
 		    "SELECT c.DocBaseType From M_InOut io " +
 			"INNER JOIN M_InOutLine iol ON io.M_InOut_ID=iol.M_InOut_ID " +
 			"INNER JOIN C_DocType c ON io.C_DocType_ID=c.C_DocType_ID " +
@@ -982,7 +983,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param M_ASI_ID - asi corrected for costing level
 	 *	@return true if cost ok
 	 */
-	private boolean process (MAcctSchema as, MProduct product, MCostElement ce, 
+	protected boolean process (MAcctSchema as, MProduct product, MCostElement ce, 
 		int Org_ID, int M_ASI_ID)
 	{
 		//handle compatibility issue between average invoice and average po
@@ -1047,7 +1048,7 @@ public class MCostDetail extends X_M_CostDetail
 		int precision = as.getCostingPrecision();
 		BigDecimal price = amt;
 		if (qty.signum() != 0)
-			price = amt.divide(qty, precision, BigDecimal.ROUND_HALF_UP);
+			price = amt.divide(qty, precision, RoundingMode.HALF_UP);
 		
 		/** All Costing Methods
 		if (ce.isAverageInvoice())

@@ -56,16 +56,17 @@ public class SQLMandatoryElementHandler extends AbstractElementHandler {
 		if (sql.endsWith(";") && !(sql.toLowerCase().endsWith("end;")))
 			sql = sql.substring(0, sql.length() - 1);
 		sql = Env.parseContext(Env.getCtx(), 0, sql, false);
+		int count = 0;
 		PreparedStatement pstmt = null;
 		X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, "", 0);
 		try {
 			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
 			if (DBType.equals("ALL")) {
-				int n = pstmt.executeUpdate();
-				if (log.isLoggable(Level.INFO)) log.info("Executed SQL Mandatory: "+ getStringValue(element, "statement") + " ReturnValue="+n);
+				count = pstmt.executeUpdate();
+				if (log.isLoggable(Level.INFO)) log.info("Executed SQL Mandatory: "+ getStringValue(element, "statement") + " ReturnValue="+count);
 			} else if (DB.isOracle() && DBType.equals("Oracle")) {
-				int n = pstmt.executeUpdate();
-				if (log.isLoggable(Level.INFO)) log.info("Executed SQL Mandatory for Oracle: "+ getStringValue(element, "statement") + " ReturnValue="+n);
+				count = pstmt.executeUpdate();
+				if (log.isLoggable(Level.INFO)) log.info("Executed SQL Mandatory for Oracle: "+ getStringValue(element, "statement") + " ReturnValue="+count);
 			} else if (DB.isPostgreSQL()
 					 && (   DBType.equals("Postgres")
 						 || DBType.equals("PostgreSQL")  // backward compatibility with old packages developed by hand
@@ -79,18 +80,18 @@ public class SQLMandatoryElementHandler extends AbstractElementHandler {
 				Statement stmt = null;
 				try {
 					stmt = pstmt.getConnection().createStatement();
-					int n = stmt.executeUpdate (sql);
-					if (log.isLoggable(Level.INFO)) log.info("Executed SQL Mandatory for PostgreSQL: "+ getStringValue(element,"statement") + " ReturnValue="+n);
+					count = stmt.executeUpdate (sql);
+					if (log.isLoggable(Level.INFO)) log.info("Executed SQL Mandatory for PostgreSQL: "+ getStringValue(element,"statement") + " ReturnValue="+count);
 				} finally {
 					DB.close(stmt);
 					stmt = null;
 				}
 			}
-			logImportDetail (ctx, impDetail, 1, "SQLMandatory",1,"Execute");
+			logImportDetail (ctx, impDetail, 1, "SQLMandatory",count,"Execute");
 			ctx.packIn.getNotifier().addSuccessLine("-> " + sql);
 		} catch (Exception e)	{
 			ctx.packIn.getNotifier().addFailureLine("SQL Mandatory failed, error (" + e.getLocalizedMessage() + "):");
-			logImportDetail (ctx, impDetail, 0, "SQLMandatory",1,"Execute");
+			logImportDetail (ctx, impDetail, 0, "SQLMandatory",-1,"Execute");
 			ctx.packIn.getNotifier().addFailureLine("-> " + sql);
 			log.log(Level.SEVERE,"SQLMandatory", e);
 			throw new AdempiereException(e);

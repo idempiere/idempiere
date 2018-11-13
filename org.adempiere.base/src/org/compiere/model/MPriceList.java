@@ -50,7 +50,7 @@ public class MPriceList extends X_M_PriceList
 	 */
 	public static MPriceList get (Properties ctx, int M_PriceList_ID, String trxName)
 	{
-		Integer key = new Integer (M_PriceList_ID);
+		Integer key = Integer.valueOf(M_PriceList_ID);
 		MPriceList retValue = (MPriceList)s_cache.get(key);
 		if (retValue == null)
 		{
@@ -263,7 +263,7 @@ public class MPriceList extends X_M_PriceList
 		if (m_precision == null)
 		{
 			MCurrency c = MCurrency.get(getCtx(), getC_Currency_ID());
-			m_precision = new Integer (c.getStdPrecision());
+			m_precision = Integer.valueOf(c.getStdPrecision());
 		}
 		return m_precision.intValue();
 	}	//	getStandardPrecision

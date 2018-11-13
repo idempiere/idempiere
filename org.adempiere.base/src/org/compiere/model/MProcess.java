@@ -54,7 +54,7 @@ public class MProcess extends X_AD_Process
 	 */
 	public static MProcess get (Properties ctx, int AD_Process_ID)
 	{
-		Integer key = new Integer (AD_Process_ID);
+		Integer key = Integer.valueOf(AD_Process_ID);
 		MProcess retValue = (MProcess) s_cache.get (key);
 		if (retValue != null)
 			return retValue;
@@ -307,6 +307,24 @@ public class MProcess extends X_AD_Process
 		String Classname = getClassname();
 		return (Classname != null && Classname.length() > 0);
 	}	//	is JavaProcess
+	
+	/**
+	 * 	Is Force Background
+	 *	@return true if force background
+	 */
+	public boolean isForceBackground()
+	{
+		return EXECUTIONTYPE_ForceBackground.equals(getExecutionType());
+	}
+	
+	/**
+	 * 	Is Force Foreground
+	 *	@return true if force foreground
+	 */
+	public boolean isForceForeground()
+	{
+		return EXECUTIONTYPE_ForceForeground.equals(getExecutionType());
+	}
 	
 	/**
 	 *  Start Database Process

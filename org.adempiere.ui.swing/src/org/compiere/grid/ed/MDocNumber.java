@@ -17,6 +17,7 @@
 package org.compiere.grid.ed;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -228,7 +229,7 @@ public final class MDocNumber extends PlainDocument
 							{
 								Number number = m_format.parse(value);
 								percentValue = new BigDecimal (number.toString());
-								percentValue = percentValue.divide(Env.ONEHUNDRED, m_format.getMaximumFractionDigits(), BigDecimal.ROUND_HALF_UP);
+								percentValue = percentValue.divide(Env.ONEHUNDRED, m_format.getMaximumFractionDigits(), RoundingMode.HALF_UP);
 								m_tc.setText(m_format.format(percentValue));
 							}
 						}

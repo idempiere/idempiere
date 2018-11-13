@@ -28,6 +28,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -477,8 +478,8 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener, TreeS
 		treeInfo.setText ("Selected Product: "+M_Product.getValue());
 		
 		Vector<Object> line = new Vector<Object>(10);
-		line.add( new Boolean(M_Product.isActive()));   //  0 IsActive
-		line.add( new Integer(0).toString()); // 1 Line
+		line.add( Boolean.valueOf(M_Product.isActive()));   //  0 IsActive
+		line.add( Integer.valueOf(0).toString()); // 1 Line
 		KeyNamePair pp = new KeyNamePair(M_Product.getM_Product_ID(),M_Product.getValue().concat("_").concat(M_Product.getName()));
 		line.add(pp); //  2 M_Product_ID
 		MUOM u = new MUOM(M_Product.getCtx(), M_Product.getC_UOM_ID(), M_Product.get_TrxName());
@@ -560,8 +561,8 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener, TreeS
 		MProduct M_Product = MProduct.get(getCtx(), bomline.getM_ProductBOM_ID());
 
 		Vector<Object> line = new Vector<Object>(10);
-		line.add( new Boolean(bomline.isActive()));   //  0 IsActive
-		line.add( new Integer(bomline.getLine()).toString()); // 1 Line
+		line.add( Boolean.valueOf(bomline.isActive()));   //  0 IsActive
+		line.add( Integer.valueOf(bomline.getLine()).toString()); // 1 Line
 		KeyNamePair pp = new KeyNamePair(M_Product.getM_Product_ID(),M_Product.getValue().concat("_").concat(M_Product.getName()));
 		line.add(pp); //  2 M_Product_ID
 		MUOM u = new MUOM(M_Product.getCtx(), M_Product.getC_UOM_ID(), M_Product.get_TrxName());
@@ -588,8 +589,8 @@ public class VTreeBOM extends CPanel implements FormPanel, ActionListener, TreeS
 		MProduct M_Product = MProduct.get(getCtx(), bom.getM_Product_ID());
 
 		Vector<Object> line = new Vector<Object>(10);
-		line.add( new Boolean(M_Product.isActive()));   //  0 IsActive
-		line.add( new Integer(bom.getLine()).toString()); // 1 Line
+		line.add( Boolean.valueOf(M_Product.isActive()));   //  0 IsActive
+		line.add( Integer.valueOf(bom.getLine()).toString()); // 1 Line
 		KeyNamePair pp = new KeyNamePair(M_Product.getM_Product_ID(),M_Product.getValue().concat("_").concat(M_Product.getName()));
 		line.add(pp); //  2 M_Product_ID
 		MUOM u = new MUOM(M_Product.getCtx(), M_Product.getC_UOM_ID(), M_Product.get_TrxName());
@@ -718,7 +719,7 @@ class myJTree extends JTree
 		sb.append(" ["+((KeyNamePair) userObject.elementAt(3)).getName().trim()+"]");
 		//BOMQty
 		BigDecimal BOMQty = (BigDecimal)(userObject.elementAt(4));
-		sb.append("x"+BOMQty.setScale(2, BigDecimal.ROUND_HALF_UP).stripTrailingZeros());		
+		sb.append("x"+BOMQty.setScale(2, RoundingMode.HALF_UP).stripTrailingZeros());		
 		
 		return sb.toString();
 	}

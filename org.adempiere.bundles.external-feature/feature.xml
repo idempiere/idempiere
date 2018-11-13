@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.bundles.external.feature"
       label="External bundles"
-      version="5.1.0.qualifier"
+      version="6.1.0.qualifier"
       provider-name="Adempiere.org">
 
    <description url="http://www.example.com/description">
@@ -32,13 +32,6 @@
          unpack="false"/>
 
    <plugin
-         id="javax.xml.ws"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.servicemix.bundles.cglib"
          download-size="0"
          install-size="0"
@@ -47,13 +40,6 @@
 
    <plugin
          id="org.apache.commons.net"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.poi"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -103,6 +89,13 @@
 
    <plugin
          id="org.restlet.ext.servlet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.poi.poi"
          download-size="0"
          install-size="0"
          version="0.0.0"

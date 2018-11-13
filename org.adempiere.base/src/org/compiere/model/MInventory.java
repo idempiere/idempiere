@@ -54,7 +54,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2155186682727239214L;
+	private static final long serialVersionUID = 4395759120481570701L;
 	/** Reversal Indicator			*/
 	public static String	REVERSE_INDICATOR = "^";
 	
@@ -66,7 +66,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 */
 	public static MInventory get (Properties ctx, int M_Inventory_ID)
 	{
-		Integer key = new Integer (M_Inventory_ID);
+		Integer key = Integer.valueOf(M_Inventory_ID);
 		MInventory retValue = (MInventory) s_cache.get (key);
 		if (retValue != null)
 			return retValue;
@@ -77,7 +77,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MInventory> s_cache = new CCache<Integer,MInventory>(Table_Name, 5, 5);
+	protected static CCache<Integer,MInventory> s_cache = new CCache<Integer,MInventory>(Table_Name, 5, 5);
 
 
 	/**
@@ -138,7 +138,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	
 	
 	/**	Lines						*/
-	private MInventoryLine[]	m_lines = null;
+	protected MInventoryLine[]	m_lines = null;
 	
 	/**
 	 * 	Get Lines
@@ -290,9 +290,9 @@ public class MInventory extends X_M_Inventory implements DocAction
 	}	//	processIt
 	
 	/**	Process Message 			*/
-	private String		m_processMsg = null;
+	protected String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
-	private boolean		m_justPrepared = false;
+	protected boolean		m_justPrepared = false;
 
 	/**
 	 * 	Unlock Document.
@@ -656,7 +656,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	/**
 	 * 	Set the definite document number after completed
 	 */
-	private void setDefiniteDocumentNo() {
+	protected void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			setMovementDate(TimeUtil.getDay(0));
@@ -672,7 +672,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	/**
 	 * 	Check Material Policy.
 	 */
-	private void checkMaterialPolicy(MInventoryLine line, BigDecimal qtyDiff)
+	protected void checkMaterialPolicy(MInventoryLine line, BigDecimal qtyDiff)
 	{	
 		
 		int no = MInventoryLineMA.deleteInventoryLineMA(line.getM_InventoryLine_ID(), get_TrxName());
@@ -944,7 +944,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		return true;
 	}	//	reverseCorrectIt
 
-	private MInventory reverse(boolean accrual) {
+	protected MInventory reverse(boolean accrual) {
 		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getMovementDate();
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
@@ -1113,13 +1113,13 @@ public class MInventory extends X_M_Inventory implements DocAction
 	
 	
 	/** Reversal Flag		*/
-	private boolean m_reversal = false;
+	protected boolean m_reversal = false;
 	
 	/**
 	 * 	Set Reversal
 	 *	@param reversal reversal
 	 */
-	private void setReversal(boolean reversal)
+	protected void setReversal(boolean reversal)
 	{
 		m_reversal = reversal;
 	}	//	setReversal
@@ -1127,7 +1127,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 * 	Is Reversal
 	 *	@return reversal
 	 */
-	private boolean isReversal()
+	protected boolean isReversal()
 	{
 		return m_reversal;
 	}	//	isReversal

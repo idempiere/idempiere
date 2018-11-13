@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Swing Client
 Bundle-SymbolicName: org.adempiere.ui.swing;singleton:=true
-Bundle-Version: 5.1.0.qualifier
+Bundle-Version: 6.1.0.qualifier
 Bundle-ClassPath: .,
  lib/jpedal.jar,
  lib/looks.jar,
@@ -72,12 +72,44 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.ui;bundle-version="0.0.0",
  org.restlet;bundle-version="0.0.0",
  org.restlet.ext.servlet;bundle-version="0.0.0",
- groovy-all;bundle-version="0.0.0",
  org.jfree.chart-osgi;bundle-version="1.0.19"
 Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.adempiere.base
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: javax.net.ssl,
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
+Import-Package: groovy.beans;version="2.5.3",
+ groovy.cli;version="2.5.3",
+ groovy.grape;version="2.5.3",
+ groovy.inspect;version="2.5.3",
+ groovy.inspect.swingui;version="2.5.3",
+ groovy.io;version="2.5.3",
+ groovy.jmx.builder;version="2.5.3",
+ groovy.json;version="2.5.3",
+ groovy.lang;version="2.5.3",
+ groovy.model;version="2.5.3",
+ groovy.security;version="2.5.3",
+ groovy.servlet;version="2.5.3",
+ groovy.sql;version="2.5.3",
+ groovy.swing;version="2.5.3",
+ groovy.swing.binding;version="2.5.3",
+ groovy.swing.factory;version="2.5.3",
+ groovy.swing.impl;version="2.5.3",
+ groovy.time;version="2.5.3",
+ groovy.transform;version="2.5.3",
+ groovy.transform.builder;version="2.5.3",
+ groovy.transform.options;version="2.5.3",
+ groovy.transform.stc;version="2.5.3",
+ groovy.ui;version="2.5.3",
+ groovy.ui.icons;version="2.5.3",
+ groovy.ui.text;version="2.5.3",
+ groovy.ui.view;version="2.5.3",
+ groovy.util;version="2.5.3",
+ groovy.util.logging;version="2.5.3",
+ groovy.util.slurpersupport;version="2.5.3",
+ groovy.xml;version="2.5.3",
+ groovy.xml.dom;version="2.5.3",
+ groovy.xml.jaxb;version="2.5.3",
+ groovy.xml.streamingmarkupsupport;version="2.5.3",
+ javax.net.ssl,
  net.sf.jasperreports.engine,
  org.apache.ecs,
  org.apache.ecs.xhtml,
@@ -90,3 +122,4 @@ Import-Package: javax.net.ssl,
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.adempiere.ui.swing
+Bundle-Vendor: iDempiere Community

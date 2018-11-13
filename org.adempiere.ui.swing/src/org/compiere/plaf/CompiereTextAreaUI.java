@@ -18,7 +18,7 @@ package org.compiere.plaf;
 
 import java.awt.AWTKeyStroke;
 import java.awt.KeyboardFocusManager;
-import java.awt.event.InputEvent;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.HashSet;
@@ -63,7 +63,7 @@ public class CompiereTextAreaUI extends BasicTextAreaUI
     /**	The Editor				*/
     private JTextComponent 		m_editor = null;
     /** Tab Stroke				*/
-    private static KeyStroke	s_stroke = KeyStroke.getKeyStroke (KeyEvent.VK_TAB, InputEvent.CTRL_MASK);
+    private static KeyStroke	s_stroke = KeyStroke.getKeyStroke (KeyEvent.VK_TAB, ActionEvent.CTRL_MASK);
     /** Tab Action				*/
     private static Action		s_action = new DefaultEditorKit.InsertTabAction();
     
@@ -109,7 +109,7 @@ public class CompiereTextAreaUI extends BasicTextAreaUI
 			//
 			forwardTraversalKeys.add (KeyStroke.getKeyStroke (KeyEvent.VK_TAB, 0));
 			forwardTraversalKeys.remove(s_stroke);
-			backwardTraversalKeys.add (KeyStroke.getKeyStroke (KeyEvent.VK_TAB, InputEvent.SHIFT_MASK));
+			backwardTraversalKeys.add (KeyStroke.getKeyStroke (KeyEvent.VK_TAB, ActionEvent.SHIFT_MASK));
 			//
 			LookAndFeel.installProperty (m_editor, "focusTraversalKeysForward",	forwardTraversalKeys);
 			LookAndFeel.installProperty (m_editor, "focusTraversalKeysBackward", backwardTraversalKeys);

@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Library
 Bundle-SymbolicName: org.adempiere.report.jasper.library;singleton:=true
-Bundle-Version: 5.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Version: 6.1.0.qualifier
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Fragment-Host: net.sf.jasperreports.engine;bundle-version="6.3.1"
 Bundle-ClassPath: .,
  lib/castor-core.jar,
@@ -13,9 +13,8 @@ Bundle-ClassPath: .,
  lib/jasperreports-fonts.jar,
  lib/jasperreports-functions.jar,
  lib/olap4j.jar,
- lib/spring-beans.jar,
- lib/spring-core.jar,
  lib/xmpcore.jar
 DynamicImport-Package: *
 Import-Package: org.w3c.dom.events;version="[3.0.0,4.0.0)"
 Automatic-Module-Name: org.adempiere.report.jasper.library
+Bundle-Vendor: iDempiere Community

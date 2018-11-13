@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.idempiere</groupId>
 		<artifactId>org.idempiere.parent</artifactId>
-		<version>5.1.0-SNAPSHOT</version>
+		<version>6.1.0-SNAPSHOT</version>
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>org.adempiere.server</artifactId>
@@ -16,8 +16,12 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-compiler-plugin</artifactId>
 				<configuration>
-					<!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=367431 -->
-					<compilerArgument>-warn:+forbidden</compilerArgument>
+					<compilerArgs>
+						<!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=367431 -->
+						<arg>-warn:+forbidden</arg>
+		      			<arg>--add-exports</arg>
+		      			<arg>java.naming/com.sun.jndi.ldap=ALL-UNNAMED</arg>
+					</compilerArgs>
 				</configuration>
 			</plugin>
 			<plugin>

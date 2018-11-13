@@ -18,7 +18,6 @@ package org.compiere.swing;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Event;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -221,10 +220,10 @@ public class CTabbedPane extends JTabbedPane
 		{
 			if (index < 9)
 				getInputMap(WHEN_IN_FOCUSED_WINDOW)
-					.put(KeyStroke.getKeyStroke(KeyEvent.VK_1+index, Event.ALT_MASK), ACTION_SELECT);
+					.put(KeyStroke.getKeyStroke(KeyEvent.VK_1+index, ActionEvent.ALT_MASK), ACTION_SELECT);
 			else if (index == 9)
 				getInputMap(WHEN_IN_FOCUSED_WINDOW)
-					.put(KeyStroke.getKeyStroke(KeyEvent.VK_0, Event.ALT_MASK), ACTION_SELECT);
+					.put(KeyStroke.getKeyStroke(KeyEvent.VK_0, ActionEvent.ALT_MASK), ACTION_SELECT);
 		}
 		//
 	}   //  insertTab
@@ -261,7 +260,7 @@ public class CTabbedPane extends JTabbedPane
 		char keyCode = m_mnemonic.get(index);
 		if (keyCode != 0)
 			getInputMap(WHEN_IN_FOCUSED_WINDOW)
-				.remove(KeyStroke.getKeyStroke(keyCode, Event.ALT_MASK));
+				.remove(KeyStroke.getKeyStroke(keyCode, ActionEvent.ALT_MASK));
 		m_mnemonic.set(index, (char)0);
 		//
 		if (!text.startsWith("<html>"))

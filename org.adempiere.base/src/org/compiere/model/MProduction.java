@@ -26,16 +26,16 @@ public class MProduction extends X_M_Production implements DocAction {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8047044372956625013L;
+	private static final long serialVersionUID = -4650232602150964606L;
 
 	/**
 	 * 
 	 */
 	/** Log								*/
 	@SuppressWarnings("unused")
-	private static CLogger		m_log = CLogger.getCLogger (MProduction.class);
-	private int lineno;
-	private int count;
+	protected static CLogger		m_log = CLogger.getCLogger (MProduction.class);
+	protected int lineno;
+	protected int count;
 
 	public MProduction(Properties ctx, int M_Production_ID, String trxName) {
 		super(ctx, M_Production_ID, trxName);
@@ -164,7 +164,7 @@ public class MProduction extends X_M_Production implements DocAction {
 		return false;
 	}
 
-	private Object processLines(MProductionLine[] lines) {
+	protected Object processLines(MProductionLine[] lines) {
 		StringBuilder errors = new StringBuilder();
 		for ( int i = 0; i<lines.length; i++) {
 			String error = lines[i].createTransactions(getMovementDate(), false);
@@ -247,7 +247,7 @@ public class MProduction extends X_M_Production implements DocAction {
 		return count;
 	}
 
-	private int createLines(boolean mustBeStocked, MProduct finishedProduct, BigDecimal requiredQty) {
+	protected int createLines(boolean mustBeStocked, MProduct finishedProduct, BigDecimal requiredQty) {
 		
 		int defaultLocator = 0;
 		
@@ -453,9 +453,9 @@ public class MProduction extends X_M_Production implements DocAction {
 	}
 
 	/**	Process Message 			*/
-	private String		m_processMsg = null;
+	protected String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
-	private boolean		m_justPrepared = false;
+	protected boolean		m_justPrepared = false;
 
 	@Override
 	public boolean unlockIt() {
@@ -703,7 +703,7 @@ public class MProduction extends X_M_Production implements DocAction {
 		return true;
 	}
 
-	private MProduction reverse(boolean accrual) {
+	protected MProduction reverse(boolean accrual) {
 		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getMovementDate();
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
@@ -760,7 +760,7 @@ public class MProduction extends X_M_Production implements DocAction {
 		return reversal;
 	}
 
-	private MProduction copyFrom(Timestamp reversalDate) {
+	protected MProduction copyFrom(Timestamp reversalDate) {
 		MProduction to = new MProduction(getCtx(), 0, get_TrxName());
 		PO.copyValues (this, to, getAD_Client_ID(), getAD_Org_ID());
 

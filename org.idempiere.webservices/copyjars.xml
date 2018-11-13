@@ -17,7 +17,7 @@
         <get src="${url.maven2}/org/apache/cxf/cxf-rt-frontend-jaxws/2.6.1/cxf-rt-frontend-jaxws-2.6.1.jar" dest="WEB-INF/lib/cxf-rt-frontend-jaxws.jar" usetimestamp="true" verbose="true" retries="5" />
         <get src="${url.maven2}/org/apache/xmlbeans/xmlbeans/3.0.0/xmlbeans-3.0.0.jar" dest="WEB-INF/lib/xmlbeans.jar" usetimestamp="true" verbose="true" retries="5" />
         <get src="${url.maven2}/aopalliance/aopalliance/1.0/aopalliance-1.0.jar" dest="WEB-INF/lib/aopalliance.jar" usetimestamp="true" verbose="true" retries="5" />
-        <get src="${url.file.srv}/jarfile/5.1/idempiere-xmlbeans-1.0.jar" dest="WEB-INF/lib/idempiere-xmlbeans.jar" usetimestamp="true" verbose="true" retries="5" />
+        <get src="${url.file.srv}/jarfile/6.1/idempiere-xmlbeans-1.0.jar" dest="WEB-INF/lib/idempiere-xmlbeans.jar" usetimestamp="true" verbose="true" retries="5" />
         <get src="${url.maven2}/org/apache/axis/axis/1.4/axis-1.4.jar" dest="WEB-INF/lib/axis.jar" usetimestamp="true" verbose="true" retries="5" />
         <get src="${url.maven2}/commons-discovery/commons-discovery/0.5/commons-discovery-0.5.jar" dest="WEB-INF/lib/commons-discovery.jar" usetimestamp="true" verbose="true" retries="5" />
         <get src="${url.maven2}/javax/ws/rs/jsr311-api/1.1/jsr311-api-1.1.jar" dest="WEB-INF/lib/jsr311-api.jar" usetimestamp="true" verbose="true" retries="5" />

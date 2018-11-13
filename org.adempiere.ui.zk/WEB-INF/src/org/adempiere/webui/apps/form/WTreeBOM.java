@@ -16,6 +16,7 @@
 package org.adempiere.webui.apps.form;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -320,14 +321,14 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 		treeInfo.setText (Msg.getElement(Env.getCtx(), "Sel_Product_ID")+": "+product.getValue());
 
 		Vector<Object> line = new Vector<Object>(10);
-		line.add( new Boolean(product.isActive()));   //  0 IsActive
-		line.add( new Integer(0).toString()); // 1 Line
+		line.add( Boolean.valueOf(product.isActive()));   //  0 IsActive
+		line.add( Integer.valueOf(0).toString()); // 1 Line
 		KeyNamePair pp = new KeyNamePair(product.getM_Product_ID(),product.getValue().concat("_").concat(product.getName()));
 		line.add(pp); //  2 M_Product_ID
 		MUOM u = new MUOM(product.getCtx(), product.getC_UOM_ID(), product.get_TrxName());
 		KeyNamePair uom = new KeyNamePair(u.get_ID(),u.getUOMSymbol());
 		line.add(uom); //  3 C_UOM_ID
-		line.add((BigDecimal) (Env.ONE).setScale(4, BigDecimal.ROUND_HALF_UP).stripTrailingZeros());  //  4 QtyBOM
+		line.add((BigDecimal) (Env.ONE).setScale(4, RoundingMode.HALF_UP).stripTrailingZeros());  //  4 QtyBOM
 
 		// dummy root node, as first node is not displayed in tree  
 		mySimpleTreeNode parent = new mySimpleTreeNode("Root",new ArrayList<TreeNode<Object>>());
@@ -442,14 +443,14 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 		MProduct M_Product = MProduct.get(getCtx(), bomline.getM_ProductBOM_ID());
 
 		Vector<Object> line = new Vector<Object>(10);
-		line.add( new Boolean(bomline.isActive()));   //  0 IsActive
-		line.add( new Integer(bomline.getLine()).toString()); // 1 Line
+		line.add( Boolean.valueOf(bomline.isActive()));   //  0 IsActive
+		line.add( Integer.valueOf(bomline.getLine()).toString()); // 1 Line
 		KeyNamePair pp = new KeyNamePair(M_Product.getM_Product_ID(),M_Product.getValue().concat("_").concat(M_Product.getName()));
 		line.add(pp); //  2 M_Product_ID
 		MUOM u = new MUOM(M_Product.getCtx(), M_Product.getC_UOM_ID(), M_Product.get_TrxName());
 		KeyNamePair uom = new KeyNamePair(u.get_ID(),u.getUOMSymbol());
 		line.add(uom); //  3 C_UOM_ID
-		line.add((BigDecimal) ((bomline.getBOMQty()!=null) ? bomline.getBOMQty() : Env.ZERO).setScale(4, BigDecimal.ROUND_HALF_UP).stripTrailingZeros());  //  4 QtyBOM
+		line.add((BigDecimal) ((bomline.getBOMQty()!=null) ? bomline.getBOMQty() : Env.ZERO).setScale(4, RoundingMode.HALF_UP).stripTrailingZeros());  //  4 QtyBOM
 
 		mySimpleTreeNode child = new mySimpleTreeNode(line,new ArrayList<TreeNode<Object>>());
 		if (!reload)
@@ -471,14 +472,14 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 		MProduct M_Product = MProduct.get(getCtx(), bom.getM_Product_ID());
 
 		Vector<Object> line = new Vector<Object>(10);
-		line.add( new Boolean(M_Product.isActive()));   //  0 IsActive
-		line.add( new Integer(bom.getLine()).toString()); // 1 Line
+		line.add( Boolean.valueOf(M_Product.isActive()));   //  0 IsActive
+		line.add( Integer.valueOf(bom.getLine()).toString()); // 1 Line
 		KeyNamePair pp = new KeyNamePair(M_Product.getM_Product_ID(),M_Product.getValue().concat("_").concat(M_Product.getName()));
 		line.add(pp); //  2 M_Product_ID
 		MUOM u = new MUOM(M_Product.getCtx(), M_Product.getC_UOM_ID(), M_Product.get_TrxName());
 		KeyNamePair uom = new KeyNamePair(u.get_ID(),u.getUOMSymbol());
 		line.add(uom); //  3 C_UOM_ID
-		line.add((BigDecimal) ((bom.getBOMQty()!=null) ? bom.getBOMQty() : Env.ZERO).setScale(4, BigDecimal.ROUND_HALF_UP).stripTrailingZeros());  //  4 QtyBOM
+		line.add((BigDecimal) ((bom.getBOMQty()!=null) ? bom.getBOMQty() : Env.ZERO).setScale(4, RoundingMode.HALF_UP).stripTrailingZeros());  //  4 QtyBOM
 
 		if(m_selected_id == bom.getM_ProductBOM_ID() || getM_Product_ID() == bom.getM_ProductBOM_ID())		
 			dataBOM.add(line);
@@ -563,7 +564,7 @@ class mySimpleTreeNode extends DefaultTreeNode<Object>
 		sb.append(" ["+((KeyNamePair) userObject.elementAt(3)).getName().trim()+"]");
 		// BOMQty
 		BigDecimal BOMQty = (BigDecimal)(userObject.elementAt(4));
-		sb.append("x"+BOMQty.setScale(2, BigDecimal.ROUND_HALF_UP).stripTrailingZeros());
+		sb.append("x"+BOMQty.setScale(2, RoundingMode.HALF_UP).stripTrailingZeros());
 		
 		return sb.toString();
 	}

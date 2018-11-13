@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.Properties;
 
@@ -40,7 +41,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3864175464877913555L;
+	private static final long serialVersionUID = 7083622834698840042L;
 
 	/**
 	 * 	Get Inventory Line with parameters
@@ -137,11 +138,11 @@ public class MInventoryLine extends X_M_InventoryLine
 	}
 	
 	/** Manually created				*/
-	// private boolean 	m_isManualEntry = true;
+	//protected boolean 	m_isManualEntry = true;
 	/** Parent							*/
-	private MInventory 	m_parent = null;
+	protected MInventory 	m_parent = null;
 	/** Product							*/
-	private MProduct 	m_product = null;
+	protected MProduct 	m_product = null;
 	
 	/**
 	 * 	Get Product
@@ -172,7 +173,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			if (product != null)
 			{
 				int precision = product.getUOMPrecision(); 
-				QtyCount = QtyCount.setScale(precision, BigDecimal.ROUND_HALF_UP);
+				QtyCount = QtyCount.setScale(precision, RoundingMode.HALF_UP);
 			}
 		}
 		super.setQtyCount(QtyCount);
@@ -191,7 +192,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			if (product != null)
 			{
 				int precision = product.getUOMPrecision(); 
-				QtyInternalUse = QtyInternalUse.setScale(precision, BigDecimal.ROUND_HALF_UP);
+				QtyInternalUse = QtyInternalUse.setScale(precision, RoundingMode.HALF_UP);
 			}
 		}
 		super.setQtyInternalUse(QtyInternalUse);
@@ -388,7 +389,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	/**
 	 * 	Create Material Allocations for new Instances
 	 */
-	/*private void createMA()
+	/*protected void createMA()
 	{
 		MStorageOnHand[] storages = MStorageOnHand.getAll(getCtx(), getM_Product_ID(), 
 			getM_Locator_ID(), get_TrxName());

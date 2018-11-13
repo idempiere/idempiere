@@ -2,7 +2,8 @@
 <feature
       id="org.adempiere.report.jasper.feature"
       label="JasperReport-feature"
-      version="5.1.0.qualifier">
+      version="6.1.0.qualifier"
+      provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -20,7 +21,7 @@
          id="org.adempiere.report.jasper"
          download-size="0"
          install-size="0"
-         version="5.1.0.qualifier"/>
+         version="6.1.0.qualifier"/>
 
    <plugin
          id="org.adempiere.report.jasper.library"
@@ -431,7 +432,7 @@
          id="stax2-api"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.1.4"
          unpack="false"/>
 
    <plugin

@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -160,7 +161,7 @@ public class MProductPricing extends AbstractProductPricing
 			calculateDiscount();
 		setPrecision();		//	from Price List
 		//
-		m_found = new Boolean (m_calculated);
+		m_found = Boolean.valueOf(m_calculated);
 		return m_calculated;
 	}	//	calculatePrice
 
@@ -826,7 +827,7 @@ public class MProductPricing extends AbstractProductPricing
 			Discount = BigDecimal.valueOf((m_PriceList.doubleValue() - m_PriceStd.doubleValue())
 				/ m_PriceList.doubleValue() * 100.0);
 		if (Discount.scale() > 2)
-			Discount = Discount.setScale(2, BigDecimal.ROUND_HALF_UP);
+			Discount = Discount.setScale(2, RoundingMode.HALF_UP);
 		return Discount;
 	}	//	getDiscount
 
@@ -898,7 +899,7 @@ public class MProductPricing extends AbstractProductPricing
 	{
 		if (m_precision >= 0	//	-1 = no rounding
 			&& bd.scale() > m_precision)
-			return bd.setScale(m_precision, BigDecimal.ROUND_HALF_UP);
+			return bd.setScale(m_precision, RoundingMode.HALF_UP);
 		return bd;
 	}	//	round
 	

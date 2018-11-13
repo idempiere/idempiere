@@ -50,7 +50,7 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage
 
 	public static MBroadcastMessage get (Properties ctx, int AD_BroadcastMessage_ID)
 	{
-		Integer key = new Integer(AD_BroadcastMessage_ID);
+		Integer key = Integer.valueOf(AD_BroadcastMessage_ID);
 		MBroadcastMessage retValue = (MBroadcastMessage)s_cache.get(key);
 		if (retValue == null)
 		{

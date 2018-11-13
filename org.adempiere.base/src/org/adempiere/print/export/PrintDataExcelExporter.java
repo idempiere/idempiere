@@ -26,6 +26,8 @@ import org.compiere.print.MPrintFormatItem;
 import org.compiere.print.MPrintPaper;
 import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataElement;
+import org.compiere.util.DisplayType;
+import org.compiere.util.Util;
 
 /**
  * Export PrintData to Excel (XLS) file
@@ -191,5 +193,25 @@ extends AbstractExcelExporter
 		sheet.setMargin(HSSFSheet.LeftMargin, ((double)paper.getMarginLeft()) / 72);
 		sheet.setMargin(HSSFSheet.BottomMargin, ((double)paper.getMarginBottom()) / 72);
 		//
+	}
+	
+	@Override
+	protected String getCellFormat(int row, int col) {
+		String cellFormat = null;
+		PrintDataElement pde = getPDE(row, col);
+		
+		if (pde != null && !Util.isEmpty(pde.getM_formatPattern())) {
+			String formatPattern = pde.getM_formatPattern();
+			int displayType = pde.getDisplayType();
+			if (DisplayType.isDate(displayType)) {
+				cellFormat = DisplayType.getDateFormat(displayType, getLanguage(), formatPattern).toPattern();
+			} else if (DisplayType.isNumeric(displayType)) {
+				cellFormat = DisplayType.getNumberFormat(displayType, getLanguage(), formatPattern).toPattern();
+			}
+		} else {
+			return super.getCellFormat(row, col);
+		}
+		
+		return cellFormat;
 	}
 }
