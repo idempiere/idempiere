@@ -169,12 +169,13 @@ public class Version2PackActivator extends AbstractActivator {
 						break;
 					}
 				}
-				releaseLock();
 			} else {
-				logger.log(Level.SEVERE, "Could not acquire the DB lock to install:" + getName());
+				logger.log(Level.WARNING, "Could not acquire the DB lock to install:" + getName());
 			}
 		} catch (AdempiereSystemError e) {
 			e.printStackTrace();
+		} finally {
+			releaseLock();
 		}
 	}
 
@@ -190,7 +191,7 @@ public class Version2PackActivator extends AbstractActivator {
 		if (packout != null && service != null) {
 			String path = packout.getPath();
 			String suffix = "_"+path.substring(path.lastIndexOf("2Pack_"));
-			System.out.println("Installing " + getName() + " " + path + " ...");
+			logger.log(Level.WARNING, "Installing " + getName() + " " + path + " ...");
 			FileOutputStream zipstream = null;
 			try {
 				// copy the resource to a temporary file to process it with 2pack
@@ -206,7 +207,7 @@ public class Version2PackActivator extends AbstractActivator {
 				if (!merge(zipfile, extractVersionString(packout)))
 					return false;
 			} catch (Throwable e) {
-				logger.log(Level.SEVERE, "Pack in failed.", e);
+				logger.log(Level.WARNING, "Pack in failed.", e);
 				return false;
 			} finally{
 				if (zipstream != null) {
@@ -215,7 +216,7 @@ public class Version2PackActivator extends AbstractActivator {
 					} catch (Exception e2) {}
 				}
 			}
-			System.out.println(getName() + " " + packout.getPath() + " installed");
+			logger.log(Level.WARNING, getName() + " " + packout.getPath() + " installed");
 		} 
 		return true;
 	}

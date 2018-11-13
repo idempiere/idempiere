@@ -426,12 +426,14 @@ public class PackInHandler extends DefaultHandler {
 
         		String fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, column, false);
         		if (! Util.isEmpty(fkConstraintSql)) {
+        			if (fkConstraintSql.toLowerCase().contains(" ad_sequence(ad_sequence_id)"))
+        				fkConstraintSql = fkConstraintSql + "; COMMIT";
         			if (fkConstraintSql.indexOf(DB.SQLSTATEMENT_SEPARATOR) == -1) {
         				DB.executeUpdate(fkConstraintSql, false, m_ctx.trx.getTrxName());
         			} else {
         				String statements[] = fkConstraintSql.split(DB.SQLSTATEMENT_SEPARATOR);
         				for (int i = 0; i < statements.length; i++) {
-        					if (Util.isEmpty(statements[i]))
+        					if (Util.isEmpty(statements[i], true))
         						continue;
         					DB.executeUpdateEx(statements[i], m_ctx.trx.getTrxName());
         				}

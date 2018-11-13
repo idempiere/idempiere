@@ -34,6 +34,7 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.compiere.model.I_AD_Form;
+import org.compiere.model.I_AD_InfoWindow;
 import org.compiere.model.I_AD_Menu;
 import org.compiere.model.I_AD_Process;
 import org.compiere.model.I_AD_Task;
@@ -230,7 +231,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 		String sql = null;
 		int AD_Tree_ID = getDefaultMenuTreeId();
 		sql = "SELECT A.Node_ID, B.AD_Menu_ID, B.Name, B.AD_WINDOW_ID, B.AD_WORKFLOW_ID, B.AD_TASK_ID, "
-				+ "B.AD_PROCESS_ID, B.AD_FORM_ID, B.AD_WORKBENCH_ID "
+				+ "B.AD_PROCESS_ID, B.AD_FORM_ID, B.AD_WORKBENCH_ID, B.AD_INFOWINDOW_ID "
 				+ "FROM AD_TreeNodeMM A, AD_Menu B "
 				+ "WHERE A.Node_ID = "
 				+ AD_Menu_ID + " AND A.Node_ID = B.AD_Menu_ID" + " AND A.AD_Tree_ID="+AD_Tree_ID;
@@ -257,10 +258,11 @@ public class MenuElementHandler extends AbstractElementHandler {
 				}
 
 				if (rs.getInt("AD_WINDOW_ID") > 0
-						|| rs.getInt("AD_WORKFLOW_ID") > 0
-						|| rs.getInt("AD_TASK_ID") > 0
 						|| rs.getInt("AD_PROCESS_ID") > 0
-						|| rs.getInt("AD_FORM_ID") > 0) {
+						|| rs.getInt("AD_TASK_ID") > 0
+						|| rs.getInt("AD_FORM_ID") > 0
+						|| rs.getInt("AD_WORKFLOW_ID") > 0
+						|| rs.getInt("AD_INFOWINDOW_ID") > 0) {
 					// Call CreateWindow.
 					if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Window_ID)>0)
 					{
@@ -286,6 +288,11 @@ public class MenuElementHandler extends AbstractElementHandler {
 						ElementHandler handler = packOut.getHandler(I_AD_Workflow.Table_Name);
 						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID));
 					}
+					else if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_InfoWindow_ID) > 0)
+					{
+						ElementHandler handler = packOut.getHandler(I_AD_InfoWindow.Table_Name);
+						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_InfoWindow_ID));
+					}
 					// Call CreateModule because entry is a summary menu
 				} else {
 					createModule(ctx, document, rs.getInt("Node_ID"));
@@ -306,7 +313,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 		String sql = null;
 		int AD_Tree_ID = getDefaultMenuTreeId();
 		sql = "SELECT A.Node_ID, B.AD_Menu_ID, B.Name, B.AD_WINDOW_ID, B.AD_WORKFLOW_ID, B.AD_TASK_ID, "
-				+ "B.AD_PROCESS_ID, B.AD_FORM_ID, B.AD_WORKBENCH_ID "
+				+ "B.AD_PROCESS_ID, B.AD_FORM_ID, B.AD_WORKBENCH_ID, B.AD_INFOWINDOW_ID "
 				+ "FROM AD_TreeNodeMM A, AD_Menu B "
 				+ "WHERE A.Parent_ID = "
 				+ menu_id + " AND A.Node_ID = B.AD_Menu_ID" + " AND A.AD_Tree_ID="+AD_Tree_ID;
@@ -326,10 +333,11 @@ public class MenuElementHandler extends AbstractElementHandler {
 				document.startElement("", "", I_AD_Menu.Table_Name, atts);
 				createMenuBinding(ctx, document, m_Menu);
 				if (rs.getInt("AD_WINDOW_ID") > 0
-						|| rs.getInt("AD_WORKFLOW_ID") > 0
-						|| rs.getInt("AD_TASK_ID") > 0
 						|| rs.getInt("AD_PROCESS_ID") > 0
-						|| rs.getInt("AD_FORM_ID") > 0) {
+						|| rs.getInt("AD_TASK_ID") > 0
+						|| rs.getInt("AD_FORM_ID") > 0
+						|| rs.getInt("AD_WORKFLOW_ID") > 0
+						|| rs.getInt("AD_INFOWINDOW_ID") > 0) {
 					// Call CreateWindow.
 					if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Window_ID)>0)
 					{
@@ -355,6 +363,11 @@ public class MenuElementHandler extends AbstractElementHandler {
 					{
 						ElementHandler handler = packOut.getHandler("AD_Workflow");
 						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID));
+					}
+					else if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_InfoWindow_ID) > 0)
+					{
+						ElementHandler handler = packOut.getHandler("AD_InfoWindow");
+						handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_InfoWindow_ID));
 					}
 					// Call CreateModule because entry is a summary menu
 				} else {

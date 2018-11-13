@@ -30,8 +30,20 @@ ADEMPIERE_DB_PATH=$3
 CMD="sqlplus $ADEMPIERE_DB_USER/$ADEMPIERE_DB_PASSWORD@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME"
 SILENTCMD="sqlplus -S $ADEMPIERE_DB_USER/$ADEMPIERE_DB_PASSWORD@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME"
 ERROR_STRINGS="^(ORA-[0-9]+:|TNS-|PLS-)"
+DIR_POST=$IDEMPIERE_HOME/migration
+if [ "x$4" = "x" ]
+then
+    DIR_SCRIPTS=$IDEMPIERE_HOME/migration
+else
+    if [ `expr substr "$4" 1 1` = "/" ]
+    then
+        DIR_SCRIPTS="$4"
+    else
+        DIR_SCRIPTS="$IDEMPIERE_HOME/$4"
+    fi
+fi
 
-cd $IDEMPIERE_HOME/migration
+cd "$DIR_SCRIPTS"
 
 # Create list of files already applied - registered in AD_MigrationScript table
 echo "set heading off
@@ -47,7 +59,7 @@ find -type d -name $ADEMPIERE_DB_PATH | grep -v "./processes_post_migration/$ADE
 do
     cd "${FOLDER}"
     ls *.sql 2>/dev/null >> $TMPFOLDER/lisFS_$$.txt
-    cd $IDEMPIERE_HOME/migration
+    cd "$DIR_SCRIPTS"
 done
 sort -o $TMPFOLDER/lisFS_$$.txt $TMPFOLDER/lisFS_$$.txt
 sort -o $TMPFOLDER/lisDB_$$.txt $TMPFOLDER/lisDB_$$.txt
@@ -82,7 +94,7 @@ else
 fi
 if [ x$APPLIED = xY ]
 then
-    cd $IDEMPIERE_HOME/migration
+    cd "$DIR_POST"
     for FILE in processes_post_migration/$ADEMPIERE_DB_PATH/*.sql
     do
         OUTFILE=$TMPFOLDER/SyncDB_out_$$/`basename "$FILE" .sql`.out
