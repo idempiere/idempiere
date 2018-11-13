@@ -15,7 +15,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jetty.version>9.4.12.v20180830</jetty.version>
 		<jp.version>6.7.0</jp.version>
-		<zk.version>8.5.0</zk.version>
+		<zk.version>8.6.0</zk.version>
 		<zk.javassist.src.version>3.23.1-GA</zk.javassist.src.version>
 		<maven.dependency.version>3.1.1</maven.dependency.version>
 		<download.maven.version>1.4.1</download.maven.version>
