@@ -759,11 +759,6 @@
 		<unit id="org.objectweb.asm.xml.source" version="6.2.1.v20180823-1831"/>
 	</location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		<unit id="org.eclipse.jetty.bundles.f.feature.group" version="9.4.12.v20180830"/>
-		<unit id="org.eclipse.jetty.bundles.f.source.feature.group" version="9.4.12.v20180830"/>
-		<repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.12.v20180830"/>
-	</location>
-	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="bcmail" version="1.60.0"/>
 		<unit id="bcmail.source" version="1.60.0"/>
 		<unit id="bcpkix" version="1.60.0"/>
