@@ -21,6 +21,12 @@ if [ "$IDEMPIERE_HOME" = "" -o  "$ADEMPIERE_DB_NAME" = "" -o "$ADEMPIERE_DB_SERV
     exit 1
 fi
 
+ISAMAZONRDS=N
+if echo "$ADEMPIERE_DB_SERVER" | grep 'rds.amazonaws.com$' > /dev/null
+then
+    ISAMAZONRDS=Y
+fi
+
 PGPASSWORD=$4
 export PGPASSWORD
 if [ "x$4" = "x^TryLocalConnection^" ]
@@ -32,7 +38,14 @@ fi
 echo -------------------------------------
 echo Recreate user and database
 echo -------------------------------------
-ADEMPIERE_CREATE_ROLE_SQL="CREATE ROLE $2 SUPERUSER LOGIN PASSWORD '$3'"
+if [ $ISAMAZONRDS = Y ]
+then
+    # modified for amazon RDS - doesn't allow SUPERUSER
+    ROOT_ROLE="CREATEDB IN ROLE rds_superuser, adempiere"
+else
+    ROOT_ROLE="SUPERUSER"
+fi
+ADEMPIERE_CREATE_ROLE_SQL="CREATE ROLE $2 $ROOT_ROLE LOGIN PASSWORD '$3'"
 if [ $LOCALPG = "true" ]
 then
     # Assuming that adempiere role already exists (it was created out there)
@@ -40,7 +53,18 @@ then
     export PGPASSWORD
     dropdb -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U $2 $ADEMPIERE_DB_NAME
 else
-    dropdb -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U postgres $ADEMPIERE_DB_NAME
+    if [ "x$2" != xadempiere ]
+    then
+        psql -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U postgres -c "CREATE ROLE adempiere"
+    fi
+    if [ $ISAMAZONRDS = Y ]
+    then
+        PGPASSWORD=$3
+        dropdb -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U $2 $ADEMPIERE_DB_NAME
+        PGPASSWORD=$4
+    else
+        dropdb -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U postgres $ADEMPIERE_DB_NAME
+    fi
     dropuser -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U postgres $2
     psql -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U postgres -c "$ADEMPIERE_CREATE_ROLE_SQL"
 fi
