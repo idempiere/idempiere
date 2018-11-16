@@ -1,53 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-181032" sequenceNumber="107">
 <locations>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.restlet.example.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.apispark.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.atom.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.crypto.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.e4.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.emf.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.fileupload.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.freemarker.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.gson.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.guice.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.gwt.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.html.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.httpclient.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.jaas.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.jackson.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.javamail.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.jaxb.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.jaxrs.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.jetty.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.jibx.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.json.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.jsslutils.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.lucene.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.nio.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.oauth.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.odata.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.openid.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.osgi.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.raml.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.rdf.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.rome.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.sdc.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.servlet.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.simple.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.sip.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.slf4j.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.spring.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.swagger.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.thymeleaf.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.velocity.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.wadl.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.xdb.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.xml.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.ext.xstream.feature.group" version="2.3.2.v20150501-1520"/>
-<unit id="org.restlet.feature.group" version="2.3.2.v20150501-1520"/>
-<repository location="http://p2.restlet.com/2.3"/>
-</location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.9.0.v20180823-1503"/>
 		<unit id="org.eclipse.equinox.sdk.feature.group" version="3.15.0.v20180904-1442"/>
@@ -767,30 +719,30 @@
 		<unit id="bcprov.source" version="1.60.0"/>
 		<unit id="bctsp" version="1.46.0"/>
 		<unit id="bctsp.source" version="1.46.0"/>
-		<unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.core.jackson-annotations.source" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.core.jackson-core" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.core.jackson-core.source" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.core.jackson-databind.source" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.dataformat.jackson-dataformat-xml" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.dataformat.jackson-dataformat-xml.source" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-guava" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-guava.source" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-joda" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-joda.source" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-json-org" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-json-org.source" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base.source" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider.source" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider.source" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.module.jackson-module-jaxb-annotations" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.module.jackson-module-jaxb-annotations.source" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.module.jackson-module-jsonSchema" version="2.9.5"/>
-		<unit id="com.fasterxml.jackson.module.jackson-module-jsonSchema.source" version="2.9.5"/>
+		<unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.core.jackson-annotations.source" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.core.jackson-core" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.core.jackson-core.source" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.core.jackson-databind.source" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.dataformat.jackson-dataformat-xml" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.dataformat.jackson-dataformat-xml.source" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-guava" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-guava.source" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-joda" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-joda.source" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-json-org" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-json-org.source" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base.source" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider.source" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider.source" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.module.jackson-module-jaxb-annotations" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.module.jackson-module-jaxb-annotations.source" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.module.jackson-module-jsonSchema" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.module.jackson-module-jsonSchema.source" version="2.9.7"/>
 		<unit id="com.fasterxml.woodstox.woodstox-core" version="5.0.3"/>
 		<unit id="com.fasterxml.woodstox.woodstox-core.source" version="5.0.3"/>
 		<unit id="com.google.zxing.core" version="3.2.1"/>
@@ -917,6 +869,10 @@
 		<unit id="org.apache.commons.digester.source" version="2.1.0"/>
 		<unit id="org.apache.commons.discovery" version="0.5.0"/>
 		<unit id="org.apache.commons.discovery.source" version="0.5.0"/>
+		<unit id="org.apache.commons.fileupload" version="1.3.3"/>
+		<unit id="org.apache.commons.fileupload.source" version="1.3.3"/>
+		<unit id="org.apache.commons.io" version="2.6.0"/>
+		<unit id="org.apache.commons.io.source" version="2.6.0"/>
 		<unit id="org.apache.commons.javaflow" version="1590792.0.0"/>
 		<unit id="org.apache.commons.javaflow.source" version="1590792.0.0"/>
 		<unit id="org.apache.cxf.cxf-core" version="3.2.6"/>
@@ -971,6 +927,8 @@
 		<unit id="org.apache.felix.webconsole.source" version="4.3.8"/>
 		<unit id="org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec" version="1.0.1"/>
 		<unit id="org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec.source" version="1.0.1"/>
+		<unit id="org.apache.httpcomponents.httpclient" version="4.5.6"/>
+		<unit id="org.apache.httpcomponents.httpclient.source" version="4.5.6"/>
 		<unit id="org.apache.neethi" version="3.1.1"/>
 		<unit id="org.apache.neethi.source" version="3.1.1"/>
 		<unit id="org.apache.poi.poi" version="3.15.0"/>
@@ -1127,6 +1085,8 @@
 		<unit id="org.objectweb.asm.util.source" version="7.0.0"/>
 		<unit id="org.passay" version="1.3.1"/>
 		<unit id="org.passay.source" version="1.3.1"/>
+		<unit id="org.restlet" version="2.4.1.v20180822-1009"/>
+		<unit id="org.restlet.ext.servlet" version="2.4.1.v20180822-1009"/>
 		<unit id="org.springframework.spring-jcl" version="5.1.1.RELEASE"/>
 		<unit id="org.springframework.spring-jcl.source" version="5.1.1.RELEASE"/>
 		<unit id="org.w3c.dom.svg.patch" version="1.1.0.b02"/>
@@ -1160,7 +1120,7 @@
 		<unit id="zul.sources" version="8.6.0"/>
 		<unit id="zweb" version="8.6.0"/>
 		<unit id="zweb.sources" version="8.6.0"/>
-		<repository location="https://raw.githubusercontent.com/hieplq/idempiere.artifact/master/m2p/maven-p2-R20181116"/>
+		<repository location="https://raw.githubusercontent.com/hieplq/idempiere.artifact/master/m2p/maven-p2-R20181116-v1"/>
 	</location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-10"/>

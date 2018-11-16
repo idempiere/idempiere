@@ -21,7 +21,7 @@
 		<groovy.version>2.5.3</groovy.version>
 		<org.bouncycastle.version>1.60</org.bouncycastle.version>
 		<jetty.conscrypt.openjdk.uber.version>1.4.0</jetty.conscrypt.openjdk.uber.version>
-        <jackson.version>2.9.5</jackson.version> <!--it up to version of jasperreport engine-->
+        <jackson.version>2.9.7</jackson.version> <!--it up to version of jasperreport engine-->
         <stax2.api.version>3.1.4</stax2.api.version> <!--it up to version of jasperreport engine-->
         <validation.api.version>1.1.0.Final</validation.api.version> <!--it up to version of jasperreport engine-->
         <woodstox.core.version>5.0.3</woodstox.core.version> <!--it up to version of jasperreport engine-->
@@ -34,6 +34,7 @@
 		<activation.version>1.2.0</activation.version>
 		<annotation.version>1.3.2</annotation.version>
 		<asm.version>7.0</asm.version>
+		<restlet.version>2.4.1.v20180822-1009</restlet.version>
 	</properties>
 	
     <repositories>
@@ -54,6 +55,11 @@
         <repository>
             <id>zkoss</id>
             <url>http://mavensync.zkoss.org/maven2</url>
+        </repository>
+        <repository>
+	        <id>restlet-2.4</id>
+	        <url>https://raw.githubusercontent.com/hieplq/idempiere.artifact/master/restlet/2.4</url>
+            <layout>p2</layout>
         </repository>
     </repositories>
 
@@ -1236,6 +1242,35 @@ it also resolve issue confilic between eclipse runtime and tycho build
 								</feature>
 
 								<feature>
+									<id>org.idempiere.apache.feature</id>
+									<version>${project.version}</version>
+									<label>Idempiere apache util feature</label>
+									<providerName>Idempiere</providerName>
+									<description>feature group apache util osgi bundle get from maven</description>
+									<copyright>Idempiere</copyright>
+									<license>GPL v2.1</license>
+									<generateSourceFeature>true</generateSourceFeature>
+
+									<artifacts>
+										<artifact>
+											<id>commons-io:commons-io:jar:2.6</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>commons-fileupload:commons-fileupload:jar:1.3.3</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.httpcomponents:httpclient:jar:4.5.6</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+									</artifacts>
+								</feature>
+
+								<feature>
 									<id>org.idempiere.jetty.feature</id>
 									<version>${jetty.version}</version>
 									<label>Idempiere jetty ${jetty.version} feature</label>
@@ -1556,6 +1591,12 @@ it also resolve issue confilic between eclipse runtime and tycho build
                                 </artifact>
                                 <artifact>
                                     <id>org.krysalis.barcode4j:2.1.0</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.restlet:${restlet.version}</id>
+                                </artifact>
+                                <artifact>
+                                    <id>org.restlet.ext.servlet:${restlet.version}</id>
                                 </artifact>
                             </p2>
 						</configuration>
