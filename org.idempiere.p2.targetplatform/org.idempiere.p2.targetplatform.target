@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-181032" sequenceNumber="107">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-181117" sequenceNumber="107">
 <locations>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.9.0.v20180823-1503"/>
@@ -1120,7 +1120,7 @@
 		<unit id="zul.sources" version="8.6.0"/>
 		<unit id="zweb" version="8.6.0"/>
 		<unit id="zweb.sources" version="8.6.0"/>
-		<repository location="https://raw.githubusercontent.com/hieplq/idempiere.artifact/master/m2p/maven-p2-R20181116-v1"/>
+		<repository location="https://raw.githubusercontent.com/hieplq/idempiere.artifact/master/m2p/maven-p2-R20181117"/>
 	</location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-10"/>

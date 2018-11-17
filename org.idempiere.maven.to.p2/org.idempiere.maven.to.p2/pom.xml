@@ -1263,7 +1263,7 @@ it also resolve issue confilic between eclipse runtime and tycho build
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.httpcomponents:httpclient:jar:4.5.6</id>
+											<id>org.apache.httpcomponents:httpclient-osgi:jar:4.5.6</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
