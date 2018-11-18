@@ -1085,8 +1085,10 @@
 		<unit id="org.objectweb.asm.util.source" version="7.0.0"/>
 		<unit id="org.passay" version="1.3.1"/>
 		<unit id="org.passay.source" version="1.3.1"/>
-		<unit id="org.restlet" version="2.4.1.v20180822-1009"/>
-		<unit id="org.restlet.ext.servlet" version="2.4.1.v20180822-1009"/>
+		<unit id="org.restlet" version="2.4.1"/>
+		<unit id="org.restlet.ext.servlet" version="2.4.1"/>
+		<unit id="org.restlet.ext.servlet.source" version="2.4.1"/>
+		<unit id="org.restlet.source" version="2.4.1"/>
 		<unit id="org.springframework.spring-jcl" version="5.1.1.RELEASE"/>
 		<unit id="org.springframework.spring-jcl.source" version="5.1.1.RELEASE"/>
 		<unit id="org.w3c.dom.svg.patch" version="1.1.0.b02"/>
@@ -1120,7 +1122,7 @@
 		<unit id="zul.sources" version="8.6.0"/>
 		<unit id="zweb" version="8.6.0"/>
 		<unit id="zweb.sources" version="8.6.0"/>
-		<repository location="https://raw.githubusercontent.com/hieplq/idempiere.artifact/master/m2p/maven-p2-R20181117"/>
+		<repository location="https://raw.githubusercontent.com/hieplq/idempiere.artifact/master/m2p/maven-p2-R20181118"/>
 	</location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-10"/>

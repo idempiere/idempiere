@@ -34,7 +34,7 @@
 		<activation.version>1.2.0</activation.version>
 		<annotation.version>1.3.2</annotation.version>
 		<asm.version>7.0</asm.version>
-		<restlet.version>2.4.1.v20180822-1009</restlet.version>
+		<restlet.version>2.4.1</restlet.version>
 	</properties>
 	
     <repositories>
@@ -57,9 +57,8 @@
             <url>http://mavensync.zkoss.org/maven2</url>
         </repository>
         <repository>
-	        <id>restlet-2.4</id>
-	        <url>https://raw.githubusercontent.com/hieplq/idempiere.artifact/master/restlet/2.4</url>
-            <layout>p2</layout>
+	        <id>restlet-maven</id>
+	        <url>http://maven.restlet.com</url>
         </repository>
     </repositories>
 
@@ -826,6 +825,129 @@ it also resolve issue confilic between eclipse runtime and tycho build
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
+										<artifact>
+		                                    <id>org.restlet.osgi:org.restlet:${restlet.version}</id>
+		                                    <source>true</source>
+											<transitive>false</transitive>
+		                                    <override>true</override>
+		                                    <!-- manefest isn't complete, so take from release of 2.3.12
+		                                    	https://github.com/restlet/restlet-framework-java/issues/1321-->
+											<instructions>
+												<Bundle-Activator>org.restlet.engine.internal.Activator</Bundle-Activator>
+												<Bundle-Name>org.restlet</Bundle-Name>
+												<Bundle-SymbolicName>org.restlet</Bundle-SymbolicName>
+												<Bundle-Version>${restlet.version}</Bundle-Version>
+												<Export-Package>org.restlet;uses:="org.restlet.engine.application,org.re
+		 stlet.resource,org.restlet.util,org.restlet.engine,org.restlet.routing,
+		 org.restlet.service,org.restlet.engine.resource,org.restlet.security,or
+		 g.restlet.data,org.restlet.engine.connector,org.restlet.representation,
+		 org.restlet.engine.component,org.restlet.engine.util",org.restlet.data;
+		 uses:="org.restlet.engine.util,org.restlet.util,org.restlet,org.restlet
+		 .engine.security,org.restlet.representation,org.restlet.engine,org.rest
+		 let.routing,org.restlet.engine.io,org.restlet.security,org.restlet.engi
+		 ne.header",org.restlet.engine;uses:="org.restlet.routing,org.restlet.da
+		 ta,org.restlet,org.restlet.representation,org.restlet.engine.log,org.re
+		 stlet.engine.security,org.restlet.engine.io,org.restlet.engine.util,org
+		 .restlet.engine.converter,org.restlet.engine.connector,org.restlet.engi
+		 ne.local,org.restlet.service,org.restlet.util",org.restlet.engine.adapt
+		 er;uses:="org.restlet,org.restlet.data,org.restlet.representation,org.r
+		 estlet.util,org.restlet.engine.header,org.restlet.engine,org.restlet.se
+		 rvice,org.restlet.engine.connector,org.restlet.engine.util,org.restlet.
+		 engine.security,org.restlet.engine.io",org.restlet.engine.application;u
+		 ses:="org.restlet.data,org.restlet,org.restlet.routing,org.restlet.serv
+		 ice,org.restlet.util,org.restlet.engine,org.restlet.representation,org.
+		 restlet.engine.util,org.restlet.engine.io,org.restlet.engine.resource,o
+		 rg.restlet.engine.header",org.restlet.engine.component;uses:="org.restl
+		 et.routing,org.restlet.data,org.restlet,org.restlet.util,org.restlet.en
+		 gine.util,org.restlet.service,org.restlet.engine.log,org.restlet.engine
+		 ,org.restlet.resource,org.restlet.representation,javax.xml.parsers,org.
+		 w3c.dom,org.xml.sax",org.restlet.engine.connector;uses:="org.restlet,or
+		 g.restlet.representation,org.restlet.util,org.restlet.service,org.restl
+		 et.data,org.restlet.engine,org.restlet.engine.util,org.restlet.engine.l
+		 ocal,org.restlet.engine.adapter,javax.net.ssl,com.sun.net.httpserver,or
+		 g.restlet.engine.ssl,org.restlet.engine.log",org.restlet.engine.convert
+		 er;uses:="org.restlet.data,org.restlet.resource,org.restlet.representat
+		 ion,org.restlet.engine.resource,org.restlet.engine,org.restlet,org.rest
+		 let.engine.application,org.restlet.engine.util",org.restlet.engine.head
+		 er;uses:="org.restlet.data,org.restlet.util,org.restlet.representation,
+		 org.restlet.engine.util,org.restlet,org.restlet.engine.security",org.re
+		 stlet.engine.internal;uses:="org.osgi.framework,org.restlet,org.restlet
+		 .engine",org.restlet.engine.io;uses:="org.restlet.representation,org.re
+		 stlet,org.restlet.engine.util,org.restlet.data,org.restlet.engine,org.r
+		 estlet.util",org.restlet.engine.local;uses:="org.restlet.service,org.re
+		 stlet.data,org.restlet.representation,org.restlet,org.restlet.resource,
+		 org.restlet.engine.util,org.restlet.engine.io,org.restlet.util,org.rest
+		 let.engine.connector",org.restlet.engine.log;uses:="org.restlet.engine.
+		 io,org.restlet.engine.util,org.restlet,org.restlet.routing,org.restlet.
+		 service,org.restlet.data,org.restlet.engine",org.restlet.engine.resourc
+		 e;uses:="org.restlet.engine.util,org.restlet,org.restlet.service,org.re
+		 stlet.data,org.restlet.resource,org.restlet.representation,org.restlet.
+		 engine.connector,org.restlet.engine.application",org.restlet.engine.sec
+		 urity;uses:="org.restlet.data,org.restlet.util,org.restlet,org.restlet.
+		 engine,org.restlet.engine.header,org.restlet.engine.util,org.restlet.se
+		 curity",org.restlet.engine.ssl;uses:="javax.net.ssl,org.restlet.data,or
+		 g.restlet.util,org.restlet,org.restlet.engine",org.restlet.engine.util;
+		 uses:="org.restlet.data,org.restlet.engine.io,org.restlet.representatio
+		 n,org.restlet,org.restlet.util,org.restlet.service,org.restlet.engine.l
+		 og,org.w3c.dom.ls,org.xml.sax.helpers,org.xml.sax,org.restlet.engine,or
+		 g.restlet.engine.security,org.restlet.routing",org.restlet.representati
+		 on;uses:="org.restlet.data,org.restlet.engine.io,org.restlet,org.restle
+		 t.util,org.restlet.engine,org.restlet.engine.util",org.restlet.resource
+		 ;uses:="org.restlet.representation,org.restlet,org.restlet.util,org.res
+		 tlet.engine,org.restlet.service,org.restlet.data,org.restlet.engine.uti
+		 l,org.restlet.engine.resource,org.restlet.engine.connector,org.restlet.
+		 engine.local,org.restlet.security",org.restlet.routing;uses:="org.restl
+		 et.data,org.restlet.representation,org.restlet,org.restlet.util,org.res
+		 tlet.resource,org.restlet.engine.header",org.restlet.security;uses:="or
+		 g.restlet.routing,org.restlet.data,org.restlet,javax.security.auth.x500
+		 ,org.restlet.engine.security,org.restlet.util,org.restlet.engine.util",
+		 org.restlet.service;uses:="org.restlet.data,org.restlet.representation,
+		 org.restlet.engine.application,org.restlet,org.restlet.resource,org.res
+		 tlet.engine.converter,org.restlet.engine,org.restlet.routing,org.restle
+		 t.engine.util,org.restlet.engine.log,org.restlet.engine.resource",org.r
+		 estlet.util;uses:="org.restlet.representation,org.restlet.data,org.rest
+		 let.engine.io,org.restlet,org.restlet.engine.util,org.restlet.routing,o
+		 rg.restlet.service"</Export-Package>
+		 <Import-Package>com.sun.net.httpserver;resolution:=optional,javax.net.ss
+		 l;resolution:=optional,javax.security.auth.x500;resolution:=optional,ja
+		 vax.xml.parsers;resolution:=optional,org.osgi.framework;resolution:=opt
+		 ional,org.w3c.dom;resolution:=optional,org.w3c.dom.ls;resolution:=optio
+		 nal,org.xml.sax;resolution:=optional,org.xml.sax.helpers;resolution:=op
+		 tional</Import-Package>
+											</instructions>
+		                                </artifact>
+		                                <artifact>
+		                                    <id>org.restlet.osgi:org.restlet.ext.servlet:${restlet.version}</id>
+		                                    <source>true</source>
+											<transitive>false</transitive>
+		                                    <override>true</override>
+											<instructions>
+												<Bundle-Name>org.restlet.ext.servlet</Bundle-Name>
+												<Bundle-SymbolicName>org.restlet.ext.servlet</Bundle-SymbolicName>
+												<Bundle-Version>${restlet.version}</Bundle-Version>
+												<Export-Package>org.restlet.ext.servlet;uses:="javax.servlet,org.restlet
+		 .ext.osgi,org.restlet,org.osgi.service.log,org.osgi.service.http,org.re
+		 stlet.representation,org.restlet.ext.servlet.internal,org.restlet.util,
+		 org.restlet.engine,org.restlet.engine.adapter,org.restlet.routing,org.r
+		 estlet.service,org.restlet.data,org.restlet.engine.component,javax.serv
+		 let.http",org.restlet.ext.servlet.internal;uses:="javax.servlet,org.res
+		 tlet.data,org.restlet.engine.io,org.restlet.representation,org.restlet,
+		 org.restlet.util,org.restlet.engine.adapter,javax.servlet.http,org.rest
+		 let.engine.connector,org.restlet.service,org.restlet.engine.local"</Export-Package>
+		 										<Import-Package>javax.servlet;resolution:=optional,javax.servlet.http;re
+		 solution:=optional,org.osgi.service.http;resolution:=optional,org.osgi.
+		 service.log;resolution:=optional,org.restlet;resolution:=optional,org.r
+		 estlet.data;resolution:=optional,org.restlet.engine;resolution:=optiona
+		 l,org.restlet.engine.adapter;resolution:=optional,org.restlet.engine.co
+		 mponent;resolution:=optional,org.restlet.engine.connector;resolution:=o
+		 ptional,org.restlet.engine.io;resolution:=optional,org.restlet.engine.l
+		 ocal;resolution:=optional,org.restlet.ext.osgi;resolution:=optional,org
+		 .restlet.representation;resolution:=optional,org.restlet.routing;resolu
+		 tion:=optional,org.restlet.service;resolution:=optional,org.restlet.uti
+		 l;resolution:=optional</Import-Package>
+												<Service-Component>OSGI-INF/*.xml</Service-Component>
+											</instructions>
+		                                </artifact>
 									</artifacts>
 								</feature>
 								<!-- zk public zk osgi on zip format download from sourceforge, so 
@@ -1591,12 +1713,6 @@ it also resolve issue confilic between eclipse runtime and tycho build
                                 </artifact>
                                 <artifact>
                                     <id>org.krysalis.barcode4j:2.1.0</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.restlet:${restlet.version}</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.restlet.ext.servlet:${restlet.version}</id>
                                 </artifact>
                             </p2>
 						</configuration>
