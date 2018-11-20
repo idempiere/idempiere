@@ -31,6 +31,8 @@ echo Re-Create DataPump directory
 echo -------------------------------------
 sqlplus $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME @$IDEMPIERE_HOME/utils/$ADEMPIERE_DB_PATH/CreateDataPumpDir.sql $IDEMPIERE_HOME/data/seed
 # Note the user running this script must be member of dba group:  usermod -G dba idempiere
+chgrp dba $IDEMPIERE_HOME/data
+chmod 770 $IDEMPIERE_HOME/data
 chgrp dba $IDEMPIERE_HOME/data/seed
 chmod 770 $IDEMPIERE_HOME/data/seed
 chgrp dba $IDEMPIERE_HOME/data/seed/Adempiere.dmp
