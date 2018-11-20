@@ -46,8 +46,6 @@ public class ConfigVM extends Config
 		//	Java Home, e.g. D:\j2sdk1.4.1\jre
 		String javaHome = System.getProperty("java.home");
 		log.fine(javaHome);
-		if (javaHome.endsWith("jre"))
-			javaHome = javaHome.substring(0, javaHome.length()-4);
 		p_data.setJavaHome(javaHome);
 	}	//	init
 

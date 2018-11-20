@@ -369,14 +369,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         toolbar.enableFind(true);
         adTabbox.evaluate(null);
 
+        toolbar.updateToolbarAccess(adWindowId);
+        updateToolbar();
+        
         if (detailQuery != null && zoomToDetailTab(detailQuery))
         {
         	return true;
         }
 
-        toolbar.updateToolbarAccess(adWindowId);
-        updateToolbar();
-        
         SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Tab, adTabbox.getSelectedGridTab().getAD_Tab_ID());
 
         return true;

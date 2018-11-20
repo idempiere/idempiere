@@ -60,16 +60,17 @@ public class AdempiereActivator extends AbstractActivator {
 			if (pkg == null) {
 				try {
 					if (getDBLock()) {
-						System.out.println("Installing " + getName() + " " + version + " ...");
+						logger.log(Level.WARNING, "Installing " + getName() + " " + version + " ...");
 						packIn();
 						install();
-						releaseLock();
-						System.out.println(getName() + " " + version + " installed.");
+						logger.log(Level.WARNING, getName() + " " + version + " installed.");
 					} else {
-						logger.log(Level.SEVERE, "Could not acquire the DB lock to install:" + getName());
+						logger.log(Level.WARNING, "Could not acquire the DB lock to install:" + getName());
 					}
 				} catch (AdempiereSystemError e) {
 					e.printStackTrace();
+				} finally {
+					releaseLock();
 				}
 			} else {
 				if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + version + " was installed: "
@@ -121,7 +122,7 @@ public class AdempiereActivator extends AbstractActivator {
 			    // call 2pack
 				merge(zipfile, getPKVersion());
 			} catch (Throwable e) {
-				logger.log(Level.SEVERE, "Pack in failed.", e);
+				logger.log(Level.WARNING, "Pack in failed.", e);
 			}
 			finally{
 				if (zipstream != null) {

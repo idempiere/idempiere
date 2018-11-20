@@ -55,7 +55,6 @@
 		<module>org.adempiere.replication-feature</module>
 		<module>org.adempiere.pipo-feature</module>
 		<module>org.adempiere.replication.server-feature</module>
-		<module>org.adempiere.sdk-feature</module>
 		<module>org.adempiere.server-feature</module>
 		<module>org.adempiere.target.platform-feature</module>
 		<module>org.adempiere.ui.swing-feature</module>

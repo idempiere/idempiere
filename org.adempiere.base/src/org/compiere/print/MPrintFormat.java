@@ -60,7 +60,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5563074831750686572L;
+	private static final long serialVersionUID = 2979978408305853342L;
 
 	/**
 	 *	Public Constructor.
@@ -650,6 +650,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	}	//	createFromTable
 
 	/**
+	 * 
 	 * 	Create MPrintFormat for Table
 	 *  @param ctx context
 	 * 	@param AD_Table_ID table
@@ -657,12 +658,25 @@ public class MPrintFormat extends X_AD_PrintFormat
 	 * 	@return print format
 	 */
 	static public MPrintFormat createFromTable (Properties ctx,
-		int AD_Table_ID, int AD_PrintFormat_ID)
+			int AD_Table_ID, int AD_PrintFormat_ID) {
+		return createFromTable(ctx, AD_Table_ID, AD_PrintFormat_ID, null);
+	}
+	
+	/**
+	 * 	Create MPrintFormat for Table
+	 *  @param ctx context
+	 * 	@param AD_Table_ID table
+	 *  @param AD_PrintFormat_ID 0 or existing PrintFormat
+	 *  @param trxName the transaction
+	 * 	@return print format
+	 */
+	static public MPrintFormat createFromTable (Properties ctx,
+		int AD_Table_ID, int AD_PrintFormat_ID, String trxName)
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
 		if (s_log.isLoggable(Level.INFO)) s_log.info ("AD_Table_ID=" + AD_Table_ID + " - AD_Client_ID=" + AD_Client_ID);
 
-		MPrintFormat pf = new MPrintFormat(ctx, AD_PrintFormat_ID, null);
+		MPrintFormat pf = new MPrintFormat(ctx, AD_PrintFormat_ID, trxName);
 		pf.setAD_Table_ID (AD_Table_ID);
 
 		//	Get Info
@@ -682,7 +696,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, AD_Table_ID);
 			pstmt.setInt(2, AD_Client_ID);
 			rs = pstmt.executeQuery();

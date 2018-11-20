@@ -34,6 +34,7 @@ import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Role;
 import org.compiere.model.MRole;
 import org.compiere.model.X_AD_Form;
+import org.compiere.model.X_AD_InfoWindow;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_Process;
@@ -55,6 +56,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 	private FormAccessElementHandler formHandler = new FormAccessElementHandler();
 	private TaskAccessElementHandler taskHandler = new TaskAccessElementHandler();
 	private WorkflowAccessElementHandler workflowHandler = new WorkflowAccessElementHandler();
+	private InfoWindowAccessElementHandler infoWindowHandler = new InfoWindowAccessElementHandler();
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
@@ -240,6 +242,23 @@ public class RoleElementHandler extends AbstractElementHandler {
 		} finally {
 			DB.close(rs, pstmt);
 		}
+
+		// Process AD_InfoWindow_Access Values
+		sql = "SELECT AD_InfoWindow_ID, AD_Role_ID FROM AD_InfoWindow_Access WHERE AD_Role_ID= " + Role_id;
+		pstmt = null;
+		rs = null;
+		try {
+			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				createInfoWindowAccess(ctx, document, rs.getInt("AD_InfoWindow_ID"), rs.getInt("AD_Role_ID"));
+			}
+		} catch (Exception e) {
+			log.log(Level.SEVERE, "AD_InfoWindow_Access", e);
+			throw new DatabaseAccessException("Failed to export InfoWindow access.");
+		} finally {
+			DB.close(rs, pstmt);
+		}
 		
 		if (createElement) {
 			document.endElement("", "", X_AD_Role.Table_Name);
@@ -288,6 +307,15 @@ public class RoleElementHandler extends AbstractElementHandler {
 		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
 		windowHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_Window.COLUMNNAME_AD_Window_ID);
+		ctx.ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
+	}
+
+	private void createInfoWindowAccess(PIPOContext ctx,
+			TransformerHandler document, int AD_InfoWindow_ID, int AD_Role_ID) throws SAXException {
+		Env.setContext(ctx.ctx, X_AD_InfoWindow.COLUMNNAME_AD_InfoWindow_ID, AD_InfoWindow_ID);
+		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
+		infoWindowHandler.create(ctx, document);
+		ctx.ctx.remove(X_AD_InfoWindow.COLUMNNAME_AD_InfoWindow_ID);
 		ctx.ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 	}
 
