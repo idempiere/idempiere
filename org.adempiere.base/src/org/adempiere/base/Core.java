@@ -122,13 +122,13 @@ public class Core {
 		return null;
 	}
 
-		/**
+	/**
 	 *
 	 * @param processId Java class name or equinox extension id
 	 * @return ProcessCall instance or null if processId not found
 	 */
 	public static ProcessCall getProcess(String processId) {
-		List<IProcessFactory> factories = Service.locator().list(IProcessFactory.class).getServices();
+		List<IProcessFactory> factories = getProcessFactories();
 		if (factories != null && !factories.isEmpty()) {
 			for(IProcessFactory factory : factories) {
 				ProcessCall process = factory.newProcessInstance(processId);
@@ -137,6 +137,39 @@ public class Core {
 			}
 		}
 		return null; 		
+	}
+
+	/**
+	 * This method load the process factories waiting until the DefaultProcessFactory on base is loaded (IDEMPIERE-3829)
+	 * @return List of factories implementing IProcessFactory
+	 */
+	private static List<IProcessFactory> getProcessFactories() {
+		List<IProcessFactory> factories = null;
+		int maxIterations = 5;
+		int waitMillis = 1000;
+		int iterations = 0;
+		boolean foundDefault = false;
+		while (true) {
+			factories = Service.locator().list(IProcessFactory.class).getServices();
+			if (factories != null && !factories.isEmpty()) {
+				for(IProcessFactory factory : factories) {
+					// wait until DefaultProcessFactory is loaded
+					if (factory instanceof DefaultProcessFactory) {
+						foundDefault = true;
+						break;
+					}
+				}
+			}
+			iterations++;
+			if (foundDefault || iterations >= maxIterations) {
+				break;
+			}
+			try {
+				Thread.sleep(waitMillis);
+			} catch (InterruptedException e) {
+			}
+		}
+		return factories;
 	}
 
 	/**
