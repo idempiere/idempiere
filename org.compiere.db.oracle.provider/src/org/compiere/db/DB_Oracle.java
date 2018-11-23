@@ -667,7 +667,7 @@ public class DB_Oracle implements AdempiereDatabase
 		boolean testConnectionOnCheckout = getBooleanProperty(poolProperties, "TestConnectionOnCheckout", false);
 		String mlogClass = getStringProperty(poolProperties, "com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
 		int checkoutTimeout = getIntProperty(poolProperties, "CheckoutTimeout", 0);
-		int statementCacheNumDeferredCloseThreads = getIntProperty(poolProperties, "StatementCacheNumDeferredCloseThreads", 1);
+		int statementCacheNumDeferredCloseThreads = getIntProperty(poolProperties, "StatementCacheNumDeferredCloseThreads", 0);
         try
         {
         	System.setProperty("com.mchange.v2.log.MLog", mlogClass);
