@@ -481,7 +481,10 @@ public class GridTabCSVImporter implements IGridTabImporter
 			StringBuilder errMsg = new StringBuilder();
 
 			try {			
-				map = mapReader.read( (String []) header.toArray(), processors);
+				// devCoffee #6141 - IDEMPIERE-3832
+				String[] hdrs = new String[header.size()];
+				header.toArray(hdrs);
+				map = mapReader.read( hdrs, processors);
 			} catch (SuperCsvCellProcessorException e) {
 				int idx = e.getCsvContext().getColumnNumber() - 1;
 				errMsg.append(header.get(idx)).append(": ").append(e.getMessage());
