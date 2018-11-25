@@ -94,7 +94,7 @@
 	</library-property>	
 	<!-- turn off borderlayout animation -->	
 	<library-property>
-    	<name>org.zkoss.zul.borderlayout.animation.disabed</name>
+    	<name>org.zkoss.zul.borderlayout.animation.disabled</name>
     	<value>true</value>
 	</library-property>
 	<library-property>
