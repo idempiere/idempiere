@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2008-2017, Hazelcast, Inc. All Rights Reserved.
+  ~ Copyright (c) 2008-2018, Hazelcast, Inc. All Rights Reserved.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -16,22 +16,26 @@
   -->
 
 <!--
-    The default Hazelcast configuration. This is used when no hazelcast.xml is present.
-    Please see the schema for how to configure Hazelcast at https://hazelcast.com/schema/config/hazelcast-config-3.9.xsd
-    or the documentation at https://hazelcast.org/documentation/
+  The default Hazelcast configuration.
+
+  This XML file is used when no hazelcast.xml is present.
+
+  To learn how to configure Hazelcast, please see the schema at
+  https://hazelcast.com/schema/config/hazelcast-config-3.11.xsd
+  or the Reference Manual at https://hazelcast.org/documentation/
 -->
+
 <!--suppress XmlDefaultAttributeValue -->
-<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.9.xsd"
-           xmlns="http://www.hazelcast.com/schema/config"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<hazelcast xmlns="http://www.hazelcast.com/schema/config"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.hazelcast.com/schema/config
+           http://www.hazelcast.com/schema/config/hazelcast-config-3.11.xsd">
+
     <group>
-        <name>@ADEMPIERE_DB_USER@.@ADEMPIERE_DB_NAME@/@ADEMPIERE_DB_SERVER@</name>
-        <password>@ADEMPIERE_DB_PASSWORD@</password>
+        <name>dev</name>
+        <password>dev-pass</password>
     </group>
-    <management-center enabled="false">http://localhost:8080/mancenter</management-center>
-    <properties>
-        <property name="hazelcast.discovery.enabled">false</property>
-    </properties>
+    <management-center enabled="false">http://localhost:8080/hazelcast-mancenter</management-center>
     <network>
         <port auto-increment="true" port-count="100">5701</port>
         <outbound-ports>
@@ -42,7 +46,7 @@
             <ports>0</ports>
         </outbound-ports>
         <join>
-            <multicast enabled="false">
+            <multicast enabled="true">
                 <multicast-group>224.2.2.3</multicast-group>
                 <multicast-port>54327</multicast-port>
             </multicast>
@@ -52,22 +56,40 @@
                     <member>127.0.0.1</member>
                 </member-list>
             </tcp-ip>
-            <aws enabled="false"/>
+            <aws enabled="false">
+                <access-key>my-access-key</access-key>
+                <secret-key>my-secret-key</secret-key>
+                <!--optional, default is us-east-1 -->
+                <region>us-west-1</region>
+                <!--optional, default is ec2.amazonaws.com. If set, region shouldn't be set as it will override this property -->
+                <host-header>ec2.amazonaws.com</host-header>
+                <!-- optional, only instances belonging to this group will be discovered, default will try all running instances -->
+                <security-group-name>hazelcast-sg</security-group-name>
+                <tag-key>type</tag-key>
+                <tag-value>hz-nodes</tag-value>
+            </aws>
+            <gcp enabled="false">
+                <zones>us-east1-b,us-east1-c</zones>
+            </gcp>
+            <azure enabled="false">
+                <client-id>CLIENT_ID</client-id>
+                <client-secret>CLIENT_SECRET</client-secret>
+                <tenant-id>TENANT_ID</tenant-id>
+                <subscription-id>SUB_ID</subscription-id>
+                <cluster-id>HZLCAST001</cluster-id>
+                <group-name>GROUP-NAME</group-name>
+            </azure>
+            <kubernetes enabled="false">
+                <namespace>MY-KUBERNETES-NAMESPACE</namespace>
+                <service-name>MY-SERVICE-NAME</service-name>
+                <service-label-name>MY-SERVICE-LABEL-NAME</service-label-name>
+                <service-label-value>MY-SERVICE-LABEL-VALUE</service-label-value>
+            </kubernetes>
+            <eureka enabled="false">
+                <self-registration>true</self-registration>
+                <namespace>hazelcast</namespace>
+            </eureka>
             <discovery-strategies>
-                <discovery-strategy enabled="false" class="com.hazelcast.aws.AwsDiscoveryStrategy">
-                    <properties>
-                       <property name="access-key">my-access-key</property>
-                       <property name="secret-key">my-secret-key</property>
-                       <!--optional, default is us-east-1 -->
-                       <property name="region">us-east-1</property>
-                       <property name="host-header">ec2.amazonaws.com</property>
-                       <!-- optional, only instances belonging to this group will be discovered, default will try all running instances -->
-                       <property name="security-group-name">hazelcast-sg</property>
-                       <property name="tag-key">type</property>
-                       <property name="tag-value">hz-nodes</property>
-                       <property name="connection-timeout-seconds">30</property>
-                    </properties>
-                </discovery-strategy>
             </discovery-strategies>
         </join>
         <interfaces enabled="false">
@@ -92,6 +114,9 @@
             <!-- iteration count to use when generating the secret key -->
             <iteration-count>19</iteration-count>
         </symmetric-encryption>
+        <failure-detector>
+            <icmp enabled="false"/>
+        </failure-detector>
     </network>
     <partition-group enabled="false"/>
     <executor-service name="default">
@@ -99,6 +124,9 @@
         <!--Queue capacity. 0 means Integer.MAX_VALUE.-->
         <queue-capacity>0</queue-capacity>
     </executor-service>
+    <security>
+        <client-block-unmapped-actions>true</client-block-unmapped-actions>
+    </security>
     <queue name="default">
         <!--
             Maximum size of the queue. When a JVM's local queue size reaches the maximum,
@@ -121,6 +149,8 @@
         <async-backup-count>0</async-backup-count>
 
         <empty-queue-ttl>-1</empty-queue-ttl>
+
+        <merge-policy batch-size="100">com.hazelcast.spi.merge.PutIfAbsentMergePolicy</merge-policy>
     </queue>
     <map name="default">
         <!--
@@ -137,25 +167,25 @@
             then all entries of the map will be copied to another JVM for
             fail-safety. 0 means no backup.
         -->
-        <backup-count>0</backup-count>
+        <backup-count>1</backup-count>
         <!--
             Number of async backups. 0 means no backup.
         -->
         <async-backup-count>0</async-backup-count>
         <!--
-			Maximum number of seconds for each entry to stay in the map. Entries that are
-			older than <time-to-live-seconds> and not updated for <time-to-live-seconds>
-			will get automatically evicted from the map.
-			Any integer between 0 and Integer.MAX_VALUE. 0 means infinite. Default is 0.
-		-->
+            Maximum number of seconds for each entry to stay in the map. Entries that are
+            older than <time-to-live-seconds> and not updated for <time-to-live-seconds>
+            will get automatically evicted from the map.
+            Any integer between 0 and Integer.MAX_VALUE. 0 means infinite. Default is 0
+        -->
         <time-to-live-seconds>0</time-to-live-seconds>
         <!--
-			Maximum number of seconds for each entry to stay idle in the map. Entries that are
-			idle(not touched) for more than <max-idle-seconds> will get
-			automatically evicted from the map. Entry is touched if get, put or containsKey is called.
-			Any integer between 0 and Integer.MAX_VALUE. 0 means infinite. Default is 0.
-		-->
-        <max-idle-seconds>1800</max-idle-seconds>
+            Maximum number of seconds for each entry to stay idle in the map. Entries that are
+            idle(not touched) for more than <max-idle-seconds> will get
+            automatically evicted from the map. Entry is touched if get, put or containsKey is called.
+            Any integer between 0 and Integer.MAX_VALUE. 0 means infinite. Default is 0.
+        -->
+        <max-idle-seconds>0</max-idle-seconds>
         <!--
             Valid values are:
             NONE (no eviction),
@@ -163,14 +193,14 @@
             LFU (Least Frequently Used).
             NONE is the default.
         -->
-        <eviction-policy>LRU</eviction-policy>
+        <eviction-policy>NONE</eviction-policy>
         <!--
             Maximum size of the map. When max size is reached,
             map is evicted based on the policy defined.
             Any integer between 0 and Integer.MAX_VALUE. 0 means
             Integer.MAX_VALUE. Default is 0.
         -->
-        <max-size policy="PER_NODE">1000</max-size>
+        <max-size policy="PER_NODE">0</max-size>
         <!--
             `eviction-percentage` property is deprecated and will be ignored when it is set.
 
@@ -200,7 +230,7 @@
             com.hazelcast.map.merge.HigherHitsMapMergePolicy ; entry with the higher hits wins.
             com.hazelcast.map.merge.LatestUpdateMapMergePolicy ; entry with the latest update wins.
         -->
-        <merge-policy>com.hazelcast.map.merge.PutIfAbsentMapMergePolicy</merge-policy>
+        <merge-policy batch-size="100">com.hazelcast.spi.merge.PutIfAbsentMergePolicy</merge-policy>
 
         <!--
            Control caching of de-serialized values. Caching makes query evaluation faster, but it cost memory.
@@ -210,11 +240,6 @@
                         ALWAYS: Always cache deserialized values.
         -->
         <cache-deserialized-values>INDEX-ONLY</cache-deserialized-values>
-
-        <near-cache name="localNearCache">
-            <in-memory-format>OBJECT</in-memory-format>
-            <cache-local-entries>true</cache-local-entries>
-        </near-cache>
 
     </map>
 
@@ -235,17 +260,38 @@
         <time-to-live-seconds>0</time-to-live-seconds>
     </event-journal>
 
+    <!--
+       Configuration for a merkle tree.
+       The merkle tree is a data structure used for efficient comparison of the
+       difference in the contents of large data structures. The precision of
+       such a comparison mechanism is defined by the depth of the merkle tree.
+    -->
+    <merkle-tree enabled="false">
+        <mapName>mapName</mapName>
+        <depth>10</depth>
+    </merkle-tree>
+
     <multimap name="default">
         <backup-count>1</backup-count>
         <value-collection-type>SET</value-collection-type>
+        <merge-policy batch-size="100">com.hazelcast.spi.merge.PutIfAbsentMergePolicy</merge-policy>
     </multimap>
+
+    <replicatedmap name="default">
+        <in-memory-format>OBJECT</in-memory-format>
+        <async-fillup>true</async-fillup>
+        <statistics-enabled>true</statistics-enabled>
+        <merge-policy batch-size="100">com.hazelcast.spi.merge.PutIfAbsentMergePolicy</merge-policy>
+    </replicatedmap>
 
     <list name="default">
         <backup-count>1</backup-count>
+        <merge-policy batch-size="100">com.hazelcast.spi.merge.PutIfAbsentMergePolicy</merge-policy>
     </list>
 
     <set name="default">
         <backup-count>1</backup-count>
+        <merge-policy batch-size="100">com.hazelcast.spi.merge.PutIfAbsentMergePolicy</merge-policy>
     </set>
 
     <jobtracker name="default">
@@ -276,7 +322,26 @@
         <async-backup-count>0</async-backup-count>
         <time-to-live-seconds>0</time-to-live-seconds>
         <in-memory-format>BINARY</in-memory-format>
+        <merge-policy batch-size="100">com.hazelcast.spi.merge.PutIfAbsentMergePolicy</merge-policy>
     </ringbuffer>
+
+    <flake-id-generator name="default">
+        <prefetch-count>100</prefetch-count>
+        <prefetch-validity-millis>600000</prefetch-validity-millis>
+        <id-offset>0</id-offset>
+        <node-id-offset>0</node-id-offset>
+        <statistics-enabled>true</statistics-enabled>
+    </flake-id-generator>
+
+    <atomic-long name="default">
+        <merge-policy batch-size="100">com.hazelcast.spi.merge.PutIfAbsentMergePolicy</merge-policy>
+    </atomic-long>
+
+    <atomic-reference name="default">
+        <merge-policy batch-size="100">com.hazelcast.spi.merge.PutIfAbsentMergePolicy</merge-policy>
+    </atomic-reference>
+
+    <count-down-latch name="default"/>
 
     <serialization>
         <portable-version>0</portable-version>
@@ -286,4 +351,26 @@
 
     <lite-member enabled="false"/>
 
+    <cardinality-estimator name="default">
+        <backup-count>1</backup-count>
+        <async-backup-count>0</async-backup-count>
+        <merge-policy batch-size="100">HyperLogLogMergePolicy</merge-policy>
+    </cardinality-estimator>
+
+    <scheduled-executor-service name="default">
+        <capacity>100</capacity>
+        <durability>1</durability>
+        <pool-size>16</pool-size>
+        <merge-policy batch-size="100">com.hazelcast.spi.merge.PutIfAbsentMergePolicy</merge-policy>
+    </scheduled-executor-service>
+
+    <crdt-replication>
+        <replication-period-millis>1000</replication-period-millis>
+        <max-concurrent-replication-targets>1</max-concurrent-replication-targets>
+    </crdt-replication>
+
+    <pn-counter name="default">
+        <replica-count>2147483647</replica-count>
+        <statistics-enabled>true</statistics-enabled>
+    </pn-counter>
 </hazelcast>
