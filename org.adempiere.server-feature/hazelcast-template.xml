@@ -32,10 +32,14 @@
            http://www.hazelcast.com/schema/config/hazelcast-config-3.11.xsd">
 
     <group>
-        <name>dev</name>
-        <password>dev-pass</password>
+        <name>@ADEMPIERE_DB_USER@.@ADEMPIERE_DB_NAME@/@ADEMPIERE_DB_SERVER@</name>
+        <!-- https://github.com/hazelcast/hazelcast/issues/11667 -->
     </group>
     <management-center enabled="false">http://localhost:8080/hazelcast-mancenter</management-center>
+    <!-- https://docs.hazelcast.org/docs/3.11/manual/html-single/index.html#time-window-for-split-brain-protection -->
+    <properties>
+        <property name="hazelcast.discovery.enabled">false</property>
+    </properties>
     <network>
         <port auto-increment="true" port-count="100">5701</port>
         <outbound-ports>
@@ -46,7 +50,7 @@
             <ports>0</ports>
         </outbound-ports>
         <join>
-            <multicast enabled="true">
+            <multicast enabled="false">
                 <multicast-group>224.2.2.3</multicast-group>
                 <multicast-port>54327</multicast-port>
             </multicast>
@@ -90,6 +94,20 @@
                 <namespace>hazelcast</namespace>
             </eureka>
             <discovery-strategies>
+                <discovery-strategy enabled="false" class="com.hazelcast.aws.AwsDiscoveryStrategy">
+                    <properties>
+                       <property name="access-key">my-access-key</property>
+                       <property name="secret-key">my-secret-key</property>
+                       <!--optional, default is us-east-1 -->
+                       <property name="region">us-east-1</property>
+                       <property name="host-header">ec2.amazonaws.com</property>
+                       <!-- optional, only instances belonging to this group will be discovered, default will try all running instances -->
+                       <property name="security-group-name">hazelcast-sg</property>
+                       <property name="tag-key">type</property>
+                       <property name="tag-value">hz-nodes</property>
+                       <property name="connection-timeout-seconds">30</property>
+                    </properties>
+                </discovery-strategy>
             </discovery-strategies>
         </join>
         <interfaces enabled="false">
@@ -141,7 +159,7 @@
             then all entries of the map will be copied to another JVM for
             fail-safety. 0 means no backup.
         -->
-        <backup-count>1</backup-count>
+        <backup-count>0</backup-count>
 
         <!--
             Number of async backups. 0 means no backup.
@@ -185,7 +203,7 @@
             automatically evicted from the map. Entry is touched if get, put or containsKey is called.
             Any integer between 0 and Integer.MAX_VALUE. 0 means infinite. Default is 0.
         -->
-        <max-idle-seconds>0</max-idle-seconds>
+        <max-idle-seconds>1800</max-idle-seconds>
         <!--
             Valid values are:
             NONE (no eviction),
@@ -193,14 +211,14 @@
             LFU (Least Frequently Used).
             NONE is the default.
         -->
-        <eviction-policy>NONE</eviction-policy>
+        <eviction-policy>LRU</eviction-policy>
         <!--
             Maximum size of the map. When max size is reached,
             map is evicted based on the policy defined.
             Any integer between 0 and Integer.MAX_VALUE. 0 means
             Integer.MAX_VALUE. Default is 0.
         -->
-        <max-size policy="PER_NODE">0</max-size>
+        <max-size policy="PER_NODE">1000</max-size>
         <!--
             `eviction-percentage` property is deprecated and will be ignored when it is set.
 
@@ -240,7 +258,11 @@
                         ALWAYS: Always cache deserialized values.
         -->
         <cache-deserialized-values>INDEX-ONLY</cache-deserialized-values>
-
+        
+        <near-cache name="localNearCache">
+            <in-memory-format>OBJECT</in-memory-format>
+            <cache-local-entries>true</cache-local-entries>
+        </near-cache>
     </map>
 
     <!--
