@@ -274,25 +274,25 @@ UPDATE AD_Field SET SeqNoGrid=30,IsDisplayedGrid='Y', Updated=sysdate, UpdatedBy
 UPDATE AD_Field SET SeqNoGrid=40,IsDisplayedGrid='Y', Updated=sysdate, UpdatedBy=100 WHERE AD_Field_ID=4835
 ;
 
-UPDATE AD_Field SET IsDisplayed='Y', IsDisplayedGrid='Y',Updated=TO_DATE('2018-11-37 23:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=11767
+UPDATE AD_Field SET IsDisplayed='Y', IsDisplayedGrid='Y',Updated=TO_DATE('2018-11-27 23:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=11767
 ;
 
-UPDATE AD_Field SET IsDisplayed='Y', IsDisplayedGrid='Y',Updated=TO_DATE('2018-11-37 23:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5529
+UPDATE AD_Field SET IsDisplayed='Y', IsDisplayedGrid='Y',Updated=TO_DATE('2018-11-27 23:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5529
 ;
 
-UPDATE AD_Field SET IsDisplayed='Y', IsDisplayedGrid='Y',Updated=TO_DATE('2018-11-37 23:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5431
+UPDATE AD_Field SET IsDisplayed='Y', IsDisplayedGrid='Y',Updated=TO_DATE('2018-11-27 23:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5431
 ;
 
-UPDATE AD_Field SET IsDisplayed='Y', IsDisplayedGrid='Y',Updated=TO_DATE('2018-11-37 23:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3079
+UPDATE AD_Field SET IsDisplayed='Y', IsDisplayedGrid='Y',Updated=TO_DATE('2018-11-27 23:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3079
 ;
 
-UPDATE AD_Field SET IsDisplayed='Y', IsDisplayedGrid='Y',Updated=TO_DATE('2018-11-37 23:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=53577
+UPDATE AD_Field SET IsDisplayed='Y', IsDisplayedGrid='Y',Updated=TO_DATE('2018-11-27 23:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=53577
 ;
 
-UPDATE AD_Field SET IsDisplayed='Y', IsDisplayedGrid='Y',Updated=TO_DATE('2018-11-37 23:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4821
+UPDATE AD_Field SET IsDisplayed='Y', IsDisplayedGrid='Y',Updated=TO_DATE('2018-11-27 23:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4821
 ;
 
-UPDATE AD_Field SET IsDisplayed='Y', IsDisplayedGrid='Y',Updated=TO_DATE('2018-11-37 23:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=53875
+UPDATE AD_Field SET IsDisplayed='Y', IsDisplayedGrid='Y',Updated=TO_DATE('2018-11-27 23:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=53875
 ;
 
 -- Nov 27, 2018, 11:56:17 PM CET
