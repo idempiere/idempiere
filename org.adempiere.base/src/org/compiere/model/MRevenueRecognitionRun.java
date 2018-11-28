@@ -17,60 +17,40 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
-import java.util.List;
 import java.util.Properties;
 
 
 /**
- *	Revenue Recognition Model
+ *	Revenue Recognition Run Model
  *	
- *  @author Jorg Janke
- *  @version $Id: MRevenueRecognition.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MRevenueRecognition extends X_C_RevenueRecognition
+public class MRevenueRecognitionRun extends X_C_RevenueRecognition_Run
 {
+
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8528224265258285903L;
+	private static final long serialVersionUID = -6068883255121303257L;
 
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_RevenueRecognition_ID id
 	 */
-	public MRevenueRecognition (Properties ctx, int C_RevenueRecognition_ID, String trxName)
+	public MRevenueRecognitionRun (Properties ctx, int C_RevenueRecognition_Run_ID, String trxName)
 	{
-		super (ctx, C_RevenueRecognition_ID, trxName);
-	}	//	MRevenueRecognition
+		super (ctx, C_RevenueRecognition_Run_ID, trxName);
+	}	//	MRevenueRecognitionRun
 
 	/**
 	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 */
-	public MRevenueRecognition (Properties ctx, ResultSet rs, String trxName)
+	public MRevenueRecognitionRun (Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
-	}	//	MRevenueRecognition
+	}	//	MRevenueRecognitionRun
 	
-	public List<MRevenueRecogService> getServicesList() {
-		
-		if ( isTimeBased() )
-			return null;
-		
-		Query query = new Query(getCtx(),MRevenueRecogService.Table_Name, "C_RevenueRecognition_ID = ?",get_TrxName());
-		query.setParameters(getC_RevenueRecognition_ID());
-		query.setOnlyActiveRecords(true);
-		query.setOrderBy("Line");
-		
-		return query.list();
-	}
-	
-	public static List<MRevenueRecognition> getAll(Properties ctx, String trxName) {
-		Query query = new Query(ctx,MRevenueRecognition.Table_Name, null, trxName);
-		return query.list();
-	}
-	
-}	//	MRevenueRecognition
+}	//	MRevenueRecognitionRun

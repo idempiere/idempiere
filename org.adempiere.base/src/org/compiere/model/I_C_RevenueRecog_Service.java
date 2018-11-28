@@ -20,24 +20,24 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for C_RevenueRecognition
+/** Generated Interface for C_RevenueRecog_Service
  *  @author iDempiere (generated) 
  *  @version Release 6.1
  */
-public interface I_C_RevenueRecognition 
+public interface I_C_RevenueRecog_Service 
 {
 
-    /** TableName=C_RevenueRecognition */
-    public static final String Table_Name = "C_RevenueRecognition";
+    /** TableName=C_RevenueRecog_Service */
+    public static final String Table_Name = "C_RevenueRecog_Service";
 
-    /** AD_Table_ID=336 */
-    public static final int Table_ID = 336;
+    /** AD_Table_ID=53888 */
+    public static final int Table_ID = 53888;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel = 1 - Org 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(3);
+    BigDecimal accessLevel = BigDecimal.valueOf(1);
 
     /** Load Meta Data */
 
@@ -91,14 +91,16 @@ public interface I_C_RevenueRecognition
 	  */
 	public int getC_RevenueRecognition_ID();
 
-    /** Column name C_RevenueRecognition_UU */
-    public static final String COLUMNNAME_C_RevenueRecognition_UU = "C_RevenueRecognition_UU";
+	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException;
 
-	/** Set C_RevenueRecognition_UU	  */
-	public void setC_RevenueRecognition_UU (String C_RevenueRecognition_UU);
+    /** Column name C_RevenueRecog_Service_ID */
+    public static final String COLUMNNAME_C_RevenueRecog_Service_ID = "C_RevenueRecog_Service_ID";
 
-	/** Get C_RevenueRecognition_UU	  */
-	public String getC_RevenueRecognition_UU();
+	/** Set Revenue Recognition Service	  */
+	public void setC_RevenueRecog_Service_ID (int C_RevenueRecog_Service_ID);
+
+	/** Get Revenue Recognition Service	  */
+	public int getC_RevenueRecog_Service_ID();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -113,19 +115,6 @@ public interface I_C_RevenueRecognition
 	  */
 	public String getDescription();
 
-    /** Column name FixedRecogDay */
-    public static final String COLUMNNAME_FixedRecogDay = "FixedRecogDay";
-
-	/** Set Fixed recognition day.
-	  * Day of the period recognition occurs
-	  */
-	public void setFixedRecogDay (int FixedRecogDay);
-
-	/** Get Fixed recognition day.
-	  * Day of the period recognition occurs
-	  */
-	public int getFixedRecogDay();
-
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -139,49 +128,31 @@ public interface I_C_RevenueRecognition
 	  */
 	public boolean isActive();
 
-    /** Column name IsTimeBased */
-    public static final String COLUMNNAME_IsTimeBased = "IsTimeBased";
+    /** Column name Line */
+    public static final String COLUMNNAME_Line = "Line";
 
-	/** Set Time based.
-	  * Time based Revenue Recognition rather than Service Level based
+	/** Set Line No.
+	  * Unique line for this document
 	  */
-	public void setIsTimeBased (boolean IsTimeBased);
+	public void setLine (int Line);
 
-	/** Get Time based.
-	  * Time based Revenue Recognition rather than Service Level based
+	/** Get Line No.
+	  * Unique line for this document
 	  */
-	public boolean isTimeBased();
+	public int getLine();
 
-    /** Column name Name */
-    public static final String COLUMNNAME_Name = "Name";
+    /** Column name Percent */
+    public static final String COLUMNNAME_Percent = "Percent";
 
-	/** Set Name.
-	  * Alphanumeric identifier of the entity
+	/** Set Percent.
+	  * Percentage
 	  */
-	public void setName (String Name);
+	public void setPercent (BigDecimal Percent);
 
-	/** Get Name.
-	  * Alphanumeric identifier of the entity
+	/** Get Percent.
+	  * Percentage
 	  */
-	public String getName();
-
-    /** Column name NoMonths */
-    public static final String COLUMNNAME_NoMonths = "NoMonths";
-
-	/** Set Number of Months	  */
-	public void setNoMonths (int NoMonths);
-
-	/** Get Number of Months	  */
-	public int getNoMonths();
-
-    /** Column name RecognitionFrequency */
-    public static final String COLUMNNAME_RecognitionFrequency = "RecognitionFrequency";
-
-	/** Set Recognition frequency	  */
-	public void setRecognitionFrequency (String RecognitionFrequency);
-
-	/** Get Recognition frequency	  */
-	public String getRecognitionFrequency();
+	public BigDecimal getPercent();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

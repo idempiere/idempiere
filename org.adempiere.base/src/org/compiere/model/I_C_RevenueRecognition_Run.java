@@ -115,6 +115,26 @@ public interface I_C_RevenueRecognition_Run
 	/** Get C_RevenueRecognition_Run_UU	  */
 	public String getC_RevenueRecognition_Run_UU();
 
+    /** Column name C_RevenueRecog_Service_ID */
+    public static final String COLUMNNAME_C_RevenueRecog_Service_ID = "C_RevenueRecog_Service_ID";
+
+	/** Set Revenue Recognition Service	  */
+	public void setC_RevenueRecog_Service_ID (int C_RevenueRecog_Service_ID);
+
+	/** Get Revenue Recognition Service	  */
+	public int getC_RevenueRecog_Service_ID();
+
+	public org.compiere.model.I_C_RevenueRecog_Service getC_RevenueRecog_Service() throws RuntimeException;
+
+    /** Column name DateRecognized */
+    public static final String COLUMNNAME_DateRecognized = "DateRecognized";
+
+	/** Set Recognition Date	  */
+	public void setDateRecognized (Timestamp DateRecognized);
+
+	/** Get Recognition Date	  */
+	public Timestamp getDateRecognized();
+
     /** Column name GL_Journal_ID */
     public static final String COLUMNNAME_GL_Journal_ID = "GL_Journal_ID";
 
