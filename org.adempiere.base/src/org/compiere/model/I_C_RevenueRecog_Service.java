@@ -35,9 +35,9 @@ public interface I_C_RevenueRecog_Service
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 1 - Org 
+    /** AccessLevel = 3 - Client - Org 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(1);
+    BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
 
@@ -101,6 +101,15 @@ public interface I_C_RevenueRecog_Service
 
 	/** Get Revenue Recognition Service	  */
 	public int getC_RevenueRecog_Service_ID();
+
+    /** Column name C_RevenueRecog_Service_UU */
+    public static final String COLUMNNAME_C_RevenueRecog_Service_UU = "C_RevenueRecog_Service_UU";
+
+	/** Set C_RevenueRecog_Service_UU	  */
+	public void setC_RevenueRecog_Service_UU (String C_RevenueRecog_Service_UU);
+
+	/** Get C_RevenueRecog_Service_UU	  */
+	public String getC_RevenueRecog_Service_UU();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

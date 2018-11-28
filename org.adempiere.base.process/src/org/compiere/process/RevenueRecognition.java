@@ -28,7 +28,6 @@ import org.compiere.model.MGLCategory;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MJournal;
-import org.compiere.model.MJournalBatch;
 import org.compiere.model.MJournalLine;
 import org.compiere.model.MOrg;
 import org.compiere.model.MRevenueRecognitionRun;
@@ -101,23 +100,9 @@ public class RevenueRecognition extends SvrProcess
 	 */
 	private String createGLJournal(MAcctSchema as)
 	{
-		
 		//
-		MGLCategory cat = MGLCategory.getDefaultSystem(getCtx());
-		if (cat == null)
-		{
-			MDocType docType = MDocType.get(getCtx(), p_C_DocType_ID);
-			cat = MGLCategory.get(getCtx(), docType.getGL_Category_ID());
-		}
-		//
-		MJournalBatch batch = new MJournalBatch(getCtx(), 0, get_TrxName());
-		batch.setDescription (getName());
-		batch.setC_DocType_ID(p_C_DocType_ID);
-		batch.setDateDoc(p_Date);
-		batch.setDateAcct(p_Date);
-		batch.setC_Currency_ID(as.getC_Currency_ID());
-		if (!batch.save())
-			return " - Could not create Batch";
+		MDocType docType = MDocType.get(getCtx(), p_C_DocType_ID);
+		MGLCategory cat = MGLCategory.get(getCtx(), docType.getGL_Category_ID());
 		//
 		
 		MJournal journal = null;
@@ -145,20 +130,23 @@ public class RevenueRecognition extends SvrProcess
 			if (run.getRecognizedAmt().signum() == 0)
 				continue;
 
-
-
 			//
 			if (journal == null)
 			{
-				journal = new MJournal (batch);
+				journal = new MJournal(getCtx(), 0, get_TrxName());
+				journal.setDescription (getName());
+				journal.setC_DocType_ID(p_C_DocType_ID);
+				journal.setDateDoc(p_Date);
+				journal.setDateAcct(p_Date);
+				journal.setC_Currency_ID(as.getC_Currency_ID());
 				journal.setC_AcctSchema_ID (as.getC_AcctSchema_ID());
 				journal.setC_Currency_ID(as.getC_Currency_ID());
 				journal.setC_ConversionType_ID(MConversionType.getDefault(getAD_Client_ID()));
 				MOrg org = MOrg.get(getCtx(), run.getAD_Org_ID());
+				journal.setAD_Org_ID(run.getAD_Org_ID());
 				journal.setDescription (getName() + " - " + org.getName());
 				journal.setGL_Category_ID (cat.getGL_Category_ID());
-				if (!journal.save())
-					return " - Could not create Journal";
+				journal.saveEx();
 			}
 
 			MInvoiceLine il = (MInvoiceLine) run.getC_RevenueRecognition_Plan().getC_InvoiceLine();
@@ -207,9 +195,10 @@ public class RevenueRecognition extends SvrProcess
 			//
 			run.setGL_Journal_ID(journal.getGL_Journal_ID());
 			run.saveEx();
+			addBufferLog(journal.getGL_Journal_ID(), journal.getDateAcct(), null, docType.getName() + " " + journal.getDocumentNo(), MJournal.Table_ID, journal.getGL_Journal_ID());
 		}
-		
-		return " - " + batch.getDocumentNo() + " #" + list.size();
+
+		return "@OK@ #" + list.size();
 	}	//	createGLJournal
 }	//	Aging
 

@@ -32,7 +32,7 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20181127L;
+	private static final long serialVersionUID = 20181128L;
 
     /** Standard Constructor */
     public X_C_RevenueRecog_Service (Properties ctx, int C_RevenueRecog_Service_ID, String trxName)
@@ -52,7 +52,7 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 3 - Client - Org 
       */
     protected int get_AccessLevel()
     {
@@ -127,6 +127,20 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set C_RevenueRecog_Service_UU.
+		@param C_RevenueRecog_Service_UU C_RevenueRecog_Service_UU	  */
+	public void setC_RevenueRecog_Service_UU (String C_RevenueRecog_Service_UU)
+	{
+		set_Value (COLUMNNAME_C_RevenueRecog_Service_UU, C_RevenueRecog_Service_UU);
+	}
+
+	/** Get C_RevenueRecog_Service_UU.
+		@return C_RevenueRecog_Service_UU	  */
+	public String getC_RevenueRecog_Service_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_C_RevenueRecog_Service_UU);
 	}
 
 	/** Set Description.
