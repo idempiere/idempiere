@@ -305,7 +305,7 @@ public interface AdempiereDatabase
 	/**
 	 * Default sql use to test whether a connection is still valid
 	 */
-	public final static String DEFAULT_CONN_TEST_SQL = "SELECT Version FROM AD_System";
+	//public final static String DEFAULT_CONN_TEST_SQL = "SELECT Version FROM AD_System";
 
 	/**
 	 * Is the database have sql extension that return a subset of the query result
