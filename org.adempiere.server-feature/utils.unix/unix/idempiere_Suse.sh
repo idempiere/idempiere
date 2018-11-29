@@ -19,6 +19,7 @@
 # adjust these variables to your environment
 IDEMPIERE_HOME=/opt/idempiere-server
 IDEMPIEREUSER=idempiere
+export TELNET_PORT=12612
 # Instead of using ENVFILE you can set JAVA_HOME, IDEMPIERE_HOME and add JAVA_HOME/bin to PATH
 # in this case you can comment the source lines for ENVFILE below
 # detected some problems with Hardy Heron ubuntu using the bash source command
@@ -57,8 +58,8 @@ IDEMPIERESTATUS=
 MAXITERATIONS=60 
 
 getidempierestatus() {
-    IDEMPIERESTATUSSTRING=$(ps ax | grep java | grep org.adempiere.server.application | grep -v grep)
-    echo $IDEMPIERESTATUSSTRING | grep -q org.adempiere.server.application
+    IDEMPIERESTATUSSTRING=$(ps ax | grep java | grep ${IDEMPIERE_HOME} | grep -v grep)
+    echo $IDEMPIERESTATUSSTRING | grep -q ${IDEMPIERE_HOME}
     IDEMPIERESTATUS=$?
 }
 
@@ -117,20 +118,20 @@ stop () {
     . $ENVFILE
     # try shutdown from OSGi console, then direct kill with signal 15, then signal 9
     log_warning_msg "Trying shutdown from OSGi console"
-    ( echo exit; echo y; sleep 5 ) | telnet localhost 12612 > /dev/null 2>&1
+    ( echo exit; echo y; sleep 5 ) | telnet localhost ${TELNET_PORT} > /dev/null 2>&1
     getidempierestatus
     if [ $IDEMPIERESTATUS -ne 0 ] ; then
         echo "Service stopped with OSGi shutdown"
     else
         echo "Trying direct kill with signal -15"
-        kill -15 -`ps ax o pgid,command | grep org.adempiere.server.application | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
+        kill -15 -`ps ax o pgid,command | grep ${IDEMPIERE_HOME} | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
         sleep 5
         getidempierestatus
         if [ $IDEMPIERESTATUS -ne 0 ] ; then
             echo "Service stopped with kill -15"
         else
             echo "Trying direct kill with signal -9"
-            kill -9 -`ps ax o pgid,command | grep org.adempiere.server.application | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
+            kill -9 -`ps ax o pgid,command | grep ${IDEMPIERE_HOME} | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
             sleep 5
             getidempierestatus
             if [ $IDEMPIERESTATUS -ne 0 ] ; then
@@ -166,7 +167,7 @@ status () {
     if [ $IDEMPIERESTATUS -eq 0 ] ; then
 	echo
 	echo "iDempiere is running:"
-	ps ax | grep org.adempiere.server.application | grep -v grep | sed 's/^[[:space:]]*\([[:digit:]]*\).*:[[:digit:]][[:digit:]][[:space:]]\(.*\)/\1 \2/'
+	ps ax | grep ${IDEMPIERE_HOME} | grep -v grep | sed 's/^[[:space:]]*\([[:digit:]]*\).*:[[:digit:]][[:digit:]][[:space:]]\(.*\)/\1 \2/'
 	echo
     else
 	echo "iDempiere is stopped"
