@@ -45,7 +45,7 @@ start () {
     source $ENVFILE 
     export LOGFILE=$IDEMPIERE_HOME/log/idempiere_`date +%Y%m%d%H%M%S`.log
     su $IDEMPIEREUSER -c "mkdir -p $IDEMPIERE_HOME/log"
-    su $IDEMPIEREUSER -c "cd $IDEMPIERE_HOME;$IDEMPIERE_HOME/idempiere-server.sh &> $LOGFILE &"
+    su $IDEMPIEREUSER -c "export TELNET_PORT=$TELNET_PORT;cd $IDEMPIERE_HOME;$IDEMPIERE_HOME/idempiere-server.sh &> $LOGFILE &"
     RETVAL=$?
     if [ $RETVAL -eq 0 ] ; then
 	# wait for server to be confirmed as started in logfile

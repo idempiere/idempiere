@@ -573,7 +573,7 @@ start () {
     echo -n "Starting iDempiere ERP: "
     export LOGFILE=$IDEMPIERE_HOME/log/idempiere_`date +%Y%m%d%H%M%S`.log
     $SU ${IDEMPIERE_USER} -c "mkdir -p $IDEMPIERE_HOME/log"
-    $SU ${IDEMPIERE_USER} -c "cd $IDEMPIERE_HOME;$IDEMPIERE_HOME/idempiere-server.sh &> $LOGFILE &"
+    $SU ${IDEMPIERE_USER} -c "export TELNET_PORT=$TELNET_PORT;cd $IDEMPIERE_HOME;$IDEMPIERE_HOME/idempiere-server.sh &> $LOGFILE &"
     RETVAL=$?
     if [ $RETVAL -eq 0 ] ; then
         # wait for server to be confirmed as started in logfile
