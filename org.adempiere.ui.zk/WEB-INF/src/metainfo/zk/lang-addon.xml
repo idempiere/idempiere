@@ -45,5 +45,6 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 
 
 	<javascript package="jawwa.atmosphere" merge="false" />
+	<javascript package="org.idempiere.websocket" merge="false" />
 	
 </language>
