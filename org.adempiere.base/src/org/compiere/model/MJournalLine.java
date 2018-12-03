@@ -469,7 +469,8 @@ public class MJournalLine extends X_GL_JournalLine
 			setM_Product_ID(combi.getM_Product_ID() > 0 ? combi.getM_Product_ID() : 0);
 			setC_BPartner_ID(combi.getC_BPartner_ID() > 0 ? combi.getC_BPartner_ID() : 0);
 			setAD_OrgTrx_ID(combi.getAD_OrgTrx_ID() > 0 ? combi.getAD_OrgTrx_ID() : 0);
-			setAD_Org_ID(combi.getAD_Org_ID() > 0 ? combi.getAD_Org_ID() : 0);
+			if (combi.getAD_Org_ID() > 0)
+				setAD_Org_ID(combi.getAD_Org_ID());
 			setC_LocFrom_ID(combi.getC_LocFrom_ID() > 0 ? combi.getC_LocFrom_ID() : 0);
 			setC_LocTo_ID(combi.getC_LocTo_ID() > 0 ? combi.getC_LocTo_ID() : 0);
 			setC_SalesRegion_ID(combi.getC_SalesRegion_ID() > 0 ? combi.getC_SalesRegion_ID() : 0);

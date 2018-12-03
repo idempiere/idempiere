@@ -664,10 +664,10 @@ public class DB_Oracle implements AdempiereDatabase
 		int maxIdleTime = getIntProperty(poolProperties, "MaxIdleTime", 1200);
 		int unreturnedConnectionTimeout = getIntProperty(poolProperties, "UnreturnedConnectionTimeout", 0);
 		boolean testConnectionOnCheckin = getBooleanProperty(poolProperties, "TestConnectionOnCheckin", false);
-		boolean testConnectionOnCheckout = getBooleanProperty(poolProperties, "TestConnectionOnCheckout", false);
+		boolean testConnectionOnCheckout = getBooleanProperty(poolProperties, "TestConnectionOnCheckout", true);
 		String mlogClass = getStringProperty(poolProperties, "com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
 		int checkoutTimeout = getIntProperty(poolProperties, "CheckoutTimeout", 0);
-		int statementCacheNumDeferredCloseThreads = getIntProperty(poolProperties, "StatementCacheNumDeferredCloseThreads", 1);
+		int statementCacheNumDeferredCloseThreads = getIntProperty(poolProperties, "StatementCacheNumDeferredCloseThreads", 0);
         try
         {
         	System.setProperty("com.mchange.v2.log.MLog", mlogClass);
@@ -679,7 +679,7 @@ public class DB_Oracle implements AdempiereDatabase
             cpds.setJdbcUrl(getConnectionURL(connection));
             cpds.setUser(connection.getDbUid());
             cpds.setPassword(connection.getDbPwd());
-            cpds.setPreferredTestQuery(DEFAULT_CONN_TEST_SQL);
+            //cpds.setPreferredTestQuery(DEFAULT_CONN_TEST_SQL);
             cpds.setIdleConnectionTestPeriod(idleConnectionTestPeriod);
             cpds.setAcquireRetryAttempts(acquireRetryAttempts);
             cpds.setTestConnectionOnCheckin(testConnectionOnCheckin);

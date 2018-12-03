@@ -756,7 +756,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		int maxIdleTime = getIntProperty(poolProperties, "MaxIdleTime", 1200);
 		int unreturnedConnectionTimeout = getIntProperty(poolProperties, "UnreturnedConnectionTimeout", 0);
 		boolean testConnectionOnCheckin = getBooleanProperty(poolProperties, "TestConnectionOnCheckin", false);
-		boolean testConnectionOnCheckout = getBooleanProperty(poolProperties, "TestConnectionOnCheckout", false);
+		boolean testConnectionOnCheckout = getBooleanProperty(poolProperties, "TestConnectionOnCheckout", true);
 		String mlogClass = getStringProperty(poolProperties, "com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
 		
 		int checkoutTimeout = getIntProperty(poolProperties, "CheckoutTimeout", 0);
@@ -772,7 +772,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
             cpds.setJdbcUrl(getConnectionURL(connection));
             cpds.setUser(connection.getDbUid());
             cpds.setPassword(connection.getDbPwd());
-            cpds.setPreferredTestQuery(DEFAULT_CONN_TEST_SQL);
+            //cpds.setPreferredTestQuery(DEFAULT_CONN_TEST_SQL);
             cpds.setIdleConnectionTestPeriod(idleConnectionTestPeriod);
             cpds.setMaxIdleTimeExcessConnections(maxIdleTimeExcessConnections);
             cpds.setMaxIdleTime(maxIdleTime);

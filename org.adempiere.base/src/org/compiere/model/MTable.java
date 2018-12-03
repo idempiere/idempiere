@@ -699,10 +699,12 @@ public class MTable extends X_AD_Table
 		return (tablename.equals("AD_Org") ||
 				tablename.equals("AD_OrgInfo") ||
 				tablename.equals("AD_Client") || // IDEMPIERE-668
+				tablename.equals("AD_AllClients_V") ||
 				tablename.equals("AD_ReportView") ||
 				tablename.equals("AD_Role") ||
 				tablename.equals("AD_System") ||
 				tablename.equals("AD_User") ||
+				tablename.equals("AD_AllUsers_V") ||
 				tablename.equals("C_DocType") ||
 				tablename.equals("GL_Category") ||
 				tablename.equals("M_AttributeSet") ||
