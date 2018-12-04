@@ -107,6 +107,8 @@ public class TableElementHandler extends AbstractElementHandler {
 
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 		MTable mTable = findPO(ctx, element);
+		if (element.defer && mTable == null)
+			return;
 		boolean isValidateView = false;
 		MViewComponent[] m_vcs = mTable.getViewComponent(true);
 		if (m_vcs != null && m_vcs.length > 0)
