@@ -369,6 +369,9 @@ public class DB_Oracle implements AdempiereDatabase
     public String convertStatement (String oraStatement)
     {
     	Convert.logMigrationScript(oraStatement, null);
+		if ("true".equals(System.getProperty("org.idempiere.db.oracle.debug"))) {
+			log.warning("Oracle -> " + oraStatement);
+		}
         return oraStatement;
     }   //  convertStatement
 
