@@ -1289,7 +1289,7 @@ public class MMatchPO extends X_M_MatchPO
 			this.saveEx();
 
 			// auto create new matchpo if have invoice line
-			if ( reversal.getC_InvoiceLine_ID() > 0)
+			if ( reversal.getC_InvoiceLine_ID() > 0 && reversal.getM_InOutLine_ID() > 0 )
 			{
 				MMatchPO[] matchPOs = MMatchPO.getOrderLine(reversal.getCtx(), reversal.getC_OrderLine_ID(), reversal.get_TrxName());
 				BigDecimal matchQty = getQty();
