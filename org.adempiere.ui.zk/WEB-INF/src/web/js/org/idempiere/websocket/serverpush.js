@@ -27,11 +27,11 @@
       path = path.substring(location.host.length+1);
       var last=path.lastIndexOf("/");
       if (last > 0) {
-    	  path = path.substring(0, last);
+    	  path = "/" + path.substring(0, last) + "/serverpush/";
       } else {
-    	  path = "";
+    	  path = "/serverpush/";
       }
-      url = url + window.location.host + "/" + path + "/serverpush/" + this.desktop.id;
+      url = url + window.location.host + path + this.desktop.id;
       var me = this;
       this.socket = new WebSocket(url);
       this.socket.onopen = function (event) {

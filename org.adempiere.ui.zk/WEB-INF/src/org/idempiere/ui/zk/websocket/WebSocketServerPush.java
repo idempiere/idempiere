@@ -62,6 +62,7 @@ public class WebSocketServerPush implements ServerPush {
     private final Object _mutex = new Object();
     
     private final static Map<String, ServerPushEndPoint> endPointMap = new ConcurrentHashMap<>();
+    private final static ServerPushEndPoint STUB = new ServerPushEndPoint();
     private List<Schedule<Event>> schedules = new ArrayList<>();
 
     public WebSocketServerPush() {
@@ -226,7 +227,9 @@ public class WebSocketServerPush implements ServerPush {
             return;
         }
 
-        log.debug("Starting server push for " + desktop);
+        if (log.isDebugEnabled())
+        	log.debug("Starting server push for " + desktop);
+        registerEndPoint(desktop.getId(), STUB);
         startServerPushAtClient(desktop);
     }
 
@@ -242,7 +245,8 @@ public class WebSocketServerPush implements ServerPush {
             return;
         }
 
-        log.debug("Stopping server push for " + desktop);
+        if (log.isDebugEnabled())
+        	log.debug("Stopping server push for " + desktop);
         Clients.response("org.idempiere.websocket.serverpush.stop", new AuScript(null, "org.idempiere.websocket.stopServerPush('" + desktop.getId() + "');"));
     }
 
@@ -292,6 +296,18 @@ public class WebSocketServerPush implements ServerPush {
 	 */
 	public static ServerPushEndPoint getEndPoint(String dtid) {
 		ServerPushEndPoint endpoint = endPointMap.get(dtid);
-		return endpoint;
+		if (endpoint == STUB)
+			return null;
+		else
+			return endpoint;
+	}
+	
+	/**
+	 * 
+	 * @param dtid desktop id
+	 * @return true if serverpush started for dtid, false otherwise
+	 */
+	public static boolean isValidDesktopId(String dtid) {
+		return endPointMap.containsKey(dtid);
 	}
 }

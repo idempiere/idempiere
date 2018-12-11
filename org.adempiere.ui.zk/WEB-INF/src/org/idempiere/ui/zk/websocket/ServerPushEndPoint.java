@@ -66,9 +66,8 @@ public class ServerPushEndPoint {
 
 	@OnOpen
 	public void onOpen(Session sess, @PathParam("dtid") String dtid) throws IOException {
-		if (!Util.isEmpty(dtid, true)) {
+		if (!Util.isEmpty(dtid, true) && WebSocketServerPush.isValidDesktopId(dtid)) {			
 			session = sess;
-			session.setMaxIdleTimeout(30000);
 			this.dtid = dtid;
 			WebSocketServerPush.registerEndPoint(dtid, this);
 		}
@@ -93,7 +92,7 @@ public class ServerPushEndPoint {
 			try {
 				session.getBasicRemote().sendText("echo");
 			} catch (IOException e) {
-				e.printStackTrace();
+				CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
 			}
 		}
 	}
