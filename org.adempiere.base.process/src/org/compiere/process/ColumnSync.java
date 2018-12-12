@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.logging.Level;
 
 import org.compiere.model.MColumn;
@@ -110,6 +111,21 @@ public class ColumnSync extends SvrProcess
 				//	update existing column
 				boolean notNull = DatabaseMetaData.columnNoNulls == rs.getInt("NULLABLE");
 				sql = column.getSQLModify(table, column.isMandatory() != notNull);
+				if (DB.isOracle()) {
+					// IDEMPIERE-3842 problem with oracle alter CLOB or BLOB
+					int actualType = rs.getInt("DATA_TYPE");
+					if (actualType == Types.CLOB) {
+						if (sql.contains(" MODIFY " + column.getColumnName() + " CLOB")) {
+							// trying to make CLOB a column that is already a CLOB
+							sql = sql.replaceFirst(" MODIFY " + column.getColumnName() + " CLOB", " MODIFY " + column.getColumnName());
+						}
+					} else if (actualType == Types.BLOB) {
+						if (sql.contains(" MODIFY " + column.getColumnName() + " BLOB")) {
+							// trying to make BLOB a column that is already a BLOB
+							sql = sql.replaceFirst(" MODIFY " + column.getColumnName() + " BLOB", " MODIFY " + column.getColumnName());
+						}
+					}
+				}
 				break;
 			}
 			DB.close(rs);
