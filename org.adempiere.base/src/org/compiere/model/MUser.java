@@ -907,14 +907,6 @@ public class MUser extends X_AD_User
 				MPasswordRule pwdrule = MPasswordRule.getRules(getCtx(), get_TrxName());
 				if (pwdrule != null){
 					List<MPasswordHistory> passwordHistorys = MPasswordHistory.getPasswordHistoryForCheck(pwdrule.getDays_Reuse_Password(), this.getAD_User_ID());
-					// for long time user don't use this system, because all password in history table is out of check range. but we will want new password must difference latest password  
-					if (passwordHistorys.size() == 0 && !this.is_new() && this.get_ValueOld(MUser.COLUMNNAME_Password) != null){
-						Object oldSalt = this.get_ValueOld(MUser.COLUMNNAME_Salt);
-						Object oldPassword = this.get_ValueOld(MUser.COLUMNNAME_Password);
-						
-						MPasswordHistory latestPassword = new MPasswordHistory(oldSalt == null?null:oldSalt.toString(), oldPassword == null?null:oldPassword.toString());
-						passwordHistorys.add(latestPassword);
-					}
 					pwdrule.validate((getLDAPUser() != null ? getLDAPUser() : getName()), getPassword(), passwordHistorys);
 				}
 				setDatePasswordChanged(new Timestamp(new Date().getTime()));
@@ -1055,17 +1047,24 @@ public class MUser extends X_AD_User
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
 		if (getPassword() != null && getPassword().length() > 0 && (newRecord || is_ValueChanged("Password"))) {
-			MPasswordHistory passwordHistory = new MPasswordHistory(this.getCtx(), 0, this.get_TrxName());
-			passwordHistory.setSalt(this.getSalt());
-			passwordHistory.setPassword(this.getPassword());
-			// http://wiki.idempiere.org/en/System_user
-			if (!this.is_new() && this.getAD_User_ID() == 0){
-				passwordHistory.set_Value(MPasswordHistory.COLUMNNAME_AD_User_ID, 0);
-			}else{
-				passwordHistory.setAD_User_ID(this.getAD_User_ID());
+			MPasswordRule pwdrule = MPasswordRule.getRules(getCtx(), get_TrxName());
+			if (pwdrule != null && pwdrule.getDays_Reuse_Password() > 0) {
+				boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
+				if (! hash_password) {
+					log.severe("Saving password history: it is strongly encouraged to save password history just when using hashed passwords - WARNING! table AD_Password_History is possibly keeping plain passwords");
+				}
+				MPasswordHistory passwordHistory = new MPasswordHistory(this.getCtx(), 0, this.get_TrxName());
+				passwordHistory.setSalt(this.getSalt());
+				passwordHistory.setPassword(this.getPassword());
+				// http://wiki.idempiere.org/en/System_user
+				if (!this.is_new() && this.getAD_User_ID() == 0){
+					passwordHistory.set_Value(MPasswordHistory.COLUMNNAME_AD_User_ID, 0);
+				}else{
+					passwordHistory.setAD_User_ID(this.getAD_User_ID());
+				}
+				passwordHistory.setDatePasswordChanged(this.getUpdated());
+				passwordHistory.saveEx();
 			}
-			passwordHistory.setDatePasswordChanged(this.getUpdated());
-			passwordHistory.saveEx();
 		}
 		return super.afterSave(newRecord, success);
 	}
