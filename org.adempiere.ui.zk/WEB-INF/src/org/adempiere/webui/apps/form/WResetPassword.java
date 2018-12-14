@@ -14,6 +14,7 @@
 
 package org.adempiere.webui.apps.form;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -37,6 +38,8 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MPasswordHistory;
+import org.compiere.model.MPasswordRule;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
@@ -44,8 +47,10 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Columns;
@@ -140,12 +145,14 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
         txtNewPassword.setId("txtNewPassword");
         txtNewPassword.setType("password");
         txtNewPassword.setCols(25);
+        txtNewPassword.addEventListener(Events.ON_BLUR, this);
         ZKUpdateUtil.setWidth(txtNewPassword, "220px");
         
         txtRetypeNewPassword = new Textbox();
         txtRetypeNewPassword.setId("txtRetypeNewPassword");
         txtRetypeNewPassword.setType("password");
         txtRetypeNewPassword.setCols(25);
+        txtRetypeNewPassword.addEventListener(Events.ON_BLUR, this);
         ZKUpdateUtil.setWidth(txtRetypeNewPassword, "220px");
 
         cbForceChangeNextLogin = new Checkbox();
@@ -261,6 +268,29 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 		{
 			validateChangePassword();
 		}
+        else if (e.getTarget() == txtNewPassword) {
+        	MPasswordRule pwdrule = MPasswordRule.getRules(Env.getCtx(), null);
+        	String userName = "";
+        	int userID = -1;
+    		if (fUser.getValue() != null) {
+    			userID = Integer.parseInt(fUser.getValue().toString());
+    		}
+			if (userID < 0)
+				throw new WrongValueException(fUser.getComponent(), Msg.getMsg(Env.getCtx(), "UserMandatory"));
+			userName = MUser.getNameOfUser(userID);
+			if (pwdrule != null) {
+				try {
+					pwdrule.validate(userName, txtNewPassword.getValue(), new ArrayList<MPasswordHistory>());
+				}
+				catch (Exception ex) {
+					throw new WrongValueException(txtNewPassword, ex.getMessage());
+				}
+			}
+        }
+        else if (e.getTarget() == txtRetypeNewPassword) {
+        	if (!txtNewPassword.getValue().equals(txtRetypeNewPassword.getValue()))
+        		throw new WrongValueException(txtRetypeNewPassword, Msg.getMsg(Env.getCtx(), "PasswordNotMatch"));
+        }
 	}
 		
 	private void validateChangePassword()
