@@ -615,6 +615,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 	private void dynInit (int AD_Table_ID, int Record_ID)
 	{
+		m_data.validateAcctSchemas(Record_ID);
 		m_data.fillAcctSchema(selAcctSchema );
 		selAcctSchema.addEventListener(Events.ON_SELECT, this);
 
