@@ -15,6 +15,7 @@
 
 package org.adempiere.webui.panel;
 
+import java.util.ArrayList;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -32,6 +33,8 @@ import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.LoginWindow;
+import org.compiere.model.MPasswordHistory;
+import org.compiere.model.MPasswordRule;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
@@ -44,8 +47,10 @@ import org.zkoss.zhtml.Div;
 import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Image;
 
@@ -59,7 +64,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 6055606520280550335L;
+	private static final long serialVersionUID = -4117126419866788951L;
 
 	private static CLogger logger = CLogger.getCLogger(ChangePasswordPanel.class);
 
@@ -246,12 +251,14 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         txtNewPassword.setId("txtNewPassword");
         txtNewPassword.setType("password");
         txtNewPassword.setCols(25);
+        txtNewPassword.addEventListener(Events.ON_BLUR, this);
         ZKUpdateUtil.setWidth(txtNewPassword, "220px");
         
         txtRetypeNewPassword = new Textbox();
         txtRetypeNewPassword.setId("txtRetypeNewPassword");
         txtRetypeNewPassword.setType("password");
         txtRetypeNewPassword.setCols(25);
+        txtRetypeNewPassword.addEventListener(Events.ON_BLUR, this);
         ZKUpdateUtil.setWidth(txtRetypeNewPassword, "220px");
         
     	txtAnswer = new Textbox();
@@ -271,6 +278,21 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         {
         	SessionManager.logoutSession();
             wndLogin.loginCancelled();
+        }
+        else if (event.getTarget() == txtNewPassword) {
+        	MPasswordRule pwdrule = MPasswordRule.getRules(Env.getCtx(), null);
+			if (pwdrule != null) {
+				try {
+					pwdrule.validate(m_userName, txtNewPassword.getValue(), new ArrayList<MPasswordHistory>());
+				}
+				catch (Exception e) {
+					throw new WrongValueException(txtNewPassword, e.getMessage());
+				}
+			}
+        }
+        else if (event.getTarget() == txtRetypeNewPassword) {
+        	if (!txtNewPassword.getValue().equals(txtRetypeNewPassword.getValue()))
+        		throw new WrongValueException(txtRetypeNewPassword, Msg.getMsg(m_ctx, "PasswordNotMatch"));
         }
     }
     
