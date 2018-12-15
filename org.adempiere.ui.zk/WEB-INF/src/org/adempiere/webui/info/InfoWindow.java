@@ -588,7 +588,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				boolean isMandatory = !m_lookup && infoColumn.isMandatory() && infoColumn.isQueryCriteria();
 				GridFieldVO vo = GridFieldVO.createParameter(infoContext, p_WindowNo, AEnv.getADWindowID(p_WindowNo), infoWindow.getAD_InfoWindow_ID(), 0,
 						columnName, infoColumn.get_Translation("Name"), infoColumn.getAD_Reference_ID(), 
-						infoColumn.getAD_Reference_Value_ID(), isMandatory, false, infoColumn.getPlaceholder());
+						infoColumn.getAD_Reference_Value_ID(), isMandatory, false, infoColumn.get_Translation("Placeholder"));
 				if (infoColumn.getAD_Val_Rule_ID() > 0) {
 					vo.ValidationCode = infoColumn.getAD_Val_Rule().getCode();
 					if (vo.lookupInfo != null) {
@@ -2026,7 +2026,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		String columnName = infoColumn.getColumnName();
 		GridFieldVO vo = GridFieldVO.createParameter(infoContext, p_WindowNo, AEnv.getADWindowID(p_WindowNo), m_infoWindowID, 0,
 				columnName, infoColumn.get_Translation("Name"), infoColumn.getAD_Reference_ID(),
-				infoColumn.getAD_Reference_Value_ID(), false, false, infoColumn.getPlaceholder());
+				infoColumn.getAD_Reference_Value_ID(), false, false, infoColumn.get_Translation("Placeholder"));
 		if (infoColumn.getAD_Val_Rule_ID() > 0) {
 			vo.ValidationCode = infoColumn.getAD_Val_Rule().getCode();
 			if (vo.lookupInfo != null) {

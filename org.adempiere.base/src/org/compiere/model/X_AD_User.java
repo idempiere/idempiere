@@ -31,7 +31,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20181104L;
+	private static final long serialVersionUID = 20180831L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
@@ -52,6 +52,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 // N
 			setIsLocked (false);
 // 'N'
+			setIsNoExpire (false);
+// N
 			setIsNoPasswordReset (false);
 // 'N'
 			setIsSalesLead (false);
@@ -745,6 +747,27 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	public String getIsMenuAutoExpand () 
 	{
 		return (String)get_Value(COLUMNNAME_IsMenuAutoExpand);
+	}
+
+	/** Set No Expire.
+		@param IsNoExpire No Expire	  */
+	public void setIsNoExpire (boolean IsNoExpire)
+	{
+		set_Value (COLUMNNAME_IsNoExpire, Boolean.valueOf(IsNoExpire));
+	}
+
+	/** Get No Expire.
+		@return No Expire	  */
+	public boolean isNoExpire () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsNoExpire);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set No Password Reset.

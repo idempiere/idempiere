@@ -611,7 +611,7 @@ public class MWFNode extends X_AD_WF_Node
 			}
 			if (getAD_Column_ID() > 0) {
 				// validate that just advanced roles can manipulate secure content via workflows
-				MColumn column = MColumn.get(getCtx(), getAD_Column_ID());
+				MColumn column = MColumn.get(getCtx(), getAD_Column_ID(), get_TrxName ());
 				if (column.isSecure() || column.isAdvanced()) {
 					if (! MRole.getDefault().isAccessAdvanced()) {
 						log.saveError("AccessTableNoUpdate", Msg.getElement(getCtx(), column.getColumnName()));

@@ -59,7 +59,7 @@ public class MRefTable extends X_AD_Ref_Table
 
 	@Override
 	public I_AD_Table getAD_Table() throws RuntimeException {
-		MTable table = MTable.get(getCtx(), getAD_Table_ID());
+		MTable table = MTable.get(getCtx(), getAD_Table_ID(), get_TrxName());
 		return table;
 	}
 	

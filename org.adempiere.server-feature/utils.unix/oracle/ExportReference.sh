@@ -21,22 +21,30 @@ sqlplus $3@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME @$IDEMPIER
 chgrp dba $IDEMPIERE_HOME/data
 chmod 770 $IDEMPIERE_HOME/data
 
-sqlplus $3@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME <<!
+if [ "x${1,,}" != "xreference" ]
+then
+    sqlplus $3@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME <<!
+DROP USER REFERENCE CASCADE;
 alter session set "_enable_rename_user"=true;
 alter system enable restricted session;
 ALTER USER $1 RENAME TO REFERENCE IDENTIFIED BY "$2";
 alter system disable restricted session;
 !
+fi
 
+rm -f $IDEMPIERE_HOME/data/Adempiere.dmp $IDEMPIERE_HOME/data/Adempiere.log
 # Export
 expdp REFERENCE/$2@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=Adempiere.dmp LOGFILE=Adempiere.log EXCLUDE=STATISTICS SCHEMAS=REFERENCE
 
-sqlplus $3@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME <<!
+if [ "x${1,,}" != "xreference" ]
+then
+    sqlplus $3@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME <<!
 alter session set "_enable_rename_user"=true;
 alter system enable restricted session;
 ALTER USER REFERENCE RENAME TO $1 IDENTIFIED BY "$2";
 alter system disable restricted session;
 !
+fi
 
 cd $IDEMPIERE_HOME/data
 jar cvfM Adempiere.jar Adempiere.dmp Adempiere.log

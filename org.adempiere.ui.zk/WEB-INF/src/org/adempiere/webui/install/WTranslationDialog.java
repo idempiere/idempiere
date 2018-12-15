@@ -29,6 +29,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.FolderBrowser;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
@@ -119,6 +120,7 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 	private int m_AD_Client_ID;
 	private boolean m_imp;
 	private ValueNamePair m_AD_Language;
+	private Checkbox isOnlyCentralized = new Checkbox();
 	
 	private void zkInit() throws Exception
 	{
@@ -139,6 +141,8 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 		bImportZIP.setLabel(Msg.getMsg(Env.getCtx(), "ImportZIP"));
 		bImportZIP.setUpload(AdempiereWebUI.getUploadSetting());
 		bImportZIP.addEventListener(Events.ON_UPLOAD, this);
+		isOnlyCentralized.setLabel(Msg.getMsg(Env.getCtx(), "OnlyCentralizedData"));
+		isOnlyCentralized.setChecked(true);
 
 		Rows rows = centerLayout.newRows();
 		Row row = rows.newRow();
@@ -152,7 +156,11 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 		row = rows.newRow();
 		row.appendChild(lTable.rightAlign());
 		row.appendChild(cbTable);
-		
+
+		row = rows.newRow();
+		row.appendChild(new Label(""));
+		row.appendChild(isOnlyCentralized);
+
 		row = rows.newRow();
 		Div div = new Div();
 		div.setStyle("text-align: right;");
@@ -298,7 +306,7 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 				// Carlos Ruiz - globalqss - improve output message from translation import process
 				msg.append(m_AD_Table.getValue()).append(" ").append((m_imp
 						? t.importTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue())
-						: t.exportTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue()))).append(" ");
+						: t.exportTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue(), isOnlyCentralized.isChecked()))).append(" ");
 			}
 			
 			if(msg == null || msg.length() == 0)
@@ -311,7 +319,7 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 			msg = null;
 			msg = new StringBuilder(m_imp
 				? t.importTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue())
-				: t.exportTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue()));
+				: t.exportTrl (directory, m_AD_Client_ID, m_AD_Language.getValue(), m_AD_Table.getValue(), isOnlyCentralized.isChecked()));
 				
 			if(msg == null || msg.length() == 0)
 				msg = new StringBuilder(m_imp ? "Import" : "Export").append(" Successful. [").append(directory).append("]");

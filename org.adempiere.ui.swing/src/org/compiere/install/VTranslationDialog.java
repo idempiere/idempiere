@@ -36,6 +36,7 @@ import org.compiere.apps.ADialog;
 import org.compiere.apps.StatusBar;
 import org.compiere.apps.form.FormFrame;
 import org.compiere.apps.form.FormPanel;
+import org.compiere.grid.ed.VCheckBox;
 import org.compiere.swing.CPanel;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -80,6 +81,7 @@ public class VTranslationDialog extends TranslationController
 	private StatusBar statusBar = new StatusBar();
 	private JLabel lClient = new JLabel();
 	private JComboBox<Object> cbClient = new JComboBox<Object>();
+	private VCheckBox isOnlyCentralized = new VCheckBox();
 
 
 	/**
@@ -93,6 +95,7 @@ public class VTranslationDialog extends TranslationController
 		lLanguage.setText(Msg.translate(Env.getCtx(), "AD_Language"));
 		lLanguage.setToolTipText(Msg.translate(Env.getCtx(), "IsSystemLanguage"));
 		lTable.setText(Msg.translate(Env.getCtx(), "AD_Table_ID"));
+		isOnlyCentralized.setText(Msg.getMsg(Env.getCtx(), "OnlyCentralizedData"));
 		//
 		bExport.setText(Msg.getMsg(Env.getCtx(), "Export"));
 		bExport.addActionListener(this);
@@ -107,9 +110,11 @@ public class VTranslationDialog extends TranslationController
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 		panel.add(cbTable,     new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0
 			,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-		panel.add(bExport,   new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0
+		panel.add(isOnlyCentralized,     new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0
+				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+		panel.add(bExport,   new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-		panel.add(bImport,   new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0
+		panel.add(bImport,   new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0
 			,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
 		panel.add(lClient,   new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
@@ -224,7 +229,7 @@ public class VTranslationDialog extends TranslationController
 				AD_Table = (ValueNamePair)cbTable.getItemAt(i);
 				msg = imp
 					? t.importTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue())
-					: t.exportTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue());
+					: t.exportTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue(), isOnlyCentralized.isSelected());
 			}
 			
 			if(msg == null || msg.length() == 0)
@@ -237,7 +242,7 @@ public class VTranslationDialog extends TranslationController
 			msg = null;
 			msg = imp
 				? t.importTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue())
-				: t.exportTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue());
+				: t.exportTrl (directory, AD_Client_ID, AD_Language.getValue(), AD_Table.getValue(), isOnlyCentralized.isSelected());
 				
 			if(msg == null || msg.length() == 0)
 				msg = (imp ? "Import" : "Export") + " Successful. [" + directory + "]";
