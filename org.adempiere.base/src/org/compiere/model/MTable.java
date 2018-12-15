@@ -58,7 +58,7 @@ public class MTable extends X_AD_Table
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8757836873040013402L;
+	private static final long serialVersionUID = 7527235342324308477L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -102,7 +102,7 @@ public class MTable extends X_AD_Table
 	 *	@param tableName case insensitive table name
 	 *	@return Table
 	 */
-	public static MTable get (Properties ctx, String tableName)
+	public static synchronized MTable get (Properties ctx, String tableName)
 	{
 		if (tableName == null)
 			return null;
