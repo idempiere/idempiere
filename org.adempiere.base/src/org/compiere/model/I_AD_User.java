@@ -485,6 +485,15 @@ public interface I_AD_User
 	  */
 	public String getIsMenuAutoExpand();
 
+    /** Column name IsNoExpire */
+    public static final String COLUMNNAME_IsNoExpire = "IsNoExpire";
+
+	/** Set No Expire	  */
+	public void setIsNoExpire (boolean IsNoExpire);
+
+	/** Get No Expire	  */
+	public boolean isNoExpire();
+
     /** Column name IsNoPasswordReset */
     public static final String COLUMNNAME_IsNoPasswordReset = "IsNoPasswordReset";
 

@@ -1312,7 +1312,7 @@ public class Login
 				if (minutes > MAX_ACCOUNT_LOCK_MINUTES)
 				{
 					boolean inactive = false;
-					if (MAX_INACTIVE_PERIOD_DAY > 0 && user.getDateLastLogin() != null)
+					if (MAX_INACTIVE_PERIOD_DAY > 0 && user.getDateLastLogin() != null && !user.isNoExpire())
 					{
 						long days = (now - user.getDateLastLogin().getTime()) / (1000 * 60 * 60 * 24);
 						if (days > MAX_INACTIVE_PERIOD_DAY)
@@ -1331,7 +1331,7 @@ public class Login
 				}					
 			}
 			
-			if (MAX_INACTIVE_PERIOD_DAY > 0 && !user.isLocked() && user.getDateLastLogin() != null)
+			if (MAX_INACTIVE_PERIOD_DAY > 0 && !user.isLocked() && user.getDateLastLogin() != null && !user.isNoExpire())
 			{
 				long days = (now - user.getDateLastLogin().getTime()) / (1000 * 60 * 60 * 24);
 				if (days > MAX_INACTIVE_PERIOD_DAY)
