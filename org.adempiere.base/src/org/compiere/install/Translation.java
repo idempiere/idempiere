@@ -173,7 +173,7 @@ public class Translation implements IApplication
 	 * 	@param Trl_Table translation table _Trl
 	 * 	@return status message
 	 */
-	public String exportTrl (String directory, int AD_Client_ID, String AD_Language, String Trl_Table)
+	public String exportTrl (String directory, int AD_Client_ID, String AD_Language, String Trl_Table, boolean onlyCentralized)
 	{
 		String fileName = directory + File.separator + Trl_Table + "_" + AD_Language + ".xml";
 		log.info(fileName);
@@ -185,6 +185,12 @@ public class Translation implements IApplication
 		String Base_Table = Trl_Table.substring(0, pos);
 		if (isBaseLanguage)
 			tableName =  Base_Table;
+
+		if (onlyCentralized) {
+			if (MTable.get(m_ctx, tableName).getAD_Table_ID() > MTable.MAX_OFFICIAL_ID)
+				return "";
+		}
+
 		String keyColumn = Base_Table + "_ID";
 		String uuidColumn = MTable.getUUIDColumnName(Base_Table);
 		String[] trlColumns = getTrlColumns (Base_Table);
@@ -237,6 +243,10 @@ public class Translation implements IApplication
 			}
 			if (AD_Client_ID >= 0)
 				sql.append(haveWhere ? " AND " : " WHERE ").append("o.AD_Client_ID=").append(AD_Client_ID);
+
+			if (onlyCentralized)
+				sql.append(haveWhere ? " AND " : " WHERE ").append(" o.").append(keyColumn).append("<=").append(MTable.MAX_OFFICIAL_ID).append(" AND o.IsActive = 'Y'");
+
 			sql.append(" ORDER BY t.").append(keyColumn);
 			//
 			pstmt = DB.prepareStatement(sql.toString(), null);
@@ -500,7 +510,7 @@ public class Translation implements IApplication
 					System.out.println("Cannot create directory " + directory + " to export the language to it.");
 					System.exit(1);
 				}
-				exportTrl(directory, -1, AD_Language, table);
+				exportTrl(directory, -1, AD_Language, table, true);
 			} else
 				System.out.println("Just import and export are supported as modes.");
 		}
