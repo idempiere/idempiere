@@ -72,7 +72,11 @@ public class GridTab2PackExporter implements IGridTabExporter {
 				if (child.getTableName().toLowerCase().endsWith("_trl")) // ignore trl tabs as they are exported as translation
 					continue;
 				if (child.getTabLevel() > gridTab.getTabLevel()+1) {
-					sql = sql.append(">").append(child.getTableName());
+					int level = child.getTabLevel() - gridTab.getTabLevel() - 1;
+					String sep = ">";
+					for (int i = 1; i < level; i++)
+						sep += "+";
+					sql = sql.append(sep).append(child.getTableName());
 				} else {
 					sql = sql.append(";").append(child.getTableName());
 				}

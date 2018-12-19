@@ -216,6 +216,7 @@ public class ExportAction implements EventListener<Event>
 			chkSelectionTab.setAttribute("tabBinding", child);
 			vlayout.appendChild(chkSelectionTab);
 			chkSelectionTabForExport.add(chkSelectionTab);
+			chkSelectionTab.addEventListener(Events.ON_CHECK, this);
 			isHasSelectionTab = true;
 		}
 		
@@ -235,6 +236,26 @@ public class ExportAction implements EventListener<Event>
 			panel.hideBusyMask();			
 		}else if (event.getTarget().equals(cboType) && event.getName().equals(Events.ON_SELECT)) {
 			displayExportTabSelection();	
+		}else if (event.getTarget() instanceof Checkbox) {
+			// A child is not exportable without its parent
+			Checkbox cbSel = (Checkbox) event.getTarget();
+			GridTab gtSel = (GridTab)cbSel.getAttribute("tabBinding");
+			boolean found = false;
+			for (Checkbox cb : chkSelectionTabForExport) {
+				if (cb == cbSel) {
+					found = true;
+					continue;
+				}
+				GridTab gt = (GridTab)cb.getAttribute("tabBinding");
+				if (found) {
+					if (gt.getTabLevel() > gtSel.getTabLevel()) {
+						cb.setChecked(cbSel.isChecked());
+						cb.setEnabled(cbSel.isChecked());
+					} else {
+						break;
+					}
+				}
+			}
 		}else if (event.getName().equals("onExporterException")){
 			FDialog.error(0, winExportFile, "FileInvalidExtension");
 			winExportFile.onClose();
