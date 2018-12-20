@@ -249,29 +249,27 @@ public class NumberBox extends Div
         txtCalc.setId(txtCalc.getUuid());
 
         boolean processDotKeypad = MSysConfig.getBooleanValue(MSysConfig.ZK_DECIMALBOX_PROCESS_DOTKEYPAD, true, Env.getAD_Client_ID(Env.getCtx()));
-        if (".".equals(separator))
-        	processDotKeypad = false;
-
-        // restrict allowed characters
-        String decimalSep = separator;
-        if (!processDotKeypad && !".".equals(separator))
-        	decimalSep += ".";
         StringBuffer funct = new StringBuffer();
         funct.append("function(evt)");
         funct.append("{");
-        funct.append("    if (!this._shallIgnore(evt, '= -/()*%+0123456789").append(decimalSep).append("'))");
+        if (processDotKeypad) {
+        	funct.append("    if (!this._shallIgnore(evt, '= -/()*%+0123456789'))");
+        } else {
+            // restrict allowed characters
+            String decimalSep = separator;
+            if (!processDotKeypad && !".".equals(separator))
+            	decimalSep += ".";
+            funct.append("    if (!this._shallIgnore(evt, '= -/()*%+0123456789").append(decimalSep).append("'))");
+        }
         funct.append("    {");
         funct.append("        this.$doKeyPress_(evt);");
         funct.append("    }");
         funct.append("}");
         txtCalc.setWidgetOverride("doKeyPress_", funct.toString());
 
-        txtCalc.setWidgetListener("onKeyUp", "calc.validateUp('" + 
+        txtCalc.setWidgetListener("onKeyDown", "calc.validateDown('" + 
         		decimalBox.getId() + "','" + txtCalc.getId() 
                 + "'," + integral + "," + (int)separatorChar + ", event, " + ( processDotKeypad ? "true" : "false" ) + ");");
-        txtCalc.setWidgetListener("onKeyPress", "calc.validatePress('" + 
-        		decimalBox.getId() + "','" + txtCalc.getId() 
-                + "'," + integral + "," + (int)separatorChar + ", event);");
         txtCalc.setMaxlength(250);
         txtCalc.setCols(30);
         
