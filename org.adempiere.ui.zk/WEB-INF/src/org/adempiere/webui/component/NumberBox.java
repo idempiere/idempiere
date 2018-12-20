@@ -92,32 +92,30 @@ public class NumberBox extends Div
         char separatorChar = DisplayType.getNumberFormat(DisplayType.Number, Env.getLanguage(Env.getCtx())).getDecimalFormatSymbols().getDecimalSeparator();
         String separator = Character.toString(separatorChar);
         boolean processDotKeypad = MSysConfig.getBooleanValue(MSysConfig.ZK_DECIMALBOX_PROCESS_DOTKEYPAD, true, Env.getAD_Client_ID(Env.getCtx()));
-        if (".".equals(separator))
-        	processDotKeypad = false;
         if (processDotKeypad) {
             StringBuffer funct = new StringBuffer();
             funct.append("function(evt)");
             funct.append("{");
-            // ignore dot and process it on key up
-            funct.append("    if (!this._shallIgnore(evt, '0123456789-%").append(separator).append("'))");
+            // ignore dot, comma and decimal separator and process them on key down
+            funct.append("    if (!this._shallIgnore(evt, '0123456789-%'))");
             funct.append("    {");
             funct.append("        this.$doKeyPress_(evt);");
             funct.append("    }");
             funct.append("}");
             decimalBox.setWidgetOverride("doKeyPress_", funct.toString());
             funct = new StringBuffer();
-            // not working correctly on opera
+            // debug // funct.append("console.log('keyCode='+event.keyCode);");
             funct.append("if (window.event)");
             funct.append("    key = event.keyCode;");
             funct.append("else");
             funct.append("    key = event.which;");
-            funct.append("if ((key == 110 || key == 190) && !window.opera) {");
+            funct.append("if (key == 108 || key == 110 || key == 188 || key == 190 || key == 194) {");
             funct.append("    var id = '$'.concat('").append(decimalBox.getId()).append("');");
             funct.append("    var calcText = jq(id)[0];");
             funct.append("    calcText.value += '").append(separator).append("';");
             funct.append("    event.stop;");
             funct.append("};");
-            decimalBox.setWidgetListener("onKeyUp", funct.toString());
+            decimalBox.setWidgetListener("onKeyDown", funct.toString());
         }
 
         appendChild(decimalBox);
