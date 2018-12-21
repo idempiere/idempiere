@@ -30,7 +30,7 @@
 		<idempiere-equinox-repository-id>eclipse-photon-201809</idempiere-equinox-repository-id>
 		<idempiere-orbit-url>http://download.eclipse.org/tools/orbit/downloads/drops/R20180905201904/repository</idempiere-orbit-url>
 		<idempiere-orbit-repository-id>orbit-photon-R20180905201904</idempiere-orbit-repository-id>
-		<url.file.srv>http://downloads.sourceforge.net/project/idempiere/binary.file</url.file.srv>
+		<url.file.srv>https://raw.githubusercontent.com/idempiere/binary.file/master</url.file.srv>
 		<extra.ui.install>org.eclipse.equinox.p2.director, org.idempiere.equinox.p2.director.feature.feature.group, org.idempiere.fitnesse.feature.feature.group</extra.ui.install>
 		<idempiere.product.id>org.adempiere.server.product</idempiere.product.id>
 		<codehaus.plexus>2.8.5</codehaus.plexus>

@@ -51,7 +51,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/jarfile/6.1/labelapplet.jar</url>
+							<url>${url.file.srv}/extra.jar/labelapplet.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>./</outputDirectory>
 							<retries>5</retries>

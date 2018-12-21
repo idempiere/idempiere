@@ -58,7 +58,7 @@
 						</goals>
 						<configuration>
 							<!-- to complicate to get from official repository https://blogs.oracle.com/dev2dev/get-oracle-jdbc-drivers-from-the-oracle-maven-repo-netbeans-eclipse-intellij -->
-							<url>${url.file.srv}/jarfile/6.1/ojdbc7.jar</url>
+							<url>${url.file.srv}/extra.jar/ojdbc7.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>lib</outputDirectory>
 							<retries>5</retries>

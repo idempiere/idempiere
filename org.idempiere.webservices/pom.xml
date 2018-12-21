@@ -32,7 +32,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/jarfile/6.1/idempiere-xmlbeans-1.0.jar</url>
+							<url>${url.file.srv}/extra.jar/idempiere-xmlbeans-1.0.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>WEB-INF/lib</outputDirectory>
 							<retries>5</retries>
