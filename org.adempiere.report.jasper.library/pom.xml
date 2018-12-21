@@ -78,7 +78,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/jarfile/jp-${jp.version}/jasperreports-fonts-${jp.version}.jar</url>
+							<url>${url.file.srv}/extra.jar/jasperreports-fonts-${jp.version}.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>lib</outputDirectory>
 							<outputFileName>jasperreports-fonts.jar</outputFileName>

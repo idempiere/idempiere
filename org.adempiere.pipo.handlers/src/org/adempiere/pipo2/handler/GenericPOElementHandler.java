@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -195,7 +196,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 
 				for (int i = 1; i < components.length; i++) {
 					String tables[] = components[i].split("[>]");
-					exportDetail(ctx, document, po, 0, tables);
+					exportDetail(ctx, document, po, tables);
 				}
 
 				if (createElement) {
@@ -209,19 +210,19 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	private void exportDetail(PIPOContext ctx, TransformerHandler document, GenericPO parent, int index, String[] tables) {
+	private void exportDetail(PIPOContext ctx, TransformerHandler document, GenericPO parent, String[] tables) {
+		String mainTable = tables[0];
 		AttributesImpl atts = new AttributesImpl();
-		tables[index] = tables[index].trim();
-		String sql = "SELECT * FROM " + tables[index] + " WHERE " + parent.get_TableName() + "_ID = ?";
+		String sql = "SELECT * FROM " + mainTable + " WHERE " + parent.get_TableName() + "_ID = ?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			sql = MRole.getDefault().addAccessSQL(sql, tables[index], true, true);
+			sql = MRole.getDefault().addAccessSQL(sql, mainTable, true, true);
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, parent.get_ID());
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				GenericPO po = new GenericPO(tables[index], ctx.ctx, rs, getTrxName(ctx));
+				GenericPO po = new GenericPO(mainTable, ctx.ctx, rs, getTrxName(ctx));
 				int AD_Client_ID = po.getAD_Client_ID();
 				if (AD_Client_ID != Env.getAD_Client_ID(ctx.ctx))
 					continue;
@@ -237,12 +238,12 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 					}
 					if (createElement) {
 						verifyPackOutRequirement(po);
-						List<String> excludes = defaultExcludeList(tables[index]);
+						List<String> excludes = defaultExcludeList(mainTable);
 						addTypeName(atts, "table");
-						document.startElement("", "", tables[index], atts);
+						document.startElement("", "", mainTable, atts);
 						PoExporter filler = new PoExporter(ctx, document, po);
 						filler.export(excludes, true);
-						ctx.packOut.getCtx().ctx.put("Table_Name",tables[index]);
+						ctx.packOut.getCtx().ctx.put("Table_Name",mainTable);
 						try {
 							new CommonTranslationHandler().packOut(ctx.packOut,document,null,po.get_ID());
 						} catch(Exception e) {
@@ -250,11 +251,27 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						}
 					}
 				}
-				for (int i=index+1; i<tables.length; i++) {
-					exportDetail(ctx, document, po, 0, new String[] {tables[i]});
+				for (int i=1; i<tables.length; i++) {
+					if (tables[i].startsWith("+")) {
+						continue;
+					}
+					List<String> detTablesArr = new ArrayList<String>();
+					for (int j=i; j<tables.length; j++) {
+						if (j == i) {
+							detTablesArr.add(tables[j]);
+						} else {
+							if (tables[j].startsWith("+")) {
+								detTablesArr.add(tables[j].substring(1));
+							} else {
+								break;
+							}
+						}
+					}
+					String[] detTables = detTablesArr.toArray(new String[0]);
+					exportDetail(ctx, document, po, detTables);
 				}
 				if (createElement) {
-					document.endElement("","",tables[index]);
+					document.endElement("","",mainTable);
 				}
 			}
 		} catch (Exception e)	{

@@ -63,7 +63,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/jarfile/6.1/fitlibrary-2.0.jar</url>
+							<url>${url.file.srv}/extra.jar/fitlibrary-2.0.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>lib</outputDirectory>
 							<retries>5</retries>
@@ -77,7 +77,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/jarfile/6.1/fitlibraryweb-2.0.jar</url>
+							<url>${url.file.srv}/extra.jar/fitlibraryweb-2.0.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>lib</outputDirectory>
 							<retries>5</retries>
