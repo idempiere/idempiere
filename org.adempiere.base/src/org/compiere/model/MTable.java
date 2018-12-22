@@ -58,7 +58,7 @@ public class MTable extends X_AD_Table
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8757836873040013402L;
+	private static final long serialVersionUID = 7527235342324308477L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -102,7 +102,7 @@ public class MTable extends X_AD_Table
 	 *	@param tableName case insensitive table name
 	 *	@return Table
 	 */
-	public static MTable get (Properties ctx, String tableName)
+	public static synchronized MTable get (Properties ctx, String tableName)
 	{
 		if (tableName == null)
 			return null;
@@ -699,10 +699,12 @@ public class MTable extends X_AD_Table
 		return (tablename.equals("AD_Org") ||
 				tablename.equals("AD_OrgInfo") ||
 				tablename.equals("AD_Client") || // IDEMPIERE-668
+				tablename.equals("AD_AllClients_V") ||
 				tablename.equals("AD_ReportView") ||
 				tablename.equals("AD_Role") ||
 				tablename.equals("AD_System") ||
 				tablename.equals("AD_User") ||
+				tablename.equals("AD_AllUsers_V") ||
 				tablename.equals("C_DocType") ||
 				tablename.equals("GL_Category") ||
 				tablename.equals("M_AttributeSet") ||

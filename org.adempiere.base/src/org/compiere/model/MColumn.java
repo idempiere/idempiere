@@ -763,7 +763,7 @@ public class MColumn extends X_AD_Column
 			foreignTable = "M_AttributeSetInstance";
 		} else if (DisplayType.Assignment == refid) {
 			foreignTable = "S_ResourceAssignment";
-		} else if (DisplayType.Image == refid) {
+		} else if (DisplayType.Image == refid && !"BinaryData".equals(getColumnName())) {
 			foreignTable = "AD_Image";
 		} else if (DisplayType.Chart == refid) {
 			foreignTable = "AD_Chart";

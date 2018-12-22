@@ -830,7 +830,7 @@ public class DataEngine
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(pd.getSQL(), m_trxName);
+			pstmt = DB.prepareNormalReadReplicaStatement(pd.getSQL(), m_trxName);
 			rs = pstmt.executeQuery();
 			//	Row Loop
 			while (rs.next())

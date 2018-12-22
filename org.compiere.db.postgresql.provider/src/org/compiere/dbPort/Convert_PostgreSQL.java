@@ -793,7 +793,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	 */
 	private String addAliasToIdentifier(String where, String alias)
 	{
-		String sqlkey = "AND,OR,FROM,WHERE,JOIN,BY,GROUP,IN,INTO,SELECT,NOT,SET,UPDATE,DELETE,HAVING,IS,NULL,EXISTS,BETWEEN,LIKE,INNER,OUTER";
+		String sqlkey = "AND,OR,FROM,WHERE,JOIN,BY,GROUP,IN,INTO,SELECT,NOT,SET,UPDATE,DELETE,HAVING,IS,NULL,EXISTS,BETWEEN,LIKE,INNER,OUTER,SIMILAR TO";
 		
 		StringTokenizer st = new StringTokenizer(where);
 		String result = "";

@@ -297,10 +297,17 @@ public abstract class AdempiereServer implements Runnable
 				p_model.getFrequency(), p_model.getCronPattern());
 
 		m_sleepMS = m_nextWork - now;
+		if (m_nextWork == 0) {
+			m_sleepMS = 0;
+		}
 		if (log.isLoggable(Level.INFO)) log.info(" Next run: " + new Timestamp(m_nextWork) + " sleep " + m_sleepMS);
 		//
 		p_model.setDateLastRun(lastRun);
-		p_model.setDateNextRun(new Timestamp(m_nextWork));
+		if (m_nextWork == 0) {
+			p_model.setDateNextRun(null);
+		} else {
+			p_model.setDateNextRun(new Timestamp(m_nextWork));
+		}
 		p_model.saveEx();			
 	}	//	run
 

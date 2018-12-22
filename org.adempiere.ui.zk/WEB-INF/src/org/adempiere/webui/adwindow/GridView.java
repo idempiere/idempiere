@@ -78,7 +78,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2966799998482667434L;
+	private static final long serialVersionUID = 3046157124327495333L;
 
 	private static final String HEADER_GRID_STYLE = "border: none; margin:0; padding: 0;";
 
@@ -208,9 +208,14 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	public void setDetailPaneMode(boolean detailPaneMode) {
 		if (this.detailPaneMode != detailPaneMode) {
 			this.detailPaneMode = detailPaneMode;
-			pageSize =  detailPaneMode ? DEFAULT_DETAIL_PAGE_SIZE : MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 20, Env.getAD_Client_ID(Env.getCtx()));
+			pageSize = detailPaneMode ? getDetailPageSize() : MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 20, Env.getAD_Client_ID(Env.getCtx()));
 			updatePaging();
 		}
+	}
+
+	/** Returns the number of records to be displayed in detail grid (TODO : manage exceptions defined in SysConfig - see https://idempiere.atlassian.net/browse/IDEMPIERE-3786) */
+	int getDetailPageSize() {
+		return MSysConfig.getIntValue(MSysConfig.ZK_PAGING_DETAIL_SIZE, DEFAULT_DETAIL_PAGE_SIZE, Env.getAD_Client_ID(Env.getCtx()));
 	}
 
 	public boolean isDetailPaneMode() {

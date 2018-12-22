@@ -1,41 +1,25 @@
 
 function Calc()
 {
-	this.validateUp = validateUp;
-	this.validatePress = validatePress;
+	this.validateDown = validateDown;
 	this.clear = clear;
 	this.clearAll = clearAll;
 	this.evaluate = evaluate;
 	this.append = append;
 
-	function validatePress(displayTextId, calcTextId, integral, separatorKey, e)
-	{
-	     var key;
-
-	     if(window.event)
-	          key = e.keyCode; //IE
-	     else
-	          key = e.which;   //Firefox
-	     // console.log("validatePress: " + displayTextId + " / " + calcTextId + " / " + integral + " / " + separatorKey + " / " + key);
-	     if (key == 61) // =
-	     {
-	     	evaluate(displayTextId, calcTextId, String.fromCharCode(separatorKey));
-	     }
-	}
-
-	function validateUp(displayTextId, calcTextId, integral, separatorKey, e, processDotKeypad)
+	function validateDown(displayTextId, calcTextId, integral, separatorKey, e, processDotKeypad)
 	{
 	     var key;
 	     if(window.event)
 	          key = e.keyCode; //IE
 	     else
 	          key = e.which;   //Firefox
-	     // console.log("validateUp: " + displayTextId + " / " + calcTextId + " / " + integral + " / " + separatorKey + " / " + key + " / " + processDotKeypad);
-	     if (key == 13) // Enter
+	     // console.log("validateDown: " + displayTextId + " / " + calcTextId + " / " + integral + " / " + separatorKey + " / " + key + " / " + processDotKeypad);
+	     if (key == 13 || key == 61) // Enter
 	     {
 	     	evaluate(displayTextId, calcTextId, String.fromCharCode(separatorKey));
 	     }
-	     else if (processDotKeypad && separatorKey != 46 && (key == 110 || key == 190) && !window.opera) // numeric dot on keypad (not working for opera)
+	     else if (processDotKeypad && (key == 108 || key == 110 || key == 188 || key == 190 || key == 194))
 	     {
 	     	append(calcTextId, String.fromCharCode(separatorKey));
 	     	e.stop;

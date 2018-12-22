@@ -46,6 +46,11 @@ else
 fi
 
 cd "$DIR_SCRIPTS"
+if [ $? -ne 0 ]
+then
+    echo "ERROR: Cannot change to folder $DIR_SCRIPTS"
+    exit 1
+fi
 
 # Create list of files already applied - registered in AD_MigrationScript table
 echo "select name from ad_migrationscript" | $SILENTCMD | sed -e 's:^ ::' | grep -v '^$' | sort > $TMPFOLDER/lisDB_$$.txt
@@ -102,11 +107,12 @@ then
         fi
     done
 fi
+PGPASSWORD=
+export PGPASSWORD
 if [ -n "$MSGERROR" ]
 then
     echo "$MSGERROR"
     echo "\n Errors were found during the process (see message above) - please review and fix the error running manually the script - and then restart this process again"
+    exit 1
 fi
-
-PGPASSWORD=
-export PGPASSWORD
+exit 0

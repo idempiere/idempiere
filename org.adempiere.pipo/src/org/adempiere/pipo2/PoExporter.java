@@ -11,6 +11,7 @@ import org.compiere.model.MTree;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
 import org.compiere.model.X_AD_Client;
+import org.compiere.model.X_AD_Image;
 import org.compiere.model.X_AD_Org;
 import org.compiere.model.X_C_Location;
 import org.compiere.model.X_M_Locator;
@@ -276,6 +277,8 @@ public class PoExporter {
 			    addTableReference(columnName, X_M_Locator.Table_Name, new AttributesImpl());
 			} else if (DisplayType.Location == displayType) {
 			    addTableReference(columnName, X_C_Location.Table_Name, new AttributesImpl());
+			} else if (DisplayType.Image == displayType) {
+				addTableReference(columnName, X_AD_Image.Table_Name, new AttributesImpl());
 			} else {
 				add(columnName, "", new AttributesImpl());
 			}

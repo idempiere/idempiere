@@ -1,18 +1,18 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.Env;
 
 public class MPasswordHistory extends X_AD_Password_History {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3480028808276906947L;
-	
+	private static final long serialVersionUID = 8602148028134601856L;
+
 	public MPasswordHistory(Properties ctx, int AD_Password_History_ID,
 			String trxName) {
 		super(ctx, AD_Password_History_ID, trxName);
@@ -35,6 +35,9 @@ public class MPasswordHistory extends X_AD_Password_History {
 	 * @return
 	 */
 	public static List<MPasswordHistory> getPasswordHistoryForCheck (int daysReuse, int userId){
+		if (daysReuse <= 0) {
+			return new ArrayList<MPasswordHistory>();
+		}
 		StringBuilder whereClause = new StringBuilder()
 				.append("SYSDATE-")
 				.append(daysReuse)

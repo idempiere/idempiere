@@ -21,6 +21,8 @@
 
 package org.adempiere.webui.acct;
 
+import static org.compiere.model.SystemIDs.REFERENCE_POSTING_TYPE;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,9 +38,9 @@ import org.adempiere.webui.component.Listbox;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MFactAcct;
+import org.compiere.model.MJournal;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRefList;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.report.core.RColumn;
 import org.compiere.report.core.RModel;
 import org.compiere.util.CLogger;
@@ -178,6 +180,24 @@ public class WAcctViewerData
 
 		Env.clearWinContext(WindowNo);
 	} // dispose
+	
+	/**
+	 * GL Journal only posts in one Accounting Schema
+	 * if the record is a GL Journal, remove the others from the array
+	 * @param Record_ID
+	 */
+	protected void validateAcctSchemas(int Record_ID)
+	{
+		if (Record_ID > 0 && AD_Table_ID == MJournal.Table_ID) {
+			MJournal journal = new MJournal(Env.getCtx(), Record_ID, null);
+			
+			if (journal != null) {
+				ASchemas = new MAcctSchema[1];
+				ASchemas[0] = MAcctSchema.get(Env.getCtx(), journal.getC_AcctSchema_ID());
+				ASchema = ASchemas[0];
+			}
+		}
+	} // validateAcctSchemas
 	
 	/**************************************************************************
 	 *  Fill Accounting Schema

@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -53,5 +54,23 @@ public class MRevenueRecognition extends X_C_RevenueRecognition
 	{
 		super(ctx, rs, trxName);
 	}	//	MRevenueRecognition
+	
+	public List<MRevenueRecogService> getServicesList() {
+		
+		if ( isTimeBased() )
+			return null;
+		
+		Query query = new Query(getCtx(),MRevenueRecogService.Table_Name, "C_RevenueRecognition_ID = ?",get_TrxName());
+		query.setParameters(getC_RevenueRecognition_ID());
+		query.setOnlyActiveRecords(true);
+		query.setOrderBy("Line");
+		
+		return query.list();
+	}
+	
+	public static List<MRevenueRecognition> getAll(Properties ctx, String trxName) {
+		Query query = new Query(ctx,MRevenueRecognition.Table_Name, null, trxName);
+		return query.list();
+	}
 	
 }	//	MRevenueRecognition

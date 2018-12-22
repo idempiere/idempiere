@@ -17,6 +17,7 @@
 
 package org.adempiere.webui.component;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -36,7 +37,7 @@ public class AutoComplete extends Combobox
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8350448733668388572L;
+	private static final long serialVersionUID = 7437206681528058083L;
 
 	/** comboItems	All menu labels	 */
 	private String[] comboItems;
@@ -47,6 +48,8 @@ public class AutoComplete extends Combobox
 	private String[] images;
 
 	private String[] contents;
+	
+	private Object[] values;
 
 	private HashMap<Comboitem, String> mapItems = new HashMap<Comboitem, String>();
 
@@ -58,7 +61,17 @@ public class AutoComplete extends Combobox
 	
 	public void setDict(String[] vals)
 	{
+		setDict(vals, true);
+	}
+	
+	public void setDict(String[] vals, boolean sort)
+	{
 		comboItems = vals;
+		
+		if (comboItems != null && sort)
+		{
+			Arrays.sort(comboItems);
+		}
 	}
 	
 	/**
@@ -86,6 +99,11 @@ public class AutoComplete extends Combobox
 	public void setImages(String[] images)
 	{
 		this.images = images;
+	}
+	
+	public void setValues(Object[] values)
+	{
+		this.values = values;
 	}
 	
 	/**
@@ -161,6 +179,8 @@ public class AutoComplete extends Combobox
 			    }
 
 				comboitem.setLabel(comboItems[i]);
+				if (values != null)
+					comboitem.setValue(values[i]);
 				comboitem.setDescription(strDescription[i]);
 
 				if (images != null && i < images.length && images[i] != null && images[i].trim().length() > 0)

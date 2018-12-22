@@ -113,6 +113,19 @@ public interface I_C_RevenueRecognition
 	  */
 	public String getDescription();
 
+    /** Column name FixedRecogDay */
+    public static final String COLUMNNAME_FixedRecogDay = "FixedRecogDay";
+
+	/** Set Fixed recognition day.
+	  * Day of the period recognition occurs
+	  */
+	public void setFixedRecogDay (int FixedRecogDay);
+
+	/** Get Fixed recognition day.
+	  * Day of the period recognition occurs
+	  */
+	public int getFixedRecogDay();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 

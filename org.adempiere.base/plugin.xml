@@ -128,4 +128,16 @@
          </run>
       </application>
    </extension>
+   <extension
+         id="org.adempiere.base.PackInFolderApplication"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+      	 <run
+               class="org.adempiere.base.PackInFolderApplication">
+         </run>
+      </application>
+   </extension>
 </plugin>

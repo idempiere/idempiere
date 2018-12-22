@@ -20,6 +20,7 @@
 IDEMPIERE_HOME=/opt/idempiere-server
 ENVFILE=$IDEMPIERE_HOME/utils/myEnvironment.sh
 IDEMPIEREUSER=idempiere
+export TELNET_PORT=12612
 
 . /etc/rc.d/init.d/functions
  
@@ -28,8 +29,8 @@ IDEMPIERESTATUS=
 MAXITERATIONS=60 # 2 seconds every iteration, max wait 2 minutes
 
 getidempierestatus() {
-    IDEMPIERESTATUSSTRING=$(ps ax | grep java | grep org.adempiere.server.application | grep -v grep)
-    echo $IDEMPIERESTATUSSTRING | grep -q org.adempiere.server.application
+    IDEMPIERESTATUSSTRING=$(ps ax | grep java | grep ${IDEMPIERE_HOME} | grep -v grep)
+    echo $IDEMPIERESTATUSSTRING | grep -q ${IDEMPIERE_HOME}
     IDEMPIERESTATUS=$?
 }
 
@@ -44,7 +45,7 @@ start () {
     source $ENVFILE 
     export LOGFILE=$IDEMPIERE_HOME/log/idempiere_`date +%Y%m%d%H%M%S`.log
     su $IDEMPIEREUSER -c "mkdir -p $IDEMPIERE_HOME/log"
-    su $IDEMPIEREUSER -c "cd $IDEMPIERE_HOME;$IDEMPIERE_HOME/idempiere-server.sh &> $LOGFILE &"
+    su $IDEMPIEREUSER -c "export TELNET_PORT=$TELNET_PORT;cd $IDEMPIERE_HOME;$IDEMPIERE_HOME/idempiere-server.sh &> $LOGFILE &"
     RETVAL=$?
     if [ $RETVAL -eq 0 ] ; then
 	# wait for server to be confirmed as started in logfile
@@ -86,20 +87,20 @@ stop () {
     source $ENVFILE
     # try shutdown from OSGi console, then direct kill with signal 15, then signal 9
     echo "Trying shutdown from OSGi console"
-    ( echo exit; echo y; sleep 5 ) | telnet localhost 12612 > /dev/null 2>&1
+    ( echo exit; echo y; sleep 5 ) | telnet localhost ${TELNET_PORT} > /dev/null 2>&1
     getidempierestatus
     if [ $IDEMPIERESTATUS -ne 0 ] ; then
         echo_success
     else
         echo "Trying direct kill with signal -15"
-        kill -15 -`ps ax o pgid,command | grep org.adempiere.server.application | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
+        kill -15 -`ps ax o pgid,command | grep ${IDEMPIERE_HOME} | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
         sleep 5
         getidempierestatus
         if [ $IDEMPIERESTATUS -ne 0 ] ; then
             echo_success
         else
             echo "Trying direct kill with signal -9"
-            kill -9 -`ps ax o pgid,command | grep org.adempiere.server.application | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
+            kill -9 -`ps ax o pgid,command | grep ${IDEMPIERE_HOME} | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
             sleep 5
             getidempierestatus
             if [ $IDEMPIERESTATUS -ne 0 ] ; then
@@ -131,7 +132,7 @@ status () {
     if [ $IDEMPIERESTATUS -eq 0 ] ; then
 	echo
 	echo "iDempiere is running:"
-	ps ax | grep org.adempiere.server.application | grep -v grep | sed 's/^[[:space:]]*\([[:digit:]]*\).*:[[:digit:]][[:digit:]][[:space:]]\(.*\)/\1 \2/'
+	ps ax | grep ${IDEMPIERE_HOME} | grep -v grep | sed 's/^[[:space:]]*\([[:digit:]]*\).*:[[:digit:]][[:digit:]][[:space:]]\(.*\)/\1 \2/'
 	echo
     else
 	echo "iDempiere is stopped"

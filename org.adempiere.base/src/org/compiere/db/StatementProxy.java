@@ -95,6 +95,8 @@ public class StatementProxy implements InvocationHandler {
 			return null;
 		} else if (name.equals("getSql") && (args == null || args.length == 0)) {
 			return getSql();
+		} else if (name.equals("equals") && (args != null && args.length == 1)) {
+			return equals(args[0]);
 		}
 		
 		String logSql = null;

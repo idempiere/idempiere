@@ -87,8 +87,17 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 	protected boolean installedPackage(String version) {
 		StringBuilder where = new StringBuilder("AD_Client_ID=? AND Name=? AND PK_Status='Completed successfully'");
 		List<Object> params = new ArrayList<Object>();
-		params.add(Env.getAD_Client_ID(Env.getCtx()));
-		params.add(getName());
+		String fileName = getName();
+		int clientId = Env.getAD_Client_ID(Env.getCtx());
+		if (version == null) {
+			String [] parts = fileName.split("_");
+			String clientValue = parts[1];
+			clientId = DB.getSQLValueEx(null, "SELECT AD_Client_ID FROM AD_Client WHERE Value=?", clientValue);
+			if (clientId < 0)
+				clientId = 0;
+		}
+		params.add(clientId);
+		params.add(fileName);
 		if (version != null) {
 			where.append(" AND PK_Version LIKE ?");
 			params.add(version +  "%");

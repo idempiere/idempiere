@@ -19,6 +19,7 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -32,7 +33,7 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20181104L;
+	private static final long serialVersionUID = 20181127L;
 
     /** Standard Constructor */
     public X_C_RevenueRecognition_Run (Properties ctx, int C_RevenueRecognition_Run_ID, String trxName)
@@ -42,7 +43,6 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
         {
 			setC_RevenueRecognition_Plan_ID (0);
 			setC_RevenueRecognition_Run_ID (0);
-			setGL_Journal_ID (0);
 			setRecognizedAmt (Env.ZERO);
         } */
     }
@@ -146,6 +146,45 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
 	public String getC_RevenueRecognition_Run_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_C_RevenueRecognition_Run_UU);
+	}
+
+	public org.compiere.model.I_C_RevenueRecog_Service getC_RevenueRecog_Service() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_RevenueRecog_Service)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecog_Service.Table_Name)
+			.getPO(getC_RevenueRecog_Service_ID(), get_TrxName());	}
+
+	/** Set Revenue Recognition Service.
+		@param C_RevenueRecog_Service_ID Revenue Recognition Service	  */
+	public void setC_RevenueRecog_Service_ID (int C_RevenueRecog_Service_ID)
+	{
+		if (C_RevenueRecog_Service_ID < 1) 
+			set_Value (COLUMNNAME_C_RevenueRecog_Service_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_RevenueRecog_Service_ID, Integer.valueOf(C_RevenueRecog_Service_ID));
+	}
+
+	/** Get Revenue Recognition Service.
+		@return Revenue Recognition Service	  */
+	public int getC_RevenueRecog_Service_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_RevenueRecog_Service_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Recognition Date.
+		@param DateRecognized Recognition Date	  */
+	public void setDateRecognized (Timestamp DateRecognized)
+	{
+		set_Value (COLUMNNAME_DateRecognized, DateRecognized);
+	}
+
+	/** Get Recognition Date.
+		@return Recognition Date	  */
+	public Timestamp getDateRecognized () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateRecognized);
 	}
 
 	public org.compiere.model.I_GL_Journal getGL_Journal() throws RuntimeException

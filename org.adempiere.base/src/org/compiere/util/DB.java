@@ -33,6 +33,7 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -2114,6 +2115,15 @@ public final class DB
         } catch (SQLException e) {
             ;
         }
+    	if (readReplicaStatements.contains(st)) {
+			try {
+				DBReadReplica.closeReadReplicaStatement(st);
+			} catch (Exception e) {
+				;
+			} finally {
+				readReplicaStatements.remove(st);
+			}
+    	}
     }
 
     /**
@@ -2522,6 +2532,50 @@ public final class DB
     	if (rowsArray.size() == 0)
     		return null;
     	return rowsArray;
+	}
+
+	/**	Read Replica Statements List	*/
+	private static final List<PreparedStatement> readReplicaStatements = Collections.synchronizedList(new ArrayList<PreparedStatement>());
+
+	/**
+	 *	Prepare Read Replica Statement
+	 *  @param sql sql statement
+	 * 	@param trxName transaction
+	 *  @return Prepared Statement (from replica if possible, otherwise normal statement)
+	 */
+	public static PreparedStatement prepareNormalReadReplicaStatement(String sql, String trxName) {
+		int concurrency = ResultSet.CONCUR_READ_ONLY;
+		String upper = sql.toUpperCase();
+		if (upper.startsWith("UPDATE ") || upper.startsWith("DELETE "))
+			concurrency = ResultSet.CONCUR_UPDATABLE;
+		return prepareNormalReadReplicaStatement(sql, ResultSet.TYPE_FORWARD_ONLY, concurrency, trxName);
+	}
+
+	/**
+	 *	Prepare Read Replica Statement
+	 *  @param sql sql statement
+	 *  @param resultSetType - ResultSet.TYPE_FORWARD_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.TYPE_SCROLL_SENSITIVE
+	 *  @param resultSetConcurrency - ResultSet.CONCUR_READ_ONLY or ResultSet.CONCUR_UPDATABLE
+	 * 	@param trxName transaction name
+	 *  @return Prepared Statement (from replica if possible, otherwise normal statement)
+	 */
+	private static PreparedStatement prepareNormalReadReplicaStatement(String sql, int resultSetType, int resultSetConcurrency, String trxName) {
+		if (sql == null || sql.length() == 0)
+			throw new IllegalArgumentException("No SQL");
+		boolean useReadReplica = MSysConfig.getValue(MSysConfig.DB_READ_REPLICA_URLS) != null;
+		if (   trxName == null
+			&& useReadReplica
+			&& resultSetType == ResultSet.TYPE_FORWARD_ONLY
+			&& resultSetConcurrency == ResultSet.CONCUR_READ_ONLY) {
+			// this is a candidate for a read replica connection (read-only, forward-only, no-trx), try to obtain one, otherwise fallback to normal
+			PreparedStatement stmt = DBReadReplica.prepareNormalReadReplicaStatement(sql, resultSetType, resultSetConcurrency, trxName);
+			if (stmt != null) {
+				readReplicaStatements.add(stmt);
+				return stmt;
+			}
+		}
+		//
+		return ProxyFactory.newCPreparedStatement(resultSetType, resultSetConcurrency, sql, trxName);
 	}
 
 }	//	DB

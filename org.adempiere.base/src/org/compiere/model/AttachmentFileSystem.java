@@ -220,6 +220,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 					attach.m_items.add(entry);
 				} else {
 					log.severe("file not found: " + file.getAbsolutePath());
+					attach.m_items.add(new MAttachmentEntry("~" + file.getName()  + "~", "".getBytes(), attach.m_items.size() + 1));
 				}
 			}
 
