@@ -31,10 +31,11 @@
 		<xml.ws.export.version>2.4</xml.ws.export.version>
 		<apache.cxf.version>3.2.6</apache.cxf.version>
 		<apache.cxf.databinding.version>3.1.17</apache.cxf.databinding.version>
-		<activation.version>1.2.0</activation.version>
-		<annotation.version>1.3.2</annotation.version>
+		<activation.version>1.2.1</activation.version>
+		<annotation.version>1.3.3</annotation.version>
 		<asm.version>7.0</asm.version>
 		<restlet.version>2.4.1</restlet.version>
+		<javamail.version>1.6.3</javamail.version>
 	</properties>
 	
     <repositories>
@@ -127,13 +128,32 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>javax.annotation:javax.annotation-api:jar:${annotation.version}</id>
+											<id>jakarta.annotation:jakarta.annotation-api:jar:${annotation.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-<!--consider to move to javax.mail:javax.mail-api:jar less dependency, but not sure full function-->
-											<id>com.sun.mail:javax.mail:jar:1.6.2</id>
+											<id>com.sun.mail:jakarta.mail:jar:${javamail.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.sun.mail:smtp:jar:${javamail.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.sun.mail:mailapi:jar:${javamail.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.sun.mail:imap:jar:${javamail.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.sun.mail:gimap:jar:${javamail.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -414,7 +434,7 @@
 										</artifact>
 										<artifact>
 											<!-- better javax.activation:javax.activation-api because include extra package -->
-											<id>com.sun.activation:javax.activation:jar:${activation.version}</id>
+											<id>com.sun.activation:jakarta.activation:jar:${activation.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -619,7 +639,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>javax.ws.rs:javax.ws.rs-api:jar:2.1.1</id>
+											<id>jakarta.ws.rs:jakarta.ws.rs-api:jar:2.1.3</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -634,7 +654,12 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>javax.xml.rpc:javax.xml.rpc-api:jar:1.1.1</id>
+											<id>jakarta.xml.rpc:jakarta.xml.rpc-api:jar:1.1.3</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>jakarta.persistence:jakarta.persistence-api:jar:2.2.1</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -1834,7 +1859,7 @@ it also resolve issue confilic between eclipse runtime and tycho build
 					    	<!-- binary of org.apache.aries.spifly.dynamic.bundle combine from org.apache.aries.spifly.core-internal org.apache.aries.spifly.weaver-internal and org.apache.aries.spifly.dynamic.bundle but on maven source come only org.apache.aries.spifly.dynamic.bundle
 					    	so i recreate source bundle to help debug
 					    	https://issues.apache.org/jira/browse/ARIES-1859 -->
-						    <url>${url.file.srv}/jarfile/6.1/org.apache.aries.spifly.dynamic.bundle.source_1.1.jar</url>
+						    <url>${url.file.srv}/extra.jar/org.apache.aries.spifly.dynamic.bundle.source_1.1.jar</url>
 						    <unpack>false</unpack>
 						    <outputDirectory>${project.build.directory}/repository/plugins</outputDirectory>
 						    <skipCache>true</skipCache>

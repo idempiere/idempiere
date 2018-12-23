@@ -315,13 +315,6 @@
          unpack="false"/>
 
    <plugin
-         id="javax.ws.rs-api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.servicemix.bundles.spring-beans"
          download-size="0"
          install-size="0"
@@ -455,6 +448,13 @@
 
    <plugin
          id="org.apache.cxf.cxf-rt-rs-service-description"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.ws.rs-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
