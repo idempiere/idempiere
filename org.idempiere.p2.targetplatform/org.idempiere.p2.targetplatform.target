@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-181032" sequenceNumber="107">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-181223" sequenceNumber="107">
 <locations>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.10.0.v20181116-0958"/>
@@ -922,6 +922,16 @@
 		<unit id="com.itextpdf.source" version="5.5.13"/>
 		<unit id="com.jaspersoft.studio.bundles.barbecue" version="1.5.0.beta1_b02"/>
 		<unit id="com.jaspersoft.studio.bundles.itext" version="2.1.7.js6_b02"/>
+		<unit id="com.sun.activation.jakarta.activation" version="1.2.1"/>
+		<unit id="com.sun.activation.jakarta.activation.source" version="1.2.1"/>
+		<unit id="com.sun.mail.gimap" version="1.6.3"/>
+		<unit id="com.sun.mail.gimap.source" version="1.6.3"/>
+		<unit id="com.sun.mail.imap" version="1.6.3"/>
+		<unit id="com.sun.mail.imap.source" version="1.6.3"/>
+		<unit id="com.sun.mail.jakarta.mail" version="1.6.3"/>
+		<unit id="com.sun.mail.jakarta.mail.source" version="1.6.3"/>
+		<unit id="com.sun.mail.smtp" version="1.6.3"/>
+		<unit id="com.sun.mail.smtp.source" version="1.6.3"/>
 		<unit id="com.sun.xml.bind.jaxb-core" version="2.3.0.1"/>
 		<unit id="com.sun.xml.bind.jaxb-core.source" version="2.3.0.1"/>
 		<unit id="com.sun.xml.bind.jaxb-impl" version="2.3.1"/>
@@ -964,6 +974,8 @@
 		<unit id="groovy-xml" version="2.5.3"/>
 		<unit id="groovy-xml.source" version="2.5.3"/>
 		<unit id="groovy.source" version="2.5.3"/>
+		<unit id="jakarta.mail.api" version="1.6.3"/>
+		<unit id="jakarta.mail.api.source" version="1.6.3"/>
 		<unit id="javax.annotation-api" version="1.3.3"/>
 		<unit id="javax.annotation-api.source" version="1.3.3"/>
 		<unit id="javax.enterprise.cdi-api" version="2.0.0.SP1"/>
@@ -972,6 +984,8 @@
 		<unit id="javax.interceptor-api.source" version="1.2.2"/>
 		<unit id="javax.jws-api" version="1.1.0"/>
 		<unit id="javax.jws-api.source" version="1.1.0"/>
+		<unit id="javax.persistence-api" version="2.2.99.b01"/>
+		<unit id="javax.persistence-api.source" version="2.2.99.b01"/>
 		<unit id="javax.transaction-api" version="1.3.0"/>
 		<unit id="javax.transaction-api.source" version="1.3.0"/>
 		<unit id="javax.validation.api" version="1.1.0.Final"/>
@@ -1002,8 +1016,8 @@
 		<unit id="org.apache.activemq.activemq-core.source" version="5.7.0"/>
 		<unit id="org.apache.activemq.kahadb" version="5.7.0"/>
 		<unit id="org.apache.activemq.kahadb.source" version="5.7.0"/>
-		<unit id="org.apache.aries.spifly.dynamic.bundle" version="1.1.0"/>
-		<unit id="org.apache.aries.spifly.dynamic.bundle.source" version="1.1.0"/>
+		<unit id="org.apache.aries.spifly.dynamic.bundle" version="1.2.0"/>
+		<unit id="org.apache.aries.spifly.dynamic.bundle.source" version="1.2.0"/>
 		<unit id="org.apache.aries.util" version="1.1.3"/>
 		<unit id="org.apache.aries.util.source" version="1.1.3"/>
 		<unit id="org.apache.batik.anim" version="1.9.1.v20180528-1434"/>
@@ -1267,41 +1281,27 @@
 		<unit id="stax2-api" version="4.1.0"/>
 		<unit id="stax2-api.source" version="3.1.4"/>
 		<unit id="stax2-api.source" version="4.1.0"/>
-		<unit id="zcommon" version="8.6.0"/>
-		<unit id="zcommon.sources" version="8.6.0"/>
-		<unit id="zel" version="8.6.0"/>
-		<unit id="zel.sources" version="8.6.0"/>
-		<unit id="zhtml" version="8.6.0"/>
-		<unit id="zhtml.sources" version="8.6.0"/>
-		<unit id="zjavassist" version="8.6.0"/>
-		<unit id="zjavassist.sources" version="8.6.0"/>
-		<unit id="zk" version="8.6.0"/>
-		<unit id="zk.sources" version="8.6.0"/>
-		<unit id="zkbind" version="8.6.0"/>
-		<unit id="zkbind.sources" version="8.6.0"/>
-		<unit id="zkplus" version="8.6.0"/>
-		<unit id="zkplus.sources" version="8.6.0"/>
-		<unit id="zkwebfragment" version="8.6.0"/>
-		<unit id="zkwebfragment.sources" version="8.6.0"/>
-		<unit id="zul" version="8.6.0"/>
-		<unit id="zul.sources" version="8.6.0"/>
-		<unit id="zweb" version="8.6.0"/>
-		<unit id="zweb.sources" version="8.6.0"/>
-		<repository location="file:/mnt/data/1Dev/project/native/idempiere-dev-11/org.idempiere.maven.to.p2/org.idempiere.maven.to.p2/target/repository/"/>
-		<unit id="com.sun.activation.jakarta.activation" version="1.2.1"/>
-		<unit id="com.sun.activation.jakarta.activation.source" version="1.2.1"/>
-		<unit id="com.sun.mail.gimap" version="1.6.3"/>
-		<unit id="com.sun.mail.gimap.source" version="1.6.3"/>
-		<unit id="com.sun.mail.imap" version="1.6.3"/>
-		<unit id="com.sun.mail.imap.source" version="1.6.3"/>
-		<unit id="com.sun.mail.jakarta.mail" version="1.6.3"/>
-		<unit id="com.sun.mail.jakarta.mail.source" version="1.6.3"/>
-		<unit id="com.sun.mail.smtp" version="1.6.3"/>
-		<unit id="com.sun.mail.smtp.source" version="1.6.3"/>
-		<unit id="jakarta.mail.api" version="1.6.3"/>
-		<unit id="jakarta.mail.api.source" version="1.6.3"/>
-		<unit id="javax.persistence-api" version="2.2.99.b01"/>
-		<unit id="javax.persistence-api.source" version="2.2.99.b01"/>
+		<unit id="zcommon" version="8.6.0.1"/>
+		<unit id="zcommon.sources" version="8.6.0.1"/>
+		<unit id="zel" version="8.6.0.1"/>
+		<unit id="zel.sources" version="8.6.0.1"/>
+		<unit id="zhtml" version="8.6.0.1"/>
+		<unit id="zhtml.sources" version="8.6.0.1"/>
+		<unit id="zjavassist" version="8.6.0.1"/>
+		<unit id="zjavassist.sources" version="8.6.0.1"/>
+		<unit id="zk" version="8.6.0.1"/>
+		<unit id="zk.sources" version="8.6.0.1"/>
+		<unit id="zkbind" version="8.6.0.1"/>
+		<unit id="zkbind.sources" version="8.6.0.1"/>
+		<unit id="zkplus" version="8.6.0.1"/>
+		<unit id="zkplus.sources" version="8.6.0.1"/>
+		<unit id="zkwebfragment" version="8.6.0.1"/>
+		<unit id="zkwebfragment.sources" version="8.6.0.1"/>
+		<unit id="zul" version="8.6.0.1"/>
+		<unit id="zul.sources" version="8.6.0.1"/>
+		<unit id="zweb" version="8.6.0.1"/>
+		<unit id="zweb.sources" version="8.6.0.1"/>
+		<repository location="https://raw.githubusercontent.com/idempiere/binary.file/master/p2.maven/maven-p2-R20181223"/>
 	</location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-10"/>
