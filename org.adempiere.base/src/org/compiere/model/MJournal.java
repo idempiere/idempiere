@@ -74,7 +74,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 			//
 			setCurrencyRate (Env.ONE);
 		//	setC_ConversionType_ID(0);
-			setDateAcct (new Timestamp(System.currentTimeMillis()));
+		//	setDateAcct (new Timestamp(System.currentTimeMillis()));
 			setDateDoc (new Timestamp(System.currentTimeMillis()));
 		//	setDescription (null);
 			setDocAction (DOCACTION_Complete);
