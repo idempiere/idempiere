@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MConversionType;
 import org.compiere.model.MDocType;
@@ -43,9 +44,10 @@ public class RevenueRecognition extends SvrProcess
 	private Timestamp	p_Date = null;
 	/** GL Document Type				*/
 	private int				p_C_DocType_ID = 0;
-
 	/** Recognition Type				*/
 	private int				p_C_RevenueRecognition_ID = 0;
+
+	private int cntDocs = 0;
 	
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -83,14 +85,13 @@ public class RevenueRecognition extends SvrProcess
 	{
 		MAcctSchema[] schemas = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID());
 		
-		String result ="@OK@"; 
 		for (MAcctSchema schema : schemas)
 		{
-			result = createGLJournal(schema);
+			createGLJournal(schema);
 			
 		}
 		//	
-		return result;
+		return "@OK@ #" + cntDocs;
 	}	//	doIt
 	
 	
@@ -98,7 +99,7 @@ public class RevenueRecognition extends SvrProcess
 	 * 	Create GL Journal
 	 * 	@return document info
 	 */
-	private String createGLJournal(MAcctSchema as)
+	private void createGLJournal(MAcctSchema as)
 	{
 		//
 		MDocType docType = MDocType.get(getCtx(), p_C_DocType_ID);
@@ -138,6 +139,9 @@ public class RevenueRecognition extends SvrProcess
 				journal.setC_DocType_ID(p_C_DocType_ID);
 				journal.setDateDoc(p_Date);
 				journal.setDateAcct(p_Date);
+				if (journal.getC_Period_ID() == 0) {
+					throw new AdempiereException("@PeriodNotFound@");
+				}
 				journal.setC_Currency_ID(as.getC_Currency_ID());
 				journal.setC_AcctSchema_ID (as.getC_AcctSchema_ID());
 				journal.setC_Currency_ID(as.getC_Currency_ID());
@@ -147,6 +151,8 @@ public class RevenueRecognition extends SvrProcess
 				journal.setDescription (getName() + " - " + org.getName());
 				journal.setGL_Category_ID (cat.getGL_Category_ID());
 				journal.saveEx();
+				cntDocs++;
+				addBufferLog(journal.getGL_Journal_ID(), journal.getDateAcct(), null, docType.getName() + " " + journal.getDocumentNo(), MJournal.Table_ID, journal.getGL_Journal_ID());
 			}
 
 			MInvoiceLine il = (MInvoiceLine) run.getC_RevenueRecognition_Plan().getC_InvoiceLine();
@@ -195,10 +201,7 @@ public class RevenueRecognition extends SvrProcess
 			//
 			run.setGL_Journal_ID(journal.getGL_Journal_ID());
 			run.saveEx();
-			addBufferLog(journal.getGL_Journal_ID(), journal.getDateAcct(), null, docType.getName() + " " + journal.getDocumentNo(), MJournal.Table_ID, journal.getGL_Journal_ID());
 		}
-
-		return "@OK@ #" + list.size();
 	}	//	createGLJournal
-}	//	Aging
 
+}	//	RevenueRecognition

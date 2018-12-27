@@ -352,10 +352,14 @@ public class MTree_Base extends X_AD_Tree
 			log.saveError("Error", "IsSummary column required for tree tables"); 
 			return false;
 		}
-		if (isTreeDrivenByValue()) {
-			if (table.getColumnIndex("Value") < 0) {
+		if (table.getColumnIndex("Value") < 0) {
+			if (isTreeDrivenByValue()) {
 				// Value is mandatory column to have a tree driven by Value
 				setIsTreeDrivenByValue(false);
+			}
+			if (isValueDisplayed()) {
+				// Value is mandatory column to be displayed
+				setIsValueDisplayed(false);
 			}
 		}
 

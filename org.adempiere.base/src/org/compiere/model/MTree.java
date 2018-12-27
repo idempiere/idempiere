@@ -481,7 +481,7 @@ public class MTree extends MTree_Base
 			String tableName =MTable.getTableName(getCtx(), getAD_Table_ID());
 			sqlNode.append("SELECT t.").append(tableName)
 			.append("_ID,");
-			if (isTreeDrivenByValue())
+			if (isValueDisplayed())
 				sqlNode.append("t.Value || ' - ' || t.Name,");
 			else
 				sqlNode.append("t.Name,");
@@ -490,7 +490,7 @@ public class MTree extends MTree_Base
 			.append(" FROM ").append(tableName).append(" t ");
 			if (!m_editable)
 			sqlNode.append(" WHERE t.IsActive='Y'");
-		}  else if (isTreeDrivenByValue()) {
+		}  else if (isValueDisplayed()) {
 			sqlNode.append("SELECT t.").append(columnNameX)
 			.append("_ID, t.Value || ' - ' || t.Name, t.Description, t.IsSummary,").append(color)
 			.append(" FROM ").append(fromClause);

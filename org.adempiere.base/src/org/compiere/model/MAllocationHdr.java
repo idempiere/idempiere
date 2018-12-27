@@ -1004,7 +1004,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 			else if (invoice != null)
 			{
 				// adjust open balance by discount and write off amounts.
-				BigDecimal amt = MConversionRate.convertBase(getCtx(), line.getWriteOffAmt().add(line.getDiscountAmt()),
+				BigDecimal amt = MConversionRate.convertBase(getCtx(), allocAmt.negate(),
 						getC_Currency_ID(), invoice.getDateAcct(), invoice.getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
 				if (amt == null)
 				{

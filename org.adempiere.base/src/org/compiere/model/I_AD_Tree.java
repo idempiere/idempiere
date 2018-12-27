@@ -189,6 +189,19 @@ public interface I_AD_Tree
 	/** Get Driven by Search Key	  */
 	public boolean isTreeDrivenByValue();
 
+    /** Column name IsValueDisplayed */
+    public static final String COLUMNNAME_IsValueDisplayed = "IsValueDisplayed";
+
+	/** Set Display Value.
+	  * Displays Value column with the Display column
+	  */
+	public void setIsValueDisplayed (boolean IsValueDisplayed);
+
+	/** Get Display Value.
+	  * Displays Value column with the Display column
+	  */
+	public boolean isValueDisplayed();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
