@@ -758,6 +758,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
             				export.setConfiguration(config);
             				export.setExporterOutput(new SimpleOutputStreamExporterOutput(strm));
             				exporter = export;
+            				// give a chance for customize jasper report configuration per report
+            				JREventManage.sentPdfExporterConfigurationEvent(export, config, pi);
             			} else if (ext.equals("ps")) {
             				JRPrintServiceExporter export = new JRPrintServiceExporter(
             						jasperContext);
