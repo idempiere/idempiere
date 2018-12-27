@@ -10,12 +10,11 @@
 	<name>Maven parent project for idempiere</name>
 
 	<properties>
-		<tycho.version>1.2.0</tycho.version>
+		<tycho.version>1.3.0</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jetty.version>9.4.12.v20180830</jetty.version>
 		<jp.version>6.7.0</jp.version>
-		<zk.version>8.5.0</zk.version>
+		<zk.version>8.6.0.1</zk.version>
 		<zk.javassist.src.version>3.23.1-GA</zk.javassist.src.version>
 		<maven.dependency.version>3.1.1</maven.dependency.version>
 		<download.maven.version>1.4.1</download.maven.version>
@@ -26,10 +25,10 @@
 		<netbeans.lib.version>RELEASE731</netbeans.lib.version>
 		<!-- default value of properties, use when run without profile -->
 		<idempiere.target>org.idempiere.p2.targetplatform</idempiere.target>
-		<idempiere-equinox-url>http://download.eclipse.org/eclipse/updates/4.9</idempiere-equinox-url>
-		<idempiere-equinox-repository-id>eclipse-photon-201809</idempiere-equinox-repository-id>
-		<idempiere-orbit-url>http://download.eclipse.org/tools/orbit/downloads/drops/R20180905201904/repository</idempiere-orbit-url>
-		<idempiere-orbit-repository-id>orbit-photon-R20180905201904</idempiere-orbit-repository-id>
+		<idempiere-equinox-url>http://download.eclipse.org/eclipse/updates/4.10</idempiere-equinox-url>
+		<idempiere-equinox-repository-id>eclipse-photon-201810</idempiere-equinox-repository-id>
+		<idempiere-orbit-url>http://download.eclipse.org/tools/orbit/downloads/drops/R20181128170323/repository</idempiere-orbit-url>
+		<idempiere-orbit-repository-id>orbit-photon-R20181128170323</idempiere-orbit-repository-id>
 		<url.file.srv>https://raw.githubusercontent.com/idempiere/binary.file/master</url.file.srv>
 		<extra.ui.install>org.eclipse.equinox.p2.director, org.idempiere.equinox.p2.director.feature.feature.group, org.idempiere.fitnesse.feature.feature.group</extra.ui.install>
 		<idempiere.product.id>org.adempiere.server.product</idempiere.product.id>
@@ -323,44 +322,6 @@
                     <configuration>
                         <verbose>true</verbose>
                     </configuration>
-				        <dependencies>
-                            <!-- overrider tycho to get latest for compiler ~/.m2/repository/org/eclipse/tycho/tycho-compiler-jdt/1.2.0/tycho-compiler-jdt-1.2.0.pom-->
-		                    <dependency>
-			                    <groupId>org.codehaus.plexus</groupId>
-			                    <artifactId>plexus-utils</artifactId>
-					            <version>3.1.0</version>
-		                    </dependency>
-		                    <dependency>
-			                    <groupId>org.codehaus.plexus</groupId>
-			                    <artifactId>plexus-compiler-manager</artifactId>
-					            <version>${codehaus.plexus}</version>
-		                    </dependency>
-		                    <dependency>
-			                    <groupId>org.codehaus.plexus</groupId>
-			                    <artifactId>plexus-compiler-api</artifactId>
-					            <version>${codehaus.plexus}</version>
-		                    </dependency>
-		                    <dependency>
-		                        <groupId>org.apache.commons</groupId>
-		                        <artifactId>commons-exec</artifactId>
-					            <version>1.3</version>
-		                    </dependency>
-		                    <dependency>
-		                    	<groupId>org.eclipse.jdt</groupId>
-		                    	<artifactId>org.eclipse.jdt.compiler.tool</artifactId>
-		                    	<version>1.2.300</version>
-		                    </dependency>
-		                    <dependency>
-		                    	<groupId>org.eclipse.jdt</groupId>
-		                    	<artifactId>org.eclipse.jdt.core</artifactId>
-		                    	<version>${jdtVersion}</version>
-		                    </dependency>
-		                    <dependency>
-		                    	<groupId>org.eclipse.jdt</groupId>
-		                    	<artifactId>org.eclipse.jdt.compiler.apt</artifactId>
-		                    	<version>${jdtAptVersion}</version>
-		                    </dependency>
-				        </dependencies>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
@@ -538,8 +499,8 @@
 						            <arch>x86_64</arch>
 					            </environment>
 				            </environments>
-                            <executionEnvironmentDefault>JavaSE-10</executionEnvironmentDefault>
-                            <executionEnvironment>JavaSE-10</executionEnvironment>
+                            <executionEnvironmentDefault>JavaSE-11</executionEnvironmentDefault>
+                            <executionEnvironment>JavaSE-11</executionEnvironment>
 			            </configuration>
 		            </plugin>
                 </plugins>

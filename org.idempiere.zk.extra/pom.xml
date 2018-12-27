@@ -27,7 +27,7 @@
 								<artifactItem>
 									<groupId>org.zkoss.zkforge</groupId>
 									<artifactId>gmapsz</artifactId>
-									<version>3.0.4</version>
+									<version>3.0.5</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.zkoss.zkforge</groupId>
@@ -47,12 +47,17 @@
 								<artifactItem>
 									<groupId>org.zkoss.theme</groupId>
 									<artifactId>breeze</artifactId>
-									<version>8.5.0</version>
+									<version>${zk.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.zkoss.theme</groupId>
+									<artifactId>iceblue_c</artifactId>
+									<version>${zk.version}</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.google.javascript</groupId>
 									<artifactId>closure-compiler</artifactId>
-									<version>v20181008</version>
+									<version>v20181028</version>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>

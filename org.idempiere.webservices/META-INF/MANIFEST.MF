@@ -78,7 +78,6 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.apache.cxf.cxf-rt-ws-policy;bundle-version="3.2.6",
  org.apache.cxf.cxf-rt-databinding-xmlbeans;bundle-version="3.1.17",
  org.apache.xmlbeans;bundle-version="3.0.1",
- javax.ws.rs-api;bundle-version="2.1.99",
  org.apache.servicemix.bundles.spring-aop,
  org.apache.servicemix.bundles.spring-beans,
  org.apache.servicemix.bundles.spring-context,
@@ -99,7 +98,8 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.glassfish.hk2.api;bundle-version="2.5.0",
  org.glassfish.hk2.locator;bundle-version="2.5.0",
  org.glassfish.hk2.utils;bundle-version="2.5.0",
- org.glassfish.jersey.bundles.repackaged.jersey-guava;bundle-version="2.22.1"
+ org.glassfish.jersey.bundles.repackaged.jersey-guava;bundle-version="2.22.1",
+ javax.ws.rs-api;bundle-version="2.1.3"
 Bundle-ClassPath: .,
  WEB-INF/lib/idempiere-xmlbeans.jar
 Export-Package: org.compiere.model,

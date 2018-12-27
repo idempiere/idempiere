@@ -63,22 +63,22 @@
    <feature url="features/org.eclipse.ecf.filetransfer.ssl.feature_1.1.100.v20180301-0132.jar" id="org.eclipse.ecf.filetransfer.ssl.feature" version="1.1.100.v20180301-0132">
       <category name="idempiere.core"/>
    </feature>
-   <feature url="features/org.eclipse.ecf.core.feature_1.5.1.v20180810-0833.jar" id="org.eclipse.ecf.core.feature" version="1.5.1.v20180810-0833">
+   <feature url="features/org.eclipse.ecf.core.feature_1.5.3.v20181012-2020.jar" id="org.eclipse.ecf.core.feature" version="1.5.3.v20181012-2020">
       <category name="idempiere.core"/>
    </feature>
-   <feature url="features/org.eclipse.ecf.filetransfer.feature_3.14.2.v20180801-2237.jar" id="org.eclipse.ecf.filetransfer.feature" version="3.14.2.v20180801-2237">
+   <feature url="features/org.eclipse.ecf.filetransfer.feature_3.14.4.v20181013-2146.jar" id="org.eclipse.ecf.filetransfer.feature" version="3.14.4.v20181013-2146">
       <category name="idempiere.core"/>
    </feature>
-   <feature url="features/org.eclipse.ecf.filetransfer.httpclient4.feature_3.14.2.v20180801-2237.jar" id="org.eclipse.ecf.filetransfer.httpclient4.feature" version="3.14.2.v20180801-2237">
+   <feature url="features/org.eclipse.ecf.filetransfer.httpclient4.feature_3.14.4.v20181013-2146.jar" id="org.eclipse.ecf.filetransfer.httpclient4.feature" version="3.14.4.v20181013-2146">
       <category name="idempiere.core"/>
    </feature>
-   <feature url="features/org.eclipse.equinox.executable_3.8.100.v20180827-1352.jar" id="org.eclipse.equinox.executable" version="3.8.100.v20180827-1352">
+   <feature url="features/org.eclipse.equinox.executable_3.8.200.v20180922-1751.jar" id="org.eclipse.equinox.executable" version="3.8.200.v20180922-1751">
       <category name="idempiere.core"/>
    </feature>
-   <feature url="features/org.eclipse.equinox.server.core_1.7.0.v20180903-1546.jar" id="org.eclipse.equinox.server.core" version="1.7.0.v20180903-1546">
+   <feature url="features/org.eclipse.equinox.server.core_1.8.0.v20181130-2106.jar" id="org.eclipse.equinox.server.core" version="1.8.0.v20181130-2106">
       <category name="idempiere.core"/>
    </feature>
-   <feature url="features/org.eclipse.equinox.server.p2_1.5.0.v20180827-1235.jar" id="org.eclipse.equinox.server.p2" version="1.5.0.v20180827-1235">
+   <feature url="features/org.eclipse.equinox.server.p2_1.6.0.v20181123-1405.jar" id="org.eclipse.equinox.server.p2" version="1.6.0.v20181123-1405">
       <category name="idempiere.core"/>
    </feature>
    <category-def name="idempiere.core" label="idempiere core"/>
