@@ -67,6 +67,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.SecureEngine;
 import org.compiere.util.Trace;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.osgi.service.event.Event;
 import org.w3c.dom.Document;
@@ -108,7 +109,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6777678451696979575L;
+	private static final long serialVersionUID = -1743619574547406959L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -4013,7 +4014,14 @@ public abstract class PO
 				if (I_C_ElementValue.Table_Name.equals(sourceTableName)) {
 					newParentID = retrieveIdOfElementValue(value, getAD_Client_ID(), ((I_C_ElementValue)this).getC_Element().getC_Element_ID(), get_TrxName());
 				} else {
-					newParentID = retrieveIdOfParentValue(value, sourceTableName, getAD_Client_ID(), get_TrxName());
+					int linkColId = tree.getParent_Column_ID();
+					String linkColName = null;
+					int linkID = 0;
+					if (linkColId > 0) {
+						linkColName = MColumn.getColumnName(Env.getCtx(), linkColId);
+						linkID = (Integer)this.get_Value(linkColName);
+					}
+					newParentID = retrieveIdOfParentValue(value, sourceTableName, linkColName, linkID, getAD_Client_ID(), get_TrxName());
 				}
 				int seqNo = DB.getSQLValueEx(get_TrxName(), selMinSeqNo, newParentID, tree.getAD_Tree_ID(), value);
 				if (seqNo == -1)
@@ -4040,9 +4048,17 @@ public abstract class PO
 	}
 
 	/** Returns the summary node with the corresponding value */
-	public static int retrieveIdOfParentValue(String value, String tableName, int clientID, String trxName)
+	public static int retrieveIdOfParentValue(String value, String tableName, int clientID, String trxName) {
+		return retrieveIdOfParentValue(value, tableName, null, 0, clientID, trxName);
+	}
+
+	public static int retrieveIdOfParentValue(String value, String tableName, String linkCol, int linkID, int clientID, String trxName)
 	{
-		String sql = "SELECT " + tableName + "_ID FROM " + tableName + " WHERE IsSummary='Y' AND AD_Client_ID=? AND Value=?";
+		String sql = "SELECT " + tableName + "_ID FROM " + tableName + " WHERE IsSummary='Y'";
+		if (!Util.isEmpty(linkCol)) {
+			sql = sql + " AND " + linkCol + "=" + linkID;
+		}
+		sql = sql + " AND AD_Client_ID=? AND Value=?";
 		int pos = value.length()-1;
 		while (pos > 0) {
 			String testParentValue = value.substring(0, pos);

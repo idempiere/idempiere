@@ -173,7 +173,7 @@ public final class VTreePanel extends CPanel
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -7188402231414573844L;
+	private static final long serialVersionUID = 8238886431744822217L;
 
 	private static final String PREFIX_DOCUMENT_SEARCH = "/";
 
@@ -243,12 +243,21 @@ public final class VTreePanel extends CPanel
 	 */
 	public boolean initTree (int AD_Tree_ID)
 	{
+		return initTree (AD_Tree_ID, null, 0);
+	}
+
+	public boolean initTree (int AD_Tree_ID, String linkColName, int linkID)
+	{
 		if (log.isLoggable(Level.CONFIG)) log.config("AD_Tree_ID=" + AD_Tree_ID);
 		//
 		m_AD_Tree_ID = AD_Tree_ID;
 
 		//  Get Tree
-		MTree vTree = new MTree (Env.getCtx(), AD_Tree_ID, m_editable, true, null);
+		MTree vTree = null;
+		if (linkColName != null)
+			vTree = new MTree (Env.getCtx(), AD_Tree_ID, m_editable, true, null, linkColName, linkID);
+		else
+			vTree = new MTree (Env.getCtx(), AD_Tree_ID, m_editable, true, null);
 		m_root = vTree.getRoot();
 		m_root.setName(Msg.getMsg(Env.getCtx(), vTree.getName() ) ); // translate name of menu.
 		// m_root.setName(Msg.getMsg(Env.getCtx(), "Menu") ); // @Trifon; this is the hardcoded way.

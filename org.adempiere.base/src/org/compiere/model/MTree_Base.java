@@ -345,6 +345,11 @@ public class MTree_Base extends X_AD_Tree
 		if (!isActive() || !isAllNodes())
 			setIsDefault(false);
 
+		if (! TREETYPE_CustomTable.equals(getTreeType())) {
+			setAD_Table_ID(-1);
+			setParent_Column_ID(-1);
+		}
+		
 		String tableName = getSourceTableName(true);
 		MTable table = MTable.get(getCtx(), tableName);
 		if (table.getColumnIndex("IsSummary") < 0) {

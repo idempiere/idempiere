@@ -43,7 +43,7 @@ public class ADTreePanel extends Panel implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 164816320839461191L;
+	private static final long serialVersionUID = 2718257463734592729L;
 	private static final String ON_EXPAND_MENU_EVENT = "onExpandMenu";
 	private TreeSearchPanel pnlSearch;
     private Tree tree;
@@ -71,10 +71,15 @@ public class ADTreePanel extends Panel implements EventListener<Event>
      */
     public boolean initTree(int AD_Tree_ID, int windowNo) 
     {
+    	return initTree(AD_Tree_ID, windowNo, null, 0);
+    }
+
+    public boolean initTree(int AD_Tree_ID, int windowNo, String linkColName, int linkID) 
+    {
     	if (this.AD_Tree_ID != AD_Tree_ID)
     	{
 	    	this.AD_Tree_ID = AD_Tree_ID;
-	    	SimpleTreeModel.initADTree(tree, AD_Tree_ID, windowNo);
+	    	SimpleTreeModel.initADTree(tree, AD_Tree_ID, windowNo, linkColName, linkID);
 	    	MTree_Base tb = MTree_Base.get(Env.getCtx(), AD_Tree_ID, null);
 	    	if (tb.isLoadAllNodesImmediately())
 	    		TreeUtils.collapseTree(tree, true);

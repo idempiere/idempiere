@@ -215,6 +215,21 @@ public interface I_AD_Tree
 	  */
 	public String getName();
 
+    /** Column name Parent_Column_ID */
+    public static final String COLUMNNAME_Parent_Column_ID = "Parent_Column_ID";
+
+	/** Set Parent Column.
+	  * The link column on the parent tab.
+	  */
+	public void setParent_Column_ID (int Parent_Column_ID);
+
+	/** Get Parent Column.
+	  * The link column on the parent tab.
+	  */
+	public int getParent_Column_ID();
+
+	public org.compiere.model.I_AD_Column getParent_Column() throws RuntimeException;
+
     /** Column name Processing */
     public static final String COLUMNNAME_Processing = "Processing";
 

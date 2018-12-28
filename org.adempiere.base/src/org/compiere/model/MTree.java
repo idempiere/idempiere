@@ -34,6 +34,7 @@ import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *  Builds Tree.
@@ -48,7 +49,7 @@ public class MTree extends MTree_Base
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6412057411585787707L;
+	private static final long serialVersionUID = -212066085945645584L;
 
 	/**
 	 *  Default Constructor.
@@ -74,11 +75,23 @@ public class MTree extends MTree_Base
 	public MTree (Properties ctx, int AD_Tree_ID, 
 		boolean editable, boolean clientTree, String trxName)
 	{
-		this (ctx, AD_Tree_ID, editable, clientTree, false, trxName);
+		this (ctx, AD_Tree_ID, editable, clientTree, false, trxName, null, 0);
+	}   //  MTree
+
+	public MTree (Properties ctx, int AD_Tree_ID, 
+			boolean editable, boolean clientTree, String trxName, String linkColName, int linkID)
+	{
+		this (ctx, AD_Tree_ID, editable, clientTree, false, trxName, linkColName, linkID);
 	}   //  MTree
 
 	public MTree (Properties ctx, int AD_Tree_ID, 
 			boolean editable, boolean clientTree, boolean allNodes, String trxName)
+	{
+		this (ctx, AD_Tree_ID, editable, clientTree, allNodes, trxName, null, 0);
+	}   //  MTree
+
+	public MTree (Properties ctx, int AD_Tree_ID, 
+			boolean editable, boolean clientTree, boolean allNodes, String trxName, String linkColName, int linkID)
 	{
 		this (ctx, AD_Tree_ID, trxName);
 		m_editable = editable;
@@ -93,7 +106,7 @@ public class MTree extends MTree_Base
 				+ ", Editable=" + editable
 				+ ", OnClient=" + clientTree);
 		//
-		loadNodes(AD_User_ID);
+		loadNodes(AD_User_ID, linkColName, linkID);
 	}   //  MTree
 
 	/** Is Tree editable    	*/
@@ -170,7 +183,7 @@ public class MTree extends MTree_Base
 			String query = "SELECT tr.AD_Tree_ID "
 					+ "FROM AD_Tree tr "
 					+ "JOIN AD_Table t ON (tr.AD_Table_ID=t.AD_Table_ID) "
-					+ "WHERE tr.AD_Client_ID=? AND tr.TreeType=? AND tr.IsActive='Y' AND tr.IsAllNodes='Y' AND t.TableName = ? "
+					+ "WHERE tr.AD_Client_ID=? AND tr.TreeType=? AND tr.IsActive='Y' AND t.TableName = ? "
 					+ "ORDER BY tr.AD_Tree_ID";
 			int treeID = DB.getSQLValueEx(null, query, Env.getAD_Client_ID(Env.getCtx()), TREETYPE_CustomTable, tableName);
 
@@ -217,9 +230,11 @@ public class MTree extends MTree_Base
 
 	/*************************************************************************
 	 *  Load Nodes and Bar
-	 * 	@param AD_User_ID user for tree bar
+	 * @param AD_User_ID user for tree bar
+	 * @param linkColName 
+	 * @param linkID 
 	 */
-	private void loadNodes (int AD_User_ID)
+	private void loadNodes (int AD_User_ID, String linkColName, int linkID)
 	{
 		//  SQL for TreeNodes
 		StringBuffer sql = new StringBuffer();
@@ -252,6 +267,8 @@ public class MTree extends MTree_Base
 									+ "WHERE tn.AD_Tree_ID=?");								//	#2
 			if (!m_editable)
 				sql.append(" AND tn.IsActive='Y'");
+			if (!Util.isEmpty(linkColName))
+				sql.append(" AND st.").append(linkColName).append("=").append(linkID);
 			sql.append(" ORDER BY COALESCE(tn.Parent_ID, -1), tn.SeqNo");
 			//do not check access if allNodes
 			if (AD_User_ID != -1)

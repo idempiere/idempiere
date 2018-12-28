@@ -73,6 +73,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
 import org.compiere.model.GridWindow;
+import org.compiere.model.MColumn;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.swing.CPanel;
@@ -658,8 +659,15 @@ public class GridController extends CPanel
 			if (AD_Tree_ID == 0)
 				AD_Tree_ID = MTree.getDefaultAD_Tree_ID (
 					Env.getAD_Client_ID(Env.getCtx()), m_mTab.getKeyColumnName());
+			int linkColId = MTree.get(Env.getCtx(), AD_Tree_ID, null).getParent_Column_ID();
+			String linkColName = null;
+			int linkID = 0;
+			if (linkColId > 0) {
+				linkColName = MColumn.getColumnName(Env.getCtx(), linkColId);
+				linkID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, linkColName, true);
+			}
 			if (m_tree != null)
-				m_tree.initTree (AD_Tree_ID);
+				m_tree.initTree (AD_Tree_ID, linkColName, linkID);
 		}
 
 		activateChilds();
