@@ -121,13 +121,13 @@ public class Login
 	{
 		//	Java System version check
 		String jVersion = System.getProperty("java.version");
-		if (jVersion.startsWith("1.8.0") || jVersion.startsWith("9.") || jVersion.startsWith("10."))
+		if (jVersion.startsWith("1.8.0") || jVersion.startsWith("9.") || jVersion.startsWith("10.") || jVersion.startsWith("11."))
 			return true;
 
 		//  Error Message
 		StringBuilder msg = new StringBuilder();
 		msg.append(System.getProperty("java.vm.name")).append(" - ").append(jVersion);
-		msg.append("  <>  1.8.0 | 9 | 10");
+		msg.append("  <>  1.8.0 | 9 | 10 | 11");
 		//
 		if (isClient)
 			JOptionPane.showMessageDialog(null, msg.toString(),
