@@ -192,7 +192,7 @@ public class MQuery implements Serializable
 					else	//	P_Number_To != null
 					{
 						if (P_Number == null)
-							query.addRestriction("TRUNC("+ParameterName+")", MQuery.LESS_EQUAL, 
+							query.addRestriction(ParameterName, MQuery.LESS_EQUAL, 
 								P_Number_To, Name, Info);
 						else
 							query.addRangeRestriction(ParameterName, 
