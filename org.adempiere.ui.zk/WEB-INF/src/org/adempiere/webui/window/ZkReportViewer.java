@@ -1278,6 +1278,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		//	Get Language from previous - thanks Gunther Hoppe 
 		if (m_reportEngine.getPrintFormat() != null)
 		{
+			setLanguage();
 			pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
 			pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
 		}
