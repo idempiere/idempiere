@@ -45,7 +45,6 @@
 		<module>org.idempiere.fitnesse.server</module>
 		<module>org.idempiere.fitrecorder</module>
 		<module>org.idempiere.hazelcast.service</module>
-		<module>org.idempiere.hazelcast.service.config</module>
 		<module>org.idempiere.ui.zk.selenium</module>
 		<module>org.idempiere.webservices</module>
 		<module>org.idempiere.zk.extra</module>
