@@ -71,6 +71,7 @@
       <property name="eclipse.product" value="org.adempiere.server.product" />
       <property name="org.eclipse.equinox.simpleconfigurator.exclusiveInstallation" value="false" />
       <property name="org.eclipse.update.reconcile" value="false" />
+      <property name="osgi.checkConfiguration" value="true" />
       <property name="osgi.compatibility.bootdelegation" value="true" />
       <property name="osgi.console.enable.builtin" value="false" />
       <property name="osgi.framework.activeThreadType" value="normal" />
