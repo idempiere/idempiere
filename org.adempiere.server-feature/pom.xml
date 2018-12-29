@@ -125,26 +125,6 @@
 							<overWriteSnapshots>true</overWriteSnapshots>
 						</configuration>
 					</execution>
-					<execution>
-						<id>alpn.lib</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.mortbay.jetty.alpn</groupId>
-									<artifactId>alpn-boot</artifactId>
-									<version>${jetty.alpn-boot.version}</version>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>../</outputDirectory>
-							<stripVersion>true</stripVersion>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
 				</executions>
 			</plugin>
 			<plugin>
