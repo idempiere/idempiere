@@ -24,7 +24,7 @@ public final class Prop implements Serializable {
 	 * @author BMLaurus-acanaveral
 	 * @uri	http://www.bmlaurus.com
 	 */
-	private static final long serialVersionUID = -3973931828485013352L;
+	private static final long serialVersionUID = -2735243406793760873L;
 
 	/**	File Property    */
 	public static final String	HOME_PROPERTY_FILE 	= 	"home.properties";
@@ -89,23 +89,8 @@ public final class Prop implements Serializable {
 	public static final String	SOC_6				=	"Social6";
 	public static final String	SOC_7				=	"Social7";
 	
-	/**	RSS Properties    */
-	public static final String	RSS_ON 				=	"rssOn";
-	public static final String	RSS 				=	"rss";
-	public static final String	RSS_1_NAME 			=	"rss1Name";
-	public static final String	RSS_1 				=	"rss1";
-	public static final String	RSS_2_NAME 			=	"rss2Name";
-	public static final String	RSS_2 				=	"rss2";
-	public static final String	RSS_3_NAME 			=	"rss3Name";
-	public static final String	RSS_3 				=	"rss3";
-	public static final String	RSS_4_NAME 			=	"rss4Name";
-	public static final String	RSS_4 				=	"rss4";
-	public static final String	RSS_5_NAME 			=	"rss5Name";
-	public static final String	RSS_5 				=	"rss5";
-	public static final String	RSS_REFRESH 		=	"RssRefreshMessage";
-	
 	/**Defaults*/
-	private static final String CREDITS				=	"Welcome to the iDempiere (OSGi+ADempiere) 3.0 Page!";
+	private static final String CREDITS				=	"Welcome to the iDempiere (OSGi+ADempiere) 6.1 Page!";
 	private static String LOGO_URL 					= 	null;
 	
 	
@@ -173,8 +158,6 @@ public final class Prop implements Serializable {
 			s_prop.setProperty(CLIENT_NAME, "iDempiere Server");
 		if(s_prop.getProperty(CREDITS_TXT)==null||s_prop.getProperty(CREDITS_TXT).length()<=0)
 			s_prop.setProperty(CREDITS_TXT, CREDITS);
-		if(s_prop.getProperty(RSS_REFRESH)==null||s_prop.getProperty(RSS_REFRESH).length()<=0)
-			s_prop.setProperty(RSS_REFRESH, "Refresh live blog posts");
 		//LINKS
 		if(s_prop.getProperty(FELIX_LINK)==null||s_prop.getProperty(FELIX_LINK).length()<=0)
 			s_prop.setProperty(FELIX_LINK, DEF_FELIX_LINK);
@@ -318,15 +301,6 @@ public final class Prop implements Serializable {
 		  if (is != null) { is.close(); }
 		}
 		return bais.toByteArray();
-	}
-	
-	public static boolean isRssOn(){
-		boolean rss=false;
-		if(getProperty(RSS_ON).toUpperCase().equals("TRUE")||
-				getProperty(RSS_ON).toUpperCase().equals("YES")||
-					getProperty(RSS_ON).toUpperCase().equals("Y"))
-						rss=true;
-		return rss;
 	}
 	
 	public static void load(){

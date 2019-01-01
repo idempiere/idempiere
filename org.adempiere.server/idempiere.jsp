@@ -12,11 +12,6 @@ Author URI: http://www.bmlaurus.com
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="stylesheet" href="<%=Prop.loadCss()%>">
 	<script type="text/javascript" src="resources/jquery/jquery.js"></script>
-	<% if(Prop.isRssOn()){ 
-		out.write("<script type=\"text/javascript\" language=\"javascript\" src=\"https://www.google.com/jsapi?key=ABQIAAAAFEyVt-pBJaTXzM__EKlCrBRyn6VRRdQGMLQqRPPw1fs6QDtVcBRGklOHzrf7hmoAX3qgxg4t5ImqRA\"></script>\n");
-		out.write("<script type=\"text/javascript\" language=\"javascript\" src=\"resources/gfeedfetcher.js\"></script>");
-		}
-	%>
 	<title><%=Prop.getProperty(Prop.TITLE) %></title>
 </head>
 <body>
@@ -80,28 +75,6 @@ Author URI: http://www.bmlaurus.com
 						</div>
 					</div>
 				</div>
-				<div id="main-rssContent">
-					<div id="rssfeed-wrap">
-						<script type="text/javascript">
-						<% if(Prop.isRssOn()) {
-							out.write("var newsfeed=new gfeedfetcher(\"rssfeeds\", \"rssfeedsclass\", \"_new\");\n");
-							out.write("newsfeed.displayoptions(\"label datetime snippet\");\n");
-							out.write("newsfeed.setentrycontainer(\"p\");\n");
-							out.write("newsfeed.filterfeed(20, \"date\");\n");
-							for(int i=1;i<=5;i++){
-								if(Prop.getProperty(Prop.RSS+i)!=null&&Prop.getProperty(Prop.RSS+i).length()>0){
-									out.write("newsfeed.addFeed(\""+Prop.getProperty(Prop.RSS+i+"Name")+"\",\""+Prop.getProperty(Prop.RSS+i)+"\");\n");
-								}
-							}
-							out.write("newsfeed.init();\n");
-						}
-						%>
-						</script>
-						<% if(Prop.isRssOn()) 
-							out.write("<p><a class=\"darklink\" href=\"javascript:newsfeed.init()\">"+Prop.getProperty(Prop.RSS_REFRESH)+"</a></p>");
-						%>
-					</div>
-				</div>
 				<div id="main-login" class="main-login">
 					<a href="<%=Prop.getProperty(Prop.WEBUI_LINK)%>" target="_self">
 						<img name="img_webui" src="<%=Prop.getImage("img_webui.png")%>" border="0" />
@@ -144,7 +117,7 @@ Author URI: http://www.bmlaurus.com
 					</div>
 				</div>
 				<div id="main-background">
-					<img name="img_background" src="<%=Prop.getImage("img_back.png")%>" border="0"/>
+					<img name="img_background" src="<%=Prop.getImage("img_back.jpg")%>" border="0"/>
 				</div>
 			</div>
 		</div>
