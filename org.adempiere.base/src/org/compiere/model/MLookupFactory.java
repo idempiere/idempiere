@@ -882,6 +882,13 @@ public class MLookupFactory
 				if (embeddedSQL != null)
 					displayColumn.append("(").append(embeddedSQL).append(")");
 			}
+			//  List
+			else if (ldc.DisplayType == DisplayType.List)
+			{
+				String embeddedSQL = getLookup_ListEmbed(language, ldc.AD_Reference_ID, ldc.ColumnName);
+				if (embeddedSQL != null)
+					displayColumn.append("(").append(embeddedSQL).append(")");
+			}
 			//	ID
 			else if (DisplayType.isID(ldc.DisplayType))
 			{
