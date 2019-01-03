@@ -82,6 +82,15 @@ public class ServerPushEndPoint {
 
 	@OnMessage
 	public void onMessage(Session session, String message) { 
+		if (session == this.session && !Util.isEmpty(message)) {
+			if (message.equals("__ping__")) {
+				try {
+					session.getBasicRemote().sendText("__pong__");
+				} catch (IllegalArgumentException | IOException e) {
+					CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
+				}
+			}
+		}
 	}
 
 	/**

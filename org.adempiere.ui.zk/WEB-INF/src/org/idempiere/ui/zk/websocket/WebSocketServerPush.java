@@ -62,6 +62,7 @@ public class WebSocketServerPush implements ServerPush {
     private final Object _mutex = new Object();
     
     private final static Map<String, ServerPushEndPoint> endPointMap = new ConcurrentHashMap<>();
+    private final static Map<String, Boolean> unregisterMap = new ConcurrentHashMap<>();
     private final static ServerPushEndPoint STUB = new ServerPushEndPoint();
     private List<Schedule<Event>> schedules = new ArrayList<>();
 
@@ -120,7 +121,7 @@ public class WebSocketServerPush implements ServerPush {
         	if (endPoint == null) {
         		if (dt.isServerPushEnabled()) {
         			try {
-						Thread.sleep(5000);
+						Thread.sleep(2000);
 					} catch (InterruptedException e) {
 					}
         			endPoint = getEndPoint(dt.getId());
@@ -184,7 +185,8 @@ public class WebSocketServerPush implements ServerPush {
     	if (dt != null) {
         	ServerPushEndPoint endPoint = getEndPoint(dt.getId());
         	if (endPoint == null) {
-        		if (dt.isServerPushEnabled()) {
+        		if (dt.isServerPushEnabled() && unregisterMap.remove(dt.getId(), Boolean.TRUE)) {
+        			registerEndPoint(dt.getId(), STUB);
         			startServerPushAtClient(dt);
         		}
         	}
@@ -286,6 +288,9 @@ public class WebSocketServerPush implements ServerPush {
 	 */
 	public static boolean unregisterEndPoint(String dtid) {
 		ServerPushEndPoint endpoint = endPointMap.remove(dtid);
+		if (endpoint != null) {
+			unregisterMap.put(dtid, Boolean.TRUE);
+		}
 		return endpoint != null;
 	}
 	
