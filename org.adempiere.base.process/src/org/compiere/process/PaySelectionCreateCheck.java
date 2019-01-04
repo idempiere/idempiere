@@ -39,6 +39,8 @@ public class PaySelectionCreateCheck extends SvrProcess
 	private String		p_PaymentRule = null;
 	/**	Payment Selection			*/
 	private int			p_C_PaySelection_ID = 0;
+	/** one payment per invoice */
+	private boolean							p_onepaymentPerInvoice	= false;
 	/** The checks					*/
 	private ArrayList<MPaySelectionCheck>	m_list = new ArrayList<MPaySelectionCheck>();
 	
@@ -55,6 +57,8 @@ public class PaySelectionCreateCheck extends SvrProcess
 				;
 			else if (name.equals("PaymentRule"))
 				p_PaymentRule = (String)para[i].getParameter();
+			else if (name.equalsIgnoreCase(MPaySelection.COLUMNNAME_IsOnePaymentPerInvoice))
+				p_onepaymentPerInvoice = para[i].getParameterAsBoolean();
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 		}
@@ -102,21 +106,24 @@ public class PaySelectionCreateCheck extends SvrProcess
 	 */
 	private void createCheck (MPaySelectionLine line) throws Exception
 	{
-		//	Try to find one
-		for (int i = 0; i < m_list.size(); i++)
+		if (!p_onepaymentPerInvoice)
 		{
-			MPaySelectionCheck check = (MPaySelectionCheck)m_list.get(i);
-			//	Add to existing
-			if (check.getC_BPartner_ID() == line.getInvoice().getC_BPartner_ID())
+			// Try to find one
+			for (int i = 0; i < m_list.size(); i++)
 			{
-				check.addLine(line);
-				if (!check.save())
-					throw new IllegalStateException("Cannot save MPaySelectionCheck");
-				line.setC_PaySelectionCheck_ID(check.getC_PaySelectionCheck_ID());
-				line.setProcessed(true);
-				if (!line.save())
-					throw new IllegalStateException("Cannot save MPaySelectionLine");
-				return;
+				MPaySelectionCheck check = (MPaySelectionCheck) m_list.get(i);
+				// Add to existing
+				if (check.getC_BPartner_ID() == line.getInvoice().getC_BPartner_ID())
+				{
+					check.addLine(line);
+					if (!check.save())
+						throw new IllegalStateException("Cannot save MPaySelectionCheck");
+					line.setC_PaySelectionCheck_ID(check.getC_PaySelectionCheck_ID());
+					line.setProcessed(true);
+					if (!line.save())
+						throw new IllegalStateException("Cannot save MPaySelectionLine");
+					return;
+				}
 			}
 		}
 		//	Create new

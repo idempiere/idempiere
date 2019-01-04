@@ -167,6 +167,15 @@ public interface I_C_PaySelection
 	  */
 	public boolean isApproved();
 
+    /** Column name IsOnePaymentPerInvoice */
+    public static final String COLUMNNAME_IsOnePaymentPerInvoice = "IsOnePaymentPerInvoice";
+
+	/** Set One Payment Per Invoice	  */
+	public void setIsOnePaymentPerInvoice (boolean IsOnePaymentPerInvoice);
+
+	/** Get One Payment Per Invoice	  */
+	public boolean isOnePaymentPerInvoice();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
