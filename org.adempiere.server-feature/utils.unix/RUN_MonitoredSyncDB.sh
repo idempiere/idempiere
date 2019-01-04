@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Author Carlos Ruiz
 if [ $IDEMPIERE_HOME ]; then
@@ -7,4 +7,4 @@ fi
 . ./myEnvironment.sh Server
 echo 	Synchronize iDempiere Database - $IDEMPIERE_HOME \($ADEMPIERE_DB_NAME\)
 
-sh $ADEMPIERE_DB_PATH/MonitoredSyncDB.sh "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$ADEMPIERE_DB_PATH" $*
+bash $ADEMPIERE_DB_PATH/MonitoredSyncDB.sh "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$ADEMPIERE_DB_PATH" $*

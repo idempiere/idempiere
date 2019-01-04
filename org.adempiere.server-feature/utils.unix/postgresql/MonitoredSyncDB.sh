@@ -28,6 +28,17 @@
 # 5. All the above steps are intended to be executed initially in a test or stage environment
 #    When executed again on a clean environment, or applied in production, the script automatically applies the fixes and continue
 #
+# WARNING:
+# Please note this script depends on the language of the postgresql installation
+# it searches for the strings:
+#   ERROR:  -> english, spanish
+#   FATAL:  -> english, spanish
+#   FEHLER: -> german
+#   ERRO:   -> portuguese
+# to support other languages, you need to edit the variable ERROR_STRINGS below
+# a previous version of the script used the command SET lc_messages TO 'C';
+# but there are environments that doesn't support setting that variable, so better to be on the safe side
+#
 
 echo Synchronize iDempiere Database
 
@@ -55,10 +66,9 @@ export PGPASSWORD
 TMPFOLDER=/tmp
 ADEMPIERE_DB_USER=$1
 ADEMPIERE_DB_PATH=$3
-CMDLANG="SET lc_messages TO 'C';"
 CMD="psql -b -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -d $ADEMPIERE_DB_NAME -U $ADEMPIERE_DB_USER"
 SILENTCMD="$CMD -q -t"
-ERROR_STRINGS="^(ERROR:|FATAL:)"
+ERROR_STRINGS="^(ERROR:|FEHLER:|FATAL:|ERRO:)"
 DIR_POST=$IDEMPIERE_HOME/migration
 if [ "x$4" = "x" ]
 then
@@ -82,7 +92,7 @@ apply_script()
     OUTFILE="$2"
     FILE="$3"
     echo "Applying $SCRIPT"
-    ( printf '%s' "$CMDLANG" ; cat "$SCRIPT" )  | $CMD > "$OUTFILE" 2>&1
+    cat "$SCRIPT" | $CMD > "$OUTFILE" 2>&1
     APPLIED=Y
     if grep -E "$ERROR_STRINGS" "$OUTFILE" > /dev/null 2>&1
     then
@@ -273,7 +283,7 @@ then
     do
         OUTFILE=$TMPFOLDER/SyncDB_out_$$/$(basename "$FILE" .sql).out
         echo "Applying $FILE"
-        ( printf '%s' "$CMDLANG" ; cat "$FILE" )  | $CMD > "$OUTFILE" 2>&1
+        cat "$FILE" | $CMD > "$OUTFILE" 2>&1
         if grep -E "$ERROR_STRINGS" "$OUTFILE" > /dev/null 2>&1
         then
             echo "Found error in $SCRIPT"

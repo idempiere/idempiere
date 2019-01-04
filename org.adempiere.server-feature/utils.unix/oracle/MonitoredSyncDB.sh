@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Author: Carlos Ruiz - globalqss
 # Script to synchronize the database with latest migration scripts allowing a remote monitored way
