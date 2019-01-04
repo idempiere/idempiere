@@ -1136,12 +1136,14 @@ public final class WebUtil
 	 */
 	public static void addCookieWebUser (HttpServletRequest request, HttpServletResponse response, String webUser, String COOKIE_NAME)
 	{
-	  if (! webUser.matches(".*[ ,;].*")) {
-		Cookie cookie = new Cookie(COOKIE_NAME, webUser);
+	  try {
+		Cookie cookie = new Cookie(COOKIE_NAME, URLEncoder.encode(webUser, "utf-8"));
 		cookie.setComment("adempiere Web User");
 		cookie.setPath(request.getContextPath());
 		cookie.setMaxAge(2592000);      //  30 days in seconds   60*60*24*30
 		response.addCookie(cookie);
+	  } catch (UnsupportedEncodingException e) {
+		e.printStackTrace();
 	  }
 	}	//	setCookieWebUser
 
