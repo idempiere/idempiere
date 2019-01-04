@@ -69,6 +69,7 @@ import org.zkoss.lang.Strings;
 import org.zkoss.util.Locales;
 import org.zkoss.web.Attributes;
 import org.zkoss.zhtml.Div;
+import org.zkoss.zhtml.Form;
 import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
@@ -220,12 +221,14 @@ public class LoginPanel extends Window implements EventListener<Event>
     }
 
 	protected void createUI() {
+		Form form = new Form();
+
 		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
     	lblLogin = new Label(Msg.getMsg(Env.getCtx(), "Login"));
     	lblLogin.setSclass(ITheme.LOGIN_BOX_HEADER_TXT_CLASS);
     	div.appendChild(lblLogin);
-    	this.appendChild(div);
+    	form.appendChild(div);
 
     	Table table = new Table();
     	table.setId("grdLogin");
@@ -233,7 +236,7 @@ public class LoginPanel extends Window implements EventListener<Event>
     	table.setDynamicProperty("cellspacing", "5");
     	table.setSclass(ITheme.LOGIN_BOX_BODY_CLASS);
 
-    	this.appendChild(table);
+    	form.appendChild(table);
 
     	Tr tr = new Tr();
     	table.appendChild(tr);
@@ -338,7 +341,8 @@ public class LoginPanel extends Window implements EventListener<Event>
         ZKUpdateUtil.setWidth(pnlButtons, null);
         pnlButtons.getButton(ConfirmPanel.A_OK).setSclass(ITheme.LOGIN_BUTTON_CLASS);
         div.appendChild(pnlButtons);
-        this.appendChild(div);
+        form.appendChild(div);
+        this.appendChild(form);
 	}
 
     private void initComponents()
@@ -360,7 +364,8 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtUserId.setCols(25);
         txtUserId.setMaxlength(40);
         ZKUpdateUtil.setWidth(txtUserId, "220px");
-        txtUserId.addEventListener(Events.ON_CHANGE, this); // Elaine 2009/02/06
+        //txtUserId.addEventListener(Events.ON_CHANGE, this); // Elaine 2009/02/06
+        txtUserId.setClientAttribute("autocomplete", "username");
 
         txtPassword = new Textbox();
         txtPassword.setId("txtPassword");
@@ -369,7 +374,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 //        txtPassword.setMaxlength(40);
         ZKUpdateUtil.setWidth(txtPassword, "220px");
         if (MSysConfig.getBooleanValue(MSysConfig.ZK_LOGIN_ALLOW_CHROME_SAVE_PASSWORD, true))
-        	txtPassword.setClientAttribute("autocomplete", null);
+        	txtPassword.setClientAttribute("autocomplete", "current-password");
 
         lstLanguage = new Combobox();
         lstLanguage.setAutocomplete(true);
