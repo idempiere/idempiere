@@ -138,7 +138,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/database/6.1/Adempiere_pg.jar</url>
+							<url>${url.file.srv}/database/6.2/Adempiere_pg.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>data/seed</outputDirectory>
 							<retries>5</retries>
@@ -151,7 +151,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/database/6.1/Adempiere.jar</url>
+							<url>${url.file.srv}/database/6.2/Adempiere.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>data/seed</outputDirectory>
 							<retries>5</retries>
