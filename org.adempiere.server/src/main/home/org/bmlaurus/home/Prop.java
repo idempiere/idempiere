@@ -34,7 +34,7 @@ public final class Prop implements Serializable {
 	private static final String	TEMPLATE_NAME 		=	"TemplateName";
 	public static final String	CLIENT_NAME 		=	"ClientName";
 	public static final String	CREDITS_TXT 		=	"Credits";
-	public static final String	COPYRIGHT_TXT 		=	"Copyriright";
+	public static final String	COPYRIGHT_TXT 		=	"Copyright";
 	public static final	String CUSTOM_IMAGE_PATH	= "CustomImagePath";
 	
 	/**	Customizable Links    */
@@ -90,7 +90,7 @@ public final class Prop implements Serializable {
 	public static final String	SOC_7				=	"Social7";
 	
 	/**Defaults*/
-	private static final String CREDITS				=	"Welcome to the iDempiere (OSGi+ADempiere) 6.1 Page!";
+	private static final String CREDITS				=	"Welcome to the iDempiere (OSGi+ADempiere) 6.2 Page!";
 	private static String LOGO_URL 					= 	null;
 	
 	
