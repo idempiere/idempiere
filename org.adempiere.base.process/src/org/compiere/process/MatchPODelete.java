@@ -53,10 +53,32 @@ public class MatchPODelete extends SvrProcess
 	protected String doIt()	throws Exception
 	{
 		if (log.isLoggable(Level.INFO)) log.info ("M_MatchPO_ID=" + p_M_MatchPO_ID);
+
+		String msg = "";
+
 		MMatchPO po = new MMatchPO (getCtx(), p_M_MatchPO_ID, get_TrxName());
 		if (po.get_ID() == 0)
 			throw new AdempiereUserError("@NotFound@ @M_MatchPO_ID@ " + p_M_MatchPO_ID);
-		//
+		int reversalId = po.getReversal_ID();
+		if (! deleteMatchPO(po)) {
+			return "@Error@";
+		}
+
+		msg += "@Deleted@";
+
+		if (reversalId > 0) {
+			MMatchPO porev = new MMatchPO (getCtx(), reversalId, get_TrxName());
+			if (porev.get_ID() == 0)
+				throw new AdempiereUserError("@NotFound@ @M_MatchPO_ID@ " + reversalId);
+			if (! deleteMatchPO(porev)) {
+				return "@Error@ @Reversal_ID@";
+			}
+			msg += " + @Deleted@ @Reversal_ID@";
+		}
+		return msg;
+	}	//	doIt
+
+	private boolean deleteMatchPO(MMatchPO po) {
 		MOrderLine orderLine = null;
 		boolean isMatchReceipt = (po.getM_InOutLine_ID() != 0);			 
 		if (isMatchReceipt)
@@ -72,10 +94,10 @@ public class MatchPODelete extends SvrProcess
 				if (!orderLine.save(get_TrxName()))
 					throw new AdempiereUserError("Delete MatchPO failed to restore PO's On Ordered Qty");
 			}
-			return "@OK@";
+			return true;
 		}
 		po.saveEx();
-		return "@Error@";
-	}	//	doIt
+		return false;
+	}
 
 }	//	MatchPODelete
