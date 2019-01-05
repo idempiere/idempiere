@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Setup
 Bundle-SymbolicName: org.adempiere.install;singleton:=true
-Bundle-Version: 6.1.0.qualifier
+Bundle-Version: 6.2.0.qualifier
 Export-Package: org.adempiere.install,
  org.compiere.install
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0"

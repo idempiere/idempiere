@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.ui.swing.feature"
       label="Swing Client-feature"
-      version="6.1.0.qualifier"
+      version="6.2.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">

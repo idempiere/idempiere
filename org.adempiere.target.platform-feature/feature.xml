@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.target.platform.feature"
       label="Adempiere Target Platform"
-      version="6.1.0.qualifier"
+      version="6.2.0.qualifier"
       provider-name="Adempiere.org">
 
    <description url="http://www.example.com/description">

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Processes
 Bundle-SymbolicName: org.adempiere.base.process
-Bundle-Version: 6.1.0.qualifier
+Bundle-Version: 6.2.0.qualifier
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
 Export-Package: org.adempiere.process,

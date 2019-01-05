@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Adempiere Swing Client" uid="org.adempiere.ui.swing.product" id="org.adempiere.ui.swing.client_product" application="org.adempiere.ui.swing.client" version="6.1.0" useFeatures="true" includeLaunchers="true">
+<product name="Adempiere Swing Client" uid="org.adempiere.ui.swing.product" id="org.adempiere.ui.swing.client_product" application="org.adempiere.ui.swing.client" version="6.2.0" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -28,10 +28,10 @@
    </plugins>
 
    <features>
-      <feature id="org.adempiere.base.feature" version="6.1.0.qualifier"/>
-      <feature id="org.adempiere.pipo.feature" version="6.1.0.qualifier"/>
-      <feature id="org.adempiere.ui.swing.feature" version="6.1.0.qualifier"/>
-      <feature id="org.idempiere.hazelcast.service.feature" version="6.1.0.qualifier"/>
+      <feature id="org.adempiere.base.feature" version="6.2.0.qualifier"/>
+      <feature id="org.adempiere.pipo.feature" version="6.2.0.qualifier"/>
+      <feature id="org.adempiere.ui.swing.feature" version="6.2.0.qualifier"/>
+      <feature id="org.idempiere.hazelcast.service.feature" version="6.2.0.qualifier"/>
    </features>
 
    <configurations>
