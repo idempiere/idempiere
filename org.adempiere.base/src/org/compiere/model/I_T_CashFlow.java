@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_CashFlow
  *  @author iDempiere (generated) 
- *  @version Release 6.1
+ *  @version Release 6.2
  */
 public interface I_T_CashFlow 
 {

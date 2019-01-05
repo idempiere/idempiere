@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Tree
  *  @author iDempiere (generated) 
- *  @version Release 6.1 - $Id$ */
+ *  @version Release 6.2 - $Id$ */
 public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20181228L;
+	private static final long serialVersionUID = 20190106L;
 
     /** Standard Constructor */
     public X_AD_Tree (Properties ctx, int AD_Tree_ID, String trxName)

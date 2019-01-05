@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_Resolution
  *  @author iDempiere (generated) 
- *  @version Release 6.1
+ *  @version Release 6.2
  */
 public interface I_R_Resolution 
 {

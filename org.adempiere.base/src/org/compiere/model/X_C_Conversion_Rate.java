@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Conversion_Rate
  *  @author iDempiere (generated) 
- *  @version Release 6.1 - $Id$ */
+ *  @version Release 6.2 - $Id$ */
 public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20181104L;
+	private static final long serialVersionUID = 20190106L;
 
     /** Standard Constructor */
     public X_C_Conversion_Rate (Properties ctx, int C_Conversion_Rate_ID, String trxName)
@@ -136,9 +136,9 @@ public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Pe
 	public void setC_ConversionType_ID (int C_ConversionType_ID)
 	{
 		if (C_ConversionType_ID < 1) 
-			set_Value (COLUMNNAME_C_ConversionType_ID, null);
+			set_ValueNoCheck (COLUMNNAME_C_ConversionType_ID, null);
 		else 
-			set_Value (COLUMNNAME_C_ConversionType_ID, Integer.valueOf(C_ConversionType_ID));
+			set_ValueNoCheck (COLUMNNAME_C_ConversionType_ID, Integer.valueOf(C_ConversionType_ID));
 	}
 
 	/** Get Currency Type.
@@ -164,9 +164,9 @@ public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Pe
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
 		if (C_Currency_ID < 1) 
-			set_Value (COLUMNNAME_C_Currency_ID, null);
+			set_ValueNoCheck (COLUMNNAME_C_Currency_ID, null);
 		else 
-			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
+			set_ValueNoCheck (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
@@ -191,7 +191,7 @@ public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Pe
 	  */
 	public void setC_Currency_ID_To (int C_Currency_ID_To)
 	{
-		set_Value (COLUMNNAME_C_Currency_ID_To, Integer.valueOf(C_Currency_ID_To));
+		set_ValueNoCheck (COLUMNNAME_C_Currency_ID_To, Integer.valueOf(C_Currency_ID_To));
 	}
 
 	/** Get Currency To.
@@ -251,7 +251,7 @@ public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Pe
 	  */
 	public void setValidFrom (Timestamp ValidFrom)
 	{
-		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
+		set_ValueNoCheck (COLUMNNAME_ValidFrom, ValidFrom);
 	}
 
 	/** Get Valid from.
@@ -268,7 +268,7 @@ public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Pe
 	  */
 	public void setValidTo (Timestamp ValidTo)
 	{
-		set_Value (COLUMNNAME_ValidTo, ValidTo);
+		set_ValueNoCheck (COLUMNNAME_ValidTo, ValidTo);
 	}
 
 	/** Get Valid to.

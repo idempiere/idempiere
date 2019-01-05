@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Workflow
  *  @author iDempiere (generated) 
- *  @version Release 6.1 - $Id$ */
+ *  @version Release 6.2 - $Id$ */
 public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20181104L;
+	private static final long serialVersionUID = 20190106L;
 
     /** Standard Constructor */
     public X_ASP_Workflow (Properties ctx, int ASP_Workflow_ID, String trxName)

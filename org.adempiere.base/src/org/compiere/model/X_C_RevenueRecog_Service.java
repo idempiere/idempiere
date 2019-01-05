@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RevenueRecog_Service
  *  @author iDempiere (generated) 
- *  @version Release 6.1 - $Id$ */
+ *  @version Release 6.2 - $Id$ */
 public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Service, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20181128L;
+	private static final long serialVersionUID = 20190106L;
 
     /** Standard Constructor */
     public X_C_RevenueRecog_Service (Properties ctx, int C_RevenueRecog_Service_ID, String trxName)

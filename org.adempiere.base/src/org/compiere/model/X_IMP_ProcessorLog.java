@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for IMP_ProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 6.1 - $Id$ */
+ *  @version Release 6.2 - $Id$ */
 public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20181104L;
+	private static final long serialVersionUID = 20190106L;
 
     /** Standard Constructor */
     public X_IMP_ProcessorLog (Properties ctx, int IMP_ProcessorLog_ID, String trxName)

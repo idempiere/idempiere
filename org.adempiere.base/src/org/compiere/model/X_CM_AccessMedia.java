@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for CM_AccessMedia
  *  @author iDempiere (generated) 
- *  @version Release 6.1 - $Id$ */
+ *  @version Release 6.2 - $Id$ */
 public class X_CM_AccessMedia extends PO implements I_CM_AccessMedia, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20181104L;
+	private static final long serialVersionUID = 20190106L;
 
     /** Standard Constructor */
     public X_CM_AccessMedia (Properties ctx, int CM_AccessMedia_ID, String trxName)
