@@ -6,7 +6,8 @@ Bundle-Version: 6.2.0.qualifier
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.eclipse.equinox.app;bundle-version="0.0.0",
  org.eclipse.jetty.apache-jsp;bundle-version="0.0.0"
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
 Web-ContextPath: /
 Bundle-ClassPath: .,
  WEB-INF/lib/jnlp-jardiff.jar,
