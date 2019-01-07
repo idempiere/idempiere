@@ -75,7 +75,7 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.jfree.chart-osgi;bundle-version="1.0.19"
 Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.adempiere.base
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
 Import-Package: groovy.beans;version="2.5.3",
  groovy.cli;version="2.5.3",

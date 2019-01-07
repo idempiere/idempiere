@@ -4,7 +4,7 @@ Bundle-Name: iDempiere Web Store Servlets
 Bundle-SymbolicName: org.adempiere.webstore.servlet
 Bundle-Version: 6.2.0.qualifier
 Bundle-Vendor: Adempiere.org
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
 Export-Package: org.compiere.wstore
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0"

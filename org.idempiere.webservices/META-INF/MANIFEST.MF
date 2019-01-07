@@ -4,7 +4,7 @@ Bundle-Name: iDempiere Webservices
 Bundle-SymbolicName: org.idempiere.webservices;singleton:=true
 Bundle-Version: 6.2.0.qualifier
 Bundle-Activator: org.idempiere.webservices.Activator
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
 Service-Component: OSGI-INF/ws_modelfactory.xml
 Import-Package: javax.activation,
