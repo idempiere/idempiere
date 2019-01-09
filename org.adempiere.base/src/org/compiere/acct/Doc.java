@@ -199,6 +199,8 @@ public abstract class Doc
 	public static final String 	STATUS_Posted           = "Y";
 	/**	Document Status         */
 	public static final String 	STATUS_Error            = "E";
+	/** Document Status			*/
+	public static final String	STATUS_Deferred			= "d";
 
 
 	/**
@@ -539,7 +541,7 @@ public abstract class Doc
 		if (!force)
 			sql.append(" AND (Processing='N' OR Processing IS NULL)");
 		if (!repost)
-			sql.append(" AND Posted='N'");
+			sql.append(" AND Posted IN ('N','d')");
 		if (DB.executeUpdate(sql.toString(), trxName) == 1) {
 			if (log.isLoggable(Level.INFO)) log.info("Locked: " + get_TableName() + "_ID=" + get_ID());
 		} else {
@@ -558,7 +560,7 @@ public abstract class Doc
 		if (isDeferPosting())
 		{
 			unlock();
-			p_Status = STATUS_NotPosted;
+			p_Status = STATUS_Deferred;
 			return null;
 		}			
 
@@ -648,7 +650,7 @@ public abstract class Doc
 		}
 
 		//  Create Note
-		if (!p_Status.equals(STATUS_Posted))
+		if (!p_Status.equals(STATUS_Posted) && !p_Status.equals(STATUS_Deferred))
 		{
 			//  Insert Note
 			String AD_MessageValue = "PostingError-" + p_Status;

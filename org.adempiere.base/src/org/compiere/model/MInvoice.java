@@ -1867,7 +1867,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 							return DocAction.STATUS_Invalid;
 						}
 						matchPO++;
-						if (!po.isPosted() && po.getM_InOutLine_ID() > 0) // match po don't post if receipt is not assigned, and it doesn't create avg po record
+						if (!po.isPosted())
 							addDocsPostProcess(po);
 						
 						MMatchInv[] matchInvoices = MMatchInv.getInvoiceLine(getCtx(), line.getC_InvoiceLine_ID(), get_TrxName());
