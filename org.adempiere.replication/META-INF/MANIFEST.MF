@@ -4,7 +4,7 @@ Bundle-Name: iDempiere Replication
 Bundle-SymbolicName: org.adempiere.replication;singleton:=true
 Bundle-Version: 6.2.0.qualifier
 Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
 Export-Package: org.adempiere.process.rpl,
  org.adempiere.process.rpl.exp,
