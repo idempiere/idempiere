@@ -6,7 +6,7 @@ Bundle-Version: 6.2.0.qualifier
 Bundle-Activator: org.idempiere.ui.zk.selenium.fitnesse.Activator
 Bundle-ActivationPolicy: lazy
 Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
 Import-Package: fit,
  fit.decorator,
  fit.decorator.exceptions,

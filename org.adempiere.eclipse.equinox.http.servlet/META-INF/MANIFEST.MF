@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-Localization: plugin
 Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
 Bundle-SymbolicName: org.adempiere.eclipse.equinox.http.servlet
 Eclipse-LazyStart: true
 Eclipse-SourceReferences: scm:cvs:pserver:dev.eclipse.org:/cvsroot/rt:

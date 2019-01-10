@@ -4,7 +4,7 @@ Bundle-Name: extra zk library
 Bundle-SymbolicName: org.idempiere.zk.extra
 Bundle-Version: 6.2.0.qualifier
 Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
 Bundle-ClassPath: .,
  lib/breeze.jar,
  lib/calendar.jar,
