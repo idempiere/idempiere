@@ -118,6 +118,7 @@ public class PackInApplicationActivator extends AbstractActivator {
 			t.schedule(new TimerTask() {
 				@Override
 				public void run() {
+				  if (! "Y".equals(Env.getContext(Env.getCtx(), "org.adempiere.base.PackInFolderApplication"))) {
 					ClassLoader cl = Thread.currentThread().getContextClassLoader();
 					try {
 						Thread.currentThread().setContextClassLoader(PackInApplicationActivator.class.getClassLoader());
@@ -128,7 +129,8 @@ public class PackInApplicationActivator extends AbstractActivator {
 						service = null;
 						Thread.currentThread().setContextClassLoader(cl);
 					}
-					t.cancel();
+				  }
+				  t.cancel();
 				}
 			}, timeout);
 		} else {

@@ -49,12 +49,24 @@ public class PackInFolderApplication implements IApplication {
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
 		Adempiere.startup(false);
-		CLogMgt.setLevel(Level.FINE);
-
+		String logLevel = System.getProperty("LogLevel");
+		if (logLevel == null)
+			logLevel = "INFO";
+		switch (logLevel) {
+		case "SEVERE":	CLogMgt.setLevel(Level.SEVERE); break;
+		case "WARNING":	CLogMgt.setLevel(Level.WARNING); break;
+		case "INFO":	CLogMgt.setLevel(Level.INFO); break;
+		case "CONFIG":	CLogMgt.setLevel(Level.CONFIG); break;
+		case "FINE":	CLogMgt.setLevel(Level.FINE); break;
+		case "FINER": 	CLogMgt.setLevel(Level.FINER); break;
+		case "FINEST": 	CLogMgt.setLevel(Level.FINEST); break;
+		default:		CLogMgt.setLevel(Level.INFO); break;
+		}
 		Map<?, ?> args = context.getArguments();
 		String commandlineArgs[] = (String[]) args.get("application.args");
 		if (commandlineArgs.length == 1) {
 			Properties ctx = Env.getCtx();
+			Env.setContext(ctx, "org.adempiere.base.PackInFolderApplication", "Y");
 			String directory = commandlineArgs[0];
 			ProcessInfo pi = new ProcessInfo("PackInFolder", 200099);
 			pi.setAD_Client_ID(0);
