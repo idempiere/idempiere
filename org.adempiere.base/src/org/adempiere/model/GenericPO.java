@@ -93,7 +93,7 @@ public class GenericPO extends PO {
 		PropertiesWrapper wrapper = (PropertiesWrapper)ctx;
 		p_ctx = wrapper.source;
 		tableName = wrapper.tableName;
-		tableID = MTable.getTable_ID(tableName);
+		tableID = MTable.getTable_ID(tableName, this.get_TrxName());
 		// log.info("Table_ID: "+Table_ID);
 		POInfo poi = POInfo.getPOInfo(ctx, tableID, this.get_TrxName());
 		return poi;

@@ -1248,8 +1248,12 @@ public class DB_Oracle implements AdempiereDatabase
         return m_convert;
     }
 
-	public int getNextID(String Name) {
-		int m_sequence_id = DB.getSQLValueEx(null, "SELECT "+Name.toUpperCase()+".nextval FROM DUAL");
+	public int getNextID(String name) {
+		return getNextID(name, null);
+	}
+
+	public int getNextID(String name, String trxName) {
+		int m_sequence_id = DB.getSQLValueEx(trxName, "SELECT "+name.toUpperCase()+".nextval FROM DUAL");
 		return m_sequence_id;
 	}
 
