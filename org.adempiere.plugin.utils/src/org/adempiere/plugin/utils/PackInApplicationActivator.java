@@ -169,7 +169,12 @@ public class PackInApplicationActivator extends AbstractActivator {
 					currentFile = zipFile;
 					if (!packIn(zipFile)) {
 						// stop processing further packages if one fail
-						addLog(Level.WARNING, "Failed application of " + zipFile);
+						String msg = "Failed application of " + zipFile;
+						addLog(Level.SEVERE, msg);
+						if (getProcessInfo() != null) {
+							getProcessInfo().setError(true);
+							getProcessInfo().setSummary("@Error@: " + msg);
+						}
 						break;
 					}
 					addLog(Level.INFO, "Successful application of " + zipFile);

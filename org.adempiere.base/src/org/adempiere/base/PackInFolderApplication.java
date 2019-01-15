@@ -32,6 +32,7 @@ import org.compiere.Adempiere;
 import org.compiere.model.MPInstance;
 import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoUtil;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.Env;
 import org.eclipse.equinox.app.IApplication;
@@ -76,14 +77,19 @@ public class PackInFolderApplication implements IApplication {
 			instance.createParameter(10, "Folder", directory);
 			pi.setAD_PInstance_ID(instance.getAD_PInstance_ID());
 			ProcessCall process = Core.getProcess("org.adempiere.pipo2.PackInFolder");
-			process.startProcess(ctx, pi, null);
+			boolean success = process.startProcess(ctx, pi, null);
+			ProcessInfoUtil.setLogFromDB(pi);
 			StringBuilder msgout = new StringBuilder("Process=").append(pi.getTitle())
-					.append(" Error=").append(pi.isError()).append(" Summary=")
-					.append(pi.getSummary());
+					.append("\n Error=").append(pi.isError())
+					.append("\n Summary=").append(pi.getSummary())
+					.append("\n Logs=\n").append(pi.getLogInfo(false).replaceAll("<br>", "\n"));
 			System.out.println(msgout.toString());
+			if (!success)
+				return new Integer(1);
 		} else {
 			System.out.println("Apply PackIn from Folder usage:");
 			System.out.println("RUN_ApplyPackInFromFolder.sh folder");
+			return new Integer(1);
 		}
 		
 		
