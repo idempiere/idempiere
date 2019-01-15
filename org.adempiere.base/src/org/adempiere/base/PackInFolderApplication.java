@@ -32,6 +32,7 @@ import org.compiere.Adempiere;
 import org.compiere.model.MPInstance;
 import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoUtil;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.Env;
 import org.eclipse.equinox.app.IApplication;
@@ -49,12 +50,24 @@ public class PackInFolderApplication implements IApplication {
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
 		Adempiere.startup(false);
-		CLogMgt.setLevel(Level.FINE);
-
+		String logLevel = System.getProperty("LogLevel");
+		if (logLevel == null)
+			logLevel = "INFO";
+		switch (logLevel) {
+		case "SEVERE":	CLogMgt.setLevel(Level.SEVERE); break;
+		case "WARNING":	CLogMgt.setLevel(Level.WARNING); break;
+		case "INFO":	CLogMgt.setLevel(Level.INFO); break;
+		case "CONFIG":	CLogMgt.setLevel(Level.CONFIG); break;
+		case "FINE":	CLogMgt.setLevel(Level.FINE); break;
+		case "FINER": 	CLogMgt.setLevel(Level.FINER); break;
+		case "FINEST": 	CLogMgt.setLevel(Level.FINEST); break;
+		default:		CLogMgt.setLevel(Level.INFO); break;
+		}
 		Map<?, ?> args = context.getArguments();
 		String commandlineArgs[] = (String[]) args.get("application.args");
 		if (commandlineArgs.length == 1) {
 			Properties ctx = Env.getCtx();
+			Env.setContext(ctx, "org.adempiere.base.PackInFolderApplication", "Y");
 			String directory = commandlineArgs[0];
 			ProcessInfo pi = new ProcessInfo("PackInFolder", 200099);
 			pi.setAD_Client_ID(0);
@@ -64,14 +77,19 @@ public class PackInFolderApplication implements IApplication {
 			instance.createParameter(10, "Folder", directory);
 			pi.setAD_PInstance_ID(instance.getAD_PInstance_ID());
 			ProcessCall process = Core.getProcess("org.adempiere.pipo2.PackInFolder");
-			process.startProcess(ctx, pi, null);
+			boolean success = process.startProcess(ctx, pi, null);
+			ProcessInfoUtil.setLogFromDB(pi);
 			StringBuilder msgout = new StringBuilder("Process=").append(pi.getTitle())
-					.append(" Error=").append(pi.isError()).append(" Summary=")
-					.append(pi.getSummary());
+					.append("\n Error=").append(pi.isError())
+					.append("\n Summary=").append(pi.getSummary())
+					.append("\n Logs=\n").append(pi.getLogInfo(false).replaceAll("<br>", "\n"));
 			System.out.println(msgout.toString());
+			if (!success)
+				return new Integer(1);
 		} else {
 			System.out.println("Apply PackIn from Folder usage:");
 			System.out.println("RUN_ApplyPackInFromFolder.sh folder");
+			return new Integer(1);
 		}
 		
 		

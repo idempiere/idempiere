@@ -4,7 +4,8 @@ Bundle-Name: iDempiere extend
 Bundle-SymbolicName: org.adempiere.extend;singleton:=true
 Bundle-Version: 6.2.0.qualifier
 Eclipse-RegisterBuddy: org.adempiere.tools
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
+Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
 Export-Package: compiere.model,
  test
 Fragment-Host: org.adempiere.base;bundle-version="0.0.0"

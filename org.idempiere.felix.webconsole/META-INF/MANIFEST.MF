@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.idempiere.felix.webconsole
 Bundle-Version: 6.2.0.qualifier
 Bundle-Activator: org.idempiere.felix.webconsole.Activator
 Bundle-ActivationPolicy: lazy
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
+Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
 Import-Package: javax.servlet;version="2.5.0",
  javax.servlet.http;version="2.5.0",
  javax.servlet.jsp;version="2.1.0",

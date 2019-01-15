@@ -209,6 +209,13 @@ public interface AdempiereDatabase
 	/**
 	 * 	Return next sequence this Sequence
 	 *	@param Sequence Name
+	 *  @param Transaction
+	 */
+	public int getNextID(String Name, String trxName);
+	
+	/**
+	 * 	Return next sequence this Sequence
+	 *	@param Sequence Name
 	 */
 	public int getNextID(String Name);
 	

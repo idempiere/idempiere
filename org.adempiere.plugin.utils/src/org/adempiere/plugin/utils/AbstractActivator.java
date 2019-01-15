@@ -159,6 +159,10 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 		m_processInfo  = processInfo;
 	}
 
+	public ProcessInfo getProcessInfo() {
+		return m_processInfo;
+	}
+
 	public void setProcessUI(IProcessUI processUI) {
 		m_processUI  = processUI;
 	};

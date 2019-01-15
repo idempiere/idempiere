@@ -58,7 +58,7 @@ public class MTable extends X_AD_Table
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7527235342324308477L;
+	private static final long serialVersionUID = 4974471096496488963L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -614,19 +614,22 @@ public class MTable extends X_AD_Table
 	}	//	getSQLCreate
 
 	// globalqss
+	public static int getTable_ID(String tableName) {
+		return getTable_ID(tableName, null);
+	}
 	/**
 	 * 	Grant independence to GenerateModel from AD_Table_ID
 	 *	@param String tableName
 	 *	@return int retValue
 	 */
-	public static int getTable_ID(String tableName) {
+	public static int getTable_ID(String tableName, String trxName) {
 		int retValue = 0;
 		String SQL = "SELECT AD_Table_ID FROM AD_Table WHERE tablename = ?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(SQL, null);
+			pstmt = DB.prepareStatement(SQL, trxName);
 			pstmt.setString(1, tableName);
 			rs = pstmt.executeQuery();
 			if (rs.next())

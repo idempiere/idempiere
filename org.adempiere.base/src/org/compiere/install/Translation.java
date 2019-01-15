@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.SAXParser;
@@ -204,7 +205,7 @@ public class Translation implements IApplication
 			//	System.out.println(factory.getClass().getName());
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			//	<!DOCTYPE idempiereTrl SYSTEM "http://www.idempiere.org/dtd/idempiereTrl.dtd">
-			//	<!DOCTYPE idempiereTrl PUBLIC "-//ComPiere, Inc.//DTD iDempiere Translation 1.0//EN" "http://www.idempiere.org/dtd/idempiereTrl.dtd">
+			//	<!DOCTYPE idempiereTrl PUBLIC "-//ComPiere, Inc.//DTD iDempiere Translation 1.0//EN" "http://www.idempiere.com/dtd/idempiereTrl.dtd">
 			Document document = builder.newDocument();
 			document.appendChild(document.createComment(Adempiere.getSummaryAscii()));
 			document.appendChild(document.createComment(DTD));
@@ -277,6 +278,7 @@ public class Translation implements IApplication
 						valueString = "";
 					value.setAttribute(XML_VALUE_ATTRIBUTE_ORIGINAL, origString);
 					if (valueString.indexOf("<") != -1 || valueString.indexOf(">") != -1 || valueString.indexOf("&") != -1) {
+						value.setAttributeNS(XMLConstants.XML_NS_URI, "space", "preserve");
 						value.appendChild(document.createCDATASection(valueString));
 					} else {
 						value.appendChild(document.createTextNode(valueString));

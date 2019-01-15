@@ -38,6 +38,7 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -4577,7 +4578,10 @@ public abstract class PO
 			if (value == null || value.equals (Null.NULL))
 				;
 			else if (c == Object.class)
+			{
+				col.setAttributeNS(XMLConstants.XML_NS_URI, "space", "preserve");
 				col.appendChild(document.createCDATASection(value.toString()));
+			}
 			else if (value instanceof Integer || value instanceof BigDecimal)
 				col.appendChild(document.createTextNode(value.toString()));
 			else if (c == Boolean.class)
@@ -4592,11 +4596,20 @@ public abstract class PO
 			else if (value instanceof Timestamp)
 				col.appendChild(document.createTextNode(value.toString()));
 			else if (c == String.class)
+			{
+				col.setAttributeNS(XMLConstants.XML_NS_URI, "space", "preserve");
 				col.appendChild(document.createCDATASection((String)value));
+			}
 			else if (DisplayType.isLOB(dt))
+			{
+				col.setAttributeNS(XMLConstants.XML_NS_URI, "space", "preserve");
 				col.appendChild(document.createCDATASection(value.toString()));
+			}
 			else
+			{
+				col.setAttributeNS(XMLConstants.XML_NS_URI, "space", "preserve");
 				col.appendChild(document.createCDATASection(value.toString()));
+			}
 			//
 			root.appendChild(col);
 		}

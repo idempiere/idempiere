@@ -1829,11 +1829,11 @@ public final class DB
 
 		if(SYSTEM_NATIVE_SEQUENCE && !adempiereSys)
 		{
-			int m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SQ");
+			int m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SQ", trxName);
 			if (m_sequence_id == -1) {
 				// try to create the sequence and try again
 				MSequence.createTableSequence(Env.getCtx(), TableName, trxName, true);
-				m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SQ");
+				m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SQ", trxName);
 			}
 			return m_sequence_id;
 		}

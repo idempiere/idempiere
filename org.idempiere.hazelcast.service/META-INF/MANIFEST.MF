@@ -30,7 +30,8 @@ Bundle-ClassPath: .,
  lib/hazelcast-aws.jar,
  lib/hazelcast.jar
 Service-Component: OSGI-INF/clusterservice.xml, OSGI-INF/cacheservice.xml, OSGI-INF/messageservice.xml
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
+Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
 Require-Bundle: org.eclipse.osgi
 Automatic-Module-Name: org.idempiere.hazelcast.service
 Bundle-Vendor: iDempiere Community

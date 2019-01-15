@@ -4,7 +4,8 @@ Bundle-Name: iDempiere Hazelcast Service Configuration
 Bundle-SymbolicName: org.idempiere.hazelcast.service.config
 Bundle-Version: 6.2.0.qualifier
 Fragment-Host: org.idempiere.hazelcast.service;bundle-version="0.0.0"
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.10))"
+Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
 Bundle-ClassPath: .
 Automatic-Module-Name: org.idempiere.hazelcast.service.config
 Bundle-Vendor: iDempiere Community

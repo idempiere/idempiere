@@ -118,6 +118,7 @@ public class PackInApplicationActivator extends AbstractActivator {
 			t.schedule(new TimerTask() {
 				@Override
 				public void run() {
+				  if (! "Y".equals(Env.getContext(Env.getCtx(), "org.adempiere.base.PackInFolderApplication"))) {
 					ClassLoader cl = Thread.currentThread().getContextClassLoader();
 					try {
 						Thread.currentThread().setContextClassLoader(PackInApplicationActivator.class.getClassLoader());
@@ -128,7 +129,8 @@ public class PackInApplicationActivator extends AbstractActivator {
 						service = null;
 						Thread.currentThread().setContextClassLoader(cl);
 					}
-					t.cancel();
+				  }
+				  t.cancel();
 				}
 			}, timeout);
 		} else {
@@ -167,7 +169,12 @@ public class PackInApplicationActivator extends AbstractActivator {
 					currentFile = zipFile;
 					if (!packIn(zipFile)) {
 						// stop processing further packages if one fail
-						addLog(Level.WARNING, "Failed application of " + zipFile);
+						String msg = "Failed application of " + zipFile;
+						addLog(Level.WARNING, msg);
+						if (getProcessInfo() != null) {
+							getProcessInfo().setError(true);
+							getProcessInfo().setSummary("@Error@: " + msg);
+						}
 						break;
 					}
 					addLog(Level.INFO, "Successful application of " + zipFile);

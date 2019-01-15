@@ -110,6 +110,7 @@ public class PipoDictionaryService implements IDictionaryService {
 			Trx.get(trxName, false).commit(true);
 			if (logger.isLoggable(Level.INFO)) logger.info("commit " + trxName);
 		} catch (Exception e) {
+			Trx.get(trxName, false).rollback();
 			adPackageImp.setP_Msg(e.getLocalizedMessage());
 			packIn.getNotifier().addFailureLine(e.getLocalizedMessage());
 			packIn.setSuccess(false);

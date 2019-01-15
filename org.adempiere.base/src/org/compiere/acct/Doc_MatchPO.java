@@ -41,6 +41,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MTax;
 import org.compiere.model.ProductCost;
 import org.compiere.model.X_M_InOut;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
@@ -60,7 +61,7 @@ public class Doc_MatchPO extends Doc
 	 * 	@param as accounting schemata
 	 * 	@param rs record
 	 * 	@param trxName trx
-	 */
+	 */	
 	public Doc_MatchPO (MAcctSchema as, ResultSet rs, String trxName)
 	{
 		super(as, MMatchPO.class, rs, DOCTYPE_MatMatchPO, trxName);
@@ -122,6 +123,24 @@ public class Doc_MatchPO extends Doc
 		{
 			m_deferPosting = true;
 		}
+		else
+		{
+			String posted = DB.getSQLValueStringEx(getTrxName(), "SELECT Posted FROM M_MatchPO WHERE M_MatchPO_ID=?", m_matchPO.getM_MatchPO_ID());
+			if (STATUS_Deferred.equals(posted))
+			{
+				int M_InOut_ID = DB.getSQLValueEx(getTrxName(), "SELECT M_InOut_ID FROM M_InOutLine WHERE M_InOutLine_ID=?", m_M_InOutLine_ID);
+				MInOut inout = new MInOut(getCtx(), M_InOut_ID, getTrxName());
+				if (inout.getDateAcct().after(m_matchPO.getDateAcct()))
+				{
+					m_matchPO.setDateAcct(inout.getDateAcct());
+					m_matchPO.setDateTrx(inout.getDateAcct());
+					setDateAcct(inout.getDateAcct());
+					setDateDoc(inout.getDateAcct());
+					m_matchPO.saveEx();
+				}
+			}
+		}
+		
 		return null;
 	}   //  loadDocumentDetails
 
