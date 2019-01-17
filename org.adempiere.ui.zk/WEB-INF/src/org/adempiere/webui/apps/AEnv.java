@@ -90,7 +90,7 @@ import com.itextpdf.text.pdf.PdfWriter;
  */
 public final class AEnv
 {
-	public static final String LOCALE = "#Locale";
+	public static final String LOCALE = Env.LOCALE;
 	
 	/**
 	 *  Show in the center of the screen.
@@ -663,15 +663,7 @@ public final class AEnv
 	 * @return Language
 	 */
 	public static Language getLanguage(Properties ctx) {
-		Locale locale = getLocale(ctx);
-		Language language = Env.getLanguage(ctx);
-		if (!language.getLocale().equals(locale)) {
-			Language tmp = Language.getLanguage(locale.toString());
-			String adLanguage = language.getAD_Language();
-			language = new Language(tmp.getName(), adLanguage, tmp.getLocale(), tmp.isDecimalPoint(),
-	    			tmp.getDateFormat().toPattern(), tmp.getMediaSize());
-		}
-		return language;
+		return Env.getLocaleLanguage(ctx);
 	}
 
 	/**
@@ -679,21 +671,7 @@ public final class AEnv
 	 * @return Locale
 	 */
 	public static Locale getLocale(Properties ctx) {
-		String value = Env.getContext(ctx, AEnv.LOCALE);
-        Locale locale = null;
-        if (value != null && value.length() > 0)
-        {
-	        String[] components = value.split("\\_");
-	        String language = components.length > 0 ? components[0] : "";
-	        String country = components.length > 1 ? components[1] : "";
-	        locale = new Locale(language, country);
-        }
-        else
-        {
-        	locale = Env.getLanguage(ctx).getLocale();
-        }
-
-        return locale;
+		return Env.getLocale(ctx);
 	}
 
 	/**
