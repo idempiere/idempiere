@@ -10,7 +10,7 @@
 	<artifactId>org.idempiere.maven.to.p2</artifactId>
 	<packaging>pom</packaging>
 	<properties>
-		<zk-osgi-zip-file>https://sourceforge.net/projects/zk1/files/ZK/zk-8.6.0.1/zk-bin-osgi-8.6.0.1.zip</zk-osgi-zip-file>
+		<zk-osgi-zip-file>https://sourceforge.net/project/zk1/ZK/zk-8.6.0.1/zk-bin-osgi-8.6.0.1.zip</zk-osgi-zip-file>
 		<!-- https://github.com/eclipse/jetty.project/blob/jetty-9.4.9.v20180320/pom.xml up to verison of jetty -->
 		<jetty.version>9.4.14.v20181114</jetty.version>
 		<jetty.alpn.api.version>1.1.3.v20160715</jetty.alpn.api.version>
@@ -112,12 +112,6 @@
 										</artifact>
 										<artifact>
 											<id>org.eclipse.jetty:jetty-continuation:jar:${jetty.version}</id>
-											<source>true</source>
-											<transitive>false</transitive>
-										</artifact>
-										<artifact>
-										    <!-- it's maintain and up to date than org.eclipse.jdt.core.compiler.batch -->
-											<id>org.eclipse.jdt:org.eclipse.jdt.core:jar:${jdtVersion}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -1760,6 +1754,39 @@ it also resolve issue confilic between eclipse runtime and tycho build
 							<outputFileName>zk-bin-osgi-${zk.version}.zip</outputFileName>
 							<outputDirectory>${project.build.directory}</outputDirectory>
 							<retries>5</retries>
+						</configuration>
+					</execution>
+<!--hot fix for https://tracker.zkoss.org/browse/ZK-4198, https://idempiere.atlassian.net/browse/IDEMPIERE-2003-->
+					<execution>
+						<id>download-zk-patch-source-for-IDEMPIERE-2003</id>
+						<phase>package</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>${url.file.srv}/extra.jar/zul.sources_8.6.0.1-patched.jar</url>
+							<unpack>false</unpack>
+							<outputFileName>zul.sources_8.6.0.1-patched.jar</outputFileName>
+							<outputDirectory>${project.build.directory}/repository/plugins</outputDirectory>
+							<retries>5</retries>
+							<overwrite>true</overwrite>
+							<skipCache>true</skipCache>
+						</configuration>
+					</execution>
+					<execution>
+						<id>download-zk-patch-binary-for-IDEMPIERE-2003</id>
+						<phase>package</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>${url.file.srv}/extra.jar/zul_8.6.0.1-patched.jar</url>
+							<unpack>false</unpack>
+							<outputFileName>zul_8.6.0.1-patched.jar</outputFileName>
+							<outputDirectory>${project.build.directory}/repository/plugins</outputDirectory>
+							<retries>5</retries>
+							<overwrite>true</overwrite>
+							<skipCache>true</skipCache>
 						</configuration>
 					</execution>
 				</executions>
