@@ -91,7 +91,7 @@ public class NumberBox extends Div
     	decimalBox.setSclass("editor-input");
         decimalBox.setId(decimalBox.getUuid());
         
-        char separatorChar = DisplayType.getNumberFormat(DisplayType.Number, Env.getLanguage(Env.getCtx())).getDecimalFormatSymbols().getDecimalSeparator();
+        char separatorChar = DisplayType.getNumberFormat(DisplayType.Number, null).getDecimalFormatSymbols().getDecimalSeparator();
         String separator = Character.toString(separatorChar);
         boolean processDotKeypad = MSysConfig.getBooleanValue(MSysConfig.ZK_DECIMALBOX_PROCESS_DOTKEYPAD, true, Env.getAD_Client_ID(Env.getCtx()));
         if (processDotKeypad) {
@@ -253,7 +253,7 @@ public class NumberBox extends Div
 
         Vbox vbox = new Vbox();
 
-        char separatorChar = DisplayType.getNumberFormat(DisplayType.Number, Env.getLanguage(Env.getCtx())).getDecimalFormatSymbols().getDecimalSeparator();
+        char separatorChar = DisplayType.getNumberFormat(DisplayType.Number, null).getDecimalFormatSymbols().getDecimalSeparator();
         String separator = Character.toString(separatorChar);
         
         txtCalc = new Textbox();

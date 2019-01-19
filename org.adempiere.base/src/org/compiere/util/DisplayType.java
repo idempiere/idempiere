@@ -355,7 +355,7 @@ public final class DisplayType
 	{
 		Language myLanguage = language;
 		if (myLanguage == null)
-			myLanguage = Language.getLoginLanguage();
+			myLanguage =  Env.getLocaleLanguage(Env.getCtx());
 		Locale locale = myLanguage.getLocale();
 		DecimalFormat format = null;
 		if (locale != null)

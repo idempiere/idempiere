@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
@@ -1143,6 +1144,45 @@ public final class Env
 	{
 		return Language.getLoginLanguage();
 	}	//	getLanguage
+
+	/**
+	 * @param ctx
+	 * @return Language
+	 */
+	public static Language getLocaleLanguage(Properties ctx) {
+		Locale locale = getLocale(ctx);
+		Language language = Env.getLanguage(ctx);
+		if (!language.getLocale().equals(locale)) {
+			Language tmp = Language.getLanguage(locale.toString());
+			String adLanguage = language.getAD_Language();
+			language = new Language(tmp.getName(), adLanguage, tmp.getLocale(), tmp.isDecimalPoint(),
+	    			tmp.getDateFormat().toPattern(), tmp.getMediaSize());
+		}
+		return language;
+	}
+
+	public static final String LOCALE = "#Locale";
+	/**
+	 * @param ctx
+	 * @return Locale
+	 */
+	public static Locale getLocale(Properties ctx) {
+		String value = Env.getContext(ctx, Env.LOCALE);
+        Locale locale = null;
+        if (value != null && value.length() > 0)
+        {
+	        String[] components = value.split("\\_");
+	        String language = components.length > 0 ? components[0] : "";
+	        String country = components.length > 1 ? components[1] : "";
+	        locale = new Locale(language, country);
+        }
+        else
+        {
+        	locale = Env.getLanguage(ctx).getLocale();
+        }
+
+        return locale;
+	}
 
 	public static ArrayList<String> getSupportedLanguages()
 	{

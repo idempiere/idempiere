@@ -50,10 +50,12 @@ public class MToolBarButton extends X_AD_ToolBarButton {
 
 	public static MToolBarButton[] getProcessButtonOfTab(int AD_Tab_ID, String trxName) {
 		MToolBarButton[] buttons = new MToolBarButton[0];
-		
-		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), Table_ID), "AD_Tab_ID=? AND Action=? AND AD_Process_ID IS NOT NULL", trxName);
+
+		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), Table_ID), "AD_ToolBarButton.AD_Tab_ID=? AND AD_ToolBarButton.Action=? AND AD_ToolBarButton.AD_Process_ID IS NOT NULL", trxName)
+				.addJoinClause("INNER JOIN AD_Process p ON (p.AD_Process_ID = AD_ToolBarButton.AD_Process_ID AND p.IsActive = 'Y')");
+
 		List<MToolBarButton> list = query.setParameters(AD_Tab_ID, "W").setOnlyActiveRecords(true)
-				.setOrderBy("CASE WHEN COALESCE(SeqNo,0)=0 THEN AD_ToolBarButton_ID ELSE SeqNo END").list();
+				.setOrderBy("CASE WHEN COALESCE(AD_ToolBarButton.SeqNo,0)=0 THEN AD_ToolBarButton.AD_ToolBarButton_ID ELSE AD_ToolBarButton.SeqNo END").list();
 		if (list != null && !list.isEmpty()) {
 			buttons = list.toArray(buttons);
 		}

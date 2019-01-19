@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-181229" sequenceNumber="107">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-190118" sequenceNumber="107">
 <locations>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.10.0.v20181116-0958"/>
@@ -888,30 +888,30 @@
 		<unit id="bcprov.source" version="1.60.0"/>
 		<unit id="bctsp" version="1.46.0"/>
 		<unit id="bctsp.source" version="1.46.0"/>
-		<unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.core.jackson-annotations.source" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.core.jackson-core" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.core.jackson-core.source" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.core.jackson-databind.source" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.dataformat.jackson-dataformat-xml" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.dataformat.jackson-dataformat-xml.source" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-guava" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-guava.source" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-joda" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-joda.source" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-json-org" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-json-org.source" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base.source" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider.source" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider.source" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.module.jackson-module-jaxb-annotations" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.module.jackson-module-jaxb-annotations.source" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.module.jackson-module-jsonSchema" version="2.9.7"/>
-		<unit id="com.fasterxml.jackson.module.jackson-module-jsonSchema.source" version="2.9.7"/>
+		<unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.core.jackson-annotations.source" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.core.jackson-core" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.core.jackson-core.source" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.core.jackson-databind" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.core.jackson-databind.source" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.dataformat.jackson-dataformat-xml" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.dataformat.jackson-dataformat-xml.source" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-guava" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-guava.source" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-joda" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-joda.source" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-json-org" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.datatype.jackson-datatype-json-org.source" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base.source" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider.source" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider.source" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.module.jackson-module-jaxb-annotations" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.module.jackson-module-jaxb-annotations.source" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.module.jackson-module-jsonSchema" version="2.9.8"/>
+		<unit id="com.fasterxml.jackson.module.jackson-module-jsonSchema.source" version="2.9.8"/>
 		<unit id="com.fasterxml.woodstox.woodstox-core" version="5.0.3"/>
 		<unit id="com.fasterxml.woodstox.woodstox-core.source" version="5.0.3"/>
 		<unit id="com.google.zxing.core" version="3.2.1"/>
@@ -1152,8 +1152,6 @@
 		<unit id="org.atmosphere.runtime.source" version="2.5.0"/>
 		<unit id="org.cryptacular" version="1.2.2"/>
 		<unit id="org.cryptacular.source" version="1.2.2"/>
-		<unit id="org.eclipse.jdt.core" version="3.15.0.v20180905-0317"/>
-		<unit id="org.eclipse.jdt.core.source" version="3.15.0.v20180905-0317"/>
 		<unit id="org.eclipse.jetty.alpn.api" version="1.1.3.v20160715"/>
 		<unit id="org.eclipse.jetty.alpn.api.source" version="1.1.3.v20160715"/>
 		<unit id="org.eclipse.jetty.alpn.client" version="9.4.14.v20181114"/>
@@ -1244,8 +1242,8 @@
 		<unit id="org.eclipse.jetty.websocket.servlet.source" version="9.4.14.v20181114"/>
 		<unit id="org.eclipse.jetty.xml" version="9.4.14.v20181114"/>
 		<unit id="org.eclipse.jetty.xml.source" version="9.4.14.v20181114"/>
-		<unit id="org.idempiere.org.conscrypt.openjdk-uber" version="1.4.0"/>
-		<unit id="org.idempiere.org.conscrypt.openjdk-uber.source" version="1.4.0"/>
+		<unit id="org.idempiere.org.conscrypt.openjdk-uber" version="1.4.2"/>
+		<unit id="org.idempiere.org.conscrypt.openjdk-uber.source" version="1.4.2"/>
 		<unit id="org.jfree.chart-osgi" version="1.0.19"/>
 		<unit id="org.jfree.jcommon-osgi" version="1.0.23"/>
 		<unit id="org.krysalis.barcode4j" version="2.1.0"/>
@@ -1298,10 +1296,12 @@
 		<unit id="zkwebfragment" version="8.6.0.1"/>
 		<unit id="zkwebfragment.sources" version="8.6.0.1"/>
 		<unit id="zul" version="8.6.0.1"/>
+		<unit id="zul" version="8.6.0.1-patched"/>
 		<unit id="zul.sources" version="8.6.0.1"/>
+		<unit id="zul.sources" version="8.6.0.1-patched"/>
 		<unit id="zweb" version="8.6.0.1"/>
 		<unit id="zweb.sources" version="8.6.0.1"/>
-		<repository location="https://raw.githubusercontent.com/idempiere/binary.file/master/p2.maven/maven-p2-R20181229"/>
+		<repository location="https://raw.githubusercontent.com/idempiere/binary.file/master/p2.maven/maven-p2-R20190118"/>
 	</location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>

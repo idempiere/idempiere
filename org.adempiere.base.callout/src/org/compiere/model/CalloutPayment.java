@@ -433,7 +433,7 @@ public class CalloutPayment extends CalloutEngine
 				currency.getStdPrecision (), RoundingMode.HALF_UP);
 			mTab.setValue ("OverUnderAmt", OverUnderAmt);
 		}
-		// No Invoice - Set Discount, Witeoff, Under/Over to 0
+		// No Invoice - Set Discount, Writeoff, Under/Over to 0
 		else if (C_Invoice_ID == 0)
 		{
 			if (Env.ZERO.compareTo (DiscountAmt) != 0)
@@ -448,8 +448,12 @@ public class CalloutPayment extends CalloutEngine
 				&& (!processed)
 				&& "Y".equals (Env.getContext (ctx, WindowNo, "IsOverUnderPayment")))
 			{
-				OverUnderAmt = InvoiceOpenAmt.subtract (PayAmt).subtract (
-					DiscountAmt).subtract (WriteOffAmt);
+				OverUnderAmt = InvoiceOpenAmt.subtract (PayAmt).subtract(DiscountAmt).subtract (WriteOffAmt);
+				if (OverUnderAmt.signum() > 0) { // no discount because is not paid in full
+					DiscountAmt = Env.ZERO;
+					mTab.setValue ("DiscountAmt", DiscountAmt);
+					OverUnderAmt = InvoiceOpenAmt.subtract (PayAmt).subtract(DiscountAmt).subtract (WriteOffAmt);
+				}
 				mTab.setValue ("OverUnderAmt", OverUnderAmt);
 			}
 			else if (colName.equals ("PayAmt")
