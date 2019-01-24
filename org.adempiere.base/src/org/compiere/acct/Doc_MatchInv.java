@@ -156,7 +156,7 @@ public class Doc_MatchInv extends Doc
 		setC_Currency_ID (as.getC_Currency_ID());
 		boolean isInterOrg = isInterOrg(as);
 
-		/**	Needs to be handeled in PO Matching as no Receipt info
+		/**	Needs to be handled in PO Matching as no Receipt info
 		if (m_pc.isService())
 		{
 			log.fine("Service - skipped");
@@ -168,8 +168,7 @@ public class Doc_MatchInv extends Doc
 		//  NotInvoicedReceipt      DR
 		//  From Receipt
 		BigDecimal multiplier = getQty()
-			.divide(m_receiptLine.getMovementQty(), 12, RoundingMode.HALF_UP)
-			.abs();
+			.divide(m_receiptLine.getMovementQty(), 12, RoundingMode.HALF_UP);
 		FactLine dr = fact.createLine (null,
 			getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
 			as.getC_Currency_ID(), Env.ONE, null);			// updated below
@@ -192,12 +191,9 @@ public class Doc_MatchInv extends Doc
 		}
 		else
 		{
-			BigDecimal effMultiplier = multiplier;
-			if (getQty().signum() < 0)
-				effMultiplier = effMultiplier.negate();
 			if (!dr.updateReverseLine (MInOut.Table_ID, 		//	Amt updated
 				m_receiptLine.getM_InOut_ID(), m_receiptLine.getM_InOutLine_ID(),
-				effMultiplier))
+				multiplier))
 			{
 				p_Error = "Mat.Receipt not posted yet";
 				return null;
@@ -213,8 +209,7 @@ public class Doc_MatchInv extends Doc
 			expense = m_pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 		BigDecimal LineNetAmt = m_invoiceLine.getLineNetAmt();
 		multiplier = getQty()
-			.divide(m_invoiceLine.getQtyInvoiced(), 12, RoundingMode.HALF_UP)
-			.abs();
+			.divide(m_invoiceLine.getQtyInvoiced(), 12, RoundingMode.HALF_UP);
 		if (multiplier.compareTo(Env.ONE) != 0)
 			LineNetAmt = LineNetAmt.multiply(multiplier);
 		if (m_pc.isService())
@@ -246,13 +241,10 @@ public class Doc_MatchInv extends Doc
 			else
 			{
 				cr.setQty(getQty().negate());
-				BigDecimal effMultiplier = multiplier;
-				if (getQty().signum() < 0)
-					effMultiplier = effMultiplier.negate();
 
 				//	Set AmtAcctCr/Dr from Invoice (sets also Project)
 				if (!cr.updateReverseLine (MInvoice.Table_ID, 		//	Amt updated
-					m_invoiceLine.getC_Invoice_ID(), m_invoiceLine.getC_InvoiceLine_ID(), effMultiplier))
+					m_invoiceLine.getC_Invoice_ID(), m_invoiceLine.getC_InvoiceLine_ID(), multiplier))
 				{
 					p_Error = "Invoice not posted yet";
 					return null;
@@ -454,8 +446,7 @@ public class Doc_MatchInv extends Doc
 			
 			BigDecimal LineNetAmt = m_invoiceLine.getLineNetAmt();
 			BigDecimal multiplier = getQty()
-				.divide(m_invoiceLine.getQtyInvoiced(), 12, RoundingMode.HALF_UP)
-				.abs();
+				.divide(m_invoiceLine.getQtyInvoiced(), 12, RoundingMode.HALF_UP);
 			if (multiplier.compareTo(Env.ONE) != 0)
 				LineNetAmt = LineNetAmt.multiply(multiplier);
 	
@@ -470,7 +461,7 @@ public class Doc_MatchInv extends Doc
 				{
 					tQty = tQty.add(mInv[i].getQty());
 					multiplier = mInv[i].getQty()
-						.divide(m_invoiceLine.getQtyInvoiced(), 12, RoundingMode.HALF_UP).abs();
+						.divide(m_invoiceLine.getQtyInvoiced(), 12, RoundingMode.HALF_UP);
 					tAmt = tAmt.add(m_invoiceLine.getLineNetAmt().multiply(multiplier));
 				}
 			}
