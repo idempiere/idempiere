@@ -85,14 +85,13 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 372661654078492488L;
+	private static final long serialVersionUID = 4486118071892173802L;
 
-	private static final String ALOGIN_SHOWDATE = "ALogin_ShowDate";
 	protected LoginWindow wndLogin;
 	protected Login login;
 
 	protected Combobox lstRole, lstClient, lstOrganisation, lstWarehouse;
-	protected Label lblRole, lblClient, lblOrganisation, lblWarehouse, lblDate;
+	protected Label lblRole, lblClient, lblDef, lblOrganisation, lblWarehouse, lblDate;
 	protected WDateEditor lstDate;
 	protected Button btnOk, btnCancel;
 
@@ -157,12 +156,10 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         	AuFocus auf = null;
             if (lstClient.getItemCount() > 1) {
             	auf = new AuFocus(lstClient);
+            } else if (lstRole.getItemCount() > 1) {
+            	auf = new AuFocus(lstRole);
             } else {
-            	if (MSysConfig.getBooleanValue(MSysConfig.ALogin_ShowOneRole, true) || lstRole.getItemCount() > 1) {
-            		auf = new AuFocus(lstRole);
-            	} else {
-            		auf = new AuFocus(lstOrganisation);
-            	}
+           		auf = new AuFocus(lstOrganisation);
             }
             Clients.response(auf);
         } else {
@@ -227,6 +224,19 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	td.appendChild(lstRole);
 
     	tr = new Tr();
+        tr.setId("rowLabelDefault");
+        table.appendChild(tr);
+    	//td = new Td();
+    	//tr.appendChild(td);
+    	td = new Td();
+    	tr.appendChild(td);
+    	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
+		div = new Div();
+		div.setStyle("text-align: right; text-decoration: underline");
+		div.appendChild(lblDef);
+    	td.appendChild(div);
+
+    	tr = new Tr();
         tr.setId("rowOrganisation");
         table.appendChild(tr);
     	td = new Td();
@@ -288,6 +298,10 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lblRole = new Label();
         lblRole.setId("lblRole");
         lblRole.setValue(Msg.getMsg(language,"Role"));
+
+        lblDef = new Label();
+        lblDef.setId("lblDef");
+        lblDef.setValue(Msg.getMsg(language,"Defaults"));
 
         lblOrganisation = new Label();
         lblOrganisation.setId("lblOrganisation");
@@ -374,22 +388,19 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         //
 
         if (m_clientKNPairs!=null && m_clientKNPairs.length == 1) {
-        	// don't show client if is just one
+        	// disable client if is just one
 			lstClient.setSelectedIndex(0);
-			lblClient.setVisible(false);
-			lstClient.setVisible(false);
+			lstClient.setEnabled(false);
         } else {
-			lblClient.setVisible(true);
-			lstClient.setVisible(true);
+			lstClient.setEnabled(true);
         }
         
         // Disable date combo-box at login screen
-        if (!MSysConfig.getBooleanValue(ALOGIN_SHOWDATE, true))
+        if (!MSysConfig.getBooleanValue(MSysConfig.ALogin_ShowDate, true))
         {
-        	lblDate.setVisible(false);
-        	lstDate.setVisible(false);
+        	lstDate.setReadWrite(false);
         }
-        
+
         setUserID();
         updateRoleList();
 
@@ -434,18 +445,14 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 
             //force reload of default role
             MRole.getDefault(m_ctx, true);
-            
-    		// If we have only one role, we can hide the combobox - metas-2009_0021_AP1_G94
-    		if (m_clientKNPairs.length == 1 && lstRole.getItemCount() == 1 && ! MSysConfig.getBooleanValue(MSysConfig.ALogin_ShowOneRole, true))
+
+    		// If we have only one role, we can make readonly the combobox
+    		if (lstRole.getItemCount() == 1)
     		{
     			lstRole.setSelectedIndex(0);
-    			lblRole.setVisible(false);
-    			lstRole.setVisible(false);
-    		}
-    		else
-    		{
-    			lblRole.setVisible(true);
-    			lstRole.setVisible(true);
+    			lstRole.setEnabled(false);
+    		} else {
+    			lstRole.setEnabled(true);
     		}
         }
         setUserID();
@@ -481,33 +488,22 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                     	lstOrganisation.setSelectedItem(ci);
 
                 }
-                
-                // If we have only one org, we can hide  combo-box at login - logilite
-                if (lstOrganisation.getItemCount() <= 1)
-                {
-                	lstOrganisation.setSelectedIndex(0);
-                	lstOrganisation.setVisible(false);
-            		lblOrganisation.setVisible(false);
-                }
-                else
-                {
-                	lstOrganisation.setVisible(true);
-            		lblOrganisation.setVisible(true);
-                }
-
                 if (lstOrganisation.getSelectedIndex() == -1 && lstOrganisation.getItemCount() > 0) {
                 	m_show = true; // didn't find default organisation
                 	lstOrganisation.setSelectedIndex(0);
                 }
             }
+
+            // If we have only one org, we can make readonly the combobox
+    		if (lstOrganisation.getItemCount() == 1)
+    		{
+    			lstOrganisation.setSelectedIndex(0);
+    			lstOrganisation.setEnabled(false);
+    		} else {
+    			lstOrganisation.setEnabled(true);
+    		}
             //
         }
-        else
-        {
-        	lstOrganisation.setVisible(false);
-    		lblOrganisation.setVisible(false);
-        }
-        
         updateWarehouseList();
     }
 
@@ -537,36 +533,12 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                     if(warehouseKNPairs[i].getID().equals(initDefault))
                     	lstWarehouse.setSelectedItem(ci);
                 }
-                
-                // we can hide ware house combo-box on selection of org
-                if (lstWarehouse.getItemCount() <= 1)
-                {
-                		lstWarehouse.setSelectedIndex(0);
-                		lstWarehouse.setVisible(false);
-                		lblWarehouse.setVisible(false);
-                }
-                else
-                {
-                		lstWarehouse.setVisible(true);
-                		lblWarehouse.setVisible(true);
-                }
-                
                 if (lstWarehouse.getSelectedIndex() == -1 && lstWarehouse.getItemCount() > 0) {
                 	m_show = true; // didn't find default warehouse
                 	lstWarehouse.setSelectedIndex(0);
                 }
             }
-            else
-            {
-            	lstWarehouse.setVisible(false);
-            	lblWarehouse.setVisible(false);
-            }
             //
-        }
-        else
-        {
-        	lstWarehouse.setVisible(false);
-        	lblWarehouse.setVisible(false);
         }
     }
 
