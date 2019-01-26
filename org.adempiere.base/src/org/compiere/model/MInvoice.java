@@ -68,7 +68,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9210893813732918522L;
+	private static final long serialVersionUID = -3191227310812025813L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -725,7 +725,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		}
 		m_lines = null;
 	}	//	renumberLines
-
+	
 	/**
 	 * 	Copy Lines From other Invoice.
 	 *	@param otherInvoice invoice
@@ -733,7 +733,19 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 * 	@param setOrder set order links
 	 *	@return number of lines copied
 	 */
-	public int copyLinesFrom (MInvoice otherInvoice, boolean counter, boolean setOrder)
+	public int copyLinesFrom (MInvoice otherInvoice, boolean counter, boolean setOrder){
+		return copyLinesFrom (otherInvoice, counter, setOrder, true);
+	}
+
+	/**
+	 * 	Copy Lines From other Invoice.
+	 *	@param otherInvoice invoice
+	 * 	@param counter create counter links
+	 * 	@param setOrder set order links
+	 *  @param copyClientOrg copy also Client and Org
+	 *	@return number of lines copied
+	 */
+	public int copyLinesFrom (MInvoice otherInvoice, boolean counter, boolean setOrder, boolean copyClientOrg)
 	{
 		if (isProcessed() || isPosted() || otherInvoice == null)
 			return 0;
@@ -743,7 +755,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		{
 			MInvoiceLine line = new MInvoiceLine (getCtx(), 0, get_TrxName());
 			MInvoiceLine fromLine = fromLines[i];
-			if (counter)	//	header
+			if (counter || !copyClientOrg)	//	header
 				PO.copyValues (fromLine, line, getAD_Client_ID(), getAD_Org_ID());
 			else
 				PO.copyValues (fromLine, line, fromLine.getAD_Client_ID(), fromLine.getAD_Org_ID());
