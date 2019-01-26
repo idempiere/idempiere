@@ -274,7 +274,25 @@ public class MColumn extends X_AD_Column
 				return false;
 			}
 		}
-		
+
+		if ( displayType == DisplayType.TableDir ||
+			(displayType == DisplayType.Search && getAD_Reference_Value_ID() <= 0))
+		{
+			// verify the foreign table exists
+			String foreignTableName = getReferenceTableName();
+			MTable foreignTable = MTable.get(getCtx(), foreignTableName);
+			if (foreignTable == null || foreignTable.getAD_Table_ID() <= 0) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "NotReferenceTable", new Object[] {getColumnName()}));
+				return false;
+			}
+		}
+
+		if (displayType == DisplayType.Table && getAD_Reference_Value_ID() <= 0)
+		{
+			log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Reference_Value_ID"));
+			return false;
+		}
+
 		if (displayType != DisplayType.Button)
 		{
 			if (! ISTOOLBARBUTTON_Window.equals(getIsToolbarButton()))

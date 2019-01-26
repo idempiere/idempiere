@@ -65,7 +65,7 @@ public class CopyFromInvoice extends SvrProcess
 		MInvoice from = new MInvoice (getCtx(), m_C_Invoice_ID, get_TrxName());
 		MInvoice to = new MInvoice (getCtx(), To_C_Invoice_ID, get_TrxName());
 		//
-		int no = to.copyLinesFrom (from, false, false);
+		int no = to.copyLinesFrom (from, false, false, false);
 		//
 		return "@Copied@=" + no;
 	}	//	doIt

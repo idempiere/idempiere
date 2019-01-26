@@ -35,6 +35,7 @@ import org.adempiere.base.event.IEventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.base.event.ImportEventData;
 import org.adempiere.base.event.LoginEventData;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.ImportValidator;
 import org.adempiere.process.ImportProcess;
 import org.compiere.acct.Fact;
@@ -241,6 +242,9 @@ public class ModelValidationEngine
 					String error;
 					try {
 						ScriptEngine engine = loginRule.getScriptEngine();
+						if (engine == null) {
+							throw new AdempiereException("Engine not found: " + loginRule.getEngineName());
+						}
 
 						MRule.setContext(engine, Env.getCtx(), 0);  // no window
 						// now add the method arguments to the engine
@@ -378,6 +382,9 @@ public class ModelValidationEngine
 					String error;
 					try {
 						ScriptEngine engine = rule.getScriptEngine();
+						if (engine == null) {
+							throw new AdempiereException("Engine not found: " + rule.getEngineName());
+						}
 
 						MRule.setContext(engine, po.getCtx(), 0);  // no window
 						// now add the method arguments to the engine
@@ -542,6 +549,9 @@ public class ModelValidationEngine
 					String error;
 					try {
 						ScriptEngine engine = rule.getScriptEngine();
+						if (engine == null) {
+							throw new AdempiereException("Engine not found: " + rule.getEngineName());
+						}
 
 						MRule.setContext(engine, po.getCtx(), 0);  // no window
 						// now add the method arguments to the engine

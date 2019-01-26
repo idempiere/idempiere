@@ -415,16 +415,6 @@ public class Doc_Invoice extends Doc
 					serviceAmt = serviceAmt.add(amt);
 				}
 			}
-			//  Set Locations
-			FactLine[] fLines = fact.getLines();
-			for (int i = 0; i < fLines.length; i++)
-			{
-				if (fLines[i] != null)
-				{
-					fLines[i].setLocationFromOrg(fLines[i].getAD_Org_ID(), true);      //  from Loc
-					fLines[i].setLocationFromBPartner(getC_BPartner_Location_ID(), false);  //  to Loc
-				}
-			}
 
 			//  Receivables     DR
 			int receivables_ID = getValidCombination_ID(Doc.ACCTTYPE_C_Receivable, as);
@@ -446,6 +436,17 @@ public class Doc_Invoice extends Doc
 			if (serviceAmt.signum() != 0)
 				fact.createLine(null, MAccount.get(getCtx(), receivablesServices_ID),
 					getC_Currency_ID(), serviceAmt, null);
+
+			//  Set Locations
+			FactLine[] fLines = fact.getLines();
+			for (int i = 0; i < fLines.length; i++)
+			{
+				if (fLines[i] != null)
+				{
+					fLines[i].setLocationFromOrg(fLines[i].getAD_Org_ID(), true);      //  from Loc
+					fLines[i].setLocationFromBPartner(getC_BPartner_Location_ID(), false);  //  to Loc
+				}
+			}
 		}
 		//  ARC
 		else if (getDocumentType().equals(DOCTYPE_ARCredit))
@@ -496,16 +497,7 @@ public class Doc_Invoice extends Doc
 					serviceAmt = serviceAmt.add(amt);
 				}
 			}
-			//  Set Locations
-			FactLine[] fLines = fact.getLines();
-			for (int i = 0; i < fLines.length; i++)
-			{
-				if (fLines[i] != null)
-				{
-					fLines[i].setLocationFromOrg(fLines[i].getAD_Org_ID(), true);      //  from Loc
-					fLines[i].setLocationFromBPartner(getC_BPartner_Location_ID(), false);  //  to Loc
-				}
-			}
+
 			//  Receivables             CR
 			int receivables_ID = getValidCombination_ID (Doc.ACCTTYPE_C_Receivable, as);
 			int receivablesServices_ID = getValidCombination_ID (Doc.ACCTTYPE_C_Receivable_Services, as);
@@ -526,6 +518,17 @@ public class Doc_Invoice extends Doc
 			if (serviceAmt.signum() != 0)
 				fact.createLine(null, MAccount.get(getCtx(), receivablesServices_ID),
 					getC_Currency_ID(), null, serviceAmt);
+
+			//  Set Locations
+			FactLine[] fLines = fact.getLines();
+			for (int i = 0; i < fLines.length; i++)
+			{
+				if (fLines[i] != null)
+				{
+					fLines[i].setLocationFromOrg(fLines[i].getAD_Org_ID(), true);      //  from Loc
+					fLines[i].setLocationFromBPartner(getC_BPartner_Location_ID(), false);  //  to Loc
+				}
+			}
 		}
 
 		//  ** API
@@ -600,16 +603,6 @@ public class Doc_Invoice extends Doc
 							line.getDescription(), getTrxName());
 				}
 			}
-			//  Set Locations
-			FactLine[] fLines = fact.getLines();
-			for (int i = 0; i < fLines.length; i++)
-			{
-				if (fLines[i] != null)
-				{
-					fLines[i].setLocationFromBPartner(getC_BPartner_Location_ID(), true);  //  from Loc
-					fLines[i].setLocationFromOrg(fLines[i].getAD_Org_ID(), false);    //  to Loc
-				}
-			}
 
 			//  Liability               CR
 			int payables_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability, as);
@@ -631,6 +624,18 @@ public class Doc_Invoice extends Doc
 			if (serviceAmt.signum() != 0)
 				fact.createLine(null, MAccount.get(getCtx(), payablesServices_ID),
 					getC_Currency_ID(), null, serviceAmt);
+
+			//  Set Locations
+			FactLine[] fLines = fact.getLines();
+			for (int i = 0; i < fLines.length; i++)
+			{
+				if (fLines[i] != null)
+				{
+					fLines[i].setLocationFromBPartner(getC_BPartner_Location_ID(), true);  //  from Loc
+					fLines[i].setLocationFromOrg(fLines[i].getAD_Org_ID(), false);    //  to Loc
+				}
+			}
+
 			//
 			updateProductPO(as);	//	Only API
 		}
@@ -705,16 +710,7 @@ public class Doc_Invoice extends Doc
 							line.getDescription(), getTrxName());
 				}
 			}
-			//  Set Locations
-			FactLine[] fLines = fact.getLines();
-			for (int i = 0; i < fLines.length; i++)
-			{
-				if (fLines[i] != null)
-				{
-					fLines[i].setLocationFromBPartner(getC_BPartner_Location_ID(), true);  //  from Loc
-					fLines[i].setLocationFromOrg(fLines[i].getAD_Org_ID(), false);    //  to Loc
-				}
-			}
+
 			//  Liability       DR
 			int payables_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability, as);
 			int payablesServices_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability_Services, as);
@@ -735,6 +731,17 @@ public class Doc_Invoice extends Doc
 			if (serviceAmt.signum() != 0)
 				fact.createLine(null, MAccount.get(getCtx(), payablesServices_ID),
 					getC_Currency_ID(), serviceAmt, null);
+
+			//  Set Locations
+			FactLine[] fLines = fact.getLines();
+			for (int i = 0; i < fLines.length; i++)
+			{
+				if (fLines[i] != null)
+				{
+					fLines[i].setLocationFromBPartner(getC_BPartner_Location_ID(), true);  //  from Loc
+					fLines[i].setLocationFromOrg(fLines[i].getAD_Org_ID(), false);    //  to Loc
+				}
+			}
 		}
 		else
 		{

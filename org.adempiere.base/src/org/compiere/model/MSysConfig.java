@@ -42,14 +42,15 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2856526441538434702L;
+	private static final long serialVersionUID = -1401329788730986024L;
 
     public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
     public static final String ALLOCATION_DESCRIPTION = "ALLOCATION_DESCRIPTION";
     public static final String ALLOW_APPLY_PAYMENT_TO_CREDITMEMO = "ALLOW_APPLY_PAYMENT_TO_CREDITMEMO";
     public static final String ALLOW_OVER_APPLIED_PAYMENT = "ALLOW_OVER_APPLIED_PAYMENT";
-    public static final String ALogin_ShowOneRole = "ALogin_ShowOneRole";
+    public static final String ALogin_ShowDate = "ALogin_ShowDate";
+    public static final String ALogin_ShowOneRole = "ALogin_ShowOneRole"; // deprecated
     public static final String APPLICATION_DATABASE_VERSION = "APPLICATION_DATABASE_VERSION";
     public static final String APPLICATION_DATABASE_VERSION_SHOWN = "APPLICATION_DATABASE_VERSION_SHOWN";
     public static final String APPLICATION_HOST_SHOWN = "APPLICATION_HOST_SHOWN";   

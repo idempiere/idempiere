@@ -26,8 +26,9 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
+import javax.script.ScriptEngineManager;
 
-import org.adempiere.base.osgi.OSGiScriptEngineManager;
 import org.adempiere.model.IAddressValidation;
 import org.adempiere.model.IShipmentProcessor;
 import org.adempiere.model.ITaxProvider;
@@ -47,7 +48,6 @@ import org.compiere.process.ProcessCall;
 import org.compiere.util.CLogger;
 import org.compiere.util.PaymentExport;
 import org.compiere.util.ReplenishInterface;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * This is a facade class for the Service Locator.
@@ -55,8 +55,6 @@ import org.osgi.framework.FrameworkUtil;
  *
  * @author viola
  * @author hengsin
- * @author Silvano Trinchero, www.freepath.it
- *  		<li>IDEMPIERE-3243 added getScriptEngine to manage both registered engines and engines provided by osgi bundles 
  */
 public class Core {
 
@@ -437,17 +435,31 @@ public class Core {
 	}
 	
 
-	/** Get script engine, checking classpath first, and then osgi plugins 
+	/** Get script engine 
 	 * 
 	 * @param engineName
 	 * @return ScriptEngine found, or null
 	 */
 	public static ScriptEngine getScriptEngine(String engineName)
 	{
-		OSGiScriptEngineManager osgiFactory = new OSGiScriptEngineManager( FrameworkUtil.getBundle(Core.class).getBundleContext());
-		ScriptEngine engine = osgiFactory.getEngineByName(engineName);
-
-		return engine;
+		ScriptEngineManager manager = new ScriptEngineManager(Core.class.getClassLoader());
+		ScriptEngine engine = manager.getEngineByName(engineName);
+		if (engine != null)
+			return engine;
+		
+		List<ScriptEngineFactory> factoryList = 
+				Service.locator().list(ScriptEngineFactory.class).getServices();
+		if (factoryList != null) {
+			for(ScriptEngineFactory factory : factoryList) {
+				for (String name : factory.getNames()) {
+					if (engineName.equals(name)) {
+						return factory.getScriptEngine();
+					}
+				}
+			}
+		}
+		
+		return null;
 	}
 	
 	/**

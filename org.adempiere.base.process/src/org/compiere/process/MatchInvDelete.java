@@ -20,6 +20,8 @@ import java.util.logging.Level;
 
 import org.compiere.model.MMatchInv;
 import org.compiere.util.AdempiereUserError;
+import org.compiere.util.CLogger;
+import org.compiere.util.ValueNamePair;
 
 
 /**
@@ -54,8 +56,14 @@ public class MatchInvDelete extends SvrProcess
 			throw new AdempiereUserError("@NotFound@ @M_MatchInv_ID@ " + p_M_MatchInv_ID);
 		if (inv.delete(true))
 			return "@OK@";
-		inv.saveEx();
-		return "@Error@";
+
+		String msg = null;
+		ValueNamePair err = CLogger.retrieveError();
+		if (err != null)
+			msg = err.getName();
+		if (msg == null || msg.length() == 0)
+			msg = " - Check log";
+		return "@Error@: " + msg;
 	}	//	doIt
 
 }	//	MatchInvDelete

@@ -230,9 +230,15 @@ public class MMatchInv extends X_M_MatchInv
 		{
 			MInOutLine line = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
 			BigDecimal matchedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchInv WHERE M_InOutLine_ID=?" , getM_InOutLine_ID());
-			if (matchedQty != null && matchedQty.compareTo(line.getMovementQty()) > 0)
+			BigDecimal matchedQtyDB = matchedQty;
+			BigDecimal movementQty = line.getMovementQty();
+			if (movementQty.signum() < 0) {
+				movementQty = movementQty.negate();
+				matchedQty = matchedQty.negate();
+			}
+			if (matchedQty != null && matchedQty.compareTo(movementQty) > 0)
 			{
-				throw new IllegalStateException("Total matched qty > movement qty. MatchedQty="+matchedQty+", MovementQty="+line.getMovementQty()+", Line="+line);
+				throw new IllegalStateException("Total matched qty > movement qty. MatchedQty="+matchedQtyDB+", MovementQty="+line.getMovementQty()+", Line="+line);
 			}
 		}
 		
@@ -240,9 +246,15 @@ public class MMatchInv extends X_M_MatchInv
 		{
 			MInvoiceLine line = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
 			BigDecimal matchedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchInv WHERE C_InvoiceLine_ID=?" , getC_InvoiceLine_ID());
-			if (matchedQty != null && matchedQty.compareTo(line.getQtyInvoiced()) > 0)
+			BigDecimal matchedQtyDB = matchedQty;
+			BigDecimal qtyInvoiced = line.getQtyInvoiced();
+			if (qtyInvoiced.signum() < 0) {
+				qtyInvoiced = qtyInvoiced.negate();
+				matchedQty = matchedQty.negate();
+			}
+			if (matchedQty != null && matchedQty.compareTo(qtyInvoiced) > 0)
 			{
-				throw new IllegalStateException("Total matched qty > invoiced qty. MatchedQty="+matchedQty+", InvoicedQty="+line.getQtyInvoiced()+", Line="+line);
+				throw new IllegalStateException("Total matched qty > invoiced qty. MatchedQty="+matchedQtyDB+", InvoicedQty="+line.getQtyInvoiced()+", Line="+line);
 			}
 		}
 		return true;
