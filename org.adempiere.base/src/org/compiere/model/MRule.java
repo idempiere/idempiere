@@ -34,8 +34,6 @@ import org.compiere.util.Util;
 /**
  *	Persistent Rule Model
  *  @author Carlos Ruiz
- *  @author Silvano Trinchero, www.freepath.it
- *  		<li>IDEMPIERE-3243 refactored getScriptEngine to use Core.getScriptEngine   
  *  @version $Id: MRule.java
  *  
  */
@@ -196,12 +194,9 @@ public class MRule extends X_AD_Rule
 	 *	@return ScriptEngine
 	 */
 	public ScriptEngine getScriptEngine() {
-		
 		String engineName = getEngineName();
-		
-		if(engineName != null)
+		if (engineName != null)
 			engine = Core.getScriptEngine(engineName);
-		
 		return engine;
 	}
 

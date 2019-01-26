@@ -2880,6 +2880,11 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					}
 	
 					ScriptEngine engine = rule.getScriptEngine();
+					if (engine == null) {
+						retValue = 	"Callout Invalid, engine not found: " + rule.getEngineName();
+						log.log(Level.SEVERE, retValue);
+						return retValue;
+					}
 	
 					// Window context are    W_
 					// Login context  are    G_

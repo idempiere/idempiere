@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import javax.script.ScriptEngine;
 
 import org.adempiere.base.Core;
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MProcess;
 import org.compiere.model.MRule;
 import org.compiere.process.ProcessCall;
@@ -217,6 +218,9 @@ public final class ProcessUtil {
 			}
 
 			ScriptEngine engine = rule.getScriptEngine();
+			if (engine == null) {
+				throw new AdempiereException("Engine not found: " + rule.getEngineName());
+			}
 
 			// Window context are    W_
 			// Login context  are    G_
