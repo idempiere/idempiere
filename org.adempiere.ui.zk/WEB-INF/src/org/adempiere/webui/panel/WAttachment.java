@@ -51,7 +51,6 @@ import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuEcho;
-import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -194,9 +193,9 @@ public class WAttachment extends Window implements EventListener<Event>
 			AEnv.showWindow(this);
 			if (autoPreview(0, true))
 			{
-				String script = "setTimeout(\"zk.Widget.$('"+ preview.getUuid() + "').$n().src = zk.Widget.$('" +
-				preview.getUuid() + "').$n().src\", 1000)";
-				Clients.response(new AuScript(null, script));
+				//String script = "setTimeout(\"zk.Widget.$('"+ preview.getUuid() + "').$n().src = zk.Widget.$('" +
+				//preview.getUuid() + "').$n().src\", 1000)";
+				//Clients.response(new AuScript(null, script));
 			}
 
 		}
