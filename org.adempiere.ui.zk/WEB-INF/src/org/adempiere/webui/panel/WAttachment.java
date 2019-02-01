@@ -301,7 +301,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		
 		Center centerPane = new Center();
 		centerPane.setSclass("dialog-content");
-		centerPane.setAutoscroll(true);
+		//centerPane.setAutoscroll(true); // not required the preview has its own scroll bar
 		mainPanel.appendChild(centerPane);
 		centerPane.appendChild(previewPanel);
 		ZKUpdateUtil.setVflex(previewPanel, "1");
