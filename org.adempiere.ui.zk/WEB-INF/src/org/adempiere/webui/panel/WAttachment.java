@@ -296,9 +296,9 @@ public class WAttachment extends Window implements EventListener<Event>
 		bDelete.addEventListener(Events.ON_CLICK, this);
 
 		previewPanel.appendChild(preview);
-		ZKUpdateUtil.setHeight(preview, "100%");
-		ZKUpdateUtil.setWidth(preview, "100%");
-
+		ZKUpdateUtil.setVflex(preview, "1");
+		ZKUpdateUtil.setHflex(preview, "1");
+		
 		Center centerPane = new Center();
 		centerPane.setSclass("dialog-content");
 		centerPane.setAutoscroll(true);
