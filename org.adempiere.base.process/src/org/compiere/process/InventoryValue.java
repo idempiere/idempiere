@@ -153,11 +153,12 @@ public class InventoryValue extends SvrProcess
 					.append("WHERE c.M_CostElement_ID=").append(p_M_CostElement_ID)
 					.append(" AND iv.M_Warehouse_ID=w.M_Warehouse_ID")
 					.append(" AND iv.M_Product_ID=c.M_Product_ID")
+					.append(" AND iv.AD_PInstance_ID=? ")
 					.append(" AND iv.M_AttributeSetInstance_ID=c.M_AttributeSetInstance_ID) ")
 				.append("WHERE EXISTS (SELECT * FROM T_InventoryValue ivv ")
 					.append("WHERE ivv.AD_PInstance_ID=").append(getAD_PInstance_ID())
 					.append(" AND ivv.M_CostElement_ID IS NULL)");
-			int noUpdatedCost = DB.executeUpdateEx(sql.toString(), get_TrxName());
+			int noUpdatedCost = DB.executeUpdateEx(sql.toString(), new Object[] {getAD_PInstance_ID()}, get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Updated Cost=" + noUpdatedCost);
 		}		
 		if ((noInsertStd+noInsertCost) == 0)
