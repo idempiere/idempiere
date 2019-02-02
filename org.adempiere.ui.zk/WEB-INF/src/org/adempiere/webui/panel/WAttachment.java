@@ -51,7 +51,6 @@ import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuEcho;
-import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -194,9 +193,9 @@ public class WAttachment extends Window implements EventListener<Event>
 			AEnv.showWindow(this);
 			if (autoPreview(0, true))
 			{
-				String script = "setTimeout(\"zk.Widget.$('"+ preview.getUuid() + "').$n().src = zk.Widget.$('" +
-				preview.getUuid() + "').$n().src\", 1000)";
-				Clients.response(new AuScript(null, script));
+				//String script = "setTimeout(\"zk.Widget.$('"+ preview.getUuid() + "').$n().src = zk.Widget.$('" +
+				//preview.getUuid() + "').$n().src\", 1000)";
+				//Clients.response(new AuScript(null, script));
 			}
 
 		}
@@ -296,12 +295,12 @@ public class WAttachment extends Window implements EventListener<Event>
 		bDelete.addEventListener(Events.ON_CLICK, this);
 
 		previewPanel.appendChild(preview);
-		ZKUpdateUtil.setHeight(preview, "100%");
-		ZKUpdateUtil.setWidth(preview, "100%");
-
+		ZKUpdateUtil.setVflex(preview, "1");
+		ZKUpdateUtil.setHflex(preview, "1");
+		
 		Center centerPane = new Center();
 		centerPane.setSclass("dialog-content");
-		centerPane.setAutoscroll(true);
+		//centerPane.setAutoscroll(true); // not required the preview has its own scroll bar
 		mainPanel.appendChild(centerPane);
 		centerPane.appendChild(previewPanel);
 		ZKUpdateUtil.setVflex(previewPanel, "1");
