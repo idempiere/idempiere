@@ -34,8 +34,8 @@ public class CalloutBPartnerQuickEntry implements IColumnCallout {
 			
 			if (!Util.isEmpty(docSOTrx)) {
 				boolean isSOTrx = "Y".equals(docSOTrx);
-				mTab.setValue(MBPartner.COLUMNNAME_IsCustomer, isSOTrx);
-				mTab.setValue(MBPartner.COLUMNNAME_IsVendor, !isSOTrx);
+				//mTab.setValue(MBPartner.COLUMNNAME_IsCustomer, isSOTrx);
+				//mTab.setValue(MBPartner.COLUMNNAME_IsVendor, !isSOTrx);
 			}
 		}
 		return null;

@@ -1023,8 +1023,10 @@ class Restriction  implements Serializable
 		//
 		this.Operator = operator;
 		//	Boolean
-		if (code instanceof Boolean)
+		if (code instanceof Boolean) {
 			Code = ((Boolean)code).booleanValue() ? "Y" : "N";
+			Code = Msg.getMsg(Env.getAD_Language(Env.getCtx()), Code.toString());
+		}
 		else if (code instanceof KeyNamePair)
 			Code = Integer.valueOf(((KeyNamePair)code).getKey());
 		else if (code instanceof ValueNamePair)
