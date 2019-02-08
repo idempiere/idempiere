@@ -40,8 +40,10 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PackoutItem;
 import org.adempiere.pipo2.SQLElementParameters;
 import org.compiere.model.X_AD_Package_Imp_Detail;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -89,6 +91,15 @@ public class SQLMandatoryElementHandler extends AbstractElementHandler {
 			}
 			logImportDetail (ctx, impDetail, 1, "SQLMandatory",count,"Execute");
 			ctx.packIn.getNotifier().addSuccessLine("-> " + sql);
+			// Cache Reset when deleting records via SQL
+			if (sql.toLowerCase().startsWith("delete from ")) {
+				String[] words = sql.split("[ \r\n]");
+				String table = words[2];
+				String tableName = DB.getSQLValueString(null, "SELECT TableName FROM AD_Table WHERE LOWER(TableName)=?", table.toLowerCase());
+				if (! Util.isEmpty(tableName)) {
+					CacheMgt.get().reset(tableName);
+				}
+			}
 		} catch (Exception e)	{
 			ctx.packIn.getNotifier().addFailureLine("SQL Mandatory failed, error (" + e.getLocalizedMessage() + "):");
 			logImportDetail (ctx, impDetail, 0, "SQLMandatory",-1,"Execute");
