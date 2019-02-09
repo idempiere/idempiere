@@ -322,7 +322,7 @@ public class ConfigurationConsole {
 					cn = System.getProperty("user.name");
 				String ou = data.getProperty(ConfigurationData.ADEMPIERE_CERT_ORG_UNIT);
 				if (ou == null)
-					ou = "AdempiereUser";
+					ou = "iDempiereUser";
 				String o = data.getProperty(ConfigurationData.ADEMPIERE_CERT_ORG);
 				if (o == null)
 					o = System.getProperty("user.name");

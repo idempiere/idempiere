@@ -602,6 +602,8 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 		}
 		if (!pass && critical)
 			cb.setBackground(Color.RED);
+		else if (!pass && !critical)
+			cb.setBackground(Color.YELLOW);
 		else
 			cb.setBackground(Color.GREEN);
 	}	//	setOK

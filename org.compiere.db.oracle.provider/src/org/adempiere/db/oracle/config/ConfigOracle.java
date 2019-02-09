@@ -392,9 +392,13 @@ public class ConfigOracle implements IDatabaseConfig
 		//	Ignore result as it might not be imported
 		pass = testJDBC(url, databaseUser, databasePassword);
 		error = "Cannot connect to User: " + databaseUser + "/" + databasePassword + " - Database may not be imported yet (OK on initial run).";
-		if (monitor != null)
-			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_USER, "ErrorJDBC",
-				pass, true, error));
+		if (monitor != null) {
+			boolean critical = true;
+			if (!isDBExists) {
+				critical = false;
+			}
+			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_USER, "ErrorJDBC", pass, critical, error));
+		}
 		if (pass)
 		{
 			if (log.isLoggable(Level.INFO)) log.info("OK: Database User = " + databaseUser);

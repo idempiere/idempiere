@@ -296,6 +296,7 @@ public class ConfigurationData
 		}
 
 		InetAddress localhost = null;
+		@SuppressWarnings("unused")
 		String hostName = "unknown";
 		try
 		{
@@ -318,7 +319,7 @@ public class ConfigurationData
 			setKeyStore(KEYSTORE_PASSWORD);
 			//	AppsServer
 			initAppsServer();
-			setAppsServer(hostName);
+			setAppsServer("0.0.0.0");
 			//	Database Server
 			initDatabase(Database.DB_POSTGRESQL);
 			String connectionName = getDatabaseDiscovered();
@@ -326,18 +327,16 @@ public class ConfigurationData
 				setDatabaseName(resolveDatabaseName(connectionName));
 			}
 			setDatabaseSystemPassword("");
-			setDatabaseServer(hostName);
+			setDatabaseServer("localhost");
 			setDatabaseUser("adempiere");
 			setDatabasePassword("adempiere");
 			//	Mail Server
-			if (p_panel != null)
-			{
-				p_panel.fMailServer.setText(hostName);
-				p_panel.fMailUser.setText("info");
-				p_panel.fMailPassword.setText("");
-				p_panel.fAdminEMail.setText("info@" + hostName);
-			}
-			//
+			setMailServer("localhost");
+			//setMailUser("info");
+			setMailUser("");
+			setMailPassword("");
+			//setAdminEMail("info@" + hostName);
+			setAdminEMail("");
 		}	//	!envLoaded
 
 		//	Default FTP stuff
@@ -535,24 +534,28 @@ public class ConfigurationData
 			? p_panel.fAdminEMail.getText()
 			: (String)p_properties.get(ADEMPIERE_ADMIN_EMAIL);
 		InternetAddress adminEMail = null;
-		try
-		{
-			adminEMail = new InternetAddress (adminEMailString);
-		}
-		catch (Exception e)
-		{
-			error = "Not valid: " +  adminEMailString + " - " + e.getMessage();
+		if (adminEMailString != null && adminEMailString.length() > 0) {
+			try
+			{
+				adminEMail = new InternetAddress (adminEMailString);
+			}
+			catch (Exception e)
+			{
+				error = "Not valid: " +  adminEMailString + " - " + e.getMessage();
+				pass = false;
+			}
+			//
+			if (pass)
+			{
+				error = "Not verified EMail = " + adminEMail;
+				pass = testMailServer(mailServer, adminEMail, mailUser, mailPassword);
+			}
+			if (p_panel != null)
+				p_panel.signalOK(p_panel.okMailUser, "ErrorMail",
+						pass, false, error);
+		} else {
 			pass = false;
 		}
-		//
-		if (pass)
-		{
-			error = "Not verified EMail = " + adminEMail;
-			pass = testMailServer(mailServer, adminEMail, mailUser, mailPassword);
-		}
-		if (p_panel != null)
-			p_panel.signalOK(p_panel.okMailUser, "ErrorMail",
-					pass, false, error);
 		if (pass)
 		{
 			if (log.isLoggable(Level.INFO)) log.info("OK: EMail = " + adminEMail);
@@ -563,7 +566,11 @@ public class ConfigurationData
 		}
 		else
 		{
-			log.warning(error);
+			if (adminEMailString != null && adminEMailString.length() > 0) {
+				log.warning(error);
+			} else {
+				if (log.isLoggable(Level.INFO)) log.info("OK: EMail not configured");
+			}
 			p_properties.setProperty(ADEMPIERE_ADMIN_EMAIL, "");
 			p_properties.setProperty(ADEMPIERE_MAIL_USER, "");
 			p_properties.setProperty(ADEMPIERE_MAIL_PASSWORD, "");
