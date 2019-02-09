@@ -94,7 +94,7 @@ public class OnlineHelp extends JEditorPane implements HyperlinkListener
 	}   //  OnlineHelp
 
 	/** Base of Online Help System      */
-	protected static final String   BASE_URL = "http://www.adempiere.com/wiki/index.php/OnlineLoginHelp";
+	protected static final String   BASE_URL = "http://wiki.idempiere.org/en/Server_Setup_Help";
 
 	public static void openInDefaultBrowser()
 	{

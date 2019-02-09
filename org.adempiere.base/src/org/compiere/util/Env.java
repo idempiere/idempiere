@@ -59,6 +59,7 @@ import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookupCache;
 import org.compiere.model.MQuery;
+import org.compiere.model.MRefList;
 import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
@@ -1686,6 +1687,12 @@ public final class Env
 										}
 									}
 								}
+							} else if (v instanceof String && !Util.isEmpty((String) v) && !Util.isEmpty(foreignTable) && foreignTable.equals(MRefList.Table_Name) && !Util.isEmpty(format)) {
+								int refID = colToken.getAD_Reference_Value_ID();
+								if (format.equals("Name"))
+									outStr.append(MRefList.getListName(getCtx(), refID, (String) v));
+								else if (format.equals("Description"))
+									outStr.append(MRefList.getListDescription(getCtx(), DB.getSQLValueStringEx(null, "SELECT Name FROM AD_Reference WHERE AD_Reference_ID = ?", refID), (String) v));
 							} else if (v instanceof Date) {
 								SimpleDateFormat df = new SimpleDateFormat(format);
 								outStr.append(df.format((Date)v));

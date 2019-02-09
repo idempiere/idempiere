@@ -99,6 +99,7 @@ public class Setup_Help extends JDialog implements ActionListener
 		}
 		catch (Exception ex)
 		{
+			ex.printStackTrace();
 		}
 	}	//	init
 
@@ -139,7 +140,7 @@ public class Setup_Help extends JDialog implements ActionListener
 	{
 		try
 		{
-			editorPane.setPage("http://www.adempiere.com/wiki/index.php/ServerSetupHelp");
+			editorPane.setPage("http://wiki.idempiere.org/en/Server_Setup_Help");
 		}
 		catch (IOException ex)
 		{

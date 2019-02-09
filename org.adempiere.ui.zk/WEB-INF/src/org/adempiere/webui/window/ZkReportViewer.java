@@ -506,6 +506,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		if (ThemeManager.isUseFontIconForImage())
 			LayoutUtils.addSclass("medium-toolbarbutton", bRefresh);
 
+		bWizard.setName("Wizard");
 		if (ThemeManager.isUseFontIconForImage())
 			bWizard.setIconSclass("z-icon-Wizard");
 		else

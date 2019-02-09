@@ -20,6 +20,7 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -33,6 +34,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 
+import org.compiere.install.ConfigurationPanel;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -178,8 +180,11 @@ public final class AppsAction extends AbstractAction
 	 */
 	private ImageIcon getIcon(String name, boolean small)
 	{
-		String fullName = name + (small ? "16" : "24");
-		return Env.getImageIcon2(fullName);
+		String fullName = name + (small ? "16" : "24") + ".gif";
+		URL imageURL = ConfigurationPanel.class.getResource("images/"+fullName);
+		if (imageURL == null)
+			return null;
+		return new ImageIcon(imageURL);
 	}	//	getIcon
 
 	/**

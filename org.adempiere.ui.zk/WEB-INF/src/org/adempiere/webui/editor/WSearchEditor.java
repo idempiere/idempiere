@@ -53,6 +53,7 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRole;
+import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -473,10 +474,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		if(!getComponent().isEnabled())
 			return;
 
-		int zoomWindowId = gridField != null ? lookup.getZoom(Env.isSOTrx(Env.getCtx(), gridField.getWindowNo())) : lookup.getZoom(Env.isSOTrx(Env.getCtx()));
-		final WQuickEntry vqe = new WQuickEntry (lookup.getWindowNo(), zoomWindowId);
-		if (vqe.getQuickFields()<=0)
-			return;
+		int zoomWindowId = -1;
+
 		int Record_ID = 0;
 
 		//  if update, get current value
@@ -488,6 +487,20 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				Record_ID = Integer.parseInt(value.toString());
 		}
 
+    	if (lookup.getColumnName() != null) {
+    		String tableName = lookup.getColumnName().substring(0, lookup.getColumnName().indexOf("."));
+    		int zoomWinID = Env.getZoomWindowID(MTable.getTable_ID(tableName), Record_ID, lookup.getWindowNo());
+    		if (zoomWinID > 0)
+    			zoomWindowId = zoomWinID;
+    	}
+    	
+    	if (zoomWindowId < 0) {
+    		zoomWindowId = gridField != null ? lookup.getZoom(Env.isSOTrx(Env.getCtx(), gridField.getWindowNo())) : lookup.getZoom(Env.isSOTrx(Env.getCtx()));
+    	}
+
+		final WQuickEntry vqe = new WQuickEntry (lookup.getWindowNo(), zoomWindowId);
+		if (vqe.getQuickFields()<=0)
+			return;
 		vqe.loadRecord (Record_ID);
 
 		final int finalRecord_ID = Record_ID;
