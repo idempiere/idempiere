@@ -40,8 +40,7 @@ esac
 IDEMPIERE_USER=idempiere
 IDEMPIERE_HOME=/opt/idempiere-server
 # in case you manual install java by use zip or your linux distros, or your java provider have difference pattern of path, please update here
-JAVA_HOME=`ls -r /usr/lib/jvm/java-1[0-9]-openjdk*/bin/javac /usr/lib/jvm/java-1[0-9]-oracle*/bin/javac | head -1`
-JAVA_HOME=`dirname $JAVA_HOME`
+JAVA_HOME=`ls -r /usr/lib/jvm/java-1[12]-openjdk*/bin/javac | head -1`
 JAVA_HOME=`dirname $JAVA_HOME`
 SU=su
 export IDEMPIERE_HOME
@@ -256,9 +255,9 @@ configure_perform()
     if [ "x${ADEMPIERE_DB_SYSTEM}" = "x^TryLocalConnection^" ]
     then
         # recreate idempiere user from here as the RUN_ImportIdempiere requires it
-        $SU postgres -c "dropdb -U postgres idempiere" # > /dev/null 2>&1
-        $SU postgres -c "dropuser -U postgres idempiere" # > /dev/null 2>&1
-        $SU postgres -c "psql -U postgres -c \"CREATE ROLE adempiere SUPERUSER LOGIN PASSWORD '${ADEMPIERE_DB_PASSWORD}'\"" # > /dev/null 2>&1
+        $SU postgres -c "cd; dropdb -U postgres idempiere" # > /dev/null 2>&1
+        $SU postgres -c "cd; dropuser -U postgres idempiere" # > /dev/null 2>&1
+        $SU postgres -c "cd; psql -U postgres -c \"CREATE ROLE adempiere SUPERUSER LOGIN PASSWORD '${ADEMPIERE_DB_PASSWORD}'\"" # > /dev/null 2>&1
     fi
 
     if [ -f ${IDEMPIERE_HOME}/utils/RUN_ImportIdempiere.sh ]  
@@ -267,13 +266,13 @@ configure_perform()
        	$SU ${IDEMPIERE_USER} -c "cd ${IDEMPIERE_HOME}/utils; ( echo "" | ./RUN_ImportIdempiere.sh )" # > /dev/null 2>&1
 	echo "Done"
     fi
-    $SU ${IDEMPIERE_USER} -c "export PGPASSWORD=${ADEMPIERE_DB_PASSWORD}; psql -d idempiere -U adempiere -h localhost -p 5432 -c ''" > /dev/null 2>&1
+    $SU ${IDEMPIERE_USER} -c "cd; export PGPASSWORD=${ADEMPIERE_DB_PASSWORD}; psql -d idempiere -U adempiere -h localhost -p 5432 -c ''" > /dev/null 2>&1
     if [ $? -ne 0 ]
     then
         echo "Cannot connect to idempiere database, please verify and try again"
         exit 1
     fi
-    $SU ${IDEMPIERE_USER} -c "export PGPASSWORD=${ADEMPIERE_DB_PASSWORD}; psql -d idempiere -U adempiere -h localhost -p 5432 -c 'select count(*) from ad_system' 2>&1 | grep '1$'" > /dev/null 2>&1
+    $SU ${IDEMPIERE_USER} -c "cd; export PGPASSWORD=${ADEMPIERE_DB_PASSWORD}; psql -d idempiere -U adempiere -h localhost -p 5432 -c 'select count(*) from ad_system' 2>&1 | grep '1$'" > /dev/null 2>&1
     if [ $? -ne 0 ]
     then
         echo "Database not imported correctly, please verify and try again"
@@ -465,7 +464,7 @@ EOF
             if [ -z "$LINE" ]
             then
                 # Empty postgres password verify connection with local postgres user
-                $SU postgres -c "psql -U postgres -c ''"
+                $SU postgres -c "cd; psql -U postgres -c ''"
                 if [ $? -eq 0 ]
                 then
                     break
