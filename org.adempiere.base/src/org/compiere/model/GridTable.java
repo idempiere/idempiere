@@ -3628,12 +3628,12 @@ public class GridTable extends AbstractTableModel
 		}	//	run
 
 		private void doRun() {
-			openResultSet();
-			if (m_rs == null)
-				return;
-
 			try
 			{
+				openResultSet();
+				if (m_rs == null)
+					return;
+
 				while (m_rs.next())
 				{
 					if (Thread.interrupted())
