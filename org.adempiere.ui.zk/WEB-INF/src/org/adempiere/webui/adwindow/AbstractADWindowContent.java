@@ -1811,16 +1811,16 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     public void onRefresh()
     {
     	GridTab gridTab = adTabbox.getSelectedGridTab();
-    	if (gridTab != null && gridTab.getTableModel() != null)
+    	/*if (gridTab != null && gridTab.getTableModel() != null)
     	{
     		gridTab.getTableModel().resetCacheSortState();
     	}
-    	Column sortColumn = findCurrentSortColumn();
+    	Column sortColumn = findCurrentSortColumn();*/
     	onRefresh(true, false);
-    	if (sortColumn != null)
+    	/*if (sortColumn != null)
     	{
     		sortColumn.setSortDirection("natural");
-    	}
+    	}*/
     	if (gridTab.isSortTab()) { // refresh is not refreshing sort tabs
     		IADTabpanel tabPanel = adTabbox.getSelectedTabpanel();
     		tabPanel.query(false, 0, 0);
