@@ -119,7 +119,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Grid;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Window.Mode;
@@ -1826,7 +1825,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		tabPanel.query(false, 0, 0);
     	}
     }
-
+/*
     private Column findCurrentSortColumn() {
 		IADTabpanel iadtabpanel = getADTab().getSelectedTabpanel();
 		if (iadtabpanel instanceof ADTabpanel) {
@@ -1849,7 +1848,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}
 		return null;
 	}
-
+*/
     /**
      * @see ToolbarListener#onHelp()
      */
