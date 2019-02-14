@@ -413,6 +413,17 @@ public class MColumn extends X_AD_Column
 			}
 		}
 
+		// IDEMPIERE-1615 Multiple key columns lead to data corruption or data loss
+		if ((is_ValueChanged(COLUMNNAME_IsKey) || is_ValueChanged(COLUMNNAME_IsActive)) && isKey() && isActive()) {
+			int cnt = DB.getSQLValueEx(get_TrxName(),
+					"SELECT COUNT(*) FROM AD_Column WHERE AD_Table_ID=? AND IsActive='Y' AND AD_Column_ID!=? AND IsKey='Y'",
+					getAD_Table_ID(), getAD_Column_ID());
+			if (cnt > 0) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "KeyColumnAlreadyDefined"));
+				return false;
+			}
+		}
+
 		return true;
 	}	//	beforeSave
 	
