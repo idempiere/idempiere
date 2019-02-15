@@ -42,7 +42,7 @@ public class Language implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8855937839841807335L;
+	private static final long serialVersionUID = 7039775951366180267L;
 
 	/**
 	 * 
@@ -368,6 +368,7 @@ public class Language implements Serializable
 	private Boolean             m_decimalPoint;
 	private Boolean				m_leftToRight;
 	private SimpleDateFormat    m_dateFormat;
+	private String              m_dbDateFormat;
 	private MediaSize 			m_mediaSize = MediaSize.ISO.A4;
 	private boolean             m_fromDB = false;
 
@@ -566,12 +567,18 @@ public class Language implements Serializable
 
 	/**
 	 *  Get Database Date Pattern.
-	 *  Derive from date pattern (make upper case)
+	 *  Derive from date pattern (make upper case and replace month as word with MM)
 	 *  @return date pattern
 	 */
 	public String getDBdatePattern()
 	{
-		return getDateFormat().toPattern().toUpperCase(m_locale);
+		if (m_dbDateFormat == null)
+		{
+			m_dbDateFormat = getDateFormat().toPattern().toUpperCase(m_locale);
+			// IDEMPIERE-3888 - temporary hack - a better solution would be to implement AD_Language.DBDatePattern
+			m_dbDateFormat = m_dbDateFormat.replaceFirst("MMM*", "MM");
+		}
+		return m_dbDateFormat;
 	}   //  getDBdatePattern
 
 	/**
