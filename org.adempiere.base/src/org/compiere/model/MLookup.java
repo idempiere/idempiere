@@ -56,7 +56,7 @@ public final class MLookup extends Lookup implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2228200000988048623L;
+	private static final long serialVersionUID = 2288661955135689187L;
 
 	/**
 	 *  MLookup Constructor
@@ -488,6 +488,11 @@ public final class MLookup extends Lookup implements Serializable
 	private Object					m_directNullKey = null;
 	private Future<?> m_loaderFuture;
 
+	public NamePair getDirect (Object key, boolean saveInCache, boolean cacheLocal)
+	{
+		return getDirect(key, saveInCache, cacheLocal, null);
+	}	//	getDirect
+
 	/**
 	 *	Get Data Direct from Table.
 	 *  @param key key
@@ -495,7 +500,7 @@ public final class MLookup extends Lookup implements Serializable
 	 * 	@param cacheLocal cache locally for r/o
 	 *  @return value
 	 */
-	public NamePair getDirect (Object key, boolean saveInCache, boolean cacheLocal)
+	public NamePair getDirect (Object key, boolean saveInCache, boolean cacheLocal, String trxName)
 	{
 		//	Nothing to query
 		if (key == null || m_info.QueryDirect == null || m_info.QueryDirect.length() == 0)
@@ -520,7 +525,7 @@ public final class MLookup extends Lookup implements Serializable
 		try
 		{
 			//	SELECT Key, Value, Name FROM ...
-			pstmt = DB.prepareStatement(m_info.QueryDirect, null);
+			pstmt = DB.prepareStatement(m_info.QueryDirect, trxName);
 			if (isNumber)
 				pstmt.setInt(1, Integer.parseInt(key.toString()));
 			else
