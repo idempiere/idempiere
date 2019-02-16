@@ -175,6 +175,8 @@ public class Login extends TableFixture {
 					break;
 				}
 			}
+		} else {
+			return "Error logging in - user/password combination not valid";
 		}
 		if (!okclient)
 			return "Error logging in - client not allowed for this user";
