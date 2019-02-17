@@ -1,6 +1,6 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2006 ComPiere, Inc. All Rights Reserved.                *
+ * Project: Trek Global ERP                                                   *
+ * Copyright (C) 2009-2018 Trek Global Corporation                			  *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -10,9 +10,6 @@
  * You should have received a copy of the GNU General Public License along    *
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
- * For the text or an alternative of this public license, you may reach us    *
- * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
- * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
 package org.adempiere.process;
 
@@ -31,34 +28,51 @@ public class RecreateStorageReservation extends SvrProcess {
 
 	@Override
 	protected String doIt() throws Exception {
-		
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT count(*) FROM ");
-		sql.append(" (");
-		sql.append(" SELECT SUM(ol.qtyreserved) AS orderqtyreserved, ol.m_warehouse_id,");
-		sql.append(" ol.m_product_id, coalesce(m_attributesetinstance_id,0) AS m_attributesetinstance_id,");
-		sql.append(" o.issotrx, w.ad_client_id,w.ad_org_id");
-		sql.append(" FROM   c_orderline ol ");
-		sql.append(" JOIN c_order o ON ( ol.c_order_id = o.c_order_id ) ");
-		sql.append(" JOIN m_warehouse w ON (w.m_warehouse_id = o.m_warehouse_id)");
-		sql.append(" WHERE  ol.m_product_id > 0 AND ol.qtyreserved!=0 AND o.docstatus NOT IN ('VO','RE') ");
-		sql.append(" GROUP  BY 2,3,4,5,6,7 ");
-		sql.append(" ) AS y ");
-		sql.append(" FULL OUTER JOIN ");
-		sql.append(" ( ");
-		sql.append(" SELECT qty AS storageqtyReserved,");
-		sql.append(" m_warehouse_id, m_product_id, m_attributesetinstance_id,issotrx,ad_client_id");
-		sql.append(" FROM   m_storagereservation");
-		sql.append(" WHERE  qty!=0");
-		sql.append(" ) AS x");
-		sql.append(" ON y.m_warehouse_id = x.m_warehouse_id");
-		sql.append(" AND x.m_product_id = y.m_product_id");
-		sql.append(" AND x.m_attributesetinstance_id = y.m_attributesetinstance_id");
-		sql.append(" AND x.issotrx = y.issotrx");
-		sql.append(" WHERE  COALESCE(x.storageqtyreserved, 0) <> COALESCE(y.orderqtyreserved, 0)");
-		sql.append(" AND (x.ad_client_id = ? OR y.ad_client_id = ?)");
-		
-		int wrongReservations = DB.getSQLValue(get_TrxName(), sql.toString(), m_AD_Client_ID, m_AD_Client_ID);
+
+		final String sql = ""
+				+ "SELECT COUNT(*) "
+				+ "FROM "
+				+ "( "
+				+ "SELECT SUM(ol.QtyReserved) AS OrderQtyReserved, "
+				+ "       ol.M_Warehouse_ID, "
+				+ "       ol.M_Product_ID, "
+				+ "       COALESCE(M_AttributeSetInstance_ID, 0) AS M_AttributeSetInstance_ID, "
+				+ "       o.IsSOTrx, "
+				+ "       w.AD_Client_ID, "
+				+ "       w.AD_Org_ID "
+				+ "FROM   C_OrderLine ol "
+				+ "       JOIN C_Order o ON ( ol.C_Order_ID = o.C_Order_ID ) "
+				+ "       JOIN M_Warehouse w ON ( w.M_Warehouse_ID = o.M_Warehouse_ID ) "
+				+ "WHERE  ol.m_product_ID > 0 "
+				+ "       AND ol.ad_client_ID = ? "
+				+ "       AND ol.qtyreserved != 0 "
+				+ "       AND o.docstatus NOT IN ( 'VO', 'RE' ) "
+				+ "GROUP  BY ol.M_Warehouse_ID, "
+				+ "          ol.M_Product_ID, "
+				+ "          COALESCE(M_AttributeSetInstance_ID, 0), "
+				+ "          o.IsSOTrx, "
+				+ "          w.AD_Client_ID, "
+				+ "          w.AD_Org_ID "
+				+ ") y "
+				+ "FULL OUTER JOIN "
+				+ "( "
+				+ "SELECT Qty AS StorageQtyreserved, "
+				+ "       M_Warehouse_ID, "
+				+ "       M_Product_ID, "
+				+ "       M_AttributeSetInstance_ID, "
+				+ "       IsSOTrx, "
+				+ "       AD_Client_ID "
+				+ "FROM   M_StorageReservation "
+				+ "WHERE  AD_Client_ID = ? "
+				+ "       AND Qty != 0 "
+				+ ") x "
+				+ "    ON y.M_Warehouse_ID = x.M_Warehouse_ID "
+				+ "       AND x.M_Product_ID = y.M_Product_ID "
+				+ "       AND x.M_AttributeSetInstance_ID = y.M_AttributeSetInstance_ID "
+				+ "       AND x.IsSOTrx = y.IsSOTrx "
+				+ "WHERE  COALESCE(x.StorageQtyReserved, 0) <> COALESCE(y.OrderQtyReserved, 0)";
+
+		int wrongReservations = DB.getSQLValueEx(get_TrxName(), sql, m_AD_Client_ID, m_AD_Client_ID);
 		
 		int noInserted = 0;
 		if (wrongReservations > 0) {
@@ -69,34 +83,49 @@ public class RecreateStorageReservation extends SvrProcess {
 			int no = DB.executeUpdateEx(deleteSql, new Object[]{m_AD_Client_ID}, get_TrxName());
 			log.warning(no + " reservation records deleted");
 			
-			sql = new StringBuilder();
-			sql.append("INSERT INTO M_StorageReservation ");
-			sql.append(" (qty, m_warehouse_id,");
-			sql.append(" m_product_id,m_attributesetinstance_id,");
-			sql.append(" issotrx, ad_client_id, ad_org_id,");
-			sql.append(" created, createdby,");
-			sql.append(" updated, updatedby,");
-			sql.append(" isactive)");
-			sql.append(" SELECT SUM(ol.qtyreserved) AS orderqtyreserved,");
-			sql.append(" ol.m_warehouse_id, ");
-			sql.append(" ol.m_product_id,");
-			sql.append(" COALESCE(m_attributesetinstance_id,0),");
-			sql.append(" o.issotrx, w.ad_client_id, w.ad_org_id,");
-			sql.append(" SYSDATE,");
-			sql.append(Env.getAD_User_ID(getCtx()));
-			sql.append(" ,SYSDATE,");
-			sql.append(Env.getAD_User_ID(getCtx()));			
-			sql.append(" ,'Y' ");
-			sql.append(" FROM c_orderline ol");
-			sql.append(" JOIN c_order o ON ( ol.c_order_id = o.c_order_id )");
-			sql.append(" JOIN m_warehouse w ON (w.m_warehouse_id = o.m_warehouse_id)");
-			sql.append(" WHERE ol.m_product_id > 0");
-			sql.append(" AND ol.qtyreserved != 0");
-			sql.append(" AND o.docstatus NOT IN ('VO', 'RE')");
-			sql.append(" AND o.ad_client_id = ?");
-			sql.append(" GROUP BY 2, 3, 4, 5, 6,7,8,9,10,11,12");
+			final String ins = ""
+					+ "INSERT INTO M_StorageReservation "
+					+ "            (Qty, "
+					+ "             M_Warehouse_ID, "
+					+ "             M_Product_ID, "
+					+ "             M_AttributeSetInstance_ID, "
+					+ "             IsSOTrx, "
+					+ "             AD_Client_ID, "
+					+ "             AD_Org_ID, "
+					+ "             Created, "
+					+ "             CreatedBy, "
+					+ "             Updated, "
+					+ "             UpdatedBy, "
+					+ "             IsActive, "
+					+ "             M_StorageReservation_UU) "
+					+ "SELECT SUM(ol.QtyReserved) AS OrderQtyReserved, "
+					+ "       ol.M_Warehouse_ID, "
+					+ "       ol.M_Product_ID, "
+					+ "       COALESCE(M_AttributeSetInstance_ID, 0), "
+					+ "       o.IsSOTrx, "
+					+ "       w.AD_Client_ID, "
+					+ "       w.AD_Org_ID, "
+					+ "       SysDate, "
+					+ "       ?, "
+					+ "       SysDate, "
+					+ "       ?, " 
+					+ "       'Y', "
+					+ "       generate_uuid() "
+					+ "FROM   C_OrderLine ol "
+					+ "       JOIN C_Order o ON ( ol.C_Order_ID = o.C_Order_ID ) "
+					+ "       JOIN M_Warehouse w ON ( w.M_Warehouse_ID = o.M_Warehouse_ID ) "
+					+ "WHERE  ol.M_Product_ID > 0 "
+					+ "       AND ol.QtyReserved != 0 "
+					+ "       AND o.DocStatus NOT IN ( 'VO', 'RE' ) "
+					+ "       AND o.AD_Client_ID = ? "
+					+ "GROUP  BY ol.M_Warehouse_ID, "
+					+ "       ol.M_Product_ID, "
+					+ "       COALESCE(M_AttributeSetInstance_ID, 0), "
+					+ "       o.IsSOTrx, "
+					+ "       w.AD_Client_ID, "
+					+ "       w.AD_Org_ID";
 			
-			noInserted = DB.executeUpdateEx(sql.toString(), new Object[]{m_AD_Client_ID}, get_TrxName());
+			noInserted = DB.executeUpdateEx(ins, new Object[]{Env.getAD_User_ID(getCtx()), Env.getAD_User_ID(getCtx()), m_AD_Client_ID}, get_TrxName());
 			log.warning(noInserted + " reservation records inserted");
 		}
 
