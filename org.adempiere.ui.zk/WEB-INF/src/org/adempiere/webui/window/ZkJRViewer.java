@@ -334,10 +334,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
 				else
 					prefix = makePrefix(jasperPrint.getName());
-				if (log.isLoggable(Level.FINE))
-				{
-					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				}
+				if (prefix.length() < 3)
+					prefix += "_".repeat(3-prefix.length());
+				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				File file = File.createTempFile(prefix, ".html", new File(path));
 
 				HtmlExporter exporter = new HtmlExporter();
@@ -360,10 +359,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
 				else
 					prefix = makePrefix(jasperPrint.getName());
-				if (log.isLoggable(Level.FINE))
-				{
-					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				}
+				if (prefix.length() < 3)
+					prefix += "_".repeat(3-prefix.length());
+				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				File file = File.createTempFile(prefix, ".xls", new File(path));
 		        FileOutputStream fos = new FileOutputStream(file);
 
@@ -389,10 +387,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
 				else
 					prefix = makePrefix(jasperPrint.getName());
-				if (log.isLoggable(Level.FINE))
-				{
-					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				}
+				if (prefix.length() < 3)
+					prefix += "_".repeat(3-prefix.length());
+				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				File file = File.createTempFile(prefix, ".csv", new File(path));
 				FileOutputStream fos = new FileOutputStream(file);
 				JRCsvExporter exporter= new JRCsvExporter();
@@ -413,10 +410,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
 				else
 					prefix = makePrefix(jasperPrint.getName());
-				if (log.isLoggable(Level.FINE))
-				{
-					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				}
+				if (prefix.length() < 3)
+					prefix += "_".repeat(3-prefix.length());
+				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				File file = File.createTempFile(prefix, ".ssv", new File(path));
 				FileOutputStream fos = new FileOutputStream(file);
 				JRCsvExporter exporter= new JRCsvExporter();

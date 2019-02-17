@@ -119,7 +119,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Grid;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Window.Mode;
@@ -1811,22 +1810,22 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     public void onRefresh()
     {
     	GridTab gridTab = adTabbox.getSelectedGridTab();
-    	if (gridTab != null && gridTab.getTableModel() != null)
+    	/*if (gridTab != null && gridTab.getTableModel() != null)
     	{
     		gridTab.getTableModel().resetCacheSortState();
     	}
-    	Column sortColumn = findCurrentSortColumn();
+    	Column sortColumn = findCurrentSortColumn();*/
     	onRefresh(true, false);
-    	if (sortColumn != null)
+    	/*if (sortColumn != null)
     	{
     		sortColumn.setSortDirection("natural");
-    	}
+    	}*/
     	if (gridTab.isSortTab()) { // refresh is not refreshing sort tabs
     		IADTabpanel tabPanel = adTabbox.getSelectedTabpanel();
     		tabPanel.query(false, 0, 0);
     	}
     }
-
+/*
     private Column findCurrentSortColumn() {
 		IADTabpanel iadtabpanel = getADTab().getSelectedTabpanel();
 		if (iadtabpanel instanceof ADTabpanel) {
@@ -1849,7 +1848,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}
 		return null;
 	}
-
+*/
     /**
      * @see ToolbarListener#onHelp()
      */

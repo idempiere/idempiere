@@ -39,6 +39,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WLocationDialog;
 import org.compiere.model.GridField;
+import org.compiere.model.GridTable;
 import org.compiere.model.Lookup;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MLocation;
@@ -413,7 +414,16 @@ ContextMenuListener, IZoomableEditor
     	{
     		if (lookup != null)
 	        {
-    			NamePair pair = lookup.getDirect(oldValue, false, false);
+    			String trxName = null;
+    			if (   gridField != null
+   					&& gridField.getGridTab() != null
+   					&& gridField.getGridTab().getTableModel() != null) {
+    				GridTable gt = gridField.getGridTab().getTableModel();
+    				if (gt.isImporting()) {
+    					trxName = gt.get_TrxName();
+    				}
+    			}
+    			NamePair pair = lookup.getDirect(oldValue, false, false, trxName);
     			if (pair != null) {
     				if (pair instanceof KeyNamePair) {
     					int key = ((KeyNamePair)pair).getKey();

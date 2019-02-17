@@ -43,7 +43,7 @@ public abstract class Lookup extends AbstractListModel<Object>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -28200392264647953L;
+	private static final long serialVersionUID = -2500275921218601088L;
 
 	/**
 	 *  Lookup
@@ -468,8 +468,14 @@ public abstract class Lookup extends AbstractListModel<Object>
 	 *  @param key key
 	 *  @param saveInCache save in cache for r/w
 	 * 	@param cacheLocal cache locally for r/o
+	 * 	@param trxName the transaction name
 	 *  @return value
 	 */
+	public NamePair getDirect (Object key, boolean saveInCache, boolean cacheLocal, String trxName)
+	{
+		return get (key);
+	}	//	getDirect
+
 	public NamePair getDirect (Object key, boolean saveInCache, boolean cacheLocal)
 	{
 		return get (key);

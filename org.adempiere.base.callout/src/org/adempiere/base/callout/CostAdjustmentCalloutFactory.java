@@ -20,6 +20,7 @@ import org.adempiere.base.IColumnCallout;
 import org.adempiere.base.IColumnCalloutFactory;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.model.GridTable;
 import org.compiere.model.I_M_InventoryLine;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
@@ -66,7 +67,15 @@ public class CostAdjustmentCalloutFactory implements IColumnCalloutFactory {
 		@Override
 		public String start(Properties ctx, int WindowNo, GridTab mTab,
 				GridField mField, Object value, Object oldValue) {
-			MInventory inventory = MInventory.get(ctx, (Integer) mTab.getValue("M_Inventory_ID"));
+			String trxName = null;
+			if (   mTab != null
+				&& mTab.getTableModel() != null) {
+				GridTable gt = mTab.getTableModel();
+				if (gt.isImporting()) {
+					trxName = gt.get_TrxName();
+				}
+			}
+			MInventory inventory = new MInventory(ctx, (Integer) mTab.getValue("M_Inventory_ID"), trxName);
 			if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(inventory.getC_DocType().getDocSubTypeInv())) {
 				String costingMethod = inventory.getCostingMethod();
 				if (value == null) {
@@ -121,7 +130,15 @@ public class CostAdjustmentCalloutFactory implements IColumnCalloutFactory {
 		@Override
 		public String start(Properties ctx, int WindowNo, GridTab mTab,
 				GridField mField, Object value, Object oldValue) {
-			MInventory inventory = MInventory.get(ctx, (Integer) mTab.getValue("M_Inventory_ID"));
+			String trxName = null;
+			if (   mTab != null
+				&& mTab.getTableModel() != null) {
+				GridTable gt = mTab.getTableModel();
+				if (gt.isImporting()) {
+					trxName = gt.get_TrxName();
+				}
+			}
+			MInventory inventory = new MInventory(ctx, (Integer) mTab.getValue("M_Inventory_ID"), trxName);
 			if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(inventory.getC_DocType().getDocSubTypeInv())) {
 				String costingMethod = inventory.getCostingMethod();
 				Object productValue = mTab.getValue(I_M_InventoryLine.COLUMNNAME_M_Product_ID);

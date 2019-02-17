@@ -167,12 +167,16 @@ public class Login extends TableFixture {
 		KeyNamePair[] clients = login.getClients(m_user, m_password);
 		boolean okclient = false;
 		KeyNamePair selectedClient = null;
-		for (KeyNamePair client : clients) {
-			if (client.getKey() == m_client_id) {
-				okclient = true;
-				selectedClient = client;
-				break;
+		if (clients != null) {
+			for (KeyNamePair client : clients) {
+				if (client.getKey() == m_client_id) {
+					okclient = true;
+					selectedClient = client;
+					break;
+				}
 			}
+		} else {
+			return "Error logging in - user/password combination not valid";
 		}
 		if (!okclient)
 			return "Error logging in - client not allowed for this user";

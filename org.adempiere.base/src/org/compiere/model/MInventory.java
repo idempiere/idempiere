@@ -255,6 +255,14 @@ public class MInventory extends X_M_Inventory implements DocAction
 			log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_C_DocType_ID));
 			return false;
 		}
+		// IDEMPIERE-1887 can make inconsistent data from physical inventory window
+		if (!newRecord && is_ValueChanged(COLUMNNAME_M_Warehouse_ID)) {
+			int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM M_InventoryLine WHERE M_Inventory_ID=?", getM_Inventory_ID());
+			if (cnt > 0) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangeWarehouse"));
+				return false;
+			}
+		}
 		return true;
 	}	//	beforeSave
 	

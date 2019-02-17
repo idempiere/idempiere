@@ -466,7 +466,7 @@ public class MMovement extends X_M_Movement implements DocAction
 									ma.getMovementQty().negate(),ma.getDateMaterialPolicy(), get_TrxName()))
 							{
 								String lastError = CLogger.retrieveErrorString("");
-								m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
+								m_processMsg = "Cannot correct Inventory OnHand (MA) [" + product.getValue() + "] - " + lastError;
 								return DocAction.STATUS_Invalid;
 							}
 	
@@ -485,7 +485,7 @@ public class MMovement extends X_M_Movement implements DocAction
 									ma.getMovementQty(),ma.getDateMaterialPolicy(), get_TrxName()))
 							{
 								String lastError = CLogger.retrieveErrorString("");
-								m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
+								m_processMsg = "Cannot correct Inventory OnHand (MA) [" + product.getValue() + "] - " + lastError;
 								return DocAction.STATUS_Invalid;
 							}
 	
@@ -497,7 +497,7 @@ public class MMovement extends X_M_Movement implements DocAction
 							trxFrom.setM_MovementLine_ID(line.getM_MovementLine_ID());
 							if (!trxFrom.save())
 							{
-								m_processMsg = "Transaction From not inserted (MA)";
+								m_processMsg = "Transaction From not inserted (MA) [" + product.getValue() + "] - ";
 								return DocAction.STATUS_Invalid;
 							}
 							//
@@ -508,7 +508,7 @@ public class MMovement extends X_M_Movement implements DocAction
 							trxTo.setM_MovementLine_ID(line.getM_MovementLine_ID());
 							if (!trxTo.save())
 							{
-								m_processMsg = "Transaction To not inserted (MA)";
+								m_processMsg = "Transaction To not inserted (MA) [" + product.getValue() + "] - ";
 								return DocAction.STATUS_Invalid;
 							}
 						}
@@ -553,7 +553,7 @@ public class MMovement extends X_M_Movement implements DocAction
 								line.getMovementQty().negate(),effDateMPolicy, get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
-							m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
+							m_processMsg = "Cannot correct Inventory OnHand (MA) [" + product.getValue() + "] - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
 	
@@ -569,7 +569,7 @@ public class MMovement extends X_M_Movement implements DocAction
 								line.getMovementQty(),effDateMPolicy, get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
-							m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
+							m_processMsg = "Cannot correct Inventory OnHand (MA) [" + product.getValue() + "] - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
 	
@@ -581,7 +581,7 @@ public class MMovement extends X_M_Movement implements DocAction
 						trxFrom.setM_MovementLine_ID(line.getM_MovementLine_ID());
 						if (!trxFrom.save())
 						{
-							m_processMsg = "Transaction From not inserted";
+							m_processMsg = "Transaction From not inserted (MA) [" + product.getValue() + "] - ";
 							return DocAction.STATUS_Invalid;
 						}
 						//
@@ -592,7 +592,7 @@ public class MMovement extends X_M_Movement implements DocAction
 						trxTo.setM_MovementLine_ID(line.getM_MovementLine_ID());
 						if (!trxTo.save())
 						{
-							m_processMsg = "Transaction To not inserted";
+							m_processMsg = "Transaction To not inserted [" + product.getValue() + "] - ";
 							return DocAction.STATUS_Invalid;
 						}
 					}	//	Fallback
@@ -878,7 +878,7 @@ public class MMovement extends X_M_Movement implements DocAction
 			rLine.setProcessed(false);
 			if (!rLine.save())
 			{
-				m_processMsg = "Could not create Movement Reversal Line";
+				m_processMsg = "Could not create Movement Reversal Line for @Line@ " + rLine.getLine() + ", @M_Product_ID@=" + rLine.getProduct().getValue();
 				return null;
 			}
 			

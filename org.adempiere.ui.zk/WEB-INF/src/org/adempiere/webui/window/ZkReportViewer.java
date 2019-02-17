@@ -1556,10 +1556,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 					log.warning("Cannot archive Document");
 				String path = System.getProperty("java.io.tmpdir");
 				String prefix = viewer.makePrefix(viewer.m_reportEngine.getName());
-				if (log.isLoggable(Level.FINE))
-				{
-					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				}
+				if (prefix.length() < 3)
+					prefix += "_".repeat(3-prefix.length());
+				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				File file = File.createTempFile(prefix, ".pdf", new File(path));
 				viewer.m_reportEngine.createPDF(file);
 				viewer.media = new AMedia(file.getName(), "pdf", "application/pdf", file, true);
@@ -1603,10 +1602,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 					log.warning("Cannot archive Document");
 				String path = System.getProperty("java.io.tmpdir");
 				String prefix = viewer.makePrefix(viewer.m_reportEngine.getName());
-				if (log.isLoggable(Level.FINE))
-				{
-					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				}
+				if (prefix.length() < 3)
+					prefix += "_".repeat(3-prefix.length());
+				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				File file = File.createTempFile(prefix, ".html", new File(path));
 				viewer.m_reportEngine.createHTML(file, false, viewer.m_reportEngine.getPrintFormat().getLanguage(), new HTMLExtension(contextPath, "rp", viewer.getUuid()));
 				viewer.media = new AMedia(file.getName(), "html", "text/html", file, false);
@@ -1649,10 +1647,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 					log.warning("Cannot archive Document");
 				String path = System.getProperty("java.io.tmpdir");
 				String prefix = viewer.makePrefix(viewer.m_reportEngine.getName());
-				if (log.isLoggable(Level.FINE))
-				{
-					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				}
+				if (prefix.length() < 3)
+					prefix += "_".repeat(3-prefix.length());
+				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				File file = File.createTempFile(prefix, ".xls", new File(path));
 				viewer.m_reportEngine.createXLS(file, viewer.m_reportEngine.getPrintFormat().getLanguage());
 				viewer.media = new AMedia(file.getName(), "xls", "application/vnd.ms-excel", file, true);

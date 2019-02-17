@@ -1047,12 +1047,14 @@ class Doc_AllocationTax
 		for (int i = 0; i < m_facts.size(); i++)
 		{
 			MFactAcct factAcct = (MFactAcct)m_facts.get(i);
-			if (factAcct.getAmtSourceDr().compareTo(total) > 0)
+			if (   (factAcct.getAmtSourceDr().signum() > 0 && factAcct.getAmtSourceDr().compareTo(total) > 0)
+				|| (factAcct.getAmtSourceDr().signum() < 0 && factAcct.getAmtSourceDr().compareTo(total) < 0))
 			{
 				total = factAcct.getAmtSourceDr();
 				m_totalIndex = i;
 			}
-			if (factAcct.getAmtSourceCr().compareTo(total) > 0)
+			if (   (factAcct.getAmtSourceCr().signum() > 0 && factAcct.getAmtSourceCr().compareTo(total) > 0)
+				|| (factAcct.getAmtSourceCr().signum() < 0 && factAcct.getAmtSourceCr().compareTo(total) < 0))
 			{
 				total = factAcct.getAmtSourceCr();
 				m_totalIndex = i;
