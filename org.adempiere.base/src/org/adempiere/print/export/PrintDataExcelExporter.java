@@ -58,10 +58,14 @@ extends AbstractExcelExporter
 			m_printData.setRowIndex(row);
 		//
 		MPrintFormatItem item = m_printFormat.getItem(col);
-		int AD_Column_ID = item.getAD_Column_ID();
 		Object obj = null;
-		if (AD_Column_ID > 0)
-			obj = m_printData.getNode(Integer.valueOf(AD_Column_ID));
+
+		if (item.isTypeField() || item.isTypePrintFormat() && item.isImageField()) {
+			int AD_Column_ID = item.getAD_Column_ID();
+			if (AD_Column_ID > 0)
+				obj = m_printData.getNode(Integer.valueOf(AD_Column_ID));
+		}
+
 		if (obj != null && obj instanceof PrintDataElement) {
 			return (PrintDataElement)obj;
 		}
