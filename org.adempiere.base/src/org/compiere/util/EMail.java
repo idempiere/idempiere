@@ -155,7 +155,9 @@ public final class EMail implements Serializable
 		
 		setSmtpHost(smtpHost);
 		setFrom(from);
-		String bccAddressForAllMails = MSysConfig.getValue(MSysConfig.MAIL_SEND_BCC_TO_ADDRESS, Env.getAD_Client_ID(Env.getCtx()));
+		String bccAddressForAllMails = null;
+		if (DB.isConnected())
+			bccAddressForAllMails = MSysConfig.getValue(MSysConfig.MAIL_SEND_BCC_TO_ADDRESS, Env.getAD_Client_ID(Env.getCtx()));
 		if (! Util.isEmpty(bccAddressForAllMails, true))
 			addBcc(bccAddressForAllMails);
 		addTo(to);
@@ -263,13 +265,17 @@ public final class EMail implements Serializable
 		Session session = null;
 		try
 		{
+			boolean isGmail = m_smtpHost.equalsIgnoreCase("smtp.gmail.com");
 			if (m_auth != null)		//	createAuthenticator was called
 				props.put("mail.smtp.auth", "true");
 			if (m_smtpPort > 0)
 			{
 				props.put("mail.smtp.port", String.valueOf(m_smtpPort));
+			} else if (isGmail)
+			{
+				props.put("mail.smtp.port", "587");
 			}
-			if (m_secureSmtp)
+			if (m_secureSmtp || isGmail)
 			{
 				props.put("mail.smtp.starttls.enable", "true");
 			}
@@ -299,7 +305,9 @@ public final class EMail implements Serializable
 			m_msg.setFrom(m_from);
 
 			// IDEMPIERE-2104 - intended for test or dev systems to not send undesired emails
-			boolean isDontSendToAddress = MSysConfig.getBooleanValue(MSysConfig.MAIL_DONT_SEND_TO_ADDRESS, false, Env.getAD_Client_ID(Env.getCtx()));
+			boolean isDontSendToAddress = false;
+			if (DB.isConnected())
+				isDontSendToAddress = MSysConfig.getBooleanValue(MSysConfig.MAIL_DONT_SEND_TO_ADDRESS, false, Env.getAD_Client_ID(Env.getCtx()));
 
 			if (! isDontSendToAddress) {
 				InternetAddress[] rec = getTos();
@@ -316,7 +324,9 @@ public final class EMail implements Serializable
 				if (m_replyTo != null)
 					m_msg.setReplyTo(new Address[] {m_replyTo});
 			} else {
-				String bccAddressForAllMails = MSysConfig.getValue(MSysConfig.MAIL_SEND_BCC_TO_ADDRESS, Env.getAD_Client_ID(Env.getCtx()));
+				String bccAddressForAllMails = null;
+				if (DB.isConnected())
+					bccAddressForAllMails = MSysConfig.getValue(MSysConfig.MAIL_SEND_BCC_TO_ADDRESS, Env.getAD_Client_ID(Env.getCtx()));
 				if (! Util.isEmpty(bccAddressForAllMails, true)) {
 					m_msg.setRecipients (Message.RecipientType.TO, bccAddressForAllMails);
 				}
@@ -603,7 +613,7 @@ public final class EMail implements Serializable
 		try
 		{
 			m_from = createInternetAddress(newFrom);
-			if (MSysConfig.getBooleanValue(MSysConfig.MAIL_SEND_BCC_TO_FROM, false, Env.getAD_Client_ID(Env.getCtx())))
+			if (DB.isConnected() && MSysConfig.getBooleanValue(MSysConfig.MAIL_SEND_BCC_TO_FROM, false, Env.getAD_Client_ID(Env.getCtx())))
 				addBcc(newFrom);
 		}
 		catch (Exception e)
