@@ -46,7 +46,7 @@ function showColumnMenu(e, columnName, row) {
 var contextMenu;
 
 function getMenu (componentId, foreignColumnName, value){
-	if (contextMenu == null){
+	if (componentId != null){
 	
 		//menu div
 		var menu = document.createElement("div");
