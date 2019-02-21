@@ -1633,8 +1633,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         	dataSql = dataSql + " " + otherClause;
         }
         
-        if (m_sqlUserOrder != null && m_sqlUserOrder.trim().length() > 0)
-        	dataSql = dataSql + m_sqlUserOrder;
+        if (indexOrderColumn > -1)
+        	dataSql = dataSql + getUserOrderClause();
         else
         	dataSql = dataSql + m_sqlOrder;
         
