@@ -424,6 +424,13 @@ public class MColumn extends X_AD_Column
 			}
 		}
 
+		if (isSelectionColumn() && getSeqNoSelection() <= 0) {
+			int next = DB.getSQLValueEx(get_TrxName(),
+					"SELECT ROUND((COALESCE(MAX(SeqNoSelection),0)+10)/10,0)*10 FROM AD_Column WHERE AD_Table_ID=? AND IsSelectionColumn='Y' AND IsActive='Y'",
+					getAD_Table_ID());
+			setSeqNoSelection(next);
+		}
+
 		return true;
 	}	//	beforeSave
 	
