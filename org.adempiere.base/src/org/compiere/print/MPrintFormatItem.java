@@ -649,6 +649,9 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 			setImageIsAttached(false);
 			setImageURL(null);
 		}
+		if (!isTypeField() && !isTypePrintFormat() && !isImageField()) {
+			setAD_Column_ID(0);
+		}
 		return true;
 	}	//	beforeSave
 	

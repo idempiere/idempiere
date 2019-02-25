@@ -819,6 +819,11 @@ public class Login
 			Env.setContext(m_ctx, Env.M_WAREHOUSE_ID, warehouse.getKey());
 			Ini.setProperty(Ini.P_WAREHOUSE, warehouse.getName());
 		}
+		else
+		{
+			Env.setContext(m_ctx, Env.M_WAREHOUSE_ID, "");
+			Ini.setProperty(Ini.P_WAREHOUSE, "");
+		}
 
 		//	Date (default today)
 		long today = System.currentTimeMillis();

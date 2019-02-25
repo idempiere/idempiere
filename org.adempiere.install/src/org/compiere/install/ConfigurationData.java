@@ -659,7 +659,7 @@ public class ConfigurationData
 		props.put("mail.user", mailUser);
 		props.put("mail.smtp.auth", "true");
 		if (isGmail) {
-			props.put("impa.smtp.port", "993");
+			props.put("mail.imaps.port", "993");
 			props.put("mail.store.protocol", "imaps");
 		}
 
