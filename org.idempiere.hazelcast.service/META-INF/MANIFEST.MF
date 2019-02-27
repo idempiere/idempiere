@@ -29,7 +29,7 @@ DynamicImport-Package: org.*, com.*, javax.*
 Bundle-ClassPath: .,
  lib/hazelcast-aws.jar,
  lib/hazelcast.jar
-Service-Component: OSGI-INF/clusterservice.xml, OSGI-INF/cacheservice.xml, OSGI-INF/messageservice.xml
+Service-Component: OSGI-INF/*.xml
 Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
 Require-Bundle: org.eclipse.osgi

@@ -17,6 +17,6 @@ Import-Package: org.jfree.io;version="1.0.23",
  org.slf4j;version="1.7.2"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.adempiere.db.oracle.OracleBundleActivator
-Service-Component: OSGI-INF/oracleprovider.xml
+Service-Component: OSGI-INF/*.xml
 Automatic-Module-Name: org.compiere.db.oracle.provider
 Bundle-Vendor: iDempiere Community

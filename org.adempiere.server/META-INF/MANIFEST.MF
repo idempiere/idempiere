@@ -39,7 +39,7 @@ Export-Package: org.adempiere.server,
  org.compiere.server,
  org.idempiere.server.factory
 Bundle-ActivationPolicy: lazy
-Service-Component: OSGI-INF/acctprocessorfactory.xml, OSGI-INF/alertprocessorfactory.xml, OSGI-INF/ldapprocessorfactory.xml, OSGI-INF/requestprocessorfactory.xml, OSGI-INF/schedulerfactory.xml, OSGI-INF/workflowprocessorfactory.xml
+Service-Component: OSGI-INF/*.xml
 Bundle-Activator: org.adempiere.server.AdempiereServerActivator
 Automatic-Module-Name: org.adempiere.server
 Bundle-Vendor: iDempiere Community

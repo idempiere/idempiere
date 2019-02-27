@@ -14,7 +14,7 @@ Import-Package: net.sf.jasperreports.engine,
  net.sf.jasperreports.view,
  org.adempiere.report.jasper,
  org.osgi.framework
-Service-Component: OSGI-INF/jrviewerprovider.xml
+Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.report.jasper.swing

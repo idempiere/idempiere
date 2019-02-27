@@ -341,7 +341,7 @@ Import-Package: fit,
  org.w3c.dom.traversal,
  org.w3c.dom.views,
  org.w3c.dom.xpath
-Service-Component: OSGI-INF/fitfixturefactory.xml
+Service-Component: OSGI-INF/*.xml
 Bundle-ClassPath: .
 Automatic-Module-Name: org.idempiere.ui.zk.selenium
 Bundle-Vendor: iDempiere Community
