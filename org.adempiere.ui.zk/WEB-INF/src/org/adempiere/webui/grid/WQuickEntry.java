@@ -252,6 +252,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 		}
 		Component field = editor.getComponent();
 		Hlayout layout = new Hlayout();
+		layout.setValign("middle");
 
 		ZKUpdateUtil.setHflex(layout, "10");
 
