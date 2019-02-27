@@ -275,6 +275,9 @@ public class MColumn extends X_AD_Column
 			}
 		}
 
+		/* IDEMPIERE-3509, IDEMPIERE-3902
+		 * removing this validation
+		 * it affects adversely PackIn process that can create the table later
 		if ( displayType == DisplayType.TableDir ||
 			(displayType == DisplayType.Search && getAD_Reference_Value_ID() <= 0))
 		{
@@ -286,6 +289,7 @@ public class MColumn extends X_AD_Column
 				return false;
 			}
 		}
+		*/
 
 		if (displayType == DisplayType.Table && getAD_Reference_Value_ID() <= 0)
 		{
