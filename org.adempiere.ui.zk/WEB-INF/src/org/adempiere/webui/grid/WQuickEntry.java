@@ -581,6 +581,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 			editor.setValue(mTable.getValueAt(row, col)); //In case a callout changed the value and it is not reflected in field yet
 			editor.setReadWrite(field.isEditable(true));
 			editor.setVisible(field.isDisplayed(true));
+			editor.updateStyle();
 		}
 	} // dynamicDisplay
 	
