@@ -599,7 +599,8 @@ ContextMenuListener, IZoomableEditor
 		if(!getComponent().isEnabled())
 			return;
 
-		final WQuickEntry vqe = new WQuickEntry (lookup.getWindowNo(), lookup.getZoom());
+		int tabNo = gridField != null && gridField.getGridTab() != null ? gridField.getGridTab().getTabNo() : 0;
+		final WQuickEntry vqe = new WQuickEntry(lookup.getWindowNo(), tabNo, lookup.getZoom());
 		int Record_ID = 0;
 
 		Object value = getValue();

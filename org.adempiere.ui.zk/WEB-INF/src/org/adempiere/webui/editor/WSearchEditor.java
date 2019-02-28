@@ -498,7 +498,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
     		zoomWindowId = gridField != null ? lookup.getZoom(Env.isSOTrx(Env.getCtx(), gridField.getWindowNo())) : lookup.getZoom(Env.isSOTrx(Env.getCtx()));
     	}
 
-		final WQuickEntry vqe = new WQuickEntry (lookup.getWindowNo(), zoomWindowId);
+    	int tabNo = gridField != null && gridField.getGridTab() != null ? gridField.getGridTab().getTabNo() : 0;
+    	final WQuickEntry vqe = new WQuickEntry(lookup.getWindowNo(), tabNo, zoomWindowId);
 		if (vqe.getQuickFields()<=0)
 			return;
 		vqe.loadRecord (Record_ID);
