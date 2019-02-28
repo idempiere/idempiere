@@ -357,6 +357,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 				initialValues.add(editor.getValue());
 			}
 			dynamicDisplay();
+    		updateStyleTab(quickTabs.get(0));
 			return true;
 		}
 
@@ -376,13 +377,12 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 			if (value != null) {
 				editor.setValue(value);
 				field.setValue(value, false);
-			} else {
-				editor.dynamicDisplay();
 			}
 			initialValues.add(editor.getValue());
 		}
 
 		dynamicDisplay();
+		updateStyleTab(quickTabs.get(0));
 		return true;
 	}	//	loadRecord
 
@@ -571,6 +571,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	    			}
 	    		}
 	    		dynamicDisplay();
+	    		updateStyleTab(gridTab);
 			}
 		}
 	}
@@ -591,9 +592,19 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 			editor.setValue(mTable.getValueAt(row, col)); //In case a callout changed the value and it is not reflected in field yet
 			editor.setReadWrite(field.isEditable(true));
 			editor.setVisible(field.isDisplayed(true));
-			editor.updateStyle();
 		}
 	} // dynamicDisplay
+
+	private void updateStyleTab(GridTab tab) {
+		for (int idxf = 0; idxf < quickFields.size(); idxf++) {
+			GridField field = quickFields.get(idxf);
+			GridTab gridTab = field.getGridTab();
+			if (tab == gridTab) {
+				WEditor editor = quickEditors.get(idxf);
+				editor.updateStyle();
+			}
+		}
+	}
 	
 	/**
 	 *	get size quickfields
