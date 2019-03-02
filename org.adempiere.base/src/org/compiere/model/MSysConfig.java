@@ -42,7 +42,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1401329788730986024L;
+	private static final long serialVersionUID = 8922763368373540965L;
 
     public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -73,6 +73,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String BACKGROUND_JOB_MAX_IN_SYSTEM = "BACKGROUND_JOB_MAX_IN_SYSTEM";
     public static final String BACKGROUND_JOB_MAX_PER_CLIENT = "BACKGROUND_JOB_MAX_PER_CLIENT";
     public static final String BACKGROUND_JOB_MAX_PER_USER = "BACKGROUND_JOB_MAX_PER_USER";
+	public static final String BPARTNER_QUICK_ENTRY_OPTIONAL_LOCATION_TABLES = "BPARTNER_QUICK_ENTRY_OPTIONAL_LOCATION_TABLES";
     public static final String CALENDAR_ALTERNATE_TIMEZONE = "CALENDAR_ALTERNATE_TIMEZONE";
     public static final String CASH_AS_PAYMENT = "CASH_AS_PAYMENT";
     public static final String CHANGE_PASSWORD_MUST_DIFFER = "CHANGE_PASSWORD_MUST_DIFFER";

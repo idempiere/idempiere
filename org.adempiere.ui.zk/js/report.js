@@ -40,13 +40,13 @@ function showColumnMenu(e, columnName, row) {
 	d.style.left = posx;
 	d.style.display = "block";
 	
-	setTimeout("getMenu ().style.display='none'", 3000);
+	setTimeout("getMenu().style.display='none'", 3000);
 }
 
 var contextMenu;
 
 function getMenu (componentId, foreignColumnName, value){
-	if (contextMenu == null){
+	if (componentId != null){
 	
 		//menu div
 		var menu = document.createElement("div");
@@ -70,9 +70,7 @@ function getMenu (componentId, foreignColumnName, value){
 		href.style.textDecoration = "none";
 		href.style.verticalAlign = "middle";
 		href.href = "javascript:void(0)";
-		href.setAttribute("onclick", "parent.zoom(contextMenu.getAttribute ('componentId'), " +
-								"contextMenu.getAttribute ('foreignColumnName'), " +
-								"contextMenu.getAttribute ('value'))");
+		href.setAttribute("onclick", "parent.zoom('" + componentId + "','" + foreignColumnName + "','" + value + "')");
 		
 		windowMenu.appendChild(href);
 		menu.appendChild(windowMenu);				
@@ -96,9 +94,7 @@ function getMenu (componentId, foreignColumnName, value){
 		reportHref.style.textDecoration = "none";
 		reportHref.style.fontSize = "11px";
 		reportHref.style.verticalAlign = "middle";
-		reportHref.setAttribute("onclick", "parent.drillDown(contextMenu.getAttribute ('componentId'), " +
-								"contextMenu.getAttribute ('foreignColumnName'), " +
-								"contextMenu.getAttribute ('value'))");
+		reportHref.setAttribute("onclick", "parent.drillDown('" + componentId + "','" + foreignColumnName + "','" + value + "')");
 		
 		report.appendChild(reportHref);
 		menu.appendChild(report);

@@ -13,7 +13,7 @@ Import-Package: net.sourceforge.barbecue,
  org.osgi.service.event
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  net.sf.jasperreports.engine;bundle-version="6.3.1"
-Service-Component: OSGI-INF/processfactory.xml
+Service-Component: OSGI-INF/*.xml
 Export-Package: org.adempiere.report.jasper
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .

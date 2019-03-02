@@ -164,7 +164,7 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
 Bundle-Activator: org.adempiere.webui.WebUIActivator
 Eclipse-ExtensibleAPI: true
 Web-ContextPath: webui
-Service-Component: OSGI-INF/reportviewerprovider.xml, OSGI-INF/defaultinfofactory.xml, OSGI-INF/defaulteditorfactory.xml, OSGI-INF/jrviewerprovider.xml, OSGI-INF/resourcefinder.xml, OSGI-INF/defaultpaymentformfactory.xml, OSGI-INF/processfactory.xml, OSGI-INF/defaultprintshippinglabel.xml, OSGI-INF/defaultcreatefromfactory.xml, OSGI-INF/defaultformfactory.xml, OSGI-INF/feedbackservice.xml, OSGI-INF/zulgadgetfactory.xml, OSGI-INF/jfgchartrenderer.xml
+Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.adempiere.ui.zk
 Bundle-Vendor: iDempiere Community

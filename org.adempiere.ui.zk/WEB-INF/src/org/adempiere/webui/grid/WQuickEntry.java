@@ -66,15 +66,17 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1397302187339942732L;
+	private static final long serialVersionUID = -6385383768870354870L;
 
 	public static final String QUICK_ENTRY_MODE = "_QUICK_ENTRY_MODE_";
 	public static final String QUICK_ENTRY_CALLER_WINDOW = "_QUICK_ENTRY_CALLER_WINDOW_";
+	public static final String QUICK_ENTRY_CALLER_TAB = "_QUICK_ENTRY_CALLER_TAB_";
 
 	private static CLogger log = CLogger.getCLogger(WQuickEntry.class);
 
 	protected int m_WindowNo;
 	private int parent_WindowNo;
+	private int parent_TabNo;
 
 	List<GridField> quickFields = new ArrayList<GridField>();
 	protected List<WEditor> quickEditors = new ArrayList<WEditor>();
@@ -94,19 +96,25 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	private boolean isHasField = false;
 
 	private String orientation;
+
+	public WQuickEntry(int WindowNo, int AD_Window_ID)
+	{
+		this(WindowNo, 0, AD_Window_ID);
+	}
+
 	/**
 	 *	Constructor.
 	 *	Requires call loadRecord
 	 * 	@param WindowNo	Window No
 	 * 	@param AD_Window_ID
 	 */
-
-	public WQuickEntry(int WindowNo, int AD_Window_ID)
+	public WQuickEntry(int WindowNo, int TabNo, int AD_Window_ID)
 	{
 		super();
 
 		m_AD_Window_ID = AD_Window_ID;
 		parent_WindowNo = WindowNo;
+		parent_TabNo = TabNo;
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		log.info("R/O=" + m_readOnly);
 
@@ -121,6 +129,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 
 		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_MODE, "Y");
 		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_CALLER_WINDOW, parent_WindowNo);
+		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_CALLER_TAB, parent_TabNo);
 		initPOs();
 
 	}	//	WQuickEntry
@@ -252,6 +261,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 		}
 		Component field = editor.getComponent();
 		Hlayout layout = new Hlayout();
+		layout.setValign("middle");
 
 		ZKUpdateUtil.setHflex(layout, "10");
 
@@ -347,6 +357,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 				initialValues.add(editor.getValue());
 			}
 			dynamicDisplay();
+    		updateStyleTab(quickTabs.get(0));
 			return true;
 		}
 
@@ -366,13 +377,12 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 			if (value != null) {
 				editor.setValue(value);
 				field.setValue(value, false);
-			} else {
-				editor.dynamicDisplay();
 			}
 			initialValues.add(editor.getValue());
 		}
 
 		dynamicDisplay();
+		updateStyleTab(quickTabs.get(0));
 		return true;
 	}	//	loadRecord
 
@@ -561,6 +571,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	    			}
 	    		}
 	    		dynamicDisplay();
+	    		updateStyleTab(gridTab);
 			}
 		}
 	}
@@ -583,6 +594,17 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 			editor.setVisible(field.isDisplayed(true));
 		}
 	} // dynamicDisplay
+
+	private void updateStyleTab(GridTab tab) {
+		for (int idxf = 0; idxf < quickFields.size(); idxf++) {
+			GridField field = quickFields.get(idxf);
+			GridTab gridTab = field.getGridTab();
+			if (tab == gridTab) {
+				WEditor editor = quickEditors.get(idxf);
+				editor.updateStyle();
+			}
+		}
+	}
 	
 	/**
 	 *	get size quickfields

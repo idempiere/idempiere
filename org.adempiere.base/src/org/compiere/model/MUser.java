@@ -277,7 +277,7 @@ public class MUser extends X_AD_User
 		if (AD_User_ID == 0)
 		{
 			setIsFullBPAccess (true);
-			setNotificationType(NOTIFICATIONTYPE_EMail);
+			setNotificationType(NOTIFICATIONTYPE_None);
 		}		
 	}	//	MUser
 

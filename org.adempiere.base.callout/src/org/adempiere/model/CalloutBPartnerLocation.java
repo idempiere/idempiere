@@ -23,9 +23,12 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MColumn;
+import org.compiere.model.MSysConfig;
+import org.compiere.model.MTable;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	BPartnerLocation Callouts.
@@ -88,6 +91,31 @@ public class CalloutBPartnerLocation extends CalloutEngine
 	{
 		// this callout is just for quick entry window
 		if ("Y".equals(Env.getContext(ctx, WindowNo, "_QUICK_ENTRY_MODE_"))) {
+			
+			String optionals = MSysConfig.getValue(MSysConfig.BPARTNER_QUICK_ENTRY_OPTIONAL_LOCATION_TABLES, Env.getAD_Client_ID(ctx));
+			String[] tables = null;
+			if (!Util.isEmpty(optionals, true)) {
+				tables = optionals.split("[,]");
+			}
+			if (tables != null && tables.length > 0) {
+				int parent_windowNo = Integer.parseInt(Env.getContext(ctx, WindowNo, "_QUICK_ENTRY_CALLER_WINDOW_"));
+				int parent_tabNo = Integer.parseInt(Env.getContext(ctx, WindowNo, "_QUICK_ENTRY_CALLER_TAB_"));
+				//Search the table ID of the first tab
+				int AD_Table_ID = Env.getContextAsInt(ctx, parent_windowNo, parent_tabNo + "|_TabInfo_AD_Table_ID", false);
+				
+				//If the new business partner is being created from payment - let the address be null
+				//AP2-413 Remove mandatory flag from location on BP quick entry
+				String tableName = MTable.getTableName(ctx, AD_Table_ID);
+				if (!Util.isEmpty(tableName, true))
+				{
+					for(String table : tables)
+					{
+						if (tableName.equalsIgnoreCase(table.trim()))
+							return "";
+					}
+				}
+			}
+			
 			if (value == null) {
 				return Msg.getMsg(ctx, "FillMandatory") + " " + Msg.getElement(ctx, mField.getColumnName());
 			}
