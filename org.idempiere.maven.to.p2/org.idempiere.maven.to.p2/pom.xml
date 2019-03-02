@@ -10,7 +10,7 @@
 	<artifactId>org.idempiere.maven.to.p2</artifactId>
 	<packaging>pom</packaging>
 	<properties>
-		<zk-osgi-zip-file>https://sourceforge.net/project/zk1/ZK/zk-8.6.0.1/zk-bin-osgi-8.6.0.1.zip</zk-osgi-zip-file>
+		<zk-osgi-zip-file>https://iweb.dl.sourceforge.net/project/zk1/ZK/zk-8.6.0.1/zk-bin-osgi-8.6.0.1.zip</zk-osgi-zip-file>
 		<!-- https://github.com/eclipse/jetty.project/blob/jetty-9.4.9.v20180320/pom.xml up to verison of jetty -->
 		<jetty.version>9.4.14.v20181114</jetty.version>
 		<jetty.alpn.api.version>1.1.3.v20160715</jetty.alpn.api.version>
@@ -26,7 +26,7 @@
         <woodstox.core.version>5.0.3</woodstox.core.version> <!--it up to version of jasperreport engine-->
         <json.version>20171018</json.version> <!--it up to version of jackson-datatype-json-org-->
         <slf4j.version>1.7.25</slf4j.version>
-		<xml.ws.version>2.3.1</xml.ws.version>
+		<xml.ws.version>2.3.2</xml.ws.version>
 		<xml.ws.export.version>2.4</xml.ws.export.version>
 		<apache.cxf.version>3.2.6</apache.cxf.version>
 		<apache.cxf.databinding.version>3.1.17</apache.cxf.databinding.version>
@@ -427,12 +427,15 @@
 										</artifact>
 										<artifact>
 											<!-- better javax.activation:javax.activation-api because include extra package -->
+											<!--https://github.com/eclipse-ee4j/jaf
+											https://eclipse-ee4j.github.io/jaf/-->
 											<id>com.sun.activation:jakarta.activation:jar:${activation.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>javax.xml.bind:jaxb-api:jar:${xml.ws.version}</id>
+											<!--https://github.com/eclipse-ee4j/jaxb-api/issues/78#issuecomment-457133266-->
+											<id>jakarta.xml.bind:jakarta.xml.bind-api:jar:${xml.ws.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -452,34 +455,10 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>javax.xml.ws:jaxws-api:jar:${xml.ws.version}</id>
+											<!--https://github.com/eclipse-ee4j/jaxb-api/issues/78#issuecomment-446898628-->
+											<id>com.sun.xml.bind:jaxb-osgi:jar:${xml.ws.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
-											<override>true</override>
-											<instructions>
-												<Bundle-SymbolicName>jaxws-api</Bundle-SymbolicName>
-												<Bundle-Version>${xml.ws.version}</Bundle-Version>
-<!--Export-Package keep same original, copy here because tool will remake it-->
-												<Export-Package>javax.xml.ws;version="${xml.ws.export.version}";uses:="javax.xml.bind,javax.xml.bind.anno
- tation,javax.xml.namespace,javax.xml.transform,javax.xml.ws.handler,j
- avax.xml.ws.spi,javax.xml.ws.spi.http,org.w3c.dom",javax.xml.ws.handl
- er;version="${xml.ws.export.version}";uses:="javax.xml.namespace,javax.xml.ws",javax.xml.ws.handler.soap
- ;version="${xml.ws.export.version}";uses:="javax.xml.bind,javax.xml.namespace,javax.xml.soap,javax.xml.w
- s.handler",javax.xml.ws.http;version="${xml.ws.export.version}";uses:="javax.xml.ws",javax.xml.ws.soap;version="${xml.ws.export.version}";u
- ses:="javax.xml.soap,javax.xml.ws,javax.xml.ws.spi",javax.xml.ws.spi;version="${xml.ws.export.version}";
- uses:="javax.xml.bind,javax.xml.namespace,javax.xml.transform,javax.x
- ml.ws,javax.xml.ws.handler,javax.xml.ws.wsaddressing,org.w3c.dom",jav
- ax.xml.ws.spi.http;version="${xml.ws.export.version}",javax.xml.ws.wsaddressing;version="${xml.ws.export.version}";uses:="javax.xml.bind.an
- notation,javax.xml.namespace,javax.xml.transform,javax.xml.ws,org.w3c
- .dom"</Export-Package>
-<!--keep same original, copy here because tool will remake it-->
-												<DynamicImport-Package>org.glassfish.hk2.osgiresourcelocator</DynamicImport-Package>
-<!--refe:note 1-->
-												<Import-Package>javax.xml.bind;version="[2.3,3)",javax.xml.bind.annota
- tion;version="[2.3,3)",javax.xml.namespace,javax.xml.soap;version="[1
- .4,2)",javax.xml.transform,javax.xml.transform.stream,org.w3c.dom</Import-Package>
-											    <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=9.0))"</Require-Capability>
-											</instructions>
 										</artifact>
 										<artifact>
 											<id>javax.interceptor:javax.interceptor-api:jar:1.2.2</id>
@@ -632,12 +611,13 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>jakarta.ws.rs:jakarta.ws.rs-api:jar:2.1.3</id>
+											<id>jakarta.ws.rs:jakarta.ws.rs-api:jar:2.1.5</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>javax.jws:javax.jws-api:jar:1.1</id>
+											<!--https://github.com/eclipse-ee4j/jws-api-->
+											<id>jakarta.jws:jakarta.jws-api:jar:1.1.1</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -647,12 +627,14 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
+											<!--https://github.com/eclipse-ee4j/jax-rpc-api-->
 											<id>jakarta.xml.rpc:jakarta.xml.rpc-api:jar:1.1.3</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>jakarta.persistence:jakarta.persistence-api:jar:2.2.1</id>
+											<!-- https://github.com/eclipse-ee4j/jpa-api -->
+											<id>jakarta.persistence:jakarta.persistence-api:jar:2.2.2</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -797,24 +779,7 @@
 										<artifact>
 											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-web:jar:${springframework.version}</id>
 											<source>false</source>
-											<transitive>false</transitive>
-<!-- 
-note 1: about javax.activity,javax.jws and javax.xml.ws
-javax.jws is depricate package, so need replace with javax.jws-api
-but eclipse auto add \-\-add-modules=ALL-SYSTEM to command line, jdk-10 still have this package so mean jdk have it.
-spring-web import javax.jws at option, so when it see javax.jws from jdk it will bind to jdk version
-
-idempiere webservice need to use javax.jws-api to build with tycho and run without add-modules=ALL-SYSTEM
-so it make two dependency chains when resolve dependency
-
-solution add version to import javax.jws;version="1.1.0"
-to force priority from javax.jws-api
-
-same for javax.xml.ws.*
-
-it also resolve issue confilic between eclipse runtime and tycho build
-
--->
+											<transitive>false</transitive>s
 										</artifact>
 										<artifact>
 											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-context-support:jar:sources:${springframework.version}</id>
