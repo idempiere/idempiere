@@ -1303,6 +1303,53 @@
 		<unit id="zweb.sources" version="8.6.0.1"/>
 		<repository location="https://raw.githubusercontent.com/idempiere/binary.file/master/p2.maven/maven-p2-R20190118"/>
 	</location>
+	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		<unit id="com.sun.istack.commons-runtime" version="3.0.8"/>
+		<unit id="com.sun.istack.commons-runtime.source" version="3.0.8"/>
+		<unit id="com.sun.org.apache.xml.internal.resolver" version="20050927.0.0"/>
+		<unit id="com.sun.org.apache.xml.internal.resolver.source" version="20050927.0.0"/>
+		<unit id="com.sun.xml.bind.jaxb-impl" version="2.3.2"/>
+		<unit id="com.sun.xml.bind.jaxb-impl.source" version="2.3.2"/>
+		<unit id="com.sun.xml.fastinfoset.FastInfoset" version="1.2.16"/>
+		<unit id="com.sun.xml.fastinfoset.FastInfoset.source" version="1.2.16"/>
+		<unit id="com.sun.xml.messaging.saaj.impl" version="1.5.1"/>
+		<unit id="com.sun.xml.messaging.saaj.impl.source" version="1.5.1"/>
+		<unit id="com.sun.xml.stream.buffer.streambuffer" version="1.5.7"/>
+		<unit id="com.sun.xml.stream.buffer.streambuffer.source" version="1.5.7"/>
+		<unit id="com.sun.xml.ws.jaxws-rt" version="2.3.2"/>
+		<unit id="com.sun.xml.ws.jaxws-rt.source" version="2.3.2"/>
+		<unit id="com.sun.xml.ws.policy" version="2.7.6"/>
+		<unit id="com.sun.xml.ws.policy.source" version="2.7.6"/>
+		<unit id="jakarta.jws-api" version="1.1.1"/>
+		<unit id="jakarta.jws-api.source" version="1.1.1"/>
+		<unit id="jakarta.xml.bind-api" version="2.3.2"/>
+		<unit id="jakarta.xml.bind-api.source" version="2.3.2"/>
+		<unit id="jakarta.xml.soap-api" version="1.4.1"/>
+		<unit id="jakarta.xml.soap-api.source" version="1.4.1"/>
+		<unit id="jakarta.xml.ws-api" version="2.3.2"/>
+		<unit id="jakarta.xml.ws-api.source" version="2.3.2"/>
+		<unit id="javax.interceptor-api" version="1.2.2"/>
+		<unit id="javax.interceptor-api.source" version="1.2.2"/>
+		<unit id="org.glassfish.external.management-api" version="3.2.1"/>
+		<unit id="org.glassfish.external.management-api.source" version="3.2.1"/>
+		<unit id="org.glassfish.gmbal.gmbal" version="4.0.0"/>
+		<unit id="org.glassfish.gmbal.gmbal.source" version="4.0.0"/>
+		<unit id="org.glassfish.ha.ha-api" version="3.1.12"/>
+		<unit id="org.glassfish.ha.ha-api.source" version="3.1.12"/>
+		<unit id="org.glassfish.pfl.pfl-asm" version="4.0.1"/>
+		<unit id="org.glassfish.pfl.pfl-asm.source" version="4.0.1"/>
+		<unit id="org.glassfish.pfl.pfl-basic" version="4.0.1"/>
+		<unit id="org.glassfish.pfl.pfl-basic.source" version="4.0.1"/>
+		<unit id="org.glassfish.pfl.pfl-dynamic" version="4.0.1"/>
+		<unit id="org.glassfish.pfl.pfl-dynamic.source" version="4.0.1"/>
+		<unit id="org.glassfish.pfl.pfl-tf" version="4.0.1"/>
+		<unit id="org.glassfish.pfl.pfl-tf.source" version="4.0.1"/>
+		<unit id="org.jvnet.mimepull" version="1.9.11"/>
+		<unit id="org.jvnet.mimepull.source" version="1.9.11"/>
+		<unit id="org.jvnet.staxex.stax-ex" version="1.8.1"/>
+		<unit id="org.jvnet.staxex.stax-ex.source" version="1.8.1"/>
+		<repository location="https://raw.githubusercontent.com/idempiere/binary.file/master/p2.maven/org.idempiere.webservice.client-p2-R20190302"/>
+	</location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
 </target>
