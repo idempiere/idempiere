@@ -6,6 +6,6 @@
 	<version>6.2.0-SNAPSHOT</version>
 	<relativePath>../org.idempiere.parent/pom.xml</relativePath>
   </parent>
-  <artifactId>org.idempiere.webservices.client-feature</artifactId>
+  <artifactId>org.idempiere.webservices.client.feature</artifactId>
   <packaging>eclipse-feature</packaging>
 </project>

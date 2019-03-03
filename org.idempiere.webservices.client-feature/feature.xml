@@ -165,10 +165,11 @@
          unpack="false"/>
 
    <plugin
-         id="org.globalqss.idempiere.test.fe"
+         id="com.diffplug.osgi.extension.sun.misc"
          download-size="0"
          install-size="0"
          version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
 </feature>

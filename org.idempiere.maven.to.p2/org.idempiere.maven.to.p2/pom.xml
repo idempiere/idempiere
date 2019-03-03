@@ -440,11 +440,6 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>com.sun.xml.bind:jaxb-core:jar:2.3.0.1</id>
-											<source>true</source>
-											<transitive>false</transitive>
-										</artifact>
-										<artifact>
 											<id>com.sun.xml.bind:jaxb-impl:jar:${xml.ws.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
@@ -1748,6 +1743,26 @@
 							<url>${url.file.srv}/extra.jar/zul_8.6.0.1-patched.jar</url>
 							<unpack>false</unpack>
 							<outputFileName>zul_8.6.0.1-patched.jar</outputFileName>
+							<outputDirectory>${project.build.directory}/repository/plugins</outputDirectory>
+							<retries>5</retries>
+							<overwrite>true</overwrite>
+							<skipCache>true</skipCache>
+						</configuration>
+					</execution>
+					<execution>
+						<!--https://stackoverflow.com/questions/20469049/resolve-a-dependency-on-package-sun-misc-with-tycho
+						 download from maven and add export sun.reflect
+						 'com.diffplug.osgi:com.diffplug.osgi.extension.sun.misc:jar:0.0.0'
+						-->
+						<id>download-sun-package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>${url.file.srv}/extra.jar/com.diffplug.osgi.extension.sun.misc_0.0.0.jar</url>
+							<unpack>false</unpack>
+							<outputFileName>com.diffplug.osgi.extension.sun.misc_0.0.0.jar</outputFileName>
 							<outputDirectory>${project.build.directory}/repository/plugins</outputDirectory>
 							<retries>5</retries>
 							<overwrite>true</overwrite>
