@@ -450,12 +450,6 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<!--https://github.com/eclipse-ee4j/jaxb-api/issues/78#issuecomment-446898628-->
-											<id>com.sun.xml.bind:jaxb-osgi:jar:${xml.ws.version}</id>
-											<source>true</source>
-											<transitive>false</transitive>
-										</artifact>
-										<artifact>
 											<id>javax.interceptor:javax.interceptor-api:jar:1.2.2</id>
 											<source>true</source>
 											<transitive>false</transitive>
