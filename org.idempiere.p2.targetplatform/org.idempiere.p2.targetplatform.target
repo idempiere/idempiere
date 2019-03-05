@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-190302" sequenceNumber="107">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-190304" sequenceNumber="107">
 <locations>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.10.0.v20181116-0958"/>
@@ -1300,6 +1300,7 @@
 		<unit id="zweb" version="8.6.0.1"/>
 		<unit id="zweb.sources" version="8.6.0.1"/>
 		<repository location="https://raw.githubusercontent.com/idempiere/binary.file/master/p2.maven/maven-p2-R20190304"/>
+		<unit id="org.apache.axis" version="1.4.0.v201903052030"/>
 	</location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="com.sun.istack.commons-runtime" version="3.0.8"/>

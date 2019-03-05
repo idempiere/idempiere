@@ -1763,6 +1763,26 @@
 							<skipCache>true</skipCache>
 						</configuration>
 					</execution>
+					<execution>
+						<!--axis dependency to bundle javax.xml.soap and javax.xml.rpc
+						that library move to https://github.com/eclipse-ee4j and newer version use by other library
+						so to avoid conflict, update dependency to newer version
+						-->
+						<id>download-axis</id>
+						<phase>package</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>${url.file.srv}/extra.jar/org.apache.axis_1.4.0.v201903052030.jar</url>
+							<unpack>false</unpack>
+							<outputFileName>org.apache.axis_1.4.0.v201903052030.jar</outputFileName>
+							<outputDirectory>${project.build.directory}/repository/plugins</outputDirectory>
+							<retries>5</retries>
+							<overwrite>true</overwrite>
+							<skipCache>true</skipCache>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<!-- copy zk osgi bundle to repository folder -->
