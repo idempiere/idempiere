@@ -624,13 +624,13 @@ public class MTable extends X_AD_Table
 	 */
 	public static int getTable_ID(String tableName, String trxName) {
 		int retValue = 0;
-		String SQL = "SELECT AD_Table_ID FROM AD_Table WHERE tablename = ?";
+		String SQL = "SELECT AD_Table_ID FROM AD_Table WHERE UPPER(tablename) = ?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(SQL, trxName);
-			pstmt.setString(1, tableName);
+			pstmt.setString(1, tableName.toUpperCase());
 			rs = pstmt.executeQuery();
 			if (rs.next())
 				retValue = rs.getInt(1);

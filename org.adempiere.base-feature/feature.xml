@@ -37,6 +37,10 @@
          id="org.adempiere.report.jasper.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.idempiere.webservices.client.feature"
+         version="0.0.0"/>
+
    <plugin
          id="org.adempiere.base"
          download-size="0"
@@ -352,13 +356,6 @@
          unpack="false"/>
 
    <plugin
-         id="jaxb-api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="javax.transaction-api"
          download-size="0"
          install-size="0"
@@ -522,6 +519,13 @@
 
    <plugin
          id="jakarta.mail.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jakarta.xml.bind-api"
          download-size="0"
          install-size="0"
          version="0.0.0"

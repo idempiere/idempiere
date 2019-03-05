@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-190118" sequenceNumber="107">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-190304" sequenceNumber="107">
 <locations>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.10.0.v20181116-0958"/>
@@ -888,6 +888,7 @@
 		<unit id="bcprov.source" version="1.60.0"/>
 		<unit id="bctsp" version="1.46.0"/>
 		<unit id="bctsp.source" version="1.46.0"/>
+		<unit id="com.diffplug.osgi.extension.sun.misc" version="0.0.0"/>
 		<unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.9.8"/>
 		<unit id="com.fasterxml.jackson.core.jackson-annotations.source" version="2.9.8"/>
 		<unit id="com.fasterxml.jackson.core.jackson-core" version="2.9.8"/>
@@ -932,12 +933,10 @@
 		<unit id="com.sun.mail.jakarta.mail.source" version="1.6.3"/>
 		<unit id="com.sun.mail.smtp" version="1.6.3"/>
 		<unit id="com.sun.mail.smtp.source" version="1.6.3"/>
-		<unit id="com.sun.xml.bind.jaxb-core" version="2.3.0.1"/>
-		<unit id="com.sun.xml.bind.jaxb-core.source" version="2.3.0.1"/>
-		<unit id="com.sun.xml.bind.jaxb-impl" version="2.3.1"/>
-		<unit id="com.sun.xml.bind.jaxb-impl.source" version="2.3.1"/>
-		<unit id="com.sun.xml.ws.jaxws-rt" version="2.3.1"/>
-		<unit id="com.sun.xml.ws.jaxws-rt.source" version="2.3.1"/>
+		<unit id="com.sun.xml.bind.jaxb-impl" version="2.3.2"/>
+		<unit id="com.sun.xml.bind.jaxb-impl.source" version="2.3.2"/>
+		<unit id="com.sun.xml.ws.jaxws-rt" version="2.3.2"/>
+		<unit id="com.sun.xml.ws.jaxws-rt.source" version="2.3.2"/>
 		<unit id="groovy" version="2.5.3"/>
 		<unit id="groovy-ant" version="2.5.3"/>
 		<unit id="groovy-ant.source" version="2.5.3"/>
@@ -974,36 +973,34 @@
 		<unit id="groovy-xml" version="2.5.3"/>
 		<unit id="groovy-xml.source" version="2.5.3"/>
 		<unit id="groovy.source" version="2.5.3"/>
+		<unit id="jakarta.jws-api" version="1.1.1"/>
+		<unit id="jakarta.jws-api.source" version="1.1.1"/>
 		<unit id="jakarta.mail.api" version="1.6.3"/>
 		<unit id="jakarta.mail.api.source" version="1.6.3"/>
+		<unit id="jakarta.persistence-api" version="2.2.2"/>
+		<unit id="jakarta.persistence-api.source" version="2.2.2"/>
+		<unit id="jakarta.ws.rs-api" version="2.1.5"/>
+		<unit id="jakarta.ws.rs-api.source" version="2.1.5"/>
+		<unit id="jakarta.xml.bind-api" version="2.3.2"/>
+		<unit id="jakarta.xml.bind-api.source" version="2.3.2"/>
 		<unit id="javax.annotation-api" version="1.3.3"/>
 		<unit id="javax.annotation-api.source" version="1.3.3"/>
 		<unit id="javax.enterprise.cdi-api" version="2.0.0.SP1"/>
 		<unit id="javax.enterprise.cdi-api.source" version="2.0.0.SP1"/>
 		<unit id="javax.interceptor-api" version="1.2.2"/>
 		<unit id="javax.interceptor-api.source" version="1.2.2"/>
-		<unit id="javax.jws-api" version="1.1.0"/>
-		<unit id="javax.jws-api.source" version="1.1.0"/>
-		<unit id="javax.persistence-api" version="2.2.99.b01"/>
-		<unit id="javax.persistence-api.source" version="2.2.99.b01"/>
 		<unit id="javax.transaction-api" version="1.3.0"/>
 		<unit id="javax.transaction-api.source" version="1.3.0"/>
 		<unit id="javax.validation.api" version="1.1.0.Final"/>
 		<unit id="javax.validation.api.source" version="1.1.0.Final"/>
 		<unit id="javax.websocket-api" version="1.1.0"/>
 		<unit id="javax.websocket-api.source" version="1.1.0"/>
-		<unit id="javax.ws.rs-api" version="2.1.3"/>
-		<unit id="javax.ws.rs-api.source" version="2.1.3"/>
 		<unit id="javax.ws.rs.jsr311-api" version="1.1.1"/>
 		<unit id="javax.ws.rs.jsr311-api.source" version="1.1.1"/>
 		<unit id="javax.xml.rpc-api" version="1.1.3"/>
 		<unit id="javax.xml.rpc-api.source" version="1.1.3"/>
 		<unit id="javax.xml.soap-api" version="1.4.0"/>
 		<unit id="javax.xml.soap-api.source" version="1.4.0"/>
-		<unit id="jaxb-api" version="2.3.1"/>
-		<unit id="jaxb-api.source" version="2.3.1"/>
-		<unit id="jaxws-api" version="2.3.1"/>
-		<unit id="jaxws-api.source" version="2.3.1"/>
 		<unit id="joda-time" version="2.10.0"/>
 		<unit id="joda-time.source" version="2.10.0"/>
 		<unit id="json" version="20171018.0.0"/>
@@ -1113,6 +1110,7 @@
 		<unit id="org.apache.poi.poi" version="3.15.0"/>
 		<unit id="org.apache.poi.poi-ooxml" version="3.15.0"/>
 		<unit id="org.apache.poi.poi-ooxml-schemas" version="3.15.0"/>
+		<unit id="org.apache.poi.poi-ooxml-schemas.source" version="3.15.0"/>
 		<unit id="org.apache.poi.poi-ooxml.source" version="3.15.0"/>
 		<unit id="org.apache.poi.poi.source" version="3.15.0"/>
 		<unit id="org.apache.servicemix.bundles.cglib" version="3.2.6.1"/>
@@ -1301,7 +1299,65 @@
 		<unit id="zul.sources" version="8.6.0.1-patched"/>
 		<unit id="zweb" version="8.6.0.1"/>
 		<unit id="zweb.sources" version="8.6.0.1"/>
-		<repository location="https://raw.githubusercontent.com/idempiere/binary.file/master/p2.maven/maven-p2-R20190118"/>
+		<repository location="https://raw.githubusercontent.com/idempiere/binary.file/master/p2.maven/maven-p2-R20190304"/>
+		<unit id="org.apache.axis" version="1.4.0.v201903052030"/>
+	</location>
+	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		<unit id="com.sun.istack.commons-runtime" version="3.0.8"/>
+		<unit id="com.sun.istack.commons-runtime.source" version="3.0.8"/>
+		<unit id="com.sun.org.apache.xml.internal.resolver" version="20050927.0.0"/>
+		<unit id="com.sun.org.apache.xml.internal.resolver.source" version="20050927.0.0"/>
+		<unit id="com.sun.xml.bind.external.rngom" version="2.3.2"/>
+		<unit id="com.sun.xml.bind.external.rngom.source" version="2.3.2"/>
+		<unit id="com.sun.xml.bind.jaxb-impl" version="2.3.2"/>
+		<unit id="com.sun.xml.bind.jaxb-impl.source" version="2.3.2"/>
+		<unit id="com.sun.xml.bind.jaxb-jxc" version="2.3.2"/>
+		<unit id="com.sun.xml.bind.jaxb-jxc.source" version="2.3.2"/>
+		<unit id="com.sun.xml.bind.jaxb-osgi" version="2.3.2"/>
+		<unit id="com.sun.xml.bind.jaxb-osgi.source" version="2.3.2"/>
+		<unit id="com.sun.xml.bind.jaxb-xjc" version="2.3.2"/>
+		<unit id="com.sun.xml.bind.jaxb-xjc.source" version="2.3.2"/>
+		<unit id="com.sun.xml.fastinfoset.FastInfoset" version="1.2.16"/>
+		<unit id="com.sun.xml.fastinfoset.FastInfoset.source" version="1.2.16"/>
+		<unit id="com.sun.xml.messaging.saaj.impl" version="1.5.1"/>
+		<unit id="com.sun.xml.messaging.saaj.impl.source" version="1.5.1"/>
+		<unit id="com.sun.xml.stream.buffer.streambuffer" version="1.5.7"/>
+		<unit id="com.sun.xml.stream.buffer.streambuffer.source" version="1.5.7"/>
+		<unit id="com.sun.xml.ws.jaxws-rt" version="2.3.2"/>
+		<unit id="com.sun.xml.ws.jaxws-rt.source" version="2.3.2"/>
+		<unit id="com.sun.xml.ws.policy" version="2.7.6"/>
+		<unit id="com.sun.xml.ws.policy.source" version="2.7.6"/>
+		<unit id="jakarta.jws-api" version="1.1.1"/>
+		<unit id="jakarta.jws-api.source" version="1.1.1"/>
+		<unit id="jakarta.xml.bind-api" version="2.3.2"/>
+		<unit id="jakarta.xml.bind-api.source" version="2.3.2"/>
+		<unit id="jakarta.xml.soap-api" version="1.4.1"/>
+		<unit id="jakarta.xml.soap-api.source" version="1.4.1"/>
+		<unit id="jakarta.xml.ws-api" version="2.3.2"/>
+		<unit id="jakarta.xml.ws-api.source" version="2.3.2"/>
+		<unit id="javax.interceptor-api" version="1.2.2"/>
+		<unit id="javax.interceptor-api.source" version="1.2.2"/>
+		<unit id="org.glassfish.external.management-api" version="3.2.1"/>
+		<unit id="org.glassfish.external.management-api.source" version="3.2.1"/>
+		<unit id="org.glassfish.gmbal.gmbal" version="4.0.0"/>
+		<unit id="org.glassfish.gmbal.gmbal.source" version="4.0.0"/>
+		<unit id="org.glassfish.ha.ha-api" version="3.1.12"/>
+		<unit id="org.glassfish.ha.ha-api.source" version="3.1.12"/>
+		<unit id="org.glassfish.jaxb.txw2" version="2.3.2"/>
+		<unit id="org.glassfish.jaxb.txw2.source" version="2.3.2"/>
+		<unit id="org.glassfish.pfl.pfl-asm" version="4.0.1"/>
+		<unit id="org.glassfish.pfl.pfl-asm.source" version="4.0.1"/>
+		<unit id="org.glassfish.pfl.pfl-basic" version="4.0.1"/>
+		<unit id="org.glassfish.pfl.pfl-basic.source" version="4.0.1"/>
+		<unit id="org.glassfish.pfl.pfl-dynamic" version="4.0.1"/>
+		<unit id="org.glassfish.pfl.pfl-dynamic.source" version="4.0.1"/>
+		<unit id="org.glassfish.pfl.pfl-tf" version="4.0.1"/>
+		<unit id="org.glassfish.pfl.pfl-tf.source" version="4.0.1"/>
+		<unit id="org.jvnet.mimepull" version="1.9.11"/>
+		<unit id="org.jvnet.mimepull.source" version="1.9.11"/>
+		<unit id="org.jvnet.staxex.stax-ex" version="1.8.1"/>
+		<unit id="org.jvnet.staxex.stax-ex.source" version="1.8.1"/>
+		<repository location="https://raw.githubusercontent.com/idempiere/binary.file/master/p2.maven/org.idempiere.webservice.client-p2-R20190304"/>
 	</location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>

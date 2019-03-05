@@ -13,6 +13,7 @@
 	</parent>
 	<modules>
 		<module>org.idempiere.maven.to.p2</module>
+		<module>org.idempiere.webservice.client</module>
 	</modules>
 
 </project>
