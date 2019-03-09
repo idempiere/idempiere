@@ -417,7 +417,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 				  targetPI = m_pfi.indexOf(getPrintFormatItem(newObject.m_key));
 				updateSortNo (selectedPI,targetPI);
 				
-				yesItems.get(index).setSortNo(yesItems.get(index).getSortNo()-10);
+				yesItems.get(index).setSortNo(yesItems.get(index).getSortNo());
 				orig = yesItems.get(index);
 				yesItems.get(index - 1).setSeqNo(yesItems.get(index - 1).getSeqNo()+10);
 				yesItems.set(index, yesItems.get(index-1));
