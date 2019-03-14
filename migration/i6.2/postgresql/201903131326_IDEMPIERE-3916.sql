@@ -230,51 +230,51 @@ CREATE UNIQUE INDEX UX_T_MoveClient ON T_MoveClient (AD_PInstance_ID,TableName,S
 ;
 
 -- Mar 13, 2019 7:28:16 PM CET
-UPDATE AD_Process_Para SET FieldLength=2000,Updated=TO_TIMESTAMP('2019-03-13 19:28:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200259
+UPDATE AD_Process_Para SET FieldLength=4000,Updated=TO_TIMESTAMP('2019-03-13 19:28:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200259
 ;
 
 -- Mar 13, 2019 7:28:19 PM CET
-UPDATE AD_Process_Para SET FieldLength=2000,Updated=TO_TIMESTAMP('2019-03-13 19:28:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200260
+UPDATE AD_Process_Para SET FieldLength=4000,Updated=TO_TIMESTAMP('2019-03-13 19:28:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200260
 ;
 
 -- Mar 13, 2019 7:28:22 PM CET
-UPDATE AD_Process_Para SET FieldLength=2000,Updated=TO_TIMESTAMP('2019-03-13 19:28:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200261
+UPDATE AD_Process_Para SET FieldLength=4000,Updated=TO_TIMESTAMP('2019-03-13 19:28:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200261
 ;
 
 -- Mar 13, 2019 7:28:27 PM CET
-UPDATE AD_Process_Para SET FieldLength=2000,Updated=TO_TIMESTAMP('2019-03-13 19:28:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200263
+UPDATE AD_Process_Para SET FieldLength=4000,Updated=TO_TIMESTAMP('2019-03-13 19:28:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200263
 ;
 
 -- Mar 13, 2019 7:29:49 PM CET
-UPDATE AD_Column SET FieldLength=2000,Updated=TO_TIMESTAMP('2019-03-13 19:29:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=5664
+UPDATE AD_Column SET FieldLength=4000,Updated=TO_TIMESTAMP('2019-03-13 19:29:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=5664
 ;
 
 -- Mar 13, 2019 7:29:51 PM CET
-INSERT INTO t_alter_column values('ad_pinstance_para','Info','VARCHAR(2000)',null,'NULL')
+INSERT INTO t_alter_column values('ad_pinstance_para','Info','VARCHAR(4000)',null,'NULL')
 ;
 
 -- Mar 13, 2019 7:29:59 PM CET
-UPDATE AD_Column SET FieldLength=2000,Updated=TO_TIMESTAMP('2019-03-13 19:29:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=5665
+UPDATE AD_Column SET FieldLength=4000,Updated=TO_TIMESTAMP('2019-03-13 19:29:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=5665
 ;
 
 -- Mar 13, 2019 7:30:00 PM CET
-INSERT INTO t_alter_column values('ad_pinstance_para','Info_To','VARCHAR(2000)',null,'NULL')
+INSERT INTO t_alter_column values('ad_pinstance_para','Info_To','VARCHAR(4000)',null,'NULL')
 ;
 
 -- Mar 13, 2019 7:30:20 PM CET
-UPDATE AD_Column SET FieldLength=2000,Updated=TO_TIMESTAMP('2019-03-13 19:30:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=2791
+UPDATE AD_Column SET FieldLength=4000,Updated=TO_TIMESTAMP('2019-03-13 19:30:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=2791
 ;
 
 -- Mar 13, 2019 7:30:21 PM CET
-INSERT INTO t_alter_column values('ad_pinstance_para','P_String','VARCHAR(2000)',null,'NULL')
+INSERT INTO t_alter_column values('ad_pinstance_para','P_String','VARCHAR(4000)',null,'NULL')
 ;
 
 -- Mar 13, 2019 7:30:28 PM CET
-UPDATE AD_Column SET FieldLength=2000,Updated=TO_TIMESTAMP('2019-03-13 19:30:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=2792
+UPDATE AD_Column SET FieldLength=4000,Updated=TO_TIMESTAMP('2019-03-13 19:30:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=2792
 ;
 
 -- Mar 13, 2019 7:30:30 PM CET
-INSERT INTO t_alter_column values('ad_pinstance_para','P_String_To','VARCHAR(2000)',null,'NULL')
+INSERT INTO t_alter_column values('ad_pinstance_para','P_String_To','VARCHAR(4000)',null,'NULL')
 ;
 
 SELECT register_migration_script('201903131326_IDEMPIERE-3916.sql') FROM dual
