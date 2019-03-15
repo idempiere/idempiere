@@ -196,7 +196,7 @@ public class MoveClient extends SvrProcess {
 			if (externalConn != null)
 				externalConn.close();
 		}
-		
+
 		checkSequences();
 
 		return "@OK@";
@@ -310,6 +310,10 @@ public class MoveClient extends SvrProcess {
 			throw new AdempiereException("Could not execute external query: " + sqlRemoteTables + "\nCause = " + e.getLocalizedMessage());
 		} finally {
 			DB.close(rsRT, stmtRT);
+		}
+
+		for (String tableName : p_tablesVerifiedList) {
+			validateOrphan(tableName);
 		}
 
 	}
@@ -519,6 +523,61 @@ public class MoveClient extends SvrProcess {
 		p_columnsVerifiedList.add(tableName.toUpperCase() + "." + columnName.toUpperCase());
 	}
 
+	private void validateOrphan(String tableName) {
+		// most of tables don't have a foreign key for AD_Org, so better validate here for potential orphan records not enforced in DB
+		MTable table = MTable.get(getCtx(), tableName);
+		for (MColumn column : table.getColumns(false)) {
+			if (!column.isActive() || column.getColumnSQL() != null) {
+				continue;
+			}
+			String columnName = column.getColumnName();
+			if ("AD_Client_ID".equalsIgnoreCase(columnName)) {
+				continue;
+			}
+			String foreignTable = column.getReferenceTableName();
+			if ("C_BPartner".equalsIgnoreCase(tableName) && "AD_OrgBP_ID".equalsIgnoreCase(columnName)) {
+				// Special case for C_BPartner.AD_OrgBP_ID defined as Button in dictionary
+				foreignTable = "AD_Org";
+			}
+			if (! Util.isEmpty(foreignTable) && ! "AD_Ref_List".equalsIgnoreCase(foreignTable)) {
+				MTable tableFK = MTable.get(getCtx(), foreignTable);
+				if (tableFK == null || MTable.ACCESSLEVEL_SystemOnly.equals(tableFK.getAccessLevel())) {
+					continue;
+				}
+				StringBuilder sqlVerifFKSB = new StringBuilder()
+				.append("SELECT COUNT(*) ")
+				.append("FROM   AD_Table t ")
+				.append("       JOIN AD_Column c ")
+				.append("         ON ( c.AD_Table_ID = t.AD_Table_ID ) ")
+				.append("WHERE  UPPER(t.TableName)=").append(DB.TO_STRING(tableName.toUpperCase()))
+				.append("       AND UPPER(c.ColumnName)=").append(DB.TO_STRING(columnName.toUpperCase()))
+				.append("       AND ( c.FKConstraintType IS NULL OR c.FKConstraintType=").append(DB.TO_STRING(MColumn.FKCONSTRAINTTYPE_DoNotCreate)).append(")");
+				int cntFk = countInExternal(sqlVerifFKSB.toString());
+				if (cntFk > 0) {
+					statusUpdate("Validating orphans for " + table.getTableName() + "." + columnName);
+					// target database has not defined a foreign key, validate orphans
+					StringBuilder sqlExternalOrgOrphanSB = new StringBuilder()
+							.append("SELECT COUNT(*) FROM ").append(tableName);
+					if (! "AD_Client".equalsIgnoreCase(tableName)) {
+						sqlExternalOrgOrphanSB.append(" JOIN AD_Client ON (").append(tableName).append(".AD_Client_ID=AD_Client.AD_Client_ID)");
+					}
+					sqlExternalOrgOrphanSB.append(" WHERE ").append(tableName).append(".").append(columnName).append(">0 AND ")
+					.append(" ").append(tableName).append(".").append(columnName).append(" NOT IN (")
+					.append(" SELECT ").append(foreignTable).append(".").append(foreignTable).append("_ID")
+					.append(" FROM ").append(foreignTable)
+					.append(" WHERE ").append(foreignTable).append(".AD_Client_ID IN (0,").append(tableName).append(".AD_Client_ID)")
+					.append(")")
+					.append(" AND ").append(p_whereClient);
+					int cntOr = countInExternal(sqlExternalOrgOrphanSB.toString());
+					if (cntOr > 0) {
+						p_errorList.add("Column " + tableName + "." + columnName +  " has orphan records in table " + foreignTable);
+					}
+				}
+			}
+		}
+
+	}
+
 	private int countInExternal(String sql) {
 		int cnt = 0;
 		sql = DB.getDatabase().convertStatement(sql);
@@ -601,7 +660,7 @@ public class MoveClient extends SvrProcess {
 			}
 
 		}
-		
+
 		try {
 			commitEx(); // commit the T_MoveClient table to analyze potential problems
 		} catch (SQLException e1) {
