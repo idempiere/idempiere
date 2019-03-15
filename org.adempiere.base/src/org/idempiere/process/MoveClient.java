@@ -545,13 +545,13 @@ public class MoveClient extends SvrProcess {
 					continue;
 				}
 				StringBuilder sqlVerifFKSB = new StringBuilder()
-				.append("SELECT COUNT(*) ")
-				.append("FROM   AD_Table t ")
-				.append("       JOIN AD_Column c ")
-				.append("         ON ( c.AD_Table_ID = t.AD_Table_ID ) ")
-				.append("WHERE  UPPER(t.TableName)=").append(DB.TO_STRING(tableName.toUpperCase()))
-				.append("       AND UPPER(c.ColumnName)=").append(DB.TO_STRING(columnName.toUpperCase()))
-				.append("       AND ( c.FKConstraintType IS NULL OR c.FKConstraintType=").append(DB.TO_STRING(MColumn.FKCONSTRAINTTYPE_DoNotCreate)).append(")");
+						.append("SELECT COUNT(*) ")
+						.append("FROM   AD_Table t ")
+						.append("       JOIN AD_Column c ")
+						.append("         ON ( c.AD_Table_ID = t.AD_Table_ID ) ")
+						.append("WHERE  UPPER(t.TableName)=").append(DB.TO_STRING(tableName.toUpperCase()))
+						.append("       AND UPPER(c.ColumnName)=").append(DB.TO_STRING(columnName.toUpperCase()))
+						.append("       AND ( c.FKConstraintType IS NULL OR c.FKConstraintType=").append(DB.TO_STRING(MColumn.FKCONSTRAINTTYPE_DoNotCreate)).append(")");
 				int cntFk = countInExternal(sqlVerifFKSB.toString());
 				if (cntFk > 0) {
 					statusUpdate("Validating orphans for " + table.getTableName() + "." + columnName);
@@ -741,6 +741,48 @@ public class MoveClient extends SvrProcess {
 							} else {
 								convertTable = "";
 							}
+						} else if ("Node_ID".equalsIgnoreCase(columnName) && "AD_TreeBar".equalsIgnoreCase(tableName)) {
+							// Special case for AD_TreeBar.Node_ID
+							convertTable = "AD_Menu";
+						} else if (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName))
+								&& "AD_TreeNodeMM".equalsIgnoreCase(tableName)) {
+							// Special case for AD_TreeNodeMM.Node/Parent_ID
+							convertTable = "AD_Menu";
+						} else if (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName))
+								&& "AD_TreeNodeBP".equalsIgnoreCase(tableName)) {
+							// Special case for AD_TreeNodeBP.Node/Parent_ID
+							convertTable = "C_BPartner";
+						} else if (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName))
+								&& "AD_TreeNodeCMC".equalsIgnoreCase(tableName)) {
+							// Special case for AD_TreeNodeCMC.Node/Parent_ID
+							convertTable = "CM_Container";
+						} else if (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName))
+								&& "AD_TreeNodeCMM".equalsIgnoreCase(tableName)) {
+							// Special case for AD_TreeNodeCMM.Node/Parent_ID
+							convertTable = "CM_Media";
+						} else if (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName))
+								&& "AD_TreeNodeCMS".equalsIgnoreCase(tableName)) {
+							// Special case for AD_TreeNodeCMS.Node/Parent_ID
+							convertTable = "CM_CStage";
+						} else if (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName))
+								&& "AD_TreeNodeCMT".equalsIgnoreCase(tableName)) {
+							// Special case for AD_TreeNodeCMT.Node/Parent_ID
+							convertTable = "CM_Template";
+						} else if (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName))
+								&& "AD_TreeNodePR".equalsIgnoreCase(tableName)) {
+							// Special case for AD_TreeNodePR.Node/Parent_ID
+							convertTable = "M_Product";
+						} else if (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName)) 
+								&& (       "AD_TreeNodeU1".equalsIgnoreCase(tableName)
+										|| "AD_TreeNodeU2".equalsIgnoreCase(tableName) 
+										|| "AD_TreeNodeU3".equalsIgnoreCase(tableName)
+										|| "AD_TreeNodeU4".equalsIgnoreCase(tableName))) {
+							// Special case for AD_TreeNodeU*.Node/Parent_ID
+							convertTable = "C_ElementValue";
+						} else if (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName)) && "AD_TreeNode".equalsIgnoreCase(tableName)) {
+							// Special case for AD_TreeNode.Node/Parent_ID - depends on AD_Tree -> TreeType and AD_Table_ID
+							int treeId = rsGD.getInt("AD_Tree_ID");
+							convertTable = getExternalTableFromTree(treeId);
 						} else if ("AD_Preference".equalsIgnoreCase(tableName) && "Value".equalsIgnoreCase(columnName)) {
 							// Special case for AD_Preference.Value
 							String att = rsGD.getString("Attribute");
@@ -821,6 +863,51 @@ public class MoveClient extends SvrProcess {
 		} catch (SQLException e) {
 			throw new AdempiereException("Could not commit,\nCause: " + e.getLocalizedMessage());
 		}
+	}
+
+	private String getExternalTableFromTree(int treeId) {
+		String tableName = null;
+		final String sqlTableTree = ""
+				+ "SELECT CASE "
+				+ "         WHEN TreeType = 'AY' THEN 'C_Activity' "
+				+ "         WHEN TreeType = 'BB' THEN 'M_BOM' "
+				+ "         WHEN TreeType = 'BP' THEN 'C_BPartner' "
+				+ "         WHEN TreeType = 'CC' THEN 'CM_Container' "
+				+ "         WHEN TreeType = 'CM' THEN 'CM_Media' "
+				+ "         WHEN TreeType = 'CS' THEN 'CM_CStage' "
+				+ "         WHEN TreeType = 'CT' THEN 'CM_Template' "
+				+ "         WHEN TreeType = 'EV' THEN 'C_ElementValue' "
+				+ "         WHEN TreeType = 'MC' THEN 'C_Campaign' "
+				+ "         WHEN TreeType = 'MM' THEN 'AD_Menu' "
+				+ "         WHEN TreeType = 'OO' THEN 'AD_Org' "
+				+ "         WHEN TreeType = 'PC' THEN 'M_Product_Category' "
+				+ "         WHEN TreeType = 'PJ' THEN 'C_Project' "
+				+ "         WHEN TreeType = 'PR' THEN 'M_Product' "
+				+ "         WHEN TreeType = 'SR' THEN 'C_SalesRegion' "
+				+ "         WHEN TreeType = 'U1' THEN 'C_ElementValue' "
+				+ "         WHEN TreeType = 'U2' THEN 'C_ElementValue' "
+				+ "         WHEN TreeType = 'U3' THEN 'C_ElementValue' "
+				+ "         WHEN TreeType = 'U4' THEN 'C_ElementValue' "
+				+ "         WHEN TreeType = 'TL' THEN AD_Table.TableName "
+				+ "         ELSE NULL "
+				+ "       END "
+				+ "FROM   AD_Tree "
+				+ "       LEFT JOIN AD_Table ON ( AD_Table.AD_Table_ID = AD_Tree.AD_Table_ID ) "
+				+ "WHERE  AD_Tree_ID = ?";
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = externalConn.prepareStatement(sqlTableTree, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			stmt.setInt(1, treeId);
+			rs = stmt.executeQuery();
+			if (rs.next())
+				tableName = rs.getString(1);
+		} catch (SQLException e) {
+			throw new AdempiereException("Could not execute external query: " + sqlTableTree + "\nCause = " + e.getLocalizedMessage());
+		} finally {
+			DB.close(rs, stmt);
+		}
+		return tableName;
 	}
 
 	private String getExternalTableName(int tableId) {
