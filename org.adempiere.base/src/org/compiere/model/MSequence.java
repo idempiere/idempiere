@@ -54,7 +54,7 @@ public class MSequence extends X_AD_Sequence
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7331047665037991960L;
+	private static final long serialVersionUID = -2215317912000946608L;
 
 	/** Log Level for Next ID Call					*/
 	private static final Level LOGLEVEL = Level.ALL;
@@ -919,16 +919,22 @@ public class MSequence extends X_AD_Sequence
 		return retValue;
 	}	//	getNextNo
 
+	public String validateTableIDValue()
+	{
+		return validateTableIDValue(null);
+	}
+
 	/**
 	 * 	Validate Table Sequence Values
+	 *  trxName the Transaction
 	 *	@return true if updated
 	 */
-	public String validateTableIDValue()
+	public String validateTableIDValue(String trxName)
 	{
 		if (!isTableID())
 			return null;
 		String tableName = getName();
-		int AD_Column_ID = DB.getSQLValue(null, "SELECT MAX(c.AD_Column_ID) "
+		int AD_Column_ID = DB.getSQLValue(trxName, "SELECT MAX(c.AD_Column_ID) "
 			+ "FROM AD_Table t"
 			+ " INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID) "
 			+ "WHERE t.TableName='" + tableName + "'"
@@ -949,7 +955,7 @@ public class MSequence extends X_AD_Sequence
 		String sql = "SELECT MAX(" + tableName + "_ID) FROM " + tableName;
 		if (IDRangeEnd > 0)
 			sql += " WHERE " + tableName + "_ID < " + IDRangeEnd;
-		int maxTableID = DB.getSQLValue(null, sql);
+		int maxTableID = DB.getSQLValue(trxName, sql);
 		if (maxTableID < INIT_NO)
 			maxTableID = INIT_NO - 1;
 		maxTableID++;		//	Next
@@ -965,7 +971,7 @@ public class MSequence extends X_AD_Sequence
 		//	Get Max System_ID used in Table
 		sql = "SELECT MAX(" + tableName + "_ID) FROM " + tableName
 			+ " WHERE " + tableName + "_ID < " + INIT_NO;
-		int maxTableSysID = DB.getSQLValue(null, sql);
+		int maxTableSysID = DB.getSQLValue(trxName, sql);
 		if (maxTableSysID <= 0)
 			maxTableSysID = INIT_SYS_NO;
 		int currentNextSysValue = getCurrentNextSys();

@@ -26,12 +26,14 @@
 
 package org.idempiere.process;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
 import org.compiere.model.MSequence;
 import org.compiere.model.MTable;
+import org.compiere.model.MTree;
 import org.compiere.model.Query;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -113,9 +115,18 @@ public class MigraID extends SvrProcess {
 				msg = "@OK@";
 			}
 		} else {
+			boolean seqCheck = false;
 			String idCol = tableName + "_ID";
 			if (p_ID_To <= 0) {
 				p_ID_To = DB.getNextID(getAD_Client_ID(), tableName, get_TrxName());
+			} else {
+				StringBuilder sqlMaxSB = new StringBuilder()
+						.append("SELECT  MAX(").append(tableName).append("_ID)")
+						.append(" FROM ").append(tableName);
+				int maxID = DB.getSQLValueEx(get_TrxName(), sqlMaxSB.toString());
+				if (p_ID_To > maxID) {
+					seqCheck = true;
+				}
 			}
 			// convert ID
 			int cnt = updID(tableName, idCol);
@@ -130,15 +141,17 @@ public class MigraID extends SvrProcess {
 			migrateChildren(tableName);
 			migrateRecordID();
 			migrateAD_Preference(idCol);
+			migrateTrees(tableName);
 			if ("C_DocType_ID".equals(idCol)) {
 				// special preference C_DocTypeTarget_ID
 				migrateAD_Preference("C_DocTypeTarget_ID");
 			}
 			// TODO: implement migration for SingleSelectionGrid and MultipleSelectionGrid
-			if (p_ID_To > p_ID_From) {
+
+			if (seqCheck) {
 				MSequence seq = MSequence.get(getCtx(), tableName, get_TrxName());
 				if (seq != null) {
-					seq.validateTableIDValue(); // ignore output messages
+					seq.validateTableIDValue(get_TrxName()); // ignore output messages
 				}
 			}
 		}
@@ -272,6 +285,83 @@ public class MigraID extends SvrProcess {
 		if (cnt > 0) {
 			String msg = cnt + " preference records updated in AD_Preference for " + columnName;
 			addBufferLog(p_ID_From, null, null, msg, 0, 0);
+		}
+	}
+
+	private void migrateTrees(String tableName) {
+		switch (tableName) {
+		case "AD_Menu":
+			migraTree("AD_TreeBar", MTree.TREETYPE_Menu);
+			migraTree("AD_TreeNodeMM", MTree.TREETYPE_Menu);
+			break;
+		case "C_BPartner":
+			migraTree("AD_TreeNodeBP", MTree.TREETYPE_BPartner);
+			break;
+		case "CM_Container":
+			migraTree("AD_TreeNodeCMC", MTree.TREETYPE_CMContainer);
+			break;
+		case "CM_Media":
+			migraTree("AD_TreeNodeCMM", MTree.TREETYPE_CMMedia);
+			break;
+		case "CM_CStage":
+			migraTree("AD_TreeNodeCMS", MTree.TREETYPE_CMContainerStage);
+			break;
+		case "CM_Template":
+			migraTree("AD_TreeNodeCMT", MTree.TREETYPE_CMTemplate);
+			break;
+		case "M_Product":
+			migraTree("AD_TreeNodePR", MTree.TREETYPE_Product);
+			break;
+		case "C_ElementValue":
+			migraTree("AD_TreeNodeU1", MTree.TREETYPE_User1);
+			migraTree("AD_TreeNodeU2", MTree.TREETYPE_User2);
+			migraTree("AD_TreeNodeU3", MTree.TREETYPE_User3);
+			migraTree("AD_TreeNodeU4", MTree.TREETYPE_User4);
+			break;
+		case "AD_Org":
+			migraTree("AD_TreeNode", MTree.TREETYPE_Organization);
+			break;
+		case "M_Product_Category":
+			migraTree("AD_TreeNode", MTree.TREETYPE_ProductCategory);
+			break;
+		case "M_BOM":
+			migraTree("AD_TreeNode", MTree.TREETYPE_BoM);
+			break;
+		case "C_Campaign":
+			migraTree("AD_TreeNode", MTree.TREETYPE_Campaign);
+			break;
+		case "C_Project":
+			migraTree("AD_TreeNode", MTree.TREETYPE_Project);
+			break;
+		case "C_Activity":
+			migraTree("AD_TreeNode", MTree.TREETYPE_Activity);
+			break;
+		case "C_SalesRegion":
+			migraTree("AD_TreeNode", MTree.TREETYPE_SalesRegion);
+			break;
+		}
+		migraTree("AD_TreeNode", MTree.TREETYPE_CustomTable);
+	}
+
+	private void migraTree(String menuTable, String treeType) {
+		List<String> columns = new ArrayList<String>();
+		columns.add("Node_ID");
+		if (! "AD_TreeBar".equalsIgnoreCase(menuTable)) {
+			columns.add("Parent_ID");
+		}
+		for (String col : columns) {
+			StringBuilder sqlUpdTreeSB = new StringBuilder()
+					.append("UPDATE ").append(menuTable)
+					.append(" SET ").append(col).append("=? WHERE ").append(col).append("=? AND AD_Tree_ID IN (SELECT AD_Tree_ID FROM AD_Tree WHERE TreeType=?");
+			if (MTree.TREETYPE_CustomTable.equals(treeType)) {
+				sqlUpdTreeSB.append(" AND AD_Table_ID=").append(p_AD_Table_ID);
+			}
+			sqlUpdTreeSB.append(")");
+			int cnt = DB.executeUpdateEx(sqlUpdTreeSB.toString(), new Object[] {p_ID_To, p_ID_From, treeType}, get_TrxName());
+			if (cnt > 0) {
+				String msg = cnt + " tree records updated in " + menuTable + "." + col;
+				addBufferLog(p_ID_From, null, null, msg, 0, 0);
+			}
 		}
 	}
 
