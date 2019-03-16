@@ -779,7 +779,8 @@ public class MoveClient extends SvrProcess {
 										|| "AD_TreeNodeU4".equalsIgnoreCase(tableName))) {
 							// Special case for AD_TreeNodeU*.Node/Parent_ID
 							convertTable = "C_ElementValue";
-						} else if (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName)) && "AD_TreeNode".equalsIgnoreCase(tableName)) {
+						} else if (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName))
+								&& "AD_TreeNode".equalsIgnoreCase(tableName)) {
 							// Special case for AD_TreeNode.Node/Parent_ID - depends on AD_Tree -> TreeType and AD_Table_ID
 							int treeId = rsGD.getInt("AD_Tree_ID");
 							convertTable = getExternalTableFromTree(treeId);
@@ -815,7 +816,21 @@ public class MoveClient extends SvrProcess {
 										// not found in the table - try to get it again - could be missed in first pass
 										convertedId = getLocalIDFor(convertTable, id);
 										if (convertedId < 0) {
-											if ("Record_ID".equalsIgnoreCase(columnName) && table.getColumnIndex("AD_Table_ID") > 0) {
+											if (("Record_ID".equalsIgnoreCase(columnName) && table.getColumnIndex("AD_Table_ID") > 0)
+													|| (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName))
+															&& (       "AD_TreeNode".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeMM".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeBP".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeCMC".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeCMM".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeCMS".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeCMT".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodePR".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeU1".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeU2".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeU3".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeU4".equalsIgnoreCase(tableName)
+																	|| "AD_TreeBar".equalsIgnoreCase(tableName)))) {
 												if (p_tablesToExcludeList.contains(convertTable.toUpperCase())) {
 													// record is pointing to a table that is not included, ignore it
 													insertRecord = false;
