@@ -898,12 +898,11 @@ public class MUser extends X_AD_User
 				}
 			}
 		}
-			
-		if (getPassword() != null && getPassword().length() > 0 && (newRecord || is_ValueChanged("Password"))) {
+
+		boolean hasPassword = ! Util.isEmpty(getPassword());
+		if (hasPassword && (newRecord || is_ValueChanged("Password"))) {
 			// Validate password policies / IDEMPIERE-221
-			if (get_ValueOld("Salt") == null && get_Value("Salt") != null) { // being hashed
-				;
-			} else {
+			if (! (get_ValueOld("Salt") == null && get_Value("Salt") != null)) { // not being hashed
 				MPasswordRule pwdrule = MPasswordRule.getRules(getCtx(), get_TrxName());
 				if (pwdrule != null){
 					List<MPasswordHistory> passwordHistorys = MPasswordHistory.getPasswordHistoryForCheck(pwdrule.getDays_Reuse_Password(), this.getAD_User_ID());
@@ -911,12 +910,15 @@ public class MUser extends X_AD_User
 				}
 				setDatePasswordChanged(new Timestamp(new Date().getTime()));
 			}
+		}
 
+		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
+		if (   hasPassword
+			&& is_ValueChanged("Password")
+			&& (!newRecord || (hash_password && getSalt() == null))) {
 			// Hash password - IDEMPIERE-347
-			boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
 			if (hash_password)
 				setPassword(getPassword());
-
 		}
 		
 		return true;
