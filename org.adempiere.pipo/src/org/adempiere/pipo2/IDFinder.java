@@ -58,10 +58,10 @@ public class IDFinder {
 	 * @param trxName
 	 */
 	public static int findIdByColumn (String tableName, String columnName, Object value, int AD_Client_ID, boolean ignorecase, String trxName) {
-		int id = 0;
-
 		if (value == null)
-			return id;
+			return 0;
+
+		int id = -1;
 
 		//construct cache key
 		StringBuilder key = new StringBuilder();
@@ -168,7 +168,7 @@ public class IDFinder {
 		}
 
 		//update cache
-		if (id > 0)
+		if (id >= 0)
 			idCache.put(key.toString(), id);
 
 		return id;
