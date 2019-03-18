@@ -16,6 +16,16 @@
  *****************************************************************************/
 package org.compiere.print;
 
+import static org.compiere.model.SystemIDs.PRINTFORMAT_INOUT_HEADER_TEMPLATE;
+import static org.compiere.model.SystemIDs.PRINTFORMAT_INOUT_LINE_TEMPLATE;
+import static org.compiere.model.SystemIDs.PRINTFORMAT_INVOICE_HEADER_TEMPLATE;
+import static org.compiere.model.SystemIDs.PRINTFORMAT_INVOICE_LINETAX_TEMPLATE;
+import static org.compiere.model.SystemIDs.PRINTFORMAT_ORDER_HEADER_TEMPLATE;
+import static org.compiere.model.SystemIDs.PRINTFORMAT_ORDER_LINETAX_TEMPLATE;
+import static org.compiere.model.SystemIDs.PRINTFORMAT_PAYSELECTION_CHECK_TEMPLATE;
+import static org.compiere.model.SystemIDs.PRINTFORMAT_PAYSELECTION_REMITTANCE_LINES_TEMPLATE;
+import static org.compiere.model.SystemIDs.PRINTFORMAT_PAYSELECTION_REMITTANCE__TEMPLATE;
+
 import java.awt.print.PageFormat;
 import java.awt.print.Pageable;
 import java.awt.print.PrinterException;
@@ -546,23 +556,23 @@ public class PrintUtil
 		CLogMgt.enable(false);
 		//
 		//	Order Template
-		int Order_PrintFormat_ID = MPrintFormat.copyToClient(ctx, 100, AD_Client_ID).get_ID();
-		int OrderLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, 101, AD_Client_ID).get_ID();
+		int Order_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_ORDER_HEADER_TEMPLATE, AD_Client_ID).get_ID();
+		int OrderLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_ORDER_LINETAX_TEMPLATE, AD_Client_ID).get_ID();
 		updatePrintFormatHeader(Order_PrintFormat_ID, OrderLine_PrintFormat_ID);
 		//	Invoice
-		int Invoice_PrintFormat_ID = MPrintFormat.copyToClient(ctx, 102, AD_Client_ID).get_ID();
-		int InvoiceLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, 103, AD_Client_ID).get_ID();
+		int Invoice_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_INVOICE_HEADER_TEMPLATE, AD_Client_ID).get_ID();
+		int InvoiceLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_INVOICE_LINETAX_TEMPLATE, AD_Client_ID).get_ID();
 		updatePrintFormatHeader(Invoice_PrintFormat_ID, InvoiceLine_PrintFormat_ID);
 		//	Shipment
-		int Shipment_PrintFormat_ID = MPrintFormat.copyToClient(ctx, 104, AD_Client_ID).get_ID();
-		int ShipmentLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, 105, AD_Client_ID).get_ID();
+		int Shipment_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_INOUT_HEADER_TEMPLATE, AD_Client_ID).get_ID();
+		int ShipmentLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_INOUT_LINE_TEMPLATE, AD_Client_ID).get_ID();
 		updatePrintFormatHeader(Shipment_PrintFormat_ID, ShipmentLine_PrintFormat_ID);
 		//	Check
-		int Check_PrintFormat_ID = MPrintFormat.copyToClient(ctx, 106, AD_Client_ID).get_ID();
-		int RemittanceLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, 107, AD_Client_ID).get_ID();
+		int Check_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_PAYSELECTION_CHECK_TEMPLATE, AD_Client_ID).get_ID();
+		int RemittanceLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_PAYSELECTION_REMITTANCE_LINES_TEMPLATE, AD_Client_ID).get_ID();
 		updatePrintFormatHeader(Check_PrintFormat_ID, RemittanceLine_PrintFormat_ID);
 		//	Remittance
-		int Remittance_PrintFormat_ID = MPrintFormat.copyToClient(ctx, 108, AD_Client_ID).get_ID();
+		int Remittance_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_PAYSELECTION_REMITTANCE__TEMPLATE, AD_Client_ID).get_ID();
 		updatePrintFormatHeader(Remittance_PrintFormat_ID, RemittanceLine_PrintFormat_ID);
 
 	//	TODO: MPrintForm	
