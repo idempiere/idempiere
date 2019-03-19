@@ -17,8 +17,14 @@
 package org.compiere.util;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 
@@ -33,6 +39,13 @@ public class Evaluator
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (Evaluator.class);
 	
+	private static final Map<String, SQLLogicResult> sqlLogicCache = new ConcurrentHashMap<>();
+
+	public static class SQLLogicResult {
+		long timestamp;
+		boolean value;
+	}
+
 	/**
 	 * 	Check if All Variables are Defined
 	 *	@param source source
@@ -299,4 +312,63 @@ public class Evaluator
 		}
 	}   //  parseDepends
 
+	/**
+	 * evaluator a expression logic base on sql
+	 * @param sqlLogic
+	 * @param ctx
+	 * @param windowNo
+	 * @param tabNo
+	 * @param targetObjectName expression logic is evaluated for, that target object (purpose for logging) can be field name, toolbar button name,..
+	 * @return
+	 */
+	public static boolean parseSQLLogic(String sqlLogic, Properties ctx, int windowNo, int tabNo, String targetObjectName) {
+		String sql = sqlLogic.substring(5); // remove @SQL=
+		boolean reverse = false;
+		if (sql.startsWith("!")) {
+			reverse = true;
+			sql = sql.substring(1); //remove !
+		}
+		sql = Env.parseContext(ctx, windowNo, tabNo, sql, false, false); // replace
+
+		// variables
+		if (sql.equals("")) {
+			s_log.log(Level.WARNING,"(" + targetObjectName + ") - SQL variable parse failed: " + sqlLogic);
+		} else {
+			SQLLogicResult cache = sqlLogicCache.get(sql);
+			if (cache != null) {
+				long since = System.currentTimeMillis() - cache.timestamp;
+				if (since <= 500) {
+					cache.timestamp = System.currentTimeMillis();
+					if (cache.value)
+						return reverse ? false : true;
+					else
+						return reverse ? true : false;
+				}
+			}
+			PreparedStatement stmt = null;
+			ResultSet rs = null;
+			try {
+				stmt = DB.prepareStatement(sql, null);
+				rs = stmt.executeQuery();
+				boolean hasNext = rs.next();
+				if (cache == null) {
+					cache = new SQLLogicResult();
+					sqlLogicCache.put(sql, cache);
+				}
+				cache.value = hasNext;
+				cache.timestamp = System.currentTimeMillis();					
+				if (hasNext)
+					return reverse ? false : true;
+				else
+					return reverse ? true : false;
+			} catch (SQLException e) {
+				s_log.log(Level.WARNING, "(" + targetObjectName + ") " + sql, e);
+			} finally {
+				DB.close(rs, stmt);
+				rs = null;
+				stmt = null;
+			}
+		}
+		return false;
+	}
 }	//	Evaluator

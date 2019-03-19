@@ -31,10 +31,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import org.adempiere.base.ILookupFactory;
@@ -358,7 +356,7 @@ public class GridField
 		{
 			boolean retValue  = false;
 			if (m_vo.MandatoryLogic != null && m_vo.MandatoryLogic.startsWith("@SQL=")) {
-				retValue = parseSQLLogic(m_vo.MandatoryLogic);
+				retValue = Evaluator.parseSQLLogic(m_vo.MandatoryLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 
 			} else{
 				retValue= Evaluator.evaluateLogic(this, m_vo.MandatoryLogic);
@@ -390,57 +388,6 @@ public class GridField
 		return isDisplayed (checkContext);
 	}	//	isMandatory
 
-	private boolean parseSQLLogic(String sqlLogic) {
-		String sql = sqlLogic.substring(5); // remove @SQL=
-		boolean reverse = false;
-		if (sql.startsWith("!")) {
-			reverse = true;
-			sql = sql.substring(1); //remove !
-		}
-		sql = Env.parseContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, sql, false, false); // replace
-
-		// variables
-		if (sql.equals("")) {
-			log.log(Level.WARNING,"(" + m_vo.ColumnName + ") - SQL variable parse failed: " + sqlLogic);
-		} else {
-			SQLLogicResult cache = sqlLogicCache.get(sql);
-			if (cache != null) {
-				long since = System.currentTimeMillis() - cache.timestamp;
-				if (since <= 500) {
-					cache.timestamp = System.currentTimeMillis();
-					if (cache.value)
-						return reverse ? false : true;
-					else
-						return reverse ? true : false;
-				}
-			}
-			PreparedStatement stmt = null;
-			ResultSet rs = null;
-			try {
-				stmt = DB.prepareStatement(sql, null);
-				rs = stmt.executeQuery();
-				boolean hasNext = rs.next();
-				if (cache == null) {
-					cache = new SQLLogicResult();
-					sqlLogicCache.put(sql, cache);
-				}
-				cache.value = hasNext;
-				cache.timestamp = System.currentTimeMillis();					
-				if (hasNext)
-					return reverse ? false : true;
-				else
-					return reverse ? true : false;
-			} catch (SQLException e) {
-				log.log(Level.WARNING, "(" + m_vo.ColumnName + ") " + sql, e);
-			} finally {
-				DB.close(rs, stmt);
-				rs = null;
-				stmt = null;
-			}
-		}
-		return false;
-	}
-
 	/**
 	 *	Is parameter Editable - checks if parameter is Read Only
 	 *  @param checkContext if true checks Context
@@ -451,7 +398,7 @@ public class GridField
 		{
 			if (m_vo.ReadOnlyLogic.startsWith("@SQL="))
 			{
-				boolean retValue = !parseSQLLogic(m_vo.ReadOnlyLogic);
+				boolean retValue = !Evaluator.parseSQLLogic(m_vo.ReadOnlyLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 				if (!retValue)
 					return false;
 			}
@@ -563,7 +510,7 @@ public class GridField
 		{
 			if (m_vo.ReadOnlyLogic.startsWith("@SQL="))
 			{
-				boolean retValue = !parseSQLLogic(m_vo.ReadOnlyLogic);
+				boolean retValue = !Evaluator.parseSQLLogic(m_vo.ReadOnlyLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 				if (!retValue)
 					return false;
 			}
@@ -2603,13 +2550,6 @@ public class GridField
 	public boolean isLookupEditorSettingValue()
 	{
 		return m_lookupEditorSettingValue;
-	}
-
-	private static final Map<String, SQLLogicResult> sqlLogicCache = new ConcurrentHashMap<>();
-	
-	private class SQLLogicResult {
-		long timestamp;
-		boolean value;
 	}
 
 	public void processUIVirtualColumn() {
