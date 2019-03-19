@@ -31,11 +31,13 @@ import java.util.logging.Level;
 import org.compiere.model.MArchive;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MTable;
+import org.compiere.model.MTree_Base;
 import org.compiere.model.Query;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
+import org.compiere.util.ValueNamePair;
 
 /**
  *	IDEMPIERE-2395
@@ -64,6 +66,36 @@ public class CleanOrphanCascade extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		if (log.isLoggable(Level.INFO)) log.info("");
+
+		ValueNamePair[] treeTables = new ValueNamePair[] {
+				new ValueNamePair("AD_TreeBar", "AD_Menu"),
+				new ValueNamePair("AD_TreeNodeBP", "C_BPartner"),
+				new ValueNamePair("AD_TreeNodeCMC", "CM_Container"),
+				new ValueNamePair("AD_TreeNodeCMM", "CM_Media"),
+				new ValueNamePair("AD_TreeNodeCMS", "CM_CStage"),
+				new ValueNamePair("AD_TreeNodeCMT", "CM_Template"),
+				new ValueNamePair("AD_TreeNodeMM", "AD_Menu"),
+				new ValueNamePair("AD_TreeNodePR", "M_Product"),
+				new ValueNamePair("AD_TreeNodeU1", "C_ElementValue"),
+				new ValueNamePair("AD_TreeNodeU2", "C_ElementValue"),
+				new ValueNamePair("AD_TreeNodeU3", "C_ElementValue"),
+				new ValueNamePair("AD_TreeNodeU4", "C_ElementValue")
+		};
+		for (ValueNamePair vnp : treeTables) {
+			String treeTable = vnp.getValue();
+			String foreignTable = vnp.getName();
+			delTree(treeTable,foreignTable, "Node_ID", 0);
+			if (! "AD_TreeBar".equalsIgnoreCase(treeTable)) {
+				delTree(treeTable,foreignTable, "Parent_ID", 0);
+			}
+		}
+
+		List<MTree_Base> trees = new Query(getCtx(), MTree_Base.Table_Name, null, get_TrxName()).list();
+		String treeTable = "AD_TreeNode";
+		for (MTree_Base tree : trees) {
+			String foreignTable = tree.getSourceTableName(true);
+			delTree(treeTable,foreignTable, "Parent_ID", tree.getAD_Tree_ID());
+		}
 
 		String whereTables = ""
 				+ "    IsView = 'N' "
@@ -143,5 +175,20 @@ public class CleanOrphanCascade extends SvrProcess
 
 		return "@OK@";
 	}	//	doIt
+
+	private void delTree(String treeTable, String foreignTable, String columnName, int treeId) {
+		StringBuilder sqlDelete = new StringBuilder()
+				.append("DELETE FROM ").append(treeTable)
+				.append(" WHERE ").append(columnName).append(">0 AND ")
+				.append(columnName).append(" NOT IN (SELECT ").append(foreignTable).append("_ID FROM ").append(foreignTable).append(")");
+		if (treeId > 0) {
+			sqlDelete.append(" AND AD_Tree_ID=").append(treeId);
+		}
+		int noDel = DB.executeUpdateEx(sqlDelete.toString(), get_TrxName());
+		if (noDel > 0) {
+			addLog(Msg.parseTranslation(getCtx(), noDel + " " + treeTable + " " + "@Deleted@ -> " + foreignTable
+					+ (treeId > 0 ? " Tree=" + treeId: "" )));
+		}
+	}	//	delTree
 
 }	//	CleanOrphanCascade
