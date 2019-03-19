@@ -992,11 +992,12 @@ public class MoveClient extends SvrProcess {
 					seq.validateTableIDValue(); // ignore output messages
 				}
 			}
-		}
-		for (String tableName : p_tablesToPreserveIDsList) {
-			MSequence seq = MSequence.get(getCtx(), tableName, get_TrxName());
-			if (seq != null) {
-				seq.validateTableIDValue(); // ignore output messages
+		} else {
+			for (String tableName : p_tablesToPreserveIDsList) {
+				MSequence seq = MSequence.get(getCtx(), tableName, get_TrxName());
+				if (seq != null) {
+					seq.validateTableIDValue(); // ignore output messages
+				}
 			}
 		}
 	}
