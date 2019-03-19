@@ -33,6 +33,7 @@ import org.compiere.model.MAttachment;
 import org.compiere.model.MTable;
 import org.compiere.model.MTree_Base;
 import org.compiere.model.Query;
+import org.compiere.model.X_AD_Package_UUID_Map;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
@@ -46,6 +47,8 @@ import org.compiere.util.ValueNamePair;
 public class CleanOrphanCascade extends SvrProcess
 {
 
+	private boolean p_IsCleanChangeLog;
+
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
@@ -54,7 +57,11 @@ public class CleanOrphanCascade extends SvrProcess
 		for (ProcessInfoParameter para : getParameter())
 		{
 			String name = para.getParameterName();
-			log.log(Level.SEVERE, "Unknown Parameter: " + name);
+			if ("IsCleanChangeLog".equals(name)) {
+				p_IsCleanChangeLog  = para.getParameterAsBoolean();
+			} else {
+				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+			}
 		}
 	}	//	prepare
 
@@ -99,7 +106,6 @@ public class CleanOrphanCascade extends SvrProcess
 
 		String whereTables = ""
 				+ "    IsView = 'N' "
-				+ "AND TableName != 'AD_ChangeLog' "
 				+ "AND EXISTS (SELECT 1 "
 				+ "            FROM   AD_Column ct "
 				+ "            WHERE  ct.IsActive='Y' AND ct.AD_Table_ID = AD_Table.AD_Table_ID "
@@ -112,13 +118,18 @@ public class CleanOrphanCascade extends SvrProcess
 				+ "            FROM   AD_Column ck "
 				+ "            WHERE  ck.IsActive='Y' AND ck.AD_Table_ID = AD_Table.AD_Table_ID "
 				+ "                   AND ck.ColumnName = AD_Table.TableName || '_ID')";
+		if (! p_IsCleanChangeLog) {
+			whereTables += " AND TableName != 'AD_ChangeLog'";
+		}
 
 		List<MTable> tables = new Query(getCtx(), "AD_Table", whereTables, get_TrxName())
 				.setOnlyActiveRecords(true)
 				.setOrderBy("TableName")
 				.list();
+		tables.add(MTable.get(getCtx(), X_AD_Package_UUID_Map.Table_Name));
 		for (MTable table : tables) {
 			String tableName = table.getTableName();
+			boolean isUUIDMap = X_AD_Package_UUID_Map.Table_Name.equals(tableName);
 
 			StringBuilder sqlRef = new StringBuilder();
 			sqlRef.append("SELECT DISTINCT t.AD_Table_ID, ");
@@ -138,12 +149,20 @@ public class CleanOrphanCascade extends SvrProcess
 						continue;
 					}
 					String colRef = refTable.getKeyColumns()[0];
+					if (isUUIDMap) {
+						colRef = MTable.getUUIDColumnName(refTable.getTableName());
+					}
 					
 					StringBuilder whereClause = new StringBuilder();
 					whereClause.append("AD_Table_ID = ").append(refTableID);
 					whereClause.append(" AND NOT EXISTS (SELECT ").append(colRef);
 					whereClause.append("                FROM   ").append(refTableName).append(" ");
-					whereClause.append("                WHERE  ").append(refTableName).append(".").append(colRef).append(" = ").append(tableName).append(".Record_ID)");
+					whereClause.append("                WHERE  ").append(refTableName).append(".").append(colRef).append(" = ").append(tableName);
+					if (isUUIDMap) {
+						whereClause.append(".Target_UUID)");
+					} else {
+						whereClause.append(".Record_ID)");
+					}
 
 					int noDel = 0;
 					if (MAttachment.Table_Name.equals(tableName)) {
