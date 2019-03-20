@@ -917,7 +917,7 @@ public class MoveClient extends SvrProcess {
 									}
 									if (convertedId < 0) {
 										// not found in the table - try to get it again - could be missed in first pass
-										convertedId = getLocalIDFor(convertTable, id);
+										convertedId = getLocalIDFor(convertTable, id, tableName);
 										if (convertedId < 0) {
 											if (("Record_ID".equalsIgnoreCase(columnName) && table.getColumnIndex("AD_Table_ID") > 0)
 													|| (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName))
@@ -1118,7 +1118,7 @@ public class MoveClient extends SvrProcess {
 		}
 	}
 
-	private int getLocalIDFor(String tableName, int foreignId) {
+	private int getLocalIDFor(String tableName, int foreignId, String tableNameSource) {
 		String uuidCol = MTable.getUUIDColumnName(tableName);
 		StringBuilder sqlRemoteUUSB = new StringBuilder()
 				.append("SELECT ").append(uuidCol).append(" FROM ").append(tableName)
@@ -1134,7 +1134,7 @@ public class MoveClient extends SvrProcess {
 			if (rs.next())
 				remoteUUID = rs.getString(1);
 		} catch (SQLException e) {
-			throw new AdempiereException("Could not execute external query: " + sqlRemoteUU + "\nCause = " + e.getLocalizedMessage());
+			throw new AdempiereException("Could not execute external query for table " + tableNameSource + ": " + sqlRemoteUU + "\nCause = " + e.getLocalizedMessage());
 		} finally {
 			DB.close(rs, stmtUU);
 		}
