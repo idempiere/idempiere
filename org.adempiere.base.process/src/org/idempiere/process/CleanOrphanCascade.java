@@ -146,7 +146,7 @@ public class CleanOrphanCascade extends SvrProcess
 					MTable refTable = MTable.get(getCtx(), refTableID);
 					StringBuilder whereClause = new StringBuilder();
 					whereClause.append("AD_Table_ID = ").append(refTableID);
-					if (refTable.getKeyColumns().length != 1) {
+					if (refTable.getKeyColumns().length != 1 && !isUUIDMap) {
 						log.warning("Wrong reference for table " + tableName + " -> " + refTableName);
 						whereClause.append(" AND Record_ID>0");
 					} else {
