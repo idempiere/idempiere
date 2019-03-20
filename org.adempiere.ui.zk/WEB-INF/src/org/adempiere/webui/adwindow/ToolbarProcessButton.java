@@ -119,7 +119,13 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 		if (displayLogic == null || displayLogic.trim().length() == 0)
 			return;
 		
-		boolean visible = Evaluator.evaluateLogic(this, displayLogic);
+		boolean visible = true;
+		if (displayLogic.startsWith("@SQL=")) {
+			visible = Evaluator.parseSQLLogic(displayLogic, Env.getCtx(), windowNo, adTabpanel.getTabNo(), mToolbarButton.getActionName());
+		}else {
+			visible = Evaluator.evaluateLogic(this, displayLogic);	
+		}
+
 		button.setVisible(visible);
 	}
 
