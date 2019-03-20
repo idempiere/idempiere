@@ -144,24 +144,25 @@ public class CleanOrphanCascade extends SvrProcess
 					String refTableName = row.get(1).toString();
 
 					MTable refTable = MTable.get(getCtx(), refTableID);
-					if (refTable.getKeyColumns().length != 1) {
-						log.warning("Wrong reference for table " + tableName + " -> " + refTableName);
-						continue;
-					}
-					String colRef = refTable.getKeyColumns()[0];
-					if (isUUIDMap) {
-						colRef = MTable.getUUIDColumnName(refTable.getTableName());
-					}
-					
 					StringBuilder whereClause = new StringBuilder();
 					whereClause.append("AD_Table_ID = ").append(refTableID);
-					whereClause.append(" AND NOT EXISTS (SELECT ").append(colRef);
-					whereClause.append("                FROM   ").append(refTableName).append(" ");
-					whereClause.append("                WHERE  ").append(refTableName).append(".").append(colRef).append(" = ").append(tableName);
-					if (isUUIDMap) {
-						whereClause.append(".Target_UUID)");
+					if (refTable.getKeyColumns().length != 1) {
+						log.warning("Wrong reference for table " + tableName + " -> " + refTableName);
+						whereClause.append(" AND Record_ID>0");
 					} else {
-						whereClause.append(".Record_ID)");
+						String colRef = refTable.getKeyColumns()[0];
+						if (isUUIDMap) {
+							colRef = MTable.getUUIDColumnName(refTable.getTableName());
+						}
+						
+						whereClause.append(" AND NOT EXISTS (SELECT ").append(colRef);
+						whereClause.append("                FROM   ").append(refTableName).append(" ");
+						whereClause.append("                WHERE  ").append(refTableName).append(".").append(colRef).append(" = ").append(tableName);
+						if (isUUIDMap) {
+							whereClause.append(".Target_UUID)");
+						} else {
+							whereClause.append(".Record_ID)");
+						}
 					}
 
 					int noDel = 0;
