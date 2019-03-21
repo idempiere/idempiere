@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PIPOContext;
@@ -59,7 +60,7 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 
 	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		int AD_Org_ID = Env.getContextAsInt(ctx.ctx, "AD_Org_ID");
+		int AD_Org_ID = Env.getContextAsInt(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Org_ID);
 		int AD_Role_ID = Env.getContextAsInt(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID);
 		
 		Query query = new Query(ctx.ctx, "AD_Role_OrgAccess", "AD_Role_ID=? and AD_Org_ID=?", getTrxName(ctx));
@@ -87,9 +88,26 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId)
+			throws Exception {
+		throw new AdempiereException("AD_Role_OrgAccess doesn't have ID, use method with UUID");
+	}
+
+	@Override
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
-			int recordId) throws Exception {
-		create(packout.getCtx(), packoutHandler);
+			int recordId, String uuid) throws Exception {
+		X_AD_Role_OrgAccess po = new Query(packout.getCtx().ctx, X_AD_Role_OrgAccess.Table_Name, "AD_Role_OrgAccess_UU=?", getTrxName(packout.getCtx()))
+				.setParameters(uuid)
+				.first();
+		if (po != null) {
+			Env.setContext(packout.getCtx().ctx, X_AD_Role.COLUMNNAME_AD_Org_ID, po.getAD_Org_ID());
+			Env.setContext(packout.getCtx().ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, po.getAD_Role_ID());
+			this.create(packout.getCtx(), packoutHandler);
+			packout.getCtx().ctx.remove(X_AD_Role.COLUMNNAME_AD_Org_ID);
+			packout.getCtx().ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
+		} else {
+			throw new AdempiereException("AD_Role_OrgAccess_UU not found = " + uuid);
+		}
 	}
 }

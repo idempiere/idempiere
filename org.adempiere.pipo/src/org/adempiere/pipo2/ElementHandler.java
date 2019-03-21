@@ -52,4 +52,18 @@ public interface ElementHandler {
 	 * @throws Exception
 	 */
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception;
+
+	/**
+	 * @param packout
+	 * @param packoutHandler
+	 * @param docHandler
+	 * @param recordId
+	 * @param uuid
+	 * @throws Exception
+	 */
+	default public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId, String uuid) throws Exception {
+		// element handlers for tables without ID must implement this method
+		packOut(packout, packoutHandler, docHandler, recordId); // defaults to calling the method without uuid
+	}
+
 }

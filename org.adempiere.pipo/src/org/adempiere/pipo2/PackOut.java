@@ -141,7 +141,7 @@ public class PackOut
 
 				ElementHandler handler = handlerRegistry.getHandler(type);
 				if (handler != null)
-					handler.packOut(this,packoutHandler,docHandler,packoutItem.getRecordId());
+					handler.packOut(this,packoutHandler,docHandler,packoutItem.getRecordId(),packoutItem.getUUID());
 				else
 					throw new IllegalArgumentException("Packout handler not found for type " + type);
 

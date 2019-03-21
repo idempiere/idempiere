@@ -29,6 +29,7 @@ import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PIPOContext;
@@ -90,7 +91,24 @@ public class InfoWindowAccessElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId) throws Exception {
-		create(packout.getCtx(), packoutHandler);
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId)
+			throws Exception {
+		throw new AdempiereException("AD_InfoWindow_Access doesn't have ID, use method with UUID");
+	}
+
+	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId, String uuid) throws Exception {
+		X_AD_InfoWindow_Access po = new Query(packout.getCtx().ctx, X_AD_InfoWindow_Access.Table_Name, "AD_InfoWindow_Access_UU=?", getTrxName(packout.getCtx()))
+				.setParameters(uuid)
+				.first();
+		if (po != null) {
+			Env.setContext(packout.getCtx().ctx, X_AD_InfoWindow.COLUMNNAME_AD_InfoWindow_ID, po.getAD_InfoWindow_ID());
+			Env.setContext(packout.getCtx().ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, po.getAD_Role_ID());
+			this.create(packout.getCtx(), packoutHandler);
+			packout.getCtx().ctx.remove(X_AD_InfoWindow.COLUMNNAME_AD_InfoWindow_ID);
+			packout.getCtx().ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
+		} else {
+			throw new AdempiereException("AD_InfoWindow_Access_UU not found = " + uuid);
+		}
 	}
 }

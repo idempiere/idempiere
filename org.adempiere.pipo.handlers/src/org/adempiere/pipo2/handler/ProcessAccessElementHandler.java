@@ -20,13 +20,15 @@ import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
-import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PoFiller;
 import org.compiere.model.I_AD_Process_Access;
+import org.compiere.model.MProcessAccess;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Process;
 import org.compiere.model.X_AD_Process_Access;
@@ -89,9 +91,27 @@ public class ProcessAccessElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId)
+			throws Exception {
+		throw new AdempiereException("AD_Process_Access doesn't have ID, use method with UUID");
+	}
+
+	@Override
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
-			int recordId) throws Exception {
-		create(packout.getCtx(), packoutHandler);
+			int recordId, String uuid) throws Exception {
+		MProcessAccess po = new Query(packout.getCtx().ctx, MProcessAccess.Table_Name, "AD_Process_Access_UU=?", getTrxName(packout.getCtx()))
+				.setParameters(uuid)
+				.first();
+		if (po != null) {
+			Env.setContext(packout.getCtx().ctx, X_AD_Process.COLUMNNAME_AD_Process_ID, po.getAD_Process_ID());
+			Env.setContext(packout.getCtx().ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, po.getAD_Role_ID());
+			this.create(packout.getCtx(), packoutHandler);
+			packout.getCtx().ctx.remove(X_AD_Process.COLUMNNAME_AD_Process_ID);
+			packout.getCtx().ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
+		} else {
+			throw new AdempiereException("AD_Process_Access_UU not found = " + uuid);
+		}
 	}
+
 }
