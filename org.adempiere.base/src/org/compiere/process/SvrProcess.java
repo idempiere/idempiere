@@ -27,6 +27,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.event.EventManager;
+import org.adempiere.base.event.EventProperty;
+import org.adempiere.base.event.IEventManager;
+import org.adempiere.base.event.IEventTopics;
 import org.adempiere.util.IProcessUI;
 import org.compiere.model.MPInstance;
 import org.compiere.model.PO;
@@ -35,6 +39,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.osgi.service.event.Event;
 
 /**
  *  Server Process Template
@@ -128,6 +133,8 @@ public abstract class SvrProcess implements ProcessCall
 			m_trx = Trx.get(Trx.createTrxName("SvrProcess"), true);
 			m_trx.setDisplayName(getClass().getName()+"_startProcess");
 		}
+		m_pi.setTransactionName(m_trx.getTrxName());
+		m_pi.setProcessUI(processUI);
 		//
 		ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
 		ClassLoader processLoader = getClass().getClassLoader();
@@ -168,13 +175,17 @@ public abstract class SvrProcess implements ProcessCall
 						m_trx.rollback();
 					m_trx.close();
 					m_trx = null;
+					m_pi.setTransactionName(null);
 				}
 			
 				unlock();
 				
 				// outside transaction processing [ teo_sarca, 1646891 ]
 				postProcess(!m_pi.isError());
-				
+
+				@SuppressWarnings("unused")
+				Event eventPP = sendProcessEvent(IEventTopics.POST_PROCESS);
+
 				Thread.currentThread().setContextClassLoader(contextLoader);
 			}
 		} finally {
@@ -198,7 +209,24 @@ public abstract class SvrProcess implements ProcessCall
 		try
 		{
 			prepare();
-			msg = doIt();
+
+			// event before process
+			Event eventBP = sendProcessEvent(IEventTopics.BEFORE_PROCESS);
+			@SuppressWarnings("unchecked")
+			List<String> errorsBP = (List<String>) eventBP.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
+			if (errorsBP != null && !errorsBP.isEmpty()) {
+				msg = "@Error@:" + errorsBP.get(0);
+			} else {
+				msg = doIt();
+				if (msg != null && ! msg.startsWith("@Error@")) {
+					Event eventAP = sendProcessEvent(IEventTopics.AFTER_PROCESS);
+					@SuppressWarnings("unchecked")
+					List<String> errorsAP = (List<String>) eventAP.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
+					if (errorsAP != null && !errorsAP.isEmpty()) {
+						msg = "@Error@:" + errorsAP.get(0);
+					}
+				}
+			}
 		}
 		catch (Throwable e)
 		{
@@ -226,6 +254,15 @@ public abstract class SvrProcess implements ProcessCall
 		
 		return success;
 	}   //  process
+
+	private Event sendProcessEvent(String topic) {
+		Event event = EventManager.newEvent(topic,
+				new EventProperty(EventManager.EVENT_DATA, m_pi),
+				new EventProperty("processUUID", m_pi.getAD_Process_UU()),
+				new EventProperty("className", m_pi.getClassName()));
+		EventManager.getInstance().sendEvent(event);
+		return event;
+	}
 
 	/**
 	 *  Prepare - e.g., get Parameters.
