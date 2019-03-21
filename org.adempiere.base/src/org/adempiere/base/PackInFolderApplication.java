@@ -85,11 +85,11 @@ public class PackInFolderApplication implements IApplication {
 					.append("\n Logs=\n").append(pi.getLogInfo(false).replaceAll("<br>", "\n"));
 			System.out.println(msgout.toString());
 			if (!success)
-				return new Integer(1);
+				return Integer.valueOf(1);
 		} else {
 			System.out.println("Apply PackIn from Folder usage:");
 			System.out.println("RUN_ApplyPackInFromFolder.sh folder");
-			return new Integer(1);
+			return Integer.valueOf(1);
 		}
 		
 		
