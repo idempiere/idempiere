@@ -1005,8 +1005,10 @@ public class MoveClient extends SvrProcess {
 										|| ("M_CostType".equalsIgnoreCase(tableName) && "Name".equalsIgnoreCase(columnName))
 										|| ("R_RequestProcessor".equalsIgnoreCase(tableName) && "Name".equalsIgnoreCase(columnName))
 										) {
-									String value = parameters[i].toString();
-									parameters[i] = value.replaceFirst(oldClientValue, p_ClientValue);
+									if (parameters[i] != null) {
+										String value = parameters[i].toString();
+										parameters[i] = value.replaceFirst(oldClientValue, p_ClientValue);
+									}
 								}
 							}
 						}
