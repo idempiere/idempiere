@@ -80,7 +80,7 @@ public final class ALogin extends CDialog
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3057525535969948097L;
+	private static final long serialVersionUID = -4397663968578607998L;
 
 	/**
 	 *	Construct the dialog.
@@ -109,6 +109,7 @@ public final class ALogin extends CDialog
 	}   //  ALogin
 
 
+	public static final String ROLE_TYPES_SWING = "NULL,SW,SS";  //swing,support+null
 	protected static final String RESOURCE = "org.compiere.apps.ALoginRes";
 	private static ResourceBundle res = ResourceBundle.getBundle(RESOURCE);
 	/**	Logger			*/
@@ -871,7 +872,7 @@ public final class ALogin extends CDialog
 		KeyNamePair[] clients = null;
 		try 
 		{
-			clients = m_login.getClients(m_user, new String(m_pwd));
+			clients = m_login.getClients(m_user, new String(m_pwd), ROLE_TYPES_SWING);
 			if (clients == null || clients.length == 0)
 			{
 				String loginErrMsg = m_login.getLoginErrMsg();
@@ -976,7 +977,7 @@ public final class ALogin extends CDialog
 			 Env.setContext(m_ctx, "#SalesRep_ID", user.getAD_User_ID());
 		}
 		//
-		KeyNamePair[] roles = m_login.getRoles(userTextField.getText(), client);
+		KeyNamePair[] roles = m_login.getRoles(userTextField.getText(), client, ROLE_TYPES_SWING);
 		// Make role Combo visible
 		roleCombo.setVisible(true);
 		roleLabel.setVisible(true);

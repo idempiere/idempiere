@@ -32,7 +32,7 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20190321L;
 
     /** Standard Constructor */
     public X_AD_Role (Properties ctx, int AD_Role_ID, String trxName)
@@ -1001,6 +1001,43 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	public String getPreferenceType () 
 	{
 		return (String)get_Value(COLUMNNAME_PreferenceType);
+	}
+
+	/** RoleType AD_Reference_ID=200166 */
+	public static final int ROLETYPE_AD_Reference_ID=200166;
+	/** WebUI = ZK */
+	public static final String ROLETYPE_WebUI = "ZK";
+	/** WebService = WS */
+	public static final String ROLETYPE_WebService = "WS";
+	/** System Support = SS */
+	public static final String ROLETYPE_SystemSupport = "SS";
+	/** Mobile = MO */
+	public static final String ROLETYPE_Mobile = "MO";
+	/** Swing = SW */
+	public static final String ROLETYPE_Swing = "SW";
+	/** External App 1 = E1 */
+	public static final String ROLETYPE_ExternalApp1 = "E1";
+	/** External App 2 = E2 */
+	public static final String ROLETYPE_ExternalApp2 = "E2";
+	/** External App 3 = E3 */
+	public static final String ROLETYPE_ExternalApp3 = "E3";
+	/** External App 4 = E4 */
+	public static final String ROLETYPE_ExternalApp4 = "E4";
+	/** External App 5 = E5 */
+	public static final String ROLETYPE_ExternalApp5 = "E5";
+	/** Set Role Type.
+		@param RoleType Role Type	  */
+	public void setRoleType (String RoleType)
+	{
+
+		set_Value (COLUMNNAME_RoleType, RoleType);
+	}
+
+	/** Get Role Type.
+		@return Role Type	  */
+	public String getRoleType () 
+	{
+		return (String)get_Value(COLUMNNAME_RoleType);
 	}
 
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
