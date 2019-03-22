@@ -14,6 +14,7 @@
 package org.adempiere.webui.window;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Properties;
 import java.util.Vector;
@@ -59,6 +60,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.SecureEngine;
 import org.compiere.util.Util;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -91,7 +93,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8527444729510721269L;
+	private static final long serialVersionUID = 7922577248288156723L;
 
 	private Checkbox bErrorsOnly;
 	private Listbox logTable;
@@ -104,6 +106,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	protected Tab tabPlugins;
 
 	protected Button btnAdempiereLog;
+	protected Button btnReloadLogProps;
 
 	private Listbox levelListBox;
 
@@ -268,14 +271,20 @@ public class AboutWindow extends Window implements EventListener<Event> {
 				levelListBox.setEnabled(true);
 				levelListBox.setTooltiptext("Set trace level. Warning: this will effect all session not just the current session");
 				levelLabel.setTooltiptext("Set trace level. Warning: this will effect all session not just the current session");
+
 				btnAdempiereLog = new Button("iDempiere Log");
 				btnAdempiereLog.setTooltiptext("Download iDempiere log file from server");
 				LayoutUtils.addSclass("txt-btn", btnAdempiereLog);
 				btnAdempiereLog.addEventListener(Events.ON_CLICK, this);
-
 				hbox.appendChild(new Space());
 				hbox.appendChild(btnAdempiereLog);
 
+				btnReloadLogProps = new Button("Reload Log Props");
+				btnReloadLogProps.setTooltiptext("Reload the configuration of log levels from idempiere.properties file");
+				LayoutUtils.addSclass("txt-btn", btnReloadLogProps);
+				btnReloadLogProps.addEventListener(Events.ON_CLICK, this);
+				hbox.appendChild(new Space());
+				hbox.appendChild(btnReloadLogProps);
 			}
 		}
 
@@ -716,6 +725,8 @@ public class AboutWindow extends Window implements EventListener<Event> {
 			cmd_errorEMail();
 		else if (event.getTarget() == btnAdempiereLog)
 			downloadAdempiereLogFile();
+		else if (event.getTarget() == btnReloadLogProps)
+			reloadLogProps();
 		else if (event.getTarget() == levelListBox)
 			setTraceLevel();
         else if (Events.ON_SELECT.equals(event.getName()) && event.getTarget() == pluginsTable)
@@ -725,6 +736,53 @@ public class AboutWindow extends Window implements EventListener<Event> {
 				processPlugin();
 			else
 				this.detach();
+		}
+	}
+
+	private void reloadLogProps() {
+		Properties props = new Properties();
+		String propertyFileName = Ini.getFileName(false);
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(propertyFileName);
+			props.load(fis);
+		} catch (Exception e) {
+			throw new AdempiereException("Could not load properties file, cause: " + e.getLocalizedMessage());
+		} finally {
+			if (fis != null) {
+				try {
+					fis.close();
+				} catch (Exception e) {}
+			}
+		}
+		String globalLevel = props.getProperty(Ini.P_TRACELEVEL);
+		if (! Util.isEmpty(globalLevel)) {
+			globalLevel = SecureEngine.decrypt(globalLevel, 0);
+			if (! Util.isEmpty(globalLevel)) {
+				CLogMgt.setLevel(globalLevel);
+				Level level = CLogMgt.getLevel();
+				for (int i = 0; i < CLogMgt.LEVELS.length; i++) {
+					if (CLogMgt.LEVELS[i].intValue() == level.intValue()) {
+						levelListBox.setSelectedIndex(i);
+						break;
+					}
+				}
+			}
+		}
+		for(Object key : props.keySet()) {
+			if (key instanceof String) {
+				String s = (String)key;
+				if (s.endsWith("."+Ini.P_TRACELEVEL)) {
+					String level = props.getProperty(s);
+					if (! Util.isEmpty(level)) {
+						level = SecureEngine.decrypt(level, 0);
+						if (! Util.isEmpty(level)) {
+							s = s.substring(0, s.length() - ("."+Ini.P_TRACELEVEL).length());
+							CLogMgt.setLevel(s, level);
+						}
+					}
+				}
+			}
 		}
 	}
 
