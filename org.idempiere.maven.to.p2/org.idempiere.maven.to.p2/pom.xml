@@ -648,7 +648,6 @@
 											<instructions>
 											    <Export-Package/>
 											    <Private-Package/>
-											    <Private-Package/>
 											    <Bundle-SymbolicName>org.apache.servicemix.bundles.spring-beans.source</Bundle-SymbolicName>
 											    <Bundle-Name>spring-expression.source</Bundle-Name>
 												<Eclipse-SourceBundle>org.apache.servicemix.bundles.spring-beans;version="${springframework.version}";roots:="."</Eclipse-SourceBundle>
@@ -669,7 +668,6 @@
 											    -->
 											<instructions>
 											    <Export-Package/>
-											    <Private-Package/>
 											    <Private-Package/>
 											    <Bundle-SymbolicName>org.apache.servicemix.bundles.spring-core.source</Bundle-SymbolicName>
 											    <Bundle-Name>spring-expression.source</Bundle-Name>
@@ -698,7 +696,6 @@
 											<instructions>
 											    <Export-Package/>
 											    <Private-Package/>
-											    <Private-Package/>
 											    <Bundle-SymbolicName>org.apache.servicemix.bundles.spring-context.source</Bundle-SymbolicName>
 											    <Bundle-Name>spring-expression.source</Bundle-Name>
 												<Eclipse-SourceBundle>org.apache.servicemix.bundles.spring-context;version="${springframework.version}";roots:="."</Eclipse-SourceBundle>
@@ -720,7 +717,6 @@
 											<instructions>
 											    <Export-Package/>
 											    <Private-Package/>
-											    <Private-Package/>
 											    <Bundle-SymbolicName>org.apache.servicemix.bundles.spring-expression.source</Bundle-SymbolicName>
 											    <Bundle-Name>spring-expression.source</Bundle-Name>
 												<Eclipse-SourceBundle>org.apache.servicemix.bundles.spring-expression;version="${springframework.version}";roots:="."</Eclipse-SourceBundle>
@@ -736,7 +732,6 @@
 											    -->
 											<instructions>
 											    <Export-Package/>
-											    <Private-Package/>
 											    <Private-Package/>
 											    <Bundle-SymbolicName>org.apache.servicemix.bundles.spring-aop.source</Bundle-SymbolicName>
 											    <Bundle-Name>spring-aop.source</Bundle-Name>
@@ -759,7 +754,6 @@
 											<instructions>
 											    <Export-Package/>
 											    <Private-Package/>
-											    <Private-Package/>
 											    <Bundle-SymbolicName>org.apache.servicemix.bundles.spring-web.source</Bundle-SymbolicName>
 											    <Bundle-Name>spring-web.source</Bundle-Name>
 												<Eclipse-SourceBundle>org.apache.servicemix.bundles.spring-web;version="${springframework.version}";roots:="."</Eclipse-SourceBundle>
@@ -780,7 +774,6 @@
 											    -->
 											<instructions>
 											    <Export-Package/>
-											    <Private-Package/>
 											    <Private-Package/>
 											    <Bundle-SymbolicName>org.apache.servicemix.bundles.spring-context-support.source</Bundle-SymbolicName>
 											    <Bundle-Name>spring-context-support.source</Bundle-Name>
@@ -943,6 +936,9 @@
 												<Eclipse-SourceBundle>zkplus;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zkplus</Bundle-SymbolicName>
 												<Bundle-Name>zkplus.source</Bundle-Name>
+												<Export-Package/>
+												<Import-Package/>
+												<Private-Package/>
 											</instructions>
 										</artifact>
 										<artifact>
@@ -953,6 +949,9 @@
 												<Eclipse-SourceBundle>zweb;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zweb</Bundle-SymbolicName>
 												<Bundle-Name>zweb.source</Bundle-Name>
+												<Export-Package/>
+												<Import-Package/>
+												<Private-Package/>
 											</instructions>
 										</artifact>
 										<artifact>
@@ -963,6 +962,9 @@
 												<Eclipse-SourceBundle>zul;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zul</Bundle-SymbolicName>
 												<Bundle-Name>zul.source</Bundle-Name>
+												<Export-Package/>
+												<Import-Package/>
+												<Private-Package/>
 											</instructions>
 										</artifact>
 										<artifact>
@@ -973,6 +975,9 @@
 												<Eclipse-SourceBundle>zk;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zk</Bundle-SymbolicName>
 												<Bundle-Name>zk.source</Bundle-Name>
+												<Export-Package/>
+												<Import-Package/>
+												<Private-Package/>
 											</instructions>
 										</artifact>
 										<artifact>
@@ -983,6 +988,9 @@
 												<Eclipse-SourceBundle>zhtml;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zhtml</Bundle-SymbolicName>
 												<Bundle-Name>zhtml.source</Bundle-Name>
+												<Export-Package/>
+												<Import-Package/>
+												<Private-Package/>
 											</instructions>
 										</artifact>
 										<artifact>
@@ -993,6 +1001,9 @@
 												<Eclipse-SourceBundle>zkbind;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zkbind</Bundle-SymbolicName>
 												<Bundle-Name>zkbind.source</Bundle-Name>
+												<Export-Package/>
+												<Import-Package/>
+												<Private-Package/>
 											</instructions>
 										</artifact>
 										<artifact>
@@ -1003,6 +1014,9 @@
 												<Eclipse-SourceBundle>zel;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zel</Bundle-SymbolicName>
 												<Bundle-Name>zel.source</Bundle-Name>
+												<Export-Package/>
+												<Import-Package/>
+												<Private-Package/>
 											</instructions>
 										</artifact>
 										<artifact>
@@ -1013,6 +1027,9 @@
 												<Eclipse-SourceBundle>zcommon;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zcommon</Bundle-SymbolicName>
 												<Bundle-Name>zcommon.source</Bundle-Name>
+												<Export-Package/>
+												<Import-Package/>
+												<Private-Package/>
 											</instructions>
 										</artifact>
 										<artifact>
@@ -1023,6 +1040,9 @@
 												<Eclipse-SourceBundle>zkwebfragment;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
 												<Bundle-SymbolicName>zkwebfragment</Bundle-SymbolicName>
 												<Bundle-Name>zkwebfragment.source</Bundle-Name>
+												<Export-Package/>
+												<Import-Package/>
+												<Private-Package/>
 											</instructions>
 										</artifact>
 										<artifact>
@@ -1034,6 +1054,9 @@
 												<Bundle-SymbolicName>zjavassist</Bundle-SymbolicName>
 												<Bundle-Version>${zk.version}</Bundle-Version>
 												<Bundle-Name>zjavassist.source</Bundle-Name>
+												<Export-Package/>
+												<Import-Package/>
+												<Private-Package/>
 											</instructions>
 										</artifact>
 									</artifacts>
