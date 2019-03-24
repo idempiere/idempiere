@@ -200,6 +200,7 @@ public abstract class PO
 		m_oldValues = new Object[size];
 		m_newValues = new Object[size];
 		m_setErrors = new ValueNamePair[size];
+		m_setErrorsFilled = false;
 
 		if (rs != null)
 			load(rs);		//	will not have virtual columns
@@ -241,6 +242,7 @@ public abstract class PO
 	private Object[]    		m_newValues = null;
 	/** Errors when setting     */
 	private ValueNamePair[]		m_setErrors = null;
+	private boolean				m_setErrorsFilled = false;  // to optimize not traveling the array if no errors
 
 	/** Record_IDs          		*/
 	private Object[]       		m_IDs = new Object[] {I_ZERO};
@@ -780,6 +782,7 @@ public abstract class PO
 				log.log(Level.WARNING, "Virtual Column" + colInfo);
 				log.saveError("VirtualColumn", "Virtual Column" + colInfo);
 				m_setErrors[index] = new ValueNamePair("VirtualColumn", "Virtual Column" + colInfo);
+				m_setErrorsFilled = true;
 				return false;
 			}
 	
@@ -792,6 +795,7 @@ public abstract class PO
 				log.log(Level.WARNING, "Column not updateable" + colInfo);
 				log.saveError("ColumnReadonly", "Column not updateable" + colInfo);
 				m_setErrors[index] = new ValueNamePair("ColumnReadonly", "Column not updateable" + colInfo);
+				m_setErrorsFilled = true;
 				return false;
 			}
 		}
@@ -800,8 +804,9 @@ public abstract class PO
 		{
 			if (checkWritable && p_info.isColumnMandatory(index))
 			{
-				log.saveError("FillMandatory", ColumnName + " is mandatory.");
-				m_setErrors[index] = new ValueNamePair("FillMandatory", ColumnName + " is mandatory.");
+				log.saveError("FillMandatory", ColumnName);
+				m_setErrors[index] = new ValueNamePair("FillMandatory", ColumnName);
+				m_setErrorsFilled = true;
 				return false;
 			}
 			m_newValues[index] = Null.NULL;          //  correct
@@ -842,6 +847,7 @@ public abstract class PO
 					log.log(Level.SEVERE, errmsg);
 					log.saveError("WrongDataType", errmsg);
 					m_setErrors[index] = new ValueNamePair("WrongDataType", errmsg);
+					m_setErrorsFilled = true;
 					return false;
 				}
 			else
@@ -852,6 +858,7 @@ public abstract class PO
 				log.log(Level.SEVERE, errmsg);
 				log.saveError("WrongDataType", errmsg);
 				m_setErrors[index] = new ValueNamePair("WrongDataType", errmsg);
+				m_setErrorsFilled = true;
 				return false;
 			}
 			//	Validate (Min/Max)
@@ -867,6 +874,7 @@ public abstract class PO
 					log.saveError(error, ColumnName);
 					m_setErrors[index] = new ValueNamePair(error, ColumnName);
 				}
+				m_setErrorsFilled = true;
 				return false;
 			}
 			//	Length for String
@@ -895,6 +903,7 @@ public abstract class PO
 							+ value + " - Reference_ID=" + p_info.getColumn(index).AD_Reference_Value_ID + validValues.toString();
 					log.saveError("Validate", errmsg);
 					m_setErrors[index] = new ValueNamePair("Validate", errmsg);
+					m_setErrorsFilled = true;
 					return false;
 				}
 			}
@@ -2024,12 +2033,14 @@ public abstract class PO
 			if (log.isLoggable(Level.FINE)) log.fine("Nothing changed - " + p_info.getTableName());
 			return true;
 		}
-		
-		for (int i = 0; i < m_setErrors.length; i++) {
-			ValueNamePair setError = m_setErrors[i];
-			if (setError != null) {
-				log.saveError(setError.getValue(), Msg.getElement(getCtx(), p_info.getColumnName(i)) + " - " + setError.getName());
-				return false;
+
+		if (m_setErrorsFilled) {
+			for (int i = 0; i < m_setErrors.length; i++) {
+				ValueNamePair setError = m_setErrors[i];
+				if (setError != null) {
+					log.saveError(setError.getValue(), Msg.getElement(getCtx(), p_info.getColumnName(i)) + " - " + setError.getName());
+					return false;
+				}
 			}
 		}
 
