@@ -285,7 +285,7 @@ public class PaymentServlet  extends HttpServlet
 				//	
 				// Added adempiereException by zuhri
 				if(!payment.processIt(DocAction.ACTION_Complete))
-					throw new AdempiereException("Failed when processing document - " + payment.getProcessMsg());
+					throw new AdempiereException(Msg.getMsg(ctx, "FailedProcessingDocument") + " - " + payment.getProcessMsg());
 				// end added by zuhri
 				payment.saveEx();
 				sendThanksEMail (request, ctx, payment, wu, wo);
