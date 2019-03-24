@@ -548,6 +548,15 @@ public interface I_AD_Role
 	  */
 	public String getPreferenceType();
 
+    /** Column name RoleType */
+    public static final String COLUMNNAME_RoleType = "RoleType";
+
+	/** Set Role Type	  */
+	public void setRoleType (String RoleType);
+
+	/** Get Role Type	  */
+	public String getRoleType();
+
     /** Column name Supervisor_ID */
     public static final String COLUMNNAME_Supervisor_ID = "Supervisor_ID";
 

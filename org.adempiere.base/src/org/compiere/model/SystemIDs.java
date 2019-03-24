@@ -58,6 +58,15 @@ public class SystemIDs
 	public final static int MESSAGE_WORKFLOWRESULT = 753;
 
 	public final static int PRINTFORMAT_STATEMENTOFACCOUNT = 134;
+	public final static int PRINTFORMAT_ORDER_HEADER_TEMPLATE = 100;
+	public final static int PRINTFORMAT_ORDER_LINETAX_TEMPLATE = 101;
+	public final static int PRINTFORMAT_INVOICE_HEADER_TEMPLATE = 102;
+	public final static int PRINTFORMAT_INVOICE_LINETAX_TEMPLATE = 103;
+	public final static int PRINTFORMAT_INOUT_HEADER_TEMPLATE = 104;
+	public final static int PRINTFORMAT_INOUT_LINE_TEMPLATE = 105;
+	public final static int PRINTFORMAT_PAYSELECTION_CHECK_TEMPLATE = 106;
+	public final static int PRINTFORMAT_PAYSELECTION_REMITTANCE_LINES_TEMPLATE = 107;
+	public final static int PRINTFORMAT_PAYSELECTION_REMITTANCE__TEMPLATE = 108;
 
 	public final static int PROCESS_AD_WORKFLOW_DOCVALUE = 305;
 	public final static int PROCESS_AD_CHANGELOG_UNDO = 306;

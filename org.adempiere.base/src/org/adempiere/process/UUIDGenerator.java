@@ -38,6 +38,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 
 /**
@@ -127,13 +128,19 @@ public class UUIDGenerator extends SvrProcess {
 					//update db
 					if (isFillUUID) {
 						// COMMENT NEXT LINE ON RELEASE WORK
-						updateUUID(mColumn, null);
+						String msg = updateUUID(mColumn, null);
+						if (! Util.isEmpty(msg)) {
+							addBufferLog(0, null, null, msg, 0, 0);
+						}
 					}
 				} else {
 					if (isFillUUID) {
 						MColumn mColumn = MColumn.get(getCtx(), AD_Column_ID);
 						// COMMENT NEXT LINE ON RELEASE WORK
-						updateUUID(mColumn, null);
+						String msg = updateUUID(mColumn, null);
+						if (! Util.isEmpty(msg)) {
+							addBufferLog(0, null, null, msg, 0, 0);
+						}
 					}
 				}
 				
@@ -157,11 +164,11 @@ public class UUIDGenerator extends SvrProcess {
 		return msgreturn.toString();
 	}
 
-	public static void updateUUID(MColumn column, String trxName) {
+	public static String updateUUID(MColumn column, String trxName) {
 		MTable table = (MTable) column.getAD_Table();
 		if (table.getTableName().startsWith("T_")) {
 			// don't update UUID for temporary tables
-			return;
+			return "";
 		}
 		int AD_Column_ID = 0;
 		StringBuilder sql = new StringBuilder("SELECT ");
@@ -175,7 +182,7 @@ public class UUIDGenerator extends SvrProcess {
 		if ((compositeKeys == null || compositeKeys.length == 0) && keyColumn == null) {
 			// TODO: Update using rowid for oracle or ctid for postgresql
 			log.warning("Cannot update orphan table " + table.getTableName() + " (not ID neither parents)");
-			return;
+			return "";
 		}
 		if (compositeKeys == null) {
 			sql.append(keyColumn);
@@ -211,19 +218,21 @@ public class UUIDGenerator extends SvrProcess {
 			trx.setDisplayName(UUIDGenerator.class.getName()+"_updateUUID");
 			localTrx = true;
 		}
+		String msg = "";
 		try {				
 			if (localTrx)
 				trx.start();
 			stmt = DB.prepareStatement(sql.toString(), trx.getTrxName());
 			stmt.setFetchSize(100);
 			rs = stmt.executeQuery();
+			int no = 0;
 			while (rs.next()) {
 				if (AD_Column_ID > 0) {
 					int recordId = rs.getInt(1);
 					// this line is to avoid users generating official UUIDs - comment it to do official migration script work
 					if (recordId > MTable.MAX_OFFICIAL_ID) {
 						UUID uuid = UUID.randomUUID();
-						DB.executeUpdateEx(updateSQL.toString(),new Object[]{uuid.toString(), recordId}, trx.getTrxName());
+						no += DB.executeUpdateEx(updateSQL.toString(),new Object[]{uuid.toString(), recordId}, trx.getTrxName());
 					}
 				} else {
 					UUID uuid = UUID.randomUUID();
@@ -232,8 +241,11 @@ public class UUIDGenerator extends SvrProcess {
 					for (String s : compositeKeys) {
 						params.add(rs.getObject(s));
 					}
-					DB.executeUpdateEx(updateSQL.toString(),params.toArray(),trx.getTrxName());
+					no += DB.executeUpdateEx(updateSQL.toString(),params.toArray(),trx.getTrxName());
 				}
+			}
+			if (no > 0) {
+				msg = no + " UUID assigned for table " + table.getTableName();
 			}
 			if (localTrx) {
 				trx.commit(true);
@@ -249,6 +261,7 @@ public class UUIDGenerator extends SvrProcess {
 				trx.close();
 			}
 		}
+		return msg;
 	}
 
 	private void syncColumn(MColumn column) {

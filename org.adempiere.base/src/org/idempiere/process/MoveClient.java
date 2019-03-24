@@ -32,6 +32,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -40,6 +41,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MSequence;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
+import org.compiere.model.X_AD_Package_UUID_Map;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereUserError;
@@ -49,8 +51,9 @@ import org.compiere.util.Util;
 
 public class MoveClient extends SvrProcess {
 
-	// Process to move a client from a external database to current
+	// Process to move a client from a external database to current, or copy a template in current database
 
+	private boolean p_IsCopyClient;    // Define if the process is to copy a template client, or bring from external database
 	private String p_JDBC_URL;         // JDBC URL of the external database
 	private String p_UserName;         // optional to connect to the JDBC URL, if empty use the same as target 
 	private String p_Password;         // optional to connect to the JDBC URL, if empty use the same as target
@@ -58,7 +61,10 @@ public class MoveClient extends SvrProcess {
 	private String p_ClientsToInclude; // optional, comma separated list, if empty then all clients >= 1000000 will be moved
 	private String p_ClientsToExclude; // optional, comma separated list of clients to exclude
 	private boolean p_IsValidateOnly;  // to do just validation and not execute the process
-	private String p_IsPreserveIDs;    // optional, comma separated list of tables that require to preserve IDs
+	private String p_TablesToPreserveIDs;    // optional, comma separated list of tables that require to preserve IDs, * for all
+	private String p_ClientName;       // New client name when copying from template
+	private String p_ClientValue;      // New client value when copying from template
+	private boolean p_IsSkipSomeValidations; // skip some validations to make the process faster
 
 	final static String insertConversionId = "INSERT INTO T_MoveClient (AD_PInstance_ID, TableName, Source_ID, Target_ID) VALUES (?, ?, ?, ?)";
 
@@ -71,6 +77,7 @@ public class MoveClient extends SvrProcess {
 	private List<String> p_tablesToExcludeList = new ArrayList<String>();
 	private List<String> p_columnsVerifiedList = new ArrayList<String>();
 	private List<String> p_idSystemConversionList = new ArrayList<String>(); // can consume lot of memory but it helps for performance
+	private boolean p_isPreserveAll = false;
 
 	@Override
 	protected void prepare() {
@@ -79,12 +86,18 @@ public class MoveClient extends SvrProcess {
 		//
 		for (ProcessInfoParameter para : getParameter()) {
 			String name = para.getParameterName();
-			if ("JDBC_URL".equals(name)) {
+			if ("IsCopyClient".equals(name)) {
+				p_IsCopyClient  = para.getParameterAsBoolean();
+			} else if ("JDBC_URL".equals(name)) {
 				p_JDBC_URL  = para.getParameterAsString();
 			} else if ("UserName".equals(name)) {
 				p_UserName = para.getParameterAsString();
 			} else if ("Password".equals(name)) {
 				p_Password = para.getParameterAsString();
+			} else if ("ClientName".equals(name)) {
+				p_ClientName = para.getParameterAsString();
+			} else if ("ClientValue".equals(name)) {
+				p_ClientValue = para.getParameterAsString();
 			} else if ("TablesToExclude".equals(name)) {
 				p_TablesToExclude = para.getParameterAsString();
 			} else if ("ClientsToInclude".equals(name)) {
@@ -94,9 +107,11 @@ public class MoveClient extends SvrProcess {
 			} else if ("IsValidateOnly".equals(name)) {
 				p_IsValidateOnly = para.getParameterAsBoolean();
 			} else if ("IsPreserveIDs".equals(name)) {
-				p_IsPreserveIDs = para.getParameterAsString();
+				p_TablesToPreserveIDs = para.getParameterAsString();
+			} else if ("IsSkipSomeValidations".equals(name)) {
+				p_IsSkipSomeValidations = para.getParameterAsBoolean();
 			} else {
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
 			}
 		}
 	}
@@ -104,17 +119,33 @@ public class MoveClient extends SvrProcess {
 	@Override
 	protected String doIt() throws Exception {
 		// validate parameters
-		if (Util.isEmpty(p_JDBC_URL, true))
-			throw new AdempiereException("Fill mandatory JDBC_URL");
+		if (p_IsCopyClient) {
+			if (! Util.isEmpty(p_ClientsToExclude, true))
+				throw new AdempiereException("Clients to exclude must be empty when copying from template");
+			if (! Util.isEmpty(p_TablesToPreserveIDs, true))
+				throw new AdempiereException("Preserve IDs must be empty when copying from template");
+			try {
+				Integer.parseInt(p_ClientsToInclude);
+			} catch (NumberFormatException e) {
+				throw new AdempiereException("Error in parameter Clients to Include, must be just one integer");
+			}
+		} else {
+			if (Util.isEmpty(p_JDBC_URL, true))
+				throw new AdempiereException("Fill mandatory JDBC_URL");
+		}
 		if (! Util.isEmpty(p_ClientsToInclude, true) && ! Util.isEmpty(p_ClientsToExclude, true))
 			throw new AdempiereException("Clients to exclude and include cannot be used at the same time");
 		if (Util.isEmpty(p_UserName, true))
 			p_UserName = CConnection.get().getDbUid();
 		if (Util.isEmpty(p_Password, true))
 			p_Password = CConnection.get().getDbPwd();
-
+		
 		// Construct the where clauses
 		p_excludeTablesWhere.append("(UPPER(AD_Table.TableName) NOT LIKE 'T|_%' ESCAPE '|'"); // exclude temporary tables
+		if (p_IsCopyClient) {
+			// exclude always AD_ChangeLog when copying from template client
+			p_excludeTablesWhere.append(" AND UPPER(TableName) != 'AD_CHANGELOG'");
+		}
 		if (Util.isEmpty(p_TablesToExclude, true)) {
 			p_excludeTablesWhere.append(")");
 		} else {
@@ -166,9 +197,14 @@ public class MoveClient extends SvrProcess {
 			p_whereClient.append(")");
 		}
 
-		if (! Util.isEmpty(p_IsPreserveIDs, true)) {
-			for (String tableName : p_IsPreserveIDs.split(",")) {
-				p_tablesToPreserveIDsList.add(tableName.toUpperCase());
+		if (! Util.isEmpty(p_TablesToPreserveIDs, true)) {
+			if  ("*".equals(p_TablesToPreserveIDs)) {
+				p_isPreserveAll = true;
+			} else {
+				p_isPreserveAll = false;
+				for (String tableName : p_TablesToPreserveIDs.split(",")) {
+					p_tablesToPreserveIDsList.add(tableName.toUpperCase());
+				}
 			}
 		}
 
@@ -176,7 +212,11 @@ public class MoveClient extends SvrProcess {
 		externalConn = null;
 		try {
 			try {
-				externalConn = DB.getDatabase(p_JDBC_URL).getDriverConnection(p_JDBC_URL, p_UserName, p_Password);
+				if (p_IsCopyClient) {
+					externalConn = DB.getConnectionRO();
+				} else {
+					externalConn = DB.getDatabase(p_JDBC_URL).getDriverConnection(p_JDBC_URL, p_UserName, p_Password);
+				}
 			} catch (Exception e) {
 				throw new AdempiereException("Could not get a connection to " + p_JDBC_URL + ",\nCause: " + e.getLocalizedMessage());
 			}
@@ -203,6 +243,19 @@ public class MoveClient extends SvrProcess {
 	}
 
 	private void validate() {
+		if (p_IsCopyClient) {
+			// Validate that the newtenant value/name doesn't exist
+			int cntCN = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_Client WHERE Name=?", p_ClientName);
+			if (cntCN > 0)
+				throw new AdempiereUserError("Client with name " + p_ClientName + " already exists in database");
+			int cntCV = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_Client WHERE Value=?", p_ClientValue);
+			if (cntCV > 0)
+				throw new AdempiereUserError("Client with search key " + p_ClientValue + " already exists in database");
+			int cntCW = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM W_Store WHERE WebContext=?", p_ClientValue.toLowerCase());
+			if (cntCW > 0)
+				throw new AdempiereUserError("WebStore with context " + p_ClientValue.toLowerCase() + " already exists in database");
+		}
+		
 		// validate there are clients to move, and doesn't exist in target
 		StringBuilder sqlValidClientsSB = new StringBuilder()
 				.append("SELECT AD_Client_ID, Value, Name, AD_Client_UU FROM AD_Client WHERE ")
@@ -210,7 +263,7 @@ public class MoveClient extends SvrProcess {
 				.append(" ORDER BY Value");
 		StringBuilder sqlValidateLocalClient = new StringBuilder()
 				.append("SELECT COUNT(*) FROM AD_Client WHERE Value=? OR Name=? OR AD_Client_UU=?");
-		if (p_tablesToPreserveIDsList.contains("AD_CLIENT")) {
+		if (p_isPreserveAll || p_tablesToPreserveIDsList.contains("AD_CLIENT")) {
 			sqlValidateLocalClient.append(" OR AD_Client_ID=?");
 		}
 		String sqlValidClients = DB.getDatabase().convertStatement(sqlValidClientsSB.toString());
@@ -226,18 +279,20 @@ public class MoveClient extends SvrProcess {
 				String clientValue = rsVC.getString(2);
 				String clientName = rsVC.getString(3);
 				String clientUUID = rsVC.getString(4);
-				int cnt = 0;
-				if (p_tablesToPreserveIDsList.contains("AD_CLIENT")) {
-					cnt = DB.getSQLValueEx(get_TrxName(), sqlValidateLocalClient.toString(), clientValue, clientName, clientUUID, clientID);
-				} else {
-					cnt = DB.getSQLValueEx(get_TrxName(), sqlValidateLocalClient.toString(), clientValue, clientName, clientUUID);
-				}
-				if (cnt > 0) {
-					String msg = "Client " + clientValue + "/" + clientName + " already exists.  UUID=" + clientUUID;
-					if (p_tablesToPreserveIDsList.contains("AD_CLIENT")) {
-						msg += ", ID=" + clientID;
+				if (! p_IsCopyClient) {
+					int cnt = 0;
+					if (p_isPreserveAll || p_tablesToPreserveIDsList.contains("AD_CLIENT")) {
+						cnt = DB.getSQLValueEx(get_TrxName(), sqlValidateLocalClient.toString(), clientValue, clientName, clientUUID, clientID);
+					} else {
+						cnt = DB.getSQLValueEx(get_TrxName(), sqlValidateLocalClient.toString(), clientValue, clientName, clientUUID);
 					}
-					p_errorList.add(msg);
+					if (cnt > 0) {
+						String msg = "Client " + clientValue + "/" + clientName + " already exists.  UUID=" + clientUUID;
+						if (p_isPreserveAll || p_tablesToPreserveIDsList.contains("AD_CLIENT")) {
+							msg += ", ID=" + clientID;
+						}
+						p_errorList.add(msg);
+					}
 				}
 			}
 		} catch (SQLException e) {
@@ -312,8 +367,10 @@ public class MoveClient extends SvrProcess {
 			DB.close(rsRT, stmtRT);
 		}
 
-		for (String tableName : p_tablesVerifiedList) {
-			validateOrphan(tableName);
+		if (! p_IsSkipSomeValidations) {
+			for (String tableName : p_tablesVerifiedList) {
+				validateOrphan(tableName);
+			}
 		}
 
 	}
@@ -420,7 +477,7 @@ public class MoveClient extends SvrProcess {
 				throw new AdempiereUserError("There is data in unsupported Multi-ID column " + tableName + "." + columnName);
 			}
 		}
-		if (refID > MTable.MAX_OFFICIAL_ID) {
+		if (!p_IsSkipSomeValidations && refID > MTable.MAX_OFFICIAL_ID) {
 			int cntET = countInExternal(sqlDataNotNullInColumn.toString());
 			if (cntET > 0) {
 				// TODO: Implement support for non-official data types (must implement how to obtain the foreign table with MColumn.getReferenceTableName)
@@ -436,6 +493,9 @@ public class MoveClient extends SvrProcess {
 		} else if ("C_BPartner".equalsIgnoreCase(tableName) && "AD_OrgBP_ID".equalsIgnoreCase(columnName)) {
 			// Special case for C_BPartner.AD_OrgBP_ID defined as Button in dictionary
 			foreignTable = "AD_Org";
+		} else if ("C_Project".equalsIgnoreCase(tableName) && "C_ProjectType_ID".equalsIgnoreCase(columnName)) {
+			// Special case for C_Project.C_ProjectType_ID defined as Button in dictionary
+			foreignTable = "C_ProjectType";
 		}
 		if (! Util.isEmpty(foreignTable)) {
 			// verify all foreign keys pointing to a different client
@@ -476,8 +536,13 @@ public class MoveClient extends SvrProcess {
 				if (! "AD_Client".equalsIgnoreCase(tableName)) {
 					sqlForeignClientSB.append(" JOIN AD_Client ON (").append(tableName).append(".AD_Client_ID=AD_Client.AD_Client_ID)");
 				}
-				sqlForeignClientSB.append(" JOIN ").append(foreignTable)
-				.append(" ON (").append(tableName).append(".").append(columnName).append("=").append(foreignTable).append(".");
+				if ("AD_Client".equalsIgnoreCase(foreignTable)) { // fix issue with foreign AD_Client_ID like AD_Replication.Remote_Client_ID
+					sqlForeignClientSB.append(" JOIN ").append(foreignTable)
+					.append(" c ON (").append(tableName).append(".").append(columnName).append("=c.");
+				} else {
+					sqlForeignClientSB.append(" JOIN ").append(foreignTable)
+					.append(" ON (").append(tableName).append(".").append(columnName).append("=").append(foreignTable).append(".");
+				}
 				if ("AD_Language".equalsIgnoreCase(foreignTable) && !columnName.equalsIgnoreCase("AD_Language_ID")) {
 					sqlForeignClientSB.append("AD_Language");
 				} else if ("AD_EntityType".equalsIgnoreCase(foreignTable) && !columnName.equalsIgnoreCase("AD_EntityType_ID")) {
@@ -504,7 +569,7 @@ public class MoveClient extends SvrProcess {
 						p_errorList.add("Column " + tableName + "." + columnName +  " has invalid cross-client reference to client " + clientID + " on ID=" + foreignID);
 						continue;
 					}
-					if (foreignID > MTable.MAX_OFFICIAL_ID) {
+					if (foreignID > 0) {
 						if (! p_idSystemConversionList.contains(foreignTable.toUpperCase() + "." + foreignID)) {
 							int localID = getFromUUID(foreignTable, uuidCol, tableName, columnName, foreignUU, foreignID);
 							if (localID < 0) {
@@ -538,6 +603,9 @@ public class MoveClient extends SvrProcess {
 			if ("C_BPartner".equalsIgnoreCase(tableName) && "AD_OrgBP_ID".equalsIgnoreCase(columnName)) {
 				// Special case for C_BPartner.AD_OrgBP_ID defined as Button in dictionary
 				foreignTable = "AD_Org";
+			} else if ("C_Project".equalsIgnoreCase(tableName) && "C_ProjectType_ID".equalsIgnoreCase(columnName)) {
+				// Special case for C_Project.C_ProjectType_ID defined as Button in dictionary
+				foreignTable = "C_ProjectType";
 			}
 			if (! Util.isEmpty(foreignTable) && ! "AD_Ref_List".equalsIgnoreCase(foreignTable)) {
 				MTable tableFK = MTable.get(getCtx(), foreignTable);
@@ -637,7 +705,7 @@ public class MoveClient extends SvrProcess {
 				while (rsGI.next()) {
 					int sourceID = rsGI.getInt(1);
 					int targetID = -1;
-					if (p_tablesToPreserveIDsList.contains(tableName.toUpperCase())) {
+					if (p_isPreserveAll || p_tablesToPreserveIDsList.contains(tableName.toUpperCase())) {
 						int localID = DB.getSQLValueEx(get_TrxName(), selectVerifyIdSB.toString(), sourceID);
 						if (localID < 0) {
 							targetID = sourceID;
@@ -645,7 +713,17 @@ public class MoveClient extends SvrProcess {
 							throw new AdempiereException("In " + tableName + "." + tableName + "_ID already exist the ID=" + sourceID);
 						}
 					} else {
-						targetID = DB.getNextID(getAD_Client_ID(), tableName, get_TrxName());
+						if ("AD_ChangeLog".equalsIgnoreCase(tableName)) {
+							// AD_ChangeLog_ID is not really a unique key - validate if it was already converted before
+							int clId = DB.getSQLValueEx(get_TrxName(),
+									"SELECT Target_ID FROM T_MoveClient WHERE AD_PInstance_ID=? AND TableName=? AND Source_ID=?",
+									getAD_PInstance_ID(), "AD_CHANGELOG", sourceID);
+							if (clId == -1) {
+								targetID = DB.getNextID(getAD_Client_ID(), tableName, get_TrxName());
+							}
+						} else {
+							targetID = DB.getNextID(getAD_Client_ID(), tableName, get_TrxName());
+						}
 					}
 					if (targetID >= 0) {
 						DB.executeUpdateEx(insertConversionId,
@@ -666,6 +744,22 @@ public class MoveClient extends SvrProcess {
 		} catch (SQLException e1) {
 			throw new AdempiereException(e1);
 		} 
+
+		int newADClientID = -1;
+		String oldClientValue = null;
+		if (p_IsCopyClient) {
+			int clientInt;
+			try {
+				clientInt = Integer.parseInt(p_ClientsToInclude);
+			} catch (NumberFormatException e) {
+				throw new AdempiereException("Error in parameter Clients to Include, must be just one integer");
+			}
+			newADClientID = DB.getSQLValueEx(get_TrxName(),
+					"SELECT Target_ID FROM T_MoveClient WHERE AD_PInstance_ID=? AND TableName=? AND Source_ID=?",
+					getAD_PInstance_ID(), "AD_CLIENT", clientInt);
+			oldClientValue = DB.getSQLValueStringEx(get_TrxName(),
+					"SELECT Value FROM AD_Client WHERE AD_Client_ID=?", clientInt);
+		}
 
 		// get the source data and insert into target converting the IDs
 		for (MTable table : tables) {
@@ -728,6 +822,9 @@ public class MoveClient extends SvrProcess {
 						} else if ("C_BPartner".equalsIgnoreCase(tableName) && "AD_OrgBP_ID".equalsIgnoreCase(columnName)) {
 							// Special case for C_BPartner.AD_OrgBP_ID defined as Button in dictionary
 							convertTable = "AD_Org";
+						} else if ("C_Project".equalsIgnoreCase(tableName) && "C_ProjectType_ID".equalsIgnoreCase(columnName)) {
+							// Special case for C_Project.C_ProjectType_ID defined as Button in dictionary
+							convertTable = "C_ProjectType";
 						} else if (convertTable != null
 								&& ("AD_Ref_List".equalsIgnoreCase(convertTable)
 										|| "AD_Language".equalsIgnoreCase(columnName)
@@ -779,7 +876,8 @@ public class MoveClient extends SvrProcess {
 										|| "AD_TreeNodeU4".equalsIgnoreCase(tableName))) {
 							// Special case for AD_TreeNodeU*.Node/Parent_ID
 							convertTable = "C_ElementValue";
-						} else if (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName)) && "AD_TreeNode".equalsIgnoreCase(tableName)) {
+						} else if (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName))
+								&& "AD_TreeNode".equalsIgnoreCase(tableName)) {
 							// Special case for AD_TreeNode.Node/Parent_ID - depends on AD_Tree -> TreeType and AD_Table_ID
 							int treeId = rsGD.getInt("AD_Tree_ID");
 							convertTable = getExternalTableFromTree(treeId);
@@ -790,6 +888,11 @@ public class MoveClient extends SvrProcess {
 								convertTable = att.substring(0, att.length()-3);
 								if ("C_DocTypeTarget".equals(convertTable)) {
 									convertTable = "C_DocType";
+								} else {
+									// validate that AD_Preference points to a valid table, ignore otherwise
+									if (MTable.getTable_ID(convertTable, get_TrxName()) <= 0) {
+										convertTable = "";
+									}
 								}
 							} else {
 								convertTable = "";
@@ -801,7 +904,8 @@ public class MoveClient extends SvrProcess {
 							if (rsGD.wasNull()) {
 								parameters[i] = null;
 							} else {
-								if (id >= MTable.MAX_OFFICIAL_ID) {
+								if (! (id == 0 && ("Parent_ID".equalsIgnoreCase(columnName) || "Node_ID".equalsIgnoreCase(columnName)))  // Parent_ID/Node_ID=0 is valid
+										&& (id >= MTable.MAX_OFFICIAL_ID || p_IsCopyClient)) {
 									int convertedId = -1;
 									final String query = "SELECT Target_ID FROM T_MoveClient WHERE AD_PInstance_ID=? AND TableName=? AND Source_ID=?";
 									try {
@@ -813,14 +917,33 @@ public class MoveClient extends SvrProcess {
 									}
 									if (convertedId < 0) {
 										// not found in the table - try to get it again - could be missed in first pass
-										convertedId = getLocalIDFor(convertTable, id);
+										convertedId = getLocalIDFor(convertTable, id, tableName);
 										if (convertedId < 0) {
-											if ("Record_ID".equalsIgnoreCase(columnName) && table.getColumnIndex("AD_Table_ID") > 0) {
+											if (("Record_ID".equalsIgnoreCase(columnName) && table.getColumnIndex("AD_Table_ID") > 0)
+													|| (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName))
+															&& (       "AD_TreeNode".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeMM".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeBP".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeCMC".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeCMM".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeCMS".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeCMT".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodePR".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeU1".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeU2".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeU3".equalsIgnoreCase(tableName)
+																	|| "AD_TreeNodeU4".equalsIgnoreCase(tableName)
+																	|| "AD_TreeBar".equalsIgnoreCase(tableName)))) {
 												if (p_tablesToExcludeList.contains(convertTable.toUpperCase())) {
 													// record is pointing to a table that is not included, ignore it
 													insertRecord = false;
 													break;
 												}
+											}
+											if ("AD_ChangeLog".equalsIgnoreCase(tableName)) {
+												// skip orphan records in AD_ChangeLog, can be log of deleted records, skip
+												insertRecord = false;
+												break;
 											}
 											throw new AdempiereException("Found orphan record in " + tableName + "." + columnName + ": " + id + " related to table " + convertTable);
 										}
@@ -837,6 +960,56 @@ public class MoveClient extends SvrProcess {
 							parameters[i] = rsGD.getObject(i + 1);
 							if (rsGD.wasNull()) {
 								parameters[i] = null;
+							}
+							if (p_IsCopyClient) {
+								String uuidCol = MTable.getUUIDColumnName(tableName);
+								if (columnName.equals(uuidCol)) {
+									String oldUUID = (String) parameters[i];
+									String newUUID = UUID.randomUUID().toString();
+									parameters[i] = newUUID;
+									if (! Util.isEmpty(oldUUID)) {
+										X_AD_Package_UUID_Map map = new X_AD_Package_UUID_Map(getCtx(), 0, get_TrxName());
+										map.setAD_Table_ID(table.getAD_Table_ID());
+										map.set_ValueNoCheck("AD_Client_ID", newADClientID);
+										map.setSource_UUID(oldUUID);
+										map.setTarget_UUID(newUUID);
+										map.saveEx();
+									}
+								} else if ("AD_Client".equalsIgnoreCase(tableName) && "Value".equalsIgnoreCase(columnName)) {
+									parameters[i] = p_ClientValue;
+								} else if ("AD_Client".equalsIgnoreCase(tableName) && "Name".equalsIgnoreCase(columnName)) {
+									parameters[i] = p_ClientName;
+								} else if (
+										   ("W_Store".equalsIgnoreCase(tableName) && "WebContext".equalsIgnoreCase(columnName))
+										|| ("AD_User".equalsIgnoreCase(tableName) && "Value".equalsIgnoreCase(columnName))
+										) {
+									parameters[i] = p_ClientValue.toLowerCase();
+								} else if (
+										   ("AD_User".equalsIgnoreCase(tableName) && "Password".equalsIgnoreCase(columnName))
+										|| ("AD_User".equalsIgnoreCase(tableName) && "Salt".equalsIgnoreCase(columnName))
+										) {
+									parameters[i] = null; // do not assign passwords to new users, must be managed by SuperUser or plugin
+								} else if (
+										   ("AD_Org".equalsIgnoreCase(tableName) && "Value".equalsIgnoreCase(columnName))
+										|| ("AD_Org".equalsIgnoreCase(tableName) && "Name".equalsIgnoreCase(columnName))
+										|| ("AD_Role".equalsIgnoreCase(tableName) && "Name".equalsIgnoreCase(columnName))
+										|| ("AD_Tree".equalsIgnoreCase(tableName) && "Name".equalsIgnoreCase(columnName))
+										|| ("AD_User".equalsIgnoreCase(tableName) && "Name".equalsIgnoreCase(columnName))
+										|| ("AD_User".equalsIgnoreCase(tableName) && "Description".equalsIgnoreCase(columnName))
+										|| ("C_AcctProcessor".equalsIgnoreCase(tableName) && "Name".equalsIgnoreCase(columnName))
+										|| ("C_AcctSchema".equalsIgnoreCase(tableName) && "Name".equalsIgnoreCase(columnName))
+										|| ("C_BPartner".equalsIgnoreCase(tableName) && "Value".equalsIgnoreCase(columnName))
+										|| ("C_BPartner".equalsIgnoreCase(tableName) && "Name".equalsIgnoreCase(columnName))
+										|| ("C_Calendar".equalsIgnoreCase(tableName) && "Name".equalsIgnoreCase(columnName))
+										|| ("C_Element".equalsIgnoreCase(tableName) && "Name".equalsIgnoreCase(columnName))
+										|| ("M_CostType".equalsIgnoreCase(tableName) && "Name".equalsIgnoreCase(columnName))
+										|| ("R_RequestProcessor".equalsIgnoreCase(tableName) && "Name".equalsIgnoreCase(columnName))
+										) {
+									if (parameters[i] != null) {
+										String value = parameters[i].toString();
+										parameters[i] = value.replaceFirst(oldClientValue, p_ClientValue);
+									}
+								}
 							}
 						}
 					}
@@ -930,15 +1103,24 @@ public class MoveClient extends SvrProcess {
 	}
 
 	private void checkSequences() {
-		for (String tableName : p_tablesToPreserveIDsList) {
-			MSequence seq = MSequence.get(getCtx(), tableName, get_TrxName());
-			if (seq != null) {
-				seq.validateTableIDValue(); // ignore output messages
+		if (p_isPreserveAll) {
+			for (String tableName : p_tablesVerifiedList) {
+				MSequence seq = MSequence.get(getCtx(), tableName, get_TrxName());
+				if (seq != null) {
+					seq.validateTableIDValue(); // ignore output messages
+				}
+			}
+		} else {
+			for (String tableName : p_tablesToPreserveIDsList) {
+				MSequence seq = MSequence.get(getCtx(), tableName, get_TrxName());
+				if (seq != null) {
+					seq.validateTableIDValue(); // ignore output messages
+				}
 			}
 		}
 	}
 
-	private int getLocalIDFor(String tableName, int foreignId) {
+	private int getLocalIDFor(String tableName, int foreignId, String tableNameSource) {
 		String uuidCol = MTable.getUUIDColumnName(tableName);
 		StringBuilder sqlRemoteUUSB = new StringBuilder()
 				.append("SELECT ").append(uuidCol).append(" FROM ").append(tableName)
@@ -954,7 +1136,7 @@ public class MoveClient extends SvrProcess {
 			if (rs.next())
 				remoteUUID = rs.getString(1);
 		} catch (SQLException e) {
-			throw new AdempiereException("Could not execute external query: " + sqlRemoteUU + "\nCause = " + e.getLocalizedMessage());
+			throw new AdempiereException("Could not execute external query for table " + tableNameSource + ": " + sqlRemoteUU + "\nCause = " + e.getLocalizedMessage());
 		} finally {
 			DB.close(rs, stmtUU);
 		}

@@ -3,6 +3,8 @@
  */
 package org.adempiere.webui.desktop;
 
+import static org.compiere.model.SystemIDs.TREE_MENUPRIMARY;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
@@ -12,11 +14,10 @@ import java.util.Map;
 import org.adempiere.util.Callback;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
+import org.compiere.model.MUser;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Session;
-
-import static org.compiere.model.SystemIDs.TREE_MENUPRIMARY;
 
 /**
  * @author hengsin
@@ -83,8 +84,8 @@ public class FavouriteController {
 	
 	private boolean barDBupdate(boolean add, int Node_ID)
 	{
-		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		int AD_Org_ID = Env.getContextAsInt(Env.getCtx(), "#AD_Org_ID");
+		int AD_Client_ID = MUser.get(Env.getCtx()).getAD_Client_ID();
+		int AD_Org_ID = 0;
 		int AD_User_ID = Env.getContextAsInt(Env.getCtx(), "#AD_User_ID");
 		StringBuilder sql = new StringBuilder();
 		if (add)

@@ -20,11 +20,12 @@ import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
-import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PoFiller;
 import org.compiere.model.I_AD_Form_Access;
 import org.compiere.model.MFormAccess;
@@ -91,9 +92,27 @@ public class FormAccessElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId)
+			throws Exception {
+		throw new AdempiereException("AD_Form_Access doesn't have ID, use method with UUID");
+	}
+
+	@Override
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler,
-			int recordId) throws Exception {
+			int recordId, String uuid) throws Exception {
+		MFormAccess po = new Query(packout.getCtx().ctx, MFormAccess.Table_Name, "AD_Form_Access_UU=?", getTrxName(packout.getCtx()))
+				.setParameters(uuid)
+				.first();
+		if (po != null) {
+			Env.setContext(packout.getCtx().ctx, X_AD_Form.COLUMNNAME_AD_Form_ID, po.getAD_Form_ID());
+			Env.setContext(packout.getCtx().ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, po.getAD_Role_ID());
+			this.create(packout.getCtx(), packoutHandler);
+			packout.getCtx().ctx.remove(X_AD_Form.COLUMNNAME_AD_Form_ID);
+			packout.getCtx().ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
+		} else {
+			throw new AdempiereException("AD_Form_Access_UU not found = " + uuid);
+		}
 	}
 
 }

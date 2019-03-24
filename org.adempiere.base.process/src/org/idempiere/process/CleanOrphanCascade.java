@@ -31,11 +31,14 @@ import java.util.logging.Level;
 import org.compiere.model.MArchive;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MTable;
+import org.compiere.model.MTree_Base;
 import org.compiere.model.Query;
+import org.compiere.model.X_AD_Package_UUID_Map;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
+import org.compiere.util.ValueNamePair;
 
 /**
  *	IDEMPIERE-2395
@@ -43,6 +46,8 @@ import org.compiere.util.Msg;
  */
 public class CleanOrphanCascade extends SvrProcess
 {
+
+	private boolean p_IsCleanChangeLog;
 
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -52,7 +57,11 @@ public class CleanOrphanCascade extends SvrProcess
 		for (ProcessInfoParameter para : getParameter())
 		{
 			String name = para.getParameterName();
-			log.log(Level.SEVERE, "Unknown Parameter: " + name);
+			if ("IsCleanChangeLog".equals(name)) {
+				p_IsCleanChangeLog  = para.getParameterAsBoolean();
+			} else {
+				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+			}
 		}
 	}	//	prepare
 
@@ -65,9 +74,38 @@ public class CleanOrphanCascade extends SvrProcess
 	{
 		if (log.isLoggable(Level.INFO)) log.info("");
 
+		ValueNamePair[] treeTables = new ValueNamePair[] {
+				new ValueNamePair("AD_TreeBar", "AD_Menu"),
+				new ValueNamePair("AD_TreeNodeBP", "C_BPartner"),
+				new ValueNamePair("AD_TreeNodeCMC", "CM_Container"),
+				new ValueNamePair("AD_TreeNodeCMM", "CM_Media"),
+				new ValueNamePair("AD_TreeNodeCMS", "CM_CStage"),
+				new ValueNamePair("AD_TreeNodeCMT", "CM_Template"),
+				new ValueNamePair("AD_TreeNodeMM", "AD_Menu"),
+				new ValueNamePair("AD_TreeNodePR", "M_Product"),
+				new ValueNamePair("AD_TreeNodeU1", "C_ElementValue"),
+				new ValueNamePair("AD_TreeNodeU2", "C_ElementValue"),
+				new ValueNamePair("AD_TreeNodeU3", "C_ElementValue"),
+				new ValueNamePair("AD_TreeNodeU4", "C_ElementValue")
+		};
+		for (ValueNamePair vnp : treeTables) {
+			String treeTable = vnp.getValue();
+			String foreignTable = vnp.getName();
+			delTree(treeTable,foreignTable, "Node_ID", 0);
+			if (! "AD_TreeBar".equalsIgnoreCase(treeTable)) {
+				delTree(treeTable,foreignTable, "Parent_ID", 0);
+			}
+		}
+
+		List<MTree_Base> trees = new Query(getCtx(), MTree_Base.Table_Name, null, get_TrxName()).list();
+		String treeTable = "AD_TreeNode";
+		for (MTree_Base tree : trees) {
+			String foreignTable = tree.getSourceTableName(true);
+			delTree(treeTable,foreignTable, "Parent_ID", tree.getAD_Tree_ID());
+		}
+
 		String whereTables = ""
 				+ "    IsView = 'N' "
-				+ "AND TableName != 'AD_ChangeLog' "
 				+ "AND EXISTS (SELECT 1 "
 				+ "            FROM   AD_Column ct "
 				+ "            WHERE  ct.IsActive='Y' AND ct.AD_Table_ID = AD_Table.AD_Table_ID "
@@ -80,13 +118,18 @@ public class CleanOrphanCascade extends SvrProcess
 				+ "            FROM   AD_Column ck "
 				+ "            WHERE  ck.IsActive='Y' AND ck.AD_Table_ID = AD_Table.AD_Table_ID "
 				+ "                   AND ck.ColumnName = AD_Table.TableName || '_ID')";
+		if (! p_IsCleanChangeLog) {
+			whereTables += " AND TableName != 'AD_ChangeLog'";
+		}
 
 		List<MTable> tables = new Query(getCtx(), "AD_Table", whereTables, get_TrxName())
 				.setOnlyActiveRecords(true)
 				.setOrderBy("TableName")
 				.list();
+		tables.add(MTable.get(getCtx(), X_AD_Package_UUID_Map.Table_Name));
 		for (MTable table : tables) {
 			String tableName = table.getTableName();
+			boolean isUUIDMap = X_AD_Package_UUID_Map.Table_Name.equals(tableName);
 
 			StringBuilder sqlRef = new StringBuilder();
 			sqlRef.append("SELECT DISTINCT t.AD_Table_ID, ");
@@ -101,17 +144,26 @@ public class CleanOrphanCascade extends SvrProcess
 					String refTableName = row.get(1).toString();
 
 					MTable refTable = MTable.get(getCtx(), refTableID);
-					if (refTable.getKeyColumns().length != 1) {
-						log.warning("Wrong reference for table " + tableName + " -> " + refTableName);
-						continue;
-					}
-					String colRef = refTable.getKeyColumns()[0];
-					
 					StringBuilder whereClause = new StringBuilder();
 					whereClause.append("AD_Table_ID = ").append(refTableID);
-					whereClause.append(" AND NOT EXISTS (SELECT ").append(colRef);
-					whereClause.append("                FROM   ").append(refTableName).append(" ");
-					whereClause.append("                WHERE  ").append(refTableName).append(".").append(colRef).append(" = ").append(tableName).append(".Record_ID)");
+					if (refTable.getKeyColumns().length != 1 && !isUUIDMap) {
+						log.warning("Wrong reference for table " + tableName + " -> " + refTableName);
+						whereClause.append(" AND Record_ID>0");
+					} else {
+						String colRef = refTable.getKeyColumns()[0];
+						if (isUUIDMap) {
+							colRef = MTable.getUUIDColumnName(refTable.getTableName());
+						}
+						
+						whereClause.append(" AND NOT EXISTS (SELECT ").append(colRef);
+						whereClause.append("                FROM   ").append(refTableName).append(" ");
+						whereClause.append("                WHERE  ").append(refTableName).append(".").append(colRef).append(" = ").append(tableName);
+						if (isUUIDMap) {
+							whereClause.append(".Target_UUID)");
+						} else {
+							whereClause.append(".Record_ID)");
+						}
+					}
 
 					int noDel = 0;
 					if (MAttachment.Table_Name.equals(tableName)) {
@@ -143,5 +195,20 @@ public class CleanOrphanCascade extends SvrProcess
 
 		return "@OK@";
 	}	//	doIt
+
+	private void delTree(String treeTable, String foreignTable, String columnName, int treeId) {
+		StringBuilder sqlDelete = new StringBuilder()
+				.append("DELETE FROM ").append(treeTable)
+				.append(" WHERE ").append(columnName).append(">0 AND ")
+				.append(columnName).append(" NOT IN (SELECT ").append(foreignTable).append("_ID FROM ").append(foreignTable).append(")");
+		if (treeId > 0) {
+			sqlDelete.append(" AND AD_Tree_ID=").append(treeId);
+		}
+		int noDel = DB.executeUpdateEx(sqlDelete.toString(), get_TrxName());
+		if (noDel > 0) {
+			addLog(Msg.parseTranslation(getCtx(), noDel + " " + treeTable + " " + "@Deleted@ -> " + foreignTable
+					+ (treeId > 0 ? " Tree=" + treeId: "" )));
+		}
+	}	//	delTree
 
 }	//	CleanOrphanCascade

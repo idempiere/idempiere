@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.adempiere.ui.zk.example
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.adempiere.ui.zk.example.Activator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
 Import-Package: org.adempiere.base,
  org.adempiere.base.equinox,
  org.adempiere.exceptions,
@@ -19,13 +20,15 @@ Import-Package: org.adempiere.base,
  org.adempiere.webui.window,
  org.compiere.model,
  org.compiere.util,
- org.osgi.framework;version="1.3.0",
- org.zkoss.util.media,
- org.zkoss.zk.ui,
- org.zkoss.zk.ui.event,
- org.zkoss.zul,
- org.zkoss.zul.event,
- org.zkoss.zul.impl
+ org.osgi.framework;version="1.3.0"
+Require-Bundle: zcommon;bundle-version="0.0.0",
+ zel;bundle-version="0.0.0",
+ zhtml;bundle-version="0.0.0",
+ zk;bundle-version="0.0.0",
+ zkbind;bundle-version="0.0.0",
+ zkplus;bundle-version="0.0.0",
+ zul;bundle-version="0.0.0",
+ zweb;bundle-version="0.0.0" 
 Service-Component: OSGI-INF/export.xml,
  OSGI-INF/paymentwindowvalidator.xml 
 Export-Package: action.images

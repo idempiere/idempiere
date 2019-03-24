@@ -1239,14 +1239,19 @@ public class Login
 		return null;
 	}	//	getPrincipal
 
+	public KeyNamePair[] getClients(String app_user, String app_pwd) {
+		return getClients(app_user, app_pwd, null);
+	}
+
 	/**
 	 *  Validate Client Login.
 	 *  Sets Context with login info
 	 *  @param app_user user id
 	 *  @param app_pwd password
+	 *  @param roleTypes comma separated list of the role types allowed to login (NULL can be added)
 	 *  @return client array or null if in error.
 	 */
-	public KeyNamePair[] getClients(String app_user, String app_pwd) {
+	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes) {
 		if (log.isLoggable(Level.INFO)) log.info("User=" + app_user);
 
 		if (Util.isEmpty(app_user))
@@ -1287,10 +1292,15 @@ public class Login
 			where.append("EMail=?");
 		else
 			where.append("COALESCE(LDAPUser,Name)=?");
+		String whereRoleType = MRole.getWhereRoleType(roleTypes, "r");
 		where.append(" AND")
 				.append(" EXISTS (SELECT * FROM AD_User_Roles ur")
 				.append("         INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID)")
-				.append("         WHERE ur.AD_User_ID=AD_User.AD_User_ID AND ur.IsActive='Y' AND r.IsActive='Y') AND ")
+				.append("         WHERE ur.AD_User_ID=AD_User.AD_User_ID AND ur.IsActive='Y' AND r.IsActive='Y'");
+		if (! Util.isEmpty(whereRoleType)) {
+			where.append(" AND ").append(whereRoleType);
+		}
+		where.append(") AND ")
 				.append(" EXISTS (SELECT * FROM AD_Client c")
 				.append("         WHERE c.AD_Client_ID=AD_User.AD_Client_ID")
 				.append("         AND c.IsActive='Y') AND ")
@@ -1511,17 +1521,24 @@ public class Login
 		}
 		return retValue;
 	}
+
+	public KeyNamePair[] getRoles(String app_user, KeyNamePair client) {
+		return getRoles(app_user, client, null);
+	}
+	
 	/**************************************************************************
 	 *  Load Roles.
 	 *  <p>
 	 *  Sets Client info in context and loads its roles
 	 *  @param  client    client information
+	 *  @param roleTypes comma separated list of the role types allowed to login (NULL can be added)
 	 *  @return list of valid roles KeyNodePairs or null if in error
 	 */
-	public KeyNamePair[] getRoles(String app_user, KeyNamePair client) {
+	public KeyNamePair[] getRoles(String app_user, KeyNamePair client, String roleTypes) {
 		if (client == null)
 			throw new IllegalArgumentException("Client missing");
 
+		String whereRoleType = MRole.getWhereRoleType(roleTypes, "r");
 		ArrayList<KeyNamePair> rolesList = new ArrayList<KeyNamePair>();
 		KeyNamePair[] retValue = null;
 		StringBuffer sql = new StringBuffer("SELECT u.AD_User_ID, r.AD_Role_ID,r.Name ")
@@ -1535,6 +1552,9 @@ public class Login
 		else
 			sql.append("COALESCE(u.LDAPUser,u.Name)=?");
 		sql.append(" AND r.IsMasterRole='N'");
+		if (! Util.isEmpty(whereRoleType)) {
+			sql.append(" AND ").append(whereRoleType);
+		}
 		sql.append(" AND u.IsActive='Y' AND EXISTS (SELECT * FROM AD_Client c WHERE u.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
 		// don't show roles without org access
 		sql.append(" AND (");

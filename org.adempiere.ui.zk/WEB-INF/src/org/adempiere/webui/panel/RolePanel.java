@@ -423,7 +423,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 				initDefault=m_userpreference.getProperty( UserPreference.P_ROLE );
 			}
             KeyNamePair clientKNPair = new KeyNamePair(Integer.valueOf((String)lstItemClient.getValue()), lstItemClient.getLabel());
-            KeyNamePair roleKNPairs[] = login.getRoles(m_userName, clientKNPair);
+            KeyNamePair roleKNPairs[] = login.getRoles(m_userName, clientKNPair, LoginPanel.ROLE_TYPES_WEBUI);
             if (roleKNPairs != null && roleKNPairs.length > 0)
             {
                 for (int i = 0; i < roleKNPairs.length; i++)

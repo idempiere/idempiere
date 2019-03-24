@@ -14,8 +14,10 @@
 package org.adempiere.base.event;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.compiere.model.PO;
+import org.compiere.process.ProcessInfo;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
@@ -106,10 +108,33 @@ public abstract class AbstractEventHandler implements EventHandler {
 	}
 
 	/**
+	 * @param topic
+	 * @param classOrUUID className or ProcessUUID
+	 */
+	protected void registerProcessEvent(String topic, String classOrUUID) {
+		String prop = "processUUID";
+		try {
+			UUID.fromString(classOrUUID);
+		} catch (Exception e) {
+			prop = "className";
+		}
+		String filter = "("+prop+"="+classOrUUID+")";
+		registerEvent(topic, filter);
+	}
+
+	/**
 	 * @param event
 	 * @return PO
 	 */
 	protected PO getPO(Event event) {
+		return getEventProperty(event, IEventManager.EVENT_DATA);
+	}
+
+	/**
+	 * @param event
+	 * @return ProcessInfo
+	 */
+	protected ProcessInfo getProcessInfo(Event event) {
 		return getEventProperty(event, IEventManager.EVENT_DATA);
 	}
 

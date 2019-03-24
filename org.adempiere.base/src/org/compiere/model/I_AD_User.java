@@ -516,6 +516,15 @@ public interface I_AD_User
 	  */
 	public boolean isSalesLead();
 
+    /** Column name IsSupportUser */
+    public static final String COLUMNNAME_IsSupportUser = "IsSupportUser";
+
+	/** Set Support User	  */
+	public void setIsSupportUser (boolean IsSupportUser);
+
+	/** Get Support User	  */
+	public boolean isSupportUser();
+
     /** Column name LastContact */
     public static final String COLUMNNAME_LastContact = "LastContact";
 

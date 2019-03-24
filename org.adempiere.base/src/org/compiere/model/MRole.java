@@ -44,6 +44,7 @@ import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trace;
+import org.compiere.util.Util;
 
 /**
  *	Role Model.
@@ -61,7 +62,7 @@ public final class MRole extends X_AD_Role
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8952907008982481439L;
+	private static final long serialVersionUID = -4649095180532036099L;
 
 	/**
 	 * 	Get Default (Client) Role
@@ -3198,4 +3199,50 @@ public final class MRole extends X_AD_Role
 		return m_canAccess_Info_Product.booleanValue();
 	}
 
+	/**
+	 * 	Get where clause for a role types list
+	 * 	@param roleType - comma separated list of role types, NULL can be used
+	 * 	@param tableName - if table needs to be qualified
+	 *	@return whereClause - return null if roleType is null or empty
+	 */
+	public static String getWhereRoleType(String roleType, String tableName) {
+		if (Util.isEmpty(roleType, true)) {
+			return null;
+		}
+		boolean includeNull = false;
+		String types[] = roleType.split(",");
+		StringBuilder whereClause = new StringBuilder("(");
+		boolean start = true;
+		for (String type : types) {
+			if ("null".equalsIgnoreCase(type)) {
+				includeNull = true;
+			} else {
+				if (start) {
+					if (! Util.isEmpty(tableName)) {
+						whereClause.append(tableName).append(".");
+					}
+					whereClause.append(COLUMNNAME_RoleType).append(" IN (");
+					start = false;
+				} else {
+					whereClause.append(",");
+				}
+				whereClause.append(DB.TO_STRING(type));
+			}
+		}
+		if (! start) {
+			whereClause.append(")");
+		}
+		if (includeNull) {
+			if (! start) {
+				whereClause.append(" OR ");
+			}
+			if (! Util.isEmpty(tableName)) {
+				whereClause.append(tableName).append(".");
+			}
+			whereClause.append(COLUMNNAME_RoleType).append(" IS NULL");
+		}
+		whereClause.append(")");
+		return whereClause.toString();
+	}
+	
 }	//	MRole

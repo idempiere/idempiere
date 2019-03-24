@@ -24,6 +24,7 @@ public class PackoutItem {
 
 	private String type;
 	private int recordId;
+	private String uuid;
 	private Map<String, Object> properties;
 
 	/**
@@ -31,9 +32,18 @@ public class PackoutItem {
 	 * @param recordId
 	 */
 	public PackoutItem(String type, int recordId, Map<String, Object> properties) {
+		this(type, recordId, null, properties);
+	}
+
+	/**
+	 * @param type
+	 * @param recordId
+	 */
+	public PackoutItem(String type, int recordId, String uuid, Map<String, Object> properties) {
 		super();
 		this.type = type;
 		this.recordId = recordId;
+		this.uuid = uuid;
 		this.properties = properties;
 	}
 
@@ -49,6 +59,13 @@ public class PackoutItem {
 	 */
 	public int getRecordId() {
 		return recordId;
+	}
+
+	/**
+	 * @return the uuid
+	 */
+	public String getUUID() {
+		return uuid;
 	}
 
 	/**

@@ -420,7 +420,6 @@ public final class Ini implements Serializable
 		{
 			fis = new FileInputStream(filename);
 			s_prop.load(fis);
-			fis.close();
 		}
 		catch (FileNotFoundException e)
 		{
@@ -436,6 +435,17 @@ public final class Ini implements Serializable
 		{
 			log.log(Level.SEVERE, filename + " - " + t.toString());
 			loadOK = false;
+		}
+		finally
+		{
+			if (fis != null)
+			{
+				try
+				{
+					fis.close();
+				}
+				catch (Exception e) {}
+			}
 		}
 		if (!loadOK || s_prop.getProperty(P_TODAY, "").equals(""))
 		{
