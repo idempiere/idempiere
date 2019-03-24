@@ -27,6 +27,7 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListHead;
 import org.adempiere.webui.component.ListHeader;
 import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
@@ -37,10 +38,9 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Center;
+import org.zkoss.zul.Box;
 import org.zkoss.zul.ListModel;
-import org.zkoss.zul.South;
+import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.ext.Selectable;
 
 /**
@@ -48,7 +48,7 @@ import org.zkoss.zul.ext.Selectable;
  * @author Low Heng Sin
  *
  */
-public class GridTabSelectionListView extends Borderlayout
+public class GridTabSelectionListView extends Vlayout
 {
 	/**
 	 * 
@@ -78,7 +78,7 @@ public class GridTabSelectionListView extends Borderlayout
 
 	private GridTabSelectionListViewRenderer renderer;
 
-	private South south;
+	private Box labelBox;
 	
 	private Map<Integer, String> columnWidthMap;
 
@@ -98,8 +98,8 @@ public class GridTabSelectionListView extends Borderlayout
 		listbox = new Listbox();
 		listbox.setCheckmark(true);
 		listbox.setMultiple(multiple);
-		south = new South();
-		this.appendChild(south);
+		labelBox = new Box();
+		this.appendChild(labelBox);
 		
 		//default paging size
 		pageSize = MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 100);
@@ -269,18 +269,20 @@ public class GridTabSelectionListView extends Borderlayout
 	private void render()
 	{
 		listbox.setStyle("min-height: 200px");
-		listbox.setVflex(true);
-		listbox.setHflex("1");
+        ZKUpdateUtil.setVflex(listbox, "1");
+        ZKUpdateUtil.setHflex(listbox, "1");
 		listbox.setSizedByContent(true);
 		
 		updateModel();				
 		
-		Center center = new Center();
-		center.appendChild(listbox);
-		this.appendChild(center);
+		Box listboxbox = new Box();
+		listboxbox.appendChild(listbox);
+        ZKUpdateUtil.setVflex(listboxbox, "1");
+        ZKUpdateUtil.setHflex(listboxbox, "1");
+		this.appendChild(listboxbox);
 		
 		selectedLabel = new Label(Msg.getMsg(Env.getCtx(), "Selected") + " : 0");
-		south.appendChild(selectedLabel);
+		labelBox.appendChild(selectedLabel);
 	}
 	
 	private void updateModel() {
