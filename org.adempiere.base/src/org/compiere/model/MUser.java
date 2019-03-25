@@ -33,6 +33,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.adempiere.exceptions.DBException;
+import org.codehaus.groovy.classgen.GeneratorContext;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -213,7 +214,15 @@ public class MUser extends X_AD_User
 			
 			clientsValidated.add(user.getAD_Client_ID());
 			boolean valid = false;
-			if (hash_password) {
+			MSystem system = MSystem.get(Env.getCtx());
+			if (system == null)
+				throw new IllegalStateException("No System Info");
+			
+			
+			if (system.isLDAP() && ! Util.isEmpty(user.getLDAPUser())) {
+				System.out.println("validating with LDAP");
+				valid = system.isLDAP(name, password);
+			} else if (hash_password) {
 				valid = user.authenticateHash(password);
 			} else {
 				// password not hashed
