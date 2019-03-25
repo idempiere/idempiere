@@ -266,12 +266,10 @@ public class Login
 		if (system.isLDAP())
 		{
 			authenticated = system.isLDAP(app_user, app_pwd);
-			if (authenticated){
+			if (authenticated) {
 				app_pwd = null;
-				authenticated=true;
 			}
-
-			// if not authenticated, use AD_User as backup
+			// if not authenticated, use AD_User as backup - just for non-LDAP users
 		}
 
 		boolean hash_password=MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
@@ -304,9 +302,11 @@ public class Login
 			// always do calculation to confuse timing based attacks
 			if ( user == null )
 				user = MUser.get(m_ctx, 0);
-			if ( user.authenticateHash(app_pwd) )
-			{
-				authenticated = true;
+			if (!system.isLDAP() || Util.isEmpty(user.getLDAPUser())) {
+				if ( user.authenticateHash(app_pwd) )
+				{
+					authenticated = true;
+				}
 			}
 		} 
 		else{
@@ -324,10 +324,11 @@ public class Login
 
 				while(rs1.next()){
 					MUser user = new MUser(m_ctx, rs1.getInt(1), null);
-					if (user.getPassword() != null && user.getPassword().equals(app_pwd)) {
-						authenticated=true;
+					if (!system.isLDAP() || Util.isEmpty(user.getLDAPUser())) {
+						if (user.getPassword() != null && user.getPassword().equals(app_pwd)) {
+							authenticated=true;
+						}
 					}
-					
 				}
 
 			}catch (Exception ex) {
@@ -1277,8 +1278,11 @@ public class Login
 
 		if (system.isLDAP())
 		{
-			authenticated = system.isLDAP(app_user, app_pwd);			
-			// if not authenticated, use AD_User as backup
+			authenticated = system.isLDAP(app_user, app_pwd);
+			if (authenticated) {
+				app_pwd = null;
+			}
+			// if not authenticated, use AD_User as backup (just for non-LDAP users)
 		}
 
 		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
@@ -1369,16 +1373,20 @@ public class Login
 			clientsValidated.add(user.getAD_Client_ID());
 			boolean valid = false;
 			// authenticated by ldap
-			if (authenticated){
+			if (authenticated) {
 				valid = true;
-			} else if (hash_password) {
-				valid = user.authenticateHash(app_pwd);
 			} else {
-				// password not hashed
-				valid = user.getPassword() != null && user.getPassword().equals(app_pwd);
-			}			
+				if (!system.isLDAP() || Util.isEmpty(user.getLDAPUser())) {
+					if (hash_password) {
+						valid = user.authenticateHash(app_pwd);
+					} else {
+						// password not hashed
+						valid = user.getPassword() != null && user.getPassword().equals(app_pwd);
+					}			
+				}
+			}
 			
-			if (valid ) {			
+			if (valid ) {
 				if (user.isLocked())
 				{
 					validButLocked = true;

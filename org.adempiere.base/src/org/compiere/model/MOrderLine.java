@@ -798,9 +798,9 @@ public class MOrderLine extends X_C_OrderLine
 			setHeaderInfo(getParent());
 
 		
-		//	R/O Check - Product/Warehouse Change/Attribute set instance
+		//	R/O Check - Product/Warehouse Change
 		if (!newRecord 
-			&& (is_ValueChanged("M_Product_ID") || is_ValueChanged("M_Warehouse_ID") || is_ValueChanged("M_AttributeSetInstance_ID"))) 
+			&& (is_ValueChanged("M_Product_ID") || is_ValueChanged("M_Warehouse_ID"))) 
 		{
 			if (!canChangeWarehouse())
 				return false;

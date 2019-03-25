@@ -359,7 +359,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 					check.saveEx();	//	Payment process needs it
 					// added AdempiereException by zuhri
 					if (!payment.processIt(DocAction.ACTION_Complete))
-						throw new AdempiereException("Failed when processing document - " + payment.getProcessMsg());
+						throw new AdempiereException(Msg.getMsg(Env.getCtx(), "FailedProcessingDocument") + " - " + payment.getProcessMsg());
 					// end added
 					payment.saveEx();
 				}

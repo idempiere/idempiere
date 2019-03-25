@@ -2193,7 +2193,7 @@ public class MOrder extends X_C_Order implements DocAction
 		}
 		// added AdempiereException by zuhri
 		if (!shipment.processIt(DocAction.ACTION_Complete))
-			throw new AdempiereException("Failed when processing document - " + shipment.getProcessMsg());
+			throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + shipment.getProcessMsg());
 		// end added
 		shipment.saveEx(get_TrxName());
 		if (!DOCSTATUS_Completed.equals(shipment.getDocStatus()))
@@ -2296,7 +2296,7 @@ public class MOrder extends X_C_Order implements DocAction
 		
 		// added AdempiereException by zuhri
 		if (!invoice.processIt(DocAction.ACTION_Complete))
-			throw new AdempiereException("Failed when processing document - " + invoice.getProcessMsg());
+			throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + invoice.getProcessMsg());
 		// end added
 		invoice.saveEx(get_TrxName());
 		setC_CashLine_ID(invoice.getC_CashLine_ID());
@@ -2383,7 +2383,7 @@ public class MOrder extends X_C_Order implements DocAction
 				counter.setDocAction(counterDT.getDocAction());
 				// added AdempiereException by zuhri
 				if (!counter.processIt(counterDT.getDocAction()))
-					throw new AdempiereException("Failed when processing document - " + counter.getProcessMsg());
+					throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + counter.getProcessMsg());
 				// end added
 				counter.saveEx(get_TrxName());
 			}

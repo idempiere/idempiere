@@ -30,9 +30,9 @@ public class SecurityProviderImpl implements WebConsoleSecurityProvider {
 			log.warning ("User not found: '" + username);
 			return null;
 		}
-		if (!user.isAdministrator())
+		if (!user.isAdministrator() && !user.hasURLFormAccess("/osgi/system/console"))
 		{
-			log.warning ("Not a Sys Admin = " + username);
+			log.warning ("User doesn't have access to /osgi/system/console = " + username);
 			return null;
 		}
 		if (log.isLoggable(Level.INFO)) log.info ("Name=" + username);

@@ -186,7 +186,7 @@ public class InvoiceCreateCreditMemo extends SvrProcess {
 		//
 		if (p_DocAction != null) {
 			if (!creditMemo.processIt(p_DocAction)) {
-				throw new AdempiereException("ERROR processing credit memo " + p_DocAction + " -> " + creditMemo.getProcessMsg());
+				throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + creditMemo.getProcessMsg());
 			}
 			if (p_IsCreateAllocation && DocAction.ACTION_Complete.equals(p_DocAction)) {
 				//	Create Allocation
@@ -210,7 +210,7 @@ public class InvoiceCreateCreditMemo extends SvrProcess {
 				cLine.setC_Invoice_ID(creditMemo.getC_Invoice_ID());
 				cLine.saveEx();
 				if (!alloc.processIt(DocAction.ACTION_Complete))
-					throw new AdempiereException("Failed when processing document - " + alloc.getProcessMsg());
+					throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + alloc.getProcessMsg());
 				// end added
 				alloc.saveEx();
 			}

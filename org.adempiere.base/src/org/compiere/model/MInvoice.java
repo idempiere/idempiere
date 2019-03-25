@@ -2256,7 +2256,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				counter.setDocAction(counterDT.getDocAction());
 				// added AdempiereException by zuhri
 				if (!counter.processIt(counterDT.getDocAction()))
-					throw new AdempiereException("Failed when processing document - " + counter.getProcessMsg());
+					throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + counter.getProcessMsg());
 				// end added
 				counter.saveEx(get_TrxName());
 			}
@@ -2569,7 +2569,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		rLine.saveEx();
 		// added AdempiereException by zuhri
 		if (!alloc.processIt(DocAction.ACTION_Complete))
-			throw new AdempiereException("Failed when processing document - " + alloc.getProcessMsg());
+			throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + alloc.getProcessMsg());
 		// end added
 		alloc.saveEx();
 		

@@ -1858,7 +1858,7 @@ public class MPayment extends X_C_Payment
 				order.set_TrxName(get_TrxName());
 				// added AdempiereException by zuhri 
 				if (!order.processIt (X_C_Order.DOCACTION_WaitComplete))
-					throw new AdempiereException("Failed when processing document - " + order.getProcessMsg());
+					throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + order.getProcessMsg());
 				// end added
 				m_processMsg = order.getProcessMsg();
 				order.saveEx(get_TrxName());
@@ -2288,7 +2288,7 @@ public class MPayment extends X_C_Payment
 		}
 		// added AdempiereException by zuhri
 		if (!alloc.processIt(DocAction.ACTION_Complete))
-			throw new AdempiereException("Failed when processing document - " + alloc.getProcessMsg());
+			throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + alloc.getProcessMsg());
 		// end added
 		m_processMsg = "@C_AllocationHdr_ID@: " + alloc.getDocumentNo();
 		return alloc.save(get_TrxName());
@@ -2323,7 +2323,7 @@ public class MPayment extends X_C_Payment
 		aLine.saveEx(get_TrxName());
 		// added AdempiereException by zuhri
 		if (!alloc.processIt(DocAction.ACTION_Complete))
-			throw new AdempiereException("Failed when processing document - " + alloc.getProcessMsg());
+			throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + alloc.getProcessMsg());
 		// end added
 		alloc.saveEx(get_TrxName());
 		m_justCreatedAllocInv = alloc;
@@ -2421,7 +2421,7 @@ public class MPayment extends X_C_Payment
 			if(alloc.processIt(DocAction.ACTION_Complete))
 				ok = alloc.save(get_TrxName());
 			else
-				throw new AdempiereException("Failed when processing document - " + alloc.getProcessMsg());
+				throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + alloc.getProcessMsg());
 			// end added by zuhri
 			m_processMsg = "@C_AllocationHdr_ID@: " + alloc.getDocumentNo();
 		}
@@ -2708,7 +2708,7 @@ public class MPayment extends X_C_Payment
 		
 		// added AdempiereException by zuhri
 		if (!alloc.processIt(DocAction.ACTION_Complete))
-			throw new AdempiereException("Failed when processing document - " + alloc.getProcessMsg());
+			throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + alloc.getProcessMsg());
 		// end added
 		alloc.saveEx(get_TrxName());
 		//			

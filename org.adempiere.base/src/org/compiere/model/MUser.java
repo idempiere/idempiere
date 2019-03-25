@@ -33,6 +33,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.adempiere.exceptions.DBException;
+import org.codehaus.groovy.classgen.GeneratorContext;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -58,7 +59,7 @@ public class MUser extends X_AD_User
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 9027688865361175114L;
+	private static final long serialVersionUID = 7996468236476384128L;
 
 	/**
 	 * Get active Users of BPartner
@@ -213,7 +214,14 @@ public class MUser extends X_AD_User
 			
 			clientsValidated.add(user.getAD_Client_ID());
 			boolean valid = false;
-			if (hash_password) {
+			MSystem system = MSystem.get(Env.getCtx());
+			if (system == null)
+				throw new IllegalStateException("No System Info");
+			
+			
+			if (system.isLDAP() && ! Util.isEmpty(user.getLDAPUser())) {
+				valid = system.isLDAP(name, password);
+			} else if (hash_password) {
 				valid = user.authenticateHash(password);
 			} else {
 				// password not hashed
@@ -768,7 +776,7 @@ public class MUser extends X_AD_User
 	
 	/**
 	 * 	Is User an Administrator?
-	 *	@return true id Admin
+	 *	@return true if Admin
 	 */
 	public boolean isAdministrator()
 	{
@@ -787,6 +795,33 @@ public class MUser extends X_AD_User
 		}
 		return m_isAdministrator.booleanValue();
 	}	//	isAdministrator
+
+	/**
+	 * 	User has access to URL form?
+	 *	@return true if user has access
+	 */
+	public boolean hasURLFormAccess(String url)
+	{
+		if (Util.isEmpty(url, true)) {
+			return false;
+		}
+		boolean hasAccess = false;
+		int formId = new Query(getCtx(), MForm.Table_Name, "ClassName=?", get_TrxName())
+				.setOnlyActiveRecords(true)
+				.setParameters(url)
+				.firstId();
+		if (formId > 0) {
+			for (MRole role : getRoles(0))
+			{
+				Boolean formAccess = role.getFormAccess(formId);
+				if (formAccess != null && formAccess.booleanValue()) {
+					hasAccess = true;
+					break;
+				}
+			}
+		}
+		return hasAccess;
+	}	//	hasURLFormAccess
 
 	/**
 	 * 	Has the user Access to BP info and resources
