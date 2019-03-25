@@ -150,9 +150,9 @@ public class AdempiereMonitorFilter implements Filter
 				log.warning ("User not found: '" + name);
 				return false;
 			}
-			if (!user.isAdministrator())
+			if (!user.isAdministrator() && !user.hasURLFormAccess("/idempiereMonitor"))
 			{
-				log.warning ("Not a Sys Admin = " + name);
+				log.warning ("User doesn't have access to /idempiereMonitor = " + name);
 				return false;
 			}
 			if (log.isLoggable(Level.INFO)) log.info ("Name=" + name);
