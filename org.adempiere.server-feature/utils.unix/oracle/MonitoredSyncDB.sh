@@ -159,7 +159,7 @@ select count(*) from ad_migrationscript where name='$BASEFIX';" | $SILENTCMD | s
 notify_error()
 {
     echo -e "$MSGERROR"
-    printf '\n%s\n' "Errors were found during the process (see message above) - please inform and integrate a fix to restart this process again"
+    printf '\n%s\n%s\n' "Error=true" "Errors were found during the process (see message above) - please inform and integrate a fix to restart this process again"
     SUPPORTEMAIL=$(echo "set heading off
 set feedback off
 set pagesize 0
