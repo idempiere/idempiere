@@ -81,6 +81,7 @@ import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -718,10 +719,17 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				continue;
 
 			MInfoColumn infoColumnAppend = (MInfoColumn) modelHasInfoColumn.getAD_InfoColumn();
-			//TODO: improve read data to get data by data type of column.
-			String appendData = null;
+			Object appendData = null;
 			try {
-				appendData = rs.getString(infoColumnAppend.getColumnName());
+				if (DisplayType.isID(infoColumnAppend.getAD_Reference_ID())) {
+					appendData = rs.getInt(infoColumnAppend.getColumnName());
+				} else if (DisplayType.isDate(infoColumnAppend.getAD_Reference_ID())) {
+					appendData = rs.getTimestamp(infoColumnAppend.getColumnName());
+				} else if (DisplayType.isNumeric(infoColumnAppend.getAD_Reference_ID())) {
+					appendData = rs.getBigDecimal(infoColumnAppend.getColumnName());
+				} else {
+					appendData = rs.getString(infoColumnAppend.getColumnName());
+				}
 			} catch (SQLException e) {
 				appendData = null;
 			}
@@ -1406,7 +1414,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (keyColumValue instanceof Integer){
 			keyValue = (Integer)keyColumValue;
 		}else {
-			String msg = "column play keyView should is integer";
+			String msg = "keyView column must be integer";
 			AdempiereException ex = new AdempiereException (msg);
 			log.severe(msg);
 			throw ex;
