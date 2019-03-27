@@ -45,7 +45,7 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8569879231642492255L;
+	private static final long serialVersionUID = 7904122964566112177L;
 	private WDocumentStatusPanel statusPanel;
 
 	@Override
@@ -64,8 +64,9 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 		super();
 
 		statusPanel = WDocumentStatusPanel.get();
-		if (statusPanel != null)
-			this.appendChild(statusPanel);
+		if (statusPanel == null)
+			return;
+		this.appendChild(statusPanel);
 
 		Toolbar recentItemsToolbar = new Toolbar();
 		this.appendChild(recentItemsToolbar);
@@ -85,4 +86,9 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 			statusPanel.updateUI();
 		}
 	}	
+	
+	@Override
+	public boolean isPooling() {
+		return true;
+	}
 }
