@@ -378,7 +378,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    			
    			confirmPanel.addComponentsCenter(cbbProcess);
 
-   			btCbbProcess = confirmPanel.addProcessButton(Msg.getMsg(Env.getCtx(), ConfirmPanel.A_PROCESS), null);
+   			btCbbProcess = confirmPanel.addButton(Msg.getMsg(Env.getCtx(), ConfirmPanel.A_PROCESS), null);
    			
    			btCbbProcess.addEventListener(Events.ON_CLICK, this);
    		}
@@ -402,7 +402,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    				confirmPanel.appendChild(ipMenu);
    				
    				// init button to show menu
-   				btMenuProcess = confirmPanel.addProcessButton("ProcessMenu", null);
+   				btMenuProcess = confirmPanel.addButton("ProcessMenu", null);
    				btMenuProcess.setPopup("ipMenu, before_start");   				
    			}
    		}
