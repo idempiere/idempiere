@@ -322,7 +322,7 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
 				return;
 
 			String title = Msg.getMsg(Env.getCtx(), "Who") + m_text;
-			new WRecordInfo (title, m_dse);
+			new WRecordInfo (title, m_dse, null);
 		}
 		else if (Events.ON_CLICK.equals(event.getName()) && event.getTarget() == popup)
 		{

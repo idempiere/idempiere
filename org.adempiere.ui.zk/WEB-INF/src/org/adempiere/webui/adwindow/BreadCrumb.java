@@ -32,6 +32,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WRecordInfo;
 import org.compiere.model.DataStatusEvent;
+import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -87,6 +88,8 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	private Hlayout toolbarContainer;
 
 	protected Menupopup linkPopup;
+
+	private GridTab m_gridTab;
 
 	/**
 	 * 
@@ -300,7 +303,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 				return;
 
 			String title = Msg.getMsg(Env.getCtx(), "Who") + m_text;
-			new WRecordInfo (title, m_dse);
+			new WRecordInfo (title, m_dse, m_gridTab);
 		} else if (event.getTarget() == btnFirst) {
 			if (toolbarListener != null)
 				toolbarListener.onFirst();
@@ -409,14 +412,15 @@ public class BreadCrumb extends Div implements EventListener<Event> {
      */
     public void setStatusDB (String text)
     {
-        setStatusDB(text, null);
+        setStatusDB(text, null, null);
     }
 
     /**
      * @param text
      * @param dse
+     * @param gridTab 
      */
-    public void setStatusDB (String text, DataStatusEvent dse)
+    public void setStatusDB (String text, DataStatusEvent dse, GridTab gridTab)
     {
         if (text == null || text.length() == 0)
         {
@@ -435,6 +439,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
         	enableFirstNavigation(m_dse.getCurrentRow() > 0);
         	enableLastNavigation(m_dse.getTotalRows() > m_dse.getCurrentRow()+1);
         }
+        m_gridTab = gridTab;
     }
         
 	@Override

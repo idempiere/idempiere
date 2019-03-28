@@ -131,6 +131,7 @@ public class SystemIDs
 
 	public final static int REFERENCE_AD_USER = 110;
 	public final static int REFERENCE_DOCUMENTACTION = 135;
+	public final static int REFERENCE_DOCUMENTSTATUS = 131;
 	public final static int REFERENCE_PAYMENTRULE = 195;
 	public final static int REFERENCE_POSTING_TYPE = 125;
 	public final static int REFERENCE_POSTED = 234;

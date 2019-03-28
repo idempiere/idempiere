@@ -89,15 +89,15 @@
 }	
 
 .record-info-dialog {
-	width: 500px;
-	height: 400px;
+	width: 800px;
+	height: 600px;
 }
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 800px) {
 	.record-info-dialog {
 		width: 100%;
 	}
 }
-@media screen and (max-height: 400px) {
+@media screen and (max-height: 600px) {
 	.record-info-dialog {
 		height: 100%;
 	}

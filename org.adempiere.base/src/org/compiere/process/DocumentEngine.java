@@ -51,6 +51,7 @@ import org.compiere.model.MRMA;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -1353,5 +1354,63 @@ public class DocumentEngine implements DocAction
 		success = engine.processIt(processAction, doc.getDocAction());
 
 		return success;
+	}
+	
+	/**
+	 * Fill Vector with DocAction Ref_List(131) values
+	 * @param v_value
+	 * @param v_name
+	 * @param v_description
+	 */
+	public static void readStatusReferenceList(ArrayList<String> v_value, ArrayList<String> v_name,
+			ArrayList<String> v_description)
+	{
+		if (v_value == null)
+			throw new IllegalArgumentException("v_value parameter is null");
+		if (v_name == null)
+			throw new IllegalArgumentException("v_name parameter is null");
+		if (v_description == null)
+			throw new IllegalArgumentException("v_description parameter is null");
+
+		String sql;
+		if (Env.isBaseLanguage(Env.getCtx(), "AD_Ref_List"))
+			sql = "SELECT Value, Name, Description FROM AD_Ref_List "
+				+ "WHERE AD_Reference_ID=? ORDER BY Name";
+		else
+			sql = "SELECT l.Value, t.Name, t.Description "
+				+ "FROM AD_Ref_List l, AD_Ref_List_Trl t "
+				+ "WHERE l.AD_Ref_List_ID=t.AD_Ref_List_ID"
+				+ " AND t.AD_Language='" + Env.getAD_Language(Env.getCtx()) + "'"
+				+ " AND l.AD_Reference_ID=? ORDER BY t.Name";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, null);
+			pstmt.setInt(1, SystemIDs.REFERENCE_DOCUMENTSTATUS);
+			rs = pstmt.executeQuery();
+			while (rs.next())
+			{
+				String value = rs.getString(1);
+				String name = rs.getString(2);
+				String description = rs.getString(3);
+				if (description == null)
+					description = "";
+				//
+				v_value.add(value);
+				v_name.add(name);
+				v_description.add(description);
+			}
+		}
+		catch (SQLException e)
+		{
+			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}
 	}
 }	//	DocumentEnine
