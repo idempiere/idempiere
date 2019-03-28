@@ -400,16 +400,6 @@ public class ZipUtil
 			if (pathEntries[i].indexOf(jarFile) != -1)
 				return pathEntries[i];
 		}
-		path = System.getProperty("sun.boot.class.path");
-		if (path == null)
-			return null;
-		pathEntries = path.split(System.getProperty("path.separator"));
-		for (int i = 0; i < pathEntries.length; i++)
-		{
-		//	System.out.println(pathEntries[i]);
-			if (pathEntries[i].indexOf(jarFile) != -1)
-				return pathEntries[i];
-		}
 		return null;
 	}	//	findInPath
 
