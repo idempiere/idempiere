@@ -26,12 +26,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 import java.util.logging.Filter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -532,24 +529,6 @@ public class CLogMgt
 		//
 		sb.append(getMsg("Date")).append(eq)        .append(Env.getContext(Env.getCtx(), "#Date")).append(NL);
 		sb.append(getMsg("Printer")).append(eq)     .append(Env.getContext(Env.getCtx(), "#Printer")).append(NL);
-		//
-		Manifest mf = ZipUtil.getManifest("CClient.jar");
-		if (mf == null)
-			mf = ZipUtil.getManifest("CTools.jar");
-		if (mf != null)
-		{
-			Attributes atts = mf.getMainAttributes();
-			if (atts != null)
-			{
-				Iterator<?> it = atts.keySet().iterator();
-				while (it.hasNext())
-				{
-					Object key = it.next();
-					if (key.toString().startsWith("Impl") || key.toString().startsWith("Spec"))
-						sb.append(key).append(eq).append(atts.get(key)).append(NL);
-				}
-			}
-		}
 		// Show Implementation Vendor / Version - teo_sarca, [ 1622855 ]
 		sb.append(getMsg("ImplementationVendor")).append(eq).append(org.compiere.Adempiere.getImplementationVendor()).append(NL);
 		sb.append(getMsg("ImplementationVersion")).append(eq).append(org.compiere.Adempiere.getImplementationVersion()).append(NL);
