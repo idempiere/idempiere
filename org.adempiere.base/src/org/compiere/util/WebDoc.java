@@ -189,7 +189,7 @@ public class WebDoc
 			m_topRight.addElement(new img("res:org/compiere/images/iD10030.png")
 			.setAlign(AlignType.RIGHT).setAlt("iDempiere"));
 		} else {
-			m_topRight.addElement(new img("images/header-logo.png")
+			m_topRight.addElement(new img("webui/theme/default/images/header-logo.png")
 			.setAlign(AlignType.RIGHT).setAlt("iDempiere"));
 		}
 		m_topRow.addElement(m_topRight);
