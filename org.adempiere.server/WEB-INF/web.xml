@@ -32,12 +32,12 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	<servlet>
+	<!-- <servlet>
 		<description>iDempiere Server Status Info</description>
 		<display-name>Server Status</display-name>
 		<servlet-name>StatusInfo</servlet-name>
 		<servlet-class>org.compiere.web.StatusInfo</servlet-class>
-	</servlet>
+	</servlet> -->
 	<servlet>
 		<description>iDempiere Server Monitor</description>
 		<display-name>iDempiere Monitor</display-name>
@@ -46,31 +46,30 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<!-- Restlet adapter -->
-    <servlet>
+    <!-- <servlet>
       <servlet-name>RestletServlet</servlet-name>
       <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
       <init-param>
-            <!-- Application class name -->
             <param-name>org.restlet.application</param-name>
             <param-value>org.adempiere.web.server.ServerApplication</param-value>
       </init-param>
-    </servlet>
+    </servlet> -->
 	<servlet-mapping>
 		<servlet-name>JnlpDownloadServlet</servlet-name>
 		<url-pattern>*.jnlp</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
+	<!-- <servlet-mapping>
 		<servlet-name>StatusInfo</servlet-name>
 		<url-pattern>/statusInfo</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> -->
 	<servlet-mapping>
 		<servlet-name>idempiereMonitor</servlet-name>
 		<url-pattern>/idempiereMonitor/*</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
+	<!-- <servlet-mapping>
       <servlet-name>RestletServlet</servlet-name>
       <url-pattern>/server/*</url-pattern>
-   </servlet-mapping>
+   </servlet-mapping> -->
 	<session-config>
 		<session-timeout>15</session-timeout>
 	</session-config>
@@ -95,9 +94,9 @@
 			<web-resource-name>service</web-resource-name>
 			<url-pattern>/server/*</url-pattern>
 		</web-resource-collection>
-		<user-data-constraint>
+		<!-- <user-data-constraint>
 			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
-		</user-data-constraint>
+		</user-data-constraint> -->
 	</security-constraint>
 	<welcome-file-list>
 		<welcome-file>idempiere.jsp</welcome-file>

@@ -31,9 +31,9 @@
 			<url-pattern>/orderServlet</url-pattern>
 		</web-resource-collection>
 
-		<user-data-constraint>
+		<!--  <user-data-constraint>
 			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
-		</user-data-constraint>
+		</user-data-constraint> -->
 	</security-constraint>
 
 	<session-config>

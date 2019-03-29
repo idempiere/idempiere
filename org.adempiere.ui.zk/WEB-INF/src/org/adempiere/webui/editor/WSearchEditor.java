@@ -795,7 +795,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		String query = "SELECT t.TableName, c.ColumnName "
 			+ "FROM AD_Column c "
-			+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID AND t.IsView='N') "
+			+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID) "
 			+ "WHERE (c.ColumnName IN ('DocumentNo', 'Value', 'Name') OR c.IsIdentifier='Y')"
 			+ " AND c.AD_Reference_ID IN (10,14)"
 			+ " AND EXISTS (SELECT * FROM AD_Column cc WHERE cc.AD_Table_ID=t.AD_Table_ID"

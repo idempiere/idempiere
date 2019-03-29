@@ -81,6 +81,7 @@ import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -370,7 +371,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected String              m_sqlCount;
 	/** Order By Clause         */
 	protected String              m_sqlOrder;
-	protected String              m_sqlUserOrder;
+	private String              m_sqlUserOrder;
+	/* sql column of infocolumn (can be alias) */
+	protected int              	  indexOrderColumn = -1;
+	protected Boolean             isColumnSortAscending = null;
 	/**ValueChange listeners       */
     private ArrayList<ValueChangeListener> listeners = new ArrayList<ValueChangeListener>();
 	/** Loading success indicator       */
@@ -718,10 +722,17 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				continue;
 
 			MInfoColumn infoColumnAppend = (MInfoColumn) modelHasInfoColumn.getAD_InfoColumn();
-			//TODO: improve read data to get data by data type of column.
-			String appendData = null;
+			Object appendData = null;
 			try {
-				appendData = rs.getString(infoColumnAppend.getColumnName());
+				if (DisplayType.isID(infoColumnAppend.getAD_Reference_ID())) {
+					appendData = rs.getInt(infoColumnAppend.getColumnName());
+				} else if (DisplayType.isDate(infoColumnAppend.getAD_Reference_ID())) {
+					appendData = rs.getTimestamp(infoColumnAppend.getColumnName());
+				} else if (DisplayType.isNumeric(infoColumnAppend.getAD_Reference_ID())) {
+					appendData = rs.getBigDecimal(infoColumnAppend.getColumnName());
+				} else {
+					appendData = rs.getString(infoColumnAppend.getColumnName());
+				}
 			} catch (SQLException e) {
 				appendData = null;
 			}
@@ -1030,8 +1041,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         	int index = sql.lastIndexOf(" WHERE");
         	sql.delete(index, sql.length());
         }
-        if (m_sqlUserOrder != null && m_sqlUserOrder.trim().length() > 0)
-        	sql.append(m_sqlUserOrder);
+        if (indexOrderColumn > -1)
+        	sql.append(getUserOrderClause());
         else
         	sql.append(m_sqlOrder);
         dataSql = Msg.parseTranslation(Env.getCtx(), sql.toString());    //  Variables
@@ -1042,6 +1053,60 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         	dataSql = DB.getDatabase().addPagingSQL(dataSql, getCacheStart(), cacheEnd);
         }
 		return dataSql;
+	}
+
+	/**
+	 * build order clause of current sort order, and save it to m_sqlUserOrder
+	 * @return
+	 */
+	protected String getUserOrderClause() {
+		if (indexOrderColumn < 0) {
+			return null;
+		}
+		if (m_sqlUserOrder == null) {
+			m_sqlUserOrder = getUserOrderClause (indexOrderColumn);
+		}
+		return m_sqlUserOrder;
+	}
+	
+	/**
+	 * build order clause of give column
+	 * if call that function before init list will raise a NPE. care about your code
+	 * @param col
+	 * @return
+	 */
+	protected String getUserOrderClause(int col) {
+		String colsql = p_layout[col].getColSQL().trim();
+		int lastSpaceIdx = colsql.lastIndexOf(" ");
+		if (lastSpaceIdx > 0)
+		{
+			String tmp = colsql.substring(0, lastSpaceIdx).trim();
+			char last = tmp.charAt(tmp.length() - 1);
+
+			String alias = colsql.substring(lastSpaceIdx).trim();
+			boolean hasAlias = alias.matches("^[a-zA-Z_][a-zA-Z0-9_]*$"); // valid SQL alias - starts with letter then digits, letters, underscore
+
+			if (tmp.toLowerCase().endsWith("as") && hasAlias)
+			{
+				colsql = alias;
+			}
+			else if (!(last == '*' || last == '-' || last == '+' || last == '/' || last == '>' || last == '<' || last == '='))
+			{
+				if (alias.startsWith("\"") && alias.endsWith("\""))
+				{
+					colsql = alias;
+				}
+				else
+				{
+					if (hasAlias)
+					{
+						colsql = alias;
+					}
+				}
+			}
+		}
+		
+		return String.format(" ORDER BY %s %s ", colsql, isColumnSortAscending? "" : "DESC");
 	}
 
     private void addDoubleClickListener() {
@@ -1406,7 +1471,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (keyColumValue instanceof Integer){
 			keyValue = (Integer)keyColumValue;
 		}else {
-			String msg = "column play keyView should is integer";
+			String msg = "keyView column must be integer";
 			AdempiereException ex = new AdempiereException (msg);
 			log.severe(msg);
 			throw ex;
@@ -2011,7 +2076,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 						isRequeryByRunSuccessProcess = true;
 						Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", null));
 					}
-					
+					recordSelectedData.clear();
 				}
 				
 		//HengSin -- end --
@@ -2198,10 +2263,15 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     			for(Object obj : headers)
     			{
     				Listheader header = (Listheader) obj;
-    				header.setSortDirection("natural");
+    				// idempiere use mix method. sometime call model method, sometime call component method
+    				// so index can be difference on complicate case, just wait to fix
+    				if (header.getColumnIndex() == indexOrderColumn)
+		              header.setSortDirection(isColumnSortAscending?"ascending":"descending");
+		            else
+		              header.setSortDirection("natural");
     			}
     		}
-    		m_sqlUserOrder="";
+//    		m_sqlUserOrder="";
     		// event == null mean direct call from reset button
     		if (event == null)
     			m_count = 0;
@@ -2336,49 +2406,22 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	public void sort(Comparator<Object> cmpr, boolean ascending) {
 		updateListSelected();
 		WListItemRenderer.ColumnComparator lsc = (WListItemRenderer.ColumnComparator) cmpr;
+		
+		// keep column order
+		int col = lsc.getColumnIndex();
+		indexOrderColumn = col;
+		isColumnSortAscending = ascending;
+		m_sqlUserOrder = null; // clear cache value
+		
 		if (m_useDatabasePaging)
 		{
-			int col = lsc.getColumnIndex();
-			String colsql = p_layout[col].getColSQL().trim();
-			int lastSpaceIdx = colsql.lastIndexOf(" ");
-			if (lastSpaceIdx > 0)
-			{
-				String tmp = colsql.substring(0, lastSpaceIdx).trim();
-				char last = tmp.charAt(tmp.length() - 1);
-
-				String alias = colsql.substring(lastSpaceIdx).trim();
-				boolean hasAlias = alias.matches("^[a-zA-Z_][a-zA-Z0-9_]*$"); // valid SQL alias - starts with letter then digits, letters, underscore
-
-				if (tmp.toLowerCase().endsWith("as") && hasAlias)
-				{
-					colsql = alias;
-				}
-				else if (!(last == '*' || last == '-' || last == '+' || last == '/' || last == '>' || last == '<' || last == '='))
-				{
-					if (alias.startsWith("\"") && alias.endsWith("\""))
-					{
-						colsql = alias;
-					}
-					else
-					{
-						if (hasAlias)
-						{
-							colsql = alias;
-						}
-					}
-				}
-			}
-			m_sqlUserOrder = " ORDER BY " + colsql;
-			if (!ascending)
-				m_sqlUserOrder += " DESC ";
 			executeQuery();
-			renderItems();
 		}
 		else
 		{
 			Collections.sort(line, lsc);
-			renderItems();
 		}
+		renderItems();
 	}
 
     public boolean isLookup()

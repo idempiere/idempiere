@@ -465,9 +465,10 @@ public class MConversionRate extends X_C_Conversion_Rate
 		return true;
 	}	//	beforeSave
 
+	private volatile static boolean recursiveCall = false;
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
-		if (success) {
+		if (success && !recursiveCall) {
 			String whereClause = "ValidFrom=? AND ValidTo=? "
 					+ "AND C_Currency_ID=? AND C_Currency_ID_To=? "
 					+ "AND C_ConversionType_ID=? "
@@ -490,9 +491,15 @@ public class MConversionRate extends X_C_Conversion_Rate
 				reciprocal.setC_Currency_ID(getC_Currency_ID_To());
 				reciprocal.setC_Currency_ID_To(getC_Currency_ID());
 			}
-			reciprocal.setDivideRate(getMultiplyRate());
-			reciprocal.setMultiplyRate(getDivideRate());
-			reciprocal.saveEx();
+			// avoid recalculation
+			reciprocal.set_Value(COLUMNNAME_DivideRate, getMultiplyRate());
+			reciprocal.set_Value(COLUMNNAME_MultiplyRate, getDivideRate());
+			recursiveCall = true;
+			try {
+				reciprocal.saveEx();
+			} finally {
+				recursiveCall = false;
+			}
 		}
 		return success;
 	}

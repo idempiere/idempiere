@@ -43,7 +43,7 @@ public final class ConfirmPanel extends Div
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3257542169107223645L;
+	private static final long serialVersionUID = -5522843675498634948L;
 
 	/** Action String OK.        */
     public static final String A_OK = "Ok";
@@ -114,6 +114,17 @@ public final class ConfirmPanel extends Div
         return button;
     }
     
+    public Button createButton(String name, String image, String tooltip)
+    {
+        Button button = ButtonFactory.createButton(name, image, tooltip);        
+        button.setId(name);
+        buttonMap.put(name, button);
+        if (!Util.isEmpty(extraButtonSClass))
+        	LayoutUtils.addSclass(extraButtonSClass, button);
+
+        return button;
+    }
+
     /**
      * create confirm panel with multiple options
      * @param withCancelButton       with cancel
@@ -263,7 +274,7 @@ public final class ConfirmPanel extends Div
      * @param imgName
      * @return
      */
-    public Button addProcessButton (String btName, String imgName){
+    public Button addButton (String btName, String imgName){
     	 Button btProcess = createButton(btName);
     	 // replace default image with image set at info process
     	 if (m_withImage && imgName != null && imgName.trim().length() > 0)
@@ -272,6 +283,15 @@ public final class ConfirmPanel extends Div
     	 return btProcess;     	
     }
     
+    public Button addProcessButton (String btName, String imgName){
+   	 Button btProcess = createButton(btName, imgName, null);
+   	 // replace default image with image set at info process
+   	 if (m_withImage && imgName != null && imgName.trim().length() > 0)
+   		 btProcess.setImage(ThemeManager.getThemeResource("images/" + imgName));
+   	 addComponentsCenter(btProcess);
+   	 return btProcess;     	
+   }
+   
     /**
      * add button to the left side of the confirm panel
      * @param button button

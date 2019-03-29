@@ -7,7 +7,7 @@
   --%>
 <div id="header">
 	<div id="headerIcon">
-	  <a href="http://<c:out value='${pageContext.request.serverName}'/>/">
+	  <a href="${pageContext.request.scheme}://<c:out value='${pageContext.request.serverName}:${pageContext.request.serverPort}'/>/">
 	  <img src="<c:out value='${ctx.webParam1}' default='AdempiereERP.gif'/>" alt="Adempiere - 1999-2007" /></a>
 	</div>
 	<div id="headerMenu">
