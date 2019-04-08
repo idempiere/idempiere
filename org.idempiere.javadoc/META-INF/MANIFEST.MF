@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: iDempiere Javadoc Generator
+Bundle-SymbolicName: org.idempiere.javadoc;singleton:=true
+Bundle-Version: 6.2.0.qualifier
+Bundle-Vendor: iDempiere Community
