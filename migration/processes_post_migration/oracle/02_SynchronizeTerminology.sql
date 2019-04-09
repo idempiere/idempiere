@@ -6,12 +6,6 @@ INSERT INTO AD_ELEMENT_TRL (AD_Element_ID, AD_LANGUAGE, AD_Client_ID, AD_Org_ID,
 UPDATE AD_COLUMN c SET AD_Element_id = (SELECT AD_Element_ID FROM AD_ELEMENT e WHERE UPPER(c.ColumnName)=UPPER(e.ColumnName)) WHERE AD_Element_ID IS NULL
 ;
 
-DELETE FROM AD_ELEMENT_TRL WHERE AD_Element_ID >= 1000000 AND AD_Element_ID IN (SELECT AD_Element_ID FROM AD_ELEMENT e WHERE NOT EXISTS (SELECT 1 FROM AD_COLUMN c WHERE UPPER(e.ColumnName)=UPPER(c.ColumnName)) AND NOT EXISTS (SELECT 1 FROM AD_PROCESS_PARA p WHERE UPPER(e.ColumnName)=UPPER(p.ColumnName)) AND NOT EXISTS (SELECT 1 FROM AD_INFOCOLUMN i WHERE UPPER(e.ColumnName)=UPPER(i.ColumnName)))
-;
-
-DELETE FROM AD_ELEMENT e WHERE AD_Element_ID >= 1000000 AND NOT EXISTS (SELECT 1 FROM AD_COLUMN c WHERE UPPER(e.ColumnName)=UPPER(c.ColumnName)) AND NOT EXISTS (SELECT 1 FROM AD_PROCESS_PARA p WHERE UPPER(e.ColumnName)=UPPER(p.ColumnName)) AND NOT EXISTS (SELECT 1 FROM AD_INFOCOLUMN i WHERE UPPER(e.ColumnName)=UPPER(i.ColumnName))
-;
-
 UPDATE AD_COLUMN c SET (ColumnName, Name, Description, Help, Placeholder) = (SELECT ColumnName, Name, Description, Help, Placeholder FROM AD_ELEMENT e WHERE c.AD_Element_ID=e.AD_Element_ID), Updated = SYSDATE WHERE EXISTS (SELECT 1 FROM AD_ELEMENT e WHERE c.AD_Element_ID=e.AD_Element_ID AND (c.ColumnName <> e.ColumnName OR c.Name <> e.Name OR COALESCE(c.Description,N' ') <> COALESCE(e.Description,N' ') OR COALESCE(c.Help,N' ') <> COALESCE(e.Help,N' ') OR COALESCE(c.Placeholder,N' ') <> COALESCE(e.Placeholder,N' ')))
 ;
 
