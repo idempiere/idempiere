@@ -348,14 +348,6 @@ public class MWFProcess extends X_AD_WF_Process
 		if (transitions == null || transitions.length == 0)
 			return false;	//	done
 		
-		//	We need to wait for last activity
-		if (MWFNode.JOINELEMENT_AND.equals(last.getNode().getJoinElement()))
-		{
-			//	get previous nodes
-			//	check if all have closed activities
-			//	return false for all but the last
-		}
-		//	eliminate from active processed
 		last.setProcessed(true);
 		last.saveEx();
 
@@ -400,11 +392,16 @@ public class MWFProcess extends X_AD_WF_Process
 	private boolean isJoinElementANDProcessed(MWFActivity activity) {
 
 
-		Query queryNodeNextTest = new Query(Env.getCtx(), MWFNodeNext.Table_Name, "AD_WF_Next_ID = ?", get_TrxName());
-		queryNodeNextTest.setParameters(activity.getAD_WF_Node_ID());
-		List<MWFNodeNext> NodeNexts = queryNodeNextTest.list();
-		for (MWFNodeNext nodeNext : NodeNexts) {
-			
+		Query queryNodeNext = new Query(Env.getCtx(), MWFNodeNext.Table_Name, "AD_WF_Next_ID = ?", get_TrxName());
+		queryNodeNext.setParameters(activity.getAD_WF_Node_ID());
+		List<MWFNodeNext> nodeNexts = queryNodeNext.list();
+		/**
+		 * IDEMPIERE-3942 #2 Transition need to match with Activity
+		 */
+		int totalParent = 0;
+		int totalActivities = 0;
+		for (MWFNodeNext nodeNext : nodeNexts) {
+			totalParent++;
 			Query queryMWFActivity = new Query(Env.getCtx(), MWFActivity.Table_Name,
 					"AD_WF_Process_ID = ? AND AD_WF_Node_ID = ? ", get_TrxName());
 
@@ -413,11 +410,14 @@ public class MWFProcess extends X_AD_WF_Process
 			queryMWFActivity.setParameters(params);
 			List<MWFActivity> parentActivitys = queryMWFActivity.list();
 			for (MWFActivity parentActivity : parentActivitys) {
+				totalActivities++;
 				if(!parentActivity.isProcessed())
 					return false;
 			}
 			
 		}
+		if(totalParent < totalActivities)
+			return false;
 		
 		return true;
 	}
