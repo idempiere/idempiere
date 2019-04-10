@@ -12,6 +12,10 @@
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 
+	<properties>
+		<javadocPluginPhase>none</javadocPluginPhase>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -33,7 +37,8 @@
 				<version>${tycho.extras.version}</version>
 				<executions>
 					<execution>
-						<id>eclipse-javadoc</id>
+						<phase>${javadocPluginPhase}</phase>
+						<id>idempiere-javadoc</id>
 						<goals>
 							<goal>javadoc</goal>
 						</goals>
