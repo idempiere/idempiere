@@ -502,6 +502,19 @@ public interface I_AD_PrintFormatItem
 	  */
 	public boolean isPageBreak();
 
+    /** Column name IsPrintBarcodeText */
+    public static final String COLUMNNAME_IsPrintBarcodeText = "IsPrintBarcodeText";
+
+	/** Set Print Barcode Text.
+	  * Print barcode text at the bottom of barcode
+	  */
+	public void setIsPrintBarcodeText (boolean IsPrintBarcodeText);
+
+	/** Get Print Barcode Text.
+	  * Print barcode text at the bottom of barcode
+	  */
+	public boolean isPrintBarcodeText();
+
     /** Column name IsPrinted */
     public static final String COLUMNNAME_IsPrinted = "IsPrinted";
 

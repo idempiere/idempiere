@@ -53,6 +53,11 @@
 									<artifactId>jnlp</artifactId>
 									<version>1.5.0</version>
 								</artifactItem>
+								<artifactItem>
+									<groupId>org.apache.avalon.framework</groupId>
+									<artifactId>avalon-framework-api</artifactId>
+									<version>4.3.1</version>
+								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>
 							<stripVersion>true</stripVersion>
