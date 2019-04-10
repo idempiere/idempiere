@@ -27,6 +27,7 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
+import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
@@ -53,6 +54,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Vbox;
@@ -270,10 +272,12 @@ public class ValuePreference extends Window implements EventListener<Event>
 	private Grid setLayout = new Grid();
 	private Label lAttribute = new Label();
 	private Textbox fAttribute = new Textbox();
-	private Label lAttributeValue = new Label();
+	private Textbox fAttributeValue = new Textbox();
 	private Label lValue = new Label();
 	private Label lValueValue = new Label();
 	private Textbox fValue = new Textbox();
+	private Label lidValue = new Label();
+	private Textbox fidValue = new Textbox();
 	private Label lSetFor = new Label();
 	private Checkbox cbClient = new Checkbox();
 	private Checkbox cbOrg = new Checkbox();
@@ -297,9 +301,13 @@ public class ValuePreference extends Window implements EventListener<Event>
 	 */
 	private void init() throws Exception
 	{
-		//
+		setSclass("popup-dialog");
+		Vlayout vlayout = new Vlayout();
+		vlayout.setHflex("1");
+		this.appendChild(vlayout);
 		lAttribute.setValue(Msg.translate(m_ctx, "Attribute").replace("&", ""));
 		lValue.setValue(Msg.translate(m_ctx, "Value").replace("&", ""));
+		lidValue.setValue("Id");
 		lSetFor.setValue(Msg.getMsg(m_ctx, "ValuePreferenceSetFor"));
 		cbClient.setLabel(Msg.translate(m_ctx, "AD_Client_ID"));
 		cbOrg.setLabel(Msg.translate(m_ctx, "AD_Org_ID"));
@@ -315,36 +323,46 @@ public class ValuePreference extends Window implements EventListener<Event>
 		setPanel.appendChild(setLayout);
 		ZKUpdateUtil.setHflex(setPanel, "1");
 		fAttribute.setReadonly(true);
+		fAttributeValue.setReadonly(true);
 		fValue.setReadonly(true);
 		
-		Vbox box = new Vbox();
-		ZKUpdateUtil.setWidth(box, "100%");
-		ZKUpdateUtil.setHeight(box, "100%");
-		box.setParent(this);
-		ZKUpdateUtil.setHflex(box, "1");
-		box.appendChild(setPanel);
-		
+		Grid grid = GridFactory.newGridLayout();
+		grid.setStyle("background-image: none;");
+		LayoutUtils.addSclass("dialog-content", grid);
+		vlayout.appendChild(grid);
+		        
 		Rows rows = new Rows();
-		rows.setParent(setLayout);
+		grid.appendChild(rows);
 		
 		Row row = new Row();
 		Div div = new Div();
 		div.setStyle("text-align: right");
 		div.appendChild(lAttribute);
 		row.appendCellChild(div, 1);
-		row.appendCellChild(fAttribute, 4);
-		ZKUpdateUtil.setWidth(fAttribute, "96%");
-		row.appendCellChild(lAttributeValue, 1);
+		row.appendCellChild(fAttribute, 3);
+		ZKUpdateUtil.setWidth(fAttribute, "98%");
+		row.appendCellChild(fAttributeValue, 3);
+		fAttributeValue.setWidth("98%");
 		rows.appendChild(row);
 		
 		row = new Row();
 		div = new Div();
 		div.setStyle("text-align: right");
+		div.appendChild(lidValue);
+		row.appendCellChild(div, 1);
+		row.appendCellChild(fidValue, 6);  
+		fidValue.setWidth("99%");  
+		fidValue.setReadonly(true);
+		rows.appendChild(row);
+		
+		rows.appendChild(row);
+		row = new Row();
+		div = new Div();
+		div.setStyle("text-align: right");
 		div.appendChild(lValue);
 		row.appendCellChild(div, 1);
-		row.appendCellChild(fValue, 4);
-		ZKUpdateUtil.setWidth(fValue, "96%");
-		row.appendCellChild(lValueValue, 1);
+		row.appendCellChild(fValue, 6);
+		ZKUpdateUtil.setWidth(fValue, "99%");
 		rows.appendChild(row);
 		
 		row = new Row();
@@ -357,6 +375,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		chlayout.appendChild(cbClient);
 		chlayout.appendChild(cbOrg);
 		chlayout.appendChild(cbUser);
+
 		if(isProcessInIW){
 			// in case show process in info window, don't show checkbox window in value preference dialog.
 			// must set is checked to save current windowID (dummy) with value preference other it will save null, 
@@ -376,25 +395,26 @@ public class ValuePreference extends Window implements EventListener<Event>
 		
 		row.appendCellChild(chlayout, 5);
 		rows.appendChild(row);
-		
+
 		row = new Row();
 		row.appendCellChild(new Space(), 1);
 		row.appendCellChild(lExplanation, 5);
 		rows.appendChild(row);
 		
-		//
-		Separator separator = new Separator();
-		ZKUpdateUtil.setHeight(separator, "10px");
-		box.appendChild(separator);
-		box.appendChild(confirmPanel);
-		
-		this.setBorder("normal");
-		setLayout.makeNoStrip();
-		setLayout.setOddRowSclass("even");
+		Div footer = new Div();
+		vlayout.appendChild(footer);
 			
 		if (!ThemeManager.isUseCSSForWindowSize()) {			
 			ZKUpdateUtil.setWindowWidthX(this, 500);
 		}
+		else
+		{
+			ZKUpdateUtil.setWindowWidthX(this, 740);
+		}
+		confirmPanel.setVflex("min");
+		confirmPanel.setClass("dialog-footer");
+		footer.appendChild(confirmPanel);
+		
 		this.setSizable(true);
 		this.setSclass("value-preference-dialog");
 	}   //  jbInit
@@ -406,12 +426,13 @@ public class ValuePreference extends Window implements EventListener<Event>
 	{
 		//  Set Attribute/Value
 		fAttribute.setText(m_DisplayAttribute);
-		lAttributeValue.setValue(m_Attribute);
+		fAttributeValue.setValue(m_Attribute);
 		fValue.setText(m_DisplayValue);
+		fidValue.setText(m_Value);
 		lValueValue.setValue(m_Value);
 		if (CLogMgt.isLevelFine())
 		{
-			lAttributeValue.setVisible(false);
+			fAttributeValue.setVisible(false);
 			lValueValue.setVisible(false);
 		}
 
@@ -484,34 +505,34 @@ public class ValuePreference extends Window implements EventListener<Event>
 	private void setExplanation()
 	{
 		/** @todo translation */
-		StringBuilder expl = new StringBuilder("For ");
+		StringBuilder expl = new StringBuilder(Msg.getCleanMsg(Env.getCtx(), "For "));
 		if (cbClient.isChecked() && cbOrg.isChecked() )
-			expl.append("this Client and Organization");
+			expl.append(Msg.getCleanMsg(Env.getCtx(), "this Client and Organization"));
 		else if (cbClient.isChecked() && !cbOrg.isChecked())
-			expl.append("all Organizations of this Client");
+			expl.append(Msg.getCleanMsg(Env.getCtx(), "all Organizations of this Client"));
 		else if (!cbClient.isChecked() && cbOrg.isChecked())
 		{
 			cbOrg.setChecked(false);
-			expl.append("entire System");
+			expl.append("Msg.getCleanMsg(Env.getCtx(), entire System");
 		}
 		else
-			expl.append("entire System");
+			expl.append("Msg.getCleanMsg(Env.getCtx(), entire System");
 		//
 		if (cbUser.isChecked())
-			expl.append(", this User");
+			expl.append(", " + Msg.getCleanMsg(Env.getCtx(), "this User"));
 		else
-			expl.append(", all Users");
+			expl.append(", " + Msg.getCleanMsg(Env.getCtx(), "all Users"));
 		//
 		if (cbWindow.isChecked())
-			expl.append(" and this Window");
+			expl.append(" " + Msg.getCleanMsg(Env.getCtx(), " and this Window"));
 		else
-			expl.append(" and all Windows");
+			expl.append(" " + Msg.getCleanMsg(Env.getCtx(), "and all Windows"));
 		//
 		if (m_AD_Process_ID_Of_Panel > 0){
 			if (cbProcess.isChecked())
-				expl.append(" and this Process");
+				expl.append(" " + Msg.getCleanMsg(Env.getCtx(), "and this Process"));
 			else
-				expl.append(" and all Process");
+				expl.append(" " + Msg.getCleanMsg(Env.getCtx(), "and all Process"));
 		}
 		//
 		if (m_AD_Infowindow_ID > 0){
@@ -521,11 +542,8 @@ public class ValuePreference extends Window implements EventListener<Event>
 				expl.append(" and all Info Window");
 		}
 		
-		//
-		if (Env.getLanguage(Env.getCtx()).isBaseLanguage())
-		{
-			lExplanation.setValue(expl.toString ());
-		}
+		lExplanation.setValue(expl.toString ());
+
 	}   //  setExplanation
 
 	/**
