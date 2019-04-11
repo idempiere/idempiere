@@ -348,14 +348,6 @@ public class MWFProcess extends X_AD_WF_Process
 		if (transitions == null || transitions.length == 0)
 			return false;	//	done
 		
-		//	We need to wait for last activity
-		if (MWFNode.JOINELEMENT_AND.equals(last.getNode().getJoinElement()))
-		{
-			//	get previous nodes
-			//	check if all have closed activities
-			//	return false for all but the last
-		}
-		//	eliminate from active processed
 		last.setProcessed(true);
 		last.saveEx();
 
@@ -369,9 +361,23 @@ public class MWFProcess extends X_AD_WF_Process
 			
 			//	Start new Activity...
 			MWFActivity activity = new MWFActivity (this, transitions[i].getAD_WF_Next_ID(), lastPO);
+			/**
+			 * IDEMPIERE-3942
+			 * Implement JoinElement AND Status
+			 */
+			if(MWFNode.JOINELEMENT_AND.equals(activity.getNode().getJoinElement()))
+			{
+				if(!isJoinElementANDProcessed(activity))
+				{
+					activity.delete(true, get_TrxName());
+					continue;
+				}
+			}
+			
 			activity.set_TrxName(trxName);
 			activity.run();
 			
+
 			//	only the first valid if XOR
 			if (MWFNode.SPLITELEMENT_XOR.equals(split))
 				return true;
@@ -379,7 +385,43 @@ public class MWFProcess extends X_AD_WF_Process
 		return true;
 	}	//	startNext
 
-	
+	/*
+	 * IDEMPIERE-3942
+	 *  Implement JoinElement AND Status
+	 */	
+	private boolean isJoinElementANDProcessed(MWFActivity activity) {
+
+
+		Query queryNodeNext = new Query(Env.getCtx(), MWFNodeNext.Table_Name, "AD_WF_Next_ID = ?", get_TrxName());
+		queryNodeNext.setParameters(activity.getAD_WF_Node_ID());
+		List<MWFNodeNext> nodeNexts = queryNodeNext.list();
+		/**
+		 * IDEMPIERE-3942 #2 Transition need to match with Activity
+		 */
+		int totalParent = 0;
+		int totalActivities = 0;
+		for (MWFNodeNext nodeNext : nodeNexts) {
+			totalParent++;
+			Query queryMWFActivity = new Query(Env.getCtx(), MWFActivity.Table_Name,
+					"AD_WF_Process_ID = ? AND AD_WF_Node_ID = ? ", get_TrxName());
+
+			Object params[] = { activity.getAD_WF_Process_ID(), nodeNext.getAD_WF_Node_ID() };
+
+			queryMWFActivity.setParameters(params);
+			List<MWFActivity> parentActivitys = queryMWFActivity.list();
+			for (MWFActivity parentActivity : parentActivitys) {
+				totalActivities++;
+				if(!parentActivity.isProcessed())
+					return false;
+			}
+			
+		}
+		if(totalParent < totalActivities)
+			return false;
+		
+		return true;
+	}
+
 	/**************************************************************************
 	 * 	Set Workflow Responsible.
 	 * 	Searches for a Invoker.

@@ -30,7 +30,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20190403L;
 
     /** Standard Constructor */
     public X_AD_PrintFormatItem (Properties ctx, int AD_PrintFormatItem_ID, String trxName)
@@ -64,6 +64,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 			setIsNextPage (false);
 			setIsOrderBy (false);
 			setIsPageBreak (false);
+			setIsPrintBarcodeText (true);
+// Y
 			setIsPrinted (true);
 // Y
 			setIsRelativePosition (true);
@@ -399,6 +401,12 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public static final String BARCODETYPE_EAN13 = "E13";
 	/** UPC-A = UPA */
 	public static final String BARCODETYPE_UPC_A = "UPA";
+	/** Code 39 with Checksum = 39C */
+	public static final String BARCODETYPE_Code39WithChecksum = "39C";
+	/** Code 39 w/o Checksum = 39c */
+	public static final String BARCODETYPE_Code39WOChecksum = "39c";
+	/** QR Code = QRC */
+	public static final String BARCODETYPE_QRCode = "QRC";
 	/** Set Barcode Type.
 		@param BarcodeType 
 		Type of barcode
@@ -900,6 +908,30 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isPageBreak () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsPageBreak);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Print Barcode Text.
+		@param IsPrintBarcodeText 
+		Print barcode text at the bottom of barcode
+	  */
+	public void setIsPrintBarcodeText (boolean IsPrintBarcodeText)
+	{
+		set_Value (COLUMNNAME_IsPrintBarcodeText, Boolean.valueOf(IsPrintBarcodeText));
+	}
+
+	/** Get Print Barcode Text.
+		@return Print barcode text at the bottom of barcode
+	  */
+	public boolean isPrintBarcodeText () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsPrintBarcodeText);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 
