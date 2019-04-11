@@ -436,7 +436,7 @@
          unpack="false"/>
 
    <plugin
-         id="jakarta.ws.rs-api"
+         id="javax.ws.rs"
          download-size="0"
          install-size="0"
          version="0.0.0"
