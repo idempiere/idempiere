@@ -20,10 +20,10 @@ package org.idempiere.fa.process;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
+import org.compiere.model.MAssetAddition;
+import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategory;
 import org.compiere.model.MProject;
-import org.compiere.model.MProduct;
-import org.compiere.model.MAssetAddition;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -42,11 +42,7 @@ public class ProjectCreateAsset extends SvrProcess
 	
 	/**	Product 			*/
 	private int 		m_Product_ID = 0;
-	
-	/**	Use Life Years 			*/
-	private int 		m_UseLifeYears = 0;
-	
-	
+		
 	/** DateTrx for create asset	*/
 	private Timestamp	m_DateTrx = null;
 	
@@ -70,7 +66,7 @@ public class ProjectCreateAsset extends SvrProcess
 				m_Product_ID = para[i].getParameterAsInt();
 			}
 			else if (para[i].getParameterName().equalsIgnoreCase("UseLifeYears")) {
-					m_UseLifeYears = para[i].getParameterAsInt();
+				;
 			}
 			else if (para[i].getParameterName().equalsIgnoreCase("DateTrx")) {
 				m_DateTrx = (Timestamp)para[i].getParameter();
@@ -106,10 +102,7 @@ public class ProjectCreateAsset extends SvrProcess
 		assetAdd.setDateAcct(m_DateTrx);
 		assetAdd.setDateDoc(m_DateTrx);
 		assetAdd.setM_Product_ID(m_Product_ID);
-		if(m_UseLifeYears > 0) {
-			assetAdd.setDeltaUseLifeYears(m_UseLifeYears);
-			assetAdd.setDeltaUseLifeYears_F(m_UseLifeYears);
-		}
+		
 		assetAdd.saveEx();
 		if (!assetAdd.processIt(DocAction.ACTION_Complete)) {
 			return "Error Process Asset Addition";

@@ -29,7 +29,7 @@ public class Doc_AssetReval extends Doc
 	
 	public ArrayList<Fact> createFacts(MAcctSchema as)
 	{
-		MAssetAcct assetAcct = getAssetAcct();
+		MAssetAcct assetAcct = getAssetAcct(as);
 		MAssetReval assetRe = getAssetReval();
 		
 		ArrayList<Fact> facts = new ArrayList<Fact>();
@@ -67,9 +67,9 @@ public class Doc_AssetReval extends Doc
 		return POSTINGTYPE_Actual;
 	}
 	
-	private MAssetAcct getAssetAcct()
+	private MAssetAcct getAssetAcct(MAcctSchema as)
 	{
-		return MAssetAcct.forA_Asset_ID(getCtx(), getA_Asset_ID(), getPostingType() , getDateAcct(), null);
+		return MAssetAcct.forA_Asset_ID(getCtx(),as.get_ID(), getA_Asset_ID(), getPostingType() , getDateAcct(), null);
 	}
 	private MAssetReval getAssetReval()
 	{

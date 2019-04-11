@@ -35,12 +35,12 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 	/**
 	 * Get Asset Group Accountings for given group
 	 */
-	public static MAssetGroupAcct forA_Asset_Group_ID(Properties ctx, int A_Asset_Group_ID, String postingType)
+	public static List<MAssetGroupAcct>  forA_Asset_Group_ID(Properties ctx, int A_Asset_Group_ID, String postingType)
 	{
 		final String whereClause = COLUMNNAME_A_Asset_Group_ID+"=? AND "+COLUMNNAME_PostingType+"=?";
 		return new Query(ctx, Table_Name, whereClause, null)
 					.setParameters(new Object[]{A_Asset_Group_ID, postingType})
-					.firstOnly();
+					.list();
 	}
 	
 	/**
@@ -138,4 +138,17 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 			return false;
 		return is_ValueChanged(index);
 	}
+	/**
+	 * Get Asset Group Accountings for given group
+	 */
+	public static MAssetGroupAcct forA_Asset_Group_ID(Properties ctx, int A_Asset_Group_ID, String postingType,
+			int C_AcctSchema_ID) {
+		final String whereClause = COLUMNNAME_A_Asset_Group_ID+"=? AND "+COLUMNNAME_PostingType+"=? AND " + COLUMNNAME_C_AcctSchema_ID +"=? " ;
+		return new Query(ctx, Table_Name, whereClause, null)
+					.setParameters(new Object[]{A_Asset_Group_ID, postingType, C_AcctSchema_ID})
+					.firstOnly();
+	}
+
+	
+
 }	//	MAssetGroupAcct

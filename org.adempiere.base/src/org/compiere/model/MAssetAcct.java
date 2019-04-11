@@ -74,13 +74,14 @@ public class MAssetAcct extends X_A_Asset_Acct
 	 * @param dateAcct check ValidFrom
 	 * @return asset accounting for the given asset
 	 */
-	public static MAssetAcct forA_Asset_ID (Properties ctx, int A_Asset_ID, String postingType, Timestamp dateAcct, String trxName)
+	public static MAssetAcct forA_Asset_ID (Properties ctx, int C_AcctSchema_ID, int A_Asset_ID, String postingType, Timestamp dateAcct, String trxName)
 	{
 		//
 		ArrayList<Object> params = new ArrayList<Object>();
-		StringBuilder whereClause = new StringBuilder(COLUMNNAME_A_Asset_ID+"=? AND "+COLUMNNAME_PostingType+"=?");
+		StringBuilder whereClause = new StringBuilder(COLUMNNAME_A_Asset_ID+"=? AND "+COLUMNNAME_PostingType+"=? AND " + COLUMNNAME_C_AcctSchema_ID +"=? " );
 		params.add(A_Asset_ID);
 		params.add(postingType);
+		params.add(C_AcctSchema_ID);
 		if (dateAcct != null)
 		{
 			whereClause.append(" AND " + COLUMNNAME_ValidFrom).append("<=?");

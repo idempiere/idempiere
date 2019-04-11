@@ -60,22 +60,15 @@ public class CalloutA_Asset_Addition extends CalloutEngine
 	{
 		if (isCalloutActive())
 			return "";
-		//
-		String columnName = mField.getColumnName();
-		if (MAssetAddition.COLUMNNAME_A_Accumulated_Depr.equals(columnName))
-		{
-			mTab.setValue(MAssetAddition.COLUMNNAME_A_Accumulated_Depr_F, value);
-		}
-		else
-		{
-			BigDecimal amtEntered = (BigDecimal) mTab.getValue(MAssetAddition.COLUMNNAME_AssetAmtEntered);
-			mTab.setValue(MAssetAddition.COLUMNNAME_AssetSourceAmt, amtEntered);
-			MConversionRateUtil.convertBase(SetGetUtil.wrap(mTab),
-					MAssetAddition.COLUMNNAME_DateAcct,
-					MAssetAddition.COLUMNNAME_AssetSourceAmt,
-					MAssetAddition.COLUMNNAME_AssetValueAmt,
-					mField.getColumnName());
-		}
+		//		
+		BigDecimal amtEntered = (BigDecimal) mTab.getValue(MAssetAddition.COLUMNNAME_AssetAmtEntered);
+		mTab.setValue(MAssetAddition.COLUMNNAME_AssetSourceAmt, amtEntered);
+		MConversionRateUtil.convertBase(SetGetUtil.wrap(mTab),
+				MAssetAddition.COLUMNNAME_DateAcct,
+				MAssetAddition.COLUMNNAME_AssetSourceAmt,
+				MAssetAddition.COLUMNNAME_AssetValueAmt,
+				mField.getColumnName());
+		
 		//
 		return "";
 	}
@@ -91,10 +84,7 @@ public class CalloutA_Asset_Addition extends CalloutEngine
 	
 	public String uselife(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
-		if (MAssetAddition.COLUMNNAME_DeltaUseLifeYears.equals(mField.getColumnName()))
-		{
-			mTab.setValue(MAssetAddition.COLUMNNAME_DeltaUseLifeYears_F, value);
-		}
+		
 		return "";
 	}
 	
@@ -102,10 +92,7 @@ public class CalloutA_Asset_Addition extends CalloutEngine
 	public String periodOffset(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		I_A_Asset_Addition aa = GridTabWrapper.create(mTab, I_A_Asset_Addition.class);
-		if (!aa.isA_Accumulated_Depr_Adjust())
-		{
-			return "";
-		}
+	
 		
 		int periods = TimeUtil.getMonthsBetween(aa.getDateDoc(), aa.getDateAcct());
 		if (periods <= 0)
@@ -113,16 +100,7 @@ public class CalloutA_Asset_Addition extends CalloutEngine
 			return "";
 		}
 		
-		int uselifeMonths = aa.getDeltaUseLifeYears() * 12;
-		if (uselifeMonths == 0)
-		{
-			return "";
-		}
-		double monthlyExpenseSL = aa.getAssetValueAmt().doubleValue() / uselifeMonths * periods;
 		
-		aa.setA_Period_Start(periods + 1);
-		aa.setA_Accumulated_Depr(BigDecimal.valueOf(monthlyExpenseSL));
-		aa.setA_Accumulated_Depr_F(BigDecimal.valueOf(monthlyExpenseSL));
 		
 		return "";
 	}

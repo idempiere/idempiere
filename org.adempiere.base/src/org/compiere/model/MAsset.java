@@ -100,7 +100,8 @@ public class MAsset extends X_A_Asset
 		setIsOwned(true);
 		setIsInPosession(true);
 		setA_Asset_CreateDate(inoutLine.getM_InOut().getMovementDate());
-		
+		//Fixed Asset should created in Organization as per the PO, MR, invoice and the asset addition document was recorded in.
+		setAD_Org_ID(invoiceLine.getAD_Org_ID());
 		// Asset Group:
 		int A_Asset_Group_ID = invoiceLine.getA_Asset_Group_ID();
 		MProduct product = MProduct.get(getCtx(), invoiceLine.getM_Product_ID());
@@ -410,22 +411,25 @@ public class MAsset extends X_A_Asset
 			// for each asset group acounting create an asset accounting and a workfile too
 			for (MAssetGroupAcct assetgrpacct :  MAssetGroupAcct.forA_Asset_Group_ID(getCtx(), getA_Asset_Group_ID()))
 			{			
-				// Asset Accounting
-				MAssetAcct assetacct = new MAssetAcct(this, assetgrpacct);
-				assetacct.setAD_Org_ID(getAD_Org_ID()); //added by @win
-				assetacct.saveEx();
-				
-				// Asset Depreciation Workfile
-				MDepreciationWorkfile assetwk = new MDepreciationWorkfile(this, assetacct.getPostingType(), assetgrpacct);
-				assetwk.setAD_Org_ID(getAD_Org_ID()); //added by @win
-				assetwk.setUseLifeYears(0);
-				assetwk.setUseLifeMonths(0);
-				assetwk.setUseLifeYears_F(0);
-				assetwk.setUseLifeMonths_F(0);
-				assetwk.saveEx();
-				
-				// Change Log
-				MAssetChange.createAndSave(getCtx(), "CRT", new PO[]{this, assetwk, assetacct}, null);
+				if (assetgrpacct.getAD_Org_ID() == 0 || assetgrpacct.getAD_Org_ID() == getAD_Org_ID()) 
+				{
+					// Asset Accounting
+					MAssetAcct assetacct = new MAssetAcct(this, assetgrpacct);
+					assetacct.setAD_Org_ID(getAD_Org_ID()); //added by @win
+					assetacct.saveEx();
+					
+					// Asset Depreciation Workfile
+					MDepreciationWorkfile assetwk = new MDepreciationWorkfile(this, assetacct.getPostingType(), assetgrpacct);
+					assetwk.setAD_Org_ID(getAD_Org_ID()); //added by @win
+					assetwk.setUseLifeYears(assetgrpacct.getUseLifeYears());
+					assetwk.setUseLifeMonths(assetgrpacct.getUseLifeMonths());
+					assetwk.setUseLifeYears_F(assetgrpacct.getUseLifeYears_F());
+					assetwk.setUseLifeMonths_F(assetgrpacct.getUseLifeMonths_F());
+					assetwk.saveEx();
+					
+					// Change Log
+					MAssetChange.createAndSave(getCtx(), "CRT", new PO[]{this, assetwk, assetacct}, null);
+				}
 			}
 			
 		}

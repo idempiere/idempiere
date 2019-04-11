@@ -33,7 +33,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20190409L;
 
     /** Standard Constructor */
     public X_A_Asset_Addition (Properties ctx, int A_Asset_Addition_ID, String trxName)
@@ -41,20 +41,12 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
       super (ctx, A_Asset_Addition_ID, trxName);
       /** if (A_Asset_Addition_ID == 0)
         {
-			setA_Accumulated_Depr (Env.ZERO);
-// 0
-			setA_Accumulated_Depr_Adjust (false);
-// N
-			setA_Accumulated_Depr_F (Env.ZERO);
-// 0
 			setA_Asset_Addition_ID (0);
 			setA_Asset_ID (0);
 			setA_CapvsExp (null);
 // 'Cap'
 			setA_CreateAsset (false);
 // 'N'
-			setA_Period_Start (0);
-// 0
 			setA_QTY_Current (Env.ZERO);
 // 0
 			setA_SourceType (null);
@@ -66,10 +58,6 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 			setC_Currency_ID (0);
 			setDateDoc (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
-			setDeltaUseLifeYears (0);
-// 0
-			setDeltaUseLifeYears_F (0);
-// 0
 			setDocStatus (null);
 // 'DR'
 			setIsApproved (false);
@@ -110,61 +98,6 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	/** Set Accumulated Depreciation.
-		@param A_Accumulated_Depr Accumulated Depreciation	  */
-	public void setA_Accumulated_Depr (BigDecimal A_Accumulated_Depr)
-	{
-		set_Value (COLUMNNAME_A_Accumulated_Depr, A_Accumulated_Depr);
-	}
-
-	/** Get Accumulated Depreciation.
-		@return Accumulated Depreciation	  */
-	public BigDecimal getA_Accumulated_Depr () 
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_Accumulated_Depr);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** Set Adjust Accumulated Depreciation.
-		@param A_Accumulated_Depr_Adjust Adjust Accumulated Depreciation	  */
-	public void setA_Accumulated_Depr_Adjust (boolean A_Accumulated_Depr_Adjust)
-	{
-		set_Value (COLUMNNAME_A_Accumulated_Depr_Adjust, Boolean.valueOf(A_Accumulated_Depr_Adjust));
-	}
-
-	/** Get Adjust Accumulated Depreciation.
-		@return Adjust Accumulated Depreciation	  */
-	public boolean isA_Accumulated_Depr_Adjust () 
-	{
-		Object oo = get_Value(COLUMNNAME_A_Accumulated_Depr_Adjust);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Accumulated Depreciation (fiscal).
-		@param A_Accumulated_Depr_F Accumulated Depreciation (fiscal)	  */
-	public void setA_Accumulated_Depr_F (BigDecimal A_Accumulated_Depr_F)
-	{
-		set_Value (COLUMNNAME_A_Accumulated_Depr_F, A_Accumulated_Depr_F);
-	}
-
-	/** Get Accumulated Depreciation (fiscal).
-		@return Accumulated Depreciation (fiscal)	  */
-	public BigDecimal getA_Accumulated_Depr_F () 
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_Accumulated_Depr_F);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
 
 	/** Set Asset Addition.
 		@param A_Asset_Addition_ID Asset Addition	  */
@@ -297,23 +230,6 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	public int getA_Life_Period_Min () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Life_Period_Min);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set A_Period_Start.
-		@param A_Period_Start A_Period_Start	  */
-	public void setA_Period_Start (int A_Period_Start)
-	{
-		set_Value (COLUMNNAME_A_Period_Start, Integer.valueOf(A_Period_Start));
-	}
-
-	/** Get A_Period_Start.
-		@return A_Period_Start	  */
-	public int getA_Period_Start () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Period_Start);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -682,43 +598,6 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	public Timestamp getDateDoc () 
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateDoc);
-	}
-
-	/** Set Delta Use Life Years.
-		@param DeltaUseLifeYears Delta Use Life Years	  */
-	public void setDeltaUseLifeYears (int DeltaUseLifeYears)
-	{
-		set_Value (COLUMNNAME_DeltaUseLifeYears, Integer.valueOf(DeltaUseLifeYears));
-	}
-
-	/** Get Delta Use Life Years.
-		@return Delta Use Life Years	  */
-	public int getDeltaUseLifeYears () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_DeltaUseLifeYears);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Delta Use Life Years (fiscal).
-		@param DeltaUseLifeYears_F 
-		Delta Use Life Years (fiscal)
-	  */
-	public void setDeltaUseLifeYears_F (int DeltaUseLifeYears_F)
-	{
-		set_Value (COLUMNNAME_DeltaUseLifeYears_F, Integer.valueOf(DeltaUseLifeYears_F));
-	}
-
-	/** Get Delta Use Life Years (fiscal).
-		@return Delta Use Life Years (fiscal)
-	  */
-	public int getDeltaUseLifeYears_F () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_DeltaUseLifeYears_F);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Description.

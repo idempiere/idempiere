@@ -147,4 +147,36 @@ public class MAssetChange extends X_A_Asset_Change
 		if (log.isLoggable(Level.FINE)) log.fine("Leaving: po=" + po);
 	}
 	/** ARHIPAC: TEO: END ------------------------------------------------------------------ */
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param A_Asset_ID
+	 * @param postingType
+	 * @param trxName
+	 * @param Account Schema
+	 * @return assetChange
+	 * @see #get(Properties, int, String, String)
+	 */
+	public static MAssetChange get (Properties ctx, int A_Asset_ID, String changeType,  String trxName, int C_AcctSchema_ID)
+	{
+		if (A_Asset_ID <= 0 || changeType == null)
+		{
+			return null;
+		}
+		
+	
+		final String whereClause = COLUMNNAME_A_Asset_ID+"=? AND "
+								  +COLUMNNAME_ChangeType+"=? AND " 
+								  +COLUMNNAME_C_AcctSchema_ID + "=?" ;
+
+		
+		MAssetChange ac = new Query(ctx, MAssetChange.Table_Name, whereClause, trxName)
+				.setParameters(new Object[]{A_Asset_ID, changeType,C_AcctSchema_ID})
+				.firstOnly();
+		
+		
+	
+		return ac;
+	}
 }	//	MAssetChange

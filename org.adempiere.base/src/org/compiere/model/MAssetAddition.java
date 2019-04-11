@@ -122,9 +122,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		MAsset asset = assetAdd.createAsset();
 		asset.dump();
 		//@win add
-		MAssetGroupAcct assetgrpacct = MAssetGroupAcct.forA_Asset_Group_ID(asset.getCtx(), asset.getA_Asset_Group_ID(), assetAdd.getPostingType());
-		assetAdd.setDeltaUseLifeYears(assetgrpacct.getUseLifeYears());
-		assetAdd.setDeltaUseLifeYears_F(assetgrpacct.getUseLifeYears_F());
+		
 		} else {
 			assetAdd.setA_Asset_ID(match.getC_InvoiceLine().getA_Asset_ID());
 			assetAdd.setA_CreateAsset(false);
@@ -179,10 +177,6 @@ public class MAssetAddition extends X_A_Asset_Addition
 		asset.saveEx();
 		asset.dump();
 		
-		// Copy UseLife values from asset group to workfile
-		MAssetGroupAcct assetgrpacct = MAssetGroupAcct.forA_Asset_Group_ID(asset.getCtx(), asset.getA_Asset_Group_ID(), assetAdd.getPostingType());
-		assetAdd.setDeltaUseLifeYears(assetgrpacct.getUseLifeYears());
-		assetAdd.setDeltaUseLifeYears_F(assetgrpacct.getUseLifeYears_F());
 		assetAdd.setA_Asset(asset);
 		assetAdd.saveEx();
 		//@win add
@@ -262,8 +256,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		setSourceAmt(project.getProjectBalanceAmt());
 		setDateDoc(new Timestamp (System.currentTimeMillis()));
 		setA_CreateAsset(true); //added by @win as create from project will certainly for createnew
-		setDeltaUseLifeYears(I_ZERO);
-		setDeltaUseLifeYears_F(I_ZERO);
+	
 		setC_DocType_ID();
 		
 		Timestamp dateAcct = new Timestamp (System.currentTimeMillis());
@@ -304,14 +297,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		setDateDoc(ifa.getAssetServiceDate());
 		setM_Locator_ID(ifa.getM_Locator_ID());
 		
-		boolean isAccmDeprAdjust = (ifa.getA_Accumulated_Depr().compareTo(Env.ZERO) > 0) ? true : false;
-		setA_Accumulated_Depr_Adjust(isAccmDeprAdjust);
-		setA_Period_Start(ifa.getA_Current_Period());
-		
-		setA_Accumulated_Depr(ifa.getA_Accumulated_Depr());
-		setA_Accumulated_Depr_F(ifa.getA_Accumulated_Depr_F());
-		setDeltaUseLifeYears((int)(ifa.getUseLifeMonths() / 12));
-		setDeltaUseLifeYears_F((int)(ifa.getUseLifeMonths_F() / 12));
+	
 		
 		setA_CapvsExp(MAssetAddition.A_CAPVSEXP_Capital); //added by zuhri, import must be in Capital
 		setA_CreateAsset(true); //added by zuhri, import must be create asset
@@ -367,7 +353,8 @@ public class MAssetAddition extends X_A_Asset_Addition
 		setC_Currency_ID(mi.getC_InvoiceLine().getC_Invoice().getC_Currency_ID());
 		setC_ConversionType_ID(mi.getC_InvoiceLine().getC_Invoice().getC_ConversionType_ID());
 		setDateDoc(mi.getM_InOutLine().getM_InOut().getMovementDate());
-		setDateAcct(mi.getM_InOutLine().getM_InOut().getMovementDate());
+		setDateAcct(mi.getDateAcct());
+		setAD_Org_ID(mi.getAD_Org_ID());
 		m_cacheMatchInv.set(mi);
 	}
 	
@@ -662,7 +649,11 @@ public class MAssetAddition extends X_A_Asset_Addition
 		MDepreciationWorkfile assetwk = MDepreciationWorkfile.get(getCtx(), getA_Asset_ID(), getPostingType(), get_TrxName());
 		if (assetwk == null)
 		{
-			assetwk = new MDepreciationWorkfile(asset, getPostingType(), null);
+		
+			for (MAssetGroupAcct assetgrpacct :  MAssetGroupAcct.forA_Asset_Group_ID(getCtx(), asset.getA_Asset_Group_ID(), getPostingType()))
+			{
+				assetwk = new MDepreciationWorkfile(asset, getPostingType(), assetgrpacct);
+			}
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("workfile: " + assetwk);
 		//
@@ -674,20 +665,53 @@ public class MAssetAddition extends X_A_Asset_Addition
 		}
 		*/
 		//
-		// Do we have entries that are not processed and before this date:
-		if (this.getA_CapvsExp().equals(A_CAPVSEXP_Capital)) { 
-		//@win modification to asset value and use life should be restricted to Capital
-		MDepreciationExp.checkExistsNotProcessedEntries(assetwk.getCtx(), assetwk.getA_Asset_ID(), getDateAcct(), assetwk.getPostingType(), assetwk.get_TrxName());
-		//
-		if (this.getA_Salvage_Value().signum() > 0) {
-			assetwk.setA_Salvage_Value(this.getA_Salvage_Value());
-		}
-		assetwk.adjustCost(getAssetValueAmt(), getA_QTY_Current(), isA_CreateAsset()); // reset if isA_CreateAsset
-		assetwk.adjustUseLife(getDeltaUseLifeYears(), getDeltaUseLifeYears_F(), isA_CreateAsset()); // reset if isA_CreateAsset
-		assetwk.setDateAcct(getDateAcct());
-		assetwk.setProcessed(true);
-		assetwk.saveEx();
-		} 
+		for (MDepreciationWorkfile assetworkFile :  MDepreciationWorkfile.forA_Asset_ID(getCtx(), getA_Asset_ID(), get_TrxName()))
+		{
+			assetworkFile.setDateAcct(getDateAcct());
+			if (assetworkFile.getC_AcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
+			{
+				BigDecimal convertedAssetCost  =  MConversionRate.convert(getCtx(), getAssetSourceAmt(),
+						getC_Currency_ID(), assetworkFile.getC_AcctSchema().getC_Currency_ID() ,
+						getDateAcct(), getC_ConversionType_ID(),
+						getAD_Client_ID(), getAD_Org_ID());
+				assetworkFile.adjustCost(convertedAssetCost, getA_QTY_Current(), isA_CreateAsset()); // reset if isA_CreateAsset
+			} else {
+				assetworkFile.adjustCost(getAssetSourceAmt(), getA_QTY_Current(), isA_CreateAsset()); // reset if isA_CreateAsset
+
+			}
+			// Do we have entries that are not processed and before this date:
+			if (this.getA_CapvsExp().equals(A_CAPVSEXP_Capital)) { 
+			//@win modification to asset value and use life should be restricted to Capital
+			MDepreciationExp.checkExistsNotProcessedEntries(assetworkFile.getCtx(), assetworkFile.getA_Asset_ID(), getDateAcct(), assetworkFile.getPostingType(), assetworkFile.get_TrxName());
+			//
+			if (this.getA_Salvage_Value().signum() > 0) {
+				if (assetworkFile.getC_AcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
+				{
+					BigDecimal salvageValue = MConversionRate.convert(getCtx(), this.getA_Salvage_Value(),
+							getC_Currency_ID(), assetworkFile.getC_AcctSchema().getC_Currency_ID() ,
+							getDateAcct(), getC_ConversionType_ID(),
+							getAD_Client_ID(), getAD_Org_ID());
+					assetworkFile.setA_Salvage_Value(salvageValue);
+				} else{
+					assetworkFile.setA_Salvage_Value(this.getA_Salvage_Value());
+				}
+			}
+			assetworkFile.setDateAcct(getDateAcct());
+			assetworkFile.setProcessed(true);
+			assetworkFile.saveEx();
+			}
+			//@win set initial depreciation period = 1 
+			if (isA_CreateAsset())
+			{
+				assetworkFile.setA_Current_Period(1);
+				assetworkFile.saveEx();
+			}
+			//
+			// Rebuild depreciation:
+			assetworkFile.buildDepreciation();
+		}		
+				
+		
 		MAssetChange.createAddition(this, assetwk);
 		
 		// Setting locator if is CreateAsset
@@ -707,24 +731,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		asset.changeStatus(MAsset.A_ASSET_STATUS_Activated, getDateAcct());
 		asset.saveEx();
 		
-		//@win set initial depreciation period = 1 
-		if (isA_CreateAsset() && !isA_Accumulated_Depr_Adjust())
-		{
-			assetwk.setA_Current_Period(1);
-			assetwk.saveEx();
-		}
-		//
 		
-		if (isA_Accumulated_Depr_Adjust())
-		{
-			if (isA_CreateAsset() && isA_Accumulated_Depr_Adjust())
-			{
-				assetwk.setA_Current_Period(getA_Period_Start());
-				assetwk.setA_Accumulated_Depr(getA_Accumulated_Depr());
-				assetwk.setA_Accumulated_Depr_F(getA_Accumulated_Depr_F());
-				assetwk.saveEx();
-			}
-		}
 		
 		// Accumulated depreciation (if any):
 		/*
@@ -752,8 +759,6 @@ public class MAssetAddition extends X_A_Asset_Addition
 		}
 		*/
 		
-		// Rebuild depreciation:
-		assetwk.buildDepreciation();
 		
 		//
 		updateSourceDocument(false);
@@ -827,7 +832,6 @@ public class MAssetAddition extends X_A_Asset_Addition
 		
 		// adjust the asset value
 		assetwk.adjustCost(getAssetValueAmt().negate(), getA_QTY_Current().negate(), false);
-		assetwk.adjustUseLife(0 - getDeltaUseLifeYears(), 0 - getDeltaUseLifeYears_F(), false);
 		assetwk.saveEx();
 		
 		//
@@ -1130,9 +1134,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 	
 	public boolean hasZeroValues()
 	{
-		return
-				getDeltaUseLifeYears() <= 0 || getDeltaUseLifeYears_F() <= 0
-				|| getDeltaUseLifeYears() != getDeltaUseLifeYears_F() ||
+		return				
 				 getAssetValueAmt().signum() <= 0
 		;
 	}

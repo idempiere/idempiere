@@ -72,7 +72,7 @@ implements DocAction
 		{
 			return false;
 		}
-		if (!isProcessed() && (newRecord || is_ValueChanged(COLUMNNAME_DateAcct)))
+		if (!isProcessed() && (newRecord || is_ValueChanged(COLUMNNAME_DateAcct) || is_ValueChanged(COLUMNNAME_C_AcctSchema_ID)))
 		{
 			selectLines(); 
 		}
@@ -126,10 +126,11 @@ implements DocAction
 				+ " WHERE "
 					+ MDepreciationExp.COLUMNNAME_A_Depreciation_Entry_ID + " IS NULL"
 					+ " AND TRUNC("+MDepreciationExp.COLUMNNAME_DateAcct+",'MONTH') = ?"
-					+ " AND AD_Client_ID=? AND AD_Org_ID=?";
+					+ " AND AD_Client_ID=? AND AD_Org_ID=?"
+					+ " AND " + MDepreciationExp.COLUMNNAME_C_AcctSchema_ID +"=?" ;
 		;
 		Timestamp dateAcct = TimeUtil.trunc(getDateAcct(), TimeUtil.TRUNC_MONTH);
-		int no = DB.executeUpdateEx(sql, new Object[]{get_ID(), dateAcct, getAD_Client_ID(), getAD_Org_ID()}, get_TrxName());
+		int no = DB.executeUpdateEx(sql, new Object[]{get_ID(), dateAcct, getAD_Client_ID(), getAD_Org_ID(), getC_AcctSchema_ID()}, get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Updated #" + no);
 	}
 	
@@ -140,8 +141,9 @@ implements DocAction
 	{
 		final String trxName = get_TrxName();
 		final List<Object> params = new ArrayList<Object>();
-		String whereClause = MDepreciationExp.COLUMNNAME_A_Depreciation_Entry_ID+"=?";
+		String whereClause = MDepreciationExp.COLUMNNAME_A_Depreciation_Entry_ID+"=? AND " + MDepreciationExp.COLUMNNAME_C_AcctSchema_ID + "=?" ;
 		params.add(get_ID());
+		params.add(getC_AcctSchema_ID());
 		
 		if (onlyNotProcessed)
 		{

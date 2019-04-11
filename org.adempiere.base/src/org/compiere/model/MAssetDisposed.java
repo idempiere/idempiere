@@ -414,11 +414,40 @@ implements DocAction
 	
 	private void createDisposal()
 	{
-		MDepreciationWorkfile assetwk = MDepreciationWorkfile.get(getCtx(), getA_Asset_ID(), getPostingType(), get_TrxName());
-		assetwk.adjustCost(getA_Disposal_Amt().negate(), Env.ZERO, false);
-		assetwk.adjustAccumulatedDepr(getA_Accumulated_Depr_Delta().negate(), getA_Accumulated_Depr_Delta().negate(), false);
-		assetwk.saveEx();
-		assetwk.buildDepreciation();
+		for (MDepreciationWorkfile assetwk :  MDepreciationWorkfile.forA_Asset_ID(getCtx(), getA_Asset_ID(), get_TrxName()))
+		{
+			BigDecimal disposalAmt = Env.ZERO;
+			BigDecimal accumDeprAmt = Env.ZERO;
+			if (assetwk.getC_AcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
+			{
+				disposalAmt  =  assetwk.getA_Asset_Cost();
+				accumDeprAmt = assetwk.getA_Accumulated_Depr();
+			} else
+			{
+				disposalAmt = getA_Disposal_Amt();
+				accumDeprAmt = getA_Accumulated_Depr_Delta();
+			}			
+			
+			MAssetChange change = new MAssetChange (getCtx(), 0, get_TrxName());
+			change.setAD_Org_ID(getAD_Org_ID()); 
+			change.setA_Asset_ID(getA_Asset_ID());
+			change.setChangeType(MAssetChange.CHANGETYPE_Disposal);
+			change.setTextDetails(MRefList.getListDescription (getCtx(),"A_Update_Type" , MAssetChange.CHANGETYPE_Disposal));
+			change.setPostingType(assetwk.getPostingType());
+			change.setAssetValueAmt(disposalAmt);
+			change.setAssetBookValueAmt(assetwk.getA_Asset_Remaining());
+			change.setAssetAccumDepreciationAmt(accumDeprAmt);
+			change.setA_QTY_Current(assetwk.getA_QTY_Current());
+			change.setC_AcctSchema_ID(assetwk.getC_AcctSchema_ID());
+			change.setAssetDisposalDate(getA_Disposed_Date());
+			change.setIsDisposed(true);
+			change.saveEx(get_TrxName());
+			
+			assetwk.adjustCost(disposalAmt.negate(), Env.ZERO, false);
+			assetwk.adjustAccumulatedDepr(accumDeprAmt.negate(), accumDeprAmt.negate(), false);
+			assetwk.saveEx();
+			assetwk.buildDepreciation();
+		}
 		//
 		// Delete not processed expense entries
 		List<MDepreciationExp> list = MDepreciationExp.getNotProcessedEntries(getCtx(), getA_Asset_ID(), getPostingType(), get_TrxName());

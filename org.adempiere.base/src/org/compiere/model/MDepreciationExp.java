@@ -92,6 +92,7 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 		depexp.setA_Period(A_Period);
 		depexp.setIsDepreciated(true);
 		depexp.setDateAcct(DateAcct);
+		depexp.setC_AcctSchema_ID(assetwk.getC_AcctSchema_ID());
 		//
 		depexp.updateFrom(assetwk);
 		//
@@ -114,11 +115,6 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 		setA_Asset_Remaining_F(wk.getA_Asset_Remaining_F());
 	}
 	
-	private MDepreciationWorkfile getA_Depreciation_Workfile()
-	{
-		return MDepreciationWorkfile.get(getCtx(), getA_Asset_ID(), getPostingType(), get_TrxName());
-	}
-
 	/**	Create Depreciation Entries
 	 *	Produce record:
 	 *	<pre>
@@ -171,7 +167,7 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 		}
 		
 		//
-		MDepreciationWorkfile assetwk = getA_Depreciation_Workfile();
+		MDepreciationWorkfile assetwk = MDepreciationWorkfile.get(getCtx(), getA_Asset_ID(), getPostingType(),get_TrxName(), getC_AcctSchema_ID());
 		if (assetwk == null)
 		{
 			throw new AssetException("@NotFound@ @A_Depreciation_Workfile_ID@");
@@ -188,8 +184,12 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 				throw new AssetNotActiveException(assetwk.getAsset().get_ID());
 			}
 			//
-			setDateAcct(assetwk.getDateAcct());
 			assetwk.adjustAccumulatedDepr(getExpense(), getExpense_F(), false);
+			// Update workfile - Remaining asset cost
+			assetwk.setA_Current_Period();
+			assetwk.saveEx();
+			//adjust to the last day of the month in before save assetwk.
+			setDateAcct(assetwk.getDateAcct());
 		}
 		else
 		{
@@ -201,9 +201,7 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 		saveEx();
 
 		//
-		// Update workfile
-		assetwk.setA_Current_Period();
-		assetwk.saveEx();
+		
 	}
 	
 	
@@ -211,10 +209,13 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 	{
 		if (isProcessed())
 		{
-			// TODO : check if we can reverse it (check period, check dateacct etc)
-			MDepreciationWorkfile assetwk = getA_Depreciation_Workfile();
-			assetwk.adjustAccumulatedDepr(getA_Accumulated_Depr().negate(), getA_Accumulated_Depr_F().negate(), false);
-			assetwk.saveEx();
+			Collection<MDepreciationWorkfile> workFiles = MDepreciationWorkfile.forA_Asset_ID(getCtx(), getA_Asset_ID(), get_TrxName());
+			for(MDepreciationWorkfile assetwk : workFiles) {	
+				// TODO : check if we can reverse it (check period, check dateacct etc)
+				//MDepreciationWorkfile assetwk = getA_Depreciation_Workfile();
+				assetwk.adjustAccumulatedDepr(getA_Accumulated_Depr().negate(), getA_Accumulated_Depr_F().negate(), false);
+				assetwk.saveEx();
+			}
 		}
 		// Try to delete postings
 		if (isPosted())
@@ -236,9 +237,12 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 		// If it was processed, we need to update workfile's current period
 		if (isProcessed())
 		{
-			MDepreciationWorkfile wk = getA_Depreciation_Workfile();
-			wk.setA_Current_Period();
-			wk.saveEx();
+			Collection<MDepreciationWorkfile> workFiles = MDepreciationWorkfile.forA_Asset_ID(getCtx(), getA_Asset_ID(), get_TrxName());
+			for(MDepreciationWorkfile wk : workFiles) {	
+				//MDepreciationWorkfile wk = getA_Depreciation_Workfile();
+				wk.setA_Current_Period();
+				wk.saveEx();
+			}
 		}
 		//
 		return true;

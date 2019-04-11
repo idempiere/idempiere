@@ -205,9 +205,13 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 			return false;
 		}
 		
+		Collection<MDepreciationWorkfile> workFiles = MDepreciationWorkfile.forA_Asset_ID(getCtx(), getA_Asset_ID(), get_TrxName());
+		for(MDepreciationWorkfile assetwk : workFiles) {	
 		// check if is fully depreciated
-		BigDecimal remainingAmt_C = getRemainingCost(null, false);
-		BigDecimal remainingAmt_F = getRemainingCost(null, true);
+			BigDecimal remainingAmt_C = assetwk.getA_Depreciation_Workfile_ID() == getA_Depreciation_Workfile_ID() 
+					? getRemainingCost(null, false) : assetwk.getRemainingCost(null, false);
+			BigDecimal remainingAmt_F = assetwk.getA_Depreciation_Workfile_ID() == getA_Depreciation_Workfile_ID()
+					? getRemainingCost(null, true) : assetwk.getRemainingCost(null, true);
 		if(remainingAmt_C.signum() == 0 && remainingAmt_F.signum() == 0)
 		{
 			//if A_Asset_Cost is 0 have a voided addition, in this case asset is not full depreciated 
@@ -215,11 +219,14 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 			{
 			 return false;	
 			}
-			//
-			return true;
+		}
+			else
+			{
+				return false;
+			}
 		}
 		
-		return false;
+		return true;
 	}
 	
 	/**
@@ -228,6 +235,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	public MDepreciationWorkfile(MAsset asset, String postingType, MAssetGroupAcct assetgrpacct)
 	{
 		this(asset.getCtx(), 0, asset.get_TrxName());
+		setC_AcctSchema_ID(assetgrpacct.getC_AcctSchema_ID());
 		setA_Asset_ID(asset.getA_Asset_ID());
 		setAD_Org_ID(asset.getAD_Org_ID()); //@win added
 		setA_Asset_Cost(asset.getA_Asset_Cost());
@@ -239,10 +247,6 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		setPostingType(postingType);
 		//
 		// Copy UseLife values from asset group to workfile
-		if (assetgrpacct == null)
-		{
-			assetgrpacct = MAssetGroupAcct.forA_Asset_Group_ID(asset.getCtx(), asset.getA_Asset_Group_ID(), postingType);
-		}
 		UseLifeImpl.copyValues(this, assetgrpacct);
 		
 		//
@@ -291,14 +295,16 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	}
 	
 	/**
-	 * Get/load workfile from cache (if trxName is null)
+	 * 
 	 * @param ctx
 	 * @param A_Asset_ID
 	 * @param postingType
 	 * @param trxName
+	 * @param Account Schema
 	 * @return workfile
+	 * @see #get(Properties, int, String, String)
 	 */
-	public static MDepreciationWorkfile get (Properties ctx, int A_Asset_ID, String postingType, String trxName)
+	public static MDepreciationWorkfile get (Properties ctx, int A_Asset_ID, String postingType,  String trxName, int C_AcctSchema_ID)
 	{
 		if (A_Asset_ID <= 0 || postingType == null)
 		{
@@ -320,9 +326,11 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 											.firstOnly();
 		*/
 		final String whereClause = COLUMNNAME_A_Asset_ID+"=?"
-									+" AND "+COLUMNNAME_PostingType+"=? ";
+									+" AND "+COLUMNNAME_PostingType+"=? AND " +  COLUMNNAME_C_AcctSchema_ID + "=?" ;
+
+		int acctSchemaId =  C_AcctSchema_ID==0 ? MClient.get(ctx).getAcctSchema().get_ID() : C_AcctSchema_ID;
 		MDepreciationWorkfile wk = new Query(ctx, MDepreciationWorkfile.Table_Name, whereClause, trxName)
-				.setParameters(new Object[]{A_Asset_ID, postingType})
+				.setParameters(new Object[]{A_Asset_ID, postingType,acctSchemaId})
 				.firstOnly();
 		
 		
@@ -331,6 +339,19 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 			s_cacheAsset.put(key, wk);
 		}
 		return wk;
+	}
+	
+	/**
+	 * Get/load workfile from cache (if trxName is null)
+	 * @param ctx
+	 * @param A_Asset_ID
+	 * @param postingType
+	 * @param trxName
+	 * @return workfile
+	 */
+	public static MDepreciationWorkfile get (Properties ctx, int A_Asset_ID, String postingType, String trxName)
+	{
+		return get(ctx, A_Asset_ID, postingType, trxName, 0);		
 	}
 	/** Static cache: Asset/PostingType -> Workfile */
 	private static CCache<MultiKey, MDepreciationWorkfile>
@@ -362,7 +383,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	 */
 	public MAssetAcct getA_AssetAcct(Timestamp dateAcct, String trxName)
 	{
-		return MAssetAcct.forA_Asset_ID(getCtx(), getA_Asset_ID(), getPostingType(), dateAcct, trxName);
+		return MAssetAcct.forA_Asset_ID(getCtx(), getC_AcctSchema_ID(), getA_Asset_ID(), getPostingType(), dateAcct, trxName);
 	}
 
 	/**	Returns the current cost of FAs. It is calculated as the difference between acquisition value and the value that you (A_Salvage_Value)
@@ -562,10 +583,11 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		String whereClause = MDepreciationExp.COLUMNNAME_A_Asset_ID+"=?"
 					+" AND "+MDepreciationExp.COLUMNNAME_PostingType+"=?"
 					+" AND "+MDepreciationExp.COLUMNNAME_Processed+"=? AND IsActive=?"
+					+" AND "+MDepreciationExp.COLUMNNAME_C_AcctSchema_ID+"=?"
 		;
 		//
 		MDepreciationExp depexp = new Query(getCtx(), MDepreciationExp.Table_Name, whereClause, get_TrxName())
-									.setParameters(new Object[]{getA_Asset_ID(), getPostingType(), true, true})
+									.setParameters(new Object[]{getA_Asset_ID(), getPostingType(), true, true, getC_AcctSchema_ID()})
 									.setOrderBy(MDepreciationExp.COLUMNNAME_A_Period+" DESC"
 												+","+MDepreciationExp.COLUMNNAME_DateAcct+" DESC")
 									.first();
@@ -701,8 +723,9 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 							+" AND "+MDepreciationExp.COLUMNNAME_A_Period+">=?"
 							+" AND "+MDepreciationExp.COLUMNNAME_A_Asset_ID+"=?"
 							+" AND "+MDepreciationExp.COLUMNNAME_PostingType+"=?"
+							+" AND "+MDepreciationExp.COLUMNNAME_C_AcctSchema_ID+"=?"
 		;
-		Object[] params = new Object[]{false, A_Current_Period, getA_Asset_ID(), getPostingType()};
+		Object[] params = new Object[]{false, A_Current_Period, getA_Asset_ID(), getPostingType(), getC_AcctSchema_ID()};
 		int no = DB.executeUpdateEx(sql, params, trxName);
 		if (log.isLoggable(Level.FINE)) log.fine("sql=" + sql + "\nDeleted #" + no);
 	}	//	truncDepreciation
