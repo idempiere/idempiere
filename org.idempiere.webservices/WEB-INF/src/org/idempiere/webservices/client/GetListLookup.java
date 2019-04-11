@@ -25,8 +25,6 @@ import javax.xml.soap.SOAPEnvelope;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 
-import org.apache.axis.soap.MessageFactoryImpl;
-import org.apache.axis.soap.SOAPConnectionFactoryImpl;
 import org.compiere.model.Lookup;
 import org.compiere.util.DisplayType;
 import org.compiere.util.NamePair;
@@ -109,10 +107,10 @@ public class GetListLookup extends Lookup {
 		try {
 			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 			dataMap = new LinkedHashMap<Object, NamePair>();
-			cf = new SOAPConnectionFactoryImpl();
+			cf = SOAPConnectionFactory.newInstance();
 			SOAPConnection conn = cf.createConnection();
 			// Create a SOAPMessage instance
-			MessageFactory mf = new MessageFactoryImpl();
+			MessageFactory mf = MessageFactory.newInstance();
 			SOAPMessage message = mf.createMessage();
 			// Create a SOAP envelope and body
 			SOAPPart part = message.getSOAPPart();

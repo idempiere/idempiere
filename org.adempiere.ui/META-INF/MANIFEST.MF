@@ -6,7 +6,7 @@ Bundle-Version: 6.2.0.qualifier
 Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
- org.apache.xerces;bundle-version="0.0.0",
+ org.apache.servicemix.bundles.xerces;bundle-version="0.0.0",
  org.eclipse.equinox.app;bundle-version="0.0.0"
 Export-Package: org.compiere.apps,
  org.compiere.apps.form,

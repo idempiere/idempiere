@@ -161,13 +161,6 @@
          unpack="false"/>
 
    <plugin
-         id="javax.xml.stream"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.commons.codec"
          download-size="0"
          install-size="0"
@@ -182,7 +175,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.xerces"
+         id="org.apache.servicemix.bundles.xerces"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -190,13 +183,6 @@
 
    <plugin
          id="org.apache.xml.serializer"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.xml"
          download-size="0"
          install-size="0"
          version="0.0.0"
