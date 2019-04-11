@@ -183,30 +183,12 @@
 		<unit id="javax.security.auth.message.source" version="1.0.0.v201108011116"/>
 		<unit id="javax.security.jacc" version="1.4.0.v201205031350"/>
 		<unit id="javax.security.jacc.source" version="1.4.0.v201205031350"/>
-		<unit id="javax.servlet" version="3.1.0.v201410161800"/>
-		<unit id="javax.servlet.jsp" version="2.2.0.v201112011158"/>
-		<unit id="javax.servlet.jsp.jstl" version="1.2.0.v201105211821"/>
-		<unit id="javax.servlet.jsp.jstl.impl" version="1.2.0.v201210211230"/>
-		<unit id="javax.servlet.jsp.jstl.impl.source" version="1.2.0.v201210211230"/>
-		<unit id="javax.servlet.jsp.jstl.source" version="1.2.0.v201105211821"/>
-		<unit id="javax.servlet.jsp.source" version="2.2.0.v201112011158"/>
-		<unit id="javax.servlet.source" version="3.1.0.v201410161800"/>
 		<unit id="javax.transaction" version="1.1.1.v201105210645"/>
 		<unit id="javax.transaction.source" version="1.1.1.v201105210645"/>
 		<unit id="javax.validation" version="1.0.0.GA_v201205091237"/>
 		<unit id="javax.validation.source" version="1.0.0.GA_v201205091237"/>
-		<unit id="javax.websocket" version="1.0.0.v20140310-1603"/>
-		<unit id="javax.websocket.source" version="1.0.0.v20140310-1603"/>
-		<unit id="javax.ws.rs" version="2.0.1.v201504171603"/>
 		<unit id="javax.wsdl" version="1.6.2.v201012040545"/>
 		<unit id="javax.wsdl.source" version="1.6.2.v201012040545"/>
-		<unit id="javax.xml" version="1.3.4.v201005080400"/>
-		<unit id="javax.xml.bind" version="2.2.0.v201105210648"/>
-		<unit id="javax.xml.bind.source" version="2.2.0.v201105210648"/>
-		<unit id="javax.xml.rpc" version="1.1.0.v201209140446"/>
-		<unit id="javax.xml.soap" version="1.3.0.v201105210645"/>
-		<unit id="javax.xml.stream" version="1.0.1.v201004272200"/>
-		<unit id="javax.xml.ws" version="2.1.0.v200902101523"/>
 		<unit id="jnr.x86asm" version="1.0.2.v201505052040"/>
 		<unit id="lpg.runtime.java" version="2.0.17.v201004271640"/>
 		<unit id="lpg.runtime.java.source" version="2.0.17.v201004271640"/>
@@ -229,7 +211,6 @@
 		<unit id="org.aopalliance" version="1.0.0.v201105210816"/>
 		<unit id="org.apache.ant" version="1.9.6.v201510161327"/>
 		<unit id="org.apache.ant.source" version="1.9.6.v201510161327"/>
-		<unit id="org.apache.axis" version="1.4.0.v201411182030"/>
 		<unit id="org.apache.bcel" version="5.2.0.v201005080400"/>
 		<unit id="org.apache.bcel.source" version="5.2.0.v201005080400"/>
 		<unit id="org.apache.bsf" version="2.4.0.v201103030230"/>
@@ -466,7 +447,6 @@
 		<unit id="org.apache.xbean.naming.source" version="3.12.0.v201304201405"/>
 		<unit id="org.apache.xbean.reflect" version="3.12.0.v201304201405"/>
 		<unit id="org.apache.xbean.reflect.source" version="3.12.0.v201304201405"/>
-		<unit id="org.apache.xerces" version="2.9.0.v201101211617"/>
 		<unit id="org.apache.xml.resolver" version="1.2.0.v201005080400"/>
 		<unit id="org.apache.xml.security" version="1.4.2.v201005080400"/>
 		<unit id="org.apache.xml.serializer" version="2.7.1.v201005080400"/>
@@ -995,12 +975,6 @@
 		<unit id="javax.validation.api.source" version="1.1.0.Final"/>
 		<unit id="javax.websocket-api" version="1.1.0"/>
 		<unit id="javax.websocket-api.source" version="1.1.0"/>
-		<unit id="javax.ws.rs.jsr311-api" version="1.1.1"/>
-		<unit id="javax.ws.rs.jsr311-api.source" version="1.1.1"/>
-		<unit id="javax.xml.rpc-api" version="1.1.3"/>
-		<unit id="javax.xml.rpc-api.source" version="1.1.3"/>
-		<unit id="javax.xml.soap-api" version="1.4.0"/>
-		<unit id="javax.xml.soap-api.source" version="1.4.0"/>
 		<unit id="joda-time" version="2.10.0"/>
 		<unit id="joda-time.source" version="2.10.0"/>
 		<unit id="json" version="20171018.0.0"/>
@@ -1051,46 +1025,48 @@
 		<unit id="org.apache.commons.io.source" version="2.6.0"/>
 		<unit id="org.apache.commons.javaflow" version="1590792.0.0"/>
 		<unit id="org.apache.commons.javaflow.source" version="1590792.0.0"/>
-		<unit id="org.apache.cxf.cxf-core" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-core.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-bindings-object" version="3.1.17"/>
-		<unit id="org.apache.cxf.cxf-rt-bindings-object.source" version="3.1.17"/>
-		<unit id="org.apache.cxf.cxf-rt-bindings-soap" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-bindings-soap.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-bindings-xml" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-bindings-xml.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-databinding-jaxb" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-databinding-jaxb.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-databinding-xmlbeans" version="3.1.17"/>
-		<unit id="org.apache.cxf.cxf-rt-databinding-xmlbeans.source" version="3.1.17"/>
-		<unit id="org.apache.cxf.cxf-rt-frontend-jaxrs" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-frontend-jaxrs.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-frontend-jaxws" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-frontend-jaxws.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-frontend-simple" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-frontend-simple.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-management" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-management.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-rs-extension-providers" version="3.1.17"/>
-		<unit id="org.apache.cxf.cxf-rt-rs-extension-providers.source" version="3.1.17"/>
-		<unit id="org.apache.cxf.cxf-rt-rs-http-sci" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-rs-http-sci.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-rs-service-description" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-rs-service-description.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-transports-http" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-transports-http-jetty" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-transports-http-jetty.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-transports-http.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-ws-addr" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-ws-addr.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-ws-policy" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-ws-policy.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-wsdl" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-rt-wsdl.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-spring-boot-autoconfigure" version="3.2.6"/>
-		<unit id="org.apache.cxf.cxf-spring-boot-autoconfigure.source" version="3.2.6"/>
-		<unit id="org.apache.cxf.rt-ws-transfer" version="3.2.6"/>
-		<unit id="org.apache.cxf.rt-ws-transfer.source" version="3.2.6"/>
+		<unit id="org.apache.cxf.cxf-core" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-core.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-bindings-object" version="3.1.18"/>
+		<unit id="org.apache.cxf.cxf-rt-bindings-object.source" version="3.1.18"/>
+		<unit id="org.apache.cxf.cxf-rt-bindings-soap" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-bindings-soap.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-bindings-xml" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-bindings-xml.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-databinding-jaxb" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-databinding-jaxb.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-databinding-xmlbeans" version="3.1.18"/>
+		<unit id="org.apache.cxf.cxf-rt-databinding-xmlbeans.source" version="3.1.18"/>
+		<unit id="org.apache.cxf.cxf-rt-frontend-jaxrs" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-frontend-jaxrs.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-frontend-jaxws" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-frontend-jaxws.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-frontend-simple" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-frontend-simple.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-management" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-management.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-rs-extension-providers" version="3.1.18"/>
+		<unit id="org.apache.cxf.cxf-rt-rs-extension-providers.source" version="3.1.18"/>
+		<unit id="org.apache.cxf.cxf-rt-rs-http-sci" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-rs-http-sci.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-rs-service-description" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-rs-service-description.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-transports-http" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-transports-http-jetty" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-transports-http-jetty.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-transports-http.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-ws-addr" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-ws-addr.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-ws-policy" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-ws-policy.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-wsdl" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-wsdl.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-spring-boot-autoconfigure" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-spring-boot-autoconfigure.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.rt-ws-transfer" version="3.3.1"/>
+		<unit id="org.apache.cxf.rt-ws-transfer.source" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-security" version="3.3.1"/>
+		<unit id="org.apache.cxf.cxf-rt-security.source" version="3.3.1"/>
 		<unit id="org.apache.felix.inventory" version="1.0.6"/>
 		<unit id="org.apache.felix.inventory.source" version="1.0.6"/>
 		<unit id="org.apache.felix.webconsole" version="4.3.8"/>
@@ -1110,7 +1086,7 @@
 		<unit id="org.apache.poi.poi" version="3.15.0"/>
 		<unit id="org.apache.poi.poi-ooxml" version="3.15.0"/>
 		<unit id="org.apache.poi.poi-ooxml-schemas" version="3.15.0"/>
-		<unit id="org.apache.poi.poi-ooxml-schemas.source" version="3.15.0"/>
+		<!-- unit id="org.apache.poi.poi-ooxml-schemas.source" version="3.15.0"/ -->
 		<unit id="org.apache.poi.poi-ooxml.source" version="3.15.0"/>
 		<unit id="org.apache.poi.poi.source" version="3.15.0"/>
 		<unit id="org.apache.servicemix.bundles.cglib" version="3.2.6.1"/>
@@ -1299,8 +1275,8 @@
 		<unit id="zul.sources" version="8.6.0.1-patched"/>
 		<unit id="zweb" version="8.6.0.1"/>
 		<unit id="zweb.sources" version="8.6.0.1"/>
-		<repository location="https://raw.githubusercontent.com/idempiere/binary.file/master/p2.maven/maven-p2-R20190304"/>
-		<unit id="org.apache.axis" version="1.4.0.v201903052030"/>
+		<unit id="org.apache.servicemix.bundles.xerces" version="2.9.1.5"/>
+		<repository location="https://raw.githubusercontent.com/idempiere/binary.file/master/p2.maven/maven-p2-R20190411"/>
 	</location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="com.sun.istack.commons-runtime" version="3.0.8"/>

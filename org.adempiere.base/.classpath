@@ -6,13 +6,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="src/"/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/bsh.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-validator.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/cron4j.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jnlp.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jython-engine.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jython.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/avalon-framework-api.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

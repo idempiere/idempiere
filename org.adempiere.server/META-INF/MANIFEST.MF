@@ -34,7 +34,7 @@ Import-Package: javax.jms;version="1.1.0",
  org.restlet.security,
  org.restlet.service,
  org.restlet.util,
- org.w3c.dom;version="3.0.0"
+ org.w3c.dom
 Export-Package: org.adempiere.server,
  org.compiere.ldap,
  org.compiere.server,
