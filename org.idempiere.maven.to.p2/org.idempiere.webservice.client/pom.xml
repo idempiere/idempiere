@@ -165,6 +165,39 @@
 											<id>jakarta.xml.ws:jakarta.xml.ws-api:jar:${xml.ws.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
+											<override>true</override>
+											<instructions>
+												<Bundle-Description>JAX-WS (JSR 224) API</Bundle-Description>
+												<Bundle-DocURL>https://www.eclipse.org</Bundle-DocURL>
+												<Bundle-License>http://www.eclipse.org/org/documents/edl-v10.php</Bundle-License>
+												<Bundle-Name>JAX-WS API</Bundle-Name>
+												<Bundle-SymbolicName>jakarta.xml.ws-api</Bundle-SymbolicName>
+												<Bundle-Vendor>Eclipse Foundation</Bundle-Vendor>
+												<Bundle-Version>2.3.2</Bundle-Version>
+												<DynamicImport-Package>org.glassfish.hk2.osgiresourcelocator</DynamicImport-Package>
+												<Import-Package>javax.xml.bind;version="[2.3,3)",javax.xml.bind.annotati
+ on;version="[2.3,3)",javax.xml.namespace,javax.xml.soap;version="[1.4,2
+ )",javax.xml.transform,javax.xml.transform.stream,org.w3c.dom</Import-Package>
+												<Export-Package>javax.xml.ws.wsaddressing;uses:="javax.xml.bind.annotati
+ on,javax.xml.namespace,javax.xml.transform,javax.xml.ws,org.w3c.dom";ve
+ rsion="2.3.2",javax.xml.ws;uses:="javax.xml.bind,javax.xml.bind.annotat
+ ion,javax.xml.namespace,javax.xml.transform,javax.xml.ws.handler,javax.
+ xml.ws.spi,javax.xml.ws.spi.http,org.w3c.dom";version="2.3.2",javax.xml
+ .ws.soap;uses:="javax.xml.soap,javax.xml.ws,javax.xml.ws.spi";version="
+ 2.3.2",javax.xml.ws.spi;uses:="javax.xml.bind,javax.xml.namespace,javax
+ .xml.transform,javax.xml.ws,javax.xml.ws.handler,javax.xml.ws.wsaddress
+ ing,org.w3c.dom";version="2.3.2",javax.xml.ws.spi.http;version="2.3.2",
+ javax.xml.ws.http;uses:="javax.xml.ws";version="2.3.2",javax.xml.ws.han
+ dler;uses:="javax.xml.namespace,javax.xml.ws";version="2.3.2",javax.xml
+ .ws.handler.soap;uses:="javax.xml.bind,javax.xml.namespace,javax.xml.so
+ ap,javax.xml.ws.handler";version="2.3.2"</Export-Package>
+												<Extension-Name>jakarta.xml.ws</Extension-Name>
+												<Implementation-Vendor>Eclipse Foundation</Implementation-Vendor>
+												<Implementation-Vendor-Id>org.glassfish</Implementation-Vendor-Id>
+												<Implementation-Version>2.3.2</Implementation-Version>
+												<Specification-Vendor>Oracle Corporation</Specification-Vendor>
+												<Specification-Version>2.3</Specification-Version>
+											</instructions>
 										</artifact>
 										<artifact>
 											<!--https://github.com/eclipse-ee4j/jws-api-->
