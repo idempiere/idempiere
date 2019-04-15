@@ -30,7 +30,7 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20190415L;
 
     /** Standard Constructor */
     public X_AD_StyleLine (Properties ctx, int AD_StyleLine_ID, String trxName)
@@ -41,6 +41,8 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 			setAD_Style_ID (0);
 			setAD_StyleLine_ID (0);
 			setAD_StyleLine_UU (null);
+			setEntityType (null);
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
 			setInlineStyle (null);
 			setLine (0);
 // @SQL=SELECT COALESCE(MAX(Line),0)+10 FROM AD_StyleLine WHERE AD_Style_ID =@AD_Style_ID@
@@ -54,7 +56,7 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {
@@ -158,6 +160,26 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	public String getDisplayLogic () 
 	{
 		return (String)get_Value(COLUMNNAME_DisplayLogic);
+	}
+
+	/** EntityType AD_Reference_ID=389 */
+	public static final int ENTITYTYPE_AD_Reference_ID=389;
+	/** Set Entity Type.
+		@param EntityType 
+		Dictionary Entity Type; Determines ownership and synchronization
+	  */
+	public void setEntityType (String EntityType)
+	{
+
+		set_Value (COLUMNNAME_EntityType, EntityType);
+	}
+
+	/** Get Entity Type.
+		@return Dictionary Entity Type; Determines ownership and synchronization
+	  */
+	public String getEntityType () 
+	{
+		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Inline Style.
