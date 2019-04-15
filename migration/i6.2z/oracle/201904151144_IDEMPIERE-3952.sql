@@ -460,5 +460,5 @@ update ad_toolbarbutton set entitytype = 'D' where ad_toolbarbutton_id in (20004
 update AD_SearchDefinition set entitytype = 'D' where ad_searchdefinition_id in (50000,50001);
 update pa_documentstatus set entitytype = 'D' where pa_documentstatus_id in (200000,200001,200002,200003,200005,200004);
 
-SELECT register_migration_script('201904101655_IDEMPIERE-3947.sql') FROM dual
+SELECT register_migration_script('201904151144_IDEMPIERE-3952.sql') FROM dual
 ;

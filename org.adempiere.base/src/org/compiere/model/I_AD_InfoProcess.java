@@ -154,6 +154,21 @@ public interface I_AD_InfoProcess
 	  */
 	public String getDisplayLogic();
 
+    /** Column name EntityType */
+    public static final String COLUMNNAME_EntityType = "EntityType";
+
+	/** Set Entity Type.
+	  * Dictionary Entity Type;
+ Determines ownership and synchronization
+	  */
+	public void setEntityType (String EntityType);
+
+	/** Get Entity Type.
+	  * Dictionary Entity Type;
+ Determines ownership and synchronization
+	  */
+	public String getEntityType();
+
     /** Column name ImageURL */
     public static final String COLUMNNAME_ImageURL = "ImageURL";
 
