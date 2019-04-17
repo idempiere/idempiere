@@ -75,8 +75,7 @@ public class CalloutGLJournal extends CalloutEngine
 			String sql = "SELECT C_Period_ID "
 				+ "FROM C_Period "
 				+ "WHERE C_Year_ID IN "
-				+ "	(SELECT C_Year_ID FROM C_Year WHERE C_Calendar_ID ="
-				+ "  (SELECT C_Calendar_ID FROM AD_ClientInfo WHERE AD_Client_ID=?))"
+				+ "	(SELECT C_Year_ID FROM C_Year WHERE C_Calendar_ID=?)"
 				+ " AND ? BETWEEN StartDate AND EndDate"
 				// globalqss - cruiz - Bug [ 1577712 ] Financial Period Bug
 				+ " AND IsActive='Y'"
@@ -86,7 +85,9 @@ public class CalloutGLJournal extends CalloutEngine
 			try
 			{
 				pstmt = DB.prepareStatement(sql, null);
-				pstmt.setInt(1, AD_Client_ID);
+				int AD_Org_ID = mTab.getValue("AD_Org_ID") != null ? ((Number)mTab.getValue("AD_Org_ID")).intValue() : 0;
+				int C_Calendar_ID = MPeriod.getC_Calendar_ID(ctx, AD_Org_ID);
+				pstmt.setInt(1, C_Calendar_ID);
 				pstmt.setTimestamp(2, DateAcct);
 				rs = pstmt.executeQuery();
 				if (rs.next())

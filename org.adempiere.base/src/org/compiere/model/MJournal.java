@@ -26,7 +26,9 @@ import java.util.logging.Level;
 
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
@@ -169,12 +171,10 @@ public class MJournal extends X_GL_Journal implements DocAction
 		super.setDateAcct(DateAcct);
 		if (DateAcct == null)
 			return;
-		if (getC_Period_ID() != 0)
-			return;
 		int C_Period_ID = MPeriod.getC_Period_ID(getCtx(), DateAcct, getAD_Org_ID());
 		if (C_Period_ID == 0)
-			log.warning("setDateAcct - Period not found");
-		else
+			log.saveError("PeriodNotFound", " : " + DisplayType.getDateFormat().format(getDateAcct()));
+		else if (C_Period_ID != getC_Period_ID())
 			setC_Period_ID(C_Period_ID);
 	}	//	setDateAcct
 
@@ -306,7 +306,25 @@ public class MJournal extends X_GL_Journal implements DocAction
 				setDateDoc(getDateAcct());
 		}
 		if (getDateAcct() == null)
+		{
 			setDateAcct(getDateDoc());
+			if (CLogger.peekError() != null)
+				return false;
+		}
+		else if (!isProcessed())
+		{
+			//validate period
+			int C_Period_ID = MPeriod.getC_Period_ID(getCtx(), getDateAcct(), getAD_Org_ID());
+			if (C_Period_ID == 0)
+			{
+				log.saveError("PeriodNotFound", " : " + DisplayType.getDateFormat().format(getDateAcct()));
+				return false;
+			}
+			else if (C_Period_ID != getC_Period_ID())
+			{
+				setC_Period_ID(C_Period_ID);
+			}
+		}
 
 		// IDEMPIERE-63
 		// for documents that can be reactivated we cannot allow changing 

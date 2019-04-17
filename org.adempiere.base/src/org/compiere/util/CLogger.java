@@ -197,6 +197,16 @@ public class CLogger extends Logger implements Serializable
 	}   //  retrieveError
 
 	/**
+	 *  Peek Error from Stack
+	 *  @return AD_Message as Value and Message as String
+	 */
+	public static ValueNamePair peekError()
+	{
+		ValueNamePair vp = (ValueNamePair) Env.getCtx().get(LAST_ERROR);
+		return vp;
+	}   //  retrieveError
+	
+	/**
 	 * Get Error message from stack
 	 * @param defaultMsg default message (used when there are no errors on stack)
 	 * @return error message, or defaultMsg if there is not error message saved
