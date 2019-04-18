@@ -54,7 +54,7 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3424249393848608297L;
+	private static final long serialVersionUID = 5920767495976301905L;
 
 	/**
 	 * 	Create new Journal Batch by copying

@@ -53,7 +53,6 @@ public class CalloutGLJournal extends CalloutEngine
 		if (value == null)
 			return "";
 
-		int AD_Client_ID = Env.getContextAsInt(ctx, WindowNo, "AD_Client_ID");
 		Timestamp DateAcct = null;
 		if (colName.equals("DateAcct"))
 			DateAcct = (Timestamp)value;
@@ -69,8 +68,8 @@ public class CalloutGLJournal extends CalloutEngine
 			mTab.setValue("DateAcct", value);
 		}
 
-		//  When DateAcct is changed, set C_Period_ID
-		else if (colName.equals("DateAcct"))
+		//  When DateAcct/Org is changed, set C_Period_ID
+		else if (colName.equals("DateAcct") || colName.equals("AD_Org_ID"))
 		{
 			String sql = "SELECT C_Period_ID "
 				+ "FROM C_Period "
