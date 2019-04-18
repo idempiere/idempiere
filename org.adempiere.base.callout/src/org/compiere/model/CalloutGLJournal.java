@@ -121,16 +121,12 @@ public class CalloutGLJournal extends CalloutEngine
 				rs = pstmt.executeQuery();
 				if (rs.next())
 				{
-					String PeriodType = rs.getString(1);
 					Timestamp StartDate = rs.getTimestamp(2);
 					Timestamp EndDate = rs.getTimestamp(3);
-					if (PeriodType.equals("S")) //  Standard Periods
-					{
-						//  out of range - set to last day
-						if (DateAcct == null
-							|| DateAcct.before(StartDate) || DateAcct.after(EndDate))
-							mTab.setValue("DateAcct", EndDate);
-					}
+					//  out of range - set to last day
+					if (DateAcct == null
+						|| DateAcct.before(StartDate) || DateAcct.after(EndDate))
+						mTab.setValue("DateAcct", EndDate);
 				}
 			}
 			catch (SQLException e)

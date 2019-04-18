@@ -954,7 +954,10 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 			}
 			else if (C_Period_ID != getC_Period_ID())
 			{
-				setC_Period_ID(C_Period_ID);
+				/* special case when assigning an adjustment period */
+				MPeriod currentPeriod = MPeriod.get(getCtx(), getC_Period_ID());
+				if (currentPeriod.isStandardPeriod())
+					setC_Period_ID(C_Period_ID);
 			}
 		}
 		
