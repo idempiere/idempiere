@@ -54,10 +54,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
-import org.zkoss.zul.Vlayout;
-import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
-import org.zkoss.zul.Vbox;
+import org.zkoss.zul.Vlayout;
 
 /**
  *  Maintain Value Preferences.
@@ -505,7 +503,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	private void setExplanation()
 	{
 		/** @todo translation */
-		StringBuilder expl = new StringBuilder(Msg.getCleanMsg(Env.getCtx(), "For "));
+		StringBuilder expl = new StringBuilder(Msg.getCleanMsg(Env.getCtx(), "For")).append(" ");
 		if (cbClient.isChecked() && cbOrg.isChecked() )
 			expl.append(Msg.getCleanMsg(Env.getCtx(), "this Client and Organization"));
 		else if (cbClient.isChecked() && !cbOrg.isChecked())
@@ -513,10 +511,10 @@ public class ValuePreference extends Window implements EventListener<Event>
 		else if (!cbClient.isChecked() && cbOrg.isChecked())
 		{
 			cbOrg.setChecked(false);
-			expl.append("Msg.getCleanMsg(Env.getCtx(), entire System");
+			expl.append(Msg.getCleanMsg(Env.getCtx(), "entire System"));
 		}
 		else
-			expl.append("Msg.getCleanMsg(Env.getCtx(), entire System");
+			expl.append(Msg.getCleanMsg(Env.getCtx(), "entire System"));
 		//
 		if (cbUser.isChecked())
 			expl.append(", " + Msg.getCleanMsg(Env.getCtx(), "this User"));
@@ -524,7 +522,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 			expl.append(", " + Msg.getCleanMsg(Env.getCtx(), "all Users"));
 		//
 		if (cbWindow.isChecked())
-			expl.append(" " + Msg.getCleanMsg(Env.getCtx(), " and this Window"));
+			expl.append(" " + Msg.getCleanMsg(Env.getCtx(), "and this Window"));
 		else
 			expl.append(" " + Msg.getCleanMsg(Env.getCtx(), "and all Windows"));
 		//
@@ -537,9 +535,9 @@ public class ValuePreference extends Window implements EventListener<Event>
 		//
 		if (m_AD_Infowindow_ID > 0){
 			if (cbInfowindow.isChecked())
-				expl.append(" and this Info Window");
+				expl.append(" " + Msg.getCleanMsg(Env.getCtx(),"and this Info Window"));
 			else
-				expl.append(" and all Info Window");
+				expl.append(" " + Msg.getCleanMsg(Env.getCtx(),"and all Info Window"));
 		}
 		
 		lExplanation.setValue(expl.toString ());
