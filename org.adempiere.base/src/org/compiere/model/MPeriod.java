@@ -373,6 +373,16 @@ public class MPeriod extends X_C_Period
 			orgID = po.get_ValueAsInt(idxorg);
 		}
 
+		if (tableID == MJournal.Table_ID || tableID == MJournalBatch.Table_ID) {
+			// special case for journal that has direct period
+			int periodID = po.get_ValueAsInt("C_Period_ID");
+			MPeriod period = MPeriod.get(ctx, periodID);
+			boolean open = period.isOpen(docBaseType, dateAcct);
+			if (!open)
+				s_log.warning(period.getName() + ": Not open for " + docBaseType + " (" + dateAcct + ")");
+			return open;
+		}
+
 		return isOpen(ctx, dateAcct, docBaseType, orgID);
 	}	//	isOpen
 
