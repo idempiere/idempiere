@@ -58,5 +58,5 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 For customizations, copy the entity and select "User"!',200142,213906,'Y',40,110,'N','N','N','N',0,0,'Y',TO_DATE('2019-04-15 17:57:13','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2019-04-15 17:57:13','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','19881ce2-9ecc-4a44-9259-6729048ef4a8','Y',80,2)
 ;
 
-SELECT register_migration_script('201904151144_IDEMPIERE-3952.sql') FROM dual
+SELECT register_migration_script('201904151810_IDEMPIERE-3952.sql') FROM dual
 ;
