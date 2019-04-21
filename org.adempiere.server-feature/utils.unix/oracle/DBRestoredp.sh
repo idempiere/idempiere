@@ -38,7 +38,7 @@ chmod 640 $IDEMPIERE_HOME/data/ExpDat.dmp
 echo -------------------------------------
 echo Import ExpDat
 echo -------------------------------------
-impdp $1@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDat.dmp SCHEMAS=$2
+impdp $2/$3@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDat.dmp SCHEMAS=$2
 
 echo -------------------------------------
 echo Check System

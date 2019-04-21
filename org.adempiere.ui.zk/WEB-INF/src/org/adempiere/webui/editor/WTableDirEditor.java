@@ -673,7 +673,7 @@ ContextMenuListener, IZoomableEditor
 		else if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
 		{
 			if (isShowPreference())
-				ValuePreference.start (getComponent(), this.getGridField(), getValue());
+				ValuePreference.start (getComponent(), this.getGridField(), getValue(), getDisplay());
 			return;
 		}
 		else if (WEditorPopupMenu.NEW_EVENT.equals(evt.getContextEvent()))

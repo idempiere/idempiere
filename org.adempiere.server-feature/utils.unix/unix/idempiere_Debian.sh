@@ -2,13 +2,13 @@
 #
 
 ### BEGIN INIT INFO
-# Provides:			idempiere
+# Provides:		idempiere
 # Required-Start:	postgresql
 # Required-Stop:	postgresql
 # Default-Start:	2 3 4 5
 # Default-Stop:		1
 # Short-Description:	iDempiere 1.0.0 server
-# Description:			Provides iDempiere ERP-CRM Server startup and shutdown script. Requires PostgreSQL server.
+# Description:		Provides iDempiere ERP-CRM Server startup and shutdown script. Requires PostgreSQL server.
 # FileTarget:	/etc/init.d/idempiere
 # FileOwner:	root.root
 # FilePerms:	0755
@@ -57,7 +57,7 @@ start () {
         ITERATIONS=0
         while [ $STATUSTEST -eq 0 ] ; do
             sleep 2
-            tail -n 9 $LOGFILE | grep -q '.*LoggedSessionListener.contextInitialized: context initialized.*' && STATUSTEST=1
+            cat $LOGFILE | grep -q '.*LoggedSessionListener.contextInitialized: context initialized.*' && STATUSTEST=1
             echo -n "."
             ITERATIONS=`expr $ITERATIONS + 1`
             if [ $ITERATIONS -gt $MAXITERATIONS ]

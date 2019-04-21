@@ -2044,6 +2044,49 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		MPInstance instance = new MPInstance(Env.getCtx(), processId, 0);
 		instance.saveEx();
 		final int pInstanceID = instance.getAD_PInstance_ID();
+		// devCoffee - enable use of special forms from process related with info windows
+		m_pi.setAD_PInstance_ID(pInstanceID);
+
+		int adFormID = m_process.getAD_Form_ID();
+	    if (adFormID != 0 )
+	    {
+	            String title = m_process.getName();
+	            if (title == null || title.length() == 0)
+	                title = m_process.getValue();
+
+	            // store in T_Selection table selected rows for Execute Process that retrieves from T_Selection in code.
+	            DB.createT_SelectionNew(pInstanceID, getSaveKeys(getInfoColumnIDFromProcess(processId)), null);
+
+	            ADForm form = ADForm.openForm(adFormID, null, m_pi);
+	            Mode mode = form.getWindowMode();
+	            form.setAttribute(Window.MODE_KEY, form.getWindowMode());
+	            form.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
+
+	            if (mode == Mode.HIGHLIGHTED || mode == Mode.MODAL) {
+	                form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+	                    @Override
+	                    public void onEvent(Event event) throws Exception {
+	                        ;
+	                    }
+	                });
+	                form.doHighlighted();
+	                form.focus();
+	            }
+	            else {
+	                form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+	                    @Override
+	                    public void onEvent(Event event) throws Exception {
+	                        updateListSelected();
+	                        recordSelectedData.clear();
+	                        Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", null));
+	                        onUserQuery();
+	                    }
+	                });
+
+	                SessionManager.getAppDesktop().showWindow(form);
+	            }
+	            return;
+	    }
 		// Execute Process
 		m_pi.setAD_PInstance_ID(pInstanceID);		
 		m_pi.setAD_InfoWindow_ID(infoWindow.getAD_InfoWindow_ID());
