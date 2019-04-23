@@ -41,6 +41,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MTax;
 import org.compiere.model.ProductCost;
 import org.compiere.model.X_M_InOut;
+import org.compiere.process.DocAction;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -113,8 +114,13 @@ public class Doc_MatchPO extends Doc
 			{
 				if (matchPO.getM_InOutLine_ID() > 0 && matchPO.getC_InvoiceLine_ID() == 0)
 				{
-					m_M_InOutLine_ID = matchPO.getM_InOutLine_ID();
-					break;
+					String docStatus = matchPO.getM_InOutLine().getM_InOut().getDocStatus();
+					if (docStatus.equals(DocAction.STATUS_Completed) || docStatus.equals(DocAction.STATUS_Closed)) {
+						if (matchPO.getQty().compareTo(getQty()) <= 0) {
+							m_M_InOutLine_ID = matchPO.getM_InOutLine_ID();
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -184,8 +190,13 @@ public class Doc_MatchPO extends Doc
 			{
 				if (matchPO.getM_InOutLine_ID() > 0 && matchPO.getC_InvoiceLine_ID() == 0)
 				{
-					m_M_InOutLine_ID = matchPO.getM_InOutLine_ID();
-					break;
+					String docStatus = matchPO.getM_InOutLine().getM_InOut().getDocStatus();
+					if (docStatus.equals(DocAction.STATUS_Completed) || docStatus.equals(DocAction.STATUS_Closed)) {
+						if (matchPO.getQty().compareTo(getQty()) <= 0) {
+							m_M_InOutLine_ID = matchPO.getM_InOutLine_ID();
+							break;
+						}
+					}
 				}
 			}
 		}
