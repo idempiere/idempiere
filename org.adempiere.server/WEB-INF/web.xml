@@ -54,6 +54,14 @@
             <param-value>org.adempiere.web.server.ServerApplication</param-value>
       </init-param>
     </servlet> -->
+    <servlet>
+    	<servlet-name>default</servlet-name>
+    	<servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class>
+    	<init-param>
+      		<param-name>dirAllowed</param-name>
+      		<param-value>false</param-value>
+    	</init-param>
+  	</servlet>
 	<servlet-mapping>
 		<servlet-name>JnlpDownloadServlet</servlet-name>
 		<url-pattern>*.jnlp</url-pattern>
