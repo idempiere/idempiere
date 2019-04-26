@@ -3,7 +3,7 @@ Version: 6.2
 Section: web
 Priority: extra
 Architecture: all
-Pre-Depends: openjdk-11-jdk|openjdk-12-jdk, postgresql-11|postgresql-10|postgresql-9.6, postgresql-contrib, adduser
+Pre-Depends: openjdk-11-jdk|openjdk-12-jdk, postgresql-11|postgresql-10|postgresql-contrib-9.6, adduser
 Suggests: firefox
 Installed-Size: 968668
 Maintainer: Carlos Ruiz  <carg67@gmail.com>
