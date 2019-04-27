@@ -35,6 +35,14 @@
       <!-- Remove async-supported if you are not using Servlet 3.0 -->
       <async-supported>true</async-supported>
     </servlet>
+    <servlet>
+    	<servlet-name>default</servlet-name>
+    	<servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class>
+    	<init-param>
+      		<param-name>dirAllowed</param-name>
+      		<param-value>false</param-value>
+    	</init-param>
+  	</servlet>
     <servlet-mapping>
       <servlet-name>AtmosphereServlet</servlet-name>
       <url-pattern>/zkau/comet</url-pattern>

@@ -415,7 +415,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		//	Miminum check
 		if (m_queryColumns.size() == 0)
 		{
-			FDialog.error(p_WindowNo, this, "Error", "No query columns found");
+			FDialog.error(p_WindowNo, this, "Error", Msg.getMsg(Env.getCtx(),"NoQueryColumnsFound"));
 			log.log(Level.SEVERE, "No query columns found");
 			return false;
 		}

@@ -27,7 +27,14 @@
 		</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-
+	<servlet>
+    	<servlet-name>default</servlet-name>
+    	<servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class>
+    	<init-param>
+      		<param-name>dirAllowed</param-name>
+      		<param-value>false</param-value>
+    	</init-param>
+  	</servlet>
 	<servlet-mapping>
 		<servlet-name>CXFServlet</servlet-name>
 		<url-pattern>/services/*</url-pattern>

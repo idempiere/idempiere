@@ -39,6 +39,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
+import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.event.SwipeEvent;
 import org.zkoss.zul.Menuitem;
 
@@ -49,6 +50,12 @@ import org.zkoss.zul.Menuitem;
  */
 public class WindowContainer extends AbstractUIPart implements EventListener<Event>
 {
+	private static final String OPTION_CLOSE = "Close";
+	private static final String OPTION_CLOSE_OTHER_WINDOWS = "CloseOtherWindows";
+	private static final String OPTION_CLOSE_WINDOWS_TO_THE_LEFT = "CloseWindowsToTheLeft";
+	private static final String OPTION_CLOSE_WINDOWS_TO_THE_RIGHT = "CloseWindowsToTheRight";
+	private static final String OPTION_CLOSE_ALL_WINDOWS = "CloseAllWindows";
+
 	public static final String ON_MOBILE_SET_SELECTED_TAB = "onMobileSetSelectedTab";
 
 	private static final String ON_AFTER_TAB_CLOSE = "onAfterTabClose";
@@ -279,6 +286,8 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 				}
 			}        	
         };
+        popupClose.addEventListener(Events.ON_OPEN, this);
+        popupClose.setAttribute("tab", tab);
         tab.setDecorateInfo(decorateInfo);
         if (title != null) 
         {
@@ -358,66 +367,85 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         }
 
         Menuitem mi;
-        if(tab.getIndex()!=0){
-        	mi = new Menuitem(Msg.getMsg(Env.getCtx(), "Close"));
+        if (tab.getIndex() != 0) {
+        	mi = new Menuitem(Msg.getMsg(Env.getCtx(), OPTION_CLOSE));
+        	mi.setAttribute("option", OPTION_CLOSE);
         	popupClose.appendChild(mi);
         	mi.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
         		public void onEvent(Event event) throws Exception {
         			int currentTabIndex = tab.getIndex();
+        			int focusTabIndex = currentTabIndex;
         			int tabsSizeBeforeClose = tabbox.getTabs().getChildren().size();
-
-        			if ( tabsSizeBeforeClose == currentTabIndex + 1 ) {
-        				currentTabIndex--;
+        			if (tabsSizeBeforeClose == currentTabIndex + 1) {
+        				focusTabIndex = currentTabIndex - 1;
         			}
-        			if ( tab.getPreviousSibling() != null ) {
-        				tab.onClose();
-        				// Update the current tab index.
-        				if ( tabsSizeBeforeClose != tabbox.getTabs().getChildren().size() )
-        					tabbox.setSelectedIndex( currentTabIndex );
-        				Events.postEvent(ON_AFTER_TAB_CLOSE, tabbox, null);
-        			}
+        			closeTabs(tab, currentTabIndex, currentTabIndex, focusTabIndex);
         		}
         	});
 
-        	mi = new Menuitem(Msg.getMsg(Env.getCtx(), "CloseOtherWindows"));
+        	mi = new Menuitem(Msg.getMsg(Env.getCtx(), OPTION_CLOSE_OTHER_WINDOWS));
+        	mi.setAttribute("option", OPTION_CLOSE_OTHER_WINDOWS);
         	popupClose.appendChild(mi);
         	mi.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
         		public void onEvent(Event event) throws Exception {
+        			int currentTabIndex = tab.getIndex();
+        			closeTabs(tab, currentTabIndex + 1, -1, currentTabIndex); // Right
         			int focusTabIndex = 1;
-        			List<Component> tabs = tabbox.getTabs().getChildren();
-        			for ( int i = tabs.size() - 1; i > 0; i-- ) {
-        				if(!((Tab)tabs.get( i )).equals(tab)){
-        					((Tab)tabs.get( i )).setSelected(false);
+        			closeTabs(tab, 1, currentTabIndex - 1, focusTabIndex); // Left
+        		}
+        	});
 
-        					((Tab)tabs.get( i )).onClose();
-        				}
-        			}
-        			tabbox.setSelectedIndex(focusTabIndex);
-        			Events.postEvent(ON_AFTER_TAB_CLOSE, tabbox, null);
+        	mi = new Menuitem(Msg.getMsg(Env.getCtx(), OPTION_CLOSE_WINDOWS_TO_THE_LEFT));
+        	mi.setAttribute("option", OPTION_CLOSE_WINDOWS_TO_THE_LEFT);
+        	popupClose.appendChild(mi);
+        	mi.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+        		public void onEvent(Event event) throws Exception {
+        			int currentTabIndex = tab.getIndex();
+        			int focusTabIndex = 1;
+        			closeTabs(tab, 1, currentTabIndex - 1, focusTabIndex);
+        		}
+        	});
+
+        	mi = new Menuitem(Msg.getMsg(Env.getCtx(), OPTION_CLOSE_WINDOWS_TO_THE_RIGHT));
+        	mi.setAttribute("option", OPTION_CLOSE_WINDOWS_TO_THE_RIGHT);
+        	popupClose.appendChild(mi);
+        	mi.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+        		public void onEvent(Event event) throws Exception {
+        			int currentTabIndex = tab.getIndex();
+        			closeTabs(tab, currentTabIndex + 1, -1, currentTabIndex);
         		}
         	});
         }
 
-		mi = new Menuitem(Msg.getMsg(Env.getCtx(), "CloseAllWindows"));
-		mi.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-			public void onEvent(Event event) throws Exception {
-				int focusTabIndex = 0;
-				List<Component> tabs = tabbox.getTabs().getChildren();
-				for ( int i = tabs.size() - 1; i > 0; i-- ) {
-					((Tab)tabs.get( i )).setSelected(false);
-					((Tab)tabs.get( i )).onClose();
-				}
-				tabbox.setSelectedIndex( focusTabIndex );
-				Events.postEvent(ON_AFTER_TAB_CLOSE, tabbox, null);
-			}
-		});
-		popupClose.appendChild(mi);
-		ZKUpdateUtil.setWidth(popupClose, "auto");
-		popupClose.setPage(tab.getPage());
-		tab.setContext(popupClose);
-        
+        mi = new Menuitem(Msg.getMsg(Env.getCtx(), OPTION_CLOSE_ALL_WINDOWS));
+        mi.setAttribute("option", OPTION_CLOSE_ALL_WINDOWS);
+        popupClose.appendChild(mi);
+        mi.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+        	public void onEvent(Event event) throws Exception {
+        		int focusTabIndex = 0;
+        		closeTabs(tab, 1, -1, focusTabIndex);
+        	}
+        });
+
+        ZKUpdateUtil.setWidth(popupClose, "auto");
+        popupClose.setPage(tab.getPage());
+        tab.setContext(popupClose);
+
 		updateTabListButton();
         return tab;
+    }
+
+    protected void closeTabs(Tab tab, int start, int end, int focus) {
+    	List<Component> tabs = tabbox.getTabs().getChildren();
+    	if (end == -1) {
+    		end = tabs.size() - 1;
+    	}
+    	for (int i = end; i >= start; i--) {
+    		((Tab)tabs.get( i )).setSelected(false);
+    		((Tab)tabs.get( i )).onClose();
+    	}
+    	tabbox.setSelectedIndex(focus);
+    	Events.postEvent(ON_AFTER_TAB_CLOSE, tabbox, null);
     }
 
 	private void updateTabListButton() {
@@ -593,6 +621,37 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 			try {
 				SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
 			} catch (Exception e) {}
+		}else if (event instanceof OpenEvent && event.getTarget() instanceof Menupopup) {
+			if (((OpenEvent)event).isOpen()) {
+				Menupopup popup = (Menupopup) event.getTarget();
+				List<Component> tabs = tabbox.getTabs().getChildren();
+				int tabsSize = tabs.size();
+				int currentTabIdx = -1;
+				if (popup.getAttribute("tab") != null) {
+					Tab currentTab = (Tab) popup.getAttribute("tab");
+					for ( int i = tabsSize - 1; i > 0; i-- ) {
+						Tab tab = ((Tab)tabs.get(i));
+						if (currentTab.equals(tab)) {
+							currentTabIdx = i;
+							break;
+						}
+					}
+				}
+				if (currentTabIdx > 0) {
+					List<Component> items = popup.getChildren();
+					for (Component item : items) {
+						if (item instanceof Menuitem) {
+							String option = (String) item.getAttribute("option");
+							boolean visible =
+									   (OPTION_CLOSE.equals(option))
+									|| (tabsSize > 2 && (OPTION_CLOSE_OTHER_WINDOWS.equals(option) || OPTION_CLOSE_ALL_WINDOWS.equals(option)))
+									|| (currentTabIdx < tabsSize - 1 && OPTION_CLOSE_WINDOWS_TO_THE_RIGHT.equals(option))
+									|| (currentTabIdx > 1 && OPTION_CLOSE_WINDOWS_TO_THE_LEFT.equals(option));
+							item.setVisible(visible);
+						}
+					}
+				}
+			}
 		}else if (Events.ON_CTRL_KEY.equals(event.getName())) {
 			KeyEvent keyEvent = (KeyEvent) event;
 			if (keyEvent.isAltKey() && keyEvent.getKeyCode() == KeyEvent.PAGE_DOWN
