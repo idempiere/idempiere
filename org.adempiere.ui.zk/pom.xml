@@ -55,7 +55,7 @@
 								<artifactItem>
 									<groupId>org.outerj.daisy</groupId>
 									<artifactId>daisydiff</artifactId>
-									<version>1.1.14-atlassian-hosted</version>
+									<version>1.1.15-atlassian-hosted</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.zkoss.zkforge</groupId>
