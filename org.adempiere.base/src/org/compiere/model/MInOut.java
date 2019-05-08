@@ -1681,6 +1681,8 @@ public class MInOut extends X_M_InOut implements DocAction
 		MInOut dropShipment = createDropShipment();
 		if (dropShipment != null)
 			info.append(" - @DropShipment@: @M_InOut_ID@=").append(dropShipment.getDocumentNo());
+		if (dropShipment != null)
+			addDocsPostProcess(dropShipment);
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
