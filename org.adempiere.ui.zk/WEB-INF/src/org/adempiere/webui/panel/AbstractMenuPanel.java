@@ -99,7 +99,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
         menuTree.setId("mnuMain");
         ZKUpdateUtil.setVflex(menuTree, "1");
         menuTree.setSizedByContent(false);
-        menuTree.setPageSize(-1); // Due to bug in the new paging functionality        
+        menuTree.setPageSize(-1); // Due to bug in the new paging functionality
     }
     
     private void initMenu(MTreeNode rootNode)
@@ -165,7 +165,6 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 treeRow.appendChild(treeCell);
                 A link = new A();
                 treeCell.appendChild(link);
-                
                 if (mChildNode.isReport())
                 {
                 	if (ThemeManager.isUseFontIconForImage())
@@ -218,11 +217,11 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 	treeCell.appendChild(newBtn);
                 	newBtn.addEventListener(Events.ON_CLICK, this);
                 }
+                treeitem.addEventListener(Events.ON_OK, this);
                 link.setLabel(mChildNode.getName());
                 
                 link.addEventListener(Events.ON_CLICK, this);
                 link.setSclass("menu-href");
-                
                 treeitem.getTreerow().setDraggable("favourite"); // Elaine 2008/07/24
                 treeitem.setAttribute(MenuSearchController.M_TREE_NODE_ATTR, mChildNode);
             }
@@ -245,7 +244,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
     {
         Component comp = event.getTarget();
         String eventName = event.getName();
-        if (eventName.equals(Events.ON_CLICK))
+        if ((eventName.equals(Events.ON_CLICK)) || (eventName.equals(Events.ON_OK)))
         {
         	doOnClick(comp, event.getData());
         }
@@ -261,6 +260,21 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 			newRecord = true;
 		} else if (eventData != null && eventData instanceof Boolean) {
 			newRecord = (Boolean)eventData;
+		}
+		if (comp instanceof Treeitem)
+		{
+			Treeitem selectedItem = (Treeitem) comp;
+			if(selectedItem.getValue() != null)
+			{
+				if (newRecord)
+				{
+					onNewRecord(selectedItem);
+				}
+				else
+				{
+					fireMenuSelectedEvent(selectedItem);
+				}
+			}
 		}
 		if (comp instanceof Treerow) 
 		{

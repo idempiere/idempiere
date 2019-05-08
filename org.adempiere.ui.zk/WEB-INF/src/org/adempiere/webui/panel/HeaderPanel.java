@@ -22,6 +22,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.GlobalSearch;
 import org.adempiere.webui.apps.MenuSearchController;
 import org.adempiere.webui.component.Panel;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.AboutWindow;
@@ -33,6 +34,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Popup;
@@ -82,6 +84,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     		LayoutUtils.addSclass("mobile", this);
     		ClientInfo.onClientInfo(this, this::onClientInfo);
     	}
+    	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
     }
 
 	protected void createPopupMenu() {
@@ -126,6 +129,17 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 			}
 		} else if (Events.ON_CREATE.equals(event.getName())) {
 			onCreate();
+		}else if (event instanceof KeyEvent)
+		{
+			//alt+m for the menu
+			KeyEvent ke = (KeyEvent) event;
+			if (ke.getKeyCode() == 77)
+			{
+				popMenu.open(btnMenu, "after_start");
+				popMenu.setFocus(true);
+			}else if (ke.getKeyCode() == 27) {
+				popMenu.close();
+			} 
 		}
 	}
 
