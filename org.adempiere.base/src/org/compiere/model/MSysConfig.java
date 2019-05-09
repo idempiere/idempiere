@@ -420,12 +420,15 @@ public class MSysConfig extends X_AD_SysConfig
 	public static String getValue(String Name, String defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
 		String key = ""+AD_Client_ID+"_"+AD_Org_ID+"_"+Name;
-		String str = s_cache.get(key);
-		if (str != null)
-			return str;
-		if (str == null && s_cache.containsKey(key)) // found null key
-			return defaultValue;
-		
+		String str = null;
+		if (! Name.endsWith("_NOCACHE")) {
+			str = s_cache.get(key);
+			if (str != null)
+				return str;
+			if (str == null && s_cache.containsKey(key)) // found null key
+				return defaultValue;
+		}
+
 		//
 		String sql = "SELECT Value FROM AD_SysConfig"
 						+ " WHERE Name=? AND AD_Client_ID IN (0, ?) AND AD_Org_ID IN (0, ?) AND IsActive='Y'"
@@ -452,13 +455,15 @@ public class MSysConfig extends X_AD_SysConfig
 			rs = null; pstmt = null;
 		}
 		//
+
 		if (str != null) {
-			s_cache.put(key, str);
+			if (! Name.endsWith("_NOCACHE"))
+				s_cache.put(key, str);
 			return str;
-		}
-		else {
+		} else {
 			// anyways, put the not found key as null
-			s_cache.put(key, null);
+			if (! Name.endsWith("_NOCACHE"))
+				s_cache.put(key, null);
 			return defaultValue;
 		}
 	}
