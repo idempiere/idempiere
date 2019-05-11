@@ -26,6 +26,7 @@ import org.adempiere.exceptions.NoVendorForProductException;
 import org.apache.commons.collections.keyvalue.MultiKey;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MCharge;
+import org.compiere.model.MConversionType;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
@@ -352,6 +353,8 @@ public class RequisitionPOCreate extends SvrProcess
 			m_order.setC_DocTypeTarget_ID();
 			m_order.setBPartner(m_bpartner);
 			m_order.setM_PriceList_ID(M_PriceList_ID);
+			if (MConversionType.getDefault(getAD_Client_ID()) > 0)
+				m_order.setC_ConversionType_ID(MConversionType.getDefault(getAD_Client_ID()));
 			//	default po document type
 			if (!p_ConsolidateDocument)
 			{

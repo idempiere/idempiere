@@ -626,7 +626,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         div.appendChild(labelHistory);
         div.appendChild(historyCombo);
         historyCombo.setStyle("margin-left: 3px; margin-right: 3px; position: relative; vertical-align: middle;");
-
+        div.setClass("toolbar");
         winMain = new MultiTabPart();
         winMain.createPart(layout);
         winMain.getComponent().setStyle("position: relative; margin-left: auto; margin-right: auto; margin-top: 3px; margin-bottom: 3px;");
@@ -647,6 +647,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         initSimple();
         initAdvanced();
         /** START DEVCOFFEE **/
+        statusBar.setClass("statusbar");
         layout.appendChild(statusBar);
         /** START DEVCOFFEE **/
 

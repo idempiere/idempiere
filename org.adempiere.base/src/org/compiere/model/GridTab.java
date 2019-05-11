@@ -2783,8 +2783,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				{
 					if (log.isLoggable(Level.FINE)) log.fine(columnName + " changed - "
 						+ dependentField.getColumnName() + " set to null");
+					Object currentValue = dependentField.getValue();
+					
 					//  invalidate current selection
 					setValue(dependentField, null);
+					
+					if (currentValue != null && mLookup.containsKey(currentValue))
+						setValue(dependentField, currentValue);
 				}
 			}
 			//  if the field is a Virtual UI Column

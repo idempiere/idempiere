@@ -294,4 +294,26 @@ public class CalloutGLJournal extends CalloutEngine
 		}
 		return "";
 	}
+	
+	/**
+	 *  Journal - Acct Schema
+	 *  Set Currency from C_AcctSchema_ID
+	 *	@param ctx context
+	 *	@param WindowNo window no
+	 *	@param mTab tab
+	 *	@param mField field
+	 *	@param value value
+	 *	@return null or error message
+	 */
+	public String acctSchema(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		if (value == null)
+			return "";
+		
+		int C_AcctSchema_ID = Env.getContextAsInt(ctx, WindowNo, "C_AcctSchema_ID");
+		MAcctSchema as = MAcctSchema.get (ctx, C_AcctSchema_ID);
+		mTab.setValue("C_Currency_ID", as.getC_Currency_ID());
+		
+		return "";
+	}
 }	//	CalloutGLJournal
