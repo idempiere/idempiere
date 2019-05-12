@@ -594,8 +594,8 @@ public final class MRole extends X_AD_Role
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append(Msg.translate(ctx, "AD_Role_ID")).append("=").append(getName())
-			.append(" - ").append(Msg.translate(ctx, "IsCanExport")).append("=").append(isCanExport())
-			.append(" - ").append(Msg.translate(ctx, "IsCanReport")).append("=").append(isCanReport())
+			.append(" - ").append(Msg.translate(ctx, "IsCanExport")).append("=").append(Msg.translate(ctx,String.valueOf(isCanExport())))
+			.append(" - ").append(Msg.translate(ctx, "IsCanReport")).append("=").append(Msg.translate(ctx,String.valueOf(isCanReport()))) 
 			.append(Env.NL).append(Env.NL);
 		//
 		for (int i = 0; i < m_orgAccess.length; i++)
