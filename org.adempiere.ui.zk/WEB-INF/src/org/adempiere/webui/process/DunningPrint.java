@@ -258,38 +258,13 @@ public class DunningPrint extends SvrProcess
 			return msgreturn.toString();
 		}
 		
-		AEnv.executeAsyncDesktopTask(new Runnable() {			
-			@Override
-			public void run() {
-				showReports(pdfList);
+		if (processUI != null)
+		{
+			processUI.showReports(pdfList);
 			}
-		});
 		
 		StringBuilder msgreturn = new StringBuilder("@Printed@=").append(count);
 		return msgreturn.toString();
 	}	//	doIt
 
-	private void showReports(List<File> pdfList) {
-		if (pdfList.size() > 1) {
-			try {
-				File outFile = File.createTempFile("DunningPrint", ".pdf");					
-				AEnv.mergePdf(pdfList, outFile);
-				Window win = new SimplePDFViewer(this.getName(), new FileInputStream(outFile));
-				win.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-				SessionManager.getAppDesktop().showWindow(win, "center");
-			} catch (Exception e) {
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			}
-		} else if (pdfList.size() > 0) {
-			try {
-				Window win = new SimplePDFViewer(this.getName(), new FileInputStream(pdfList.get(0)));
-				win.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-				SessionManager.getAppDesktop().showWindow(win, "center");
-			} catch (Exception e)
-			{
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			}
-		}
-	}
-	
 }	//	DunningPrint

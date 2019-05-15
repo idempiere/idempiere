@@ -15,6 +15,7 @@
 package org.adempiere.webui.apps;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,10 +49,13 @@ import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.process.WProcessInfo;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
+import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.Adempiere;
 import org.compiere.model.Lookup;
 import org.compiere.model.MAttachment;
@@ -1275,4 +1279,63 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}, new Event("onAskForInput"));
 	}
 
+	@Override
+	public void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback) {
+		FDialog.askForInput(message, lookup, editorType, callback, getDesktop(), m_WindowNo);
+	}
+
+	@Override
+	public void showReports(List<File> pdfList) {
+
+		if (pdfList == null || pdfList.isEmpty())
+			return;
+
+		AEnv.executeAsyncDesktopTask(new Runnable() {
+			@Override
+			public void run() {
+				if (pdfList.size() > 1) {
+					try {
+						File outFile = File.createTempFile(m_Name, ".pdf");
+						AEnv.mergePdf(pdfList, outFile);
+						Window win = new SimplePDFViewer(m_Name, new FileInputStream(outFile));
+						win.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+						SessionManager.getAppDesktop().showWindow(win, "center");
+					} catch (Exception e) {
+						log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+					}
+				} else if (pdfList.size() > 0) {
+					try {
+						Window win = new SimplePDFViewer(m_Name, new FileInputStream(pdfList.get(0)));
+						win.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+						SessionManager.getAppDesktop().showWindow(win, "center");
+					} catch (Exception e) {
+						log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+					}
+				}
+			}
+		});
+	}
+
+	@Override
+	public void showInfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue,
+			boolean multipleSelection, String whereClause, Integer AD_InfoWindow_ID, boolean lookup) {
+
+		if (AD_InfoWindow_ID <= 0)
+			return;
+
+		AEnv.executeAsyncDesktopTask(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Window win = new InfoWindow(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
+							whereClause, AD_InfoWindow_ID, lookup);
+
+					SessionManager.getAppDesktop().showWindow(win, "center");
+				} catch (Exception e) {
+					log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+				}
+
+			}
+		});
+	}
 }

@@ -34,6 +34,7 @@ import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.apps.CalloutDialog;
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
@@ -335,6 +336,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         this.windowNo = windowNo;
         this.gridWindow = gridWindow;
         this.gridTab = gridTab;
+        // callout dialog ask for input - devCoffee #3390
+        gridTab.setCalloutUI(new CalloutDialog(Executions.getCurrent().getDesktop(), windowNo));
         this.windowPanel = winPanel;
         gridTab.addDataStatusListener(this);
         this.dataBinder = new GridTabDataBinder(gridTab);

@@ -43,6 +43,7 @@ import org.adempiere.base.Core;
 import org.adempiere.base.IColumnCallout;
 import org.adempiere.model.MTabCustomization;
 import org.adempiere.util.ContextRunnable;
+import org.adempiere.util.ICalloutUI;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
@@ -149,6 +150,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		selection = new ArrayList<Integer>();
 	}	//	GridTab
 	
+	/** ICalloutUI*/
+	private ICalloutUI calloutUI;
+
 	/** Value Object                    */
 	private GridTabVO          	m_vo;
 
@@ -3377,5 +3381,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public GridTabVO getVO() 
 	{
 		return m_vo;
+	}
+
+	public ICalloutUI getCalloutUI() {
+		return calloutUI;
+	}
+
+	public void setCalloutUI(ICalloutUI calloutUI) {
+		this.calloutUI = calloutUI;
 	}
 }	//	GridTab

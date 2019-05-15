@@ -14,7 +14,9 @@
 package org.adempiere.util;
 
 import java.io.File;
+import java.util.List;
 
+import org.compiere.model.MLookup;
 import org.compiere.process.ProcessInfo;
 
 /**
@@ -81,8 +83,56 @@ public interface IProcessUI {
 	public void askForInput(String message, Callback<String> callback);
 
 	/**
+	 * Prompt user for input with a configurable DisplayType (String, Number, TableDir or Search)
+	 *
+	 * Usage is the same from ask and askForInput methods with some additional parameters
+	 *
+	 * muriloht - devCoffee #3390
+	 *
+	 * @param message
+	 * @param lookup
+	 * @param displayType
+	 * @param callback
+	 */
+	default public void askForInput(String message, MLookup lookup, int displayType, Callback<Object> callback){
+		throw new RuntimeException();
+	}
+
+	/**
 	 * add to list of file available for download after process end 
 	 * @param file
 	 */
 	public void download(File file);
+
+	/**
+	 * show reports from a given file list
+	 *
+	 * matheus.marcelino - devCoffee #5561
+	 *
+	 * @param pdfList
+	 */
+	default public void showReports(List<File> pdfList)
+	{
+		throw new RuntimeException();
+}
+
+	/**
+	 * show an info window from inside a process with user defined parameters
+	 *
+	 * gustavo.francisco - devCoffee #7094
+	 *
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
+	 * @param whereClause
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
+	 */
+	default public void showInfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue,
+			boolean multipleSelection, String whereClause, Integer AD_InfoWindow_ID, boolean lookup)
+	{
+		throw new RuntimeException();
+	}
 }

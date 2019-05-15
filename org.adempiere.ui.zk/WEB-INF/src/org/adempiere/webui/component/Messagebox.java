@@ -23,6 +23,8 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -68,7 +70,7 @@ public class Messagebox extends Window implements EventListener<Event>
 	private Button btnAbort;
 	private Button btnRetry;
 	private Button btnIgnore;
-	private Textbox txtInput = new Textbox();;
+	private WEditor inputField;
 
 	private Image img = new Image();
 
@@ -177,7 +179,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		
 		Panel pnlInput= new Panel();
 		pnlInput.setStyle(MESSAGE_PANEL_STYLE);
-		pnlInput.appendChild(txtInput);
+		pnlInput.appendChild(inputField.getComponent());
 
 		Vbox pnlText = new Vbox();
 		pnlText.appendChild(pnlMessage);
@@ -255,9 +257,18 @@ public class Messagebox extends Window implements EventListener<Event>
 	
 	public int show(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal)
 	{
+		return show(message, title, buttons, icon, null, callback, modal);
+	}
+
+	public int show(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
+	{
 		this.msg = message;
 		this.imgSrc = icon;
 		this.callback = callback;
+		if (editor == null)
+			inputField = new WStringEditor();
+		else
+			inputField = editor;
 
 		init();
 		
@@ -268,7 +279,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		btnRetry.setVisible(false);
 		btnAbort.setVisible(false);
 		btnIgnore.setVisible(false);
-		txtInput.setVisible(false);
+		inputField.setVisible(false);
 
 		if ((buttons & OK) != 0)
 			btnOk.setVisible(true);
@@ -292,7 +303,7 @@ public class Messagebox extends Window implements EventListener<Event>
 			btnIgnore.setVisible(true);
 
 		if ((buttons & INPUT) != 0) {
-			txtInput.setVisible(true);
+			inputField.setVisible(true);
 			isInput = true;
 		}
 
@@ -334,9 +345,13 @@ public class Messagebox extends Window implements EventListener<Event>
 	
 	public static int showDialog(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal) 
 	{
-		Messagebox msg = new Messagebox();
+		return showDialog(message, title, buttons, icon, null, callback, modal);
+	}
 
-		return msg.show(message, title, buttons, icon, callback, modal);
+	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
+	{
+		Messagebox msg = new Messagebox();
+		return msg.show(message, title, buttons, icon, editor, callback, modal);
 	}
 
 	public void onEvent(Event event) throws Exception
@@ -389,7 +404,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		{
 			callback.onCallback(returnValue);
 		} else if (callback != null && isInput) {
-			callback.onCallback(txtInput.getText());
+			callback.onCallback(inputField.getValue());
 		}
 	}
 }

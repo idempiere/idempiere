@@ -20,16 +20,27 @@ package org.adempiere.webui.window;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
+import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.Messagebox;
+import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WNumberEditor;
+import org.adempiere.webui.editor.WSearchEditor;
+import org.adempiere.webui.editor.WStringEditor;
+import org.adempiere.webui.editor.WTableDirEditor;
+import org.compiere.model.MLookup;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trace;
 
 import org.zkoss.zk.ui.Component;
-import org.adempiere.util.Callback;
-import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.component.Messagebox;
+import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 
 /**
  *
@@ -346,6 +357,52 @@ public class FDialog
     	return ask(AEnv.getDialogHeader(Env.getCtx(), windowNo), windowNo, comp, adMessage, callback);
     }
     
+	public static void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback, Desktop desktop, int windowNo) {
+		@SuppressWarnings("unused")
+		final WEditor weditor;
+
+		switch (editorType) {
+		case DisplayType.String:
+			weditor = new WStringEditor();
+			break;
+		case DisplayType.Number:
+			weditor = new WNumberEditor();
+			break;
+		case DisplayType.TableDir:
+			weditor = new WTableDirEditor(lookup, "", "", true, false, true);
+			break;
+		case DisplayType.Search:
+			weditor = new WSearchEditor(lookup, "", "", true, false, true);
+			break;
+		default:
+			weditor = null;
+			break;
+		}
+		Executions.schedule(desktop, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				FDialog.askForInput(windowNo, weditor, message, callback);
+			}
+		}, new Event("onAskForInput"));
+	}
+
+    public static void askForInput(int windowNo, WEditor weditor, String adMessage, final Callback<Object> callback)
+    {
+    	Callback<Object> msgCallback = null;
+    	if (callback != null)
+    	{
+    		msgCallback = new Callback<Object>() {
+				@Override
+				public void onCallback(Object result) {
+					callback.onCallback(result);
+				}
+			};
+    	}
+    	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
+        Messagebox.showDialog(s, AEnv.getDialogHeader(Env.getCtx(), windowNo),
+        		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, weditor, msgCallback, (msgCallback == null));
+    }
+
     public static void askForInput(int windowNo, Component comp, String adMessage, final Callback<String> callback)
     {
     	Callback<String> msgCallback = null;

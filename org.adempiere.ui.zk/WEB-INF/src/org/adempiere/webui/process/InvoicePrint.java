@@ -17,7 +17,6 @@
 package org.adempiere.webui.process;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -25,10 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.component.Window;
-import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.model.MClient;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MMailText;
@@ -325,12 +320,10 @@ public class InvoicePrint extends SvrProcess
 			DB.close(rs, pstmt);
 		}
 		
-		AEnv.executeAsyncDesktopTask(new Runnable() {
-			@Override
-			public void run() {
-				showReports(pdfList);
+		if (processUI != null)
+		{
+			processUI.showReports(pdfList);
 			}
-		});
 
 		//
 		if (p_EMailPDF)
@@ -439,31 +432,6 @@ public class InvoicePrint extends SvrProcess
 			sql.append(orgWhere);
 		}
 		sql.append(" ORDER BY i.C_Invoice_ID, pf.AD_Org_ID DESC");	//	more than 1 PF record
-	}
-
-	private void showReports(List<File> pdfList) {
-		if (pdfList.size() > 1) {
-			try {
-				File outFile = File.createTempFile("InvoicePrint", ".pdf");					
-				AEnv.mergePdf(pdfList, outFile);
-
-				Window win = new SimplePDFViewer(this.getName(), new FileInputStream(outFile));
-				win.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-				SessionManager.getAppDesktop().showWindow(win, "center");
-			} catch (Exception e) {
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			}
-		} else if (pdfList.size() > 0) {
-			try {
-				Window win = new SimplePDFViewer(this.getName(), new FileInputStream(pdfList.get(0)));
-				win.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-				SessionManager.getAppDesktop().showWindow(win, "center");
-			} catch (Exception e)
-			{
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			}
-		}
-		
 	}
 
 }	//	InvoicePrint
