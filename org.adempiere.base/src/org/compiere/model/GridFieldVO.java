@@ -386,6 +386,28 @@ public class GridFieldVO implements Serializable
 		{
 			CLogger.get().log(Level.SEVERE, "createParameter", e);
 		}
+		//devCoffee - #3858
+		if(vo.IsDisplayed) {
+			MUserDefProcParameter userDef = MUserDefProcParameter.get(ctx, vo.AD_Column_ID, vo.AD_Process_ID_Of_Panel);
+			if(userDef != null) {
+				if(userDef.getName() != null)
+					vo.Header = userDef.getName();
+				if(userDef.getDescription() != null)
+					vo.Description = userDef.getDescription();
+				if(userDef.getHelp() != null)
+					vo.Help = userDef.getHelp();
+				if(userDef.getReadOnlyLogic() != null)
+					vo.ReadOnlyLogic = userDef.getReadOnlyLogic();
+				if(userDef.getDefaultValue() != null)
+					vo.DefaultValue = userDef.getDefaultValue();
+				if(userDef.getDisplayLogic() != null)
+					vo.DisplayLogic = userDef.getDisplayLogic();
+				if(userDef.getMandatoryLogic() != null)
+					vo.MandatoryLogic = userDef.getMandatoryLogic();
+			    vo.IsDisplayed = userDef.isDisplayed();
+			}
+		}
+		//fim devCoffee - 3858
 		//
 		vo.initFinish();
 		if (vo.DefaultValue2 == null)
@@ -444,16 +466,16 @@ public class GridFieldVO implements Serializable
 
 	/**
 	 * Create parameter for infoWindow
-	 * @param ctx
-	 * @param WindowNo
-	 * @param AD_Column_ID
-	 * @param ColumnName
-	 * @param Name
-	 * @param AD_Reference_ID
-	 * @param AD_Reference_Value_ID
-	 * @param IsMandatory
-	 * @param IsEncrypted
-	 * @return
+	 * @param ctx ctx
+	 * @param WindowNo WindowNo
+	 * @param AD_Column_ID AD_Column_ID
+	 * @param ColumnName ColumnName
+	 * @param Name  Name
+	 * @param AD_Reference_ID AD_Reference_ID
+	 * @param AD_Reference_Value_ID AD_Reference_Value_ID
+	 * @param IsMandatory  IsMandatory
+	 * @param IsEncrypted IsEncrypted
+	 * @return GridFieldV0 v0
 	 */
 	public static GridFieldVO createParameter (Properties ctx, int WindowNo, int WindowIDOfPanel, int infoWindowID,
 			int AD_Column_ID, String ColumnName, String Name, int AD_Reference_ID, int AD_Reference_Value_ID, 
