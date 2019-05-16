@@ -1401,5 +1401,5 @@ UPDATE AD_Table SET Name='Process Customization',Updated=TO_TIMESTAMP('2019-05-1
 ;
 
 
-SELECT register_migration_script('201905160920_IDEMPIERE-3799.sql') FROM dual
+SELECT register_migration_script('201905160920_IDEMPIERE-3971.sql') FROM dual
 ;
