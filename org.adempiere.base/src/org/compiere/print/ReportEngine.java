@@ -60,6 +60,7 @@ import javax.print.event.PrintServiceAttributeEvent;
 import javax.print.event.PrintServiceAttributeListener;
 import javax.xml.transform.stream.StreamResult;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pdf.Document;
 import org.adempiere.print.export.PrintDataExcelExporter;
 import org.apache.ecs.XhtmlDocument;
@@ -578,6 +579,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "(f)", e);
+			throw new AdempiereException(e);
 		}
 		return false;
 	}	//	createHTML
@@ -674,7 +676,11 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			tbody.setNeedClosingTag(false);
 			
 			Boolean [] colSuppressRepeats = m_layout == null || m_layout.colSuppressRepeats == null? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
-			Object [] preValues = new Object [colSuppressRepeats.length];
+			Object [] preValues = null;
+			if (colSuppressRepeats != null){
+				preValues = new Object [colSuppressRepeats.length];
+			}
+
 			int printColIndex = -1;
 			//	for all rows (-1 = header row)
 			for (int row = -1; row < m_printData.getRowCount(); row++)
@@ -732,7 +738,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 							Object obj = m_printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
 							if (obj == null){
 								td.addElement("&nbsp;");
-								if (colSuppressRepeats[printColIndex]){
+								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
 									preValues[printColIndex] = null;
 								}
 							}
@@ -741,7 +747,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 								PrintDataElement pde = (PrintDataElement) obj;
 								String value = pde.getValueDisplay(language);	//	formatted
 
-								if (colSuppressRepeats[printColIndex]){
+								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
 									if (value.equals(preValues[printColIndex])){
 										td.addElement("&nbsp;");
 										continue;
@@ -858,6 +864,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "(w)", e);
+			throw new AdempiereException(e);
 		}
 		return false;
 	}	//	createHTML
@@ -916,7 +923,10 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		try
 		{
 			Boolean [] colSuppressRepeats = m_layout == null || m_layout.colSuppressRepeats == null? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
-			Object [] preValues = new Object [colSuppressRepeats.length];
+			Object [] preValues = null;
+			if (colSuppressRepeats != null){
+				preValues = new Object [colSuppressRepeats.length];
+			}
 			int printColIndex = -1;
 			//	for all rows (-1 = header row)
 			for (int row = -1; row < m_printData.getRowCount(); row++)
@@ -948,7 +958,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 							Object obj = m_printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
 							String data = "";
 							if (obj == null){
-								if (colSuppressRepeats[printColIndex]){
+								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
 									preValues[printColIndex] = null;
 								}
 							}
@@ -960,7 +970,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 								else
 									data = pde.getValueDisplay(language);	//	formatted
 								
-								if (colSuppressRepeats[printColIndex]){
+								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
 									if (data.equals(preValues[printColIndex])){
 										continue;
 									}else{
@@ -1149,7 +1159,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "PDF", e);
-			return false;
+			throw new AdempiereException(e);
 		}
 
 		File file2 = new File(fileName);

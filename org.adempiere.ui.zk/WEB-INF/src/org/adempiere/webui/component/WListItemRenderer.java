@@ -288,7 +288,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 					}
 					else
 					{
-						listcell.setLabel(format.format(((Number)field).doubleValue()));
+						listcell.setLabel(format.format(field));
 						ZkCssHelper.appendStyle(listcell, "text-align: right");
 					}
 				}

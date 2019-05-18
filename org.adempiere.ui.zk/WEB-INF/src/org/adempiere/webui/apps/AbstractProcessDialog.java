@@ -575,7 +575,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			freportType.appendItem("PDF", "PDF");
 			freportType.appendItem("Excel", "XLS");
 		}
-		freportType.setSelectedIndex(0);
+		freportType.setSelectedIndex(-1);
 		
 		String where = "AD_Process_ID = ? AND AD_User_ID = ? AND Name IS NULL ";
 		
@@ -597,7 +597,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		
 		if (freportType != null && instance != null) {
 			if (instance.getReportType() == null)
-				freportType.setValue("HTML");
+				freportType.setSelectedIndex(-1);
 			else 
 				freportType.setValue(instance.getReportType());
 		}
