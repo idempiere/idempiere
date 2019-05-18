@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MSysConfig;
 
 import com.itextpdf.text.FontFactory;
@@ -86,7 +87,7 @@ public class Document {
             document.close();
             
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new AdempiereException(e);
         }
 	}
 	
@@ -96,7 +97,7 @@ public class Document {
         try {
         	writePDF(pageable, new FileOutputStream(result));
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new AdempiereException(e);
         }
         
         return result;

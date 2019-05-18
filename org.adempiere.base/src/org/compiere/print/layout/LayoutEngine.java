@@ -250,6 +250,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	public void setPrintFormat (MPrintFormat format, boolean doLayout)
 	{
 		m_format = format;
+		this.colSuppressRepeats = null;
 		//	Initial & Default Settings
 		m_printCtx = new Properties(format.getCtx());
 
@@ -1980,6 +1981,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	}
 
 	public static Boolean [] getColSuppressRepeats (MPrintFormat format){
+		if (format.isForm())
+			return null;
 		List<Boolean> colSuppressRepeats = new ArrayList<>();
 		for (int c = 0; c < format.getItemCount(); c++)
 		{
