@@ -217,7 +217,7 @@ public class MStatusLine extends X_AD_StatusLine
 					Format fmt = fmts[idx];
 					Object obj;
 					if (fmt instanceof DecimalFormat || fmt instanceof ChoiceFormat) {
-						obj = rs.getDouble(idx+1);
+						obj = rs.getBigDecimal(idx+1);
 					} else if (fmt instanceof SimpleDateFormat) {
 						obj = rs.getTimestamp(idx+1);
 					} else {
