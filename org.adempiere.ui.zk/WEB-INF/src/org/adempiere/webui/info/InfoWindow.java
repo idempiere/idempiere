@@ -2627,24 +2627,44 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		public Object getValueAt(int row, int col)
 		{
 			Object val = null;
-			
+
+			int columnIndex = 1;
+			int colFound = 0;
+			for (int idx = 0; idx < getColumnCount(); idx++) {
+				if (isColumnPrinted(idx)) {
+					columnIndex++;
+					colFound++;
+					if (colFound >= col) {
+						break;
+					}
+					if (columnInfos[idx].isKeyPairCol()) {
+						columnIndex++;
+					}
+				}
+			}
+
 			try
 			{
-				val = m_rs.getObject(col + 1); // Col are zero-based, while resultset col are 1 based
+				val = m_rs.getObject(columnIndex);
+				if (columnInfos[col].isKeyPairCol()) {
+					m_rs.getObject(columnIndex+1);
+					if (m_rs.wasNull()) {
+						val = null;
+					}
+				}
 			}
 			catch(SQLException e)
 			{
 				throw new AdempiereException(e);
 			}
-			
+			/* not required - the info window splits the column in key name pairs
 			GridField gridField = columnInfos[col].getGridField();
-			
 			Lookup lookup = gridField.getLookup();
-
-			if (lookup != null)
+			if (val != null && lookup != null)
 			{
 				val = lookup.getDisplay(val);
 			}
+			*/
 			
 			return val; 
 		}
