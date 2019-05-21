@@ -345,10 +345,16 @@ public class FinReport extends SvrProcess
 		scaleResults();
 
 		//	Create Report
-		if (Ini.isClient())
-			getProcessInfo().setTransientObject (getPrintFormat());
+		if (Ini.isClient()) 
+		{
+			if (getProcessInfo().getTransientObject() == null)
+				getProcessInfo().setTransientObject (getPrintFormat());
+		}
 		else
-			getProcessInfo().setSerializableObject(getPrintFormat());
+		{
+			if (getProcessInfo().getSerializableObject() == null)
+				getProcessInfo().setSerializableObject(getPrintFormat());
+		}
 
 		if (log.isLoggable(Level.FINE)) log.fine((System.currentTimeMillis() - m_start) + " ms");
 		return "";

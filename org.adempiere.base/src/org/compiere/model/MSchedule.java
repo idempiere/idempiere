@@ -90,7 +90,8 @@ public class MSchedule extends X_AD_Schedule
 	public boolean isOKtoRunOnIP()
 	{
 		String ipOnly = getRunOnlyOnIP();
-		if ((ipOnly == null) || (ipOnly.length() == 0))
+		// 0.0.0.0 = all ip address
+		if ((ipOnly == null) || (ipOnly.length() == 0) || "0.0.0.0".equals(ipOnly))
 			return true;
 
 		StringTokenizer st = new StringTokenizer(ipOnly, ";");

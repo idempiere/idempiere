@@ -23,6 +23,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -220,6 +221,15 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		{
 			Events.echoEvent(ON_OK_ECHO, this, null);
 			return;
+		}
+		if(fPrintFormat != null && fPrintFormat.getValue() != null) {
+			MPrintFormat format = new MPrintFormat(Env.getCtx(), (Integer) fPrintFormat.getValue(), null);
+			if (format != null) {
+				getProcessInfo().setSerializableObject(format);
+			}
+		}
+		if(freportType != null && freportType.getSelectedItem() != null) {
+			getProcessInfo().setReportType(freportType.getSelectedItem().getValue().toString());
 		}
 		startProcess();
 	}	

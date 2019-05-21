@@ -272,6 +272,8 @@ public abstract class AbstractProcessCtl implements Runnable
 			m_pi.setClassName(ProcessUtil.JASPER_STARTER_CLASS);
 			startProcess();
 			MPInstance pinstance = new MPInstance(Env.getCtx(), m_pi.getAD_PInstance_ID(), null);
+			if (m_pi.getReportType() != null)
+				pinstance.setReportType(m_pi.getReportType());
 			String errmsg = pinstance.getErrorMsg();
 			if (Util.isEmpty(errmsg, true))
 				errmsg = "Rows=" + String.valueOf(m_pi.getRowCount());

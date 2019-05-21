@@ -66,7 +66,6 @@ import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
-import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_ReportView;
@@ -103,7 +102,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2821858988648268894L;
+	private static final long serialVersionUID = 8232462327114180974L;
 
 	private static final String ON_COMPLETE = "onComplete";
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
@@ -258,9 +257,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	protected HtmlBasedComponent topParameterLayout;
 	protected HtmlBasedComponent bottomParameterLayout;
 	protected HtmlBasedComponent mainParameterLayout;
-	private WTableDirEditor fPrintFormat;
+	protected WTableDirEditor fPrintFormat;
 	private WEditor fLanguageType;
-	private Listbox freportType;
+	protected Listbox freportType;
 	private Checkbox chbIsSummary;
 	protected Button bOK;
 	protected Button bCancel;
@@ -410,29 +409,37 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	protected void reportOptionLayout(HtmlBasedComponent bottomParameterLayout) {
-		if (!isReport())
+		if (!isReport() && !isJasperReport())
 			return;//if not a report not need show this pannel
-		
+
 		// option control
 		Hlayout reportOptionLayout = new Hlayout();
 		reportOptionLayout.setSclass("report-option-container");
 		reportOptionLayout.setValign("middle");
 		bottomParameterLayout.appendChild(reportOptionLayout);
-		
+
+		Label lreportType = new Label(Msg.translate(Env.getCtx(), "view.report"));
+		lreportType.setSclass("option-input-parameter view-report-label");
 		freportType = new Listbox();
 		freportType.setSclass("option-input-parameter view-report-list");
+		reportOptionLayout.appendChild(lreportType);
+		reportOptionLayout.appendChild(freportType);	
+
+		if (isJasperReport())
+			listReportTypeJasper();
+		
+		if (!isReport())
+			return;
 		chbIsSummary = new Checkbox();
 		chbIsSummary.setSclass("option-input-parameter");
 		Label lPrintFormat = new Label(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
 		lPrintFormat.setSclass("option-input-parameter print-format-label");
-		Label lreportType = new Label(Msg.translate(Env.getCtx(), "view.report"));
-		lreportType.setSclass("option-input-parameter view-report-label");
 		Label lIsSummary = new Label(Msg.translate(Env.getCtx(), "Summary"));
 		lIsSummary.setSclass("option-input-parameter");
-		
+
 		MClient client = MClient.get(m_ctx);
 		listPrintFormat(client);
-		
+
 		reportOptionLayout.appendChild(lPrintFormat);
 		reportOptionLayout.appendChild(fPrintFormat.getComponent());
 		if (client.isMultiLingualDocument()){
@@ -443,8 +450,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}
 		fPrintFormat.getComponent().setSclass("option-input-parameter print-format-list");
 		fPrintFormat.getComponent().setPlaceholder(lPrintFormat.getValue());
-		reportOptionLayout.appendChild(lreportType);
-		reportOptionLayout.appendChild(freportType);	
 		reportOptionLayout.appendChild(lIsSummary);
 		reportOptionLayout.appendChild(chbIsSummary);
 	}
@@ -452,7 +457,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	protected boolean isReport () {
 		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
 		return pr.isReport() && pr.getJasperReport() == null;
-		
+	}
+	
+	protected boolean isJasperReport () {
+		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
+		return pr.isReport() && pr.getJasperReport() != null;
 	}
 	
 	protected void savePrameterLayout(HtmlBasedComponent bottomParameterLayout) {
@@ -565,26 +574,44 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		{
 			log.log(Level.SEVERE, e.getLocalizedMessage());
 		}
+
+		fillReportType(m_isCanExport);
 		
+		setReportTypeAndPrintFormat(getLastRun());
+	}
+	
+	private void listReportTypeJasper()
+	{
+		boolean m_isCanExport = MRole.getDefault().isCanExport();
+		fillReportType(m_isCanExport);
+
+		setReportTypeAndPrintFormat(getLastRun());
+	}
+	
+	private MPInstance getLastRun() {
+		final String where = "AD_Process_ID = ? AND AD_User_ID = ? AND Name IS NULL ";
+		return new Query(Env.getCtx(), MPInstance.Table_Name, where, null)
+				.setOnlyActiveRecords(true).setClient_ID()
+				.setParameters(m_AD_Process_ID, Env.getContextAsInt(Env.getCtx(), "#AD_User_ID"))
+				.setOrderBy("Created DESC")
+				.first();
+	}
+
+	private void fillReportType(boolean m_isCanExport) {
 		freportType.removeAllItems();
 		freportType.setMold("select");
+		freportType.appendItem("", "");
+		freportType.appendItem("PDF", "PDF");
 		freportType.appendItem("HTML", "HTML");
 		
 		if (m_isCanExport)
 		{
-			freportType.appendItem("PDF", "PDF");
 			freportType.appendItem("Excel", "XLS");
+			freportType.appendItem("CSV", "CSV");
 		}
 		freportType.setSelectedIndex(-1);
-		
-		String where = "AD_Process_ID = ? AND AD_User_ID = ? AND Name IS NULL ";
-		
-		MPInstance lastrun = MTable.get(Env.getCtx(), MPInstance.Table_Name).createQuery(where, null).setOnlyActiveRecords(true).setClient_ID()
-			.setParameters(m_AD_Process_ID, Env.getContextAsInt(Env.getCtx(), "#AD_User_ID")).setOrderBy("Created DESC").first();
-		
-		setReportTypeAndPrintFormat(lastrun);
 	}
-	
+
 	private void setReportTypeAndPrintFormat(MPInstance instance)
 	{
 		if (fPrintFormat != null && instance != null) {
@@ -607,11 +634,14 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	protected void saveReportOption (){
-		if (!isReport()){
+		if (!isReport() && !isJasperReport()){
 			return;
 		}
 		if(freportType.getSelectedItem() != null) {
 			getProcessInfo().setReportType(freportType.getSelectedItem().getValue().toString());
+		}
+		if (!isReport()){
+			return;
 		}
 		if(fPrintFormat != null && fPrintFormat.getValue() != null) {
 			MPrintFormat format = new MPrintFormat(m_ctx, (Integer) fPrintFormat.getValue(), null);
@@ -709,9 +739,14 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	protected void saveReportOptionToInstance (MPInstance instance){
+		if (!isReport() && !isJasperReport())
+			return;
+
+		if (freportType.getSelectedItem() != null)
+			instance.setReportType(freportType.getSelectedItem().getValue().toString());
+
 		if (!isReport())
 			return;
-		
 		Object value = fPrintFormat.getValue();
 		if (value == null){
 			instance.setAD_PrintFormat_ID(0);
@@ -728,7 +763,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			}
 		}
 		
-		instance.setReportType(freportType.getSelectedItem().getValue().toString());
 		instance.setIsSummary(chbIsSummary.isSelected());
 	}
 	
@@ -874,6 +908,12 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			instance.setIsRunAsJob(true);
 			instance.setIsProcessing(true);
 			instance.setNotificationType(getNotificationType());
+			instance.setReportType(m_pi.getReportType());
+			instance.setIsSummary(m_pi.isSummary());
+			instance.setAD_Language_ID(m_pi.getLanguageID());
+			if (m_pi.getSerializableObject() != null && m_pi.getSerializableObject() instanceof MPrintFormat) {
+				instance.setAD_PrintFormat_ID(((MPrintFormat)m_pi.getSerializableObject()).getAD_PrintFormat_ID());
+			}
 			instance.saveEx();
 			
 			m_pi.setAD_PInstance_ID(instance.getAD_PInstance_ID());
@@ -1154,15 +1194,27 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			int AD_User_ID = Env.getAD_User_ID(m_ctx);
 			
 			try {
-				m_pi.setSummary(""); // reset summary
-				
 				MProcess process = new MProcess(m_ctx, m_pi.getAD_Process_ID(), null);	
+				if (process.isReport() && process.getJasperReport() != null) {
+					if (!Util.isEmpty(process.getJasperReport())) 
+					{
+						m_pi.setExport(true);
+						if ("HTML".equals(m_pi.getReportType())) 
+							m_pi.setExportFileExtension("html");
+						else if ("CSV".equals(m_pi.getReportType()))
+							m_pi.setExportFileExtension("csv");
+						else if ("XLS".equals(m_pi.getReportType()))
+							m_pi.setExportFileExtension("xls");
+						else
+							m_pi.setExportFileExtension("pdf");
+					}
+				}
 				ServerProcessCtl.process(m_pi, null);
 				ProcessInfoUtil.setLogFromDB(m_pi);
 				if (!m_pi.isError())
 				{					
 					boolean isReport = (process.isReport() || process.getAD_ReportView_ID() > 0 || process.getJasperReport() != null || process.getAD_PrintFormat_ID() > 0);
-					if (isReport)
+					if (isReport && m_pi.getPDFReport() != null)
 					{
 						download(m_pi.getPDFReport());
 					}

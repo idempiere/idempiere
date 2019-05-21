@@ -31,7 +31,7 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20190521L;
 
     /** Standard Constructor */
     public X_AD_Scheduler (Properties ctx, int AD_Scheduler_ID, String trxName)
@@ -76,6 +76,34 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
+
+	/** Set Print Format.
+		@param AD_PrintFormat_ID 
+		Data Print Format
+	  */
+	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID)
+	{
+		if (AD_PrintFormat_ID < 1) 
+			set_Value (COLUMNNAME_AD_PrintFormat_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_PrintFormat_ID, Integer.valueOf(AD_PrintFormat_ID));
+	}
+
+	/** Get Print Format.
+		@return Data Print Format
+	  */
+	public int getAD_PrintFormat_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormat_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
     {
@@ -333,6 +361,31 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** ReportOutputType AD_Reference_ID=200169 */
+	public static final int REPORTOUTPUTTYPE_AD_Reference_ID=200169;
+	/** PDF = PDF */
+	public static final String REPORTOUTPUTTYPE_PDF = "PDF";
+	/** HTML = HTML */
+	public static final String REPORTOUTPUTTYPE_HTML = "HTML";
+	/** Excel = XLS */
+	public static final String REPORTOUTPUTTYPE_Excel = "XLS";
+	/** CSV = CSV */
+	public static final String REPORTOUTPUTTYPE_CSV = "CSV";
+	/** Set Report Output Type.
+		@param ReportOutputType Report Output Type	  */
+	public void setReportOutputType (String ReportOutputType)
+	{
+
+		set_Value (COLUMNNAME_ReportOutputType, ReportOutputType);
+	}
+
+	/** Get Report Output Type.
+		@return Report Output Type	  */
+	public String getReportOutputType () 
+	{
+		return (String)get_Value(COLUMNNAME_ReportOutputType);
 	}
 
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
