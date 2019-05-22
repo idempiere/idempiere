@@ -464,6 +464,7 @@ public abstract class AbstractProcessCtl implements Runnable
 		if (!started && (!m_IsServerProcess || clientOnly ))
 		{
 			if (m_pi.getClassName().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
+				m_pi.setProcessUI(m_processUI);
 				return ProcessUtil.startScriptProcess(Env.getCtx(), m_pi, m_trx);
 			} else {
 				return ProcessUtil.startJavaProcess(Env.getCtx(), m_pi, m_trx, true, m_processUI);
