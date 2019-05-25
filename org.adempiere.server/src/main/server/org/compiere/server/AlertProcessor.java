@@ -36,6 +36,7 @@ import org.compiere.model.MAttachment;
 import org.compiere.model.MClient;
 import org.compiere.model.MNote;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MSystem;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -132,8 +133,12 @@ public class AlertProcessor extends AdempiereServer
 			return false;
 		if (log.isLoggable(Level.INFO)) log.info("" + alert);
 
-		StringBuffer message = new StringBuffer(alert.getAlertMessage())
-			.append(Env.NL);
+		MSystem system = MSystem.get(Env.getCtx());
+		MClient client = MClient.get(Env.getCtx());
+		// parse variables from Client, then from System
+		String alertMessage = Env.parseVariable(alert.getAlertMessage(), client, null, true);
+		alertMessage = Env.parseVariable(alertMessage, system, null, true);
+		StringBuffer message = new StringBuffer(alertMessage).append(Env.NL);
 		//
 		boolean valid = true;
 		boolean processed = false;
@@ -228,12 +233,15 @@ public class AlertProcessor extends AdempiereServer
 		//
 		// Report footer - Date Generated
 		DateFormat df = DisplayType.getDateFormat(DisplayType.DateTime, language);
-		message.append("\n\n");
+		message.append(Env.NL).append(Env.NL);
 		message.append(Msg.translate(language, "Date")).append(" : ")
 				.append(df.format(new Timestamp(System.currentTimeMillis())));
 		
 		Collection<Integer> users = alert.getRecipientUsers();
-		int countMail = notifyUsers(users, alert.getAlertSubject(), message.toString(), attachments);
+		// parse variables from Client, then from System
+		String alertSubject = Env.parseVariable(alert.getAlertSubject(), client, null, true);
+		alertSubject = Env.parseVariable(alertSubject, system, null, true);
+		int countMail = notifyUsers(users, alertSubject, message.toString(), attachments);
 		
 		// IDEMPIERE-2864
 		for(File attachment : attachments)
@@ -260,7 +268,8 @@ public class AlertProcessor extends AdempiereServer
 		for (int user_id : users) {
 			MUser user = MUser.get(getCtx(), user_id);
 			if (user.isNotificationEMail()) {
-				if (m_client.sendEMailAttachments (user_id, subject, message, attachments))
+				String messageHTML = message.replaceAll(Env.NL, "<br>");
+				if (m_client.sendEMailAttachments (user_id, subject, messageHTML, attachments, true))
 				{
 					countMail++;
 				}
@@ -276,15 +285,17 @@ public class AlertProcessor extends AdempiereServer
 					MNote note = new MNote(getCtx(), AD_Message_ID, user_id, trx.getTrxName());
 					note.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
 					note.setTextMsg(message);
+					note.setDescription(subject);
 					note.saveEx();
-					// Attachment
-					MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), trx.getTrxName());
-					attachment.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
-					for (File f : attachments) {
-						attachment.addEntry(f);
+					if (attachments.size() > 0) {
+						// Attachment
+						MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), trx.getTrxName());
+						attachment.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
+						for (File f : attachments) {
+							attachment.addEntry(f);
+						}
+						attachment.saveEx();
 					}
-					attachment.setTextMsg(message);
-					attachment.saveEx();
 					countMail++;
 					trx.commit();
 				} catch (Throwable e) {
