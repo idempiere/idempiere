@@ -62,6 +62,21 @@ public interface I_AD_Scheduler
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_PrintFormat_ID */
+    public static final String COLUMNNAME_AD_PrintFormat_ID = "AD_PrintFormat_ID";
+
+	/** Set Print Format.
+	  * Data Print Format
+	  */
+	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID);
+
+	/** Get Print Format.
+	  * Data Print Format
+	  */
+	public int getAD_PrintFormat_ID();
+
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
+
     /** Column name AD_Process_ID */
     public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
 
@@ -240,6 +255,15 @@ public interface I_AD_Scheduler
 	  * Direct internal record ID
 	  */
 	public int getRecord_ID();
+
+    /** Column name ReportOutputType */
+    public static final String COLUMNNAME_ReportOutputType = "ReportOutputType";
+
+	/** Set Report Output Type	  */
+	public void setReportOutputType (String ReportOutputType);
+
+	/** Get Report Output Type	  */
+	public String getReportOutputType();
 
     /** Column name R_MailText_ID */
     public static final String COLUMNNAME_R_MailText_ID = "R_MailText_ID";

@@ -108,13 +108,14 @@ import net.sf.jasperreports.export.ExporterOutput;
 import net.sf.jasperreports.export.SimpleCsvExporterConfiguration;
 import net.sf.jasperreports.export.SimpleExporterConfiguration;
 import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleHtmlExporterConfiguration;
+import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
+import net.sf.jasperreports.export.SimpleHtmlReportConfiguration;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 import net.sf.jasperreports.export.SimplePrintServiceExporterConfiguration;
 import net.sf.jasperreports.export.SimpleTextExporterConfiguration;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
-import net.sf.jasperreports.export.SimpleXlsExporterConfiguration;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXmlExporterOutput;
 
 /**
@@ -724,6 +725,9 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	                	if (reportPathList.length == 1) {
 		                    if (log.isLoggable(Level.INFO)) log.info( "ReportStarter.startProcess run report -"+jasperPrint.getName());
 		                    JRViewerProvider viewerLauncher = Service.locator().locate(JRViewerProvider.class).getService();
+		                    if (!Util.isEmpty(processInfo.getReportType())) {
+		                    	jasperPrint.setProperty("IDEMPIERE_REPORT_TYPE", processInfo.getReportType());
+		                    }
 		                    viewerLauncher.openViewer(jasperPrint, pi.getTitle());
 	                	} else {
 	                		jasperPrintList.add(jasperPrint);
@@ -785,17 +789,25 @@ public class ReportStarter implements ProcessCall, ClientProcess
             				JRTextExporter export = new JRTextExporter(jasperContext);
             				SimpleTextExporterConfiguration config = new SimpleTextExporterConfiguration();
             				export.setConfiguration(config);
+            				export.setExporterOutput(new SimpleWriterExporterOutput(strm));
             				exporter = export;
             			} else if (ext.equals("html") || ext.equals("htm")) {
-            				HtmlExporter export = new HtmlExporter(jasperContext);
-            				SimpleHtmlExporterConfiguration config = new SimpleHtmlExporterConfiguration();
-            				export.setConfiguration(config);
-            				exporter = export;
+            				HtmlExporter exporterHTML = new HtmlExporter();
+            				SimpleHtmlReportConfiguration htmlConfig = new SimpleHtmlReportConfiguration();
+            				htmlConfig.setEmbedImage(true);
+            				htmlConfig.setAccessibleHtml(true);
+            				exporterHTML.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+            				exporterHTML.setExporterOutput(new SimpleHtmlExporterOutput(file));
+            				exporterHTML.setConfiguration(htmlConfig);
+            				exporter = exporterHTML;
             			} else if (ext.equals("xls")) {
-            				JRXlsExporter export = new JRXlsExporter(jasperContext);
-            				SimpleXlsExporterConfiguration config = new SimpleXlsExporterConfiguration();
-            				export.setConfiguration(config);
-            				exporter = export;
+            				JRXlsExporter exporterXLS = new JRXlsExporter(jasperContext);
+            				SimpleXlsReportConfiguration xlsConfig = new SimpleXlsReportConfiguration();
+            				xlsConfig.setOnePagePerSheet(false);
+            				exporterXLS.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+            				exporterXLS.setExporterOutput(new SimpleOutputStreamExporterOutput(strm));
+            				exporterXLS.setConfiguration(xlsConfig);
+            				exporter = exporterXLS;
             			} else {
             				log.severe("FileInvalidExtension="+ext);
             				strm.close();

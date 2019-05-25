@@ -274,11 +274,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		previewType.setMold("select");
 		previewType.appendItem("HTML", "HTML");
+		previewType.appendItem("PDF", "PDF");
 		
 		if ( m_isCanExport )
 		{
-			previewType.appendItem("PDF", "PDF");
 			previewType.appendItem("Excel", "XLS");
+			previewType.appendItem("CSV", "CSV");
 		}
 		
 		toolBar.appendChild(previewType);		
@@ -290,10 +291,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		if (m_reportEngine.getReportType() != null)
 		{
-			if (m_reportEngine.getReportType().equals("PDF") && m_isCanExport)
+			if (m_reportEngine.getReportType().equals("PDF"))
 				pTypeIndex = 1;
 			else if (m_reportEngine.getReportType().equals("XLS") && m_isCanExport)
 				pTypeIndex = 2;
+			else if (m_reportEngine.getReportType().equals("CSV") && m_isCanExport)
+				pTypeIndex = 3;
 		}
 		else
 		{
@@ -305,10 +308,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
     
     		if ("HTML".equals(type)) {
     			pTypeIndex = 0;
-    		} else if ("PDF".equals(type) && m_isCanExport) {
+    		} else if ("PDF".equals(type)) {
     			pTypeIndex = 1;
     		} else if ("XLS".equals(type) && m_isCanExport) {
     			pTypeIndex = 2;
+    		} else if ("CSV".equals(type) && m_isCanExport) {
+    			pTypeIndex = 3;
     		}
 		}
 		
@@ -651,7 +656,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(new HTMLRendererRunnable(this),getDesktop()));
 		} else if ("XLS".equals(previewType.getSelectedItem().getValue())) {			
 			future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(new XLSRendererRunnable(this),getDesktop()));
-		}						
+		} else if ("CSV".equals(previewType.getSelectedItem().getValue())) {
+			future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(new CSVRendererRunnable(this),getDesktop()));
+		}
 	}
 	
 	private void onPreviewReport() {
@@ -1653,6 +1660,49 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				File file = File.createTempFile(prefix, ".xls", new File(path));
 				viewer.m_reportEngine.createXLS(file, viewer.m_reportEngine.getPrintFormat().getLanguage());
 				viewer.media = new AMedia(file.getName(), "xls", "application/vnd.ms-excel", file, true);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException)
+					throw (RuntimeException)e;
+				else
+					throw new RuntimeException(e);
+			} finally {			
+				Desktop desktop = AEnv.getDesktop();
+				if (desktop != null && desktop.isAlive()) {
+					new ServerPushTemplate(desktop).executeAsync(this);
+				}
+			}
+		}
+
+		@Override
+		public void updateUI() {
+			viewer.labelDrill.setVisible(false);
+			viewer.comboDrill.setVisible(false);
+			viewer.onPreviewReport();
+		}
+		
+	}
+
+	static class CSVRendererRunnable extends ContextRunnable  implements IServerPushCallback {
+
+		private ZkReportViewer viewer;
+
+		public CSVRendererRunnable(ZkReportViewer viewer) {
+			super();
+			this.viewer = viewer;
+		}
+
+		@Override
+		protected void doRun() {
+			try {
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = viewer.makePrefix(viewer.m_reportEngine.getName());
+				if (log.isLoggable(Level.FINE))
+				{
+					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				}
+				File file = File.createTempFile(prefix, ".csv", new File(path));
+				viewer.m_reportEngine.createCSV(file, ',', AEnv.getLanguage(Env.getCtx()));
+				viewer.media = new AMedia(file.getName(), "csv", "text/csv", file, true);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;

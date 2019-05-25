@@ -94,7 +94,28 @@ public class ServerReportCtl {
 			{
 				if (pi != null && pi.isBatch() && pi.isPrintPreview())
 				{
-					pi.setPDFReport(re.getPDF());
+					if ("HTML".equals(pi.getReportType())) 
+					{
+						pi.setExport(true);
+						pi.setExportFileExtension("html");
+						pi.setExportFile(re.getHTML());
+					}
+					else if ("CSV".equals(pi.getReportType()))
+					{
+						pi.setExport(true);
+						pi.setExportFileExtension("csv");
+						pi.setExportFile(re.getCSV());					
+					}
+					else if ("XLS".equals(pi.getReportType()))
+					{
+						pi.setExport(true);
+						pi.setExportFileExtension("xls");
+						pi.setExportFile(re.getXLS());					
+					}
+					else
+					{
+						pi.setPDFReport(re.getPDF());
+					}
 				}
 				else
 				{
@@ -261,10 +282,31 @@ public class ServerReportCtl {
 			String TableName = MTable.getTableName(ctx, format.getAD_Table_ID());
 			MQuery query = MQuery.get (ctx, pi.getAD_PInstance_ID(), TableName);
 			PrintInfo info = new PrintInfo(pi);
-			re = new ReportEngine(ctx, format, query, info, pi.getTransactionName());
+			re = new ReportEngine(ctx, format, query, info, pi.isSummary(), pi.getTransactionName());
 			if (pi.isPrintPreview() && pi.isBatch())
 			{
-				pi.setPDFReport(re.getPDF());
+				if ("HTML".equals(pi.getReportType())) 
+				{
+					pi.setExport(true);
+					pi.setExportFileExtension("html");
+					pi.setExportFile(re.getHTML());
+				}
+				else if ("CSV".equals(pi.getReportType()))
+				{
+					pi.setExport(true);
+					pi.setExportFileExtension("csv");
+					pi.setExportFile(re.getCSV());					
+				}
+				else if ("XLS".equals(pi.getReportType()))
+				{
+					pi.setExport(true);
+					pi.setExportFileExtension("xls");
+					pi.setExportFile(re.getXLS());					
+				}
+				else
+				{
+					pi.setPDFReport(re.getPDF());
+				}
 			}
 			else
 			{
@@ -285,7 +327,28 @@ public class ServerReportCtl {
 		
 		if (pi.isPrintPreview() && pi.isBatch())
 		{
-			pi.setPDFReport(re.getPDF());
+			if ("HTML".equals(pi.getReportType())) 
+			{
+				pi.setExport(true);
+				pi.setExportFileExtension("html");
+				pi.setExportFile(re.getHTML());
+			}
+			else if ("CSV".equals(pi.getReportType()))
+			{
+				pi.setExport(true);
+				pi.setExportFileExtension("csv");
+				pi.setExportFile(re.getCSV());					
+			}
+			else if ("XLS".equals(pi.getReportType()))
+			{
+				pi.setExport(true);
+				pi.setExportFileExtension("xls");
+				pi.setExportFile(re.getXLS());					
+			}
+			else
+			{
+				pi.setPDFReport(re.getPDF());
+			}
 		}
 		else
 		{
@@ -322,7 +385,28 @@ public class ServerReportCtl {
 		ReportEngine re = new ReportEngine(Env.getCtx(), format, query, info);
 		if (pi.isPrintPreview() && pi.isBatch())
 		{
-			pi.setPDFReport(re.getPDF());
+			if ("HTML".equals(pi.getReportType())) 
+			{
+				pi.setExport(true);
+				pi.setExportFileExtension("html");
+				pi.setExportFile(re.getHTML());
+			}
+			else if ("CSV".equals(pi.getReportType()))
+			{
+				pi.setExport(true);
+				pi.setExportFileExtension("csv");
+				pi.setExportFile(re.getCSV());					
+			}
+			else if ("XLS".equals(pi.getReportType()))
+			{
+				pi.setExport(true);
+				pi.setExportFileExtension("xls");
+				pi.setExportFile(re.getXLS());					
+			}
+			else
+			{
+				pi.setPDFReport(re.getPDF());
+			}
 		}
 		else
 		{

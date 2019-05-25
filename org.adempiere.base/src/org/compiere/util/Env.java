@@ -1666,7 +1666,7 @@ public final class Env
 					String foreignTable = colToken.getReferenceTableName();
 					if (v != null) {
 						if (format != null && format.length() > 0) {
-							if (v instanceof Integer && (Integer) v > 0 && !Util.isEmpty(foreignTable)) {
+							if (v instanceof Integer && (Integer) v >= 0 && (!Util.isEmpty(foreignTable) || token.equalsIgnoreCase(po.get_TableName()+"_ID"))){
 								int tblIndex = format.indexOf(".");
 								String tableName = null;
 								if (tblIndex > 0)
@@ -1674,7 +1674,7 @@ public final class Env
 								else
 									tableName = foreignTable;
 								MTable table = MTable.get(ctx, tableName);
-								if (table != null && tableName.equalsIgnoreCase(foreignTable)) {
+								if (table != null && (tableName.equalsIgnoreCase(foreignTable) || tableName.equalsIgnoreCase(po.get_TableName()))) {
 									String columnName = tblIndex > 0 ? format.substring(tblIndex + 1) : format;
 									MColumn column = table.getColumn(columnName);
 									if (column != null) {
