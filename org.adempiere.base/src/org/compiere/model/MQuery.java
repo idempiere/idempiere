@@ -383,6 +383,19 @@ public class MQuery implements Serializable
 	
 	private Object m_zoomValue;
 
+	private int m_zoomWindow_ID;
+
+
+	public int getM_zoomWindow_ID() {
+		return m_zoomWindow_ID;
+	}
+
+
+	public void setM_zoomWindow_ID(int m_zoomWindow_ID) {
+		this.m_zoomWindow_ID = m_zoomWindow_ID;
+	}
+
+
 	/**
 	 * 	Get Record Count
 	 *	@return count - default 999999

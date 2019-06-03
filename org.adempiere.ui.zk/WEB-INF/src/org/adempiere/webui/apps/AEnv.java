@@ -462,7 +462,11 @@ public final class AEnv
 		if (query == null || query.getTableName() == null || query.getTableName().length() == 0)
 			return;
 		
-		int AD_Window_ID = Env.getZoomWindowID(query);
+		int AD_Window_ID = query.getM_zoomWindow_ID();
+
+		if (AD_Window_ID <= 0)
+			AD_Window_ID = Env.getZoomWindowID(query);
+
 		//  Nothing to Zoom to
 		if (AD_Window_ID == 0)
 			return;

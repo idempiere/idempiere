@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.wf.MWFNode;
 
 /**
@@ -240,4 +241,26 @@ public class MWindow extends X_AD_Window
 	}
 	//end vpj-cd e-evolution
 	
+	/**
+	 * get Window ID by UU
+	 * @param uu
+	 * @return
+	 */
+	public static int findByUU(String uu)
+	{
+		int retValue = 0;
+
+		final String whereClause = MWindow.COLUMNNAME_AD_Window_UU + "=?";
+
+		MWindow window = new Query(Env.getCtx(), MWindow.Table_Name, whereClause, null)
+				.setParameters(uu)
+				.setOnlyActiveRecords(true)
+				.first();
+
+		if (window != null)
+			retValue = window.get_ID();
+
+		return retValue;
+	}
+
 }	//	M_Window
