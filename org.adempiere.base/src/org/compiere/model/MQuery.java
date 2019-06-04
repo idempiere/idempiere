@@ -49,7 +49,7 @@ public class MQuery implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 481623650333512326L;
+	private static final long serialVersionUID = -1495322773308601375L;
 
 	/**
 	 *	Get Query from Parameter
@@ -386,12 +386,12 @@ public class MQuery implements Serializable
 	private int m_zoomWindow_ID;
 
 
-	public int getM_zoomWindow_ID() {
+	public int getZoomWindowID() {
 		return m_zoomWindow_ID;
 	}
 
 
-	public void setM_zoomWindow_ID(int m_zoomWindow_ID) {
+	public void setZoomWindowID(int m_zoomWindow_ID) {
 		this.m_zoomWindow_ID = m_zoomWindow_ID;
 	}
 

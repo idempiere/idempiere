@@ -20,6 +20,7 @@ import java.awt.Dimension;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -41,7 +42,7 @@ public class MWindow extends X_AD_Window
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8966733945232755787L;
+	private static final long serialVersionUID = -6027810254265627308L;
 
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MWindow.class);
@@ -68,6 +69,39 @@ public class MWindow extends X_AD_Window
 		}
 		return retValue;
 	}	//	get
+
+	/**
+	 * get Window ID by UU
+	 * @param ctx context
+	 * @param uu AD_Window_UU
+	 * @return MWindow object
+	 */
+	public static synchronized MWindow get(Properties ctx, String uu)
+	{
+		if (uu == null)
+			return null;
+		MWindow retValue = null;
+		Iterator<MWindow> it = s_cache.values().iterator();
+		while (it.hasNext())
+		{
+			retValue = it.next();
+			if (uu.equals(retValue.getAD_Window_UU()) && retValue.getCtx() == ctx)
+			{
+				return retValue;
+			}
+		}
+
+		final String whereClause = MWindow.COLUMNNAME_AD_Window_UU + "=?";
+		MWindow window = new Query(Env.getCtx(), MWindow.Table_Name, whereClause, null)
+				.setParameters(uu)
+				.setOnlyActiveRecords(true)
+				.first();
+
+		if (window != null)
+			retValue = window;
+
+		return retValue;
+	}
 
 	/**
 	 * 	Standard Constructor
@@ -241,26 +275,4 @@ public class MWindow extends X_AD_Window
 	}
 	//end vpj-cd e-evolution
 	
-	/**
-	 * get Window ID by UU
-	 * @param uu
-	 * @return
-	 */
-	public static int findByUU(String uu)
-	{
-		int retValue = 0;
-
-		final String whereClause = MWindow.COLUMNNAME_AD_Window_UU + "=?";
-
-		MWindow window = new Query(Env.getCtx(), MWindow.Table_Name, whereClause, null)
-				.setParameters(uu)
-				.setOnlyActiveRecords(true)
-				.first();
-
-		if (window != null)
-			retValue = window.get_ID();
-
-		return retValue;
-	}
-
 }	//	M_Window

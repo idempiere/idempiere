@@ -18,6 +18,7 @@ import java.util.Map;
 import org.adempiere.webui.event.ZoomEvent;
 import org.compiere.model.MQuery;
 import org.compiere.model.MWindow;
+import org.compiere.util.Env;
 import org.zkoss.json.JSONArray;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.au.AuRequest;
@@ -69,10 +70,13 @@ public class ZoomCommand implements AuService {
 			code = data.get(1);
 		}
 
-		if (data.size() > 3)
+		if (   data.size() > 3 && data.get(3) != null
+			&& data.get(2) != null && data.get(2).toString().equalsIgnoreCase("AD_Window_UU"))
 		{
 			String windowUU = (String) data.get(3);
-			windowID = MWindow.findByUU(windowUU);
+			MWindow window = MWindow.get(Env.getCtx(), windowUU);
+			if (window != null)
+				windowID = window.getAD_Window_ID();
 		}
 		//
 		MQuery query = new MQuery(tableName);
@@ -81,7 +85,7 @@ public class ZoomCommand implements AuService {
 		query.setZoomTableName(tableName);
 		query.setZoomColumnName(columnName);
 		query.setZoomValue(code);
-		query.setM_zoomWindow_ID(windowID);
+		query.setZoomWindowID(windowID);
 
 		Events.postEvent(new ZoomEvent(comp, query));
 
