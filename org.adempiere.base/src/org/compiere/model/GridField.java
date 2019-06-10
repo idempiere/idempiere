@@ -83,7 +83,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1871840570764036802L;
+	private static final long serialVersionUID = -5923967271000455417L;
 
 	/**
 	 *  Field Constructor.
@@ -110,10 +110,8 @@ public class GridField
 	 * GridTab.processDependentFields will check this flag to avoid clearing of lookup field value that just have been set.
 	 **/ 
 	private boolean m_lookupEditorSettingValue = false;
-	private boolean m_lockedrecord=false;
+	private boolean m_lockedRecord = false;
 	
-
-
 	/**
 	 *  Dispose
 	 */
@@ -447,7 +445,7 @@ public class GridField
 	{
 		if (isVirtualColumn())
 			return false;
-		if (m_lockedrecord)
+		if (m_lockedRecord)
 			return false;
 		//  Fields always enabled (are usually not updateable)
 		if (m_vo.ColumnName.equals("Posted")
@@ -2512,13 +2510,14 @@ public class GridField
 		return m_vo.displayType == DisplayType.Button && MColumn.ISTOOLBARBUTTON_Toolbar.equals(m_vo.IsToolbarButton);
 	}
 
-	public boolean islockedrecord() {
-		return m_lockedrecord;
+	public boolean isLockedRecord() {
+		return m_lockedRecord;
 	}
 
-	public void setlockedrecord(boolean m_lockedrecord) {
-		this.m_lockedrecord = m_lockedrecord;
+	public void setLockedRecord(boolean lockedRecord) {
+		this.m_lockedRecord = lockedRecord;
 	}
+
 	public int getPA_DashboardContent_ID()
 	{
 		return m_vo.PA_DashboardContent_ID;

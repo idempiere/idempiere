@@ -42,6 +42,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTable;
 import org.compiere.model.Lookup;
 import org.compiere.model.MBPartnerLocation;
+import org.compiere.model.MColumn;
 import org.compiere.model.MLocation;
 import org.compiere.model.MLookup;
 import org.compiere.model.MRole;
@@ -314,30 +315,38 @@ ContextMenuListener, IZoomableEditor
                 	refreshList();
             	}
                 
-                //still not in list, reset to zero 
+                //still not in list, reset to zero
                 if (!getComponent().isSelected(value))
                 {
                 	if (value instanceof Integer && gridField != null && gridField.getDisplayType() != DisplayType.ID && 
                 			(gridTab==null || !gridTab.getTableModel().isImporting())) // for IDs is ok to be out of the list
                 	{
-                		//if it is problem with record lock, just keep value (no trigger change) and set field readonly  
+                		//if it is problem with record lock, just keep value (no trigger change) and set field readonly
                 		MRole role = MRole.getDefault(Env.getCtx(), false);
-            			if (role.isRecordAccess(gridTab.getAD_Table_ID() ,(int)value,false)){
-            				oldValue = value;
-            				setReadWrite(false);
-            				gridField.setlockedrecord(true);
-            			}
-            			else 
-            			{
-	                		getComponent().setValue(null);
-	                		if (curValue == null)
-	                			curValue = value;
-	                		ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), curValue, null);
-	            	        super.fireValueChange(changeEvent);
-	                		oldValue = null;
-							if (gridField!=null)
-            				gridField.setlockedrecord(false);
-            			}
+                		MColumn col = MColumn.get(Env.getCtx(), gridField.getAD_Column_ID());
+                		int refTableID = -1;
+                		if (col.get_ID() > 0) {
+                			String refTable = col.getReferenceTableName();
+                			MTable table = MTable.get(Env.getCtx(), refTable);
+                			refTableID = table.getAD_Table_ID();
+                		}
+                		if (refTableID > 0 && ! role.isRecordAccess(refTableID, (int)value, false))
+                		{
+                			oldValue = value;
+                			setReadWrite(false);
+                			gridField.setLockedRecord(true);
+                		}
+                		else
+                		{
+                			getComponent().setValue(null);
+                			if (curValue == null)
+                				curValue = value;
+                			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), curValue, null);
+                			super.fireValueChange(changeEvent);
+                			oldValue = null;
+                			if (gridField!=null)
+                				gridField.setLockedRecord(false);
+                		}
                 	}
                 }
             }
@@ -345,7 +354,7 @@ ContextMenuListener, IZoomableEditor
             {
             	oldValue = value;
 				if (gridField!=null)
-            		gridField.setlockedrecord(false);
+            		gridField.setLockedRecord(false);
             }
         }
         else
