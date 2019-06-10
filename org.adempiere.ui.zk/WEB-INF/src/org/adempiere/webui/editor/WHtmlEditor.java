@@ -194,7 +194,7 @@ public class WHtmlEditor extends WEditor implements ContextMenuListener
 					adwindowContent.hideBusyMask();
 				}
 				if (!dialog.isCancelled()) {
-					box.setContent(dialog.getText());
+					box.setContent(WTextEditorDialog.sanitize(dialog.getText()));
 					String newText = box.getContent();
 			        ValueChangeEvent changeEvent = new ValueChangeEvent(WHtmlEditor.this, WHtmlEditor.this.getColumnName(), oldValue, newText);
 			        WHtmlEditor.super.fireValueChange(changeEvent);
