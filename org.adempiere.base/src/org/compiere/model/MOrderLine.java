@@ -311,7 +311,8 @@ public class MOrderLine extends X_C_OrderLine
 		//	Calculate Discount
 		setDiscount(m_productPrice.getDiscount());
 		//	Set UOM
-		setC_UOM_ID(m_productPrice.getC_UOM_ID());
+		if (getC_UOM_ID()==0)
+			setC_UOM_ID(m_productPrice.getC_UOM_ID());
 	}	//	setPrice
 
 	/**
