@@ -237,7 +237,9 @@ public class WMediaDialog extends Window implements EventListener<Event>
 				AMedia media = createMedia();
 				
 				preview.setContent(media);
+				preview.setClientAttribute("sandbox", "");
 				preview.setVisible(true);
+				preview.invalidate();
 			}
 			catch (Exception e)
 			{

@@ -28,6 +28,8 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.Language;
+import org.owasp.html.PolicyFactory;
+import org.owasp.html.Sanitizers;
 import org.zkforge.ckez.CKeditor;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.event.Event;
@@ -48,7 +50,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1188165765430615546L;
+	private static final long serialVersionUID = -1857623453350849161L;
 
 	private boolean editable;
 	private int maxSize;
@@ -186,7 +188,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	}
 
 	public void onEditorCallback(Event event) {
-		text = (String) event.getData();
+		text = sanitize((String) event.getData());
 		detach();
 	}
 	
@@ -262,6 +264,16 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	 */
 	public String getText() {
 		return text;
+	}
+
+	public static String sanitize(String untrustedHTML) {
+		final PolicyFactory policy = Sanitizers.BLOCKS
+				.and(Sanitizers.FORMATTING)
+				.and(Sanitizers.IMAGES)
+				.and(Sanitizers.LINKS)
+				.and(Sanitizers.STYLES)
+				.and(Sanitizers.TABLES);
+		return policy.sanitize(untrustedHTML);
 	}
 
 }

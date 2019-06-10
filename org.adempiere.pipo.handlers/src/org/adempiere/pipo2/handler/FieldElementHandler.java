@@ -33,6 +33,7 @@ import org.compiere.model.I_AD_Field;
 import org.compiere.model.I_AD_FieldGroup;
 import org.compiere.model.I_AD_Reference;
 import org.compiere.model.I_AD_Tab;
+import org.compiere.model.I_AD_Val_Rule;
 import org.compiere.model.MField;
 import org.compiere.model.X_AD_Field;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -119,6 +120,12 @@ public class FieldElementHandler extends AbstractElementHandler {
 			{
 				ElementHandler handler = packOut.getHandler(I_AD_Reference.Table_Name);
 				handler.packOut(packOut,document,null,m_Field.getAD_Reference_ID());
+			}
+
+			if (m_Field.getAD_Val_Rule_ID() > 0)
+			{
+				ElementHandler handler = packOut.getHandler(I_AD_Val_Rule.Table_Name);
+				handler.packOut(packOut,document,null,m_Field.getAD_Val_Rule_ID());
 			}
 		}
 		catch(Exception e)

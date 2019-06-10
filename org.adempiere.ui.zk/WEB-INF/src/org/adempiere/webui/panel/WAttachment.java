@@ -482,6 +482,7 @@ public class WAttachment extends Window implements EventListener<Event>
 				AMedia media = new AMedia(entry.getName(), null, contentType, entry.getData());
 
 				preview.setContent(media);
+				preview.setClientAttribute("sandbox", "");
 				preview.setVisible(true);
 				preview.invalidate();
 			}

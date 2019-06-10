@@ -62,6 +62,11 @@
 									<artifactId>ckez</artifactId>
 									<version>4.7.0.0</version>
 								</artifactItem>
+								<artifactItem>
+									<groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+									<artifactId>owasp-java-html-sanitizer</artifactId>
+									<version>20190503.1</version>
+								</artifactItem>
 							</artifactItems>
 							<outputDirectory>WEB-INF/lib</outputDirectory>
 							<stripVersion>true</stripVersion>
