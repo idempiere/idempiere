@@ -126,7 +126,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		autoPreviewList.add("image/gif");
 		autoPreviewList.add("text/plain");
 		autoPreviewList.add("application/pdf");
-		autoPreviewList.add("text/html");
+		// autoPreviewList.add("text/html"); IDEMPIERE-3980
 	}
 
 	/**
@@ -482,7 +482,6 @@ public class WAttachment extends Window implements EventListener<Event>
 				AMedia media = new AMedia(entry.getName(), null, contentType, entry.getData());
 
 				preview.setContent(media);
-				preview.setClientAttribute("sandbox", "");
 				preview.setVisible(true);
 				preview.invalidate();
 			}
