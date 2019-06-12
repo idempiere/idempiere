@@ -21,7 +21,9 @@ import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -109,6 +111,9 @@ public class Doc_MatchPO extends Doc
 		
 		if (m_M_InOutLine_ID == 0)
 		{
+			List<MMatchPO> noInvoiceLines = new ArrayList<MMatchPO>();
+			Map<Integer, BigDecimal[]> noShipmentLines = new HashMap<>();
+			Map<Integer, BigDecimal[]> postedNoShipmentLines = new HashMap<>();
 			MMatchPO[] matchPOs = MMatchPO.getOrderLine(getCtx(), m_oLine.getC_OrderLine_ID(), getTrxName());
 			for (MMatchPO matchPO : matchPOs)
 			{
@@ -116,12 +121,68 @@ public class Doc_MatchPO extends Doc
 				{
 					String docStatus = matchPO.getM_InOutLine().getM_InOut().getDocStatus();
 					if (docStatus.equals(DocAction.STATUS_Completed) || docStatus.equals(DocAction.STATUS_Closed)) {
-						if (matchPO.getQty().compareTo(getQty()) <= 0) {
+						noInvoiceLines.add(matchPO);
+					}
+				} 
+				else if (matchPO.getM_InOutLine_ID() == 0)
+				{
+					String docStatus = matchPO.getC_InvoiceLine().getC_Invoice().getDocStatus();
+					if (docStatus.equals(DocAction.STATUS_Completed) || docStatus.equals(DocAction.STATUS_Closed)) {
+						if (matchPO.isPosted())
+							postedNoShipmentLines.put(matchPO.getM_MatchPO_ID(), new BigDecimal[]{matchPO.getQty()});
+						else
+							noShipmentLines.put(matchPO.getM_MatchPO_ID(), new BigDecimal[]{matchPO.getQty()});
+					}
+				}
+			}
+			
+			for (MMatchPO matchPO : noInvoiceLines)
+			{
+				BigDecimal qty = matchPO.getQty();
+				for (Integer matchPOId : postedNoShipmentLines.keySet())
+				{
+					BigDecimal[] qtyHolder = postedNoShipmentLines.get(matchPOId);
+					if (qtyHolder[0].compareTo(qty) >= 0)
+					{
+						qtyHolder[0] = qtyHolder[0].subtract(qty);
+						qty = BigDecimal.ZERO;
+					} 
+					else if (qtyHolder[0].signum() > 0)
+					{
+						qty = qty.subtract(qtyHolder[0]);
+						qtyHolder[0] = BigDecimal.ZERO;
+					}
+					if (qty.signum() == 0)
+						break;
+				}
+				if (qty.signum() == 0)
+					continue;
+				for (Integer matchPOId : noShipmentLines.keySet())
+				{
+					BigDecimal[] qtyHolder = noShipmentLines.get(matchPOId);
+					if (qtyHolder[0].compareTo(qty) >= 0)
+					{
+						qtyHolder[0] = qtyHolder[0].subtract(qty);
+						qty = BigDecimal.ZERO;
+					} 
+					else if (qtyHolder[0].signum() > 0)
+					{
+						qty = qty.subtract(qtyHolder[0]);
+						qtyHolder[0] = BigDecimal.ZERO;
+					}
+					if (qtyHolder[0].signum() == 0)
+					{
+						if (matchPOId == m_matchPO.getM_MatchPO_ID())
+						{
 							m_M_InOutLine_ID = matchPO.getM_InOutLine_ID();
 							break;
 						}
 					}
+					if (qty.signum() == 0)
+						break;
 				}
+				if (m_M_InOutLine_ID > 0)
+					break;
 			}
 		}
 
