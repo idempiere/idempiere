@@ -21,9 +21,6 @@ import static org.compiere.model.SystemIDs.COLUMN_C_INVOICELINE_M_PRODUCT_ID;
 import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
 
 import java.beans.PropertyChangeEvent;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -50,13 +47,12 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
+import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
-import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.zkoss.zk.au.out.AuScript;
@@ -363,7 +359,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		int id = -1;
 		
 		if (m_tableName == null)	//	sets table name & key column
-			getDirectAccessSQL("*");
+			setTableAndKeyColumn();
 		
 		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, getComponent().getText(), false, getWhereClause());
 		if (ip != null && ip.loadedOK() && ip.getRowCount() == 1)
@@ -567,7 +563,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			queryValue = getComponent().getText();
 
 		if (m_tableName == null)	//	sets table name & key column
-			getDirectAccessSQL("*");
+			setTableAndKeyColumn();
 
 		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, queryValue, false, whereClause);
 		if (ip != null)
@@ -630,226 +626,26 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	}
 
 	/**
-	 * 	Generate Access SQL for Search.
-	 * 	The SQL returns the ID of the value entered
-	 * 	Also sets m_tableName and m_keyColumnName
-	 *	@param text uppercase text for LIKE comparison
-	 *	@return sql or ""
-	 *  Example
-	 *	SELECT C_Payment_ID FROM C_Payment WHERE UPPER(DocumentNo) LIKE x OR ...
+	 * 	Sets m_tableName and m_keyColumnName
 	 */
-	private String getDirectAccessSQL (String text)
-	{
-		String m_columnName = getColumnName();
-
-		StringBuffer sql = new StringBuffer();
-		m_tableName = m_columnName.substring(0, m_columnName.length()-3);
-		m_keyColumnName = m_columnName;
-
-		if (m_columnName.equals("M_Product_ID"))
-		{
+	private void setTableAndKeyColumn() {
+		if (getGridField() != null && getGridField().getAD_Column_ID() > 0) {
+			// field - this search editor comes from a window
+			MColumn column = MColumn.get(Env.getCtx(), getGridField().getAD_Column_ID());
+			m_tableName = column.getReferenceTableName();
+			MTable table = MTable.get(Env.getCtx(), m_tableName);
+			m_keyColumnName = table.getKeyColumns()[0];
+		} else {
+			// no field - the search editor is defined programatically
+			m_keyColumnName = getColumnName();
+			m_tableName = m_keyColumnName.substring(0, m_keyColumnName.length()-3);
+		}
+		if (m_keyColumnName.equals("M_Product_ID")) {
 			//	Reset
 			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_Product_ID", "0");
 			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_AttributeSetInstance_ID", "0");
 			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_Locator_ID", "0");
-
-			sql.append("SELECT M_Product_ID FROM M_Product WHERE (UPPER(Value) LIKE ")
-				.append(DB.TO_STRING(text))
-				.append(" OR UPPER(Name) LIKE ").append(DB.TO_STRING(text))
-				.append(" OR UPC LIKE ").append(DB.TO_STRING(text)).append(")");
 		}
-		else if (m_columnName.equals("C_BPartner_ID"))
-		{
-			sql.append("SELECT C_BPartner_ID FROM C_BPartner WHERE (UPPER(Value) LIKE ")
-				.append(DB.TO_STRING(text))
-				.append(" OR UPPER(Name) LIKE ").append(DB.TO_STRING(text)).append(")");
-		}
-		else if (m_columnName.equals("C_Order_ID"))
-		{
-			sql.append("SELECT C_Order_ID FROM C_Order WHERE UPPER(DocumentNo) LIKE ")
-				.append(DB.TO_STRING(text));
-		}
-		else if (m_columnName.equals("C_Invoice_ID"))
-		{
-			sql.append("SELECT C_Invoice_ID FROM C_Invoice WHERE UPPER(DocumentNo) LIKE ")
-				.append(DB.TO_STRING(text));
-		}
-		else if (m_columnName.equals("M_InOut_ID"))
-		{
-			sql.append("SELECT M_InOut_ID FROM M_InOut WHERE UPPER(DocumentNo) LIKE ")
-				.append(DB.TO_STRING(text));
-		}
-		else if (m_columnName.equals("C_Payment_ID"))
-		{
-			sql.append("SELECT C_Payment_ID FROM C_Payment WHERE UPPER(DocumentNo) LIKE ")
-				.append(DB.TO_STRING(text));
-		}
-		else if (m_columnName.equals("GL_JournalBatch_ID"))
-		{
-			sql.append("SELECT GL_JournalBatch_ID FROM GL_JournalBatch WHERE UPPER(DocumentNo) LIKE ")
-				.append(DB.TO_STRING(text));
-		}
-		else if (m_columnName.equals("SalesRep_ID"))
-		{
-			sql.append("SELECT AD_User_ID FROM AD_User WHERE UPPER(Name) LIKE ")
-				.append(DB.TO_STRING(text));
-
-			m_tableName = "AD_User";
-			m_keyColumnName = "AD_User_ID";
-		}
-
-		//	Predefined
-
-		if (sql.length() > 0)
-		{
-			String wc = getWhereClause();
-
-			if (wc != null && wc.length() > 0)
-				sql.append(" AND ").append(wc);
-
-			sql.append(" AND IsActive='Y'");
-			//	***
-
-			if (log.isLoggable(Level.FINEST)) log.finest(m_columnName + " (predefined) " + sql.toString());
-
-			return MRole.getDefault().addAccessSQL(sql.toString(),
-				m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-		}
-
-		//	Check if it is a Table Reference
-
-		if (lookup != null && lookup instanceof MLookup)
-		{
-			int AD_Reference_ID = ((MLookup)lookup).getAD_Reference_Value_ID();
-
-			if (AD_Reference_ID != 0)
-			{
-				boolean isValueDisplayed = false;
-				String query = "SELECT kc.ColumnName, dc.ColumnName, t.TableName, rt.IsValueDisplayed "
-					+ "FROM AD_Ref_Table rt"
-					+ " INNER JOIN AD_Column kc ON (rt.AD_Key=kc.AD_Column_ID)"
-					+ " INNER JOIN AD_Column dc ON (rt.AD_Display=dc.AD_Column_ID)"
-					+ " INNER JOIN AD_Table t ON (rt.AD_Table_ID=t.AD_Table_ID) "
-					+ "WHERE rt.AD_Reference_ID=?";
-
-				String displayColumnName = null;
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-
-				try
-				{
-					pstmt = DB.prepareStatement(query, null);
-					pstmt.setInt(1, AD_Reference_ID);
-					rs = pstmt.executeQuery();
-
-					if (rs.next())
-					{
-						m_keyColumnName = rs.getString(1);
-						displayColumnName = rs.getString(2);
-						m_tableName = rs.getString(3);
-						String t = rs.getString(4);
-						isValueDisplayed = "Y".equalsIgnoreCase(t);
-					}
-				}
-				catch (Exception e)
-				{
-					log.log(Level.SEVERE, query, e);
-				}
-				finally
-				{
-					DB.close(rs, pstmt);
-				}
-
-
-				if (displayColumnName != null)
-				{
-					sql = new StringBuffer();
-					sql.append("SELECT ").append(m_keyColumnName)
-						.append(" FROM ").append(m_tableName)
-						.append(" WHERE (UPPER(").append(displayColumnName)
-						.append(") LIKE ").append(DB.TO_STRING(text));
-					if (isValueDisplayed)
-					{
-						sql.append(" OR UPPER(").append("Value")
-						   .append(") LIKE ").append(DB.TO_STRING(text));
-					}
-					sql.append(")");
-					sql.append(" AND IsActive='Y'");
-
-					String wc = getWhereClause();
-
-					if (wc != null && wc.length() > 0)
-						sql.append(" AND ").append(wc);
-
-					//	***
-
-					if (log.isLoggable(Level.FINEST)) log.finest(m_columnName + " (Table) " + sql.toString());
-
-					return MRole.getDefault().addAccessSQL(sql.toString(),
-								m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-				}
-			} // Table Reference
-		} // MLookup
-
-		/** Check Well Known Columns of Table - assumes TableDir	**/
-
-		String query = "SELECT t.TableName, c.ColumnName "
-			+ "FROM AD_Column c "
-			+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID) "
-			+ "WHERE (c.ColumnName IN ('DocumentNo', 'Value', 'Name') OR c.IsIdentifier='Y')"
-			+ " AND c.AD_Reference_ID IN (10,14)"
-			+ " AND EXISTS (SELECT * FROM AD_Column cc WHERE cc.AD_Table_ID=t.AD_Table_ID"
-				+ " AND cc.IsKey='Y' AND cc.ColumnName=?)";
-
-		m_keyColumnName = m_columnName;
-		sql = new StringBuffer();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(query, null);
-			pstmt.setString(1, m_keyColumnName);
-			rs = pstmt.executeQuery();
-
-			while (rs.next())
-			{
-				if (sql.length() != 0)
-					sql.append(" OR ");
-
-				m_tableName = rs.getString(1);
-				sql.append("UPPER(").append(rs.getString(2)).append(") LIKE ").append(DB.TO_STRING(text));
-			}
-		}
-		catch (SQLException ex)
-		{
-			log.log(Level.SEVERE, query, ex);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		//
-		if (sql.length() == 0)
-		{
-			log.log(Level.SEVERE, m_columnName + " (TableDir) - no standard/identifier columns");
-			return "";
-		}
-		//
-		StringBuffer retValue = new StringBuffer ("SELECT ")
-			.append(m_columnName).append(" FROM ").append(m_tableName)
-			.append(" WHERE ").append(sql)
-			.append(" AND IsActive='Y'");
-
-		String wc = getWhereClause();
-
-		if (wc != null && wc.length() > 0)
-			retValue.append(" AND ").append(wc);
-		//	***
-		if (log.isLoggable(Level.FINEST)) log.finest(m_columnName + " (TableDir) " + sql.toString());
-		return MRole.getDefault().addAccessSQL(retValue.toString(),
-					m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 	}
 
 	private String getWhereClause()
