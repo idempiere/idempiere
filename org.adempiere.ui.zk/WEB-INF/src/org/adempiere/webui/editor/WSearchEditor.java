@@ -629,8 +629,17 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	 * 	Sets m_tableName and m_keyColumnName
 	 */
 	private void setTableAndKeyColumn() {
-		if (getGridField() != null && getGridField().getAD_Column_ID() > 0) {
-			// field - this search editor comes from a window
+		if (lookup != null && lookup instanceof MLookup) {
+			// foreign table defined in lookup
+			m_keyColumnName = ((MLookup)lookup).getColumnName();
+			if (m_keyColumnName.contains(".")) {
+				m_tableName = m_keyColumnName.substring(0, m_keyColumnName.indexOf("."));
+				m_keyColumnName = m_keyColumnName.substring(m_keyColumnName.indexOf(".")+1);
+			} else {
+				m_tableName = m_keyColumnName.substring(0, m_keyColumnName.length()-3);
+			}
+		} else if (getGridField() != null && getGridField().getGridTab() != null && getGridField().getAD_Column_ID() > 0) {
+			// field - this search editor comes from a window, when it comes from process parameter it doesn't have a gridtab
 			MColumn column = MColumn.get(Env.getCtx(), getGridField().getAD_Column_ID());
 			m_tableName = column.getReferenceTableName();
 			MTable table = MTable.get(Env.getCtx(), m_tableName);
