@@ -395,6 +395,8 @@ public class MMatchPO extends X_M_MatchPO
 						}
 						else
 							continue;
+						if (iLine == null && mpo.isPosted())
+							continue;
 					}
 					if ((iLine != null || mpo.getC_InvoiceLine_ID() > 0) && (sLine != null || mpo.getM_InOutLine_ID() > 0))
 					{
