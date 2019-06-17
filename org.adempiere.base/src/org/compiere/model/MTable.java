@@ -705,6 +705,7 @@ public class MTable extends X_AD_Table
 				tablename.equals("AD_AllClients_V") ||
 				tablename.equals("AD_ReportView") ||
 				tablename.equals("AD_Role") ||
+				tablename.equals("AD_AllRoles_V") ||
 				tablename.equals("AD_System") ||
 				tablename.equals("AD_User") ||
 				tablename.equals("AD_AllUsers_V") ||

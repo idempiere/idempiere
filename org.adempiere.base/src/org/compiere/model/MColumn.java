@@ -809,6 +809,13 @@ public class MColumn extends X_AD_Column
 			foreignTable = "AD_Chart";
 		}
 
+		if (foreignTable.equals("AD_AllClients_V"))
+			foreignTable = "AD_Client";
+		else if (foreignTable.equals("AD_AllUsers_V"))
+			foreignTable = "AD_User";
+		else if (foreignTable.equals("AD_AllRoles_V"))
+			foreignTable = "AD_Role";
+
 		return foreignTable;
 	}
 
