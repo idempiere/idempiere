@@ -117,14 +117,14 @@ public class Doc_MatchPO extends Doc
 			MMatchPO[] matchPOs = MMatchPO.getOrderLine(getCtx(), m_oLine.getC_OrderLine_ID(), getTrxName());
 			for (MMatchPO matchPO : matchPOs)
 			{
-				if (matchPO.getM_InOutLine_ID() > 0 && matchPO.getC_InvoiceLine_ID() == 0)
+				if (matchPO.getM_InOutLine_ID() > 0 && matchPO.getC_InvoiceLine_ID() == 0 && matchPO.getReversal_ID()==0)
 				{
 					String docStatus = matchPO.getM_InOutLine().getM_InOut().getDocStatus();
 					if (docStatus.equals(DocAction.STATUS_Completed) || docStatus.equals(DocAction.STATUS_Closed)) {
 						noInvoiceLines.add(matchPO);
 					}
 				} 
-				else if (matchPO.getM_InOutLine_ID() == 0)
+				else if (matchPO.getM_InOutLine_ID() == 0 && matchPO.getReversal_ID()==0)
 				{
 					String docStatus = matchPO.getC_InvoiceLine().getC_Invoice().getDocStatus();
 					if (docStatus.equals(DocAction.STATUS_Completed) || docStatus.equals(DocAction.STATUS_Closed)) {

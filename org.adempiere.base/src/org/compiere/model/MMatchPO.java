@@ -23,9 +23,15 @@ import java.sql.ResultSet;
 import java.sql.Savepoint;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.process.DocAction;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -625,6 +631,154 @@ public class MMatchPO extends X_M_MatchPO
 							msg = msg + " " + error.getName();
 						}
 						throw new RuntimeException(msg);
+					}
+					
+					//auto create m_matchinv if not created yet
+					int cnt = DB.getSQLValue(iLine.get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE C_InvoiceLine_ID="+iLine.getC_InvoiceLine_ID());
+					if (cnt == 0)
+					{
+						Map<Integer, BigDecimal[]> noInvoiceLines = new HashMap<>();
+						Map<Integer, List<MMatchPO>> invoiceMatched = new HashMap<Integer, List<MMatchPO>>();
+						List<MMatchPO> noInvoiceList = new ArrayList<MMatchPO>();
+						MMatchPO[] matchPOs = MMatchPO.getOrderLine(iLine.getCtx(), C_OrderLine_ID, iLine.get_TrxName());
+						for (MMatchPO matchPO : matchPOs)
+						{
+							if (matchPO.getM_InOutLine_ID() > 0 && matchPO.getReversal_ID() == 0)
+							{
+								if (matchPO.getC_InvoiceLine_ID() == 0)
+								{
+									String docStatus = matchPO.getM_InOutLine().getM_InOut().getDocStatus();
+									if (docStatus.equals(DocAction.STATUS_Completed) || docStatus.equals(DocAction.STATUS_Closed)) 
+									{
+										noInvoiceLines.put(matchPO.getM_MatchPO_ID(), new BigDecimal[]{matchPO.getQty()});
+										noInvoiceList.add(matchPO);
+									}
+								}
+								else
+								{
+									List<MMatchPO> invoices = invoiceMatched.get(matchPO.getM_InOutLine_ID());
+									if (invoices == null) 
+									{
+										invoices = new ArrayList<MMatchPO>();
+										invoiceMatched.put(matchPO.getM_InOutLine_ID(), invoices);
+									}
+									invoices.add(matchPO);
+								}
+							} 
+						}
+						
+						Collections.sort(noInvoiceList, new Comparator<MMatchPO>() {
+							@Override
+							public int compare(MMatchPO arg0, MMatchPO arg1) {
+								return arg0.getM_MatchPO_ID() > arg1.getM_MatchPO_ID() 
+										? 1
+										: (arg0.getM_MatchPO_ID()==arg1.getM_MatchPO_ID() ? 0 : -1);
+							}
+						});
+						for (MMatchPO matchPO : noInvoiceList)
+						{
+							BigDecimal[] qtyHolder = noInvoiceLines.get(matchPO.getM_MatchPO_ID());
+							List<MMatchPO> matchedInvoices = invoiceMatched.get(matchPO.getM_InOutLine_ID());
+							MMatchInv[] matchInvoices = MMatchInv.getInOutLine(iLine.getCtx(), matchPO.getM_InOutLine_ID(), iLine.get_TrxName());
+							for (MMatchInv matchInv : matchInvoices)
+							{
+								if (matchInv.getReversal_ID() > 0)
+									continue;
+								BigDecimal alreadyMatch = BigDecimal.ZERO;
+								if (matchedInvoices != null)
+								{
+									for(MMatchPO matchedInvoice : matchedInvoices)
+									{
+										if (matchedInvoice.getC_InvoiceLine_ID()==matchInv.getC_InvoiceLine_ID())
+											alreadyMatch = alreadyMatch.add(matchedInvoice.getQty());
+									}
+								}
+								BigDecimal balance = matchInv.getQty().subtract(alreadyMatch);
+								if (balance.signum() > 0)
+								{
+									String docStatus = matchInv.getC_InvoiceLine().getC_Invoice().getDocStatus();
+									if (docStatus.equals(DocAction.STATUS_Completed) || docStatus.equals(DocAction.STATUS_Closed)) 
+									{
+										qtyHolder[0] = qtyHolder[0].subtract(balance);
+									}
+								}
+							}							
+						}
+						
+						BigDecimal toMatch = retValue.getQty();
+						for (MMatchPO matchPO : noInvoiceList)
+						{
+							BigDecimal[] qtyHolder = noInvoiceLines.get(matchPO.getM_MatchPO_ID());
+							if (qtyHolder[0].signum() > 0)
+							{
+								BigDecimal autoMatchQty = null;
+								if (qtyHolder[0].compareTo(toMatch) >= 0)
+								{
+									autoMatchQty = toMatch;
+									toMatch = BigDecimal.ZERO;
+								}
+								else
+								{
+									autoMatchQty = qtyHolder[0];
+									toMatch = toMatch.subtract(autoMatchQty);
+								}
+								if (autoMatchQty != null && autoMatchQty.signum() > 0)
+								{
+									Savepoint savepoint = null;
+									Trx trx = null;
+									MMatchInv matchInv = null;
+									try
+									{
+										trx = trxName != null ? Trx.get(trxName, false) : null;
+										savepoint = trx != null ? trx.getConnection().setSavepoint() : null;
+										matchInv = new MMatchInv(retValue.getCtx(), 0, retValue.get_TrxName());
+										matchInv.setC_InvoiceLine_ID(retValue.getC_InvoiceLine_ID());
+										matchInv.setM_Product_ID(retValue.getM_Product_ID());
+										matchInv.setM_InOutLine_ID(matchPO.getM_InOutLine_ID());
+										matchInv.setAD_Client_ID(retValue.getAD_Client_ID());
+										matchInv.setAD_Org_ID(retValue.getAD_Org_ID());
+										matchInv.setM_AttributeSetInstance_ID(retValue.getM_AttributeSetInstance_ID());
+										matchInv.setQty(autoMatchQty);
+										matchInv.setDateTrx(dateTrx);
+										matchInv.setProcessed(true);
+										if (!matchInv.save())
+										{
+											if (savepoint != null)
+											{
+												trx.getConnection().rollback(savepoint);								
+												savepoint = null;
+											}
+											else
+											{
+												matchInv.delete(true);
+											}
+											String msg = "Failed to auto match invoice.";
+											ValueNamePair error = CLogger.retrieveError();
+											if (error != null)
+											{
+												msg = msg + " " + error.getName();
+											}
+											s_log.severe(msg);
+											matchInv = null;
+										}
+									} catch (Exception e) {						
+										s_log.log(Level.SEVERE, "Failed to auto match Invoice.", e);
+										matchInv = null;
+									} finally {
+										if (savepoint != null) 
+										{
+											try {
+												trx.getConnection().releaseSavepoint(savepoint);
+											} catch (Exception e) {}
+										}	
+									}
+									if (matchInv == null)
+										break;
+								}
+							}
+							if (toMatch.signum() <= 0)
+								break;
+						}
 					}
 				}
 			}
