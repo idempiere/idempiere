@@ -1145,4 +1145,32 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			return info;
 		return info.substring(fromIndex + 1, toIndex);
 	}
+
+	@Override
+	public String subsetClauseForCSV(String columnName, String csv) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("string_to_array(")
+			.append(columnName)
+			.append(",',')");
+		builder.append(" <@ "); //is contained by
+		builder.append("string_to_array('")
+			.append(csv)
+			.append("',',')");
+
+		return builder.toString();
+	}
+
+	@Override
+	public String intersectClauseForCSV(String columnName, String csv) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("string_to_array(")
+			.append(columnName)
+			.append(",',')");
+		builder.append(" && "); //is contained by
+		builder.append("string_to_array('")
+			.append(csv)
+			.append("',',')");
+
+		return builder.toString();
+	}
 }   //  DB_PostgreSQL

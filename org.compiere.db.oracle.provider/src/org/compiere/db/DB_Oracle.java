@@ -1420,5 +1420,33 @@ public class DB_Oracle implements AdempiereDatabase
 		if (toIndex == -1)
 			return info;
 		return info.substring(fromIndex + 1, toIndex);
+	}
+
+	@Override
+	public String subsetClauseForCSV(String columnName, String csv) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("toTableOfVarchar2(")
+			.append(columnName)
+			.append(")");
+		builder.append(" submultiset of ")
+			.append("toTableOfVarchar2('")
+			.append(csv)
+			.append("')");
+		
+		return builder.toString();
+	}
+
+	@Override
+	public String intersectClauseForCSV(String columnName, String csv) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("toTableOfVarchar2(")
+			.append(columnName)
+			.append(")");
+		builder.append(" MULTISET INTERSECT ")
+			.append("toTableOfVarchar2('")
+			.append(csv)
+			.append("') IS NOT EMPTY");
+		
+		return builder.toString();
 	}	
 }   //  DB_Oracle

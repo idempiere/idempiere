@@ -1701,6 +1701,15 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 }
                 m_query.addRestriction(getSubCategoryWhereClause(field, ((Integer) parsedValue).intValue()), and, openBrackets);
             }
+            else if ((field.getDisplayType()==DisplayType.ChosenMultipleSelectionList||field.getDisplayType()==DisplayType.ChosenMultipleSelectionSearch||field.getDisplayType()==DisplayType.ChosenMultipleSelectionTable) &&
+            		(MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator) || MQuery.OPERATORS[MQuery.NOT_EQUAL_INDEX].getValue().equals(Operator)))
+            {
+            	String clause = DB.intersectClauseForCSV(ColumnSQL, parsedValue.toString());
+            	if (MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator))
+            		m_query.addRestriction(clause, and, openBrackets);
+            	else
+            		m_query.addRestriction("NOT (" + clause + ")", and, openBrackets);
+            }
             else
             	m_query.addRestriction(ColumnSQL, Operator, parsedValue,
             			infoName, infoDisplay, and, openBrackets);
@@ -1849,6 +1858,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     	continue;
                     }
 
+                    if (field.getDisplayType()==DisplayType.ChosenMultipleSelectionList||field.getDisplayType()==DisplayType.ChosenMultipleSelectionSearch||field.getDisplayType()==DisplayType.ChosenMultipleSelectionTable)
+                    {
+                    	String clause = DB.intersectClauseForCSV(ColumnSQL.toString(), value.toString());
+                    	m_query.addRestriction(clause);
+                    	continue;
+                    }
+                    
                     //
                     // Be more permissive for String columns
                     if (isSearchLike(field))

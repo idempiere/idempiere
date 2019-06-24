@@ -238,8 +238,29 @@ public final class MLookup extends Lookup implements Serializable
 	public String getDisplay (Object key)
 	{
 		if (key == null)
-			return "";
-		//
+			return "";		
+		//		
+		if (m_info.DisplayType==DisplayType.ChosenMultipleSelectionList || m_info.DisplayType==DisplayType.ChosenMultipleSelectionSearch
+			|| m_info.DisplayType==DisplayType.ChosenMultipleSelectionTable)
+		{
+			StringBuilder builder = new StringBuilder();
+			String[] keys = key.toString().split("[,]");
+			for(String k : keys)
+			{
+				if (builder.length() > 0)
+					builder.append(", ");
+				Object display = get(k);
+				if (display == null)
+				{
+					builder.append("<").append(k).append(">");
+				}
+				else
+				{
+					builder.append(display.toString());
+				}
+			}
+			return builder.toString();
+		}
 		Object display = get (key);
 		if (display == null){
 			StringBuilder msgreturn = new StringBuilder("<").append(key.toString()).append(">");

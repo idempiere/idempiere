@@ -651,6 +651,14 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			else
 			{
 		        value = rs.getString(colIndex);
+		        if (! rs.wasNull()) {
+					WEditor editor = editorMap.get(p_layout[col].getColSQL());
+					if (editor != null && editor.getGridField() != null && editor.getGridField().isLookup())
+					{
+						editor.setValue(value);
+						value = editor.getDisplay();
+					}
+		        }
 			}
 			data.add(value);
 		}
@@ -2530,6 +2538,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	
 	public Integer getFirstRowKey() {
 		return contentPanel.getFirstRowKey();
+	}
+
+	public Integer getRowKeyAt(int row) {
+		return contentPanel.getRowKeyAt(row);
 	}
 
 	/**

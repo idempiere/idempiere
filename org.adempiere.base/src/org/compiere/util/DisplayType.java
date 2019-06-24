@@ -21,6 +21,9 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_AMOUNT;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_ASSIGNMENT;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_BINARY;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_BUTTON;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_LIST;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_TABLE;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_SEARCH;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_COLOR;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_COSTPRICE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DATE;
@@ -156,6 +159,12 @@ public final class DisplayType
 	
 	public static final int MultipleSelectionGrid = REFERENCE_DATATYPE_MULTIPLE_SELECTION_GRID;
 
+	public static final int ChosenMultipleSelectionList = REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_LIST;
+	
+	public static final int ChosenMultipleSelectionTable = REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_TABLE;
+	
+	public static final int ChosenMultipleSelectionSearch = REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_SEARCH;
+
 	/**
 	 *	- New Display Type
 		INSERT INTO AD_REFERENCE
@@ -272,7 +281,10 @@ public final class DisplayType
 			|| displayType == FilePath || displayType == FileName
 			|| displayType == URL || displayType == PrinterName
 			|| displayType == SingleSelectionGrid || displayType == Color
-			|| displayType == MultipleSelectionGrid)
+			|| displayType == MultipleSelectionGrid
+			|| displayType == ChosenMultipleSelectionList
+			|| displayType == ChosenMultipleSelectionTable
+			|| displayType == ChosenMultipleSelectionSearch)
 			return true;
 		
 		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
@@ -312,7 +324,10 @@ public final class DisplayType
 	public static boolean isLookup(int displayType)
 	{
 		if (displayType == List || displayType == Table
-			|| displayType == TableDir || displayType == Search)
+			|| displayType == TableDir || displayType == Search
+			|| displayType == ChosenMultipleSelectionTable
+			|| displayType == ChosenMultipleSelectionSearch
+			|| displayType == ChosenMultipleSelectionList)
 			return true;
 		
 		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();

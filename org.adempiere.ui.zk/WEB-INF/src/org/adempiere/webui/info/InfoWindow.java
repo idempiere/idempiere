@@ -71,7 +71,6 @@ import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.GridWindow;
-import org.compiere.model.Lookup;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MLookupFactory;
@@ -874,7 +873,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if (! colSQL.toUpperCase().contains(" AS "))
 			colSQL += " AS " + infoColumn.getColumnName();
         editorMap.put(colSQL, editor);
-		ColumnInfo columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), colSQL, KeyNamePair.class, (String)null, infoColumn.isReadOnly() || haveNotProcess);
+        Class<?> colClass = columnName.endsWith("_ID") ? KeyNamePair.class : String.class;
+		ColumnInfo columnInfo = new ColumnInfo(infoColumn.get_Translation("Name"), colSQL, colClass, (String)null, infoColumn.isReadOnly() || haveNotProcess);
 		return columnInfo;
 	}
 
@@ -946,33 +946,60 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				} else {
 					builder.append(checkAND.isChecked() ? " AND " : " OR ");
 				}
-				
-				String columnClause = null;
-				if (mInfoColumn.getQueryFunction() != null && mInfoColumn.getQueryFunction().trim().length() > 0) {
-					String function = mInfoColumn.getQueryFunction();
-					if (function.indexOf("@") >= 0) {
-						String s = Env.parseContext(infoContext, p_WindowNo, function, true, false);
-						if (s.length() == 0) {
-							log.log(Level.SEVERE, "Failed to parse query function. " + function);
-						} else {
-							function = s;
-						}
+								
+				if (mInfoColumn.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionList)
+				{
+					String pString = editor.getValue().toString();
+					String column = columnName;
+					if (column.indexOf(".") > 0)
+						column = column.substring(column.indexOf(".")+1);
+					int cnt = DB.getSQLValueEx(null, "SELECT Count(*) From AD_Column WHERE IsActive='Y' AND AD_Client_ID=0 AND Upper(ColumnName)=? AND AD_Reference_ID=?", column.toUpperCase(), DisplayType.ChosenMultipleSelectionList);
+					if (cnt > 0)
+						builder.append(DB.intersectClauseForCSV(columnName, pString));
+					else
+						builder.append(DB.inClauseForCSV(columnName, pString));
+				} 
+				else if (mInfoColumn.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionTable || mInfoColumn.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionSearch)
+				{
+					String pString = editor.getValue().toString();
+					if (columnName.endsWith("_ID"))
+					{						
+						builder.append(DB.inClauseForCSV(columnName, pString));
 					}
-					if (function.indexOf("?") >= 0) {
-						columnClause = function.replaceFirst("[?]", columnName);
-					} else {
-						columnClause = function+"("+columnName+")";
+					else
+					{
+						builder.append(DB.intersectClauseForCSV(columnName, pString));
 					}
-				} else {
-					columnClause = columnName;
 				}
-				builder.append(columnClause)
-					   .append(" ")
-					   .append(mInfoColumn.getQueryOperator());
-				if (columnClause.toUpperCase().startsWith("UPPER(")) {
-					builder.append(" UPPER(?)");
-				} else {
-					builder.append(" ?");
+				else
+				{
+					String columnClause = null;
+					if (mInfoColumn.getQueryFunction() != null && mInfoColumn.getQueryFunction().trim().length() > 0) {
+						String function = mInfoColumn.getQueryFunction();
+						if (function.indexOf("@") >= 0) {
+							String s = Env.parseContext(infoContext, p_WindowNo, function, true, false);
+							if (s.length() == 0) {
+								log.log(Level.SEVERE, "Failed to parse query function. " + function);
+							} else {
+								function = s;
+							}
+						}
+						if (function.indexOf("?") >= 0) {
+							columnClause = function.replaceFirst("[?]", columnName);
+						} else {
+							columnClause = function+"("+columnName+")";
+						}
+					} else {
+						columnClause = columnName;
+					}
+					builder.append(columnClause)
+						   .append(" ")
+						   .append(mInfoColumn.getQueryOperator());
+					if (columnClause.toUpperCase().startsWith("UPPER(")) {
+						builder.append(" UPPER(?)");
+					} else {
+						builder.append(" ?");
+					}
 				}
 			}
 		}	
@@ -1068,6 +1095,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			if (editor.getGridField() != null && editor.getValue() != null && editor.getValue().toString().trim().length() > 0) {
 				MInfoColumn mInfoColumn = findInfoColumn(editor.getGridField());
 				if (mInfoColumn == null || mInfoColumn.getSelectClause().equals("0")) {
+					continue;
+				}
+				if (mInfoColumn.getAD_Reference_ID()==DisplayType.ChosenMultipleSelectionList || mInfoColumn.getAD_Reference_ID()==DisplayType.ChosenMultipleSelectionSearch
+					|| mInfoColumn.getAD_Reference_ID()==DisplayType.ChosenMultipleSelectionTable) {
 					continue;
 				}
 				Object value = editor.getValue();
