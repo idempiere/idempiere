@@ -46,8 +46,10 @@ public class ParameterElement extends GridElement
 	 */
 	public ParameterElement(MQuery query, Properties ctx, MPrintTableFormat tFormat)
 	{
-		super (query.getRestrictionCount(), 4);
+		super (query.getReportProcessQuery() != null ? query.getReportProcessQuery().getRestrictionCount() : query.getRestrictionCount(), 4);
 		setData (0, 0, Msg.getMsg(ctx, "Parameter") + ":", tFormat.getPageHeader_Font(), tFormat.getPageHeaderFG_Color());
+		if (query.getReportProcessQuery() != null)
+			query = query.getReportProcessQuery();
 		for (int r = 0; r < query.getRestrictionCount(); r++)
 		{
 			setData (r, 1, query.getInfoName(r), tFormat.getParameter_Font(), tFormat.getParameter_Color());

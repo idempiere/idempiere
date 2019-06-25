@@ -61,25 +61,25 @@ public class MQuery implements Serializable
 	static public MQuery get (Properties ctx, int AD_PInstance_ID, String TableName)
 	{
 		if (s_log.isLoggable(Level.INFO)) s_log.info("AD_PInstance_ID=" + AD_PInstance_ID + ", TableName=" + TableName);
-		MQuery query = new MQuery(TableName);
+		MQuery reportQuery = new MQuery(TableName);
 		//	Temporary Tables - add qualifier (not displayed)
 		boolean isTemporaryTable = false;
-		MTable table = null;
+		MTable table =  MTable.get(ctx, TableName);
 		if (TableName.startsWith("T_"))
 		{
-			query.addRestriction(TableName + ".AD_PInstance_ID=" + AD_PInstance_ID);
+			reportQuery.addRestriction(TableName + ".AD_PInstance_ID=" + AD_PInstance_ID);
 			isTemporaryTable = true;
-			table = MTable.get(ctx, TableName);
 		}
-		boolean isFinancialReport = ("T_Report".equals(TableName) || "T_ReportStatement".equals(TableName));
-		query.m_AD_PInstance_ID = AD_PInstance_ID;
+		//use separate query object for rendering of parameter at report
+		reportQuery.setReportProcessQuery(new MQuery(TableName));
+		reportQuery.m_AD_PInstance_ID = AD_PInstance_ID;
 
 		//	How many rows do we have?
 		String SQL = "SELECT COUNT(*) FROM AD_PInstance_Para WHERE AD_PInstance_ID=?";
 		int rows = DB.getSQLValue(null, SQL, AD_PInstance_ID);
 
 		if (rows < 1)
-			return query;
+			return reportQuery;
 
 		//	Msg.getMsg(Env.getCtx(), "Parameter")
 		boolean trl = !Env.isBaseLanguage(ctx, "AD_Process_Para");
@@ -125,9 +125,11 @@ public class MQuery implements Serializable
 					s_log.log(Level.SEVERE, "(Parameter) - more rows than expected");
 					break;
 				}
+				MQuery query = reportQuery;
 				String ParameterName = rs.getString(1);
 				String P_String = rs.getString(2);
 				String P_String_To = rs.getString(3);
+				int restrictionCount = reportQuery.getRestrictionCount();
 				//
 				Double P_Number = null;
 				double d = rs.getDouble(4);
@@ -153,12 +155,10 @@ public class MQuery implements Serializable
 					+ ", N=" + P_Number + "-" + P_Number_To + ", D=" + P_Date + "-" + P_Date_To
 					+ "; Name=" + Name + ", Info=" + Info + "-" + Info_To + ", Range=" + isRange);
 				//
-				// Check if the parameter exists as column in our table.
-				// This condition applies only to temporary tables - teo_sarca [ 2860022 ]
-				if (isTemporaryTable && !isFinancialReport && table != null && table.getColumn(ParameterName) == null)
+				//custom query or column not exists - render as report parameters
+				if (isTemporaryTable || (table != null && table.getColumn(ParameterName) == null))
 				{
-					if (s_log.isLoggable(Level.INFO)) s_log.info("Skip parameter "+ParameterName+" because there is no column in table "+TableName);
-					continue;
+					query = reportQuery.getReportProcessQuery();
 				}
 
 				//-------------------------------------------------------------
@@ -240,6 +240,12 @@ public class MQuery implements Serializable
 							query.addRangeRestriction(paramName, P_Date, P_Date_To, Name, Info, Info_To);
 					}
 				}
+				//add to reportprocessquery if new restriction added to reportquery
+				if (query == reportQuery && reportQuery.getReportProcessQuery() != null 
+					&& reportQuery.getRestrictionCount() > restrictionCount) 
+				{
+					reportQuery.getReportProcessQuery().m_list.add(reportQuery.m_list.get(reportQuery.m_list.size()-1));
+				}
 			}
 		}
 		catch (SQLException e2)
@@ -251,8 +257,8 @@ public class MQuery implements Serializable
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		if (s_log.isLoggable(Level.INFO)) s_log.info(query.toString());
-		return query;
+		if (s_log.isLoggable(Level.INFO)) s_log.info(reportQuery.toString());
+		return reportQuery;
 	}	//	get
 	
 	/**
@@ -403,6 +409,8 @@ public class MQuery implements Serializable
 	private Object m_zoomValue;
 
 	private int m_zoomWindow_ID;
+
+	private MQuery m_reportProcessQuery;
 
 
 	public int getZoomWindowID() {
@@ -1032,6 +1040,14 @@ public class MQuery implements Serializable
 	 */
 	public Object getZoomValue() {
 		return m_zoomValue;
+	}
+	
+	public void setReportProcessQuery(MQuery query) {
+		m_reportProcessQuery = query;
+	}
+	
+	public MQuery getReportProcessQuery() {
+		return m_reportProcessQuery;
 	}
 }	//	MQuery
 
