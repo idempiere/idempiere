@@ -98,6 +98,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.eevolution.model.MDDOrder;
@@ -625,6 +626,21 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			if (cssPrefix != null && cssPrefix.trim().length() == 0)
 				cssPrefix = null;
 			
+			table parameterTable = null;
+			if (!m_printFormat.isForm()) {
+				if (m_query != null && m_query.isActive()) {
+					int rows = m_query.getReportProcessQuery() != null ? m_query.getReportProcessQuery().getRestrictionCount() : m_query.getRestrictionCount();
+					if (rows > 0) {
+						parameterTable = new table();
+						if (cssPrefix != null)
+							parameterTable.setClass(cssPrefix + "-parameter-table");
+						else
+							parameterTable.setClass("parameter-table");
+						parameterTable.setNeedClosingTag(false);
+					}
+				}
+			}
+			
 			table table = new table();
 			if (cssPrefix != null)
 				table.setClass(cssPrefix + "-table");
@@ -632,17 +648,17 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			//
 			table.setNeedClosingTag(false);
 			PrintWriter w = new PrintWriter(writer);
-			
+			XhtmlDocument doc = null;
+					
 			if (onlyTable)
 				table.output(w);
 			else
 			{
-				XhtmlDocument doc = new XhtmlDocument();
+				doc = new XhtmlDocument();
 				doc.getHtml().setNeedClosingTag(false);
 				doc.getBody().setNeedClosingTag(false);
 				doc.appendHead("<meta charset=\"UTF-8\" />");
-				doc.appendBody(table);
-				appendInlineCss (doc);
+				
 				if (extension != null && extension.getStyleURL() != null)
 				{
 					// maybe cache style content with key is path
@@ -666,9 +682,91 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				
 				if (extension != null && !isExport){
 					extension.setWebAttribute(doc.getBody());
+				}				
+			}
+			
+			if (doc != null)
+			{
+				appendInlineCss(doc);
+				mapCssInfo.clear();
+				
+				StringBuilder styleBuild = new StringBuilder();
+				MPrintTableFormat tf = m_printFormat.getTableFormat();
+				CSSInfo cssInfo = new CSSInfo(tf.getPageHeader_Font(), tf.getPageHeaderFG_Color());
+				if (cssPrefix != null) {
+					if (parameterTable != null)
+						styleBuild.append("."+cssPrefix + "-parameter-table th").append(cssInfo.getCssRule());						
+					styleBuild.append("."+cssPrefix + "-table th").append(cssInfo.getCssRule());
+				}
+				else {
+					if (parameterTable != null)						
+						styleBuild.append("parameter-table th").append(cssInfo.getCssRule());
+					styleBuild.append("table th").append(cssInfo.getCssRule());
 				}
 				
+				cssInfo = new CSSInfo(tf.getParameter_Font(), tf.getParameter_Color());
+				styleBuild.append(".tr-parameter td").append(cssInfo.getCssRule());
+				
+				cssInfo = new CSSInfo(tf.getFunct_Font(), tf.getFunctFG_Color());
+				styleBuild.append(".tr-function td").append(cssInfo.getCssRule());
+				
+				MPrintFont printFont = MPrintFont.get(m_printFormat.getAD_PrintFont_ID());
+				Font base = printFont.getFont();
+				Font newFont = new Font(base.getName(), Font.PLAIN, base.getSize()-1);
+				cssInfo = new CSSInfo(newFont, null);
+				styleBuild.append(".tr-level-1 td").append(cssInfo.getCssRule());
+				
+				newFont = new Font(base.getName(), Font.PLAIN, base.getSize()-2);
+				cssInfo = new CSSInfo(newFont, null);
+				styleBuild.append(".tr-level-2 td").append(cssInfo.getCssRule());
+				
+				styleBuild = new StringBuilder(styleBuild.toString().replaceAll(";", "!important;"));
+				appendInlineCss (doc, styleBuild);
+							
 				doc.output(w);
+				
+				if (parameterTable != null) {
+					parameterTable.output(w);
+					
+					tr tr = new tr();
+					tr.setClass("tr-parameter");
+					th th = new th();
+					tr.addElement(th);
+					th.addElement(Msg.getMsg(getCtx(), "Parameter") + ":");
+					
+					MQuery query = m_query;
+					if (m_query.getReportProcessQuery() != null)
+						query = m_query.getReportProcessQuery();
+					for (int r = 0; r < query.getRestrictionCount(); r++)
+					{
+						if (r > 0) {
+							tr = new tr();
+							tr.setClass("tr-parameter");
+							td td = new td();
+							tr.addElement(td);
+							td.addElement("&nbsp;");
+						}
+						
+						td td = new td();
+						tr.addElement(td);
+						td.addElement(query.getInfoName(r));
+						
+						td = new td();
+						tr.addElement(td);
+						td.addElement(query.getInfoOperator(r));
+						
+						td = new td();
+						tr.addElement(td);
+						td.addElement(query.getInfoDisplayAll(r));
+						
+						tr.output(w);
+					}
+					
+					w.println();
+					w.println("</table>");
+				}
+				
+				table.output(w);
 			}
 			
 			thead thead = new thead();
@@ -2105,6 +2203,11 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				color = mPrintColor.getColor();
 				
 			}
+		}
+		
+		public CSSInfo (Font font, Color color) {
+			this.font = font;
+			this.color = color;
 		}
 		
 		/**
