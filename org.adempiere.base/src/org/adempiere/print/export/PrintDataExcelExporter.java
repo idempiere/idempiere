@@ -19,14 +19,21 @@ import java.util.Date;
 import javax.print.attribute.standard.MediaSizeName;
 
 import org.adempiere.impexp.AbstractExcelExporter;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.compiere.model.MQuery;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.print.MPrintPaper;
 import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataElement;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -40,12 +47,18 @@ extends AbstractExcelExporter
 {
 	private PrintData m_printData;
 	private MPrintFormat m_printFormat;
+	private MQuery m_query;
 	
 	public PrintDataExcelExporter(PrintData printData, MPrintFormat printFormat, Boolean[] colSuppressRepeats) {
+		this(printData, printFormat, colSuppressRepeats, null);
+	}
+	
+	public PrintDataExcelExporter(PrintData printData, MPrintFormat printFormat, Boolean[] colSuppressRepeats, MQuery query) {
 		super();
 		this.m_printData = printData;
 		this.m_printFormat = printFormat;
 		this.colSuppressRepeats = colSuppressRepeats;
+		this.m_query = query;
 	}
 
 	@Override
@@ -217,5 +230,55 @@ extends AbstractExcelExporter
 		}
 		
 		return cellFormat;
+	}
+	
+	@Override
+	protected void createParameter(HSSFSheet sheet) {
+		if (!m_printFormat.isForm()) {
+			if (m_query != null && m_query.isActive()) {
+				int rows = m_query.getReportProcessQuery() != null ? m_query.getReportProcessQuery().getRestrictionCount() : m_query.getRestrictionCount();
+				if (rows > 0) {
+					setNoOfParameter(rows);
+					setFreezePane(1, rows + 1);
+					
+					HSSFCellStyle parameterStyle = m_workbook.createCellStyle();
+					HSSFFont parameterFont = m_workbook.createFont();
+					parameterFont.setItalic(true);
+					parameterStyle.setFont(parameterFont);
+					
+					MQuery query = m_query;
+					if (m_query.getReportProcessQuery() != null)
+						query = m_query.getReportProcessQuery();
+					for (int r = 0; r < query.getRestrictionCount(); r++)
+					{
+						HSSFRow row = sheet.createRow(r);
+						if (r == 0) {
+							HSSFCell cell = row.createCell(0);
+							HSSFCellStyle style = m_workbook.createCellStyle();
+							HSSFFont font = m_workbook.createFont();
+							font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+							style.setFont(font);
+							cell.setCellStyle(style);
+							String value = Util.stripDiacritics(Msg.getMsg(getCtx(), "Parameter") + ":");
+							cell.setCellValue(new HSSFRichTextString(value));
+						}
+						HSSFCell cell = row.createCell(1);
+						cell.setCellStyle(parameterStyle);
+						String value = Util.stripDiacritics(query.getInfoName(r));
+						cell.setCellValue(new HSSFRichTextString(value));
+						
+						cell = row.createCell(2);
+						cell.setCellStyle(parameterStyle);
+						value = Util.stripDiacritics(query.getInfoOperator(r));
+						cell.setCellValue(new HSSFRichTextString(value));
+						
+						cell = row.createCell(3);
+						cell.setCellStyle(parameterStyle);
+						value = Util.stripDiacritics(query.getInfoDisplayAll(r));
+						cell.setCellValue(new HSSFRichTextString(value));
+					}
+				}
+			}
+		}
 	}
 }

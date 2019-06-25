@@ -121,7 +121,7 @@ public abstract class AbstractExcelExporter
 	/** Logger */
 	protected final CLogger log = CLogger.getCLogger(getClass());
 	//
-	private HSSFWorkbook m_workbook;
+	protected HSSFWorkbook m_workbook;
 	private HSSFDataFormat m_dataFormat;
 	private HSSFFont m_fontHeader = null;
 	private HSSFFont m_fontDefault = null;
@@ -135,6 +135,7 @@ public abstract class AbstractExcelExporter
 	private HashMap<String, HSSFCellStyle> m_styles = new HashMap<String, HSSFCellStyle>();
 
 	protected Boolean[] colSuppressRepeats;
+	private int noOfParameter = 0;
 	
 	public AbstractExcelExporter() {
 		m_workbook = new HSSFWorkbook();
@@ -311,6 +312,7 @@ public abstract class AbstractExcelExporter
 		HSSFSheet sheet= m_workbook.createSheet();
 		formatPage(sheet);
 		createHeaderFooter(sheet);
+		createParameter(sheet);
 		createTableHeader(sheet);
 		m_sheetCount++;
 		//
@@ -319,9 +321,14 @@ public abstract class AbstractExcelExporter
 
 	private void createTableHeader(HSSFSheet sheet)
 	{
+		createTableHeader(sheet, Math.max(noOfParameter, 0));
+	}
+		
+	private void createTableHeader(HSSFSheet sheet, int headerRowNum)
+	{
 		int colnumMax = 0;
 
-		HSSFRow row = sheet.createRow(0);
+		HSSFRow row = sheet.createRow(headerRowNum);
 		//	for all columns
 		int colnum = 0;
 		for (int col = 0; col < getColumnCount(); col++)
@@ -343,6 +350,21 @@ public abstract class AbstractExcelExporter
 //		m_workbook.setRepeatingRowsAndColumns(m_sheetCount, 0, 0, 0, 0);
 	}
 
+	protected int getNoOfParameter()
+	{
+		return noOfParameter;
+	}
+
+	protected void setNoOfParameter(int noOfParameter)
+	{
+		this.noOfParameter = noOfParameter;
+	}
+	
+	protected void createParameter(HSSFSheet sheet)
+	{
+		
+	}
+	
 	protected void createHeaderFooter(HSSFSheet sheet)
 	{
 		// Sheet Header
@@ -408,7 +430,9 @@ public abstract class AbstractExcelExporter
 			preValues = new Object [colSuppressRepeats.length];
 		}
 		
-		for (int xls_rownum = 1; rownum < lastRowNum; rownum++, xls_rownum++)
+		int initxls_rownum = Math.max(noOfParameter+1, 1);
+		
+		for (int xls_rownum = initxls_rownum; rownum < lastRowNum; rownum++, xls_rownum++)
 		{
 			if (!isCurrentRowOnly())
 				setCurrentRow(rownum);
