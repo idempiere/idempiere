@@ -229,6 +229,19 @@ public interface I_AD_PrintFormatItem
 	  */
 	public int getCreatedBy();
 
+    /** Column name DisplayLogic */
+    public static final String COLUMNNAME_DisplayLogic = "DisplayLogic";
+
+	/** Set Display Logic.
+	  * If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public void setDisplayLogic (String DisplayLogic);
+
+	/** Get Display Logic.
+	  * If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public String getDisplayLogic();
+
     /** Column name FieldAlignmentType */
     public static final String COLUMNNAME_FieldAlignmentType = "FieldAlignmentType";
 
