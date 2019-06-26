@@ -13,8 +13,13 @@
  *****************************************************************************/
 package org.adempiere.print.export;
 
+import java.io.OutputStream;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Level;
 
 import javax.print.attribute.standard.MediaSizeName;
 
@@ -47,30 +52,37 @@ extends AbstractExcelExporter
 {
 	private PrintData m_printData;
 	private MPrintFormat m_printFormat;
+	private Map<MPrintFormatItem, PrintData> childPrintFormatDetails;
+	private ArrayList<Object> columns;
 	private MQuery m_query;
 	
-	public PrintDataExcelExporter(PrintData printData, MPrintFormat printFormat, Boolean[] colSuppressRepeats) {
-		this(printData, printFormat, colSuppressRepeats, null);
+	public PrintDataExcelExporter(PrintData printData, MPrintFormat printFormat) {
+		this(printData, printFormat, null, null);
 	}
 	
-	public PrintDataExcelExporter(PrintData printData, MPrintFormat printFormat, Boolean[] colSuppressRepeats, MQuery query) {
+	public PrintDataExcelExporter(PrintData printData, MPrintFormat printFormat, Map<MPrintFormatItem, PrintData> childPrintFormatDetails, Boolean[] colSuppressRepeats) {
+		this(printData, printFormat, childPrintFormatDetails, colSuppressRepeats, null);
+	}
+	
+	public PrintDataExcelExporter(PrintData printData, MPrintFormat printFormat, Map<MPrintFormatItem, PrintData> childPrintFormatDetails, Boolean[] colSuppressRepeats, MQuery query) {
 		super();
 		this.m_printData = printData;
 		this.m_printFormat = printFormat;
+		this.childPrintFormatDetails = childPrintFormatDetails;
 		this.colSuppressRepeats = colSuppressRepeats;
 		this.m_query = query;
 	}
 
 	@Override
 	public int getColumnCount() {
-		return m_printFormat.getItemCount();
+		return columns.size();
 	}
 
 	private PrintDataElement getPDE(int row, int col) {
 		if (m_printData.getRowIndex() != row)
 			m_printData.setRowIndex(row);
 		//
-		MPrintFormatItem item = m_printFormat.getItem(col);
+		MPrintFormatItem item = (MPrintFormatItem) columns.get(col);
 		Object obj = null;
 
 		if (item.isTypeField() || item.isTypePrintFormat() && item.isImageField()) {
@@ -123,12 +135,50 @@ extends AbstractExcelExporter
 			value = pde.getValueDisplay(getLanguage());
 		}
 		//
+		MPrintFormatItem item = null;
+		Object colObj = columns.get(col);
+		if (colObj instanceof MPrintFormatItem)
+			item = (MPrintFormatItem) colObj;
+		if(item != null && item.getAD_PrintFormatChild_ID()!=0)
+		{
+			MPrintFormat mPrintFormat = null;
+		
+			if(childPrintFormatDetails!=null)
+			{
+				for (Iterator<Map.Entry<MPrintFormatItem,PrintData>> iter = childPrintFormatDetails.entrySet().iterator(); iter.hasNext();) 
+				{
+					try {
+						Map.Entry<MPrintFormatItem,PrintData> entry = (Map.Entry<MPrintFormatItem,PrintData>) iter.next();
+						MPrintFormatItem mPrintFormatItem = (MPrintFormatItem)entry.getKey();
+						if (mPrintFormatItem.equals(item)) 
+						{
+							mPrintFormat = new MPrintFormat(getCtx(), mPrintFormatItem.getAD_PrintFormatChild_ID(), null);
+							PrintData printData = (PrintData)entry.getValue();	
+							PrintDataExcelExporter exp =new PrintDataExcelExporter(printData, mPrintFormat);
+							exp.exportToWorkbook(m_workbook, m_lang);
+							break;
+						}
+					}
+					catch(Exception ex)
+					{
+						log.log(Level.WARNING, ex.getMessage(), ex);
+						break;
+					}
+				}
+			}
+		}
 		return value;
 	}
 
 	@Override
 	public String getHeaderName(int col) {
-		return m_printFormat.getItem(col).getPrintName(getLanguage());
+		Object colObj = columns.get(col);
+		if (colObj instanceof MPrintFormatItem) {
+			MPrintFormatItem item = (MPrintFormatItem) colObj;
+			return item.getPrintName(getLanguage());
+		} else {
+			return "";
+		}
 	}
 
 	@Override
@@ -138,8 +188,10 @@ extends AbstractExcelExporter
 
 	@Override
 	public boolean isColumnPrinted(int col) {
-		MPrintFormatItem item = m_printFormat.getItem(col);
-		return item.isPrinted();
+		if (columns != null && col < columns.size())
+			return true;
+		else
+			return false;
 	}
 
 	@Override
@@ -230,6 +282,21 @@ extends AbstractExcelExporter
 		}
 		
 		return cellFormat;
+	}
+	
+	@Override
+	protected void export(OutputStream out) throws Exception {
+		columns = new ArrayList<>();
+		for (int col = 0; col < m_printFormat.getItemCount(); col++)
+		{
+			MPrintFormatItem item = m_printFormat.getItem(col);
+			if (item.isPrinted())
+			{
+				columns.add(item);
+			}
+		}
+
+		super.export(out);
 	}
 	
 	@Override

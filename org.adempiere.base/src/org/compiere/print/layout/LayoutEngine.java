@@ -41,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -226,6 +227,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	/** Image Size				*/
 	public static Dimension		IMAGE_SIZE = new Dimension(10,10);
 
+	private Map<MPrintFormatItem,PrintData> childPrintFormatDetails = new HashMap<MPrintFormatItem,PrintData>();
+	
 	public Boolean[] colSuppressRepeats;
 	
 	static {
@@ -1279,6 +1282,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 			return null;
 		if (log.isLoggable(Level.FINE))
 			log.fine(includedData.toString());
+		setChildPrintFormatDetails(item, includedData); //map printdata and printformat item
 		//
 		element = layoutTable (format, includedData, item.getXSpace());
 		//	handle multi page tables
@@ -1980,6 +1984,16 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		return  m_PrintInfo;
 	}
 
+	public void setChildPrintFormatDetails(MPrintFormatItem printFormatItem, PrintData printData)
+	{
+		childPrintFormatDetails.put(printFormatItem, printData);
+	}
+	
+	public Map<MPrintFormatItem, PrintData> getChildPrintFormatDetails()
+	{
+		return childPrintFormatDetails;
+	}
+	
 	public static Boolean [] getColSuppressRepeats (MPrintFormat format){
 		if (format.isForm())
 			return null;

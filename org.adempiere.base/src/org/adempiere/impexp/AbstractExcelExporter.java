@@ -125,7 +125,7 @@ public abstract class AbstractExcelExporter
 	private HSSFDataFormat m_dataFormat;
 	private HSSFFont m_fontHeader = null;
 	private HSSFFont m_fontDefault = null;
-	private Language m_lang = null;
+	protected Language m_lang = null;
 	private int m_sheetCount = 0;
 	//
 	private int m_colSplit = 1;
@@ -415,8 +415,7 @@ public abstract class AbstractExcelExporter
 	 * @param out
 	 * @throws Exception
 	 */
-	private void export(OutputStream out)
-	throws Exception
+	protected void export(OutputStream out) throws Exception
 	{
 		HSSFSheet sheet= createTableSheet();
 		String sheetName = null;
