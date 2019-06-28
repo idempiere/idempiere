@@ -25,7 +25,9 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import org.compiere.model.MQuery;
+import org.compiere.util.Evaluator;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Layout Page
@@ -118,6 +120,11 @@ public class Page
 		m_pageCount = pageCount;
 	}	//	setPageCount
 
+	public int getPageCount()
+	{
+		return m_pageCount;
+	}
+	
 	/**
 	 * 	Add Print Element to Page
 	 * 	@param element print element
@@ -180,7 +187,17 @@ public class Page
 		for (int i = 0; i < m_elements.size(); i++)
 		{
 			PrintElement e = (PrintElement)m_elements.get(i);
+			if (e.getPrintData() != null && !Util.isEmpty(e.getPageLogic(), true) && e.getRowIndex() >= 0)
+			{
+				e.getPrintData().setRowIndex(e.getRowIndex());
+				PrintDataEvaluatee evaluatee = new PrintDataEvaluatee(this, e.getPrintData());
+				boolean display = Evaluator.evaluateLogic(evaluatee, e.getPageLogic());
+				if (!display)
+					continue;
+			}
+			e.setCurrentPage(this);
 			e.paint(g2D, m_pageNo, pageStart, m_ctx, isView);
+			e.setCurrentPage(null);
 		}
 	}	//	paint
 

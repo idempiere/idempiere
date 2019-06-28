@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import org.compiere.model.MQuery;
+import org.compiere.util.Evaluator;
+import org.compiere.util.Util;
 
 /**
  *	Header Footer
@@ -48,6 +50,8 @@ public class HeaderFooter
 	private ArrayList<PrintElement>	m_elements = new ArrayList<PrintElement>();
 	/** Header/Footer content as Array	*/
 	private PrintElement[] 	m_pe = null;
+
+	private Page m_currentPage;
 
 	/**
 	 * 	Add Print Element to Page
@@ -86,7 +90,17 @@ public class HeaderFooter
 		Point pageStart = new Point(bounds.getLocation());
 		getElements();
 		for (int i = 0; i < m_pe.length; i++)
+		{
+			if (m_currentPage != null && !Util.isEmpty(m_pe[i].getPageLogic(), true) && m_pe[i].getPrintData() != null
+				&& m_pe[i].getRowIndex() >= 0)
+			{
+				PrintDataEvaluatee evaluatee = new PrintDataEvaluatee(m_currentPage, m_pe[i].getPrintData());
+				boolean display = Evaluator.evaluateLogic(evaluatee, m_pe[i].getPageLogic());
+				if (!display)
+					continue;
+			}
 			m_pe[i].paint(g2D, 0, pageStart, m_ctx, isView);
+		}
 	}	//	paint
 
 	/**
@@ -104,5 +118,10 @@ public class HeaderFooter
 		}
 		return retValue;
 	}	//	getDrillDown
+
+	public void setCurrentPage(Page page) 
+	{
+		m_currentPage = page;
+	}
 
 }	//	HeaderFooter

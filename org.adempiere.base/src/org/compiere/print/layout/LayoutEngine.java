@@ -50,7 +50,6 @@ import javax.print.DocFlavor;
 import javax.print.attribute.DocAttributeSet;
 
 import org.compiere.model.MClientInfo;
-import org.compiere.model.MColumn;
 import org.compiere.model.MQuery;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -72,7 +71,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -1101,7 +1099,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 				
 				//	Type
 				PrintElement element = null;
-				if ( !isDisplayed(item) )
+				if ( !PrintDataEvaluatee.hasPageLogic(item.getDisplayLogic()) && !isDisplayed(m_data, item) )
 				{
 					;
 				}
@@ -1214,6 +1212,14 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					m_currPage.addElement (element);
 				else
 					m_headerFooter.addElement (element);
+				
+				if (PrintDataEvaluatee.hasPageLogic(item.getDisplayLogic()))
+				{
+					element.setPrintData(m_data);
+					element.setRowIndex(row);
+					element.setPageLogic(item.getDisplayLogic());
+				}
+				
 				//
 				if (m_lastHeight[m_area] > m_maxHeightSinceNewLine[m_area])
 					m_maxHeightSinceNewLine[m_area] = m_lastHeight[m_area];
@@ -1623,6 +1629,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		Boolean [] colSuppressRepeats = new Boolean[columnCount];
 		String[] columnJustification = new String[columnCount];
 		HashMap<Integer,Integer> additionalLines = new HashMap<Integer,Integer>();
+		ArrayList<String> pageLogics = new ArrayList<String>();
+		boolean hasPageLogic = false;
 
 		int col = 0;
 		for (int c = 0; c < format.getItemCount(); c++)
@@ -1669,6 +1677,16 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					rowColColor.put(new Point(TableElement.ALL, col), color.getColor());
 				}
 				//
+				if (PrintDataEvaluatee.hasPageLogic(item.getDisplayLogic()))
+				{
+					pageLogics.add(item.getDisplayLogic());
+					hasPageLogic = true;
+				}
+				else
+				{
+					pageLogics.add(null);
+				}
+				//
 				col++;
 			}
 		}
@@ -1679,7 +1697,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		KeyNamePair[] pk = new KeyNamePair[rows];
 		String pkColumnName = null;
 		ArrayList<Integer> functionRows = new ArrayList<Integer>();
-		ArrayList<Integer> pageBreak = new ArrayList<Integer>();
+		ArrayList<Integer> pageBreak = new ArrayList<Integer>();		
 
 		//	for all rows
 		for (int row = 0; row < rows; row++)
@@ -1724,7 +1742,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 				Serializable dataElement = null;
 				if (item.isPrinted())	//	Text Columns
 				{
-					if ( !isDisplayed(item) )
+					if ( !PrintDataEvaluatee.hasPageLogic(item.getDisplayLogic()) && !isDisplayed(printData, item) )
 					{
 						;
 					}
@@ -1802,6 +1820,13 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		
 		if (format == m_format)
 			this.colSuppressRepeats = colSuppressRepeats;
+		
+		if (hasPageLogic)
+		{
+			table.setPageLogics(pageLogics);
+			table.setTablePrintData(printData);
+		}
+		
 		return table;
 	}	//	layoutTable
 
@@ -1891,7 +1916,9 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		//
 	//	log.fine("#" + m_id, "PageIndex=" + pageIndex + ", Copy=" + m_isCopy);
 		page.paint((Graphics2D)graphics, r, false, m_isCopy);	//	sets context
+		getHeaderFooter().setCurrentPage(page);
 		getHeaderFooter().paint((Graphics2D)graphics, r, false);
+		getHeaderFooter().setCurrentPage(null);
 		//
 		return Printable.PAGE_EXISTS;
 	}	//	print
@@ -2005,81 +2032,10 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		return childPrintFormatDetails;
 	}
 	
-	private boolean isDisplayed(MPrintFormatItem item) {
+	private boolean isDisplayed(PrintData data, MPrintFormatItem item) {
 		if ( Util.isEmpty(item.getDisplayLogic() ))
 			return true;
-		boolean display = Evaluator.evaluateLogic(new Evaluatee() {
-			
-			@Override
-			public String get_ValueAsString(String variableName) {
-				if (Page.CONTEXT_PAGE.equals(variableName)) {
-					return String.valueOf(getPageNo());
-				} else if (Page.CONTEXT_PAGECOUNT.equals(variableName)) {
-					return String.valueOf(getNumberOfPages());
-				}
-				
-				//ref column
-				String foreignColumn = "";
-				int f = variableName.indexOf('.');
-				if (f > 0) {
-					foreignColumn = variableName.substring(f+1, variableName.length());
-					variableName = variableName.substring(0, f);
-				}
-				
-				Object obj = m_data.getNode(variableName);
-				if ( obj == null || !(obj instanceof PrintDataElement))
-					return "";
-				PrintDataElement data = (PrintDataElement) obj;
-				if (data.isNull() )
-					return "";
-				String value = null;
-				if (data.getValue() instanceof Boolean)
-					value = ((Boolean)data.getValue()).booleanValue() ? "Y" : "N";
-				else
-					value = data.getValueAsString();
-				if (!Util.isEmpty(value) && !Util.isEmpty(foreignColumn) && variableName.endsWith("_ID")) {
-					String refValue = "";
-					int id = 0;
-					try {
-						id = Integer.parseInt(value);
-					} catch (Exception e){}
-					if (id > 0) {
-						String tableName = null;
-						if (!Util.isEmpty(m_data.getTableName()))
-							tableName = m_data.getTableName();
-						else
-							tableName = variableName.substring(0, variableName.length()-3);
-						MColumn column = MColumn.get(m_data.getCtx(), tableName, variableName);
-						if (column != null) {
-							String foreignTable = column.getReferenceTableName();
-							refValue = DB.getSQLValueString(null,
-									"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE " 
-									+ foreignTable + "_ID = ?", id);
-						} else {
-							if (variableName.startsWith("#") || variableName.startsWith("$")) {
-								variableName = variableName.substring(1);
-							} else if (variableName.indexOf("|") > 0) {
-								variableName = variableName.substring(variableName.lastIndexOf("|")+1);
-							}
-							String foreignTable = null;
-							if (foreignColumn.indexOf(".") > 0) {
-								foreignTable = foreignColumn.substring(0, foreignColumn.indexOf("."));
-							} else {
-								foreignTable = variableName.substring(0, variableName.length()-3);
-							}
-							MTable t = MTable.get(Env.getCtx(), foreignTable);
-							if (t != null) {
-								refValue = DB.getSQLValueString(null,
-										"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE " 
-										+ foreignTable + "_ID = ?", id);
-							}
-						}
-					}
-					return refValue;
-				}
-				return value;
-			}
-		}, item.getDisplayLogic());
+		boolean display = Evaluator.evaluateLogic(new PrintDataEvaluatee(getPage(getPageNo()), data), item.getDisplayLogic());
 		
 		return display;
 	}

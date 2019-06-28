@@ -43,8 +43,10 @@ import java.util.regex.Pattern;
 import org.compiere.model.MQuery;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.print.MPrintTableFormat;
+import org.compiere.print.PrintData;
 import org.compiere.print.util.SerializableMatrix;
 import org.compiere.print.util.SerializableMatrixImpl;
+import org.compiere.util.Evaluator;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
 import org.compiere.util.Util;
@@ -1449,6 +1451,22 @@ public class TableElement extends PrintElement
 				if (Arrays.equals(lastItems,printItems) )
 					suppress = true;
 			}
+
+			if (!suppress)
+			{
+				if (m_tablePrintData != null && m_pageLogics != null && col < m_pageLogics.size())
+				{
+					String pageLogic = m_pageLogics.get(col);
+					if (!Util.isEmpty(pageLogic, true))
+					{
+						m_tablePrintData.setRowIndex(row);
+						PrintDataEvaluatee evaluatee = new PrintDataEvaluatee(getCurrentPage(), m_tablePrintData);
+						boolean display = Evaluator.evaluateLogic(evaluatee, pageLogic);
+						if (!display)
+							suppress = true;
+					}
+				}
+			}
 			
 			if ( !suppress )
 			{
@@ -1669,6 +1687,8 @@ public class TableElement extends PrintElement
 
 	/** Print Data				*/
 	private SerializableMatrix<ArrayList<Serializable>> m_printRows = new SerializableMatrixImpl<ArrayList<Serializable>>("PrintRows");
+	private ArrayList<String> m_pageLogics;
+	private PrintData m_tablePrintData;
 	
 	/**
 	 * 	Insert empty Row after current Row
@@ -1705,4 +1725,14 @@ public class TableElement extends PrintElement
 		return coordinate.toArray();
 	}	//	getPrintItems
 
+
+	public void setPageLogics(ArrayList<String> pageLogics) 
+	{
+		m_pageLogics = pageLogics;
+	}
+
+	public void setTablePrintData(PrintData printData)
+	{
+		m_tablePrintData = printData;
+	}
 }

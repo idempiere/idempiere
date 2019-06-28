@@ -30,6 +30,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MQuery;
 import org.compiere.print.MPrintFormatItem;
+import org.compiere.print.PrintData;
 import org.compiere.util.CLogger;
 
 /**
@@ -72,6 +73,14 @@ public abstract class PrintElement implements ImageObserver, Serializable
 	
 	/**	Logger			*/
 	protected CLogger	log = CLogger.getCLogger(getClass());
+
+	private Page m_currentPage;
+
+	private PrintData m_printData;
+
+	private int m_rowIndex = -1;
+
+	private String m_pageLogic;
 	
 	
 	/**************************************************************************
@@ -357,4 +366,43 @@ public abstract class PrintElement implements ImageObserver, Serializable
 		return sb.toString();
 	}	//	toString
 
+	public void setCurrentPage(Page page) 
+	{
+		m_currentPage = page;
+	}
+
+	protected Page getCurrentPage()
+	{
+		return m_currentPage;
+	}
+
+	public void setPrintData(PrintData printData) 
+	{
+		m_printData = printData;
+	}
+	
+	public PrintData getPrintData() 
+	{
+		return m_printData;
+	}
+
+	public void setRowIndex(int row) 
+	{
+		m_rowIndex = row;
+	}
+	
+	public int getRowIndex()
+	{
+		return m_rowIndex;
+	}
+
+	public void setPageLogic(String displayLogic) 
+	{
+		m_pageLogic = displayLogic;
+	}
+	
+	public String getPageLogic()
+	{
+		return m_pageLogic;
+	}
 }   //  PrintElement
