@@ -84,6 +84,16 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 		form.addEventListener(Events.ON_CHECK, this);
 		box.appendChild(form);
 
+		Checkbox info = new Checkbox();
+		if (ThemeManager.isUseFontIconForImage())
+			info.setIconSclass("z-icon-Info");
+		else
+			info.setImage(ThemeManager.getThemeResource("images/mInfo.png"));
+		info.setChecked(true);
+		info.setId("info");
+		info.addEventListener(Events.ON_CHECK, this);
+		box.appendChild(info);
+
 		Checkbox single = new Checkbox();
 		single.setLabel(Msg.getMsg(Env.getCtx(), "FlatView"));
 		single.setId("flatView");
