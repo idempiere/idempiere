@@ -54,17 +54,22 @@ public class PrintDataEvaluatee implements Evaluatee {
 			variableName = variableName.substring(0, f);
 		}
 		
-		Object obj = m_data.getNode(variableName);
-		if ( obj == null || !(obj instanceof PrintDataElement))
-			return "";
-		PrintDataElement data = (PrintDataElement) obj;
-		if (data.isNull() )
-			return "";
 		String value = null;
-		if (data.getValue() instanceof Boolean)
-			value = ((Boolean)data.getValue()).booleanValue() ? "Y" : "N";
-		else
-			value = data.getValueAsString();
+		if (variableName.startsWith("#") || variableName.startsWith("$")) {
+			value  = Env.getContext(Env.getCtx(), variableName);
+		} else {
+			Object obj = m_data.getNode(variableName);
+			if ( obj == null || !(obj instanceof PrintDataElement))
+				return "";
+			PrintDataElement data = (PrintDataElement) obj;
+			if (data.isNull() )
+				return "";
+			
+			if (data.getValue() instanceof Boolean)
+				value = ((Boolean)data.getValue()).booleanValue() ? "Y" : "N";
+			else
+				value = data.getValueAsString();
+		}
 		if (!Util.isEmpty(value) && !Util.isEmpty(foreignColumn) && variableName.endsWith("_ID")) {
 			String refValue = "";
 			int id = 0;
