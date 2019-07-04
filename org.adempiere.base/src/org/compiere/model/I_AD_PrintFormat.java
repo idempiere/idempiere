@@ -288,6 +288,15 @@ public interface I_AD_PrintFormat
 	  */
 	public boolean isActive();
 
+    /** Column name IsBreakPagePerRecord */
+    public static final String COLUMNNAME_IsBreakPagePerRecord = "IsBreakPagePerRecord";
+
+	/** Set Break page per record	  */
+	public void setIsBreakPagePerRecord (boolean IsBreakPagePerRecord);
+
+	/** Get Break page per record	  */
+	public boolean isBreakPagePerRecord();
+
     /** Column name IsDefault */
     public static final String COLUMNNAME_IsDefault = "IsDefault";
 
