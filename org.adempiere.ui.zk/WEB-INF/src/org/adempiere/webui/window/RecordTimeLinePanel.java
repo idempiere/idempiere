@@ -24,23 +24,32 @@
  **********************************************************************/
 package org.adempiere.webui.window;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.model.MChangeLog;
+import org.compiere.model.MColumn;
+import org.compiere.model.MLookup;
+import org.compiere.model.MLookupFactory;
 import org.compiere.model.MUser;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.NamePair;
 import org.zkoss.util.Pair;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
@@ -57,6 +66,22 @@ public class RecordTimeLinePanel extends Vlayout {
 	 */
 	private static final long serialVersionUID = 3420422470180313180L;
 
+	/** Date Time Format		*/
+	private SimpleDateFormat	m_dateTimeFormat = DisplayType.getDateFormat
+		(DisplayType.DateTime, Env.getLanguage(Env.getCtx()));
+	/** Date Format			*/
+	private SimpleDateFormat	m_dateFormat = DisplayType.getDateFormat
+		(DisplayType.Date, Env.getLanguage(Env.getCtx()));
+	/** Number Format		*/
+	private DecimalFormat		m_numberFormat = DisplayType.getNumberFormat
+		(DisplayType.Number, Env.getLanguage(Env.getCtx()));
+	/** Amount Format		*/
+	private DecimalFormat		m_amtFormat = DisplayType.getNumberFormat
+		(DisplayType.Amount, Env.getLanguage(Env.getCtx()));
+	/** Number Format		*/
+	private DecimalFormat		m_intFormat = DisplayType.getNumberFormat
+		(DisplayType.Integer, Env.getLanguage(Env.getCtx()));
+	
 	/**
 	 * 
 	 */
@@ -87,7 +112,7 @@ public class RecordTimeLinePanel extends Vlayout {
 				if (DocAction.STATUS_Reversed.equals(docStatusValues.get(i)))
 					reversedStatusName = docStatusNames.get(i);
 			}
-			StringBuilder sql = new StringBuilder("SELECT u.AD_User_ID, l.created, c.columnName, l.oldValue, l.newValue, l.trxname ") 
+			StringBuilder sql = new StringBuilder("SELECT u.AD_User_ID, l.created, c.columnName, l.oldValue, l.newValue, l.trxname, l.AD_Column_ID ") 
 					.append("FROM AD_ChangeLog l ")
 					.append("JOIN AD_Column c ON l.ad_column_id=c.ad_column_id ")
 					.append("JOIN AD_User u ON l.createdby=u.ad_user_id ")
@@ -102,6 +127,7 @@ public class RecordTimeLinePanel extends Vlayout {
 				stmt.setInt(2, recordId);
 				rs = stmt.executeQuery();
 				List<String> columns = null;
+				List<Integer> columnIds = null;
 				List<Pair<String, String>> changes = null;
 				String currentTrx = null;
 				String currentDocStatusOld = null;
@@ -113,9 +139,11 @@ public class RecordTimeLinePanel extends Vlayout {
 					String trxName = rs.getString(6);
 					String oldValue = rs.getString(4);
 					String newValue = rs.getString(5);
+					int AD_Column_ID = rs.getInt(7);
 					if (columns == null) {
 						columns = new ArrayList<String>();
 						changes = new ArrayList<>();
+						columnIds = new ArrayList<>();
 					}
 					if (currentTrx == null || currentTrx.equals(trxName)) {
 						if (currentTrx == null)
@@ -131,18 +159,20 @@ public class RecordTimeLinePanel extends Vlayout {
 							if (field != null && field.isDisplayed(true)) {
 								columns.add(field.getHeader());
 								changes.add(new Pair<String, String>(oldValue, newValue));
+								columnIds.add(AD_Column_ID);
 							}
 						}
 					} else {						
 						buildChangeLogMessage(gridTab, docActionValues,
 								docActionNames, reversedStatusName, columns,
 								currentDocStatusOld, currentDocStatusNew,
-								updated, userId, changes);												
+								updated, userId, changes, columnIds);												
 						currentTrx = trxName;						
 						currentDocStatusOld = null;
 						currentDocStatusNew = null;
 						columns = new ArrayList<String>();
 						changes = new ArrayList<>();
+						columnIds = new ArrayList<>();
 						if (columnName.equals("DocAction")) {
 							continue;
 						} else if (columnName.equals("DocStatus")) {
@@ -154,6 +184,7 @@ public class RecordTimeLinePanel extends Vlayout {
 							if (field != null && field.isDisplayed(true)) {
 								columns.add(field.getHeader());
 								changes.add(new Pair<String, String>(oldValue, newValue));
+								columnIds.add(AD_Column_ID);
 							}
 						}
 					}
@@ -162,7 +193,7 @@ public class RecordTimeLinePanel extends Vlayout {
 				}
 				buildChangeLogMessage(gridTab, docActionValues, docActionNames,
 						reversedStatusName, columns, currentDocStatusOld,
-						currentDocStatusNew, updated, userId, changes);
+						currentDocStatusNew, updated, userId, changes, columnIds);
 				if (gridTab != null && gridTab.getValue("CreatedBy") != null) {
 					MUser createdBy = MUser.get(Env.getCtx(), (int) gridTab.getValue("CreatedBy"));
 					StringBuilder sb = new StringBuilder(" ")
@@ -185,11 +216,11 @@ public class RecordTimeLinePanel extends Vlayout {
 			ArrayList<String> docActionValues,
 			ArrayList<String> docActionNames, String reversedStatusName,
 			List<String> columns, String currentDocStatusOld,
-			String currentDocStatusNew, Timestamp updated, int userId, List<Pair<String,String>> changes) {
+			String currentDocStatusNew, Timestamp updated, int userId, List<Pair<String,String>> changes, List<Integer> columnIds) {
 		if (currentDocStatusOld != null && currentDocStatusNew != null) {
 			buildDocActionMessage(docActionValues, docActionNames, reversedStatusName, updated, new MUser(Env.getCtx(), userId, (String)null), 
 					currentDocStatusOld, currentDocStatusNew, gridTab.getWindowNo());
-		} else if (columns != null && columns.size() > 0) {
+		} else if (columns != null && columns.size() > 0) {						
 			StringBuilder sb = new StringBuilder(" ");
 			sb.append(Msg.getMsg(Env.getCtx(), "Updated")).append(" ");
 			for(int i = 0; i < columns.size(); i++) {
@@ -201,14 +232,107 @@ public class RecordTimeLinePanel extends Vlayout {
 					} else {
 						sb.append(", ");
 					}
-				}				
+				}
+				
+				MColumn column = MColumn.get (Env.getCtx(), columnIds.get(i));				
 				Pair<String, String> change = changes.get(i);
+				String oldValue = change.getX();
+				String newValue = change.getY();
+				if (oldValue != null && oldValue.equals(MChangeLog.NULL))
+					oldValue = null;
+				if (newValue != null && newValue.equals(MChangeLog.NULL))
+					newValue = null;
+				String showOldValue = oldValue;
+				String showNewValue = newValue;
+				try
+				{
+					if (DisplayType.isText (column.getAD_Reference_ID ()))
+						;
+					else if (column.getAD_Reference_ID() == DisplayType.YesNo)
+					{
+						if (oldValue != null)
+						{
+							boolean yes = oldValue.equals("true") || oldValue.equals("Y");
+							showOldValue = Msg.getMsg(Env.getCtx(), yes ? "Y" : "N");
+						}
+						if (newValue != null)
+						{
+							boolean yes = newValue.equals("true") || newValue.equals("Y");
+							showNewValue = Msg.getMsg(Env.getCtx(), yes ? "Y" : "N");
+						}
+					}
+					else if (column.getAD_Reference_ID() == DisplayType.Amount)
+					{
+						if (oldValue != null)
+							showOldValue = m_amtFormat
+								.format (new BigDecimal (oldValue));
+						if (newValue != null)
+							showNewValue = m_amtFormat
+								.format (new BigDecimal (newValue));
+					}
+					else if (column.getAD_Reference_ID() == DisplayType.Integer)
+					{
+						if (oldValue != null)
+							showOldValue = m_intFormat.format (Integer.valueOf(oldValue));
+						if (newValue != null)
+							showNewValue = m_intFormat.format (Integer.valueOf(newValue));
+					}
+					else if (DisplayType.isNumeric (column.getAD_Reference_ID ()))
+					{
+						if (oldValue != null)
+							showOldValue = m_numberFormat.format (new BigDecimal (oldValue));
+						if (newValue != null)
+							showNewValue = m_numberFormat.format (new BigDecimal (newValue));
+					}
+					else if (column.getAD_Reference_ID() == DisplayType.Date)
+					{
+						if (oldValue != null)
+							showOldValue = m_dateFormat.format (Timestamp.valueOf (oldValue));
+						if (newValue != null)
+							showNewValue = m_dateFormat.format (Timestamp.valueOf (newValue));
+					}
+					else if (column.getAD_Reference_ID() == DisplayType.DateTime)
+					{
+						if (oldValue != null)
+							showOldValue = m_dateTimeFormat.format (Timestamp.valueOf (oldValue));
+						if (newValue != null)
+							showNewValue = m_dateTimeFormat.format (Timestamp.valueOf (newValue));
+					}
+					else if (DisplayType.isLookup(column.getAD_Reference_ID ()))
+					{
+						MLookup lookup = MLookupFactory.get (Env.getCtx(), 0,
+							column.getAD_Column_ID(), column.getAD_Reference_ID(),
+							Env.getLanguage(Env.getCtx()), column.getColumnName(),
+							column.getAD_Reference_Value_ID(),
+							column.isParent(), null);
+						if (oldValue != null)
+						{
+							Object key = oldValue; 
+							NamePair pp = lookup.get(key);
+							if (pp != null)
+								showOldValue = pp.getName();
+						}
+						if (newValue != null)
+						{
+							Object key = newValue; 
+							NamePair pp = lookup.get(key);
+							if (pp != null)
+								showNewValue = pp.getName();
+						}
+					}
+					else if (DisplayType.isLOB (column.getAD_Reference_ID ()))
+						;
+				}
+				catch (Exception e)
+				{
+					CLogger.getCLogger(getClass()).log(Level.WARNING, oldValue + "->" + newValue, e);
+				}
 				sb.append("<i>")
 				  .append(columns.get(i));
 				sb.append(" (")
-				  .append(change.getX() != null && !"NULL".equals(change.getX())? change.getX() : "")
+				  .append(showOldValue != null ? showOldValue : "")
 				  .append(" > ")
-				  .append(change.getY() != null && !"NULL".equals(change.getY()) ? change.getY() : "")
+				  .append(showNewValue != null ? showNewValue : "")
 				  .append(")");
 				sb.append("</i>");
 			}
@@ -261,13 +385,11 @@ public class RecordTimeLinePanel extends Vlayout {
 		buildActivityMessage(updated, sb.toString(), user);
 	}
 
-	private void buildActivityMessage(Timestamp activityDate, String activityMessage, MUser user) {
-		
-		SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.DateTime);
+	private void buildActivityMessage(Timestamp activityDate, String activityMessage, MUser user) {		
 		StringBuilder sb = new StringBuilder();		
 		sb.append("<div class=\"help-content\">\n");		
 		sb.append("<strong>").append(user.getName()).append("</strong> ").append(activityMessage);
-		sb.append("<div>&nbsp;</div><div>").append(dateFormat.format(activityDate)).append("</div>");		
+		sb.append("<div>&nbsp;</div><div>").append(m_dateTimeFormat.format(activityDate)).append("</div>");		
 		sb.append("</div>");
 		Hbox hlayout = new Hbox();
 		hlayout.setHflex("1");
