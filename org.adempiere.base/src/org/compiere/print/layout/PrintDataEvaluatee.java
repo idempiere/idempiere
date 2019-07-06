@@ -41,9 +41,9 @@ public class PrintDataEvaluatee implements Evaluatee {
 	@Override
 	public String get_ValueAsString(String variableName) {
 		if (Page.CONTEXT_PAGE.equals(variableName)) {
-			return String.valueOf(m_page.getPageNo());
+			return m_page != null ? String.valueOf(m_page.getPageNo()) : "1";
 		} else if (Page.CONTEXT_PAGECOUNT.equals(variableName)) {
-			return String.valueOf(m_page.getPageCount());
+			return m_page != null ? String.valueOf(m_page.getPageCount()) : "1";
 		}
 		
 		//ref column

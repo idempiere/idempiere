@@ -37,7 +37,9 @@ import org.compiere.print.MPrintFormatItem;
 import org.compiere.print.MPrintPaper;
 import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataElement;
+import org.compiere.print.layout.PrintDataEvaluatee;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Evaluator;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
@@ -50,11 +52,23 @@ import org.compiere.util.Util;
 public class PrintDataExcelExporter
 extends AbstractExcelExporter
 {
+	//constant for form rendering
+	private static final int COLUMN_WIDTH_DIVISOR = 64;
+	private static final int ROW_HEIGHT_DIVISOR = 20;
+	
 	private PrintData m_printData;
 	private MPrintFormat m_printFormat;
 	private Map<MPrintFormatItem, PrintData> childPrintFormatDetails;
 	private ArrayList<Object> columns;
 	private MQuery m_query;
+	
+	//variables for form rendering
+	private int m_previousFormRow = -1;
+	private int m_lastHeaderRow = -1;
+	private int m_firstHeaderRow = -1;
+	private int m_firstFooterRow = -1;
+	private int m_previousFormCol = -1;
+	private String m_previousAreaType = null;
 	
 	public PrintDataExcelExporter(PrintData printData, MPrintFormat printFormat) {
 		this(printData, printFormat, null, null);
@@ -156,6 +170,7 @@ extends AbstractExcelExporter
 							PrintData printData = (PrintData)entry.getValue();	
 							PrintDataExcelExporter exp =new PrintDataExcelExporter(printData, mPrintFormat);
 							exp.exportToWorkbook(m_workbook, m_lang);
+							m_previousFormRow = m_workbook.getSheetAt(m_workbook.getNumberOfSheets()-1).getLastRowNum();
 							break;
 						}
 					}
@@ -347,5 +362,175 @@ extends AbstractExcelExporter
 				}
 			}
 		}
+	}
+	
+	@Override
+	protected boolean isForm()
+	{
+		return m_printFormat.isForm();
+	}
+
+	@Override
+	protected HSSFCell getFormCell(HSSFRow row, int colnum) {
+		HSSFCell cell = null;
+		if (colnum >= 0 && colnum < columns.size()) {
+			MPrintFormatItem item = (MPrintFormatItem) columns.get(colnum);		
+			int previousCol = m_previousFormCol >= 0 ? m_previousFormCol : 0;
+			if (m_previousAreaType != null && !m_previousAreaType.equals(item.getPrintAreaType())) {
+				previousCol = 0;
+			}
+			if (item.isRelativePosition()) {
+				int offset = item.getXSpace() > 0 ? item.getXSpace() / COLUMN_WIDTH_DIVISOR : 0;
+				if (offset == 0 && item.getXSpace() > 0)
+					offset = 1;
+				int col = previousCol + offset;			
+				cell = row.getCell(col);
+				if (cell == null)
+					cell = row.createCell(col);
+			} else {
+				int offset = item.getXPosition() > 0 ? item.getXPosition() / COLUMN_WIDTH_DIVISOR : 0;
+				cell = row.getCell(offset);
+				if (cell == null)
+					cell = row.createCell(offset);
+			}
+			if (cell != null) {
+				m_previousFormCol = cell.getColumnIndex();
+				m_previousAreaType  = item.getPrintAreaType();
+			}
+		}
+		
+		return cell;
+	}
+
+	@Override
+	protected HSSFRow getFormRow(HSSFSheet sheet, int colnum) {
+		HSSFRow row = null;
+		if (m_firstHeaderRow == -1) {
+			m_firstHeaderRow = sheet.getLastRowNum();
+		}
+		if (colnum >= 0 && colnum < columns.size()) {
+			MPrintFormatItem item = (MPrintFormatItem) columns.get(colnum);
+			if (item.isRelativePosition()) {				
+				int firstContentRow = m_lastHeaderRow >= 0 ? m_lastHeaderRow+1 : m_firstHeaderRow;
+				int relativeFrom = m_previousFormRow >= 0 ? m_previousFormRow : 0;
+				if (item.getPrintAreaType().equals(MPrintFormatItem.PRINTAREATYPE_Content)) {
+					if (relativeFrom < firstContentRow)
+						relativeFrom = firstContentRow;
+				} else if (item.getPrintAreaType().equals(MPrintFormatItem.PRINTAREATYPE_Footer)) {
+					if (relativeFrom < m_firstFooterRow)
+						relativeFrom = m_firstFooterRow;
+					else if (m_firstFooterRow==-1 && relativeFrom <= firstContentRow)
+						relativeFrom = firstContentRow + 1;
+				}
+				if (item.isNextLine()) {
+					int offset = 1;
+					row = sheet.getRow(relativeFrom+offset);
+					if (row == null)
+						row = sheet.createRow(relativeFrom+offset);
+				} else if (item.getYSpace() == 0) {
+					row = sheet.getRow(relativeFrom);
+					if (row == null)
+						row = sheet.createRow(relativeFrom);
+				} else {
+					int offset = (item.getYSpace() / ROW_HEIGHT_DIVISOR) + 1;
+					row = sheet.getRow(relativeFrom+offset);
+					if (row == null)
+						row = sheet.createRow(relativeFrom+offset);						
+				}
+				m_previousFormRow = row.getRowNum();
+				
+				if (item.getPrintAreaType().equals(MPrintFormatItem.PRINTAREATYPE_Header)) {
+					if (row.getRowNum() > m_lastHeaderRow) {
+						m_lastHeaderRow = row.getRowNum();
+					}
+				}
+			} else {
+				if (item.getYPosition() == 0) {
+					if (item.getPrintAreaType().equals(MPrintFormatItem.PRINTAREATYPE_Header)) {
+						row = sheet.getRow(m_firstHeaderRow);
+						if (row.getRowNum() > m_lastHeaderRow) {
+							m_lastHeaderRow = row.getRowNum();
+						}
+					} else if (item.getPrintAreaType().equals(MPrintFormatItem.PRINTAREATYPE_Content)) {
+						if (m_lastHeaderRow >= 0) {
+							row = sheet.getRow(m_lastHeaderRow+1);
+							if (row == null)
+								row = sheet.createRow(m_lastHeaderRow+1);
+						} else {
+							row = sheet.getRow(m_firstHeaderRow);
+						}
+					} else if (item.getPrintAreaType().equals(MPrintFormatItem.PRINTAREATYPE_Footer)) {
+						if (m_firstFooterRow >= 0) {
+							row = sheet.getRow(m_firstFooterRow);
+						} else {
+							row = sheet.getRow(sheet.getLastRowNum()+1);
+							if (row == null)
+								row = sheet.createRow(sheet.getLastRowNum()+1);
+							m_firstFooterRow = row.getRowNum();
+						}
+					}
+					m_previousFormRow = row.getRowNum();
+				} else {
+					int offset = item.getYPosition() / ROW_HEIGHT_DIVISOR;
+					if (item.getPrintAreaType().equals(MPrintFormatItem.PRINTAREATYPE_Header)) {
+						row = sheet.getRow(m_firstHeaderRow+offset);
+						if (row == null)
+							row = sheet.createRow(m_firstHeaderRow+offset);
+						if (row.getRowNum() > m_lastHeaderRow) {
+							m_lastHeaderRow = row.getRowNum();
+						}
+					} else if (item.getPrintAreaType().equals(MPrintFormatItem.PRINTAREATYPE_Content)) {
+						int firstContentRow = m_lastHeaderRow >= 0 ? m_lastHeaderRow+1 : m_firstHeaderRow;
+						row = sheet.getRow(firstContentRow+offset);
+						if (row == null)
+							row = sheet.createRow(firstContentRow+offset);
+					} else if (item.getPrintAreaType().equals(MPrintFormatItem.PRINTAREATYPE_Footer)) {
+						if (m_firstFooterRow == -1)
+							m_firstFooterRow = sheet.getLastRowNum()+1;
+						row = sheet.getRow(m_firstFooterRow+offset);
+						if (row == null)
+							row = sheet.createRow(m_firstFooterRow+offset);
+					}
+					m_previousFormRow = row.getRowNum();
+				}
+			}
+		}
+		return row;
+	}
+	
+	@Override
+	protected boolean isSetFormRowPosition(int col) {
+		Object value = col >= 0 && col < columns.size() ? columns.get(col) : null;
+		if (value instanceof MPrintFormatItem) {
+			MPrintFormatItem item = (MPrintFormatItem)value; 
+			return item.isSetNLPosition();
+		}
+		return super.isSetFormRowPosition(col);
+	}
+	
+	@Override
+	protected boolean isSuppressNull(int col) {
+		Object value = col >= 0 && col < columns.size() ? columns.get(col) : null;
+		if (value instanceof MPrintFormatItem) {
+			MPrintFormatItem item = (MPrintFormatItem)value;
+			return item.isSuppressNull();
+		}
+		return super.isSuppressNull(col);
+	}
+	
+	@Override
+	protected boolean isVisible(int row, int col) {
+		Object value = col >= 0 && col < columns.size() ? columns.get(col) : null;
+		if (value instanceof MPrintFormatItem) {
+			MPrintFormatItem item = (MPrintFormatItem)value;
+			String displayLogic = item.getDisplayLogic();
+			if (!Util.isEmpty(displayLogic, true)) {
+				if (m_printData.getRowIndex() != row)
+					m_printData.setRowIndex(row);
+				PrintDataEvaluatee evaluatee = new PrintDataEvaluatee(null, m_printData);
+				return Evaluator.evaluateLogic(evaluatee, displayLogic);
+			}
+		}
+		return super.isVisible(row, col);
 	}
 }

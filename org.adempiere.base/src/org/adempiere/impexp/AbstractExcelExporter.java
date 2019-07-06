@@ -295,7 +295,7 @@ public abstract class AbstractExcelExporter
 			return;
 		//
 		fixColumnWidth(prevSheet, colCount);
-		if (m_colSplit >= 0 || m_rowSplit >= 0)
+		if ((m_colSplit >= 0 || m_rowSplit >= 0) && !isForm())
 			prevSheet.createFreezePane(m_colSplit >= 0 ? m_colSplit : 0, m_rowSplit >= 0 ? m_rowSplit : 0);
 		if (!Util.isEmpty(prevSheetName, true) && m_sheetCount > 0) {
 			int prevSheetIndex = m_sheetCount - 1;
@@ -313,7 +313,10 @@ public abstract class AbstractExcelExporter
 		formatPage(sheet);
 		createHeaderFooter(sheet);
 		createParameter(sheet);
-		createTableHeader(sheet);
+		if (!isForm())
+		{
+			createTableHeader(sheet);
+		}
 		m_sheetCount++;
 		//
 		return sheet;
@@ -417,7 +420,17 @@ public abstract class AbstractExcelExporter
 	 */
 	protected void export(OutputStream out) throws Exception
 	{
-		HSSFSheet sheet= createTableSheet();
+		HSSFSheet sheet= null;
+		if (out != null) 
+		{
+			sheet = createTableSheet();
+		}
+		else  
+		{
+			m_dataFormat = m_workbook.createDataFormat();
+			sheet = m_workbook.getSheetAt(0);
+			createTableHeader(sheet, sheet.getLastRowNum()+2);
+		}
 		String sheetName = null;
 		//
 		int colnumMax = 0;
@@ -429,7 +442,11 @@ public abstract class AbstractExcelExporter
 			preValues = new Object [colSuppressRepeats.length];
 		}
 		
-		int initxls_rownum = Math.max(noOfParameter+1, 1);
+		int initxls_rownum = 0;
+		if (out != null)
+			initxls_rownum = Math.max(noOfParameter+1, 1);
+		else 
+			initxls_rownum = Math.max(noOfParameter+1, sheet.getLastRowNum()+1);
 		
 		for (int xls_rownum = initxls_rownum; rownum < lastRowNum; rownum++, xls_rownum++)
 		{
@@ -449,10 +466,35 @@ public abstract class AbstractExcelExporter
 				if (isColumnPrinted(col))
 				{
 					printColIndex++;
-					HSSFCell cell = row.createCell(colnum);
-
+					HSSFCell cell = null;
 					// line row
 					Object obj = getValueAt(rownum, col);
+					if (isForm())
+					{
+						if (isVisible(rownum, col) && (!isSuppressNull(col) || (obj != null && !Util.isEmpty(obj.toString(), true))))
+						{
+							row = getFormRow(sheet, col);
+							cell = getFormCell(row, col);
+							String label = fixString(getHeaderName(col));
+							if (!Util.isEmpty(label, true))
+							{
+								cell.setCellValue(new HSSFRichTextString(label));
+								int index = cell.getColumnIndex()+1;
+								cell = row.getCell(index);
+								if (cell == null)
+									cell = row.createCell(index);
+							}
+						}
+						else if (isSetFormRowPosition(col))
+						{
+							row = getFormRow(sheet, col);
+						}
+					}
+					else
+					{
+						cell = row.createCell(colnum);
+					}
+					
 					int displayType = getDisplayType(rownum, col);
 					if (obj == null){
 						if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
@@ -460,8 +502,9 @@ public abstract class AbstractExcelExporter
 						}
 					}else if (colSuppressRepeats != null && colSuppressRepeats[printColIndex] && obj.equals(preValues[printColIndex])){
 						//suppress
-					}
-					else if (DisplayType.isDate(displayType)) {
+					} else if (!isVisible(rownum, col)) {
+						;
+					} else if (DisplayType.isDate(displayType)) {
 						Timestamp value = (Timestamp)obj;
 						cell.setCellValue(value);
 					}
@@ -485,8 +528,12 @@ public abstract class AbstractExcelExporter
 						cell.setCellValue(new HSSFRichTextString(value));
 					}
 					//
-					HSSFCellStyle style = getStyle(rownum, col);
-					cell.setCellStyle(style);
+					if (cell != null) {
+						HSSFCellStyle style = getStyle(rownum, col);
+						if (isForm())
+							style.setWrapText(true);
+						cell.setCellStyle(style);
+					}
 					// Page break
 					if (isPageBreak(rownum, col)) {
 						isPageBreak = true;
@@ -507,7 +554,10 @@ public abstract class AbstractExcelExporter
 				isPageBreak = false;
 			}
 		}	//	for all rows
-		closeTableSheet(sheet, sheetName, colnumMax);
+		if (out == null)
+			fixColumnWidth(sheet, colnumMax);
+		else
+			closeTableSheet(sheet, sheetName, colnumMax);
 		//
 		
 		if(out!=null)
@@ -561,5 +611,62 @@ public abstract class AbstractExcelExporter
 		m_lang = language;
 		m_workbook = workbook;
 		export(null);
+	}
+	
+	/**
+	 * @return true if it is form layout
+	 */
+	protected boolean isForm()
+	{
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param row
+	 * @param col
+	 * @return true if column is visible
+	 */
+	protected boolean isVisible(int row, int col)
+	{
+		return true;
+	}
+	
+	/**
+	 * 
+	 * @param col
+	 * @return true if column should be hidden when it is null
+	 */
+	protected boolean isSuppressNull(int col) {
+		return false;
+	}
+
+	/**
+	 * 
+	 * @param col
+	 * @return true if column is use to set new row position
+	 */
+	protected boolean isSetFormRowPosition(int col) {
+		return false;
+	}
+
+	/**
+	 * get cell for column. use for form layout
+	 * @param row
+	 * @param colnum
+	 * @return cell for column
+	 */
+	protected HSSFCell getFormCell(HSSFRow row, int colnum) {
+		return null;
+	}
+
+	/**
+	 * get row for column. use for form layout
+	 * @param sheet
+	 * @param colnum
+	 * @return row for column
+	 */
+	protected HSSFRow getFormRow(HSSFSheet sheet, int colnum) {
+		return null;
 	}
 }
