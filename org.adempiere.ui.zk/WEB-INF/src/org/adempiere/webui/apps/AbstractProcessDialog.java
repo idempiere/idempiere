@@ -68,6 +68,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_ReportView;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
@@ -614,7 +615,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 
 	private void setReportTypeAndPrintFormat(MPInstance instance)
 	{
-		if (fPrintFormat != null && instance != null) {
+		if (fPrintFormat != null && instance != null
+			&& instance.getAD_Process_ID() != SystemIDs.PROCESS_RPT_FINREPORT) {
 			fPrintFormat.setValue((Integer) instance.getAD_PrintFormat_ID());
 		}
 		
