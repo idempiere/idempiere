@@ -1,0 +1,126 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>org.idempiere.javadoc</artifactId>
+	<packaging>eclipse-plugin</packaging>
+
+	<parent>
+		<groupId>org.idempiere</groupId>
+		<artifactId>org.idempiere.parent</artifactId>
+		<version>6.2.0-SNAPSHOT</version>
+		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
+	</parent>
+
+	<properties>
+		<javadocPluginPhase>none</javadocPluginPhase>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>3.0.0</version>
+					<executions>
+					  <execution>
+						<id>parse-version</id>
+						<goals>
+						  <goal>parse-version</goal>
+						</goals>
+					  </execution>
+					</executions>
+				</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-document-bundle-plugin</artifactId>
+				<version>${tycho.extras.version}</version>
+				<executions>
+					<execution>
+						<phase>${javadocPluginPhase}</phase>
+						<id>idempiere-javadoc</id>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.basedir}/API</outputDirectory>
+							<skipTocGen>true</skipTocGen>
+							<javadocOptions>
+								<ignoreError>true</ignoreError>
+								<encoding>UTF-8</encoding>
+								<excludes>
+									<exclude>br.com.caelum.*</exclude>
+									<exclude>br.inf.portalfiscal.*</exclude>
+									<exclude>bsh*</exclude>
+									<exclude>com.google.*</exclude>
+									<exclude>com.jgoodies.*</exclude>
+									<exclude>com.thoughtworks.*</exclude>
+									<exclude>fi.jawsy.jawwa.zk.atmosphere</exclude>
+									<exclude>it.sauronsoftware.cron4j</exclude>
+									<exclude>javax.*</exclude>
+									<exclude>net.miginfocom.*</exclude>
+									<exclude>okhttp3*</exclude>
+									<exclude>okio*</exclude>
+									<exclude>org.jdesktop.*</exclude>
+									<exclude>org.jrimum.*</exclude>
+									<exclude>org.jsoup*</exclude>
+									<exclude>org.netbeans.*</exclude>
+									<exclude>org.zkforge.*</exclude>
+									<exclude>org.zkoss.*</exclude>
+									<exclude>test*</exclude>
+									<exclude>org.eclipse.*</exclude>
+									<exclude>org.compiere.css</exclude>
+									<exclude>org.compiere.images</exclude>
+									<exclude>org.apache.*</exclude>
+									<exclude>metainfo.zk</exclude>
+									<exclude>web*</exclude>
+									<exclude>org.idempiere.adInterface.x10*</exclude>
+									<exclude>action.images*</exclude>
+									<exclude>google.*</exclude>
+									<exclude>jsinterop.*</exclude>
+									<exclude>org.checkerframework.*</exclude>
+									<exclude>org.codehaus.*</exclude>
+									<exclude>org.kohsuke.*</exclude>
+								</excludes>
+								<additionalArguments>
+									<!-- needed by Java 11 compatibility and compiling at doc generation
+										(same as used on start-server.sh) -->
+									<additionalArgument>--add-exports
+										java.desktop/sun.awt=ALL-UNNAMED --add-exports
+										java.sql.rowset/com.sun.rowset=ALL-UNNAMED --add-exports
+										java.naming/com.sun.jndi.ldap=ALL-UNNAMED --add-exports
+										java.base/sun.security.tools.keytool=ALL-UNNAMED
+										--add-modules=ALL-SYSTEM --add-modules java.se --add-opens
+										java.base/java.lang=ALL-UNNAMED --add-opens
+										java.base/java.nio=ALL-UNNAMED --add-opens
+										java.base/sun.nio.ch=ALL-UNNAMED --add-opens
+										java.management/sun.management=ALL-UNNAMED --add-opens
+										jdk.management/com.sun.management.internal=ALL-UNNAMED
+										--add-exports java.base/jdk.internal.ref=ALL-UNNAMED
+										--add-exports java.desktop/sun.awt=ALL-UNNAMED --add-exports
+										java.sql.rowset/com.sun.rowset=ALL-UNNAMED --add-exports
+										java.naming/com.sun.jndi.ldap=ALL-UNNAMED</additionalArgument>
+									<additionalArgument>-Xdoclint:none</additionalArgument>
+									<additionalArgument>-use</additionalArgument>
+									<additionalArgument>-author</additionalArgument>
+									<additionalArgument>-breakiterator</additionalArgument>
+									<additionalArgument>-version</additionalArgument>
+									<additionalArgument>-link
+										https://docs.oracle.com/en/java/javase/11/docs/api/</additionalArgument>
+									<additionalArgument>-splitindex</additionalArgument>
+									<additionalArgument>-overview
+										${project.basedir}/doc/overview.html</additionalArgument>
+									<additionalArgument>-windowtitle "iDempiere ${parsedVersion.majorVersion}.${parsedVersion.minorVersion} API Documentation"</additionalArgument>
+									<additionalArgument>-doctitle "iDempiere ${parsedVersion.majorVersion}.${parsedVersion.minorVersion} API Documentation"</additionalArgument>
+									<additionalArgument>-header "iDempiere ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}"</additionalArgument>
+									<additionalArgument>-bottom "iDempiere ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}"</additionalArgument>
+									<additionalArgument>--no-module-directories</additionalArgument>
+								</additionalArguments>
+							</javadocOptions>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

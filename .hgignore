@@ -94,3 +94,6 @@ server.product.*\.launch
 ^RemoteSystemsTempFiles
 
 ^fitnesse/FitNesseRoot/FitLibraryWeb/[^/]+\.zip$
+
+^org\.idempiere\.javadoc/API$
+

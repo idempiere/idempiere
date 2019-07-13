@@ -1854,8 +1854,9 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					|| line.getM_Product_ID() == 0)
 				{
 					ol = new MOrderLine (getCtx(), line.getC_OrderLine_ID(), get_TrxName());
-					if (line.getQtyInvoiced() != null)
-						ol.setQtyInvoiced(ol.getQtyInvoiced().add(line.getQtyInvoiced()));
+					if (line.getQtyInvoiced() != null) {
+						ol.setQtyInvoiced(ol.getQtyInvoiced().add(isCreditMemo() ? line.getQtyInvoiced().negate() : line.getQtyInvoiced()));
+					}
 					if (!ol.save(get_TrxName()))
 					{
 						m_processMsg = "Could not update Order Line";
