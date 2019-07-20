@@ -203,6 +203,11 @@ public class HelpController
      */
     public void renderToolTip(String hdr, String  desc, String help, String otherContent)
     {
+    	if (Util.isEmpty(hdr) && Util.isEmpty(otherContent))
+    		pnlToolTip.setVisible(false);
+    	else if (!pnlToolTip.isVisible())
+    		pnlToolTip.setVisible(true);
+
     	StringBuilder sb = new StringBuilder();
     	sb.append("<html>\n<body>\n<div class=\"help-content\">\n");
     	
