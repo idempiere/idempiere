@@ -277,7 +277,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         else if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
         {
         	SessionManager.logoutSession();
-            wndLogin.loginCancelled();
+            //wndLogin.loginCancelled();
         }
         else if (event.getTarget() == txtNewPassword) {
         	MPasswordRule pwdrule = MPasswordRule.getRules(Env.getCtx(), null);
