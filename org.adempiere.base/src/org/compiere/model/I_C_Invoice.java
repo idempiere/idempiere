@@ -816,6 +816,17 @@ public interface I_C_Invoice
 	/** Get Referenced Invoice	  */
 	public int getRef_Invoice_ID();
 
+    /** Column name RelatedInvoice_ID */
+    public static final String COLUMNNAME_RelatedInvoice_ID = "RelatedInvoice_ID";
+
+	/** Set Related Invoice	  */
+	public void setRelatedInvoice_ID (int RelatedInvoice_ID);
+
+	/** Get Related Invoice	  */
+	public int getRelatedInvoice_ID();
+
+	public org.compiere.model.I_C_Invoice getRelatedInvoice() throws RuntimeException;
+
     /** Column name Reversal_ID */
     public static final String COLUMNNAME_Reversal_ID = "Reversal_ID";
 
