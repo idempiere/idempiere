@@ -1973,6 +1973,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	    			// do nothing when parameter not change and at window mode, or at dialog mode but select non record    			
 	    			onOk();
 	    		}
+	        	else if (m_infoWindowID == 0 && event.getTarget() instanceof InfoGeneralPanel) {
+	        		onUserQuery();
+	        	}
         	}else if (event.getName().equals(Events.ON_CANCEL) || (event.getTarget().equals(this) && event.getName().equals(Events.ON_CLOSE))){
         		m_cancel = true;
         		dispose(false);
