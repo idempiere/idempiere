@@ -109,14 +109,8 @@ public class InvoiceCreateCreditMemo extends SvrProcess {
 		if (invoice.isCreditMemo()) {
 			throw new AdempiereException(Msg.getMsg(getCtx(), "CannotCreateCreditMemoFromCreditMemo"));
 		}
-		// Validate if there is already another credit memo for this invoice (via POReference)
-
-		// TODO Carlos : 2 ways - using invoice own field or searching a credit memo
-		int id = 0;
-		if (invoice.getRelatedInvoice_ID() > 0)
-			id = invoice.getRelatedInvoice_ID();
-
-		id = DB.getSQLValueEx(get_TrxName(), "SELECT C_Invoice_ID FROM C_Invoice WHERE RelatedInvoice_ID = ?", invoice.getC_Invoice_ID());
+		// Validate if there is already another credit memo for this invoice
+		int id = DB.getSQLValueEx(get_TrxName(), "SELECT C_Invoice_ID FROM C_Invoice WHERE RelatedInvoice_ID = ?", invoice.getC_Invoice_ID());
 
 		if (id > 0) {
 			MInvoice actualCreditMemo = MInvoice.get(getCtx(), id);
@@ -127,12 +121,6 @@ public class InvoiceCreateCreditMemo extends SvrProcess {
 
 		MInvoice creditMemo = credit();
 		if (creditMemo != null) {
-
-			// TODO Carlos - remove those 2 lines it if you think it's not a good idea to fill the field for the invoice
-			invoice.setRelatedInvoice_ID(creditMemo.getC_Invoice_ID());
-			invoice.saveEx();
-
-			
 			MDocType dtc = MDocType.get(getCtx(), creditMemo.getC_DocTypeTarget_ID());
 			addLog(0, null, null, dtc.getName() + " " + creditMemo.getDocumentNo(), MInvoice.Table_ID, creditMemo.getC_Invoice_ID());
 		}
