@@ -1434,6 +1434,21 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         			if (isTreeDrivenByValue())
         				treePanel.prepareForRefresh();
 				}
+        		
+        		if ("Saved".equals(e.getAD_Message()) && model.find(null, gridTab.getRecord_ID()) != null && !isTreeDrivenByValue())
+        		{
+        			DefaultTreeNode<Object> treeNode = model.find(null, gridTab.getRecord_ID());
+        			if (treeNode != null) { // 
+        				MTreeNode data = (MTreeNode) treeNode.getData();
+
+        				String label = (isValueDisplayed() ? (gridTab.getValue("Value").toString() + " - ") : "") + gridTab.get_ValueAsString("Name");
+        				if (!data.getName().equals(label)) {
+        					data.setName(label);
+        					treeNode.setData(data);
+        				}
+        			}
+				}
+
         		if (refresh)
         		{
         			int AD_Tree_ID = Env.getContextAsInt (Env.getCtx(), getWindowNo(), "AD_Tree_ID", true);

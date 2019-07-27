@@ -33,7 +33,7 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20190725L;
 
     /** Standard Constructor */
     public X_C_Invoice (Properties ctx, int C_Invoice_ID, String trxName)
@@ -1449,6 +1449,31 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 	public int getRef_Invoice_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Ref_Invoice_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_Invoice getRelatedInvoice() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
+			.getPO(getRelatedInvoice_ID(), get_TrxName());	}
+
+	/** Set Related Invoice.
+		@param RelatedInvoice_ID Related Invoice	  */
+	public void setRelatedInvoice_ID (int RelatedInvoice_ID)
+	{
+		if (RelatedInvoice_ID < 1) 
+			set_Value (COLUMNNAME_RelatedInvoice_ID, null);
+		else 
+			set_Value (COLUMNNAME_RelatedInvoice_ID, Integer.valueOf(RelatedInvoice_ID));
+	}
+
+	/** Get Related Invoice.
+		@return Related Invoice	  */
+	public int getRelatedInvoice_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_RelatedInvoice_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

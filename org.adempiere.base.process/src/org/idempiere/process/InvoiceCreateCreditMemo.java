@@ -109,21 +109,9 @@ public class InvoiceCreateCreditMemo extends SvrProcess {
 		if (invoice.isCreditMemo()) {
 			throw new AdempiereException(Msg.getMsg(getCtx(), "CannotCreateCreditMemoFromCreditMemo"));
 		}
-		// Validate if there is already another credit memo for this invoice (via POReference)
-		final String sql = ""
-				+ "SELECT C_Invoice_ID "
-				+ "FROM   C_Invoice i "
-				+ "       JOIN C_DocType dt ON ( i.C_DocType_ID = dt.C_DocType_ID ) "
-				+ "WHERE  i.POReference = ? "
-				+ "       AND dt.DocBaseType IN ( ?, ? ) "
-				+ "       AND i.C_BPartner_ID = ? "
-				+ "       AND i.AD_Client_ID = ? "
-				+ "       AND i.AD_Org_ID = ?";
-		int id = DB.getSQLValue(get_TrxName(), sql, 
-				invoice.getDocumentNo(),
-				MDocType.DOCBASETYPE_APCreditMemo, MDocType.DOCBASETYPE_ARCreditMemo,
-				invoice.getC_BPartner_ID(),
-				invoice.getAD_Client_ID(), invoice.getAD_Org_ID());
+		// Validate if there is already another credit memo for this invoice
+		int id = DB.getSQLValueEx(get_TrxName(), "SELECT C_Invoice_ID FROM C_Invoice WHERE RelatedInvoice_ID = ?", invoice.getC_Invoice_ID());
+
 		if (id > 0) {
 			MInvoice actualCreditMemo = MInvoice.get(getCtx(), id);
 			MDocType dtc = MDocType.get(getCtx(), actualCreditMemo.getC_DocTypeTarget_ID());
@@ -182,6 +170,7 @@ public class InvoiceCreateCreditMemo extends SvrProcess {
 		StringBuilder msgadd = new StringBuilder("{->").append(invoice.getDocumentNo()).append(")");
 		creditMemo.addDescription(msgadd.toString());
 		creditMemo.setPOReference(invoice.getDocumentNo());
+		creditMemo.setRelatedInvoice_ID(invoice.getC_Invoice_ID());
 		creditMemo.saveEx(get_TrxName());
 		//
 		if (p_DocAction != null) {
