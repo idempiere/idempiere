@@ -32,7 +32,7 @@ public class X_T_Aging extends PO implements I_T_Aging, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20190729L;
 
     /** Standard Constructor */
     public X_T_Aging (Properties ctx, int T_Aging_ID, String trxName)
@@ -348,6 +348,31 @@ public class X_T_Aging extends PO implements I_T_Aging, I_Persistent
 	public int getC_Project_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_Currency getConvertAmountsInCurrency() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
+			.getPO(getConvertAmountsInCurrency_ID(), get_TrxName());	}
+
+	/** Set Convert Amounts in Currency.
+		@param ConvertAmountsInCurrency_ID Convert Amounts in Currency	  */
+	public void setConvertAmountsInCurrency_ID (int ConvertAmountsInCurrency_ID)
+	{
+		if (ConvertAmountsInCurrency_ID < 1) 
+			set_Value (COLUMNNAME_ConvertAmountsInCurrency_ID, null);
+		else 
+			set_Value (COLUMNNAME_ConvertAmountsInCurrency_ID, Integer.valueOf(ConvertAmountsInCurrency_ID));
+	}
+
+	/** Get Convert Amounts in Currency.
+		@return Convert Amounts in Currency	  */
+	public int getConvertAmountsInCurrency_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ConvertAmountsInCurrency_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
