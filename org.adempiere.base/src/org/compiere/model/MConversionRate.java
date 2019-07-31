@@ -33,6 +33,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
 
 /**
@@ -236,7 +237,7 @@ public class MConversionRate extends X_C_Conversion_Rate
 			C_ConversionType_ID = MConversionType.getDefault(AD_Client_ID);
 		//	Conversion Date
 		if (ConvDate == null)
-			ConvDate = new Timestamp (System.currentTimeMillis());
+			ConvDate = TimeUtil.getDay(null);
 
 		//	Get Rate
 		String sql = "SELECT MultiplyRate "
