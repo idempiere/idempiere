@@ -47,7 +47,7 @@ public class MBPartner extends X_C_BPartner
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3098526308112073395L;
+	private static final long serialVersionUID = -255154524310324997L;
 
 	/**
 	 * 	Get Empty Template Business Partner
@@ -148,9 +148,10 @@ public class MBPartner extends X_C_BPartner
 		final String whereClause = "TaxID=? AND AD_Client_ID=?";
 		MBPartner retValue = new Query(ctx, Table_Name, whereClause, trxName)
 		.setParameters(taxID, Env.getAD_Client_ID(ctx))
-		.firstOnly();
+		.setOrderBy(COLUMNNAME_C_BPartner_ID)
+		.first();
 		return retValue;
-	}	//	get
+	}	//	getFirstWithTaxID
 
 	/**
 	 * 	Get BPartner with Value
