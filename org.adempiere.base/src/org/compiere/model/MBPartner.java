@@ -135,6 +135,22 @@ public class MBPartner extends X_C_BPartner
 		.firstOnly();
 		return retValue;
 	}	//	get
+	
+	/**
+	 * 	Get BPartner with taxID in a transaction
+	 *	@param ctx context 
+	 *	@param taxID taxID
+	 * 	@param trxName transaction
+	 *	@return BPartner or null
+	 */
+	public static MBPartner getFirstWithTaxID (Properties ctx, String taxID, String trxName)
+	{
+		final String whereClause = "TaxID=? AND AD_Client_ID=?";
+		MBPartner retValue = new Query(ctx, Table_Name, whereClause, trxName)
+		.setParameters(taxID, Env.getAD_Client_ID(ctx))
+		.firstOnly();
+		return retValue;
+	}	//	get
 
 	/**
 	 * 	Get BPartner with Value
