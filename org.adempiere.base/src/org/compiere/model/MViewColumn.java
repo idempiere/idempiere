@@ -19,13 +19,16 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.db.Database;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
+
 
 public class MViewColumn extends X_AD_ViewColumn {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1497519704377959238L;
+	private static final long serialVersionUID = -7325808411400037317L;
 
 	/**
 	 * Standard constructor
@@ -73,4 +76,20 @@ public class MViewColumn extends X_AD_ViewColumn {
 			.append("]");
 		return sb.toString();
 	}
+
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		String error = Database.isValidIdentifier(getColumnName());
+		if (!Util.isEmpty(error)) {
+			log.saveError("Error", Msg.getMsg(getCtx(), error) + " [ColumnName]");
+			return false;
+		}
+		return true;
+	}
+
 }

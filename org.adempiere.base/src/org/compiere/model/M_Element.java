@@ -21,9 +21,11 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
+import org.compiere.db.Database;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 
 /**
@@ -196,6 +198,11 @@ public class M_Element extends X_AD_Element
 				log.saveError(DBException.SAVE_ERROR_NOT_UNIQUE_MSG, Msg.getElement(getCtx(), COLUMNNAME_ColumnName));
 				return false;
 			}
+		}
+		String error = Database.isValidIdentifier(getColumnName());
+		if (!Util.isEmpty(error)) {
+			log.saveError("Error", Msg.getMsg(getCtx(), error) + " [ColumnName]");
+			return false;
 		}
 		
 		return true;
