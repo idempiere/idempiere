@@ -32,6 +32,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
+import org.compiere.db.Database;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -254,6 +255,20 @@ public class MColumn extends X_AD_Column
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
+		String error = Database.isValidIdentifier(getColumnName());
+		if (!Util.isEmpty(error)) {
+			log.saveError("Error", Msg.getMsg(getCtx(), error) + " [ColumnName]");
+			return false;
+		}
+
+		if (! Util.isEmpty(getFKConstraintName())) {
+			error = Database.isValidIdentifier(getFKConstraintName());
+			if (!Util.isEmpty(error)) {
+				log.saveError("Error", Msg.getMsg(getCtx(), error) + " [FKConstraintName]");
+				return false;
+			}
+		}
+
 		int displayType = getAD_Reference_ID();
 		if (DisplayType.isLOB(displayType))	//	LOBs are 0
 		{

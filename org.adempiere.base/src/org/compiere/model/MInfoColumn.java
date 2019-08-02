@@ -21,11 +21,14 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.model.IInfoColumn;
+import org.compiere.db.Database;
 import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Info Window Column Model
@@ -137,6 +140,11 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		String error = Database.isValidIdentifier(getColumnName());
+		if (!Util.isEmpty(error)) {
+			log.saveError("Error", Msg.getMsg(getCtx(), error) + " [ColumnName]");
+			return false;
+		}
 		// Sync Terminology
 		if ((newRecord || is_ValueChanged ("AD_Element_ID")) 
 			&& getAD_Element_ID() != 0 && isCentrallyMaintained())

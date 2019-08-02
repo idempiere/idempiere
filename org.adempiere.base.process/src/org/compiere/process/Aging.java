@@ -46,7 +46,7 @@ public class Aging extends SvrProcess
 	//FR 1933937
 	private boolean		p_DateAcct = false;
 	private boolean 	p_IsSOTrx = false;
-	private int			p_C_Currency_ID = 0;
+	private int			p_ConvertCurrencyTo_ID = 0;
 	private int			p_AD_Org_ID = 0;
 	private int			p_C_BP_Group_ID = 0;
 	private int			p_C_BPartner_ID = 0;
@@ -72,7 +72,9 @@ public class Aging extends SvrProcess
 			else if (name.equals("IsSOTrx"))
 				p_IsSOTrx = "Y".equals(para[i].getParameter());
 			else if (name.equals("C_Currency_ID"))
-				p_C_Currency_ID = ((BigDecimal)para[i].getParameter()).intValue();
+				;
+			else if (name.equals("ConvertAmountsInCurrency_ID"))
+				p_ConvertCurrencyTo_ID = para[i].getParameterAsInt();
 			else if (name.equals("AD_Org_ID"))
 				p_AD_Org_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else if (name.equals("C_BP_Group_ID"))
@@ -99,7 +101,7 @@ public class Aging extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		if (log.isLoggable(Level.INFO)) log.info("StatementDate=" + p_StatementDate + ", IsSOTrx=" + p_IsSOTrx
-			+ ", C_Currency_ID=" + p_C_Currency_ID + ", AD_Org_ID=" + p_AD_Org_ID
+			+ ", ConvertAmountsInCurrency_ID=" + p_ConvertCurrencyTo_ID + ", AD_Org_ID=" + p_AD_Org_ID
 			+ ", C_BP_Group_ID=" + p_C_BP_Group_ID + ", C_BPartner_ID=" + p_C_BPartner_ID
 			+ ", IsListInvoices=" + p_IsListInvoices);
 		//FR 1933937
@@ -109,7 +111,7 @@ public class Aging extends SvrProcess
 		sql.append("SELECT bp.C_BP_Group_ID, oi.C_BPartner_ID,oi.C_Invoice_ID,oi.C_InvoicePaySchedule_ID, "  // 1..4 
 			+ "oi.C_Currency_ID, oi.IsSOTrx, "								//	5..6
 			+ "oi.DateInvoiced, oi.NetDays,oi.DueDate,oi.DaysDue, ");		//	7..10
-		if (p_C_Currency_ID == 0)
+		if (p_ConvertCurrencyTo_ID == 0)
 		{
 			if (!p_DateAcct)//FR 1933937
 			{
@@ -122,7 +124,7 @@ public class Aging extends SvrProcess
 		}
 		else
 		{
-			String s = ",oi.C_Currency_ID," + p_C_Currency_ID + ",oi.DateAcct,oi.C_ConversionType_ID,oi.AD_Client_ID,oi.AD_Org_ID)";
+			String s = ",oi.C_Currency_ID," + p_ConvertCurrencyTo_ID + ",oi.DateAcct,oi.C_ConversionType_ID,oi.AD_Client_ID,oi.AD_Org_ID)";
 			sql.append("currencyConvert(oi.GrandTotal").append(s);		//	11
 			if (!p_DateAcct)
 			{
@@ -231,6 +233,7 @@ public class Aging extends SvrProcess
 					aging.setC_Campaign_ID(C_Campaign_ID);
 					aging.setC_Project_ID(C_Project_ID);
 					aging.setDateAcct(p_DateAcct);
+					aging.setConvertAmountsInCurrency_ID(p_ConvertCurrencyTo_ID);
 				}
 				//	Fill Buckets
 				aging.add (DueDate, DaysDue, GrandTotal, OpenAmt);

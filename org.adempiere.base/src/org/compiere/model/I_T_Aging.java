@@ -197,6 +197,17 @@ public interface I_T_Aging
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
+    /** Column name ConvertAmountsInCurrency_ID */
+    public static final String COLUMNNAME_ConvertAmountsInCurrency_ID = "ConvertAmountsInCurrency_ID";
+
+	/** Set Convert Amounts in Currency	  */
+	public void setConvertAmountsInCurrency_ID (int ConvertAmountsInCurrency_ID);
+
+	/** Get Convert Amounts in Currency	  */
+	public int getConvertAmountsInCurrency_ID();
+
+	public org.compiere.model.I_C_Currency getConvertAmountsInCurrency() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 

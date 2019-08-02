@@ -87,7 +87,8 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 	 * @param layoutEmbedded 
 	 *
 	 */
-	public RelatedInfoWindow(EmbedWinInfo info, InfoWindow infoWindow, Paging embeddedPaging, String infoSqlCount, ColumnInfo[] layoutEmbedded) {
+	public RelatedInfoWindow(EmbedWinInfo info, InfoWindow infoWindow, Paging embeddedPaging, String infoSqlCount, ColumnInfo[] layoutEmbedded, Map<String, WEditor> editorMap) {
+		this.editorMap = editorMap;
 		this.info = info;
 		parentInfoWindow = infoWindow;
 		this.paging = embeddedPaging;

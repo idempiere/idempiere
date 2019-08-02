@@ -2721,12 +2721,24 @@ public abstract class PO
 				ok = lobSave();
 			else
 			{
-				if (m_trxName == null)
-					log.saveError("SaveError", "Update return " + no + " instead of 1"
-						+ " - " + p_info.getTableName() + "." + where);
-				else
-					log.saveError("SaveError", "Update return " + no + " instead of 1"
-						+ " - [" + m_trxName + "] - " + p_info.getTableName() + "." + where);
+				if (CLogger.peekError() == null) {
+					if (m_trxName == null)
+						log.saveError("SaveError", "Update return " + no + " instead of 1"
+							+ " - " + p_info.getTableName() + "." + where);
+					else
+						log.saveError("SaveError", "Update return " + no + " instead of 1"
+							+ " - [" + m_trxName + "] - " + p_info.getTableName() + "." + where);
+				} else {
+					String msg = "Not updated - ";
+					if (CLogMgt.isLevelFiner())
+						msg += sql.toString();
+					else
+						msg += get_TableName();
+					if (m_trxName == null)
+						log.log(Level.WARNING, msg);
+					else
+						log.log(Level.WARNING, "[" + m_trxName + "]" + msg);
+				}
 			}
 			return ok;
 		}

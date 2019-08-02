@@ -21,13 +21,15 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.db.Database;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 public class MTableIndex extends X_AD_TableIndex {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5312095272014146977L;
+	private static final long serialVersionUID = 1433937879086456196L;
 
 	/**
 	 * Get active indexes from table
@@ -216,6 +218,21 @@ public class MTableIndex extends X_AD_TableIndex {
 		else
 			sql = "DROP INDEX " + getName();
 		return sql;
+	}
+
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		String error = Database.isValidIdentifier(getName());
+		if (!Util.isEmpty(error)) {
+			log.saveError("Error", Msg.getMsg(getCtx(), error) + " [Name]");
+			return false;
+		}
+		return true;
 	}
 
 	/**

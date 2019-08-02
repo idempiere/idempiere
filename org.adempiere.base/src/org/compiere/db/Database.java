@@ -22,6 +22,7 @@ import java.util.List;
 import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
 import org.compiere.util.CLogger;
+import org.compiere.util.Util;
 
 /**
  *  General Database Constants and Utilities
@@ -91,6 +92,27 @@ public class Database
 			return getDatabase(DB_POSTGRESQL);
 
 		log.severe("No Database for " + url);
+		return null;
+	}
+
+	/**
+	 *  Apply common validations for database object names
+	 *  @param String identifier
+	 *  @return String error-code - null if not error
+	 */
+	public static String isValidIdentifier(String identifier)
+	{
+		if (Util.isEmpty(identifier))
+			return "InvalidIdentifierEmpty";
+		// unquoted identifiers cannot contain spaces
+		if (identifier.contains(" "))
+			return "InvalidIdentifierSpaces";
+		// first character of identifier must be alphabetic
+		if (! identifier.substring(0,  1).matches("[a-zA-Z]"))
+			return "InvalidIdentifierFirstCharAlpha";
+		// names must contain just alphanumeric and underscore
+		if (! identifier.matches("^[a-zA-Z0-9_]*$"))
+			return "InvalidIdentifierJustAlpha";
 		return null;
 	}
 
