@@ -67,6 +67,8 @@ public class InvoiceGenerate extends SvrProcess
 	private int			p_C_BPartner_ID = 0;
 	/** Order					*/
 	private int			p_C_Order_ID = 0;
+	/** Shipment				*/
+	private int			p_M_InOut_ID = 0;
 	/** Consolidate				*/
 	private boolean		p_ConsolidateDocument = true;
 	/** Invoice Document Action	*/
@@ -110,6 +112,8 @@ public class InvoiceGenerate extends SvrProcess
 				p_C_BPartner_ID = para[i].getParameterAsInt();
 			else if (name.equals("C_Order_ID"))
 				p_C_Order_ID = para[i].getParameterAsInt();
+			else if (name.equals("M_InOut_ID"))
+				p_M_InOut_ID = para[i].getParameterAsInt();
 			else if (name.equals("ConsolidateDocument"))
 				p_ConsolidateDocument = "Y".equals(para[i].getParameter());
 			else if (name.equals("DocAction"))
@@ -150,7 +154,7 @@ public class InvoiceGenerate extends SvrProcess
 				.append("WHERE C_Order.DocStatus='CO' AND C_Order.IsSOTrx='Y' ")
 				.append("AND C_Order.C_Order_ID = T_Selection.T_Selection_ID ")
 				.append("AND T_Selection.AD_PInstance_ID=? ")
-				.append("ORDER BY C_Order.M_Warehouse_ID, C_Order.PriorityRule, C_Order.C_BPartner_ID, C_Order.Bill_Location_ID, C_Order.C_Order_ID");
+				.append("ORDER BY C_Order.AD_Org_ID, C_Order.M_Warehouse_ID, C_Order.PriorityRule, C_Order.C_BPartner_ID, C_Order.Bill_Location_ID, C_Order.C_Order_ID");
 		}
 		else
 		{
@@ -164,10 +168,14 @@ public class InvoiceGenerate extends SvrProcess
 				sql.append(" AND C_Order_ID=?");
 			//
 			sql.append(" AND EXISTS (SELECT * FROM C_OrderLine ol ")
-					.append("WHERE o.C_Order_ID=ol.C_Order_ID AND ol.QtyOrdered<>ol.QtyInvoiced) ")
-				.append("AND o.C_DocType_ID IN (SELECT C_DocType_ID FROM C_DocType ")
+					.append("WHERE o.C_Order_ID=ol.C_Order_ID AND ol.QtyOrdered<>ol.QtyInvoiced ");
+			//
+			if (p_M_InOut_ID != 0)
+				sql.append(" AND EXISTS (SELECT '1' FROM M_InOutLine iol WHERE iol.C_OrderLine_ID=ol.C_OrderLine_ID AND iol.M_InOut_ID=?) ");
+			//
+			sql.append(") AND o.C_DocType_ID IN (SELECT C_DocType_ID FROM C_DocType ")
 					.append("WHERE DocBaseType='SOO' AND DocSubTypeSO NOT IN ('ON','OB','WR')) ")
-				.append("ORDER BY M_Warehouse_ID, PriorityRule, C_BPartner_ID, Bill_Location_ID, C_Order_ID");
+				.append("ORDER BY AD_Org_ID, M_Warehouse_ID, PriorityRule, C_BPartner_ID, Bill_Location_ID, C_Order_ID");
 		}
 	//	sql += " FOR UPDATE";
 		
@@ -188,6 +196,8 @@ public class InvoiceGenerate extends SvrProcess
 					pstmt.setInt(index++, p_C_BPartner_ID);
 				if (p_C_Order_ID != 0)
 					pstmt.setInt(index++, p_C_Order_ID);
+				if (p_M_InOut_ID != 0)
+					pstmt.setInt(index++, p_M_InOut_ID);
 			}
 		}
 		catch (Exception e)
