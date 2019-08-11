@@ -45,6 +45,7 @@ import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -209,18 +210,18 @@ public class InitialClientSetup extends SvrProcess
 			|| p_C_Country_ID <= 0
 			|| (!p_UseDefaultCoA && (p_CoAFile == null || p_CoAFile.length() == 0))
 			)
-			throw new IllegalArgumentException("Missing required parameters");
+			throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "Missing required parameters"));
 
 		// Validate Uniqueness of client and users name
 		//	Unique Client Name
 		if (DB.executeUpdate("UPDATE AD_Client SET CreatedBy=0 WHERE Name=?", new Object[] {p_ClientName}, false, null) != 0)
-			throw new AdempiereException("@NotUnique@ " + p_ClientName);
+			throw new AdempiereException("@" + Msg.getMsg(Env.getCtx(), "NotUnique") + "@ " + p_ClientName);
 
 		//	Unique User Names
 		if (DB.executeUpdate("UPDATE AD_User SET CreatedBy=0 WHERE Name=?", new Object[] {p_AdminUserName}, false, null) != 0)
-			throw new AdempiereException("@NotUnique@ " + p_AdminUserName);
+			throw new AdempiereException("@" + Msg.getMsg(Env.getCtx(), "NotUnique") + "@ " + p_AdminUserName);
 		if (DB.executeUpdate("UPDATE AD_User SET CreatedBy=0 WHERE Name=?", new Object[] {p_NormalUserName}, false, null) != 0)
-			throw new AdempiereException("@NotUnique@ " + p_NormalUserName);
+			throw new AdempiereException("@" + Msg.getMsg(Env.getCtx(), "NotUnique") + "@ " + p_NormalUserName);
 
 		// City_ID overrides CityName if both used
 		if (p_C_City_ID > 0) {
@@ -236,13 +237,13 @@ public class InitialClientSetup extends SvrProcess
 		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 		if (email_login) {
 			if (Util.isEmpty(p_AdminUserEmail)) 
-				throw new AdempiereException("AdminUserEmail is required");
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AdminUserEmail is required"));
 			if (! EMail.validate(p_AdminUserEmail)) 
-				throw new AdempiereException("AdminUserEmail " + p_AdminUserEmail + " is incorrect");
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AdminUserEmail") + " "  + p_AdminUserEmail + " " + Msg.getMsg(Env.getCtx(), "is incorrect") );
 			if (Util.isEmpty(p_NormalUserEmail)) 
-				throw new AdempiereException("NormalUserEmail is required");
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "NormalUserEmail is required") );
 			if (! EMail.validate(p_NormalUserEmail)) 
-				throw new AdempiereException("NormalUserEmail " + p_NormalUserEmail + " is incorrect");
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "NormalUserEmail") + " " + p_NormalUserEmail + " " + Msg.getMsg(Env.getCtx(), "is incorrect"));
 		}
 		if (Util.isEmpty(p_CoAFile, true))
 			p_CoAFile = MSysConfig.getValue(MSysConfig.DEFAULT_COA_PATH,
@@ -251,13 +252,13 @@ public class InitialClientSetup extends SvrProcess
 							+ File.separator + "AccountingDefaultsOnly.csv");
 		File coaFile = new File(p_CoAFile);
 		if (!coaFile.exists())
-			throw new AdempiereException("CoaFile " + p_CoAFile + " does not exist");
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "CoaFile") + " " + p_CoAFile + " " + Msg.getMsg(Env.getCtx(), "does not exist") );
 		if (!coaFile.canRead())
-			throw new AdempiereException("Cannot read CoaFile " + p_CoAFile);
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "Cannot read CoaFile") + " " + p_CoAFile);
 		if (!coaFile.isFile())
-			throw new AdempiereException("CoaFile " + p_CoAFile + " is not a file");
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "CoaFile") + " " + p_CoAFile + " " + Msg.getMsg(Env.getCtx(), "is not a file"));
 		if (coaFile.length() <= 0L)
-			throw new AdempiereException("CoaFile " + p_CoAFile + " is empty");
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "CoaFile") +  " " + p_CoAFile + " " + Msg.getMsg(Env.getCtx(), "is empty"));
 
 		// Process
 		MSetup ms = new MSetup(Env.getCtx(), WINDOW_THIS_PROCESS);
@@ -265,7 +266,7 @@ public class InitialClientSetup extends SvrProcess
 			if (! ms.createClient(p_ClientName, p_OrgValue, p_OrgName, p_AdminUserName, p_NormalUserName
 					, p_Phone, p_Phone2, p_Fax, p_EMail, p_TaxID, p_AdminUserEmail, p_NormalUserEmail, p_IsSetInitialPassword)) {
 				ms.rollback();
-				throw new AdempiereException("Create client failed");
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "Create client failed"));
 			}
 				
 			addLog(ms.getInfo());
@@ -277,13 +278,13 @@ public class InitialClientSetup extends SvrProcess
 				p_IsUseProductDimension, p_IsUseBPDimension, p_IsUseProjectDimension, p_IsUseCampaignDimension, p_IsUseSalesRegionDimension, p_IsUseActivityDimension,
 				coaFile, p_UseDefaultCoA, p_InactivateDefaults)) {
 				ms.rollback();
-				throw new AdempiereException("@AccountSetupError@");
+				throw new AdempiereException("@" + Msg.getMsg(Env.getCtx(), "AccountSetupError")+ "@");
 			}
 
 			//  Generate Entities
 			if (!ms.createEntities(p_C_Country_ID, p_CityName, p_C_Region_ID, p_C_Currency_ID, p_Postal, p_Address1)) {
 				ms.rollback();
-				throw new AdempiereException("@AccountSetupError@");
+				throw new AdempiereException("@" +  Msg.getMsg(Env.getCtx(), "AccountSetupError") + "@");
 			}
 			addLog(ms.getInfo());
 
