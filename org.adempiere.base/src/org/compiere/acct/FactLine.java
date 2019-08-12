@@ -125,7 +125,7 @@ public final class FactLine extends X_Fact_Acct
 		reversal.setC_LocTo_ID(getC_LocTo_ID());
 		reversal.setC_LocFrom_ID(getC_LocFrom_ID());
 		reversal.setUser1_ID(getUser1_ID());
-		reversal.setUser2_ID(getUser1_ID());
+		reversal.setUser2_ID(getUser2_ID());
 		reversal.setUserElement1_ID(getUserElement1_ID());
 		reversal.setUserElement2_ID(getUserElement2_ID());
 		
