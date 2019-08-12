@@ -153,7 +153,7 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		suggestion.setProcessed(false);
 		
 		suggestion.saveEx();
-		FDialog.info(0, this, "Your suggestions have been submitted for review");
+		FDialog.info(0, this, Msg.getMsg(Env.getCtx(),"Your suggestions have been submitted for review"));
 		this.detach();
 	}
 }

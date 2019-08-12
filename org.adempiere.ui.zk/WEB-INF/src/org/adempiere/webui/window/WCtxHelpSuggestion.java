@@ -175,9 +175,9 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 			onSave0(trx);
 			trx.commit(true);
 			if (ctxHelpMsg != null && ctxHelpMsg.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx())) {
-				FDialog.info(0, this, "Your changes have been saved.");
+				FDialog.info(0, this, Msg.getMsg(Env.getCtx(), "Your changes have been saved."));
 			} else {
-				FDialog.info(0, this, "Your suggestions have been submitted for review");
+				FDialog.info(0, this, Msg.getMsg(Env.getCtx(),"Your suggestions have been submitted for review"));
 			}
 		} catch (Exception e) {
 			trx.rollback();
