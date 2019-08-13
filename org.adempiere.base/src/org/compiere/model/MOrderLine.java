@@ -814,7 +814,7 @@ public class MOrderLine extends X_C_OrderLine
 		if (getM_Product_ID() == 0)
 			setM_AttributeSetInstance_ID(0);
 		//	Product
-		else	//	Set/check Product Price
+		else if (!isProcessed())	//	Set/check Product Price
 		{
 			//	Set Price if Actual = 0
 			if (m_productPrice == null 
