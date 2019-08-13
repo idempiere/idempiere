@@ -37,9 +37,6 @@ import org.compiere.util.Trace;
  */
 public class MProductPricing extends AbstractProductPricing
 {
-	
-	private String trxName=null;
-
 	/**
 	 * New constructor to be used with the ProductPriceFactories
 	 */
@@ -88,8 +85,6 @@ public class MProductPricing extends AbstractProductPricing
 		m_useVendorBreak = thereAreVendorBreakRecords > 0;
 	}
 
-	private int 		m_M_PriceList_Version_ID = 0;
-	private Timestamp 	m_PriceDate;	
 	/** Precision -1 = no rounding		*/
 	private int		 	m_precision = -1;
 	
