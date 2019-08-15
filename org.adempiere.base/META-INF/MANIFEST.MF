@@ -54,6 +54,7 @@ Export-Package: bsh,
  org.eevolution.model,
  org.idempiere.broadcast,
  org.idempiere.distributed,
+ org.idempiere.fa.service.api,
  org.idempiere.model
 Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"

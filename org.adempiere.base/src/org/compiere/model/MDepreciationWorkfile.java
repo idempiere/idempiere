@@ -3,10 +3,12 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.apache.commons.collections.keyvalue.MultiKey;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
@@ -16,6 +18,9 @@ import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.idempiere.fa.feature.UseLife;
 import org.idempiere.fa.feature.UseLifeImpl;
+import org.idempiere.fa.service.api.DepreciationDTO;
+import org.idempiere.fa.service.api.DepreciationFactoryLookupDTO;
+import org.idempiere.fa.service.api.IDepreciationMethod;
 
 
 /**
@@ -649,6 +654,28 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		
 		truncDepreciation();
 		int A_Current_Period = getA_Current_Period();
+		
+		// lookup for implement of IDepreciationMethod
+		DepreciationFactoryLookupDTO depreciationFactoryLookupDTO = new DepreciationFactoryLookupDTO();
+		depreciationFactoryLookupDTO.depreciationType = depreciation_C.getDepreciationType();
+		IDepreciationMethod depreciationMethod = Core.getDepreciationMethod (depreciationFactoryLookupDTO);
+		
+		if(depreciationMethod != null) {
+			DepreciationDTO depreciationDTO = new DepreciationDTO();
+			depreciationDTO.useFullLife = new BigDecimal(this.getA_Life_Period());// at the moment, int is ok for Thai, but for other country BigDecima is suitable, need to change AD
+			depreciationDTO.useFullLifeUnit = Calendar.MONTH;
+			depreciationDTO.depreciationId = this.get_ID();
+			depreciationDTO.inServiceDate = this.getA_Asset().getAssetServiceDate();
+			depreciationDTO.accountDate = this.getDateAcct();
+			depreciationDTO.startPeriodDepreciation = this.getA_Current_Period();
+			lifePeriods = (int)depreciationMethod.getCountPeriod(depreciationDTO);
+			
+			// it's safe, at the moment, core disable setting of lifePeriods_F
+			lifePeriods_C = lifePeriods;
+			lifePeriods_F = lifePeriods;
+		}
+		
+		
 		for (int currentPeriod = A_Current_Period, cnt = 1; currentPeriod <= lifePeriods; currentPeriod++, cnt++)
 		{
 			exp_C = Env.ZERO;
@@ -656,34 +683,42 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 			
 			String help = "" + accumDep_C + "|" + accumDep_F + " + ";
 			
-			if (lifePeriods_C > currentPeriod || !depreciation_C.requireLastPeriodAdjustment())
+			if (lifePeriods_C > currentPeriod ||  !depreciation_C.requireLastPeriodAdjustment())
 			{
 				setFiscal(false);
-				exp_C = depreciation_C.invoke(this, assetacct, currentPeriod, accumDep_C);
+				exp_C = depreciation_C.invoke(this, assetacct, currentPeriod, accumDep_C, depreciationMethod);
 				accumDep_C = accumDep_C.add(exp_C);
 			}
 			else if (lifePeriods_C == currentPeriod)
 			{	// last period
-				exp_C = assetCost.subtract(accumDep_C);
+				if (depreciationMethod != null && depreciationMethod.isPeriodAdjustment()) {
+					exp_C = depreciation_C.invoke(this, assetacct, currentPeriod, accumDep_C, depreciationMethod);
+				}else {
+					exp_C = assetCost.subtract(accumDep_C);
+				}
 				accumDep_C = assetCost;
 			}
 			
 			if (lifePeriods_F > currentPeriod || !depreciation_F.requireLastPeriodAdjustment())
 			{
 				setFiscal(true);
-				exp_F = depreciation_F.invoke(this, assetacct, currentPeriod, accumDep_F);
+				exp_F = depreciation_F.invoke(this, assetacct, currentPeriod, accumDep_F, depreciationMethod);
 				accumDep_F = accumDep_F.add(exp_F);
 			}
 			else if (lifePeriods_F == currentPeriod)
 			{	// last period (fiscal)
-				exp_F = assetCost.subtract(accumDep_F);
+				if (depreciationMethod != null && depreciationMethod.isPeriodAdjustment()) {
+					exp_C = depreciation_C.invoke(this, assetacct, currentPeriod, accumDep_C, depreciationMethod);
+				}else {
+					exp_F = assetCost.subtract(accumDep_F);
+				}
 				accumDep_F = assetCost;
 			}
 			
 			help += "" + exp_C + "|" + exp_F + " = " + accumDep_C + "|" + accumDep_F;
 			
 			// added by zuhri
-			int months = 0;
+			int months = 0; 
 			
 			months = months + (currentPeriod - A_Current_Period);
 			Timestamp dateAcct = TimeUtil.getMonthLastDay(TimeUtil.addMonths(getDateAcct(), months));

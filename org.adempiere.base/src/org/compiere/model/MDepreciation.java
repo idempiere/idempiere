@@ -2,6 +2,7 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
+import java.util.Calendar;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,6 +14,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.idempiere.fa.exceptions.AssetNotImplementedException;
 import org.idempiere.fa.exceptions.AssetNotSupportedException;
+import org.idempiere.fa.service.api.DepreciationDTO;
+import org.idempiere.fa.service.api.IDepreciationMethod;
 
 
 /**
@@ -144,7 +147,7 @@ public class MDepreciation extends X_A_Depreciation
 	 * @return amortized value
 	 */
 	public BigDecimal invoke(MDepreciationWorkfile assetwk, MAssetAcct assetAcct,
-								int A_Current_Period, BigDecimal Accum_Dep)
+								int A_Current_Period, BigDecimal Accum_Dep, IDepreciationMethod depreciationMethod)
 	{
 		String depreciationType = getDepreciationType();
 		BigDecimal retValue = null;
@@ -164,7 +167,24 @@ public class MDepreciation extends X_A_Depreciation
 		{
 			return BigDecimal.ZERO;
 		}
-		if (depreciationType.equalsIgnoreCase("SL"))
+		
+		if (depreciationMethod != null) {
+			DepreciationDTO depreciationDTO = new DepreciationDTO();
+			depreciationDTO.period = A_Current_Period;
+			depreciationDTO.salvage = assetwk.getA_Salvage_Value();
+			depreciationDTO.totalAmount = assetwk.getA_Asset_Cost();
+			depreciationDTO.useFullLife = new BigDecimal(assetwk.getA_Life_Period());// at the moment, int is ok for Thai, but for other country BigDecima is suitable, need to change AD
+			depreciationDTO.useFullLifeUnit = Calendar.MONTH;
+			depreciationDTO.trxName = assetwk.get_TrxName();
+			depreciationDTO.depreciationId = assetwk.get_ID();
+			depreciationDTO.inServiceDate = assetwk.getA_Asset().getAssetServiceDate();
+			depreciationDTO.accountDate = assetwk.getDateAcct();
+			depreciationDTO.accumulatedCost = assetwk.getA_Accumulated_Depr();
+			depreciationDTO.startPeriodDepreciation = assetwk.getA_Current_Period();
+			depreciationDTO.scale = getPrecision();
+			// calculate expense use implement of IDepreciationMethod
+			retValue = depreciationMethod.caclulateDepreciation(depreciationDTO);
+		}else if (depreciationType.equalsIgnoreCase("SL"))
 		{
 			retValue = apply_SL(assetwk, assetAcct, A_Current_Period, Accum_Dep);
 		}
