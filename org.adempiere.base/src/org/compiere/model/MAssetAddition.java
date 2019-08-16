@@ -642,6 +642,24 @@ public class MAssetAddition extends X_A_Asset_Addition
 		//loading asset
 		MAsset asset = getA_Asset(!m_justPrepared); // requery if not just prepared
 		if (log.isLoggable(Level.FINE)) log.fine("asset=" + asset);
+		
+
+		// Setting locator if is CreateAsset
+		if (isA_CreateAsset() && getM_Locator_ID() > 0)
+		{
+			asset.setM_Locator_ID(getM_Locator_ID());
+		}
+		
+		// Creating/Updating asset product
+		updateA_Asset_Product(false);
+		//
+		// Changing asset status to Activated or Depreciated
+		if (isA_CreateAsset())
+		{
+			asset.setAssetServiceDate(getDateDoc());
+		}
+		asset.changeStatus(MAsset.A_ASSET_STATUS_Activated, getDateAcct());
+		asset.saveEx();
 
 		//
 		// Get/Create Asset Workfile:
@@ -713,24 +731,6 @@ public class MAssetAddition extends X_A_Asset_Addition
 				
 		
 		MAssetChange.createAddition(this, assetwk);
-		
-		// Setting locator if is CreateAsset
-		if (isA_CreateAsset() && getM_Locator_ID() > 0)
-		{
-			asset.setM_Locator_ID(getM_Locator_ID());
-		}
-		
-		// Creating/Updating asset product
-		updateA_Asset_Product(false);
-		//
-		// Changing asset status to Activated or Depreciated
-		if (isA_CreateAsset())
-		{
-			asset.setAssetServiceDate(getDateDoc());
-		}
-		asset.changeStatus(MAsset.A_ASSET_STATUS_Activated, getDateAcct());
-		asset.saveEx();
-		
 		
 		
 		// Accumulated depreciation (if any):
