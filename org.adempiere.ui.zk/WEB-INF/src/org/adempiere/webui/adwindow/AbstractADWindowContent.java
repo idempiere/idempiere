@@ -3054,7 +3054,28 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}
 		else
 		{
-			ProcessModalDialog dialog = new ProcessModalDialog(this, curWindowNo, wButton.getProcess_ID(), table_ID, record_ID, startWOasking);
+			final IADTabpanel adtabPanel = findADTabpanel(wButton);
+
+			ProcessInfo pi = new ProcessInfo("", wButton.getProcess_ID(), table_ID, record_ID);
+			if (adtabPanel != null && adtabPanel.isGridView() && adtabPanel.getGridTab() != null)
+			{
+				int[] indices = adtabPanel.getGridTab().getSelection();
+				if (indices.length > 0)
+				{
+					List<Integer> records = new ArrayList<Integer>();
+					for (int i = 0; i < indices.length; i++)
+					{
+						int keyID = adtabPanel.getGridTab().getKeyID(indices[i]);
+						if (keyID > 0)
+							records.add(keyID);
+					}
+
+					// IDEMPIERE-3998 Set multiple selected grid records into process info
+					pi.setRecord_IDs(records);
+				}
+			}
+
+			ProcessModalDialog dialog = new ProcessModalDialog(this, curWindowNo, pi, startWOasking);
 
 			if (dialog.isValid())
 			{

@@ -439,6 +439,16 @@ public abstract class SvrProcess implements ProcessCall
 	}   //  getRecord_ID
 
 	/**
+	 * Get Record_IDs
+	 * 
+	 * @return Record_IDs
+	 */
+	protected List<Integer> getRecord_IDs() 
+	{
+		return m_pi.getRecord_IDs();
+	} // getRecord_IDs
+
+	/**
 	 *  Get AD_User_ID
 	 *  @return AD_User_ID of Process owner or -1 if not found
 	 */
