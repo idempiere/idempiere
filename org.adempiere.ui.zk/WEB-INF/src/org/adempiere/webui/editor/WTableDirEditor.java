@@ -323,12 +323,17 @@ ContextMenuListener, IZoomableEditor
                 	{
                 		//if it is problem with record lock, just keep value (no trigger change) and set field readonly
                 		MRole role = MRole.getDefault(Env.getCtx(), false);
-                		MColumn col = MColumn.get(Env.getCtx(), gridField.getAD_Column_ID());
                 		int refTableID = -1;
-                		if (col.get_ID() > 0) {
-                			String refTable = col.getReferenceTableName();
-                			MTable table = MTable.get(Env.getCtx(), refTable);
-                			refTableID = table.getAD_Table_ID();
+                		if (gridTab != null) // fields process para don't represent a column ID
+                		{
+                    		MColumn col = MColumn.get(Env.getCtx(), gridField.getAD_Column_ID());
+                    		if (col.get_ID() > 0) {
+                    			String refTable = col.getReferenceTableName();
+                    			if (refTable != null) {
+                        			MTable table = MTable.get(Env.getCtx(), refTable);
+                        			refTableID = table.getAD_Table_ID();
+                    			}
+                    		}
                 		}
                 		if (refTableID > 0 && ! role.isRecordAccess(refTableID, (int)value, false))
                 		{
