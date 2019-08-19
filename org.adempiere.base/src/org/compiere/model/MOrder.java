@@ -533,7 +533,6 @@ public class MOrder extends X_C_Order implements DocAction
 			line.setQtyInvoiced(Env.ZERO);
 			line.setQtyReserved(Env.ZERO);
 			line.setQtyLostSales(Env.ZERO);
-			line.setQtyOrdered(Env.ZERO);
 			line.setDateDelivered(null);
 			line.setDateInvoiced(null);
 			//
