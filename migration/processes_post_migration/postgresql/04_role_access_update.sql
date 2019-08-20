@@ -85,7 +85,9 @@ BEGIN
          || r.ad_role_id
          || ','||r.ad_client_id||','||r.ad_org_id||',''Y'', statement_timestamp(),0, statement_timestamp(),0 FROM AD_InfoWindow i LEFT JOIN AD_InfoWindow_Access ia ON (ia.AD_Role_ID='
 	 || r.ad_role_id
-	 || ' AND i.AD_InfoWindow_ID = ia.AD_InfoWindow_ID) WHERE i.AD_Client_ID IN (0,'||r.ad_client_id||') AND ia.AD_InfoWindow_ID IS NULL';
+	 || ' AND i.AD_InfoWindow_ID = ia.AD_InfoWindow_ID) INNER JOIN AD_Table tt ON (i.AD_Table_ID=tt.AD_Table_ID) WHERE i.AD_Client_ID IN (0,'||r.ad_client_id||') AND ia.AD_InfoWindow_ID IS NULL AND tt.AccessLevel IN '
+         || roleaccesslevel;
+
 
       EXECUTE sqlins;
 
