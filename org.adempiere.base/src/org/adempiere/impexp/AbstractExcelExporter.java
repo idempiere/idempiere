@@ -16,6 +16,7 @@ package org.adempiere.impexp;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -439,7 +440,11 @@ public abstract class AbstractExcelExporter
 						//suppress
 					}
 					else if (DisplayType.isDate(displayType)) {
-						Timestamp value = (Timestamp)obj;
+						Timestamp value = null;
+						if (obj instanceof Date)
+							value = new Timestamp(((Date)obj).getTime());
+						else
+							value = (Timestamp)obj;
 						cell.setCellValue(value);
 					}
 					else if (DisplayType.isNumeric(displayType)) {
