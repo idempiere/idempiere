@@ -134,7 +134,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 	private void init() {
 		final boolean isCanExport=MRole.getDefault().isCanExport();
-		defaultType = jasperPrint.getProperty("IDEMPIERE_REPORT_TYPE");
+		defaultType = jasperPrint == null ? null : jasperPrint.getProperty("IDEMPIERE_REPORT_TYPE");
 		if (Util.isEmpty(defaultType)) {
 			defaultType = MSysConfig.getValue(MSysConfig.ZK_REPORT_JASPER_OUTPUT_TYPE, "PDF",
 					Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));//It gets default Jasper output type
