@@ -278,3 +278,7 @@
 .z-icon-ZoomAcross:before {	
 	content: "\f00e";
 }
+.z-icon-CSVImport:before {
+	content: "\f0f6";
+}
+
