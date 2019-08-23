@@ -197,7 +197,7 @@
 	content: "\f0d6";
 }
 .z-icon-PostIt:before {
-	content: "\f15c";
+	content: "\f24a";
 }
 .z-icon-Preference:before {
 	content: "\f085";
@@ -274,7 +274,6 @@
 .z-icon-Zoom:before {
 	content: "\f14c";
 }
-
 .z-icon-ZoomAcross:before {	
 	content: "\f00e";
 }
