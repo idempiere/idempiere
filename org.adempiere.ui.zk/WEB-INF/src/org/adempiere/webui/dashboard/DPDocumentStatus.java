@@ -30,6 +30,7 @@
 package org.adempiere.webui.dashboard;
 
 import org.adempiere.webui.apps.graph.WDocumentStatusPanel;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.compiere.util.Env;
@@ -68,14 +69,26 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 			return;
 		this.appendChild(statusPanel);
 
-		Toolbar recentItemsToolbar = new Toolbar();
-		this.appendChild(recentItemsToolbar);
+		Toolbar documentStatusToolbar = new Toolbar();
+		this.appendChild(documentStatusToolbar);
 
-		Image imgr = new Image(ThemeManager.getThemeResource("images/Refresh24.png"));
-		recentItemsToolbar.appendChild(imgr);
-		imgr.setStyle("text-align: right; cursor: pointer; width:24px; height:24px;");
-		imgr.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
-		imgr.addEventListener(Events.ON_CLICK, this);
+		if (ThemeManager.isUseFontIconForImage())
+		{
+			ToolBarButton btn = new ToolBarButton();
+			btn.setIconSclass("z-icon-Refresh");
+			btn.setSclass("trash-toolbarbutton");
+			documentStatusToolbar.appendChild(btn);
+			btn.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
+			btn.addEventListener(Events.ON_CLICK, this);
+		}
+		else
+		{
+			Image imgr = new Image(ThemeManager.getThemeResource("images/Refresh24.png"));
+			documentStatusToolbar.appendChild(imgr);
+			imgr.setStyle("text-align: right; cursor: pointer; width:24px; height:24px;");
+			imgr.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
+			imgr.addEventListener(Events.ON_CLICK, this);
+		}
 	}
 
 	public void onEvent(Event event) throws Exception {
