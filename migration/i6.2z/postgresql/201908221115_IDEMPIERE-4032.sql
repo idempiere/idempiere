@@ -1,4 +1,4 @@
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
+-- IDEMPIERE-4032 Financial Report Translation (lines & column)
 -- Aug 22, 2019, 9:40:40 AM BRT
 UPDATE AD_Column SET IsTranslated='Y', SeqNoSelection=10,Updated=TO_TIMESTAMP('2019-08-22 09:40:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6043
 ;
@@ -347,63 +347,160 @@ UPDATE AD_Column SET IsTranslated='N',Updated=TO_TIMESTAMP('2019-08-22 10:48:30'
 
 -- DROP TABLE pa_reportcolumn_trl;
 
-CREATE TABLE pa_reportcolumn_trl (
-	pa_reportcolumn_id numeric(10) NOT NULL,
-	ad_language varchar(6) NOT NULL,
-	ad_client_id numeric(10) NOT NULL,
-	ad_org_id numeric(10) NOT NULL,
-	isactive bpchar(1) NOT NULL DEFAULT 'Y'::bpchar,
-	created timestamp NOT NULL DEFAULT now(),
-	createdby numeric(10) NOT NULL,
-	updated timestamp NOT NULL DEFAULT now(),
-	updatedby numeric(10) NOT NULL,
-	"name" varchar(255) NOT NULL,
-	istranslated bpchar(1) NOT NULL DEFAULT 'N'::bpchar,
-	description varchar(255) NULL,
-	pa_reportcolumn_trl_uu varchar(36) NULL DEFAULT NULL::character varying,
-	CONSTRAINT pa_reportcolumn_trl_isactive_check CHECK ((isactive = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))),
-	CONSTRAINT pa_reportcolumn_trl_istranslated_check CHECK ((istranslated = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))),
-	CONSTRAINT pa_reportcolumn_trl_pkey PRIMARY KEY (pa_reportcolumn_id, ad_language),
-	CONSTRAINT adlanguage_mreportcolumntrl FOREIGN KEY (ad_language) REFERENCES ad_language(ad_language) DEFERRABLE INITIALLY DEFERRED,
-	CONSTRAINT mreportcolumn_mreportcolumntrl FOREIGN KEY (pa_reportcolumn_id) REFERENCES pa_reportcolumn(pa_reportcolumn_id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
-);
-CREATE UNIQUE INDEX pa_reportcolumn_trl_uu_idx ON pa_reportcolumn_trl USING btree (pa_reportcolumn_trl_uu);
+--CREATE TABLE pa_reportcolumn_trl (
+	--pa_reportcolumn_id numeric(10) NOT NULL,
+	--ad_language varchar(6) NOT NULL,
+	--ad_client_id numeric(10) NOT NULL,
+	--ad_org_id numeric(10) NOT NULL,
+	--isactive bpchar(1) NOT NULL DEFAULT 'Y'::bpchar,
+	--created timestamp NOT NULL DEFAULT now(),
+	--createdby numeric(10) NOT NULL,
+	--updated timestamp NOT NULL DEFAULT now(),
+	--updatedby numeric(10) NOT NULL,
+	--"name" varchar(255) NOT NULL,
+	--istranslated bpchar(1) NOT NULL DEFAULT 'N'::bpchar,
+	--description varchar(255) NULL,
+	--pa_reportcolumn_trl_uu varchar(36) NULL DEFAULT NULL::character varying,
+	--CONSTRAINT pa_reportcolumn_trl_isactive_check CHECK ((isactive = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))),
+	--CONSTRAINT pa_reportcolumn_trl_istranslated_check CHECK ((istranslated = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))),
+	--CONSTRAINT pa_reportcolumn_trl_pkey PRIMARY KEY (pa_reportcolumn_id, ad_language),
+	--CONSTRAINT adlanguage_mreportcolumntrl FOREIGN KEY (ad_language) REFERENCES ad_language(ad_language) DEFERRABLE INITIALLY DEFERRED,
+	--CONSTRAINT mreportcolumn_mreportcolumntrl FOREIGN KEY (pa_reportcolumn_id) REFERENCES pa_reportcolumn(pa_reportcolumn_id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+--);
+--CREATE UNIQUE INDEX pa_reportcolumn_trl_uu_idx ON pa_reportcolumn_trl USING btree (pa_reportcolumn_trl_uu);
 
 -- Permissions
 
-ALTER TABLE pa_reportcolumn_trl OWNER TO brerp;
-GRANT ALL ON TABLE pa_reportcolumn_trl TO brerp;
+--ALTER TABLE pa_reportcolumn_trl OWNER TO brerp;
+--GRANT ALL ON TABLE pa_reportcolumn_trl TO brerp;
 
 -- Drop table
 
 -- DROP TABLE pa_reportline_trl;
 
-CREATE TABLE pa_reportline_trl (
-	pa_reportline_id numeric(10) NOT NULL,
-	ad_language varchar(6) NOT NULL,
-	ad_client_id numeric(10) NOT NULL,
-	ad_org_id numeric(10) NOT NULL,
-	isactive bpchar(1) NOT NULL DEFAULT 'Y'::bpchar,
-	created timestamp NOT NULL DEFAULT now(),
-	createdby numeric(10) NOT NULL,
-	updated timestamp NOT NULL DEFAULT now(),
-	updatedby numeric(10) NOT NULL,
-	"name" varchar(255) NOT NULL,
-	istranslated bpchar(1) NOT NULL DEFAULT 'N'::bpchar,
-	description varchar(255) NULL,
-	pa_reportline_trl_uu varchar(36) NULL DEFAULT NULL::character varying,
-	CONSTRAINT pa_reportline_trl_isactive_check CHECK ((isactive = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))),
-	CONSTRAINT pa_reportline_trl_istranslated_check CHECK ((istranslated = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))),
-	CONSTRAINT pa_reportline_trl_pkey PRIMARY KEY (pa_reportline_id, ad_language),
-	CONSTRAINT adlanguage_mreportlinetrl FOREIGN KEY (ad_language) REFERENCES ad_language(ad_language) DEFERRABLE INITIALLY DEFERRED,
-	CONSTRAINT mreportline_mreportlinetrl FOREIGN KEY (pa_reportline_id) REFERENCES pa_reportline(pa_reportline_id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
-);
-CREATE UNIQUE INDEX pa_reportline_trl_uu_idx ON pa_reportline_trl USING btree (pa_reportline_trl_uu);
+--CREATE TABLE pa_reportline_trl (
+	--pa_reportline_id numeric(10) NOT NULL,
+	--ad_language varchar(6) NOT NULL,
+	--ad_client_id numeric(10) NOT NULL,
+	--ad_org_id numeric(10) NOT NULL,
+	--isactive bpchar(1) NOT NULL DEFAULT 'Y'::bpchar,
+	--created timestamp NOT NULL DEFAULT now(),
+	--createdby numeric(10) NOT NULL,
+	--updated timestamp NOT NULL DEFAULT now(),
+	--updatedby numeric(10) NOT NULL,
+	--"name" varchar(255) NOT NULL,
+	--istranslated bpchar(1) NOT NULL DEFAULT 'N'::bpchar,
+	--description varchar(255) NULL,
+	--pa_reportline_trl_uu varchar(36) NULL DEFAULT NULL::character varying,
+	--CONSTRAINT pa_reportline_trl_isactive_check CHECK ((isactive = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))),
+	--CONSTRAINT pa_reportline_trl_istranslated_check CHECK ((istranslated = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))),
+	--CONSTRAINT pa_reportline_trl_pkey PRIMARY KEY (pa_reportline_id, ad_language),
+	--CONSTRAINT adlanguage_mreportlinetrl FOREIGN KEY (ad_language) REFERENCES ad_language(ad_language) DEFERRABLE INITIALLY DEFERRED,
+	--CONSTRAINT mreportline_mreportlinetrl FOREIGN KEY (pa_reportline_id) REFERENCES pa_reportline(pa_reportline_id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+--);
+--CREATE UNIQUE INDEX pa_reportline_trl_uu_idx ON pa_reportline_trl USING btree (pa_reportline_trl_uu);
 
 -- Permissions
 
-ALTER TABLE pa_reportline_trl OWNER TO brerp;
-GRANT ALL ON TABLE pa_reportline_trl TO brerp;
+--ALTER TABLE pa_reportline_trl OWNER TO brerp;
+--GRANT ALL ON TABLE pa_reportline_trl TO brerp;
+
+
+-- Aug 23, 2019, 12:05:48 PM CEST
+UPDATE AD_Column SET FKConstraintName='ADLanguage_PAReportColumnTrl', FKConstraintType='N',Updated=TO_TIMESTAMP('2019-08-23 12:05:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214001
+;
+
+-- Aug 23, 2019, 12:05:49 PM CEST
+UPDATE AD_Column SET IsUpdateable='N', FKConstraintName='PAReportColumn_PAReportColumnT', FKConstraintType='N',Updated=TO_TIMESTAMP('2019-08-23 12:05:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214000
+;
+
+-- Aug 23, 2019, 12:05:49 PM CEST
+CREATE TABLE PA_ReportColumn_Trl (AD_Client_ID NUMERIC(10) NOT NULL, AD_Language VARCHAR(6) NOT NULL, AD_Org_ID NUMERIC(10) NOT NULL, Created TIMESTAMP DEFAULT statement_timestamp() NOT NULL, CreatedBy NUMERIC(10) NOT NULL, Description VARCHAR(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR(255) NOT NULL, PA_ReportColumn_ID NUMERIC(10) NOT NULL, PA_ReportColumn_Trl_UU VARCHAR(36) DEFAULT NULL , Updated TIMESTAMP DEFAULT statement_timestamp() NOT NULL, UpdatedBy NUMERIC(10) NOT NULL, CONSTRAINT PA_ReportColumn_Trl_UU_idx UNIQUE (PA_ReportColumn_Trl_UU))
+;
+
+-- Aug 23, 2019, 12:05:49 PM CEST
+ALTER TABLE PA_ReportColumn_Trl ADD CONSTRAINT ADLanguage_PAReportColumnTrl FOREIGN KEY (AD_Language) REFERENCES ad_language(ad_language) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Aug 23, 2019, 12:05:49 PM CEST
+ALTER TABLE PA_ReportColumn_Trl ADD CONSTRAINT PAReportColumn_PAReportColumnT FOREIGN KEY (PA_ReportColumn_ID) REFERENCES pa_reportcolumn(pa_reportcolumn_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Aug 23, 2019, 12:06:17 PM CEST
+UPDATE AD_Column SET FKConstraintName='ADLanguage_PAReportLineTrl', FKConstraintType='N',Updated=TO_TIMESTAMP('2019-08-23 12:06:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=213988
+;
+
+-- Aug 23, 2019, 12:06:17 PM CEST
+UPDATE AD_Column SET IsUpdateable='N', FKConstraintName='PAReportLine_PAReportLineTrl', FKConstraintType='C',Updated=TO_TIMESTAMP('2019-08-23 12:06:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=213987
+;
+
+-- Aug 23, 2019, 12:06:17 PM CEST
+CREATE TABLE PA_ReportLine_Trl (AD_Client_ID NUMERIC(10) NOT NULL, AD_Language VARCHAR(6) NOT NULL, AD_Org_ID NUMERIC(10) NOT NULL, Created TIMESTAMP DEFAULT statement_timestamp() NOT NULL, CreatedBy NUMERIC(10) NOT NULL, Description VARCHAR(255) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR(255) NOT NULL, PA_ReportLine_ID NUMERIC(10) NOT NULL, PA_ReportLine_Trl_UU VARCHAR(36) DEFAULT NULL , Updated TIMESTAMP DEFAULT statement_timestamp() NOT NULL, UpdatedBy NUMERIC(10) NOT NULL, CONSTRAINT PA_ReportLine_Trl_UU_idx UNIQUE (PA_ReportLine_Trl_UU))
+;
+
+-- Aug 23, 2019, 12:06:17 PM CEST
+ALTER TABLE PA_ReportLine_Trl ADD CONSTRAINT ADLanguage_PAReportLineTrl FOREIGN KEY (AD_Language) REFERENCES ad_language(ad_language) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Aug 23, 2019, 12:06:18 PM CEST
+ALTER TABLE PA_ReportLine_Trl ADD CONSTRAINT PAReportLine_PAReportLineTrl FOREIGN KEY (PA_ReportLine_ID) REFERENCES pa_reportline(pa_reportline_id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Aug 23, 2019, 12:06:40 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing) VALUES (0,0,201075,'a67484ed-1e7c-4237-8060-258591e25976',TO_TIMESTAMP('2019-08-23 12:06:39','YYYY-MM-DD HH24:MI:SS'),100,'U','Y','pa_reportcolumn_trl_uu_idx',TO_TIMESTAMP('2019-08-23 12:06:39','YYYY-MM-DD HH24:MI:SS'),100,200259,'N','Y','N')
+;
+
+-- Aug 23, 2019, 12:06:40 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201390,'4d2d5ca6-a56d-4585-a751-cc59975db329',TO_TIMESTAMP('2019-08-23 12:06:40','YYYY-MM-DD HH24:MI:SS'),100,'Y',TO_TIMESTAMP('2019-08-23 12:06:40','YYYY-MM-DD HH24:MI:SS'),100,214012,201075,1)
+;
+
+-- Aug 23, 2019, 12:07:12 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing) VALUES (0,0,201076,'d0e3c1fd-9d91-4e77-8f64-72fe821a4d5e',TO_TIMESTAMP('2019-08-23 12:07:12','YYYY-MM-DD HH24:MI:SS'),100,'U','Y','pa_reportline_trl_uu_idx',TO_TIMESTAMP('2019-08-23 12:07:12','YYYY-MM-DD HH24:MI:SS'),100,200260,'N','Y','N')
+;
+
+-- Aug 23, 2019, 12:07:12 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201391,'88d8157d-d334-40eb-9f1d-cdbc73643795',TO_TIMESTAMP('2019-08-23 12:07:12','YYYY-MM-DD HH24:MI:SS'),100,'Y',TO_TIMESTAMP('2019-08-23 12:07:12','YYYY-MM-DD HH24:MI:SS'),100,213999,201076,1)
+;
+
+-- Aug 23, 2019, 12:34:56 PM CEST
+UPDATE AD_Column SET IsParent='Y', IsUpdateable='N',Updated=TO_TIMESTAMP('2019-08-23 12:34:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214001
+;
+
+-- Aug 23, 2019, 12:35:26 PM CEST
+UPDATE AD_Column SET IsParent='Y', IsUpdateable='N',Updated=TO_TIMESTAMP('2019-08-23 12:35:26','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=213988
+;
+
+-- Aug 23, 2019, 12:39:59 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,TableIndexDrop,IsKey) VALUES (0,0,201077,'9d0a5e45-631b-48d2-9ca9-96966b928d63',TO_TIMESTAMP('2019-08-23 12:39:58','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','pa_reportcolumn_trl_pkey',TO_TIMESTAMP('2019-08-23 12:39:58','YYYY-MM-DD HH24:MI:SS'),100,200259,'Y','Y','N','N','Y')
+;
+
+-- Aug 23, 2019, 12:40:28 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201392,'3262d884-604c-4e02-8eb9-1bf84b200b26',TO_TIMESTAMP('2019-08-23 12:40:28','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2019-08-23 12:40:28','YYYY-MM-DD HH24:MI:SS'),100,214000,201077,10)
+;
+
+-- Aug 23, 2019, 12:40:34 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201393,'a42a89c3-ec2b-45cc-a8c8-30ec09c7f9ab',TO_TIMESTAMP('2019-08-23 12:40:34','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2019-08-23 12:40:34','YYYY-MM-DD HH24:MI:SS'),100,214001,201077,20)
+;
+
+-- Aug 23, 2019, 12:40:39 PM CEST
+ALTER TABLE PA_ReportColumn_Trl ADD CONSTRAINT pa_reportcolumn_trl_pkey PRIMARY KEY (PA_ReportColumn_ID,AD_Language)
+;
+
+-- Aug 23, 2019, 12:41:05 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,TableIndexDrop,IsKey) VALUES (0,0,201078,'bae1ea1c-285f-40b1-a38c-202f3a6aac8b',TO_TIMESTAMP('2019-08-23 12:41:05','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','pa_reportline_trl_pkey',TO_TIMESTAMP('2019-08-23 12:41:05','YYYY-MM-DD HH24:MI:SS'),100,200260,'Y','Y','N','N','Y')
+;
+
+-- Aug 23, 2019, 12:41:16 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201394,'27b913b5-b8a0-425b-8c9b-64026c26c4f2',TO_TIMESTAMP('2019-08-23 12:41:15','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2019-08-23 12:41:15','YYYY-MM-DD HH24:MI:SS'),100,213987,201078,10)
+;
+
+-- Aug 23, 2019, 12:41:21 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201395,'efaad945-58fa-4fd6-af1f-cf4f415da163',TO_TIMESTAMP('2019-08-23 12:41:21','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2019-08-23 12:41:21','YYYY-MM-DD HH24:MI:SS'),100,213988,201078,20)
+;
+
+-- Aug 23, 2019, 12:41:25 PM CEST
+ALTER TABLE PA_ReportLine_Trl ADD CONSTRAINT pa_reportline_trl_pkey PRIMARY KEY (PA_ReportLine_ID,AD_Language)
+;
 
 SELECT register_migration_script('201908221115_IDEMPIERE-4032.sql') FROM dual
 ;
