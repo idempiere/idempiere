@@ -187,6 +187,7 @@ public class WPaySelect extends PaySelect
 		
 		onlyPositiveBalance.setText(Msg.getMsg(Env.getCtx(), "PositiveBalance"));
 		onlyPositiveBalance.addActionListener(this);
+		onlyPositiveBalance.setChecked(true);
 		
 		//IDEMPIERE-2657, pritesh shah
 		bGenerate.setEnabled(false);
