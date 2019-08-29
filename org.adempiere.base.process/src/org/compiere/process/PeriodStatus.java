@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.model.MPeriod;
@@ -32,8 +34,8 @@ import org.compiere.util.DB;
  */
 public class PeriodStatus extends SvrProcess
 {
-	/** Period						*/
-	private int			p_C_Period_ID = 0;
+	/** Periods						*/
+	private List<Integer> p_C_Period_IDs;
 	/** Action						*/
 	private String		p_PeriodAction = null;
 	
@@ -51,10 +53,16 @@ public class PeriodStatus extends SvrProcess
 				;
 			else if (name.equals("PeriodAction"))
 				p_PeriodAction = (String)para[i].getParameter();
+			else if (name.equals("*RecordIDs*"))
+				;
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 		}
-		p_C_Period_ID = getRecord_ID();
+		p_C_Period_IDs = getRecord_IDs();
+		if (p_C_Period_IDs == null || p_C_Period_IDs.size() == 0) {
+			p_C_Period_IDs = new ArrayList<Integer>();
+			p_C_Period_IDs.add(getRecord_ID());
+		}
 	}	//	prepare
 
 	/**
@@ -64,7 +72,9 @@ public class PeriodStatus extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		if (log.isLoggable(Level.INFO)) log.info ("C_Period_ID=" + p_C_Period_ID + ", PeriodAction=" + p_PeriodAction);
+	  int no = 0;
+	  if (log.isLoggable(Level.INFO)) log.info ("C_Period_ID=" + p_C_Period_IDs + ", PeriodAction=" + p_PeriodAction);
+	  for (int p_C_Period_ID : p_C_Period_IDs) {
 		MPeriod period = new MPeriod (getCtx(), p_C_Period_ID, get_TrxName());
 		if (period.get_ID() == 0)
 			throw new AdempiereUserError("@NotFound@  @C_Period_ID@=" + p_C_Period_ID);
@@ -89,12 +99,13 @@ public class PeriodStatus extends SvrProcess
 			.append(" AND PeriodStatus<>'P'")
 			.append(" AND PeriodStatus<>'").append(p_PeriodAction).append("'");
 			
-		int no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no += DB.executeUpdateEx(sql.toString(), get_TrxName());
 		
-		CacheMgt.get().reset("C_PeriodControl", 0);
 		CacheMgt.get().reset("C_Period", p_C_Period_ID);
-		StringBuilder msgreturn = new StringBuilder("@Updated@ #").append(no);
-		return msgreturn.toString();
+	  }
+	  CacheMgt.get().reset("C_PeriodControl", 0);
+	  StringBuilder msgreturn = new StringBuilder("@Updated@ #").append(no);
+	  return msgreturn.toString();
 	}	//	doIt
 
 }	//	PeriodStatus
