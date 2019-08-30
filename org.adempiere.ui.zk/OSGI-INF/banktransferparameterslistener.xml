@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.adempiere.webui.process.BankTransferParameterListener">
+   <implementation class="org.adempiere.webui.process.BankTransferParameterListener"/>
+   <property name="ProcessClass" type="String" value="org.eevolution.process.BankTransfer"/>
+   <property name="ColumnName" type="String" value="StatementDate,From_C_BankAccount_ID,To_C_BankAccount_ID"/>
+   <service>
+      <provide interface="org.adempiere.webui.apps.IProcessParameterListener"/>
+   </service>
+</scr:component>
