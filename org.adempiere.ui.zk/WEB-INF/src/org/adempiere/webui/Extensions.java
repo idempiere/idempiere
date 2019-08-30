@@ -63,7 +63,7 @@ public class Extensions {
 		ServiceQuery query = new ServiceQuery();
 		query.put("ProcessClass", processClass);
 		if (columnName != null)
-			query.put("|ColumnName", columnName+"|"+columnName+",*|"+"*,"+columnName+",*|"+"*,"+columnName);
+			query.put("|(ColumnName", columnName+")(ColumnName="+columnName+",*)(ColumnName="+"*,"+columnName+",*)(ColumnName=*,"+columnName+")");
 		return Service.locator().list(IProcessParameterListener.class, null, query).getServices();
 	}
 }
