@@ -108,6 +108,7 @@ public class WPaySelect extends PaySelect
 	private Label labelCurrency = new Label();
 	private Label labelBalance = new Label();
 	private Checkbox onlyDue = new Checkbox();
+	private Checkbox onlyPositiveBalance = new Checkbox();
 	private Label labelBPartner = new Label();
 	private Listbox fieldBPartner = ListboxFactory.newDropdownListbox();
 	private Label dataStatus = new Label();
@@ -185,10 +186,14 @@ public class WPaySelect extends PaySelect
 		onlyDue.addActionListener(this);
 		fieldPayDate.addValueChangeListener(this);
 		ZKUpdateUtil.setHflex(fieldPayDate.getComponent(), "1");
-
+		
 		chkOnePaymentPerInv.setText(Msg.translate(Env.getCtx(), MPaySelection.COLUMNNAME_IsOnePaymentPerInvoice));
 		chkOnePaymentPerInv.addActionListener(this);
 
+		onlyPositiveBalance.setText(Msg.getMsg(Env.getCtx(), "PositiveBalance"));
+		onlyPositiveBalance.addActionListener(this);
+		onlyPositiveBalance.setChecked(true);
+		
 		//IDEMPIERE-2657, pritesh shah
 		bGenerate.setEnabled(false);
 		bGenerate.addActionListener(this);
@@ -255,13 +260,15 @@ public class WPaySelect extends PaySelect
 		row = rows.newRow();
 		row.appendChild(labelDtype.rightAlign());
 		row.appendChild(fieldDtype);
-		row.appendChild(new Space());
-		row.appendCellChild(chkOnePaymentPerInv);
-		if (ClientInfo.minWidth(ClientInfo.MEDIUM_WIDTH))
-		{			
+		if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1))
+		{
 			row.appendChild(new Space());
-			row.appendChild(new Space());
+			row = rows.newRow();
 		}
+		row.appendChild(new Space());
+		row.appendChild(onlyPositiveBalance);
+		row.appendCellChild(chkOnePaymentPerInv);
+		row.appendChild(new Space());
 		
 		row = rows.newRow();
 		row.appendChild(labelPayDate.rightAlign());
@@ -373,7 +380,7 @@ public class WPaySelect extends PaySelect
 		KeyNamePair bpartner = (KeyNamePair) fieldBPartner.getSelectedItem().getValue();
 		KeyNamePair docType = (KeyNamePair) fieldDtype.getSelectedItem().getValue();
 
-		loadTableInfo(bi, payDate, paymentRule, onlyDue.isSelected(), bpartner, docType, miniTable);
+		loadTableInfo(bi, payDate, paymentRule, onlyDue.isSelected(), onlyPositiveBalance.isSelected(), bpartner, docType, miniTable);
 		
 		calculateSelection();
 		if (ClientInfo.maxHeight(ClientInfo.MEDIUM_HEIGHT-1))
@@ -413,7 +420,7 @@ public class WPaySelect extends PaySelect
 
 		//  Update Open Invoices
 		else if (e.getTarget() == fieldBPartner || e.getTarget() == bRefresh || e.getTarget() == fieldDtype
-				|| e.getTarget() == fieldPaymentRule || e.getTarget() == onlyDue)
+				|| e.getTarget() == fieldPaymentRule || e.getTarget() == onlyDue || e.getTarget() == onlyPositiveBalance)
 			loadTableInfo();
 
 		else if (DialogEvents.ON_WINDOW_CLOSE.equals(e.getName())) {

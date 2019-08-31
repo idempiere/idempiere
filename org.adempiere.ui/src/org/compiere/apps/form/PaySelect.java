@@ -243,6 +243,7 @@ public class PaySelect
 			+ " INNER JOIN C_PaymentTerm p ON (i.C_PaymentTerm_ID=p.C_PaymentTerm_ID)",
 			//	WHERE
 			"i.IsSOTrx=? AND IsPaid='N'"
+			+ " AND invoiceOpen(i.C_Invoice_ID, i.C_InvoicePaySchedule_ID) != 0" //Check that AmountDue <> 0
 			//	Different Payment Selection
 			+ " AND NOT EXISTS (SELECT * FROM C_PaySelectionLine psl"
 			+                 " INNER JOIN C_PaySelectionCheck psc ON (psl.C_PaySelectionCheck_ID=psc.C_PaySelectionCheck_ID)"
@@ -303,7 +304,7 @@ public class PaySelect
 	 *  Query and create TableInfo
 	 */
 	public void loadTableInfo(BankInfo bi, Timestamp payDate, ValueNamePair paymentRule, boolean onlyDue, 
-			KeyNamePair bpartner, KeyNamePair docType, IMiniTable miniTable)
+			boolean onlyPositiveBalance, KeyNamePair bpartner, KeyNamePair docType, IMiniTable miniTable)
 	{
 		log.config("");
 		//  not yet initialized
@@ -331,6 +332,27 @@ public class PaySelect
 		int c_doctype_id  = dt.getKey();
 		if (c_doctype_id   != 0)
 			sql += " AND i.c_doctype_id =?";
+
+		if (onlyPositiveBalance) {
+			int innerindex = sql.indexOf("INNER");
+			String subWhereClause = sql.substring(innerindex, sql.length());
+
+			//Replace original aliases with new aliases
+			subWhereClause = subWhereClause.replaceAll("\\bi\\b", "i1");
+			subWhereClause = subWhereClause.replaceAll("\\bbp\\b", "bp1");
+			subWhereClause = subWhereClause.replaceAll("\\bc\\b", "c1");
+			subWhereClause = subWhereClause.replaceAll("\\bp\\b", "p1");
+			subWhereClause = subWhereClause.replaceAll("\\bpsl\\b", "psl1");
+			subWhereClause = subWhereClause.replaceAll("\\bpsc\\b", "psc1");
+			subWhereClause = subWhereClause.replaceAll("\\bpmt\\b", "pmt1");
+
+			sql += " AND i.c_bpartner_id NOT IN ( SELECT i1.C_BPartner_ID"
+					+ " FROM C_Invoice_v i1 "
+					+ subWhereClause
+					+ " GROUP BY i1.C_BPartner_ID"
+					+ " HAVING sum(invoiceOpen(i1.C_Invoice_ID, i1.C_InvoicePaySchedule_ID)) <= 0) ";
+		}
+
 		sql += " ORDER BY 2,3";
 
 		if (log.isLoggable(Level.FINEST)) log.finest(sql + " - C_Currency_ID=" + bi.C_Currency_ID + ", C_BPartner_ID=" + C_BPartner_ID + ", C_doctype_id=" + c_doctype_id  );
@@ -359,6 +381,16 @@ public class PaySelect
 				pstmt.setInt(index++, C_BPartner_ID);
 			if (c_doctype_id  != 0)                    //Document type
 				pstmt.setInt(index++, c_doctype_id );
+			if (onlyPositiveBalance) {
+				pstmt.setString(index++, isSOTrx);			//	IsSOTrx
+				pstmt.setInt(index++, m_AD_Client_ID);		//	Client
+				if (onlyDue)
+					pstmt.setTimestamp(index++, payDate);
+				if (C_BPartner_ID != 0)
+					pstmt.setInt(index++, C_BPartner_ID);
+				if (c_doctype_id  != 0)                    //Document type
+					pstmt.setInt(index++, c_doctype_id );				
+			}
 			//
 			rs = pstmt.executeQuery();
 			miniTable.loadTable(rs);

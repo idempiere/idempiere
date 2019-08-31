@@ -111,13 +111,16 @@ BEGIN
             || ' where name='''
             || r.tablename
             || ''' and istableid=''Y''';
-
          EXECUTE cmdupd;
       END IF;
       IF currentseq < currentnext AND isnativeseqon ='Y' THEN 
-         WHILE NOT currentseq >= (currentnext-1) LOOP
-           EXECUTE 'SELECT nextval('''||trim(r.tablename)||'_sq'''||')' INTO currentseq;
-         END LOOP;
+         cmdupd :=
+               'SELECT setval('''
+            || trim(r.tablename)
+            || '_sq'','
+            || currentnext
+            || ')';
+         EXECUTE cmdupd;
       END IF;			
     END IF;
    END LOOP;
