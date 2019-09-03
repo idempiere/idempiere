@@ -29,7 +29,7 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20190710L;
 
     /** Standard Constructor */
     public X_AD_UserPreference (Properties ctx, int AD_UserPreference_ID, String trxName)
@@ -39,6 +39,8 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
         {
 			setAD_User_ID (0);
 			setAD_UserPreference_ID (0);
+			setViewFindResult (null);
+// 0
         } */
     }
 
@@ -194,6 +196,26 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 		return false;
 	}
 
+	/** Set Threshold.
+		@param GridAfterFindThreshold 
+		Force grid view when Find panel closes if number of records exceed threshold
+	  */
+	public void setGridAfterFindThreshold (int GridAfterFindThreshold)
+	{
+		set_Value (COLUMNNAME_GridAfterFindThreshold, Integer.valueOf(GridAfterFindThreshold));
+	}
+
+	/** Get Threshold.
+		@return Force grid view when Find panel closes if number of records exceed threshold
+	  */
+	public int getGridAfterFindThreshold () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_GridAfterFindThreshold);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Detailed Zoom Across.
 		@param IsDetailedZoomAcross Detailed Zoom Across	  */
 	public void setIsDetailedZoomAcross (boolean IsDetailedZoomAcross)
@@ -258,5 +280,31 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** ViewFindResult AD_Reference_ID=200170 */
+	public static final int VIEWFINDRESULT_AD_Reference_ID=200170;
+	/** Default = 0 */
+	public static final String VIEWFINDRESULT_Default = "0";
+	/** Always in Grid View = 1 */
+	public static final String VIEWFINDRESULT_AlwaysInGridView = "1";
+	/** According to threshold = 2 */
+	public static final String VIEWFINDRESULT_AccordingToThreshold = "2";
+	/** Set View find result.
+		@param ViewFindResult 
+		Does the system must switch to grid mode after the Find panel closes
+	  */
+	public void setViewFindResult (String ViewFindResult)
+	{
+
+		set_Value (COLUMNNAME_ViewFindResult, ViewFindResult);
+	}
+
+	/** Get View find result.
+		@return Does the system must switch to grid mode after the Find panel closes
+	  */
+	public String getViewFindResult () 
+	{
+		return (String)get_Value(COLUMNNAME_ViewFindResult);
 	}
 }

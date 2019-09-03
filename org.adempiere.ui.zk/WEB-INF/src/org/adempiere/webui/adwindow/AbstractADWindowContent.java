@@ -19,6 +19,7 @@ package org.adempiere.webui.adwindow;
 
 import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_REDO;
 import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_UNDO;
+import static org.compiere.model.MSysConfig.ZK_GRID_AFTER_FIND;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -93,6 +94,8 @@ import org.compiere.model.MProjectIssue;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRecentItem;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
+import org.compiere.model.MUserPreference;
 import org.compiere.model.MWindow;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_CtxHelp;
@@ -2060,8 +2063,28 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 				        if (findWindow.isCreateNew())
 				        	onNew();
-				        else
+				        else {
 				        	adTabbox.getSelectedGridTab().dataRefresh(false); // Elaine 2008/07/25
+
+				        	if (!adTabbox.getSelectedTabpanel().isGridView()) { // See if we should force the grid view
+
+				        		boolean forceGridView = false;
+				        		String up = Env.getContext(Env.getCtx(), MUserPreference.COLUMNNAME_ViewFindResult);
+
+				        		if (up.equals(MUserPreference.VIEWFINDRESULT_Default)) {
+				        			forceGridView = MSysConfig.getBooleanValue(ZK_GRID_AFTER_FIND, false, Env.getAD_Client_ID(Env.getCtx()));
+				        		}
+				        		else if (up.equals(MUserPreference.VIEWFINDRESULT_AlwaysInGridView)) {
+				        			forceGridView = true;
+				        		}
+				        		else if (up.equals(MUserPreference.VIEWFINDRESULT_AccordingToThreshold)) {
+				        			forceGridView = adTabbox.getSelectedTabpanel().getGridTab().getRowCount() >= Env.getContextAsInt(Env.getCtx(), MUserPreference.COLUMNNAME_GridAfterFindThreshold);
+				        		}
+
+				        		if (forceGridView)
+				        			adTabbox.getSelectedTabpanel().switchRowPresentation();
+				        	}
+				        }
 			        }
 					else
 					{

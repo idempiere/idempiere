@@ -142,6 +142,19 @@ public interface I_AD_UserPreference
 	  */
 	public int getCreatedBy();
 
+    /** Column name GridAfterFindThreshold */
+    public static final String COLUMNNAME_GridAfterFindThreshold = "GridAfterFindThreshold";
+
+	/** Set Threshold.
+	  * Force grid view when Find panel closes if number of records exceed threshold
+	  */
+	public void setGridAfterFindThreshold (int GridAfterFindThreshold);
+
+	/** Get Threshold.
+	  * Force grid view when Find panel closes if number of records exceed threshold
+	  */
+	public int getGridAfterFindThreshold();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -201,4 +214,17 @@ public interface I_AD_UserPreference
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name ViewFindResult */
+    public static final String COLUMNNAME_ViewFindResult = "ViewFindResult";
+
+	/** Set View find result.
+	  * Does the system must switch to grid mode after the Find panel closes
+	  */
+	public void setViewFindResult (String ViewFindResult);
+
+	/** Get View find result.
+	  * Does the system must switch to grid mode after the Find panel closes
+	  */
+	public String getViewFindResult();
 }
