@@ -20,13 +20,21 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MAttachment;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
@@ -429,6 +437,13 @@ public class FileUtil
 		return localFile;
 	}
 
+	/**
+	 * 
+	 * @param path
+	 * @return true if deleted
+	 * @throws FileNotFoundException
+	 * @Deprecated
+	 */
 	public static boolean deleteFolderRecursive(File path) throws FileNotFoundException {
 		if (!path.exists())
 			throw new FileNotFoundException(path.getAbsolutePath());
@@ -441,4 +456,55 @@ public class FileUtil
 		return ret && path.delete();
 	}
 
+	/**
+	 * copy attachment entry to file
+	 * @param attachment
+	 * @param destinationFile
+	 * @param index
+	 */
+	public static void copy(MAttachment attachment, File destinationFile, int index)
+	{
+		FileOutputStream destinationFileOutputStream=null;
+		try {
+			destinationFile.createNewFile();
+			destinationFileOutputStream = new FileOutputStream(destinationFile);
+			byte[] buffer = attachment.getEntryData(index);
+			destinationFileOutputStream.write(buffer);
+		} 
+		catch( java.io.FileNotFoundException f ) {
+			throw new AdempiereException("File not found exception : " + destinationFile.getName() + " : " + f);
+		} 
+		catch( java.io.IOException e ) {
+			throw new AdempiereException("IOException : " + e);
+		} finally {
+			try {
+				if (destinationFileOutputStream != null)
+					destinationFileOutputStream.close();
+			} catch(Exception e) { 
+				throw new AdempiereException("Exception : " + e);
+			}
+		}
+	}
+
+	/**
+	 * delete folder recursively
+	 * @param folder
+	 * @throws IOException
+	 */
+	public static void deleteDirectory(File folder) throws IOException {
+		Path directory = folder.toPath();
+		Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+		   @Override
+		   public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+		       Files.delete(file);
+		       return FileVisitResult.CONTINUE;
+		   }
+
+		   @Override
+		   public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+		       Files.delete(dir);
+		       return FileVisitResult.CONTINUE;
+		   }
+		});
+	}
 }	//	FileUtil

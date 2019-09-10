@@ -17,6 +17,7 @@
 package org.adempiere.webui.panel;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
@@ -44,6 +46,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
+import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -76,7 +79,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4311076973993361653L;
+	private static final long serialVersionUID = 8266807399792500541L;
 
 	private static CLogger log = CLogger.getCLogger(WAttachment.class);
 
@@ -99,6 +102,7 @@ public class WAttachment extends Window implements EventListener<Event>
 
 	private Button bDelete = ButtonFactory.createNamedButton(ConfirmPanel.A_DELETE, false, true);
 	private Button bSave = new Button();
+	private Button bSaveAllAsZip = new Button();
 	private Button bDeleteAll = new Button();
 	private Button bLoad = new Button();
 	private Button bCancel = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL, false, true);
@@ -259,6 +263,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		toolBar.appendChild(bLoad);
 		toolBar.appendChild(bDelete);
 		toolBar.appendChild(bSave);
+		toolBar.appendChild(bSaveAllAsZip);
 		toolBar.appendChild(cbContent);
 		toolBar.appendChild(sizeLabel);
 
@@ -280,6 +285,15 @@ public class WAttachment extends Window implements EventListener<Event>
 			bSave.setImage(ThemeManager.getThemeResource("images/Export24.png"));
 		bSave.setTooltiptext(Msg.getMsg(Env.getCtx(), "AttachmentSave"));
 		bSave.addEventListener(Events.ON_CLICK, this);
+
+		bSaveAllAsZip.setEnabled(false);
+		bSaveAllAsZip.setSclass("img-btn");
+		if (ThemeManager.isUseFontIconForImage())
+			bSaveAllAsZip.setIconSclass("z-icon-file-zip-o");
+		else
+			bSaveAllAsZip.setImage(ThemeManager.getThemeResource("images/SaveAsZip24.png"));
+		bSaveAllAsZip.setTooltiptext(Msg.getMsg(Env.getCtx(), "ExportZIP"));
+		bSaveAllAsZip.addEventListener(Events.ON_CLICK, this);
 
 		if (ThemeManager.isUseFontIconForImage())
 			bLoad.setIconSclass("z-icon-Import");
@@ -420,6 +434,7 @@ public class WAttachment extends Window implements EventListener<Event>
 			sizeLabel.setText(size.toPlainString() + unit);
 
 			bSave.setEnabled(true);
+			bSaveAllAsZip.setEnabled(true);
 			bDelete.setEnabled(true);
 
 			if (autoPreviewList.contains(mimeType))
@@ -436,6 +451,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		else
 		{
 			bSave.setEnabled(false);
+			bSaveAllAsZip.setEnabled(false);
 			bDelete.setEnabled(false);
 			sizeLabel.setText("");
 			return false;
@@ -572,6 +588,8 @@ public class WAttachment extends Window implements EventListener<Event>
 			saveAttachmentToFile();
 		} else if (e.getTarget() == bRefresh) {
 			displayData(cbContent.getSelectedIndex(), true);
+		} else if (e.getTarget() == bSaveAllAsZip) {
+			saveAllAsZip();
 		}
 
 	}	//	onEvent
@@ -734,4 +752,19 @@ public class WAttachment extends Window implements EventListener<Event>
 		}
 		return "UTF-8";
 	}	
+
+	private void saveAllAsZip() {
+		File zipFile = m_attachment.saveAsZip();
+		
+		if (zipFile != null) {
+			String name = MTable.get(Env.getCtx(), m_attachment.getAD_Table_ID()).getTableName() + "_" + m_attachment.getRecord_ID();
+			AMedia media = null;	
+			try {
+				media = new AMedia(name, null, "application/zip", zipFile, true);
+			} catch (Exception e) {
+				throw new AdempiereException("Error when converting zip file to media : " + e);
+			}			
+			Filedownload.save(media);
+		}
+	}
 }
