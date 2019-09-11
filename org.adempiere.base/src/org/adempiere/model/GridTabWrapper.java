@@ -133,7 +133,7 @@ public class GridTabWrapper implements InvocationHandler
 	
 	private final String getTrxName()
 	{
-		return null;
+		return getGridTab().getTableModel().get_TrxName();
 	}
 	
 	/**
