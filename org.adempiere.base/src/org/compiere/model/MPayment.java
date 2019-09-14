@@ -2282,12 +2282,17 @@ public class MPayment extends X_C_Payment
 		for (int i = 0; i < pAllocs.length; i++)
 		{
 			MPaymentAllocate pa = pAllocs[i];
+
+			BigDecimal allocationAmt = pa.getAmount();			//	underpayment
+			if (pa.getOverUnderAmt().signum() < 0 && pa.getAmount().signum() > 0)
+				allocationAmt = allocationAmt.add(pa.getOverUnderAmt());	//	overpayment (negative)
+
 			MAllocationLine aLine = null;
 			if (isReceipt())
-				aLine = new MAllocationLine (alloc, pa.getAmount(), 
+				aLine = new MAllocationLine (alloc, allocationAmt,
 					pa.getDiscountAmt(), pa.getWriteOffAmt(), pa.getOverUnderAmt());
 			else
-				aLine = new MAllocationLine (alloc, pa.getAmount().negate(), 
+				aLine = new MAllocationLine (alloc, allocationAmt.negate(),
 					pa.getDiscountAmt().negate(), pa.getWriteOffAmt().negate(), pa.getOverUnderAmt().negate());
 			aLine.setDocInfo(pa.getC_BPartner_ID(), 0, pa.getC_Invoice_ID());
 			aLine.setPaymentInfo(getC_Payment_ID(), 0);

@@ -148,7 +148,7 @@ public class PaySelectionCreateFrom extends SvrProcess
 						.append(" WHERE i.C_Invoice_ID=psl.C_Invoice_ID AND psl.IsActive='Y'")
 						.append(" AND (pmt.DocStatus IS NULL OR pmt.DocStatus NOT IN ('VO','RE')) )")
 			//	Don't generate again invoices already on this payment selection 
-			.append(" AND i.C_Invoice_ID NOT IN (SELECT i.C_Invoice_ID FROM C_PaySelectionLine psl WHERE psl.C_PaySelection_ID=?)"); //	##p9
+			.append(" AND i.C_Invoice_ID NOT IN (SELECT psl.C_Invoice_ID FROM C_PaySelectionLine psl WHERE psl.C_PaySelection_ID=?)"); //	##p9
 		//	Disputed
 		if (!p_IncludeInDispute)
 			sqlWhere.append(" AND i.IsInDispute='N'");
