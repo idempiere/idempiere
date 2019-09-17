@@ -25,6 +25,7 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
+import org.compiere.model.MInvoice;
 import org.compiere.model.MPaySelection;
 import org.compiere.model.MPaySelectionLine;
 import org.compiere.model.X_C_Order;
@@ -271,6 +272,10 @@ public class PaySelectionCreateFrom extends SvrProcess
 			{
 				int C_Invoice_ID = rs.getInt(1);
 				BigDecimal PayAmt = rs.getBigDecimal(2);
+
+				if (PayAmt == null)
+					return "@Error@ @PaySelectionPayAmtIsNull@ (" + new MInvoice(getCtx(), C_Invoice_ID, get_TrxName()).getDocumentInfo() + ")";
+
 				if (C_Invoice_ID == 0 || Env.ZERO.compareTo(PayAmt) == 0)
 					continue;
 				BigDecimal DiscountAmt = rs.getBigDecimal(3);
