@@ -642,10 +642,20 @@ public class MInOutLine extends X_M_InOutLine
 	 */
 	protected boolean beforeDelete ()
 	{
-		if (getParent().getDocStatus().equals(MInOut.DOCSTATUS_Drafted))
-			return true;
-		log.saveError("Error", Msg.getMsg(getCtx(), "CannotDelete"));
-		return false;
+		if (! getParent().getDocStatus().equals(MInOut.DOCSTATUS_Drafted)) {
+			log.saveError("Error", Msg.getMsg(getCtx(), "CannotDelete"));
+			return false;
+		}
+		// IDEMPIERE-3391 Not possible to delete a line in the Material Receipt window
+		List<MInvoiceLine> ils = new Query(getCtx(), MInvoiceLine.Table_Name, "M_InOutLine_ID=?", get_TrxName())
+				.setParameters(getM_InOutLine_ID())
+				.list();
+		ils.forEach(il -> {
+			il.setM_InOutLine_ID(-1);
+			il.saveEx();
+		});
+		//
+		return true;
 	}	//	beforeDelete
 
 	/**
