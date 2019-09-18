@@ -89,6 +89,11 @@ public abstract class CreateFrom implements ICreateFrom
 	 */
 	protected ArrayList<KeyNamePair> loadOrderData (int C_BPartner_ID, boolean forInvoice, boolean sameWarehouseOnly)
 	{
+		return loadOrderData(C_BPartner_ID, forInvoice, sameWarehouseOnly, false);
+	}
+	
+	protected ArrayList<KeyNamePair> loadOrderData (int C_BPartner_ID, boolean forInvoice, boolean sameWarehouseOnly, boolean forCreditMemo)
+	{
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
 
 		String isSOTrxParam = isSOTrx ? "Y":"N";
@@ -109,14 +114,20 @@ public abstract class CreateFrom implements ICreateFrom
 			.append(display)
 			.append(" FROM C_Order o WHERE ")
 			.append(colBP)
-			.append("=? AND o.IsSOTrx=? AND o.DocStatus IN ('CL','CO') AND o.C_Order_ID IN (SELECT ol.C_Order_ID FROM C_OrderLine ol WHERE ol.QtyOrdered-")
-			.append(column)
-			.append("!=0) ");
+			.append("=? AND o.IsSOTrx=? AND o.DocStatus IN ('CL','CO') AND o.C_Order_ID IN (SELECT ol.C_Order_ID FROM C_OrderLine ol WHERE ");
+		if (forCreditMemo)
+			sql.append(column).append(">0 AND (CASE WHEN ol.QtyDelivered>=ol.QtyOrdered THEN ol.QtyDelivered-ol.QtyInvoiced!=0 ELSE 1=1 END)) ");
+		else
+			sql.append("ol.QtyOrdered-").append(column).append("!=0) ");
+					
 		if(sameWarehouseOnly)
 		{
 			sql = sql.append(" AND o.M_Warehouse_ID=? ");
 		}
-		sql = sql.append("ORDER BY o.DateOrdered,o.DocumentNo");
+		if (forCreditMemo)
+			sql = sql.append("ORDER BY o.DateOrdered DESC,o.DocumentNo DESC");
+		else
+			sql = sql.append("ORDER BY o.DateOrdered,o.DocumentNo");
 		//
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -156,6 +167,11 @@ public abstract class CreateFrom implements ICreateFrom
 	 */
 	protected Vector<Vector<Object>> getOrderData (int C_Order_ID, boolean forInvoice)
 	{
+		return getOrderData (C_Order_ID, forInvoice, false);
+	}
+	
+	protected Vector<Vector<Object>> getOrderData (int C_Order_ID, boolean forInvoice, boolean forCreditMemo)
+	{
 		/**
 		 *  Selected        - 0
 		 *  Qty             - 1
@@ -170,9 +186,9 @@ public abstract class CreateFrom implements ICreateFrom
 		p_order = new MOrder (Env.getCtx(), C_Order_ID, null);
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-		StringBuilder sql = new StringBuilder("SELECT "
-			+ "l.QtyOrdered-SUM(COALESCE(m.Qty,0)),"					//	1
-			+ "CASE WHEN l.QtyOrdered=0 THEN 0 ELSE l.QtyEntered/l.QtyOrdered END,"	//	2
+		StringBuilder sql = new StringBuilder("SELECT ");
+		sql.append(forCreditMemo ? "SUM(COALESCE(m.Qty,0))," : "l.QtyOrdered-SUM(COALESCE(m.Qty,0)),");	//	1
+		sql.append("CASE WHEN l.QtyOrdered=0 THEN 0 ELSE l.QtyEntered/l.QtyOrdered END,"	//	2
 			+ " l.C_UOM_ID,COALESCE(uom.UOMSymbol,uom.Name),"			//	3..4
 			+ " COALESCE(l.M_Product_ID,0),COALESCE(p.Name,c.Name),po.VendorProductNo,"	//	5..7
 			+ " l.C_OrderLine_ID,l.Line "								//	8..9
@@ -180,7 +196,7 @@ public abstract class CreateFrom implements ICreateFrom
 			+ " LEFT OUTER JOIN M_Product_PO po ON (l.M_Product_ID = po.M_Product_ID AND l.C_BPartner_ID = po.C_BPartner_ID) "
 			+ " LEFT OUTER JOIN M_MatchPO m ON (l.C_OrderLine_ID=m.C_OrderLine_ID AND ");
 		sql.append(forInvoice ? "m.C_InvoiceLine_ID" : "m.M_InOutLine_ID");
-		sql.append(" IS NOT NULL)")
+		sql.append(" IS NOT NULL AND COALESCE(m.Reversal_ID,0)=0)")
 			.append(" LEFT OUTER JOIN M_Product p ON (l.M_Product_ID=p.M_Product_ID)"
 			+ " LEFT OUTER JOIN C_Charge c ON (l.C_Charge_ID=c.C_Charge_ID)");
 		if (Env.isBaseLanguage(Env.getCtx(), "C_UOM"))

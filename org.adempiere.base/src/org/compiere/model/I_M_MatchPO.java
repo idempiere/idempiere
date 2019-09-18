@@ -327,6 +327,17 @@ public interface I_M_MatchPO
 	  */
 	public BigDecimal getQty();
 
+    /** Column name Ref_MatchPO_ID */
+    public static final String COLUMNNAME_Ref_MatchPO_ID = "Ref_MatchPO_ID";
+
+	/** Set Referenced Match PO	  */
+	public void setRef_MatchPO_ID (int Ref_MatchPO_ID);
+
+	/** Get Referenced Match PO	  */
+	public int getRef_MatchPO_ID();
+
+	public org.compiere.model.I_M_MatchPO getRef_MatchPO() throws RuntimeException;
+
     /** Column name Reversal_ID */
     public static final String COLUMNNAME_Reversal_ID = "Reversal_ID";
 

@@ -365,7 +365,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 	protected void configureMiniTable (IMiniTable miniTable)
 	{
 		miniTable.setColumnClass(0, Boolean.class, false);      //  0-Selection
-		miniTable.setColumnClass(1, BigDecimal.class, true);        //  1-Qty
+		miniTable.setColumnClass(1, BigDecimal.class, false);        //  1-Qty
 		miniTable.setColumnClass(2, String.class, true);        //  2-UOM
 		miniTable.setColumnClass(3, String.class, true);        //  3-Product
 		miniTable.setColumnClass(4, String.class, true);        //  4-VendorProductNo

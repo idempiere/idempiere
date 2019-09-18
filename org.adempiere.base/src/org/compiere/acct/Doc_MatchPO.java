@@ -41,6 +41,7 @@ import org.compiere.model.MOrderLandedCostAllocation;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.MTax;
+import org.compiere.model.MatchPOAutoMatch;
 import org.compiere.model.ProductCost;
 import org.compiere.model.X_M_InOut;
 import org.compiere.process.DocAction;
@@ -114,7 +115,7 @@ public class Doc_MatchPO extends Doc
 			List<MMatchPO> noInvoiceLines = new ArrayList<MMatchPO>();
 			Map<Integer, BigDecimal[]> noShipmentLines = new HashMap<>();
 			Map<Integer, BigDecimal[]> postedNoShipmentLines = new HashMap<>();
-			MMatchPO[] matchPOs = MMatchPO.getOrderLine(getCtx(), m_oLine.getC_OrderLine_ID(), getTrxName());
+			List<MMatchPO> matchPOs = MatchPOAutoMatch.getNotMatchedMatchPOList(getCtx(), m_oLine.getC_OrderLine_ID(), getTrxName());
 			for (MMatchPO matchPO : matchPOs)
 			{
 				if (matchPO.getM_InOutLine_ID() > 0 && matchPO.getC_InvoiceLine_ID() == 0 && matchPO.getReversal_ID()==0)
@@ -188,7 +189,8 @@ public class Doc_MatchPO extends Doc
 
 		if (m_M_InOutLine_ID == 0)	//  Defer posting if not matched to Shipment
 		{
-			m_deferPosting = true;
+			if (m_matchPO.getRef_MatchPO_ID() == 0)
+				m_deferPosting = true;
 		}
 		else
 		{
@@ -264,6 +266,9 @@ public class Doc_MatchPO extends Doc
 
 		if (m_M_InOutLine_ID == 0)	//  No posting if not matched to Shipment
 		{
+			if (m_matchPO.getRef_MatchPO_ID() > 0)
+				return facts;
+			
 			p_Error = "No posting if not matched to Shipment";
 			return null;
 		}
