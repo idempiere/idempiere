@@ -3,7 +3,7 @@ SET DEFINE OFF
 
 -- IDEMPIERE-4006 Wrong matched PO quanity for vendor credit memo
 -- Sep 3, 2019, 5:51:11 PM SGT
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203363,0,0,'Y',TO_DATE('2019-09-03 17:51:10','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2019-09-03 17:51:10','YYYY-MM-DD HH24:MI:SS'),100,'Ref_MatchPO_ID','Referenced Match PO','Referenced Match PO','U','880834ea-81fe-4813-95de-7390350cee95')
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203363,0,0,'Y',TO_DATE('2019-09-03 17:51:10','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2019-09-03 17:51:10','YYYY-MM-DD HH24:MI:SS'),100,'Ref_MatchPO_ID','Referenced Match PO','Referenced Match PO','D','880834ea-81fe-4813-95de-7390350cee95')
 ;
 
 -- Sep 3, 2019, 5:51:15 PM SGT
@@ -11,7 +11,7 @@ UPDATE AD_Element SET EntityType='D',Updated=TO_DATE('2019-09-03 17:51:15','YYYY
 ;
 
 -- Sep 3, 2019, 5:52:04 PM SGT
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214044,0,'Referenced Match PO',473,'Ref_MatchPO_ID',10,'N','N','N','N','N',0,'N',30,200017,0,0,'Y',TO_DATE('2019-09-03 17:52:03','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2019-09-03 17:52:03','YYYY-MM-DD HH24:MI:SS'),100,203363,'Y','N','U','N','N','N','Y','50fc1a1d-5bb0-4631-94c3-92c2fa9ec13a','Y',0,'N','N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214044,0,'Referenced Match PO',473,'Ref_MatchPO_ID',10,'N','N','N','N','N',0,'N',30,200017,0,0,'Y',TO_DATE('2019-09-03 17:52:03','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2019-09-03 17:52:03','YYYY-MM-DD HH24:MI:SS'),100,203363,'Y','N','D','N','N','N','Y','50fc1a1d-5bb0-4631-94c3-92c2fa9ec13a','Y',0,'N','N','N','N')
 ;
 
 -- Sep 3, 2019, 5:52:16 PM SGT
