@@ -30,7 +30,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20190917L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -113,6 +113,34 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public int getAD_Element_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Element_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_Name)
+			.getPO(getAD_FieldStyle_ID(), get_TrxName());	}
+
+	/** Set Field Style.
+		@param AD_FieldStyle_ID 
+		Field CSS Style 
+	  */
+	public void setAD_FieldStyle_ID (int AD_FieldStyle_ID)
+	{
+		if (AD_FieldStyle_ID < 1) 
+			set_Value (COLUMNNAME_AD_FieldStyle_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_FieldStyle_ID, Integer.valueOf(AD_FieldStyle_ID));
+	}
+
+	/** Get Field Style.
+		@return Field CSS Style 
+	  */
+	public int getAD_FieldStyle_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldStyle_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

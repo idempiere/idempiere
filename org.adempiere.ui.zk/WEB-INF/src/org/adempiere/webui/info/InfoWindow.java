@@ -603,6 +603,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				vo.Description = desc != null ? desc : "";
 				String help = infoColumn.get_Translation("Help");
 				vo.Help = help != null ? help : "";
+				vo.AD_FieldStyle_ID = infoColumn.getAD_FieldStyle_ID();
 				GridField gridField = new GridField(vo);
 				gridFields.add(gridField);
 			}
@@ -628,14 +629,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					}
 				}
 				
-				if(hasEditable)
-				{
+			}
+
 					infoWindowListItemRenderer = new WInfoWindowListItemRenderer(this);
 					contentPanel.setItemRenderer(infoWindowListItemRenderer);
+			if(hasEditable)
+			{
 					contentPanel.setAllowIDColumnForReadWrite(true);
 					infoWindowListItemRenderer.addTableValueChangeListener(contentPanel); // Replicated from WListbox constructor
 				}					
-			}			
 			
 			StringBuilder builder = new StringBuilder(p_whereClause != null ? p_whereClause.trim() : "");
 			String infoWhereClause = infoWindow.getWhereClause();
@@ -2067,6 +2069,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		vo.Description = desc != null ? desc : "";
 		String help = infoColumn.get_Translation("Help");
 		vo.Help = help != null ? help : "";
+		vo.AD_FieldStyle_ID = infoColumn.getAD_FieldStyle_ID();
 		GridField gridField = new GridField(vo);
 
 		return gridField;

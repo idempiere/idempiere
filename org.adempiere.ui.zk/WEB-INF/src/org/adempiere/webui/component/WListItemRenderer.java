@@ -328,7 +328,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 						AImage aImage = new AImage(url);
 						Image image = new Image();
 						image.setContent(aImage);
-						image.setStyle("width: 48px; height: 48px;");
+						image.setStyle("width: 16px; height: 16px; display: block;");
 						listcell.appendChild(image);
 						listcell.setStyle("text-align: center;");
 					} catch (MalformedURLException e) {
