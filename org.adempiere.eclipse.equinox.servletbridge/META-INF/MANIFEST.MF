@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Bundle-Name: %bundleName
 Bundle-SymbolicName: org.adempiere.eclipse.equinox.servletbridge;singleton:=true
 Eclipse-SourceReferences: scm:cvs:pserver:dev.eclipse.org:/cvsroot/rt:

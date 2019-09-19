@@ -34,6 +34,7 @@
 		<extra.ui.install>org.eclipse.equinox.p2.director, org.idempiere.equinox.p2.director.feature.feature.group, org.idempiere.fitnesse.feature.feature.group</extra.ui.install>
 		<idempiere.product.id>org.adempiere.server.product</idempiere.product.id>
 		<codehaus.plexus>2.8.5</codehaus.plexus>
+		<ecjVersion>3.19.0</ecjVersion>
 	</properties>
 
 	<build>
@@ -356,8 +357,15 @@
 					<artifactId>tycho-compiler-plugin</artifactId>
 					<version>${tycho.version}</version>
                     <configuration>
-                        <verbose>true</verbose>
-                    </configuration>
+						<verbose>true</verbose>						
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.eclipse.jdt</groupId>
+							<artifactId>ecj</artifactId>
+							<version>${ecjVersion}</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>

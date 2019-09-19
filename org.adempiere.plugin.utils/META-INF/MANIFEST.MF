@@ -3,8 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Plugin Utils
 Bundle-SymbolicName: org.adempiere.plugin.utils
 Bundle-Version: 6.2.0.qualifier
-Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Import-Package: org.adempiere.base,
  org.adempiere.util,
  org.apache.xerces.dom;version="2.9.0",

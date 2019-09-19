@@ -56,8 +56,8 @@ Export-Package: bsh,
  org.idempiere.distributed,
  org.idempiere.fa.service.api,
  org.idempiere.model
-Comment: Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Import-Package: com.google.zxing,
  com.google.zxing.qrcode.decoder,
  com.google.zxing.qrcode.encoder,
