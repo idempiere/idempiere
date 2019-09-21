@@ -352,17 +352,11 @@ public class MMatchPO extends X_M_MatchPO
 			MInOutLine sLine, int C_OrderLine_ID, Timestamp dateTrx,
 			BigDecimal qty, String trxName) {
 		MMatchPO retValue = null;
-		String sql = "SELECT * FROM M_MatchPO WHERE C_OrderLine_ID=? and Reversal_ID IS NULL ORDER BY M_MatchPO_ID";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
+		List<MMatchPO> matchPOList = MatchPOAutoMatch.getNotMatchedMatchPOList(ctx, C_OrderLine_ID, trxName);
+		if (!matchPOList.isEmpty())
 		{
-			pstmt = DB.prepareStatement (sql, trxName);
-			pstmt.setInt (1, C_OrderLine_ID);
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
+			for (MMatchPO mpo : matchPOList)
 			{
-				MMatchPO mpo = new MMatchPO (ctx, rs, trxName);
 				if (qty.compareTo(mpo.getQty()) >= 0)
 				{
 					BigDecimal toMatch = qty;
@@ -408,7 +402,7 @@ public class MMatchPO extends X_M_MatchPO
 					{
 						//verify m_matchinv not created for other invoice
 						int cnt = DB.getSQLValue(iLine.get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+mpo.getM_InOutLine_ID()
-								+" AND C_InvoiceLine_ID != "+iLine.getC_InvoiceLine_ID());
+								+" AND C_InvoiceLine_ID != "+iLine.getC_InvoiceLine_ID() + " AND Reversal_ID=0");
 						if (cnt > 0)
 							continue;
 					}
@@ -429,46 +423,10 @@ public class MMatchPO extends X_M_MatchPO
 								+" AND C_InvoiceLine_ID="+C_InvoiceLine_ID);
 						if (cnt <= 0)
 						{
-							Trx trx = trxName != null ? Trx.get(trxName, false) : null;
-							Savepoint savepoint = trx != null ? trx.getConnection().setSavepoint() : null;
-							MMatchInv matchInv = new MMatchInv(mpo.getCtx(), 0, mpo.get_TrxName());
-							matchInv.setC_InvoiceLine_ID(C_InvoiceLine_ID);
-							matchInv.setM_Product_ID(mpo.getM_Product_ID());
-							matchInv.setM_InOutLine_ID(M_InOutLine_ID);
-							matchInv.setAD_Client_ID(mpo.getAD_Client_ID());
-							matchInv.setAD_Org_ID(mpo.getAD_Org_ID());
-							matchInv.setM_AttributeSetInstance_ID(mpo.getM_AttributeSetInstance_ID());
-							matchInv.setQty(mpo.getQty());
-							matchInv.setDateTrx(dateTrx);
-							matchInv.setProcessed(true);
-							if (!matchInv.save())
-							{
-								if (savepoint != null)
-								{
-									trx.getConnection().rollback(savepoint);
-									savepoint = null;
-								}
-								else
-								{
-									matchInv.delete(true);
-								}
-								String msg = "Failed to auto match invoice.";
-								ValueNamePair error = CLogger.retrieveError();
-								if (error != null)
-								{
-									msg = msg + " " + error.getName();
-								}
-								//log as debug message and continue
-								s_log.fine(msg);
+							MMatchInv matchInv = createMatchInv(mpo, C_InvoiceLine_ID, M_InOutLine_ID, mpo.getQty(), dateTrx, trxName);
+							if (matchInv == null)
 								continue;
-							}
 							mpo.setMatchInvCreated(matchInv);
-							if (savepoint != null) 
-							{
-								try {
-									trx.getConnection().releaseSavepoint(savepoint);
-								} catch (Exception e) {}
-							}
 						}
 					}
 					if (iLine != null)
@@ -499,22 +457,6 @@ public class MMatchPO extends X_M_MatchPO
 				}
 			}
 		}
-		catch (Exception e)
-		{
-			s_log.log(Level.SEVERE, sql, e); 
-			if (e instanceof RuntimeException)
-			{
-				throw (RuntimeException)e;
-			}
-			else
-			{
-				throw new IllegalStateException(e);
-			}
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-		}
 		
 		//	Create New
 		if (retValue == null)
@@ -528,7 +470,7 @@ public class MMatchPO extends X_M_MatchPO
 			if (sLine != null && (sLine.getC_OrderLine_ID() == C_OrderLine_ID || iLine == null)
 				&& (sLineMatchedQty == null || sLineMatchedQty.signum() <= 0))
 			{				
-				if (qty.signum() > 0)
+				if (qty.signum() != 0)
 				{
 					retValue = new MMatchPO (sLine, dateTrx, qty);
 					retValue.setC_OrderLine_ID(C_OrderLine_ID);
@@ -562,52 +504,8 @@ public class MMatchPO extends X_M_MatchPO
 						//auto create matchinv
 						if (otherMatchPO != null)
 						{
-							Savepoint savepoint = null;
-							Trx trx = null;
-							try
-							{
-								trx = trxName != null ? Trx.get(trxName, false) : null;
-								savepoint = trx != null ? trx.getConnection().setSavepoint() : null;
-								MMatchInv matchInv = new MMatchInv(retValue.getCtx(), 0, retValue.get_TrxName());
-								matchInv.setC_InvoiceLine_ID(otherMatchPO.getC_InvoiceLine_ID());
-								matchInv.setM_Product_ID(retValue.getM_Product_ID());
-								matchInv.setM_InOutLine_ID(retValue.getM_InOutLine_ID());
-								matchInv.setAD_Client_ID(retValue.getAD_Client_ID());
-								matchInv.setAD_Org_ID(retValue.getAD_Org_ID());
-								matchInv.setM_AttributeSetInstance_ID(retValue.getM_AttributeSetInstance_ID());
-								matchInv.setQty(retValue.getQty());
-								matchInv.setDateTrx(dateTrx);
-								matchInv.setProcessed(true);
-								if (!matchInv.save())
-								{
-									if (savepoint != null)
-									{
-										trx.getConnection().rollback(savepoint);								
-										savepoint = null;
-									}
-									else
-									{
-										matchInv.delete(true);
-									}
-									String msg = "Failed to auto match invoice.";
-									ValueNamePair error = CLogger.retrieveError();
-									if (error != null)
-									{
-										msg = msg + " " + error.getName();
-									}
-									s_log.severe(msg);
-								}
-								retValue.setMatchInvCreated(matchInv);								
-							} catch (Exception e) {						
-								s_log.log(Level.SEVERE, "Failed to auto match Invoice.", e); 
-							} finally {
-								if (savepoint != null) 
-								{
-									try {
-										trx.getConnection().releaseSavepoint(savepoint);
-									} catch (Exception e) {}
-								}	
-							}
+							MMatchInv matchInv = createMatchInv(retValue, otherMatchPO.getC_InvoiceLine_ID(), retValue.getM_InOutLine_ID(), retValue.getQty(), dateTrx, trxName);
+							retValue.setMatchInvCreated(matchInv);
 							if (otherMatchPO.getQty().signum() == 0 )
 								otherMatchPO.deleteEx(true);
 						}
@@ -626,7 +524,7 @@ public class MMatchPO extends X_M_MatchPO
 			}
 			else if (iLine != null)
 			{
-				if (qty.signum() > 0)
+				if (qty.signum() != 0)
 				{
 					retValue = new MMatchPO (iLine, dateTrx, qty);
 					retValue.setC_OrderLine_ID(C_OrderLine_ID);
@@ -652,7 +550,7 @@ public class MMatchPO extends X_M_MatchPO
 						if (matchPO.getM_MatchPO_ID() == retValue.getM_MatchPO_ID())
 							continue;
 						
-						if (matchPO.getM_InOutLine_ID() > 0 && matchPO.getReversal_ID() == 0)
+						if (matchPO.getM_InOutLine_ID() > 0 && matchPO.getReversal_ID() == 0 && matchPO.getRef_MatchPO_ID() == 0)
 						{
 							if (matchPO.getC_InvoiceLine_ID() == 0)
 							{
@@ -738,54 +636,8 @@ public class MMatchPO extends X_M_MatchPO
 							}
 							if (autoMatchQty != null && autoMatchQty.signum() > 0)
 							{
-								Savepoint savepoint = null;
-								Trx trx = null;
-								MMatchInv matchInv = null;
-								try
-								{
-									trx = trxName != null ? Trx.get(trxName, false) : null;
-									savepoint = trx != null ? trx.getConnection().setSavepoint() : null;
-									matchInv = new MMatchInv(retValue.getCtx(), 0, retValue.get_TrxName());
-									matchInv.setC_InvoiceLine_ID(retValue.getC_InvoiceLine_ID());
-									matchInv.setM_Product_ID(retValue.getM_Product_ID());
-									matchInv.setM_InOutLine_ID(matchPO.getM_InOutLine_ID());
-									matchInv.setAD_Client_ID(retValue.getAD_Client_ID());
-									matchInv.setAD_Org_ID(retValue.getAD_Org_ID());
-									matchInv.setM_AttributeSetInstance_ID(retValue.getM_AttributeSetInstance_ID());
-									matchInv.setQty(autoMatchQty);
-									matchInv.setDateTrx(dateTrx);
-									matchInv.setProcessed(true);
-									if (!matchInv.save())
-									{
-										if (savepoint != null)
-										{
-											trx.getConnection().rollback(savepoint);								
-											savepoint = null;
-										}
-										else
-										{
-											matchInv.delete(true);
-										}
-										String msg = "Failed to auto match invoice.";
-										ValueNamePair error = CLogger.retrieveError();
-										if (error != null)
-										{
-											msg = msg + " " + error.getName();
-										}
-										s_log.severe(msg);
-										matchInv = null;
-									}
-								} catch (Exception e) {						
-									s_log.log(Level.SEVERE, "Failed to auto match Invoice.", e);
-									matchInv = null;
-								} finally {
-									if (savepoint != null) 
-									{
-										try {
-											trx.getConnection().releaseSavepoint(savepoint);
-										} catch (Exception e) {}
-									}	
-								}
+								MMatchInv matchInv = createMatchInv(retValue, retValue.getC_InvoiceLine_ID(), matchPO.getM_InOutLine_ID(), autoMatchQty, dateTrx, trxName);
+								retValue.setMatchInvCreated(matchInv);
 								if (matchInv == null)
 									break;
 							}
@@ -797,9 +649,65 @@ public class MMatchPO extends X_M_MatchPO
 			}
 		}
 		
+		if (C_OrderLine_ID > 0 && retValue != null)
+			MatchPOAutoMatch.match(ctx, C_OrderLine_ID, retValue, trxName);
+				
 		return retValue;
 	}	//	create
 	
+	private static MMatchInv createMatchInv(MMatchPO mpo, int C_InvoiceLine_ID, int M_InOutLine_ID, BigDecimal qty, Timestamp dateTrx, String trxName) 
+	{
+		Savepoint savepoint = null;
+		Trx trx = null;
+		MMatchInv matchInv = null;
+		try
+		{
+			trx = trxName != null ? Trx.get(trxName, false) : null;
+			savepoint = trx != null ? trx.getConnection().setSavepoint() : null;
+			matchInv = new MMatchInv(mpo.getCtx(), 0, mpo.get_TrxName());
+			matchInv.setC_InvoiceLine_ID(C_InvoiceLine_ID);
+			matchInv.setM_Product_ID(mpo.getM_Product_ID());
+			matchInv.setM_InOutLine_ID(M_InOutLine_ID);
+			matchInv.setAD_Client_ID(mpo.getAD_Client_ID());
+			matchInv.setAD_Org_ID(mpo.getAD_Org_ID());
+			matchInv.setM_AttributeSetInstance_ID(mpo.getM_AttributeSetInstance_ID());
+			matchInv.setQty(qty);
+			matchInv.setDateTrx(dateTrx);
+			matchInv.setProcessed(true);
+			if (!matchInv.save())
+			{
+				if (savepoint != null)
+				{
+					trx.getConnection().rollback(savepoint);								
+					savepoint = null;
+				}
+				else
+				{
+					matchInv.delete(true);
+				}
+				String msg = "Failed to auto match invoice.";
+				ValueNamePair error = CLogger.retrieveError();
+				if (error != null)
+				{
+					msg = msg + " " + error.getName();
+				}
+				s_log.severe(msg);
+				matchInv = null;
+			}
+		} catch (Exception e) {						
+			s_log.log(Level.SEVERE, "Failed to auto match Invoice.", e);
+			matchInv = null;
+		} finally {
+			if (savepoint != null) 
+			{
+				try {
+					trx.getConnection().releaseSavepoint(savepoint);
+				} catch (Exception e) {}
+			}	
+		}
+		
+		return matchInv;
+	}
 
 	protected MMatchInv m_matchInv;
 
@@ -1450,6 +1358,7 @@ public class MMatchPO extends X_M_MatchPO
 			reversal.set_ValueNoCheck ("DocumentNo", null);
 			reversal.setPosted (false);
 			reversal.setProcessed(true);
+			reversal.setRef_MatchPO_ID(getRef_MatchPO_ID());
 			reversal.setReversal_ID(getM_MatchPO_ID());   	
 			reversal.saveEx();
 

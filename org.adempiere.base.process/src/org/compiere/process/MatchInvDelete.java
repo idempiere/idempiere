@@ -19,6 +19,7 @@ package org.compiere.process;
 import java.util.logging.Level;
 
 import org.compiere.model.MMatchInv;
+import org.compiere.model.MMatchPO;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.ValueNamePair;
@@ -51,19 +52,28 @@ public class MatchInvDelete extends SvrProcess
 	protected String doIt()	throws Exception
 	{
 		if (log.isLoggable(Level.INFO)) log.info ("M_MatchInv_ID=" + p_M_MatchInv_ID);
+		
+		String msg = "";
+		
 		MMatchInv inv = new MMatchInv (getCtx(), p_M_MatchInv_ID, get_TrxName());
 		if (inv.get_ID() == 0)
 			throw new AdempiereUserError("@NotFound@ @M_MatchInv_ID@ " + p_M_MatchInv_ID);
-		if (inv.delete(true))
-			return "@OK@";
-
-		String msg = null;
-		ValueNamePair err = CLogger.retrieveError();
-		if (err != null)
-			msg = err.getName();
-		if (msg == null || msg.length() == 0)
-			msg = " - Check log";
-		return "@Error@: " + msg;
+		int reversalId = inv.getReversal_ID();
+		if (!inv.delete(true))
+			return "@Error@";
+		
+		msg += "@Deleted@";
+		
+		if (reversalId > 0) {
+			MMatchInv invrev = new MMatchInv (getCtx(), reversalId, get_TrxName());
+			if (invrev.get_ID() == 0)
+				throw new AdempiereUserError("@NotFound@ @M_MatchInv_ID@ " + reversalId);
+			if (!invrev.delete(true)) {
+				return "@Error@ @Reversal_ID@";
+			}
+			msg += " + @Deleted@ @Reversal_ID@";
+		}
+		return msg;
 	}	//	doIt
 
 }	//	MatchInvDelete

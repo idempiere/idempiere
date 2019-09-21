@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -105,6 +106,8 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 
 	private Grid parameterStdLayout;
 	
+	private boolean isCreditMemo = false;
+	
 	/**
 	 *  Dynamic Init
 	 *  @throws Exception if Lookups cannot be initialized
@@ -126,6 +129,9 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 			rmaLabel.setVisible(false);
 		    rmaField.setVisible(false);
 		}
+		
+		isCreditMemo = MDocType.DOCBASETYPE_APCreditMemo.equals(docType.getDocBaseType()) 
+				|| MDocType.DOCBASETYPE_ARCreditMemo.equals(docType.getDocBaseType());		
 		
 		initBPartner(true);
 		bPartnerField.addValueChangeListener(this);
@@ -315,7 +321,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		orderField.removeAllItems();
 		orderField.addItem(pp);
 		
-		ArrayList<KeyNamePair> list = loadOrderData(C_BPartner_ID, forInvoice, false);
+		ArrayList<KeyNamePair> list = loadOrderData(C_BPartner_ID, forInvoice, false, isCreditMemo);
 		for(KeyNamePair knp : list)
 			orderField.addItem(knp);
 		
@@ -381,7 +387,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	 */
 	protected void loadOrder (int C_Order_ID, boolean forInvoice)
 	{
-		loadTableOIS(getOrderData(C_Order_ID, forInvoice));
+		loadTableOIS(getOrderData(C_Order_ID, forInvoice, isCreditMemo));
 	}   //  LoadOrder
 	
 	protected void loadRMA (int M_RMA_ID)

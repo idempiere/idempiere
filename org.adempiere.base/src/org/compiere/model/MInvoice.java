@@ -1144,6 +1144,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			int no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Lines -> #" + no);
 		}
+		
 		return true;
 	}	//	afterSave
 
@@ -1831,10 +1832,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				&& !isReversal())
 			{
 				MInOutLine receiptLine = new MInOutLine (getCtx(),line.getM_InOutLine_ID(), get_TrxName());
-				BigDecimal matchQty = line.getQtyInvoiced();
+				BigDecimal movementQty = receiptLine.getM_InOut().getMovementType().charAt(1) == '-' ? receiptLine.getMovementQty().negate() : receiptLine.getMovementQty();
+				BigDecimal matchQty = isCreditMemo() ? line.getQtyInvoiced().negate() : line.getQtyInvoiced();
 
-				if (receiptLine.getMovementQty().compareTo(matchQty) < 0)
-					matchQty = receiptLine.getMovementQty();
+				if (movementQty.compareTo(matchQty) < 0)
+					matchQty = movementQty;
 
 				MMatchInv inv = new MMatchInv(line, getDateInvoiced(), matchQty);
 				if (!inv.save(get_TrxName()))
@@ -1869,7 +1871,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					&& !isReversal())
 				{
 					//	MatchPO is created also from MInOut when Invoice exists before Shipment
-					BigDecimal matchQty = line.getQtyInvoiced();
+					BigDecimal matchQty = isCreditMemo() ? line.getQtyInvoiced().negate() : line.getQtyInvoiced();					
 					MMatchPO po = MMatchPO.create (line, null,
 						getDateInvoiced(), matchQty);
 					if (po != null) 
@@ -1897,7 +1899,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					}
 				}
 			}
-
+			
 			//Update QtyInvoiced RMA Line
 			if (line.getM_RMALine_ID() != 0)
 			{
@@ -2425,6 +2427,9 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				}
 				addDocsPostProcess(new MMatchInv(Env.getCtx(), mInv[i].getReversal_ID(), get_TrxName()));
 			}
+			
+			MatchPOAutoMatch.unmatch(getCtx(), getC_Invoice_ID(), get_TrxName());
+			
 			MMatchPO[] mPO = MMatchPO.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
 			for (int i = 0; i < mPO.length; i++)
 			{
