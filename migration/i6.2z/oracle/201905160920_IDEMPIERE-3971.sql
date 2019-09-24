@@ -1,10 +1,9 @@
 SET SQLBLANKLINES ON
 SET DEFINE OFF
 
-alter table ad_table add column cof_Processing varchar(1);
 -- Development of Process Customization
 -- 24/11/2017 9h47min49s BRST
-INSERT INTO AD_Table (AD_Table_ID,Name,Description,Help,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,cof_Processing) VALUES (200232,'User defined Process','User defined Process','User defined Process','AD_UserDef_Proc',0,'3',0,0,'Y',TO_DATE('2017-11-24 09:47:49','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2017-11-24 09:47:49','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','Y','L','N','Y','33449b20-f6cc-4e48-afad-bcbe5d0dd92e','N','N','N','N')
+INSERT INTO AD_Table (AD_Table_ID,Name,Description,Help,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView) VALUES (200232,'User defined Process','User defined Process','User defined Process','AD_UserDef_Proc',0,'3',0,0,'Y',TO_DATE('2017-11-24 09:47:49','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2017-11-24 09:47:49','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','Y','L','N','Y','33449b20-f6cc-4e48-afad-bcbe5d0dd92e','N','N','N')
 ;
 
 -- 24/11/2017 9h47min49s BRST
@@ -255,7 +254,7 @@ ALTER TABLE AD_UserDef_Proc ADD IsUserUpdateable CHAR(1) DEFAULT NULL  CHECK (Is
 ;
 
 -- 24/11/2017 10h45min14s BRST
-INSERT INTO AD_Table (AD_Table_ID,Name,Description,Help,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,cof_Processing) VALUES (200233,'User defined Process Parameter','User defined Process Parameter','User defined Process Parameter','AD_UserDef_Proc_Parameter',0,'3',0,0,'Y',TO_DATE('2017-11-24 10:45:14','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2017-11-24 10:45:14','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','Y','L','N','Y','cf6639d3-ed90-4fe4-9b52-9f323f7c0677','N','N','N','N')
+INSERT INTO AD_Table (AD_Table_ID,Name,Description,Help,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView) VALUES (200233,'User defined Process Parameter','User defined Process Parameter','User defined Process Parameter','AD_UserDef_Proc_Parameter',0,'3',0,0,'Y',TO_DATE('2017-11-24 10:45:14','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2017-11-24 10:45:14','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','Y','L','N','Y','cf6639d3-ed90-4fe4-9b52-9f323f7c0677','N','N','N')
 ;
 
 -- 24/11/2017 10h45min14s BRST
@@ -1191,11 +1190,6 @@ DELETE FROM AD_Field WHERE AD_Field_ID=205257
 UPDATE AD_Column SET AD_Reference_ID=19, FKConstraintType=NULL,Updated=TO_DATE('2017-11-30 14:56:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=213270
 ;
 
-alter table ad_table drop column cof_Processing;
-
-
-
--- I forgot to set the DICTIONARY_ID_COMMENTS System Configurator
 -- May 16, 2019, 9:25:26 AM BRT
 UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=0, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=218
 ;
@@ -1403,8 +1397,6 @@ UPDATE AD_Tab SET Name='Process Customization',Updated=TO_DATE('2019-05-16 09:26
 -- May 16, 2019, 9:26:17 AM BRT
 UPDATE AD_Table SET Name='Process Customization',Updated=TO_DATE('2019-05-16 09:26:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=200232
 ;
-
-
 
 SELECT register_migration_script('201905160920_IDEMPIERE-3971.sql') FROM dual
 ;

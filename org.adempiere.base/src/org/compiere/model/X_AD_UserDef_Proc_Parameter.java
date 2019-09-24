@@ -1,5 +1,5 @@
 /******************************************************************************
- * Product: BrERP Gestão Empresarial Completa (http://brerp.org)              *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
  * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
@@ -22,15 +22,15 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Proc_Parameter
- *  @author BrERP Gestão Empresarial Completa (generated) 
- *  @version Release 5.1 - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 6.2 - $Id$ */
 public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc_Parameter, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171129L;
+	private static final long serialVersionUID = 20190924L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Proc_Parameter (Properties ctx, int AD_UserDef_Proc_Parameter_ID, String trxName)
@@ -51,7 +51,7 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {
@@ -230,52 +230,28 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
+	/** IsDisplayed AD_Reference_ID=319 */
+	public static final int ISDISPLAYED_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISDISPLAYED_Yes = "Y";
+	/** No = N */
+	public static final String ISDISPLAYED_No = "N";
 	/** Set Displayed.
 		@param IsDisplayed 
 		Determines, if this field is displayed
 	  */
-	public void setIsDisplayed (boolean IsDisplayed)
+	public void setIsDisplayed (String IsDisplayed)
 	{
-		set_Value (COLUMNNAME_IsDisplayed, Boolean.valueOf(IsDisplayed));
+
+		set_Value (COLUMNNAME_IsDisplayed, IsDisplayed);
 	}
 
 	/** Get Displayed.
 		@return Determines, if this field is displayed
 	  */
-	public boolean isDisplayed () 
+	public String getIsDisplayed () 
 	{
-		Object oo = get_Value(COLUMNNAME_IsDisplayed);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Read Only.
-		@param IsReadOnly 
-		Field is read only
-	  */
-	public void setIsReadOnly (boolean IsReadOnly)
-	{
-		set_Value (COLUMNNAME_IsReadOnly, Boolean.valueOf(IsReadOnly));
-	}
-
-	/** Get Read Only.
-		@return Field is read only
-	  */
-	public boolean isReadOnly () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsReadOnly);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_IsDisplayed);
 	}
 
 	/** Set Mandatory Logic.

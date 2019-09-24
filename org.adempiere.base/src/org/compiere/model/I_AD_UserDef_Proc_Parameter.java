@@ -1,5 +1,5 @@
 /******************************************************************************
- * Product: BrERP Gestão Empresarial Completa (http://brerp.org)              *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
  * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Proc_Parameter
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 6.2
  */
 public interface I_AD_UserDef_Proc_Parameter 
 {
@@ -35,9 +35,9 @@ public interface I_AD_UserDef_Proc_Parameter
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(3);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -199,25 +199,12 @@ public interface I_AD_UserDef_Proc_Parameter
 	/** Set Displayed.
 	  * Determines, if this field is displayed
 	  */
-	public void setIsDisplayed (boolean IsDisplayed);
+	public void setIsDisplayed (String IsDisplayed);
 
 	/** Get Displayed.
 	  * Determines, if this field is displayed
 	  */
-	public boolean isDisplayed();
-
-    /** Column name IsReadOnly */
-    public static final String COLUMNNAME_IsReadOnly = "IsReadOnly";
-
-	/** Set Read Only.
-	  * Field is read only
-	  */
-	public void setIsReadOnly (boolean IsReadOnly);
-
-	/** Get Read Only.
-	  * Field is read only
-	  */
-	public boolean isReadOnly();
+	public String getIsDisplayed();
 
     /** Column name MandatoryLogic */
     public static final String COLUMNNAME_MandatoryLogic = "MandatoryLogic";

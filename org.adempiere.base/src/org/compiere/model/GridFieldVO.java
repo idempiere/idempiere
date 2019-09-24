@@ -404,7 +404,8 @@ public class GridFieldVO implements Serializable
 					vo.DisplayLogic = userDef.getDisplayLogic();
 				if(userDef.getMandatoryLogic() != null)
 					vo.MandatoryLogic = userDef.getMandatoryLogic();
-			    vo.IsDisplayed = userDef.isDisplayed();
+				if (userDef.getIsDisplayed()!= null)
+				    vo.IsDisplayed = "Y".equals(userDef.getIsDisplayed());
 			}
 		}
 		//fim devCoffee - 3858

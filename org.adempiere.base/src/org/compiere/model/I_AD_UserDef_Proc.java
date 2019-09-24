@@ -1,5 +1,5 @@
 /******************************************************************************
- * Product: BrERP Gestão Empresarial Completa (http://brerp.org)              *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
  * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Proc
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 6.2
  */
 public interface I_AD_UserDef_Proc 
 {
@@ -35,9 +35,9 @@ public interface I_AD_UserDef_Proc
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(3);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -196,19 +196,6 @@ public interface I_AD_UserDef_Proc
 	  * The record is active in the system
 	  */
 	public boolean isActive();
-
-    /** Column name IsDefault */
-    public static final String COLUMNNAME_IsDefault = "IsDefault";
-
-	/** Set Default.
-	  * Default value
-	  */
-	public void setIsDefault (boolean IsDefault);
-
-	/** Get Default.
-	  * Default value
-	  */
-	public boolean isDefault();
 
     /** Column name IsUserUpdateable */
     public static final String COLUMNNAME_IsUserUpdateable = "IsUserUpdateable";

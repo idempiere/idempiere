@@ -1,5 +1,5 @@
 /******************************************************************************
- * Product: BrERP Gestão Empresarial Completa (http://brerp.org)              *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
  * Copyright (C) 1999-2012 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software, you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
@@ -19,17 +19,18 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Proc
- *  @author BrERP Gestão Empresarial Completa (generated) 
- *  @version Release 5.1 - $Id$ */
+ *  @author iDempiere (generated) 
+ *  @version Release 6.2 - $Id$ */
 public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171124L;
+	private static final long serialVersionUID = 20190924L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Proc (Properties ctx, int AD_UserDef_Proc_ID, String trxName)
@@ -49,7 +50,7 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {
@@ -245,30 +246,6 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
-	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
-	public void setIsDefault (boolean IsDefault)
-	{
-		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
-	}
-
-	/** Get Default.
-		@return Default value
-	  */
-	public boolean isDefault () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
 	/** Set User updatable.
 		@param IsUserUpdateable 
 		The field can be updated by the user
@@ -309,4 +286,12 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), getName());
+    }
 }
