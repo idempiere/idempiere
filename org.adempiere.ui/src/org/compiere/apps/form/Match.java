@@ -300,7 +300,7 @@ public class Match
 			m_qtyColumn = "lin.QtyInvoiced";
 			m_sql.append("SELECT hdr.C_Invoice_ID,hdr.DocumentNo, hdr.DateInvoiced, bp.Name,hdr.C_BPartner_ID,"
 				+ " lin.Line,lin.C_InvoiceLine_ID, p.Name,lin.M_Product_ID,"
-				+ " lin.QtyInvoiced,SUM(NVL(mi.Qty,0)), org.Name, hdr.AD_Org_ID "  //JAVIER
+				+ " CASE WHEN dt.DocBaseType='APC' THEN lin.QtyInvoiced * -1 ELSE lin.QtyInvoiced END,SUM(NVL(mi.Qty,0)), org.Name, hdr.AD_Org_ID "  //JAVIER
 				+ "FROM C_Invoice hdr"
 				+ " INNER JOIN AD_Org org ON (hdr.AD_Org_ID=org.AD_Org_ID)" //JAVIER
 				+ " INNER JOIN C_BPartner bp ON (hdr.C_BPartner_ID=bp.C_BPartner_ID)"
@@ -313,9 +313,9 @@ public class Match
 				m_sql.append(" AND mi.M_InOutLine_ID  = ").append(Line_ID);
 			
 			m_groupBy = " GROUP BY hdr.C_Invoice_ID,hdr.DocumentNo,hdr.DateInvoiced,bp.Name,hdr.C_BPartner_ID,"
-				+ " lin.Line,lin.C_InvoiceLine_ID,p.Name,lin.M_Product_ID,lin.QtyInvoiced, org.Name, hdr.AD_Org_ID " //JAVIER
+				+ " lin.Line,lin.C_InvoiceLine_ID,p.Name,lin.M_Product_ID,dt.DocBaseType,lin.QtyInvoiced, org.Name, hdr.AD_Org_ID " //JAVIER
 				+ "HAVING "
-				+ (matched ? "0" : "lin.QtyInvoiced")
+				+ (matched ? "0" : "CASE WHEN dt.DocBaseType='APC' THEN lin.QtyInvoiced * -1 ELSE lin.QtyInvoiced END")
 				+ "<>SUM(NVL(mi.Qty,0))";
 		}
 		else if (display == MATCH_ORDER)

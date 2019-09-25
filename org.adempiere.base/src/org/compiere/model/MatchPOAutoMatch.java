@@ -212,6 +212,19 @@ public class MatchPOAutoMatch {
 								matchPOCreditMemo.setRef_MatchPO_ID(po.getM_MatchPO_ID());
 								matchPOCreditMemo.setPosted(true);
 								matchPOCreditMemo.saveEx(trxName);
+								
+								MMatchInv matchInv1 = MMatchPO.createMatchInv(po, po.getC_InvoiceLine_ID(), po.getM_InOutLine_ID(), po.getQty(), po.getDateTrx(), trxName);
+								MMatchInv matchInv2 = MMatchPO.createMatchInv(matchPOCreditMemo, matchPOCreditMemo.getC_InvoiceLine_ID(), matchPOCreditMemo.getM_InOutLine_ID(), matchPOCreditMemo.getQty(), matchPOCreditMemo.getDateTrx(), trxName);
+								if (matchInv1 != null && matchInv2 != null)
+								{
+									matchInv1.setRef_MatchInv_ID(matchInv2.getM_MatchInv_ID());
+									matchInv1.saveEx(trxName);
+									
+									matchInv2.setRef_MatchInv_ID(matchInv1.getM_MatchInv_ID());									
+									matchInv2.saveEx(trxName);
+								}
+								else
+									break;
 
 								matchedMatchPOList.add(po);
 								creditMemoQty = creditMemoQty.subtract(po.getQty());
@@ -225,6 +238,19 @@ public class MatchPOAutoMatch {
 								matchPOCreditMemo.setRef_MatchPO_ID(matchPO.getM_MatchPO_ID());
 								matchPOCreditMemo.setPosted(true);
 								matchPOCreditMemo.saveEx(trxName);
+								
+								MMatchInv matchInv1 = MMatchPO.createMatchInv(matchPO, matchPO.getC_InvoiceLine_ID(), matchPO.getM_InOutLine_ID(), matchPO.getQty(), matchPO.getDateTrx(), trxName);
+								MMatchInv matchInv2 = MMatchPO.createMatchInv(matchPOCreditMemo, matchPOCreditMemo.getC_InvoiceLine_ID(), matchPOCreditMemo.getM_InOutLine_ID(), matchPOCreditMemo.getQty(), matchPOCreditMemo.getDateTrx(), trxName);
+								if (matchInv1 != null && matchInv2 != null)
+								{
+									matchInv1.setRef_MatchInv_ID(matchInv2.getM_MatchInv_ID());
+									matchInv1.saveEx(trxName);
+									
+									matchInv2.setRef_MatchInv_ID(matchInv1.getM_MatchInv_ID());									
+									matchInv2.saveEx(trxName);
+								}
+								else
+									break;
 
 								matchedMatchPOList.add(matchPO);
 								creditMemoQty = creditMemoQty.subtract(matchPO.getQty());
@@ -244,6 +270,19 @@ public class MatchPOAutoMatch {
 								matchPO.setRef_MatchPO_ID(po.getM_MatchPO_ID());
 								matchPO.setPosted(true);
 								matchPO.saveEx(trxName);
+								
+								MMatchInv matchInv1 = MMatchPO.createMatchInv(po, po.getC_InvoiceLine_ID(), po.getM_InOutLine_ID(), po.getQty(), po.getDateTrx(), trxName);
+								MMatchInv matchInv2 = MMatchPO.createMatchInv(matchPO, matchPO.getC_InvoiceLine_ID(), matchPO.getM_InOutLine_ID(), matchPO.getQty(), matchPO.getDateTrx(), trxName);
+								if (matchInv1 != null && matchInv2 != null)
+								{
+									matchInv1.setRef_MatchInv_ID(matchInv2.getM_MatchInv_ID());
+									matchInv1.saveEx(trxName);
+									
+									matchInv2.setRef_MatchInv_ID(matchInv1.getM_MatchInv_ID());									
+									matchInv2.saveEx(trxName);
+								}
+								else
+									break;
 
 								matchedMatchPOList.add(matchPO);
 								creditMemoQty = creditMemoQty.subtract(matchPO.getQty());
@@ -280,6 +319,19 @@ public class MatchPOAutoMatch {
 							matchPOCreditMemo.setRef_MatchPO_ID(po.getM_MatchPO_ID());
 							matchPOCreditMemo.setPosted(true);
 							matchPOCreditMemo.saveEx(trxName);
+							
+							MMatchInv matchInv1 = MMatchPO.createMatchInv(po, po.getC_InvoiceLine_ID(), po.getM_InOutLine_ID(), po.getQty(), po.getDateTrx(), trxName);
+							MMatchInv matchInv2 = MMatchPO.createMatchInv(matchPOCreditMemo, matchPOCreditMemo.getC_InvoiceLine_ID(), matchPOCreditMemo.getM_InOutLine_ID(), matchPOCreditMemo.getQty(), matchPOCreditMemo.getDateTrx(), trxName);
+							if (matchInv1 != null && matchInv2 != null)
+							{
+								matchInv1.setRef_MatchInv_ID(matchInv2.getM_MatchInv_ID());
+								matchInv1.saveEx(trxName);
+								
+								matchInv2.setRef_MatchInv_ID(matchInv1.getM_MatchInv_ID());									
+								matchInv2.saveEx(trxName);
+							}
+							else
+								break;
 
 							matchedMatchPOList.add(po);
 							creditMemoQty = creditMemoQty.subtract(po.getQty());
@@ -293,6 +345,19 @@ public class MatchPOAutoMatch {
 							matchPOCreditMemo.setRef_MatchPO_ID(matchPO.getM_MatchPO_ID());
 							matchPOCreditMemo.setPosted(true);
 							matchPOCreditMemo.saveEx(trxName);
+							
+							MMatchInv matchInv1 = MMatchPO.createMatchInv(matchPO, matchPO.getC_InvoiceLine_ID(), matchPO.getM_InOutLine_ID(), matchPO.getQty(), matchPO.getDateTrx(), trxName);
+							MMatchInv matchInv2 = MMatchPO.createMatchInv(matchPOCreditMemo, matchPOCreditMemo.getC_InvoiceLine_ID(), matchPOCreditMemo.getM_InOutLine_ID(), matchPOCreditMemo.getQty(), matchPOCreditMemo.getDateTrx(), trxName);
+							if (matchInv1 != null && matchInv2 != null)
+							{
+								matchInv1.setRef_MatchInv_ID(matchInv2.getM_MatchInv_ID());
+								matchInv1.saveEx(trxName);
+								
+								matchInv2.setRef_MatchInv_ID(matchInv1.getM_MatchInv_ID());									
+								matchInv2.saveEx(trxName);
+							}
+							else
+								break;
 
 							matchedMatchPOList.add(matchPO);
 							creditMemoQty = creditMemoQty.subtract(matchPO.getQty());
@@ -312,6 +377,19 @@ public class MatchPOAutoMatch {
 							matchPO.setRef_MatchPO_ID(po.getM_MatchPO_ID());
 							matchPO.setPosted(true);
 							matchPO.saveEx(trxName);
+							
+							MMatchInv matchInv1 = MMatchPO.createMatchInv(po, po.getC_InvoiceLine_ID(), po.getM_InOutLine_ID(), po.getQty(), po.getDateTrx(), trxName);
+							MMatchInv matchInv2 = MMatchPO.createMatchInv(matchPO, matchPO.getC_InvoiceLine_ID(), matchPO.getM_InOutLine_ID(), matchPO.getQty(), matchPO.getDateTrx(), trxName);
+							if (matchInv1 != null && matchInv2 != null)
+							{
+								matchInv1.setRef_MatchInv_ID(matchInv2.getM_MatchInv_ID());
+								matchInv1.saveEx(trxName);
+								
+								matchInv2.setRef_MatchInv_ID(matchInv1.getM_MatchInv_ID());									
+								matchInv2.saveEx(trxName);
+							}
+							else
+								break;
 
 							matchedMatchPOList.add(matchPO);
 							creditMemoQty = creditMemoQty.subtract(matchPO.getQty());
@@ -348,6 +426,18 @@ public class MatchPOAutoMatch {
 	 */
 	public static void unmatch(Properties ctx, int C_Invoice_ID, String trxName)
 	{
+		MMatchInv[] minvs = MMatchInv.getInvoice(ctx, C_Invoice_ID, trxName);
+		for(MMatchInv minv : minvs)
+		{
+			if (minv.getReversal_ID() > 0 || minv.getRef_MatchInv_ID() == 0)
+				continue;
+			
+			MMatchInv refMatchInv = new MMatchInv(ctx, minv.getRef_MatchInv_ID(), trxName);
+			refMatchInv.deleteEx(true);
+			
+			minv.deleteEx(true);
+		}
+		
 		List<Integer> unmatchedOrderLineID = new ArrayList<Integer>();
 		MMatchPO[] mpos = MMatchPO.getInvoice(ctx, C_Invoice_ID, trxName);
 		for (MMatchPO mpo : mpos)

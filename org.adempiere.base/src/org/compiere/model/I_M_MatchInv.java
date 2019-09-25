@@ -286,6 +286,17 @@ public interface I_M_MatchInv
 	  */
 	public BigDecimal getQty();
 
+    /** Column name Ref_MatchInv_ID */
+    public static final String COLUMNNAME_Ref_MatchInv_ID = "Ref_MatchInv_ID";
+
+	/** Set Referenced Match Invoice	  */
+	public void setRef_MatchInv_ID (int Ref_MatchInv_ID);
+
+	/** Get Referenced Match Invoice	  */
+	public int getRef_MatchInv_ID();
+
+	public org.compiere.model.I_M_MatchInv getRef_MatchInv() throws RuntimeException;
+
     /** Column name Reversal_ID */
     public static final String COLUMNNAME_Reversal_ID = "Reversal_ID";
 

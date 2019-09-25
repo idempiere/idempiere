@@ -33,7 +33,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20190923L;
 
     /** Standard Constructor */
     public X_M_MatchInv (Properties ctx, int M_MatchInv_ID, String trxName)
@@ -44,7 +44,6 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 			setC_InvoiceLine_ID (0);
 			setDateAcct (new Timestamp( System.currentTimeMillis() ));
 			setDateTrx (new Timestamp( System.currentTimeMillis() ));
-			setM_InOutLine_ID (0);
 			setM_MatchInv_ID (0);
 			setM_Product_ID (0);
 			setPosted (false);
@@ -414,6 +413,31 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	public org.compiere.model.I_M_MatchInv getRef_MatchInv() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_MatchInv)MTable.get(getCtx(), org.compiere.model.I_M_MatchInv.Table_Name)
+			.getPO(getRef_MatchInv_ID(), get_TrxName());	}
+
+	/** Set Referenced Match Invoice.
+		@param Ref_MatchInv_ID Referenced Match Invoice	  */
+	public void setRef_MatchInv_ID (int Ref_MatchInv_ID)
+	{
+		if (Ref_MatchInv_ID < 1) 
+			set_Value (COLUMNNAME_Ref_MatchInv_ID, null);
+		else 
+			set_Value (COLUMNNAME_Ref_MatchInv_ID, Integer.valueOf(Ref_MatchInv_ID));
+	}
+
+	/** Get Referenced Match Invoice.
+		@return Referenced Match Invoice	  */
+	public int getRef_MatchInv_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Ref_MatchInv_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_M_MatchInv getReversal() throws RuntimeException
