@@ -469,9 +469,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)',200233,'DisplayLogic',2000,'N','N','N','N','N',0,'N',14,0,0,'Y',TO_DATE('2017-11-24 11:04:32','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2017-11-24 11:04:32','YYYY-MM-DD HH24:MI:SS'),100,283,'Y','N','D','N','N','N','Y','6756a368-c060-42c3-a3bb-3e4820a29011','Y',0,'N','N')
 ;
 
@@ -739,9 +739,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)',200235,213293,'Y',2000,90,'N','N','N','N',0,0,'Y',TO_DATE('2017-11-24 11:18:57','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2017-11-24 11:18:57','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','045f78e0-a8aa-4e91-985d-c9fb04d5fab6','Y',80,5,3)
 ;
 
@@ -1041,9 +1041,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)',200233,'ReadOnlyLogic',2000,'N','N','N','N','N',0,'N',14,0,0,'Y',TO_DATE('2017-11-29 09:55:49','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2017-11-29 09:55:49','YYYY-MM-DD HH24:MI:SS'),100,1663,'Y','N','D','N','N','N','Y','6ce5dae0-ab1f-42f4-a489-2db84a15b009','Y',0,'N','N')
 ;
 
@@ -1064,9 +1064,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)',200235,213301,'Y',2000,110,'N','N','N','N',0,0,'Y',TO_DATE('2017-11-29 09:56:51','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2017-11-29 09:56:51','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','98045d11-a9d4-43c5-8d4c-0196498928c0','Y',120,5,3)
 ;
 
