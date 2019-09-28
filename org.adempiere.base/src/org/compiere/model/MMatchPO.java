@@ -655,7 +655,7 @@ public class MMatchPO extends X_M_MatchPO
 		return retValue;
 	}	//	create
 	
-	private static MMatchInv createMatchInv(MMatchPO mpo, int C_InvoiceLine_ID, int M_InOutLine_ID, BigDecimal qty, Timestamp dateTrx, String trxName) 
+	protected static MMatchInv createMatchInv(MMatchPO mpo, int C_InvoiceLine_ID, int M_InOutLine_ID, BigDecimal qty, Timestamp dateTrx, String trxName) 
 	{
 		Savepoint savepoint = null;
 		Trx trx = null;

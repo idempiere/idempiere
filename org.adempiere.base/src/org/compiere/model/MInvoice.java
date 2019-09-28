@@ -1894,6 +1894,13 @@ public class MInvoice extends X_C_Invoice implements DocAction
 								{
 									addDocsPostProcess(matchInvoice);
 								}
+								
+								if (matchInvoice.getRef_MatchInv_ID() > 0)
+								{
+									MMatchInv refMatchInv = new MMatchInv(getCtx(), matchInvoice.getRef_MatchInv_ID(), get_TrxName());
+									if (!refMatchInv.isPosted())
+										addDocsPostProcess(refMatchInv);
+								}
 							}
 						}
 					}
@@ -2414,6 +2421,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		//	Reverse/Delete Matching
 		if (!isSOTrx())
 		{
+			MatchPOAutoMatch.unmatch(getCtx(), getC_Invoice_ID(), get_TrxName());
+			
 			MMatchInv[] mInv = MMatchInv.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
 			for (int i = 0; i < mInv.length; i++)
 			{
@@ -2426,9 +2435,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 					return null;
 				}
 				addDocsPostProcess(new MMatchInv(Env.getCtx(), mInv[i].getReversal_ID(), get_TrxName()));
-			}
-			
-			MatchPOAutoMatch.unmatch(getCtx(), getC_Invoice_ID(), get_TrxName());
+			}			
 			
 			MMatchPO[] mPO = MMatchPO.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
 			for (int i = 0; i < mPO.length; i++)
