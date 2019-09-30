@@ -259,7 +259,7 @@ public class MConversionRate extends X_C_Conversion_Rate
 			pstmt.setInt(1, CurFrom_ID);
 			pstmt.setInt(2, CurTo_ID);
 			pstmt.setInt(3, C_ConversionType_ID);
-			pstmt.setTimestamp(4, ConvDate);
+			pstmt.setTimestamp(4, TimeUtil.getDay(ConvDate));
 			pstmt.setInt(5, AD_Client_ID);
 			pstmt.setInt(6, AD_Org_ID);
 			rs = pstmt.executeQuery();
