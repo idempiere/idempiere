@@ -35,6 +35,7 @@ import org.compiere.model.MScheduler;
 import org.compiere.model.MSession;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.idempiere.server.cluster.ClusterServerMgr;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.ServiceReference;
@@ -47,19 +48,15 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  *  @author Jorg Janke
  *  @version $Id: AdempiereServerMgr.java,v 1.4 2006/10/09 00:23:26 jjanke Exp $
  */
-public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFactory<AdempiereServer, AdempiereProcessor>, IServerFactory<AdempiereServer, AdempiereProcessor>>, BundleListener
+public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFactory<AdempiereServer, AdempiereProcessor>, IServerFactory<AdempiereServer, AdempiereProcessor>>, BundleListener, IServerManager
 {
 	private static ServiceTracker<IServerFactory<AdempiereServer, AdempiereProcessor>, IServerFactory<AdempiereServer, AdempiereProcessor>> serviceTracker;
 
-	public static int SERVER_STATE_NOT_SCHEDULE = 0;
-	public static int SERVER_STATE_STARTED = 1;
-	public static int SERVER_STATE_STOPPED = 2;
-	
 	/**
 	 * 	Get Adempiere Server Manager
 	 *	@return mgr
 	 */
-	public synchronized static AdempiereServerMgr get()
+	public synchronized static IServerManager get()
 	{
 		return get(true);
 	}
@@ -68,7 +65,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	 * 	Get Adempiere Server Manager
 	 *	@return mgr
 	 */
-	public synchronized static AdempiereServerMgr get(boolean createNew)
+	public synchronized static IServerManager get(boolean createNew)
 	{
 		if (m_serverMgr == null && createNew)
 		{
@@ -93,12 +90,12 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	{
 		super();
 		startEnvironment();
-		m_servers=new ArrayList<ServerWrapper>();
+		m_servers=new ArrayList<LocalServerController>();
 		processorClass = new HashSet<String>();
 	}	//	AdempiereServerMgr
 
 	/**	The Servers				*/
-	private ArrayList<ServerWrapper>	m_servers = new ArrayList<ServerWrapper>();
+	private ArrayList<LocalServerController>	m_servers = new ArrayList<LocalServerController>();
 	/** Context					*/
 	private Properties		m_ctx = Env.getCtx();
 	/** Start					*/
@@ -129,14 +126,15 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	 *	@return true if started
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public synchronized boolean reload()
+	@Override
+	public synchronized String reload()
 	{
 		log.info("");
-		if (!stopAll())
-			return false;
+		if (stopAll() != null)
+			return "Failed to stop all servers";
 		
 		int noServers = 0;		
-		m_servers=new ArrayList<ServerWrapper>();
+		m_servers=new ArrayList<LocalServerController>();
 		processorClass = new HashSet<String>();
 		
 		//osgi server
@@ -150,7 +148,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		}
 		
 		if (log.isLoggable(Level.FINE)) log.fine("#" + noServers);
-		return startAll();
+		return startAll() == null ? null : "Failed to restart all servers"; 
 	}	//	startEnvironment
 
 	private void createServers(IServerFactory<AdempiereServer, AdempiereProcessor> factory) {
@@ -164,12 +162,17 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 				for (AdempiereServer server : servers)
 				{
 					AdempiereProcessor model = server.getModel();
-					if (AdempiereServer.isOKtoRunOnIP(model)) {
-						m_servers.add(new ServerWrapper(server));
+					if (canRunHere(server, model)) {
+						m_servers.add(new LocalServerController(server));
 					}
 				}
 			}				
 		}
+	}
+
+	private boolean canRunHere(AdempiereServer server, AdempiereProcessor model) {
+		return AdempiereServer.isOKtoRunOnIP(model) 
+				&& ClusterServerMgr.getInstance().getServerInstanceAtOtherMembers(server.getServerID())==null;
 	}
 	
 	/**
@@ -179,7 +182,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public boolean addScheduler(MScheduler scheduler) {
 		String serverId = scheduler.getServerID();
-		if (getServer(serverId) != null)
+		if (getServerInstance(serverId) != null)
 			return false;
 		
 		//osgi server
@@ -190,9 +193,9 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 			{
 				if (factory.getProcessorClass().getName().equals(scheduler.getClass().getName())) {
 					AdempiereServer server = factory.create(m_ctx, scheduler);
-					if (server != null && AdempiereServer.isOKtoRunOnIP(scheduler)) {
-						m_servers.add(new ServerWrapper(server));
-						return start(serverId);
+					if (server != null && canRunHere(server, scheduler)) {
+						m_servers.add(new LocalServerController(server));
+						return start(serverId)==null;
 					}
 				}
 			}
@@ -214,13 +217,14 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	 * 	Start all servers
 	 *	@return true if started
 	 */
-	public synchronized boolean startAll()
+	@Override
+	public synchronized String startAll()
 	{
 		log.info ("");
-		ServerWrapper[] servers = getInActive();
+		LocalServerController[] servers = getInActive();
 		for (int i = 0; i < servers.length; i++)
 		{
-			ServerWrapper server = servers[i];
+			LocalServerController server = servers[i];
 			try
 			{
 				if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
@@ -243,7 +247,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		int noStopped = 0;
 		for (int i = 0; i < servers.length; i++)
 		{
-			ServerWrapper server = servers[i];
+			LocalServerController server = servers[i];
 			try
 			{
 				if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
@@ -264,7 +268,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 			}
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("Running=" + noRunning + ", Stopped=" + noStopped);
-		return noStopped == 0;
+		return noStopped == 0 ? null : "Failed to start all servers";
 	}	//	startAll
 
 	/**
@@ -272,13 +276,14 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	 * 	@param serverID server ID
 	 *	@return true if started
 	 */
-	public synchronized boolean start (String serverID)
+	@Override
+	public synchronized String start (String serverID)
 	{
-		ServerWrapper server = getServer(serverID);
+		LocalServerController server = getLocalServerController(serverID);
 		if (server == null)
-			return false;
+			return "Server not found";
 		if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
-			return true;
+			return "Server is already running";
 		
 		try
 		{
@@ -290,28 +295,29 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "Server=" + serverID, e);
-			return false;
+			return e.getMessage();
 		}
 		finally
 		{
 			Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, 0);
 		}
 		if (log.isLoggable(Level.INFO)) log.info(server.toString());
-		return (server.scheduleFuture != null && !server.scheduleFuture.isDone());
+		return (server.scheduleFuture != null && !server.scheduleFuture.isDone()) ? null : "Failed to start server"; 
 	}	//	startIt
 	
 	/**
 	 * 	Stop all Servers
 	 *	@return true if stopped
 	 */
-	public synchronized boolean stopAll()
+	@Override
+	public synchronized String stopAll()
 	{
 		log.info ("");
-		ServerWrapper[] servers = getActive();
+		LocalServerController[] servers = getActive();
 		//	Interrupt
 		for (int i = 0; i < servers.length; i++)
 		{
-			ServerWrapper server = servers[i];
+			LocalServerController server = servers[i];
 			try
 			{
 				if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
@@ -329,7 +335,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		//	Wait for death
 		for (int i = 0; i < servers.length; i++)
 		{
-			ServerWrapper server = servers[i];
+			LocalServerController server = servers[i];
 			try
 			{
 				int maxWait = 10;	//	10 iterations = 1 sec
@@ -354,7 +360,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		int noStopped = 0;
 		for (int i = 0; i < servers.length; i++)
 		{
-			ServerWrapper server = servers[i];
+			LocalServerController server = servers[i];
 			try
 			{
 				if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
@@ -376,7 +382,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("Running=" + noRunning + ", Stopped=" + noStopped);
 		AdempiereServerGroup.get().dump();
-		return noRunning == 0;
+		return noRunning == 0 ? null : "Failed to stop all servers";
 	}	//	stopAll
 
 	/**
@@ -384,13 +390,14 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	 * 	@param serverID server ID
 	 *	@return true if interrupted
 	 */
-	public synchronized boolean stop (String serverID)
+	@Override
+	public synchronized String stop (String serverID)
 	{
-		ServerWrapper server = getServer(serverID);
+		LocalServerController server = getLocalServerController(serverID);
 		if (server == null)
-			return false;
+			return "Server not found";
 		if (server.scheduleFuture == null || server.scheduleFuture.isDone())
-			return true;
+			return "Server is already stop";
 
 		try
 		{
@@ -400,10 +407,10 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "stop", e);
-			return false;
+			return e.getMessage();
 		}
 		if (log.isLoggable(Level.INFO)) log.info(server.toString());
-		return (server.scheduleFuture == null || server.scheduleFuture.isDone());
+		return (server.scheduleFuture == null || server.scheduleFuture.isDone()) ? null : "Failed to stop server";
 	}	//	stop
 
 	
@@ -421,16 +428,16 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	 * 	Get Active Servers
 	 *	@return array of active servers
 	 */
-	protected synchronized ServerWrapper[] getActive()
+	protected synchronized LocalServerController[] getActive()
 	{
-		ArrayList<ServerWrapper> list = new ArrayList<ServerWrapper>();
+		ArrayList<LocalServerController> list = new ArrayList<LocalServerController>();
 		for (int i = 0; i < m_servers.size(); i++)
 		{
-			ServerWrapper server = (ServerWrapper)m_servers.get(i);
+			LocalServerController server = (LocalServerController)m_servers.get(i);
 			if (server != null && server.scheduleFuture != null && !server.scheduleFuture.isDone())
 				list.add (server);
 		}
-		ServerWrapper[] retValue = new ServerWrapper[list.size ()];
+		LocalServerController[] retValue = new LocalServerController[list.size ()];
 		list.toArray (retValue);
 		return retValue;
 	}	//	getActive
@@ -439,16 +446,16 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	 * 	Get InActive Servers
 	 *	@return array of inactive servers
 	 */
-	protected synchronized ServerWrapper[] getInActive()
+	protected synchronized LocalServerController[] getInActive()
 	{
-		ArrayList<ServerWrapper> list = new ArrayList<ServerWrapper>();
+		ArrayList<LocalServerController> list = new ArrayList<LocalServerController>();
 		for (int i = 0; i < m_servers.size(); i++)
 		{
-			ServerWrapper server = m_servers.get(i);
+			LocalServerController server = m_servers.get(i);
 			if (server != null && (server.scheduleFuture == null || server.scheduleFuture.isDone()))
 				list.add (server);
 		}
-		ServerWrapper[] retValue = new ServerWrapper[list.size()];
+		LocalServerController[] retValue = new LocalServerController[list.size()];
 		list.toArray (retValue);
 		return retValue;
 	}	//	getInActive
@@ -457,33 +464,32 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	 * 	Get all Servers
 	 *	@return array of servers
 	 */
-	public synchronized ServerWrapper[] getAll()
+	private synchronized LocalServerController[] getLocalServerControllers()
 	{
-		ServerWrapper[] retValue = new ServerWrapper[m_servers.size()];
+		LocalServerController[] retValue = new LocalServerController[m_servers.size()];
 		m_servers.toArray (retValue);
 		return retValue;
 	}	//	getAll
 	
-	public synchronized int getStatus(AdempiereProcessor processor)
-	{
-		int status = SERVER_STATE_NOT_SCHEDULE;
-		for (int i = 0; i < m_servers.size(); i++)
-		{
-			ServerWrapper server = m_servers.get(i);
-			AdempiereProcessor model = server.server.getModel();
-			if (model.getClass().getName().equals(processor.getClass().getName()) && model.getServerID().equals(processor.getServerID()))
-			{
-				if (server.scheduleFuture == null || server.scheduleFuture.isDone())
-				{
-					status = SERVER_STATE_STOPPED;
-				}
-				else
-				{
-					status = SERVER_STATE_STARTED;
-				}
+	
+	@Override
+	public ServerInstance[] getServerInstances() {
+		List<ServerInstance> responses = new ArrayList<>();
+		LocalServerController[] controllers = getLocalServerControllers();
+		for (LocalServerController controller : controllers) {
+			if (controller.getServer() != null) {
+				ServerInstance response = new ServerInstance(controller.getServer().getServerID(), controller.getServer().getModel(), 
+						controller.isAlive(), controller.isInterrupted(), controller.getServer().isSleeping(), 
+						controller.getServer().getStartTime(), controller.getServer().getStatistics(), controller.getServer().getServerInfo());
+				responses.add(response);
 			}
 		}
-		return status;
+		return responses.toArray(new ServerInstance[0]);
+	}
+
+	public synchronized int getStatus(AdempiereProcessor processor)
+	{
+		return getServerStatus(processor.getServerID());
 	}
 	
 	/**
@@ -491,13 +497,34 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	 *	@param serverID server id
 	 *	@return server or null
 	 */
-	public synchronized ServerWrapper getServer (String serverID)
+	@Override
+	public synchronized ServerInstance getServerInstance(String serverID)
 	{
 		if (serverID == null)
 			return null;
 		for (int i = 0; i < m_servers.size(); i++)
 		{
-			ServerWrapper server = m_servers.get(i);
+			LocalServerController server = m_servers.get(i);
+			if (serverID.equals(server.server.getServerID()))
+				return new ServerInstance(server.getServer().getServerID(), server.getServer().getModel(), 
+						server.isAlive(), server.isInterrupted(), server.getServer().isSleeping(),
+						server.getServer().getStartTime(), server.getServer().getStatistics(), server.getServer().getServerInfo());
+		}
+		return null;
+	}	//	getServer
+	
+	/**
+	 * 	Get Server with ID
+	 *	@param serverID server id
+	 *	@return server or null
+	 */
+	private synchronized LocalServerController getLocalServerController (String serverID)
+	{
+		if (serverID == null)
+			return null;
+		for (int i = 0; i < m_servers.size(); i++)
+		{
+			LocalServerController server = m_servers.get(i);
 			if (serverID.equals(server.server.getServerID()))
 				return server;
 		}
@@ -522,49 +549,48 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	 * 	Get Description
 	 *	@return description
 	 */
+	@Override
 	public String getDescription()
 	{
-		return "$Revision: 1.4 $";
+		return Adempiere.getVersion();
 	}	//	getDescription
 	
 	/**
 	 * 	Get Number Servers
 	 *	@return no of servers
 	 */
-	public synchronized String getServerCount()
+	@Override
+	public synchronized ServerCount getServerCount()
 	{
-		int noRunning = 0;
-		int noStopped = 0;
+		ServerCount serverCount = new ServerCount();
 		for (int i = 0; i < m_servers.size(); i++)
 		{
-			ServerWrapper server = m_servers.get(i);
+			LocalServerController server = m_servers.get(i);
 			if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
-				noRunning++;
+				serverCount.addStarted(1);
 			else
-				noStopped++;
+				serverCount.addStopped(1);
 		}
-		String info = String.valueOf(m_servers.size())
-			+ " - Running=" + noRunning
-			+ " - Stopped=" + noStopped;
-		return info;
+		return serverCount;
 	}	//	getServerCount
 	
 	/**
 	 * 	Get start date
 	 *	@return start date
 	 */
+	@Override
 	public Timestamp getStartTime()
 	{
 		return m_start;
 	}	//	getStartTime
 
-	public static class ServerWrapper implements Runnable
+	private class LocalServerController implements Runnable
 	{
 
 		protected AdempiereServer server;
 		protected volatile ScheduledFuture<?> scheduleFuture;
 
-		public ServerWrapper(AdempiereServer server) {
+		public LocalServerController(AdempiereServer server) {
 			this.server = server;
 			start();
 		}
@@ -633,12 +659,12 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	}
 
 	public Boolean remove(String serverID) {
-		ServerWrapper server = getServer(serverID);
+		LocalServerController server = getLocalServerController(serverID);
 		if (server == null)
 			return false;
 		
 		if (server.scheduleFuture != null && !server.scheduleFuture.isDone()) {
-			if (!stop(serverID)) {
+			if (stop(serverID) != null) {
 				return false;
 			}
 		}
@@ -652,5 +678,39 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		}
 		
 		return false;
+	}
+
+	@Override
+	public String runNow(String serverId) {
+		LocalServerController serverInstance = getLocalServerController(serverId);
+		if (serverInstance == null || serverInstance.getServer() == null) {
+			return "Server " + serverId + " not found";
+		}
+		
+		if (serverInstance.getServer().isSleeping())
+		{
+			serverInstance.getServer().runNow();
+		}
+		else
+		{
+			int count = 0;
+			while(!serverInstance.getServer().isSleeping() && count < 5)
+			{
+				count++;
+				try {
+					Thread.sleep(60000);
+				} catch (InterruptedException e) {
+					Thread.interrupted();
+				}				
+			}
+			if (serverInstance.getServer().isSleeping())
+				serverInstance.getServer().runNow();
+			else
+			{
+				return "Timeout waiting for server process to be available for execution.";
+			}
+		}
+		
+		return null;
 	}
 }	//	AdempiereServerMgr

@@ -38,6 +38,8 @@ Import-Package: javax.jms;version="1.1.0",
 Export-Package: org.adempiere.server,
  org.compiere.ldap,
  org.compiere.server,
+ org.idempiere.server.cluster,
+ org.idempiere.server.cluster.callable,
  org.idempiere.server.factory
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/*.xml

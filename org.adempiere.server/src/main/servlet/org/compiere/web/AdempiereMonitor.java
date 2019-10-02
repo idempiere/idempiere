@@ -26,6 +26,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
+import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.adempiere.base.IServiceHolder;
+import org.adempiere.base.Service;
 import org.adempiere.util.LogAuthFailure;
 import org.apache.ecs.HtmlColor;
 import org.apache.ecs.xhtml.a;
@@ -69,10 +72,11 @@ import org.compiere.model.MStore;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.Query;
-import org.compiere.server.AdempiereServer;
 import org.compiere.server.AdempiereServerGroup;
 import org.compiere.server.AdempiereServerMgr;
-import org.compiere.server.AdempiereServerMgr.ServerWrapper;
+import org.compiere.server.IServerManager;
+import org.compiere.server.ServerCount;
+import org.compiere.server.ServerInstance;
 import org.compiere.util.CLogFile;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
@@ -83,9 +87,12 @@ import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.compiere.util.WebDoc;
 import org.compiere.util.WebEnv;
 import org.compiere.util.WebUtil;
+import org.idempiere.distributed.IClusterService;
+import org.idempiere.server.cluster.ClusterServerMgr;
 
 /**
  *	Adempiere Server Monitor
@@ -103,7 +110,7 @@ public class AdempiereMonitor extends HttpServlet
 	/**	Logger				*/
 	private static CLogger	log = CLogger.getCLogger(AdempiereMonitor.class);
 	/**	The Server			*/
-	private static AdempiereServerMgr	m_serverMgr = null;
+	private static IServerManager	m_serverMgr = null;
 	/** Message				*/
 	private static p				m_message = null;
 	
@@ -189,8 +196,8 @@ public class AdempiereMonitor extends HttpServlet
 			return false;
 		
 		if (log.isLoggable(Level.INFO)) log.info ("ServerID=" + serverID);
-		ServerWrapper server = m_serverMgr.getServer(serverID);
-		if (server == null || server.getServer() == null)
+		ServerInstance server = m_serverMgr.getServerInstance(serverID);
+		if (server == null)
 		{
 			m_message = new p();
 			m_message.addElement(new strong("Server not found: "));
@@ -207,7 +214,7 @@ public class AdempiereMonitor extends HttpServlet
 		para.addElement(link);
 		b.addElement(para);
 		//
-		b.addElement(new h2(server.getServer().getName()));
+		b.addElement(new h2(server.getModel().getName()));
 		//
 		table table = new table();
 		table.setBorder(1);
@@ -224,7 +231,7 @@ public class AdempiereMonitor extends HttpServlet
 	//	line.addElement(new th().addElement("Description"));
 		table.addElement(line);
 		
-		AdempiereProcessorLog[] logs = server.getServer().getLogs();
+		AdempiereProcessorLog[] logs = server.getModel().getLogs();
 		for (int i = 0; i < logs.length; i++)
 		{
 			AdempiereProcessorLog pLog = logs[i];
@@ -260,8 +267,8 @@ public class AdempiereMonitor extends HttpServlet
 			return false;
 		
 		if (log.isLoggable(Level.INFO)) log.info ("ServerID=" + serverID);
-		ServerWrapper server = m_serverMgr.getServer(serverID);
-		if (server == null || server.getServer() == null)
+		ServerInstance server = m_serverMgr.getServerInstance(serverID);
+		if (server == null)
 		{
 			m_message = new p();
 			m_message.addElement(new strong("Server not found: "));
@@ -269,32 +276,14 @@ public class AdempiereMonitor extends HttpServlet
 			return false;
 		}
 		//
-		AdempiereServer serverInstance = server.getServer();
-		if (serverInstance.isSleeping())
+		String error = m_serverMgr.runNow(serverID);
+		if (!Util.isEmpty(error, true))
 		{
-			serverInstance.runNow();
+			m_message = new p();
+			m_message.addElement(new strong(error));
+			m_message.addElement(serverID);
 		}
-		else
-		{
-			int count = 0;
-			while(!serverInstance.isSleeping() && count < 5)
-			{
-				count++;
-				try {
-					Thread.sleep(60000);
-				} catch (InterruptedException e) {
-					Thread.interrupted();
-				}				
-			}
-			if (serverInstance.isSleeping())
-				serverInstance.runNow();
-			else
-			{
-				m_message = new p();
-				m_message.addElement(new strong("Timeout waiting for server process  to be available for execution."));
-				m_message.addElement(serverID);
-			}
-		}
+		
 		//
 		return true;
 	}	//	processRunParameter
@@ -323,9 +312,9 @@ public class AdempiereMonitor extends HttpServlet
 			{
 				if (start)
 				{	
-					ok = m_serverMgr.startAll();
+					ok = m_serverMgr.startAll()==null;
 				} else{					
-					ok = m_serverMgr.stopAll();
+					ok = m_serverMgr.stopAll()==null;
 				}
 					
 				m_message.addElement("All");
@@ -334,22 +323,22 @@ public class AdempiereMonitor extends HttpServlet
 			{
 				if (reload) 
 				{
-					ok=m_serverMgr.reload();
+					ok=m_serverMgr.reload()==null;
 					this.createSummaryPage(request, response,true);
 					m_dirAccessList = getDirAcessList();
 				} else {
-					ServerWrapper server = m_serverMgr.getServer(serverID);
-					if (server == null || server.getServer() == null) {
+					 ServerInstance server = m_serverMgr.getServerInstance(serverID);
+					if (server == null) {
 						m_message = new p();
 						m_message.addElement(new strong("Server not found: "));
 						m_message.addElement(serverID);
 						return;
 					} else {
 						if (start)
-							ok = m_serverMgr.start(serverID);
+							ok = m_serverMgr.start(serverID)==null;
 						else
-							ok = m_serverMgr.stop(serverID);
-						m_message.addElement(server.getServer().getName());
+							ok = m_serverMgr.stop(serverID)==null;
+						m_message.addElement(server.getModel().getName());
 					}
 				}
 			}
@@ -631,13 +620,24 @@ public class AdempiereMonitor extends HttpServlet
 		table.addElement(line);
 		line = new tr();
 		line.addElement(new th().addElement("Servers"));
-		line.addElement(new td().addElement(WebEnv.getCellContent(m_serverMgr.getServerCount())));
+		line.addElement(new td().addElement(WebEnv.getCellContent(createServerCountMessage(m_serverMgr.getServerCount()))));
 		table.addElement(line);
 		line = new tr();
 		line.addElement(new th().addElement("Last Updated"));
 		line.addElement(new td().addElement(new Timestamp(System.currentTimeMillis()).toString()));
 		table.addElement(line);
 		bb.addElement(table);
+		
+		IServiceHolder<IClusterService> holder = Service.locator().locate(IClusterService.class);
+		IClusterService service = holder != null ? holder.getService() : null;
+		if (service != null && service.getLocalMember() != null)
+		{
+			line = new tr();
+			line.addElement(new th().addElement("Cluster Node Id"));
+			line.addElement(new td().addElement(WebEnv.getCellContent(service.getLocalMember().getId())));
+			table.addElement(line);
+			bb.addElement(table);
+		}
 		//
 		p para = new p();
 		a link = new a ("idempiereMonitor?Action=Start_All", "Start All");
@@ -656,16 +656,16 @@ public class AdempiereMonitor extends HttpServlet
 		//	***** Server Links *****			
 		bb.addElement(new hr());
 		para = new p();
-		ServerWrapper[] servers = m_serverMgr.getAll();		
+		ServerInstance[] servers = m_serverMgr.getServerInstances();		
 		for (int i = 0; i < servers.length; i++)
 		{
 			if (i > 0)
 				para.addElement(new br());
-			ServerWrapper server = servers[i];
-			link = new a ("#" + server.getServer().getServerID(), server.getServer().getName());
+			ServerInstance server = servers[i];
+			link = new a ("#" + server.getServerId(), server.getModel().getName());
 			para.addElement(link);
 			font status = null;
-			if (server.isAlive())
+			if (server.isStarted())
 				status = new font().setColor(HtmlColor.GREEN).addElement(" (Running)");
 			else
 				status = new font().setColor(HtmlColor.RED).addElement(" (Stopped)");
@@ -680,10 +680,10 @@ public class AdempiereMonitor extends HttpServlet
 		bb.removeEndEndModifier();
 		for (int i = 0; i < servers.length; i++)
 		{
-			ServerWrapper server = servers[i];
+			ServerInstance server = servers[i];
 			bb.addElement(new hr());
-			bb.addElement(new a().setName(server.getServer().getServerID()));
-			bb.addElement(new h2(server.getServer().getName()));
+			bb.addElement(new a().setName(server.getServerId()));
+			bb.addElement(new h2(server.getModel().getName()));			
 			//
 			table = new table();
 			table.setBorder(1);
@@ -691,11 +691,11 @@ public class AdempiereMonitor extends HttpServlet
 			table.setCellPadding(2);
 			//	Status
 			line = new tr();
-			if (server.isAlive())
+			if (server.isStarted())
 			{
 				String msg = "Stop";
-				link = new a ("idempiereMonitor?Action=Stop_" + server.getServer().getServerID(), msg);
-				if (server.getServer().isSleeping())
+				link = new a ("idempiereMonitor?Action=Stop_" + server.getServerId(), msg);
+				if (server.isSleeping())
 				{
 					line.addElement(new th().addElement("Sleeping"));
 					line.addElement(new td().addElement(link));
@@ -708,54 +708,74 @@ public class AdempiereMonitor extends HttpServlet
 				table.addElement(line);
 				line = new tr();
 				line.addElement(new th().addElement("Start - Elapsed"));
-				line.addElement(new td().addElement(WebEnv.getCellContent(server.getServer().getStartTime()) 
-					+ " - " + TimeUtil.formatElapsed(server.getServer().getStartTime())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(server.getStartTime()) 
+					+ " - " + TimeUtil.formatElapsed(server.getStartTime())));
 			}
 			else
 			{
 				String msg = "Start";
 				line.addElement(new th().addElement("Not Started"));
-				link = new a ("idempiereMonitor?Action=Start_" + server.getServer().getServerID(), msg);
+				link = new a ("idempiereMonitor?Action=Start_" + server.getServerId(), msg);
 				line.addElement(new td().addElement(link));
 			}
 			table.addElement(line);
 			//
 			line = new tr();
 			line.addElement(new th().addElement("Description"));
-			line.addElement(new td().addElement(WebEnv.getCellContent(server.getServer().getDescription())));
+			line.addElement(new td().addElement(WebEnv.getCellContent(server.getModel().getDescription())));
 			table.addElement(line);
 			//
 			line = new tr();
 			line.addElement(new th().addElement("Last Run"));
-			line.addElement(new td().addElement(WebEnv.getCellContent(server.getServer().getDateLastRun())));
+			line.addElement(new td().addElement(WebEnv.getCellContent(server.getModel().getDateLastRun())));
 			table.addElement(line);
 			line = new tr();
 			line.addElement(new th().addElement("Info"));
-			line.addElement(new td().addElement(WebEnv.getCellContent(server.getServer().getServerInfo())));
+			line.addElement(new td().addElement(WebEnv.getCellContent(server.getServerInfo())));
 			table.addElement(line);
 			//
 			line = new tr();
 			line.addElement(new th().addElement("Next Run"));
 			td td = new td();
-			td.addElement(WebEnv.getCellContent(server.getServer().getDateNextRun(false)));
+			td.addElement(WebEnv.getCellContent(server.getModel().getDateNextRun(false)));
 			td.addElement(" - ");
-			link = new a ("idempiereMonitor?RunNow=" + server.getServer().getServerID(), "(Run Now)");
+			link = new a ("idempiereMonitor?RunNow=" + server.getServerId(), "(Run Now)");
 			td.addElement(link);
 			line.addElement(td);
 			table.addElement(line);
 			//
 			line = new tr();
 			line.addElement(new th().addElement("Statistics"));
-			line.addElement(new td().addElement(server.getServer().getStatistics()));
+			line.addElement(new td().addElement(server.getStatistics()));
 			table.addElement(line);
 			//
+			if (server.getClusterMember() != null) 
+			{
+				InetAddress address = server.getClusterMember().getAddress();
+				String ip = address != null ? address.getHostAddress() : null;
+				if (ip != null && 
+					(ip.startsWith("10.") ||  
+				     ip.startsWith("172.16") || 
+				     ip.startsWith("192.168"))) 
+				{					
+					line = new tr();
+					line.addElement(new th().addElement("Cluster Node IP"));
+					line.addElement(new td().addElement(ip));
+				}
+				table.addElement(line);
+				line = new tr();
+				line.addElement(new th().addElement("Cluster Node Id"));
+				line.addElement(new td().addElement(server.getClusterMember().getId()));
+				table.addElement(line);
+				
+			}
 			
 			//	Add table to Body
 			bb.addElement(table);
 			link = new a ("#top", "Top");
 			bb.addElement(link);
 			bb.addElement(" - ");
-			link = new a ("idempiereMonitor?Log=" + server.getServer().getServerID(), "Log");
+			link = new a ("idempiereMonitor?Log=" + server.getServerId(), "Log");
 			bb.addElement(link);
 			bb.addElement(" - ");
 			link = new a ("idempiereMonitor", "Refresh");
@@ -765,6 +785,20 @@ public class AdempiereMonitor extends HttpServlet
 		//	fini
 		WebUtil.createResponse (request, response, this, null, doc, false);
 	}	//	createSummaryPage
+	
+	private String createServerCountMessage(ServerCount serverCount) {
+		StringBuilder builder = new StringBuilder();
+		
+		if (serverCount != null) {
+			builder.append(serverCount.getStarted()+serverCount.getStopped())
+				.append(" - Running=")
+				.append(serverCount.getStarted())
+				.append(" - Stopped=")
+				.append(serverCount.getStopped());
+		}
+		
+		return builder.toString();
+	}
 	
 	/**************************************************************************
 	 * 	Create & Return Summary Page
@@ -817,29 +851,29 @@ public class AdempiereMonitor extends HttpServlet
 		writer.print(m_serverMgr.getServerCount());
 		writer.println("</server-count>");
 		
-		ServerWrapper[] servers = m_serverMgr.getAll();		
+		ServerInstance[] servers = m_serverMgr.getServerInstances();		
 		for (int i = 0; i < servers.length; i++)
 		{
-			ServerWrapper server = servers[i];
+			ServerInstance server = servers[i];
 			writer.println("\t\t<server>");
 			writer.print("\t\t\t<id>");
-			writer.print(server.getServer().getServerID());
+			writer.print(server.getServerId());
 			writer.println("</id>");
 			writer.print("\t\t\t<name>");
-			writer.print(server.getServer().getName());
+			writer.print(server.getModel().getName());
 			writer.println("</name>");
 			writer.print("\t\t\t<description>");
-			writer.print(server.getServer().getDescription());
+			writer.print(server.getModel().getDescription());
 			writer.println("</description>");
 			writer.print("\t\t\t<info>");
-			writer.print(server.getServer().getServerInfo());
+			writer.print(server.getServerInfo());
 			writer.println("</info>");
 			writer.print("\t\t\t<status>");
-			if (server.isAlive())
+			if (server.isStarted())
 			{
 				if (server.isInterrupted())
 					writer.print("Interrupted");
-				else if (server.getServer().isSleeping())
+				else if (server.isSleeping())
 					writer.print("Sleeping");
 				else
 					writer.print("Running");
@@ -848,16 +882,16 @@ public class AdempiereMonitor extends HttpServlet
 				writer.print("Stopped");
 			writer.println("</status>");
 			writer.print("\t\t\t<start-time>");
-			writer.print(server.getServer().getStartTime());
+			writer.print(server.getStartTime());
 			writer.println("</start-time>");
 			writer.print("\t\t\t<last-run>");
-			writer.print(server.getServer().getDateLastRun());
+			writer.print(server.getModel().getDateLastRun());
 			writer.println("</last-run>");
 			writer.print("\t\t\t<next-run>");
-			writer.print(server.getServer().getDateNextRun(false));
+			writer.print(server.getModel().getDateNextRun(false));
 			writer.println("</next-run>");
 			writer.print("\t\t\t<statistics>");
-			writer.print(server.getServer().getStatistics());
+			writer.print(server.getStatistics());
 			writer.println("</statistics>");
 			writer.println("\t\t</server>");
 		}
@@ -1148,7 +1182,16 @@ public class AdempiereMonitor extends HttpServlet
 	{
 		WebEnv.initWeb(config);
 		log.info ("");
+		
+		//always create the local server manager instance
 		m_serverMgr = AdempiereServerMgr.get();
+		
+		//switch to cluster manager if cluster service is available
+		IServiceHolder<IClusterService> holder = Service.locator().locate(IClusterService.class);
+		IClusterService service = holder != null ? holder.getService() : null;
+		if (service != null)
+			m_serverMgr = ClusterServerMgr.getInstance();
+				
 		m_dirAccessList = getDirAcessList();
 	}	//	init
 	

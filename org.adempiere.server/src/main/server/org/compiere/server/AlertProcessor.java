@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.logging.Level;
 
 import org.adempiere.impexp.ArrayExcelExporter;
-import org.compiere.Adempiere;
 import org.compiere.model.MAlert;
 import org.compiere.model.MAlertProcessor;
 import org.compiere.model.MAlertProcessorLog;
@@ -457,21 +456,5 @@ public class AlertProcessor extends AdempiereServer
 	public String getServerInfo()
 	{
 		return "#" + p_runCount + " - Last=" + m_summary.toString();
-	}	//	getServerInfo
-
-	
-	/***************************************************************************
-	 * 	Test
-	 *	@param args ignored
-	 */
-	public static void main (String[] args)
-	{
-		Adempiere.startup(true);
-		MAlertProcessor model = new MAlertProcessor (Env.getCtx(), 100, null);
-		AlertProcessor ap = new AlertProcessor(model);
-		AdempiereServerMgr.ServerWrapper wrapper = new AdempiereServerMgr.ServerWrapper(ap);
-		wrapper.start();
-		
-	}
-	
+	}	//	getServerInfo	
 }
