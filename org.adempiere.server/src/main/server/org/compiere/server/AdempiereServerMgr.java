@@ -56,7 +56,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	 * 	Get Adempiere Server Manager
 	 *	@return mgr
 	 */
-	public synchronized static IServerManager get()
+	public synchronized static AdempiereServerMgr get()
 	{
 		return get(true);
 	}
@@ -65,7 +65,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	 * 	Get Adempiere Server Manager
 	 *	@return mgr
 	 */
-	public synchronized static IServerManager get(boolean createNew)
+	public synchronized static AdempiereServerMgr get(boolean createNew)
 	{
 		if (m_serverMgr == null && createNew)
 		{
