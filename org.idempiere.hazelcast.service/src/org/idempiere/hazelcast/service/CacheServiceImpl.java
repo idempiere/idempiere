@@ -16,8 +16,11 @@ package org.idempiere.hazelcast.service;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.idempiere.distributed.ICacheService;
+
+import com.hazelcast.core.IMap;
 
 /**
  * @author hengsin
@@ -56,6 +59,23 @@ public class CacheServiceImpl implements ICacheService {
 			return Activator.getHazelcastInstance().getSet(name);
 		else
 			return null;
+	}
+
+	@Override
+	public <K, V> boolean tryLock(Map<K, V> map, K key, long timeout, TimeUnit timeunit) throws InterruptedException {
+		if (map instanceof IMap<?, ?>) {
+			IMap<K, V> imap = (IMap<K, V>) map;
+			return imap.tryLock(key, timeout, timeunit);
+		}
+		return false;
+	}
+
+	@Override
+	public <K, V> void unLock(Map<K, V> map, K key) {
+		if (map instanceof IMap<?, ?>) {
+			IMap<K, V> imap = (IMap<K, V>) map;
+			imap.unlock(key);
+		}
 	}
 
 }

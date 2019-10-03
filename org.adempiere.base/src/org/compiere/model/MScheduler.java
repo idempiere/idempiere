@@ -96,7 +96,14 @@ public class MScheduler extends X_AD_Scheduler
 	 */
 	public String getServerID ()
 	{
-		return "Scheduler" + get_ID();
+		if (get_ID() == 0 && get_IDOld() > 0)
+		{
+			return "Scheduler" + get_IDOld();
+		}
+		else
+		{
+			return "Scheduler" + get_ID();
+		}
 	}	//	getServerID
 
 	/**

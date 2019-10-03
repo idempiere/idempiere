@@ -39,16 +39,19 @@ import java.util.concurrent.Future;
 import org.adempiere.base.IServiceHolder;
 import org.adempiere.base.Service;
 import org.compiere.Adempiere;
+import org.compiere.model.MScheduler;
 import org.compiere.server.IServerManager;
 import org.compiere.server.ServerCount;
 import org.compiere.server.ServerInstance;
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
+import org.idempiere.server.cluster.callable.AddSchedulerCallable;
 import org.idempiere.server.cluster.callable.GetAllCallable;
 import org.idempiere.server.cluster.callable.GetServerCallable;
 import org.idempiere.server.cluster.callable.GetServerCountCallable;
 import org.idempiere.server.cluster.callable.GetStartTimeCallable;
 import org.idempiere.server.cluster.callable.ReloadCallable;
+import org.idempiere.server.cluster.callable.RemoveSchedulerCallable;
 import org.idempiere.server.cluster.callable.Response;
 import org.idempiere.server.cluster.callable.RunNowCallable;
 import org.idempiere.server.cluster.callable.StartAllCallable;
@@ -374,48 +377,59 @@ public class ClusterServerMgr implements IServerManager {
 		}
 	}
 
-	/**
-	 * find server instance from non-local nodes 
-	 * @param serverId
-	 * @return ServerInstance 
-	 */
-	public ServerInstance getServerInstanceAtOtherMembers(String serverId) {
+	@Override
+	public String addScheduler(MScheduler scheduler) {
 		IClusterService service = getClusterService();
 		if (service == null)
-			return null;
+			return "Cluster service not available";
 		
-		GetServerCallable callable = new GetServerCallable(serverId);
-		Collection<IClusterMember> members = service.getMembers();
-		if (members == null || members.isEmpty())
-			return null;
-		final IClusterMember local = service.getLocalMember();
-		if (local == null)
-			return null;
-		List<IClusterMember> others = new ArrayList<>();
-		members.forEach(e -> {
-			if (!e.getId().equals(local.getId())) {
-				others.add(e);
-			}
-		});
-		if (others.size() > 0) {
-			Map<IClusterMember, Future<ServerInstance>> futureMap = service.execute(callable, others);
-			if (futureMap != null) {
-				try {
-					Set<Entry<IClusterMember, Future<ServerInstance>>> results = futureMap.entrySet();
-					for(Entry<IClusterMember, Future<ServerInstance>> f : results) {
-						ServerInstance i = f.getValue().get();
-						if (i != null) {
-							i.setClusterMember(f.getKey());
-							return i;
-						}
+		AddSchedulerCallable callable = new AddSchedulerCallable(scheduler);
+		Map<IClusterMember, Future<Response>> futureMap = service.execute(callable, service.getMembers());
+		if (futureMap != null) {
+			try {
+				Collection<Future<Response>> results = futureMap.values();
+				for(Future<Response> f : results) {
+					Response response = f.get();
+					if (response != null && response.getServerId() != null) {
+						return response.getError();
 					}
-				} catch (InterruptedException e) {
-					throw new RuntimeException(e.getMessage(), e);
-				} catch (ExecutionException e) {
-					throw new RuntimeException(e.getMessage(), e);
 				}
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e.getMessage(), e);
+			} catch (ExecutionException e) {
+				throw new RuntimeException(e.getMessage(), e);
 			}
+			return null;
+		} else {
+			return "Failed to send add scheduler request through cluster servie";
 		}
-		return null;
+	}
+	
+	@Override
+	public String removeScheduler(MScheduler scheduler) {
+		IClusterService service = getClusterService();
+		if (service == null)
+			return "Cluster service not available";
+		
+		RemoveSchedulerCallable callable = new RemoveSchedulerCallable(scheduler);
+		Map<IClusterMember, Future<Response>> futureMap = service.execute(callable, service.getMembers());
+		if (futureMap != null) {
+			try {
+				Collection<Future<Response>> results = futureMap.values();
+				for(Future<Response> f : results) {
+					Response response = f.get();
+					if (response != null && response.getServerId() != null) {
+						return response.getError();
+					}
+				}
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e.getMessage(), e);
+			} catch (ExecutionException e) {
+				throw new RuntimeException(e.getMessage(), e);
+			}
+			return null;
+		} else {
+			return "Failed to send remove scheduler request through cluster servie";
+		}
 	}
 }

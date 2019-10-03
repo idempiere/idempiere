@@ -23,113 +23,45 @@
 * - Trek Global Corporation                                           *
 * - Heng Sin Low                                                      *
 **********************************************************************/
-package org.compiere.server;
+package org.idempiere.server.cluster.callable;
 
-import java.sql.Timestamp;
+import java.io.Serializable;
+import java.util.concurrent.Callable;
 
 import org.compiere.model.MScheduler;
+import org.compiere.server.AdempiereServerMgr;
+import org.compiere.server.IServerManager;
 
 /**
- * 
  * @author hengsin
  *
  */
-public interface IServerManager {
-
-	public static int SERVER_STATE_NOT_SCHEDULE = 0;
-	public static int SERVER_STATE_STARTED = 1;
-	public static int SERVER_STATE_STOPPED = 2;
+public class RemoveSchedulerCallable implements Callable<Response>, Serializable {
 
 	/**
-	 * Get server instance by id
-	 * @param serverId
-	 * @return ServerInstance or null if not found
+	 * generated serial id
 	 */
-	public ServerInstance getServerInstance(String serverId);
+	private static final long serialVersionUID = 7929697664683268446L;
+	private MScheduler scheduler;
 	
 	/**
-	 * 
 	 * @param serverId
-	 * @return server status
 	 */
-	public default int getServerStatus(String serverId) {
-		ServerInstance instance = getServerInstance(serverId);
-		if (instance == null || instance.getServerId() == null) {
-			return SERVER_STATE_NOT_SCHEDULE;
-		} else if (instance.isStarted()) {
-			return SERVER_STATE_STARTED;
-		} else {
-			return SERVER_STATE_STOPPED;
-		}
+	public RemoveSchedulerCallable(MScheduler scheduler) {
+		this.scheduler = scheduler;
 	}
 
-	/**
-	 * 
-	 * @param serverId
-	 * @return error
-	 */
-	public String runNow(String serverId);
-
-	/**
-	 * 
-	 * @param serverId
-	 * @return error
-	 */
-	public String start(String serverId);
-
-	/**
-	 * 
-	 * @param serverId
-	 * @return error
-	 */
-	public String stop(String serverId);
-	
-	/**
-	 * @return error
-	 */
-	public String startAll();
-	
-	/**
-	 * @return error
-	 */
-	public String stopAll();
-
-	/**
-	 * @return error
-	 */
-	public String reload();
-
-	/**
-	 * @return start time stamp
-	 */
-	public Timestamp getStartTime();
-
-	/**
-	 * 
-	 * @return ServerCount
-	 */
-	public ServerCount getServerCount();
-
-	/**
-	 * @return all server instances
-	 */
-	public ServerInstance[] getServerInstances();
-
-	/**
-	 * @return description
-	 */
-	public String getDescription();
-
-	/**
-	 * @param scheduler
-	 * @return error
-	 */
-	public String addScheduler(MScheduler scheduler);
-
-	/**
-	 * 
-	 * @param scheduler
-	 * @return error
-	 */
-	public String removeScheduler(MScheduler scheduler);
+	@Override
+	public Response call() throws Exception {
+		Response response = new Response();
+		IServerManager serverMgr = AdempiereServerMgr.get(false);
+		if (serverMgr != null) {
+			if (serverMgr.getServerInstance(scheduler.getServerID()) != null) {
+				response.error = serverMgr.removeScheduler(scheduler);
+				response.serverId = scheduler.getServerID();
+			}
+		}
+		
+		return response;
+	}
 }

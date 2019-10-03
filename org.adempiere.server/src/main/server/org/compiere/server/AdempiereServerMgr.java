@@ -20,12 +20,14 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import org.adempiere.base.IServiceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.server.AdempiereServerActivator;
 import org.adempiere.server.IServerFactory;
@@ -35,7 +37,9 @@ import org.compiere.model.MScheduler;
 import org.compiere.model.MSession;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
-import org.idempiere.server.cluster.ClusterServerMgr;
+import org.idempiere.distributed.ICacheService;
+import org.idempiere.distributed.IClusterMember;
+import org.idempiere.distributed.IClusterService;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.ServiceReference;
@@ -133,6 +137,34 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		if (stopAll() != null)
 			return "Failed to stop all servers";
 		
+		String clusterId = getClusterMemberId();
+		if (clusterId != null) {
+			Map<String, String> map = getServerOwnerMap();
+			if (map != null) {
+				ICacheService cacheService = getCacheService();
+				try {
+					String reloadLockKey = "cluster.server.owner.map.reload";
+					if (cacheService.tryLock(map, reloadLockKey, 30, TimeUnit.SECONDS)) {
+						try {
+							List<String> toRemove = new ArrayList<>();
+							for(Map.Entry<String, String> entry : map.entrySet()) {
+								if (entry.getValue().equals(clusterId)) {
+									toRemove.add(entry.getKey());
+								}
+							}
+							for(String key : toRemove) {
+								map.remove(key);
+							}
+						} finally {
+							cacheService.unLock(map, reloadLockKey);
+						}
+					}					
+				} catch (Exception e) {
+					return "Failed to lock cluster server owner map";
+				}
+			}
+		}
+				
 		int noServers = 0;		
 		m_servers=new ArrayList<LocalServerController>();
 		processorClass = new HashSet<String>();
@@ -163,6 +195,31 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 				{
 					AdempiereProcessor model = server.getModel();
 					if (canRunHere(server, model)) {
+						String clusterId = getClusterMemberId();
+						if (clusterId != null) {
+							Map<String, String> map = getServerOwnerMap();
+							if (map != null) {
+								ICacheService cacheService = getCacheService();
+								try {
+									if (cacheService.tryLock(map, server.getServerID(), 30, TimeUnit.SECONDS)) {
+										try {
+											String memberId = map.get(server.getServerID());
+											if (memberId != null && !memberId.equals(clusterId)) {
+												continue;
+											} else if (memberId == null) {
+												map.put(server.getServerID(), clusterId);
+											}
+										} finally {
+											cacheService.unLock(map, server.getServerID());
+										}
+									} else {
+										continue;
+									}
+								} catch (Exception e) {
+									continue;
+								}
+							}
+						}
 						m_servers.add(new LocalServerController(server));
 					}
 				}
@@ -171,19 +228,19 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	}
 
 	private boolean canRunHere(AdempiereServer server, AdempiereProcessor model) {
-		return AdempiereServer.isOKtoRunOnIP(model) 
-				&& ClusterServerMgr.getInstance().getServerInstanceAtOtherMembers(server.getServerID())==null;
+		return AdempiereServer.isOKtoRunOnIP(model);
 	}
 	
 	/**
 	 * @param scheduler
-	 * @return true
+	 * @return error
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public boolean addScheduler(MScheduler scheduler) {
+	@Override
+	public String addScheduler(MScheduler scheduler) {
 		String serverId = scheduler.getServerID();
 		if (getServerInstance(serverId) != null)
-			return false;
+			return null;
 		
 		//osgi server
 		List<IServerFactory> serverFactoryList = Service.locator().list(IServerFactory.class).getServices();
@@ -194,16 +251,80 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 				if (factory.getProcessorClass().getName().equals(scheduler.getClass().getName())) {
 					AdempiereServer server = factory.create(m_ctx, scheduler);
 					if (server != null && canRunHere(server, scheduler)) {
-						m_servers.add(new LocalServerController(server));
-						return start(serverId)==null;
+						if (getServerInstance(scheduler.getServerID()) == null) {
+							String clusterId = getClusterMemberId();
+							if (clusterId != null) {
+								Map<String, String> map = getServerOwnerMap();
+								if (map != null) {
+									ICacheService cacheService = getCacheService();
+									try {
+										if (cacheService.tryLock(map, server.getServerID(), 30, TimeUnit.SECONDS)) {
+											try {
+												String memberId = map.get(server.getServerID());
+												if (memberId != null && !memberId.equals(clusterId)) {
+													continue;
+												} else if (memberId == null) {
+													map.put(server.getServerID(), clusterId);
+												}
+											} finally {
+												cacheService.unLock(map, server.getServerID());
+											}
+										} else {
+											continue;
+										}
+									} catch (Exception e) {
+										continue;
+									}
+								}
+							}
+							m_servers.add(new LocalServerController(server, false));
+							return start(serverId);
+						}
 					}
 				}
 			}
 		}
 		
-		return false;		
+		return null;		
 	}
 
+	@Override
+	public synchronized String removeScheduler(MScheduler scheduler) {
+		String serverId = scheduler.getServerID();
+		LocalServerController serverController = getLocalServerController(serverId);
+		if (serverController == null)
+			return null;
+		
+		if (serverController.isAlive()) {
+			String error = stop(serverId);
+			if (error != null) {
+				return error;
+			}
+		}
+		
+		for (int i = 0; i < m_servers.size(); i++) {
+			serverController = m_servers.get(i);
+			if (serverId.equals(serverController.server.getServerID())) {
+				m_servers.remove(i);
+				
+				String clusterId = getClusterMemberId();
+				if (clusterId != null) {
+					Map<String, String> map = getServerOwnerMap();
+					if (map != null) {
+						String ownerId = map.get(serverId);
+						if (ownerId != null && ownerId.equals(clusterId)) {
+							map.remove(serverId);
+						}
+					}
+				}
+				return null;
+			}
+		}
+		
+		return null;
+		
+	}
+	
 	/**
 	 * 	Get Server Context
 	 *	@return ctx
@@ -473,7 +594,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	
 	
 	@Override
-	public ServerInstance[] getServerInstances() {
+	public synchronized ServerInstance[] getServerInstances() {
 		List<ServerInstance> responses = new ArrayList<>();
 		LocalServerController[] controllers = getLocalServerControllers();
 		for (LocalServerController controller : controllers) {
@@ -590,9 +711,14 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		protected AdempiereServer server;
 		protected volatile ScheduledFuture<?> scheduleFuture;
 
-		public LocalServerController(AdempiereServer server) {
+		private LocalServerController(AdempiereServer server) {
+			this(server, true);
+		}
+		
+		private LocalServerController(AdempiereServer server, boolean start) {
 			this.server = server;
-			start();
+			if (start)
+				start();
 		}
 		
 		public void start() {
@@ -711,6 +837,36 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 			}
 		}
 		
+		return null;
+	}
+	
+	private IClusterService getClusterService() {
+		IServiceHolder<IClusterService> holder = Service.locator().locate(IClusterService.class);
+		IClusterService service = holder != null ? holder.getService() : null;
+		return service;
+	}
+	
+	private String getClusterMemberId() {
+		IClusterService service = getClusterService();
+		if (service != null) {
+			IClusterMember local = service.getLocalMember();
+			if (local != null)
+				return local.getId();
+		}
+		return null;
+	}
+	
+	private ICacheService getCacheService( ) {
+		IServiceHolder<ICacheService> holder = Service.locator().locate(ICacheService.class);
+		ICacheService service = holder != null ? holder.getService() : null;
+		return service;
+	}
+	
+	private Map<String, String> getServerOwnerMap() {
+		ICacheService service = getCacheService();
+		if (service != null) {
+			return service.getMap("cluster.server.owner.map");
+		}
 		return null;
 	}
 }	//	AdempiereServerMgr
