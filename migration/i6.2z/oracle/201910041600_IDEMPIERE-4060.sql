@@ -46,13 +46,8 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Failed to add and start scheduler. Error:',0,0,'Y',TO_DATE('2019-10-04 14:23:47','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2019-10-04 14:23:47','YYYY-MM-DD HH24:MI:SS'),100,200573,'SchedulerAddAndStartFail','D','898a96bf-5b1b-405a-8507-a69ac58e364e')
 ;
 
--- Oct 4, 2019, 2:24:19 PM MYT
-INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Scheduler stopped successfully',0,0,'Y',TO_DATE('2019-10-04 14:24:18','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2019-10-04 14:24:18','YYYY-MM-DD HH24:MI:SS'),100,200574,'SchedulerStopped','D','f4620ecb-bac1-408b-8609-e1997cd5a598')
-;
-
 -- Oct 4, 2019, 2:30:12 PM MYT
-INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Scheduler stopped successfully',0,0,'Y',TO_DATE('2019-10-04 14:30:06','YYYY-MM-DD HH24:MI:SS
-'),100,TO_DATE('2019-10-04 14:30:06','YYYY-MM-DD HH24:MI:SS'),100,200575,'SchedulerStoppedSuccess','D','d918dd12-9578-4160-9212-28af2114b5fe')
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Scheduler stopped successfully',0,0,'Y',TO_DATE('2019-10-04 14:30:06','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2019-10-04 14:30:06','YYYY-MM-DD HH24:MI:SS'),100,200575,'SchedulerStoppedSuccess','D','d918dd12-9578-4160-9212-28af2114b5fe')
 ;
 
 -- Oct 4, 2019, 2:30:48 PM MYT
