@@ -2193,7 +2193,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		});
     }
 
-    private void onSave(final boolean onSaveEvent, final boolean onNavigationEvent, final Callback<Boolean> callback) {
+    public void onSave(final boolean onSaveEvent, final boolean onNavigationEvent, final Callback<Boolean> callback) {
     	final Callback<Boolean> postCallback = new Callback<Boolean>() {
 			@Override
 			public void onCallback(Boolean result) {
