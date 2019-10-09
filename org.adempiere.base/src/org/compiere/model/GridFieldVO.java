@@ -361,6 +361,7 @@ public class GridFieldVO implements Serializable
 			vo.Header = rs.getString("Name");
 			vo.Description = rs.getString("Description");
 			vo.Help = rs.getString("Help");
+			vo.SeqNo = rs.getInt("SeqNo");
 			vo.displayType = rs.getInt("AD_Reference_ID");
 			vo.IsMandatory = rs.getString("IsMandatory").equals("Y");
 			vo.FieldLength = rs.getInt("FieldLength");
@@ -406,6 +407,28 @@ public class GridFieldVO implements Serializable
 					vo.MandatoryLogic = userDef.getMandatoryLogic();
 				if (userDef.getIsDisplayed()!= null)
 				    vo.IsDisplayed = "Y".equals(userDef.getIsDisplayed());
+				if (userDef.getPlaceholder()!= null)
+				    vo.Placeholder = userDef.getPlaceholder();
+				if (userDef.getPlaceholder2()!= null)
+				    vo.Placeholder2 = userDef.getPlaceholder2();
+				if (userDef.getSeqNo() > 0)
+				    vo.SeqNo = userDef.getSeqNo();
+				if (userDef.getAD_Reference_ID()>0)
+					vo.displayType = userDef.getAD_Reference_ID();
+				if (userDef.getAD_Reference_Value_ID()>0)
+					vo.AD_Reference_Value_ID = userDef.getAD_Reference_Value_ID();
+				if (userDef.getVFormat() != null)
+					vo.VFormat = userDef.getVFormat();
+				if (userDef.getAD_Val_Rule_ID() > 0)
+					vo.ValidationCode  = MValRule.get(ctx, userDef.getAD_Val_Rule_ID()).getCode();
+				if(userDef.getDefaultValue2() != null)
+					vo.DefaultValue2 = userDef.getDefaultValue2();
+				if(userDef.getValueMin() != null)
+					vo.ValueMin = userDef.getValueMin();
+				if(userDef.getValueMax() != null)
+					vo.ValueMax = userDef.getValueMax();
+				if (userDef.getIsMandatory()!= null)
+					vo.IsMandatory = "Y".equals(userDef.getIsMandatory());
 			}
 		}
 		//fim devCoffee - 3858

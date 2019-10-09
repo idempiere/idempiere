@@ -30,7 +30,7 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190924L;
+	private static final long serialVersionUID = 20191009L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Proc_Parameter (Properties ctx, int AD_UserDef_Proc_Parameter_ID, String trxName)
@@ -92,6 +92,62 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	public int getAD_Process_Para_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_Para_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
+			.getPO(getAD_Reference_ID(), get_TrxName());	}
+
+	/** Set Reference.
+		@param AD_Reference_ID 
+		System Reference and Validation
+	  */
+	public void setAD_Reference_ID (int AD_Reference_ID)
+	{
+		if (AD_Reference_ID < 1) 
+			set_Value (COLUMNNAME_AD_Reference_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
+	}
+
+	/** Get Reference.
+		@return System Reference and Validation
+	  */
+	public int getAD_Reference_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
+			.getPO(getAD_Reference_Value_ID(), get_TrxName());	}
+
+	/** Set Reference Key.
+		@param AD_Reference_Value_ID 
+		Required to specify, if data type is Table or List
+	  */
+	public void setAD_Reference_Value_ID (int AD_Reference_Value_ID)
+	{
+		if (AD_Reference_Value_ID < 1) 
+			set_Value (COLUMNNAME_AD_Reference_Value_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Reference_Value_ID, Integer.valueOf(AD_Reference_Value_ID));
+	}
+
+	/** Get Reference Key.
+		@return Required to specify, if data type is Table or List
+	  */
+	public int getAD_Reference_Value_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_Value_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -162,6 +218,34 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 		return (String)get_Value(COLUMNNAME_AD_UserDef_Proc_Parameter_UU);
 	}
 
+	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
+			.getPO(getAD_Val_Rule_ID(), get_TrxName());	}
+
+	/** Set Dynamic Validation.
+		@param AD_Val_Rule_ID 
+		Dynamic Validation Rule
+	  */
+	public void setAD_Val_Rule_ID (int AD_Val_Rule_ID)
+	{
+		if (AD_Val_Rule_ID < 1) 
+			set_Value (COLUMNNAME_AD_Val_Rule_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Val_Rule_ID, Integer.valueOf(AD_Val_Rule_ID));
+	}
+
+	/** Get Dynamic Validation.
+		@return Dynamic Validation Rule
+	  */
+	public int getAD_Val_Rule_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Val_Rule_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Default Logic.
 		@param DefaultValue 
 		Default value hierarchy, separated by ;
@@ -177,6 +261,23 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	public String getDefaultValue () 
 	{
 		return (String)get_Value(COLUMNNAME_DefaultValue);
+	}
+
+	/** Set Default Logic 2.
+		@param DefaultValue2 
+		Default value hierarchy, separated by ;
+	  */
+	public void setDefaultValue2 (String DefaultValue2)
+	{
+		set_Value (COLUMNNAME_DefaultValue2, DefaultValue2);
+	}
+
+	/** Get Default Logic 2.
+		@return Default value hierarchy, separated by ;
+	  */
+	public String getDefaultValue2 () 
+	{
+		return (String)get_Value(COLUMNNAME_DefaultValue2);
 	}
 
 	/** Set Description.
@@ -254,6 +355,54 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 		return (String)get_Value(COLUMNNAME_IsDisplayed);
 	}
 
+	/** IsMandatory AD_Reference_ID=319 */
+	public static final int ISMANDATORY_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISMANDATORY_Yes = "Y";
+	/** No = N */
+	public static final String ISMANDATORY_No = "N";
+	/** Set Mandatory.
+		@param IsMandatory 
+		Data entry is required in this column
+	  */
+	public void setIsMandatory (String IsMandatory)
+	{
+
+		set_Value (COLUMNNAME_IsMandatory, IsMandatory);
+	}
+
+	/** Get Mandatory.
+		@return Data entry is required in this column
+	  */
+	public String getIsMandatory () 
+	{
+		return (String)get_Value(COLUMNNAME_IsMandatory);
+	}
+
+	/** Set Range.
+		@param IsRange 
+		The parameter is a range of values
+	  */
+	public void setIsRange (boolean IsRange)
+	{
+		set_Value (COLUMNNAME_IsRange, Boolean.valueOf(IsRange));
+	}
+
+	/** Get Range.
+		@return The parameter is a range of values
+	  */
+	public boolean isRange () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsRange);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Mandatory Logic.
 		@param MandatoryLogic Mandatory Logic	  */
 	public void setMandatoryLogic (String MandatoryLogic)
@@ -293,6 +442,34 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
         return new KeyNamePair(get_ID(), getName());
     }
 
+	/** Set Placeholder.
+		@param Placeholder Placeholder	  */
+	public void setPlaceholder (String Placeholder)
+	{
+		set_Value (COLUMNNAME_Placeholder, Placeholder);
+	}
+
+	/** Get Placeholder.
+		@return Placeholder	  */
+	public String getPlaceholder () 
+	{
+		return (String)get_Value(COLUMNNAME_Placeholder);
+	}
+
+	/** Set Placeholder2.
+		@param Placeholder2 Placeholder2	  */
+	public void setPlaceholder2 (String Placeholder2)
+	{
+		set_Value (COLUMNNAME_Placeholder2, Placeholder2);
+	}
+
+	/** Get Placeholder2.
+		@return Placeholder2	  */
+	public String getPlaceholder2 () 
+	{
+		return (String)get_Value(COLUMNNAME_Placeholder2);
+	}
+
 	/** Set Read Only Logic.
 		@param ReadOnlyLogic 
 		Logic to determine if field is read only (applies only when field is read-write)
@@ -308,5 +485,76 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	public String getReadOnlyLogic () 
 	{
 		return (String)get_Value(COLUMNNAME_ReadOnlyLogic);
+	}
+
+	/** Set Sequence.
+		@param SeqNo 
+		Method of ordering records; lowest number comes first
+	  */
+	public void setSeqNo (int SeqNo)
+	{
+		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
+	}
+
+	/** Get Sequence.
+		@return Method of ordering records; lowest number comes first
+	  */
+	public int getSeqNo () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Max. Value.
+		@param ValueMax 
+		Maximum Value for a field
+	  */
+	public void setValueMax (String ValueMax)
+	{
+		set_Value (COLUMNNAME_ValueMax, ValueMax);
+	}
+
+	/** Get Max. Value.
+		@return Maximum Value for a field
+	  */
+	public String getValueMax () 
+	{
+		return (String)get_Value(COLUMNNAME_ValueMax);
+	}
+
+	/** Set Min. Value.
+		@param ValueMin 
+		Minimum Value for a field
+	  */
+	public void setValueMin (String ValueMin)
+	{
+		set_Value (COLUMNNAME_ValueMin, ValueMin);
+	}
+
+	/** Get Min. Value.
+		@return Minimum Value for a field
+	  */
+	public String getValueMin () 
+	{
+		return (String)get_Value(COLUMNNAME_ValueMin);
+	}
+
+	/** Set Value Format.
+		@param VFormat 
+		Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+	  */
+	public void setVFormat (String VFormat)
+	{
+		set_Value (COLUMNNAME_VFormat, VFormat);
+	}
+
+	/** Get Value Format.
+		@return Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+	  */
+	public String getVFormat () 
+	{
+		return (String)get_Value(COLUMNNAME_VFormat);
 	}
 }

@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -237,10 +238,22 @@ public class ProcessParameterPanel extends Panel implements
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_processInfo.getAD_Process_ID());
 			rs = pstmt.executeQuery();
+			ArrayList<GridFieldVO> listVO = new ArrayList<GridFieldVO>();
 			while (rs.next()) {
 				hasFields = true;
-				createField(rs, rows);
+
+				// Create Field
+				GridFieldVO voF = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, m_processInfo.getAD_Process_ID(), m_AD_Window_ID, m_InfoWindowID,rs);
+				listVO.add(voF);
 			}
+			Collections.sort(listVO, new GridFieldVO.SeqNoComparator());
+
+			for (int i = 0; i < listVO.size(); i++)
+			{
+				createField(listVO.get(i), rows);
+				log.severe(listVO.get(i).ColumnName + listVO.get(i).SeqNo);
+			}
+
 		} catch (SQLException e) {
 			log.log(Level.SEVERE, sql, e);
 		}
@@ -273,13 +286,9 @@ public class ProcessParameterPanel extends Panel implements
 	 * mFields are used for default value and mandatory checking; vEditors are
 	 * used to retrieve the value (no data binding)
 	 * 
-	 * @param rs
-	 *            result set
+	 * @param voF GridFieldVO
 	 */
-	private void createField(ResultSet rs, Rows rows) {
-		// Create Field
-		GridFieldVO voF = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, m_processInfo.getAD_Process_ID(), m_AD_Window_ID, m_InfoWindowID,
-				rs);
+	private void createField(GridFieldVO voF, Rows rows) {
 		GridField mField = new GridField(voF);
 		m_mFields.add(mField); // add to Fields
 
