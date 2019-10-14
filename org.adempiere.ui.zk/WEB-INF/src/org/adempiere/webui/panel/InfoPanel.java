@@ -1820,10 +1820,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             	{
             		Listitem m_lastOnSelectItem = (Listitem) selectEvent.getReference();
             		m_lastSelectedIndex = m_lastOnSelectItem.getIndex();
-            		}
+           		}
+
+            	enableButtons();
+            	
             }else if (event.getTarget() == contentPanel && event.getName().equals("onAfterRender")){           	
-        	//IDEMPIERE-1334 at this event selected item from listBox and model is sync
-        	enableButtons();
+            	//IDEMPIERE-1334 at this event selected item from listBox and model is sync
+            	enableButtons();
             }
             else if (event.getTarget() == contentPanel && event.getName().equals(Events.ON_DOUBLE_CLICK))
             {
