@@ -32,7 +32,7 @@ public class ResetCacheCallable implements Callable<Integer>, Serializable
 	private String tableName;
 	private int Record_ID;
 	
-	protected ResetCacheCallable(String tableName, int Record_ID)
+	public ResetCacheCallable(String tableName, int Record_ID)
 	{
 		this.tableName = tableName;
 		this.Record_ID = Record_ID;

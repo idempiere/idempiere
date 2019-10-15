@@ -427,4 +427,8 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	public int getMaxSize() {
 		return m_maxSize;
 	}
+	
+	public boolean isDistributed() {
+		return m_distributed;
+	}
 }	//	CCache

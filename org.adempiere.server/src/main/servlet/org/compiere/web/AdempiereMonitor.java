@@ -22,13 +22,10 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.RuntimeMXBean;
-import java.lang.management.ThreadMXBean;
 import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -40,9 +37,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.adempiere.base.IServiceHolder;
-import org.adempiere.base.Service;
-import org.adempiere.util.LogAuthFailure;
 import org.apache.ecs.HtmlColor;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.b;
@@ -63,8 +57,6 @@ import org.apache.ecs.xhtml.td;
 import org.apache.ecs.xhtml.th;
 import org.apache.ecs.xhtml.tr;
 import org.compiere.Adempiere;
-import org.compiere.db.AdempiereDatabase;
-import org.compiere.db.CConnection;
 import org.compiere.model.AdempiereProcessorLog;
 import org.compiere.model.MClient;
 import org.compiere.model.MSession;
@@ -75,24 +67,30 @@ import org.compiere.model.Query;
 import org.compiere.server.AdempiereServerGroup;
 import org.compiere.server.AdempiereServerMgr;
 import org.compiere.server.IServerManager;
+import org.compiere.server.LogFileInfo;
 import org.compiere.server.ServerCount;
 import org.compiere.server.ServerInstance;
+import org.compiere.server.SystemInfo;
+import org.compiere.server.TrxInfo;
 import org.compiere.util.CLogFile;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
-import org.compiere.util.CMemoryUsage;
+import org.compiere.util.CacheInfo;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.Ini;
 import org.compiere.util.TimeUtil;
-import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.WebDoc;
 import org.compiere.util.WebEnv;
 import org.compiere.util.WebUtil;
+import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
 import org.idempiere.server.cluster.ClusterServerMgr;
+import org.idempiere.server.cluster.callable.DeleteLogsCallable;
+import org.idempiere.server.cluster.callable.ReadLogCallable;
+import org.idempiere.server.cluster.callable.RotateLogCallable;
+import org.idempiere.server.cluster.callable.SetTraceLevelCallable;
 
 /**
  *	Adempiere Server Monitor
@@ -150,6 +148,12 @@ public class AdempiereMonitor extends HttpServlet
 			return;
 		}
 		if (processCacheParameter (request, response))
+		{
+			if (xmlOutput)
+				createXMLSummaryPage(request, response);
+			return;
+		}
+		if (processNodeInfoPage(request, response))
 		{
 			if (xmlOutput)
 				createXMLSummaryPage(request, response);
@@ -366,12 +370,26 @@ public class AdempiereMonitor extends HttpServlet
 	{
 		String traceCmd = WebUtil.getParameter (request, "Trace");
 		String traceLevel = WebUtil.getParameter (request, "TraceLevel");
+		String nodeId = WebUtil.getParameter (request, "nodeId");
 		if (traceLevel != null && traceLevel.length() > 0)
 		{
 			if (log.isLoggable(Level.INFO)) log.info ("New Level: " + traceLevel);
-			CLogMgt.setLevel(traceLevel);
-			Ini.setProperty(Ini.P_TRACELEVEL, traceLevel);
-			Ini.saveProperties(false);
+			SetTraceLevelCallable callable = new SetTraceLevelCallable(traceLevel);
+			try 
+			{
+				if (!Util.isEmpty(nodeId, true)) 
+				{
+					ClusterServerMgr.getClusterService().execute(callable, ClusterServerMgr.getClusterMember(nodeId)).get();
+				} 
+				else 
+				{
+					callable.call();				
+				}
+			} 
+			catch (Exception e) 
+			{
+				throw new RuntimeException(e);
+			}
 			return false;
 		}
 		
@@ -383,30 +401,66 @@ public class AdempiereMonitor extends HttpServlet
 		//
 		if (traceCmd.equals("ROTATE"))
 		{
-			if (fileHandler != null)
-				fileHandler.rotateLog();
+			RotateLogCallable callable = new RotateLogCallable();
+			try 
+			{
+				if (!Util.isEmpty(nodeId, true)) 
+				{
+					ClusterServerMgr.getClusterService().execute(callable, ClusterServerMgr.getClusterMember(nodeId)).get();
+				} 
+				else 
+				{
+					callable.call();				
+				}
+			} 
+			catch (Exception e) 
+			{
+				throw new RuntimeException(e);
+			}
 			return false;	//	re-display
 		}
 		else if (traceCmd.equals("DELETE"))
 		{
-			File logDir = fileHandler.getLogDirectory();
-			if (logDir != null && logDir.isDirectory())
+			DeleteLogsCallable callable = new DeleteLogsCallable();
+			try 
 			{
-				File[] logs = logDir.listFiles();
-				for (int i = 0; i < logs.length; i++) 
+				if (!Util.isEmpty(nodeId, true)) 
 				{
-					String fileName = logs[i].getAbsolutePath();
-					if (fileName.equals(fileHandler.getFileName()))
-						continue;
-					if (fileName.endsWith(LogAuthFailure.authFailureFilename)) // Do not delete login failure
-						continue;
-					if (logs[i].delete())
-						log.warning("Deleted: " + fileName);
-					else
-						log.warning("Not Deleted: " + fileName);
+					ClusterServerMgr.getClusterService().execute(callable, ClusterServerMgr.getClusterMember(nodeId)).get();
+				} 
+				else 
+				{
+					callable.call();				
 				}
+			} 
+			catch (Exception e) 
+			{
+				throw new RuntimeException(e);
 			}
 			return false;	//	re-display
+		}
+		
+		if (!Util.isEmpty(nodeId, true)) 
+		{
+			ReadLogCallable callable = new ReadLogCallable(traceCmd);
+			try {
+				byte[] contents = ClusterServerMgr.getClusterService().execute(callable, ClusterServerMgr.getClusterMember(nodeId)).get();
+				if (contents == null || contents.length == 0)
+					return false;
+				
+				try(ServletOutputStream out = response.getOutputStream ())
+				{
+					response.setContentType("text/plain");
+					response.setBufferSize(2048);
+					response.setContentLength(contents.length);
+					out.write(contents);
+					out.flush();
+				}
+				return true;
+			} catch (Exception e) {
+				log.log(Level.WARNING, e.getMessage(), e);
+				return false;
+			}
 		}
 		
 		//	Display current log File
@@ -538,7 +592,8 @@ public class AdempiereMonitor extends HttpServlet
 	{
 		String cmd = WebUtil.getParameter (request, "CacheReset");
 		if (cmd == null || cmd.length() == 0)
-			return false;
+			return createCacheDetailsPage(request, response);
+		
 		String tableName = WebUtil.getParameter (request, "CacheTableName");
 		String record_ID = WebUtil.getParameter (request, "CacheRecord_ID");
 		
@@ -628,15 +683,56 @@ public class AdempiereMonitor extends HttpServlet
 		table.addElement(line);
 		bb.addElement(table);
 		
-		IServiceHolder<IClusterService> holder = Service.locator().locate(IClusterService.class);
-		IClusterService service = holder != null ? holder.getService() : null;
-		if (service != null && service.getLocalMember() != null)
+		IClusterService service = ClusterServerMgr.getClusterService();
+		Collection<IClusterMember> members = null;
+		IClusterMember local = null;
+		if (service != null)
 		{
-			line = new tr();
-			line.addElement(new th().addElement("Cluster Node Id"));
-			line.addElement(new td().addElement(WebEnv.getCellContent(service.getLocalMember().getId())));
-			table.addElement(line);
-			bb.addElement(table);
+			members = service.getMembers();
+			local = service.getLocalMember();
+			if (members.size() > 1 && local != null) 
+			{
+				line = new tr();
+				line.addElement(new th().addElement("Cluster Nodes"));
+				p para = new p();
+				StringBuilder nodeBuilder = new StringBuilder(local.getId());
+				InetAddress address = local.getAddress();
+				String ip = address != null ? address.getHostAddress() : null;
+				if (ip != null && 
+					(ip.startsWith("10.") ||  
+				     ip.startsWith("172.16") || 
+				     ip.startsWith("192.168"))) 
+				{					
+					nodeBuilder.append(" (").append(ip).append(")");
+				}
+				para.addElement(nodeBuilder.toString());
+				
+				for(IClusterMember member : members) 
+				{
+					if (member.getId().equals(local.getId())) 
+					{
+						continue;
+					}
+					else 
+					{
+						para.addElement(" - ");
+						nodeBuilder = new StringBuilder(member.getId());
+						address = member.getAddress();
+						ip = address != null ? address.getHostAddress() : null;
+						if (ip != null && 
+								(ip.startsWith("10.") ||  
+							     ip.startsWith("172.16") || 
+							     ip.startsWith("192.168"))) 
+						{					
+							nodeBuilder.append(" (").append(ip).append(")");
+						}
+						a link = new a ("idempiereMonitor?NodeInfo="+member.getId(), nodeBuilder.toString());
+						para.addElement(link);
+					}					
+				}
+				line.addElement(new td().addElement(para));
+				table.addElement(line);
+			}
 		}
 		//
 		p para = new p();
@@ -674,7 +770,7 @@ public class AdempiereMonitor extends HttpServlet
 		bb.addElement(para);
 
 		//	**** Log Management ****	
-		createLogMgtPage(bb);	
+		createLogMgtPage(bb, members, local);	
 		
 		//	***** Server Details *****
 		bb.removeEndEndModifier();
@@ -749,7 +845,7 @@ public class AdempiereMonitor extends HttpServlet
 			line.addElement(new td().addElement(server.getStatistics()));
 			table.addElement(line);
 			//
-			if (server.getClusterMember() != null) 
+			if (server.getClusterMember() != null && members != null && members.size() > 1) 
 			{
 				InetAddress address = server.getClusterMember().getAddress();
 				String ip = address != null ? address.getHostAddress() : null;
@@ -785,7 +881,7 @@ public class AdempiereMonitor extends HttpServlet
 		//	fini
 		WebUtil.createResponse (request, response, this, null, doc, false);
 	}	//	createSummaryPage
-	
+
 	private String createServerCountMessage(ServerCount serverCount) {
 		StringBuilder builder = new StringBuilder();
 		
@@ -904,8 +1000,10 @@ public class AdempiereMonitor extends HttpServlet
 	/**
 	 * 	Add Log Management to page
 	 *	@param bb body
+	 *  @param members 
+	 *  @param local 
 	 */
-	private void createLogMgtPage (body bb)
+	private void createLogMgtPage (body bb, Collection<IClusterMember> members, IClusterMember local)
 	{
 		bb.addElement(new hr());
 		
@@ -917,95 +1015,91 @@ public class AdempiereMonitor extends HttpServlet
 		//
 		Properties ctx = new Properties();
 		MSystem system = MSystem.get(ctx);
+		SystemInfo systemInfo = SystemInfo.getLocalSystemInfo();				
 		tr line = new tr();
-		line.addElement(new th().addElement(system.getDBAddress()));
-		line.addElement(new td().addElement(Ini.getAdempiereHome()));
+		line.addElement(new th().addElement(Adempiere.getURL()));
+		line.addElement(new td().addElement(Adempiere.getAdempiereHome()));
 		table.addElement(line);
 		//	OS + Name
 		line = new tr();
-		String info = System.getProperty("os.name")
-			+ " " + System.getProperty("os.version");
-		String s = System.getProperty("sun.os.patch.level");
-		if (s != null && s.length() > 0)
-			info += " (" + s + ")";
-		line.addElement(new th().addElement(info));
-		info = system.getName();
+		line.addElement(new th().addElement(systemInfo.getOperatingSystem()));
+		String info = system.getName();
 		if (system.getCustomPrefix() != null)
 			info += " (" + system.getCustomPrefix() + ")"; 
 		line.addElement(new td().addElement(info));
 		table.addElement(line);
 		//	Java + email
 		line = new tr();
-		info = System.getProperty("java.vm.name")
-			+ " " + System.getProperty("java.vm.version");
-		line.addElement(new th().addElement(info));
-		line.addElement(new td().addElement(system.getUserName()));
+		line.addElement(new th().addElement(systemInfo.getJavaVM()));
+		line.addElement(new td().addElement(system.getSupportEMail()));
 		table.addElement(line);
 		//	DB + Instance
 		line = new tr();
-		CConnection cc = CConnection.get();
-		AdempiereDatabase db = cc.getDatabase();
-		info = db.getDescription();
-		line.addElement(new th().addElement(info));
-		line.addElement(new td().addElement(cc.getConnectionURL()));
+		line.addElement(new th().addElement(systemInfo.getDatabaseDescription()));
+		line.addElement(new td().addElement(systemInfo.getDatabaseConnectionURL()));
 		table.addElement(line);
 		line = new tr();
 		line.addElement(new th().addElement("DB Connection Pool"));
-		line.addElement(new td().addElement(cc.getDatabase().getStatus()));
+		line.addElement(new td().addElement(systemInfo.getDatabaseStatus()));
 		table.addElement(line);
 		//	Processors/Support
 		line = new tr();
-		line.addElement(new th().addElement("Processor/Support"));
-		line.addElement(new td().addElement(system.getNoProcessors() + "/" + system.getSupportUnits()));
+		line.addElement(new th().addElement("Processor"));
+		line.addElement(new td().addElement(systemInfo.getAvailableProcessors()+""));
 		table.addElement(line);
+		if (systemInfo.getAverageSystemLoad() >= 0)
+		{
+			line = new tr();
+			line.addElement(new th().addElement("System Load"));
+			line.addElement(new td().addElement(systemInfo.getAverageSystemLoad()+"%"));
+			table.addElement(line);
+		}
 		//	Memory
 		line = new tr();
-		MemoryMXBean memory = ManagementFactory.getMemoryMXBean();
 		line.addElement(new th().addElement("VM Memory"));
-		line.addElement(new td().addElement(new CMemoryUsage(memory.getNonHeapMemoryUsage()).toString()));
+		line.addElement(new td().addElement(systemInfo.getMemoryUsage()));
 		table.addElement(line);
 		line = new tr();
 		line.addElement(new th().addElement("Heap Memory"));
-		line.addElement(new td().addElement(new CMemoryUsage(memory.getHeapMemoryUsage()).toString()));
+		line.addElement(new td().addElement(systemInfo.getHeapMemoryUsage()));
 		table.addElement(line);
 		//	Runtime
 		line = new tr();
-		RuntimeMXBean rt = ManagementFactory.getRuntimeMXBean();
-		line.addElement(new th().addElement("Runtime " + rt.getName()));
-		line.addElement(new td().addElement(TimeUtil.formatElapsed(rt.getUptime())));
+		line.addElement(new th().addElement("Runtime " + systemInfo.getRuntimeName()));
+		line.addElement(new td().addElement(TimeUtil.formatElapsed(systemInfo.getRuntimeUpTime())));
 		table.addElement(line);
 		//	Threads
 		line = new tr();
-		ThreadMXBean th = ManagementFactory.getThreadMXBean();
-		line.addElement(new th().addElement("Threads " + th.getThreadCount()));
-		line.addElement(new td().addElement("Peak=" + th.getPeakThreadCount() 
-			+ ", Demons=" + th.getDaemonThreadCount()
-			+ ", Total=" + th.getTotalStartedThreadCount()));
+		line.addElement(new th().addElement("Threads " + systemInfo.getThreadCount()));
+		line.addElement(new td().addElement("Peak=" + systemInfo.getPeakThreadCount() 
+			+ ", Daemons=" + systemInfo.getDaemonThreadCount()
+			+ ", Total=" + systemInfo.getTotalStartedThreadCount()));
 		table.addElement(line);
 		
 		//Transactions
-		Trx[] trxs = Trx.getActiveTransactions();
-		for (Trx trx : trxs)
+		TrxInfo[] trxs = systemInfo.getTrxInfos();
+		for (TrxInfo trx : trxs)
 		{
-			if (trx != null && trx.isActive()) 
-			{
-				line = new tr();
-				line.addElement(new th().addElement("Active Transaction "));
-				td td = new td();
-				td.setOnClick("var newwindow=window.open('','Popup', 'width=800,height=600');newwindow.document.write('<title>"  + escapeEcmaScript(trx.getDisplayName()) +"</title>"
-						+ "<pre>" + escapeEcmaScript(trx.getStrackTrace()) + "</pre>')");
-				td.addElement("Name="+trx.getDisplayName() + ", StartTime=" + trx.getStartTime());
-				td.setTitle("Click to see stack trace");
-				td.setStyle("text-decoration: underline; color: blue");
-				line.addElement(td);
-				table.addElement(line);
-			}
+			line = new tr();
+			line.addElement(new th().addElement("Active Transaction "));
+			td td = new td();
+			td.setOnClick("var newwindow=window.open('','Popup', 'width=800,height=600');newwindow.document.write('<title>"  + escapeEcmaScript(trx.getDisplayName()) +"</title>"
+					+ "<pre>" + escapeEcmaScript(trx.getStackTrace()) + "</pre>')");
+			td.addElement("Name="+trx.getDisplayName() + ", StartTime=" + trx.getStartTime());
+			td.setTitle("Click to see stack trace");
+			td.setStyle("text-decoration: underline; color: blue");
+			line.addElement(td);
+			table.addElement(line);
 		}
 		
 		//	Cache Reset
 		line = new tr();
 		line.addElement(new th().addElement(CacheMgt.get().toStringX()));
-		line.addElement(new td().addElement(new a ("idempiereMonitor?CacheReset=Yes", "Reset Cache")));
+		p cachePara = new p();
+		cachePara.addElement(new a ("idempiereMonitor?CacheReset=Yes", "Reset Cache"))
+			.addElement(" - ")				
+			.addElement(new a ("idempiereMonitor?CacheDetails=Yes", "Cache Details"));
+		line.addElement(new td().addElement(cachePara));
 		table.addElement(line);
 		
 		//	Trace Level
@@ -1018,7 +1112,7 @@ public class AdempiereMonitor extends HttpServlet
 		{
 			options[i] = new option(CLogMgt.LEVELS[i].getName());
 			options[i].addElement(CLogMgt.LEVELS[i].getName());
-			if (CLogMgt.LEVELS[i] == CLogMgt.getLevel())
+			if (CLogMgt.LEVELS[i] == systemInfo.getLogLevel())
 				options[i].setSelected(true);
 		}
 		select sel = new select("TraceLevel", options);
@@ -1028,14 +1122,17 @@ public class AdempiereMonitor extends HttpServlet
 		table.addElement(line);
 		//
 		line = new tr();
-		CLogFile fileHandler = CLogFile.get (true, null, false);
 		line.addElement(new th().addElement("Trace File"));
-		line.addElement(new td().addElement(new a ("idempiereMonitor?Trace=" + fileHandler.getFileName(), "Current")));
+		line.addElement(new td().addElement(new a ("idempiereMonitor?Trace=" + systemInfo.getCurrentLogFile(), "Current")));
 		table.addElement(line);
 		//
 		line = new tr();
-		line.addElement(new td().addElement(new a ("idempiereMonitor?Trace=ROTATE", "Rotate Trace Log")));
-		line.addElement(new td().addElement(new a ("idempiereMonitor?Trace=DELETE", "Delete all Trace Logs")));
+		p tlp = new p();
+		tlp.addElement(new a ("idempiereMonitor?Trace=ROTATE", "Rotate Trace Log"))
+		   .addElement(" - ")
+		   .addElement(new a ("idempiereMonitor?Trace=DELETE", "Delete all Trace Logs"));
+		line.addElement(new th());
+		line.addElement(new td().addElement(tlp));
 		table.addElement(line);
 		//
 		bb.addElement(table);
@@ -1044,28 +1141,20 @@ public class AdempiereMonitor extends HttpServlet
 		p p = new p();
 		p.addElement(new b("All Log Files: "));
 		//	All in dir
-		File logDir = fileHandler.getLogDirectory();
-		if (logDir != null && logDir.isDirectory())
+		LogFileInfo logFiles[] = systemInfo.getLogFileInfos();
+		for (LogFileInfo logFile : logFiles) 
 		{
-			File[] logs = logDir.listFiles();
-			for (int i = 0; i < logs.length; i++) 
-			{
-				// Skip if is not a file - teo_sarca [ 1726066 ]
-				if (!logs[i].isFile())
-					continue;
-				
-				if (i != 0)
-					p.addElement(" - ");
-				String fileName = logs[i].getAbsolutePath();
-				a link = new a ("idempiereMonitor?Trace=" + fileName, fileName);
-				p.addElement(link);
-				int size = (int)(logs[i].length()/1024);
-				if (size < 1024)
-					p.addElement(" (" + size + "k)");
-				else
-					p.addElement(" (" + size/1024 + "M)");
-			}
-		}
+			if (logFile != logFiles[0])
+				p.addElement(" - ");
+			String fileName = logFile.getFileName();
+			a link = new a ("idempiereMonitor?Trace=" + fileName, fileName);
+			p.addElement(link);
+			int size = (int)(logFile.getFileSize()/1024);
+			if (size < 1024)
+				p.addElement(" (" + size + "k)");
+			else
+				p.addElement(" (" + size/1024 + "M)");
+		}		
 		bb.addElement(p);
 		
 		//	Clients and Web Stores
@@ -1131,6 +1220,20 @@ public class AdempiereMonitor extends HttpServlet
 			p.addElement("&nbsp;");
 		line.addElement(new td().addElement(p));
 		table.addElement(line);
+		if (members != null && members.size() > 1) {
+			line = new tr();
+			line.addElement(new th().addElement(""));
+			p = null;
+			for(IClusterMember member : members) {
+				if (p == null)
+					p = new p();
+				else
+					p.addElement(" - ");
+				p.addElement(member.getId() + " : " + ((member.getId().equals(local.getId())) ? systemInfo.getSessionCount() : SystemInfo.getClusterSessionCount(member)));
+			}
+			line.addElement(new td().addElement(p));
+			table.addElement(line);
+		}						
 		//	
 		line = new tr();
 
@@ -1187,9 +1290,7 @@ public class AdempiereMonitor extends HttpServlet
 		m_serverMgr = AdempiereServerMgr.get();
 		
 		//switch to cluster manager if cluster service is available
-		IServiceHolder<IClusterService> holder = Service.locator().locate(IClusterService.class);
-		IClusterService service = holder != null ? holder.getService() : null;
-		if (service != null)
+		if (ClusterServerMgr.getClusterService() != null)
 			m_serverMgr = ClusterServerMgr.getInstance();
 				
 		m_dirAccessList = getDirAcessList();
@@ -1307,4 +1408,257 @@ public class AdempiereMonitor extends HttpServlet
 		input = input.replace("\t", "\\t");
 		return input;
 	 }
+	
+	/**
+	 * 	return cache details page
+	 *	@param request request
+	 *	@param response response
+	 *	@return true if it was a cache details request
+	 *	@throws ServletException
+	 *	@throws IOException
+	 */
+	private boolean createCacheDetailsPage (HttpServletRequest request, HttpServletResponse response)
+		throws ServletException, IOException
+	{
+		String cmd = WebUtil.getParameter (request, "CacheDetails");
+		if (cmd == null || cmd.length() == 0)
+			return false;
+		
+		WebDoc doc = WebDoc.create ("iDempiere Server Cache Details");
+		//	Body
+		body b = doc.getBody();
+		//
+		p para = new p();
+		a link = new a ("idempiereMonitor", "Return");
+		para.addElement(link);
+		b.addElement(para);
+		//
+		table table = new table();
+		table.setBorder(1);
+		table.setCellSpacing(2);
+		table.setCellPadding(2);
+		
+		//	Header
+		tr line = new tr();
+		line.addElement(new th().addElement("Name"));
+		line.addElement(new th().addElement("Table Name"));
+		line.addElement(new th().addElement("Size"));
+		line.addElement(new th().addElement("Expire (Minutes)"));
+		line.addElement(new th().addElement("Max Size"));
+		line.addElement(new th().addElement("Distributed"));
+		table.addElement(line);
+		
+		List<CacheInfo> instances = CacheInfo.getCacheInfos(true);
+		if (instances.size() > 0 && instances.get(0).getNodeId() != null) 
+		{
+			line.addElement(new th().addElement("Node Id"));
+		}
+		for (CacheInfo ccache : instances)
+		{			
+			line = new tr();
+			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getName())));
+			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getTableName())));
+			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getSize())));
+			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getExpireMinutes())));
+			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getMaxSize())));
+			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.isDistributed())));
+			if (ccache.getNodeId() != null)
+			{
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getNodeId())));
+			}
+			table.addElement(line);
+		}
+		//
+		b.addElement(table);
+		link = new a ("#top", "Top");
+		b.addElement(link);
+		
+		//	fini
+		WebUtil.createResponse (request, response, this, null, doc, false);
+		return true;
+	}	//	processLogParameter
+
+	/**
+	 * 	return cache details page
+	 *	@param request request
+	 *	@param response response
+	 *	@return true if it was a cache details request
+	 *	@throws ServletException
+	 *	@throws IOException
+	 */
+	public boolean processNodeInfoPage (HttpServletRequest request, HttpServletResponse response)
+		throws ServletException, IOException
+	{
+		String nodeId = WebUtil.getParameter (request, "NodeInfo");
+		if (nodeId == null || nodeId.length() == 0)
+			return false;
+		
+		WebDoc doc = WebDoc.create ("Details for node " + nodeId);
+		//	Body
+		body b = doc.getBody();
+		p para = new p();		
+		a link = new a ("idempiereMonitor", "Return");
+		para.addElement(link);
+		b.addElement(para);
+		
+		createNodeInfoPage(b, nodeId);
+		
+		WebUtil.createResponse (request, response, this, null, doc, false);
+		
+		return true;
+	}
+		
+	private void createNodeInfoPage (body bb, String nodeId)
+	{
+		SystemInfo systemInfo = SystemInfo.getClusterNodeInfo(nodeId);
+		if (systemInfo == null)
+			return;
+		
+		bb.addElement(new hr());
+		
+		table table = new table();
+		table.setBorder(1);
+		table.setCellSpacing(2);
+		table.setCellPadding(2);		
+		
+		InetAddress address = systemInfo.getAddress();
+		String ip = address != null ? address.getHostAddress() : null;
+		if (ip != null && 
+			(ip.startsWith("10.") ||  
+		     ip.startsWith("172.16") || 
+		     ip.startsWith("192.168"))) 
+		{		
+			tr line = new tr();
+			line.addElement(new th().addElement("IP Address"));
+			line.addElement(new td().addElement(ip));
+			table.addElement(line);
+		}
+		
+		//	OS + Name
+		tr line = new tr();
+		line.addElement(new th().addElement(systemInfo.getOperatingSystem()));
+		table.addElement(line);
+		//	Java + email
+		line = new tr();
+		line.addElement(new th().addElement(systemInfo.getJavaVM()));
+		table.addElement(line);
+		//	DB + Instance
+		line = new tr();
+		line.addElement(new th().addElement(systemInfo.getDatabaseDescription()));
+		line.addElement(new td().addElement(systemInfo.getDatabaseConnectionURL()));
+		table.addElement(line);
+		line = new tr();
+		line.addElement(new th().addElement("DB Connection Pool"));
+		line.addElement(new td().addElement(systemInfo.getDatabaseStatus()));
+		table.addElement(line);
+		//	Processors/Support
+		line = new tr();
+		line.addElement(new th().addElement("Processor (Average System Load)"));
+		line.addElement(new td().addElement(systemInfo.getAvailableProcessors() + " (" 
+				+ systemInfo.getAverageSystemLoad() + ") "));
+		table.addElement(line);
+		//	Memory
+		line = new tr();
+		line.addElement(new th().addElement("VM Memory"));
+		line.addElement(new td().addElement(systemInfo.getMemoryUsage()));
+		table.addElement(line);
+		line = new tr();
+		line.addElement(new th().addElement("Heap Memory"));
+		line.addElement(new td().addElement(systemInfo.getHeapMemoryUsage()));
+		table.addElement(line);
+		//	Runtime
+		line = new tr();
+		line.addElement(new th().addElement("Runtime " + systemInfo.getRuntimeName()));
+		line.addElement(new td().addElement(TimeUtil.formatElapsed(systemInfo.getRuntimeUpTime())));
+		table.addElement(line);
+		//	Threads
+		line = new tr();
+		line.addElement(new th().addElement("Threads " + systemInfo.getThreadCount()));
+		line.addElement(new td().addElement("Peak=" + systemInfo.getPeakThreadCount() 
+			+ ", Daemons=" + systemInfo.getDaemonThreadCount()
+			+ ", Total=" + systemInfo.getTotalStartedThreadCount()));
+		table.addElement(line);
+		
+		//Transactions
+		TrxInfo[] trxs = systemInfo.getTrxInfos();
+		for (TrxInfo trx : trxs)
+		{
+			line = new tr();
+			line.addElement(new th().addElement("Active Transaction "));
+			td td = new td();
+			td.setOnClick("var newwindow=window.open('','Popup', 'width=800,height=600');newwindow.document.write('<title>"  + escapeEcmaScript(trx.getDisplayName()) +"</title>"
+					+ "<pre>" + escapeEcmaScript(trx.getStackTrace()) + "</pre>')");
+			td.addElement("Name="+trx.getDisplayName() + ", StartTime=" + trx.getStartTime());
+			td.setTitle("Click to see stack trace");
+			td.setStyle("text-decoration: underline; color: blue");
+			line.addElement(td);
+			table.addElement(line);
+		}
+		
+		//	Trace Level
+		line = new tr();
+		line.addElement(new th().addElement(new label("TraceLevel").addElement("Trace Log Level")));
+		form myForm = new form("idempiereMonitor", form.METHOD_POST, form.ENC_DEFAULT);
+		//	LogLevel Selection
+		option[] options = new option[CLogMgt.LEVELS.length];
+		for (int i = 0; i < options.length; i++) 
+		{
+			options[i] = new option(CLogMgt.LEVELS[i].getName());
+			options[i].addElement(CLogMgt.LEVELS[i].getName());
+			if (CLogMgt.LEVELS[i] == systemInfo.getLogLevel())
+				options[i].setSelected(true);
+		}
+		select sel = new select("TraceLevel", options);
+		myForm.addElement(sel);
+		myForm.addElement(new input(input.TYPE_HIDDEN, "nodeId", nodeId));
+		myForm.addElement(new input(input.TYPE_SUBMIT, "Set", "Set"));
+		line.addElement(new td().addElement(myForm));
+		table.addElement(line);
+		//
+		line = new tr();
+		line.addElement(new th().addElement("Trace File"));
+		line.addElement(new td().addElement(new a ("idempiereMonitor?Trace=" + systemInfo.getCurrentLogFile()
+			 + "&nodeId=" + nodeId, "Current")));
+		table.addElement(line);
+		//
+		line = new tr();
+		p tlp = new p();
+		tlp.addElement(new a ("idempiereMonitor?Trace=ROTATE&nodeId="+nodeId, "Rotate Trace Log"))
+		  .addElement(" - ")
+		  .addElement(new a ("idempiereMonitor?Trace=DELETE&nodeId="+nodeId, "Delete all Trace Logs"));
+		line.addElement(new th());
+		line.addElement(new td().addElement(tlp));
+		table.addElement(line);
+		//
+		bb.addElement(table);
+		
+		//	List Log Files
+		p p = new p();
+		p.addElement(new b("All Log Files: "));
+		//	All in dir
+		LogFileInfo logFiles[] = systemInfo.getLogFileInfos();
+		for (LogFileInfo logFile : logFiles) 
+		{
+			if (logFile != logFiles[0])
+				p.addElement(" - ");
+			String fileName = logFile.getFileName();
+			a link = new a ("idempiereMonitor?Trace=" + fileName + "&nodeId="+nodeId, fileName);
+			p.addElement(link);
+			int size = (int)(logFile.getFileSize()/1024);
+			if (size < 1024)
+				p.addElement(" (" + size + "k)");
+			else
+				p.addElement(" (" + size/1024 + "M)");
+		}		
+		bb.addElement(p);
+		
+		//	
+		line = new tr();
+		line.addElement(new th().addElement("Active sessions for node" ));
+		line.addElement(new td().addElement(""+systemInfo.getSessionCount()));
+		table.addElement(line);
+		//
+		bb.addElement(table);
+	}
+	
 }	//	AdempiereMonitor

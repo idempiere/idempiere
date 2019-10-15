@@ -319,5 +319,12 @@ public class MSession extends X_AD_Session
 		return null;
 	}	//	changeLog
 
+	/**
+	 * 
+	 * @return number of cached sessions
+	 */
+	public static int getCachedSessionCount() {
+		return s_sessions.size()-1;
+	}
 }	//	MSession
 
