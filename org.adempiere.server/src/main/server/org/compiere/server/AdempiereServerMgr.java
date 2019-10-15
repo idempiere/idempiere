@@ -40,6 +40,7 @@ import org.compiere.util.Env;
 import org.idempiere.distributed.ICacheService;
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
+import org.idempiere.server.cluster.ClusterServerMgr;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.ServiceReference;
@@ -840,14 +841,8 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		return null;
 	}
 	
-	private IClusterService getClusterService() {
-		IServiceHolder<IClusterService> holder = Service.locator().locate(IClusterService.class);
-		IClusterService service = holder != null ? holder.getService() : null;
-		return service;
-	}
-	
 	private String getClusterMemberId() {
-		IClusterService service = getClusterService();
+		IClusterService service = ClusterServerMgr.getClusterService();
 		if (service != null) {
 			IClusterMember local = service.getLocalMember();
 			if (local != null)

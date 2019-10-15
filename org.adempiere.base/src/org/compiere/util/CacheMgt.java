@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -383,6 +384,21 @@ public class CacheMgt
 
 	public void newRecord(String tableName, int recordId) {
 		clusterNewRecord(tableName, recordId);
+	}
+	
+	/**
+	 * 
+	 * @return cache infos
+	 */
+	public List<CacheInfo> getCacheInfos() {
+		List<CacheInfo> infos = new ArrayList<>();
+		CacheInterface[] instances = getInstancesAsArray();
+		for(CacheInterface ci : instances) {
+			if (ci instanceof CCache<?, ?>) {
+				infos.add(new CacheInfo((CCache<?, ?>) ci));
+			}
+		}
+		return infos;
 	}
 	
 	private static class MaxSizeHashMap<K, V> extends LinkedHashMap<K, V> {
