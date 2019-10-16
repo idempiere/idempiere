@@ -323,6 +323,15 @@ public interface I_AD_InfoWindow
 	  */
 	public String getOtherClause();
 
+    /** Column name PagingSize */
+    public static final String COLUMNNAME_PagingSize = "PagingSize";
+
+	/** Set Paging Size	  */
+	public void setPagingSize (int PagingSize);
+
+	/** Get Paging Size	  */
+	public int getPagingSize();
+
     /** Column name Processing */
     public static final String COLUMNNAME_Processing = "Processing";
 

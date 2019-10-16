@@ -123,7 +123,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3761627143274259211L;
+	private static final long serialVersionUID = 7893447773574337316L;
 	private final static int DEFAULT_PAGE_SIZE = 100;
 	private final static int DEFAULT_PAGE_PRELOAD = 4;
 	protected List<Button> btProcessList = new ArrayList<Button>();
@@ -254,9 +254,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			if (p_whereClause.length() == 0)
 				log.log(Level.SEVERE, "Cannot parse context= " + whereClause);
 		}
-		
+
 		pageSize = MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, DEFAULT_PAGE_SIZE, Env.getAD_Client_ID(Env.getCtx()));
-		
+		if (infoWindow != null && infoWindow.getPagingSize() > 0)
+			pageSize = infoWindow.getPagingSize();
+
 		init();
 
 		this.setAttribute(ITabOnSelectHandler.ATTRIBUTE_KEY, new ITabOnSelectHandler() {

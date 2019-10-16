@@ -30,7 +30,7 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20190726L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow (Properties ctx, int AD_InfoWindow_ID, String trxName)
@@ -54,6 +54,8 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 			setMaxQueryRecords (0);
 // 0
 			setName (null);
+			setPagingSize (0);
+// 0
         } */
     }
 
@@ -460,6 +462,23 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public String getOtherClause () 
 	{
 		return (String)get_Value(COLUMNNAME_OtherClause);
+	}
+
+	/** Set Paging Size.
+		@param PagingSize Paging Size	  */
+	public void setPagingSize (int PagingSize)
+	{
+		set_Value (COLUMNNAME_PagingSize, Integer.valueOf(PagingSize));
+	}
+
+	/** Get Paging Size.
+		@return Paging Size	  */
+	public int getPagingSize () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PagingSize);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Process Now.
