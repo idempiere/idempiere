@@ -145,9 +145,9 @@ public class MWorkflow extends X_AD_Workflow
 	
 	
 	/**	Single Cache					*/
-	private static CCache<String,MWorkflow>	s_cache = new CCache<String,MWorkflow>(Table_Name, 20);
+	private static CCache<String,MWorkflow>	s_cache = new CCache<String,MWorkflow>(Table_Name, Table_Name+"|Language_Workflow", 20);
 	/**	Document Value Cache			*/
-	private static CCache<String,MWorkflow[]>	s_cacheDocValue = new CCache<String,MWorkflow[]> (Table_Name, Table_Name+"_Document_Value", 5);
+	private static CCache<String,MWorkflow[]>	s_cacheDocValue = new CCache<String,MWorkflow[]> (Table_Name, Table_Name+"|AD_Client_Table", 5);
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MWorkflow.class);
 	

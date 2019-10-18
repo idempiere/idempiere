@@ -1936,7 +1936,7 @@ public final class Env
 
 	/**	Window Cache		*/
 	private static CCache<Integer,GridWindowVO>	s_windowsvo
-		= new CCache<Integer,GridWindowVO>(I_AD_Window.Table_Name, 10);
+		= new CCache<Integer,GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO", 10);
 
 	/**
 	 *  Get Window Model

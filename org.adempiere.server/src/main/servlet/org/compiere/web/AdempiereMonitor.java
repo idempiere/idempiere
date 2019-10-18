@@ -1454,7 +1454,9 @@ public class AdempiereMonitor extends HttpServlet
 			line.addElement(new th().addElement("Node Id"));
 		}
 		for (CacheInfo ccache : instances)
-		{			
+		{		
+			if (ccache.getName().endsWith("|CCacheListener"))
+				continue;
 			line = new tr();
 			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getName())));
 			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getTableName())));

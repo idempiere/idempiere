@@ -113,12 +113,13 @@ public class MCountry extends X_C_Country
 	 * 	Set Default Language to Client Language
 	 *	@param ctx context
 	 */
-	private static void loadAllCountries (Properties ctx)
+	private static synchronized void loadAllCountries (Properties ctx)
 	{
 		MClient client = MClient.get (ctx);
 		MLanguage lang = MLanguage.get(ctx, client.getAD_Language());
 		//
-		s_countries = new CCache<Integer,MCountry>(Table_Name, 250);
+		if (s_countries == null)
+			s_countries = new CCache<Integer,MCountry>(Table_Name, 250);
 		List<MCountry> countries = new Query(ctx, Table_Name, "", null)
 			.setOnlyActiveRecords(true)
 			.list();
@@ -183,7 +184,7 @@ public class MCountry extends X_C_Country
 	/**	Country Cache					*/
 	private static CCache<Integer,MCountry>	s_countries = null;
 	/**	Default Country 				*/
-	private static CCache<Integer,MCountry>	s_default = new CCache<Integer,MCountry>(Table_Name, 3);
+	private static CCache<Integer,MCountry>	s_default = new CCache<Integer,MCountry>(Table_Name, Table_Name+"|Default", 3);
 	/**	Static Logger					*/
 	private static CLogger		s_log = CLogger.getCLogger (MCountry.class);
 	//	Default DisplaySequence	*/

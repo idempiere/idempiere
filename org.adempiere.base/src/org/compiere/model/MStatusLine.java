@@ -51,7 +51,7 @@ public class MStatusLine extends X_AD_StatusLine
 	private static CLogger		s_log = CLogger.getCLogger(MStatusLine.class);
 	/** Status Line Cache				*/
 	private static CCache<String, MStatusLine> s_cache = new CCache<String, MStatusLine>(Table_Name, 10);
-	private static CCache<String, MStatusLine[]> s_cachew = new CCache<String, MStatusLine[]>(Table_Name, 10);
+	private static CCache<String, MStatusLine[]> s_cachew = new CCache<String, MStatusLine[]>(Table_Name, Table_Name+"|MStatusLine[]", 10);
 
 	/**
 	 * 	Standard Constructor

@@ -291,7 +291,7 @@ public final class AEnv
 					CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
 					if (cache == null)
 					{
-						cache = new CCache<Integer, GridWindowVO>(I_AD_Window.Table_Name, 10);
+						cache = new CCache<Integer, GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO|Session", 10);
 						windowCache.put(sessionID, cache);
 					}
 					cache.put(AD_Window_ID, mWindowVO);

@@ -1890,7 +1890,7 @@ public abstract class PO
 	}	//	setAD_User_ID
 
 	/**	Cache						*/
-	private static CCache<String,String> trl_cache	= new CCache<String,String>("po_trl", 5);
+	private static CCache<String,String> trl_cache	= new CCache<String,String>("PO_Trl", 5);
 
 	public String get_Translation (String columnName, String AD_Language)
 	{

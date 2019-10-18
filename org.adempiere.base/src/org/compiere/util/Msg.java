@@ -21,11 +21,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.Adempiere;
+import org.compiere.model.I_AD_Element;
 import org.compiere.model.I_AD_Message;
 
 /**
@@ -67,18 +70,18 @@ public final class Msg
 	}	//	Mag
 
 	/**  The Map                    */
-	private CCache<String,CCache<String,String>> m_languages 
-		= new CCache<String,CCache<String,String>>(null, "msg_lang", 2, 0, false);
+	private Map<String,CCache<String,String>> m_languages 
+		= new HashMap<String, CCache<String,String>>();
 	
-	private CCache<String,CCache<String,String>> m_elementCache 
-		= new CCache<String,CCache<String,String>>(null, "msg_element", 2, 0, false);
+	private Map<String,CCache<String,String>> m_elementCache 
+		= new HashMap<String,CCache<String,String>>();
 
 	/**
 	 *  Get Language specific Message Map
 	 *  @param ad_language Language Key
 	 *  @return HashMap of Language
 	 */
-	private CCache<String,String> getMsgMap (String ad_language)
+	private synchronized CCache<String,String> getMsgMap (String ad_language)
 	{
 		String AD_Language = ad_language;
 		if (AD_Language == null || AD_Language.length() == 0)
@@ -89,7 +92,7 @@ public final class Msg
 			return retValue;
 
 		//  Load Language
-		retValue = initMsg(AD_Language);
+		retValue = initMsg(AD_Language, retValue);
 		if (retValue != null)
 		{
 			m_languages.put(AD_Language, retValue);
@@ -98,17 +101,17 @@ public final class Msg
 		return retValue;
 	}   //  getMsgMap
 	
-	private CCache<String,String> getElementMap (String ad_language)
+	private synchronized CCache<String,String> getElementMap (String ad_language)
 	{
 		String AD_Language = ad_language;
 		if (AD_Language == null || AD_Language.length() == 0)
 			AD_Language = Language.getBaseAD_Language();
 		//  Do we have the language ?
 		CCache<String,String> retValue = (CCache<String,String>)m_elementCache.get(AD_Language);
-		if (retValue != null && retValue.size() > 0)
+		if (retValue != null)
 			return retValue;
 
-		retValue = new CCache<String, String>("element", 100, 0, false, 0);
+		retValue = new CCache<String, String>(I_AD_Element.Table_Name, I_AD_Element.Table_Name + "|" + AD_Language, 100, 0, false, 0);
 		m_elementCache.put(AD_Language, retValue);
 		return retValue;
 	}
@@ -121,10 +124,10 @@ public final class Msg
 	 *  @param AD_Language Language
 	 *  @return Cache HashMap
 	 */
-	private CCache<String,String> initMsg (String AD_Language)
+	private CCache<String,String> initMsg (String AD_Language, CCache<String,String> msg)
 	{
-	//	Trace.printStack();
-		CCache<String,String> msg = new CCache<String,String>(I_AD_Message.Table_Name, MAP_SIZE, 0, false, 0);
+		if (msg == null)
+			msg = new CCache<String,String>(I_AD_Message.Table_Name, I_AD_Message.Table_Name + "|" + AD_Language, MAP_SIZE, 0, false, 0);
 		//
 		if (!DB.isConnected())
 		{
@@ -183,7 +186,7 @@ public final class Msg
 	/**
 	 *  Reset Message cache
 	 */
-	public void reset()
+	public synchronized void reset()
 	{
 		if (m_languages == null)
 			return;
@@ -195,14 +198,13 @@ public final class Msg
 			CCache<String, String> hm = iterator.next();
 			hm.reset();
 		}
-		m_languages.clear();
 	}   //  reset
 
 	/**
 	 *  Return an array of the installed Languages
 	 *  @return Array of loaded Languages or null
 	 */
-	public String[] getLanguages()
+	public synchronized String[] getLanguages()
 	{
 		if (m_languages == null)
 			return null;
@@ -216,11 +218,11 @@ public final class Msg
 	 *  @param language Language code
 	 *  @return true, if language is loaded
 	 */
-	public boolean isLoaded (String language)
+	public synchronized boolean isLoaded (String language)
 	{
 		if (m_languages == null)
 			return false;
-		return m_languages.containsKey(language);
+		return m_languages.get(language) != null && !m_languages.get(language).isEmpty();
 	}   //  isLoaded
 
 	/**

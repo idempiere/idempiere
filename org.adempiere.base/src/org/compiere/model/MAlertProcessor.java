@@ -83,7 +83,7 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 	}	//	MAlertProcessor
 
 	/** Cache: AD_AlertProcessor -> Alerts array */
-	private static CCache<Integer, MAlert[]> s_cacheAlerts = new CCache<Integer, MAlert[]>(I_AD_Alert.Table_Name, "AD_Alert_ForProcessor", 10, false);
+	private static CCache<Integer, MAlert[]> s_cacheAlerts = new CCache<Integer, MAlert[]>(I_AD_Alert.Table_Name, "AD_Alert|AlertProcessor", 10, false);
 
 	/**
 	 * 	Get Server ID
