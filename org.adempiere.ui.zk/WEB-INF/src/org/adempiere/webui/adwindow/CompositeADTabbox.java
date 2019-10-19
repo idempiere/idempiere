@@ -151,6 +151,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 						showLastError();
 					} 
 					tabPanel.getGridTab().dataRefreshAll(true, true);
+					tabPanel.getGridTab().refreshParentTabs();
 				}
 				else if (DetailPane.ON_DELETE_EVENT.equals(event.getName())) {
 					onDelete();

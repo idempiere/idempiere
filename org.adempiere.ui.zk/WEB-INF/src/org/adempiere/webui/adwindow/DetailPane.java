@@ -710,7 +710,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         		} else if (BTN_EDIT_ID.equals(btn.getId())) {
         			btn.setDisabled(false);
         		} else if (BTN_SAVE_ID.equals(btn.getId())) {
-         			btn.setDisabled(false);
+        			btn.setDisabled(!adtab.needSave(true, false));
          		}
         		if (windowRestrictList.contains(btn.getId())) {
         			btn.setVisible(false);
