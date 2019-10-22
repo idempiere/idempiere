@@ -463,20 +463,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.jetty.alpn.conscrypt.server"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.idempiere.org.conscrypt.openjdk-uber"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="slf4j.api"
          download-size="0"
          install-size="0"

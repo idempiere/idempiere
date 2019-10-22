@@ -1128,8 +1128,6 @@
 		<unit id="org.eclipse.jetty.alpn.api.source" version="1.1.3.v20160715"/>
 		<unit id="org.eclipse.jetty.alpn.client" version="9.4.14.v20181114"/>
 		<unit id="org.eclipse.jetty.alpn.client.source" version="9.4.14.v20181114"/>
-		<unit id="org.eclipse.jetty.alpn.conscrypt.server" version="9.4.14.v20181114"/>
-		<unit id="org.eclipse.jetty.alpn.conscrypt.server.source" version="9.4.14.v20181114"/>
 		<unit id="org.eclipse.jetty.alpn.openjdk8.server" version="9.4.14.v20181114"/>
 		<unit id="org.eclipse.jetty.alpn.openjdk8.server.source" version="9.4.14.v20181114"/>
 		<unit id="org.eclipse.jetty.alpn.server" version="9.4.14.v20181114"/>
@@ -1214,8 +1212,6 @@
 		<unit id="org.eclipse.jetty.websocket.servlet.source" version="9.4.14.v20181114"/>
 		<unit id="org.eclipse.jetty.xml" version="9.4.14.v20181114"/>
 		<unit id="org.eclipse.jetty.xml.source" version="9.4.14.v20181114"/>
-		<unit id="org.idempiere.org.conscrypt.openjdk-uber" version="1.4.2"/>
-		<unit id="org.idempiere.org.conscrypt.openjdk-uber.source" version="1.4.2"/>
 		<unit id="org.jfree.chart-osgi" version="1.0.19"/>
 		<unit id="org.jfree.jcommon-osgi" version="1.0.23"/>
 		<unit id="org.krysalis.barcode4j" version="2.1.0"/>

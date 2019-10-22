@@ -51,7 +51,6 @@
       <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.jetty.alpn.api" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.jetty.alpn.conscrypt.server" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.alpn.server" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.apache-jsp" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.http" autoStart="true" startLevel="0" />

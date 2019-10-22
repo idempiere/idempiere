@@ -19,7 +19,6 @@
 		<org.apache.taglibs.version>1.2.5</org.apache.taglibs.version>
 		<groovy.version>2.5.3</groovy.version>
 		<org.bouncycastle.version>1.60</org.bouncycastle.version>
-		<jetty.conscrypt.openjdk.uber.version>1.4.2</jetty.conscrypt.openjdk.uber.version>
         <jackson.version>2.9.8</jackson.version> <!--it up to version of jasperreport engine-->
         <stax2.api.version>3.1.4</stax2.api.version> <!--it up to version of jasperreport engine-->
         <validation.api.version>1.1.0.Final</validation.api.version> <!--it up to version of jasperreport engine-->
@@ -391,24 +390,9 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.eclipse.jetty:jetty-alpn-conscrypt-server:jar:${jetty.version}</id>
-											<source>true</source>
-											<transitive>false</transitive>
-										</artifact>
-										<artifact>
 											<id>org.eclipse.jetty:jetty-alpn-openjdk8-server:jar:${jetty.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
-										</artifact>
-										<artifact>
-											<id>org.conscrypt:conscrypt-openjdk-uber:jar:${jetty.conscrypt.openjdk.uber.version}</id>
-											<source>true</source>
-											<transitive>false</transitive>
-											<instructions>
-        										<Export-Package>org.conscrypt;version="${jetty.conscrypt.openjdk.uber.version}"</Export-Package>
-        										<Bundle-Name>org.idempiere.org.conscrypt.openjdk-uber</Bundle-Name>
-        										<Bundle-SymbolicName>org.idempiere.org.conscrypt.openjdk-uber</Bundle-SymbolicName>
-    										</instructions>
 										</artifact>
 										<artifact>
 											<id>org.slf4j:slf4j-api:jar:${slf4j.version}</id>
@@ -1398,11 +1382,6 @@
 									<generateSourceFeature>true</generateSourceFeature>
 
 									<artifacts>
-										<artifact>
-											<id>org.eclipse.jetty:jetty-alpn-conscrypt-server:jar:${jetty.version}</id>
-											<source>true</source>
-											<transitive>false</transitive>
-										</artifact>
 										<artifact>
 											<id>org.eclipse.jetty:jetty-alpn-openjdk8-server:jar:${jetty.version}</id>
 											<source>true</source>

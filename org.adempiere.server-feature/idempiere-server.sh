@@ -28,7 +28,7 @@ VMOPTS="-Dorg.osgi.framework.bootdelegation=sun.security.ssl,org.w3c.dom.events
 -Dosgi.compatibility.bootdelegation=true
 -Djetty.home=$BASE/jettyhome
 -Djetty.base=$BASE/jettyhome
--Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-deployer.xml,etc/jetty-ssl.xml,etc/jetty-ssl-context.xml,etc/jetty-http.xml,etc/jetty-alpn.xml,etc/jetty-http2.xml,etc/jetty-https.xml
+-Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-deployer.xml,etc/jetty-ssl.xml,etc/jetty-ssl-context.xml,etc/jetty-http.xml,etc/jetty-https.xml
 -Dosgi.console=localhost:$TELNET_PORT
 -Dmail.mime.encodefilename=true
 -Dmail.mime.decodefilename=true
