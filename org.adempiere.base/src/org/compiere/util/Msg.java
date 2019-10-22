@@ -40,7 +40,7 @@ import org.compiere.model.I_AD_Message;
 public final class Msg
 {
 	/** Initial size of HashMap     */
-	private static final int 		MAP_SIZE = 1500;
+	private static final int 		MAP_SIZE = 2000;
 	/**  Separator between Msg and optional Tip     */
 	private static final String     SEPARATOR = Env.NL + Env.NL;
 

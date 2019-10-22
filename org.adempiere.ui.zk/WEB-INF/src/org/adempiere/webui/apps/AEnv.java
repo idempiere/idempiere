@@ -206,6 +206,15 @@ public final class AEnv
 	public static void logout()
 	{
 		String sessionID = Env.getContext(Env.getCtx(), "#AD_Session_ID");
+		synchronized (windowCache)
+		{
+			CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
+			if (cache != null)
+			{
+				cache.clear();
+				CacheMgt.get().unregister(cache);
+			}
+		}
 		windowCache.remove(sessionID);
 		//	End Session
 		MSession session = MSession.get(Env.getCtx(), false);	//	finish
@@ -291,7 +300,7 @@ public final class AEnv
 					CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
 					if (cache == null)
 					{
-						cache = new CCache<Integer, GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO|Session", 10);
+						cache = new CCache<Integer, GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO|Session|"+sessionID, 10);
 						windowCache.put(sessionID, cache);
 					}
 					cache.put(AD_Window_ID, mWindowVO);
