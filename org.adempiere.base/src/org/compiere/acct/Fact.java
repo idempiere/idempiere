@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.compiere.model.MAccount;
@@ -335,22 +336,10 @@ public final class Fact
 	 */
 	public boolean isSegmentBalanced()
 	{
-		//AZ Goodwill
-		//  Multi-Currency documents are source balanced by definition
 		//  No lines -> balanced
-		if (m_lines.size() == 0 || m_doc.isMultiCurrency())
+		if (m_lines.size() == 0)
 			return true;
 		
-		// If there is more than 1 currency in fact lines, it is a multi currency doc
-		ArrayList<Integer> list = new ArrayList<Integer>();
-		for (int i = 0; i < m_lines.size(); i++){
-			FactLine line = (FactLine)m_lines.get(i);
-			if (line.getC_Currency_ID() > 0 && !list.contains(line.getC_Currency_ID()))
-				list.add(line.getC_Currency_ID());
-		}
-		if (list.size() > 1 )
-			return true;
-			
 		MAcctSchemaElement[] elements = m_acctSchema.getAcctSchemaElements();
 		//  check all balancing segments
 		for (int i = 0; i < elements.length; i++)
@@ -374,7 +363,7 @@ public final class Fact
 		if (segmentType.equals(MAcctSchemaElement.ELEMENTTYPE_Organization))
 		{
 			HashMap<Integer,BigDecimal> map = new HashMap<Integer,BigDecimal>();
-			//  Add up values by key
+			//  Add up values by organization
 			for (int i = 0; i < m_lines.size(); i++)
 			{
 				FactLine line = (FactLine)m_lines.get(i);
@@ -384,21 +373,24 @@ public final class Fact
 				if (oldBal != null)
 					bal = bal.add(oldBal);
 				map.put(key, bal);
-			//	System.out.println("Add Key=" + key + ", Bal=" + bal + " <- " + line);
 			}
-			//  check if all keys are zero
-			Iterator<BigDecimal> values = map.values().iterator();
-			while (values.hasNext())
+			
+			//  check if there are not balance entries involving multiple organizations
+			Map<Integer, BigDecimal> notBalance = new HashMap<>();			
+			for(Map.Entry<Integer, BigDecimal> entry : map.entrySet())
 			{
-				BigDecimal bal = values.next();
+				BigDecimal bal = entry.getValue();
 				if (bal.signum() != 0)
 				{
-					map.clear();
-					log.warning ("(" + segmentType + ") NO - " + toString() + ", Balance=" + bal);
-					return false;
+					notBalance.put(entry.getKey(), entry.getValue());
 				}
 			}
-			map.clear();
+			
+			if (notBalance.size() > 1)
+			{
+				return false;
+			}
+			
 			if (log.isLoggable(Level.FINER)) log.finer("(" + segmentType + ") - " + toString());
 			return true;
 		}
