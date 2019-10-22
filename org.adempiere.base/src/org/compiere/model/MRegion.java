@@ -56,7 +56,7 @@ public class MRegion extends X_C_Region
 	 */
 	private static void loadAllRegions (Properties ctx)
 	{
-		s_regions = new CCache<String,MRegion>(Table_Name, 100);
+		s_regions.clear();
 		String sql = "SELECT * FROM C_Region WHERE IsActive='Y'";
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -161,7 +161,7 @@ public class MRegion extends X_C_Region
 	}	//	getRegions
 
 	/**	Region Cache				*/
-	private static CCache<String,MRegion> s_regions = null;
+	private static CCache<String,MRegion> s_regions = new CCache<String,MRegion>(Table_Name, Table_Name, 100, 0, false, 0);
 	/** Default Region				*/
 	private static MRegion		s_default = null;
 	/**	Static Logger				*/
