@@ -396,7 +396,7 @@ public class PackInApplicationActivator extends AbstractActivator implements Fra
 
 	@Override
 	public void frameworkEvent(FrameworkEvent event) {
-		if (event.getType() == FrameworkEvent.STARTED) {
+		if (event.getType() == FrameworkEvent.STARTLEVEL_CHANGED) {
 			frameworkStarted();
 		}
 	}

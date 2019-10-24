@@ -190,7 +190,7 @@ public class AdempiereActivator extends AbstractActivator implements FrameworkLi
 	
 	@Override
 	public void frameworkEvent(FrameworkEvent event) {
-		if (event.getType() == FrameworkEvent.STARTED) {
+		if (event.getType() == FrameworkEvent.STARTLEVEL_CHANGED) {
 			frameworkStarted();
 		}		
 	}

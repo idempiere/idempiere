@@ -315,7 +315,7 @@ public class Incremental2PackActivator extends AbstractActivator implements Fram
 	
 	@Override
 	public void frameworkEvent(FrameworkEvent event) {
-		if (event.getType() == FrameworkEvent.STARTED) {
+		if (event.getType() == FrameworkEvent.STARTLEVEL_CHANGED) {
 			frameworkStarted();
 		}
 	}
