@@ -19,10 +19,12 @@ import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkEvent;
+import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class AdempiereActivator extends AbstractActivator {
+public class AdempiereActivator extends AbstractActivator implements FrameworkListener {
 
 	protected final static CLogger logger = CLogger.getCLogger(AdempiereActivator.class.getName());
 
@@ -30,6 +32,7 @@ public class AdempiereActivator extends AbstractActivator {
 	public void start(BundleContext context) throws Exception {
 		this.context = context;
 		if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + getVersion() + " starting...");
+		context.addFrameworkListener(this);
 		serviceTracker = new ServiceTracker<IDictionaryService, IDictionaryService>(context, IDictionaryService.class.getName(), this);
 		serviceTracker.open();
 		start();
@@ -146,6 +149,7 @@ public class AdempiereActivator extends AbstractActivator {
 	public void stop(BundleContext context) throws Exception {
 		stop();
 		serviceTracker.close();
+		context.removeFrameworkListener(this);
 		this.context = null;
 		if (logger.isLoggable(Level.INFO)) logger.info(context.getBundle().getSymbolicName() + " "
 				+ context.getBundle().getHeaders().get("Bundle-Version")
@@ -165,41 +169,6 @@ public class AdempiereActivator extends AbstractActivator {
 	public IDictionaryService addingService(
 			ServiceReference<IDictionaryService> reference) {
 		service = context.getService(reference);
-		if (Adempiere.getThreadPoolExecutor() != null) {
-			Adempiere.getThreadPoolExecutor().execute(new Runnable() {			
-				@Override
-				public void run() {
-					ClassLoader cl = Thread.currentThread().getContextClassLoader();
-					try {
-						Thread.currentThread().setContextClassLoader(AdempiereActivator.class.getClassLoader());
-						setupPackInContext();
-						installPackage();
-					} finally {
-						ServerContext.dispose();
-						service = null;
-						Thread.currentThread().setContextClassLoader(cl);
-					}
-				}
-			});
-		} else {
-			Adempiere.addServerStateChangeListener(new ServerStateChangeListener() {				
-				@Override
-				public void stateChange(ServerStateChangeEvent event) {
-					if (event.getEventType() == ServerStateChangeEvent.SERVER_START && service != null) {
-						ClassLoader cl = Thread.currentThread().getContextClassLoader();
-						try {
-							Thread.currentThread().setContextClassLoader(AdempiereActivator.class.getClassLoader());
-							setupPackInContext();
-							installPackage();
-						} finally {
-							ServerContext.dispose();
-							service = null;
-							Thread.currentThread().setContextClassLoader(cl);
-						}
-					}					
-				}
-			});
-		}
 		return null;
 	}
 
@@ -218,4 +187,51 @@ public class AdempiereActivator extends AbstractActivator {
 		serverContext.setProperty("#AD_Client_ID", "0");
 		ServerContext.setCurrentInstance(serverContext);
 	};
+	
+	@Override
+	public void frameworkEvent(FrameworkEvent event) {
+		if (event.getType() == FrameworkEvent.STARTED) {
+			frameworkStarted();
+		}		
+	}
+
+	private void frameworkStarted() {		
+		if (service != null) {
+			if (Adempiere.getThreadPoolExecutor() != null) {
+				Adempiere.getThreadPoolExecutor().execute(new Runnable() {			
+					@Override
+					public void run() {
+						ClassLoader cl = Thread.currentThread().getContextClassLoader();
+						try {
+							Thread.currentThread().setContextClassLoader(AdempiereActivator.class.getClassLoader());
+							setupPackInContext();
+							installPackage();
+						} finally {
+							ServerContext.dispose();
+							service = null;
+							Thread.currentThread().setContextClassLoader(cl);
+						}
+					}
+				});
+			} else {
+				Adempiere.addServerStateChangeListener(new ServerStateChangeListener() {				
+					@Override
+					public void stateChange(ServerStateChangeEvent event) {
+						if (event.getEventType() == ServerStateChangeEvent.SERVER_START && service != null) {
+							ClassLoader cl = Thread.currentThread().getContextClassLoader();
+							try {
+								Thread.currentThread().setContextClassLoader(AdempiereActivator.class.getClassLoader());
+								setupPackInContext();
+								installPackage();
+							} finally {
+								ServerContext.dispose();
+								service = null;
+								Thread.currentThread().setContextClassLoader(cl);
+							}
+						}					
+					}
+				});
+			}
+		}
+	}
 }
