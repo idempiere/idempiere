@@ -25,14 +25,9 @@
 **********************************************************************/
 package org.idempiere.server.cluster.callable;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.RandomAccessFile;
 import java.io.Serializable;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
 
 import org.compiere.util.CLogFile;
 
@@ -40,7 +35,7 @@ import org.compiere.util.CLogFile;
  * @author hengsin
  *
  */
-public class ReadLogCallable extends LogFileCallable implements Callable<byte[]>, Serializable {
+public class GetLogInfoCallable extends LogFileCallable implements Callable<GetLogInfoCallable.LogInfo>, Serializable {
 
 	/**
 	 * generated serial id
@@ -48,28 +43,17 @@ public class ReadLogCallable extends LogFileCallable implements Callable<byte[]>
 	private static final long serialVersionUID = 33969865104073117L;
 
 	private String fileName;
-	private int blockNo;
 
 	/**
 	 * 
 	 * @param fileName
 	 */
-	public ReadLogCallable(String fileName) {
-		this(fileName, 0);
-	}
-
-	/**
-	 * 
-	 * @param fileName
-	 * @param blockNo 0 base block index
-	 */
-	public ReadLogCallable(String fileName, int blockNo) {
+	public GetLogInfoCallable(String fileName) {
 		this.fileName = fileName;
-		this.blockNo = blockNo;
 	}
 	
 	@Override
-	public byte[] call() throws Exception {
+	public LogInfo call() throws Exception {
 		CLogFile fileHandler = CLogFile.get(false, null, false);
 		//
 		// Display current log File
@@ -80,34 +64,71 @@ public class ReadLogCallable extends LogFileCallable implements Callable<byte[]>
 		if (!isAccessible(file))
 			return null;
 		
-		if (file.length() == 0) {
-			return new byte[0];
+		long length = file.length();
+		int noOfBlocks = 1;
+		if (length > BLOCK_SIZE) {
+			int v = (int) (((length - 1) / BLOCK_SIZE) + 1);
+			if (v == 0)
+				v = 1;
+			noOfBlocks = v;
+		}
+		
+		return new LogInfo(fileName, length, BLOCK_SIZE, noOfBlocks);
+	}
+	
+	public static class LogInfo implements Serializable {
+		
+		/**
+		 * generated serial id
+		 */
+		private static final long serialVersionUID = -4154825003947713729L;
+		
+		private String fileName;
+		private long length;
+		private int blockSize;
+		private int noOfBlocks;
+		
+		public LogInfo(String fileName, long length, int blockSize, int noOfBlocks) {
+			super();
+			this.fileName = fileName;
+			this.length = length;
+			this.blockSize = blockSize;
+			this.noOfBlocks = noOfBlocks;
 		}
 
-		try(RandomAccessFile raf = new RandomAccessFile(file, "r"); FileChannel channel = raf.getChannel();) {			
-			if (blockNo > 0) {
-				channel.position(blockNo * BLOCK_SIZE);
-			}
-			ByteBuffer buffer = ByteBuffer.allocate(1024);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream(2048);
-			int bytesRead = 0;
-			int totalRead = 0;
-			while((bytesRead = channel.read(buffer)) > 0) {
-				totalRead += bytesRead;
-				if (totalRead > BLOCK_SIZE) {
-					int diff = BLOCK_SIZE - totalRead;
-					bytesRead = bytesRead - diff;
-					totalRead = BLOCK_SIZE;
-				}
-				baos.write(buffer.array(), 0, bytesRead);
-				buffer.clear();
-				if (totalRead == BLOCK_SIZE)
-					break;
-			}
-			return baos.toByteArray();
-		} catch (Exception ex) {
-			log.log(Level.SEVERE, "stream" + ex);
-			return null;
-		}		
+		/**
+		 * @return the serialversionuid
+		 */
+		public static long getSerialversionuid() {
+			return serialVersionUID;
+		}
+
+		/**
+		 * @return the fileName
+		 */
+		public String getFileName() {
+			return fileName;
+		}
+
+		/**
+		 * @return the length
+		 */
+		public long getLength() {
+			return length;
+		}
+
+		/**
+		 * @return the blockSize
+		 */
+		public int getBlockSize() {
+			return blockSize;
+		}
+
+		/**
+		 * @return the noOfBlocks
+		 */
+		public int getNoOfBlocks() {
+			return noOfBlocks;
+		}			
 	}
 }

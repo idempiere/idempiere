@@ -88,6 +88,7 @@ import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
 import org.idempiere.server.cluster.ClusterServerMgr;
 import org.idempiere.server.cluster.callable.DeleteLogsCallable;
+import org.idempiere.server.cluster.callable.GetLogInfoCallable;
 import org.idempiere.server.cluster.callable.ReadLogCallable;
 import org.idempiere.server.cluster.callable.RotateLogCallable;
 import org.idempiere.server.cluster.callable.SetTraceLevelCallable;
@@ -442,18 +443,27 @@ public class AdempiereMonitor extends HttpServlet
 		
 		if (!Util.isEmpty(nodeId, true)) 
 		{
-			ReadLogCallable callable = new ReadLogCallable(traceCmd);
+			
+			GetLogInfoCallable infoCallable = new GetLogInfoCallable(traceCmd);
+			IClusterService service = ClusterServerMgr.getClusterService();
+			IClusterMember member = ClusterServerMgr.getClusterMember(nodeId);
 			try {
-				byte[] contents = ClusterServerMgr.getClusterService().execute(callable, ClusterServerMgr.getClusterMember(nodeId)).get();
-				if (contents == null || contents.length == 0)
+				GetLogInfoCallable.LogInfo logInfo = service.execute(infoCallable, member).get();
+				if (logInfo == null || logInfo.getLength() == 0)
 					return false;
 				
 				try(ServletOutputStream out = response.getOutputStream ())
 				{
 					response.setContentType("text/plain");
 					response.setBufferSize(2048);
-					response.setContentLength(contents.length);
-					out.write(contents);
+					response.setContentLength((int) logInfo.getLength());
+					for(int i = 0; i < logInfo.getNoOfBlocks(); i++) {
+						ReadLogCallable callable = new ReadLogCallable(logInfo.getFileName(), i);
+						byte[] contents = service.execute(callable, member).get();
+						if (contents == null || contents.length == 0)
+							break;
+						out.write(contents);						
+					}
 					out.flush();
 				}
 				return true;
