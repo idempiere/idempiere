@@ -95,7 +95,7 @@ public class ReadLogCallable extends LogFileCallable implements Callable<byte[]>
 			while((bytesRead = channel.read(buffer)) > 0) {
 				totalRead += bytesRead;
 				if (totalRead > BLOCK_SIZE) {
-					int diff = BLOCK_SIZE - totalRead;
+					int diff = totalRead - BLOCK_SIZE;
 					bytesRead = bytesRead - diff;
 					totalRead = BLOCK_SIZE;
 				}

@@ -97,13 +97,6 @@ public class GetLogInfoCallable extends LogFileCallable implements Callable<GetL
 		}
 
 		/**
-		 * @return the serialversionuid
-		 */
-		public static long getSerialversionuid() {
-			return serialVersionUID;
-		}
-
-		/**
 		 * @return the fileName
 		 */
 		public String getFileName() {
