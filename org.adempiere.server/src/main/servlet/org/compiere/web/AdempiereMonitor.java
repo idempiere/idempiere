@@ -707,13 +707,9 @@ public class AdempiereMonitor extends HttpServlet
 				p para = new p();
 				StringBuilder nodeBuilder = new StringBuilder(local.getId());
 				InetAddress address = local.getAddress();
-				String ip = address != null ? address.getHostAddress() : null;
-				if (ip != null && 
-					(ip.startsWith("10.") ||  
-				     ip.startsWith("172.16") || 
-				     ip.startsWith("192.168"))) 
+				if (address != null) 
 				{					
-					nodeBuilder.append(" (").append(ip).append(")");
+					nodeBuilder.append(" (").append(address.getCanonicalHostName()).append(")");
 				}
 				para.addElement(nodeBuilder.toString());
 				
@@ -728,13 +724,9 @@ public class AdempiereMonitor extends HttpServlet
 						para.addElement(" - ");
 						nodeBuilder = new StringBuilder(member.getId());
 						address = member.getAddress();
-						ip = address != null ? address.getHostAddress() : null;
-						if (ip != null && 
-								(ip.startsWith("10.") ||  
-							     ip.startsWith("172.16") || 
-							     ip.startsWith("192.168"))) 
+						if (address != null) 
 						{					
-							nodeBuilder.append(" (").append(ip).append(")");
+							nodeBuilder.append(" (").append(address.getCanonicalHostName()).append(")");
 						}
 						a link = new a ("idempiereMonitor?NodeInfo="+member.getId(), nodeBuilder.toString());
 						para.addElement(link);
@@ -1028,7 +1020,7 @@ public class AdempiereMonitor extends HttpServlet
 		SystemInfo systemInfo = SystemInfo.getLocalSystemInfo();				
 		tr line = new tr();
 		line.addElement(new th().addElement(Adempiere.getURL()));
-		line.addElement(new td().addElement(Adempiere.getAdempiereHome()));
+		line.addElement(new td().addElement(systemInfo.getPropertyFileName()));
 		table.addElement(line);
 		//	OS + Name
 		line = new tr();
@@ -1041,7 +1033,7 @@ public class AdempiereMonitor extends HttpServlet
 		//	Java + email
 		line = new tr();
 		line.addElement(new th().addElement(systemInfo.getJavaVM()));
-		line.addElement(new td().addElement(system.getSupportEMail()));
+		line.addElement(new td().addElement("Average GC Time=" + systemInfo.getGarbageCollectionTime() / systemInfo.getGarbageCollectionCount() + " ms"));
 		table.addElement(line);
 		//	DB + Instance
 		line = new tr();
@@ -1533,26 +1525,26 @@ public class AdempiereMonitor extends HttpServlet
 		table.setCellSpacing(2);
 		table.setCellPadding(2);		
 		
+		tr line = new tr();
+		line.addElement(new th().addElement("Property File"));
+		line.addElement(new td().addElement(systemInfo.getPropertyFileName()));
+		table.addElement(line);
+		
+		line = new tr();
 		InetAddress address = systemInfo.getAddress();
-		String ip = address != null ? address.getHostAddress() : null;
-		if (ip != null && 
-			(ip.startsWith("10.") ||  
-		     ip.startsWith("172.16") || 
-		     ip.startsWith("192.168"))) 
-		{		
-			tr line = new tr();
-			line.addElement(new th().addElement("IP Address"));
-			line.addElement(new td().addElement(ip));
-			table.addElement(line);
-		}
+		line.addElement(new th().addElement("Host Name"));
+		line.addElement(new td().addElement(address.getCanonicalHostName()));
+		table.addElement(line);
 		
 		//	OS + Name
-		tr line = new tr();
-		line.addElement(new th().addElement(systemInfo.getOperatingSystem()));
+		line = new tr();
+		line.addElement(new th().addElement("Operating System"));
+		line.addElement(new td().addElement(systemInfo.getOperatingSystem()));
 		table.addElement(line);
 		//	Java + email
 		line = new tr();
 		line.addElement(new th().addElement(systemInfo.getJavaVM()));
+		line.addElement(new td().addElement("Average GC Time=" + systemInfo.getGarbageCollectionTime() / systemInfo.getGarbageCollectionCount() + " ms"));
 		table.addElement(line);
 		//	DB + Instance
 		line = new tr();

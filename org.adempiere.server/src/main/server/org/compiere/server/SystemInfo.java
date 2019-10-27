@@ -37,11 +37,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 
+import org.compiere.Adempiere;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.CConnection;
 import org.compiere.model.MSession;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CMemoryUsage;
+import org.compiere.util.Ini;
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
 import org.idempiere.server.cluster.ClusterServerMgr;
@@ -58,6 +60,8 @@ public class SystemInfo implements Serializable {
 	 */
 	private static final long serialVersionUID = -4451616690416295597L;
 	
+	private String propertyFileName;
+	private String idempereHome;
 	private String operatingSystem;
 	private String javaVM;
 	private String databaseDescription;
@@ -90,6 +94,22 @@ public class SystemInfo implements Serializable {
 	private SystemInfo() {
 	}
 
+	/**
+	 * 
+	 * @return idempiere property filename
+	 */
+	public String getPropertyFileName() {
+		return propertyFileName;
+	}
+	
+	/**
+	 * 
+	 * @return idempiere home
+	 */
+	public String getIDempiereHome() {
+		return idempereHome;
+	}
+	
 	/**
 	 * @return the operatingSystem
 	 */
@@ -218,6 +238,8 @@ public class SystemInfo implements Serializable {
 	
 	public static SystemInfo getLocalSystemInfo() {
 		SystemInfo si = new SystemInfo();
+		si.propertyFileName = Ini.getPropertyFileName();
+		si.idempereHome = Adempiere.getAdempiereHome();
 		OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
 		String osInfo = os.getName() + " " + os.getVersion();
 		osInfo += " (" + os.getArch() + ")";
@@ -259,13 +281,6 @@ public class SystemInfo implements Serializable {
 		return si;
 	}
 	
-	/**
-	 * @return the serialversionuid
-	 */
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	/**
 	 * @return the garbageCollectionCount
 	 */
