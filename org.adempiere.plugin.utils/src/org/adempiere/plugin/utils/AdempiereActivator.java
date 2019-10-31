@@ -20,19 +20,18 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkEvent;
-import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class AdempiereActivator extends AbstractActivator implements FrameworkListener {
+public class AdempiereActivator extends AbstractActivator {
 
 	protected final static CLogger logger = CLogger.getCLogger(AdempiereActivator.class.getName());
 
 	@Override
 	public void start(BundleContext context) throws Exception {
 		this.context = context;
+		registryRunPackin ();
 		if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + getVersion() + " starting...");
-		context.addFrameworkListener(this);
 		serviceTracker = new ServiceTracker<IDictionaryService, IDictionaryService>(context, IDictionaryService.class.getName(), this);
 		serviceTracker.open();
 		start();
@@ -195,7 +194,7 @@ public class AdempiereActivator extends AbstractActivator implements FrameworkLi
 		}		
 	}
 
-	private void frameworkStarted() {		
+	protected void frameworkStarted() {
 		if (service != null) {
 			if (Adempiere.getThreadPoolExecutor() != null) {
 				Adempiere.getThreadPoolExecutor().execute(new Runnable() {			

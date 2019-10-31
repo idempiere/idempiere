@@ -38,8 +38,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkEvent;
-import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -48,15 +46,15 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author hengsin
  *
  */
-public class Incremental2PackActivator extends AbstractActivator implements FrameworkListener {
+public class Incremental2PackActivator extends AbstractActivator {
 
 	protected final static CLogger logger = CLogger.getCLogger(Incremental2PackActivator.class.getName());
 
 	@Override
 	public void start(BundleContext context) throws Exception {
 		this.context = context;
+		registryRunPackin ();
 		if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + getVersion() + " starting...");
-		context.addFrameworkListener(this);
 		serviceTracker = new ServiceTracker<IDictionaryService, IDictionaryService>(context, IDictionaryService.class.getName(), this);
 		serviceTracker.open();
 		start();
@@ -312,15 +310,9 @@ public class Incremental2PackActivator extends AbstractActivator implements Fram
 		serverContext.setProperty("#AD_Client_ID", "0");
 		ServerContext.setCurrentInstance(serverContext);
 	};
-	
-	@Override
-	public void frameworkEvent(FrameworkEvent event) {
-		if (event.getType() == FrameworkEvent.STARTLEVEL_CHANGED) {
-			frameworkStarted();
-		}
-	}
 
-	private void frameworkStarted() {
+	@Override
+	protected void frameworkStarted() {
 		if (service != null) {
 			if (Adempiere.getThreadPoolExecutor() != null) {
 				Adempiere.getThreadPoolExecutor().execute(new Runnable() {			

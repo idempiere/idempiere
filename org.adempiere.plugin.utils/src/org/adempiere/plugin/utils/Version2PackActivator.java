@@ -38,8 +38,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkEvent;
-import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -48,7 +46,7 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author hengsin
  *
  */
-public class Version2PackActivator extends AbstractActivator implements FrameworkListener {
+public class Version2PackActivator extends AbstractActivator{
 
 	protected final static CLogger logger = CLogger.getCLogger(Version2PackActivator.class.getName());
 
@@ -280,15 +278,9 @@ public class Version2PackActivator extends AbstractActivator implements Framewor
 		serverContext.setProperty("#AD_Client_ID", "0");
 		ServerContext.setCurrentInstance(serverContext);
 	};
-	
-	@Override
-	public void frameworkEvent(FrameworkEvent event) {
-		if (event.getType() == FrameworkEvent.STARTLEVEL_CHANGED) {
-			frameworkStarted();
-		}
-	}
 
-	private void frameworkStarted() {
+	@Override
+	protected void frameworkStarted() {
 		if (service != null) {
 			if (Adempiere.getThreadPoolExecutor() != null) {
 				Adempiere.getThreadPoolExecutor().execute(new Runnable() {			

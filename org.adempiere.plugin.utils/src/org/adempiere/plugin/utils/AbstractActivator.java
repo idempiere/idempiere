@@ -34,10 +34,12 @@ import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkEvent;
+import org.osgi.framework.FrameworkListener;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
-public abstract class AbstractActivator implements BundleActivator, ServiceTrackerCustomizer<IDictionaryService, IDictionaryService> {
+public abstract class AbstractActivator implements BundleActivator, ServiceTrackerCustomizer<IDictionaryService, IDictionaryService>, FrameworkListener{
 
 	protected final static CLogger logger = CLogger.getCLogger(AbstractActivator.class.getName());
 	protected BundleContext context;
@@ -46,7 +48,8 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 	private String trxName = null;
 	private ProcessInfo m_processInfo = null;
 	private IProcessUI m_processUI = null;
-
+	public static boolean isFrameworkCompletedSrart = false;
+	
 	protected boolean merge(File zipfile, String version) throws Exception {
 		boolean success = false;
 
@@ -183,6 +186,24 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 		logger.log(level, msg);
 		if (m_processInfo != null)
 			m_processInfo.setSummary(msg);
+	}
+	
+	@Override
+	public void frameworkEvent(FrameworkEvent event) {
+		if (event.getType() == FrameworkEvent.STARTLEVEL_CHANGED) {
+			isFrameworkCompletedSrart = true;
+			frameworkStarted();
+		}
+	}
+	
+	protected abstract void frameworkStarted();
+	
+	protected void registryRunPackin() {
+		if (isFrameworkCompletedSrart) {
+			frameworkStarted ();
+		}else {
+			context.addFrameworkListener(this);
+		}
 	}
 
 }

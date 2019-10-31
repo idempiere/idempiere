@@ -42,12 +42,10 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkEvent;
-import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class PackInApplicationActivator extends AbstractActivator implements FrameworkListener {
+public class PackInApplicationActivator extends AbstractActivator{
 
 	protected final static CLogger logger = CLogger.getCLogger(PackInApplicationActivator.class.getName());
 	private List<File> filesToProcess = new ArrayList<>();
@@ -395,13 +393,7 @@ public class PackInApplicationActivator extends AbstractActivator implements Fra
 	}
 
 	@Override
-	public void frameworkEvent(FrameworkEvent event) {
-		if (event.getType() == FrameworkEvent.STARTLEVEL_CHANGED) {
-			frameworkStarted();
-		}
-	}
-
-	private void frameworkStarted() {
+	protected void frameworkStarted() {
 		if (service != null) {
 			if (Adempiere.getThreadPoolExecutor() != null) {
 				Adempiere.getThreadPoolExecutor().execute(new Runnable() {			
