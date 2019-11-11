@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.IDictionaryService;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.model.MSession;
@@ -38,8 +37,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * 
@@ -50,21 +47,11 @@ public class Incremental2PackActivator extends AbstractActivator {
 
 	protected final static CLogger logger = CLogger.getCLogger(Incremental2PackActivator.class.getName());
 
-	@Override
-	public void start(BundleContext context) throws Exception {
-		this.context = context;
-		registryRunPackin ();
-		if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + getVersion() + " starting...");
-		serviceTracker = new ServiceTracker<IDictionaryService, IDictionaryService>(context, IDictionaryService.class.getName(), this);
-		serviceTracker.open();
-		start();
-		if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + getVersion() + " ready.");
-	}
-
 	public String getName() {
 		return context.getBundle().getSymbolicName();
 	}
 
+	@Override
 	public String getVersion() {
 		String version = (String) context.getBundle().getHeaders().get("Bundle-Version");
 		// e.g. 1.0.0.qualifier, check only the "1.0.0" part
@@ -261,49 +248,9 @@ public class Incremental2PackActivator extends AbstractActivator {
 	protected void setContext(BundleContext context) {
 		this.context = context;
 	}
-	
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		stop();
-		serviceTracker.close();
-		context.removeFrameworkListener(this);
-		this.context = null;
-		if (logger.isLoggable(Level.INFO)) logger.info(context.getBundle().getSymbolicName() + " "
-				+ context.getBundle().getHeaders().get("Bundle-Version")
-				+ " stopped.");
-	}
 
 	protected void afterPackIn() {
 	};
-
-	/**
-	 * call when bundle have been started ( after this.context have been set )
-	 */
-	protected void start() {
-	};
-
-	/**
-	 * call when bundle is stop ( before this.context is set to null )
-	 */
-	protected void stop() {
-	}
-
-	@Override
-	public IDictionaryService addingService(
-			ServiceReference<IDictionaryService> reference) {
-		service = context.getService(reference);
-		return null;
-	}
-
-	@Override
-	public void modifiedService(ServiceReference<IDictionaryService> reference,
-			IDictionaryService service) {
-	}
-
-	@Override
-	public void removedService(ServiceReference<IDictionaryService> reference,
-			IDictionaryService service) {
-	}
 
 	protected void setupPackInContext() {
 		Properties serverContext = new Properties();

@@ -41,57 +41,14 @@ import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
 
 public class PackInApplicationActivator extends AbstractActivator{
 
 	protected final static CLogger logger = CLogger.getCLogger(PackInApplicationActivator.class.getName());
 	private List<File> filesToProcess = new ArrayList<>();
 	private File currentFile;
-	
-	@Override
-	public void start(BundleContext context) throws Exception {
-		this.context = context;
-		if (logger.isLoggable(Level.INFO)) logger.info(getName() + " starting...");
-		context.addFrameworkListener(this);
-		serviceTracker = new ServiceTracker<IDictionaryService, IDictionaryService>(context, IDictionaryService.class.getName(), this);
-		serviceTracker.open();
-		start();
-		if (logger.isLoggable(Level.INFO)) 
-			logger.info(getName() + " ready.");		
-	}
-	
-	/**
-	 * call when bundle have been started ( after this.context have been set )
-	 */
-	protected void start() {
-	};
-	
-	/**
-	 * call when bundle is stop ( before this.context is set to null )
-	 */
-	protected void stop() {
-	}
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		stop();
-		serviceTracker.close();
-		context.removeFrameworkListener(this);
-		this.context = null;
-		if (logger.isLoggable(Level.INFO)) logger.info(context.getBundle().getSymbolicName() + " "
-				+ context.getBundle().getHeaders().get("Bundle-Version")
-				+ " stopped.");		
-	}
-
-	@Override
-	public IDictionaryService addingService(ServiceReference<IDictionaryService> reference) {
-		service = context.getService(reference);		
-		return null;
-	}
-	
 	public void automaticPackin(int timeout, String folders, boolean fromService) {
 		if (fromService) {
 			//Initial delay - starting from service
@@ -368,14 +325,6 @@ public class PackInApplicationActivator extends AbstractActivator{
 				.setParameters(clientValue)
 				.setOnlyActiveRecords(true);
 		return q.getIDs();
-	}
-	
-	@Override
-	public void modifiedService(ServiceReference<IDictionaryService> reference, IDictionaryService service) {
-	}
-
-	@Override
-	public void removedService(ServiceReference<IDictionaryService> reference, IDictionaryService service) {
 	}
 
 	@Override

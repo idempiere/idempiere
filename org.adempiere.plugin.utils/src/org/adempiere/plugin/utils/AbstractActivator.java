@@ -36,6 +36,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
+import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -49,6 +50,30 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 	private ProcessInfo m_processInfo = null;
 	private IProcessUI m_processUI = null;
 	public static boolean isFrameworkCompletedSrart = false;
+	
+
+	@Override
+	public void start(BundleContext context) throws Exception {
+		this.context = context;
+		if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + getVersion() + " starting...");
+		serviceTracker = new ServiceTracker<IDictionaryService, IDictionaryService>(context, IDictionaryService.class.getName(), this);
+		serviceTracker.open();
+		if (!isFrameworkCompletedSrart)
+			context.addFrameworkListener(this);
+		start();
+		if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + getVersion() + " ready.");
+	}
+	
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		stop();
+		serviceTracker.close();
+		context.removeFrameworkListener(this);
+		this.context = null;
+		if (logger.isLoggable(Level.INFO)) logger.info(context.getBundle().getSymbolicName() + " "
+				+ context.getBundle().getHeaders().get("Bundle-Version")
+				+ " stopped.");
+	}
 	
 	protected boolean merge(File zipfile, String version) throws Exception {
 		boolean success = false;
@@ -197,13 +222,39 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 	}
 	
 	protected abstract void frameworkStarted();
+
+	/**
+	 * call when bundle have been started ( after this.context have been set )
+	 */
+	protected void start() {
+	};
+
+	/**
+	 * call when bundle is stop ( before this.context is set to null )
+	 */
+	protected void stop() {
+	}
 	
-	protected void registryRunPackin() {
-		if (isFrameworkCompletedSrart) {
+	public String getVersion() {
+		return "";
+	}
+	
+	@Override
+	public IDictionaryService addingService(
+			ServiceReference<IDictionaryService> reference) {
+		service = context.getService(reference);
+		if (isFrameworkCompletedSrart)
 			frameworkStarted ();
-		}else {
-			context.addFrameworkListener(this);
-		}
+		return null;
 	}
 
+	@Override
+	public void modifiedService(ServiceReference<IDictionaryService> reference,
+			IDictionaryService service) {
+	}
+
+	@Override
+	public void removedService(ServiceReference<IDictionaryService> reference,
+			IDictionaryService service) {
+	}
 }
