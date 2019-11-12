@@ -139,7 +139,7 @@ public class WAcctViewerData
 	private String m_ref2 = null;
 	
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WAcctViewerData.class);
+	private static final CLogger log = CLogger.getCLogger(WAcctViewerData.class);
 
 	/**
 	 *  Constructor

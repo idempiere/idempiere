@@ -70,7 +70,7 @@ import org.supercsv.prefs.CsvPreference;
 public class GridTabCSVExporter implements IGridTabExporter
 {
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(GridTabCSVExporter.class);
+	private static final CLogger log = CLogger.getCLogger(GridTabCSVExporter.class);
 
 	@Override
 	public void export(GridTab gridTab, List<GridTab> childs, boolean currentRowOnly, File file,int indxDetailSelected) {

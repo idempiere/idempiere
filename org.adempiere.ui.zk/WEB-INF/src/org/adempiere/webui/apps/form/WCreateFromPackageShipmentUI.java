@@ -56,7 +56,7 @@ public class WCreateFromPackageShipmentUI extends CreateFromPackageShipment
 	}
 
 	/**	Logger			*/
-	private CLogger log = CLogger.getCLogger(getClass());
+	private static final CLogger log = CLogger.getCLogger(WCreateFromPackageShipmentUI.class);
 	
 	public boolean dynInit() throws Exception
 	{

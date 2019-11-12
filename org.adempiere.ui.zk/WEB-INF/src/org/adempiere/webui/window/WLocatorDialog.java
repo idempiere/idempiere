@@ -124,7 +124,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 
 	private String title;
 
-	private static CLogger log = CLogger.getCLogger(WLocatorDialog.class);
+	private static final CLogger log = CLogger.getCLogger(WLocatorDialog.class);
 	
 	/**
 	 *	Constructor

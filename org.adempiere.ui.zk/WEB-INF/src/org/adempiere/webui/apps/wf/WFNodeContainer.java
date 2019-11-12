@@ -41,7 +41,7 @@ public class WFNodeContainer
 {
 	/**	Logger			*/
 	@SuppressWarnings("unused")
-	private static CLogger	log = CLogger.getCLogger(WFNodeContainer.class);
+	private static final CLogger	log = CLogger.getCLogger(WFNodeContainer.class);
 
 	/** The Workflow		*/
 	private MWorkflow	m_wf = null;

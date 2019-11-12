@@ -97,7 +97,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	private int p_WindowNo;
 
 	/**	Logger			*/
-	private CLogger log = CLogger.getCLogger(getClass());
+	private final static CLogger log = CLogger.getCLogger(WCreateFromShipmentUI.class);
 		
 	protected Label bPartnerLabel = new Label();
 	protected WEditor bPartnerField;

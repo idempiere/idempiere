@@ -49,7 +49,7 @@ public class OSTask extends Thread
 	private OutputStream    m_inStream;
 
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(OSTask.class);
+	private static final CLogger log = CLogger.getCLogger(OSTask.class);
 
 	/** Read Out                            */
 	private Thread          m_outReader = new Thread()

@@ -36,7 +36,7 @@ public class LdapResult
 	/** Encoder							*/
 	private BerEncoder m_encoder = null;
 	/**	Logger	*/
-	private static CLogger log = CLogger.getCLogger (LdapResult.class);
+	private static final CLogger log = CLogger.getCLogger (LdapResult.class);
 	/** Error number */
 	private int errNo = LDAP_SUCCESS;
 	/** Error String */

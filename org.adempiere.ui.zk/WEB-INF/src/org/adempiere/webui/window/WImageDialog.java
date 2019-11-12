@@ -110,7 +110,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 	/**  Image Model            */
 	private MImage      m_mImage = null;
 	/**	Logger					*/
-	private static CLogger log = CLogger.getCLogger(WImageDialog.class);
+	private static final CLogger log = CLogger.getCLogger(WImageDialog.class);
 
 	/** */
 	private Borderlayout mainLayout = new Borderlayout();

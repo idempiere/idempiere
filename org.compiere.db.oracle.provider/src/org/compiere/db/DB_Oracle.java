@@ -124,7 +124,7 @@ public class DB_Oracle implements AdempiereDatabase
     private Convert m_convert = new Convert_Oracle();
 
     /** Logger          */
-    private static CLogger          log = CLogger.getCLogger (DB_Oracle.class);
+    private static final CLogger          log = CLogger.getCLogger (DB_Oracle.class);
 
 
     private static int              m_maxbusyconnections = 0;

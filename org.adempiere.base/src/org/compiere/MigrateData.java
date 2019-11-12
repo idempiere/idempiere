@@ -48,7 +48,7 @@ public class MigrateData
 	}	//	MigrateData
 	
 	/**	Logger	*/
-	private static CLogger	log	= CLogger.getCLogger (MigrateData.class);
+	private static final CLogger	log	= CLogger.getCLogger (MigrateData.class);
 	
 	/**
 	 * 	Release 252c

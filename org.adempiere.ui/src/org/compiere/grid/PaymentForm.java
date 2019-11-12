@@ -43,7 +43,7 @@ import org.compiere.util.TrxRunnable;
 public abstract class PaymentForm implements IPaymentForm {
 
 	/**	Logger			*/
-	protected CLogger log = CLogger.getCLogger(getClass());
+	protected transient CLogger log = CLogger.getCLogger(getClass());
 	
 	/**	Window						*/
 	private int                 m_WindowNo = 0;

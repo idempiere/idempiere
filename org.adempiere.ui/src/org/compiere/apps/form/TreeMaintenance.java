@@ -36,7 +36,7 @@ public class TreeMaintenance {
 	/**	Active Tree				*/
 	public MTree		 	m_tree;
 	/**	Logger			*/
-	public static CLogger log = CLogger.getCLogger(TreeMaintenance.class);
+	public static final CLogger log = CLogger.getCLogger(TreeMaintenance.class);
 	
 	public KeyNamePair[] getTreeData()
 	{

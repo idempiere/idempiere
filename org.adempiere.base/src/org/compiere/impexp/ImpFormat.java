@@ -58,7 +58,7 @@ public final class ImpFormat
 	}	//	ImpFormat
 	
 	/**	Logger			*/
-	private static CLogger	log = CLogger.getCLogger(ImpFormat.class);
+	private static final CLogger	log = CLogger.getCLogger(ImpFormat.class);
 
 	private String 		m_name;
 	private String 		m_formatType;

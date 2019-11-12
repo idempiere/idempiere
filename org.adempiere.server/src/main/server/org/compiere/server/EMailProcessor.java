@@ -82,7 +82,7 @@ public class EMailProcessor
 
 	
 	/**	Logger			*/
-	protected CLogger	log = CLogger.getCLogger(getClass());
+	protected static final CLogger	log = CLogger.getCLogger(EMailProcessor.class);
 	
 	/**	Process Error				*/
 	protected static final int		ERROR = 0;

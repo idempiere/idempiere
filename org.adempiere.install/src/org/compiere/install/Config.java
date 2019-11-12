@@ -41,7 +41,7 @@ public abstract class Config
 	/**	Configuration Data			*/
 	protected ConfigurationData 	p_data = null;
 	/**	Logger	*/
-	static CLogger	log	= CLogger.getCLogger (Config.class);
+	protected static final CLogger	log	= CLogger.getCLogger (Config.class);
 
 
 	/**

@@ -48,7 +48,7 @@ import org.w3c.dom.Document;
 public class FileImportProcessor implements IImportProcessor {
 	
 	/**	Logger	*/
-	protected CLogger	log = CLogger.getCLogger (FileImportProcessor.class);
+	protected static final CLogger	log = CLogger.getCLogger (FileImportProcessor.class);
 	
 	public void process(Properties ctx, ReplicationProcessor replicationProcessor, String trxName)
 			throws Exception {

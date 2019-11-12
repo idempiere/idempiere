@@ -34,7 +34,7 @@ import org.eclipse.equinox.app.IApplicationContext;
  */
 public class SignDatabaseBuildApplication implements IApplication {
 
-	private static CLogger	s_log	= CLogger.getCLogger (SignDatabaseBuildApplication.class);
+	private static final CLogger	s_log	= CLogger.getCLogger (SignDatabaseBuildApplication.class);
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)

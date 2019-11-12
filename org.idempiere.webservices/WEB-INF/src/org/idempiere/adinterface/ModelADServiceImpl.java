@@ -119,7 +119,7 @@ import org.idempiere.webservices.fault.IdempiereServiceFault;
 @WebService(endpointInterface="org.idempiere.adinterface.ModelADService", serviceName="ModelADService",targetNamespace="http://idempiere.org/ADInterface/1_0")
 public class ModelADServiceImpl extends AbstractService implements ModelADService {
 
-	private static CLogger	log = CLogger.getCLogger(ModelADServiceImpl.class);
+	private static final CLogger	log = CLogger.getCLogger(ModelADServiceImpl.class);
 	
 	private static String webServiceName = new String("ModelADService");
 	

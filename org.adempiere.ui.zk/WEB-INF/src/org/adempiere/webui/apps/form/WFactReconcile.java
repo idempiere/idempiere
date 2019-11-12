@@ -64,7 +64,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	/** Number of selected rows */
 	private int             m_noSelected = 0;
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WFactReconcile.class);
+	private static final CLogger log = CLogger.getCLogger(WFactReconcile.class);
 	
 	/**
 	 *	Initialize Panel

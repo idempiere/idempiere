@@ -33,7 +33,7 @@ import org.compiere.util.Util;
 public class Database
 {
 	/**	Logger							*/
-	private static CLogger			log = CLogger.getCLogger (Database.class);
+	private static final CLogger			log = CLogger.getCLogger (Database.class);
 	
 	/** Oracle ID       */
 	public static String        DB_ORACLE   = "Oracle";               	

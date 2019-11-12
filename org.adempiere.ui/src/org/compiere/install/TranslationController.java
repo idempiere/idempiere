@@ -33,7 +33,7 @@ public class TranslationController
 	}
 	
 	/**	Logger			*/
-	public static CLogger log = CLogger.getCLogger(TranslationController.class);
+	public static final CLogger log = CLogger.getCLogger(TranslationController.class);
 	/**	Window No			*/
 	public int         	m_WindowNo = 0;
 

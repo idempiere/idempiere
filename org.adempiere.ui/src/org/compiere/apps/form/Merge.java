@@ -38,7 +38,7 @@ public class Merge
 	//private Connection		m_con = null;
 	private Trx 			m_trx = null;         
 	/**	Logger			*/
-	public static CLogger log = CLogger.getCLogger(Merge.class);
+	public static final CLogger log = CLogger.getCLogger(Merge.class);
 
 	public static String	AD_ORG_ID = "AD_Org_ID";
 	public static String	C_BPARTNER_ID = "C_BPartner_ID";

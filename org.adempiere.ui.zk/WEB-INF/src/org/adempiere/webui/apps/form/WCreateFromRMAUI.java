@@ -74,7 +74,7 @@ public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListen
 	private int p_WindowNo;
 
 	/**	Logger			*/
-	private CLogger log = CLogger.getCLogger(getClass());
+	private static final CLogger log = CLogger.getCLogger(WCreateFromRMAUI.class);
 		
 	protected Label bPartnerLabel = new Label();
 	protected WEditor bPartnerField;

@@ -63,7 +63,7 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
 	private static final long serialVersionUID = -2038792517003449189L;
 	
 	/** Log. */
-    private static CLogger  log = CLogger.getCLogger(WSQLProcess.class);
+    private static final CLogger  log = CLogger.getCLogger(WSQLProcess.class);
 
     /** DML Statement		*/
 	private static final String[] DML_KEYWORDS = new String[]{

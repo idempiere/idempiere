@@ -84,7 +84,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
 	public static final String BTNPREFIX = "Btn";
 
-    private static CLogger log = CLogger.getCLogger(ADWindowToolbar.class);
+    private static final CLogger log = CLogger.getCLogger(ADWindowToolbar.class);
 
     private ToolBarButton btnIgnore;
 

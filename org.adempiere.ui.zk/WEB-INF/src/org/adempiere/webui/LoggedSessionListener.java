@@ -25,7 +25,7 @@ import org.compiere.util.WebUtil;
 
 public class LoggedSessionListener implements HttpSessionListener, ServletContextListener, ServerStateChangeListener{
 	private static Hashtable<String, HttpSession> AD_SessionList = new Hashtable<String, HttpSession>();
-	private static CLogger logger = CLogger.getCLogger(LoggedSessionListener.class);
+	private static final CLogger logger = CLogger.getCLogger(LoggedSessionListener.class);
 	
 	@Override
 	public void sessionCreated(HttpSessionEvent evt) {

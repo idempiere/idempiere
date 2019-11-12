@@ -82,7 +82,7 @@ public abstract class AbstractProcessCtl implements Runnable
 	private boolean 		m_IsServerProcess = false;
 	
 	/**	Static Logger	*/
-	private static CLogger	log	= CLogger.getCLogger (AbstractProcessCtl.class);
+	private static final CLogger	log	= CLogger.getCLogger (AbstractProcessCtl.class);
 	
 	/**
 	 * Run this process in a new thread

@@ -71,7 +71,7 @@ public class PaySelect
 	/** one-To-one payment per invoice */
 	public boolean			m_isOnePaymentPerInvoice	= false;
 	/**	Logger			*/
-	public static CLogger log = CLogger.getCLogger(PaySelect.class);
+	public static final CLogger log = CLogger.getCLogger(PaySelect.class);
 
 	public ArrayList<BankInfo> getBankAccountData()
 	{

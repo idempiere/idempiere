@@ -100,7 +100,7 @@ public final class ImpFormatRow
 	private int					m_maxLength = 0;
 
 	/**	Logger			*/
-	private CLogger	log = CLogger.getCLogger(getClass());
+	private static final CLogger	log = CLogger.getCLogger(ImpFormatRow.class);
 	
 	/**
 	 *	Sequence No

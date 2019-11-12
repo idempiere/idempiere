@@ -39,7 +39,7 @@ public class TabEditor
 	public MTab m_tab;
 
 	/**	Logger			*/
-	public static CLogger log = CLogger.getCLogger(TabEditor.class);
+	public static final CLogger log = CLogger.getCLogger(TabEditor.class);
 
 	private List<MField> fields = new ArrayList<MField>();
 	

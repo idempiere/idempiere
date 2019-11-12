@@ -104,7 +104,7 @@ public class CustomizeGridViewPanel extends Panel
 	}	//	
 
 	/**	Logger			*/
-	static CLogger log = CLogger.getCLogger(CustomizeGridViewPanel.class);
+	protected static final CLogger log = CLogger.getCLogger(CustomizeGridViewPanel.class);
 	private int			m_WindowNo;
 	private int			m_AD_Tab_ID;
 	private int 		m_AD_User_ID;

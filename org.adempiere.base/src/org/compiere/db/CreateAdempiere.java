@@ -92,7 +92,7 @@ public class CreateAdempiere
 	private Connection			m_conn = null;
 	
 	/**	Logger	*/
-	private static CLogger	log	= CLogger.getCLogger (CreateAdempiere.class);
+	private static final CLogger	log	= CLogger.getCLogger (CreateAdempiere.class);
 	
 	/**
 	 * 	Create Adempiere Database

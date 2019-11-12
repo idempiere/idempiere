@@ -16,11 +16,10 @@ public class MD5Impl {
 	/**
 	 *
 	 */
-	private CLogger log = null;
+	private static final CLogger log = CLogger.getCLogger(MD5Impl.class);
 
 	public MD5Impl() {
-		super();
-		log = CLogger.getCLogger(MD5Impl.class);
+		super();		
 	}
 
 	/**

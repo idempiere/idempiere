@@ -95,7 +95,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	private int m_bomLine = 0;
 	
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WBOMDrop.class);
+	private static final CLogger log = CLogger.getCLogger(WBOMDrop.class);
 	
 	/**	List of all selectors		*/
 	private ArrayList<org.zkoss.zul.Checkbox> m_selectionList = new ArrayList<org.zkoss.zul.Checkbox>();

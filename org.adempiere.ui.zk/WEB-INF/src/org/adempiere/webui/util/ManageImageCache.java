@@ -46,7 +46,7 @@ import org.zkoss.image.Image;
  */
 public class ManageImageCache {
 	
-	protected static transient CLogger	log = CLogger.getCLogger (ManageImageCache.class);
+	protected static final CLogger	log = CLogger.getCLogger (ManageImageCache.class);
 	/**
 	 * this cache is don't expire, if must restart cache when has update image.
 	 * better use a timer, example reset cache after 10 minute has update. it help user can change a batch of image and reset one time.

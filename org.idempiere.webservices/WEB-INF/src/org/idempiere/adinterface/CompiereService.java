@@ -43,7 +43,7 @@ import org.idempiere.adInterface.x10.ADLoginRequest;
  */
 public class CompiereService {
 
-	private static CLogger	log = CLogger.getCLogger(CompiereService.class);
+	private static final CLogger	log = CLogger.getCLogger(CompiereService.class);
 
 	private int m_AD_Client_ID;
 	private int m_AD_Org_ID;

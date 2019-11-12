@@ -93,7 +93,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	/**	Set Column					*/
 	private	MColumn 			m_column = null;
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WWFActivity.class);
+	private static final CLogger log = CLogger.getCLogger(WWFActivity.class);
 
 	//
 	private Label lNode = new Label(Msg.translate(Env.getCtx(), "AD_WF_Node_ID"));

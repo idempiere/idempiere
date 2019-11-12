@@ -68,7 +68,7 @@ public class WBPartner extends Window implements EventListener<Event>, ValueChan
 	 */
 	private static final long serialVersionUID = 5842369060073088746L;
 
-	private static CLogger log = CLogger.getCLogger(WBPartner.class);
+	private static final CLogger log = CLogger.getCLogger(WBPartner.class);
 	
 	private int m_WindowNo;
 	

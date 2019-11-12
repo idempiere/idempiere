@@ -66,7 +66,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
 	 */
 	private static final long serialVersionUID = -4117126419866788951L;
 
-	private static CLogger logger = CLogger.getCLogger(ChangePasswordPanel.class);
+	private static final CLogger logger = CLogger.getCLogger(ChangePasswordPanel.class);
 
     protected LoginWindow wndLogin;
 

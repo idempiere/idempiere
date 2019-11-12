@@ -62,7 +62,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	private static final long serialVersionUID = -5501893389366975849L;
 
 	/**	Logger. */
-	private static CLogger logger = CLogger.getCLogger(WListbox.class);
+	private static final CLogger logger = CLogger.getCLogger(WListbox.class);
 
 	/** Is Total Show */
 	private boolean showTotals = false;

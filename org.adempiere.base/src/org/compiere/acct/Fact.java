@@ -62,7 +62,7 @@ public final class Fact
 
 
 	/**	Log					*/
-	private CLogger			log = CLogger.getCLogger(getClass());
+	private static final CLogger	log = CLogger.getCLogger(Fact.class);
 
 	/** Document            */
 	private Doc             m_doc = null;

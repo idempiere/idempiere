@@ -95,7 +95,7 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 	private int p_WindowNo;
 
 	/**	Logger			*/
-	private CLogger log = CLogger.getCLogger(getClass());
+	private static final CLogger log = CLogger.getCLogger(WCreateFromDepositBatchUI.class);
 	
 	protected Label bankAccountLabel = new Label();
 	protected WTableDirEditor bankAccountField;

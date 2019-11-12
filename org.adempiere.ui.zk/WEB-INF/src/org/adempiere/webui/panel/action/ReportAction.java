@@ -69,7 +69,7 @@ import org.zkoss.zul.Vbox;
  */
 public class ReportAction implements EventListener<Event>
 {
-	private static CLogger log = CLogger.getCLogger(ReportAction.class);
+	private static final CLogger log = CLogger.getCLogger(ReportAction.class);
 	
 	private AbstractADWindowContent panel;
 	

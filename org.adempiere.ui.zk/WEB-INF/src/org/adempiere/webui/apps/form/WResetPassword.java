@@ -63,7 +63,7 @@ import org.zkoss.zul.South;
  */
 public class WResetPassword implements IFormController, EventListener<Event>, ValueChangeListener {
 
-	private static CLogger log = CLogger.getCLogger(WResetPassword.class);
+	private static final CLogger log = CLogger.getCLogger(WResetPassword.class);
 
 	private CustomForm form;
 	private Grid gridPanel;

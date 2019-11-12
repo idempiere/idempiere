@@ -46,7 +46,7 @@ public class WPreference extends WQuickEntry implements EventListener<Event> {
 	 * 
 	 */
 	private static final long serialVersionUID = -8223456746437563389L;
-	private static CLogger log = CLogger.getCLogger(WPreference.class);
+	private static final CLogger log = CLogger.getCLogger(WPreference.class);
 
 	private WYesNoEditor 	adempiereSys;
 	private WYesNoEditor 	logMigrationScript;

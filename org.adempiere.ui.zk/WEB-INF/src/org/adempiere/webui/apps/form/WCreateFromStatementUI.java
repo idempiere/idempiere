@@ -94,7 +94,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	private int p_WindowNo;
 
 	/**	Logger			*/
-	private CLogger log = CLogger.getCLogger(getClass());
+	private final static CLogger log = CLogger.getCLogger(WCreateFromStatementUI.class);
 
 	protected Label bankAccountLabel = new Label();
 	protected WTableDirEditor bankAccountField;

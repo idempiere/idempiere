@@ -40,7 +40,7 @@ import org.compiere.util.Env;
 public class RoleAccessUpdate extends SvrProcess
 {
 	/**	Static Logger	*/
-	private static CLogger	s_log	= CLogger.getCLogger (RoleAccessUpdate.class);
+	private static final CLogger	s_log	= CLogger.getCLogger (RoleAccessUpdate.class);
 	
 	/**	Update Role				*/
 	private int	p_AD_Role_ID = -1;

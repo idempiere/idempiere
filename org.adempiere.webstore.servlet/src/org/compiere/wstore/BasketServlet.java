@@ -57,7 +57,7 @@ public class BasketServlet extends HttpServlet
 	 */
 	private static final long serialVersionUID = 3636119916937667318L;
 	/**	Logging						*/
-	private static CLogger			log = CLogger.getCLogger(BasketServlet.class);
+	private static final CLogger			log = CLogger.getCLogger(BasketServlet.class);
 	/** Name						*/
 	static public final String		NAME = "basketServlet";
 	/** SalesRep Parameter			*/

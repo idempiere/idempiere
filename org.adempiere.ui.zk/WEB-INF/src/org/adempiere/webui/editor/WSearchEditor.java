@@ -82,7 +82,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
     private InfoPanel			infoPanel = null;
 	private String imageUrl;
 
-	private static CLogger log = CLogger.getCLogger(WSearchEditor.class);
+	private static final CLogger log = CLogger.getCLogger(WSearchEditor.class);
 
 	private static final String IN_PROGRESS_IMAGE = "~./zk/img/progress3.gif";
 	

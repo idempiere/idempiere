@@ -40,7 +40,7 @@ import org.compiere.util.Trx;
 public class SequenceCheck extends SvrProcess
 {
 	/**	Static Logger	*/
-	private static CLogger	s_log	= CLogger.getCLogger (SequenceCheck.class);
+	private static final CLogger	s_log	= CLogger.getCLogger (SequenceCheck.class);
 	
 	/**
 	 *  Prepare - e.g., get Parameters.

@@ -117,7 +117,7 @@ public class Translation implements IApplication
 	/**	Table is centrally maintained	*/
 	private boolean			m_IsCentrallyMaintained = false;
 	/**	Logger						*/
-	private CLogger			log = CLogger.getCLogger(getClass());
+	private static final CLogger	log = CLogger.getCLogger(Translation.class);
 	/** Properties					*/
 	private Properties		m_ctx = null;
 

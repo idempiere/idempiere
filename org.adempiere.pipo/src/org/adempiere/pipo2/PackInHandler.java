@@ -69,7 +69,7 @@ public class PackInHandler extends DefaultHandler {
     private String packageDirectory = null;
     private int AD_Package_Imp_ID=0;
 	private int AD_Package_Imp_Inst_ID=0;
-    private CLogger log = CLogger.getCLogger(PackInHandler.class);
+    private static final CLogger log = CLogger.getCLogger(PackInHandler.class);
 	private boolean isInit = false;
 	private String packageStatus = "Installing";
 	private PIPOContext m_ctx = null;

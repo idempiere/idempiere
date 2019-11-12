@@ -20,7 +20,7 @@ import org.compiere.util.CLogger;
 
 public class CompiereUtil {
 
-	private static CLogger			log = CLogger.getCLogger(CompiereUtil.class);	
+	private static final CLogger	   log = CLogger.getCLogger(CompiereUtil.class);	
 	private static boolean          s_initOK    = false;
 
 	/**

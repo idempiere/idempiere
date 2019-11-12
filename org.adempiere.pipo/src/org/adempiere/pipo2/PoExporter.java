@@ -25,7 +25,7 @@ public class PoExporter {
 	private PO po = null;
 
 	@SuppressWarnings("unused")
-	private CLogger log = CLogger.getCLogger(getClass());
+	private static final CLogger log = CLogger.getCLogger(PoExporter.class);
 	private PIPOContext ctx;
 
 	private TransformerHandler transformerHandler;

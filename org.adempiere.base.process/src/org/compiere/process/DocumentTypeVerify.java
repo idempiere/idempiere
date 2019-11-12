@@ -38,7 +38,7 @@ import org.compiere.util.DB;
 public class DocumentTypeVerify extends SvrProcess
 {
 	/**	Static Logger	*/
-	private static CLogger	s_log	= CLogger.getCLogger (DocumentTypeVerify.class);
+	private static final CLogger	s_log	= CLogger.getCLogger (DocumentTypeVerify.class);
 	
 	
 	/**

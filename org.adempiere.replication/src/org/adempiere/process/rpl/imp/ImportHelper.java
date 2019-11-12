@@ -79,11 +79,8 @@ import org.w3c.dom.NodeList;
  */
 public class ImportHelper {
 
-	/** Instance Logger 			*/
-	private CLogger log = CLogger.getCLogger(ImportHelper.class);
-	
-	/** Static Logger 				*/
-	private static CLogger s_log = CLogger.getCLogger(ImportHelper.class);
+	/** Logger 			*/
+	private static final CLogger log = CLogger.getCLogger(ImportHelper.class);
 	
 	/** Custom Date Format			*/
 	private SimpleDateFormat	m_customDateFormat = null;
@@ -567,10 +564,10 @@ public class ImportHelper {
 								.setParameters(value)
 								.firstOnly();
 		
-		if (s_log.isLoggable(Level.INFO)) s_log.info("Client_Value =[" + value + "]");
+		if (log.isLoggable(Level.INFO)) log.info("Client_Value =[" + value + "]");
 		if(result != null)
 		{
-			if (s_log.isLoggable(Level.INFO)) s_log.info("AD_Client_ID = " + result.getAD_Client_ID());
+			if (log.isLoggable(Level.INFO)) log.info("AD_Client_ID = " + result.getAD_Client_ID());
 		}
 		
 		return result;

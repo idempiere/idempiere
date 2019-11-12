@@ -48,7 +48,7 @@ public class Allocation
 	public DecimalFormat format = DisplayType.getNumberFormat(DisplayType.Amount);
 
 	/**	Logger			*/
-	public static CLogger log = CLogger.getCLogger(Allocation.class);
+	public static final CLogger log = CLogger.getCLogger(Allocation.class);
 
 	private boolean     m_calculating = false;
 	public int         	m_C_Currency_ID = 0;

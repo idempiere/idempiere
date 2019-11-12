@@ -26,7 +26,7 @@ import org.compiere.util.CLogger;
 public abstract class CreateFromForm
 {
 	/**	Logger			*/
-	protected CLogger log = CLogger.getCLogger(getClass());
+	protected transient CLogger log = CLogger.getCLogger(getClass());
 
 	private String title;
 	

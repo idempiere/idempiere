@@ -44,7 +44,7 @@ public class TrxMaterial {
 
 	public MQuery          m_staticQuery = null;
 	/**	Logger			*/
-	public static CLogger log = CLogger.getCLogger(TrxMaterial.class);
+	public static final CLogger log = CLogger.getCLogger(TrxMaterial.class);
 	
 	/**
 	 *  Dynamic Layout (Grid).

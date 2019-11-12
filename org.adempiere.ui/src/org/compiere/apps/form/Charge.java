@@ -54,7 +54,7 @@ public class Charge
 	private int         m_AD_Org_ID = 0;
 	private MAcctSchema  m_acctSchema = null;
 	/**	Logger			*/
-	public static CLogger log = CLogger.getCLogger(Charge.class);
+	public static final CLogger log = CLogger.getCLogger(Charge.class);
 
 	/**
 	 *  Dynamic Init

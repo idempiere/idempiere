@@ -44,7 +44,7 @@ import org.compiere.util.Env;
 public class ServerBean implements Server
 {
 	/**	Logger				*/
-	private static CLogger log = CLogger.getCLogger(ServerBean.class);
+	private static final CLogger log = CLogger.getCLogger(ServerBean.class);
 	//
 	/**
 	 *  Post Immediate

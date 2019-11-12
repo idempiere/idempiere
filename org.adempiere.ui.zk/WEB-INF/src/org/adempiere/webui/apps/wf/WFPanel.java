@@ -82,7 +82,7 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	private MWorkflow	m_wf = null;
 
 	/**	Logger			*/
-	private static CLogger	log = CLogger.getCLogger(WFPanel.class);
+	private static final CLogger	log = CLogger.getCLogger(WFPanel.class);
 	
 	//	IO
 	private WFNodeContainer nodeContainer = new WFNodeContainer();

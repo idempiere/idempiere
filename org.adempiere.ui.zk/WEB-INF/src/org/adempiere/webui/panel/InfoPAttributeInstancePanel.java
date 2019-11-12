@@ -117,7 +117,7 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
 	private String				m_M_AttributeSetInstanceName = null;
 	private String				m_sql;
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(InfoPAttributeInstancePanel.class);
+	private static final CLogger log = CLogger.getCLogger(InfoPAttributeInstancePanel.class);
 
 	/**
 	 * 	Static Init

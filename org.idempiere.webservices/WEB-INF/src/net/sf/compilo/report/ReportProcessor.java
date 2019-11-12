@@ -55,7 +55,7 @@ import org.compiere.util.Language;
 public class ReportProcessor
 {
 	public static File REPORT_HOME = null;
-	private static CLogger log = CLogger.getCLogger(ReportProcessor.class);
+	private static final CLogger log = CLogger.getCLogger(ReportProcessor.class);
 	
     static
     {

@@ -45,7 +45,7 @@ public class MyValidator implements ModelValidator
 	}	//	MyValidator
 	
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(MyValidator.class);
+	private static final CLogger log = CLogger.getCLogger(MyValidator.class);
 	/** Client			*/
 	private int		m_AD_Client_ID = -1;
 	/** User	*/

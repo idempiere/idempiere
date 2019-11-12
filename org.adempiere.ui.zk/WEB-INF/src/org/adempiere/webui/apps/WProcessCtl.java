@@ -48,7 +48,7 @@ import org.zkoss.zk.ui.event.EventListener;
 public class WProcessCtl extends AbstractProcessCtl {
 	
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WProcessCtl.class);
+	private static final CLogger log = CLogger.getCLogger(WProcessCtl.class);
 	
 	public static void process (int WindowNo, ProcessInfo pi, Trx trx)
 	{

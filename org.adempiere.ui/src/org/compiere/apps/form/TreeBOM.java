@@ -27,7 +27,7 @@ import org.eevolution.model.MPPProductBOM;
 public class TreeBOM {
 
 	
-	public static CLogger log = CLogger.getCLogger(TreeBOM.class);
+	public static final CLogger log = CLogger.getCLogger(TreeBOM.class);
 	
 	public Properties getCtx() {
 		return Env.getCtx();

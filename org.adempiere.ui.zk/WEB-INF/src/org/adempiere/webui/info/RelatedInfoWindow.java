@@ -68,7 +68,7 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 	protected Map<String, WEditor> editorMap = new HashMap<String, WEditor>();
 	private InfoWindow parentInfoWindow;
 
-	protected CLogger log = CLogger.getCLogger(getClass());
+	protected transient CLogger log = CLogger.getCLogger(getClass());
 
 	private ListModelTable model;
 

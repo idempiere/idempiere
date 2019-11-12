@@ -39,7 +39,7 @@ import org.compiere.util.CLogger;
  */
 public abstract class compiereDataSource implements JRDataSource
 {	
-	protected CLogger log = CLogger.getCLogger(compiereDataSource.class);
+	protected transient CLogger log = CLogger.getCLogger(compiereDataSource.class);
 	
 	public abstract Object getFieldValue(JRField field) throws JRException;
 	

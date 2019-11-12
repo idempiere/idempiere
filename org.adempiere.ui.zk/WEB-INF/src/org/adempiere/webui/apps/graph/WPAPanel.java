@@ -52,7 +52,7 @@ public class WPAPanel extends Panel implements EventListener<Event>
 	private MGoal[] 	m_goals = null;
 	
 	/**	Logger	*/
-	private static CLogger log = CLogger.getCLogger (WPAPanel.class);
+	private static final CLogger log = CLogger.getCLogger (WPAPanel.class);
 	
 	/**
 	 * 	Static/Dynamic Init

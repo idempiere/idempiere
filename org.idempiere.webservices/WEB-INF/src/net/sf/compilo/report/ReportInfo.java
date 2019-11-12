@@ -62,7 +62,7 @@ public class ReportInfo
     private boolean hasSubReport = false;
     private boolean hasError = false;
     private ArrayList<String> errorMsg = new ArrayList<String>();
-    private CLogger log = CLogger.getCLogger(ReportInfo.class);
+    private static final CLogger log = CLogger.getCLogger(ReportInfo.class);
     
     public ReportInfo ()
     {        

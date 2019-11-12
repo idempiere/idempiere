@@ -50,7 +50,7 @@ public class AlertTest extends AdempiereTestCase
 {
 
 	/**	Logger	*/
-	private static CLogger	log	= CLogger.getCLogger (AlertTest.class);
+	private static final CLogger	log	= CLogger.getCLogger (AlertTest.class);
 	
 	/**
 	 * 	Run

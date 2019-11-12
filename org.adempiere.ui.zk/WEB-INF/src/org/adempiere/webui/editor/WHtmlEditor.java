@@ -63,7 +63,7 @@ public class WHtmlEditor extends WEditor implements ContextMenuListener
 	private boolean readwrite;
 
     /**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WHtmlEditor.class);
+	private static final CLogger log = CLogger.getCLogger(WHtmlEditor.class);
 
     public WHtmlEditor(GridField gridField)
     {

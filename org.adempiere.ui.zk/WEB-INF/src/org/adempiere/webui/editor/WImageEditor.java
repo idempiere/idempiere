@@ -49,7 +49,7 @@ public class WImageEditor extends WEditor
 	private boolean readwrite;
 
     /**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WImageEditor.class);
+	private static final CLogger log = CLogger.getCLogger(WImageEditor.class);
     
     public WImageEditor(GridField gridField)
     {

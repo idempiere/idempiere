@@ -54,7 +54,7 @@ public class UUIDGenerator extends SvrProcess {
 	private boolean isFillUUID = false;
 
 	/**	Logger							*/
-	private static CLogger log = CLogger.getCLogger(UUIDGenerator.class);
+	private static final CLogger log = CLogger.getCLogger(UUIDGenerator.class);
 
 	/**
 	 * @see org.compiere.process.SvrProcess#prepare()

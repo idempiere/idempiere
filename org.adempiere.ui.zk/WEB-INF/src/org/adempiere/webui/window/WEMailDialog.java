@@ -197,7 +197,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	private List<DataSource> attachments = new ArrayList<DataSource>();
 	
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WEMailDialog.class);
+	private static final CLogger log = CLogger.getCLogger(WEMailDialog.class);
 
 	private Textbox fFrom = new Textbox();//20);
 	private Textbox fTo = new Textbox();//20);

@@ -90,7 +90,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	private GenForm genForm;
 	
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WGenForm.class);
+	private static final CLogger log = CLogger.getCLogger(WGenForm.class);
 	//
 	private Tabbox tabbedPane = new Tabbox();
 	private Borderlayout selPanel = new Borderlayout();

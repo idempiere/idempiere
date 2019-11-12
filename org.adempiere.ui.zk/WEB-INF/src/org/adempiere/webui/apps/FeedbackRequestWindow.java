@@ -75,7 +75,7 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 	 */
 	private static final long serialVersionUID = 8586980192148533197L;
 
-	private static CLogger log = CLogger.getCLogger(FeedbackRequestWindow.class);
+	private static final CLogger log = CLogger.getCLogger(FeedbackRequestWindow.class);
 	
 	protected WTableDirEditor requestTypeField, priorityField, salesRepField;
 	protected Textbox txtSummary;

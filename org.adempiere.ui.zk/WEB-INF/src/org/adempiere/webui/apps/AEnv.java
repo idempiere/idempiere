@@ -251,7 +251,7 @@ public final class AEnv
 	/** Workflow Window		*/
 	private static int		s_workflow_Window_ID = 0;
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(AEnv.class);
+	private static final CLogger log = CLogger.getCLogger(AEnv.class);
 
 	/**	Window Cache		*/
 	private static Map<String, CCache<Integer,GridWindowVO>> windowCache = new HashMap<String, CCache<Integer,GridWindowVO>>();

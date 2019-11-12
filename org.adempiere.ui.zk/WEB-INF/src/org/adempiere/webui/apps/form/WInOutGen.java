@@ -57,7 +57,7 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 	private WGenForm form;
 
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WInOutGen.class);
+	private static final CLogger log = CLogger.getCLogger(WInOutGen.class);
 	//
 	private Label lWarehouse = new Label();
 	private WTableDirEditor fWarehouse;

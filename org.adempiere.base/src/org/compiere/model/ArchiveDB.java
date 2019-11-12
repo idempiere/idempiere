@@ -30,7 +30,7 @@ import org.compiere.util.CLogger;
 public class ArchiveDB implements IArchiveStore {
 
 
-	private final CLogger log = CLogger.getCLogger(getClass());
+	private static final CLogger log = CLogger.getCLogger(ArchiveDB.class);
 
 	/* (non-Javadoc)
 	 * @see org.compiere.model.IArchiveStore#loadLOBData(org.compiere.model.MArchive, org.compiere.model.MStorageProvider)

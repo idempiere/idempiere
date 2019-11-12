@@ -34,7 +34,7 @@ public class StatusBean implements Status
 	
 	/**	Logging				*/
 	@SuppressWarnings("unused")
-	private static CLogger	log = CLogger.getCLogger(StatusBean.class);
+	private static final CLogger	log = CLogger.getCLogger(StatusBean.class);
 
 	/**
 	 * 	Get Version (Date)

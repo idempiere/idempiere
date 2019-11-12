@@ -120,7 +120,7 @@ public abstract class AbstractExcelExporter
 	public abstract boolean isPageBreak(int row, int col);
 
 	/** Logger */
-	protected final CLogger log = CLogger.getCLogger(getClass());
+	protected final transient CLogger log = CLogger.getCLogger(getClass());
 	//
 	protected HSSFWorkbook m_workbook;
 	private HSSFDataFormat m_dataFormat;

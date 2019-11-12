@@ -88,7 +88,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	private int p_WindowNo;
 
 	/**	Logger			*/
-	private CLogger log = CLogger.getCLogger(getClass());
+	private static final CLogger log = CLogger.getCLogger(WCreateFromInvoiceUI.class);
 		
 	protected Label bPartnerLabel = new Label();
 	protected WEditor bPartnerField;

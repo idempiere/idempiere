@@ -131,7 +131,7 @@ public class GraphColumn
 
 	/**	Logger	*/
 	@SuppressWarnings("unused")
-	private static CLogger log = CLogger.getCLogger (GraphColumn.class);
+	private static final CLogger log = CLogger.getCLogger (GraphColumn.class);
 	/** Integer Number Format		*/
 	private static DecimalFormat	s_format = DisplayType.getNumberFormat(DisplayType.Integer);
 

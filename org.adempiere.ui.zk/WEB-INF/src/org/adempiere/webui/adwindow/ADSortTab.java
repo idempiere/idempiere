@@ -103,7 +103,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	}	//	ADSortTab
 
 	/**	Logger			*/
-	static CLogger log = CLogger.getCLogger(ADSortTab.class);
+	protected static final CLogger log = CLogger.getCLogger(ADSortTab.class);
 	private int			m_WindowNo;
 	private int			m_AD_Table_ID;
 	private String		m_TableName = null;

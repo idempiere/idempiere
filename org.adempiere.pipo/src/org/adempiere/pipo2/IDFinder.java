@@ -44,7 +44,7 @@ import org.compiere.util.Env;
  */
 public class IDFinder {
 
-	private static CLogger log = CLogger.getCLogger(IDFinder.class);
+	private static final CLogger log = CLogger.getCLogger(IDFinder.class);
 
 	private static Map<String, Integer>idCache = new ConcurrentHashMap<String, Integer>(); 
 

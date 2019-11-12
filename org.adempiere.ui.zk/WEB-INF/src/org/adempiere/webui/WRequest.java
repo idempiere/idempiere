@@ -94,7 +94,7 @@ public class WRequest implements EventListener<Event>
 	StringBuffer 		m_where = null;
 	
 	/**	Logger	*/
-	private static CLogger	log	= CLogger.getCLogger (WRequest.class);
+	private static final CLogger	log	= CLogger.getCLogger (WRequest.class);
 
 	/**
 	 * 	Display Request Options - New/Existing.

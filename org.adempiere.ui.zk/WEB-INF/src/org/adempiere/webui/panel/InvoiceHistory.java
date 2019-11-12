@@ -108,7 +108,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 	private int		m_M_AttributeSetInstance_ID;
 	
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(InvoiceHistory.class);
+	private static final CLogger log = CLogger.getCLogger(InvoiceHistory.class);
 
 	private Label 			label = new Label();
 	//

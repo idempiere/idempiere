@@ -45,7 +45,7 @@ public class Match
 {
 
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(Match.class);
+	private static final CLogger log = CLogger.getCLogger(Match.class);
 
 	/** Match Options           */
 	private String[] m_matchOptions = new String[] {

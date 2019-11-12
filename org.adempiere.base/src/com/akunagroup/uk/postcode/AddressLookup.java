@@ -54,7 +54,7 @@ import org.w3c.dom.NodeList;
  */
 public class AddressLookup implements AddressLookupInterface {
 	/** The logger. */
-	private static CLogger log = CLogger.getCLogger(AddressLookup.class);
+	private static final CLogger log = CLogger.getCLogger(AddressLookup.class);
 
 	/**
 	 * The access code which is used along with clientID to authenticate the

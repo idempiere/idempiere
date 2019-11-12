@@ -321,9 +321,9 @@ public abstract class Doc
 	}
 	
 	/**	Static Log						*/
-	protected static CLogger	s_log = CLogger.getCLogger(Doc.class);
+	protected static final CLogger	s_log = CLogger.getCLogger(Doc.class);
 	/**	Log	per Document				*/
-	protected CLogger			log = CLogger.getCLogger(getClass());
+	protected transient CLogger			log = CLogger.getCLogger(getClass());
 
 	/* If the transaction must be managed locally (false if it's managed externally by the caller) */
 	private boolean m_manageLocalTrx;

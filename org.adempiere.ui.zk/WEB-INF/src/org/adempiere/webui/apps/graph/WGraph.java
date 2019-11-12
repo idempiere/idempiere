@@ -83,7 +83,7 @@ public class WGraph extends Div implements IdSpace {
 	private Point m_point0_0 = null;
 
 	/** Logger */
-	private static CLogger log = CLogger.getCLogger(WGraph.class);
+	private static final CLogger log = CLogger.getCLogger(WGraph.class);
 
 	/** Y Axis Target Line Label */
 	private String m_Y_TargetLabel = null;

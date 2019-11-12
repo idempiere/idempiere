@@ -107,7 +107,7 @@ public class AdempiereMonitor extends HttpServlet
 	private static final long serialVersionUID = -7455613826465213838L;
 
 	/**	Logger				*/
-	private static CLogger	log = CLogger.getCLogger(AdempiereMonitor.class);
+	private static final CLogger	log = CLogger.getCLogger(AdempiereMonitor.class);
 	/**	The Server			*/
 	private static IServerManager	m_serverMgr = null;
 	/** Message				*/

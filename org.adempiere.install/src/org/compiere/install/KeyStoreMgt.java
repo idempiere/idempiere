@@ -57,7 +57,7 @@ public class KeyStoreMgt
 	}	//	KeyStoreMgt
 	
 	/**	Logger					*/
-	private static CLogger		log	= CLogger.getCLogger(KeyStoreMgt.class);
+	private static final CLogger		log	= CLogger.getCLogger(KeyStoreMgt.class);
 	/**	KeyStore File			*/
 	private File 		m_file = null;
 	/**	KeyStore Password		*/

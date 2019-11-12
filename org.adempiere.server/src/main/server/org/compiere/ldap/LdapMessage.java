@@ -48,7 +48,7 @@ public class LdapMessage
 	/** Decoder */
 	private BerDecoder decoder = null;
 	/**	Logger	*/
-	private static CLogger log = CLogger.getCLogger (LdapMessage.class);
+	private static final CLogger log = CLogger.getCLogger (LdapMessage.class);
 	/** Protocol Operation		*/
 	private int		m_protocolOp = -1;
     /** Message Id needed for the reply message */

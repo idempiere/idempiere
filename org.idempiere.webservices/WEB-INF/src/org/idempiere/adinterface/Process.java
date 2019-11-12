@@ -72,7 +72,7 @@ import org.idempiere.webservices.fault.IdempiereServiceFault;
 
 public class Process {
 	
-	private static CLogger	log = CLogger.getCLogger(Process.class);
+	private static final CLogger	log = CLogger.getCLogger(Process.class);
 
 	public static ProcessParamsDocument getProcessParams( CompiereService cs, GetProcessParamsDocument req ) 
 	{

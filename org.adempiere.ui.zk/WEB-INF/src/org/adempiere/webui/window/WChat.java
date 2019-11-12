@@ -122,7 +122,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	/** Attachment				*/
 	private MChat			m_chat;
 	/**	Logger					*/
-	private static CLogger log = CLogger.getCLogger(WChat.class);
+	private static final CLogger log = CLogger.getCLogger(WChat.class);
 
 	private Borderlayout 	mainPanel = new Borderlayout();
 	private Textbox			newText = new Textbox();

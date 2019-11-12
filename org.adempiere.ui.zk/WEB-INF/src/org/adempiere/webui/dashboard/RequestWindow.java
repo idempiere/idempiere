@@ -64,7 +64,7 @@ public class RequestWindow extends Window implements EventListener<Event> {
 	 */
 	private static final long serialVersionUID = 7757368164776005797L;
 
-	private static CLogger log = CLogger.getCLogger(RequestWindow.class);
+	private static final CLogger log = CLogger.getCLogger(RequestWindow.class);
 	
 	/** Read Only				*/
 	private boolean m_readOnly = false;

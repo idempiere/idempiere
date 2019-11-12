@@ -128,7 +128,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	private int oldtabidx = 0;
 	
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WReportCustomization.class);
+	private static final CLogger log = CLogger.getCLogger(WReportCustomization.class);
 
 	/**
 	 * 	Static Layout

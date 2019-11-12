@@ -81,7 +81,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	 */
 	private static final long serialVersionUID = 8266807399792500541L;
 
-	private static CLogger log = CLogger.getCLogger(WAttachment.class);
+	private static final CLogger log = CLogger.getCLogger(WAttachment.class);
 
 	/**	Window No				*/
 	private int	m_WindowNo;

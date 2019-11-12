@@ -58,7 +58,7 @@ import org.compiere.util.Util;
 public abstract class AbstractDocumentSearch {
 
 	/** the logger */
-	static CLogger log = CLogger.getCLogger(AbstractDocumentSearch.class);
+	protected static final CLogger log = CLogger.getCLogger(AbstractDocumentSearch.class);
 	protected boolean windowOpened = false;
 
 	/**

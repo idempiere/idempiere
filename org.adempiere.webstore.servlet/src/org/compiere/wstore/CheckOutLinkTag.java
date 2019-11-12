@@ -48,7 +48,7 @@ public class CheckOutLinkTag extends TagSupport
 	 */
 	private static final long serialVersionUID = 6103865361649483332L;
 	/**	Logger							*/
-	private CLogger			log = CLogger.getCLogger (getClass());
+	private static final CLogger	log = CLogger.getCLogger (CheckOutLinkTag.class);
 	/** One Line						*/
 	private boolean			m_oneLine = false;
 

@@ -165,7 +165,7 @@ public final class WAccountDialog extends Window
 	/** Current combination */
 	private int IDvalue = 0;
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WAccountDialog.class);
+	private static final CLogger log = CLogger.getCLogger(WAccountDialog.class);
 
 	//  Editors for Query
 	private WEditor 			f_Alias, f_Combination,

@@ -19,7 +19,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class FileElementHandler implements ElementHandler {
 
-	private CLogger log = CLogger.getCLogger(FileElementHandler.class);
+	private static final CLogger log = CLogger.getCLogger(FileElementHandler.class);
 
 	public void packOut(PackOut packout, TransformerHandler packoutHandler,
 			TransformerHandler docHandler, int recordId) throws Exception {

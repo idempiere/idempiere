@@ -94,7 +94,7 @@ public class ModelClassGenerator
 	public static final String NL = "\n";
 
 	/**	Logger			*/
-	private static CLogger	log	= CLogger.getCLogger (ModelClassGenerator.class);
+	private static final CLogger	log	= CLogger.getCLogger (ModelClassGenerator.class);
 
 	/** Package Name */
 	private String packageName = "";

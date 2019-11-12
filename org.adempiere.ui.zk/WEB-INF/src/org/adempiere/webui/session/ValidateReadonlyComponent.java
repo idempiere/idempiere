@@ -38,7 +38,7 @@ import org.zkoss.zul.impl.InputElement;
  *
  */
 public class ValidateReadonlyComponent implements AuService {
-	private static CLogger	log = CLogger.getCLogger (ValidateReadonlyComponent.class);
+	private static final CLogger	log = CLogger.getCLogger (ValidateReadonlyComponent.class);
 	/**
 	 * throw WrongValueException when denied request, other false 
 	 */

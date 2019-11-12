@@ -62,7 +62,7 @@ public class JDBCInfo
 	private DatabaseMetaData	m_md = null;
 
 	/**	Logger	*/
-	private static CLogger	log	= CLogger.getCLogger (JDBCInfo.class);
+	private static final CLogger	log	= CLogger.getCLogger (JDBCInfo.class);
 	
 	/**
 	 * 	List All

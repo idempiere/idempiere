@@ -202,7 +202,7 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 	/** Setting Grid		*/
 	private boolean			m_setting = false;
 	/**	Logger	*/
-	private static CLogger log = CLogger.getCLogger (WAttributeGrid.class);
+	private static final CLogger log = CLogger.getCLogger (WAttributeGrid.class);
 	
 	/**	Modes				*/
 	private static String[]	MODES = new String[]{

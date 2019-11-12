@@ -116,7 +116,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 	private ConfirmPanel confirmPanel = new ConfirmPanel (false);
 
 	/**	Logger			*/
-	protected CLogger		log = CLogger.getCLogger(getClass());
+	private static final CLogger	log = CLogger.getCLogger(WFieldRecordInfo.class);
 	/** The Data		*/
 	private Vector<Vector<String>>	m_data = new Vector<Vector<String>>();
 

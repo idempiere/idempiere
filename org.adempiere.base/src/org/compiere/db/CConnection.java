@@ -50,7 +50,7 @@ public class CConnection implements Serializable, Cloneable
 	/** Connection      */
 	private volatile static CConnection	s_cc = null;
 	/** Logger			*/
-	private static CLogger 		log = CLogger.getCLogger (CConnection.class);
+	private static final CLogger 		log = CLogger.getCLogger (CConnection.class);
 
 	/**
 	 *  Get/Set default client/server Connection

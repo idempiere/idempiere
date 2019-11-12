@@ -79,7 +79,7 @@ public class GenerateModelJPA
 	private Timestamp 		s_run = new Timestamp(System.currentTimeMillis());
 	
 	/**	Logger			*/
-	private static CLogger	log	= CLogger.getCLogger (GenerateModelJPA.class);
+	private static final CLogger	log	= CLogger.getCLogger (GenerateModelJPA.class);
 	
 	/**
 	 * 	Add Header info to buffer

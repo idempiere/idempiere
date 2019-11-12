@@ -39,7 +39,7 @@ import org.compiere.util.Env;
 public class PackInProcess extends SvrProcess {
 
 	/** Logger */
-	private CLogger log = CLogger.getCLogger(getClass());
+	private static final CLogger log = CLogger.getCLogger(PackInProcess.class);
 	//update system maintain dictionary, default to false
 	private boolean m_UpdateDictionary = false;
 	private String m_packageDirectory = null;

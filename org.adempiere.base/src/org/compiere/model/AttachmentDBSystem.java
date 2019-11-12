@@ -30,7 +30,7 @@ public class AttachmentDBSystem implements IAttachmentStore
 	
 	/** Indicator for zip data  */
 	public static final String 	ZIP = "zip";
-	private final CLogger log = CLogger.getCLogger(getClass());
+	private static final CLogger log = CLogger.getCLogger(AttachmentDBSystem.class);
 
 
 	@Override

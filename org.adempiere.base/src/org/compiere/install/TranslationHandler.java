@@ -69,7 +69,7 @@ public class TranslationHandler extends DefaultHandler
 	private Timestamp		m_time = new Timestamp(System.currentTimeMillis());
 	private int				m_updateCount = 0;
 
-	private static CLogger	log = CLogger.getCLogger(TranslationHandler.class);
+	private static final CLogger	log = CLogger.getCLogger(TranslationHandler.class);
 
 	
 	/**************************************************************************

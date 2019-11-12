@@ -7,7 +7,7 @@ import org.compiere.util.CLogger;
 public class Convert_Oracle extends Convert {
 
 	/** Logger */
-	private static CLogger log = CLogger.getCLogger(Convert_Oracle.class);
+	private static final CLogger log = CLogger.getCLogger(Convert_Oracle.class);
 
 	public Convert_Oracle() {}
 	

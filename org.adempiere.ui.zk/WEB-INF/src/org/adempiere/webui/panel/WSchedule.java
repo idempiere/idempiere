@@ -97,7 +97,7 @@ public class WSchedule extends Window implements EventListener<Event>
 	}	//	WSchedule
 
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WSchedule.class);
+	private static final CLogger log = CLogger.getCLogger(WSchedule.class);
 
 
 	private ToolBarButton button;

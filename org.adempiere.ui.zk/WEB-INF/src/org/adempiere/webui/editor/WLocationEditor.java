@@ -54,7 +54,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 {
     private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     
-    private static CLogger log = CLogger.getCLogger(WLocationEditor.class);
+    private static final CLogger log = CLogger.getCLogger(WLocationEditor.class);
     private MLocationLookup     m_Location;
     private MLocation           m_value;
 

@@ -33,7 +33,7 @@ import org.compiere.util.DB;
 public class SignDatabaseBuild
 {
 	/**	Static Logger	*/
-	private static CLogger	s_log	= CLogger.getCLogger (SignDatabaseBuild.class);
+	private static final CLogger	s_log	= CLogger.getCLogger (SignDatabaseBuild.class);
 
 	public static void main(String[] args)
 	{

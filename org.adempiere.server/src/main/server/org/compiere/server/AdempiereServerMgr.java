@@ -86,7 +86,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	/**	Singleton					*/
 	private static AdempiereServerMgr	m_serverMgr = null;
 	/**	Logger			*/
-	protected CLogger	log = CLogger.getCLogger(getClass());
+	protected static final CLogger	log = CLogger.getCLogger(AdempiereServerMgr.class);
 	
 	/**************************************************************************
 	 * 	Adempiere Server Manager

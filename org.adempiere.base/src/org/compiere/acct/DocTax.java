@@ -72,7 +72,7 @@ public final class DocTax
 	private boolean		m_salesTax = false;
 	
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(DocTax.class);
+	private static final CLogger log = CLogger.getCLogger(DocTax.class);
 	
 
 	/** Tax Due Acct        */

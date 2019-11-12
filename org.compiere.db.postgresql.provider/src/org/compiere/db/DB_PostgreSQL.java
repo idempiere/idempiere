@@ -112,7 +112,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	private String          		m_connectionURL;
 
 	/**	Logger			*/
-	private static CLogger			log	= CLogger.getCLogger (DB_PostgreSQL.class);
+	private static final CLogger			log	= CLogger.getCLogger (DB_PostgreSQL.class);
 
     private static int              m_maxbusyconnections = 0;
 

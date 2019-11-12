@@ -83,7 +83,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	private ToolBarButton bSendMail = new ToolBarButton();  // Added by Martin Augustine - Ntier software Services 09/10/2013
 	private File attachment = null;
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(ZkJRViewer.class);
+	private static final CLogger log = CLogger.getCLogger(ZkJRViewer.class);
 
 	/** Window No					*/
 	private int                 m_WindowNo = -1;

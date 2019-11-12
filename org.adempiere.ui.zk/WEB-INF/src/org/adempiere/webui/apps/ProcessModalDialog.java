@@ -54,7 +54,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	private static final String ON_OK_ECHO = "onOkEcho";
 	
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(ProcessModalDialog.class);
+	private static final CLogger log = CLogger.getCLogger(ProcessModalDialog.class);
 	//
 	private String orientation;
 

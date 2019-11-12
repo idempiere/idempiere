@@ -86,7 +86,7 @@ public class LdapConnectionHandler extends Thread
 	/** Ldap Model			*/
 	private MLdapProcessor m_model = null;
 	/**	Logger	*/
-	private static CLogger log = CLogger.getCLogger (LdapConnectionHandler.class);
+	private static final CLogger log = CLogger.getCLogger (LdapConnectionHandler.class);
 	
 	
 	/**

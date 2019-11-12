@@ -60,7 +60,7 @@ public class AccessSqlParser
 	private static final String		ON = " ON ";
 
 	/**	Logger				*/
-	private CLogger	log = CLogger.getCLogger(getClass());
+	private static final CLogger	log = CLogger.getCLogger(AccessSqlParser.class);
 	/**	Original SQL			*/
 	private String		m_sqlOriginal;
 	/**	SQL Selects			*/

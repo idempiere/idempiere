@@ -163,7 +163,7 @@ public class WTask extends Window implements EventListener<Event>, IHelpContext
 	}
 
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WTask.class);
+	private static final CLogger log = CLogger.getCLogger(WTask.class);
 
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private Html info = new Html();

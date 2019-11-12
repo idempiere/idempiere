@@ -33,7 +33,7 @@ import org.compiere.util.Trx;
 public class SynchronizeTerminology extends SvrProcess
 {
 	/**	Static Logger	*/
-	private static CLogger	s_log	= CLogger.getCLogger (SynchronizeTerminology.class);
+	private static final CLogger	s_log	= CLogger.getCLogger (SynchronizeTerminology.class);
 	
 	/**
 	 *  Prepare - e.g., get Parameters.

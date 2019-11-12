@@ -52,7 +52,7 @@ import org.osgi.service.event.Event;
  */
 public class RequestEventHandler extends AbstractEventHandler implements ManagedService
 {
-	private static CLogger s_log = CLogger.getCLogger (RequestEventHandler.class);
+	private static final CLogger s_log = CLogger.getCLogger (RequestEventHandler.class);
 	
 	@Override
 	protected void doHandleEvent(Event event) 

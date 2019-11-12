@@ -35,7 +35,7 @@ public class SetupWizard
 {
 
 	/**	Logger			*/
-	public static CLogger log = CLogger.getCLogger(SetupWizard.class);
+	public static final CLogger log = CLogger.getCLogger(SetupWizard.class);
 
 	public MWFNode m_node; 
 

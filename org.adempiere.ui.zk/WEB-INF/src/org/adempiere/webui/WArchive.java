@@ -60,7 +60,7 @@ public class WArchive implements EventListener<Event>
 	StringBuffer 		m_where = null;
 	
 	/**	Logger	*/
-	private static CLogger	log	= CLogger.getCLogger (WArchive.class);
+	private static final CLogger	log	= CLogger.getCLogger (WArchive.class);
 	
 	/**
 	 * 	Display Request Options - New/Existing.

@@ -60,7 +60,7 @@ public class OrderTest implements Runnable
 
 	int m_errors = 0;
 	/**	Logger	*/
-	private static CLogger	log	= CLogger.getCLogger (OrderTest.class);
+	private static final CLogger	log	= CLogger.getCLogger (OrderTest.class);
 	
 	/**
 	 * 	Run

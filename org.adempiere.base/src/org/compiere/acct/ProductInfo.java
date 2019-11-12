@@ -71,7 +71,7 @@ public class ProductInfo
 	private BigDecimal      m_qty = Env.ZERO;
 
 	/**	Logger					*/
-	protected CLogger		log = CLogger.getCLogger (getClass());
+	private final static CLogger	log = CLogger.getCLogger (ProductInfo.class);
 
 	/**
 	 *  Get Product Info (Service, Revenue Recognition).

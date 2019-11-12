@@ -129,7 +129,7 @@ public class ProcessParameterPanel extends Panel implements
 	// infoWindowID of infoWindow below this dialog in case call process from infoWindow
 	private int 		m_InfoWindowID = 0;
 	/** Logger */
-	private static CLogger log = CLogger
+	private static final CLogger log = CLogger
 			.getCLogger(ProcessParameterPanel.class);
 
 	//

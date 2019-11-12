@@ -36,7 +36,7 @@ import org.compiere.util.Env;
  */
 public class ProductPriceValidator implements ModelValidator {
 	
-	private static CLogger log = CLogger.getCLogger(ProductPriceValidator.class);
+	private static final CLogger log = CLogger.getCLogger(ProductPriceValidator.class);
 	private int m_AD_Client_ID;
 	
 	public int getAD_Client_ID() {

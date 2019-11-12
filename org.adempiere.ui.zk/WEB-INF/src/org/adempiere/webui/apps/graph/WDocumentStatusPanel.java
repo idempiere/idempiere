@@ -52,7 +52,7 @@ public class WDocumentStatusPanel extends Panel {
 	private MDocumentStatus[] 	m_indicators = null;
 
 	/**	Logger	*/
-	private static CLogger log = CLogger.getCLogger (WDocumentStatusPanel.class);
+	private static final CLogger log = CLogger.getCLogger (WDocumentStatusPanel.class);
 
 	/**
 	 * 	Get Panel if User has Document Status Indicators

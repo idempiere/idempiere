@@ -70,7 +70,7 @@ public class ExportModelValidator implements ModelValidator {
 	public static final String CTX_IsReplicationEnabled = "#IsReplicationEnabled";
 
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(ExportModelValidator.class);
+	private static final CLogger log = CLogger.getCLogger(ExportModelValidator.class);
 
 	/** Client			*/
 	private int		m_AD_Client_ID = -1;

@@ -93,7 +93,7 @@ public abstract class AdempiereServer implements Runnable
 	private long 				m_nextWork = 0;
 
 	/**	Logger						*/
-	protected CLogger	log = CLogger.getCLogger(getClass());
+	protected transient CLogger	log = CLogger.getCLogger(getClass());
 	/** System						*/
 	protected volatile static MSystem p_system = null;
 	/** Client						*/

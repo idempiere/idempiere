@@ -93,7 +93,7 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 	private boolean 		m_isSOTrx;
 		
 	/**	Logger			*/
-	protected CLogger log = CLogger.getCLogger(getClass());
+	protected transient CLogger log = CLogger.getCLogger(getClass());
 	private Borderlayout layout;
 	private Vbox southBody;
 	

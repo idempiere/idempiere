@@ -39,7 +39,7 @@ public class Archive {
 	public int 		m_Record_ID = 0;
 	
 	/**	Logger			*/
-	public static CLogger log = CLogger.getCLogger(Archive.class);
+	public static final CLogger log = CLogger.getCLogger(Archive.class);
 
 	public KeyNamePair[] getProcessData()
 	{

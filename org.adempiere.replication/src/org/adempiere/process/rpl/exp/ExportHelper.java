@@ -77,7 +77,7 @@ import org.w3c.dom.Text;
 public class ExportHelper {
 
 	/**	Logger					*/
-	private static CLogger log = CLogger.getCLogger(ExportHelper.class);
+	private static final CLogger log = CLogger.getCLogger(ExportHelper.class);
 
 	/** XML Document 			*/
 	private Document outDocument = null;

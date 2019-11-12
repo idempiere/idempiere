@@ -64,7 +64,7 @@ public class ReplicationLocal extends SvrProcess
 	private Timestamp			m_replicationStart = new Timestamp (m_start);
 
 	/**	Logger						*/
-	private static CLogger		s_log = CLogger.getCLogger(ReplicationLocal.class);
+	private static final CLogger		s_log = CLogger.getCLogger(ReplicationLocal.class);
 
 	/**	Remote class				*/
 	private static String	REMOTE = "org.compiere.process.ReplicationRemote";

@@ -208,7 +208,7 @@ public class MWebServiceType extends X_WS_WebServiceType
 	
 	/**	Static Logger	*/
 	@SuppressWarnings("unused")
-	private static CLogger	s_log	= CLogger.getCLogger (MWebServiceType.class);
+	private static final CLogger	s_log	= CLogger.getCLogger (MWebServiceType.class);
 	
 	/**************************************************************************
 	 * 	Standard Constructor

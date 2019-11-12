@@ -58,7 +58,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 	 */
 	private static final long serialVersionUID = 1849434312706721390L;
 
-	private static CLogger log = CLogger.getCLogger(BroadcastMessageWindow.class);
+	private static final CLogger log = CLogger.getCLogger(BroadcastMessageWindow.class);
 	public static final int PRESSED_PREV = 1;
 	public static final int PRESSED_NEXT = 2;
 	public static final int UPDATE_CurrMsg = 0;

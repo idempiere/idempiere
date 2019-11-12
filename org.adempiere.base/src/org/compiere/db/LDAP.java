@@ -90,7 +90,7 @@ public class LDAP
 	}	//	validate
 	
 	/**	Logger	*/
-	private static CLogger log = CLogger.getCLogger (LDAP.class);
+	private static final CLogger log = CLogger.getCLogger (LDAP.class);
 	
 	
 	/**

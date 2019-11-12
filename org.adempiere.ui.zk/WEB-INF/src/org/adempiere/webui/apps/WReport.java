@@ -111,7 +111,7 @@ public class WReport implements EventListener<Event> {
 	/**	The Option List					*/
 	private List<KeyNamePair>	m_list = new ArrayList<KeyNamePair>();
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WReport.class);
+	private static final CLogger log = CLogger.getCLogger(WReport.class);
 	/** The parent window for locking/unlocking during process execution */
 	Component parent;
 	/** The parent window number */

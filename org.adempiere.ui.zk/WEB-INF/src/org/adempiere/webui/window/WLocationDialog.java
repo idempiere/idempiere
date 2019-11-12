@@ -95,7 +95,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 	private static final long serialVersionUID = -9116270523919373406L;
 	private static final String LABEL_STYLE = "white-space: nowrap;";
 	/** Logger          */
-	private static CLogger log = CLogger.getCLogger(WLocationDialog.class);
+	private static final CLogger log = CLogger.getCLogger(WLocationDialog.class);
 	private Label lblAddress1;
 	private Label lblAddress2;
 	private Label lblAddress3;

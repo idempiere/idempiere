@@ -44,7 +44,7 @@ public class ReportPool
     private static final int MAXNUM = 15;
     private static int 	size = 0;
 
-    private CLogger log = CLogger.getCLogger(ReportPool.class);
+    private static final CLogger log = CLogger.getCLogger(ReportPool.class);
     
     public ReportInfo getReport (int AD_Process_ID )
     {

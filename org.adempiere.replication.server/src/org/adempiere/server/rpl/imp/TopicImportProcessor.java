@@ -46,7 +46,7 @@ import org.compiere.util.CLogger;
 public class TopicImportProcessor implements IImportProcessor {
 	
 	/**	Logger	*/
-	protected CLogger	log = CLogger.getCLogger (TopicImportProcessor.class);
+	protected static final CLogger	log = CLogger.getCLogger (TopicImportProcessor.class);
 	
 	/**
 	 * Topic Listener

@@ -88,7 +88,7 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 	private ArrayList<MRecordAccess>	m_recordAccesss = new ArrayList<MRecordAccess>();
 	private int				m_currentRow = 0;
 	private MRecordAccess	m_currentData = null;
-	private CLogger			log = CLogger.getCLogger(getClass());
+	private static final CLogger	log = CLogger.getCLogger(WRecordAccessDialog.class);
 	
 	private Label roleLabel = new Label(Msg.translate(Env.getCtx(), "AD_Role_ID"));
 	private Listbox roleField = null;	

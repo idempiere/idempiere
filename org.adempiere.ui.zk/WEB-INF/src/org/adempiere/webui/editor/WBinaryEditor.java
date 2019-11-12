@@ -38,7 +38,7 @@ public class WBinaryEditor extends WEditor
     private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     
     /**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WBinaryEditor.class);
+	private static final CLogger log = CLogger.getCLogger(WBinaryEditor.class);
     
     private boolean         m_mandatory;
     private Object          m_data;

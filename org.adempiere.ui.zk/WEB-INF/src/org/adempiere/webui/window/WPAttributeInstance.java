@@ -134,7 +134,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 	private String				m_M_AttributeSetInstanceName = null;
 	private String				m_sql;
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WPAttributeInstance.class);
+	private static final CLogger log = CLogger.getCLogger(WPAttributeInstance.class);
 
 	/**
 	 * 	Static Init

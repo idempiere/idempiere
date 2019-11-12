@@ -75,7 +75,7 @@ public abstract class Convert
 	protected boolean                 m_verbose = true;
 
 	/**	Logger	*/
-	private static CLogger	log	= CLogger.getCLogger (Convert.class);
+	private static final CLogger	log	= CLogger.getCLogger (Convert.class);
 	
     private static FileOutputStream tempFileOr = null;
     private static Writer writerOr;

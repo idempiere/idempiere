@@ -94,7 +94,7 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 	private int p_WindowNo;
 
 	/**	Logger			*/
-	private CLogger log = CLogger.getCLogger(getClass());
+	private final static CLogger log = CLogger.getCLogger(WStatementCreateFromBatch.class);
 	
 	protected Label bankAccountLabel = new Label();
 	protected WTableDirEditor bankAccountField;

@@ -136,7 +136,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 {
 	private static final int DEFAULT_SWAP_MAX_PAGES = 100;
 	/** Logger */
-	private static CLogger log = CLogger.getCLogger(ReportStarter.class);
+	private static final CLogger log = CLogger.getCLogger(ReportStarter.class);
 	private static File REPORT_HOME = null;
     public static final JasperReportsContext jasperReportStartContext;
 	

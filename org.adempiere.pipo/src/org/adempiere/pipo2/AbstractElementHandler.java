@@ -55,7 +55,7 @@ import org.adempiere.pipo2.exception.DatabaseAccessException;
  */
 public abstract class AbstractElementHandler implements ElementHandler {
 
-	protected CLogger log = CLogger.getCLogger(getClass());
+	protected transient CLogger log = CLogger.getCLogger(getClass());
 
 	/**
 	 * @param ctx

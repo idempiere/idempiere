@@ -391,7 +391,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected MInfoWindow infoWindow;
 
 	/**	Logger			*/
-	protected CLogger log = CLogger.getCLogger(getClass());
+	protected transient CLogger log = CLogger.getCLogger(getClass());
 
 	protected WListbox contentPanel = new WListbox();
 	protected Paging paging;

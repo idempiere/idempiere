@@ -45,7 +45,7 @@ public abstract class LogFileCallable {
 	protected static final int BLOCK_SIZE = 1024 * 1024 * 5;
 	protected static final String s_dirAccessFileName = "dirAccess.txt";
 	
-	protected CLogger log = CLogger.getCLogger(getClass());
+	protected transient CLogger log = CLogger.getCLogger(getClass());
 	
 	/**
 	 * default constructor

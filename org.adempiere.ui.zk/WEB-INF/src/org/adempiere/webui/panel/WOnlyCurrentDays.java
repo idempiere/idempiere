@@ -80,7 +80,7 @@ public class WOnlyCurrentDays extends Window implements EventListener<Event>, Di
 	private int 	m_days = 0;
 	
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WOnlyCurrentDays.class);
+	private static final CLogger log = CLogger.getCLogger(WOnlyCurrentDays.class);
 
 	/**
 	 * 	Static Initializer

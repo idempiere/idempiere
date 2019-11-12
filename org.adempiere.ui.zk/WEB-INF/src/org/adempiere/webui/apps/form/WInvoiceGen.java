@@ -57,7 +57,7 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 	private WGenForm form;
 
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WInvoiceGen.class);
+	private static final CLogger log = CLogger.getCLogger(WInvoiceGen.class);
 	//
 	private Label lOrg = new Label();
 	private WTableDirEditor fOrg;

@@ -57,7 +57,7 @@ public class PayPrint {
 	/** Payment Batch		*/
 	public MPaymentBatch	m_batch = null; 
 	/**	Logger			*/
-	public static CLogger log = CLogger.getCLogger(PayPrint.class);
+	public static final CLogger log = CLogger.getCLogger(PayPrint.class);
 	
 	public String bank;
 	public String currency;

@@ -178,7 +178,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     /** Is cancel ?                 */
     private boolean         m_isCancel = false; // teo_sarca [ 1708717 ]
     /** Logger          */
-    private static CLogger log = CLogger.getCLogger(FindWindow.class);
+    private static final CLogger log = CLogger.getCLogger(FindWindow.class);
     /** Number of records           */
     private int             m_total;
     private PreparedStatement   m_pstmt;

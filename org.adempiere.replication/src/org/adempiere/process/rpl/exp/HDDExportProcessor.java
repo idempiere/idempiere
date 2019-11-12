@@ -56,7 +56,7 @@ import org.w3c.dom.Document;
 public class HDDExportProcessor implements IExportProcessor {
 
 	/**	Logger	*/
-	protected CLogger	log = CLogger.getCLogger (getClass());
+	protected static final CLogger	log = CLogger.getCLogger (HDDExportProcessor.class);
 	
 	public void process(Properties ctx, MEXPProcessor expProcessor, Document document, Trx trx) 
 			throws Exception 

@@ -99,7 +99,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	private static final String ON_OK_ECHO = "onOkEcho";
 	
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(ProcessDialog.class);
+	private static final CLogger log = CLogger.getCLogger(ProcessDialog.class);
 	//
 
 	private Table logMessageTable;	

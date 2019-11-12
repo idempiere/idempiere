@@ -98,7 +98,7 @@ public class ConfigurationData
 
 
 	/**	Static Logger	*/
-	static CLogger	log	= CLogger.getCLogger (ConfigurationData.class);
+	protected static final CLogger	log	= CLogger.getCLogger (ConfigurationData.class);
 
 
 	/** Properties File	name			*/

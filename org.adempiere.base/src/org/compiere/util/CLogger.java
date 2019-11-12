@@ -16,7 +16,6 @@
  *****************************************************************************/
 package org.compiere.util;
 
-import java.io.Serializable;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -27,12 +26,8 @@ import java.util.logging.Logger;
  *  @author Jorg Janke
  *  @version $Id: CLogger.java,v 1.3 2006/08/09 16:38:47 jjanke Exp $
  */
-public class CLogger extends Logger implements Serializable
+public class CLogger extends Logger
 {
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -4015949992093043663L;
 	private static final String LAST_INFO = "org.compiere.util.CLogger.lastInfo";
 	private static final String LAST_WARNING = "org.compiere.util.CLogger.lastWarning";
 	private static final String LAST_ERROR = "org.compiere.util.CLogger.lastError";

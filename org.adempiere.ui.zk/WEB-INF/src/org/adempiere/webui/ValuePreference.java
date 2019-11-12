@@ -171,7 +171,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	/** The Menu Icon               */
 	//private static String ICON_URL = "images/VPreference16.png";
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(ValuePreference.class);
+	private static final CLogger log = CLogger.getCLogger(ValuePreference.class);
 	private AbstractADWindowContent adwindowContent;
 	
 	/**

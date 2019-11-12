@@ -28,7 +28,7 @@ import org.osgi.framework.BundleContext;
 
 public class PipoDictionaryService implements IDictionaryService {
 
-	CLogger logger = CLogger.getCLogger(PipoDictionaryService.class.getName());
+	private static final CLogger logger = CLogger.getCLogger(PipoDictionaryService.class.getName());
 
 	public PipoDictionaryService() {
 		super();

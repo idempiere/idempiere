@@ -129,7 +129,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 	/**	True if setting Value			*/
 	private boolean		m_setting = false;
 	/**	Logger							*/
-	private static CLogger log = CLogger.getCLogger(WAssignmentDialog.class);
+	private static final CLogger log = CLogger.getCLogger(WAssignmentDialog.class);
 	/**	Lookup with Resource & UOM		*/
 	private HashMap<KeyNamePair,KeyNamePair>	m_lookup = new HashMap<KeyNamePair,KeyNamePair>();
 	

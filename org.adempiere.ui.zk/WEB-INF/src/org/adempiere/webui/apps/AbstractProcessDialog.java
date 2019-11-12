@@ -112,7 +112,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	private static final String ON_COMPLETE = "onComplete";
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
 	
-	private static CLogger log = CLogger.getCLogger(AbstractProcessDialog.class);
+	private static final CLogger log = CLogger.getCLogger(AbstractProcessDialog.class);
 
 	protected int m_WindowNo;
 	private Properties m_ctx;

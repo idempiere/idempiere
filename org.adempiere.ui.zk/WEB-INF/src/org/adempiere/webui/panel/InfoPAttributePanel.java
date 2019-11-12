@@ -113,7 +113,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 	private ArrayList<Component>	m_instanceEditors = new ArrayList<Component>();
 	private ArrayList<Component>	m_instanceEditorsTo = new ArrayList<Component>();
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(InfoPAttributePanel.class);
+	private static final CLogger log = CLogger.getCLogger(InfoPAttributePanel.class);
 
 	private Rows rows = null;
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);

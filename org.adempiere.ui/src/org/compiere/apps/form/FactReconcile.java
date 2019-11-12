@@ -22,7 +22,7 @@ import org.compiere.util.Msg;
 public class FactReconcile {
 	
 	/**	Logger			*/
-	public static CLogger log = CLogger.getCLogger(FactReconcile.class);
+	public static final CLogger log = CLogger.getCLogger(FactReconcile.class);
 	
 	public int			m_AD_Client_ID = 0;
 	public int			m_AD_Org_ID = 0;

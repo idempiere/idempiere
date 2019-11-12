@@ -51,7 +51,7 @@ public class ArchiveFileSystem implements IArchiveStore {
 	
 	private  String ARCHIVE_FOLDER_PLACEHOLDER = "%ARCHIVE_FOLDER%";
 	
-	private final CLogger log = CLogger.getCLogger(getClass());
+	private static final CLogger log = CLogger.getCLogger(ArchiveFileSystem.class);
 
 
 	/* (non-Javadoc)

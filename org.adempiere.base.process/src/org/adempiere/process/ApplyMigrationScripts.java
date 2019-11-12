@@ -45,7 +45,7 @@ import org.compiere.util.DB;
 public class ApplyMigrationScripts extends SvrProcess {
 
 	/** Logger */
-	private static CLogger log = CLogger.getCLogger(ApplyMigrationScripts.class);
+	private static final CLogger log = CLogger.getCLogger(ApplyMigrationScripts.class);
 
 	@Override
 	protected String doIt() throws Exception {

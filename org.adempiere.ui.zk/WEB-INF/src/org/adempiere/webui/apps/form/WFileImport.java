@@ -85,7 +85,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 	private static final int MAX_SHOWN_LINES = 10;
 	
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WFileImport.class);
+	private static final CLogger log = CLogger.getCLogger(WFileImport.class);
 	
 	private int	m_record = -1;
 	

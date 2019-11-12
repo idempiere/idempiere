@@ -178,7 +178,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	/**	 Ability to create new assignments	*/
 	private boolean			m_createNew;
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(InfoSchedule.class);
+	private static final CLogger log = CLogger.getCLogger(InfoSchedule.class);
 
 	private Vbox mainLayout = new Vbox();
 	private Hlayout parameterPanel = new Hlayout();

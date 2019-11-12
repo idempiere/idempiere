@@ -58,7 +58,7 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	 */
 	private static final long serialVersionUID = -329919930778203892L;
 
-	private static CLogger log = CLogger.getCLogger(WMediaDialog.class);
+	private static final CLogger log = CLogger.getCLogger(WMediaDialog.class);
 
 	/** data	*/
 	private Object m_data;

@@ -63,7 +63,7 @@ public class DocLine
 	/** Parent					*/
 	private Doc					m_doc = null;
 	/**	 Log					*/
-	protected CLogger			log = CLogger.getCLogger(getClass());
+	protected transient CLogger	log = CLogger.getCLogger(getClass());
 
 	/** Qty                     */
 	private BigDecimal	 		m_qty = null;

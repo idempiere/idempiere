@@ -43,7 +43,7 @@ public class GenerateModel
 {
 	
 	/**	Logger			*/
-	private static CLogger	log	= CLogger.getCLogger (GenerateModel.class);
+	private static final CLogger	log	= CLogger.getCLogger (GenerateModel.class);
 	
 	/**
 	 * 	String representation

@@ -108,7 +108,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 	private static LogAuthFailure logAuthFailure = new LogAuthFailure();
 
 	private static final String ON_LOAD_TOKEN = "onLoadToken";
-    private static CLogger logger = CLogger.getCLogger(LoginPanel.class);
+    private static final CLogger logger = CLogger.getCLogger(LoginPanel.class);
 
     protected Properties ctx;
     protected Label lblUserId;

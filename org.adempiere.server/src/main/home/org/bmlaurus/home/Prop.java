@@ -97,7 +97,7 @@ public final class Prop implements Serializable {
 	/**	Container for Properties    */
 	private volatile static Properties 		s_prop = new Properties();
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(Prop.class);
+	private static final CLogger log = CLogger.getCLogger(Prop.class);
 	
 	
 	private static String IMAGE_PATH(){

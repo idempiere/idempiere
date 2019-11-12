@@ -128,7 +128,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 	private boolean isSingleTrx = false;
 
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(GridTabCSVImporter.class);
+	private static final CLogger log = CLogger.getCLogger(GridTabCSVImporter.class);
 	
 	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset , String importMode) {		
 		return fileImport(gridTab, childs, filestream, charset, importMode, null);

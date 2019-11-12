@@ -69,7 +69,7 @@ import org.w3c.dom.Document;
 public class TopicExportProcessor implements IExportProcessor {
 
 	/**	Logger	*/
-	protected CLogger	log = CLogger.getCLogger (getClass());
+	protected static final CLogger	log = CLogger.getCLogger (TopicExportProcessor.class);
 	
 	/**
 	 * 

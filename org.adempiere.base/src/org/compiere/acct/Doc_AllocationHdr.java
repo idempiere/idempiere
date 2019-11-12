@@ -1003,7 +1003,7 @@ class Doc_AllocationTax
 		m_IsSOTrx = isSOTrx;
 	}	//	Doc_AllocationTax
 
-	private CLogger				log = CLogger.getCLogger(getClass());
+	private static final CLogger	log = CLogger.getCLogger(Doc_AllocationTax.class);
 
 	private MAccount			m_DiscountAccount;
 	private BigDecimal 			m_DiscountAmt;

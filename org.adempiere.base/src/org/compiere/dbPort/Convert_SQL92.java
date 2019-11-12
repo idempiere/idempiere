@@ -29,7 +29,7 @@ import org.compiere.util.Util;
 public abstract class Convert_SQL92 extends Convert {
 	
 	/**	Logger	*/
-	private static CLogger	log	= CLogger.getCLogger (Convert_SQL92.class);
+	private static final CLogger	log	= CLogger.getCLogger (Convert_SQL92.class);
 	
 	/**************************************************************************
 	 *  Convert Outer Join.

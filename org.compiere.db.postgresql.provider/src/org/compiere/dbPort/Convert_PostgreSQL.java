@@ -48,7 +48,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	private TreeMap<String,String> m_map;
 
 	/** Logger */
-	private static CLogger log = CLogger.getCLogger(Convert_PostgreSQL.class);
+	private static final CLogger log = CLogger.getCLogger(Convert_PostgreSQL.class);
 
 	
 	

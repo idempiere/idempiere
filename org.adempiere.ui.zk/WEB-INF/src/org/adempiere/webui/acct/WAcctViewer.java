@@ -194,7 +194,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	private RModel m_rmodel;
 
 	/**	Logger				*/
-	private static CLogger log = CLogger.getCLogger(WAcctViewer.class);
+	private static final CLogger log = CLogger.getCLogger(WAcctViewer.class);
 
 	/**
 	 *  Default constructor

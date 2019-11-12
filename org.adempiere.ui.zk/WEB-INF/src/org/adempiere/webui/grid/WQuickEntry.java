@@ -72,7 +72,7 @@ public class WQuickEntry extends Window implements EventListener<Event>, ValueCh
 	public static final String QUICK_ENTRY_CALLER_WINDOW = "_QUICK_ENTRY_CALLER_WINDOW_";
 	public static final String QUICK_ENTRY_CALLER_TAB = "_QUICK_ENTRY_CALLER_TAB_";
 
-	private static CLogger log = CLogger.getCLogger(WQuickEntry.class);
+	private static final CLogger log = CLogger.getCLogger(WQuickEntry.class);
 
 	protected int m_WindowNo;
 	private int parent_WindowNo;

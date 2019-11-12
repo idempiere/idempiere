@@ -47,7 +47,7 @@ public final class OFX1ToXML extends InputStream implements Runnable
 	private String m_ofx = "";
 
 	/**	Logger			*/
-	private CLogger	log = CLogger.getCLogger(getClass());
+	private static final CLogger	log = CLogger.getCLogger(OFX1ToXML.class);
 	
 	/**
 	 * Constructor for OFX1ToXML

@@ -50,7 +50,7 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 	private Object m_value;
 
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WAccountEditor.class);
+	private static final CLogger log = CLogger.getCLogger(WAccountEditor.class);
 
 	public WAccountEditor(GridField gridField)
 	{

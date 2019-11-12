@@ -43,7 +43,7 @@ import org.compiere.util.Msg;
 public abstract class StatementCreateFromBatch extends CreateFromForm
 {
 	/**	Logger			*/
-	protected CLogger log = CLogger.getCLogger(getClass());
+	protected transient CLogger log = CLogger.getCLogger(getClass());
 	
 	public boolean dynInit() throws Exception
 	{

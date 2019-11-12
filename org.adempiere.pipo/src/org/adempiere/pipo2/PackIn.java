@@ -53,7 +53,7 @@ import org.compiere.util.Trx;
 public class PackIn {
 
 	/** Logger */
-	private CLogger log = CLogger.getCLogger(getClass());
+	private static final CLogger log = CLogger.getCLogger(PackIn.class);
 	//update system maintain dictionary, default to false
 	private boolean m_UpdateDictionary = false;
 	private String m_packageDirectory = null;

@@ -37,7 +37,7 @@ public class LogAuthFailure  {
 	private static Writer writer;
 	public static String authFailureFilename = "AuthFailure.log";
 	/**	Logger				*/
-	private static CLogger log = CLogger.getCLogger(LogAuthFailure.class);
+	private static final CLogger log = CLogger.getCLogger(LogAuthFailure.class);
 
 	public LogAuthFailure() {
 

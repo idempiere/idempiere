@@ -73,7 +73,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 	private String 				imageUrl;
 	private MyListModel			model = new MyListModel();
 
-	private static CLogger log = CLogger.getCLogger(WChosenboxSearchEditor.class);
+	private static final CLogger log = CLogger.getCLogger(WChosenboxSearchEditor.class);
 	private boolean onselecting;
 
 	public WChosenboxSearchEditor (GridField gridField)

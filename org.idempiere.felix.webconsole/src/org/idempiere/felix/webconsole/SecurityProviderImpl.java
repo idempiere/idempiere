@@ -17,7 +17,7 @@ import org.compiere.util.Env;
 public class SecurityProviderImpl implements WebConsoleSecurityProvider {
 
 	/**	Logger			*/
-	protected CLogger	log = CLogger.getCLogger(getClass());
+	private final static CLogger	log = CLogger.getCLogger(SecurityProviderImpl.class);
 	
 	/* (non-Javadoc)
 	 * @see org.apache.felix.webconsole.WebConsoleSecurityProvider#authenticate(java.lang.String, java.lang.String)

@@ -67,7 +67,7 @@ public class POWrapper implements InvocationHandler
 		return (T)wrapper.getPO();
 	}
 
-	private final CLogger log = CLogger.getCLogger(getClass());
+	private static final CLogger log = CLogger.getCLogger(POWrapper.class);
 	private final PO po;
 	
 	private POWrapper(PO po)

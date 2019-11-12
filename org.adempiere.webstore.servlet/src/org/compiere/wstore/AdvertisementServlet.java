@@ -52,7 +52,7 @@ public class AdvertisementServlet extends HttpServlet
 	 */
 	private static final long serialVersionUID = -1795015577057042600L;
 	/**	Logging						*/
-	private static CLogger			log = CLogger.getCLogger(AdvertisementServlet.class);
+	private static final CLogger			log = CLogger.getCLogger(AdvertisementServlet.class);
 	/** Name						*/
 	static public final String		NAME = "AdvertisementServlet";
 

@@ -51,7 +51,7 @@ import org.idempiere.webservices.AbstractService;
  */
 @WebService(endpointInterface = "com.trekglobal.ws.CompositeService", serviceName = "compositeInterface" ,targetNamespace="http://idempiere.org/ADInterface/1_0")
 public class CompositeServiceImpl extends AbstractService implements CompositeService {
-	private static CLogger log = CLogger.getCLogger(CompositeServiceImpl.class);
+	private static final CLogger log = CLogger.getCLogger(CompositeServiceImpl.class);
 
 	private static String webServiceName = new String("CompositeInterface");
 

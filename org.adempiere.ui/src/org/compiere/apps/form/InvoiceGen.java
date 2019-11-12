@@ -48,7 +48,7 @@ import org.compiere.util.Trx;
 public class InvoiceGen extends GenForm
 {
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(InvoiceGen.class);
+	private static final CLogger log = CLogger.getCLogger(InvoiceGen.class);
 	//
 	
 	public Object 			m_AD_Org_ID = null;

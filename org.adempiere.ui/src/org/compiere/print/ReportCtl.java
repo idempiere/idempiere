@@ -77,7 +77,7 @@ public class ReportCtl
 
 
 	/**	Static Logger	*/
-	private static CLogger	s_log	= CLogger.getCLogger (ReportCtl.class);
+	private static final CLogger	s_log	= CLogger.getCLogger (ReportCtl.class);
 	private volatile static ProcessInfo m_pi;
 
 	/**

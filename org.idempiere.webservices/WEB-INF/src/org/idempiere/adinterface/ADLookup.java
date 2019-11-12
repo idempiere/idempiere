@@ -36,7 +36,7 @@ import org.idempiere.adInterface.x10.LookupValues;
  */
 public class ADLookup {
 	
-	protected static CLogger	log = CLogger.getCLogger(ADLookup.class);	
+	private static final CLogger	log = CLogger.getCLogger(ADLookup.class);	
 	
 	/**
 	 * @param lvs

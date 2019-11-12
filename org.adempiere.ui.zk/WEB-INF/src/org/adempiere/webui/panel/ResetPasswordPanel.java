@@ -69,7 +69,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 	 */
 	private static final long serialVersionUID = -657724758165769510L;
 
-	private static CLogger logger = CLogger.getCLogger(ResetPasswordPanel.class);
+	private static final CLogger logger = CLogger.getCLogger(ResetPasswordPanel.class);
 	
 	protected static final int MAX_RESET_PASSWORD_TRIES = 3; 
     protected static final int NO_OF_SECURITY_QUESTION = 5; 

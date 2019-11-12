@@ -113,7 +113,7 @@ public class TopicListener implements MessageListener {
 	private ReplicationProcessor replicationProcessor = null;
 	
 	/**	Logger	*/
-	protected CLogger	log = CLogger.getCLogger (TopicListener.class);
+	protected static final CLogger	log = CLogger.getCLogger (TopicListener.class);
 	
 	/** 
 	 * Is Durable Subscription

@@ -52,7 +52,7 @@ public class Matcher
 	/** Transaction						*/
 	private String				m_trxName = null;
 	/**	Logger							*/
-	protected CLogger			log = CLogger.getCLogger (getClass());
+	private static final CLogger	log = CLogger.getCLogger (Matcher.class);
 
 	/**
 	 * 	Matching
