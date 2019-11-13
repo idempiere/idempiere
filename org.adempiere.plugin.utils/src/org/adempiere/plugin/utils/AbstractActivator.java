@@ -49,7 +49,8 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 	private String trxName = null;
 	private ProcessInfo m_processInfo = null;
 	private IProcessUI m_processUI = null;
-	public static boolean isFrameworkCompletedSrart = false;
+	private final static Object mutex = new Object();
+	private static boolean isFrameworkStarted = false;
 	
 
 	@Override
@@ -58,7 +59,7 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 		if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + getVersion() + " starting...");
 		serviceTracker = new ServiceTracker<IDictionaryService, IDictionaryService>(context, IDictionaryService.class.getName(), this);
 		serviceTracker.open();
-		if (!isFrameworkCompletedSrart)
+		if (!isFrameworkStarted())
 			context.addFrameworkListener(this);
 		start();
 		if (logger.isLoggable(Level.INFO)) logger.info(getName() + " " + getVersion() + " ready.");
@@ -216,9 +217,17 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 	@Override
 	public void frameworkEvent(FrameworkEvent event) {
 		if (event.getType() == FrameworkEvent.STARTLEVEL_CHANGED) {
-			isFrameworkCompletedSrart = true;
-			frameworkStarted();
+			synchronized(mutex) {
+				isFrameworkStarted = true;
+				frameworkStarted();
+			}
 		}
+	}
+	
+	public static Boolean isFrameworkStarted() {
+		synchronized(mutex) {
+	        return isFrameworkStarted;
+	    }
 	}
 	
 	protected abstract void frameworkStarted();
@@ -243,7 +252,7 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 	public IDictionaryService addingService(
 			ServiceReference<IDictionaryService> reference) {
 		service = context.getService(reference);
-		if (isFrameworkCompletedSrart)
+		if (isFrameworkStarted())
 			frameworkStarted ();
 		return null;
 	}

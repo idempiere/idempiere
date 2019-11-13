@@ -26,7 +26,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 
-import org.adempiere.base.IDictionaryService;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
@@ -41,7 +40,6 @@ import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
-import org.osgi.framework.ServiceReference;
 
 public class PackInApplicationActivator extends AbstractActivator{
 
