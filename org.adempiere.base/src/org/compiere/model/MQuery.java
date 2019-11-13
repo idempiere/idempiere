@@ -63,12 +63,10 @@ public class MQuery implements Serializable
 		if (s_log.isLoggable(Level.INFO)) s_log.info("AD_PInstance_ID=" + AD_PInstance_ID + ", TableName=" + TableName);
 		MQuery reportQuery = new MQuery(TableName);
 		//	Temporary Tables - add qualifier (not displayed)
-		boolean isTemporaryTable = false;
 		MTable table =  MTable.get(ctx, TableName);
 		if (TableName.startsWith("T_"))
 		{
 			reportQuery.addRestriction(TableName + ".AD_PInstance_ID=" + AD_PInstance_ID);
-			isTemporaryTable = true;
 		}
 		//use separate query object for rendering of parameter at report
 		reportQuery.setReportProcessQuery(new MQuery(TableName));
@@ -156,7 +154,7 @@ public class MQuery implements Serializable
 					+ "; Name=" + Name + ", Info=" + Info + "-" + Info_To + ", Range=" + isRange);
 				//
 				//custom query or column not exists - render as report parameters
-				if (isTemporaryTable || (table != null && table.getColumn(ParameterName) == null))
+				if (table != null && table.getColumn(ParameterName) == null)
 				{
 					query = reportQuery.getReportProcessQuery();
 				}
