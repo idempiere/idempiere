@@ -182,14 +182,25 @@ public class PoFiller{
 				}
 			}
 			if (po.get_ColumnIndex(columnName) >= 0) {
+				MColumn col = MColumn.get(ctx.ctx, po.get_TableName(), columnName);
+				String refTableName = col.getReferenceTableName();
 				if (id > 0) {
+					MTable foreignTable = MTable.get(Env.getCtx(), refTableName);
+					PO subPo = foreignTable.getPO(id, po.get_TrxName());
+					if (subPo.getAD_Client_ID() != Env.getAD_Client_ID(ctx.ctx)) {
+						String accessLevel = foreignTable.getAccessLevel();
+						if ((MTable.ACCESSLEVEL_All.equals(accessLevel)
+								|| MTable.ACCESSLEVEL_SystemOnly.equals(accessLevel)
+								|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) && 
+								subPo.getAD_Client_ID() != 0)
+							return -1;
+					}
+
 					if (po.get_ValueAsInt(columnName) != id) {
 						po.set_ValueNoCheck(columnName, id);
 					}
 					return id;
 				} else if (id == 0) {
-					MColumn col = MColumn.get(ctx.ctx, po.get_TableName(), columnName);
-					String refTableName = col.getReferenceTableName();
 					if (refTableName != null && MTable.isZeroIDTable(refTableName)) {
 						po.set_ValueNoCheck(columnName, id);
 						return id;
