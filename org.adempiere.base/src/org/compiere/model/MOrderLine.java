@@ -859,6 +859,7 @@ public class MOrderLine extends X_C_OrderLine
 		if (newRecord || is_ValueChanged("QtyOrdered"))
 			setQtyOrdered(getQtyOrdered());
 		
+		/* IDEMPIERE-4095 - it is a valid use case to reserve a serialized item on sales (same as reserving non existing inventory)
 		//	Qty on instance ASI for SO
 		if (m_IsSOTrx 
 			&& getM_AttributeSetInstance_ID() != 0
@@ -898,6 +899,7 @@ public class MOrderLine extends X_C_OrderLine
 				}
 			}	//	stocked
 		}	//	SO instance
+		-- commented out because of IDEMPIERE-4095 */
 		
 		//	FreightAmt Not used
 		if (Env.ZERO.compareTo(getFreightAmt()) != 0)
