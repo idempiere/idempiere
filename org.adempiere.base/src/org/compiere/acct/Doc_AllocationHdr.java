@@ -873,14 +873,17 @@ public class Doc_AllocationHdr extends Doc
 					description.append(" / ").append(descriptionPay);
 				}
 				fl.setDescription(description.toString());
+				fl.setAD_Org_ID(invoice.getAD_Org_ID());
 			}
 			if (invoiceDifference.signum() != 0) {
 				FactLine fl = fact.createLine (line, invAcct, as.getC_Currency_ID(), invoiceDifference.negate());
 				fl.setDescription(descriptionInv.toString());
+				fl.setAD_Org_ID(invoice.getAD_Org_ID());
 			}
 			if (paymentDifference.signum() != 0) {
 				FactLine fl = fact.createLine (line, payAcct, as.getC_Currency_ID(), paymentDifference);
 				fl.setDescription(descriptionPay.toString());
+				fl.setAD_Org_ID(invoice.getAD_Org_ID());
 			}
 		}
 		else
@@ -888,10 +891,12 @@ public class Doc_AllocationHdr extends Doc
 			if (invoiceDifference.signum() != 0) {
 				FactLine fl = fact.createLine (line, invAcct, as.getC_Currency_ID(), invoiceDifference);
 				fl.setDescription(descriptionInv.toString());
+				fl.setAD_Org_ID(invoice.getAD_Org_ID());
 			}
 			if (paymentDifference.signum() != 0) {
 				FactLine fl = fact.createLine (line, payAcct, as.getC_Currency_ID(), paymentDifference.negate());
 				fl.setDescription(descriptionPay.toString());
+				fl.setAD_Org_ID(invoice.getAD_Org_ID());
 			}
 			if (acctDifference.signum() != 0) {
 				FactLine fl = fact.createLine (line, loss, gain, as.getC_Currency_ID(), acctDifference.negate());
@@ -900,6 +905,7 @@ public class Doc_AllocationHdr extends Doc
 					description.append(" / ").append(descriptionPay);
 				}
 				fl.setDescription(description.toString());
+				fl.setAD_Org_ID(invoice.getAD_Org_ID());
 			}
 		}
 		return null;
