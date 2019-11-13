@@ -493,7 +493,6 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	public void setTabTitle(String title, org.zkoss.zul.Tab tab) {
 		if (tab == null)
 			return;
-		title = title.replaceAll("[&]", "");
 		if (title.length() <= MAX_TITLE_LENGTH) 
 		{
 			tab.setLabel(title);
