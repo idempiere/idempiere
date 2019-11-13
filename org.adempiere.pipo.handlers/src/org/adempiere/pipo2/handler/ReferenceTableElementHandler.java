@@ -24,17 +24,17 @@ import java.util.logging.Level;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.compiere.model.I_AD_Ref_Table;
+import org.compiere.model.MReference;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_Ref_Table;
-import org.compiere.model.X_AD_Reference;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
@@ -82,7 +82,7 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 						X_AD_Ref_Table.Table_ID);
 
 				int AD_Reference_ID = refTable.getAD_Reference_ID();
-				X_AD_Reference adReference = new X_AD_Reference(ctx.ctx, AD_Reference_ID, getTrxName(ctx));
+				MReference adReference = new MReference(ctx.ctx, AD_Reference_ID, getTrxName(ctx));
 				logImportDetail(ctx, impDetail, 1, adReference.getName(), refTable.getAD_Reference_ID(), action);
 			}
 		} else {

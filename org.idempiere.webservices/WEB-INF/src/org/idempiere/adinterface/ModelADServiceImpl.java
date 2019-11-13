@@ -50,12 +50,12 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRefTable;
+import org.compiere.model.MReference;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MWebServiceType;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
-import org.compiere.model.X_AD_Reference;
 import org.compiere.model.X_WS_WebServiceFieldInput;
 import org.compiere.model.X_WS_WebService_Para;
 import org.compiere.util.CLogger;
@@ -460,14 +460,14 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	    	
 	    	Properties ctx = m_cs.getCtx();
 	
-	    	X_AD_Reference ref = new X_AD_Reference(ctx, ref_id, null);
+	    	MReference ref = MReference.get(ctx, ref_id);
 	    	
 	    	String sql = null;
 			ArrayList<String> listColumnNames = new ArrayList<String>();
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			MWebServiceType m_webservicetype= getWebServiceType();
-	    	if (X_AD_Reference.VALIDATIONTYPE_ListValidation.equals(ref.getValidationType())) {
+	    	if (MReference.VALIDATIONTYPE_ListValidation.equals(ref.getValidationType())) {
 	    		// Fill List Reference
 	    		String ad_language = Env.getAD_Language(ctx);
 	    		boolean isBaseLanguage = Env.isBaseLanguage(ad_language, "AD_Ref_List");
@@ -503,31 +503,11 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 					throw new IdempiereServiceFault(e.getClass().toString() + " " + e.getMessage() + " sql=" + sql, e.getCause(), new QName("getList"));
 	    		}
 	
-	    	} else if (X_AD_Reference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
+	    	} else if (MReference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
 	    		// Fill values from a reference table
 	    		MRole role = new MRole(ctx, roleid, null);
-	    		String sqlrt = "SELECT * FROM AD_Ref_Table WHERE AD_Reference_ID=?";
-	    		MRefTable rt = null;
-	   			PreparedStatement pstmtrt = null;
-	    		ResultSet rsrt = null;
-	    		try
-	    		{
-	    			pstmtrt = DB.prepareStatement (sqlrt, null);
-	    			pstmtrt.setInt (1, ref_id);
-	    			rsrt = pstmtrt.executeQuery ();
-	    			if (rsrt.next ())
-	    	    		rt = new MRefTable(ctx, rsrt, null);
-	    		}
-	    		catch (Exception e)
-	    		{
-	    			// ignore this exception
-	    		}
-	    		finally
-	    		{
-	    			DB.close(rsrt, pstmtrt);
-	    			rsrt = null; pstmtrt = null;
-	    		}
-	    		if (rt == null)
+	    		MRefTable rt = MRefTable.get(ctx,  ref_id);
+	    		if (rt == null || rt.get_ID() == 0)
 	    			throw new IdempiereServiceFault("Web service type "
 	    					+ m_webservicetype.getValue() + ": reference table "
 	    					+ ref_id + " not found",
