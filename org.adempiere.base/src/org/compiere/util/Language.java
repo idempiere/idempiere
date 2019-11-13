@@ -479,7 +479,7 @@ public class Language implements Serializable
 	 *  using the upper case function.
 	 *  It also must have leading zero for day and month.
 	 */
-	public void setDateFormat (String javaDatePattern)
+	public synchronized void setDateFormat (String javaDatePattern)
 	{
 		if (javaDatePattern == null)
 			return;
@@ -502,7 +502,7 @@ public class Language implements Serializable
 	 *  i.e. leading zero for date and month
 	 *  @return date format MM/dd/yyyy - dd.MM.yyyy
 	 */
-	public SimpleDateFormat getDateFormat()
+	public synchronized SimpleDateFormat getDateFormat()
 	{
 		if (m_dateFormat == null)
 		{
@@ -537,7 +537,7 @@ public class Language implements Serializable
 			}
 			m_dateFormat.setLenient(true);
 		}
-		return m_dateFormat;
+		return (SimpleDateFormat) m_dateFormat.clone();
 	}   //  getDateFormat
 
 	/**
