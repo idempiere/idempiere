@@ -62,6 +62,21 @@ public interface I_AD_UserQuery
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Role_ID */
+    public static final String COLUMNNAME_AD_Role_ID = "AD_Role_ID";
+
+	/** Set Role.
+	  * Responsibility Role
+	  */
+	public void setAD_Role_ID (int AD_Role_ID);
+
+	/** Get Role.
+	  * Responsibility Role
+	  */
+	public int getAD_Role_ID();
+
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
+
     /** Column name AD_Tab_ID */
     public static final String COLUMNNAME_AD_Tab_ID = "AD_Tab_ID";
 
@@ -128,6 +143,21 @@ public interface I_AD_UserQuery
 
 	/** Get AD_UserQuery_UU	  */
 	public String getAD_UserQuery_UU();
+
+    /** Column name AD_Window_ID */
+    public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
+
+	/** Set Window.
+	  * Data entry or display window
+	  */
+	public void setAD_Window_ID (int AD_Window_ID);
+
+	/** Get Window.
+	  * Data entry or display window
+	  */
+	public int getAD_Window_ID();
+
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name Code */
     public static final String COLUMNNAME_Code = "Code";

@@ -88,6 +88,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MUserQuery;
+import org.compiere.model.MWindow;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -127,6 +128,7 @@ import org.zkoss.zul.Vlayout;
  */
 public class FindWindow extends Window implements EventListener<Event>, ValueChangeListener, DialogEvents
 {
+
 	private static final String FIND_ROW_EDITOR = "find.row.editor";
 
 	private static final String FIND_ROW_EDITOR_TO = "find.row.editor.to";
@@ -134,7 +136,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2476692172080549315L;
+	private static final long serialVersionUID = -7374857601424061640L;
 
 	// values and label for history combo
 	private static final String HISTORY_DAY_ALL = "All";
@@ -193,6 +195,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     public static final int     FIELDLENGTH = 20;
 
     private int m_AD_Tab_ID = 0;
+    private int m_AD_Window_ID = 0;
 	private MUserQuery[] userQueries;
 	private Rows contentSimpleRows;
 	private boolean m_createNew = false;
@@ -200,6 +203,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	private int m_minRecords;
 	private String m_title;
 	private ToolBarButton btnSave;
+	private ToolBarButton btnShare;
 	private Label msgLabel;
 
 	/** Index ColumnName = 0		*/
@@ -264,6 +268,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         m_findFields = findFields;
         m_sNew = "** ".concat(Msg.getMsg(Env.getCtx(), "New Query")).concat(" **");		
         m_AD_Tab_ID = adTabId;
+        if (m_AD_Tab_ID > 0) {
+            m_AD_Window_ID = MWindow.getWindow_ID(m_AD_Tab_ID);
+        }
         m_minRecords = minRecords;
         m_isCancel = true;
         //
@@ -590,6 +597,19 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         if (ThemeManager.isUseFontIconForImage())
         	LayoutUtils.addSclass("large-toolbarbutton", btnSave);
 
+        btnShare = new ToolBarButton();
+        btnShare.setAttribute("name","btnShareAdv");
+        btnShare.setTooltiptext(Msg.getMsg(Env.getCtx(), "ShareFilter"));
+        if (ThemeManager.isUseFontIconForImage())
+        	btnShare.setIconSclass("z-icon-Share");
+        else
+        	btnShare.setImage(ThemeManager.getThemeResource("images/Setup24.png"));
+        btnShare.addEventListener(Events.ON_CLICK, this);
+        btnShare.setId("btnShare");
+        btnShare.setStyle("vertical-align: middle;");
+        if (ThemeManager.isUseFontIconForImage())
+        	LayoutUtils.addSclass("large-toolbarbutton", btnShare);
+
         fQueryName = new Combobox();
         fQueryName.setTooltiptext(Msg.getMsg(Env.getCtx(),"QueryName"));
 		fQueryName.setId("savedQueryCombo");
@@ -609,7 +629,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		div.appendChild(label);
 		div.appendChild(fQueryName);
         div.appendChild(btnSave);
+        div.appendChild(btnShare);
         
+        //Show share button only for roles with preference level = Client
+        if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType())) 
+        	btnShare.setVisible(false);
+        	
         fQueryName.setStyle("margin-left: 3px; margin-right: 3px; position: relative; vertical-align: middle;");
         
         msgLabel = new Label("");
@@ -1293,12 +1318,15 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             }
             else if (event.getTarget() == fQueryName)
             {
+            	btnSave.setDisabled(false);
+	        	btnShare.setDisabled(false);
             	int index = fQueryName.getSelectedIndex();
             	if(index < 0) return;
             	if (winMain.getComponent().getSelectedIndex() != 1) 
             	{
             		winMain.getComponent().setSelectedIndex(1);
             		btnSave.setDisabled(m_AD_Tab_ID <= 0);
+            		btnShare.setDisabled(m_AD_Tab_ID <= 0);
             		historyCombo.setSelectedItem(null);
             		fQueryName.setReadonly(false); 
             	}
@@ -1311,8 +1339,18 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             			rowList.remove(rowIndex);
             		createFields();  
             	}
-    			else
+    			else {
+    				MUserQuery uq = userQueries[index-1];
+    				// If global query do not allow other users to save the query 
+    				if (uq.getAD_User_ID() != Env.getAD_User_ID(Env.getCtx())) {
+    			        if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType()) ||
+    			        		uq.getAD_Client_ID() != Env.getAD_Client_ID(Env.getCtx())) {
+    			        	btnSave.setDisabled(true);
+    			        	btnShare.setDisabled(true);
+    			        }
+    				}
     				parseUserQuery(userQueries[index-1]);
+    			}
     		}
     		else if (event.getTarget() instanceof Tab) {
     			if (winMain.getComponent().getSelectedIndex() == 1) {
@@ -1344,12 +1382,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     }
                 }
 
-                else if ("btnSaveAdv".equals(button.getAttribute("name").toString()))
+                else if ("btnSaveAdv".equals(button.getAttribute("name").toString())
+                		|| "btnShareAdv".equals(button.getAttribute("name").toString()))
                 {
+                	boolean shareAllUsers = "btnShareAdv".equals(button.getAttribute("name").toString());
                 	if (winMain.getComponent().getSelectedIndex() == 1) {
-                    	cmd_saveAdvanced(true);
+                    	cmd_saveAdvanced(true, shareAllUsers);
                 	} else {
-                    	cmd_saveSimple(true);
+                    	cmd_saveSimple(true, shareAllUsers);
                 	}
                 }
             }
@@ -1573,7 +1613,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
 	}	//	parseValue
 
-    private void cmd_saveAdvanced(boolean saveQuery)
+    private void cmd_saveAdvanced(boolean saveQuery, boolean shareAllUsers)
 	{
 		//
 		m_query = new MQuery(m_tableName);
@@ -1717,7 +1757,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             appendCode(code, ColumnName, Operator, value.toString(), value2 != null ? value2.toString() : "", andOr, lBrackets, rBrackets);
         }
         
-        saveQuery(saveQuery, code);
+        saveQuery(saveQuery, code, shareAllUsers);
 
 	}	//	cmd_saveAdvanced
 
@@ -1741,7 +1781,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			.append(rBrackets);
 	}
 
-	private void saveQuery(boolean saveQuery, StringBuilder code) {
+	private void saveQuery(boolean saveQuery, StringBuilder code, boolean shareAllUsers) {
         
         String selected = fQueryName.getValue();
 		if (selected != null) {
@@ -1767,9 +1807,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 						uq = new MUserQuery (Env.getCtx(), 0, null);
 						uq.setName (name);
 						uq.setAD_Tab_ID(m_AD_Tab_ID); //red1 UserQuery [ 1798539 ] taking in new field from Compiere
+						uq.setAD_Window_ID(m_AD_Window_ID); // IDEMPIERE-2837 Use in a better way saved searches
 						uq.set_ValueOfColumn("AD_User_ID", Env.getAD_User_ID(Env.getCtx())); // required set_Value for System=0 user
 					}
-					
+					if (shareAllUsers)
+						uq.set_ValueOfColumn("AD_User_ID", null); 
+
 				} else	if (code.length() <= 0){ // Delete the query
 					if (uq == null) 
 					{
@@ -1801,7 +1844,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		}
 	}
 
-	private void cmd_saveSimple(boolean saveQuery)
+	private void cmd_saveSimple(boolean saveQuery, boolean shareAllUsers)
 	{
         //  Create Query String
         m_query = new MQuery(m_tableName);
@@ -1922,7 +1965,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	addHistoryRestriction(historyCombo.getSelectedItem());
         }
 
-        saveQuery(saveQuery, code);
+        saveQuery(saveQuery, code, shareAllUsers);
 
 	}	//	cmd_saveSimple
 
@@ -2168,7 +2211,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     {
         m_isCancel = false; // teo_sarca [ 1708717 ]
         //  save pending
-        cmd_saveSimple(false);
+        cmd_saveSimple(false, false);
         
         //  Test for no records
         if (getNoOfRecords(m_query, true) != 0)
@@ -2238,7 +2281,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     {
         m_isCancel = false; // teo_sarca [ 1708717 ]
         //  save pending
-        cmd_saveAdvanced(false);
+        cmd_saveAdvanced(false, false);
         
         if(historyCombo.getSelectedItem()!=null)
         {

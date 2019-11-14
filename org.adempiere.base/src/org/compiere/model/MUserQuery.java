@@ -35,10 +35,11 @@ import org.compiere.util.Env;
  */
 public class MUserQuery extends X_AD_UserQuery
 {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6279689761765405320L;
+	private static final long serialVersionUID = -5528419580653430616L;
 
 	/**
 	 * 	Get all active queries of client for Tab
@@ -48,10 +49,100 @@ public class MUserQuery extends X_AD_UserQuery
 	 */
 	public static MUserQuery[] get (Properties ctx, int AD_Tab_ID)
 	{
+		ArrayList<MUserQuery> list = getUserOnlyQueries(ctx, AD_Tab_ID);
+		list.addAll(getAllUsersQueries(ctx, AD_Tab_ID));
+		list.addAll(getClientQueries(ctx, AD_Tab_ID));
+		list.addAll(getRoleQueries(ctx, AD_Tab_ID));
+		MUserQuery[] retValue = new MUserQuery[list.size()];
+		list.toArray(retValue);
+		return retValue;
+	}	//	get
+	
+	/**
+	 * 	Get all active queries of user for Tab
+	 *	@param ctx context
+	 *	@param AD_Tab_ID tab
+	 *	@return array of queries
+	 */
+	public static ArrayList<MUserQuery> getUserOnlyQueries(Properties ctx, int AD_Tab_ID)
+	{
 		int AD_User_ID = Env.getAD_User_ID(ctx);
 		String sql = "SELECT * FROM AD_UserQuery "
 			 + "WHERE AD_Client_ID=? AND AD_Tab_ID=? AND IsActive='Y' "
-			 + "AND AD_User_ID in (0, " + AD_User_ID + ") "
+			 + "AND AD_User_ID in (0, ?) "
+			 + "ORDER BY Name";
+		int AD_Client_ID = Env.getAD_Client_ID (ctx);
+		ArrayList<MUserQuery> list = new ArrayList<MUserQuery>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, null);
+			pstmt.setInt (1, AD_Client_ID);
+			pstmt.setInt (2, AD_Tab_ID);
+			pstmt.setInt (3, AD_User_ID);
+			rs = pstmt.executeQuery();
+			while (rs.next ())
+				list.add(new MUserQuery (ctx, rs, null));
+		}
+		catch (Exception e)
+		{
+			s_log.log (Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		return list;
+	}	//	getUserOnlyQueries
+	
+	/**
+	 * 	Get all active queries of the system for Tab
+	 *	@param ctx context
+	 *	@param AD_Tab_ID tab
+	 *	@return array of queries
+	 */
+	public static ArrayList<MUserQuery> getAllUsersQueries(Properties ctx, int AD_Tab_ID)
+	{
+		String sql = "SELECT * FROM AD_UserQuery "
+			 + "WHERE AD_Client_ID=0 AND AD_Tab_ID=? AND IsActive='Y' "
+			 + "AND AD_User_ID IS NULL AND AD_Role_ID IS NULL "
+			 + "ORDER BY Name";
+		ArrayList<MUserQuery> list = new ArrayList<MUserQuery>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, null);
+			pstmt.setInt (1, AD_Tab_ID);
+			rs = pstmt.executeQuery();
+			while (rs.next ())
+				list.add(new MUserQuery (ctx, rs, null));
+		}
+		catch (Exception e)
+		{
+			s_log.log (Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		return list;
+	}	//	getAllUsersQueries
+	
+	/**
+	 * 	Get all active queries of the client for Tab
+	 *	@param ctx context
+	 *	@param AD_Tab_ID tab
+	 *	@return array of queries
+	 */
+	public static ArrayList<MUserQuery> getClientQueries(Properties ctx, int AD_Tab_ID)
+	{
+		String sql = "SELECT * FROM AD_UserQuery "
+			 + "WHERE AD_Client_ID=? AND AD_Tab_ID=? AND IsActive='Y' "
+			 + "AND AD_User_ID IS NULL AND AD_Role_ID IS NULL "
 			 + "ORDER BY Name";
 		int AD_Client_ID = Env.getAD_Client_ID (ctx);
 		ArrayList<MUserQuery> list = new ArrayList<MUserQuery>();
@@ -75,10 +166,49 @@ public class MUserQuery extends X_AD_UserQuery
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		MUserQuery[] retValue = new MUserQuery[list.size()];
-		list.toArray(retValue);
-		return retValue;
-	}	//	get
+		return list;
+	}	//	getClientQueries
+	
+	/**
+	 * 	Get all active queries of the role for Tab
+	 *	@param ctx context
+	 *	@param AD_Tab_ID tab
+	 *	@return array of queries
+	 */
+	public static ArrayList<MUserQuery> getRoleQueries(Properties ctx, int AD_Tab_ID)
+	{
+		String sql = "SELECT * FROM AD_UserQuery "
+			 + "WHERE AD_Client_ID IN (0,?) AND AD_Tab_ID=? AND IsActive='Y' "
+			 + "AND AD_User_ID IS NULL "
+			 + "AND (AD_Role_ID = ? OR AD_Role_ID IN (SELECT Included_Role_ID FROM   AD_Role_Included WHERE  AD_Role_id = ? AND IsActive = 'Y')) "
+			 + "ORDER BY Name";
+		int AD_Client_ID = Env.getAD_Client_ID (ctx);
+		int AD_Role_ID = Env.getAD_Role_ID (ctx);
+		ArrayList<MUserQuery> list = new ArrayList<MUserQuery>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, null);
+			pstmt.setInt (1, AD_Client_ID);
+			pstmt.setInt (2, AD_Tab_ID);
+			pstmt.setInt (3, AD_Role_ID);
+			pstmt.setInt (4, AD_Role_ID);
+			rs = pstmt.executeQuery();
+			while (rs.next ())
+				list.add(new MUserQuery (ctx, rs, null));
+		}
+		catch (Exception e)
+		{
+			s_log.log (Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		return list;
+	}	//	getRoleQueries
 	
 	/**
 	 * 	Get Specific Tab Query

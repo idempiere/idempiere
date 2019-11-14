@@ -30,7 +30,7 @@ public class X_AD_UserQuery extends PO implements I_AD_UserQuery, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20191113L;
 
     /** Standard Constructor */
     public X_AD_UserQuery (Properties ctx, int AD_UserQuery_ID, String trxName)
@@ -72,6 +72,34 @@ public class X_AD_UserQuery extends PO implements I_AD_UserQuery, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
+			.getPO(getAD_Role_ID(), get_TrxName());	}
+
+	/** Set Role.
+		@param AD_Role_ID 
+		Responsibility Role
+	  */
+	public void setAD_Role_ID (int AD_Role_ID)
+	{
+		if (AD_Role_ID < 0) 
+			set_Value (COLUMNNAME_AD_Role_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
+	}
+
+	/** Get Role.
+		@return Responsibility Role
+	  */
+	public int getAD_Role_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
     {
@@ -192,6 +220,34 @@ public class X_AD_UserQuery extends PO implements I_AD_UserQuery, I_Persistent
 	public String getAD_UserQuery_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_AD_UserQuery_UU);
+	}
+
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
+			.getPO(getAD_Window_ID(), get_TrxName());	}
+
+	/** Set Window.
+		@param AD_Window_ID 
+		Data entry or display window
+	  */
+	public void setAD_Window_ID (int AD_Window_ID)
+	{
+		if (AD_Window_ID < 1) 
+			set_Value (COLUMNNAME_AD_Window_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
+	}
+
+	/** Get Window.
+		@return Data entry or display window
+	  */
+	public int getAD_Window_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Validation code.

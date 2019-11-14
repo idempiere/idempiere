@@ -39,10 +39,11 @@ import org.compiere.wf.MWFNode;
  */
 public class MWindow extends X_AD_Window
 {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6027810254265627308L;
+	private static final long serialVersionUID = -9200113429427897527L;
 
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MWindow.class);
@@ -274,5 +275,30 @@ public class MWindow extends X_AD_Window
 		return retValue;
 	}
 	//end vpj-cd e-evolution
+	
+	/**
+	 * 	get Window ID
+	 *	@param int AD_Tab_ID
+	 *	@return int retValue
+	 */
+	public static int getWindow_ID(int AD_Tab_ID) {
+		int retValue = 0;
+		String sql = "SELECT AD_Window_ID FROM AD_Tab WHERE AD_Tab_ID = ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = DB.prepareStatement(sql, null);
+			pstmt.setInt(1, AD_Tab_ID);
+			rs = pstmt.executeQuery();
+			if (rs.next())
+				retValue = rs.getInt(1);
+		} catch (SQLException e) {
+			s_log.log(Level.SEVERE, sql, e);
+			retValue = -1;
+		} finally {
+			DB.close(rs, pstmt);
+		}
+		return retValue;
+	}
 	
 }	//	M_Window
