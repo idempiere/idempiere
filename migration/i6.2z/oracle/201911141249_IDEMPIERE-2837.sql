@@ -202,14 +202,6 @@ UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=13, Updated=SysDate WHERE AD_Tree_ID
 ;
 
 -- Nov 13, 2019, 3:32:10 PM CET
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=14, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=1000000
-;
-
--- Nov 13, 2019, 3:32:10 PM CET
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=15, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=1000004
-;
-
--- Nov 13, 2019, 3:32:10 PM CET
 UPDATE AD_TreeNodeMM SET Parent_ID=367, SeqNo=0, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200172
 ;
 
@@ -307,6 +299,22 @@ UPDATE AD_TreeNodeMM SET Parent_ID=367, SeqNo=23, Updated=SysDate WHERE AD_Tree_
 
 -- Nov 13, 2019, 3:32:10 PM CET
 UPDATE AD_TreeNodeMM SET Parent_ID=367, SeqNo=24, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200171
+;
+
+-- Nov 14, 2019, 6:00:32 PM CET
+UPDATE AD_Column SET FieldLength=0, ReadOnlyLogic=NULL,Updated=TO_DATE('2019-11-14 18:00:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=14361
+;
+
+-- Nov 14, 2019, 6:00:43 PM CET
+UPDATE AD_Tab SET ReadOnlyLogic='@#ShowAdvanced@=N',Updated=TO_DATE('2019-11-14 18:00:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200275
+;
+
+-- Nov 14, 2019, 6:04:27 PM CET
+UPDATE AD_Field SET AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, ReadOnlyLogic='@#ShowAdvanced@=N', IsToolbarButton=NULL,Updated=TO_DATE('2019-11-14 18:04:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=12249
+;
+
+-- Nov 14, 2019, 6:04:31 PM CET
+UPDATE AD_Field SET AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, ReadOnlyLogic='@#ShowAdvanced@=N', IsToolbarButton=NULL,Updated=TO_DATE('2019-11-14 18:04:31','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=12246
 ;
 
 SELECT register_migration_script('201911141249_IDEMPIERE-2837.sql') FROM dual

@@ -88,7 +88,6 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MUserQuery;
-import org.compiere.model.MWindow;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -195,7 +194,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     public static final int     FIELDLENGTH = 20;
 
     private int m_AD_Tab_ID = 0;
-    private int m_AD_Window_ID = 0;
 	private MUserQuery[] userQueries;
 	private Rows contentSimpleRows;
 	private boolean m_createNew = false;
@@ -268,9 +266,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         m_findFields = findFields;
         m_sNew = "** ".concat(Msg.getMsg(Env.getCtx(), "New Query")).concat(" **");		
         m_AD_Tab_ID = adTabId;
-        if (m_AD_Tab_ID > 0) {
-            m_AD_Window_ID = MWindow.getWindow_ID(m_AD_Tab_ID);
-        }
         m_minRecords = minRecords;
         m_isCancel = true;
         //
@@ -1807,7 +1802,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 						uq = new MUserQuery (Env.getCtx(), 0, null);
 						uq.setName (name);
 						uq.setAD_Tab_ID(m_AD_Tab_ID); //red1 UserQuery [ 1798539 ] taking in new field from Compiere
-						uq.setAD_Window_ID(m_AD_Window_ID); // IDEMPIERE-2837 Use in a better way saved searches
 						uq.set_ValueOfColumn("AD_User_ID", Env.getAD_User_ID(Env.getCtx())); // required set_Value for System=0 user
 					}
 					if (shareAllUsers)

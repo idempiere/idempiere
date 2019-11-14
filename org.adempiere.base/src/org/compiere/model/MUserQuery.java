@@ -35,11 +35,10 @@ import org.compiere.util.Env;
  */
 public class MUserQuery extends X_AD_UserQuery
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5528419580653430616L;
+	private static final long serialVersionUID = -3606227368868305024L;
 
 	/**
 	 * 	Get all active queries of client for Tab
@@ -276,5 +275,19 @@ public class MUserQuery extends X_AD_UserQuery
 	{
 		super (ctx, rs, trxName);
 	}	//	MUserQuery
-	
+
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if (getAD_Tab_ID() > 0) {
+			if (newRecord || is_ValueChanged(COLUMNNAME_AD_Tab_ID)) {
+				MTab tab = new MTab(getCtx(), getAD_Tab_ID(), get_TrxName());
+				setAD_Window_ID(tab.getAD_Window_ID());
+				setAD_Table_ID(tab.getAD_Table_ID());
+			}
+		} else {
+			setAD_Window_ID(0);
+		}
+		return true;
+	}
+
 }	//	MUserQuery
