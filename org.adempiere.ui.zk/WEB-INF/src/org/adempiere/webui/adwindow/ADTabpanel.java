@@ -68,7 +68,6 @@ import org.compiere.model.GridTable;
 import org.compiere.model.GridWindow;
 import org.compiere.model.I_AD_Preference;
 import org.compiere.model.MColumn;
-import org.compiere.model.MLookup;
 import org.compiere.model.MPreference;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -1369,27 +1368,12 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
             		|| (Core.findCallout(gridTab.getTableName(), mField.getColumnName())).size()>0
             		|| gridTab.hasDependants(mField.getColumnName())))
         {
+	        // IDEMPIERE-4106 Refresh the list (lookup) on dependant fields was moved inside processFieldChange->processDependencies
             String msg = gridTab.processFieldChange(mField);     //  Dependencies & Callout
             if (msg.length() > 0)
             {
                 FDialog.error(windowNo, this, msg);
             }
-
-            // Refresh the list on dependant fields
-    		for (GridField dependentField : gridTab.getDependantFields(mField.getColumnName()))
-    		{
-    			//  if the field has a lookup
-    			if (dependentField != null && dependentField.getLookup() instanceof MLookup)
-    			{
-    				MLookup mLookup = (MLookup)dependentField.getLookup();
-    				//  if the lookup is dynamic (i.e. contains this columnName as variable)
-    				if (mLookup.getValidation().indexOf("@"+mField.getColumnName()+"@") != -1)
-    				{
-    					mLookup.refresh();
-    				}
-    			}
-    		}   //  for all dependent fields
-
         }
         //if (col >= 0)
         if (!uiCreated)

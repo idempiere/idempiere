@@ -2771,8 +2771,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//  Get dependent MFields (may be because of display or dynamic lookup)
 		for (GridField dependentField : getDependantFields(columnName))
 		{
-			if (dependentField == null || dependentField.isLookupEditorSettingValue()) continue;
-			
+			if (dependentField == null || dependentField.isLookupEditorSettingValue())
+				continue;
+
 			//  if the field has a lookup
 			if (dependentField.getLookup() instanceof MLookup)
 			{
@@ -2783,12 +2784,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				{
 					if (log.isLoggable(Level.FINE)) log.fine(columnName + " changed - "
 						+ dependentField.getColumnName() + " set to null");
+					mLookup.refresh();
 					Object currentValue = dependentField.getValue();
 					
 					//  invalidate current selection
 					setValue(dependentField, null);
 					
-					if (currentValue != null && mLookup.containsKey(currentValue))
+					if (currentValue != null && mLookup.containsKeyNoDirect(currentValue))
 						setValue(dependentField, currentValue);
 				}
 			}
