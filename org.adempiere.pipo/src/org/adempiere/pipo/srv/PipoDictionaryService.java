@@ -71,6 +71,9 @@ public class PipoDictionaryService implements IDictionaryService {
 			if (versionSeparatorPos > 0) {
 				int dotPos = fileName.lastIndexOf(".");
 				if (dotPos > 0 && dotPos > versionSeparatorPos) {
+					if (fileName.indexOf("_") != fileName.lastIndexOf("_"))
+						dotPos=fileName.lastIndexOf("_");
+					
 					String version = fileName.substring(versionSeparatorPos+"2Pack_".length(), dotPos);
 					if (version.split("[.]").length == 3) {
 						packageVersion = version;

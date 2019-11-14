@@ -170,6 +170,8 @@ public class Version2PackActivator extends AbstractActivator{
 		String p = u.getPath();
 		int upos=p.lastIndexOf("_");
 		int dpos=p.lastIndexOf(".");
+		if (p.indexOf("_") != p.lastIndexOf("_"))
+			dpos=p.lastIndexOf("_");
 		String v = p.substring(upos+1, dpos);
 		return v;
 	}

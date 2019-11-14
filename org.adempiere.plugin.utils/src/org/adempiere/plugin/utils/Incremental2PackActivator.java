@@ -201,6 +201,8 @@ public class Incremental2PackActivator extends AbstractActivator {
 		String p = u.getPath();
 		int upos=p.lastIndexOf("2Pack_");
 		int dpos=p.lastIndexOf(".");
+		if (p.indexOf("_") != p.lastIndexOf("_"))
+			dpos=p.lastIndexOf("_");
 		String v = p.substring(upos+"2Pack_".length(), dpos);
 		return v;
 	}
