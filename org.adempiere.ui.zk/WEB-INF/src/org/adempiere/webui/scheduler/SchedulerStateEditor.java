@@ -111,8 +111,12 @@ public class SchedulerStateEditor extends WEditor {
 				if (serverMgr != null) {
 					String error = serverMgr.addScheduler(model);
 					if (error == null) {
-						FDialog.info(0, null, "SchedulerAddAndStartSuccess");
-					} else {
+						if (serverMgr.getServerInstance(model.getServerID()) != null) {
+							FDialog.info(0, null, "SchedulerAddAndStartSuccess");
+						} else {
+							FDialog.error(0, "SchedulerAddAndStartFail", "Not accepted by any server node, please check the scheduler's schedule setting");
+						}						
+					} else {						
 						FDialog.error(0, "SchedulerAddAndStartFail", error);
 					}
 					getComponent().setLabel(getDisplay());
