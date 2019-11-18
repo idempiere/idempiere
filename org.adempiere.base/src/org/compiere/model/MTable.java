@@ -36,6 +36,7 @@ import org.compiere.db.Database;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -61,7 +62,7 @@ public class MTable extends X_AD_Table
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4974471096496488963L;
+	private static final long serialVersionUID = 4736882280922026772L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -107,6 +108,17 @@ public class MTable extends X_AD_Table
 	 */
 	public static synchronized MTable get (Properties ctx, String tableName)
 	{
+		return get(ctx, tableName, null);
+	}	//	get
+	
+	/**
+	 * 	Get Table from Cache
+	 *	@param ctx context
+	 *	@param tableName case insensitive table name
+	 *	@return Table
+	 */
+	public static synchronized MTable get (Properties ctx, String tableName, String trxName)
+	{
 		if (tableName == null)
 			return null;
 		Iterator<MTable> it = s_cache.values().iterator();
@@ -127,11 +139,11 @@ public class MTable extends X_AD_Table
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, null);
+			pstmt = DB.prepareStatement (sql, trxName);
 			pstmt.setString(1, tableName.toUpperCase());
 			rs = pstmt.executeQuery ();
 			if (rs.next())
-				retValue = new MTable (ctx, rs, null);
+				retValue = new MTable (ctx, rs, trxName);
 		}
 		catch (Exception e)
 		{
@@ -631,29 +643,8 @@ public class MTable extends X_AD_Table
 	 *	@return int retValue
 	 */
 	public static int getTable_ID(String tableName, String trxName) {
-		int retValue = 0;
-		String SQL = "SELECT AD_Table_ID FROM AD_Table WHERE UPPER(tablename) = ?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(SQL, trxName);
-			pstmt.setString(1, tableName.toUpperCase());
-			rs = pstmt.executeQuery();
-			if (rs.next())
-				retValue = rs.getInt(1);
-		}
-		catch (Exception e)
-		{
-			s_log.log(Level.SEVERE, SQL, e);
-			retValue = -1;
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-		return retValue;
+		MTable table = get(Env.getCtx(), tableName, trxName);
+		return table != null ? table.getAD_Table_ID() : 0;
 	}
 
 	/**
