@@ -24,14 +24,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Scheduler
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190521L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_AD_Scheduler (Properties ctx, int AD_Scheduler_ID, String trxName)
@@ -414,6 +414,22 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Scheduler State.
+		@param SchedulerState 
+		State of this scheduler record (not scheduled, started or stopped)
+	  */
+	public void setSchedulerState (Object SchedulerState)
+	{
+		throw new IllegalArgumentException ("SchedulerState is virtual column");	}
+
+	/** Get Scheduler State.
+		@return State of this scheduler record (not scheduled, started or stopped)
+	  */
+	public Object getSchedulerState () 
+	{
+				return get_Value(COLUMNNAME_SchedulerState);
 	}
 
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException

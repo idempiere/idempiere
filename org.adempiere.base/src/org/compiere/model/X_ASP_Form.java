@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Form
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_ASP_Form (Properties ctx, int ASP_Form_ID, String trxName)

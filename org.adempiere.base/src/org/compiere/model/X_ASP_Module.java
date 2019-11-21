@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for ASP_Module
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_ASP_Module (Properties ctx, int ASP_Module_ID, String trxName)

@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ProductOperation
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_M_ProductOperation (Properties ctx, int M_ProductOperation_ID, String trxName)

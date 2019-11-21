@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintFormat
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190704L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_AD_PrintFormat (Properties ctx, int AD_PrintFormat_ID, String trxName)
@@ -421,15 +421,18 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 		return ii.intValue();
 	}
 
-	/** Set Break page per record.
-		@param IsBreakPagePerRecord Break page per record	  */
+	/** Set Page break per record.
+		@param IsBreakPagePerRecord 
+		Page Break after each record
+	  */
 	public void setIsBreakPagePerRecord (boolean IsBreakPagePerRecord)
 	{
 		set_Value (COLUMNNAME_IsBreakPagePerRecord, Boolean.valueOf(IsBreakPagePerRecord));
 	}
 
-	/** Get Break page per record.
-		@return Break page per record	  */
+	/** Get Page break per record.
+		@return Page Break after each record
+	  */
 	public boolean isBreakPagePerRecord () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsBreakPagePerRecord);

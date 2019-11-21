@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_AllClients_V
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_AD_AllClients_V (Properties ctx, int AD_AllClients_V_ID, String trxName)
@@ -68,8 +68,8 @@ public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persis
       return sb.toString();
     }
 
-	/** Set All Clients.
-		@param AD_AllClients_V_ID All Clients	  */
+	/** Set Client (All).
+		@param AD_AllClients_V_ID Client (All)	  */
 	public void setAD_AllClients_V_ID (int AD_AllClients_V_ID)
 	{
 		if (AD_AllClients_V_ID < 1) 
@@ -78,8 +78,8 @@ public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persis
 			set_ValueNoCheck (COLUMNNAME_AD_AllClients_V_ID, Integer.valueOf(AD_AllClients_V_ID));
 	}
 
-	/** Get All Clients.
-		@return All Clients	  */
+	/** Get Client (All).
+		@return Client (All)	  */
 	public int getAD_AllClients_V_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AllClients_V_ID);

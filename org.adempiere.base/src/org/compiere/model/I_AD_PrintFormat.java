@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PrintFormat
  *  @author iDempiere (generated) 
- *  @version Release 6.2
+ *  @version Release 7.1
  */
 public interface I_AD_PrintFormat 
 {
@@ -291,10 +291,14 @@ public interface I_AD_PrintFormat
     /** Column name IsBreakPagePerRecord */
     public static final String COLUMNNAME_IsBreakPagePerRecord = "IsBreakPagePerRecord";
 
-	/** Set Break page per record	  */
+	/** Set Page break per record.
+	  * Page Break after each record
+	  */
 	public void setIsBreakPagePerRecord (boolean IsBreakPagePerRecord);
 
-	/** Get Break page per record	  */
+	/** Get Page break per record.
+	  * Page Break after each record
+	  */
 	public boolean isBreakPagePerRecord();
 
     /** Column name IsDefault */

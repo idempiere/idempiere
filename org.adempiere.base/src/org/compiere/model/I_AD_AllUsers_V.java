@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_AllUsers_V
  *  @author iDempiere (generated) 
- *  @version Release 6.2
+ *  @version Release 7.1
  */
 public interface I_AD_AllUsers_V 
 {
@@ -44,10 +44,10 @@ public interface I_AD_AllUsers_V
     /** Column name AD_AllClients_V_ID */
     public static final String COLUMNNAME_AD_AllClients_V_ID = "AD_AllClients_V_ID";
 
-	/** Set All Clients	  */
+	/** Set Client (All)	  */
 	public void setAD_AllClients_V_ID (int AD_AllClients_V_ID);
 
-	/** Get All Clients	  */
+	/** Get Client (All)	  */
 	public int getAD_AllClients_V_ID();
 
 	public org.compiere.model.I_AD_AllClients_V getAD_AllClients_V() throws RuntimeException;
@@ -55,10 +55,10 @@ public interface I_AD_AllUsers_V
     /** Column name AD_AllUsers_V_ID */
     public static final String COLUMNNAME_AD_AllUsers_V_ID = "AD_AllUsers_V_ID";
 
-	/** Set All Users	  */
+	/** Set User (All)	  */
 	public void setAD_AllUsers_V_ID (int AD_AllUsers_V_ID);
 
-	/** Get All Users	  */
+	/** Get User (All)	  */
 	public int getAD_AllUsers_V_ID();
 
     /** Column name AD_AllUsers_V_UU */
@@ -106,6 +106,15 @@ public interface I_AD_AllUsers_V
 	  * User who created this records
 	  */
 	public int getCreatedBy();
+
+    /** Column name DateAccountLocked */
+    public static final String COLUMNNAME_DateAccountLocked = "DateAccountLocked";
+
+	/** Set Date Account Locked	  */
+	public void setDateAccountLocked (Timestamp DateAccountLocked);
+
+	/** Get Date Account Locked	  */
+	public Timestamp getDateAccountLocked();
 
     /** Column name DateLastLogin */
     public static final String COLUMNNAME_DateLastLogin = "DateLastLogin";
@@ -191,6 +200,15 @@ public interface I_AD_AllUsers_V
 	/** Get Locked	  */
 	public boolean isLocked();
 
+    /** Column name IsNoExpire */
+    public static final String COLUMNNAME_IsNoExpire = "IsNoExpire";
+
+	/** Set No Expire	  */
+	public void setIsNoExpire (boolean IsNoExpire);
+
+	/** Get No Expire	  */
+	public boolean isNoExpire();
+
     /** Column name IsNoPasswordReset */
     public static final String COLUMNNAME_IsNoPasswordReset = "IsNoPasswordReset";
 
@@ -199,6 +217,15 @@ public interface I_AD_AllUsers_V
 
 	/** Get No Password Reset	  */
 	public boolean isNoPasswordReset();
+
+    /** Column name IsSupportUser */
+    public static final String COLUMNNAME_IsSupportUser = "IsSupportUser";
+
+	/** Set Support User	  */
+	public void setIsSupportUser (boolean IsSupportUser);
+
+	/** Get Support User	  */
+	public boolean isSupportUser();
 
     /** Column name LDAPUser */
     public static final String COLUMNNAME_LDAPUser = "LDAPUser";

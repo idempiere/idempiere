@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for R_GroupUpdates
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_R_GroupUpdates (Properties ctx, int R_GroupUpdates_ID, String trxName)

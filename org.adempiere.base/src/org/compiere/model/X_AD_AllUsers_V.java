@@ -23,14 +23,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_AllUsers_V
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_AD_AllUsers_V (Properties ctx, int AD_AllUsers_V_ID, String trxName)
@@ -74,8 +74,8 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 		return (org.compiere.model.I_AD_AllClients_V)MTable.get(getCtx(), org.compiere.model.I_AD_AllClients_V.Table_Name)
 			.getPO(getAD_AllClients_V_ID(), get_TrxName());	}
 
-	/** Set All Clients.
-		@param AD_AllClients_V_ID All Clients	  */
+	/** Set Client (All).
+		@param AD_AllClients_V_ID Client (All)	  */
 	public void setAD_AllClients_V_ID (int AD_AllClients_V_ID)
 	{
 		if (AD_AllClients_V_ID < 1) 
@@ -84,8 +84,8 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 			set_ValueNoCheck (COLUMNNAME_AD_AllClients_V_ID, Integer.valueOf(AD_AllClients_V_ID));
 	}
 
-	/** Get All Clients.
-		@return All Clients	  */
+	/** Get Client (All).
+		@return Client (All)	  */
 	public int getAD_AllClients_V_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AllClients_V_ID);
@@ -94,8 +94,8 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set All Users.
-		@param AD_AllUsers_V_ID All Users	  */
+	/** Set User (All).
+		@param AD_AllUsers_V_ID User (All)	  */
 	public void setAD_AllUsers_V_ID (int AD_AllUsers_V_ID)
 	{
 		if (AD_AllUsers_V_ID < 1) 
@@ -104,8 +104,8 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 			set_ValueNoCheck (COLUMNNAME_AD_AllUsers_V_ID, Integer.valueOf(AD_AllUsers_V_ID));
 	}
 
-	/** Get All Users.
-		@return All Users	  */
+	/** Get User (All).
+		@return User (All)	  */
 	public int getAD_AllUsers_V_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AllUsers_V_ID);
@@ -126,6 +126,20 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	public String getAD_AllUsers_V_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_AD_AllUsers_V_UU);
+	}
+
+	/** Set Date Account Locked.
+		@param DateAccountLocked Date Account Locked	  */
+	public void setDateAccountLocked (Timestamp DateAccountLocked)
+	{
+		set_Value (COLUMNNAME_DateAccountLocked, DateAccountLocked);
+	}
+
+	/** Get Date Account Locked.
+		@return Date Account Locked	  */
+	public Timestamp getDateAccountLocked () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateAccountLocked);
 	}
 
 	/** Set Date Last Login.
@@ -249,6 +263,27 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 		return false;
 	}
 
+	/** Set No Expire.
+		@param IsNoExpire No Expire	  */
+	public void setIsNoExpire (boolean IsNoExpire)
+	{
+		set_Value (COLUMNNAME_IsNoExpire, Boolean.valueOf(IsNoExpire));
+	}
+
+	/** Get No Expire.
+		@return No Expire	  */
+	public boolean isNoExpire () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsNoExpire);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set No Password Reset.
 		@param IsNoPasswordReset No Password Reset	  */
 	public void setIsNoPasswordReset (boolean IsNoPasswordReset)
@@ -261,6 +296,27 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	public boolean isNoPasswordReset () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsNoPasswordReset);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Support User.
+		@param IsSupportUser Support User	  */
+	public void setIsSupportUser (boolean IsSupportUser)
+	{
+		set_Value (COLUMNNAME_IsSupportUser, Boolean.valueOf(IsSupportUser));
+	}
+
+	/** Get Support User.
+		@return Support User	  */
+	public boolean isSupportUser () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsSupportUser);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

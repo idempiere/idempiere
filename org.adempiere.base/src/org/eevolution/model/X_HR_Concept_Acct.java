@@ -23,14 +23,14 @@ import org.compiere.model.*;
 
 /** Generated Model for HR_Concept_Acct
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_HR_Concept_Acct (Properties ctx, int HR_Concept_Acct_ID, String trxName)

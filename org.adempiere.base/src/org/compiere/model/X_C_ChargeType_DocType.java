@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for C_ChargeType_DocType
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_C_ChargeType_DocType (Properties ctx, int C_ChargeType_DocType_ID, String trxName)

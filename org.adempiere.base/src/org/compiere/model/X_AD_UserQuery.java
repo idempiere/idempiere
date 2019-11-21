@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserQuery
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_AD_UserQuery extends PO implements I_AD_UserQuery, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191113L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_AD_UserQuery (Properties ctx, int AD_UserQuery_ID, String trxName)
@@ -41,6 +41,7 @@ public class X_AD_UserQuery extends PO implements I_AD_UserQuery, I_Persistent
 			setAD_Tab_ID (0);
 			setAD_Table_ID (0);
 			setAD_UserQuery_ID (0);
+			setAD_Window_ID (0);
 			setName (null);
         } */
     }

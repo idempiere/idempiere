@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_SearchDefinition
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190415L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_AD_SearchDefinition (Properties ctx, int AD_SearchDefinition_ID, String trxName)

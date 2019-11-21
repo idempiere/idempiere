@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Scheduler
  *  @author iDempiere (generated) 
- *  @version Release 6.2
+ *  @version Release 7.1
  */
 public interface I_AD_Scheduler 
 {
@@ -279,6 +279,19 @@ public interface I_AD_Scheduler
 	public int getR_MailText_ID();
 
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException;
+
+    /** Column name SchedulerState */
+    public static final String COLUMNNAME_SchedulerState = "SchedulerState";
+
+	/** Set Scheduler State.
+	  * State of this scheduler record (not scheduled, started or stopped)
+	  */
+	public void setSchedulerState (Object SchedulerState);
+
+	/** Get Scheduler State.
+	  * State of this scheduler record (not scheduled, started or stopped)
+	  */
+	public Object getSchedulerState();
 
     /** Column name Supervisor_ID */
     public static final String COLUMNNAME_Supervisor_ID = "Supervisor_ID";

@@ -24,14 +24,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_TransactionAllocation
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllocation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_M_TransactionAllocation (Properties ctx, int M_TransactionAllocation_ID, String trxName)

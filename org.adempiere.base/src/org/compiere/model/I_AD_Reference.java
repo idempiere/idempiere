@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Reference
  *  @author iDempiere (generated) 
- *  @version Release 6.2
+ *  @version Release 7.1
  */
 public interface I_AD_Reference 
 {
@@ -48,6 +48,21 @@ public interface I_AD_Reference
 	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
+
+    /** Column name AD_Element_ID */
+    public static final String COLUMNNAME_AD_Element_ID = "AD_Element_ID";
+
+	/** Set System Element.
+	  * System Element enables the central maintenance of column description and help.
+	  */
+	public void setAD_Element_ID (int AD_Element_ID);
+
+	/** Get System Element.
+	  * System Element enables the central maintenance of column description and help.
+	  */
+	public int getAD_Element_ID();
+
+	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";

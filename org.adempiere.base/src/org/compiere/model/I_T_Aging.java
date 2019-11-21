@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_Aging
  *  @author iDempiere (generated) 
- *  @version Release 6.2
+ *  @version Release 7.1
  */
 public interface I_T_Aging 
 {
@@ -182,6 +182,17 @@ public interface I_T_Aging
 
 	public org.compiere.model.I_C_InvoicePaySchedule getC_InvoicePaySchedule() throws RuntimeException;
 
+    /** Column name ConvertAmountsInCurrency_ID */
+    public static final String COLUMNNAME_ConvertAmountsInCurrency_ID = "ConvertAmountsInCurrency_ID";
+
+	/** Set Convert Amounts in Currency	  */
+	public void setConvertAmountsInCurrency_ID (int ConvertAmountsInCurrency_ID);
+
+	/** Get Convert Amounts in Currency	  */
+	public int getConvertAmountsInCurrency_ID();
+
+	public org.compiere.model.I_C_Currency getConvertAmountsInCurrency() throws RuntimeException;
+
     /** Column name C_Project_ID */
     public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
 
@@ -196,17 +207,6 @@ public interface I_T_Aging
 	public int getC_Project_ID();
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
-
-    /** Column name ConvertAmountsInCurrency_ID */
-    public static final String COLUMNNAME_ConvertAmountsInCurrency_ID = "ConvertAmountsInCurrency_ID";
-
-	/** Set Convert Amounts in Currency	  */
-	public void setConvertAmountsInCurrency_ID (int ConvertAmountsInCurrency_ID);
-
-	/** Get Convert Amounts in Currency	  */
-	public int getConvertAmountsInCurrency_ID();
-
-	public org.compiere.model.I_C_Currency getConvertAmountsInCurrency() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

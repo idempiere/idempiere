@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_AllClients_V
  *  @author iDempiere (generated) 
- *  @version Release 6.2
+ *  @version Release 7.1
  */
 public interface I_AD_AllClients_V 
 {
@@ -44,10 +44,10 @@ public interface I_AD_AllClients_V
     /** Column name AD_AllClients_V_ID */
     public static final String COLUMNNAME_AD_AllClients_V_ID = "AD_AllClients_V_ID";
 
-	/** Set All Clients	  */
+	/** Set Client (All)	  */
 	public void setAD_AllClients_V_ID (int AD_AllClients_V_ID);
 
-	/** Get All Clients	  */
+	/** Get Client (All)	  */
 	public int getAD_AllClients_V_ID();
 
     /** Column name AD_AllClients_V_UU */

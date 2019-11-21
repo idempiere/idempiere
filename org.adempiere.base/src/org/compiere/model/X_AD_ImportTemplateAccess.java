@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_ImportTemplateAccess
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_AD_ImportTemplateAccess extends PO implements I_AD_ImportTemplateAccess, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_AD_ImportTemplateAccess (Properties ctx, int AD_ImportTemplateAccess_ID, String trxName)

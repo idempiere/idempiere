@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Reference
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_AD_Reference (Properties ctx, int AD_Reference_ID, String trxName)
@@ -73,6 +73,34 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_Name)
+			.getPO(getAD_Element_ID(), get_TrxName());	}
+
+	/** Set System Element.
+		@param AD_Element_ID 
+		System Element enables the central maintenance of column description and help.
+	  */
+	public void setAD_Element_ID (int AD_Element_ID)
+	{
+		if (AD_Element_ID < 1) 
+			set_Value (COLUMNNAME_AD_Element_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Element_ID, Integer.valueOf(AD_Element_ID));
+	}
+
+	/** Get System Element.
+		@return System Element enables the central maintenance of column description and help.
+	  */
+	public int getAD_Element_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Element_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	/** Set Reference.
 		@param AD_Reference_ID 

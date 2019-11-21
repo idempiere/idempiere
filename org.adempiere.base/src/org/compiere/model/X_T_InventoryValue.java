@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_InventoryValue
  *  @author iDempiere (generated) 
- *  @version Release 6.2 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20190106L;
+	private static final long serialVersionUID = 20191121L;
 
     /** Standard Constructor */
     public X_T_InventoryValue (Properties ctx, int T_InventoryValue_ID, String trxName)
