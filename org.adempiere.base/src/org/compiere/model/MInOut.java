@@ -368,7 +368,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		setM_Warehouse_ID (order.getM_Warehouse_ID());
 		setIsSOTrx (order.isSOTrx());
 		if (C_DocTypeShipment_ID == 0) {
-			MDocType dto = MDocType.get(getCtx(), order.getC_DocTypeTarget_ID());
+			MDocType dto = MDocType.get(getCtx(), order.getC_DocType_ID());
 			C_DocTypeShipment_ID = dto.getC_DocTypeShipment_ID();
 			if (C_DocTypeShipment_ID <= 0) 
 				throw new AdempiereException("@NotFound@ @C_DocTypeShipment_ID@ - @C_DocType_ID@:"
