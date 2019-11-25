@@ -73,20 +73,22 @@ public class ConfigVM extends Config
 		System.setProperty(ConfigurationData.JAVA_HOME, javaHome.getAbsolutePath());
 
 		//	Java Version
-		final String[] versions = new String[]{"1.7.0", "1.8.0", "9", "9.", "10", "10.", "11", "11.", "12", "12."};
 		pass = false;
 		String thisJV = System.getProperty("java.version");
-		for(String version : versions) 
+		int pointPos = thisJV.indexOf(".");
+		int thisJVint = 0;
+		if (pointPos >= 0)
+			thisJVint = Integer.valueOf(thisJV.substring(0, pointPos));
+		else
+			thisJVint = Integer.valueOf(thisJV);
+		int minSupportedVersion = 11;
+		pass = thisJVint >= minSupportedVersion;
+		if (pass)
 		{
-			pass = thisJV.indexOf(version) != -1;
-			if (pass)
-			{
-				if (log.isLoggable(Level.INFO)) log.info("OK: Version=" + thisJV);
-				break;
-			}			
-		}
+			if (log.isLoggable(Level.INFO)) log.info("OK: Version=" + thisJV);
+		}			
 		
-		error = "Wrong Java Version: Should be " + versions[0] + " and above.";
+		error = "Wrong Java Version = " + thisJV + ": Should be " + minSupportedVersion + " and above.";
 		if (getPanel() != null)
 			signalOK(getPanel().okJavaHome, "ErrorJavaHome",
 					pass, true, error);
