@@ -52,7 +52,7 @@ public class MColumn extends X_AD_Column
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7215660422231054443L;
+	private static final long serialVersionUID = -6905852892037761285L;
 
 	public static MColumn get (Properties ctx, int AD_Column_ID)
 	{
@@ -228,6 +228,16 @@ public class MColumn extends X_AD_Column
 		String s = getColumnSQL();
 		return s != null && s.length() > 0 && s.startsWith("@SQL=");
 	}	//	isVirtualUIColumn
+	
+	/**
+	 * 	Is Virtual Search Column
+	 *	@return true if virtual search column
+	 */
+	public boolean isVirtualSearchColumn()
+	{
+		String s = getColumnSQL();
+		return s != null && s.length() > 0 && s.startsWith("@SQLFIND=");
+	}	//	isVirtualSearchColumn
 
 	/**
 	 * 	Is the Column Encrypted?
@@ -362,7 +372,7 @@ public class MColumn extends X_AD_Column
 				setIsMandatory(false);
 			if (isUpdateable())
 				setIsUpdateable(false);
-			if (isVirtualUIColumn() && isIdentifier())
+			if ((isVirtualUIColumn() || isVirtualSearchColumn()) && isIdentifier())
 				setIsIdentifier(false);
 		}
 		//	Updateable
@@ -1240,10 +1250,18 @@ public class MColumn extends X_AD_Column
 	}
 
 	public String getColumnSQL(boolean nullForUI) {
+		return getColumnSQL(nullForUI, true);
+	}
+	
+	public String getColumnSQL(boolean nullForUI, boolean nullForSearch) {
 		String query = getColumnSQL();
 		if (query != null && query.length() > 0) {
 			if (query.startsWith("@SQL=") && nullForUI)
 				query = "NULL";
+			else if (query.startsWith("@SQLFIND=") && nullForSearch)
+				query = "NULL";
+			else if (query.startsWith("@SQLFIND=") && !nullForSearch)
+				query = query.substring(9);
 		}
 		return query;
 	}

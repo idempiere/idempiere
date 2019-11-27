@@ -768,7 +768,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			if (mField.isSelectionColumn()) {
             	gridFieldList.add(mField); // isSelectionColumn 
             } else {
-            	if (isDisplayed && mField.getDisplayType() != DisplayType.Button && !mField.getColumnName().equals("AD_Client_ID"))
+            	if ((isDisplayed || mField.isVirtualSearchColumn()) && mField.getDisplayType() != DisplayType.Button && !mField.getColumnName().equals("AD_Client_ID"))
             		moreFieldList.add(mField);
             }
         }   //  for all target tab fields
@@ -1633,7 +1633,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             if (field == null || field.isVirtualUIColumn())
             	continue;
             boolean isProductCategoryField = isProductCategoryField(field.getColumnName());
-            String ColumnSQL = field.getColumnSQL(false);
+            String ColumnSQL = field.getSearchColumnSQL();
             // Left brackets
             Listbox listLeftBracket = (Listbox)row.getFellow("listLeftBracket"+row.getId());
             String lBrackets = listLeftBracket.getSelectedItem().getValue().toString();
@@ -1866,7 +1866,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     GridField field = getTargetMField(ColumnName);
                     if (field.isVirtualUIColumn())
                     	continue;
-                    StringBuilder ColumnSQL = new StringBuilder(field.getColumnSQL(false));
+                    StringBuilder ColumnSQL = new StringBuilder(field.getSearchColumnSQL());
                     m_query.addRangeRestriction(ColumnSQL.toString(), value, valueTo,
                     		ColumnName, wed.getDisplay(), wedTo.getDisplay(), true, 0);
                     appendCode(code, ColumnName, MQuery.BETWEEN, value.toString(), valueTo.toString(), "AND", "", "");
@@ -1881,7 +1881,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     GridField field = getTargetMField(ColumnName);
                     
                     boolean isProductCategoryField = isProductCategoryField(field.getColumnName());
-                    StringBuilder ColumnSQL = new StringBuilder(field.getColumnSQL(false));
+                    StringBuilder ColumnSQL = new StringBuilder(field.getSearchColumnSQL());
 
                     // add encryption here if the field is encrypted.
                     if (field.isEncrypted()) {
@@ -1947,7 +1947,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 }
 
                 GridField field = getTargetMField(ColumnName);
-                StringBuilder ColumnSQL = new StringBuilder(field.getColumnSQL(false));
+                StringBuilder ColumnSQL = new StringBuilder(field.getSearchColumnSQL());
                 //
                 m_query.addRestriction(ColumnSQL.toString(), MQuery.LESS_EQUAL, valueTo, ColumnName, wed.getDisplay());
                 appendCode(code, ColumnName, MQuery.LESS_EQUAL, valueTo.toString(), "", "AND", "", "");
@@ -2379,7 +2379,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private String getSubCategoryWhereClause(GridField field, int productCategoryId) {
         //if a node with this id is found later in the search we have a loop in the tree
         int subTreeRootParentId = 0;
-        StringBuilder retString = new StringBuilder(field.getColumnSQL(false)).append(" IN (");
+        StringBuilder retString = new StringBuilder(field.getSearchColumnSQL()).append(" IN (");
         String sql = "SELECT M_Product_Category_ID, M_Product_Category_Parent_ID FROM M_Product_Category WHERE AD_Client_ID=? AND IsActive='Y'";
         final Vector<SimpleTreeNode> categories = new Vector<SimpleTreeNode>(100);
         PreparedStatement pstmt = null;

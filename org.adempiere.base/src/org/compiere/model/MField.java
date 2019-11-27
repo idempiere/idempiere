@@ -149,6 +149,13 @@ public class MField extends X_AD_Field
 			setAD_Val_Rule_ID(0);
 			setIsToolbarButton(null);
 		}
+		if (isDisplayed()) {
+			MColumn column = (MColumn) getAD_Column();
+			if (column.isVirtualSearchColumn()) {
+				setIsDisplayed(false);
+				setIsDisplayedGrid(false);
+			}
+		}
 
 		return true;
 	}	//	beforeSave

@@ -615,7 +615,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 		int seqNo = 1;
 		for (GridField gridField : gridFields)
 		{
-			if (gridField.isVirtualUIColumn())
+			if (gridField.isVirtualUIColumn() || gridField.isVirtualSearchColumn())
 				continue;
 			MPrintFormatItem pfi = MPrintFormatItem.createFromGridField(pf, gridField, seqNo++);
 			if (pfi != null)
@@ -878,7 +878,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 			{
 				int columnID = rs.getInt(1);
 				MColumn column = MColumn.get(ctx, columnID);
-				if (column.isVirtualUIColumn())
+				if (column.isVirtualUIColumn() || column.isVirtualSearchColumn())
 					continue;
 				MPrintFormatItem pfi = MPrintFormatItem.createFromColumn (format, columnID, seqNo++);
 				if (pfi != null)
