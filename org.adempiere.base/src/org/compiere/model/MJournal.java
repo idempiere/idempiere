@@ -55,7 +55,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6116307358915557651L;
+	private static final long serialVersionUID = 4661098755828765138L;
 
 	/**
 	 * 	Standard Constructor
@@ -1037,5 +1037,14 @@ public class MJournal extends X_GL_Journal implements DocAction
 			|| DOCSTATUS_Closed.equals(ds)
 			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
+
+	/**
+	 * 	Get Document Status
+	 *	@return Document Status Clear Text
+	 */
+	public String getDocStatusName()
+	{
+		return MRefList.getListName(getCtx(), SystemIDs.REFERENCE_DOCUMENTSTATUS, getDocStatus());
+	}	//	getDocStatusName
 
 }	//	MJournal
