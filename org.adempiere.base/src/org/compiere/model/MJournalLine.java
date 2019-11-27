@@ -305,6 +305,9 @@ public class MJournalLine extends X_GL_JournalLine
 		fillDimensionsFromCombination();
 		// end idempiere 344 - nmicoud
 
+		if (getLine() == 0)
+			setLine(DB.getSQLValueEx(get_TrxName(), "SELECT COALESCE(MAX(Line), 0) + 10 FROM GL_JournalLine WHERE GL_Journal_ID = ?", getGL_Journal_ID()));
+
 		//	Acct Amts
 		BigDecimal rate = getCurrencyRate();
 		BigDecimal amt = rate.multiply(getAmtSourceDr());
