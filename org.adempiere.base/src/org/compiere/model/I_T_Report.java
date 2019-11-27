@@ -181,6 +181,87 @@ public interface I_T_Report
 	/** Get Col_20	  */
 	public BigDecimal getCol_20();
 
+    /** Column name Col_21 */
+    public static final String COLUMNNAME_Col_21 = "Col_21";
+
+	/** Set Col_21	  */
+	public void setCol_21 (BigDecimal Col_21);
+
+	/** Get Col_21	  */
+	public BigDecimal getCol_21();
+
+    /** Column name Col_22 */
+    public static final String COLUMNNAME_Col_22 = "Col_22";
+
+	/** Set Col_22	  */
+	public void setCol_22 (BigDecimal Col_22);
+
+	/** Get Col_22	  */
+	public BigDecimal getCol_22();
+
+    /** Column name Col_23 */
+    public static final String COLUMNNAME_Col_23 = "Col_23";
+
+	/** Set Col_23	  */
+	public void setCol_23 (BigDecimal Col_23);
+
+	/** Get Col_23	  */
+	public BigDecimal getCol_23();
+
+    /** Column name Col_24 */
+    public static final String COLUMNNAME_Col_24 = "Col_24";
+
+	/** Set Col_24	  */
+	public void setCol_24 (BigDecimal Col_24);
+
+	/** Get Col_24	  */
+	public BigDecimal getCol_24();
+
+    /** Column name Col_25 */
+    public static final String COLUMNNAME_Col_25 = "Col_25";
+
+	/** Set Col_25	  */
+	public void setCol_25 (BigDecimal Col_25);
+
+	/** Get Col_25	  */
+	public BigDecimal getCol_25();
+
+    /** Column name Col_26 */
+    public static final String COLUMNNAME_Col_26 = "Col_26";
+
+	/** Set Col_26	  */
+	public void setCol_26 (BigDecimal Col_26);
+
+	/** Get Col_26	  */
+	public BigDecimal getCol_26();
+
+    /** Column name Col_27 */
+    public static final String COLUMNNAME_Col_27 = "Col_27";
+
+	/** Set Col_27	  */
+	public void setCol_27 (BigDecimal Col_27);
+
+	/** Get Col_27	  */
+	public BigDecimal getCol_27();
+
+    /** Column name Col_28 */
+    public static final String COLUMNNAME_Col_28 = "Col_28";
+
+	/** Set Col_28	  */
+	public void setCol_28 (BigDecimal Col_28);
+
+	/** Get Col_28	  */
+	public BigDecimal getCol_28();
+
+    /** Column name Col_29 */
+    public static final String COLUMNNAME_Col_29 = "Col_29";
+
+	/** Set Col_29	  */
+	public void setCol_29 (BigDecimal Col_29);
+
+	/** Get Col_29	  */
+	public BigDecimal getCol_29();
+
     /** Column name Col_3 */
     public static final String COLUMNNAME_Col_3 = "Col_3";
 
@@ -189,6 +270,15 @@ public interface I_T_Report
 
 	/** Get Col_3	  */
 	public BigDecimal getCol_3();
+
+    /** Column name Col_30 */
+    public static final String COLUMNNAME_Col_30 = "Col_30";
+
+	/** Set Col_30	  */
+	public void setCol_30 (BigDecimal Col_30);
+
+	/** Get Col_30	  */
+	public BigDecimal getCol_30();
 
     /** Column name Col_4 */
     public static final String COLUMNNAME_Col_4 = "Col_4";

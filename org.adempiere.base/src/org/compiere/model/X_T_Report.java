@@ -32,7 +32,7 @@ public class X_T_Report extends PO implements I_T_Report, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20191127L;
 
     /** Standard Constructor */
     public X_T_Report (Properties ctx, int T_Report_ID, String trxName)
@@ -341,6 +341,159 @@ public class X_T_Report extends PO implements I_T_Report, I_Persistent
 		return bd;
 	}
 
+	/** Set Col_21.
+		@param Col_21 Col_21	  */
+	public void setCol_21 (BigDecimal Col_21)
+	{
+		set_ValueNoCheck (COLUMNNAME_Col_21, Col_21);
+	}
+
+	/** Get Col_21.
+		@return Col_21	  */
+	public BigDecimal getCol_21 () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_21);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Col_22.
+		@param Col_22 Col_22	  */
+	public void setCol_22 (BigDecimal Col_22)
+	{
+		set_ValueNoCheck (COLUMNNAME_Col_22, Col_22);
+	}
+
+	/** Get Col_22.
+		@return Col_22	  */
+	public BigDecimal getCol_22 () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_22);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Col_23.
+		@param Col_23 Col_23	  */
+	public void setCol_23 (BigDecimal Col_23)
+	{
+		set_ValueNoCheck (COLUMNNAME_Col_23, Col_23);
+	}
+
+	/** Get Col_23.
+		@return Col_23	  */
+	public BigDecimal getCol_23 () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_23);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Col_24.
+		@param Col_24 Col_24	  */
+	public void setCol_24 (BigDecimal Col_24)
+	{
+		set_ValueNoCheck (COLUMNNAME_Col_24, Col_24);
+	}
+
+	/** Get Col_24.
+		@return Col_24	  */
+	public BigDecimal getCol_24 () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_24);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Col_25.
+		@param Col_25 Col_25	  */
+	public void setCol_25 (BigDecimal Col_25)
+	{
+		set_ValueNoCheck (COLUMNNAME_Col_25, Col_25);
+	}
+
+	/** Get Col_25.
+		@return Col_25	  */
+	public BigDecimal getCol_25 () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_25);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Col_26.
+		@param Col_26 Col_26	  */
+	public void setCol_26 (BigDecimal Col_26)
+	{
+		set_ValueNoCheck (COLUMNNAME_Col_26, Col_26);
+	}
+
+	/** Get Col_26.
+		@return Col_26	  */
+	public BigDecimal getCol_26 () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_26);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Col_27.
+		@param Col_27 Col_27	  */
+	public void setCol_27 (BigDecimal Col_27)
+	{
+		set_ValueNoCheck (COLUMNNAME_Col_27, Col_27);
+	}
+
+	/** Get Col_27.
+		@return Col_27	  */
+	public BigDecimal getCol_27 () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_27);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Col_28.
+		@param Col_28 Col_28	  */
+	public void setCol_28 (BigDecimal Col_28)
+	{
+		set_ValueNoCheck (COLUMNNAME_Col_28, Col_28);
+	}
+
+	/** Get Col_28.
+		@return Col_28	  */
+	public BigDecimal getCol_28 () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_28);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Col_29.
+		@param Col_29 Col_29	  */
+	public void setCol_29 (BigDecimal Col_29)
+	{
+		set_ValueNoCheck (COLUMNNAME_Col_29, Col_29);
+	}
+
+	/** Get Col_29.
+		@return Col_29	  */
+	public BigDecimal getCol_29 () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_29);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
 	/** Set Col_3.
 		@param Col_3 Col_3	  */
 	public void setCol_3 (BigDecimal Col_3)
@@ -353,6 +506,23 @@ public class X_T_Report extends PO implements I_T_Report, I_Persistent
 	public BigDecimal getCol_3 () 
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_3);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Col_30.
+		@param Col_30 Col_30	  */
+	public void setCol_30 (BigDecimal Col_30)
+	{
+		set_ValueNoCheck (COLUMNNAME_Col_30, Col_30);
+	}
+
+	/** Get Col_30.
+		@return Col_30	  */
+	public BigDecimal getCol_30 () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_30);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
