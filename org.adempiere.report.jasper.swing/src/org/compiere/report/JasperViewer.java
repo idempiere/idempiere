@@ -18,13 +18,14 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
 import org.compiere.db.CConnection;
-
+import org.compiere.model.PrintInfo;
 
 public class JasperViewer extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = 1192807883081180999L;
 	
 	private String m_title;
+	private PrintInfo m_printInfo;
 	
     /** Creates new form JasperViewer */
     /**
@@ -32,11 +33,12 @@ public class JasperViewer extends javax.swing.JFrame {
      * @param frameTitle Title to be displayed
      * @throws JRException
      */
-    protected JasperViewer(JasperPrint jasperPrint,String frameTitle) throws JRException {
+    protected JasperViewer(JasperPrint jasperPrint,String frameTitle, PrintInfo printInfo) throws JRException {
         this.m_title = frameTitle;
     	initComponents();
         JasperReportViewer viewer = new JasperReportViewer(this, jasperPrint);
         this.pnlMain.add(viewer, BorderLayout.CENTER);
+		m_printInfo = printInfo;
     }
 
 
@@ -85,12 +87,12 @@ public class JasperViewer extends javax.swing.JFrame {
     /**
      *
      */
-    public static void viewReport(JasperPrint jasperPrint) throws JRException {
-        JasperViewer jasperViewer = new JasperViewer(jasperPrint,"JasperReport");
+    public static void viewReport(JasperPrint jasperPrint, PrintInfo printInfo) throws JRException {
+        JasperViewer jasperViewer = new JasperViewer(jasperPrint,"JasperReport", printInfo);
         jasperViewer.setVisible(true);
     }
-    public static void viewReport(JasperPrint jasperPrint,String frameTitle) throws JRException {
-        JasperViewer jasperViewer = new JasperViewer(jasperPrint,frameTitle);
+    public static void viewReport(JasperPrint jasperPrint,String frameTitle, PrintInfo printInfo) throws JRException {
+        JasperViewer jasperViewer = new JasperViewer(jasperPrint,frameTitle, printInfo);
         jasperViewer.setVisible(true);
     }
 
@@ -105,7 +107,7 @@ public class JasperViewer extends javax.swing.JFrame {
         try {
         	JasperReport myjasperReport = (JasperReport) JasperCompileManager.compileReport(args[0] );
         	JasperPrint myjasperPrint = JasperFillManager.fillReport( myjasperReport, new HashMap<String,Object>(), getConnection());
-            JasperViewer.viewReport(myjasperPrint);
+            JasperViewer.viewReport(myjasperPrint, null);
            } 
         catch (Exception e) {
             e.printStackTrace();

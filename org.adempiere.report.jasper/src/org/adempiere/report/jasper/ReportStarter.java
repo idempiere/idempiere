@@ -722,13 +722,15 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	                    	}
 	                    }	
 	                } else {
-	                	if (reportPathList.length == 1) {
+						if (printInfo == null)
+							printInfo = new PrintInfo(pi);
+						if (reportPathList.length == 1) {
 		                    if (log.isLoggable(Level.INFO)) log.info( "ReportStarter.startProcess run report -"+jasperPrint.getName());
 		                    JRViewerProvider viewerLauncher = Service.locator().locate(JRViewerProvider.class).getService();
 		                    if (!Util.isEmpty(processInfo.getReportType())) {
 		                    	jasperPrint.setProperty("IDEMPIERE_REPORT_TYPE", processInfo.getReportType());
 		                    }
-		                    viewerLauncher.openViewer(jasperPrint, pi.getTitle());
+		                    viewerLauncher.openViewer(jasperPrint, pi.getTitle(), printInfo);
 	                	} else {
 	                		jasperPrintList.add(jasperPrint);
 	                		if (idx+1 == reportPathList.length) {
@@ -736,7 +738,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 			                    if (viewerLauncher == null) {
 			                    	throw new AdempiereException("Can not find a viewer provider for multiple jaspers");
 			                    }
-			                    viewerLauncher.openViewer(jasperPrintList, pi.getTitle());
+			                    viewerLauncher.openViewer(jasperPrintList, pi.getTitle(), printInfo);
 	                		}
 	                	}
 	                }
