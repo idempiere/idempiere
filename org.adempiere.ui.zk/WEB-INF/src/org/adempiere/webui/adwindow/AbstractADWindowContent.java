@@ -1342,7 +1342,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		toolbar.getButton("Attachment").setPressed(adTabbox.getSelectedGridTab().hasAttachment());
 		toolbar.getButton("PostIt").setPressed(adTabbox.getSelectedGridTab().hasPostIt());
 		toolbar.getButton("Chat").setPressed(adTabbox.getSelectedGridTab().hasChat());
-		toolbar.getButton("Find").setPressed(adTabbox.getSelectedGridTab().isQueryActive());
 
 		if (toolbar.isPersonalLock)
 		{
@@ -1361,6 +1360,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             toolbar.enableProcessButton(!isNewRow && adtab != null && adtab.getToolbarButtons().size() > 0);
             toolbar.enableCustomize(adtab.isGridView());
         }
+        
+		toolbar.getButton("Find").setPressed(adTabbox.getSelectedGridTab().isQueryActive() || 
+				(!isNewRow && (m_onlyCurrentRows || m_onlyCurrentDays > 0)));
 
 	}
 
@@ -1707,8 +1709,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	toolbar.enablePostIt(false);
         }
 
-        toolbar.getButton("Find").setPressed(adTabbox.getSelectedGridTab().isQueryActive());
-
         // Elaine 2008/12/05
         //  Lock Indicator
         if (toolbar.isPersonalLock)
@@ -1727,7 +1727,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         toolbar.enableZoomAcross(!isNewRow);
         toolbar.enableActiveWorkflows(!isNewRow);
         toolbar.enableRequests(!isNewRow);
-        
+		toolbar.getButton("Find").setPressed(adTabbox.getSelectedGridTab().isQueryActive() || 
+				(!isNewRow && (m_onlyCurrentRows || m_onlyCurrentDays > 0)));
+
         toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !isNewRow);
         toolbar.enableReport(!isNewRow);
         toolbar.enableExport(!isNewRow && !adTabbox.getSelectedGridTab().isSortTab());
