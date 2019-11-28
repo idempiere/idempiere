@@ -557,6 +557,11 @@
 						            <ws>win32</ws>
 						            <arch>x86_64</arch>
 					            </environment>
+						    <environment>
+						            <os>macosx</os>
+						            <ws>cocoa</ws>
+						            <arch>x86_64</arch>
+					            </environment>
 				            </environments>
                             <executionEnvironmentDefault>JavaSE-11</executionEnvironmentDefault>
                             <executionEnvironment>JavaSE-11</executionEnvironment>
