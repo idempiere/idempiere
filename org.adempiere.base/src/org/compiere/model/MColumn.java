@@ -796,7 +796,7 @@ public class MColumn extends X_AD_Column
 		int refid = getAD_Reference_ID();
 		if (DisplayType.TableDir == refid || (DisplayType.Search == refid && getAD_Reference_Value_ID() == 0)) {
 			foreignTable = getColumnName().substring(0, getColumnName().length()-3);
-		} else 	if (DisplayType.Table == refid || DisplayType.Search == refid) {
+		} else if (DisplayType.Table == refid || DisplayType.Search == refid) {
 			MReference ref = MReference.get(getCtx(), getAD_Reference_Value_ID());
 			if (MReference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
 				int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_Ref_Table WHERE AD_Reference_ID=?", getAD_Reference_Value_ID());
@@ -806,7 +806,13 @@ public class MColumn extends X_AD_Column
 						foreignTable = rt.getAD_Table().getTableName();
 				}
 			}
-		} else 	if (DisplayType.List == refid || DisplayType.Payment == refid) {
+		} else if (DisplayType.Button == refid) {
+			// C_BPartner.AD_OrgBP_ID and C_Project.C_ProjectType_ID are defined as buttons
+			if ("AD_OrgBP_ID".equalsIgnoreCase(getColumnName()))
+				foreignTable = "AD_Org";
+			else if ("C_ProjectType_ID".equalsIgnoreCase(getColumnName()))
+				foreignTable = "C_ProjectType";
+		} else if (DisplayType.List == refid || DisplayType.Payment == refid) {
 			foreignTable = "AD_Ref_List";
 		} else if (DisplayType.Location == refid) {
 			foreignTable = "C_Location";

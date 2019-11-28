@@ -183,17 +183,32 @@ public class PoFiller{
 			}
 			if (po.get_ColumnIndex(columnName) >= 0) {
 				MColumn col = MColumn.get(ctx.ctx, po.get_TableName(), columnName);
+				MTable foreignTable = null;
 				String refTableName = col.getReferenceTableName();
-				if (id > 0) {
-					MTable foreignTable = MTable.get(Env.getCtx(), refTableName);
-					PO subPo = foreignTable.getPO(id, po.get_TrxName());
-					if (subPo.getAD_Client_ID() != Env.getAD_Client_ID(ctx.ctx)) {
-						String accessLevel = foreignTable.getAccessLevel();
-						if ((MTable.ACCESSLEVEL_All.equals(accessLevel)
-								|| MTable.ACCESSLEVEL_SystemOnly.equals(accessLevel)
-								|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) && 
-								subPo.getAD_Client_ID() != 0)
-							return -1;
+				if (refTableName != null) {
+					foreignTable = MTable.get(Env.getCtx(), refTableName);
+				} else {
+					if ("Record_ID".equalsIgnoreCase(columnName)) {
+						// special case - get the foreign table using column AD_Table_ID
+						int idxTableID = po.get_ColumnIndex("AD_Table_ID");
+						if (idxTableID >= 0) {
+							int tableID = po.get_ValueAsInt(idxTableID);
+							foreignTable = MTable.get(Env.getCtx(), tableID);
+							refTableName = foreignTable.getTableName();
+						}
+					}
+				}
+				if (id > 0 && refTableName != null) {
+					if (foreignTable != null) {
+						PO subPo = foreignTable.getPO(id, po.get_TrxName());
+						if (subPo != null && subPo.getAD_Client_ID() != Env.getAD_Client_ID(ctx.ctx)) {
+							String accessLevel = foreignTable.getAccessLevel();
+							if ((MTable.ACCESSLEVEL_All.equals(accessLevel)
+									|| MTable.ACCESSLEVEL_SystemOnly.equals(accessLevel)
+									|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) && 
+									subPo.getAD_Client_ID() != 0)
+								return -1;
+						}
 					}
 
 					if (po.get_ValueAsInt(columnName) != id) {
