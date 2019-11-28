@@ -10,4 +10,9 @@ import net.sf.jasperreports.engine.JasperPrint;
 public interface JRViewerProviderList {
 
 	public void openViewer(List<JasperPrint> jasperPrintList, String title, PrintInfo printInfo) throws JRException;
+
+	default void openViewer(List<JasperPrint> jasperPrintList, String title) throws JRException {
+		openViewer(jasperPrintList, title, null);
+	}
+
 }
