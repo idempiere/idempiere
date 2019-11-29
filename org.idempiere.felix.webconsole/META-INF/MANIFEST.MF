@@ -8,6 +8,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Import-Package: javax.servlet;version="2.5.0",
+ javax.servlet.descriptor;version="3.1.0",
  javax.servlet.http;version="2.5.0",
  javax.servlet.jsp;version="2.1.0",
  javax.servlet.jsp.el;version="2.1.0",
@@ -18,6 +19,7 @@ Import-Package: javax.servlet;version="2.5.0",
  javax.servlet.jsp.resources;version="2.1.0",
  javax.servlet.jsp.tagext;version="2.1.0",
  javax.servlet.resources;version="2.5.0",
+ org.adempiere.eclipse.equinox.http.servlet,
  org.apache.felix.webconsole;version="3.1.2",
  org.compiere.model,
  org.compiere.util,
@@ -31,3 +33,4 @@ Service-Component: OSGI-INF/*.xml
 Bundle-ClassPath: .
 Automatic-Module-Name: org.idempiere.felix.webconsole
 Bundle-Vendor: iDempiere Community
+Export-Package: org.idempiere.felix.webconsole;x-internal:=true

@@ -7,8 +7,6 @@
 <project reference="MercurialEclipseProjectSet|org.adempiere.base.process|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.base.process"/>
 <project reference="MercurialEclipseProjectSet|org.adempiere.bundles.external-feature|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.bundles.external-feature"/>
 <project reference="MercurialEclipseProjectSet|org.adempiere.eclipse.equinox.http.servlet|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.eclipse.equinox.http.servlet"/>
-<project reference="MercurialEclipseProjectSet|org.adempiere.eclipse.equinox.http.servletbridge|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.eclipse.equinox.http.servletbridge"/>
-<project reference="MercurialEclipseProjectSet|org.adempiere.eclipse.equinox.servletbridge|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.eclipse.equinox.servletbridge"/>
 <project reference="MercurialEclipseProjectSet|org.adempiere.extend|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.extend"/>
 <project reference="MercurialEclipseProjectSet|org.adempiere.install|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.install"/>
 <project reference="MercurialEclipseProjectSet|org.adempiere.payment.processor|/mnt/data/dev/project/working-project/maventycho/idempiere|org.adempiere.payment.processor"/>
@@ -67,7 +65,6 @@
 <item elementID="=org.adempiere.server" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=org.adempiere.webstore" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=org.idempiere.felix.webconsole" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
-<item elementID="=org.adempiere.eclipse.equinox.servletbridge" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=org.adempiere.base.callout" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=org.idempiere.hazelcast.service" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=org.adempiere.ui.zk" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
@@ -82,7 +79,6 @@
 <item elementID="=org.adempiere.pipo" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=org.adempiere.report.jasper.webapp" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=org.adempiere.webstore.resource" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
-<item elementID="=org.adempiere.eclipse.equinox.http.servletbridge" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=org.idempiere.zk.extra" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=org.adempiere.base" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=org.adempiere.pipo.handlers" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>

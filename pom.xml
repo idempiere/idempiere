@@ -18,8 +18,6 @@
 		<module>org.adempiere.extend</module>
 		<module>org.adempiere.payment.processor</module>
 		<module>org.adempiere.eclipse.equinox.http.servlet</module>
-		<module>org.adempiere.eclipse.equinox.http.servletbridge</module>
-		<module>org.adempiere.eclipse.equinox.servletbridge</module>
 		<module>org.adempiere.install</module>
 		<module>org.adempiere.pipo</module>
 		<module>org.adempiere.pipo.handlers</module>
