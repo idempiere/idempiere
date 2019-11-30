@@ -280,4 +280,6 @@
 .z-icon-CSVImport:before {
 	content: "\f0f6";
 }
-
+.z-icon-GetMail:before {
+	content: "\f0e0";
+}

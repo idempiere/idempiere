@@ -264,6 +264,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		tpgc4.refresh();
 		tpgc4.setWReportCustomization(this);
 		tabpanels.appendChild(tpgc4);
+		tabpanels.setStyle("overflow: auto;");
 
 		tpsf5.setMPrintFormat(fm);
 		tpsf5.setPrintFormatItems(pfi);		
@@ -285,6 +286,10 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		btnSave = new Button();
 		btnSave.setName("btnSave");
 		btnSave.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Save")));
+		//devCoffee #6142
+		if (ThemeManager.isUseFontIconForImage())
+			btnSave.setIconSclass("z-icon-Save");
+		else
 		btnSave.setImage(ThemeManager.getThemeResource("images/Save24.png"));
 		if(fm.getAD_Client_ID()== 0 || !isChange)
 		{	
@@ -297,6 +302,10 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 		if (m_isCanExport)
 		{
+			//devCoffee #6142
+			if (ThemeManager.isUseFontIconForImage())
+				bExport.setIconSclass("z-icon-Export");
+			else
 			bExport.setImage(ThemeManager.getThemeResource("images/Export24.png"));
 			bExport.setName("btnExport");
 			bExport.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Export")));
@@ -314,6 +323,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		
 		f.appendChild(foot);
 		grid.appendChild(f);
+		grid.setStyle("border:none");
 		form.appendChild(grid);
 		form.setBorder("normal");
 	}

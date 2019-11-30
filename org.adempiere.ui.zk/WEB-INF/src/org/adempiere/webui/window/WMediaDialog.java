@@ -157,15 +157,24 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		
 
 		bSave.setEnabled(false);
-		bSave.setImage(ThemeManager.getThemeResource("images/Export24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bSave.setIconSclass("z-icon-Export");
+		else
+			bSave.setImage(ThemeManager.getThemeResource("images/Download24.png"));
 		bSave.setTooltiptext(Msg.getMsg(Env.getCtx(), "AttachmentSave"));
 		bSave.addEventListener(Events.ON_CLICK, this);
 
-		bLoad.setImage(ThemeManager.getThemeResource("images/Import24.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bLoad.setIconSclass("z-icon-Import");
+		else
+			bLoad.setImage(ThemeManager.getThemeResource("images/Upload24.png"));
 		bLoad.setTooltiptext(Msg.getMsg(Env.getCtx(), "Load"));
 		bLoad.addEventListener(Events.ON_UPLOAD, this);
 		bLoad.setUpload(AdempiereWebUI.getUploadSetting());
 
+		if (ThemeManager.isUseFontIconForImage())
+			bDelete.setIconSclass("z-icon-Delete");
+		else
 		bDelete.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
 		bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
 		bDelete.addEventListener(Events.ON_CLICK, this);
@@ -187,9 +196,15 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		southPane.appendChild(confirmPanel);
 		ZKUpdateUtil.setHeight(southPane, "30px");
 		
+		if(ThemeManager.isUseFontIconForImage())
+			bOk.setIconSclass("z-icon-Ok");
+		else
 		bOk.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
 		bOk.addEventListener(Events.ON_CLICK, this);
 				
+		if(ThemeManager.isUseFontIconForImage())
+			bCancel.setIconSclass("z-icon-Cancel");
+		else
 		bCancel.setImage(ThemeManager.getThemeResource("images/Cancel24.png"));
 		bCancel.addEventListener(Events.ON_CLICK, this);
 		
