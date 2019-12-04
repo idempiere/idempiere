@@ -36,7 +36,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -153,28 +152,12 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 	 */
 	private void jbInit() throws Exception
 	{
-		//devCoffee #6142
-    	if(ThemeManager.isUseFontIconForImage())
-    		bDelete.setIconSclass("z-icon-Delete");
-    	else
 		bDelete.setImage(ThemeManager.getThemeResource("images/Delete16.png"));
 		bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
-		//devCoffee #6142
-    	if(ThemeManager.isUseFontIconForImage())
-    		bNew.setIconSclass("z-icon-New");
-    	else
 		bNew.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		bNew.setTooltiptext(Msg.getMsg(Env.getCtx(), "New"));
-		//devCoffee #6142
-    	if(ThemeManager.isUseFontIconForImage())
-    		bUp.setIconSclass("z-icon-Previous");
-    	else
 		bUp.setImage(ThemeManager.getThemeResource("images/Previous16.png"));
 		bUp.setTooltiptext(Msg.getMsg(Env.getCtx(), "Previous"));
-		//devCoffee #6142
-    	if(ThemeManager.isUseFontIconForImage())
-    		bDown.setIconSclass("z-icon-Next");
-    	else
 		bDown.setImage(ThemeManager.getThemeResource("images/Next16.png"));
 		bDown.setTooltiptext(Msg.getMsg(Env.getCtx(), "Next"));
 		
@@ -203,8 +186,6 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 		rows.appendChild(row);	
 		row.appendChild(roleLabel);
 		row.appendChild(roleField);
-		//devCoffee #6142
-		ZKUpdateUtil.setHflex((HtmlBasedComponent) row.getLastChild(), "1");
 		row.appendChild(cbActive);
 		row.appendChild(cbExclude);
 		row.appendChild(cbReadOnly);

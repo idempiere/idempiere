@@ -341,14 +341,10 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		appendRecordLogInfo(pi.getLogs(), infoResultContent);
 		
 		bOK.setLabel(Msg.getMsg(Env.getCtx(), "Parameter"));
-		//devCoffee #6142
-		if (!ThemeManager.isUseFontIconForImage())
 		bOK.setImage(ThemeManager.getThemeResource("images/Reset16.png"));
 		bOK.setDisabled(false);
 
 		bCancel.setLabel(Msg.getMsg(Env.getCtx(), "Close"));
-		//devCoffee #6142
-		if (!ThemeManager.isUseFontIconForImage())
 		bCancel.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
 		bCancel.setDisabled(false);
 
@@ -462,13 +458,9 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		isParameterPage = true;
 
 		bOK.setLabel(Msg.getMsg(Env.getCtx(), "Start"));
-		//devCoffee #6142
-		if (!ThemeManager.isUseFontIconForImage())
 		bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 		
 		bCancel.setLabel(Util.cleanAmp(Msg.translate(Env.getCtx(), ConfirmPanel.A_CANCEL)));
-		//devCoffee #6142
-		if (!ThemeManager.isUseFontIconForImage())
 		bCancel.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
 
 		//recreate process info

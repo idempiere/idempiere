@@ -351,9 +351,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			cbNewEdit.addEventListener(Events.ON_CHECK, this);
 			row.appendChild(cbNewEdit);
 			bSelect.setLabel(Msg.getMsg(Env.getCtx(), "SelectExisting"));
-			if (ThemeManager.isUseFontIconForImage())
-				bSelect.setIconSclass("z-icon-PAttribute");
-			else
 			bSelect.setImage(ThemeManager.getThemeResource("images/PAttribute16.png"));
 			bSelect.addEventListener(Events.ON_CLICK, this);
 			row.appendChild(bSelect);
@@ -433,11 +430,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			//	Popup 
 //			fieldLot.addMouseListener(new VPAttributeDialog_mouseAdapter(this));    //  popup
 			mZoom = new Menuitem(Msg.getMsg(Env.getCtx(), "Zoom"), ThemeManager.getThemeResource("images/Zoom16.png"));
-			if(ThemeManager.isUseFontIconForImage()) {
-				mZoom.setIconSclass("z-icon-Zoom");
-				mZoom.setImage("");
-			}
-
 			mZoom.addEventListener(Events.ON_CLICK, this);
 			popupMenu.appendChild(mZoom);
 			this.appendChild(popupMenu);

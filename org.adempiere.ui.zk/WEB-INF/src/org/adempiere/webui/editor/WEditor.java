@@ -773,14 +773,9 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
      * @param popupMenu
      */
 	protected void addTextEditorMenu(WEditorPopupMenu popupMenu) {
-		Menuitem editor = new Menuitem();
+		Menuitem editor = new Menuitem(Msg.getMsg(Env.getCtx(), "Editor"), ThemeManager.getThemeResource("images/Editor16.png"));
 		editor.setAttribute("EVENT", WEditorPopupMenu.EDITOR_EVENT);
-		editor.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Editor")).intern());
-        if (ThemeManager.isUseFontIconForImage())
-        	editor.setIconSclass("z-icon-Edit");
-        else
-        	editor.setImage(ThemeManager.getThemeResource("images/Editor16.png"));
-        editor.addEventListener(Events.ON_CLICK, this);
+		editor.addEventListener(Events.ON_CLICK, popupMenu);
 		popupMenu.appendChild(editor);
 	}
 	

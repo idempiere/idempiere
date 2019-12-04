@@ -311,16 +311,6 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 				
 		row = new Row();
 		rows.appendChild(row);
-		row.appendChild(new Label(""));
-		row.appendChild(isAcknowledgmentReceipt);
-
-		row = new Row();
-		rows.appendChild(row);
-		row.appendChild(new Label(""));
-		row.appendChild(isAcknowledgmentReceipt);
-
-		row = new Row();
-		rows.appendChild(row);
 		div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(lSubject);
@@ -373,9 +363,6 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			LayoutUtils.addSclass("large-toolbarbutton", btn);
 
 		bAddDefaultMailText = new Button();
-		if(ThemeManager.isUseFontIconForImage())
-			bAddDefaultMailText.setIconSclass("z-icon-GetMail");
-		else
 		bAddDefaultMailText.setImage(ThemeManager.getThemeResource("images/DefaultMailText.png"));
 		bAddDefaultMailText.addEventListener(Events.ON_CLICK, this);
 		bAddDefaultMailText.setTooltiptext(Msg.getMsg(Env.getCtx(), "AddDefaultMailTextContent"));
