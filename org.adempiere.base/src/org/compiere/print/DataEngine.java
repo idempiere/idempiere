@@ -310,7 +310,9 @@ public class DataEngine
 				int AD_Column_ID = rs.getInt(1);
 				String ColumnName = rs.getString(2);
 				String ColumnSQL = rs.getString(24);
-				if (ColumnSQL != null && ColumnSQL.length() > 0 && (ColumnSQL.startsWith("@SQL=") || ColumnSQL.startsWith("@SQLFIND=")))
+				if (ColumnSQL != null && ColumnSQL.length() > 0 && ColumnSQL.startsWith("@SQLFIND="))
+					ColumnSQL = ColumnSQL.substring(9);
+				if (ColumnSQL != null && ColumnSQL.length() > 0 && ColumnSQL.startsWith("@SQL="))
 					ColumnSQL = "NULL";
 				if (ColumnSQL != null && ColumnSQL.contains("@"))
 					ColumnSQL = Env.parseContext(Env.getCtx(), -1, ColumnSQL, false, true);
