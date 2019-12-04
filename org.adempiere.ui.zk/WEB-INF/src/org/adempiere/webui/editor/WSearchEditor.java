@@ -286,7 +286,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		}
 	}
 
-	private void actionRefresh(Object value)
+	protected void actionRefresh(Object value)
 	{
 //		boolean mandatory = isMandatory();
 //		AEnv.actionRefresh(lookup, value, mandatory);
@@ -345,7 +345,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		//
 	}
 
-	private void actionText(String text)
+	protected void actionText(String text)
 	{
 		//	Nothing entered
 		if (text == null || text.length() == 0 || text.equals("%"))
@@ -411,7 +411,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	}	//	actionText
 
 
-	private void resetButtonState() {
+	protected void resetButtonState() {
 		getComponent().getButton().setEnabled(true);
 		if (ThemeManager.isUseFontIconForImage())
 			getComponent().getButton().setIconSclass(imageUrl);
@@ -421,7 +421,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	}
 
 
-	private void actionCombo (Object value)
+	protected void actionCombo (Object value)
 	{
 		if (log.isLoggable(Level.FINE))
 			log.fine("Value=" + value);
@@ -465,7 +465,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	 *	Action - Special Quick Entry Screen
 	 *  @param newRecord true if new record should be created
 	 */
-	private void actionQuickEntry (boolean newRecord)
+	protected void actionQuickEntry (boolean newRecord)
 	{
 		if(!getComponent().isEnabled())
 			return;
@@ -538,7 +538,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		}
 	}	//	actionQuickEntry
 
-	private void actionButton(String queryValue)
+	protected  void actionButton(String queryValue)
 	{
 		if (lookup == null)
 			return;		//	leave button disabled

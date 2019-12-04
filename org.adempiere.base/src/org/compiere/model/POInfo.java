@@ -48,7 +48,7 @@ public class POInfo implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3496403499343293597L;
+	private static final long serialVersionUID = -6346988499971159874L;
 
 	/** Used by Remote FinReport			*/
 	/**
@@ -199,7 +199,7 @@ public class POInfo implements Serializable
 				//
 				m_AccessLevel = rs.getString(18);
 				String ColumnSQL = rs.getString(19);
-				if (ColumnSQL != null && ColumnSQL.length() > 0 && ColumnSQL.startsWith("@SQL="))
+				if (ColumnSQL != null && ColumnSQL.length() > 0 && (ColumnSQL.startsWith("@SQL=") || ColumnSQL.startsWith("@SQLFIND=")))
 					ColumnSQL = "NULL";
 				if (ColumnSQL != null && ColumnSQL.contains("@"))
 					ColumnSQL = Env.parseContext(Env.getCtx(), -1, ColumnSQL, false, true);
@@ -378,7 +378,7 @@ public class POInfo implements Serializable
 		if (index < 0 || index >= m_columns.length)
 			return null;
 		if (m_columns[index].ColumnSQL != null && m_columns[index].ColumnSQL.length() > 0) {
-			if (m_columns[index].ColumnSQL.startsWith("@SQL="))
+			if (m_columns[index].ColumnSQL.startsWith("@SQL=") || m_columns[index].ColumnSQL.startsWith("@SQLFIND="))
 				return "NULL AS " + m_columns[index].ColumnName;
 			return m_columns[index].ColumnSQL + " AS " + m_columns[index].ColumnName;
 		}
@@ -425,6 +425,20 @@ public class POInfo implements Serializable
 			&& m_columns[index].ColumnSQL.length() > 0
 			&& m_columns[index].ColumnSQL.startsWith("@SQL=");
 	}   //  isVirtualUIColumn
+	
+	/**
+	 *  Is Column Virtual Search?
+	 *  @param index index
+	 *  @return true if column is virtual search
+	 */
+	public boolean isVirtualSearchColumn (int index)
+	{
+		if (index < 0 || index >= m_columns.length)
+			return true;
+		return m_columns[index].ColumnSQL != null 
+			&& m_columns[index].ColumnSQL.length() > 0
+			&& m_columns[index].ColumnSQL.startsWith("@SQLFIND=");
+	}   //  isVirtualSearchColumn
 
 	/**
 	 *  Get Column Label

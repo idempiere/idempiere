@@ -72,7 +72,7 @@ public class FactReconciliation extends SvrProcess
 			pstmt.setTimestamp(3, p_DateAcct_From);
 			pstmt.setTimestamp(4, p_DateAcct_To);
 			int count = pstmt.executeUpdate();
-			String result = Msg.getMsg(getCtx(),"@Created@") + ": " + count + ", ";
+			String result = Msg.getMsg(getCtx(),"Created") + ": " + count + ", ";
 			
 			if (log.isLoggable(Level.FINE))log.log(Level.FINE, result);
 
@@ -88,7 +88,7 @@ public class FactReconciliation extends SvrProcess
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getAD_PInstance_ID());
 			count = pstmt.executeUpdate();
-			result = Msg.getMsg(getCtx(), "@Deleted@") + ": " + count;
+			result = Msg.getMsg(getCtx(), "Deleted") + ": " + count;
 			
 			if (log.isLoggable(Level.FINE))log.log(Level.FINE, result);
 		

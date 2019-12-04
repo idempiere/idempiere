@@ -83,7 +83,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5923967271000455417L;
+	private static final long serialVersionUID = 496387784464611123L;
 
 	/**
 	 *  Field Constructor.
@@ -1323,7 +1323,7 @@ public class GridField
 		if (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0)
 		{
 			String query;
-			if (m_vo.ColumnSQL.startsWith("@SQL="))
+			if (m_vo.ColumnSQL.startsWith("@SQL=") || m_vo.ColumnSQL.startsWith("@SQLFIND="))
 				query = "NULL";
 			else
 				query = m_vo.ColumnSQL;
@@ -1334,6 +1334,26 @@ public class GridField
 		}
 		return m_vo.ColumnName;
 	}	//	getColumnSQL
+	
+	/**
+	 *  Get Column Name or SQL for search queries
+	 *  @return column name
+	 */
+	public String getSearchColumnSQL()
+	{
+		if (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0)
+		{
+			String query;
+			if (m_vo.ColumnSQL.startsWith("@SQL="))
+				query = "NULL";
+			else if (m_vo.ColumnSQL.startsWith("@SQLFIND="))
+				query = m_vo.ColumnSQL.substring(9);
+			else
+				query = m_vo.ColumnSQL;
+			return query;
+		}
+		return m_vo.ColumnName;
+	}	//	getSearchColumnSQL
 
 	/**
 	 *  Is Virtual Column
@@ -1361,6 +1381,15 @@ public class GridField
 	{
 		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith("@SQL="));
 	}	//	isVirtualUIColumn
+	
+	/**
+	 *  Is Virtual search Column
+	 *  @return column is virtual search
+	 */
+	public boolean isVirtualSearchColumn()
+	{
+		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith("@SQLFIND="));
+	}	//	isVirtualDBColumn
 	
 	/**
 	 * 	Get Header

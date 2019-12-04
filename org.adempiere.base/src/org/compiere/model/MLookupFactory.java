@@ -435,7 +435,7 @@ public class MLookupFactory
 				ZoomWindowPO = rs.getInt(9);
 				//AD_Table_ID = rs.getInt(10);
 				displayColumnSQL = rs.getString(11);
-				if (displayColumnSQL != null && displayColumnSQL.length() > 0 && displayColumnSQL.startsWith("@SQL="))
+				if (displayColumnSQL != null && displayColumnSQL.length() > 0 && (displayColumnSQL.startsWith("@SQL=") || displayColumnSQL.startsWith("@SQLFIND=")))
 					displayColumnSQL = "NULL";
 				if (displayColumnSQL != null && displayColumnSQL.contains("@") && displayColumnSQL.startsWith("@SQL="))
 					displayColumnSQL = Env.parseContext(Env.getCtx(), -1, displayColumnSQL, false, true);
@@ -668,7 +668,7 @@ public class MLookupFactory
 			embedSQL.append(TableNameAlias).append(".Value||'-'||");
 
 		MColumn columnDisplay = new MColumn(Env.getCtx(), columnDisplay_ID, null);
-		if (columnDisplay.isVirtualUIColumn())
+		if (columnDisplay.isVirtualUIColumn() || columnDisplay.isVirtualSearchColumn())
 		{
 			s_log.warning("Virtual UI Column must not be used as display");
 			return null;

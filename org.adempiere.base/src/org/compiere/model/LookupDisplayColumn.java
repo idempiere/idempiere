@@ -67,7 +67,7 @@ public class LookupDisplayColumn implements Serializable
 		IsTranslated = isTranslated;
 		DisplayType = ad_Reference_ID;
 		AD_Reference_ID = ad_Reference_Value_ID;
-		if (columnSQL != null && columnSQL.length() > 0 && columnSQL.startsWith("@SQL="))
+		if (columnSQL != null && columnSQL.length() > 0 && (columnSQL.startsWith("@SQL=") || columnSQL.startsWith("@SQLFIND=")))
 			ColumnSQL = "NULL";
 		else
 			ColumnSQL = columnSQL;
