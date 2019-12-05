@@ -2984,7 +2984,7 @@ public final class MRole extends X_AD_Role
 			}
 			else
 			{
-				if (override && b2 == true && b1 == false)
+				if (override)
 				{
 					map.put(key, b2);
 				}
