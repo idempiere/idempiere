@@ -336,7 +336,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 		sql = new StringBuilder ("UPDATE I_Product i ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Value not unique,' ")
 			.append("WHERE I_IsImported<>'Y'")
-			.append(" AND Value IN (SELECT Value FROM I_Product ii WHERE i.AD_Client_ID=ii.AD_Client_ID GROUP BY Value HAVING COUNT(*) > 1)").append(clientCheck);
+			.append(" AND EXISTS (SELECT 1 FROM I_Product ii WHERE i.AD_Client_ID=ii.AD_Client_ID AND i.i_product_id <> ii.i_product_id AND i.value = ii.value)").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning("Not Unique Value=" + no);
@@ -344,7 +344,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 		sql = new StringBuilder ("UPDATE I_Product i ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=UPC not unique,' ")
 			.append("WHERE I_IsImported<>'Y'")
-			.append(" AND UPC IN (SELECT UPC FROM I_Product ii WHERE i.AD_Client_ID=ii.AD_Client_ID GROUP BY UPC HAVING COUNT(*) > 1)").append(clientCheck);
+			.append(" AND EXISTS (SELECT 1 FROM I_Product ii WHERE i.AD_Client_ID=ii.AD_Client_ID AND i.i_product_id <> ii.i_product_id AND i.upc = ii.upc)").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning("Not Unique UPC=" + no);
@@ -376,8 +376,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=VendorProductNo not unique,' ")
 			.append("WHERE I_IsImported<>'Y'")
 			.append(" AND C_BPartner_ID IS NOT NULL")
-			.append(" AND (C_BPartner_ID, VendorProductNo) IN ")
-			.append(" (SELECT C_BPartner_ID, VendorProductNo FROM I_Product ii WHERE i.AD_Client_ID=ii.AD_Client_ID GROUP BY C_BPartner_ID, VendorProductNo HAVING COUNT(*) > 1)")
+			.append(" AND EXISTS (SELECT 1 from I_Product ii WHERE i.AD_Client_ID = ii.AD_Client_ID AND i.c_bpartner_id = ii.c_bpartner_id AND i.vendorproductno = ii.vendorproductno AND i.i_product_id <> ii.i_product_id)")
 			.append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
