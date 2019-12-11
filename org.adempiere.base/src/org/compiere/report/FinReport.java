@@ -1110,6 +1110,9 @@ public class FinReport extends SvrProcess
 	private String getLineIDs (int fromID, int toID)
 	{
 		if (log.isLoggable(Level.FINEST)) log.finest("From=" + fromID + " To=" + toID);
+		if (fromID == toID) {
+			return String.valueOf(fromID);
+		}
 		int firstPA_ReportLine_ID = 0;
 		int lastPA_ReportLine_ID = 0;
 		
