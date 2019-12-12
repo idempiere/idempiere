@@ -25,6 +25,7 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.process.ProcessInfoLog;
+import org.zkoss.zul.Html;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
@@ -53,8 +54,10 @@ public class StatusBar extends Panel implements EventListener<Event>
 	 * 
 	 */
 	private static final long serialVersionUID = 1519490416637936553L;
+	
+	private Panel infoPanel;
 
-	private Label infoLine;
+	private Html infoLine;
 
 	private Div west;
 	
@@ -84,8 +87,10 @@ public class StatusBar extends Panel implements EventListener<Event>
 
     private void init()
     {        
-        infoLine = new Label();
-        
+    	infoPanel = new Panel();
+    	infoLine = new Html();
+    	infoPanel.appendChild(infoLine);
+    	
         east = new Div();
         east.setSclass("adwindow-status-docinfo");
         east.appendChild(infoLine);
@@ -107,9 +112,12 @@ public class StatusBar extends Panel implements EventListener<Event>
 	 */
 	public void setInfo (String text)
 	{
-		infoLine.setValue(text != null ? text : "");
-		infoLine.setTooltiptext(text);
-		infoLine.setStyle("font-weight: bold;");
+    	StringBuilder inflcnt = new StringBuilder();
+    	inflcnt.append("<html>\n<body>\n<div class=\"help-content\">\n");
+    	inflcnt.append(text != null ? text : "");
+    	inflcnt.append("</div>\n</body>\n</html>");
+    	infoLine.setContent(inflcnt.toString());
+
 	}	//	setInfo
 
 	/**

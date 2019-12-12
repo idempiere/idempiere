@@ -22,6 +22,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,6 +47,7 @@ import org.compiere.model.MMatchInv;
 import org.compiere.model.MMatchPO;
 import org.compiere.model.MNote;
 import org.compiere.model.MPeriod;
+import org.compiere.model.MRefList;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
@@ -52,6 +55,7 @@ import org.compiere.process.DocumentEngine;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
@@ -653,6 +657,8 @@ public abstract class Doc
 		if (!p_Status.equals(STATUS_Posted) && !p_Status.equals(STATUS_Deferred))
 		{
 			//  Insert Note
+			SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.Date);
+			DecimalFormat numberFormat = DisplayType.getNumberFormat(DisplayType.Amount);
 			String AD_MessageValue = "PostingError-" + p_Status;
 			int AD_User_ID = p_po.getUpdatedBy();
 			MNote note = new MNote (getCtx(), AD_MessageValue, AD_User_ID,
@@ -666,14 +672,14 @@ public abstract class Doc
 				Text.append(" (").append(p_Error).append(")");
 			String cn = getClass().getName();
 			Text.append(" - ").append(cn.substring(cn.lastIndexOf('.')))
-				.append(" (").append(getDocumentType())
-				.append(" - DocumentNo=").append(getDocumentNo())
-				.append(", DateAcct=").append(getDateAcct().toString().substring(0,10))
-				.append(", Amount=").append(getAmount())
-				.append(", Sta=").append(p_Status)
-				.append(" - PeriodOpen=").append(isPeriodOpen())
-				.append(", Balanced=").append(isBalanced())
-				.append(", Schema=").append(m_as.getName());
+			.append(" (").append(getDocumentType())
+			.append(" - " + Msg.getElement(Env.getCtx(),"DocumentNo") + "=").append(getDocumentNo())
+			.append(" - " + Msg.getElement(Env.getCtx(),"DateAcct") + "=").append(dateFormat.format(getDateAcct()))
+			.append(" - " + Msg.getMsg(Env.getCtx(),"Amount") + "=").append(numberFormat.format(getAmount()))
+			.append(" - " + Msg.getElement(Env.getCtx(),"DocStatus") + "=").append(MRefList.getListName(getCtx(), 131, m_DocStatus))
+			.append(" - " + Msg.getMsg(Env.getCtx(),"PeriodOpen") + "=").append(Msg.getMsg(Env.getCtx(), String.valueOf(isPeriodOpen())))
+			.append(" - " + Msg.getElement(Env.getCtx(),"IsBalanced") + "=").append( Msg.getMsg(Env.getCtx(), String.valueOf(isBalanced())))
+			.append(" - " + Msg.getElement(Env.getCtx(),"C_AcctSchema_ID") + "=").append(m_as.getName());
 			note.setTextMsg(Text.toString());
 			note.saveEx();
 			p_Error = Text.toString();
