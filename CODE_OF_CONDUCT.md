@@ -25,7 +25,7 @@ If you want something to orientate, use these:
 * Challenge others' points of view and opinions, but do so respectfully and thoughtfully ... without insult and personal attack. Differing opinions is one of the things that make this site great.
 * The best place for your question is the [project's forum][forum]. We get a large number of emails. If your email contains a question about iDempiere we will kindly point you to the forums.
 * There is no selling allowed in the forums.
-* Aavoid demanding contributions or cooperation from others.
+* Avoid demanding contributions or cooperation from others.
 * Avoid blaming anybody for not contributing or cooperating.
 * When you want to post in another language please use appropiate sub-wiki.
 
