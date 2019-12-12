@@ -1,12 +1,16 @@
-IDEMPIERE IS A COMMUNITY PROJECT THAT RESPECTS AND PROTECTS CONTRIBUTIONS AND MAINTAINS ALL CREDITS IN PLACE HERE IN ITS OFFICIAL REPOSITORY. ALSO WE OBEY THE GPL LAW THAT BASICALLY SAYS 'YOU ARE FREE TO MODIFY THE SOURCE BUT SHARE BACK THE CHANGES'. IF NOT KINDLY INFORM US. (Please write to red1@red1.org).
-HOWEVER ALL SOURCE GOES THROUGH STRICT PEER REVIEW BEFORE MAKING IT TO THE CORE. (Please check http://ci.idempiere.org/)
+# iDempiere. Community Powered Enterprise
 
-AS WE ARE USING THE OSGI PLUGIN APPROACH, A MARKETPLACE OF INDEPENDENT PLUGINS THAT ARE LOOSELY COUPLED TO THE CORE IS NOW POSSIBLE WITHOUT IMPACTING THE CORE THUS REDUCING ITS BLOAT (Please do so at http://wiki.idempiere.org/en/Category:Available_Plugins)
+iDempiere Business Suite ERP/CRM/SCM done the community way.  Focus is on the Community that includes Subject Matter Specialists, Implementors and End-Users.
 
-WE WORK WELL DOCUMENTING ISSUES (Please do so at https://idempiere.atlassian.net/secure/Dashboard.jspa)
+Please visit the project from page containing links for most of our resources: https://www.idempiere.org/
 
-ALL COMMUNICATION REGARDING CODE IS APPRECIATED AT https://groups.google.com/forum/#!forum/idempiere.
+You can have a first hand experience about the software in one of our live cloud test sites: https://www.idempiere.org/test-sites
 
-COMMUNITY LEADER
+If you want to install it by yourself, the most used way is to follow the guide: https://wiki.idempiere.org/en/Installing_iDempiere
 
-Redhuan D. Oon
+In case of doubts please use our support forums at http://groups.google.com/group/idempiere  
+Or our Mattermost support channel in https://mattermost.idempiere.org/
+
+If you find a bug or want to register a feature request please consider discussing it first in our forums, and after you're totally sure, please use the JIRA ticketing system: https://idempiere.atlassian.net
+
+Continuous integration when changing this repository is managed with Jenkins at http://ci.idempiere.org/
