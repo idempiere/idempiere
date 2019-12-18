@@ -37,7 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.UUID;
 import java.util.logging.Level;
 
 import org.adempiere.base.IGridTabImporter;
@@ -242,6 +241,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 						manageMasterTrx(gridTab, null);
 						createTrx(gridTab);
 					}
+					trx.setDisplayName(GridTabCSVImporter.class.getName()+"_fileImport_" + gridTab.getTableName());
 
 					String recordResult = processRecord(importMode, gridTab, indxDetail, isDetail, idx, rowResult, childs);
 					rowResult.append(recordResult);
@@ -594,8 +594,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 	 * @param gridTab
 	 */
 	private void createTrx(GridTab gridTab){
-
-		trxName = getTrxName(gridTab.getTableName());
+		trxName = Trx.createTrxName("CSVImport");
 		gridTab.getTableModel().setImportingMode(true,trxName);	
 		trx = Trx.get(trxName,true);
 		masterRecord = null;
@@ -776,10 +775,6 @@ public class GridTabCSVImporter implements IGridTabImporter
 		return rowResult.toString();
 
 	}//processRecord
-	
-	private String getTrxName(String gritTabName){
-		return "Import_" + gritTabName + "_" + UUID.randomUUID();
-	}
 	
 	private void throwAdempiereException(String msg){
 	    throw new AdempiereException(msg);
