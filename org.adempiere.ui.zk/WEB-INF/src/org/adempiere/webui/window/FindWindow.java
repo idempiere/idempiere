@@ -127,15 +127,14 @@ import org.zkoss.zul.Vlayout;
  */
 public class FindWindow extends Window implements EventListener<Event>, ValueChangeListener, DialogEvents
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2958810511464597943L;
 
 	private static final String FIND_ROW_EDITOR = "find.row.editor";
 
 	private static final String FIND_ROW_EDITOR_TO = "find.row.editor.to";
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7374857601424061640L;
 
 	// values and label for history combo
 	private static final String HISTORY_DAY_ALL = "All";
@@ -174,6 +173,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private String          m_whereExtended;
     /** Search Fields               */
     private GridField[]     m_findFields;
+    /** The Tab               */
+	private GridTab m_gridTab = null;
     /** Resulting query             */
     private MQuery          m_query = null;
     /** Is cancel ?                 */
@@ -268,6 +269,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         m_tableName = tableName;
         m_whereExtended = whereExtended;
         m_findFields = findFields;
+        if (findFields != null && findFields.length > 0)
+        	m_gridTab = findFields[0].getGridTab();
         m_sNew = "** ".concat(Msg.getMsg(Env.getCtx(), "New Query")).concat(" **");		
         m_AD_Tab_ID = adTabId;
         m_minRecords = minRecords;
@@ -2357,15 +2360,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	rs = null;
         	stmt = null;
         }
-        MRole role = MRole.getDefault();
         //  No Records
       /*  if (m_total == 0 && alertZeroRecords)
             FDialog.warn(m_targetWindowNo, this, "FindZeroRecords");*/
         //  More then allowed
-        if (query != null && role.isQueryMax(m_total))
+        if (m_gridTab != null && query != null && m_gridTab.isQueryMax(m_total))
         {
             FDialog.error(m_targetWindowNo, this, "FindOverMax",
-                m_total + " > " + role.getMaxQueryRecords());
+                m_total + " > " + m_gridTab.getMaxQueryRecords());
             m_total = 0; // return 0 if more then allowed - teo_sarca [ 1708717 ]
         }
         else
@@ -2553,8 +2555,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      */
     public MQuery getQuery()
     {
-        MRole role = MRole.getDefault();
-        if (role.isQueryMax(getTotalRecords()) && !m_isCancel)
+        if (m_gridTab != null && m_gridTab.isQueryMax(getTotalRecords()) && !m_isCancel)
         {
             m_query = MQuery.getNoRecordQuery (m_tableName, false);
             m_total = 0;
