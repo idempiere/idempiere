@@ -23,6 +23,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.editor.WSearchEditor;
@@ -35,10 +36,12 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.form.FactReconcile;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
+import org.compiere.model.MFactAcct;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.X_C_ElementValue;
@@ -47,8 +50,10 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
@@ -112,6 +117,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	private Button bGenerate = cp.createButton(ConfirmPanel.A_PROCESS);
 	private Button bReset = cp.createButton(ConfirmPanel.A_RESET);
 	private Button bZoom = cp.createButton(ConfirmPanel.A_ZOOM);
+	private Button bZoomDoc = cp.createButton(ConfirmPanel.A_ZOOM);
 	private Grid commandLayout = GridFactory.newGridLayout();
 	private Button bRefresh = cp.createButton(ConfirmPanel.A_REFRESH);
 	private Label labelDateAcct = new Label();
@@ -124,6 +130,9 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	private boolean loading = false;
 	private Label differenceLabel = new Label();
 	private Textbox differenceField = new Textbox();
+
+	private ToolBarButton bSelect = new ToolBarButton("SelectAll");
+	private boolean checkAllSelected = true;
 	
 	/**
 	 *  Static Init
@@ -137,12 +146,19 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		bRefresh.addActionListener(this);
 		bReset.addActionListener(this);
 		bZoom.addActionListener(this);
+		bZoomDoc.addActionListener(this);
 		bGenerate.setEnabled(false);
 		bReset.setEnabled(false);
 		//bRefresh.setText(Msg.getMsg(Env.getCtx(), "Query"));
 		bGenerate.setLabel(Msg.getMsg(Env.getCtx(),"Process"));
 		bReset.setLabel(Msg.getMsg(Env.getCtx(),"Reset"));
 		bZoom.setLabel(Msg.translate(Env.getCtx(), "Fact_Acct_ID"));
+		bZoomDoc.setId(bZoomDoc.getId() + "Doc"); // to avoid 'org.zkoss.zk.ui.UiException: Not unique in the ID space of <Grid null>: Zoom'
+		bZoomDoc.setLabel(Msg.translate(Env.getCtx(), "ZoomDocument"));
+		bSelect.setMode("toggle");
+		bSelect.setImage(ThemeManager.getThemeResource("images/SelectAll24.png"));
+		bSelect.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "SelectAll"));
+		bSelect.addEventListener(Events.ON_CLICK, this);
 		
 		//
 		labelAcctSchema.setText(Msg.translate(Env.getCtx(), "C_AcctSchema_ID"));
@@ -234,9 +250,13 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		ZKUpdateUtil.setWidth(commandLayout, "100%");
 		rows = commandLayout.newRows();
 		row = rows.newRow();
+		row.appendCellChild(bSelect, 1);
 		row.appendCellChild(bZoom, 1);
 		ZKUpdateUtil.setHflex(bZoom, "true");
 		ZKUpdateUtil.setWidth(bZoom, "100%");
+		row.appendCellChild(bZoomDoc, 1);
+		ZKUpdateUtil.setHflex(bZoomDoc, "true");
+		ZKUpdateUtil.setWidth(bZoomDoc, "100%");
 		row.appendCellChild(differenceLabel.rightAlign());
 		ZKUpdateUtil.setHflex(differenceLabel, "true");
 		row.appendCellChild(differenceField, 2);
@@ -251,6 +271,8 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		{
 			bZoom.setTooltiptext(bZoom.getLabel());
 			bZoom.setLabel(null);
+			bZoomDoc.setTooltiptext(bZoomDoc.getLabel());
+			bZoomDoc.setLabel(null);
 			bGenerate.setTooltiptext(bGenerate.getLabel());
 			bGenerate.setLabel(null);
 			bReset.setTooltiptext(bReset.getLabel());
@@ -310,10 +332,13 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 				+ "AND EXISTS (SELECT 1 FROM C_AcctSchema_Element ase "
 				+ "WHERE ase.C_Element_ID=C_ElementValue.C_Element_ID AND ase.ElementType='AC' "
 				+ "AND ase.C_AcctSchema_ID=@C_AcctSchema_ID@ AND ase.AD_Client_ID=@AD_Client_ID@) ");
-		fieldAccount = new WTableDirEditor("C_ElementValue_ID", false, false, true, lookupAccount);
+		fieldAccount = new WTableDirEditor("C_ElementValue_ID", true, false, true, lookupAccount);
 	}
 	
 	public void loadData(){
+		
+		if(fieldAccount.isNullOrEmpty())
+			throw new WrongValueException(fieldAccount.getComponent(), Msg.getMsg(Env.getCtx(), "FillMandatory"));
 		
 		if(fieldAcctSchema.getValue()!=null)
 			m_C_AcctSchema_ID = (Integer)fieldAcctSchema.getValue();
@@ -419,6 +444,27 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	public void tableChanged(WTableModelEvent event) {
 		if (! loading )
 			calculateSelection();
+
+		if (event.getModel() == miniTable.getModel()) {
+
+			int row = event.getFirstRow();
+			int col = event.getColumn();
+
+			if (row < 0)
+				return;
+
+			if (checkAllSelected && col == selectedColIndex) {
+				ListModelTable model = miniTable.getModel();
+				boolean rowUnSelected = false;
+				for (int i = 0; i < model.getRowCount(); i++) {
+					if ( ! (Boolean) model.getValueAt(i, selectedColIndex) ) {
+						rowUnSelected = true;
+						break;
+					}
+				}
+				bSelect.setPressed(! rowUnSelected);
+			}
+		}
 	}
 
 	@Override
@@ -431,13 +477,18 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 			resetReconciliation();
 
 		else if (event.getTarget().equals(bZoom))
-			zoom();
-		
+			zoom(MFactAcct.Table_ID);
+		else if (event.getTarget().equals(bZoomDoc))
+			zoom(-1);
+
 		else if (event.getTarget().equals(bCancel))
 			SessionManager.getAppDesktop().closeActiveWindow();
 		
 		else if (event.getTarget().equals(bRefresh))
 			loadData();
+		
+		else if (event.getTarget().equals(bSelect))
+			onbSelect();
 		
 	}
 	
@@ -474,6 +525,8 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 				((ListModelTable) miniTable.getModel()).remove(r--);
 			}
 		}
+
+		bSelect.setPressed(false);
 	}
 	
 	/**
@@ -481,7 +534,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	 *  @param AD_Window_ID window id
 	 *  @param zoomQuery zoom query
 	 */
-	protected void zoom ()
+	protected void zoom (int tableID)
 	{
 		log.info("");
 		
@@ -493,8 +546,13 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		KeyNamePair pp = (KeyNamePair)miniTable.getModel().getValueAt(selected, idColIndex);
 		
 		int factId = pp.getKey();
-		
-		AEnv.zoom(270, factId);
+
+		if (tableID == MFactAcct.Table_ID)
+			AEnv.zoom(tableID, factId);
+		else {
+			MFactAcct fa = new MFactAcct(Env.getCtx(), factId, null);
+			AEnv.zoom(fa.getAD_Table_ID(), fa.getRecord_ID());
+		}
 	}	//	zoom
 	
 	private void resetReconciliation() {
@@ -522,6 +580,8 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 				((ListModelTable) miniTable.getModel()).remove(r--);
 			}
 		}
+
+		bSelect.setPressed(false);
 	}
 
 	@Override
@@ -529,5 +589,17 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		return form;
 	}
 
+	void onbSelect() {
+		ListModelTable model = miniTable.getModel();
+		int rows = model.getSize();
+		Boolean selectAll = bSelect.isPressed() ? Boolean.FALSE : Boolean.TRUE;
+		bSelect.setPressed(! bSelect.isPressed());
+		checkAllSelected = false;
+		for (int i = 0; i < rows; i++)
+			model.setValueAt(selectAll, i, selectedColIndex);
+		checkAllSelected = true;
+		miniTable.setModel(model);
+		calculateSelection();
+	}
 }
 

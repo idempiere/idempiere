@@ -30,7 +30,7 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20191218L;
 
     /** Standard Constructor */
     public X_AD_Tab (Properties ctx, int AD_Tab_ID, String trxName)
@@ -672,6 +672,26 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Max Query Records.
+		@param MaxQueryRecords 
+		If defined, you cannot query more records as defined - the query criteria needs to be changed to query less records
+	  */
+	public void setMaxQueryRecords (int MaxQueryRecords)
+	{
+		set_Value (COLUMNNAME_MaxQueryRecords, Integer.valueOf(MaxQueryRecords));
+	}
+
+	/** Get Max Query Records.
+		@return If defined, you cannot query more records as defined - the query criteria needs to be changed to query less records
+	  */
+	public int getMaxQueryRecords () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_MaxQueryRecords);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Name.
