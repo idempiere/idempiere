@@ -250,8 +250,7 @@ public class FactReconcile {
 			return false;
 		}
 
-		rec.setMatchCode(null);
-		return rec.save();
+		return rec.delete(false);
 	}
 	
 	protected Vector<KeyNamePair> getAccount(){
