@@ -30,6 +30,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Language;
 import org.compiere.util.NamePair;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.event.DropEvent;
@@ -207,7 +208,7 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 			for (MPrintFormatItem pfi : listColumns){
 				 pfi.setSeqNo(seq);
 				 m_pfi.get(m_pfi.indexOf(pfi)).setSeqNo(seq);
-			     String name= pfi.getPrintName()== null ? pfi.getName(): pfi.getPrintName() ;
+			     String name= pfi.getPrintName(Language.getLoginLanguage())== null ? pfi.getName(): pfi.getPrintName(Language.getLoginLanguage()) ;
 			     ListElement element =new ListElement(pfi.get_ID(), name, pfi.getSeqNo(), pfi.getAD_Client_ID(), pfi.getAD_Org_ID());
 			     sortModel.addElement(element);
 			     sortList.addItem(new KeyNamePair(m_pfi.get(m_pfi.indexOf(pfi)).get_ID(), name)); 

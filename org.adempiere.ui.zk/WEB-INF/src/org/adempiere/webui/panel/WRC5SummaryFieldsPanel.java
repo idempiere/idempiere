@@ -26,6 +26,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.Env;
+import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -159,7 +160,7 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 		
 		for(int i=0 ;i<DisplayItems.size(); i++){
 			row=new Row();
-			String strValue = DisplayItems.get(i).getPrintName();
+			String strValue = DisplayItems.get(i).getPrintName(Language.getLoginLanguage());
 			if(strValue ==null || strValue.length()==0){
 				strValue = DisplayItems.get(i).getName();
 			}

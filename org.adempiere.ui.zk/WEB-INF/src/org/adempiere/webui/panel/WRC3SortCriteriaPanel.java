@@ -36,6 +36,7 @@ import org.compiere.model.MRefList;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
 import org.compiere.util.Util;
@@ -233,7 +234,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 			yesModel.removeAllElements();
 			for (int i=0 ; i < yesItems.size() ; i++) {				 
 				 int ID= yesItems.get(i).get_ID();
-				 String name = getName(yesItems.get(i));
+				 String name = yesItems.get(i).getPrintName(Language.getLoginLanguage())==null? yesItems.get(i).getName():yesItems.get(i).getPrintName(Language.getLoginLanguage());
 				 yesList.addItem(new KeyNamePair(ID, name));
 				 yesModel.addElement(new ListElement(ID, name, yesItems.get(i).getSortNo(), true, yesItems.get(i).getAD_Client_ID(), yesItems.get(i).getAD_Org_ID()));	
 			}
@@ -243,7 +244,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 			noModel.removeAllElements();
 			for (int i=0 ; i < noItems.size() ; i++) {
 				 int ID= noItems.get(i).get_ID();
-				 String name = noItems.get(i).getPrintName()== null ? noItems.get(i).getName() : noItems.get(i).getPrintName();
+				 String name = noItems.get(i).getPrintName(Language.getLoginLanguage())== null ? noItems.get(i).getName() : noItems.get(i).getPrintName(Language.getLoginLanguage());
 				 noItems.get(i).setSortNo(0);
 				 noItems.get(i).setIsOrderBy(false);
 				 noList.addItem(new KeyNamePair(ID, name));
