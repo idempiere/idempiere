@@ -72,6 +72,9 @@
 							<goal>site</goal>
 						</goals>
 						<configuration>
+							<skipInvalidArtifacts>false</skipInvalidArtifacts>
+  							<skipNotExistingArtifacts>false</skipNotExistingArtifacts>
+
 							<featureDefinitions>
 								<feature>
 									<id>org.idempiere.maven.feature</id>
@@ -105,11 +108,6 @@
                                                 <Export-Package>*</Export-Package>
 											</instructions>
 									    </artifact>
-										<artifact>
-											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces:jar:2.9.1_5</id>
-											<source>true</source>
-											<transitive>false</transitive>
-										</artifact>
 										<artifact>
 											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces:jar:2.9.1_5</id>
 											<source>true</source>
