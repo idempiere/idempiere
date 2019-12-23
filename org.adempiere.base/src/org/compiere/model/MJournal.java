@@ -20,6 +20,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -457,34 +458,10 @@ public class MJournal extends X_GL_Journal implements DocAction
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
-		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 
-		// Get Period
-		MPeriod period = (MPeriod) getC_Period();
-		if (! period.isInPeriod(getDateAcct())) {
-			period = MPeriod.get (getCtx(), getDateAcct(), getAD_Org_ID(), get_TrxName());
-			if (period == null)
-			{
-				log.warning("No Period for " + getDateAcct());
-				m_processMsg = "@PeriodNotFound@";
-				return DocAction.STATUS_Invalid;
-			}
-			//	Standard Period
-			if (period.getC_Period_ID() != getC_Period_ID()
-					&& period.isStandardPeriod())
-			{
-				m_processMsg = "@PeriodNotValid@";
-				return DocAction.STATUS_Invalid;
-			}
-		}
-		boolean open = period.isOpen(dt.getDocBaseType(), getDateAcct());
-		if (!open)
-		{
-			log.warning(period.getName()
-				+ ": Not open for " + dt.getDocBaseType() + " (" + getDateAcct() + ")");
-			m_processMsg = "@PeriodClosed@";
+		m_processMsg = validatePeriod(getDateAcct());
+		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
-		}
 
 		//	Lines
 		MJournalLine[] lines = getLines(true);
@@ -502,6 +479,12 @@ public class MJournal extends X_GL_Journal implements DocAction
 			MJournalLine line = lines[i];
 			if (!isActive())
 				continue;
+
+			if (! line.getDateAcct().equals(getDateAcct())) {
+				m_processMsg = validatePeriod(line.getDateAcct());
+				if (m_processMsg != null)
+					return DocAction.STATUS_Invalid;
+			}
 			
 			// bcahya, BF [2789319] No check of Actual, Budget, Statistical attribute
 			if (!line.getAccountElementValue().isActive())
@@ -584,6 +567,35 @@ public class MJournal extends X_GL_Journal implements DocAction
 		return DocAction.STATUS_InProgress;
 	}	//	prepareIt
 	
+	private String validatePeriod(Timestamp dateAcct) {
+		// Get Period
+		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
+		MPeriod period = (MPeriod) getC_Period();
+		SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.Date);
+
+		if (! period.isInPeriod(dateAcct)) {
+			period = MPeriod.get (getCtx(), dateAcct, getAD_Org_ID(), get_TrxName());
+			if (period == null)
+			{
+				log.warning("No Period for " + dateAcct);
+				return "@PeriodNotFound@ -> " + dateFormat.format(dateAcct);
+			}
+			//	Standard Period
+			if (period.getC_Period_ID() != getC_Period_ID() && period.isStandardPeriod())
+			{
+				log.warning("No Period for " + dateAcct);
+				return "@PeriodNotValid@ -> " + dateFormat.format(dateAcct);
+			}
+		}
+		boolean open = period.isOpen(dt.getDocBaseType(), dateAcct);
+		if (!open)
+		{
+			log.warning(period.getName() + ": Not open for " + dt.getDocBaseType() + " (" + dateAcct + ")");
+			return "@PeriodClosed@ -> " + dateFormat.format(dateAcct);
+		}
+		return null;
+	}
+
 	/**
 	 * 	Approve Document
 	 * 	@return true if success 
