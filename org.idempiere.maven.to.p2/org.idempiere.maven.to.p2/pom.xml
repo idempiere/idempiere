@@ -34,6 +34,7 @@
 		<asm.version>7.0</asm.version>
 		<restlet.version>2.4.1</restlet.version>
 		<javamail.version>1.6.3</javamail.version>
+		<poi.version>4.1.0</poi.version>
 	</properties>
 	
     <repositories>
@@ -41,10 +42,6 @@
             <id>orbit-photon-R20180531190352</id><!--only this repository have bakik 1.9-->
             <url>http://download.eclipse.org/tools/orbit/downloads/drops2/R20180531190352/repository</url>
             <layout>p2</layout>
-        </repository>
-        <repository>
-	        <id>org.jfree.chart</id>
-	        <url>http://nexus.orbisgis.org/content/repositories/osgi-maven</url>
         </repository>
         <repository>
 	        <id>jasperstudio-6.6.0</id>
@@ -88,6 +85,31 @@
 									<license>GPL v2.1</license>
 									<generateSourceFeature>true</generateSourceFeature>
 									<artifacts>
+										<artifact>
+											<id>org.jfree:jfreechart:1.0.19</id>
+											<source>true</source>
+											<transitive>false</transitive>
+											<override>true</override>
+											<instructions>
+                                                <Import-Package>*;resolution:=optional</Import-Package>
+                                                <Export-Package>*</Export-Package>
+											</instructions>
+									    </artifact>
+									    <artifact>
+											<id>org.jfree:jcommon:1.0.21</id>
+											<source>true</source>
+											<transitive>false</transitive>
+											<override>true</override>
+											<instructions>
+                                                <Import-Package>*;resolution:=optional</Import-Package>
+                                                <Export-Package>*</Export-Package>
+											</instructions>
+									    </artifact>
+										<artifact>
+											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces:jar:2.9.1_5</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
 										<artifact>
 											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces:jar:2.9.1_5</id>
 											<source>true</source>
@@ -385,7 +407,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.commons:commons-collections4:jar:4.2</id>
+											<id>org.apache.commons:commons-collections4:jar:4.4</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -564,7 +586,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.xmlbeans:xmlbeans:jar:3.0.1</id>
+											<id>org.apache.xmlbeans:xmlbeans:jar:3.1.0</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -1176,17 +1198,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.jfree:jfreechart-osgi:jar:1.0.19</id>
-											<source>true</source>
-											<transitive>false</transitive>
-										</artifact>
-										<artifact>
-											<id>org.jfree:jcommon-osgi:jar:1.0.23</id>
-											<source>true</source>
-											<transitive>false</transitive>
-										</artifact>
-										<artifact>
-											<id>org.apache.poi:poi:jar:3.15</id>
+											<id>org.apache.poi:poi:jar:${poi.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
                                             <override>true</override>
@@ -1198,7 +1210,7 @@
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.apache.poi:poi-ooxml:jar:3.15</id>
+											<id>org.apache.poi:poi-ooxml:jar:${poi.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
                                             <override>true</override>
@@ -1210,7 +1222,7 @@
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.apache.poi:poi-ooxml-schemas:jar:3.15</id>
+											<id>org.apache.poi:poi-ooxml-schemas:jar:${poi.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
                                             <override>true</override>
