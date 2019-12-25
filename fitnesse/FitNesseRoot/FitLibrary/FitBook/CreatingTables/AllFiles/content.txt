@@ -1,5 +1,0 @@
-|!-eg.AllFiles-!|
-|!-PatientTests/*.html-!||
-|!-StaffScheduleTests/*.html-!||
-|!-BedOccupancyTests/*.html-!||
-|!-ObservationTests/*.html-!||

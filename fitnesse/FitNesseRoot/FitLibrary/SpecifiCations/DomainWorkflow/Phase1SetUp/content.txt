@@ -1,7 +1,0 @@
-^SpecifyPrimitive
-
-^SpecifyArrays
-^SpecifyLists
-^SpecifySets
-^SpecifyMaps
-^SpecifyObject

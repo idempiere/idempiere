@@ -1,4 +1,0 @@
-^HttpHead
-^HttpGet
-^HttpHeadWithProxy
-^HttpGetWithProxy

@@ -1,3 +1,0 @@
-!|fitlibrary.runner.FolderRunnerFixture|
-
-|''run''|folderRunner/tests|''giving''|folderRunner/reports|

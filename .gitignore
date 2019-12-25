@@ -8,7 +8,6 @@ org.adempiere.webstore/bin
 org.idempiere.hazelcast.service.config/bin
 */target/
 runtime-server.product
-org.idempiere.fitnesse.server/FitNesseRoot
 syntax: regexp
 adempiere
 org.adempiere.install/lib
@@ -18,7 +17,6 @@ org.adempiere.ui.zk/bin/**
 **/lib/*.jar
 **/seed/*.jar
 db/ddlutils/lib/*.jar
-fitnesse/fitnesse.jar
 org.adempiere.ui.zk/labelapplet.jar
 
 lib/plugins
@@ -36,7 +34,6 @@ org.compiere.db.postgresql.provider/bin/*.class
 org.adempiere.ui.swing/bin/**
 org.adempiere.report.jasper.fonts/bin/**
 
-org.adempiere.tomcat.config/META-INF/tomcat/server.xml
 org.apache.ecs/bin/*.class
 org.adempiere.replication/bin/*.class
 org.adempiere.replication.server/bin/**
@@ -50,9 +47,6 @@ org.adempiere.ui.swing.pluginlist/bin/*.class
 org.adempiere.plugin.utils/bin/*.class
 org.adempiere.webstore.servlet/bin/*.class
 org.adempiere.webstore.servlet/bin/*.tld
-org.adempiere.eclipse.equinox.servletbridge/bin/*.class
-org.adempiere.eclipse.equinox.http.servlet/bin/*.class
-org.adempiere.eclipse.equinox.http.servletbridge/bin/*.class
 org.adempiere.ui.zk.example/bin/*
 org.adempiere.webstore.resource/bin/*
 org.adempiere.webstore.resource/bin/*
@@ -75,24 +69,12 @@ hazelcast.xml
 swingclient.product*.launch
 server.product*.launch
 
-org.zkoss.zk.library/bin
 .class
 
-org.zkoss.zk.library/*/calendar*.jar
-org.zkoss.zk.library/*/ckez*.jar
-org.zkoss.zk.library/*/gmapsz*.jar
-org.zkoss.zk.library/*/jruby*.jar
-org.zkoss.zk.library/*/jython*.jar
-org.zkoss.zk.library/*/timelinez*.jar
-org.zkoss.zk.library/*/timeplotz*.jar
-org.zkoss.zk.library/*/z*.jar
-.buckminster/
 jettyhome/
 .recommenders/
 packin
 packout
 RemoteSystemsTempFiles
-
-fitnesse/FitNesseRoot/FitLibraryWeb/*.zip
 
 org.idempiere.javadoc/API

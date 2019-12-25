@@ -1,6 +1,0 @@
-^SetUp
-^TestWithNoRestrictions
-^TestWithOneRestrictionPass
-^TestWithOneRestrictionFail
-^TestWithMultipleRestrictionsPass
-^TestWithMultipleRestrictionsFail

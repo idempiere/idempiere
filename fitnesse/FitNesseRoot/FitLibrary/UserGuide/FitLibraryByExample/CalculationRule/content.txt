@@ -1,8 +1,0 @@
-A CalculationRule specifies business rules that involve calculations.
-
-!3 Example
-^DiscountExample
-!3 Code
-^DiscountCode
-^CodeInGeneral
-^DomainAdapter

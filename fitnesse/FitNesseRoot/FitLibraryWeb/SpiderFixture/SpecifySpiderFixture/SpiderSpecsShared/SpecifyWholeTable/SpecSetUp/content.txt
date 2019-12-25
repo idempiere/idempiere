@@ -1,9 +1,0 @@
-!include <FitLibraryWeb.SpiderFixture.SpecifySpiderFixture.SpecSetUp
-!*< def
-!define html ({{{<table>
-  <tr><td>red</td><td>green</td></tr>
-  <tr><td>yellow</td><td>blue</td></tr>
-</table>}}})
-*!
-
-|''with html''|${html}|

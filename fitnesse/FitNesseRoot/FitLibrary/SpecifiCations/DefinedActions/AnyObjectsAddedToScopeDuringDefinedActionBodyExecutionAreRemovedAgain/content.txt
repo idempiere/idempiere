@@ -1,3 +1,0 @@
-^DefinedActions
->ExceptWhenNoFlowObjectInOuterScope
-^WithSomethingInOuterScope

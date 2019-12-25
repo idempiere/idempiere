@@ -1,2 +1,0 @@
-|!include .FitLibrary.SpecifiCations.DomainWorkflow.Phase1SetUp.IntArray|
-|!include .FitLibrary.SpecifiCations.DomainWorkflow.Phase1SetUp.IntArray|

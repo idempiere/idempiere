@@ -1,6 +1,0 @@
-!define BRACE ({)
-!define BRACKET {[}
-!define PAREN [(]
-
-|script|
-|check|echo|${BRACE} ${BRACKET} ${PAREN}|{ [ (|

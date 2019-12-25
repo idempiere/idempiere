@@ -1,5 +1,0 @@
-This is a method, supplied in a ${domainAdapter}, that defines how to parse a particular ${valueObject} type.
-
-In Java, a ${finder} is also used.
-!3 Examples
- * See .FitLibrary.SpecifiCations.DoWorkflow.TestParseDelegate

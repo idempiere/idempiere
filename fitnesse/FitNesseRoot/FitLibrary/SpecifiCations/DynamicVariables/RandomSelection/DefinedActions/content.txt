@@ -1,7 +1,0 @@
-|''random variable values''|
-
-|''select''|title|''randomly''|
-|Mr|
-|Mrs|
-
-|show|get|@{title}|

@@ -1,8 +1,0 @@
->SpecSetUp
-^SelectByPosition
-^SelectByName
-^SelectDefault
-^SelectionFails
-^SelectByXpath
-^SelectById
-^SelectDoesNotChangeTitle

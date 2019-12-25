@@ -1,2 +1,0 @@
-|calculate late fee|
-|''hire period''|''hours late''|''per hour''|''per day''|''per week''|''late fee()''|

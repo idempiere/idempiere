@@ -1,3 +1,0 @@
-|''colour''|''count''|
-|red|101|
-|blue|102|

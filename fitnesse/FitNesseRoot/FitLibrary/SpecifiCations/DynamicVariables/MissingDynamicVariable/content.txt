@@ -1,3 +1,0 @@
-!|fitlibrary.DoFixture|
-
-|''get''|@{prop}|'''is'''|@{prop}|

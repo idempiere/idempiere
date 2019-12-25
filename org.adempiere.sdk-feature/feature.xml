@@ -35,10 +35,6 @@
          optional="true"/>
 
    <includes
-         id="org.idempiere.fitnesse.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.idempiere.equinox.p2.director.feature"
          version="0.0.0"/>
 

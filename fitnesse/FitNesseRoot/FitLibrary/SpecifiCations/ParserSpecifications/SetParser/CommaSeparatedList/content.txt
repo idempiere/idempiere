@@ -1,3 +1,0 @@
-^ParseSpecification
-^MatchSpecification
-^ShowSpecification

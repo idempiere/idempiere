@@ -1,7 +1,0 @@
-|''lookup''|
-|three|hit?|
-|two|2|
-|one|1|
-|one|11|
-
-|''expected test results''|0|''right''|0|''wrong''|0|''ignored''|1|''exceptions''|

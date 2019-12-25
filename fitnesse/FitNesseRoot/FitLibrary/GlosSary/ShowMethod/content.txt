@@ -1,2 +1,0 @@
-${programmers}
-A ${show} is needed when a ${finder} returns an ${entity} that doesn't match the expected one.

@@ -1,4 +1,0 @@
-|!-OccupantListInRoom-!|lotr|
-|''user''|
-|anna|
-|luke|

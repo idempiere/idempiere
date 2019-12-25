@@ -1,4 +1,0 @@
-^SetUp
-^TestAccountAfterHire
-^TestAccountAfterHireCancel
-^TestAccountReturnEarly

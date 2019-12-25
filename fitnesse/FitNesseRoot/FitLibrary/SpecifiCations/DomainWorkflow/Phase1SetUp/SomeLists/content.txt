@@ -1,4 +1,0 @@
- * List<Colour>
-|''a list''|!include ColourList|
- * List<List<Colour>>
-|''a list of lists''|!include ListColourList|

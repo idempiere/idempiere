@@ -1,7 +1,0 @@
-^SpecifySinglePropertyReference
-^SpecifySinglePropertyReferenceErrors
-^SpecifyOfPropertyReference
-^SpecifyIndexedReference
-^SpecifyIndexedArrayReference
-^SpecifyMapReference
-^SpecifyMixedReferences

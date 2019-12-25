@@ -1,6 +1,0 @@
-|''spider''|
-
-|''save html in''|test.html|
-
-|''zero report counts''|
-

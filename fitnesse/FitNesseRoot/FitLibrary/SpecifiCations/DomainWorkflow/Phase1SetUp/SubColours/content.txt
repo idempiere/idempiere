@@ -1,3 +1,0 @@
-|''colour''|''count''|''sub colours''|
-|violet|33|!include SubSubColours|
-|orange|44||

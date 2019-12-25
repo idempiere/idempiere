@@ -1,4 +1,0 @@
-${domainObject}s can be set up with ''!-DomainObjectSetUpTraverse-!'' tables.
-
-For further explanation, examples, and specifications, see:
- * ${domainObject}

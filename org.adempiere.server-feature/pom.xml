@@ -31,13 +31,6 @@
 							</includes>
 							<followSymlinks>false</followSymlinks>
         				</fileset>
-        				<fileset>
-							<directory>${project.basedir}/../fitnesse/FitNesseRoot/FitLibraryWeb</directory>
-							<includes>
-								<include>*.zip</include>
-							</includes>
-							<followSymlinks>false</followSymlinks>
-        				</fileset>
 					</filesets>
 				</configuration>
 			</plugin>
@@ -135,26 +128,6 @@
 							<overWriteSnapshots>true</overWriteSnapshots>
 						</configuration>
 					</execution>
-					<execution>
-						<id>fitnesse.lib</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.fitnesse</groupId>
-									<artifactId>fitnesse</artifactId>
-									<version>20111025</version>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>../fitnesse</outputDirectory>
-							<stripVersion>true</stripVersion>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -184,45 +157,6 @@
 							<url>${url.file.srv}/database/7.1/Adempiere.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>data/seed</outputDirectory>
-							<retries>5</retries>
-						</configuration>
-					</execution>
-					<execution>
-						<id>download-fitnesse-test-1</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>${url.file.srv}/extra.jar/101-20121212164242.zip</url>
-							<unpack>false</unpack>
-							<outputDirectory>../fitnesse/FitNesseRoot/FitLibraryWeb</outputDirectory>
-							<retries>5</retries>
-						</configuration>
-					</execution>
-					<execution>
-						<id>download-fitnesse-test-2</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>${url.file.srv}/extra.jar/21-20121212154702.zip</url>
-							<unpack>false</unpack>
-							<outputDirectory>../fitnesse/FitNesseRoot/FitLibraryWeb</outputDirectory>
-							<retries>5</retries>
-						</configuration>
-					</execution>
-					<execution>
-						<id>download-fitnesse-test-3</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>${url.file.srv}/extra.jar/6-20121212124109.zip</url>
-							<unpack>false</unpack>
-							<outputDirectory>../fitnesse/FitNesseRoot/FitLibraryWeb</outputDirectory>
 							<retries>5</retries>
 						</configuration>
 					</execution>

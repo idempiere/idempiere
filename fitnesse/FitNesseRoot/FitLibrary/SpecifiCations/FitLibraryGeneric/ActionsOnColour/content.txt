@@ -1,3 +1,0 @@
-|''set point''|!include ThePointRef|
-
-|check|''point''|!include ThePointRef|

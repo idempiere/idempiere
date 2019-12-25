@@ -1,3 +1,0 @@
-|''client booking list''|Joanna|
-|''rental item''|''count''|
-

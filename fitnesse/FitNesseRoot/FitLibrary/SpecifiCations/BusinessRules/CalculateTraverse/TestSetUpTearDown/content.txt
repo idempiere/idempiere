@@ -1,6 +1,0 @@
-^TestSetUp
-^TestTearDown
-^TestSetUpExceptionShown
-
-^TestNonFlowSetUp
-^TestNonFlowSetUpException

@@ -1,6 +1,0 @@
-|'''do this now'''|
-|''name''|''full address''|
-
-|''get''|@{name}|'''is'''|adam|
-
-|''get''|@{full address}|'''is'''|paradise|

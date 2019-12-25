@@ -1,8 +1,0 @@
-^SetUp
-
-^CreateNewClients
-^CreateClientConflict
-^ModifyClientDetails
-^DeleteClient
-^DeleteClientWithBookings
-^ValidateEmails

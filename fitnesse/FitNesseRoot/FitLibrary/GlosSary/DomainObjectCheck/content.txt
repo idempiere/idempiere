@@ -1,4 +1,0 @@
-${domainObject}s can be checked with ''!-DomainObjectCheckTraverse-!'' tables.
-
-For further explanation, examples, and specifications, see:
- * ${domainObject}
