@@ -338,7 +338,7 @@ extends AbstractExcelExporter
 							HSSFCell cell = row.createCell(0);
 							HSSFCellStyle style = m_workbook.createCellStyle();
 							HSSFFont font = m_workbook.createFont();
-							font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+							font.setBold(true);
 							style.setFont(font);
 							cell.setCellStyle(style);
 							String value = Util.stripDiacritics(Msg.getMsg(getCtx(), "Parameter") + ":");

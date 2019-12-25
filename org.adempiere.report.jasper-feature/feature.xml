@@ -79,7 +79,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.jfree.jcommon-osgi"
+         id="org.jfree.jcommon"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -93,7 +93,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.jfree.chart-osgi"
+         id="org.jfree.chart"
          download-size="0"
          install-size="0"
          version="0.0.0"

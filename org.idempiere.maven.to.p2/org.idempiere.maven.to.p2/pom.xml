@@ -44,8 +44,8 @@
             <layout>p2</layout>
         </repository>
         <repository>
-	        <id>jasperstudio-6.6.0</id>
-	        <url>https://sourceforge.net/projects/jasperstudio/files/updatesite/6.6.0</url>
+	        <id>jasperstudio-6.11.0</id>
+	        <url>https://sourceforge.net/projects/jasperstudio/files/updatesite/6.11.0</url>
             <layout>p2</layout>
         </repository>
         <repository>
@@ -99,7 +99,7 @@
 											</instructions>
 									    </artifact>
 									    <artifact>
-											<id>org.jfree:jcommon:1.0.21</id>
+											<id>org.jfree:jcommon:1.0.23</id>
 											<source>true</source>
 											<transitive>false</transitive>
 											<override>true</override>
@@ -1227,7 +1227,7 @@
 											<instructions>
 												<Bundle-SymbolicName>org.apache.poi.poi-ooxml-schemas</Bundle-SymbolicName>
 												<Bundle-Name>poi-ooxml-schemas</Bundle-Name>
-                                                <Import-Package>*;resolution:=optional</Import-Package>
+                                                <Import-Package>*;resolution:=optional,org.apache.xmlbeans.impl.schema</Import-Package>
                                                 <Export-Package>*</Export-Package>
 											</instructions>
 										</artifact>
@@ -1690,7 +1690,7 @@
                                     <id>com.jaspersoft.studio.bundles.barbecue:1.5.0.beta1_b02</id>
                                 </artifact>
                                 <artifact>
-                                    <id>com.jaspersoft.studio.bundles.itext:2.1.7.js6_b02</id>
+                                    <id>com.jaspersoft.studio.bundles.itext:2.1.7.js7_b01</id>
                                 </artifact>
                                 <artifact>
                                     <id>org.w3c.dom.svg.patch:1.1.0.b02</id>
