@@ -33,7 +33,7 @@ then
    cp jettyhome/etc/jetty-selector.xml jetty-selector.xml.sav
 fi
 
-$DESTINATION/update-prd.sh $1 org.adempiere.server.product,org.idempiere.fitnesse.feature.feature.group
+$DESTINATION/update-prd.sh $1 org.adempiere.server.product
 
 cp idempiere.ini.sav idempiere.ini
 
