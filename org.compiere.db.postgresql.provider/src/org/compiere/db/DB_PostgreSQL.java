@@ -21,12 +21,13 @@ package org.compiere.db;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -55,7 +56,6 @@ import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
-import org.jfree.io.IOUtils;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -729,10 +729,8 @@ public class DB_PostgreSQL implements AdempiereDatabase
 				dir.mkdir();
 			propertyFile = new File(propertyFilename);
 			try {
-				FileOutputStream fos = new FileOutputStream(propertyFile);
 				inputStream = url.openStream();
-				IOUtils.getInstance().copyStreams(inputStream, fos);
-				fos.close();
+				Files.copy(inputStream, propertyFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 				inputStream.close();
 				inputStream = null;
 			} catch (FileNotFoundException e) {
