@@ -10,7 +10,8 @@ Bundle-ClassPath: .,
  lib/mchange-commons-java.jar,
  lib/postgresql.jar
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
- org.adempiere.install;bundle-version="0.0.0"
+ org.adempiere.install;bundle-version="0.0.0",
+ org.jfree.jcommon;bundle-version="1.0.23"
 Import-Package: junit.framework;version="3.8.2",
  org.junit;version="4.8.1",
  org.osgi.framework,
