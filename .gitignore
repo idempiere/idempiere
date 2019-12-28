@@ -56,6 +56,7 @@ org.apache.ecs/bin/*
 keystore/*
 log/*
 PostgreSQL/*
+Oracle/*
 *.log
 Adempiere.properties
 idempiere.properties
