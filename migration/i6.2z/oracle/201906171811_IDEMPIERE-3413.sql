@@ -61,25 +61,10 @@ UPDATE AD_Field SET DisplayLogic='@IsQueryCriteria@=Y & @AD_Reference_ID@!200161
 UPDATE AD_Field SET AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, MandatoryLogic='@AD_Reference_ID@=200161 | @AD_Reference_ID@=200162 | @AD_Reference_ID@=200163', IsToolbarButton=NULL,Updated=TO_DATE('2019-06-22 17:15:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=201622
 ;
 
-CREATE TYPE TABLE_OF_VARCHAR2 AS TABLE OF VARCHAR2(4000)
-;
+-- moved to script 201912282330_IDEMPIERE-3413.sql
+-- CREATE TYPE TABLE_OF_VARCHAR2 AS TABLE OF VARCHAR2(4000)
 
-CREATE OR REPLACE FUNCTION toTableOfVarchar2(p_list IN VARCHAR2)
-      RETURN TABLE_OF_VARCHAR2 DETERMINISTIC
-    AS
-      l_tab TABLE_OF_VARCHAR2 := TABLE_OF_VARCHAR2();
-    BEGIN
-      FOR i IN
-      ( select trim('"' from REGEXP_SUBSTR(p_list, '(".*?"|.*?)(,|$)', 1, level, NULL, 1)) split
-      from dual
-      connect by level<=length(regexp_replace(p_list,'".*?"|[^,]*'))+1)
-      LOOP
-       l_tab.EXTEND;
-       l_tab(l_tab.COUNT) := i.split;
-     END LOOP;
-     RETURN l_tab;
-   END toTableOfVarchar2
-;
+-- CREATE OR REPLACE FUNCTION toTableOfVarchar2(p_list IN VARCHAR2)
 
 SELECT register_migration_script('201906171811_IDEMPIERE-3413.sql') FROM dual
 ;
