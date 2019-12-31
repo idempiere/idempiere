@@ -118,6 +118,7 @@ public class ReportAction implements EventListener<Event>
 			cboExportType.appendItem("txt" + " - " + Msg.getMsg(Env.getCtx(), "FileTXT"), "txt");
 			cboExportType.appendItem("ssv" + " - " + Msg.getMsg(Env.getCtx(), "FileSSV"), "ssv");
 			cboExportType.appendItem("csv" + " - " + Msg.getMsg(Env.getCtx(), "FileCSV"), "csv");
+			cboExportType.appendItem("xlsx" + " - " + Msg.getMsg(Env.getCtx(), "FileXLSX"), "xlsx");
 			ListItem li = cboExportType.appendItem("xls" + " - " + Msg.getMsg(Env.getCtx(), "FileXLS"), "xls");
 			cboExportType.setSelectedItem(li);
 			cboExportType.setVisible(false);
@@ -439,6 +440,11 @@ public class ReportAction implements EventListener<Event>
 			{
 				inputFile = File.createTempFile("Export", ".xls");							
 				re.createXLS(inputFile, re.getPrintFormat().getLanguage());
+			}
+			else if (ext.equals("xlsx"))
+			{
+				inputFile = File.createTempFile("Export", ".xlsx");							
+				re.createXLSX(inputFile, re.getPrintFormat().getLanguage());
 			}
 			else
 			{
