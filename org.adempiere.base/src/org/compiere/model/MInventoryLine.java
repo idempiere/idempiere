@@ -289,6 +289,10 @@ public class MInventoryLine extends X_M_InventoryLine
 		MDocType dt = MDocType.get(getCtx(), getParent().getC_DocType_ID());
 		String docSubTypeInv = dt.getDocSubTypeInv();
 
+		//	Set AD_Org to parent if not charge
+		if (getC_Charge_ID() == 0)
+			setAD_Org_ID(getParent().getAD_Org_ID());
+		
 		if (MDocType.DOCSUBTYPEINV_InternalUseInventory.equals(docSubTypeInv)) {
 
 			// Internal Use Inventory validations
@@ -359,11 +363,7 @@ public class MInventoryLine extends X_M_InventoryLine
 		} else {
 			log.saveError("Error", "Document inventory subtype not configured, cannot complete");
 			return false;
-		}
-
-		//	Set AD_Org to parent if not charge
-		if (getC_Charge_ID() == 0)
-			setAD_Org_ID(getParent().getAD_Org_ID());
+		}		
 
 		return true;
 	}	//	beforeSave

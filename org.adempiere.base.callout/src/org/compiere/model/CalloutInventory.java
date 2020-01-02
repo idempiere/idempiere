@@ -173,5 +173,50 @@ public class CalloutInventory extends CalloutEngine
 		return Env.ZERO;
 	}
 	
-
+	/**
+	 * 
+	 * 	reset value of org when not set charge 
+	 * 
+	 *  @param ctx      Context
+	 *  @param WindowNo current Window No
+	 *  @param mTab     Model Tab
+	 *  @param mField   Model Field
+	 *  @param value    The new value
+	 *  @return Error message or ""
+	 */
+	public String setCharge (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value){		
+		int doctypeid = Env.getContextAsInt(ctx, WindowNo, "C_DocType_ID");
+		String docSubTypeInv = null;
+		if (doctypeid > 0) {
+			MDocType dt = MDocType.get(ctx, doctypeid);
+			docSubTypeInv = dt.getDocSubTypeInv();
+		}
+		
+		//just reset org in charge = 0 when isn't window Physical Inventory 
+		if (!MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv) && value == null) {
+			mTab.setValue(MOrg.COLUMNNAME_AD_Org_ID, Env.getContext(ctx, WindowNo, MOrg.COLUMNNAME_AD_Org_ID));
+		}				
+		
+		return "";
+	}
+	
+	/**
+	 *  reset value of org when change inventoryType to D
+	 *   
+	 *  @param ctx      Context
+	 *  @param WindowNo current Window No
+	 *  @param mTab     Model Tab
+	 *  @param mField   Model Field
+	 *  @param value    The new value
+	 *  @return Error message or ""
+	 */
+	public String setInventoryType (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value){
+		String inventoryType = Env.getContext(ctx, WindowNo, "InventoryType").toString();
+		if ("D".equals(inventoryType)){
+			mTab.setValue(MOrg.COLUMNNAME_AD_Org_ID, Env.getContext(ctx, WindowNo, MOrg.COLUMNNAME_AD_Org_ID));
+		}
+		return "";
+	}
+	
 }	//	CalloutInventory
+
