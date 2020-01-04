@@ -63,6 +63,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pdf.Document;
 import org.adempiere.print.export.PrintDataExcelExporter;
+import org.adempiere.print.export.PrintDataXLSXExporter;
 import org.apache.ecs.XhtmlDocument;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.script;
@@ -1483,6 +1484,20 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		exp.export(outFile, language);
 	}
 
+	/**
+	 * Create ExcelX file
+	 * @param outFile output file
+	 * @param language
+	 * @throws Exception if error
+	 */
+	public void createXLSX(File outFile, Language language)
+	throws Exception
+	{
+		Boolean [] colSuppressRepeats = m_layout == null || m_layout.colSuppressRepeats == null? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
+		PrintDataXLSXExporter exp = new PrintDataXLSXExporter(getPrintData(), getPrintFormat(), colSuppressRepeats);
+		exp.export(outFile, language);
+	}
+	
 	/**************************************************************************
 	 * 	Get Report Engine for process info 
 	 *	@param ctx context

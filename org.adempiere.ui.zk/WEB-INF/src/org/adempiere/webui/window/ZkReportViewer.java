@@ -280,6 +280,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		{
 			previewType.appendItem("Excel", "XLS");
 			previewType.appendItem("CSV", "CSV");
+			previewType.appendItem("Excel X", "XLSX");
 		}
 		
 		toolBar.appendChild(previewType);		
@@ -658,7 +659,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(new XLSRendererRunnable(this),getDesktop()));
 		} else if ("CSV".equals(previewType.getSelectedItem().getValue())) {
 			future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(new CSVRendererRunnable(this),getDesktop()));
-		}
+		} else if ("XLSX".equals(previewType.getSelectedItem().getValue())) {			
+			future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(new XLSXRendererRunnable(this),getDesktop()));
+		}		
 	}
 	
 	private void onPreviewReport() {
@@ -1135,6 +1138,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			cboType.appendItem("ssv" + " - " + Msg.getMsg(Env.getCtx(), "FileSSV"), "ssv");
 			cboType.appendItem("csv" + " - " + Msg.getMsg(Env.getCtx(), "FileCSV"), "csv");
 			cboType.appendItem("xls" + " - " + Msg.getMsg(Env.getCtx(), "FileXLS"), "xls");
+			cboType.appendItem("xlsx" + " - " + Msg.getMsg(Env.getCtx(), "FileXLSX"), "xlsx");
 			cboType.setSelectedItem(li);
 			
 			Hbox hb = new Hbox();
@@ -1217,6 +1221,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				String contextPath = Executions.getCurrent().getContextPath();
 				m_reportEngine.createHTML(sw, false, m_reportEngine.getPrintFormat().getLanguage(), new HTMLExtension(contextPath, "rp", this.getUuid()), true);
 				data = sw.getBuffer().toString().getBytes();	
+			}
+			else if (ext.equals("xlsx"))
+			{
+				inputFile = File.createTempFile("Export", ".xlsx");							
+				m_reportEngine.createXLSX(inputFile, m_reportEngine.getPrintFormat().getLanguage());
 			}
 			else if (ext.equals("xls"))
 			{
@@ -1724,4 +1733,61 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
 		
 	}
+	
+	protected static class XLSXRendererRunnable extends ContextRunnable implements IServerPushCallback
+	{
+
+		private ZkReportViewer viewer;
+
+		public XLSXRendererRunnable(ZkReportViewer viewer)
+		{
+			super();
+			this.viewer = viewer;
+		}
+
+		@Override
+		protected void doRun()
+		{
+			try
+			{
+				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
+					log.warning("Cannot archive Document");
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = viewer.makePrefix(viewer.m_reportEngine.getName());
+				if (log.isLoggable(Level.FINE))
+				{
+					log.log(Level.FINE, "Path=" + path + " Prefix=" + prefix);
+				}
+				File file = File.createTempFile(prefix, ".xlsx", new File(path));
+				viewer.m_reportEngine.createXLSX(file, viewer.m_reportEngine.getPrintFormat().getLanguage());
+				viewer.media = new AMedia(file.getName(), "xlsx",
+						"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", file, true);
+			}
+			catch (Exception e)
+			{
+				if (e instanceof RuntimeException)
+					throw (RuntimeException) e;
+				else
+					throw new RuntimeException(e);
+			}
+			finally
+			{
+				Desktop desktop = AEnv.getDesktop();
+				if (desktop != null && desktop.isAlive())
+				{
+					new ServerPushTemplate(desktop).executeAsync(this);
+				}
+			}
+		}
+
+		@Override
+		public void updateUI()
+		{
+			viewer.labelDrill.setVisible(false);
+			viewer.comboDrill.setVisible(false);
+			viewer.onPreviewReport();
+		}
+
+	}
+	
 }
