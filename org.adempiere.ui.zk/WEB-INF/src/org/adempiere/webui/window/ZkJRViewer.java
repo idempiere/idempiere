@@ -63,6 +63,7 @@ import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.SimpleCsvExporterConfiguration;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
@@ -70,12 +71,13 @@ import net.sf.jasperreports.export.SimpleHtmlReportConfiguration;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
 public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCloseHandler {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = -7047317766671393738L;
+	private static final long serialVersionUID = -812700088629098149L;
 
 	private JasperPrint jasperPrint;
 	private java.util.List<JasperPrint> jasperPrintList;
@@ -161,9 +163,10 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		if (isCanExport) {
 			previewType.appendItem("PDF", "PDF");
 			previewType.appendItem("HTML", "HTML");
-			previewType.appendItem("Excel", "XLS");
+			previewType.appendItem("XLS", "XLS");
 			previewType.appendItem("CSV", "CSV");
 			previewType.appendItem("SSV", "SSV");
+			previewType.appendItem("XLSX", "XLSX");
 			if ("PDF".equals(defaultType)) {
 				previewType.setSelectedIndex(0);
 			} else if ("HTML".equals(defaultType)) {
@@ -174,6 +177,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				previewType.setSelectedIndex(3);
 			} else if ("SSV".equals(defaultType)) {
 				previewType.setSelectedIndex(4);
+			} else if ("XLSX".equals(defaultType)) {
+				previewType.setSelectedIndex(5);
 			} else {
 				previewType.setSelectedIndex(0);
 				log.info("Format not Valid: "+defaultType);
@@ -190,6 +195,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			} else if ("CSV".equals(defaultType)) {
 				previewType.setSelectedIndex(0); // default to PDF if cannot export
 			} else if ("SSV".equals(defaultType)) {
+				previewType.setSelectedIndex(0); // default to PDF if cannot export
+			} else if ("XLSX".equals(defaultType)) {
 				previewType.setSelectedIndex(0); // default to PDF if cannot export
 			} else {
 				previewType.setSelectedIndex(0);
@@ -402,6 +409,34 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				exporterXLS.setConfiguration(xlsConfig);
 				exporterXLS.exportReport();
 				media = new AMedia(m_title + ".xls", "xls", "application/vnd.ms-excel", file, true);
+
+			} else if ("XLSX".equals(reportType)) {
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = null;
+				if (isList)
+					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
+				else
+					prefix = makePrefix(jasperPrint.getName());
+				if (prefix.length() < 3)
+					prefix += "_".repeat(3-prefix.length());
+				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				File file = File.createTempFile(prefix, ".xlsx", new File(path));
+		        FileOutputStream fos = new FileOutputStream(file);
+
+				// coding For Excel:
+				JRXlsxExporter exporterXLSX = new JRXlsxExporter();
+				SimpleXlsxReportConfiguration xlsxConfig = new SimpleXlsxReportConfiguration();
+				xlsxConfig.setOnePagePerSheet(false);
+
+				if (!isList){
+					jasperPrintList = new ArrayList<>();
+					jasperPrintList.add(jasperPrint);
+				}
+				exporterXLSX.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+				exporterXLSX.setExporterOutput(new SimpleOutputStreamExporterOutput(fos));
+				exporterXLSX.setConfiguration(xlsxConfig);
+				exporterXLSX.exportReport();
+				media = new AMedia(m_title + ".xlsx", "xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", file, true);
 
 			}else if ("CSV".equals(reportType)) {
 				String path = System.getProperty("java.io.tmpdir");

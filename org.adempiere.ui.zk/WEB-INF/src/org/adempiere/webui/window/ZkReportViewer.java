@@ -143,7 +143,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5315520059451132465L;
+	private static final long serialVersionUID = -424164233048709765L;
 
 	/** Window No					*/
 	private int                 m_WindowNo = -1;
@@ -278,9 +278,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		if ( m_isCanExport )
 		{
-			previewType.appendItem("Excel", "XLS");
+			previewType.appendItem("XLS", "XLS");
 			previewType.appendItem("CSV", "CSV");
-			previewType.appendItem("Excel X", "XLSX");
+			previewType.appendItem("XLSX", "XLSX");
 		}
 		
 		toolBar.appendChild(previewType);		
@@ -298,6 +298,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				pTypeIndex = 2;
 			else if (m_reportEngine.getReportType().equals("CSV") && m_isCanExport)
 				pTypeIndex = 3;
+			else if (m_reportEngine.getReportType().equals("XLSX") && m_isCanExport)
+				pTypeIndex = 4;
 		}
 		else
 		{
@@ -315,6 +317,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
     			pTypeIndex = 2;
     		} else if ("CSV".equals(type) && m_isCanExport) {
     			pTypeIndex = 3;
+    		} else if ("XLSX".equals(type) && m_isCanExport) {
+    			pTypeIndex = 4;
     		}
 		}
 		

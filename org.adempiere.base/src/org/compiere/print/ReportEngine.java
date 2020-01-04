@@ -1322,6 +1322,44 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		}
 	}	//	getXLS
 	
+	/**************************************************************************
+	 * 	Create XLSX file.
+	 * 	(created in temporary storage)
+	 *	@return XLSX file
+	 */
+	public File getXLSX()
+	{
+		return getXLSX(null);
+	}	//	getXLSX
+
+	/**
+	 * 	Create XLSX file.
+	 * 	@param file file
+	 *	@return XLSX file
+	 */
+	public File getXLSX(File file)
+	{
+		try
+		{
+			if (file == null)
+				file = File.createTempFile (makePrefix(getName()), ".xlsx");
+		}
+		catch (IOException e)
+		{
+			log.log(Level.SEVERE, "", e);
+		}
+		try 
+		{
+			createXLSX(file, Env.getLanguage(getCtx()));
+			return file;
+		} 
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, "", e);
+			return null;
+		}
+	}	//	getXLSX
+	
 	/**
 	 * 	Create PDF File
 	 * 	@param file file

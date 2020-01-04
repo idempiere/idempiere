@@ -440,7 +440,7 @@ public class AlertProcessor extends AdempiereServer
 		if (data.size() <= 1)
 			return null;
 		// File
-		File file = rule.createReportFile("xls");
+		File file = rule.createReportFile("xlsx");
 		//
 		ArrayExcelExporter exporter = new ArrayExcelExporter(getCtx(), data);
 		exporter.export(file, language, false);

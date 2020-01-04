@@ -195,6 +195,8 @@ public class Scheduler extends AdempiereServer
 				pi.setExportFileExtension("csv");
 			else if ("XLS".equals(pi.getReportType()))
 				pi.setExportFileExtension("xls");
+			else if ("XLSX".equals(pi.getReportType()))
+				pi.setExportFileExtension("xlsx");
 			else
 				pi.setExportFileExtension("pdf");
 		}

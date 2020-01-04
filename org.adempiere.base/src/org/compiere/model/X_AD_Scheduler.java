@@ -31,7 +31,7 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200104L;
 
     /** Standard Constructor */
     public X_AD_Scheduler (Properties ctx, int AD_Scheduler_ID, String trxName)
@@ -369,10 +369,12 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	public static final String REPORTOUTPUTTYPE_PDF = "PDF";
 	/** HTML = HTML */
 	public static final String REPORTOUTPUTTYPE_HTML = "HTML";
-	/** Excel = XLS */
-	public static final String REPORTOUTPUTTYPE_Excel = "XLS";
+	/** XLS = XLS */
+	public static final String REPORTOUTPUTTYPE_XLS = "XLS";
 	/** CSV = CSV */
 	public static final String REPORTOUTPUTTYPE_CSV = "CSV";
+	/** XLSX = XLSX */
+	public static final String REPORTOUTPUTTYPE_XLSX = "XLSX";
 	/** Set Report Output Type.
 		@param ReportOutputType Report Output Type	  */
 	public void setReportOutputType (String ReportOutputType)

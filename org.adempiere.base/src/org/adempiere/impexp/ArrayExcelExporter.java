@@ -26,7 +26,7 @@ import org.compiere.util.Util;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  *
  */
-public class ArrayExcelExporter extends AbstractExcelExporter {
+public class ArrayExcelExporter extends AbstractXLSXExporter {
 	private Properties m_ctx = null;
 	private ArrayList<ArrayList<Object>> m_data = null;
 
