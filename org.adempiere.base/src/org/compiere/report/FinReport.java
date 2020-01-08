@@ -942,6 +942,40 @@ public class FinReport extends SvrProcess
 			}
 		} 	//	for all columns
 
+		// allow opposite sign
+		boolean hasOpposites = false;
+		StringBuffer sb = new StringBuffer("UPDATE T_Report SET ");
+		for (int col = 0; col < m_columns.length; col++)
+		{
+			if (m_columns[col].isAllowOppositeSign())
+			{
+				if (hasOpposites)
+					sb.append(", ");
+				else
+					hasOpposites = true;
+
+				// Column to set
+				sb.append("Col_").append(col).append("=");
+				sb.append("( CASE WHEN l.IsShowOppositeSign = 'Y'  THEN -1 ELSE 1 END ) * Col_").append(col);
+			}
+		}
+
+		if (hasOpposites)
+		{
+			sb.append(" FROM	PA_ReportLine l ");
+			sb.append(" WHERE 	AD_PInstance_ID = ").append(getAD_PInstance_ID());
+			 // 0=Line  1=Acct
+			sb.append(" AND ABS(LevelNo) < 2 AND l.PA_ReportLine_ID=T_Report.PA_ReportLine_ID ");
+			int no = DB.executeUpdate(sb.toString(), get_TrxName());
+			if (no < 1)
+				log.severe("#=" + no + " for setting opposite sign" + " - " + sb.toString());
+			else
+			{
+				log.fine("Set opposite sign: " + no);
+				log.finest(sb.toString());
+			}
+		}
+
 	}	//	doCalculations
 
 	/**
