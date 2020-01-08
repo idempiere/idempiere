@@ -12,6 +12,7 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.process.DocAction;
+import org.compiere.process.DocOptions;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.DB;
 import org.compiere.util.TimeUtil;
@@ -26,7 +27,7 @@ import org.idempiere.fa.exceptions.AssetException;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
 public class MDepreciationEntry extends X_A_Depreciation_Entry
-implements DocAction
+implements DocAction, DocOptions
 {
 
 	/**
@@ -87,8 +88,30 @@ implements DocAction
 			return false;
 		}
 		
-		unselectLines(); 
+		unselectLines(false); 
 		return true;
+	}
+	
+	@Override
+	public int customizeValidActions(String docStatus, Object processing, String orderType, String isSOTrx,
+			int AD_Table_ID, String[] docAction, String[] options, int index) {
+		if (options == null)
+			throw new IllegalArgumentException("Option array parameter is null");
+		if (docAction == null)
+			throw new IllegalArgumentException("Doc action array parameter is null");
+
+		// If a document is drafted or invalid, the users are able to complete, prepare
+		// or void
+		if (docStatus.equals(DocumentEngine.STATUS_Drafted) || docStatus.equals(DocumentEngine.STATUS_Invalid)) {
+			options[index++] = DocumentEngine.ACTION_Complete;
+
+			// If the document is already completed, we also want to be able to reactivate
+			// or void it instead of only closing it
+		} else if (docStatus.equals(DocumentEngine.STATUS_Completed)) {
+			options[index++] = DocumentEngine.ACTION_Void;
+		}
+
+		return index;
 	}
 	
 	public void setC_Period_ID()
@@ -101,25 +124,25 @@ implements DocAction
 		setC_Period_ID(period.get_ID());
 	}
 
-	private void unselectLines()
-	{
-		String sql = "UPDATE " + MDepreciationExp.Table_Name + " SET "
-						+ MDepreciationExp.COLUMNNAME_A_Depreciation_Entry_ID + "=NULL "
-					+ " WHERE "
-						+ MDepreciationExp.COLUMNNAME_A_Depreciation_Entry_ID + "=?";
+	private void unselectLines(boolean unProcess) {
+		StringBuffer sql = new StringBuffer("UPDATE " + MDepreciationExp.Table_Name + " SET ");
+		sql.append(MDepreciationExp.COLUMNNAME_A_Depreciation_Entry_ID + "=NULL ");
+		if (unProcess)
+			sql.append(", processed = 'N'");
+		sql.append(" WHERE " + MDepreciationExp.COLUMNNAME_A_Depreciation_Entry_ID + "=?");
 		int id = get_ID();
-		if (id <= 0) 
-		{ // Use old ID is current ID is missing (i.e. object was deleted)
+		if (id <= 0) { // Use old ID is current ID is missing (i.e. object was deleted)
 			id = get_IDOld();
 		}
-		int no = DB.executeUpdateEx(sql, new Object[]{id}, get_TrxName());
-		if (log.isLoggable(Level.FINE)) log.fine("Updated #" + no);
+		int no = DB.executeUpdateEx(sql.toString(), new Object[] { id }, get_TrxName());
+		if (log.isLoggable(Level.FINE))
+			log.fine("Updated #" + no);
 	}
 	
 	private void selectLines()
 	{
 		// Reset selected lines:
-		unselectLines();
+		unselectLines(false);
 		// Select lines:
 		final String sql = "UPDATE " + MDepreciationExp.Table_Name + " SET "
 				+ MDepreciationExp.COLUMNNAME_A_Depreciation_Entry_ID + "=?"
@@ -297,9 +320,20 @@ implements DocAction
 	}	//	completeIt
 	
 	
-	public boolean voidIt()
-	{
-		return false;
+	public boolean voidIt() {
+
+		// User Validation
+		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_VOID);
+		if (valid != null) {
+			m_processMsg = valid;
+			return false;
+		}
+
+		deleteFacts(this);
+		unselectLines(true);
+		setDocStatus(DOCSTATUS_Voided);
+		setDocAction(DOCACTION_None);
+		return true;
 	}
 	
 	
@@ -369,5 +403,11 @@ implements DocAction
 		final String sql = "DELETE FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=? AND Line_ID=?";
 		Object[] params = new Object[]{Table_ID, depexp.getA_Depreciation_Entry_ID(), depexp.get_ID()};
 		DB.executeUpdateEx(sql, params, depexp.get_TrxName());
+	}
+	
+	public static void deleteFacts(MDepreciationEntry depent) {
+		final String sql = "DELETE FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=? ";
+		Object[] params = new Object[] { Table_ID, depent.getA_Depreciation_Entry_ID() };
+		DB.executeUpdateEx(sql, params, depent.get_TrxName());
 	}
 }
