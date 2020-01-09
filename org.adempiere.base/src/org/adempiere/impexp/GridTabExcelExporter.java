@@ -191,4 +191,10 @@ public class GridTabExcelExporter extends AbstractExcelExporter implements IGrid
 	public boolean isExportableTab(GridTab gridTab) {
 		return false;
 	}
+
+	@Override
+	public boolean isDisplayed(int row, int col)
+	{
+		return true;
+	}
 }
