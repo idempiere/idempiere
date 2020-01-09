@@ -11,6 +11,7 @@ import org.compiere.model.MAsset;
 import org.compiere.model.MDepreciationEntry;
 import org.compiere.model.MDepreciationExp;
 import org.compiere.model.MDepreciationWorkfile;
+import org.compiere.model.MFactAcct;
 import org.compiere.model.MPeriod;
 import org.compiere.model.Query;
 import org.compiere.process.ProcessInfoParameter;
@@ -134,7 +135,7 @@ public class A_Depreciation_Exp_Check extends SvrProcess
 		if (!exp.getDateAcct().equals(dateAcctNew))
 		{
 			addLog("OLD1: "+exp);
-			MDepreciationEntry.deleteFacts(exp);
+			MFactAcct.deleteEx(MDepreciationExp.Table_ID, exp.getA_Depreciation_Exp_ID(), get_TrxName());
 			exp.setDateAcct(dateAcctNew);
 			exp.setA_Depreciation_Entry_ID(0);
 			exp.saveEx();
@@ -151,7 +152,7 @@ public class A_Depreciation_Exp_Check extends SvrProcess
 			if (!period.isInPeriod(exp.getDateAcct()))
 			{
 				addLog("OLD2: "+exp);
-				MDepreciationEntry.deleteFacts(exp);
+				MFactAcct.deleteEx(MDepreciationExp.Table_ID, exp.getA_Depreciation_Exp_ID(), get_TrxName());				
 				exp.setA_Depreciation_Entry_ID(0);
 				exp.saveEx();
 				addLog("NEW2: "+exp);

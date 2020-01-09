@@ -221,7 +221,7 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 		if (isPosted())
 		{
 			MPeriod.testPeriodOpen(getCtx(), getDateAcct(), MDocType.DOCBASETYPE_GLDocument, getAD_Org_ID());
-			MDepreciationEntry.deleteFacts(this);
+			MFactAcct.deleteEx(Table_ID, getA_Depreciation_Exp_ID(), get_TrxName());			
 		}
 		return true;
 	}

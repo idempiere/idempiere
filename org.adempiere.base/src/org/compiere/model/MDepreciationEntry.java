@@ -329,7 +329,7 @@ implements DocAction, DocOptions
 			return false;
 		}
 
-		deleteFacts(this);
+		MFactAcct.deleteEx(Table_ID, getA_Depreciation_Entry_ID(), get_TrxName());
 		unselectLines(true);
 		setDocStatus(DOCSTATUS_Voided);
 		setDocAction(DOCACTION_None);
@@ -396,18 +396,6 @@ implements DocAction, DocOptions
 	public String getDocumentInfo()
 	{
 		return getDocumentNo();
-	}
+	}	
 	
-	public static void deleteFacts(MDepreciationExp depexp)
-	{
-		final String sql = "DELETE FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=? AND Line_ID=?";
-		Object[] params = new Object[]{Table_ID, depexp.getA_Depreciation_Entry_ID(), depexp.get_ID()};
-		DB.executeUpdateEx(sql, params, depexp.get_TrxName());
-	}
-	
-	public static void deleteFacts(MDepreciationEntry depent) {
-		final String sql = "DELETE FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=? ";
-		Object[] params = new Object[] { Table_ID, depent.getA_Depreciation_Entry_ID() };
-		DB.executeUpdateEx(sql, params, depent.get_TrxName());
-	}
 }
