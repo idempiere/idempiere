@@ -112,6 +112,12 @@ public class ServerReportCtl {
 						pi.setExportFileExtension("xls");
 						pi.setExportFile(re.getXLS());					
 					}
+					else if ("XLSX".equals(pi.getReportType()))
+					{
+						pi.setExport(true);
+						pi.setExportFileExtension("xlsx");
+						pi.setExportFile(re.getXLSX());					
+					}
 					else
 					{
 						pi.setPDFReport(re.getPDF());
@@ -303,6 +309,12 @@ public class ServerReportCtl {
 					pi.setExportFileExtension("xls");
 					pi.setExportFile(re.getXLS());					
 				}
+				else if ("XLSX".equals(pi.getReportType()))
+				{
+					pi.setExport(true);
+					pi.setExportFileExtension("xlsx");
+					pi.setExportFile(re.getXLSX());					
+				}
 				else
 				{
 					pi.setPDFReport(re.getPDF());
@@ -344,6 +356,12 @@ public class ServerReportCtl {
 				pi.setExport(true);
 				pi.setExportFileExtension("xls");
 				pi.setExportFile(re.getXLS());					
+			}
+			else if ("XLSX".equals(pi.getReportType()))
+			{
+				pi.setExport(true);
+				pi.setExportFileExtension("xlsx");
+				pi.setExportFile(re.getXLSX());					
 			}
 			else
 			{
@@ -402,6 +420,12 @@ public class ServerReportCtl {
 				pi.setExport(true);
 				pi.setExportFileExtension("xls");
 				pi.setExportFile(re.getXLS());					
+			}
+			else if ("XLSX".equals(pi.getReportType()))
+			{
+				pi.setExport(true);
+				pi.setExportFileExtension("xlsx");
+				pi.setExportFile(re.getXLSX());					
 			}
 			else
 			{

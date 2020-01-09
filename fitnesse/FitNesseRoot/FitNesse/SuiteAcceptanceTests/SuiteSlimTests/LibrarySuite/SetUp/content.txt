@@ -1,5 +1,0 @@
-!include -c .FitNesse.SuiteAcceptanceTests.SuiteSlimTests.SetUp
-
-!|Import|
-|fitnesse.slim.test.library|
-

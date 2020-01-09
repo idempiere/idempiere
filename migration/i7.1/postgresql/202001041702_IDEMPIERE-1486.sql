@@ -1,0 +1,12 @@
+-- IDEMPIERE-2924  Export to XLS limited to 65536
+-- Jan 4, 2020, 4:51:45 PM CET
+UPDATE AD_Form SET AccessLevel='7',Updated=TO_TIMESTAMP('2020-01-04 16:51:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Form_ID=200008
+;
+
+-- Jan 4, 2020, 4:51:52 PM CET
+UPDATE AD_Process SET AccessLevel='7',Updated=TO_TIMESTAMP('2020-01-04 16:51:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=200064
+;
+
+SELECT register_migration_script('202001041702_IDEMPIERE-1486.sql') FROM dual
+;
+

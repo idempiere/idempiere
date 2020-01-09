@@ -1,6 +1,0 @@
-^SetUp
-
-^AddSalesGoods
-^RejectDuplicateTypes
-^ModifySalesGoods
-^RejectModifySalesGoods

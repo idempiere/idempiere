@@ -1,7 +1,0 @@
-|an act|m|
-
-|''log text''|@{m}|
-
-|boolean property|'''logged'''|
-
-|show as after table|frog|kettle|

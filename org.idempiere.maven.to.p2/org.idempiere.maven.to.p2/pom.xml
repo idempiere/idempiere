@@ -34,6 +34,7 @@
 		<asm.version>7.0</asm.version>
 		<restlet.version>2.4.1</restlet.version>
 		<javamail.version>1.6.3</javamail.version>
+		<poi.version>4.1.0</poi.version>
 	</properties>
 	
     <repositories>
@@ -43,12 +44,8 @@
             <layout>p2</layout>
         </repository>
         <repository>
-	        <id>org.jfree.chart</id>
-	        <url>http://nexus.orbisgis.org/content/repositories/osgi-maven</url>
-        </repository>
-        <repository>
-	        <id>jasperstudio-6.6.0</id>
-	        <url>https://sourceforge.net/projects/jasperstudio/files/updatesite/6.6.0</url>
+	        <id>jasperstudio-6.11.0</id>
+	        <url>https://sourceforge.net/projects/jasperstudio/files/updatesite/6.11.0</url>
             <layout>p2</layout>
         </repository>
         <repository>
@@ -75,6 +72,9 @@
 							<goal>site</goal>
 						</goals>
 						<configuration>
+							<skipInvalidArtifacts>false</skipInvalidArtifacts>
+  							<skipNotExistingArtifacts>false</skipNotExistingArtifacts>
+
 							<featureDefinitions>
 								<feature>
 									<id>org.idempiere.maven.feature</id>
@@ -88,6 +88,26 @@
 									<license>GPL v2.1</license>
 									<generateSourceFeature>true</generateSourceFeature>
 									<artifacts>
+										<artifact>
+											<id>org.jfree:jfreechart:1.0.19</id>
+											<source>true</source>
+											<transitive>false</transitive>
+											<override>true</override>
+											<instructions>
+                                                <Import-Package>*;resolution:=optional</Import-Package>
+                                                <Export-Package>*</Export-Package>
+											</instructions>
+									    </artifact>
+									    <artifact>
+											<id>org.jfree:jcommon:1.0.23</id>
+											<source>true</source>
+											<transitive>false</transitive>
+											<override>true</override>
+											<instructions>
+                                                <Import-Package>*;resolution:=optional</Import-Package>
+                                                <Export-Package>*</Export-Package>
+											</instructions>
+									    </artifact>
 										<artifact>
 											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces:jar:2.9.1_5</id>
 											<source>true</source>
@@ -385,7 +405,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.commons:commons-collections4:jar:4.2</id>
+											<id>org.apache.commons:commons-collections4:jar:4.4</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -564,7 +584,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.xmlbeans:xmlbeans:jar:3.0.1</id>
+											<id>org.apache.xmlbeans:xmlbeans:jar:3.1.0</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -1176,17 +1196,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.jfree:jfreechart-osgi:jar:1.0.19</id>
-											<source>true</source>
-											<transitive>false</transitive>
-										</artifact>
-										<artifact>
-											<id>org.jfree:jcommon-osgi:jar:1.0.23</id>
-											<source>true</source>
-											<transitive>false</transitive>
-										</artifact>
-										<artifact>
-											<id>org.apache.poi:poi:jar:3.15</id>
+											<id>org.apache.poi:poi:jar:${poi.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
                                             <override>true</override>
@@ -1198,7 +1208,7 @@
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.apache.poi:poi-ooxml:jar:3.15</id>
+											<id>org.apache.poi:poi-ooxml:jar:${poi.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
                                             <override>true</override>
@@ -1210,14 +1220,14 @@
 											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.apache.poi:poi-ooxml-schemas:jar:3.15</id>
+											<id>org.apache.poi:poi-ooxml-schemas:jar:${poi.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
                                             <override>true</override>
 											<instructions>
 												<Bundle-SymbolicName>org.apache.poi.poi-ooxml-schemas</Bundle-SymbolicName>
 												<Bundle-Name>poi-ooxml-schemas</Bundle-Name>
-                                                <Import-Package>*;resolution:=optional</Import-Package>
+                                                <Import-Package>*;resolution:=optional,org.apache.xmlbeans.impl.schema</Import-Package>
                                                 <Export-Package>*</Export-Package>
 											</instructions>
 										</artifact>
@@ -1680,7 +1690,7 @@
                                     <id>com.jaspersoft.studio.bundles.barbecue:1.5.0.beta1_b02</id>
                                 </artifact>
                                 <artifact>
-                                    <id>com.jaspersoft.studio.bundles.itext:2.1.7.js6_b02</id>
+                                    <id>com.jaspersoft.studio.bundles.itext:2.1.7.js7_b01</id>
                                 </artifact>
                                 <artifact>
                                     <id>org.w3c.dom.svg.patch:1.1.0.b02</id>

@@ -1,3 +1,0 @@
-^HarvestSucceeds
-^DoesNotMatch
-^NotEnoughGroups

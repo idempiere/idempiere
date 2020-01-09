@@ -1,7 +1,0 @@
-|''begin transaction for client''| Joanna |''staff''| Bill|
-
-|''begin transaction for client''| Bob |''staff''| John |
-|''complete transaction''|
-
-|''resume transaction for client''| Joanna |
-|''complete transaction''|

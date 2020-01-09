@@ -1,9 +1,0 @@
- * setup
-|''begin transaction for client''| Joanna |''staff''| Bill|
- * action
-|''resume transaction for client''|Joanna|
-|''complete transaction''|
- * checks
-|''transactions pending''|
-|''client''|''staff''|''owing''|
-

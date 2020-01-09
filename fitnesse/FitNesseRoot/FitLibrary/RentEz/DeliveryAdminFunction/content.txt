@@ -1,5 +1,0 @@
-^SetUp
-
-^CreateDeliveryCost
-^DeleteDeliveryCost
-^ModifyDeliveryCost

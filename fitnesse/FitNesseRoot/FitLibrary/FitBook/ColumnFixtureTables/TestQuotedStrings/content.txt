@@ -1,3 +1,0 @@
-!|CalculateQuoted|
-|input      |countSpaces()|countChars()|
-|"    +    "|8            | 9          |

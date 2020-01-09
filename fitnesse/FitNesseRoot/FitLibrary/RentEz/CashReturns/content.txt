@@ -1,8 +1,0 @@
-^TestReturn
-^TestPartialReturn
-^TestReturnItemsDueSooner
-^TestSeveralReturns
-
-^TestOneHourEarlyisNotRefunded
-
-^SetUp

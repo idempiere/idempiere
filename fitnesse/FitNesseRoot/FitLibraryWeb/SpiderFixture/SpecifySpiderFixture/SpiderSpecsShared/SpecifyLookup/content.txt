@@ -1,8 +1,0 @@
-^SpecifyDirectMatch
-^SpecifyMatchFirst
-^SpecifyPatternMatch
-^SpecifyNoMatch
-^SpecifyMultipleSetVariables
-^SpecifyMultipleMatch
-^SpecifyMultipleMatchMultipleSetVariables
-^SetUp

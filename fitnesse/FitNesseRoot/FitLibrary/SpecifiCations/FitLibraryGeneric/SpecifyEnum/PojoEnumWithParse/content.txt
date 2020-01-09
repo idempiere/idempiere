@@ -1,3 +1,0 @@
-!|fitlibraryGeneric.specify.enumerator.PojoWithEnumWithParse|
-
-|process|Red|is|my name is red|

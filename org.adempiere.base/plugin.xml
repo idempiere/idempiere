@@ -140,4 +140,13 @@
          </run>
       </application>
    </extension>
+   <extension
+         id="org.adempiere.impexp.GridTabXLSXExporter"
+         name="Grid data excel exporter"
+         point="org.adempiere.base.IGridTabExporter">
+      <exporter
+            class="org.adempiere.impexp.GridTabXLSXExporter"
+            priority="0">
+      </exporter>
+   </extension>
 </plugin>

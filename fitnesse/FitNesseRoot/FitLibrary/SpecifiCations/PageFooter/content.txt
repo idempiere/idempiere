@@ -1,4 +1,0 @@
-----${copyright}
-${gpl2}
-
-([[!-ReadingSpecifications-!][.FitLibrary.SpecifiCations.ReadingSpecifications]]) ([[!-FitLibrary.UserGuide-!][.FitLibrary.UserGuide]])  ([[!-FitLibrary.Glossary-!][.FitLibrary.GlosSary]]) (.FrontPage) (.RecentChanges)

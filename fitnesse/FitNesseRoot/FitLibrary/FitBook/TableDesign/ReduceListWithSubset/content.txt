@@ -1,3 +1,0 @@
-|''rental item subset''|
-|''name''|''count''|
-|coffee urn|10|

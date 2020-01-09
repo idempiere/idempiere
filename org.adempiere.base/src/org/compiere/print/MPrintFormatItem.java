@@ -45,8 +45,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -679302944951915141L;
-
+	private static final long serialVersionUID = 7145503984951798641L;
 
 	/**
 	 *	Constructor
@@ -116,6 +115,8 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 	private String 					m_columnName = null;
 	/** Locally cached label translations			*/
 	private HashMap<String,String>	m_translationLabel;
+	String m_newTranslationLabel = null;
+	boolean m_translationLabelChanged = false;
 	/** Locally cached suffix translations			*/
 	private HashMap<String,String>	m_translationSuffix;
 
@@ -136,6 +137,26 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 		if (retValue == null || retValue.length() == 0)
 			return getPrintName();
 		return retValue;
+	}	//	getPrintName
+
+	/**************************************************************************
+	 *	Set print name on language
+	 * 	@param language language - ignored if IsMultiLingualDocument not 'Y'
+	 */
+	public void setPrintName (Language language, String printName)
+	{
+		if (language == null || Env.isBaseLanguage(language, "AD_PrintFormatItem")) {
+			setPrintName(printName);
+			return;
+		}
+		loadTranslations();
+		String retValue = (String)m_translationLabel.get(language.getAD_Language());
+		if ((retValue != null && ! retValue.equals(printName))
+			|| (retValue == null && printName != null)) {
+			m_newTranslationLabel = printName;
+			m_translationLabelChanged = true;
+			m_translationLabel.put(language.getAD_Language(), printName);
+		}
 	}	//	getPrintName
 
 	/**
@@ -683,11 +704,30 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 					+ " AND AD_PrintFormatItem_Trl.AD_PrintFormatItem_ID = " + get_ID() + ")"
 				+ " AND EXISTS (SELECT * FROM AD_Client "
 					+ "WHERE AD_Client_ID=AD_PrintFormatItem_Trl.AD_Client_ID AND IsMultiLingualDocument='Y')";
-			int no = DB.executeUpdate(sql, get_TrxName());
+			int no = DB.executeUpdateEx(sql, get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("translations updated #" + no);
+		}
+		
+		if (m_translationLabelChanged) {
+			String sql = "UPDATE AD_PrintFormatItem_Trl "
+					+ "SET PrintName = ? "
+					+ "WHERE AD_PrintFormatItem_ID = ?"
+					+ " AND AD_Language=?";
+			int no = DB.executeUpdateEx(sql, new Object[] {m_newTranslationLabel, get_ID(), Language.getLoginLanguage().getAD_Language()}, get_TrxName());
+			if (log.isLoggable(Level.FINE)) log.fine("translations updated #" + no);
+			
+			m_newTranslationLabel = null;
+			m_translationLabelChanged = false;
 		}
 
 		return success;
 	}	//	afterSave
+	
+	@Override
+	public boolean is_Changed() {
+		if (m_translationLabelChanged)
+			return true;
+		return super.is_Changed();
+	}
 	
 }	//	MPrintFormatItem

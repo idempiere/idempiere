@@ -95,6 +95,7 @@ import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXmlExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.fill.JRBaseFiller;
 import net.sf.jasperreports.engine.fill.JRFiller;
 import net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer;
@@ -116,6 +117,7 @@ import net.sf.jasperreports.export.SimplePrintServiceExporterConfiguration;
 import net.sf.jasperreports.export.SimpleTextExporterConfiguration;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import net.sf.jasperreports.export.SimpleXmlExporterOutput;
 
 /**
@@ -810,6 +812,14 @@ public class ReportStarter implements ProcessCall, ClientProcess
             				exporterXLS.setExporterOutput(new SimpleOutputStreamExporterOutput(strm));
             				exporterXLS.setConfiguration(xlsConfig);
             				exporter = exporterXLS;
+            			} else if (ext.equals("xlsx")) {
+            				JRXlsxExporter exporterXLSX = new JRXlsxExporter(jasperContext);
+            				SimpleXlsxReportConfiguration xlsxConfig = new SimpleXlsxReportConfiguration();
+            				xlsxConfig.setOnePagePerSheet(false);
+            				exporterXLSX.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+            				exporterXLSX.setExporterOutput(new SimpleOutputStreamExporterOutput(strm));
+            				exporterXLSX.setConfiguration(xlsxConfig);
+            				exporter = exporterXLSX;
             			} else {
             				log.severe("FileInvalidExtension="+ext);
             				strm.close();

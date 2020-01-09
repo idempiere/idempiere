@@ -1,3 +1,0 @@
-|''colour''|yellow|
-|''count''|200|
-|''point''|!include ThePoints|

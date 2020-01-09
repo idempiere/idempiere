@@ -1,5 +1,0 @@
-^SetUp
-^ImportantInformation
-^TestCreditCardValidation
-^TestPaywithCreditCard
-^TestCreditCardBonusPoints

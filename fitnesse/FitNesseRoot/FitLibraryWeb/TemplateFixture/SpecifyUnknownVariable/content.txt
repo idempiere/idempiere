@@ -1,4 +1,0 @@
-|''with file''|<bla>$a</bla>|
-
-|''get template''|templateDiry/test.txt|'''is'''|<bla>$a</bla>|
-

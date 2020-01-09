@@ -1,4 +1,0 @@
->WithInputText
->WithInPassword
->WithTextArea
->WithOtherElement

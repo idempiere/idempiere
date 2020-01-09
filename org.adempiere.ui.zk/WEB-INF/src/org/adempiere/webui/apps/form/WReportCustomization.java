@@ -470,6 +470,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 			cboType.appendItem("ssv" + " - " + Msg.getMsg(Env.getCtx(), "FileSSV"), "ssv");
 			cboType.appendItem("csv" + " - " + Msg.getMsg(Env.getCtx(), "FileCSV"), "csv");
 			cboType.appendItem("xls" + " - " + Msg.getMsg(Env.getCtx(), "FileXLS"), "xls");
+			cboType.appendItem("xlsx" + " - " + Msg.getMsg(Env.getCtx(), "FileXLSX"), "xlsx");
 			cboType.setSelectedItem(li);
 			
 			Hbox hb = new Hbox();
@@ -564,6 +565,11 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 			{
 				inputFile = File.createTempFile("Export", ".xls");							
 				m_reportEngine.createXLS(inputFile, m_reportEngine.getPrintFormat().getLanguage());
+			}
+			else if (ext.equals("xlsx"))
+			{
+				inputFile = File.createTempFile("Export", ".xlsx");							
+				m_reportEngine.createXLSX(inputFile, m_reportEngine.getPrintFormat().getLanguage());
 			}
 			else
 			{

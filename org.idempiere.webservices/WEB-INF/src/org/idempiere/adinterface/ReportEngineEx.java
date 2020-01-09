@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -29,6 +30,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 
@@ -210,15 +212,15 @@ public class ReportEngineEx { //extends  ReportEngine  {
 			table1.setBorder(0).setCols(10).setCellPadding(0).setCellSpacing(2);
 			table1.addElement( new tr().addElement(new td().setColSpan(10).addElement(new h1(re.getName())).setStyle("border:none;")));
 			tr tr1;
-			String tmp = "Jednostka: ";
+			String tmp = Msg.getElement(m_ctx, "AD_Org_ID") + ": ";
 			MOrg o = MOrg.get(m_ctx, Env.getAD_Org_ID(m_ctx));
 			tmp += o.getName();			
 			tr1 = new tr();
 			tr1.addElement( new td().addElement( tmp ).setColSpan(10).setStyle("border:none;") );
-			table1.addElement( tr1 );			
-			
-			java.text.DateFormat dateFormat = java.text.DateFormat.getDateInstance(java.text.DateFormat.FULL, new Locale("pl_PL"));
-			String dateData = "Czas wygenerowania: "+dateFormat.format(new java.util.Date());
+			table1.addElement( tr1 );
+
+			SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.Date);
+			String dateData = Msg.getElement(m_ctx, "DateReport")+ ": "+dateFormat.format(new java.util.Date());
 			tr1 = new tr();
 			tr1.addElement( new td().addElement( dateData ).setColSpan(10).setStyle("border:none;") );
 			table1.addElement( tr1 );			

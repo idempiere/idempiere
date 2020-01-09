@@ -39,11 +39,7 @@
 		<module>org.compiere.db.oracle.provider</module>
 		<module>org.compiere.db.postgresql.provider</module>
 		<module>org.idempiere.felix.webconsole</module>
-		<module>org.idempiere.fitnesse.fixture</module>
-		<module>org.idempiere.fitnesse.server</module>
-		<module>org.idempiere.fitrecorder</module>
 		<module>org.idempiere.hazelcast.service</module>
-		<module>org.idempiere.ui.zk.selenium</module>
 		<module>org.idempiere.webservices</module>
 		<module>org.idempiere.zk.extra</module>
 		<module>org.adempiere.report.jasper-feature</module>
@@ -61,7 +57,6 @@
 		<module>org.idempiere.eclipse.platform-feature</module>
 		<module>org.idempiere.equinox.p2.director-feature</module>
 		<module>org.idempiere.felix.webconsole-feature</module>
-		<module>org.idempiere.fitnesse-feature</module>
 		<module>org.idempiere.hazelcast.service-feature</module>
 		<module>org.adempiere.payment.processor-feature</module>
 		<module>org.idempiere.zk-feature</module>

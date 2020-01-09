@@ -1,4 +1,0 @@
-This ${traverse} checks a ''set'' (ie, an unordered list) against a table.
-!3 Examples
- * .FitLibrary.UserGuide.FitLibraryByExample.UnorderedList
- * .FitLibrary.SpecifiCations.CollectionSpecifications.SetTraverse

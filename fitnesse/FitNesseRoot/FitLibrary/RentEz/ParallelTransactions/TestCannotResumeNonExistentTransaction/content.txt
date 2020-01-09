@@ -1,1 +1,0 @@
-|'''reject'''|''resume transaction for client''| Joanna |

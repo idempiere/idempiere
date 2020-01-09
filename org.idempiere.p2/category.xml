@@ -45,9 +45,6 @@
    <feature url="features/org.idempiere.felix.webconsole.feature_7.1.0.qualifier.jar" id="org.idempiere.felix.webconsole.feature" version="7.1.0.qualifier">
       <category name="idempiere.core"/>
    </feature>
-   <feature url="features/org.idempiere.fitnesse.feature_7.1.0.qualifier.jar" id="org.idempiere.fitnesse.feature" version="7.1.0.qualifier">
-      <category name="idempiere.core"/>
-   </feature>
    <feature url="features/org.idempiere.hazelcast.service.feature_7.1.0.qualifier.jar" id="org.idempiere.hazelcast.service.feature" version="7.1.0.qualifier">
       <category name="idempiere.core"/>
    </feature>

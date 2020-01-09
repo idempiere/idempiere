@@ -251,7 +251,7 @@ public class ProcessParameterPanel extends Panel implements
 			for (int i = 0; i < listVO.size(); i++)
 			{
 				createField(listVO.get(i), rows);
-				log.severe(listVO.get(i).ColumnName + listVO.get(i).SeqNo);
+				if (log.isLoggable(Level.INFO)) log.info(listVO.get(i).ColumnName + listVO.get(i).SeqNo);
 			}
 
 		} catch (SQLException e) {

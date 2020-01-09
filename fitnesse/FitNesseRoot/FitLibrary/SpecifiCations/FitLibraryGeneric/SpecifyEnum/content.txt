@@ -1,9 +1,0 @@
-^BareEnum
-^BareEnumWithUnderscore
-^BareEnumFailing
-^BareEnumUnknown
-^EnumAndNull
-^EnumWithParse
-^PojoEnumWithParse
-^ArrayOfEnum
-^ListOfEnum

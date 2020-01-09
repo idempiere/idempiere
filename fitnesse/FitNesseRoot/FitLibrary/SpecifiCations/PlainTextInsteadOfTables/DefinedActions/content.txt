@@ -1,3 +1,0 @@
-^ClassPerson
-^AddressIsAt
-|!contents|

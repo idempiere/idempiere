@@ -1,5 +1,0 @@
-|''chat server''|
-
-||anna|''connects''|
-
-||anna|''creates''|lotr|''room''|

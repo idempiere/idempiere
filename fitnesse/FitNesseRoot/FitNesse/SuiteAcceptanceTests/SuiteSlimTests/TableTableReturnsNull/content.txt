@@ -1,6 +1,0 @@
-!|Table:fitnesse.slim.test.DummyTableTableReturnsNull|
-||
-
--!|script|
-|pass|
-

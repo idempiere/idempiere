@@ -1,6 +1,0 @@
-|''total commission''|
-|''staff''|''total''|
-|Bill|0.00|
-|Pual|0.00|
-|John|0.00|
-

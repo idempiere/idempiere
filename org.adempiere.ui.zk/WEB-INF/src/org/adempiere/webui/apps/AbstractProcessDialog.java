@@ -107,7 +107,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8232462327114180974L;
+	private static final long serialVersionUID = -9220870163215609274L;
 
 	private static final String ON_COMPLETE = "onComplete";
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
@@ -611,8 +611,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		
 		if (m_isCanExport)
 		{
-			freportType.appendItem("Excel", "XLS");
+			freportType.appendItem("XLS", "XLS");
 			freportType.appendItem("CSV", "CSV");
+			freportType.appendItem("XLSX", "XLSX");
 		}
 		freportType.setSelectedIndex(-1);
 	}
@@ -1211,6 +1212,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 							m_pi.setExportFileExtension("csv");
 						else if ("XLS".equals(m_pi.getReportType()))
 							m_pi.setExportFileExtension("xls");
+						else if ("XLSX".equals(m_pi.getReportType()))
+							m_pi.setExportFileExtension("xlsx");
 						else
 							m_pi.setExportFileExtension("pdf");
 					}

@@ -1,6 +1,0 @@
-!include -c <SuiteAcceptanceTests.SetUp
-
-!|Library|
-|page driver|
-|echo fixture|
-|clock fixture|

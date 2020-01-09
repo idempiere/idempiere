@@ -1,2 +1,0 @@
-[[Front Page][.FrontPage]] | [[User Guide][.FitNesse.UserGuide]]
-[[root][root]] (for global !-!path's-!, ''etc.'')

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-190411" sequenceNumber="107">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="idempiere-191224" sequenceNumber="107">
 <locations>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.10.0.v20181116-0958"/>
@@ -900,7 +900,7 @@
 		<unit id="com.itextpdf" version="5.5.13"/>
 		<unit id="com.itextpdf.source" version="5.5.13"/>
 		<unit id="com.jaspersoft.studio.bundles.barbecue" version="1.5.0.beta1_b02"/>
-		<unit id="com.jaspersoft.studio.bundles.itext" version="2.1.7.js6_b02"/>
+		<unit id="com.jaspersoft.studio.bundles.itext" version="2.1.7.js7_b01"/>
 		<unit id="com.sun.activation.jakarta.activation" version="1.2.1"/>
 		<unit id="com.sun.activation.jakarta.activation.source" version="1.2.1"/>
 		<unit id="com.sun.mail.gimap" version="1.6.3"/>
@@ -977,8 +977,8 @@
 		<unit id="joda-time.source" version="2.10.0"/>
 		<unit id="json" version="20171018.0.0"/>
 		<unit id="json.source" version="20171018.0.0"/>
-		<unit id="net.sf.jasperreports.engine" version="6.6.0"/>
-		<unit id="net.sf.jasperreports.engine.source" version="6.6.0"/>
+		<unit id="net.sf.jasperreports.engine" version="6.11.0"/>
+		<unit id="net.sf.jasperreports.engine.source" version="6.11.0"/>
 		<unit id="net.sf.supercsv.super-csv" version="2.4.0"/>
 		<unit id="net.sf.supercsv.super-csv.source" version="2.4.0"/>
 		<unit id="org.apache.activemq.activemq-core" version="5.7.0"/>
@@ -1009,8 +1009,8 @@
 		<unit id="org.apache.batik.util" version="1.9.1.v20180227-1645"/>
 		<unit id="org.apache.batik.util.gui" version="1.9.1.v20180227-1645"/>
 		<unit id="org.apache.batik.xml" version="1.9.1.v20180227-1645"/>
-		<unit id="org.apache.commons.commons-collections4" version="4.2.0"/>
-		<unit id="org.apache.commons.commons-collections4.source" version="4.2.0"/>
+		<unit id="org.apache.commons.commons-collections4" version="4.4.0"/>
+		<unit id="org.apache.commons.commons-collections4.source" version="4.4.0"/>
 		<unit id="org.apache.commons.commons-configuration2" version="2.3.0"/>
 		<unit id="org.apache.commons.commons-configuration2.source" version="2.3.0"/>
 		<unit id="org.apache.commons.digester" version="2.1.0"/>
@@ -1081,12 +1081,12 @@
 		<unit id="org.apache.httpcomponents.httpclient.source" version="4.5.6"/>
 		<unit id="org.apache.neethi" version="3.1.1"/>
 		<unit id="org.apache.neethi.source" version="3.1.1"/>
-		<unit id="org.apache.poi.poi" version="3.15.0"/>
-		<unit id="org.apache.poi.poi-ooxml" version="3.15.0"/>
-		<unit id="org.apache.poi.poi-ooxml-schemas" version="3.15.0"/>
+		<unit id="org.apache.poi.poi" version="4.1.0"/>
+		<unit id="org.apache.poi.poi-ooxml" version="4.1.0"/>
+		<unit id="org.apache.poi.poi-ooxml-schemas" version="4.1.0"/>
 		<!-- unit id="org.apache.poi.poi-ooxml-schemas.source" version="3.15.0"/ -->
-		<unit id="org.apache.poi.poi-ooxml.source" version="3.15.0"/>
-		<unit id="org.apache.poi.poi.source" version="3.15.0"/>
+		<unit id="org.apache.poi.poi-ooxml.source" version="4.1.0"/>
+		<unit id="org.apache.poi.poi.source" version="4.1.0"/>
 		<unit id="org.apache.servicemix.bundles.cglib" version="3.2.6.1"/>
 		<unit id="org.apache.servicemix.bundles.cglib.source" version="3.2.6.1"/>
 		<unit id="org.apache.servicemix.bundles.jaxen" version="1.1.1.2"/>
@@ -1118,7 +1118,8 @@
 		<unit id="org.apache.velocity.source" version="1.7.0"/>
 		<unit id="org.apache.ws.xmlschema.core" version="2.2.3"/>
 		<unit id="org.apache.ws.xmlschema.core.source" version="2.2.3"/>
-		<unit id="org.apache.xmlbeans" version="3.0.1"/>
+		<unit id="org.apache.xmlbeans" version="3.1.0"/>
+		<unit id="org.apache.xmlbeans.source" version="3.1.0"/>
 		<unit id="org.apache.xmlgraphics" version="2.2.0.v20180410-1551"/>
 		<unit id="org.atmosphere.runtime" version="2.5.0"/>
 		<unit id="org.atmosphere.runtime.source" version="2.5.0"/>
@@ -1212,8 +1213,8 @@
 		<unit id="org.eclipse.jetty.websocket.servlet.source" version="9.4.14.v20181114"/>
 		<unit id="org.eclipse.jetty.xml" version="9.4.14.v20181114"/>
 		<unit id="org.eclipse.jetty.xml.source" version="9.4.14.v20181114"/>
-		<unit id="org.jfree.chart-osgi" version="1.0.19"/>
-		<unit id="org.jfree.jcommon-osgi" version="1.0.23"/>
+		<unit id="org.jfree.chart" version="1.0.19"/>
+		<unit id="org.jfree.jcommon" version="1.0.23"/>
 		<unit id="org.krysalis.barcode4j" version="2.1.0"/>
 		<unit id="org.mortbay.jasper.apache-el" version="8.5.33"/>
 		<unit id="org.mortbay.jasper.apache-el.source" version="8.5.33"/>
@@ -1270,7 +1271,7 @@
 		<unit id="zweb" version="8.6.0.1"/>
 		<unit id="zweb.sources" version="8.6.0.1"/>
 		<unit id="org.apache.servicemix.bundles.xerces" version="2.9.1.5"/>
-		<repository location="https://raw.githubusercontent.com/idempiere/binary.file/master/p2.maven/maven-p2-R20190411"/>
+		<repository location="https://raw.githubusercontent.com/idempiere/binary.file/master/p2.maven/maven-p2-R20191224"/>
 	</location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="com.sun.istack.commons-runtime" version="3.0.8"/>

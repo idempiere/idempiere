@@ -1,3 +1,0 @@
-^AccessThroughAction
-^AccessDirectlyToFixture
-^DynamicVariablesSubstitutedForFit

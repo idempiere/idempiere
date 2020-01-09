@@ -1,4 +1,0 @@
-|''colour''|
-|blue|
-|red|
-|green|

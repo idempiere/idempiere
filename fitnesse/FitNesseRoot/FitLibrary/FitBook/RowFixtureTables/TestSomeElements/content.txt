@@ -1,4 +1,0 @@
-|!-DiscountGroupOrderedSubsetList-!|
-|''order''|''futureValue''|''maxOwing''|''minPurchase''|''discountPercent''|
-|1|low|0.00|0.00|0|
-|5|high|2000.00|2000.00|10|

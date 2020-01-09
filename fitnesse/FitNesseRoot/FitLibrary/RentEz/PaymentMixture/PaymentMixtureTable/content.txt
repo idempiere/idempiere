@@ -1,6 +1,0 @@
-|''permitted combination of payments''|
-||''cash''|''account''|''voucher''|''bonus''|
-|''cash''|yes|yes|yes|yes|
-|''account''|yes|yes|yes|yes|
-|''voucher''|yes|yes|yes|no|
-|''bonus''|yes|yes|no|yes|

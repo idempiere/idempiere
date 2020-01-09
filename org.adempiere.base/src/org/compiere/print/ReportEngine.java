@@ -63,6 +63,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pdf.Document;
 import org.adempiere.print.export.PrintDataExcelExporter;
+import org.adempiere.print.export.PrintDataXLSXExporter;
 import org.apache.ecs.XhtmlDocument;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.script;
@@ -1321,6 +1322,44 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		}
 	}	//	getXLS
 	
+	/**************************************************************************
+	 * 	Create XLSX file.
+	 * 	(created in temporary storage)
+	 *	@return XLSX file
+	 */
+	public File getXLSX()
+	{
+		return getXLSX(null);
+	}	//	getXLSX
+
+	/**
+	 * 	Create XLSX file.
+	 * 	@param file file
+	 *	@return XLSX file
+	 */
+	public File getXLSX(File file)
+	{
+		try
+		{
+			if (file == null)
+				file = File.createTempFile (makePrefix(getName()), ".xlsx");
+		}
+		catch (IOException e)
+		{
+			log.log(Level.SEVERE, "", e);
+		}
+		try 
+		{
+			createXLSX(file, Env.getLanguage(getCtx()));
+			return file;
+		} 
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, "", e);
+			return null;
+		}
+	}	//	getXLSX
+	
 	/**
 	 * 	Create PDF File
 	 * 	@param file file
@@ -1483,6 +1522,20 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		exp.export(outFile, language);
 	}
 
+	/**
+	 * Create ExcelX file
+	 * @param outFile output file
+	 * @param language
+	 * @throws Exception if error
+	 */
+	public void createXLSX(File outFile, Language language)
+	throws Exception
+	{
+		Boolean [] colSuppressRepeats = m_layout == null || m_layout.colSuppressRepeats == null? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
+		PrintDataXLSXExporter exp = new PrintDataXLSXExporter(getPrintData(), getPrintFormat(), colSuppressRepeats);
+		exp.export(outFile, language);
+	}
+	
 	/**************************************************************************
 	 * 	Get Report Engine for process info 
 	 *	@param ctx context
