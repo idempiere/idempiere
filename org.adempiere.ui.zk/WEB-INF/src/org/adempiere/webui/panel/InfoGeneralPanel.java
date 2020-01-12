@@ -38,6 +38,7 @@ import org.adempiere.webui.window.FDialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.I_C_ElementValue;
+import org.compiere.model.MColumn;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MTable;
 import org.compiere.util.DB;
@@ -513,9 +514,9 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 					list.add(new ColumnInfo(Msg.translate(Env.getCtx(), columnName), colSql.toString(), colClass));
 					if (log.isLoggable(Level.FINEST)) log.finest("Added Column=" + columnName);
 				}
-				else if (DisplayType.isLookup(displayType))
+				else if (isDisplayed && DisplayType.isLookup(displayType))
 				{
-					ColumnInfo colInfo = createLookupColumnInfo(Msg.translate(Env.getCtx(), columnName), columnName, displayType, AD_Reference_Value_ID, AD_Column_ID);
+					ColumnInfo colInfo = createLookupColumnInfo(Msg.translate(Env.getCtx(), columnName), columnName, displayType, AD_Reference_Value_ID, AD_Column_ID, colSql.toString());
 					if (colInfo != null)
 					{
 						list.add(colInfo);
@@ -630,18 +631,25 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		}
 	}
 	
-	protected ColumnInfo createLookupColumnInfo(String name, String columnName, int AD_Reference_ID, int AD_Reference_Value_ID, int AD_Column_ID) {
+	protected ColumnInfo createLookupColumnInfo(String name, String columnName, int AD_Reference_ID, int AD_Reference_Value_ID, int AD_Column_ID, String columnSql) {
 //		MLookupInfo lookupInfo = MLookupFactory.getLookupInfo(Env.getCtx(), p_WindowNo, AD_Column_ID, AD_Reference_ID, Env.getLanguage(Env.getCtx()), columnName, 
 //				AD_Reference_Value_ID, false, null);
 //		String displayColumn = lookupInfo.DisplayColumn;
 //		String keyColumn = lookupInfo.KeyColumn;
+		
+		MTable table = MTable.get(Env.getCtx(), p_tableName);
+		MColumn column = table.getColumn(columnName);
+		String baseColumn = column.isVirtualColumn() ? columnSql : columnName;
 
 		String embedded = AD_Reference_Value_ID > 0 ? MLookupFactory.getLookup_TableEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, AD_Reference_Value_ID)
-				: MLookupFactory.getLookup_TableDirEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName);
+				: MLookupFactory.getLookup_TableDirEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, baseColumn);
 		embedded = "(" + embedded + ")";
 	
+		if (embedded.contains("@"))
+			embedded = "NULL";
+		
 		ColumnInfo columnInfo = null;
-		if (columnName.endsWith("_ID"))
+		if (columnName.endsWith("_ID")  && !column.isVirtualColumn())
 			columnInfo = new ColumnInfo(name, embedded, KeyNamePair.class, p_tableName+"."+columnName);
 		else
 			columnInfo = new ColumnInfo(name, embedded, String.class, null);

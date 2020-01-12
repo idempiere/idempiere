@@ -129,6 +129,7 @@ public class MMatchInv extends X_M_MatchInv
 				+" WHERE M_MatchInv.C_InvoiceLine_ID=il.C_InvoiceLine_ID AND il.C_Invoice_ID=?)";
 		List<MMatchInv> list = new Query(ctx, I_M_MatchInv.Table_Name, whereClause, trxName)
 		.setParameters(C_Invoice_ID)
+		.setOrderBy(COLUMNNAME_ProcessedOn)
 		.list();
 		return list.toArray (new MMatchInv[list.size()]);
 	}	//	getInvoice
