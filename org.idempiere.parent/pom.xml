@@ -26,9 +26,9 @@
 		<maven-clean-plugin.version>2.5</maven-clean-plugin.version><!-- get from master, update when mave have update-->
 		<!-- default value of properties, use when run without profile -->
 		<idempiere.target>org.idempiere.p2.targetplatform</idempiere.target>
-		<idempiere-equinox-url>http://download.eclipse.org/eclipse/updates/4.10</idempiere-equinox-url>
+		<idempiere-equinox-url>https://download.eclipse.org/eclipse/updates/4.10</idempiere-equinox-url>
 		<idempiere-equinox-repository-id>eclipse-photon-201810</idempiere-equinox-repository-id>
-		<idempiere-orbit-url>http://download.eclipse.org/tools/orbit/downloads/drops/R20181128170323/repository</idempiere-orbit-url>
+		<idempiere-orbit-url>https://download.eclipse.org/tools/orbit/downloads/drops/R20181128170323/repository</idempiere-orbit-url>
 		<idempiere-orbit-repository-id>orbit-photon-R20181128170323</idempiere-orbit-repository-id>
 		<url.file.srv>https://raw.githubusercontent.com/idempiere/binary.file/master</url.file.srv>
 		<extra.ui.install>org.eclipse.equinox.p2.director, org.idempiere.equinox.p2.director.feature.feature.group, org.idempiere.fitnesse.feature.feature.group</extra.ui.install>
@@ -464,7 +464,7 @@
             <repositories>
 	            <repository>
 		            <id>Central</id>
-		            <url>http://central.maven.org/maven2</url>
+		            <url>https://repo1.maven.org/maven2</url>
 	            </repository>
 
 	            <repository>
@@ -474,7 +474,7 @@
 
 	            <repository>
 		            <id>OpenNMS</id>
-		            <url>http://repo.opennms.org/maven2</url>
+		            <url>https://repo.opennms.org/maven2</url>
 	            </repository>
 
 	            <repository>
@@ -489,12 +489,12 @@
 
 	            <repository>
 		            <id>NetBeans</id>
-		            <url>http://bits.netbeans.org/maven2</url>
+		            <url>https://bits.netbeans.org/maven2</url>
 	            </repository>
 
 	            <repository>
 		            <id>Clojars</id>
-		            <url>http://clojars.org/repo</url>
+		            <url>https://clojars.org/repo</url>
 	            </repository>
 
 	            <repository>
@@ -504,12 +504,12 @@
 
 	            <repository>
 		            <id>zkoss</id>
-		            <url>http://mavensync.zkoss.org/maven2</url>
+		            <url>https://mavensync.zkoss.org/maven2</url>
 	            </repository>
 
 	            <repository>
 		            <id>jenkins</id>
-		            <url>http://repo.jenkins-ci.org/releases</url>
+		            <url>https://repo.jenkins-ci.org/releases</url>
 	            </repository>
             </repositories>
             <build>

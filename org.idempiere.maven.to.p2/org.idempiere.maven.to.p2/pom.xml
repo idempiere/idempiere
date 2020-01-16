@@ -39,12 +39,12 @@
     <repositories>
         <repository>
             <id>orbit-photon-R20180531190352</id><!--only this repository have bakik 1.9-->
-            <url>http://download.eclipse.org/tools/orbit/downloads/drops2/R20180531190352/repository</url>
+            <url>https://download.eclipse.org/tools/orbit/downloads/drops2/R20180531190352/repository</url>
             <layout>p2</layout>
         </repository>
         <repository>
 	        <id>org.jfree.chart</id>
-	        <url>http://nexus.orbisgis.org/content/repositories/osgi-maven</url>
+	        <url>https://nexus.orbisgis.org/content/repositories/osgi-maven</url>
         </repository>
         <repository>
 	        <id>jasperstudio-6.6.0</id>
@@ -53,11 +53,11 @@
         </repository>
         <repository>
             <id>zkoss</id>
-            <url>http://mavensync.zkoss.org/maven2</url>
+            <url>https://mavensync.zkoss.org/maven2</url>
         </repository>
         <repository>
 	        <id>restlet-maven</id>
-	        <url>http://maven.restlet.com</url>
+	        <url>https://maven.restlet.com</url>
         </repository>
     </repositories>
 
