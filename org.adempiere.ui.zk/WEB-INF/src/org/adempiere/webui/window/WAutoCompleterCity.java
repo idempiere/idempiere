@@ -42,7 +42,7 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 318310285903469314L;
+	private static final long serialVersionUID = -5130826429569842714L;
 
 	private static final int PopupDelayMillis = 500;
 
@@ -153,7 +153,7 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 				"SELECT cy.C_City_ID, cy.Name, cy.C_Region_ID, r.Name"
 				+" FROM C_City cy"
 				+" LEFT OUTER JOIN C_Region r ON (r.C_Region_ID=cy.C_Region_ID)"
-				+" WHERE cy.AD_Client_ID IN (0,?)");
+				+" WHERE cy.AD_Client_ID IN (0,?) AND cy.IsActive = 'Y'");
 		params.add(getAD_Client_ID());
 		if (getC_Region_ID() > 0)
 		{
