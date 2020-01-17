@@ -331,6 +331,19 @@ public interface I_PA_ReportColumn
 	  */
 	public boolean isAdhocConversion();
 
+    /** Column name IsAllowOppositeSign */
+    public static final String COLUMNNAME_IsAllowOppositeSign = "IsAllowOppositeSign";
+
+	/** Set Allow Opposite Sign.
+	  * Allow column values to be displayed with the opposite sign
+	  */
+	public void setIsAllowOppositeSign (boolean IsAllowOppositeSign);
+
+	/** Get Allow Opposite Sign.
+	  * Allow column values to be displayed with the opposite sign
+	  */
+	public boolean isAllowOppositeSign();
+
     /** Column name IsIncludeNullsActivity */
     public static final String COLUMNNAME_IsIncludeNullsActivity = "IsIncludeNullsActivity";
 
