@@ -708,7 +708,7 @@ public class WAllocation extends Allocation
 		//	Set AllocationDate
 		if (allocDate != null) {
 			if (! allocDate.equals(dateField.getValue())) {
-                Clients.showNotification(Msg.getMsg(Env.getCtx(), "AllocationDateUpdated"), Clients.NOTIFICATION_TYPE_INFO, dateField.getComponent(), "start_before", -1, true);       
+                Clients.showNotification(Msg.getMsg(Env.getCtx(), "AllocationDateUpdated"), Clients.NOTIFICATION_TYPE_INFO, dateField.getComponent(), "start_before", -1, false);       
                 dateField.setValue(allocDate);
 			}
 		}
