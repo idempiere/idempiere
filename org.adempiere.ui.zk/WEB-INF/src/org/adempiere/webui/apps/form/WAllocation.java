@@ -66,6 +66,7 @@ import org.compiere.util.TrxRunnable;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
@@ -703,10 +704,15 @@ public class WAllocation extends Allocation
 		
 		paymentInfo.setText(calculatePayment(paymentTable, multiCurrency.isSelected()));
 		invoiceInfo.setText(calculateInvoice(invoiceTable, multiCurrency.isSelected()));
-		
+
 		//	Set AllocationDate
-		if (allocDate != null)
-			dateField.setValue(allocDate);
+		if (allocDate != null) {
+			if (! allocDate.equals(dateField.getValue())) {
+                Clients.showNotification(Msg.getMsg(Env.getCtx(), "AllocationDateUpdated"), Clients.NOTIFICATION_TYPE_INFO, dateField.getComponent(), "start_before", -1, true);       
+                dateField.setValue(allocDate);
+			}
+		}
+
 		//  Set Allocation Currency
 		allocCurrencyLabel.setText(currencyPick.getDisplay());
 		//  Difference
