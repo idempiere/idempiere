@@ -307,7 +307,7 @@ public class MStore extends X_W_Store
 		if (!urlOK) // || url.indexOf("localhost") != -1)
 		{
 			log.saveError("FillMandatory", Msg.getElement(getCtx(), "URL") 
-				+ " - e.g. http://www.adempiere.org");
+				+ " - e.g. http://www.idempiere.org");
 			return false;
 		}
 		
@@ -411,8 +411,8 @@ public class MStore extends X_W_Store
 			return "No Web Store EMail for " + getName();
 		//
 		EMail email = createEMail (getWStoreEMail(),
-			"Adempiere WebStore EMail Test", 
-			"Adempiere WebStore EMail Test: " + toString());
+			"iDempiere WebStore EMail Test", 
+			"iDempiere WebStore EMail Test: " + toString());
 		if (email == null)
 			return "Could not create Web Store EMail: " + getName();
 		try
@@ -546,21 +546,21 @@ public class MStore extends X_W_Store
 				"\nSorry to see you go.  This is effictive immediately."},
 			new String[]{MMailMsg.MAILMSGTYPE_OrderAcknowledgement,
 				"Order Acknowledgement", 
-				"Adempiere Web - Order ",
+				"iDempiere Web - Order ",
 				"Dear ", 
 				"\nThank you for your purchase: ",
 				"\nYou can view your Orders, Invoices, Payments in the Web Store."
 				+ "\nFrom there, you also download your Assets (Documentation, etc.)"},
 			new String[]{MMailMsg.MAILMSGTYPE_PaymentAcknowledgement,
 				"Payment Success", 
-				"Adempiere Web - Payment ",
+				"iDempiere Web - Payment ",
 				"Dear ", 
 				"\nThank you for your payment of ",
 				"\nYou can view your Orders, Invoices, Payments in the Web Store."
 				+ "\nFrom there you also download your Assets (Documentation, etc.)"},
 			new String[]{MMailMsg.MAILMSGTYPE_PaymentError,
 				"Payment Error", 
-				"Adempiere Web - Declined Payment ",
+				"iDempiere Web - Declined Payment ",
 				"Dear ",
 				"\nUnfortunately your payment was declined: ",
 				"\nPlease check and try again. You can pay later by going to 'My Orders' or 'My Invoices' - or by directly creating a payment in 'My Payments'"},

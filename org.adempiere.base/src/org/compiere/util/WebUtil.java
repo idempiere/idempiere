@@ -549,7 +549,7 @@ public final class WebUtil
 		if (cookieProperties != null)
 		{
 			Cookie cookie = new Cookie (WebEnv.COOKIE_INFO, propertiesEncode(cookieProperties));
-			cookie.setComment("(c) adempiere, Inc - Jorg Janke");
+			cookie.setComment("(c) iDempiere, Inc - Jorg Janke");
 			cookie.setSecure(false);
 			cookie.setPath("/");
 			if (cookieProperties.size() == 0)
