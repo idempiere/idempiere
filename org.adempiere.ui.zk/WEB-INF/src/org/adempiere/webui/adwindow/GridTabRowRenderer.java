@@ -44,10 +44,8 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MStyle;
 import org.compiere.model.MSysConfig;
-import org.compiere.model.X_AD_StyleLine;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.compiere.util.Evaluator;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuScript;
@@ -279,27 +277,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		
 		GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
 		MStyle style = MStyle.get(Env.getCtx(), AD_Style_ID);
-		X_AD_StyleLine[] lines = style.getStyleLines();
-		StringBuilder styleBuilder = new StringBuilder();
-		for (X_AD_StyleLine line : lines) 
-		{
-			String inlineStyle = line.getInlineStyle().trim();
-			String displayLogic = line.getDisplayLogic();
-			String theme = line.getTheme();
-			if (!Util.isEmpty(theme)) {
-				if (!ThemeManager.getTheme().equals(theme))
-					continue;
-			}
-			if (!Util.isEmpty(displayLogic))
-			{
-				if (!Evaluator.evaluateLogic(gridRowCtx, displayLogic)) 
-					continue;
-			}
-			if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
-				styleBuilder.append("; ");
-			styleBuilder.append(inlineStyle);
-		}
-		setComponentStyle(component, styleBuilder.toString());
+		setComponentStyle(component, style.buildStyle(ThemeManager.getTheme(), gridRowCtx));
 	}
 
 	protected  void setComponentStyle(HtmlBasedComponent component, String style) {
