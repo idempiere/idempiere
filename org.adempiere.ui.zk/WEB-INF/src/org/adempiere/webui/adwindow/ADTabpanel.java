@@ -738,8 +738,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         		Label label = new Label(field.getHeader());
         		Div div = new Div();
         		div.setSclass("form-label-heading");
-        		if (field.getAD_FieldStyle_ID() > 0) {
-            		MStyle style = MStyle.get(Env.getCtx(), field.getAD_FieldStyle_ID());
+        		if (field.getAD_LabelStyle_ID() > 0) {
+            		MStyle style = MStyle.get(Env.getCtx(), field.getAD_LabelStyle_ID());
             		String cssStyle = style.buildStyle(ThemeManager.getTheme(), new Evaluatee() {
     					@Override
     					public String get_ValueAsString(String variableName) {
