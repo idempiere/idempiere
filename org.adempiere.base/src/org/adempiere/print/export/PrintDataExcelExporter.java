@@ -38,9 +38,11 @@ import org.compiere.print.MPrintPaper;
 import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataElement;
 import org.compiere.print.layout.PrintDataEvaluatee;
+import org.compiere.print.layout.PrintDataEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Evaluator;
 import org.compiere.util.Msg;
+import org.compiere.util.Evaluator;
 import org.compiere.util.Util;
 
 /**
@@ -532,5 +534,18 @@ extends AbstractExcelExporter
 			}
 		}
 		return super.isVisible(row, col);
+	}
+
+	@Override
+	public boolean isDisplayed(int row, int col)
+	{
+		if (m_printData.getRowIndex() != row)
+			m_printData.setRowIndex(row);
+
+		MPrintFormatItem item = m_printFormat.getItem(col);
+		if (Util.isEmpty(item.getDisplayLogic()))
+			return true;
+
+		return Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), item.getDisplayLogic());
 	}
 }
