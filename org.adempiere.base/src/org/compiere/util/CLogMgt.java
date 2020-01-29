@@ -669,18 +669,6 @@ public class CLogMgt
 		//  Host
 		sb.append(cc.getAppsHost());
 		
-		if (Ini.isClient())
-		{
-			sb.append(" (");
-
-			//  Server
-			if (!cc.getAppsHost().equalsIgnoreCase("MyAppsServer") && cc.isAppsServerOK(false))
-				sb.append(CConnection.get().getServerVersion());
-			else
-				sb.append(getMsg("NotActive"));
-			//
-			sb.append(")\n  ");
-		}
 		//
 		return sb.toString();
 	}   //  getServerInfo

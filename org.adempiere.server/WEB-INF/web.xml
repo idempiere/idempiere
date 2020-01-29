@@ -45,15 +45,6 @@
 		<servlet-class>org.compiere.web.AdempiereMonitor</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	<!-- Restlet adapter -->
-    <!-- <servlet>
-      <servlet-name>RestletServlet</servlet-name>
-      <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
-      <init-param>
-            <param-name>org.restlet.application</param-name>
-            <param-value>org.adempiere.web.server.ServerApplication</param-value>
-      </init-param>
-    </servlet> -->
     <servlet>
     	<servlet-name>default</servlet-name>
     	<servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class>

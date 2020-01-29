@@ -56,7 +56,6 @@ import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.Adempiere;
 import org.compiere.apps.wf.WFActivity;
 import org.compiere.apps.wf.WFPanel;
-import org.compiere.db.CConnection;
 import org.compiere.grid.tree.VTreePanel;
 import org.compiere.model.MRole;
 import org.compiere.model.MSession;
@@ -110,7 +109,6 @@ public final class AMenu extends CFrame
 	public AMenu ()
 	{
 		super();
-		if (log.isLoggable(Level.INFO)) log.info("CodeBase=" + Adempiere.getCodeBase());	
 		
 		UIManager.put( "ClassLoader", this.getClass().getClassLoader());
 		
@@ -130,7 +128,6 @@ public final class AMenu extends CFrame
 		session.setWebSession(UUID.randomUUID().toString());
 		session.setDescription(session.getDescription() + " " + "Swing Client");
 		session.saveEx();
-		CConnection.get().setAppServerCredential("AD_Session_ID#"+session.getAD_Session_ID(), session.getWebSession().toCharArray());
 
 		// Setting close operation/listener - teo_sarca [ 1684168 ]
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

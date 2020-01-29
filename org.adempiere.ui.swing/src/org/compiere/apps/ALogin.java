@@ -465,7 +465,7 @@ public final class ALogin extends CDialog
 	 */
 	public boolean initLogin()
 	{
-		m_cc = CConnection.get(Adempiere.getCodeBaseHost());
+		m_cc = CConnection.get();
 		hostField.setValue(m_cc);
 		
 		if ( Ini.isPropertyBool(Ini.P_VALIDATE_CONNECTION_ON_STARTUP)) {
@@ -507,14 +507,6 @@ public final class ALogin extends CDialog
 		}
 	}   //  processWindowEvent
 
-	private void validateAppServer() {
-		m_user = userTextField.getText();
-		m_pwd = passwordField.getPassword();
-		
-		m_cc.setAppServerCredential(m_user, m_pwd);
-		m_cc.testAppsServer();
-	}
-	
 	private void connectToDatabase() {
 		//Check connection
 		DB.setDBTarget(m_cc);
@@ -529,7 +521,6 @@ public final class ALogin extends CDialog
 	private void validateConnection()
 	{
 		m_connectionOK = -1;
-		validateAppServer();
 		
 		//make sure connecting to new database
 		DB.closeTarget();

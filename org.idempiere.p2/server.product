@@ -66,7 +66,6 @@
       <plugin id="org.idempiere.felix.webconsole" autoStart="true" startLevel="0" />
       <plugin id="org.mortbay.jasper.apache-el" autoStart="true" startLevel="0" />
       <plugin id="org.mortbay.jasper.apache-jsp" autoStart="true" startLevel="0" />
-      <plugin id="org.restlet" autoStart="true" startLevel="0" />
       <property name="org.eclipse.update.reconcile" value="false" />
       <property name="osgi.instance.area.default" value="@config.dir/../workspace" />
       <property name="eclipse.product" value="org.adempiere.server.product" />

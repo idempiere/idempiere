@@ -93,7 +93,7 @@ public final class AdempiereClient
 		}
 
 		//  Set Default Database Connection from Ini
-		DB.setDBTarget(CConnection.get(Adempiere.getCodeBaseHost()));
+		DB.setDBTarget(CConnection.get());
 
 		if (isClient)		//	don't test connection
 			return false;	//	need to call

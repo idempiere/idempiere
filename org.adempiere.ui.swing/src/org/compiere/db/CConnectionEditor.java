@@ -62,11 +62,6 @@ public class CConnectionEditor extends JComponent
 		m_text.setEditable(false);
 		m_text.setBorder(null);
 		m_text.addMouseListener(ml);
-		m_server.setIcon(new ImageIcon(getClass().getResource("Server16.gif")));
-		m_server.setFocusable(false);
-		m_server.setBorder(null);
-		m_server.setOpaque(true);
-		m_server.addMouseListener(ml);
 		m_db.setIcon(new ImageIcon(getClass().getResource("Database16.gif")));
 		m_db.setFocusable(false);
 		m_db.setBorder(null);
@@ -75,7 +70,6 @@ public class CConnectionEditor extends JComponent
 		LookAndFeel.installBorder(this, "TextField.border");
 		//
 		setLayout(new BorderLayout(0,0));
-		add(m_server, BorderLayout.WEST);
 		add(m_text, BorderLayout.CENTER);
 		add(m_db, BorderLayout.EAST);
 	}   //  CConnectionEditor
@@ -84,8 +78,6 @@ public class CConnectionEditor extends JComponent
 	private JTextField  m_text = new JTextField(10);
 	/** DB Button Element   */
 	private JLabel      m_db = new JLabel ();
-	/** Host Button Element */
-	private JLabel      m_server = new JLabel();
 	/** The Value           */
 	private CConnection m_value = null;
 	/** ReadWrite           */
@@ -154,7 +146,6 @@ public class CConnectionEditor extends JComponent
 	 */
 	public void setBackground (Color color)
 	{
-		m_server.setBackground(color);
 		m_text.setBackground(color);
 		m_db.setBackground(color);
 	}   //  setBackground
@@ -208,12 +199,10 @@ public class CConnectionEditor extends JComponent
 		if (m_value == null)
 			return;
 		//  Text
-		if (m_value.isAppsServerOK(false) || m_value.isDatabaseOK())
+		if (m_value.isDatabaseOK())
 		{
 			m_text.setForeground(AdempierePLAF.getTextColor_OK());
 			setBackground(false);
-			if (!m_value.isAppsServerOK(false))
-				m_server.setBackground(AdempierePLAF.getFieldBackground_Error());
 			if (!m_value.isDatabaseOK())
 				m_db.setBackground(AdempierePLAF.getFieldBackground_Error());
 		}

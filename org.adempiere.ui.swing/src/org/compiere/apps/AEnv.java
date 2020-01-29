@@ -58,7 +58,6 @@ import org.compiere.model.MTable;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CFrame;
 import org.compiere.swing.CMenuItem;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -805,48 +804,8 @@ public final class AEnv
 	/** Workflow Menu		*/
 	private static int		s_workflow_Window_ID = 0;
 	
-	/**	Server Re-tries		*/
-	private static int 		s_serverTries = 0;
-	/**	Server Session		*/
-	private static Server	s_server = null;
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(AEnv.class);
-
-	/**
-	 *  Is AppsServer Active ?
-	 *  @return true if active
-	 */
-	public static boolean isServerActive()
-	{
-		boolean contactAgain = s_server == null && s_serverTries == 0;
-		boolean ok = CConnection.get().isAppsServerOK(contactAgain);
-		if (ok)
-		{
-			s_serverTries = 0;
-			return true;
-		}
-		if (s_serverTries > 1)	//	try twice
-			return false;
-
-		//	Try to connect
-		CLogMgt.enable(false);
-		try
-		{
-			s_serverTries++;
-			if (log.isLoggable(Level.CONFIG)) log.config("try #" + s_serverTries);
-			ok = CConnection.get().isAppsServerOK(true);
-			if (ok)
-				s_serverTries = 0;
-		}
-		catch (Exception ex)
-		{
-			ok = false;
-			s_server = null;
-		}
-		CLogMgt.enable(true);
-		//
-		return ok;
-	}   //  isServerActive
 
 	/**
 	 *  Get Server Version
@@ -886,23 +845,17 @@ public final class AEnv
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("TableName=" + tableName + ", Record_ID=" + Record_ID);
 
-		//  try to get from Server when enabled
-		if (isServerActive())
+		try
 		{
-			log.config("trying server");
-			try
+			Server server = CConnection.get().getServer();
+			if (server != null)
 			{
-				Server server = CConnection.get().getServer();
-				if (server != null)
-				{
-					server.cacheReset(Env.getRemoteCallCtx(Env.getCtx()), tableName, Record_ID); 
-				}
+				server.cacheReset(Env.getRemoteCallCtx(Env.getCtx()), tableName, Record_ID); 
 			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, "ex", e);
-				s_server = null;
-			}
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, "ex", e);
 		}
 	}   //  cacheReset
 	

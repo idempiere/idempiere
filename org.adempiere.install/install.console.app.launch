@@ -83,7 +83,6 @@
         <setEntry value="org.junit@default:default"/>
         <setEntry value="org.krysalis.barcode4j@default:default"/>
         <setEntry value="org.passay@default:default"/>
-        <setEntry value="org.restlet*2.4.1@default:default"/>
         <setEntry value="slf4j.api@default:default"/>
         <setEntry value="slf4j.jcl@default:false"/>
     </setAttribute>

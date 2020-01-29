@@ -368,8 +368,6 @@
         <setEntry value="org.objectweb.asm.commons*7.0.0.v20181030-2244@default:default"/>
         <setEntry value="org.objectweb.asm.tree*7.0.0.v20181030-2244@default:default"/>
         <setEntry value="org.passay@default:default"/>
-        <setEntry value="org.restlet*2.4.1@default:default"/>
-        <setEntry value="org.restlet.ext.servlet*2.4.1@default:default"/>
         <setEntry value="org.sat4j.core@default:default"/>
         <setEntry value="org.sat4j.pb@default:default"/>
         <setEntry value="org.slf4j.apis.jcl@default:default"/>

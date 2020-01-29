@@ -33,9 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import org.adempiere.client.ClientCredentialDialog;
 import org.adempiere.plaf.AdempierePLAF;
-import org.compiere.apps.AEnv;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CCheckBox;
 import org.compiere.swing.CComboBox;
@@ -44,7 +42,6 @@ import org.compiere.swing.CLabel;
 import org.compiere.swing.CPanel;
 import org.compiere.swing.CTextField;
 import org.compiere.util.CLogger;
-import org.compiere.util.Ini;
 
 /**
  *  Connection Dialog.
@@ -127,12 +124,6 @@ public class CConnectionDialog extends CDialog implements ActionListener
 	private CLabel dbTypeLabel = new CLabel();
 	private CComboBox<Object> dbTypeField = new CComboBox<Object>(Database.getDatabaseNames());
 	private CCheckBox cbBequeath = new CCheckBox();
-	private CLabel appsHostLabel = new CLabel();
-	private CTextField appsHostField = new CTextField();
-	private CLabel sslPortLabel = new CLabel();
-	private CTextField sslPortField = new CTextField();
-	private CButton bTestApps = new CButton();
-	//private CCheckBox cbOverwrite = new CCheckBox();
 	private CLabel dbUidLabel = new CLabel();
 	private CTextField dbUidField = new CTextField();
 	private JPasswordField dbPwdField = new JPasswordField();
@@ -169,12 +160,6 @@ public class CConnectionDialog extends CDialog implements ActionListener
 		sidField.setColumns(30);
 		fwPortField.setColumns(10);
 		cbBequeath.setText(res.getString("BequeathConnection"));
-		appsHostLabel.setText(res.getString("AppsHost"));
-		appsHostField.setColumns(30);
-		sslPortLabel.setText(res.getString("AppsPort"));
-		sslPortField.setColumns(10);
-		bTestApps.setText(res.getString("TestApps"));
-		bTestApps.setHorizontalAlignment(JLabel.LEFT);
 		//cbOverwrite.setText(res.getString("Overwrite"));
 		dbUidLabel.setText(res.getString("DBUidPwd"));
 		dbUidField.setColumns(10);
@@ -188,19 +173,6 @@ public class CConnectionDialog extends CDialog implements ActionListener
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(12, 12, 5, 5), 0, 0));
 		centerPanel.add(nameField,  new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0
 			,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(12, 0, 5, 12), 0, 0));
-		centerPanel.add(appsHostLabel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
-			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 12, 5, 5), 0, 0));
-		centerPanel.add(appsHostField, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0
-			,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 0, 5, 12), 0, 0));
-		centerPanel.add(sslPortLabel, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0
-				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 12, 5, 5), 0, 0));
-			centerPanel.add(sslPortField, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0
-				,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-		//
-		centerPanel.add(bTestApps, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0
-			,GridBagConstraints.SOUTHWEST, GridBagConstraints.HORIZONTAL, new Insets(5, 0, 12, 0), 0, 0));
-		//centerPanel.add(cbOverwrite, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0
-			//,GridBagConstraints.WEST, GridBagConstraints.VERTICAL, new Insets(0, 5, 0, 12), 0, 0));
 		//	DB
 		centerPanel.add(dbTypeLabel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 12, 5, 5), 0, 0));
@@ -240,9 +212,6 @@ public class CConnectionDialog extends CDialog implements ActionListener
 			,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 0, 12, 0), 0, 0));
 		//
 		nameField.addActionListener(this);
-		appsHostField.addActionListener(this);
-		sslPortField.addActionListener(this);
-		bTestApps.addActionListener(this);
 		//
 		dbTypeField.addActionListener(this);
 		hostField.addActionListener(this);
@@ -254,19 +223,7 @@ public class CConnectionDialog extends CDialog implements ActionListener
 		fwPortField.addActionListener(this);
 		bTestDB.addActionListener(this);
 		bOK.addActionListener(this);
-		bCancel.addActionListener(this);
-		
-		//	Server
-		if (!Ini.isClient())
-		{
-			appsHostLabel.setVisible(false);
-			appsHostField.setVisible(false);
-			sslPortLabel.setVisible(false);
-			sslPortField.setVisible(false);
-			bTestApps.setVisible(false);
-		}
-		else	//	Client
-			cbBequeath.setVisible(false);
+		bCancel.addActionListener(this);		
 	}   //  jbInit
 
 	/**
@@ -352,21 +309,8 @@ public class CConnectionDialog extends CDialog implements ActionListener
 
 
 		updateCConnection();
-		//
-		if (src == bTestApps)
-		{
-			ClientCredentialDialog ccd = new ClientCredentialDialog(this);
-			ccd.setModal(true);
-			AEnv.showCenterWindow(this, ccd);
-			if (ccd.isOKpressed())
-			{
-				m_cc.setAppServerCredential(ccd.getUserId(), ccd.getPassword());
-				cmd_testApps();
-			}
-		}
-
 		//  Database Selection Changed
-		else if (src == dbTypeField)
+		if (src == dbTypeField)
 		{
 			m_cc.setType((String)dbTypeField.getSelectedItem());
 			dbPortField.setText(String.valueOf(m_cc.getDbPort()));
@@ -385,17 +329,7 @@ public class CConnectionDialog extends CDialog implements ActionListener
 	}   //  actionPerformed
 
 	private void updateCConnection() {
-		if (Ini.isClient())
-		{
-			//hengsin: avoid unnecessary requery of application server status
-			if (!appsHostField.getText().equals(m_cc.getAppsHost()))
-				m_cc.setAppsHost(appsHostField.getText());
-			if (!sslPortField.getText().equals(Integer.toString(m_cc.getSSLPort())))
-				m_cc.setSSLPort(sslPortField.getText());
-
-		}
-		else
-			m_cc.setAppsHost("localhost");
+		m_cc.setAppsHost("localhost");
 		//
 		m_cc.setType((String)dbTypeField.getSelectedItem());
 		m_cc.setDbHost(hostField.getText());
@@ -416,14 +350,8 @@ public class CConnectionDialog extends CDialog implements ActionListener
 	{
 		m_updating = true;
 		nameField.setText(m_cc.getName());
-		appsHostField.setText(m_cc.getAppsHost());
-		sslPortField.setText(String.valueOf(m_cc.getSSLPort()));
 		//
-		bTestApps.setIcon(getStatusIcon(m_cc.isAppsServerOK(false)));
-	//	bTestApps.setToolTipText(m_cc.getRmiUri());
-
-		//cbOverwrite.setVisible(m_cc.isAppsServerOK(false));
-		boolean rw = !m_cc.isAppsServerOK(false);
+		boolean rw = true;
 		//
 		dbTypeLabel.setReadWrite(rw);
 		dbTypeField.setReadWrite(rw);
@@ -493,25 +421,6 @@ public class CConnectionDialog extends CDialog implements ActionListener
 		}
 		setBusy (false);
 	}   //  cmd_testDB
-
-	/**
-	 *  Test Application connection
-	 */
-	private void cmd_testApps()
-	{
-		setBusy (true);
-		m_cc.setAppsHost(appsHostField.getText());
-		m_cc.setSSLPort(sslPortField.getText());
-		Exception e = m_cc.testAppsServer();
-		if (e != null)
-		{
-			JOptionPane.showMessageDialog(this,
-				e.getLocalizedMessage(),
-				res.getString("ServerNotActive") + " - " + m_cc.getAppsHost(),
-				JOptionPane.ERROR_MESSAGE);
-		}
-		setBusy (false);
-	}   //  cmd_testApps
 
 	public boolean isCancel() {
 		return isCancel;
