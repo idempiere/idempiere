@@ -1,14 +1,14 @@
 -- IDEMPIERE-4084 improve toolbar more configurable
 -- Jan 24, 2020, 8:22:03 PM CET
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Help,PrintName,EntityType,AD_Element_UU) VALUES (203396,0,0,'Y',TO_TIMESTAMP('2020-01-24 20:22:02','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-01-24 20:22:02','YYYY-MM-DD HH24:MI:SS'),100,'isShowMore','Group in show more',NULL,'Group in show more','D','ba2bc74f-3b73-48c0-b1fa-8182d5275c77')
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Help,PrintName,EntityType,AD_Element_UU) VALUES (203396,0,0,'Y',TO_TIMESTAMP('2020-01-24 20:22:02','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-01-24 20:22:02','YYYY-MM-DD HH24:MI:SS'),100,'IsShowMore','Group in show more',NULL,'Group in show more','D','ba2bc74f-3b73-48c0-b1fa-8182d5275c77')
 ;
 
 -- Jan 24, 2020, 8:22:34 PM CET
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml) VALUES (214166,0,'Group in show more',200003,'isShowMore','N',1,'N','N','N','N','N',0,'N',20,0,0,'Y',TO_TIMESTAMP('2020-01-24 20:22:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-01-24 20:22:34','YYYY-MM-DD HH24:MI:SS'),100,203396,'Y','N','D','N','N','N','Y','065f4119-dd27-42bf-997a-cfa9af541363','Y',0,'N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml) VALUES (214166,0,'Group in show more',200003,'IsShowMore','N',1,'N','N','N','N','N',0,'N',20,0,0,'Y',TO_TIMESTAMP('2020-01-24 20:22:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-01-24 20:22:34','YYYY-MM-DD HH24:MI:SS'),100,203396,'Y','N','D','N','N','N','Y','065f4119-dd27-42bf-997a-cfa9af541363','Y',0,'N','N','N')
 ;
 
 -- Jan 24, 2020, 8:22:51 PM CET
-ALTER TABLE AD_ToolBarButton ADD COLUMN isShowMore CHAR(1) DEFAULT 'N' CHECK (isShowMore IN ('Y','N'))
+ALTER TABLE AD_ToolBarButton ADD COLUMN IsShowMore CHAR(1) DEFAULT 'N' CHECK (IsShowMore IN ('Y','N'))
 ;
 
 -- Jan 24, 2020, 8:23:08 PM CET

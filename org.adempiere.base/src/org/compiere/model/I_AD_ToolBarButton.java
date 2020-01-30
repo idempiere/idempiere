@@ -250,11 +250,11 @@ public interface I_AD_ToolBarButton
 	  */
 	public boolean isCustomization();
 
-    /** Column name isShowMore */
-    public static final String COLUMNNAME_isShowMore = "isShowMore";
+    /** Column name IsShowMore */
+    public static final String COLUMNNAME_IsShowMore = "IsShowMore";
 
 	/** Set Group in show more	  */
-	public void setisShowMore (boolean isShowMore);
+	public void setIsShowMore (boolean IsShowMore);
 
 	/** Get Group in show more	  */
 	public boolean isShowMore();
