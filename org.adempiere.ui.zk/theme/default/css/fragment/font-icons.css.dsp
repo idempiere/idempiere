@@ -283,4 +283,6 @@
 .z-icon-ShowMore:before {
 	content: "\f142";
 }
-
+.z-icon-Share:before {
+	content: "\f0ac";
+}
