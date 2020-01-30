@@ -280,4 +280,7 @@
 .z-icon-CSVImport:before {
 	content: "\f0f6";
 }
+.z-icon-ShowMore:before {
+	content: "\f142";
+}
 

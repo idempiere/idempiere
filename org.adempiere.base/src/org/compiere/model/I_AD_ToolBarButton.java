@@ -250,6 +250,15 @@ public interface I_AD_ToolBarButton
 	  */
 	public boolean isCustomization();
 
+    /** Column name isShowMore */
+    public static final String COLUMNNAME_isShowMore = "isShowMore";
+
+	/** Set Group in show more	  */
+	public void setisShowMore (boolean isShowMore);
+
+	/** Get Group in show more	  */
+	public boolean isShowMore();
+
     /** Column name KeyStroke_KeyCode */
     public static final String COLUMNNAME_KeyStroke_KeyCode = "KeyStroke_KeyCode";
 

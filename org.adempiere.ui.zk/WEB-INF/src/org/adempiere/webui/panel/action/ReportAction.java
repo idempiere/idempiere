@@ -201,7 +201,7 @@ public class ReportAction implements EventListener<Event>
 			confirmPanel.addActionListener(this);
 		}
 
-		LayoutUtils.openPopupWindow(panel.getToolbar().getButton("Report"), winReport, "after_start");
+		LayoutUtils.openPopupWindow(panel.getToolbar().getToolbarItem("Report"), winReport, "after_start");
 	}
 	
 	@Override
