@@ -26,10 +26,8 @@
 		<module>org.adempiere.replication.server</module>
 		<module>org.adempiere.report.jasper.library</module>
 		<module>org.adempiere.report.jasper</module>
-		<module>org.adempiere.report.jasper.swing</module>
 		<module>org.adempiere.report.jasper.webapp</module>
-		<module>org.adempiere.server</module>
-		<module>org.adempiere.ui.swing</module>
+		<module>org.adempiere.server</module>		
 		<module>org.adempiere.ui</module>
 		<module>org.adempiere.ui.zk</module>
 		<module>org.adempiere.webstore</module>
@@ -49,8 +47,7 @@
 		<module>org.adempiere.pipo-feature</module>
 		<module>org.adempiere.replication.server-feature</module>
 		<module>org.adempiere.server-feature</module>
-		<module>org.adempiere.target.platform-feature</module>
-		<module>org.adempiere.ui.swing-feature</module>
+		<module>org.adempiere.target.platform-feature</module>		
 		<module>org.adempiere.ui.zk-feature</module>
 		<module>org.adempiere.webstore-feature</module>
 		<module>org.compiere.db.provider-feature</module>
