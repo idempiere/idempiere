@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE zk>
+
+	<!--
+		zk.xml Copyright (C) 2006 Potix Corporation. All Rights Reserved.
+	-->
+
+<zk>
+	<device-config>
+ 		<device-type>ajax</device-type>
+      		<server-push-class>org.idempiere.ui.zk.websocket.WebSocketServerPush</server-push-class>
+	</device-config>
+</zk>

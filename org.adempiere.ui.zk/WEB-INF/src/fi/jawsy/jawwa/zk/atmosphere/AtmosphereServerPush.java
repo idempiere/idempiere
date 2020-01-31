@@ -184,11 +184,27 @@ public class AtmosphereServerPush implements ServerPush {
 	        synchronized (schedules) {
 				schedules.add(new Schedule(task, event, scheduler));
 			}
+	        boolean ok = false;
 	        try {
-	        	commitResponse();
+	        	ok = commitResponse();
 			} catch (IOException e) {
 				log.error(e.getMessage(), e);
 			}
+	        if (!ok) {
+	        	try {
+					Thread.sleep(500);
+				} catch (InterruptedException e1) {}
+	        	if (schedules.size() > 0) {
+		        	try {
+			        	ok = commitResponse();
+					} catch (IOException e) {
+						log.error(e.getMessage(), e);
+					}
+		        	if (!ok) {
+			        	log.warn("Failed to resume long polling resource");
+			        }
+	        	}	        	
+	        }	        
     	} else {
     		//in event listener thread, can schedule immediately
     		scheduler.schedule(task, event);
@@ -204,10 +220,15 @@ public class AtmosphereServerPush implements ServerPush {
             return;
         }
 
-        log.debug("Starting server push for " + desktop);
-        Clients.response("jawwa.atmosphere.serverpush", new AuScript(null, "jawwa.atmosphere.startServerPush('" + desktop.getId() + "', " + timeout
-                + ");"));
+        if (log.isDebugEnabled())
+        	log.debug("Starting server push for " + desktop);
+        startClientPush(desktop);
     }
+
+	private void startClientPush(Desktop desktop) {
+		Clients.response("jawwa.atmosphere.serverpush", new AuScript(null, "jawwa.atmosphere.startServerPush('" + desktop.getId() + "', " + timeout
+                + ");"));
+	}
 
     @Override
     public void stop() {
@@ -217,7 +238,8 @@ public class AtmosphereServerPush implements ServerPush {
             return;
         }
 
-        log.debug("Stopping server push for " + desktop);
+        if (log.isDebugEnabled())
+        	log.debug("Stopping server push for " + desktop);
         Clients.response("jawwa.atmosphere.serverpush", new AuScript(null, "jawwa.atmosphere.stopServerPush('" + desktop.getId() + "');"));
         try {
 			commitResponse();
@@ -263,6 +285,11 @@ public class AtmosphereServerPush implements ServerPush {
 
 	@Override
 	public void resume() {
+		if (desktop == null || desktop.get() == null) {
+			throw new IllegalStateException(
+					"ServerPush cannot be resumed without desktop, or has been stopped!call #start(desktop)} instead");
+		}
+		startClientPush(desktop.get());
 	}
 	
 	private class Schedule<T extends Event> {

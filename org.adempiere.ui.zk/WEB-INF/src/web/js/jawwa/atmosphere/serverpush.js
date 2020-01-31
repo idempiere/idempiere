@@ -64,6 +64,7 @@
 
       var jqxhr = $.ajax(this.ajaxOptions);
       this._req = jqxhr;
+      zAu.cmd0.echo(this.desktop);
     },
     start: function() {
       this.desktop._serverpush = this;
