@@ -47,13 +47,13 @@ Author URI: http://www.bmlaurus.com
 							</a>
 							<div class="main-txt-btn"><%=Prop.getProperty(Prop.WEBUI_TEXT)%></div>
 						</li>
-						<li id ="main-requestBtns-btnReq">
+						<li id ="main-requestBtns-btnLocSupp">
 							<a href="<%=Prop.getProperty(Prop.SUPPORT_LINK)%>" target="_blank">
 								<img name="img_locsupport" src="<%=Prop.getImage("img_locsupport.png")%>" border="0" />
 							</a>
 							<div class="main-txt-btn"><%=Prop.getProperty(Prop.LOCAL_TEXT)%></div>
 						</li>
-						<li id ="main-requestBtns-btnSendReq">
+						<li id ="main-requestBtns-btnResoc">
 							<a href="<%=Prop.getProperty(Prop.RESOURCE_LINK)%>" target="_blank">
 								<img name="img_resource" src="<%=Prop.getImage("img_resource.png")%>" border="0" />
 							</a>
@@ -83,13 +83,13 @@ Author URI: http://www.bmlaurus.com
 							</a>
 							<div class="main-txt-btn"><%=Prop.getProperty(Prop.IRC_TEXT)%></div>
 						</li>
-						<li id ="main-requestBtns-btnLocSupp">
+						<li id ="main-requestBtns-btnReq">
 							<a href="<%=Prop.getProperty(Prop.WEBSTORE_LINK)%>" target="_blank">
 								<img name="img_webstore" src="<%=Prop.getImage("img_webstore.png")%>" border="0" />
 							</a>
 							<div class="main-txt-btn"><%=Prop.getProperty(Prop.WEBSTORE_TEXT)%></div>
 						</li>
-						<li id ="main-requestBtns-btnResoc">
+						<li id ="main-requestBtns-btnSendReq">
 							<a href="<%=Prop.getProperty(Prop.SENDREQUEST_LINK)%>" target="_blank">
 								<img name="img_sendreq" src="<%=Prop.getImage("img_sendreq.png")%>" border="0" />
 							</a>
@@ -139,6 +139,6 @@ Author URI: http://www.bmlaurus.com
 				<%=Prop.getProperty(Prop.COPYRIGHT_TXT)%>
 			</div>
 		</div>
-	</div>
+	</div>	
 </body>
 </html>
