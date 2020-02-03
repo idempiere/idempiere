@@ -14,7 +14,7 @@ Author URI: http://www.bmlaurus.com
 	<script type="text/javascript" src="resources/jquery/jquery.js"></script>
 	<title><%=Prop.getProperty(Prop.TITLE) %></title>
 </head>
-<body>
+<body onload="checkWebstoreLinks()">
 	<div id="body" class="body">
 		<div id="toolBar" class="toolBar">
 			<div id="toolBar-title" class="toolBar-title">
@@ -140,5 +140,42 @@ Author URI: http://www.bmlaurus.com
 			</div>
 		</div>
 	</div>	
+	<script>
+		function checkWebstoreLinks() {
+			try {
+				var element = document.getElementById("main-requestBtns-btnReq");
+				var link = element.getElementsByTagName("a")[0];
+				var url = link.href;
+				checkLink(element, url);
+				
+				element = document.getElementById("main-requestBtns-btnSendReq");
+				link = element.getElementsByTagName("a")[0];
+				url = link.href;
+				checkLink(element, url);			
+			} catch (error) {}
+		}
+		
+		function checkLink(element, url) {
+			var reader = new XMLHttpRequest();
+			//asynchronous is true
+			reader.open('get', url, true);
+			//check each time the ready state changes
+			//to see if the object is ready
+			reader.onreadystatechange = checkReadyState;
+
+			function checkReadyState() {
+			  if (reader.readyState === 4) {
+			    //check to see whether request for the file failed or succeeded
+			    if ((reader.status == 200) || (reader.status === 0)) {
+			      ;
+			    } else {
+			      element.style.display = "none";
+			    }
+			  }
+			}
+			
+			reader.send(null);
+		}
+	</script>
 </body>
 </html>

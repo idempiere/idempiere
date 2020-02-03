@@ -47,14 +47,14 @@ div.body{
 	padding-top: 70px;
 }
 #main-background{
-	height: 496px;
+	height: 520px;
     position: absolute;
     top: 1px;
     width: 810px;
     z-index: -1000;
 }
 #main-background img{
-	height: 496px;
+	height: 520px;
 	width: 810px;
 }
 .topBtnHeader{
