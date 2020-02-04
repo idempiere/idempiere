@@ -191,19 +191,23 @@ public class AtmosphereServerPush implements ServerPush {
 				log.error(e.getMessage(), e);
 			}
 	        if (!ok) {
-	        	try {
-					Thread.sleep(500);
-				} catch (InterruptedException e1) {}
-	        	if (schedules.size() > 0) {
+	        	for(int i = 0; i < 3 && !ok; i++) {
 		        	try {
-			        	ok = commitResponse();
-					} catch (IOException e) {
-						log.error(e.getMessage(), e);
-					}
-		        	if (!ok) {
-			        	log.warn("Failed to resume long polling resource");
-			        }
-	        	}	        	
+						Thread.sleep(500);
+					} catch (InterruptedException e1) {}
+		        	if (schedules.size() > 0) {
+			        	try {
+				        	ok = commitResponse();
+						} catch (IOException e) {
+							log.error(e.getMessage(), e);
+						}			        	
+		        	} else {
+		        		ok = true;
+		        	}
+	        	}
+	        	if (!ok) {
+		        	log.warn("Failed to resume long polling resource");
+		        }
 	        }	        
     	} else {
     		//in event listener thread, can schedule immediately
@@ -252,12 +256,6 @@ public class AtmosphereServerPush implements ServerPush {
 	  		log.trace(resource.transport().name());
 	  	}
     	
-		try {
-			commitResponse();
-		} catch (IOException e) {
-			log.error(e.getLocalizedMessage(), e);
-		}
-
     	DesktopCtrl desktopCtrl = (DesktopCtrl) this.desktop.get();
         if (desktopCtrl == null) {
         	log.error("No desktop available");
