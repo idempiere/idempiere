@@ -2,9 +2,6 @@ SET SQLBLANKLINES ON
 SET DEFINE OFF
 
 -- IDEMPIERE-4084 improve toolbar more configurable
--- Feb 5, 2020, 4:51:45 PM CET
-UPDATE AD_ToolBarButton SET SeqNo=110,Updated=TO_DATE('2020-02-05 16:51:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ToolBarButton_ID=200029
-;
 
 -- Feb 5, 2020, 4:52:04 PM CET
 UPDATE AD_ToolBarButton SET SeqNo=10,Updated=TO_DATE('2020-02-05 16:52:04','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ToolBarButton_ID=200031
