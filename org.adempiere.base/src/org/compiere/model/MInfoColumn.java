@@ -41,7 +41,7 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 9198213211937136870L;
+	private static final long serialVersionUID = -6313260451237775302L;
 
 	/**
 	 * 	Stanfard Constructor
@@ -64,6 +64,13 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn
 	{
 		super (ctx, rs, trxName);
 	}	//	MInfoColumn
+
+	public MInfoColumn(MInfoWindow targetInfoWindow) {
+		this(targetInfoWindow.getCtx(), 0, targetInfoWindow.get_TrxName());
+		m_parent = targetInfoWindow;
+		this.setAD_InfoWindow_ID (targetInfoWindow.getAD_InfoWindow_ID());
+		this.setEntityType(targetInfoWindow.getEntityType());
+	}
 
 	/** Parent						*/
 	private MInfoWindow	m_parent = null;
@@ -172,9 +179,9 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn
 			return success;
 	
 		// evaluate need valid
-		boolean isNeedValid = newRecord || is_ValueChanged (MInfoColumn.COLUMNNAME_SelectClause);
+		boolean isNeedValid = getParent().isValidateEachColumn() && (newRecord || is_ValueChanged (MInfoColumn.COLUMNNAME_SelectClause));
 		
-		// call valid of parrent
+		// call valid of parent
 		if (isNeedValid){
 			getParent().validate();
 			getParent().saveEx(get_TrxName());
