@@ -103,6 +103,7 @@ public class CopyInfoWindowColumns extends SvrProcess
 			m_count++;
 		}
 		targetInfoWindow.validate();
+		targetInfoWindow.saveEx();
 		//
 		return "#" + m_count;
 	}	//	doIt
