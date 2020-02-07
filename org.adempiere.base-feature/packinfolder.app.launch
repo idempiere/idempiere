@@ -394,9 +394,6 @@
         <setEntry value="org.adempiere.server@default:true"/>
         <setEntry value="org.adempiere.ui.zk@default:true"/>
         <setEntry value="org.adempiere.ui@default:default"/>
-        <setEntry value="org.adempiere.webstore.resource@default:false"/>
-        <setEntry value="org.adempiere.webstore.servlet@default:false"/>
-        <setEntry value="org.adempiere.webstore@default:default"/>
         <setEntry value="org.apache.ecs@default:default"/>
         <setEntry value="org.compiere.db.oracle.provider@default:default"/>
         <setEntry value="org.compiere.db.postgresql.provider@default:default"/>

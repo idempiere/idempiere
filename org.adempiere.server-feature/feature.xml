@@ -27,11 +27,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.adempiere.webstore.feature"
-         version="0.0.0"
-         optional="true"/>
-
-   <includes
          id="org.idempiere.felix.webconsole.feature"
          version="0.0.0"/>
 

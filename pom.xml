@@ -30,9 +30,6 @@
 		<module>org.adempiere.server</module>		
 		<module>org.adempiere.ui</module>
 		<module>org.adempiere.ui.zk</module>
-		<module>org.adempiere.webstore</module>
-		<module>org.adempiere.webstore.resource</module>
-		<module>org.adempiere.webstore.servlet</module>
 		<module>org.apache.ecs</module>
 		<module>org.compiere.db.oracle.provider</module>
 		<module>org.compiere.db.postgresql.provider</module>
@@ -49,7 +46,6 @@
 		<module>org.adempiere.server-feature</module>
 		<module>org.adempiere.target.platform-feature</module>		
 		<module>org.adempiere.ui.zk-feature</module>
-		<module>org.adempiere.webstore-feature</module>
 		<module>org.compiere.db.provider-feature</module>
 		<module>org.idempiere.eclipse.platform-feature</module>
 		<module>org.idempiere.equinox.p2.director-feature</module>
