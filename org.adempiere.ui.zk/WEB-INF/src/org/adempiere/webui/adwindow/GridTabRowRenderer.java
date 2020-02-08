@@ -587,6 +587,11 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		if (isActive != null && !isActive.booleanValue()) {
 			LayoutUtils.addSclass("grid-inactive-row", row);
 		}
+		
+		//IDEMPIERE-4165 After adding a new row to the list (New or copy) repaint the grid when rendering the last row  
+		if (gridTab.isNew() && rowIndex == grid.getRows().getChildren().size()-1) {
+			grid.invalidate();
+		}
 
 	}
 
