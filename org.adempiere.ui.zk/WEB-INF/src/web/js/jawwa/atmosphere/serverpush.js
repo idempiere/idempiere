@@ -4,7 +4,9 @@
     if (dt._serverpush)
       dt._serverpush.stop();
 
-    var spush = new jawwa.atmosphere.ServerPush(dt, timeout);
+    //change to true to enable trace of execution
+    var trace = false;
+    var spush = new jawwa.atmosphere.ServerPush(dt, timeout, trace);
     spush.start();
   };
   jawwa.atmosphere.stopServerPush = function(dtid) {
@@ -18,6 +20,7 @@
     delay: 10,
     failures: 0,
     timeout: 0,
+    trace: false,
     ajaxOptions: {
         url: zk.ajaxURI("/comet", {au: true}),
         type: "GET",
@@ -27,14 +30,17 @@
         data: null,
         dataType: "text" 
     },
-    $init: function(desktop, timeout) {
+    $init: function(desktop, timeout, trace) {
       this.desktop = desktop;
       this.timeout = timeout;
       this.ajaxOptions.data = { dtid: this.desktop.id };
       this.ajaxOptions.timeout = this.timeout;
+      this.trace = trace;
       var me = this;
       this.ajaxOptions.error = function(jqxhr, textStatus, errorThrown) {
-    	  if (textStatus != "timeout") {
+    	  if (me.trace)
+    		  console.log("error: " + textStatus + " dtid: " + me.desktop.id);
+    	  if (textStatus != "timeout" && textStatus != "abort") {
 	          if (typeof console == "object") {
 	        	  console.error(textStatus);
 	              console.error(errorThrown);
@@ -43,10 +49,14 @@
     	  }
       };
       this.ajaxOptions.success = function(data) {
+    	  if (me.trace)
+    		  console.log("success" + " dtid: " + me.desktop.id);
           zAu.cmd0.echo(this.desktop);
           me.failures = 0;
       };
       this.ajaxOptions.complete = function() {
+    	  if (me.trace)
+    		  console.log("complete"+ " dtid: " + me.desktop.id);
     	  me._schedule();
       };
     },
@@ -62,16 +72,22 @@
       if (!this.active)
         return;
 
+      if (this.trace)
+    	  console.log("_send"+ " dtid: " + this.desktop.id);
       var jqxhr = $.ajax(this.ajaxOptions);
       this._req = jqxhr;
       zAu.cmd0.echo(this.desktop);
     },
     start: function() {
+      if (this.trace)
+    	  console.log("start"+ " dtid: " + this.desktop.id);
       this.desktop._serverpush = this;
       this.active = true;
       this._send();
     },
     stop: function() {
+      if (this.trace)
+    	  console.log("stop"+ " dtid: " + this.desktop.id);
       this.active = false;
       this.desktop._serverpush = null;      
       if (this._req) {
