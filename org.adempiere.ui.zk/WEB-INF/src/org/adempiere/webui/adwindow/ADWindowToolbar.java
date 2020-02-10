@@ -83,9 +83,11 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9183846974546235806L;
+	private static final long serialVersionUID = 2945672260455902597L;
 
 	public static final String BTNPREFIX = "Btn";
+	
+	public static final String MNITMPREFIX = "Mnitm";
 
     private static final CLogger log = CLogger.getCLogger(ADWindowToolbar.class);
 
@@ -274,7 +276,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         					tooltipKey = null;
         				}
         				ToolBarButton btn = createButton(button.getComponentName(), null, tooltipKey);
-        				this.appendChild(btn);
         				btn.removeEventListener(Events.ON_CLICK, this);
         				btn.setId(button.getName());
         				btn.setDisabled(false);
@@ -291,9 +292,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
         				if (ClientInfo.isMobile() && button.isShowMore()) 
         					mobileShowMoreButtons.add(btn);
-        				else if (button.isShowMore())
-        					createMenuitem(btn);
-        				else {
+        				else if (!button.isShowMore()) {
             				this.appendChild(btn);
             				action.decorate(btn);        					
         				}
@@ -371,12 +370,15 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		Menuitem item = new Menuitem(button.getTooltiptext());
 		if (button.getImage() != null)
 			item.setImage(button.getImage());
+		else if (button.getImageContent() != null)
+			item.setImageContent(button.getImageContent());
 		else if (ThemeManager.isUseFontIconForImage()) { 
 			item.setIconSclass(button.getIconSclass());
     		LayoutUtils.addSclass("font-icon-toolbar-button", item);
 		}
+		item.setId(MNITMPREFIX+button.getName());
 		item.setValue(button.getName());
-		item.addEventListener(Events.ON_CLICK, evt -> doOnClick(new Event(Events.ON_CLICK, button)));
+		item.addEventListener(Events.ON_CLICK, evt -> Events.sendEvent(new Event(Events.ON_CLICK, button)));
 		menupopup.appendChild(item);
 		menuItems.put(button, item);
 		return item;
@@ -905,8 +907,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public void dynamicDisplay() {
 		List<Toolbarbutton> customButtons = new ArrayList<Toolbarbutton>();
 		for(ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons) {
-			toolbarCustomBtn.dynamicDisplay();
+			toolbarCustomBtn.dynamicDisplay(menuItems.get(toolbarCustomBtn.getToolbarbutton()) != null);
 			customButtons.add(toolbarCustomBtn.getToolbarbutton());
+			if (menuItems.get(toolbarCustomBtn.getToolbarbutton()) != null)
+				menuItems.get(toolbarCustomBtn.getToolbarbutton()).setVisible(toolbarCustomBtn.getToolbarbutton().isVisible());
 		}
 		
 		ADWindow adwindow = ADWindow.findADWindow(this);
