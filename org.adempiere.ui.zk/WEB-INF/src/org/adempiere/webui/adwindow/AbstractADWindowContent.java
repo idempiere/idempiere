@@ -2016,16 +2016,20 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             return;
 
         clearTitleRelatedContext();
-
-        onSave(false, false, new Callback<Boolean>() {
-
-			@Override
-			public void onCallback(Boolean result) {
-				if (result) {
-					doOnFind();
-				}
-			}
-		});
+        
+        // The record was not changed locally
+        if (adTabbox.getDirtyADTabpanel() == null) {
+        	doOnFind();
+        } else {
+            onSave(false, false, new Callback<Boolean>() {
+    			@Override
+    			public void onCallback(Boolean result) {
+    				if (result) {
+    					doOnFind();
+    				}
+    			}
+    		});        	
+        }
     }
 
 	private void doOnFind() {
