@@ -242,6 +242,19 @@ public class CLogger extends Logger
 	}   //  saveWarning
 
 	/**
+	 * Get Warning message from stack
+	 * @param defaultMsg default message (used when there are no warnings on stack)
+	 * @return error message, or defaultMsg if there is not error message saved
+	 * @see #retrieveError()
+	 */
+	public static String retrieveWarningString(String defaultMsg) {
+		ValueNamePair vp = retrieveWarning();
+		if (vp == null)
+			return defaultMsg;
+		return vp.getName();
+	}
+
+	/**
 	 *  Get Warning from Stack
 	 *  @return AD_Message as Value and Message as String
 	 */

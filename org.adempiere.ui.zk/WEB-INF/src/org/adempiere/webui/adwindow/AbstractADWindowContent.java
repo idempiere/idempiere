@@ -2387,6 +2387,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		//other error will be catch in the dataStatusChanged event
 	}
 
+	private void showLastWarning() {
+		String msg = CLogger.retrieveWarningString(null);
+		if (msg != null)
+		{
+			statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), msg), true);
+		}
+	}
+
 	/**
 	 * @see ToolbarListener#onSaveCreate()
 	 */
@@ -2470,7 +2478,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		            adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
 		    		adTabbox.getSelectedGridTab().refreshParentTabs();
 		    		if (!success)
-		    			showLastError();
+		    			showLastWarning();
 
 		            adTabbox.getSelectedTabpanel().dynamicDisplay(0);
 		            focusToActivePanel();

@@ -104,7 +104,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2741647620577906242L;
+	private static final long serialVersionUID = 817894725729408648L;
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 	public static final String DATA_UPDATE_COPIED_MESSAGE = "UpdateCopied";
@@ -3432,7 +3432,7 @@ public class GridTable extends AbstractTableModel
 			e.setInfo(AD_Message, info, isError, !isError);
 		}
 		if (isError)
-			log.saveError(AD_Message, info);
+			log.saveWarning(AD_Message, info);
 		fireDataStatusChanged (e);
 	}   //  fireDataStatusEvent
 
@@ -3499,7 +3499,7 @@ public class GridTable extends AbstractTableModel
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = -8735217685095696892L;
+		private static final long serialVersionUID = -6866671239509705988L;
 
 		/**
 		 *  Construct Loader
