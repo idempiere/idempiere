@@ -29,7 +29,6 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.ADWindowContent;
-import org.adempiere.webui.adwindow.IFieldEditorContainer;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Searchbox;
 import org.adempiere.webui.event.ContextMenuEvent;
@@ -390,17 +389,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			log.fine(getColumnName() + " - Unique ID=" + id);
 
 		actionCombo(Integer.valueOf(id));          //  data binding
-		
-		Searchbox comp = getComponent();
-		Component parent = comp.getParent();
-		while (parent != null) {
-			if (parent instanceof IFieldEditorContainer) {
-				((IFieldEditorContainer) parent).focusToNextEditor(this);
-				break;
-			}
-			parent = parent.getParent();
-		}
-		
+		focusNext();
+
 		//safety check: if focus is going no where, focus back to self
 		String uid = getComponent().getTextbox().getUuid();
 		String script = "setTimeout(function(){try{var e = zk.Widget.$('#" + uid +
@@ -599,6 +589,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 						actionCombo (result);
 					else
 						actionCombo (result[0]);
+					focusNext();
 				}
 				else if (cancelled)
 				{
@@ -612,13 +603,14 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 					}else{
 						getComponent().setText("");
 						actionCombo(null);
-					}						
+					}
+					getComponent().getTextbox().focus();
 				}
 				else
 				{
 					if (log.isLoggable(Level.CONFIG)) log.config(getColumnName() + " - Result = null (not cancelled)");
+					getComponent().getTextbox().focus();
 				}
-				getComponent().getTextbox().focus();
 			}
 		});
 		ip.setId(ip.getTitle()+"_"+ip.getWindowNo());

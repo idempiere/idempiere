@@ -1880,7 +1880,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 				continue;
 			}
 			if (found) {
-				if (editor.isVisible() && editor.isReadWrite()) {
+				if (editor.isVisible() && editor.isReadWrite()
+					// note, no auto focus on next button - if interested in
+					// focusing next button must implement to check if the button
+					// is just showin in toolbar, just focus on window fields must be auto focused
+					&& ! (editor instanceof WButtonEditor)) {
 					focusToEditor(editor, false);
 					break;
 				}
