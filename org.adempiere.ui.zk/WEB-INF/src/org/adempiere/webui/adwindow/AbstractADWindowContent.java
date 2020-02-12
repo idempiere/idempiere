@@ -2462,9 +2462,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				if (result)
 				{
 		        	//error will be catch in the dataStatusChanged event
-		            adTabbox.getSelectedGridTab().dataDelete();
+		            boolean success = adTabbox.getSelectedGridTab().dataDelete();
 		            adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
 		    		adTabbox.getSelectedGridTab().refreshParentTabs();
+		    		if (!success)
+		    			showLastError();
 
 		            adTabbox.getSelectedTabpanel().dynamicDisplay(0);
 		            focusToActivePanel();

@@ -3432,7 +3432,7 @@ public class GridTable extends AbstractTableModel
 			e.setInfo(AD_Message, info, isError, !isError);
 		}
 		if (isError)
-			log.saveWarning(AD_Message, info);
+			log.saveError(AD_Message, info);
 		fireDataStatusChanged (e);
 	}   //  fireDataStatusEvent
 
