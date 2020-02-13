@@ -42,6 +42,7 @@ public class Datebox extends org.zkoss.zul.Datebox
 	public void setEnabled(boolean enabled)
     {
         this.setReadonly(!enabled);
+        this.setDisabled(!enabled);
         this.setButtonVisible(enabled);
     }
     
