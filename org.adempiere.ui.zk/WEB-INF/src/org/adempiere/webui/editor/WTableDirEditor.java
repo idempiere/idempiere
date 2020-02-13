@@ -507,6 +507,8 @@ ContextMenuListener, IZoomableEditor
 		        			gridField.setLookupEditorSettingValue(false);
 		        	}
 		        }
+		        if (newValue != null)
+		        	focusNext();
     		} finally {
     			onselecting = false;
     		}
