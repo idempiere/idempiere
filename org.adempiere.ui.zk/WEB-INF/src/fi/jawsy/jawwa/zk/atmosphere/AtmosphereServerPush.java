@@ -192,9 +192,11 @@ public class AtmosphereServerPush implements ServerPush {
 			}
 	        if (!ok) {
 	        	for(int i = 0; i < 3 && !ok; i++) {
-		        	try {
-						Thread.sleep(500);
-					} catch (InterruptedException e1) {}
+	        		for (int ii = 0; ii < 10 && schedules.size() > 0; ii++) {
+                        try {
+                            Thread.sleep(50);
+                        } catch (InterruptedException e1) {}
+                    }
 		        	if (schedules.size() > 0) {
 			        	try {
 				        	ok = commitResponse();
