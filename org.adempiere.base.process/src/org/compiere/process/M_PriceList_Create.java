@@ -235,10 +235,10 @@ public class M_PriceList_Create extends SvrProcess {
 		//	Delete Old Data	
 		//
 		if (p_DeleteOld.equals("Y")) {
-			sqldel = "DELETE M_ProductPrice WHERE	M_PriceList_Version_ID=?";
+			sqldel = "DELETE FROM M_ProductPrice WHERE	M_PriceList_Version_ID=?";
 			cntd = DB.executeUpdate(sqldel, p_PriceList_Version_ID, get_TrxName());
 			if (cntd == -1)
-				raiseError(" DELETE	M_ProductPrice ", sqldel);
+				raiseError(" DELETE	FROM M_ProductPrice ", sqldel);
 			totd += cntd;
 			message = new StringBuilder("@Deleted@=").append(cntd).append(" - ");
 			if (log.isLoggable(Level.FINE)) log.fine("Deleted " + cntd);
@@ -402,7 +402,7 @@ public class M_PriceList_Create extends SvrProcess {
 					v_temp = rsCurgen.getInt("M_PriceList_Version_Base_ID");
 					if (rsCurgen.wasNull() || v_temp != p_PriceList_Version_ID) {
 
-						sqldel = "DELETE M_ProductPrice pp WHERE pp.M_PriceList_Version_ID=? AND EXISTS (SELECT t_selection_id FROM T_Selection s WHERE pp.M_Product_ID=s.T_Selection_ID AND s.AD_PInstance_ID=?)";
+						sqldel = "DELETE FROM M_ProductPrice pp WHERE pp.M_PriceList_Version_ID=? AND EXISTS (SELECT t_selection_id FROM T_Selection s WHERE pp.M_Product_ID=s.T_Selection_ID AND s.AD_PInstance_ID=?)";
 						cntd = DB.executeUpdate(sqldel, new Object[]{p_PriceList_Version_ID, m_AD_PInstance_ID}, false, get_TrxName());
 						if (cntd == -1)
 							raiseError(" DELETE	M_ProductPrice ", sqldel);

@@ -84,11 +84,11 @@ public class TaxDeclarationCreate extends SvrProcess
 		if (p_DeleteOld)
 		{
 			//	Delete old
-			String sql = "DELETE C_TaxDeclarationLine WHERE C_TaxDeclaration_ID=?";
+			String sql = "DELETE FROM C_TaxDeclarationLine WHERE C_TaxDeclaration_ID=?";
 			int no = DB.executeUpdate(sql, p_C_TaxDeclaration_ID, false, get_TrxName());
 			if (no != 0)
 				if (log.isLoggable(Level.CONFIG)) log.config("Delete Line #" + no);
-			sql = "DELETE C_TaxDeclarationAcct WHERE C_TaxDeclaration_ID=?";
+			sql = "DELETE FROM C_TaxDeclarationAcct WHERE C_TaxDeclaration_ID=?";
 			no = DB.executeUpdate(sql, p_C_TaxDeclaration_ID, false, get_TrxName());
 			if (no != 0)
 				if (log.isLoggable(Level.CONFIG)) log.config("Delete Acct #" + no);

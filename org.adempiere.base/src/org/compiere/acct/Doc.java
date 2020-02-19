@@ -705,7 +705,7 @@ public abstract class Doc
 	 */
 	protected int deleteAcct()
 	{
-		StringBuilder sql = new StringBuilder ("DELETE Fact_Acct WHERE AD_Table_ID=")
+		StringBuilder sql = new StringBuilder ("DELETE FROM Fact_Acct WHERE AD_Table_ID=")
 			.append(get_Table_ID())
 			.append(" AND Record_ID=").append(p_po.get_ID())
 			.append(" AND C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());

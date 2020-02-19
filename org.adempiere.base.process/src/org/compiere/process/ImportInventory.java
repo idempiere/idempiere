@@ -164,7 +164,7 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 		//	Delete Old Imported
 		if (p_DeleteOldImported)
 		{
-			sql = new StringBuilder ("DELETE I_Inventory ")
+			sql = new StringBuilder ("DELETE FROM I_Inventory ")
 				  .append("WHERE I_IsImported='Y'").append (clientCheck);
 			no = DB.executeUpdate (sql.toString (), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Imported=" + no);

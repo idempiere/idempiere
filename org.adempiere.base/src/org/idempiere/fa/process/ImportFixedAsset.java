@@ -84,7 +84,7 @@ public class ImportFixedAsset extends SvrProcess
 		//	Delete Old Imported
 		if (p_DeleteOldImported)
 		{
-			sql = new StringBuffer ("DELETE "+X_I_FixedAsset.Table_Name
+			sql = new StringBuffer ("DELETE FROM "+X_I_FixedAsset.Table_Name
 				  + " WHERE I_IsImported='Y'").append (sqlCheck);
 			no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Imported =" + no);

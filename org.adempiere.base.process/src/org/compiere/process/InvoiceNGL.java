@@ -115,7 +115,7 @@ public class InvoiceNGL extends SvrProcess
 			p_DateReval = new Timestamp(System.currentTimeMillis());
 		
 		//	Delete - just to be sure
-		StringBuilder sql = new StringBuilder("DELETE T_InvoiceGL WHERE AD_PInstance_ID=").append(getAD_PInstance_ID());
+		StringBuilder sql = new StringBuilder("DELETE FROM T_InvoiceGL WHERE AD_PInstance_ID=").append(getAD_PInstance_ID());
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no > 0)
 			if (log.isLoggable(Level.INFO)) log.info("Deleted #" + no);

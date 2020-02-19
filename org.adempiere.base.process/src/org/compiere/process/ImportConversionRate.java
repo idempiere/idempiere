@@ -99,7 +99,7 @@ public class ImportConversionRate extends SvrProcess
 		//	Delete Old Imported
 		if (p_DeleteOldImported)
 		{
-			sql = new StringBuilder ("DELETE I_Conversion_Rate ")
+			sql = new StringBuilder ("DELETE FROM I_Conversion_Rate ")
 				  .append("WHERE I_IsImported='Y'").append (clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Impored =" + no);

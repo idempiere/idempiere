@@ -126,7 +126,7 @@ public class InventoryCountCreate extends SvrProcess
 			if (log.isLoggable(Level.FINE)) log.fine("doIt - Deleted MA #" + no1);
 			//End of Added Line
 			
-			StringBuilder sql = new StringBuilder("DELETE M_InventoryLine WHERE Processed='N' ")
+			StringBuilder sql = new StringBuilder("DELETE FROM M_InventoryLine WHERE Processed='N' ")
 				.append("AND M_Inventory_ID=").append(p_M_Inventory_ID);
 			int no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("doIt - Deleted #" + no);

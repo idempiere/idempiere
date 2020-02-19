@@ -191,7 +191,7 @@ public class ReplenishReport extends SvrProcess
 			if (log.isLoggable(Level.FINE)) log.fine("Corrected CurrentVendor(N)=" + no);
 		
 		//	Just to be sure
-		sql = new StringBuilder("DELETE T_Replenish WHERE AD_PInstance_ID=").append(getAD_PInstance_ID());
+		sql = new StringBuilder("DELETE FROM T_Replenish WHERE AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			if (log.isLoggable(Level.FINE)) log.fine("Delete Existing Temp=" + no);
@@ -266,7 +266,7 @@ public class ReplenishReport extends SvrProcess
 			if (log.isLoggable(Level.FINE)) log.fine("Update #" + no);
 
 		//	Delete inactive products and replenishments
-		sql = new StringBuilder("DELETE T_Replenish r ");
+		sql = new StringBuilder("DELETE FROM T_Replenish r ");
 			sql.append("WHERE (EXISTS (SELECT * FROM M_Product p ");
 				sql.append("WHERE p.M_Product_ID=r.M_Product_ID AND p.IsActive='N')");
 			sql.append(" OR EXISTS (SELECT * FROM M_Replenish rr ");
@@ -390,7 +390,7 @@ public class ReplenishReport extends SvrProcess
 			}
 		}
 		//	Delete rows where nothing to order
-		sql = new StringBuilder("DELETE T_Replenish ");
+		sql = new StringBuilder("DELETE FROM T_Replenish ");
 			sql.append("WHERE QtyToOrder < 1");
 		    sql.append(" AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		no = DB.executeUpdate(sql.toString(), get_TrxName());

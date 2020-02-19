@@ -1644,7 +1644,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	{
 		log.fine("");
 		//	Delete Taxes
-		StringBuilder msgdb = new StringBuilder("DELETE C_InvoiceTax WHERE C_Invoice_ID=").append(getC_Invoice_ID());
+		StringBuilder msgdb = new StringBuilder("DELETE FROM C_InvoiceTax WHERE C_Invoice_ID=").append(getC_Invoice_ID());
 		DB.executeUpdateEx(msgdb.toString(), get_TrxName());
 		m_taxes = null;
 

@@ -181,7 +181,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 	{
 		if (getKeepLogDays() < 1)
 			return 0;
-		StringBuilder sql = new StringBuilder("DELETE AD_LdapProcessorLog ")
+		StringBuilder sql = new StringBuilder("DELETE FROM AD_LdapProcessorLog ")
 			.append("WHERE AD_LdapProcessor_ID=").append(getAD_LdapProcessor_ID()) 
 			.append(" AND (Created+").append(getKeepLogDays()).append(") < SysDate");
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());

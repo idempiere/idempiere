@@ -2737,7 +2737,7 @@ public class GridTable extends AbstractTableModel
 		}
 		else	//	Delete via SQL
 		{
-			StringBuilder sql = new StringBuilder("DELETE ");
+			StringBuilder sql = new StringBuilder("DELETE FROM ");
 			sql.append(m_tableName).append(" WHERE ").append(getWhereClause(rowData));
 			int no = 0;
 			PreparedStatement pstmt = null;
