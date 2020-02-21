@@ -190,7 +190,7 @@ public class MBOMProduct extends X_M_BOMProduct
 		//	Set Line Number
 		if (getLine() == 0)
 		{
-			String sql = "SELECT NVL(MAX(Line),0)+10 FROM M_BOMProduct WHERE M_BOM_ID=?";
+			String sql = "SELECT COALESCE(MAX(Line),0)+10 FROM M_BOMProduct WHERE M_BOM_ID=?";
 			int ii = DB.getSQLValue (get_TrxName(), sql, getM_BOM_ID());
 			setLine (ii);
 		}
