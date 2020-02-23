@@ -268,7 +268,7 @@ public class AtmosphereServerPush implements ServerPush {
         }
 
 	  	if (!resource.isSuspended()) {
-	  		resource.suspend(-1); 
+	  		resource.suspend(); 
 	  	}
 	  	this.resource.set(resource);
 
