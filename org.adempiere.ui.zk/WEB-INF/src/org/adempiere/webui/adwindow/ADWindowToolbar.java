@@ -374,7 +374,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 			item.setImageContent(button.getImageContent());
 		else if (ThemeManager.isUseFontIconForImage()) { 
 			item.setIconSclass(button.getIconSclass());
-    		LayoutUtils.addSclass("font-icon-toolbar-button", item);
+    		LayoutUtils.addSclass("font-icon-menuitem", item);
 		}
 		item.setId(MNITMPREFIX+button.getName());
 		item.setValue(button.getName());
@@ -683,7 +683,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
       		LayoutUtils.addSclass("font-icon-toolbar-button", this.btnLock);
       		if (menuItems.get(btnLock) != null) {
     			menuItems.get(btnLock).setIconSclass(iconSclass);
-    			LayoutUtils.addSclass("font-icon-toolbar-button", menuItems.get(btnLock));
+    			LayoutUtils.addSclass("font-icon-menuitem", menuItems.get(btnLock));
     		}
       	}
       	else
@@ -1100,10 +1100,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     	getButton(buttonName).setPressed(pressed);
     	if (menuItems.get(getButton(buttonName)) != null) {
     		if (pressed)
-    			menuItems.get(getButton(buttonName)).setSclass("z-toolbarbutton-checked");
+    			menuItems.get(getButton(buttonName)).setSclass("z-toolbarbutton-checked font-icon-menuitem");
     		else {
     			menuItems.get(getButton(buttonName)).setClass("");
-    			menuItems.get(getButton(buttonName)).setClass("z-menu-item");
+    			menuItems.get(getButton(buttonName)).setClass("font-icon-menuitem z-menu-item");
     		}
     	}
     }

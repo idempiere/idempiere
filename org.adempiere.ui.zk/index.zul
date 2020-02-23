@@ -145,7 +145,8 @@ Copyright (C) 2007 Ashley G Ramdass.
 					
 				this.$bind_(dt, skipper, after);
 				
-				if (this.getType () != "password"){
+				var txtid = this.getId()
+				if (txtid != "txtUserId" && txtid != "txtPassword" ){
 					return;
 				}
 				
@@ -159,7 +160,8 @@ Copyright (C) 2007 Ashley G Ramdass.
 				
 				this.$unbind_(dt, skipper);
 				
-				if (this.getType () != "password"){
+				var txtid = this.getId()
+				if (txtid != "txtUserId" && txtid != "txtPassword" ){
 					return;
 				}
 				
