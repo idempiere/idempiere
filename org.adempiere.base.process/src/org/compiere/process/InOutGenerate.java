@@ -257,14 +257,11 @@ public class InOutGenerate extends SvrProcess
 					BigDecimal onHand = Env.ZERO;
 					BigDecimal toDeliver = line.getQtyOrdered()
 						.subtract(line.getQtyDelivered());
-					MProduct product = line.getProduct();
 					//	Nothing to Deliver
-					if (product != null && toDeliver.signum() == 0)
+					if (toDeliver.signum() == 0)
 						continue;
-					
-					// or it's a charge - Bug#: 1603966 
-					if (line.getC_Charge_ID()!=0 && toDeliver.signum() == 0)
-						continue;
+
+					MProduct product = line.getProduct();
 					
 					//	Check / adjust for confirmations
 					BigDecimal unconfirmedShippedQty = Env.ZERO;
@@ -296,6 +293,11 @@ public class InOutGenerate extends SvrProcess
 					{
 						if (!MOrder.DELIVERYRULE_CompleteOrder.equals(order.getDeliveryRule()))	//	printed later
 							createLine (order, line, toDeliver, null, false);
+						continue;
+					}
+					if (product == null)
+					{
+						// code must never arrive here - but for safety against NPE
 						continue;
 					}
 
