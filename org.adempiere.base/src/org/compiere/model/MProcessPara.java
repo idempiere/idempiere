@@ -297,9 +297,9 @@ public class MProcessPara extends X_AD_Process_Para
 			|| (DisplayType.Search == getAD_Reference_ID() && getAD_Reference_Value_ID() == 0)) {
 			foreignTable = getColumnName().substring(0, getColumnName().length()-3);
 		} else 	if (DisplayType.Table == getAD_Reference_ID() || DisplayType.Search == getAD_Reference_ID()) {
-			MReference ref = MReference.get(getCtx(), getAD_Reference_Value_ID());
+			MReference ref = MReference.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
 			if (MReference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
-				MRefTable rt = MRefTable.get(getCtx(), getAD_Reference_Value_ID());
+				MRefTable rt = MRefTable.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
 				if (rt != null)
 					foreignTable = rt.getAD_Table().getTableName();
 			}

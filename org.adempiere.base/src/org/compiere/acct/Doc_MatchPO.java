@@ -549,7 +549,8 @@ public class Doc_MatchPO extends Doc
 						if (m_oLine.getC_Currency_ID() != as.getC_Currency_ID())
 						{
 							MOrder order = m_oLine.getParent();
-							if(MAcctSchema.COSTINGMETHOD_AveragePO.equals(as.getCostingMethod())) 
+							MProduct product = new MProduct(getCtx(), m_oLine.getM_Product_ID(), getTrxName());
+							if(MAcctSchema.COSTINGMETHOD_AveragePO.equals(product.getCostingMethod(as))) 
 							{
 								orderCost = mPO[i].getM_InOutLine().getC_OrderLine().getPriceActual();
 								Timestamp dateAcct = mPO[i].getM_InOutLine().getM_InOut().getDateAcct();

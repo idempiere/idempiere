@@ -33,7 +33,7 @@ public class MReference extends X_AD_Reference {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 119105464164520763L;
+	private static final long serialVersionUID = 343092563490562893L;
 
 	/**
 	 * 	Standard Constructor
@@ -61,19 +61,27 @@ public class MReference extends X_AD_Reference {
 	/**	Reference Cache				*/
 	private static CCache<Integer,MReference>	s_cache = new CCache<Integer,MReference>(Table_Name, 20);
 
+	public static MReference get (Properties ctx, int AD_Reference_ID)
+	{
+		return get(ctx, AD_Reference_ID, null);
+	}
+
 	/**
 	 * 	Get from Cache
 	 *	@param ctx context
 	 *	@param AD_Reference_ID id
+	 *	@param trxName trx
 	 *	@return category
 	 */
-	public static MReference get (Properties ctx, int AD_Reference_ID)
+	public static MReference get (Properties ctx, int AD_Reference_ID, String trxName)
 	{
 		Integer ii = Integer.valueOf(AD_Reference_ID);
 		MReference retValue = (MReference)s_cache.get(ii);
-		if (retValue != null)
+		if (retValue != null) {
+			retValue.set_TrxName(trxName);
 			return retValue;
-		retValue = new MReference (ctx, AD_Reference_ID, null);
+		}
+		retValue = new MReference (ctx, AD_Reference_ID, trxName);
 		if (retValue.get_ID () != 0)
 			s_cache.put (AD_Reference_ID, retValue);
 		return retValue;

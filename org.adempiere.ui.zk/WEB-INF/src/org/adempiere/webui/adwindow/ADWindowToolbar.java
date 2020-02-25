@@ -31,6 +31,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
 import org.adempiere.webui.component.FToolbar;
+import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.ToolbarListener;
@@ -61,10 +62,12 @@ import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
+import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Toolbarbutton;
+import org.zkoss.zul.impl.LabelImageElement;
 
 /**
  *
@@ -80,9 +83,11 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9183846974546235806L;
+	private static final long serialVersionUID = 2945672260455902597L;
 
 	public static final String BTNPREFIX = "Btn";
+	
+	public static final String MNITMPREFIX = "Mnitm";
 
     private static final CLogger log = CLogger.getCLogger(ADWindowToolbar.class);
 
@@ -113,9 +118,14 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     private ToolBarButton btnCSVImport;
 
     private ToolBarButton btnProcess;
+    
+    private ToolBarButton btnShowMore;
+    private Menupopup menupopup;
 
     private HashMap<String, ToolBarButton> buttons = new HashMap<String, ToolBarButton>();
-
+    private HashMap<ToolBarButton, Menuitem> menuItems = new HashMap<ToolBarButton, Menuitem>();
+	private ArrayList<ToolBarButton> mobileShowMoreButtons = new ArrayList<ToolBarButton>();
+	
 //    private ToolBarButton btnExit;
 
     private ArrayList<ToolbarListener> listeners = new ArrayList<ToolbarListener>();
@@ -167,6 +177,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	private void init()
     {
     	LayoutUtils.addSclass("adwindow-toolbar", this);
+
+    	//Show more menu pop up
+        menupopup = new Menupopup();
+        this.appendChild(menupopup);
 
         btnIgnore = createButton("Ignore", "Ignore", "Ignore");
         btnIgnore.setTooltiptext(btnIgnore.getTooltiptext()+ "    Alt+Z");
@@ -236,6 +250,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         }
         btnFileImport = createButton("FileImport", "FileImport", "FileImport");
         btnCSVImport = createButton("CSVImport", "CSVImport", "CSVImport");
+        
+        btnShowMore = createButton("ShowMore", "ShowMore", "ShowMore");
+        btnShowMore.setDisabled(true);
+        btnShowMore.setVisible(false);
 
         MToolBarButton[] officialButtons = MToolBarButton.getToolbarButtons("W", null);
         for (MToolBarButton button : officialButtons) {
@@ -258,7 +276,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         					tooltipKey = null;
         				}
         				ToolBarButton btn = createButton(button.getComponentName(), null, tooltipKey);
-        				this.appendChild(btn);
         				btn.removeEventListener(Events.ON_CLICK, this);
         				btn.setId(button.getName());
         				btn.setDisabled(false);
@@ -273,17 +290,32 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         				ToolbarCustomButton toolbarCustomBtn = new ToolbarCustomButton(button, btn, actionId, windowNo);
         				toolbarCustomButtons.add(toolbarCustomBtn);
 
-        				this.appendChild(btn);
-        				action.decorate(btn);
+        				if (ClientInfo.isMobile() && button.isShowMore()) 
+        					mobileShowMoreButtons.add(btn);
+        				else if (!button.isShowMore()) {
+            				this.appendChild(btn);
+            				action.decorate(btn);        					
+        				}
         			}
         		}
         		if (buttons.get(button.getComponentName()) != null) {
-        			this.appendChild(buttons.get(button.getComponentName()));
-        			if (button.isAddSeparator()) {
-        				this.appendChild(new Separator("vertical"));
+        			if (ClientInfo.isMobile() && button.isShowMore()) 
+    					mobileShowMoreButtons.add(buttons.get(button.getComponentName()));
+    				else if (button.isShowMore())
+        				createMenuitem(buttons.get(button.getComponentName()));
+        			else {
+            			this.appendChild(buttons.get(button.getComponentName()));
+            			if (button.isAddSeparator()) {
+            				this.appendChild(new Separator("vertical"));
+            			}
         			}
         		}
         	}
+        }
+        if (!ClientInfo.isMobile() && !menuItems.isEmpty()) {
+            this.appendChild(btnShowMore);
+            btnShowMore.setDisabled(false);
+            btnShowMore.setVisible(true);
         }
 
     	configureKeyMap();
@@ -328,10 +360,39 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
         return btn;
     }
+    
+    /**
+     * Create Menu Item based on ToolBar button
+     * @param button
+     * @return
+     */
+    private Menuitem createMenuitem(ToolBarButton button){
+		Menuitem item = new Menuitem(button.getTooltiptext());
+		if (button.getImage() != null)
+			item.setImage(button.getImage());
+		else if (button.getImageContent() != null)
+			item.setImageContent(button.getImageContent());
+		else if (ThemeManager.isUseFontIconForImage()) { 
+			item.setIconSclass(button.getIconSclass());
+    		LayoutUtils.addSclass("font-icon-menuitem", item);
+		}
+		item.setId(MNITMPREFIX+button.getName());
+		item.setValue(button.getName());
+		item.addEventListener(Events.ON_CLICK, evt -> Events.sendEvent(new Event(Events.ON_CLICK, button)));
+		menupopup.appendChild(item);
+		menuItems.put(button, item);
+		return item;
+    }    
 
     public ToolBarButton getButton(String name)
     {
     	return buttons.get(name);
+    }
+    
+    public LabelImageElement getToolbarItem(String name)
+    {
+    	return menuItems.get(buttons.get(name)) != null ? buttons.get("ShowMore") : 
+    		buttons.get(name);
     }
 
     /** VK_A thru VK_Z are the same as ASCII 'A' thru 'Z' (0x41 - 0x5A) */
@@ -407,7 +468,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         {
             if(event.getTarget() instanceof ToolBarButton)
             {
-            	doOnClick(event);
+            	if (!event.getTarget().getId().contentEquals(BTNPREFIX+"ShowMore"))
+            		doOnClick(event);
+            	else
+            		menupopup.open(btnShowMore, "after_start");
             }
         } else if (eventName.equals(Events.ON_CTRL_KEY))
         {
@@ -477,17 +541,22 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     {
         this.btnParentRecord.setDisabled(!enableParent);
         this.btnDetailRecord.setDisabled(!enableDetail);
+        enableMenuitem(btnParentRecord, enableParent);
+        enableMenuitem(btnDetailRecord, enableDetail);
     }
 
     public void enableRefresh(boolean enabled)
     {
         this.btnRefresh.setDisabled(!enabled);
+        enableMenuitem(btnRefresh, enabled);
     }
 
     public void enableSave(boolean enabled)
     {
         this.btnSave.setDisabled(!enabled);
     	this.btnSaveAndCreate.setDisabled(!enabled);
+        enableMenuitem(btnSave, enabled);
+        enableMenuitem(btnSaveAndCreate, enabled);
     }
 
     public boolean isSaveEnable() {
@@ -502,6 +571,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     public void enableDelete(boolean enabled)
     {
         this.btnDelete.setDisabled(!enabled);        
+        enableMenuitem(btnDelete, enabled);
     }
     
     public boolean isDeleteEnable()
@@ -516,82 +586,105 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     public void enableIgnore(boolean enabled)
     {
         this.btnIgnore.setDisabled(!enabled);
+        enableMenuitem(btnIgnore, enabled);
     }
 
     public void enableNew(boolean enabled)
     {
         this.btnNew.setDisabled(!enabled);
+        enableMenuitem(btnNew, enabled);
     }
 
     public void enableCopy(boolean enabled)
     {
         this.btnCopy.setDisabled(!enabled);
+        enableMenuitem(btnCopy, enabled);
     }
 
     public void enableAttachment(boolean enabled)
     {
         this.btnAttachment.setDisabled(!enabled);
+        enableMenuitem(btnAttachment, enabled);
     }
 
     public void enableChat(boolean enabled)
     {
         this.btnChat.setDisabled(!enabled);
+        enableMenuitem(btnChat, enabled);
     }
 
     public void enablePrint(boolean enabled)
     {
     	this.btnPrint.setDisabled(!enabled);
+        enableMenuitem(btnPrint, enabled);
     }
 
     public void enableReport(boolean enabled)
     {
     	this.btnReport.setDisabled(!enabled);
+        enableMenuitem(btnReport, enabled);
     }
 
     public void enableFind(boolean enabled)
     {
         this.btnFind.setDisabled(!enabled);
+        enableMenuitem(btnFind, enabled);
     }
 
     public void enableGridToggle(boolean enabled)
     {
     	btnGridToggle.setDisabled(!enabled);
+    	enableMenuitem(btnGridToggle, enabled);
     }
 
     public void enableCustomize(boolean enabled)
     {
     	btnCustomize.setDisabled(!enabled);
+    	enableMenuitem(btnCustomize, enabled);
     }
     
     public void enableArchive(boolean enabled)
     {
     	btnArchive.setDisabled(!enabled);
+    	enableMenuitem(btnArchive, enabled);
     }
     
     public void enableZoomAcross(boolean enabled)
     {
     	btnZoomAcross.setDisabled(!enabled);
+    	enableMenuitem(btnZoomAcross, enabled);
     }
     
     public void enableActiveWorkflows(boolean enabled)
     {
     	btnActiveWorkflows.setDisabled(!enabled);
+    	enableMenuitem(btnActiveWorkflows, enabled);
     }
     
     public void enableRequests(boolean enabled)
     {
     	btnRequests.setDisabled(!enabled);
+    	enableMenuitem(btnRequests, enabled);
+    }
+    
+    public void enableMenuitem(Toolbarbutton button, boolean enabled) {
+        if (menuItems.get(button) != null)
+			menuItems.get(button).setDisabled(!enabled);
     }
 
     public void lock(boolean locked)
     {
-    	this.btnLock.setPressed(locked);
+    	setPressed("Lock", locked);
 
       	if (ThemeManager.isUseFontIconForImage())
       	{
       		String iconSclass = "z-icon-" + (this.btnLock.isPressed() ? "lock" : "unlock") ;
       		this.btnLock.setIconSclass(iconSclass);
       		LayoutUtils.addSclass("font-icon-toolbar-button", this.btnLock);
+      		if (menuItems.get(btnLock) != null) {
+    			menuItems.get(btnLock).setIconSclass(iconSclass);
+    			LayoutUtils.addSclass("font-icon-menuitem", menuItems.get(btnLock));
+    		}
       	}
       	else
       	{
@@ -604,12 +697,16 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
       		String imgURL = "images/"+ (this.btnLock.isPressed() ? "LockX" : "Lock") + suffix;
         	imgURL = ThemeManager.getThemeResource(imgURL);
     		this.btnLock.setImage(imgURL);
+    		if (menuItems.get(btnLock) != null) {
+    			menuItems.get(btnLock).setImage(imgURL);
+    		}
       	}
     }
 
     public void enablePostIt(boolean enabled)
     {
         this.btnPostIt.setDisabled(!enabled);
+    	enableMenuitem(btnPostIt, enabled);
     }
 
     public Event getEvent()
@@ -665,6 +762,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		{
 			btn.setVisible(visible);
 		}
+		for (Menuitem mn : menuItems.values())
+		{
+			mn.setVisible(visible);
+		}
 	}
 
 	/**
@@ -678,6 +779,11 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		if (btn != null)
 		{
 			btn.setVisible(visible);
+		}
+		Menuitem mn = menuItems.get(btn);
+		if (mn != null)
+		{
+			mn.setVisible(visible);
 		}
 	}
 
@@ -696,6 +802,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public void enableExport(boolean b) {
 		if (btnExport != null)
 			btnExport.setDisabled(!b);
+    	enableMenuitem(btnExport, b);
 	}
 
 	/**
@@ -705,6 +812,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public void enableFileImport(boolean b) {
 		if (btnFileImport != null)
 			btnFileImport.setDisabled(!b);
+    	enableMenuitem(btnFileImport, b);
 	}
 
 	/**
@@ -714,6 +822,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public void enableCSVImport(boolean b) {
 		if (btnCSVImport != null)
 			btnCSVImport.setDisabled(!b);
+    	enableMenuitem(btnCSVImport, b);
 	}
 
 	private boolean ToolBarMenuRestictionLoaded = false;
@@ -733,6 +842,13 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 						this.removeChild(p);
 						break;
 					}
+				} else if (p instanceof Menupopup) {
+					for (Component p1 = p.getFirstChild(); p1 != null; p1 = p1.getNextSibling()) {
+						if ( p1 instanceof Menuitem && restrictName.equals((((Menuitem)p1).getValue())) ) {
+							p.removeChild(p1);
+							break;
+						}					
+					}					
 				}
 			}
 
@@ -749,6 +865,13 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 							this.removeChild(p);
 							break;
 						}
+					} else if (p instanceof Menupopup) {
+						for (Component p1 = p.getFirstChild(); p1 != null; p1 = p1.getNextSibling()) {
+							if ( p1 instanceof Menuitem && advancedName.equals((((Menuitem)p1).getValue())) ) {
+								p.removeChild(p1);
+								break;
+							}					
+						}					
 					}
 				}
 
@@ -759,8 +882,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		// If no workflow set for the table => disable btnWorkflow
 		if (!btnActiveWorkflows.isDisabled()) {
 			GridTab gridTab = adwindow.getADWindowContent().getActiveGridTab();
-			if (gridTab != null)
+			if (gridTab != null) {
 				btnActiveWorkflows.setDisabled(!hasWorkflow(gridTab));
+				enableMenuitem(btnActiveWorkflows, !btnActiveWorkflows.isDisabled());
+			}
 		}
 		ToolBarMenuRestictionLoaded = true;
 	}
@@ -775,14 +900,17 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public void enableProcessButton(boolean b) {
 		if (btnProcess != null) {
 			btnProcess.setDisabled(!b);
+			enableMenuitem(btnProcess, b);
 		}
 	}
 
 	public void dynamicDisplay() {
 		List<Toolbarbutton> customButtons = new ArrayList<Toolbarbutton>();
 		for(ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons) {
-			toolbarCustomBtn.dynamicDisplay();
+			toolbarCustomBtn.dynamicDisplay(menuItems.get(toolbarCustomBtn.getToolbarbutton()) != null);
 			customButtons.add(toolbarCustomBtn.getToolbarbutton());
+			if (menuItems.get(toolbarCustomBtn.getToolbarbutton()) != null)
+				menuItems.get(toolbarCustomBtn.getToolbarbutton()).setVisible(toolbarCustomBtn.getToolbarbutton().isVisible());
 		}
 		
 		ADWindow adwindow = ADWindow.findADWindow(this);
@@ -806,6 +934,13 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 							p.setVisible(false);
 							break;
 						}
+					} else if (p instanceof Menupopup) {
+						for (Component p1 = p.getFirstChild(); p1 != null; p1 = p1.getNextSibling()) {
+							if ( p1 instanceof Menuitem && restrictName.equals((((Menuitem)p1).getValue())) ) {
+								p.removeChild(p1);
+								break;
+							}					
+						}					
 					}
 				}
 
@@ -835,6 +970,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		this.setWidgetOverride("toolbarScrollable", "function (wgt) {\n" + 
 				"	var total = jq(wgt.$n()).width();\n" + 
 				"	var w = wgt.firstChild;\n" + 
+				"	var a = " + !mobileShowMoreButtons.isEmpty() + ";\n" + 
 				"\n" + 
 				"	// make sure all images are loaded.\n" + 
 				"	if (zUtl.isImageLoading()) {\n" + 
@@ -853,7 +989,11 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 				"	if (w) {\n" + 
 				"       var event = new zk.Event(wgt, 'onOverflowButton', w.uuid, {toServer: true}); \n" +
 				"       zAu.send(event); \n" +
-				"	}\n" + 
+				"	}\n" +
+				"	else if (a) {\n" + 
+				"       var event = new zk.Event(wgt, 'onOverflowButton', null, {toServer: true}); \n" +
+				"       zAu.send(event); \n" +
+				"	}\n" +
 				"}");
 		addEventListener(Events.ON_AFTER_SIZE, (AfterSizeEvent evt) -> onAfterSize(evt));
 		
@@ -892,21 +1032,26 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	private void onOverflowButton(Event evt) {
 		overflows = new ArrayList<>();
 		String uuid = (String) evt.getData();
-		boolean overflowStarted = false;
-		for(Component comp : getChildren()) {
-			if (comp instanceof ToolBarButton) {
-				if (overflowStarted) {
-					overflows.add((ToolBarButton) comp);
-				} else if (comp.getUuid().equals(uuid)) {
-					overflows.add((ToolBarButton) comp);
-					overflowStarted = true;
+		if (uuid != null) {
+			boolean overflowStarted = false;
+			for(Component comp : getChildren()) {
+				if (comp instanceof ToolBarButton) {
+					if (overflowStarted) {
+						overflows.add((ToolBarButton) comp);
+					} else if (comp.getUuid().equals(uuid)) {
+						overflows.add((ToolBarButton) comp);
+						overflowStarted = true;
+					}
 				}
 			}
 		}
+		//Add at the end of the overflow those buttons marked as isShowMore
+		for (ToolBarButton toolbarButton : mobileShowMoreButtons)
+			overflows.add(toolbarButton);
 		if (overflows.size() > 0) {
 			overflowButton = new A();
-			overflowButton.setIconSclass("z-icon-angle-double-down");
-			overflowButton.setStyle("position: absolute; right: 2px; bottom: 6px; font-size: 12px; font-weight: 500;");
+			overflowButton.setIconSclass("z-icon-ShowMore");
+			overflowButton.setStyle("position: absolute; right: 4px; font-size: 18px; font-weight: 500; color: #333");
 			appendChild(overflowButton);
 			overflowPopup = new Popup();
 			overflowPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
@@ -950,4 +1095,16 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 			Clients.evalJavaScript(script);
 		}
 	}
+	
+    public void setPressed(String buttonName, boolean pressed) {
+    	getButton(buttonName).setPressed(pressed);
+    	if (menuItems.get(getButton(buttonName)) != null) {
+    		if (pressed)
+    			menuItems.get(getButton(buttonName)).setSclass("z-toolbarbutton-checked font-icon-menuitem");
+    		else {
+    			menuItems.get(getButton(buttonName)).setClass("");
+    			menuItems.get(getButton(buttonName)).setClass("font-icon-menuitem z-menu-item");
+    		}
+    	}
+    }
 }
