@@ -209,7 +209,7 @@ public class MRequestProcessor extends X_R_RequestProcessor
 	{
 		if (getKeepLogDays() < 1)
 			return 0;
-		String sql = "DELETE R_RequestProcessorLog "
+		String sql = "DELETE FROM R_RequestProcessorLog "
 			+ "WHERE R_RequestProcessor_ID=" + getR_RequestProcessor_ID() 
 			+ " AND (Created+" + getKeepLogDays() + ") < SysDate";
 		int no = DB.executeUpdate(sql, get_TrxName());

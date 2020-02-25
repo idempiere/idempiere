@@ -100,7 +100,7 @@ implements ImportProcess
 		//	Delete Old Imported
 		if (m_deleteOldImported)
 		{
-			sql = new StringBuilder ("DELETE I_BPartner ")
+			sql = new StringBuilder ("DELETE FROM I_BPartner ")
 					.append("WHERE I_IsImported='Y'").append(clientCheck);
 			no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Impored =" + no);

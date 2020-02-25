@@ -91,12 +91,14 @@ import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
 import org.compiere.print.layout.LayoutEngine;
+import org.compiere.print.layout.PrintDataEvaluatee;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Evaluator;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
@@ -847,7 +849,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 							td td = new td();
 							tr.addElement(td);
 							Object obj = m_printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
-							if (obj == null){
+							if (obj == null || !isDisplayPFItem(item)){
 								td.addElement("&nbsp;");
 								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
 									preValues[printColIndex] = null;
@@ -1064,7 +1066,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 							printColIndex++;
 							Object obj = m_printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
 							String data = "";
-							if (obj == null){
+							if (obj == null || !isDisplayPFItem(item)){
 								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
 									preValues[printColIndex] = null;
 								}
@@ -2390,6 +2392,14 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		public String getCssSelector(){
 			return String.format(CSS_SELECTOR_TEMPLATE, index + 1);
 		}
+	}
+	
+	private boolean isDisplayPFItem(MPrintFormatItem item)
+	{
+		if(Util.isEmpty(item.getDisplayLogic()))
+			return true;
+		
+		return Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), item.getDisplayLogic());
 	}
 
 }	//	ReportEngine

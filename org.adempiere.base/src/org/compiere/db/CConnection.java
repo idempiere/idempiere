@@ -27,9 +27,7 @@ import javax.sql.DataSource;
 import javax.swing.JOptionPane;
 
 import org.adempiere.base.Service;
-import org.compiere.Adempiere;
 import org.compiere.interfaces.Server;
-import org.compiere.interfaces.Status;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
 
@@ -56,52 +54,28 @@ public class CConnection implements Serializable, Cloneable
 	 *  Get/Set default client/server Connection
 	 *  @return Connection Descriptor
 	 */
-	public static CConnection get ()
+	public synchronized static CConnection get ()
 	{
-		return get(null);
+		if (s_cc == null)
+		{
+			String attributes = Ini.getProperty (Ini.P_CONNECTION);
+			s_cc = new CConnection (null);
+			s_cc.setAttributes (attributes);
+			if (log.isLoggable(Level.FINE)) log.fine(s_cc.toString());
+		}
+
+		return s_cc;
 	}	//	get
 
 	/**
 	 *  Get/Set default client/server Connection
 	 *  @param apps_host optional apps host for new connections
 	 *  @return Connection Descriptor
+	 *  @deprecated
 	 */
 	public synchronized static CConnection get (String apps_host)
 	{
-		if (s_cc == null)
-		{
-			String attributes = Ini.getProperty (Ini.P_CONNECTION);
-			if (attributes == null || attributes.length () == 0)
-			{
-				//hengsin, zero setup for webstart client
-				CConnection cc = null;
-				if (apps_host != null && Adempiere.isWebStartClient())
-				{
-					cc = new CConnection(apps_host);
-					if (cc.testAppsServer() == null)
-					{
-						s_cc = cc;
-						Ini.setProperty(Ini.P_CONNECTION, cc.toStringLong());
-						Ini.saveProperties(Ini.isClient());
-					}
-				}
-				if (s_cc == null)
-				{
-					if (cc == null) cc = new CConnection(apps_host);
-					s_cc = cc;
-					Ini.setProperty(Ini.P_CONNECTION, cc.toStringLong());
-					Ini.saveProperties(Ini.isClient());
-				}
-			}
-			else
-			{
-				s_cc = new CConnection (null);
-				s_cc.setAttributes (attributes);
-			}
-			if (log.isLoggable(Level.FINE)) log.fine(s_cc.toString());
-		}
-
-		return s_cc;
+		return get();
 	} 	//  get
 
 
@@ -195,12 +169,9 @@ public class CConnection implements Serializable, Cloneable
 	private AdempiereDatabase m_db = null;
 	/** ConnectionException */
 	private Exception 	m_dbException = null;
-	private Exception 	m_appsException = null;
 
 	/** Database Connection 	*/
 	private boolean 	m_okDB = false;
-	/** Apps Server Connection  */
-	private boolean 	m_okApps = false;
 
 	/** Info                */
 	private String[] 	m_info = new String[2];
@@ -210,14 +181,10 @@ public class CConnection implements Serializable, Cloneable
 
 	/** DataSource      	*/
 	private DataSource	m_ds = null;
-	/**	Server Session		*/
-	private Server		m_server = null;
 	/** DB Info				*/
 	private String		m_dbInfo = null;
 	private int m_webPort;
 	private int m_sslPort;
-	private boolean m_queryAppsServer;
-	private SecurityPrincipal securityPrincipal;
 
 	/*************************************************************************
 	 *  Get Name
@@ -263,7 +230,6 @@ public class CConnection implements Serializable, Cloneable
 	{
 		m_apps_host = apps_host;
 		m_name = toString ();
-		m_okApps = false;
 	}
 
 	/**
@@ -339,57 +305,12 @@ public class CConnection implements Serializable, Cloneable
 	}
 
 	/**
-	 *  Is Application Server OK
-	 *  @param tryContactAgain try to contact again
-	 *  @return true if Apps Server exists
-	 */
-	public boolean isAppsServerOK (boolean tryContactAgain)
-	{
-		if (!tryContactAgain && m_queryAppsServer)
-			return m_okApps;
-
-		if (getAppServerCredential() == null)
-		{
-			m_okApps = false;
-			return m_okApps;
-		}
-
-		m_queryAppsServer = true;
-
-		try
-		{
-			Status status = Service.locator().locate(Status.class).getService();
-			m_version = status.getDateVersion();
-		}
-		catch (Throwable t)
-		{
-			m_okApps = false;
-		}
-		return m_okApps;
-	} 	//  isAppsOK
-
-	/**
-	 *  Test ApplicationServer
-	 *  @return Exception or null
-	 */
-	public synchronized Exception testAppsServer ()
-	{
-		m_appsException = null;
-		queryAppsServerInfo();
-		return getAppsServerException ();
-	} 	//  testAppsServer
-
-	/**
 	 * 	Get Server
 	 * 	@return Server
 	 */
 	public Server getServer()
 	{
-		if (m_server == null)
-		{
-			m_server = Service.locator().locate(Server.class).getService();
-		}
-		return m_server;
+		return Service.locator().locate(Server.class).getService();
 	}	//	getServer
 
 
@@ -1110,15 +1031,8 @@ public class CConnection implements Serializable, Cloneable
 		sb.append (" - ").append (m_info[1] != null ? m_info[1] : "")
 		  .append ("\n").append (getDatabase ().toString ());
 		
-		if (Ini.isClient()) 
-		{
-			sb.append ("\nAppsServerOK=").append (isAppsServerOK (false))
-		      .append (", DatabaseOK=").append (isDatabaseOK ());
-		}
-		else
-		{
-			sb.append ("\nDatabaseOK=").append (isDatabaseOK ());
-		}
+		sb.append ("\nDatabaseOK=").append (isDatabaseOK ());
+		
 		return sb.toString ();
 	}	//  getInfo
 
@@ -1305,67 +1219,6 @@ public class CConnection implements Serializable, Cloneable
 	}	//	getInitialContext
 
 	/**
-	 *  Query Application Server Status.
-	 *  update okApps
-	 *  @return true ik OK
-	 */
-	private boolean queryAppsServerInfo ()
-	{
-		m_okApps = false;
-		m_queryAppsServer = true;
-
-		if (getAppsHost().equalsIgnoreCase("MyAppsServer")) {
-			log.warning (getAppsHost() + " ignored");
-			return m_okApps; // false
-		}
-
-		Status status = Service.locator().locate(Status.class).getService();
-		try {
-			updateInfoFromServer(status);
-			m_okApps = true;
-		} catch (Exception e) {
-			m_appsException = e;
-		}
-
-		return m_okApps;
-	}	//  setAppsServerInfo
-
-	/**
-	 *  Get Last Exception of Apps Server Connection attempt
-	 *  @return Exception or null
-	 */
-	public synchronized Exception getAppsServerException ()
-	{
-		return m_appsException;
-	} 	//  getAppsServerException
-
-	/**
-	 *  Update Connection Info from Apps Server
-	 *  @param svr Apps Server Status
-	 *  @throws Exception
-	 */
-	private void updateInfoFromServer (Status svr) throws Exception
-	{
-		if (svr == null)
-			throw new IllegalArgumentException ("AppsServer was NULL");
-
-		setType (svr.getDbType());
-		setDbHost (svr.getDbHost());
-		setDbPort (svr.getDbPort ());
-		setDbName (svr.getDbName ());
-		setDbUid (svr.getDbUid ());
-		setDbPwd (svr.getDbPwd ());
-		setBequeath (false);
-		//
-		setFwHost (svr.getFwHost ());
-		setFwPort (svr.getFwPort ());
-		if (getFwHost() == null || getFwHost().length () == 0)
-			setViaFirewall (false);
-		m_version = svr.getDateVersion ();
-		if (log.isLoggable(Level.CONFIG)) log.config("Server=" + getDbHost() + ", DB=" + getDbName());
-	} 	//  update Info
-
-	/**
 	 *  Convert Statement
 	 *  @param origStatement original statement (Oracle notation)
 	 *  @return converted Statement
@@ -1418,19 +1271,6 @@ public class CConnection implements Serializable, Cloneable
 			return "SERIALIZABLE";
 		return "<?" + transactionIsolation + "?>";
 	}	//	getTransactionIsolationInfo
-
-	public void setAppServerCredential(String identity, char[] secret)
-	{
-		securityPrincipal = new SecurityPrincipal();
-		securityPrincipal.identity = identity;
-		securityPrincipal.secret= secret;
-		m_server = null;
-	}
-
-	public SecurityPrincipal getAppServerCredential()
-	{
-		return securityPrincipal;
-	}
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {

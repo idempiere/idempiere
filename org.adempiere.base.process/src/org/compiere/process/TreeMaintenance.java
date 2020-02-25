@@ -100,7 +100,7 @@ public class TreeMaintenance extends SvrProcess
 		
 		//	Delete unused
 		StringBuilder sql = new StringBuilder();
-		sql.append("DELETE ").append(nodeTableName)
+		sql.append("DELETE FROM ").append(nodeTableName)
 			.append(" WHERE AD_Tree_ID=").append(tree.getAD_Tree_ID())
 			.append(" AND Node_ID NOT IN (SELECT ").append(sourceTableKey)
 			.append(" FROM ").append(sourceTableName)

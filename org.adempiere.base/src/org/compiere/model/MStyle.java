@@ -9,6 +9,9 @@ import java.util.Properties;
 
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.compiere.util.Evaluatee;
+import org.compiere.util.Evaluator;
+import org.compiere.util.Util;
 
 /**
  * @author hengsin
@@ -18,7 +21,7 @@ public class MStyle extends X_AD_Style {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4988653330824933725L;
+	private static final long serialVersionUID = 712675285511854305L;
 
 	/**	Cache					*/
 	private static  CCache<Integer,MStyle> s_cache = new CCache<Integer,MStyle>(Table_Name, 30, 60);
@@ -54,5 +57,29 @@ public class MStyle extends X_AD_Style {
 			m_lines = lines.toArray(new X_AD_StyleLine[0]);
 		}
 		return m_lines;
+	}
+	
+	public String buildStyle(String defaultTheme, Evaluatee evaluatee) {
+		X_AD_StyleLine[] lines = getStyleLines();
+		StringBuilder styleBuilder = new StringBuilder();
+		for (X_AD_StyleLine line : lines) 
+		{
+			String inlineStyle = line.getInlineStyle().trim();
+			String displayLogic = line.getDisplayLogic();
+			String theme = line.getTheme();
+			if (!Util.isEmpty(theme)) {
+				if (!theme.equals(defaultTheme))
+					continue;
+			}
+			if (!Util.isEmpty(displayLogic))
+			{
+				if (!Evaluator.evaluateLogic(evaluatee, displayLogic)) 
+					continue;
+			}
+			if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
+				styleBuilder.append("; ");
+			styleBuilder.append(inlineStyle);
+		}
+		return styleBuilder.toString();
 	}
 }

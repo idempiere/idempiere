@@ -73,7 +73,7 @@ public class MFactAcct extends X_Fact_Acct
 	public static int deleteEx(int AD_Table_ID, int Record_ID, String trxName)
 	throws DBException
 	{
-		final String sql = "DELETE Fact_Acct WHERE AD_Table_ID=? AND Record_ID=?";
+		final String sql = "DELETE FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=?";
 		int no = DB.executeUpdateEx(sql, new Object[]{AD_Table_ID, Record_ID}, trxName);
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("delete - AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID + " - #" + no);
 		return no;

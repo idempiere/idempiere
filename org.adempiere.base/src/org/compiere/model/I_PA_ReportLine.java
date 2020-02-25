@@ -154,6 +154,19 @@ public interface I_PA_ReportLine
 	  */
 	public boolean isPrinted();
 
+    /** Column name IsShowOppositeSign */
+    public static final String COLUMNNAME_IsShowOppositeSign = "IsShowOppositeSign";
+
+	/** Set Show Opposite Sign.
+	  * Display values with the opposite sign
+	  */
+	public void setIsShowOppositeSign (boolean IsShowOppositeSign);
+
+	/** Get Show Opposite Sign.
+	  * Display values with the opposite sign
+	  */
+	public boolean isShowOppositeSign();
+
     /** Column name LineType */
     public static final String COLUMNNAME_LineType = "LineType";
 

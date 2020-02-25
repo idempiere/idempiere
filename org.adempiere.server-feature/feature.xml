@@ -27,11 +27,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.adempiere.webstore.feature"
-         version="0.0.0"
-         optional="true"/>
-
-   <includes
          id="org.idempiere.felix.webconsole.feature"
          version="0.0.0"/>
 
@@ -92,13 +87,6 @@
 
    <plugin
          id="org.adempiere.server"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.restlet.ext.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"

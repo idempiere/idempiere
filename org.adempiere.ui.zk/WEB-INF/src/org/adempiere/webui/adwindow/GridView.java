@@ -356,7 +356,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 			showRecordsCount();
 		}
 		if (this.isVisible())
-			Clients.resize(listbox);
+			listbox.invalidate();
 	}
 
 	/**
@@ -729,7 +729,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 				listModel.setPage(pgNo);
 				onSelectedRowChange(0);
 				gridTab.clearSelection();
-				Clients.resize(listbox);
+				listbox.invalidate();
 			}
 		}
 		else if (event.getTarget() == selectAll)
@@ -1121,7 +1121,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		
 		refresh(gridTab);
 		scrollToCurrentRow();
-		Clients.resize(listbox);
+		listbox.invalidate();
 	}
 
 	/**

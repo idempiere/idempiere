@@ -317,11 +317,6 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 		return (String)get_Value(COLUMNNAME_Subject);
 	}
 
-	public org.compiere.model.I_W_MailMsg getW_MailMsg() throws RuntimeException
-    {
-		return (org.compiere.model.I_W_MailMsg)MTable.get(getCtx(), org.compiere.model.I_W_MailMsg.Table_Name)
-			.getPO(getW_MailMsg_ID(), get_TrxName());	}
-
 	/** Set Mail Message.
 		@param W_MailMsg_ID 
 		Web Store Mail Message Template

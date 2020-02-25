@@ -2707,6 +2707,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		public boolean isPageBreak(int row, int col)
 		{
 			return false;
-		}		
+		}
+
+		@Override
+		public boolean isDisplayed(int row, int col)
+		{
+			return true;
+		}	
 	}	
 }
