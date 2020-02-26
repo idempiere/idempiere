@@ -51,7 +51,6 @@ import org.compiere.model.MTab;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Tab_Customization;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
@@ -556,34 +555,9 @@ public class CustomizeGridViewPanel extends Panel
 		String gridview = null;
 		if (lstGridMode.getSelectedItem() != null && lstGridMode.getSelectedItem().toString().length() > 0)
 			gridview = lstGridMode.getSelectedItem().toString();
-		if (m_tabcust != null && m_tabcust.getAD_Tab_Customization_ID() > 0) {
-			m_tabcust.setCustom(custom.toString());	
-			m_tabcust.setIsDisplayedGrid(gridview);
-		} else {
-			m_tabcust = new MTabCustomization(Env.getCtx(), 0, null);
-			m_tabcust.setAD_Tab_ID(m_AD_Tab_ID);
-			m_tabcust.set_ValueOfColumn("AD_User_ID", m_AD_User_ID);
-			m_tabcust.setCustom(custom.toString());
-			m_tabcust.setIsDisplayedGrid(gridview);
-		}
-		if (m_tabcust.getCustom() == null || m_tabcust.getCustom().trim().length() == 0)
-		{
-			if (m_tabcust.is_new())
-			{
-				//no action needed
-				getParent().detach();
-				return;
-			}
-			else
-			{
-				ok = m_tabcust.delete(true);
-			}
-		}
-		else
-		{
-			ok = m_tabcust.save();
-		}
-		//
+		final String dView = gridview;
+
+		ok = MTabCustomization.saveData(Env.getCtx(), m_AD_Tab_ID, m_AD_User_ID, custom.toString(), dView, null, false);
 		if(ok) {
 			m_saved = true;
 			// FDialog.info(m_WindowNo, null, "Saved");

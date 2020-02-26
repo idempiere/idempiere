@@ -69,6 +69,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	private static final String BTN_NEW_ID = "BtnNew";
 	
 	private static final String BTN_SAVE_ID = "BtnSave";
+	
+	private static final String BTN_QUICK_FORM_ID = "BtnQuickForm";
 
 	private static final String TABBOX_ONSELECT_ATTRIBUTE = "detailpane.tabbox.onselect";
 
@@ -83,6 +85,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	private static final String NEW_IMAGE = "images/New16.png";
 	private static final String PROCESS_IMAGE = "images/Process16.png";
 	private static final String SAVE_IMAGE = "images/Save16.png";
+	private static final String QUICK_FORM_IMAGE = "images/QuickForm16.png";
 
 
 	private ToolBarButton btnNew;
@@ -110,6 +113,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	public static final String ON_EDIT_EVENT = "onEdit";
 	
 	public static final String ON_SAVE_EVENT = "onSave";
+	
+	public static final String ON_QUICK_FORM_EVENT = "onQuickForm";
 	
     private HashMap<String, ToolBarButton> buttons = new HashMap<String, ToolBarButton>();
     private List<ToolbarCustomButton> toolbarCustomButtons = new ArrayList<ToolbarCustomButton>();
@@ -354,6 +359,24 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Process")));
 	        buttons.put(BTN_PROCESS_ID.substring(3, BTN_PROCESS_ID.length()), button);
 		}
+		
+		// ADD Quick Form Button
+		button = new ToolBarButton();
+		if (ThemeManager.isUseFontIconForImage())
+			button.setIconSclass("z-icon-QuickForm");
+		else
+			button.setImage(ThemeManager.getThemeResource(QUICK_FORM_IMAGE));
+		button.setId(BTN_QUICK_FORM_ID);
+		button.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception
+			{
+				Event openEvent = new Event(ON_QUICK_FORM_EVENT, DetailPane.this);
+				eventListener.onEvent(openEvent);
+			}
+		});
+		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "QuickForm")));
+		buttons.put(BTN_QUICK_FORM_ID.substring(3, BTN_QUICK_FORM_ID.length()), button);
 		
 		MToolBarButton[] officialButtons = MToolBarButton.getToolbarButtons("D", null);
 		for (MToolBarButton toolbarButton : officialButtons) {
@@ -711,7 +734,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         			btn.setDisabled(false);
         		} else if (BTN_SAVE_ID.equals(btn.getId())) {
         			btn.setDisabled(!adtab.needSave(true, false));
-         		}
+				}
+				else if (BTN_QUICK_FORM_ID.equals(btn.getId())) {
+					btn.setDisabled(!(adtab.isEnableQuickFormButton() && !adtab.getGridTab().isReadOnly()));
+				}
         		if (windowRestrictList.contains(btn.getId())) {
         			btn.setVisible(false);
         		} else if (tabRestrictList.contains(btn.getId())) {

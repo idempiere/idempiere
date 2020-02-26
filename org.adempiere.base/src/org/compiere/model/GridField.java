@@ -2595,6 +2595,13 @@ public class GridField
 	{
 		return m_lookupEditorSettingValue;
 	}
+	/**
+	 * Is Quick Form
+	 * @return true if displayed in Quick Form
+	 */
+	public boolean isQuickForm() {
+		return m_vo.IsQuickForm;
+	}
 
 	public void processUIVirtualColumn() {
 		String sql = m_vo.ColumnSQL.substring(5);

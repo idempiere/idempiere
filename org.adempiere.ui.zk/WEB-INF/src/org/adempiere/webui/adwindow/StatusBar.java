@@ -18,6 +18,7 @@
 package org.adempiere.webui.adwindow;
 
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.apps.form.WQuickForm;
 import org.adempiere.webui.component.DocumentLink;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
@@ -243,7 +244,9 @@ public class StatusBar extends Panel implements EventListener<Event>
 		while (parent != null) {
 			if (parent instanceof Tabpanel)
 				return parent;
-			
+			else if (parent instanceof WQuickForm)
+				return parent;
+
 			parent = parent.getParent();
 		}
 		return null;

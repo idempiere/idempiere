@@ -1036,5 +1036,11 @@ public class ADSortTab extends Panel implements IADTabpanel
 	public ADTreePanel getTreePanel() {
 		return null;
 	}
+
+	@Override
+	public boolean isEnableQuickFormButton() 
+	{
+		return false;
+	}
 }	//ADSortTab
 

@@ -214,6 +214,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	//Contains currently selected rows
 	private ArrayList<Integer> selection = null;
+	public boolean isQuickForm = false;
 	
 	// Context property names:
 	public static final String CTX_KeyColumnName = "_TabInfo_KeyColumnName";
@@ -3373,6 +3374,14 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public void clearSelection()
 	{
 		selection.clear();
+	}
+
+	public boolean isQuickForm() {
+		return isQuickForm;
+	}
+
+	public void setQuickForm(boolean isQuickForm) {
+		this.isQuickForm = isQuickForm;
 	}
 
 	public GridWindow getGridWindow()
