@@ -143,7 +143,7 @@ UPDATE AD_Field SET SeqNo=440, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, 
 UPDATE AD_Field SET SeqNo=450, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2017-10-31 17:29:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=139
 ;
 
-INSERT INTO AD_ToolBarButton (AD_Client_ID,AD_Org_ID,Created,CreatedBy,ComponentName,IsActive,AD_ToolBarButton_ID,Name,Updated,UpdatedBy,IsCustomization,KeyStroke_KeyCode,KeyStroke_Modifiers,AD_ToolBarButton_UU,"action",SeqNo,IsAdvancedButton,IsAddSeparator) VALUES (0,0,TO_TIMESTAMP('2017-11-01 09:47:25','YYYY-MM-DD HH24:MI:SS'),100,'QuickForm','Y',200094,'Window -QuickForm',TO_TIMESTAMP('2017-11-01 09:47:25','YYYY-MM-DD HH24:MI:SS'),100,'N',0,0,'73c01d0e-ff1b-4bbb-b3c7-e6c650adbed8','W',280,'N','Y')
+INSERT INTO AD_ToolBarButton (AD_Client_ID,AD_Org_ID,Created,CreatedBy,ComponentName,IsActive,AD_ToolBarButton_ID,Name,Updated,UpdatedBy,IsCustomization,KeyStroke_KeyCode,KeyStroke_Modifiers,AD_ToolBarButton_UU,"action",SeqNo,IsAdvancedButton,IsAddSeparator,EntityType,IsShowMore) VALUES (0,0,TO_TIMESTAMP('2017-11-01 09:47:25','YYYY-MM-DD HH24:MI:SS'),100,'QuickForm','Y',200094,'Window -QuickForm',TO_TIMESTAMP('2017-11-01 09:47:25','YYYY-MM-DD HH24:MI:SS'),100,'N',0,0,'73c01d0e-ff1b-4bbb-b3c7-e6c650adbed8','W',280,'N','Y','D','Y')
 ;
 
 CREATE OR REPLACE VIEW ad_field_v AS
@@ -206,7 +206,7 @@ INSERT INTO AD_SysConfig (AD_SysConfig_ID,AD_Client_ID,AD_Org_ID,Created,Updated
 
 -- Quick Form enhancement
 -- Nov 22, 2017 12:48:12 PM IST
-INSERT INTO AD_ToolBarButton (AD_Client_ID,AD_Org_ID,Created,CreatedBy,ComponentName,IsActive,AD_ToolBarButton_ID,Name,Updated,UpdatedBy,IsCustomization,KeyStroke_KeyCode,KeyStroke_Modifiers,AD_ToolBarButton_UU,"action",SeqNo,IsAdvancedButton,IsAddSeparator) VALUES (0,0,TO_TIMESTAMP('2017-11-22 12:48:11','YYYY-MM-DD HH24:MI:SS'),100,'QuickForm','Y',200095,'Detail - QuickForm',TO_TIMESTAMP('2017-11-22 12:48:11','YYYY-MM-DD HH24:MI:SS'),100,'N',0,0,'93a9a483-ea2f-49b7-8737-a4113b2aa8de','D',50,'N','N')
+INSERT INTO AD_ToolBarButton (AD_Client_ID,AD_Org_ID,Created,CreatedBy,ComponentName,IsActive,AD_ToolBarButton_ID,Name,Updated,UpdatedBy,IsCustomization,KeyStroke_KeyCode,KeyStroke_Modifiers,AD_ToolBarButton_UU,"action",SeqNo,IsAdvancedButton,IsAddSeparator,EntityType,IsShowMore) VALUES (0,0,TO_TIMESTAMP('2017-11-22 12:48:11','YYYY-MM-DD HH24:MI:SS'),100,'QuickForm','Y',200095,'Detail - QuickForm',TO_TIMESTAMP('2017-11-22 12:48:11','YYYY-MM-DD HH24:MI:SS'),100,'N',0,0,'93a9a483-ea2f-49b7-8737-a4113b2aa8de','D',50,'N','N','D','N')
 ;
 
 -- Quick Form read only
@@ -214,5 +214,13 @@ INSERT INTO AD_ToolBarButton (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Component
 UPDATE AD_Field SET AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, ReadOnlyLogic='@AD_Column_ID.AD_Reference_ID@=200122 | @AD_Column_ID.AD_Reference_ID@=200127 | @AD_Column_ID.AD_Reference_ID@=200128 | @AD_Column_ID.AD_Reference_ID@=200161 | @AD_Column_ID.AD_Reference_ID@=200162 | @AD_Column_ID.AD_Reference_ID@=200163', IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2020-02-18 18:13:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205244
 ;
 
-SELECT register_migration_script('201710311730_IDEMPIERE-4157.sql') FROM dual
+-- Feb 26, 2020, 7:06:38 PM CET
+UPDATE AD_ToolBarButton SET SeqNo=300,Updated=TO_TIMESTAMP('2020-02-26 19:06:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ToolBarButton_ID=200081
+;
+
+-- Feb 26, 2020, 7:06:51 PM CET
+UPDATE AD_ToolBarButton SET SeqNo=290,Updated=TO_TIMESTAMP('2020-02-26 19:06:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ToolBarButton_ID=200067
+;
+
+SELECT register_migration_script('202002261603_IDEMPIERE-4157.sql') FROM dual
 ;
