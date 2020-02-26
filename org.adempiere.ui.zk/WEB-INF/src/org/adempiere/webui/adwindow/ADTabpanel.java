@@ -139,7 +139,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5117210424909609150L;
+	private static final long serialVersionUID = -6023888511495744589L;
 
 	private static final String ON_SAVE_OPEN_PREFERENCE_EVENT = "onSaveOpenPreference";
 

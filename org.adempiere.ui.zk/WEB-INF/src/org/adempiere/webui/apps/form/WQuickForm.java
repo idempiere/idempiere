@@ -57,11 +57,10 @@ import org.zkoss.zul.Columns;
  */
 public class WQuickForm extends Window implements EventListener <Event>, DataStatusListener
 {
-
 	/**
 	 * 
 	 */
-	private static final long		serialVersionUID	= -5095168843989540551L;
+	private static final long serialVersionUID = -5363771364595732977L;
 
 	public Trx						trx					= null;
 
@@ -142,6 +141,7 @@ public class WQuickForm extends Window implements EventListener <Event>, DataSta
 		bCustomize.addEventListener(Events.ON_CLICK, this);
 		bUnSort.addEventListener(Events.ON_CLICK, this);
 
+		// @TODO: translate extra quickform tooltips
 		// Add Shortcut Key info in tool-tip
 		bSave.setTooltiptext(bSave.getTooltiptext() + " (Alt+S) Save current record if modified");
 		bIgnore.setTooltiptext(bIgnore.getTooltiptext() + " (Alt+Z) Ignore un-save changes of current record");

@@ -74,7 +74,6 @@ import org.zkoss.zul.impl.CustomGridDataLoader;
  */
 public class GridView extends Vlayout implements EventListener<Event>, IdSpace, IFieldEditorContainer, StateChangeListener
 {
-
 	/**
 	 * 
 	 */
@@ -84,7 +83,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 
 	private static final int DEFAULT_DETAIL_PAGE_SIZE = 10;
 
-	public static final int DEFAULT_MOBILE_PAGE_SIZE = 20;
+	private static final int DEFAULT_MOBILE_PAGE_SIZE = 20;
 	
 	private static final int DEFAULT_PAGE_SIZE = 20;
 

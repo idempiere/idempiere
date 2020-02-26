@@ -68,11 +68,10 @@ import org.zkoss.zul.Vbox;
  * @since Nov 08, 2017
  */
 public class QuickCustomizeGridViewPanel extends Panel {
-
 	/**
 	 * 
 	 */
-	private static final long		serialVersionUID	= 721233085611663253L;
+	private static final long serialVersionUID = 7566420005952940208L;
 
 	static CLogger					log					= CLogger.getCLogger(QuickCustomizeGridViewPanel.class);
 
@@ -458,11 +457,10 @@ public class QuickCustomizeGridViewPanel extends Panel {
 	 * ListElement Item
 	 */
 	private static class ListElement extends NamePair {
-		
 		/**
 		 * 
-		 */	
-		private static final long serialVersionUID = 884539656654102968L;
+		 */
+		private static final long serialVersionUID = -4428985595605126841L;
 
 		private int m_key;
 

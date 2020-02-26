@@ -83,7 +83,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2945672260455902597L;
+	private static final long serialVersionUID = -8494819673584541046L;
 
 	public static final String BTNPREFIX = "Btn";
 	

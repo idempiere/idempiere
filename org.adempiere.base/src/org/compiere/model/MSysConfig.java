@@ -39,10 +39,10 @@ import org.compiere.util.DisplayType;
  */
 public class MSysConfig extends X_AD_SysConfig
 {
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6662424546913925975L;
+	private static final long serialVersionUID = -4014355086112902334L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -135,6 +135,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String PROJECT_ID_USE_CENTRALIZED_ID = "PROJECT_ID_USE_CENTRALIZED_ID";
     public static final String PROJECT_ID_USER = "PROJECT_ID_USER";
     public static final String PROJECT_ID_WEBSITE = "PROJECT_ID_WEBSITE";
+	public static final String QUICKFORM_PAGE_SIZE = "QUICKFORM_PAGE_SIZE";
     public static final String REAL_TIME_POS = "REAL_TIME_POS";
     public static final String RecentItems_MaxSaved = "RecentItems_MaxSaved";
     public static final String RecentItems_MaxShown = "RecentItems_MaxShown";
@@ -194,7 +195,6 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_THEME_USE_FONT_ICON_FOR_IMAGE = "ZK_THEME_USE_FONT_ICON_FOR_IMAGE";
     public static final String ZK_THEME = "ZK_THEME";
     public static final String ZOOM_ACROSS_QUERY_TIMEOUT = "ZOOM_ACROSS_QUERY_TIMEOUT";
-	public static final String QUICKFORM_PAGE_SIZE = "QUICKFORM_PAGE_SIZE";
 
 	/**
 	 * 	Standard Constructor

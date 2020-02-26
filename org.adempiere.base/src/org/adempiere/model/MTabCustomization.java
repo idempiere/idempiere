@@ -11,7 +11,7 @@ public class MTabCustomization extends X_AD_Tab_Customization {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3977886674683054829L;
+	private static final long serialVersionUID = 786885789239156678L;
 
 	public MTabCustomization(Properties ctx, int AD_Tab_Customization_ID, String trxName) {
 		super(ctx, AD_Tab_Customization_ID, trxName);

@@ -17,10 +17,10 @@ import org.compiere.util.Msg;
 public class CustomizeGridViewDialog extends Window {
 
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -4093048147438176240L;
-	
+	private static final long serialVersionUID = -138153049225192685L;
+
 	private CustomizeGridViewPanel customizePanel;
 	private QuickCustomizeGridViewPanel quickCustomizePanel;
 	private boolean isQuickForm = false;

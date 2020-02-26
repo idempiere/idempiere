@@ -51,11 +51,11 @@ import org.zkoss.zul.Space;
  */
 public class StatusBar extends Panel implements EventListener<Event> 
 {
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1519490416637936553L;
-	
+	private static final long serialVersionUID = 7091641684809092888L;
+
 	private Panel infoPanel;
 
 	private Html infoLine;
