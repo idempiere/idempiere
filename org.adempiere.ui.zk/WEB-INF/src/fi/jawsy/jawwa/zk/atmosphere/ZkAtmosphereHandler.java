@@ -53,7 +53,8 @@ public class ZkAtmosphereHandler implements AtmosphereHandler {
         if (session.getWebApp() instanceof WebAppCtrl) {
         	WebAppCtrl webAppCtrl = (WebAppCtrl) session.getWebApp();
         	Desktop desktop = webAppCtrl.getDesktopCache(session).getDesktopIfAny(dtid);
-        	log.warn("Could not find desktop: " + dtid);
+        	if (desktop == null)
+        		log.warn("Could not find desktop: " + dtid);
             return new Either<String, Desktop>("Could not find desktop", desktop);
         }
         return new Either<String, Desktop>("Webapp does not implement WebAppCtrl", null);

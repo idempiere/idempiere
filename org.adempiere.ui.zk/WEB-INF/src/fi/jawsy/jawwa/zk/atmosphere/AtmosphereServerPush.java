@@ -122,7 +122,7 @@ public class AtmosphereServerPush implements ServerPush {
 
     private boolean commitResponse() throws IOException {    	
         AtmosphereResource resource = this.resource.getAndSet(null);
-        if (resource != null && resource.isSuspended()) {
+        if (resource != null) {
         	resource.resume();
         	return true;
         } 
