@@ -2782,6 +2782,7 @@ public abstract class PO
 			}
 			m_IDs[0] = Integer.valueOf(no);
 			set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
+			saveNew_afterSetID();
 		}
 		//uuid secondary key
 		int uuidIndex = p_info.getColumnIndex(getUUIDColumnName());
@@ -3096,6 +3097,13 @@ public abstract class PO
 		return 0;
 	}	//	saveNew_getID
 
+	/**
+	 * Call after ID have been assigned for new record
+	 */
+	protected void saveNew_afterSetID()
+	{
+		
+	}
 
 	/**
 	 * 	Create Single/Multi Key Where Clause

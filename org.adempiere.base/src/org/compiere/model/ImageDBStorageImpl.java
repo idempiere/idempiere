@@ -24,20 +24,17 @@ import java.util.zip.ZipOutputStream;
 import org.compiere.util.CLogger;
 
 /**
- * @author juliana
+ * @author hengsin
  *
  */
-public class ArchiveDB implements IArchiveStore {
+public class ImageDBStorageImpl implements IImageStore {
 
 
-	private static final CLogger log = CLogger.getCLogger(ArchiveDB.class);
+	private final CLogger log = CLogger.getCLogger(getClass());
 
-	/* (non-Javadoc)
-	 * @see org.compiere.model.IArchiveStore#loadLOBData(org.compiere.model.MArchive, org.compiere.model.MStorageProvider)
-	 */
 	@Override
-	public byte[] loadLOBData(MArchive archive, MStorageProvider prov) {
-		byte[] deflatedData = archive.getByteData();
+	public byte[] load(MImage image, MStorageProvider prov) {
+		byte[] deflatedData = image.getByteData();
 		if (deflatedData == null)
 			return null;
 		//
@@ -64,6 +61,9 @@ public class ArchiveDB implements IArchiveStore {
 				if (log.isLoggable(Level.FINE)) log.fine("Size=" + inflatedData.length + " - zip=" + entry.getCompressedSize()
 						+ "(" + entry.getSize() + ") "
 						+ (entry.getCompressedSize() * 100 / entry.getSize()) + "%");
+			} else {
+				//not zip stream, legacy data
+				inflatedData = deflatedData;
 			}
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "", e);
@@ -72,13 +72,13 @@ public class ArchiveDB implements IArchiveStore {
 		return inflatedData;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.compiere.model.IArchiveStore#save(org.compiere.model.MArchive, org.compiere.model.MStorageProvider, byte[])
-	 */
 	@Override
-	public void save(MArchive archive, MStorageProvider prov,byte[] inflatedData) {
-		if (inflatedData == null || inflatedData.length == 0)
-			throw new IllegalArgumentException("InflatedData is NULL");
+	public void save(MImage image, MStorageProvider prov,byte[] inflatedData) {
+		if (inflatedData == null || inflatedData.length == 0) {
+			image.setByteData(null);
+			return;
+		}
+		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		ZipOutputStream zip = new ZipOutputStream(out);
 		zip.setMethod(ZipOutputStream.DEFLATED);
@@ -87,7 +87,7 @@ public class ArchiveDB implements IArchiveStore {
 		//
 		byte[] deflatedData = null;
 		try {
-			ZipEntry entry = new ZipEntry("IdempiereArchive");
+			ZipEntry entry = new ZipEntry("IdempiereImage");
 			entry.setTime(System.currentTimeMillis());
 			entry.setMethod(ZipEntry.DEFLATED);
 			zip.putNextEntry(entry);
@@ -104,11 +104,11 @@ public class ArchiveDB implements IArchiveStore {
 			log.log(Level.SEVERE, "saveLOBData", e);
 			deflatedData = null;
 		}
-		archive.setByteData(deflatedData);
+		image.setByteData(deflatedData);
 	}
 
 	@Override
-	public boolean deleteArchive(MArchive archive, MStorageProvider prov) {
+	public boolean delete(MImage image, MStorageProvider prov) {
 		
 		return true;
 	}
@@ -119,7 +119,7 @@ public class ArchiveDB implements IArchiveStore {
 	}
 
 	@Override
-	public void flush(MArchive archive, MStorageProvider prov) {		
+	public void flush(MImage image, MStorageProvider prov) {
 	}
 
 }

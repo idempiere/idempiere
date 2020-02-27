@@ -278,4 +278,11 @@ public class MArchive extends X_AD_Archive {
 		
 	}
 
+	@Override
+	protected void saveNew_afterSetID()
+	{
+		IArchiveStore prov = provider.getArchiveStore();
+		if (prov != null && prov.isPendingFlush())
+			 prov.flush(this,provider);
+	}
 } // MArchive
