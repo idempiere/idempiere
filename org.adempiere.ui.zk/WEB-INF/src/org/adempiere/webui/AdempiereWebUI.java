@@ -84,7 +84,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3320656546509525766L;
+	private static final long serialVersionUID = -6725805283410008847L;
 
 	private static final String SAVED_CONTEXT = "saved.context";
 	
@@ -250,7 +250,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 		keyListener = new Keylistener();
 		keyListener.setPage(this.getPage());
-		keyListener.setCtrlKeys("@a@c@d@e@f@h@m@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup");
+		keyListener.setCtrlKeys("@a@c@d@e@f@h@l@m@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup$#f2^#f2");
 		keyListener.setAutoBlur(false);
 		
 		//create new desktop
@@ -369,6 +369,10 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	 */
     public void logout()
     {
+	    Desktop desktop = Executions.getCurrent().getDesktop();
+	    if (desktop.isServerPushEnabled())
+			desktop.enableServerPush(false);
+    	
     	Session session = logout0();
     	DesktopCache desktopCache = ((SessionCtrl)session).getDesktopCache();
     	
@@ -383,6 +387,10 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			desktopCache.removeDesktop(Executions.getCurrent().getDesktop());
     }
     public void logoutAfterTabDestroyed(){
+    	Desktop desktop = Executions.getCurrent().getDesktop();
+	    if (desktop.isServerPushEnabled())
+			desktop.enableServerPush(false);
+	    
        	Session session = logout0();
 
     	//clear context, invalidate session
@@ -392,7 +400,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     
 
 	protected Session logout0() {
-		Session session = Executions.getCurrent().getDesktop().getSession();
+		Session session = Executions.getCurrent() != null ? Executions.getCurrent().getDesktop().getSession() : null;
 		
 		if (keyListener != null) {
 			keyListener.detach();
@@ -409,7 +417,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	getPage().removeComponents();
         
     	//clear session attributes
-		session.getAttributes().clear();
+    	if (session != null)
+    		session.getAttributes().clear();
 
     	//logout ad_session
     	AEnv.logout();
@@ -523,9 +532,12 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(properties, Env.LANGUAGE, Env.getContext(Env.getCtx(), Env.LANGUAGE));
 		Env.setContext(properties, AEnv.LOCALE, Env.getContext(Env.getCtx(), AEnv.LOCALE));
 		
-		Locale locale = (Locale) Executions.getCurrent().getDesktop().getSession().getAttribute(Attributes.PREFERRED_LOCALE);
+		Desktop desktop = Executions.getCurrent().getDesktop();
+		Locale locale = (Locale) desktop.getSession().getAttribute(Attributes.PREFERRED_LOCALE);
 		HttpServletRequest httpRequest = (HttpServletRequest) Executions.getCurrent().getNativeRequest();		
 		
+		if (desktop.isServerPushEnabled())
+			desktop.enableServerPush(false);
 		Session session = logout0();
     	
     	//clear context and invalidate session

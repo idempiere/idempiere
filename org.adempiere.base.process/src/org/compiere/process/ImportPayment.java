@@ -99,7 +99,7 @@ public class ImportPayment extends SvrProcess
 		//	Delete Old Imported
 		if (p_deleteOldImported)
 		{
-			sql = new StringBuilder ("DELETE I_Payment ")
+			sql = new StringBuilder ("DELETE FROM I_Payment ")
 				  .append("WHERE I_IsImported='Y'").append (clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Impored =" + no);

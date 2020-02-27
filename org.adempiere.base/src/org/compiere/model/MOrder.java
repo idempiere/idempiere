@@ -1783,7 +1783,7 @@ public class MOrder extends X_C_Order implements DocAction
 	{
 		log.fine("");
 		//	Delete Taxes
-		DB.executeUpdateEx("DELETE C_OrderTax WHERE C_Order_ID=" + getC_Order_ID(), get_TrxName());
+		DB.executeUpdateEx("DELETE FROM C_OrderTax WHERE C_Order_ID=" + getC_Order_ID(), get_TrxName());
 		m_taxes = null;
 		
 		MTaxProvider[] providers = getTaxProviders();

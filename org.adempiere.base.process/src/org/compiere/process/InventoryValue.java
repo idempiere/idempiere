@@ -95,7 +95,7 @@ public class InventoryValue extends SvrProcess
 		MAcctSchema as = c.getAcctSchema();
 		
 		//  Delete (just to be sure)
-		StringBuilder sql = new StringBuilder ("DELETE T_InventoryValue WHERE AD_PInstance_ID=");
+		StringBuilder sql = new StringBuilder ("DELETE FROM T_InventoryValue WHERE AD_PInstance_ID=");
 		sql.append(getAD_PInstance_ID());
 		int no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 
@@ -201,7 +201,7 @@ public class InventoryValue extends SvrProcess
 		//  Adjust for Valuation Date
 		sql = new StringBuilder("UPDATE T_InventoryValue iv ")
 			.append("SET QtyOnHand=")
-				.append("(SELECT iv.QtyOnHand - NVL(SUM(t.MovementQty), 0) ")
+				.append("(SELECT iv.QtyOnHand - COALESCE(SUM(t.MovementQty), 0) ")
 				.append("FROM M_Transaction t")
 				.append(" INNER JOIN M_Locator l ON (t.M_Locator_ID=l.M_Locator_ID) ")
 				.append("WHERE t.M_Product_ID=iv.M_Product_ID")
@@ -215,7 +215,7 @@ public class InventoryValue extends SvrProcess
 		//
 		sql = new StringBuilder("UPDATE T_InventoryValue iv ")
 			.append("SET QtyOnHand=")
-				.append("(SELECT iv.QtyOnHand - NVL(SUM(t.MovementQty), 0) ")
+				.append("(SELECT iv.QtyOnHand - COALESCE(SUM(t.MovementQty), 0) ")
 				.append("FROM M_Transaction t")
 				.append(" INNER JOIN M_Locator l ON (t.M_Locator_ID=l.M_Locator_ID) ")
 				.append("WHERE t.M_Product_ID=iv.M_Product_ID")
@@ -228,7 +228,7 @@ public class InventoryValue extends SvrProcess
 		if (log.isLoggable(Level.FINE)) log.fine("Update w/o ASI=" + no);
 		
 		//  Delete Records w/o OnHand Qty
-		sql = new StringBuilder("DELETE T_InventoryValue ")
+		sql = new StringBuilder("DELETE FROM T_InventoryValue ")
 			.append("WHERE (QtyOnHand=0 OR QtyOnHand IS NULL) AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		int noQty = DB.executeUpdateEx (sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("NoQty Deleted=" + noQty);

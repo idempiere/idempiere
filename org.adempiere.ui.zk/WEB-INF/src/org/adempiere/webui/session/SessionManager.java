@@ -18,6 +18,7 @@
 package org.adempiere.webui.session;
 
 import java.lang.ref.WeakReference;
+import java.util.LinkedList;
 import java.util.Properties;
 
 import org.adempiere.webui.IWebClient;
@@ -26,6 +27,8 @@ import org.adempiere.webui.desktop.IDesktop;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
 
 /**
  * 
@@ -36,6 +39,8 @@ import org.zkoss.zk.ui.Desktop;
 public class SessionManager
 {
     public static final String SESSION_APPLICATION = "SessionApplication";
+	// Keep track of open Quick Form
+	public static final String	SESSION_QUICKFORM	= "SessionQuickForm";
     
     public static boolean isUserLoggedIn(Properties ctx)
     {
@@ -94,4 +99,42 @@ public class SessionManager
     		app.changeRole(user);
     }
 
+	public static boolean registerQuickFormTab(Integer AD_Tab_ID)
+	{
+		LinkedList<Integer> openTabs = getOpenQuickFormTabs();
+
+		if (openTabs.contains(AD_Tab_ID))
+		{
+			return false;
+		}
+
+		openTabs.add(AD_Tab_ID);
+		getSession().setAttribute(SESSION_QUICKFORM, openTabs);
+
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static LinkedList<Integer> getOpenQuickFormTabs()
+	{
+		LinkedList<Integer> tabs = (LinkedList<Integer>) getSession().getAttribute(SESSION_QUICKFORM);
+
+		if (tabs == null)
+		{
+			tabs = new LinkedList<Integer>();
+		}
+		return tabs;
+	}
+
+	public static void closeQuickFormTab(Integer AD_Tab_ID)
+	{
+		LinkedList<Integer> openTabs = getOpenQuickFormTabs();
+		openTabs.remove(AD_Tab_ID);
+		getSession().setAttribute(SESSION_QUICKFORM, openTabs);
+	}
+
+	private static Session getSession()
+	{
+		return Executions.getCurrent().getDesktop().getSession();
+	}
 }

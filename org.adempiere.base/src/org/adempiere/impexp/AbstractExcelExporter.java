@@ -119,6 +119,15 @@ public abstract class AbstractExcelExporter
 	 */
 	public abstract boolean isPageBreak(int row, int col);
 
+	/**
+	 * Check if there is a display logic
+	 * 
+	 * @param row row index
+	 * @param col column index
+	 * @return true if there is no logic or evaluate logic specified in print item
+	 */
+	public abstract boolean isDisplayed(int row, int col);
+
 	/** Logger */
 	protected final transient CLogger log = CLogger.getCLogger(getClass());
 	//
@@ -497,7 +506,7 @@ public abstract class AbstractExcelExporter
 					}
 					
 					int displayType = getDisplayType(rownum, col);
-					if (obj == null){
+					if (obj == null || !isDisplayed(rownum, col)){
 						if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
 							preValues[printColIndex] = null;
 						}

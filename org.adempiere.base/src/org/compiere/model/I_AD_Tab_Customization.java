@@ -157,6 +157,19 @@ public interface I_AD_Tab_Customization
 	/** Get Show in Grid	  */
 	public String getIsDisplayedGrid();
 
+    /** Column name IsQuickForm */
+    public static final String COLUMNNAME_IsQuickForm = "IsQuickForm";
+
+	/** Set Quick Form.
+	  * Display in Quick Form
+	  */
+	public void setIsQuickForm (boolean IsQuickForm);
+
+	/** Get Quick Form.
+	  * Display in Quick Form
+	  */
+	public boolean isQuickForm();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

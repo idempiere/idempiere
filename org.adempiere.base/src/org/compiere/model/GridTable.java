@@ -104,7 +104,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2741647620577906242L;
+	private static final long serialVersionUID = -3190218965990521698L;
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 	public static final String DATA_UPDATE_COPIED_MESSAGE = "UpdateCopied";
@@ -904,7 +904,13 @@ public class GridTable extends AbstractTableModel
 		}
 		if (getRowCount() == 0)
 			return;
-		
+
+		GridField field = getField(col);
+
+		// Ignoring new record while sorting
+		if (field.getGridTab().isQuickForm())
+			dataIgnore();
+
 		boolean isSameSortEntries = (col == m_lastSortColumnIndex && ascending == m_lastSortedAscending);
 		if (!isSameSortEntries)
 		{
@@ -915,7 +921,6 @@ public class GridTable extends AbstractTableModel
 		//cache changed row
 		Object[] changedRow = m_rowChanged >= 0 ? getDataAtRow(m_rowChanged) : null;
 
-		GridField field = getField (col);
 		//	RowIDs are not sorted
 		if (field.getDisplayType() == DisplayType.RowID)
 			return;
@@ -2737,7 +2742,7 @@ public class GridTable extends AbstractTableModel
 		}
 		else	//	Delete via SQL
 		{
-			StringBuilder sql = new StringBuilder("DELETE ");
+			StringBuilder sql = new StringBuilder("DELETE FROM ");
 			sql.append(m_tableName).append(" WHERE ").append(getWhereClause(rowData));
 			int no = 0;
 			PreparedStatement pstmt = null;
@@ -3499,7 +3504,7 @@ public class GridTable extends AbstractTableModel
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = -8735217685095696892L;
+		private static final long serialVersionUID = -6866671239509705988L;
 
 		/**
 		 *  Construct Loader
@@ -3975,5 +3980,13 @@ public class GridTable extends AbstractTableModel
 
 	public int getKeyColumnIndex() {
 		return m_indexKeyColumn;
+	}
+
+	/**
+	 * Index of updated row's
+	 */
+	public int getRowChanged()
+	{
+		return m_rowChanged;
 	}
 }

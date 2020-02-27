@@ -98,7 +98,7 @@ public class FavouriteController {
 				.append("'Y',SysDate,").append(AD_User_ID).append(",SysDate,").append(AD_User_ID).append(")");
 			//	if already exist, will result in ORA-00001: unique constraint (ADEMPIERE.AD_TREEBAR_KEY)
 		else
-			sql.append("DELETE AD_TreeBar WHERE AD_Tree_ID=").append(m_AD_Tree_ID)
+			sql.append("DELETE FROM AD_TreeBar WHERE AD_Tree_ID=").append(m_AD_Tree_ID)
 				.append(" AND AD_User_ID=").append(AD_User_ID)
 				.append(" AND Node_ID=").append(Node_ID);
 		int no = DB.executeUpdate(sql.toString(), false, null);

@@ -30,9 +30,6 @@
    <feature url="features/org.adempiere.ui.zk.feature_7.1.0.qualifier.jar" id="org.adempiere.ui.zk.feature" version="7.1.0.qualifier">
       <category name="idempiere.core"/>
    </feature>
-   <feature url="features/org.adempiere.webstore.feature_7.1.0.qualifier.jar" id="org.adempiere.webstore.feature" version="7.1.0.qualifier">
-      <category name="idempiere.core"/>
-   </feature>
    <feature url="features/org.compiere.db.provider.feature_7.1.0.qualifier.jar" id="org.compiere.db.provider.feature" version="7.1.0.qualifier">
       <category name="idempiere.core"/>
    </feature>

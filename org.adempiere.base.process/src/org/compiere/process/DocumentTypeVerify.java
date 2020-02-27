@@ -132,7 +132,7 @@ public class DocumentTypeVerify extends SvrProcess
 		if (s_log.isLoggable(Level.INFO)) s_log.info("AD_Client_ID=" + AD_Client_ID);
 
 		//	Delete Duplicates
-		String sql = "DELETE C_PeriodControl pc1 "
+		String sql = "DELETE FROM C_PeriodControl pc1 "
 			+ "WHERE (C_Period_ID, DocBaseType) IN "
 				+ "(SELECT C_Period_ID, DocBaseType "
 				+ "FROM C_PeriodControl pc2 "

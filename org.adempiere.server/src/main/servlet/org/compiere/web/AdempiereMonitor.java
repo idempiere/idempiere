@@ -60,7 +60,6 @@ import org.compiere.Adempiere;
 import org.compiere.model.AdempiereProcessorLog;
 import org.compiere.model.MClient;
 import org.compiere.model.MSession;
-import org.compiere.model.MStore;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.Query;
@@ -1179,24 +1178,6 @@ public class AdempiereMonitor extends HttpServlet
 			p.addElement(new a("idempiereMonitor?EMail=" + client.getAD_Client_ID(), client.getName()));
 		}
 		if (clients.length == 0)
-			p.addElement("&nbsp;");
-		line.addElement(new td().addElement(p));
-		table.addElement(line);
-		//	
-		line = new tr();
-		MStore[] wstores = MStore.getActive();
-		line.addElement(new th().addElement("Active Web Stores #" + wstores.length));
-		p = new p();
-		for (int i = 0; i < wstores.length; i++)
-		{
-			MStore store = wstores[i];
-			if (i > 0)
-				p.addElement(" - ");
-			a a = new a(store.getWebContext(), store.getName());
-			a.setTarget("t" + i);
-			p.addElement(a);
-		}
-		if (wstores.length == 0)
 			p.addElement("&nbsp;");
 		line.addElement(new td().addElement(p));
 		table.addElement(line);

@@ -30,7 +30,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20191122L;
 
     /** Standard Constructor */
     public X_PA_ReportLine (Properties ctx, int PA_ReportLine_ID, String trxName)
@@ -188,6 +188,30 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	public boolean isPrinted () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Show Opposite Sign.
+		@param IsShowOppositeSign 
+		Display values with the opposite sign
+	  */
+	public void setIsShowOppositeSign (boolean IsShowOppositeSign)
+	{
+		set_Value (COLUMNNAME_IsShowOppositeSign, Boolean.valueOf(IsShowOppositeSign));
+	}
+
+	/** Get Show Opposite Sign.
+		@return Display values with the opposite sign
+	  */
+	public boolean isShowOppositeSign () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowOppositeSign);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

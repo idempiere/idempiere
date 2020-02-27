@@ -500,9 +500,9 @@ public class MLookupFactory
 			if (KeyColumn.endsWith("_ID"))
 				realSQL.append("NULL,");
 			if (isValueDisplayed)
-				realSQL.append("NVL(").append(TableName).append(".Value,'-1') || '-' || ");
+				realSQL.append("COALESCE(").append(TableName).append(".Value,'-1') || '-' || ");
 			if (displayColumnSQL != null && displayColumnSQL.trim().length() > 0)
-				realSQL.append("NVL(").append(displayColumnSQL).append(",'-1')");
+				realSQL.append("COALESCE(").append(displayColumnSQL).append(",'-1')");
 			else {
 				if (showID) {
 					StringBuilder displayColumn = getDisplayColumn(language, TableName, list);
@@ -510,7 +510,7 @@ public class MLookupFactory
 					realSQL.append(displayColumn);
 				} else {
 					lookupDisplayColumn = DisplayColumn;
-					realSQL.append("NVL(").append(TableName).append("_Trl.").append(DisplayColumn).append(",'-1')");
+					realSQL.append("COALESCE(").append(TableName).append("_Trl.").append(DisplayColumn).append(",'-1')");
 				}
 			}
 			realSQL.append(",").append(TableName).append(".IsActive");
@@ -528,9 +528,9 @@ public class MLookupFactory
 			if (KeyColumn.endsWith("_ID"))
 				realSQL.append("NULL,");
 			if (isValueDisplayed)
-				realSQL.append("NVL(").append(TableName).append(".Value,'-1') || '-' || ");
+				realSQL.append("COALESCE(").append(TableName).append(".Value,'-1') || '-' || ");
 			if (displayColumnSQL != null && displayColumnSQL.trim().length() > 0)
-				realSQL.append("NVL(").append(displayColumnSQL).append(",'-1')");
+				realSQL.append("COALESCE(").append(displayColumnSQL).append(",'-1')");
 			else {
 				if (showID) {
 					StringBuilder displayColumn = getDisplayColumn(language, TableName, list);
@@ -538,7 +538,7 @@ public class MLookupFactory
 					realSQL.append(displayColumn);
 				} else {
 					lookupDisplayColumn = DisplayColumn;
-					realSQL.append("NVL(").append(TableName).append(".").append(DisplayColumn).append(",'-1')");
+					realSQL.append("COALESCE(").append(TableName).append(".").append(DisplayColumn).append(",'-1')");
 				}
 			}
 			realSQL.append(",").append(TableName).append(".IsActive");
@@ -847,7 +847,7 @@ public class MLookupFactory
 			StringBuilder msg = new StringBuilder().append(TableName).append(".").append(ldc.ColumnName);
 			String columnSQL = ldc.IsVirtual ? ldc.ColumnSQL : msg.toString();
 
-			displayColumn.append("NVL(");
+			displayColumn.append("COALESCE(");
 
 			//  translated
 			if (ldc.IsTranslated && !Env.isBaseLanguage(language, TableName) && !ldc.IsVirtual

@@ -103,7 +103,7 @@ public class ImportPriceList extends SvrProcess
 		//	Delete Old Imported
 		if (m_deleteOldImported)
 		{
-			sql = new StringBuilder("DELETE I_PriceList "
+			sql = new StringBuilder("DELETE FROM I_PriceList "
 				+ "WHERE I_IsImported='Y'").append(clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.INFO)) log.info("Delete Old Impored =" + no);

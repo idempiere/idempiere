@@ -129,7 +129,7 @@ public class GeneratePeriodicCashPlanLines  extends SvrProcess {
     		throw new IllegalArgumentException ("Cash Plan does not exist");
     	
     	int insertNo = 0;
-    	int lineNo = DB.getSQLValue(get_TrxName(), "SELECT NVL(MAX(Line),0)+10 FROM C_CashPlanLine WHERE C_CashPlan_ID=?", p_C_CashPlan_ID);
+    	int lineNo = DB.getSQLValue(get_TrxName(), "SELECT COALESCE(MAX(Line),0)+10 FROM C_CashPlanLine WHERE C_CashPlan_ID=?", p_C_CashPlan_ID);
     	
     	for (int cnt = 0; cnt < p_Repetitions; cnt++) {
         	MCashPlanLine cpl = new MCashPlanLine(getCtx(), 0, get_TrxName());

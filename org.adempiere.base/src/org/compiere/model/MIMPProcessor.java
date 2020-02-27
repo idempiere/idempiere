@@ -128,7 +128,7 @@ public class MIMPProcessor
 	{
 		if (getKeepLogDays() < 1)
 			return 0;
-		StringBuilder sql = new StringBuilder("DELETE ").append(X_IMP_ProcessorLog.Table_Name).append(" ")
+		StringBuilder sql = new StringBuilder("DELETE FROM ").append(X_IMP_ProcessorLog.Table_Name).append(" ")
 			.append("WHERE ").append(X_IMP_ProcessorLog.COLUMNNAME_IMP_Processor_ID).append("=").append(getIMP_Processor_ID()) 
 			.append(" AND (Created+").append(getKeepLogDays()).append(") < SysDate");
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());

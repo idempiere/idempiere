@@ -46,7 +46,7 @@ Copyright (C) 2007 Ashley G Ramdass.
 			id.zk.Extend = zk.$extends(zk.Object, {}, {
 				fakeOnchange: function (wgt) {
 					// just sent fake event when control is textfield and value is not yet sync to server
-					if (wgt.$instanceof(zul.inp.Textbox) && wgt.$n().value != wgt.getText())
+					if ((wgt.$instanceof(zul.inp.Textbox) || wgt.$instanceof(zul.inp.Decimalbox)) && wgt.$n().value != wgt.getText())
 						zAu.send(new zk.Event(zk.Widget.$(wgt), 'onChange',{"value":wgt.$n().value}));
 
 					else if (zk.$import("ckez.CKeditor") != undefined && wgt.$instanceof(ckez.CKeditor)){//https://www.zkoss.org/javadoc/latest/jsdoc/_global_/zk.html#$import(_global_.String)
@@ -145,7 +145,8 @@ Copyright (C) 2007 Ashley G Ramdass.
 					
 				this.$bind_(dt, skipper, after);
 				
-				if (this.getType () != "password"){
+				var txtid = this.getId()
+				if (txtid != "txtUserId" && txtid != "txtPassword" ){
 					return;
 				}
 				
@@ -159,7 +160,8 @@ Copyright (C) 2007 Ashley G Ramdass.
 				
 				this.$unbind_(dt, skipper);
 				
-				if (this.getType () != "password"){
+				var txtid = this.getId()
+				if (txtid != "txtUserId" && txtid != "txtPassword" ){
 					return;
 				}
 				
