@@ -177,10 +177,9 @@ public class ImageFileStorageImpl implements IImageStore {
 				}
 			}
 			
-			String ext = getExtension(image);
 			// write to path
 			msgfile = new StringBuilder().append(imagePathRoot).append(File.separator)
-					.append(image.getImageStoragePath()).append(image.get_ID()).append(ext);
+					.append(image.getImageStoragePath()).append(image.get_ID());
 			final File destFile = new File(msgfile.toString());
 
 			out = new BufferedOutputStream(new FileOutputStream(destFile));
@@ -194,7 +193,7 @@ public class ImageFileStorageImpl implements IImageStore {
 			document.appendChild(root);
 			document.setXmlStandalone(true);
 			final Element entry = document.createElement("entry");
-			StringBuilder msgsat = new StringBuilder(IMAGE_FOLDER_PLACEHOLDER).append(image.getImageStoragePath()).append(image.get_ID()).append(ext);
+			StringBuilder msgsat = new StringBuilder(IMAGE_FOLDER_PLACEHOLDER).append(image.getImageStoragePath()).append(image.get_ID());
 			entry.setAttribute("file", msgsat.toString());
 			root.appendChild(entry);
 			final Source source = new DOMSource(document);
@@ -239,9 +238,8 @@ public class ImageFileStorageImpl implements IImageStore {
 		if ("".equals(imagePathRoot)) {
 			throw new IllegalArgumentException("no image path defined");
 		}
-		String ext = getExtension(image);
 		StringBuilder msgfile = new StringBuilder().append(imagePathRoot)
-				.append(image.getImageStoragePath()).append(image.get_ID()).append(ext);
+				.append(image.getImageStoragePath()).append(image.getAD_Image_ID());
 		
 		File file=new File(msgfile.toString());
 		if (file !=null && file.exists()) {
@@ -251,15 +249,6 @@ public class ImageFileStorageImpl implements IImageStore {
 			}
 		}
 		return true;
-	}
-
-	private String getExtension(MImage image) {
-		String name = image.getName();
-		String ext = "";
-		if (name.lastIndexOf(".") > 0) {
-			ext = name.substring(name.lastIndexOf("."));
-		}
-		return ext;
 	}
 
 	@Override

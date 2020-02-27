@@ -44,11 +44,16 @@ public class ImageDBStorageImpl implements IImageStore {
 
 		byte[] inflatedData = null;
 		try {
-			ByteArrayInputStream in = new ByteArrayInputStream(deflatedData);
-			ZipInputStream zip = new ZipInputStream(in);
-			ZipEntry entry = zip.getNextEntry();
-			if (entry != null) // just one entry
+			ZipInputStream zip = null;
+			ZipEntry entry = null;
+			if (MSysConfig.getBooleanValue(MSysConfig.IMAGE_DB_STORAGE_SAVE_AS_ZIP, false)) {
+				ByteArrayInputStream in = new ByteArrayInputStream(deflatedData);
+				zip = new ZipInputStream(in);
+				entry = zip.getNextEntry();
+			}
+			if (entry != null)
 			{
+				// just one entry per zip
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				byte[] buffer = new byte[2048];
 				int length = zip.read(buffer);
@@ -62,7 +67,7 @@ public class ImageDBStorageImpl implements IImageStore {
 						+ "(" + entry.getSize() + ") "
 						+ (entry.getCompressedSize() * 100 / entry.getSize()) + "%");
 			} else {
-				//not zip stream, legacy data
+				//not zip stream, legacy data, or saving as raw
 				inflatedData = deflatedData;
 			}
 		} catch (Exception e) {
@@ -73,36 +78,39 @@ public class ImageDBStorageImpl implements IImageStore {
 	}
 
 	@Override
-	public void save(MImage image, MStorageProvider prov,byte[] inflatedData) {
+	public void save(MImage image, MStorageProvider prov, byte[] inflatedData) {
 		if (inflatedData == null || inflatedData.length == 0) {
 			image.setByteData(null);
 			return;
 		}
-		
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		ZipOutputStream zip = new ZipOutputStream(out);
-		zip.setMethod(ZipOutputStream.DEFLATED);
-		zip.setLevel(Deflater.BEST_COMPRESSION);
-		zip.setComment("idempiere");
-		//
 		byte[] deflatedData = null;
-		try {
-			ZipEntry entry = new ZipEntry("IdempiereImage");
-			entry.setTime(System.currentTimeMillis());
-			entry.setMethod(ZipEntry.DEFLATED);
-			zip.putNextEntry(entry);
-			zip.write(inflatedData, 0, inflatedData.length);
-			zip.closeEntry();
-			if (log.isLoggable(Level.FINE)) log.fine(entry.getCompressedSize() + " (" + entry.getSize() + ") "
-					+ (entry.getCompressedSize() * 100 / entry.getSize()) + "%");
+		if (MSysConfig.getBooleanValue(MSysConfig.IMAGE_DB_STORAGE_SAVE_AS_ZIP, false)) {
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			ZipOutputStream zip = new ZipOutputStream(out);
+			zip.setMethod(ZipOutputStream.DEFLATED);
+			zip.setLevel(Deflater.BEST_COMPRESSION);
+			zip.setComment("idempiere");
 			//
-			// zip.finish();
-			zip.close();
-			deflatedData = out.toByteArray();
-			if (log.isLoggable(Level.FINE)) log.fine("Length=" + inflatedData.length);
-		} catch (Exception e) {
-			log.log(Level.SEVERE, "saveLOBData", e);
-			deflatedData = null;
+			try {
+				ZipEntry entry = new ZipEntry(image.getName());
+				entry.setTime(System.currentTimeMillis());
+				entry.setMethod(ZipEntry.DEFLATED);
+				zip.putNextEntry(entry);
+				zip.write(inflatedData, 0, inflatedData.length);
+				zip.closeEntry();
+				if (log.isLoggable(Level.FINE)) log.fine(entry.getCompressedSize() + " (" + entry.getSize() + ") "
+						+ (entry.getCompressedSize() * 100 / entry.getSize()) + "%");
+				//
+				// zip.finish();
+				zip.close();
+				deflatedData = out.toByteArray();
+				if (log.isLoggable(Level.FINE)) log.fine("Length=" + inflatedData.length);
+			} catch (Exception e) {
+				log.log(Level.SEVERE, "saveLOBData", e);
+				deflatedData = null;
+			}
+		} else {
+			deflatedData = inflatedData;
 		}
 		image.setByteData(deflatedData);
 	}

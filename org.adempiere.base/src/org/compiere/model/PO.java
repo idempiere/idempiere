@@ -110,7 +110,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1743619574547406959L;
+	private static final long serialVersionUID = -1330388218446118451L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -3504,6 +3504,10 @@ public abstract class PO
 			//	Reset
 			if (success)
 			{
+				if (!postDelete()) {
+					log.warning("postDelete failed");
+				}
+
 				//osgi event handler
 				Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this);
 				EventManager.getInstance().postEvent(event);
@@ -3603,6 +3607,14 @@ public abstract class PO
 		return success;
 	} 	//	afterDelete
 
+	/**
+	 * 	Executed after the Delete operation is committed in the database.
+	 *	@return true if post delete is a success
+	 */
+	protected boolean postDelete()
+	{
+		return true;
+	}
 
 	/**
 	 * 	Insert (missing) Translation Records

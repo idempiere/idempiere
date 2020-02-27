@@ -57,7 +57,7 @@ public class MAttachment extends X_AD_Attachment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8261865873158774665L;
+	private static final long serialVersionUID = 6596285414376249694L;
 
 	/**
 	 * 
@@ -503,27 +503,19 @@ public class MAttachment extends X_AD_Attachment
 	}	//	beforeSave
 
 	/**
-	 * 	Executed before Delete operation.
-	 *	@return true if record can be deleted
-	 */
-	protected boolean beforeDelete ()
-	{
-		return deleteLOBData();
-	}
-	
-	/**
 	 * 	Delete Entry Data in Zip File format
 	 *	@return true if saved
 	 */
-	private boolean deleteLOBData()
+	@Override
+	protected boolean postDelete()
 	{
 		if (m_items == null)
 			loadLOBData();
 		IAttachmentStore prov = provider.getAttachmentStore();
 		if (prov != null)
 			return prov.delete(this,provider);
-		return false;
-	} 	//	beforeDelete
+		return true;
+	} 	//	postDelete
 	
 	/**************************************************************************
 	 * 	Test

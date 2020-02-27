@@ -329,8 +329,8 @@ public class MImage extends X_AD_Image
 	}	//	beforeSave
 
 	public String getImageStoragePath() {
-		StringBuilder path = new StringBuilder().append(this.getAD_Client_ID()).append(File.separator).append(this.getAD_Org_ID())
-				.append(File.separator);
+		StringBuilder path = new StringBuilder("AD_Image").append(File.separator)
+				.append(this.getAD_Client_ID()).append(File.separator);
 		return path.toString();
 	}
 	
@@ -354,18 +354,15 @@ public class MImage extends X_AD_Image
 	public void setByteData(byte[] BinaryData){
 		super.setBinaryData(BinaryData);
 	}
-	
+
 	@Override
-	protected boolean afterDelete (boolean success) {
-		if (success) {
-			IImageStore prov = provider.getImageStore();
-			if (prov != null)
-				return prov.delete(this,provider);
-		}
-		return success;
-		
+	protected boolean postDelete() {
+		IImageStore prov = provider.getImageStore();
+		if (prov != null)
+			return prov.delete(this,provider);
+		return true;
 	}
-	
+
 	@Override
 	protected void saveNew_afterSetID()
 	{

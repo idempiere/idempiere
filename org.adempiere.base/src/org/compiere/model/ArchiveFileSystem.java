@@ -241,7 +241,7 @@ public class ArchiveFileSystem implements IArchiveStore {
 			throw new IllegalArgumentException("no attachmentPath defined");
 		}
 		StringBuilder msgfile = new StringBuilder().append(archivePathRoot)
-				.append(archive.getArchivePathSnippet()).append(archive.get_ID()).append(".pdf");
+				.append(archive.getArchivePathSnippet()).append(archive.getAD_Archive_ID()).append(".pdf");
 		
 		File file=new File(msgfile.toString());
 		if (file !=null && file.exists()) {

@@ -39,7 +39,7 @@ public class MArchive extends X_AD_Archive {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3217541537768473865L;
+	private static final long serialVersionUID = -9116541441191978777L;
 
 	/**
 	 * Get Archives
@@ -269,7 +269,8 @@ public class MArchive extends X_AD_Archive {
 		return true;
 	} // beforeSave
 	
-	protected boolean beforeDelete ()
+	@Override
+	protected boolean postDelete()
 	{
 		IArchiveStore prov = provider.getArchiveStore();
 		if (prov != null)
