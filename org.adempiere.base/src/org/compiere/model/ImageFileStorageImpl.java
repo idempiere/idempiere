@@ -44,29 +44,26 @@ import org.xml.sax.SAXException;
 import org.w3c.dom.Element;
 
 /**
- * @author juliana
+ * @author hengsin
  *
  */
-public class ArchiveFileSystem implements IArchiveStore {
+public class ImageFileStorageImpl implements IImageStore {
 	
-	private  String ARCHIVE_FOLDER_PLACEHOLDER = "%ARCHIVE_FOLDER%";
+	private  String IMAGE_FOLDER_PLACEHOLDER = "%IMAGE_FOLDER%";
 	
-	private static final CLogger log = CLogger.getCLogger(ArchiveFileSystem.class);
+	private final CLogger log = CLogger.getCLogger(getClass());
+	
+	//temporary buffer when AD_Image_ID=0
+	private byte[] buffer = null;
 
-	//temporary buffer when AD_Archive_ID=0;
-	private byte[] buffer;
-
-	/* (non-Javadoc)
-	 * @see org.compiere.model.IArchiveStore#loadLOBData(org.compiere.model.MArchive, org.compiere.model.MStorageProvider)
-	 */
 	@Override
-	public byte[] loadLOBData(MArchive archive, MStorageProvider prov) {
-		String archivePathRoot = getArchivePathRoot(prov);
-		if ("".equals(archivePathRoot)) {
-			throw new IllegalArgumentException("no attachmentPath defined");
+	public byte[] load(MImage image, MStorageProvider prov) {
+		String imagePathRoot = getImagePathRoot(prov);
+		if ("".equals(imagePathRoot)) {
+			throw new IllegalArgumentException("no path defined");
 		}
 		buffer = null;
-		byte[] data = archive.getByteData();
+		byte[] data = image.getByteData();
 		if (data == null) {
 			return null;
 		}
@@ -78,48 +75,48 @@ public class ArchiveFileSystem implements IArchiveStore {
 			final Document document = builder.parse(new ByteArrayInputStream(data));
 			final NodeList entries = document.getElementsByTagName("entry");
 			if(entries.getLength()!=1){
-				log.severe("no archive entry found");
+				log.severe("no image entry found");
 			}
-				final Node entryNode = entries.item(0);
-				final NamedNodeMap attributes = entryNode.getAttributes();
-				final Node	 fileNode = attributes.getNamedItem("file");
-				if(fileNode==null ){
-					log.severe("no filename for entry");
-					return null;
+			final Node entryNode = entries.item(0);
+			final NamedNodeMap attributes = entryNode.getAttributes();
+			final Node	 fileNode = attributes.getNamedItem("file");
+			if(fileNode==null ){
+				log.severe("no filename for entry");
+				return null;
+			}
+			String filePath = fileNode.getNodeValue();
+			if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
+			if(filePath!=null){
+				filePath = filePath.replaceFirst(IMAGE_FOLDER_PLACEHOLDER, imagePathRoot.replaceAll("\\\\","\\\\\\\\"));
+				//just to be shure...
+				String replaceSeparator = File.separator;
+				if(!replaceSeparator.equals("/")){
+					replaceSeparator = "\\\\";
 				}
-				String filePath = fileNode.getNodeValue();
-				if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
-				if(filePath!=null){
-					filePath = filePath.replaceFirst(ARCHIVE_FOLDER_PLACEHOLDER, archivePathRoot.replaceAll("\\\\","\\\\\\\\"));
-					//just to be shure...
-					String replaceSeparator = File.separator;
-					if(!replaceSeparator.equals("/")){
-						replaceSeparator = "\\\\";
-					}
-					filePath = filePath.replaceAll("/", replaceSeparator);
-					filePath = filePath.replaceAll("\\\\", replaceSeparator);
+				filePath = filePath.replaceAll("/", replaceSeparator);
+				filePath = filePath.replaceAll("\\\\", replaceSeparator);
+			}
+			if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
+			final File file = new File(filePath);
+			if (file.exists()) {
+				// read files into byte[]
+				final byte[] dataEntry = new byte[(int) file.length()];
+				try {
+					final FileInputStream fileInputStream = new FileInputStream(file);
+					fileInputStream.read(dataEntry);
+					fileInputStream.close();
+				} catch (FileNotFoundException e) {
+					log.severe("File Not Found.");
+					e.printStackTrace();
+				} catch (IOException e1) {
+					log.severe("Error Reading The File.");
+					e1.printStackTrace();
 				}
-				if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
-				final File file = new File(filePath);
-				if (file.exists()) {
-					// read files into byte[]
-					final byte[] dataEntry = new byte[(int) file.length()];
-					try {
-						final FileInputStream fileInputStream = new FileInputStream(file);
-						fileInputStream.read(dataEntry);
-						fileInputStream.close();
-					} catch (FileNotFoundException e) {
-						log.severe("File Not Found.");
-						e.printStackTrace();
-					} catch (IOException e1) {
-						log.severe("Error Reading The File.");
-						e1.printStackTrace();
-					}
-					return dataEntry;
-				} else {
-					log.severe("file not found: " + file.getAbsolutePath());
-					return null;
-				}
+				return dataEntry;
+			} else {
+				log.severe("file not found: " + file.getAbsolutePath());
+				return null;
+			}
 
 		} catch (SAXException sxe) {
 			// Error generated during parsing)
@@ -143,45 +140,46 @@ public class ArchiveFileSystem implements IArchiveStore {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.compiere.model.IArchiveStore#save(org.compiere.model.MArchive, org.compiere.model.MStorageProvider)
-	 */
 	@Override
-	public void  save(MArchive archive, MStorageProvider prov,byte[] inflatedData) {		
+	public void  save(MImage image, MStorageProvider prov,byte[] inflatedData) {
 		if (inflatedData == null || inflatedData.length == 0) {
-			throw new IllegalArgumentException("InflatedData is NULL");
+			image.setByteData(null);
+			delete(image, prov);
+			return;
 		}
-		if(archive.get_ID()==0){
+		
+		if(image.get_ID()==0){
 			//set binary data otherwise save will fail
-			archive.setByteData(new byte[]{'0'});
+			image.setByteData(new byte[]{'0'});
 			buffer = inflatedData;
-		} else {		
-			write(archive, prov, inflatedData);			
+		} else {
+			write(image, prov, inflatedData);
 		}
+
 	}
 
-	private void write(MArchive archive, MStorageProvider prov,
-			byte[] inflatedData) {		
+	private void write(MImage image, MStorageProvider prov, byte[] inflatedData) {
 		BufferedOutputStream out = null;
 		try {
-			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();			
 			
-			String archivePathRoot = getArchivePathRoot(prov);
-			if ("".equals(archivePathRoot)) {
-				throw new IllegalArgumentException("no attachmentPath defined");
+			String imagePathRoot = getImagePathRoot(prov);
+			if ("".equals(imagePathRoot)) {
+				throw new IllegalArgumentException("no storage path defined");
 			}
 			// create destination folder
-			StringBuilder msgfile = new StringBuilder().append(archivePathRoot)
-					.append(archive.getArchivePathSnippet());
+			StringBuilder msgfile = new StringBuilder().append(imagePathRoot)
+					.append(image.getImageStoragePath());
 			final File destFolder = new File(msgfile.toString());
 			if (!destFolder.exists()) {
 				if (!destFolder.mkdirs()) {
 					log.warning("unable to create folder: " + destFolder.getPath());
 				}
 			}
-			// write to pdf
-			msgfile = new StringBuilder().append(archivePathRoot).append(File.separator)
-					.append(archive.getArchivePathSnippet()).append(archive.get_ID()).append(".pdf");
+			
+			// write to path
+			msgfile = new StringBuilder().append(imagePathRoot).append(File.separator)
+					.append(image.getImageStoragePath()).append(image.get_ID());
 			final File destFile = new File(msgfile.toString());
 
 			out = new BufferedOutputStream(new FileOutputStream(destFile));
@@ -191,11 +189,11 @@ public class ArchiveFileSystem implements IArchiveStore {
 			//create xml entry
 			final DocumentBuilder builder = factory.newDocumentBuilder();
 			final Document document = builder.newDocument();
-			final Element root = document.createElement("archive");
+			final Element root = document.createElement("image");
 			document.appendChild(root);
 			document.setXmlStandalone(true);
 			final Element entry = document.createElement("entry");
-			StringBuilder msgsat = new StringBuilder(ARCHIVE_FOLDER_PLACEHOLDER).append(archive.getArchivePathSnippet()).append(archive.get_ID()).append(".pdf");
+			StringBuilder msgsat = new StringBuilder(IMAGE_FOLDER_PLACEHOLDER).append(image.getImageStoragePath()).append(image.get_ID());
 			entry.setAttribute("file", msgsat.toString());
 			root.appendChild(entry);
 			final Source source = new DOMSource(document);
@@ -206,11 +204,11 @@ public class ArchiveFileSystem implements IArchiveStore {
 			final byte[] xmlData = bos.toByteArray();
 			if (log.isLoggable(Level.FINE)) log.fine(bos.toString());
 			//store xml in db
-			archive.setByteData(xmlData);
+			image.setByteData(xmlData);
 
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "saveLOBData", e);
-			archive.setByteData(null);
+			image.setByteData(null);
 			throw new RuntimeException(e);
 		} finally {
 			if(out != null){
@@ -221,27 +219,27 @@ public class ArchiveFileSystem implements IArchiveStore {
 		}
 	}
 
-	private String getArchivePathRoot(MStorageProvider prov) {
-		String archivePathRoot = prov.getFolder();
-		if (archivePathRoot == null)
-			archivePathRoot = "";
-		if (Util.isEmpty(archivePathRoot)) {
-			log.severe("no archivePath defined");
-		} else if (!archivePathRoot.endsWith(File.separator)){
-			archivePathRoot = archivePathRoot + File.separator;
-			log.fine(archivePathRoot);
+	private String getImagePathRoot(MStorageProvider prov) {
+		String imagePathRoot = prov.getFolder();
+		if (imagePathRoot == null)
+			imagePathRoot = "";
+		if (Util.isEmpty(imagePathRoot)) {
+			log.severe("no image Path defined");
+		} else if (!imagePathRoot.endsWith(File.separator)){
+			imagePathRoot = imagePathRoot + File.separator;
+			log.fine(imagePathRoot);
 		}
-		return archivePathRoot;
+		return imagePathRoot;
 	}
 
 	@Override
-	public boolean deleteArchive(MArchive archive, MStorageProvider prov) {
-		String archivePathRoot = getArchivePathRoot(prov);
-		if ("".equals(archivePathRoot)) {
-			throw new IllegalArgumentException("no attachmentPath defined");
+	public boolean delete(MImage image, MStorageProvider prov) {
+		String imagePathRoot = getImagePathRoot(prov);
+		if ("".equals(imagePathRoot)) {
+			throw new IllegalArgumentException("no image path defined");
 		}
-		StringBuilder msgfile = new StringBuilder().append(archivePathRoot)
-				.append(archive.getArchivePathSnippet()).append(archive.getAD_Archive_ID()).append(".pdf");
+		StringBuilder msgfile = new StringBuilder().append(imagePathRoot)
+				.append(image.getImageStoragePath()).append(image.getAD_Image_ID());
 		
 		File file=new File(msgfile.toString());
 		if (file !=null && file.exists()) {
@@ -259,11 +257,11 @@ public class ArchiveFileSystem implements IArchiveStore {
 	}
 
 	@Override
-	public void flush(MArchive archive, MStorageProvider prov) {
+	public void flush(MImage image, MStorageProvider prov) {
 		if (buffer != null && buffer.length > 0) {
-			write(archive, prov, buffer);
+			write(image, prov, buffer);
 			buffer = null;
-		}
+		}		
 	}
 
 }
