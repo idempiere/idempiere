@@ -178,6 +178,10 @@ public class WImageEditor extends WEditor
 						//
 						ValueChangeEvent vce = new ValueChangeEvent(WImageEditor.this, gridField.getColumnName(), oldValue, newValue);
 						fireValueChange(vce);
+						if (oldValue == null && newValue != null && getGridField() != null && getGridField().getGridTab() != null) {
+							// save automatically when creating a new image
+							getGridField().getGridTab().dataSave(false);
+						}
 					}
 					
 				}

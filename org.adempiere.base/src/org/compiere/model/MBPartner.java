@@ -47,7 +47,7 @@ public class MBPartner extends X_C_BPartner
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -255154524310324997L;
+	private static final long serialVersionUID = 5534148976588041343L;
 
 	/**
 	 * 	Get Empty Template Business Partner
@@ -1005,5 +1005,17 @@ public class MBPartner extends X_C_BPartner
 			delete_Tree(MTree_Base.TREETYPE_BPartner);
 		return success;
 	}	//	afterDelete
+
+	@Override
+	protected boolean postDelete() {
+		if (getLogo_ID() > 0) {
+			MImage img = new MImage(getCtx(), getLogo_ID(), get_TrxName());
+			if (!img.delete(true)) {
+				log.warning("Associated image could not be deleted for bpartner - AD_Image_ID=" + getLogo_ID());
+				return false;
+			}
+		}
+		return true;
+	}
 
 }	//	MBPartner

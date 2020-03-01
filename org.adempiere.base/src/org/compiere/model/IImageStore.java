@@ -13,15 +13,15 @@
  *****************************************************************************/
 package org.compiere.model;
 
-public interface IArchiveStore {
+public interface IImageStore {
 	
-	public byte[] loadLOBData(MArchive archive,MStorageProvider prov);
+	public byte[] load(MImage image, MStorageProvider prov);
 
-	public void save(MArchive archive, MStorageProvider prov,byte[] inflatedData);
+	public void save(MImage image, MStorageProvider prov, byte[] inflatedData);
 	
-	public boolean deleteArchive(MArchive archive, MStorageProvider prov);
+	public boolean delete(MImage image, MStorageProvider prov);
 
 	public boolean isPendingFlush();
 	
-	public void flush(MArchive archive,MStorageProvider prov);
+	public void flush(MImage image,MStorageProvider prov);
 }
