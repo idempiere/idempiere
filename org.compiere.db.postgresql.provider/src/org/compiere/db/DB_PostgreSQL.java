@@ -73,8 +73,21 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class DB_PostgreSQL implements AdempiereDatabase
 {
 
-    private static final String POOL_PROPERTIES = "pool.properties";
+    private static final String P_POSTGRE_SQL_NATIVE = "PostgreSQLNative";
 
+	private static final String POOL_PROPERTIES = "pool.properties";
+
+	private static Boolean sysNative = null;
+	
+	static
+	{
+		String property = System.getProperty(P_POSTGRE_SQL_NATIVE);
+		if (!Util.isEmpty(property, true) ) 
+		{
+			sysNative = "Y".equalsIgnoreCase(property);
+		}
+	}
+	
 	public Convert getConvert() {
 		return m_convert;
 	}
@@ -116,7 +129,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
     private static int              m_maxbusyconnections = 0;
 
-    public static final String NATIVE_MARKER = "NATIVE_"+Database.DB_POSTGRESQL+"_KEYWORK";
+    private static final String NATIVE_MARKER = "NATIVE_"+Database.DB_POSTGRESQL+"_KEYWORK";
 
     private CCache<String, String> convertCache = new CCache<String, String>(null, "DB_PostgreSQL_Convert_Cache", 1000, 60, false);
 
@@ -331,14 +344,17 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	 */
 	public String convertStatement (String oraStatement)
 	{
-		String cache = convertCache.get(oraStatement);
-		if (cache != null) {
-			Convert.logMigrationScript(oraStatement, cache);
-			if ("true".equals(System.getProperty("org.idempiere.db.postgresql.debug"))) {
-				// log.warning("Oracle -> " + oraStatement);
-				log.warning("Pgsql  -> " + cache);
+		if (!isNativeMode())
+		{
+			String cache = convertCache.get(oraStatement);
+			if (cache != null) {
+				Convert.logMigrationScript(oraStatement, cache);
+				if ("true".equals(System.getProperty("org.idempiere.db.postgresql.debug"))) {
+					// log.warning("Oracle -> " + oraStatement);
+					log.warning("Pgsql  -> " + cache);
+				}
+				return cache;
 			}
-			return cache;
 		}
 
 		String retValue[] = m_convert.convert(oraStatement);
@@ -359,7 +375,8 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			}
 			//end vpj-cd 24/06/2005 e-evolution
 
-		convertCache.put(oraStatement, retValue[0]);
+		if (!isNativeMode())
+			convertCache.put(oraStatement, retValue[0]);
 
 		//  Diagnostics (show changed, but not if AD_Error
 		if (log.isLoggable(Level.FINE))
@@ -372,7 +389,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		}
 		    //end vpj-cd 24/06/2005 e-evolution
 		//
-    	Convert.logMigrationScript(oraStatement, retValue[0]);
+		Convert.logMigrationScript(oraStatement, retValue[0]);
 		return retValue[0];
 	}   //  convertStatement
 
@@ -1171,4 +1188,43 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
 		return builder.toString();
 	}
+	
+	@Override
+	public boolean isNativeMode() {
+		return isUseNativeDialect();
+	}
+	
+	/**
+	 * @return true if it is using native dialect
+	 */
+	public final static boolean isUseNativeDialect() {
+		if (Convert.isLogMigrationScript())
+			return false;
+		else if (sysNative != null)
+			return sysNative;
+		else
+			return Ini.isPropertyBool(P_POSTGRE_SQL_NATIVE);
+	}
+	
+	/**
+	 * 
+	 * @param keyword
+	 * @return if not using native dialect, return native_marker + keyword
+	 */
+	public final static String markNativeKeyword(String keyword) {
+		if (isUseNativeDialect())
+			return keyword;
+		else
+			return NATIVE_MARKER + keyword;
+	}
+	
+	/**
+	 * 
+	 * @param statement
+	 * @return statement after the removal of native keyword marker
+	 */
+	public final static String removeNativeKeyworkMarker(String statement) {
+		return statement.replace(DB_PostgreSQL.NATIVE_MARKER, "");
+	}
+
 }   //  DB_PostgreSQL

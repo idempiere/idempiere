@@ -352,5 +352,13 @@ public interface AdempiereDatabase
 	 * @return subset sql clause
 	 */
 	public String intersectClauseForCSV(String columnName, String csv);
+	
+	/**
+	 * 
+	 * @return true if using native dialect, false if using oracle dialect
+	 */
+	public default boolean isNativeMode() {
+		return true;
+	}
 }   //  AdempiereDatabase
 
