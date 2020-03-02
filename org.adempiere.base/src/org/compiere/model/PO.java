@@ -1323,7 +1323,12 @@ public abstract class PO
 		{
 			if (i != 0)
 				sql.append(",");
-			sql.append(p_info.getColumnSQL(i));	//	Normal and Virtual Column
+			String columnSQL = p_info.getColumnSQL(i);
+			if (!p_info.isVirtualColumn(i))
+			{
+				columnSQL = DB.getDatabase().quoteColumnName(columnSQL);
+			}
+			sql.append(columnSQL);	//	Normal and Virtual Column
 		}
 		sql.append(" FROM ").append(p_info.getTableName())
 			.append(" WHERE ")
@@ -2545,7 +2550,7 @@ public abstract class PO
 			if (changes)
 				sql.append(", ");
 			changes = true;
-			sql.append(columnName).append("=");
+			sql.append(DB.getDatabase().quoteColumnName(columnName)).append("=");
 
 			if (withValues)
 			{
@@ -2888,7 +2893,7 @@ public abstract class PO
 			}
 			else
 				doComma = true;
-			sqlInsert.append(p_info.getColumnName(i));
+			sqlInsert.append(DB.getDatabase().quoteColumnName(p_info.getColumnName(i)));
 			//
 			//  Based on class of definition, not class of value
 			Class<?> c = p_info.getColumnClass(i);

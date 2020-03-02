@@ -354,6 +354,15 @@ public interface AdempiereDatabase
 	public String intersectClauseForCSV(String columnName, String csv);
 	
 	/**
+	 * Quote column name if necessary (usually to avoid conflict with reserved keywords)
+	 * @param columnName
+	 * @return columnName or quoted columnName
+	 */
+	public default String quoteColumnName(String columnName) {
+		return columnName;
+	}
+	
+	/**
 	 * 
 	 * @return true if using native dialect, false if using oracle dialect
 	 */

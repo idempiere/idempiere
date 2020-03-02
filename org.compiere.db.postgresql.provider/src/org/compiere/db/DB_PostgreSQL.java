@@ -35,6 +35,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 import java.util.logging.Level;
@@ -135,6 +137,8 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
     private Random rand = new Random();
 
+    private static final List<String> reservedKeywords = Arrays.asList("limit","action","old","new");
+    
 	/**
 	 *  Get Database Name
 	 *  @return database short name
@@ -1173,6 +1177,22 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			.append("',',')");
 
 		return builder.toString();
+	}
+
+	@Override
+	public String quoteColumnName(String columnName) {
+		if (!isNativeMode()) {
+			return columnName;
+		}
+		
+		String lowerCase = columnName.toLowerCase();
+		if (reservedKeywords.contains(lowerCase)) {
+			StringBuilder sql = new StringBuilder("\"");
+			sql.append(lowerCase).append("\"");
+			return sql.toString();
+		} else {
+			return columnName;
+		}
 	}
 
 	@Override
