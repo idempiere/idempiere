@@ -642,7 +642,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			if (where.length() > 0)
 				where.append(" AND ");
 			where.append("Created >= ");
-			where.append("SysDate-").append(m_vo.onlyCurrentDays);
+			where.append("getDate()-").append(m_vo.onlyCurrentDays);
 		}
 		//	Detail Query
 		if (isDetail())

@@ -3896,8 +3896,8 @@ public abstract class PO
 			sb.append(",").append(PO.getUUIDColumnName(acctTable));
 		//	..	SELECT
 		sb.append(") SELECT ").append(get_ID())
-			.append(", p.C_AcctSchema_ID, p.AD_Client_ID,0,'Y', SysDate,")
-			.append(getUpdatedBy()).append(",SysDate,").append(getUpdatedBy());
+			.append(", p.C_AcctSchema_ID, p.AD_Client_ID,0,'Y', getDate(),")
+			.append(getUpdatedBy()).append(",getDate(),").append(getUpdatedBy());
 		for (int i = 0; i < s_acctColumns.size(); i++)
 			sb.append(",p.").append(s_acctColumns.get(i));
 		//uuid column
@@ -3976,7 +3976,7 @@ public abstract class PO
 			sb.append(", ").append(PO.getUUIDColumnName(tableName)).append(") ");
 		else
 			sb.append(") ");
-		sb.append("SELECT t.AD_Client_ID, 0, 'Y', SysDate, "+getUpdatedBy()+", SysDate, "+getUpdatedBy()+","
+		sb.append("SELECT t.AD_Client_ID, 0, 'Y', getDate(), "+getUpdatedBy()+", getDate(), "+getUpdatedBy()+","
 				+ "t.AD_Tree_ID, ").append(get_ID()).append(", 0, 999");
 		if (uuidColumnId > 0 && uuidFunction)
 			sb.append(", Generate_UUID() ");

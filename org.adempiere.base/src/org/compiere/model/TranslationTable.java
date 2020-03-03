@@ -219,7 +219,7 @@ public class TranslationTable
 		//
 		StringBuilder sb = new StringBuilder("UPDATE ");
 		sb.append(m_trlTableName)
-			.append(" SET IsTranslated='N',Updated=SysDate WHERE ")
+			.append(" SET IsTranslated='N',Updated=getDate() WHERE ")
 			.append(m_baseTableName).append("_ID=").append(po.get_ID());
 		int no = DB.executeUpdate(sb.toString(), po.get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine(m_trlTableName + ": ID=" + po.get_ID() + " #" + no);

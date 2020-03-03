@@ -810,7 +810,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			+ "       AND n.Action = 'C' "
 			+ "       AND a.WFState = 'CC' "
 			+ "       AND a.UpdatedBy = " + userid
-			+ "       AND a.Updated > Trunc(SYSDATE) - " + (days-1)
+			+ "       AND a.Updated > Trunc(getDate()) - " + (days-1)
 			+ checkSameSO
 			+ checkSameReceipt
 			+ checkDocAction;

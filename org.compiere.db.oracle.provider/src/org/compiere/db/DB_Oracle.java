@@ -445,8 +445,8 @@ public class DB_Oracle implements AdempiereDatabase
         if (time == null)
         {
             if (dayOnly)
-                return "TRUNC(SysDate)";
-            return "SysDate";
+                return "TRUNC(getDate())";
+            return "getDate()";
         }
 
         StringBuilder dateString = new StringBuilder("TO_DATE('");
@@ -970,7 +970,7 @@ public class DB_Oracle implements AdempiereDatabase
                 case DisplayType.Time:
                     retValue = "DATE";
                     if (defaultValue)
-                        retValue += " DEFAULT SYSDATE";
+                        retValue += " DEFAULT getDate()";
                     break;
 
                 //  Number(10)

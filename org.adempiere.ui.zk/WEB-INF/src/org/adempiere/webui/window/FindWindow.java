@@ -2267,7 +2267,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	{
     		StringBuilder where = new StringBuilder(m_tableName);
     		where.append(".Created >= ");
-    		where.append("SysDate-").append(getHistoryDays(selectedHistoryValue));
+    		where.append("getDate()-").append(getHistoryDays(selectedHistoryValue));
     		m_query.addRestriction(where.toString());
     	}
     }

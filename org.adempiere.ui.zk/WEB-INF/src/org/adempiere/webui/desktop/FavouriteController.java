@@ -95,7 +95,7 @@ public class FavouriteController {
 				+ "IsActive,Created,CreatedBy,Updated,UpdatedBy)VALUES (")
 				.append(m_AD_Tree_ID).append(",").append(AD_User_ID).append(",").append(Node_ID).append(",")
 				.append(AD_Client_ID).append(",").append(AD_Org_ID).append(",")
-				.append("'Y',SysDate,").append(AD_User_ID).append(",SysDate,").append(AD_User_ID).append(")");
+				.append("'Y',getDate(),").append(AD_User_ID).append(",getDate(),").append(AD_User_ID).append(")");
 			//	if already exist, will result in ORA-00001: unique constraint (ADEMPIERE.AD_TREEBAR_KEY)
 		else
 			sql.append("DELETE FROM AD_TreeBar WHERE AD_Tree_ID=").append(m_AD_Tree_ID)

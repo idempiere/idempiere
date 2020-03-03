@@ -42,7 +42,7 @@ public class DBReadReplica {
 	private static String m_user = null;
 	private static String m_pass = null;
 	final private static String sqlValidateSync = "SELECT lastupdate FROM dbreplicasyncverifier";
-	final private static String sqlUpdateSync = "UPDATE dbreplicasyncverifier SET lastupdate=SYSDATE";
+	final private static String sqlUpdateSync = "UPDATE dbreplicasyncverifier SET lastupdate=getDate()";
 	final private static String sqlValidateDBAddress = "SELECT DBAddress FROM AD_System";
 	private volatile static int shift = 0; // for load balancing between different replicas
 

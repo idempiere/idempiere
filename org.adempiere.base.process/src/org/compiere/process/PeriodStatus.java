@@ -93,7 +93,7 @@ public class PeriodStatus extends SvrProcess
 		else
 			return "-";
 		//
-		sql.append("', PeriodAction='N', Updated=SysDate,UpdatedBy=").append(getAD_User_ID());
+		sql.append("', PeriodAction='N', Updated=getDate(),UpdatedBy=").append(getAD_User_ID());
 		//	WHERE
 		sql.append(" WHERE C_Period_ID=").append(period.getC_Period_ID())
 			.append(" AND PeriodStatus<>'P'")

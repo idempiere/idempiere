@@ -144,7 +144,7 @@ public class MScheduler extends X_AD_Scheduler
 			return 0;
 		String sql = "DELETE FROM AD_SchedulerLog "
 			+ "WHERE AD_Scheduler_ID=" + getAD_Scheduler_ID()
-			+ " AND (Created+" + getKeepLogDays() + ") < SysDate";
+			+ " AND (Created+" + getKeepLogDays() + ") < getDate()";
 		int no = DB.executeUpdateEx(sql, get_TrxName());
 		return no;
 	}	//	deleteLog
