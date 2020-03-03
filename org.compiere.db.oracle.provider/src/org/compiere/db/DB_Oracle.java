@@ -46,6 +46,8 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
 import org.compiere.dbPort.Convert;
 import org.compiere.dbPort.Convert_Oracle;
+import org.compiere.model.MColumn;
+import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -909,106 +911,12 @@ public class DB_Oracle implements AdempiereDatabase
      *  @param precision precision
      *  @param defaultValue if true adds default value
      *  @return data type
+     *  @deprecated
      */
     public String getDataType (String columnName, int displayType, int precision,
         boolean defaultValue)
     {
-        String retValue = null;
-        //handle special case, bug [ 1618423 ]
-        if (columnName != null)
-        {
-            if (displayType == DisplayType.Button
-                && columnName.endsWith("_ID"))
-            {
-                retValue = "NUMBER(10)";
-            }
-        }
-        if (retValue == null)
-        {
-            switch (displayType)
-            {
-                //  IDs
-                case DisplayType.Account:
-                case DisplayType.Assignment:
-                case DisplayType.ID:
-                case DisplayType.Location:
-                case DisplayType.Locator:
-                case DisplayType.PAttribute:
-                case DisplayType.Search:
-                case DisplayType.Table:
-                case DisplayType.TableDir:
-                case DisplayType.Image:
-                case DisplayType.Chart:
-                    retValue = "NUMBER(10)";
-                    break;
-
-                // Dynamic Precision
-                case DisplayType.Amount:
-                    retValue = "NUMBER";
-                    if (defaultValue)
-                        retValue += " DEFAULT 0";
-                    break;
-
-                case DisplayType.Binary:
-                    retValue = "BLOB";
-                    break;
-
-                case DisplayType.Button:
-                    retValue = "CHAR(1)";
-                    break;
-
-                // Number Dynamic Precision
-                case DisplayType.CostPrice:
-                    retValue = "NUMBER";
-                    if (defaultValue)
-                        retValue += " DEFAULT 0";
-                    break;
-
-                //  Date
-                case DisplayType.Date:
-                case DisplayType.DateTime:
-                case DisplayType.Time:
-                    retValue = "DATE";
-                    if (defaultValue)
-                        retValue += " DEFAULT getDate()";
-                    break;
-
-                //  Number(10)
-                case DisplayType.Integer:
-                    retValue = "NUMBER(10)";
-                    break;
-
-                case DisplayType.List:
-                    retValue = "CHAR(" + precision + ")";
-                    break;
-
-                //  NVARCHAR
-                case DisplayType.Color:
-                case DisplayType.Memo:
-                case DisplayType.String:
-                case DisplayType.Text:
-                    retValue = "NVARCHAR(" + precision + ")";
-                    break;
-
-                case DisplayType.TextLong:
-                    retValue = "CLOB";
-                    break;
-
-                //  Dyn Prec
-                case DisplayType.Quantity:
-                    retValue = "NUMBER";
-                    break;
-
-                case DisplayType.YesNo:
-                    retValue = "CHAR(1)";
-                    break;
-
-                default:
-                    log.severe("Unknown: " + displayType);
-                    break;
-            }
-        }
-        return retValue;
+    	return DisplayType.getSQLDataType(displayType, columnName, precision);
     }   //  getDataType
 
 
@@ -1446,5 +1354,168 @@ public class DB_Oracle implements AdempiereDatabase
 			.append("') IS NOT EMPTY");
 		
 		return builder.toString();
-	}	
+	}
+
+	@Override
+	public String getNumericDataType() {
+		return "NUMBER";
+	}
+
+	@Override
+	public String getCharacterDataType() {
+		return "CHAR";
+	}
+
+	@Override
+	public String getVarcharDataType() {
+		return "VARCHAR2";
+	}
+
+	@Override
+	public String getBlobDataType() {
+		return "BLOB";
+	}
+
+	@Override
+	public String getClobDataType() {
+		return "CLOB";
+	}
+
+	@Override
+	public String getTimestampDataType() {
+		return "DATE";
+	}
+
+	@Override
+	public String getSQLDDL(MColumn column) {				
+		StringBuilder sql = new StringBuilder ().append(column.getColumnName())
+			.append(" ").append(column.getSQLDataType());
+
+		//	Default
+		String defaultValue = column.getDefaultValue();
+		if (defaultValue != null 
+				&& defaultValue.length() > 0
+				&& defaultValue.indexOf('@') == -1		//	no variables
+				&& ( ! (DisplayType.isID(column.getAD_Reference_ID()) && defaultValue.equals("-1") ) ) )  // not for ID's with default -1
+		{
+			if (DisplayType.isText(column.getAD_Reference_ID()) 
+					|| column.getAD_Reference_ID() == DisplayType.List
+					|| column.getAD_Reference_ID() == DisplayType.YesNo
+					// Two special columns: Defined as Table but DB Type is String 
+					|| column.getColumnName().equals("EntityType") || column.getColumnName().equals("AD_Language")
+					|| (column.getAD_Reference_ID() == DisplayType.Button &&
+							!(column.getColumnName().endsWith("_ID"))))
+			{
+				if (!defaultValue.startsWith("'") && !defaultValue.endsWith("'"))
+					defaultValue = DB.TO_STRING(defaultValue);
+			}
+			sql.append(" DEFAULT ").append(defaultValue);
+		}
+		else
+		{
+			if (! column.isMandatory())
+				sql.append(" DEFAULT NULL ");
+			defaultValue = null;
+		}
+
+		//	Inline Constraint
+		if (column.getAD_Reference_ID() == DisplayType.YesNo)
+			sql.append(" CHECK (").append(column.getColumnName()).append(" IN ('Y','N'))");
+
+		//	Null
+		if (column.isMandatory())
+			sql.append(" NOT NULL");
+		return sql.toString();
+	
+	}
+	
+	/**
+	 * 	Get SQL Add command
+	 *	@param table table
+	 *	@return sql
+	 */
+	@Override
+	public String getSQLAdd (MTable table, MColumn column)
+	{
+		StringBuilder sql = new StringBuilder ("ALTER TABLE ")
+			.append(table.getTableName())
+			.append(" ADD ").append(column.getSQLDDL());
+		String constraint = column.getConstraint(table.getTableName());
+		if (constraint != null && constraint.length() > 0) {
+			sql.append(DB.SQLSTATEMENT_SEPARATOR).append("ALTER TABLE ")
+			.append(table.getTableName())
+			.append(" ADD ").append(constraint);
+		}
+		return sql.toString();
+	}	//	getSQLAdd
+	
+	/**
+	 * 	Get SQL Modify command
+	 *	@param table table
+	 *	@param setNullOption generate null / not null statement
+	 *	@return sql separated by ;
+	 */
+	public String getSQLModify (MTable table, MColumn column, boolean setNullOption)
+	{
+		StringBuilder sql = new StringBuilder();
+		StringBuilder sqlBase = new StringBuilder ("ALTER TABLE ")
+			.append(table.getTableName())
+			.append(" MODIFY ").append(column.getColumnName());
+		
+		//	Default
+		StringBuilder sqlDefault = new StringBuilder(sqlBase)
+			.append(" ").append(column.getSQLDataType());
+		String defaultValue = column.getDefaultValue();
+		if (defaultValue != null 
+			&& defaultValue.length() > 0
+			&& defaultValue.indexOf('@') == -1		//	no variables
+			&& ( ! (DisplayType.isID(column.getAD_Reference_ID()) && defaultValue.equals("-1") ) ) )  // not for ID's with default -1
+		{
+			if (DisplayType.isText(column.getAD_Reference_ID()) 
+				|| column.getAD_Reference_ID() == DisplayType.List
+				|| column.getAD_Reference_ID() == DisplayType.YesNo
+				// Two special columns: Defined as Table but DB Type is String 
+				|| column.getColumnName().equals("EntityType") || column.getColumnName().equals("AD_Language")
+				|| (column.getAD_Reference_ID() == DisplayType.Button &&
+						!(column.getColumnName().endsWith("_ID"))))
+			{
+				if (!defaultValue.startsWith("'") && !defaultValue.endsWith("'"))
+					defaultValue = DB.TO_STRING(defaultValue);
+			}
+			sqlDefault.append(" DEFAULT ").append(defaultValue);
+		}
+		else
+		{
+			if (! column.isMandatory())
+				sqlDefault.append(" DEFAULT NULL ");
+			defaultValue = null;
+		}
+		sql.append(sqlDefault);
+		
+		//	Constraint
+
+		//	Null Values
+		if (column.isMandatory() && defaultValue != null && defaultValue.length() > 0)
+		{
+			StringBuilder sqlSet = new StringBuilder("UPDATE ")
+				.append(table.getTableName())
+				.append(" SET ").append(column.getColumnName())
+				.append("=").append(defaultValue)
+				.append(" WHERE ").append(column.getColumnName()).append(" IS NULL");
+			sql.append(DB.SQLSTATEMENT_SEPARATOR).append(sqlSet);
+		}
+		
+		//	Null
+		if (setNullOption)
+		{
+			StringBuilder sqlNull = new StringBuilder(sqlBase);
+			if (column.isMandatory())
+				sqlNull.append(" NOT NULL");
+			else
+				sqlNull.append(" NULL");
+			sql.append(DB.SQLSTATEMENT_SEPARATOR).append(sqlNull);
+		}
+		//
+		return sql.toString();
+	}	//	getSQLModify
 }   //  DB_Oracle

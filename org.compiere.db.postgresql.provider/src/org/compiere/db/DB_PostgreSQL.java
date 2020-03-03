@@ -49,6 +49,8 @@ import org.adempiere.db.postgresql.PostgreSQLBundleActivator;
 import org.adempiere.exceptions.DBException;
 import org.compiere.dbPort.Convert;
 import org.compiere.dbPort.Convert_PostgreSQL;
+import org.compiere.model.MColumn;
+import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -1246,5 +1248,166 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	public final static String removeNativeKeyworkMarker(String statement) {
 		return statement.replace(DB_PostgreSQL.NATIVE_MARKER, "");
 	}
+
+	
+	@Override
+	public String getNumericDataType() {
+		return "NUMERIC";
+	}
+
+	@Override
+	public String getCharacterDataType() {
+		return "CHAR";
+	}
+
+	@Override
+	public String getVarcharDataType() {
+		return "VARCHAR";
+	}
+
+	@Override
+	public String getBlobDataType() {
+		return "BYTEA";
+	}
+
+	@Override
+	public String getClobDataType() {
+		return "TEXT";
+	}
+
+	@Override
+	public String getTimestampDataType() {
+		return "TIMESTAMP";
+	}
+
+	@Override
+	public String getSQLDDL(MColumn column) {				
+		StringBuilder sql = new StringBuilder ().append(column.getColumnName())
+			.append(" ").append(column.getSQLDataType());
+
+		//	Null
+		if (column.isMandatory())
+			sql.append(" NOT NULL");
+			
+		//	Inline Constraint
+		if (column.getAD_Reference_ID() == DisplayType.YesNo)
+			sql.append(" CHECK (").append(column.getColumnName()).append(" IN ('Y','N'))");
+
+		//	Default
+		String defaultValue = column.getDefaultValue();
+		if (defaultValue != null 
+				&& defaultValue.length() > 0
+				&& defaultValue.indexOf('@') == -1		//	no variables
+				&& ( ! (DisplayType.isID(column.getAD_Reference_ID()) && defaultValue.equals("-1") ) ) )  // not for ID's with default -1
+		{
+			if (DisplayType.isText(column.getAD_Reference_ID()) 
+					|| column.getAD_Reference_ID() == DisplayType.List
+					|| column.getAD_Reference_ID() == DisplayType.YesNo
+					// Two special columns: Defined as Table but DB Type is String 
+					|| column.getColumnName().equals("EntityType") || column.getColumnName().equals("AD_Language")
+					|| (column.getAD_Reference_ID() == DisplayType.Button &&
+							!(column.getColumnName().endsWith("_ID"))))
+			{
+				if (!defaultValue.startsWith("'") && !defaultValue.endsWith("'"))
+					defaultValue = DB.TO_STRING(defaultValue);
+			}
+			if (defaultValue.equalsIgnoreCase("sysdate"))
+				defaultValue = "getDate()";
+			sql.append(" DEFAULT ").append(defaultValue);
+		}
+		else
+		{
+			if (! column.isMandatory())
+				sql.append(" DEFAULT NULL ");
+			defaultValue = null;
+		}
+		
+		return sql.toString();
+	
+	}
+	
+	/**
+	 * 	Get SQL Add command
+	 *	@param table table
+	 *	@return sql
+	 */
+	@Override
+	public String getSQLAdd (MTable table, MColumn column)
+	{
+		StringBuilder sql = new StringBuilder ("ALTER TABLE ")
+			.append(table.getTableName())
+			.append(" ADD COLUMN ").append(column.getSQLDDL());
+		String constraint = column.getConstraint(table.getTableName());
+		if (constraint != null && constraint.length() > 0) {
+			sql.append(DB.SQLSTATEMENT_SEPARATOR).append("ALTER TABLE ")
+			.append(table.getTableName())
+			.append(" ADD ").append(constraint);
+		}
+		return sql.toString();
+	}	//	getSQLAdd
+	
+	/**
+	 * 	Get SQL Modify command
+	 *	@param table table
+	 *	@param setNullOption generate null / not null statement
+	 *	@return sql separated by ;
+	 */
+	public String getSQLModify (MTable table, MColumn column, boolean setNullOption)
+	{
+		StringBuilder sql = new StringBuilder ("INSERT INTO t_alter_column values('")
+			.append(table.getTableName())
+			.append("','").append(quoteColumnName(column.getColumnName()))
+			.append("','")
+			.append(column.getSQLDataType())
+			.append("',");
+		
+		//	Null
+		if (setNullOption)
+		{
+			if (column.isMandatory())
+				sql.append("'NOT NULL',");
+			else
+				sql.append("'NULL',");
+		}
+		else
+		{
+			sql.append("null,");
+		}
+			
+		//	Default
+		String defaultValue = column.getDefaultValue();
+		if (defaultValue != null 
+			&& defaultValue.length() > 0
+			&& defaultValue.indexOf('@') == -1		//	no variables
+			&& ( ! (DisplayType.isID(column.getAD_Reference_ID()) && defaultValue.equals("-1") ) ) )  // not for ID's with default -1
+		{
+			if (defaultValue.equalsIgnoreCase("sysdate"))
+				defaultValue = "getDate()";
+			if (!defaultValue.startsWith("'") && !defaultValue.endsWith("'"))
+				defaultValue = "'" + defaultValue + "'";
+			sql.append(defaultValue);
+		}
+		else
+		{
+			sql.append("null");
+		}
+		sql.append(")");
+		
+		
+		//	Null Values
+		if (column.isMandatory() && defaultValue != null && defaultValue.length() > 0)
+		{
+			StringBuilder sqlSet = new StringBuilder("UPDATE ")
+				.append(table.getTableName())
+				.append(" SET ").append(quoteColumnName(column.getColumnName()))
+				.append("=").append(defaultValue)
+				.append(" WHERE ").append(quoteColumnName(column.getColumnName())).append(" IS NULL");
+			sql.append(DB.SQLSTATEMENT_SEPARATOR).append(sqlSet);
+		}
+		
+		
+		//
+		return sql.toString();
+	}	//	getSQLModify
 
 }   //  DB_PostgreSQL
