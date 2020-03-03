@@ -53,6 +53,8 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	
 	private final static Pattern likePattern = Pattern.compile("\\bLIKE\\b", REGEX_FLAGS);
 	
+	private final static Pattern sysDatePattern = Pattern.compile("\\bSYSDATE\\b", REGEX_FLAGS);
+	
 	/**
 	 * Is Oracle DB
 	 * 
@@ -77,6 +79,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	protected ArrayList<String> convertStatement(String sqlStatement) {
 		ArrayList<String> result = new ArrayList<String>();
 		if (DB_PostgreSQL.isUseNativeDialect()) {
+			sqlStatement = convertSysDate(sqlStatement);
 			sqlStatement = convertSimilarTo(sqlStatement);
 			result.add(sqlStatement);
 			return result;
@@ -131,6 +134,20 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 		return result;
 	} // convertStatement
 
+	private String convertSysDate(String statement) {
+		String retValue = statement;
+		String replacement = "getDate()";
+		try {
+			Matcher m = sysDatePattern.matcher(retValue);
+			retValue = m.replaceAll(replacement);
+		} catch (Exception e) {
+			String error = "Error expression: " + sysDatePattern.pattern() + " - " + e;
+			log.info(error);
+			m_conversionError = error;
+		}		
+		return retValue;
+	}
+	
 	private String convertSimilarTo(String statement) {
 		String retValue = statement;
 		boolean useSimilarTo = isUseSimilarTo();
