@@ -191,24 +191,17 @@ UPDATE AD_Process_Para SET Name='Delete old/existing files', Description='Delete
 UPDATE AD_Process_Para SET DisplayLogic='@AD_AllClients_V_ID:-1@=-1',Updated=TO_TIMESTAMP('2020-02-28 17:54:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200288
 ;
 
--- Mar 4, 2020, 4:19:26 PM CET
+-- Mar 4, 2020, 5:01:54 PM CET
 UPDATE AD_Process SET Help='<p><span style="color:#ff0000"><b>WARNING: This process can be destructive, so please be sure that you have a backup of the database, as well as a backup of your old storage provider.</b></span></p>
 
 <p>The process migrates files between storage providers.</p>
 
-<ul>
-	<li><b>Client:</b> Optional, you can select a client to migrate, if empty it will try to migrate storage providers from all clients with the Actual Storage Provider selected below.</li>
-	<li><b>Actual Storage Provider:</b>&nbsp;If the client is empty, you define here the storage provider to migrate, if empty it migrates clients with the storage provider not set (this is by default DB).</li>
-	<li><b>Storage Provider:</b>&nbsp;The new storage provider to migrate the files.</li>
-	<li><b>Migrate Attachment:</b>&nbsp;Check this flag if you want to migrate the attachment files to the new storage provider.</li>
-	<li><b>Migrate Archive:</b>&nbsp;Check this flag if you want to migrate the attachment files to the new storage provider.</li>
-	<li><b>Migrate Image:</b>&nbsp;Check this flag if you want to migrate the attachment files to the new storage provider.</li>
-	<li><b>Delete old/existing files:</b>&nbsp;If this flag is checked, after the attachments are migrated the program tries to delete (free space) the files from the previous storage provider.&nbsp; <span style="color:#ff0000">Note that migrating from/to a DB storage provider is a destructive action that cannot be recovered, it implies deleting the old/existing files</span>.</li>
-</ul>
+<ul><li><b>Client:</b> Optional, you can select a client to migrate, if empty it will try to migrate storage providers from all clients with the Actual Storage Provider selected below.</li><li><b>Actual Storage Provider:</b> If the client is empty, you define here the storage provider to migrate, if empty it migrates clients with the storage provider not set (this is by default DB).</li><li><b>Storage Provider:</b> The new storage provider to migrate the files.</li><li><b>Migrate Attachment:</b> If enabled, it migrates the attachment files to the new storage provider.</li><li><b>Migrate Archive:</b> If enabled, it migrates the archive files to the new storage provider.</li><li><b>Migrate Image:</b> If enabled, it migrates the image files to the new storage provider.</li><li><b>Delete old/existing files:</b> If enabled, after the files are migrated the program tries to free space deleting the files from the previous storage provider.  <span style="color:#ff0000">Note that migrating from/to a DB storage provider is a destructive action that cannot be recovered, it implies deleting the old/existing files</span>.</li></ul>
 
-<p>The process provides status updates when running in foreground, however as the process can take long time, it can be executed in background.&nbsp; Please note that during the migration the whole table being migrated (attachment, archive, image) is locked, so operations on these tables are not permitted.&nbsp; Because of this, it is recommended to run this process in a <b>maintenance window</b> without users logged in the system.</p>
+<p>Please note that during the migration the whole set of records in the table being migrated (attachment, archive, image) is locked, so operations on these records are not permitted.  Because of this, it is recommended to run this process in a <b>maintenance window</b> without users logged in the system.</p>
 
-<p>There are intermediate commits in ',Updated=TO_TIMESTAMP('2020-03-04 16:19:26','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=200117
+<p>In case of failure the attachments / archives / images that succeeded as a whole from a client are still migrated, but not partial records (which would result in data corruption if allowed).</p>
+',Updated=TO_TIMESTAMP('2020-03-04 17:01:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=200117
 ;
 
 -- Mar 4, 2020, 4:21:15 PM CET
