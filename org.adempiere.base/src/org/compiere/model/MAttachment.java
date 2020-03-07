@@ -57,7 +57,7 @@ public class MAttachment extends X_AD_Attachment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6596285414376249694L;
+	private static final long serialVersionUID = -1685512419870004665L;
 
 	/**
 	 * 
@@ -685,4 +685,14 @@ public class MAttachment extends X_AD_Attachment
 		
 		return destZipFile;
 	}
+
+	/**
+	 * Set Storage Provider
+	 * Used temporarily for the process to migrate storage provider
+	 * @param Storage provider
+	 */
+	public void setStorageProvider(MStorageProvider p) {
+		provider = p;
+	}
+
 }	//	MAttachment

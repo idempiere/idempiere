@@ -290,6 +290,35 @@ Copyright (C) 2007 Ashley G Ramdass.
 			
 			wgt.$syncScroll ()
 		}
+		
+		//Incorporate fix from https://tracker.zkoss.org/browse/ZK-4204
+		//Probably can be removed after the upgrade to zk9
+		zk.afterLoad('zk', function () {
+			if (navigator.sendBeacon && window.URLSearchParams) {
+				zAu._rmDesktop = function(dt, dummy) {
+					var url = zk.ajaxURI(null, {desktop: dt, au: true}),
+					data = jq.param({dtid: dt.id, cmd_0: dummy ? 'dummy' : 'rmDesktop', opt_0: 'i'}),
+					headers = {};
+					if (zk.pfmeter) {
+						var fakeReq = {
+							setRequestHeader: function (name, value) {
+								headers[name] = value;
+							}
+						};
+						zAu._pfsend(dt, fakeReq, true, false);
+					}
+					var params = new URLSearchParams(data);
+					for (var key in headers) {
+						if (headers.hasOwnProperty(key))
+							params.append(key, headers[key]);
+					}
+					navigator.sendBeacon(url, zk.chrome // https://crbug.com/747787
+						? new Blob([params.toString()], {type: 'application/x-www-form-urlencoded'})
+						: params
+					);
+				}
+			}
+		});
 	]]>
 	</script>
     <include src="${themePreference}"/>
