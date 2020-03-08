@@ -973,12 +973,11 @@ public class Doc_AllocationHdr extends Doc
 		List<Object> valuesPay = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
 				MPayment.Table_ID, payment.getC_Payment_ID(), as.getC_AcctSchema_ID(), acct.getAccount_ID());
 		if (valuesPay != null) {
-			if (payment.isReceipt()) {
+			paymentSource = (BigDecimal) valuesPay.get(0); // AmtSourceDr
+			paymentAccounted = (BigDecimal) valuesPay.get(1); // AmtAcctDr
+			if (paymentSource.signum() == 0 && paymentAccounted.signum() == 0) {
 				paymentSource = (BigDecimal) valuesPay.get(2); // AmtSourceCr
 				paymentAccounted = (BigDecimal) valuesPay.get(3); // AmtAcctCr
-			} else {
-				paymentSource = (BigDecimal) valuesPay.get(0); // AmtSourceDr
-				paymentAccounted = (BigDecimal) valuesPay.get(1); // AmtAcctDr
 			}
 		}
 		
@@ -995,7 +994,7 @@ public class Doc_AllocationHdr extends Doc
 		//	Full Payment in currency
 		if (allocationSource.abs().compareTo(paymentSource.abs()) == 0)
 		{
-			acctDifference = totalAllocationAccounted.subtract(paymentAccounted.abs());	//	gain is negative
+			acctDifference = totalAllocationAccounted.abs().subtract(paymentAccounted.abs());	//	gain is negative
 			StringBuilder d2 = new StringBuilder("(full) = ").append(acctDifference);
 			if (log.isLoggable(Level.FINE)) log.fine(d2.toString());
 			description.append(" - ").append(d2);
@@ -1004,6 +1003,46 @@ public class Doc_AllocationHdr extends Doc
 			if (MPeriod.getC_Period_ID(getCtx(), payment.getDateAcct(), payment.getAD_Org_ID()) != 
 					MPeriod.getC_Period_ID(getCtx(), getDateAcct(), getAD_Org_ID())) 
 			{
+				BigDecimal allocationAccounted0 = MConversionRate.convert(getCtx(),
+						allocationSource, getC_Currency_ID(),
+						as.getC_Currency_ID(), payment.getDateAcct(),
+						payment.getC_ConversionType_ID(), payment.getAD_Client_ID(), payment.getAD_Org_ID());
+				BigDecimal paymentAccounted0 = MConversionRate.convert(getCtx(),
+						paymentSource, getC_Currency_ID(),
+						as.getC_Currency_ID(), getDateAcct(),
+						getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
+				isSameSourceDiffPeriod = allocationAccounted0.abs().compareTo(paymentAccounted.abs()) == 0 &&
+						paymentAccounted0.abs().compareTo(totalAllocationAccounted.abs()) == 0;
+			}
+		}
+		else
+		{
+			//	percent of total payment
+			double multiplier = allocationSource.doubleValue() / paymentSource.doubleValue();
+			//	Reduce Orig Payment Accounted
+			paymentAccounted = paymentAccounted.multiply(BigDecimal.valueOf(multiplier));
+			//	Difference based on percentage of Orig Payment
+			acctDifference = totalAllocationAccounted.abs().subtract(paymentAccounted.abs());	//	gain is negative
+			//	ignore Tolerance
+			if (acctDifference.abs().compareTo(TOLERANCE) < 0)
+				acctDifference = Env.ZERO;
+			//	Round
+			int precision = as.getStdPrecision();
+			if (acctDifference.scale() > precision)
+				acctDifference = acctDifference.setScale(precision, RoundingMode.HALF_UP);
+			StringBuilder d2 = new StringBuilder("(partial) = ").append(acctDifference).append(" - Multiplier=").append(multiplier);
+			if (log.isLoggable(Level.FINE)) log.fine(d2.toString());
+			description.append(" - ").append(d2);
+			
+			//	Different period
+			if (MPeriod.getC_Period_ID(getCtx(), payment.getDateAcct(), payment.getAD_Org_ID()) != 
+					MPeriod.getC_Period_ID(getCtx(), getDateAcct(), getAD_Org_ID())) 
+			{
+				if (paymentAccounted.scale() > precision)
+					paymentAccounted = paymentAccounted.setScale(precision, RoundingMode.HALF_UP);
+				paymentSource = paymentSource.multiply(BigDecimal.valueOf(multiplier));
+				if (paymentSource.scale() > precision)
+					paymentSource = paymentSource.setScale(precision, RoundingMode.HALF_UP);
 				BigDecimal allocationAccounted0 = MConversionRate.convert(getCtx(),
 						allocationSource, getC_Currency_ID(),
 						as.getC_Currency_ID(), payment.getDateAcct(),
