@@ -166,7 +166,7 @@ public class PackRollProcess extends SvrProcess {
 									// Format Date
 									sqlC = new StringBuffer("UPDATE "
 											+ tableName + " SET " + columnName
-											+ " = SYSDATE WHERE "
+											+ " = getDate() WHERE "
 											+ columnIDName + " = " + recordID);
 
 									DB.executeUpdateEx(sqlC.toString(), get_TrxName());

@@ -425,8 +425,8 @@ public final class MRole extends X_AD_Role
 			return "-";
 		
 		String roleClientOrgUser = getAD_Role_ID() + ","
-			+ getAD_Client_ID() + "," + getAD_Org_ID() + ",'Y', SysDate," 
-			+ getUpdatedBy() + ", SysDate," + getUpdatedBy() 
+			+ getAD_Client_ID() + "," + getAD_Org_ID() + ",'Y', getDate()," 
+			+ getUpdatedBy() + ", getDate()," + getUpdatedBy() 
 			+ ",'Y' ";	//	IsReadWrite
 		
 		String sqlWindow = "INSERT INTO AD_Window_Access "
@@ -474,8 +474,8 @@ public final class MRole extends X_AD_Role
 			+ "(AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"
 			+ "C_DocType_ID , AD_Ref_List_ID, AD_Role_ID) " 
 			+ "(SELECT "
-			+ getAD_Client_ID() + ",0,'Y', SysDate," 
-			+ getUpdatedBy() + ", SysDate," + getUpdatedBy() 
+			+ getAD_Client_ID() + ",0,'Y', getDate()," 
+			+ getUpdatedBy() + ", getDate()," + getUpdatedBy() 
 			+ ", doctype.C_DocType_ID, action.AD_Ref_List_ID, rol.AD_Role_ID " 
 			+ "FROM AD_Client client " 
 			+ "INNER JOIN C_DocType doctype ON (doctype.AD_Client_ID=client.AD_Client_ID) "
@@ -491,8 +491,8 @@ public final class MRole extends X_AD_Role
 				+ "(AD_InfoWindow_ID, AD_Role_ID,"
 				+ " AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy) "
 				+ "SELECT i.AD_InfoWindow_ID," + getAD_Role_ID() + ","
-				+ getAD_Client_ID() + "," + getAD_Org_ID() + ",'Y',SysDate," 
-				+ getUpdatedBy() + ", SysDate," + getUpdatedBy()
+				+ getAD_Client_ID() + "," + getAD_Org_ID() + ",'Y',getDate()," 
+				+ getUpdatedBy() + ", getDate()," + getUpdatedBy()
 				+ " FROM AD_InfoWindow i LEFT JOIN AD_InfoWindow_Access ia ON "
 				+ "(ia.AD_Role_ID=" + getAD_Role_ID()
 				+ " AND i.AD_InfoWindow_ID = ia.AD_InfoWindow_ID) "
@@ -2827,8 +2827,8 @@ public final class MRole extends X_AD_Role
 		+" SELECT 1 FROM AD_User_Roles ur"
 		+" INNER JOIN AD_User_Substitute us ON (us.AD_User_ID=ur.AD_User_ID)"
 		+" WHERE ur.AD_Role_ID=AD_Role.AD_Role_ID AND ur.IsActive='Y' AND us.IsActive='Y'"
-		+" AND (us.ValidFrom IS NULL OR us.ValidFrom <= SYSDATE)"
-		+" AND (us.ValidTo IS NULL OR us.ValidTo >= SYSDATE)"
+		+" AND (us.ValidFrom IS NULL OR us.ValidFrom <= getDate())"
+		+" AND (us.ValidTo IS NULL OR us.ValidTo >= getDate())"
 		+" AND us.Substitute_ID=?)";
 
 		List<MRole> list = new Query(getCtx(), Table_Name, whereClause, get_TrxName())

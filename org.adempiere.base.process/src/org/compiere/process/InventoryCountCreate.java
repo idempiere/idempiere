@@ -139,7 +139,7 @@ public class InventoryCountCreate extends SvrProcess
 								sql.append("(AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,");
 								sql.append(" M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID,");
 								sql.append(" QtyOnHand, DateLastInventory) ");
-								sql.append("SELECT l.AD_CLIENT_ID, l.AD_ORG_ID, 'Y', SysDate, 0,SysDate, 0,");
+								sql.append("SELECT l.AD_CLIENT_ID, l.AD_ORG_ID, 'Y', getDate(), 0,getDate(), 0,");
 								sql.append(" l.M_Locator_ID, p.M_Product_ID, 0,");
 								sql.append(" 0,null ");
 								sql.append("FROM M_Locator l");

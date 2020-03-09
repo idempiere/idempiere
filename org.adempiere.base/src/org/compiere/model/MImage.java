@@ -339,10 +339,15 @@ public class MImage extends X_AD_Image
 	 * @param trxName
 	 */
 	private void initImageStoreDetails(Properties ctx, String trxName) {
-		MClientInfo clientInfo = MClientInfo.get(ctx);
+		MClientInfo clientInfo = MClientInfo.get(ctx, getAD_Client_ID());
 		provider=new MStorageProvider(ctx, clientInfo.getStorageImage_ID(), trxName);		
 	}
 	
+	/**
+	 * Set Storage Provider
+	 * Used temporarily for the process to migrate storage provider
+	 * @param Storage provider
+	 */
 	public void setStorageProvider(MStorageProvider p) {
 		provider = p;
 	}

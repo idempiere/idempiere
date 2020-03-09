@@ -140,7 +140,7 @@ public class SchedulerStateEditor extends WEditor {
 	}
     
 	private int getAD_Scheduler_ID() {
-		return gridTab.getRecord_ID();
+		return gridTab != null ? gridTab.getRecord_ID() : 0;
 	}
 
 	/**
@@ -152,7 +152,7 @@ public class SchedulerStateEditor extends WEditor {
 			if (schedulerState == AdempiereServerMgr.SERVER_STATE_NOT_SCHEDULE) {
 				ADWindow adwindow = ADWindow.findADWindow(getComponent());
 				if (adwindow != null) {
-					if (gridTab.isNew() || gridTab.needSave(false, false)) {
+					if (gridTab != null && (gridTab.isNew() || gridTab.needSave(false, false))) {
 						adwindow.getADWindowContent().onSave(true, false, new Callback<Boolean>() {
 							@Override
 							public void onCallback(Boolean result) {
@@ -171,7 +171,7 @@ public class SchedulerStateEditor extends WEditor {
 			} else if (schedulerState == AdempiereServerMgr.SERVER_STATE_STARTED) {
 				ADWindow adwindow = ADWindow.findADWindow(getComponent());
 				if (adwindow != null) {
-					if (gridTab.isNew() || gridTab.needSave(false, false)) {
+					if (gridTab != null && (gridTab.isNew() || gridTab.needSave(false, false))) {
 						adwindow.getADWindowContent().onSave(true, false, new Callback<Boolean>() {
 							@Override
 							public void onCallback(Boolean result) {
@@ -186,7 +186,7 @@ public class SchedulerStateEditor extends WEditor {
 			} else if (schedulerState == AdempiereServerMgr.SERVER_STATE_STOPPED) {
 				ADWindow adwindow = ADWindow.findADWindow(getComponent());
 				if (adwindow != null) {
-					if (gridTab.isNew() || gridTab.needSave(false, false)) {
+					if (gridTab != null && (gridTab.isNew() || gridTab.needSave(false, false))) {
 						adwindow.getADWindowContent().onSave(true, false, new Callback<Boolean>() {
 							@Override
 							public void onCallback(Boolean result) {
@@ -261,7 +261,7 @@ public class SchedulerStateEditor extends WEditor {
 	 */
 	@Override
 	public void setReadWrite(boolean readWrite) {
-		GridField descriptionField = gridTab.getField("Description");
+		GridField descriptionField = gridTab != null ? gridTab.getField("Description") : null;
 		if (descriptionField != null)	
 			getComponent().setEnabled(descriptionField.isEditable(true));
 		else

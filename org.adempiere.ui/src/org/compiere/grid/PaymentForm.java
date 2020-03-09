@@ -174,7 +174,7 @@ public abstract class PaymentForm implements IPaymentForm {
 	{
 		s_Currencies = new Hashtable<Integer,KeyNamePair>(12);	//	Currenly only 10+1
 		String SQL = "SELECT C_Currency_ID, ISO_Code FROM C_Currency "
-			+ "WHERE (IsEMUMember='Y' AND EMUEntryDate<SysDate) OR IsEuro='Y' "
+			+ "WHERE (IsEMUMember='Y' AND EMUEntryDate<getDate()) OR IsEuro='Y' "
 			+ "ORDER BY 2";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

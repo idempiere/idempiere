@@ -151,10 +151,10 @@ public class MRequestType extends X_R_RequestType
 			+ "(SELECT COUNT(*) FROM R_Request r "
 			+ "WHERE r.R_RequestType_ID=x.R_RequestType_ID) AS TotalNo, "
 			+ "(SELECT COUNT(*) FROM R_Request r "
-			+ "WHERE r.R_RequestType_ID=x.R_RequestType_ID AND Created>addDays(SysDate,-30)) AS New30No, "
+			+ "WHERE r.R_RequestType_ID=x.R_RequestType_ID AND Created>addDays(getDate(),-30)) AS New30No, "
 			+ "(SELECT COUNT(*) FROM R_Request r"
 			+ " INNER JOIN R_Status s ON (r.R_Status_ID=s.R_Status_ID AND s.IsClosed='Y') "
-			+ "WHERE r.R_RequestType_ID=x.R_RequestType_ID AND r.Updated>addDays(SysDate,-30)) AS Closed30No "
+			+ "WHERE r.R_RequestType_ID=x.R_RequestType_ID AND r.Updated>addDays(getDate(),-30)) AS Closed30No "
 			//
 			+ "FROM R_RequestType x WHERE R_RequestType_ID=?";
 		PreparedStatement pstmt = null;

@@ -114,9 +114,9 @@ public class ImportPriceList extends SvrProcess
 			.append("SET AD_Client_ID = COALESCE (AD_Client_ID, ").append(m_AD_Client_ID).append("),")
 			.append(" AD_Org_ID = COALESCE (AD_Org_ID, 0),")
 			.append(" IsActive = COALESCE (IsActive, 'Y'),")
-			.append(" Created = COALESCE (Created, SysDate),")
+			.append(" Created = COALESCE (Created, getDate()),")
 			.append(" CreatedBy = COALESCE (CreatedBy, 0),")
-			.append(" Updated = COALESCE (Updated, SysDate),")
+			.append(" Updated = COALESCE (Updated, getDate()),")
 			.append(" UpdatedBy = COALESCE (UpdatedBy, 0),")
 			.append(" EnforcePriceLimit = COALESCE (EnforcePriceLimit, 'N'),")
 			.append(" IsSOPriceList = COALESCE (IsSOPriceList, 'N'),")
@@ -283,7 +283,7 @@ public class ImportPriceList extends SvrProcess
 			//	Set Imported = Y
 			pstmt_setImported = DB.prepareStatement
 				("UPDATE I_PriceList SET I_IsImported='Y', M_PriceList_ID=?, M_PriceList_Version_ID=?, "
-				+ "Updated=SysDate, Processed='Y' WHERE I_PriceList_ID=?", get_TrxName());
+				+ "Updated=getDate(), Processed='Y' WHERE I_PriceList_ID=?", get_TrxName());
 
 			//
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
@@ -463,7 +463,7 @@ public class ImportPriceList extends SvrProcess
 
 		//	Set Error to indicator to not imported
 		sql = new StringBuilder ("UPDATE I_PriceList ")
-			.append("SET I_IsImported='N', Updated=SysDate ")
+			.append("SET I_IsImported='N', Updated=getDate() ")
 			.append("WHERE I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0, null, new BigDecimal (no), "@Errors@");

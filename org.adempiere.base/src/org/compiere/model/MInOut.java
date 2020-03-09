@@ -1616,10 +1616,10 @@ public class MInOut extends X_M_InOut implements DocAction
 							}
 							if (!po.isPosted())
 								addDocsPostProcess(po);
-							MMatchInv matchInvCreated = po.getMatchInvCreated();
-							if (matchInvCreated != null) {
+							
+							MMatchInv[] matchInvList = MMatchInv.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
+							for (MMatchInv matchInvCreated : matchInvList)
 								addDocsPostProcess(matchInvCreated);
-							}
 						}
 						//	Update PO with ASI
 						if (   oLine != null && oLine.getM_AttributeSetInstance_ID() == 0

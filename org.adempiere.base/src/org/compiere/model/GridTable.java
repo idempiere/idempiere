@@ -400,7 +400,7 @@ public class GridTable extends AbstractTableModel
 				where.append(" AND ");
 			//	Show only unprocessed or the one updated within x days
 			where.append("(Processed='N' OR Updated>");
-			where.append("SysDate-1");
+			where.append("getDate()-1");
 			where.append(")");
 		}
 

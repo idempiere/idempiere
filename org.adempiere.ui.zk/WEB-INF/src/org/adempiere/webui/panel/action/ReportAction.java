@@ -315,7 +315,7 @@ public class ReportAction implements EventListener<Event>
 				whereClause.append(" AND ");
 			//	Show only unprocessed or the one updated within x days
 			whereClause.append("(").append(gridTab.getTableName()).append(".Processed='N' OR ").append(gridTab.getTableName()).append(".Updated>");
-			whereClause.append("SysDate-1");
+			whereClause.append("getDate()-1");
 			whereClause.append(")");
 		}
 
