@@ -41,7 +41,7 @@ echo -------------------------------------
 if [ $ISAMAZONRDS = Y ]
 then
     # modified for amazon RDS - doesn't allow SUPERUSER
-    ROOT_ROLE="CREATEDB IN ROLE rds_superuser, adempiere"
+    ROOT_ROLE="CREATEDB IN ROLE rds_superuser"
 else
     ROOT_ROLE="SUPERUSER"
 fi
