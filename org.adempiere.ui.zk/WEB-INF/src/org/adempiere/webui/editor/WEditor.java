@@ -571,7 +571,15 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	protected void applyLabelStyles(boolean applyDictionaryStyle) {
 		if (label != null) {
 			boolean zoomable = isZoomable();
-			String style = (zoomable ? STYLE_ZOOMABLE_LABEL : "") + (isMandatoryStyle() ? STYLE_EMPTY_MANDATORY_LABEL : STYLE_NORMAL_LABEL);
+			LayoutUtils.addSclass(CLASS_NORMAL_LABEL, label);
+			if (zoomable)
+				LayoutUtils.addSclass(CLASS_ZOOMABLE_LABEL, label);
+			if (isMandatoryStyle())
+				LayoutUtils.addSclass(CLASS_EMPTY_MANDATORY_LABEL, label);
+			else 
+				LayoutUtils.removeSclass(CLASS_EMPTY_MANDATORY_LABEL, label);
+			
+			String style = "";
 			if (ClientInfo.isMobile()) {
 				if (!zoomable && popupMenu != null) {
 					style = style + STYLE_MOBILE_ZOOMABLE;
@@ -613,6 +621,17 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 			style = buildStyle(gridField.getAD_FieldStyle_ID());
 		}
 		setFieldStyle(style);
+		setFieldMandatoryStyle();
+	}
+	
+	private void setFieldMandatoryStyle() {
+		HtmlBasedComponent component = (HtmlBasedComponent) getComponent();
+		if (component != null) {
+			if (isMandatoryStyle())
+				LayoutUtils.addSclass(CLASS_MANDATORY_FIELD, component);
+			else 
+				LayoutUtils.removeSclass(CLASS_MANDATORY_FIELD, component);
+		}
 	}
 
 	protected void setFieldStyle(String style) {
@@ -829,10 +848,11 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	protected Evaluatee getStyleEvaluatee() {
 		return new EvaluateeWrapper(this, gridField, tableEditor);
 	}
-	
-	private static final String STYLE_ZOOMABLE_LABEL = "cursor: pointer; text-decoration: underline;";
-	private static final String STYLE_NORMAL_LABEL = "color: #333;";
-	private static final String STYLE_EMPTY_MANDATORY_LABEL = "color: red;";
+
+	private static final String CLASS_MANDATORY_FIELD = "idempiere-mandatory";
+	private static final String CLASS_ZOOMABLE_LABEL = "idempiere-zoomable-label";
+	private static final String CLASS_NORMAL_LABEL = "idempiere-label";
+	private static final String CLASS_EMPTY_MANDATORY_LABEL = "idempiere-mandatory-label";
 	private static final String STYLE_MOBILE_ZOOMABLE = "cursor: pointer;";
 	
 	private static class EvaluateeWrapper implements Evaluatee {
