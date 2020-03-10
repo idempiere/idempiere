@@ -10,7 +10,5 @@
 	<classpathentry kind="src" path="src/main/server/"/>
 	<classpathentry kind="src" path="src/main/servlet/"/>
 	<classpathentry kind="src" path="src/main/home/"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/jnlp-jardiff.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/jnlp-servlet.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
