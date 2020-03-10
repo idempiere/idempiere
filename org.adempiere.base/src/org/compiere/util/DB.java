@@ -402,6 +402,18 @@ public final class DB
 	}	//	getConnectionRO
 
 	/**
+	 *	Return a replica connection if possible, otherwise read committed, read/only from pool.
+	 *  @return Connection (r/o)
+	 */
+	public static Connection getReportingConnectionRO ()
+	{
+		Connection conn = DBReadReplica.getConnectionRO();
+		if (conn == null)
+			conn = getConnectionRO();
+        return conn;
+	}	//	getReportingConnectionRO
+
+	/**
 	 *	Create new Connection.
 	 *  The connection must be closed explicitly by the application
 	 *
