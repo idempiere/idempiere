@@ -17,9 +17,9 @@
 
 package org.adempiere.webui.adwindow;
 
+import static org.compiere.model.MSysConfig.ZK_GRID_AFTER_FIND;
 import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_REDO;
 import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_UNDO;
-import static org.compiere.model.MSysConfig.ZK_GRID_AFTER_FIND;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -1427,7 +1427,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         
 		toolbar.setPressed("Find",adTabbox.getSelectedGridTab().isQueryActive() || 
 				(!isNewRow && (m_onlyCurrentRows || m_onlyCurrentDays > 0)));
-
+		
+		toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), findWindow != null ? findWindow.getAD_UserQuery_ID() : 0);
 	}
 
 	/**
@@ -1807,6 +1808,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         toolbar.enableRequests(!isNewRow);
 		toolbar.setPressed("Find", adTabbox.getSelectedGridTab().isQueryActive() || 
 				(!isNewRow && (m_onlyCurrentRows || m_onlyCurrentDays > 0)));
+		toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), findWindow != null ? findWindow.getAD_UserQuery_ID() : 0);
 
         toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !isNewRow);
         toolbar.enableReport(!isNewRow);
@@ -2169,6 +2171,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				        			adTabbox.getSelectedTabpanel().switchRowPresentation();
 				        	}
 				        }
+				        toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), findWindow.getAD_UserQuery_ID());
 			        }
 					else
 					{
@@ -2878,6 +2881,67 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	public void onCSVImport() {
 		CSVImportAction action = new CSVImportAction(this);
 		action.fileImport();
+	}
+	
+	@Override
+	public void onSearchQuery() {
+		if (adTabbox.getSelectedGridTab() == null)
+            return;
+
+        clearTitleRelatedContext();
+
+		// The record was not changed locally
+        if (adTabbox.getDirtyADTabpanel() == null) {
+        	doOnQueryChange();
+        } else {
+            onSave(false, false, new Callback<Boolean>() {
+    			@Override
+    			public void onCallback(Boolean result) {
+    				if (result) {
+    					doOnQueryChange();
+    				}
+    			}
+    		});        	
+        }
+	}
+	
+	/**
+	 * Simulate opening the Find Window, selecting a user query and click ok
+	 */
+	public void doOnQueryChange() {
+		//  Gets Fields from AD_Field_v
+		GridField[] findFields = adTabbox.getSelectedGridTab().getFields();
+		if (findWindow == null || !findWindow.validate(adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
+				adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
+				adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID())) {
+			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
+					adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
+					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID());
+
+			setupEmbeddedFindwindow();	        
+			if (!findWindow.initialize()) {
+				if (findWindow.getTotalRecords() == 0) {
+					FDialog.info(curWindowNo, getComponent(), "NoRecordsFound");
+				}
+				return;
+			}
+		}
+
+		findWindow.setAD_UserQuery_ID(toolbar.getAD_UserQuery_ID());
+		findWindow.advancedOkClick();
+		MQuery query = findWindow.getQuery();
+
+		//  Confirmed query
+		if (query != null) {
+			m_onlyCurrentRows = false;
+			adTabbox.getSelectedGridTab().setQuery(query);
+			adTabbox.getSelectedTabpanel().query(m_onlyCurrentRows, m_onlyCurrentDays, MRole.getDefault().getMaxQueryRecords());   //  autoSize
+		}
+
+		adTabbox.getSelectedGridTab().dataRefresh(false);
+
+		focusToActivePanel();
+		findWindow.dispose();
 	}
 
 	/**************************************************************************
