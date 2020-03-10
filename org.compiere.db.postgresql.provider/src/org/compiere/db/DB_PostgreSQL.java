@@ -1044,9 +1044,14 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	 * @param end
 	 */
 	public String addPagingSQL(String sql, int start, int end) {
-		String newSql = sql + " " + NATIVE_MARKER + "LIMIT " + ( end - start + 1 )
-			+ "  " + NATIVE_MARKER + "OFFSET " + (start - 1);
-		return newSql;
+		StringBuilder newSql = new StringBuilder(sql);
+		newSql.append(" ")
+			.append(markNativeKeyword("LIMIT "))
+			.append(( end - start + 1 ))
+			.append(" ")
+			.append(markNativeKeyword("OFFSET "))
+			.append((start - 1));
+		return newSql.toString();
 	}
 
 	public boolean isPagingSupported() {
