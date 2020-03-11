@@ -621,13 +621,13 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 			style = buildStyle(gridField.getAD_FieldStyle_ID());
 		}
 		setFieldStyle(style);
-		setFieldMandatoryStyle();
+		setFieldMandatoryStyle(applyDictionaryStyle);
 	}
 	
-	private void setFieldMandatoryStyle() {
+	private void setFieldMandatoryStyle(boolean applyStyle) {
 		HtmlBasedComponent component = (HtmlBasedComponent) getComponent();
 		if (component != null) {
-			if (isMandatoryStyle())
+			if (isMandatoryStyle() && applyStyle)
 				LayoutUtils.addSclass(CLASS_MANDATORY_FIELD, component);
 			else 
 				LayoutUtils.removeSclass(CLASS_MANDATORY_FIELD, component);
