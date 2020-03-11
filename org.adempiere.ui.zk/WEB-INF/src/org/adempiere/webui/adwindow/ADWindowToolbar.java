@@ -30,6 +30,7 @@ import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
+import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.FToolbar;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Tabpanel;
@@ -43,6 +44,7 @@ import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
 import org.compiere.model.MToolBarButton;
+import org.compiere.model.MUserQuery;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -62,6 +64,7 @@ import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
@@ -90,6 +93,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public static final String MNITMPREFIX = "Mnitm";
 
     private static final CLogger log = CLogger.getCLogger(ADWindowToolbar.class);
+
+    private Combobox fQueryName;
+	private MUserQuery[] userQueries;
+	private MUserQuery selectedUserQuery;
 
     private ToolBarButton btnIgnore;
 
@@ -181,7 +188,15 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     	//Show more menu pop up
         menupopup = new Menupopup();
         this.appendChild(menupopup);
-
+        
+        //IDEMPIERE-4085
+        fQueryName = new Combobox();
+        fQueryName.setTooltiptext(Msg.getMsg(Env.getCtx(),"QueryName"));
+        fQueryName.setPlaceholder(Msg.getMsg(Env.getCtx(),"QueryName"));
+        fQueryName.setId(BTNPREFIX + "SearchQuery");
+        fQueryName.addEventListener(Events.ON_SELECT, this);
+        LayoutUtils.addSclass("toolbar-searchbox", fQueryName);
+				
         btnIgnore = createButton("Ignore", "Ignore", "Ignore");
         btnIgnore.setTooltiptext(btnIgnore.getTooltiptext()+ "    Alt+Z");
         btnHelp = createButton("Help", "Help","Help");
@@ -309,7 +324,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
             				this.appendChild(new Separator("vertical"));
             			}
         			}
-        		}
+        		} else if (button.isSearchQueryComponent())
+    		        this.appendChild(fQueryName); 
         	}
         }
         if (!ClientInfo.isMobile() && !menuItems.isEmpty()) {
@@ -492,14 +508,30 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	        	}
 	        	this.onCtrlKeyEvent(keyEvent);
         	}
+        } else if (Events.ON_SELECT.equals(eventName)) 
+        {
+        	int index = fQueryName.getSelectedIndex();
+        	if (index < 0) return;
+        	if (index == 0) // no query - refresh
+        		setSelectedUserQuery(null);
+        	else
+				setSelectedUserQuery(userQueries[index-1]);
+
+			doOnClick(event);
         }
     }
 
 	private void doOnClick(Event event) {
 		this.event = event;
-		ToolBarButton cComponent = (ToolBarButton) event.getTarget();
-		String compName = cComponent.getName();
-		String methodName = "on" + compName.substring(3);
+		String compName;
+		String methodName;
+		if (event.getTarget() == fQueryName) {
+			methodName = "onSearchQuery";
+		} else {
+			ToolBarButton cComponent = (ToolBarButton) event.getTarget();
+			compName = cComponent.getName();
+			methodName = "on" + compName.substring(3);
+		}
 		Iterator<ToolbarListener> listenerIter = listeners.iterator();
 		while(listenerIter.hasNext())
 		{
@@ -1107,4 +1139,31 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     		}
     	}
     }
+    
+    public void refreshUserQuery(int AD_Tab_ID, int AD_UserQuery_ID) {
+    	fQueryName.getItems().clear();
+        userQueries = MUserQuery.get(Env.getCtx(), AD_Tab_ID);
+        fQueryName.appendItem("");
+        for (int i = 0; i < userQueries.length; i++) {
+	       	Comboitem li = fQueryName.appendItem(userQueries[i].getName());
+	       	li.setValue(userQueries[i].getAD_UserQuery_ID());
+	       	if (AD_UserQuery_ID == userQueries[i].getAD_UserQuery_ID())
+	       		fQueryName.setSelectedItem(li);
+        }
+        if (AD_UserQuery_ID <= 0 || fQueryName.getItemCount() <= 1)
+        	fQueryName.setValue("");
+    }
+    
+	public void setSelectedUserQuery(MUserQuery selectedUserQuery) {
+		this.selectedUserQuery = selectedUserQuery;
+		if (selectedUserQuery != null)
+			fQueryName.setValue(selectedUserQuery.getName());
+	}
+
+	public int getAD_UserQuery_ID() {
+		if (selectedUserQuery == null)
+			return 0;
+		return selectedUserQuery.getAD_UserQuery_ID();
+	}
+	
 }

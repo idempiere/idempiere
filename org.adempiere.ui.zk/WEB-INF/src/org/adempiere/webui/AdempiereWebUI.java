@@ -118,6 +118,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 	private ConcurrentMap<String, String[]> m_URLParameters;
 
+	public static final String SERVERPUSH_SCHEDULE_FAILURES = "serverpush.schedule.failures";
+
     public AdempiereWebUI()
     {
     	this.setVisible(false);

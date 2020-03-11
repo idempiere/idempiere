@@ -25,6 +25,7 @@ import java.util.Properties;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.AutoComplete;
@@ -768,6 +769,7 @@ ContextMenuListener, IZoomableEditor
 	
 	private interface ITableDirEditor {
 		public void setEditor(WTableDirEditor editor);
+		public void cleanup();
 	}
 	
 	private static class EditorCombobox extends Combobox implements ITableDirEditor {
@@ -815,7 +817,7 @@ ContextMenuListener, IZoomableEditor
 		/**
 		 * 
 		 */
-		protected void cleanup() {
+		public void cleanup() {
 			if (editor.tableCacheListener != null) {
 				CacheMgt.get().unregister(editor.tableCacheListener);
 				editor.tableCacheListener = null;
@@ -873,7 +875,7 @@ ContextMenuListener, IZoomableEditor
 		/**
 		 * 
 		 */
-		protected void cleanup() {
+		public void cleanup() {
 			if (editor.tableCacheListener != null) {
 				CacheMgt.get().unregister(editor.tableCacheListener);
 				editor.tableCacheListener = null;
@@ -916,7 +918,12 @@ ContextMenuListener, IZoomableEditor
 		}
 
 		private void refreshLookupList() {
-			Executions.schedule(editor.getComponent().getDesktop(), new EventListener<Event>() {
+			int failures = 0;
+			Desktop desktop = editor.getComponent().getDesktop();
+			Object attr = desktop.getAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES);
+			if (attr != null && attr instanceof Integer)
+				failures = ((Integer)attr).intValue();
+			Executions.schedule(desktop, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) {
 					try {
@@ -925,6 +932,13 @@ ContextMenuListener, IZoomableEditor
 					} catch (Exception e) {}
 				}
 			}, new Event("onResetLookupList"));
+			attr = desktop.getAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES);
+			if (attr != null && attr instanceof Integer) {
+				int f = ((Integer)attr).intValue();
+				if (f > failures) {
+					((ITableDirEditor)editor.getComponent()).cleanup();
+				}
+			}
 		}
 				
 		@Override

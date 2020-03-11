@@ -110,7 +110,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1743619574547406959L;
+	private static final long serialVersionUID = -1330388218446118451L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -2782,6 +2782,7 @@ public abstract class PO
 			}
 			m_IDs[0] = Integer.valueOf(no);
 			set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
+			saveNew_afterSetID();
 		}
 		//uuid secondary key
 		int uuidIndex = p_info.getColumnIndex(getUUIDColumnName());
@@ -3096,6 +3097,13 @@ public abstract class PO
 		return 0;
 	}	//	saveNew_getID
 
+	/**
+	 * Call after ID have been assigned for new record
+	 */
+	protected void saveNew_afterSetID()
+	{
+		
+	}
 
 	/**
 	 * 	Create Single/Multi Key Where Clause
@@ -3496,6 +3504,10 @@ public abstract class PO
 			//	Reset
 			if (success)
 			{
+				if (!postDelete()) {
+					log.warning("postDelete failed");
+				}
+
 				//osgi event handler
 				Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this);
 				EventManager.getInstance().postEvent(event);
@@ -3595,6 +3607,14 @@ public abstract class PO
 		return success;
 	} 	//	afterDelete
 
+	/**
+	 * 	Executed after the Delete operation is committed in the database.
+	 *	@return true if post delete is a success
+	 */
+	protected boolean postDelete()
+	{
+		return true;
+	}
 
 	/**
 	 * 	Insert (missing) Translation Records
