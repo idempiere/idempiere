@@ -68,6 +68,8 @@ import java.util.logging.Level;
 
 import org.adempiere.base.IDisplayTypeFactory;
 import org.adempiere.base.Service;
+import org.compiere.db.AdempiereDatabase;
+import org.compiere.db.Database;
 import org.compiere.model.MLanguage;
 
 /**
@@ -602,6 +604,15 @@ public final class DisplayType
 		return Object.class;
 	}   //  getClass
 
+	private static final AdempiereDatabase getDatabase() 
+	{
+		AdempiereDatabase db = DB.getDatabase();
+		if (db.isNativeMode())
+			return db;
+		else
+			return Database.getDatabase(Database.DB_ORACLE);
+	}
+	
 	/**
 	 * 	Get SQL DataType
 	 *	@param displayType AD_Reference_ID
@@ -613,51 +624,51 @@ public final class DisplayType
 	{
 		if (columnName.equals("EntityType")
 			|| columnName.equals ("AD_Language"))
-			return "VARCHAR2(" + fieldLength + ")";
+			return getDatabase().getVarcharDataType() + "(" + fieldLength + ")";
 		//	ID
 		if (DisplayType.isID(displayType))
 		{
 			if (displayType == DisplayType.Image 	//	FIXTHIS
 				&& columnName.equals("BinaryData"))
-				return "BLOB";
+				return getDatabase().getBlobDataType();
 			//	ID, CreatedBy/UpdatedBy, Acct
 			else if (columnName.endsWith("_ID")
 				|| columnName.endsWith("tedBy")
 				|| columnName.endsWith("_Acct") )
-				return "NUMBER(10)";
+				return getDatabase().getNumericDataType()+"(10)";
 			else if (fieldLength < 4)
-				return "CHAR(" + fieldLength + ")";
+				return getDatabase().getCharacterDataType()+"(" + fieldLength + ")";
 			else	//	EntityType, AD_Language	fallback
-				return "VARCHAR2(" + fieldLength + ")";
+				return getDatabase().getVarcharDataType()+"(" + fieldLength + ")";
 		}
 		//
 		if (displayType == DisplayType.Integer)
-			return "NUMBER(10)";
+			return getDatabase().getNumericDataType()+"(10)";
 		if (DisplayType.isDate(displayType))
-			return "DATE";
+			return getDatabase().getTimestampDataType();
 		if (DisplayType.isNumeric(displayType))
-			return "NUMBER";
+			return getDatabase().getNumericDataType();
 		if (displayType == DisplayType.Binary)
-			return "BLOB";
+			return getDatabase().getBlobDataType();
 		if (displayType == DisplayType.TextLong
 			|| (displayType == DisplayType.Text && fieldLength >= 4000))
-			return "CLOB";
+			return getDatabase().getClobDataType();
 		if (displayType == DisplayType.YesNo)
-			return "CHAR(1)";
+			return getDatabase().getCharacterDataType()+"(1)";
 		if (displayType == DisplayType.List || displayType == DisplayType.Payment) {
 			if (fieldLength == 1)
-				return "CHAR(" + fieldLength + ")";
+				return getDatabase().getCharacterDataType()+"(" + fieldLength + ")";
 			else
-				return "VARCHAR2(" + fieldLength + ")";
+				return getDatabase().getVarcharDataType()+"(" + fieldLength + ")";
 		}
 		if (displayType == DisplayType.Color)
-			return "VARCHAR2(" + fieldLength + ")";
+			return getDatabase().getVarcharDataType()+"(" + fieldLength + ")";
 		if (displayType == DisplayType.Button)
 		{
 			if (columnName.endsWith("_ID"))
-				return "NUMBER(10)";
+				return getDatabase().getNumericDataType()+"(10)";
 			else
-				return "CHAR(" + fieldLength + ")";
+				return getDatabase().getCharacterDataType()+"(" + fieldLength + ")";
 		}
 		
 		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
@@ -671,9 +682,9 @@ public final class DisplayType
 			s_log.severe("Unhandled Data Type = " + displayType);
 
 		if (columnName.endsWith("_ID"))
-			return "NUMBER(10)";
+			return getDatabase().getNumericDataType()+"(10)";
 
-		return "VARCHAR2(" + fieldLength + ")";
+		return getDatabase().getVarcharDataType()+"(" + fieldLength + ")";
 	}	//	getSQLDataType
 
 	/**

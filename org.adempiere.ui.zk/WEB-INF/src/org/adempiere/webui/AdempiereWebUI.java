@@ -84,7 +84,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3320656546509525766L;
+	private static final long serialVersionUID = -6725805283410008847L;
 
 	private static final String SAVED_CONTEXT = "saved.context";
 	
@@ -117,6 +117,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	private static boolean eventThreadEnabled = false;
 
 	private ConcurrentMap<String, String[]> m_URLParameters;
+
+	public static final String SERVERPUSH_SCHEDULE_FAILURES = "serverpush.schedule.failures";
 
     public AdempiereWebUI()
     {
@@ -250,7 +252,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 		keyListener = new Keylistener();
 		keyListener.setPage(this.getPage());
-		keyListener.setCtrlKeys("@a@c@d@e@f@h@m@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup");
+		keyListener.setCtrlKeys("@a@c@d@e@f@h@l@m@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup$#f2^#f2");
 		keyListener.setAutoBlur(false);
 		
 		//create new desktop

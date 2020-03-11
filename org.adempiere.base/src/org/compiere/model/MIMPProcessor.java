@@ -130,7 +130,7 @@ public class MIMPProcessor
 			return 0;
 		StringBuilder sql = new StringBuilder("DELETE FROM ").append(X_IMP_ProcessorLog.Table_Name).append(" ")
 			.append("WHERE ").append(X_IMP_ProcessorLog.COLUMNNAME_IMP_Processor_ID).append("=").append(getIMP_Processor_ID()) 
-			.append(" AND (Created+").append(getKeepLogDays()).append(") < SysDate");
+			.append(" AND (Created+").append(getKeepLogDays()).append(") < getDate()");
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		return no;
 	}

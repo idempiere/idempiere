@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,7 +123,7 @@ public class AtmosphereServerPush implements ServerPush {
 
     private boolean commitResponse() throws IOException {    	
         AtmosphereResource resource = this.resource.getAndSet(null);
-        if (resource != null && resource.isSuspended()) {
+        if (resource != null) {
         	resource.resume();
         	return true;
         } 
@@ -192,11 +193,9 @@ public class AtmosphereServerPush implements ServerPush {
 			}
 	        if (!ok) {
 	        	for(int i = 0; i < 3 && !ok; i++) {
-	        		for (int ii = 0; ii < 10 && schedules.size() > 0; ii++) {
-                        try {
-                            Thread.sleep(50);
-                        } catch (InterruptedException e1) {}
-                    }
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e1) {}
 		        	if (schedules.size() > 0) {
 			        	try {
 				        	ok = commitResponse();
@@ -209,6 +208,15 @@ public class AtmosphereServerPush implements ServerPush {
 	        	}
 	        	if (!ok) {
 		        	log.warn("Failed to resume long polling resource");
+		        	Desktop d = desktop.get();
+		        	if (d != null) {
+		        		Integer count = (Integer) d.getAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES);
+		        		if (count != null)
+		        			count = Integer.valueOf(count.intValue()+1);
+		        		else
+		        			count = Integer.valueOf(1);
+		        		d.setAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES, count);
+		        	}
 		        }
 	        }	        
     	} else {
@@ -268,7 +276,7 @@ public class AtmosphereServerPush implements ServerPush {
         }
 
 	  	if (!resource.isSuspended()) {
-	  		resource.suspend(-1); 
+	  		resource.suspend(); 
 	  	}
 	  	this.resource.set(resource);
 

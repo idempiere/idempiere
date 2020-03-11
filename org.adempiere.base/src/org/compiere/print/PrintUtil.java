@@ -581,7 +581,7 @@ public class PrintUtil
 		String sql = "INSERT INTO AD_PrintForm(AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_PrintForm_ID,"
 			+ "Name,Order_PrintFormat_ID,Invoice_PrintFormat_ID,Remittance_PrintFormat_ID,Shipment_PrintFormat_ID)"
 			//
-			+ " VALUES (" + AD_Client_ID + ",0,'Y',SysDate,0,SysDate,0," + AD_PrintForm_ID + ","
+			+ " VALUES (" + AD_Client_ID + ",0,'Y',getDate(),0,getDate(),0," + AD_PrintForm_ID + ","
 			+ "'" + Msg.translate(ctx, "Standard") + "',"
 			+ Order_PrintFormat_ID + "," + Invoice_PrintFormat_ID + ","
 			+ Remittance_PrintFormat_ID + "," + Shipment_PrintFormat_ID + ")";

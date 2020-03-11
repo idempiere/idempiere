@@ -221,7 +221,7 @@ public class CalloutRMA extends CalloutEngine {
         
         // Retrieve tax Exempt
         String sql = "SELECT C_Tax_ID FROM C_Tax WHERE AD_Client_ID=? AND IsActive='Y' "
-            + "AND IsTaxExempt='Y' AND ValidFrom < SYSDATE ORDER BY IsDefault DESC";        
+            + "AND IsTaxExempt='Y' AND ValidFrom < getDate() ORDER BY IsDefault DESC";        
         // Set tax for charge as exempt        
         int taxId = DB.getSQLValueEx(null, sql, Env.getAD_Client_ID(ctx));
         

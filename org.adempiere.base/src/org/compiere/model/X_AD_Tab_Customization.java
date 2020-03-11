@@ -29,7 +29,7 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200225L;
 
     /** Standard Constructor */
     public X_AD_Tab_Customization (Properties ctx, int AD_Tab_Customization_ID, String trxName)
@@ -193,5 +193,29 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	public String getIsDisplayedGrid () 
 	{
 		return (String)get_Value(COLUMNNAME_IsDisplayedGrid);
+	}
+
+	/** Set Quick Form.
+		@param IsQuickForm 
+		Display in Quick Form
+	  */
+	public void setIsQuickForm (boolean IsQuickForm)
+	{
+		set_Value (COLUMNNAME_IsQuickForm, Boolean.valueOf(IsQuickForm));
+	}
+
+	/** Get Quick Form.
+		@return Display in Quick Form
+	  */
+	public boolean isQuickForm () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsQuickForm);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 }

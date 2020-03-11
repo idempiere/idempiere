@@ -679,7 +679,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 			+ "AD_Preference_ID, AD_Preference_UU, AD_Client_ID, AD_Org_ID, IsActive, Created,CreatedBy,Updated,UpdatedBy,"
 			+ "AD_Window_ID, AD_Process_ID, AD_InfoWindow_ID, PreferenceFor, AD_User_ID, Attribute, Value) VALUES (");
 		sql.append(AD_Preference_ID).append(",").append(DB.TO_STRING(UUID.randomUUID().toString())).append(",").append(Client_ID).append(",").append(Org_ID)
-			.append(", 'Y',SysDate,").append(m_AD_User_ID).append(",SysDate,").append(m_AD_User_ID).append(", ");
+			.append(", 'Y',getDate(),").append(m_AD_User_ID).append(",getDate(),").append(m_AD_User_ID).append(", ");
 		
 		if (cbWindow.isChecked())
 			sql.append(m_AD_Window_ID).append(",");

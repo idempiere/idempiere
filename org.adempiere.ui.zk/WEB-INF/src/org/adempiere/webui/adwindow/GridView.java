@@ -74,7 +74,6 @@ import org.zkoss.zul.impl.CustomGridDataLoader;
  */
 public class GridView extends Vlayout implements EventListener<Event>, IdSpace, IFieldEditorContainer, StateChangeListener
 {
-
 	/**
 	 * 
 	 */
@@ -163,7 +162,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		//default paging size
 		if (ClientInfo.isMobile())
 		{
-			//Shoud be <= 20 on mobile
+			//Should be <= 20 on mobile
 			pageSize = MSysConfig.getIntValue(MSysConfig.ZK_MOBILE_PAGING_SIZE, DEFAULT_MOBILE_PAGE_SIZE, Env.getAD_Client_ID(Env.getCtx()));
 			String limit = Library.getProperty(CustomGridDataLoader.GRID_DATA_LOADER_LIMIT);
 			if (limit == null || !(limit.equals(Integer.toString(pageSize)))) {

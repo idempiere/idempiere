@@ -130,7 +130,7 @@ public class MNewsChannel extends X_CM_NewsChannel
 			xmlCode.append ("  </image>");
 
 			String whereClause = "";
-			if (!showFutureItems) whereClause = "sysdate>pubdate"; 
+			if (!showFutureItems) whereClause = "getDate()>pubdate"; 
 			MNewsItem[] theseItems = getNewsItems(whereClause);
 				
 			for(int i=0;i<theseItems.length;i++) 

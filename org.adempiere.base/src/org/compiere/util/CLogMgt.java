@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 
 import org.adempiere.base.Service;
 import org.compiere.Adempiere;
+import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.CConnection;
 import org.compiere.model.MClient;
 import org.idempiere.distributed.IClusterMember;
@@ -680,9 +681,17 @@ public class CLogMgt
 	private static String getDatabaseInfo()
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append(CConnection.get().getDbHost()).append(" : ")
-			.append(CConnection.get().getDbPort()).append(" / ")
+		sb.append(CConnection.get().getDbHost()).append(":")
+			.append(CConnection.get().getDbPort()).append("/")
 			.append(CConnection.get().getDbName());
+		
+		AdempiereDatabase db = DB.getDatabase();
+		sb.append(" (").append(db.getName());
+		if (!DB.isOracle()) 
+		{
+			sb.append(", ").append(db.isNativeMode() ? "Native Dialect" : "Oracle Dialect");
+		}
+		sb.append(")");
 		//  Connection Manager
 		if (CConnection.get().isViaFirewall())
 			sb.append(getMsg("via")).append(" ")

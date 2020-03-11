@@ -104,7 +104,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 817894725729408648L;
+	private static final long serialVersionUID = -3190218965990521698L;
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 	public static final String DATA_UPDATE_COPIED_MESSAGE = "UpdateCopied";
@@ -400,7 +400,7 @@ public class GridTable extends AbstractTableModel
 				where.append(" AND ");
 			//	Show only unprocessed or the one updated within x days
 			where.append("(Processed='N' OR Updated>");
-			where.append("SysDate-1");
+			where.append("getDate()-1");
 			where.append(")");
 		}
 
@@ -904,7 +904,13 @@ public class GridTable extends AbstractTableModel
 		}
 		if (getRowCount() == 0)
 			return;
-		
+
+		GridField field = getField(col);
+
+		// Ignoring new record while sorting
+		if (field.getGridTab().isQuickForm())
+			dataIgnore();
+
 		boolean isSameSortEntries = (col == m_lastSortColumnIndex && ascending == m_lastSortedAscending);
 		if (!isSameSortEntries)
 		{
@@ -915,7 +921,6 @@ public class GridTable extends AbstractTableModel
 		//cache changed row
 		Object[] changedRow = m_rowChanged >= 0 ? getDataAtRow(m_rowChanged) : null;
 
-		GridField field = getField (col);
 		//	RowIDs are not sorted
 		if (field.getDisplayType() == DisplayType.RowID)
 			return;
@@ -3975,5 +3980,13 @@ public class GridTable extends AbstractTableModel
 
 	public int getKeyColumnIndex() {
 		return m_indexKeyColumn;
+	}
+
+	/**
+	 * Index of updated row's
+	 */
+	public int getRowChanged()
+	{
+		return m_rowChanged;
 	}
 }

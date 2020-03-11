@@ -95,3 +95,15 @@
 .font-icon-menuitem i {
 	vertical-align: middle;
 }
+.toolbar-searchbox {
+    margin-right: 10px;
+    margin-left: 10px;
+    border: 1px;
+    padding: 1px;
+}
+@media screen and (max-width: 768px) {
+  .toolbar-searchbox {
+    display: none;
+    width: 0px;
+  }
+}

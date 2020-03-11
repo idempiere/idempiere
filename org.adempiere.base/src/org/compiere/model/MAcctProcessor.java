@@ -163,7 +163,7 @@ public class MAcctProcessor extends X_C_AcctProcessor
 			return 0;
 		StringBuilder sql = new StringBuilder("DELETE FROM C_AcctProcessorLog ")
 					.append("WHERE C_AcctProcessor_ID=").append(getC_AcctProcessor_ID()) 
-					.append(" AND (Created+").append(getKeepLogDays()).append(") < SysDate");
+					.append(" AND (Created+").append(getKeepLogDays()).append(") < getDate()");
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		return no;
 	}	//	deleteLog

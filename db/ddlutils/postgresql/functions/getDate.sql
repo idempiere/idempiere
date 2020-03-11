@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION getDate()
 RETURNS TIMESTAMP WITH TIME ZONE AS $$
 BEGIN
-    RETURN now();
+    RETURN statement_timestamp();
 END;
-$$ LANGUAGE plpgsql VOLATILE;
+$$ LANGUAGE plpgsql STABLE;

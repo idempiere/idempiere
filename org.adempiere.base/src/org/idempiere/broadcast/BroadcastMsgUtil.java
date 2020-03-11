@@ -161,7 +161,7 @@ public class BroadcastMsgUtil
 				+ "       AND ( bm.BroadcastType = 'IL' OR bm.BroadcastType = 'L' ) "
 				+ "       AND bm.isPublished = 'Y' "
 				+ "       AND ( n.Processed = 'N' OR ( n.Processed = 'Y' AND bm.BroadcastFrequency = 'E' ) ) "
-				+ "       AND ( bm.Expired = 'N' AND ( bm.Expiration IS NULL OR bm.Expiration > SYSDATE ) ) ";
+				+ "       AND ( bm.Expired = 'N' AND ( bm.Expiration IS NULL OR bm.Expiration > getDate() ) ) ";
 
 		ArrayList<MBroadcastMessage> mbMessages = new ArrayList<MBroadcastMessage>();
 		PreparedStatement pstmt = null;

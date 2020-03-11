@@ -46,37 +46,7 @@
 		      			<arg>java.naming/com.sun.jndi.ldap=ALL-UNNAMED</arg>
 					</compilerArgs>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>javax.samples.jnlp</groupId>
-									<artifactId>jnlp-jardiff</artifactId>
-									<version>1.6.0</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>javax.samples.jnlp</groupId>
-									<artifactId>jnlp-servlet</artifactId>
-									<version>1.6.0</version>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>WEB-INF/lib</outputDirectory>
-							<stripVersion>true</stripVersion>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+			</plugin>			
 		</plugins>
 	</build>
 </project>

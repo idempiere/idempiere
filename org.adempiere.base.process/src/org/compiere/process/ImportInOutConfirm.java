@@ -86,9 +86,9 @@ public class ImportInOutConfirm extends SvrProcess
 		//	Set IsActive, Created/Updated
 		sql = new StringBuilder ("UPDATE I_InOutLineConfirm ")
 			.append("SET IsActive = COALESCE (IsActive, 'Y'),")
-			.append(" Created = COALESCE (Created, SysDate),")
+			.append(" Created = COALESCE (Created, getDate()),")
 			.append(" CreatedBy = COALESCE (CreatedBy, 0),")
-			.append(" Updated = COALESCE (Updated, SysDate),")
+			.append(" Updated = COALESCE (Updated, getDate()),")
 			.append(" UpdatedBy = COALESCE (UpdatedBy, 0),")
 			.append(" I_ErrorMsg = ' ',")
 			.append(" I_IsImported = 'N' ")

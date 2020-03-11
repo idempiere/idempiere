@@ -33,7 +33,6 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.adempiere.exceptions.DBException;
-import org.codehaus.groovy.classgen.GeneratorContext;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -59,7 +58,7 @@ public class MUser extends X_AD_User
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7996468236476384128L;
+	private static final long serialVersionUID = 1366564982801896588L;
 
 	/**
 	 * Get active Users of BPartner
@@ -1105,4 +1104,17 @@ public class MUser extends X_AD_User
 		}
 		return super.afterSave(newRecord, success);
 	}
+
+	@Override
+	protected boolean postDelete() {
+		if (getAD_Image_ID() > 0) {
+			MImage img = new MImage(getCtx(), getAD_Image_ID(), get_TrxName());
+			if (!img.delete(true)) {
+				log.warning("Associated image could not be deleted for user - AD_Image_ID=" + getAD_Image_ID());
+				return false;
+			}
+		}
+		return true;
+	}
+
 }	//	MUser

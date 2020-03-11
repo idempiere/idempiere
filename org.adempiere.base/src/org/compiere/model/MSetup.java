@@ -150,7 +150,7 @@ public final class MSetup
 		Env.setContext(m_ctx, "#AD_Client_ID", AD_Client_ID);
 
 		//	Standard Values
-		m_stdValues = String.valueOf(AD_Client_ID) + ",0,'Y',SysDate,0,SysDate,0";
+		m_stdValues = String.valueOf(AD_Client_ID) + ",0,'Y',getDate(),0,getDate(),0";
 		//  Info - Client
 		m_info.append(Msg.translate(m_lang, "AD_Client_ID")).append("=").append(name).append("\n");
 
@@ -197,7 +197,7 @@ public final class MSetup
 		}
 		Env.setContext(m_ctx, m_WindowNo, "AD_Org_ID", getAD_Org_ID());
 		Env.setContext(m_ctx, "#AD_Org_ID", getAD_Org_ID());
-		m_stdValuesOrg = AD_Client_ID + "," + getAD_Org_ID() + ",'Y',SysDate,0,SysDate,0";
+		m_stdValuesOrg = AD_Client_ID + "," + getAD_Org_ID() + ",'Y',getDate(),0,getDate(),0";
 		//  Info
 		m_info.append(Msg.translate(m_lang, "AD_Org_ID")).append("=").append(name).append("\n");
 		

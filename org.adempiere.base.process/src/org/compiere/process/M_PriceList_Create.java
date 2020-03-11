@@ -452,9 +452,9 @@ public class M_PriceList_Create extends SvrProcess {
 									sqlins.append("      ,");
 									sqlins.append(rsCurgen.getInt("AD_Org_ID"));
 									sqlins.append("      ,'Y'");
-									sqlins.append("      ,SysDate,");
+									sqlins.append("      ,getDate(),");
 									sqlins.append(currentUserID); 
-									sqlins.append("      ,SysDate,");
+									sqlins.append("      ,getDate(),");
 									sqlins.append(currentUserID);
 									//
 									//Price List
@@ -577,9 +577,9 @@ public class M_PriceList_Create extends SvrProcess {
 									sqlins.append(rsCurgen.getInt("AD_Client_ID"));
 									sqlins.append(", ");
 									sqlins.append(rsCurgen.getInt("AD_Org_ID"));
-									sqlins.append(", 'Y', SysDate,  ");
+									sqlins.append(", 'Y', getDate(),  ");
 									sqlins.append(currentUserID);
-									sqlins.append(", SysDate, ");
+									sqlins.append(", getDate(), ");
 									sqlins.append(currentUserID);
 									sqlins.append(" ,");
 									// Price List

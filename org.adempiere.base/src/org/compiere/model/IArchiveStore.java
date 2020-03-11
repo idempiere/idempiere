@@ -21,4 +21,7 @@ public interface IArchiveStore {
 	
 	public boolean deleteArchive(MArchive archive, MStorageProvider prov);
 
+	public boolean isPendingFlush();
+	
+	public void flush(MArchive archive,MStorageProvider prov);
 }
