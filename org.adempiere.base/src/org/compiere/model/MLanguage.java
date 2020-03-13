@@ -260,7 +260,7 @@ public class MLanguage extends X_AD_Language
 		int AD_Language_ID = getAD_Language_ID();
 		if (AD_Language_ID == 0)
 		{
-			String sql = "SELECT COALESCE(MAX(AD_Language_ID), 999999) FROM AD_Language WHERE AD_Language_ID > 1000";
+			String sql = "SELECT NVL(MAX(AD_Language_ID), 999999) FROM AD_Language WHERE AD_Language_ID > 1000";
 			AD_Language_ID = DB.getSQLValue (get_TrxName(), sql);
 			setAD_Language_ID(AD_Language_ID+1);
 		}

@@ -381,7 +381,7 @@ public abstract class CreateFromShipment extends CreateFrom
 		
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		StringBuilder sql = new StringBuilder("SELECT " // Entered UOM
-				+ "l.QtyInvoiced-SUM(COALESCE(mi.Qty,0)),l.QtyEntered/l.QtyInvoiced,"
+				+ "l.QtyInvoiced-SUM(NVL(mi.Qty,0)),l.QtyEntered/l.QtyInvoiced,"
 				+ " l.C_UOM_ID,COALESCE(uom.UOMSymbol,uom.Name)," // 3..4
 				+ " p.M_Locator_ID, loc.Value, " // 5..6
 				+ " l.M_Product_ID,p.Name, po.VendorProductNo, l.C_InvoiceLine_ID,l.Line," // 7..11

@@ -1809,7 +1809,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			Object[] arguments = new Object[3];
 			boolean filled = false;
 			//
-			String sql = "SELECT COUNT(*), COALESCE(SUM(LineNetAmt),0), COALESCE(SUM(LineTotalAmt),0) "
+			String sql = "SELECT COUNT(*), NVL(SUM(LineNetAmt),0), NVL(SUM(LineTotalAmt),0) "
 				+ "FROM C_InvoiceBatchLine "
 				+ "WHERE C_InvoiceBatch_ID=? AND IsActive='Y'";
 			//

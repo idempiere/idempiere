@@ -321,7 +321,7 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 		//	Excluding quantities
 		sql = new StringBuilder ("UPDATE I_Inventory ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Excluding quantities, ' ")
-			.append("WHERE COALESCE(QtyInternalUse,0)<>0 AND (COALESCE(QtyCount,0)<>0 OR COALESCE(QtyBook,0)<>0) ")
+			.append("WHERE NVL(QtyInternalUse,0)<>0 AND (NVL(QtyCount,0)<>0 OR NVL(QtyBook,0)<>0) ")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		if (no != 0)
@@ -330,7 +330,7 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 		//	Required charge for internal use
 		sql = new StringBuilder ("UPDATE I_Inventory ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Required charge, ' ")
-			.append("WHERE COALESCE(QtyInternalUse,0)<>0 AND COALESCE(C_Charge_ID,0)=0 ")
+			.append("WHERE NVL(QtyInternalUse,0)<>0 AND NVL(C_Charge_ID,0)=0 ")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate (sql.toString (), get_TrxName());
 		if (no != 0)
