@@ -426,7 +426,7 @@ public class MRequestType extends X_R_RequestType
 		else
 		{
 			orderBy = "s.SeqNo"; 
-			groupBy = "COALESCE(s.Name,TO_NCHAR('-')), s.R_Status_ID, s.SeqNo ";
+			groupBy = "NVL(s.Name,'-'), s.R_Status_ID, s.SeqNo ";
 			sb.append(groupBy)
 				.append("FROM R_Request LEFT OUTER JOIN R_Status s ON (R_Request.R_Status_ID=s.R_Status_ID) ");
 		}

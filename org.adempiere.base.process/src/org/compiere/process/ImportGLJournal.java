@@ -658,8 +658,8 @@ public class ImportGLJournal extends SvrProcess
 		//	Go through Journal Records
 		sql = new StringBuilder ("SELECT * FROM I_GLJournal ")
 			.append("WHERE I_IsImported='N'").append (clientCheck)
-			.append(" ORDER BY COALESCE(BatchDocumentNo, TO_NCHAR(I_GLJournal_ID)||' '), COALESCE(JournalDocumentNo, ")
-					.append("TO_NCHAR(I_GLJournal_ID)||' '), C_AcctSchema_ID, PostingType, C_DocType_ID, GL_Category_ID, ")
+			.append(" ORDER BY NVL(BatchDocumentNo, I_GLJournal_ID||' '), NVL(JournalDocumentNo, ")
+					.append("I_GLJournal_ID||' '), C_AcctSchema_ID, PostingType, C_DocType_ID, GL_Category_ID, ")
 					.append("C_Currency_ID, TRUNC(DateAcct), Line, I_GLJournal_ID");
 		try
 		{
