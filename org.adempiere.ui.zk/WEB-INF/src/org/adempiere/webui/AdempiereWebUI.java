@@ -119,7 +119,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	private ConcurrentMap<String, String[]> m_URLParameters;
 
 	public static final String SERVERPUSH_SCHEDULE_FAILURES = "serverpush.schedule.failures";
-
+	
+	private static final String ON_LOGIN_COMPLETED = "onLoginCompleted";
+	
     public AdempiereWebUI()
     {
     	this.setVisible(false);
@@ -127,11 +129,15 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	userPreference = new UserPreference();
     	// preserve the original URL parameters as is destroyed later on loging
     	m_URLParameters = new ConcurrentHashMap<String, String[]>(Executions.getCurrent().getParameterMap());
+    	
+    	this.addEventListener(ON_LOGIN_COMPLETED, this);
     }
 
 	public void onCreate()
     {
         this.getPage().setTitle(ThemeManager.getBrowserTitle());
+        
+        Executions.getCurrent().getDesktop().enableServerPush(true);
         
         SessionManager.setSessionApplication(this);
         Session session = Executions.getCurrent().getDesktop().getSession();
@@ -153,11 +159,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         }
         else
         {
-            loginCompleted();
+        	Clients.showBusy(null);
+        	//use echo event to make sure server push have been started when loginCompleted is call
+        	Events.echoEvent(ON_LOGIN_COMPLETED, this, null);
         }
 
-        Executions.getCurrent().getDesktop().enableServerPush(true);
-        
         Executions.getCurrent().getDesktop().addListener(new DrillCommand());
         Executions.getCurrent().getDesktop().addListener(new TokenCommand());
         Executions.getCurrent().getDesktop().addListener(new ZoomCommand());
@@ -485,7 +491,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			if (appDesktop != null)
 				appDesktop.setClientInfo(clientInfo);
 
-		}
+		} else if (event.getName().equals(ON_LOGIN_COMPLETED)) {
+			loginCompleted();
+		} 
 
 	}
 
@@ -541,10 +549,13 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		if (desktop.isServerPushEnabled())
 			desktop.enableServerPush(false);
 		Session session = logout0();
-    	
-    	//clear context and invalidate session
+		DesktopCache desktopCache = ((SessionCtrl)session).getDesktopCache();
+		
+    	//clear context
 		Env.getCtx().clear();
-    	((SessionCtrl)session).invalidateNow();    	
+		
+		//invalidate session
+		((SessionCtrl)session).invalidateNow();    	
     	
     	//put saved context into new session
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -555,7 +566,12 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		newSession.setAttribute(SAVED_CONTEXT, map);
 		properties.setProperty(SessionContextListener.SERVLET_SESSION_ID, newSession.getId());
 		
-		Executions.sendRedirect("index.zul");
+		//redirect must happens before removeDesktop below, otherwise you get NPE
+		Executions.getCurrent().sendRedirect("index.zul");
+		
+		//remove old desktop    	
+		if (desktopCache != null)
+			desktopCache.removeDesktop(desktop);
 	}
 	
 	@Override
