@@ -207,8 +207,8 @@ public class AtmosphereServerPush implements ServerPush {
 		        	}
 	        	}
 	        	if (!ok) {
-		        	log.warn("Failed to resume long polling resource");
-		        	Desktop d = desktop.get();
+	        		Desktop d = desktop.get();
+		        	log.warn("Failed to resume long polling resource" + (d != null ? " for desktop " + d.getId() : ""));		        	
 		        	if (d != null) {
 		        		Integer count = (Integer) d.getAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES);
 		        		if (count != null)
