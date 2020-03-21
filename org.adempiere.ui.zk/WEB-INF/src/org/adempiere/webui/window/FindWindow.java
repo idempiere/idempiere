@@ -58,6 +58,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
@@ -716,11 +717,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             GridField mField = m_findFields[i];
             boolean isDisplayed = mField.isDisplayed();
             
-            if (DisplayType.isText(mField.getVO().displayType)) {
-            	// for string fields allow searching long strings - useful for like and similar to searches
-            	mField.getVO().FieldLength = 32767;  // a conservative max literal string - like oracle extended
-            	mField.getVO().DisplayLength = mField.getVO().FieldLength;
-            }
             if (mField.getVO().displayType == DisplayType.YesNo || mField.isEncrypted() || mField.isEncryptedColumn()) {
 				// Make Yes-No searchable as list
 				GridFieldVO vo = mField.getVO();
@@ -1191,7 +1187,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         editor.addValueChangeListener(this);
         Label label = editor.getLabel();
         Component fieldEditor = editor.getComponent();
-        //Fix miss lable of checkbox
+        setLengthStringField(mField, fieldEditor);
+        //Fix miss label of checkbox
         label.setValue(mField.getHeader());
         //
         if (displayLength > 0)      //  set it back
@@ -1256,6 +1253,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         return true;
     }   // addSelectionColumn
     
+    private void setLengthStringField(GridField field, Component fieldEditor) {
+        if (DisplayType.isText(field.getVO().displayType) && fieldEditor instanceof Textbox) {
+        	// for string fields allow searching long strings - useful for like and similar to searches
+        	((Textbox) fieldEditor).setMaxlength(32767);  // a conservative max literal string - like oracle extended
+        }
+	}
+
     public void onEvent(Event event) throws Exception
     {
         	m_createNew  = false;
@@ -2191,6 +2195,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             editor = new WStringEditor(findField);
             findField.addPropertyChangeListener(editor);
         }
+        setLengthStringField(findField, editor.getComponent());
         
         editor.addValueChangeListener(this);
         editor.setValue(null);
