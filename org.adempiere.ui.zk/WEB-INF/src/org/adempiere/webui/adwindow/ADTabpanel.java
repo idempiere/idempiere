@@ -1753,7 +1753,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 				attachDetailPane();
 			}
 			ZKUpdateUtil.setVflex(this, "true");
-			listPanel.setDetailPaneMode(detailPaneMode);
+			listPanel.setDetailPaneMode(detailPaneMode, gridTab);
 		}		
 	}
 
