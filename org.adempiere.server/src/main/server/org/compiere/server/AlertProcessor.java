@@ -133,7 +133,7 @@ public class AlertProcessor extends AdempiereServer
 		if (log.isLoggable(Level.INFO)) log.info("" + alert);
 
 		MSystem system = MSystem.get(Env.getCtx());
-		MClient client = MClient.get(Env.getCtx());
+		MClient client = MClient.get(Env.getCtx(), alert.getAD_Client_ID());
 		// parse variables from Client, then from System
 		String alertMessage = Env.parseVariable(alert.getAlertMessage(), client, null, true);
 		alertMessage = Env.parseVariable(alertMessage, system, null, true);
@@ -240,7 +240,7 @@ public class AlertProcessor extends AdempiereServer
 		// parse variables from Client, then from System
 		String alertSubject = Env.parseVariable(alert.getAlertSubject(), client, null, true);
 		alertSubject = Env.parseVariable(alertSubject, system, null, true);
-		int countMail = notifyUsers(users, alertSubject, message.toString(), attachments);
+		int countMail = notifyUsers(users, alertSubject, message.toString(), attachments, alert);
 		
 		// IDEMPIERE-2864
 		for(File attachment : attachments)
@@ -259,9 +259,10 @@ public class AlertProcessor extends AdempiereServer
 	 * @param subject email subject
 	 * @param message email message
 	 * @param attachments 
+	 * @param alert 
 	 * @return how many email were sent
 	 */
-	protected int notifyUsers(Collection<Integer> users, String subject, String message, Collection<File> attachments)
+	protected int notifyUsers(Collection<Integer> users, String subject, String message, Collection<File> attachments, MAlert alert)
 	{
 		int countMail = 0;
 		for (int user_id : users) {
@@ -282,14 +283,14 @@ public class AlertProcessor extends AdempiereServer
 					// Notice
 					int AD_Message_ID = 52244;  /* TODO - Hardcoded message=notes */
 					MNote note = new MNote(getCtx(), AD_Message_ID, user_id, trx.getTrxName());
-					note.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
+					note.setClientOrg(alert.getAD_Client_ID(), alert.getAD_Org_ID());
 					note.setTextMsg(message);
 					note.setDescription(subject);
 					note.saveEx();
 					if (attachments.size() > 0) {
 						// Attachment
 						MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), trx.getTrxName());
-						attachment.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
+						attachment.setClientOrg(alert.getAD_Client_ID(), alert.getAD_Org_ID());
 						for (File f : attachments) {
 							attachment.addEntry(f);
 						}
