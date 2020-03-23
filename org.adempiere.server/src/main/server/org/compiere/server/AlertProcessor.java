@@ -326,7 +326,7 @@ public class AlertProcessor extends AdempiereServer
 		Exception error = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, trxName);
+			pstmt = DB.prepareNormalReadReplicaStatement(sql, trxName);
 			rs = pstmt.executeQuery ();
 			ResultSetMetaData meta = rs.getMetaData();
 			boolean isFirstRow = true;
@@ -389,7 +389,7 @@ public class AlertProcessor extends AdempiereServer
 		Exception error = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, trxName);
+			pstmt = DB.prepareNormalReadReplicaStatement(sql, trxName);
 			rs = pstmt.executeQuery ();
 			ResultSetMetaData meta = rs.getMetaData();
 			while (rs.next ())
