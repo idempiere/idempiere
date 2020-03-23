@@ -37,6 +37,7 @@ import org.compiere.model.MNote;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.MUser;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -269,7 +270,8 @@ public class AlertProcessor extends AdempiereServer
 			MUser user = MUser.get(getCtx(), user_id);
 			if (user.isNotificationEMail()) {
 				String messageHTML = message.replaceAll(Env.NL, "<br>");
-				if (m_client.sendEMailAttachments (user_id, subject, messageHTML, attachments, true))
+				MClient client = MClient.get(Env.getCtx(), alert.getAD_Client_ID());
+				if (client.sendEMailAttachments (user_id, subject, messageHTML, attachments, true))
 				{
 					countMail++;
 				}
@@ -281,7 +283,7 @@ public class AlertProcessor extends AdempiereServer
 					trx = Trx.get(Trx.createTrxName("AP_NU"), true);
 					trx.setDisplayName(getClass().getName()+"_"+m_model.getName()+"_notifyUsers");
 					// Notice
-					int AD_Message_ID = 52244;  /* TODO - Hardcoded message=notes */
+					int AD_Message_ID = SystemIDs.MESSAGE_NOTES;  /* TODO - Hardcoded message=notes */
 					MNote note = new MNote(getCtx(), AD_Message_ID, user_id, trx.getTrxName());
 					note.setClientOrg(alert.getAD_Client_ID(), alert.getAD_Org_ID());
 					note.setTextMsg(message);
