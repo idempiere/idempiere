@@ -161,6 +161,8 @@ public class MAsset extends X_A_Asset
 		setDateAcct(ifa.getDateAcct());
 		setName(ifa.getName());
 		setDescription(ifa.getDescription());
+
+		setI_FixedAsset(ifa);
 	}
 
 	/**
@@ -413,6 +415,9 @@ public class MAsset extends X_A_Asset
 			{			
 				if (assetgrpacct.getAD_Org_ID() == 0 || assetgrpacct.getAD_Org_ID() == getAD_Org_ID()) 
 				{
+					if (getI_FixedAsset() != null && assetgrpacct.getC_AcctSchema_ID() != getI_FixedAsset().getC_AcctSchema_ID())
+						continue;
+					
 					// Asset Accounting
 					MAssetAcct assetacct = new MAssetAcct(this, assetgrpacct);
 					assetacct.setAD_Org_ID(getAD_Org_ID()); //added by @win
@@ -576,6 +581,10 @@ public class MAsset extends X_A_Asset
 	public void setA_Accumulated_Depr(BigDecimal A_Accumulated_Depr)		{	m_A_Accumulated_Depr = A_Accumulated_Depr; }
 	public BigDecimal getA_Accumulated_Depr_F()								{	return m_A_Accumulated_Depr_F;	}
 	public void setA_Accumulated_Depr_F(BigDecimal A_Accumulated_Depr_F)	{	m_A_Accumulated_Depr_F = A_Accumulated_Depr_F; }
+	
+	private MIFixedAsset m_I_FixedAsset = null;
+	public MIFixedAsset getI_FixedAsset()										{	return m_I_FixedAsset;	}
+	public void setI_FixedAsset(MIFixedAsset I_FixedAsset)					{	m_I_FixedAsset = I_FixedAsset; }
 
 	public MAssetDelivery confirmDelivery(EMail email, int ad_User_ID) {
 		// TODO Auto-generated method stub

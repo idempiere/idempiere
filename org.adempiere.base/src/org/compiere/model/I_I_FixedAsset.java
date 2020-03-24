@@ -147,6 +147,19 @@ public interface I_I_FixedAsset
 	/** Get Asset Type Value	  */
 	public String getA_Asset_Type_Value();
 
+    /** Column name AcctSchemaName */
+    public static final String COLUMNNAME_AcctSchemaName = "AcctSchemaName";
+
+	/** Set Account Schema Name.
+	  * Name of the Accounting Schema
+	  */
+	public void setAcctSchemaName (String AcctSchemaName);
+
+	/** Get Account Schema Name.
+	  * Name of the Accounting Schema
+	  */
+	public String getAcctSchemaName();
+
     /** Column name A_Current_Period */
     public static final String COLUMNNAME_A_Current_Period = "A_Current_Period";
 
@@ -195,6 +208,15 @@ public interface I_I_FixedAsset
 	/** Get Asset Salvage Value	  */
 	public BigDecimal getA_Salvage_Value();
 
+    /** Column name AssetAmtEntered */
+    public static final String COLUMNNAME_AssetAmtEntered = "AssetAmtEntered";
+
+	/** Set Entered Amount	  */
+	public void setAssetAmtEntered (BigDecimal AssetAmtEntered);
+
+	/** Get Entered Amount	  */
+	public BigDecimal getAssetAmtEntered();
+
     /** Column name AssetDepreciationDate */
     public static final String COLUMNNAME_AssetDepreciationDate = "AssetDepreciationDate";
 
@@ -234,6 +256,15 @@ public interface I_I_FixedAsset
 	  */
 	public Timestamp getAssetServiceDate();
 
+    /** Column name AssetSourceAmt */
+    public static final String COLUMNNAME_AssetSourceAmt = "AssetSourceAmt";
+
+	/** Set Source Amount	  */
+	public void setAssetSourceAmt (BigDecimal AssetSourceAmt);
+
+	/** Get Source Amount	  */
+	public BigDecimal getAssetSourceAmt();
+
     /** Column name BPartner_Value */
     public static final String COLUMNNAME_BPartner_Value = "BPartner_Value";
 
@@ -246,6 +277,21 @@ public interface I_I_FixedAsset
 	  * The Key of the Business Partner
 	  */
 	public String getBPartner_Value();
+
+    /** Column name C_AcctSchema_ID */
+    public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
+
+	/** Set Accounting Schema.
+	  * Rules for accounting
+	  */
+	public void setC_AcctSchema_ID (int C_AcctSchema_ID);
+
+	/** Get Accounting Schema.
+	  * Rules for accounting
+	  */
+	public int getC_AcctSchema_ID();
+
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_BPartnerSR_ID */
     public static final String COLUMNNAME_C_BPartnerSR_ID = "C_BPartnerSR_ID";
@@ -285,6 +331,21 @@ public interface I_I_FixedAsset
 
 	/** Get City Value	  */
 	public String getC_City_Value();
+
+    /** Column name C_Currency_ID */
+    public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
+
+	/** Set Currency.
+	  * The Currency for this record
+	  */
+	public void setC_Currency_ID (int C_Currency_ID);
+
+	/** Get Currency.
+	  * The Currency for this record
+	  */
+	public int getC_Currency_ID();
+
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -421,6 +482,19 @@ public interface I_I_FixedAsset
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name ISO_Code */
+    public static final String COLUMNNAME_ISO_Code = "ISO_Code";
+
+	/** Set ISO Currency Code.
+	  * Three letter ISO 4217 Code of the Currency
+	  */
+	public void setISO_Code (String ISO_Code);
+
+	/** Get ISO Currency Code.
+	  * Three letter ISO 4217 Code of the Currency
+	  */
+	public String getISO_Code();
 
     /** Column name LocatorValue */
     public static final String COLUMNNAME_LocatorValue = "LocatorValue";
