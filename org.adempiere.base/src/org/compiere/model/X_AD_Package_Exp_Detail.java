@@ -30,7 +30,7 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200324L;
 
     /** Standard Constructor */
     public X_AD_Package_Exp_Detail (Properties ctx, int AD_Package_Exp_Detail_ID, String trxName)
@@ -945,6 +945,8 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	public static final String TYPE_SQLMandatory = "SQM";
 	/** Info Window = IW */
 	public static final String TYPE_InfoWindow = "IW";
+	/** Data Single = DS */
+	public static final String TYPE_DataSingle = "DS";
 	/** Set Type.
 		@param Type 
 		Type of Validation (SQL, Java Script, Java Language)
