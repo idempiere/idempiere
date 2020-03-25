@@ -110,7 +110,7 @@ public class MDistribution extends X_GL_Distribution
 				continue;
 			
 			//	Optional Elements - "non-Any"
-			if (!distribution.isAnyOrg() && distribution.getAD_Org_ID() != AD_Org_ID)
+			if (!distribution.isAnyOrg() && distribution.getOrg_ID() != AD_Org_ID)
 				continue;
 			if (!distribution.isAnyAcct() && distribution.getAccount_ID() != Account_ID)
 				continue;
