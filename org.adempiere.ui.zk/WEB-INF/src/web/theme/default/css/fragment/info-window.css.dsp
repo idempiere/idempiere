@@ -6,7 +6,25 @@
 	border: none !important;
 }
 
-.info-panel .z-center {
+.info-panel .statusBar .z-west,
+.info-panel .statusBar .z-center {
+    background: #F4F4F4;
+	border: none;
+	padding-top: 2px;
+	padding-left: 4px;
+}
+
+.info-panel .statusBar .z-east {
+    background: #F4F4F4;
+	border: none;
+	padding-top: 2px;
+	padding-left: 4px;
+	width:24px;
+}
+
+.info-panel .z-south-title{
+	bottom: 4px;
+    position: relative;
 }
 
 .info-panel .z-listbox {
