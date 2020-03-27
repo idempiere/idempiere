@@ -117,4 +117,10 @@ public class ArrayExcelExporter extends AbstractXLSXExporter {
 	protected int getCurrentRow() {
 		return 0;
 	}
+
+	@Override
+	public boolean isDisplayed(int row, int col)
+	{
+		return true;
+	}
 }

@@ -85,13 +85,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.restlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.ant"
          download-size="0"
          install-size="0"
@@ -446,14 +439,6 @@
          unpack="false"/>
 
    <plugin
-         id="groovy-swing"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="groovy-xml"
          download-size="0"
          install-size="0"
@@ -519,6 +504,21 @@
 
    <plugin
          id="org.apache.poi.poi-ooxml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="groovy-sql"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.compress"
          download-size="0"
          install-size="0"
          version="0.0.0"

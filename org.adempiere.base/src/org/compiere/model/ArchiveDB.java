@@ -113,4 +113,13 @@ public class ArchiveDB implements IArchiveStore {
 		return true;
 	}
 
+	@Override
+	public boolean isPendingFlush() {
+		return false;
+	}
+
+	@Override
+	public void flush(MArchive archive, MStorageProvider prov) {		
+	}
+
 }

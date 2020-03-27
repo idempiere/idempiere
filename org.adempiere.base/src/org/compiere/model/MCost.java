@@ -424,7 +424,7 @@ public class MCost extends X_M_Cost
 	protected static BigDecimal getSeedCostFromPriceList(MProduct product,
 			MAcctSchema as, int orgID) {
 		String sql = "SELECT pp.PriceList, pp.PriceStd FROM M_ProductPrice pp" +
-				" INNER JOIN M_PriceList_Version plv ON (pp.M_PriceList_Version_ID = plv.M_PriceList_Version_ID AND plv.ValidFrom <= trunc(sysdate))" +
+				" INNER JOIN M_PriceList_Version plv ON (pp.M_PriceList_Version_ID = plv.M_PriceList_Version_ID AND plv.ValidFrom <= trunc(getDate()))" +
 				" INNER JOIN M_PriceList pl ON (plv.M_PriceList_ID = pl.M_PriceList_ID AND pl.IsSOPriceList = 'N')" +
 				" WHERE pp.AD_Client_ID = ? AND pp.AD_Org_ID IN (0, ?) AND pp.M_Product_ID = ? AND pp.PriceList > 0 AND pp.IsActive = 'Y' " +
 				" ORDER BY pp.AD_Org_ID Desc, plv.ValidFrom Desc";

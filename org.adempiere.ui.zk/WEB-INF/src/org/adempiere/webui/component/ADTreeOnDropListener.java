@@ -174,7 +174,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 				sql.append(mTree.getNodeTableName())
 					.append(" SET Parent_ID=").append(oldMParent.getNode_ID())
 					.append(", SeqNo=").append(i)
-					.append(", Updated=SysDate")
+					.append(", Updated=getDate()")
 					.append(" WHERE AD_Tree_ID=").append(mTree.getAD_Tree_ID())
 					.append(" AND Node_ID=").append(md.getNode_ID());
 				if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
@@ -191,7 +191,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 					sql.append(mTree.getNodeTableName())
 						.append(" SET Parent_ID=").append(newMParent.getNode_ID())
 						.append(", SeqNo=").append(i)
-						.append(", Updated=SysDate")
+						.append(", Updated=getDate()")
 						.append(" WHERE AD_Tree_ID=").append(mTree.getAD_Tree_ID())
 						.append(" AND Node_ID=").append(md.getNode_ID());
 					if (log.isLoggable(Level.FINE)) log.fine(sql.toString());

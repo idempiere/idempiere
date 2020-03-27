@@ -26,6 +26,7 @@ import java.util.Properties;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.adwindow.IFieldEditorContainer;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Datebox;
@@ -44,11 +45,9 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
 import org.compiere.model.MStyle;
-import org.compiere.model.X_AD_StyleLine;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
-import org.compiere.util.Evaluator;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
@@ -572,7 +571,15 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	protected void applyLabelStyles(boolean applyDictionaryStyle) {
 		if (label != null) {
 			boolean zoomable = isZoomable();
-			String style = (zoomable ? STYLE_ZOOMABLE_LABEL : "") + (isMandatoryStyle() ? STYLE_EMPTY_MANDATORY_LABEL : STYLE_NORMAL_LABEL);
+			LayoutUtils.addSclass(CLASS_NORMAL_LABEL, label);
+			if (zoomable)
+				LayoutUtils.addSclass(CLASS_ZOOMABLE_LABEL, label);
+			if (isMandatoryStyle())
+				LayoutUtils.addSclass(CLASS_EMPTY_MANDATORY_LABEL, label);
+			else 
+				LayoutUtils.removeSclass(CLASS_EMPTY_MANDATORY_LABEL, label);
+			
+			String style = "";
 			if (ClientInfo.isMobile()) {
 				if (!zoomable && popupMenu != null) {
 					style = style + STYLE_MOBILE_ZOOMABLE;
@@ -614,6 +621,17 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 			style = buildStyle(gridField.getAD_FieldStyle_ID());
 		}
 		setFieldStyle(style);
+		setFieldMandatoryStyle(applyDictionaryStyle);
+	}
+	
+	private void setFieldMandatoryStyle(boolean applyStyle) {
+		HtmlBasedComponent component = (HtmlBasedComponent) getComponent();
+		if (component != null) {
+			if (isMandatoryStyle() && applyStyle)
+				LayoutUtils.addSclass(CLASS_MANDATORY_FIELD, component);
+			else 
+				LayoutUtils.removeSclass(CLASS_MANDATORY_FIELD, component);
+		}
 	}
 
 	protected void setFieldStyle(String style) {
@@ -647,27 +665,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
 	protected String buildStyle(int AD_Style_ID) {
 		MStyle style = MStyle.get(Env.getCtx(), AD_Style_ID);
-		X_AD_StyleLine[] lines = style.getStyleLines();
-		StringBuilder styleBuilder = new StringBuilder();
-		for (X_AD_StyleLine line : lines) 
-		{
-			String inlineStyle = line.getInlineStyle().trim();
-			String displayLogic = line.getDisplayLogic();
-			String theme = line.getTheme();
-			if (!Util.isEmpty(theme)) {
-				if (!ThemeManager.getTheme().equals(theme))
-					continue;
-			}
-			if (!Util.isEmpty(displayLogic))
-			{
-				if (!Evaluator.evaluateLogic(getStyleEvaluatee(), displayLogic)) 
-					continue;
-			}
-			if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
-				styleBuilder.append("; ");
-			styleBuilder.append(inlineStyle);
-		}
-		return styleBuilder.toString();
+		return style.buildStyle(ThemeManager.getTheme(), getStyleEvaluatee());
 	}
 	
     /**
@@ -835,13 +833,26 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		return null;
 	}
 
+	protected void focusNext() {
+		Component comp = getComponent();
+		Component parent = comp.getParent();
+		while (parent != null) {
+			if (parent instanceof IFieldEditorContainer) {
+				((IFieldEditorContainer) parent).focusToNextEditor(this);
+				break;
+			}
+			parent = parent.getParent();
+		}
+	}
+
 	protected Evaluatee getStyleEvaluatee() {
 		return new EvaluateeWrapper(this, gridField, tableEditor);
 	}
-	
-	private static final String STYLE_ZOOMABLE_LABEL = "cursor: pointer; text-decoration: underline;";
-	private static final String STYLE_NORMAL_LABEL = "color: #333;";
-	private static final String STYLE_EMPTY_MANDATORY_LABEL = "color: red;";
+
+	private static final String CLASS_MANDATORY_FIELD = "idempiere-mandatory";
+	private static final String CLASS_ZOOMABLE_LABEL = "idempiere-zoomable-label";
+	private static final String CLASS_NORMAL_LABEL = "idempiere-label";
+	private static final String CLASS_EMPTY_MANDATORY_LABEL = "idempiere-mandatory-label";
 	private static final String STYLE_MOBILE_ZOOMABLE = "cursor: pointer;";
 	
 	private static class EvaluateeWrapper implements Evaluatee {

@@ -126,9 +126,9 @@ public class MWorkflowProcessor extends X_AD_WorkflowProcessor
 	{
 		if (getKeepLogDays() < 1)
 			return 0;
-		String sql = "DELETE AD_WorkflowProcessorLog "
+		String sql = "DELETE FROM AD_WorkflowProcessorLog "
 			+ "WHERE AD_WorkflowProcessor_ID=" + getAD_WorkflowProcessor_ID() 
-			+ " AND (Created+" + getKeepLogDays() + ") < SysDate";
+			+ " AND (Created+" + getKeepLogDays() + ") < getDate()";
 		int no = DB.executeUpdate(sql, get_TrxName());
 		return no;
 	}	//	deleteLog

@@ -109,7 +109,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 		//	Delete Old Imported
 		if (m_deleteOldImported)
 		{
-			sql = new StringBuilder ("DELETE I_Product ")
+			sql = new StringBuilder ("DELETE FROM I_Product ")
 				.append("WHERE I_IsImported='Y'").append(clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.INFO)) log.info("Delete Old Imported =" + no);
@@ -120,9 +120,9 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			.append("SET AD_Client_ID = COALESCE (AD_Client_ID, ").append(m_AD_Client_ID).append("),")
 			.append(" AD_Org_ID = COALESCE (AD_Org_ID, 0),")
 			.append(" IsActive = COALESCE (IsActive, 'Y'),")
-			.append(" Created = COALESCE (Created, SysDate),")
+			.append(" Created = COALESCE (Created, getDate()),")
 			.append(" CreatedBy = COALESCE (CreatedBy, 0),")
-			.append(" Updated = COALESCE (Updated, SysDate),")
+			.append(" Updated = COALESCE (Updated, getDate()),")
 			.append(" UpdatedBy = COALESCE (UpdatedBy, 0),")
 			.append(" ProductType = COALESCE (ProductType, 'I'),")
 			.append(" I_ErrorMsg = ' ',")
@@ -433,7 +433,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 				+ "UPC,SKU,C_UOM_ID,IsSummary,M_Product_Category_ID,C_TaxCategory_ID,"
 				+ "ProductType,ImageURL,DescriptionURL) "
 				+ "SELECT ?,"
-				+ "AD_Client_ID,AD_Org_ID,'Y',SysDate,CreatedBy,SysDate,UpdatedBy,"
+				+ "AD_Client_ID,AD_Org_ID,'Y',getDate(),CreatedBy,getDate(),UpdatedBy,"
 				+ "Value,Name,Description,DocumentNote,Help,"
 				+ "UPC,SKU,C_UOM_ID,'N',M_Product_Category_ID," + C_TaxCategory_ID + ","
 				+ "ProductType,ImageURL,DescriptionURL "
@@ -451,7 +451,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 				+ "(SELECT Value,Name,Description,DocumentNote,Help,"
 				+ "UPC,SKU,C_UOM_ID,M_Product_Category_ID,Classification,ProductType,"
 				+ "Volume,Weight,ShelfWidth,ShelfHeight,ShelfDepth,UnitsPerPallet,"
-				+ "Discontinued,DiscontinuedBy,SysDate,UpdatedBy"
+				+ "Discontinued,DiscontinuedBy,getDate(),UpdatedBy"
 				+ " FROM I_Product WHERE I_Product_ID=?) "
 				+ "WHERE M_Product_ID=?";
 			PreparedStatement pstmt_updateProduct = DB.prepareStatement
@@ -468,7 +468,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 				+ "PriceList,PricePO,RoyaltyAmt,PriceEffective,"
 				+ "VendorProductNo,VendorCategory,Manufacturer,"
 				+ "Discontinued,DiscontinuedBy,Order_Min,Order_Pack,"
-				+ "CostPerOrder,DeliveryTime_Promised,SysDate,UpdatedBy"
+				+ "CostPerOrder,DeliveryTime_Promised,getDate(),UpdatedBy"
 				+ " FROM I_Product"
 				+ " WHERE I_Product_ID=?) "
 				+ "WHERE M_Product_ID=? AND C_BPartner_ID=?";
@@ -485,7 +485,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 				+ "Discontinued,DiscontinuedBy, DiscontinuedAt, Order_Min,Order_Pack,"
 				+ "CostPerOrder,DeliveryTime_Promised) "
 				+ "SELECT ?,?, "
-				+ "AD_Client_ID,AD_Org_ID,'Y',SysDate,CreatedBy,SysDate,UpdatedBy,"
+				+ "AD_Client_ID,AD_Org_ID,'Y',getDate(),CreatedBy,getDate(),UpdatedBy,"
 				+ "'Y',C_UOM_ID,C_Currency_ID,UPC,"
 				+ "PriceList,PricePO,RoyaltyAmt,PriceEffective,"
 				+ "VendorProductNo,VendorCategory,Manufacturer,"
@@ -497,7 +497,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			//	Set Imported = Y
 			pstmt_setImported = DB.prepareStatement
 				("UPDATE I_Product SET I_IsImported='Y', M_Product_ID=?, "
-				+ "Updated=SysDate, Processed='Y' WHERE I_Product_ID=?", get_TrxName());
+				+ "Updated=getDate(), Processed='Y' WHERE I_Product_ID=?", get_TrxName());
 
 			//
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
@@ -543,7 +543,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 						.append("(SELECT Value,Name,Description,DocumentNote,Help,")
 						.append("UPC,SKU,C_UOM_ID,M_Product_Category_ID,Classification,ProductType,")
 						.append("Volume,Weight,ShelfWidth,ShelfHeight,ShelfDepth,UnitsPerPallet,")
-						.append("Discontinued,DiscontinuedBy, DiscontinuedAt, SysDate,UpdatedBy")
+						.append("Discontinued,DiscontinuedBy, DiscontinuedAt, getDate(),UpdatedBy")
 						.append(" FROM I_Product WHERE I_Product_ID=").append(I_Product_ID).append(") ")
 						.append("WHERE M_Product_ID=").append(M_Product_ID);
 					PreparedStatement pstmt_updateProduct = DB.prepareStatement
@@ -590,7 +590,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 							.append("PriceList,PricePO,RoyaltyAmt,PriceEffective,")
 							.append("VendorProductNo,VendorCategory,Manufacturer,")
 							.append("Discontinued,DiscontinuedBy, DiscontinuedAt, Order_Min,Order_Pack,")
-							.append("CostPerOrder,DeliveryTime_Promised,SysDate,UpdatedBy")
+							.append("CostPerOrder,DeliveryTime_Promised,getDate(),UpdatedBy")
 							.append(" FROM I_Product")
 							.append(" WHERE I_Product_ID=").append(I_Product_ID).append(") ")
 							.append("WHERE M_Product_ID=").append(M_Product_ID).append(" AND C_BPartner_ID=").append(C_BPartner_ID);
@@ -689,7 +689,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 
 		//	Set Error to indicator to not imported
 		sql = new StringBuilder ("UPDATE I_Product ")
-			.append("SET I_IsImported='N', Updated=SysDate ")
+			.append("SET I_IsImported='N', Updated=getDate() ")
 			.append("WHERE I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0, null, new BigDecimal (no), "@Errors@");

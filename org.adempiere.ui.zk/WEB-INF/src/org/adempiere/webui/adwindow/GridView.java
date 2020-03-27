@@ -42,6 +42,7 @@ import org.compiere.model.GridTable;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.StateChangeEvent;
 import org.compiere.model.StateChangeListener;
+import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -74,11 +75,10 @@ import org.zkoss.zul.impl.CustomGridDataLoader;
  */
 public class GridView extends Vlayout implements EventListener<Event>, IdSpace, IFieldEditorContainer, StateChangeListener
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3046157124327495333L;
+	private static final long serialVersionUID = 3995829393137424527L;
 
 	private static final String HEADER_GRID_STYLE = "border: none; margin:0; padding: 0;";
 
@@ -97,6 +97,9 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	private static final int MIN_NUMERIC_COL_WIDTH = 120;
 
 	private static final String ATTR_ON_POST_SELECTED_ROW_CHANGED = "org.adempiere.webui.adwindow.GridView.onPostSelectedRowChanged";
+
+	/**	Static Logger	*/
+	private static CLogger	s_log	= CLogger.getCLogger (GridView.class);
 
 	private Grid listbox = null;
 
@@ -163,7 +166,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		//default paging size
 		if (ClientInfo.isMobile())
 		{
-			//Shoud be <= 20 on mobile
+			//Should be <= 20 on mobile
 			pageSize = MSysConfig.getIntValue(MSysConfig.ZK_MOBILE_PAGING_SIZE, DEFAULT_MOBILE_PAGE_SIZE, Env.getAD_Client_ID(Env.getCtx()));
 			String limit = Library.getProperty(CustomGridDataLoader.GRID_DATA_LOADER_LIMIT);
 			if (limit == null || !(limit.equals(Integer.toString(pageSize)))) {
@@ -205,17 +208,60 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		listbox.setEmptyMessage(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Processing")));
 	}
 	
-	public void setDetailPaneMode(boolean detailPaneMode) {
+	public void setDetailPaneMode(boolean detailPaneMode, GridTab gridTab) {
 		if (this.detailPaneMode != detailPaneMode) {
 			this.detailPaneMode = detailPaneMode;
-			pageSize = detailPaneMode ? getDetailPageSize() : MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 20, Env.getAD_Client_ID(Env.getCtx()));
+			pageSize = detailPaneMode ? getDetailPageSize(gridTab) : MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 20, Env.getAD_Client_ID(Env.getCtx()));
 			updatePaging();
 		}
 	}
 
-	/** Returns the number of records to be displayed in detail grid (TODO : manage exceptions defined in SysConfig - see https://idempiere.atlassian.net/browse/IDEMPIERE-3786) */
-	int getDetailPageSize() {
-		return MSysConfig.getIntValue(MSysConfig.ZK_PAGING_DETAIL_SIZE, DEFAULT_DETAIL_PAGE_SIZE, Env.getAD_Client_ID(Env.getCtx()));
+	/** Returns the number of records to be displayed in detail grid */
+	private int getDetailPageSize(GridTab gridTab) {
+		int size = DEFAULT_DETAIL_PAGE_SIZE;
+		String pageDetailSizes = MSysConfig.getValue(MSysConfig.ZK_PAGING_DETAIL_SIZE, Env.getAD_Client_ID(Env.getCtx()));
+		if (Util.isEmpty(pageDetailSizes, true)) {
+			return size;
+		}
+		/* Format of ZK_PAGING_DETAIL_SIZE is a list of components separated by ;
+		 * first component is the wide default
+		 * next components are exceptions defined as pair of tab:size - where tab can be AD_Tab_ID, AD_Tab_UU or AD_TableName
+		 */
+		for (String pageDetailSize : pageDetailSizes.split(";")) {
+			String[] parts = pageDetailSize.split(":");
+			if (parts.length < 1 || parts.length > 2) {
+				s_log.warning("Misconfiguration of ZK_PAGING_DETAIL_SIZE - cannot split : in -> " + pageDetailSize);
+				return size;
+			}
+			String sizeToParse = null;
+			if (parts.length == 1) {
+				sizeToParse = parts[0];
+			} else {
+				String tab = parts[0];
+				if (   tab.equalsIgnoreCase(String.valueOf(gridTab.getAD_Tab_ID()))
+					|| tab.equalsIgnoreCase(String.valueOf(gridTab.getAD_Tab_UU()))
+					|| tab.equalsIgnoreCase(String.valueOf(gridTab.getTableName()))) {
+					sizeToParse = parts[1];
+				}
+			}
+			if (sizeToParse != null) {
+				int sizeParsed = -1;
+				try {
+					sizeParsed = Integer.valueOf(sizeToParse);
+				} catch (NumberFormatException e) {
+					s_log.warning("Misconfiguration of ZK_PAGING_DETAIL_SIZE - cannot parse as integer -> " + sizeToParse);
+					return size;
+				}
+				if (sizeParsed > 0) {
+					size = sizeParsed;
+					if (parts.length > 1) {
+						// found a specific tab size configuration
+						break;
+					}
+				}
+			}
+		}
+		return size;
 	}
 
 	public boolean isDetailPaneMode() {
@@ -356,7 +402,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 			showRecordsCount();
 		}
 		if (this.isVisible())
-			Clients.resize(listbox);
+			listbox.invalidate();
 	}
 
 	/**
@@ -729,7 +775,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 				listModel.setPage(pgNo);
 				onSelectedRowChange(0);
 				gridTab.clearSelection();
-				Clients.resize(listbox);
+				listbox.invalidate();
 			}
 		}
 		else if (event.getTarget() == selectAll)
@@ -1121,7 +1167,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		
 		refresh(gridTab);
 		scrollToCurrentRow();
-		Clients.resize(listbox);
+		listbox.invalidate();
 	}
 
 	/**

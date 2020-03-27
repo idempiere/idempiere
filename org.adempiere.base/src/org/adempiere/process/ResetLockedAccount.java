@@ -48,7 +48,7 @@ public class ResetLockedAccount extends SvrProcess {
 			if (!user.isLocked())
 				throw new AdempiereException(Msg.getMsg(getCtx(), "UserIsNotLocked", new Object[] {user.getName()}));
 
-			StringBuilder sql = new StringBuilder ("UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, DateLastLogin=NULL, Updated=SysDate ")
+			StringBuilder sql = new StringBuilder ("UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, DateLastLogin=NULL, Updated=getDate() ")
 					.append(" WHERE IsLocked='Y' AND AD_Client_ID = ? ")
 					.append(" AND AD_User_ID = " + user.getAD_User_ID());
 			int no = DB.executeUpdate(sql.toString(), new Object[] { p_AD_Client_ID }, false, get_TrxName());
@@ -63,7 +63,7 @@ public class ResetLockedAccount extends SvrProcess {
 			int MAX_ACCOUNT_LOCK_MINUTES = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_ACCOUNT_LOCK_MINUTES, 0);
 			int MAX_INACTIVE_PERIOD = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_INACTIVE_PERIOD_DAY, 0);
 			
-			StringBuilder sql = new StringBuilder("UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, DateLastLogin=NULL, Updated=SysDate ")
+			StringBuilder sql = new StringBuilder("UPDATE AD_User SET IsLocked = 'N', DateAccountLocked=NULL, FailedLoginCount=0, DateLastLogin=NULL, Updated=getDate() ")
 					.append(" WHERE IsLocked='Y' AND AD_Client_ID = ? ");
 			
 			if (DB.isPostgreSQL())
@@ -76,9 +76,9 @@ public class ResetLockedAccount extends SvrProcess {
 			else
 			{
 				if (MAX_ACCOUNT_LOCK_MINUTES > 0)
-					sql.append(" AND (SysDate-DateAccountLocked) * 1440 > ").append(MAX_ACCOUNT_LOCK_MINUTES);
+					sql.append(" AND (getDate()-DateAccountLocked) * 1440 > ").append(MAX_ACCOUNT_LOCK_MINUTES);
 				if (MAX_INACTIVE_PERIOD > 0)
-					sql.append(" AND (SysDate-DateLastLogin) <= ").append(MAX_INACTIVE_PERIOD);
+					sql.append(" AND (getDate()-DateLastLogin) <= ").append(MAX_INACTIVE_PERIOD);
 			}
 			
 			int no = DB.executeUpdate(sql.toString(), p_AD_Client_ID, get_TrxName());

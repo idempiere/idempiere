@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.au.out.AuScript;
@@ -121,7 +122,7 @@ public class WebSocketServerPush implements ServerPush {
         	if (endPoint == null) {
         		if (dt.isServerPushEnabled()) {
         			try {
-						Thread.sleep(2000);
+						Thread.sleep(300);
 					} catch (InterruptedException e) {
 					}
         			endPoint = getEndPoint(dt.getId());
@@ -202,7 +203,18 @@ public class WebSocketServerPush implements ServerPush {
 	        synchronized (schedules) {
 				schedules.add(new Schedule(task, event, scheduler));
 			}
-	        echo();
+	        boolean ok = echo();
+	        if (!ok) {
+	        	Desktop d = desktop.get();
+	        	if (d != null) {
+	        		Integer count = (Integer) d.getAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES);
+	        		if (count != null)
+	        			count = Integer.valueOf(count.intValue()+1);
+	        		else
+	        			count = Integer.valueOf(1);
+	        		d.setAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES, count);
+	        	}
+	        }
     	} else {
     		//in event listener thread, can schedule immediately
     		scheduler.schedule(task, event);

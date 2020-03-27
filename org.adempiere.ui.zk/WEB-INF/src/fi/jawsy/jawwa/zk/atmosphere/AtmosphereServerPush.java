@@ -20,8 +20,11 @@ the License.
 package fi.jawsy.jawwa.zk.atmosphere;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.adempiere.webui.AdempiereWebUI;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +61,7 @@ public class AtmosphereServerPush implements ServerPush {
     private ThreadInfo _active;
     private ExecutionCarryOver _carryOver;
     private final Object _mutex = new Object();
+    private List<Schedule<Event>> schedules = new ArrayList<>();
 
     public AtmosphereServerPush() {
         String timeoutString = Library.getProperty("fi.jawsy.jawwa.zk.atmosphere.timeout");
@@ -119,7 +123,7 @@ public class AtmosphereServerPush implements ServerPush {
 
     private boolean commitResponse() throws IOException {    	
         AtmosphereResource resource = this.resource.getAndSet(null);
-        if (resource != null && resource.isSuspended()) {
+        if (resource != null) {
         	resource.resume();
         	return true;
         } 
@@ -155,19 +159,71 @@ public class AtmosphereServerPush implements ServerPush {
     	return _active != null && _active.nActive > 0;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void onPiggyback() {
+    	Schedule<Event>[] pendings = null;
+    	synchronized (schedules) {
+    		if (!schedules.isEmpty()) {
+    			pendings = schedules.toArray(new Schedule[0]);
+    			schedules = new ArrayList<>();
+    		}
+    	}
+    	if (pendings != null && pendings.length > 0) {
+    		for(Schedule<Event> p : pendings) {
+    			p.scheduler.schedule(p.task, p.event);
+    		}
+    	}    	
     }
 
-    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
 	public <T extends Event> void schedule(EventListener<T> task, T event,
 			Scheduler<T> scheduler) {
-        scheduler.schedule(task, event);
-        try {
-        	commitResponse();
-		} catch (IOException e) {
-			log.error(e.getLocalizedMessage(), e);
-		}
+    	if (Executions.getCurrent() == null) {
+    		//save for schedule at on piggyback event
+	        synchronized (schedules) {
+				schedules.add(new Schedule(task, event, scheduler));
+			}
+	        boolean ok = false;
+	        try {
+	        	ok = commitResponse();
+			} catch (IOException e) {
+				log.error(e.getMessage(), e);
+			}
+	        if (!ok) {
+	        	for(int i = 0; i < 3 && !ok; i++) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e1) {}
+		        	if (schedules.size() > 0) {
+			        	try {
+				        	ok = commitResponse();
+						} catch (IOException e) {
+							log.error(e.getMessage(), e);
+						}			        	
+		        	} else {
+		        		ok = true;
+		        	}
+	        	}
+	        	if (!ok) {
+	        		Desktop d = desktop.get();
+		        	log.warn("Failed to resume long polling resource" + (d != null ? " for desktop " + d.getId() : ""));		        	
+		        	if (d != null) {
+		        		Integer count = (Integer) d.getAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES);
+		        		if (count != null)
+		        			count = Integer.valueOf(count.intValue()+1);
+		        		else
+		        			count = Integer.valueOf(1);
+		        		d.setAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES, count);
+		        	}
+		        }
+	        }	        
+    	} else {
+    		//in event listener thread, can schedule immediately
+    		scheduler.schedule(task, event);
+    	}
+    
     }
 
     @Override
@@ -178,10 +234,15 @@ public class AtmosphereServerPush implements ServerPush {
             return;
         }
 
-        log.debug("Starting server push for " + desktop);
-        Clients.response("jawwa.atmosphere.serverpush", new AuScript(null, "jawwa.atmosphere.startServerPush('" + desktop.getId() + "', " + timeout
-                + ");"));
+        if (log.isDebugEnabled())
+        	log.debug("Starting server push for " + desktop);
+        startClientPush(desktop);
     }
+
+	private void startClientPush(Desktop desktop) {
+		Clients.response("jawwa.atmosphere.serverpush", new AuScript(null, "jawwa.atmosphere.startServerPush('" + desktop.getId() + "', " + timeout
+                + ");"));
+	}
 
     @Override
     public void stop() {
@@ -191,12 +252,16 @@ public class AtmosphereServerPush implements ServerPush {
             return;
         }
 
-        log.debug("Stopping server push for " + desktop);
-        Clients.response("jawwa.atmosphere.serverpush", new AuScript(null, "jawwa.atmosphere.stopServerPush('" + desktop.getId() + "');"));
-        try {
-			commitResponse();
-		} catch (IOException e) {
+        this.resource.set(null);
+        synchronized (schedules) {
+        	schedules.clear();
 		}
+        
+        if (Executions.getCurrent() != null) {
+	        if (log.isDebugEnabled())
+	        	log.debug("Stopping server push for " + desktop);
+	        Clients.response("jawwa.atmosphere.serverpush", new AuScript(null, "jawwa.atmosphere.stopServerPush('" + desktop.getId() + "');"));        
+        }
     }
 
     public void onRequest(AtmosphereResource resource) {
@@ -204,12 +269,6 @@ public class AtmosphereServerPush implements ServerPush {
 	  		log.trace(resource.transport().name());
 	  	}
     	
-		try {
-			commitResponse();
-		} catch (IOException e) {
-			log.error(e.getLocalizedMessage(), e);
-		}
-
     	DesktopCtrl desktopCtrl = (DesktopCtrl) this.desktop.get();
         if (desktopCtrl == null) {
         	log.error("No desktop available");
@@ -217,7 +276,7 @@ public class AtmosphereServerPush implements ServerPush {
         }
 
 	  	if (!resource.isSuspended()) {
-	  		resource.suspend(-1); 
+	  		resource.suspend(); 
 	  	}
 	  	this.resource.set(resource);
 
@@ -237,5 +296,22 @@ public class AtmosphereServerPush implements ServerPush {
 
 	@Override
 	public void resume() {
+		if (desktop == null || desktop.get() == null) {
+			throw new IllegalStateException(
+					"ServerPush cannot be resumed without desktop, or has been stopped!call #start(desktop)} instead");
+		}
+		startClientPush(desktop.get());
 	}
+	
+	private class Schedule<T extends Event> {
+    	private EventListener<T> task;
+		private T event;
+		private Scheduler<T> scheduler;
+
+		private Schedule(EventListener<T> task, T event, Scheduler<T> scheduler) {
+    		this.task = task;
+    		this.event = event;
+    		this.scheduler = scheduler;
+    	}
+    }
 }

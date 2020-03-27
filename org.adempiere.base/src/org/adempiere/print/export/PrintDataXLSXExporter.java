@@ -26,7 +26,9 @@ import org.compiere.print.MPrintFormatItem;
 import org.compiere.print.MPrintPaper;
 import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataElement;
-
+import org.compiere.print.layout.PrintDataEvaluatee;
+import org.compiere.util.Evaluator;
+import org.compiere.util.Util;
 /**
  * Export PrintData to Excel (XLSX) file
  * 
@@ -212,5 +214,19 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 		sheet.setMargin(HSSFSheet.RightMargin, ((double) paper.getMarginRight()) / 72);
 		sheet.setMargin(HSSFSheet.LeftMargin, ((double) paper.getMarginLeft()) / 72);
 		sheet.setMargin(HSSFSheet.BottomMargin, ((double) paper.getMarginBottom()) / 72);
+	}
+	
+
+	@Override
+	public boolean isDisplayed(int row, int col)
+	{
+		if (m_printData.getRowIndex() != row)
+			m_printData.setRowIndex(row);
+
+		MPrintFormatItem item = m_printFormat.getItem(col);
+		if ( Util.isEmpty(item.getDisplayLogic()))
+			return true;
+		
+		return Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), item.getDisplayLogic());
 	}
 }

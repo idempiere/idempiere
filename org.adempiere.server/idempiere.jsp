@@ -14,7 +14,7 @@ Author URI: http://www.bmlaurus.com
 	<script type="text/javascript" src="resources/jquery/jquery.js"></script>
 	<title><%=Prop.getProperty(Prop.TITLE) %></title>
 </head>
-<body>
+<body onload="checkWebstoreLinks()">
 	<div id="body" class="body">
 		<div id="toolBar" class="toolBar">
 			<div id="toolBar-title" class="toolBar-title">
@@ -39,82 +39,63 @@ Author URI: http://www.bmlaurus.com
 		</div>
 		<div id ="main" class="main">
 			<div id="main-content" class="main-content">
-				<div id="main-topButtons">
-					<div id="main-requestBtns" class="topBtnHeader">
-						<div id ="main-requestBtns-btnReq" class="topBtn">
-							<div class = "btnResoc-content">
-								<a href="<%=Prop.getProperty(Prop.SUPPORT_LINK)%>" target="_blank">
-									<img name="img_locsupport" src="<%=Prop.getImage("img_locsupport.png")%>" border="0" title="<%=Prop.getProperty(Prop.LOCAL_TEXT)%>"/>
-								</a>
-								<div class="main-txt-btn"><%=Prop.getProperty(Prop.LOCAL_TEXT)%></div>
-							</div>
-						</div>
-						<div id ="main-requestBtns-btnSendReq" class="topBtn">
-							<div class = "btnResoc-content">
-								<a href="<%=Prop.getProperty(Prop.RESOURCE_LINK)%>" target="_blank">
-									<img name="img_resource" src="<%=Prop.getImage("img_resource.png")%>" border="0" title="<%=Prop.getProperty(Prop.RESOURCE_TEXT)%>"/>
-								</a>
-								<div class="main-txt-btn"><%=Prop.getProperty(Prop.RESOURCE_TEXT)%></div>
-							</div>
-						</div>
-						<div id ="main-requestBtns-btnLocSupp" class="topBtn">
-							<div class = "btnResoc-content">
-								<a href="<%=Prop.getProperty(Prop.WEBSTORE_LINK)%>" target="_blank">
-									<img name="img_webstore" src="<%=Prop.getImage("img_webstore.png")%>" border="0" title="<%=Prop.getProperty(Prop.WEBSTORE_TEXT)%>"/>
-								</a>
-								<div class="main-txt-btn"><%=Prop.getProperty(Prop.WEBSTORE_TEXT)%></div>
-							</div>
-						</div>
-						<div id ="main-requestBtns-btnResoc" class="topBtn">
-							<div class = "btnResoc-content">
-								<a href="<%=Prop.getProperty(Prop.SENDREQUEST_LINK)%>" target="_blank">
-									<img name="img_sendreq" src="<%=Prop.getImage("img_sendreq.png")%>" border="0" title="<%=Prop.getProperty(Prop.SENDREQUEST_TEXT)%>"/>
-								</a>
-								<div class="main-txt-btn"><%=Prop.getProperty(Prop.SENDREQUEST_TEXT)%></div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div id="main-login" class="main-login">
-					<a href="<%=Prop.getProperty(Prop.WEBUI_LINK)%>" target="_self">
-						<img name="img_webui" src="<%=Prop.getImage("img_webui.png")%>" border="0" />
-					</a>
-				</div>
 				<div id="main-docuBtns">
-					<div id="main-docuBtns" class="topBtnFooter">
-						<div id ="main-docuBtns-btnIrc" class="bottomBtn">
-							<div class = "btnDocu-content">
-								<a href="<%=Prop.getProperty(Prop.IRC_LINK)%>" target="_blank">
-									<img name="img_irc" src="<%=Prop.getImage("img_irc.png")%>" border="0" title="<%=Prop.getProperty(Prop.IRC_TEXT)%>"/>
-								</a>
-								<div class="main-txt-btn"><%=Prop.getProperty(Prop.IRC_TEXT)%></div>
-							</div>
-						</div>
-						<div id ="main-docuBtns-btnWiki" class="bottomBtn">
-							<div class = "btnDocu-content">
-								<a href="<%=Prop.getProperty(Prop.WIKI_LINK)%>" target="_blank">
-									<img name="img_wiki" src="<%=Prop.getImage("img_wiki.png")%>" border="0" title="<%=Prop.getProperty(Prop.WIKI_TEXT)%>"/>
-								</a>
-								<div class="main-txt-btn"><%=Prop.getProperty(Prop.WIKI_TEXT)%></div>
-							</div>
-						</div>
-						<div id ="main-docuBtns-btnForum" class="bottomBtn">
-							<div class = "btnDocu-content">
-								<a href="<%=Prop.getProperty(Prop.FORUMS_LINK)%>" target="_blank">
-									<img name="img_forum" src="<%=Prop.getImage("img_forum.png")%>" border="0" title="<%=Prop.getProperty(Prop.FORUMS_TEXT)%>"/>
-								</a>
-								<div class="main-txt-btn"><%=Prop.getProperty(Prop.FORUMS_TEXT)%></div>
-							</div>
-						</div>
-						<div id ="main-docuBtns-btnSuppReq" class="bottomBtn">
-							<div class = "btnDocu-content">
-								<a href="<%=Prop.getProperty(Prop.SUPPORTREQ_LINK)%>" target="_blank">
-									<img name="img_supreq" src="<%=Prop.getImage("img_supreq.png")%>" border="0" title="<%=Prop.getProperty(Prop.SUPPORTREQUEST_TEXT)%>"/>
-								</a>
-								<div class="main-txt-btn"><%=Prop.getProperty(Prop.SUPPORTREQUEST_TEXT)%></div>
-							</div>
-						</div>
-					</div>
+					<ul>
+						<li id="main-requestBtns-btnLogin">
+							<a href="<%=Prop.getProperty(Prop.WEBUI_LINK)%>" target="_self">
+								<img name="img_webui" src="<%=Prop.getImage("img_webui.png")%>" border="0" />
+							</a>
+							<div class="main-txt-btn"><%=Prop.getProperty(Prop.WEBUI_TEXT)%></div>
+						</li>
+						<li id ="main-requestBtns-btnLocSupp">
+							<a href="<%=Prop.getProperty(Prop.SUPPORT_LINK)%>" target="_blank">
+								<img name="img_locsupport" src="<%=Prop.getImage("img_locsupport.png")%>" border="0" />
+							</a>
+							<div class="main-txt-btn"><%=Prop.getProperty(Prop.LOCAL_TEXT)%></div>
+						</li>
+						<li id ="main-requestBtns-btnResoc">
+							<a href="<%=Prop.getProperty(Prop.RESOURCE_LINK)%>" target="_blank">
+								<img name="img_resource" src="<%=Prop.getImage("img_resource.png")%>" border="0" />
+							</a>
+							<div class="main-txt-btn"><%=Prop.getProperty(Prop.RESOURCE_TEXT)%></div>
+						</li>																		
+						<li id ="main-docuBtns-btnWiki">
+							<a href="<%=Prop.getProperty(Prop.WIKI_LINK)%>" target="_blank">
+								<img name="img_wiki" src="<%=Prop.getImage("img_wiki.png")%>" border="0" />
+							</a>
+							<div class="main-txt-btn"><%=Prop.getProperty(Prop.WIKI_TEXT)%></div>
+						</li>
+						<li id ="main-docuBtns-btnForum">
+							<a href="<%=Prop.getProperty(Prop.FORUMS_LINK)%>" target="_blank">
+								<img name="img_forum" src="<%=Prop.getImage("img_forum.png")%>" border="0"/>
+							</a>
+							<div class="main-txt-btn"><%=Prop.getProperty(Prop.FORUMS_TEXT)%></div>
+						</li>
+						<li id ="main-docuBtns-btnSuppReq">
+							<a href="<%=Prop.getProperty(Prop.SUPPORTREQ_LINK)%>" target="_blank">
+								<img name="img_supreq" src="<%=Prop.getImage("img_supreq.png")%>" border="0"/>
+							</a>
+							<div class="main-txt-btn"><%=Prop.getProperty(Prop.SUPPORTREQUEST_TEXT)%></div>
+						</li>
+						<li id ="main-docuBtns-btnIrc">
+							<a href="<%=Prop.getProperty(Prop.IRC_LINK)%>" target="_blank">
+								<img name="img_irc" src="<%=Prop.getImage("img_irc.png")%>" border="0" />
+							</a>
+							<div class="main-txt-btn"><%=Prop.getProperty(Prop.IRC_TEXT)%></div>
+						</li>
+						<li id ="main-requestBtns-btnReq">
+							<a href="<%=Prop.getProperty(Prop.WEBSTORE_LINK)%>" target="_blank">
+								<img name="img_webstore" src="<%=Prop.getImage("img_webstore.png")%>" border="0" />
+							</a>
+							<div class="main-txt-btn"><%=Prop.getProperty(Prop.WEBSTORE_TEXT)%></div>
+						</li>
+						<li id ="main-requestBtns-btnSendReq">
+							<a href="<%=Prop.getProperty(Prop.SENDREQUEST_LINK)%>" target="_blank">
+								<img name="img_sendreq" src="<%=Prop.getImage("img_sendreq.png")%>" border="0" />
+							</a>
+							<div class="main-txt-btn"><%=Prop.getProperty(Prop.SENDREQUEST_TEXT)%></div>
+						</li>
+					</ul>
 				</div>
 				<div id="main-background">
 					<img name="img_background" src="<%=Prop.getImage("img_back.jpg")%>" border="0"/>
@@ -158,6 +139,43 @@ Author URI: http://www.bmlaurus.com
 				<%=Prop.getProperty(Prop.COPYRIGHT_TXT)%>
 			</div>
 		</div>
-	</div>
+	</div>	
+	<script>
+		function checkWebstoreLinks() {
+			try {
+				var element = document.getElementById("main-requestBtns-btnReq");
+				var link = element.getElementsByTagName("a")[0];
+				var url = link.href;
+				checkLink(element, url);
+				
+				element = document.getElementById("main-requestBtns-btnSendReq");
+				link = element.getElementsByTagName("a")[0];
+				url = link.href;
+				checkLink(element, url);			
+			} catch (error) {}
+		}
+		
+		function checkLink(element, url) {
+			var reader = new XMLHttpRequest();
+			//asynchronous is true
+			reader.open('get', url, true);
+			//check each time the ready state changes
+			//to see if the object is ready
+			reader.onreadystatechange = checkReadyState;
+
+			function checkReadyState() {
+			  if (reader.readyState === 4) {
+			    //check to see whether request for the file failed or succeeded
+			    if ((reader.status == 200) || (reader.status === 0)) {
+			      ;
+			    } else {
+			      element.style.display = "none";
+			    }
+			  }
+			}
+			
+			reader.send(null);
+		}
+	</script>
 </body>
 </html>

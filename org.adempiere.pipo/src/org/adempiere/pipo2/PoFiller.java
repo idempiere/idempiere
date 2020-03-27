@@ -189,10 +189,20 @@ public class PoFiller{
 					foreignTable = MTable.get(Env.getCtx(), refTableName);
 				} else {
 					if ("Record_ID".equalsIgnoreCase(columnName)) {
-						// special case - get the foreign table using column AD_Table_ID
-						int idxTableID = po.get_ColumnIndex("AD_Table_ID");
-						if (idxTableID >= 0) {
-							int tableID = po.get_ValueAsInt(idxTableID);
+						// special case - get the foreign table using AD_Table_ID
+						int tableID = 0;
+						try {
+							// try it first from the XML element, is possible that the table is still not filled in the po object
+							tableID = Integer.parseInt(e.parent.properties.get("AD_Table_ID").contents.toString());
+						} catch (Exception e1) {}
+						if (tableID == 0) {
+							// XML didn't work, try the po object
+							int idxTableID = po.get_ColumnIndex("AD_Table_ID");
+							if (idxTableID >= 0) {
+								tableID = po.get_ValueAsInt(idxTableID);
+							}
+						}
+						if (tableID > 0) {
 							foreignTable = MTable.get(Env.getCtx(), tableID);
 							refTableName = foreignTable.getTableName();
 						}

@@ -100,7 +100,7 @@ implements ImportProcess
 		//	Delete Old Imported
 		if (m_deleteOldImported)
 		{
-			sql = new StringBuilder ("DELETE I_BPartner ")
+			sql = new StringBuilder ("DELETE FROM I_BPartner ")
 					.append("WHERE I_IsImported='Y'").append(clientCheck);
 			no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Impored =" + no);
@@ -111,9 +111,9 @@ implements ImportProcess
 				.append("SET AD_Client_ID = COALESCE (AD_Client_ID, ").append(m_AD_Client_ID).append("),")
 						.append(" AD_Org_ID = COALESCE (AD_Org_ID, 0),")
 						.append(" IsActive = COALESCE (IsActive, 'Y'),")
-						.append(" Created = COALESCE (Created, SysDate),")
+						.append(" Created = COALESCE (Created, getDate()),")
 						.append(" CreatedBy = COALESCE (CreatedBy, 0),")
-						.append(" Updated = COALESCE (Updated, SysDate),")
+						.append(" Updated = COALESCE (Updated, getDate()),")
 						.append(" UpdatedBy = COALESCE (UpdatedBy, 0),")
 						.append(" I_ErrorMsg = ' ',")
 						.append(" I_IsImported = 'N' ")
@@ -601,7 +601,7 @@ implements ImportProcess
 			rs = null; pstmt = null;
 			//	Set Error to indicator to not imported
 			sql = new StringBuilder ("UPDATE I_BPartner ")
-					.append("SET I_IsImported='N', Updated=SysDate ")
+					.append("SET I_IsImported='N', Updated=getDate() ")
 					.append("WHERE I_IsImported<>'Y'").append(clientCheck);
 			no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 			addLog (0, null, new BigDecimal (no), "@Errors@");

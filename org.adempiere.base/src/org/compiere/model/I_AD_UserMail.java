@@ -268,6 +268,4 @@ public interface I_AD_UserMail
 	  * Web Store Mail Message Template
 	  */
 	public int getW_MailMsg_ID();
-
-	public org.compiere.model.I_W_MailMsg getW_MailMsg() throws RuntimeException;
 }

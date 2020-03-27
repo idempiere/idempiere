@@ -26,9 +26,6 @@ import java.util.Properties;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.logging.Level;
 
-import javax.jnlp.BasicService;
-import javax.jnlp.ServiceManager;
-import javax.jnlp.UnavailableServiceException;
 import javax.swing.ImageIcon;
 import javax.swing.event.EventListenerList;
 
@@ -476,44 +473,6 @@ public final class Adempiere
 		s_supportEmail = email;
 	}   //  setSupportEMail
 
-	/**
-	 * 	Get JNLP CodeBase
-	 *	@return code base or null
-	 */
-	public static URL getCodeBase()
-	{
-		try
-		{
-			BasicService bs = (BasicService)ServiceManager.lookup("javax.jnlp.BasicService");
-			URL url = bs.getCodeBase();
-	        return url;
-		}
-		catch(UnavailableServiceException ue)
-		{
-			return null;
-		}
-	}	//	getCodeBase
-
-	/**
-	 * @return True if client is started using web start
-	 */
-	public static boolean isWebStartClient()
-	{
-		return getCodeBase() != null;
-	}
-
-	/**
-	 * 	Get JNLP CodeBase Host
-	 *	@return code base or null
-	 */
-	public static String getCodeBaseHost()
-	{
-		URL url = getCodeBase();
-		if (url == null)
-			return null;
-		return url.getHost();
-	}	//	getCodeBase
-
 	public static synchronized boolean isStarted()
 	{
 		return (log != null);
@@ -585,7 +544,7 @@ public final class Adempiere
 		}
 
 		//  Set Default Database Connection from Ini
-		DB.setDBTarget(CConnection.get(getCodeBaseHost()));
+		DB.setDBTarget(CConnection.get());
 
 		createThreadPool();
 		

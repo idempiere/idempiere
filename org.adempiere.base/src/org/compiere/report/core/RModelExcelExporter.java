@@ -78,4 +78,10 @@ extends AbstractExcelExporter
 	protected int getCurrentRow() {
 		return m_currentRow;
 	}
+
+	@Override
+	public boolean isDisplayed(int row, int col)
+	{
+		return true;
+	}
 }

@@ -58,6 +58,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
@@ -247,6 +248,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     /** IDEMPIERE-2836  User Query Where */
     private String          m_whereUserQuery;
     private ToolBar advancedPanelToolBar;
+    
+    /**IDEMPIERE-4085*/
+    private int m_AD_UserQuery_ID = 0;    
 
     /**
      * FindPanel Constructor
@@ -619,7 +623,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		//user query
 		userQueries = MUserQuery.get(Env.getCtx(), m_AD_Tab_ID);
 		for (int i = 0; i < userQueries.length; i++)
-			fQueryName.appendItem(userQueries[i].getName());
+			fQueryName.appendItem(userQueries[i].getName(), userQueries[i].getAD_UserQuery_ID());
 		fQueryName.setValue("");
 		fQueryName.addEventListener(Events.ON_SELECT, this);
 		
@@ -713,11 +717,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             GridField mField = m_findFields[i];
             boolean isDisplayed = mField.isDisplayed();
             
-            if (DisplayType.isText(mField.getVO().displayType)) {
-            	// for string fields allow searching long strings - useful for like and similar to searches
-            	mField.getVO().FieldLength = 32767;  // a conservative max literal string - like oracle extended
-            	mField.getVO().DisplayLength = mField.getVO().FieldLength;
-            }
             if (mField.getVO().displayType == DisplayType.YesNo || mField.isEncrypted() || mField.isEncryptedColumn()) {
 				// Make Yes-No searchable as list
 				GridFieldVO vo = mField.getVO();
@@ -1188,7 +1187,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         editor.addValueChangeListener(this);
         Label label = editor.getLabel();
         Component fieldEditor = editor.getComponent();
-        //Fix miss lable of checkbox
+        setLengthStringField(mField, fieldEditor);
+        //Fix miss label of checkbox
         label.setValue(mField.getHeader());
         //
         if (displayLength > 0)      //  set it back
@@ -1253,9 +1253,16 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         return true;
     }   // addSelectionColumn
     
+    private void setLengthStringField(GridField field, Component fieldEditor) {
+        if (DisplayType.isText(field.getVO().displayType) && fieldEditor instanceof Textbox) {
+        	// for string fields allow searching long strings - useful for like and similar to searches
+        	((Textbox) fieldEditor).setMaxlength(32767);  // a conservative max literal string - like oracle extended
+        }
+	}
+
     public void onEvent(Event event) throws Exception
     {
-        m_createNew  = false;
+        	m_createNew  = false;
         if (Events.ON_CHANGE.equals(event.getName()))
         {
             if (event.getTarget() == historyCombo)
@@ -1320,41 +1327,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             }
             else if (event.getTarget() == fQueryName)
             {
-            	m_whereUserQuery = null;
-    			showAdvanced();
-            	btnSave.setDisabled(false);
-	        	btnShare.setDisabled(false);
-            	int index = fQueryName.getSelectedIndex();
-            	if(index < 0) return;
-            	if (winMain.getComponent().getSelectedIndex() != 1) 
-            	{
-            		winMain.getComponent().setSelectedIndex(1);
-            		btnSave.setDisabled(m_AD_Tab_ID <= 0);
-            		btnShare.setDisabled(m_AD_Tab_ID <= 0);
-            		historyCombo.setSelectedItem(null);
-            		fQueryName.setReadonly(false); 
-            	}
-            	msgLabel.setText("");
-
-            	if(index == 0) 
-            	{ // no query - wipe and start over.
-            		List<?> rowList = advancedPanel.getChildren();
-            		for (int rowIndex = rowList.size() - 1; rowIndex >= 1; rowIndex--)
-            			rowList.remove(rowIndex);
-            		createFields();  
-            	}
-    			else {
-    				MUserQuery uq = userQueries[index-1];
-    				// If global query do not allow other users to save the query 
-    				if (uq.getAD_User_ID() != Env.getAD_User_ID(Env.getCtx())) {
-    			        if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType()) ||
-    			        		uq.getAD_Client_ID() != Env.getAD_Client_ID(Env.getCtx())) {
-    			        	btnSave.setDisabled(true);
-    			        	btnShare.setDisabled(true);
-    			        }
-    				}
-    				parseUserQuery(userQueries[index-1]);
-    			}
+            	onSelectedQueryChanged();
     		}
     		else if (event.getTarget() instanceof Tab) {
     			if (winMain.getComponent().getSelectedIndex() == 1) {
@@ -1404,8 +1377,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
                 if ("btnOkSimple".equals(btn.getName()))
                 {
+                    fQueryName.setSelectedIndex(0);
                     cmd_ok_Simple();
-                    fQueryName.setValue("");
                     if (advancedPanel != null) {
                     	advancedPanel.getItems().clear();
                     }
@@ -1477,6 +1450,44 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
 
     }   //  onEvent
+    
+    public void onSelectedQueryChanged() {
+    	m_whereUserQuery = null;
+		showAdvanced();
+    	btnSave.setDisabled(false);
+    	btnShare.setDisabled(false);
+    	int index = fQueryName.getSelectedIndex();
+    	if(index < 0) return;
+    	if (winMain.getComponent().getSelectedIndex() != 1) 
+    	{
+    		winMain.getComponent().setSelectedIndex(1);
+    		btnSave.setDisabled(m_AD_Tab_ID <= 0);
+    		btnShare.setDisabled(m_AD_Tab_ID <= 0);
+    		historyCombo.setSelectedItem(null);
+    		fQueryName.setReadonly(false); 
+    	}
+    	msgLabel.setText("");
+
+    	if(index == 0) 
+    	{ // no query - wipe and start over.
+    		List<?> rowList = advancedPanel.getChildren();
+    		for (int rowIndex = rowList.size() - 1; rowIndex >= 1; rowIndex--)
+    			rowList.remove(rowIndex);
+    		createFields();
+    	}
+		else {
+			MUserQuery uq = userQueries[index-1];
+			// If global query do not allow other users to save the query 
+			if (uq.getAD_User_ID() != Env.getAD_User_ID(Env.getCtx())) {
+		        if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType()) ||
+		        		uq.getAD_Client_ID() != Env.getAD_Client_ID(Env.getCtx())) {
+		        	btnSave.setDisabled(true);
+		        	btnShare.setDisabled(true);
+		        }
+			}
+			parseUserQuery(userQueries[index-1]);
+		}
+    }
 
 	private void onSimpleTabSelected() {
 		historyCombo.setDisabled(false);
@@ -1491,6 +1502,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
     private void parseUserQuery(MUserQuery userQuery)
     {
+    	if (userQuery == null) 
+    		return;
+
     	String code = userQuery.getCode();
     	if (code.startsWith("@SQL=")) {
 			m_whereUserQuery = "(" + code.substring(code.indexOf("=")+1, code.length()) + ")";
@@ -1992,10 +2006,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		userQueries = MUserQuery.get(Env.getCtx(), m_AD_Tab_ID);
 		fQueryName.getItems().clear();
 		boolean selected = false;
-		fQueryName.appendItem(m_sNew);  
+		fQueryName.appendItem(m_sNew, 0);  
 		for (int i = 0; i < userQueries.length; i++)
 		{
 			Comboitem ci = fQueryName.appendItem(userQueries[i].getName());
+			ci.setValue(userQueries[i].getAD_UserQuery_ID());
 			if(value.equals(userQueries[i].getName()))
 			{
 				fQueryName.setSelectedItem(ci);
@@ -2180,6 +2195,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             editor = new WStringEditor(findField);
             findField.addPropertyChangeListener(editor);
         }
+        setLengthStringField(findField, editor.getComponent());
         
         editor.addValueChangeListener(this);
         editor.setValue(null);
@@ -2267,7 +2283,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	{
     		StringBuilder where = new StringBuilder(m_tableName);
     		where.append(".Created >= ");
-    		where.append("SysDate-").append(getHistoryDays(selectedHistoryValue));
+    		where.append("getDate()-").append(getHistoryDays(selectedHistoryValue));
     		m_query.addRestriction(where.toString());
     	}
     }
@@ -2305,7 +2321,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         if (getNoOfRecords(m_query, true) != 0)
           dispose();
     }   //  cmd_ok_Advanced
-
+    
+    /**
+     * Simulate the user query selection and click ok
+     */
+    public void advancedOkClick() {
+    	onSelectedQueryChanged();
+    	cmd_ok_Advanced();
+    }
     
     /**
      *  Get the number of records of target tab
@@ -2736,5 +2759,22 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		advancedPanelToolBar.setVisible(true);
 		advancedPanel.setVisible(true);
 	}
+	
+	public int getAD_UserQuery_ID() {
+		if (fQueryName.getSelectedIndex() <= 0 || userQueries[fQueryName.getSelectedIndex()-1] == null)
+			m_AD_UserQuery_ID = 0;
+		else if (m_AD_UserQuery_ID != userQueries[fQueryName.getSelectedIndex()-1].getAD_UserQuery_ID())
+			m_AD_UserQuery_ID = userQueries[fQueryName.getSelectedIndex()-1].getAD_UserQuery_ID();
+		return m_AD_UserQuery_ID;
+	}
 
+	public void setAD_UserQuery_ID(int AD_UserQuery_ID) {
+		m_AD_UserQuery_ID = AD_UserQuery_ID;
+		for (Comboitem li : fQueryName.getItems()) {
+			if (m_AD_UserQuery_ID == (Integer) li.getValue()) {
+				fQueryName.setSelectedItem(li);
+				break;
+			}
+		}
+	}
 }   //  FindPanel

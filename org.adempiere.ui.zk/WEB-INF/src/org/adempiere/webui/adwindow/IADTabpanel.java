@@ -191,4 +191,8 @@ public interface IADTabpanel extends Component, Evaluatee {
 	 */
 	public abstract ADTreePanel getTreePanel();	
 
+	/**
+	 * @return Quick Form Button Enabled/Disabled
+	 */
+	public abstract boolean isEnableQuickFormButton();
 }

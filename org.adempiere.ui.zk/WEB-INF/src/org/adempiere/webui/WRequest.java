@@ -182,7 +182,7 @@ public class WRequest implements EventListener<Event>
 		}
 		
 		m_popup.setPage(invoker.getPage());
-		m_popup.open(invoker);
+		m_popup.open(invoker, "after_start");
 	}	//	getZoomTargets
 	
 	public void onEvent(final Event e) throws Exception 

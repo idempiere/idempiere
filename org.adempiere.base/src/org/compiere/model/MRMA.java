@@ -378,7 +378,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	{
 		log.fine("");
 		//	Delete Taxes
-		DB.executeUpdateEx("DELETE M_RMATax WHERE M_RMA_ID=" + getM_RMA_ID(), get_TrxName());
+		DB.executeUpdateEx("DELETE FROM M_RMATax WHERE M_RMA_ID=" + getM_RMA_ID(), get_TrxName());
 		m_taxes = null;
 		
 		MTaxProvider[] providers = getTaxProviders();

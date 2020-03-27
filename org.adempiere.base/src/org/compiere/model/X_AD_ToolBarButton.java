@@ -30,7 +30,7 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200124L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButton (Properties ctx, int AD_ToolBarButton_ID, String trxName)
@@ -355,6 +355,27 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 	public boolean isCustomization () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsCustomization);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Group in show more.
+		@param IsShowMore Group in show more	  */
+	public void setIsShowMore (boolean IsShowMore)
+	{
+		set_Value (COLUMNNAME_IsShowMore, Boolean.valueOf(IsShowMore));
+	}
+
+	/** Get Group in show more.
+		@return Group in show more	  */
+	public boolean isShowMore () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowMore);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

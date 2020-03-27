@@ -84,7 +84,7 @@ public class ImportFixedAsset extends SvrProcess
 		//	Delete Old Imported
 		if (p_DeleteOldImported)
 		{
-			sql = new StringBuffer ("DELETE "+X_I_FixedAsset.Table_Name
+			sql = new StringBuffer ("DELETE FROM "+X_I_FixedAsset.Table_Name
 				  + " WHERE I_IsImported='Y'").append (sqlCheck);
 			no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Imported =" + no);
@@ -95,9 +95,9 @@ public class ImportFixedAsset extends SvrProcess
 			  + "SET AD_Client_ID = COALESCE (AD_Client_ID,").append (p_AD_Client_ID).append ("),"
 			  + " AD_Org_ID = COALESCE (AD_Org_ID,").append (p_AD_Org_ID).append ("),"
 			  + " IsActive = COALESCE (IsActive, 'Y'),"
-			  + " Created = COALESCE (Created, SysDate),"
+			  + " Created = COALESCE (Created, getDate()),"
 			  + " CreatedBy = COALESCE (CreatedBy, 0),"
-			  + " Updated = COALESCE (Updated, SysDate),"
+			  + " Updated = COALESCE (Updated, getDate()),"
 			  + " UpdatedBy = COALESCE (UpdatedBy, 0),"
 			  + " I_ErrorMsg = ' ',"
 			  + " I_IsImported = 'N' "

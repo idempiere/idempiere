@@ -21,6 +21,7 @@ import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -49,6 +50,8 @@ public class MImage extends X_AD_Image
 	 */
 	private static final long serialVersionUID = -7361463683427300715L;
 
+	private MStorageProvider provider;
+	
 	/**
 	 * 	Get MImage from Cache
 	 *	@param ctx context
@@ -84,6 +87,7 @@ public class MImage extends X_AD_Image
 		super (ctx, AD_Image_ID, trxName);
 		if (AD_Image_ID < 1)
 			setName("-");
+		initImageStoreDetails(ctx, trxName);
 	}   //  MImage
 
 	/**
@@ -95,6 +99,7 @@ public class MImage extends X_AD_Image
 	public MImage (Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
+		initImageStoreDetails(ctx, trxName);
 	}	//	MImage
 
 	
@@ -233,20 +238,31 @@ public class MImage extends X_AD_Image
 	 * 	Set Binary Data
 	 *	@param BinaryData data
 	 */
+	@Override
 	public void setBinaryData (byte[] BinaryData)
 	{
 		m_image = null;
 		m_icon = null;
-		super.setBinaryData (BinaryData);
+		IImageStore prov = provider.getImageStore();
+		if (prov != null)
+			prov.save(this,provider,BinaryData);
 	}	//	setBinaryData
 	
+	@Override
+	public byte[] getBinaryData() {		
+		IImageStore prov = provider.getImageStore();
+		if (prov != null)
+			return prov.load(this,provider);
+		return null;
+	}
+
 	/**
 	 * 	Get Data 
 	 *	@return data
 	 */
 	public byte[] getData()
 	{
-		byte[] data = super.getBinaryData ();
+		byte[] data = getBinaryData ();
 		if (data != null)
 			return data;
 		//	From URL
@@ -311,5 +327,52 @@ public class MImage extends X_AD_Image
 			setAD_Org_ID(0);
 		return true;
 	}	//	beforeSave
+
+	public String getImageStoragePath() {
+		StringBuilder path = new StringBuilder("AD_Image").append(File.separator)
+				.append(this.getAD_Client_ID()).append(File.separator);
+		return path.toString();
+	}
 	
+	/**
+	 * @param ctx
+	 * @param trxName
+	 */
+	private void initImageStoreDetails(Properties ctx, String trxName) {
+		MClientInfo clientInfo = MClientInfo.get(ctx, getAD_Client_ID());
+		provider=new MStorageProvider(ctx, clientInfo.getStorageImage_ID(), trxName);		
+	}
+	
+	/**
+	 * Set Storage Provider
+	 * Used temporarily for the process to migrate storage provider
+	 * @param Storage provider
+	 */
+	public void setStorageProvider(MStorageProvider p) {
+		provider = p;
+	}
+	
+	public byte[] getByteData(){
+		return super.getBinaryData();
+	}
+	
+	public void setByteData(byte[] BinaryData){
+		super.setBinaryData(BinaryData);
+	}
+
+	@Override
+	protected boolean postDelete() {
+		IImageStore prov = provider.getImageStore();
+		if (prov != null)
+			return prov.delete(this,provider);
+		return true;
+	}
+
+	@Override
+	protected void saveNew_afterSetID()
+	{
+		IImageStore prov = provider.getImageStore();
+		if (prov != null && prov.isPendingFlush())
+			prov.flush(this, provider);
+	}
 }   //  MImage

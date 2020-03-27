@@ -160,7 +160,7 @@ public class MMedia extends X_CM_Media
 				+ "(AD_Client_ID,AD_Org_ID, IsActive,Created,CreatedBy,Updated,UpdatedBy, "
 				+ "AD_Tree_ID, Node_ID, Parent_ID, SeqNo) "
 				+ "VALUES (")
-				.append(getAD_Client_ID()).append(",0, 'Y', SysDate, 0, SysDate, 0,")
+				.append(getAD_Client_ID()).append(",0, 'Y', getDate(), 0, getDate(), 0,")
 				.append(getAD_Tree_ID()).append(",").append(get_ID())
 				.append(", 0, 999)");
 			int no = DB.executeUpdate(sb.toString(), get_TrxName());

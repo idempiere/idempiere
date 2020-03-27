@@ -69,7 +69,6 @@
         <setEntry value="groovy-json@default:false"/>
         <setEntry value="groovy-jsr223@default:false"/>
         <setEntry value="groovy-nio@default:false"/>
-        <setEntry value="groovy-swing@default:false"/>
         <setEntry value="groovy-xml@default:false"/>
         <setEntry value="groovy@default:default"/>
         <setEntry value="jakarta.jws-api@default:default"/>
@@ -350,10 +349,6 @@
         <setEntry value="org.objectweb.asm.tree*7.0.0.v20181030-2244@default:default"/>
         <setEntry value="org.objectweb.asm.tree*7.0.0@default:default"/>
         <setEntry value="org.passay@default:default"/>
-        <setEntry value="org.restlet*2.0.5.v201605172130@default:true"/>
-        <setEntry value="org.restlet*2.4.1@default:true"/>
-        <setEntry value="org.restlet.ext.servlet*2.0.5.v201605172130@default:default"/>
-        <setEntry value="org.restlet.ext.servlet*2.4.1@default:default"/>
         <setEntry value="org.sat4j.core@default:default"/>
         <setEntry value="org.sat4j.pb@default:default"/>
         <setEntry value="org.springframework.spring-jcl@default:default"/>
@@ -399,9 +394,6 @@
         <setEntry value="org.adempiere.server@default:true"/>
         <setEntry value="org.adempiere.ui.zk@default:true"/>
         <setEntry value="org.adempiere.ui@default:default"/>
-        <setEntry value="org.adempiere.webstore.resource@default:false"/>
-        <setEntry value="org.adempiere.webstore.servlet@default:false"/>
-        <setEntry value="org.adempiere.webstore@default:default"/>
         <setEntry value="org.apache.ecs@default:default"/>
         <setEntry value="org.compiere.db.oracle.provider@default:default"/>
         <setEntry value="org.compiere.db.postgresql.provider@default:default"/>

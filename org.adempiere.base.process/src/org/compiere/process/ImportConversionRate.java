@@ -99,7 +99,7 @@ public class ImportConversionRate extends SvrProcess
 		//	Delete Old Imported
 		if (p_DeleteOldImported)
 		{
-			sql = new StringBuilder ("DELETE I_Conversion_Rate ")
+			sql = new StringBuilder ("DELETE FROM I_Conversion_Rate ")
 				  .append("WHERE I_IsImported='Y'").append (clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Impored =" + no);
@@ -114,12 +114,12 @@ public class ImportConversionRate extends SvrProcess
 		if (p_ValidFrom != null)
 			sql.append(" ValidFrom = COALESCE (ValidFrom,").append (DB.TO_DATE(p_ValidFrom)).append ("),");
 		else
-			sql.append(" ValidFrom = COALESCE (ValidFrom,SysDate),");
+			sql.append(" ValidFrom = COALESCE (ValidFrom,getDate()),");
 		sql.append(" CreateReciprocalRate = COALESCE (CreateReciprocalRate,'").append (p_CreateReciprocalRate ? "Y" : "N").append ("'),")
 			.append(" IsActive = COALESCE (IsActive, 'Y'),")
-			.append(" Created = COALESCE (Created, SysDate),")
+			.append(" Created = COALESCE (Created, getDate()),")
 			.append(" CreatedBy = COALESCE (CreatedBy, 0),")
-			.append(" Updated = COALESCE (Updated, SysDate),")
+			.append(" Updated = COALESCE (Updated, getDate()),")
 			.append(" UpdatedBy = ").append(getAD_User_ID()).append(",")
 			.append(" I_ErrorMsg = ' ',")
 			.append(" Processed = 'N',"	)
@@ -285,7 +285,7 @@ public class ImportConversionRate extends SvrProcess
 
 		//	Set Error to indicator to not imported
 		sql = new StringBuilder ("UPDATE I_Conversion_Rate ")
-			.append("SET I_IsImported='N', Updated=SysDate ")
+			.append("SET I_IsImported='N', Updated=getDate() ")
 			.append("WHERE I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0, null, new BigDecimal (no), "@Errors@");
