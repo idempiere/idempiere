@@ -533,6 +533,10 @@ public class ModelInterfaceGenerator
 			//
 			return getClass(columnName, displayType, AD_Reference_ID); // recursive call with new parameters
 		}
+		else if (displayType == DisplayType.Button && columnName.endsWith("_ID"))
+		{
+			return Integer.class;
+		}
 		else
 		{
 			return DisplayType.getClass(displayType, true);
