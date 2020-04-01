@@ -81,6 +81,8 @@ import org.zkoss.zul.Window;
  */
 public class AdempiereWebUI extends Window implements EventListener<Event>, IWebClient
 {
+	public static final String DESKTOP_SESSION_INVALIDATED_ATTR = "DesktopSessionInvalidated";
+
 	/**
 	 * 
 	 */
@@ -569,9 +571,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		//redirect must happens before removeDesktop below, otherwise you get NPE
 		Executions.getCurrent().sendRedirect("index.zul");
 		
-		//remove old desktop    	
-		if (desktopCache != null)
+		//remove old desktop
+		if (desktopCache != null) {
+			desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
 			desktopCache.removeDesktop(desktop);
+		}
 	}
 	
 	@Override

@@ -845,7 +845,10 @@ public class Doc_AllocationHdr extends Doc
 		if (valuesInv != null) {
 			if (invoice.getReversal_ID() == 0 || invoice.get_ID() < invoice.getReversal_ID())
 			{
-				if ((invoice.isSOTrx() && !invoice.isCreditMemo()) || (!invoice.isSOTrx() && invoice.isCreditMemo())) {
+				if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
+						|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
+						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
+						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo())) {
 					invoiceSource = (BigDecimal) valuesInv.get(0); // AmtSourceDr
 					invoiceAccounted = (BigDecimal) valuesInv.get(1); // AmtAcctDr
 				} else {
@@ -855,7 +858,10 @@ public class Doc_AllocationHdr extends Doc
 			}
 			else
 			{
-				if ((invoice.isSOTrx() && !invoice.isCreditMemo()) || (!invoice.isSOTrx() && invoice.isCreditMemo())) {
+				if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
+						|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
+						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
+						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo())) {
 					invoiceSource = (BigDecimal) valuesInv.get(2); // AmtSourceCr
 					invoiceAccounted = (BigDecimal) valuesInv.get(3); // AmtAcctCr
 				} else {
@@ -912,7 +918,10 @@ public class Doc_AllocationHdr extends Doc
 		MAccount loss = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedLoss_Acct());
 		//
 
-		if ((invoice.isSOTrx() && !invoice.isCreditMemo()) || (!invoice.isSOTrx() && invoice.isCreditMemo()))
+		if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
+				|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
+				|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
+				|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo()))
 		{
 			FactLine fl = fact.createLine (line, loss, gain, as.getC_Currency_ID(), acctDifference);
 			fl.setDescription(description.toString());
@@ -1080,7 +1089,10 @@ public class Doc_AllocationHdr extends Doc
 				BigDecimal invoiceAccounted = null;
 				if (invoice.getReversal_ID() == 0 || invoice.get_ID() < invoice.getReversal_ID())
 				{
-					if ((invoice.isSOTrx() && !invoice.isCreditMemo()) || (!invoice.isSOTrx() && invoice.isCreditMemo())) {
+					if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
+							|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
+							|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
+							|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo())) {
 						invoiceSource = (BigDecimal) valuesInv.get(0); // AmtSourceDr
 						invoiceAccounted = (BigDecimal) valuesInv.get(1); // AmtAcctDr
 					} else {
@@ -1090,7 +1102,10 @@ public class Doc_AllocationHdr extends Doc
 				}
 				else
 				{
-					if ((invoice.isSOTrx() && !invoice.isCreditMemo()) || (!invoice.isSOTrx() && invoice.isCreditMemo())) {
+					if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
+							|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
+							|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
+							|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo())) {
 						invoiceSource = (BigDecimal) valuesInv.get(2); // AmtSourceCr
 						invoiceAccounted = (BigDecimal) valuesInv.get(3); // AmtAcctCr
 					} else {
@@ -1199,12 +1214,12 @@ public class Doc_AllocationHdr extends Doc
 			{
 				if (totalAmtAcctDr.compareTo(totalAmtAcctCr) > 0)
 				{
-					allocateSource = allocateSource.add(totalAmtSourceDr);
+					allocateSource = allocateSource.add(totalAmtSourceDr).subtract(totalAmtSourceCr);
 					allocateAccounted = allocateAccounted.add(totalAmtAcctDr).subtract(totalAmtAcctCr);
 				}
 				else
 				{
-					allocateSource = allocateSource.add(totalAmtSourceCr);
+					allocateSource = allocateSource.add(totalAmtSourceCr).subtract(totalAmtSourceDr);
 					allocateAccounted = allocateAccounted.add(totalAmtAcctCr).subtract(totalAmtAcctDr);
 				}
 			}			
@@ -1335,12 +1350,15 @@ public class Doc_AllocationHdr extends Doc
 			if (acctDifference == null || acctDifference.signum() == 0)
 			{
 				log.fine("No Difference");
-				return null;
+				continue;
 			}
 			
 			//
 			Integer C_AllocationLine_ID = htInvAllocLine.get(invoice.getC_Invoice_ID());
-			if ((invoice.isSOTrx() && !invoice.isCreditMemo()) || (!invoice.isSOTrx() && invoice.isCreditMemo()))
+			if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
+					|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
+					|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
+					|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo()))
 			{
 				FactLine fl = fact.createLine (null, acct, as.getC_Currency_ID(), acctDifference);
 				fl.setDescription(description.toString());
@@ -1525,12 +1543,12 @@ public class Doc_AllocationHdr extends Doc
 			{
 				if (totalAmtAcctDr.compareTo(totalAmtAcctCr) > 0)
 				{
-					allocateSource = allocateSource.add(totalAmtSourceDr);
+					allocateSource = allocateSource.add(totalAmtSourceDr).subtract(totalAmtSourceCr);
 					allocateAccounted = allocateAccounted.add(totalAmtAcctDr).subtract(totalAmtAcctCr);
 				}
 				else
 				{
-					allocateSource = allocateSource.add(totalAmtSourceCr);
+					allocateSource = allocateSource.add(totalAmtSourceCr).subtract(totalAmtSourceDr);
 					allocateAccounted = allocateAccounted.add(totalAmtAcctCr).subtract(totalAmtAcctDr);
 				}
 			}			
@@ -1665,7 +1683,7 @@ public class Doc_AllocationHdr extends Doc
 			if (acctDifference == null || acctDifference.signum() == 0)
 			{
 				log.fine("No Difference");
-				return null;
+				continue;
 			}
 			
 			//
