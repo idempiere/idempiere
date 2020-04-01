@@ -237,6 +237,11 @@ public class SessionContextListener implements ExecutionInit,
 			return;
 		}
 		
+		Object sessionInvalidated = desktop.getAttribute(AdempiereWebUI.DESKTOP_SESSION_INVALIDATED_ATTR);
+		if (sessionInvalidated != null) {
+			return;
+		}
+		
 		if (ServerContext.getCurrentInstance().isEmpty() || !isContextValid())
     	{
 			setupExecutionContextFromSession(Executions.getCurrent());
