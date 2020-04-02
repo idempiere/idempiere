@@ -1229,7 +1229,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 						MUserRoles[] urs = MUserRoles.getOfRole(getCtx(), resp.getAD_Role_ID());
 						for (int i = 0; i < urs.length; i++)
 						{
-							if(urs[i].getAD_User_ID() == Env.getAD_User_ID(getCtx()))
+							if(urs[i].getAD_User_ID() == Env.getAD_User_ID(getCtx()) && urs[i].isActive())
 							{
 								autoApproval = true;
 								break;
