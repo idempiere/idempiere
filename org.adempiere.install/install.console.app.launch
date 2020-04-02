@@ -88,7 +88,6 @@
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
         <setEntry value="org.adempiere.base@default:default"/>
-        <setEntry value="org.adempiere.extend@default:false"/>
         <setEntry value="org.adempiere.install@default:default"/>
         <setEntry value="org.apache.ecs@default:default"/>
         <setEntry value="org.compiere.db.oracle.provider@default:default"/>
