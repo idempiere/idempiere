@@ -918,11 +918,8 @@ ContextMenuListener, IZoomableEditor
 		}
 
 		private void refreshLookupList() {
-			int failures = 0;
 			Desktop desktop = editor.getComponent().getDesktop();
-			Object attr = desktop.getAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES);
-			if (attr != null && attr instanceof Integer)
-				failures = ((Integer)attr).intValue();
+			int failures = AdempiereWebUI.getScheduleFailures(desktop);
 			Executions.schedule(desktop, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) {
@@ -932,12 +929,9 @@ ContextMenuListener, IZoomableEditor
 					} catch (Exception e) {}
 				}
 			}, new Event("onResetLookupList"));
-			attr = desktop.getAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES);
-			if (attr != null && attr instanceof Integer) {
-				int f = ((Integer)attr).intValue();
-				if (f > failures) {
-					((ITableDirEditor)editor.getComponent()).cleanup();
-				}
+			int f = AdempiereWebUI.getScheduleFailures(desktop);
+			if (f > failures) {
+				((ITableDirEditor)editor.getComponent()).cleanup();
 			}
 		}
 				
