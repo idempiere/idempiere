@@ -220,6 +220,8 @@ public final class AEnv
 		MSession session = MSession.get(Env.getCtx(), false);	//	finish
 		if (session != null)
 			session.logout();
+		
+		Env.setContext(Env.getCtx(), "#AD_Session_ID", (String)null);
 		//
 	}
 

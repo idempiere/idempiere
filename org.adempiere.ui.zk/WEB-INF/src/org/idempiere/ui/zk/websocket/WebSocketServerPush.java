@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.adempiere.webui.AdempiereWebUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.au.out.AuEcho;
@@ -203,14 +202,7 @@ public class WebSocketServerPush implements ServerPush {
     	if (Executions.getCurrent() == null) {
     		//schedule and execute in desktop's onPiggyBack listener
     		scheduler.schedule(task, event);
-	        boolean ok = echo();
-	        if (!ok) {
-	        	Desktop d = desktop.get();
-	        	log.warn("Failed to resume long polling resource" + (d != null ? " for desktop " + d.getId() : ""));		        	
-	        	if (d != null) {
-	        		AdempiereWebUI.increaseScheduleFailures(d);
-	        	}
-	        }
+	        echo();
     	} else {
     		// in event listener thread, use echo to execute async
     		synchronized (schedules) {

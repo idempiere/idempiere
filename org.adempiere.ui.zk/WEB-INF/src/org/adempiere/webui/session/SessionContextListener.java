@@ -325,7 +325,7 @@ public class SessionContextListener implements ExecutionInit,
 		} 
 	}
 	
-	public static void addDesktopId(int AD_Session_ID, String dtid)
+	public static synchronized void addDesktopId(int AD_Session_ID, String dtid)
 	{
 		String key = getSessionDesktopListKey(AD_Session_ID);
 		@SuppressWarnings("unchecked")

@@ -66,8 +66,6 @@ import org.zkoss.zk.ui.event.ClientInfoEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.sys.DesktopCache;
-import org.zkoss.zk.ui.sys.SessionCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Window;
 
@@ -120,8 +118,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 	private ConcurrentMap<String, String[]> m_URLParameters;
 
-	public static final String SERVERPUSH_SCHEDULE_FAILURES = "serverpush.schedule.failures";
-	
 	private static final String ON_LOGIN_COMPLETED = "onLoginCompleted";
 	
     public AdempiereWebUI()
@@ -384,18 +380,16 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			desktop.enableServerPush(false);
     	
     	Session session = logout0();
-    	DesktopCache desktopCache = ((SessionCtrl)session).getDesktopCache();
     	
     	//clear context, invalidate session
     	Env.getCtx().clear();
     	session.invalidate();
+    	desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
             	
         //redirect to login page
-        Executions.sendRedirect("index.zul");
-        
-        if (desktopCache != null)
-			desktopCache.removeDesktop(Executions.getCurrent().getDesktop());
+        Executions.sendRedirect("index.zul");        
     }
+    
     public void logoutAfterTabDestroyed(){
     	Desktop desktop = Executions.getCurrent().getDesktop();
 	    if (desktop.isServerPushEnabled())
@@ -550,14 +544,14 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		
 		if (desktop.isServerPushEnabled())
 			desktop.enableServerPush(false);
-		Session session = logout0();
-		DesktopCache desktopCache = ((SessionCtrl)session).getDesktopCache();
+		logout0();
 		
     	//clear context
 		Env.getCtx().clear();
 		
 		//invalidate session
-		((SessionCtrl)session).invalidateNow();    	
+		httpRequest.getSession(false).invalidate();    	
+		desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
     	
     	//put saved context into new session
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -568,14 +562,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		newSession.setAttribute(SAVED_CONTEXT, map);
 		properties.setProperty(SessionContextListener.SERVLET_SESSION_ID, newSession.getId());
 		
-		//redirect must happens before removeDesktop below, otherwise you get NPE
-		Executions.getCurrent().sendRedirect("index.zul");
-		
-		//remove old desktop
-		if (desktopCache != null) {
-			desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
-			desktopCache.removeDesktop(desktop);
-		}
+		Executions.getCurrent().sendRedirect("index.zul");		
 	}
 	
 	@Override
@@ -593,32 +580,5 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			uploadSetting.append(",maxsize=").append(size);
 		}
 		return uploadSetting.toString();
-	}
-	
-	/**
-	 * Increase server push schedule failures count 
-	 * @param d
-	 */
-	public static void increaseScheduleFailures(Desktop d) {
-		Integer count = (Integer) d.getAttribute(SERVERPUSH_SCHEDULE_FAILURES);
-		if (count != null)
-			count = Integer.valueOf(count.intValue()+1);
-		else
-			count = Integer.valueOf(1);
-		d.setAttribute(SERVERPUSH_SCHEDULE_FAILURES, count);
-	}
-	
-	/**
-	 * 
-	 * @param d
-	 * @return server push schedule failures count
-	 */
-	public static int getScheduleFailures(Desktop d) {
-		int failures = 0;
-		Object attr = d.getAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES);
-		if (attr != null && attr instanceof Integer)
-			failures = ((Integer)attr).intValue();
-		
-		return failures;
-	}
+	}	
 }

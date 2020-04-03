@@ -93,7 +93,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	protected Combobox lstRole, lstClient, lstOrganisation, lstWarehouse;
 	protected Label lblRole, lblClient, lblDef, lblOrganisation, lblWarehouse, lblDate;
 	protected WDateEditor lstDate;
-	protected Button btnOk, btnCancel;
 
     /** Context					*/
 	protected Properties      m_ctx;
@@ -351,16 +350,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstDate.setValue(new Timestamp(System.currentTimeMillis()));
         lstDate.getComponent().setId("loginDate");
 
-        btnOk = new Button();
-        btnOk.setId("btnOk");
-        btnOk.setLabel("Ok");
-        btnOk.addEventListener("onClick", this);
-
-        btnCancel = new Button();
-        btnCancel.setId("btnCancel");
-        btnCancel.setLabel("Cancel");
-        btnCancel.addEventListener("onClick", this);
-        
     	//  initial client - Elaine 2009/02/06
     	UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
 		String initDefault = userPreference.getProperty(UserPreference.P_CLIENT);
