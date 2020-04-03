@@ -25,7 +25,6 @@ import java.util.Properties;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.AutoComplete;
@@ -66,6 +65,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.sys.SessionCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.Comboitem;
@@ -919,7 +919,15 @@ ContextMenuListener, IZoomableEditor
 
 		private void refreshLookupList() {
 			Desktop desktop = editor.getComponent().getDesktop();
-			int failures = AdempiereWebUI.getScheduleFailures(desktop);
+			boolean alive = false;
+			if (desktop.isAlive() && desktop.getSession() != null) {
+				SessionCtrl ctrl = (SessionCtrl) desktop.getSession();
+				alive = !ctrl.isInvalidated();
+			}
+			if (!alive) {
+				((ITableDirEditor)editor.getComponent()).cleanup();
+				return;
+			}
 			Executions.schedule(desktop, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) {
@@ -929,10 +937,6 @@ ContextMenuListener, IZoomableEditor
 					} catch (Exception e) {}
 				}
 			}, new Event("onResetLookupList"));
-			int f = AdempiereWebUI.getScheduleFailures(desktop);
-			if (f > failures) {
-				((ITableDirEditor)editor.getComponent()).cleanup();
-			}
 		}
 				
 		@Override
