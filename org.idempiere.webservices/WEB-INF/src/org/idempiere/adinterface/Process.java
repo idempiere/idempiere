@@ -345,8 +345,10 @@ public class Process {
 			try
 			{
 				processOK = process.processIt(pi, trx, false);
-				if (trxName == null)
-					trx.commit();				
+				if (trxName == null && processOK)
+					trx.commit();	
+				else if (trxName == null && !processOK)
+					trx.rollback();
 			}
 			catch (Throwable t)
 			{
