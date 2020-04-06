@@ -36,20 +36,16 @@ public class PO_Record
 {
 	/**	Parent Tables		*/
 	private static int[]	s_parents =	new int[]{
-		X_C_Order.Table_ID,
-		X_CM_Container.Table_ID
+		X_C_Order.Table_ID
 	};
 	private static String[]	s_parentNames = new String[]{
-		X_C_Order.Table_Name,
-		X_CM_Container.Table_Name
+		X_C_Order.Table_Name
 	};
 	private static int[]	s_parentChilds = new int[]{
-		X_C_OrderLine.Table_ID,
-		X_CM_Container_Element.Table_ID
+		X_C_OrderLine.Table_ID
 	};
 	private static String[]	s_parentChildNames = new String[]{
-		X_C_OrderLine.Table_Name,
-		X_CM_Container_Element.Table_Name
+		X_C_OrderLine.Table_Name
 	};
 	
 	
@@ -58,9 +54,6 @@ public class PO_Record
 	private static int[]	s_cascades =	new int[]{
 		X_AD_Attachment.Table_ID,
 		X_AD_Archive.Table_ID,
-	//	X_CM_ContainerTTable.Table_ID,
-	//	X_CM_CStageTTable.Table_ID,
-		X_K_Index.Table_ID,
 		X_AD_Note.Table_ID,
 		X_AD_RecentItem.Table_ID,
 		X_AD_PostIt.Table_ID	
@@ -69,9 +62,6 @@ public class PO_Record
 	private static String[]	s_cascadeNames = new String[]{
 		X_AD_Attachment.Table_Name,
 		X_AD_Archive.Table_Name,
-	//	X_CM_ContainerTTable.Table_Name,
-	//	X_CM_CStageTTable.Table_Name,
-		X_K_Index.Table_Name,
 		X_AD_Note.Table_Name,
 		X_AD_RecentItem.Table_Name,
 		X_AD_PostIt.Table_Name
