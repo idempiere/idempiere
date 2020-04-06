@@ -583,8 +583,13 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	}
     }
     
+    /**
+     * show UI for change role
+     * @param ctx env context
+     */
     public void changeRole(Properties ctx) {
-    	ctxBeforeChangeRole = ctx;
+    	ctxBeforeChangeRole = new Properties();
+    	ctxBeforeChangeRole.putAll(ctx);
     	int AD_Client_ID = Env.getAD_Client_ID(ctx);
     	lstClient.setValue(AD_Client_ID);
     	updateRoleList();
