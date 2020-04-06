@@ -539,9 +539,9 @@
 				            </dependency-resolution>
 				            <target>
 					            <artifact>
-						            <groupId>${project.groupId}</groupId>
+						            <groupId>org.idempiere</groupId>
 						            <artifactId>${idempiere.target}</artifactId>
-						            <version>${project.version}</version>
+						            <version>7.1.0-SNAPSHOT</version>
 					            </artifact>
 				            </target>
 
