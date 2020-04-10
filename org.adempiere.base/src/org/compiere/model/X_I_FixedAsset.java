@@ -32,7 +32,7 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200225L;
 
     /** Standard Constructor */
     public X_I_FixedAsset (Properties ctx, int I_FixedAsset_ID, String trxName)
@@ -44,7 +44,11 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 // 0
 			setA_Remaining_Period (0);
 // 0
+			setAssetAmtEntered (Env.ZERO);
+// 0
 			setAssetPeriodDepreciationAmt (Env.ZERO);
+// 0
+			setAssetSourceAmt (Env.ZERO);
 // 0
 			setDocAction (null);
 // 'CO'
@@ -280,6 +284,23 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 		return (String)get_Value(COLUMNNAME_A_Asset_Type_Value);
 	}
 
+	/** Set Account Schema Name.
+		@param AcctSchemaName 
+		Name of the Accounting Schema
+	  */
+	public void setAcctSchemaName (String AcctSchemaName)
+	{
+		set_Value (COLUMNNAME_AcctSchemaName, AcctSchemaName);
+	}
+
+	/** Get Account Schema Name.
+		@return Name of the Accounting Schema
+	  */
+	public String getAcctSchemaName () 
+	{
+		return (String)get_Value(COLUMNNAME_AcctSchemaName);
+	}
+
 	/** Set Current Period.
 		@param A_Current_Period Current Period	  */
 	public void setA_Current_Period (int A_Current_Period)
@@ -326,6 +347,23 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	public BigDecimal getA_Salvage_Value () 
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_Salvage_Value);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Entered Amount.
+		@param AssetAmtEntered Entered Amount	  */
+	public void setAssetAmtEntered (BigDecimal AssetAmtEntered)
+	{
+		set_Value (COLUMNNAME_AssetAmtEntered, AssetAmtEntered);
+	}
+
+	/** Get Entered Amount.
+		@return Entered Amount	  */
+	public BigDecimal getAssetAmtEntered () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AssetAmtEntered);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
@@ -385,6 +423,23 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_AssetServiceDate);
 	}
 
+	/** Set Source Amount.
+		@param AssetSourceAmt Source Amount	  */
+	public void setAssetSourceAmt (BigDecimal AssetSourceAmt)
+	{
+		set_Value (COLUMNNAME_AssetSourceAmt, AssetSourceAmt);
+	}
+
+	/** Get Source Amount.
+		@return Source Amount	  */
+	public BigDecimal getAssetSourceAmt () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AssetSourceAmt);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
 	/** Set Business Partner Key.
 		@param BPartner_Value 
 		The Key of the Business Partner
@@ -400,6 +455,34 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	public String getBPartner_Value () 
 	{
 		return (String)get_Value(COLUMNNAME_BPartner_Value);
+	}
+
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+
+	/** Set Accounting Schema.
+		@param C_AcctSchema_ID 
+		Rules for accounting
+	  */
+	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
+	{
+		if (C_AcctSchema_ID < 1) 
+			set_Value (COLUMNNAME_C_AcctSchema_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
+	}
+
+	/** Get Accounting Schema.
+		@return Rules for accounting
+	  */
+	public int getC_AcctSchema_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartnerSR() throws RuntimeException
@@ -470,6 +553,34 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	public String getC_City_Value () 
 	{
 		return (String)get_Value(COLUMNNAME_C_City_Value);
+	}
+
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
+			.getPO(getC_Currency_ID(), get_TrxName());	}
+
+	/** Set Currency.
+		@param C_Currency_ID 
+		The Currency for this record
+	  */
+	public void setC_Currency_ID (int C_Currency_ID)
+	{
+		if (C_Currency_ID < 1) 
+			set_Value (COLUMNNAME_C_Currency_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
+	}
+
+	/** Get Currency.
+		@return The Currency for this record
+	  */
+	public int getC_Currency_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
@@ -669,6 +780,23 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	public String getInventoryNo () 
 	{
 		return (String)get_Value(COLUMNNAME_InventoryNo);
+	}
+
+	/** Set ISO Currency Code.
+		@param ISO_Code 
+		Three letter ISO 4217 Code of the Currency
+	  */
+	public void setISO_Code (String ISO_Code)
+	{
+		set_Value (COLUMNNAME_ISO_Code, ISO_Code);
+	}
+
+	/** Get ISO Currency Code.
+		@return Three letter ISO 4217 Code of the Currency
+	  */
+	public String getISO_Code () 
+	{
+		return (String)get_Value(COLUMNNAME_ISO_Code);
 	}
 
 	/** Set Locator Key.

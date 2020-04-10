@@ -18,9 +18,8 @@
 package org.adempiere.webui;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
+import java.util.Enumeration;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -61,13 +60,12 @@ import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.sys.DesktopCache;
-import org.zkoss.zk.ui.sys.SessionCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Window;
 
@@ -81,13 +79,13 @@ import org.zkoss.zul.Window;
  */
 public class AdempiereWebUI extends Window implements EventListener<Event>, IWebClient
 {
+	public static final String DESKTOP_SESSION_INVALIDATED_ATTR = "DesktopSessionInvalidated";
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6725805283410008847L;
 
-	private static final String SAVED_CONTEXT = "saved.context";
-	
 	public static final String APPLICATION_DESKTOP_KEY = "application.desktop";
 
 	public static String APP_NAME = null;
@@ -118,8 +116,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 	private ConcurrentMap<String, String[]> m_URLParameters;
 
-	public static final String SERVERPUSH_SCHEDULE_FAILURES = "serverpush.schedule.failures";
-	
 	private static final String ON_LOGIN_COMPLETED = "onLoginCompleted";
 	
     public AdempiereWebUI()
@@ -141,13 +137,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         
         SessionManager.setSessionApplication(this);
         Session session = Executions.getCurrent().getDesktop().getSession();
-        @SuppressWarnings("unchecked")
-		Map<String, Object>map = (Map<String, Object>) session.removeAttribute(SAVED_CONTEXT);
-        if (map != null && !map.isEmpty())
-        {
-        	onChangeRole(map);
-        	return;
-        }
         
         Properties ctx = Env.getCtx();
         langSession = Env.getContext(ctx, Env.LANGUAGE);
@@ -382,18 +371,16 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			desktop.enableServerPush(false);
     	
     	Session session = logout0();
-    	DesktopCache desktopCache = ((SessionCtrl)session).getDesktopCache();
     	
     	//clear context, invalidate session
     	Env.getCtx().clear();
     	session.invalidate();
+    	desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
             	
         //redirect to login page
-        Executions.sendRedirect("index.zul");
-        
-        if (desktopCache != null)
-			desktopCache.removeDesktop(Executions.getCurrent().getDesktop());
+        Executions.sendRedirect("index.zul");        
     }
+    
     public void logoutAfterTabDestroyed(){
     	Desktop desktop = Executions.getCurrent().getDesktop();
 	    if (desktop.isServerPushEnabled())
@@ -497,14 +484,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 	}
 
-	private void onChangeRole(Map<String, Object> map) {
-		Locale locale = (Locale) map.get("locale");
-		Properties properties = (Properties) map.get("context");
-        
+	private void onChangeRole(Locale locale, Properties context) {
 		SessionManager.setSessionApplication(this);
 		loginDesktop = new WLogin(this);
         loginDesktop.createPart(this.getPage());
-        loginDesktop.changeRole(locale, properties);
+        loginDesktop.changeRole(locale, context);
         loginDesktop.getComponent().getRoot().addEventListener(Events.ON_CLIENT_INFO, this);
 	}
 
@@ -545,33 +529,44 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Desktop desktop = Executions.getCurrent().getDesktop();
 		Locale locale = (Locale) desktop.getSession().getAttribute(Attributes.PREFERRED_LOCALE);
 		HttpServletRequest httpRequest = (HttpServletRequest) Executions.getCurrent().getNativeRequest();		
+		Env.setContext(properties, SessionContextListener.SERVLET_SESSION_ID, httpRequest.getSession().getId());
 		
-		if (desktop.isServerPushEnabled())
-			desktop.enableServerPush(false);
-		Session session = logout0();
-		DesktopCache desktopCache = ((SessionCtrl)session).getDesktopCache();
+		//stop key listener
+		if (keyListener != null) {
+			keyListener.detach();
+			keyListener = null;
+		}
 		
-    	//clear context
-		Env.getCtx().clear();
-		
-		//invalidate session
-		((SessionCtrl)session).invalidateNow();    	
+		//desktop cleanup
+		IDesktop appDesktop = getAppDeskop();
+		if (appDesktop != null)
+			appDesktop.logout();
+
+    	//remove all children component
+    	getChildren().clear();
     	
-    	//put saved context into new session
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("context", properties);
-		map.put("locale", locale);
+    	//remove all root components except this
+    	Page page = getPage();
+    	page.removeComponents();
+    	this.setPage(page);
+        
+    	//clear session attributes
+    	Enumeration<String> attributes = httpRequest.getSession().getAttributeNames();
+    	while(attributes.hasMoreElements()) {
+    		String attribute = attributes.nextElement();
+    		
+    		//need to keep zk's session attributes
+    		if (attribute.contains("zkoss."))
+    			continue;
+    		
+    		httpRequest.getSession().removeAttribute(attribute);
+    	}
+
+    	//logout ad_session
+    	AEnv.logout();
 		
-		HttpSession newSession = httpRequest.getSession(true);
-		newSession.setAttribute(SAVED_CONTEXT, map);
-		properties.setProperty(SessionContextListener.SERVLET_SESSION_ID, newSession.getId());
-		
-		//redirect must happens before removeDesktop below, otherwise you get NPE
-		Executions.getCurrent().sendRedirect("index.zul");
-		
-		//remove old desktop    	
-		if (desktopCache != null)
-			desktopCache.removeDesktop(desktop);
+    	//show change role window and set new context for env and session
+		onChangeRole(locale, properties);
 	}
 	
 	@Override
@@ -589,5 +584,5 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			uploadSetting.append(",maxsize=").append(size);
 		}
 		return uploadSetting.toString();
-	}
+	}	
 }

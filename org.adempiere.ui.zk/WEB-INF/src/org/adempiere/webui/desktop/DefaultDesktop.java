@@ -31,13 +31,11 @@ import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.model.MBroadcastMessage;
-import org.adempiere.util.ServerContext;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
-import org.adempiere.webui.apps.DesktopRunnable;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.component.Tab;
@@ -54,15 +52,11 @@ import org.adempiere.webui.panel.BroadcastMessageWindow;
 import org.adempiere.webui.panel.HeaderPanel;
 import org.adempiere.webui.panel.HelpController;
 import org.adempiere.webui.panel.TimeoutPanel;
-import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
-import org.adempiere.webui.util.IServerPushCallback;
-import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
-import org.compiere.Adempiere;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.I_AD_Preference;
@@ -382,30 +376,10 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
     		layout.getDesktop().enableServerPush(true);
     	}
 
-        Runnable runnable = new Runnable() {
-			public void run() {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {}
-
-				IServerPushCallback callback = new IServerPushCallback() {
-					public void updateUI() {
-						Properties ctx = (Properties)layout.getDesktop().getSession().getAttribute(SessionContextListener.SESSION_CTX);
-						try {
-							ServerContext.setCurrentInstance(ctx);
-							renderHomeTab();
-							automaticOpen(ctx);
-						} finally {
-							ServerContext.dispose();
-						}
-					}
-				};
-				ServerPushTemplate template = new ServerPushTemplate(layout.getDesktop());
-				template.executeAsync(callback);
-			}
-		};
-
-		Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(runnable,layout.getDesktop()));
+        Executions.schedule(layout.getDesktop(), event -> {
+        	renderHomeTab();
+        	automaticOpen(Env.getCtx());
+        }, new Event("onRenderHomeTab"));        
 
 		ToolBar toolbar = windowContainer.getToobar();
       

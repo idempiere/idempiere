@@ -15,7 +15,6 @@
 		<module>org.adempiere.base</module>
 		<module>org.adempiere.base.callout</module>
 		<module>org.adempiere.base.process</module>
-		<module>org.adempiere.extend</module>
 		<module>org.adempiere.payment.processor</module>
 		<module>org.adempiere.eclipse.equinox.http.servlet</module>
 		<module>org.adempiere.install</module>

@@ -342,13 +342,17 @@ public class PackInApplicationActivator extends AbstractActivator{
 	@Override
 	protected void frameworkStarted() {
 		if (service != null) {
+			String packinFolders = System.getProperty(MSysConfig.AUTOMATIC_PACKIN_FOLDERS);
+			if (packinFolders == null || packinFolders.trim().length() == 0) {
+				packinFolders = MSysConfig.getValue(MSysConfig.AUTOMATIC_PACKIN_FOLDERS);
+			}
+			final String fPackinFolders = packinFolders;
 			if (Adempiere.getThreadPoolExecutor() != null) {
 				Adempiere.getThreadPoolExecutor().execute(new Runnable() {			
 					@Override
 					public void run() {
 						int timeout = MSysConfig.getIntValue(MSysConfig.AUTOMATIC_PACKIN_INITIAL_DELAY, 120) * 1000;
-						String folders = MSysConfig.getValue(MSysConfig.AUTOMATIC_PACKIN_FOLDERS);
-						automaticPackin(timeout, folders, true);
+						automaticPackin(timeout, fPackinFolders, true);
 					}
 				});
 			} else {
@@ -357,8 +361,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 					public void stateChange(ServerStateChangeEvent event) {
 						if (event.getEventType() == ServerStateChangeEvent.SERVER_START && service != null) {
 							int timeout = MSysConfig.getIntValue(MSysConfig.AUTOMATIC_PACKIN_INITIAL_DELAY, 120) * 1000;
-							String folders = MSysConfig.getValue(MSysConfig.AUTOMATIC_PACKIN_FOLDERS);
-							automaticPackin(timeout, folders, true);
+							automaticPackin(timeout, fPackinFolders, true);
 						}					
 					}
 				});

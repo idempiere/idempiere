@@ -37,6 +37,7 @@ import org.compiere.model.MNote;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.MUser;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -133,7 +134,7 @@ public class AlertProcessor extends AdempiereServer
 		if (log.isLoggable(Level.INFO)) log.info("" + alert);
 
 		MSystem system = MSystem.get(Env.getCtx());
-		MClient client = MClient.get(Env.getCtx());
+		MClient client = MClient.get(Env.getCtx(), alert.getAD_Client_ID());
 		// parse variables from Client, then from System
 		String alertMessage = Env.parseVariable(alert.getAlertMessage(), client, null, true);
 		alertMessage = Env.parseVariable(alertMessage, system, null, true);
@@ -240,7 +241,7 @@ public class AlertProcessor extends AdempiereServer
 		// parse variables from Client, then from System
 		String alertSubject = Env.parseVariable(alert.getAlertSubject(), client, null, true);
 		alertSubject = Env.parseVariable(alertSubject, system, null, true);
-		int countMail = notifyUsers(users, alertSubject, message.toString(), attachments);
+		int countMail = notifyUsers(users, alertSubject, message.toString(), attachments, alert);
 		
 		// IDEMPIERE-2864
 		for(File attachment : attachments)
@@ -259,16 +260,18 @@ public class AlertProcessor extends AdempiereServer
 	 * @param subject email subject
 	 * @param message email message
 	 * @param attachments 
+	 * @param alert 
 	 * @return how many email were sent
 	 */
-	protected int notifyUsers(Collection<Integer> users, String subject, String message, Collection<File> attachments)
+	protected int notifyUsers(Collection<Integer> users, String subject, String message, Collection<File> attachments, MAlert alert)
 	{
 		int countMail = 0;
 		for (int user_id : users) {
 			MUser user = MUser.get(getCtx(), user_id);
 			if (user.isNotificationEMail()) {
 				String messageHTML = message.replaceAll(Env.NL, "<br>");
-				if (m_client.sendEMailAttachments (user_id, subject, messageHTML, attachments, true))
+				MClient client = MClient.get(Env.getCtx(), alert.getAD_Client_ID());
+				if (client.sendEMailAttachments (user_id, subject, messageHTML, attachments, true))
 				{
 					countMail++;
 				}
@@ -280,16 +283,16 @@ public class AlertProcessor extends AdempiereServer
 					trx = Trx.get(Trx.createTrxName("AP_NU"), true);
 					trx.setDisplayName(getClass().getName()+"_"+m_model.getName()+"_notifyUsers");
 					// Notice
-					int AD_Message_ID = 52244;  /* TODO - Hardcoded message=notes */
+					int AD_Message_ID = SystemIDs.MESSAGE_NOTES;  /* TODO - Hardcoded message=notes */
 					MNote note = new MNote(getCtx(), AD_Message_ID, user_id, trx.getTrxName());
-					note.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
+					note.setClientOrg(alert.getAD_Client_ID(), alert.getAD_Org_ID());
 					note.setTextMsg(message);
 					note.setDescription(subject);
 					note.saveEx();
 					if (attachments.size() > 0) {
 						// Attachment
 						MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), trx.getTrxName());
-						attachment.setClientOrg(m_model.getAD_Client_ID(), m_model.getAD_Org_ID());
+						attachment.setClientOrg(alert.getAD_Client_ID(), alert.getAD_Org_ID());
 						for (File f : attachments) {
 							attachment.addEntry(f);
 						}
@@ -323,7 +326,7 @@ public class AlertProcessor extends AdempiereServer
 		Exception error = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, trxName);
+			pstmt = DB.prepareNormalReadReplicaStatement(sql, trxName);
 			rs = pstmt.executeQuery ();
 			ResultSetMetaData meta = rs.getMetaData();
 			boolean isFirstRow = true;
@@ -386,7 +389,7 @@ public class AlertProcessor extends AdempiereServer
 		Exception error = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, trxName);
+			pstmt = DB.prepareNormalReadReplicaStatement(sql, trxName);
 			rs = pstmt.executeQuery ();
 			ResultSetMetaData meta = rs.getMetaData();
 			while (rs.next ())
