@@ -31,7 +31,7 @@ public class X_HR_ListType extends PO implements I_HR_ListType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_HR_ListType (Properties ctx, int HR_ListType_ID, String trxName)
@@ -67,8 +67,8 @@ public class X_HR_ListType extends PO implements I_HR_ListType, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_HR_ListType[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_HR_ListType[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

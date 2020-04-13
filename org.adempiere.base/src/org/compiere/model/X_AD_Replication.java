@@ -33,7 +33,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_Replication (Properties ctx, int AD_Replication_ID, String trxName)
@@ -77,8 +77,8 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Replication[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_Replication[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

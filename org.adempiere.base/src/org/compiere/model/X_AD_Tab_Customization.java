@@ -29,7 +29,7 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200225L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_Tab_Customization (Properties ctx, int AD_Tab_Customization_ID, String trxName)
@@ -65,7 +65,7 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Tab_Customization[")
+      StringBuilder sb = new StringBuilder ("X_AD_Tab_Customization[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

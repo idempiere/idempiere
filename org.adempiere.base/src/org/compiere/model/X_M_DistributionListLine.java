@@ -32,7 +32,7 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_DistributionListLine (Properties ctx, int M_DistributionListLine_ID, String trxName)
@@ -71,7 +71,7 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_DistributionListLine[")
+      StringBuilder sb = new StringBuilder ("X_M_DistributionListLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

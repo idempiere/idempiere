@@ -29,7 +29,7 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_IMP_ProcessorLog (Properties ctx, int IMP_ProcessorLog_ID, String trxName)
@@ -67,7 +67,7 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_IMP_ProcessorLog[")
+      StringBuilder sb = new StringBuilder ("X_IMP_ProcessorLog[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

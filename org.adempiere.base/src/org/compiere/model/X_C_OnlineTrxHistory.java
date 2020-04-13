@@ -29,7 +29,7 @@ public class X_C_OnlineTrxHistory extends PO implements I_C_OnlineTrxHistory, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_OnlineTrxHistory (Properties ctx, int C_OnlineTrxHistory_ID, String trxName)
@@ -70,7 +70,7 @@ public class X_C_OnlineTrxHistory extends PO implements I_C_OnlineTrxHistory, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_OnlineTrxHistory[")
+      StringBuilder sb = new StringBuilder ("X_C_OnlineTrxHistory[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

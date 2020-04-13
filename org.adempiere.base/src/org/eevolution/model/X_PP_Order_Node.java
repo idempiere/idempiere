@@ -34,7 +34,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_PP_Order_Node (Properties ctx, int PP_Order_Node_ID, String trxName)
@@ -91,8 +91,8 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PP_Order_Node[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_PP_Order_Node[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

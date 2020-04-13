@@ -29,7 +29,7 @@ public class X_C_BP_Employee_Acct extends PO implements I_C_BP_Employee_Acct, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_BP_Employee_Acct (Properties ctx, int C_BP_Employee_Acct_ID, String trxName)
@@ -65,7 +65,7 @@ public class X_C_BP_Employee_Acct extends PO implements I_C_BP_Employee_Acct, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_BP_Employee_Acct[")
+      StringBuilder sb = new StringBuilder ("X_C_BP_Employee_Acct[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -32,7 +32,7 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_PP_WF_Node_Product (Properties ctx, int PP_WF_Node_Product_ID, String trxName)
@@ -71,7 +71,7 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PP_WF_Node_Product[")
+      StringBuilder sb = new StringBuilder ("X_PP_WF_Node_Product[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

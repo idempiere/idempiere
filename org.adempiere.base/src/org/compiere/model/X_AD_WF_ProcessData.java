@@ -30,7 +30,7 @@ public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_WF_ProcessData (Properties ctx, int AD_WF_ProcessData_ID, String trxName)
@@ -67,7 +67,7 @@ public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_WF_ProcessData[")
+      StringBuilder sb = new StringBuilder ("X_AD_WF_ProcessData[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

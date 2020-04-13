@@ -30,7 +30,7 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200124L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButton (Properties ctx, int AD_ToolBarButton_ID, String trxName)
@@ -77,8 +77,8 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_ToolBarButton[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_ToolBarButton[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

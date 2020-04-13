@@ -29,7 +29,7 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_Sequence_No (Properties ctx, int AD_Sequence_No_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Sequence_No[")
+      StringBuilder sb = new StringBuilder ("X_AD_Sequence_No[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

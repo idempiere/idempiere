@@ -33,7 +33,7 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_A_Asset_Info_Lic (Properties ctx, int A_Asset_Info_Lic_ID, String trxName)
@@ -69,7 +69,7 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Asset_Info_Lic[")
+      StringBuilder sb = new StringBuilder ("X_A_Asset_Info_Lic[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

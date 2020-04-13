@@ -32,7 +32,7 @@ public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_Product_PO (Properties ctx, int M_Product_PO_ID, String trxName)
@@ -73,7 +73,7 @@ public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_Product_PO[")
+      StringBuilder sb = new StringBuilder ("X_M_Product_PO[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

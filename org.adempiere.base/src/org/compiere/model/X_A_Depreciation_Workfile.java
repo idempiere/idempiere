@@ -33,7 +33,7 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Workfile (Properties ctx, int A_Depreciation_Workfile_ID, String trxName)
@@ -102,7 +102,7 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Depreciation_Workfile[")
+      StringBuilder sb = new StringBuilder ("X_A_Depreciation_Workfile[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -30,7 +30,7 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_PeriodControl (Properties ctx, int C_PeriodControl_ID, String trxName)
@@ -69,7 +69,7 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_PeriodControl[")
+      StringBuilder sb = new StringBuilder ("X_C_PeriodControl[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

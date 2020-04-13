@@ -32,7 +32,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_TaxDeclarationAcct (Properties ctx, int C_TaxDeclarationAcct_ID, String trxName)
@@ -70,7 +70,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_TaxDeclarationAcct[")
+      StringBuilder sb = new StringBuilder ("X_C_TaxDeclarationAcct[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

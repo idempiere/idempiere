@@ -33,7 +33,7 @@ public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_Fact_Reconciliation (Properties ctx, int Fact_Reconciliation_ID, String trxName)
@@ -69,7 +69,7 @@ public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_Fact_Reconciliation[")
+      StringBuilder sb = new StringBuilder ("X_Fact_Reconciliation[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -29,7 +29,7 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_CommodityShipment (Properties ctx, int M_CommodityShipment_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_CommodityShipment[")
+      StringBuilder sb = new StringBuilder ("X_M_CommodityShipment[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

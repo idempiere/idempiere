@@ -32,7 +32,7 @@ public class X_A_Asset_Spread extends PO implements I_A_Asset_Spread, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_A_Asset_Spread (Properties ctx, int A_Asset_Spread_ID, String trxName)
@@ -81,7 +81,7 @@ public class X_A_Asset_Spread extends PO implements I_A_Asset_Spread, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Asset_Spread[")
+      StringBuilder sb = new StringBuilder ("X_A_Asset_Spread[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

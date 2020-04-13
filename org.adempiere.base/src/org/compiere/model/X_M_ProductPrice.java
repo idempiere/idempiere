@@ -31,7 +31,7 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_ProductPrice (Properties ctx, int M_ProductPrice_ID, String trxName)
@@ -70,7 +70,7 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_ProductPrice[")
+      StringBuilder sb = new StringBuilder ("X_M_ProductPrice[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

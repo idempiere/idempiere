@@ -29,7 +29,7 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_WS_WebService_Para (Properties ctx, int WS_WebService_Para_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_WS_WebService_Para[")
+      StringBuilder sb = new StringBuilder ("X_WS_WebService_Para[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

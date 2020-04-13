@@ -32,7 +32,7 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_PrintTableFormat (Properties ctx, int AD_PrintTableFormat_ID, String trxName)
@@ -77,8 +77,8 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_PrintTableFormat[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_PrintTableFormat[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

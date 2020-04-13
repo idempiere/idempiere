@@ -29,7 +29,7 @@ public class X_M_RelatedProduct extends PO implements I_M_RelatedProduct, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_RelatedProduct (Properties ctx, int M_RelatedProduct_ID, String trxName)
@@ -67,8 +67,8 @@ public class X_M_RelatedProduct extends PO implements I_M_RelatedProduct, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_RelatedProduct[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_M_RelatedProduct[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

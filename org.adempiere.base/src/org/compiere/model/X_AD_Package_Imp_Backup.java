@@ -30,7 +30,7 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Backup (Properties ctx, int AD_Package_Imp_Backup_ID, String trxName)
@@ -67,7 +67,7 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Package_Imp_Backup[")
+      StringBuilder sb = new StringBuilder ("X_AD_Package_Imp_Backup[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

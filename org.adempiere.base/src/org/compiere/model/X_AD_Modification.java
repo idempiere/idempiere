@@ -30,7 +30,7 @@ public class X_AD_Modification extends PO implements I_AD_Modification, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_Modification (Properties ctx, int AD_Modification_ID, String trxName)
@@ -70,8 +70,8 @@ public class X_AD_Modification extends PO implements I_AD_Modification, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Modification[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_Modification[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

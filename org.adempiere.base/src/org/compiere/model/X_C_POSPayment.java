@@ -32,7 +32,7 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_POSPayment (Properties ctx, int C_POSPayment_ID, String trxName)
@@ -73,7 +73,7 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_POSPayment[")
+      StringBuilder sb = new StringBuilder ("X_C_POSPayment[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

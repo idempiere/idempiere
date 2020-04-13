@@ -33,7 +33,7 @@ public class X_C_BankStatementLine extends PO implements I_C_BankStatementLine, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_BankStatementLine (Properties ctx, int C_BankStatementLine_ID, String trxName)
@@ -87,7 +87,7 @@ public class X_C_BankStatementLine extends PO implements I_C_BankStatementLine, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_BankStatementLine[")
+      StringBuilder sb = new StringBuilder ("X_C_BankStatementLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

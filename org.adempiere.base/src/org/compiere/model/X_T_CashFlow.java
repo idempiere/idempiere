@@ -32,7 +32,7 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_T_CashFlow (Properties ctx, int T_CashFlow_ID, String trxName)
@@ -69,8 +69,8 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_T_CashFlow[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_T_CashFlow[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
