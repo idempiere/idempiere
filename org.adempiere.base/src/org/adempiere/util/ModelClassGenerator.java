@@ -248,7 +248,6 @@ public class ModelClassGenerator
 			 .append("    public String toString()").append(NL)
 			 .append("    {").append(NL)
 			 .append("      StringBuilder sb = new StringBuilder (\"").append(className).append("[\")").append(NL)
-			 // TODO: generate getName if there is a Name column -- .append(",Name=").append(getName())
 			 .append("        .append(get_ID())");
 		if (hasName)
 			start.append(".append(\",Name=\").append(getName())");
@@ -904,6 +903,9 @@ public class ModelClassGenerator
 		String filterViews = null;
 		if (tableLike.toString().contains("%")) {
 			filterViews = "AND (TableName IN ('RV_WarehousePrice','RV_BPartner') OR IsView='N')"; 	//	special views
+		}
+		if (tableLike.toString().equals("'%'")) {
+			filterViews += " AND TableName NOT LIKE 'W|_%' ESCAPE '|'"; 	//	exclude webstore from general model generator
 		}
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT AD_Table_ID ")
