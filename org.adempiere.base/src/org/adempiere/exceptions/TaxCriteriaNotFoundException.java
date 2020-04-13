@@ -35,7 +35,7 @@ public class TaxCriteriaNotFoundException extends AdempiereException
 	
 	private static final String buildMessage (String criteriaName, int criteria_ID)
 	{
-		StringBuffer msg = new StringBuffer("@").append(AD_Message).append("@");
+		StringBuilder msg = new StringBuilder("@").append(AD_Message).append("@");
 		msg.append(" @").append(criteriaName).append("@");
 		msg.append(" (ID ").append(criteria_ID).append(")");
 		return msg.toString();

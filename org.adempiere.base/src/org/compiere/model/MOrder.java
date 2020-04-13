@@ -578,7 +578,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MOrder[")
+		StringBuilder sb = new StringBuilder ("MOrder[")
 			.append(get_ID()).append("-").append(getDocumentNo())
 			.append(",IsSOTrx=").append(isSOTrx())
 			.append(",C_DocType_ID=").append(getC_DocType_ID())

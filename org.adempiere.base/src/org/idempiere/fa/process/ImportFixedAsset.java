@@ -148,7 +148,7 @@ public class ImportFixedAsset extends SvrProcess
 		
 		// Asset Type From Value
 		/* commented by @win
-		sql = new StringBuffer ("UPDATE "+MIFixedAsset.Table_Name+" ifa "
+		sql = new StringBuilder ("UPDATE "+MIFixedAsset.Table_Name+" ifa "
 			  + "SET A_Asset_Type_ID=(SELECT MAX(A_Asset_Type_ID) FROM A_Asset_Type t"
 			  + " WHERE ifa.A_Asset_Type_Value=t.Value AND ifa.AD_Client_ID=t.AD_Client_ID) "
 			  + "WHERE A_Asset_Type_ID IS NULL AND A_Asset_Type_Value IS NOT NULL"
@@ -286,7 +286,7 @@ public class ImportFixedAsset extends SvrProcess
 
 		//	Go through Fixed Assets Records w/o C_BPartner_ID
 		/* no need this @win
-		sql = new StringBuffer ("SELECT * FROM "+MIFixedAsset.Table_Name+ " 
+		sql = new StringBuilder ("SELECT * FROM "+MIFixedAsset.Table_Name+ " 
 			  + "WHERE I_IsImported='N' AND C_BPartnerSR_ID IS NULL").append (sqlCheck);
 		try
 		{
@@ -336,7 +336,7 @@ public class ImportFixedAsset extends SvrProcess
 		{
 			log.log(Level.SEVERE, "CreateBP", e);
 		}
-		sql = new StringBuffer ("UPDATE "+MIFixedAsset.Table_Name+ " "
+		sql = new StringBuilder ("UPDATE "+MIFixedAsset.Table_Name+ " "
 			  + "SET I_IsImported='N', I_ErrorMsg=I_ErrorMsg||'ERR=No BPartner, ' "
 			  + "WHERE C_BPartnerSR_ID IS NULL"
 			  + " AND I_IsImported<>'Y'").append (sqlCheck);
@@ -350,7 +350,7 @@ public class ImportFixedAsset extends SvrProcess
 		// TODO : zuhri Utama - need to fixed create new product
 
 		//	Go through Fixed Assets Records w/o M_Product_ID
-		sql = new StringBuffer ("SELECT * FROM "+MIFixedAsset.Table_Name+ " "
+		sql = new StringBuilder ("SELECT * FROM "+MIFixedAsset.Table_Name+ " "
 			  + "WHERE I_IsImported='N' AND M_Product_ID IS NULL").append (sqlCheck);
 		try
 		{
@@ -394,7 +394,7 @@ public class ImportFixedAsset extends SvrProcess
 		{
 			log.log(Level.SEVERE, "CreateProduct", e);
 		}
-		sql = new StringBuffer ("UPDATE "+MIFixedAsset.Table_Name+ " "
+		sql = new StringBuilder ("UPDATE "+MIFixedAsset.Table_Name+ " "
 			  + "SET I_IsImported='N', I_ErrorMsg=I_ErrorMsg||'ERR=No BPartner, ' "
 			  + "WHERE M_Product_ID IS NULL"
 			  + " AND I_IsImported<>'Y'").append (sqlCheck);

@@ -345,7 +345,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	 */
 	public void setTranslation()
 	{
-		StringBuffer sb = new StringBuffer ("UPDATE AD_PrintFormatItem_Trl t"
+		StringBuilder sb = new StringBuilder ("UPDATE AD_PrintFormatItem_Trl t"
 			+ " SET (PrintName, PrintNameSuffix)="
 			+ " (SELECT PrintName, PrintNameSuffix FROM AD_PrintFormatItem i WHERE i.AD_PrintFormatItem_ID=t.AD_PrintFormatItem_ID) "
 			+ "WHERE AD_PrintFormatItem_ID IN"
@@ -453,7 +453,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MPrintFormat[ID=").append(get_ID())
+		StringBuilder sb = new StringBuilder ("MPrintFormat[ID=").append(get_ID())
 			.append(",Name=").append(getName())
 			.append(",Language=").append(getLanguage())
 			.append(",Items=").append(getItemCount())
@@ -989,7 +989,7 @@ public class MPrintFormat extends X_AD_PrintFormat
             int fromID = fromItems[i].getAD_PrintFormatItem_ID();
             int toID = toItems[i].getAD_PrintFormatItem_ID();
 
-            StringBuffer sql = new StringBuffer("UPDATE AD_PrintFormatItem_Trl new ")
+            StringBuilder sql = new StringBuilder("UPDATE AD_PrintFormatItem_Trl new ")
             	//	Set
             	.append("SET (PrintName, PrintNameSuffix, IsTranslated) = ")
             	.append("(")

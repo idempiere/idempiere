@@ -2218,7 +2218,7 @@ public class GridField
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("GridField[")
+		StringBuilder sb = new StringBuilder("GridField[")
 			.append(m_vo.ColumnName).append("=").append(m_value);
 		if (isKey())
 			sb.append("(Key)");

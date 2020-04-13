@@ -210,7 +210,7 @@ public class MProcessPara extends X_AD_Process_Para
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MProcessPara[")
+		StringBuilder sb = new StringBuilder ("MProcessPara[")
 			.append (get_ID ())
 			.append ("]");
 		return sb.toString ();

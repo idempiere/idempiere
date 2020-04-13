@@ -636,7 +636,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		 *	Set Where Clause
 		 */
 		//	Tab Where Clause
-		StringBuffer where = new StringBuffer(m_vo.WhereClause);
+		StringBuilder where = new StringBuilder(m_vo.WhereClause);
 		if (m_vo.onlyCurrentDays > 0)
 		{
 			if (where.length() > 0)
@@ -739,9 +739,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public void resetDetailForNewParentRecord() {
 		if (m_mTable.isOpen())
 		{
-			StringBuffer where = new StringBuffer("2=3");
-			m_extendedWhere = where.toString();
-			m_oldQuery = where.toString();
+			String where = "2=3";
+			m_extendedWhere = where;
+			m_oldQuery = where;
 			m_parentNeedSave = true;
 			
 			m_currentRow = -1;
@@ -749,7 +749,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			 *	Query
 			 */
 			if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - " + where);		
-			m_mTable.dataRequery(where.toString(), m_vo.onlyCurrentRows && !isDetail(), 0);
+			m_mTable.dataRequery(where, m_vo.onlyCurrentRows && !isDetail(), 0);
 			
 			// Go to Record 0
 			setCurrentRow(0, true);
@@ -888,7 +888,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 		query.setTableName("xx");
 		// use IN instead of EXISTS as subquery should be highly selective
-		StringBuffer result = new StringBuffer (getTableName()).append(".").append(tabKeyColumn)
+		StringBuilder result = new StringBuilder (getTableName()).append(".").append(tabKeyColumn)
 			.append(" IN (SELECT xx.").append(tabKeyColumn)
 			.append(" FROM ")
 			.append(tableName).append(" xx WHERE ")
@@ -1855,7 +1855,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			int Record_ID;
 			boolean isOrder = m_vo.TableName.startsWith("C_Order");
 			//
-			StringBuffer sql = new StringBuffer("SELECT COUNT(*) AS Lines,c.ISO_Code,o.TotalLines,o.GrandTotal,"
+			StringBuilder sql = new StringBuilder("SELECT COUNT(*) AS Lines,c.ISO_Code,o.TotalLines,o.GrandTotal,"
 				+ "currencyBase(o.GrandTotal,o.C_Currency_ID,o.DateAcct, o.AD_Client_ID,o.AD_Org_ID) AS ConvAmt ");
 			if (isOrder)
 			{

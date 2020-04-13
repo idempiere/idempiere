@@ -1125,7 +1125,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			return;
 		//
 		boolean needMask = false;
-		StringBuffer buff = new StringBuffer();
+		StringBuilder buff = new StringBuilder();
 		char chars[] = content.toCharArray();
 		for (int i = 0; i < chars.length; i++)
 		{

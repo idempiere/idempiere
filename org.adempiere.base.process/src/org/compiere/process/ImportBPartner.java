@@ -149,7 +149,7 @@ implements ImportProcess
 
 		//	Set Country
 		/**
-		sql = new StringBuffer ("UPDATE I_BPartner i "
+		sql = new StringBuilder ("UPDATE I_BPartner i "
 			+ "SET CountryCode=(SELECT CountryCode FROM C_Country c WHERE c.IsDefault='Y'"
 			+ " AND c.AD_Client_ID IN (0, i.AD_Client_ID) AND ROWNUM=1) "
 			+ "WHERE CountryCode IS NULL AND C_Country_ID IS NULL"

@@ -100,7 +100,7 @@ public class PO_LOB implements Serializable
 			|| (m_value instanceof byte[] && ((byte[])m_value).length == 0)
 			)
 		{
-			StringBuffer sql = new StringBuffer ("UPDATE ")
+			StringBuilder sql = new StringBuilder ("UPDATE ")
 				.append(m_tableName)
 				.append(" SET ").append(m_columnName)
 				.append("=null WHERE ").append(m_whereClause);
@@ -111,12 +111,12 @@ public class PO_LOB implements Serializable
 			return true;
 		}
 		
-		StringBuffer sql = new StringBuffer ("UPDATE ")
+		StringBuilder sql = new StringBuilder ("UPDATE ")
 			.append(m_tableName)
 			.append(" SET ").append(m_columnName)
 			.append("=? WHERE ").append(m_whereClause);
 		if (!DB.isPostgreSQL() && !DB.isOracle())
-			sql = new StringBuffer(DB.getDatabase().convertStatement(sql.toString()));
+			sql = new StringBuilder(DB.getDatabase().convertStatement(sql.toString()));
 		//
 		
 		if (log.isLoggable(Level.FINE)) log.fine("[" + trxName + "] - Local - " + m_value);

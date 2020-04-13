@@ -189,7 +189,7 @@ public class MProcess extends X_AD_Process
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MProcess[")
+		StringBuilder sb = new StringBuilder ("MProcess[")
 			.append (get_ID())
 			.append("-").append(getName())
 			.append ("]");

@@ -183,7 +183,7 @@ public class ImportPriceList extends SvrProcess
 		
 		/* UOM For Future USE
 		//	Set UOM (System/own)
-		sql = new StringBuffer ("UPDATE I_PriceList "
+		sql = new StringBuilder ("UPDATE I_PriceList "
 			+ "SET X12DE355 = "
 			+ "(SELECT MAX(X12DE355) FROM C_UOM u WHERE u.IsDefault='Y' AND u.AD_Client_ID IN (0,I_PriceList.AD_Client_ID)) "
 			+ "WHERE X12DE355 IS NULL AND C_UOM_ID IS NULL"
@@ -191,14 +191,14 @@ public class ImportPriceList extends SvrProcess
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.fine("Set UOM Default=" + no);
 		//
-		sql = new StringBuffer ("UPDATE I_PriceList "
+		sql = new StringBuilder ("UPDATE I_PriceList "
 			+ "SET C_UOM_ID = (SELECT C_UOM_ID FROM C_UOM u WHERE u.X12DE355=I_PriceList.X12DE355 AND u.AD_Client_ID IN (0,I_PriceList.AD_Client_ID)) "
 			+ "WHERE C_UOM_ID IS NULL"
 			+ " AND I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		log.info("Set UOM=" + no);
 		//
-		sql = new StringBuffer ("UPDATE I_PriceList "
+		sql = new StringBuilder ("UPDATE I_PriceList "
 			+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid UOM, ' "
 			+ "WHERE C_UOM_ID IS NULL"
 			+ " AND I_IsImported<>'Y'").append(clientCheck);

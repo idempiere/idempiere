@@ -223,7 +223,7 @@ public final class DB
 	//	if (mailPassword == null || mailPassword.length() == 0)
 	//		return;
 		//
-		StringBuffer sql = new StringBuffer("UPDATE AD_Client SET")
+		StringBuilder sql = new StringBuilder("UPDATE AD_Client SET")
 			.append(" SMTPHost=").append(DB.TO_STRING(server))
 			.append(", RequestEMail=").append(DB.TO_STRING(adminEMail))
 			.append(", RequestUser=").append(DB.TO_STRING(mailUser))
@@ -232,7 +232,7 @@ public final class DB
 		int no = DB.executeUpdate(sql.toString(), null);
 		if (log.isLoggable(Level.FINE)) log.fine("Client #"+no);
 		//
-		sql = new StringBuffer("UPDATE AD_User SET ")
+		sql = new StringBuilder("UPDATE AD_User SET ")
 			.append(" EMail=").append(DB.TO_STRING(adminEMail))
 			.append(", EMailUser=").append(DB.TO_STRING(mailUser))
 			.append(", EMailUserPW=").append(DB.TO_STRING(mailPassword))

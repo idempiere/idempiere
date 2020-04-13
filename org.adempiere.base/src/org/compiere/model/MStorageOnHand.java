@@ -1017,7 +1017,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MStorageOnHand[")
+		StringBuilder sb = new StringBuilder("MStorageOnHand[")
 			.append("M_Locator_ID=").append(getM_Locator_ID())
 			.append(",M_Product_ID=").append(getM_Product_ID())
 			.append(",M_AttributeSetInstance_ID=").append(getM_AttributeSetInstance_ID())

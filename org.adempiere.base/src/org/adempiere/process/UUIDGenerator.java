@@ -356,7 +356,7 @@ public class UUIDGenerator extends SvrProcess {
 	public static void updateAllUUID(MColumn column) {
 		MTable table = (MTable) column.getAD_Table();
 		int AD_Column_ID = DB.getSQLValue(null, "SELECT AD_Column_ID FROM AD_Column WHERE AD_Table_ID=? AND ColumnName=?", table.getAD_Table_ID(), table.getTableName()+"_ID");
-		StringBuffer sql = new StringBuffer("SELECT ");
+		StringBuilder sql = new StringBuilder("SELECT ");
 		String keyColumn = null;
 		
 		// second script - just generate for tables with _ID primary key

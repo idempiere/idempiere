@@ -138,7 +138,7 @@ public class AlertProcessor extends AdempiereServer
 		// parse variables from Client, then from System
 		String alertMessage = Env.parseVariable(alert.getAlertMessage(), client, null, true);
 		alertMessage = Env.parseVariable(alertMessage, system, null, true);
-		StringBuffer message = new StringBuffer(alertMessage).append(Env.NL);
+		StringBuilder message = new StringBuilder(alertMessage).append(Env.NL);
 		//
 		boolean valid = true;
 		boolean processed = false;

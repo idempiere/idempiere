@@ -171,9 +171,9 @@ public class TranslationTable
 		if (po.get_ID() == 0)
 			throw new IllegalArgumentException("PO ID is 0");
 		//
-		StringBuffer sql1 = new StringBuffer();
+		StringBuilder sql1 = new StringBuilder();
 		sql1.append("INSERT INTO ").append(m_trlTableName).append(" (");
-		StringBuffer sql2 = new StringBuffer();
+		StringBuilder sql2 = new StringBuilder();
 		sql2.append(") SELECT ");
 		
 		//	Key Columns

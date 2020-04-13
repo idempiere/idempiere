@@ -51,7 +51,7 @@ public class GenerateModel
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("GenerateModel[").append("]");
+		StringBuilder sb = new StringBuilder ("GenerateModel[").append("]");
 		return sb.toString();
 	}
 
@@ -106,7 +106,7 @@ public class GenerateModel
 			System.err.println("No EntityType");
 			System.exit(1);
 		}
-		StringBuffer sql = new StringBuffer("EntityType IN (")
+		StringBuilder sql = new StringBuilder("EntityType IN (")
 			.append(entityType).append(")");
 		log.info(sql.toString());
 		log.info("----------------------------------");
