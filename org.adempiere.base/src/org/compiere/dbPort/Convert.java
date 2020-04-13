@@ -306,7 +306,7 @@ public abstract class Convert
 		Pattern p = Pattern.compile("'[[^']*]*'");
 		Matcher m = p.matcher(inputValue);
 		int i = 0;
-		StringBuffer retValue = new StringBuffer(inputValue.length());
+		StringBuilder retValue = new StringBuilder(inputValue.length());
 		while (m.find()) {
 			String var = inputValue.substring(m.start(), m.end()).replace(quoteMarker, "''"); // Put back quotes, if any
 			retVars.addElement(var);

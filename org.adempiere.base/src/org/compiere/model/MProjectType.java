@@ -99,7 +99,7 @@ public class MProjectType extends X_C_ProjectType
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MProjectType[")
+		StringBuilder sb = new StringBuilder ("MProjectType[")
 			.append(get_ID())
 			.append("-").append(getName())
 			.append("]");

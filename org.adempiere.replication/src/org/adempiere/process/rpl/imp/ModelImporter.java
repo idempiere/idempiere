@@ -77,7 +77,7 @@ public class ModelImporter extends SvrProcess {
 			p_AD_Client_ID = Env.getAD_Client_ID(getCtx());
 		AD_Table_ID = getTable_ID();
 
-		StringBuffer sb = new StringBuffer("AD_Table_ID=").append(AD_Table_ID);
+		StringBuilder sb = new StringBuilder("AD_Table_ID=").append(AD_Table_ID);
 		sb.append("; Record_ID=").append(getRecord_ID());
 		// Parameter
 		ProcessInfoParameter[] para = getParameter();

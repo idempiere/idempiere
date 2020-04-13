@@ -139,7 +139,7 @@ public class MProductDownload extends X_M_ProductDownload
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MProductDownload[")
+		StringBuilder sb = new StringBuilder ("MProductDownload[")
 			.append(get_ID())
 			.append(",M_Product_ID=").append(getM_Product_ID())
 			.append(",").append(getDownloadURL())

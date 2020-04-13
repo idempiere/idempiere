@@ -223,7 +223,7 @@ public class PackOut
 		atts.addAttribute("","","UpdateDictionary","CDATA", isExportDictionaryEntity ? "true" : "false");
 
 		MClient client = MClient.get(pipoContext.ctx);
-		StringBuffer sb = new StringBuffer ()
+		StringBuilder sb = new StringBuilder ()
 			.append(client.get_ID())
 			.append("-")
 			.append(client.getValue())
@@ -283,7 +283,7 @@ public class PackOut
 		addTextElement(docHandler, "filenotes", "Notes: Contains all application/object settings for package", atts);
 
 		MClient client = MClient.get(pipoContext.ctx);
-		StringBuffer sb = new StringBuffer ()
+		StringBuilder sb = new StringBuilder ()
 			.append(client.get_ID())
 			.append("-")
 			.append(client.getValue())

@@ -369,7 +369,7 @@ public class ImportOrder extends SvrProcess
 
 		//	Set Country
 		/**
-		sql = new StringBuffer ("UPDATE I_Order o "
+		sql = new StringBuilder ("UPDATE I_Order o "
 			  + "SET CountryCode=(SELECT MAX(CountryCode) FROM C_Country c WHERE c.IsDefault='Y'"
 			  + " AND c.AD_Client_ID IN (0, o.AD_Client_ID)) "
 			  + "WHERE C_BPartner_ID IS NULL AND CountryCode IS NULL AND C_Country_ID IS NULL"

@@ -110,7 +110,7 @@ public class PO_Record
 				}
 				else 
 				{
-					StringBuffer sql = new StringBuffer ("DELETE FROM ")
+					StringBuilder sql = new StringBuilder ("DELETE FROM ")
 							.append(s_cascadeNames[i])
 							.append(" WHERE AD_Table_ID=? AND Record_ID=?");
 					int no = DB.executeUpdate(sql.toString(), params, false, trxName);
@@ -134,7 +134,7 @@ public class PO_Record
 				Object[] params = new Object[]{Integer.valueOf(AD_Table_IDchild), Integer.valueOf(Record_ID)};
 				for (int i = 0; i < s_cascades.length; i++)
 				{
-					StringBuffer sql = new StringBuffer ("DELETE FROM ")
+					StringBuilder sql = new StringBuilder ("DELETE FROM ")
 						.append(s_cascadeNames[i])
 						.append(" WHERE AD_Table_ID=? AND Record_ID IN (SELECT ")
 						.append(s_parentChildNames[j]).append("_ID FROM ")
@@ -204,7 +204,7 @@ public class PO_Record
 		for (int i = 0; i < s_restricts.length; i++)
 		{
 			//	SELECT COUNT(*) FROM table WHERE AD_Table_ID=#1 AND Record_ID=#2
-			StringBuffer sql = new StringBuffer ("SELECT COUNT(*) FROM ")
+			StringBuilder sql = new StringBuilder ("SELECT COUNT(*) FROM ")
 				.append(s_restrictNames[i])
 				.append(" WHERE AD_Table_ID=? AND Record_ID=?");
 			int no = DB.getSQLValue(trxName, sql.toString(), AD_Table_ID, Record_ID);
@@ -263,7 +263,7 @@ public class PO_Record
 	{
 		for (int i = 0; i < s_cascades.length; i++)
 		{
-			StringBuffer sql = new StringBuffer ("DELETE FROM ")
+			StringBuilder sql = new StringBuilder ("DELETE FROM ")
 				.append(s_cascadeNames[i])
 				.append(" WHERE AD_Table_ID=").append(AD_Table_ID)
 				.append(" AND Record_ID NOT IN (SELECT ")

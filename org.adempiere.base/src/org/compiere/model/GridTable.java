@@ -2077,7 +2077,7 @@ public class GridTable extends AbstractTableModel
 			
 			//	Need to re-read row to get ROWID, Key, DocumentNo, Trigger, virtual columns
 			if (log.isLoggable(Level.FINE)) log.fine("Reading ... " + whereClause);
-			StringBuffer refreshSQL = new StringBuffer(m_SQL_Select)
+			StringBuilder refreshSQL = new StringBuilder(m_SQL_Select)
 				.append(" WHERE ").append(whereClause);
 			pstmt = DB.prepareStatement(refreshSQL.toString(), null);
 			rs = pstmt.executeQuery();
@@ -2279,7 +2279,7 @@ public class GridTable extends AbstractTableModel
 		//	Refresh - update buffer
 		String whereClause = po.get_WhereClause(true);
 		if (log.isLoggable(Level.FINE)) log.fine("Reading ... " + whereClause);
-		StringBuffer refreshSQL = new StringBuffer(m_SQL_Select)
+		StringBuilder refreshSQL = new StringBuilder(m_SQL_Select)
 			.append(" WHERE ").append(whereClause);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -2349,8 +2349,8 @@ public class GridTable extends AbstractTableModel
 	private String getWhereClause (Object[] rowData)
 	{
 		int size = m_fields.size();
-		StringBuffer singleRowWHERE = null;
-		StringBuffer multiRowWHERE = null;
+		StringBuilder singleRowWHERE = null;
+		StringBuilder multiRowWHERE = null;
 		String tableName = getTableName();
 		for (int col = 0; col < size; col++)
 		{
@@ -2365,10 +2365,10 @@ public class GridTable extends AbstractTableModel
 					return null;
 				}
 				if (columnName.endsWith ("_ID"))
-					singleRowWHERE = new StringBuffer(tableName).append(".").append(columnName)
+					singleRowWHERE = new StringBuilder(tableName).append(".").append(columnName)
 						.append ("=").append (value);
 				else
-					singleRowWHERE = new StringBuffer(tableName).append(".").append(columnName)
+					singleRowWHERE = new StringBuilder(tableName).append(".").append(columnName)
 						.append ("=").append (DB.TO_STRING(value.toString()));
 			}
 			else if (field.isParentColumn())
@@ -2381,7 +2381,7 @@ public class GridTable extends AbstractTableModel
 					continue;
 				}
 				if (multiRowWHERE == null)
-					multiRowWHERE = new StringBuffer();
+					multiRowWHERE = new StringBuilder();
 				else
 					multiRowWHERE.append(" AND ");
 				if (columnName.endsWith ("_ID"))
@@ -3489,7 +3489,7 @@ public class GridTable extends AbstractTableModel
 	 */
 	public String toString()
 	{
-		return new StringBuffer("MTable[").append(m_tableName)
+		return new StringBuilder("MTable[").append(m_tableName)
 			.append(",WindowNo=").append(m_WindowNo)
 			.append(",Tab=").append(m_TabNo).append("]").toString();
 	}   //  toString

@@ -359,7 +359,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			log.warning("No Mandatory Value=" + no);
 
 		//	Vendor Product No
-	//	sql = new StringBuffer ("UPDATE I_Product i "
+	//	sql = new StringBuilder ("UPDATE I_Product i "
 	//		+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Mandatory VendorProductNo,' "
 	//		+ "WHERE I_IsImported<>'Y'"
 	//		+ " AND VendorProductNo IS NULL AND (C_BPartner_ID IS NOT NULL OR BPartner_Value IS NOT NULL)").append(clientCheck);

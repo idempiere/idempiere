@@ -901,7 +901,7 @@ public class Doc_MatchInv extends Doc
 					+ "WHERE C_InvoiceLine_ID IN (SELECT C_InvoiceLine_ID FROM C_InvoiceLine WHERE C_Invoice_ID=?) "
 					+ "AND COALESCE(Reversal_ID,0)=0";
 			List<List<Object>> list  = DB.getSQLArrayObjectsEx(getTrxName(), matchInvLineSql, invoice.get_ID());
-			StringBuffer s = new StringBuffer();
+			StringBuilder s = new StringBuilder();
 			
 			if (list == null)
 				return null;
@@ -1084,7 +1084,7 @@ public class Doc_MatchInv extends Doc
 					+ "WHERE M_InOutLine_ID IN (SELECT M_InOutLine_ID FROM M_InOutLine WHERE M_InOut_ID=?) "
 					+ "AND COALESCE(Reversal_ID,0)=0";
 			List<List<Object>> list  = DB.getSQLArrayObjectsEx(getTrxName(), matchInvLineSql, receipt.get_ID());
-			StringBuffer s = new StringBuffer();
+			StringBuilder s = new StringBuilder();
 			
 			if (list == null)
 				return null;

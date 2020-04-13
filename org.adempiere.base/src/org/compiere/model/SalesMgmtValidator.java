@@ -162,7 +162,7 @@ public class SalesMgmtValidator implements ModelValidator
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("SalesMgmtValidator");
+		StringBuilder sb = new StringBuilder ("SalesMgmtValidator");
 		return sb.toString ();
 	}	//	toString
 	

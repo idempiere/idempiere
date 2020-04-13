@@ -2395,8 +2395,8 @@ public final class MRole extends X_AD_Role
 	{
 		loadRecordAccess(false);
 		//
-		StringBuffer sbInclude = new StringBuffer();
-		StringBuffer sbExclude = new StringBuffer();
+		StringBuilder sbInclude = new StringBuilder();
+		StringBuilder sbExclude = new StringBuilder();
 		//	Role Access
 		for (int i = 0; i < m_recordAccess.length; i++)
 		{
@@ -2559,7 +2559,7 @@ public final class MRole extends X_AD_Role
 		final ArrayList<String> validOptions = new ArrayList<String>();
 		final List<Object> optionParams = new ArrayList<Object>();
 		//
-		final StringBuffer sql_values = new StringBuffer();
+		final StringBuilder sql_values = new StringBuilder();
 		for (int i = 0; i < maxIndex; i++) {
 			if (sql_values.length() > 0)
 				sql_values.append(",");

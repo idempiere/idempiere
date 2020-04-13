@@ -167,7 +167,7 @@ public class MViewComponent extends X_AD_ViewComponent {
     @Override
 	public String toString()
     {
-	    StringBuffer sb = new StringBuffer("MViewComponent[")
+    	StringBuilder sb = new StringBuilder("MViewComponent[")
 	    	.append(get_ID())
 	        .append("-").append(getName());
 	    sb.append("]");

@@ -140,7 +140,7 @@ public class MProject extends X_C_Project
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MProject[").append(get_ID())
+		StringBuilder sb = new StringBuilder ("MProject[").append(get_ID())
 			.append("-").append(getValue()).append(",ProjectCategory=").append(getProjectCategory())
 			.append("]");
 		return sb.toString();

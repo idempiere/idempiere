@@ -188,7 +188,7 @@ public abstract class Convert_SQL92 extends Convert {
 			WHERE tn.AD_Tree_ID=10
 
 		 */
-		StringBuffer newFrom = new StringBuffer ();
+		StringBuilder newFrom = new StringBuilder ();
 		for (int i = 0; i < joins.size(); i++)
 		{
 			Join first = new Join ((String)joins.get(i));

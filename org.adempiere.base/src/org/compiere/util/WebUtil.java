@@ -229,7 +229,7 @@ public final class WebUtil
 		outStr.append(inStr);           					//	add remainder
 		String retValue = outStr.toString();
 		/**
-		StringBuffer debug = new StringBuffer();
+		StringBuilder debug = new StringBuilder();
 		char[] cc = data.toCharArray();
 		for (int j = 0; j < cc.length; j++)
 		{

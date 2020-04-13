@@ -220,7 +220,7 @@ public class ImportConversionRate extends SvrProcess
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Rates =" + no);
-	//	sql = new StringBuffer ("UPDATE I_Conversion_Rate i "	//	Rate diff > 10%
+	//	sql = new StringBuilder ("UPDATE I_Conversion_Rate i "	//	Rate diff > 10%
 	//		+ "SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Inconsistent Rates='||(MultiplyRate - (1/DivideRate)) "
 	//		+ "WHERE ((MultiplyRate - (1/DivideRate)) > (MultiplyRate * .1))"
 	//		+ " AND I_IsImported<>'Y'").append (clientCheck);

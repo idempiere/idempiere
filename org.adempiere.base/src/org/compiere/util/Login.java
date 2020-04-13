@@ -310,7 +310,7 @@ public class Login
 			}
 		} 
 		else{
-			StringBuffer sql = new StringBuffer("SELECT AD_User.AD_User_ID ").append(" FROM AD_User ");
+			StringBuilder sql = new StringBuilder("SELECT AD_User.AD_User_ID ").append(" FROM AD_User ");
 			sql.append(" WHERE ").append(userNameCol).append("=?");
 			sql.append(" AND AD_User.IsActive='Y'").append(" AND EXISTS (SELECT * FROM AD_Client c WHERE AD_User.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
 
@@ -345,7 +345,7 @@ public class Login
 		}
 
 		if(authenticated){	
-			StringBuffer sql = new StringBuffer("SELECT AD_User.AD_User_ID, r.AD_Role_ID,r.Name")
+			StringBuilder sql = new StringBuilder("SELECT AD_User.AD_User_ID, r.AD_Role_ID,r.Name")
 			.append(" FROM AD_User ")
 			.append(" INNER JOIN AD_User_Roles ur ON (AD_User.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
 			.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ");
@@ -1549,7 +1549,7 @@ public class Login
 		String whereRoleType = MRole.getWhereRoleType(roleTypes, "r");
 		ArrayList<KeyNamePair> rolesList = new ArrayList<KeyNamePair>();
 		KeyNamePair[] retValue = null;
-		StringBuffer sql = new StringBuffer("SELECT u.AD_User_ID, r.AD_Role_ID,r.Name ")
+		StringBuilder sql = new StringBuilder("SELECT u.AD_User_ID, r.AD_Role_ID,r.Name ")
 			.append("FROM AD_User u")
 			.append(" INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
 			.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ");

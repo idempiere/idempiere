@@ -221,7 +221,7 @@ public class MSession extends X_AD_Session
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MSession[")
+		StringBuilder sb = new StringBuilder("MSession[")
 			.append(getAD_Session_ID())
 			.append(",AD_User_ID=").append(getCreatedBy())
 			.append(",").append(getCreated())
