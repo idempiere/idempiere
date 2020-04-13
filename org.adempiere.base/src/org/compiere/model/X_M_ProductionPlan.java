@@ -32,7 +32,7 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_ProductionPlan (Properties ctx, int M_ProductionPlan_ID, String trxName)
@@ -76,7 +76,7 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_ProductionPlan[")
+      StringBuilder sb = new StringBuilder ("X_M_ProductionPlan[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

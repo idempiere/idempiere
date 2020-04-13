@@ -30,7 +30,7 @@ public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcess
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_R_RequestProcessor_Route (Properties ctx, int R_RequestProcessor_Route_ID, String trxName)
@@ -68,7 +68,7 @@ public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcess
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_R_RequestProcessor_Route[")
+      StringBuilder sb = new StringBuilder ("X_R_RequestProcessor_Route[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

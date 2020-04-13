@@ -33,7 +33,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_InOut (Properties ctx, int M_InOut_ID, String trxName)
@@ -101,7 +101,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_InOut[")
+      StringBuilder sb = new StringBuilder ("X_M_InOut[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

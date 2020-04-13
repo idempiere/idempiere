@@ -32,7 +32,7 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_DD_NetworkDistribution (Properties ctx, int DD_NetworkDistribution_ID, String trxName)
@@ -69,8 +69,8 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_DD_NetworkDistribution[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_DD_NetworkDistribution[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

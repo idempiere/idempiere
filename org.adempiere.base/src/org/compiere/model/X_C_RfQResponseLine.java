@@ -30,7 +30,7 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_RfQResponseLine (Properties ctx, int C_RfQResponseLine_ID, String trxName)
@@ -69,7 +69,7 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_RfQResponseLine[")
+      StringBuilder sb = new StringBuilder ("X_C_RfQResponseLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

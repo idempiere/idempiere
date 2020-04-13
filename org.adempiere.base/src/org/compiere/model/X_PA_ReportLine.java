@@ -30,7 +30,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191122L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_PA_ReportLine (Properties ctx, int PA_ReportLine_ID, String trxName)
@@ -74,8 +74,8 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PA_ReportLine[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_PA_ReportLine[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

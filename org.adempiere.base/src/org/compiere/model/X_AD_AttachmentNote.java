@@ -30,7 +30,7 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_AttachmentNote (Properties ctx, int AD_AttachmentNote_ID, String trxName)
@@ -69,7 +69,7 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_AttachmentNote[")
+      StringBuilder sb = new StringBuilder ("X_AD_AttachmentNote[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

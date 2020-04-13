@@ -33,7 +33,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_Opportunity (Properties ctx, int C_Opportunity_ID, String trxName)
@@ -76,7 +76,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_Opportunity[")
+      StringBuilder sb = new StringBuilder ("X_C_Opportunity[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

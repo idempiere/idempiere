@@ -29,7 +29,7 @@ public class X_EXP_Processor_Type extends PO implements I_EXP_Processor_Type, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_EXP_Processor_Type (Properties ctx, int EXP_Processor_Type_ID, String trxName)
@@ -67,8 +67,8 @@ public class X_EXP_Processor_Type extends PO implements I_EXP_Processor_Type, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_EXP_Processor_Type[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_EXP_Processor_Type[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

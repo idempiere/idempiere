@@ -30,7 +30,7 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_PP_Order_Node_Asset (Properties ctx, int PP_Order_Node_Asset_ID, String trxName)
@@ -69,7 +69,7 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PP_Order_Node_Asset[")
+      StringBuilder sb = new StringBuilder ("X_PP_Order_Node_Asset[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

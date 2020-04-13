@@ -30,7 +30,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -87,8 +87,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_DocType[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_DocType[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

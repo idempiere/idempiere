@@ -31,7 +31,7 @@ public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceV
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_ProductPriceVendorBreak (Properties ctx, int M_ProductPriceVendorBreak_ID, String trxName)
@@ -72,7 +72,7 @@ public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceV
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_ProductPriceVendorBreak[")
+      StringBuilder sb = new StringBuilder ("X_M_ProductPriceVendorBreak[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

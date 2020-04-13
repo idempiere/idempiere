@@ -34,7 +34,7 @@ public class X_I_HR_Movement extends PO implements I_I_HR_Movement, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_I_HR_Movement (Properties ctx, int I_HR_Movement_ID, String trxName)
@@ -71,7 +71,7 @@ public class X_I_HR_Movement extends PO implements I_I_HR_Movement, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_I_HR_Movement[")
+      StringBuilder sb = new StringBuilder ("X_I_HR_Movement[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

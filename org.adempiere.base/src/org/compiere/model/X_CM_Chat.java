@@ -30,7 +30,7 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_CM_Chat (Properties ctx, int CM_Chat_ID, String trxName)
@@ -69,7 +69,7 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_CM_Chat[")
+      StringBuilder sb = new StringBuilder ("X_CM_Chat[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

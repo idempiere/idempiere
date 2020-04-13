@@ -29,7 +29,7 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Convention (Properties ctx, int A_Depreciation_Convention_ID, String trxName)
@@ -66,8 +66,8 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Depreciation_Convention[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_A_Depreciation_Convention[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

@@ -32,7 +32,7 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_PP_Order_Cost (Properties ctx, int PP_Order_Cost_ID, String trxName)
@@ -71,7 +71,7 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PP_Order_Cost[")
+      StringBuilder sb = new StringBuilder ("X_PP_Order_Cost[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

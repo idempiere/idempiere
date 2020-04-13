@@ -30,7 +30,7 @@ public class X_R_MailText extends PO implements I_R_MailText, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_R_MailText (Properties ctx, int R_MailText_ID, String trxName)
@@ -68,8 +68,8 @@ public class X_R_MailText extends PO implements I_R_MailText, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_R_MailText[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_R_MailText[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

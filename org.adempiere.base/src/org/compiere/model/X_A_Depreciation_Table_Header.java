@@ -30,7 +30,7 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Table_Header (Properties ctx, int A_Depreciation_Table_Header_ID, String trxName)
@@ -70,7 +70,7 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Depreciation_Table_Header[")
+      StringBuilder sb = new StringBuilder ("X_A_Depreciation_Table_Header[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

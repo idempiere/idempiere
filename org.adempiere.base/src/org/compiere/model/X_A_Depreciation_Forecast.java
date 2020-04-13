@@ -31,7 +31,7 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Forecast (Properties ctx, int A_Depreciation_Forecast_ID, String trxName)
@@ -70,7 +70,7 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Depreciation_Forecast[")
+      StringBuilder sb = new StringBuilder ("X_A_Depreciation_Forecast[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

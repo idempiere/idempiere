@@ -29,7 +29,7 @@ public class X_AD_Document_Action_Access extends PO implements I_AD_Document_Act
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_Document_Action_Access (Properties ctx, int AD_Document_Action_Access_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_AD_Document_Action_Access extends PO implements I_AD_Document_Act
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Document_Action_Access[")
+      StringBuilder sb = new StringBuilder ("X_AD_Document_Action_Access[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

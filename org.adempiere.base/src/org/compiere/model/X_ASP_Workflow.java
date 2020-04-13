@@ -29,7 +29,7 @@ public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_ASP_Workflow (Properties ctx, int ASP_Workflow_ID, String trxName)
@@ -67,7 +67,7 @@ public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_ASP_Workflow[")
+      StringBuilder sb = new StringBuilder ("X_ASP_Workflow[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

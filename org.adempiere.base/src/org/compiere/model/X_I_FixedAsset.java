@@ -32,7 +32,7 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200225L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_I_FixedAsset (Properties ctx, int I_FixedAsset_ID, String trxName)
@@ -80,8 +80,8 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_I_FixedAsset[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_I_FixedAsset[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

@@ -30,7 +30,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_BroadcastMessage (Properties ctx, int AD_BroadcastMessage_ID, String trxName)
@@ -69,7 +69,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_BroadcastMessage[")
+      StringBuilder sb = new StringBuilder ("X_AD_BroadcastMessage[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

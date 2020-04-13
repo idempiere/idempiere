@@ -31,7 +31,7 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_OrderLandedCost (Properties ctx, int C_OrderLandedCost_ID, String trxName)
@@ -74,7 +74,7 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_OrderLandedCost[")
+      StringBuilder sb = new StringBuilder ("X_C_OrderLandedCost[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -32,7 +32,7 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_Charge (Properties ctx, int C_Charge_ID, String trxName)
@@ -74,8 +74,8 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_Charge[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_Charge[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

@@ -33,7 +33,7 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_ForecastLine (Properties ctx, int M_ForecastLine_ID, String trxName)
@@ -76,7 +76,7 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_ForecastLine[")
+      StringBuilder sb = new StringBuilder ("X_M_ForecastLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

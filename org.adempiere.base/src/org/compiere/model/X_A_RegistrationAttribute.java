@@ -30,7 +30,7 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_A_RegistrationAttribute (Properties ctx, int A_RegistrationAttribute_ID, String trxName)
@@ -70,8 +70,8 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_RegistrationAttribute[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_A_RegistrationAttribute[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

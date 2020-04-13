@@ -30,7 +30,7 @@ public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_Substitute (Properties ctx, int M_Substitute_ID, String trxName)
@@ -67,8 +67,8 @@ public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_Substitute[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_M_Substitute[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

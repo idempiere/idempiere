@@ -32,7 +32,7 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_MovementLineConfirm (Properties ctx, int M_MovementLineConfirm_ID, String trxName)
@@ -74,7 +74,7 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_MovementLineConfirm[")
+      StringBuilder sb = new StringBuilder ("X_M_MovementLineConfirm[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

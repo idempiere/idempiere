@@ -33,7 +33,7 @@ public class X_PA_SLA_Goal extends PO implements I_PA_SLA_Goal, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_PA_SLA_Goal (Properties ctx, int PA_SLA_Goal_ID, String trxName)
@@ -74,8 +74,8 @@ public class X_PA_SLA_Goal extends PO implements I_PA_SLA_Goal, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PA_SLA_Goal[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_PA_SLA_Goal[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
