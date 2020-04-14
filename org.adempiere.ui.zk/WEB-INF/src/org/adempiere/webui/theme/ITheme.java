@@ -54,4 +54,6 @@ public interface ITheme {
 	public static final String USE_CSS_FOR_WINDOW_SIZE = "#THEME_USE_CSS_FOR_WINDOW_SIZE";
 	
 	public static final String USE_FONT_ICON_FOR_IMAGE = "#THEME_USE_FONT_ICON_FOR_IMAGE";
+	
+	public static final String ZK_TOOLBAR_BUTTON_SIZE = "#ZK_Toolbar_Button_Size";
 }
