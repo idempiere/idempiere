@@ -38,6 +38,7 @@ import org.adempiere.webui.desktop.FavouriteController;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.BrowserToken;
 import org.adempiere.webui.util.UserPreference;
@@ -525,6 +526,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(properties, UserPreference.LANGUAGE_NAME, Env.getContext(Env.getCtx(), UserPreference.LANGUAGE_NAME));
 		Env.setContext(properties, Env.LANGUAGE, Env.getContext(Env.getCtx(), Env.LANGUAGE));
 		Env.setContext(properties, AEnv.LOCALE, Env.getContext(Env.getCtx(), AEnv.LOCALE));
+		Env.setContext(properties, ITheme.ZK_TOOLBAR_BUTTON_SIZE, Env.getContext(Env.getCtx(), ITheme.ZK_TOOLBAR_BUTTON_SIZE));
+		Env.setContext(properties, ITheme.USE_CSS_FOR_WINDOW_SIZE, Env.getContext(Env.getCtx(), ITheme.USE_CSS_FOR_WINDOW_SIZE));
+		Env.setContext(properties, ITheme.USE_FONT_ICON_FOR_IMAGE, Env.getContext(Env.getCtx(), ITheme.USE_FONT_ICON_FOR_IMAGE));
 		
 		Desktop desktop = Executions.getCurrent().getDesktop();
 		Locale locale = (Locale) desktop.getSession().getAttribute(Attributes.PREFERRED_LOCALE);
