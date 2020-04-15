@@ -1397,7 +1397,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 						new QName("queryData"));
 	
 			int roleid = reqlogin.getRoleID();
-			MRole role = new MRole(ctx, roleid, null);
+			MRole role = MRole.get(ctx, roleid);
 			
 			// start a trx
 			String trxName = localTrxName;
