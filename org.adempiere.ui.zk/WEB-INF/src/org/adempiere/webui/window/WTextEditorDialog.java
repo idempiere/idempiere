@@ -273,7 +273,11 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 				.and(Sanitizers.LINKS)
 				.and(Sanitizers.STYLES)
 				.and(Sanitizers.TABLES);
-		return policy.sanitize(untrustedHTML);
-	}
 
+		String ret = policy.sanitize(untrustedHTML);
+		ret = ret.replaceAll("&#35;", "#");
+		ret = ret.replaceAll("&#64;", "@");
+
+		return ret;
+	}
 }

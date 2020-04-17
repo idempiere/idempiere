@@ -135,6 +135,11 @@ public class WLogin extends AbstractUIPart
 		return layout;
 	}
 
+	/**
+	 * Show change role window
+	 * @param locale
+	 * @param properties env context
+	 */
 	public void changeRole(Locale locale, Properties properties) {
 		loginWindow.changeRole(locale, properties);
 	}

@@ -24,11 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.adempiere.webui.AdempiereWebUI;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.lang.Library;
+import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.DesktopUnavailableException;
@@ -171,6 +171,7 @@ public class AtmosphereServerPush implements ServerPush {
     	}
     	if (pendings != null && pendings.length > 0) {
     		for(Schedule<Event> p : pendings) {
+    			//schedule and execute in desktop's onPiggyBack listener
     			p.scheduler.schedule(p.task, p.event);
     		}
     	}    	
@@ -180,53 +181,29 @@ public class AtmosphereServerPush implements ServerPush {
 	@Override
 	public <T extends Event> void schedule(EventListener<T> task, T event,
 			Scheduler<T> scheduler) {
+    	
     	if (Executions.getCurrent() == null) {
-    		//save for schedule at on piggyback event
-	        synchronized (schedules) {
-				schedules.add(new Schedule(task, event, scheduler));
-			}
-	        boolean ok = false;
+    		//schedule and execute in desktop's onPiggyBack listener
+    		scheduler.schedule(task, event);
 	        try {
-	        	ok = commitResponse();
+	        	commitResponse();
 			} catch (IOException e) {
 				log.error(e.getMessage(), e);
 			}
-	        if (!ok) {
-	        	for(int i = 0; i < 3 && !ok; i++) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e1) {}
-		        	if (schedules.size() > 0) {
-			        	try {
-				        	ok = commitResponse();
-						} catch (IOException e) {
-							log.error(e.getMessage(), e);
-						}			        	
-		        	} else {
-		        		ok = true;
-		        	}
-	        	}
-	        	if (!ok) {
-		        	log.warn("Failed to resume long polling resource");
-		        	Desktop d = desktop.get();
-		        	if (d != null) {
-		        		Integer count = (Integer) d.getAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES);
-		        		if (count != null)
-		        			count = Integer.valueOf(count.intValue()+1);
-		        		else
-		        			count = Integer.valueOf(1);
-		        		d.setAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES, count);
-		        	}
-		        }
-	        }	        
     	} else {
-    		//in event listener thread, can schedule immediately
-    		scheduler.schedule(task, event);
+    		// in event listener thread, use echo to execute async
+    		synchronized (schedules) {
+				schedules.add(new Schedule(task, event, scheduler));
+			}
+    		if (Executions.getCurrent().getAttribute("AtmosphereServerPush.Echo") == null) {
+    			Executions.getCurrent().setAttribute("AtmosphereServerPush.Echo", Boolean.TRUE);
+    			Clients.response(new AuEcho());
+    		}
     	}
     
     }
 
-    @Override
+	@Override
     public void start(Desktop desktop) {
         Desktop oldDesktop = this.desktop.getAndSet(desktop);
         if (oldDesktop != null) {

@@ -2266,7 +2266,8 @@ public abstract class PO
 				msg = (val != null ? val + ": " : "") + err.getName();
 			if (msg == null || msg.length() == 0)
 				msg = "SaveError";
-			throw new AdempiereException(msg);
+			Exception ex = CLogger.retrieveException();
+			throw new AdempiereException(msg, ex);
 		}
 	}
 
@@ -3558,7 +3559,8 @@ public abstract class PO
 				msg = err.getName();
 			if (msg == null || msg.length() == 0)
 				msg = "DeleteError";
-			throw new AdempiereException(msg);
+			Exception ex = CLogger.retrieveException();
+			throw new AdempiereException(msg, ex);
 		}
 	}
 
@@ -4841,7 +4843,7 @@ public abstract class PO
 			if ("DBExecuteError".equals(msg))
 				info = "DBExecuteError:" + info;
 			//	Unique Constraint
-			Exception e = CLogger.retrieveException();
+			Exception e = CLogger.peekException();
 			if (DBException.isUniqueContraintError(e))
 			{
 				boolean found = false;

@@ -268,12 +268,12 @@ public interface I_C_Project
 	/** Set Project Type.
 	  * Type of the project
 	  */
-	public void setC_ProjectType_ID (String C_ProjectType_ID);
+	public void setC_ProjectType_ID (int C_ProjectType_ID);
 
 	/** Get Project Type.
 	  * Type of the project
 	  */
-	public String getC_ProjectType_ID();
+	public int getC_ProjectType_ID();
 
     /** Column name C_Project_UU */
     public static final String COLUMNNAME_C_Project_UU = "C_Project_UU";

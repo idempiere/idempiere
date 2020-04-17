@@ -2382,7 +2382,10 @@ public class GridTable extends AbstractTableModel
 				if (columnName.endsWith ("_ID"))
 					multiRowWHERE.append (tableName).append(".").append(columnName)
 						.append ("=").append (value);
-				else
+				else if (value instanceof Timestamp) {
+					multiRowWHERE.append (tableName).append(".").append(columnName)
+					.append ("=").append (DB.TO_DATE((Timestamp)value, false));
+				}else
 					multiRowWHERE.append (tableName).append(".").append(columnName)
 						.append ("=").append (DB.TO_STRING(value.toString()));
 			}

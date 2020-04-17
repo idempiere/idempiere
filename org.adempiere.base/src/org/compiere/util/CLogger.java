@@ -199,7 +199,7 @@ public class CLogger extends Logger
 	{
 		ValueNamePair vp = (ValueNamePair) Env.getCtx().get(LAST_ERROR);
 		return vp;
-	}   //  retrieveError
+	}   //  peekError
 	
 	/**
 	 * Get Error message from stack
@@ -225,6 +225,16 @@ public class CLogger extends Logger
 		return ex;
 	}   //  retrieveError
 
+	/**
+	 *  Peek Exception from Stack
+	 *  @return last exception
+	 */
+	public static Exception peekException()
+	{
+		Exception ex = (Exception) Env.getCtx().get(LAST_EXCEPTION);
+		return ex;
+	}   //  peekException
+	
 	/**
 	 *  Save Warning as ValueNamePair.
 	 *  @param AD_Message message key

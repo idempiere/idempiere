@@ -647,7 +647,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		//logging
 		if(CLogMgt.isLevelFine())
 		{
-			sb.append("currentPeriod=" + getA_Current_Period() + ", AssetServiceDate=" + getAssetDepreciationDate() + "\n");
+			sb.append("currentPeriod=" + getA_Current_Period() + ", AssetServiceDate=" + getAssetServiceDate() + "\n");
 			sb.append("offset: C|F=" + offset_C + "|" + offset_F + "\n");
 			sb.append("life: C|F=" + lifePeriods_C + "|" + lifePeriods_F + " + offset =" + lifePeriods + "\n");
 		}
@@ -675,6 +675,20 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 			lifePeriods_F = lifePeriods;
 		}
 		
+		Timestamp startDateAcct = getDateAcct();
+		if (getAssetDepreciationDate() != null)
+		{
+			if (getAssetDepreciationDate().compareTo(getDateAcct()) >= 0)
+			{
+				if (TimeUtil.getMonthLastDay(startDateAcct).compareTo(getAssetDepreciationDate()) == 0)
+				{
+					startDateAcct = TimeUtil.addMonths(getAssetDepreciationDate(), 1);
+					++A_Current_Period;
+				}
+				else
+					startDateAcct = getAssetDepreciationDate();					
+			}
+		}
 		
 		for (int currentPeriod = A_Current_Period, cnt = 1; currentPeriod <= lifePeriods; currentPeriod++, cnt++)
 		{
@@ -721,7 +735,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 			int months = 0; 
 			
 			months = months + (currentPeriod - A_Current_Period);
-			Timestamp dateAcct = TimeUtil.getMonthLastDay(TimeUtil.addMonths(getDateAcct(), months));
+			Timestamp dateAcct = TimeUtil.getMonthLastDay(TimeUtil.addMonths(startDateAcct, months));
 			
 			MDepreciationExp.createDepreciation (this, currentPeriod, dateAcct,
 													exp_C, exp_F,
