@@ -44,6 +44,8 @@ import javax.xml.ws.WebServiceContext;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.xmlbeans.StringEnumAbstractBase.Table;
+import org.apache.xmlbeans.XmlInt;
+import org.apache.xmlbeans.impl.values.XmlValueOutOfRangeException;
 import org.compiere.model.I_AD_Column;
 import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
@@ -338,8 +340,16 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	}
 
 	private int validateParameter(String parameterName, int i) {
+		return validateParameter(parameterName, i, null);
+	}
+	
+	private int validateParameter(String parameterName, int i, String uuid) {
 		Integer io = Integer.valueOf(i);
 		String string = validateParameter(parameterName, io.toString());
+		// Use the UUID only if the returned string is empty to not override the constant value if any
+		if (string == null || string.equals("0"))
+			string = uuid;
+		
 		if (string == null)
 			return -1;
 		if (string.equals(io.toString()))
@@ -401,7 +411,12 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	
 			// Validate parameters
 			modelRunProcess.setADMenuID(validateParameter("AD_Menu_ID", modelRunProcess.getADMenuID()));
-			modelRunProcess.setADProcessID(validateParameter("AD_Process_ID", modelRunProcess.getADProcessID()));
+			try {
+				modelRunProcess.setADProcessID(validateParameter("AD_Process_ID", modelRunProcess.getADProcessID()));
+			} catch(XmlValueOutOfRangeException e) { //	Catch the exception when the Process ID is not an Integer
+				log.warning(e.getMessage() + " -- " + " trying to parse string as the UUID");
+				modelRunProcess.setADProcessID(validateParameter("AD_Process_ID", 0, getUUIDValue(modelRunProcess.xgetADProcessID())));
+			}
 			modelRunProcess.setADRecordID(validateParameter("AD_Record_ID", modelRunProcess.getADRecordID()));
 			modelRunProcess.setDocAction(validateParameter("DocAction", modelRunProcess.getDocAction()));
 	
@@ -421,6 +436,20 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		} finally {
 			getCompiereService().disconnect();
 		}
+	}
+	
+	private String getUUIDValue(XmlInt xmlInt) {
+		if (xmlInt != null) {
+			//Get the content between <xml-fragment> and </xml-fragment>
+		    String content = xmlInt.toString().substring(
+		    		"<xml-fragment>".length(), xmlInt.toString().indexOf("</xml-fragment>"));
+		    
+		    if (content != null && !content.isEmpty())
+		    	return content;
+		}
+
+		//No string value
+		return null;
 	}
 
 	public WindowTabDataDocument getList(ModelGetListRequestDocument req) {
