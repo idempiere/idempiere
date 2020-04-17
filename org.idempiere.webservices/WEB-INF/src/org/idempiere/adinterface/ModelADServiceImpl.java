@@ -414,8 +414,11 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			try {
 				modelRunProcess.setADProcessID(validateParameter("AD_Process_ID", modelRunProcess.getADProcessID()));
 			} catch(XmlValueOutOfRangeException e) { //	Catch the exception when the Process ID is not an Integer
-				log.warning(e.getMessage() + " -- " + " trying to parse string as the UUID");
-				modelRunProcess.setADProcessID(validateParameter("AD_Process_ID", 0, getUUIDValue(modelRunProcess.xgetADProcessID())));
+				String processUU = getUUIDValue(modelRunProcess.xgetADProcessID());
+				if (processUU == null) {
+					throw e;
+				}
+				modelRunProcess.setADProcessID(validateParameter("AD_Process_ID", 0, processUU));
 			}
 			modelRunProcess.setADRecordID(validateParameter("AD_Record_ID", modelRunProcess.getADRecordID()));
 			modelRunProcess.setDocAction(validateParameter("DocAction", modelRunProcess.getDocAction()));
@@ -440,15 +443,13 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	
 	private String getUUIDValue(XmlInt xmlInt) {
 		if (xmlInt != null) {
-			//Get the content between <xml-fragment> and </xml-fragment>
-		    String content = xmlInt.toString().substring(
-		    		"<xml-fragment>".length(), xmlInt.toString().indexOf("</xml-fragment>"));
-		    
-		    if (content != null && !content.isEmpty())
+			// String xml <...> blocks
+		    String content = xmlInt.toString().replaceAll("<[^>]*>", "");
+		    if (! Util.isEmpty(content, true) && ADLookup.isUUID(content))
 		    	return content;
 		}
 
-		//No string value
+		//No UUID value
 		return null;
 	}
 
