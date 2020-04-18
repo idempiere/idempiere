@@ -38,6 +38,7 @@ import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
@@ -365,7 +366,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         	else
         	{
 	        	Executions.createComponents(ThemeManager.getPreference(), this, null);
-	        	String size = Env.getContext(Env.getCtx(), "#ZK_Toolbar_Button_Size");
+	        	String size = Env.getContext(Env.getCtx(), ITheme.ZK_TOOLBAR_BUTTON_SIZE);
 	        	String suffix = "24.png";
 	        	if (!Util.isEmpty(size)) 
 	        	{
@@ -738,7 +739,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
       	}
       	else
       	{
-      		String size = Env.getContext(Env.getCtx(), "#ZK_Toolbar_Button_Size");
+      		String size = Env.getContext(Env.getCtx(), ITheme.ZK_TOOLBAR_BUTTON_SIZE);
       		String suffix = "24.png";
       		if (!Util.isEmpty(size))
       		{
