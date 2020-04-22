@@ -161,7 +161,6 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		//
 		content.appendChild(newText);
 		newText.setRows(3);
-		ZKUpdateUtil.setHeight(newText, "100%");
 		newText.setMultiline(true);		
 		ZKUpdateUtil.setHflex(newText, "1");
 		ZKUpdateUtil.setVflex(newText, "min");
@@ -359,7 +358,6 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 			replyTextbox.setMultiline(true);
 			replyTextbox.setRows(3);
 			ZKUpdateUtil.setWidth(replyTextbox, "100%");
-			ZKUpdateUtil.setHeight(replyTextbox, "100%");
 			div.appendChild(replyTextbox);
 			Button btn = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Ok")));
 			div.appendChild(btn);

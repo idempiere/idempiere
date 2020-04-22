@@ -313,7 +313,6 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		txtResult = new Textbox();
 		txtResult.setCols(2);
 		txtResult.setRows(3);
-		ZKUpdateUtil.setHeight(txtResult, "100%");
 		txtResult.setReadonly(true);
 		
 		cbxValid = new Checkbox();
