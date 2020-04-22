@@ -410,7 +410,15 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			}
 	
 			// Validate parameters
-			modelRunProcess.setADMenuID(validateParameter("AD_Menu_ID", modelRunProcess.getADMenuID()));
+			try {
+				modelRunProcess.setADMenuID(validateParameter("AD_Menu_ID", modelRunProcess.getADMenuID()));
+			} catch(XmlValueOutOfRangeException e) { //	Catch the exception when the Process ID is not an Integer
+				String menuUU = getUUIDValue(modelRunProcess.xgetADMenuID());
+				if (menuUU == null) {
+					throw e;
+				}
+				modelRunProcess.setADMenuID(validateParameter("AD_Menu_ID", 0, menuUU));
+			}
 			try {
 				modelRunProcess.setADProcessID(validateParameter("AD_Process_ID", modelRunProcess.getADProcessID()));
 			} catch(XmlValueOutOfRangeException e) { //	Catch the exception when the Process ID is not an Integer
