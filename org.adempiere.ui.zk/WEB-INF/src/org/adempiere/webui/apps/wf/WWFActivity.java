@@ -197,7 +197,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		fHelp.setMultiline(true);
 		fHelp.setRows(3);
 		ZKUpdateUtil.setWidth(fHelp, "100%");
-		ZKUpdateUtil.setHeight(fHelp, "100%");
 		ZKUpdateUtil.setHflex(fHelp, "true");
 		fHelp.setReadonly(true);
 		row.appendChild(new Label());

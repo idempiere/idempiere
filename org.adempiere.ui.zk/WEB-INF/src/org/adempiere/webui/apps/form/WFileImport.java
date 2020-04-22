@@ -214,7 +214,6 @@ public class WFileImport extends ADForm implements EventListener<Event>
 				
 		ZKUpdateUtil.setHflex(rawData, "1");
 		rawData.setRows(MAX_SHOWN_LINES);
-		ZKUpdateUtil.setHeight(rawData, "100%");
 		
 		ZKUpdateUtil.setHflex(northPanel, "1");
 		ZKUpdateUtil.setVflex(northPanel, "0");

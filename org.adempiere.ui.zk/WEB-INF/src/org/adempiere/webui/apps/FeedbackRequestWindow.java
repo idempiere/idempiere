@@ -146,7 +146,6 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		txtSummary = new Textbox();
 		txtSummary.setRows(10);
 		ZKUpdateUtil.setWidth(txtSummary, "95%");
-		ZKUpdateUtil.setHeight(txtSummary, "100%");
 		
 		confirmPanel = new ConfirmPanel(true);
 		confirmPanel.addActionListener(this);

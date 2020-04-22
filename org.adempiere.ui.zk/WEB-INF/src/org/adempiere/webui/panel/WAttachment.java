@@ -272,7 +272,6 @@ public class WAttachment extends Window implements EventListener<Event>
 		div.appendChild(toolBar);
 		text.setRows(3);
 		ZKUpdateUtil.setHflex(text, "1");
-		ZKUpdateUtil.setHeight(text, "100%");
 		
 		div.appendChild(text);
 		northPanel.appendChild(div);
