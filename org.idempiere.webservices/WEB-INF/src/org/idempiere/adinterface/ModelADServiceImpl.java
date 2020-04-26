@@ -358,8 +358,8 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			String tableName = parameterName.substring(0, parameterName.length()-3);
 			StringBuilder sql = new StringBuilder("SELECT ");
 			sql.append(parameterName).append(" FROM ").append(tableName)
-				.append(" WHERE ").append(tableName).append("_UU=").append(DB.TO_STRING(string));
-			return DB.getSQLValue(null, sql.toString());
+				.append(" WHERE ").append(tableName).append("_UU=?");
+			return DB.getSQLValue(null, sql.toString(), string);
 		}
 		
 		Map<String, Object> requestCtx = getRequestCtx();
@@ -410,7 +410,15 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			}
 	
 			// Validate parameters
-			modelRunProcess.setADMenuID(validateParameter("AD_Menu_ID", modelRunProcess.getADMenuID()));
+			try {
+				modelRunProcess.setADMenuID(validateParameter("AD_Menu_ID", modelRunProcess.getADMenuID()));
+			} catch(XmlValueOutOfRangeException e) { //	Catch the exception when the Menu ID is not an Integer
+				String menuUU = getUUIDValue(modelRunProcess.xgetADMenuID());
+				if (menuUU == null) {
+					throw e;
+				}
+				modelRunProcess.setADMenuID(validateParameter("AD_Menu_ID", 0, menuUU));
+			}
 			try {
 				modelRunProcess.setADProcessID(validateParameter("AD_Process_ID", modelRunProcess.getADProcessID()));
 			} catch(XmlValueOutOfRangeException e) { //	Catch the exception when the Process ID is not an Integer
@@ -476,7 +484,15 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			int roleid = reqlogin.getRoleID();
 	
 	    	// Validate parameters
-			modelGetList.setADReferenceID(validateParameter("AD_Reference_ID", modelGetList.getADReferenceID()));
+			try {
+				modelGetList.setADReferenceID(validateParameter("AD_Reference_ID", modelGetList.getADReferenceID()));
+			} catch(XmlValueOutOfRangeException e) { //	Catch the exception when the Reference ID is not an Integer
+				String refUU = getUUIDValue(modelGetList.xgetADReferenceID());
+				if (refUU == null) {
+					throw e;
+				}
+				modelGetList.setADReferenceID(validateParameter("AD_Reference_ID", 0, refUU));
+			}
 			modelGetList.setFilter(validateParameter("Filter", modelGetList.getFilter()));
 	
 	    	int ref_id = modelGetList.getADReferenceID();
@@ -535,7 +551,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	
 	    	} else if (MReference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
 	    		// Fill values from a reference table
-	    		MRole role = new MRole(ctx, roleid, null);
+	    		MRole role = MRole.get(ctx, roleid);
 	    		MRefTable rt = MRefTable.get(ctx,  ref_id);
 	    		if (rt == null || rt.get_ID() == 0)
 	    			throw new IdempiereServiceFault("Web service type "
