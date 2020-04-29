@@ -626,7 +626,7 @@ ContextMenuListener, IZoomableEditor
 	 *	Action - Special Quick Entry Screen
 	 *  @param newRecord true if new record should be created
 	 */
-	private void actionQuickEntry (boolean newRecord)
+	protected void actionQuickEntry (boolean newRecord)
 	{
 		if(!getComponent().isEnabled())
 			return;
@@ -672,7 +672,7 @@ ContextMenuListener, IZoomableEditor
 		AEnv.showWindow(vqe);		
 	}	//	actionQuickEntry
 
-	private void actionLocation() {
+	protected void actionLocation() {
 		int BPLocation_ID = 0;
 		Object value = getValue();
 		if (value instanceof Integer)
