@@ -20,27 +20,6 @@ Copyright (C) 2007 Ashley G Ramdass.
 				if (console) console.log(msg);
 			};
 
-            // default non th, tr, td use clone method to create ghost element
-            // this code implement same behavior for li to get drag-drop effect
-            // still have room for improve: https://www.zkoss.org/wiki/ZK_Client-side_Reference/Customization/Drag-and-Drop_Effects  
-			var superghost = zk.DnD.ghost;
-            zk.DnD.ghost = function (drag, ofs, msg) {
-                if (msg == null && drag.node){
-                    var dragNode = jq(drag.node)[0];
-                    var dragWg = zk.Widget.$(dragNode);
-                    
-                    var textNote = dragWg.$n('real') || dragWg.getCaveNode();
-                    
-                    if (jq.nodeName(dragNode, 'li')){
-                        msg = textNote ? textNote.textContent || textNote.innerText || '' : '';
-                    }
-                }
-                
-                return superghost(drag, ofs, msg);
-            };
-            
-            
-
 			zk.$package('id.zk');
 			
 			id.zk.Extend = zk.$extends(zk.Object, {}, {
@@ -193,7 +172,7 @@ Copyright (C) 2007 Ashley G Ramdass.
 			zk.override(zul.mesh.Paging.prototype, "bind_", function () {
 				this.$bind_.apply(this, arguments);
 				if (this._totalSize == 0x7fffffff){
-					jq(".z-paging-text", this).text("?");
+					jq(".z-paging-text", this).text(" / ?");
 				}
 			});
 			
@@ -252,73 +231,7 @@ Copyright (C) 2007 Ashley G Ramdass.
 				}
 				this.$onSize.apply(this, arguments);
 			});
-		});	
-		
-		// overload for recalculate width of scroll when has frozen control
-		function syncScrollOVR (wgt){
-			var parent = wgt.parent;
-			
-			if (parent.eheadtbl && parent._nativebar) {
-				var scroll = wgt.$n('scrollX');
-				var cells = parent._getFirstRowCells(parent.eheadrows);
-				var totalcols = cells.length;
-				var columns = wgt._columns;
-				var scrollScale = totalcols - columns - 1; 
-				var leftWidth = 0;
-				
-				var headerWidth = 0; 
-				for (var i = 0; i < columns; i++)
-					headerWidth += cells[i].offsetWidth;
-				
-				var bodyWidth = parent.$n('body').offsetWidth;
-				var extraWidth = parent.$n('body').offsetWidth - headerWidth;
-				var extraColumnNum = 0;
-				for (var i = totalcols - 1; i >= columns; i--){
-					extraWidth -= cells[i].offsetWidth;
-					if (cells[i].offsetWidth == 0)// when scroll to right, column at left has width = 0
-						continue;
-					if (extraWidth >= 0){
-						extraColumnNum++;
-					}else{
-						break;
-					}
-				}
-				
-				
-				scroll.firstChild.style.width = jq.px0(bodyWidth + 50 * (scrollScale - extraColumnNum));
-			}
-			
-			wgt.$syncScroll ()
-		}
-		
-		//Incorporate fix from https://tracker.zkoss.org/browse/ZK-4204
-		//Probably can be removed after the upgrade to zk9
-		zk.afterLoad('zk', function () {
-			if (navigator.sendBeacon && window.URLSearchParams) {
-				zAu._rmDesktop = function(dt, dummy) {
-					var url = zk.ajaxURI(null, {desktop: dt, au: true}),
-					data = jq.param({dtid: dt.id, cmd_0: dummy ? 'dummy' : 'rmDesktop', opt_0: 'i'}),
-					headers = {};
-					if (zk.pfmeter) {
-						var fakeReq = {
-							setRequestHeader: function (name, value) {
-								headers[name] = value;
-							}
-						};
-						zAu._pfsend(dt, fakeReq, true, false);
-					}
-					var params = new URLSearchParams(data);
-					for (var key in headers) {
-						if (headers.hasOwnProperty(key))
-							params.append(key, headers[key]);
-					}
-					navigator.sendBeacon(url, zk.chrome // https://crbug.com/747787
-						? new Blob([params.toString()], {type: 'application/x-www-form-urlencoded'})
-						: params
-					);
-				}
-			}
-		});
+		});			
 	]]>
 	</script>
     <include src="${themePreference}"/>

@@ -125,7 +125,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	    	this.setItemRenderer(rowRenderer);
 
 	    	//recreate listhead if needed
-		    ListHead head = super.getListHead();
+		    ListHead head = getListHead();
 		    if (head != null)
 		    {
 		    	head.getChildren().clear();
@@ -133,14 +133,14 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	    	}
 	    }
 
-	    // re-render
-	    this.repaint();
-
-	    return;
+	    repaint();
 	}
 
     public void setModel(ListModel<?> model)
     {
+    	if (getModel() == model)
+    		return;
+    	
         super.setModel(model);
         if (model instanceof ListModelTable)
         {
@@ -156,19 +156,20 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	 * it to the Listbox.
 	 *
 	 */
-	private void initialiseHeader()
+	public void initialiseHeader()
 	{
-	    ListHead head = null;
-
-	    head = super.getListHead();
+	    ListHead head = getListHead();
 
 	    //init only once
-	    if (head != null)
+	    if (head == null)
+	    {
+	    	head = new ListHead();
+	    	appendChild(head);
+	    }
+	    else if (head.getChildren().size() > 0)
 	    {
 	    	return;
 	    }
-
-	    head = new ListHead();
 
 	    // render list head
 	    if (this.getItemRenderer() instanceof WListItemRenderer)
@@ -180,11 +181,6 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	    	throw new ApplicationException("Rendering of the ListHead is unsupported for "
 	    			+ this.getItemRenderer().getClass().getSimpleName());
 	    }
-
-	    //attach the listhead
-	    head.setParent(this);
-
-	    return;
 	}
 
 	/**
@@ -254,7 +250,11 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
      */
     public ListModelTable getModel()
     {
-		if (super.getModel() instanceof ListModelTable)
+    	if (super.getModel() == null)
+    	{
+    		return null;
+    	}
+    	else if (super.getModel() instanceof ListModelTable)
 		{
 	    	return (ListModelTable)super.getModel();
 		}
@@ -360,9 +360,6 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
             boolean multiSelection,
             String tableName,boolean addAccessSQL)
     {
-    	if (getListhead() != null)
-    		getListHead().detach();
-    	
         int columnIndex = 0;
         StringBuilder sql = new StringBuilder ("SELECT ");
         setLayout(layout);
@@ -581,7 +578,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 			throw new UnsupportedOperationException("Layout not defined");
 		}
 
-		clearTable();
+		clearTable();		
 
 		try
 		{
@@ -661,15 +658,10 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		}
 		if (getShowTotals())
 			addTotals(m_layout);
-		// TODO implement this
-		//autoSize();
-
-		// repaint the table
-		this.repaint();
+		
+		repaint();
 
 		if (logger.isLoggable(Level.CONFIG)) logger.config("Row(rs)=" + getRowCount());
-
-		return;
 	}	//	loadTable
 
 	/**
@@ -740,15 +732,10 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		}
 		if (getShowTotals())
 			addTotals(m_layout);
-		// TODO implement this
-		//autoSize();
-
-		// repaint the table
-		this.repaint();
+		
+		repaint();
 
 		if (logger.isLoggable(Level.CONFIG)) logger.config("Row(array)=" + getRowCount());
-
-		return;
 	}	//	loadTable
 
 	/**
@@ -1081,13 +1068,9 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	 */
 	public void repaint()
 	{
-	    // create the head
+	    // create header (if needed)
 	    initialiseHeader();
-
-	    // this causes re-rendering of the Listbox
-		this.setModel(this.getModel());
-
-		return;
+	    invalidate();
 	}
 
     /**

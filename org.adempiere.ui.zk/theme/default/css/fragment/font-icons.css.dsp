@@ -268,7 +268,7 @@
 .z-icon-Wizard:before {
 	content: "\f0d0";
 }
-.z-icon-WorkFlow:before {	
+.z-icon-Workflow:before, .z-icon-WorkFlow:before {	
 	content: "\f126";
 }
 .z-icon-Zoom:before {

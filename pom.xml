@@ -35,15 +35,14 @@
 		<module>org.idempiere.felix.webconsole</module>
 		<module>org.idempiere.hazelcast.service</module>
 		<module>org.idempiere.webservices</module>
+		<module>org.idempiere.webservices-feature</module>
 		<module>org.idempiere.zk.extra</module>
 		<module>org.adempiere.report.jasper-feature</module>
-		<module>org.adempiere.bundles.external-feature</module>
 		<module>org.adempiere.base-feature</module>
 		<module>org.adempiere.replication-feature</module>
 		<module>org.adempiere.pipo-feature</module>
 		<module>org.adempiere.replication.server-feature</module>
 		<module>org.adempiere.server-feature</module>
-		<module>org.adempiere.target.platform-feature</module>		
 		<module>org.adempiere.ui.zk-feature</module>
 		<module>org.compiere.db.provider-feature</module>
 		<module>org.idempiere.eclipse.platform-feature</module>
