@@ -2808,7 +2808,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					AEnv.startWorkflowProcess(adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID());
 				} catch (Exception e) {
 					CLogger.get().saveError("Error", e);
-					throw new ApplicationException(e.getMessage());
+					throw new ApplicationException(e.getMessage(), e);
 				}
 		}
 	}
