@@ -2804,7 +2804,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			if (adTabbox.getSelectedGridTab().getRecord_ID() <= 0)
 				return;
 			else
-				AEnv.startWorkflowProcess(adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID());
+				try {
+					AEnv.startWorkflowProcess(adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID());
+				} catch (Exception e) {
+					CLogger.get().saveError("Error", e);
+					throw new ApplicationException(e.getMessage());
+				}
 		}
 	}
 	//
