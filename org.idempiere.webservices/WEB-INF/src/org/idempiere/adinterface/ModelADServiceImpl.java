@@ -1456,7 +1456,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			if (manageTrx)
 				trx.setDisplayName(getClass().getName()+"_"+webServiceName+"_queryData");
 			
-	    	StringBuilder sqlBuilder = new StringBuilder(role.addAccessSQL("SELECT * FROM " + tableName, tableName, true, true));
+	    	StringBuilder sqlBuilder = new StringBuilder(role.addAccessSQL("SELECT * FROM " + tableName, tableName, true, MRole.SQL_RO));
 			
 			ArrayList<Object> sqlParaList = new ArrayList<Object>();
 			PO holderPo = table.getPO(0, trxName);
