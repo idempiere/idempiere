@@ -11,6 +11,12 @@
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 
+	<repositories>
+		<repository>
+			<id>idempiere.github.io.maven.zk</id>
+			<url>https://idempiere.github.io/binary.file/maven.zk</url>
+		</repository>
+	</repositories>
 	<build>
 		<plugins>
 			<plugin>

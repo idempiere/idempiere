@@ -295,9 +295,6 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 
 		setupColumns();
 		render();
-		if (listbox.getFrozen() != null){
-			listbox.getFrozen().setWidgetOverride("syncScroll", "function (){syncScrollOVR(this);}");
-		}
 		
 		updateListIndex();
 

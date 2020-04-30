@@ -150,6 +150,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         else
         {
         	Clients.showBusy(null);
+        	if (session.getAttribute(CLIENT_INFO) != null)
+        	{
+        		clientInfo = (ClientInfo) session.getAttribute(CLIENT_INFO);
+        	}
+        	getRoot().addEventListener(Events.ON_CLIENT_INFO, this);
         	//use echo event to make sure server push have been started when loginCompleted is call
         	Events.echoEvent(ON_LOGIN_COMPLETED, this, null);
         }
