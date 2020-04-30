@@ -9,7 +9,7 @@ when detect side effect, fix to only apply for parameter window*/
 	height: 100%;
 }
 .process-modal-dialog.z-window > .z-window-content {
-	height: 100%;
+	flex: 1 1 0;
 }
 
 .main-parameter-layout,
@@ -31,7 +31,7 @@ when detect side effect, fix to only apply for parameter window*/
 }
 
 .bottom-parameter-layout{
-	padding-top: 4px;
+	padding: 4px 4px 0px 4px;
 	border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
 
@@ -58,6 +58,10 @@ when detect side effect, fix to only apply for parameter window*/
 .save-parameter-container{
 	overflow-x: auto;
 	overflow-y: hidden;
+}
+
+.result-parameter-layout {
+	overflow: auto;
 }
 
 .popup-dialog.z-window.z-window-overlapped.z-window-shadow,

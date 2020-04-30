@@ -174,7 +174,8 @@
 }
 
 .adwindow-gridview-detail {
-	height: 200px;
+	min-height: 200px;
+	height: 35%;
 }
 
 .adwindow-gridview-detail + .z-south-splitter {

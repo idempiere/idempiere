@@ -97,6 +97,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 			if (topParameterLayout != null)
 			{
 				topParameterLayout.setStyle("max-height:" + (ClientInfo.get().desktopHeight-130) + "px");
+				ZKUpdateUtil.setVflex(topParameterLayout, "1");
 			}
 			if (bottomParameterLayout != null)
 			{
@@ -106,7 +107,9 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 						ZKUpdateUtil.setVflex((HtmlBasedComponent) c, "min");
 				}
 			}			
-			this.setSclass("popup-dialog process-modal-dialog");
+			this.setSclass("popup-dialog process-modal-dialog z-flex z-flex-column");
+			this.setSizable(true);
+			this.setMaximizable(true);
 			if (ClientInfo.isMobile())
 			{
 				orientation = ClientInfo.get().orientation;

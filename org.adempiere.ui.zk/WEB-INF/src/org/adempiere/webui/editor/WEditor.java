@@ -59,6 +59,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Timebox;
 import org.zkoss.zul.impl.InputElement;
 import org.zkoss.zul.impl.XulElement;
 
@@ -676,7 +677,9 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         if (getComponent() instanceof HtmlBasedComponent) {
         	//can't stretch bandbox & datebox
         	if (!(getComponent() instanceof Bandbox) &&
-        		!(getComponent() instanceof Datebox)) {
+        		!(getComponent() instanceof Datebox) &&
+        		!(getComponent() instanceof DatetimeBox) &&
+        		!(getComponent() instanceof Timebox)) {
         		String width = tableEditor ? "96%" : "100%";
         		if (getComponent() instanceof Button) {
         			if (!tableEditor) {

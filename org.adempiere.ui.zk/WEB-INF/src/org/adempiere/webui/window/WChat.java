@@ -163,7 +163,6 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		newText.setRows(3);
 		newText.setMultiline(true);		
 		ZKUpdateUtil.setHflex(newText, "1");
-		ZKUpdateUtil.setVflex(newText, "min");
 		addButton = new Button(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Add")));
 		addButton.addActionListener(this);
 		content.appendChild(addButton);

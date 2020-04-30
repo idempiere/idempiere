@@ -78,16 +78,11 @@
 }
 
 .datetime-box {
-	display: inline-block;
 	white-space:nowrap;
 }
-
 .datetime-box .z-datebox {
-	display: inline;
 }
-
 .datetime-box .z-timebox {
-	display: inline;
 }
 
 span.grid-combobox-editor {
