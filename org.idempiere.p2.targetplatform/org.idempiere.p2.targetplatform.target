@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target name="idempiere-200430" sequenceNumber="108">
+<target name="idempiere-200501" sequenceNumber="109">
 <locations>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<repository location="https://idempiere.github.io/binary.file/p2.maven/org.idempiere.webservice.client-p2-R20190412"/>
@@ -406,20 +406,6 @@
 		<unit id="org.opentest4j.source" version="1.2.0.v20190826-0900"/>
 		<unit id="org.reactivestreams" version="1.0.2.v20181120-0809"/>
 		<unit id="org.reactivestreams.source" version="1.0.2.v20181120-0809"/>
-		<unit id="org.slf4j.api" version="1.7.30.v20200204-2150"/>
-		<unit id="org.slf4j.api.source" version="1.7.30.v20200204-2150"/>
-		<unit id="org.slf4j.apis.jcl" version="1.7.30.v20200204-2150"/>
-		<unit id="org.slf4j.apis.jcl.source" version="1.7.30.v20200204-2150"/>
-		<unit id="org.slf4j.apis.log4j" version="1.7.30.v20200204-2150"/>
-		<unit id="org.slf4j.apis.log4j.source" version="1.7.30.v20200204-2150"/>
-		<unit id="org.slf4j.binding.nop" version="1.7.30.v20200204-2150"/>
-		<unit id="org.slf4j.binding.nop.source" version="1.7.30.v20200204-2150"/>
-		<unit id="org.slf4j.binding.simple" version="1.7.30.v20200204-2150"/>
-		<unit id="org.slf4j.binding.simple.source" version="1.7.30.v20200204-2150"/>
-		<unit id="org.slf4j.bridge.jul" version="1.7.30.v20200204-2150"/>
-		<unit id="org.slf4j.bridge.jul.source" version="1.7.30.v20200204-2150"/>
-		<unit id="org.slf4j.ext" version="1.7.30.v20200204-2150"/>
-		<unit id="org.slf4j.ext.source" version="1.7.30.v20200204-2150"/>
 		<unit id="org.tukaani.xz" version="1.8.0.v20180207-1613"/>
 		<unit id="org.tukaani.xz.source" version="1.8.0.v20180207-1613"/>
 	</location>
