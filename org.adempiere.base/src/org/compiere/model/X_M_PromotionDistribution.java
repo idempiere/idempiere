@@ -31,7 +31,7 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_PromotionDistribution (Properties ctx, int M_PromotionDistribution_ID, String trxName)
@@ -74,7 +74,7 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_PromotionDistribution[")
+      StringBuilder sb = new StringBuilder ("X_M_PromotionDistribution[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

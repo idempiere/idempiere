@@ -31,13 +31,6 @@
 							</includes>
 							<followSymlinks>false</followSymlinks>
         				</fileset>
-        				<fileset>
-							<directory>${project.basedir}</directory>
-							<includes>
-								<include>labelapplet.jar</include>
-							</includes>
-							<followSymlinks>false</followSymlinks>
-        				</fileset>
 					</filesets>
 				</configuration>
 			</plugin>
@@ -72,24 +65,6 @@
 							<stripVersion>true</stripVersion>
 							<overWriteReleases>true</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>com.googlecode.maven-download-plugin</groupId>
-				<artifactId>download-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>${url.file.srv}/extra.jar/labelapplet.jar</url>
-							<unpack>false</unpack>
-							<outputDirectory>./</outputDirectory>
-							<retries>5</retries>
 						</configuration>
 					</execution>
 				</executions>

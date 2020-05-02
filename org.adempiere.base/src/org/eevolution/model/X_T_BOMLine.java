@@ -32,7 +32,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_T_BOMLine (Properties ctx, int T_BOMLine_ID, String trxName)
@@ -68,7 +68,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_T_BOMLine[")
+      StringBuilder sb = new StringBuilder ("X_T_BOMLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -65,6 +65,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.sys.SessionCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.Comboitem;
@@ -507,6 +508,8 @@ ContextMenuListener, IZoomableEditor
 		        			gridField.setLookupEditorSettingValue(false);
 		        	}
 		        }
+		        if (newValue != null)
+		        	focusNext();
     		} finally {
     			onselecting = false;
     		}
@@ -623,7 +626,7 @@ ContextMenuListener, IZoomableEditor
 	 *	Action - Special Quick Entry Screen
 	 *  @param newRecord true if new record should be created
 	 */
-	private void actionQuickEntry (boolean newRecord)
+	protected void actionQuickEntry (boolean newRecord)
 	{
 		if(!getComponent().isEnabled())
 			return;
@@ -669,7 +672,7 @@ ContextMenuListener, IZoomableEditor
 		AEnv.showWindow(vqe);		
 	}	//	actionQuickEntry
 
-	private void actionLocation() {
+	protected void actionLocation() {
 		int BPLocation_ID = 0;
 		Object value = getValue();
 		if (value instanceof Integer)
@@ -766,6 +769,7 @@ ContextMenuListener, IZoomableEditor
 	
 	private interface ITableDirEditor {
 		public void setEditor(WTableDirEditor editor);
+		public void cleanup();
 	}
 	
 	private static class EditorCombobox extends Combobox implements ITableDirEditor {
@@ -813,7 +817,7 @@ ContextMenuListener, IZoomableEditor
 		/**
 		 * 
 		 */
-		protected void cleanup() {
+		public void cleanup() {
 			if (editor.tableCacheListener != null) {
 				CacheMgt.get().unregister(editor.tableCacheListener);
 				editor.tableCacheListener = null;
@@ -871,7 +875,7 @@ ContextMenuListener, IZoomableEditor
 		/**
 		 * 
 		 */
-		protected void cleanup() {
+		public void cleanup() {
 			if (editor.tableCacheListener != null) {
 				CacheMgt.get().unregister(editor.tableCacheListener);
 				editor.tableCacheListener = null;
@@ -914,7 +918,17 @@ ContextMenuListener, IZoomableEditor
 		}
 
 		private void refreshLookupList() {
-			Executions.schedule(editor.getComponent().getDesktop(), new EventListener<Event>() {
+			Desktop desktop = editor.getComponent().getDesktop();
+			boolean alive = false;
+			if (desktop.isAlive() && desktop.getSession() != null) {
+				SessionCtrl ctrl = (SessionCtrl) desktop.getSession();
+				alive = !ctrl.isInvalidated();
+			}
+			if (!alive) {
+				((ITableDirEditor)editor.getComponent()).cleanup();
+				return;
+			}
+			Executions.schedule(desktop, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) {
 					try {

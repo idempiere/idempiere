@@ -30,7 +30,7 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_SchedulerRecipient (Properties ctx, int AD_SchedulerRecipient_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_SchedulerRecipient[")
+      StringBuilder sb = new StringBuilder ("X_AD_SchedulerRecipient[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

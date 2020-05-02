@@ -238,15 +238,20 @@ public class ModelClassGenerator
 			 .append("    {").append(NL)
 			 .append("      POInfo poi = POInfo.getPOInfo (ctx, Table_ID, get_TrxName());").append(NL)
 			 .append("      return poi;").append(NL)
-			 .append("    }").append(NL)
+			 .append("    }").append(NL);
 			// initPO
 
+		final String sqlCol = "SELECT COUNT(*) FROM AD_Column WHERE AD_Table_ID=? AND ColumnName=? AND IsActive='Y'";
+		boolean hasName = (DB.getSQLValue(null, sqlCol, AD_Table_ID, "Name") == 1);
 			// toString()
-			 .append(NL)
+		start.append(NL)
 			 .append("    public String toString()").append(NL)
 			 .append("    {").append(NL)
-			 .append("      StringBuffer sb = new StringBuffer (\"").append(className).append("[\")").append(NL)
-			 .append("        .append(get_ID()).append(\"]\");").append(NL)
+			 .append("      StringBuilder sb = new StringBuilder (\"").append(className).append("[\")").append(NL)
+			 .append("        .append(get_ID())");
+		if (hasName)
+			start.append(".append(\",Name=\").append(getName())");
+		start.append(".append(\"]\");").append(NL)
 			 .append("      return sb.toString();").append(NL)
 			 .append("    }").append(NL)
 		;
@@ -898,6 +903,9 @@ public class ModelClassGenerator
 		String filterViews = null;
 		if (tableLike.toString().contains("%")) {
 			filterViews = "AND (TableName IN ('RV_WarehousePrice','RV_BPartner') OR IsView='N')"; 	//	special views
+		}
+		if (tableLike.toString().equals("'%'")) {
+			filterViews += " AND TableName NOT LIKE 'W|_%' ESCAPE '|'"; 	//	exclude webstore from general model generator
 		}
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT AD_Table_ID ")

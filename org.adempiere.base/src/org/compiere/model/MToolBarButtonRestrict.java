@@ -162,7 +162,7 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MToolBarButtonRestrict[")
+		StringBuilder sb = new StringBuilder ("MToolBarButtonRestrict[")
 			.append(get_ID()).append(",AD_ToolBarButtonRestrict_ID=").append(getAD_ToolBarButtonRestrict_ID())
 			.append("]");
 		return sb.toString();

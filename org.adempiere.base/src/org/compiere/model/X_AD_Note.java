@@ -30,7 +30,7 @@ public class X_AD_Note extends PO implements I_AD_Note, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_Note (Properties ctx, int AD_Note_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_AD_Note extends PO implements I_AD_Note, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Note[")
+      StringBuilder sb = new StringBuilder ("X_AD_Note[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

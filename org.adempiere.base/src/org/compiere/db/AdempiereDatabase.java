@@ -25,6 +25,8 @@ import java.sql.Timestamp;
 import javax.sql.DataSource;
 
 import org.compiere.dbPort.Convert;
+import org.compiere.model.MColumn;
+import org.compiere.model.MTable;
 import org.compiere.model.PO;
 
 //import org.compiere.util.CPreparedStatement;
@@ -302,14 +304,6 @@ public interface AdempiereDatabase
 	public boolean isQueryTimeoutSupported();
 
 	/**
-	 * 	Get Data Type
-	 *	@param DisplayType display type
-	 *	@return data type
-	 */
-//	public String getDataType (int displayType, int precision,
-//		boolean defaultValue)
-      
-	/**
 	 * Default sql use to test whether a connection is still valid
 	 */
 	//public final static String DEFAULT_CONN_TEST_SQL = "SELECT Version FROM AD_System";
@@ -352,5 +346,120 @@ public interface AdempiereDatabase
 	 * @return subset sql clause
 	 */
 	public String intersectClauseForCSV(String columnName, String csv);
+	
+	/**
+	 * Quote column name if necessary (usually to avoid conflict with reserved keywords)
+	 * @param columnName
+	 * @return columnName or quoted columnName
+	 */
+	public default String quoteColumnName(String columnName) {
+		return columnName;
+	}
+	
+	/**
+	 * 
+	 * @return true if using native dialect, false if using oracle dialect
+	 */
+	public default boolean isNativeMode() {
+		return true;
+	}
+	
+	/**
+	 * @return numeric data type name
+	 */
+	public String getNumericDataType();
+	
+	/**
+	 * 
+	 * @return fixed lenght character data type name
+	 */
+	public String getCharacterDataType();
+	
+	/**
+	 * 
+	 * @return variable length character data type name
+	 */
+	public String getVarcharDataType();
+	
+	/**
+	 * 
+	 * @return binary large object data type name
+	 */
+	public String getBlobDataType();
+	
+	/**
+	 * 
+	 * @return character large object data type name
+	 */
+	public String getClobDataType();
+	
+	/**
+	 * 
+	 * @return time stamp data type name
+	 */
+	public String getTimestampDataType();
+	
+	/**
+	 * Get SQL Create
+	 * @param table
+	 * @return create table DDL
+	 */
+	public default String getSQLCreate(MTable table)
+	{
+		StringBuilder sb = new StringBuilder("CREATE TABLE ")
+			.append(table.getTableName()).append(" (");
+		//
+		StringBuilder constraints = new StringBuilder();
+		MColumn[] columns = table.getColumns(true);
+		boolean columnAdded = false;
+		for (int i = 0; i < columns.length; i++)
+		{
+			MColumn column = columns[i];
+			String colSQL = column.getSQLDDL();
+			if ( colSQL != null )
+			{
+				if (columnAdded)
+					sb.append(", ");
+				else
+					columnAdded = true;
+				sb.append(column.getSQLDDL());
+			}
+			else // virtual column
+				continue;
+			//
+			String constraint = column.getConstraint(table.getTableName());
+			if (constraint != null && constraint.length() > 0)
+				constraints.append(", ").append(constraint);
+		}
+
+		sb.append(constraints)
+			.append(")");
+		return sb.toString();
+	}	//	getSQLCreate
+	
+	/**
+	 * 
+	 * @param column
+	 * @return ddl sql for column
+	 */
+	public String getSQLDDL(MColumn column);
+	
+	/**
+	 * 
+	 * @param table
+	 * @param column
+	 * @return add column sql
+	 */
+	public String getSQLAdd(MTable table, MColumn column);
+	
+	/**
+	 * 
+	 * @param table
+	 * @param column
+	 * @param setNullOption
+	 * @return alter column sql
+	 */
+	public String getSQLModify (MTable table, MColumn column, boolean setNullOption);
+		
 }   //  AdempiereDatabase
 

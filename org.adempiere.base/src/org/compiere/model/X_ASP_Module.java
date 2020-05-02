@@ -30,7 +30,7 @@ public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_ASP_Module (Properties ctx, int ASP_Module_ID, String trxName)
@@ -67,8 +67,8 @@ public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_ASP_Module[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_ASP_Module[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

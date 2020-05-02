@@ -40,7 +40,7 @@ public class TaxForChangeNotFoundException extends AdempiereException
 	private static final String buildMessage(int C_Charge_ID, int AD_Org_ID, int M_Warehouse_ID,
 			int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID, String additionalMsg)
 	{
-		StringBuffer msg = new StringBuffer("@").append(AD_Message).append("@");
+		StringBuilder msg = new StringBuilder("@").append(AD_Message).append("@");
 		if (!Util.isEmpty(additionalMsg, true))
 		{
 			msg.append(" ").append(additionalMsg).append(" - ");

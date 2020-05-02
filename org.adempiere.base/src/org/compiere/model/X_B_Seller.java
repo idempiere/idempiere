@@ -31,7 +31,7 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_B_Seller (Properties ctx, int B_Seller_ID, String trxName)
@@ -69,8 +69,8 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_B_Seller[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_B_Seller[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

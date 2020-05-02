@@ -33,7 +33,7 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_UserRemuneration (Properties ctx, int C_UserRemuneration_ID, String trxName)
@@ -75,7 +75,7 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_UserRemuneration[")
+      StringBuilder sb = new StringBuilder ("X_C_UserRemuneration[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

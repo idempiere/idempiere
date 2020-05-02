@@ -30,7 +30,7 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_POSKeyLayout (Properties ctx, int C_POSKeyLayout_ID, String trxName)
@@ -66,8 +66,8 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_POSKeyLayout[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_POSKeyLayout[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

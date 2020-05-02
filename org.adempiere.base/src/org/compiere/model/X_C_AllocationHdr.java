@@ -33,7 +33,7 @@ public class X_C_AllocationHdr extends PO implements I_C_AllocationHdr, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_AllocationHdr (Properties ctx, int C_AllocationHdr_ID, String trxName)
@@ -81,7 +81,7 @@ public class X_C_AllocationHdr extends PO implements I_C_AllocationHdr, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_AllocationHdr[")
+      StringBuilder sb = new StringBuilder ("X_C_AllocationHdr[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

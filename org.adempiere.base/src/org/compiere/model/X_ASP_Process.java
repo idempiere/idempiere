@@ -30,7 +30,7 @@ public class X_ASP_Process extends PO implements I_ASP_Process, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_ASP_Process (Properties ctx, int ASP_Process_ID, String trxName)
@@ -68,7 +68,7 @@ public class X_ASP_Process extends PO implements I_ASP_Process, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_ASP_Process[")
+      StringBuilder sb = new StringBuilder ("X_ASP_Process[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -29,7 +29,7 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_UserBPAccess (Properties ctx, int AD_UserBPAccess_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_UserBPAccess[")
+      StringBuilder sb = new StringBuilder ("X_AD_UserBPAccess[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

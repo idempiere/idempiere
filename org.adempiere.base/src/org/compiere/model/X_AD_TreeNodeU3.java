@@ -29,7 +29,7 @@ public class X_AD_TreeNodeU3 extends PO implements I_AD_TreeNodeU3, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_TreeNodeU3 (Properties ctx, int AD_TreeNodeU3_ID, String trxName)
@@ -67,7 +67,7 @@ public class X_AD_TreeNodeU3 extends PO implements I_AD_TreeNodeU3, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_TreeNodeU3[")
+      StringBuilder sb = new StringBuilder ("X_AD_TreeNodeU3[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

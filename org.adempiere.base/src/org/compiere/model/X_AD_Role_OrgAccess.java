@@ -29,7 +29,7 @@ public class X_AD_Role_OrgAccess extends PO implements I_AD_Role_OrgAccess, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_Role_OrgAccess (Properties ctx, int AD_Role_OrgAccess_ID, String trxName)
@@ -65,7 +65,7 @@ public class X_AD_Role_OrgAccess extends PO implements I_AD_Role_OrgAccess, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Role_OrgAccess[")
+      StringBuilder sb = new StringBuilder ("X_AD_Role_OrgAccess[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

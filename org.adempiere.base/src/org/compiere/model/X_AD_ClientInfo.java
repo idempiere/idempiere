@@ -30,7 +30,7 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_ClientInfo (Properties ctx, int AD_ClientInfo_ID, String trxName)
@@ -69,7 +69,7 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_ClientInfo[")
+      StringBuilder sb = new StringBuilder ("X_AD_ClientInfo[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
@@ -763,6 +763,34 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 	public int getStorageArchive_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_StorageArchive_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_StorageProvider getStorageImage() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_StorageProvider)MTable.get(getCtx(), org.compiere.model.I_AD_StorageProvider.Table_Name)
+			.getPO(getStorageImage_ID(), get_TrxName());	}
+
+	/** Set Image Store.
+		@param StorageImage_ID 
+		Storage provider for Image
+	  */
+	public void setStorageImage_ID (int StorageImage_ID)
+	{
+		if (StorageImage_ID < 1) 
+			set_Value (COLUMNNAME_StorageImage_ID, null);
+		else 
+			set_Value (COLUMNNAME_StorageImage_ID, Integer.valueOf(StorageImage_ID));
+	}
+
+	/** Get Image Store.
+		@return Storage provider for Image
+	  */
+	public int getStorageImage_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_StorageImage_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

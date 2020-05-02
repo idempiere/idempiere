@@ -31,7 +31,7 @@ public class X_QM_Specification extends PO implements I_QM_Specification, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_QM_Specification (Properties ctx, int QM_Specification_ID, String trxName)
@@ -68,8 +68,8 @@ public class X_QM_Specification extends PO implements I_QM_Specification, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_QM_Specification[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_QM_Specification[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

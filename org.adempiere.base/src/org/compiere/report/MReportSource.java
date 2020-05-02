@@ -252,7 +252,7 @@ public class MReportSource extends X_PA_ReportSource
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MReportSource[")
+		StringBuilder sb = new StringBuilder ("MReportSource[")
 			.append(get_ID()).append(" - ").append(getDescription())
 			.append(" - ").append(getElementType());
 		sb.append ("]");

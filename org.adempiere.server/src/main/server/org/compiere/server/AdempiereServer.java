@@ -395,7 +395,7 @@ public abstract class AdempiereServer implements Runnable
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ()
+		StringBuilder sb = new StringBuilder ()
 			.append ("Sleeping=").append(m_sleeping)
 			.append (",Last=").append(getDateLastRun());
 		if (m_sleeping)

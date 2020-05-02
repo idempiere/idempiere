@@ -880,7 +880,7 @@ public final class EMail implements Serializable
 	public void setMessageHTML (String subject, String message)
 	{
 		m_subject = subject;
-		StringBuffer sb = new StringBuffer("<HTML>\n")
+		StringBuilder sb = new StringBuilder("<HTML>\n")
 				.append("<HEAD>\n")
 				.append("<TITLE>\n")
 				.append(subject + "\n")

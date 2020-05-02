@@ -106,7 +106,7 @@ public class FinReport extends SvrProcess
 	 */
 	protected void prepare()
 	{
-		StringBuffer sb = new StringBuffer ("Record_ID=")
+		StringBuilder sb = new StringBuilder ("Record_ID=")
 			.append(getRecord_ID());
 		//	Parameter
 		ProcessInfoParameter[] para = getParameter();
@@ -311,14 +311,14 @@ public class FinReport extends SvrProcess
 		//	** Create Temporary and empty Report Lines from PA_ReportLine
 		//	- AD_PInstance_ID, PA_ReportLine_ID, 0, 0
 		int PA_ReportLineSet_ID = m_report.getLineSet().getPA_ReportLineSet_ID();
-		StringBuffer sql = new StringBuffer ("INSERT INTO T_Report "
+		StringBuilder sql = new StringBuilder ("INSERT INTO T_Report "
 			+ "(AD_PInstance_ID, PA_ReportLine_ID, Record_ID,Fact_Acct_ID, SeqNo,LevelNo, Name,Description) "
-			+ "SELECT ").append(getAD_PInstance_ID()).append(", rl.PA_ReportLine_ID, 0,0, rl.SeqNo,0, COALESCE(trl.Name, rl.Name) as Name, COALESCE(trl.Description,rl.Description) as Description "
+			+ "SELECT ").append(getAD_PInstance_ID()).append(", rl.PA_ReportLine_ID, 0,0, rl.SeqNo,0, NVL(trl.Name, rl.Name) as Name, NVL(trl.Description,rl.Description) as Description "
 			+ "FROM PA_ReportLine rl "
 			+ "LEFT JOIN PA_ReportLine_Trl trl ON trl.PA_ReportLine_ID = rl.PA_ReportLine_ID AND trl.AD_Language = '" + Env.getAD_Language(Env.getCtx()) + "' "
 			+ "WHERE rl.IsActive='Y' AND rl.PA_ReportLineSet_ID=").append(PA_ReportLineSet_ID);
 
-		int no = DB.executeUpdate(sql.toString(), get_TrxName());
+		int no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Report Lines = " + no);
 
 		//	** Get Data	** Segment Values
@@ -376,7 +376,7 @@ public class FinReport extends SvrProcess
 			return;
 		}
 
-		StringBuffer update = new StringBuffer();
+		StringBuilder update = new StringBuilder();
 		//	for all columns
 		for (int col = 0; col < m_columns.length; col++)
 		{
@@ -387,7 +387,7 @@ public class FinReport extends SvrProcess
 			info.append("Line=").append(line).append(",Col=").append(col);
 
 			//	SELECT SUM()
-			StringBuffer select = new StringBuffer ("SELECT ");
+			StringBuilder select = new StringBuilder ("SELECT ");
 			if (m_lines[line].getPAAmountType() != null)				//	line amount type overwrites column
 			{
 				String sql = m_lines[line].getSelectClause (true);
@@ -890,10 +890,10 @@ public class FinReport extends SvrProcess
 						continue;
 					String colsql = "SELECT a." + oper2col + " FROM T_Report a " +
 							" INNER JOIN PA_ReportLine b ON a.PA_ReportLine_ID = b.PA_ReportLine_ID " +
-							" LEFT JOIN PA_ReportLine trlb ON trlb.PA_ReportLine_ID = b.PA_ReportLine_ID AND trlb.AD_Language = '" + Env.getLanguage(Env.getCtx()) + "' " +
+							" LEFT JOIN PA_ReportLine_Trl trlb ON trlb.PA_ReportLine_ID = b.PA_ReportLine_ID AND trlb.AD_Language = ? " +
 							" WHERE a.AD_PInstance_ID = " + getAD_PInstance_ID() +
-							" AND COALESCE(trlb.Name, b.Name) = ?";
-					BigDecimal value2 = DB.getSQLValueBD(get_TrxName(), colsql, oper2Line);
+							" AND (trlb.Name = ? OR b.Name = ?)";
+					BigDecimal value2 = DB.getSQLValueBDEx(get_TrxName(), colsql, Env.getAD_Language(Env.getCtx()), oper2Line, oper2Line);
 					if (value2 != null && value2.signum() != 0)
 						oper2 = value2.toPlainString();
 
@@ -941,6 +941,39 @@ public class FinReport extends SvrProcess
 				if (log.isLoggable(Level.FINEST)) log.finest (sb.toString ());
 			}
 		} 	//	for all columns
+
+		// allow opposite sign
+		boolean hasOpposites = false;
+		StringBuilder sb = new StringBuilder("UPDATE T_Report SET ");
+		for (int col = 0; col < m_columns.length; col++)
+		{
+			if (m_columns[col].isAllowOppositeSign())
+			{
+				if (hasOpposites)
+					sb.append(", ");
+				else
+					hasOpposites = true;
+
+				// Column to set
+				sb.append("Col_").append(col).append("= -1 * Col_").append(col);
+			}
+		}
+
+		if (hasOpposites)
+		{
+			sb.append(" WHERE 	AD_PInstance_ID = ").append(getAD_PInstance_ID());
+			// 0=Line 1=Acct
+			sb.append(" AND ABS(LevelNo) < 2 ");
+			sb.append(" AND EXISTS (SELECT 1 FROM PA_ReportLine rl WHERE rl.PA_ReportLine_ID=T_Report.PA_ReportLine_ID AND rl.IsShowOppositeSign='Y' AND rl.IsActive='Y') ");
+			int no = DB.executeUpdate(sb.toString(), get_TrxName());
+			if (no < 1)
+				log.severe("#=" + no + " for setting opposite sign" + " - " + sb.toString());
+			else
+			{
+				log.fine("Set opposite sign: " + no);
+				log.finest(sb.toString());
+			}
+		}
 
 	}	//	doCalculations
 
@@ -997,16 +1030,16 @@ public class FinReport extends SvrProcess
 			boolean lteq = true; //less than or equal to
 			String seqsql = "SELECT b.seqNo FROM T_Report a " +
 			" INNER JOIN PA_ReportLine b ON a.PA_ReportLine_ID = b.PA_ReportLine_ID " +
-			" LEFT JOIN PA_ReportLine trlb ON trlb.PA_ReportLine_ID = b.PA_ReportLine_ID AND trlb.AD_Language = '" + Env.getLanguage(Env.getCtx()) + "' " +
+			" LEFT JOIN PA_ReportLine_Trl trlb ON trlb.PA_ReportLine_ID = b.PA_ReportLine_ID AND trlb.AD_Language = ? " +
 			" WHERE a.AD_PInstance_ID = " + getAD_PInstance_ID() +
-			" AND COALESCE(trlb.Name,b.Name) = ?";
+			" AND (trlb.Name = ? OR b.Name = ?)";
 			int seqNo = -1;
 			try {
 				seqNo = Integer.parseInt(multi[0].trim());
 			} catch (Exception e) {}
 			if (seqNo == -1)
 			{
-				seqNo = DB.getSQLValue(get_TrxName(), seqsql, multi[0].trim());
+				seqNo = DB.getSQLValueEx(get_TrxName(), seqsql, Env.getAD_Language(Env.getCtx()), multi[0].trim(), multi[0].trim());
 			}
 			if (seqNo < 0)
 				continue;
@@ -1030,7 +1063,7 @@ public class FinReport extends SvrProcess
 				} catch (Exception e) {}
 				if (seqNo == -1)
 				{
-					seqNo = DB.getSQLValue(get_TrxName(), seqsql, multi[i].trim());
+					seqNo = DB.getSQLValueEx(get_TrxName(), seqsql, Env.getAD_Language(Env.getCtx()), multi[i].trim(), multi[i].trim());
 				}
 				if (seqNo < 0)
 					continue;
@@ -1040,7 +1073,7 @@ public class FinReport extends SvrProcess
 			for (int i = 0; i < seqlist.size(); i++)
 			{
 				int currentSeq = seqlist.get(i);
-				StringBuffer sb = new StringBuffer ("UPDATE T_Report SET ");
+				StringBuilder sb = new StringBuilder ("UPDATE T_Report SET ");
 				//	Column to set
 				sb.append ("Col_").append (col).append("=");
 
@@ -1300,7 +1333,7 @@ public class FinReport extends SvrProcess
 		if (log.isLoggable(Level.FINE)) log.fine("Variable=" + variable);
 
 		//	Insert
-		StringBuffer insert = new StringBuffer("INSERT INTO T_Report "
+		StringBuilder insert = new StringBuilder("INSERT INTO T_Report "
 			+ "(AD_PInstance_ID, PA_ReportLine_ID, Record_ID,Fact_Acct_ID,LevelNo ");
 		for (int col = 0; col < m_columns.length; col++)
 			insert.append(",Col_").append(col);
@@ -1312,7 +1345,7 @@ public class FinReport extends SvrProcess
 		
 		boolean listSourceNoTrx = m_report.isListSourcesXTrx() && variable.equalsIgnoreCase(I_C_ValidCombination.COLUMNNAME_Account_ID);
 		//SQL to get the Account Element which no transaction		
-		StringBuffer unionInsert = listSourceNoTrx ? new StringBuffer() : null;
+		StringBuilder unionInsert = listSourceNoTrx ? new StringBuilder() : null;
 		if (listSourceNoTrx) {
 			unionInsert.append(" UNION SELECT ")
 			.append(getAD_PInstance_ID()).append(",")
@@ -1345,7 +1378,7 @@ public class FinReport extends SvrProcess
 			}
 
 			//	SELECT SUM()
-			StringBuffer select = new StringBuffer ("SELECT ");
+			StringBuilder select = new StringBuilder ("SELECT ");
 			if (m_lines[line].getPAAmountType() != null)				//	line amount type overwrites column
 				select.append (m_lines[line].getSelectClause (true));
 			else if (m_columns[col].getPAAmountType() != null)
@@ -1417,9 +1450,9 @@ public class FinReport extends SvrProcess
 			insert.append("(").append(select).append(")");
 		}
 		//	WHERE (sources, posting type)
-		StringBuffer where = new StringBuffer(m_lines[line].getWhereClause(p_PA_Hierarchy_ID));
+		StringBuilder where = new StringBuilder(m_lines[line].getWhereClause(p_PA_Hierarchy_ID));
 		
-		StringBuffer unionWhere = listSourceNoTrx ? new StringBuffer() : null;
+		StringBuilder unionWhere = listSourceNoTrx ? new StringBuilder() : null;
 		if (listSourceNoTrx && m_lines[line].getSources() != null && m_lines[line].getSources().length > 0){
 			//	Only one
 			if (m_lines[line].getSources().length == 1 
@@ -1430,7 +1463,7 @@ public class FinReport extends SvrProcess
 			else
 			{
 				//	Multiple
-				StringBuffer sb = new StringBuffer ("(");
+				StringBuilder sb = new StringBuilder ("(");
 				for (int i = 0; i < m_lines[line].getSources().length; i++)
 				{
 					if ((m_lines[line].getSources()[i]).getElementType().equalsIgnoreCase(MReportSource.ELEMENTTYPE_Account)) {
@@ -1497,7 +1530,7 @@ public class FinReport extends SvrProcess
 			return;
 
 		//	Set Name,Description
-		StringBuffer sql = new StringBuffer ("UPDATE T_Report SET (Name,Description)=(")
+		StringBuilder sql = new StringBuilder ("UPDATE T_Report SET (Name,Description)=(")
 			.append(m_lines[line].getSourceValueQuery()).append("T_Report.Record_ID) "
 			//
 			+ "WHERE Record_ID <> 0 AND AD_PInstance_ID=").append(getAD_PInstance_ID())
@@ -1521,7 +1554,7 @@ public class FinReport extends SvrProcess
 		if (log.isLoggable(Level.INFO)) log.info("Line=" + line + " - Variable=" + variable);
 
 		//	Insert
-		StringBuffer insert = new StringBuffer("INSERT INTO T_Report "
+		StringBuilder insert = new StringBuilder("INSERT INTO T_Report "
 			+ "(AD_PInstance_ID, PA_ReportLine_ID, Record_ID,Fact_Acct_ID,LevelNo ");
 		for (int col = 0; col < m_columns.length; col++)
 			insert.append(",Col_").append(col);
@@ -1547,7 +1580,7 @@ public class FinReport extends SvrProcess
 			}
 
 			//	SELECT
-			StringBuffer select = new StringBuffer ("SELECT ");
+			StringBuilder select = new StringBuilder ("SELECT ");
 			if (m_lines[line].getPAAmountType() != null)				//	line amount type overwrites column
 				select.append (m_lines[line].getSelectClause (false));
 			else if (m_columns[col].getPAAmountType() != null)

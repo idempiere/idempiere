@@ -31,7 +31,7 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_U_WebMenu (Properties ctx, int U_WebMenu_ID, String trxName)
@@ -71,8 +71,8 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_U_WebMenu[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_U_WebMenu[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

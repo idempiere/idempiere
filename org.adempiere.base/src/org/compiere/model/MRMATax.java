@@ -250,7 +250,7 @@ public class MRMATax extends X_M_RMATax
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MRMATax[")
+		StringBuilder sb = new StringBuilder ("MRMATax[")
 			.append("M_RMA_ID=").append(getM_RMA_ID())
 			.append(", C_Tax_ID=").append(getC_Tax_ID())
 			.append(", Base=").append(getTaxBaseAmt())

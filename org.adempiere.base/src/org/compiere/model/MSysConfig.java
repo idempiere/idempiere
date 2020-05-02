@@ -39,10 +39,10 @@ import org.compiere.util.DisplayType;
  */
 public class MSysConfig extends X_AD_SysConfig
 {
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6662424546913925975L;
+	private static final long serialVersionUID = -9208749663408576569L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -99,6 +99,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String HTML_REPORT_THEME = "HTML_REPORT_THEME";
     public static final String IBAN_VALIDATION = "IBAN_VALIDATION";
     public static final String IDENTIFIER_SEPARATOR = "IDENTIFIER_SEPARATOR";
+    public static final String IMAGE_DB_STORAGE_SAVE_AS_ZIP = "IMAGE_DB_STORAGE_SAVE_AS_ZIP";
     public static final String INFO_DEFAULTSELECTED = "INFO_DEFAULTSELECTED";
     public static final String INFO_DOUBLECLICKTOGGLESSELECTION = "INFO_DOUBLECLICKTOGGLESSELECTION";
     public static final String Invoice_ReverseUseNewNumber = "Invoice_ReverseUseNewNumber";
@@ -135,6 +136,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String PROJECT_ID_USE_CENTRALIZED_ID = "PROJECT_ID_USE_CENTRALIZED_ID";
     public static final String PROJECT_ID_USER = "PROJECT_ID_USER";
     public static final String PROJECT_ID_WEBSITE = "PROJECT_ID_WEBSITE";
+	public static final String QUICKFORM_PAGE_SIZE = "QUICKFORM_PAGE_SIZE";
     public static final String REAL_TIME_POS = "REAL_TIME_POS";
     public static final String RecentItems_MaxSaved = "RecentItems_MaxSaved";
     public static final String RecentItems_MaxShown = "RecentItems_MaxShown";

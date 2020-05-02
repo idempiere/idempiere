@@ -32,7 +32,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_R_RequestAction (Properties ctx, int R_RequestAction_ID, String trxName)
@@ -68,7 +68,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_R_RequestAction[")
+      StringBuilder sb = new StringBuilder ("X_R_RequestAction[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

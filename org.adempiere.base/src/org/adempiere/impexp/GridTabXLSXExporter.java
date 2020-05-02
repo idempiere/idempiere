@@ -26,7 +26,6 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.Util;
 
 /**
  * Excel Exporter Adapter for GridTab
@@ -198,5 +197,11 @@ public class GridTabXLSXExporter extends AbstractXLSXExporter implements IGridTa
 	public boolean isExportableTab(GridTab gridTab)
 	{
 		return false;
+	}
+	
+	@Override
+	public boolean isDisplayed(int row, int col)
+	{
+		return true;
 	}
 }

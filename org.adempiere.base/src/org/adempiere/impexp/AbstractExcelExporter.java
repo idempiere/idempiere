@@ -119,6 +119,15 @@ public abstract class AbstractExcelExporter
 	 */
 	public abstract boolean isPageBreak(int row, int col);
 
+	/**
+	 * Check if there is a display logic
+	 * 
+	 * @param row row index
+	 * @param col column index
+	 * @return true if there is no logic or evaluate logic specified in print item
+	 */
+	public abstract boolean isDisplayed(int row, int col);
+
 	/** Logger */
 	protected final transient CLogger log = CLogger.getCLogger(getClass());
 	//
@@ -194,7 +203,7 @@ public abstract class AbstractExcelExporter
 	 * @return number excel format string
 	 */
 	private String getFormatString(NumberFormat df, boolean isHighlightNegativeNumbers) {
-		StringBuffer format = new StringBuffer();
+		StringBuilder format = new StringBuilder();
 		int integerDigitsMin = df.getMinimumIntegerDigits();
 		int integerDigitsMax = df.getMaximumIntegerDigits();
 		for (int i = 0; i < integerDigitsMax; i++) {
@@ -218,7 +227,7 @@ public abstract class AbstractExcelExporter
 		}
 		if (isHighlightNegativeNumbers) {
 			String f = format.toString();
-			format = new StringBuffer(f).append(";[RED]-").append(f);
+			format = new StringBuilder(f).append(";[RED]-").append(f);
 		}
 		//
 		if (log.isLoggable(Level.FINEST)) log.finest("NumberFormat: "+format);
@@ -497,7 +506,7 @@ public abstract class AbstractExcelExporter
 					}
 					
 					int displayType = getDisplayType(rownum, col);
-					if (obj == null){
+					if (obj == null || !isDisplayed(rownum, col)){
 						if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
 							preValues[printColIndex] = null;
 						}

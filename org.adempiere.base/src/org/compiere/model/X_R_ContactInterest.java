@@ -31,7 +31,7 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_R_ContactInterest (Properties ctx, int R_ContactInterest_ID, String trxName)
@@ -68,7 +68,7 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_R_ContactInterest[")
+      StringBuilder sb = new StringBuilder ("X_R_ContactInterest[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

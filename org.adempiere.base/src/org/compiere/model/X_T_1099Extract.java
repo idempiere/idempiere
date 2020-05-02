@@ -32,7 +32,7 @@ public class X_T_1099Extract extends PO implements I_T_1099Extract, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_T_1099Extract (Properties ctx, int T_1099Extract_ID, String trxName)
@@ -70,8 +70,8 @@ public class X_T_1099Extract extends PO implements I_T_1099Extract, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_T_1099Extract[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_T_1099Extract[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

@@ -30,7 +30,7 @@ public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_Attribute_Value (Properties ctx, int AD_Attribute_Value_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Attribute_Value[")
+      StringBuilder sb = new StringBuilder ("X_AD_Attribute_Value[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

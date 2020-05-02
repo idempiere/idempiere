@@ -32,7 +32,7 @@ public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_MovementLine (Properties ctx, int M_MovementLine_ID, String trxName)
@@ -80,7 +80,7 @@ public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_MovementLine[")
+      StringBuilder sb = new StringBuilder ("X_M_MovementLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

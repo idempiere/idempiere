@@ -224,12 +224,12 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 					{
 						if (result)
 						{
-							Events.echoEvent(ON_DEFER_CHANGE_ROLE, component, null);
+							Events.postEvent(ON_DEFER_CHANGE_ROLE, component, null);
 						}
 					}
 				});
 			} else {
-				Events.echoEvent(ON_DEFER_CHANGE_ROLE, component, null);
+				Events.postEvent(ON_DEFER_CHANGE_ROLE, component, null);
 			}
 		}
 		else if (preference == event.getTarget())

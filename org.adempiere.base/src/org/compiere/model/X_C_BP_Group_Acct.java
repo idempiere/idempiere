@@ -30,7 +30,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_BP_Group_Acct (Properties ctx, int C_BP_Group_Acct_ID, String trxName)
@@ -75,7 +75,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_BP_Group_Acct[")
+      StringBuilder sb = new StringBuilder ("X_C_BP_Group_Acct[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -306,7 +306,7 @@ public abstract class Convert
 		Pattern p = Pattern.compile("'[[^']*]*'");
 		Matcher m = p.matcher(inputValue);
 		int i = 0;
-		StringBuffer retValue = new StringBuffer(inputValue.length());
+		StringBuilder retValue = new StringBuilder(inputValue.length());
 		while (m.find()) {
 			String var = inputValue.substring(m.start(), m.end()).replace(quoteMarker, "''"); // Put back quotes, if any
 			retVars.addElement(var);
@@ -438,13 +438,7 @@ public abstract class Convert
 	public synchronized static void logMigrationScript(String oraStatement, String pgStatement) {
 		// Check AdempiereSys
 		// check property Log migration script
-		boolean logMigrationScript = false;
-		if (Ini.isClient()) {
-			logMigrationScript = Ini.isPropertyBool(Ini.P_LOGMIGRATIONSCRIPT);
-		} else {
-			String sysProperty = Env.getCtx().getProperty("LogMigrationScript", "N");
-			logMigrationScript = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
-		}
+		boolean logMigrationScript = isLogMigrationScript();
 		if (logMigrationScript) {
 			if (dontLog(oraStatement))
 				return;
@@ -478,6 +472,20 @@ public abstract class Convert
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * @return true if it is in log migration script mode
+	 */
+	public static boolean isLogMigrationScript() {
+		boolean logMigrationScript = false;
+		if (Ini.isClient()) {
+			logMigrationScript = Ini.isPropertyBool(Ini.P_LOGMIGRATIONSCRIPT);
+		} else {
+			String sysProperty = Env.getCtx().getProperty("LogMigrationScript", "N");
+			logMigrationScript = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
+		}
+		return logMigrationScript;
 	}
 
 

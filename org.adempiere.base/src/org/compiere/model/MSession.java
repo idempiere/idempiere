@@ -20,12 +20,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.Vector;
 import java.util.logging.Level;
 
 import org.compiere.Adempiere;
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
-import org.compiere.util.Ini;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.WebUtil;
 
@@ -58,16 +57,15 @@ public class MSession extends X_AD_Session
 	{
 		int AD_Session_ID = Env.getContextAsInt(ctx, "#AD_Session_ID");
 		MSession session = null;
-		if (AD_Session_ID > 0)
-			session = (MSession)s_sessions.get(Integer.valueOf(AD_Session_ID));
 		// Try to load
-		if (session == null && AD_Session_ID > 0)
+		if (AD_Session_ID > 0 && s_sessions.contains(AD_Session_ID))
 		{
 			session = new MSession(ctx, AD_Session_ID, null);
-			if (session.get_ID() != AD_Session_ID) {
-				Env.setContext (ctx, "#AD_Session_ID", AD_Session_ID);
+			if (session.get_ID() != AD_Session_ID) 
+			{
+				session = null;
+				s_sessions.remove(AD_Session_ID);
 			}
-			s_sessions.put(AD_Session_ID, session);
 		}
 		// Create New
 		if (session == null && createNew)
@@ -76,7 +74,7 @@ public class MSession extends X_AD_Session
 			session.saveEx();
 			AD_Session_ID = session.getAD_Session_ID();
 			Env.setContext (ctx, "#AD_Session_ID", AD_Session_ID);
-			s_sessions.put (Integer.valueOf(AD_Session_ID), session);
+			s_sessions.add (Integer.valueOf(AD_Session_ID));
 		}	
 		return session;
 	}	//	get
@@ -93,23 +91,29 @@ public class MSession extends X_AD_Session
 	{
 		int AD_Session_ID = Env.getContextAsInt(ctx, "#AD_Session_ID");
 		MSession session = null;
-		if (AD_Session_ID > 0)
-			session = (MSession)s_sessions.get(Integer.valueOf(AD_Session_ID));
+		// Try to load
+		if (AD_Session_ID > 0 && s_sessions.contains(AD_Session_ID))
+		{
+			session = new MSession(ctx, AD_Session_ID, null);
+			if (session.get_ID() != AD_Session_ID) 
+			{
+				session = null;
+				s_sessions.remove(AD_Session_ID);
+			}
+		}
 		if (session == null)
 		{
 			session = new MSession (ctx, Remote_Addr, Remote_Host, WebSession, null);	//	remote session
 			session.saveEx();
 			AD_Session_ID = session.getAD_Session_ID();
 			Env.setContext(ctx, "#AD_Session_ID", AD_Session_ID);
-			s_sessions.put(Integer.valueOf(AD_Session_ID), session);
-		}	
+			s_sessions.add(Integer.valueOf(AD_Session_ID));
+		}
 		return session;
 	}	//	get
 
 	/**	Sessions					*/
-	private static CCache<Integer, MSession> s_sessions = Ini.isClient() 
-		? new CCache<Integer, MSession>(null, "AD_Session_ID", 1, 0, false)		//	one client session 
-		: new CCache<Integer, MSession>(null, "AD_Session_ID", 30, 0, false);	//	no time-out	
+	private static Vector<Integer> s_sessions = new Vector<>();	
 	
 	
 	/**************************************************************************
@@ -217,7 +221,7 @@ public class MSession extends X_AD_Session
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MSession[")
+		StringBuilder sb = new StringBuilder("MSession[")
 			.append(getAD_Session_ID())
 			.append(",AD_User_ID=").append(getCreatedBy())
 			.append(",").append(getCreated())

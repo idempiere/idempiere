@@ -176,4 +176,9 @@ public interface ToolbarListener
     public void onCustomize();
 
     public void onProcess();
+    
+    /**
+     * Select query from the user query list
+     */
+    public void onSearchQuery();
 }

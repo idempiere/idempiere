@@ -30,7 +30,7 @@ public class X_C_BP_BankAccount extends PO implements I_C_BP_BankAccount, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_BP_BankAccount (Properties ctx, int C_BP_BankAccount_ID, String trxName)
@@ -68,7 +68,7 @@ public class X_C_BP_BankAccount extends PO implements I_C_BP_BankAccount, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_BP_BankAccount[")
+      StringBuilder sb = new StringBuilder ("X_C_BP_BankAccount[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

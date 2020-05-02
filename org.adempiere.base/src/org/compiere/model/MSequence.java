@@ -1292,7 +1292,7 @@ public class MSequence extends X_AD_Sequence
 			String website, String prm_USER, String prm_PASSWORD,
 			String prm_TABLE, String prm_ALTKEY, String prm_COMMENT,
 			String prm_PROJECT) {
-		StringBuffer read = new StringBuffer();
+		StringBuilder read = new StringBuilder();
 		int retValue = -1;
 		try {
 			String completeUrl = website + "?" + "USER="

@@ -206,7 +206,6 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		fDescription.setMultiline(true);
 		fDescription.setRows(3);
 		ZKUpdateUtil.setWidth(fDescription, "100%");
-		ZKUpdateUtil.setHeight(fDescription, "100%");
 		rows.appendChild(row);
 		
 		row = new Row();

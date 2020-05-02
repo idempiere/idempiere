@@ -106,7 +106,7 @@ public class ImportGLJournal extends SvrProcess
 		//	Delete Old Imported
 		if (m_DeleteOldImported)
 		{
-			sql = new StringBuilder ("DELETE I_GLJournal ")
+			sql = new StringBuilder ("DELETE FROM I_GLJournal ")
 				  .append("WHERE I_IsImported='Y'").append (clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Impored =" + no);
@@ -115,9 +115,9 @@ public class ImportGLJournal extends SvrProcess
 		//	Set IsActive, Created/Updated
 		sql = new StringBuilder ("UPDATE I_GLJournal ")
 			.append("SET IsActive = COALESCE (IsActive, 'Y'),")
-			.append(" Created = COALESCE (Created, SysDate),")
+			.append(" Created = COALESCE (Created, getDate()),")
 			.append(" CreatedBy = COALESCE (CreatedBy, 0),")
-			.append(" Updated = COALESCE (Updated, SysDate),")
+			.append(" Updated = COALESCE (Updated, getDate()),")
 			.append(" UpdatedBy = COALESCE (UpdatedBy, 0),")
 			.append(" I_ErrorMsg = ' ',")
 			.append(" I_IsImported = 'N' ")
@@ -141,7 +141,7 @@ public class ImportGLJournal extends SvrProcess
 			sql.append(" C_AcctSchema_ID = COALESCE (C_AcctSchema_ID,").append (m_C_AcctSchema_ID).append ("),");
 		if (m_DateAcct != null)
 			sql.append(" DateAcct = COALESCE (DateAcct,").append (DB.TO_DATE(m_DateAcct)).append ("),");
-		sql.append(" Updated = COALESCE (Updated, SysDate) ")
+		sql.append(" Updated = COALESCE (Updated, getDate()) ")
 			  .append("WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Client/DocOrg/Default=" + no);
@@ -182,7 +182,7 @@ public class ImportGLJournal extends SvrProcess
 
 		//	Set DateAcct (mandatory)
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
-			.append("SET DateAcct=SysDate ")
+			.append("SET DateAcct=getDate() ")
 			.append("WHERE DateAcct IS NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
@@ -572,7 +572,7 @@ public class ImportGLJournal extends SvrProcess
 		//AZ Goodwill
 		//BF: 2391401 Remove account balance limitation in Import GL Journal 
 		/*
-		sql = new StringBuffer ("UPDATE I_GLJournal i "
+		sql = new StringBuilder ("UPDATE I_GLJournal i "
 			+ "SET I_ErrorMsg=I_ErrorMsg||'WARN=Check Acct Balance, ' "
 			+ "WHERE ABS(AmtAcctDr-AmtAcctCr)>100000000"	//	100 mio
 			+ " AND I_IsImported<>'Y'").append (clientCheck);
@@ -658,8 +658,8 @@ public class ImportGLJournal extends SvrProcess
 		//	Go through Journal Records
 		sql = new StringBuilder ("SELECT * FROM I_GLJournal ")
 			.append("WHERE I_IsImported='N'").append (clientCheck)
-			.append(" ORDER BY COALESCE(BatchDocumentNo, TO_NCHAR(I_GLJournal_ID)||' '), COALESCE(JournalDocumentNo, ")
-					.append("TO_NCHAR(I_GLJournal_ID)||' '), C_AcctSchema_ID, PostingType, C_DocType_ID, GL_Category_ID, ")
+			.append(" ORDER BY NVL(BatchDocumentNo, I_GLJournal_ID||' '), NVL(JournalDocumentNo, ")
+					.append("I_GLJournal_ID||' '), C_AcctSchema_ID, PostingType, C_DocType_ID, GL_Category_ID, ")
 					.append("C_Currency_ID, TRUNC(DateAcct), Line, I_GLJournal_ID");
 		try
 		{
@@ -842,7 +842,7 @@ public class ImportGLJournal extends SvrProcess
 
 		//	Set Error to indicator to not imported
 		sql = new StringBuilder ("UPDATE I_GLJournal ")
-			.append("SET I_IsImported='N', Updated=SysDate ")
+			.append("SET I_IsImported='N', Updated=getDate() ")
 			.append("WHERE I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0, null, new BigDecimal (no), "@Errors@");

@@ -157,7 +157,7 @@ public class DocWorkflowManager implements DocWorkflowMgr
 			return false;
 		}
 		String keyColumn = keyColumns[0];
-		StringBuffer sql = new StringBuffer("SELECT ")
+		StringBuilder sql = new StringBuilder("SELECT ")
 			.append(keyColumn).append(" FROM ").append(tableName)
 			.append(" WHERE AD_Client_ID=? AND ")		//	#1
 				.append(keyColumn).append("=? AND ")	//	#2

@@ -30,7 +30,7 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_R_IssueKnown (Properties ctx, int R_IssueKnown_ID, String trxName)
@@ -67,7 +67,7 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_R_IssueKnown[")
+      StringBuilder sb = new StringBuilder ("X_R_IssueKnown[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

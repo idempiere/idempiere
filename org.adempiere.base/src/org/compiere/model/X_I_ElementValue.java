@@ -30,7 +30,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_I_ElementValue (Properties ctx, int I_ElementValue_ID, String trxName)
@@ -66,8 +66,8 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_I_ElementValue[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_I_ElementValue[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

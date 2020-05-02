@@ -29,7 +29,7 @@ public class X_C_AddressValidation extends PO implements I_C_AddressValidation, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_AddressValidation (Properties ctx, int C_AddressValidation_ID, String trxName)
@@ -69,8 +69,8 @@ public class X_C_AddressValidation extends PO implements I_C_AddressValidation, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_AddressValidation[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_AddressValidation[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

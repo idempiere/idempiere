@@ -31,7 +31,7 @@ public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_InvoiceTax (Properties ctx, int C_InvoiceTax_ID, String trxName)
@@ -71,7 +71,7 @@ public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_InvoiceTax[")
+      StringBuilder sb = new StringBuilder ("X_C_InvoiceTax[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

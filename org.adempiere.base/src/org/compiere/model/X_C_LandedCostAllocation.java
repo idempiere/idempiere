@@ -32,7 +32,7 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_LandedCostAllocation (Properties ctx, int C_LandedCostAllocation_ID, String trxName)
@@ -73,7 +73,7 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_LandedCostAllocation[")
+      StringBuilder sb = new StringBuilder ("X_C_LandedCostAllocation[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

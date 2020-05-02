@@ -116,7 +116,7 @@ public class WebEnv
 		}
 
 		Enumeration<String> en = config.getInitParameterNames();
-		StringBuffer info = new StringBuffer("Servlet Init Parameter: ")
+		StringBuilder info = new StringBuilder("Servlet Init Parameter: ")
 			.append(config.getServletName());
 		while (en.hasMoreElements())
 		{
@@ -149,7 +149,7 @@ public class WebEnv
 
 		//  Load Environment Variables (serverApps/src/web/WEB-INF/web.xml)
 		Enumeration<String> en = context.getInitParameterNames();
-		StringBuffer info = new StringBuffer("Servlet Context Init Parameters: ")
+		StringBuilder info = new StringBuilder("Servlet Context Init Parameters: ")
 			.append(context.getServletContextName());
 		while (en.hasMoreElements())
 		{

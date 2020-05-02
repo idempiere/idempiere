@@ -77,7 +77,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4161399343247477912L;
+	private static final long serialVersionUID = -2238411612673317537L;
 
 	/**
 	 *	Sort Tab Constructor
@@ -126,9 +126,9 @@ public class ADSortTab extends Panel implements IADTabpanel
 	//
 	SimpleListModel noModel = new SimpleListModel() {
 		/**
-		 *
+		 * 
 		 */
-		private static final long serialVersionUID = -8261235952902938774L;
+		private static final long serialVersionUID = 3488081120336708285L;
 
 		@Override
 		public void addElement(Object obj) {
@@ -680,7 +680,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 			.append(" SET ").append(m_ColumnSortName).append("=0");
 			if (m_ColumnYesNoName != null)
 				sql.append(",").append(m_ColumnYesNoName).append("='N'");
-			sql.append(", Updated=sysdate, UpdatedBy=").append(Env.getAD_User_ID(Env.getCtx()));
+			sql.append(", Updated=getDate(), UpdatedBy=").append(Env.getAD_User_ID(Env.getCtx()));
 			sql.append(" WHERE ").append(m_KeyColumnName).append("=").append(pp.getKey());
 			if (DB.executeUpdate(sql.toString(), null) == 1) {
 				pp.setSortNo(0);
@@ -710,7 +710,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 			.append(" SET ").append(m_ColumnSortName).append("=").append(index);
 			if (m_ColumnYesNoName != null)
 				sql.append(",").append(m_ColumnYesNoName).append("='Y'");
-			sql.append(", Updated=sysdate, UpdatedBy=").append(Env.getAD_User_ID(Env.getCtx()));
+			sql.append(", Updated=getDate(), UpdatedBy=").append(Env.getAD_User_ID(Env.getCtx()));
 			sql.append(" WHERE ").append(m_KeyColumnName).append("=").append(pp.getKey());
 			if (DB.executeUpdate(sql.toString(), null) == 1) {
 				pp.setSortNo(index);
@@ -739,9 +739,9 @@ public class ADSortTab extends Panel implements IADTabpanel
 	 */
 	private class ListElement extends NamePair {
 		/**
-		 *
+		 * 
 		 */
-		private static final long serialVersionUID = -5645910649588308798L;
+		private static final long serialVersionUID = -6319536467438753815L;
 		private int		m_key;
 		private int		m_AD_Client_ID;
 		private int		m_AD_Org_ID;
@@ -1035,6 +1035,12 @@ public class ADSortTab extends Panel implements IADTabpanel
 
 	public ADTreePanel getTreePanel() {
 		return null;
+	}
+
+	@Override
+	public boolean isEnableQuickFormButton() 
+	{
+		return false;
 	}
 }	//ADSortTab
 

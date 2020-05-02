@@ -33,7 +33,7 @@ public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_AllocationLine (Properties ctx, int C_AllocationLine_ID, String trxName)
@@ -72,7 +72,7 @@ public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_AllocationLine[")
+      StringBuilder sb = new StringBuilder ("X_C_AllocationLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -408,7 +408,7 @@ public class PrintDataElement implements Serializable
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer(m_columnName).append("=").append(m_value);
+		StringBuilder sb = new StringBuilder(m_columnName).append("=").append(m_value);
 		if (m_isPKey)
 			sb.append("(PK)");
 		return sb.toString();

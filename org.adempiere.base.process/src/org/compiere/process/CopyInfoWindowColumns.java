@@ -90,19 +90,20 @@ public class CopyInfoWindowColumns extends SvrProcess
 		MInfoWindow sourceInfoWindow = new MInfoWindow(getCtx(), p_source_AD_InfoWindow_ID, get_TrxName());
 		MInfoColumn[] sourceColumns = sourceInfoWindow.getInfoColumns();
 
+		targetInfoWindow.setIsValidateEachColumn(false);
 		for (int i = 0; i < sourceColumns.length; i++)
 		{
-			MInfoColumn colTarget = new MInfoColumn(getCtx(),0, get_TrxName());
+			MInfoColumn colTarget = new MInfoColumn(targetInfoWindow);
 			PO.copyValues(sourceColumns[i], colTarget);
 			colTarget.setAD_InfoWindow_ID (targetInfoWindow.getAD_InfoWindow_ID());
-			colTarget.setAD_Org_ID(targetInfoWindow.getAD_Org_ID());
 			colTarget.setEntityType(targetInfoWindow.getEntityType());
 			colTarget.setIsActive(sourceColumns[i].isActive());
 			colTarget.saveEx(get_TrxName());
 
 			m_count++;
 		}
-
+		targetInfoWindow.validate();
+		targetInfoWindow.saveEx();
 		//
 		return "#" + m_count;
 	}	//	doIt

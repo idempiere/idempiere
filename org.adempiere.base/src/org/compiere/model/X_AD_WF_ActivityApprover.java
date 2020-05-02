@@ -29,7 +29,7 @@ public class X_AD_WF_ActivityApprover extends PO implements I_AD_WF_ActivityAppr
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_WF_ActivityApprover (Properties ctx, int AD_WF_ActivityApprover_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_AD_WF_ActivityApprover extends PO implements I_AD_WF_ActivityAppr
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_WF_ActivityApprover[")
+      StringBuilder sb = new StringBuilder ("X_AD_WF_ActivityApprover[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

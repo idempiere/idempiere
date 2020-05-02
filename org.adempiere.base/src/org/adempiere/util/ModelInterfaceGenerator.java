@@ -533,6 +533,10 @@ public class ModelInterfaceGenerator
 			//
 			return getClass(columnName, displayType, AD_Reference_ID); // recursive call with new parameters
 		}
+		else if (displayType == DisplayType.Button && columnName.endsWith("_ID"))
+		{
+			return Integer.class;
+		}
 		else
 		{
 			return DisplayType.getClass(displayType, true);
@@ -771,9 +775,9 @@ public class ModelInterfaceGenerator
 		if (tableName == null || tableName.trim().length() == 0)
 			throw new IllegalArgumentException("Must specify table name");
 
-		String tableLike = tableName.trim();
-		if (!tableLike.startsWith("'") || !tableLike.endsWith("'"))
-			tableLike = "'" + tableLike + "'";
+		StringBuilder tableLike = new StringBuilder().append(tableName.trim());
+		if (!tableLike.toString().startsWith("'") || !tableLike.toString().endsWith("'"))
+			tableLike = new StringBuilder("'").append(tableLike).append("'");
 
 		StringBuilder entityTypeFilter = new StringBuilder();
 		if (entityType != null && entityType.trim().length() > 0)
@@ -816,6 +820,9 @@ public class ModelInterfaceGenerator
 		String filterViews = null;
 		if (tableLike.toString().contains("%")) {
 			filterViews = "AND (TableName IN ('RV_WarehousePrice','RV_BPartner') OR IsView='N')"; 	//	special views
+		}
+		if (tableLike.toString().equals("'%'")) {
+			filterViews += " AND TableName NOT LIKE 'W|_%' ESCAPE '|'"; 	//	exclude webstore from general model generator
 		}
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT AD_Table_ID ")

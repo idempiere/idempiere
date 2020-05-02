@@ -483,6 +483,19 @@ public interface I_AD_Field
 	/** Get Quick Entry	  */
 	public boolean isQuickEntry();
 
+    /** Column name IsQuickForm */
+    public static final String COLUMNNAME_IsQuickForm = "IsQuickForm";
+
+	/** Set Quick Form.
+	  * Display in Quick Form
+	  */
+	public void setIsQuickForm (boolean IsQuickForm);
+
+	/** Get Quick Form.
+	  * Display in Quick Form
+	  */
+	public boolean isQuickForm();
+
     /** Column name IsReadOnly */
     public static final String COLUMNNAME_IsReadOnly = "IsReadOnly";
 
