@@ -503,7 +503,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         } else if (eventName.equals(Events.ON_CTRL_KEY))
         {
         	KeyEvent keyEvent = (KeyEvent) event;
-        	if (SessionManager.getOpenQuickFormTabs().size() > 0  && !(keyEvent.getKeyCode() == KeyEvent.F2))
+        	if (AbstractADWindowContent.getOpenQuickFormTabs().size() > 0  && !(keyEvent.getKeyCode() == KeyEvent.F2))
         		return;
         	if (LayoutUtils.isReallyVisible(this)) {
 	        	//filter same key event that is too close

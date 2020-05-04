@@ -18,7 +18,6 @@
 package org.adempiere.webui.session;
 
 import java.lang.ref.WeakReference;
-import java.util.LinkedList;
 import java.util.Properties;
 
 import org.adempiere.webui.IWebClient;
@@ -98,43 +97,4 @@ public class SessionManager
     	if (app != null)
     		app.changeRole(user);
     }
-
-	public static boolean registerQuickFormTab(Integer AD_Tab_ID)
-	{
-		LinkedList<Integer> openTabs = getOpenQuickFormTabs();
-
-		if (openTabs.contains(AD_Tab_ID))
-		{
-			return false;
-		}
-
-		openTabs.add(AD_Tab_ID);
-		getSession().setAttribute(SESSION_QUICKFORM, openTabs);
-
-		return true;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static LinkedList<Integer> getOpenQuickFormTabs()
-	{
-		LinkedList<Integer> tabs = (LinkedList<Integer>) getSession().getAttribute(SESSION_QUICKFORM);
-
-		if (tabs == null)
-		{
-			tabs = new LinkedList<Integer>();
-		}
-		return tabs;
-	}
-
-	public static void closeQuickFormTab(Integer AD_Tab_ID)
-	{
-		LinkedList<Integer> openTabs = getOpenQuickFormTabs();
-		openTabs.remove(AD_Tab_ID);
-		getSession().setAttribute(SESSION_QUICKFORM, openTabs);
-	}
-
-	private static Session getSession()
-	{
-		return Executions.getCurrent().getDesktop().getSession();
-	}
 }

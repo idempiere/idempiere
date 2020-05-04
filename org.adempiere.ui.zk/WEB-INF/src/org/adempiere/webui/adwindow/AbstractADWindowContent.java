@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -1113,7 +1114,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		logger.log(Level.FINE, "Invoke Quick Form");
 		// Prevent to open Quick Form if already opened.
-		if (!SessionManager.registerQuickFormTab(getADTab().getSelectedGridTab().getAD_Tab_ID()))
+		if (!AbstractADWindowContent.registerQuickFormTab(getADTab().getSelectedGridTab().getAD_Tab_ID()))
 		{
 			logger.fine("TabID=" + getActiveGridTab().getAD_Tab_ID() + "  is already open.");
 			return;
@@ -3681,5 +3682,59 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		this.currQGV = currQGV;
 	}
-	
+
+	/**
+	 * Close Quick form to remove tabID from the list
+	 * 
+	 * @param AD_Tab_ID
+	 */
+	public static void closeQuickFormTab(Integer AD_Tab_ID)
+	{
+		LinkedList <Integer> openTabs = getOpenQuickFormTabs();
+		openTabs.remove(AD_Tab_ID);
+		getCurrentSession().setAttribute(SessionManager.SESSION_QUICKFORM, openTabs);
+	} // closeQuickFormTab
+
+	/**
+	 * Get list of open quick form tabs
+	 * 
+	 * @return list of tabIDs
+	 */
+	public static LinkedList <Integer> getOpenQuickFormTabs( )
+	{
+		@SuppressWarnings("unchecked")
+		LinkedList <Integer> tabs = (LinkedList <Integer>) getCurrentSession().getAttribute(SessionManager.SESSION_QUICKFORM);
+		if (tabs == null)
+			tabs = new LinkedList <Integer>();
+		return tabs;
+	} // getOpenQuickFormTabs
+
+	/**
+	 * Register Quick form against tabID
+	 * 
+	 * @param AD_Tab_ID
+	 * @return False when already quick form opens for same tab
+	 */
+	public static boolean registerQuickFormTab(Integer AD_Tab_ID)
+	{
+		LinkedList <Integer> openTabs = getOpenQuickFormTabs();
+
+		if (openTabs.contains(AD_Tab_ID))
+		{
+			return false;
+		}
+
+		openTabs.add(AD_Tab_ID);
+		getCurrentSession().setAttribute(SessionManager.SESSION_QUICKFORM, openTabs);
+
+		return true;
+	} // registerQuickFormTab
+
+	/**
+	 * @return {@link Session}
+	 */
+	public static Session getCurrentSession( )
+	{
+		return Executions.getCurrent().getDesktop().getSession();
+	} // getCurrentSession
 }
