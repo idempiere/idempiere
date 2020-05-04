@@ -52,6 +52,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	@author Trifon Trifonov
@@ -106,11 +107,11 @@ public class ModelInterfaceGenerator
 	/** Logger */
 	private static final CLogger log = CLogger.getCLogger(ModelInterfaceGenerator.class);
 
-	public ModelInterfaceGenerator(int AD_Table_ID, String directory, String packageName) {
+	public ModelInterfaceGenerator(int AD_Table_ID, String directory, String packageName, String entityTypeFilter) {
 		this.packageName = packageName;
 		// create column access methods
 		StringBuilder mandatory = new StringBuilder();
-		StringBuilder sb = createColumns(AD_Table_ID, mandatory);
+		StringBuilder sb = createColumns(AD_Table_ID, mandatory, entityTypeFilter);
 
 		// Header
 		String tableName = createHeader(AD_Table_ID, sb, mandatory);
@@ -232,9 +233,10 @@ public class ModelInterfaceGenerator
 	 *
 	 * @param AD_Table_ID table
 	 * @param mandatory   init call for mandatory columns
+	 * @param entityTypeFilter 
 	 * @return set/get method
 	 */
-	private StringBuilder createColumns(int AD_Table_ID, StringBuilder mandatory) {
+	private StringBuilder createColumns(int AD_Table_ID, StringBuilder mandatory, String entityTypeFilter) {
 		StringBuilder sb = new StringBuilder();
 		String sql = "SELECT c.ColumnName, c.IsUpdateable, c.IsMandatory," // 1..3
 				+ " c.AD_Reference_ID, c.AD_Reference_Value_ID, DefaultValue, SeqNo, " // 4..7
@@ -249,6 +251,7 @@ public class ModelInterfaceGenerator
 //				+ " AND c.ColumnName NOT LIKE 'Created%'"
 //				+ " AND c.ColumnName NOT LIKE 'Updated%' "
 				+ " AND c.IsActive='Y'"
+				+ (!Util.isEmpty(entityTypeFilter) ? " AND c." + entityTypeFilter : "")
 				+ " ORDER BY c.ColumnName";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -848,7 +851,7 @@ public class ModelInterfaceGenerator
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				new ModelInterfaceGenerator(rs.getInt(1), directory.toString(), packageName);
+				new ModelInterfaceGenerator(rs.getInt(1), directory.toString(), packageName, entityTypeFilter.toString());
 			}
 		}
 		catch (SQLException e)

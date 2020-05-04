@@ -41,6 +41,7 @@ import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Util;
 
 /**
  *  Generate Model Classes extending PO.
@@ -72,14 +73,15 @@ public class ModelClassGenerator
 	 * 	@param AD_Table_ID table id
 	 * 	@param directory directory
 	 * 	@param packageName package name
+	 *  @param entityTypeFilter
 	 */
-	public ModelClassGenerator (int AD_Table_ID, String directory, String packageName)
+	public ModelClassGenerator (int AD_Table_ID, String directory, String packageName, String entityTypeFilter)
 	{
 		this.packageName = packageName;
 
 		//	create column access methods
 		StringBuilder mandatory = new StringBuilder();
-		StringBuilder sb = createColumns(AD_Table_ID, mandatory);
+		StringBuilder sb = createColumns(AD_Table_ID, mandatory, entityTypeFilter);
 
 		// Header
 		String className = createHeader(AD_Table_ID, sb, mandatory, packageName);
@@ -268,9 +270,10 @@ public class ModelClassGenerator
 	 * 	Create Column access methods
 	 * 	@param AD_Table_ID table
 	 * 	@param mandatory init call for mandatory columns
+	 *  @param entityTypeFilter 
 	 * 	@return set/get method
 	 */
-	private StringBuilder createColumns (int AD_Table_ID, StringBuilder mandatory)
+	private StringBuilder createColumns (int AD_Table_ID, StringBuilder mandatory, String entityTypeFilter)
 	{
 		StringBuilder sb = new StringBuilder();
 		String sql = "SELECT c.ColumnName, c.IsUpdateable, c.IsMandatory,"		//	1..3
@@ -281,6 +284,7 @@ public class ModelClassGenerator
 			+ "WHERE c.AD_Table_ID=?"
 			+ " AND c.ColumnName NOT IN ('AD_Client_ID', 'AD_Org_ID', 'IsActive', 'Created', 'CreatedBy', 'Updated', 'UpdatedBy')"
 			+ " AND c.IsActive='Y'"
+			+ (!Util.isEmpty(entityTypeFilter) ? " AND c." + entityTypeFilter : "")
 			+ " ORDER BY c.ColumnName";
 		boolean isKeyNamePairCreated = false; // true if the method "getKeyNamePair" is already generated
 		PreparedStatement pstmt = null;
@@ -930,7 +934,7 @@ public class ModelClassGenerator
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				new ModelClassGenerator(rs.getInt(1), directory.toString(), packageName);
+				new ModelClassGenerator(rs.getInt(1), directory.toString(), packageName, entityTypeFilter.toString());
 			}
 		}
 		catch (SQLException e)
