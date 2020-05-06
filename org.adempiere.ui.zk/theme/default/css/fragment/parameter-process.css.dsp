@@ -4,10 +4,11 @@ twwo css make height of window always 100% its parent,
 it fix some issue relate resize, but can make side effect
 when detect side effect, fix to only apply for parameter window*/
 .z-window.z-window-noborder.z-window-noheader.z-window-embedded,
-.z-window.z-window-noborder.z-window-noheader.z-window-embedded .z-window-content {
+.z-window.z-window-noborder.z-window-noheader.z-window-embedded .z-window-content,
+.main-parameter-layout {
 	height: 100%;
 }
-.main-parameter-layout{
+.process-modal-dialog .main-parameter-layout{
 	height: auto;
 	flex-basis: auto;
 }
