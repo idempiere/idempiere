@@ -1368,7 +1368,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 						+ tableName + " not found",
 						new QName("readData"));
 	    	PO po = table.getPO(recordID, trxName);
-	    	if (po == null) {
+	    	if (po == null || (po.getAD_Client_ID() > 0 && po.getAD_Client_ID() != Env.getAD_Client_ID(ctx))) {
 	    		resp.setSuccess(false);
 	        	resp.setRowCount(cnt);
 	        	resp.setNumRows(cnt);
