@@ -25,7 +25,6 @@
 		<module>org.adempiere.replication.server</module>
 		<module>org.adempiere.report.jasper.library</module>
 		<module>org.adempiere.report.jasper</module>
-		<module>org.adempiere.report.jasper.webapp</module>
 		<module>org.adempiere.server</module>		
 		<module>org.adempiere.ui</module>
 		<module>org.adempiere.ui.zk</module>

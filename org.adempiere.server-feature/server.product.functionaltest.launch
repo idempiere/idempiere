@@ -353,7 +353,6 @@
         <setEntry value="org.adempiere.replication.server@default:default"/>
         <setEntry value="org.adempiere.replication@default:default"/>
         <setEntry value="org.adempiere.report.jasper.library@default:false"/>
-        <setEntry value="org.adempiere.report.jasper.webapp@default:default"/>
         <setEntry value="org.adempiere.report.jasper@default:default"/>
         <setEntry value="org.adempiere.server@default:true"/>
         <setEntry value="org.adempiere.ui.zk@default:true"/>
