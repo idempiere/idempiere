@@ -332,6 +332,9 @@ public class ReportStarter implements ProcessCall, ClientProcess
 					baos.write(buf, 0, s);
 	
 	    		String hash = new String(baos.toByteArray());
+	    		int posSpace = hash.indexOf(" ");
+	    		if (posSpace > 0)
+	    			hash = hash.substring(0, posSpace);
 	    		return hash;
 			}
     	} catch (IOException e) {
