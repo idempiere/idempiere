@@ -205,6 +205,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	protected StatusBar statusBarQF;
 
 	/**
+	 * Maintain no of quick form tabs open
+	 */
+	ArrayList <Integer>			quickFormOpenTabs	= new ArrayList <Integer>();
+
+	/**
 	 * Constructor
 	 * @param ctx
 	 * @param windowNo
@@ -256,7 +261,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     private void initComponents()
     {
         /** Initalise toolbar */
-        toolbar = new ADWindowToolbar(getWindowNo());
+        toolbar = new ADWindowToolbar(this, getWindowNo());
         toolbar.setId("windowToolbar");
         toolbar.addListener(this);
 
@@ -1113,7 +1118,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		logger.log(Level.FINE, "Invoke Quick Form");
 		// Prevent to open Quick Form if already opened.
-		if (!SessionManager.registerQuickFormTab(getADTab().getSelectedGridTab().getAD_Tab_ID()))
+		if (!this.registerQuickFormTab(getADTab().getSelectedGridTab().getAD_Tab_ID()))
 		{
 			logger.fine("TabID=" + getActiveGridTab().getAD_Tab_ID() + "  is already open.");
 			return;
@@ -3681,5 +3686,42 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		this.currQGV = currQGV;
 	}
-	
+
+	/**
+	 * Close Quick form to remove tabID from the list
+	 * 
+	 * @param AD_Tab_ID
+	 */
+	public void closeQuickFormTab(Integer AD_Tab_ID)
+	{
+		quickFormOpenTabs.remove(AD_Tab_ID);
+	} // closeQuickFormTab
+
+	/**
+	 * Get list of open quick form tabs
+	 * 
+	 * @return list of tabIDs
+	 */
+	public ArrayList <Integer> getOpenQuickFormTabs( )
+	{
+		return quickFormOpenTabs;
+	} // getOpenQuickFormTabs
+
+	/**
+	 * Register Quick form against tabID
+	 * 
+	 * @param AD_Tab_ID
+	 * @return False when already quick form opens for same tab
+	 */
+	public boolean registerQuickFormTab(Integer AD_Tab_ID)
+	{
+		if (quickFormOpenTabs.contains(AD_Tab_ID))
+		{
+			return false;
+		}
+
+		quickFormOpenTabs.add(AD_Tab_ID);
+
+		return true;
+	} // registerQuickFormTab
 }

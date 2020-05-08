@@ -92,10 +92,14 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 
 	private GridTab m_gridTab;
 
+	private AbstractADWindowContent windowContent;
+
 	/**
-	 * 
+	 * @param windowContent 
+	 * @param windowNo
 	 */
-	public BreadCrumb(int windowNo) {
+	public BreadCrumb(AbstractADWindowContent windowContent, int windowNo) {
+		this.windowContent = windowContent;
 		this.windowNo = windowNo;
 		layout = new Hbox();
 		layout.setPack("start");
@@ -325,7 +329,11 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 			}
 		} else if (event.getName().equals(Events.ON_CTRL_KEY)) {
 			if (!LayoutUtils.isReallyVisible(this)) return;
-			
+
+			// If Quick form is opened then prevent navigation keyEvent
+			if (windowContent != null && windowContent.getOpenQuickFormTabs().size() > 0)
+				return;
+
 			KeyEvent keyEvent = (KeyEvent) event;
 			if (keyEvent.isAltKey()) {
 				if (keyEvent.getKeyCode() == KeyEvent.LEFT) {
