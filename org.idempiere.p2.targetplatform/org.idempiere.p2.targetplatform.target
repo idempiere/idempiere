@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target name="idempiere-200501" sequenceNumber="109">
+<target name="idempiere-200508" sequenceNumber="110">
 <locations>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<repository location="https://idempiere.github.io/binary.file/p2.maven/org.idempiere.webservice.client-p2-R20190412"/>
@@ -812,30 +812,30 @@
 		<unit id="stax2-api.source" version="4.2.0"/>
 	</location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		<repository location="https://idempiere.github.io/binary.file/p2.zk/9.0.1"/>
-		<unit id="zcommon" version="9.0.1"/>
-		<unit id="zcommon.source" version="9.0.1"/>
-		<unit id="zel" version="9.0.1"/>
-		<unit id="zel.source" version="9.0.1"/>
-		<unit id="zhtml" version="9.0.1"/>
-		<unit id="zhtml.source" version="9.0.1"/>
-		<unit id="zjavassist" version="9.0.1"/>
-		<unit id="zk" version="9.0.1"/>
-		<unit id="zk.source" version="9.0.1"/>
-		<unit id="zkbind" version="9.0.1"/>
-		<unit id="zkbind.source" version="9.0.1"/>
-		<unit id="zkplus" version="9.0.1"/>
-		<unit id="zkplus-legacy" version="9.0.1"/>
-		<unit id="zkplus-legacy.source" version="9.0.1"/>
-		<unit id="zkplus.source" version="9.0.1"/>
-		<unit id="zkwebfragment" version="9.0.1"/>
-		<unit id="zkwebfragment.source" version="9.0.1"/>
-		<unit id="zul" version="9.0.1"/>
-		<unit id="zul.source" version="9.0.1"/>
-		<unit id="zweb" version="9.0.1"/>
-		<unit id="zweb-dsp" version="9.0.1"/>
-		<unit id="zweb-dsp.source" version="9.0.1"/>
-		<unit id="zweb.source" version="9.0.1"/>
+		<repository location="https://idempiere.github.io/binary.file/p2.zk/9.0.1.2"/>
+		<unit id="zcommon" version="9.0.1.2"/>
+		<unit id="zcommon.source" version="9.0.1.2"/>
+		<unit id="zel" version="9.0.1.2"/>
+		<unit id="zel.source" version="9.0.1.2"/>
+		<unit id="zhtml" version="9.0.1.2"/>
+		<unit id="zhtml.source" version="9.0.1.2"/>
+		<unit id="zjavassist" version="9.0.1.2"/>
+		<unit id="zk" version="9.0.1.2"/>
+		<unit id="zk.source" version="9.0.1.2"/>
+		<unit id="zkbind" version="9.0.1.2"/>
+		<unit id="zkbind.source" version="9.0.1.2"/>
+		<unit id="zkplus" version="9.0.1.2"/>
+		<unit id="zkplus-legacy" version="9.0.1.2"/>
+		<unit id="zkplus-legacy.source" version="9.0.1.2"/>
+		<unit id="zkplus.source" version="9.0.1.2"/>
+		<unit id="zkwebfragment" version="9.0.1.2"/>
+		<unit id="zkwebfragment.source" version="9.0.1.2"/>
+		<unit id="zul" version="9.0.1.2"/>
+		<unit id="zul.source" version="9.0.1.2"/>
+		<unit id="zweb" version="9.0.1.2"/>
+		<unit id="zweb-dsp" version="9.0.1.2"/>
+		<unit id="zweb-dsp.source" version="9.0.1.2"/>
+		<unit id="zweb.source" version="9.0.1.2"/>
 	</location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
