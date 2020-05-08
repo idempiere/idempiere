@@ -52,6 +52,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	@author Trifon Trifonov
@@ -106,11 +107,18 @@ public class ModelInterfaceGenerator
 	/** Logger */
 	private static final CLogger log = CLogger.getCLogger(ModelInterfaceGenerator.class);
 
-	public ModelInterfaceGenerator(int AD_Table_ID, String directory, String packageName) {
+	/**
+	 * 
+	 * @param AD_Table_ID
+	 * @param directory
+	 * @param packageName
+	 * @param entityTypeFilter entity type filter for column
+	 */
+	public ModelInterfaceGenerator(int AD_Table_ID, String directory, String packageName, String entityTypeFilter) {
 		this.packageName = packageName;
 		// create column access methods
 		StringBuilder mandatory = new StringBuilder();
-		StringBuilder sb = createColumns(AD_Table_ID, mandatory);
+		StringBuilder sb = createColumns(AD_Table_ID, mandatory, entityTypeFilter);
 
 		// Header
 		String tableName = createHeader(AD_Table_ID, sb, mandatory);
@@ -232,9 +240,10 @@ public class ModelInterfaceGenerator
 	 *
 	 * @param AD_Table_ID table
 	 * @param mandatory   init call for mandatory columns
+	 * @param entityTypeFilter
 	 * @return set/get method
 	 */
-	private StringBuilder createColumns(int AD_Table_ID, StringBuilder mandatory) {
+	private StringBuilder createColumns(int AD_Table_ID, StringBuilder mandatory, String entityTypeFilter) {
 		StringBuilder sb = new StringBuilder();
 		String sql = "SELECT c.ColumnName, c.IsUpdateable, c.IsMandatory," // 1..3
 				+ " c.AD_Reference_ID, c.AD_Reference_Value_ID, DefaultValue, SeqNo, " // 4..7
@@ -249,6 +258,7 @@ public class ModelInterfaceGenerator
 //				+ " AND c.ColumnName NOT LIKE 'Created%'"
 //				+ " AND c.ColumnName NOT LIKE 'Updated%' "
 				+ " AND c.IsActive='Y'"
+				+ (!Util.isEmpty(entityTypeFilter) ? " AND c." + entityTypeFilter : "")
 				+ " ORDER BY c.ColumnName";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -759,8 +769,9 @@ public class ModelInterfaceGenerator
 	 * @param packageName
 	 * @param entityType
 	 * @param tableLike
+	 * @param columnEntityType
 	 */
-	public static void generateSource(String sourceFolder, String packageName, String entityType, String tableName)
+	public static void generateSource(String sourceFolder, String packageName, String entityType, String tableName, String columnEntityType)
 	{
 		if (sourceFolder == null || sourceFolder.trim().length() == 0)
 			throw new IllegalArgumentException("Must specify source folder");
@@ -840,6 +851,25 @@ public class ModelInterfaceGenerator
 		sql.append(" ORDER BY TableName");
 
 		//
+		StringBuilder columnFilterBuilder = new StringBuilder();
+		if (!Util.isEmpty(columnEntityType, true))
+		{
+			columnFilterBuilder.append("EntityType IN (");
+			StringTokenizer tokenizer = new StringTokenizer(columnEntityType, ",");
+			int i = 0;
+			while(tokenizer.hasMoreTokens()) {
+				StringBuilder token = new StringBuilder().append(tokenizer.nextToken().trim());
+				if (!token.toString().startsWith("'") || !token.toString().endsWith("'"))
+					token = new StringBuilder("'").append(token).append("'");
+				if (i > 0)
+					columnFilterBuilder.append(",");
+				columnFilterBuilder.append(token);
+				i++;
+			}
+			columnFilterBuilder.append(")");
+		}
+		String columnFilter = columnFilterBuilder.length() > 0 ? columnFilterBuilder.toString() : null;
+		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -848,7 +878,7 @@ public class ModelInterfaceGenerator
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				new ModelInterfaceGenerator(rs.getInt(1), directory.toString(), packageName);
+				new ModelInterfaceGenerator(rs.getInt(1), directory.toString(), packageName, columnFilter);
 			}
 		}
 		catch (SQLException e)
