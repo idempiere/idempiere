@@ -38,15 +38,18 @@ public class ModelGeneratorApplication implements IApplication {
 		Map<?, ?> args = context.getArguments();
 		// IDEMPIERE-1686 - GenerateModel does not take commandline arguments
 		String commandlineArgs[] = (String[]) args.get("application.args");
-		if (commandlineArgs.length == 4) {
+		if (commandlineArgs.length >= 4) {
 			String folder = commandlineArgs[0];
 			String packageName = commandlineArgs[1];
 			String entityType = commandlineArgs[2];
 			String tableName = commandlineArgs[3];
-			ModelInterfaceGenerator.generateSource(folder, packageName, entityType, tableName);
-			ModelClassGenerator.generateSource(folder, packageName, entityType, tableName);
+			String columnEntityType = null;
+			if (commandlineArgs.length >= 5) 
+				columnEntityType = commandlineArgs[4];
+			ModelInterfaceGenerator.generateSource(folder, packageName, entityType, tableName, columnEntityType);
+			ModelClassGenerator.generateSource(folder, packageName, entityType, tableName, columnEntityType);
 		} else if (commandlineArgs.length != 0) {
-			System.out.println("usage: ModelGenerator folder packageName entityType tableName");
+			System.out.println("usage: ModelGenerator folder packageName tableEntityType tableName columnEntityType");
 		} else {
 			ModelGeneratorDialog dialog = new ModelGeneratorDialog();
 			dialog.setModal(true);
