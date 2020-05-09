@@ -1823,7 +1823,6 @@ public final class DB
 	 * 	@param trxName optional Transaction Name
 	 *  @return next no
 	 */
-	@SuppressWarnings("deprecation")
 	public static int getNextID (int AD_Client_ID, String TableName, String trxName)
 	{
 		return MSequence.getNextID (AD_Client_ID, TableName, trxName); // it is ok to call deprecated method here

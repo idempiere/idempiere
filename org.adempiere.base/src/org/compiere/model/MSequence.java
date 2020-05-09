@@ -62,9 +62,6 @@ public class MSequence extends X_AD_Sequence
 	
 	private static final String NoYearNorMonth = "-";
 
-	/**
-	 *  @deprecated please use DB.getNextID (int, String, String)
-	 */
 	public static int getNextID (int AD_Client_ID, String TableName)
 	{
 		return getNextID(AD_Client_ID, TableName, null);
@@ -75,10 +72,8 @@ public class MSequence extends X_AD_Sequence
 	 *	Get next number for Key column = 0 is Error.
 	 *  @param AD_Client_ID client
 	 *  @param TableName table name
-	 * 	@param trxName deprecated (NOT USED!!)
+	 * 	@param trxName
 	 *  @return next no or (-1=not found, -2=error)
-	 *  
-	 *  @deprecated please use DB.getNextID (int, String, String)
 	 */
 	public static int getNextID (int AD_Client_ID, String TableName, String trxName)
 	{
