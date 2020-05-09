@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
+import org.compiere.model.MReportView;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_ReportView;
@@ -726,10 +727,9 @@ public class DataEngine
 		}	//	order by
 		else if (format.getAD_ReportView_ID() > 0)
 		{
-			X_AD_ReportView reportView = (X_AD_ReportView) MTable.get(Env.getCtx(), X_AD_ReportView.Table_ID)
-					.getPO(format.getAD_ReportView_ID(), m_trxName);
+			X_AD_ReportView reportView = MReportView.get(Env.getCtx(),format.getAD_ReportView_ID());
 
-			if (!Util.isEmpty(reportView.getOrderByClause(), true))
+			if (reportView!=null && !Util.isEmpty(reportView.getOrderByClause(), true))
 			{
 				finalSQL.append(" ORDER BY ").append(reportView.getOrderByClause());
 			}
