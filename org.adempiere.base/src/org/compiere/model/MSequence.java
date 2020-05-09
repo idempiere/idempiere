@@ -28,6 +28,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -35,6 +36,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.db.CConnection;
+import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -100,8 +102,6 @@ public class MSequence extends X_AD_Sequence
 
 		if (TableName == null || TableName.length() == 0)
 			throw new IllegalArgumentException("TableName missing");
-		// Get the table
-		MTable table = MTable.get(Env.getCtx(), TableName);
 
 		int retValue = -1;
 
@@ -126,7 +126,7 @@ public class MSequence extends X_AD_Sequence
 		}
 
 		boolean queryProjectServer = false;
-		if (table.getColumnIndex("EntityType") >= 0)
+		if (isTableWithEntityType(TableName))
 			queryProjectServer = true;
 		if (!queryProjectServer && MSequence.Table_Name.equalsIgnoreCase(TableName))
 			queryProjectServer = true;
@@ -1375,6 +1375,19 @@ public class MSequence extends X_AD_Sequence
 		return false;
 	}
 	
+	private static CCache<String,String> tablesWithEntityType = new CCache<String,String>(Table_Name, "TablesWithEntityType", 60, 0, false, 0);
+	
+	private synchronized static boolean isTableWithEntityType(String tableName) {
+		if (tablesWithEntityType == null || tablesWithEntityType.size() == 0) {
+			final String sql = "SELECT TableName FROM AD_Table WHERE AD_Table_ID IN (SELECT AD_Table_ID FROM AD_Column WHERE ColumnName='EntityType') ORDER BY TableName";
+			List<List<Object>> list = DB.getSQLArrayObjectsEx(null, sql);
+			for (List<Object> row : list) {
+				tablesWithEntityType.put((String)row.get(0), "");
+			}
+		}
+		return (tablesWithEntityType.get(tableName) != null);
+	}
+
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if (isStartNewMonth() && !isStartNewYear())
