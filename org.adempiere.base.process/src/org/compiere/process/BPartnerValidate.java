@@ -74,13 +74,13 @@ public class BPartnerValidate extends SvrProcess
 	{
 		if (log.isLoggable(Level.INFO)) log.info("C_BPartner_ID=" + p_C_BPartner_ID + ", C_BP_Group_ID=" + p_C_BP_Group_ID); 
 		if (p_C_BPartner_ID == 0 && p_C_BP_Group_ID == 0)
-			throw new AdempiereUserError ("No Business Partner/Group selected");
+			throw new AdempiereUserError (Msg.getMsg(getCtx(), "BPartnerGroupNotSelected"));
 		
 		if (p_C_BP_Group_ID == 0)
 		{
 			MBPartner bp = new MBPartner (getCtx(), p_C_BPartner_ID, get_TrxName());
 			if (bp.get_ID() == 0)
-				throw new AdempiereUserError ("Business Partner not found - C_BPartner_ID=" + p_C_BPartner_ID);
+				throw new AdempiereUserError (Msg.getMsg(getCtx(), "BPartnerNotFound") + " - C_BPartner_ID=" + p_C_BPartner_ID);
 			checkBP (bp);
 		}
 		else
