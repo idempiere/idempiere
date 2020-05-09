@@ -1252,10 +1252,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		layout = new Borderlayout();
 		ZKUpdateUtil.setWidth(layout, "100%");
 		ZKUpdateUtil.setHeight(layout, "100%");
-        if (!isLookup())
-        {
-        	layout.setStyle("position: relative");
-        }
         this.appendChild(layout);
 		
         if (isLookup())
@@ -1269,8 +1265,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         North north = new North();
         north.setCollapsible(true);
         north.setSplittable(true);
-        north.setAutoscroll(true);
+        north.setAutoscroll(true);                
         LayoutUtils.addSlideSclass(north);
+        ZKUpdateUtil.setVflex(north, "min");
         layout.appendChild(north);
         renderParameterPane(north);
         

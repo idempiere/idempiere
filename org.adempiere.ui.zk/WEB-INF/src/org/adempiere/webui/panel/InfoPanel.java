@@ -304,7 +304,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			setBorder("none");
 			ZKUpdateUtil.setWidth(this, "100%");
 			ZKUpdateUtil.setHeight(this, "100%");
-			setStyle("position: absolute");
 		}
 
 		confirmPanel = new ConfirmPanel(true, true, true, true, true, true);  // Elaine 2008/12/16 
