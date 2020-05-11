@@ -581,6 +581,11 @@ public class MLookupFactory
 			realSQL.append(" ORDER BY 3");
 
 		if (s_log.isLoggable(Level.FINEST)) s_log.finest("AD_Reference_Value_ID=" + AD_Reference_Value_ID + " - " + realSQL);
+
+		int zoomWinID = Env.getZoomWindowID(MTable.get(ctx, TableName).getAD_Table_ID(), 0, WindowNo);
+		if (zoomWinID > 0)
+			ZoomWindow = zoomWinID;
+
 		if (overrideZoomWindow > 0)
 		{
 			ZoomWindow = overrideZoomWindow;
@@ -785,6 +790,10 @@ public class MLookupFactory
 		MTable table = MTable.get(ctx, TableName);
 		ZoomWindow = table.getAD_Window_ID();
 		ZoomWindowPO = table.getPO_Window_ID();
+
+		int zoomWinID = Env.getZoomWindowID(table.getAD_Table_ID(), 0, WindowNo);
+		if (zoomWinID > 0)
+			ZoomWindow = zoomWinID;
 
 		StringBuilder realSQL = new StringBuilder("SELECT ");
 		realSQL.append(TableName).append(".").append(KeyColumn).append(",NULL,");
