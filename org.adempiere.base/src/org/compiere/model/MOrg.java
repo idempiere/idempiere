@@ -35,7 +35,7 @@ public class MOrg extends X_AD_Org
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5604686137606338725L;
+	private static final long serialVersionUID = -2193700173272559271L;
 
 
 	/**
@@ -65,10 +65,22 @@ public class MOrg extends X_AD_Org
 	 */
 	public static MOrg get (Properties ctx, int AD_Org_ID)
 	{
+		return get(ctx, AD_Org_ID, null);
+	}	//	get
+
+	/**
+	 * 	Get Org from Cache
+	 *	@param ctx context
+	 *	@param AD_Org_ID id
+	 *	@param trxName transaction name
+	 *	@return MOrg
+	 */
+	public static MOrg get (Properties ctx, int AD_Org_ID, String trxName)
+	{
 		MOrg retValue = s_cache.get (AD_Org_ID);
 		if (retValue != null)
 			return retValue;
-		retValue = new MOrg (ctx, AD_Org_ID, null);
+		retValue = new MOrg (ctx, AD_Org_ID, trxName);
 		if (retValue.get_ID () != 0)
 			s_cache.put (AD_Org_ID, retValue);
 		return retValue;
