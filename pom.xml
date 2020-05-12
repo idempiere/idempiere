@@ -53,6 +53,7 @@
 		<module>org.idempiere.webservices.client-feature</module>
 		<module>org.idempiere.p2</module>
 		<module>org.idempiere.javadoc</module>
+		<module>org.idempiere.test</module>
 		<module>${idempiere.target}</module>
 	</modules>
 
