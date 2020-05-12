@@ -396,6 +396,11 @@
 					<artifactId>maven-dependency-plugin</artifactId>
 					<version>${maven.dependency.version}</version>
 				</plugin>
+				<plugin>
+				  <groupId>org.eclipse.tycho</groupId>
+				  <artifactId>tycho-surefire-plugin</artifactId>
+				  <version>${tycho.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
