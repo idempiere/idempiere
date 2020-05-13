@@ -729,5 +729,16 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 			return true;
 		return super.is_Changed();
 	}
+
+	@Override
+	public MPrintFormatItem clone() {
+		MPrintFormatItem clone = (MPrintFormatItem) super.clone();
+		clone.m_columnName = null;
+		clone.m_newTranslationLabel = null;
+		clone.m_translationLabel = null;
+		clone.m_translationSuffix = null;
+		clone.m_translationLabelChanged = false;
+		return clone;
+	}
 	
 }	//	MPrintFormatItem

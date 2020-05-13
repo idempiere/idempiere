@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -266,6 +268,8 @@ public abstract class PO
 
 	/** Trifon - Indicates that this record is created by replication functionality.*/
 	private boolean m_isReplication = false;
+	
+	private boolean m_isReadonly = false;
 
 	/** Access Level S__ 100	4	System info			*/
 	public static final int ACCESSLEVEL_SYSTEM = 4;
@@ -708,6 +712,7 @@ public abstract class PO
 	 */
 	protected final boolean set_Value (String ColumnName, Object value, boolean checkWritable)
 	{
+		checkReadonly();
 		if (value instanceof String && ColumnName.equals("WhereClause")
 			&& value.toString().toUpperCase().indexOf("=NULL") != -1)
 			log.warning("Invalid Null Value - " + ColumnName + "=" + value);
@@ -766,6 +771,7 @@ public abstract class PO
 	 */
 	protected final boolean set_Value (int index, Object value, boolean checkWritable)
 	{
+		checkReadonly();
 		if (index < 0 || index >= get_ColumnCount())
 		{
 			log.log(Level.WARNING, "Index invalid - " + index);
@@ -1039,6 +1045,7 @@ public abstract class PO
 	 */
 	public final boolean set_CustomColumnReturningBoolean (String columnName, Object value)
 	{
+		checkReadonly();
 		// [ 1845793 ] PO.set_CustomColumn not updating correctly m_newValues
 		// this is for columns not in PO - verify and call proper method if exists
 		int poIndex = get_ColumnIndex(columnName);
@@ -2030,6 +2037,7 @@ public abstract class PO
 	 */
 	public boolean save()
 	{
+		checkReadonly();		
 		checkValidContext();
 		CLogger.resetLast();
 		boolean newRecord = is_new();	//	save locally as load resets
@@ -2386,6 +2394,7 @@ public abstract class PO
 
 	public void saveReplica (boolean isFromReplication) throws AdempiereException
 	{
+		checkReadonly();
 		setReplication(isFromReplication);
 		saveEx();
 	}
@@ -3213,6 +3222,7 @@ public abstract class PO
 	 */
 	public boolean delete (boolean force)
 	{
+		checkReadonly();
 		checkValidContext();
 		CLogger.resetLast();
 		if (is_new())
@@ -4236,6 +4246,8 @@ public abstract class PO
 	 */
 	public void set_TrxName (String trxName)
 	{
+		if (trxName != null)
+			checkReadonly();
 		m_trxName = trxName;
 	}	//	setTrx
 
@@ -4774,9 +4786,48 @@ public abstract class PO
 		return columnName;
 	}
 	
+	/**
+	 * @return true if class has custom clone method and is safe to clone
+	 */
+	public boolean isSafeToClone() {
+		Class<?> clazz = this.getClass();
+		boolean override = true;
+		if (!clazz.getName().equals(PO.class.getName()) && !clazz.getSuperclass().getName().equals(PO.class.getName())) {
+			try {
+				Method method = clazz.getDeclaredMethod("clone");
+				if (method.getDeclaringClass() != clazz) {
+					override = false;
+				}
+			} catch (NoSuchMethodException | SecurityException e) {
+				override = false;
+			}
+			
+			//if subclass doesn't override clone, it is only safe to use PO.clone method
+			//if subclass has no instance variables
+			if (!override) {
+				Class<?> tocheck = clazz;
+				while (!tocheck.getSuperclass().getName().equals(PO.class.getName())) {
+					Field[] fields = tocheck.getDeclaredFields();
+					if (fields != null && fields.length > 0)
+						return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		PO clone = (PO) super.clone();
+	public PO clone() {
+		if (!isSafeToClone()) {
+			throw new UnsupportedOperationException(getClass().getName() + " does not override clone() method");
+		}
+		
+		PO clone;
+		try {
+			clone = (PO) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
 		clone.m_trxName = null;
 		if (m_custom != null)
 		{
@@ -4807,11 +4858,24 @@ public abstract class PO
 				clone.m_IDs[i] = m_IDs[i];
 			}
 		}
+		if (m_attributes != null)
+		{
+			clone.m_attributes = new HashMap<String, Object>();
+			clone.m_attributes.putAll(m_attributes);
+		}
 		clone.p_ctx = Env.getCtx();
 		clone.m_doc = null;
 		clone.m_lobInfo = null;
 		clone.m_attachment = null;
 		clone.m_isReplication = false;
+		clone.m_setErrors = new ValueNamePair[m_setErrors.length];
+		clone.m_setErrorsFilled = false;
+		if (s_acctColumns != null)
+		{
+			clone.s_acctColumns = new ArrayList<String>();
+			clone.s_acctColumns.addAll(s_acctColumns);
+		}
+		clone.m_isReadonly = false;
 		return clone;
 	}
 
@@ -4823,6 +4887,7 @@ public abstract class PO
 	}
 	
 	public void set_Attribute(String columnName, Object value) {
+		checkReadonly();
 		if (m_attributes == null)
 			m_attributes = new HashMap<String, Object>();
 		m_attributes.put(columnName, value);
@@ -4838,6 +4903,22 @@ public abstract class PO
 		return m_attributes;
 	}
 
+	/**
+	 * Mark PO as Readonly
+	 */
+	public void markReadonly() {
+		m_isReadonly = true;
+		m_trxName = null;
+	}
+	
+	/**
+	 * 
+	 * @return true if PO is readonly, false otherwise
+	 */
+	public boolean is_Readonly() {
+		return m_isReadonly;
+	}
+	
 	private void validateUniqueIndex()
 	{
 		ValueNamePair ppE = CLogger.retrieveError();
@@ -4882,4 +4963,12 @@ public abstract class PO
 			throw new AdempiereException("Context lost");
 	}
 
+	private void checkReadonly() 
+	{
+		if (is_Readonly()) 
+		{
+			throw new UnsupportedOperationException("Readonly");
+		}
+	}
+	
 }   //  PO

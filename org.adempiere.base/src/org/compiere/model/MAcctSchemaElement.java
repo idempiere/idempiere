@@ -28,6 +28,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *  Account Schema Element Object
@@ -59,7 +60,7 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 	{
 		Integer key = Integer.valueOf(as.getC_AcctSchema_ID());
 		MAcctSchemaElement[] retValue = (MAcctSchemaElement[]) s_cache.get (key);
-		if (retValue != null)
+		if (Util.isEmpty(as.get_TrxName()) && retValue != null)
 			return retValue;
 
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("C_AcctSchema_ID=" + as.getC_AcctSchema_ID());
@@ -81,7 +82,8 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 		
 		retValue = new MAcctSchemaElement[list.size()];
 		list.toArray(retValue);
-		s_cache.put (key, retValue);
+		if (Util.isEmpty(as.get_TrxName()))
+			s_cache.put (key, retValue);
 		return retValue;
 	}   //  getAcctSchemaElements
 

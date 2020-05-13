@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.Util;
 
 /**
  *	Cash Book Model
@@ -59,10 +60,10 @@ public class MCashBook extends X_C_CashBook
 	{
 		Integer key = Integer.valueOf(C_CashBook_ID);
 		MCashBook retValue = (MCashBook) s_cache.get (key);
-		if (retValue != null)
+		if (Util.isEmpty(trxName) && retValue != null)
 			return retValue;
 		retValue = new MCashBook (ctx, C_CashBook_ID, trxName);
-		if (retValue.get_ID () != 0)
+		if (retValue.get_ID () != 0 && Util.isEmpty(trxName))
 			s_cache.put (key, retValue);
 		return retValue;
 	}	//	get

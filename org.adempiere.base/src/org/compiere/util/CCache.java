@@ -19,6 +19,7 @@ package org.compiere.util;
 import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.adempiere.base.Service;
+import org.compiere.model.PO;
 import org.idempiere.distributed.ICacheService;
 
 /**
@@ -291,10 +293,20 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/**
 	 *	@see java.util.Map#get(java.lang.Object)
 	 */
+	@Override
 	public V get(Object key)
 	{
 		expire();
-		return cache.get(key);
+		V value = cache.get(key);
+		if (value != null && value instanceof PO)
+		{
+			PO po = (PO) value;
+			if (!Util.isEmpty(po.get_TrxName())) {
+				remove(key);
+				value = null;
+			}
+		}
+		return value;
 	}	//	get
 
 	/**
@@ -313,6 +325,43 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 			return null;
 		} else if (!nullList.isEmpty()) {
 			nullList.remove(key);
+		}
+		if (value != null && value instanceof PO) {
+			PO po = (PO) value;
+			if (!Util.isEmpty(po.get_TrxName())) {
+				return null;
+			}
+			po.markReadonly();
+		} else if (value != null && value instanceof Collection) {
+			Collection<?> collection = (Collection<?>) value;
+			for(Object obj : collection) {
+				if (obj == null)
+		        	continue;
+				if (obj instanceof PO) {
+					PO po = (PO)obj;
+					if (!Util.isEmpty(po.get_TrxName())) {
+						return null;
+					}
+					po.markReadonly();
+				} else {
+					break;
+				}
+			}
+		} else if (value != null && value.getClass().isArray()) {
+			for(int i=0; i<Array.getLength(value); i++){
+		        Object obj = Array.get(value, i);
+		        if (obj == null)
+		        	continue;
+		        if (obj instanceof PO) {
+		        	PO po = (PO)obj;
+		        	if (!Util.isEmpty(po.get_TrxName())) {
+						return null;
+					}
+					po.markReadonly();
+		        } else {
+		        	break;
+		        }
+		    }
 		}
 		return cache.put (key, value);
 	}	// put

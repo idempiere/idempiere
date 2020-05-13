@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,7 +38,11 @@ import java.util.Properties;
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MClient;
 import org.compiere.model.MTest;
+import org.compiere.model.MUser;
 import org.compiere.model.POInfo;
+import org.compiere.model.X_AD_User;
+import org.compiere.print.MPrintFormat;
+import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
@@ -318,5 +323,133 @@ public class POTest extends AbstractTestCase
 		} finally {
 			trx3.close();
 		}
+	}
+	
+	@Test
+	public void testCloneAndCache() 
+	{
+		final MUser user = new MUser(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), getTrxName());
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user.clone();
+		});
+		
+		X_AD_User user2 = new X_AD_User(Env.getCtx(), user.getAD_User_ID(), getTrxName());
+		X_AD_User user2Clone= (X_AD_User) user2.clone();
+		assertNull(user2Clone.get_TrxName());
+		
+		CCache<Integer, MUser> userCache = new CCache<Integer, MUser>(MUser.Table_Name, 5);
+		userCache.put(user.get_ID(), user);
+		assertNull(userCache.get(user.get_ID()));
+		
+		MPrintFormat printFormat = new MPrintFormat(Env.getCtx(), 118, getTrxName()); //OrderHeader
+		MPrintFormat printFormatClone = printFormat.clone();
+		assertNull(printFormatClone.get_TrxName());
+		assertEquals(printFormat.getItemCount(), printFormatClone.getItemCount());
+		for(int i = 0; i < printFormat.getItemCount(); i++) {
+			assertTrue(printFormat.getItem(i) != printFormatClone.getItem(i));
+		}
+		
+		CCache<Integer, MPrintFormat> printFormatCache = new CCache<Integer, MPrintFormat>(MPrintFormat.Table_Name, 5);
+		printFormatCache.put(printFormat.get_ID(), printFormat);
+		assertNull(printFormatCache.get(printFormat.get_ID()));
+		
+		MUser user3 = new MUser(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), null);
+		userCache.put(user3.get_ID(), user3);
+		assertNotNull(userCache.get(user3.get_ID()));
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user3.set_TrxName(getTrxName());		
+		});
+		
+		MPrintFormat printFormat2 = new MPrintFormat(Env.getCtx(), 118, null); //OrderHeader
+		printFormatCache.put(printFormat2.get_ID(), printFormat2);
+		assertNotNull(printFormatCache.get(printFormat2.get_ID()));
+		assertThrows(UnsupportedOperationException.class, () -> {
+			printFormat2.set_TrxName(getTrxName());
+		});
+	}
+	
+	@Test
+	public void testReadonly()
+	{
+		MUser user1 = new MUser(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), getTrxName());
+		user1.markReadonly();
+		assertNull(user1.get_TrxName());
+		assertTrue(user1.is_Readonly());
+		
+		MUser user2 = new MUser(Env.getCtx(), user1.getAD_User_ID(), null);
+		assertFalse(user2.is_Readonly());
+		CCache<Integer, MUser> userCache = new CCache<Integer, MUser>(MUser.Table_Name, 5);
+		userCache.put(user2.get_ID(), user2);
+		assertTrue(user2.is_Readonly());
+		
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user2.setName("MyName");
+		});
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user2.delete(true);
+		});
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user2.delete(true, getTrxName());
+		});
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user2.deleteEx(true);
+		});
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user2.deleteEx(true, getTrxName());
+		});
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user2.save();
+		});
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user2.save(getTrxName());
+		});
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user2.saveEx();
+		});
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user2.saveEx(getTrxName());
+		});
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user2.set_Attribute("custom", Boolean.TRUE);
+		});
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user2.set_CustomColumn("custom", Boolean.TRUE);
+		});
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user2.set_CustomColumnReturningBoolean("custom", Boolean.TRUE);
+		});
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user2.set_TrxName(getTrxName());
+		});
+		assertDoesNotThrow(() -> {
+			user2.set_TrxName(null);
+		});
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user2.set_ValueNoCheck("IsActive", Boolean.FALSE);
+		});
+		assertThrows(UnsupportedOperationException.class, () -> {
+			user2.set_ValueOfColumnReturningBoolean("IsActive", Boolean.FALSE);
+		});
+		
+		MPrintFormat printFormat = new MPrintFormat(Env.getCtx(), 118, null);
+		printFormat.markReadonly();
+		assertThrows(UnsupportedOperationException.class, () -> {
+			printFormat.set_ValueNoCheck("IsActive", Boolean.FALSE);
+		});
+		
+		MPrintFormat printFormatClone = printFormat.clone();
+		assertTrue(printFormat.is_Readonly());
+		assertFalse(printFormatClone.is_Readonly());
+		
+		printFormatClone.set_TrxName(getTrxName());
+		printFormatClone.setIsActive(false);
+		assertDoesNotThrow(() -> {
+			printFormatClone.saveEx();
+		});	
+		MPrintFormat printFormat2 = new MPrintFormat(Env.getCtx(), 118, getTrxName());
+		assertFalse(printFormat2.isActive());
+		rollback();
+		printFormatClone.load(getTrxName());
+		assertTrue(printFormatClone.isActive());
 	}
 }

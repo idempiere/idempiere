@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.compiere.report.MReportTree;
 import org.compiere.util.CCache;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Util;
 
 /**
  *  Accounting Schema Model (base)
@@ -64,7 +65,7 @@ public class MAcctSchema extends X_C_AcctSchema
 		//  Check Cache
 		Integer key = Integer.valueOf(C_AcctSchema_ID);
 		MAcctSchema retValue = (MAcctSchema)s_cache.get(key);
-		if (retValue != null)
+		if (Util.isEmpty(trxName) && retValue != null)
 			return retValue;
 		retValue = new MAcctSchema (ctx, C_AcctSchema_ID, trxName);
 		if (trxName == null)
@@ -94,7 +95,7 @@ public class MAcctSchema extends X_C_AcctSchema
 	{
 		//  Check Cache
 		Integer key = Integer.valueOf(AD_Client_ID);
-		if (s_schema.containsKey(key))
+		if (Util.isEmpty(trxName) && s_schema.containsKey(key))
 			return (MAcctSchema[])s_schema.get(key);
 
 		//  Create New

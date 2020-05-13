@@ -1116,11 +1116,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 
 		if (pf != null)
 		{
-			try {
-				pf = pf.clone();
-			} catch (CloneNotSupportedException e) {
-				throw new RuntimeException(e);
-			}
+			pf = pf.clone();
 		}
 		return pf;
 	}	//	get
@@ -1254,11 +1250,11 @@ public class MPrintFormat extends X_AD_PrintFormat
 	}
 
 	@Override
-	public MPrintFormat clone() throws CloneNotSupportedException {
+	public MPrintFormat clone() {
 		MPrintFormat clone = (MPrintFormat) super.clone();
 		clone.m_items = m_items == null ? null : new MPrintFormatItem[m_items.length];
 		for(int i = 0; i < m_items.length; i++) {
-			clone.m_items[i] = m_items[i];
+			clone.m_items[i] = m_items[i].clone();
 		}
 		clone.m_tFormat = m_tFormat;
 		clone.m_language = Env.getLanguage(Env.getCtx());
