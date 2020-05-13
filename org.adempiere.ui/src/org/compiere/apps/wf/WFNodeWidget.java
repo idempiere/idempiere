@@ -3,6 +3,7 @@
  */
 package org.compiere.apps.wf;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -51,6 +52,7 @@ public class WFNodeWidget extends Widget {
 		setLayout (LayoutFactory.createVerticalFlowLayout ());
         setOpaque (true);
         setCheckClipping (true);
+        setBackground(new Color(255, 255, 255, 0));
 
         setPreferredSize(new Dimension(NODE_WIDTH, NODE_HEIGHT));
 
