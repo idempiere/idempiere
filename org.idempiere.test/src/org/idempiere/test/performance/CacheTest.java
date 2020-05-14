@@ -26,16 +26,11 @@ package org.idempiere.test.performance;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.sql.Timestamp;
-
 import org.compiere.model.MOrder;
 import org.compiere.model.MZoomCondition;
 import org.compiere.util.CacheMgt;
-import org.compiere.util.Language;
 import org.idempiere.test.AbstractTestCase;
-import org.idempiere.test.LoginDetails;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 /**
  * 
@@ -46,15 +41,7 @@ public class CacheTest extends AbstractTestCase {
 
 	public CacheTest() {
 	}
-
 	
-	@Override
-	protected LoginDetails newLoginDetails(TestInfo testInfo) {
-		//System, SystemAdministrator
-		return new LoginDetails(0, 0, 0, 0, 0, new Timestamp(System.currentTimeMillis()), Language.getLanguage("en_US"));
-	}
-
-
 	@Test
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-2698
