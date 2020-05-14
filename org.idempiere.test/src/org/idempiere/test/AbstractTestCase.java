@@ -40,6 +40,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * @author hengsin
@@ -57,26 +58,42 @@ public abstract class AbstractTestCase {
 	protected final int GARDEN_WORLD_HQ_WAREHOUSE = 103;
 	
 	@BeforeAll
+	/**
+	 * setup for class
+	 */
 	static void setup() {
 		Adempiere.startup(false);
 	}
 
 	@BeforeEach
-	protected void init() {
+	/**
+	 * Init for each test method
+	 * @param testInfo
+	 */
+	protected void init(TestInfo testInfo) {
 		String trxName = Trx.createTrxName(getClass().getName()+"_");
 		trx = Trx.get(trxName, true);
 		trx.start();
 		
-		initContext();
+		initContext(testInfo);
 	}
 	
-	protected LoginDetails newLoginDetails() {
+	/**
+	 * Create the login context for each test method
+	 * @param testInfo
+	 * @return LoginDetails
+	 */
+	protected LoginDetails newLoginDetails(TestInfo testInfo) {
 		return new LoginDetails(GARDEN_WORLD_CLIENT, GARDEN_WORLD_HQ_ORG, GARDEN_WORLD_ADMIN_USER, GARDEN_WORLD_ADMIN_ROLE, GARDEN_WORLD_HQ_WAREHOUSE, 
 				new Timestamp(System.currentTimeMillis()), Language.getLanguage("en_US"));
 	}
 
-	protected void initContext() {
-		loginDetails = newLoginDetails();
+	/**
+	 * Init environment context for each test method
+	 * @param testInfo
+	 */
+	protected void initContext(TestInfo testInfo) {
+		loginDetails = newLoginDetails(testInfo);
 		
 		Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, loginDetails.getClientId());
 		Env.setContext(Env.getCtx(), Env.AD_ORG_ID, loginDetails.getOrganizationId());	
@@ -125,6 +142,9 @@ public abstract class AbstractTestCase {
 	}
 	
 	@AfterEach
+	/**
+	 * tear down for each test method
+	 */
 	protected void tearDown() {
 		if (trx != null && trx.isActive()) {
 			trx.rollback();
@@ -132,10 +152,17 @@ public abstract class AbstractTestCase {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return current transaction
+	 */
 	protected Trx getTrx() {
 		return trx;
 	}
 	
+	/**
+	 * commit current transaction
+	 */
 	protected void commit() {
 		if (trx != null && trx.isActive()) {
 			try {
@@ -146,6 +173,9 @@ public abstract class AbstractTestCase {
 		}
 	}
 	
+	/**
+	 * rollback current transaction
+	 */
 	protected void rollback() {
 		if (trx != null && trx.isActive()) {
 			trx.rollback();
@@ -180,11 +210,18 @@ public abstract class AbstractTestCase {
 		return loginDetails.getLoginDate();
 	}
 	
+	/**
+	 * 
+	 * @return current transaction name
+	 */
 	protected String getTrxName() {
 		return trx.getTrxName();
 	}
 	
 	@AfterAll
+	/**
+	 * shutdown for class
+	 */
 	static void shutdown() {
 		Adempiere.stop();
 	}
