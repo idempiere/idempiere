@@ -36,6 +36,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.adempiere.exceptions.DBException;
+import org.compiere.model.MPInstance;
+import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
 import org.compiere.model.POResultSet;
 import org.compiere.model.Query;
@@ -294,11 +296,19 @@ public class QueryTest extends AbstractTestCase {
 		assertThrows(DBException.class, () -> {
 			query.aggregate(null, Query.AGGREGATE_SUM);
 		}, "No Expression defined");
+		
 	}
 	
 	@Test
 	public void testOnlySelection() throws Exception
 	{
+		//make sure ad_pinstance is not empty
+		int count = DB.getSQLValueEx(null, "SELECT Count(AD_PInstance_ID) FROM AD_PInstance");
+		if (count == 0) {
+			//Generate Shipments (manual)
+			new MPInstance(MProcess.get(Env.getCtx(), 199), 0);
+		}
+		
 		// Get one AD_PInstance_ID
 		int AD_PInstance_ID = DB.getSQLValueEx(null, "SELECT MAX(AD_PInstance_ID) FROM AD_PInstance");
 		assertTrue(AD_PInstance_ID > 0);
