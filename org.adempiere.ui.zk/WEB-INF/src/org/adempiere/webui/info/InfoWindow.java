@@ -71,6 +71,7 @@ import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.GridWindow;
+import org.compiere.model.Lookup;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MLookupFactory;
@@ -2691,14 +2692,16 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			{
 				throw new AdempiereException(e);
 			}
-			/* not required - the info window splits the column in key name pairs
-			GridField gridField = columnInfos[col].getGridField();
-			Lookup lookup = gridField.getLookup();
-			if (val != null && lookup != null)
+			
+			if(val != null && !columnInfos[col].isKeyPairCol() 
+					&& columnInfos[col].getGridField().getLookup() != null)
 			{
-				val = lookup.getDisplay(val);
-			}
-			*/
+				Lookup lookup = columnInfos[col].getGridField().getLookup();
+				if (lookup != null)
+				{
+					val = lookup.getDisplay(val);
+				}
+			} 
 			
 			return val; 
 		}
