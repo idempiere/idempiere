@@ -26,9 +26,15 @@ package org.idempiere.test.performance;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.compiere.model.I_AD_Table;
+import org.compiere.model.MColumn;
 import org.compiere.model.MOrder;
+import org.compiere.model.MRefTable;
+import org.compiere.model.MTable;
+import org.compiere.model.MWarehouse;
 import org.compiere.model.MZoomCondition;
 import org.compiere.util.CacheMgt;
+import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
 
@@ -56,5 +62,22 @@ public class CacheTest extends AbstractTestCase {
 		MZoomCondition[] conditions3 = MZoomCondition.getConditions(MOrder.Table_ID);
 		assertTrue(conditions3 != null && conditions3.length == conditions1.length);
 		assertTrue(conditions1 != conditions3);
+	}
+	
+	@Test
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-2699
+	 */
+	public void testTableCache() {
+		MTable table = MTable.get(Env.getCtx(), MOrder.Table_ID);
+		MColumn column = table.getColumn(MOrder.COLUMNNAME_C_Order_ID);
+		I_AD_Table table2 = column.getAD_Table();
+		assertTrue(table == table2);
+		
+		//M_Warehouse of Client
+		table = MTable.get(Env.getCtx(), MWarehouse.Table_ID);
+		MRefTable refTable = MRefTable.get(Env.getCtx(), 197);
+		table2 = refTable.getAD_Table();
+		assertTrue(table == table2);
 	}
 }
