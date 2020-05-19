@@ -10,6 +10,7 @@
 	<name>Maven parent project for idempiere</name>
 
 	<properties>
+		<jdk.version>11</jdk.version>
 		<tycho.version>1.7.0</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -347,7 +348,9 @@
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-compiler-plugin</artifactId>
 					<version>${tycho.version}</version>
-                    			<configuration>
+                    <configuration>
+                    	<source>${jdk.version}</source>
+                    	<target>${jdk.version}</target>
 						<verbose>true</verbose>						
 					</configuration>
 				</plugin>
@@ -555,8 +558,8 @@
 					            <arch>x86_64</arch>
 				            </environment>
 			            </environments>
-			            <executionEnvironmentDefault>JavaSE-11</executionEnvironmentDefault>
-			            <executionEnvironment>JavaSE-11</executionEnvironment>
+			            <executionEnvironmentDefault>JavaSE-${jdk.version}</executionEnvironmentDefault>
+			            <executionEnvironment>JavaSE-${jdk.version}</executionEnvironment>
 		            </configuration>
 		     </plugin>
 		 </plugins>

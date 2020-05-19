@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target name="idempiere-200508" sequenceNumber="110">
+<target name="idempiere-200519" sequenceNumber="110">
 <locations>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<repository location="https://idempiere.github.io/binary.file/p2.maven/org.idempiere.webservice.client-p2-R20190412"/>
@@ -410,7 +410,33 @@
 		<unit id="org.tukaani.xz.source" version="1.8.0.v20180207-1613"/>
 	</location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		<repository location="https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20200430/"/>
+		<repository location="https://idempiere.github.io/binary.file/p2.zk/9.0.1.2"/>
+		<unit id="zcommon" version="9.0.1.2"/>
+		<unit id="zcommon.source" version="9.0.1.2"/>
+		<unit id="zel" version="9.0.1.2"/>
+		<unit id="zel.source" version="9.0.1.2"/>
+		<unit id="zhtml" version="9.0.1.2"/>
+		<unit id="zhtml.source" version="9.0.1.2"/>
+		<unit id="zjavassist" version="9.0.1.2"/>
+		<unit id="zk" version="9.0.1.2"/>
+		<unit id="zk.source" version="9.0.1.2"/>
+		<unit id="zkbind" version="9.0.1.2"/>
+		<unit id="zkbind.source" version="9.0.1.2"/>
+		<unit id="zkplus" version="9.0.1.2"/>
+		<unit id="zkplus-legacy" version="9.0.1.2"/>
+		<unit id="zkplus-legacy.source" version="9.0.1.2"/>
+		<unit id="zkplus.source" version="9.0.1.2"/>
+		<unit id="zkwebfragment" version="9.0.1.2"/>
+		<unit id="zkwebfragment.source" version="9.0.1.2"/>
+		<unit id="zul" version="9.0.1.2"/>
+		<unit id="zul.source" version="9.0.1.2"/>
+		<unit id="zweb" version="9.0.1.2"/>
+		<unit id="zweb-dsp" version="9.0.1.2"/>
+		<unit id="zweb-dsp.source" version="9.0.1.2"/>
+		<unit id="zweb.source" version="9.0.1.2"/>
+	</location>
+	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		<repository location="https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20200519/"/>
 		<unit id="bcmail" version="1.60.0"/>
 		<unit id="bcmail.source" version="1.60.0"/>
 		<unit id="bcpkix" version="1.60.0"/>
@@ -542,8 +568,8 @@
 		<unit id="org.apache.activemq.activemq-core.source" version="5.7.0"/>
 		<unit id="org.apache.activemq.kahadb" version="5.7.0"/>
 		<unit id="org.apache.activemq.kahadb.source" version="5.7.0"/>
-		<unit id="org.apache.aries.spifly.dynamic.bundle" version="1.2.0"/>
-		<unit id="org.apache.aries.spifly.dynamic.bundle.source" version="1.2.0"/>
+		<unit id="org.apache.aries.spifly.dynamic.bundle" version="1.2.4"/>
+		<unit id="org.apache.aries.spifly.dynamic.bundle.source" version="1.2.4"/>
 		<unit id="org.apache.aries.util" version="1.1.3"/>
 		<unit id="org.apache.aries.util.source" version="1.1.3"/>
 		<unit id="org.apache.commons.commons-collections4" version="4.4.0"/>
@@ -785,16 +811,16 @@
 		<unit id="org.mortbay.jasper.apache-el" version="8.5.49"/>
 		<unit id="org.mortbay.jasper.apache-el.source" version="8.5.49"/>
 		<unit id="org.mortbay.jasper.apache-jsp" version="8.5.49"/>
-		<unit id="org.objectweb.asm" version="7.0.0"/>
-		<unit id="org.objectweb.asm.commons" version="7.0.0"/>
-		<unit id="org.objectweb.asm.commons.source" version="7.0.0"/>
-		<unit id="org.objectweb.asm.source" version="7.0.0"/>
-		<unit id="org.objectweb.asm.tree" version="7.0.0"/>
-		<unit id="org.objectweb.asm.tree.analysis" version="7.0.0"/>
-		<unit id="org.objectweb.asm.tree.analysis.source" version="7.0.0"/>
-		<unit id="org.objectweb.asm.tree.source" version="7.0.0"/>
-		<unit id="org.objectweb.asm.util" version="7.0.0"/>
-		<unit id="org.objectweb.asm.util.source" version="7.0.0"/>
+		<unit id="org.objectweb.asm" version="7.3.1"/>
+		<unit id="org.objectweb.asm.commons" version="7.3.1"/>
+		<unit id="org.objectweb.asm.commons.source" version="7.3.1"/>
+		<unit id="org.objectweb.asm.source" version="7.3.1"/>
+		<unit id="org.objectweb.asm.tree" version="7.3.1"/>
+		<unit id="org.objectweb.asm.tree.analysis" version="7.3.1"/>
+		<unit id="org.objectweb.asm.tree.analysis.source" version="7.3.1"/>
+		<unit id="org.objectweb.asm.tree.source" version="7.3.1"/>
+		<unit id="org.objectweb.asm.util" version="7.3.1"/>
+		<unit id="org.objectweb.asm.util.source" version="7.3.1"/>
 		<unit id="org.passay" version="1.3.1"/>
 		<unit id="org.passay.source" version="1.3.1"/>
 		<unit id="org.springframework.spring-jcl" version="5.1.1.RELEASE"/>
@@ -810,32 +836,6 @@
 		<unit id="slf4j.jdk14.source" version="1.7.25"/>
 		<unit id="stax2-api" version="4.2.0"/>
 		<unit id="stax2-api.source" version="4.2.0"/>
-	</location>
-	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		<repository location="https://idempiere.github.io/binary.file/p2.zk/9.0.1.2"/>
-		<unit id="zcommon" version="9.0.1.2"/>
-		<unit id="zcommon.source" version="9.0.1.2"/>
-		<unit id="zel" version="9.0.1.2"/>
-		<unit id="zel.source" version="9.0.1.2"/>
-		<unit id="zhtml" version="9.0.1.2"/>
-		<unit id="zhtml.source" version="9.0.1.2"/>
-		<unit id="zjavassist" version="9.0.1.2"/>
-		<unit id="zk" version="9.0.1.2"/>
-		<unit id="zk.source" version="9.0.1.2"/>
-		<unit id="zkbind" version="9.0.1.2"/>
-		<unit id="zkbind.source" version="9.0.1.2"/>
-		<unit id="zkplus" version="9.0.1.2"/>
-		<unit id="zkplus-legacy" version="9.0.1.2"/>
-		<unit id="zkplus-legacy.source" version="9.0.1.2"/>
-		<unit id="zkplus.source" version="9.0.1.2"/>
-		<unit id="zkwebfragment" version="9.0.1.2"/>
-		<unit id="zkwebfragment.source" version="9.0.1.2"/>
-		<unit id="zul" version="9.0.1.2"/>
-		<unit id="zul.source" version="9.0.1.2"/>
-		<unit id="zweb" version="9.0.1.2"/>
-		<unit id="zweb-dsp" version="9.0.1.2"/>
-		<unit id="zweb-dsp.source" version="9.0.1.2"/>
-		<unit id="zweb.source" version="9.0.1.2"/>
 	</location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
