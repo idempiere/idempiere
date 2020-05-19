@@ -85,7 +85,6 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String DB_READ_REPLICA_NORMAL_MAX_ITERATIONS = "DB_READ_REPLICA_NORMAL_MAX_ITERATIONS";
 	public static final String DB_READ_REPLICA_NORMAL_TIMEOUT_IN_MILLISECONDS = "DB_READ_REPLICA_NORMAL_TIMEOUT_IN_MILLISECONDS";
 	public static final String DB_READ_REPLICA_URLS = "DB_READ_REPLICA_URLS";
-    public static final String DICTIONARY_ID_COMMENTS = "DICTIONARY_ID_COMMENTS";
     public static final String DICTIONARY_ID_PASSWORD = "DICTIONARY_ID_PASSWORD";
     public static final String DICTIONARY_ID_USE_CENTRALIZED_ID = "DICTIONARY_ID_USE_CENTRALIZED_ID";
     public static final String DICTIONARY_ID_USER = "DICTIONARY_ID_USER";
@@ -130,7 +129,6 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String PDF_FONT_DIR = "PDF_FONT_DIR";
     public static final String ProductUOMConversionRateValidate = "ProductUOMConversionRateValidate";
     public static final String ProductUOMConversionUOMValidate = "ProductUOMConversionUOMValidate";
-    public static final String PROJECT_ID_COMMENTS = "PROJECT_ID_COMMENTS";
     public static final String PROJECT_ID_PASSWORD = "PROJECT_ID_PASSWORD";
     public static final String PROJECT_ID_PROJECT = "PROJECT_ID_PROJECT";
     public static final String PROJECT_ID_USE_CENTRALIZED_ID = "PROJECT_ID_USE_CENTRALIZED_ID";
