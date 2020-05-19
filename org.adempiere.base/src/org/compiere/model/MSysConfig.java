@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,7 +43,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9208749663408576569L;
+	private static final long serialVersionUID = -3283099328590831741L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -273,12 +274,13 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
 	/**
 	 * Get system configuration property of type double
 	 * @param Name
 	 * @param defaultValue
 	 * @return double
+	 * @deprecated use better getBigDecimalValue
 	 */
 	public static double getDoubleValue(String Name, double defaultValue)
 	{
@@ -296,7 +298,30 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
+	/**
+	 * Get system configuration property of type BigDecimal
+	 * @param Name
+	 * @param defaultValue
+	 * @return BigDecimal
+	 */
+	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue)
+	{
+		String s = getValue(Name);
+		if (s == null || s.length() == 0)
+			return defaultValue;
+		//
+		try
+		{
+			return new BigDecimal(s);
+		}
+		catch (NumberFormatException e)
+		{
+			s_log.log(Level.SEVERE, "getBigDecimalValue (" + Name + ") = " + s, e);
+		}
+		return defaultValue;
+	}
+
 	/**
 	 * Get system configuration property of type boolean
 	 * @param Name
@@ -366,13 +391,14 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
 	/**
 	 * Get system configuration property of type double
 	 * @param Name
 	 * @param defaultValue
 	 * @param Client ID
 	 * @return double
+	 * @deprecated use better getBigDecimalValue
 	 */
 	public static double getDoubleValue(String Name, double defaultValue, int AD_Client_ID)
 	{
@@ -390,7 +416,31 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
+	/**
+	 * Get system configuration property of type BigDecimal
+	 * @param Name
+	 * @param defaultValue
+	 * @param Client ID
+	 * @return BigDecimal
+	 */
+	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue, int AD_Client_ID)
+	{
+		String s = getValue(Name, AD_Client_ID);
+		if (s == null || s.length() == 0)
+			return defaultValue;
+		//
+		try
+		{
+			return new BigDecimal(s);
+		}
+		catch (NumberFormatException e)
+		{
+			s_log.log(Level.SEVERE, "getBigDecimalValue (" + Name + ") = " + s, e);
+		}
+		return defaultValue;
+	}
+
 	/**
 	 * Get system configuration property of type boolean
 	 * @param Name
@@ -510,7 +560,7 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
 	/**
 	 * Get system configuration property of type double
 	 * @param Name
@@ -518,6 +568,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param Client ID
 	 * @param Organization ID
 	 * @return double
+	 * @deprecated use better getBigDecimalValue
 	 */
 	public static double getDoubleValue(String Name, double defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
@@ -535,7 +586,32 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
+	/**
+	 * Get system configuration property of type BigDecimal
+	 * @param Name
+	 * @param defaultValue
+	 * @param Client ID
+	 * @param Organization ID
+	 * @return BigDecimal
+	 */
+	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue, int AD_Client_ID, int AD_Org_ID)
+	{
+		String s = getValue(Name, AD_Client_ID, AD_Org_ID);
+		if (s == null || s.length() == 0)
+			return defaultValue;
+		//
+		try
+		{
+			return new BigDecimal(s);
+		}
+		catch (NumberFormatException e)
+		{
+			s_log.log(Level.SEVERE, "getBigDecimalValue (" + Name + ") = " + s, e);
+		}
+		return defaultValue;
+	}
+
 	/**
 	 * Get system configuration property of type boolean
 	 * @param Name
