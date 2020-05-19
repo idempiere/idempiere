@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.idempiere.test
 Bundle-Version: 7.1.0.qualifier
 Bundle-Vendor: iDempiere
 Automatic-Module-Name: org.idempiere.test
-Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.junit.jupiter.api;version="5.6.0",
  org.junit.jupiter.api.condition;version="5.6.0",
  org.junit.jupiter.api.extension;version="5.6.0",
