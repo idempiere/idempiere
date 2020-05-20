@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.adempiere.util.ServerContext;
 import org.apache.ecs.AlignType;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.body;
@@ -180,11 +181,16 @@ public class WebEnv
 		if (log.isLoggable(Level.INFO)) log.info(info.toString());
 		//
 		Properties ctx = new Properties();
-		MClient client = MClient.get(ctx, 0);
-		MSystem system = MSystem.get(ctx);
-		client.sendEMail(client.getRequestEMail(),
-			"Server started: " + system.getName() + " (" + WebUtil.getServerName() + ")",
-			"ServerInfo: " + context.getServerInfo(), null);
+		try {
+			ServerContext.setCurrentInstance(ctx);
+			MClient client = MClient.get(Env.getCtx(), 0);
+			MSystem system = MSystem.get(Env.getCtx());
+			client.sendEMail(client.getRequestEMail(),
+				"Server started: " + system.getName() + " (" + WebUtil.getServerName() + ")",
+				"ServerInfo: " + context.getServerInfo(), null);
+		} finally {
+			ServerContext.dispose();
+		}
 
 		return s_initOK;
 	}	//	initWeb
