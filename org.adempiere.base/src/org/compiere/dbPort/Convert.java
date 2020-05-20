@@ -37,7 +37,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.compiere.db.Database;
-import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -515,6 +514,7 @@ public abstract class Convert
 			"AD_WINDOW_ACCESS",
 			"AD_WORKFLOW_ACCESS",
 			"AD_WORKFLOWPROCESSORLOG",
+			"AD_USERPREFERENCE",
 			"CM_WEBACCESSLOG",
 			"C_ACCTPROCESSORLOG",
 			"K_INDEXLOG",
@@ -581,13 +581,8 @@ public abstract class Convert
 
 	private static void writeLogMigrationScript(Writer w, String statement) throws IOException
 	{
-		boolean isUseCentralizedID = "Y".equals(MSysConfig.getValue(MSysConfig.DICTIONARY_ID_USE_CENTRALIZED_ID, "Y")); // defaults to Y
-		boolean isUseProjectCentralizedID = "Y".equals(MSysConfig.getValue(MSysConfig.PROJECT_ID_USE_CENTRALIZED_ID, "N")); // defaults to N
 		String prm_COMMENT;
-		if (!isUseCentralizedID && isUseProjectCentralizedID)
-			prm_COMMENT = MSysConfig.getValue(MSysConfig.PROJECT_ID_COMMENTS);
-		else
-			prm_COMMENT = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_COMMENTS);
+		prm_COMMENT = Env.getContext(Env.getCtx(), "MigrationScriptComment");
 		if (prm_COMMENT != null && ! m_oldprm_COMMENT.equals(prm_COMMENT)) {
 			// log sysconfig comment
 			w.append("-- ");
