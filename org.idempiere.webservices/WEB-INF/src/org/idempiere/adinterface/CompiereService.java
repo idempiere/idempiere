@@ -34,6 +34,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Login;
+import org.compiere.util.Util;
 import org.idempiere.adInterface.x10.ADLoginRequest;
 
 /**
@@ -263,8 +264,8 @@ public class CompiereService {
 		if (email_login)
 			m_userName = user.getEMail();
 		else
-			m_userName = user.getName();
-		
+			m_userName = Util.isEmpty(user.getLDAPUser()) ? user.getName() : user.getLDAPUser();
+
 		Env.setContext( getCtx(), "#AD_Language", Lang);
 		m_language = Language.getLanguage(Lang);
 		Env.verifyLanguage( getCtx(), m_language );
