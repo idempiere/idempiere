@@ -261,39 +261,15 @@ public class MUserQuery extends X_AD_UserQuery
 	 */
 	public static MUserQuery getUserQueryByName(Properties ctx, int AD_Tab_ID, String name)
 	{
-		int AD_User_ID = Env.getAD_User_ID(ctx);
-		String sql = "SELECT * FROM AD_UserQuery "
-			 + "WHERE AD_Client_ID=? AND AD_Tab_ID=? AND UPPER(Name) LIKE ? AND IsActive='Y' "
-			 + "AND (AD_User_ID = ? OR AD_User_ID IS NULL) "
-			 + "ORDER BY Name";
-		int AD_Client_ID = Env.getAD_Client_ID (ctx);
-		if (name == null)
-			name = "%";
-		MUserQuery retValue = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, AD_Client_ID);
-			pstmt.setInt (2, AD_Tab_ID);
-			pstmt.setString (3, name.toUpperCase());
-			pstmt.setInt (4, AD_User_ID);
-			rs = pstmt.executeQuery ();
-			if (rs.next ())
-				retValue = new MUserQuery (ctx, rs, null);
-		}
-		catch (Exception e)
-		{
-			s_log.log (Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-		return retValue;
-	}	//	get
+		String sqlWhere = " AD_Client_ID=? AND AD_Tab_ID=? AND UPPER(Name) LIKE ? "
+			 + "AND (AD_User_ID = ? OR AD_User_ID IS NULL) ";
+
+		return new Query(ctx, Table_Name, sqlWhere, null)
+				.setParameters(Env.getAD_Client_ID (ctx), AD_Tab_ID, name.toUpperCase(), Env.getAD_User_ID(ctx))
+				.setOnlyActiveRecords(true)
+				.setOrderBy("Name")
+				.first();
+	}	//	getUserQueryByName
 
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MUserQuery.class);
