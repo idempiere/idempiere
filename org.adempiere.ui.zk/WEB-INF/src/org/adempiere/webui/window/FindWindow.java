@@ -1368,6 +1368,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 	} else {
                     	cmd_saveSimple(true, shareAllUsers);
                 	}
+                	if (shareAllUsers)
+                		btnSave.setDisabled(true);
                 }
             }
             //  Confirm panel actions
@@ -1477,14 +1479,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	}
 		else {
 			MUserQuery uq = userQueries[index-1];
-			// If global query do not allow other users to save the query 
-			if (uq.getAD_User_ID() != Env.getAD_User_ID(Env.getCtx())) {
-		        if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType()) ||
-		        		uq.getAD_Client_ID() != Env.getAD_Client_ID(Env.getCtx())) {
-		        	btnSave.setDisabled(true);
-		        	btnShare.setDisabled(true);
-		        }
-			}
+			btnSave.setDisabled(!uq.userCanSave());
+			btnShare.setDisabled(!uq.userCanShare());
 			parseUserQuery(userQueries[index-1]);
 		}
     }
@@ -1829,7 +1825,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 					code.append( (Object) historyCombo.getSelectedItem().getValue());
 		        }
 				
-				MUserQuery uq = MUserQuery.get(Env.getCtx(), m_AD_Tab_ID, name);
+				MUserQuery uq = MUserQuery.getUserQueryByName(Env.getCtx(), m_AD_Tab_ID, name);
 				if (code.length() > 0) { // New or updated
 					if (uq == null) // Create a new record
 					{
