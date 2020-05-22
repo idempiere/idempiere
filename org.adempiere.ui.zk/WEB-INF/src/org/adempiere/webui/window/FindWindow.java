@@ -1839,7 +1839,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 						uq.set_ValueOfColumn("AD_User_ID", Env.getAD_User_ID(Env.getCtx())); // required set_Value for System=0 user
 					}
 					if (shareAllUsers)
-						uq.set_ValueOfColumn("AD_User_ID", null); 
+						uq.set_ValueOfColumn("AD_User_ID", 0); 
 
 				} else	if (code.length() <= 0){ // Delete the query
 					if (uq == null) 
