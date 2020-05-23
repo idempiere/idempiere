@@ -549,6 +549,9 @@ public abstract class Convert
 			return true;
 		if (uppStmt.startsWith("UPDATE R_REQUESTPROCESSOR SET DATELASTRUN"))
 			return true;
+		// don't log sequence updates
+		if (uppStmt.startsWith("UPDATE AD_SEQUENCE SET CURRENTNEXT"))
+			return true;
 		// Don't log DELETE FROM Some_Table WHERE AD_Table_ID=? AND Record_ID=?
 		if (uppStmt.startsWith("DELETE FROM ") && uppStmt.endsWith(" WHERE AD_TABLE_ID=? AND RECORD_ID=?"))
 			return true;
