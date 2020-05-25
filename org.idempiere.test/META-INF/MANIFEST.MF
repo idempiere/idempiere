@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: iDempiere Unit Testing
+Bundle-SymbolicName: org.idempiere.test
+Bundle-Version: 7.1.0.qualifier
+Bundle-Vendor: iDempiere
+Automatic-Module-Name: org.idempiere.test
+Import-Package: org.junit.jupiter.api;version="5.6.0",
+ org.junit.jupiter.api.condition;version="5.6.0",
+ org.junit.jupiter.api.extension;version="5.6.0",
+ org.junit.jupiter.api.extension.support;version="5.6.0",
+ org.junit.jupiter.api.function;version="5.6.0",
+ org.junit.jupiter.api.io;version="5.6.0",
+ org.junit.jupiter.api.parallel;version="5.6.0",
+ org.junit.jupiter.params;version="5.6.0",
+ org.junit.jupiter.params.aggregator;version="5.6.0",
+ org.junit.jupiter.params.converter;version="5.6.0",
+ org.junit.jupiter.params.provider;version="5.6.0",
+ org.junit.jupiter.params.support;version="5.6.0"
+Require-Bundle: org.adempiere.base;bundle-version="7.1.0"

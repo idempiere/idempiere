@@ -28,7 +28,7 @@
 		<apache.cxf.databinding.version>3.1.18</apache.cxf.databinding.version>
 		<activation.version>1.2.1</activation.version>
 		<annotation.version>1.3.3</annotation.version>
-		<asm.version>7.0</asm.version>
+		<asm.version>7.3.1</asm.version>
 		<javamail.version>1.6.3</javamail.version>
 		<poi.version>4.1.0</poi.version>
 		<batik.version>1.11</batik.version>
@@ -174,7 +174,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle:jar:1.2</id>
+											<id>org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle:jar:1.2.4</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>

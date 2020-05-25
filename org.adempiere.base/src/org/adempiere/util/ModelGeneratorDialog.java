@@ -52,6 +52,7 @@ public class ModelGeneratorDialog extends JDialog implements ActionListener {
 	private JCheckBox fGenerateInterface;
 	private JCheckBox fGenerateClass;
 	private JTextField fEntityType;
+	private JTextField fColumnEntityType;
 
 	public ModelGeneratorDialog() {
 		super();
@@ -62,7 +63,7 @@ public class ModelGeneratorDialog extends JDialog implements ActionListener {
 		this.getContentPane().add(confirmPanel, BorderLayout.SOUTH);
 		Panel mainPanel = new Panel();
 		this.getContentPane().add(mainPanel, BorderLayout.CENTER);
-		mainPanel.setLayout(new GridLayout(5, 2));
+		mainPanel.setLayout(new GridLayout(6, 2));
 
 		Panel filePanel = new Panel();
 		filePanel.setLayout(new BorderLayout());
@@ -84,16 +85,24 @@ public class ModelGeneratorDialog extends JDialog implements ActionListener {
 		fTableName = new JTextField("AD_ReplaceThis%");
 		mainPanel.add(fTableName);
 
-		mainPanel.add(new JLabel("Entity Type"));
+		mainPanel.add(new JLabel("Table Entity Type"));
 		fEntityType = new JTextField("D");
 		mainPanel.add(fEntityType);
+		
+		mainPanel.add(new JLabel("Column Entity Type"));
+		fColumnEntityType = new JTextField("");
+		mainPanel.add(fColumnEntityType);
 
+		Panel chkPanel = new Panel();
+		chkPanel.setLayout(new GridLayout(1, 2));
+		mainPanel.add(new JLabel(""));
+		mainPanel.add(chkPanel);
 		fGenerateInterface = new JCheckBox("Generate Interface");
 		fGenerateInterface.setSelected(true);
-		mainPanel.add(fGenerateInterface);
+		chkPanel.add(fGenerateInterface);
 		fGenerateClass = new JCheckBox("Generate Class");
 		fGenerateClass.setSelected(true);
-		mainPanel.add(fGenerateClass);
+		chkPanel.add(fGenerateClass);
 
 		bGenerate = new JButton("Generate Source");
 		confirmPanel.add(bGenerate);
@@ -130,12 +139,13 @@ public class ModelGeneratorDialog extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(this, "Must select at least one of generate interface or generate class", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
+			String columnEntityType = fColumnEntityType.getText();
 			this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			if (fGenerateInterface.isSelected()) {
-				ModelInterfaceGenerator.generateSource(folder, packageName, entityType, tableName);
+				ModelInterfaceGenerator.generateSource(folder, packageName, entityType, tableName, columnEntityType);
 			}
 			if (fGenerateClass.isSelected()) {
-				ModelClassGenerator.generateSource(folder, packageName, entityType, tableName);
+				ModelClassGenerator.generateSource(folder, packageName, entityType, tableName, columnEntityType);
 			}			
 			this.dispose();
 		} else if (e.getSource() == bCancel) {

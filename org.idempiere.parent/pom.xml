@@ -10,11 +10,12 @@
 	<name>Maven parent project for idempiere</name>
 
 	<properties>
+		<jdk.version>11</jdk.version>
 		<tycho.version>1.7.0</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jp.version>6.11.0</jp.version>
-		<zk.version>9.0.1</zk.version>
+		<zk.version>9.0.1.2</zk.version>
 		<zk.javassist.src.version>3.23.1-GA</zk.javassist.src.version>
 		<maven.dependency.version>3.1.1</maven.dependency.version>
 		<download.maven.version>1.4.1</download.maven.version>
@@ -22,7 +23,7 @@
 		<springframework.version>4.3.19.RELEASE_1</springframework.version><!--cfx dependency on [3.1,5)-->
 		<!-- https://www.eclipse.org/jetty/documentation/9.3.x/alpn-chapter.html#alpn-versions -->
 		<jetty.alpn-boot.version>8.1.12.v20180117</jetty.alpn-boot.version>
-		<netbeans.lib.version>RELEASE731</netbeans.lib.version>
+		<netbeans.lib.version>RELEASE113</netbeans.lib.version>
 		<maven-clean-plugin.version>2.5</maven-clean-plugin.version><!-- get from master, update when mave have update-->
 		<!-- default value of properties, use when run without profile -->
 		<idempiere.target>org.idempiere.p2.targetplatform</idempiere.target>
@@ -347,7 +348,9 @@
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-compiler-plugin</artifactId>
 					<version>${tycho.version}</version>
-                    			<configuration>
+                    <configuration>
+                    	<source>${jdk.version}</source>
+                    	<target>${jdk.version}</target>
 						<verbose>true</verbose>						
 					</configuration>
 				</plugin>
@@ -395,6 +398,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
 					<version>${maven.dependency.version}</version>
+				</plugin>
+				<plugin>
+				  <groupId>org.eclipse.tycho</groupId>
+				  <artifactId>tycho-surefire-plugin</artifactId>
+				  <version>${tycho.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -480,11 +488,6 @@
 	            </repository>
 
 	            <repository>
-		            <id>NetBeans</id>
-		            <url>https://bits.netbeans.org/maven2</url>
-	            </repository>
-
-	            <repository>
 		            <id>Clojars</id>
 		            <url>https://clojars.org/repo</url>
 	            </repository>
@@ -555,8 +558,8 @@
 					            <arch>x86_64</arch>
 				            </environment>
 			            </environments>
-			            <executionEnvironmentDefault>JavaSE-11</executionEnvironmentDefault>
-			            <executionEnvironment>JavaSE-11</executionEnvironment>
+			            <executionEnvironmentDefault>JavaSE-${jdk.version}</executionEnvironmentDefault>
+			            <executionEnvironment>JavaSE-${jdk.version}</executionEnvironment>
 		            </configuration>
 		     </plugin>
 		 </plugins>

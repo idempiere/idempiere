@@ -206,7 +206,6 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 		String ShipperAccount = ShippingUtil.getSenderShipperAccount(shipper.getM_Shipper_ID(), shipper.getAD_Org_ID());
 		String DutiesShipperAccount = ShippingUtil.getSenderDutiesShipperAccount(shipper.getM_Shipper_ID(), shipper.getAD_Org_ID());
 		
-		// 1 kg = 2.20462 lb
 		MClientInfo ci = MClientInfo.get(ctx, m_order.getAD_Client_ID(), trxName);
 		MUOM uom = new MUOM(ctx, ci.getC_UOM_Weight_ID(), null);
 		String unit = uom.getX12DE355();
@@ -218,13 +217,16 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 				isPound = true;
 		}
 		
+		// 1 kg = 2.20462 lb
+		final BigDecimal kgToPound = new BigDecimal("2.20462");
 		MShipperPackaging sp = new MShipperPackaging(ctx, M_ShipperPackaging_ID, trxName);
-		BigDecimal WeightPerPackage = sp.getWeight().multiply(isPound ? BigDecimal.valueOf(2.20462) : BigDecimal.ONE);
+		BigDecimal WeightPerPackage = sp.getWeight().multiply(isPound ? kgToPound : BigDecimal.ONE);
 		
 		if (WeightPerPackage == null || WeightPerPackage.compareTo(BigDecimal.ZERO) == 0)
 		{
-			BigDecimal defaultWeightPerPackage = BigDecimal.valueOf(MSysConfig.getDoubleValue(MSysConfig.SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE, 30));
-			WeightPerPackage = defaultWeightPerPackage.multiply(isPound ? BigDecimal.valueOf(2.20462) : BigDecimal.ONE);
+			final BigDecimal thirty = new BigDecimal("30");
+			BigDecimal defaultWeightPerPackage = MSysConfig.getBigDecimalValue(MSysConfig.SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE, thirty);
+			WeightPerPackage = defaultWeightPerPackage.multiply(isPound ? kgToPound : BigDecimal.ONE);
 		}
 		
 		BigDecimal CODAmount = m_order.getGrandTotal();
