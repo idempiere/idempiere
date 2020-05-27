@@ -101,7 +101,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean isSOTrx, String whereClause, boolean lookup)
 	{
-		super(windowNo, tableName, keyColumn, false,whereClause, lookup);
+		super(windowNo, tableName, keyColumn, false, whereClause, lookup, 0, queryValue);
 
 		setTitle(Msg.getMsg(Env.getCtx(), "Info"));
 
@@ -112,26 +112,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 			p_loadedOK = initInfo ();
 			
-			if (queryValue != null && queryValue.length() > 0)
-			{				
-				Textbox[] txts = new Textbox[] {txt1, txt2, txt3, txt4};
-				for(Textbox t : txts) 
-				{
-					if (t != null && t.isVisible())
-					{
-						t.setValue(queryValue);
-						testCount();
-						if (m_count <= 0)
-							t.setValue(null);
-						else
-							break;
-					}
-				}
-				if (m_count <= 0)
-				{
-					txt1.setValue(queryValue);
-				}
-			}
+			processQueryValue();
 		}
 		catch (Exception e)
 		{
@@ -146,22 +127,25 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 		if (queryValue != null && queryValue.length() > 0)
         {
-			MTable table = MTable.get(Env.getCtx(), p_tableName);
-			if (   table.getIdentifierColumns().length > 1
-				&& !p_tableName.startsWith("AD_"))  // 32 AD tables with identifiers containing _
+			if (!isAutoComplete)
 			{
-				String separator = I_C_ElementValue.Table_Name.equalsIgnoreCase(p_tableName) ? "-" : "_";
-				if (txt2.isVisible())
+				MTable table = MTable.get(Env.getCtx(), p_tableName);
+				if (   table.getIdentifierColumns().length > 1
+					&& !p_tableName.startsWith("AD_"))  // 32 AD tables with identifiers containing _
 				{
-					String[] values = queryValue.split("["+separator+"]");
-					if (values != null && values.length == 2) 
+					String separator = I_C_ElementValue.Table_Name.equalsIgnoreCase(p_tableName) ? "-" : "_";
+					if (txt2.isVisible())
 					{
-						txt1.setValue(values[0]);
-						txt2.setValue(values[1]);
+						String[] values = queryValue.split("["+separator+"]");
+						if (values != null && values.length == 2) 
+						{
+							txt1.setValue(values[0]);
+							txt2.setValue(values[1]);
+						}
 					}
-				}
-
-			}			
+	
+				}			
+			}
 			
             executeQuery();
             renderItems();
@@ -169,6 +153,32 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		
 		if (ClientInfo.isMobile()) {
 			ClientInfo.onClientInfo(this, this::onClientInfo);
+		}
+	}
+
+	private void processQueryValue() {
+		if (queryValue != null && queryValue.length() > 0)
+		{				
+			Textbox[] txts = new Textbox[] {txt1, txt2, txt3, txt4};
+			for(Textbox t : txts) 
+			{
+				if (t != null && t.isVisible())
+				{
+					t.setValue(queryValue);
+					testCount();
+					if (m_count <= 0)
+						t.setValue(null);
+					else
+						break;
+				}
+				
+				if (isAutoComplete)
+					break;
+			}
+			if (m_count <= 0)
+			{
+				txt1.setValue(queryValue);
+			}
 		}
 	}
 

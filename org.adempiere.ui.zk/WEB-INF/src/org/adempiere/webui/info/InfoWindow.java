@@ -147,7 +147,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     protected ColumnInfo[] columnInfos;
 	protected TableInfo[] tableInfos;
 	protected MInfoColumn[] infoColumns;	
-	protected String queryValue;
+	
 	protected WQuickEntry vqe;
 	
 	private List<GridField> gridFields;
@@ -206,9 +206,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
 			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, GridField field) {
 		super(WindowNo, tableName, keyColumn, multipleSelection, whereClause,
-				lookup, AD_InfoWindow_ID);
+				lookup, AD_InfoWindow_ID, queryValue);		
 		this.m_gridfield = field;
-		this.queryValue = queryValue;
 
    		//Xolali IDEMPIERE-1045
    		contentPanel.addActionListener(new EventListener<Event>() {
@@ -242,8 +241,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			if (haveProcess)
 				p_multipleSelection = true;
 		}		
-				
-		loadInfoRelatedTabs();
+						
+		if (!isAutoComplete)
+			loadInfoRelatedTabs();
+		
 		if (loadedOK()) {
 			if (isLookup()) {
 				Env.clearTabContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO);
@@ -263,8 +264,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 		
 		// F3P: add export button
-		
-		initExport();
+		if (!isAutoComplete)
+			initExport();
 	}
 	
 	/** 
@@ -505,6 +506,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		isQueryByUser = true;
 		for (int i = 0; i < identifiers.size(); i++) {
 			WEditor editor = identifiers.get(i);
+			if (isAutoComplete && i > 0) {
+				break;
+			}
 			try{
 				editor.setValue(queryValue);
 			}catch(Exception ex){
@@ -520,17 +524,19 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 		
 		boolean splitValue = false;
-		if (m_count <= 0) {			
-			String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
-			String[] values = queryValue.split("[" + separator.trim()+"]");
-			if (values.length == 2) {
-				splitValue = true;
-				for(int i = 0; i < values.length && i < identifiers.size(); i++) {
-					WEditor editor = identifiers.get(i);
-					editor.setValue(values[i].trim());
-				}
-				testCount(false);
-			} 
+		if (!isAutoComplete) {
+			if (m_count <= 0) {			
+				String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
+				String[] values = queryValue.split("[" + separator.trim()+"]");
+				if (values.length == 2) {
+					splitValue = true;
+					for(int i = 0; i < values.length && i < identifiers.size(); i++) {
+						WEditor editor = identifiers.get(i);
+						editor.setValue(values[i].trim());
+					}
+					testCount(false);
+				} 
+			}
 		}
 		
 		if (m_count > 0) {
@@ -605,6 +611,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				String help = infoColumn.get_Translation("Help");
 				vo.Help = help != null ? help : "";
 				vo.AD_FieldStyle_ID = infoColumn.getAD_FieldStyle_ID();
+				vo.IsAutocomplete = infoColumn.isAutocomplete();
 				GridField gridField = new GridField(vo);
 				gridFields.add(gridField);
 			}
@@ -1445,10 +1452,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				row.appendChild(checkAND);
 			}
 		}
-		evalDisplayLogic();
+		if (!isAutoComplete)
+			evalDisplayLogic();
 		if (!update)
 			initParameters();
-		dynamicDisplay(null);
+		if (!isAutoComplete)
+			dynamicDisplay(null);
 	}
 	
 	protected void evalDisplayLogic() {
@@ -1927,6 +1936,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		try
 		{
 			pstmt = DB.prepareStatement(countSql, null);
+			if (queryTimeout > 0)
+				pstmt.setQueryTimeout(queryTimeout);
 			setParameters (pstmt, true);
 			rs = pstmt.executeQuery();
 
@@ -2122,6 +2133,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	
 	@Override
 	protected boolean hasNew() {
+		if (isAutoComplete)
+			return false;
+		
 		boolean hasNew = getADWindowID () > 0;
 		if (hasNew && vqe == null && hasRightQuickEntry){
 			GridWindow gridwindow = GridWindow.get(Env.getCtx(), 0, getADWindowID());

@@ -23,11 +23,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 
 import org.adempiere.util.ContextRunnable;
 import org.compiere.Adempiere;
+import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -129,6 +131,7 @@ public final class MLookup extends Lookup implements Serializable
 
 	private boolean 		    m_hasShortListItems = false;	// IDEMPIERE 90
 
+	private final static int MAX_NAMEPAIR_CACHE_SIZE = 1000;
 	/**
 	 *  Dispose
 	 */
@@ -540,7 +543,31 @@ public final class MLookup extends Lookup implements Serializable
 		}
 		if (log.isLoggable(Level.FINER)) log.finer(m_info.KeyColumn + ": " + key 
 				+ ", SaveInCache=" + saveInCache + ",Local=" + cacheLocal);
+		
+		String cacheKey = m_info.TableName+"|"+m_info.KeyColumn;
 		boolean isNumber = m_info.KeyColumn.endsWith("_ID");
+		CCache<Integer, KeyNamePair> knpCache = null;
+		CCache<String, ValueNamePair> vnpCache = null;
+		if (isNumber)
+		{
+			knpCache = s_directKeyNamePairCache.get(cacheKey);
+			if (knpCache != null) 
+			{
+				KeyNamePair knp = knpCache.get(Integer.parseInt(key.toString()));
+				if (knp != null)
+					return knp;
+			}
+		}
+		else
+		{
+			vnpCache = s_directValueNamePairCache.get(cacheKey);
+			if (vnpCache != null) 
+			{
+				ValueNamePair vnp = vnpCache.get(key.toString());
+				if (vnp != null)
+					return vnp;
+			}
+		}
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -567,6 +594,16 @@ public final class MLookup extends Lookup implements Serializable
 					if (saveInCache)		//	save if
 						m_lookup.put(Integer.valueOf(keyValue), p);
 					directValue = p;
+					if (knpCache != null)
+					{
+						knpCache.put(p.getKey(), p);
+					}
+					else
+					{
+						knpCache = new CCache<Integer, KeyNamePair>(null, "MLookup.DirectKeyNamePairCache", 100, 60, false, MAX_NAMEPAIR_CACHE_SIZE);
+						knpCache.put(p.getKey(), p);
+						s_directKeyNamePairCache.put(cacheKey, knpCache);
+					}
 				}
 				else
 				{
@@ -575,6 +612,16 @@ public final class MLookup extends Lookup implements Serializable
 					if (saveInCache)		//	save if
 						m_lookup.put(value, p);
 					directValue = p;
+					if (vnpCache != null)
+					{
+						vnpCache.put(p.getValue(), p);
+					}
+					else
+					{
+						vnpCache  = new CCache<String, ValueNamePair>(null, "MLookup.DirectValueNamePairCache", 100, 60, false, MAX_NAMEPAIR_CACHE_SIZE);
+						vnpCache.put(p.getValue(), p);
+						s_directValueNamePairCache.put(cacheKey, vnpCache);
+					}
 				}
 				if (rs.next())
 					log.log(Level.SEVERE, m_info.KeyColumn + ": Not unique (first returned) for "
@@ -759,6 +806,12 @@ public final class MLookup extends Lookup implements Serializable
 		return m_info;
 	}
 	
+	private final static CCache<String, List<KeyNamePair>> s_keyNamePairCache = new CCache<String, List<KeyNamePair>>(null, "MLookup.KeyNamePairCache", 100, 60, false, 500);
+	private final static CCache<String, List<ValueNamePair>> s_valueNamePairCache = new CCache<String, List<ValueNamePair>>(null, "MLookup.ValueNamePairCache", 100, 60, false, 500);
+	
+	private final static CCache<String, CCache<Integer, KeyNamePair>> s_directKeyNamePairCache = new CCache<String, CCache<Integer,KeyNamePair>>(null, "", 100, 60, false, 500);
+	private final static CCache<String, CCache<String, ValueNamePair>> s_directValueNamePairCache = new CCache<String, CCache<String,ValueNamePair>>(null, "", 100, 60, false, 500);
+	
 	/**************************************************************************
 	 *	MLookup Loader
 	 */
@@ -785,8 +838,6 @@ public final class MLookup extends Lookup implements Serializable
 		protected void doRun()
 		{
 			long startTime = System.currentTimeMillis();
-			if (Ini.isClient())
-				MLookupCache.loadStart (m_info);
 			StringBuilder sql = new StringBuilder().append(m_info.Query);
 
 			// IDEMPIERE 90
@@ -849,6 +900,44 @@ public final class MLookup extends Lookup implements Serializable
 			//	Reset
 			m_lookup.clear();
 			boolean isNumber = m_info.KeyColumn.endsWith("_ID");
+			
+			String cacheKey = sql.toString();
+			List<KeyNamePair> knpCache =  null;
+			List<ValueNamePair> vnpCache = null;
+			if (isNumber) 
+			{
+				knpCache = s_keyNamePairCache.get(cacheKey);
+				if (knpCache != null) 
+				{
+					for(KeyNamePair knp : knpCache) 
+					{
+						m_lookup.put(knp.getKey(), knp);
+					}
+					return;
+				}
+				else
+				{
+					knpCache = new ArrayList<KeyNamePair>();
+				}
+			} 
+			else 
+			{
+				vnpCache = s_valueNamePairCache.get(cacheKey);
+				if (vnpCache != null)
+				{
+					for(ValueNamePair vnp : vnpCache)
+					{
+						m_lookup.put(vnp.getValue(), vnp);
+					}
+					return;
+			
+				}
+				else
+				{
+					vnpCache = new ArrayList<ValueNamePair>();
+				}
+			}
+			
 			m_hasInactive = false;
 			int rows = 0;
 			PreparedStatement pstmt = null;
@@ -905,14 +994,27 @@ public final class MLookup extends Lookup implements Serializable
 						int key = rs.getInt(1);
 						KeyNamePair p = new KeyNamePair(key, name.toString());
 						m_lookup.put(Integer.valueOf(key), p);
+						knpCache.add(p);
 					}
 					else
 					{
 						String value = rs.getString(2);
 						ValueNamePair p = new ValueNamePair(value, name.toString());
 						m_lookup.put(value, p);
+						vnpCache.add(p);
 					}
 				//	if (log.isLoggable(Level.FINE)) log.fine( m_info.KeyColumn + ": " + name);
+				}
+				
+				if (isNumber)
+				{
+					if (knpCache.size() <= MAX_NAMEPAIR_CACHE_SIZE)
+						s_keyNamePairCache.put(cacheKey, knpCache);
+				}
+				else
+				{
+					if (vnpCache.size() <= MAX_NAMEPAIR_CACHE_SIZE)
+						s_valueNamePairCache.put(cacheKey, vnpCache);
 				}
 			}
 			catch (SQLException e)
@@ -930,9 +1032,6 @@ public final class MLookup extends Lookup implements Serializable
 					+ " - Loader complete #" + size + " - all=" + m_allLoaded
 					+ " - ms=" + String.valueOf(System.currentTimeMillis()-m_startTime)
 					+ " (" + String.valueOf(System.currentTimeMillis()-startTime) + ")");
-		//	if (m_allLoaded)
-			if (Ini.isClient()) 
-				MLookupCache.loadEnd (m_info, m_lookup);
 		}	//	run
 	}	//	Loader
 

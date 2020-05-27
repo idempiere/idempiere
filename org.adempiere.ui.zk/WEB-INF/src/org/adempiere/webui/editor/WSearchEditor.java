@@ -21,8 +21,6 @@ import static org.compiere.model.SystemIDs.COLUMN_C_INVOICELINE_M_PRODUCT_ID;
 import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -59,7 +57,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
-import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -69,9 +66,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.ListModel;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.ListSubModel;
 
 /**
  * Search Editor for web UI.
@@ -92,7 +86,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
     private Object              value;
     private InfoPanel			infoPanel = null;
 	private String imageUrl;
-	private MyListModel listModel = null;
+	private InfoListSubModel listModel = null;
 
 	private static final CLogger log = CLogger.getCLogger(WSearchEditor.class);
 
@@ -214,13 +208,31 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		if (gridField != null)
 			getComponent().getCombobox().setPlaceholder(gridField.getPlaceholder());
 		
-		listModel = new MyListModel();
-		listModel.getSubModel(null, MAX_AUTO_COMPLETE_ROWS);
-		
-		getComponent().getCombobox().addEventListener(Events.ON_CHANGING, (EventListener<InputEvent>)(e) -> {
-			if (!e.isChangingBySelectBack())
-				listModel.getSubModel(e.getValue(), MAX_AUTO_COMPLETE_ROWS);
-		});
+		if (gridField != null && gridField.isAutocomplete()) {
+			setTableAndKeyColumn();
+			listModel = new InfoListSubModel(lookup, gridField, m_tableName, m_keyColumnName);
+			getComponent().getCombobox().setModel(listModel.getSubModel(null, MAX_AUTO_COMPLETE_ROWS));
+			
+			getComponent().getCombobox().addEventListener(Events.ON_CHANGING, (EventListener<InputEvent>)(e) -> {
+				if (!e.isChangingBySelectBack()) {
+					listModel.setWhereClause(getWhereClause());
+					String s = e.getValue();
+					if (!Util.isEmpty(s, true)) {
+						StringBuilder query = new StringBuilder(s);
+						query.append("?autocomplete={");
+						query.append("timeout:1")
+							.append(",")
+							.append("pagesize:")
+							.append(MAX_AUTO_COMPLETE_ROWS);
+						query.append("}");
+						s = query.toString();
+					}
+					getComponent().getCombobox().setModel(listModel.getSubModel(s, MAX_AUTO_COMPLETE_ROWS));
+				}
+			});
+		} else {
+			getComponent().getCombobox().setAutodrop(false);
+		}
 		
 		return;
 	}
@@ -824,49 +836,5 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			}
 		}
 		
-	}
-	
-	private class MyListModel extends ListModelList<ValueNamePair> implements ListSubModel<ValueNamePair> {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -1210525428410505409L;
-
-		@Override
-		public ListModel<ValueNamePair> getSubModel(Object value, int nRows) {
-			ListModelList<ValueNamePair> model = new ListModelList<>();
-			if (value != null && !Util.isEmpty(value.toString(), true)) {
-				String queryText = value.toString().trim();
-				
-				if (m_tableName == null)	//	sets table name & key column
-					setTableAndKeyColumn();
-				
-				final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, queryText, false, getWhereClause());
-				if (ip != null && ip.loadedOK()) {
-					int rowCount = ip.getRowCount();
-					if (rowCount > 0) {
-						List<String> added = new ArrayList<String>();
-						for(int i = 0; i < rowCount; i++) {
-							Integer key = ip.getRowKeyAt(i);
-							if (key != null && key.intValue() > 0) {
-								String name = lookup.getDisplay(key);
-								if (added.contains(name))
-									continue;
-								else
-									added.add(name);
-								ValueNamePair pair = new ValueNamePair(key.toString(), name);
-								model.add(pair);
-								if (nRows > 0 && added.size() >= nRows)
-									break;
-							}
-						}
-					}
-				}
-			}
-			getComponent().getCombobox().setModel(model);
-			return model;
-		}
-		
-	}
+	}	
 }
