@@ -110,7 +110,7 @@ public class MReport extends X_PA_Report
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MReport[")
+		StringBuilder sb = new StringBuilder ("MReport[")
 			.append(get_ID()).append(" - ").append(getName());
 		if (getDescription() != null)
 			sb.append("(").append(getDescription()).append(")");

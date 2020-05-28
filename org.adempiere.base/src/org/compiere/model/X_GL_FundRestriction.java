@@ -30,7 +30,7 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_GL_FundRestriction (Properties ctx, int GL_FundRestriction_ID, String trxName)
@@ -68,8 +68,8 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_GL_FundRestriction[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_GL_FundRestriction[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

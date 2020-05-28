@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Web Client
 Bundle-SymbolicName: org.adempiere.ui.zk;singleton:=true
 Bundle-Version: 7.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Import-Package: groovy.transform.stc;version="2.4.7",
  javax.annotation,
@@ -49,6 +48,7 @@ Import-Package: groovy.transform.stc;version="2.4.7",
  org.jfree.data.time,
  org.jfree.util,
  org.osgi.framework;version="1.7.0",
+ org.osgi.framework.wiring;version="1.2.0",
  org.osgi.service.component.annotations;version="1.3.0",
  org.osgi.service.event;version="1.3.0",
  org.osgi.util.tracker;version="1.5.0",
@@ -74,7 +74,6 @@ Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  org.adempiere.webui.apps.graph.model,
  org.adempiere.webui.apps.wf,
  org.adempiere.webui.component,
- org.adempiere.webui.component.test,
  org.adempiere.webui.dashboard,
  org.adempiere.webui.desktop,
  org.adempiere.webui.editor,
@@ -164,7 +163,6 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  zkplus;bundle-version="0.0.0",
  zul;bundle-version="0.0.0",
  zweb;bundle-version="0.0.0",
- org.junit;bundle-version="0.0.0",
  org.apache.commons.io;bundle-version="0.0.0",
  com.itextpdf;bundle-version="0.0.0",
  org.atmosphere.runtime;bundle-version="0.0.0",

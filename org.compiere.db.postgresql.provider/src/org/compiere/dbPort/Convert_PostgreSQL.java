@@ -51,6 +51,9 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	private static final CLogger log = CLogger.getCLogger(Convert_PostgreSQL.class);
 
 	
+	private final static Pattern likePattern = Pattern.compile("\\bLIKE\\b", REGEX_FLAGS);
+	
+	private final static Pattern sysDatePattern = Pattern.compile("\\bSYSDATE\\b", REGEX_FLAGS);
 	
 	/**
 	 * Is Oracle DB
@@ -75,13 +78,20 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	 */
 	protected ArrayList<String> convertStatement(String sqlStatement) {
 		ArrayList<String> result = new ArrayList<String>();
+		if (DB_PostgreSQL.isUseNativeDialect()) {
+			sqlStatement = convertSysDate(sqlStatement);
+			sqlStatement = convertSimilarTo(sqlStatement);
+			result.add(sqlStatement);
+			return result;
+		}
+		
 		/** Vector to save previous values of quoted strings **/
 		Vector<String> retVars = new Vector<String>();
 		
 		String statement = replaceQuotedStrings(sqlStatement, retVars);
 		statement = convertWithConvertMap(statement);
 		statement = convertSimilarTo(statement);
-		statement = statement.replace(DB_PostgreSQL.NATIVE_MARKER, "");
+		statement = DB_PostgreSQL.removeNativeKeyworkMarker(statement);
 		
 		String cmpString = statement.toUpperCase();
 		boolean isCreate = cmpString.startsWith("CREATE ");
@@ -124,23 +134,39 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 		return result;
 	} // convertStatement
 
+	private String convertSysDate(String statement) {
+		String retValue = statement;
+		String replacement = "getDate()";
+		try {
+			Matcher m = sysDatePattern.matcher(retValue);
+			retValue = m.replaceAll(replacement);
+		} catch (Exception e) {
+			String error = "Error expression: " + sysDatePattern.pattern() + " - " + e;
+			log.info(error);
+			m_conversionError = error;
+		}		
+		return retValue;
+	}
+	
 	private String convertSimilarTo(String statement) {
 		String retValue = statement;
-		boolean useSimilarTo = "Y".equals(Env.getContext(Env.getCtx(), "P|IsUseSimilarTo"));
+		boolean useSimilarTo = isUseSimilarTo();
 		if (useSimilarTo) {
-			String regex = "\\bLIKE\\b";
 			String replacement = "SIMILAR TO";
 			try {
-				Pattern p = Pattern.compile(regex, REGEX_FLAGS);
-				Matcher m = p.matcher(retValue);
+				Matcher m = likePattern.matcher(retValue);
 				retValue = m.replaceAll(replacement);
 			} catch (Exception e) {
-				String error = "Error expression: " + regex + " - " + e;
+				String error = "Error expression: " + likePattern.pattern() + " - " + e;
 				log.info(error);
 				m_conversionError = error;
 			}
 		}
 		return retValue;
+	}
+
+	private boolean isUseSimilarTo() {
+		return "Y".equals(Env.getContext(Env.getCtx(), "P|IsUseSimilarTo"));
 	}
 
 	@Override

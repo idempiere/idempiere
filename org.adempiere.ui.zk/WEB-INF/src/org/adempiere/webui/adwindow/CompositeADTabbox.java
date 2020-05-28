@@ -149,12 +149,33 @@ public class CompositeADTabbox extends AbstractADTabbox
 					final IADTabpanel tabPanel = getSelectedDetailADTabpanel();
 					if (!tabPanel.getGridTab().dataSave(true)) {
 						showLastError();
-					} 
-					tabPanel.getGridTab().dataRefreshAll(true, true);
-					tabPanel.getGridTab().refreshParentTabs();
+					} else {
+						tabPanel.getGridTab().dataRefreshAll(true, true);
+						tabPanel.getGridTab().refreshParentTabs();
+					}
 				}
 				else if (DetailPane.ON_DELETE_EVENT.equals(event.getName())) {
 					onDelete();
+				}
+				else if (DetailPane.ON_QUICK_FORM_EVENT.equals(event.getName()))
+				{
+					if (headerTab.getGridTab().isNew() && !headerTab.needSave(true, false))
+						return;
+
+					final int row = getSelectedDetailADTabpanel() != null ? getSelectedDetailADTabpanel().getGridTab().getCurrentRow() : 0;
+					final boolean formView = event.getData() != null ? (Boolean) event.getData() : true;
+
+					adWindowPanel.saveAndNavigate(new Callback <Boolean>() {
+						@Override
+						public void onCallback(Boolean result)
+						{
+							if (result)
+							{
+								onEditDetail(row, formView);
+								adWindowPanel.onQuickForm();
+							}
+						}
+					});
 				}
 			}
 

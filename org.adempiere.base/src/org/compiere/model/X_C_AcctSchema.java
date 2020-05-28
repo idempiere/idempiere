@@ -30,7 +30,7 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_AcctSchema (Properties ctx, int C_AcctSchema_ID, String trxName)
@@ -90,8 +90,8 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_AcctSchema[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_AcctSchema[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

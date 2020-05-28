@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.compiere.model.ImageDBStorageImpl">
+   <implementation class="org.compiere.model.ImageDBStorageImpl"/>
+   <service>
+      <provide interface="org.compiere.model.IImageStore"/>
+   </service>
+   <property name="method" type="String" value="DB"/>
+</scr:component>

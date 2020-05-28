@@ -32,7 +32,7 @@ public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_B_BuyerFunds (Properties ctx, int B_BuyerFunds_ID, String trxName)
@@ -70,7 +70,7 @@ public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_B_BuyerFunds[")
+      StringBuilder sb = new StringBuilder ("X_B_BuyerFunds[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -33,7 +33,7 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_BPartner (Properties ctx, int C_BPartner_ID, String trxName)
@@ -86,8 +86,8 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_BPartner[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_BPartner[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
@@ -155,17 +155,23 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 		@param AD_OrgBP_ID 
 		The Business Partner is another Organization for explicit Inter-Org transactions
 	  */
-	public void setAD_OrgBP_ID (String AD_OrgBP_ID)
+	public void setAD_OrgBP_ID (int AD_OrgBP_ID)
 	{
-		set_Value (COLUMNNAME_AD_OrgBP_ID, AD_OrgBP_ID);
+		if (AD_OrgBP_ID < 1) 
+			set_Value (COLUMNNAME_AD_OrgBP_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_OrgBP_ID, Integer.valueOf(AD_OrgBP_ID));
 	}
 
 	/** Get Linked Organization.
 		@return The Business Partner is another Organization for explicit Inter-Org transactions
 	  */
-	public String getAD_OrgBP_ID () 
+	public int getAD_OrgBP_ID () 
 	{
-		return (String)get_Value(COLUMNNAME_AD_OrgBP_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgBP_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Partner Parent.

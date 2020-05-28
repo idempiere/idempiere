@@ -47,7 +47,7 @@ public class MBPartner extends X_C_BPartner
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -255154524310324997L;
+	private static final long serialVersionUID = 5534148976588041343L;
 
 	/**
 	 * 	Get Empty Template Business Partner
@@ -573,41 +573,17 @@ public class MBPartner extends X_C_BPartner
 		super.setClientOrg(AD_Client_ID, AD_Org_ID);
 	}	//	setClientOrg
 
-	/**
-	 * 	Set Linked Organization.
-	 * 	(is Button)
-	 *	@param AD_OrgBP_ID 
-	 */
-	public void setAD_OrgBP_ID (int AD_OrgBP_ID)
-	{
-		if (AD_OrgBP_ID == 0)
-			super.setAD_OrgBP_ID (null);
-		else
-			super.set_Value("AD_OrgBP_ID", AD_OrgBP_ID);
-	}	//	setAD_OrgBP_ID
-	
 	/** 
 	 * 	Get Linked Organization.
 	 * 	(is Button)
 	 * 	The Business Partner is another Organization 
 	 * 	for explicit Inter-Org transactions 
 	 * 	@return AD_Org_ID if BP
+	 *  @deprecated
 	 */
 	public int getAD_OrgBP_ID_Int() 
 	{
-		String org = super.getAD_OrgBP_ID();
-		if (org == null)
-			return 0;
-		int AD_OrgBP_ID = 0;
-		try
-		{
-			AD_OrgBP_ID = Integer.parseInt (org);
-		}
-		catch (Exception ex)
-		{
-			log.log(Level.SEVERE, org, ex);
-		}
-		return AD_OrgBP_ID;
+		return getAD_OrgBP_ID();
 	}	//	getAD_OrgBP_ID_Int
 
 	/**
@@ -1005,5 +981,17 @@ public class MBPartner extends X_C_BPartner
 			delete_Tree(MTree_Base.TREETYPE_BPartner);
 		return success;
 	}	//	afterDelete
+
+	@Override
+	protected boolean postDelete() {
+		if (getLogo_ID() > 0) {
+			MImage img = new MImage(getCtx(), getLogo_ID(), get_TrxName());
+			if (!img.delete(true)) {
+				log.warning("Associated image could not be deleted for bpartner - AD_Image_ID=" + getLogo_ID());
+				return false;
+			}
+		}
+		return true;
+	}
 
 }	//	MBPartner

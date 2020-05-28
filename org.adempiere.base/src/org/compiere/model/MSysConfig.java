@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,10 +40,10 @@ import org.compiere.util.DisplayType;
  */
 public class MSysConfig extends X_AD_SysConfig
 {
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6662424546913925975L;
+	private static final long serialVersionUID = -3283099328590831741L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -85,7 +86,6 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String DB_READ_REPLICA_NORMAL_MAX_ITERATIONS = "DB_READ_REPLICA_NORMAL_MAX_ITERATIONS";
 	public static final String DB_READ_REPLICA_NORMAL_TIMEOUT_IN_MILLISECONDS = "DB_READ_REPLICA_NORMAL_TIMEOUT_IN_MILLISECONDS";
 	public static final String DB_READ_REPLICA_URLS = "DB_READ_REPLICA_URLS";
-    public static final String DICTIONARY_ID_COMMENTS = "DICTIONARY_ID_COMMENTS";
     public static final String DICTIONARY_ID_PASSWORD = "DICTIONARY_ID_PASSWORD";
     public static final String DICTIONARY_ID_USE_CENTRALIZED_ID = "DICTIONARY_ID_USE_CENTRALIZED_ID";
     public static final String DICTIONARY_ID_USER = "DICTIONARY_ID_USER";
@@ -99,6 +99,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String HTML_REPORT_THEME = "HTML_REPORT_THEME";
     public static final String IBAN_VALIDATION = "IBAN_VALIDATION";
     public static final String IDENTIFIER_SEPARATOR = "IDENTIFIER_SEPARATOR";
+    public static final String IMAGE_DB_STORAGE_SAVE_AS_ZIP = "IMAGE_DB_STORAGE_SAVE_AS_ZIP";
     public static final String INFO_DEFAULTSELECTED = "INFO_DEFAULTSELECTED";
     public static final String INFO_DOUBLECLICKTOGGLESSELECTION = "INFO_DOUBLECLICKTOGGLESSELECTION";
     public static final String Invoice_ReverseUseNewNumber = "Invoice_ReverseUseNewNumber";
@@ -129,12 +130,12 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String PDF_FONT_DIR = "PDF_FONT_DIR";
     public static final String ProductUOMConversionRateValidate = "ProductUOMConversionRateValidate";
     public static final String ProductUOMConversionUOMValidate = "ProductUOMConversionUOMValidate";
-    public static final String PROJECT_ID_COMMENTS = "PROJECT_ID_COMMENTS";
     public static final String PROJECT_ID_PASSWORD = "PROJECT_ID_PASSWORD";
     public static final String PROJECT_ID_PROJECT = "PROJECT_ID_PROJECT";
     public static final String PROJECT_ID_USE_CENTRALIZED_ID = "PROJECT_ID_USE_CENTRALIZED_ID";
     public static final String PROJECT_ID_USER = "PROJECT_ID_USER";
     public static final String PROJECT_ID_WEBSITE = "PROJECT_ID_WEBSITE";
+	public static final String QUICKFORM_PAGE_SIZE = "QUICKFORM_PAGE_SIZE";
     public static final String REAL_TIME_POS = "REAL_TIME_POS";
     public static final String RecentItems_MaxSaved = "RecentItems_MaxSaved";
     public static final String RecentItems_MaxShown = "RecentItems_MaxShown";
@@ -271,12 +272,13 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
 	/**
 	 * Get system configuration property of type double
 	 * @param Name
 	 * @param defaultValue
 	 * @return double
+	 * @deprecated use better getBigDecimalValue
 	 */
 	public static double getDoubleValue(String Name, double defaultValue)
 	{
@@ -294,7 +296,30 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
+	/**
+	 * Get system configuration property of type BigDecimal
+	 * @param Name
+	 * @param defaultValue
+	 * @return BigDecimal
+	 */
+	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue)
+	{
+		String s = getValue(Name);
+		if (s == null || s.length() == 0)
+			return defaultValue;
+		//
+		try
+		{
+			return new BigDecimal(s);
+		}
+		catch (NumberFormatException e)
+		{
+			s_log.log(Level.SEVERE, "getBigDecimalValue (" + Name + ") = " + s, e);
+		}
+		return defaultValue;
+	}
+
 	/**
 	 * Get system configuration property of type boolean
 	 * @param Name
@@ -364,13 +389,14 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
 	/**
 	 * Get system configuration property of type double
 	 * @param Name
 	 * @param defaultValue
 	 * @param Client ID
 	 * @return double
+	 * @deprecated use better getBigDecimalValue
 	 */
 	public static double getDoubleValue(String Name, double defaultValue, int AD_Client_ID)
 	{
@@ -388,7 +414,31 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
+	/**
+	 * Get system configuration property of type BigDecimal
+	 * @param Name
+	 * @param defaultValue
+	 * @param Client ID
+	 * @return BigDecimal
+	 */
+	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue, int AD_Client_ID)
+	{
+		String s = getValue(Name, AD_Client_ID);
+		if (s == null || s.length() == 0)
+			return defaultValue;
+		//
+		try
+		{
+			return new BigDecimal(s);
+		}
+		catch (NumberFormatException e)
+		{
+			s_log.log(Level.SEVERE, "getBigDecimalValue (" + Name + ") = " + s, e);
+		}
+		return defaultValue;
+	}
+
 	/**
 	 * Get system configuration property of type boolean
 	 * @param Name
@@ -508,7 +558,7 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
 	/**
 	 * Get system configuration property of type double
 	 * @param Name
@@ -516,6 +566,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param Client ID
 	 * @param Organization ID
 	 * @return double
+	 * @deprecated use better getBigDecimalValue
 	 */
 	public static double getDoubleValue(String Name, double defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
@@ -533,7 +584,32 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
+	/**
+	 * Get system configuration property of type BigDecimal
+	 * @param Name
+	 * @param defaultValue
+	 * @param Client ID
+	 * @param Organization ID
+	 * @return BigDecimal
+	 */
+	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue, int AD_Client_ID, int AD_Org_ID)
+	{
+		String s = getValue(Name, AD_Client_ID, AD_Org_ID);
+		if (s == null || s.length() == 0)
+			return defaultValue;
+		//
+		try
+		{
+			return new BigDecimal(s);
+		}
+		catch (NumberFormatException e)
+		{
+			s_log.log(Level.SEVERE, "getBigDecimalValue (" + Name + ") = " + s, e);
+		}
+		return defaultValue;
+	}
+
 	/**
 	 * Get system configuration property of type boolean
 	 * @param Name

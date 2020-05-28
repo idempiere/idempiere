@@ -31,7 +31,7 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_S_ResourceUnAvailable (Properties ctx, int S_ResourceUnAvailable_ID, String trxName)
@@ -68,7 +68,7 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_S_ResourceUnAvailable[")
+      StringBuilder sb = new StringBuilder ("X_S_ResourceUnAvailable[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

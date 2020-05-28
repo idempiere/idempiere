@@ -82,7 +82,7 @@ public class CalloutEngine implements Callout
 		
 		//
 		String retValue = "";
-		StringBuffer msg = new StringBuffer(methodName).append(" - ")
+		StringBuilder msg = new StringBuilder(methodName).append(" - ")
 			.append(mField.getColumnName())
 			.append("=").append(value)
 			.append(" (old=").append(oldValue)
@@ -143,7 +143,7 @@ public class CalloutEngine implements Callout
 			throw new IllegalArgumentException ("No Method Name");
 		//
 		String retValue = null;
-		StringBuffer msg = new StringBuffer(methodName).append(" - ").append(value);
+		StringBuilder msg = new StringBuilder(methodName).append(" - ").append(value);
 		if (log.isLoggable(Level.INFO)) log.info (msg.toString());
 		//
 		//	Find Method

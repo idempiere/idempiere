@@ -164,7 +164,7 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 		//	Delete Old Imported
 		if (p_DeleteOldImported)
 		{
-			sql = new StringBuilder ("DELETE I_Inventory ")
+			sql = new StringBuilder ("DELETE FROM I_Inventory ")
 				  .append("WHERE I_IsImported='Y'").append (clientCheck);
 			no = DB.executeUpdate (sql.toString (), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Imported=" + no);
@@ -177,9 +177,9 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 		if (p_MovementDate != null)
 			sql.append(" MovementDate = COALESCE (MovementDate,").append (DB.TO_DATE(p_MovementDate)).append ("),");
 		sql.append(" IsActive = COALESCE (IsActive, 'Y'),")
-			  .append(" Created = COALESCE (Created, SysDate),")
+			  .append(" Created = COALESCE (Created, getDate()),")
 			  .append(" CreatedBy = COALESCE (CreatedBy, 0),")
-			  .append(" Updated = COALESCE (Updated, SysDate),")
+			  .append(" Updated = COALESCE (Updated, getDate()),")
 			  .append(" UpdatedBy = COALESCE (UpdatedBy, 0),")
 			  .append(" I_ErrorMsg = ' ',")
 			  .append(" M_Warehouse_ID = NULL,")	//	reset
@@ -495,7 +495,7 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 
 		//	Set Error to indicator to not imported
 		sql = new StringBuilder ("UPDATE I_Inventory ")
-			.append("SET I_IsImported='N', Updated=SysDate ")
+			.append("SET I_IsImported='N', Updated=getDate() ")
 			.append("WHERE I_IsImported<>'Y'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog (0, null, new BigDecimal (no), "@Errors@");

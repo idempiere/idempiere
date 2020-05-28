@@ -53,6 +53,8 @@ public class ArchiveFileSystem implements IArchiveStore {
 	
 	private static final CLogger log = CLogger.getCLogger(ArchiveFileSystem.class);
 
+	//temporary buffer when AD_Archive_ID=0;
+	private byte[] buffer;
 
 	/* (non-Javadoc)
 	 * @see org.compiere.model.IArchiveStore#loadLOBData(org.compiere.model.MArchive, org.compiere.model.MStorageProvider)
@@ -63,6 +65,7 @@ public class ArchiveFileSystem implements IArchiveStore {
 		if ("".equals(archivePathRoot)) {
 			throw new IllegalArgumentException("no attachmentPath defined");
 		}
+		buffer = null;
 		byte[] data = archive.getByteData();
 		if (data == null) {
 			return null;
@@ -144,24 +147,29 @@ public class ArchiveFileSystem implements IArchiveStore {
 	 * @see org.compiere.model.IArchiveStore#save(org.compiere.model.MArchive, org.compiere.model.MStorageProvider)
 	 */
 	@Override
-	public void  save(MArchive archive, MStorageProvider prov,byte[] inflatedData) {
-		String archivePathRoot = getArchivePathRoot(prov);
-		if ("".equals(archivePathRoot)) {
-			throw new IllegalArgumentException("no attachmentPath defined");
-		}
+	public void  save(MArchive archive, MStorageProvider prov,byte[] inflatedData) {		
 		if (inflatedData == null || inflatedData.length == 0) {
 			throw new IllegalArgumentException("InflatedData is NULL");
 		}
 		if(archive.get_ID()==0){
 			//set binary data otherwise save will fail
 			archive.setByteData(new byte[]{'0'});
-			if(!archive.save()) {
-				throw new IllegalArgumentException("unable to save MArchive");
-			}
+			buffer = inflatedData;
+		} else {		
+			write(archive, prov, inflatedData);			
 		}
-		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	}
+
+	private void write(MArchive archive, MStorageProvider prov,
+			byte[] inflatedData) {		
 		BufferedOutputStream out = null;
 		try {
+			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			
+			String archivePathRoot = getArchivePathRoot(prov);
+			if ("".equals(archivePathRoot)) {
+				throw new IllegalArgumentException("no attachmentPath defined");
+			}
 			// create destination folder
 			StringBuilder msgfile = new StringBuilder().append(archivePathRoot)
 					.append(archive.getArchivePathSnippet());
@@ -203,6 +211,7 @@ public class ArchiveFileSystem implements IArchiveStore {
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "saveLOBData", e);
 			archive.setByteData(null);
+			throw new RuntimeException(e);
 		} finally {
 			if(out != null){
 				try {
@@ -210,7 +219,6 @@ public class ArchiveFileSystem implements IArchiveStore {
 				} catch (Exception e) {	}
 			}
 		}
-
 	}
 
 	private String getArchivePathRoot(MStorageProvider prov) {
@@ -233,7 +241,7 @@ public class ArchiveFileSystem implements IArchiveStore {
 			throw new IllegalArgumentException("no attachmentPath defined");
 		}
 		StringBuilder msgfile = new StringBuilder().append(archivePathRoot)
-				.append(archive.getArchivePathSnippet()).append(archive.get_ID()).append(".pdf");
+				.append(archive.getArchivePathSnippet()).append(archive.getAD_Archive_ID()).append(".pdf");
 		
 		File file=new File(msgfile.toString());
 		if (file !=null && file.exists()) {
@@ -243,6 +251,19 @@ public class ArchiveFileSystem implements IArchiveStore {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public boolean isPendingFlush() {
+		return buffer != null && buffer.length > 0;
+	}
+
+	@Override
+	public void flush(MArchive archive, MStorageProvider prov) {
+		if (buffer != null && buffer.length > 0) {
+			write(archive, prov, buffer);
+			buffer = null;
+		}
 	}
 
 }

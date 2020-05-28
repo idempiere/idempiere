@@ -95,7 +95,7 @@ public class InventoryValue extends SvrProcess
 		MAcctSchema as = c.getAcctSchema();
 		
 		//  Delete (just to be sure)
-		StringBuilder sql = new StringBuilder ("DELETE T_InventoryValue WHERE AD_PInstance_ID=");
+		StringBuilder sql = new StringBuilder ("DELETE FROM T_InventoryValue WHERE AD_PInstance_ID=");
 		sql.append(getAD_PInstance_ID());
 		int no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 
@@ -228,7 +228,7 @@ public class InventoryValue extends SvrProcess
 		if (log.isLoggable(Level.FINE)) log.fine("Update w/o ASI=" + no);
 		
 		//  Delete Records w/o OnHand Qty
-		sql = new StringBuilder("DELETE T_InventoryValue ")
+		sql = new StringBuilder("DELETE FROM T_InventoryValue ")
 			.append("WHERE (QtyOnHand=0 OR QtyOnHand IS NULL) AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		int noQty = DB.executeUpdateEx (sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("NoQty Deleted=" + noQty);

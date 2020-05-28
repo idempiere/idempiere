@@ -33,7 +33,7 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_GL_JournalBatch (Properties ctx, int GL_JournalBatch_ID, String trxName)
@@ -81,7 +81,7 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_GL_JournalBatch[")
+      StringBuilder sb = new StringBuilder ("X_GL_JournalBatch[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

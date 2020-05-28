@@ -30,7 +30,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_Registration (Properties ctx, int AD_Registration_ID, String trxName)
@@ -75,7 +75,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Registration[")
+      StringBuilder sb = new StringBuilder ("X_AD_Registration[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

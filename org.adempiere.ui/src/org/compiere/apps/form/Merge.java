@@ -138,11 +138,11 @@ public class Merge
 				+ " - " + ColumnName + " - From=" + from_ID + ",To=" + to_ID);
 			if (success)
 			{
-				sql = "DELETE " + TableName + " WHERE " + ColumnName + "=" + from_ID;
+				sql = "DELETE FROM " + TableName + " WHERE " + ColumnName + "=" + from_ID;
 				
 				if ( DB.executeUpdate(sql, m_trx.getTrxName()) < 0 )
 				{
-					m_errorLog.append(Env.NL).append("DELETE ").append(TableName)
+					m_errorLog.append(Env.NL).append("DELETE FROM ").append(TableName)
 					.append(" - ");
 				    success = false;
 					if (log.isLoggable(Level.CONFIG)) log.config(m_errorLog.toString());
@@ -196,7 +196,7 @@ public class Merge
 			if (m_deleteTables[i].equals(TableName))
 			{
 				delete = true;
-				sql = "DELETE " + TableName + " WHERE " + ColumnName + "=" + from_ID;
+				sql = "DELETE FROM " + TableName + " WHERE " + ColumnName + "=" + from_ID;
 			}
 		}
 		// Delete newly created MCost records - teo_sarca [ 1704554 ]
@@ -213,7 +213,7 @@ public class Merge
 		{
 			count = -1;
 			m_errorLog.append(Env.NL)
-				.append(delete ? "DELETE " : "UPDATE ")
+				.append(delete ? "DELETE FROM " : "UPDATE ")
 				.append(TableName).append(" - ")
 				.append(" - ").append(sql);
 			if (log.isLoggable(Level.CONFIG)) log.config(m_errorLog.toString());

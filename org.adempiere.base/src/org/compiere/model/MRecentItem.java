@@ -197,7 +197,7 @@ public class MRecentItem extends X_AD_RecentItem
 				ri.setAD_Tab_ID(AD_Tab_ID);
 				ri.saveEx();
 			} else {
-				DB.executeUpdateEx("UPDATE AD_RecentItem SET Updated=SYSDATE WHERE AD_RecentItem_ID=?", new Object[] {ri.getAD_RecentItem_ID()}, null);
+				DB.executeUpdateEx("UPDATE AD_RecentItem SET Updated=getDate() WHERE AD_RecentItem_ID=?", new Object[] {ri.getAD_RecentItem_ID()}, null);
 			}
 		}
 		publishChangedEvent(AD_User_ID);
@@ -228,7 +228,7 @@ public class MRecentItem extends X_AD_RecentItem
 	public static void touchUpdatedRecord(Properties ctx, int AD_Table_ID, int Record_ID, int AD_User_ID) {
 		MRecentItem ri = get(ctx, AD_Table_ID, Record_ID, AD_User_ID);
 		if (ri != null) {
-			DB.executeUpdateEx("UPDATE AD_RecentItem SET Updated=SYSDATE WHERE AD_RecentItem_ID=?", new Object[] {ri.getAD_RecentItem_ID()}, null);
+			DB.executeUpdateEx("UPDATE AD_RecentItem SET Updated=getDate() WHERE AD_RecentItem_ID=?", new Object[] {ri.getAD_RecentItem_ID()}, null);
 			deleteExtraRecentItems(ctx, AD_User_ID);
 			publishChangedEvent(AD_User_ID);
 		}

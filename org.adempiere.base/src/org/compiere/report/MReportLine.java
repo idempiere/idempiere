@@ -313,7 +313,7 @@ public class MReportLine extends X_PA_ReportLine
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MReportLine[")
+		StringBuilder sb = new StringBuilder ("MReportLine[")
 			.append(get_ID()).append(" - ").append(getName()).append(" - ").append(getDescription())
 			.append(", SeqNo=").append(getSeqNo()).append(", AmountType=").append(getPAAmountType())
 			.append(", PeriodType=").append(getPAPeriodType())

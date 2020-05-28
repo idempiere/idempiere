@@ -33,7 +33,7 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_BP_Price (Properties ctx, int M_BP_Price_ID, String trxName)
@@ -75,7 +75,7 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_BP_Price[")
+      StringBuilder sb = new StringBuilder ("X_M_BP_Price[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

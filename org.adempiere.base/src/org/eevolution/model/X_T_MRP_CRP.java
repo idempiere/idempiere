@@ -30,7 +30,7 @@ public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_T_MRP_CRP (Properties ctx, int T_MRP_CRP_ID, String trxName)
@@ -65,7 +65,7 @@ public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_T_MRP_CRP[")
+      StringBuilder sb = new StringBuilder ("X_T_MRP_CRP[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -1616,10 +1616,10 @@ public class MInOut extends X_M_InOut implements DocAction
 							}
 							if (!po.isPosted())
 								addDocsPostProcess(po);
-							MMatchInv matchInvCreated = po.getMatchInvCreated();
-							if (matchInvCreated != null) {
+							
+							MMatchInv[] matchInvList = MMatchInv.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
+							for (MMatchInv matchInvCreated : matchInvList)
 								addDocsPostProcess(matchInvCreated);
-							}
 						}
 						//	Update PO with ASI
 						if (   oLine != null && oLine.getM_AttributeSetInstance_ID() == 0
@@ -1973,7 +1973,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			return null;
 		//	Business Partner needs to be linked to Org
 		MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
-		int counterAD_Org_ID = bp.getAD_OrgBP_ID_Int();
+		int counterAD_Org_ID = bp.getAD_OrgBP_ID();
 		if (counterAD_Org_ID == 0)
 			return null;
 

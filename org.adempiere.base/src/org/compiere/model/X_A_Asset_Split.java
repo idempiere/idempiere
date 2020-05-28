@@ -33,7 +33,7 @@ public class X_A_Asset_Split extends PO implements I_A_Asset_Split, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_A_Asset_Split (Properties ctx, int A_Asset_Split_ID, String trxName)
@@ -86,7 +86,7 @@ public class X_A_Asset_Split extends PO implements I_A_Asset_Split, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Asset_Split[")
+      StringBuilder sb = new StringBuilder ("X_A_Asset_Split[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -814,6 +814,8 @@ public class POInfo implements Serializable
 			if (count > 1)
 				sql.append(",");
 			String columnSQL = getColumnSQL(i);
+			if (!virtual)
+				columnSQL = DB.getDatabase().quoteColumnName(columnSQL);
 			if (fullyQualified && !virtual)
 				sql.append(getTableName()).append(".");
 			sql.append(columnSQL);	//	Normal and Virtual Column

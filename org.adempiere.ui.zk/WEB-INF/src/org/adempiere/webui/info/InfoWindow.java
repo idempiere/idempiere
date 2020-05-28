@@ -71,6 +71,7 @@ import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.GridWindow;
+import org.compiere.model.Lookup;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MLookupFactory;
@@ -1252,10 +1253,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		layout = new Borderlayout();
 		ZKUpdateUtil.setWidth(layout, "100%");
 		ZKUpdateUtil.setHeight(layout, "100%");
-        if (!isLookup())
-        {
-        	layout.setStyle("position: relative");
-        }
         this.appendChild(layout);
 		
         if (isLookup())
@@ -1269,8 +1266,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         North north = new North();
         north.setCollapsible(true);
         north.setSplittable(true);
-        north.setAutoscroll(true);
+        north.setAutoscroll(true);                
         LayoutUtils.addSlideSclass(north);
+        ZKUpdateUtil.setVflex(north, "min");
         layout.appendChild(north);
         renderParameterPane(north);
         
@@ -2691,14 +2689,16 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			{
 				throw new AdempiereException(e);
 			}
-			/* not required - the info window splits the column in key name pairs
-			GridField gridField = columnInfos[col].getGridField();
-			Lookup lookup = gridField.getLookup();
-			if (val != null && lookup != null)
+			
+			if(val != null && !columnInfos[col].isKeyPairCol() 
+					&& columnInfos[col].getGridField().getLookup() != null)
 			{
-				val = lookup.getDisplay(val);
-			}
-			*/
+				Lookup lookup = columnInfos[col].getGridField().getLookup();
+				if (lookup != null)
+				{
+					val = lookup.getDisplay(val);
+				}
+			} 
 			
 			return val; 
 		}
@@ -2707,6 +2707,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		public boolean isPageBreak(int row, int col)
 		{
 			return false;
-		}		
+		}
+
+		@Override
+		public boolean isDisplayed(int row, int col)
+		{
+			return true;
+		}	
 	}	
 }

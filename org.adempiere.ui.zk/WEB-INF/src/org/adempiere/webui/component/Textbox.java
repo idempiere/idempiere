@@ -57,7 +57,13 @@ public class Textbox extends org.zkoss.zul.Textbox implements EventListener<Even
     {
         this.setDisabled(!enabled);
     }
-    
+
+    @Override
+    public void setReadonly(boolean readonly) {
+    	super.setReadonly(readonly);
+    	this.setDisabled(readonly);
+    }
+
     public void setObscureType(String obscureType)
     {
     	if (obscureType != null && obscureType.length() > 0)

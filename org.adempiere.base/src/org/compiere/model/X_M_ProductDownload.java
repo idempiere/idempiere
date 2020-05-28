@@ -30,7 +30,7 @@ public class X_M_ProductDownload extends PO implements I_M_ProductDownload, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_ProductDownload (Properties ctx, int M_ProductDownload_ID, String trxName)
@@ -68,8 +68,8 @@ public class X_M_ProductDownload extends PO implements I_M_ProductDownload, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_ProductDownload[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_M_ProductDownload[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

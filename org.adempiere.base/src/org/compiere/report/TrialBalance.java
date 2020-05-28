@@ -107,7 +107,7 @@ public class TrialBalance extends SvrProcess
 	 */
 	protected void prepare()
 	{
-		StringBuffer sb = new StringBuffer ("AD_PInstance_ID=")
+		StringBuilder sb = new StringBuilder ("AD_PInstance_ID=")
 			.append(getAD_PInstance_ID());
 		//	Parameter
 		ProcessInfoParameter[] para = getParameter();
@@ -300,8 +300,8 @@ public class TrialBalance extends SvrProcess
 			sql.append("0");
 		else
 			sql.append(p_AD_Org_ID);
-		sql.append(", SysDate,").append(getAD_User_ID())
-			.append(",SysDate,").append(getAD_User_ID()).append(",");
+		sql.append(", getDate(),").append(getAD_User_ID())
+			.append(",getDate(),").append(getAD_User_ID()).append(",");
 		//	C_AcctSchema_ID, Account_ID, AccountValue, DateTrx, DateAcct, C_Period_ID,
 		sql.append(p_C_AcctSchema_ID).append(",");
 		if (p_Account_ID == 0)

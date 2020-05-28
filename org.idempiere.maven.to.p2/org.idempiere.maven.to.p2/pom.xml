@@ -10,53 +10,37 @@
 	<artifactId>org.idempiere.maven.to.p2</artifactId>
 	<packaging>pom</packaging>
 	<properties>
-		<zk-osgi-zip-file>https://iweb.dl.sourceforge.net/project/zk1/ZK/zk-8.6.0.1/zk-bin-osgi-8.6.0.1.zip</zk-osgi-zip-file>
-		<!-- https://github.com/eclipse/jetty.project/blob/jetty-9.4.9.v20180320/pom.xml up to verison of jetty -->
-		<jetty.version>9.4.14.v20181114</jetty.version>
-		<jetty.alpn.api.version>1.1.3.v20160715</jetty.alpn.api.version>
-		<jetty.jsp.version>8.5.33.1</jetty.jsp.version>
+		<jetty.version>9.4.28.v20200408</jetty.version>
+		<jetty.jsp.version>8.5.49</jetty.jsp.version>
 		<jetty.osgi.servlet.api.version>3.1.0.M3</jetty.osgi.servlet.api.version>
 		<org.apache.taglibs.version>1.2.5</org.apache.taglibs.version>
 		<groovy.version>2.5.3</groovy.version>
 		<org.bouncycastle.version>1.60</org.bouncycastle.version>
-        <jackson.version>2.9.8</jackson.version> <!--it up to version of jasperreport engine-->
-        <stax2.api.version>3.1.4</stax2.api.version> <!--it up to version of jasperreport engine-->
-        <validation.api.version>1.1.0.Final</validation.api.version> <!--it up to version of jasperreport engine-->
-        <woodstox.core.version>5.0.3</woodstox.core.version> <!--it up to version of jasperreport engine-->
-        <json.version>20171018</json.version> <!--it up to version of jackson-datatype-json-org-->
-        <slf4j.version>1.7.25</slf4j.version>
+		<jackson.version>2.10.0</jackson.version> <!--jasperreport dependency-->
+		<stax2.api.version>4.2</stax2.api.version> <!--jackson-dataformat-xml dependency-->
+		<validation.api.version>1.1.0.Final</validation.api.version> <!--it up to version of jasperreport engine-->
+		<woodstox.core.version>6.0.1</woodstox.core.version> <!--jackson-dataformat-xml dependency-->
+		<json.version>20180813</json.version> <!--jackson-datatype-json-org dependency-->
+		<slf4j.version>1.7.25</slf4j.version>
 		<xml.ws.version>2.3.2</xml.ws.version>
 		<xml.ws.export.version>2.4</xml.ws.export.version>
 		<apache.cxf.version>3.3.1</apache.cxf.version>
 		<apache.cxf.databinding.version>3.1.18</apache.cxf.databinding.version>
 		<activation.version>1.2.1</activation.version>
 		<annotation.version>1.3.3</annotation.version>
-		<asm.version>7.0</asm.version>
-		<restlet.version>2.4.1</restlet.version>
+		<asm.version>7.3.1</asm.version>
 		<javamail.version>1.6.3</javamail.version>
 		<poi.version>4.1.0</poi.version>
+		<batik.version>1.11</batik.version>
 	</properties>
 	
-    <repositories>
-        <repository>
-            <id>orbit-photon-R20180531190352</id><!--only this repository have bakik 1.9-->
-            <url>https://download.eclipse.org/tools/orbit/downloads/drops2/R20180531190352/repository</url>
-            <layout>p2</layout>
-        </repository>
-        <repository>
-	        <id>jasperstudio-6.11.0</id>
-	        <url>https://sourceforge.net/projects/jasperstudio/files/updatesite/6.11.0</url>
-            <layout>p2</layout>
-        </repository>
-        <repository>
-            <id>zkoss</id>
-            <url>https://mavensync.zkoss.org/maven2</url>
-        </repository>
-        <repository>
-	        <id>restlet-maven</id>
-	        <url>https://maven.restlet.com</url>
-        </repository>
-    </repositories>
+	<repositories>
+		<repository>
+			<id>jasperstudio-6.11.0</id>
+			<url>https://sourceforge.net/projects/jasperstudio/files/updatesite/6.11.0</url>
+		    <layout>p2</layout>
+		</repository>		
+	</repositories>
 
 	<build>
 		<plugins>
@@ -94,8 +78,8 @@
 											<transitive>false</transitive>
 											<override>true</override>
 											<instructions>
-                                                <Import-Package>*;resolution:=optional</Import-Package>
-                                                <Export-Package>*</Export-Package>
+												<Import-Package>*;resolution:=optional</Import-Package>
+												<Export-Package>*</Export-Package>
 											</instructions>
 									    </artifact>
 									    <artifact>
@@ -104,8 +88,8 @@
 											<transitive>false</transitive>
 											<override>true</override>
 											<instructions>
-                                                <Import-Package>*;resolution:=optional</Import-Package>
-                                                <Export-Package>*</Export-Package>
+												<Import-Package>*;resolution:=optional</Import-Package>
+												<Export-Package>*</Export-Package>
 											</instructions>
 									    </artifact>
 										<artifact>
@@ -190,7 +174,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle:jar:1.2</id>
+											<id>org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle:jar:1.2.4</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -795,367 +779,14 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-		                                    <id>org.restlet.osgi:org.restlet:${restlet.version}</id>
-		                                    <source>true</source>
+											<id>org.zkoss:zsoup:jar:1.8.2.5</id>
+											<source>true</source>
 											<transitive>false</transitive>
-		                                    <override>true</override>
-		                                    <!-- manefest isn't complete, so take from release of 2.3.12
-		                                    	https://github.com/restlet/restlet-framework-java/issues/1321-->
-											<instructions>
-												<Bundle-Activator>org.restlet.engine.internal.Activator</Bundle-Activator>
-												<Bundle-Name>org.restlet</Bundle-Name>
-												<Bundle-SymbolicName>org.restlet</Bundle-SymbolicName>
-												<Bundle-Version>${restlet.version}</Bundle-Version>
-												<Export-Package>org.restlet;uses:="org.restlet.engine.application,org.re
-		 stlet.resource,org.restlet.util,org.restlet.engine,org.restlet.routing,
-		 org.restlet.service,org.restlet.engine.resource,org.restlet.security,or
-		 g.restlet.data,org.restlet.engine.connector,org.restlet.representation,
-		 org.restlet.engine.component,org.restlet.engine.util",org.restlet.data;
-		 uses:="org.restlet.engine.util,org.restlet.util,org.restlet,org.restlet
-		 .engine.security,org.restlet.representation,org.restlet.engine,org.rest
-		 let.routing,org.restlet.engine.io,org.restlet.security,org.restlet.engi
-		 ne.header",org.restlet.engine;uses:="org.restlet.routing,org.restlet.da
-		 ta,org.restlet,org.restlet.representation,org.restlet.engine.log,org.re
-		 stlet.engine.security,org.restlet.engine.io,org.restlet.engine.util,org
-		 .restlet.engine.converter,org.restlet.engine.connector,org.restlet.engi
-		 ne.local,org.restlet.service,org.restlet.util",org.restlet.engine.adapt
-		 er;uses:="org.restlet,org.restlet.data,org.restlet.representation,org.r
-		 estlet.util,org.restlet.engine.header,org.restlet.engine,org.restlet.se
-		 rvice,org.restlet.engine.connector,org.restlet.engine.util,org.restlet.
-		 engine.security,org.restlet.engine.io",org.restlet.engine.application;u
-		 ses:="org.restlet.data,org.restlet,org.restlet.routing,org.restlet.serv
-		 ice,org.restlet.util,org.restlet.engine,org.restlet.representation,org.
-		 restlet.engine.util,org.restlet.engine.io,org.restlet.engine.resource,o
-		 rg.restlet.engine.header",org.restlet.engine.component;uses:="org.restl
-		 et.routing,org.restlet.data,org.restlet,org.restlet.util,org.restlet.en
-		 gine.util,org.restlet.service,org.restlet.engine.log,org.restlet.engine
-		 ,org.restlet.resource,org.restlet.representation,javax.xml.parsers,org.
-		 w3c.dom,org.xml.sax",org.restlet.engine.connector;uses:="org.restlet,or
-		 g.restlet.representation,org.restlet.util,org.restlet.service,org.restl
-		 et.data,org.restlet.engine,org.restlet.engine.util,org.restlet.engine.l
-		 ocal,org.restlet.engine.adapter,javax.net.ssl,com.sun.net.httpserver,or
-		 g.restlet.engine.ssl,org.restlet.engine.log",org.restlet.engine.convert
-		 er;uses:="org.restlet.data,org.restlet.resource,org.restlet.representat
-		 ion,org.restlet.engine.resource,org.restlet.engine,org.restlet,org.rest
-		 let.engine.application,org.restlet.engine.util",org.restlet.engine.head
-		 er;uses:="org.restlet.data,org.restlet.util,org.restlet.representation,
-		 org.restlet.engine.util,org.restlet,org.restlet.engine.security",org.re
-		 stlet.engine.internal;uses:="org.osgi.framework,org.restlet,org.restlet
-		 .engine",org.restlet.engine.io;uses:="org.restlet.representation,org.re
-		 stlet,org.restlet.engine.util,org.restlet.data,org.restlet.engine,org.r
-		 estlet.util",org.restlet.engine.local;uses:="org.restlet.service,org.re
-		 stlet.data,org.restlet.representation,org.restlet,org.restlet.resource,
-		 org.restlet.engine.util,org.restlet.engine.io,org.restlet.util,org.rest
-		 let.engine.connector",org.restlet.engine.log;uses:="org.restlet.engine.
-		 io,org.restlet.engine.util,org.restlet,org.restlet.routing,org.restlet.
-		 service,org.restlet.data,org.restlet.engine",org.restlet.engine.resourc
-		 e;uses:="org.restlet.engine.util,org.restlet,org.restlet.service,org.re
-		 stlet.data,org.restlet.resource,org.restlet.representation,org.restlet.
-		 engine.connector,org.restlet.engine.application",org.restlet.engine.sec
-		 urity;uses:="org.restlet.data,org.restlet.util,org.restlet,org.restlet.
-		 engine,org.restlet.engine.header,org.restlet.engine.util,org.restlet.se
-		 curity",org.restlet.engine.ssl;uses:="javax.net.ssl,org.restlet.data,or
-		 g.restlet.util,org.restlet,org.restlet.engine",org.restlet.engine.util;
-		 uses:="org.restlet.data,org.restlet.engine.io,org.restlet.representatio
-		 n,org.restlet,org.restlet.util,org.restlet.service,org.restlet.engine.l
-		 og,org.w3c.dom.ls,org.xml.sax.helpers,org.xml.sax,org.restlet.engine,or
-		 g.restlet.engine.security,org.restlet.routing",org.restlet.representati
-		 on;uses:="org.restlet.data,org.restlet.engine.io,org.restlet,org.restle
-		 t.util,org.restlet.engine,org.restlet.engine.util",org.restlet.resource
-		 ;uses:="org.restlet.representation,org.restlet,org.restlet.util,org.res
-		 tlet.engine,org.restlet.service,org.restlet.data,org.restlet.engine.uti
-		 l,org.restlet.engine.resource,org.restlet.engine.connector,org.restlet.
-		 engine.local,org.restlet.security",org.restlet.routing;uses:="org.restl
-		 et.data,org.restlet.representation,org.restlet,org.restlet.util,org.res
-		 tlet.resource,org.restlet.engine.header",org.restlet.security;uses:="or
-		 g.restlet.routing,org.restlet.data,org.restlet,javax.security.auth.x500
-		 ,org.restlet.engine.security,org.restlet.util,org.restlet.engine.util",
-		 org.restlet.service;uses:="org.restlet.data,org.restlet.representation,
-		 org.restlet.engine.application,org.restlet,org.restlet.resource,org.res
-		 tlet.engine.converter,org.restlet.engine,org.restlet.routing,org.restle
-		 t.engine.util,org.restlet.engine.log,org.restlet.engine.resource",org.r
-		 estlet.util;uses:="org.restlet.representation,org.restlet.data,org.rest
-		 let.engine.io,org.restlet,org.restlet.engine.util,org.restlet.routing,o
-		 rg.restlet.service"</Export-Package>
-		 <Import-Package>com.sun.net.httpserver;resolution:=optional,javax.net.ss
-		 l;resolution:=optional,javax.security.auth.x500;resolution:=optional,ja
-		 vax.xml.parsers;resolution:=optional,org.osgi.framework;resolution:=opt
-		 ional,org.w3c.dom;resolution:=optional,org.w3c.dom.ls;resolution:=optio
-		 nal,org.xml.sax;resolution:=optional,org.xml.sax.helpers;resolution:=op
-		 tional</Import-Package>
-											</instructions>
-		                                </artifact>
-		                                <artifact>
-		                                    <id>org.restlet.osgi:org.restlet.ext.servlet:${restlet.version}</id>
-		                                    <source>true</source>
-											<transitive>false</transitive>
-		                                    <override>true</override>
-											<instructions>
-												<Bundle-Name>org.restlet.ext.servlet</Bundle-Name>
-												<Bundle-SymbolicName>org.restlet.ext.servlet</Bundle-SymbolicName>
-												<Bundle-Version>${restlet.version}</Bundle-Version>
-												<Export-Package>org.restlet.ext.servlet;uses:="javax.servlet,org.restlet
-		 .ext.osgi,org.restlet,org.osgi.service.log,org.osgi.service.http,org.re
-		 stlet.representation,org.restlet.ext.servlet.internal,org.restlet.util,
-		 org.restlet.engine,org.restlet.engine.adapter,org.restlet.routing,org.r
-		 estlet.service,org.restlet.data,org.restlet.engine.component,javax.serv
-		 let.http",org.restlet.ext.servlet.internal;uses:="javax.servlet,org.res
-		 tlet.data,org.restlet.engine.io,org.restlet.representation,org.restlet,
-		 org.restlet.util,org.restlet.engine.adapter,javax.servlet.http,org.rest
-		 let.engine.connector,org.restlet.service,org.restlet.engine.local"</Export-Package>
-		 										<Import-Package>javax.servlet;resolution:=optional,javax.servlet.http;re
-		 solution:=optional,org.osgi.service.http;resolution:=optional,org.osgi.
-		 service.log;resolution:=optional,org.restlet;resolution:=optional,org.r
-		 estlet.data;resolution:=optional,org.restlet.engine;resolution:=optiona
-		 l,org.restlet.engine.adapter;resolution:=optional,org.restlet.engine.co
-		 mponent;resolution:=optional,org.restlet.engine.connector;resolution:=o
-		 ptional,org.restlet.engine.io;resolution:=optional,org.restlet.engine.l
-		 ocal;resolution:=optional,org.restlet.ext.osgi;resolution:=optional,org
-		 .restlet.representation;resolution:=optional,org.restlet.routing;resolu
-		 tion:=optional,org.restlet.service;resolution:=optional,org.restlet.uti
-		 l;resolution:=optional</Import-Package>
-												<Service-Component>OSGI-INF/*.xml</Service-Component>
-											</instructions>
-		                                </artifact>
-									</artifacts>
-								</feature>
-								<!-- zk public zk osgi on zip format download from sourceforge, so 
-									make source bundle from maven on this step -->
-								<feature>
-									<id>org.idempiere.zk.source.feature</id>
-									<version>${project.version}</version>
-									<label>Idempiere zk source ${project.version} feature</label>
-									<providerName>Idempiere</providerName>
-									<description>feature group all zk source get from maven
-										repository</description>
-									<copyright>Idempiere</copyright>
-									<license>GPL v2.1</license>
-									<generateSourceFeature>true</generateSourceFeature>
-									<artifacts>
-										<artifact>
-											<id>org.zkoss.zk:zkplus:jar:sources:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Eclipse-SourceBundle>zkplus;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
-												<Bundle-SymbolicName>zkplus</Bundle-SymbolicName>
-												<Bundle-Name>zkplus.source</Bundle-Name>
-												<Export-Package/>
-												<Import-Package/>
-												<Private-Package/>
-											</instructions>
 										</artifact>
 										<artifact>
-											<id>org.zkoss.common:zweb:jar:sources:${zk.version}</id>
-											<source>false</source>
+											<id>com.github.relaxng:relaxngDatatype:jar:2011.1</id>
+											<source>true</source>
 											<transitive>false</transitive>
-											<instructions>
-												<Eclipse-SourceBundle>zweb;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
-												<Bundle-SymbolicName>zweb</Bundle-SymbolicName>
-												<Bundle-Name>zweb.source</Bundle-Name>
-												<Export-Package/>
-												<Import-Package/>
-												<Private-Package/>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.zkoss.zk:zul:jar:sources:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Eclipse-SourceBundle>zul;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
-												<Bundle-SymbolicName>zul</Bundle-SymbolicName>
-												<Bundle-Name>zul.source</Bundle-Name>
-												<Export-Package/>
-												<Import-Package/>
-												<Private-Package/>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.zkoss.zk:zk:jar:sources:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Eclipse-SourceBundle>zk;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
-												<Bundle-SymbolicName>zk</Bundle-SymbolicName>
-												<Bundle-Name>zk.source</Bundle-Name>
-												<Export-Package/>
-												<Import-Package/>
-												<Private-Package/>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.zkoss.zk:zhtml:jar:sources:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Eclipse-SourceBundle>zhtml;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
-												<Bundle-SymbolicName>zhtml</Bundle-SymbolicName>
-												<Bundle-Name>zhtml.source</Bundle-Name>
-												<Export-Package/>
-												<Import-Package/>
-												<Private-Package/>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.zkoss.zk:zkbind:jar:sources:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Eclipse-SourceBundle>zkbind;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
-												<Bundle-SymbolicName>zkbind</Bundle-SymbolicName>
-												<Bundle-Name>zkbind.source</Bundle-Name>
-												<Export-Package/>
-												<Import-Package/>
-												<Private-Package/>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.zkoss.common:zel:jar:sources:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Eclipse-SourceBundle>zel;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
-												<Bundle-SymbolicName>zel</Bundle-SymbolicName>
-												<Bundle-Name>zel.source</Bundle-Name>
-												<Export-Package/>
-												<Import-Package/>
-												<Private-Package/>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.zkoss.common:zcommon:jar:sources:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Eclipse-SourceBundle>zcommon;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
-												<Bundle-SymbolicName>zcommon</Bundle-SymbolicName>
-												<Bundle-Name>zcommon.source</Bundle-Name>
-												<Export-Package/>
-												<Import-Package/>
-												<Private-Package/>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.zkoss.zk:zkwebfragment:jar:sources:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Eclipse-SourceBundle>zkwebfragment;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
-												<Bundle-SymbolicName>zkwebfragment</Bundle-SymbolicName>
-												<Bundle-Name>zkwebfragment.source</Bundle-Name>
-												<Export-Package/>
-												<Import-Package/>
-												<Private-Package/>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.javassist:javassist:jar:sources:${zk.javassist.src.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Eclipse-SourceBundle>zjavassist;version="${zk.version}";roots:="."</Eclipse-SourceBundle>
-												<Bundle-SymbolicName>zjavassist</Bundle-SymbolicName>
-												<Bundle-Version>${zk.version}</Bundle-Version>
-												<Bundle-Name>zjavassist.source</Bundle-Name>
-												<Export-Package/>
-												<Import-Package/>
-												<Private-Package/>
-											</instructions>
-										</artifact>
-									</artifacts>
-								</feature>
-								<feature>
-									<id>org.idempiere.zk.feature</id>
-									<version>${project.version}</version>
-									<label>Idempiere zk ${project.version} feature</label>
-									<providerName>Idempiere</providerName>
-									<description>feature group all zk osgi bundle get from
-										sourcefore</description>
-									<copyright>Idempiere</copyright>
-									<license>GPL v2.1</license>
-									<generateSourceFeature>true</generateSourceFeature>
-									<artifacts>
-										<artifact>
-											<id>org.zkoss.zk:zkplus:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Bundle-SymbolicName>zkplus</Bundle-SymbolicName>
-												<Bundle-Name>zkplus</Bundle-Name>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.zkoss.common:zweb:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Bundle-SymbolicName>zweb</Bundle-SymbolicName>
-												<Bundle-Name>zweb</Bundle-Name>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.zkoss.zk:zul:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Bundle-SymbolicName>zul</Bundle-SymbolicName>
-												<Bundle-Name>zul</Bundle-Name>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.zkoss.zk:zk:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Bundle-SymbolicName>zk</Bundle-SymbolicName>
-												<Bundle-Name>zk</Bundle-Name>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.zkoss.zk:zhtml:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Bundle-SymbolicName>zhtml</Bundle-SymbolicName>
-												<Bundle-Name>zhtml</Bundle-Name>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.zkoss.zk:zkbind:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Bundle-SymbolicName>zkbind</Bundle-SymbolicName>
-												<Bundle-Name>zkbind</Bundle-Name>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.zkoss.common:zel:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Bundle-SymbolicName>zel</Bundle-SymbolicName>
-												<Bundle-Name>zel</Bundle-Name>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.zkoss.common:zcommon:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Bundle-SymbolicName>zcommon</Bundle-SymbolicName>
-												<Bundle-Name>zcommon</Bundle-Name>
-											</instructions>
-										</artifact>
-										<artifact>
-											<id>org.zkoss.zk:zkwebfragment:${zk.version}</id>
-											<source>false</source>
-											<transitive>false</transitive>
-											<instructions>
-												<Bundle-SymbolicName>zkwebfragment</Bundle-SymbolicName>
-												<Bundle-Name>zkwebfragment</Bundle-Name>
-											</instructions>
 										</artifact>
 									</artifacts>
 								</feature>
@@ -1199,36 +830,36 @@
 											<id>org.apache.poi:poi:jar:${poi.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
-                                            <override>true</override>
+                                            							<override>true</override>
 											<instructions>
 												<Bundle-SymbolicName>org.apache.poi.poi</Bundle-SymbolicName>
 												<Bundle-Name>poi-ooxml</Bundle-Name>
-                                                <Import-Package>*;resolution:=optional</Import-Package>
-                                                <Export-Package>*</Export-Package>
+												<Import-Package>*;resolution:=optional</Import-Package>
+												<Export-Package>*</Export-Package>
 											</instructions>
 										</artifact>
 										<artifact>
 											<id>org.apache.poi:poi-ooxml:jar:${poi.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
-                                            <override>true</override>
+                                            						<override>true</override>
 											<instructions>
 												<Bundle-SymbolicName>org.apache.poi.poi-ooxml</Bundle-SymbolicName>
 												<Bundle-Name>poi-ooxml</Bundle-Name>
-                                                <Import-Package>*;resolution:=optional</Import-Package>
-                                                <Export-Package>*</Export-Package>
+												<Import-Package>*;resolution:=optional</Import-Package>
+												<Export-Package>*</Export-Package>
 											</instructions>
 										</artifact>
 										<artifact>
 											<id>org.apache.poi:poi-ooxml-schemas:jar:${poi.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
-                                            <override>true</override>
+                                            						<override>true</override>
 											<instructions>
 												<Bundle-SymbolicName>org.apache.poi.poi-ooxml-schemas</Bundle-SymbolicName>
 												<Bundle-Name>poi-ooxml-schemas</Bundle-Name>
-                                                <Import-Package>*;resolution:=optional,org.apache.xmlbeans.impl.schema</Import-Package>
-                                                <Export-Package>*</Export-Package>
+												<Import-Package>*;resolution:=optional,org.apache.xmlbeans.impl.schema</Import-Package>
+												<Export-Package>*</Export-Package>
 											</instructions>
 										</artifact>
 										<artifact>
@@ -1313,6 +944,106 @@
 										</artifact>
 									</artifacts>
 								</feature>
+								
+								<feature>
+									<id>org.idempiere.batik.feature</id>
+									<version>${project.version}</version>
+									<label>Idempiere apache batik feature</label>
+									<providerName>Idempiere</providerName>
+									<description>feature group apache batik osgi bundle get from maven</description>
+									<copyright>Idempiere</copyright>
+									<license>GPL v2.1</license>
+									<generateSourceFeature>true</generateSourceFeature>
+
+									<artifacts>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-anim:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-awt-util:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-bridge:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-codec:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-constants:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-css:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-dom:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-ext:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-extension:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-gvt:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-i18n:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-parser:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-script:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-svg-dom:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-svggen:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-util:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.apache.xmlgraphics:batik-xml:${batik.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+									</artifacts>
+								</feature>
+								
 								<feature>
 									<id>org.idempiere.asm.feature</id>
 									<version>${asm.version}</version>
@@ -1346,35 +1077,6 @@
 										</artifact>
 										<artifact>
 											<id>org.ow2.asm:asm-util:jar:${asm.version}</id>
-											<source>true</source>
-											<transitive>false</transitive>
-										</artifact>
-									</artifacts>
-								</feature>
-
-								<feature>
-									<id>org.idempiere.apache.feature</id>
-									<version>${project.version}</version>
-									<label>Idempiere apache util feature</label>
-									<providerName>Idempiere</providerName>
-									<description>feature group apache util osgi bundle get from maven</description>
-									<copyright>Idempiere</copyright>
-									<license>GPL v2.1</license>
-									<generateSourceFeature>true</generateSourceFeature>
-
-									<artifacts>
-										<artifact>
-											<id>commons-io:commons-io:jar:2.6</id>
-											<source>true</source>
-											<transitive>false</transitive>
-										</artifact>
-										<artifact>
-											<id>commons-fileupload:commons-fileupload:jar:1.3.3</id>
-											<source>true</source>
-											<transitive>false</transitive>
-										</artifact>
-										<artifact>
-											<id>org.apache.httpcomponents:httpclient-osgi:jar:4.5.6</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -1605,156 +1307,29 @@
 									</artifacts>
 								</feature>
 							</featureDefinitions>
-							<artifacts>
+							<p2>                                
 								<artifact>
-									<id>org.javassist:javassist:${zk.javassist.src.version}</id>
-									<source>false</source>
-									<transitive>false</transitive>
-									<override>true</override>
-									<instructions>
-										<Bundle-SymbolicName>zjavassist</Bundle-SymbolicName>
-										<Bundle-Name>zjavassist</Bundle-Name>
-										<!-- this work-around can generate bundle with version is ${zk.version}, 
-											but feature still use version from artifact id, mean ${zk.javassist.src.version}, 
-											it let target recognize wrong bundle -->
-										<!-- need to adjust feature at next step -->
-										<Bundle-Version>${zk.version}</Bundle-Version>
-									</instructions>
+								    <id>com.jaspersoft.studio.bundles.barbecue:1.5.0.beta1_b02</id>
 								</artifact>
-							</artifacts>
-                            <p2>
-                                <artifact>
-                                    <id>org.apache.batik.anim:1.9.1.v20180528-1434</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.bridge:1.9.1.v20180313-1559</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.codec:1.9.1.v20180313-1559</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.constants:1.9.1.v20180227-1645</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.css:1.9.1.v20180313-1559</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.dom:1.9.1.v20180528-1434</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.dom.svg:1.9.1.v20180313-1559</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.ext.awt:1.9.1.v20180227-1645</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.extension:1.9.1.v20180313-1559</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.gvt:1.9.1.v20180227-1645</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.i18n:1.9.1.v20180227-1645</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.parser:1.9.1.v20180313-1559</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.pdf:1.9.1.v20180417-1407</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.script:1.9.1.v20180313-1559</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.svggen:1.9.1.v20180313-1559</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.swing:1.9.1.v20180313-1559</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.transcoder:1.9.1.v20180313-1559</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.util:1.9.1.v20180227-1645</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.util.gui:1.9.1.v20180227-1645</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.batik.xml:1.9.1.v20180227-1645</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.apache.xmlgraphics:2.2.0.v20180410-1551</id>
-                                </artifact>
-                                <artifact>
-                                    <id>com.jaspersoft.studio.bundles.barbecue:1.5.0.beta1_b02</id>
-                                </artifact>
-                                <artifact>
-                                    <id>com.jaspersoft.studio.bundles.itext:2.1.7.js7_b01</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.w3c.dom.svg.patch:1.1.0.b02</id>
-                                </artifact>
-                                <artifact>
-                                    <id>org.krysalis.barcode4j:2.1.0</id>
-                                </artifact>
-                            </p2>
+								<artifact>
+								    <id>com.jaspersoft.studio.bundles.itext:2.1.7.js7_b01</id>
+								</artifact>
+								<artifact>
+								    <id>org.w3c.dom.svg.patch:1.1.0.b02</id>
+								</artifact>
+								<artifact>
+								    <id>org.krysalis.barcode4j:2.1.0</id>
+								</artifact>
+							</p2>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			<!-- download zk osgi, unzip it -->
+			<!-- download sun package, unzip it -->
 			<plugin>
 				<groupId>com.googlecode.maven-download-plugin</groupId>
 				<artifactId>download-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>download-zk-package</id>
-						<phase>package</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>${zk-osgi-zip-file}</url>
-							<unpack>true</unpack>
-							<outputFileName>zk-bin-osgi-${zk.version}.zip</outputFileName>
-							<outputDirectory>${project.build.directory}</outputDirectory>
-							<retries>5</retries>
-						</configuration>
-					</execution>
-<!--hot fix for https://tracker.zkoss.org/browse/ZK-4198, https://idempiere.atlassian.net/browse/IDEMPIERE-2003-->
-					<execution>
-						<id>download-zk-patch-source-for-IDEMPIERE-2003</id>
-						<phase>package</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>${url.file.srv}/extra.jar/zul.sources_8.6.0.1-patched.jar</url>
-							<unpack>false</unpack>
-							<outputFileName>zul.sources_8.6.0.1-patched.jar</outputFileName>
-							<outputDirectory>${project.build.directory}/repository/plugins</outputDirectory>
-							<retries>5</retries>
-							<overwrite>true</overwrite>
-							<skipCache>true</skipCache>
-						</configuration>
-					</execution>
-					<execution>
-						<id>download-zk-patch-binary-for-IDEMPIERE-2003</id>
-						<phase>package</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>${url.file.srv}/extra.jar/zul_8.6.0.1-patched.jar</url>
-							<unpack>false</unpack>
-							<outputFileName>zul_8.6.0.1-patched.jar</outputFileName>
-							<outputDirectory>${project.build.directory}/repository/plugins</outputDirectory>
-							<retries>5</retries>
-							<overwrite>true</overwrite>
-							<skipCache>true</skipCache>
-						</configuration>
-					</execution>
+				<executions>					
 					<execution>
 						<!--https://stackoverflow.com/questions/20469049/resolve-a-dependency-on-package-sun-misc-with-tycho
 						 download from maven and add export sun.reflect
@@ -1777,64 +1352,12 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- copy zk osgi bundle to repository folder -->
+
 			<plugin>
 				<groupId>com.coderplus.maven.plugins</groupId>
 				<artifactId>copy-rename-maven-plugin</artifactId>
 				<executions>
-					<execution>
-						<id>rename-file</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<fileSets>
-								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zcommon.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zcommon_${zk.version}.jar</destinationFile>
-								</fileSet>
-								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zel.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zel_${zk.version}.jar</destinationFile>
-								</fileSet>
-								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zhtml.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zhtml_${zk.version}.jar</destinationFile>
-								</fileSet>
-								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zjavassist.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zjavassist_${zk.version}.jar</destinationFile>
-								</fileSet>
-								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zk.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zk_${zk.version}.jar</destinationFile>
-								</fileSet>
-								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zkbind.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zkbind_${zk.version}.jar</destinationFile>
-								</fileSet>
-								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zkplus.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zkplus_${zk.version}.jar</destinationFile>
-								</fileSet>
-								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zul.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zul_${zk.version}.jar</destinationFile>
-								</fileSet>
-								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zweb.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zweb_${zk.version}.jar</destinationFile>
-								</fileSet>
-								<fileSet>
-									<sourceFile>${project.build.directory}/zk-bin-osgi-${zk.version}/dist/lib/zkwebfragment.osgi.jar</sourceFile>
-									<destinationFile>${project.build.directory}/repository/plugins/zkwebfragment_${zk.version}.jar</destinationFile>
-								</fileSet>
-							</fileSets>
-						</configuration>
-					</execution>
-
-                    <!-- delete metadata file to update md5 -->
+                    			<!-- delete metadata file to update md5 -->
 					<execution>
 						<id>move-file</id>
 						<phase>package</phase>
@@ -1857,7 +1380,7 @@
 				</executions>
 			</plugin>
 
-			<!-- update P2 after add zk lib -->
+			<!-- update P2 -->
 			<plugin>
 				<groupId>org.eclipse.tycho.extras</groupId>
 				<artifactId>tycho-p2-extras-plugin</artifactId>

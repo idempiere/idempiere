@@ -30,7 +30,7 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_ShippingProcessorCfg (Properties ctx, int M_ShippingProcessorCfg_ID, String trxName)
@@ -68,8 +68,8 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_ShippingProcessorCfg[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_M_ShippingProcessorCfg[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

@@ -30,7 +30,7 @@ public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_TableIndex (Properties ctx, int AD_TableIndex_ID, String trxName)
@@ -75,8 +75,8 @@ public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_TableIndex[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_TableIndex[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

@@ -33,7 +33,7 @@ public class X_C_InvoiceBatchLine extends PO implements I_C_InvoiceBatchLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_InvoiceBatchLine (Properties ctx, int C_InvoiceBatchLine_ID, String trxName)
@@ -94,7 +94,7 @@ public class X_C_InvoiceBatchLine extends PO implements I_C_InvoiceBatchLine, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_InvoiceBatchLine[")
+      StringBuilder sb = new StringBuilder ("X_C_InvoiceBatchLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

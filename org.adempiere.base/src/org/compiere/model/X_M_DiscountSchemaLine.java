@@ -33,7 +33,7 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_DiscountSchemaLine (Properties ctx, int M_DiscountSchemaLine_ID, String trxName)
@@ -98,7 +98,7 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_DiscountSchemaLine[")
+      StringBuilder sb = new StringBuilder ("X_M_DiscountSchemaLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

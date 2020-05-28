@@ -1124,6 +1124,8 @@ public final class FactLine extends X_Fact_Acct
 		if (MMovement.Table_ID == AD_Table_ID)
 			sql.append(" AND M_Locator_ID=?");
 		// end MZ
+		sql.append(" ORDER BY Fact_Acct_ID ");
+		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

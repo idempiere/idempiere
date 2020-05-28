@@ -73,7 +73,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
-import org.compiere.model.X_AD_ReportView;
+import org.compiere.model.MReportView;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
@@ -542,7 +542,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		{
 			if (pr.getAD_ReportView_ID() > 0)
 			{
-				X_AD_ReportView m_Reportview = new X_AD_ReportView(m_ctx, pr.getAD_ReportView_ID(), null);
+				MReportView m_Reportview = MReportView.get(m_ctx, pr.getAD_ReportView_ID());
 				table_ID = m_Reportview.getAD_Table_ID();
 			}
 			else if (pr.getAD_PrintFormat_ID() > 0)
@@ -821,15 +821,15 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	
 	protected void startProcess()
 	{
+		if (!parameterPanel.validateParameters())
+			return;
+
 		if (m_pi.isProcessRunning(parameterPanel.getParameters())) {
 			FDialog.error(getWindowNo(), "ProcessAlreadyRunning");
 			log.log(Level.WARNING, "Abort process " + m_AD_Process_ID + " because it is already running");
 			return;
 		}
 
-		if (!parameterPanel.validateParameters())
-			return;
-		
 		startProcess0();
 	}
 	

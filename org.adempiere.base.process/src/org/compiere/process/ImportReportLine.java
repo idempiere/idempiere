@@ -85,7 +85,7 @@ public class ImportReportLine extends SvrProcess
 		//	Delete Old Imported
 		if (m_deleteOldImported)
 		{
-			sql = new StringBuilder ("DELETE I_ReportLine ")
+			sql = new StringBuilder ("DELETE FROM I_ReportLine ")
 				.append("WHERE I_IsImported='Y'").append(clientCheck);
 			no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Impored =" + no);
@@ -96,9 +96,9 @@ public class ImportReportLine extends SvrProcess
 			.append("SET AD_Client_ID = COALESCE (AD_Client_ID, ").append(m_AD_Client_ID).append("),")
 			.append(" AD_Org_ID = COALESCE (AD_Org_ID, 0),")
 			.append(" IsActive = COALESCE (IsActive, 'Y'),")
-			.append(" Created = COALESCE (Created, SysDate),")
+			.append(" Created = COALESCE (Created, getDate()),")
 			.append(" CreatedBy = COALESCE (CreatedBy, 0),")
-			.append(" Updated = COALESCE (Updated, SysDate),")
+			.append(" Updated = COALESCE (Updated, getDate()),")
 			.append(" UpdatedBy = COALESCE (UpdatedBy, 0),")
 			.append(" I_ErrorMsg = ' ',")
 			.append(" I_IsImported = 'N' ")
@@ -276,7 +276,7 @@ public class ImportReportLine extends SvrProcess
 			.append("AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,")
 			.append("Name,SeqNo,IsPrinted,IsSummary,LineType)")
 			.append("SELECT ?,PA_ReportLineSet_ID,")
-			.append("AD_Client_ID,AD_Org_ID,'Y',SysDate,CreatedBy,SysDate,UpdatedBy,")
+			.append("AD_Client_ID,AD_Org_ID,'Y',getDate(),CreatedBy,getDate(),UpdatedBy,")
 			.append("Name,SeqNo,IsPrinted,IsSummary,LineType ")
 			//jz + "FROM I_ReportLine "
 			// + "WHERE PA_ReportLineSet_ID=? AND Name=? AND ROWNUM=1"		//	#2..3
@@ -339,7 +339,7 @@ public class ImportReportLine extends SvrProcess
 		//	****	Update ReportLine
 		sql = new StringBuilder ("UPDATE PA_ReportLine r ")
 			.append("SET (Description,SeqNo,IsSummary,IsPrinted,LineType,CalculationType,AmountType,PAAmountType,PAPeriodType,PostingType,Updated,UpdatedBy)=")
-			.append(" (SELECT Description,SeqNo,IsSummary,IsPrinted,LineType,CalculationType,AmountType,PAAmountType,PAPeriodType,PostingType,SysDate,UpdatedBy")
+			.append(" (SELECT Description,SeqNo,IsSummary,IsPrinted,LineType,CalculationType,AmountType,PAAmountType,PAPeriodType,PostingType,getDate(),UpdatedBy")
 			.append(" FROM I_ReportLine i WHERE r.Name=i.Name AND r.PA_ReportLineSet_ID=i.PA_ReportLineSet_ID")
 			.append(" AND i.I_ReportLine_ID=(SELECT MIN(I_ReportLine_ID) FROM I_ReportLine iii")
 			.append(" WHERE i.Name=iii.Name AND i.PA_ReportLineSet_ID=iii.PA_ReportLineSet_ID)) ")
@@ -373,7 +373,7 @@ public class ImportReportLine extends SvrProcess
 					.append("AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,")
 					.append("PA_ReportLine_ID,ElementType,C_ElementValue_ID) ")
 					.append("SELECT ?,")
-					.append("AD_Client_ID,AD_Org_ID,'Y',SysDate,CreatedBy,SysDate,UpdatedBy,")
+					.append("AD_Client_ID,AD_Org_ID,'Y',getDate(),CreatedBy,getDate(),UpdatedBy,")
 					.append("PA_ReportLine_ID,'AC',C_ElementValue_ID ")
 					.append("FROM I_ReportLine ")
 					.append("WHERE I_ReportLine_ID=?")
@@ -386,7 +386,7 @@ public class ImportReportLine extends SvrProcess
 			/*
 			String sqlt="UPDATE PA_ReportSource "
 				+ "SET (ElementType,C_ElementValue_ID,Updated,UpdatedBy)="
-				+ " (SELECT 'AC',C_ElementValue_ID,SysDate,UpdatedBy"
+				+ " (SELECT 'AC',C_ElementValue_ID,getDate(),UpdatedBy"
 				+ " FROM I_ReportLine"
 				+ " WHERE I_ReportLine_ID=?) "
 				+ "WHERE PA_ReportSource_ID=?"
@@ -407,7 +407,7 @@ public class ImportReportLine extends SvrProcess
 			pstmt_setImported = DB.prepareStatement
 				("UPDATE I_ReportLine SET I_IsImported='Y',"
 				+ " PA_ReportSource_ID=?, "
-				+ " Updated=SysDate, Processed='Y' WHERE I_ReportLine_ID=?", get_TrxName());
+				+ " Updated=getDate(), Processed='Y' WHERE I_ReportLine_ID=?", get_TrxName());
 
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
 			rs = pstmt.executeQuery();
@@ -445,7 +445,7 @@ public class ImportReportLine extends SvrProcess
 					//jz
 					StringBuilder sqlt= new StringBuilder("UPDATE PA_ReportSource ")
 						.append("SET (ElementType,C_ElementValue_ID,Updated,UpdatedBy)=")
-						.append(" (SELECT CAST('AC' AS CHAR(2)),C_ElementValue_ID,SysDate,UpdatedBy")  //jz
+						.append(" (SELECT CAST('AC' AS CHAR(2)),C_ElementValue_ID,getDate(),UpdatedBy")  //jz
 						.append(" FROM I_ReportLine")
 						.append(" WHERE I_ReportLine_ID=").append(I_ReportLine_ID).append(") ")
 						.append("WHERE PA_ReportSource_ID=").append(PA_ReportSource_ID).append(" ")
@@ -510,7 +510,7 @@ public class ImportReportLine extends SvrProcess
 
 		//	Set Error to indicator to not imported
 		sql = new StringBuilder ("UPDATE I_ReportLine ")
-			.append("SET I_IsImported='N', Updated=SysDate ")
+			.append("SET I_IsImported='N', Updated=getDate() ")
 			.append("WHERE I_IsImported<>'Y'").append(clientCheck);
 		
 		no = DB.executeUpdate(sql.toString(), get_TrxName());

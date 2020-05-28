@@ -30,7 +30,7 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_IMP_Processor (Properties ctx, int IMP_Processor_ID, String trxName)
@@ -72,8 +72,8 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_IMP_Processor[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_IMP_Processor[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

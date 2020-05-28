@@ -83,7 +83,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 496387784464611123L;
+	private static final long serialVersionUID = -632698704437797186L;
 
 	/**
 	 *  Field Constructor.
@@ -2218,7 +2218,7 @@ public class GridField
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("GridField[")
+		StringBuilder sb = new StringBuilder("GridField[")
 			.append(m_vo.ColumnName).append("=").append(m_value);
 		if (isKey())
 			sb.append("(Key)");
@@ -2594,6 +2594,13 @@ public class GridField
 	public boolean isLookupEditorSettingValue()
 	{
 		return m_lookupEditorSettingValue;
+	}
+	/**
+	 * Is Quick Form
+	 * @return true if displayed in Quick Form
+	 */
+	public boolean isQuickForm() {
+		return m_vo.IsQuickForm;
 	}
 
 	public void processUIVirtualColumn() {

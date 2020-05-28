@@ -50,7 +50,7 @@ public class TaxNotFoundException extends AdempiereException
 			Timestamp billDate, int billFromC_Location_ID, int billToC_Location_ID)
 	{
 		final DateFormat df = DisplayType.getDateFormat();
-		StringBuffer msg = new StringBuffer("@").append(AD_Message).append("@");
+		StringBuilder msg = new StringBuilder("@").append(AD_Message).append("@");
 		//
 		msg.append(" - @C_TaxCategory_ID@:").append(getTaxCategoryString(C_TaxCategory_ID));
 		msg.append(", @IsSOTrx@:@").append(IsSOTrx ? "Y":"N").append("@");

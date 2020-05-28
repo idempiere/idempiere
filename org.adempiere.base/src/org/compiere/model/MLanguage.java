@@ -460,7 +460,7 @@ public class MLanguage extends X_AD_Language
 							.append("Createdby,UpdatedBy,Created,Updated, ")
 							.append(keyColumn).append(cols).append(") ")
 							.append("SELECT '").append(getAD_Language()).append("','N', AD_Client_ID,AD_Org_ID, ")
-							.append(AD_User_ID).append(",").append(AD_User_ID).append(", SysDate, SysDate, ")
+							.append(AD_User_ID).append(",").append(AD_User_ID).append(", getDate(), getDate(), ")
 							.append(keyColumn).append(cols)
 							.append(" FROM ").append(baseTable)
 							.append(" WHERE ").append(keyColumn).append(" NOT IN (SELECT ").append(keyColumn)

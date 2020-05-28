@@ -298,6 +298,10 @@ public class InOutGenerate extends SvrProcess
 							createLine (order, line, toDeliver, null, false);
 						continue;
 					}
+					if (product == null)
+					{
+						continue;
+					}
 
 					//	Stored Product
 					String MMPolicy = product.getMMPolicy();

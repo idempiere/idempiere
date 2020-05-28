@@ -25,7 +25,6 @@ import java.util.logging.Level;
 import org.compiere.model.MClient;
 import org.compiere.model.MInterestArea;
 import org.compiere.model.MMailText;
-import org.compiere.model.MStore;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserMail;
 import org.compiere.util.DB;
@@ -144,18 +143,6 @@ public class SendMailText extends SvrProcess
 				.append(": ").append(m_ia.getName())
 				.append("\n").append(Msg.getMsg(getCtx(), "UnsubscribeInfo"))
 				.append("\n");
-			MStore[] wstores = MStore.getOfClient(m_client);
-			int index = 0;
-			for (int i = 0; i < wstores.length; i++)
-			{
-				if (wstores[i].isDefault())
-				{
-					index = i;
-					break;
-				}
-			}
-			if (wstores.length > 0)
-				unsubscribe.append(wstores[index].getWebContext(true));
 		}
 
 		//

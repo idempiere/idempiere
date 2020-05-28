@@ -30,7 +30,7 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_PInstance (Properties ctx, int AD_PInstance_ID, String trxName)
@@ -70,8 +70,8 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_PInstance[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_PInstance[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

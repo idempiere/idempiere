@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.adempiere.util.ServerContext;
 import org.apache.ecs.HtmlColor;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.b;
@@ -60,7 +61,6 @@ import org.compiere.Adempiere;
 import org.compiere.model.AdempiereProcessorLog;
 import org.compiere.model.MClient;
 import org.compiere.model.MSession;
-import org.compiere.model.MStore;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.Query;
@@ -771,8 +771,14 @@ public class AdempiereMonitor extends HttpServlet
 		}
 		bb.addElement(para);
 
-		//	**** Log Management ****	
-		createLogMgtPage(bb, members, local);	
+		//	**** Log Management ****
+		try {
+			Properties ctx = new Properties();
+			ServerContext.setCurrentInstance(ctx);
+			createLogMgtPage(bb, members, local);
+		} finally {
+			ServerContext.dispose();
+		}
 		
 		//	***** Server Details *****
 		bb.removeEndEndModifier();
@@ -1015,8 +1021,8 @@ public class AdempiereMonitor extends HttpServlet
 		table.setCellSpacing(2);
 		table.setCellPadding(2);
 		//
-		Properties ctx = new Properties();
-		MSystem system = MSystem.get(ctx);
+		
+		MSystem system = MSystem.get(Env.getCtx());
 		SystemInfo systemInfo = SystemInfo.getLocalSystemInfo();				
 		tr line = new tr();
 		line.addElement(new th().addElement(Adempiere.getURL()));
@@ -1166,7 +1172,7 @@ public class AdempiereMonitor extends HttpServlet
 		table.setCellPadding(2);
 		//	
 		line = new tr();
-		MClient[] clients = MClient.getAll(ctx, "AD_Client_ID");
+		MClient[] clients = MClient.getAll(Env.getCtx(), "AD_Client_ID");
 		line.addElement(new th().addElement("Client #" + clients.length + " - EMail Test:"));
 		p = new p();
 		for (int i = 0; i < clients.length; i++)
@@ -1179,24 +1185,6 @@ public class AdempiereMonitor extends HttpServlet
 			p.addElement(new a("idempiereMonitor?EMail=" + client.getAD_Client_ID(), client.getName()));
 		}
 		if (clients.length == 0)
-			p.addElement("&nbsp;");
-		line.addElement(new td().addElement(p));
-		table.addElement(line);
-		//	
-		line = new tr();
-		MStore[] wstores = MStore.getActive();
-		line.addElement(new th().addElement("Active Web Stores #" + wstores.length));
-		p = new p();
-		for (int i = 0; i < wstores.length; i++)
-		{
-			MStore store = wstores[i];
-			if (i > 0)
-				p.addElement(" - ");
-			a a = new a(store.getWebContext(), store.getName());
-			a.setTarget("t" + i);
-			p.addElement(a);
-		}
-		if (wstores.length == 0)
 			p.addElement("&nbsp;");
 		line.addElement(new td().addElement(p));
 		table.addElement(line);
@@ -1259,7 +1247,7 @@ public class AdempiereMonitor extends HttpServlet
 		else if (inMaintenanceClients.size() > 0) {
 			boolean first = true;
 			for (int clientID : inMaintenanceClients) {
-				MClient client = MClient.get(ctx, clientID);
+				MClient client = MClient.get(Env.getCtx(), clientID);
 				if (!client.isActive())
 					continue;
 				if (!first)

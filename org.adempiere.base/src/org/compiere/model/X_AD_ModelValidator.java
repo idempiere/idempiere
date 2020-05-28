@@ -30,7 +30,7 @@ public class X_AD_ModelValidator extends PO implements I_AD_ModelValidator, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_ModelValidator (Properties ctx, int AD_ModelValidator_ID, String trxName)
@@ -69,8 +69,8 @@ public class X_AD_ModelValidator extends PO implements I_AD_ModelValidator, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_ModelValidator[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_ModelValidator[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

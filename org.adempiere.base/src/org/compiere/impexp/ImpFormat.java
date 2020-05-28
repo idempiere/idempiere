@@ -608,7 +608,7 @@ public final class ImpFormat
 				.append("AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,IsActive")	//	StdFields
 				.append(") VALUES (").append(ID).append(",")
 				.append(AD_Client_ID).append(",").append(AD_Org_ID)
-				.append(",SysDate,").append(UpdatedBy).append(",SysDate,").append(UpdatedBy).append(",'Y'")
+				.append(",getDate(),").append(UpdatedBy).append(",getDate(),").append(UpdatedBy).append(",'Y'")
 				.append(")");
 			//
 			int no = DB.executeUpdate(sql.toString(), trxName);
@@ -629,7 +629,7 @@ public final class ImpFormat
 			.append(m_tableName).append(" SET ");
 		for (int i = 0; i < nodes.length; i++)
 			sql.append(nodes[i]).append(",");		//	column=value
-		sql.append("IsActive='Y',Processed='N',I_IsImported='N',Updated=SysDate,UpdatedBy=").append(UpdatedBy);
+		sql.append("IsActive='Y',Processed='N',I_IsImported='N',Updated=getDate(),UpdatedBy=").append(UpdatedBy);
 		sql.append(" WHERE ").append(m_tablePK).append("=").append(ID);
 		//  Update Cmd
 		int no = DB.executeUpdate(sql.toString(), trxName);

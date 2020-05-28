@@ -378,7 +378,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	{
 		log.fine("");
 		//	Delete Taxes
-		DB.executeUpdateEx("DELETE M_RMATax WHERE M_RMA_ID=" + getM_RMA_ID(), get_TrxName());
+		DB.executeUpdateEx("DELETE FROM M_RMATax WHERE M_RMA_ID=" + getM_RMA_ID(), get_TrxName());
 		m_taxes = null;
 		
 		MTaxProvider[] providers = getTaxProviders();
@@ -505,7 +505,7 @@ public class MRMA extends X_M_RMA implements DocAction
 			return null;
 		//	Business Partner needs to be linked to Org
 		MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
-		int counterAD_Org_ID = bp.getAD_OrgBP_ID_Int();
+		int counterAD_Org_ID = bp.getAD_OrgBP_ID();
 		if (counterAD_Org_ID == 0)
 			return null;
 

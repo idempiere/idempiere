@@ -56,6 +56,7 @@ public class SystemIDs
 
 	public final static int MESSAGE_REQUESTUPDATE = 834;
 	public final static int MESSAGE_WORKFLOWRESULT = 753;
+	public final static int MESSAGE_NOTES = 52244;
 
 	public final static int PRINTFORMAT_STATEMENTOFACCOUNT = 134;
 	public final static int PRINTFORMAT_ORDER_HEADER_TEMPLATE = 100;

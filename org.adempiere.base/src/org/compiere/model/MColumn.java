@@ -32,6 +32,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
+import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -63,6 +64,7 @@ public class MColumn extends X_AD_Column
 	 * 	Get MColumn from Cache
 	 *	@param ctx context
 	 * 	@param AD_Column_ID id
+	 * 	@param trxName trx
 	 *	@return MColumn
 	 */
 	public static MColumn get(Properties ctx, int AD_Column_ID, String trxName)
@@ -506,16 +508,11 @@ public class MColumn extends X_AD_Column
 	 */
 	public String getSQLAdd (MTable table)
 	{
-		StringBuilder sql = new StringBuilder ("ALTER TABLE ")
-			.append(table.getTableName())
-			.append(" ADD ").append(getSQLDDL());
-		String constraint = getConstraint(table.getTableName());
-		if (constraint != null && constraint.length() > 0) {
-			sql.append(DB.SQLSTATEMENT_SEPARATOR).append("ALTER TABLE ")
-			.append(table.getTableName())
-			.append(" ADD ").append(constraint);
-		}
-		return sql.toString();
+		AdempiereDatabase db = DB.getDatabase();	
+		if (db.isNativeMode()) 
+			return db.getSQLAdd(table, this);
+		else
+			return Database.getDatabase(Database.DB_ORACLE).getSQLAdd(table, this);
 	}	//	getSQLAdd
 
 	/**
@@ -527,44 +524,11 @@ public class MColumn extends X_AD_Column
 		if (isVirtualColumn())
 			return null;
 		
-		StringBuilder sql = new StringBuilder ().append(getColumnName())
-			.append(" ").append(getSQLDataType());
-
-		//	Default
-		String defaultValue = getDefaultValue();
-		if (defaultValue != null 
-				&& defaultValue.length() > 0
-				&& defaultValue.indexOf('@') == -1		//	no variables
-				&& ( ! (DisplayType.isID(getAD_Reference_ID()) && defaultValue.equals("-1") ) ) )  // not for ID's with default -1
-		{
-			if (DisplayType.isText(getAD_Reference_ID()) 
-					|| getAD_Reference_ID() == DisplayType.List
-					|| getAD_Reference_ID() == DisplayType.YesNo
-					// Two special columns: Defined as Table but DB Type is String 
-					|| getColumnName().equals("EntityType") || getColumnName().equals("AD_Language")
-					|| (getAD_Reference_ID() == DisplayType.Button &&
-							!(getColumnName().endsWith("_ID"))))
-			{
-				if (!defaultValue.startsWith("'") && !defaultValue.endsWith("'"))
-					defaultValue = DB.TO_STRING(defaultValue);
-			}
-			sql.append(" DEFAULT ").append(defaultValue);
-		}
+		AdempiereDatabase db = DB.getDatabase();
+		if (db.isNativeMode())
+			return db.getSQLDDL(this);
 		else
-		{
-			if (! isMandatory())
-				sql.append(" DEFAULT NULL ");
-			defaultValue = null;
-		}
-
-		//	Inline Constraint
-		if (getAD_Reference_ID() == DisplayType.YesNo)
-			sql.append(" CHECK (").append(getColumnName()).append(" IN ('Y','N'))");
-
-		//	Null
-		if (isMandatory())
-			sql.append(" NOT NULL");
-		return sql.toString();
+			return Database.getDatabase(Database.DB_ORACLE).getSQLDDL(this);
 	}	//	getSQLDDL	
 	
 	/**
@@ -575,66 +539,11 @@ public class MColumn extends X_AD_Column
 	 */
 	public String getSQLModify (MTable table, boolean setNullOption)
 	{
-		StringBuilder sql = new StringBuilder();
-		StringBuilder sqlBase = new StringBuilder ("ALTER TABLE ")
-			.append(table.getTableName())
-			.append(" MODIFY ").append(getColumnName());
-		
-		//	Default
-		StringBuilder sqlDefault = new StringBuilder(sqlBase)
-			.append(" ").append(getSQLDataType());
-		String defaultValue = getDefaultValue();
-		if (defaultValue != null 
-			&& defaultValue.length() > 0
-			&& defaultValue.indexOf('@') == -1		//	no variables
-			&& ( ! (DisplayType.isID(getAD_Reference_ID()) && defaultValue.equals("-1") ) ) )  // not for ID's with default -1
-		{
-			if (DisplayType.isText(getAD_Reference_ID()) 
-				|| getAD_Reference_ID() == DisplayType.List
-				|| getAD_Reference_ID() == DisplayType.YesNo
-				// Two special columns: Defined as Table but DB Type is String 
-				|| getColumnName().equals("EntityType") || getColumnName().equals("AD_Language")
-				|| (getAD_Reference_ID() == DisplayType.Button &&
-						!(getColumnName().endsWith("_ID"))))
-			{
-				if (!defaultValue.startsWith("'") && !defaultValue.endsWith("'"))
-					defaultValue = DB.TO_STRING(defaultValue);
-			}
-			sqlDefault.append(" DEFAULT ").append(defaultValue);
-		}
+		AdempiereDatabase db = DB.getDatabase();
+		if (db.isNativeMode())
+			return db.getSQLModify(table, this, setNullOption);
 		else
-		{
-			if (! isMandatory())
-				sqlDefault.append(" DEFAULT NULL ");
-			defaultValue = null;
-		}
-		sql.append(sqlDefault);
-		
-		//	Constraint
-
-		//	Null Values
-		if (isMandatory() && defaultValue != null && defaultValue.length() > 0)
-		{
-			StringBuilder sqlSet = new StringBuilder("UPDATE ")
-				.append(table.getTableName())
-				.append(" SET ").append(getColumnName())
-				.append("=").append(defaultValue)
-				.append(" WHERE ").append(getColumnName()).append(" IS NULL");
-			sql.append(DB.SQLSTATEMENT_SEPARATOR).append(sqlSet);
-		}
-		
-		//	Null
-		if (setNullOption)
-		{
-			StringBuilder sqlNull = new StringBuilder(sqlBase);
-			if (isMandatory())
-				sqlNull.append(" NOT NULL");
-			else
-				sqlNull.append(" NULL");
-			sql.append(DB.SQLSTATEMENT_SEPARATOR).append(sqlNull);
-		}
-		//
-		return sql.toString();
+			return Database.getDatabase(Database.DB_ORACLE).getSQLModify(table, this, setNullOption);
 	}	//	getSQLModify
 
 	/**
@@ -807,11 +716,11 @@ public class MColumn extends X_AD_Column
 		if (DisplayType.TableDir == refid || (DisplayType.Search == refid && getAD_Reference_Value_ID() == 0)) {
 			foreignTable = getColumnName().substring(0, getColumnName().length()-3);
 		} else if (DisplayType.Table == refid || DisplayType.Search == refid) {
-			MReference ref = MReference.get(getCtx(), getAD_Reference_Value_ID());
+			MReference ref = MReference.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
 			if (MReference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
 				int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_Ref_Table WHERE AD_Reference_ID=?", getAD_Reference_Value_ID());
 				if (cnt == 1) {
-					MRefTable rt = MRefTable.get(getCtx(), getAD_Reference_Value_ID());
+					MRefTable rt = MRefTable.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
 					if (rt != null)
 						foreignTable = rt.getAD_Table().getTableName();
 				}

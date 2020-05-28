@@ -32,7 +32,7 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_ShipperLabelsCfg (Properties ctx, int M_ShipperLabelsCfg_ID, String trxName)
@@ -72,8 +72,8 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_ShipperLabelsCfg[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_M_ShipperLabelsCfg[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

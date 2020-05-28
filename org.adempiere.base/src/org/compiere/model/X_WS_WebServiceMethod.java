@@ -30,7 +30,7 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_WS_WebServiceMethod (Properties ctx, int WS_WebServiceMethod_ID, String trxName)
@@ -67,8 +67,8 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_WS_WebServiceMethod[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_WS_WebServiceMethod[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

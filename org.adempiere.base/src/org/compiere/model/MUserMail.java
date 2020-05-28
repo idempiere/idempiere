@@ -82,29 +82,6 @@ public class MUserMail extends X_AD_UserMail
 	}	//	MUserMail
 	
 	/**
-	 * 	Parent Constructor
-	 *	@param parent Mail message
-	 *	@param AD_User_ID recipient user
-	 *	@param mail email
-	 */
-	public MUserMail (MMailMsg parent, int AD_User_ID, EMail mail)
-	{
-		this (parent.getCtx(), 0, parent.get_TrxName());
-		setClientOrg(parent);
-		setAD_User_ID(AD_User_ID);
-		setW_MailMsg_ID(parent.getW_MailMsg_ID());
-		setSenderAndRecipient(mail);
-		//
-		if (mail.isSentOK())
-			setMessageID(mail.getMessageID());
-		else
-		{
-			setMessageID(mail.getSentMsg());
-			setIsDelivered(ISDELIVERED_No);
-		}
-	}	//	MUserMail
-
-	/**
 	 * 	New User Mail (no trx)
 	 *	@param po persistent object
 	 *	@param AD_User_ID recipient user

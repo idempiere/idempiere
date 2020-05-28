@@ -128,7 +128,7 @@ public class AmtInWords_ZH implements AmtInWords
 	*/
 	private String convert (BigDecimal number)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		int signum = number.signum();	// positive , 0 , negative
 		int numUnit = 0;				// each number character
 		int numIndex = 0;				// each number position

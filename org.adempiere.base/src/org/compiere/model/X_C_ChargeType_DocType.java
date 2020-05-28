@@ -29,7 +29,7 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_ChargeType_DocType (Properties ctx, int C_ChargeType_DocType_ID, String trxName)
@@ -69,7 +69,7 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_ChargeType_DocType[")
+      StringBuilder sb = new StringBuilder ("X_C_ChargeType_DocType[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -30,7 +30,7 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_Package_UUID_Map (Properties ctx, int AD_Package_UUID_Map_ID, String trxName)
@@ -69,7 +69,7 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Package_UUID_Map[")
+      StringBuilder sb = new StringBuilder ("X_AD_Package_UUID_Map[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

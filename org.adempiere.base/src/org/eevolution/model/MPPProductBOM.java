@@ -274,7 +274,7 @@ public class MPPProductBOM extends X_PP_Product_BOM
 	@Override
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MPPProductBOM[")
+		StringBuilder sb = new StringBuilder ("MPPProductBOM[")
 		.append(get_ID()).append("-").append(getDocumentNo())
 		.append(", Value=").append(getValue())
 		.append ("]");

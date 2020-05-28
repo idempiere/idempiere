@@ -29,7 +29,7 @@ public class X_AD_Window_Access extends PO implements I_AD_Window_Access, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_Window_Access (Properties ctx, int AD_Window_Access_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_AD_Window_Access extends PO implements I_AD_Window_Access, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Window_Access[")
+      StringBuilder sb = new StringBuilder ("X_AD_Window_Access[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

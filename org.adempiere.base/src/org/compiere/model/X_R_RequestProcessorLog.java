@@ -29,7 +29,7 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_R_RequestProcessorLog (Properties ctx, int R_RequestProcessorLog_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_R_RequestProcessorLog[")
+      StringBuilder sb = new StringBuilder ("X_R_RequestProcessorLog[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

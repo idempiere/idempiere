@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import org.adempiere.base.IModelFactory;
 import org.adempiere.base.Service;
 import org.adempiere.model.GenericPO;
+import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -577,60 +578,11 @@ public class MTable extends X_AD_Table
 	 */
 	public String getSQLCreate()
 	{
-		StringBuffer sb = new StringBuffer("CREATE TABLE ")
-			.append(getTableName()).append(" (");
-		//
-		// boolean hasPK = false;
-		// boolean hasParents = false;
-		StringBuffer constraints = new StringBuffer();
-		getColumns(true);
-		boolean columnAdded = false;
-		for (int i = 0; i < m_columns.length; i++)
-		{
-			MColumn column = m_columns[i];
-			String colSQL = column.getSQLDDL();
-			if ( colSQL != null )
-			{
-				if (columnAdded)
-					sb.append(", ");
-				else
-					columnAdded = true;
-				sb.append(column.getSQLDDL());
-			}
-			else // virtual column
-				continue;
-			//
-			// if (column.isKey())
-			//	hasPK = true;
-			// if (column.isParent())
-			//	hasParents = true;
-			String constraint = column.getConstraint(getTableName());
-			if (constraint != null && constraint.length() > 0)
-				constraints.append(", ").append(constraint);
-		}
-		/* IDEMPIERE-1901 - deprecate code that create composite primary key
-		//	Multi Column PK
-		if (!hasPK && hasParents)
-		{
-			StringBuffer cols = new StringBuffer();
-			for (int i = 0; i < m_columns.length; i++)
-			{
-				MColumn column = m_columns[i];
-				if (!column.isParent())
-					continue;
-				if (cols.length() > 0)
-					cols.append(", ");
-				cols.append(column.getColumnName());
-			}
-			sb.append(", CONSTRAINT ")
-				.append(getTableName()).append("_Key PRIMARY KEY (")
-				.append(cols).append(")");
-		}
-		*/
-
-		sb.append(constraints)
-			.append(")");
-		return sb.toString();
+		AdempiereDatabase db = DB.getDatabase();
+		if (db.isNativeMode())
+			return db.getSQLCreate(this);
+		else
+			return Database.getDatabase(Database.DB_ORACLE).getSQLCreate(this);
 	}	//	getSQLCreate
 
 	// globalqss
