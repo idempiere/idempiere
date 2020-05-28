@@ -77,6 +77,7 @@ import org.zkoss.zk.ui.util.Clients;
 public class WSearchEditor extends WEditor implements ContextMenuListener, ValueChangeListener, IZoomableEditor
 {
 	private static final int MAX_AUTO_COMPLETE_ROWS = 50;
+	private static final int AUTO_COMPLETE_QUERY_TIMEOUT = 1; //1 second
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK, Events.ON_CHANGE, Events.ON_OK};
 	public static final String		ATTRIBUTE_IS_INFO_PANEL_OPEN	= "ATTRIBUTE_IS_INFO_PANEL_OPEN";
 	private Lookup 				lookup;
@@ -220,7 +221,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 					if (!Util.isEmpty(s, true)) {
 						StringBuilder query = new StringBuilder(s);
 						query.append("?autocomplete={");
-						query.append("timeout:1")
+						query.append("timeout:")
+							.append(AUTO_COMPLETE_QUERY_TIMEOUT)
 							.append(",")
 							.append("pagesize:")
 							.append(MAX_AUTO_COMPLETE_ROWS);

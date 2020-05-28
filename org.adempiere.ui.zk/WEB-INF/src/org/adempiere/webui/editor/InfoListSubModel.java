@@ -31,6 +31,7 @@ import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.panel.InfoPanel;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
+import org.compiere.util.NamePair;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zul.ListModel;
@@ -91,20 +92,27 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 				int rowCount = ip.getRowCount();
 				if (rowCount > 0) {
 					List<String> added = new ArrayList<String>();
+					List<Integer> keys = new ArrayList<Integer>();
 					for(int i = 0; i < rowCount; i++) {
 						Integer key = ip.getRowKeyAt(i);
 						if (key != null && key.intValue() > 0) {
-							String name = lookup.getDisplay(key);
-							if (added.contains(name))
-								continue;
-							else
-								added.add(name);
-							ValueNamePair pair = new ValueNamePair(key.toString(), name);
-							model.add(pair);
-							if (nRows > 0 && added.size() >= nRows)
-								break;
+							keys.add(key);							
 						}
+						if (nRows > 0 && keys.size() >= nRows)
+							break;
 					}
+					NamePair[] namePairs = lookup.getDirect(keys.toArray());
+					for(NamePair np : namePairs) {
+						String name = np.getName();
+						if (added.contains(name))
+							continue;
+						else
+							added.add(name);
+						ValueNamePair pair = new ValueNamePair(np.getID(), name);
+						model.add(pair);
+						if (nRows > 0 && added.size() >= nRows)
+							break;
+					}						
 				}
 			}
 		}

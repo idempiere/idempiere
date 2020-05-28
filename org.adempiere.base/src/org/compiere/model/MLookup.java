@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 
@@ -662,6 +664,132 @@ public final class MLookup extends Lookup implements Serializable
 		m_hasInactive = true;
 		return directValue;
 	}	//	getDirect
+
+	
+	@Override
+	public NamePair[] getDirect(Object[] keys) 
+	{
+		List<NamePair> list = new ArrayList<NamePair>();
+		String cacheKey = m_info.TableName+"|"+m_info.KeyColumn;
+		boolean isNumber = m_info.KeyColumn.endsWith("_ID");
+		CCache<Integer, KeyNamePair> knpCache = null;
+		CCache<String, ValueNamePair> vnpCache = null;
+		Map<Object, Integer> notInCaches = new HashMap<Object, Integer>();
+		for (int i = 0; i < keys.length; i++)
+		{
+			Object key = keys[i];
+			if (isNumber)
+			{
+				KeyNamePair knp = null;
+				int id = Integer.parseInt(key.toString());
+				knpCache = s_directKeyNamePairCache.get(cacheKey);
+				if (knpCache != null) 
+				{
+					knp = knpCache.get(id);
+				}
+				if (knp == null)
+					knp = new KeyNamePair(id, null);
+				list.add(knp);
+				notInCaches.put(id, i);
+			}
+			else
+			{
+				ValueNamePair vnp = null;
+				vnpCache = s_directValueNamePairCache.get(cacheKey);
+				if (vnpCache != null) 
+				{
+					vnp = vnpCache.get(key.toString());
+				}
+				if (vnp == null)
+					vnp = new ValueNamePair(key.toString(), null);
+				list.add(vnp);
+				notInCaches.put(key.toString(), i);
+			}			
+		}
+				
+		StringBuilder builder = new StringBuilder();
+		for(int i = 0; i < notInCaches.size(); i++)
+		{
+			if (builder.length() > 0)
+				builder.append(" UNION ALL ");
+			builder.append(m_info.QueryDirect);
+		}
+		
+		try (PreparedStatement pstmt = DB.prepareStatement(builder.toString(), null))
+		{
+			Set<Object> keySet = notInCaches.keySet();
+			int i = 0;
+			for(Object id : keySet)
+			{
+				i++;
+				if (id instanceof Integer)
+				{
+					pstmt.setInt(i, (int) id);
+				}
+				else
+				{
+					pstmt.setString(i, id.toString());
+				}
+			}
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next())
+			{
+				StringBuilder name = new StringBuilder().append(rs.getString(3));
+				boolean isActive = rs.getString(4).equals("Y");
+				if (!isActive)
+				{
+					name.insert(0, INACTIVE_S).append(INACTIVE_E);
+				}
+				if (isNumber)
+				{
+					int keyValue = rs.getInt(1);
+					KeyNamePair p = new KeyNamePair(keyValue, name.toString());
+					if (knpCache != null)
+					{
+						knpCache.put(p.getKey(), p);
+					}
+					else
+					{
+						knpCache = new CCache<Integer, KeyNamePair>(null, "MLookup.DirectKeyNamePairCache", 100, 60, false, MAX_NAMEPAIR_CACHE_SIZE);
+						knpCache.put(p.getKey(), p);
+						s_directKeyNamePairCache.put(cacheKey, knpCache);
+					}
+					Integer idx  = notInCaches.get(p.getKey());
+					if (idx != null)
+						list.set(idx.intValue(), p);
+				}
+				else
+				{
+					String value = rs.getString(2);
+					ValueNamePair p = new ValueNamePair(value, name.toString());
+					if (vnpCache != null)
+					{
+						vnpCache.put(p.getValue(), p);
+					}
+					else
+					{
+						vnpCache  = new CCache<String, ValueNamePair>(null, "MLookup.DirectValueNamePairCache", 100, 60, false, MAX_NAMEPAIR_CACHE_SIZE);
+						vnpCache.put(p.getValue(), p);
+						s_directValueNamePairCache.put(cacheKey, vnpCache);
+					}
+					Integer idx  = notInCaches.get(p.getValue());
+					if (idx != null)
+						list.set(idx.intValue(), p);
+				}
+			}
+		} catch (SQLException e) {
+			log.log(Level.SEVERE, e.getMessage(), e);
+		}
+		
+		for(int i = list.size()-1; i >= 0; i--) 
+		{
+			NamePair np = list.get(i);
+			if (np.getName() == null)
+				list.remove(i);
+		}
+		
+		return list.toArray(new NamePair[0]);
+	}
 
 	/**
 	 *	Get Zoom
