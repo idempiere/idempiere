@@ -75,6 +75,8 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	private static final long serialVersionUID = -7784588474522162502L;
 
+	private static final boolean isReactWHOrderReverseInvoice = MSysConfig.getBooleanValue(MSysConfig.REACTIVATE_WH_ORDER_REVERSES_INVOICE, false, Env.getAD_Client_ID(Env.getCtx()));
+	
 	/**
 	 * 	Create new Order by copying
 	 * 	@param from order
@@ -2416,7 +2418,7 @@ public class MOrder extends X_C_Order implements DocAction
 			so.saveEx();
 		}
 
-		if (!createReversals())
+		if (!createReversals(true))
 			return false;
 
 		MOrderLine[] lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);
@@ -2482,7 +2484,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 * 	Create Shipment/Invoice Reversals
 	 * 	@return true if success
 	 */
-	protected boolean createReversals()
+	protected boolean createReversals(boolean reverseInvoices)
 	{
 		//	Cancel only Sales 
 		if (!isSOTrx())
@@ -2524,38 +2526,42 @@ public class MOrder extends X_C_Order implements DocAction
 			ship.saveEx(get_TrxName());
 		}	//	for all shipments
 			
-		//	Reverse All *Invoices*
-		info.append(" - @C_Invoice_ID@:");
-		MInvoice[] invoices = getInvoices();
-		for (int i = 0; i < invoices.length; i++)
+		//	Reverse All *Invoices* created by our document
+		if (reverseInvoices)	
 		{
-			MInvoice invoice = invoices[i];
-			//	if closed - ignore
-			if (MInvoice.DOCSTATUS_Closed.equals(invoice.getDocStatus())
-				|| MInvoice.DOCSTATUS_Reversed.equals(invoice.getDocStatus())
-				|| MInvoice.DOCSTATUS_Voided.equals(invoice.getDocStatus()) )
-				continue;			
-			invoice.set_TrxName(get_TrxName());
-			
-			//	If not completed - void - otherwise reverse it
-			if (!MInvoice.DOCSTATUS_Completed.equals(invoice.getDocStatus()))
+		
+			info.append(" - @C_Invoice_ID@:");
+			MInvoice[] invoices = getInvoices();
+			for (int i = 0; i < invoices.length; i++)
 			{
-				if (invoice.voidIt())
-					invoice.setDocStatus(MInvoice.DOCSTATUS_Voided);
-			}
-			else if (invoice.reverseCorrectIt())	//	completed invoice
-			{
-				invoice.setDocStatus(MInvoice.DOCSTATUS_Reversed);
-				info.append(" ").append(invoice.getDocumentNo());
-			}
-			else
-			{
-				m_processMsg = "Could not reverse Invoice " + invoice;
-				return false;
-			}
-			invoice.setDocAction(MInvoice.DOCACTION_None);
-			invoice.saveEx(get_TrxName());
-		}	//	for all shipments
+				MInvoice invoice = invoices[i];
+				//	if closed - ignore
+				if (MInvoice.DOCSTATUS_Closed.equals(invoice.getDocStatus())
+						|| MInvoice.DOCSTATUS_Reversed.equals(invoice.getDocStatus())
+						|| MInvoice.DOCSTATUS_Voided.equals(invoice.getDocStatus()) )
+					continue;			
+				invoice.set_TrxName(get_TrxName());
+
+				//	If not completed - void - otherwise reverse it
+				if (!MInvoice.DOCSTATUS_Completed.equals(invoice.getDocStatus()))
+				{
+					if (invoice.voidIt())
+						invoice.setDocStatus(MInvoice.DOCSTATUS_Voided);
+				}
+				else if (invoice.reverseCorrectIt())	//	completed invoice
+				{
+					invoice.setDocStatus(MInvoice.DOCSTATUS_Reversed);
+					info.append(" ").append(invoice.getDocumentNo());
+				}
+				else
+				{
+					m_processMsg = "Could not reverse Invoice " + invoice;
+					return false;
+				}
+				invoice.setDocAction(MInvoice.DOCACTION_None);
+				invoice.saveEx(get_TrxName());
+			}	//	for all invoices
+		}
 		
 		m_processMsg = info.toString();
 		return true;
@@ -2743,7 +2749,7 @@ public class MOrder extends X_C_Order implements DocAction
 			|| MDocType.DOCSUBTYPESO_WarehouseOrder.equals(DocSubTypeSO)	//	(W)illCall(P)ickup	
 			|| MDocType.DOCSUBTYPESO_POSOrder.equals(DocSubTypeSO))			//	(W)alkIn(R)eceipt
 		{
-			if (!createReversals())
+			if (!createReversals(isReactWHOrderReverseInvoice || !MDocType.DOCSUBTYPESO_WarehouseOrder.equals(DocSubTypeSO)))
 				return false;
 		}
 		else
