@@ -318,6 +318,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 						if (t > 0)
 							this.pageSize = t;
 					} catch (Exception e) {}
+				} else if (pair[0].equalsIgnoreCase("searchcolumn")) {
+					this.autoCompleteSearchColumn = pair[1];
 				}
 			}
 		}
@@ -461,6 +463,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected boolean isAutoComplete = false;
 	
 	protected int queryTimeout = 0;
+	
+	protected String autoCompleteSearchColumn = null;
 	
 	protected String queryValue;
 	

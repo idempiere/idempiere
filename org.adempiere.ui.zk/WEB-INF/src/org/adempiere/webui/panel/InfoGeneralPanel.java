@@ -160,22 +160,32 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		if (queryValue != null && queryValue.length() > 0)
 		{				
 			Textbox[] txts = new Textbox[] {txt1, txt2, txt3, txt4};
+			int i = 0;
 			for(Textbox t : txts) 
 			{
 				if (t != null && t.isVisible())
 				{
+					if (isAutoComplete)
+					{
+						if (!Util.isEmpty(autoCompleteSearchColumn))
+						{
+							if (!autoCompleteSearchColumn.equals(m_queryColumns.get(i)))
+								continue;
+						}
+					}
 					t.setValue(queryValue);
 					testCount();
 					if (m_count <= 0)
 						t.setValue(null);
 					else
 						break;
+					
+					if (isAutoComplete)
+						break;
 				}
-				
-				if (isAutoComplete)
-					break;
+				i++;
 			}
-			if (m_count <= 0)
+			if (m_count <= 0 && !isAutoComplete)
 			{
 				txt1.setValue(queryValue);
 			}
