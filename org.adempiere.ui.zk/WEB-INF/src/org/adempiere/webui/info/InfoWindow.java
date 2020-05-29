@@ -506,8 +506,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		isQueryByUser = true;
 		for (int i = 0; i < identifiers.size(); i++) {
 			WEditor editor = identifiers.get(i);
-			if (isAutoComplete && i > 0) {
-				break;
+			if (isAutoComplete) {
+				if (!Util.isEmpty(autoCompleteSearchColumn)) {
+					if (!editor.getColumnName().equals(autoCompleteSearchColumn))
+						continue;
+				}
 			}
 			try{
 				editor.setValue(queryValue);
@@ -516,6 +519,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			}
 			
 			testCount(false);
+			if (isAutoComplete)
+				break;
 			if (m_count > 0) {
 				break;
 			} else {
@@ -1455,8 +1460,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				row.appendChild(checkAND);
 			}
 		}
-		if (!isAutoComplete)
-			evalDisplayLogic();
+		evalDisplayLogic();
 		if (!update)
 			initParameters();
 		if (!isAutoComplete)

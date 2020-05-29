@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -618,7 +619,12 @@ public class MLookupFactory
 		retValue.DisplayColumn = lookupDisplayColumn;		
 		retValue.InfoWindowId = infoWindowId;
 		retValue.QueryDirect = MRole.getDefault().addAccessSQL(directQuery, TableName, true, false);
+		List<String> lookupDisplayColumns = new ArrayList<String>();
+		if (isValueDisplayed)
+			lookupDisplayColumns.add("Value");
+		lookupDisplayColumns.add(lookupDisplayColumn != null ? lookupDisplayColumn : DisplayColumn);
 		s_cacheRefTable.put(key.toString(), retValue.cloneIt());
+		retValue.lookupDisplayColumns = lookupDisplayColumns;
 		return retValue;
 	}	//	getLookup_Table
 
@@ -850,6 +856,11 @@ public class MLookupFactory
 			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);
 		lInfo.DisplayColumn = displayColumn.toString();
 		lInfo.QueryDirect = MRole.getDefault().addAccessSQL(directQuery, TableName, true, false);
+		List<String> lookupDisplayColumns = new ArrayList<String>();
+		for (LookupDisplayColumn ldc : list) {
+			lookupDisplayColumns.add(ldc.ColumnName);
+		}
+		lInfo.lookupDisplayColumns = lookupDisplayColumns;
 		s_cacheRefTable.put(cacheKey.toString(), lInfo.cloneIt());
 		return lInfo;
 	}	//	getLookup_TableDir
