@@ -303,6 +303,19 @@ public interface I_AD_UserDef_Field
 	  */
 	public String getIsAlwaysUpdateable();
 
+    /** Column name IsAutocomplete */
+    public static final String COLUMNNAME_IsAutocomplete = "IsAutocomplete";
+
+	/** Set Autocomplete.
+	  * Automatic completion for textfields
+	  */
+	public void setIsAutocomplete (String IsAutocomplete);
+
+	/** Get Autocomplete.
+	  * Automatic completion for textfields
+	  */
+	public String getIsAutocomplete();
+
     /** Column name IsDisplayed */
     public static final String COLUMNNAME_IsDisplayed = "IsDisplayed";
 
