@@ -230,13 +230,22 @@ public class MLookupInfo implements Serializable, Cloneable
 		try
 		{
 			MLookupInfo clone = (MLookupInfo)super.clone();
+			clone.parsedValidationCode = "";
+			clone.IsValidated = false;
+			clone.ctx = null;
+			if (ZoomQuery != null)
+				clone.ZoomQuery = ZoomQuery.clone();
 			return clone;
 		}
-		catch (Exception e)
+		catch (CloneNotSupportedException e)
 		{
-			CLogger.get().log(Level.SEVERE, "", e);
+			throw new RuntimeException(e);
 		}
-		return null;
 	}	//	clone
+
+	@Override
+	public MLookupInfo clone() {
+		return cloneIt();
+	}
 
 }   //  MLookupInfo
