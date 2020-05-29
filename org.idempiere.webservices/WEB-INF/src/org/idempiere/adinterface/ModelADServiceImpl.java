@@ -1392,7 +1392,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 							dfid.setVal(new String(Base64.encodeBase64((byte[]) po.get_Value(i))));
 						}
 						else if(po.get_Value(i) instanceof Boolean) {
-							dfid.setVal(po.get_Value(i).toString().equals("true") ? "Y" : "N");
+							dfid.setVal((Boolean)po.get_Value(i) ? "Y" : "N");
 						}
 						else {
 							dfid.setVal(po.get_Value(i).toString());
