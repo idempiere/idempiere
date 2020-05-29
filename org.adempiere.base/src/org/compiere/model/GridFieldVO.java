@@ -330,6 +330,9 @@ public class GridFieldVO implements Serializable
 
 				if (userDef.getPlaceholder() != null)
 					vo.Placeholder = userDef.getPlaceholder();
+				
+				if (userDef.getIsAutocomplete() != null)
+					vo.IsAutocomplete = "Y".equals(userDef.getIsAutocomplete());
 			}
 		}
 		//
@@ -384,6 +387,7 @@ public class GridFieldVO implements Serializable
 			vo.MandatoryLogic = rs.getString("MandatoryLogic");
 			vo.Placeholder = rs.getString("Placeholder");
 			vo.Placeholder2 = rs.getString("Placeholder2");
+			vo.IsAutocomplete = "Y".equals(rs.getString("IsAutoComplete"));
 		}
 		catch (SQLException e)
 		{
