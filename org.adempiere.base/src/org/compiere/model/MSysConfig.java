@@ -234,7 +234,15 @@ public class MSysConfig extends X_AD_SysConfig
 	 */
 	public static String getValue(String Name, String defaultValue)
 	{
-		return getValue(Name, defaultValue, 0, 0);
+        // IDEMPIERE-3551: allow setting system configuration (system level only, not client level) by environment variable over database value
+        // note: change value on database and reset cache don't effect configuration setting by this way
+        String envValue = System.getProperty(Name);
+        if (envValue == null)// value from database
+            return getValue(Name, defaultValue, 0, 0);
+        else if(envValue.trim().length() == 0)// clear configuration
+            return null;
+        else// environment configuration
+            return envValue;
 	}
 	
 	/**
