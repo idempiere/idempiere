@@ -33,7 +33,6 @@ import org.adempiere.webui.adwindow.ADWindowContent;
 import org.adempiere.webui.adwindow.QuickGridTabRowRenderer;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ComboEditorBox;
-import org.adempiere.webui.component.Searchbox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
@@ -139,7 +138,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	 */
 	public WSearchEditor (Lookup lookup, String label, String description, boolean mandatory, boolean readonly, boolean updateable)
 	{
-		super(new Searchbox(), label, description, mandatory, readonly, updateable);
+		super(new CustomSearchBox() , label, description, mandatory, readonly, updateable);
 
 		if (lookup == null)
 		{
@@ -155,7 +154,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	public WSearchEditor(String columnName, boolean mandatory, boolean readonly, boolean updateable,
     		Lookup lookup)
 	{
-		super(new Searchbox(), null, null, mandatory, readonly, updateable);
+		super(new CustomSearchBox(), null, null, mandatory, readonly, updateable);
 
 		if (lookup == null)
 		{
