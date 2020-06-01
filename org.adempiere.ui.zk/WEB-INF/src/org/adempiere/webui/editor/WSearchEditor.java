@@ -21,7 +21,6 @@ import static org.compiere.model.SystemIDs.COLUMN_C_INVOICELINE_M_PRODUCT_ID;
 import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
 
 import java.beans.PropertyChangeEvent;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -56,7 +55,6 @@ import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -76,8 +74,7 @@ import org.zkoss.zk.ui.util.Clients;
  */
 public class WSearchEditor extends WEditor implements ContextMenuListener, ValueChangeListener, IZoomableEditor
 {
-	private static final int MAX_AUTO_COMPLETE_ROWS = 50;
-	private static final int AUTO_COMPLETE_QUERY_TIMEOUT = 1; //1 second
+	private static final int MAX_AUTO_COMPLETE_ROWS = 50;	
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK, Events.ON_CHANGE, Events.ON_OK};
 	public static final String		ATTRIBUTE_IS_INFO_PANEL_OPEN	= "ATTRIBUTE_IS_INFO_PANEL_OPEN";
 	private Lookup 				lookup;
@@ -217,27 +214,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			getComponent().getCombobox().addEventListener(Events.ON_CHANGING, (EventListener<InputEvent>)(e) -> {
 				if (!e.isChangingBySelectBack()) {
 					listModel.setWhereClause(getWhereClause());
-					String s = e.getValue();
-					if (!Util.isEmpty(s, true)) {
-						StringBuilder query = new StringBuilder(s);
-						query.append("?autocomplete={");
-						query.append("timeout:")
-							.append(AUTO_COMPLETE_QUERY_TIMEOUT)
-							.append(",")
-							.append("pagesize:")
-							.append(MAX_AUTO_COMPLETE_ROWS);
-						if (lookup instanceof MLookup) {
-							MLookup mlookup = (MLookup) lookup;
-							List<String> displayColumns = mlookup.getLookupInfo().lookupDisplayColumns;
-							if (displayColumns != null && displayColumns.size() > 0) {
-								query.append(",")
-									.append("searchcolumn:")
-									.append(displayColumns.get(0));
-							}
-						}
-						query.append("}");
-						s = query.toString();
-					}
+					String s = e.getValue();					
 					getComponent().getCombobox().setModel(listModel.getSubModel(s, MAX_AUTO_COMPLETE_ROWS));
 				}
 			});

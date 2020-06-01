@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 /**
  *  Info Class for Lookup SQL (ValueObject)
@@ -234,7 +235,7 @@ public class MLookupInfo implements Serializable, Cloneable
 		{
 			MLookupInfo clone = (MLookupInfo)super.clone();
 			clone.parsedValidationCode = "";
-			clone.IsValidated = false;
+			clone.IsValidated = Util.isEmpty(ValidationCode);
 			clone.ctx = null;
 			if (ZoomQuery != null)
 				clone.ZoomQuery = ZoomQuery.clone();

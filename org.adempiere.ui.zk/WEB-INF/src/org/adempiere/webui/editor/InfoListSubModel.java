@@ -31,6 +31,7 @@ import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.panel.InfoPanel;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
+import org.compiere.model.MLookup;
 import org.compiere.util.NamePair;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
@@ -51,6 +52,8 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 	private String keyColumnName;
 	private String whereClause;
 
+	private static final int AUTO_COMPLETE_QUERY_TIMEOUT = 1; //1 second
+	
 	/**
 	 * 
 	 * @param lookup
@@ -86,6 +89,24 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 		ListModelList<ValueNamePair> model = new ListModelList<>();
 		if (value != null && !Util.isEmpty(value.toString(), true)) {
 			String queryText = value.toString().trim();
+			StringBuilder queryBuilder = new StringBuilder(queryText);
+			queryBuilder.append("?autocomplete={");
+			queryBuilder.append("timeout:")
+				.append(AUTO_COMPLETE_QUERY_TIMEOUT)
+				.append(",")
+				.append("pagesize:")
+				.append(nRows);
+			if (lookup instanceof MLookup) {
+				MLookup mlookup = (MLookup) lookup;
+				List<String> displayColumns = mlookup.getLookupInfo().lookupDisplayColumns;
+				if (displayColumns != null && displayColumns.size() > 0) {
+					queryBuilder.append(",")
+						.append("searchcolumn:")
+						.append(displayColumns.get(0));
+				}
+			}
+			queryBuilder.append("}");
+			queryText = queryBuilder.toString();
 			
 			final InfoPanel ip = InfoManager.create(lookup, gridField, tableName, keyColumnName, queryText, false, getWhereClause());
 			if (ip != null && ip.loadedOK()) {
