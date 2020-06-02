@@ -58,7 +58,8 @@
       this.ajaxOptions.complete = function() {
     	  if (me.trace)
     		  console.log("complete"+ " dtid: " + me.desktop.id);
-    	  me._schedule();
+    	  if (me._req && me._req.statusText != "timeout")
+    		  me._schedule();
       };
     },
     _schedule: function() {
