@@ -973,7 +973,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				if (contextLost)
 					Env.getCtx().remove("#AD_Client_ID");
 			}
-			//throw new AdempiereException(e);
+			throw new AdempiereException(e);
 		}
 		finally
 		{
