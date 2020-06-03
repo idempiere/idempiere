@@ -58,8 +58,11 @@
       this.ajaxOptions.complete = function() {
     	  if (me.trace)
     		  console.log("complete"+ " dtid: " + me.desktop.id);
-    	  if (me._req && me._req.statusText != "timeout")
+    	  if (me._req && me._req.statusText == "Could not find session" && me._req.status == 401){
+    		  ;//stop sent request:IDEMPIERE-4237
+    	  }else{
     		  me._schedule();
+    	  }
       };
     },
     _schedule: function() {
