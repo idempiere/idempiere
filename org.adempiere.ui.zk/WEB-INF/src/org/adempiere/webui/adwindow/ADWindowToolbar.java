@@ -30,6 +30,7 @@ import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
+import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.FToolbar;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Tabpanel;
@@ -37,12 +38,14 @@ import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
 import org.compiere.model.MToolBarButton;
+import org.compiere.model.MUserQuery;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -62,6 +65,7 @@ import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
@@ -83,11 +87,17 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9183846974546235806L;
+	private static final long serialVersionUID = -8494819673584541046L;
 
 	public static final String BTNPREFIX = "Btn";
+	
+	public static final String MNITMPREFIX = "Mnitm";
 
     private static final CLogger log = CLogger.getCLogger(ADWindowToolbar.class);
+
+    private Combobox fQueryName;
+	private MUserQuery[] userQueries;
+	private MUserQuery selectedUserQuery;
 
     private ToolBarButton btnIgnore;
 
@@ -117,6 +127,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
     private ToolBarButton btnProcess;
     
+    private ToolBarButton btnQuickForm;
+
     private ToolBarButton btnShowMore;
     private Menupopup menupopup;
 
@@ -146,6 +158,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	private long prevKeyEventTime = 0;
 
 	private KeyEvent prevKeyEvent;
+	
+	// Maintain hierarchical Quick form by its parent-child tab while open leaf
+	// tab once & dispose and doing same action
+	private int							quickFormTabHrchyLevel		= 0;
 
 	private A overflowButton;
 
@@ -155,16 +171,19 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	
 	private int prevWidth;
 
+	private AbstractADWindowContent windowContent;
+
 	/**	Last Modifier of Action Event					*/
 //	public int 				lastModifiers;
 	//
 
     public ADWindowToolbar()
     {
-    	this(0);
+    	this(null, 0);
     }
 
-    public ADWindowToolbar(int windowNo) {
+    public ADWindowToolbar(AbstractADWindowContent windowContent, int windowNo) {
+    	this.windowContent = windowContent;
     	setWindowNo(windowNo);
         init();
         if (ClientInfo.isMobile()) {
@@ -179,7 +198,15 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     	//Show more menu pop up
         menupopup = new Menupopup();
         this.appendChild(menupopup);
-
+        
+        //IDEMPIERE-4085
+        fQueryName = new Combobox();
+        fQueryName.setTooltiptext(Msg.getMsg(Env.getCtx(),"QueryName"));
+        fQueryName.setPlaceholder(Msg.getMsg(Env.getCtx(),"QueryName"));
+        fQueryName.setId(BTNPREFIX + "SearchQuery");
+        fQueryName.addEventListener(Events.ON_SELECT, this);
+        LayoutUtils.addSclass("toolbar-searchbox", fQueryName);
+				
         btnIgnore = createButton("Ignore", "Ignore", "Ignore");
         btnIgnore.setTooltiptext(btnIgnore.getTooltiptext()+ "    Alt+Z");
         btnHelp = createButton("Help", "Help","Help");
@@ -233,6 +260,9 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btnProcess.setTooltiptext(btnProcess.getTooltiptext()+ "    Alt+O");
         btnProcess.setDisabled(false);
 
+        btnQuickForm = createButton("QuickForm", "QuickForm", "QuickForm");
+        btnQuickForm.setDisabled(false);
+
         // Help and Exit should always be enabled
         btnHelp.setDisabled(false);
         btnGridToggle.setDisabled(false);
@@ -274,7 +304,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         					tooltipKey = null;
         				}
         				ToolBarButton btn = createButton(button.getComponentName(), null, tooltipKey);
-        				this.appendChild(btn);
         				btn.removeEventListener(Events.ON_CLICK, this);
         				btn.setId(button.getName());
         				btn.setDisabled(false);
@@ -291,9 +320,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
         				if (ClientInfo.isMobile() && button.isShowMore()) 
         					mobileShowMoreButtons.add(btn);
-        				else if (button.isShowMore())
-        					createMenuitem(btn);
-        				else {
+        				else if (!button.isShowMore()) {
             				this.appendChild(btn);
             				action.decorate(btn);        					
         				}
@@ -310,7 +337,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
             				this.appendChild(new Separator("vertical"));
             			}
         			}
-        		}
+        		} else if (button.isSearchQueryComponent())
+    		        this.appendChild(fQueryName); 
         	}
         }
         if (!ClientInfo.isMobile() && !menuItems.isEmpty()) {
@@ -341,7 +369,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         	else
         	{
 	        	Executions.createComponents(ThemeManager.getPreference(), this, null);
-	        	String size = Env.getContext(Env.getCtx(), "#ZK_Toolbar_Button_Size");
+	        	String size = Env.getContext(Env.getCtx(), ITheme.ZK_TOOLBAR_BUTTON_SIZE);
 	        	String suffix = "24.png";
 	        	if (!Util.isEmpty(size)) 
 	        	{
@@ -371,12 +399,15 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		Menuitem item = new Menuitem(button.getTooltiptext());
 		if (button.getImage() != null)
 			item.setImage(button.getImage());
+		else if (button.getImageContent() != null)
+			item.setImageContent(button.getImageContent());
 		else if (ThemeManager.isUseFontIconForImage()) { 
 			item.setIconSclass(button.getIconSclass());
-    		LayoutUtils.addSclass("font-icon-toolbar-button", item);
+    		LayoutUtils.addSclass("font-icon-menuitem", item);
 		}
+		item.setId(MNITMPREFIX+button.getName());
 		item.setValue(button.getName());
-		item.addEventListener(Events.ON_CLICK, evt -> doOnClick(new Event(Events.ON_CLICK, button)));
+		item.addEventListener(Events.ON_CLICK, evt -> Events.sendEvent(new Event(Events.ON_CLICK, button)));
 		menupopup.appendChild(item);
 		menuItems.put(button, item);
 		return item;
@@ -438,6 +469,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		altKeyMap.put(VK_R, btnReport);		
 		altKeyMap.put(VK_P, btnPrint);
 		altKeyMap.put(VK_O, btnProcess);
+		altKeyMap.put(VK_L, btnCustomize);
 	}
 
 	protected void addSeparator()
@@ -473,7 +505,12 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
             }
         } else if (eventName.equals(Events.ON_CTRL_KEY))
         {
-        	KeyEvent keyEvent = (KeyEvent) event;
+			KeyEvent keyEvent = (KeyEvent) event;
+
+			// If Quick form is opened then prevent toolbar shortcut key events.
+			if (!(keyEvent.getKeyCode() == KeyEvent.F2) && windowContent != null && windowContent.getOpenQuickFormTabs().size() > 0)
+				return;
+
         	if (LayoutUtils.isReallyVisible(this)) {
 	        	//filter same key event that is too close
 	        	//firefox fire key event twice when grid is visible
@@ -490,14 +527,30 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	        	}
 	        	this.onCtrlKeyEvent(keyEvent);
         	}
+        } else if (Events.ON_SELECT.equals(eventName)) 
+        {
+        	int index = fQueryName.getSelectedIndex();
+        	if (index < 0) return;
+        	if (index == 0) // no query - refresh
+        		setSelectedUserQuery(null);
+        	else
+				setSelectedUserQuery(userQueries[index-1]);
+
+			doOnClick(event);
         }
     }
 
 	private void doOnClick(Event event) {
 		this.event = event;
-		ToolBarButton cComponent = (ToolBarButton) event.getTarget();
-		String compName = cComponent.getName();
-		String methodName = "on" + compName.substring(3);
+		String compName;
+		String methodName;
+		if (event.getTarget() == fQueryName) {
+			methodName = "onSearchQuery";
+		} else {
+			ToolBarButton cComponent = (ToolBarButton) event.getTarget();
+			compName = cComponent.getName();
+			methodName = "on" + compName.substring(3);
+		}
 		Iterator<ToolbarListener> listenerIter = listeners.iterator();
 		while(listenerIter.hasNext())
 		{
@@ -670,6 +723,12 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 			menuItems.get(button).setDisabled(!enabled);
     }
 
+	public void enableQuickForm(boolean enabled)
+	{
+		btnQuickForm.setDisabled(!enabled);
+		enableMenuitem(btnQuickForm, enabled);
+	}
+
     public void lock(boolean locked)
     {
     	setPressed("Lock", locked);
@@ -681,12 +740,12 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
       		LayoutUtils.addSclass("font-icon-toolbar-button", this.btnLock);
       		if (menuItems.get(btnLock) != null) {
     			menuItems.get(btnLock).setIconSclass(iconSclass);
-    			LayoutUtils.addSclass("font-icon-toolbar-button", menuItems.get(btnLock));
+    			LayoutUtils.addSclass("font-icon-menuitem", menuItems.get(btnLock));
     		}
       	}
       	else
       	{
-      		String size = Env.getContext(Env.getCtx(), "#ZK_Toolbar_Button_Size");
+      		String size = Env.getContext(Env.getCtx(), ITheme.ZK_TOOLBAR_BUTTON_SIZE);
       		String suffix = "24.png";
       		if (!Util.isEmpty(size))
       		{
@@ -732,10 +791,41 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 			}
 		}
 		else if (!keyEvent.isAltKey() && keyEvent.isCtrlKey() && !keyEvent.isShiftKey())
-			btn = ctrlKeyMap.get(keyEvent.getKeyCode());
+		{
+			if (keyEvent.getKeyCode() == KeyEvent.F2)
+			{
+				quickFormTabHrchyLevel = quickFormTabHrchyLevel + 1;
+				fireButtonClickEvent(keyEvent, btnDetailRecord);
+				if (!btnQuickForm.isDisabled() && btnQuickForm.isVisible())
+				{
+					fireButtonClickEvent(keyEvent, btnQuickForm);
+				}
+				else if (!btnParentRecord.isDisabled() && btnParentRecord.isVisible())
+				{
+					fireButtonClickEvent(keyEvent, btnParentRecord);
+					quickFormTabHrchyLevel = quickFormTabHrchyLevel - 1;
+				}
+				return;
+			}
+			else
+			{
+				btn = ctrlKeyMap.get(keyEvent.getKeyCode());
+			}
+		}
 		else if (!keyEvent.isAltKey() && !keyEvent.isCtrlKey() && !keyEvent.isShiftKey())
 			btn = keyMap.get(keyEvent.getKeyCode());
+		else if (!keyEvent.isAltKey() && !keyEvent.isCtrlKey() && keyEvent.isShiftKey())
+		{
+			if (keyEvent.getKeyCode() == KeyEvent.F2)
+			{
+				btn = btnQuickForm;
+			}
+		}
+		fireButtonClickEvent(keyEvent, btn);
+	}
 
+	private void fireButtonClickEvent(KeyEvent keyEvent, ToolBarButton btn)
+	{
 		if (btn != null) {
 			prevKeyEventTime = System.currentTimeMillis();
         	prevKeyEvent = keyEvent;
@@ -905,8 +995,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public void dynamicDisplay() {
 		List<Toolbarbutton> customButtons = new ArrayList<Toolbarbutton>();
 		for(ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons) {
-			toolbarCustomBtn.dynamicDisplay();
+			toolbarCustomBtn.dynamicDisplay(menuItems.get(toolbarCustomBtn.getToolbarbutton()) != null);
 			customButtons.add(toolbarCustomBtn.getToolbarbutton());
+			if (menuItems.get(toolbarCustomBtn.getToolbarbutton()) != null)
+				menuItems.get(toolbarCustomBtn.getToolbarbutton()).setVisible(toolbarCustomBtn.getToolbarbutton().isVisible());
 		}
 		
 		ADWindow adwindow = ADWindow.findADWindow(this);
@@ -1096,11 +1188,54 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     	getButton(buttonName).setPressed(pressed);
     	if (menuItems.get(getButton(buttonName)) != null) {
     		if (pressed)
-    			menuItems.get(getButton(buttonName)).setSclass("z-toolbarbutton-checked");
+    			menuItems.get(getButton(buttonName)).setSclass("z-toolbarbutton-checked font-icon-menuitem");
     		else {
     			menuItems.get(getButton(buttonName)).setClass("");
-    			menuItems.get(getButton(buttonName)).setClass("z-menu-item");
+    			menuItems.get(getButton(buttonName)).setClass("font-icon-menuitem z-menu-item");
     		}
     	}
     }
+
+	/**
+	 * @return
+	 */
+	public int getQuickFormTabHrchyLevel()
+	{
+		return quickFormTabHrchyLevel;
+	}
+
+	/**
+	 * @param quickFormHrchyTabLevel
+	 */
+	public void setQuickFormTabHrchyLevel(int quickFormHrchyTabLevel)
+	{
+		this.quickFormTabHrchyLevel = quickFormHrchyTabLevel;
+	}
+    
+    public void refreshUserQuery(int AD_Tab_ID, int AD_UserQuery_ID) {
+    	fQueryName.getItems().clear();
+        userQueries = MUserQuery.get(Env.getCtx(), AD_Tab_ID);
+        fQueryName.appendItem("");
+        for (int i = 0; i < userQueries.length; i++) {
+	       	Comboitem li = fQueryName.appendItem(userQueries[i].getName());
+	       	li.setValue(userQueries[i].getAD_UserQuery_ID());
+	       	if (AD_UserQuery_ID == userQueries[i].getAD_UserQuery_ID())
+	       		fQueryName.setSelectedItem(li);
+        }
+        if (AD_UserQuery_ID <= 0 || fQueryName.getItemCount() <= 1)
+        	fQueryName.setValue("");
+    }
+    
+	public void setSelectedUserQuery(MUserQuery selectedUserQuery) {
+		this.selectedUserQuery = selectedUserQuery;
+		if (selectedUserQuery != null)
+			fQueryName.setValue(selectedUserQuery.getName());
+	}
+
+	public int getAD_UserQuery_ID() {
+		if (selectedUserQuery == null)
+			return 0;
+		return selectedUserQuery.getAD_UserQuery_ID();
+	}
+
 }

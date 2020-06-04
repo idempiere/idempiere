@@ -101,6 +101,10 @@
 	padding-bottom: 0px;
 }
 
+.desktop-tabbox > .z-tabpanels {
+	flex-grow: 1 1 0;
+}
+
 .desktop-north, .desktop-center {
 	border: none;
 }

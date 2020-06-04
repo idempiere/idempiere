@@ -305,7 +305,7 @@ public class InvoicePrint extends SvrProcess
 				if (printed)
 				{
 					StringBuffer sb = new StringBuffer ("UPDATE C_Invoice "
-						+ "SET DatePrinted=SysDate, IsPrinted='Y' WHERE C_Invoice_ID=")
+						+ "SET DatePrinted=getDate(), IsPrinted='Y' WHERE C_Invoice_ID=")
 						.append (C_Invoice_ID);
 					DB.executeUpdateEx(sb.toString(), get_TrxName());
 				}

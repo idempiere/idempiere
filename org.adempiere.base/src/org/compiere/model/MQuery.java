@@ -44,7 +44,7 @@ import org.compiere.util.ValueNamePair;
  * 		<li>BF [ 2860022 ] MQuery.get() is generating restrictions for non-existent column
  * 			https://sourceforge.net/tracker/?func=detail&aid=2860022&group_id=176962&atid=879332
  */
-public class MQuery implements Serializable
+public class MQuery implements Serializable, Cloneable
 {
 	/**
 	 * 
@@ -1046,6 +1046,19 @@ public class MQuery implements Serializable
 	
 	public MQuery getReportProcessQuery() {
 		return m_reportProcessQuery;
+	}
+	
+	@Override
+	public MQuery clone() {
+		try {
+			MQuery clone = (MQuery) super.clone();
+			clone.m_recordCount = 999999;
+			if (m_reportProcessQuery != null)
+				clone.m_reportProcessQuery = m_reportProcessQuery.clone();
+			return clone;
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }	//	MQuery
 

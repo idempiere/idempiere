@@ -197,7 +197,7 @@ public class MNote extends X_AD_Note
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MNote[")
+		StringBuilder sb = new StringBuilder ("MNote[")
 			.append(get_ID()).append(",AD_Message_ID=").append(getAD_Message_ID())
 			.append(",").append(getReference())
 			.append(",Processed=").append(isProcessed())

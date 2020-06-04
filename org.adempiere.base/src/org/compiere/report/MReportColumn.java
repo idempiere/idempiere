@@ -343,7 +343,7 @@ public class MReportColumn extends X_PA_ReportColumn
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MReportColumn[")
+		StringBuilder sb = new StringBuilder ("MReportColumn[")
 			.append(get_ID()).append(" - ").append(getName()).append(" - ").append(getDescription())
 			.append(", SeqNo=").append(getSeqNo()).append(", AmountType=").append(getPAAmountType())
 			.append(", PeriodType=").append(getPAPeriodType())

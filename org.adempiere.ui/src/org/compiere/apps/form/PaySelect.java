@@ -207,11 +207,11 @@ public class PaySelect
 		 *
 		SELECT i.C_Invoice_ID, i.DateInvoiced+p.NetDays AS DateDue,
 		bp.Name, i.DocumentNo, c.ISO_Code, i.GrandTotal,
-		paymentTermDiscount(i.GrandTotal, i.C_PaymentTerm_ID, i.DateInvoiced, SysDate) AS Discount,
-		SysDate-paymentTermDueDays(i.C_PaymentTerm_ID,i.DateInvoiced) AS DiscountDate,
-		i.GrandTotal-paymentTermDiscount(i.GrandTotal,i.C_PaymentTerm_ID,i.DateInvoiced,SysDate) AS DueAmount,
-		currencyConvert(i.GrandTotal-paymentTermDiscount(i.GrandTotal,i.C_PaymentTerm_ID,i.DateInvoiced,SysDate,null),
-			i.C_Currency_ID,xx100,SysDate) AS PayAmt
+		paymentTermDiscount(i.GrandTotal, i.C_PaymentTerm_ID, i.DateInvoiced, getDate()) AS Discount,
+		getDate()-paymentTermDueDays(i.C_PaymentTerm_ID,i.DateInvoiced) AS DiscountDate,
+		i.GrandTotal-paymentTermDiscount(i.GrandTotal,i.C_PaymentTerm_ID,i.DateInvoiced,getDate()) AS DueAmount,
+		currencyConvert(i.GrandTotal-paymentTermDiscount(i.GrandTotal,i.C_PaymentTerm_ID,i.DateInvoiced,getDate(),null),
+			i.C_Currency_ID,xx100,getDate()) AS PayAmt
 		FROM C_Invoice_v i, C_BPartner bp, C_Currency c, C_PaymentTerm p
 		WHERE i.IsSOTrx='N'
 		AND i.C_BPartner_ID=bp.C_BPartner_ID

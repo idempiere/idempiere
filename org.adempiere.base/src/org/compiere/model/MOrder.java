@@ -578,7 +578,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MOrder[")
+		StringBuilder sb = new StringBuilder ("MOrder[")
 			.append(get_ID()).append("-").append(getDocumentNo())
 			.append(",IsSOTrx=").append(isSOTrx())
 			.append(",C_DocType_ID=").append(getC_DocType_ID())
@@ -1289,7 +1289,7 @@ public class MOrder extends X_C_Order implements DocAction
 		}
 				
 		// Bug 1564431
-		if (getDeliveryRule() != null && getDeliveryRule().equals(MOrder.DELIVERYRULE_CompleteOrder)) 
+		if (MOrder.DELIVERYRULE_CompleteOrder.equals(getDeliveryRule()) )
 		{
 			for (int i = 0; i < lines.length; i++) 
 			{
@@ -1298,6 +1298,11 @@ public class MOrder extends X_C_Order implements DocAction
 				if (product != null && product.isExcludeAutoDelivery())
 				{
 					m_processMsg = "@M_Product_ID@ "+product.getValue()+" @IsExcludeAutoDelivery@";
+					return DocAction.STATUS_Invalid;
+				}
+				if (line.getDatePromised() != null && !line.getDatePromised().equals(getDatePromised()))
+				{
+					m_processMsg = "@Line@ " + line.getLine() + " - @Invalid@ @DatePromised@";
 					return DocAction.STATUS_Invalid;
 				}
 			}
@@ -1783,7 +1788,7 @@ public class MOrder extends X_C_Order implements DocAction
 	{
 		log.fine("");
 		//	Delete Taxes
-		DB.executeUpdateEx("DELETE C_OrderTax WHERE C_Order_ID=" + getC_Order_ID(), get_TrxName());
+		DB.executeUpdateEx("DELETE FROM C_OrderTax WHERE C_Order_ID=" + getC_Order_ID(), get_TrxName());
 		m_taxes = null;
 		
 		MTaxProvider[] providers = getTaxProviders();
@@ -2326,7 +2331,7 @@ public class MOrder extends X_C_Order implements DocAction
 			return null;
 		//	Business Partner needs to be linked to Org
 		MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
-		int counterAD_Org_ID = bp.getAD_OrgBP_ID_Int(); 
+		int counterAD_Org_ID = bp.getAD_OrgBP_ID(); 
 		if (counterAD_Org_ID == 0)
 			return null;
 		

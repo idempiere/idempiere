@@ -34,7 +34,7 @@ public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_PP_Cost_Collector (Properties ctx, int PP_Cost_Collector_ID, String trxName)
@@ -86,7 +86,7 @@ public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PP_Cost_Collector[")
+      StringBuilder sb = new StringBuilder ("X_PP_Cost_Collector[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

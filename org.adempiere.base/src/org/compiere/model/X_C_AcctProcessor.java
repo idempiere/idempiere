@@ -31,7 +31,7 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_AcctProcessor (Properties ctx, int C_AcctProcessor_ID, String trxName)
@@ -71,8 +71,8 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_AcctProcessor[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_AcctProcessor[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

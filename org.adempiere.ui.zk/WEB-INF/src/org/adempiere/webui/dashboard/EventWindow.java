@@ -82,7 +82,6 @@ public class EventWindow extends Window implements EventListener<Event> {
 		txtContent = new Textbox();
 		txtContent.setRows(5);
 		ZKUpdateUtil.setWidth(txtContent, "95%");
-		ZKUpdateUtil.setHeight(txtContent, "100%");
 		txtContent.setReadonly(true);
 		
 		txtHeaderColor = new Textbox();

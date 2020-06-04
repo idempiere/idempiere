@@ -288,7 +288,7 @@ implements DocAction
 	
 	public String getSummary()
 	{
-		return new StringBuffer()
+		return new StringBuilder()
 				.append(getDocumentNo()).append("/").append(getDateDoc())
 				.toString();
 	}

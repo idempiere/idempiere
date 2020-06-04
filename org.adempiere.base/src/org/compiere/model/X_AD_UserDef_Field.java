@@ -30,7 +30,7 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200527L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Field (Properties ctx, int AD_UserDef_Field_ID, String trxName)
@@ -69,8 +69,8 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_UserDef_Field[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_UserDef_Field[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
@@ -439,6 +439,30 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	public String getIsAlwaysUpdateable () 
 	{
 		return (String)get_Value(COLUMNNAME_IsAlwaysUpdateable);
+	}
+
+	/** IsAutocomplete AD_Reference_ID=319 */
+	public static final int ISAUTOCOMPLETE_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISAUTOCOMPLETE_Yes = "Y";
+	/** No = N */
+	public static final String ISAUTOCOMPLETE_No = "N";
+	/** Set Autocomplete.
+		@param IsAutocomplete 
+		Automatic completion for textfields
+	  */
+	public void setIsAutocomplete (String IsAutocomplete)
+	{
+
+		set_Value (COLUMNNAME_IsAutocomplete, IsAutocomplete);
+	}
+
+	/** Get Autocomplete.
+		@return Automatic completion for textfields
+	  */
+	public String getIsAutocomplete () 
+	{
+		return (String)get_Value(COLUMNNAME_IsAutocomplete);
 	}
 
 	/** IsDisplayed AD_Reference_ID=319 */

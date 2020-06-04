@@ -28,6 +28,7 @@ import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WRecordInfo;
@@ -91,10 +92,14 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 
 	private GridTab m_gridTab;
 
+	private AbstractADWindowContent windowContent;
+
 	/**
-	 * 
+	 * @param windowContent 
+	 * @param windowNo
 	 */
-	public BreadCrumb(int windowNo) {
+	public BreadCrumb(AbstractADWindowContent windowContent, int windowNo) {
+		this.windowContent = windowContent;
 		this.windowNo = windowNo;
 		layout = new Hbox();
 		layout.setPack("start");
@@ -324,7 +329,11 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 			}
 		} else if (event.getName().equals(Events.ON_CTRL_KEY)) {
 			if (!LayoutUtils.isReallyVisible(this)) return;
-			
+
+			// If Quick form is opened then prevent navigation keyEvent
+			if (windowContent != null && windowContent.getOpenQuickFormTabs().size() > 0)
+				return;
+
 			KeyEvent keyEvent = (KeyEvent) event;
 			if (keyEvent.isAltKey()) {
 				if (keyEvent.getKeyCode() == KeyEvent.LEFT) {
@@ -384,7 +393,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
         btn.setName(BTNPREFIX+name);
         btn.setId(name);
         Executions.createComponents(ThemeManager.getPreference(), this, null);
-        String size = Env.getContext(Env.getCtx(), "#ZK_Toolbar_Button_Size");
+        String size = Env.getContext(Env.getCtx(), ITheme.ZK_TOOLBAR_BUTTON_SIZE);
     	String suffix = "24.png";
     	if (!Util.isEmpty(size)) 
     	{

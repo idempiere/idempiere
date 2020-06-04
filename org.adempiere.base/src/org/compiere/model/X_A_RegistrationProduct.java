@@ -29,7 +29,7 @@ public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProdu
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_A_RegistrationProduct (Properties ctx, int A_RegistrationProduct_ID, String trxName)
@@ -65,7 +65,7 @@ public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProdu
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_RegistrationProduct[")
+      StringBuilder sb = new StringBuilder ("X_A_RegistrationProduct[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

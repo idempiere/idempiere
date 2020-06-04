@@ -32,7 +32,7 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_InventoryLine (Properties ctx, int M_InventoryLine_ID, String trxName)
@@ -76,7 +76,7 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_InventoryLine[")
+      StringBuilder sb = new StringBuilder ("X_M_InventoryLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

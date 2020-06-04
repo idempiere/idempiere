@@ -32,7 +32,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_PA_ReportColumn (Properties ctx, int PA_ReportColumn_ID, String trxName)
@@ -101,8 +101,8 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PA_ReportColumn[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_PA_ReportColumn[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
@@ -577,6 +577,30 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	public boolean isAdhocConversion () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsAdhocConversion);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Allow Opposite Sign.
+		@param IsAllowOppositeSign 
+		Allow column values to be displayed with the opposite sign
+	  */
+	public void setIsAllowOppositeSign (boolean IsAllowOppositeSign)
+	{
+		set_Value (COLUMNNAME_IsAllowOppositeSign, Boolean.valueOf(IsAllowOppositeSign));
+	}
+
+	/** Get Allow Opposite Sign.
+		@return Allow column values to be displayed with the opposite sign
+	  */
+	public boolean isAllowOppositeSign () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsAllowOppositeSign);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

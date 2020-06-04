@@ -130,9 +130,9 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 	{
 		if (getKeepLogDays() < 1)
 			return 0;
-		String sql = "DELETE AD_AlertProcessorLog "
+		String sql = "DELETE FROM AD_AlertProcessorLog "
 			+ "WHERE AD_AlertProcessor_ID=" + getAD_AlertProcessor_ID() 
-			+ " AND (Created+" + getKeepLogDays() + ") < SysDate";
+			+ " AND (Created+" + getKeepLogDays() + ") < getDate()";
 		int no = DB.executeUpdate(sql, get_TrxName());
 		return no;
 	}	//	deleteLog

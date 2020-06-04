@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.CCache;
+
 
 /**
  *	Field Model
@@ -32,8 +34,31 @@ public class MField extends X_AD_Field
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7124162742037904113L;
-
+	private static final long serialVersionUID = 7243492167390659946L;
+	
+	/**	Cache						*/
+	private static CCache<Integer,MField> s_cache = new CCache<Integer,MField>(Table_Name, 20);
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param AD_Field_ID
+	 * @return MField
+	 */
+	public static MField get(Properties ctx, int AD_Field_ID)
+	{
+		Integer key = Integer.valueOf(AD_Field_ID);
+		MField retValue = s_cache.get (key);
+		if (retValue != null && retValue.getCtx() == ctx) {
+			return retValue;
+		}
+		retValue = new MField (ctx, AD_Field_ID, null);
+		if (retValue.get_ID () == AD_Field_ID) {
+			s_cache.put (key, retValue);
+		}
+		return retValue;
+	}
+	
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

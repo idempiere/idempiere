@@ -179,7 +179,7 @@ public class MResource extends X_S_Resource
 	@Override
 	public String toString()
 	{
-	      StringBuffer sb = new StringBuffer ("MResource[")
+		StringBuilder sb = new StringBuilder ("MResource[")
 	        .append(get_ID())
 	        .append(", Value=").append(getValue())
 	        .append(", Name=").append(getName())

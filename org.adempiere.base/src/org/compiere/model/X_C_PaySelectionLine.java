@@ -32,7 +32,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_PaySelectionLine (Properties ctx, int C_PaySelectionLine_ID, String trxName)
@@ -83,7 +83,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_PaySelectionLine[")
+      StringBuilder sb = new StringBuilder ("X_C_PaySelectionLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

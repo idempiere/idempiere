@@ -223,7 +223,7 @@ public final class DB
 	//	if (mailPassword == null || mailPassword.length() == 0)
 	//		return;
 		//
-		StringBuffer sql = new StringBuffer("UPDATE AD_Client SET")
+		StringBuilder sql = new StringBuilder("UPDATE AD_Client SET")
 			.append(" SMTPHost=").append(DB.TO_STRING(server))
 			.append(", RequestEMail=").append(DB.TO_STRING(adminEMail))
 			.append(", RequestUser=").append(DB.TO_STRING(mailUser))
@@ -232,7 +232,7 @@ public final class DB
 		int no = DB.executeUpdate(sql.toString(), null);
 		if (log.isLoggable(Level.FINE)) log.fine("Client #"+no);
 		//
-		sql = new StringBuffer("UPDATE AD_User SET ")
+		sql = new StringBuilder("UPDATE AD_User SET ")
 			.append(" EMail=").append(DB.TO_STRING(adminEMail))
 			.append(", EMailUser=").append(DB.TO_STRING(mailUser))
 			.append(", EMailUserPW=").append(DB.TO_STRING(mailPassword))
@@ -400,6 +400,18 @@ public final class DB
 	{
         return createConnection(true, true, Connection.TRANSACTION_READ_COMMITTED);     //  see below
 	}	//	getConnectionRO
+
+	/**
+	 *	Return a replica connection if possible, otherwise read committed, read/only from pool.
+	 *  @return Connection (r/o)
+	 */
+	public static Connection getReportingConnectionRO ()
+	{
+		Connection conn = DBReadReplica.getConnectionRO();
+		if (conn == null)
+			conn = getConnectionRO();
+        return conn;
+	}	//	getReportingConnectionRO
 
 	/**
 	 *	Create new Connection.
@@ -1811,33 +1823,8 @@ public final class DB
 	 * 	@param trxName optional Transaction Name
 	 *  @return next no
 	 */
-	@SuppressWarnings("deprecation")
 	public static int getNextID (int AD_Client_ID, String TableName, String trxName)
 	{
-		boolean SYSTEM_NATIVE_SEQUENCE = MSysConfig.getBooleanValue(MSysConfig.SYSTEM_NATIVE_SEQUENCE,false);
-		//	Check AdempiereSys
-		boolean adempiereSys = false;
-		if (Ini.isClient()) 
-		{
-			adempiereSys = Ini.isPropertyBool(Ini.P_ADEMPIERESYS);
-		} 
-		else
-		{
-			String sysProperty = Env.getCtx().getProperty("AdempiereSys", "N");
-			adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
-		}
-
-		if(SYSTEM_NATIVE_SEQUENCE && !adempiereSys)
-		{
-			int m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SQ", trxName);
-			if (m_sequence_id == -1) {
-				// try to create the sequence and try again
-				MSequence.createTableSequence(Env.getCtx(), TableName, trxName, true);
-				m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SQ", trxName);
-			}
-			return m_sequence_id;
-		}
-
 		return MSequence.getNextID (AD_Client_ID, TableName, trxName); // it is ok to call deprecated method here
 	}	//	getNextID
 

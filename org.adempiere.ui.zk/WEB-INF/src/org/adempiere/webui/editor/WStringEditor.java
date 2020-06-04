@@ -148,8 +148,6 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	            getComponent().setMultiline(false);
 	        if (! gridField.isAutocomplete()) // avoid -> Combobox doesn't support multiple rows
 	        	getComponent().setRows(gridField.getNumLines() <= 0 || tableEditor ? 1 : gridField.getNumLines());
-	        if (getComponent().getRows() > 1)
-	        	ZKUpdateUtil.setHeight(getComponent(), "100%");
 
 	        if (getComponent() instanceof Textbox)
 	        	((Textbox)getComponent()).setObscureType(obscureType);

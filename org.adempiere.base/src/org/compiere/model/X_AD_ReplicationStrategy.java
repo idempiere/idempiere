@@ -30,7 +30,7 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_ReplicationStrategy (Properties ctx, int AD_ReplicationStrategy_ID, String trxName)
@@ -68,8 +68,8 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_ReplicationStrategy[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_ReplicationStrategy[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

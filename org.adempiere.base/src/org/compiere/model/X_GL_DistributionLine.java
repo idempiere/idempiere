@@ -32,7 +32,7 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_GL_DistributionLine (Properties ctx, int GL_DistributionLine_ID, String trxName)
@@ -84,7 +84,7 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_GL_DistributionLine[")
+      StringBuilder sb = new StringBuilder ("X_GL_DistributionLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -30,7 +30,7 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191218L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_Tab (Properties ctx, int AD_Tab_ID, String trxName)
@@ -86,8 +86,8 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Tab[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_Tab[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

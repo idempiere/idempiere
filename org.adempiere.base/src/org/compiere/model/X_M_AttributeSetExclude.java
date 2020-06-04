@@ -29,7 +29,7 @@ public class X_M_AttributeSetExclude extends PO implements I_M_AttributeSetExclu
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_AttributeSetExclude (Properties ctx, int M_AttributeSetExclude_ID, String trxName)
@@ -67,7 +67,7 @@ public class X_M_AttributeSetExclude extends PO implements I_M_AttributeSetExclu
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_AttributeSetExclude[")
+      StringBuilder sb = new StringBuilder ("X_M_AttributeSetExclude[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -31,7 +31,7 @@ public class X_M_PromotionLine extends PO implements I_M_PromotionLine, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_PromotionLine (Properties ctx, int M_PromotionLine_ID, String trxName)
@@ -69,7 +69,7 @@ public class X_M_PromotionLine extends PO implements I_M_PromotionLine, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_PromotionLine[")
+      StringBuilder sb = new StringBuilder ("X_M_PromotionLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

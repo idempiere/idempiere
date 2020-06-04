@@ -109,7 +109,7 @@ public class GridWindowVO implements Serializable
 
 		//  --  Get Window
 
-		StringBuffer sql = new StringBuffer("SELECT Name,Description,Help,WindowType, "
+		StringBuilder sql = new StringBuilder("SELECT Name,Description,Help,WindowType, "
 			+ "AD_Color_ID,AD_Image_ID,WinHeight,WinWidth, "
 			+ "IsSOTrx, AD_Window_UU ");
 

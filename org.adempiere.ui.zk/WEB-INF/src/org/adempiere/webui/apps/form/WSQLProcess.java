@@ -106,7 +106,6 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
         m_txbSqlField.setMultiline(true);
         m_txbSqlField.setMaxlength(maxStatementLength);
         m_txbSqlField.setRows(noStatementRows);
-        ZKUpdateUtil.setHeight(m_txbSqlField, "100%");
         ZKUpdateUtil.setHflex(m_txbSqlField, "1");
         m_txbSqlField.setCols(noColumns);
         m_txbSqlField.setReadonly(false);
@@ -122,7 +121,6 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
         // create the bottom row of components
         m_txbResultField.setCols(noColumns);
         m_txbResultField.setRows(noResultRows);
-        ZKUpdateUtil.setHeight(m_txbResultField, "100%");
         ZKUpdateUtil.setHflex(m_txbResultField, "1");
         m_txbResultField.setReadonly(true);
 

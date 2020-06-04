@@ -1125,7 +1125,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			return;
 		//
 		boolean needMask = false;
-		StringBuffer buff = new StringBuffer();
+		StringBuilder buff = new StringBuilder();
 		char chars[] = content.toCharArray();
 		for (int i = 0; i < chars.length; i++)
 		{
@@ -2087,7 +2087,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		StringBuilder sql = new StringBuilder();
 		if (type == ORDER || type == SHIPMENT || type == INVOICE)
 			sql.append("UPDATE ").append(DOC_BASETABLES[type])
-				.append(" SET DatePrinted=SysDate, IsPrinted='Y' WHERE ")
+				.append(" SET DatePrinted=getDate(), IsPrinted='Y' WHERE ")
 				.append(DOC_IDS[type]).append("=").append(Record_ID);
 		//
 		if (sql.length() > 0)

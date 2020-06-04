@@ -48,7 +48,7 @@ protected boolean afterSave (boolean newRecord,boolean success)
 	p_A_Asset_ID = getA_Asset_ID();
 	
 	
-	String sql = "SELECT SUM(USEUNITS) FROM A_Asset_use WHERE A_Asset_ID=? and usedate <= SYSDATE";
+	String sql = "SELECT SUM(USEUNITS) FROM A_Asset_use WHERE A_Asset_ID=? and usedate <= getDate()";
 	total_unitsused = DB.getSQLValueEx(null, sql, getA_Asset_ID());
 	
 	MAsset asset = MAsset.get(getCtx(), p_A_Asset_ID, null);

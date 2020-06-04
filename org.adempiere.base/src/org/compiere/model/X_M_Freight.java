@@ -33,7 +33,7 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_Freight (Properties ctx, int M_Freight_ID, String trxName)
@@ -73,7 +73,7 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_Freight[")
+      StringBuilder sb = new StringBuilder ("X_M_Freight[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

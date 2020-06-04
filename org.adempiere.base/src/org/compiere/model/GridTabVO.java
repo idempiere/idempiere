@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -283,7 +284,8 @@ public class GridTabVO implements Evaluatee, Serializable
 		return true;
 	}	//	loadTabDetails
 
-
+	private static final CCache<String, ArrayList<GridFieldVO>> s_gridFieldCache = new CCache<String, ArrayList<GridFieldVO>>(MField.Table_Name, "GridFieldVO Cache", 100, 60, false, 1000);
+	
 	/**************************************************************************
 	 *  Create Tab Fields
 	 *  @param mTabVO tab value object
@@ -293,36 +295,55 @@ public class GridTabVO implements Evaluatee, Serializable
 	{
 		//local only or remote fail for vpn profile
 		mTabVO.Fields = new ArrayList<GridFieldVO>();
-
+		
 		String sql = GridFieldVO.getSQL(mTabVO.ctx);
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
+		String cacheKey = sql + "|" + mTabVO.AD_Tab_ID;
+		ArrayList<GridFieldVO> cache = s_gridFieldCache.get(cacheKey);
+		if (cache != null)
 		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, mTabVO.AD_Tab_ID);
-			rs = pstmt.executeQuery();
-			while (rs.next())
+			for(GridFieldVO gvo : cache)
 			{
-				GridFieldVO voF = GridFieldVO.create (mTabVO.ctx, 
-					mTabVO.WindowNo, mTabVO.TabNo, 
-					mTabVO.AD_Window_ID, mTabVO.AD_Tab_ID, 
-					mTabVO.IsReadOnly, rs);
-				if (voF != null)
-					mTabVO.Fields.add(voF);
+				GridFieldVO clone = gvo.clone(mTabVO.ctx, mTabVO.WindowNo, mTabVO.TabNo, mTabVO.AD_Window_ID, mTabVO.AD_Tab_ID, mTabVO.IsReadOnly);
+				mTabVO.Fields.add(clone.afterCreate());
 			}
 		}
-		catch (Exception e)
-		{
-			CLogger.get().log(Level.SEVERE, "", e);
-			return false;
+		else
+		{			
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
+			{
+				cache = new ArrayList<GridFieldVO>();
+				pstmt = DB.prepareStatement(sql, null);
+				pstmt.setInt(1, mTabVO.AD_Tab_ID);
+				rs = pstmt.executeQuery();
+				while (rs.next())
+				{
+					GridFieldVO voF = GridFieldVO.createFromResultSet(mTabVO.ctx, 
+						mTabVO.WindowNo, mTabVO.TabNo, 
+						mTabVO.AD_Window_ID, mTabVO.AD_Tab_ID, 
+						mTabVO.IsReadOnly, rs);
+					if (voF != null)
+					{
+						cache.add(voF.clone(Env.getCtx(), mTabVO.WindowNo, mTabVO.TabNo, mTabVO.AD_Window_ID, mTabVO.AD_Tab_ID, mTabVO.IsReadOnly));
+						mTabVO.Fields.add(voF.afterCreate());
+					}					
+				}
+				if (!cache.isEmpty())
+					s_gridFieldCache.put(cacheKey, cache);
+			}
+			catch (Exception e)
+			{
+				CLogger.get().log(Level.SEVERE, "", e);
+				return false;
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
+			}
 		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}		
 		
 		Collections.sort(mTabVO.Fields, new GridFieldVO.SeqNoComparator());
 		mTabVO.initFields = true;

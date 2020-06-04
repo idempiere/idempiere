@@ -33,7 +33,7 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_PA_SLA_Measure (Properties ctx, int PA_SLA_Measure_ID, String trxName)
@@ -72,7 +72,7 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PA_SLA_Measure[")
+      StringBuilder sb = new StringBuilder ("X_PA_SLA_Measure[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

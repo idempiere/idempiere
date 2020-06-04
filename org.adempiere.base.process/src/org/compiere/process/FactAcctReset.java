@@ -273,7 +273,7 @@ public class FactAcctReset extends SvrProcess
 
 		int reset = DB.executeUpdate(sql1, get_TrxName()); 
 		//	Fact
-		String sql2 = "DELETE Fact_Acct "
+		String sql2 = "DELETE FROM Fact_Acct "
 			+ "WHERE AD_Client_ID=" + p_AD_Client_ID
 			+ " AND AD_Table_ID=" + AD_Table_ID;
 		if ( !autoPeriod )

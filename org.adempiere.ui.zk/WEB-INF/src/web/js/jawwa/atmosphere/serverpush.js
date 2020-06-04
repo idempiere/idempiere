@@ -23,7 +23,7 @@
     trace: false,
     ajaxOptions: {
         url: zk.ajaxURI("/comet", {au: true}),
-        type: "GET",
+        type: "POST",
         cache: false,
         async: true,
         global: false,
@@ -35,6 +35,7 @@
       this.timeout = timeout;
       this.ajaxOptions.data = { dtid: this.desktop.id };
       this.ajaxOptions.timeout = this.timeout;
+      this.ajaxOptions.url = zk.ajaxURI("/comet", {au: true,desktop:this.desktop.id,ignoreSession:false}),
       this.trace = trace;
       var me = this;
       this.ajaxOptions.error = function(jqxhr, textStatus, errorThrown) {
@@ -57,7 +58,11 @@
       this.ajaxOptions.complete = function() {
     	  if (me.trace)
     		  console.log("complete"+ " dtid: " + me.desktop.id);
-    	  me._schedule();
+    	  if (me._req && me._req.statusText == "SessionNotFound" && me._req.status == 400) {
+    		  ;//stop sent request:IDEMPIERE-4237
+    	  } else {
+    		  me._schedule();
+    	  }
       };
     },
     _schedule: function() {

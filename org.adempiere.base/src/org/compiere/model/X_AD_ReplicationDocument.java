@@ -29,7 +29,7 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_ReplicationDocument (Properties ctx, int AD_ReplicationDocument_ID, String trxName)
@@ -68,7 +68,7 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_ReplicationDocument[")
+      StringBuilder sb = new StringBuilder ("X_AD_ReplicationDocument[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

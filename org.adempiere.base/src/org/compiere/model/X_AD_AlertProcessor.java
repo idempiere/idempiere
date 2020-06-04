@@ -31,7 +31,7 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_AD_AlertProcessor (Properties ctx, int AD_AlertProcessor_ID, String trxName)
@@ -71,8 +71,8 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_AlertProcessor[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_AlertProcessor[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

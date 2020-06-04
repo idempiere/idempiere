@@ -29,7 +29,7 @@ public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_M_PromotionGroupLine (Properties ctx, int M_PromotionGroupLine_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_PromotionGroupLine[")
+      StringBuilder sb = new StringBuilder ("X_M_PromotionGroupLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

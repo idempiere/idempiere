@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.adempiere.webui.util.ZKUpdateUtil;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Timebox;
 
@@ -42,7 +41,6 @@ public class DatetimeBox extends Panel {
 		//timeBox.setButtonVisible(false);
 		appendChild(dateBox);
 		appendChild(timeBox);
-		ZKUpdateUtil.setHflex(this, "1");
 		
 		initComponents();
 	}

@@ -91,7 +91,7 @@ public class MDocumentStatus extends X_PA_DocumentStatus {
 	}	//	getDocumentStatusIndicators
 
 	public static int evaluate(MDocumentStatus documentStatus) {
-		StringBuffer sql = new StringBuffer("SELECT COUNT(*) FROM ");
+		StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM ");
 		String tableName = MTable.getTableName(Env.getCtx(), documentStatus.getAD_Table_ID());
 		sql.append(tableName);
 		String where = getWhereClause(documentStatus);
@@ -102,7 +102,7 @@ public class MDocumentStatus extends X_PA_DocumentStatus {
 	}
 
 	public static String getWhereClause(MDocumentStatus documentStatus) {
-		StringBuffer where = new StringBuffer(" AD_Client_ID=" + Env.getAD_Client_ID(Env.getCtx()) );
+		StringBuilder where = new StringBuilder(" AD_Client_ID=" + Env.getAD_Client_ID(Env.getCtx()) );
 		if (documentStatus.getC_Project_ID() > 0) 
 		{
 			where.append(" AND C_Project_ID=").append(documentStatus.getC_Project_ID());

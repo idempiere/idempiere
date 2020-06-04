@@ -118,7 +118,7 @@ public class AddressLookup implements AddressLookupInterface {
 	 */
 	private URL buildUrl(String postcode) {
 		try {
-			StringBuffer urlStr = new StringBuffer();
+			StringBuilder urlStr = new StringBuilder();
 			urlStr.append(serverUrl);
 			urlStr.append(serverUrl.endsWith("/") ? "" : "/");
 			urlStr.append("/query?op=query&");

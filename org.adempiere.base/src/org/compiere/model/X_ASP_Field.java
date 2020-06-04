@@ -29,7 +29,7 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_ASP_Field (Properties ctx, int ASP_Field_ID, String trxName)
@@ -65,7 +65,7 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_ASP_Field[")
+      StringBuilder sb = new StringBuilder ("X_ASP_Field[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -27,6 +27,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MRoleOrgAccess;
 import org.compiere.model.MWarehouse;
 import org.compiere.util.AdempiereUserError;
+import org.compiere.util.Msg;
 
 /**
  *	Link Business Partner to Organization.
@@ -85,7 +86,7 @@ public class BPartnerOrgLink extends SvrProcess
 			throw new AdempiereUserError ("No Business Partner ID");
 		MBPartner bp = new MBPartner (getCtx(), p_C_BPartner_ID, get_TrxName());
 		if (bp.get_ID() == 0)
-			throw new AdempiereUserError ("Business Partner not found - C_BPartner_ID=" + p_C_BPartner_ID);
+			throw new AdempiereUserError (Msg.getMsg(getCtx(), "BPartnerNotFound") + " - C_BPartner_ID=" + p_C_BPartner_ID);
 		//	BP Location
 		MBPartnerLocation[] locs = bp.getLocations(false);
 		if (locs == null || locs.length == 0)

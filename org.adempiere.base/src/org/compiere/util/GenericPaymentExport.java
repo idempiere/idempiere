@@ -97,13 +97,13 @@ public class GenericPaymentExport implements PaymentExport
 
 		char x = '"';      //  ease
 		int noLines = 0;
-		StringBuffer line = null;
+		StringBuilder line = null;
 		try
 		{
 			FileWriter fw = new FileWriter(file);
 
 			//  write header
-			line = new StringBuffer();
+			line = new StringBuilder();
 			line.append(x).append("Value").append(x).append(",")
 				.append(x).append("Name").append(x).append(",")
 				.append(x).append("Contact").append(x).append(",")
@@ -142,7 +142,7 @@ public class GenericPaymentExport implements PaymentExport
 						comment.append(", ");
 					comment.append(psls[l].getInvoice().getDocumentNo());
 				}
-				line = new StringBuffer();
+				line = new StringBuilder();
 				line.append(x).append(bp[BP_VALUE]).append(x).append(",")   // Value
 					.append(x).append(bp[BP_NAME]).append(x).append(",")    // Name
 					.append(x).append(bp[BP_CONTACT]).append(x).append(",") // Contact

@@ -35,6 +35,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 import java.util.logging.Level;
@@ -47,6 +49,8 @@ import org.adempiere.db.postgresql.PostgreSQLBundleActivator;
 import org.adempiere.exceptions.DBException;
 import org.compiere.dbPort.Convert;
 import org.compiere.dbPort.Convert_PostgreSQL;
+import org.compiere.model.MColumn;
+import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -73,8 +77,21 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class DB_PostgreSQL implements AdempiereDatabase
 {
 
-    private static final String POOL_PROPERTIES = "pool.properties";
+    private static final String P_POSTGRE_SQL_NATIVE = "PostgreSQLNative";
 
+	private static final String POOL_PROPERTIES = "pool.properties";
+
+	private static Boolean sysNative = null;
+	
+	static
+	{
+		String property = System.getProperty(P_POSTGRE_SQL_NATIVE);
+		if (!Util.isEmpty(property, true) ) 
+		{
+			sysNative = "Y".equalsIgnoreCase(property);
+		}
+	}
+	
 	public Convert getConvert() {
 		return m_convert;
 	}
@@ -116,12 +133,14 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
     private static int              m_maxbusyconnections = 0;
 
-    public static final String NATIVE_MARKER = "NATIVE_"+Database.DB_POSTGRESQL+"_KEYWORK";
+    private static final String NATIVE_MARKER = "NATIVE_"+Database.DB_POSTGRESQL+"_KEYWORK";
 
     private CCache<String, String> convertCache = new CCache<String, String>(null, "DB_PostgreSQL_Convert_Cache", 1000, 60, false);
 
     private Random rand = new Random();
 
+    private static final List<String> reservedKeywords = Arrays.asList("limit","action","old","new");
+    
 	/**
 	 *  Get Database Name
 	 *  @return database short name
@@ -331,14 +350,17 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	 */
 	public String convertStatement (String oraStatement)
 	{
-		String cache = convertCache.get(oraStatement);
-		if (cache != null) {
-			Convert.logMigrationScript(oraStatement, cache);
-			if ("true".equals(System.getProperty("org.idempiere.db.postgresql.debug"))) {
-				// log.warning("Oracle -> " + oraStatement);
-				log.warning("Pgsql  -> " + cache);
+		if (!isNativeMode())
+		{
+			String cache = convertCache.get(oraStatement);
+			if (cache != null) {
+				Convert.logMigrationScript(oraStatement, cache);
+				if ("true".equals(System.getProperty("org.idempiere.db.postgresql.debug"))) {
+					// log.warning("Oracle -> " + oraStatement);
+					log.warning("Pgsql  -> " + cache);
+				}
+				return cache;
 			}
-			return cache;
 		}
 
 		String retValue[] = m_convert.convert(oraStatement);
@@ -359,7 +381,8 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			}
 			//end vpj-cd 24/06/2005 e-evolution
 
-		convertCache.put(oraStatement, retValue[0]);
+		if (!isNativeMode())
+			convertCache.put(oraStatement, retValue[0]);
 
 		//  Diagnostics (show changed, but not if AD_Error
 		if (log.isLoggable(Level.FINE))
@@ -372,7 +395,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		}
 		    //end vpj-cd 24/06/2005 e-evolution
 		//
-    	Convert.logMigrationScript(oraStatement, retValue[0]);
+		Convert.logMigrationScript(oraStatement, retValue[0]);
 		return retValue[0];
 	}   //  convertStatement
 
@@ -1021,9 +1044,14 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	 * @param end
 	 */
 	public String addPagingSQL(String sql, int start, int end) {
-		String newSql = sql + " " + NATIVE_MARKER + "LIMIT " + ( end - start + 1 )
-			+ "  " + NATIVE_MARKER + "OFFSET " + (start - 1);
-		return newSql;
+		StringBuilder newSql = new StringBuilder(sql);
+		newSql.append(" ")
+			.append(markNativeKeyword("LIMIT "))
+			.append(( end - start + 1 ))
+			.append(" ")
+			.append(markNativeKeyword("OFFSET "))
+			.append((start - 1));
+		return newSql.toString();
 	}
 
 	public boolean isPagingSupported() {
@@ -1159,6 +1187,22 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	}
 
 	@Override
+	public String quoteColumnName(String columnName) {
+		if (!isNativeMode()) {
+			return columnName;
+		}
+		
+		String lowerCase = columnName.toLowerCase();
+		if (reservedKeywords.contains(lowerCase)) {
+			StringBuilder sql = new StringBuilder("\"");
+			sql.append(lowerCase).append("\"");
+			return sql.toString();
+		} else {
+			return columnName;
+		}
+	}
+
+	@Override
 	public String intersectClauseForCSV(String columnName, String csv) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("string_to_array(")
@@ -1171,4 +1215,204 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
 		return builder.toString();
 	}
+	
+	@Override
+	public boolean isNativeMode() {
+		return isUseNativeDialect();
+	}
+	
+	/**
+	 * @return true if it is using native dialect
+	 */
+	public final static boolean isUseNativeDialect() {
+		if (Convert.isLogMigrationScript())
+			return false;
+		else if (sysNative != null)
+			return sysNative;
+		else
+			return Ini.isPropertyBool(P_POSTGRE_SQL_NATIVE);
+	}
+	
+	/**
+	 * 
+	 * @param keyword
+	 * @return if not using native dialect, return native_marker + keyword
+	 */
+	public final static String markNativeKeyword(String keyword) {
+		if (isUseNativeDialect())
+			return keyword;
+		else
+			return NATIVE_MARKER + keyword;
+	}
+	
+	/**
+	 * 
+	 * @param statement
+	 * @return statement after the removal of native keyword marker
+	 */
+	public final static String removeNativeKeyworkMarker(String statement) {
+		return statement.replace(DB_PostgreSQL.NATIVE_MARKER, "");
+	}
+
+	
+	@Override
+	public String getNumericDataType() {
+		return "NUMERIC";
+	}
+
+	@Override
+	public String getCharacterDataType() {
+		return "CHAR";
+	}
+
+	@Override
+	public String getVarcharDataType() {
+		return "VARCHAR";
+	}
+
+	@Override
+	public String getBlobDataType() {
+		return "BYTEA";
+	}
+
+	@Override
+	public String getClobDataType() {
+		return "TEXT";
+	}
+
+	@Override
+	public String getTimestampDataType() {
+		return "TIMESTAMP";
+	}
+
+	@Override
+	public String getSQLDDL(MColumn column) {				
+		StringBuilder sql = new StringBuilder ().append(column.getColumnName())
+			.append(" ").append(column.getSQLDataType());
+
+		//	Null
+		if (column.isMandatory())
+			sql.append(" NOT NULL");
+			
+		//	Inline Constraint
+		if (column.getAD_Reference_ID() == DisplayType.YesNo)
+			sql.append(" CHECK (").append(column.getColumnName()).append(" IN ('Y','N'))");
+
+		//	Default
+		String defaultValue = column.getDefaultValue();
+		if (defaultValue != null 
+				&& defaultValue.length() > 0
+				&& defaultValue.indexOf('@') == -1		//	no variables
+				&& ( ! (DisplayType.isID(column.getAD_Reference_ID()) && defaultValue.equals("-1") ) ) )  // not for ID's with default -1
+		{
+			if (DisplayType.isText(column.getAD_Reference_ID()) 
+					|| column.getAD_Reference_ID() == DisplayType.List
+					|| column.getAD_Reference_ID() == DisplayType.YesNo
+					// Two special columns: Defined as Table but DB Type is String 
+					|| column.getColumnName().equals("EntityType") || column.getColumnName().equals("AD_Language")
+					|| (column.getAD_Reference_ID() == DisplayType.Button &&
+							!(column.getColumnName().endsWith("_ID"))))
+			{
+				if (!defaultValue.startsWith("'") && !defaultValue.endsWith("'"))
+					defaultValue = DB.TO_STRING(defaultValue);
+			}
+			if (defaultValue.equalsIgnoreCase("sysdate"))
+				defaultValue = "getDate()";
+			sql.append(" DEFAULT ").append(defaultValue);
+		}
+		else
+		{
+			if (! column.isMandatory())
+				sql.append(" DEFAULT NULL ");
+			defaultValue = null;
+		}
+		
+		return sql.toString();
+	
+	}
+	
+	/**
+	 * 	Get SQL Add command
+	 *	@param table table
+	 *	@return sql
+	 */
+	@Override
+	public String getSQLAdd (MTable table, MColumn column)
+	{
+		StringBuilder sql = new StringBuilder ("ALTER TABLE ")
+			.append(table.getTableName())
+			.append(" ADD COLUMN ").append(column.getSQLDDL());
+		String constraint = column.getConstraint(table.getTableName());
+		if (constraint != null && constraint.length() > 0) {
+			sql.append(DB.SQLSTATEMENT_SEPARATOR).append("ALTER TABLE ")
+			.append(table.getTableName())
+			.append(" ADD ").append(constraint);
+		}
+		return sql.toString();
+	}	//	getSQLAdd
+	
+	/**
+	 * 	Get SQL Modify command
+	 *	@param table table
+	 *	@param setNullOption generate null / not null statement
+	 *	@return sql separated by ;
+	 */
+	public String getSQLModify (MTable table, MColumn column, boolean setNullOption)
+	{
+		StringBuilder sql = new StringBuilder ("INSERT INTO t_alter_column values('")
+			.append(table.getTableName())
+			.append("','").append(quoteColumnName(column.getColumnName()))
+			.append("','")
+			.append(column.getSQLDataType())
+			.append("',");
+		
+		//	Null
+		if (setNullOption)
+		{
+			if (column.isMandatory())
+				sql.append("'NOT NULL',");
+			else
+				sql.append("'NULL',");
+		}
+		else
+		{
+			sql.append("null,");
+		}
+			
+		//	Default
+		String defaultValue = column.getDefaultValue();
+		if (defaultValue != null 
+			&& defaultValue.length() > 0
+			&& defaultValue.indexOf('@') == -1		//	no variables
+			&& ( ! (DisplayType.isID(column.getAD_Reference_ID()) && defaultValue.equals("-1") ) ) )  // not for ID's with default -1
+		{
+			if (defaultValue.equalsIgnoreCase("sysdate"))
+				defaultValue = "getDate()";
+			if (!defaultValue.startsWith("'") && !defaultValue.endsWith("'"))
+				defaultValue = "'" + defaultValue + "'";
+			sql.append(defaultValue);
+		}
+		else
+		{
+			sql.append("null");
+		}
+		sql.append(")");
+		
+		
+		//	Null Values
+		if (column.isMandatory() && defaultValue != null && defaultValue.length() > 0)
+		{
+			StringBuilder sqlSet = new StringBuilder("UPDATE ")
+				.append(table.getTableName())
+				.append(" SET ").append(quoteColumnName(column.getColumnName()))
+				.append("=").append(defaultValue)
+				.append(" WHERE ").append(quoteColumnName(column.getColumnName())).append(" IS NULL");
+			sql.append(DB.SQLSTATEMENT_SEPARATOR).append(sqlSet);
+		}
+		
+		
+		//
+		return sql.toString();
+	}	//	getSQLModify
+
 }   //  DB_PostgreSQL

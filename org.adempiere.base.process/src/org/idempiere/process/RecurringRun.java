@@ -97,7 +97,7 @@ public class RecurringRun extends SvrProcess
 				+ ", Cut_Date=" + p_Cut_Date + ", DocAction=" + p_DocAction);
 
 		ArrayList<Object> parameters = new ArrayList<Object>();
-		StringBuffer whereClause = new StringBuffer("RunsMax>(SELECT COUNT(*) FROM C_Recurring_Run WHERE C_Recurring_Run.C_Recurring_ID=C_Recurring.C_Recurring_ID)");
+		StringBuilder whereClause = new StringBuilder("RunsMax>(SELECT COUNT(*) FROM C_Recurring_Run WHERE C_Recurring_Run.C_Recurring_ID=C_Recurring.C_Recurring_ID)");
 		if (p_C_RecurringGroup_ID > 0) {
 			whereClause.append(" AND C_RecurringGroup_ID=?");
 			parameters.add(p_C_RecurringGroup_ID);

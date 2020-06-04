@@ -449,6 +449,21 @@ public interface I_AD_ClientInfo
 
 	public org.compiere.model.I_AD_StorageProvider getStorageArchive() throws RuntimeException;
 
+    /** Column name StorageImage_ID */
+    public static final String COLUMNNAME_StorageImage_ID = "StorageImage_ID";
+
+	/** Set Image Store.
+	  * Storage provider for Image
+	  */
+	public void setStorageImage_ID (int StorageImage_ID);
+
+	/** Get Image Store.
+	  * Storage provider for Image
+	  */
+	public int getStorageImage_ID();
+
+	public org.compiere.model.I_AD_StorageProvider getStorageImage() throws RuntimeException;
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

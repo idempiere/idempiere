@@ -977,7 +977,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	{
 		if (isProcessed())
 			return "Processed";
-		StringBuilder sql = new StringBuilder("DELETE C_LandedCostAllocation WHERE C_InvoiceLine_ID=").append(getC_InvoiceLine_ID());
+		StringBuilder sql = new StringBuilder("DELETE FROM C_LandedCostAllocation WHERE C_InvoiceLine_ID=").append(getC_InvoiceLine_ID());
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			if (log.isLoggable(Level.INFO)) log.info("Deleted #" + no);

@@ -32,6 +32,7 @@ import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.DataElementParameters;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.ElementHandler;
+import org.adempiere.pipo2.IHandlerRegistry;
 import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PackoutItem;
@@ -172,7 +173,9 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 				}
 
 				if (createElement) {
-					if (po.get_KeyColumns() != null && po.get_KeyColumns().length == 1 && po.get_ID() > 0) {
+					// 
+					if (po.get_KeyColumns() != null && po.get_KeyColumns().length == 1 && po.get_ID() > 0
+						&& ! IHandlerRegistry.TABLE_GENERIC_SINGLE_HANDLER.equals(ctx.packOut.getCurrentPackoutItem().getType())) {
 						ElementHandler handler = ctx.packOut.getHandler(po.get_TableName());
 						if (handler != null && !handler.getClass().equals(this.getClass()) ) {
 							handler.packOut(ctx.packOut, document, ctx.logDocument, po.get_ID());

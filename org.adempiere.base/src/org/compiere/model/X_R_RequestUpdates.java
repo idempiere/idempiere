@@ -29,7 +29,7 @@ public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_R_RequestUpdates (Properties ctx, int R_RequestUpdates_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_R_RequestUpdates[")
+      StringBuilder sb = new StringBuilder ("X_R_RequestUpdates[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

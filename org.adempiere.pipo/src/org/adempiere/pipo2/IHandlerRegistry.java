@@ -9,6 +9,7 @@ public interface IHandlerRegistry {
 	
 	public static final String TABLE_TRANSLATION_HANDLER = "table.translationHandler";
 	public static final String TABLE_GENERIC_HANDLER = "table.genericHandler";
+	public static final String TABLE_GENERIC_SINGLE_HANDLER = "table.genericSingleHandler";
 	
 	/**
 	 * @param element

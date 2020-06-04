@@ -70,7 +70,11 @@ public class ToolbarCustomButton implements EventListener<Event>, Evaluatee {
 	}
 	
 	public void dynamicDisplay() {
-		if (toolbarButton.getParent() == null)
+		dynamicDisplay(false);
+	}
+	
+	public void dynamicDisplay(boolean forceValidation) {
+		if (toolbarButton.getParent() == null && !forceValidation)
 			return;
 		
 		String displayLogic = mToolbarButton.getDisplayLogic();

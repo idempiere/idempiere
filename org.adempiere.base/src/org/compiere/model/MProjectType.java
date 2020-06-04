@@ -99,7 +99,7 @@ public class MProjectType extends X_C_ProjectType
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MProjectType[")
+		StringBuilder sb = new StringBuilder ("MProjectType[")
 			.append(get_ID())
 			.append("-").append(getName())
 			.append("]");
@@ -237,7 +237,7 @@ public class MProjectType extends X_C_ProjectType
 		else
 		{
 			orderBy = "p.SeqNo"; 
-			groupBy = "COALESCE(p.Name,TO_NCHAR('-')), p.C_Phase_ID, p.SeqNo ";
+			groupBy = "NVL(p.Name,'-'), p.C_Phase_ID, p.SeqNo ";
 			sb.append(groupBy)
 				.append("FROM C_Project LEFT OUTER JOIN C_Phase p ON (C_Project.C_Phase_ID=p.C_Phase_ID) ");
 		}

@@ -30,7 +30,7 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_S_ExpenseType (Properties ctx, int S_ExpenseType_ID, String trxName)
@@ -71,8 +71,8 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_S_ExpenseType[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_S_ExpenseType[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

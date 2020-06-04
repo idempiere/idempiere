@@ -32,7 +32,7 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20200413L;
 
     /** Standard Constructor */
     public X_C_CommissionDetail (Properties ctx, int C_CommissionDetail_ID, String trxName)
@@ -72,7 +72,7 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_CommissionDetail[")
+      StringBuilder sb = new StringBuilder ("X_C_CommissionDetail[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
