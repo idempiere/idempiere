@@ -277,7 +277,7 @@ public class Doc_AllocationHdr extends Doc
 						if (payment.getReversal_ID() > 0 )
 							allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance().negate());
 						else
-							allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance());
+							allocPayAccounted = allocPayAccounted.add(fl == null ? Env.ZERO: fl.getAcctBalance());
 					}
 					else if (line.getC_CashLine_ID() != 0)
 					{
