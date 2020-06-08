@@ -230,9 +230,10 @@ public class Doc_AllocationHdr extends Doc
 				{
 					fl = fact.createLine (line, getPaymentAcct(as, line.getC_Payment_ID()),
 						getC_Currency_ID(), line.getAmtSource(), null);
-					if (fl != null && payment != null)
+					if (fl != null && payment != null) {
 						fl.setAD_Org_ID(payment.getAD_Org_ID());
-					allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance());
+						allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance());
+					}
 				}
 				else
 				{
@@ -268,16 +269,16 @@ public class Doc_AllocationHdr extends Doc
 					// Normal behavior -- unchanged if using clearing accounts
 
 					//	Payment/Cash	DR
-					if (line.getC_Payment_ID() != 0)
-					{
-						fl = fact.createLine (line, getPaymentAcct(as, line.getC_Payment_ID()),
-							getC_Currency_ID(), line.getAmtSource(), null);
-						if (fl != null && payment != null)
+					if (line.getC_Payment_ID() != 0) {
+						fl = fact.createLine(line, getPaymentAcct(as, line.getC_Payment_ID()),
+								getC_Currency_ID(), line.getAmtSource(), null);
+						if (fl != null && payment != null) {
 							fl.setAD_Org_ID(payment.getAD_Org_ID());
-						if (payment.getReversal_ID() > 0 )
-							allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance().negate());
-						else
-							allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance());
+							if (payment.getReversal_ID() > 0)
+								allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance().negate());
+							else
+								allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance());
+						}
 					}
 					else if (line.getC_CashLine_ID() != 0)
 					{
