@@ -19,7 +19,6 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
-import org.compiere.util.CLogger;
 
 public class MReportView extends X_AD_ReportView {
 
