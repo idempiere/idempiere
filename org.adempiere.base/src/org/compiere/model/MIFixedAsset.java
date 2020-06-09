@@ -8,9 +8,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
-import org.compiere.model.MClient;
-import org.compiere.model.MProduct;
-import org.compiere.model.MUOM;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
