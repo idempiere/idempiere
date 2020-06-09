@@ -643,10 +643,14 @@ public class MPeriod extends X_C_Period
 				return false;
 			}
 			//	We are OK
-			if (isInPeriod(today))
+			if (isInPeriod(today) && as.getC_Period_ID() != getC_Period_ID())
 			{
-				as.setC_Period_ID(getC_Period_ID());
-				as.saveEx();
+				as = new MAcctSchema(Env.getCtx(), as.getC_AcctSchema_ID(), null);
+				if (as.getC_Period_ID() != getC_Period_ID())
+				{
+					as.setC_Period_ID(getC_Period_ID());
+					as.saveEx();
+				}
 			}
 			return true;
 		}
