@@ -1137,17 +1137,22 @@ public final class MRole extends X_AD_Role
 		//
 		StringBuilder sb = new StringBuilder();
 		Iterator<String> it = set.iterator();
-		boolean oneOnly = true;
+		final int MAX_ORACLE_ELEMENTS_IN_ORACLE = 1000;
+		int idx = 0;
 		while (it.hasNext())
 		{
+			idx++;
 			if (sb.length() > 0)
 			{
-				sb.append(",");
-				oneOnly = false;
+				if (DB.isOracle() && (idx-1) % MAX_ORACLE_ELEMENTS_IN_ORACLE == 0) { // prevent ORA-01795
+					sb.append(") OR AD_Org_ID IN (");
+				} else {
+					sb.append(",");
+				}
 			}
 			sb.append(it.next());
 		}
-		if (oneOnly)
+		if (sb.indexOf(",") < 0) // only one org
 		{
 			if (sb.length() > 0)
 				return "AD_Org_ID=" + sb.toString();
@@ -1157,8 +1162,8 @@ public final class MRole extends X_AD_Role
 				return "AD_Org_ID=-1";	//	No Access Record
 			}
 		}		
-		return "AD_Org_ID IN(" + sb.toString() + ")";
-	}	//	getOrgWhereValue
+		return "(AD_Org_ID IN (" + sb.toString() + "))";
+	}	//	getOrgWhere
 	
 	/**
 	 * 	Access to Org
@@ -1997,9 +2002,10 @@ public final class MRole extends X_AD_Role
 			if (!isAccessAllOrgs())
 			{
 				retSQL.append(" AND ");
+				String orgWhere = getOrgWhere(rw);
 				if (fullyQualified)
-					retSQL.append(tableName).append(".");
-				retSQL.append(getOrgWhere(rw));
+					orgWhere = orgWhere.replaceAll("AD_Org_ID", tableName + ".AD_Org_ID");
+				retSQL.append(orgWhere);
 			}
 		} else {
 			retSQL.append("1=1");
