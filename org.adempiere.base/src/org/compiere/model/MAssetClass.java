@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.model.Query;
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;

@@ -17,11 +17,7 @@
 
 package org.compiere.model;
 
-import org.compiere.model.MClient;
-import org.compiere.model.MOrderLine;
-import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
-import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 
 
