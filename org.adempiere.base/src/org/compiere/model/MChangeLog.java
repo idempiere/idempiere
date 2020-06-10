@@ -37,8 +37,7 @@ public class MChangeLog extends X_AD_ChangeLog
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7156972859181201446L;
-
+	private static final long serialVersionUID = 6497639795962310332L;
 
 	/**
 	 * 	Do we track changes for this table
@@ -53,6 +52,10 @@ public class MChangeLog extends X_AD_ChangeLog
 		int index = Arrays.binarySearch(s_changeLog, AD_Table_ID);
 		return index >= 0;
 	}	//	trackChanges
+
+	public static void resetLoggedList() {
+		s_changeLog = null;
+	}
 	
 	/**
 	 *	Fill Log with tables to be logged 
