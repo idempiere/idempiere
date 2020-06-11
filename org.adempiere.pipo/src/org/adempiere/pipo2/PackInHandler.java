@@ -526,6 +526,7 @@ public class PackInHandler extends DefaultHandler {
 			.setOrderBy("AD_Client_ID, Name")
 			.list();
     	for (MRole role : roles) {
+    		role.setAD_User_ID(Env.getAD_User_ID(m_ctx.ctx));
         	role.updateAccessRecords(false);
     	}
 	}
