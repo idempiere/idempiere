@@ -232,9 +232,9 @@ public abstract class PO
 	private static CLogger		s_log = CLogger.getCLogger (PO.class);
 
 	/** Context                 */
-	protected Properties		p_ctx;
+	protected transient Properties		p_ctx;
 	/** Model Info              */
-	protected volatile POInfo	p_info = null;
+	protected transient volatile POInfo	p_info = null;
 
 	/** Original Values         */
 	private Object[]    		m_oldValues = null;
@@ -4820,6 +4820,8 @@ public abstract class PO
 	    // default deserialization
 	    ois.defaultReadObject();
 	    log = CLogger.getCLogger(getClass());
+	    p_ctx = Env.getCtx();
+	    p_info = initPO(p_ctx);
 	}
 	
 	public void set_Attribute(String columnName, Object value) {
