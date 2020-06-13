@@ -498,6 +498,12 @@ public class MColumn extends X_AD_Column
 		}
 		*/
 
+		if ((newRecord || is_ValueChanged(COLUMNNAME_ColumnName))
+			&& (   "EntityType".equals(getColumnName())
+				|| "EntityType".equals(get_ValueOld(COLUMNNAME_ColumnName).toString()))) {
+			MChangeLog.resetLoggedList();
+		}
+		
 		return success;
 	}	//	afterSave
 	
