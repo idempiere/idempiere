@@ -920,8 +920,8 @@ public final class MLookup extends Lookup implements Serializable
 	private final static CCache<String, CCache<String, List<KeyNamePair>>> s_keyNamePairCache = new CCache<String, CCache<String, List<KeyNamePair>>>(null, "MLookup.KeyNamePairCache", 100, 60, false, 500);
 	private final static CCache<String, CCache<String, List<ValueNamePair>>> s_valueNamePairCache = new CCache<String, CCache<String, List<ValueNamePair>>>(null, "MLookup.ValueNamePairCache", 100, 60, false, 500);
 	
-	private final static CCache<String, CCache<Integer, KeyNamePair>> s_directKeyNamePairCache = new CCache<String, CCache<Integer,KeyNamePair>>(null, "", 100, 60, false, 500);
-	private final static CCache<String, CCache<String, ValueNamePair>> s_directValueNamePairCache = new CCache<String, CCache<String,ValueNamePair>>(null, "", 100, 60, false, 500);
+	private final static CCache<String, CCache<Integer, KeyNamePair>> s_directKeyNamePairCache = new CCache<String, CCache<Integer,KeyNamePair>>(null, "MLookup.DirectKeyNamePairCache", 100, 60, false, 500);
+	private final static CCache<String, CCache<String, ValueNamePair>> s_directValueNamePairCache = new CCache<String, CCache<String,ValueNamePair>>(null, "MLookup.DirectValueNamePairCache", 100, 60, false, 500);
 	
 	private synchronized static List<KeyNamePair> getKeyNamePairCache(MLookupInfo lookupInfo, String cacheKey) 
 	{
