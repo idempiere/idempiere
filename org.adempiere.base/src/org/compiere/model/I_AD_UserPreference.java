@@ -177,6 +177,19 @@ public interface I_AD_UserPreference
 	/** Get Detailed Zoom Across	  */
 	public boolean isDetailedZoomAcross();
 
+    /** Column name IsMenuOnField */
+    public static final String COLUMNNAME_IsMenuOnField = "IsMenuOnField";
+
+	/** Set Context Menu on Field.
+	  * Set the context menu on field, or just in label
+	  */
+	public void setIsMenuOnField (boolean IsMenuOnField);
+
+	/** Get Context Menu on Field.
+	  * Set the context menu on field, or just in label
+	  */
+	public boolean isMenuOnField();
+
     /** Column name IsUseSimilarTo */
     public static final String COLUMNNAME_IsUseSimilarTo = "IsUseSimilarTo";
 
@@ -185,6 +198,15 @@ public interface I_AD_UserPreference
 
 	/** Get Use Similar To	  */
 	public boolean isUseSimilarTo();
+
+    /** Column name MigrationScriptComment */
+    public static final String COLUMNNAME_MigrationScriptComment = "MigrationScriptComment";
+
+	/** Set Migration Script Comment	  */
+	public void setMigrationScriptComment (String MigrationScriptComment);
+
+	/** Get Migration Script Comment	  */
+	public String getMigrationScriptComment();
 
     /** Column name ToggleOnDoubleClick */
     public static final String COLUMNNAME_ToggleOnDoubleClick = "ToggleOnDoubleClick";

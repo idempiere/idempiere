@@ -144,7 +144,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 				// show menu when right click to label
 				popupMenu.addContextElement(label);
 				
-				if (component instanceof XulElement) 
+				boolean menuOnField = (! "N".equals(Env.getContext(Env.getCtx(), "P|IsMenuOnField")));
+				if (component instanceof XulElement && menuOnField)
 				{
 					popupMenu.addContextElement((XulElement) component);
 				}
@@ -153,7 +154,26 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		
 	}
 	
-    public WEditor(Component comp, GridField gridField) {
+	public void showMenuAndSetLabel(Label additionalLabel) {
+		showMenu();
+		if (popupMenu == null)
+			return;
+		if (!readOnly)
+		{		
+			//long press conflict with text selection gesture on mobile
+			if (ClientInfo.isMobile())
+			{
+				additionalLabel.addEventListener(Events.ON_CLICK, evt-> popupMenu.open(label, "after_end"));
+			}
+			else
+			{
+				// show menu when right click to label
+				popupMenu.addContextElement(additionalLabel);
+			}
+		}
+	}
+
+	public WEditor(Component comp, GridField gridField) {
     	this(comp, gridField, -1);
 	}
 

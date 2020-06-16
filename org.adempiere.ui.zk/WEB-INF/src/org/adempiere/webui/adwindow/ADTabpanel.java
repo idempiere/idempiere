@@ -509,6 +509,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         GridField fields[] = gridTab.getFields();
         Row row = new Row();
         int actualxpos = 0;
+		boolean menuOnField = (! "N".equals(Env.getContext(Env.getCtx(), "P|IsMenuOnField")));
 
         String currentFieldGroup = null;
         for (int i = 0; i < fields.length; i++)
@@ -626,7 +627,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         		row.appendCellChild(createSpacer(), xpos-1 - actualxpos);
         	boolean paintLabel = ! (field.getDisplayType() == DisplayType.Button || field.getDisplayType() == DisplayType.YesNo || field.isFieldOnly()); 
 
-        	// Adjust column spam to the remain columns size
+        	// Adjust column span to the remain columns size
 			int remainCols = numCols - actualxpos;
     		if (columnSpan > remainCols)
     			columnSpan = remainCols-1 > 0 ? remainCols-1 : 1;
@@ -713,18 +714,24 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	        					Label label = editor.getLabel();
 	        					if (ClientInfo.isMobile())
 	        					{
-	        						WEditorPopupMenu finalPopupMenu = popupMenu;
-	        						label.addEventListener(Events.ON_CLICK, evt-> finalPopupMenu.open(label, "after_start"));
+		        					if (paintLabel)
+		        					{
+		        						WEditorPopupMenu finalPopupMenu = popupMenu;
+		        						label.addEventListener(Events.ON_CLICK, evt-> finalPopupMenu.open(label, "after_start"));
+		        					}
 	        					}
 	        					else
 	        					{
-		        					if (popupMenu.isZoomEnabled() && editor instanceof IZoomableEditor)
+		        					if (popupMenu.isZoomEnabled() && editor instanceof IZoomableEditor && paintLabel)
 		        					{
 		        						label.addEventListener(Events.ON_CLICK, new ZoomListener((IZoomableEditor) editor));
 		        					}
-		
-		        					popupMenu.addContextElement(label);
-		        					if (editor.getComponent() instanceof XulElement) 
+		        					if (paintLabel)
+		        					{
+			        					popupMenu.addContextElement(label);
+		        					}
+		        					if (   editor.getComponent() instanceof XulElement
+		        						&& (menuOnField || ! paintLabel)) 
 		        					{
 		        						popupMenu.addContextElement((XulElement) editor.getComponent());
 		        					}

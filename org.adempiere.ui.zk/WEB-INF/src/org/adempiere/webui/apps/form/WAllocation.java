@@ -309,20 +309,20 @@ public class WAllocation extends Allocation
 		row.appendCellChild(bpartnerLabel.rightAlign());
 		ZKUpdateUtil.setHflex(bpartnerSearch.getComponent(), "true");
 		row.appendCellChild(bpartnerSearch.getComponent(),1);
-		bpartnerSearch.showMenu();
+		bpartnerSearch.showMenuAndSetLabel(bpartnerLabel);
 		row.appendChild(dateLabel.rightAlign());
 		row.appendChild(dateField.getComponent());
 		
 		row.appendCellChild(organizationLabel.rightAlign());
 		ZKUpdateUtil.setHflex(organizationPick.getComponent(), "true");
 		row.appendCellChild(organizationPick.getComponent(),1);
-		organizationPick.showMenu();		
+		organizationPick.showMenuAndSetLabel(organizationLabel);		
 		
 		row = rows.newRow();
 		row.appendCellChild(currencyLabel.rightAlign(),1);
 		ZKUpdateUtil.setHflex(currencyPick.getComponent(), "true");
 		row.appendCellChild(currencyPick.getComponent(),1);		
-		currencyPick.showMenu();
+		currencyPick.showMenuAndSetLabel(currencyLabel);
 		
 		Hbox cbox = new Hbox();
 		cbox.setWidth("100%");
@@ -380,10 +380,10 @@ public class WAllocation extends Allocation
 		if (maxWidth(SMALL_WIDTH-1))
 			row = rows.newRow();
 		row.appendCellChild(DocTypeLabel.rightAlign());
-		chargePick.showMenu();
+		chargePick.showMenuAndSetLabel(chargeLabel);
 		ZKUpdateUtil.setHflex(DocTypePick.getComponent(), "true");
 		row.appendCellChild(DocTypePick.getComponent());
-		DocTypePick.showMenu();
+		DocTypePick.showMenuAndSetLabel(DocTypeLabel);
 		if (maxWidth(SMALL_WIDTH-1))
 		{
 			row = rows.newRow();
