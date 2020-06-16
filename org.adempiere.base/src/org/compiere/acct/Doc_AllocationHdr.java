@@ -230,9 +230,10 @@ public class Doc_AllocationHdr extends Doc
 				{
 					fl = fact.createLine (line, getPaymentAcct(as, line.getC_Payment_ID()),
 						getC_Currency_ID(), line.getAmtSource(), null);
-					if (fl != null && payment != null)
+					if (fl != null && payment != null) {
 						fl.setAD_Org_ID(payment.getAD_Org_ID());
-					allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance());
+						allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance());
+					}
 				}
 				else
 				{
