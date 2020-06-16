@@ -818,7 +818,7 @@ public class MProductPricing extends AbstractProductPricing
 	public BigDecimal getDiscount()
 	{
 		BigDecimal Discount = Env.ZERO;
-		if (m_PriceList.intValue() != 0)
+		if (m_PriceList.compareTo(Env.ZERO) != 0)
 			Discount = BigDecimal.valueOf((m_PriceList.doubleValue() - m_PriceStd.doubleValue())
 				/ m_PriceList.doubleValue() * 100.0);
 		if (Discount.scale() > 2)
