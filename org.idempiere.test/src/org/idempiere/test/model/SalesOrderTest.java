@@ -87,7 +87,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
 		assertTrue(info.isError());
-		assertEquals(DocAction.STATUS_Drafted, order.getDocStatus());
+		assertEquals(DocAction.STATUS_Invalid, order.getDocStatus());
 		
 		rollback();
 		
