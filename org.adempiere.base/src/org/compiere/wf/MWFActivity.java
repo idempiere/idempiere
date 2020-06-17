@@ -285,7 +285,13 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			if (log.isLoggable(Level.FINE)) log.fine(oldState + "->"+ WFState + ", Msg=" + getTextMsg());
 			super.setWFState (WFState);
 			m_state = new StateEngine (getWFState());
-			saveEx();			//	closed in MWFProcess.checkActivities()
+			boolean valid = save();
+			if (! valid) {
+				// the activity could not be updated, probably it was deleted by the rollback to savepoint
+				// so, set the ID to zero and save it again (insert)
+				setAD_WF_Activity_ID(0);
+				saveEx();
+			}
 			updateEventAudit();
 
 			//	Inform Process
@@ -335,7 +341,13 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		}
 		else
 			m_audit.setEventType(MWFEventAudit.EVENTTYPE_StateChanged);
-		m_audit.saveEx();
+		boolean valid = m_audit.save();
+		if (! valid) {
+			// the event audit could not be updated, probably it was deleted by the rollback to savepoint
+			// so, set the ID to zero and save it again (insert)
+			m_audit.setAD_WF_EventAudit_ID(0);
+			m_audit.saveEx();
+		}
 	}	//	updateEventAudit
 
 	/**
@@ -870,8 +882,15 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		//
 		try
 		{
-			if (!localTrx)
-				savepoint = trx.setSavepoint(null);
+			if (!localTrx) {
+				// when cascade workflows, avoid setting a savepoint for each workflow
+				// use the same first savepoint from the transaction
+				savepoint = trx.getLastWFSavepoint();
+				if (savepoint == null) {
+					savepoint = trx.setSavepoint(null);
+					trx.setLastWFSavepoint(savepoint);
+				}
+			}
 
 			if (!m_state.isValidAction(StateEngine.ACTION_Start))
 			{
@@ -924,6 +943,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				try
 				{
 					trx.rollback(savepoint);
+					trx.setLastWFSavepoint(null);
 				} catch (SQLException e1) {}
 			}
 
@@ -972,7 +992,6 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				if (contextLost)
 					Env.getCtx().remove("#AD_Client_ID");
 			}
-			throw new AdempiereException(e);
 		}
 		finally
 		{
