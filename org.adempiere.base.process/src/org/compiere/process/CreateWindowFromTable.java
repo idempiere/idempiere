@@ -34,6 +34,7 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MWindow;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 
@@ -108,7 +109,7 @@ public class CreateWindowFromTable extends SvrProcess
 		if (log.isLoggable(Level.INFO)) 
 			log.info("Source AD_Table_ID=" + p_AD_Table_ID);
 		
-		MTable table = MTable.get(getCtx(), p_AD_Table_ID);
+		MTable table = new MTable(getCtx(), p_AD_Table_ID, get_TrxName());
 		if (table != null) {
 			
 			String entityType = table.getEntityType();
@@ -127,11 +128,11 @@ public class CreateWindowFromTable extends SvrProcess
 				window.setIsSOTrx(p_IsSOTrx);
 				window.setWindowType(p_WindowType);
 				window.setEntityType(entityType);
-				window.saveEx(get_TrxName());
+				window.saveEx();
 				addLog(window.getAD_Window_ID(), null, null, "@AD_Window_ID@: " + window.getName(), 
 						window.get_Table_ID(), window.getAD_Window_ID());
 			} else {
-				window = MWindow.get(getCtx(), p_AD_Window_ID);
+				window = new MWindow(getCtx(), p_AD_Window_ID, get_TrxName());
 			}
 
 			MTab tab = new MTab(window);
@@ -142,22 +143,22 @@ public class CreateWindowFromTable extends SvrProcess
 			
 			//Set order by
 			if (table.getColumnIndex("Value") > 0)
-				tab.setOrderByClause("Value");
+				tab.setOrderByClause(table.getTableName() + ".Value");
 			else if (table.getColumnIndex("Name") > 0)
-				tab.setOrderByClause("Name");
+				tab.setOrderByClause(table.getTableName() + ".Name");
 			else 
-				tab.setOrderByClause("Created DESC");
+				tab.setOrderByClause(table.getTableName() + ".Created DESC");
 
-			tab.saveEx(get_TrxName());
+			tab.saveEx();
 			addLog(tab.getAD_Tab_ID(), null, null, "@AD_Tab_ID@: " + tab.getName(), 
 					tab.get_Table_ID(), tab.getAD_Tab_ID());
 
 			//Create Fields
-			ProcessInfo processInfo = new ProcessInfo("", 174, 0, tab.getAD_Tab_ID());
+			ProcessInfo processInfo = new ProcessInfo("", SystemIDs.PROCESS_AD_TAB_CREATEFIELDS, 0, tab.getAD_Tab_ID());
 			ProcessInfoParameter[] pip = {new ProcessInfoParameter("EntityType", entityType, null, null, null)};
 			processInfo.setParameter(pip);
 
-			MPInstance instance = new MPInstance(getCtx(), 174, 0);
+			MPInstance instance = new MPInstance(getCtx(), SystemIDs.PROCESS_AD_TAB_CREATEFIELDS, 0);
 			instance.saveEx();
 			instance.createParameter(10, "EntityType", entityType);
 			processInfo.setAD_PInstance_ID(instance.getAD_PInstance_ID());
@@ -180,18 +181,16 @@ public class CreateWindowFromTable extends SvrProcess
 				menu.setIsSOTrx(p_IsSOTrx);
 				menu.setAction(MMenu.ACTION_Window);
 				menu.setAD_Window_ID(window.getAD_Window_ID());
-				menu.saveEx(get_TrxName());
+				menu.saveEx();
 				addLog(menu.getAD_Menu_ID(), null, null, "@AD_Menu_ID@: " + menu.getName(), 
 						menu.get_Table_ID(), menu.getAD_Menu_ID());
 			}
 
-			//If AD_Window_ID is empty in the Table record -> Set Window SO or PO
-			if (window.isSOTrx() && table.getAD_Window_ID() <= 0)
+			//If AD_Window_ID is empty in the Table record
+			if (table.getAD_Window_ID() <= 0)
 				table.setAD_Window_ID(window.getAD_Window_ID());
-			else if (!window.isSOTrx() && table.getPO_Window_ID() <= 0)
-				table.setPO_Window_ID(window.getAD_Window_ID());
 			
-			table.saveEx(get_TrxName());
+			table.saveEx();
 		}
 
 		return "@OK@";
@@ -213,19 +212,19 @@ public class CreateWindowFromTable extends SvrProcess
 		boolean hasUpdatedBy = false;
 
 		for (MColumn column : table.getColumns(true)) {
-			if (column.getAD_Element_ID() == 102) //AD_Client_ID
+			if (column.getAD_Element_ID() == SystemIDs.ELEMENT_AD_CLIENT_ID)
 				hasAD_Client_ID = true;
-			else if (column.getAD_Element_ID() == 113) //AD_org_ID
+			else if (column.getAD_Element_ID() == SystemIDs.ELEMENT_AD_ORG_ID)
 				hasAD_Org_ID = true;
-			else if (column.getAD_Element_ID() == 245) //Created
+			else if (column.getAD_Element_ID() == SystemIDs.ELEMENT_CREATED)
 				hasCreated = true;
-			else if (column.getAD_Element_ID() == 246) //CreatedBy
+			else if (column.getAD_Element_ID() == SystemIDs.ELEMENT_CREATEDBY)
 				hasCreatedBy = true;
-			else if (column.getAD_Element_ID() == 348) //IsActive
+			else if (column.getAD_Element_ID() == SystemIDs.ELEMENT_ISACTIVE)
 				hasIsActive = true;
-			else if (column.getAD_Element_ID() == 607) //Updated
+			else if (column.getAD_Element_ID() == SystemIDs.ELEMENT_UPDATED)
 				hasUpdated = true;
-			else if (column.getAD_Element_ID() == 608) //Updated By
+			else if (column.getAD_Element_ID() == SystemIDs.ELEMENT_UPDATEDBY)
 				hasUpdatedBy = true;
 		}
 
