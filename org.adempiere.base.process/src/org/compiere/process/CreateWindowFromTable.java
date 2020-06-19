@@ -1,0 +1,226 @@
+/******************************************************************************
+ * Product: Adempiere ERP & CRM Smart Business Solution                       *
+ * Copyright (C) 2007 ADempiere, Inc. All Rights Reserved.                    *
+ * This program is free software; you can redistribute it and/or modify it    *
+ * under the terms version 2 of the GNU General Public License as published   *
+ * by the Free Software Foundation. This program is distributed in the hope   *
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
+ * See the GNU General Public License for more details.                       *
+ * You should have received a copy of the GNU General Public License along    *
+ * with this program; if not, write to the Free Software Foundation, Inc.,    *
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ * For the text or an alternative of this public license, you may reach us    *
+ * Adempiere, Inc.                                                            *
+ *****************************************************************************/
+package org.compiere.process;
+
+import java.util.logging.Level;
+
+import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MColumn;
+import org.compiere.model.MMenu;
+import org.compiere.model.MPInstance;
+import org.compiere.model.MTab;
+import org.compiere.model.MTable;
+import org.compiere.model.MWindow;
+import org.compiere.util.Msg;
+import org.compiere.util.Trx;
+
+/**
+ *	Create Menu - Window/tab & field from a table 
+ *	
+ *  @author Diego Ruiz - BX Service GmbH
+ */
+public class CreateWindowFromTable extends SvrProcess
+{
+	/** Table		*/
+	private int		p_AD_Table_ID = 0;
+	
+	/** Window Type		*/
+	private String		p_WindowType = null;
+	
+	/** Sales transaction		*/
+	private boolean		p_IsSOTrx = false;
+	
+	/** Is a New Window?		*/
+	private boolean		p_isNewWindow = false;
+	
+	/** AD_Window_ID    		*/
+	private int		p_AD_Window_ID = 0;
+	
+	/** Tab Level    		*/
+	private int		p_TabLevel = 0;
+	
+	/** Create Menu Record		*/
+	private boolean		p_isCreateMenu = false;
+	
+	/**
+	 *  Prepare - e.g., get Parameters.
+	 */
+	protected void prepare ()
+	{
+		ProcessInfoParameter[] para = getParameter();
+		for (int i = 0; i < para.length; i++)
+		{
+			String name = para[i].getParameterName();
+			if (para[i].getParameter() == null)
+				;
+			else if (name.equals("WindowType"))
+				p_WindowType = para[i].getParameterAsString();
+			else if (name.equals("IsSOTrx"))
+				p_IsSOTrx = para[i].getParameterAsBoolean();
+			else if (name.equals("IsNewWindow"))
+				p_isNewWindow = para[i].getParameterAsBoolean();
+			else if (name.equals("AD_Window_ID"))
+				p_AD_Window_ID = para[i].getParameterAsInt();
+			else if (name.equals("TabLevel"))
+				p_TabLevel = para[i].getParameterAsInt();
+			else if (name.equals("IsCreateMenu"))
+				p_isCreateMenu = para[i].getParameterAsBoolean();
+			else
+				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+		}
+		p_AD_Table_ID = getRecord_ID();
+	}	//	prepare
+
+	/**
+	 * 	Process
+	 *	@return info
+	 *	@throws Exception
+	 */
+	protected String doIt () throws Exception
+	{
+		if (p_AD_Table_ID == 0)
+			throw new AdempiereException("@NotFound@ @AD_Table_ID@ " + p_AD_Table_ID);
+		if (!p_isNewWindow && p_AD_Window_ID == 0)
+			throw new AdempiereException("@Mandatory@ @AD_Window_ID@");
+		if (log.isLoggable(Level.INFO)) 
+			log.info("Source AD_Table_ID=" + p_AD_Table_ID);
+		
+		MTable table = MTable.get(getCtx(), p_AD_Table_ID);
+		if (table != null) {
+			
+			String entityType = table.getEntityType();
+			
+			if (!isTableValid(table))
+				throw new AdempiereException(Msg.getMsg(getCtx(), "NewWindowNoValid"));
+			
+			MWindow window;
+			if (p_isNewWindow) {
+				if (MWindow.WINDOWTYPE_Transaction.equals(p_WindowType) && 
+						table.getColumnIndex("Processed") <= 0)
+					throw new AdempiereException(Msg.getMsg(getCtx(), "TrxWindowMandatoryProcessed"));
+				
+				window = new MWindow(getCtx(), 0, get_TrxName());
+				window.setName(table.getName());
+				window.setIsSOTrx(p_IsSOTrx);
+				window.setWindowType(p_WindowType);
+				window.setEntityType(entityType);
+				window.saveEx(get_TrxName());
+				addLog(window.getAD_Window_ID(), null, null, "@AD_Window_ID@: " + window.getName(), 
+						window.get_Table_ID(), window.getAD_Window_ID());
+			} else {
+				window = MWindow.get(getCtx(), p_AD_Window_ID);
+			}
+
+			MTab tab = new MTab(window);
+			tab.setName(table.getName());
+			tab.setAD_Table_ID(p_AD_Table_ID);
+			tab.setTabLevel(p_TabLevel);
+			tab.setIsSingleRow(true); //Default
+			
+			//Set order by
+			if (table.getColumnIndex("Value") > 0)
+				tab.setOrderByClause("Value");
+			else if (table.getColumnIndex("Name") > 0)
+				tab.setOrderByClause("Name");
+			else 
+				tab.setOrderByClause("Created DESC");
+
+			tab.saveEx(get_TrxName());
+			addLog(tab.getAD_Tab_ID(), null, null, "@AD_Tab_ID@: " + tab.getName(), 
+					tab.get_Table_ID(), tab.getAD_Tab_ID());
+
+			//Create Fields
+			ProcessInfo processInfo = new ProcessInfo("", 174, 0, tab.getAD_Tab_ID());
+			ProcessInfoParameter[] pip = {new ProcessInfoParameter("EntityType", entityType, null, null, null)};
+			processInfo.setParameter(pip);
+
+			MPInstance instance = new MPInstance(getCtx(), 174, 0);
+			instance.saveEx();
+			instance.createParameter(10, "EntityType", entityType);
+			processInfo.setAD_PInstance_ID(instance.getAD_PInstance_ID());
+
+			TabCreateFields createFields = new TabCreateFields();
+			boolean success = createFields.startProcess(getCtx(), processInfo, Trx.get(get_TrxName(), false));
+			if (!success) {
+				StringBuilder msgout = new StringBuilder("Process=").append(processInfo.getTitle())
+						.append(" Called from=").append("CreateWindowFromTable")
+						.append(" Error=").append(processInfo.isError())
+						.append(" Summary=").append(processInfo.getSummary());
+				log.severe(msgout.toString());
+				throw new AdempiereException(processInfo.getSummary());
+			}
+
+			if (p_isCreateMenu) {
+				MMenu menu = new MMenu(getCtx(), 0, get_TrxName());
+				menu.setName(window.getName());
+				menu.setEntityType(entityType);
+				menu.setIsSOTrx(p_IsSOTrx);
+				menu.setAction(MMenu.ACTION_Window);
+				menu.setAD_Window_ID(window.getAD_Window_ID());
+				menu.saveEx(get_TrxName());
+				addLog(menu.getAD_Menu_ID(), null, null, "@AD_Menu_ID@: " + menu.getName(), 
+						menu.get_Table_ID(), menu.getAD_Menu_ID());
+			}
+
+			//If AD_Window_ID is empty in the Table record -> Set Window SO or PO
+			if (window.isSOTrx() && table.getAD_Window_ID() <= 0)
+				table.setAD_Window_ID(window.getAD_Window_ID());
+			else if (!window.isSOTrx() && table.getPO_Window_ID() <= 0)
+				table.setPO_Window_ID(window.getAD_Window_ID());
+			
+			table.saveEx(get_TrxName());
+		}
+
+		return "@OK@";
+	}	//	doIt
+
+	/**
+	 * 
+	 * @param table Table to be verifies
+	 * @return true if the table has all recommended columns
+	 */
+	public boolean isTableValid(MTable table) {
+		
+		boolean hasIsActive = false;
+		boolean hasAD_Client_ID = false;
+		boolean hasAD_Org_ID = false;
+		boolean hasCreated = false;
+		boolean hasUpdated = false;
+		boolean hasCreatedBy = false;
+		boolean hasUpdatedBy = false;
+
+		for (MColumn column : table.getColumns(true)) {
+			if (column.getAD_Element_ID() == 102) //AD_Client_ID
+				hasAD_Client_ID = true;
+			else if (column.getAD_Element_ID() == 113) //AD_org_ID
+				hasAD_Org_ID = true;
+			else if (column.getAD_Element_ID() == 245) //Created
+				hasCreated = true;
+			else if (column.getAD_Element_ID() == 246) //CreatedBy
+				hasCreatedBy = true;
+			else if (column.getAD_Element_ID() == 348) //IsActive
+				hasIsActive = true;
+			else if (column.getAD_Element_ID() == 607) //Updated
+				hasUpdated = true;
+			else if (column.getAD_Element_ID() == 608) //Updated By
+				hasUpdatedBy = true;
+		}
+
+		return hasIsActive && hasAD_Client_ID && hasAD_Org_ID && hasCreated &&
+				hasUpdated && hasCreatedBy && hasUpdatedBy;
+	} // isTableValid
+	
+}
