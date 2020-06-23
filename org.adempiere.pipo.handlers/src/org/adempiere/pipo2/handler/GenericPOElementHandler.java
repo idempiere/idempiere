@@ -199,6 +199,9 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 
 				for (int i = 1; i < components.length; i++) {
 					String tables[] = components[i].split("[>]");
+					for (int nameIndex = 0; nameIndex < tables.length; nameIndex++) {
+						tables [nameIndex] = tables[nameIndex].trim();
+					}
 					exportDetail(ctx, document, po, tables);
 				}
 
