@@ -50,7 +50,7 @@ public class MWebServiceType extends X_WS_WebServiceType
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5414706098050155592L;
+	private static final long serialVersionUID = 7216001796414414950L;
 
 	/**	Parameters	*/
 	private MWebServicePara[]	m_para = null;
@@ -286,44 +286,5 @@ public class MWebServiceType extends X_WS_WebServiceType
 		
 		return m_inputFieldMap.get(colName);
 	}
-
-	protected boolean afterSave (boolean newRecord, boolean success) {
-		
-		if (newRecord && success) {
-			if (getWS_WebService().getValue().equals("ModelADService")) {
-				String method = getWS_WebServiceMethod().getValue();
-
-				if (method.equals("getList")) {
-					addWsParameter("AD_Reference_ID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
-				}
-				else if (method.equals("runProcess")) {
-					addWsParameter("AD_Process_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, ""); // can't fill it as it can be ProcessID or ProcessUU
-					addWsParameter("AD_Menu_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, "0");
-					addWsParameter("AD_Record_ID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
-				}
-				else {
-					String value = "";
-					if (method.equals("createData")) value = "Create";
-					if (method.equals("deleteData")) value = "Delete";
-					if (method.equals("queryData")) value = "Read";
-					if (method.equals("readData")) value = "Read";
-					if (method.equals("updateData")) value = "Update";
-
-					addWsParameter("TableName", X_WS_WebService_Para.PARAMETERTYPE_Constant, MTable.get(getCtx(), getAD_Table_ID()).getTableName());
-					addWsParameter("Action", X_WS_WebService_Para.PARAMETERTYPE_Constant, value);
-					addWsParameter("RecordID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
-				}
-			}
-		}
-		return true;
-	}
 	
-	void addWsParameter(String name, String type, String value) {
-		X_WS_WebService_Para wsp = new X_WS_WebService_Para(getCtx(), 0, get_TrxName());
-		wsp.setWS_WebServiceType_ID(getWS_WebServiceType_ID());
-		wsp.setParameterName(name);
-		wsp.setParameterType(type);
-		wsp.setConstantValue(value);
-		wsp.saveEx();
-	}
 }	//	MWebServiceType
