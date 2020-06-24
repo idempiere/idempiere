@@ -1126,6 +1126,7 @@ public final class MSetup
 		 */
 		//  Create BP Group
 		MBPGroup bpg = new MBPGroup (m_ctx, 0, m_trx.getTrxName());
+		bpg.setAD_Org_ID(0);
 		bpg.setValue(defaultName);
 		bpg.setName(defaultName);
 		bpg.setIsDefault(true);
@@ -1136,6 +1137,7 @@ public final class MSetup
 
 		//	Create BPartner
 		MBPartner bp = new MBPartner (m_ctx, 0, m_trx.getTrxName());
+		bp.setAD_Org_ID(0);
 		bp.setValue(defaultName);
 		bp.setName(defaultName);
 		bp.setBPGroup(bpg);
@@ -1145,6 +1147,7 @@ public final class MSetup
 			log.log(Level.SEVERE, "BPartner NOT inserted");
 		//  Location for Standard BP
 		MLocation bpLoc = new MLocation(m_ctx, C_Country_ID, C_Region_ID, City, m_trx.getTrxName());
+		bpLoc.setAD_Org_ID(0);
 		bpLoc.saveEx();
 		MBPartnerLocation bpl = new MBPartnerLocation(bp);
 		bpl.setC_Location_ID(bpLoc.getC_Location_ID());
@@ -1165,6 +1168,7 @@ public final class MSetup
 		 */
 		//  Create Product Category
 		MProductCategory pc = new MProductCategory(m_ctx, 0, m_trx.getTrxName());
+		pc.setAD_Org_ID(0);
 		pc.setValue(defaultName);
 		pc.setName(defaultName);
 		pc.setIsDefault(true);
@@ -1202,6 +1206,7 @@ public final class MSetup
 
 		//  Tax - Zero Rate
 		MTax tax = new MTax (m_ctx, "Standard", Env.ZERO, C_TaxCategory_ID, m_trx.getTrxName());
+		tax.setAD_Org_ID(0);
 		tax.setIsDefault(true);
 		if (tax.save())
 			m_info.append(Msg.translate(m_lang, "C_Tax_ID"))
@@ -1211,6 +1216,7 @@ public final class MSetup
 
 		//	Create Product
 		MProduct product = new MProduct (m_ctx, 0, m_trx.getTrxName());
+		product.setAD_Org_ID(0);
 		product.setValue(defaultName);
 		product.setName(defaultName);
 		product.setC_UOM_ID(C_UOM_ID);
@@ -1285,6 +1291,7 @@ public final class MSetup
 		 */
 		//  PriceList
 		MPriceList pl = new MPriceList(m_ctx, 0, m_trx.getTrxName());
+		pl.setAD_Org_ID(0);
 		pl.setName(defaultName);
 		pl.setC_Currency_ID(C_Currency_ID);
 		pl.setIsDefault(true);
@@ -1292,12 +1299,14 @@ public final class MSetup
 			log.log(Level.SEVERE, "PriceList NOT inserted");
 		//  Price List
 		MDiscountSchema ds = new MDiscountSchema(m_ctx, 0, m_trx.getTrxName());
+		ds.setAD_Org_ID(0);
 		ds.setName(defaultName);
 		ds.setDiscountType(MDiscountSchema.DISCOUNTTYPE_Pricelist);
 		if (!ds.save())
 			log.log(Level.SEVERE, "DiscountSchema NOT inserted");
 		//  PriceList Version
 		MPriceListVersion plv = new MPriceListVersion(pl);
+		plv.setAD_Org_ID(0);
 		plv.setName();
 		plv.setM_DiscountSchema_ID(ds.getM_DiscountSchema_ID());
 		if (!plv.save())
@@ -1311,6 +1320,7 @@ public final class MSetup
 
 		//	Create Sales Rep for Client-User
 		MBPartner bpCU = new MBPartner (m_ctx, 0, m_trx.getTrxName());
+		bpCU.setAD_Org_ID(0);
 		bpCU.setValue(AD_User_U_Name);
 		bpCU.setName(AD_User_U_Name);
 		bpCU.setBPGroup(bpg);
@@ -1322,6 +1332,7 @@ public final class MSetup
 			log.log(Level.SEVERE, "SalesRep (User) NOT inserted");
 		//  Location for Client-User
 		MLocation bpLocCU = new MLocation(m_ctx, C_Country_ID, C_Region_ID, City, m_trx.getTrxName());
+		bpLocCU.setAD_Org_ID(0);
 		bpLocCU.saveEx();
 		MBPartnerLocation bplCU = new MBPartnerLocation(bpCU);
 		bplCU.setC_Location_ID(bpLocCU.getC_Location_ID());
@@ -1337,6 +1348,7 @@ public final class MSetup
 
 		//	Create Sales Rep for Client-Admin
 		MBPartner bpCA = new MBPartner (m_ctx, 0, m_trx.getTrxName());
+		bpCA.setAD_Org_ID(0);
 		bpCA.setValue(AD_User_Name);
 		bpCA.setName(AD_User_Name);
 		bpCA.setBPGroup(bpg);
@@ -1348,6 +1360,7 @@ public final class MSetup
 			log.log(Level.SEVERE, "SalesRep (Admin) NOT inserted");
 		//  Location for Client-Admin
 		MLocation bpLocCA = new MLocation(m_ctx, C_Country_ID, C_Region_ID, City, m_trx.getTrxName());
+		bpLocCA.setAD_Org_ID(0);
 		bpLocCA.saveEx();
 		MBPartnerLocation bplCA = new MBPartnerLocation(bpCA);
 		bplCA.setC_Location_ID(bpLocCA.getC_Location_ID());
