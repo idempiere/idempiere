@@ -1,6 +1,7 @@
 SET SQLBLANKLINES ON
 SET DEFINE OFF
 
+-- IDEMPIERE-1026 Button on table to create automatically the window
 -- Jun 19, 2020, 10:31:17 AM CEST
 INSERT INTO AD_Process (AD_Process_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Description,Help,IsReport,Value,IsDirectPrint,Classname,AccessLevel,EntityType,Statistic_Count,Statistic_Seconds,IsBetaFunctionality,IsServerProcess,ShowHelp,CopyFromProcess,AD_Process_UU,AllowMultipleExecution) VALUES (200118,0,0,'Y',TO_DATE('2020-06-19 10:31:16','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-06-19 10:31:16','YYYY-MM-DD HH24:MI:SS'),100,'Create Window, Tab & Field from Table','Create Window, Tab & Field record of the Table','This process will take the table definition and create the Window/Tab and field record with these options:<br>
 
@@ -70,6 +71,22 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 
 -- Jun 19, 2020, 11:49:59 AM CEST
 INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Transaction windows require to have a Processed column. Please create the column and try again.',0,0,'Y',TO_DATE('2020-06-19 11:49:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-06-19 11:49:59','YYYY-MM-DD HH24:MI:SS'),100,200616,'TrxWindowMandatoryProcessed','D','eb358a84-5395-4ee8-9ad6-5c532a2dd6a8')
+;
+
+-- Jun 22, 2020, 2:23:37 PM CEST
+UPDATE AD_Process_Para SET DefaultValue=NULL,Updated=TO_DATE('2020-06-22 14:23:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200076
+;
+
+-- Jun 24, 2020, 1:25:07 PM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','There is already a window with the name {0}',0,0,'Y',TO_DATE('2020-06-24 13:25:07','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-06-24 13:25:07','YYYY-MM-DD HH24:MI:SS'),100,200617,'DuplicatedWindowName','D','12dbf77d-06a0-4300-92e0-ce0c2f1cdedb')
+;
+
+-- Jun 24, 2020, 1:30:43 PM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','No column is defined as Parent Link, therefore, the table cannot be a detail tab.',0,0,'Y',TO_DATE('2020-06-24 13:30:42','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-06-24 13:30:42','YYYY-MM-DD HH24:MI:SS'),100,200618,'NoParentLink','D','5383b8b1-9434-4148-8ce0-7c901f9e5507')
+;
+
+-- Jun 24, 2020, 1:40:00 PM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','The maximum tab level for this window can be {0}.',0,0,'Y',TO_DATE('2020-06-24 13:40:00','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-06-24 13:40:00','YYYY-MM-DD HH24:MI:SS'),100,200619,'MaxTabLevel','D','5ceed3b5-080a-4eab-b408-7f4eb2744624')
 ;
 
 SELECT register_migration_script('202006191355_IDEMPIERE-1026.sql') FROM dual

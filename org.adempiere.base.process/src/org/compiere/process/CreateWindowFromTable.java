@@ -35,6 +35,7 @@ import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MWindow;
 import org.compiere.model.SystemIDs;
+import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 
@@ -123,16 +124,46 @@ public class CreateWindowFromTable extends SvrProcess
 						table.getColumnIndex("Processed") <= 0)
 					throw new AdempiereException(Msg.getMsg(getCtx(), "TrxWindowMandatoryProcessed"));
 				
+				int i = DB.getSQLValue(get_TrxName(), "SELECT 1 FROM AD_Window WHERE AD_Window.name = ?", table.getName());
+
+				if (i == 1)
+					throw new AdempiereException(Msg.getMsg(getCtx(), "DuplicatedWindowName", new Object[] {table.getName()}));
+
 				window = new MWindow(getCtx(), 0, get_TrxName());
 				window.setName(table.getName());
 				window.setIsSOTrx(p_IsSOTrx);
 				window.setWindowType(p_WindowType);
 				window.setEntityType(entityType);
 				window.saveEx();
-				addLog(window.getAD_Window_ID(), null, null, "@AD_Window_ID@: " + window.getName(), 
+				addLog(window.getAD_Window_ID(), null, null, "@AD_Window_ID@: " + window.getName(),
 						window.get_Table_ID(), window.getAD_Window_ID());
 			} else {
+				//If no new window but a detail tab
+				if (p_TabLevel > 0) {
+					boolean hasParentLinkColumn = false;
+					for (MColumn column : table.getColumns(false)) {
+						if (column.isParent()) {
+							hasParentLinkColumn = true;
+							break;
+						}
+					}
+					
+					if (!hasParentLinkColumn)
+						throw new AdempiereException(Msg.getMsg(getCtx(), "NoParentLink"));
+				}
 				window = new MWindow(getCtx(), p_AD_Window_ID, get_TrxName());
+				
+				if (p_TabLevel > 1) {
+					int maxTabLevel = 0;
+					for (MTab tab : window.getTabs(false, get_TrxName())) {
+						if (tab.getTabLevel() > maxTabLevel) {
+							maxTabLevel = tab.getTabLevel();
+						}
+					}
+					
+					if (maxTabLevel+1 < p_TabLevel)
+						throw new AdempiereException(Msg.getMsg(getCtx(), "MaxTabLevel", new Object[] {maxTabLevel+1}));
+				}
 			}
 
 			MTab tab = new MTab(window);
@@ -155,12 +186,9 @@ public class CreateWindowFromTable extends SvrProcess
 
 			//Create Fields
 			ProcessInfo processInfo = new ProcessInfo("", SystemIDs.PROCESS_AD_TAB_CREATEFIELDS, 0, tab.getAD_Tab_ID());
-			ProcessInfoParameter[] pip = {new ProcessInfoParameter("EntityType", entityType, null, null, null)};
-			processInfo.setParameter(pip);
 
 			MPInstance instance = new MPInstance(getCtx(), SystemIDs.PROCESS_AD_TAB_CREATEFIELDS, 0);
 			instance.saveEx();
-			instance.createParameter(10, "EntityType", entityType);
 			processInfo.setAD_PInstance_ID(instance.getAD_PInstance_ID());
 
 			TabCreateFields createFields = new TabCreateFields();
