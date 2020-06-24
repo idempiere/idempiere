@@ -33,7 +33,7 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20200623L;
 
     /** Standard Constructor */
     public X_M_DiscountSchemaLine (Properties ctx, int M_DiscountSchemaLine_ID, String trxName)
@@ -191,6 +191,23 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public Timestamp getConversionDate () 
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ConversionDate);
+	}
+
+	/** Set Description.
+		@param Description 
+		Optional short description of the record
+	  */
+	public void setDescription (String Description)
+	{
+		set_Value (COLUMNNAME_Description, Description);
+	}
+
+	/** Get Description.
+		@return Optional short description of the record
+	  */
+	public String getDescription () 
+	{
+		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Group1.
@@ -369,6 +386,10 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public static final String LIMIT_ROUNDING_CurrencyPrecision = "C";
 	/** Ending in 9/5 = 9 */
 	public static final String LIMIT_ROUNDING_EndingIn95 = "9";
+	/** Hundred = h */
+	public static final String LIMIT_ROUNDING_Hundred = "h";
+	/** Thousand = t */
+	public static final String LIMIT_ROUNDING_Thousand = "t";
 	/** Set Limit price Rounding.
 		@param Limit_Rounding 
 		Rounding of the final result
@@ -535,6 +556,10 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public static final String LIST_ROUNDING_CurrencyPrecision = "C";
 	/** Ending in 9/5 = 9 */
 	public static final String LIST_ROUNDING_EndingIn95 = "9";
+	/** Hundred = h */
+	public static final String LIST_ROUNDING_Hundred = "h";
+	/** Thousand = t */
+	public static final String LIST_ROUNDING_Thousand = "t";
 	/** Set List price Rounding.
 		@param List_Rounding 
 		Rounding rule for final list price
@@ -850,6 +875,10 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public static final String STD_ROUNDING_CurrencyPrecision = "C";
 	/** Ending in 9/5 = 9 */
 	public static final String STD_ROUNDING_EndingIn95 = "9";
+	/** Hundred = h */
+	public static final String STD_ROUNDING_Hundred = "h";
+	/** Thousand = t */
+	public static final String STD_ROUNDING_Thousand = "t";
 	/** Set Standard price Rounding.
 		@param Std_Rounding 
 		Rounding rule for calculated price
