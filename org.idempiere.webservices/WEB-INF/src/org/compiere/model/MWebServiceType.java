@@ -286,5 +286,45 @@ public class MWebServiceType extends X_WS_WebServiceType
 		
 		return m_inputFieldMap.get(colName);
 	}
+
+	public static void insertParameters (Properties ctx, MWebServiceType ws, String trxName) {
+
+		if (ws.getWS_WebService().getValue().equals("ModelADService")) {
+			String method = ws.getWS_WebServiceMethod().getValue();
+
+			if (method.equals("getList")) {
+				addWsParameter(ctx, ws, "AD_Reference_ID", X_WS_WebService_Para.PARAMETERTYPE_Free, "", trxName);
+			}
+			else if (method.equals("runProcess")) {
+				addWsParameter(ctx, ws, "AD_Process_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, "", trxName); // can't fill it as the process is unknown
+				addWsParameter(ctx, ws, "AD_Menu_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, "0", trxName);
+				addWsParameter(ctx, ws, "AD_Record_ID", X_WS_WebService_Para.PARAMETERTYPE_Free, "", trxName);
+			}
+			else {
+				String value = "";
+				if (method.equals("createData")) value = "Create";
+				if (method.equals("deleteData")) value = "Delete";
+				if (method.equals("queryData")) value = "Read";
+				if (method.equals("readData")) value = "Read";
+				if (method.equals("updateData")) value = "Update";
+
+				addWsParameter(ctx, ws, "TableName", X_WS_WebService_Para.PARAMETERTYPE_Constant, MTable.get(ctx, ws.getAD_Table_ID()).getTableName(), trxName);
+				addWsParameter(ctx, ws, "Action", X_WS_WebService_Para.PARAMETERTYPE_Constant, value, trxName);
+				addWsParameter(ctx, ws, "RecordID", X_WS_WebService_Para.PARAMETERTYPE_Free, "", trxName);
+			}
+		}
+	}
 	
+	private static void addWsParameter(Properties ctx, MWebServiceType ws, String name, String type, String value, String trxName) {
+		
+		if (DB.getSQLValueEx(trxName, "SELECT 1 FROM WS_WebService_Para WHERE WS_WebServiceType_ID = ? AND ParameterName = ?", ws.getWS_WebServiceType_ID(), name) != 1) {
+			X_WS_WebService_Para wsp = new X_WS_WebService_Para(ctx, 0, trxName);
+			wsp.setAD_Org_ID(ws.getAD_Org_ID());
+			wsp.setWS_WebServiceType_ID(ws.getWS_WebServiceType_ID());
+			wsp.setParameterName(name);
+			wsp.setParameterType(type);
+			wsp.setConstantValue(value);
+			wsp.saveEx();	
+		}
+	}	
 }	//	MWebServiceType
