@@ -68,7 +68,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3191227310812025813L;
+	private static final long serialVersionUID = 5581441980246794522L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -1283,43 +1283,58 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public BigDecimal getOpenAmt ()
 	{
-		return getOpenAmt (true, null);
+		return getOpenAmt (true, null, false);
 	}	//	getOpenAmt
 
+	public BigDecimal getOpenAmt (boolean creditMemoAdjusted, Timestamp paymentDate)
+	{
+		return getOpenAmt(creditMemoAdjusted, paymentDate, false);
+	}
 	/**
 	 * 	Get Open Amount
 	 * 	@param creditMemoAdjusted adjusted for CM (negative)
-	 * 	@param paymentDate ignored Payment Date
+	 * 	@param paymentDate Payment Date
 	 * 	@return Open Amt
 	 */
-	public BigDecimal getOpenAmt (boolean creditMemoAdjusted, Timestamp paymentDate)
+	public BigDecimal getOpenAmt (boolean creditMemoAdjusted, Timestamp paymentDate, boolean requery)
 	{
-		if (isPaid())
+		if (isPaid() && paymentDate == null)
 			return Env.ZERO;
 		//
-		if (m_openAmt == null)
-		{
-			m_openAmt = getGrandTotal();
-			if (paymentDate != null)
-			{
-				//	Payment Discount
-				//	Payment Schedule
-			}
-			BigDecimal allocated = getAllocatedAmt();
-			if (allocated != null)
-			{
-				allocated = allocated.abs();	//	is absolute
-				m_openAmt = m_openAmt.subtract(allocated);
+		if (paymentDate != null || m_openAmt == null || requery) {
+			BigDecimal l_openAmt = getOpenAmt(paymentDate);
+			if (paymentDate != null) {
+				if (isCreditMemo() && creditMemoAdjusted)
+					return l_openAmt.negate();
+				return l_openAmt;
+			} else {
+				m_openAmt = l_openAmt;
 			}
 		}
 		//
-		if (!creditMemoAdjusted)
-			return m_openAmt;
-		if (isCreditMemo())
+		if (isCreditMemo() && creditMemoAdjusted)
 			return m_openAmt.negate();
 		return m_openAmt;
 	}	//	getOpenAmt
 
+	/*
+     *    Get open amt depending on payment date
+     *    @return open Amt
+     */
+    public BigDecimal getOpenAmt (Timestamp paymentDate)
+    {
+    	BigDecimal retValue;
+    	if (paymentDate == null) {
+            retValue = DB.getSQLValueBDEx(get_TrxName(),
+            		"SELECT invoiceOpen(?,?) FROM DUAL",
+            		getC_Invoice_ID(), 0);
+    	} else {
+            retValue = DB.getSQLValueBDEx(get_TrxName(),
+            		"SELECT invoiceOpenToDate(?,?,?) FROM DUAL",
+            		getC_Invoice_ID(), 0, paymentDate);
+    	}
+        return retValue;
+    }    //    getOpenAmt
 
 	/**
 	 * 	Get Document Status
