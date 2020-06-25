@@ -200,7 +200,9 @@ public class WPaySelect extends PaySelect
 		bCancel.addActionListener(this);
 		//
 		North north = new North();
-		north.setStyle("border: none; max-height: 60%;");
+		north.setStyle("border: none;");
+		if (ClientInfo.isMobile())
+			north.setStyle("max-height: 60%;");
 		mainLayout.appendChild(north);
 		north.appendChild(parameterPanel);		
 		north.setSplittable(true);
