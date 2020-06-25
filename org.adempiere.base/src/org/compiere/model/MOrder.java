@@ -2607,6 +2607,13 @@ public class MOrder extends X_C_Order implements DocAction
 		
 		setProcessed(true);
 		setDocAction(DOCACTION_None);
+
+		// IDEMPIERE-966 thanks to Hideaki Hagiwara
+		if (!calculateTaxTotal()) {
+			m_processMsg = Msg.getMsg(p_ctx,"Error calculating tax");
+			return false;
+		}
+
 		// After Close
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE);
 		if (m_processMsg != null)
