@@ -43,7 +43,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3283099328590831741L;
+	private static final long serialVersionUID = 4339975517612838655L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -181,6 +181,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_LOGIN_ALLOW_REMEMBER_ME = "ZK_LOGIN_ALLOW_REMEMBER_ME";
     public static final String ZK_LOGO_LARGE = "ZK_LOGO_LARGE";
     public static final String ZK_LOGO_SMALL = "ZK_LOGO_SMALL";
+    public static final String ZK_MAX_ATTACHMENT_PREVIEW_SIZE = "ZK_MAX_ATTACHMENT_PREVIEW_SIZE";
     public static final String ZK_MAX_UPLOAD_SIZE = "ZK_MAX_UPLOAD_SIZE";
     public static final String ZK_MOBILE_PAGING_SIZE = "ZK_MOBILE_PAGING_SIZE";
     public static final String ZK_PAGING_DETAIL_SIZE = "ZK_PAGING_DETAIL_SIZE";
