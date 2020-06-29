@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -137,6 +138,21 @@ public class MAttribute extends X_M_Attribute
 		return m_values;
 	}	//	getValues
 
+	static private CCache<Integer,MAttribute> s_cache = new CCache<Integer,MAttribute>(Table_Name, 30, 60);
+	
+	public static MAttribute get (Properties ctx, int M_Attribute_ID){
+		Integer key = Integer.valueOf(M_Attribute_ID);
+		MAttribute retValue = (MAttribute)s_cache.get(key);
+		
+		if(retValue!=null)
+			return retValue;
+		
+		retValue = (MAttribute) MTable.get(ctx, MAttribute.Table_ID).getPO(M_Attribute_ID, null);
+		
+		s_cache.put(key, retValue);
+		
+		return retValue;
+	}
 	
 	/**************************************************************************
 	 * 	Get Attribute Instance
@@ -153,6 +169,8 @@ public class MAttribute extends X_M_Attribute
 		return retValue;
 	}	//	getAttributeInstance
 
+	
+	// TODO: Merge Patch-2999 lines  40-99
 	/**
 	 * 	Set Attribute Instance
 	 * 	@param value value
