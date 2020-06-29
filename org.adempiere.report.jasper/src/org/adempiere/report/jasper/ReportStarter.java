@@ -601,6 +601,12 @@ public class ReportStarter implements ProcessCall, ClientProcess
         	//params.put("LoginLogo", reportPath);
         	
         	Language currLang = Env.getLanguage(Env.getCtx());
+        	if ((params.containsKey("AD_Language") && params.get("AD_Language") != null) || 
+        			(params.containsKey("CURRENT_LANG") && params.get("CURRENT_LANG") != null)) {
+        		String langInfo = params.get("AD_Language") != null ? params.get("AD_Language").toString() : 
+        			params.get("CURRENT_LANG").toString();
+        		currLang = Language.getLanguage(langInfo);
+        	}
         	String printerName = null;
         	MPrintFormat printFormat = null;
         	PrintInfo printInfo = null;
