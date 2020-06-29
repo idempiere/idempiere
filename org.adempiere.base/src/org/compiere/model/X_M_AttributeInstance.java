@@ -33,7 +33,7 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20200629L;
 
     /** Standard Constructor */
     public X_M_AttributeInstance (Properties ctx, int M_AttributeInstance_ID, String trxName)
@@ -212,6 +212,26 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 	}
 
 	/** Set Value.
+		@param ValueInt 
+		Integer Value
+	  */
+	public void setValueInt (int ValueInt)
+	{
+		set_Value (COLUMNNAME_ValueInt, Integer.valueOf(ValueInt));
+	}
+
+	/** Get Value.
+		@return Integer Value
+	  */
+	public int getValueInt () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ValueInt);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Value.
 		@param ValueNumber 
 		Numeric Value
 	  */
@@ -229,5 +249,22 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set Value.
+		@param ValueTimeStamp 
+		TimeStamp Value
+	  */
+	public void setValueTimeStamp (Timestamp ValueTimeStamp)
+	{
+		set_Value (COLUMNNAME_ValueTimeStamp, ValueTimeStamp);
+	}
+
+	/** Get Value.
+		@return TimeStamp Value
+	  */
+	public Timestamp getValueTimeStamp () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_ValueTimeStamp);
 	}
 }
