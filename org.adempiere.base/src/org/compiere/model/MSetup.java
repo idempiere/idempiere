@@ -904,6 +904,7 @@ public final class MSetup
 	private int createGLCategory (String Name, String CategoryType, boolean isDefault)
 	{
 		MGLCategory cat = new MGLCategory (m_ctx, 0, m_trx.getTrxName());
+		cat.setAD_Org_ID(0);
 		cat.setName(Name);
 		cat.setCategoryType(CategoryType);
 		cat.setIsDefault(isDefault);
