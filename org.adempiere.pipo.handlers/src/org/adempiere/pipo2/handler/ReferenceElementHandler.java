@@ -16,9 +16,6 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -31,7 +28,6 @@ import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
-import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Reference;
 import org.compiere.model.MReference;
@@ -112,7 +108,7 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 
 		AttributesImpl atts = new AttributesImpl();
 
-		MReference m_Reference = new MReference(ctx.ctx, Reference_id, getTrxName(ctx));
+		MReference m_Reference = MReference.get(ctx.ctx, Reference_id);
 
 		boolean createElement = isPackOutElement(ctx, m_Reference);
 
@@ -130,36 +126,13 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 			}
 		}
 
-		if (m_Reference.getValidationType().compareTo("L") == 0) {
-			String sql1 = "SELECT AD_REF_LIST_ID FROM AD_Ref_List WHERE AD_Reference_ID= "
-					+ Reference_id;
-
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-
-			try {
-				pstmt = DB.prepareStatement(sql1, getTrxName(ctx));
-				rs = pstmt.executeQuery();
-
-				while (rs.next()) {
-					createReferenceList(ctx, document, rs.getInt("AD_REF_LIST_ID"));
-				}
-			}
-			catch (Exception e) {
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-				if (e instanceof SAXException)
-					throw (SAXException) e;
-				else if (e instanceof SQLException)
-					throw new DatabaseAccessException("Failed to export Reference.", e);
-				else if (e instanceof RuntimeException)
-					throw (RuntimeException) e;
-				else
-					throw new RuntimeException("Failed to export Reference.", e);
-			} finally {
-				DB.close(rs, pstmt);
+		if (MReference.VALIDATIONTYPE_ListValidation.equals(m_Reference.getValidationType())) {
+			int[] rls = DB.getIDsEx(getTrxName(ctx), "SELECT AD_Ref_List_ID FROM AD_Ref_List WHERE AD_Reference_ID=?", Reference_id);
+			for (int rl : rls) {
+				createReferenceList(ctx, document, rl);
 			}
 
-		} else if (m_Reference.getValidationType().compareTo("T") == 0) {
+		} else if (MReference.VALIDATIONTYPE_TableValidation.equals(m_Reference.getValidationType())) {
 			createReferenceTable(ctx, document, Reference_id);
 		}
 
