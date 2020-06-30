@@ -2,7 +2,6 @@ package org.adempiere.pipo2.handler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -16,6 +15,7 @@ import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
+import org.compiere.model.MColumn;
 import org.compiere.model.MLanguage;
 import org.compiere.model.MTable;
 import org.compiere.util.DB;
@@ -87,7 +87,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 			PIPOContext ctx, Element element) throws SAXException{
 
 		String parentTable = tableName.substring(0, tableName.length()-4);
-		ArrayList<String> columns = getTranslatedColumns(parentTable);
+		ArrayList<String> columns = getTranslatedColumns(ctx, parentTable);
 		StringBuilder sql = new StringBuilder();
 		sql.append("INSERT INTO ")
 			.append(tableName)
@@ -140,7 +140,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 	private void updateTranslation(String tableName, int parentID,
 			PIPOContext ctx, Element element) throws SAXException{
 		String parentTable = tableName.substring(0, tableName.length()-4);
-		ArrayList<String> columns = getTranslatedColumns(parentTable);
+		ArrayList<String> columns = getTranslatedColumns(ctx, parentTable);
 		StringBuilder buffer = new StringBuilder("UPDATE "+tableName+" SET ");
 		for (String columnName : columns) {
 			buffer.append(columnName).append("=?,");
@@ -196,17 +196,18 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 	private void createTranslationTags(PIPOContext ctx, String parentTable,
 			int parentRecordID, TransformerHandler document) throws SAXException {
 
-		ArrayList<String> translatedColumns = getTranslatedColumns(parentTable);
+		ArrayList<String> translatedColumns = getTranslatedColumns(ctx, parentTable);
 
 		String sql =
-			"select "+cast(translatedColumns)+" from "+parentTable+"_trl where "+
-			parentTable+"_ID="+parentRecordID;
+			"SELECT "+cast(translatedColumns)+" FROM "+parentTable+"_Trl WHERE "+
+			parentTable+"_ID=?";
 
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
 		try {
 
-			pstm = DB.prepareStatement(sql, null);
+			pstm = DB.prepareStatement(sql, getTrxName(ctx));
+			pstm.setInt(1, parentRecordID);
 			rs = pstm.executeQuery();
 
 			String elementName = parentTable + "_Trl";
@@ -243,11 +244,12 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 
 	/**
 	 *
+	 * @param ctx 
 	 * @param parentTable
 	 * @return
 	 * @throws SAXException
 	 */
-	private ArrayList<String> getTranslatedColumns(String parentTable) throws SAXException {
+	private ArrayList<String> getTranslatedColumns(PIPOContext ctx, String parentTable) throws SAXException {
 
 
 		ArrayList<String> pipolColumns = cacheColumns.get(parentTable);
@@ -256,27 +258,14 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 		}
 
 		ArrayList<String> columns = new ArrayList<String>();
-		String sql = "select * from ad_column where ad_table_id = " +
-				"(select ad_table_id from ad_table where tableName = ?)" +
-				"and isTranslated='Y'";
-
-		PreparedStatement pstm = null;
-		ResultSet rs = null;
-		try {
-			pstm = DB.prepareStatement(sql, null);
-			pstm.setString(1, parentTable);
-
-			rs = pstm.executeQuery();
-			while(rs.next()){
-				columns.add(rs.getString("columnName"));
+		MTable table = MTable.get(ctx.ctx, parentTable);
+		MColumn[] cols = table.getColumns(false);
+		for (MColumn col : cols) {
+			if (col.isTranslated()) {
+				columns.add(col.getColumnName());
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new SAXException();
-		} finally {
-			DB.close(rs, pstm);
 		}
-
+		
 		columns.add("AD_Language");
 		columns.add("IsActive");
 		columns.add("IsTranslated");
