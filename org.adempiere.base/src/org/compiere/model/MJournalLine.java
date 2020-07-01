@@ -307,6 +307,10 @@ public class MJournalLine extends X_GL_JournalLine
 
 		if (getLine() == 0)
 			setLine(DB.getSQLValueEx(get_TrxName(), "SELECT COALESCE(MAX(Line), 0) + 10 FROM GL_JournalLine WHERE GL_Journal_ID = ?", getGL_Journal_ID()));
+		if (getC_Currency_ID() == 0)
+			setC_Currency_ID(getParent().getC_Currency_ID());
+		if (getC_ConversionType_ID() == 0)
+			setC_ConversionType_ID(getParent().getC_ConversionType_ID());
 
 		//	Acct Amts
 		BigDecimal rate = getCurrencyRate();
