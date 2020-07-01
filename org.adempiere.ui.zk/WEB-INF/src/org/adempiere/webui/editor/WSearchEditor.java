@@ -55,6 +55,7 @@ import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.NamePair;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -228,17 +229,30 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	@Override
 	public void setValue(Object value)
 	{
+		Object curValue = this.value;
         this.value = value;
 		if (value != null && !"".equals(String.valueOf(value)))
-		{
-		    String text = lookup.getDisplay(value);
+		{		
+			NamePair namePair = lookup.get(value);
+			if (namePair != null)
+			{
+				String text = namePair.toString();
 
-            if (text.startsWith("_"))
+	            if (text.startsWith("_"))
+	            {
+	                text = text.substring(1);
+	            }
+	            getComponent().setText(text);
+			}
+			else
             {
-                text = text.substring(1);
+				getComponent().setText("");
+        		if (curValue == null)
+        			curValue = value;
+        		ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), curValue, null);
+    	        fireValueChange(changeEvent);
+        		this.value = null;
             }
-
-            getComponent().setText(text);
 		}
 		else
 		{
