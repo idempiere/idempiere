@@ -49,14 +49,55 @@ public class PoFiller{
 		return value;
 	}
 	
-	protected boolean isBlobOnPackinFile (String columnName){
-		String value = getStringValue(columnName);
-		if(value == null)
-			return false;
+	private enum TagValueType {
+		BINARY,
+		CLOB,
+		TEXT
+	}
+	
+	/**
+	 * test to see can treatment value as normal String to set to String column
+	 * 
+	 * value can be string or path to binary file
+	 * in case binary has 2 type
+	 * 1. binary is (attach file, image, binary content) then 
+	 * 		tag name = "BinaryData"
+	 * 		value by format	file path (fileCount + ".dat")
+	 * 			part 1 file name: fileCount + ".dat" // refer: PackOut.writeBlob 
+	 *      	separate char : "|"
+	 *      	part 2 data type: "byte[]" // refer:PoExporter.addBlob
+	 * 2. binary is long string (Clob) then Packout then
+	 * 		tag name is columnName
+	 * 		value by format
+	 * 			part 1 file name: fileCount + ".dat" // refer: PackOut.writeBlob 
+	 *      	separate char : "|"
+	 *      	part 2 data type: "string" // refer:PoExporter.addBlob
+	 * 3. isn't binary but value has format of case 1, 2
+	 * @param qName : xml tag name
+	 * @return
+	 */
+	protected TagValueType getTreamentType (String qName){
+		if ("BinaryData".equals(qName))
+			return TagValueType.BINARY;
 		
-		String strParts [] = value.split("[|]");
-		return strParts.length == 2;
+		Element pe = element.properties.get(qName);
+		if (pe == null) // in case binary, clob this data always not null
+			return TagValueType.TEXT;
+		
+		String value = pe.contents.toString();
+		if (Util.isEmpty(value, true)) // in case binary, clob this data always not blank
+			return TagValueType.TEXT;
+		
+		String valueComponents [] = value.split("[|]");
+		if (valueComponents.length != 2) // in case binary, clob this data always = 2
+			return TagValueType.TEXT;
 
+		String fileName = valueComponents[0];
+		File file = new File(ctx.packIn.getPackageDirectory() + File.separator + "blobs" + File.separator, fileName);
+		if (file.exists())
+			return TagValueType.CLOB;
+		else
+			return TagValueType.TEXT;
 	}
 	
 	/**
@@ -338,13 +379,13 @@ public class PoFiller{
 					setInteger(qName);
 				} else if (info.getColumnClass(index) == Timestamp.class) {
 					setTimestamp(qName);
-				}else if(DisplayType.TextLong == info.getColumnDisplayType(index)) {// export column from system have type is normal string, but import to system have this column but type is textlong (mean blob)
-					if (getStringValue (qName) != null && !isBlobOnPackinFile(qName)) {
+				}else if(DisplayType.isText(info.getColumnDisplayType(index))) {// data is text then test to see on 2pack can get text to setter or not
+					if (getTreamentType(qName) == TagValueType.TEXT)
 						setString(qName);
-					}else {
+					else if (getTreamentType(qName) == TagValueType.CLOB) {
 						setBlob(qName);
 					}
-				} else if (DisplayType.isLOB(info.getColumnDisplayType(index))) {
+				} else if (DisplayType.isLOB(info.getColumnDisplayType(index))) {//binary (attach, image) only, clob already test above
 					setBlob(qName);
 				} else {
 					setString(qName);
