@@ -252,7 +252,7 @@ public final class EMail implements Serializable
 			return m_sentMsg;
 		}
 		//
-		Properties props = System.getProperties();
+		Properties props = new Properties();
 		props.put("mail.store.protocol", "smtp");
 		props.put("mail.transport.protocol", "smtp");
 		props.put("mail.host", m_smtpHost);
