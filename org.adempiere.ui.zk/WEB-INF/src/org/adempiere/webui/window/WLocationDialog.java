@@ -174,8 +174,8 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			setTitle(Msg.getMsg(Env.getCtx(), "LocationUpdate"));    
 		//
 		// Reset TAB_INFO context
-		Env.setContext(Env.getCtx(), m_WindowNo, Env.TAB_INFO, "C_Region_ID", null);
-		Env.setContext(Env.getCtx(), m_WindowNo, Env.TAB_INFO, "C_Country_ID", null);
+		Env.setContext(Env.getCtx(), m_WindowNo, Env.TAB_INFO, "C_Region_ID", (String)null);
+		Env.setContext(Env.getCtx(), m_WindowNo, Env.TAB_INFO, "C_Country_ID", (String)null);
 		//
 		initComponents();
 		init();

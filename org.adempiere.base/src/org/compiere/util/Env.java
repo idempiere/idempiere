@@ -265,6 +265,22 @@ public final class Env
 			ctx.setProperty(context, value);
 	}	//	setContext
 
+	private static void setContext (Properties ctx, String context, Timestamp value, String contextLog) {
+		if (ctx == null || context == null)
+			return;
+		if (value == null){
+			ctx.remove(context);
+			if (log.isLoggable(Level.FINER)) log.finer(contextLog + context + "==" + value);
+		}
+		else {	
+			Calendar c1 = Calendar.getInstance();
+			c1.setTime(value);
+			String stringValue = DisplayType.getTimestampFormat_Default().format(c1.getTime());
+			ctx.setProperty(context, stringValue);
+			if (log.isLoggable(Level.FINER)) log.finer(contextLog + context + "==" + stringValue);
+		}
+	}
+	
 	/**
 	 *	Set Global Context to Value
 	 *  @param ctx context
@@ -273,27 +289,7 @@ public final class Env
 	 */
 	public static void setContext (Properties ctx, String context, Timestamp value)
 	{
-		if (ctx == null || context == null)
-			return;
-		if (value == null)
-		{
-			ctx.remove(context);
-			if (log.isLoggable(Level.FINER)) log.finer("Context " + context + "==" + value);
-		}
-		else
-		{	//	JDBC Format	2005-05-09 00:00:00.0
-			// BUG:3075946 KTU, Fix Thai Date
-			//String stringValue = value.toString();
-			String stringValue = "";
-			Calendar c1 = Calendar.getInstance();
-			c1.setTime(value);
-			stringValue = DisplayType.getTimestampFormat_Default().format(c1.getTime());
-			//	Chop off .0 (nanos)
-			//stringValue = stringValue.substring(0, stringValue.indexOf("."));
-			// KTU
-			ctx.setProperty(context, stringValue);
-			if (log.isLoggable(Level.FINER)) log.finer("Context " + context + "==" + stringValue);
-		}
+		setContext (ctx, context, value, "Context ");
 	}	//	setContext
 
 	/**
@@ -350,28 +346,28 @@ public final class Env
 	 */
 	public static void setContext (Properties ctx, int WindowNo, String context, Timestamp value)
 	{
-		if (ctx == null || context == null)
-			return;
-		if (value == null)
-		{
-			ctx.remove(WindowNo+"|"+context);
-			if (log.isLoggable(Level.FINER)) log.finer("Context("+WindowNo+") " + context + "==" + value);
-		}
+		String contextLog = "Context(" + WindowNo + ") ";
+		if (context == null)
+			setContext (ctx, null, value, contextLog);
 		else
-		{	//	JDBC Format	2005-05-09 00:00:00.0
-			// BUG:3075946 KTU, Fix Thai year 
-			//String stringValue = value.toString();
-			String stringValue = "";
-			Calendar c1 = Calendar.getInstance();
-			c1.setTime(value);
-			stringValue = DisplayType.getTimestampFormat_Default().format(c1.getTime());
-			//	Chop off .0 (nanos)
-			//stringValue = stringValue.substring(0, stringValue.indexOf("."));
-			// KTU
-			ctx.setProperty(WindowNo+"|"+context, stringValue);
-			if (log.isLoggable(Level.FINER)) log.finer("Context("+WindowNo+") " + context + "==" + stringValue);
-		}
+			setContext (ctx, WindowNo + "|" + context, value, contextLog);
 	}	//	setContext
+	
+	/**
+	 * Set Context for Tab to Value
+	 * @param ctx
+	 * @param WindowNo
+	 * @param tabNo
+	 * @param context
+	 * @param value
+	 */
+	public static void setContext (Properties ctx, int WindowNo, int tabNo, String context, Timestamp value) {
+		String contextLog = "Context(" + WindowNo + "," + tabNo + ") ";
+		if (context == null)
+			setContext (ctx, null, value, contextLog);
+		else
+			setContext (ctx, WindowNo + "|" + tabNo + "|" + context, value, contextLog);
+	}
 	
 	/**
 	 *	Set Context for Window to int Value

@@ -369,7 +369,7 @@ public class CalloutInOut extends CalloutEngine
 				//	Locator
 				ii = Integer.valueOf(rs.getInt(2));
 				if (rs.wasNull())
-					Env.setContext(ctx, WindowNo, 0, "M_Locator_ID", null);
+					Env.setContext(ctx, WindowNo, 0, "M_Locator_ID", (String)null);
 				else
 				{
 					if (log.isLoggable(Level.CONFIG)) log.config("M_Locator_ID=" + ii);
