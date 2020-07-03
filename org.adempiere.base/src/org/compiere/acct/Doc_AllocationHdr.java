@@ -724,26 +724,6 @@ public class Doc_AllocationHdr extends Doc
 
 
 	/**************************************************************************
-	 * 	Create Realized Gain & Loss.
-	 * 	Compares the Accounted Amount of the Invoice to the
-	 * 	Accounted Amount of the Allocation
-	 *	@param as accounting schema
-	 *	@param fact fact
-	 *	@param acct account
-	 *	@param invoice invoice
-	 *	@param allocationSource source amt
-	 *	@param allocationAccounted acct amt
-	 *	@return Error Message or null if OK
-	 *
-	 */
-	private String createRealizedGainLoss (DocLine line, MAcctSchema as, Fact fact, MAccount acct,
-		MInvoice invoice, BigDecimal allocationSource, BigDecimal allocationAccounted)
-	{
-		return createInvoiceGainLoss(line, as, fact, acct, invoice, allocationSource, allocationAccounted);
-	}	//	createRealizedGainLoss
-
-
-	/**************************************************************************
 	 * 	Create Tax Correction.
 	 * 	Requirement: Adjust the tax amount, if you did not receive the full
 	 * 	amount of the invoice (payment discount, write-off).
