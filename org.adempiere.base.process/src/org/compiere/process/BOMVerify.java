@@ -20,7 +20,6 @@ import java.sql.*;
 import java.util.*;
 import java.util.logging.*;
 import org.compiere.model.*;
-import org.compiere.process.SvrProcess;
 import org.compiere.util.*;
 
 /**
