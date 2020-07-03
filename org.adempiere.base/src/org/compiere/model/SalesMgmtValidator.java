@@ -17,7 +17,6 @@
 
 package org.compiere.model;
 
-import org.compiere.model.ModelValidator;
 import org.compiere.util.CLogger;
 
 
