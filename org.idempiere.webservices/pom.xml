@@ -26,7 +26,7 @@
 				<configuration>
 					<filesets>
 						<fileset>
-							<directory>${project.basedir}/WEB-INF/lib</directory>
+							<directory>${project.basedir}/lib</directory>
 							<includes>
 								<include>*.jar</include>
 							</includes>
@@ -57,7 +57,7 @@
 						<configuration>
 							<url>${url.file.srv}/extra.jar/idempiere-xmlbeans-1.0.jar</url>
 							<unpack>false</unpack>
-							<outputDirectory>WEB-INF/lib</outputDirectory>
+							<outputDirectory>lib</outputDirectory>
 							<retries>5</retries>
 							<outputFileName>idempiere-xmlbeans.jar</outputFileName>
 						</configuration>
