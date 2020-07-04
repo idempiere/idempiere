@@ -264,7 +264,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			try {
 				if (!((org.compiere.process.DocAction) po).processIt(docAction))
 					return rollbackAndSetError(trx, resp, ret, true,
-							"Couldn't set docAction: " + ((org.compiere.process.DocAction) po).getProcessMsg());
+							Msg.parseTranslation(ctx, "@FailedProcessingDocument@: " + ((org.compiere.process.DocAction) po).getProcessMsg()));
 			} catch (Exception e) {
 				return rollbackAndSetError(trx, resp, ret, true, e.toString());
 			}
