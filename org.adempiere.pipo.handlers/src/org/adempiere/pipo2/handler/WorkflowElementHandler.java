@@ -16,31 +16,32 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
-import org.adempiere.exceptions.DBException;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
-import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.Element;
+import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Workflow;
+import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_WF_NextCondition;
 import org.compiere.model.X_AD_WF_Node;
 import org.compiere.model.X_AD_WF_NodeNext;
 import org.compiere.model.X_AD_Workflow;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.wf.MWFNextCondition;
+import org.compiere.wf.MWFNode;
+import org.compiere.wf.MWFNodeNext;
 import org.compiere.wf.MWorkflow;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -150,17 +151,14 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 		if (ctx.packOut.isExported(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID+"|"+AD_Workflow_ID))
 			return;
 		PackOut packOut = ctx.packOut;
-		int ad_wf_nodenext_id = 0;
-		int ad_wf_nodenextcondition_id = 0;
 		AttributesImpl atts = new AttributesImpl();
 
-		MWorkflow m_Workflow = new MWorkflow(ctx.ctx,
-						AD_Workflow_ID, null);
+		MWorkflow m_Workflow = MWorkflow.get(ctx.ctx, AD_Workflow_ID);
 		boolean createElement = isPackOutElement(ctx, m_Workflow);
 		if (createElement) {
 			atts.addAttribute("", "", "type", "CDATA", "object");
 			atts.addAttribute("", "", "type-name", "CDATA", "ad.workflow");
-			document.startElement("", "", I_AD_Workflow.Table_Name, atts);
+			document.startElement("", "", MWorkflow.Table_Name, atts);
 			createWorkflowBinding(ctx, document, m_Workflow);
 
 			packOut.getCtx().ctx.put("Table_Name",I_AD_Workflow.Table_Name);
@@ -171,54 +169,40 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 			}
 		}
 
-		String sql = "SELECT AD_WF_Node_ID FROM AD_WF_Node WHERE AD_Workflow_ID=? AND AD_Client_ID=?";
-
-		PreparedStatement pstmt = null;
-		PreparedStatement psNodeNext = null;
-		PreparedStatement psNCondition = null;
-		ResultSet rs = null;
-		ResultSet nodeNextrs = null;
-		ResultSet nodeNConditionrs = null;
 		try {
-			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
-			pstmt.setInt(1, AD_Workflow_ID);
-			pstmt.setInt(2, Env.getAD_Client_ID(ctx.ctx));
-			// Generated workflowNodeNext(s) and
-			// workflowNodeNextCondition(s)
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				int nodeId = rs.getInt("AD_WF_Node_ID");
+			List<MWFNode> wns = new Query(ctx.ctx, MWFNode.Table_Name, "AD_Workflow_ID=? AND AD_Client_ID=?", getTrxName(ctx))
+					.setParameters(AD_Workflow_ID, Env.getAD_Client_ID(ctx.ctx))
+					.list();
+			for (MWFNode wn : wns) {
+				int nodeId = wn.getAD_WF_Node_ID();
 				createNode(ctx, document, nodeId);
-				sql = "SELECT ad_wf_nodenext_id from ad_wf_nodenext WHERE ad_wf_node_id=? AND AD_Client_ID=?";
-				psNodeNext = DB.prepareStatement(sql, getTrxName(ctx));
-				psNodeNext.setInt(1, nodeId);
-				psNodeNext.setInt(2, Env.getAD_Client_ID(ctx.ctx));
-				nodeNextrs  = psNodeNext.executeQuery();
-				while (nodeNextrs.next()){  	
-					ad_wf_nodenext_id = nodeNextrs.getInt("AD_WF_NodeNext_ID");
+
+				List<MWFNodeNext> wnns = new Query(ctx.ctx, MWFNodeNext.Table_Name, "AD_WF_Node_ID=? AND AD_Client_ID=?", getTrxName(ctx))
+						.setParameters(nodeId, Env.getAD_Client_ID(ctx.ctx))
+						.list();
+				for (MWFNodeNext wnn : wnns) {
+					int ad_wf_nodenext_id = wnn.getAD_WF_NodeNext_ID();
 					createNodeNext(ctx, document, ad_wf_nodenext_id);
-					sql = "SELECT ad_wf_nextcondition_id from ad_wf_nextcondition WHERE ad_wf_nodenext_id=? AND AD_Client_ID=?";
-					psNCondition = DB.prepareStatement(sql, getTrxName(ctx));
-					psNCondition.setInt(1, ad_wf_nodenext_id);
-					psNCondition.setInt(2, Env.getAD_Client_ID(ctx.ctx));
-					nodeNConditionrs = psNCondition.executeQuery();
-					while (nodeNConditionrs.next()) {
-						ad_wf_nodenextcondition_id= nodeNConditionrs.getInt("AD_WF_NextCondition_ID");
+
+					List<MWFNextCondition> wncs = new Query(ctx.ctx, MWFNextCondition.Table_Name, "AD_WF_NodeNext_ID=? AND AD_Client_ID=?", getTrxName(ctx))
+							.setParameters(ad_wf_nodenext_id, Env.getAD_Client_ID(ctx.ctx))
+							.list();
+					for (MWFNextCondition wnc : wncs) {
+						int ad_wf_nodenextcondition_id = wnc.getAD_WF_NextCondition_ID();
 						if (log.isLoggable(Level.INFO)) log.info("ad_wf_nodenextcondition_id: "+ String.valueOf(ad_wf_nodenextcondition_id));
 						createNodeNextCondition(ctx, document, ad_wf_nodenextcondition_id);
 					}
+
 				}
+
 			}
-		} catch (Exception e) {
-			throw new DBException(e);
-		} finally {
-			DB.close(rs, pstmt);
-			DB.close(nodeNextrs, psNodeNext);
-			DB.close(nodeNConditionrs,psNCondition);
-			if (createElement) {
-				document.endElement("", "", MWorkflow.Table_Name);
-			}
+		} catch (Exception e)	{
+			throw new AdempiereException(e);
 		}
+		if (createElement) {
+			document.endElement("", "", MWorkflow.Table_Name);
+		}
+
 	}
 
 	private void createNodeNextCondition(PIPOContext ctx,

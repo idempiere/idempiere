@@ -211,4 +211,25 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn
 	public MInfoColumn getAD_InfoColumn() {
 		return this;
 	}
+
+	@Override
+	public I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException {
+		if (get_TrxName() != null)
+			return new MValRule(getCtx(), getAD_Val_Rule_ID(), get_TrxName());
+		else
+			return MValRule.get(getCtx(), getAD_Val_Rule_ID());
+	}
+
+	@Override
+	protected MInfoColumn clone() {
+		try {
+			MInfoColumn ic = (MInfoColumn) super.clone();
+			ic.m_parent = null;
+			return ic;
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
 }	//	MInfoColumn

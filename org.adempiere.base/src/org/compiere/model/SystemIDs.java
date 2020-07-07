@@ -44,6 +44,14 @@ public class SystemIDs
 	public final static int COUNTRY_US = 100;
 	public final static int COUNTRY_JAPAN = 216;
 
+	public final static int ELEMENT_AD_CLIENT_ID = 102;
+	public final static int ELEMENT_AD_ORG_ID = 113;
+	public final static int ELEMENT_CREATED = 245;
+	public final static int ELEMENT_CREATEDBY = 246;
+	public final static int ELEMENT_UPDATED = 607;
+	public final static int ELEMENT_UPDATEDBY = 608;
+	public final static int ELEMENT_ISACTIVE = 348;
+	
 	public final static int ENTITYTYPE_ADEMPIERE = 20;
 	public final static int ENTITYTYPE_DICTIONARY = 10;
 
@@ -73,6 +81,7 @@ public class SystemIDs
 	public final static int PROCESS_AD_CHANGELOG_UNDO = 306;
 	public final static int PROCESS_AD_CHANGELOG_REDO = 307;
 	public final static int PROCESS_AD_NATIVE_SEQUENCE_ENABLE = 53156;
+	public final static int PROCESS_AD_TAB_CREATEFIELDS = 174;
 	public final static int PROCESS_C_INVOICE_GENERATE = 119;
 	public final static int PROCESS_C_INVOICE_GENERATE_MANUAL = 134;
 	public final static int PROCESS_C_INVOICE_GENERATERMA_MANUAL = 52002;

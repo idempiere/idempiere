@@ -599,7 +599,12 @@ ContextMenuListener, IZoomableEditor
 			Object curValue = getValue();
 			
 			if (isReadWrite())
-				lookup.refresh();
+			{
+				if (lookup instanceof MLookup)
+					((MLookup) lookup).refreshItemsAndCache();
+				else
+					lookup.refresh();
+			}
 			else
 				refreshList();
             if (curValue != null)
