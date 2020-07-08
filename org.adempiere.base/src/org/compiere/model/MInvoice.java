@@ -68,7 +68,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5581441980246794522L;
+	private static final long serialVersionUID = 5528627686994635273L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -1943,7 +1943,42 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		if (matchPO > 0)
 			info.append(" @M_MatchPO_ID@#").append(matchPO).append(" ");
 
+		// Generate and complete an allocation if is a credit memo linked to an invoice
+		if (isCreditMemo() && getRelatedInvoice_ID() > 0) {
+			MInvoice inv = new MInvoice(getCtx(), getRelatedInvoice_ID(), get_TrxName());
 
+			if (!inv.isPaid()) {
+				BigDecimal invOpenAmt = inv.getOpenAmt();
+				BigDecimal cmOpenAmt = getOpenAmt();
+				StringBuilder aDescription = new StringBuilder(Msg.getElement(getCtx(), "C_Invoice_ID")).append(": ").append(inv.getDocumentNo()).append("/").append(getDocumentNo());
+
+				MAllocationHdr ah = new MAllocationHdr(getCtx(), true, TimeUtil.max(getDateAcct(), inv.getDateAcct()), getC_Currency_ID(), aDescription.toString(), get_TrxName());
+				ah.setAD_Org_ID(getAD_Org_ID());
+				ah.saveEx();
+
+				if (invOpenAmt.abs().compareTo(cmOpenAmt.abs()) == 0) {
+					addAllocationLine(ah, inv.getC_Invoice_ID(), invOpenAmt, Env.ZERO);
+					addAllocationLine(ah, getC_Invoice_ID(), cmOpenAmt, Env.ZERO);
+				}
+				else if (invOpenAmt.abs().compareTo(cmOpenAmt.abs()) > 0) {
+					addAllocationLine(ah, inv.getC_Invoice_ID(), cmOpenAmt.negate(), invOpenAmt.add(cmOpenAmt));
+					addAllocationLine(ah, getC_Invoice_ID(), cmOpenAmt, Env.ZERO);
+				}
+				else if (invOpenAmt.abs().compareTo(cmOpenAmt.abs()) < 0) {
+					addAllocationLine(ah, inv.getC_Invoice_ID(), invOpenAmt, Env.ZERO);
+					addAllocationLine(ah, getC_Invoice_ID(), invOpenAmt.negate(), cmOpenAmt.add(invOpenAmt));
+				}
+
+				ah.setDocAction(MAllocationHdr.DOCACTION_Complete);
+				if (!ah.processIt(MAllocationHdr.DOCACTION_Complete)) {
+					m_processMsg = "Cannot Complete the Allocation : [" + ah.getProcessMsg() + "] " + ah;
+					return DocAction.STATUS_Invalid;
+				}
+				ah.saveEx();
+				info.append("@C_AllocationHdr_ID@: " + ah.getDocumentInfo());
+				addDocsPostProcess(ah);
+			}
+		}
 
 		//	Update BP Statistics
 		MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
