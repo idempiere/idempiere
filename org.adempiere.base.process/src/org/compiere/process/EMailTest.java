@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import org.compiere.model.MClient;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
+import org.compiere.util.Util;
 
 /**
  *	Client EMail Test
@@ -71,7 +72,7 @@ public class EMailTest extends SvrProcess
 				addLog(0, null, null, "Not Found Directory: " + client.getDocumentDir());
 		}
 		
-		return clientTest;
+		return Util.isEmpty(clientTest) ? "OK" : clientTest;
 	}	//	doIt
 	
 }	//	EMailTest

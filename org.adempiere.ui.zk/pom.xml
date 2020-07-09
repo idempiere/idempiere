@@ -25,7 +25,7 @@
 				<configuration>
 					<filesets>
 						<fileset>
-							<directory>${project.basedir}/WEB-INF/lib</directory>
+							<directory>${project.basedir}/lib</directory>
 							<includes>
 								<include>*.jar</include>
 							</includes>
@@ -61,7 +61,7 @@
 									<version>20190503.1</version>
 								</artifactItem>
 							</artifactItems>
-							<outputDirectory>WEB-INF/lib</outputDirectory>
+							<outputDirectory>lib</outputDirectory>
 							<stripVersion>true</stripVersion>
 							<overWriteReleases>true</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
