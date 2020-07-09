@@ -53,7 +53,7 @@ public class MColumn extends X_AD_Column
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6905852892037761285L;
+	private static final long serialVersionUID = 5934334786732835926L;
 
 	public static MColumn get (Properties ctx, int AD_Column_ID)
 	{
@@ -1179,6 +1179,20 @@ public class MColumn extends X_AD_Column
 				query = query.substring(9);
 		}
 		return query;
+	}
+
+	public String renameDBColumn(String newColumnName) {
+		int rvalue = -1;
+		String sql;
+		if (! newColumnName.toLowerCase().equals(getColumnName().toLowerCase())) {
+			MTable table = new MTable(getCtx(), getAD_Table_ID(), get_TrxName());
+			sql = "ALTER TABLE " + table.getTableName() + " RENAME COLUMN " + getColumnName() + " TO " + newColumnName;
+			rvalue = DB.executeUpdateEx(sql, get_TrxName());
+		} else {
+			sql = getColumnName() + " - rename not required";
+		}
+		setColumnName(newColumnName);
+		return rvalue + " - " + sql;
 	}
 
 }	//	MColumn
