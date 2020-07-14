@@ -72,6 +72,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -599,7 +600,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	{
 		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0,
 				attribute.getName(), Msg.translate(Env.getCtx(), attribute.get_Translation("Name")),
-				attribute.getAD_Reference_ID(), attribute.getAD_Reference_Value_ID(), false, false);
+				attribute.getAD_Reference_ID(), attribute.getAD_Reference_Value_ID(), false, false, "");
 		String desc = attribute.get_Translation("Description");
 		vo.Description = desc != null ? desc : "";
 		GridField gridField = new GridField(vo);
@@ -610,12 +611,23 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	{
 		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0,
 				attribute.getName(), Msg.translate(Env.getCtx(), attribute.get_Translation("Name")),
-				DisplayType.String, 0, false, false);
+				DisplayType.String, 0, false, false, "");
 		String desc = attribute.get_Translation("Description");
 		vo.Description = desc != null ? desc : "";
 		GridField gridField = new GridField(vo);
 		return gridField;
 	}
+	
+	private GridField getNumberGridField(MAttribute attribute)
+	{
+		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0,
+				attribute.getName(), Msg.translate(Env.getCtx(), attribute.get_Translation("Name")),
+				DisplayType.Number, 0, false, false, "");
+		String desc = attribute.get_Translation("Description");
+		vo.Description = desc != null ? desc : "";
+		GridField gridField = new GridField(vo);
+		return gridField;
+	}	
 	
 //	private void setDateAttribute(MAttribute attribute,Datebox editor)
 //	{
@@ -1126,7 +1138,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		{
 			Timestamp valueTimeStamp = (Timestamp) editor.getValue();
 			if (attributes.isMandatory() && valueTimeStamp == null)
-				mandatory += " - " + attributes.getName()
+				mandatory += " - " + attributes.getName();
 
 			attributes.setMAttributeInstance(m_M_AttributeSetInstance_ID, valueTimeStamp);
 		}

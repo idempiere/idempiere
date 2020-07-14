@@ -237,6 +237,18 @@ public class MAttribute extends X_M_Attribute
 		instance.saveEx();
 	}	//	setAttributeInstance
 	
+	public void setMAttributeInstance (int M_AttributeSetInstance_ID, int valueInt, String value)
+	{
+		MAttributeInstance instance = getMAttributeInstance(M_AttributeSetInstance_ID);
+		if (instance == null)
+		{
+			instance = new MAttributeInstance(getCtx(), getM_Attribute_ID(),
+					M_AttributeSetInstance_ID, valueInt, get_TrxName());
+		}
+		
+		instance.setValueInt(valueInt, value);
+		instance.saveEx();
+	}	//	setAttributeInstance
 	
 	public void setMAttributeInstance(int M_AttributeSetInstance_ID, Timestamp value)
 	{
