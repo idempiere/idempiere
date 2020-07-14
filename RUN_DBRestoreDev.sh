@@ -62,6 +62,8 @@ then
     exit 1
 fi
 
+sudo service postgresql restart
+
 ADEMPIERE_DB_USER="$(expr "$CONN" : ".*UID.=\(.*\),PWD.=")"
 ADEMPIERE_DB_PASSWORD="$(expr "$CONN" : ".*PWD.=\(.*\)]")"
 ADEMPIERE_DB_NAME="$(expr "$CONN" : ".*DBname.=\(.*\),BQ.=")"
@@ -87,3 +89,4 @@ read in
 # Parameter: <systemAccount> <adempiereID> <adempierePwd>
 # globalqss - cruiz - 2007-10-09 - added fourth parameter for postgres(ignored in oracle)
 sh "org.adempiere.server-feature/utils.unix/$ADEMPIERE_DB_PATH/DBRestore.sh" "system/$1" "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$1"
+./RUN_SyncDBDev.sh
