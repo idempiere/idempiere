@@ -26,3 +26,9 @@ External Plug-in Libraries
 /org.idempiere.javadoc/API
 
 /data/
+
+*.save
+*.bak
+*.launch
+/.dbeaver/
+/Scripts/
