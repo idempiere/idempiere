@@ -77,6 +77,7 @@ public class TableElementHandler extends AbstractElementHandler {
 				return;
 			}
 			
+			element.recordId = mTable.get_ID();
 			if (mTable.is_new() || mTable.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Table.Table_Name,
 						X_AD_Table.Table_ID);
@@ -162,6 +163,13 @@ public class TableElementHandler extends AbstractElementHandler {
 			addTypeName(atts, "table");
 			document.startElement("","",I_AD_Table.Table_Name,atts);
 			createTableBinding(ctx,document,m_Table);
+			
+			packOut.getCtx().ctx.put("Table_Name",X_AD_Table.Table_Name);
+			try {
+				new CommonTranslationHandler().packOut(packOut, document, null, AD_Table_ID);
+			} catch(Exception e) {
+				if (log.isLoggable(Level.INFO)) log.log(Level.INFO, e.getMessage());
+			}
 		}
 
 		try {

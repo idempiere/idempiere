@@ -87,6 +87,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				mColumn.setFieldLength(mColumn.get_ValueOldAsInt(MColumn.COLUMNNAME_FieldLength));
 			}
 
+			element.recordId = mColumn.get_ID();
 			if (!mColumn.is_new() && !mColumn.is_Changed()) {
 				boolean syncDatabase = "Y".equalsIgnoreCase(getStringValue(element, "IsSyncDatabase"));
 				if (syncDatabase) {
@@ -95,7 +96,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				}
 				return;
 			}
-			
+
 			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Column.Table_Name, X_AD_Column.Table_ID);
 			String action = null;
 			if (!mColumn.is_new()) {
@@ -348,6 +349,14 @@ public class ColumnElementHandler extends AbstractElementHandler {
 		addTypeName(atts, "table");
 		document.startElement("", "", I_AD_Column.Table_Name, atts);
 		createColumnBinding(ctx, document, m_Column);
+		
+		ctx.ctx.put("Table_Name",X_AD_Column.Table_Name);
+		try {
+			new CommonTranslationHandler().packOut(ctx.packOut, document, null, AD_Column_ID);
+		} catch(Exception e) {
+			if (log.isLoggable(Level.INFO)) log.log(Level.INFO, e.getMessage());
+		}
+		
 		document.endElement("", "", I_AD_Column.Table_Name);
 	}
 
