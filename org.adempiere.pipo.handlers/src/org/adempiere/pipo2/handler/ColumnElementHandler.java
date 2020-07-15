@@ -346,7 +346,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 		try {
 			new CommonTranslationHandler().packOut(ctx.packOut, document, null, AD_Column_ID);
 		} catch(Exception e) {
-			if (log.isLoggable(Level.INFO)) log.info(e.toString());
+			if (log.isLoggable(Level.INFO)) log.log(Level.INFO, e.getMessage());
 		}
 		
 		document.endElement("", "", I_AD_Column.Table_Name);

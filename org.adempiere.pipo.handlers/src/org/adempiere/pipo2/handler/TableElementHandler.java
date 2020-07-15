@@ -168,7 +168,7 @@ public class TableElementHandler extends AbstractElementHandler {
 			try {
 				new CommonTranslationHandler().packOut(packOut, document, null, AD_Table_ID);
 			} catch(Exception e) {
-				if (log.isLoggable(Level.INFO)) log.info(e.toString());
+				if (log.isLoggable(Level.INFO)) log.log(Level.INFO, e.getMessage());
 			}
 		}
 
