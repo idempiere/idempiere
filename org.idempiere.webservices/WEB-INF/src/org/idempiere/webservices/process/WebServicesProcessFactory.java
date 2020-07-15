@@ -32,15 +32,18 @@ import org.compiere.process.ProcessCall;
  * @author nmicoud - TGI
  *
  */
-public class WS_ProcessFactory implements IProcessFactory {
+public class WebServicesProcessFactory implements IProcessFactory {
 
 	public ProcessCall newProcessInstance(String className) {
 		ProcessCall process = null;
-		try {
-			Class<?> clazz = getClass().getClassLoader().loadClass(className);
-			process =  (ProcessCall) clazz.getDeclaredConstructor().newInstance();
-		} catch (Exception e) {
+		if (className.startsWith("org.idempiere.webservices.process")) {
+			try {
+				Class<?> clazz = getClass().getClassLoader().loadClass(className);
+				process =  (ProcessCall) clazz.getDeclaredConstructor().newInstance();
+			} catch (Exception e) {
+			}	
 		}
+
 		return process;
 	}
 }
