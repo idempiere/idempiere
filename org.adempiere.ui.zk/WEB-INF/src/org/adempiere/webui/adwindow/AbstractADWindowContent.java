@@ -1448,6 +1448,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				(!isNewRow && (m_onlyCurrentRows || m_onlyCurrentDays > 0)));
 		
 		toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), findWindow != null ? findWindow.getAD_UserQuery_ID() : 0);
+		
+		// IDEMPIERE-4368 Init and Load first Default User Query
+		if(isNewRow && toolbar.initDefaultQuery()) {
+			doOnQueryChange();	// reload initialized Default Query
+		}
 	}
 
 	/**
