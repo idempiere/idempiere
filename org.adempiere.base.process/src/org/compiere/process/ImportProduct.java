@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Savepoint;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
@@ -31,7 +30,6 @@ import org.compiere.model.MProductPrice;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.X_I_Product;
 import org.compiere.util.DB;
-import org.compiere.util.Trx;
 
 /**
  *	Import Products from I_Product
