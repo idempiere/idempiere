@@ -536,8 +536,6 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 				}
 				else					//	Update Product
 				{
-					Trx trx = Trx.get(get_TrxName(), false);
-					Savepoint savepoint = trx.setSavepoint(null);
 					StringBuilder sqlt = new StringBuilder("UPDATE M_PRODUCT ")
 						.append("SET (Value,Name,Description,DocumentNote,Help,")
 						.append("UPC,SKU,C_UOM_ID,M_Product_Category_ID,Classification,ProductType,")
@@ -562,29 +560,19 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 					}
 					catch (SQLException ex)
 					{
-						trx.rollback(savepoint);
-						savepoint = null;
+						rollback();
 						log.warning("Update Product - " + ex.toString());
 						StringBuilder sql0 = new StringBuilder ("UPDATE I_Product i ")
 							.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Update Product: " + ex.toString()))
 							.append("WHERE I_Product_ID=").append(I_Product_ID);
 						DB.executeUpdate(sql0.toString(), get_TrxName());
+						commitEx(); //to keep the error message even if next product fails, too
 						continue;
 					}
 					finally
 					{
 						DB.close(pstmt_updateProduct);
 						pstmt_updateProduct = null;	
-						if (savepoint != null)
-						{
-							try {
-								trx.releaseSavepoint(savepoint);
-							} catch (SQLException e) {
-								e.printStackTrace();
-							}
-						}
-						savepoint = null;
-						trx = null;
 					}					
 				}
 
@@ -629,6 +617,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 								.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Update Product_PO: " + ex.toString()))
 								.append("WHERE I_Product_ID=").append(I_Product_ID);
 							DB.executeUpdate(sql0.toString(), get_TrxName());
+							commitEx(); //to keep the error message even if next product fails, too
 							continue;
 						}
 						finally
@@ -657,6 +646,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 								.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Insert Product_PO: " + ex.toString()))
 								.append("WHERE I_Product_ID=").append(I_Product_ID);
 							DB.executeUpdate(sql0.toString(), get_TrxName());
+							commitEx(); //to keep the error message even if next product fails, too							
 							continue;
 						}
 					}
