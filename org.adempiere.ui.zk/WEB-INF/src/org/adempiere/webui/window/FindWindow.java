@@ -1943,7 +1943,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				String ColumnSQL = null;
            	
 				if(table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {					
-					//TODO
 					ColumnSQL = getAttributeSQL(Integer.valueOf(ColumnName));            	
 				}
 				else {            	
@@ -1995,7 +1994,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			boolean and = true;
 			boolean not = false;
 			if ( rowIndex > 1 ) {
-				and = !"OR".contains(andOr);  	//igor if contains OR
+				and = !"OR".contains(andOr);  	//if contains OR
 			}
 			// NOT
 			if(andOr.contains("NOT")) {
@@ -2145,7 +2144,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
                 m_query.addRestriction(where_rest, and, not, isExistCondition, openBrackets);
 			}
-			else if ((field.getDisplayType()==DisplayType.ChosenMultipleSelectionList||field.getDisplayType()==DisplayType.ChosenMultipleSelectionSearch||field.getDisplayType()==DisplayType.ChosenMultipleSelectionTable) &&
+			else if (field != null && (field.getDisplayType()==DisplayType.ChosenMultipleSelectionList||field.getDisplayType()==DisplayType.ChosenMultipleSelectionSearch||field.getDisplayType()==DisplayType.ChosenMultipleSelectionTable) &&
 				(MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator) || MQuery.OPERATORS[MQuery.NOT_EQUAL_INDEX].getValue().equals(Operator)))
 			{
 				//TODO MultipleSelectionList was not implemented for multiple tables.
