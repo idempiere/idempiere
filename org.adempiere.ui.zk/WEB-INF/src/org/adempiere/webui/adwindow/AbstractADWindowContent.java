@@ -728,7 +728,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             GridField[] findFields = mTab.getFields();
             findWindow = new FindWindow(curWindowNo,
                     mTab.getName(), mTab.getAD_Table_ID(), mTab.getTableName(),
-                    where.toString(), findFields, 10, mTab.getAD_Tab_ID()); // no query below 10
+                    where.toString(), findFields, 10, mTab.getAD_Tab_ID(), this); // no query below 10
             setupEmbeddedFindwindow();
             if (findWindow.initialize())
             {
@@ -2138,7 +2138,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID())) {
 	        findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
 	            adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
-	            adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID());
+	            adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID(), this);
 
 	        setupEmbeddedFindwindow();	        
 	        if (!findWindow.initialize()) {
@@ -2940,7 +2940,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID())) {
 			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
 					adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
-					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID());
+					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID(), this);
 
 			setupEmbeddedFindwindow();	        
 			if (!findWindow.initialize()) {
@@ -3738,4 +3738,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		return true;
 	} // registerQuickFormTab
+
+	public GridWindow getGridWindow() {
+		return gridWindow;
+	}
 }

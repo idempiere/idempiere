@@ -619,5 +619,17 @@ public class GridWindow implements Serializable
 		return m_vo.AD_Window_UU;
 	}
 
+	public GridTab getGridTab (int ad_tab_id)
+	{
+		for (int i = 0; i < m_tabs.size(); i++)
+		{
+			GridTab tab = getTab(i);
+			if (tab.getAD_Tab_ID()==ad_tab_id)
+				return tab;
+		}
+		
+		return null;
+		
+	}	//	getTab
 	
 }	//	MWindow
