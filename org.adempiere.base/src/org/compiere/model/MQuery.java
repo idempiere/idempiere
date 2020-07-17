@@ -31,7 +31,6 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
-import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 
 /**
@@ -86,7 +85,7 @@ public class MQuery implements Serializable, Cloneable
 			SQL = "SELECT ip.ParameterName,ip.P_String,ip.P_String_To,"			//	1..3
 				+ "ip.P_Number,ip.P_Number_To,"									//	4..5
 				+ "ip.P_Date,ip.P_Date_To, ip.Info,ip.Info_To, "				//	6..9
-				+ "pp.Name, pp.IsRange, pp.ExistsClause, pp.AD_Reference_ID "	//	10..13
+				+ "pp.Name, pp.IsRange, pp.AD_Reference_ID "					//	10..12
 				+ "FROM AD_PInstance_Para ip, AD_PInstance i, AD_Process_Para pp "
 				+ "WHERE i.AD_PInstance_ID=ip.AD_PInstance_ID"
 				+ " AND pp.AD_Process_ID=i.AD_Process_ID"
@@ -97,7 +96,7 @@ public class MQuery implements Serializable, Cloneable
 		else
 			SQL = "SELECT ip.ParameterName,ip.P_String,ip.P_String_To, ip.P_Number,ip.P_Number_To,"
 				+ "ip.P_Date,ip.P_Date_To, ip.Info,ip.Info_To, "
-				+ "ppt.Name, pp.IsRange, pp.ExistsClause, pp.AD_Reference_ID "
+				+ "ppt.Name, pp.IsRange, pp.AD_Reference_ID "
 				+ "FROM AD_PInstance_Para ip, AD_PInstance i, AD_Process_Para pp, AD_Process_Para_Trl ppt "
 				+ "WHERE i.AD_PInstance_ID=ip.AD_PInstance_ID"
 				+ " AND pp.AD_Process_ID=i.AD_Process_ID"
@@ -148,9 +147,7 @@ public class MQuery implements Serializable, Cloneable
 				String Name = rs.getString(10);
 				boolean isRange = "Y".equals(rs.getString(11));
 				//
-				String existsClause = rs.getString(12);
-				//
-				int Reference_ID = rs.getInt(13);
+				int Reference_ID = rs.getInt(12);
 				//
 				if (s_log.isLoggable(Level.FINE)) s_log.fine(ParameterName + " S=" + P_String + "-" + P_String_To
 					+ ", N=" + P_Number + "-" + P_Number_To + ", D=" + P_Date + "-" + P_Date_To
@@ -165,11 +162,7 @@ public class MQuery implements Serializable, Cloneable
 				//-------------------------------------------------------------
 				if (P_String != null)
 				{
-					if (!Util.isEmpty(existsClause))
-					{
-						query.addRestriction(existsClause, P_String);
-					}
-					else if (P_String_To == null)
+					if (P_String_To == null)
 					{
 						if (Reference_ID == DisplayType.ChosenMultipleSelectionList)
 						{
@@ -205,11 +198,7 @@ public class MQuery implements Serializable, Cloneable
 				//	Number
 				else if (P_Number != null || P_Number_To != null)
 				{
-					if (!Util.isEmpty(existsClause))
-					{
-						query.addRestriction(existsClause, P_Number);
-					}
-					else if (P_Number_To == null)
+					if (P_Number_To == null)
 					{
 						if (isRange)
 							query.addRestriction(ParameterName, MQuery.GREATER_EQUAL, 
@@ -234,11 +223,7 @@ public class MQuery implements Serializable, Cloneable
 					String paramName = (Reference_ID == DisplayType.DateTime) ? ParameterName
 							: "TRUNC(" + ParameterName + ")";
 					
-					if (!Util.isEmpty(existsClause))
-					{
-						query.addRestriction(existsClause, P_Date);
-					}
-					else if (P_Date_To == null)
+					if (P_Date_To == null)
 					{
 						if (isRange)
 							query.addRestriction(paramName, MQuery.GREATER_EQUAL, P_Date, Name, Info);
@@ -688,17 +673,6 @@ public class MQuery implements Serializable, Cloneable
 	}	//	addRestriction
 
 	/**
-	 * Add Restriction
-	 * @param existsClause
-	 * @param Code
-	 */
-	protected void addRestriction (String existsClause, Object Code)
-	{
-		Restriction r = new Restriction(existsClause, Code);
-		m_list.add(r);
-	}	//	addRestriction
-	
-	/**
 	 * 	Add Restriction
 	 * 	@param whereClause SQL WHERE clause
 	 */
@@ -707,6 +681,19 @@ public class MQuery implements Serializable, Cloneable
 		if (whereClause == null || whereClause.trim().length() == 0)
 			return;
 		Restriction r = new Restriction (whereClause, andCondition, false, false, joinDepth);
+		m_list.add(r);
+		m_newRecord = whereClause.equals(NEWRECORD);
+	}	//	addRestriction
+
+	/**
+	 * 	Add Restriction
+	 * 	@param whereClause SQL WHERE clause
+	 */
+	public void addRestriction (String whereClause, boolean andCondition, boolean notCondition, int joinDepth)
+	{
+		if (whereClause == null || whereClause.trim().length() == 0)
+			return;
+		Restriction r = new Restriction (whereClause, andCondition, notCondition, false, joinDepth);
 		m_list.add(r);
 		m_newRecord = whereClause.equals(NEWRECORD);
 	}	//	addRestriction
@@ -794,7 +781,7 @@ public class MQuery implements Serializable, Cloneable
 			//NOT
 			sb.append(r.notCondition ? " NOT " : "");
 			//EXISTS 
-			sb.append(r.existsCondition ? " EXISTS " : "");			
+			sb.append(r.existsCondition ? " EXISTS " : "");
 			
 			for ( ; currentDepth < r.joinDepth; currentDepth++ )
 			{
@@ -848,7 +835,7 @@ public class MQuery implements Serializable, Cloneable
 			sb.append(r.notCondition ? " NOT " : "");		
 			//EXISTS
 			sb.append(r.existsCondition ? " EXISTS " : "");	
-			
+
 			//
 			sb.append(r.getInfoName())
 				.append(r.getInfoOperator())
