@@ -41,12 +41,14 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -167,7 +169,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		int identifiersCount = 0;
 		StringBuilder identifierSql = new StringBuilder();
 		String sql = "SELECT t.TableName, c.AD_Column_ID, c.ColumnName, e.Name,"	//	1..4
-			+ "c.IsParent, c.IsKey, c.IsIdentifier, c.IsTranslated "				//	4..8
+			+ "c.IsParent, c.IsKey, c.IsIdentifier, c.IsTranslated, c.ColumnSQL "				//	5..9
 			+ "FROM AD_Table t, AD_Column c, AD_Element e "
 			+ "WHERE t.AD_Table_ID=?"						//	#1
 			+ " AND t.AD_Table_ID=c.AD_Table_ID"
@@ -177,7 +179,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Element");
 		if (trl)
 			sql = "SELECT t.TableName, c.AD_Column_ID, c.ColumnName, et.Name,"	//	1..4
-				+ "c.IsParent, c.IsKey, c.IsIdentifier, c.IsTranslated "		//	4..8
+				+ "c.IsParent, c.IsKey, c.IsIdentifier, c.IsTranslated, c.ColumnSQL "		//	5..9
 				+ "FROM AD_Table t, AD_Column c, AD_Element_Trl et "
 				+ "WHERE t.AD_Table_ID=?"						//	#1
 				+ " AND t.AD_Table_ID=c.AD_Table_ID"
@@ -231,8 +233,24 @@ public class ADSortTab extends Panel implements IADTabpanel
 					if (log.isLoggable(Level.FINE)) log.fine("Identifier=" + rs.getString(1) + "." + rs.getString(3));
 					boolean isTranslated = trl && "Y".equals(rs.getString(8));
 					if (identifierSql.length() > 0)
-						identifierSql.append(",");
-					identifierSql.append(isTranslated ? "tt." : "t.").append(rs.getString(3));
+					{
+						//use concat for postgresql and || operator for oracle. || treat null value differently between oracle and postgresql
+						if (DB.isPostgreSQL())
+							identifierSql.append(",'")
+								.append(MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx())))
+								.append("',");							
+						else
+							identifierSql.append(" || '")
+								.append(MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx())))
+								.append("' || ");
+					}
+					if (!Util.isEmpty(rs.getString(9)))
+					{
+						String value = rs.getString(9).replace(m_TableName + ".", isTranslated ? "tt." : "t.");
+						identifierSql.append(value);			
+					}
+					else
+						identifierSql.append(isTranslated ? "tt." : "t.").append(rs.getString(3));
 					identifiersCount++;
 //					m_IdentifierColumnName = rs.getString(3);
 					if (isTranslated)
@@ -256,8 +274,13 @@ public class ADSortTab extends Panel implements IADTabpanel
 			m_IdentifierSql = "NULL";
 		else if (identifiersCount == 1)
 			m_IdentifierSql = identifierSql.toString();
-		else
-			m_IdentifierSql = identifierSql.insert(0, "COALESCE(").append(")").toString();
+		else 
+		{
+			if (DB.isPostgreSQL())
+				m_IdentifierSql = identifierSql.insert(0, "CONCAT(").append(")").toString();
+			else
+				m_IdentifierSql = identifierSql.toString();
+		}
 		//
 		noLabel.setValue(Msg.getMsg(Env.getCtx(), "Available"));
 		log.fine(m_ColumnSortName);
