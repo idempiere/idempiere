@@ -544,11 +544,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
 
         ListHeader lstHTable = new ListHeader();
-		lstHTable.setLabel(Msg.translate(Env.getCtx(), "AD_Table_ID"));
+		lstHTable.setLabel(Msg.translate(Env.getCtx(), "AD_Tab_ID"));
 		ZKUpdateUtil.setWidth(lstHTable, "12%");
         
         ListHeader lstHColumn = new ListHeader();
-        lstHColumn.setLabel(Msg.translate(Env.getCtx(), "AD_Column_ID"));
+        lstHColumn.setLabel(Msg.translate(Env.getCtx(), "AD_Field_ID"));
         ZKUpdateUtil.setWidth(lstHColumn, "18%");
 
         ListHeader lstHOperator = new ListHeader();
