@@ -375,6 +375,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
         toolbar.updateToolbarAccess(adWindowId);
         updateToolbar();
+        if (toolbar.initDefaultQuery()) {
+        	doOnQueryChange();
+        }
         
         if (detailQuery != null && zoomToDetailTab(detailQuery))
         {
@@ -1348,7 +1351,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		if (callback != null)
 			callback.onCallback(true);
 	}
-
+	
 	private void updateToolbar()
 	{
 		toolbar.enableTabNavigation(breadCrumb.hasParentLink(), adTabbox.getSelectedDetailADTabpanel() != null);
@@ -1379,6 +1382,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				(!isNewRow && (m_onlyCurrentRows || m_onlyCurrentDays > 0)));
 		
 		toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), findWindow != null ? findWindow.getAD_UserQuery_ID() : 0);
+
 	}
 
 	/**
