@@ -35,20 +35,15 @@ import org.compiere.util.Msg;
  *  @author 	Jorg Janke
  *  @version 	$Id: MAcctSchemaElement.java,v 1.4 2006/08/10 01:00:44 jjanke Exp $
  * 
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
- * 				<li>BF [ 1795817 ] Acct Schema Elements "Account" and "Org" should be mandatory
  * @author victor.perez@e-evolution.com, www.e-evolution.com
  *    			<li>RF [ 2214883 ] Remove SQL code and Replace for Query http://sourceforge.net/tracker/index.php?func=detail&aid=2214883&group_id=176962&atid=879335
  */
 public class MAcctSchemaElement extends X_C_AcctSchema_Element
 {
-
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 4215184252533527719L;
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4642928142654938659L;
 
 	/**
 	 * Factory: Return ArrayList of Account Schema Elements
@@ -429,14 +424,6 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 			(ELEMENTTYPE_UserElementList1.equals(et) || ELEMENTTYPE_UserElementList2.equals(et)
 			|| ELEMENTTYPE_UserColumn1.equals(et) || ELEMENTTYPE_UserColumn2.equals(et)))
 			setIsMandatory(false);
-		// Acct Schema Elements "Account" and "Org" should be mandatory - teo_sarca BF [ 1795817 ]
-		if (ELEMENTTYPE_Account.equals(et) || ELEMENTTYPE_Organization.equals(et)) {
-			if (!isMandatory())
-				setIsMandatory(true);
-			if (!isActive())
-				setIsActive(true);
-		}
-		//
 		else if (isMandatory())
 		{
 			String errorField = null;
@@ -533,19 +520,7 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 		StringBuilder msguvd = new StringBuilder(element).append("=").append(id);
 		MAccount.updateValueDescription(getCtx(),msguvd.toString(), get_TrxName());
 	}	//	updateData
-	
-	@Override
-	protected boolean beforeDelete ()
-	{
-		String et = getElementType();
-		// Acct Schema Elements "Account" and "Org" should be mandatory - teo_sarca BF [ 1795817 ] 
-		if (ELEMENTTYPE_Account.equals(et) || ELEMENTTYPE_Organization.equals(et)) {
-			log.saveError("Error", Msg.parseTranslation(getCtx(), "@DeleteError@ @IsMandatory@"));
-			return false;
-		}
-		return true;
-	}
-	
+
 	/**
 	 * After Delete
 	 * @param success success
