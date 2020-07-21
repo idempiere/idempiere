@@ -50,7 +50,7 @@ public class MWebServiceType extends X_WS_WebServiceType
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7216001796414414950L;
+	private static final long serialVersionUID = -2713868996404459577L;
 
 	/**	Parameters	*/
 	private MWebServicePara[]	m_para = null;
@@ -287,20 +287,20 @@ public class MWebServiceType extends X_WS_WebServiceType
 		return m_inputFieldMap.get(colName);
 	}
 
-	public static void insertParameters (Properties ctx, MWebServiceType ws, String trxName) {
+	public void insertParameters() {
 
-		if ("ModelADService".equals(ws.getWS_WebService().getValue())) {
-			String method = ws.getWS_WebServiceMethod().getValue();
+		MWebService ws = MWebService.get(getCtx(), getWS_WebService_ID());
+		if (ws != null && "ModelADService".equals(ws.getValue())) {
+			X_WS_WebServiceMethod wsm = new X_WS_WebServiceMethod(getCtx(), getWS_WebServiceMethod_ID(), get_TrxName());
+			String method = wsm.getValue();
 
 			if ("getList".equals(method)) {
-				ws.addWsParameter("AD_Reference_ID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
-			}
-			else if ("runProcess".equals(method)) {
-				ws.addWsParameter("AD_Process_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, ""); // can't fill it as the process is unknown
-				ws.addWsParameter("AD_Menu_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, "0");
-				ws.addWsParameter("AD_Record_ID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
-			}
-			else {
+				addWsParameter("AD_Reference_ID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
+			} else if ("runProcess".equals(method)) {
+				addWsParameter("AD_Process_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, ""); // can't fill it as the process is unknown
+				addWsParameter("AD_Menu_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, "0");
+				addWsParameter("AD_Record_ID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
+			} else {
 				String value = "";
 				if ("createData".equals(method))
 					value = "Create";
@@ -313,9 +313,9 @@ public class MWebServiceType extends X_WS_WebServiceType
 				else if ("updateData".equals(method))
 					value = "Update";
 
-				ws.addWsParameter("TableName", X_WS_WebService_Para.PARAMETERTYPE_Constant, MTable.get(ctx, ws.getAD_Table_ID()).getTableName());
-				ws.addWsParameter("Action", X_WS_WebService_Para.PARAMETERTYPE_Constant, value);
-				ws.addWsParameter("RecordID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
+				addWsParameter("TableName", X_WS_WebService_Para.PARAMETERTYPE_Constant, MTable.get(getCtx(), getAD_Table_ID()).getTableName());
+				addWsParameter("Action", X_WS_WebService_Para.PARAMETERTYPE_Constant, value);
+				addWsParameter("RecordID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
 			}
 		}
 	}
