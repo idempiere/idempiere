@@ -286,5 +286,50 @@ public class MWebServiceType extends X_WS_WebServiceType
 		
 		return m_inputFieldMap.get(colName);
 	}
-	
+
+	public static void insertParameters (Properties ctx, MWebServiceType ws, String trxName) {
+
+		if ("ModelADService".equals(ws.getWS_WebService().getValue())) {
+			String method = ws.getWS_WebServiceMethod().getValue();
+
+			if ("getList".equals(method)) {
+				ws.addWsParameter("AD_Reference_ID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
+			}
+			else if ("runProcess".equals(method)) {
+				ws.addWsParameter("AD_Process_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, ""); // can't fill it as the process is unknown
+				ws.addWsParameter("AD_Menu_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, "0");
+				ws.addWsParameter("AD_Record_ID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
+			}
+			else {
+				String value = "";
+				if ("createData".equals(method))
+					value = "Create";
+				else if ("deleteData".equals(method))
+					value = "Delete";
+				else if ("queryData".equals(method))
+					value = "Read";
+				else if ("readData".equals(method))
+					value = "Read";
+				else if ("updateData".equals(method))
+					value = "Update";
+
+				ws.addWsParameter("TableName", X_WS_WebService_Para.PARAMETERTYPE_Constant, MTable.get(ctx, ws.getAD_Table_ID()).getTableName());
+				ws.addWsParameter("Action", X_WS_WebService_Para.PARAMETERTYPE_Constant, value);
+				ws.addWsParameter("RecordID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
+			}
+		}
+	}
+
+	private void addWsParameter(String name, String type, String value) {
+		
+		if (DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM WS_WebService_Para WHERE WS_WebServiceType_ID = ? AND ParameterName = ?", getWS_WebServiceType_ID(), name) != 1) {
+			MWebServicePara wsp = new MWebServicePara(getCtx(), 0, get_TrxName());
+			wsp.setAD_Org_ID(getAD_Org_ID());
+			wsp.setWS_WebServiceType_ID(getWS_WebServiceType_ID());
+			wsp.setParameterName(name);
+			wsp.setParameterType(type);
+			wsp.setConstantValue(value);
+			wsp.saveEx();	
+		}
+	}
 }	//	MWebServiceType
