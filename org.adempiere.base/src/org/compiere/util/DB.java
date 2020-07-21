@@ -339,11 +339,6 @@ public final class DB
 
 		//direct connection
 		boolean success = false;
-		CLogErrorBuffer eb = CLogErrorBuffer.get(false);
-		if (eb != null && eb.isIssueError())
-			eb.setIssueError(false);
-		else
-			eb = null;	//	don't reset
 		try
 		{
             Connection conn = getConnectionRW(createNew);   //  try to get a connection
@@ -358,8 +353,6 @@ public final class DB
 		{
 			success = false;
 		}
-		if (eb != null)
-			eb.setIssueError(true);
 		return success;
 	}   //  isConnected
 
@@ -1823,33 +1816,8 @@ public final class DB
 	 * 	@param trxName optional Transaction Name
 	 *  @return next no
 	 */
-	@SuppressWarnings("deprecation")
 	public static int getNextID (int AD_Client_ID, String TableName, String trxName)
 	{
-		boolean SYSTEM_NATIVE_SEQUENCE = MSysConfig.getBooleanValue(MSysConfig.SYSTEM_NATIVE_SEQUENCE,false);
-		//	Check AdempiereSys
-		boolean adempiereSys = false;
-		if (Ini.isClient()) 
-		{
-			adempiereSys = Ini.isPropertyBool(Ini.P_ADEMPIERESYS);
-		} 
-		else
-		{
-			String sysProperty = Env.getCtx().getProperty("AdempiereSys", "N");
-			adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
-		}
-
-		if(SYSTEM_NATIVE_SEQUENCE && !adempiereSys)
-		{
-			int m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SQ", trxName);
-			if (m_sequence_id == -1) {
-				// try to create the sequence and try again
-				MSequence.createTableSequence(Env.getCtx(), TableName, trxName, true);
-				m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SQ", trxName);
-			}
-			return m_sequence_id;
-		}
-
 		return MSequence.getNextID (AD_Client_ID, TableName, trxName); // it is ok to call deprecated method here
 	}	//	getNextID
 

@@ -4,7 +4,6 @@ Bundle-Name: iDempiere Webservices
 Bundle-SymbolicName: org.idempiere.webservices;singleton:=true
 Bundle-Version: 7.1.0.qualifier
 Bundle-Activator: org.idempiere.webservices.Activator
-Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Service-Component: OSGI-INF/*.xml
 Import-Package: javax.activation,
@@ -100,7 +99,7 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  jakarta.xml.ws-api;bundle-version="2.3.2",
  jakarta.xml.soap-api;bundle-version="1.4.1"
 Bundle-ClassPath: .,
- WEB-INF/lib/idempiere-xmlbeans.jar
+ lib/idempiere-xmlbeans.jar
 Export-Package: org.compiere.model,
  org.idempiere.adInterface.x10,
  org.idempiere.adInterface.x10.impl,

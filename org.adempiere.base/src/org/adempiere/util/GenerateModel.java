@@ -106,24 +106,25 @@ public class GenerateModel
 			System.err.println("No EntityType");
 			System.exit(1);
 		}
-		StringBuilder sql = new StringBuilder("EntityType IN (")
+		StringBuilder entityTypeFilter = new StringBuilder("EntityType IN (")
 			.append(entityType).append(")");
-		log.info(sql.toString());
+		log.info(entityTypeFilter.toString());
 		log.info("----------------------------------");
 		
 		String tableLike = null;
-		tableLike = "'%'";	//	All tables
+		tableLike = "'%'";	//	All tablesype
 		// tableLike = "'AD_OrgInfo', 'AD_Role', 'C_CashLine', 'C_Currency', 'C_Invoice', 'C_Order', 'C_Payment', 'M_InventoryLine', 'M_PriceList', 'M_Product', 'U_POSTerminal'";	//	Only specific tables
 		if (args.length > 3)
 			tableLike = args[3];
 		if (log.isLoggable(Level.INFO)) log.info("Table Like: " + tableLike);
 
 		//	complete sql
-		sql.insert(0, "SELECT AD_Table_ID "
+		StringBuilder sql = new StringBuilder("SELECT AD_Table_ID "
 			+ "FROM AD_Table "
 			+ "WHERE (TableName IN ('RV_WarehousePrice','RV_BPartner')"	//	special views
 			+ " OR IsView='N')"
 			+ " AND IsActive = 'Y' AND TableName NOT LIKE '%_Trl' AND ");
+		sql.append(entityTypeFilter);
 		// Autodetect if we need to use IN or LIKE clause - teo_sarca [ 3020640 ]
 		if (tableLike.indexOf(",") == -1)
 			sql.append(" AND TableName LIKE ").append(tableLike);
@@ -142,8 +143,8 @@ public class GenerateModel
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				new ModelInterfaceGenerator(rs.getInt(1), directory, packageName);
-				new ModelClassGenerator(rs.getInt(1), directory, packageName);
+				new ModelInterfaceGenerator(rs.getInt(1), directory, packageName, entityTypeFilter.toString());
+				new ModelClassGenerator(rs.getInt(1), directory, packageName, entityTypeFilter.toString());
 				count++;
 			}
  		}

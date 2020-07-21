@@ -312,9 +312,9 @@
         <setEntry value="org.krysalis.barcode4j@default:default"/>
         <setEntry value="org.mortbay.jasper.apache-el@default:true"/>
         <setEntry value="org.mortbay.jasper.apache-jsp@default:true"/>
-        <setEntry value="org.objectweb.asm*7.2.0.v20191010-1910@default:default"/>
-        <setEntry value="org.objectweb.asm.commons*7.2.0.v20191010-1910@default:default"/>
-        <setEntry value="org.objectweb.asm.tree*7.2.0.v20191010-1910@default:default"/>
+        <setEntry value="org.objectweb.asm*7.3.1@default:default"/>
+        <setEntry value="org.objectweb.asm.commons*7.3.1@default:default"/>
+        <setEntry value="org.objectweb.asm.tree*7.3.1@default:default"/>
         <setEntry value="org.passay@default:default"/>
         <setEntry value="org.sat4j.core@default:default"/>
         <setEntry value="org.sat4j.pb@default:default"/>
@@ -353,7 +353,6 @@
         <setEntry value="org.adempiere.replication.server@default:default"/>
         <setEntry value="org.adempiere.replication@default:default"/>
         <setEntry value="org.adempiere.report.jasper.library@default:false"/>
-        <setEntry value="org.adempiere.report.jasper.webapp@default:default"/>
         <setEntry value="org.adempiere.report.jasper@default:default"/>
         <setEntry value="org.adempiere.server@default:true"/>
         <setEntry value="org.adempiere.ui.zk@default:true"/>

@@ -34,7 +34,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.util.Notification;
 import org.zkoss.zul.Caption;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
@@ -170,7 +170,7 @@ public class StatusBar extends Panel implements EventListener<Event>
 		
     	String labelText = buildLabelText(m_statusText);
     	if (error) {
-    		Clients.showNotification(buildNotificationText(m_statusText), "error", findTabpanel(this), "top_left", 3500, true);
+    		Notification.show(buildNotificationText(m_statusText), "error", findTabpanel(this), "top_left", 3500, true);
     	}
     	Label label = new Label(labelText);
     	messageContainer.setSclass(error ? "docstatus-error" : "docstatus-normal");
@@ -287,6 +287,7 @@ public class StatusBar extends Panel implements EventListener<Event>
     private void createPopup() {
 		msgPopupCnt = new Div();
 		ZKUpdateUtil.setVflex(msgPopupCnt, "1");
+		msgPopupCnt.setStyle("flex-basis: auto");
 
 		
 		msgPopup = new Window();

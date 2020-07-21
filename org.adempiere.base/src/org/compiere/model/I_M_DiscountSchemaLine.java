@@ -134,6 +134,19 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getCreatedBy();
 
+    /** Column name Description */
+    public static final String COLUMNNAME_Description = "Description";
+
+	/** Set Description.
+	  * Optional short description of the record
+	  */
+	public void setDescription (String Description);
+
+	/** Get Description.
+	  * Optional short description of the record
+	  */
+	public String getDescription();
+
     /** Column name Group1 */
     public static final String COLUMNNAME_Group1 = "Group1";
 

@@ -386,13 +386,3 @@
 	}
 }
 
-@media screen and (max-height: 500px) {
-	.popup-dialog.process-modal-dialog {
-		height: 100%;
-	}
-}
-@media screen and (min-height: 501px) {
-	.popup-dialog.process-modal-dialog {
-		min-height: 500px;
-	}
-}

@@ -568,6 +568,9 @@ public class MTable extends X_AD_Table
 			seq.setName(getTableName());
 			seq.saveEx();
 		}
+		if (newRecord || is_ValueChanged(COLUMNNAME_IsChangeLog)) {
+			MChangeLog.resetLoggedList();
+		}
 		
 		return success;
 	}	//	afterSave

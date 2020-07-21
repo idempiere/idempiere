@@ -465,7 +465,6 @@ public final class LayoutUtils {
 			LayoutUtils.removeSclass("slide", (HtmlBasedComponent) evt.getTarget());
 		else
 			LayoutUtils.addSclass("slide", (HtmlBasedComponent) evt.getTarget());
-		evt.getTarget().invalidate();
 	};
 	
 	/**

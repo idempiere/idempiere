@@ -466,9 +466,18 @@ public class MClient extends X_AD_Client
 		}	
 		//
 		String systemName = MSystem.get(getCtx()).getName();
+		StringBuilder subject = new StringBuilder(systemName).append(" EMail Test");
 		StringBuilder msgce = new StringBuilder(systemName).append(" EMail Test: ").append(toString());
-		EMail email = createEMail (getRequestEMail(),
-				systemName + " EMail Test",msgce.toString());
+
+		int mailtextID = MSysConfig.getIntValue(MSysConfig.EMAIL_TEST_MAILTEXT_ID, 0, getAD_Client_ID());
+		if (mailtextID > 0) {
+			MMailText mt = new MMailText(getCtx(), mailtextID, get_TrxName());
+			mt.setPO(this);
+			subject = new StringBuilder(mt.getMailHeader());
+			msgce = new StringBuilder(mt.getMailText(true));
+		}
+
+		EMail email = createEMail (getRequestEMail(), subject.toString(), msgce.toString());
 		if (email == null){
 			StringBuilder msgreturn = new StringBuilder("Could not create EMail: ").append(getName());
 			return msgreturn.toString();
@@ -487,7 +496,7 @@ public class MClient extends X_AD_Client
 			if (EMail.SENT_OK.equals (msg))
 			{
 				if (log.isLoggable(Level.INFO)) log.info("Sent Test EMail to " + getRequestEMail());
-				return "OK";
+				return "";
 			}
 			else
 			{

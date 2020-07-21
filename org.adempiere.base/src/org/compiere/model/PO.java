@@ -232,9 +232,9 @@ public abstract class PO
 	private static CLogger		s_log = CLogger.getCLogger (PO.class);
 
 	/** Context                 */
-	protected Properties		p_ctx;
+	protected transient Properties		p_ctx;
 	/** Model Info              */
-	protected volatile POInfo	p_info = null;
+	protected transient volatile POInfo	p_info = null;
 
 	/** Original Values         */
 	private Object[]    		m_oldValues = null;
@@ -2049,33 +2049,6 @@ public abstract class PO
 			}
 		}
 
-		//	Organization Check
-		if (getAD_Org_ID() == 0
-			&& (get_AccessLevel() == ACCESSLEVEL_ORG
-				|| (get_AccessLevel() == ACCESSLEVEL_CLIENTORG
-					&& MClientShare.isOrgLevelOnly(getAD_Client_ID(), get_Table_ID()))))
-		{
-			log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Org_ID"));
-			return false;
-		}
-		//	Should be Org 0
-		if (getAD_Org_ID() != 0)
-		{
-			boolean reset = get_AccessLevel() == ACCESSLEVEL_SYSTEM;
-			if (!reset && MClientShare.isClientLevelOnly(getAD_Client_ID(), get_Table_ID()))
-			{
-				reset = get_AccessLevel() == ACCESSLEVEL_CLIENT
-					|| get_AccessLevel() == ACCESSLEVEL_SYSTEMCLIENT
-					|| get_AccessLevel() == ACCESSLEVEL_ALL
-					|| get_AccessLevel() == ACCESSLEVEL_CLIENTORG;
-			}
-			if (reset)
-			{
-				log.warning("Set Org to 0");
-				setAD_Org_ID(0);
-			}
-		}
-
 		Trx localTrx = null;
 		Trx trx = null;
 		Savepoint savepoint = null;
@@ -2172,6 +2145,34 @@ public abstract class PO
 				}
 				return false;
 			}
+
+		//	Organization Check
+		if (getAD_Org_ID() == 0
+			&& (get_AccessLevel() == ACCESSLEVEL_ORG
+				|| (get_AccessLevel() == ACCESSLEVEL_CLIENTORG
+					&& MClientShare.isOrgLevelOnly(getAD_Client_ID(), get_Table_ID()))))
+		{
+			log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Org_ID"));
+			return false;
+		}
+		//	Should be Org 0
+		if (getAD_Org_ID() != 0)
+		{
+			boolean reset = get_AccessLevel() == ACCESSLEVEL_SYSTEM;
+			if (!reset && MClientShare.isClientLevelOnly(getAD_Client_ID(), get_Table_ID()))
+			{
+				reset = get_AccessLevel() == ACCESSLEVEL_CLIENT
+					|| get_AccessLevel() == ACCESSLEVEL_SYSTEMCLIENT
+					|| get_AccessLevel() == ACCESSLEVEL_ALL
+					|| get_AccessLevel() == ACCESSLEVEL_CLIENTORG;
+			}
+			if (reset)
+			{
+				log.warning("Set Org to 0");
+				setAD_Org_ID(0);
+			}
+		}
+
 			//	Save
 			if (newRecord)
 			{
@@ -4820,6 +4821,8 @@ public abstract class PO
 	    // default deserialization
 	    ois.defaultReadObject();
 	    log = CLogger.getCLogger(getClass());
+	    p_ctx = Env.getCtx();
+	    p_info = initPO(p_ctx);
 	}
 	
 	public void set_Attribute(String columnName, Object value) {

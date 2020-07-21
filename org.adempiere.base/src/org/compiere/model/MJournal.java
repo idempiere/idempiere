@@ -332,6 +332,10 @@ public class MJournal extends X_GL_Journal implements DocAction
 
 		if (getGL_Category_ID() == 0 && getC_DocType_ID() > 0)
 			setGL_Category_ID(MDocType.get(getCtx(), getC_DocType_ID()).getGL_Category_ID());
+		if (getC_AcctSchema_ID() == 0)
+			setC_AcctSchema_ID(MClientInfo.get(getCtx(), getAD_Client_ID()).getC_AcctSchema1_ID());
+		if (getC_ConversionType_ID() == 0)
+			setC_ConversionType_ID(MConversionType.getDefault(getAD_Client_ID()));
 
 		// IDEMPIERE-63
 		// for documents that can be reactivated we cannot allow changing 

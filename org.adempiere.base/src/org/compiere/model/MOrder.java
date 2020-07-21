@@ -1093,6 +1093,14 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 		}
 
+		// IDEMPIERE-4318 Validation - Prepay Order must not allow Cash payment rule
+		MDocType dt = MDocType.get(getCtx(), getC_DocTypeTarget_ID());
+		if (   MDocType.DOCSUBTYPESO_PrepayOrder.equals(dt.getDocSubTypeSO())
+			&& PAYMENTRULE_Cash.equals(getPaymentRule())) {
+			log.saveError("Error", Msg.parseTranslation(getCtx(), "@Invalid@ @PaymentRule@"));
+			return false;
+		}
+
 		if (! recursiveCall && (!newRecord && is_ValueChanged(COLUMNNAME_C_PaymentTerm_ID))) {
 			recursiveCall = true;
 			try {
@@ -1289,7 +1297,7 @@ public class MOrder extends X_C_Order implements DocAction
 		}
 				
 		// Bug 1564431
-		if (getDeliveryRule() != null && getDeliveryRule().equals(MOrder.DELIVERYRULE_CompleteOrder)) 
+		if (MOrder.DELIVERYRULE_CompleteOrder.equals(getDeliveryRule()) )
 		{
 			for (int i = 0; i < lines.length; i++) 
 			{
@@ -1298,6 +1306,11 @@ public class MOrder extends X_C_Order implements DocAction
 				if (product != null && product.isExcludeAutoDelivery())
 				{
 					m_processMsg = "@M_Product_ID@ "+product.getValue()+" @IsExcludeAutoDelivery@";
+					return DocAction.STATUS_Invalid;
+				}
+				if (line.getDatePromised() != null && !line.getDatePromised().equals(getDatePromised()))
+				{
+					m_processMsg = "@Line@ " + line.getLine() + " - @Invalid@ @DatePromised@";
 					return DocAction.STATUS_Invalid;
 				}
 			}
@@ -2594,6 +2607,13 @@ public class MOrder extends X_C_Order implements DocAction
 		
 		setProcessed(true);
 		setDocAction(DOCACTION_None);
+
+		// IDEMPIERE-966 thanks to Hideaki Hagiwara
+		if (!calculateTaxTotal()) {
+			m_processMsg = Msg.getMsg(p_ctx,"Error calculating tax");
+			return false;
+		}
+
 		// After Close
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE);
 		if (m_processMsg != null)
@@ -2704,32 +2724,10 @@ public class MOrder extends X_C_Order implements DocAction
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)
 			return false;	
-				
-		
 		
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		String DocSubTypeSO = dt.getDocSubTypeSO();
 		
-		//	Replace Prepay with POS to revert all doc
-		if (MDocType.DOCSUBTYPESO_PrepayOrder.equals (DocSubTypeSO))
-		{
-			MDocType newDT = null;
-			MDocType[] dts = MDocType.getOfClient (getCtx());
-			for (int i = 0; i < dts.length; i++)
-			{
-				MDocType type = dts[i];
-				if (MDocType.DOCSUBTYPESO_PrepayOrder.equals(type.getDocSubTypeSO()))
-				{
-					if (type.isDefault() || newDT == null)
-						newDT = type;
-				}
-			}
-			if (newDT == null)
-				return false;
-			else
-				setC_DocType_ID (newDT.getC_DocType_ID());
-		}
-
 		//	PO - just re-open
 		if (!isSOTrx()) {
 			if (log.isLoggable(Level.INFO)) log.info("Existing documents not modified - " + dt);

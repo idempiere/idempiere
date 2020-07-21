@@ -65,6 +65,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
@@ -264,7 +265,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			try {
 				if (!((org.compiere.process.DocAction) po).processIt(docAction))
 					return rollbackAndSetError(trx, resp, ret, true,
-							"Couldn't set docAction: " + ((org.compiere.process.DocAction) po).getProcessMsg());
+							Msg.parseTranslation(ctx, "@FailedProcessingDocument@: " + ((org.compiere.process.DocAction) po).getProcessMsg()));
 			} catch (Exception e) {
 				return rollbackAndSetError(trx, resp, ret, true, e.toString());
 			}
@@ -1390,8 +1391,13 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 					if (po.get_Value(i) != null){						
 						if(po.get_Value(i) instanceof byte[]){
 							dfid.setVal(new String(Base64.encodeBase64((byte[]) po.get_Value(i))));
-						}else						
-						    dfid.setVal(po.get_Value(i).toString());
+						}
+						else if(po.get_Value(i) instanceof Boolean) {
+							dfid.setVal((Boolean)po.get_Value(i) ? "Y" : "N");
+						}
+						else {
+							dfid.setVal(po.get_Value(i).toString());
+						}
 					}else
 						dfid.setVal(null);
 				}

@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.adempiere.util.ServerContext;
 import org.apache.ecs.HtmlColor;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.b;
@@ -770,8 +771,14 @@ public class AdempiereMonitor extends HttpServlet
 		}
 		bb.addElement(para);
 
-		//	**** Log Management ****	
-		createLogMgtPage(bb, members, local);	
+		//	**** Log Management ****
+		try {
+			Properties ctx = new Properties();
+			ServerContext.setCurrentInstance(ctx);
+			createLogMgtPage(bb, members, local);
+		} finally {
+			ServerContext.dispose();
+		}
 		
 		//	***** Server Details *****
 		bb.removeEndEndModifier();
@@ -1014,8 +1021,8 @@ public class AdempiereMonitor extends HttpServlet
 		table.setCellSpacing(2);
 		table.setCellPadding(2);
 		//
-		Properties ctx = new Properties();
-		MSystem system = MSystem.get(ctx);
+		
+		MSystem system = MSystem.get(Env.getCtx());
 		SystemInfo systemInfo = SystemInfo.getLocalSystemInfo();				
 		tr line = new tr();
 		line.addElement(new th().addElement(Adempiere.getURL()));
@@ -1165,7 +1172,7 @@ public class AdempiereMonitor extends HttpServlet
 		table.setCellPadding(2);
 		//	
 		line = new tr();
-		MClient[] clients = MClient.getAll(ctx, "AD_Client_ID");
+		MClient[] clients = MClient.getAll(Env.getCtx(), "AD_Client_ID");
 		line.addElement(new th().addElement("Client #" + clients.length + " - EMail Test:"));
 		p = new p();
 		for (int i = 0; i < clients.length; i++)
@@ -1240,7 +1247,7 @@ public class AdempiereMonitor extends HttpServlet
 		else if (inMaintenanceClients.size() > 0) {
 			boolean first = true;
 			for (int clientID : inMaintenanceClients) {
-				MClient client = MClient.get(ctx, clientID);
+				MClient client = MClient.get(Env.getCtx(), clientID);
 				if (!client.isActive())
 					continue;
 				if (!first)

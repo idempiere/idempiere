@@ -36,7 +36,7 @@ public class TestEJB
 	 */
 	public TestEJB ()
 	{
-		CConnection cc = CConnection.get(null);
+		CConnection cc = CConnection.get();
 		cc.setAppsHost("dev1");
 		InitialContext ic = cc.getInitialContext(false);
 		/**/

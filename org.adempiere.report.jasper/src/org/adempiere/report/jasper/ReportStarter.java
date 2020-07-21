@@ -28,6 +28,9 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -71,6 +74,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.utils.DigestOfFile;
@@ -197,8 +201,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
     		fout.close();
     		return downloadedFile;
     	} catch (FileNotFoundException e) {
-			if(reportLocation.indexOf("Subreport") == -1 && !reportLocation.endsWith(".properties")) // Only show the warning if it is not a subreport or properties
-				log.warning("404 not found: Report cannot be found on server "+ e.getMessage());
     		return null;
     	} catch (IOException e) {
 			throw new AdempiereException("I/O error when trying to download (sub)report from server "+ e.getLocalizedMessage());
@@ -254,78 +256,91 @@ public class ReportStarter implements ProcessCall, ClientProcess
     		String downloadedLocalFile = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator")+"TMP" + cleanFile;
 
     		reportFile = new File(localFile);
-
-
     		if (reportFile.exists())
-    		{
-    			String localMD5hash = DigestOfFile.GetLocalMD5Hash(reportFile);
-    			String remoteMD5Hash = getRemoteMD5(reportLocation);
-    			if (log.isLoggable(Level.INFO)) log.info("MD5 for local file is "+localMD5hash );
-    			if ( remoteMD5Hash != null)
+    		{    			
+    			String remoteMD5Hash = getRemoteMD5(reportLocation);    			
+    			if (!Util.isEmpty(remoteMD5Hash, true))
     			{
-    				if (localMD5hash.equals(remoteMD5Hash))
+    				String localMD5hash = DigestOfFile.getMD5Hash(reportFile);
+    				if (log.isLoggable(Level.INFO)) log.info("MD5 for local file is "+localMD5hash );
+    				if (localMD5hash.equals(remoteMD5Hash.trim()))
     				{
-    					if (log.isLoggable(Level.INFO)) log.info(" no need to download: local report is up-to-date");
+    					if (log.isLoggable(Level.INFO)) log.info("MD5 match: local report file is up-to-date");
+    					return reportFile;
     				}
     				else
     				{
-    					if (log.isLoggable(Level.INFO)) log.info(" report on server is different that local one, download and replace");
+    					if (log.isLoggable(Level.INFO)) log.info("MD5 is different, download and replace");
     					downloadedFile = getRemoteFile(reportLocation, downloadedLocalFile);
-    					reportFile.delete();
-    					downloadedFile.renameTo(reportFile);
+    					if (downloadedFile != null)
+    					{
+    						Path to = reportFile.toPath();
+    						Path from = downloadedFile.toPath();
+    						Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
+    						return to.toFile();
+    					}
+    					else
+    					{
+    						return null;
+    					}
     				}
     			}
     			else
     			{
-    				log.warning("Remote hashing is not available did you deployed webApp.ear?");
     				downloadedFile = getRemoteFile(reportLocation, downloadedLocalFile);
-    				//    				compare hash of existing and downloaded
-    				if ( DigestOfFile.md5localHashCompare(reportFile,downloadedFile) )
+    				if (downloadedFile == null)
+    					return null;
+    				
+    				// compare hash of existing and downloaded
+    				if ( DigestOfFile.md5HashCompare(reportFile,downloadedFile) )
     				{
     					//nothing file are identical
-    					if (log.isLoggable(Level.INFO)) log.info(" no need to replace your existing report");
+    					if (log.isLoggable(Level.INFO)) log.info("MD5 match: local report file is up-to-date");
+    					return reportFile;
     				}
     				else
     				{
-    					if (log.isLoggable(Level.INFO)) log.info(" report on server is different that local one, replacing");
-    					reportFile.delete();
-    					downloadedFile.renameTo(reportFile);
+    					if (log.isLoggable(Level.INFO)) log.info("MD5 is different, replace with downloaded file");
+    					Path to = reportFile.toPath();
+						Path from = downloadedFile.toPath();
+						Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
+						return to.toFile();
     				}
     			}
     		}
     		else
     		{
     			reportFile = getRemoteFile(reportLocation,localFile);
+    			return reportFile;
     		}
 
     	}
     	catch (Exception e) {
 			throw new AdempiereException("Unknown exception: "+ e.getLocalizedMessage());
-    	}
-    	return reportFile;
+    	}    	
     }
 
     private String getRemoteMD5(String reportLocation) {
-    	try{
-    		String md5url = reportLocation;
-    		if (md5url.indexOf("?") > 0)
-    			md5url = md5url + "&md5=true";
-    		else
-    			md5url = md5url + "?md5=true";
+    	try {
+    		String md5url = reportLocation + ".md5";
     		URL reportURL = new URL(md5url);
-			InputStream in = reportURL.openStream();
-
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			byte buf[] = new byte[1024];
-			int s = 0;
- 			while((s = in.read(buf, 0, 1024)) > 0)
-				baos.write(buf, 0, s);
-
-    		in.close();
-    		String hash = new String(baos.toByteArray());
-    		return hash;
+			try (InputStream in = reportURL.openStream()) {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				byte buf[] = new byte[1024];
+				int s = 0;
+	 			while((s = in.read(buf, 0, 1024)) > 0)
+					baos.write(buf, 0, s);
+	
+	    		String hash = new String(baos.toByteArray());
+	    		int posSpace = hash.indexOf(" ");
+	    		if (posSpace > 0)
+	    			hash = hash.substring(0, posSpace);
+	    		return hash;
+			}
     	} catch (IOException e) {
-			throw new AdempiereException("I/O error when trying to download (sub)report from server "+ e.getLocalizedMessage());
+    		if (log.isLoggable(Level.INFO))
+    			log.log(Level.INFO, "MD5 not available for " + reportLocation, e);
+    		return null;
     	}
 	}
 
@@ -388,7 +403,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
         }
         ReportData reportData = getReportData(pi, trxName);
         if (reportData == null) {
-            reportResult(AD_PInstance_ID, "Can not find report data", trxName);
+            reportResult(AD_PInstance_ID, "Failed to retrieve report data", trxName);
+            pi.setSummary("Failed to retrieve report data", true);
             return false;
         }
 
@@ -401,6 +417,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
         if (Util.isEmpty(reportPath, true))
 		{
             reportResult(AD_PInstance_ID, "Can not find report", trxName);
+            pi.setSummary("Can not find report", true);
             return false;
         }
         if (reportPath.startsWith("@#LocalHttpAddr@")) {
@@ -430,6 +447,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 			String tmp = "Can not find report file at path - " + reportPath;
 			log.severe(tmp);
 			reportResult(AD_PInstance_ID, tmp, trxName);
+			pi.setSummary(tmp, true);
 		}
 
 		if (reportFile != null)
@@ -583,6 +601,12 @@ public class ReportStarter implements ProcessCall, ClientProcess
         	//params.put("LoginLogo", reportPath);
         	
         	Language currLang = Env.getLanguage(Env.getCtx());
+        	if ((params.containsKey("AD_Language") && params.get("AD_Language") != null) || 
+        			(params.containsKey("CURRENT_LANG") && params.get("CURRENT_LANG") != null)) {
+        		String langInfo = params.get("AD_Language") != null ? params.get("AD_Language").toString() : 
+        			params.get("CURRENT_LANG").toString();
+        		currLang = Language.getLanguage(langInfo);
+        	}
         	String printerName = null;
         	MPrintFormat printFormat = null;
         	PrintInfo printInfo = null;
@@ -860,6 +884,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
         	processInfo.setRowCount(nrows);
         }
         reportResult( AD_PInstance_ID, null, trxName);
+        pi.setSummary(Msg.getMsg(Env.getCtx(), "Success"), false);
         return true;
     }	
 	
@@ -1182,7 +1207,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		String downloadedLocalFile = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator")+"TMP" + entry.getName();
 		File reportFile = new File(localFile);
 		if (reportFile.exists()) {
-			String localMD5hash = DigestOfFile.GetLocalMD5Hash(reportFile);
+			String localMD5hash = DigestOfFile.getMD5Hash(reportFile);
 			String entryMD5hash = DigestOfFile.getMD5Hash(entry.getData());
 			if (localMD5hash.equals(entryMD5hash))
 			{

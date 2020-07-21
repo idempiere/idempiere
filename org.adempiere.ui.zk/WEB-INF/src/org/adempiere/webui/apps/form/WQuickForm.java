@@ -141,24 +141,19 @@ public class WQuickForm extends Window implements EventListener <Event>, DataSta
 		bCustomize.addEventListener(Events.ON_CLICK, this);
 		bUnSort.addEventListener(Events.ON_CLICK, this);
 
-		// @TODO: translate extra quickform tooltips
-		// Add Shortcut Key info in tool-tip
-		bSave.setTooltiptext(bSave.getTooltiptext() + " (Alt+S) Save current record if modified");
-		bIgnore.setTooltiptext(bIgnore.getTooltiptext() + " (Alt+Z) Ignore un-save changes of current record");
-		bDelete.setTooltiptext(bDelete.getTooltiptext() + " (Alt+D) Delete selected or current record");
-		bCustomize.setTooltiptext(bCustomize.getTooltiptext() + " (Alt+L) Customize panel as per user");
-
 		Button bRefresh = confirmPanel.getButton(ConfirmPanel.A_REFRESH);
-		bRefresh.setTooltiptext(bRefresh.getTooltiptext() + " (Alt+E) ReQuery all record");
+		Button bCancel = confirmPanel.getButton(ConfirmPanel.A_CANCEL);
+		Button bOk = confirmPanel.getButton(ConfirmPanel.A_OK);
 
-		Button bCancle = confirmPanel.getButton(ConfirmPanel.A_CANCEL);
-		bCancle.setTooltiptext(bCancle.getTooltiptext() + " (Alt+X) Close quick form");
-
-		Button bok = confirmPanel.getButton(ConfirmPanel.A_OK);
-		bok.setTooltiptext(bok.getTooltiptext() + " (Alt+K) Save and Close quick form");
-
-		Button bunSort = confirmPanel.getButton("UnSort");
-		bunSort.setTooltiptext(bunSort.getTooltiptext() + " (Alt + R) Restore sorting to natural if column sorted");
+		// Set tool-tip information
+		bSave.setTooltiptext(Msg.translate(Env.getCtx(), "QuickFormSave")); // 'Alt + S'
+		bDelete.setTooltiptext(Msg.translate(Env.getCtx(), "QuickFormDelete")); // 'Alt + D'
+		bIgnore.setTooltiptext(Msg.translate(Env.getCtx(), "QuickFormIgnore")); // 'Alt + Z'
+		bUnSort.setTooltiptext(Msg.translate(Env.getCtx(), "QuickFormUnSort")); // 'Alt + R'
+		bCustomize.setTooltiptext(Msg.translate(Env.getCtx(), "QuickFormCustomize")); // 'Alt + L'
+		bOk.setTooltiptext(Msg.translate(Env.getCtx(), "QuickFormOk")); // 'Alt + K' - Save_Close
+		bCancel.setTooltiptext(Msg.translate(Env.getCtx(), "QuickFormCancel")); // 'Alt + X'
+		bRefresh.setTooltiptext(Msg.translate(Env.getCtx(), "QuickFormRefresh")); // 'Alt + E'
 
 		confirmPanel.addComponentsLeft(bSave);
 		confirmPanel.addComponentsLeft(bDelete);
@@ -386,7 +381,7 @@ public class WQuickForm extends Window implements EventListener <Event>, DataSta
 		gridTab.setQuickForm(false);
 		onIgnore();
 		gridTab.removeDataStatusListener(this);
-		SessionManager.closeQuickFormTab(gridTab.getAD_Tab_ID());
+		adWinContent.closeQuickFormTab(gridTab.getAD_Tab_ID());
 		quickGridView.getRenderer().clearMaps();
 		int tabLevel = adWinContent.getToolbar().getQuickFormTabHrchyLevel();
 		if (tabLevel > 0)
@@ -400,7 +395,7 @@ public class WQuickForm extends Window implements EventListener <Event>, DataSta
 			{
 				adWinContent.onParentRecord();
 				SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, prevQGV);
-				// TODO need to set focus on last focused row of parent Form.
+				// need to set focus on last focused row of parent Form.
 				Events.echoEvent(QuickGridView.EVENT_ON_PAGE_NAVIGATE, prevQGV, null);
 			}
 			adWinContent.setCurrQGV(prevQGV);

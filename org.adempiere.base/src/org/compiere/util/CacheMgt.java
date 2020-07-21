@@ -109,7 +109,11 @@ public class CacheMgt
 		{
 			ICacheService provider = Service.locator().locate(ICacheService.class).getService();
 			if (provider != null)
-				map = provider.getMap(name);
+			{
+				IClusterService clusterService = Service.locator().locate(IClusterService.class).getService();
+				if (clusterService != null && !clusterService.isStandAlone())
+					map = provider.getMap(name);
+			}
 		}
 		
 		if (map == null)

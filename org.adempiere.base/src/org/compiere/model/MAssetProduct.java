@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.model.Query;
-
 /**
  * Asset Product
  * @author Teo Sarca, SC ARHIPAC SERIVCE SRL

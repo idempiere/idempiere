@@ -53,9 +53,10 @@ public class MIssue extends X_AD_Issue
 	 */
 	public static MIssue create (LogRecord record)
 	{
-		s_log.config(record.getMessage());
+		if (s_log.isLoggable(Level.CONFIG))
+			s_log.config(record.getMessage());
 		MSystem system = MSystem.get(Env.getCtx()); 
-		if (!DB.isConnected() 
+		if (!DB.isConnected(false)
 			|| system == null
 			|| !system.isAutoErrorReport())
 			return null;
@@ -406,7 +407,7 @@ public class MIssue extends X_AD_Issue
 	public String report()
 	{
 		//if (true)
-		return "-";
+		return null;
 		/*StringBuilder parameter = new StringBuilder("?");
 		if (getRecord_ID() == 0)	//	don't report
 			return "ID=0";

@@ -114,14 +114,6 @@ public class MSystem extends X_AD_System
 	}	//	MSystem
 
 	/**
-	 * 	Constructor
-	 */
-	public MSystem ()
-	{
-		this (new Properties(), 0, null);
-	}	//	MSystem
-
-	/**
 	 * 	Is LDAP Authentification defined
 	 *	@return true if ldap defined
 	 */
@@ -498,14 +490,5 @@ public class MSystem extends X_AD_System
 		String ca = MSysConfig.getValue(MSysConfig.SWING_LOGIN_ALLOW_REMEMBER_ME, SYSTEM_ALLOW_REMEMBER_PASSWORD);
 		return (ca.equalsIgnoreCase(SYSTEM_ALLOW_REMEMBER_PASSWORD) && !MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false));
 	}
-
-	/**
-	 * 	Test
-	 *	@param args
-	 */
-	public static void main (String[] args)
-	{
-		new MSystem();
-	}	//	main
 	
 }	//	MSystem

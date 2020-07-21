@@ -94,7 +94,7 @@ public class ADWindowContent extends AbstractADWindowContent
         ZKUpdateUtil.setVflex(north, "0");
         toolbar.setParent(div);
         toolbar.setWindowNo(getWindowNo());
-        breadCrumb = new BreadCrumb(getWindowNo());
+        breadCrumb = new BreadCrumb(this, getWindowNo());
         breadCrumb.setToolbarListener(this);
         breadCrumb.setId("breadCrumb");
         div.appendChild(breadCrumb);

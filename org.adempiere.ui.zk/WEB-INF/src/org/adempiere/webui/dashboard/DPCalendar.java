@@ -90,7 +90,6 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	private static final String ON_REQUEST_CHANGED_TOPIC = "onRequestChanged";
 	
 	private EventWindow eventWin;
-	private Properties ctx;
 	private WeakReference<Desktop> desktop;
 	private ArrayList<ADCalendarEvent> events;
 	private DesktopCleanup listener;
@@ -103,9 +102,6 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	public DPCalendar() {
 		super();
 
-		ctx = new Properties();
-		ctx.putAll(Env.getCtx());
-		
 		Component component = Executions.createComponents(ThemeManager.getThemeResource("zul/calendar/calendar_mini.zul"), this, null);
 
 		calendars = (Calendars) component.getFellow("cal");
@@ -439,7 +435,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	}
 
 	private void refreshModel() {		
-		events = getEvents(0, ctx);		
+		events = getEvents(0, Env.getCtx());		
 	}
 	
 	private void updateDateLabel() {
@@ -473,8 +469,8 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 			String userId = (String) event.getProperty(I_R_Request.COLUMNNAME_AD_User_ID);
 			String createdBy = (String) event.getProperty(I_R_Request.COLUMNNAME_CreatedBy);
 			
-			String AD_Client_ID = Integer.toString(Env.getAD_Client_ID(ctx));
-			String AD_User_ID = Integer.toString(Env.getAD_User_ID(ctx));
+			String AD_Client_ID = Integer.toString(Env.getAD_Client_ID(Env.getCtx()));
+			String AD_User_ID = Integer.toString(Env.getAD_User_ID(Env.getCtx()));
 			if (clientId.equals(AD_Client_ID) && !"0".equals(AD_User_ID)) {
 				if (salesRepId.equals(AD_User_ID) || userId.equals(AD_User_ID) || createdBy.equals(AD_User_ID)) {
 					try {

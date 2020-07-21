@@ -71,6 +71,7 @@ import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.GridWindow;
+import org.compiere.model.Lookup;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MLookupFactory;
@@ -146,7 +147,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     protected ColumnInfo[] columnInfos;
 	protected TableInfo[] tableInfos;
 	protected MInfoColumn[] infoColumns;	
-	protected String queryValue;
+	
 	protected WQuickEntry vqe;
 	
 	private List<GridField> gridFields;
@@ -205,9 +206,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
 			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, GridField field) {
 		super(WindowNo, tableName, keyColumn, multipleSelection, whereClause,
-				lookup, AD_InfoWindow_ID);
+				lookup, AD_InfoWindow_ID, queryValue);		
 		this.m_gridfield = field;
-		this.queryValue = queryValue;
 
    		//Xolali IDEMPIERE-1045
    		contentPanel.addActionListener(new EventListener<Event>() {
@@ -241,8 +241,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			if (haveProcess)
 				p_multipleSelection = true;
 		}		
-				
-		loadInfoRelatedTabs();
+						
+		if (!isAutoComplete)
+			loadInfoRelatedTabs();
+		
 		if (loadedOK()) {
 			if (isLookup()) {
 				Env.clearTabContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO);
@@ -262,8 +264,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 		
 		// F3P: add export button
-		
-		initExport();
+		if (!isAutoComplete)
+			initExport();
 	}
 	
 	/** 
@@ -504,6 +506,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		isQueryByUser = true;
 		for (int i = 0; i < identifiers.size(); i++) {
 			WEditor editor = identifiers.get(i);
+			if (isAutoComplete) {
+				if (!Util.isEmpty(autoCompleteSearchColumn)) {
+					if (!editor.getColumnName().equals(autoCompleteSearchColumn))
+						continue;
+				}
+			}
 			try{
 				editor.setValue(queryValue);
 			}catch(Exception ex){
@@ -511,6 +519,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			}
 			
 			testCount(false);
+			if (isAutoComplete)
+				break;
 			if (m_count > 0) {
 				break;
 			} else {
@@ -519,17 +529,19 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 		
 		boolean splitValue = false;
-		if (m_count <= 0) {			
-			String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
-			String[] values = queryValue.split("[" + separator.trim()+"]");
-			if (values.length == 2) {
-				splitValue = true;
-				for(int i = 0; i < values.length && i < identifiers.size(); i++) {
-					WEditor editor = identifiers.get(i);
-					editor.setValue(values[i].trim());
-				}
-				testCount(false);
-			} 
+		if (!isAutoComplete) {
+			if (m_count <= 0) {			
+				String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
+				String[] values = queryValue.split("[" + separator.trim()+"]");
+				if (values.length == 2) {
+					splitValue = true;
+					for(int i = 0; i < values.length && i < identifiers.size(); i++) {
+						WEditor editor = identifiers.get(i);
+						editor.setValue(values[i].trim());
+					}
+					testCount(false);
+				} 
+			}
 		}
 		
 		if (m_count > 0) {
@@ -604,6 +616,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				String help = infoColumn.get_Translation("Help");
 				vo.Help = help != null ? help : "";
 				vo.AD_FieldStyle_ID = infoColumn.getAD_FieldStyle_ID();
+				vo.IsAutocomplete = infoColumn.isAutocomplete();
 				GridField gridField = new GridField(vo);
 				gridFields.add(gridField);
 			}
@@ -1252,10 +1265,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		layout = new Borderlayout();
 		ZKUpdateUtil.setWidth(layout, "100%");
 		ZKUpdateUtil.setHeight(layout, "100%");
-        if (!isLookup())
-        {
-        	layout.setStyle("position: relative");
-        }
         this.appendChild(layout);
 		
         if (isLookup())
@@ -1269,8 +1278,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         North north = new North();
         north.setCollapsible(true);
         north.setSplittable(true);
-        north.setAutoscroll(true);
+        north.setAutoscroll(true);                
         LayoutUtils.addSlideSclass(north);
+        ZKUpdateUtil.setVflex(north, "min");
         layout.appendChild(north);
         renderParameterPane(north);
         
@@ -1450,7 +1460,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		evalDisplayLogic();
 		if (!update)
 			initParameters();
-		dynamicDisplay(null);
+		if (!isAutoComplete)
+			dynamicDisplay(null);
 	}
 	
 	protected void evalDisplayLogic() {
@@ -1929,6 +1940,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		try
 		{
 			pstmt = DB.prepareStatement(countSql, null);
+			if (queryTimeout > 0)
+				pstmt.setQueryTimeout(queryTimeout);
 			setParameters (pstmt, true);
 			rs = pstmt.executeQuery();
 
@@ -2124,6 +2137,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	
 	@Override
 	protected boolean hasNew() {
+		if (isAutoComplete)
+			return false;
+		
 		boolean hasNew = getADWindowID () > 0;
 		if (hasNew && vqe == null && hasRightQuickEntry){
 			GridWindow gridwindow = GridWindow.get(Env.getCtx(), 0, getADWindowID());
@@ -2691,14 +2707,16 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			{
 				throw new AdempiereException(e);
 			}
-			/* not required - the info window splits the column in key name pairs
-			GridField gridField = columnInfos[col].getGridField();
-			Lookup lookup = gridField.getLookup();
-			if (val != null && lookup != null)
+			
+			if(val != null && !columnInfos[col].isKeyPairCol() 
+					&& columnInfos[col].getGridField().getLookup() != null)
 			{
-				val = lookup.getDisplay(val);
-			}
-			*/
+				Lookup lookup = columnInfos[col].getGridField().getLookup();
+				if (lookup != null)
+				{
+					val = lookup.getDisplay(val);
+				}
+			} 
 			
 			return val; 
 		}

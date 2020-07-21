@@ -90,6 +90,7 @@ import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.I_M_Product;
 import org.compiere.model.MImage;
+import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.MQuery;
@@ -205,6 +206,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	protected StatusBar statusBarQF;
 
 	/**
+	 * Maintain no of quick form tabs open
+	 */
+	ArrayList <Integer>			quickFormOpenTabs	= new ArrayList <Integer>();
+
+	/**
 	 * Constructor
 	 * @param ctx
 	 * @param windowNo
@@ -256,7 +262,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     private void initComponents()
     {
         /** Initalise toolbar */
-        toolbar = new ADWindowToolbar(getWindowNo());
+        toolbar = new ADWindowToolbar(this, getWindowNo());
         toolbar.setId("windowToolbar");
         toolbar.addListener(this);
 
@@ -380,6 +386,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
         toolbar.updateToolbarAccess(adWindowId);
         updateToolbar();
+        if (toolbar.initDefaultQuery()) {
+        	doOnQueryChange();
+        }
         
         if (detailQuery != null && zoomToDetailTab(detailQuery))
         {
@@ -1113,7 +1122,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		logger.log(Level.FINE, "Invoke Quick Form");
 		// Prevent to open Quick Form if already opened.
-		if (!SessionManager.registerQuickFormTab(getADTab().getSelectedGridTab().getAD_Tab_ID()))
+		if (!this.registerQuickFormTab(getADTab().getSelectedGridTab().getAD_Tab_ID()))
 		{
 			logger.fine("TabID=" + getActiveGridTab().getAD_Tab_ID() + "  is already open.");
 			return;
@@ -1188,9 +1197,16 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	}
     	else if (event.getTarget() instanceof ProcessModalDialog)
     	{
+    		if (!DialogEvents.ON_WINDOW_CLOSE.equals(event.getName())){
+    			return;
+    		}
+
     		hideBusyMask();
     		ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
-    		onModalClose(dialog.getProcessInfo());
+    		ProcessInfo pi = dialog.getProcessInfo();
+
+    		onModalClose(pi);
+
 			String s = null;
 			boolean b = false;
 			ProcessInfoLog[] logs = null;
@@ -1206,7 +1222,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				b = statusBar.getStatusError();
 				logs = statusBar.getPLogs();
 			}
-			onRefresh(true, false);
+
+			MPInstance instance = new MPInstance(ctx, pi.getAD_PInstance_ID(), "false");
+			if (!instance.isRunAsJob()){
+				// when run as job, don't expect see its effect when close parameter panel, so don't refresh 
+				onRefresh(true, false);
+			}
+
 			if (getActiveGridTab().isQuickForm)
 			{
 				statusBarQF.setStatusLine(s, b, logs);
@@ -1396,7 +1418,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		if (callback != null)
 			callback.onCallback(true);
 	}
-
+	
 	private void updateToolbar()
 	{
 		toolbar.enableTabNavigation(breadCrumb.hasParentLink(), adTabbox.getSelectedDetailADTabpanel() != null);
@@ -1429,6 +1451,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				(!isNewRow && (m_onlyCurrentRows || m_onlyCurrentDays > 0)));
 		
 		toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), findWindow != null ? findWindow.getAD_UserQuery_ID() : 0);
+
 	}
 
 	/**
@@ -3681,5 +3704,42 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		this.currQGV = currQGV;
 	}
-	
+
+	/**
+	 * Close Quick form to remove tabID from the list
+	 * 
+	 * @param AD_Tab_ID
+	 */
+	public void closeQuickFormTab(Integer AD_Tab_ID)
+	{
+		quickFormOpenTabs.remove(AD_Tab_ID);
+	} // closeQuickFormTab
+
+	/**
+	 * Get list of open quick form tabs
+	 * 
+	 * @return list of tabIDs
+	 */
+	public ArrayList <Integer> getOpenQuickFormTabs( )
+	{
+		return quickFormOpenTabs;
+	} // getOpenQuickFormTabs
+
+	/**
+	 * Register Quick form against tabID
+	 * 
+	 * @param AD_Tab_ID
+	 * @return False when already quick form opens for same tab
+	 */
+	public boolean registerQuickFormTab(Integer AD_Tab_ID)
+	{
+		if (quickFormOpenTabs.contains(AD_Tab_ID))
+		{
+			return false;
+		}
+
+		quickFormOpenTabs.add(AD_Tab_ID);
+
+		return true;
+	} // registerQuickFormTab
 }

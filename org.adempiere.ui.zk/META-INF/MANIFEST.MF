@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Web Client
 Bundle-SymbolicName: org.adempiere.ui.zk;singleton:=true
 Bundle-Version: 7.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Import-Package: groovy.transform.stc;version="2.4.7",
  javax.annotation,
@@ -59,9 +58,9 @@ Import-Package: groovy.transform.stc;version="2.4.7",
  org.springframework.web.util
 DynamicImport-Package: action.images
 Bundle-ClassPath: .,
- WEB-INF/lib/ckez.jar,
- WEB-INF/lib/daisydiff.jar,
- WEB-INF/lib/owasp-java-html-sanitizer.jar
+ lib/ckez.jar,
+ lib/daisydiff.jar,
+ lib/owasp-java-html-sanitizer.jar
 Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  metainfo.zk,
  org.adempiere.webui,

@@ -50,7 +50,7 @@ public class MWebServiceType extends X_WS_WebServiceType
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7216001796414414950L;
+	private static final long serialVersionUID = -2713868996404459577L;
 
 	/**	Parameters	*/
 	private MWebServicePara[]	m_para = null;
@@ -286,5 +286,50 @@ public class MWebServiceType extends X_WS_WebServiceType
 		
 		return m_inputFieldMap.get(colName);
 	}
-	
+
+	public void insertParameters() {
+
+		MWebService ws = MWebService.get(getCtx(), getWS_WebService_ID());
+		if (ws != null && "ModelADService".equals(ws.getValue())) {
+			X_WS_WebServiceMethod wsm = new X_WS_WebServiceMethod(getCtx(), getWS_WebServiceMethod_ID(), get_TrxName());
+			String method = wsm.getValue();
+
+			if ("getList".equals(method)) {
+				addWsParameter("AD_Reference_ID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
+			} else if ("runProcess".equals(method)) {
+				addWsParameter("AD_Process_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, ""); // can't fill it as the process is unknown
+				addWsParameter("AD_Menu_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, "0");
+				addWsParameter("AD_Record_ID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
+			} else {
+				String value = "";
+				if ("createData".equals(method))
+					value = "Create";
+				else if ("deleteData".equals(method))
+					value = "Delete";
+				else if ("queryData".equals(method))
+					value = "Read";
+				else if ("readData".equals(method))
+					value = "Read";
+				else if ("updateData".equals(method))
+					value = "Update";
+
+				addWsParameter("TableName", X_WS_WebService_Para.PARAMETERTYPE_Constant, MTable.get(getCtx(), getAD_Table_ID()).getTableName());
+				addWsParameter("Action", X_WS_WebService_Para.PARAMETERTYPE_Constant, value);
+				addWsParameter("RecordID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
+			}
+		}
+	}
+
+	private void addWsParameter(String name, String type, String value) {
+		
+		if (DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM WS_WebService_Para WHERE WS_WebServiceType_ID = ? AND ParameterName = ?", getWS_WebServiceType_ID(), name) != 1) {
+			MWebServicePara wsp = new MWebServicePara(getCtx(), 0, get_TrxName());
+			wsp.setAD_Org_ID(getAD_Org_ID());
+			wsp.setWS_WebServiceType_ID(getWS_WebServiceType_ID());
+			wsp.setParameterName(name);
+			wsp.setParameterType(type);
+			wsp.setConstantValue(value);
+			wsp.saveEx();	
+		}
+	}
 }	//	MWebServiceType
