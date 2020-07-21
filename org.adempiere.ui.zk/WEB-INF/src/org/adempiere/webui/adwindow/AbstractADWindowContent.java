@@ -386,7 +386,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
         toolbar.updateToolbarAccess(adWindowId);
         updateToolbar();
-        if (toolbar.initDefaultQuery()) {
+        if (query == null && toolbar.initDefaultQuery()) {
         	doOnQueryChange();
         }
         
