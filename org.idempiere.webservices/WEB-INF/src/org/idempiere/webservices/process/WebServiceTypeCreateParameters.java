@@ -33,19 +33,24 @@ import org.compiere.process.SvrProcess;
  */
 public class WebServiceTypeCreateParameters extends SvrProcess {
 
+	// The web service type (record on screen)
+	private int p_WS_WebServiceType_ID;
+
 	/**
 	 * Prepare - e.g., get Parameters.
 	 */
-	protected void prepare() {}
+	protected void prepare() {
+		p_WS_WebServiceType_ID = getRecord_ID();
+	}
 
 	/**
 	 *  Perform process.
 	 *  @return Message
 	 *  @throws Exception
 	 */
-	protected String doIt() throws Exception
-	{
-		MWebServiceType.insertParameters(getCtx(), new MWebServiceType(getCtx(), getRecord_ID(), get_TrxName()), get_TrxName());
+	protected String doIt() throws Exception {
+		MWebServiceType ws = new MWebServiceType(getCtx(), p_WS_WebServiceType_ID, get_TrxName());
+		ws.insertParameters();
 		return "@ProcessOK@";
 	} // doIt
 
