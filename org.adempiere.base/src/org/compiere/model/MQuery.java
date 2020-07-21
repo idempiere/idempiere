@@ -49,7 +49,7 @@ public class MQuery implements Serializable, Cloneable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1495322773308601375L;
+	private static final long serialVersionUID = -2274118194784608966L;
 
 	/**
 	 *	Get Query from Parameter
@@ -468,8 +468,12 @@ public class MQuery implements Serializable, Cloneable
 	public static final String 	NOT_NULL = " IS NOT NULL ";
 	/** For IDEMPIERE-377	*/
 	public static final String 	NULL = " IS NULL ";
+	/** Days 	*/
+	public static final String 	DAYS = " DAYS ";
+	/** Days - 11		*/
+	public static final int		DAYS_INDEX = 11;
 
-	/**	Operators for Strings				*/
+	/**	All the Operators			*/
 	public static final ValueNamePair[]	OPERATORS = new ValueNamePair[] {
 		new ValueNamePair (EQUAL,			" = "),		//	0 - EQUAL_INDEX
 		new ValueNamePair (NOT_EQUAL,		" != "),	//  1 - NOT_EQUAL_INDEX
@@ -481,7 +485,23 @@ public class MQuery implements Serializable, Cloneable
 		new ValueNamePair (LESS_EQUAL,		" <= "),
 		new ValueNamePair (BETWEEN,			" >-< "),	//	8 - BETWEEN_INDEX
 		new ValueNamePair (NULL,			" NULL "),
-		new ValueNamePair (NOT_NULL,		" !NULL ")
+		new ValueNamePair (NOT_NULL,		" !NULL "),
+		new ValueNamePair (DAYS,			" DAYS ")   // 11 - DAYS
+	};
+	/**	Operators for Strings				*/
+	public static final ValueNamePair[]	OPERATORS_STRINGS = new ValueNamePair[] {
+		new ValueNamePair (EQUAL,			" = "),
+		new ValueNamePair (NOT_EQUAL,		" != "),
+		new ValueNamePair (LIKE,			" ~ "),
+		new ValueNamePair (NOT_LIKE,		" !~ "),
+		new ValueNamePair (GREATER,			" > "),
+		new ValueNamePair (GREATER_EQUAL,	" >= "),
+		new ValueNamePair (LESS,			" < "),
+		new ValueNamePair (LESS_EQUAL,		" <= "),
+		new ValueNamePair (BETWEEN,			" >-< "),
+		new ValueNamePair (NULL,			" NULL "),
+		new ValueNamePair (NOT_NULL,		" !NULL "),
+		new ValueNamePair (DAYS,			" DAYS ")
 	};
 	/**	Operators for Lookups and Lists	(including Y/N)				*/
 	public static final ValueNamePair[]	OPERATORS_LOOKUP = new ValueNamePair[] {
@@ -496,7 +516,7 @@ public class MQuery implements Serializable, Cloneable
 		new ValueNamePair (NOT_NULL,		" !NULL ")
 	};
 
-	/**	Operators for Numbers, Dates, Integers	*/
+	/**	Operators for Numbers, Integers	*/
 	public static final ValueNamePair[]	OPERATORS_NUMBERS = new ValueNamePair[] {
 		new ValueNamePair (EQUAL,			" = "),
 		new ValueNamePair (NOT_EQUAL,		" != "),
@@ -509,6 +529,20 @@ public class MQuery implements Serializable, Cloneable
 		new ValueNamePair (NOT_NULL,		" !NULL ")
 	};
 	
+	/**	Operators for Dates	*/
+	public static final ValueNamePair[]	OPERATORS_DATES = new ValueNamePair[] {
+		new ValueNamePair (EQUAL,			" = "),
+		new ValueNamePair (NOT_EQUAL,		" != "),
+		new ValueNamePair (GREATER,			" > "),
+		new ValueNamePair (GREATER_EQUAL,	" >= "),
+		new ValueNamePair (LESS,			" < "),
+		new ValueNamePair (LESS_EQUAL,		" <= "),
+		new ValueNamePair (BETWEEN,			" >-< "),
+		new ValueNamePair (NULL,			" NULL "),
+		new ValueNamePair (NOT_NULL,		" !NULL "),
+		new ValueNamePair (DAYS,			" DAYS ")
+	};
+
 	/*************************************************************************
 	 * 	Add Restriction
 	 * 	@param ColumnName ColumnName

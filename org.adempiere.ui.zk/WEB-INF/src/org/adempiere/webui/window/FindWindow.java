@@ -131,7 +131,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2958810511464597943L;
+	private static final long serialVersionUID = -3907408033854720147L;
 
 	private static final String FIND_ROW_EDITOR = "find.row.editor";
 
@@ -1024,14 +1024,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	        if (columnName == null || columnName == "")
 	        	return;
 	    	String value = fields.length > INDEX_VALUE ? fields[INDEX_VALUE] : "";
-	    	if(value.length() > 0)
+	    	if(value.length() > 0 || fields[1].equals(MQuery.DAYS))
 	    	{
 	    		cellQueryFrom.setAttribute("value", value); // Elaine 2009/03/16 - set attribute value
 		        cellQueryFrom.appendChild(parseString(getTargetMField(columnName), value, listItem, false));
 	    	}
 	    	// QueryTo
 	    	String value2 = fields.length > INDEX_VALUE2 ? fields[INDEX_VALUE2] : "";
-	    	if(value2.length() > 0)
+	    	if(value2.length() > 0 || fields[1].equals(MQuery.DAYS))
 	    	{
 	    		cellQueryTo.setAttribute("value", value2); // Elaine 2009/03/16 - set attribute value
 	    		cellQueryTo.appendChild(parseString(getTargetMField(columnName), value2, listItem, true));
@@ -1132,6 +1132,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             	{
                 	listColumn.setSelectedItem(li);
             		selected = true;
+            		break;
             	}
             }
             if(!selected) listColumn.setSelectedIndex(0);
@@ -1145,6 +1146,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             	{
             		listOperator.setSelectedItem(li);
             		selected = true;
+            		break;
             	}
             }
             if(!selected) listOperator.setSelectedIndex(0);
@@ -1559,14 +1561,22 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	 */
 	private Component parseString(GridField field, String in, ListItem listItem, boolean to)
 	{
-		if (in == null)
+		Listbox listOp = (Listbox) listItem.getFellow("listOperator"+listItem.getId());
+        String betweenValue = listOp.getSelectedItem().getValue().toString();
+        String opValue = MQuery.OPERATORS[MQuery.BETWEEN_INDEX].getValue();
+        String opValueDays = MQuery.OPERATORS[MQuery.DAYS_INDEX].getValue();
+
+		if (in == null && !betweenValue.equals(opValueDays))
 			return null;
 		int dt = field.getDisplayType();
+
 		try
 		{
 			WEditor editor = null;
 			if (field.isKey())
 	            editor = new WNumberEditor(field);
+			else if (betweenValue.equals(opValueDays))
+	            editor = new WNumberEditor(field, true);
 	        else
 	            editor = WebEditorFactory.getEditor(field, true);
 	        if (editor == null)
@@ -1587,20 +1597,29 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			//	Return Timestamp
 			else if (DisplayType.isDate(dt))
 			{
-				long time = 0;
-				try
+				if (betweenValue.equals(opValueDays))
 				{
-					time = DisplayType.getDateFormat_JDBC().parse(in).getTime();
+					if (in.toString().length() > 0)
+					{
+						int i = Integer.parseInt(in);
+				        editor.setValue(Integer.valueOf(i));
+					}
+				} else {
+					long time = 0;
+					try
+					{
+						time = DisplayType.getDateFormat_JDBC().parse(in).getTime();
+						editor.setValue(new Timestamp(time));
+					}
+					catch (Exception e)
+					{
+						StringBuilder msglog = new StringBuilder().append(in.toString()).append("(").append(in.getClass()).append(")").append(e);
+						log.log(Level.SEVERE, msglog.toString());
+						time = DisplayType.getDateFormat(dt).parse(in).getTime();
+					}
+
 					editor.setValue(new Timestamp(time));
 				}
-				catch (Exception e)
-				{
-					StringBuilder msglog = new StringBuilder().append(in.toString()).append("(").append(in.getClass()).append(")").append(e);
-					log.log(Level.SEVERE, msglog.toString());
-					time = DisplayType.getDateFormat(dt).parse(in).getTime();
-				}
-
-				editor.setValue(new Timestamp(time));
 			}
 			else if (dt == DisplayType.YesNo)
 				editor.setValue(Boolean.valueOf(in));
@@ -1610,11 +1629,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			editor.addValueChangeListener(this);
 
 			boolean between = false;
-	        Listbox listOp = (Listbox) listItem.getFellow("listOperator"+listItem.getId());
-	        String betweenValue = listOp.getSelectedItem().getValue().toString();
-	        String opValue = MQuery.OPERATORS[MQuery.BETWEEN_INDEX].getValue();
 	        if (to &&  betweenValue != null
-	            && betweenValue.equals(opValue))
+	        	&& (betweenValue.equals(opValue) || betweenValue.equals(opValueDays)))
 	            between = true;
 
 	        boolean enabled = !to || (to && between);
@@ -1706,7 +1722,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            	value = cellQueryFrom.getAttribute("value");
 	            }
 	            
-	            if (value == null)
+	            if (value == null && !Operator.equals(MQuery.DAYS))
 	            {
 	            	if(Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL))
 	            	{
@@ -1717,16 +1733,17 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            	continue;
 	            }
 	            Object parsedValue = parseValue(field, value);
-	            if (parsedValue == null)
+	            if (parsedValue == null && !Operator.equals(MQuery.DAYS))
 	                continue;
-	            String infoDisplay = value.toString();
+	            String infoDisplay = (value == null ? "" : value.toString());
 	            if (field.isLookup())
 	                infoDisplay = field.getLookup().getDisplay(value);
 	            else if (field.getDisplayType() == DisplayType.YesNo)
 	                infoDisplay = Msg.getMsg(Env.getCtx(), infoDisplay);
 	            //  Value2  ******
 	            Object value2 = null;
-	            if (MQuery.OPERATORS[MQuery.BETWEEN_INDEX].getValue().equals(Operator))
+	            if (   MQuery.OPERATORS[MQuery.BETWEEN_INDEX].getValue().equals(Operator)
+	            	|| MQuery.OPERATORS[MQuery.DAYS_INDEX].getValue().equals(Operator))
 	            {
 	                ListCell cellQueryTo = (ListCell)row.getFellow("cellQueryTo"+row.getId());
 	                
@@ -1748,14 +1765,21 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                
 	                
 	                value2 = cellQueryTo.getAttribute("value");
-	                if (value2 == null)
+	                if (value2 == null && !Operator.equals(MQuery.DAYS))
 	                    continue;
 	                Object parsedValue2 = parseValue(field, value2);
-	                String infoDisplay_to = value2.toString();
-	                if (parsedValue2 == null)
+	                String infoDisplay_to = (value2 == null ? "" : value2.toString());
+	                if (parsedValue2 == null && !Operator.equals(MQuery.DAYS))
 	                    continue;
-	                m_query.addRangeRestriction(ColumnSQL, parsedValue, parsedValue2,
-	                    infoName, infoDisplay, infoDisplay_to, and, openBrackets);
+	                if (Operator.equals(MQuery.DAYS))
+	                {
+	                	if (parsedValue == null && parsedValue2 == null)
+	                		continue;
+		                m_query.addRestriction(getDaysWhereClause(field, (Integer)parsedValue, (Integer)parsedValue2), and, openBrackets);
+	                } else {
+	                	m_query.addRangeRestriction(ColumnSQL, parsedValue, parsedValue2,
+	    	                    infoName, infoDisplay, infoDisplay_to, and, openBrackets);
+	                }
 	            }
 	            else if (isProductCategoryField && MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator)) {
 	                if (!(parsedValue instanceof Integer)) {
@@ -1776,7 +1800,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            	m_query.addRestriction(ColumnSQL, Operator, parsedValue,
 	            			infoName, infoDisplay, and, openBrackets);
 
-	            appendCode(code, ColumnName, Operator, value.toString(), value2 != null ? value2.toString() : "", andOr, lBrackets, rBrackets);
+	            appendCode(code, ColumnName, Operator, value != null ? value.toString() : "", value2 != null ? value2.toString() : "", andOr, lBrackets, rBrackets);
 	        }
 	        
 	        saveQuery(saveQuery, code, shareAllUsers);			
@@ -1786,7 +1810,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
 	}	//	cmd_saveAdvanced
 
-    private void appendCode(StringBuilder code, String columnName,
+	private void appendCode(StringBuilder code, String columnName,
 			String operator, String value1, String value2, String andOr,
 			String lBrackets, String rBrackets) {
 		if (code.length() > 0)
@@ -2092,14 +2116,17 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	addOperators(MQuery.OPERATORS_LOOKUP, listOperator);
         }
         else if (DisplayType.isNumeric(referenceType)
-        		|| DisplayType.isDate(referenceType)
         		|| DisplayType.isID(referenceType)) // Note that lookups were filtered above
         {
         	addOperators(MQuery.OPERATORS_NUMBERS, listOperator);
         }
+        else if (DisplayType.isDate(referenceType))
+        {
+        	addOperators(MQuery.OPERATORS_DATES, listOperator);
+        }
         else // DisplayType.isText
         {
-        	addOperators(MQuery.OPERATORS, listOperator);
+        	addOperators(MQuery.OPERATORS_STRINGS, listOperator);
         }
     } //    addOperators
 
@@ -2130,8 +2157,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         Listbox listOp = (Listbox) row.getFellow("listOperator"+row.getId());
         String betweenValue = listOp.getSelectedItem().getValue().toString();
         String opValue = MQuery.OPERATORS[MQuery.BETWEEN_INDEX].getValue();
+        String opValueDays = MQuery.OPERATORS[MQuery.DAYS_INDEX].getValue();
         if (to &&  betweenValue != null
-            && betweenValue.equals(opValue))
+            && (betweenValue.equals(opValue) || betweenValue.equals(opValueDays)))
             between = true;
 
         boolean enabled = !to || (to && between);
@@ -2148,6 +2176,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         {
             editor = new WNumberEditor(findField);
 		}
+        else if (DisplayType.isDate(findField.getDisplayType()) && MQuery.DAYS.equals(betweenValue))
+        {
+            editor = new WNumberEditor(findField, true);
+        }
         else if (findField.getDisplayType() == DisplayType.Button)        	
         {
 			if (findField.getAD_Reference_Value_ID() > 0) {		
@@ -2502,6 +2534,36 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     }   //  SimpleTreeNode
 
     /**
+     * Returns a sql where string for a date with days ago operator
+     * @param field
+     * @param daysFrom
+     * @param daysTo
+     * @return
+    **/
+    private String getDaysWhereClause(GridField field, Integer daysFrom, Integer daysTo) {
+        StringBuilder retString = new StringBuilder(field.getSearchColumnSQL());
+        if (daysFrom != null && daysTo != null) {
+        	// between
+			retString.append(" BETWEEN AddDays(SysDate,")
+				.append(daysFrom)
+				.append(") AND AddDays(SysDate,")
+				.append(daysTo)
+				.append(")");
+        } else if (daysFrom != null) {
+        	// greater than
+			retString.append(" >= AddDays(SysDate,")
+				.append(daysFrom)
+				.append(")");
+        } else { // daysTo != null
+        	// less than
+			retString.append(" <= AddDays(SysDate,")
+				.append(daysTo)
+				.append(")");
+        }
+        return retString.toString();
+	}
+
+    /**
      *  Parse Value
      *  @param field column
      *  @param in value
@@ -2535,6 +2597,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             {
                 if (in instanceof Timestamp)
                     return in;
+                else if (in instanceof Integer)
+                    return in;
                 long time = 0;
                 try
                 {
@@ -2543,9 +2607,22 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 }
                 catch (Exception e)
                 {
-                    StringBuilder msglog = new StringBuilder(in.toString()).append("(").append(in.getClass()).append(")").append(e);
-                	log.log(Level.SEVERE, msglog.toString());
-                    time = DisplayType.getDateFormat(dt).parse(in.toString()).getTime();
+                	try
+                	{
+                		if (in.toString().length() > 0)
+                		{
+                            int i = Integer.parseInt(in.toString());
+                            return Integer.valueOf(i);
+                		} else {
+                			return null;
+                		}
+                    }
+                    catch (Exception e2)
+                    {
+                        StringBuilder msglog = new StringBuilder(in.toString()).append("(").append(in.getClass()).append(")").append(e);
+                    	log.log(Level.SEVERE, msglog.toString());
+                        time = DisplayType.getDateFormat(dt).parse(in.toString()).getTime();
+                    }
                 }
                 return new Timestamp(time);
             }
