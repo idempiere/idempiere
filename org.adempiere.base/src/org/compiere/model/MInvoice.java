@@ -1944,39 +1944,58 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			info.append(" @M_MatchPO_ID@#").append(matchPO).append(" ");
 
 		// Generate and complete an allocation if is a credit memo linked to an invoice
-		if (isCreditMemo() && getRelatedInvoice_ID() > 0) {
+		if (isCreditMemo() && getRelatedInvoice_ID() > 0 && !isPaid()) {
 			MInvoice inv = new MInvoice(getCtx(), getRelatedInvoice_ID(), get_TrxName());
 
-			if (!inv.isPaid()) {
+			if (!inv.isPaid() && inv.isSOTrx() == isSOTrx()) { 
 				BigDecimal invOpenAmt = inv.getOpenAmt();
 				BigDecimal cmOpenAmt = getOpenAmt();
-				StringBuilder aDescription = new StringBuilder(Msg.getElement(getCtx(), "C_Invoice_ID")).append(": ").append(inv.getDocumentNo()).append("/").append(getDocumentNo());
+				
+				if (invOpenAmt.signum() != cmOpenAmt.signum()) {
+					StringBuilder aDescription = new StringBuilder(Msg.getElement(getCtx(), "C_Invoice_ID")).append(": ").append(inv.getDocumentNo()).append("/").append(getDocumentNo());
 
-				MAllocationHdr ah = new MAllocationHdr(getCtx(), true, TimeUtil.max(getDateAcct(), inv.getDateAcct()), getC_Currency_ID(), aDescription.toString(), get_TrxName());
-				ah.setAD_Org_ID(getAD_Org_ID());
-				ah.saveEx();
+					MAllocationHdr ah = new MAllocationHdr(getCtx(), true, TimeUtil.max(getDateAcct(), inv.getDateAcct()), getC_Currency_ID(), aDescription.toString(), get_TrxName());
+					ah.setAD_Org_ID(getAD_Org_ID());
+					ah.saveEx();
 
-				if (invOpenAmt.abs().compareTo(cmOpenAmt.abs()) == 0) {
-					addAllocationLine(ah, inv.getC_Invoice_ID(), invOpenAmt, Env.ZERO);
-					addAllocationLine(ah, getC_Invoice_ID(), cmOpenAmt, Env.ZERO);
-				}
-				else if (invOpenAmt.abs().compareTo(cmOpenAmt.abs()) > 0) {
-					addAllocationLine(ah, inv.getC_Invoice_ID(), cmOpenAmt.negate(), invOpenAmt.add(cmOpenAmt));
-					addAllocationLine(ah, getC_Invoice_ID(), cmOpenAmt, Env.ZERO);
-				}
-				else if (invOpenAmt.abs().compareTo(cmOpenAmt.abs()) < 0) {
-					addAllocationLine(ah, inv.getC_Invoice_ID(), invOpenAmt, Env.ZERO);
-					addAllocationLine(ah, getC_Invoice_ID(), invOpenAmt.negate(), cmOpenAmt.add(invOpenAmt));
-				}
+					if (isSOTrx()) {
+						if (invOpenAmt.add(cmOpenAmt).signum() == 0) {
+							addAllocationLine(ah, inv.getC_Invoice_ID(), invOpenAmt, Env.ZERO);
+							addAllocationLine(ah, getC_Invoice_ID(), cmOpenAmt, Env.ZERO);
+						}
+						else if (invOpenAmt.add(cmOpenAmt).signum() > 0) {
+							addAllocationLine(ah, inv.getC_Invoice_ID(), cmOpenAmt.negate(), invOpenAmt.add(cmOpenAmt));
+							addAllocationLine(ah, getC_Invoice_ID(), cmOpenAmt, Env.ZERO);
+						}
+						else if (invOpenAmt.add(cmOpenAmt).signum() < 0) {
+							addAllocationLine(ah, inv.getC_Invoice_ID(), invOpenAmt, Env.ZERO);
+							addAllocationLine(ah, getC_Invoice_ID(), invOpenAmt.negate(), cmOpenAmt.add(invOpenAmt));
+						}
+					}
+					else {
+						if (invOpenAmt.add(cmOpenAmt).signum() == 0) {
+							addAllocationLine(ah, inv.getC_Invoice_ID(), invOpenAmt.negate(), Env.ZERO);
+							addAllocationLine(ah, getC_Invoice_ID(), cmOpenAmt.negate(), Env.ZERO);
+						}
+						else if (invOpenAmt.add(cmOpenAmt).signum() > 0) {
+							addAllocationLine(ah, inv.getC_Invoice_ID(), cmOpenAmt, invOpenAmt.add(cmOpenAmt).negate());
+							addAllocationLine(ah, getC_Invoice_ID(), cmOpenAmt.negate(), Env.ZERO);
+						}
+						else if (invOpenAmt.add(cmOpenAmt).signum() < 0) {
+							addAllocationLine(ah, inv.getC_Invoice_ID(), invOpenAmt.negate(), Env.ZERO);
+							addAllocationLine(ah, getC_Invoice_ID(), invOpenAmt, cmOpenAmt.add(invOpenAmt).negate());
+						}
+					}
 
-				ah.setDocAction(MAllocationHdr.DOCACTION_Complete);
-				if (!ah.processIt(MAllocationHdr.DOCACTION_Complete)) {
-					m_processMsg = "Cannot Complete the Allocation : [" + ah.getProcessMsg() + "] " + ah;
-					return DocAction.STATUS_Invalid;
+					ah.setDocAction(MAllocationHdr.DOCACTION_Complete);
+					if (!ah.processIt(MAllocationHdr.DOCACTION_Complete)) {
+						m_processMsg = "Cannot Complete the Allocation : [" + ah.getProcessMsg() + "] " + ah;
+						return DocAction.STATUS_Invalid;
+					}
+					ah.saveEx();
+					info.append("@C_AllocationHdr_ID@: " + ah.getDocumentInfo());
+					addDocsPostProcess(ah);
 				}
-				ah.saveEx();
-				info.append("@C_AllocationHdr_ID@: " + ah.getDocumentInfo());
-				addDocsPostProcess(ah);
 			}
 		}
 
