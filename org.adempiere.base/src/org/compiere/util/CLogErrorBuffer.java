@@ -127,13 +127,16 @@ public class CLogErrorBuffer extends Handler
 	 *	@see java.util.logging.Handler#publish(java.util.logging.LogRecord)
 	 *	@param record log record
 	 */
-	public synchronized void publish (LogRecord record)
+	public void publish (LogRecord record)
 	{
+		if (!isLoggable (record))
+			return;
+		
 		checkContext();
 
 		@SuppressWarnings("unchecked")
 		LinkedList<LogRecord> m_logs = (LinkedList<LogRecord>) Env.getCtx().get(LOGS_KEY);
-		if (!isLoggable (record) || m_logs == null)
+		if (m_logs == null)
 			return;
 
 		//	Output
@@ -153,13 +156,16 @@ public class CLogErrorBuffer extends Handler
 			if (isAddLogRecordToContext())
 			{
 				@SuppressWarnings("unchecked")
-				LinkedList<LogRecord> m_errors = (LinkedList<LogRecord>) Env.getCtx().get(ERRORS_KEY);				
-				if (m_errors.size() >= ERROR_SIZE)
+				LinkedList<LogRecord> m_errors = (LinkedList<LogRecord>) Env.getCtx().get(ERRORS_KEY);
+				synchronized (m_errors)
 				{
-					m_errors.removeFirst();
+					if (m_errors.size() >= ERROR_SIZE)
+					{
+						m_errors.removeFirst();
+					}
+					//	Add Error
+					m_errors.add(record);
 				}
-				//	Add Error
-				m_errors.add(record);
 			}
 			record.getSourceClassName();	//	forces Class Name eval
 
@@ -169,33 +175,36 @@ public class CLogErrorBuffer extends Handler
 				@SuppressWarnings("unchecked")
 				LinkedList<LogRecord[]>	m_history = (LinkedList<LogRecord[]>) Env.getCtx().get(HISTORY_KEY);
 				ArrayList<LogRecord> history = new ArrayList<LogRecord>();
-				if (m_history.size() >= ERROR_SIZE)
+				synchronized (m_history)
 				{
-					m_history.removeFirst();
-				}
-				for (int i = m_logs.size()-1; i >= 0; i--)
-				{
-					LogRecord rec = (LogRecord)m_logs.get(i);
-					if (rec.getLevel() == Level.SEVERE)
+					if (m_history.size() >= ERROR_SIZE)
 					{
-						if (history.size() == 0)
-							history.add(rec);
+						m_history.removeFirst();
+					}
+					for (int i = m_logs.size()-1; i >= 0; i--)
+					{
+						LogRecord rec = (LogRecord)m_logs.get(i);
+						if (rec.getLevel() == Level.SEVERE)
+						{
+							if (history.size() == 0)
+								history.add(rec);
+							else
+								break;		//	don't include previous error
+						}
 						else
-							break;		//	don't include previous error
+						{
+							history.add(rec);
+							if (history.size() > 10)
+								break;		//	no more then 10 history records
+						}
+		
 					}
-					else
-					{
-						history.add(rec);
-						if (history.size() > 10)
-							break;		//	no more then 10 history records
-					}
-	
+					LogRecord[] historyArray = new LogRecord[history.size()];
+					int no = 0;
+					for (int i = history.size()-1; i >= 0; i--)
+						historyArray[no++] = (LogRecord)history.get(i);
+					m_history.add(historyArray);
 				}
-				LogRecord[] historyArray = new LogRecord[history.size()];
-				int no = 0;
-				for (int i = history.size()-1; i >= 0; i--)
-					historyArray[no++] = (LogRecord)history.get(i);
-				m_history.add(historyArray);
 			}
 			//	Issue Reporting
 			if (isIssueError())
