@@ -68,7 +68,7 @@ UPDATE AD_Tab SET IsSingleRow='N',Updated=TO_TIMESTAMP('2020-06-18 16:14:36','YY
 ;
 
 -- Jun 24, 2020, 5:06:03 PM CEST
-INSERT INTO AD_Process (AD_Process_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Description,IsReport,Value,IsDirectPrint,Classname,AccessLevel,EntityType,Statistic_Count,Statistic_Seconds,IsBetaFunctionality,IsServerProcess,ShowHelp,CopyFromProcess,AD_Process_UU,AllowMultipleExecution,XXA_IsDossierAction) VALUES (200119,0,0,'Y',TO_TIMESTAMP('2020-06-24 17:06:02','YYYY-MM-DD HH24:MI:SS'),0,TO_TIMESTAMP('2020-06-24 17:06:02','YYYY-MM-DD HH24:MI:SS'),0,'Insert Parameters','This process will add required parameters for current web service type','N','WebServiceTypeCreateParameters','N','org.idempiere.webservices.process.WebServiceTypeCreateParameters','6','D',0,0,'N','N','S','N','2b94e537-3bb4-4e25-8277-13c16061e3a6','P','N')
+INSERT INTO AD_Process (AD_Process_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Description,IsReport,Value,IsDirectPrint,Classname,AccessLevel,EntityType,Statistic_Count,Statistic_Seconds,IsBetaFunctionality,IsServerProcess,ShowHelp,CopyFromProcess,AD_Process_UU,AllowMultipleExecution) VALUES (200119,0,0,'Y',TO_TIMESTAMP('2020-06-24 17:06:02','YYYY-MM-DD HH24:MI:SS'),0,TO_TIMESTAMP('2020-06-24 17:06:02','YYYY-MM-DD HH24:MI:SS'),0,'Insert Parameters','This process will add required parameters for current web service type','N','WebServiceTypeCreateParameters','N','org.idempiere.webservices.process.WebServiceTypeCreateParameters','6','D',0,0,'N','N','S','N','2b94e537-3bb4-4e25-8277-13c16061e3a6','P')
 ;
 
 -- Jun 24, 2020, 5:06:24 PM CEST
