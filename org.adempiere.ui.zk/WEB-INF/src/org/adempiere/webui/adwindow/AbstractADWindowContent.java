@@ -732,6 +732,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             findWindow = new FindWindow(curWindowNo,
                     mTab.getName(), mTab.getAD_Table_ID(), mTab.getTableName(),
                     where.toString(), findFields, 10, mTab.getAD_Tab_ID()); // no query below 10
+           	tabFindWindowHashMap.put(mTab, findWindow);
             setupEmbeddedFindwindow();
             if (findWindow.initialize())
             {
@@ -907,6 +908,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	private Menuitem 	m_access = null;
 
 	private FindWindow findWindow;
+	private HashMap<GridTab, FindWindow> tabFindWindowHashMap = new HashMap<GridTab, FindWindow>();
+	private int masterRecord = -1;
 
 	private Div mask;
 
@@ -1823,6 +1826,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         {
         	adTabbox.evaluate(e);
         }
+        
+		int record_ID = adTabbox.getSelectedGridTab().getRecord_ID();
+
+        if (adTabbox.getSelectedGridTab().getTabLevel() == 0 && record_ID != masterRecord) {
+        	clenFindWindowHashMap();
+        	masterRecord = record_ID;
+        }
 
         boolean isNewRow = adTabbox.getSelectedGridTab().getRowCount() == 0 || adTabbox.getSelectedGridTab().isNew();
         toolbar.enableArchive(!isNewRow);
@@ -1831,6 +1841,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         toolbar.enableRequests(!isNewRow);
 		toolbar.setPressed("Find", adTabbox.getSelectedGridTab().isQueryActive() || 
 				(!isNewRow && (m_onlyCurrentRows || m_onlyCurrentDays > 0)));
+		if (adTabbox.getSelectedGridTab().isQueryActive() && 
+				tabFindWindowHashMap.get(adTabbox.getSelectedGridTab()) != null) 
+			findWindow = tabFindWindowHashMap.get(adTabbox.getSelectedGridTab());
 		toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), findWindow != null ? findWindow.getAD_UserQuery_ID() : 0);
 
         toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !isNewRow);
@@ -2140,17 +2153,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         if (findWindow == null || !findWindow.validate(adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
             adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
             adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID())) {
-	        findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
-	            adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
-	            adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID());
-
-	        setupEmbeddedFindwindow();	        
-	        if (!findWindow.initialize()) {
-	        	if (findWindow.getTotalRecords() == 0) {
-	        		FDialog.info(curWindowNo, getComponent(), "NoRecordsFound");
-	        	}
-	        	return;
-	        }
+        	if (!getFindWindow(findFields))
+        		return;
         }
 
         if (!findWindow.getEventListeners(DialogEvents.ON_WINDOW_CLOSE).iterator().hasNext()) {
@@ -2942,17 +2946,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		if (findWindow == null || !findWindow.validate(adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
 				adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
 				adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID())) {
-			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
-					adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
-					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID());
 
-			setupEmbeddedFindwindow();	        
-			if (!findWindow.initialize()) {
-				if (findWindow.getTotalRecords() == 0) {
-					FDialog.info(curWindowNo, getComponent(), "NoRecordsFound");
-				}
-				return;
-			}
+        	if (!getFindWindow(findFields))
+        		return;
 		}
 
 		findWindow.setAD_UserQuery_ID(toolbar.getAD_UserQuery_ID());
@@ -3637,6 +3633,35 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	
 	public ADWindow getADWindow() {
 		return adwindow;
+	}
+	
+	public boolean getFindWindow(GridField[] findFields) {
+		if (tabFindWindowHashMap.get(adTabbox.getSelectedGridTab()) != null) {
+			findWindow = tabFindWindowHashMap.get(adTabbox.getSelectedGridTab());
+			toolbar.setSelectedUserQuery(findWindow.getAD_UserQuery_ID());
+		} else {
+			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
+					adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
+					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID());
+
+			setupEmbeddedFindwindow();
+			if (!findWindow.initialize()) {
+				if (findWindow.getTotalRecords() == 0) {
+					FDialog.info(curWindowNo, getComponent(), "NoRecordsFound");
+				}
+				return false;
+			}
+			tabFindWindowHashMap.put(adTabbox.getSelectedGridTab(), findWindow);
+		}
+		return true;
+	}
+	
+	/**
+	 * Clean all the detail cached FindWindow objects
+	 * when the master record is changed
+	 */
+	private void clenFindWindowHashMap() {
+		tabFindWindowHashMap.keySet().removeIf(tab -> tab.getTabLevel() != 0);
 	}
 	
 	private void clearTitleRelatedContext() {
