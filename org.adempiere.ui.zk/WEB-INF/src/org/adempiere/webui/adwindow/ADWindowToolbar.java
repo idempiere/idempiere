@@ -1213,13 +1213,26 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         for (int i = 0; i < userQueries.length; i++) {
 	       	Comboitem li = fQueryName.appendItem(userQueries[i].getName());
 	       	li.setValue(userQueries[i].getAD_UserQuery_ID());
-	       	if (AD_UserQuery_ID == userQueries[i].getAD_UserQuery_ID())
+	       	if (AD_UserQuery_ID == userQueries[i].getAD_UserQuery_ID()) {
 	       		fQueryName.setSelectedItem(li);
+	       		if (AD_UserQuery_ID != getAD_UserQuery_ID())
+	       			setSelectedUserQuery(AD_UserQuery_ID);
+	       	}
         }
-        if (AD_UserQuery_ID <= 0 || fQueryName.getItemCount() <= 1)
-        	fQueryName.setValue("");
+        if (AD_UserQuery_ID <= 0 || fQueryName.getItemCount() <= 1 
+        		|| fQueryName.getSelectedItem() == null)
+        	fQueryName.setSelectedIndex(0);
     }
     
+	public void setSelectedUserQuery(int AD_UserQuery_ID) {
+		for (MUserQuery userQuery : userQueries) {
+			if (AD_UserQuery_ID == userQuery.getAD_UserQuery_ID()) {
+				selectedUserQuery = userQuery;
+				break;
+			}
+		}
+	}
+	
 	public void setSelectedUserQuery(MUserQuery selectedUserQuery) {
 		this.selectedUserQuery = selectedUserQuery;
 		if (selectedUserQuery != null)
