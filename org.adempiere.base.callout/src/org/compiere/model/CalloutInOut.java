@@ -268,40 +268,69 @@ public class CalloutInOut extends CalloutEngine
 			return "";
 
 		String sql = "SELECT p.AD_Language,p.C_PaymentTerm_ID,"
-			+ "p.M_PriceList_ID,p.PaymentRule,p.POReference,"
-			+ "p.SO_Description,p.IsDiscountPrinted,"
-			+ "p.SO_CreditLimit-p.SO_CreditUsed AS CreditAvailable,"
-			+ "l.C_BPartner_Location_ID,c.AD_User_ID "
-			+ "FROM C_BPartner p, C_BPartner_Location l, AD_User c "
-			+ "WHERE l.IsActive='Y' AND p.C_BPartner_ID=l.C_BPartner_ID(+)"
-			+ " AND p.C_BPartner_ID=c.C_BPartner_ID(+)"
-			+ " AND p.C_BPartner_ID=?";		//	1
+				+ "p.M_PriceList_ID,p.PaymentRule,p.POReference,"
+				+ "p.SO_Description,p.IsDiscountPrinted,"
+				+ "p.SO_CreditLimit-p.SO_CreditUsed AS CreditAvailable "
+				+ "FROM C_BPartner p "
+				+ "WHERE p.C_BPartner_ID=?";		//	1
 
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
+		try (PreparedStatement pstmt = DB.prepareStatement(sql, null);)
 		{
-			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, C_BPartner_ID.intValue());
-			rs = pstmt.executeQuery();
+			ResultSet rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				//[ 1867464 ]
 				boolean IsSOTrx = "Y".equals(Env.getContext(ctx, WindowNo, "IsSOTrx"));
 				if (!IsSOTrx)
 				{
-					//	Location
-					Integer ii = Integer.valueOf(rs.getInt("C_BPartner_Location_ID"));
-					if (rs.wasNull())
-						mTab.setValue("C_BPartner_Location_ID", null);
-					else
-						mTab.setValue("C_BPartner_Location_ID", ii);
-					//	Contact
-					ii = Integer.valueOf(rs.getInt("AD_User_ID"));
-					if (rs.wasNull())
-						mTab.setValue("AD_User_ID", null);
-					else
-						mTab.setValue("AD_User_ID", ii);
+					String sql0 = "SELECT l.C_BPartner_Location_ID "
+							+ "FROM C_BPartner p "
+							+ "LEFT JOIN C_BPartner_Location l ON (p.C_BPartner_ID=l.C_BPartner_ID) "
+							+ "WHERE l.IsActive='Y' AND p.C_BPartner_ID=?";		//	1
+					try (PreparedStatement pstmt0 = DB.prepareStatement(sql0, null);)
+					{
+						pstmt0.setInt(1, C_BPartner_ID.intValue());
+						ResultSet rs0 = pstmt0.executeQuery();
+						if (rs0.next())
+						{
+							//	Location
+							Integer ii = Integer.valueOf(rs0.getInt("C_BPartner_Location_ID"));
+							if (rs0.wasNull())
+								mTab.setValue("C_BPartner_Location_ID", null);
+							else
+								mTab.setValue("C_BPartner_Location_ID", ii);
+						}
+					}
+					catch (SQLException e)
+					{
+						log.log(Level.SEVERE, sql0, e);
+						return e.getMessage();
+					}
+					
+					sql0 = "SELECT c.AD_User_ID "
+							+ "FROM C_BPartner p "
+							+ "LEFT JOIN AD_User c ON (p.C_BPartner_ID=c.C_BPartner_ID) "
+							+ "WHERE c.IsActive='Y' AND p.C_BPartner_ID=?";		//	1
+					try (PreparedStatement pstmt0 = DB.prepareStatement(sql0, null);)
+					{
+						pstmt0.setInt(1, C_BPartner_ID.intValue());
+						ResultSet rs0 = pstmt0.executeQuery();
+						if (rs0.next())
+						{
+							//	Contact
+							Integer ii = Integer.valueOf(rs0.getInt("AD_User_ID"));
+							if (rs0.wasNull())
+								mTab.setValue("AD_User_ID", null);
+							else
+								mTab.setValue("AD_User_ID", ii);							
+						}
+					}
+					catch (SQLException e)
+					{
+						log.log(Level.SEVERE, sql0, e);
+						return e.getMessage();
+					}
 				}
 
 				//Bugs item #1679818: checking for SOTrx only
@@ -320,10 +349,6 @@ public class CalloutInOut extends CalloutEngine
 		{
 			log.log(Level.SEVERE, sql, e);
 			return e.getLocalizedMessage();
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
 		}
 
 		return "";
