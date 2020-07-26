@@ -375,7 +375,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		if (log.isLoggable(Level.FINE)) log.fine("LocatorTypes=" + lstLocatorType.getItemCount());
 
 		//	Load existing Locators
-		
+		m_mLocator.refreshIfNeeded();
 		m_mLocator.fillComboBox(m_mandatory, true, true, false, false); // IDEMPIERE 90
 		
 		if (log.isLoggable(Level.FINE)) log.fine(m_mLocator.toString());
@@ -393,17 +393,22 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 			}
 		}
 		
+		int selectedIndex = -1;
 		for (int i = 0; i < m_mLocator.getSize(); i++)
 		{
-			Object obj = m_mLocator.getElementAt(i);
+			MLocator obj = (MLocator) m_mLocator.getElementAt(i);
+			if (obj.getM_Locator_ID() == m_M_Locator_ID && m_M_Locator_ID > 0)
+				selectedIndex = i;
 			
 			lstLocator.appendItem(obj.toString(), obj);
 		}
 		
-		//lstLocator.setModel(m_mLocator);
-		//lstLocator.setValue(m_M_Locator_ID);
-		if (lstLocator.getItemCount() > 0)
-			lstLocator.setSelectedIndex(0);
+		if (lstLocator.getItemCount() > 0) {
+			if (selectedIndex >= 0)
+				lstLocator.setSelectedIndex(selectedIndex);
+			else
+				lstLocator.setSelectedIndex(0);
+		}
 		lstLocator.addEventListener(Events.ON_SELECT, this);
 		
 		displayLocator();
