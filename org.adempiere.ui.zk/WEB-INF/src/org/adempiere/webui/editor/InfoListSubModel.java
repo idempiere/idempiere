@@ -116,7 +116,7 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 					List<Integer> keys = new ArrayList<Integer>();
 					for(int i = 0; i < rowCount; i++) {
 						Integer key = ip.getRowKeyAt(i);
-						if (key != null && key.intValue() > 0) {
+						if (key != null && key.intValue() > 0 && !keys.contains(key)) {
 							keys.add(key);							
 						}
 						if (nRows > 0 && keys.size() >= nRows)
