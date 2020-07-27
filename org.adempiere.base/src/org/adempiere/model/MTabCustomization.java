@@ -74,7 +74,7 @@ public class MTabCustomization extends X_AD_Tab_Customization {
 		{
 			tabCust = new MTabCustomization(ctx, 0, trxName);
 			tabCust.setAD_Tab_ID(AD_Tab_ID);
-			tabCust.setAD_User_ID(AD_User_ID);
+			tabCust.set_Value(MTabCustomization.COLUMNNAME_AD_User_ID,0); // allow saving for System
 			tabCust.setCustom(Custom);
 			tabCust.setIsDisplayedGrid(DisplayedGrid);
 			tabCust.setIsQuickForm(isQuickForm);
