@@ -36,7 +36,7 @@ then
     exit 1
 fi
 
-if [ -s "$2" ]
+if [ -s "$2" -a "skipsync" != "$2" ]
 then
 	PROPFILE="$(dirname "$2")/$(basename "$2")"
 fi
@@ -89,4 +89,7 @@ read in
 # Parameter: <systemAccount> <adempiereID> <adempierePwd>
 # globalqss - cruiz - 2007-10-09 - added fourth parameter for postgres(ignored in oracle)
 sh "org.adempiere.server-feature/utils.unix/$ADEMPIERE_DB_PATH/DBRestore.sh" "system/$1" "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$1"
-./RUN_SyncDBDev.sh
+if [ -s "$2" -a "nosync" != "$2" ]
+then
+    ./RUN_SyncDBDev.sh
+fi
