@@ -1276,7 +1276,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     			if (preference == null || preference.getAD_Preference_ID() <= 0) {
     				preference = new MPreference(Env.getCtx(), 0, null);
     				preference.setAD_Window_ID(windowId);
-    				preference.set_ValueOfColumn("AD_User_ID", userId); // required set_Value for System=0 user
+    				preference.setAD_User_ID(userId); // allow System
     				preference.setAttribute(adTabId+"|DetailPane.IsOpen");
     			}
 				preference.setValue(value ? "Y" : "N");
@@ -1971,7 +1971,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			if (preference == null || preference.getAD_Preference_ID() <= 0) {
 				preference = new MPreference(Env.getCtx(), 0, null);
 				preference.setAD_Window_ID(windowId);
-				preference.set_ValueOfColumn("AD_User_ID", userId); // required set_Value for System=0 user
+				preference.setAD_User_ID(userId);
 				preference.setAttribute(adTabId+"|"+attribute);
 			}
 			preference.setValue(value);

@@ -1092,12 +1092,7 @@ public class MUser extends X_AD_User
 				MPasswordHistory passwordHistory = new MPasswordHistory(this.getCtx(), 0, this.get_TrxName());
 				passwordHistory.setSalt(this.getSalt());
 				passwordHistory.setPassword(this.getPassword());
-				// http://wiki.idempiere.org/en/System_user
-				if (!this.is_new() && this.getAD_User_ID() == 0){
-					passwordHistory.set_Value(MPasswordHistory.COLUMNNAME_AD_User_ID, 0);
-				}else{
-					passwordHistory.setAD_User_ID(this.getAD_User_ID());
-				}
+				passwordHistory.setAD_User_ID(this.getAD_User_ID());
 				passwordHistory.setDatePasswordChanged(this.getUpdated());
 				passwordHistory.saveEx();
 			}
