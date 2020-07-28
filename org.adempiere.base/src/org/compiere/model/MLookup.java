@@ -512,8 +512,6 @@ public final class MLookup extends Lookup implements Serializable
 
 	/**	Save getDirect last return value */	
 	private HashMap<Object,Object>	m_lookupDirect = null;
-	/**	Save last unsuccessful				*/
-	private Object					m_directNullKey = null;
 	private Future<?> m_loaderFuture;
 
 	public NamePair getDirect (Object key, boolean saveInCache, boolean cacheLocal)
@@ -532,8 +530,6 @@ public final class MLookup extends Lookup implements Serializable
 	{
 		//	Nothing to query
 		if (key == null || m_info.QueryDirect == null || m_info.QueryDirect.length() == 0)
-			return null;
-		if (key.equals(m_directNullKey))
 			return null;
 		if (key.toString().trim().length() == 0)
 			return null;
@@ -609,7 +605,6 @@ public final class MLookup extends Lookup implements Serializable
 			}
 			else
 			{
-				m_directNullKey = key;
 				directValue = null;
 			}
 
@@ -1085,6 +1080,9 @@ public final class MLookup extends Lookup implements Serializable
 						for(KeyNamePair knp : knpCache) 
 						{
 							m_lookup.put(knp.getKey(), knp);
+							String name = knp.getName();
+							if (name.startsWith(INACTIVE_S) && name.endsWith(INACTIVE_E))
+								m_hasInactive  = true;
 						}
 						return;
 					}
@@ -1104,6 +1102,9 @@ public final class MLookup extends Lookup implements Serializable
 						for(ValueNamePair vnp : vnpCache)
 						{
 							m_lookup.put(vnp.getValue(), vnp);
+							String name = vnp.getName();
+							if (name.startsWith(INACTIVE_S) && name.endsWith(INACTIVE_E))
+								m_hasInactive  = true;
 						}
 						return;
 					}

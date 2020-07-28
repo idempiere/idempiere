@@ -73,6 +73,11 @@ public class CLogErrorBuffer extends Handler
 		setFilter(CLogFilter.get());
     }	//	initialize
 
+    private boolean isAddLogRecordToContext()
+    {
+    	return CLogMgt.getLevelAsInt() <= Level.INFO.intValue();
+    }
+    
     /**
      * 	Issue Error
      *	@return true if issue error
@@ -124,62 +129,83 @@ public class CLogErrorBuffer extends Handler
 	 */
 	public void publish (LogRecord record)
 	{
+		if (!isLoggable (record))
+			return;
+		
 		checkContext();
 
 		@SuppressWarnings("unchecked")
 		LinkedList<LogRecord> m_logs = (LinkedList<LogRecord>) Env.getCtx().get(LOGS_KEY);
-		if (!isLoggable (record) || m_logs == null)
+		if (m_logs == null)
 			return;
 
 		//	Output
-		synchronized (m_logs)
+		if (isAddLogRecordToContext())
 		{
-			if (m_logs.size() >= LOG_SIZE)
-				m_logs.removeFirst();
-			m_logs.add(record);
+			synchronized (m_logs)
+			{
+				if (m_logs.size() >= LOG_SIZE)
+					m_logs.removeFirst();
+				m_logs.add(record);
+			}
 		}
 
 		//	We have an error
 		if (record.getLevel() == Level.SEVERE)
 		{
-			@SuppressWarnings("unchecked")
-			LinkedList<LogRecord> m_errors = (LinkedList<LogRecord>) Env.getCtx().get(ERRORS_KEY);
-			@SuppressWarnings("unchecked")
-			LinkedList<LogRecord[]>	m_history = (LinkedList<LogRecord[]>) Env.getCtx().get(HISTORY_KEY);
-			if (m_errors.size() >= ERROR_SIZE)
+			if (isAddLogRecordToContext())
 			{
-				m_errors.removeFirst();
-				m_history.removeFirst();
+				@SuppressWarnings("unchecked")
+				LinkedList<LogRecord> m_errors = (LinkedList<LogRecord>) Env.getCtx().get(ERRORS_KEY);
+				synchronized (m_errors)
+				{
+					if (m_errors.size() >= ERROR_SIZE)
+					{
+						m_errors.removeFirst();
+					}
+					//	Add Error
+					m_errors.add(record);
+				}
 			}
-			//	Add Error
-			m_errors.add(record);
 			record.getSourceClassName();	//	forces Class Name eval
 
 			//	Create History
-			ArrayList<LogRecord> history = new ArrayList<LogRecord>();
-			for (int i = m_logs.size()-1; i >= 0; i--)
+			if (isAddLogRecordToContext())
 			{
-				LogRecord rec = (LogRecord)m_logs.get(i);
-				if (rec.getLevel() == Level.SEVERE)
+				@SuppressWarnings("unchecked")
+				LinkedList<LogRecord[]>	m_history = (LinkedList<LogRecord[]>) Env.getCtx().get(HISTORY_KEY);
+				ArrayList<LogRecord> history = new ArrayList<LogRecord>();
+				synchronized (m_history)
 				{
-					if (history.size() == 0)
-						history.add(rec);
-					else
-						break;		//	don't include previous error
+					if (m_history.size() >= ERROR_SIZE)
+					{
+						m_history.removeFirst();
+					}
+					for (int i = m_logs.size()-1; i >= 0; i--)
+					{
+						LogRecord rec = (LogRecord)m_logs.get(i);
+						if (rec.getLevel() == Level.SEVERE)
+						{
+							if (history.size() == 0)
+								history.add(rec);
+							else
+								break;		//	don't include previous error
+						}
+						else
+						{
+							history.add(rec);
+							if (history.size() > 10)
+								break;		//	no more then 10 history records
+						}
+		
+					}
+					LogRecord[] historyArray = new LogRecord[history.size()];
+					int no = 0;
+					for (int i = history.size()-1; i >= 0; i--)
+						historyArray[no++] = (LogRecord)history.get(i);
+					m_history.add(historyArray);
 				}
-				else
-				{
-					history.add(rec);
-					if (history.size() > 10)
-						break;		//	no more then 10 history records
-				}
-
 			}
-			LogRecord[] historyArray = new LogRecord[history.size()];
-			int no = 0;
-			for (int i = history.size()-1; i >= 0; i--)
-				historyArray[no++] = (LogRecord)history.get(i);
-			m_history.add(historyArray);
 			//	Issue Reporting
 			if (isIssueError())
 			{
@@ -199,12 +225,11 @@ public class CLogErrorBuffer extends Handler
 					&& loggerName.indexOf("CConnection") == -1
 					)
 				{
-					setIssueError(false);
 					try
 					{
 						MIssue.create(record);
-						setIssueError(true);
-					} catch (Throwable e)
+					} 
+					catch (Throwable e)
 					{
 						//failed to save exception to db, print to console
 						System.err.println(getFormatter().format(record));

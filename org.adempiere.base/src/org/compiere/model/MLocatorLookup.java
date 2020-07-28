@@ -29,6 +29,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
 import org.compiere.util.Util;
@@ -58,8 +59,20 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	 */
 	public MLocatorLookup(Properties ctx, int WindowNo)
 	{
+		this(ctx, WindowNo, null);
+	}
+	
+	/**
+	 *	Constructor
+	 *  @param ctx context
+	 *  @param WindowNo window no
+	 *  @param validationCode Lookup validation code
+	 */
+	public MLocatorLookup(Properties ctx, int WindowNo, String validationCode)
+	{
 		super (DisplayType.TableDir, WindowNo);
 		m_ctx = ctx;
+		m_validationCode = validationCode;
 		//
 		m_loader = new Loader();
 		m_loader.start();
@@ -69,6 +82,9 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	private Properties          m_ctx;
 	protected int				C_Locator_ID;
 	private Loader				m_loader;
+	private String				m_validationCode;
+	private String				m_parsedValidation;
+	private int 				m_warehouseActiveCount;
 
 	/**	Only Warehouse					*/
 	private int					m_only_Warehouse_ID = 0;
@@ -300,7 +316,36 @@ public final class MLocatorLookup extends Lookup implements Serializable
 		return false;
 	}	//	isValid
 
-
+	private boolean isNeedRefresh()
+	{
+		if (!Util.isEmpty(m_validationCode))
+		{
+			Properties ctx = new Properties(m_ctx);
+			Env.setContext(ctx, getWindowNo(), "M_Product_ID", getOnly_Product_ID());
+			Env.setContext(ctx, getWindowNo(), "M_Warehouse_ID", getOnly_Warehouse_ID());
+			String parseValidation = Env.parseContext(ctx, getWindowNo(), m_validationCode, false, false);
+			if ((!Util.isEmpty(parseValidation) && !parseValidation.equals(m_parsedValidation)) || (!Util.isEmpty(m_parsedValidation) && !m_parsedValidation.equals(parseValidation)))
+				return true;
+		}
+		else if (!Util.isEmpty(m_parsedValidation))
+		{
+			m_parsedValidation = null;
+			return true;
+		}
+		
+		if (m_only_Warehouse_ID==0)
+		{
+			int activeCount = DB.getSQLValue(null, "SELECT Count(*) FROM M_Warehouse WHERE IsActive='Y' AND AD_Client_ID=?", Env.getAD_Client_ID(m_ctx));
+			if (m_warehouseActiveCount != activeCount)
+			{
+				m_warehouseActiveCount = activeCount;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/**************************************************************************
 	 *	Loader
 	 */
@@ -336,12 +381,27 @@ public final class MLocatorLookup extends Lookup implements Serializable
 			
 			if (local_only_warehouse_id != 0)
 				sql.append(" AND M_Locator.M_Warehouse_ID=?");
+			else
+				m_warehouseActiveCount = DB.getSQLValue(null, "SELECT Count(*) FROM M_Warehouse WHERE IsActive='Y' AND AD_Client_ID=?", Env.getAD_Client_ID(m_ctx));
 			if (local_only_product_id != 0)
 				sql.append(" AND (M_Locator.IsDefault='Y' ")	//	Default Locator
 					.append("OR EXISTS (SELECT * FROM M_Product p ")	//	Product Locator
 					.append("WHERE p.M_Locator_ID=M_Locator.M_Locator_ID AND p.M_Product_ID=?)")
 					.append("OR EXISTS (SELECT * FROM M_Storage s ")	//	Storage Locator
 					.append("WHERE s.M_Locator_ID=M_Locator.M_Locator_ID AND s.M_Product_ID=?))");
+			m_parsedValidation = null;
+			if (!Util.isEmpty(m_validationCode))
+			{
+				Properties ctx = new Properties(m_ctx);
+				Env.setContext(ctx, getWindowNo(), "M_Product_ID", getOnly_Product_ID());
+				Env.setContext(ctx, getWindowNo(), "M_Warehouse_ID", getOnly_Warehouse_ID());
+				String parseValidation = Env.parseContext(ctx, getWindowNo(), m_validationCode, false, false);				
+				m_parsedValidation = parseValidation;
+				if (!Util.isEmpty(parseValidation))
+				{
+					sql.append(" AND ( ").append(parseValidation).append(" ) ");
+				}
+			}
 			sql.append(" ORDER BY ");
 			if (local_only_warehouse_id == 0)
 				sql.append("wh.Name,");
@@ -465,6 +525,16 @@ public final class MLocatorLookup extends Lookup implements Serializable
 		return m_lookup.size();
 	}	//	refresh
 
+	public int refreshIfNeeded()
+	{
+		if (m_loader != null && m_loader.isAlive())
+			return m_lookup.size();
+		else if (isNeedRefresh())
+			return refresh();
+		else
+			return m_lookup.size();
+	}
+	
 	/**
 	 *	Get underlying fully qualified Table.Column Name
 	 *  @return Table.ColumnName
@@ -474,4 +544,9 @@ public final class MLocatorLookup extends Lookup implements Serializable
 		return "M_Locator.M_Locator_ID";
 	}	//	getColumnName
 
+	public void dynamicDisplay(Properties ctx) 
+	{
+		m_ctx = ctx;
+		m_parsedValidation = null;		
+	}
 }	//	MLocatorLookup

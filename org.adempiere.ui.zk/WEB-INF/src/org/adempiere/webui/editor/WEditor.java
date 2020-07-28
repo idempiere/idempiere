@@ -29,6 +29,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.IFieldEditorContainer;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.ComboEditorBox;
 import org.adempiere.webui.component.Datebox;
 import org.adempiere.webui.component.DatetimeBox;
 import org.adempiere.webui.component.EditorBox;
@@ -641,17 +642,23 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 			String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
 			if (component instanceof EditorBox)
 				((EditorBox)component).getTextbox().setSclass(sclass);
+			else if (component instanceof ComboEditorBox)
+				((ComboEditorBox)component).getCombobox().setSclass(sclass);
 			else
 				component.setSclass(sclass);
 		} else if (style != null && style.startsWith(MStyle.ZCLASS_PREFIX)) {
 			String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
 			if (component instanceof EditorBox)
 				((EditorBox)component).getTextbox().setZclass(zclass);
+			else if (component instanceof ComboEditorBox)
+				((ComboEditorBox)component).getCombobox().setZclass(zclass);
 			else
 				component.setZclass(zclass);
 		} else {
 			if (component instanceof EditorBox)
 				((EditorBox)component).getTextbox().setStyle(style);
+			else if (component instanceof ComboEditorBox)
+				((ComboEditorBox)component).getCombobox().setStyle(style);
 			else
 				component.setStyle(style);
 		}

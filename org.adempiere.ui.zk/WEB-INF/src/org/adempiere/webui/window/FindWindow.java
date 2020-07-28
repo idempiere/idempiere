@@ -2356,7 +2356,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         String finalSQL = MRole.getDefault().addAccessSQL(sql.toString(),
             m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
         finalSQL = Env.parseContext(Env.getCtx(), m_targetWindowNo, finalSQL, false);
-        Env.setContext(Env.getCtx(), m_targetWindowNo, TABNO, GridTab.CTX_FindSQL, finalSQL);
+        if (log.isLoggable(Level.INFO))
+        	Env.setContext(Env.getCtx(), m_targetWindowNo, TABNO, GridTab.CTX_FindSQL, finalSQL);
 
         //  Execute Qusery
         m_total = 999999;

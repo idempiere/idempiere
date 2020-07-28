@@ -184,6 +184,7 @@ public class MWFProcess extends X_AD_WF_Process
 		}
 		List<MWFActivity> list = new Query(getCtx(), MWFActivity.Table_Name, whereClause.toString(), trxName)
 								.setParameters(params)
+								.setOrderBy(MWFActivity.COLUMNNAME_AD_WF_Activity_ID)
 								.list();
 		m_activities = new MWFActivity[list.size ()];
 		list.toArray (m_activities);
