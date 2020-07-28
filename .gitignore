@@ -24,11 +24,3 @@ External Plug-in Libraries
 /jettyhome/
 
 /org.idempiere.javadoc/API
-
-/data/
-
-*.save
-*.bak
-*.launch
-/.dbeaver/
-/Scripts/
