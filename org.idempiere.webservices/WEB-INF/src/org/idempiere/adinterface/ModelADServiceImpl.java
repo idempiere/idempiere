@@ -1282,19 +1282,19 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	    	if (po == null)
 	    		return rollbackAndSetError(trx, resp, ret, true, "No Record " + recordID + " in " + tableName);
 	    	POInfo poinfo = POInfo.getPOInfo(ctx, table.getAD_Table_ID());
-	
-	    	DataRow dr = modelCRUD.getDataRow();
-	    	
-	    	StandardResponseDocument retResp = scanFields(dr.getFieldArray(), m_webservicetype, po, poinfo, trx, resp, ret);
-			if (retResp != null)
-				return retResp;
-	
+
 	    	if(po.get_ColumnIndex("Processed")>=0 && po.get_ValueAsBoolean("Processed")){
 	    		resp.setError("Record is processed and can not be updated");
 	    		resp.setIsError(true);
 	    		return ret;
 	    	}
+
+	    	DataRow dr = modelCRUD.getDataRow();
 	    	
+	    	StandardResponseDocument retResp = scanFields(dr.getFieldArray(), m_webservicetype, po, poinfo, trx, resp, ret);
+			if (retResp != null)
+				return retResp;
+
 	    	if (!po.save())
 	    		return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
 	
