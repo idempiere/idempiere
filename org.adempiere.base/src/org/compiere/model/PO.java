@@ -30,6 +30,7 @@ import java.sql.Savepoint;
 import java.sql.Timestamp;
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -225,7 +227,24 @@ public abstract class PO
 		setAD_Org_ID(AD_Org_ID);
 	}	//	PO
 
-
+	/**
+	 * Copy all properties from copy. Method to help the implementation of copy constructor.
+	 * @param copy
+	 */
+	protected void copyPO(PO copy)
+	{
+		this.m_attachment = copy.m_attachment != null ? new MAttachment(copy.m_attachment) : null;
+		this.m_attributes = copy.m_attributes != null ? new HashMap<String, Object>(copy.m_attributes) : null;
+		this.m_createNew = copy.m_createNew;
+		this.m_custom = copy.m_custom != null ? new HashMap<String, String>(copy.m_custom) : null;
+		this.m_IDs = copy.m_IDs != null ? Arrays.copyOf(copy.m_IDs, copy.m_IDs.length) : null;
+		this.m_KeyColumns = copy.m_KeyColumns != null ? Arrays.copyOf(copy.m_KeyColumns, copy.m_KeyColumns.length) : null;
+		this.m_lobInfo = copy.m_lobInfo != null ? copy.m_lobInfo.stream().map(PO_LOB::new).collect(Collectors.toCollection(ArrayList::new)) : null;
+		this.m_newValues = copy.m_newValues != null ? Arrays.copyOf(copy.m_newValues, copy.m_newValues.length) : null;
+		this.m_oldValues = copy.m_oldValues != null ? Arrays.copyOf(copy.m_oldValues, copy.m_oldValues.length) : null;		
+		this.s_acctColumns = copy.s_acctColumns != null ? copy.s_acctColumns.stream().collect(Collectors.toCollection(ArrayList::new)) : null;
+	}
+	
 	/**	Logger							*/
 	protected transient CLogger	log = CLogger.getCLogger (getClass());
 	/** Static Logger					*/
