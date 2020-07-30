@@ -330,7 +330,7 @@ public class MMovement extends X_M_Movement implements DocAction
 		}
 
 		//	Confirmation
-		if (dt.isInTransit())
+		if (dt.isInTransit() && !isReversal())
 			createConfirmation();
 
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
