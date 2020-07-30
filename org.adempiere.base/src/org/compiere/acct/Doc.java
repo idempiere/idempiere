@@ -1102,7 +1102,7 @@ public abstract class Doc
 				m_period = MPeriod.get(getCtx(), ii.intValue());
 		}
 		if (m_period == null)
-			m_period = MPeriod.get(getCtx(), getDateAcct(), getAD_Org_ID(), m_trxName);
+			m_period = MPeriod.get(getCtx(), getDateAcct(), getAD_Org_ID(), (String)null);
 		//	Is Period Open?
 		if (m_period != null
 			&& m_period.isOpen(getDocumentType(), getDateAcct()))
@@ -1690,6 +1690,11 @@ public abstract class Doc
 		return 0;
 	}	//	getC_ConversionType_ID
 
+	public BigDecimal getCurrencyRate()
+	{		
+		return null;
+	}
+
 	/**
 	 * 	Get GL_Category_ID
 	 *	@return category
@@ -1707,8 +1712,8 @@ public abstract class Doc
 	}	//	getGL_Category_ID
 
 	/**
-	 * 	Get GL_Category_ID
-	 *	@return category
+	 * 	Get getGL_Budget_ID
+	 *	@return budget
 	 */
 	public int getGL_Budget_ID()
 	{
@@ -2317,6 +2322,13 @@ public abstract class Doc
 	 */
 	public ArrayList<Fact> getFacts() {
 		return m_fact;
+	}
+	
+	/**
+	 * @return MAcctSchema
+	 */
+	protected MAcctSchema getAcctSchema() {
+		return m_as;
 	}
 	
 	/**
