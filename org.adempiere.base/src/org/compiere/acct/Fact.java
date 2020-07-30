@@ -310,6 +310,7 @@ public final class Fact
 		FactLine line = new FactLine (m_doc.getCtx(), m_doc.get_Table_ID(), 
 			m_doc.get_ID(), 0, m_trxName);
 		line.setDocumentInfo(m_doc, null);
+		line.setAD_Org_ID(m_doc.getAD_Org_ID());
 		line.setPostingType(m_postingType);
 
 		//	Account
@@ -586,6 +587,7 @@ public final class Fact
 				m_doc.get_ID(), 0, m_trxName);
 			line.setDocumentInfo (m_doc, null);
 			line.setPostingType (m_postingType);
+			line.setAD_Org_ID(m_doc.getAD_Org_ID());
 			line.setAccount (m_acctSchema, m_acctSchema.getCurrencyBalancing_Acct());
 			
 			//  Amount
