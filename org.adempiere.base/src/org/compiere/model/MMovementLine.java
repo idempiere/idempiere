@@ -188,17 +188,24 @@ public class MMovementLine extends X_M_MovementLine
 
 		if (getMovementQty().signum() == 0)
 		{
-			if (   MMovement.DOCACTION_Void.equals(getParent().getDocAction())
-				&& (   MMovement.DOCSTATUS_Drafted.equals(getParent().getDocStatus())
-					|| MMovement.DOCSTATUS_Invalid.equals(getParent().getDocStatus())
-					|| MMovement.DOCSTATUS_InProgress.equals(getParent().getDocStatus())
-					|| MMovement.DOCSTATUS_Approved.equals(getParent().getDocStatus())
-					|| MMovement.DOCSTATUS_NotApproved.equals(getParent().getDocStatus())
+			String docAction = getParent().getDocAction();
+			String docStatus = getParent().getDocStatus();
+			if (   MMovement.DOCACTION_Void.equals(docAction)
+				&& (   MMovement.DOCSTATUS_Drafted.equals(docStatus)
+					|| MMovement.DOCSTATUS_Invalid.equals(docStatus)
+					|| MMovement.DOCSTATUS_InProgress.equals(docStatus)
+					|| MMovement.DOCSTATUS_Approved.equals(docStatus)
+					|| MMovement.DOCSTATUS_NotApproved.equals(docStatus)
 				   )
-				) 
+				)
 			{
 				// [ 2092198 ] Error voiding an Inventory Move - globalqss
 				// zero allowed in this case (action Void and status Draft)
+			} else if (   MMovement.DOCACTION_Complete.equals(docAction)
+					   && MMovement.DOCSTATUS_InProgress.equals(docStatus))
+			{
+				// IDEMPIERE-2624 Cant confirm 0 qty on Movement Confirmation
+				// zero allowed in this case (action Complete and status In Progress)
 			} else {
 				log.saveError("FillMandatory", Msg.getElement(getCtx(), "MovementQty"));
 				return false;
