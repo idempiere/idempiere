@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -1055,6 +1056,31 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			}
 		}
 
+		if (!isProcessed())
+		{
+			MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
+			MAcctSchema as = MAcctSchema.get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
+			if (as.getC_Currency_ID() != getC_Currency_ID())
+			{
+				if (isOverrideCurrencyRate())
+				{
+					if(getCurrencyRate() == null || getCurrencyRate().signum() == 0)
+					{
+						log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_CurrencyRate));
+						return false;
+					}
+				}
+				else
+				{
+					setCurrencyRate(null);
+				}
+			}
+			else
+			{
+				setCurrencyRate(null);
+			}
+		}
+		
 		return true;
 	}	//	beforeSave
 
@@ -1949,8 +1975,20 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
 		DB.getDatabase().forUpdate(bp, 0);
 		//	Update total revenue and balance / credit limit (reversed on AllocationLine.processIt)
-		BigDecimal invAmt = MConversionRate.convertBase(getCtx(), getGrandTotal(true),	//	CM adjusted
-			getC_Currency_ID(), getDateAcct(), getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
+		BigDecimal invAmt = null;
+		int baseCurrencyId = Env.getContextAsInt(getCtx(), "$C_Currency_ID");
+		if (getC_Currency_ID() != baseCurrencyId && isOverrideCurrencyRate())
+		{
+			invAmt = getGrandTotal(true).multiply(getCurrencyRate());
+			int stdPrecision = MCurrency.getStdPrecision(getCtx(), baseCurrencyId);
+			if (invAmt.scale() > stdPrecision)
+				invAmt = invAmt.setScale(stdPrecision, RoundingMode.HALF_UP);
+		}
+		else
+		{
+			invAmt = MConversionRate.convertBase(getCtx(), getGrandTotal(true),	//	CM adjusted
+				getC_Currency_ID(), getDateAcct(), getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
+		}
 		if (invAmt == null)
 		{
 			m_processMsg = MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingCurrencyToBaseCurrency",

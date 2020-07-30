@@ -33,7 +33,7 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20200721L;
 
     /** Standard Constructor */
     public X_C_Invoice (Properties ctx, int C_Invoice_ID, String trxName)
@@ -64,6 +64,8 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 // @IsApproved@
 			setIsDiscountPrinted (false);
 			setIsInDispute (false);
+// N
+			setIsOverrideCurrencyRate (false);
 // N
 			setIsPaid (false);
 			setIsPayScheduleValid (false);
@@ -696,6 +698,26 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 		return (String)get_Value(COLUMNNAME_CreateFrom);
 	}
 
+	/** Set Rate.
+		@param CurrencyRate 
+		Currency Conversion Rate
+	  */
+	public void setCurrencyRate (BigDecimal CurrencyRate)
+	{
+		set_Value (COLUMNNAME_CurrencyRate, CurrencyRate);
+	}
+
+	/** Get Rate.
+		@return Currency Conversion Rate
+	  */
+	public BigDecimal getCurrencyRate () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CurrencyRate);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
 	/** Set Account Date.
 		@param DateAcct 
 		Accounting Date
@@ -1061,6 +1083,30 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 	public boolean isInDispute () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsInDispute);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Override Currency Conversion Rate.
+		@param IsOverrideCurrencyRate 
+		Override Currency Conversion Rate
+	  */
+	public void setIsOverrideCurrencyRate (boolean IsOverrideCurrencyRate)
+	{
+		set_Value (COLUMNNAME_IsOverrideCurrencyRate, Boolean.valueOf(IsOverrideCurrencyRate));
+	}
+
+	/** Get Override Currency Conversion Rate.
+		@return Override Currency Conversion Rate
+	  */
+	public boolean isOverrideCurrencyRate () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsOverrideCurrencyRate);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

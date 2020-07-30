@@ -399,6 +399,19 @@ public interface I_C_Invoice
 	  */
 	public String getCreateFrom();
 
+    /** Column name CurrencyRate */
+    public static final String COLUMNNAME_CurrencyRate = "CurrencyRate";
+
+	/** Set Rate.
+	  * Currency Conversion Rate
+	  */
+	public void setCurrencyRate (BigDecimal CurrencyRate);
+
+	/** Get Rate.
+	  * Currency Conversion Rate
+	  */
+	public BigDecimal getCurrencyRate();
+
     /** Column name DateAcct */
     public static final String COLUMNNAME_DateAcct = "DateAcct";
 
@@ -611,6 +624,19 @@ public interface I_C_Invoice
 	  * Document is in dispute
 	  */
 	public boolean isInDispute();
+
+    /** Column name IsOverrideCurrencyRate */
+    public static final String COLUMNNAME_IsOverrideCurrencyRate = "IsOverrideCurrencyRate";
+
+	/** Set Override Currency Conversion Rate.
+	  * Override Currency Conversion Rate
+	  */
+	public void setIsOverrideCurrencyRate (boolean IsOverrideCurrencyRate);
+
+	/** Get Override Currency Conversion Rate.
+	  * Override Currency Conversion Rate
+	  */
+	public boolean isOverrideCurrencyRate();
 
     /** Column name IsPaid */
     public static final String COLUMNNAME_IsPaid = "IsPaid";

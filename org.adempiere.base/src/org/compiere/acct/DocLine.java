@@ -115,6 +115,7 @@ public class DocLine
 	private int					m_C_ConversionType_ID = -1;
 	/** Period						*/
 	private int					m_C_Period_ID = -1;
+	private BigDecimal 			m_currencyRate = null;
 
 	/**
 	 *  Get Currency
@@ -166,6 +167,16 @@ public class DocLine
 	{
 		m_C_ConversionType_ID = C_ConversionType_ID;
 	}	//	setC_ConversionType_ID
+	
+	public BigDecimal getCurrencyRate()
+	{
+		return m_currencyRate;
+	}
+	
+	protected void setCurrencyRate(BigDecimal currencyRate) 
+	{
+		m_currencyRate = currencyRate;
+	}
 	
 	/**
 	 *  Set Amount (DR)
