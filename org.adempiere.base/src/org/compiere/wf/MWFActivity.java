@@ -201,6 +201,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		saveEx();
 		//
 		m_audit = new MWFEventAudit(this);
+		m_audit.setAD_Org_ID(getAD_Org_ID());//Add by Hideaki Hagiwara
 		m_audit.saveEx();
 		//
 		m_process = process;
