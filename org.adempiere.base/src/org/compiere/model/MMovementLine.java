@@ -39,7 +39,7 @@ public class MMovementLine extends X_M_MovementLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5753062311388766921L;
+	private static final long serialVersionUID = -5614562023263896756L;
 
 	/**
 	 * 	Standard Cosntructor
@@ -171,6 +171,13 @@ public class MMovementLine extends X_M_MovementLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_MovementLine"));
 			return false;
 		}
+		if (getParent().pendingConfirmations()) {
+			if (  newRecord ||
+				(is_ValueChanged(COLUMNNAME_MovementQty) && !is_ValueChanged(COLUMNNAME_TargetQty))) {
+				log.saveError("SaveError", Msg.parseTranslation(getCtx(), "@Open@: @M_MovementConfirm_ID@"));
+				return false;
+			}
+		}
 		//	Set Line No
 		if (getLine() == 0)
 		{
@@ -229,7 +236,20 @@ public class MMovementLine extends X_M_MovementLine
 
 		return true;
 	}	//	beforeSave
-	
+
+	/**
+	 * 	Before Delete
+	 *	@return true if it can be deleted
+	 */
+	@Override
+	protected boolean beforeDelete() {
+		if (getParent().pendingConfirmations()) {
+			log.saveError("DeleteError", Msg.parseTranslation(getCtx(), "@Open@: @M_MovementConfirm_ID@"));
+			return false;
+		}
+		return super.beforeDelete();
+	}
+
 	/** 
 	 *      Set Distribution Order Line. 
 	 *      Does not set Quantity! 
