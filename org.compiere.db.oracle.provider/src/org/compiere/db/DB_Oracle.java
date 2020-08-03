@@ -1371,6 +1371,13 @@ public class DB_Oracle implements AdempiereDatabase
 		return "VARCHAR2";
 	}
 
+	/**
+	 * @return variable length character data type suffix
+	 */
+	public String getVarcharLengthSuffix() {
+		return " CHAR";
+	};
+
 	@Override
 	public String getBlobDataType() {
 		return "BLOB";
