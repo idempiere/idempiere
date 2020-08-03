@@ -1216,7 +1216,7 @@ class Restriction  implements Serializable
 			//	We have a Function in the ColumnName
 			if (pos != -1 && end != -1 && !(pos-1==ColumnName.indexOf('(') && ColumnName.trim().startsWith("(")))
 				sb.append(ColumnName.substring(0, pos))
-					.append(tableName).append(".").append(ColumnName.substring(pos, end))
+					.append(tableName).append(".").append(DB.getDatabase().quoteColumnName(ColumnName.substring(pos, end)))
 					.append(ColumnName.substring(end));
 			else
 			{
@@ -1228,12 +1228,12 @@ class Restriction  implements Serializable
 				}
 				else
 				{
-					sb.append(tableName).append(".").append(ColumnName);
+					sb.append(tableName).append(".").append(DB.getDatabase().quoteColumnName(ColumnName));
 				}
 			}
 		}
 		else
-			sb.append(ColumnName);
+			sb.append(virtualColumn ? ColumnName : DB.getDatabase().quoteColumnName(ColumnName));
 		
 		sb.append(Operator);
 		if ( ! (Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL)))
