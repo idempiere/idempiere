@@ -1382,9 +1382,9 @@ public class Doc_MatchInv extends Doc
 
 		BigDecimal acctDifference = null;
 		//	Full MR in currency
-		if (matchInvSource.compareTo(invoiceSource) == 0)//if (allocationSource.abs().compareTo(invoiceSource.abs()) == 0)
+		if (matchInvSource.compareTo(invoiceSource) == 0)
 		{
-			acctDifference = matchInvAccounted.abs().subtract(invoiceAccounted.abs());	//	gain is negative//acctDifference = invoiceAccounted.abs().subtract(allocationAccounted.abs());
+			acctDifference = matchInvAccounted.abs().subtract(invoiceAccounted.abs());	//	gain is negative
 			StringBuilder d2 = new StringBuilder("(full) = ").append(acctDifference);
 			if (log.isLoggable(Level.FINE)) log.fine(d2.toString());
 			description.append(" - ").append(d2);
@@ -1601,14 +1601,14 @@ public class Doc_MatchInv extends Doc
 					StringBuilder sql = new StringBuilder()
 						.append("SELECT SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
 						.append(" FROM Fact_Acct ")
-						.append("WHERE AD_Table_ID=? AND Record_ID=?")	//	match inv
+						.append("WHERE AD_Table_ID=? AND (Record_ID=? OR Record_ID=?)")	//	match inv
 						.append(" AND C_AcctSchema_ID=?")
 						.append(" AND PostingType='A'")
 						.append(" AND Account_ID=?");
 					
 					// For Match Inv
 					List<Object> valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-							MMatchInv.Table_ID, matchInv.get_ID(), as.getC_AcctSchema_ID(), acct.getAccount_ID());
+							MMatchInv.Table_ID, matchInv.get_ID(), matchInv.getRef_MatchInv_ID() > 0 ? matchInv.getRef_MatchInv_ID() : -1, as.getC_AcctSchema_ID(), acct.getAccount_ID());
 					if (valuesMatchInv != null) {
 						totalAmtSourceDr = (BigDecimal) valuesMatchInv.get(0);
 						if (totalAmtSourceDr == null)
@@ -1639,13 +1639,19 @@ public class Doc_MatchInv extends Doc
 							{
 								matchInvSource = matchInvSource.add(totalAmtSourceDr);
 								matchInvAccounted = matchInvAccounted.add(totalAmtAcctDr).subtract(totalAmtAcctCr);
-								currencyAdjustment = currencyAdjustment.add(totalAmtAcctCr);
+								if (invoice.isCreditMemo())
+									currencyAdjustment = currencyAdjustment.add(totalAmtAcctDr);
+								else
+									currencyAdjustment = currencyAdjustment.add(totalAmtAcctCr);
 							}
 							else
 							{
 								matchInvSource = matchInvSource.add(totalAmtSourceCr);
 								matchInvAccounted = matchInvAccounted.add(totalAmtAcctCr).subtract(totalAmtAcctDr);
-								currencyAdjustment = currencyAdjustment.add(totalAmtAcctDr);
+								if (invoice.isCreditMemo())
+									currencyAdjustment = currencyAdjustment.add(totalAmtAcctCr);
+								else
+									currencyAdjustment = currencyAdjustment.add(totalAmtAcctDr);
 							}
 						}
 					}
@@ -1653,14 +1659,14 @@ public class Doc_MatchInv extends Doc
 					sql = new StringBuilder()
 						.append("SELECT SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
 						.append(" FROM Fact_Acct ")
-						.append("WHERE AD_Table_ID=? AND Record_ID=?")	//	match inv
+						.append("WHERE AD_Table_ID=? AND (Record_ID=? OR Record_ID=?)")	//	match inv
 						.append(" AND C_AcctSchema_ID=?")
 						.append(" AND PostingType='A'")
 						.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)");
 					
 					// For Match Inv
 					valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-							MMatchInv.Table_ID, matchInv.get_ID(), as.getC_AcctSchema_ID(), 
+							MMatchInv.Table_ID, matchInv.get_ID(), matchInv.getRef_MatchInv_ID() > 0 ? matchInv.getRef_MatchInv_ID() : -1, as.getC_AcctSchema_ID(), 
 							gain.getAccount_ID(), loss.getAccount_ID(), as.getCurrencyBalancing_Acct().getAccount_ID());
 					if (valuesMatchInv != null) {
 						totalAmtSourceDr = (BigDecimal) valuesMatchInv.get(0);
@@ -1677,7 +1683,6 @@ public class Doc_MatchInv extends Doc
 							totalAmtAcctCr = Env.ZERO;
 						
 						matchInvAccounted = matchInvAccounted.subtract(totalAmtAcctDr).subtract(totalAmtAcctCr).add(currencyAdjustment);
-//						matchInvSource = matchInvSource.subtract(totalAmtSourceDr).subtract(totalAmtSourceCr).add(currencyAdjustment);
 					}
 				}
 				
