@@ -168,7 +168,22 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	    }
 	    else if (head.getChildren().size() > 0)
 	    {
-	    	return;
+	    	if (this.getItemRenderer() instanceof WListItemRenderer)
+	    	{
+	    		WListItemRenderer renderer = (WListItemRenderer) this.getItemRenderer();
+	    		if (renderer.getTableColumns().size() != head.getChildren().size())
+	    		{
+	    			head.getChildren().clear();
+	    		}
+	    		else
+	    		{
+	    			return;
+	    		}
+	    	}
+	    	else
+	    	{
+	    		return;
+	    	}
 	    }
 
 	    // render list head
