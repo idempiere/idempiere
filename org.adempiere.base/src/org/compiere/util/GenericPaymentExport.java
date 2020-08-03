@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.DBException;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaySelectionLine;
@@ -184,20 +185,20 @@ public class GenericPaymentExport implements PaymentExport
 	 *  @param C_BPartner_ID BPartner
 	 *  @return info array
 	 */
-	private static String[] getBPartnerInfo (int C_BPartner_ID)
+	private String[] getBPartnerInfo (int C_BPartner_ID)
 	{
 		String[] bp = new String[10];
 
 		String sql = "SELECT bp.Value, bp.Name, c.Name AS Contact, "
 			+ "a.Address1, a.Address2, a.City, r.Name AS Region, a.Postal, "
 			+ "cc.Name AS Country, bp.ReferenceNo "
-			+ "FROM C_BPartner bp, AD_User c, C_BPartner_Location l, C_Location a, C_Region r, C_Country cc "
+			+ "FROM C_BPartner bp "
+			+ "LEFT OUTER JOIN AD_User c ON (bp.C_BPartner_ID=c.C_BPartner_ID) "
+			+ "INNER JOIN C_BPartner_Location l ON (bp.C_BPartner_ID=l.C_BPartner_ID) "
+			+ "INNER JOIN C_Location a ON (l.C_Location_ID=a.C_Location_ID) "
+			+ "LEFT OUTER JOIN C_Region r ON (a.C_Region_ID=r.C_Region_ID) "
+			+ "INNER JOIN C_Country cc ON (a.C_Country_ID=cc.C_Country_ID) "
 			+ "WHERE bp.C_BPartner_ID=?"        // #1
-			+ " AND bp.C_BPartner_ID=c.C_BPartner_ID(+)"
-			+ " AND bp.C_BPartner_ID=l.C_BPartner_ID"
-			+ " AND l.C_Location_ID=a.C_Location_ID"
-			+ " AND a.C_Region_ID=r.C_Region_ID(+)"
-			+ " AND a.C_Country_ID=cc.C_Country_ID "
 			+ "ORDER BY l.IsBillTo DESC";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -243,7 +244,7 @@ public class GenericPaymentExport implements PaymentExport
 		}
 		catch (SQLException e)
 		{
-			s_log.log(Level.SEVERE, sql, e);
+			throw new DBException(e);
 		}
 		finally
 		{
