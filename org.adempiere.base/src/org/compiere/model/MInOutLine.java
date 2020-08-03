@@ -514,6 +514,13 @@ public class MInOutLine extends X_M_InOutLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOutLine"));
 			return false;
 		}
+		if (getParent().pendingConfirmations()) {
+			if (  newRecord ||
+				(is_ValueChanged(COLUMNNAME_MovementQty) && !is_ValueChanged(COLUMNNAME_TargetQty))) {
+				log.saveError("SaveError", Msg.parseTranslation(getCtx(), "@Open@: @M_InOutConfirm_ID@"));
+				return false;
+			}
+		}
 		// Locator is mandatory if no charge is defined - teo_sarca BF [ 2757978 ]
 		if(getProduct() != null && MProduct.PRODUCTTYPE_Item.equals(getProduct().getProductType()))
 		{
@@ -644,6 +651,10 @@ public class MInOutLine extends X_M_InOutLine
 	{
 		if (! getParent().getDocStatus().equals(MInOut.DOCSTATUS_Drafted)) {
 			log.saveError("Error", Msg.getMsg(getCtx(), "CannotDelete"));
+			return false;
+		}
+		if (getParent().pendingConfirmations()) {
+			log.saveError("DeleteError", Msg.parseTranslation(getCtx(), "@Open@: @M_InOutConfirm_ID@"));
 			return false;
 		}
 		// IDEMPIERE-3391 Not possible to delete a line in the Material Receipt window

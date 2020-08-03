@@ -69,7 +69,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1226522383231204912L;
+	private static final long serialVersionUID = 5791054523079936837L;
 
 	/**
 	 * 	Create Shipment From Order
@@ -1283,22 +1283,10 @@ public class MInOut extends X_M_InOut implements DocAction
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
-		//	Outstanding (not processed) Incoming Confirmations ?
-		MInOutConfirm[] confirmations = getConfirmations(true);
-		for (int i = 0; i < confirmations.length; i++)
-		{
-			MInOutConfirm confirm = confirmations[i];
-			if (!confirm.isProcessed())
-			{
-				if (MInOutConfirm.CONFIRMTYPE_CustomerConfirmation.equals(confirm.getConfirmType()))
-					continue;
-				//
-				m_processMsg = "Open @M_InOutConfirm_ID@: " +
-					confirm.getConfirmTypeName() + " - " + confirm.getDocumentNo();
-				return DocAction.STATUS_InProgress;
-			}
+		if (pendingCustomerConfirmations()) {
+			m_processMsg = "@Open@: @M_InOutConfirm_ID@";
+			return DocAction.STATUS_InProgress;
 		}
-
 
 		//	Implicit Approval
 		if (!isApproved())
@@ -1719,6 +1707,39 @@ public class MInOut extends X_M_InOut implements DocAction
 		setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
 	}	//	completeIt
+
+	/**
+	 * Outstanding (not processed) Customer Confirmations ?
+	 * @return true if there are pending Customer Confirmations
+	 */
+	public boolean pendingCustomerConfirmations() {
+		MInOutConfirm[] confirmations = getConfirmations(true);
+		for (int i = 0; i < confirmations.length; i++) {
+			MInOutConfirm confirm = confirmations[i];
+			if (!confirm.isProcessed()) {
+				if (MInOutConfirm.CONFIRMTYPE_CustomerConfirmation.equals(confirm.getConfirmType())) {
+					continue;
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Outstanding (not processed) Confirmations ?
+	 * @return true if there are pending Confirmations
+	 */
+	public boolean pendingConfirmations() {
+		MInOutConfirm[] confirmations = getConfirmations(true);
+		for (int i = 0; i < confirmations.length; i++) {
+			MInOutConfirm confirm = confirmations[i];
+			if (!confirm.isProcessed()) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/* Save array of documents to process AFTER completing this one */
 	ArrayList<PO> docsPostProcess = new ArrayList<PO>();

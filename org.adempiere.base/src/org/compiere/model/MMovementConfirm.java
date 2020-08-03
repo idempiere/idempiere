@@ -82,7 +82,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 			cLine.saveEx(move.get_TrxName());
 		}
 		return confirm;
-	}	//	MInOutConfirm
+	}	//	create
 
 	
 	/**************************************************************************
@@ -124,7 +124,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		this (move.getCtx(), 0, move.get_TrxName());
 		setClientOrg(move);
 		setM_Movement_ID(move.getM_Movement_ID());
-	}	//	MInOutConfirm
+	}	//	MMovementConfirm
 	
 	/**	Confirm Lines					*/
 	protected MMovementLineConfirm[]	m_lines = null;
@@ -235,7 +235,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 			log.severe("Could not create PDF - " + e.getMessage());
 		}
 		return null;
-	}	//	getPDF
+	}	//	createPDF
 
 	/**
 	 * 	Create PDF file
@@ -409,7 +409,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 						+ " - Difference=" + confirm.getDifferenceQty());
 					
 					if (m_processMsg == null)
-						m_processMsg = "Differnce Doc not created";
+						m_processMsg = "Difference Doc not created";
 					return DocAction.STATUS_Invalid;
 				}
 			}
