@@ -1127,6 +1127,8 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
                 && (event.getFirstRow() == WTableModelEvent.ALL_ROWS))
         {
             this.repaint();
+            //IDEMPIERE-4396 Force zk ListBox to Sync Model after sorting
+            super.setModel(this.getModel());
         }
         else if ((event.getType() == WTableModelEvent.CONTENTS_CHANGED)
         		&& event.getFirstRow() != WTableModelEvent.ALL_ROWS
