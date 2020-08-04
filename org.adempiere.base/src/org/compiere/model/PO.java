@@ -4795,6 +4795,7 @@ public abstract class PO
 	}
 	
 	@Override
+	@Deprecated
 	protected Object clone() throws CloneNotSupportedException {
 		PO clone = (PO) super.clone();
 		clone.m_trxName = null;

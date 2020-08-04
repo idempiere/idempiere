@@ -72,6 +72,16 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn
 		this.setEntityType(targetInfoWindow.getEntityType());
 	}
 
+	/**
+	 * copy constructor
+	 * @param copy
+	 */
+	public MInfoColumn(MInfoColumn copy) {
+		this(Env.getCtx(), 0, (String)null);
+		copyPO(copy);
+		this.m_parent = copy.m_parent != null ? new MInfoWindow(copy.m_parent) : null;
+	}
+	
 	/** Parent						*/
 	private MInfoWindow	m_parent = null;
 
@@ -219,17 +229,4 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn
 		else
 			return MValRule.get(getCtx(), getAD_Val_Rule_ID());
 	}
-
-	@Override
-	protected MInfoColumn clone() {
-		try {
-			MInfoColumn ic = (MInfoColumn) super.clone();
-			ic.m_parent = null;
-			return ic;
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	
 }	//	MInfoColumn
