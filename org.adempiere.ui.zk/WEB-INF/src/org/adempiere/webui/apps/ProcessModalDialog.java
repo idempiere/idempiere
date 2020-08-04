@@ -176,6 +176,15 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		getParameterPanel().restoreContext();
 		this.detach();
 	}	//	dispose
+	
+	@Override
+	public void autoStart() 	
+	{	
+		this.setBorder("none");	
+		this.setTitle(null);
+		this.getFirstChild().setVisible(false);	
+		super.autoStart();	
+	}	
 
 	@Override
 	public void showBusyDialog() {
