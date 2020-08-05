@@ -101,6 +101,20 @@ public class MPrintFormat extends X_AD_PrintFormat
 		m_items = getItems();
 	}	//	MPrintFormat
 
+	/**
+	 * Copy constructor
+	 * @param copy
+	 */
+	public MPrintFormat(MPrintFormat copy)
+	{
+		this(Env.getCtx(), 0, (String)null);
+		copyPO(copy);
+		this.m_translationViewLanguage = copy.m_translationViewLanguage;
+		this.m_items = copy.m_items != null ? Arrays.stream(copy.m_items).map(MPrintFormatItem::new).toArray(MPrintFormatItem[]::new) : null;
+		this.m_language = copy.m_language != null ? new Language(copy.m_language) : null;
+		this.m_tFormat = copy.m_tFormat != null ? new MPrintTableFormat(copy.m_tFormat) : null;
+	}
+	
 	/** Items							*/
 	private MPrintFormatItem[]		m_items = null;
 	/** Translation View Language		*/
@@ -1116,11 +1130,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 
 		if (pf != null)
 		{
-			try {
-				pf = pf.clone();
-			} catch (CloneNotSupportedException e) {
-				throw new RuntimeException(e);
-			}
+			pf = new MPrintFormat(pf);
 		}
 		return pf;
 	}	//	get
@@ -1254,6 +1264,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	}
 
 	@Override
+	@Deprecated
 	public MPrintFormat clone() throws CloneNotSupportedException {
 		MPrintFormat clone = (MPrintFormat) super.clone();
 		clone.m_items = m_items == null ? null : new MPrintFormatItem[m_items.length];
