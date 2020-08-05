@@ -111,6 +111,21 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 		super(ctx, rs, trxName);
 	}	//	MPrintFormatItem
 
+	/**
+	 * Copy constructor
+	 * @param copy
+	 */
+	public MPrintFormatItem(MPrintFormatItem copy)
+	{
+		this(Env.getCtx(), 0, (String)null);
+		copyPO(copy);
+		this.m_columnName = copy.m_columnName;
+		this.m_newTranslationLabel = copy.m_newTranslationLabel;
+		this.m_translationLabelChanged = copy.m_translationLabelChanged;
+		this.m_translationLabel = copy.m_translationLabel != null ? new HashMap<String, String>(copy.m_translationLabel) : null;
+		this.m_translationSuffix = copy.m_translationSuffix != null ? new HashMap<String, String>(copy.m_translationSuffix) : null;
+	}
+	
 	/**	Locally cached column name			*/
 	private String 					m_columnName = null;
 	/** Locally cached label translations			*/

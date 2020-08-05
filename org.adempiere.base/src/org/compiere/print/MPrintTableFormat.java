@@ -86,6 +86,39 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 		super(ctx, rs, trxName);
 	}	//	MPrintTableFormat
 	
+	/**
+	 * Copy constructor
+	 * @param copy
+	 */
+	public MPrintTableFormat(MPrintTableFormat copy)
+	{
+		this(Env.getCtx(), 0, (String)null);
+		copyPO(copy);
+		this.standard_Font = copy.standard_Font;
+		this.funct_Font = copy.funct_Font;
+		this.functBG_Color = copy.functBG_Color;
+		this.functFG_Color = copy.functFG_Color;
+		this.hdrLine_Color = copy.hdrLine_Color;
+		this.header_Font = copy.header_Font;
+		this.header_Stroke = copy.header_Stroke;
+		this.headerBG_Color = copy.headerBG_Color;
+		this.headerFG_Color = copy.headerFG_Color;
+		this.lineH_Color = copy.lineH_Color;
+		this.lineH_Stroke = copy.lineH_Stroke;
+		this.lineV_Color = copy.lineV_Color;
+		this.lineV_Stroke = copy.lineV_Stroke;
+		this.m_image = copy.m_image;
+		this.m_image_water_mark = copy.m_image_water_mark;
+		this.pageFooter_Font = copy.pageFooter_Font;
+		this.pageFooterBG_Color = copy.pageFooterBG_Color;
+		this.pageFooterFG_Color = copy.pageFooterFG_Color;
+		this.pageHeader_Font = copy.pageHeader_Font;
+		this.pageHeaderBG_Color = copy.pageHeaderBG_Color;
+		this.pageHeaderFG_Color = copy.pageHeaderFG_Color;
+		this.parameter_Color = copy.parameter_Color;
+		this.parameter_Font = copy.parameter_Font;
+	}
+	
 	/*************************************************************************/
 
 	private Font 	standard_Font = new Font(null);

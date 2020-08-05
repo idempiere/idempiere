@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_InfoRelated;
+import org.compiere.util.Env;
 
 public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn {
 	/**
@@ -35,6 +36,15 @@ public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * Copy constructor
+	 * @param copy
+	 */
+	public MInfoRelated(MInfoRelated copy) {
+		this(Env.getCtx(), 0, (String)null);
+		copyPO(copy);
+	}
+	
 	public MInfoColumn getLinkInfoColumn() {
 		if (log.isLoggable(Level.INFO)) log.info("Link Column ID: -----  : " + getRelatedColumn_ID());
 
