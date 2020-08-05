@@ -1127,6 +1127,9 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
                 && (event.getFirstRow() == WTableModelEvent.ALL_ROWS))
         {
             this.repaint();
+            //sync model with listbox
+            ListModelTable model = this.getModel();
+            model.updateComponent(0, model.getSize()-1);
         }
         else if ((event.getType() == WTableModelEvent.CONTENTS_CHANGED)
         		&& event.getFirstRow() != WTableModelEvent.ALL_ROWS
