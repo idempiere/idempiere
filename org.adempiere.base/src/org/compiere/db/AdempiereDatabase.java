@@ -380,7 +380,14 @@ public interface AdempiereDatabase
 	 * @return variable length character data type name
 	 */
 	public String getVarcharDataType();
-	
+
+	/**
+	 * @return variable length character data type suffix
+	 */
+	public default String getVarcharLengthSuffix() {
+		return "";
+	};
+
 	/**
 	 * 
 	 * @return binary large object data type name
@@ -460,6 +467,7 @@ public interface AdempiereDatabase
 	 * @return alter column sql
 	 */
 	public String getSQLModify (MTable table, MColumn column, boolean setNullOption);
-		
+
+	
 }   //  AdempiereDatabase
 

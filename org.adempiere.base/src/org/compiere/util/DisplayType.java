@@ -624,7 +624,7 @@ public final class DisplayType
 	{
 		if (columnName.equals("EntityType")
 			|| columnName.equals ("AD_Language"))
-			return getDatabase().getVarcharDataType() + "(" + fieldLength + ")";
+			return getDatabase().getVarcharDataType() + "(" + fieldLength + getDatabase().getVarcharLengthSuffix() + ")";
 		//	ID
 		if (DisplayType.isID(displayType))
 		{
@@ -640,7 +640,7 @@ public final class DisplayType
 			else if (fieldLength < 4)
 				return getDatabase().getCharacterDataType()+"(" + fieldLength + ")";
 			else	//	EntityType, AD_Language	fallback
-				return getDatabase().getVarcharDataType()+"(" + fieldLength + ")";
+				return getDatabase().getVarcharDataType()+"(" + fieldLength + getDatabase().getVarcharLengthSuffix() + ")";
 		}
 		//
 		if (displayType == DisplayType.Integer)
@@ -660,10 +660,10 @@ public final class DisplayType
 			if (fieldLength == 1)
 				return getDatabase().getCharacterDataType()+"(" + fieldLength + ")";
 			else
-				return getDatabase().getVarcharDataType()+"(" + fieldLength + ")";
+				return getDatabase().getVarcharDataType()+"(" + fieldLength + getDatabase().getVarcharLengthSuffix() + ")";
 		}
 		if (displayType == DisplayType.Color)
-			return getDatabase().getVarcharDataType()+"(" + fieldLength + ")";
+			return getDatabase().getVarcharDataType()+"(" + fieldLength + getDatabase().getVarcharLengthSuffix() + ")";
 		if (displayType == DisplayType.Button)
 		{
 			if (columnName.endsWith("_ID"))
@@ -685,7 +685,7 @@ public final class DisplayType
 		if (columnName.endsWith("_ID"))
 			return getDatabase().getNumericDataType()+"(10)";
 
-		return getDatabase().getVarcharDataType()+"(" + fieldLength + ")";
+		return getDatabase().getVarcharDataType()+"(" + fieldLength + getDatabase().getVarcharLengthSuffix() + ")";
 	}	//	getSQLDataType
 
 	/**
