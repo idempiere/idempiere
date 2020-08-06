@@ -352,5 +352,13 @@ public interface AdempiereDatabase
 	 * @return subset sql clause
 	 */
 	public String intersectClauseForCSV(String columnName, String csv);
+
+	/**
+	 * @return variable length character data type suffix
+	 */
+	public default String getVarcharLengthSuffix() {
+		return "";
+	};
+
 }   //  AdempiereDatabase
 

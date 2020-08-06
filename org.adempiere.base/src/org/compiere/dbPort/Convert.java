@@ -385,7 +385,7 @@ public abstract class Convert
 	
 				} catch (Exception e) {
 					String error = "Error expression: " + regex + " - " + e;
-					log.info(error);
+					log.warning(error);
 					m_conversionError = error;
 				}
 			}
