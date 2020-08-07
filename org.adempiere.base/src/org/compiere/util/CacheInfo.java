@@ -61,6 +61,8 @@ public class CacheInfo implements Serializable {
 	private boolean distributed;
 	private InetAddress nodeAddress;
 	private String nodeId;
+	private long hit;
+	private long miss;
 
 	/**
 	 * 
@@ -72,6 +74,8 @@ public class CacheInfo implements Serializable {
 		expireMinutes = cache.getExpireMinutes();
 		maxSize = cache.getMaxSize();
 		distributed = cache.isDistributed();
+		hit = cache.getHit();
+		miss = cache.getMiss();
 	}
 
 	/**
@@ -131,6 +135,22 @@ public class CacheInfo implements Serializable {
 		return nodeId;
 	}
 
+	/**
+	 * 
+	 * @return hit count
+	 */
+	public long getHit() {
+		return hit;
+	}
+	
+	/**
+	 * 
+	 * @return miss count
+	 */
+	public long getMiss() {
+		return miss;
+	}
+	
 	/**
 	 * 
 	 * @param sortByName
