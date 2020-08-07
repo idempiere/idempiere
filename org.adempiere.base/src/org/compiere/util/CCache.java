@@ -303,7 +303,10 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		expire();
 		V v = cache.get(key);
 		if (v == null)
-			m_miss.getAndAdd(1);
+			if (nullList.contains(key))
+				m_hit.getAndAdd(1);
+			else
+				m_miss.getAndAdd(1);
 		else
 			m_hit.getAndAdd(1);
 		return v;
