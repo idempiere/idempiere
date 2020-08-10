@@ -129,7 +129,7 @@ public class CacheTest extends AbstractTestCase {
 		assertEquals(oak, p2.getM_Product_ID());
 		assertTrue(pc.getHit() > hit, "Second get of product Oak, cache hit should increase");
 		
-		p2.setDescription("Test Update");
+		p2.setDescription("Test Update @ " + System.currentTimeMillis());
 		p2.saveEx();
 		
 		//get after p2 update, miss should increase
@@ -143,5 +143,7 @@ public class CacheTest extends AbstractTestCase {
 		p1 = MProduct.get(Env.getCtx(), mulch);
 		assertEquals(mulch, p1.getM_Product_ID());
 		assertTrue(pc.getHit() > hit, "Get of product Mulch after update of product Oak, cache hit should increase");
+		
+		rollback();
 	}
 }
