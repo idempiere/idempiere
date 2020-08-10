@@ -263,9 +263,9 @@ public class CacheMgt
 	}
 
 	/**
-	 * @return
+	 * @return cache instances
 	 */
-	protected synchronized CacheInterface[] getInstancesAsArray() {
+	public synchronized CacheInterface[] getInstancesAsArray() {
 		return m_instances.toArray(new CacheInterface[0]);
 	}
 	

@@ -427,12 +427,17 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	public int reset(int recordId) {
 		if (recordId <= 0)
 			return reset();
-				
-		if (!nullList.isEmpty()) {
-			if (nullList.remove(recordId)) return 1;
+
+		K firstKey = cache.keySet().iterator().next();
+		if (firstKey != null && firstKey instanceof Integer) {
+			if (!nullList.isEmpty()) {
+				if (nullList.remove(recordId)) return 1;
+			}
+			V removed = cache.remove(recordId);
+			return removed != null ? 1 : 0;
+		} else {
+			return reset();
 		}
-		V removed = cache.remove(recordId);
-		return removed != null ? 1 : 0;
 	}
 
 	@Override

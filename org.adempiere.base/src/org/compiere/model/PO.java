@@ -2384,7 +2384,7 @@ public abstract class PO
 			m_createNew = false;
 		}
 		if (!newRecord) {
-			CacheMgt.get().reset(p_info.getTableName());
+			CacheMgt.get().reset(p_info.getTableName(), get_ID());
 			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID());
 		} else if (get_ID() > 0 && success)
 			CacheMgt.get().newRecord(p_info.getTableName(), get_ID());
