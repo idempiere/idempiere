@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
@@ -428,7 +429,8 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		if (recordId <= 0)
 			return reset();
 
-		K firstKey = cache.keySet().iterator().next();
+		Iterator<K> iterator = cache.keySet().iterator();
+		K firstKey = iterator.hasNext() ? iterator.next() : null;
 		if (firstKey != null && firstKey instanceof Integer) {
 			if (!nullList.isEmpty()) {
 				if (nullList.remove(recordId)) return 1;
