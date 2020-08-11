@@ -152,10 +152,21 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 
 
 		//	****	Find Product
+		// first check for duplicate UPCs
+		sql = new StringBuilder ("UPDATE I_Product i ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=more than one product with this UPC,' ")
+			.append("WHERE I_IsImported<>'Y'")
+			.append(" AND EXISTS (SELECT 1 FROM M_Product mp")
+			.append(" JOIN M_Product mp2 on mp.AD_Client_ID=mp2.AD_Client_ID AND mp.upc = mp2.upc AND mp.M_Product_ID <> mp2.M_Product_ID")
+			.append(" WHERE i.AD_Client_ID=mp.AD_Client_ID AND i.upc = mp.upc)").append(clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (no != 0)
+			log.warning("Not Unique UPC=" + no);
+
 		//	EAN/UPC
 		sql = new StringBuilder ("UPDATE I_Product i ")
 			.append("SET M_Product_ID=(SELECT M_Product_ID FROM M_Product p")
-			.append(" WHERE i.UPC=p.UPC AND i.AD_Client_ID=p.AD_Client_ID and p.IsActive = 'Y') ")
+			.append(" WHERE i.UPC=p.UPC AND i.AD_Client_ID=p.AD_Client_ID) ")
 			.append("WHERE M_Product_ID IS NULL")
 			.append(" AND I_IsImported='N'").append(clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
