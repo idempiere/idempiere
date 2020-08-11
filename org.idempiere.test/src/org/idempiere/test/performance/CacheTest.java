@@ -129,6 +129,7 @@ public class CacheTest extends AbstractTestCase {
 		assertEquals(oak, p2.getM_Product_ID());
 		assertTrue(pc.getHit() > hit, "Second get of product Oak, cache hit should increase");
 		
+		p2.set_TrxName(getTrxName());
 		p2.setDescription("Test Update @ " + System.currentTimeMillis());
 		p2.saveEx();
 		
@@ -143,6 +144,24 @@ public class CacheTest extends AbstractTestCase {
 		p1 = MProduct.get(Env.getCtx(), mulch);
 		assertEquals(mulch, p1.getM_Product_ID());
 		assertTrue(pc.getHit() > hit, "Get of product Mulch after update of product Oak, cache hit should increase");
+		
+		//create p3 to test delete
+		MProduct p3 = new MProduct(Env.getCtx(), 0, getTrxName());
+		String name = "Test@"+System.currentTimeMillis();
+		p3.setValue(name);
+		p3.setName(name);
+		p3.setM_Product_Category_ID(p1.getM_Product_Category_ID());
+		p3.setC_UOM_ID(p1.getC_UOM_ID());
+		p3.setC_TaxCategory_ID(p1.getC_TaxCategory_ID());
+		p3.saveEx();
+		
+		p3.deleteEx(true);
+		
+		//cache for p2 not effected by p3 delete, hit should increase
+		hit = pc.getHit();
+		p2 = MProduct.get(Env.getCtx(), oak);
+		assertEquals(oak, p2.getM_Product_ID());
+		assertTrue(pc.getHit() > hit, "Get of product Oak after delete of product Mulch, cache hit should increase");
 		
 		rollback();
 	}

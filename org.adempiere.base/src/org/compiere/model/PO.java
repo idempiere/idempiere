@@ -3542,7 +3542,7 @@ public abstract class PO
 				int size = p_info.getColumnCount();
 				m_oldValues = new Object[size];
 				m_newValues = new Object[size];
-				CacheMgt.get().reset(p_info.getTableName());
+				CacheMgt.get().reset(p_info.getTableName(), Record_ID);
 			}
 		}
 		finally
