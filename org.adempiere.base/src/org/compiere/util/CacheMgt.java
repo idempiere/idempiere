@@ -176,9 +176,15 @@ public class CacheMgt
 						total += i.get();
 					}
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					throw new RuntimeException(e);
 				} catch (ExecutionException e) {
-					e.printStackTrace();
+					if (e.getCause() != null)
+						if (e.getCause() instanceof RuntimeException)
+							throw (RuntimeException)e.getCause();
+						else
+							throw new RuntimeException(e.getCause());
+					else
+						throw new RuntimeException(e);
 				}
 				return total;
 			} else {
@@ -263,9 +269,9 @@ public class CacheMgt
 	}
 
 	/**
-	 * @return
+	 * @return cache instances
 	 */
-	protected synchronized CacheInterface[] getInstancesAsArray() {
+	public synchronized CacheInterface[] getInstancesAsArray() {
 		return m_instances.toArray(new CacheInterface[0]);
 	}
 	
