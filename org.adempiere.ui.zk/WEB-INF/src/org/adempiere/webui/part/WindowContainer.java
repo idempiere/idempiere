@@ -50,6 +50,7 @@ import org.zkoss.zul.Menuitem;
  */
 public class WindowContainer extends AbstractUIPart implements EventListener<Event>
 {
+    public static final int VK_ESC            = 0x1B;
 	private static final String OPTION_CLOSE = "Close";
 	private static final String OPTION_CLOSE_OTHER_WINDOWS = "CloseOtherWindows";
 	private static final String OPTION_CLOSE_WINDOWS_TO_THE_LEFT = "CloseWindowsToTheLeft";
@@ -94,6 +95,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         tabbox = new Tabbox();
         tabbox.addEventListener("onPageAttached", this);
         tabbox.addEventListener("onPageDetached", this);
+        tabbox.addEventListener(Events.ON_CANCEL, this);
         tabbox.setSupportTabDragDrop(!isMobile());
         tabbox.setActiveBySeq(true);
         tabbox.setCheckVisibleOnlyForNextActive(!isMobile());
@@ -662,8 +664,15 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 					&& tabbox.getSelectedTab() != null && tabbox.getSelectedTab().getPreviousSibling() != null) {
 				tabbox.setSelectedTab((org.zkoss.zul.Tab)tabbox.getSelectedTab().getPreviousSibling());
 				keyEvent.stopPropagation();
+			 
+// IDEMPIERE-2941 - global event Listener for 0x1B (ESC) keycode (Propagation problem)
+//			}else if (keyEvent.getKeyCode() == VK_ESC && tabbox.getSelectedTab() != null && getSelectedTab().isClosable()) {
+//				closeActiveWindow();
+//				keyEvent.stopPropagation();
 			}
-		}
+		}else if (event.getName().equals(Events.ON_CANCEL) && tabbox.getSelectedTab() != null && getSelectedTab().isClosable()) {	//IDEMPIERE-2941 do not close not closable tabs (Home)
+			closeActiveWindow();
+    	}
 		
 	}
 }
