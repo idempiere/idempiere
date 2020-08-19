@@ -59,6 +59,7 @@ import org.zkforge.keylistener.Keylistener;
 import org.zkoss.web.Attributes;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zk.au.out.AuScript;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
@@ -251,10 +252,13 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		//auto commit user preference
     	userPreferences.fillPreferences();
 
-		keyListener = new Keylistener();
-		keyListener.setPage(this.getPage());
-		keyListener.setCtrlKeys("@a@c@d@e@f@h@l@m@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup$#f2^#f2");
-		keyListener.setAutoBlur(false);
+    	if (keyListener == null || keyListener.getPage() != this.getPage())
+    	{
+			keyListener = new Keylistener();
+			keyListener.setPage(this.getPage());
+			keyListener.setCtrlKeys("@a@c@d@e@f@h@l@m@n@o@p@r@s@t@z@x@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup$#f2^#f2");
+			keyListener.setAutoBlur(false);
+    	}
 		
 		//create new desktop
 		IDesktop appDesktop = createDesktop();
@@ -540,12 +544,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		HttpServletRequest httpRequest = (HttpServletRequest) Executions.getCurrent().getNativeRequest();		
 		Env.setContext(properties, SessionContextListener.SERVLET_SESSION_ID, httpRequest.getSession().getId());
 		
-		//stop key listener
-		if (keyListener != null) {
-			keyListener.detach();
-			keyListener = null;
-		}
-		
 		//desktop cleanup
 		IDesktop appDesktop = getAppDeskop();
 		if (appDesktop != null)
@@ -556,7 +554,12 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	
     	//remove all root components except this
     	Page page = getPage();
-    	page.removeComponents();
+    	//need to keep keyListener
+    	Component[] roots = page.getRoots().toArray(new Component[0]);
+    	for (Component root : roots) {
+    		if (root != keyListener)
+    			root.detach();
+    	}
     	this.setPage(page);
         
     	//clear session attributes
