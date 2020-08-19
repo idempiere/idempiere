@@ -102,17 +102,38 @@ public class MPrintFormat extends X_AD_PrintFormat
 	}	//	MPrintFormat
 
 	/**
-	 * Copy constructor
+	 * 
 	 * @param copy
 	 */
-	public MPrintFormat(MPrintFormat copy)
+	public MPrintFormat(MPrintFormat copy) 
 	{
-		this(Env.getCtx(), 0, (String)null);
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPrintFormat(Properties ctx, MPrintFormat copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPrintFormat(Properties ctx, MPrintFormat copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
 		copyPO(copy);
 		this.m_translationViewLanguage = copy.m_translationViewLanguage;
-		this.m_items = copy.m_items != null ? Arrays.stream(copy.m_items).map(MPrintFormatItem::new).toArray(MPrintFormatItem[]::new) : null;
+		this.m_items = copy.m_items != null ? Arrays.stream(copy.m_items).map(e -> {return new MPrintFormatItem(ctx, e, trxName);}).toArray(MPrintFormatItem[]::new) : null;
 		this.m_language = copy.m_language != null ? new Language(copy.m_language) : null;
-		this.m_tFormat = copy.m_tFormat != null ? new MPrintTableFormat(copy.m_tFormat) : null;
+		this.m_tFormat = copy.m_tFormat != null ? new MPrintTableFormat(ctx, copy.m_tFormat, trxName) : null;
 	}
 	
 	/** Items							*/
@@ -1121,18 +1142,16 @@ public class MPrintFormat extends X_AD_PrintFormat
 			pf = (MPrintFormat)s_formats.get(key);
 		if (pf == null)
 		{
-			pf = new MPrintFormat (ctx, AD_PrintFormat_ID, null);
-			if (pf.get_ID() <= 0)
-				pf = null;
-			else
-				s_formats.put(key, pf);
+			pf = new MPrintFormat (ctx, AD_PrintFormat_ID, (String)null);
+			if (pf.get_ID() == AD_PrintFormat_ID)
+			{
+				s_formats.put(key, new MPrintFormat(Env.getCtx(), pf));
+				return pf;
+			}
+			return null;
 		}
 
-		if (pf != null)
-		{
-			pf = new MPrintFormat(pf);
-		}
-		return pf;
+		return new MPrintFormat(ctx, pf);
 	}	//	get
 
 	/**

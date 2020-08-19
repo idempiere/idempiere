@@ -55,6 +55,34 @@ public class MUserDefProc extends X_AD_UserDef_Proc {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MUserDefProc(MUserDefProc copy) {
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MUserDefProc(Properties ctx, MUserDefProc copy) {
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MUserDefProc(Properties ctx, MUserDefProc copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	private static MUserDefProc[] getAll (Properties ctx, int processID)
 	{
 		if (m_fullList == null) {
@@ -97,7 +125,7 @@ public class MUserDefProc extends X_AD_UserDef_Proc {
 				.append(AD_User_ID)
 				.toString();
 		if (s_cache.containsKey(key))
-			return s_cache.get(key);
+			return s_cache.get(key) != null ? new MUserDefProc(ctx, s_cache.get(key)) : null;
 
 		//candidates
 		MUserDefProc[] candidates = getAll(ctx, AD_Process_ID);
@@ -160,7 +188,7 @@ public class MUserDefProc extends X_AD_UserDef_Proc {
 	    if (weight[maxindex] > -1) {
 	    	MUserDefProc retValue = null;
 	    	retValue = candidates[maxindex];
-	    	s_cache.put(key, retValue);
+	    	s_cache.put(key, new MUserDefProc(Env.getCtx(), retValue));
 	    	return retValue;
 	    } else {
 	    	s_cache.put(key, null);

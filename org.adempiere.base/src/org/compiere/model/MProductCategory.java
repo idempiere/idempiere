@@ -54,11 +54,14 @@ public class MProductCategory extends X_M_Product_Category
 		Integer ii = Integer.valueOf(M_Product_Category_ID);
 		MProductCategory retValue = (MProductCategory)s_cache.get(ii);
 		if (retValue != null)
+			return new MProductCategory(ctx, retValue);
+		retValue = new MProductCategory (ctx, M_Product_Category_ID, (String)null);
+		if (retValue.get_ID () == M_Product_Category_ID)
+		{
+			s_cache.put (M_Product_Category_ID, new MProductCategory(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MProductCategory (ctx, M_Product_Category_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (M_Product_Category_ID, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 	
 	/**
@@ -151,6 +154,37 @@ public class MProductCategory extends X_M_Product_Category
 		super(ctx, rs, trxName);
 	}	//	MProductCategory
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MProductCategory(MProductCategory copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MProductCategory(Properties ctx, MProductCategory copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MProductCategory(Properties ctx, MProductCategory copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Before Save
 	 *	@param newRecord new

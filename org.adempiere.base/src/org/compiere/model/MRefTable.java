@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 
 public class MRefTable extends X_AD_Ref_Table
@@ -59,6 +60,37 @@ public class MRefTable extends X_AD_Ref_Table
 		super (ctx, rs, trxName);
 	}	//	MRefTable
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRefTable(MRefTable copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRefTable(Properties ctx, MRefTable copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRefTable(Properties ctx, MRefTable copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	@Override
 	public I_AD_Table getAD_Table() throws RuntimeException {
 		MTable table = MTable.get(getCtx(), getAD_Table_ID(), get_TrxName());
@@ -85,13 +117,15 @@ public class MRefTable extends X_AD_Ref_Table
 		Integer ii = Integer.valueOf(AD_Reference_ID);
 		MRefTable retValue = (MRefTable)s_cache.get(ii);
 		if (retValue != null) {
-			retValue.set_TrxName(trxName);
-			return retValue;
+			return new MRefTable(ctx, retValue, trxName);
 		}
 		retValue = new MRefTable (ctx, AD_Reference_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (AD_Reference_ID, retValue);
-		return retValue;
+		if (retValue.get_ID () == AD_Reference_ID)
+		{
+			s_cache.put (AD_Reference_ID, new MRefTable(Env.getCtx(), retValue));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 }	//	MRefTable

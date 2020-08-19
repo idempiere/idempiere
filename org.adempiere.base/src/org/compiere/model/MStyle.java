@@ -4,6 +4,7 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -25,7 +26,7 @@ public class MStyle extends X_AD_Style {
 
 	/**	Cache					*/
 	private static  CCache<Integer,MStyle> s_cache = new CCache<Integer,MStyle>(Table_Name, 30, 60);
-	private X_AD_StyleLine[] m_lines = null;
+	private MStyleLine[] m_lines = null;
 	
     public static final String SCLASS_PREFIX = "@sclass=";
     public static final String ZCLASS_PREFIX = "@zclass=";
@@ -38,23 +39,57 @@ public class MStyle extends X_AD_Style {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MStyle(MStyle copy) {
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MStyle(Properties ctx, MStyle copy) {
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MStyle(Properties ctx, MStyle copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_lines = copy.m_lines != null ? Arrays.stream(copy.m_lines).map(e -> {return new MStyleLine(ctx, e, trxName);}).toArray(MStyleLine[]::new) : null;
+	}
+	
 	public static MStyle get (Properties ctx, int AD_Style_ID)
 	{
 		Integer key = Integer.valueOf(AD_Style_ID);
 		MStyle retValue = (MStyle)s_cache.get(key);
 		if (retValue == null)
 		{
-			retValue = new MStyle (ctx, AD_Style_ID, null);
-			s_cache.put(key, retValue);
+			retValue = new MStyle (ctx, AD_Style_ID, (String)null);
+			if (retValue.get_ID() == AD_Style_ID)
+			{
+				s_cache.put(key, new MStyle(Env.getCtx(), retValue));
+				return retValue;
+			}
+			return null;
 		}
-		return retValue;
+		return new MStyle(ctx, retValue);
 	}	//	get
 	
-	public X_AD_StyleLine[] getStyleLines() {
+	public MStyleLine[] getStyleLines() {
 		if (m_lines == null) {
 			Query query = new Query(Env.getCtx(), I_AD_StyleLine.Table_Name, "AD_Style_ID=? AND InlineStyle IS NOT NULL", null);
 			List<X_AD_StyleLine> lines = query.setParameters(getAD_Style_ID()).setOnlyActiveRecords(true).setOrderBy("Line").list();
-			m_lines = lines.toArray(new X_AD_StyleLine[0]);
+			m_lines = lines.toArray(new MStyleLine[0]);
 		}
 		return m_lines;
 	}

@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -112,6 +113,38 @@ public class MAttribute extends X_M_Attribute
 		super(ctx, rs, trxName);
 	}	//	MAttribute
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAttribute(MAttribute copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAttribute(Properties ctx, MAttribute copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAttribute(Properties ctx, MAttribute copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_values = copy.m_values != null ? Arrays.stream(copy.m_values).map(e -> {var v = new MAttributeValue(ctx, e, trxName); return v;}).toArray(MAttributeValue[]::new) : null;
+	}
+	
 	/**	Values						*/
 	private MAttributeValue[]		m_values = null;
 

@@ -60,6 +60,38 @@ public class MPrintFont extends X_AD_PrintFont
 		super (ctx, rs, trxName);
 	}
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPrintFont(MPrintFont copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPrintFont(Properties ctx, MPrintFont copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPrintFont(Properties ctx, MPrintFont copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_cacheFont = copy.m_cacheFont;
+	}
+	
 	/** Font cached					*/
 	private Font 	m_cacheFont = null;
 
@@ -209,10 +241,15 @@ public class MPrintFont extends X_AD_PrintFont
 		MPrintFont pf = (MPrintFont)s_fonts.get(key);
 		if (pf == null)
 		{
-			pf = new MPrintFont (Env.getCtx(), AD_PrintFont_ID, null);
-			s_fonts.put(key, pf);
+			pf = new MPrintFont (Env.getCtx(), AD_PrintFont_ID, (String)null);
+			if (pf.get_ID() == AD_PrintFont_ID)
+			{
+				s_fonts.put(key, new MPrintFont(Env.getCtx(), pf));
+				return pf;
+			}
+			return null;
 		}
-		return pf;
+		return new MPrintFont(Env.getCtx(), pf);
 	}	//	get
 
 	/*************************************************************************/

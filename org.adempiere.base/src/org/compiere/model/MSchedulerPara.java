@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Env;
+
 /**
  * 	Scheduler Parameter Model
  *	
@@ -54,6 +56,38 @@ public class MSchedulerPara extends X_AD_Scheduler_Para
 	{
 		super (ctx, rs, trxName);
 	}	//	MSchedulerPara
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MSchedulerPara(MSchedulerPara copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MSchedulerPara(Properties ctx, MSchedulerPara copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MSchedulerPara(Properties ctx, MSchedulerPara copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_parameter = copy.m_parameter != null ? new MProcessPara(ctx, copy.m_parameter, trxName) : null;
+	}
 	
 	/** Parameter Column Name		*/
 	private MProcessPara	m_parameter = null;

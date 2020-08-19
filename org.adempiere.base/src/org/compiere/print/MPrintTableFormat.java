@@ -87,12 +87,33 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 	}	//	MPrintTableFormat
 	
 	/**
-	 * Copy constructor
+	 * 
 	 * @param copy
 	 */
-	public MPrintTableFormat(MPrintTableFormat copy)
+	public MPrintTableFormat(MPrintTableFormat copy) 
 	{
-		this(Env.getCtx(), 0, (String)null);
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPrintTableFormat(Properties ctx, MPrintTableFormat copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPrintTableFormat(Properties ctx, MPrintTableFormat copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
 		copyPO(copy);
 		this.standard_Font = copy.standard_Font;
 		this.funct_Font = copy.funct_Font;
@@ -587,10 +608,20 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 		if (tf == null)
 		{
 			if (AD_PrintTableFormat_ID == 0)
+			{
 				tf = getDefault (ctx);
+			}
 			else
-				tf = new MPrintTableFormat (ctx, AD_PrintTableFormat_ID, null);
-			s_cache.put(ii, tf);
+			{
+				tf = new MPrintTableFormat (ctx, AD_PrintTableFormat_ID, (String)null);
+				if (tf.get_ID() != AD_PrintTableFormat_ID)
+					return null;
+			}
+			s_cache.put(tf.get_ID(), new MPrintTableFormat(Env.getCtx(), tf));
+		}
+		else
+		{
+			tf = new MPrintTableFormat(ctx, tf);
 		}
 		tf.setStandard_Font(standard_font);
 		return tf;

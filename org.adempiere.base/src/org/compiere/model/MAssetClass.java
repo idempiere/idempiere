@@ -40,6 +40,37 @@ public class MAssetClass extends X_A_Asset_Class
 		super (ctx, rs, trxName);
 	}	//	MAssetClass
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAssetClass(MAssetClass copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAssetClass(Properties ctx, MAssetClass copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAssetClass(Properties ctx, MAssetClass copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**		*/
 	private static CCache<Integer, MAssetClass> s_cache = new CCache<Integer, MAssetClass>(Table_Name, 20);
 
@@ -55,13 +86,15 @@ public class MAssetClass extends X_A_Asset_Class
 		
 		MAssetClass assetClass = s_cache.get(id);
 		if (assetClass == null) {
-			assetClass = new MAssetClass(ctx, id, null);
-		}
-		if (assetClass.get_ID() != id) {
-			return null;
-		}
-		s_cache.put(id, assetClass);
-		return assetClass;
+			assetClass = new MAssetClass(ctx, id, (String)null);
+			if (assetClass.get_ID() != id) {
+				return null;
+			}
+			s_cache.put(id, new MAssetClass(Env.getCtx(), assetClass));
+			return assetClass;
+		}		
+		
+		return new MAssetClass(ctx, assetClass);
 	} // get
 	
 	/**

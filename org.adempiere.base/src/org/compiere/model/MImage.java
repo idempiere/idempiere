@@ -34,7 +34,7 @@ import javax.swing.ImageIcon;
 
 import org.adempiere.base.Core;
 import org.compiere.util.CCache;
-import org.compiere.util.Ini;
+import org.compiere.util.Env;
 
 /**
  *  Image Model
@@ -66,11 +66,14 @@ public class MImage extends X_AD_Image
 		Integer key = Integer.valueOf(AD_Image_ID);
 		MImage retValue = (MImage) s_cache.get (key);
 		if (retValue != null)
+			return new MImage(ctx, retValue);
+		retValue = new MImage (ctx, AD_Image_ID, (String)null);
+		if (retValue.get_ID () == AD_Image_ID)
+		{
+			s_cache.put (key, new MImage(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MImage (ctx, AD_Image_ID, null);
-		if (retValue.get_ID () != 0 && Ini.isClient())
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -102,6 +105,36 @@ public class MImage extends X_AD_Image
 		initImageStoreDetails(ctx, trxName);
 	}	//	MImage
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MImage(MImage copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MImage(Properties ctx, MImage copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MImage(Properties ctx, MImage copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/** The Image                   */
 	private Image			m_image = null;

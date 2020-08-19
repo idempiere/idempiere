@@ -71,16 +71,13 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 			return new MLocation(ctx, C_Location_ID, trxName);
 		//
 		Integer key = Integer.valueOf(C_Location_ID);
-		MLocation retValue = null;
-		if (trxName == null)
-			retValue = (MLocation) s_cache.get (key);
+		MLocation retValue = s_cache.get (key);
 		if (retValue != null)
-			return retValue;
+			return new MLocation(ctx, retValue, trxName);
 		retValue = new MLocation (ctx, C_Location_ID, trxName);
-		if (retValue.get_ID () != 0)		//	found
+		if (retValue.get_ID () == C_Location_ID)		//	found
 		{
-			if (trxName == null)
-				s_cache.put (key, retValue);
+			s_cache.put (key, new MLocation(Env.getCtx(), retValue));
 			return retValue;
 		}
 		return null;					//	not found
@@ -190,6 +187,39 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		super(ctx, rs, trxName);
 	}	//	MLocation
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MLocation(MLocation copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MLocation(Properties ctx, MLocation copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MLocation(Properties ctx, MLocation copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_c = copy.m_c != null ? new MCountry(ctx, copy.m_c, trxName) : null;
+		this.m_r = copy.m_r != null ? new MRegion(ctx, copy.m_r, trxName) : null;
+	}
+	
 	private 	MCountry		m_c = null;
 	private 	MRegion			m_r = null;
 	

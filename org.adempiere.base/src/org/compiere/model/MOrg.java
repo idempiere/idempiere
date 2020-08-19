@@ -52,7 +52,7 @@ public class MOrg extends X_AD_Org
 								.list();
 		for (MOrg org : list)
 		{
-			s_cache.put(org.get_ID(), org);
+			s_cache.put(org.get_ID(), new MOrg(Env.getCtx(), org));
 		}
 		return list.toArray(new MOrg[list.size()]);
 	}	//	getOfClient
@@ -67,11 +67,14 @@ public class MOrg extends X_AD_Org
 	{
 		MOrg retValue = s_cache.get (AD_Org_ID);
 		if (retValue != null)
+			return new MOrg(ctx, retValue);
+		retValue = new MOrg (ctx, AD_Org_ID, (String)null);
+		if (retValue.get_ID () == AD_Org_ID)
+		{
+			s_cache.put (AD_Org_ID, new MOrg(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MOrg (ctx, AD_Org_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (AD_Org_ID, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
@@ -118,6 +121,27 @@ public class MOrg extends X_AD_Org
 		setValue (value);
 		setName (name);
 	}	//	MOrg
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MOrg(MOrg copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MOrg(Properties ctx, MOrg copy) 
+	{
+		super(ctx, 0, (String)null);
+		copyPO(copy);
+		this.m_linkedBPartner = copy.m_linkedBPartner;
+	}
 
 	/**	Linked Business Partner			*/
 	private Integer 	m_linkedBPartner = null;

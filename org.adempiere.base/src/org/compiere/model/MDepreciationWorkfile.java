@@ -276,6 +276,40 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		dump();
 	}
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDepreciationWorkfile(MDepreciationWorkfile copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDepreciationWorkfile(Properties ctx, MDepreciationWorkfile copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDepreciationWorkfile(Properties ctx, MDepreciationWorkfile copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_asset = copy.m_asset;
+		this.m_isFiscal = copy.m_isFiscal;
+		this.m_buildDepreciation = copy.m_buildDepreciation;
+	}
+
 	/** Logger										*/
 	private CLogger log = CLogger.getCLogger(getClass());
 
@@ -317,12 +351,9 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		}
 		
 		final MultiKey key = new MultiKey(A_Asset_ID, postingType);
-		if (trxName == null)
-		{
-			MDepreciationWorkfile wk = s_cacheAsset.get(key);
-			if (wk != null)
-				return wk;
-		}
+		MDepreciationWorkfile wk = s_cacheAsset.get(key);
+		if (wk != null)
+			return new MDepreciationWorkfile(ctx, wk, trxName);
 		/* @win temporary change as this code is causing duplicate create MDepreciationWorkfile on asset addition
 		final String whereClause = COLUMNNAME_A_Asset_ID+"=?"
 									+" AND "+COLUMNNAME_PostingType+"=? AND "+COLUMNNAME_A_QTY_Current+">?";
@@ -334,14 +365,13 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 									+" AND "+COLUMNNAME_PostingType+"=? AND " +  COLUMNNAME_C_AcctSchema_ID + "=?" ;
 
 		int acctSchemaId =  C_AcctSchema_ID==0 ? MClient.get(ctx).getAcctSchema().get_ID() : C_AcctSchema_ID;
-		MDepreciationWorkfile wk = new Query(ctx, MDepreciationWorkfile.Table_Name, whereClause, trxName)
+		wk = new Query(ctx, MDepreciationWorkfile.Table_Name, whereClause, trxName)
 				.setParameters(new Object[]{A_Asset_ID, postingType,acctSchemaId})
 				.firstOnly();
-		
-		
-		if (trxName == null && wk != null)
+				
+		if (wk != null)
 		{
-			s_cacheAsset.put(key, wk);
+			s_cacheAsset.put(key, new MDepreciationWorkfile(Env.getCtx(), wk));
 		}
 		return wk;
 	}

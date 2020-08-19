@@ -18,12 +18,15 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.keyvalue.MultiKey;
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	Table Validator Scripts
@@ -53,11 +56,14 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator
 		final Integer key = AD_Table_ScriptValidator_ID;
 		MTableScriptValidator retValue = (MTableScriptValidator) s_cache.get (key);
 		if (retValue != null)
+			return new MTableScriptValidator(ctx, retValue);
+		retValue = new MTableScriptValidator (ctx, AD_Table_ScriptValidator_ID, (String)null);
+		if (retValue.get_ID () == AD_Table_ScriptValidator_ID)
+		{
+			s_cache.put (key, new MTableScriptValidator(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MTableScriptValidator (ctx, AD_Table_ScriptValidator_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 	
 	/**
@@ -75,7 +81,7 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator
 		if (mvrs != null)
 		{
 			if (mvrs.size() > 0)
-				return mvrs;
+				return mvrs.stream().map(e ->{return new MTableScriptValidator(ctx, e);}).collect(Collectors.toCollection(ArrayList::new));
 			else
 				return null;
 		}
@@ -90,12 +96,12 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator
 		// Store to cache
 		for (MTableScriptValidator rule : mvrs)
 		{
-			s_cache.put(rule.get_ID(), rule);
+			s_cache.put(rule.get_ID(), new MTableScriptValidator(Env.getCtx(), rule));
 		}
 		
 		// Store to cache
 		if (mvrs != null)
-			s_cacheTableEvent.put(key, mvrs);
+			s_cacheTableEvent.put(key, mvrs.stream().map(e ->{return new MTableScriptValidator(Env.getCtx(), e);}).collect(Collectors.toCollection(ArrayList::new)));
 		//
 		if (mvrs != null && mvrs.size() > 0)
 			return mvrs;
@@ -131,6 +137,37 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator
 	{
 		super(ctx, rs, trxName);
 	}	//	MTableScriptValidator
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MTableScriptValidator(MTableScriptValidator copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MTableScriptValidator(Properties ctx, MTableScriptValidator copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MTableScriptValidator(Properties ctx, MTableScriptValidator copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	@Override
 	protected boolean beforeSave(boolean newRecord)

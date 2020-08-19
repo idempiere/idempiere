@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 /**
  * @author Ashley G Ramdass
@@ -59,6 +60,37 @@ public class MPOSTerminal extends X_U_POSTerminal
     }
     
     /**
+	 * 
+	 * @param copy
+	 */
+	public MPOSTerminal(MPOSTerminal copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPOSTerminal(Properties ctx, MPOSTerminal copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPOSTerminal(Properties ctx, MPOSTerminal copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+    /**
      * @param ctx Context
      * @param U_POSTerminal_ID Terminal ID
      * @return Terminal
@@ -69,16 +101,21 @@ public class MPOSTerminal extends X_U_POSTerminal
         MPOSTerminal retValue = (MPOSTerminal)s_cache.get(key);
         if (retValue == null)
         {
-            retValue = new MPOSTerminal (ctx, U_POSTerminal_ID, null);
-            if (retValue.get_ID() <= 0)
+            retValue = new MPOSTerminal (ctx, U_POSTerminal_ID, (String)null);
+            if (retValue.get_ID() != U_POSTerminal_ID)
             {
                 return null;
             }
-            s_cache.put(key, retValue);
+            s_cache.put(key, new MPOSTerminal(Env.getCtx(), retValue));
+            checkLock(retValue);
+            return retValue;
         }
-        
-        checkLock(retValue);
-        return retValue;
+        else
+        {
+        	retValue = new MPOSTerminal(ctx, retValue);
+        	checkLock(retValue);
+        	return retValue;
+        }
     }
     
     protected void loadComplete(boolean success)

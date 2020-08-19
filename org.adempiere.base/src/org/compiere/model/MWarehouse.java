@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -66,11 +67,15 @@ public class MWarehouse extends X_M_Warehouse
 		Integer key = Integer.valueOf(M_Warehouse_ID);
 		MWarehouse retValue = (MWarehouse)s_cache.get(key);
 		if (retValue != null)
-			return retValue;
+			return new MWarehouse(ctx, retValue, trxName);
 		//
 		retValue = new MWarehouse (ctx, M_Warehouse_ID, trxName);
-		s_cache.put (key, retValue);
-		return retValue;
+		if (retValue.get_ID() == M_Warehouse_ID)
+		{
+			s_cache.put (key, new MWarehouse(Env.getCtx(), retValue));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**
@@ -153,6 +158,38 @@ public class MWarehouse extends X_M_Warehouse
 			setC_Location_ID (org.getInfo().getC_Location_ID());
 	}	//	MWarehouse
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWarehouse(MWarehouse copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWarehouse(Properties ctx, MWarehouse copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWarehouse(Properties ctx, MWarehouse copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_locators = copy.m_locators != null ? Arrays.stream(copy.m_locators).map(e -> {return new MLocator(ctx, e, trxName);}).toArray(MLocator[]::new) : null;
+	}
+	
 	/**	Warehouse Locators				*/
 	protected MLocator[]	m_locators = null;
 	

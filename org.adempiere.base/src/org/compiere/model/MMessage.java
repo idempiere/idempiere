@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	Message Model
@@ -74,9 +75,14 @@ public class MMessage extends X_AD_Message
 				pstmt = null;
 			}
 			if (retValue != null)
-				s_cache.put(Value, retValue);
+				s_cache.put(Value, new MMessage(Env.getCtx(), retValue));
+			return retValue;
 		}
-		return retValue;
+		else
+		{
+			return new MMessage(ctx, retValue);
+		}
+		
 	}	//	get
 
 	/**
@@ -138,4 +144,35 @@ public class MMessage extends X_AD_Message
 		super(ctx, rs, trxName);
 	}	//	MMessage
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MMessage(MMessage copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MMessage(Properties ctx, MMessage copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MMessage(Properties ctx, MMessage copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 }	//	MMessage

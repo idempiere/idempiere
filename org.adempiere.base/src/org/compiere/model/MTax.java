@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -65,7 +66,7 @@ public class MTax extends X_C_Tax
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
 		MTax[] retValue = (MTax[])s_cacheAll.get(AD_Client_ID);
 		if (retValue != null)
-			return retValue;
+			return Arrays.stream(retValue).map(e -> {return new MTax(ctx, e);}).toArray(MTax[]::new);
 
 		//	Create it
 		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
@@ -76,10 +77,10 @@ public class MTax extends X_C_Tax
 								.list();
 		for (MTax tax : list)
 		{
-			s_cache.put(tax.get_ID(), tax);
+			s_cache.put(tax.get_ID(), new MTax(Env.getCtx(), tax));
 		}
 		retValue = list.toArray(new MTax[list.size()]);
-		s_cacheAll.put(AD_Client_ID, retValue);
+		s_cacheAll.put(AD_Client_ID, Arrays.stream(retValue).map(e -> {return new MTax(Env.getCtx(), e);}).toArray(MTax[]::new));
 		return retValue;
 	}	//	getAll
 
@@ -95,11 +96,14 @@ public class MTax extends X_C_Tax
 		Integer key = Integer.valueOf(C_Tax_ID);
 		MTax retValue = (MTax) s_cache.get (key);
 		if (retValue != null)
+			return new MTax(ctx, retValue);
+		retValue = new MTax (ctx, C_Tax_ID, (String)null);
+		if (retValue.get_ID () == C_Tax_ID)
+		{
+			s_cache.put (key, new MTax(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MTax (ctx, C_Tax_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**************************************************************************
@@ -154,6 +158,40 @@ public class MTax extends X_C_Tax
 		setRate (Rate == null ? Env.ZERO : Rate);
 		setC_TaxCategory_ID (C_TaxCategory_ID);	//	FK
 	}	//	MTax
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MTax(MTax copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MTax(Properties ctx, MTax copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MTax(Properties ctx, MTax copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_childTaxes = copy.m_childTaxes != null ? Arrays.stream(copy.m_childTaxes).map(e -> {return new MTax(ctx, e, trxName);}).toArray(MTax[]::new) : null;
+		this.m_postals = copy.m_postals != null ? Arrays.stream(copy.m_postals).map(e -> {return new MTaxPostal(ctx, e, trxName);}).toArray(MTaxPostal[]::new) : null;
+	}
+
 
 	/**
 	 * 	Get Child Taxes

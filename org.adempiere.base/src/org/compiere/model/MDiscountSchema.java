@@ -21,6 +21,7 @@ import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -54,11 +55,14 @@ public class MDiscountSchema extends X_M_DiscountSchema
 		Integer key = Integer.valueOf(M_DiscountSchema_ID);
 		MDiscountSchema retValue = (MDiscountSchema) s_cache.get (key);
 		if (retValue != null)
+			return new MDiscountSchema(ctx, retValue);
+		retValue = new MDiscountSchema (ctx, M_DiscountSchema_ID, (String)null);
+		if (retValue.get_ID () == M_DiscountSchema_ID)
+		{
+			s_cache.put (key, new MDiscountSchema(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MDiscountSchema (ctx, M_DiscountSchema_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
@@ -97,6 +101,39 @@ public class MDiscountSchema extends X_M_DiscountSchema
 	{
 		super(ctx, rs, trxName);
 	}	//	MDiscountSchema
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDiscountSchema(MDiscountSchema copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDiscountSchema(Properties ctx, MDiscountSchema copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDiscountSchema(Properties ctx, MDiscountSchema copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_breaks = copy.m_breaks != null ? Arrays.stream(copy.m_breaks).map(e -> {return new MDiscountSchemaBreak(ctx, e, trxName);}).toArray(MDiscountSchemaBreak[]::new) : null;
+		this.m_lines = copy.m_lines != null ? Arrays.stream(copy.m_lines).map(e -> {return new MDiscountSchemaLine(ctx, e, trxName);}).toArray(MDiscountSchemaLine[]::new) : null;
+	}
 
 	/**	Breaks							*/
 	private MDiscountSchemaBreak[]	m_breaks  = null;

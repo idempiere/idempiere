@@ -23,8 +23,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CCache;
@@ -71,6 +73,37 @@ public class MImportTemplate extends X_AD_ImportTemplate
 		super(ctx, rs, trxName);
 	}	//	MImportTemplate
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MImportTemplate(MImportTemplate copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MImportTemplate(Properties ctx, MImportTemplate copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MImportTemplate(Properties ctx, MImportTemplate copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		// Validate character set vs supported
@@ -91,7 +124,7 @@ public class MImportTemplate extends X_AD_ImportTemplate
 		String key = roleid + "_" + tabid;
 		List<MImportTemplate> retValue = s_cacheRoleTab.get(key);
 		if (retValue != null)
-			return retValue;
+			return retValue.stream().map(MImportTemplate::new).collect(Collectors.toCollection(ArrayList::new));
 
 		final String where = ""
 				+ "IsActive = 'Y' "

@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 
 /**
@@ -56,12 +57,14 @@ public class MResource extends X_S_Resource
 			return null;
 		MResource r = s_cache.get(S_Resource_ID);
 		if (r == null) {
-			r = new MResource(ctx, S_Resource_ID, null);
+			r = new MResource(ctx, S_Resource_ID, (String)null);
 			if (r.get_ID() == S_Resource_ID) {
-				s_cache.put(S_Resource_ID, r);
+				s_cache.put(S_Resource_ID, new MResource(Env.getCtx(), r));
+				return r;
 			}
+			return null;
 		}
-		return r;
+		return new MResource(ctx, r);
 	}
 
 	/**
@@ -84,6 +87,38 @@ public class MResource extends X_S_Resource
 		super(ctx, rs, trxName);
 	}	//	MResource
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MResource(MResource copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MResource(Properties ctx, MResource copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MResource(Properties ctx, MResource copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_resourceType = copy.m_resourceType != null ? new MResourceType(ctx, copy.m_resourceType, trxName) : null;
+		this.m_product = copy.m_product != null ? new MProduct(ctx, copy.m_product, trxName) : null;
+	}
 	
 	/** Cached Resource Type	*/
 	private MResourceType	m_resourceType = null;

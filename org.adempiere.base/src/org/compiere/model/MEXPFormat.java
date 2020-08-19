@@ -32,12 +32,15 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 
 
 /**
@@ -73,6 +76,36 @@ public class MEXPFormat extends X_EXP_Format {
 	
 	public MEXPFormat(Properties ctx, ResultSet rs, String trxName) {
 		super (ctx, rs, trxName);
+	}
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MEXPFormat(MEXPFormat copy) {
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MEXPFormat(Properties ctx, MEXPFormat copy) {
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MEXPFormat(Properties ctx, MEXPFormat copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_lines = copy.m_lines != null ? copy.m_lines.stream().map(e -> {return new MEXPFormatLine(ctx, e, trxName);}).collect(Collectors.toCollection(ArrayList::new)) : null;
+		this.m_lines_unique = copy.m_lines_unique != null ? copy.m_lines_unique.stream().map(e -> {return new MEXPFormatLine(ctx, e, trxName);}).collect(Collectors.toCollection(ArrayList::new)) : null;
 	}
 	
 	public List<MEXPFormatLine> getFormatLines() {
@@ -114,14 +147,15 @@ public class MEXPFormat extends X_EXP_Format {
 	{
 		MEXPFormat exp_format = exp_format_by_id_cache.get(EXP_Format_ID);
 		if(exp_format != null)
-			return exp_format;
+			return new MEXPFormat(ctx, exp_format, trxName);
 		exp_format = new MEXPFormat(ctx, EXP_Format_ID , trxName);
-		if(exp_format!=null)
+		if(exp_format.getEXP_Format_ID() == EXP_Format_ID)
 		{	
-		exp_format.getFormatLines();
-		exp_format_by_id_cache.put(EXP_Format_ID, exp_format);
+			exp_format.getFormatLines();
+			exp_format_by_id_cache.put(EXP_Format_ID, new MEXPFormat(Env.getCtx(), exp_format));
+			return exp_format;
 		}
-		return exp_format;
+		return null;
 	}
 	
 	public static MEXPFormat getFormatByValueAD_Client_IDAndVersion(Properties ctx, String value, int AD_Client_ID, String version, String trxName) 
@@ -142,8 +176,8 @@ public class MEXPFormat extends X_EXP_Format {
 		if(retValue != null)
 		{	
 			retValue.getFormatLines();
-			s_cache.put (key, retValue);
-			exp_format_by_id_cache.put(retValue.getEXP_Format_ID(), retValue);
+			s_cache.put (key, new MEXPFormat(Env.getCtx(), retValue));
+			exp_format_by_id_cache.put(retValue.getEXP_Format_ID(), new MEXPFormat(Env.getCtx(), retValue));
 		}
 		
 		return retValue;
@@ -156,7 +190,7 @@ public class MEXPFormat extends X_EXP_Format {
 		
 		retValue = (MEXPFormat)s_cache.get(key);
 		if(retValue!=null)
-			return retValue;
+			return new MEXPFormat(ctx, retValue, trxName);
 		
 		StringBuilder whereClause = new StringBuilder(" AD_Client_ID = ? ")
 			.append("  AND ").append(X_EXP_Format.COLUMNNAME_AD_Table_ID).append(" = ? ")
@@ -168,8 +202,8 @@ public class MEXPFormat extends X_EXP_Format {
 		if(retValue!=null)
 		{	
 			retValue.getFormatLines();
-			s_cache.put (key, retValue);
-			exp_format_by_id_cache.put(retValue.getEXP_Format_ID(), retValue);
+			s_cache.put (key, new MEXPFormat(Env.getCtx(), retValue));
+			exp_format_by_id_cache.put(retValue.getEXP_Format_ID(), new MEXPFormat(Env.getCtx(), retValue));
 		}
 		
 		return retValue;

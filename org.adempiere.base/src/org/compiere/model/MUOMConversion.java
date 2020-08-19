@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -605,7 +606,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		Integer key = Integer.valueOf(M_Product_ID);
 		MUOMConversion[] result = (MUOMConversion[])s_conversionProduct.get(key);
 		if (result != null)
-			return result;
+			return Arrays.stream(result).map(e -> {return new MUOMConversion(ctx, e);}).toArray(MUOMConversion[]::new);
 		
 		ArrayList<MUOMConversion> list = new ArrayList<MUOMConversion>();
 		//	Add default conversion
@@ -624,7 +625,7 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		//	Convert & save
 		result = new MUOMConversion[list.size ()];
 		list.toArray (result);
-		s_conversionProduct.put(key, result);
+		s_conversionProduct.put(key, Arrays.stream(result).map(e -> {return new MUOMConversion(Env.getCtx(), e);}).toArray(MUOMConversion[]::new));
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("getProductConversions - M_Product_ID=" + M_Product_ID + " #" + result.length);
 		return result;
 	}	//	getProductConversions
@@ -693,6 +694,37 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		setMultiplyRate(Env.ONE);
 		setDivideRate(Env.ONE);
 	}	//	MUOMConversion
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MUOMConversion(MUOMConversion copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MUOMConversion(Properties ctx, MUOMConversion copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MUOMConversion(Properties ctx, MUOMConversion copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Before Save

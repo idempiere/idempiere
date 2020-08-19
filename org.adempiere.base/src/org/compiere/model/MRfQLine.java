@@ -19,11 +19,13 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 
 /**
@@ -51,11 +53,14 @@ public class MRfQLine extends X_C_RfQLine
 		Integer key = Integer.valueOf(C_RfQLine_ID);
 		MRfQLine retValue = (MRfQLine) s_cache.get (key);
 		if (retValue != null)
-			return retValue;
+			return new MRfQLine(ctx, retValue, trxName);
 		retValue = new MRfQLine (ctx, C_RfQLine_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		if (retValue.get_ID () == C_RfQLine_ID)
+		{
+			s_cache.put (key, new MRfQLine(Env.getCtx(), retValue));
+			return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -98,6 +103,38 @@ public class MRfQLine extends X_C_RfQLine
 		setC_RfQ_ID(rfq.getC_RfQ_ID());
 	}	//	MRfQLine
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRfQLine(MRfQLine copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRfQLine(Properties ctx, MRfQLine copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRfQLine(Properties ctx, MRfQLine copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_qtys = copy.m_qtys != null ? Arrays.stream(copy.m_qtys).map(e -> {return new MRfQLineQty(ctx, e, trxName);}).toArray(MRfQLineQty[]::new) : null;
+	}
+	
 	/**	Qyantities				*/
 	private MRfQLineQty[] 	m_qtys = null;
 	

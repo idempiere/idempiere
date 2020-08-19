@@ -369,19 +369,16 @@ public class MAccount extends X_C_ValidCombination
 	public static MAccount get (Properties ctx, int C_ValidCombination_ID)
 	{
 		MAccount account = s_cache.get(C_ValidCombination_ID);
-		if (account != null && account.getCtx() == ctx)
-			return account;
+		if (account != null)
+			return new MAccount(ctx, account);
 		
-		account = new MAccount(ctx, C_ValidCombination_ID, null);
+		account = new MAccount(ctx, C_ValidCombination_ID, (String)null);
 		if (account.getC_ValidCombination_ID() == C_ValidCombination_ID) 
 		{
-			s_cache.put(C_ValidCombination_ID, account);
+			s_cache.put(C_ValidCombination_ID, new MAccount(Env.getCtx(), account));
 			return account;
 		}
-		else
-		{
-			return null;
-		}
+		return null;
 	}   //  getAccount
 
 	/**
@@ -447,6 +444,38 @@ public class MAccount extends X_C_ValidCombination
 		setC_AcctSchema_ID(as.getC_AcctSchema_ID());
 	}	//	Account
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAccount(MAccount copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAccount(Properties ctx, MAccount copy)
+	{
+		this(ctx, copy, (String)null);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAccount(Properties ctx, MAccount copy, String trxName)
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_accountEV = copy.m_accountEV != null ? new MElementValue(ctx, copy.m_accountEV) : null;
+	}
+	
 	/**	Account Segment				*/
 	private MElementValue	m_accountEV = null;
 

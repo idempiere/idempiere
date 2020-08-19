@@ -26,6 +26,7 @@ import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 
 
@@ -62,12 +63,14 @@ public class MResourceType extends X_S_ResourceType
 		
 		MResourceType type = s_cache.get(S_ResourceType_ID);
 		if (type == null) {
-			type = new MResourceType(ctx, S_ResourceType_ID, null);
+			type = new MResourceType(ctx, S_ResourceType_ID, (String)null);
 			if (type.get_ID() == S_ResourceType_ID) {
-				s_cache.put(S_ResourceType_ID, type);
+				s_cache.put(S_ResourceType_ID, new MResourceType(Env.getCtx(), type));
+				return type;
 			}
+			return null;
 		}
-		return type;
+		return new MResourceType(ctx, type);
 	}
 	
 	/**
@@ -89,6 +92,37 @@ public class MResourceType extends X_S_ResourceType
 	{
 		super(ctx, rs, trxName);
 	}	//	MResourceType
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MResourceType(MResourceType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MResourceType(Properties ctx, MResourceType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MResourceType(Properties ctx, MResourceType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	@Override
 	protected boolean beforeSave(boolean newRecord)

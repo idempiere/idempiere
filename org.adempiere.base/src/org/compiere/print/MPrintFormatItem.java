@@ -112,12 +112,33 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 	}	//	MPrintFormatItem
 
 	/**
-	 * Copy constructor
+	 * 
 	 * @param copy
 	 */
-	public MPrintFormatItem(MPrintFormatItem copy)
+	public MPrintFormatItem(MPrintFormatItem copy) 
 	{
-		this(Env.getCtx(), 0, (String)null);
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPrintFormatItem(Properties ctx, MPrintFormatItem copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPrintFormatItem(Properties ctx, MPrintFormatItem copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
 		copyPO(copy);
 		this.m_columnName = copy.m_columnName;
 		this.m_newTranslationLabel = copy.m_newTranslationLabel;

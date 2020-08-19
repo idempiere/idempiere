@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -25,6 +26,7 @@ import org.adempiere.util.ProcessUtil;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFNode;
@@ -57,11 +59,14 @@ public class MProcess extends X_AD_Process
 		Integer key = Integer.valueOf(AD_Process_ID);
 		MProcess retValue = (MProcess) s_cache.get (key);
 		if (retValue != null)
+			return new MProcess(ctx, retValue);
+		retValue = new MProcess (ctx, AD_Process_ID, (String)null);
+		if (retValue.get_ID () == AD_Process_ID)
+		{
+			s_cache.put (key, new MProcess(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MProcess (ctx, AD_Process_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 	
 	/**
@@ -74,12 +79,15 @@ public class MProcess extends X_AD_Process
 	{
 		MProcess retValue = s_cacheUU.get(AD_Process_UU);
 		if (retValue != null)
-			return retValue;
+			return new MProcess(ctx, retValue);
 		int id = DB.getSQLValueEx(null, "SELECT AD_Process_ID FROM AD_Process WHERE AD_Process_UU = ? ", AD_Process_UU);
-		retValue = new MProcess (ctx, id, null);
-		if (!Util.isEmpty(retValue.getAD_Process_UU()))
-			s_cacheUU.put (retValue.getAD_Process_UU(), retValue);
-		return retValue;
+		retValue = new MProcess (ctx, id, (String)null);
+		if (!Util.isEmpty(retValue.getAD_Process_UU())) 
+		{
+			s_cacheUU.put (retValue.getAD_Process_UU(), new MProcess(Env.getCtx(), retValue));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**
@@ -97,7 +105,7 @@ public class MProcess extends X_AD_Process
 			.firstOnly();
 		if (p != null)
 		{
-			s_cache.put (p.get_ID(), p);
+			s_cache.put (p.get_ID(), new MProcess(Env.getCtx(), p));
 		}
 		return p;
 	}	//	getFromMenu
@@ -141,7 +149,38 @@ public class MProcess extends X_AD_Process
 		super(ctx, rs, trxName);
 	}	//	MProcess
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MProcess(MProcess copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
 
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MProcess(Properties ctx, MProcess copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MProcess(Properties ctx, MProcess copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_parameters = copy.m_parameters != null ? Arrays.stream(copy.m_parameters).map(e -> {return new MProcessPara(ctx, e, trxName);}).toArray(MProcessPara[]::new) : null;
+	}
+	
 	/**	Parameters					*/
 	private MProcessPara[]		m_parameters = null;
 

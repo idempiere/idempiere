@@ -91,14 +91,14 @@ public class MRegion extends X_C_Region
 	 *	@param C_Region_ID ID
 	 *	@return Country
 	 */
-	public static MRegion get (Properties ctx, int C_Region_ID)
+	public static synchronized MRegion get (Properties ctx, int C_Region_ID)
 	{
-		if (s_regions == null || s_regions.size() == 0)
+		if (s_regions.size() == 0)
 			loadAllRegions(ctx);
 		String key = String.valueOf(C_Region_ID);
 		MRegion r = (MRegion)s_regions.get(key);
 		if (r != null)
-			return r;
+			return new MRegion(ctx, r);
 		r = new MRegion (ctx, C_Region_ID, null);
 		if (r.getC_Region_ID() == C_Region_ID)
 		{
@@ -113,9 +113,9 @@ public class MRegion extends X_C_Region
 	 * 	@param ctx context
 	 *	@return Region or null
 	 */
-	public static MRegion getDefault (Properties ctx)
+	public static synchronized MRegion getDefault (Properties ctx)
 	{
-		if (s_regions == null || s_regions.size() == 0)
+		if (s_regions.size() == 0)
 			loadAllRegions(ctx);
 		return s_default;
 	}	//	get
@@ -125,12 +125,11 @@ public class MRegion extends X_C_Region
 	 * 	@param ctx context
 	 *  @return MCountry Array
 	 */
-	public static MRegion[] getRegions(Properties ctx)
+	public static synchronized MRegion[] getRegions(Properties ctx)
 	{
-		if (s_regions == null || s_regions.size() == 0)
+		if (s_regions.size() == 0)
 			loadAllRegions(ctx);
-		MRegion[] retValue = new MRegion[s_regions.size()];
-		s_regions.values().toArray(retValue);
+		MRegion[] retValue = s_regions.values().stream().map(e ->{return new MRegion(ctx, e);}).toArray(MRegion[]::new);
 		Arrays.sort(retValue, new MRegion(ctx, 0, null));
 		return retValue;
 	}	//	getRegions
@@ -141,21 +140,12 @@ public class MRegion extends X_C_Region
 	 *  @param C_Country_ID country
 	 *  @return MRegion Array
 	 */
-	public static MRegion[] getRegions (Properties ctx, int C_Country_ID)
+	public static synchronized MRegion[] getRegions (Properties ctx, int C_Country_ID)
 	{
-		if (s_regions == null || s_regions.size() == 0)
+		if (s_regions.size() == 0)
 			loadAllRegions(ctx);
-		ArrayList<MRegion> list = new ArrayList<MRegion>();
-		Iterator<MRegion> it = s_regions.values().iterator();
-		while (it.hasNext())
-		{
-			MRegion r = it.next();
-			if (r.getC_Country_ID() == C_Country_ID)
-				list.add(r);
-		}
 		//  Sort it
-		MRegion[] retValue = new MRegion[list.size()];
-		list.toArray(retValue);
+		MRegion[] retValue = s_regions.values().stream().filter(e-> e.getC_Country_ID()==C_Country_ID).map(e ->{return new MRegion(ctx, e);}).toArray(MRegion[]::new);
 		Arrays.sort(retValue, new MRegion(ctx, 0, null));
 		return retValue;
 	}	//	getRegions
@@ -204,6 +194,37 @@ public class MRegion extends X_C_Region
 		setC_Country_ID(country.getC_Country_ID());
 		setName(regionName);
 	}   //  MRegion
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRegion(MRegion copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRegion(Properties ctx, MRegion copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRegion(Properties ctx, MRegion copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 *	Return Name

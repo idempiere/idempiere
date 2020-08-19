@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  * Asset Group Model
@@ -41,6 +42,37 @@ public class MAssetGroup extends X_A_Asset_Group
 	}	//	MAssetGroup
 	
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MAssetGroup(MAssetGroup copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAssetGroup(Properties ctx, MAssetGroup copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAssetGroup(Properties ctx, MAssetGroup copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 * Get Asset Group [CACHE]
 	 * @param ctx context
 	 * @param A_Asset_Group_ID	asset group id
@@ -53,14 +85,13 @@ public class MAssetGroup extends X_A_Asset_Group
 		// Try cache
 		MAssetGroup ag = s_cache.get(A_Asset_Group_ID);
 		if (ag != null)
-			return ag;
+			return new MAssetGroup(ctx, ag);
 		// Load
-		ag = new MAssetGroup(ctx, A_Asset_Group_ID, null);
-		if (ag != null && ag.get_ID() != A_Asset_Group_ID)
-			ag = null;
+		ag = new MAssetGroup(ctx, A_Asset_Group_ID, (String)null);
+		if (ag.get_ID() != A_Asset_Group_ID)
+			return null;
 		else
-			s_cache.put(A_Asset_Group_ID, ag);
-		//
+			s_cache.put(A_Asset_Group_ID, new MAssetGroup(Env.getCtx(), ag));
 		return ag;
 	}
 	

@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 
 /**
  *	Location City Model (Value Object)
@@ -49,11 +50,11 @@ public class MCity extends X_C_City
 		Integer key = Integer.valueOf(C_City_ID);
 		MCity r = s_Cities.get(key);
 		if (r != null)
-			return r;
-		r = new MCity (ctx, C_City_ID, null);
+			return new MCity(ctx, r);
+		r = new MCity (ctx, C_City_ID, (String)null);
 		if (r.getC_City_ID() == C_City_ID)
 		{
-			s_Cities.put(key, r);
+			s_Cities.put(key, new MCity(Env.getCtx(), r));
 			return r;
 		}
 		return null;
@@ -105,6 +106,36 @@ public class MCity extends X_C_City
 		setName(cityName);
 	}   //  MCity
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MCity(MCity copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MCity(Properties ctx, MCity copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MCity(Properties ctx, MCity copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	/**
 	 *	Return Name
 	 *  @return Name

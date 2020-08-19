@@ -76,6 +76,37 @@ public class MStatusLine extends X_AD_StatusLine
 	}	//	MStatusLine
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MStatusLine(MStatusLine copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MStatusLine(Properties ctx, MStatusLine copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MStatusLine(Properties ctx, MStatusLine copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 * Get the status line defined for the window|tab|table
 	 * @param window_ID
 	 * @param tab_ID
@@ -89,7 +120,7 @@ public class MStatusLine extends X_AD_StatusLine
 		{
 			retValue = s_cache.get(key.toString());
 			if (s_log.isLoggable(Level.FINEST)) s_log.finest("Cache: " + retValue);
-			return retValue;
+			return new MStatusLine(Env.getCtx(), retValue);
 		}
 
 		String sql = ""

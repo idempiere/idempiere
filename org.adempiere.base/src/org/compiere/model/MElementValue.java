@@ -117,6 +117,26 @@ public class MElementValue extends X_C_ElementValue
 	}	//	MElementValue
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MElementValue(MElementValue copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MElementValue(Properties ctx, MElementValue copy)
+	{
+		this(ctx, 0, (String)null);
+		copyPO(copy);
+	}
+	
+	/**
 	 * 	Set/Update Settings from import
 	 *	@param imp import
 	 */

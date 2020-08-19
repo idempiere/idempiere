@@ -24,9 +24,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
@@ -69,11 +71,14 @@ public class MWFNode extends X_AD_WF_Node
 		String key = Env.getAD_Language(ctx) + "_" + AD_WF_Node_ID;
 		MWFNode retValue = (MWFNode) s_cache.get (key);
 		if (retValue != null)
+			return new MWFNode(ctx, retValue);
+		retValue = new MWFNode (ctx, AD_WF_Node_ID, (String)null);
+		if (retValue.get_ID () == AD_WF_Node_ID)
+		{
+			s_cache.put (key, new MWFNode(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MWFNode (ctx, AD_WF_Node_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
@@ -149,12 +154,49 @@ public class MWFNode extends X_AD_WF_Node
 		} catch (SQLException e) {
 			throw new AdempiereException(e);
 		}
-		if (key != null && trxName == null && !s_cache.containsKey(key))
-			s_cache.put (key, this);
+		if (key != null && !s_cache.containsKey(key))
+			s_cache.put (key, new MWFNode(Env.getCtx(), this));
 	}	//	MWFNode
 
-	
-	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWFNode(MWFNode copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWFNode(Properties ctx, MWFNode copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWFNode(Properties ctx, MWFNode copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_next = copy.m_next != null ? copy.m_next.stream().map(e -> {return new MWFNodeNext(ctx, e, trxName);}).collect(Collectors.toCollection(ArrayList::new)) : null;
+		this.m_name_trl = copy.m_name_trl;
+		this.m_description_trl = copy.m_description_trl;
+		this.m_help_trl = copy.m_help_trl;
+		this.m_translated = copy.m_translated;
+		this.m_column = copy.m_column != null ? new MColumn(ctx, copy.m_column, trxName) : null;
+		this.m_paras = copy.m_paras != null ? Arrays.stream(copy.m_paras).map(e ->{return new MWFNodePara(ctx, e, trxName);}).toArray(MWFNodePara[]::new) : null;
+		this.m_durationBaseMS = copy.m_durationBaseMS;
+	}
+
 	/**	Next Modes				*/
 	private List<MWFNodeNext>	m_next = new ArrayList<MWFNodeNext>();
 	/**	Translated Name			*/

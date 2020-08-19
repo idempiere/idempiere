@@ -65,6 +65,37 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	}	//	MUserDefWin
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MUserDefWin(MUserDefWin copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MUserDefWin(Properties ctx, MUserDefWin copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MUserDefWin(Properties ctx, MUserDefWin copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 *  Get all MUserDefWin entries related to window
 	 * 	@param ctx context
 	 *  @param window_ID window
@@ -123,7 +154,7 @@ public class MUserDefWin extends X_AD_UserDef_Win
 				.append(AD_User_ID)
 				.toString();
 		if (s_cache.containsKey(key))
-			return s_cache.get(key);
+			return s_cache.get(key) != null ? new MUserDefWin(ctx, s_cache.get(key)) : null;
 
 		// candidates
 		MUserDefWin[] candidates = getAll(ctx, window_ID);
@@ -186,7 +217,7 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	    if (weight[maxindex] > -1) {
 			MUserDefWin retValue = null;
 	    	retValue=candidates[maxindex];
-	    	s_cache.put(key, retValue);
+	    	s_cache.put(key, new MUserDefWin(Env.getCtx(), retValue));
 	    	return retValue;
 	    } else {
 	    	s_cache.put(key, null);

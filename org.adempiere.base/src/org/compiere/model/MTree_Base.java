@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	Base Tree Model.
@@ -207,11 +208,14 @@ public class MTree_Base extends X_AD_Tree
 		Integer key = Integer.valueOf(AD_Tree_ID);
 		MTree_Base retValue = (MTree_Base) s_cache.get (key);
 		if (retValue != null)
-			return retValue;
+			return new MTree_Base(ctx, retValue, trxName);
 		retValue = new MTree_Base (ctx, AD_Tree_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		if (retValue.get_ID () == AD_Tree_ID)
+		{
+			s_cache.put (key, new MTree_Base(Env.getCtx(), retValue));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	
@@ -279,6 +283,36 @@ public class MTree_Base extends X_AD_Tree
 		setIsDefault(false);
 	}	//	MTree_Base
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MTree_Base(MTree_Base copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MTree_Base(Properties ctx, MTree_Base copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MTree_Base(Properties ctx, MTree_Base copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 *	Get Node TableName

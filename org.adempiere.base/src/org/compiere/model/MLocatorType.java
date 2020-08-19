@@ -29,6 +29,7 @@ import java.util.Properties;
 
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 
 /**
  *	Warehouse Locator Type Object
@@ -48,20 +49,20 @@ public class MLocatorType extends X_M_LocatorType {
 	 *	@return MLocator
 	 */
 	public static MLocatorType get (Properties ctx, int M_LocatorType_ID) {
-		if (s_cache == null)
-			s_cache	= new CCache<Integer,MLocatorType>(Table_Name, 20);
 		Integer key = Integer.valueOf(M_LocatorType_ID);
 		MLocatorType retValue = (MLocatorType) s_cache.get (key);
 		if (retValue != null)
+			return new MLocatorType(ctx, retValue);
+		retValue = new MLocatorType (ctx, M_LocatorType_ID, (String)null);
+		if (retValue.get_ID () == M_LocatorType_ID) {
+			s_cache.put (key, new MLocatorType(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MLocatorType (ctx, M_LocatorType_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
-	private volatile static CCache<Integer,MLocatorType> s_cache; 
+	private final static CCache<Integer,MLocatorType> s_cache = new CCache<Integer,MLocatorType>(Table_Name, 20); 
 
 	/**	Logger						*/
 	@SuppressWarnings("unused")
@@ -92,6 +93,34 @@ public class MLocatorType extends X_M_LocatorType {
 		super(ctx, rs, trxName);
 	}	//	MLocatorType
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MLocatorType(MLocatorType copy) {
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MLocatorType(Properties ctx, MLocatorType copy) {
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MLocatorType(Properties ctx, MLocatorType copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 *	Get String Representation
 	 * 	@return Name

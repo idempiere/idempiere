@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 
 /**
@@ -57,19 +58,16 @@ public class MActivity extends X_C_Activity
 		MActivity activity = s_cache.get(C_Activity_ID);
 		if (activity != null)
 		{
-			return activity;
+			return new MActivity(ctx, activity);
 		}
 		// Load from DB
-		activity = new MActivity(ctx, C_Activity_ID, null);
+		activity = new MActivity(ctx, C_Activity_ID, (String)null);
 		if (activity.get_ID() == C_Activity_ID)
 		{
-			s_cache.put(C_Activity_ID, activity);
+			s_cache.put(C_Activity_ID, new MActivity(Env.getCtx(), activity));
+			return activity;
 		}
-		else
-		{
-			activity = null;
-		}
-		return activity;
+		return null;
 	}
 
 	/**
@@ -94,6 +92,36 @@ public class MActivity extends X_C_Activity
 		super(ctx, rs, trxName);
 	}	//	MActivity
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MActivity(MActivity copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MActivity(Properties ctx, MActivity copy)
+	{
+		this(ctx, copy, (String)null);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MActivity(Properties ctx, MActivity copy, String trxName)
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	After Save.

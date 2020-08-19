@@ -55,10 +55,15 @@ public class MStatus extends X_R_Status
 		MStatus retValue = (MStatus)s_cache.get(key);
 		if (retValue == null)
 		{
-			retValue = new MStatus (ctx, R_Status_ID, null);
-			s_cache.put(key, retValue);
+			retValue = new MStatus (ctx, R_Status_ID, (String)null);
+			if (retValue.get_ID() == R_Status_ID)
+			{
+				s_cache.put(key, new MStatus(Env.getCtx(), retValue));
+				return retValue;
+			}
+			return null;
 		}
-		return retValue;
+		return new MStatus(ctx, retValue);
 	}	//	get
 
 	/**
@@ -72,7 +77,7 @@ public class MStatus extends X_R_Status
 		Integer key = Integer.valueOf(R_RequestType_ID);
 		MStatus retValue = (MStatus)s_cacheDefault.get(key);
 		if (retValue != null)
-			return retValue;
+			return new MStatus(ctx, retValue);
 		//	Get New
 		String sql = "SELECT * FROM R_Status s "
 			+ "WHERE EXISTS (SELECT * FROM R_RequestType rt "
@@ -101,7 +106,7 @@ public class MStatus extends X_R_Status
 			pstmt = null;
 		}
 		if (retValue != null)
-			s_cacheDefault.put(key, retValue);
+			s_cacheDefault.put(key, new MStatus(Env.getCtx(), retValue));
 		return retValue;
 	}	//	getDefault
 
@@ -185,7 +190,37 @@ public class MStatus extends X_R_Status
 		super (ctx, rs, trxName);
 	}	//	MStatus
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MStatus(MStatus copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
 
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MStatus(Properties ctx, MStatus copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MStatus(Properties ctx, MStatus copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Before Save
 	 *	@param newRecord new

@@ -20,6 +20,7 @@ import java.awt.Dimension;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -29,6 +30,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.compiere.wf.MWFNode;
 
 /**
@@ -61,14 +63,15 @@ public class MWindow extends X_AD_Window
 	{
 		Integer key = Integer.valueOf(AD_Window_ID);
 		MWindow retValue = s_cache.get (key);
-		if (retValue != null && retValue.getCtx() == ctx) {
+		if (retValue != null) {
+			return new MWindow(ctx, retValue);
+		}
+		retValue = new MWindow (ctx, AD_Window_ID, (String)null);
+		if (retValue.get_ID () == AD_Window_ID) {
+			s_cache.put (key, new MWindow(Env.getCtx(), retValue));
 			return retValue;
 		}
-		retValue = new MWindow (ctx, AD_Window_ID, null);
-		if (retValue.get_ID () != 0) {
-			s_cache.put (key, retValue);
-		}
-		return retValue;
+		return null;
 	}	//	get
 
 	/**
@@ -79,27 +82,24 @@ public class MWindow extends X_AD_Window
 	 */
 	public static synchronized MWindow get(Properties ctx, String uu)
 	{
-		if (uu == null)
+		if (Util.isEmpty(uu, true))
 			return null;
 		MWindow retValue = null;
 		Iterator<MWindow> it = s_cache.values().iterator();
 		while (it.hasNext())
 		{
 			retValue = it.next();
-			if (uu.equals(retValue.getAD_Window_UU()) && retValue.getCtx() == ctx)
+			if (uu.equals(retValue.getAD_Window_UU()))
 			{
-				return retValue;
+				return new MWindow(ctx, retValue);
 			}
 		}
 
 		final String whereClause = MWindow.COLUMNNAME_AD_Window_UU + "=?";
-		MWindow window = new Query(Env.getCtx(), MWindow.Table_Name, whereClause, null)
+		retValue = new Query(ctx, MWindow.Table_Name, whereClause, (String)null)
 				.setParameters(uu)
 				.setOnlyActiveRecords(true)
 				.first();
-
-		if (window != null)
-			retValue = window;
 
 		return retValue;
 	}
@@ -132,6 +132,38 @@ public class MWindow extends X_AD_Window
 	{
 		super(ctx, rs, trxName);
 	}	//	M_Window
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWindow(MWindow copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWindow(Properties ctx, MWindow copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWindow(Properties ctx, MWindow copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_tabs = copy.m_tabs != null ? Arrays.stream(copy.m_tabs).map(e -> {return new MTab(ctx, e, trxName);}).toArray(MTab[]::new) : null;
+	}
 	
 	/**
 	 * 	Set Window Size

@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 /**
  * 	Reporting Hierarchy Model
@@ -45,11 +46,14 @@ public class MHierarchy extends X_PA_Hierarchy
 		Integer key = Integer.valueOf(PA_Hierarchy_ID);
 		MHierarchy retValue = (MHierarchy)s_cache.get (key);
 		if (retValue != null)
+			return new MHierarchy(ctx, retValue);
+		retValue = new MHierarchy (ctx, PA_Hierarchy_ID, (String)null);
+		if (retValue.get_ID () == PA_Hierarchy_ID)
+		{
+			s_cache.put (key, new MHierarchy(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MHierarchy (ctx, PA_Hierarchy_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -77,6 +81,37 @@ public class MHierarchy extends X_PA_Hierarchy
 	{
 		super (ctx, rs, trxName);
 	}	//	MHierarchy
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MHierarchy(MHierarchy copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MHierarchy(Properties ctx, MHierarchy copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MHierarchy(Properties ctx, MHierarchy copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Get AD_Tree_ID based on tree type

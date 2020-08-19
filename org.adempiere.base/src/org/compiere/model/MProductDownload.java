@@ -27,6 +27,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 
 /**
@@ -132,6 +133,37 @@ public class MProductDownload extends X_M_ProductDownload
 	{
 		super (ctx, rs, trxName);
 	}	//	MProductDownload
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MProductDownload(MProductDownload copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MProductDownload(Properties ctx, MProductDownload copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MProductDownload(Properties ctx, MProductDownload copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	String Representation

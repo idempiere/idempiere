@@ -26,6 +26,7 @@ import org.compiere.sla.SLACriteria;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	Service Level Agreement Criteria Model
@@ -53,11 +54,14 @@ public class MSLACriteria extends X_PA_SLA_Criteria
 		Integer key = Integer.valueOf(PA_SLA_Criteria_ID);
 		MSLACriteria retValue = (MSLACriteria) s_cache.get (key);
 		if (retValue != null)
-			return retValue;
+			return new MSLACriteria(ctx, retValue, trxName);
 		retValue = new MSLACriteria (ctx, PA_SLA_Criteria_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		if (retValue.get_ID () == PA_SLA_Criteria_ID)
+		{
+			s_cache.put (key, new MSLACriteria(Env.getCtx(), retValue));
+			return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -86,6 +90,37 @@ public class MSLACriteria extends X_PA_SLA_Criteria
 		super(ctx, rs, trxName);
 	}	//	MSLACriteria
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MSLACriteria(MSLACriteria copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MSLACriteria(Properties ctx, MSLACriteria copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MSLACriteria(Properties ctx, MSLACriteria copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Get Goals of Criteria
 	 *	@return array of Goals

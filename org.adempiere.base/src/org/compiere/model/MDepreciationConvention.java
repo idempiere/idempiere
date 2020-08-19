@@ -7,6 +7,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**	Convention for the first year of depreciation (ex. FMCON, FYCON ...)
  *	@author Teo Sarca, SC Arhipac SRL
@@ -43,6 +44,37 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention
 		super (ctx, rs, trxName);
 	}	//	MDepreciationConvention
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDepreciationConvention(MDepreciationConvention copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDepreciationConvention(Properties ctx, MDepreciationConvention copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDepreciationConvention(Properties ctx, MDepreciationConvention copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**		Cache									*/
 	private static CCache<Integer,MDepreciationConvention> s_cache = new CCache<Integer,MDepreciationConvention>(Table_Name, 5);
 	//~ /**		Static logger							*/
@@ -52,11 +84,11 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention
 		Integer key = Integer.valueOf(A_Depreciation_Convention_ID);
 		MDepreciationConvention conv = s_cache.get(key);
 		if (conv != null) {
-			return conv;
+			return new MDepreciationConvention(ctx, conv);
 		}
-		conv = new MDepreciationConvention(ctx, A_Depreciation_Convention_ID, null);
-		if (conv.get_ID() > 0) {
-			s_cache.put(key, conv);
+		conv = new MDepreciationConvention(ctx, A_Depreciation_Convention_ID, (String)null);
+		if (conv.get_ID() == A_Depreciation_Convention_ID) {
+			s_cache.put(key, new MDepreciationConvention(Env.getCtx(), conv));
 		} else {
 			conv = null;
 		}

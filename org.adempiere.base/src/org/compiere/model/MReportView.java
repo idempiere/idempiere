@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 public class MReportView extends X_AD_ReportView {
 
@@ -43,6 +44,34 @@ public class MReportView extends X_AD_ReportView {
 
 	/**
 	 * 
+	 * @param copy
+	 */
+	public MReportView(MReportView copy) {
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MReportView(Properties ctx, MReportView copy) {
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MReportView(Properties ctx, MReportView copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
+	 * 
 	 * @param ctx
 	 * @param AD_ReportView_ID
 	 * @return
@@ -56,9 +85,14 @@ public class MReportView extends X_AD_ReportView {
 		MReportView retValue = (MReportView)s_cache.get(key);
 		if (retValue == null)
 		{
-			retValue = new MReportView (ctx, AD_ReportView_ID, null);
-			s_cache.put(key, retValue);
+			retValue = new MReportView (ctx, AD_ReportView_ID, (String)null);
+			if (retValue.get_ID() == AD_ReportView_ID)
+			{
+				s_cache.put(key, new MReportView(Env.getCtx(), retValue));
+				return retValue;
+			}
+			return null;
 		}
-		return retValue;
+		return new MReportView(ctx, retValue);
 	}	//	get
 }

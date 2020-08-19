@@ -21,10 +21,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MColumn;
@@ -75,11 +77,14 @@ public class MWorkflow extends X_AD_Workflow
 		String key = Env.getAD_Language(ctx) + "_" + AD_Workflow_ID;
 		MWorkflow retValue = (MWorkflow)s_cache.get(key);
 		if (retValue != null)
+			return new MWorkflow(ctx, retValue);
+		retValue = new MWorkflow (ctx, AD_Workflow_ID, (String)null);
+		if (retValue.get_ID() == AD_Workflow_ID) 
+		{
+			s_cache.put(key, new MWorkflow(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MWorkflow (ctx, AD_Workflow_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put(key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 	
 	
@@ -114,7 +119,7 @@ public class MWorkflow extends X_AD_Workflow
 				{
 					MWorkflow[] wfs = new MWorkflow[list.size()];
 					list.toArray(wfs);
-					s_cacheDocValue.put (oldKey, wfs);
+					s_cacheDocValue.put (oldKey, Arrays.stream(wfs).map(e -> {return new MWorkflow(Env.getCtx(), e);}).toArray(MWorkflow[]::new));
 					list = new ArrayList<MWorkflow>();
 				}
 				oldKey = newKey;
@@ -126,7 +131,7 @@ public class MWorkflow extends X_AD_Workflow
 			{
 				MWorkflow[] wfs = new MWorkflow[list.size()];
 				list.toArray(wfs);
-				s_cacheDocValue.put (oldKey, wfs);
+				s_cacheDocValue.put (oldKey, Arrays.stream(wfs).map(e -> {return new MWorkflow(Env.getCtx(), e);}).toArray(MWorkflow[]::new));
 			}
 			if (s_log.isLoggable(Level.CONFIG)) s_log.config("#" + s_cacheDocValue.size());
 		}
@@ -142,7 +147,7 @@ public class MWorkflow extends X_AD_Workflow
 				retValue[i].set_TrxName(trxName);
 			}
 		}*/
-		return retValue;
+		return retValue != null ? Arrays.stream(retValue).map(e -> {return new MWorkflow(ctx, e);}).toArray(MWorkflow[]::new) : null;
 	}	//	getDocValue
 	
 	
@@ -198,6 +203,42 @@ public class MWorkflow extends X_AD_Workflow
 		loadNodes();
 	}	//	Workflow
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWorkflow(MWorkflow copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWorkflow(Properties ctx, MWorkflow copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWorkflow(Properties ctx, MWorkflow copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_description_trl = copy.m_description_trl;
+		this.m_help_trl = copy.m_help_trl;
+		this.m_name_trl = copy.m_name_trl;
+		this.m_nodes = copy.m_nodes != null ? copy.m_nodes.stream().map(e ->{return new MWFNode(ctx, e, trxName);}).collect(Collectors.toCollection(ArrayList::new)) : null;
+		this.m_translated = copy.m_translated;
+	}
+	
 	/**	WF Nodes				*/
 	private List<MWFNode>	m_nodes = new ArrayList<MWFNode>();
 

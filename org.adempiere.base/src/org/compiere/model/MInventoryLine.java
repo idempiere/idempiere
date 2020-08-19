@@ -137,6 +137,39 @@ public class MInventoryLine extends X_M_InventoryLine
 		this(inventory, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, QtyBook, QtyCount, null);
 	}
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MInventoryLine(MInventoryLine copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MInventoryLine(Properties ctx, MInventoryLine copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MInventoryLine(Properties ctx, MInventoryLine copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_parent = copy.m_parent != null ? new MInventory(ctx, copy.m_parent, trxName) : null;
+		this.m_product = copy.m_product != null ? new MProduct(ctx, copy.m_product, trxName) : null;
+	}
+
 	/** Manually created				*/
 	//protected boolean 	m_isManualEntry = true;
 	/** Parent							*/

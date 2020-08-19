@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Env;
+
 
 /**
  *	Tax Postal Model
@@ -55,4 +57,35 @@ public class MTaxPostal extends X_C_TaxPostal
 		super(ctx, rs, trxName);
 	}	//	MTaxPostal
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MTaxPostal(MTaxPostal copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MTaxPostal(Properties ctx, MTaxPostal copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MTaxPostal(Properties ctx, MTaxPostal copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 }	//	MTaxPostal

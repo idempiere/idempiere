@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -69,14 +70,15 @@ public class MProduct extends X_M_Product
 		MProduct retValue = (MProduct) s_cache.get (key);
 		if (retValue != null)
 		{
+			return new MProduct(ctx, retValue);
+		}
+		retValue = new MProduct (ctx, M_Product_ID, (String)null);
+		if (retValue.get_ID () == M_Product_ID)
+		{
+			s_cache.put (key, new MProduct(Env.getCtx(), retValue));
 			return retValue;
 		}
-		retValue = new MProduct (ctx, M_Product_ID, null);
-		if (retValue.get_ID () != 0)
-		{
-			s_cache.put (key, retValue);
-		}
-		return retValue;
+		return null;
 	}	//	get
 
 	/**
@@ -269,6 +271,39 @@ public class MProduct extends X_M_Product
 		setWeight(impP.getWeight());
 	}	//	MProduct
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MProduct(MProduct copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MProduct(Properties ctx, MProduct copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MProduct(Properties ctx, MProduct copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_downloads = copy.m_downloads != null ? Arrays.stream(copy.m_downloads).map(e -> {return new MProductDownload(ctx, e, trxName);}).toArray(MProductDownload[]::new) : null;
+		this.m_precision = copy.m_precision;
+	}
+
 	/** Additional Downloads				*/
 	private MProductDownload[] m_downloads = null;
 	

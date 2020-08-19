@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 
 /**
@@ -95,7 +96,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 		Integer key = Integer.valueOf(C_DocType_ID);
 		MDocTypeCounter retValue = (MDocTypeCounter)s_counter.get(key);
 		if (retValue != null)
-			return retValue;
+			return new MDocTypeCounter(ctx, retValue);
 		
 		//	Direct Relationship
 		MDocTypeCounter temp = null;
@@ -114,6 +115,10 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 				{
 					temp = retValue; 
 					retValue = null;
+				}
+				else
+				{
+					s_counter.put(key, new MDocTypeCounter(Env.getCtx(), retValue));
 				}
 			}
 		}
@@ -146,11 +151,14 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 		Integer key = Integer.valueOf(C_DocTypeCounter_ID);
 		MDocTypeCounter retValue = (MDocTypeCounter) s_cache.get (key);
 		if (retValue != null)
-			return retValue;
+			return new MDocTypeCounter(ctx, retValue, trxName);
 		retValue = new MDocTypeCounter (ctx, C_DocTypeCounter_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		if (retValue.get_ID () == C_DocTypeCounter_ID)
+		{
+			s_cache.put (key, new MDocTypeCounter(Env.getCtx(), retValue));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**
@@ -230,6 +238,36 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 		super(ctx, rs, trxName);
 	}	//	MDocTypeCounter
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDocTypeCounter(MDocTypeCounter copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDocTypeCounter(Properties ctx, MDocTypeCounter copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDocTypeCounter(Properties ctx, MDocTypeCounter copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Set C_DocType_ID

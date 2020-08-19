@@ -65,7 +65,7 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute
 			{
 				MRegistrationAttribute value = new MRegistrationAttribute(ctx, rs, null);
 				Integer key = Integer.valueOf(value.getA_RegistrationAttribute_ID());
-				s_cache.put(key, value);
+				s_cache.put(key, new MRegistrationAttribute(Env.getCtx(), value));
 				list.add(value);
 			}
 		}
@@ -98,10 +98,15 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute
 		if (retValue == null)
 		{
 			retValue = new MRegistrationAttribute (ctx, A_RegistrationAttribute_ID, trxName);
-			s_cache.put(key, retValue);
+			if (retValue.get_ID() == A_RegistrationAttribute_ID)
+			{
+				s_cache.put(key, new MRegistrationAttribute(Env.getCtx(), retValue));
+				return retValue;
+			}
+			return null;
 		}
-		return retValue;
-	}	//	getAll
+		return new MRegistrationAttribute(ctx, retValue, trxName);
+	}	//	get
 
 	/** Static Logger					*/
 	private static CLogger s_log = CLogger.getCLogger(MRegistrationAttribute.class);
@@ -129,4 +134,34 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute
 		super(ctx, rs, trxName);
 	}	//	MRegistrationAttribute
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRegistrationAttribute(MRegistrationAttribute copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRegistrationAttribute(Properties ctx, MRegistrationAttribute copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRegistrationAttribute(Properties ctx, MRegistrationAttribute copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 }	//	MRegistrationAttribute

@@ -19,11 +19,13 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	POS Function Key Layout
@@ -49,11 +51,14 @@ public class MPOSKeyLayout extends X_C_POSKeyLayout
 		Integer key = Integer.valueOf(C_POSKeyLayout_ID);
 		MPOSKeyLayout retValue = (MPOSKeyLayout) s_cache.get (key);
 		if (retValue != null)
+			return new MPOSKeyLayout(ctx, retValue);
+		retValue = new MPOSKeyLayout (ctx, C_POSKeyLayout_ID, (String)null);
+		if (retValue.get_ID () == C_POSKeyLayout_ID)
+		{
+			s_cache.put (key, new MPOSKeyLayout(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MPOSKeyLayout (ctx, C_POSKeyLayout_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -81,6 +86,38 @@ public class MPOSKeyLayout extends X_C_POSKeyLayout
 		super(ctx, rs, trxName);
 	}	//	MPOSKeyLayout
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPOSKeyLayout(MPOSKeyLayout copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPOSKeyLayout(Properties ctx, MPOSKeyLayout copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPOSKeyLayout(Properties ctx, MPOSKeyLayout copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_keys = copy.m_keys != null ? Arrays.stream(copy.m_keys).map(e -> {return new MPOSKey(ctx, e, trxName);}).toArray(MPOSKey[]::new) : null;
+	}
+	
 	/**	Keys				*/
 	private MPOSKey[]	m_keys = null;
 	

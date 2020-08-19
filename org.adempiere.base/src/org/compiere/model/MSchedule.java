@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 
 public class MSchedule extends X_AD_Schedule 
@@ -54,6 +55,34 @@ public class MSchedule extends X_AD_Schedule
 	public MSchedule(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 		// TODO Auto-generated constructor stub
+	}
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MSchedule(MSchedule copy) {
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MSchedule(Properties ctx, MSchedule copy) {
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MSchedule(Properties ctx, MSchedule copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
 	}
 	
 	@Override
@@ -163,11 +192,14 @@ public class MSchedule extends X_AD_Schedule
 		Integer key = Integer.valueOf(AD_Schedule_ID);
 		MSchedule retValue = (MSchedule)s_cache.get (key);
 		if (retValue != null)
+			return new MSchedule(ctx, retValue);
+		retValue = new MSchedule (ctx, AD_Schedule_ID, (String)null);
+		if (retValue.get_ID() == AD_Schedule_ID)
+		{
+			s_cache.put (key, new MSchedule(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MSchedule (ctx, AD_Schedule_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}
 
 	/**	Cache						*/

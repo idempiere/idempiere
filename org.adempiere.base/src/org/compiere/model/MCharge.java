@@ -90,11 +90,17 @@ public class MCharge extends X_C_Charge
 		Integer key = Integer.valueOf(C_Charge_ID);
 		MCharge retValue = (MCharge)s_cache.get (key);
 		if (retValue != null)
-			return retValue;
-		retValue = new MCharge (ctx, C_Charge_ID, null);
-		if (retValue.get_ID() != 0)
+			return new MCharge(ctx, retValue);
+		retValue = new MCharge (Env.getCtx(), C_Charge_ID, (String)null);
+		if (retValue.get_ID() == C_Charge_ID)
+		{
 			s_cache.put (key, retValue);
-		return retValue;
+			return new MCharge(ctx, retValue);
+		}
+		else
+		{
+			return null;
+		}
 	}	//	get
 
 	/**	Cache						*/
@@ -136,6 +142,37 @@ public class MCharge extends X_C_Charge
 		super(ctx, rs, trxName);
 	}	//	MCharge
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MCharge(MCharge copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MCharge(Properties ctx, MCharge copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MCharge(Properties ctx, MCharge copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	After Save
 	 *	@param newRecord new

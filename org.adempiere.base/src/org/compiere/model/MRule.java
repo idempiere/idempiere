@@ -28,6 +28,7 @@ import javax.script.ScriptEngine;
 import org.adempiere.base.Core;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
@@ -66,11 +67,14 @@ public class MRule extends X_AD_Rule
 		Integer key = Integer.valueOf(AD_Rule_ID);
 		MRule retValue = (MRule) s_cache.get (key);
 		if (retValue != null)
+			return new MRule(ctx, retValue);
+		retValue = new MRule (ctx, AD_Rule_ID, (String)null);
+		if (retValue.get_ID () == AD_Rule_ID)
+		{
+			s_cache.put (key, new MRule(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MRule (ctx, AD_Rule_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**
@@ -154,6 +158,38 @@ public class MRule extends X_AD_Rule
 	{
 		super(ctx, rs, trxName);
 	}	//	MRule
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRule(MRule copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRule(Properties ctx, MRule copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRule(Properties ctx, MRule copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.engine = copy.engine;
+	}
 	
 	/**
 	 * 	Before Save

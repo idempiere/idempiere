@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 /**
  * 	Bank Model
@@ -46,11 +47,14 @@ public class MBank extends X_C_Bank
 		Integer key = Integer.valueOf(C_Bank_ID);
 		MBank retValue = (MBank)s_cache.get (key);
 		if (retValue != null)
+			return new MBank(ctx, retValue);
+		retValue = new MBank (ctx, C_Bank_ID, (String)null);
+		if (retValue.get_ID() == C_Bank_ID)
+		{
+			s_cache.put (key, new MBank(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MBank (ctx, C_Bank_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -80,6 +84,37 @@ public class MBank extends X_C_Bank
 		super (ctx, rs, trxName);
 	}	//	MBank
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MBank(MBank copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MBank(Properties ctx, MBank copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MBank(Properties ctx, MBank copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	String Representation
 	 *	@return info

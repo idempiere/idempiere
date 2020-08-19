@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -156,7 +157,7 @@ public class MDistribution extends X_GL_Distribution
 		Integer key = Integer.valueOf(Account_ID);
 		MDistribution[] retValue = (MDistribution[])s_accounts.get(key);
 		if (retValue != null)
-			return retValue;
+			return Arrays.stream(retValue).map(e -> {return new MDistribution(ctx, e);}).toArray(MDistribution[]::new);
 		String whereClause = "";
 		Object[] parameters = null;
 		if (Account_ID >= 0) {
@@ -170,7 +171,7 @@ public class MDistribution extends X_GL_Distribution
 		//
 		retValue = new MDistribution[list.size ()];
 		list.toArray (retValue);
-		s_accounts.put(key, retValue);
+		s_accounts.put(key, Arrays.stream(retValue).map(e -> {return new MDistribution(Env.getCtx(), e);}).toArray(MDistribution[]::new));
 		return retValue;
 	}	//	get
 	
@@ -237,6 +238,38 @@ public class MDistribution extends X_GL_Distribution
 		super(ctx, rs, trxName);
 	}	//	MDistribution
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDistribution(MDistribution copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDistribution(Properties ctx, MDistribution copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDistribution(Properties ctx, MDistribution copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_lines = copy.m_lines != null ? Arrays.stream(copy.m_lines).map(e -> {return new MDistributionLine(ctx, e, trxName);}).toArray(MDistributionLine[]::new) : null;
+	}
+	
 	/**	The Lines						*/
 	private MDistributionLine[]		m_lines = null;
 	

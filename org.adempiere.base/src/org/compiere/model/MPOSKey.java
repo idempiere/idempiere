@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Env;
+
 
 /**
  *	POS Function Key Model
@@ -55,6 +57,37 @@ public class MPOSKey extends X_C_POSKey
 		super(ctx, rs, trxName);
 	}	//	MPOSKey
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPOSKey(MPOSKey copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPOSKey(Properties ctx, MPOSKey copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPOSKey(Properties ctx, MPOSKey copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	@Override
 	protected boolean postDelete() {
 		if (getAD_Image_ID() > 0) {

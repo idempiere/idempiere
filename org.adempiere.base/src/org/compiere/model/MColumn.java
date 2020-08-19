@@ -71,14 +71,16 @@ public class MColumn extends X_AD_Column
 	{
 		Integer key = Integer.valueOf(AD_Column_ID);
 		MColumn retValue = (MColumn) s_cache.get (key);
-		if (retValue != null) {
-			retValue.set_TrxName(trxName);
+		if (retValue != null) 
+			return new MColumn(ctx, retValue, trxName);
+		
+		retValue = new MColumn (ctx, AD_Column_ID, trxName);
+		if (retValue.get_ID () == AD_Column_ID)
+		{
+			s_cache.put (key, new MColumn(Env.getCtx(), retValue));
 			return retValue;
 		}
-		retValue = new MColumn (ctx, AD_Column_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		return null;
 	}	//	get
 
 	/**
@@ -172,7 +174,36 @@ public class MColumn extends X_AD_Column
 		setEntityType(parent.getEntityType());
 	}	//	MColumn
 	
-	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MColumn(MColumn copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MColumn(Properties ctx, MColumn copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MColumn(Properties ctx, MColumn copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	/**
 	 * 	Is Standard Column
 	 *	@return true for AD_Client_ID, etc.

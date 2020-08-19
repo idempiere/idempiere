@@ -30,6 +30,7 @@ import java.util.Properties;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	Country Group Model
@@ -51,11 +52,11 @@ public class MCountryGroup extends X_C_CountryGroup
 	{
 		MCountryGroup c = s_cache.get(C_CountryGroup_ID);
 		if (c != null)
-			return c;
+			return new MCountryGroup(ctx, c);
 		c = new MCountryGroup (ctx, C_CountryGroup_ID, null);
 		if (c.getC_CountryGroup_ID() == C_CountryGroup_ID)
 		{
-			s_cache.put(C_CountryGroup_ID, c);
+			s_cache.put(C_CountryGroup_ID, new MCountryGroup(Env.getCtx(), c));
 			return c;
 		}
 		return null;
@@ -89,6 +90,37 @@ public class MCountryGroup extends X_C_CountryGroup
 		super(ctx, rs, trxName);
 	}	//	MCountryGroup
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MCountryGroup(MCountryGroup copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MCountryGroup(Properties ctx, MCountryGroup copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MCountryGroup(Properties ctx, MCountryGroup copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	public static boolean countryGroupContains(int c_CountryGroup_ID, int c_Country_ID) {
 		
 		if (c_CountryGroup_ID == 0 || c_Country_ID == 0)

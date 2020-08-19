@@ -187,13 +187,16 @@ public class MCostElement extends X_M_CostElement
 	public static MCostElement get (Properties ctx, int M_CostElement_ID)
 	{
 		Integer key = Integer.valueOf(M_CostElement_ID);
-		MCostElement retValue = (MCostElement) s_cache.get (key);
+		MCostElement retValue = s_cache.get (key);
 		if (retValue != null)
+			return new MCostElement(ctx, retValue);
+		retValue = new MCostElement (ctx, M_CostElement_ID, (String)null);
+		if (retValue.get_ID () == M_CostElement_ID)
+		{
+			s_cache.put (key, new MCostElement(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MCostElement (ctx, M_CostElement_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 	
 	
@@ -265,6 +268,37 @@ public class MCostElement extends X_M_CostElement
 	{
 		super (ctx, rs, trxName);
 	}	//	MCostElement
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MCostElement(MCostElement copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MCostElement(Properties ctx, MCostElement copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MCostElement(Properties ctx, MCostElement copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Before Save

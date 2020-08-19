@@ -53,11 +53,14 @@ public class MBPGroup extends X_C_BP_Group
 		Integer key = Integer.valueOf(C_BP_Group_ID);
 		MBPGroup retValue = (MBPGroup) s_cache.get (key);
 		if (retValue != null)
-			return retValue;
+			return new MBPGroup(ctx, retValue);
 		retValue = new MBPGroup (ctx, C_BP_Group_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		if (retValue.get_ID () == C_BP_Group_ID)
+		{
+			s_cache.put (key, new MBPGroup(Env.getCtx(), retValue));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**
@@ -86,7 +89,7 @@ public class MBPGroup extends X_C_BP_Group
 		Integer key = Integer.valueOf(AD_Client_ID);
 		MBPGroup retValue = (MBPGroup) s_cacheDefault.get (key);
 		if (retValue != null)
-			return retValue;
+			return new MBPGroup(ctx, retValue);
 		
 		String sql = "SELECT * FROM C_BP_Group g "
 			+ "WHERE IsDefault='Y' AND AD_Client_ID=? "
@@ -100,9 +103,9 @@ public class MBPGroup extends X_C_BP_Group
 			rs = pstmt.executeQuery ();
 			if (rs.next ())
 			{
-				retValue = new MBPGroup (ctx, rs, null);
+				retValue = new MBPGroup (ctx, rs, (String)null);
 				if (retValue.get_ID () != 0)
-					s_cacheDefault.put (key, retValue);
+					s_cacheDefault.put (key, new MBPGroup(Env.getCtx(), retValue));
 			}
 		}
 		catch (Exception e)
@@ -200,6 +203,36 @@ public class MBPGroup extends X_C_BP_Group
 		super(ctx, rs, trxName);
 	}	//	MBPGroup
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MBPGroup(MBPGroup copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MBPGroup(Properties ctx, MBPGroup copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MBPGroup(Properties ctx, MBPGroup copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Get Credit Watch Percent

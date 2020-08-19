@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 /**
  * 	Request Resolution Model
@@ -46,11 +47,14 @@ public class MResolution extends X_R_Resolution
 		Integer key = Integer.valueOf(R_Resolution_ID);
 		MResolution retValue = (MResolution) s_cache.get (key);
 		if (retValue != null)
+			return new MResolution(ctx, retValue);
+		retValue = new MResolution (ctx, R_Resolution_ID, (String)null);
+		if (retValue.get_ID () == R_Resolution_ID)
+		{
+			s_cache.put (key, new MResolution(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MResolution (ctx, R_Resolution_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
@@ -80,4 +84,34 @@ public class MResolution extends X_R_Resolution
 		super (ctx, rs, trxName);
 	}	//	MResolution
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MResolution(MResolution copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MResolution(Properties ctx, MResolution copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MResolution(Properties ctx, MResolution copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 }	//	MResolution

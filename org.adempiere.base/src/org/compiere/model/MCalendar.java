@@ -49,11 +49,14 @@ public class MCalendar extends X_C_Calendar
 		Integer key = Integer.valueOf(C_Calendar_ID);
 		MCalendar retValue = (MCalendar) s_cache.get (key);
 		if (retValue != null)
+			return new MCalendar(ctx, retValue);
+		retValue = new MCalendar (ctx, C_Calendar_ID, (String)null);
+		if (retValue.get_ID () == C_Calendar_ID) 
+		{
+			s_cache.put (key, new MCalendar(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MCalendar (ctx, C_Calendar_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 	
 	/**
@@ -116,6 +119,31 @@ public class MCalendar extends X_C_Calendar
 		StringBuilder msgset = new StringBuilder().append(client.getName()).append(" ").append(Msg.translate(client.getCtx(), "C_Calendar_ID"));
 		setName(msgset.toString());
 	}	//	MCalendar
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MCalendar(MCalendar copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MCalendar(Properties ctx, MCalendar copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	public MCalendar(Properties ctx, MCalendar copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Create (current) Calendar Year

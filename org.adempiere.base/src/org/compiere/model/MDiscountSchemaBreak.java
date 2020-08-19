@@ -20,6 +20,8 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Env;
+
 
 /**
  *	Discount Break Schema (Model)
@@ -60,6 +62,36 @@ public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak
 		super(ctx, rs, trxName);
 	}	//	MDiscountSchemaBreak
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDiscountSchemaBreak(MDiscountSchemaBreak copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDiscountSchemaBreak(Properties ctx, MDiscountSchemaBreak copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDiscountSchemaBreak(Properties ctx, MDiscountSchemaBreak copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Criteria apply

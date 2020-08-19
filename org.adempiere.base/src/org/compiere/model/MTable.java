@@ -20,6 +20,7 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -89,16 +90,16 @@ public class MTable extends X_AD_Table
 	{
 		Integer key = Integer.valueOf(AD_Table_ID);
 		MTable retValue = s_cache.get (key);
-		if (retValue != null && retValue.getCtx() == ctx) {
-			if (trxName != null)
-				retValue.set_TrxName(trxName);
+		if (retValue != null) 
+			return new MTable(ctx, retValue, trxName);
+		
+		retValue = new MTable (ctx, AD_Table_ID, trxName);
+		if (retValue.get_ID () == AD_Table_ID) 
+		{
+			s_cache.put (key, new MTable(Env.getCtx(), retValue));
 			return retValue;
 		}
-		retValue = new MTable (ctx, AD_Table_ID, trxName);
-		if (retValue.get_ID () != 0) {
-			s_cache.put (key, retValue);
-		}
-		return retValue;
+		return null;
 	}	//	get
 
 	/**
@@ -236,6 +237,42 @@ public class MTable extends X_AD_Table
 	{
 		super(ctx, rs, trxName);
 	}	//	MTable
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MTable(MTable copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MTable(Properties ctx, MTable copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MTable(Properties ctx, MTable copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_columns = copy.m_columns != null ? Arrays.stream(copy.m_columns).map(e -> {return new MColumn(ctx, e, trxName);}).toArray(MColumn[]::new): null;
+		this.m_columnNameMap = copy.m_columnNameMap != null ? new HashMap<String, Integer>(copy.m_columnNameMap) : null;
+		this.m_columnIdMap = copy.m_columnIdMap != null ? new HashMap<Integer, Integer>(copy.m_columnIdMap) : null;
+		this.m_viewComponents = copy.m_viewComponents != null ? Arrays.stream(copy.m_viewComponents).map(e -> {return new MViewComponent(ctx, e, trxName);}).toArray(MViewComponent[]::new) : null;
+	}
+
 
 	/**	Columns				*/
 	private MColumn[]	m_columns = null;

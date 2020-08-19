@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 /**
  * 	Chat Type Model
@@ -45,11 +46,14 @@ public class MChatType extends X_CM_ChatType
 		Integer key = Integer.valueOf(CM_ChatType_ID);
 		MChatType retValue = (MChatType)s_cache.get (key);
 		if (retValue != null)
+			return new MChatType(ctx, retValue);
+		retValue = new MChatType (ctx, CM_ChatType_ID, (String)null);
+		if (retValue.get_ID () == CM_ChatType_ID)
+		{
+			s_cache.put (key, new MChatType(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MChatType (ctx, CM_ChatType_ID, null);
-		if (retValue.get_ID () != CM_ChatType_ID)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
@@ -80,4 +84,34 @@ public class MChatType extends X_CM_ChatType
 		super (ctx, rs, trxName);
 	}	//	MChatType
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MChatType(MChatType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MChatType(Properties ctx, MChatType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MChatType(Properties ctx, MChatType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 }	//	MChatType

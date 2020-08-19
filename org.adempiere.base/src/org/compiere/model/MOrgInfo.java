@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 /**
  *	Organization Info Model
@@ -61,14 +62,14 @@ public class MOrgInfo extends X_AD_OrgInfo
 		MOrgInfo retValue = s_cache.get(AD_Org_ID);
 		if (retValue != null)
 		{
-			return retValue;
+			return new MOrgInfo(ctx, retValue, trxName);
 		}
 		retValue = new Query(ctx, Table_Name, "AD_Org_ID=?", trxName)
 						.setParameters(AD_Org_ID)
 						.firstOnly();
 		if (retValue != null)
 		{
-			s_cache.put(AD_Org_ID, retValue);
+			s_cache.put(AD_Org_ID, new MOrgInfo(Env.getCtx(), retValue));
 		}
 		return retValue;
 	}	//	get
@@ -100,4 +101,34 @@ public class MOrgInfo extends X_AD_OrgInfo
 		setTaxID ("?");
 	}	//	MOrgInfo
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MOrgInfo(MOrgInfo copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MOrgInfo(Properties ctx, MOrgInfo copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MOrgInfo(Properties ctx, MOrgInfo copy, String trxName) 
+	{
+		super(ctx, 0, trxName);
+		copyPO(copy);
+	}
 }

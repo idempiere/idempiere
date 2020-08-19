@@ -23,6 +23,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -140,15 +141,20 @@ public class MUser extends X_AD_User
 		MUser retValue = (MUser)s_cache.get(key);
 		if (retValue == null)
 		{
-			retValue = new MUser (ctx, AD_User_ID, null);
+			retValue = new MUser (ctx, AD_User_ID, (String)null);
 			if (AD_User_ID == 0)
 			{
 				String trxName = null;
 				retValue.load(trxName);	//	load System Record
 			}
-			s_cache.put(key, retValue);
+			if (retValue.get_ID() == AD_User_ID)
+			{
+				s_cache.put(key, new MUser(Env.getCtx(), retValue));
+				return retValue;
+			}
+			return null;
 		}
-		return retValue;
+		return new MUser(ctx, retValue);
 	}	//	get
 
 	/**
@@ -310,6 +316,41 @@ public class MUser extends X_AD_User
 	{
 		super(ctx, rs, trxName);
 	}	//	MUser
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MUser(MUser copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MUser(Properties ctx, MUser copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MUser(Properties ctx, MUser copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_roles = copy.m_roles != null ? Arrays.stream(copy.m_roles).map(e ->{return new MRole(ctx, e, trxName);}).toArray(MRole[]::new) : null;
+		this.m_rolesAD_Org_ID = copy.m_rolesAD_Org_ID;
+		this.m_isAdministrator = copy.m_isAdministrator;
+		this.m_bpAccess = copy.m_bpAccess != null ? Arrays.copyOf(copy.m_bpAccess, copy.m_bpAccess.length) : null;
+	}
 
 	/**	Roles of User with Org	*/
 	private MRole[] 			m_roles = null;

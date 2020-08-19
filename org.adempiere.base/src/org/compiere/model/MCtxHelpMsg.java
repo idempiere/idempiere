@@ -71,6 +71,34 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg {
 	}	//	MCtxHelpMsg
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MCtxHelpMsg(MCtxHelpMsg copy) {
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MCtxHelpMsg(Properties ctx, MCtxHelpMsg copy) {
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MCtxHelpMsg(Properties ctx, MCtxHelpMsg copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 * Get the context help message defined for the type, recordid, client, org
 	 * @param ctx
 	 * @param ctxtype
@@ -87,7 +115,7 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg {
 		if (s_cache.containsKey(key.toString())) {
 			retValue = s_cache.get(key.toString());
 			if (s_log.isLoggable(Level.FINEST)) s_log.finest("Cache: " + retValue);
-			return retValue;
+			return retValue != null ? new MCtxHelpMsg(ctx, retValue) : null;
 		}
 
 		int AD_CtxHelp_ID = getCtxHelpID(ctxType, recordId);
@@ -97,7 +125,7 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg {
 					.setParameters(Env.getAD_Client_ID(ctx), Env.getAD_Org_ID(ctx), AD_CtxHelp_ID)
 					.first();
 		}
-		s_cache.put(key.toString(), retValue);
+		s_cache.put(key.toString(), retValue != null ? new MCtxHelpMsg(Env.getCtx(), retValue) : null);
 		return retValue;
 	}
 

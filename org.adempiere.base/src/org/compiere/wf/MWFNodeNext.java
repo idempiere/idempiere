@@ -17,6 +17,7 @@
 package org.compiere.wf;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -83,6 +84,40 @@ public class MWFNodeNext extends X_AD_WF_NodeNext
 		setAD_WF_Next_ID(AD_WF_Next_ID);
 	}	//	MWFNodeNext
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWFNodeNext(MWFNodeNext copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWFNodeNext(Properties ctx, MWFNodeNext copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWFNodeNext(Properties ctx, MWFNodeNext copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_conditions = copy.m_conditions != null ? Arrays.stream(copy.m_conditions).map(e ->{return new MWFNextCondition(ctx, e, trxName);}).toArray(MWFNextCondition[]::new) : null;
+		this.m_fromSplitAnd = copy.m_fromSplitAnd;
+		this.m_toJoinAnd = copy.m_toJoinAnd;
+	}
+	
 	/** Transition Conditions			*/
 	private MWFNextCondition[] 	m_conditions = null;
 	/**	From (Split Eleemnt) is AND		*/

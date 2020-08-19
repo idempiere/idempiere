@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 /**
  * 	Product Category Account Model
@@ -50,7 +51,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct
 		String key = M_Product_Category_ID+"#"+C_AcctSchema_ID;
 		MProductCategoryAcct acct = s_cache.get(key);
 		if (acct != null)
-			return acct;
+			return new MProductCategoryAcct(ctx, acct, trxName);
 		
 		final String whereClause = "M_Product_Category_ID=? AND C_AcctSchema_ID=?";
 		acct = new Query(ctx, Table_Name, whereClause, trxName)
@@ -58,7 +59,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct
 					.firstOnly();
 		if (acct != null)
 		{
-			s_cache.put(key, acct);
+			s_cache.put(key, new MProductCategoryAcct(Env.getCtx(), acct));
 		}
 		return acct;
 	}	//	get
@@ -87,6 +88,37 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct
 		super (ctx, rs, trxName);
 	}	//	MProductCategoryAcct
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MProductCategoryAcct(MProductCategoryAcct copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MProductCategoryAcct(Properties ctx, MProductCategoryAcct copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MProductCategoryAcct(Properties ctx, MProductCategoryAcct copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Check Costing Setup
 	 */

@@ -18,13 +18,16 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.report.MReportTree;
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Util;
 
 /**
  *  Accounting Schema Model (base)
@@ -65,10 +68,10 @@ public class MAcctSchema extends X_C_AcctSchema
 		Integer key = Integer.valueOf(C_AcctSchema_ID);
 		MAcctSchema retValue = (MAcctSchema)s_cache.get(key);
 		if (retValue != null)
-			return retValue;
+			return new MAcctSchema(ctx, retValue, trxName);
+		
 		retValue = new MAcctSchema (ctx, C_AcctSchema_ID, trxName);
-		if (trxName == null)
-			s_cache.put(key, retValue);
+		s_cache.put(key, new MAcctSchema(Env.getCtx(), retValue));
 		return retValue;
 	}	//	get
 	
@@ -95,7 +98,9 @@ public class MAcctSchema extends X_C_AcctSchema
 		//  Check Cache
 		Integer key = Integer.valueOf(AD_Client_ID);
 		if (s_schema.containsKey(key))
-			return (MAcctSchema[])s_schema.get(key);
+		{
+			return Arrays.stream(s_schema.get(key)).map(e -> { return new MAcctSchema(ctx, e, trxName); }).toArray(MAcctSchema[]::new);
+		}
 
 		//  Create New
 		ArrayList<MAcctSchema> list = new ArrayList<MAcctSchema>();
@@ -131,8 +136,7 @@ public class MAcctSchema extends X_C_AcctSchema
 		//  Save
 		MAcctSchema[] retValue = new MAcctSchema [list.size()];
 		list.toArray(retValue);
-		if (trxName == null)
-			s_schema.put(key, retValue);
+		s_schema.put(key, Arrays.stream(retValue).map(e -> {return new MAcctSchema(Env.getCtx(), e);}).toArray(MAcctSchema[]::new));
 		return retValue;
 	}   //  getClientAcctSchema
 
@@ -200,6 +204,45 @@ public class MAcctSchema extends X_C_AcctSchema
 		setName (msgset.toString());
 	}	//	MAcctSchema
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAcctSchema(MAcctSchema copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAcctSchema(Properties ctx, MAcctSchema copy)
+	{
+		this(ctx, copy, (String)null);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAcctSchema(Properties ctx, MAcctSchema copy, String trxName) 
+	{
+		super(ctx, 0, trxName);
+		this.m_gl = copy.m_gl != null ? new MAcctSchemaGL(ctx, copy.m_gl) : null;
+		this.m_default = copy.m_default != null ? new MAcctSchemaDefault(ctx, copy.m_default) : null;
+		this.m_SuspenseError_Acct = copy.m_SuspenseError_Acct != null ? new MAccount(ctx, copy.m_SuspenseError_Acct) : null;
+		this.m_CurrencyBalancing_Acct = copy.m_CurrencyBalancing_Acct != null ? new MAccount(ctx, copy.m_CurrencyBalancing_Acct) : null;
+		this.m_DueTo_Acct = copy.m_DueTo_Acct != null ? new MAccount(ctx, copy.m_DueTo_Acct) : null;
+		this.m_DueFrom_Acct = copy.m_DueFrom_Acct != null ? new MAccount(ctx, copy.m_DueFrom_Acct) : null;
+		this.m_stdPrecision = copy.m_stdPrecision;
+		this.m_costPrecision = copy.m_costPrecision;
+		this.m_onlyOrg = copy.m_onlyOrg != null ? new MOrg(ctx, copy.m_onlyOrg) : null;
+		this.m_onlyOrgs = copy.m_onlyOrgs;
+	}
 
 	/** GL Info				*/
 	private MAcctSchemaGL			m_gl = null;

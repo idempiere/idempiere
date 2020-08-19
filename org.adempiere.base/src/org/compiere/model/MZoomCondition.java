@@ -16,6 +16,7 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -61,6 +62,37 @@ public class MZoomCondition extends X_AD_ZoomCondition
 		super (ctx, rs, trxName);
 	}	//	MZoomCondition
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MZoomCondition(MZoomCondition copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MZoomCondition(Properties ctx, MZoomCondition copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MZoomCondition(Properties ctx, MZoomCondition copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/** Cache of Table Conditions Array		**/
 	private static CCache<Integer,MZoomCondition[]> s_conditions = new CCache<Integer,MZoomCondition[]>(Table_Name, 0);
 
@@ -80,9 +112,10 @@ public class MZoomCondition extends X_AD_ZoomCondition
 				.setOrderBy(MZoomCondition.COLUMNNAME_SeqNo)
 				.list();
 			conditions = list.toArray(new MZoomCondition[list.size()]);
-			s_conditions.put(AD_Table_ID, conditions);
+			s_conditions.put(AD_Table_ID, Arrays.stream(conditions).map(MZoomCondition::new).toArray(MZoomCondition[]::new));
+			return conditions;
 		}
-		return conditions;
+		return Arrays.stream(conditions).map(MZoomCondition::new).toArray(MZoomCondition[]::new);
 	}	//	getConditions
 
 	private static int findZoomWindowByTableId(int AD_Table_ID, MQuery query)

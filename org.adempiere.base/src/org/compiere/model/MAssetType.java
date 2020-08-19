@@ -49,10 +49,10 @@ public class MAssetType extends X_A_Asset_Type
 			return null;
 		MAssetType o = s_cache.get(A_Asset_Type_ID);
 		if (o != null)
-			return o;
-		o = new MAssetType(ctx, A_Asset_Type_ID, null);
-		if (o.get_ID() > 0) {
-			s_cache.put(A_Asset_Type_ID, o);
+			return new MAssetType(ctx, o);
+		o = new MAssetType(ctx, A_Asset_Type_ID, (String)null);
+		if (o.get_ID() == A_Asset_Type_ID) {
+			s_cache.put(A_Asset_Type_ID, new MAssetType(Env.getCtx(), o));
 			return o;
 		}
 		return null;
@@ -80,6 +80,37 @@ public class MAssetType extends X_A_Asset_Type
 	public MAssetType (Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);
+	}
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAssetType(MAssetType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAssetType(Properties ctx, MAssetType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAssetType(Properties ctx, MAssetType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
 	}
 	
 	/** Is Fixed Asset

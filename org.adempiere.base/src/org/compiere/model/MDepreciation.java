@@ -45,6 +45,37 @@ public class MDepreciation extends X_A_Depreciation
 		super (ctx, rs, trxName);
 	}	//	MDepreciation
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDepreciation(MDepreciation copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDepreciation(Properties ctx, MDepreciation copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDepreciation(Properties ctx, MDepreciation copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**		Cache									*/
 	private static CCache<Integer,MDepreciation>
 	s_cache = new CCache<Integer,MDepreciation>(Table_Name, 5);
@@ -66,9 +97,9 @@ public class MDepreciation extends X_A_Depreciation
 			return ;
 		}
 		
-		s_cache.put(depr.get_ID(), depr);
+		s_cache.put(depr.get_ID(), new MDepreciation(Env.getCtx(), depr));
 		String key = "" + depr.getAD_Client_ID() + "_" + depr.getDepreciationType();
-		s_cache_forType.put(key, depr);
+		s_cache_forType.put(key, new MDepreciation(Env.getCtx(), depr));
 	}
  
 	/**
@@ -81,10 +112,10 @@ public class MDepreciation extends X_A_Depreciation
 		MDepreciation depr = s_cache.get(A_Depreciation_ID);
 		if (depr != null)
 		{
-			return depr;
+			return new MDepreciation(ctx, depr);
 		}
-		depr = new MDepreciation(ctx, A_Depreciation_ID, null);
-		if (depr.get_ID() > 0)
+		depr = new MDepreciation(ctx, A_Depreciation_ID, (String)null);
+		if (depr.get_ID() == A_Depreciation_ID)
 		{
 			addToCache(depr);
 		}
@@ -107,7 +138,7 @@ public class MDepreciation extends X_A_Depreciation
 		MDepreciation depr = s_cache_forType.get(key);
 		if (depr != null)
 		{
-			return depr;
+			return new MDepreciation(ctx, depr);
 		}
 		
 		final String whereClause = COLUMNNAME_DepreciationType+"=?"

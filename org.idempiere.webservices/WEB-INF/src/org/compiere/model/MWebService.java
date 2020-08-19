@@ -32,6 +32,7 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -39,6 +40,7 @@ import java.util.logging.Level;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	Web Services Model
@@ -63,11 +65,14 @@ public class MWebService extends X_WS_WebService
 		Integer key = Integer.valueOf(WS_WebService_ID);
 		MWebService retValue = (MWebService) s_cache.get (key);
 		if (retValue != null)
+			return new MWebService(ctx, retValue);
+		retValue = new MWebService (ctx, WS_WebService_ID, (String)null);
+		if (retValue.get_ID () == WS_WebService_ID)
+		{
+			s_cache.put (key, new MWebService(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MWebService (ctx, WS_WebService_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**
@@ -119,19 +124,19 @@ public class MWebService extends X_WS_WebService
 	}	//	get
 
 	/**	Methods				*/
-	private X_WS_WebServiceMethod[]	m_methods = null;
+	private MWebServiceMethod[]	m_methods = null;
 	
 	/**
 	 * 	Get Methods
 	 *	@param requery requery
 	 *	@return array of methods
 	 */
-	public X_WS_WebServiceMethod[] getMethods (boolean requery)
+	public MWebServiceMethod[] getMethods (boolean requery)
 	{
 		if (m_methods != null && !requery)
 			return m_methods;
 		String sql = "SELECT * FROM WS_WebServiceMethod WHERE WS_WebService_ID=? AND IsActive='Y' ORDER BY Value";
-		ArrayList<X_WS_WebServiceMethod> list = new ArrayList<X_WS_WebServiceMethod>();
+		ArrayList<MWebServiceMethod> list = new ArrayList<MWebServiceMethod>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -140,7 +145,7 @@ public class MWebService extends X_WS_WebService
 			pstmt.setInt (1, getWS_WebService_ID());
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
-				list.add (new X_WS_WebServiceMethod (getCtx(), rs, get_TrxName()));
+				list.add (new MWebServiceMethod (getCtx(), rs, get_TrxName()));
 		}
 		catch (Exception e)
 		{
@@ -153,7 +158,7 @@ public class MWebService extends X_WS_WebService
 			pstmt = null;
 		}
 		//
-		m_methods = new X_WS_WebServiceMethod[list.size ()];
+		m_methods = new MWebServiceMethod[list.size ()];
 		list.toArray (m_methods);
 		return m_methods;
 	}	//	getMethods
@@ -211,4 +216,35 @@ public class MWebService extends X_WS_WebService
 		super(ctx, rs, trxName);
 	}	//	MWebService
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWebService(MWebService copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWebService(Properties ctx, MWebService copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWebService(Properties ctx, MWebService copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_methods = copy.m_methods != null ? Arrays.stream(copy.m_methods).map(e -> {return new MWebServiceMethod(ctx, e, trxName);}).toArray(MWebServiceMethod[]::new) : null;
+	}
 }	//	MWebService

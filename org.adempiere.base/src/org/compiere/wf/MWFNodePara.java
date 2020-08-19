@@ -23,6 +23,7 @@ import java.util.Properties;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_Node_Para;
+import org.compiere.util.Env;
 
 
 /**
@@ -79,6 +80,37 @@ public class MWFNodePara extends X_AD_WF_Node_Para
 		super(ctx, rs, trxName);
 	}	//	MWFNodePara
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWFNodePara(MWFNodePara copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWFNodePara(Properties ctx, MWFNodePara copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWFNodePara(Properties ctx, MWFNodePara copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_processPara = copy.m_processPara != null ? new MProcessPara(ctx, copy.m_processPara, trxName) : null;
+	}
 	
 	/** Linked Process Parameter			*/
 	private MProcessPara 	m_processPara = null;

@@ -28,6 +28,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 public class MReference extends X_AD_Reference {
 	/**
@@ -58,6 +59,34 @@ public class MReference extends X_AD_Reference {
 		super (ctx, rs, trxName);
 	}	//	MReference
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MReference(MReference copy) {
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MReference(Properties ctx, MReference copy) {
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MReference(Properties ctx, MReference copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**	Reference Cache				*/
 	private static CCache<Integer,MReference>	s_cache = new CCache<Integer,MReference>(Table_Name, 20);
 
@@ -78,13 +107,15 @@ public class MReference extends X_AD_Reference {
 		Integer ii = Integer.valueOf(AD_Reference_ID);
 		MReference retValue = (MReference)s_cache.get(ii);
 		if (retValue != null) {
-			retValue.set_TrxName(trxName);
-			return retValue;
+			return new MReference(ctx, retValue, trxName);
 		}
 		retValue = new MReference (ctx, AD_Reference_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (AD_Reference_ID, retValue);
-		return retValue;
+		if (retValue.get_ID () == AD_Reference_ID)
+		{
+			s_cache.put (AD_Reference_ID, new MReference(Env.getCtx(), retValue));
+			return retValue;
+		}
+		return null;
 	}	//	get
 	
 }	//	MReference

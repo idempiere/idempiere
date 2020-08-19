@@ -69,9 +69,9 @@ public class MClient extends X_AD_Client
 		Integer key = Integer.valueOf(AD_Client_ID);
 		MClient client = (MClient)s_cache.get(key);
 		if (client != null)
-			return client;
-		client = new MClient (ctx, AD_Client_ID, null);
-		s_cache.put (key, client);
+			return new MClient(ctx, client);
+		client = new MClient (ctx, AD_Client_ID, (String)null);
+		s_cache.put (key, new MClient(Env.getCtx(), client));
 		return client;
 	}	//	get
 
@@ -93,11 +93,11 @@ public class MClient extends X_AD_Client
 	 */
 	public static MClient[] getAll (Properties ctx, String orderBy)
 	{
-		List<MClient> list = new Query(ctx,I_AD_Client.Table_Name,null,null)
+		List<MClient> list = new Query(ctx,I_AD_Client.Table_Name,(String)null,(String)null)
 		.setOrderBy(orderBy)
 		.list();
 		for(MClient client:list ){
-			s_cache.put (Integer.valueOf(client.getAD_Client_ID()), client);
+			s_cache.put (Integer.valueOf(client.getAD_Client_ID()), new MClient(Env.getCtx(), client));
 		}
 		MClient[] retValue = new MClient[list.size ()];
 		list.toArray (retValue);
@@ -184,6 +184,42 @@ public class MClient extends X_AD_Client
 	{
 		this (ctx, Env.getAD_Client_ID(ctx), trxName);
 	}	//	MClient
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MClient(MClient copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MClient(Properties ctx, MClient copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MClient(Properties ctx, MClient copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_info = copy.m_info != null ? new MClientInfo(ctx, copy.m_info, trxName) : null;
+		this.m_language = copy.m_language != null ? new Language(copy.m_language) : null;
+		this.m_createNew = copy.m_createNew;
+		this.m_AD_Tree_Account_ID = copy.m_AD_Tree_Account_ID;
+		this.m_fieldAccess = copy.m_fieldAccess != null ? new ArrayList<Integer>(copy.m_fieldAccess) : null;
+	}
 
 	/**	Client Info					*/
 	private MClientInfo 		m_info = null;

@@ -17,11 +17,13 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 
 public class MViewComponent extends X_AD_ViewComponent {
@@ -62,6 +64,38 @@ public class MViewComponent extends X_AD_ViewComponent {
 		this(parent.getCtx(), 0, parent.get_TrxName());
 		setClientOrg(parent);
 		setAD_Table_ID(parent.getAD_Table_ID());
+	}
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MViewComponent(MViewComponent copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MViewComponent(Properties ctx, MViewComponent copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MViewComponent(Properties ctx, MViewComponent copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_columns = copy.m_columns != null ? Arrays.stream(copy.m_columns).map(e -> {return new MViewColumn(ctx, e, trxName);}).toArray(MViewColumn[]::new) : null;
 	}
 	
 	/** Columns				*/

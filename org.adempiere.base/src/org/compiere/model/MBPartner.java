@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -323,7 +324,43 @@ public class MBPartner extends X_C_BPartner
 		setC_BP_Group_ID(impBP.getC_BP_Group_ID());
 	}	//	MBPartner
 	
-	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MBPartner(MBPartner copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MBPartner(Properties ctx, MBPartner copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MBPartner(Properties ctx, MBPartner copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_contacts = copy.m_contacts != null ? Arrays.stream(copy.m_contacts).map(e -> {return new MUser(ctx, e, trxName);}).toArray(MUser[]::new) : null;
+		this.m_locations = copy.m_locations != null ? Arrays.stream(copy.m_locations).map(e -> {return new MBPartnerLocation(ctx, e, trxName);}).toArray(MBPartnerLocation[]::new) : null;
+		this.m_accounts = copy.m_accounts != null ? Arrays.stream(copy.m_accounts).map(e -> {return new MBPBankAccount(ctx, e, trxName);}).toArray(MBPBankAccount[]::new) : null;
+		this.m_primaryC_BPartner_Location_ID = copy.m_primaryC_BPartner_Location_ID;
+		this.m_primaryAD_User_ID = copy.m_primaryAD_User_ID;
+		this.m_group = copy.m_group != null ? new MBPGroup(ctx, copy.m_group, trxName) : null;
+	}
+
 	/** Users							*/
 	protected MUser[]				m_contacts = null;
 	/** Addressed						*/

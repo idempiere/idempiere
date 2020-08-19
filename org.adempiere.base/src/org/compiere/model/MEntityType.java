@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 
 /**
  * 	Enitity Type Model
@@ -56,12 +57,12 @@ public class MEntityType extends X_AD_EntityType
 	{
 		MEntityType retValue = (MEntityType) s_cache.get (entityType);
 		if (retValue != null)
-			return retValue;
+			return new MEntityType(ctx, retValue);
 		retValue = new Query(ctx, Table_Name, "EntityType=?", null)
 			.setParameters(entityType)
 			.firstOnly();
 		if (retValue != null)
-			s_cache.put (entityType, retValue);
+			s_cache.put (entityType, new MEntityType(Env.getCtx(), retValue));
 		return retValue;
 	}
 	
@@ -92,6 +93,37 @@ public class MEntityType extends X_AD_EntityType
 	{
 		super (ctx, rs, trxName);
 	}	//	MEntityType
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MEntityType(MEntityType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MEntityType(Properties ctx, MEntityType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MEntityType(Properties ctx, MEntityType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * First Not System Entity ID

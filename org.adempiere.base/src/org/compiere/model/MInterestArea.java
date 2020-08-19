@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *  Interest Area.
@@ -92,11 +93,14 @@ public class MInterestArea extends X_R_InterestArea
 		Integer key = Integer.valueOf(R_InterestArea_ID);
 		MInterestArea retValue = (MInterestArea) s_cache.get (key);
 		if (retValue != null)
+			return new MInterestArea(ctx, retValue);
+		retValue = new MInterestArea (ctx, R_InterestArea_ID, (String)null);
+		if (retValue.get_ID () == R_InterestArea_ID)
+		{
+			s_cache.put (key, new MInterestArea(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MInterestArea (ctx, R_InterestArea_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -134,7 +138,40 @@ public class MInterestArea extends X_R_InterestArea
 		super(ctx, rs, trxName);
 	}	//	MInterestArea
 
-	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MInterestArea(MInterestArea copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MInterestArea(Properties ctx, MInterestArea copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MInterestArea(Properties ctx, MInterestArea copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_AD_User_ID = copy.m_AD_User_ID;
+		this.m_ci = copy.m_ci != null ? new MContactInterest(ctx, copy.m_ci, trxName) : null;
+	}
+
+
 	/**
 	 * 	Get Value
 	 *	@return value

@@ -96,10 +96,15 @@ public class MPrintColor extends X_AD_PrintColor
 		MPrintColor pc = (MPrintColor)s_colors.get(key);
 		if (pc == null)
 		{
-			pc = new MPrintColor (ctx, AD_PrintColor_ID, null);
-			s_colors.put(key, pc);
+			pc = new MPrintColor (ctx, AD_PrintColor_ID, (String)null);
+			if (pc.get_ID() == AD_PrintColor_ID)
+			{
+				s_colors.put(key, new MPrintColor(Env.getCtx(), pc));
+				return pc;
+			}
+			return null;
 		}
-		return pc;
+		return new MPrintColor(ctx, pc);
 	}	//	get
 
 	/**
@@ -144,6 +149,38 @@ public class MPrintColor extends X_AD_PrintColor
 		super (ctx, rs, trxName);
 	}
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPrintColor(MPrintColor copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPrintColor(Properties ctx, MPrintColor copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPrintColor(Properties ctx, MPrintColor copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_cacheColor = copy.m_cacheColor;
+	}
+	
 	/**	Color cached				*/
 	private Color	m_cacheColor = null;
 

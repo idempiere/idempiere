@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -507,7 +508,39 @@ public class MPeriod extends X_C_Period
 		setEndDate(endDate);
 	}	//	MPeriod
 	
-	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPeriod(MPeriod copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPeriod(Properties ctx, MPeriod copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPeriod(Properties ctx, MPeriod copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_C_Calendar_ID = copy.m_C_Calendar_ID;
+		this.m_controls = copy.m_controls != null ? Arrays.stream(copy.m_controls).map(e -> {return new MPeriodControl(ctx, e, trxName);}).toArray(MPeriodControl[]::new) : null;
+	}
+
 	/**	Period Controls			*/
 	private MPeriodControl[] m_controls = null;
 		

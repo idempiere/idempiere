@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.db.Database;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
@@ -61,6 +62,37 @@ public class MViewColumn extends X_AD_ViewColumn {
 		this(parent.getCtx(), 0, parent.get_TrxName());
 		setClientOrg(parent);
 		setAD_ViewComponent_ID(parent.getAD_ViewComponent_ID());
+	}
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MViewColumn(MViewColumn copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MViewColumn(Properties ctx, MViewColumn copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MViewColumn(Properties ctx, MViewColumn copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
 	}
 	
 	/**

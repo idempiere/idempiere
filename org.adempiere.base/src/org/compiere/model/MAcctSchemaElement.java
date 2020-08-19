@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -28,6 +29,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *  Account Schema Element Object
@@ -55,7 +57,9 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 		Integer key = Integer.valueOf(as.getC_AcctSchema_ID());
 		MAcctSchemaElement[] retValue = (MAcctSchemaElement[]) s_cache.get (key);
 		if (retValue != null)
-			return retValue;
+			return Arrays.stream(retValue)
+						.map(e -> { return new MAcctSchemaElement(as.getCtx(), e, as.get_TrxName()); })
+						.toArray(MAcctSchemaElement[]::new);
 
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("C_AcctSchema_ID=" + as.getC_AcctSchema_ID());
 		ArrayList<MAcctSchemaElement> list = new ArrayList<MAcctSchemaElement>();
@@ -76,7 +80,7 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 		
 		retValue = new MAcctSchemaElement[list.size()];
 		list.toArray(retValue);
-		s_cache.put (key, retValue);
+		s_cache.put (key, Arrays.stream(retValue).map(e -> {return new MAcctSchemaElement(Env.getCtx(), e);}).toArray(MAcctSchemaElement[]::new));
 		return retValue;
 	}   //  getAcctSchemaElements
 
@@ -237,6 +241,38 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 		//	setSeqNo (0);
 		
 	}	//	MAcctSchemaElement
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAcctSchemaElement(MAcctSchemaElement copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAcctSchemaElement(Properties ctx, MAcctSchemaElement copy)
+	{
+		this(ctx, copy, (String)null);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAcctSchemaElement(Properties ctx, MAcctSchemaElement copy, String trxName) 
+	{
+		super(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_ColumnName = copy.m_ColumnName;
+	}
 
 	/** User Element Column Name		*/
 	private String		m_ColumnName = null;

@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.model.X_AD_WF_Block;
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 
 /**
@@ -48,11 +49,14 @@ public class MWFBlock extends X_AD_WF_Block
 		Integer key = Integer.valueOf(AD_WF_Block_ID);
 		MWFBlock retValue = (MWFBlock) s_cache.get (key);
 		if (retValue != null)
+			return new MWFBlock(ctx, retValue);
+		retValue = new MWFBlock (ctx, AD_WF_Block_ID, (String)null);
+		if (retValue.get_ID () == AD_WF_Block_ID)
+		{
+			s_cache.put (key, new MWFBlock(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MWFBlock (ctx, AD_WF_Block_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -81,4 +85,34 @@ public class MWFBlock extends X_AD_WF_Block
 		super(ctx, rs, trxName);
 	}	//	MWFBlock
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWFBlock(MWFBlock copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWFBlock(Properties ctx, MWFBlock copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWFBlock(Properties ctx, MWFBlock copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 }	//	MWFBlock

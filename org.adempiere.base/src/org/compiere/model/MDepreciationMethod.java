@@ -11,6 +11,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  * Method of adjusting the difference between depreciation (Calculated) and registered as (booked).
@@ -40,6 +41,37 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 		super (ctx, rs, trxName);
 	}	//	MDepreciationMethod
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDepreciationMethod(MDepreciationMethod copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDepreciationMethod(Properties ctx, MDepreciationMethod copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDepreciationMethod(Properties ctx, MDepreciationMethod copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**		Cache									*/
 	private static CCache<Integer,MDepreciationMethod>
 	s_cache = new CCache<Integer,MDepreciationMethod>(Table_Name, 5);
@@ -56,8 +88,8 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 		{
 			return;
 		}
-		s_cache.put(depr.get_ID(), depr);
-		s_cache_forType.put(depr.getDepreciationType(), depr);
+		s_cache.put(depr.get_ID(), new MDepreciationMethod(Env.getCtx(), depr));
+		s_cache_forType.put(depr.getDepreciationType(), new MDepreciationMethod(Env.getCtx(), depr));
 	}
 
 	/**
@@ -76,10 +108,10 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 		MDepreciationMethod depr = s_cache.get(A_Depreciation_Method_ID);
 		if (depr != null)
 		{
-			return depr;
+			return new MDepreciationMethod(ctx, depr);
 		}
-		depr = new MDepreciationMethod(ctx, A_Depreciation_Method_ID, null);
-		if (depr.get_ID() > 0)
+		depr = new MDepreciationMethod(ctx, A_Depreciation_Method_ID, (String)null);
+		if (depr.get_ID() == A_Depreciation_Method_ID)
 		{
 			addToCache(depr);
 		}
@@ -99,7 +131,7 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 		MDepreciationMethod depr = s_cache_forType.get(key);
 		if (depr != null)
 		{
-			return depr;
+			return new MDepreciationMethod(ctx, depr);
 		}
 		depr = new Query(ctx, Table_Name, COLUMNNAME_DepreciationType+"=?", null)
 					.setParameters(new Object[]{depreciationType})

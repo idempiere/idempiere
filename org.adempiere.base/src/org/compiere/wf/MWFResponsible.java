@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.compiere.model.MRole;
 import org.compiere.model.X_AD_WF_Responsible;
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 
@@ -49,11 +50,14 @@ public class MWFResponsible extends X_AD_WF_Responsible
 		Integer key = Integer.valueOf(AD_WF_Responsible_ID);
 		MWFResponsible retValue = (MWFResponsible) s_cache.get (key);
 		if (retValue != null)
+			return new MWFResponsible(ctx, retValue);
+		retValue = new MWFResponsible (ctx, AD_WF_Responsible_ID, (String)null);
+		if (retValue.get_ID () == AD_WF_Responsible_ID)
+		{
+			s_cache.put (key, new MWFResponsible(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MWFResponsible (ctx, AD_WF_Responsible_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -81,6 +85,37 @@ public class MWFResponsible extends X_AD_WF_Responsible
 	{
 		super(ctx, rs, trxName);
 	}	//	MWFResponsible
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWFResponsible(MWFResponsible copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWFResponsible(Properties ctx, MWFResponsible copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWFResponsible(Properties ctx, MWFResponsible copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Invoker - return true if no user and no role 

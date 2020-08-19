@@ -31,6 +31,7 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import java.util.Properties;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	Web Services Type Model
@@ -240,6 +242,42 @@ public class MWebServiceType extends X_WS_WebServiceType
 		super(ctx, rs, trxName);
 	}	//	MWebServiceType
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWebServiceType(MWebServiceType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWebServiceType(Properties ctx, MWebServiceType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWebServiceType(Properties ctx, MWebServiceType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_para = copy.m_para != null ? Arrays.stream(copy.m_para).map(e -> {return new MWebServicePara(ctx, e, trxName);}).toArray(MWebServicePara[]::new) : null;
+		this.m_inputcolumnnames = copy.m_inputcolumnnames != null ? Arrays.copyOf(copy.m_inputcolumnnames, copy.m_inputcolumnnames.length) : null;
+		this.m_outputcolumnnames = copy.m_outputcolumnnames != null ? Arrays.copyOf(copy.m_outputcolumnnames, copy.m_outputcolumnnames.length) : null;
+		this.m_inputFieldMap = copy.m_inputFieldMap != null ? new HashMap<String, X_WS_WebServiceFieldInput>(copy.m_inputFieldMap) : null;
+		this.m_keyColumns = copy.m_keyColumns != null ? new ArrayList<String>(copy.m_keyColumns) : null;
+	}
+
 	/**
 	 * 
 	 * @param requery

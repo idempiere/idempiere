@@ -50,11 +50,14 @@ public class MBankAccount extends X_C_BankAccount
 		Integer key = Integer.valueOf(C_BankAccount_ID);
 		MBankAccount retValue = (MBankAccount) s_cache.get (key);
 		if (retValue != null)
+			return new MBankAccount(ctx, retValue);
+		retValue = new MBankAccount (ctx, C_BankAccount_ID, (String)null);
+		if (retValue.get_ID () == C_BankAccount_ID)
+		{
+			s_cache.put (key, new MBankAccount(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MBankAccount (ctx, C_BankAccount_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -92,6 +95,37 @@ public class MBankAccount extends X_C_BankAccount
 		super(ctx, rs, trxName);
 	}	//	MBankAccount
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MBankAccount(MBankAccount copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MBankAccount(Properties ctx, MBankAccount copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MBankAccount(Properties ctx, MBankAccount copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	String representation
 	 *	@return info

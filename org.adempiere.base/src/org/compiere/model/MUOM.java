@@ -106,18 +106,22 @@ public class MUOM extends X_C_UOM
 	 *	@param C_UOM_ID ID
 	 * 	@return UOM
 	 */
-	public static MUOM get (Properties ctx, int C_UOM_ID)
+	public static synchronized MUOM get (Properties ctx, int C_UOM_ID)
 	{
 		if (s_cache.size() == 0)
 			loadUOMs (ctx);
 		//
 		MUOM uom = s_cache.get(C_UOM_ID);
 		if (uom != null)
-			return uom;
+			return new MUOM(ctx, uom);
 		//
-		uom = new MUOM (ctx, C_UOM_ID, null);
-		s_cache.put(C_UOM_ID, uom);
-		return uom;
+		uom = new MUOM (ctx, C_UOM_ID, (String)null);
+		if (uom.get_ID() == C_UOM_ID)
+		{
+			s_cache.put(C_UOM_ID, new MUOM(Env.getCtx(), uom));
+			return uom;
+		}
+		return null;
 	}	//	get
 	
 	/**
@@ -158,7 +162,7 @@ public class MUOM extends X_C_UOM
 								.list();
 		//
 		for (MUOM uom : list) {
-			s_cache.put(uom.get_ID(), uom);
+			s_cache.put(uom.get_ID(), new MUOM(Env.getCtx(), uom));
 		}
 	}	//	loadUOMs
 	
@@ -193,6 +197,37 @@ public class MUOM extends X_C_UOM
 		super(ctx, rs, trxName);
 	}	//	UOM
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MUOM(MUOM copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MUOM(Properties ctx, MUOM copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MUOM(Properties ctx, MUOM copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	String Representation
 	 *	@return info

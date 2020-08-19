@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	Warehouse Locator Object
@@ -178,20 +179,21 @@ public class MLocator extends X_M_Locator
 	 */
 	public static MLocator get (Properties ctx, int M_Locator_ID)
 	{
-		if (s_cache == null)
-			s_cache	= new CCache<Integer,MLocator>(Table_Name, 20);
 		Integer key = Integer.valueOf(M_Locator_ID);
 		MLocator retValue = (MLocator) s_cache.get (key);
 		if (retValue != null)
+			return new MLocator(ctx, retValue);
+		retValue = new MLocator (ctx, M_Locator_ID, (String)null);
+		if (retValue.get_ID () == M_Locator_ID)
+		{
+			s_cache.put (key, new MLocator(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MLocator (ctx, M_Locator_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
-	protected volatile static CCache<Integer,MLocator> s_cache; 
+	private final static CCache<Integer,MLocator> s_cache = new CCache<Integer,MLocator>(Table_Name, 20); 
 	 
 	/**	Logger						*/
 	private static CLogger		s_log = CLogger.getCLogger (MLocator.class);
@@ -244,6 +246,37 @@ public class MLocator extends X_M_Locator
 		super(ctx, rs, trxName);
 	}	//	MLocator
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MLocator(MLocator copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MLocator(Properties ctx, MLocator copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MLocator(Properties ctx, MLocator copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 *	Get String Representation
 	 * 	@return Value

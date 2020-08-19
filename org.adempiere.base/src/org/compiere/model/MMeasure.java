@@ -68,11 +68,14 @@ public class MMeasure extends X_PA_Measure
 		Integer key = Integer.valueOf(PA_Measure_ID);
 		MMeasure retValue = (MMeasure)s_cache.get (key);
 		if (retValue != null)
+			return new MMeasure(ctx, retValue);
+		retValue = new MMeasure (ctx, PA_Measure_ID, (String)null);
+		if (retValue.get_ID() == PA_Measure_ID)
+		{
+			s_cache.put (key, new MMeasure(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MMeasure (ctx, PA_Measure_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -101,6 +104,37 @@ public class MMeasure extends X_PA_Measure
 		super (ctx, rs, trxName);
 	}	//	MMeasure
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MMeasure(MMeasure copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MMeasure(Properties ctx, MMeasure copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MMeasure(Properties ctx, MMeasure copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	public ArrayList<GraphColumn> getGraphColumnList(MGoal goal)
 	{
 		ArrayList<GraphColumn> list = new ArrayList<GraphColumn>();

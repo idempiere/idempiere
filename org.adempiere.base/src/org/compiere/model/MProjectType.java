@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  * 	Project Type Model
@@ -52,11 +53,14 @@ public class MProjectType extends X_C_ProjectType
 		Integer key = Integer.valueOf(C_ProjectType_ID);
 		MProjectType retValue = (MProjectType)s_cache.get (key);
 		if (retValue != null)
+			return new MProjectType(ctx, retValue);
+		retValue = new MProjectType (ctx, C_ProjectType_ID, (String)null);
+		if (retValue.get_ID() == C_ProjectType_ID)
+		{
+			s_cache.put (key, new MProjectType(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MProjectType (ctx, C_ProjectType_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -93,6 +97,37 @@ public class MProjectType extends X_C_ProjectType
 		super(ctx, rs, trxName);
 	}	//	MProjectType
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MProjectType(MProjectType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MProjectType(Properties ctx, MProjectType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MProjectType(Properties ctx, MProjectType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	String Representation
 	 *	@return	info

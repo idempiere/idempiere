@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.compiere.model.MProduct;
 import org.compiere.model.Query;
@@ -73,17 +74,14 @@ public class MPPProductBOM extends X_PP_Product_BOM
 			return null;
 		MPPProductBOM bom = s_cache.get(PP_Product_BOM_ID);
 		if (bom != null)
-			return bom;
-		bom = new MPPProductBOM(ctx, PP_Product_BOM_ID, null);
+			return new MPPProductBOM(ctx, bom);
+		bom = new MPPProductBOM(ctx, PP_Product_BOM_ID, (String)null);
 		if (bom.get_ID() == PP_Product_BOM_ID)
 		{
-			s_cache.put(PP_Product_BOM_ID, bom);
+			s_cache.put(PP_Product_BOM_ID, new MPPProductBOM(Env.getCtx(), bom));
+			return bom;
 		}
-		else
-		{
-			bom = null;
-		}
-		return bom;
+		return null;
 	}
 	
 	/**
@@ -179,6 +177,38 @@ public class MPPProductBOM extends X_PP_Product_BOM
 		super (ctx, rs,trxName);
 	}
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPPProductBOM(MPPProductBOM copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPPProductBOM(Properties ctx, MPPProductBOM copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPPProductBOM(Properties ctx, MPPProductBOM copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_lines = copy.m_lines != null ? copy.m_lines.stream().map(e -> {return new MPPProductBOMLine(ctx, e, trxName);}).collect(Collectors.toCollection(ArrayList::new)) : null;
+	}
+	
 	/**
 	 * 	Get BOM Lines valid date for Product BOM
 	 *  @param valid Date to Validate

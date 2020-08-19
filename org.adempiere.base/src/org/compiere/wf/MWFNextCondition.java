@@ -63,6 +63,38 @@ public class MWFNextCondition extends X_AD_WF_NextCondition
 		super(ctx, rs, trxName);
 	}	//	MWFNextCondition
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWFNextCondition(MWFNextCondition copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWFNextCondition(Properties ctx, MWFNextCondition copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWFNextCondition(Properties ctx, MWFNextCondition copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_numeric = copy.m_numeric;
+	}
+	
 	/**	Numeric evaluation		*/
 	private boolean		m_numeric = true;
 	

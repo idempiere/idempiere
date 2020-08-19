@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 /**
  * 	Request Category Model
@@ -45,11 +46,14 @@ public class MRequestCategory extends X_R_Category
 		Integer key = Integer.valueOf(R_Category_ID);
 		MRequestCategory retValue = (MRequestCategory) s_cache.get (key);
 		if (retValue != null)
+			return new MRequestCategory(ctx, retValue);
+		retValue = new MRequestCategory (ctx, R_Category_ID, (String)null);
+		if (retValue.get_ID () == R_Category_ID)
+		{
+			s_cache.put (key, new MRequestCategory(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MRequestCategory (ctx, R_Category_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -79,4 +83,34 @@ public class MRequestCategory extends X_R_Category
 		super (ctx, rs, trxName);
 	}	//	MCategory
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRequestCategory(MRequestCategory copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRequestCategory(Properties ctx, MRequestCategory copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRequestCategory(Properties ctx, MRequestCategory copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 }	//	MCategory

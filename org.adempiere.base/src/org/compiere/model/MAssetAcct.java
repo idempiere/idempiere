@@ -38,6 +38,37 @@ public class MAssetAcct extends X_A_Asset_Acct
 		super (ctx, rs, trxName);
 	}
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAssetAcct(MAssetAcct copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAssetAcct(Properties ctx, MAssetAcct copy)
+	{
+		this(ctx, copy, (String)null);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAssetAcct(Properties ctx, MAssetAcct copy, String trxName)
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**		Static Cache: A_Asset_Acct_ID -> MAssetAcct					*/
 	private static CCache<Integer,MAssetAcct> s_cache = new CCache<Integer,MAssetAcct>(Table_Name, 5);
 	
@@ -52,18 +83,15 @@ public class MAssetAcct extends X_A_Asset_Acct
 		MAssetAcct acct = s_cache.get(A_Asset_Acct_ID);
 		if (acct != null)
 		{
-			return acct;
+			return new MAssetAcct(ctx, acct);
 		}
 		acct = new MAssetAcct(ctx, A_Asset_Acct_ID, null);
-		if (acct.get_ID() > 0)
+		if (acct.get_ID() == A_Asset_Acct_ID)
 		{
-			addToCache(acct);
+			s_cache.put(A_Asset_Acct_ID, new MAssetAcct(Env.getCtx(), acct));
+			return acct;
 		}
-		else
-		{
-			acct = null;
-		}
-		return acct;
+		return null;
 	}
 	
 	/**
@@ -91,20 +119,11 @@ public class MAssetAcct extends X_A_Asset_Acct
 								.setParameters(params)
 								.setOrderBy(COLUMNNAME_ValidFrom+" DESC NULLS LAST")
 								.first();
-		if (trxName == null)
+		if (acct.get_ID() > 0)
 		{
-			addToCache(acct);
+			s_cache.put(acct.get_ID(), new MAssetAcct(Env.getCtx(), acct));
 		}
 		return acct;
-	}
-	
-	private static void addToCache(MAssetAcct acct)
-	{
-		if (acct == null || acct.get_ID() <= 0)
-		{
-			return;
-		}
-		s_cache.put(acct.get_ID(), acct);
 	}
 	
 	/**

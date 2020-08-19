@@ -20,6 +20,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -69,11 +70,14 @@ public class MInventory extends X_M_Inventory implements DocAction
 		Integer key = Integer.valueOf(M_Inventory_ID);
 		MInventory retValue = (MInventory) s_cache.get (key);
 		if (retValue != null)
+			return new MInventory(ctx, retValue);
+		retValue = new MInventory (ctx, M_Inventory_ID, (String)null);
+		if (retValue.get_ID () == M_Inventory_ID) 
+		{
+			s_cache.put (key, new MInventory(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MInventory (ctx, M_Inventory_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -136,7 +140,38 @@ public class MInventory extends X_M_Inventory implements DocAction
 		setM_Warehouse_ID(wh.getM_Warehouse_ID());
 	}
 	
-	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MInventory(MInventory copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MInventory(Properties ctx, MInventory copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MInventory(Properties ctx, MInventory copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_lines = copy.m_lines != null ? Arrays.stream(copy.m_lines).map(e -> {return new MInventoryLine(ctx, e, trxName);}).toArray(MInventoryLine[]::new) : null;
+	}
+
 	/**	Lines						*/
 	protected MInventoryLine[]	m_lines = null;
 	

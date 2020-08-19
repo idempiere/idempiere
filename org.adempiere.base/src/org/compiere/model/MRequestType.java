@@ -128,6 +128,37 @@ public class MRequestType extends X_R_RequestType
 		super(ctx, rs, trxName);
 	}	//	MRequestType
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRequestType(MRequestType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRequestType(Properties ctx, MRequestType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRequestType(Properties ctx, MRequestType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/** Next time stats to be created		*/
 	private long m_nextStats = 0;
 	

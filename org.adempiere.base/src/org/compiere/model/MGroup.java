@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 /**
  * 	Request Group Model
@@ -45,11 +46,14 @@ public class MGroup extends X_R_Group
 		Integer key = Integer.valueOf(R_Group_ID);
 		MGroup retValue = (MGroup) s_cache.get (key);
 		if (retValue != null)
+			return new MGroup(ctx, retValue);
+		retValue = new MGroup (ctx, R_Group_ID, (String)null);
+		if (retValue.get_ID () == R_Group_ID)
+		{
+			s_cache.put (key, new MGroup(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MGroup (ctx, R_Group_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -77,5 +81,36 @@ public class MGroup extends X_R_Group
 	{
 		super (ctx, rs, trxName);
 	}	//	MGroup
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MGroup(MGroup copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MGroup(Properties ctx, MGroup copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MGroup(Properties ctx, MGroup copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 }	//	MGroup

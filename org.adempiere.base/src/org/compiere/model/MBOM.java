@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
@@ -48,11 +49,14 @@ public class MBOM extends X_M_BOM
 		Integer key = Integer.valueOf(M_BOM_ID);
 		MBOM retValue = (MBOM) s_cache.get (key);
 		if (retValue != null)
+			return new MBOM(ctx, retValue);
+		retValue = new MBOM (ctx, M_BOM_ID, (String)null);
+		if (retValue.get_ID () == M_BOM_ID)
+		{
+			s_cache.put (key, new MBOM(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MBOM (ctx, M_BOM_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**
@@ -116,6 +120,37 @@ public class MBOM extends X_M_BOM
 		super (ctx, rs, trxName);
 	}	//	MBOM
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MBOM(MBOM copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MBOM(Properties ctx, MBOM copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MBOM(Properties ctx, MBOM copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Before Save
 	 *	@param newRecord new

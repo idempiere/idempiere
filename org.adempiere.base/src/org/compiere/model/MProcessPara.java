@@ -50,11 +50,14 @@ public class MProcessPara extends X_AD_Process_Para
 		Integer key = Integer.valueOf(AD_Process_Para_ID);
 		MProcessPara retValue = (MProcessPara)s_cache.get (key);
 		if (retValue != null)
+			return new MProcessPara(ctx, retValue);
+		retValue = new MProcessPara (ctx, AD_Process_Para_ID, (String)null);
+		if (retValue.get_ID () == AD_Process_Para_ID)
+		{
+			s_cache.put (key, new MProcessPara(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MProcessPara (ctx, AD_Process_Para_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
@@ -110,6 +113,37 @@ public class MProcessPara extends X_AD_Process_Para
 		setEntityType(parent.getEntityType());
 	}
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MProcessPara(MProcessPara copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MProcessPara(Properties ctx, MProcessPara copy)
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MProcessPara(Properties ctx, MProcessPara copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/** Virtual Window No - 999	*/
 	public static int		WINDOW_NO = 999;
 	/** Virtual Tab No - 0		*/

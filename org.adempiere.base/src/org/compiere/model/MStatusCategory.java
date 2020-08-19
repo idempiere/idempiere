@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -109,11 +110,14 @@ public class MStatusCategory extends X_R_StatusCategory
 		Integer key = Integer.valueOf(R_StatusCategory_ID);
 		MStatusCategory retValue = (MStatusCategory)s_cache.get (key);
 		if (retValue != null)
+			return new MStatusCategory(ctx, retValue);
+		retValue = new MStatusCategory (ctx, R_StatusCategory_ID, (String)null);
+		if (retValue.get_ID() == R_StatusCategory_ID)
+		{
+			s_cache.put (key, new MStatusCategory(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MStatusCategory (ctx, R_StatusCategory_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
@@ -150,6 +154,38 @@ public class MStatusCategory extends X_R_StatusCategory
 		super (ctx, rs, trxName);
 	}	//	RStatusCategory
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MStatusCategory(MStatusCategory copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MStatusCategory(Properties ctx, MStatusCategory copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MStatusCategory(Properties ctx, MStatusCategory copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_status = copy.m_status != null ? Arrays.stream(copy.m_status).map(e ->{return new MStatus(ctx, e, trxName);}).toArray(MStatus[]::new) : null;
+	}
+	
 	/**	The Status						*/
 	private MStatus[] m_status = null;
 	

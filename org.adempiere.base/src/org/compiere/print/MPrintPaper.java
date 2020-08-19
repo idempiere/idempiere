@@ -67,11 +67,12 @@ public class MPrintPaper extends X_AD_PrintPaper
 		if (pp == null)
 		{
 			pp = new MPrintPaper (Env.getCtx(), AD_PrintPaper_ID, null);
-			s_papers.put(key, pp);
+			s_papers.put(key, new MPrintPaper(Env.getCtx(), pp));
+			return pp;
 		}
 		else
 			if (s_log.isLoggable(Level.CONFIG)) s_log.config("AD_PrintPaper_ID=" + AD_PrintPaper_ID);
-		return pp;
+		return new MPrintPaper(Env.getCtx(), pp);
 	}	//	get
 
 	/**
@@ -128,7 +129,38 @@ public class MPrintPaper extends X_AD_PrintPaper
 		super (ctx, rs, trxName);
 	}	//	MPrintPaper
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPrintPaper(MPrintPaper copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
 
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPrintPaper(Properties ctx, MPrintPaper copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPrintPaper(Properties ctx, MPrintPaper copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_mediaSize = copy.m_mediaSize;
+	}
+	
 	/** Media Size			*/
 	private MediaSize		m_mediaSize = null;
 

@@ -64,7 +64,7 @@ public class MClientInfo extends X_AD_ClientInfo
 		Integer key = Integer.valueOf(AD_Client_ID);
 		MClientInfo info = (MClientInfo)s_cache.get(key);
 		if (info != null)
-			return info;
+			return new MClientInfo(ctx, info, trxName);
 		//
 		String sql = "SELECT * FROM AD_ClientInfo WHERE AD_Client_ID=?";
 		PreparedStatement pstmt = null;
@@ -76,9 +76,8 @@ public class MClientInfo extends X_AD_ClientInfo
 			rs = pstmt.executeQuery ();
 			if (rs.next ())
 			{
-				info = new MClientInfo (ctx, rs, null);
-				if (trxName == null)
-					s_cache.put (key, info);
+				info = new MClientInfo (ctx, rs, trxName);
+				s_cache.put (key, new MClientInfo(Env.getCtx(), info));
 			}
 		}
 		catch (SQLException ex)
@@ -169,6 +168,38 @@ public class MClientInfo extends X_AD_ClientInfo
 		m_createNew = true;
 	}	//	MClientInfo
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MClientInfo(MClientInfo copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MClientInfo(Properties ctx, MClientInfo copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MClientInfo(Properties ctx, MClientInfo copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_acctSchema = copy.m_acctSchema != null ? new MAcctSchema(ctx, copy.m_acctSchema, trxName) : null;
+		this.m_createNew = copy.m_createNew;
+	}
 
 	/**	Account Schema				*/
 	private MAcctSchema 		m_acctSchema = null;

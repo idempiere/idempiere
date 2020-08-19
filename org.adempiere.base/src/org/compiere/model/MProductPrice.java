@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 
 /**
  *	Product Price
@@ -128,6 +129,37 @@ public class MProductPrice extends X_M_ProductPrice
 		setM_Product_ID(M_Product_ID);
 		setPrices (PriceList, PriceStd, PriceLimit);
 	}	//	MProductPrice
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MProductPrice(MProductPrice copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MProductPrice(Properties ctx, MProductPrice copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MProductPrice(Properties ctx, MProductPrice copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Set Prices

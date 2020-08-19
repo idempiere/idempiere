@@ -17,10 +17,12 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 
 /**
@@ -75,6 +77,39 @@ public class MPriceListVersion extends X_M_PriceList_Version
 		setClientOrg(pl);
 		setM_PriceList_ID(pl.getM_PriceList_ID());
 	}	//	MPriceListVersion
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPriceListVersion(MPriceListVersion copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPriceListVersion(Properties ctx, MPriceListVersion copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPriceListVersion(Properties ctx, MPriceListVersion copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_pl = copy.m_pl != null ? new MPriceList(ctx, copy.m_pl, trxName) : null;
+		this.m_pp = copy.m_pp != null ? Arrays.stream(copy.m_pp).map(e -> {return new MProductPrice(ctx, e, trxName);}).toArray(MProductPrice[]::new) : null;
+	}
 	
 	/** Product Prices			*/
 	private MProductPrice[] m_pp = null;

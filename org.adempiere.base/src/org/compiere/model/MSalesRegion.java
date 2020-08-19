@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 
 /**
@@ -46,11 +47,14 @@ public class MSalesRegion extends X_C_SalesRegion
 		Integer key = Integer.valueOf(C_SalesRegion_ID);
 		MSalesRegion retValue = (MSalesRegion) s_cache.get (key);
 		if (retValue != null)
+			return new MSalesRegion(ctx, retValue);
+		retValue = new MSalesRegion (ctx, C_SalesRegion_ID, (String)null);
+		if (retValue.get_ID () == C_SalesRegion_ID)
+		{
+			s_cache.put (key, new MSalesRegion(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MSalesRegion (ctx, C_SalesRegion_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
@@ -79,6 +83,37 @@ public class MSalesRegion extends X_C_SalesRegion
 		super(ctx, rs, trxName);
 	}	//	MSalesRegion
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MSalesRegion(MSalesRegion copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MSalesRegion(Properties ctx, MSalesRegion copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MSalesRegion(Properties ctx, MSalesRegion copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	After Save.
 	 * 	Insert

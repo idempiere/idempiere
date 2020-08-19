@@ -37,6 +37,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  * @author Trifon N. Trifonov
@@ -57,6 +58,34 @@ public class MEXPFormatLine extends X_EXP_FormatLine {
 	
 	public MEXPFormatLine (Properties ctx, ResultSet rs, String trxName) {
 		super (ctx, rs, trxName);
+	}
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MEXPFormatLine(MEXPFormatLine copy) {
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MEXPFormatLine(Properties ctx, MEXPFormatLine copy) {
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MEXPFormatLine(Properties ctx, MEXPFormatLine copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
 	}
 	
 	@Override

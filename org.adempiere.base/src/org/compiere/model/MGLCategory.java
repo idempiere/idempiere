@@ -51,11 +51,14 @@ public class MGLCategory extends X_GL_Category
 		Integer key = Integer.valueOf(GL_Category_ID);
 		MGLCategory retValue = (MGLCategory)s_cache.get (key);
 		if (retValue != null)
+			return new MGLCategory(ctx, retValue);
+		retValue = new MGLCategory (ctx, GL_Category_ID, (String)null);
+		if (retValue.get_ID () == GL_Category_ID)
+		{
+			s_cache.put (key, new MGLCategory(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MGLCategory (ctx, GL_Category_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**
@@ -158,6 +161,37 @@ public class MGLCategory extends X_GL_Category
 		super(ctx, rs, trxName);
 	}	//	MGLCategory
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MGLCategory(MGLCategory copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MGLCategory(Properties ctx, MGLCategory copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MGLCategory(Properties ctx, MGLCategory copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	@Override
 	public String toString()
 	{

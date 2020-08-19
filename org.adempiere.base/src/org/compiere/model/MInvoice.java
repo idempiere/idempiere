@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
@@ -409,6 +410,40 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		setC_BPartner_Location_ID(line.getC_BPartner_Location_ID());
 		setAD_User_ID(line.getAD_User_ID());
 	}	//	MInvoice
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MInvoice(MInvoice copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MInvoice(Properties ctx, MInvoice copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MInvoice(Properties ctx, MInvoice copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_openAmt = copy.m_openAmt;
+		this.m_lines = copy.m_lines != null ? Arrays.stream(copy.m_lines).map(e -> {return new MInvoiceLine(ctx, e, trxName);}).toArray(MInvoiceLine[]::new) : null;
+		this.m_taxes = copy.m_taxes != null ? Arrays.stream(copy.m_taxes).map(e -> {return new MInvoiceTax(ctx, e, trxName);}).toArray(MInvoiceTax[]::new) : null;
+	}
 
 	/**	Open Amount				*/
 	private BigDecimal 		m_openAmt = null;

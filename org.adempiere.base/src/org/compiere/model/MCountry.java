@@ -61,11 +61,11 @@ public class MCountry extends X_C_Country
 		loadAllCountriesIfNeeded(ctx);
 		MCountry c = s_countries.get(C_Country_ID);
 		if (c != null)
-			return c;
-		c = new MCountry (ctx, C_Country_ID, null);
+			return new MCountry(ctx, c);
+		c = new MCountry (ctx, C_Country_ID, (String)null);
 		if (c.getC_Country_ID() == C_Country_ID)
 		{
-			s_countries.put(C_Country_ID, c);
+			s_countries.put(C_Country_ID, new MCountry(Env.getCtx(), c));
 			return c;
 		}
 		return null;
@@ -81,11 +81,11 @@ public class MCountry extends X_C_Country
 		int clientID = Env.getAD_Client_ID(ctx);
 		MCountry c = s_default.get(clientID);
 		if (c != null)
-			return c;
+			return new MCountry(ctx, c);
 
 		loadDefaultCountry(ctx);
 		c = s_default.get(clientID);
-		return c;
+		return new MCountry(ctx, c);
 	}	//	get
 
 	/**
@@ -124,10 +124,10 @@ public class MCountry extends X_C_Country
 			.setOnlyActiveRecords(true)
 			.list();
 		for (MCountry c : countries) {
-			s_countries.put(c.getC_Country_ID(), c);
+			s_countries.put(c.getC_Country_ID(), new MCountry(Env.getCtx(), c));
 			//	Country code of Client Language
 			if (lang != null && lang.getCountryCode().equals(c.getCountryCode()))
-				s_default.put(client.getAD_Client_ID(), c);
+				s_default.put(client.getAD_Client_ID(), new MCountry(Env.getCtx(), c));
 		}
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("#" + s_countries.size() 
 			+ " - Default=" + s_default);
@@ -223,6 +223,37 @@ public class MCountry extends X_C_Country
 		super(ctx, rs, trxName);
 	}	//	MCountry
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MCountry(MCountry copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MCountry(Properties ctx, MCountry copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MCountry(Properties ctx, MCountry copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 *	Return Name - translated if DisplayLanguage is set.
 	 *  @return Name

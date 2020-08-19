@@ -47,17 +47,56 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage
     {
     	super(ctx, rs, trxName);
     }
-
+    
+    /**
+     * 
+     * @param copy
+     */
+    public MBroadcastMessage(MBroadcastMessage copy)
+    {
+    	this(Env.getCtx(), copy);
+    }
+    
+    /**
+     * 
+     * @param ctx
+     * @param copy
+     */
+    public MBroadcastMessage(Properties ctx, MBroadcastMessage copy)
+    {
+    	this(ctx, copy, (String)null);
+    }
+    
+    /**
+     * 
+     * @param ctx
+     * @param copy
+     * @param trxName
+     */
+    public MBroadcastMessage(Properties ctx, MBroadcastMessage copy, String trxName)
+    {
+    	this(ctx, 0, trxName);
+    	copyPO(copy);
+    }
+    
+    /**
+     * 
+     * @param ctx
+     * @param AD_BroadcastMessage_ID
+     * @return MBroadcastMessage or null
+     */
 	public static MBroadcastMessage get (Properties ctx, int AD_BroadcastMessage_ID)
 	{
 		Integer key = Integer.valueOf(AD_BroadcastMessage_ID);
 		MBroadcastMessage retValue = (MBroadcastMessage)s_cache.get(key);
 		if (retValue == null)
 		{
-			retValue = new MBroadcastMessage (ctx, AD_BroadcastMessage_ID, null);
+			retValue = new MBroadcastMessage (Env.getCtx(), AD_BroadcastMessage_ID, null);
 			
 			s_cache.put(key, retValue);
 		}
+		retValue = new MBroadcastMessage(ctx, retValue);
+		
 		return retValue;
 	}	//	get
     

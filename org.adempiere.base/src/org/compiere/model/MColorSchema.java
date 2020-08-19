@@ -92,11 +92,14 @@ public class MColorSchema extends X_PA_ColorSchema
 		Integer key = Integer.valueOf(PA_ColorSchema_ID);
 		MColorSchema retValue = (MColorSchema)s_cache.get (key);
 		if (retValue != null)
+			return new MColorSchema(ctx, retValue);
+		retValue = new MColorSchema (ctx, PA_ColorSchema_ID, (String)null);
+		if (retValue.get_ID() == PA_ColorSchema_ID)
+		{
+			s_cache.put (key, new MColorSchema(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MColorSchema (ctx, PA_ColorSchema_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
@@ -133,6 +136,37 @@ public class MColorSchema extends X_PA_ColorSchema
 		super (ctx, rs, trxName);
 	}	//	MColorSchema
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MColorSchema(MColorSchema copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MColorSchema(Properties ctx, MColorSchema copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MColorSchema(Properties ctx, MColorSchema copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Set Default.
 	 * 	Red (50) - Yellow (100) - Green

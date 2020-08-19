@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 
@@ -49,11 +50,14 @@ public class MPOS extends X_C_POS
 		Integer key = Integer.valueOf(C_POS_ID);
 		MPOS retValue = (MPOS) s_cache.get (key);
 		if (retValue != null)
+			return new MPOS(ctx, retValue);
+		retValue = new MPOS (ctx, C_POS_ID, (String)null);
+		if (retValue.get_ID () == C_POS_ID)
+		{
+			s_cache.put (key, new MPOS(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MPOS (ctx, C_POS_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
 	/**
@@ -106,6 +110,38 @@ public class MPOS extends X_C_POS
 	{
 		super(ctx, rs, trxName);
 	}	//	MPOS
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPOS(MPOS copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPOS(Properties ctx, MPOS copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPOS(Properties ctx, MPOS copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_template = copy.m_template != null ? new MBPartner(ctx, copy.m_template, trxName) : null;
+	}
 	
 	/**	Cash Business Partner			*/
 	private MBPartner	m_template = null;

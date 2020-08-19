@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 
@@ -89,6 +90,26 @@ public class MAcctSchemaGL extends X_C_AcctSchema_GL
 		super(ctx, rs, trxName);
 	}	//	MAcctSchemaGL
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAcctSchemaGL(MAcctSchemaGL copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAcctSchemaGL(Properties ctx, MAcctSchemaGL copy)
+	{
+		this(ctx, 0, (String)null);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Get Acct Info list 
 	 *	@return list

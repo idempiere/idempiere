@@ -51,11 +51,14 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 		Integer key = Integer.valueOf(PA_MeasureCalc_ID);
 		MMeasureCalc retValue = (MMeasureCalc)s_cache.get (key);
 		if (retValue != null)
+			return new MMeasureCalc(ctx, retValue);
+		retValue = new MMeasureCalc (ctx, PA_MeasureCalc_ID, (String)null);
+		if (retValue.get_ID() == PA_MeasureCalc_ID)
+		{
+			s_cache.put (key, new MMeasureCalc(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MMeasureCalc (ctx, PA_MeasureCalc_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
@@ -84,6 +87,36 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 		super (ctx, rs, trxName);
 	}	//	MMeasureCalc
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MMeasureCalc(MMeasureCalc copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MMeasureCalc(Properties ctx, MMeasureCalc copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MMeasureCalc(Properties ctx, MMeasureCalc copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Get Sql to return single value for the Performance Indicator

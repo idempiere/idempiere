@@ -71,7 +71,7 @@ public class MRecentItem extends X_AD_RecentItem
 	    	  synchronized (MRecentItem.class) {
 	    		  String key = getCacheKey(AD_RecentItem_ID, ctx);
 	    		  if (!s_cache.containsKey(key))
-	    			  s_cache.put (key, this);
+	    			  s_cache.put (key, new MRecentItem(Env.getCtx(), this));
 	    	  }
 	      }
 	}	//	MRecentItem
@@ -97,10 +97,42 @@ public class MRecentItem extends X_AD_RecentItem
 		}
 		synchronized (MRecentItem.class) {
 			if (key != null && !s_cache.containsKey(key))
-				s_cache.put (key, this);
+				s_cache.put (key, new MRecentItem(Env.getCtx(), this));
 		}
 	}	//	MRecentItem
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRecentItem(MRecentItem copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRecentItem(Properties ctx, MRecentItem copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRecentItem(Properties ctx, MRecentItem copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_label = copy.m_label;
+	}
+	
 	/**
 	 * 	Get from Cache using ID
 	 *	@param ctx context
@@ -112,8 +144,16 @@ public class MRecentItem extends X_AD_RecentItem
 		String ii = getCacheKey(AD_RecentItem_ID, ctx);
 		MRecentItem ri = (MRecentItem)s_cache.get(ii);
 		if (ri == null)
+		{
 			ri = new MRecentItem (ctx, AD_RecentItem_ID, null);
-		return ri;
+			if (ri.get_ID() == AD_RecentItem_ID)
+			{
+				s_cache.put(ii, new MRecentItem(Env.getCtx(), ri));
+				return ri;
+			}
+			return null;
+		}
+		return new MRecentItem(ctx, ri);
 	}	//	get
 
 	/**
@@ -135,7 +175,7 @@ public class MRecentItem extends X_AD_RecentItem
 					&& Env.getAD_Language(ctx).equals(Env.getAD_Language(retValue.getCtx()))
 					)
 			{
-				return retValue;
+				return new MRecentItem(ctx, retValue);
 			}
 		}
 		//
@@ -165,7 +205,7 @@ public class MRecentItem extends X_AD_RecentItem
 		if (retValue != null)
 		{
 			String key = getCacheKey(retValue.getAD_RecentItem_ID(), ctx);
-			s_cache.put (key, retValue);
+			s_cache.put (key, new MRecentItem(Env.getCtx(), retValue));
 		}
 		return retValue;
 	}	//	get

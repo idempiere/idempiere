@@ -29,6 +29,7 @@ import java.util.Properties;
 
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 
 /**
  *	Persistent Validation Rule Model
@@ -53,11 +54,14 @@ public class MValRule extends X_AD_Val_Rule
 		Integer key = Integer.valueOf(AD_Val_Rule_ID);
 		MValRule retValue = (MValRule) s_cache.get (key);
 		if (retValue != null)
+			return new MValRule(ctx, retValue);
+		retValue = new MValRule (ctx, AD_Val_Rule_ID, (String)null);
+		if (retValue.get_ID () == AD_Val_Rule_ID)
+		{
+			s_cache.put (key, new MValRule(Env.getCtx(), retValue));
 			return retValue;
-		retValue = new MValRule (ctx, AD_Val_Rule_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
@@ -89,6 +93,37 @@ public class MValRule extends X_AD_Val_Rule
 		super(ctx, rs, trxName);
 	}	//	MValRule
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MValRule(MValRule copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MValRule(Properties ctx, MValRule copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MValRule(Properties ctx, MValRule copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	String Representation
 	 *	@return info

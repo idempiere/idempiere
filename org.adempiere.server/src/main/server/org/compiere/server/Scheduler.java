@@ -621,14 +621,19 @@ public class Scheduler extends AdempiereServer
 		MScheduler retValue = (MScheduler)s_cache.get(key);
 		if (retValue == null)
 		{
-			retValue = new MScheduler(ctx, AD_Scheduler_ID, null);
+			retValue = new MScheduler(ctx, AD_Scheduler_ID, (String)null);
 			if (AD_Scheduler_ID == 0)
 			{
 				String trxName = null;
 				retValue.load(trxName);	//	load System Record
 			}
-			s_cache.put(key, retValue);
+			if (retValue.get_ID() == AD_Scheduler_ID)
+			{
+				s_cache.put(key, new MScheduler(Env.getCtx(), retValue));
+				return retValue;
+			}
+			return null;
 		}
-		return retValue;
+		return new MScheduler(ctx, retValue);
 	}	//	get
 }	//	Scheduler

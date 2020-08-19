@@ -51,13 +51,14 @@ public class MPriceList extends X_M_PriceList
 	public static MPriceList get (Properties ctx, int M_PriceList_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(M_PriceList_ID);
-		MPriceList retValue = (MPriceList)s_cache.get(key);
+		MPriceList retValue = s_cache.get(key);
 		if (retValue == null)
 		{
 			retValue = new MPriceList (ctx, M_PriceList_ID, trxName);
-			s_cache.put(key, retValue);
+			s_cache.put(key, new MPriceList(Env.getCtx(), retValue));
+			return retValue;
 		}
-		return retValue;		
+		return new MPriceList(ctx, retValue, trxName);		
 	}	//	get
 	
 	/**
@@ -226,6 +227,39 @@ public class MPriceList extends X_M_PriceList
 		setEnforcePriceLimit(impPL.isEnforcePriceLimit());
 	}	//	MPriceList
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPriceList(MPriceList copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPriceList(Properties ctx, MPriceList copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPriceList(Properties ctx, MPriceList copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_plv = copy.m_plv != null ? new MPriceListVersion(ctx, copy.m_plv, trxName) : null;
+		this.m_precision = copy.m_precision;
+	}
+	
 	/**	Cached PLV					*/
 	private MPriceListVersion	m_plv = null;
 	/** Cached Precision			*/

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /**
@@ -79,6 +80,26 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default
 		super(ctx, rs, trxName);
 	}	//	MAcctSchemaDefault
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAcctSchemaDefault(MAcctSchemaDefault copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAcctSchemaDefault(Properties ctx, MAcctSchemaDefault copy)
+	{
+		this(ctx, 0, (String)null);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Get Realized Gain Acct for currency
 	 *	@param C_Currency_ID currency

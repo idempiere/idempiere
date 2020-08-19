@@ -18,12 +18,14 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.TreeSet;
 
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 
@@ -85,6 +87,39 @@ public class MScheduler extends X_AD_Scheduler
 		super(ctx, rs, trxName);
 	}	//	MScheduler
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MScheduler(MScheduler copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MScheduler(Properties ctx, MScheduler copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MScheduler(Properties ctx, MScheduler copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_parameter = copy.m_parameter != null ? Arrays.stream(copy.m_parameter).map(e -> {return new MSchedulerPara(ctx, e, trxName);}).toArray(MSchedulerPara[]::new) : null;
+		this.m_recipients = copy.m_recipients != null ? Arrays.stream(copy.m_recipients).map(e -> {return new MSchedulerRecipient(ctx, e, trxName);}).toArray(MSchedulerRecipient[]::new) : null;
+	}
+	
 	/**	Process Parameter			*/
 	private MSchedulerPara[] m_parameter = null;
 	/** Process Recipients			*/

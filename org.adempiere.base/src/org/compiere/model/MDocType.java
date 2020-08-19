@@ -94,12 +94,15 @@ public class MDocType extends X_C_DocType
 	static public MDocType get (Properties ctx, int C_DocType_ID)
 	{
 		MDocType retValue = (MDocType)s_cache.get(C_DocType_ID);
-		if (retValue == null)
+		if (retValue != null)
+			return new MDocType(ctx, retValue);
+		retValue = new MDocType (ctx, C_DocType_ID, (String)null);
+		if (retValue.getC_DocType_ID() == C_DocType_ID)
 		{
-			retValue = new MDocType (ctx, C_DocType_ID, null);
-			s_cache.put(C_DocType_ID, retValue);
+			s_cache.put(C_DocType_ID, new MDocType(Env.getCtx(), retValue));
+			return retValue;
 		}
-		return retValue; 
+		return null;		 
 	} 	//	get
 	
 	/**	Cache					*/
@@ -163,6 +166,37 @@ public class MDocType extends X_C_DocType
 		setGL_Category_ID ();
 	}	//	MDocType
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDocType(MDocType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDocType(Properties ctx, MDocType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDocType(Properties ctx, MDocType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Set Default GL Category
 	 */

@@ -25,6 +25,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 
 /**
@@ -53,11 +54,14 @@ public class MRfQ extends X_C_RfQ
 		Integer key = Integer.valueOf(C_RfQ_ID);
 		MRfQ retValue = (MRfQ) s_cache.get (key);
 		if (retValue != null)
-			return retValue;
+			return new MRfQ(ctx, retValue, trxName);
 		retValue = new MRfQ (ctx, C_RfQ_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		if (retValue.get_ID () == C_RfQ_ID) 
+		{
+			s_cache.put (key, new MRfQ(Env.getCtx(), retValue));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
@@ -102,6 +106,37 @@ public class MRfQ extends X_C_RfQ
 	{
 		super(ctx, rs, trxName);
 	}	//	MRfQ
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRfQ(MRfQ copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRfQ(Properties ctx, MRfQ copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRfQ(Properties ctx, MRfQ copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Get active Lines

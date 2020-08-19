@@ -160,6 +160,49 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		super(ctx, rs, trxName);
 	}	//	MInvoiceLine
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MInvoiceLine(MInvoiceLine copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MInvoiceLine(Properties ctx, MInvoiceLine copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MInvoiceLine(Properties ctx, MInvoiceLine copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_tax = copy.m_tax != null ? new MTax(ctx, copy.m_tax, trxName) : null;
+		this.m_M_PriceList_ID = copy.m_M_PriceList_ID;
+		this.m_DateInvoiced = copy.m_DateInvoiced;
+		this.m_C_BPartner_ID = copy.m_C_BPartner_ID;
+		this.m_C_BPartner_Location_ID = copy.m_C_BPartner_Location_ID;
+		this.m_IsSOTrx = copy.m_IsSOTrx;
+		this.m_product = copy.m_product != null ? new MProduct(ctx, copy.m_product, trxName) : null;
+		this.m_charge = copy.m_charge != null ? new MCharge(ctx, copy.m_charge, trxName) : null;
+		this.m_name = copy.m_name;
+		this.m_precision = copy.m_precision;
+		this.m_parent = copy.m_parent != null ? new MInvoice(ctx, copy.m_parent, trxName) : null;
+		this.m_priceSet = copy.m_priceSet;
+	}
+
 	protected int			m_M_PriceList_ID = 0;
 	protected Timestamp	m_DateInvoiced = null;
 	protected int			m_C_BPartner_ID = 0;

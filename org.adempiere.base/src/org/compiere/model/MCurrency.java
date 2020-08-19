@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 /**
  * 	Currency Model.
@@ -85,7 +86,37 @@ public class MCurrency extends X_C_Currency
 		setIsEuro (false);
 	}	//	MCurrency
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MCurrency(MCurrency copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
 
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MCurrency(Properties ctx, MCurrency copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MCurrency(Properties ctx, MCurrency copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**	Store System Currencies			**/
 	private static CCache<Integer,MCurrency> s_currencies = new CCache<Integer,MCurrency>(Table_Name, 50);
 	/** Cache System Currencies by using ISO code as key **/
@@ -102,16 +133,16 @@ public class MCurrency extends X_C_Currency
 		//	Try Cache
 		MCurrency retValue = (MCurrency)s_currenciesISO.get(ISOcode);
 		if (retValue != null)
-			return retValue;
+			return new MCurrency(ctx, retValue);
 
 		//	Try database
-		Query query = new Query(ctx, I_C_Currency.Table_Name, "ISO_Code=?", null);
+		Query query = new Query(ctx, I_C_Currency.Table_Name, "ISO_Code=?", (String)null);
 		query.setParameters(ISOcode);
 		retValue = (MCurrency)query.firstOnly();
 		
 		//	Save 
 		if (retValue!=null)
-			s_currenciesISO.put(ISOcode, retValue);
+			s_currenciesISO.put(ISOcode, new MCurrency(Env.getCtx(), retValue));
 		return retValue;
 	}	
 	
@@ -128,13 +159,13 @@ public class MCurrency extends X_C_Currency
 		Integer key = Integer.valueOf(C_Currency_ID);
 		MCurrency retValue = (MCurrency)s_currencies.get(key);
 		if (retValue != null)
-			return retValue;
+			return new MCurrency(ctx, retValue);
 
 		//	Create it
-		retValue = new MCurrency(ctx, C_Currency_ID, null);
+		retValue = new MCurrency(ctx, C_Currency_ID, (String)null);
 		//	Save in System
 		if (retValue.getAD_Client_ID() == 0)
-			s_currencies.put(key, retValue);
+			s_currencies.put(key, new MCurrency(Env.getCtx(), retValue));
 		return retValue;
 	}	//	get
 

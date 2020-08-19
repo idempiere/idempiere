@@ -20,55 +20,70 @@
 * MA 02110-1301, USA.                                                 *
 *                                                                     *
 * Contributors:                                                       *
-* - Carlos Ruiz - globalqss                                           *
+* - Trek Global Corporation                                           *
+* - Heng Sin Low                                                      *
 **********************************************************************/
-
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.Properties;
 
-import org.adempiere.base.IModelFactory;
 import org.compiere.util.Env;
 
-public class WS_ModelFactory implements IModelFactory {
+/**
+ * @author hengsin
+ *
+ */
+public class MAttributeSetExclude extends X_M_AttributeSetExclude {
 
-	@Override
-	public Class<?> getClass(String tableName) {
-		if (X_WS_WebService_Para.Table_Name.equals(tableName))
-			return MWebServicePara.class;
-		if (X_WS_WebServiceType.Table_Name.equals(tableName))
-			return MWebServiceType.class;
-		if (X_WS_WebService.Table_Name.equals(tableName))
-			return MWebService.class;
-		if (MWebServiceMethod.Table_Name.equals(tableName))
-			return MWebServiceMethod.class;
-		return null;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2977401481745176882L;
+
+	/**
+	 * @param ctx
+	 * @param M_AttributeSetExclude_ID
+	 * @param trxName
+	 */
+	public MAttributeSetExclude(Properties ctx, int M_AttributeSetExclude_ID, String trxName) {
+		super(ctx, M_AttributeSetExclude_ID, trxName);
 	}
 
-	@Override
-	public PO getPO(String tableName, int Record_ID, String trxName) {
-		if (X_WS_WebService_Para.Table_Name.equals(tableName))
-			return new MWebServicePara(Env.getCtx(), Record_ID, trxName);
-		if (X_WS_WebServiceType.Table_Name.equals(tableName))
-			return new MWebServiceType(Env.getCtx(), Record_ID, trxName);
-		if (X_WS_WebService.Table_Name.equals(tableName))
-			return new MWebService(Env.getCtx(), Record_ID, trxName);
-		if (MWebServiceMethod.Table_Name.equals(tableName))
-			return new MWebServiceMethod(Env.getCtx(), Record_ID, trxName);
-		return null;
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
+	public MAttributeSetExclude(Properties ctx, ResultSet rs, String trxName) {
+		super(ctx, rs, trxName);
 	}
 
-	@Override
-	public PO getPO(String tableName, ResultSet rs, String trxName) {
-		if (X_WS_WebService_Para.Table_Name.equals(tableName))
-			return new MWebServicePara(Env.getCtx(), rs, trxName);
-		if (X_WS_WebServiceType.Table_Name.equals(tableName))
-			return new MWebServiceType(Env.getCtx(), rs, trxName);
-		if (X_WS_WebService.Table_Name.equals(tableName))
-			return new MWebService(Env.getCtx(), rs, trxName);
-		if (MWebServiceMethod.Table_Name.equals(tableName))
-			return new MWebServiceMethod(Env.getCtx(), rs, trxName);
-		return null;
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAttributeSetExclude(MAttributeSetExclude copy) {
+		this(Env.getCtx(), copy);
 	}
 
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAttributeSetExclude(Properties ctx, MAttributeSetExclude copy) {
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAttributeSetExclude(Properties ctx, MAttributeSetExclude copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 }

@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -126,8 +127,7 @@ public final class MRole extends X_AD_Role
 		MRole role = (MRole)s_roles.get (key);
 		if (role == null || reload)
 		{
-			role = new MRole (ctx, AD_Role_ID, null);
-			s_roles.put (key, role);
+			role = new MRole (ctx, AD_Role_ID, null);			
 			if (AD_Role_ID == 0)
 			{
 				String trxName = null;
@@ -135,9 +135,10 @@ public final class MRole extends X_AD_Role
 			}
 			role.setAD_User_ID(AD_User_ID);
 			role.loadAccess(reload);
+			s_roles.put (key, new MRole(Env.getCtx(), role));
 			if (s_log.isLoggable(Level.INFO)) s_log.info(role.toString());
 		}
-		return role;
+		return new MRole(ctx, role);
 	}	//	get
 
 	/**
@@ -297,6 +298,57 @@ public final class MRole extends X_AD_Role
 	{
 		super(ctx, rs, trxName);
 	}	//	MRole
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRole(MRole copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRole(Properties ctx, MRole copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRole(Properties ctx, MRole copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_AD_User_ID = copy.m_AD_User_ID;
+		this.m_orgAccess = copy.m_orgAccess != null ? Arrays.copyOf(copy.m_orgAccess, copy.m_orgAccess.length) : null;
+		this.m_tableAccess = copy.m_tableAccess != null ? Arrays.copyOf(copy.m_tableAccess, copy.m_tableAccess.length): null;
+		this.m_columnAccess = copy.m_columnAccess != null ? Arrays.copyOf(copy.m_columnAccess, copy.m_columnAccess.length) : null;
+		this.m_recordAccess = copy.m_recordAccess != null ? Arrays.copyOf(copy.m_recordAccess, copy.m_recordAccess.length) : null;
+		this.m_recordDependentAccess = copy.m_recordDependentAccess != null ? Arrays.copyOf(copy.m_recordDependentAccess, copy.m_recordDependentAccess.length) : null;
+		this.m_tableAccessLevel = copy.m_tableAccessLevel != null ? new HashMap<Integer, String>(copy.m_tableAccessLevel) : null;
+		this.m_tableName = copy.m_tableName != null ? new HashMap<String, Integer>(copy.m_tableName) : null;
+		this.m_viewName = copy.m_viewName != null ? new HashSet<String>(copy.m_viewName) : null;
+		this.m_tableIdName = copy.m_tableIdName != null ? new HashMap<String, String>(copy.m_tableIdName) : null;
+		this.m_windowAccess = copy.m_windowAccess != null ? new HashMap<Integer, Boolean>(copy.m_windowAccess) : null;
+		this.m_processAccess = copy.m_processAccess != null ? new HashMap<Integer, Boolean>(copy.m_processAccess) : null;
+		this.m_taskAccess = copy.m_taskAccess != null ? new HashMap<Integer, Boolean>(copy.m_taskAccess) : null;
+		this.m_workflowAccess = copy.m_workflowAccess != null ? new HashMap<Integer, Boolean>(copy.m_workflowAccess) : null;
+		this.m_formAccess = copy.m_formAccess != null ? new HashMap<Integer, Boolean>(copy.m_formAccess) : null;
+		this.m_infoAccess = copy.m_infoAccess != null ? new HashMap<Integer, Boolean>(copy.m_infoAccess) : null;
+		this.m_includedRoles = copy.m_includedRoles != null ? new ArrayList<MRole>(copy.m_includedRoles) : null;
+		this.m_parent = copy.m_parent != null ? new MRole(ctx, copy.m_parent, trxName) : null;
+		this.m_includedSeqNo = copy.m_includedSeqNo;
+		this.m_canAccess_Info_Product = copy.m_canAccess_Info_Product;
+	}
 
 	/**
 	 * 	Get Confirm Query Records

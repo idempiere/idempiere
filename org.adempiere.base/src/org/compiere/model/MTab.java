@@ -20,12 +20,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	Tab Model
@@ -107,6 +109,37 @@ public class MTab extends X_AD_Tab
 		setEntityType(parent.getEntityType());
 	}	//	M_Tab
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MTab(MTab copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MTab(Properties ctx, MTab copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MTab(Properties ctx, MTab copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_fields = copy.m_fields != null ? Arrays.stream(copy.m_fields).map(e -> {return new MField(ctx, e, trxName);}).toArray(MField[]::new) : null;
+	}
 	
 	/**	The Fields						*/
 	private MField[]		m_fields	= null;

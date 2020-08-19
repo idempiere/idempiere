@@ -105,6 +105,38 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine
 	} //	 MPPProductBOMLine
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MPPProductBOMLine(MPPProductBOMLine copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPPProductBOMLine(Properties ctx, MPPProductBOMLine copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPPProductBOMLine(Properties ctx, MPPProductBOMLine copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_bom = copy.m_bom != null ? new MPPProductBOM(ctx, copy.m_bom, trxName) : null;
+	}
+	
+	/**
 	 * Calculate Low Level of a Product
 	 * @param ID Product
 	 * @return int low level

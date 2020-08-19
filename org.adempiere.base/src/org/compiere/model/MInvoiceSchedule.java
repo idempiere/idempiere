@@ -24,6 +24,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 
 /**
@@ -52,11 +53,14 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule
 		Integer key = Integer.valueOf(C_InvoiceSchedule_ID);
 		MInvoiceSchedule retValue = (MInvoiceSchedule) s_cache.get (key);
 		if (retValue != null)
-			return retValue;
+			return new MInvoiceSchedule(ctx, retValue, trxName);
 		retValue = new MInvoiceSchedule (ctx, C_InvoiceSchedule_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		if (retValue.get_ID () == C_InvoiceSchedule_ID) 
+		{
+			s_cache.put (key, new MInvoiceSchedule(Env.getCtx(), retValue));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
@@ -84,6 +88,37 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule
 	{
 		super(ctx, rs, trxName);
 	}	//	MInvoiceSchedule
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MInvoiceSchedule(MInvoiceSchedule copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MInvoiceSchedule(Properties ctx, MInvoiceSchedule copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MInvoiceSchedule(Properties ctx, MInvoiceSchedule copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Can I send Invoice

@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
+import org.compiere.util.Env;
 
 
 /**
@@ -49,14 +50,15 @@ public class MField extends X_AD_Field
 	{
 		Integer key = Integer.valueOf(AD_Field_ID);
 		MField retValue = s_cache.get (key);
-		if (retValue != null && retValue.getCtx() == ctx) {
+		if (retValue != null) {
+			return new MField(ctx, retValue);
+		}
+		retValue = new MField (ctx, AD_Field_ID, (String)null);
+		if (retValue.get_ID () == AD_Field_ID) {
+			s_cache.put (key, new MField(Env.getCtx(), retValue));
 			return retValue;
 		}
-		retValue = new MField (ctx, AD_Field_ID, null);
-		if (retValue.get_ID () == AD_Field_ID) {
-			s_cache.put (key, retValue);
-		}
-		return retValue;
+		return null;
 	}
 	
 	/**
@@ -121,6 +123,37 @@ public class MField extends X_AD_Field
 		setAD_Tab_ID(parent.getAD_Tab_ID());
 		setEntityType(parent.getEntityType());
 	}	//	M_Field
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MField(MField copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MField(Properties ctx, MField copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MField(Properties ctx, MField copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Set Column Values

@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Env;
+
 
 /**
  *	Discount Schema Line (Price List) Model 
@@ -56,4 +58,35 @@ public class MDiscountSchemaLine extends X_M_DiscountSchemaLine
 		super(ctx, rs, trxName);
 	}	//	MDiscountSchemaLine
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDiscountSchemaLine(MDiscountSchemaLine copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDiscountSchemaLine(Properties ctx, MDiscountSchemaLine copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDiscountSchemaLine(Properties ctx, MDiscountSchemaLine copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 }	//	MDiscountSchemaLine
