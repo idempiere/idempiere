@@ -561,6 +561,12 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     			root.detach();
     	}
     	this.setPage(page);
+    	
+    	//clear key listeners
+    	Iterable<EventListener<? extends Event>> keylisteners = keyListener.getEventListeners(Events.ON_CTRL_KEY);
+    	for(EventListener<? extends Event> kl : keylisteners) {
+    		keyListener.removeEventListener(Events.ON_CTRL_KEY, kl);
+    	}
         
     	//clear session attributes
     	Enumeration<String> attributes = httpRequest.getSession().getAttributeNames();
