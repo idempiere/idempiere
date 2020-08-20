@@ -726,8 +726,8 @@ public final class Fact
 			//end AZ
 			//	Just the first
 			if (distributions.length > 1)
-				log.warning("More then one Distributiion for " + dLine.getAccount());
-			MDistribution distribution = distributions[0]; 
+				log.warning("More then one Distribution for " + dLine.getAccount());
+			MDistribution distribution = distributions[0];
 
 			// FR 2685367 - GL Distribution delete line instead reverse
 			if (distribution.isCreateReversal()) {
