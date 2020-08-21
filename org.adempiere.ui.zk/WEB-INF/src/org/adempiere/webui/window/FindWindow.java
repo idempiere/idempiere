@@ -131,7 +131,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2958810511464597943L;
+	private static final long serialVersionUID = -3907408033854720147L;
 
 	private static final String FIND_ROW_EDITOR = "find.row.editor";
 
@@ -1114,7 +1114,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	listColumn.setSelectedIndex(0);
 
             for (ValueNamePair item: op)
-                listOperator.appendItem(item.getName(), item.getValue());
+                listOperator.appendItem(Msg.getMsg(Env.getCtx(), item.getName()), item.getValue());
             listOperator.setSelectedIndex(0);
         }
         else
@@ -1132,6 +1132,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             	{
                 	listColumn.setSelectedItem(li);
             		selected = true;
+            		break;
             	}
             }
             if(!selected) listColumn.setSelectedIndex(0);
@@ -1140,11 +1141,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             for (int i = 0; i < op.length; i++)
             {
             	ValueNamePair item = op[i];
-            	ListItem li = listOperator.appendItem(item.getName(), item.getValue());
+            	ListItem li = listOperator.appendItem(Msg.getMsg(Env.getCtx(), item.getName()), item.getValue());
             	if(item.getValue().equals(operator))
             	{
             		listOperator.setSelectedItem(li);
             		selected = true;
+            		break;
             	}
             }
             if(!selected) listOperator.setSelectedIndex(0);
@@ -1555,7 +1557,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	 * 	@param in value
 	 * @param to
 	 * @param listItem
-	 * 	@return data type corected value
+	 * 	@return data type corrected value
 	 */
 	private Component parseString(GridField field, String in, ListItem listItem, boolean to)
 	{
@@ -1719,7 +1721,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            Object parsedValue = parseValue(field, value);
 	            if (parsedValue == null)
 	                continue;
-	            String infoDisplay = value.toString();
+	            String infoDisplay = (value == null ? "" : value.toString());
 	            if (field.isLookup())
 	                infoDisplay = field.getLookup().getDisplay(value);
 	            else if (field.getDisplayType() == DisplayType.YesNo)
@@ -1776,7 +1778,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            	m_query.addRestriction(ColumnSQL, Operator, parsedValue,
 	            			infoName, infoDisplay, and, openBrackets);
 
-	            appendCode(code, ColumnName, Operator, value.toString(), value2 != null ? value2.toString() : "", andOr, lBrackets, rBrackets);
+	            appendCode(code, ColumnName, Operator, value != null ? value.toString() : "", value2 != null ? value2.toString() : "", andOr, lBrackets, rBrackets);
 	        }
 	        
 	        saveQuery(saveQuery, code, shareAllUsers);			
@@ -2092,14 +2094,17 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	addOperators(MQuery.OPERATORS_LOOKUP, listOperator);
         }
         else if (DisplayType.isNumeric(referenceType)
-        		|| DisplayType.isDate(referenceType)
         		|| DisplayType.isID(referenceType)) // Note that lookups were filtered above
         {
         	addOperators(MQuery.OPERATORS_NUMBERS, listOperator);
         }
+        else if (DisplayType.isDate(referenceType))
+        {
+        	addOperators(MQuery.OPERATORS_DATES, listOperator);
+        }
         else // DisplayType.isText
         {
-        	addOperators(MQuery.OPERATORS, listOperator);
+        	addOperators(MQuery.OPERATORS_STRINGS, listOperator);
         }
     } //    addOperators
 
@@ -2113,7 +2118,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         itemList.clear();
         for (ValueNamePair item: op)
         {
-            listOperator.appendItem(item.getName(), item.getValue());
+            listOperator.appendItem(Msg.getMsg(Env.getCtx(), item.getName()), item.getValue());
         }
         listOperator.setSelectedIndex(0);
     }   //  addOperators
