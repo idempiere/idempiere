@@ -49,7 +49,7 @@ public class MQuery implements Serializable, Cloneable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1495322773308601375L;
+	private static final long serialVersionUID = -8412818805510431201L;
 
 	/**
 	 *	Get Query from Parameter
@@ -442,73 +442,111 @@ public class MQuery implements Serializable, Cloneable
 	
 	/** Equal 			*/
 	public static final String	EQUAL = "=";
+	public static final String	MSG_EQUAL = "OPERATOR_EQUAL";
 	/** Equal - 0		*/
 	public static final int		EQUAL_INDEX = 0;
 	/** Not Equal		*/
 	public static final String	NOT_EQUAL = "!=";
+	public static final String	MSG_NOT_EQUAL = "OPERATOR_NOT_EQUAL";
 	/** Not Equal - 1		*/
 	public static final int		NOT_EQUAL_INDEX = 1;
 	/** Like			*/
 	public static final String	LIKE = " LIKE ";
+	public static final String	MSG_LIKE = "OPERATOR_LIKE";
 	/** Not Like		*/
 	public static final String	NOT_LIKE = " NOT LIKE ";
+	public static final String	MSG_NOT_LIKE = "OPERATOR_NOT_LIKE";
 	/** Greater			*/
 	public static final String	GREATER = ">";
+	public static final String	MSG_GREATER = "OPERATOR_GREATER";
 	/** Greater Equal	*/
 	public static final String	GREATER_EQUAL = ">=";
+	public static final String	MSG_GREATER_EQUAL = "OPERATOR_GREATER_EQUAL";
 	/** Less			*/
 	public static final String	LESS = "<";
+	public static final String	MSG_LESS = "OPERATOR_LESS";
 	/** Less Equal		*/
 	public static final String	LESS_EQUAL = "<=";
+	public static final String	MSG_LESS_EQUAL = "OPERATOR_LESS_EQUAL";
 	/** Between			*/
 	public static final String	BETWEEN = " BETWEEN ";
+	public static final String	MSG_BETWEEN = "OPERATOR_BETWEEN";
 	/** Between - 8		*/
 	public static final int		BETWEEN_INDEX = 8;
 	/** For IDEMPIERE-377	*/
 	public static final String 	NOT_NULL = " IS NOT NULL ";
+	public static final String 	MSG_NOT_NULL = "OPERATOR_NOT_NULL";
 	/** For IDEMPIERE-377	*/
 	public static final String 	NULL = " IS NULL ";
+	public static final String 	MSG_NULL = "OPERATOR_NULL";
 
-	/**	Operators for Strings				*/
+	/**	All the Operators			*/
 	public static final ValueNamePair[]	OPERATORS = new ValueNamePair[] {
-		new ValueNamePair (EQUAL,			" = "),		//	0 - EQUAL_INDEX
-		new ValueNamePair (NOT_EQUAL,		" != "),	//  1 - NOT_EQUAL_INDEX
-		new ValueNamePair (LIKE,			" ~ "),
-		new ValueNamePair (NOT_LIKE,		" !~ "),
-		new ValueNamePair (GREATER,			" > "),
-		new ValueNamePair (GREATER_EQUAL,	" >= "),
-		new ValueNamePair (LESS,			" < "),
-		new ValueNamePair (LESS_EQUAL,		" <= "),
-		new ValueNamePair (BETWEEN,			" >-< "),	//	8 - BETWEEN_INDEX
-		new ValueNamePair (NULL,			" NULL "),
-		new ValueNamePair (NOT_NULL,		" !NULL ")
+		new ValueNamePair (EQUAL,			MSG_EQUAL),		//	0 - EQUAL_INDEX
+		new ValueNamePair (NOT_EQUAL,		MSG_NOT_EQUAL),	//  1 - NOT_EQUAL_INDEX
+		new ValueNamePair (LIKE,			MSG_LIKE),
+		new ValueNamePair (NOT_LIKE,		MSG_NOT_LIKE),
+		new ValueNamePair (GREATER,			MSG_GREATER),
+		new ValueNamePair (GREATER_EQUAL,	MSG_GREATER_EQUAL),
+		new ValueNamePair (LESS,			MSG_LESS),
+		new ValueNamePair (LESS_EQUAL,		MSG_LESS_EQUAL),
+		new ValueNamePair (BETWEEN,			MSG_BETWEEN),	//	8 - BETWEEN_INDEX
+		new ValueNamePair (NULL,			MSG_NULL),
+		new ValueNamePair (NOT_NULL,		MSG_NOT_NULL)
+	};
+	/**	Operators for Strings				*/
+	public static final ValueNamePair[]	OPERATORS_STRINGS = new ValueNamePair[] {
+		new ValueNamePair (EQUAL,			MSG_EQUAL),
+		new ValueNamePair (NOT_EQUAL,		MSG_NOT_EQUAL),
+		new ValueNamePair (LIKE,			MSG_LIKE),
+		new ValueNamePair (NOT_LIKE,		MSG_NOT_LIKE),
+		new ValueNamePair (GREATER,			MSG_GREATER),
+		new ValueNamePair (GREATER_EQUAL,	MSG_GREATER_EQUAL),
+		new ValueNamePair (LESS,			MSG_LESS),
+		new ValueNamePair (LESS_EQUAL,		MSG_LESS_EQUAL),
+		new ValueNamePair (BETWEEN,			MSG_BETWEEN),
+		new ValueNamePair (NULL,			MSG_NULL),
+		new ValueNamePair (NOT_NULL,		MSG_NOT_NULL)
 	};
 	/**	Operators for Lookups and Lists	(including Y/N)				*/
 	public static final ValueNamePair[]	OPERATORS_LOOKUP = new ValueNamePair[] {
-		new ValueNamePair (EQUAL,			" = "),
-		new ValueNamePair (NOT_EQUAL,		" != "),
-		new ValueNamePair (NULL,			" NULL "),
-		new ValueNamePair (NOT_NULL,		" !NULL ")
+		new ValueNamePair (EQUAL,			MSG_EQUAL),
+		new ValueNamePair (NOT_EQUAL,		MSG_NOT_EQUAL),
+		new ValueNamePair (NULL,			MSG_NULL),
+		new ValueNamePair (NOT_NULL,		MSG_NOT_NULL)
 	};
 	/**	Operators for encrypted fields								*/
 	public static final ValueNamePair[]	OPERATORS_ENCRYPTED = new ValueNamePair[] {
-		new ValueNamePair (NULL,			" NULL "),
-		new ValueNamePair (NOT_NULL,		" !NULL ")
+		new ValueNamePair (NULL,			MSG_NULL),
+		new ValueNamePair (NOT_NULL,		MSG_NOT_NULL)
 	};
 
-	/**	Operators for Numbers, Dates, Integers	*/
+	/**	Operators for Numbers, Integers	*/
 	public static final ValueNamePair[]	OPERATORS_NUMBERS = new ValueNamePair[] {
-		new ValueNamePair (EQUAL,			" = "),
-		new ValueNamePair (NOT_EQUAL,		" != "),
-		new ValueNamePair (GREATER,			" > "),
-		new ValueNamePair (GREATER_EQUAL,	" >= "),
-		new ValueNamePair (LESS,			" < "),
-		new ValueNamePair (LESS_EQUAL,		" <= "),
-		new ValueNamePair (BETWEEN,			" >-< "),
-		new ValueNamePair (NULL,			" NULL "),
-		new ValueNamePair (NOT_NULL,		" !NULL ")
+		new ValueNamePair (EQUAL,			MSG_EQUAL),
+		new ValueNamePair (NOT_EQUAL,		MSG_NOT_EQUAL),
+		new ValueNamePair (GREATER,			MSG_GREATER),
+		new ValueNamePair (GREATER_EQUAL,	MSG_GREATER_EQUAL),
+		new ValueNamePair (LESS,			MSG_LESS),
+		new ValueNamePair (LESS_EQUAL,		MSG_LESS_EQUAL),
+		new ValueNamePair (BETWEEN,			MSG_BETWEEN),
+		new ValueNamePair (NULL,			MSG_NULL),
+		new ValueNamePair (NOT_NULL,		MSG_NOT_NULL)
 	};
 	
+	/**	Operators for Dates	*/
+	public static final ValueNamePair[]	OPERATORS_DATES = new ValueNamePair[] {
+		new ValueNamePair (EQUAL,			MSG_EQUAL),
+		new ValueNamePair (NOT_EQUAL,		MSG_NOT_EQUAL),
+		new ValueNamePair (GREATER,			MSG_GREATER),
+		new ValueNamePair (GREATER_EQUAL,	MSG_GREATER_EQUAL),
+		new ValueNamePair (LESS,			MSG_LESS),
+		new ValueNamePair (LESS_EQUAL,		MSG_LESS_EQUAL),
+		new ValueNamePair (BETWEEN,			MSG_BETWEEN),
+		new ValueNamePair (NULL,			MSG_NULL),
+		new ValueNamePair (NOT_NULL,		MSG_NOT_NULL)
+	};
+
 	/*************************************************************************
 	 * 	Add Restriction
 	 * 	@param ColumnName ColumnName
