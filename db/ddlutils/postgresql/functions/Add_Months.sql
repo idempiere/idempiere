@@ -1,14 +1,11 @@
-CREATE OR REPLACE FUNCTION add_months (in datetime timestamptz, in months numeric) RETURNS date AS
-$BODY$
-declare duration varchar;
+CREATE OR REPLACE FUNCTION add_months (datetime TIMESTAMP WITH TIME ZONE, months NUMERIC)
+RETURNS TIMESTAMP WITH TIME ZONE AS $$
 BEGIN
 	if datetime is null or months is null then
 		return null;
 	end if;
-	duration = months || ' month';	 
-	return cast(datetime + cast(duration as interval) as date);
+	return datetime + (interval '1' month * TRUNC(months));
 END;
-$BODY$
-LANGUAGE 'plpgsql' IMMUTABLE
+$$ LANGUAGE plpgsql IMMUTABLE
 ;
 
