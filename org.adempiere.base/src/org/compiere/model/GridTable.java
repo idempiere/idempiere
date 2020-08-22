@@ -2167,6 +2167,18 @@ public class GridTable extends AbstractTableModel
 		if (po == null)
 			throw new ClassNotFoundException ("No Persistent Object");
 		
+		if (!po.is_new())
+		{
+			if (hasChanged(po))
+			{				
+				// return error stating that current record has changed and it cannot be saved
+				String adMessage = "CurrentRecordModified";
+				String msg = Msg.getMsg(Env.getCtx(), adMessage);
+				fireDataStatusEEvent(adMessage, msg, true);
+				return SAVE_ERROR;
+			}
+		}
+		
 		int size = m_fields.size();
 		for (int col = 0; col < size; col++)
 		{
@@ -3801,7 +3813,7 @@ public class GridTable extends AbstractTableModel
 			} else if (hasProcessed) {
 				columns = new String("Processed");
 			} else {
-				// no columns updated or processed to commpare
+				// no columns updated or processed to compare
 				return false;
 			}
 			
@@ -3872,7 +3884,53 @@ public class GridTable extends AbstractTableModel
 		return false;
 	}
 
-	
+	// verify if the current record has changed
+	private boolean hasChanged(PO po) {
+		if (m_rowChanged < 0)
+			return false;
+		
+		// not so aggressive (it can has still concurrency problems)
+		// compare Updated, IsProcessed
+		int colUpdated = findColumn("Updated");
+		int colProcessed = findColumn("Processed");
+		
+		boolean hasUpdated = colUpdated > 0 && po.get_ColumnIndex("Updated") >= 0;
+		boolean hasProcessed = colProcessed > 0 && po.get_ColumnIndex("ProcesseD") >= 0;
+
+		if (!hasUpdated && !hasProcessed) {
+			// no columns updated or processed to compare
+			return false;
+		}
+				
+    	Timestamp dbUpdated = (Timestamp) po.get_Value("Updated");
+    	if (hasUpdated) {
+			Timestamp memUpdated = null;
+			memUpdated = (Timestamp) getOldValue(m_rowChanged, colUpdated);
+			if (memUpdated == null)
+				memUpdated = (Timestamp) getValueAt(m_rowChanged, colUpdated);
+
+			if (memUpdated != null && ! memUpdated.equals(dbUpdated))
+				return true;
+    	}
+    	
+    	if (hasProcessed) {
+			Boolean memProcessed = null;
+			memProcessed = (Boolean) getOldValue(m_rowChanged, colProcessed);
+			if (memProcessed == null){
+				if(getValueAt(m_rowChanged, colProcessed) instanceof Boolean )
+				   memProcessed = (Boolean) getValueAt(m_rowChanged, colProcessed); 
+				else if (getValueAt(m_rowChanged, colProcessed) instanceof String )
+				   memProcessed = Boolean.valueOf((String)getValueAt(m_rowChanged, colProcessed)); 
+			}
+    			
+			Boolean dbProcessed = po.get_ValueAsBoolean("Processed");
+			if (memProcessed != null && ! memProcessed.equals(dbProcessed))
+				return true;
+    	}
+
+		return false;
+	}
+		
 	/**
 	 * get Parent Tab No
 	 * @return Tab No
