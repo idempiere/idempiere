@@ -88,8 +88,9 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 		{
 			return;
 		}
-		s_cache.put(depr.get_ID(), new MDepreciationMethod(Env.getCtx(), depr));
-		s_cache_forType.put(depr.getDepreciationType(), new MDepreciationMethod(Env.getCtx(), depr));
+		MDepreciationMethod copy = new MDepreciationMethod(Env.getCtx(), depr);
+		s_cache.put(depr.get_ID(), copy);
+		s_cache_forType.put(depr.getDepreciationType(), copy);
 	}
 
 	/**
@@ -114,12 +115,9 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 		if (depr.get_ID() == A_Depreciation_Method_ID)
 		{
 			addToCache(depr);
+			return depr;
 		}
-		else
-		{
-			depr = null;
-		}
-		return depr;
+		return null;
 	} // get
 
 	/**

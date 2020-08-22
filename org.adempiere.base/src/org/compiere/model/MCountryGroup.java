@@ -53,7 +53,7 @@ public class MCountryGroup extends X_C_CountryGroup
 		MCountryGroup c = s_cache.get(C_CountryGroup_ID);
 		if (c != null)
 			return new MCountryGroup(ctx, c);
-		c = new MCountryGroup (ctx, C_CountryGroup_ID, null);
+		c = new MCountryGroup (ctx, C_CountryGroup_ID, (String)null);
 		if (c.getC_CountryGroup_ID() == C_CountryGroup_ID)
 		{
 			s_cache.put(C_CountryGroup_ID, new MCountryGroup(Env.getCtx(), c));

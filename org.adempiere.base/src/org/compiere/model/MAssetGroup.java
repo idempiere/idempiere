@@ -88,11 +88,12 @@ public class MAssetGroup extends X_A_Asset_Group
 			return new MAssetGroup(ctx, ag);
 		// Load
 		ag = new MAssetGroup(ctx, A_Asset_Group_ID, (String)null);
-		if (ag.get_ID() != A_Asset_Group_ID)
-			return null;
-		else
+		if (ag.get_ID() == A_Asset_Group_ID)
+		{
 			s_cache.put(A_Asset_Group_ID, new MAssetGroup(Env.getCtx(), ag));
-		return ag;
+			return ag;
+		}
+		return null;
 	}
 	
 	/**

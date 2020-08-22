@@ -27,7 +27,6 @@ import org.compiere.report.MReportTree;
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
-import org.compiere.util.Util;
 
 /**
  *  Accounting Schema Model (base)
@@ -71,8 +70,12 @@ public class MAcctSchema extends X_C_AcctSchema
 			return new MAcctSchema(ctx, retValue, trxName);
 		
 		retValue = new MAcctSchema (ctx, C_AcctSchema_ID, trxName);
-		s_cache.put(key, new MAcctSchema(Env.getCtx(), retValue));
-		return retValue;
+		if (retValue.get_ID() == C_AcctSchema_ID)
+		{
+			s_cache.put(key, new MAcctSchema(Env.getCtx(), retValue));
+			return retValue;
+		}
+		return null;
 	}	//	get
 	
 	/**

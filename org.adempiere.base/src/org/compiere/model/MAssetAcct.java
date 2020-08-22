@@ -85,7 +85,7 @@ public class MAssetAcct extends X_A_Asset_Acct
 		{
 			return new MAssetAcct(ctx, acct);
 		}
-		acct = new MAssetAcct(ctx, A_Asset_Acct_ID, null);
+		acct = new MAssetAcct(ctx, A_Asset_Acct_ID, (String)null);
 		if (acct.get_ID() == A_Asset_Acct_ID)
 		{
 			s_cache.put(A_Asset_Acct_ID, new MAssetAcct(Env.getCtx(), acct));

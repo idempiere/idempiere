@@ -91,13 +91,15 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage
 		MBroadcastMessage retValue = (MBroadcastMessage)s_cache.get(key);
 		if (retValue == null)
 		{
-			retValue = new MBroadcastMessage (Env.getCtx(), AD_BroadcastMessage_ID, null);
-			
-			s_cache.put(key, retValue);
+			retValue = new MBroadcastMessage (ctx, AD_BroadcastMessage_ID, (String)null);
+			if (retValue.get_ID() == AD_BroadcastMessage_ID)
+			{
+				s_cache.put(key, new MBroadcastMessage(Env.getCtx(), retValue));
+				return retValue;
+			}
+			return null;
 		}
-		retValue = new MBroadcastMessage(ctx, retValue);
-		
-		return retValue;
+		return new MBroadcastMessage(ctx, retValue);
 	}	//	get
     
 	

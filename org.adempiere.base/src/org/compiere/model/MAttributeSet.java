@@ -136,9 +136,9 @@ public class MAttributeSet extends X_M_AttributeSet
 		copyPO(copy);
 		this.m_instanceAttributes = copy.m_instanceAttributes != null ? Arrays.stream(copy.m_instanceAttributes).map(e -> {return new MAttribute(ctx, e, trxName);}).toArray(MAttribute[]::new) : null;
 		this.m_productAttributes = copy.m_productAttributes != null ? Arrays.stream(copy.m_productAttributes).map(e -> {return new MAttribute(ctx, e, trxName);}).toArray(MAttribute[]::new) : null;
-		this.m_excludes = copy.m_excludes != null ? Arrays.stream(copy.m_excludes).map(e -> {return new MAttributeSetExclude(ctx, e, trxName);}).toArray(MAttributeSetExclude[]::new) : null;
-		this.m_excludeLots = copy.m_excludeLots != null ? Arrays.stream(copy.m_excludeLots).map(e -> {return new MLotCtlExclude(ctx, e, trxName);}).toArray(MLotCtlExclude[]::new) : null;
-		this.m_excludeSerNos = copy.m_excludeSerNos != null ? Arrays.stream(copy.m_excludeSerNos).map(e -> {return new MSerNoCtlExclude(ctx, e, trxName);}).toArray(MSerNoCtlExclude[]::new): null;
+		this.m_excludes = copy.m_excludes != null ? Arrays.copyOf(copy.m_excludes, copy.m_excludes.length) : null;
+		this.m_excludeLots = copy.m_excludeLots != null ? Arrays.copyOf(copy.m_excludeLots, copy.m_excludeLots.length) : null;
+		this.m_excludeSerNos = copy.m_excludeSerNos != null ? Arrays.copyOf(copy.m_excludeSerNos, copy.m_excludeSerNos.length) : null;
 	}
 
 	/**	Instance Attributes					*/

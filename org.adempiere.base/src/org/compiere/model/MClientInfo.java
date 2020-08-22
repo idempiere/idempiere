@@ -198,7 +198,6 @@ public class MClientInfo extends X_AD_ClientInfo
 		this(ctx, 0, trxName);
 		copyPO(copy);
 		this.m_acctSchema = copy.m_acctSchema != null ? new MAcctSchema(ctx, copy.m_acctSchema, trxName) : null;
-		this.m_createNew = copy.m_createNew;
 	}
 
 	/**	Account Schema				*/
@@ -213,7 +212,7 @@ public class MClientInfo extends X_AD_ClientInfo
 	public MAcctSchema getMAcctSchema1()
 	{
 		if (m_acctSchema == null && getC_AcctSchema1_ID() != 0)
-			m_acctSchema = new MAcctSchema (getCtx(), getC_AcctSchema1_ID(), null);
+			m_acctSchema = new MAcctSchema (getCtx(), getC_AcctSchema1_ID(), get_TrxName());
 		return m_acctSchema;
 	}	//	getMAcctSchema1
 

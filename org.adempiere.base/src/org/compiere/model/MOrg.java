@@ -138,11 +138,22 @@ public class MOrg extends X_AD_Org
 	 */
 	public MOrg(Properties ctx, MOrg copy) 
 	{
-		super(ctx, 0, (String)null);
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MOrg(Properties ctx, MOrg copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
 		copyPO(copy);
 		this.m_linkedBPartner = copy.m_linkedBPartner;
 	}
-
+	
 	/**	Linked Business Partner			*/
 	private Integer 	m_linkedBPartner = null;
 

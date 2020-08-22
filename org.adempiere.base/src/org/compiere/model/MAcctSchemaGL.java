@@ -104,9 +104,20 @@ public class MAcctSchemaGL extends X_C_AcctSchema_GL
 	 * @param ctx
 	 * @param copy
 	 */
-	public MAcctSchemaGL(Properties ctx, MAcctSchemaGL copy)
+	public MAcctSchemaGL(Properties ctx, MAcctSchemaGL copy) 
 	{
-		this(ctx, 0, (String)null);
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAcctSchemaGL(Properties ctx, MAcctSchemaGL copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
 	

@@ -54,7 +54,7 @@ public class MBPGroup extends X_C_BP_Group
 		MBPGroup retValue = (MBPGroup) s_cache.get (key);
 		if (retValue != null)
 			return new MBPGroup(ctx, retValue);
-		retValue = new MBPGroup (ctx, C_BP_Group_ID, null);
+		retValue = new MBPGroup (ctx, C_BP_Group_ID, (String)null);
 		if (retValue.get_ID () == C_BP_Group_ID)
 		{
 			s_cache.put (key, new MBPGroup(Env.getCtx(), retValue));

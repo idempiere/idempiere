@@ -130,9 +130,20 @@ public class MElementValue extends X_C_ElementValue
 	 * @param ctx
 	 * @param copy
 	 */
-	public MElementValue(Properties ctx, MElementValue copy)
+	public MElementValue(Properties ctx, MElementValue copy) 
 	{
-		this(ctx, 0, (String)null);
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MElementValue(Properties ctx, MElementValue copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
 	

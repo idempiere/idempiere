@@ -89,10 +89,9 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention
 		conv = new MDepreciationConvention(ctx, A_Depreciation_Convention_ID, (String)null);
 		if (conv.get_ID() == A_Depreciation_Convention_ID) {
 			s_cache.put(key, new MDepreciationConvention(Env.getCtx(), conv));
-		} else {
-			conv = null;
+			return conv;
 		}
-		return conv;
+		return null;
 	} // get
 
 	/**	*/

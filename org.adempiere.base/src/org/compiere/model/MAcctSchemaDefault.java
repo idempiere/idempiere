@@ -94,9 +94,20 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default
 	 * @param ctx
 	 * @param copy
 	 */
-	public MAcctSchemaDefault(Properties ctx, MAcctSchemaDefault copy)
+	public MAcctSchemaDefault(Properties ctx, MAcctSchemaDefault copy) 
 	{
-		this(ctx, 0, (String)null);
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAcctSchemaDefault(Properties ctx, MAcctSchemaDefault copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
 	

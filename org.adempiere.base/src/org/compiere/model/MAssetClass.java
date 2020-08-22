@@ -87,11 +87,11 @@ public class MAssetClass extends X_A_Asset_Class
 		MAssetClass assetClass = s_cache.get(id);
 		if (assetClass == null) {
 			assetClass = new MAssetClass(ctx, id, (String)null);
-			if (assetClass.get_ID() != id) {
-				return null;
+			if (assetClass.get_ID() == id) {
+				s_cache.put(id, new MAssetClass(Env.getCtx(), assetClass));
+				return assetClass;
 			}
-			s_cache.put(id, new MAssetClass(Env.getCtx(), assetClass));
-			return assetClass;
+			return null;
 		}		
 		
 		return new MAssetClass(ctx, assetClass);

@@ -305,9 +305,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	{
 		this(ctx, 0, trxName);
 		copyPO(copy);
-		this.m_asset = copy.m_asset;
-		this.m_isFiscal = copy.m_isFiscal;
-		this.m_buildDepreciation = copy.m_buildDepreciation;
+		this.m_asset = copy.m_asset != null ? new MAsset(ctx, copy.m_asset, trxName) : null;
 	}
 
 	/** Logger										*/

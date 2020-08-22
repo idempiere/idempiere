@@ -91,16 +91,13 @@ public class MCharge extends X_C_Charge
 		MCharge retValue = (MCharge)s_cache.get (key);
 		if (retValue != null)
 			return new MCharge(ctx, retValue);
-		retValue = new MCharge (Env.getCtx(), C_Charge_ID, (String)null);
+		retValue = new MCharge (ctx, C_Charge_ID, (String)null);
 		if (retValue.get_ID() == C_Charge_ID)
 		{
-			s_cache.put (key, retValue);
-			return new MCharge(ctx, retValue);
+			s_cache.put (key, new MCharge(Env.getCtx(), retValue));
+			return retValue;
 		}
-		else
-		{
-			return null;
-		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/

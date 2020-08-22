@@ -142,7 +142,7 @@ public class MAttribute extends X_M_Attribute
 	{
 		this(ctx, 0, trxName);
 		copyPO(copy);
-		this.m_values = copy.m_values != null ? Arrays.stream(copy.m_values).map(e -> {var v = new MAttributeValue(ctx, e, trxName); return v;}).toArray(MAttributeValue[]::new) : null;
+		this.m_values = copy.m_values != null ? Arrays.stream(copy.m_values).map(e -> {return new MAttributeValue(ctx, e, trxName);}).toArray(MAttributeValue[]::new) : null;
 	}
 	
 	/**	Values						*/
@@ -160,7 +160,7 @@ public class MAttribute extends X_M_Attribute
 			List<MAttributeValue> list = new ArrayList<MAttributeValue>();
 			if (!isMandatory())
 				list.add (null);
-			list = new Query(getCtx(),I_M_AttributeValue.Table_Name,whereClause,null)
+			list = new Query(getCtx(),I_M_AttributeValue.Table_Name,whereClause,get_TrxName())
 			.setParameters(getM_Attribute_ID())
 			.setOrderBy("Value")
 			.list();

@@ -86,7 +86,7 @@ public class MCashBook extends X_C_CashBook
 		{
 			MCashBook cb = (MCashBook)it.next();
 			if (cb.getAD_Org_ID() == AD_Org_ID && cb.getC_Currency_ID() == C_Currency_ID)
-				return cb;
+				return new MCashBook(ctx, cb);
 		}
 		
 		//	Get from DB
@@ -96,10 +96,10 @@ public class MCashBook extends X_C_CashBook
 		.setOrderBy("IsDefault DESC")
 		.first();
 		if (retValue!=null)
-			{
-				Integer key = Integer.valueOf(retValue.getC_CashBook_ID());
-				s_cache.put (key, retValue);
-			}
+		{
+			Integer key = Integer.valueOf(retValue.getC_CashBook_ID());
+			s_cache.put (key, new MCashBook(Env.getCtx(), retValue));
+		}
 		return retValue;
 	}	//	get
 	

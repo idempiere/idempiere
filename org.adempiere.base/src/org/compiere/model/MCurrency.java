@@ -164,9 +164,13 @@ public class MCurrency extends X_C_Currency
 		//	Create it
 		retValue = new MCurrency(ctx, C_Currency_ID, (String)null);
 		//	Save in System
-		if (retValue.getAD_Client_ID() == 0)
-			s_currencies.put(key, new MCurrency(Env.getCtx(), retValue));
-		return retValue;
+		if (retValue.get_ID() == C_Currency_ID)
+		{
+			if (retValue.getAD_Client_ID() == 0)
+				s_currencies.put(key, new MCurrency(Env.getCtx(), retValue));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**

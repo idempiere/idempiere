@@ -215,8 +215,6 @@ public class MClient extends X_AD_Client
 		this(ctx, 0, trxName);
 		copyPO(copy);
 		this.m_info = copy.m_info != null ? new MClientInfo(ctx, copy.m_info, trxName) : null;
-		this.m_language = copy.m_language != null ? new Language(copy.m_language) : null;
-		this.m_createNew = copy.m_createNew;
 		this.m_AD_Tree_Account_ID = copy.m_AD_Tree_Account_ID;
 		this.m_fieldAccess = copy.m_fieldAccess != null ? new ArrayList<Integer>(copy.m_fieldAccess) : null;
 	}
