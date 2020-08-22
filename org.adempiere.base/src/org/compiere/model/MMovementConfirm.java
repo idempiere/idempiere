@@ -608,8 +608,10 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
 		if (m_processMsg != null)
 			return false;
-		
-		return false;
+
+		setProcessed(true);
+		setDocAction(DOCACTION_None);
+		return true;
 	}	//	voidIt
 	
 	/**
