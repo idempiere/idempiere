@@ -732,8 +732,8 @@ public abstract class PO
 	{
 		if (is_Immutable())
 		{
-			if (log.isLoggable(Level.INFO))
-				log.log(Level.INFO, "PO is Immutable", new Exception("PO is Immutable"));
+			if (log.isLoggable(Level.WARNING))
+				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
 			return false;
 		}
 		
@@ -797,8 +797,8 @@ public abstract class PO
 	{
 		if (is_Immutable())
 		{
-			if (log.isLoggable(Level.INFO))
-				log.log(Level.INFO, "PO is Immutable", new Exception("PO is Immutable"));
+			if (log.isLoggable(Level.WARNING))
+				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
 			return false;
 		}
 		
@@ -959,8 +959,8 @@ public abstract class PO
 	public void setProcessedOn(String ColumnName, Object value, Object oldValue) {
 		if (is_Immutable())
 		{
-			if (log.isLoggable(Level.INFO))
-				log.log(Level.INFO, "PO is Immutable", new Exception("PO is Immutable"));
+			if (log.isLoggable(Level.WARNING))
+				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
 			return;
 		}
 		
@@ -1084,8 +1084,8 @@ public abstract class PO
 	{
 		if (is_Immutable())
 		{
-			if (log.isLoggable(Level.INFO))
-				log.log(Level.INFO, "PO is Immutable", new Exception("PO is Immutable"));
+			if (log.isLoggable(Level.WARNING))
+				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
 			return false;
 		}
 		
@@ -1124,8 +1124,8 @@ public abstract class PO
 	{
 		if (is_Immutable())
 		{
-			if (log.isLoggable(Level.INFO))
-				log.log(Level.INFO, "PO is Immutable", new Exception("PO is Immutable"));
+			if (log.isLoggable(Level.WARNING))
+				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
 			return;
 		}
 		
@@ -2089,8 +2089,8 @@ public abstract class PO
 	{
 		if (is_Immutable())
 		{
-			if (log.isLoggable(Level.INFO))
-				log.log(Level.INFO, "PO is Immutable", new Exception("PO is Immutable"));
+			if (log.isLoggable(Level.WARNING))
+				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
 			return false;
 		}
 		
@@ -2453,8 +2453,8 @@ public abstract class PO
 	{
 		if (is_Immutable())
 		{
-			if (log.isLoggable(Level.INFO))
-				log.log(Level.INFO, "PO is Immutable", new Exception("PO is Immutable"));
+			if (log.isLoggable(Level.WARNING))
+				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
 			return;
 		}
 		setReplication(isFromReplication);
@@ -3286,8 +3286,8 @@ public abstract class PO
 	{
 		if (is_Immutable())
 		{
-			if (log.isLoggable(Level.INFO))
-				log.log(Level.INFO, "PO is Immutable", new Exception("PO is Immutable"));
+			if (log.isLoggable(Level.WARNING))
+				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
 			return false;
 		}
 		
@@ -4318,8 +4318,8 @@ public abstract class PO
 		{
 			if (is_Immutable())
 			{
-				if (log.isLoggable(Level.INFO))
-					log.log(Level.INFO, "PO is Immutable", new Exception("PO is Immutable"));
+				if (log.isLoggable(Level.WARNING))
+					log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
 				return;
 			}
 		}
@@ -4780,16 +4780,16 @@ public abstract class PO
 	public void setDoc(Doc doc) {
 		if (!is_Immutable())
 			m_doc = doc;
-		else if (log.isLoggable(Level.INFO))
-			log.log(Level.INFO, "PO is Immutable", new Exception("PO is Immutable"));
+		else if (log.isLoggable(Level.WARNING))
+			log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
 	}
 
 	public void setReplication(boolean isFromReplication)
 	{
 		if (!is_Immutable())
 			m_isReplication = isFromReplication;
-		else if (log.isLoggable(Level.INFO))
-			log.log(Level.INFO, "PO is Immutable", new Exception("PO is Immutable"));
+		else if (log.isLoggable(Level.WARNING))
+			log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
 	}
 
 	public boolean isReplication()
@@ -4921,8 +4921,8 @@ public abstract class PO
 	public void set_Attribute(String columnName, Object value) {
 		if (is_Immutable())
 		{
-			if (log.isLoggable(Level.INFO))
-				log.log(Level.INFO, "PO is Immutable", new Exception("PO is Immutable"));
+			if (log.isLoggable(Level.WARNING))
+				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
 			return;
 		}
 		

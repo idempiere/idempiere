@@ -800,7 +800,7 @@ public class MProductPricing extends AbstractProductPricing
 		if (M_DiscountSchema_ID == 0)
 			return;
 		
-		MDiscountSchema sd = MDiscountSchema.get(Env.getCtx(), M_DiscountSchema_ID);	//	not correct
+		MDiscountSchema sd = MDiscountSchema.get(M_DiscountSchema_ID);	//	not correct
 		if (sd.get_ID() == 0 || (MDiscountSchema.DISCOUNTTYPE_Breaks.equals(sd.getDiscountType()) && !MDiscountSchema.CUMULATIVELEVEL_Line.equals(sd.getCumulativeLevel())))
 			return;
 		//

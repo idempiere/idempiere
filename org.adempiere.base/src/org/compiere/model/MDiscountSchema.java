@@ -43,23 +43,35 @@ public class MDiscountSchema extends X_M_DiscountSchema
 	 */
 	private static final long serialVersionUID = -3314884382853756019L;
 
-
 	/**
 	 * 	Get Discount Schema from Cache
-	 *	@param ctx context
+	 *	@param ctx ignore
 	 *	@param M_DiscountSchema_ID id
 	 *	@return MDiscountSchema
+	 *  @deprecated
 	 */
 	public static MDiscountSchema get (Properties ctx, int M_DiscountSchema_ID)
 	{
+		return get(M_DiscountSchema_ID);
+	}
+	
+	/**
+	 * 	Get Discount Schema from Cache
+	 *	@param M_DiscountSchema_ID id
+	 *	@return MDiscountSchema
+	 */
+	public static MDiscountSchema get (int M_DiscountSchema_ID)
+	{
+		Properties ctx = Env.getCtx();
 		Integer key = Integer.valueOf(M_DiscountSchema_ID);
 		MDiscountSchema retValue = (MDiscountSchema) s_cache.get (key);
 		if (retValue != null)
-			return new MDiscountSchema(ctx, retValue);
+			return retValue;
 		retValue = new MDiscountSchema (ctx, M_DiscountSchema_ID, (String)null);
 		if (retValue.get_ID () == M_DiscountSchema_ID)
 		{
-			s_cache.put (key, new MDiscountSchema(Env.getCtx(), retValue));
+			retValue.markImmutable();
+			s_cache.put (key, retValue);
 			return retValue;
 		}
 		return null;
@@ -160,7 +172,12 @@ public class MDiscountSchema extends X_M_DiscountSchema
 			pstmt.setInt (1, getM_DiscountSchema_ID());
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
-				list.add(new MDiscountSchemaBreak(getCtx(), rs, get_TrxName()));
+			{
+				MDiscountSchemaBreak dsb = new MDiscountSchemaBreak(getCtx(), rs, get_TrxName());
+				if (is_Immutable())
+					dsb.markImmutable();
+				list.add(dsb);
+			}
 		}
 		catch (Exception e)
 		{
@@ -199,7 +216,12 @@ public class MDiscountSchema extends X_M_DiscountSchema
 			pstmt.setInt (1, getM_DiscountSchema_ID());
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
-				list.add(new MDiscountSchemaLine(getCtx(), rs, get_TrxName()));
+			{
+				MDiscountSchemaLine dsl = new MDiscountSchemaLine(getCtx(), rs, get_TrxName());
+				if (is_Immutable())
+					dsl.markImmutable();
+				list.add(dsl);
+			}
 		}
 		catch (Exception e)
 		{
@@ -374,5 +396,13 @@ public class MDiscountSchema extends X_M_DiscountSchema
 		m_breaks = null;
 		return count;
 	}	//	reSeq
-	
+
+	@Override
+	public void markImmutable() {
+		super.markImmutable();
+		if (m_lines != null)
+			Arrays.stream(m_lines).forEach(e -> {e.markImmutable();});
+		if (m_breaks != null)
+			Arrays.stream(m_breaks).forEach(e -> {e.markImmutable();});
+	}	
 }	//	MDiscountSchema

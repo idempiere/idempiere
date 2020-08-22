@@ -100,12 +100,24 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg {
 	
 	/**
 	 * Get the context help message defined for the type, recordid, client, org
-	 * @param ctx
+	 * @param ctx ignore
 	 * @param ctxtype
 	 * @param recordId
 	 * @return the context message record
+	 * @deprecated
 	 */
 	public static MCtxHelpMsg get(Properties ctx, String ctxType, int recordId) {
+		return get(ctxType, recordId);
+	}
+	
+	/**
+	 * Get the context help message defined for the type, recordid, client, org
+	 * @param ctxtype
+	 * @param recordId
+	 * @return an immutable instance of context message record (if any)
+	 */
+	public static MCtxHelpMsg get(String ctxType, int recordId) {
+		Properties ctx = Env.getCtx();
 		StringBuilder key = new StringBuilder()
 			.append(ctxType).append("|")
 			.append(recordId).append("|")
@@ -115,7 +127,7 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg {
 		if (s_cache.containsKey(key.toString())) {
 			retValue = s_cache.get(key.toString());
 			if (s_log.isLoggable(Level.FINEST)) s_log.finest("Cache: " + retValue);
-			return retValue != null ? new MCtxHelpMsg(ctx, retValue) : null;
+			return retValue;
 		}
 
 		int AD_CtxHelp_ID = getCtxHelpID(ctxType, recordId);
@@ -124,8 +136,10 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg {
 			retValue = query.setOrderBy("AD_Client_ID DESC, AD_Org_ID DESC, AD_CtxHelpMsg_ID DESC")
 					.setParameters(Env.getAD_Client_ID(ctx), Env.getAD_Org_ID(ctx), AD_CtxHelp_ID)
 					.first();
+			if (retValue != null)
+				retValue.markImmutable();
 		}
-		s_cache.put(key.toString(), retValue != null ? new MCtxHelpMsg(Env.getCtx(), retValue) : null);
+		s_cache.put(key.toString(), retValue);
 		return retValue;
 	}
 

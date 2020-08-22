@@ -359,23 +359,35 @@ public class MAccount extends X_C_ValidCombination
 		return vc;
 	}   //  getDefault
 
+	/**
+	 *  Get Account
+	 *  @param ctx ignore
+	 *  @param C_ValidCombination_ID combination
+	 *  @return Account
+	 *  @deprecated
+	 */
+	public static MAccount get (Properties ctx, int C_ValidCombination_ID)
+	{
+		return get(C_ValidCombination_ID);
+	}
 	
 	/**
 	 *  Get Account
 	 *  @param ctx context
 	 *  @param C_ValidCombination_ID combination
-	 *  @return Account
+	 *  @return Immutable instance of Account
 	 */
-	public static MAccount get (Properties ctx, int C_ValidCombination_ID)
+	public static MAccount get (int C_ValidCombination_ID)
 	{
 		MAccount account = s_cache.get(C_ValidCombination_ID);
 		if (account != null)
-			return new MAccount(ctx, account);
-		
-		account = new MAccount(ctx, C_ValidCombination_ID, (String)null);
+			return account;
+				
+		account = new MAccount(Env.getCtx(), C_ValidCombination_ID, (String)null);
 		if (account.getC_ValidCombination_ID() == C_ValidCombination_ID) 
 		{
-			s_cache.put(C_ValidCombination_ID, new MAccount(Env.getCtx(), account));
+			account.markImmutable();
+			s_cache.put(C_ValidCombination_ID, account);
 			return account;
 		}
 		return null;
@@ -473,7 +485,7 @@ public class MAccount extends X_C_ValidCombination
 	{
 		this(ctx, 0, trxName);
 		copyPO(copy);
-		this.m_accountEV = copy.m_accountEV != null ? new MElementValue(ctx, copy.m_accountEV) : null;
+		this.m_accountEV = copy.m_accountEV != null ? new MElementValue(ctx, copy.m_accountEV, trxName) : null;
 	}
 	
 	/**	Account Segment				*/
@@ -550,7 +562,11 @@ public class MAccount extends X_C_ValidCombination
 		if (m_accountEV == null)
 		{
 			if (getAccount_ID() != 0)
+			{
 				m_accountEV = new MElementValue(getCtx(), getAccount_ID(), get_TrxName());
+				if (is_Immutable())
+					m_accountEV.markImmutable();
+			}
 		}
 		return m_accountEV;
 	}	//	setAccount
@@ -867,6 +883,13 @@ public class MAccount extends X_C_ValidCombination
 	}	//	beforeSave
 	
 	
+	@Override
+	public void markImmutable() {
+		super.markImmutable();
+		if (m_accountEV != null)
+			m_accountEV.markImmutable();
+	}
+
 	/**
 	 * 	Test
 	 *	@param args
