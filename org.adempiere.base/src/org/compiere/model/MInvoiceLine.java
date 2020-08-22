@@ -63,8 +63,10 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	{
 		if (sLine == null)
 			return null;
-		final String whereClause = I_M_InOutLine.COLUMNNAME_M_InOutLine_ID+"=?";
-		List<MInvoiceLine> list = new Query(sLine.getCtx(),I_C_InvoiceLine.Table_Name,whereClause,sLine.get_TrxName())
+
+		final String whereClause = "C_InvoiceLine.M_InOutLine_ID=? AND C_Invoice.Processed='Y'";
+		final String joinInvoice = "JOIN C_Invoice ON (C_Invoice.C_Invoice_ID = C_InvoiceLine.C_Invoice_ID)";
+		List<MInvoiceLine> list = new Query(sLine.getCtx(),I_C_InvoiceLine.Table_Name,whereClause,sLine.get_TrxName()).addJoinClause(joinInvoice)
 		.setParameters(sLine.getM_InOutLine_ID())
 		.list();
 		
