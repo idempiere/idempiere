@@ -451,10 +451,10 @@ public class MQuery implements Serializable, Cloneable
 	/** Not Equal - 1		*/
 	public static final int		NOT_EQUAL_INDEX = 1;
 	/** Like			*/
-	public static final String	LIKE = " LIKE ";
+	public static final String	LIKE = "~";
 	public static final String	MSG_LIKE = "OPERATOR_LIKE";
 	/** Not Like		*/
-	public static final String	NOT_LIKE = " NOT LIKE ";
+	public static final String	NOT_LIKE = "!~";
 	public static final String	MSG_NOT_LIKE = "OPERATOR_NOT_LIKE";
 	/** Greater			*/
 	public static final String	GREATER = ">";
@@ -469,15 +469,15 @@ public class MQuery implements Serializable, Cloneable
 	public static final String	LESS_EQUAL = "<=";
 	public static final String	MSG_LESS_EQUAL = "OPERATOR_LESS_EQUAL";
 	/** Between			*/
-	public static final String	BETWEEN = " BETWEEN ";
+	public static final String	BETWEEN = ">-<";
 	public static final String	MSG_BETWEEN = "OPERATOR_BETWEEN";
 	/** Between - 8		*/
 	public static final int		BETWEEN_INDEX = 8;
 	/** For IDEMPIERE-377	*/
-	public static final String 	NOT_NULL = " IS NOT NULL ";
+	public static final String 	NOT_NULL = "!NULL";
 	public static final String 	MSG_NOT_NULL = "OPERATOR_NOT_NULL";
 	/** For IDEMPIERE-377	*/
-	public static final String 	NULL = " IS NULL ";
+	public static final String 	NULL = "NULL";
 	public static final String 	MSG_NULL = "OPERATOR_NULL";
 
 	/**	All the Operators			*/
@@ -1331,7 +1331,7 @@ class Restriction  implements Serializable
 		for (int i = 0; i < MQuery.OPERATORS.length; i++)
 		{
 			if (MQuery.OPERATORS[i].getValue().equals(Operator))
-				return MQuery.OPERATORS[i].getName();
+				return Msg.getMsg(Env.getCtx(), MQuery.OPERATORS[i].getName());
 		}
 		return Operator;
 	}	//	getInfoOperator
