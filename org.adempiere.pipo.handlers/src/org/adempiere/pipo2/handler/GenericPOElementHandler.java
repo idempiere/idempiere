@@ -51,6 +51,7 @@ import org.compiere.model.PO;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -235,13 +236,21 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 
 				boolean createElement = isPackOutElement(ctx, po);
 				if (createElement) {
-					if (po.get_ID() > 0) {
-						ElementHandler handler = ctx.packOut.getHandler(po.get_TableName());
-						if (handler != null && !handler.getClass().equals(this.getClass()) ) {
+
+					ElementHandler handler = ctx.packOut.getHandler(po.get_TableName());
+					if (handler != null && !handler.getClass().equals(this.getClass())) {
+						if (po.get_ID() > 0 && po.get_KeyColumns().length==1) {
 							handler.packOut(ctx.packOut, document, ctx.logDocument, po.get_ID());
 							createElement = false;
+						} else {
+							String uuid = po.get_ValueAsString(po.getUUIDColumnName());
+							if (!Util.isEmpty(uuid, true)) {
+								handler.packOut(ctx.packOut, document, ctx.logDocument, -1, uuid);
+								createElement = false;
+							}
 						}
 					}
+
 					if (createElement) {
 						verifyPackOutRequirement(po);
 						List<String> excludes = defaultExcludeList(mainTable);
