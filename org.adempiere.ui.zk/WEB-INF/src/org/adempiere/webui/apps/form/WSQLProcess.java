@@ -153,8 +153,10 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
     public static final Button createProcessButton()
     {
         Button btnProcess = new Button();
-
-        btnProcess.setImage(ThemeManager.getThemeResource("images/Process24.png"));
+        if(ThemeManager.isUseFontIconForImage())
+        	btnProcess.setIconSclass("z-icon-Process");
+        else
+        	btnProcess.setImage(ThemeManager.getThemeResource("images/Process24.png"));
         btnProcess.setName(Msg.getMsg(Env.getCtx(), "Process"));
 
         return btnProcess;
