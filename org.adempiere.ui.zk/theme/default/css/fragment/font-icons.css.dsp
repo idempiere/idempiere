@@ -292,3 +292,9 @@
 .z-icon-UnSort:before {
 	content: "\f074";
 }
+.z-icon-Collapse:before {
+	content: "\f066";
+}
+.z-icon-Add:before {
+	content: "\f0fe";
+}

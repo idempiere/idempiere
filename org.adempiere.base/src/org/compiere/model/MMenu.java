@@ -22,8 +22,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
+
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	Menu Model
@@ -41,6 +44,26 @@ public class MMenu extends X_AD_Menu
 	 * 
 	 */
 	private static final long serialVersionUID = -6671861281736697100L;
+
+	/** Cache for MMenu */
+	private static CCache <Integer, MMenu>	cache_menu			= new CCache <Integer, MMenu>("CacheMenu", 50);
+
+	/**
+	 * Get Menu object
+	 * 
+	 * @param AD_Menu_ID
+	 * @return {@link MMenu}
+	 */
+	public static MMenu get(int AD_Menu_ID)
+	{
+		if (cache_menu.containsKey(AD_Menu_ID))
+			return cache_menu.get(AD_Menu_ID);
+
+		MMenu menu = (MMenu) MTable.get(Env.getCtx(), MMenu.Table_ID).getPO(AD_Menu_ID, null);
+		cache_menu.put(AD_Menu_ID, menu);
+
+		return menu;
+	} // get
 
 	/**
 	 * Get menues with where clause

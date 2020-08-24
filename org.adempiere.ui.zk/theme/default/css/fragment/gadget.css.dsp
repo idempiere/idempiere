@@ -225,3 +225,37 @@
 	padding-left: 4px;
 	padding-right: 4px;
 }
+
+<%-- User Favorite Dashboard Panel Start --%>
+
+.fav-tree-panel {
+  padding: 2px;
+  background-color: #eee;
+  border-radius: 5px;
+}
+
+.fav-toolbar {
+  padding: 10px;
+  background-color: #eee;
+  border: 1px solid #d8d8d8;
+  border-radius: 5px;
+}
+
+.fav-button-add {
+}
+
+.fav-folder-textbox {
+  margin-left: 3px;
+  padding: 1px;
+  width: 40%;
+  min-width: 100px;
+}
+
+.fav-chkbox {
+  margin-left: 2px;
+}
+
+.fav-toolbar > .z-toolbar-start {
+}
+    
+<%-- User Favorite Dashboard Panel End --%>
