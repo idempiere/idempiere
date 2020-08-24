@@ -480,6 +480,7 @@ public class MQuery implements Serializable, Cloneable
 	public static final String 	NULL = " IS NULL ";
 	public static final String 	MSG_NULL = "OPERATOR_NULL";
 
+	/* NOTE: Value is the SQL operator, and Name is the message that appears in Find window and reports */
 	/**	All the Operators			*/
 	public static final ValueNamePair[]	OPERATORS = new ValueNamePair[] {
 		new ValueNamePair (EQUAL,			MSG_EQUAL),		//	0 - EQUAL_INDEX
@@ -1331,7 +1332,7 @@ class Restriction  implements Serializable
 		for (int i = 0; i < MQuery.OPERATORS.length; i++)
 		{
 			if (MQuery.OPERATORS[i].getValue().equals(Operator))
-				return MQuery.OPERATORS[i].getName();
+				return Msg.getMsg(Env.getCtx(), MQuery.OPERATORS[i].getName());
 		}
 		return Operator;
 	}	//	getInfoOperator
