@@ -442,6 +442,20 @@ public class MReportColumn extends X_PA_ReportColumn
 			return super.getRelativePeriod();
 		return null;
 	}	//	getRelativePeriod
+
+	/**
+	 * Get Relative Period To
+	 * 
+	 * @return relative period to
+	 */
+	@Override
+	public BigDecimal getRelativePeriodTo()
+	{
+		if (getColumnType().equals(COLUMNTYPE_RelativePeriod) || getColumnType().equals(COLUMNTYPE_SegmentValue))
+			return (BigDecimal) get_Value(COLUMNNAME_RelativePeriodTo);
+		return null;
+	} // getRelativePeriodTo
+
 	/**
 	 *	Get Element Type
 	 */

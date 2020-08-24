@@ -156,6 +156,8 @@ public class GridField
 	/** Indicator for new Value				*/
 	public static final String  INSERTING = "FieldValueInserting";
 
+	private static final int	PA_REPORTCOLUMN_RelativePeriodTo_COLUMN_ID	= 214087;
+	
 	/** Error Value for HTML interface          */
 	private String			m_errorValue = null;
 	/** Error Value indicator for HTML interface    */
@@ -682,7 +684,8 @@ public class GridField
 		return (m_vo.IsKey || m_vo.displayType == DisplayType.RowID 
 				|| DisplayType.isLOB(m_vo.displayType)
 				|| "Created".equals(m_vo.ColumnName) // for Created/Updated default is managed on PO, and direct inserts on DB
-				|| "Updated".equals(m_vo.ColumnName));
+				|| "Updated".equals(m_vo.ColumnName))
+				|| (m_vo.AD_Column_ID == PA_REPORTCOLUMN_RelativePeriodTo_COLUMN_ID && Util.isEmpty(m_vo.DefaultValue, true)));
 	}
 
 	/**
