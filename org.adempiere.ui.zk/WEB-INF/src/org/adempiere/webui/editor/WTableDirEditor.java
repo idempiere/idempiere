@@ -241,7 +241,10 @@ ContextMenuListener, IZoomableEditor
         			searchMode = new Menuitem();
         			searchMode.setAttribute(WEditorPopupMenu.EVENT_ATTRIBUTE, SHORT_LIST_EVENT);
         			searchMode.setLabel(Msg.getMsg(Env.getCtx(), "ShortListSwitchSearchMode"));
-        			searchMode.setImage(ThemeManager.getThemeResource("images/Lock16.png"));
+        			if(ThemeManager.isUseFontIconForImage())
+        				searchMode.setIconSclass("z-icon-Lock");
+        			else
+        				searchMode.setImage(ThemeManager.getThemeResource("images/Lock16.png"));
         			searchMode.addEventListener(Events.ON_CLICK, popupMenu);
         			popupMenu.appendChild(searchMode);
         		}
