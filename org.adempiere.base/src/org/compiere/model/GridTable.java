@@ -3802,8 +3802,8 @@ public class GridTable extends AbstractTableModel
 			int colUpdated = findColumn("Updated");
 			int colProcessed = findColumn("Processed");
 			
-			boolean hasUpdated = (colUpdated > 0);
-			boolean hasProcessed = (colProcessed > 0);
+			boolean hasUpdated = (colUpdated >= 0);
+			boolean hasProcessed = (colProcessed >= 0);
 			
 			String columns = null;
 			if (hasUpdated && hasProcessed) {
@@ -3894,8 +3894,8 @@ public class GridTable extends AbstractTableModel
 		int colUpdated = findColumn("Updated");
 		int colProcessed = findColumn("Processed");
 		
-		boolean hasUpdated = colUpdated > 0 && po.get_ColumnIndex("Updated") >= 0;
-		boolean hasProcessed = colProcessed > 0 && po.get_ColumnIndex("ProcesseD") >= 0;
+		boolean hasUpdated = colUpdated >= 0;
+		boolean hasProcessed = colProcessed >= 0;
 
 		if (!hasUpdated && !hasProcessed) {
 			// no columns updated or processed to compare
