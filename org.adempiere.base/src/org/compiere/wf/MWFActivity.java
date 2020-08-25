@@ -1142,6 +1142,29 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			//
 			ProcessInfo pi = new ProcessInfo (m_node.getName(true), m_node.getAD_Process_ID(),
 				getAD_Table_ID(), getRecord_ID());
+			
+			//check record id overwrite
+			MWFNodePara[] nParams = m_node.getParameters();
+			for(MWFNodePara p : nParams) 
+			{
+				if (p.getAD_Process_Para_ID() == 0 && p.getAttributeName().equalsIgnoreCase("Record_ID") && !Util.isEmpty(p.getAttributeValue(), true)) 
+				{
+					try 
+					{
+						Object value = parseNodeParaAttribute(p);
+						if (value == p || value == null)
+							break;
+						int recordId = Integer.valueOf(value.toString());
+						pi.setRecord_ID(recordId);
+					}
+					catch (NumberFormatException e)
+					{
+						log.log(Level.WARNING, e.getMessage(), e);
+					}
+					break;
+				}
+			}
+
 			pi.setAD_User_ID(getAD_User_ID());
 			pi.setAD_Client_ID(getAD_Client_ID());
 			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
@@ -1610,50 +1633,13 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			MPInstancePara iPara = iParams[pi];
 			for (int np = 0; np < nParams.length; np++)
 			{
-				MWFNodePara nPara = nParams[np];
+				MWFNodePara nPara = nParams[np];				
 				if (iPara.getParameterName().equals(nPara.getAttributeName()))
 				{
 					String variableName = nPara.getAttributeValue();
-					if (log.isLoggable(Level.FINE)) log.fine(nPara.getAttributeName()
-						+ " = " + variableName);
-					//	Value - Constant/Variable
-					Object value = variableName;
-					if (variableName == null
-						|| (variableName != null && variableName.length() == 0))
-						value = null;
-					else if (variableName.indexOf('@') != -1 && m_po != null)	//	we have a variable
-					{
-						//	Strip
-						int index = variableName.indexOf('@');
-						String columnName = variableName.substring(index+1);
-						index = columnName.indexOf('@');
-						if (index == -1)
-						{
-							log.warning(nPara.getAttributeName()
-								+ " - cannot evaluate=" + variableName);
-							break;
-						}
-						columnName = columnName.substring(0, index);
-						index = m_po.get_ColumnIndex(columnName);
-						if (index != -1)
-						{
-							value = m_po.get_Value(index);
-						}
-						else	//	not a column
-						{
-							//	try Env
-							String env = Env.getContext(getCtx(), columnName);
-							if (env.length() == 0)
-							{
-								log.warning(nPara.getAttributeName()
-									+ " - not column nor environment =" + columnName
-									+ "(" + variableName + ")");
-								break;
-							}
-							else
-								value = env;
-						}
-					}	//	@variable@
+					Object value = parseNodeParaAttribute(nPara);
+					if (value == nPara)
+						break;
 
 					//	No Value
 					if (value == null)
@@ -1718,6 +1704,52 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		}	//	instance parameter loop
 	}	//	fillParameter
 
+	private Object parseNodeParaAttribute(MWFNodePara nPara)
+	{
+		String variableName = nPara.getAttributeValue();
+		if (log.isLoggable(Level.FINE)) log.fine(nPara.getAttributeName()
+			+ " = " + variableName);
+		//	Value - Constant/Variable
+		Object value = variableName;
+		if (variableName == null
+			|| (variableName != null && variableName.length() == 0))
+			value = null;
+		else if (variableName.indexOf('@') != -1 && m_po != null)	//	we have a variable
+		{
+			//	Strip
+			int index = variableName.indexOf('@');
+			String columnName = variableName.substring(index+1);
+			index = columnName.indexOf('@');
+			if (index == -1)
+			{
+				log.warning(nPara.getAttributeName()
+					+ " - cannot evaluate=" + variableName);
+				return nPara;
+			}
+			columnName = columnName.substring(0, index);
+			index = m_po.get_ColumnIndex(columnName);
+			if (index != -1)
+			{
+				value = m_po.get_Value(index);
+			}
+			else	//	not a column
+			{
+				//	try Env
+				String env = Env.getContext(getCtx(), columnName);
+				if (env.length() == 0)
+				{
+					log.warning(nPara.getAttributeName()
+						+ " - not column nor environment =" + columnName
+						+ "(" + variableName + ")");
+					return nPara;
+				}
+				else
+					value = env;
+			}
+		}	//	@variable@
+		return value;
+	}
+	
 	/*********************************
 	 * 	Send EMail
 	 */
