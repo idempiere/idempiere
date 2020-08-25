@@ -8,7 +8,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnN
 ;
 
 -- Oct 14, 2019 4:44:49 PM IST
-ALTER TABLE PA_ReportColumn ADD COLUMN RelativePeriodTo NUMERIC DEFAULT '0' 
+ALTER TABLE PA_ReportColumn ADD COLUMN RelativePeriodTo NUMERIC DEFAULT NULL 
 ;
 
 -- Oct 14, 2019 4:09:10 PM IST

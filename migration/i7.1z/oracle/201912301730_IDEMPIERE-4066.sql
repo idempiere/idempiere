@@ -11,7 +11,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnN
 ;
 
 -- Oct 14, 2019 4:44:49 PM IST
-ALTER TABLE PA_ReportColumn ADD RelativePeriodTo NUMBER DEFAULT 0
+ALTER TABLE PA_ReportColumn ADD RelativePeriodTo NUMBER DEFAULT NULL
 ;
 
 -- Oct 14, 2019 4:09:10 PM IST
@@ -20,10 +20,6 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisp
 
 -- Nov 26, 2019 4:04:43 PM IST
 UPDATE AD_Column SET DefaultValue=NULL,Updated=TO_DATE('2019-11-26 16:04:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214087
-;
-
--- Nov 26, 2019 4:04:46 PM IST
-ALTER TABLE PA_ReportColumn MODIFY RelativePeriodTo NUMBER DEFAULT NULL 
 ;
 
 -- Nov 27, 2019 4:51:42 PM IST
