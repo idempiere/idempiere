@@ -213,7 +213,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	
 	/**************************************************************************
 	 * 	Get Journal Lines
-	 * 	@param requery requery
+	 * 	@param requery requery (not used)
 	 *	@return Array of lines
 	 */
 	public MJournalLine[] getLines (boolean requery)
