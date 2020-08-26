@@ -2089,9 +2089,7 @@ public abstract class PO
 	{
 		if (is_Immutable())
 		{
-			if (log.isLoggable(Level.WARNING))
-				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
-			return false;
+			throw new AdempiereException("PO is Immutable");
 		}
 		
 		checkValidContext();
@@ -2453,9 +2451,7 @@ public abstract class PO
 	{
 		if (is_Immutable())
 		{
-			if (log.isLoggable(Level.WARNING))
-				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
-			return;
+			throw new AdempiereException("PO is Immutable");
 		}
 		setReplication(isFromReplication);
 		saveEx();
@@ -3286,9 +3282,7 @@ public abstract class PO
 	{
 		if (is_Immutable())
 		{
-			if (log.isLoggable(Level.WARNING))
-				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
-			return false;
+			throw new AdempiereException("PO is Immutable");
 		}
 		
 		checkValidContext();
