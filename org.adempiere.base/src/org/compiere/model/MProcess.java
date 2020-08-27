@@ -25,9 +25,11 @@ import org.adempiere.util.ProcessUtil;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFNode;
+import org.compiere.wf.MWFProcess;
 
 /**
  *  Process Model
@@ -264,38 +266,51 @@ public class MProcess extends X_AD_Process
 			//	Lock
 			pInstance.setIsProcessing(true);
 			pInstance.saveEx();
+			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
 		}
 
 		boolean ok = false;
 
-		//	Java Class
-		String Classname = getClassname();
-		if (Classname != null && Classname.length() > 0)
+		if (isWorkflow()) 
 		{
-			pi.setClassName(Classname);
-			ok = startClass(pi, trx, managedTrx);
-		}
-		else
-		{
-			//	PL/SQL Procedure
-			String ProcedureName = getProcedureName();
-			if (ProcedureName != null && ProcedureName.length() > 0)
+			pi.setTransactionName(trx.getTrxName());
+			MWFProcess wfprocess = ProcessUtil.startWorkFlow(getCtx(), pi, getAD_Workflow_ID());
+			if (wfprocess == null)
 			{
-				ok = startProcess (ProcedureName, pi, trx, managedTrx);
+				ok = false;
 			}
 			else
 			{
-				// BF IDEMPIERE-165
-				if (this.isReport()) {
-					ok = true;
-				}
-				else {
-					String msg = "No Classname or ProcedureName for " + getName();
-					pi.setSummary(msg, ok);
-					log.warning(msg);
-				}
+				MPInstance pinstance = new MPInstance(Env.getCtx(), pi.getAD_PInstance_ID(), null);
+				String errmsg = pi.getSummary();
+				pinstance.setResult(!pi.isError());
+				pinstance.setErrorMsg(errmsg);
+				pinstance.saveEx();
+				ok = !pi.isError();
 			}
 		}
+		else if (isJavaProcess())
+		{
+			pi.setClassName(getClassname());
+			ok = startClass(pi, trx, managedTrx);
+		}
+		else if (isDatabaseProcedure())
+		{			
+			//	PL/SQL Procedure
+			ok = startProcess (getProcedureName(), pi, trx, managedTrx);
+		}
+		else if (this.isReport()) 
+		{
+			// BF IDEMPIERE-165
+			ok = true;
+		}
+		else 
+		{
+			String msg = "No Workflow, Classname or ProcedureName for " + getName();
+			pi.setSummary(msg, ok);
+			log.warning(msg);
+		}
+		
 		return ok;
 	}	//	process
 
@@ -305,9 +320,17 @@ public class MProcess extends X_AD_Process
 	 */
 	public boolean isJavaProcess()
 	{
-		String Classname = getClassname();
-		return (Classname != null && Classname.length() > 0);
+		return !Util.isEmpty(getClassname(), true);
 	}	//	is JavaProcess
+	
+	/**
+	 * Is this a db procedure
+	 * @return true if db procedure
+	 */
+	public boolean isDatabaseProcedure()
+	{
+		return !Util.isEmpty(getProcedureName(), true);
+	}
 	
 	/**
 	 * 	Is Force Background
