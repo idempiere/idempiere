@@ -604,12 +604,26 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)
 			return false;
+
+		// set confirmation as processed to allow voiding the inventory move
+		setProcessed(true);
+		saveEx();
+
+		// voiding the confirmation voids also the inventory move
+		MMovement move = new MMovement (getCtx(), getM_Movement_ID(), get_TrxName());
+		ProcessInfo processInfo = MWorkflow.runDocumentActionWorkflow(move, DocAction.ACTION_Void);
+		if (processInfo.isError())
+		{
+			m_processMsg = processInfo.getSummary();
+			setProcessed(false);
+			return false;
+		}
+
 		// After Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
 		if (m_processMsg != null)
 			return false;
 
-		setProcessed(true);
 		setDocAction(DOCACTION_None);
 		return true;
 	}	//	voidIt
