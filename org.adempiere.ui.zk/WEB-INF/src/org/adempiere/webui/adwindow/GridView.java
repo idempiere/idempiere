@@ -1004,6 +1004,19 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		}
 
 		if (gridTab.getCurrentRow() != rowIndex) {
+			ADWindow adwindow = ADWindow.findADWindow(this);
+			if (adwindow != null) {
+				final boolean[] retValue = new boolean[] {false};
+				final int index = rowIndex;
+				adwindow.getADWindowContent().saveAndNavigate(e -> {
+					if (e) {
+						gridTab.navigate(index);
+						retValue[0] = true;
+					}
+				});
+				return retValue[0];
+			}
+			
 			gridTab.navigate(rowIndex);
 			return true;
 		}
