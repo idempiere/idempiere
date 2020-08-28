@@ -36,6 +36,7 @@ public class SystemIDs
 	public final static int COLUMN_FACT_ACCT_M_PRODUCT_ID = 2527;	
 	public final static int COLUMN_M_MOVEMENTLINE_M_ATTRIBUTESETINSTANCE_ID = 8551;
 	public final static int COLUMN_M_PRODUCT_M_ATTRIBUTESETINSTANCE_ID = 8418;
+	public final static int COLUMN_PA_REPORTCOLUMN_RelativePeriodTo_COLUMN_ID	= 214087;
 	public final static int COLUMN_S_RESOURCE_S_RESOURCETYPE_ID = 6851;
 	public final static int COLUMN_S_RESOURCEASSIGNMENT_S_RESOURCE_ID = 6826;
 	public final static int COLUMN_WIZARDSTATUS = 200310;

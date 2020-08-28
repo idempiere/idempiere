@@ -34,7 +34,7 @@ public class MReportColumn extends X_PA_ReportColumn
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2395905882810790219L;
+	private static final long serialVersionUID = 2584173320087743126L;
 
 	/**
 	 * 	Constructor
