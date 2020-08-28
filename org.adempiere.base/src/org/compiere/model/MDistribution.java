@@ -48,6 +48,7 @@ public class MDistribution extends X_GL_Distribution
 	 *	@param acct account (ValidCombination)
 	 *	@param PostingType only posting type
 	 *	@param C_DocType_ID only document type
+	 *	@param dateAcct date (to be tested with ValidFrom/ValidTo)
 	 *	@return array of distributions
 	 */
 	public static MDistribution[] get (MAccount acct,  
@@ -68,6 +69,7 @@ public class MDistribution extends X_GL_Distribution
 	 *	@param C_AcctSchema_ID schema
 	 *	@param PostingType posting type
 	 *	@param C_DocType_ID document type
+	 *	@param dateAcct date (to be tested with ValidFrom/ValidTo)
 	 *	@param AD_Org_ID org
 	 *	@param Account_ID account
 	 *	@param M_Product_ID product
