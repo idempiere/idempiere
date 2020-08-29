@@ -18,6 +18,7 @@
 package org.adempiere.webui.editor;
 
 import java.sql.Timestamp;
+import java.time.ZoneId;
 import java.util.Date;
 
 import org.adempiere.webui.ValuePreference;
@@ -120,7 +121,7 @@ public class WDateEditor extends WEditor implements ContextMenuListener
 
 	        if (date != null)
 	        {
-	            newValue = new Timestamp(date.getTime());
+	        	newValue = Timestamp.valueOf(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 	        }
 	        if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
 	    	    return;
