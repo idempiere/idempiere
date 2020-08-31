@@ -162,7 +162,7 @@ public class WDateEditor extends WEditor implements ContextMenuListener
     	}
     	else if (value instanceof Timestamp)
         {
-            getComponent().setValue((Timestamp)value);
+            getComponent().setValueInLocalDateTime(((Timestamp)value).toLocalDateTime());
             oldValue = (Timestamp)value;
         }
     	else
