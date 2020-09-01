@@ -148,7 +148,7 @@ public class WDateEditor extends WEditor implements ContextMenuListener
     {
     	// Elaine 2008/07/25
     	if(getComponent().getValue() == null) return null;
-    	return new Timestamp(getComponent().getValue().getTime());
+    	return Timestamp.valueOf(getComponent().getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
     	//
     }
 
@@ -172,7 +172,7 @@ public class WDateEditor extends WEditor implements ContextMenuListener
     			getComponent().setText(value.toString());
     		} catch (Exception e) {}
     		if (getComponent().getValue() != null)
-    			oldValue = new Timestamp(getComponent().getValue().getTime());
+    			oldValue = Timestamp.valueOf(getComponent().getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
     		else
     			oldValue = null;
     	}
