@@ -1155,9 +1155,6 @@ public class Doc_MatchInv extends Doc
 				.append(" AND PostingType='A'");
 		}
 		
-		MAccount gain = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedGain_Acct());
-		MAccount loss = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedLoss_Acct());
-		
 		BigDecimal acctDifference = null;	//	gain is negative
 		// For Match Invoice
 		valuesInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
@@ -1189,47 +1186,19 @@ public class Doc_MatchInv extends Doc
 					matchInvSource = matchInvSource.add(totalAmtSourceDr);
 					matchInvAccounted = matchInvAccounted.add(totalAmtAcctDr);
 				}
+				else if (totalAmtSourceDr.compareTo(totalAmtSourceCr) == 0 && totalAmtAcctDr.compareTo(totalAmtAcctCr) == 0)
+				{
+					//	do nothing
+				}
+				else if (totalAmtAcctDr.compareTo(totalAmtAcctCr) > 0)
+				{
+					matchInvSource = matchInvSource.add(totalAmtSourceDr);
+					matchInvAccounted = matchInvAccounted.add(totalAmtAcctDr).subtract(totalAmtAcctCr);
+				}
 				else
 				{
-					BigDecimal currencyAdjustment = Env.ZERO;
-					
-					if (totalAmtAcctDr.compareTo(totalAmtAcctCr) > 0)
-					{
-						matchInvSource = matchInvSource.add(totalAmtSourceDr);
-						matchInvAccounted = matchInvAccounted.add(totalAmtAcctDr).subtract(totalAmtAcctCr);
-						currencyAdjustment = currencyAdjustment.add(totalAmtAcctCr);
-					}
-					else
-					{
-						matchInvSource = matchInvSource.add(totalAmtSourceCr);
-						matchInvAccounted = matchInvAccounted.add(totalAmtAcctCr).subtract(totalAmtAcctDr);
-						currencyAdjustment = currencyAdjustment.add(totalAmtAcctDr);
-					}
-					
-					if (totalAmtSourceDr.compareTo(totalAmtSourceCr) == 0)
-					{
-						// For Match Invoice
-						String sqlAdj = sql.toString().replaceAll(" AND Account_ID=\\?", " AND (Account_ID=? OR Account_ID=? OR Account_ID=?)");
-						valuesInv = DB.getSQLValueObjectsEx(getTrxName(), sqlAdj.toString(),
-								MMatchInv.Table_ID, get_ID(), as.getC_AcctSchema_ID(), 
-								gain.getAccount_ID(), loss.getAccount_ID(), as.getCurrencyBalancing_Acct().getAccount_ID());
-						if (valuesInv != null) {
-							totalAmtSourceDr = (BigDecimal) valuesInv.get(0);
-							if (totalAmtSourceDr == null)
-								totalAmtSourceDr = Env.ZERO;
-							totalAmtAcctDr = (BigDecimal) valuesInv.get(1);
-							if (totalAmtAcctDr == null)
-								totalAmtAcctDr = Env.ZERO;
-							totalAmtSourceCr = (BigDecimal) valuesInv.get(2);
-							if (totalAmtSourceCr == null)
-								totalAmtSourceCr = Env.ZERO;
-							totalAmtAcctCr = (BigDecimal) valuesInv.get(3);
-							if (totalAmtAcctCr == null)
-								totalAmtAcctCr = Env.ZERO;
-							
-							matchInvAccounted = matchInvAccounted.subtract(totalAmtAcctDr).subtract(totalAmtAcctCr).add(currencyAdjustment);
-						}
-					}
+					matchInvSource = matchInvSource.add(totalAmtSourceCr);
+					matchInvAccounted = matchInvAccounted.add(totalAmtAcctCr).subtract(totalAmtAcctDr);
 				}
 			}
 			else
@@ -1268,7 +1237,9 @@ public class Doc_MatchInv extends Doc
 			log.fine("No Difference");
 			return null;
 		}
-		
+
+		MAccount gain = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedGain_Acct());
+		MAccount loss = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedLoss_Acct());
 		//
 		if (invoice.isSOTrx())
 		{
