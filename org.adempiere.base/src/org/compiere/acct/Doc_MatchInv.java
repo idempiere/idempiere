@@ -1033,7 +1033,7 @@ public class Doc_MatchInv extends Doc
 			BigDecimal debit = dr.getAmtSourceDr();
 			BigDecimal credit = cr.getAmtSourceCr();
 
-			if (debit.compareTo(credit) == 0 && (cr.getAcctBalance().add(dr.getAcctBalance())).compareTo(Env.ZERO) == 0) {
+			if (debit.compareTo(credit) == 0) {
 				fact.remove(dr);
 				fact.remove(cr);
 			}
@@ -1185,10 +1185,6 @@ public class Doc_MatchInv extends Doc
 				{
 					matchInvSource = matchInvSource.add(totalAmtSourceDr);
 					matchInvAccounted = matchInvAccounted.add(totalAmtAcctDr);
-				}
-				else if (totalAmtSourceDr.compareTo(totalAmtSourceCr) == 0 && totalAmtAcctDr.compareTo(totalAmtAcctCr) == 0)
-				{
-					//	do nothing
 				}
 				else if (totalAmtAcctDr.compareTo(totalAmtAcctCr) > 0)
 				{
@@ -1373,10 +1369,6 @@ public class Doc_MatchInv extends Doc
 				{
 					matchInvSource = matchInvSource.add(totalAmtSourceDr);
 					matchInvAccounted = matchInvAccounted.add(totalAmtAcctDr);
-				}
-				else if (totalAmtSourceDr.compareTo(totalAmtSourceCr) == 0 && totalAmtAcctDr.compareTo(totalAmtAcctCr) == 0)
-				{
-					//	do nothing
 				}
 				else if (totalAmtAcctDr.compareTo(totalAmtAcctCr) > 0)
 				{
