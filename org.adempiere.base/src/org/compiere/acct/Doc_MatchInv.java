@@ -1597,6 +1597,7 @@ public class Doc_MatchInv extends Doc
 					if (skipMatchInvIdList.contains(matchInv.get_ID()))
 						continue;
 					
+					BigDecimal currencyAdjustment = Env.ZERO;
 					StringBuilder sql = new StringBuilder()
 						.append("SELECT SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
 						.append(" FROM Fact_Acct ")
@@ -1604,14 +1605,6 @@ public class Doc_MatchInv extends Doc
 						.append(" AND C_AcctSchema_ID=?")
 						.append(" AND PostingType='A'")
 						.append(" AND Account_ID=?");
-					
-					if (matchInv.getRef_MatchInv_ID() > 0)
-					{
-						if (invoice.isCreditMemo() && matchInv.getQty().compareTo(BigDecimal.ZERO) < 0)
-							sql.append(" AND Qty > 0");
-						else
-							sql.append(" AND Qty < 0");
-					}
 					
 					// For Match Inv
 					List<Object> valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
@@ -1645,12 +1638,20 @@ public class Doc_MatchInv extends Doc
 							if (totalAmtAcctDr.compareTo(totalAmtAcctCr) > 0)
 							{
 								matchInvSource = matchInvSource.add(totalAmtSourceDr);
-								matchInvAccounted = matchInvAccounted.add(totalAmtAcctDr);
+								matchInvAccounted = matchInvAccounted.add(totalAmtAcctDr).subtract(totalAmtAcctCr);
+								if (invoice.isCreditMemo())
+									currencyAdjustment = currencyAdjustment.add(totalAmtAcctDr);
+								else
+									currencyAdjustment = currencyAdjustment.add(totalAmtAcctCr);
 							}
 							else
 							{
 								matchInvSource = matchInvSource.add(totalAmtSourceCr);
-								matchInvAccounted = matchInvAccounted.add(totalAmtAcctCr);
+								matchInvAccounted = matchInvAccounted.add(totalAmtAcctCr).subtract(totalAmtAcctDr);
+								if (invoice.isCreditMemo())
+									currencyAdjustment = currencyAdjustment.add(totalAmtAcctCr);
+								else
+									currencyAdjustment = currencyAdjustment.add(totalAmtAcctDr);
 							}
 						}
 					}
@@ -1661,8 +1662,7 @@ public class Doc_MatchInv extends Doc
 						.append("WHERE AD_Table_ID=? AND (Record_ID=? OR Record_ID=?)")	//	match inv
 						.append(" AND C_AcctSchema_ID=?")
 						.append(" AND PostingType='A'")
-						.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
-						.append(" AND Description LIKE 'Invoice%'");
+						.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)");
 					
 					// For Match Inv
 					valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
@@ -1682,7 +1682,7 @@ public class Doc_MatchInv extends Doc
 						if (totalAmtAcctCr == null)
 							totalAmtAcctCr = Env.ZERO;
 						
-						matchInvAccounted = matchInvAccounted.subtract(totalAmtAcctDr).subtract(totalAmtAcctCr);
+						matchInvAccounted = matchInvAccounted.subtract(totalAmtAcctDr).subtract(totalAmtAcctCr).add(currencyAdjustment);
 					}
 				}
 				
@@ -1771,12 +1771,6 @@ public class Doc_MatchInv extends Doc
 				continue;
 			}
 			
-			if (acctDifference.abs().compareTo(TOLERANCE) > 0)
-			{
-				log.fine("acctDifference="+acctDifference);
-				continue;
-			}
-			
 			//
 			if (invoice.isSOTrx())
 			{
@@ -1784,12 +1778,15 @@ public class Doc_MatchInv extends Doc
 				fl.setDescription(description.toString());
 				updateFactLine(fl);
 				
-				if (as.isCurrencyBalancing() && as.getC_Currency_ID() != invoice.getC_Currency_ID())
-					fl = fact.createLine (null, as.getCurrencyBalancing_Acct(), as.getC_Currency_ID(), acctDifference.negate());
-				else 
-					fl = fact.createLine (null, loss, gain, as.getC_Currency_ID(), acctDifference.negate());	
-				fl.setDescription(description.toString());
-				updateFactLine(fl);
+				if (!fact.isAcctBalanced())
+				{
+					if (as.isCurrencyBalancing() && as.getC_Currency_ID() != invoice.getC_Currency_ID())
+						fl = fact.createLine (null, as.getCurrencyBalancing_Acct(), as.getC_Currency_ID(), acctDifference.negate());
+					else 
+						fl = fact.createLine (null, loss, gain, as.getC_Currency_ID(), acctDifference.negate());	
+					fl.setDescription(description.toString());
+					updateFactLine(fl);
+				}				
 			}
 			else
 			{
@@ -1797,12 +1794,15 @@ public class Doc_MatchInv extends Doc
 				fl.setDescription(description.toString());
 				updateFactLine(fl);
 				
-				if (as.isCurrencyBalancing() && as.getC_Currency_ID() != invoice.getC_Currency_ID())
-					fl = fact.createLine (null, as.getCurrencyBalancing_Acct(), as.getC_Currency_ID(), acctDifference);
-				else
-					fl = fact.createLine (null, loss, gain, as.getC_Currency_ID(), acctDifference);
-				fl.setDescription(description.toString());
-				updateFactLine(fl);
+				if (!fact.isAcctBalanced())
+				{
+					if (as.isCurrencyBalancing() && as.getC_Currency_ID() != invoice.getC_Currency_ID())
+						fl = fact.createLine (null, as.getCurrencyBalancing_Acct(), as.getC_Currency_ID(), acctDifference);
+					else
+						fl = fact.createLine (null, loss, gain, as.getC_Currency_ID(), acctDifference);
+					fl.setDescription(description.toString());
+					updateFactLine(fl);
+				}
 			}
 		}
 		return null;
