@@ -420,7 +420,8 @@ public class Doc_AllocationHdr extends Doc
 						getC_Currency_ID(), null, line.getAmtSource().negate());
 					if (fl != null && payment != null)
 						fl.setAD_Org_ID(payment.getAD_Org_ID());
-					allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance().negate());
+					if (fl != null)
+						allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance().negate());
 				}
 				else if (isUsingClearing && line.getC_CashLine_ID() != 0) // Avoid usage of clearing accounts
 				{
