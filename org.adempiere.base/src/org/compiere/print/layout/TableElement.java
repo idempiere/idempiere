@@ -46,6 +46,7 @@ import org.compiere.print.MPrintTableFormat;
 import org.compiere.print.PrintData;
 import org.compiere.print.util.SerializableMatrix;
 import org.compiere.print.util.SerializableMatrixImpl;
+import org.compiere.report.MReportLine;
 import org.compiere.util.Evaluator;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
@@ -80,7 +81,7 @@ public class TableElement extends PrintElement
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4185521888252077894L;
+	private static final long serialVersionUID = -4144554863262696285L;
 
 
 	/**
@@ -115,6 +116,12 @@ public class TableElement extends PrintElement
 	 *  @param rowColBackground HashMap with Point as key with background Color overwrite
 	 *  @param tFormat table format
 	 *  @param pageBreak Arraylist of rows with page break
+	 *  
+	 *  @param colSuppressRepeats
+	 *  @param rowColReportLine
+	 *  @param finReportSumRows
+	 *  @param blankRows
+	 * @param detailColReportLine 
 	 */
 	public TableElement (ValueNamePair[] columnHeader,
 		int[] columnMaxWidth, int[] columnMaxHeight, String[] columnJustification,
@@ -122,7 +129,8 @@ public class TableElement extends PrintElement
 		SerializableMatrix<Serializable> data, KeyNamePair[] pk, String pkColumnName,
 		int pageNoStart, Rectangle firstPage, Rectangle nextPages, int repeatedColumns, HashMap<Integer,Integer> additionalLines,
 		HashMap<Point,Font> rowColFont, HashMap<Point,Color> rowColColor, HashMap<Point,Color> rowColBackground,
-		MPrintTableFormat tFormat, ArrayList<Integer> pageBreak, Boolean[] colSuppressRepeats)
+		MPrintTableFormat tFormat, ArrayList<Integer> pageBreak, Boolean[] colSuppressRepeats, HashMap<Point, MReportLine> rowColReportLine,
+		ArrayList<Integer> finReportSumRows, ArrayList<Integer> blankRows)
 	{
 		super();
 		if (log.isLoggable(Level.FINE))
@@ -162,6 +170,9 @@ public class TableElement extends PrintElement
 		if (m_baseBackground == null)
 			m_baseBackground = Color.white;
 		m_tFormat = tFormat;
+		m_finReportSumRows = finReportSumRows;
+		m_rowColReportLine = rowColReportLine;
+		m_blankRows = blankRows;
 
 		//	Page Break - not two after each other
 		m_pageBreak = pageBreak;
@@ -257,6 +268,13 @@ public class TableElement extends PrintElement
 
 	/**	Key: Integer (original Column) - Value: Integer (below column)	*/
 	private HashMap<Integer,Integer>	m_additionalLines;
+
+	/** List of Fin Report Summary Rows */
+	private ArrayList<Integer>					m_finReportSumRows;
+	/** HashMap with Point as key with report line */
+	private HashMap<Point, MReportLine>			m_rowColReportLine;
+	/** List of Fin Report blank rows */
+	private ArrayList<Integer>					m_blankRows;
 
 	/*************************************************************************/
 
@@ -585,13 +603,26 @@ public class TableElement extends PrintElement
 		for (int row = 0; row < rows; row++)
 		{
 			float rowHeight = 0f;
+			float over = 0f;
+			float under = 0f;
 			dataSizes.setRowIndex(row);
 			List<Dimension2DImpl> dimensions = dataSizes.getRowData();
 			for (int col = 0; col < cols; col++)
 			{
 				if (dimensions.get(col).height > rowHeight)	//	max
 					rowHeight = (float)dimensions.get(col).height;
+				
+				if (getReportLine(row, col) != null)
+				{
+					if (getReportLine(row, col).getOverline() > over)
+						over = getReportLine(row, col).getOverline();
+					if (getReportLine(row, col).getUnderline() > under)
+						under = getReportLine(row, col).getUnderline();
+				}
 			}	//	for all columns
+			over = over == 2 ? over * m_tFormat.getLineStroke().floatValue() + V_GAP : over * m_tFormat.getLineStroke().floatValue();
+			under = under == 2 ? under * m_tFormat.getLineStroke().floatValue() + V_GAP : under * m_tFormat.getLineStroke().floatValue();
+			rowHeight += over + under;
 			rowHeight += m_tFormat.getLineStroke().floatValue() + (2*V_GAP);
 			m_rowHeights.add(Float.valueOf(rowHeight));
 			p_height += rowHeight;
@@ -865,6 +896,9 @@ public class TableElement extends PrintElement
 	 */
 	private Color getColor (int row, int col)
 	{
+		if (m_blankRows.contains(row))
+			return getBackground(row, col);
+
 		//	First specific position
 		Color color = (Color)m_rowColColor.get(new Point(row, col));
 		if (color != null)
@@ -1434,6 +1468,29 @@ public class TableElement extends PrintElement
 					(int)(colWidth-m_tFormat.getVLineStroke().floatValue()), 
 					(int)(rowHeight-m_tFormat.getLineStroke().floatValue()) );
 			}
+
+			// Over Line
+			MReportLine rLine = getReportLine(row, col);
+			if (rLine != null)
+			{
+				if (rLine.getOverline() > 1)
+				{
+					curY -= V_GAP + m_tFormat.getVLineStroke().floatValue();
+					g2D.setPaint(m_tFormat.getHeaderLine_Color());
+					g2D.setStroke(rLine.getOverlineStroke(m_tFormat.getVLineStroke()));
+					g2D.drawLine(curX, (int) (curY + m_tFormat.getVLineStroke().floatValue()),
+					             (int) (curX + colWidth - m_tFormat.getVLineStroke().floatValue()), (int) (curY + m_tFormat.getVLineStroke().floatValue()));
+					curY += V_GAP + m_tFormat.getVLineStroke().floatValue();
+				}
+				if (rLine.getOverline() > 0)
+				{
+					g2D.setPaint(m_tFormat.getHeaderLine_Color());
+					g2D.setStroke(rLine.getOverlineStroke(m_tFormat.getVLineStroke()));
+					g2D.drawLine(curX, curY, (int) (curX + colWidth - m_tFormat.getVLineStroke().floatValue()), curY);
+					curY += m_tFormat.getVLineStroke().floatValue();
+				}
+			}
+
 			curX += H_GAP;		//	upper left gap
 			curY += V_GAP;
 
@@ -1607,9 +1664,37 @@ public class TableElement extends PrintElement
 					curX, (int)(rowYstart+rowHeight-m_tFormat.getLineStroke().floatValue()));
 			curX += m_tFormat.getVLineStroke().floatValue();
 
+			// Under Line
+			if (rLine != null && rLine.getUnderline() > 0)
+			{
+				if (rLine.getUnderline() > 1)
+				{
+					curY -= V_GAP + m_tFormat.getVLineStroke().floatValue();
+					g2D.setPaint(m_tFormat.getHeaderLine_Color());
+					g2D.setStroke(rLine.getUnderlineStroke(m_tFormat.getVLineStroke()));
+					g2D.drawLine(origX, curY, (int) (origX + colWidth - m_tFormat.getVLineStroke().floatValue()), curY);
+					curY += V_GAP + m_tFormat.getVLineStroke().floatValue();
+				}
+				if (rLine.getUnderline() > 0)
+				{
+					g2D.setPaint(m_tFormat.getHeaderLine_Color());
+					g2D.setStroke(rLine.getUnderlineStroke(m_tFormat.getVLineStroke()));
+					g2D.drawLine(origX, curY, (int) (origX + colWidth - m_tFormat.getVLineStroke().floatValue()), curY);
+				}
+			}
+
+			// Maintain financial report detail and column section Y position
+			if ((int) (rowYstart + rowHeight) > curY)
+			{
+				curY = (int) (rowYstart + rowHeight);
+			}
+
             //  X end line
             if (row == m_data.getRowCount()-1)         //  last Line
             {
+				// left some space between underline and last line
+				curY += 2 * V_GAP;
+
                 /**
                  * Bug fix - Bottom line was always displayed whether or not header lines was set to be visible
                  * @author ashley
@@ -1633,13 +1718,16 @@ public class TableElement extends PrintElement
                 boolean nextIsFunction = m_functionRows.contains(Integer.valueOf(row+1));
                 if (nextIsFunction && m_functionRows.contains(Integer.valueOf(row)))
                     nextIsFunction = false;     //  this is a function line too
-                if (nextIsFunction)
-                {
-                    g2D.setPaint(m_tFormat.getFunctFG_Color());
-                    g2D.setStroke(m_tFormat.getHLine_Stroke());
-                    g2D.drawLine(origX, curY,               //   -> - (bottom)
-                        (int)(origX+colWidth-m_tFormat.getVLineStroke().floatValue()), curY);
-                }
+				MReportLine nextLine = getReportLine(row + 1, col);
+				if (nextIsFunction || (m_finReportSumRows.contains(Integer.valueOf(row + 1)) && nextLine != null
+						&& nextLine.getOverline() == 0))
+				{
+					g2D.setPaint(m_tFormat.getFunctFG_Color());
+					g2D.setStroke(m_tFormat.getHLine_Stroke());
+					
+					g2D.drawLine(origX, curY, 				// -> - (bottom)
+							(int) (origX + colWidth - m_tFormat.getVLineStroke().floatValue()), curY);
+				}
                 else if (m_tFormat.isPaintHLines())
                 {
                     g2D.setPaint(m_tFormat.getHLine_Color());
@@ -1725,6 +1813,22 @@ public class TableElement extends PrintElement
 		return coordinate.toArray();
 	}	//	getPrintItems
 
+	/**
+	 * Get Report Line.
+	 * 
+	 * @param row row
+	 * @param col column
+	 * @return ReportLine for row/col
+	 */
+	private MReportLine getReportLine(int row, int col)
+	{
+		// First specific position
+		MReportLine rLine = (MReportLine) m_rowColReportLine.get(new Point(row, col));
+		if (rLine != null)
+			return rLine;
+
+		return null;
+	} // getFont
 
 	public void setPageLogics(ArrayList<String> pageLogics) 
 	{
