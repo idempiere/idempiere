@@ -77,7 +77,8 @@ public class LoggedSessionListener implements HttpSessionListener, ServletContex
 	        }
         }
 
-        logger.log(Level.OFF, "context initialized");
+        if (logger.isLoggable(Level.FINE))
+        	logger.log(Level.FINE, "context initialized");
         /**
          * End iDempiere Start
          */
