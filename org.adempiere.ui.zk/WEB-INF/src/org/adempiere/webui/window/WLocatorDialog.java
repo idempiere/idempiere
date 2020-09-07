@@ -21,7 +21,6 @@
 
 package org.adempiere.webui.window;
 
-import static org.compiere.model.SystemIDs.COLUMN_M_LOCATOR_M_LOCATOR_ID;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,13 +47,10 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MLocator;
 import org.compiere.model.MLocatorLookup;
 import org.compiere.model.MLocatorType;
-import org.compiere.model.MLookup;
-import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRole;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
-import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -149,9 +145,9 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		
 		m_WindowNo = windowNo;
 		this.title = title;
+		m_mLocator = mLocator;
 		initComponents();
 
-		m_mLocator = mLocator;
 		m_M_Locator_ID = M_Locator_ID;
 		m_mandatory = mandatory;
 		m_only_Warehouse_ID = only_Warehouse_ID;
@@ -172,10 +168,8 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		lblLevelZ.setValue(Msg.getElement(Env.getCtx(), "Z"));
 		lblKey.setValue(Msg.translate(Env.getCtx(), "Value"));
 		
-		MLookup lookup = MLookupFactory.get(Env.getCtx(), m_WindowNo, 0, COLUMN_M_LOCATOR_M_LOCATOR_ID, DisplayType.TableDir);
-		locatorField = new WTableDirEditor(lookup , Msg.translate(Env.getCtx(), "M_Locator_ID"), "", true, false, true);
+		locatorField = new WTableDirEditor(m_mLocator , Msg.translate(Env.getCtx(), "M_Locator_ID"), "", true, false, true, true);
 		LayoutUtils.addSclass("z-label", locatorField.getComponent());
-		
 		chkCreateNew.setLabel(Msg.getMsg(Env.getCtx(), "CreateNew"));
 		
 		lstWarehouse.setMold("select");

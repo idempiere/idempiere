@@ -40,7 +40,6 @@ public class SystemIDs
 	public final static int COLUMN_S_RESOURCEASSIGNMENT_S_RESOURCE_ID = 6826;
 	public final static int COLUMN_WIZARDSTATUS = 200310;
 	public final static int COLUMN_AD_FIELD_AD_FIELDGROUP_ID = 5375;
-	public final static int COLUMN_M_LOCATOR_M_LOCATOR_ID = 1389;
 
 	public final static int COUNTRY_US = 100;
 	public final static int COUNTRY_JAPAN = 216;
