@@ -313,7 +313,7 @@ public class FinReport extends SvrProcess
 		int PA_ReportLineSet_ID = m_report.getLineSet().getPA_ReportLineSet_ID();
 		StringBuilder sql = new StringBuilder ("INSERT INTO T_Report "
 			+ "(AD_PInstance_ID, PA_ReportLine_ID, Record_ID,Fact_Acct_ID, SeqNo,LevelNo, Name,Description) "
-			+ "SELECT ").append(getAD_PInstance_ID()).append(", rl.PA_ReportLine_ID, 0,0, rl.SeqNo,0, NVL(trl.Name, rl.Name) as Name, NVL(trl.Description,rl.Description) as Description "
+			+ "SELECT ").append(getAD_PInstance_ID()).append(", rl.PA_ReportLine_ID, 0,0, rl.SeqNo,0, CASE WHEN LineType='B' THEN '' ELSE NVL(trl.Name, rl.Name) END as Name, NVL(trl.Description,rl.Description) as Description "
 			+ "FROM PA_ReportLine rl "
 			+ "LEFT JOIN PA_ReportLine_Trl trl ON trl.PA_ReportLine_ID = rl.PA_ReportLine_ID AND trl.AD_Language = '" + Env.getAD_Language(Env.getCtx()) + "' "
 			+ "WHERE rl.IsActive='Y' AND rl.PA_ReportLineSet_ID=").append(PA_ReportLineSet_ID);
