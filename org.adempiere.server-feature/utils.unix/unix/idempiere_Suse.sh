@@ -11,7 +11,7 @@
 # Required-Start:
 # Required-Stop:
 # Default-Start:  3 5
-# Default-Stop:   
+# Default-Stop:
 # Description:    Start the iDempiere server
 ### END INIT INFO
 
@@ -47,19 +47,19 @@ rc_reset
 # 5 - program is not installed
 # 6 - program is not configured
 # 7 - program is not running
-# 
+#
 # Note that starting an already running service, stopping
 # or restarting a not-running service as well as the restart
 # with force-reload (in case signalling is not supported) are
 # considered a success.
 
-# 
+#
 IDEMPIERESTATUS=
-MAXITERATIONS=60 
+MAXITERATIONS=60
 
 getidempierestatus() {
     IDEMPIERESTATUSSTRING=$(ps ax | grep java | grep ${IDEMPIERE_HOME} | grep -v grep)
-    echo $IDEMPIERESTATUSSTRING | grep -q ${IDEMPIERE_HOME}
+    echo "$IDEMPIERESTATUSSTRING" | grep -q ${IDEMPIERE_HOME}
     IDEMPIERESTATUS=$?
 }
 
@@ -71,9 +71,9 @@ start () {
 	return
     fi
     echo -n "Starting iDempiere ERP: "
-    cd $IDEMPIERE_HOME/utils
-    . $ENVFILE 
-    export LOGFILE=$IDEMPIERE_HOME/log/idempiere_`date +%Y%m%d%H%M%S`.log
+    cd $IDEMPIERE_HOME/utils || exit
+    . $ENVFILE
+    export LOGFILE=$IDEMPIERE_HOME/log/idempiere_$(date +%Y%m%d%H%M%S).log
     su $IDEMPIEREUSER -c "mkdir -p $IDEMPIERE_HOME/log"
     su $IDEMPIEREUSER -c "export TELNET_PORT=$TELNET_PORT;cd $IDEMPIERE_HOME;$IDEMPIERE_HOME/idempiere-server.sh &> $LOGFILE &"
     RETVAL=$?
@@ -83,9 +83,9 @@ start () {
         ITERATIONS=0
         while [ $STATUSTEST -eq 0 ] ; do
             sleep 2
-            cat $LOGFILE | grep -q '.*LoggedSessionListener.contextInitialized: context initialized.*' && STATUSTEST=1
+            grep -q '.*LoggedSessionListener.contextInitialized: context initialized.*' < "$LOGFILE" && STATUSTEST=1
             echo -n "."
-            ITERATIONS=`expr $ITERATIONS + 1`
+            ITERATIONS=$((ITERATIONS + 1))
             if [ $ITERATIONS -gt $MAXITERATIONS ]
                 then
                 break
@@ -114,7 +114,7 @@ stop () {
 	return
     fi
     echo -n "Stopping iDempiere ERP: "
-    cd $IDEMPIERE_HOME/utils
+    cd $IDEMPIERE_HOME/utils || exit
     . $ENVFILE
     # try shutdown from OSGi console, then direct kill with signal 15, then signal 9
     log_warning_msg "Trying shutdown from OSGi console"
@@ -124,14 +124,14 @@ stop () {
         echo "Service stopped with OSGi shutdown"
     else
         echo "Trying direct kill with signal -15"
-        kill -15 -`ps ax o pgid,command | grep ${IDEMPIERE_HOME} | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
+        kill -15 -$(ps ax o pgid,command | grep ${IDEMPIERE_HOME} | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u)
         sleep 5
         getidempierestatus
         if [ $IDEMPIERESTATUS -ne 0 ] ; then
             echo "Service stopped with kill -15"
         else
             echo "Trying direct kill with signal -9"
-            kill -9 -`ps ax o pgid,command | grep ${IDEMPIERE_HOME} | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
+            kill -9 -$(ps ax o pgid,command | grep ${IDEMPIERE_HOME} | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u)
             sleep 5
             getidempierestatus
             if [ $IDEMPIERESTATUS -ne 0 ] ; then
@@ -193,7 +193,7 @@ case "$1" in
 	status
 	;;
     *)
-	echo $"Usage: $0 {start|stop|restart|condrestart|status}"
+	echo "Usage: $0 {start|stop|restart|condrestart|status}"
 	exit 1
 esac
 

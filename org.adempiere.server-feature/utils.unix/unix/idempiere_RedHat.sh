@@ -23,14 +23,14 @@ IDEMPIEREUSER=idempiere
 export TELNET_PORT=12612
 
 . /etc/rc.d/init.d/functions
- 
+
 RETVAL=0
 IDEMPIERESTATUS=
 MAXITERATIONS=60 # 2 seconds every iteration, max wait 2 minutes
 
 getidempierestatus() {
     IDEMPIERESTATUSSTRING=$(ps ax | grep java | grep ${IDEMPIERE_HOME} | grep -v grep)
-    echo $IDEMPIERESTATUSSTRING | grep -q ${IDEMPIERE_HOME}
+    echo "$IDEMPIERESTATUSSTRING" | grep -q ${IDEMPIERE_HOME}
     IDEMPIERESTATUS=$?
 }
 
@@ -41,9 +41,9 @@ start () {
 	  return 1
     fi
     echo -n "Starting iDempiere ERP: "
-    cd $IDEMPIERE_HOME/utils
-    source $ENVFILE 
-    export LOGFILE=$IDEMPIERE_HOME/log/idempiere_`date +%Y%m%d%H%M%S`.log
+    cd $IDEMPIERE_HOME/utils || exit
+    source $ENVFILE
+    export LOGFILE=$IDEMPIERE_HOME/log/idempiere_$(date +%Y%m%d%H%M%S).log
     su $IDEMPIEREUSER -c "mkdir -p $IDEMPIERE_HOME/log"
     su $IDEMPIEREUSER -c "export TELNET_PORT=$TELNET_PORT;cd $IDEMPIERE_HOME;$IDEMPIERE_HOME/idempiere-server.sh &> $LOGFILE &"
     RETVAL=$?
@@ -53,9 +53,9 @@ start () {
 	ITERATIONS=0
 	while [ $STATUSTEST -eq 0 ] ; do
 	    sleep 2
-	    cat $LOGFILE | grep -q '.*LoggedSessionListener.contextInitialized: context initialized.*' && STATUSTEST=1
+	    grep -q '.*LoggedSessionListener.contextInitialized: context initialized.*' < "$LOGFILE" && STATUSTEST=1
 	    echo -n "."
-	    ITERATIONS=`expr $ITERATIONS + 1`
+	    ITERATIONS=$((ITERATIONS + 1))
 	    if [ $ITERATIONS -gt $MAXITERATIONS ]
 		then
 		   break
@@ -83,7 +83,7 @@ stop () {
 	  return 1
     fi
     echo -n "Stopping iDempiere ERP: "
-    cd $IDEMPIERE_HOME/utils
+    cd $IDEMPIERE_HOME/utils || exit
     source $ENVFILE
     # try shutdown from OSGi console, then direct kill with signal 15, then signal 9
     echo "Trying shutdown from OSGi console"
@@ -93,14 +93,14 @@ stop () {
         echo_success
     else
         echo "Trying direct kill with signal -15"
-        kill -15 -`ps ax o pgid,command | grep ${IDEMPIERE_HOME} | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
+        kill -15 -$(ps ax o pgid,command | grep ${IDEMPIERE_HOME} | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u)
         sleep 5
         getidempierestatus
         if [ $IDEMPIERESTATUS -ne 0 ] ; then
             echo_success
         else
             echo "Trying direct kill with signal -9"
-            kill -9 -`ps ax o pgid,command | grep ${IDEMPIERE_HOME} | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u`
+            kill -9 -$(ps ax o pgid,command | grep ${IDEMPIERE_HOME} | grep -v grep | sed -e 's/^ *//g' | cut -f 1 -d " " | sort -u)
             sleep 5
             getidempierestatus
             if [ $IDEMPIERESTATUS -ne 0 ] ; then

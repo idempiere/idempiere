@@ -10,7 +10,7 @@ echo ... Setup Jetty
 ./idempiere --launcher.ini setup.ini -application org.eclipse.ant.core.antRunner -buildfile build.xml
 
 echo ... Make .sh executable
-chmod -R a+x *.sh
+chmod -R a+x -- *.sh
 find . -name '*.sh' -exec chmod a+x '{}' \;
 
 echo ...

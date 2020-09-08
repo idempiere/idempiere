@@ -33,7 +33,7 @@ echo Synchronize iDempiere Database
 
 echo Upgrading database "$1@$ADEMPIERE_DB_NAME"
 
-if [ $# -eq 0 ] 
+if [ $# -eq 0 ]
   then
     echo "Usage: $0 <userAccount>"
     echo "Example: $0 adempiere adempiere"
@@ -100,7 +100,7 @@ process_fix()
     then
         TMPBASE="${FAILEDSCRIPT##*/}"
         BASE="${TMPBASE%.sql}"
-    elif [ "fix" = "$SUFFIX" ]       
+    elif [ "fix" = "$SUFFIX" ]
     then
         TMPBASE="${FAILEDSCRIPT##*/}"
         BASE="${TMPBASE%.[0-9][0-9][0-9].fix}"

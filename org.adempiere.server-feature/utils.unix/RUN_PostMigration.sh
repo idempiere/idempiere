@@ -2,13 +2,14 @@
 #
 # $Id: RUN_PostMigration.sh
 
-if [ $IDEMPIERE_HOME ]; then
-  cd $IDEMPIERE_HOME/utils
+if [ "$IDEMPIERE_HOME" ]; then
+    cd "$IDEMPIERE_HOME"/utils || (echo "Cannot cd $IDEMPIERE_HOME/utils"; exit 1)
 fi
-. ./myEnvironment.sh Server
+export ID_ENV=Server
+. ./myEnvironment.sh
 
 #check java home
-if [ $JAVA_HOME ]; then
+if [ "$JAVA_HOME" ]; then
   export PATH=$JAVA_HOME/bin:$PATH	
 else
   echo JAVA_HOME is not set.
@@ -17,7 +18,7 @@ else
   exit
 fi
 
-cd $IDEMPIERE_HOME
+cd "$IDEMPIERE_HOME" || (echo "Cannot cd to $IDEMPIERE_HOME"; exit 1)
 
 ./idempiere --launcher.ini setup.ini -application org.adempiere.base.PostMigration -consoleLog
 
