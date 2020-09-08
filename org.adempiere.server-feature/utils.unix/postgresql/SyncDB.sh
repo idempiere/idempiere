@@ -5,15 +5,15 @@
 
 echo	Synchronize iDempiere Database
 
-echo Upgrading database $1@$ADEMPIERE_DB_NAME
+echo Upgrading database "$1@$ADEMPIERE_DB_NAME"
 
-if [ $# -eq 0 ] 
+if [ $# -eq 0 ]
   then
     echo "Usage:		$0 <userAccount>"
     echo "Example:	$0 adempiere adempiere"
     exit 1
 fi
-if [ "$IDEMPIERE_HOME" = "" -o  "$ADEMPIERE_DB_NAME" = "" -o "$ADEMPIERE_DB_SERVER" = "" -o "$ADEMPIERE_DB_PORT" = "" ]
+if [ "$IDEMPIERE_HOME" = "" ] || [ "$ADEMPIERE_DB_NAME" = "" ] || [ "$ADEMPIERE_DB_SERVER" = "" ] || [ "$ADEMPIERE_DB_PORT" = "" ]
   then
     echo "Please make sure that the environment variables are set correctly:"
     echo "	IDEMPIERE_HOME	e.g. /idempiere"
@@ -37,7 +37,7 @@ if [ "x$4" = "x" ]
 then
     DIR_SCRIPTS=$IDEMPIERE_HOME/migration
 else
-    if [ `expr substr "$4" 1 1` = "/" ]
+    if [ "${4:0:1}" = "/" ]
     then
         DIR_SCRIPTS="$4"
     else
@@ -45,23 +45,18 @@ else
     fi
 fi
 
-cd "$DIR_SCRIPTS"
-if [ $? -ne 0 ]
-then
-    echo "ERROR: Cannot change to folder $DIR_SCRIPTS"
-    exit 1
-fi
+cd "$DIR_SCRIPTS" || (echo "ERROR: Cannot change to folder $DIR_SCRIPTS"; exit 1)
 
 # Create list of files already applied - registered in AD_MigrationScript table
 echo "select name from ad_migrationscript" | $SILENTCMD | sed -e 's:^ ::' | grep -v '^$' | sort > $TMPFOLDER/lisDB_$$.txt
 
 # Create list of files in the migration folder
-> $TMPFOLDER/lisFS_$$.txt
-find -type d -name $ADEMPIERE_DB_PATH | grep -v "./processes_post_migration/$ADEMPIERE_DB_PATH" | while read FOLDER
+: > $TMPFOLDER/lisFS_$$.txt
+find . -type d -name "$ADEMPIERE_DB_PATH" | grep -v "./processes_post_migration/$ADEMPIERE_DB_PATH" | while read -r FOLDER
 do
-    cd "${FOLDER}"
-    ls *.sql 2>/dev/null >> $TMPFOLDER/lisFS_$$.txt
-    cd "$DIR_SCRIPTS"
+    cd "${FOLDER}" || (echo "ERROR: Cannot change to folder $FOLDER"; exit 1)
+    ls -- *.sql 2>/dev/null >> $TMPFOLDER/lisFS_$$.txt
+    cd "$DIR_SCRIPTS" || (echo "ERROR: Cannot change to folder $DIR_SCRIPTS"; exit 1)
 done
 sort -o $TMPFOLDER/lisFS_$$.txt $TMPFOLDER/lisFS_$$.txt
 sort -o $TMPFOLDER/lisDB_$$.txt $TMPFOLDER/lisDB_$$.txt
@@ -72,14 +67,14 @@ comm -13 $TMPFOLDER/lisDB_$$.txt $TMPFOLDER/lisFS_$$.txt > $TMPFOLDER/lisPENDING
 if [ -s $TMPFOLDER/lisPENDING_$$.txt ]
 then
     mkdir $TMPFOLDER/SyncDB_out_$$
-    for FILE in `cat $TMPFOLDER/lisPENDING_$$.txt`
+    cat $TMPFOLDER/lisPENDING_$$.txt | while read -r FILE
     do
-	SCRIPT=`find -name "$FILE" | grep "/$ADEMPIERE_DB_PATH/"`
-	OUTFILE=$TMPFOLDER/SyncDB_out_$$/`basename "$FILE" .sql`.out
+	SCRIPT=$(find . -name "$FILE" | grep "/$ADEMPIERE_DB_PATH/")
+	OUTFILE=$TMPFOLDER/SyncDB_out_$$/$(basename "$FILE" .sql).out
 	echo "Applying $SCRIPT"
-	cat "$SCRIPT" | $CMD 2>&1 | tee "$OUTFILE"
+	$CMD < "$SCRIPT" 2>&1 | tee "$OUTFILE"
 	APPLIED=Y
-	if egrep "$ERROR_STRINGS" "$OUTFILE" > /dev/null 2>&1
+	if grep -E "$ERROR_STRINGS" "$OUTFILE" > /dev/null 2>&1
 	then
 	    MSGERROR="$MSGERROR\n**** ERROR ON FILE $OUTFILE - Please verify ****"
 	    # Stop processing to allow user to fix the problem before processing additional files
@@ -96,12 +91,12 @@ else
 fi
 if [ x$APPLIED = xY ]
 then
-    cd "$DIR_POST"
-    for FILE in processes_post_migration/$ADEMPIERE_DB_PATH/*.sql
+    cd "$DIR_POST" || (echo "ERROR: Cannot change to folder $DIR_POST"; exit 1)
+    for FILE in processes_post_migration/"$ADEMPIERE_DB_PATH"/*.sql
     do
-        OUTFILE=$TMPFOLDER/SyncDB_out_$$/`basename "$FILE" .sql`.out
-        cat "$FILE" | $CMD 2>&1 | tee "$OUTFILE"
-        if egrep "$ERROR_STRINGS" "$OUTFILE" > /dev/null 2>&1
+        OUTFILE=$TMPFOLDER/SyncDB_out_$$/$(basename "$FILE" .sql).out
+        $CMD 2>&1 < "$FILE" | tee "$OUTFILE"
+        if grep -E "$ERROR_STRINGS" "$OUTFILE" > /dev/null 2>&1
         then
             MSGERROR="$MSGERROR\n**** ERROR ON FILE $OUTFILE - Please verify ****"
         fi
@@ -112,7 +107,7 @@ export PGPASSWORD
 if [ -n "$MSGERROR" ]
 then
     echo "$MSGERROR"
-    echo "\n Errors were found during the process (see message above) - please review and fix the error running manually the script - and then restart this process again"
+    printf "\n Errors were found during the process (see message above) - please review and fix the error running manually the script - and then restart this process again"
     exit 1
 fi
 exit 0
