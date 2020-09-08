@@ -39,7 +39,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Oct 16, 2019 2:43:31 PM IST
-ALTER TABLE PA_ReportLine ADD OverlineStrokeType VARCHAR2(3) DEFAULT NULL 
+ALTER TABLE PA_ReportLine ADD OverlineStrokeType VARCHAR2(3 CHAR) DEFAULT NULL 
 ;
 
 -- Oct 16, 2019 2:44:08 PM IST
@@ -51,7 +51,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLen
 ;
 
 -- Oct 16, 2019 2:45:39 PM IST
-ALTER TABLE PA_ReportLine ADD UnderlineStrokeType VARCHAR2(3) DEFAULT NULL 
+ALTER TABLE PA_ReportLine ADD UnderlineStrokeType VARCHAR2(3 CHAR) DEFAULT NULL 
 ;
 
 -- Oct 16, 2019 2:48:07 PM IST

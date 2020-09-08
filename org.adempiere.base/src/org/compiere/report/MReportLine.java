@@ -351,7 +351,16 @@ public class MReportLine extends X_PA_ReportLine
 	{
 		return LINETYPE_SegmentValue.equals(getLineType());
 	}
-	
+
+	/**
+	 * Line Type Blank Line
+	 * @return true if Blank Line
+	 */
+	public boolean isLineTypeBlankLine() 
+	{
+		return LINETYPE_BlankLine.equals(getLineType());
+	}
+
 	/**
 	 * 	Calculation Type Range
 	 *	@return true if range
