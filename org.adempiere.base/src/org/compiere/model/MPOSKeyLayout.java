@@ -23,9 +23,9 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	POS Function Key Layout
@@ -38,10 +38,20 @@ public class MPOSKeyLayout extends X_C_POSKeyLayout
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5047330258566607212L;
+	private static final long serialVersionUID = 8100247902607470888L;
 
 	/**
-	 * 	Get POS Key Layout from Cache
+	 * 	Get POS Key Layout from Cache (immutable)
+	 *	@param C_POSKeyLayout_ID id
+	 *	@return MPOSKeyLayout
+	 */
+	public static MPOSKeyLayout get (int C_POSKeyLayout_ID)
+	{
+		return get(Env.getCtx(), C_POSKeyLayout_ID);
+	}
+	
+	/**
+	 * 	Get POS Key Layout from Cache (immutable)
 	 *	@param ctx context
 	 *	@param C_POSKeyLayout_ID id
 	 *	@return MPOSKeyLayout
@@ -49,20 +59,20 @@ public class MPOSKeyLayout extends X_C_POSKeyLayout
 	public static MPOSKeyLayout get (Properties ctx, int C_POSKeyLayout_ID)
 	{
 		Integer key = Integer.valueOf(C_POSKeyLayout_ID);
-		MPOSKeyLayout retValue = (MPOSKeyLayout) s_cache.get (key);
+		MPOSKeyLayout retValue = s_cache.get (ctx, key, e -> new MPOSKeyLayout(ctx, e));
 		if (retValue != null)
-			return new MPOSKeyLayout(ctx, retValue);
+			return retValue;
 		retValue = new MPOSKeyLayout (ctx, C_POSKeyLayout_ID, (String)null);
 		if (retValue.get_ID () == C_POSKeyLayout_ID)
 		{
-			s_cache.put (key, new MPOSKeyLayout(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MPOSKeyLayout(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MPOSKeyLayout> s_cache = new CCache<Integer,MPOSKeyLayout>(Table_Name, 3);
+	private static ImmutableIntPOCache<Integer,MPOSKeyLayout> s_cache = new ImmutableIntPOCache<Integer,MPOSKeyLayout>(Table_Name, 3);
 
 	/**
 	 * 	Standard Constructor
@@ -154,6 +164,8 @@ public class MPOSKeyLayout extends X_C_POSKeyLayout
 			pstmt = null;
 		}
 		
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 		m_keys = new MPOSKey[list.size ()];
 		list.toArray (m_keys);
 		return m_keys;
@@ -168,5 +180,14 @@ public class MPOSKeyLayout extends X_C_POSKeyLayout
 		return getKeys(false).length;
 	}	//	getNoOfKeys
 	
+	@Override
+	public MPOSKeyLayout markImmutable() 
+	{
+		MPOSKeyLayout pkl = (MPOSKeyLayout) super.markImmutable();
+		if (m_keys != null && m_keys.length > 0)
+			Arrays.stream(m_keys).forEach(e -> e.markImmutable());
+		return pkl;
+	}
+
 }	//	MPOSKeyLayout
 

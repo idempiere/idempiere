@@ -3,9 +3,9 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * Asset Group Model
@@ -17,9 +17,10 @@ public class MAssetGroup extends X_A_Asset_Group
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -173157506404569463L;
+	private static final long serialVersionUID = 2605166916393528396L;
+	
 	/** Cache: ID -> MAssetGroup */
-	private static CCache<Integer, MAssetGroup> s_cache = new CCache<Integer, MAssetGroup>(Table_Name, 10, 0);
+	private static ImmutableIntPOCache<Integer, MAssetGroup> s_cache = new ImmutableIntPOCache<Integer, MAssetGroup>(Table_Name, 10, 0);
 	
 	/**
 	 * 	Default Constructor
@@ -74,6 +75,16 @@ public class MAssetGroup extends X_A_Asset_Group
 	
 	/**
 	 * Get Asset Group [CACHE]
+	 * @param A_Asset_Group_ID	asset group id
+	 * @return asset group or null
+	 */
+	public static MAssetGroup get(int A_Asset_Group_ID)
+	{
+		return get(Env.getCtx(), A_Asset_Group_ID);				
+	}
+	
+	/**
+	 * Get Asset Group [CACHE]
 	 * @param ctx context
 	 * @param A_Asset_Group_ID	asset group id
 	 * @return asset group or null
@@ -83,14 +94,14 @@ public class MAssetGroup extends X_A_Asset_Group
 		if (A_Asset_Group_ID <= 0)
 			return null;
 		// Try cache
-		MAssetGroup ag = s_cache.get(A_Asset_Group_ID);
+		MAssetGroup ag = s_cache.get(ctx, A_Asset_Group_ID, e -> new MAssetGroup(ctx, e));
 		if (ag != null)
-			return new MAssetGroup(ctx, ag);
+			return ag;
 		// Load
 		ag = new MAssetGroup(ctx, A_Asset_Group_ID, (String)null);
 		if (ag.get_ID() == A_Asset_Group_ID)
 		{
-			s_cache.put(A_Asset_Group_ID, new MAssetGroup(Env.getCtx(), ag));
+			s_cache.put(A_Asset_Group_ID, ag, e -> new MAssetGroup(Env.getCtx(), e));
 			return ag;
 		}
 		return null;
@@ -202,5 +213,12 @@ public class MAssetGroup extends X_A_Asset_Group
 		//
 		return true;
 	}
+	
+	@Override
+	public MAssetGroup markImmutable() 
+	{
+		return (MAssetGroup) super.markImmutable();
+	}
+
 }	//	MAssetGroup
 

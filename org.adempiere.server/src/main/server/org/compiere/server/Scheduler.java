@@ -48,14 +48,13 @@ import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.process.ServerProcessCtl;
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
-
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Scheduler
@@ -86,7 +85,7 @@ public class Scheduler extends AdempiereServer
 
 	protected int AD_Scheduler_ID;
 
-	private static CCache<Integer,MScheduler> s_cache = new CCache<Integer,MScheduler>(MScheduler.Table_Name, 10, 60, true);
+	private static ImmutableIntPOCache<Integer,MScheduler> s_cache = new ImmutableIntPOCache<Integer,MScheduler>(MScheduler.Table_Name, 10, 60, true);
 
 	/**
 	 * 	Work
@@ -611,6 +610,7 @@ public class Scheduler extends AdempiereServer
 	}	//	getServerInfo
 
 	/**
+	 * Get MScheduler from cache (immutable)
 	 * @param ctx
 	 * @param AD_Scheduler_ID
 	 * @return MScheduler
@@ -618,7 +618,7 @@ public class Scheduler extends AdempiereServer
 	protected static MScheduler get(Properties ctx, int AD_Scheduler_ID)
 	{
 		Integer key = Integer.valueOf(AD_Scheduler_ID);
-		MScheduler retValue = (MScheduler)s_cache.get(key);
+		MScheduler retValue = s_cache.get(ctx, key, e -> new MScheduler(ctx, e));
 		if (retValue == null)
 		{
 			retValue = new MScheduler(ctx, AD_Scheduler_ID, (String)null);
@@ -629,11 +629,11 @@ public class Scheduler extends AdempiereServer
 			}
 			if (retValue.get_ID() == AD_Scheduler_ID)
 			{
-				s_cache.put(key, new MScheduler(Env.getCtx(), retValue));
+				s_cache.put(key, retValue, e -> new MScheduler(Env.getCtx(), e));
 				return retValue;
 			}
 			return null;
 		}
-		return new MScheduler(ctx, retValue);
+		return retValue;
 	}	//	get
 }	//	Scheduler

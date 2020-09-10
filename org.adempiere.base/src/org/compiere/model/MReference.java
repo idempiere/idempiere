@@ -27,14 +27,14 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 public class MReference extends X_AD_Reference {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 343092563490562893L;
+	private static final long serialVersionUID = -2722869411041069805L;
 
 	/**
 	 * 	Standard Constructor
@@ -88,15 +88,31 @@ public class MReference extends X_AD_Reference {
 	}
 	
 	/**	Reference Cache				*/
-	private static CCache<Integer,MReference>	s_cache = new CCache<Integer,MReference>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MReference>	s_cache = new ImmutableIntPOCache<Integer,MReference>(Table_Name, 20);
 
+	/**
+	 * 	Get from Cache
+	 *	@param AD_Reference_ID id
+	 *	@return category
+	 */
+	public static MReference get (int AD_Reference_ID)
+	{
+		return get(Env.getCtx(), AD_Reference_ID);
+	}
+	
+	/**
+	 * 	Get from Cache (immutable)
+	 *	@param ctx context
+	 *	@param AD_Reference_ID id
+	 *	@return category
+	 */
 	public static MReference get (Properties ctx, int AD_Reference_ID)
 	{
 		return get(ctx, AD_Reference_ID, null);
 	}
 
 	/**
-	 * 	Get from Cache
+	 * 	Get from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Reference_ID id
 	 *	@param trxName trx
@@ -105,14 +121,14 @@ public class MReference extends X_AD_Reference {
 	public static MReference get (Properties ctx, int AD_Reference_ID, String trxName)
 	{
 		Integer ii = Integer.valueOf(AD_Reference_ID);
-		MReference retValue = (MReference)s_cache.get(ii);
+		MReference retValue = s_cache.get(ctx, ii, e -> new MReference(ctx, e));
 		if (retValue != null) {
-			return new MReference(ctx, retValue, trxName);
+			return retValue;
 		}
 		retValue = new MReference (ctx, AD_Reference_ID, trxName);
 		if (retValue.get_ID () == AD_Reference_ID)
 		{
-			s_cache.put (AD_Reference_ID, new MReference(Env.getCtx(), retValue));
+			s_cache.put (AD_Reference_ID, retValue, e -> new MReference(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;

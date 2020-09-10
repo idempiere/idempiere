@@ -26,8 +26,8 @@ import java.util.logging.Level;
 
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_PrintFont;
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	AD_PrintFont Print Font Model
@@ -40,7 +40,7 @@ public class MPrintFont extends X_AD_PrintFont
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2986160498367260541L;
+	private static final long serialVersionUID = -613305916546183810L;
 
 	/**
 	 *	Constructor
@@ -228,7 +228,7 @@ public class MPrintFont extends X_AD_PrintFont
 	/*************************************************************************/
 
 	/** Cached Fonts						*/
-	static private CCache<Integer,MPrintFont> s_fonts = new CCache<Integer,MPrintFont>(Table_Name, 20);
+	static private ImmutableIntPOCache<Integer,MPrintFont> s_fonts = new ImmutableIntPOCache<Integer,MPrintFont>(Table_Name, 20);
 
 	/**
 	 * 	Get Font
@@ -238,18 +238,18 @@ public class MPrintFont extends X_AD_PrintFont
 	static public MPrintFont get (int AD_PrintFont_ID)
 	{
 		Integer key = Integer.valueOf(AD_PrintFont_ID);
-		MPrintFont pf = (MPrintFont)s_fonts.get(key);
+		MPrintFont pf = s_fonts.get(key);
 		if (pf == null)
 		{
 			pf = new MPrintFont (Env.getCtx(), AD_PrintFont_ID, (String)null);
 			if (pf.get_ID() == AD_PrintFont_ID)
 			{
-				s_fonts.put(key, new MPrintFont(Env.getCtx(), pf));
+				s_fonts.put(key, pf);
 				return pf;
 			}
 			return null;
 		}
-		return new MPrintFont(Env.getCtx(), pf);
+		return pf;
 	}	//	get
 
 	/*************************************************************************/

@@ -23,10 +23,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CCache;
@@ -124,7 +122,7 @@ public class MImportTemplate extends X_AD_ImportTemplate
 		String key = roleid + "_" + tabid;
 		List<MImportTemplate> retValue = s_cacheRoleTab.get(key);
 		if (retValue != null)
-			return retValue.stream().map(MImportTemplate::new).collect(Collectors.toCollection(ArrayList::new));
+			return retValue;
 
 		final String where = ""
 				+ "IsActive = 'Y' "
@@ -145,6 +143,8 @@ public class MImportTemplate extends X_AD_ImportTemplate
 			.setParameters(Env.getAD_Client_ID(Env.getCtx()), tabid, roleid, roleid)
 			.setOrderBy("Name")
 			.list();
+		if (retValue.size() > 0)
+			retValue.stream().forEach(e -> e.markImmutable());
 		s_cacheRoleTab.put(key, retValue);
 		return retValue;
 	}

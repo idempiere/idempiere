@@ -23,10 +23,10 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Request Type Model
@@ -38,14 +38,23 @@ import org.compiere.util.Env;
  */
 public class MRequestType extends X_R_RequestType
 {
-
     /**
-     * 
-     */
-    private static final long serialVersionUID = 6235793036503665638L;
+	 * 
+	 */
+	private static final long serialVersionUID = -1772516764599702671L;
 
 	/**
-	 * 	Get Request Type (cached)
+	 * 	Get Request Type (cached) (immutable)
+	 *	@param R_RequestType_ID id
+	 *	@return Request Type
+	 */
+	public static MRequestType get (int R_RequestType_ID)
+	{
+		return get(Env.getCtx(), R_RequestType_ID);
+	}
+	
+	/**
+	 * 	Get Request Type (cached) (immutable)
 	 *	@param ctx context
 	 *	@param R_RequestType_ID id
 	 *	@return Request Type
@@ -53,11 +62,16 @@ public class MRequestType extends X_R_RequestType
 	public static MRequestType get (Properties ctx, int R_RequestType_ID)
 	{
 		Integer key = Integer.valueOf(R_RequestType_ID);
-		MRequestType retValue = (MRequestType)s_cache.get(key);
+		MRequestType retValue = s_cache.get(ctx, key, e -> new MRequestType(ctx, e));
 		if (retValue == null)
 		{
 			retValue = new MRequestType (ctx, R_RequestType_ID, null);
-			s_cache.put(key, retValue);
+			if (retValue.get_ID() == R_RequestType_ID)
+			{
+				s_cache.put(key, retValue, e -> new MRequestType(Env.getCtx(), e));
+				return retValue;
+			}
+			return null;
 		}
 		return retValue;
 	}	//	get
@@ -66,7 +80,7 @@ public class MRequestType extends X_R_RequestType
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MRequestType.class);
 	/**	Cache							*/
-	static private CCache<Integer,MRequestType> s_cache = new CCache<Integer,MRequestType>(Table_Name, 10);
+	static private ImmutableIntPOCache<Integer,MRequestType> s_cache = new ImmutableIntPOCache<Integer,MRequestType>(Table_Name, 10);
 
 	/**
 	 * 	Get Default Request Type

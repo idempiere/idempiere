@@ -21,11 +21,11 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * 	Cost Element Model
@@ -40,12 +40,10 @@ import org.compiere.util.Msg;
  */
 public class MCostElement extends X_M_CostElement
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3423495977508725440L;
-
+	private static final long serialVersionUID = 4914952212171251715L;
 
 	/**
 	 * 	Get Material Cost Element or create it
@@ -179,7 +177,17 @@ public class MCostElement extends X_M_CostElement
 	// end MZ
 	
 	/**
-	 * 	Get Cost Element from Cache
+	 * 	Get Cost Element from Cache (immutable)
+	 *	@param M_CostElement_ID id
+	 *	@return Cost Element
+	 */
+	public static MCostElement get (int M_CostElement_ID)
+	{
+		return get(Env.getCtx(), M_CostElement_ID);
+	}
+	
+	/**
+	 * 	Get Cost Element from Cache (immutable)
 	 *	@param ctx context
 	 *	@param M_CostElement_ID id
 	 *	@return Cost Element
@@ -187,13 +195,13 @@ public class MCostElement extends X_M_CostElement
 	public static MCostElement get (Properties ctx, int M_CostElement_ID)
 	{
 		Integer key = Integer.valueOf(M_CostElement_ID);
-		MCostElement retValue = s_cache.get (key);
+		MCostElement retValue = s_cache.get (ctx, key, e -> new MCostElement(ctx, e));
 		if (retValue != null)
-			return new MCostElement(ctx, retValue);
+			return retValue;
 		retValue = new MCostElement (ctx, M_CostElement_ID, (String)null);
 		if (retValue.get_ID () == M_CostElement_ID)
 		{
-			s_cache.put (key, new MCostElement(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MCostElement(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
@@ -235,7 +243,7 @@ public class MCostElement extends X_M_CostElement
 	}	
 
 	/**	Cache						*/
-	protected static CCache<Integer,MCostElement>	s_cache	= new CCache<Integer,MCostElement>(Table_Name, 20);
+	protected static ImmutableIntPOCache<Integer,MCostElement>	s_cache	= new ImmutableIntPOCache<Integer,MCostElement>(Table_Name, 20);
 	
 	/**	Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MCostElement.class);

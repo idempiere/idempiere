@@ -19,8 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * 	Reporting Hierarchy Model
@@ -33,32 +33,42 @@ public class MHierarchy extends X_PA_Hierarchy
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3278979908976853690L;
+	private static final long serialVersionUID = 7862096742442159952L;
 
 	/**
-	 * 	Get MHierarchy from Cache
-	 *	@param ctx context
+	 * 	Get MHierarchy from Cache (immutable)
+	 *	@param PA_Hierarchy_ID id
+	 *	@return MHierarchy
+	 */
+	public static MHierarchy get (int PA_Hierarchy_ID)
+	{
+		return get(Env.getCtx(), PA_Hierarchy_ID);
+	}
+	
+	/**
+	 * 	Get MHierarchy (Immutable) from Cache
+	 *  @param ctx context
 	 *	@param PA_Hierarchy_ID id
 	 *	@return MHierarchy
 	 */
 	public static MHierarchy get (Properties ctx, int PA_Hierarchy_ID)
 	{
 		Integer key = Integer.valueOf(PA_Hierarchy_ID);
-		MHierarchy retValue = (MHierarchy)s_cache.get (key);
+		MHierarchy retValue = (MHierarchy)s_cache.get (ctx, key, e -> new MHierarchy(ctx, e));
 		if (retValue != null)
-			return new MHierarchy(ctx, retValue);
+			return retValue;
 		retValue = new MHierarchy (ctx, PA_Hierarchy_ID, (String)null);
 		if (retValue.get_ID () == PA_Hierarchy_ID)
 		{
-			s_cache.put (key, new MHierarchy(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MHierarchy(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer, MHierarchy> s_cache 
-		= new CCache<Integer, MHierarchy> (Table_Name, 20);
+	private static ImmutableIntPOCache<Integer, MHierarchy> s_cache 
+		= new ImmutableIntPOCache<Integer, MHierarchy> (Table_Name, 20);
 	
 	/**
 	 * 	Default Constructor

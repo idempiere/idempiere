@@ -21,10 +21,10 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	GL Category
@@ -37,25 +37,34 @@ public class MGLCategory extends X_GL_Category
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -272365151811522531L;
-
+	private static final long serialVersionUID = 7294511214194057235L;
 
 	/**
 	 * 	Get MGLCategory from Cache
-	 *	@param ctx context
 	 *	@param GL_Category_ID id
 	 *	@return MGLCategory
+	 */
+	public static MGLCategory get (int GL_Category_ID)
+	{
+		return get(Env.getCtx(), GL_Category_ID);
+	}
+	
+	/**
+	 * 	Get MGLCategory from Cache
+	 *  @param ctx context
+	 *	@param GL_Category_ID id
+	 *	@return immutable instance of MGLCategory
 	 */
 	public static MGLCategory get (Properties ctx, int GL_Category_ID)
 	{
 		Integer key = Integer.valueOf(GL_Category_ID);
-		MGLCategory retValue = (MGLCategory)s_cache.get (key);
+		MGLCategory retValue = s_cache.get (ctx, key, e -> new MGLCategory(ctx, e));
 		if (retValue != null)
-			return new MGLCategory(ctx, retValue);
+			return retValue;
 		retValue = new MGLCategory (ctx, GL_Category_ID, (String)null);
 		if (retValue.get_ID () == GL_Category_ID)
 		{
-			s_cache.put (key, new MGLCategory(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MGLCategory(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
@@ -129,8 +138,8 @@ public class MGLCategory extends X_GL_Category
 	/**	Logger						*/
 	private static CLogger s_log = CLogger.getCLogger (MGLCategory.class);
 	/**	Cache						*/
-	private static CCache<Integer, MGLCategory> s_cache 
-		= new CCache<Integer, MGLCategory> (Table_Name, 5);
+	private static ImmutableIntPOCache<Integer, MGLCategory> s_cache 
+		= new ImmutableIntPOCache<Integer, MGLCategory> (Table_Name, 5);
 	
 
 	/**************************************************************************

@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *  Account Object Entity to maintain all segment values.
@@ -40,9 +40,9 @@ public class MAccount extends X_C_ValidCombination
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7980515458720808532L;
+	private static final long serialVersionUID = 1927316490582718406L;
 	
-	private static final CCache<Integer, MAccount> s_cache = new CCache<Integer, MAccount>(Table_Name, 100);
+	private static final ImmutableIntPOCache<Integer, MAccount> s_cache = new ImmutableIntPOCache<Integer, MAccount>(Table_Name, 100);
 
 	/*
 	 * Deprecated - use the same method with trxName instead
@@ -360,34 +360,31 @@ public class MAccount extends X_C_ValidCombination
 	}   //  getDefault
 
 	/**
-	 *  Get Account
-	 *  @param ctx ignore
+	 *  Get Account from cache (immutable)
 	 *  @param C_ValidCombination_ID combination
 	 *  @return Account
-	 *  @deprecated
 	 */
-	public static MAccount get (Properties ctx, int C_ValidCombination_ID)
+	public static MAccount get (int C_ValidCombination_ID)
 	{
-		return get(C_ValidCombination_ID);
+		return get(Env.getCtx(), C_ValidCombination_ID);
 	}
 	
 	/**
-	 *  Get Account
+	 *  Get Account from cache (immutable)
 	 *  @param ctx context
 	 *  @param C_ValidCombination_ID combination
 	 *  @return Immutable instance of Account
 	 */
-	public static MAccount get (int C_ValidCombination_ID)
+	public static MAccount get (Properties ctx, int C_ValidCombination_ID)
 	{
-		MAccount account = s_cache.get(C_ValidCombination_ID);
+		MAccount account = s_cache.get(ctx, C_ValidCombination_ID, e -> new MAccount(ctx, e));
 		if (account != null)
 			return account;
 				
-		account = new MAccount(Env.getCtx(), C_ValidCombination_ID, (String)null);
+		account = new MAccount(ctx, C_ValidCombination_ID, (String)null);
 		if (account.getC_ValidCombination_ID() == C_ValidCombination_ID) 
 		{
-			account.markImmutable();
-			s_cache.put(C_ValidCombination_ID, account);
+			s_cache.put(C_ValidCombination_ID, account, e -> new MAccount(Env.getCtx(), e));
 			return account;
 		}
 		return null;
@@ -884,10 +881,11 @@ public class MAccount extends X_C_ValidCombination
 	
 	
 	@Override
-	public void markImmutable() {
+	public MAccount markImmutable() {
 		super.markImmutable();
 		if (m_accountEV != null)
 			m_accountEV.markImmutable();
+		return this;
 	}
 
 	/**

@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Asset Registration Attribute
@@ -38,7 +38,7 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5306354702182270968L;
+	private static final long serialVersionUID = -5410660542293211173L;
 
 	/**
 	 * 	Get All Asset Registration Attributes (not cached).
@@ -65,7 +65,7 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute
 			{
 				MRegistrationAttribute value = new MRegistrationAttribute(ctx, rs, null);
 				Integer key = Integer.valueOf(value.getA_RegistrationAttribute_ID());
-				s_cache.put(key, new MRegistrationAttribute(Env.getCtx(), value));
+				s_cache.put(key, value, e -> new MRegistrationAttribute(Env.getCtx(), e));
 				list.add(value);
 			}
 		}
@@ -87,32 +87,54 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute
 
 	/**
 	 * 	Get Registration Attribute (cached)
+	 *	@param A_RegistrationAttribute_ID id
+	 *	@return Registration Attribute
+	 */
+	public static MRegistrationAttribute get (int A_RegistrationAttribute_ID)
+	{
+		return get(A_RegistrationAttribute_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get Registration Attribute (cached) (immutable)
+	 *	@param A_RegistrationAttribute_ID id
+	 *  @param trxName
+	 *	@return Registration Attribute
+	 */
+	public static MRegistrationAttribute get (int A_RegistrationAttribute_ID, String trxName)
+	{
+		return get(Env.getCtx(), A_RegistrationAttribute_ID, trxName);
+	}
+	
+	/**
+	 * 	Get Registration Attribute (cached) (immutable)
 	 *	@param ctx context
 	 *	@param A_RegistrationAttribute_ID id
+	 *  @param trxName
 	 *	@return Registration Attribute
 	 */
 	public static MRegistrationAttribute get (Properties ctx, int A_RegistrationAttribute_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(A_RegistrationAttribute_ID);
-		MRegistrationAttribute retValue = (MRegistrationAttribute)s_cache.get(key);
+		MRegistrationAttribute retValue = s_cache.get(ctx, key, e -> new MRegistrationAttribute(ctx, e));
 		if (retValue == null)
 		{
 			retValue = new MRegistrationAttribute (ctx, A_RegistrationAttribute_ID, trxName);
 			if (retValue.get_ID() == A_RegistrationAttribute_ID)
 			{
-				s_cache.put(key, new MRegistrationAttribute(Env.getCtx(), retValue));
+				s_cache.put(key, retValue, e -> new MRegistrationAttribute(Env.getCtx(), e));
 				return retValue;
 			}
 			return null;
 		}
-		return new MRegistrationAttribute(ctx, retValue, trxName);
+		return retValue;
 	}	//	get
 
 	/** Static Logger					*/
 	private static CLogger s_log = CLogger.getCLogger(MRegistrationAttribute.class);
 	/**	Cache						*/
-	private static CCache<Integer,MRegistrationAttribute> s_cache 
-		= new CCache<Integer,MRegistrationAttribute>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MRegistrationAttribute> s_cache 
+		= new ImmutableIntPOCache<Integer,MRegistrationAttribute>(Table_Name, 20);
 
 	/**************************************************************************
 	 * 	Standard Constructor

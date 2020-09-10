@@ -27,9 +27,9 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Warehouse Locator Type Object
@@ -40,29 +40,38 @@ public class MLocatorType extends X_M_LocatorType {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7567584133468332781L;
+	private static final long serialVersionUID = 3021833597380696668L;
 
 	/**
-	 * 	Get Locator Type from Cache
-	 *	@param ctx context
+	 * 	Get Locator Type from Cache (immutable)
+	 *	@param M_LocatorType_ID id
+	 *	@return MLocator
+	 */
+	public static MLocatorType get (int M_LocatorType_ID) {
+		return get(Env.getCtx(), M_LocatorType_ID);
+	}
+	
+	/**
+	 * 	Get Locator Type from Cache (immutable)
+	 *  @param ctx context
 	 *	@param M_LocatorType_ID id
 	 *	@return MLocator
 	 */
 	public static MLocatorType get (Properties ctx, int M_LocatorType_ID) {
 		Integer key = Integer.valueOf(M_LocatorType_ID);
-		MLocatorType retValue = (MLocatorType) s_cache.get (key);
+		MLocatorType retValue = s_cache.get (ctx, key, e -> new MLocatorType(ctx, e));
 		if (retValue != null)
-			return new MLocatorType(ctx, retValue);
+			return retValue;
 		retValue = new MLocatorType (ctx, M_LocatorType_ID, (String)null);
 		if (retValue.get_ID () == M_LocatorType_ID) {
-			s_cache.put (key, new MLocatorType(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MLocatorType(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	} //	get
 
 	/**	Cache						*/
-	private final static CCache<Integer,MLocatorType> s_cache = new CCache<Integer,MLocatorType>(Table_Name, 20); 
+	private final static ImmutableIntPOCache<Integer,MLocatorType> s_cache = new ImmutableIntPOCache<Integer,MLocatorType>(Table_Name, 20); 
 
 	/**	Logger						*/
 	@SuppressWarnings("unused")

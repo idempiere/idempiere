@@ -24,10 +24,10 @@ import java.util.logging.Level;
 
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_PrintColor;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	AD_PrintColor Print Color Model
@@ -40,7 +40,7 @@ public class MPrintColor extends X_AD_PrintColor
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5611659311562283304L;
+	private static final long serialVersionUID = 729053102783763723L;
 
 	/**************************************************************************
 	 * 	Create Color in Database and save
@@ -77,12 +77,23 @@ public class MPrintColor extends X_AD_PrintColor
 	/*************************************************************************/
 
 	/** Cached Colors						*/
-	static private CCache<Integer,MPrintColor> 	s_colors = new CCache<Integer,MPrintColor>(Table_Name, 20);
+	static private ImmutableIntPOCache<Integer,MPrintColor> 	s_colors = new ImmutableIntPOCache<Integer,MPrintColor>(Table_Name, 20);
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MPrintColor.class);
 
 	/**
-	 * 	Get Color.
+	 * 	Get Color from cache (immutable)
+	 * 	if id = 0, it returns a new color (black) - but do not modify/save as cached
+	 * 	@param AD_PrintColor_ID id
+	 * 	@return Color
+	 */
+	static public MPrintColor get (int AD_PrintColor_ID)
+	{
+		return get(Env.getCtx(), AD_PrintColor_ID);
+	}
+	
+	/**
+	 * 	Get Color from cache (immutable)
 	 * 	if id = 0, it returns a new color (black) - but do not modify/save as cached
 	 * 	@param ctx context
 	 * 	@param AD_PrintColor_ID id
@@ -93,18 +104,18 @@ public class MPrintColor extends X_AD_PrintColor
 	//	if (AD_PrintColor_ID == 0)
 	//		return new MPrintColor (ctx, 0);
 		Integer key = Integer.valueOf(AD_PrintColor_ID);
-		MPrintColor pc = (MPrintColor)s_colors.get(key);
+		MPrintColor pc = s_colors.get(ctx, key, e -> new MPrintColor(ctx, e));
 		if (pc == null)
 		{
 			pc = new MPrintColor (ctx, AD_PrintColor_ID, (String)null);
 			if (pc.get_ID() == AD_PrintColor_ID)
 			{
-				s_colors.put(key, new MPrintColor(Env.getCtx(), pc));
+				s_colors.put(key, pc, e -> new MPrintColor(Env.getCtx(), e));
 				return pc;
 			}
 			return null;
 		}
-		return new MPrintColor(ctx, pc);
+		return pc;
 	}	//	get
 
 	/**
@@ -237,6 +248,12 @@ public class MPrintColor extends X_AD_PrintColor
 		return sb.toString();
 	}	//	getRRGGBB
 	
+	@Override
+	public MPrintColor markImmutable() 
+	{
+		return (MPrintColor) super.markImmutable();
+	}
+
 	/**
 	 * 	String Representation
 	 * 	@return info

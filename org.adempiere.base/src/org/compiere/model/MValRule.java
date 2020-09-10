@@ -27,9 +27,9 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Persistent Validation Rule Model
@@ -41,10 +41,20 @@ public class MValRule extends X_AD_Val_Rule
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8482599477870030638L;
+	private static final long serialVersionUID = -2475798196422214666L;
 
 	/**
-	 * 	Get Rule from Cache
+	 * 	Get Rule from Cache (immutable)
+	 *	@param AD_Val_Rule_ID id
+	 *	@return MValRule
+	 */
+	public static MValRule get (int AD_Val_Rule_ID)
+	{
+		return get(Env.getCtx(), AD_Val_Rule_ID);
+	}
+	
+	/**
+	 * 	Get Rule from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Val_Rule_ID id
 	 *	@return MValRule
@@ -52,20 +62,20 @@ public class MValRule extends X_AD_Val_Rule
 	public static MValRule get (Properties ctx, int AD_Val_Rule_ID)
 	{
 		Integer key = Integer.valueOf(AD_Val_Rule_ID);
-		MValRule retValue = (MValRule) s_cache.get (key);
+		MValRule retValue = s_cache.get (ctx, key, e -> new MValRule(ctx, e));
 		if (retValue != null)
-			return new MValRule(ctx, retValue);
+			return retValue;
 		retValue = new MValRule (ctx, AD_Val_Rule_ID, (String)null);
 		if (retValue.get_ID () == AD_Val_Rule_ID)
 		{
-			s_cache.put (key, new MValRule(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MValRule(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MValRule> s_cache = new CCache<Integer,MValRule>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MValRule> s_cache = new ImmutableIntPOCache<Integer,MValRule>(Table_Name, 20);
 
 	/**	Static Logger	*/
 	@SuppressWarnings("unused")
@@ -124,6 +134,12 @@ public class MValRule extends X_AD_Val_Rule
 		copyPO(copy);
 	}
 	
+	@Override
+	public MValRule markImmutable() 
+	{
+		return (MValRule) super.markImmutable();
+	}
+
 	/**
 	 * 	String Representation
 	 *	@return info

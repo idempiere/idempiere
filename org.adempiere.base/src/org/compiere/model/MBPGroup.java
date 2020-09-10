@@ -23,11 +23,10 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Business Partner Group Model 
@@ -40,31 +39,31 @@ public class MBPGroup extends X_C_BP_Group
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8897399796117872715L;
+	private static final long serialVersionUID = 1155912422087010656L;
 
 	/**
-	 * 	Get MBPGroup from Cache
+	 * 	Get MBPGroup from Cache (immutable)
+	 *	@param C_BP_Group_ID id
+	 *	@return MBPGroup
+	 */
+	public static MBPGroup get (int C_BP_Group_ID)
+	{
+		return get(Env.getCtx(), C_BP_Group_ID);
+	}
+	
+	/**
+	 * 	Get MBPGroup from Cache (immutable)
 	 *	@param ctx context
 	 *	@param C_BP_Group_ID id
 	 *	@return MBPGroup
 	 */
 	public static MBPGroup get (Properties ctx, int C_BP_Group_ID)
 	{
-		Integer key = Integer.valueOf(C_BP_Group_ID);
-		MBPGroup retValue = (MBPGroup) s_cache.get (key);
-		if (retValue != null)
-			return new MBPGroup(ctx, retValue);
-		retValue = new MBPGroup (ctx, C_BP_Group_ID, (String)null);
-		if (retValue.get_ID () == C_BP_Group_ID)
-		{
-			s_cache.put (key, new MBPGroup(Env.getCtx(), retValue));
-			return retValue;
-		}
-		return null;
+		return get(ctx, C_BP_Group_ID, (String)null);
 	}	//	get
 
 	/**
-	 * 
+	 * Get MBPGroup from cache (immutable)
 	 * @param ctx
 	 * @param C_BP_Group_ID
 	 * @param trxName
@@ -72,10 +71,17 @@ public class MBPGroup extends X_C_BP_Group
 	 */
 	public static MBPGroup get (Properties ctx, int C_BP_Group_ID, String trxName)
 	{
-		if (Util.isEmpty(trxName, true))
-			return get(ctx, C_BP_Group_ID);
-		else
-			return new MBPGroup (ctx, C_BP_Group_ID, trxName);
+		Integer key = Integer.valueOf(C_BP_Group_ID);
+		MBPGroup retValue = s_cache.get (ctx, key, e -> new MBPGroup(ctx, e));
+		if (retValue != null)
+			return retValue;
+		retValue = new MBPGroup (ctx, C_BP_Group_ID, trxName);
+		if (retValue.get_ID () == C_BP_Group_ID)
+		{
+			s_cache.put (key, retValue, e -> new MBPGroup(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}
 	
 	/**
@@ -87,9 +93,9 @@ public class MBPGroup extends X_C_BP_Group
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
 		Integer key = Integer.valueOf(AD_Client_ID);
-		MBPGroup retValue = (MBPGroup) s_cacheDefault.get (key);
+		MBPGroup retValue = s_cacheDefault.get (ctx, key, e -> new MBPGroup(ctx, e));
 		if (retValue != null)
-			return new MBPGroup(ctx, retValue);
+			return retValue;
 		
 		String sql = "SELECT * FROM C_BP_Group g "
 			+ "WHERE IsDefault='Y' AND AD_Client_ID=? "
@@ -104,8 +110,10 @@ public class MBPGroup extends X_C_BP_Group
 			if (rs.next ())
 			{
 				retValue = new MBPGroup (ctx, rs, (String)null);
-				if (retValue.get_ID () != 0)
-					s_cacheDefault.put (key, new MBPGroup(Env.getCtx(), retValue));
+				if (retValue.get_ID () != 0) 
+				{
+					s_cacheDefault.put (key, retValue, e -> new MBPGroup(Env.getCtx(), e));
+				}
 			}
 		}
 		catch (Exception e)
@@ -165,11 +173,11 @@ public class MBPGroup extends X_C_BP_Group
 	}	//	getOfBPartner
 	
 	/**	Cache						*/
-	private static CCache<Integer,MBPGroup>	s_cache
-		= new CCache<Integer,MBPGroup>(Table_Name, 10);
+	private static ImmutableIntPOCache<Integer,MBPGroup>	s_cache
+		= new ImmutableIntPOCache<Integer,MBPGroup>(Table_Name, 10);
 	/**	Default Cache					*/
-	private static CCache<Integer,MBPGroup>	s_cacheDefault
-		= new CCache<Integer,MBPGroup>(Table_Name, MBPGroup.class.getName()+".Default", 5);
+	private static ImmutableIntPOCache<Integer,MBPGroup>	s_cacheDefault
+		= new ImmutableIntPOCache<Integer,MBPGroup>(Table_Name, MBPGroup.class.getName()+".Default", 5);
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MBPGroup.class);
 	
@@ -278,5 +286,11 @@ public class MBPGroup extends X_C_BP_Group
 			return insert_Accounting("C_BP_Group_Acct", "C_AcctSchema_Default", null);
 		return success;
 	}	//	afterSave
+
+	@Override
+	public MBPGroup markImmutable() 
+	{
+		return (MBPGroup) super.markImmutable();
+	}
 
 }	//	MBPGroup

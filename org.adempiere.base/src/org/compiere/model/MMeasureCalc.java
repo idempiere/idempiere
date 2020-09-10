@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * 	Performance Measure Calculation
@@ -38,32 +38,42 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4720674127987683534L;
+	private static final long serialVersionUID = 3143013490477454559L;
 
 	/**
-	 * 	Get MMeasureCalc from Cache
-	 *	@param ctx context
+	 * 	Get MMeasureCalc from Cache (immutable)
+	 *	@param PA_MeasureCalc_ID id
+	 *	@return MMeasureCalc
+	 */
+	public static MMeasureCalc get (int PA_MeasureCalc_ID)
+	{
+		return get(Env.getCtx(), PA_MeasureCalc_ID);
+	}
+	
+	/**
+	 * 	Get MMeasureCalc from Cache (immutable)
+	 *  @param ctx context
 	 *	@param PA_MeasureCalc_ID id
 	 *	@return MMeasureCalc
 	 */
 	public static MMeasureCalc get (Properties ctx, int PA_MeasureCalc_ID)
 	{
 		Integer key = Integer.valueOf(PA_MeasureCalc_ID);
-		MMeasureCalc retValue = (MMeasureCalc)s_cache.get (key);
+		MMeasureCalc retValue = s_cache.get (ctx, key, e -> new MMeasureCalc(ctx, e));
 		if (retValue != null)
-			return new MMeasureCalc(ctx, retValue);
+			return retValue;
 		retValue = new MMeasureCalc (ctx, PA_MeasureCalc_ID, (String)null);
 		if (retValue.get_ID() == PA_MeasureCalc_ID)
 		{
-			s_cache.put (key, new MMeasureCalc(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MMeasureCalc(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer, MMeasureCalc> s_cache 
-		= new CCache<Integer, MMeasureCalc> (Table_Name, 10);
+	private static ImmutableIntPOCache<Integer, MMeasureCalc> s_cache 
+		= new ImmutableIntPOCache<Integer, MMeasureCalc> (Table_Name, 10);
 	
 	/**************************************************************************
 	 * 	Standard Constructor

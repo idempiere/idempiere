@@ -4,8 +4,8 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.ArhRuntimeException;
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * Asset Type
@@ -16,7 +16,7 @@ public class MAssetType extends X_A_Asset_Type
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1371478760221357780L;
+	private static final long serialVersionUID = -5511421754249363729L;
 
 	private static final String A_ASSET_TYPE_MFX = "MFX"; // HARDCODED - you must create a Asset Type with Value=MFX to indicate is Fixed Asset
 	private static final String A_ASSET_TYPE_INV = "INV"; // HARDCODED - you must create a Asset Type with Value=MFX to indicate is Inventory Object
@@ -36,9 +36,20 @@ public class MAssetType extends X_A_Asset_Type
 	};
 	
 	/**		Static Cache: A_Asset_Type.A_Asset_Type_ID-> MAssetType					*/
-	private static CCache<Integer,MAssetType> s_cache = new CCache<Integer,MAssetType>(Table_Name, 10, 0);
+	private static ImmutableIntPOCache<Integer,MAssetType> s_cache = new ImmutableIntPOCache<Integer,MAssetType>(Table_Name, 10, 0);
 	
-	/**	Get Asset Type
+	/**	
+	 * Get Asset Type from cache (immutable)
+	 *	@param	A_Asset_Type_ID
+	 *	@return asset type object
+	 */
+	public static MAssetType get (int A_Asset_Type_ID)
+	{
+		return get(Env.getCtx(), A_Asset_Type_ID);
+	}
+	
+	/**	
+	 *  Get Asset Type from cache (immutable)
 	 *	@param	ctx context
 	 *	@param	A_Asset_Type_ID
 	 *	@return asset type object
@@ -47,27 +58,15 @@ public class MAssetType extends X_A_Asset_Type
 	{
 		if (A_Asset_Type_ID <= 0)
 			return null;
-		MAssetType o = s_cache.get(A_Asset_Type_ID);
+		MAssetType o = s_cache.get(ctx, A_Asset_Type_ID, e -> new MAssetType(ctx, e));
 		if (o != null)
-			return new MAssetType(ctx, o);
+			return o;
 		o = new MAssetType(ctx, A_Asset_Type_ID, (String)null);
 		if (o.get_ID() == A_Asset_Type_ID) {
-			s_cache.put(A_Asset_Type_ID, new MAssetType(Env.getCtx(), o));
+			s_cache.put(A_Asset_Type_ID, o, e -> new MAssetType(Env.getCtx(), e));
 			return o;
 		}
 		return null;
-	}
-	
-	/**	Get Asset Type
-	 *	@param	ctx	context
-	 *	@param	id		id as Number
-	 *	@return asset type object
-	 */
-	public static MAssetType get (Properties ctx, Object id)
-	{
-		if (id == null)
-			return null;
-		return get(ctx, ((Number)id).intValue());
 	}
 	
 	/** Standard Constructor */
@@ -228,6 +227,12 @@ public class MAssetType extends X_A_Asset_Type
 		return true;
 	}
 	
+	@Override
+	public MAssetType markImmutable() 
+	{
+		return (MAssetType) super.markImmutable();
+	}
+
 	/** Callout Class */
 	public static class Callout extends CalloutEngine
 	{

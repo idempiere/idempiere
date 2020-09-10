@@ -19,8 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * 	Request Category Model
@@ -32,11 +32,20 @@ public class MRequestCategory extends X_R_Category
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 9174605980194362716L;
-
+	private static final long serialVersionUID = 984010124643923205L;
 
 	/**
-	 * 	Get MCategory from Cache
+	 * 	Get MCategory from Cache (immutable)
+	 *	@param R_Category_ID id
+	 *	@return MCategory
+	 */
+	public static MRequestCategory get (int R_Category_ID)
+	{
+		return get(Env.getCtx(), R_Category_ID);				
+	}
+	
+	/**
+	 * 	Get MCategory from Cache (immutable)
 	 *	@param ctx context
 	 *	@param R_Category_ID id
 	 *	@return MCategory
@@ -44,21 +53,21 @@ public class MRequestCategory extends X_R_Category
 	public static MRequestCategory get (Properties ctx, int R_Category_ID)
 	{
 		Integer key = Integer.valueOf(R_Category_ID);
-		MRequestCategory retValue = (MRequestCategory) s_cache.get (key);
+		MRequestCategory retValue = s_cache.get (ctx, key, e -> new MRequestCategory(ctx, e));
 		if (retValue != null)
-			return new MRequestCategory(ctx, retValue);
+			return retValue;
 		retValue = new MRequestCategory (ctx, R_Category_ID, (String)null);
 		if (retValue.get_ID () == R_Category_ID)
 		{
-			s_cache.put (key, new MRequestCategory(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MRequestCategory(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MRequestCategory>	s_cache	
-		= new CCache<Integer,MRequestCategory>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MRequestCategory>	s_cache	
+		= new ImmutableIntPOCache<Integer,MRequestCategory>(Table_Name, 20);
 	
 	
 	/**************************************************************************

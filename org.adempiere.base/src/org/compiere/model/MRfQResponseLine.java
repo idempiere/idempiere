@@ -157,7 +157,7 @@ public class MRfQResponseLine extends X_C_RfQResponseLine
 	public MRfQLine getRfQLine()
 	{
 		if (m_rfqLine == null)
-			m_rfqLine = MRfQLine.get(getCtx(), getC_RfQLine_ID(), get_TrxName());
+			m_rfqLine = MRfQLine.getCopy(getCtx(), getC_RfQLine_ID(), get_TrxName());
 		return m_rfqLine;
 	}	//	getRfQLine
 	

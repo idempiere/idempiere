@@ -24,9 +24,9 @@ import java.util.logging.Level;
 
 import org.compiere.sla.SLACriteria;
 import org.compiere.util.AdempiereSystemError;
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Service Level Agreement Criteria Model
@@ -39,9 +39,29 @@ public class MSLACriteria extends X_PA_SLA_Criteria
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3295590987540402184L;
+	private static final long serialVersionUID = 6772238818871223076L;
 
-
+	/**
+	 * 	Get MSLACriteria from Cache
+	 *	@param PA_SLA_Criteria_ID id
+	 *	@return MSLACriteria
+	 */
+	public static MSLACriteria get (int PA_SLA_Criteria_ID)
+	{
+		return get(PA_SLA_Criteria_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get MSLACriteria from Cache
+	 *	@param PA_SLA_Criteria_ID id
+	 *	@param trxName transaction
+	 *	@return MSLACriteria
+	 */
+	public static MSLACriteria get (int PA_SLA_Criteria_ID, String trxName)
+	{
+		return get(Env.getCtx(), PA_SLA_Criteria_ID, trxName);
+	}
+	
 	/**
 	 * 	Get MSLACriteria from Cache
 	 *	@param ctx context
@@ -52,20 +72,20 @@ public class MSLACriteria extends X_PA_SLA_Criteria
 	public static MSLACriteria get (Properties ctx, int PA_SLA_Criteria_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(PA_SLA_Criteria_ID);
-		MSLACriteria retValue = (MSLACriteria) s_cache.get (key);
+		MSLACriteria retValue = s_cache.get (ctx, key, e -> new MSLACriteria(ctx, e));
 		if (retValue != null)
-			return new MSLACriteria(ctx, retValue, trxName);
+			return retValue;
 		retValue = new MSLACriteria (ctx, PA_SLA_Criteria_ID, trxName);
 		if (retValue.get_ID () == PA_SLA_Criteria_ID)
 		{
-			s_cache.put (key, new MSLACriteria(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MSLACriteria(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MSLACriteria>	s_cache	= new CCache<Integer,MSLACriteria>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MSLACriteria>	s_cache	= new ImmutableIntPOCache<Integer,MSLACriteria>(Table_Name, 20);
 	
 	
 	/**

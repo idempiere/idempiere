@@ -30,12 +30,12 @@ import javax.script.ScriptEngine;
 import org.adempiere.apps.graph.GraphColumn;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.MeasureInterface;
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 
 /**
@@ -55,32 +55,42 @@ public class MMeasure extends X_PA_Measure
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6274990637485210675L;
+	private static final long serialVersionUID = -3584012092877837973L;
 
 	/**
-	 * 	Get MMeasure from Cache
-	 *	@param ctx context
+	 * 	Get MMeasure from Cache (immutable)
+	 *	@param PA_Measure_ID id
+	 *	@return MMeasure
+	 */
+	public static MMeasure get (int PA_Measure_ID)
+	{
+		return get(Env.getCtx(), PA_Measure_ID);
+	}
+	
+	/**
+	 * 	Get MMeasure from Cache (immutable)
+	 *  @param ctx context
 	 *	@param PA_Measure_ID id
 	 *	@return MMeasure
 	 */
 	public static MMeasure get (Properties ctx, int PA_Measure_ID)
 	{
 		Integer key = Integer.valueOf(PA_Measure_ID);
-		MMeasure retValue = (MMeasure)s_cache.get (key);
+		MMeasure retValue = s_cache.get (ctx, key, e -> new MMeasure(ctx, e));
 		if (retValue != null)
-			return new MMeasure(ctx, retValue);
+			return retValue;
 		retValue = new MMeasure (ctx, PA_Measure_ID, (String)null);
 		if (retValue.get_ID() == PA_Measure_ID)
 		{
-			s_cache.put (key, new MMeasure(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MMeasure(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer, MMeasure> s_cache 
-		= new CCache<Integer, MMeasure> (Table_Name, 10);
+	private static ImmutableIntPOCache<Integer, MMeasure> s_cache 
+		= new ImmutableIntPOCache<Integer, MMeasure> (Table_Name, 10);
 	
 	/**
 	 * 	Standard Constructor
@@ -140,7 +150,7 @@ public class MMeasure extends X_PA_Measure
 		ArrayList<GraphColumn> list = new ArrayList<GraphColumn>();
 		if (MMeasure.MEASURETYPE_Calculated.equals(getMeasureType()))
 		{
-			MMeasureCalc mc = MMeasureCalc.get(getCtx(), getPA_MeasureCalc_ID());
+			MMeasureCalc mc = MMeasureCalc.get(getPA_MeasureCalc_ID());
 			String sql = mc.getSqlBarChart(goal.getRestrictions(false),
 					goal.getMeasureDisplay(), goal.getDateFrom(),
 					MRole.getDefault());	//	logged in role
@@ -499,7 +509,7 @@ public class MMeasure extends X_PA_Measure
 			if (role == null)
 				role = MRole.getDefault(getCtx(), false);	//	could result in wrong data
 			//
-			MMeasureCalc mc = MMeasureCalc.get(getCtx(), getPA_MeasureCalc_ID());
+			MMeasureCalc mc = MMeasureCalc.get(getPA_MeasureCalc_ID());
 			if (mc == null || mc.get_ID() == 0 || mc.get_ID() != getPA_MeasureCalc_ID())
 			{
 				log.log(Level.SEVERE, "Not found PA_MeasureCalc_ID=" + getPA_MeasureCalc_ID());

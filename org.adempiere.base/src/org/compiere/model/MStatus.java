@@ -23,10 +23,10 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * 	Request Status Model
@@ -38,11 +38,20 @@ public class MStatus extends X_R_Status
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4549127671165860354L;
-
+	private static final long serialVersionUID = 446327334122691551L;
 
 	/**
-	 * 	Get Request Status (cached)
+	 * 	Get Request Status (cached) (immutable)
+	 *	@param R_Status_ID id
+	 *	@return Request Status or null
+	 */
+	public static MStatus get (int R_Status_ID)
+	{
+		return get(Env.getCtx(), R_Status_ID);
+	}
+	
+	/**
+	 * 	Get Request Status (cached) (immutable)
 	 *	@param ctx context
 	 *	@param R_Status_ID id
 	 *	@return Request Status or null
@@ -52,18 +61,18 @@ public class MStatus extends X_R_Status
 		if (R_Status_ID == 0)
 			return null;
 		Integer key = Integer.valueOf(R_Status_ID);
-		MStatus retValue = (MStatus)s_cache.get(key);
+		MStatus retValue = s_cache.get(ctx, key, e -> new MStatus(ctx, e));
 		if (retValue == null)
 		{
 			retValue = new MStatus (ctx, R_Status_ID, (String)null);
 			if (retValue.get_ID() == R_Status_ID)
 			{
-				s_cache.put(key, new MStatus(Env.getCtx(), retValue));
+				s_cache.put(key, retValue, e -> new MStatus(Env.getCtx(), e));
 				return retValue;
 			}
 			return null;
 		}
-		return new MStatus(ctx, retValue);
+		return retValue;
 	}	//	get
 
 	/**
@@ -75,9 +84,9 @@ public class MStatus extends X_R_Status
 	public static MStatus getDefault (Properties ctx, int R_RequestType_ID)
 	{
 		Integer key = Integer.valueOf(R_RequestType_ID);
-		MStatus retValue = (MStatus)s_cacheDefault.get(key);
+		MStatus retValue = s_cacheDefault.get(ctx, key, e -> new MStatus(ctx, e));
 		if (retValue != null)
-			return new MStatus(ctx, retValue);
+			return retValue;
 		//	Get New
 		String sql = "SELECT * FROM R_Status s "
 			+ "WHERE EXISTS (SELECT * FROM R_RequestType rt "
@@ -105,8 +114,10 @@ public class MStatus extends X_R_Status
 			rs = null;
 			pstmt = null;
 		}
-		if (retValue != null)
-			s_cacheDefault.put(key, new MStatus(Env.getCtx(), retValue));
+		if (retValue != null) 
+		{
+			s_cacheDefault.put(key, retValue, e -> new MStatus(Env.getCtx(), e));
+		}
 		return retValue;
 	}	//	getDefault
 
@@ -151,11 +162,11 @@ public class MStatus extends X_R_Status
 	/** Static Logger					*/
 	private static CLogger s_log = CLogger.getCLogger(MStatus.class);
 	/**	Cache							*/
-	static private CCache<Integer,MStatus> s_cache
-		= new CCache<Integer,MStatus> (Table_Name, 10);
+	static private ImmutableIntPOCache<Integer,MStatus> s_cache
+		= new ImmutableIntPOCache<Integer,MStatus> (Table_Name, 10);
 	/**	Default Cache (Key=Client)		*/
-	static private CCache<Integer,MStatus> s_cacheDefault
-		= new CCache<Integer,MStatus>(Table_Name, "R_Status_Default", 10);
+	static private ImmutableIntPOCache<Integer,MStatus> s_cacheDefault
+		= new ImmutableIntPOCache<Integer,MStatus>(Table_Name, "R_Status_Default", 10);
 
 
 	/**************************************************************************

@@ -23,8 +23,8 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.print.MPrintColor;
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * 	Performance Color Schema
@@ -37,7 +37,7 @@ public class MColorSchema extends X_PA_ColorSchema
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4645092884363283719L;
+	private static final long serialVersionUID = -3730457542399382168L;
 
 	/**
 	 * 	Get Color
@@ -74,6 +74,15 @@ public class MColorSchema extends X_PA_ColorSchema
 		return cs.getColor(percent);
 	}	//	getColor
 
+	/**
+	 * 	Get MColorSchema from Cache
+	 *	@param PA_ColorSchema_ID id
+	 *	@return MColorSchema
+	 */
+	public static MColorSchema get (int PA_ColorSchema_ID)
+	{
+		return get(Env.getCtx(), PA_ColorSchema_ID);
+	}
 	
 	/**
 	 * 	Get MColorSchema from Cache
@@ -90,21 +99,21 @@ public class MColorSchema extends X_PA_ColorSchema
 			return retValue;
 		}
 		Integer key = Integer.valueOf(PA_ColorSchema_ID);
-		MColorSchema retValue = (MColorSchema)s_cache.get (key);
+		MColorSchema retValue = (MColorSchema)s_cache.get (ctx, key, e -> new MColorSchema(ctx, e));
 		if (retValue != null)
-			return new MColorSchema(ctx, retValue);
+			return retValue;
 		retValue = new MColorSchema (ctx, PA_ColorSchema_ID, (String)null);
 		if (retValue.get_ID() == PA_ColorSchema_ID)
 		{
-			s_cache.put (key, new MColorSchema(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MColorSchema(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer, MColorSchema> s_cache 
-		= new CCache<Integer, MColorSchema> (Table_Name, 20);
+	private static ImmutableIntPOCache<Integer, MColorSchema> s_cache 
+		= new ImmutableIntPOCache<Integer, MColorSchema> (Table_Name, 20);
 	
 	/**
 	 * 	Standard Constructor

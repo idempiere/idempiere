@@ -21,10 +21,10 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  *	Message Model
@@ -37,11 +37,21 @@ public class MMessage extends X_AD_Message
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7362947218094337783L;
+	private static final long serialVersionUID = -7983736322524189608L;
 
 	/**
-	 * 	Get Message (cached)
-	 *	@param ctx context
+	 * 	Get Message (cached) (immutable)
+	 *	@param Value message value
+	 *	@return message
+	 */
+	public static MMessage get (String Value)
+	{
+		return get(Env.getCtx(), Value);
+	}
+	
+	/**
+	 * 	Get Message (cached) (immutable)
+	 *  @param ctx context
 	 *	@param Value message value
 	 *	@return message
 	 */
@@ -49,7 +59,7 @@ public class MMessage extends X_AD_Message
 	{
 		if (Value == null || Value.length() == 0)
 			return null;
-		MMessage retValue = (MMessage)s_cache.get(Value);
+		MMessage retValue = (MMessage)s_cache.get(ctx, Value, e -> new MMessage(ctx, e));
 		//
 		if (retValue == null)
 		{
@@ -62,7 +72,7 @@ public class MMessage extends X_AD_Message
 				pstmt.setString(1, Value);
 				rs = pstmt.executeQuery();
 				if (rs.next())
-					retValue = new MMessage (ctx, rs, null);
+					retValue = new MMessage (Env.getCtx(), rs, null);
 			}
 			catch (Exception e)
 			{
@@ -75,18 +85,20 @@ public class MMessage extends X_AD_Message
 				pstmt = null;
 			}
 			if (retValue != null)
-				s_cache.put(Value, new MMessage(Env.getCtx(), retValue));
+			{
+				s_cache.put(Value, retValue, e -> new MMessage(Env.getCtx(), e));
+			}
 			return retValue;
 		}
 		else
 		{
-			return new MMessage(ctx, retValue);
+			return retValue;
 		}
 		
 	}	//	get
 
 	/**
-	 * 	Get Message (cached)
+	 * 	Get Message (cached) (immutable)
 	 *	@param ctx context
 	 *	@param AD_Message_ID id
 	 *	@return message
@@ -94,31 +106,42 @@ public class MMessage extends X_AD_Message
 	public static MMessage get (Properties ctx, int AD_Message_ID)
 	{
 		String key = String.valueOf(AD_Message_ID);
-		MMessage retValue = (MMessage)s_cache.get(key);
+		MMessage retValue = s_cache.get(ctx, key, e -> new MMessage(ctx, e));
 		if (retValue == null)
 		{
 			retValue = new MMessage (ctx, AD_Message_ID, null);
-			s_cache.put(key, retValue);
+			s_cache.put(key, retValue, e -> new MMessage(Env.getCtx(), e));
 		}
 		return retValue;
 	}	//	get
 	
 	/**
 	 * 	Get Message ID (cached)
-	 *	@param ctx context
+	 *	@param ctx ignore
 	 *	@param Value message value
 	 *	@return AD_Message_ID
+	 *  @deprecated
 	 */
 	public static int getAD_Message_ID (Properties ctx, String Value)
 	{
-		MMessage msg = get(ctx, Value);
+		return getAD_Message_ID(Value);
+	}
+	
+	/**
+	 * 	Get Message ID (cached)
+	 *	@param Value message value
+	 *	@return AD_Message_ID
+	 */
+	public static int getAD_Message_ID (String Value)
+	{
+		MMessage msg = get(Value);
 		if (msg == null)
 			return 0;
 		return msg.getAD_Message_ID();
 	}	//	getAD_Message_ID
 	
 	/**	Cache					*/
-	static private CCache<String,MMessage> s_cache = new CCache<String,MMessage>(Table_Name, 100);
+	static private ImmutablePOCache<String,MMessage> s_cache = new ImmutablePOCache<String,MMessage>(Table_Name, 100);
 	/** Static Logger					*/
 	private static CLogger 	s_log = CLogger.getCLogger(MMessage.class);
 	

@@ -19,8 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * 	Bank Model
@@ -29,15 +29,24 @@ import org.compiere.util.Env;
  *  @version $Id: MBank.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
 public class MBank extends X_C_Bank
-{
+{	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3459010882027283811L;
-
+	private static final long serialVersionUID = 5093713970786841175L;
 
 	/**
-	 * 	Get MBank from Cache
+	 * 	Get MBank from Cache (immutable)
+	 *	@param C_Bank_ID id
+	 *	@return MBank
+	 */
+	public static MBank get (int C_Bank_ID)
+	{
+		return get(Env.getCtx(), C_Bank_ID);
+	}
+	
+	/**
+	 * 	Get MBank from Cache (immutable)
 	 *	@param ctx context
 	 *	@param C_Bank_ID id
 	 *	@return MBank
@@ -45,21 +54,21 @@ public class MBank extends X_C_Bank
 	public static MBank get (Properties ctx, int C_Bank_ID)
 	{
 		Integer key = Integer.valueOf(C_Bank_ID);
-		MBank retValue = (MBank)s_cache.get (key);
+		MBank retValue = s_cache.get (ctx, key, e -> new MBank(ctx, e));
 		if (retValue != null)
-			return new MBank(ctx, retValue);
+			return retValue;
 		retValue = new MBank (ctx, C_Bank_ID, (String)null);
 		if (retValue.get_ID() == C_Bank_ID)
 		{
-			s_cache.put (key, new MBank(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MBank(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MBank> s_cache = 
-		new CCache<Integer,MBank> (Table_Name, 3);
+	private static ImmutableIntPOCache<Integer,MBank> s_cache = 
+		new ImmutableIntPOCache<Integer,MBank> (Table_Name, 3);
 	
 	
 	/**************************************************************************
@@ -115,6 +124,12 @@ public class MBank extends X_C_Bank
 		copyPO(copy);
 	}
 	
+	@Override
+	public MBank markImmutable() 
+	{
+		return (MBank) super.markImmutable();
+	}
+
 	/**
 	 * 	String Representation
 	 *	@return info

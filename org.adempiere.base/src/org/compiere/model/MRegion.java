@@ -21,18 +21,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.Collator;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.Adempiere;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOCache;
+
 import static org.compiere.model.SystemIDs.*;
 
 /**
@@ -47,14 +46,12 @@ public class MRegion extends X_C_Region
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1124865777747582617L;
-
+	private static final long serialVersionUID = 5309795002353895615L;
 
 	/**
 	 * 	Load Regions (cached)
-	 *	@param ctx context
 	 */
-	private static void loadAllRegions (Properties ctx)
+	private static void loadAllRegions ()
 	{
 		s_regions.clear();
 		String sql = "SELECT * FROM C_Region WHERE IsActive='Y'";
@@ -66,7 +63,8 @@ public class MRegion extends X_C_Region
 			rs = stmt.executeQuery(sql);
 			while(rs.next())
 			{
-				MRegion r = new MRegion (ctx, rs, null);
+				MRegion r = new MRegion (Env.getCtx(), rs, null);
+				r.markImmutable();
 				s_regions.put(String.valueOf(r.getC_Region_ID()), r);
 				if (r.isDefault())
 					s_default = r;
@@ -87,22 +85,31 @@ public class MRegion extends X_C_Region
 
 	/**
 	 * 	Get Country (cached)
-	 * 	@param ctx context
+	 *	@param C_Region_ID ID
+	 *	@return Country
+	 */
+	public static synchronized MRegion get (int C_Region_ID)
+	{
+		return get(Env.getCtx(), C_Region_ID);
+	}
+	
+	/**
+	 * 	Get Country (immutable, cached)
 	 *	@param C_Region_ID ID
 	 *	@return Country
 	 */
 	public static synchronized MRegion get (Properties ctx, int C_Region_ID)
 	{
 		if (s_regions.size() == 0)
-			loadAllRegions(ctx);
+			loadAllRegions();
 		String key = String.valueOf(C_Region_ID);
-		MRegion r = (MRegion)s_regions.get(key);
+		MRegion r = s_regions.get(ctx, key, e -> new MRegion(ctx, e));
 		if (r != null)
-			return new MRegion(ctx, r);
+			return r;
 		r = new MRegion (ctx, C_Region_ID, null);
 		if (r.getC_Region_ID() == C_Region_ID)
 		{
-			s_regions.put(key, r);
+			s_regions.put(key, r, e -> new MRegion(Env.getCtx(), e));
 			return r;
 		}
 		return null;
@@ -110,48 +117,79 @@ public class MRegion extends X_C_Region
 
 	/**
 	 * 	Get Default Region
-	 * 	@param ctx context
+	 * 	@param ctx ignore
 	 *	@return Region or null
+	 *  @deprecated
 	 */
 	public static synchronized MRegion getDefault (Properties ctx)
 	{
+		return getDefault();
+	}
+	
+	/**
+	 * 	Get Default Region
+	 *	@return Region or null
+	 */
+	public static synchronized MRegion getDefault ()
+	{
 		if (s_regions.size() == 0)
-			loadAllRegions(ctx);
+			loadAllRegions();
 		return s_default;
 	}	//	get
 
 	/**
 	 *	Return Regions as Array
-	 * 	@param ctx context
+	 * 	@param ctx ignore
 	 *  @return MCountry Array
+	 *  @deprecated
 	 */
 	public static synchronized MRegion[] getRegions(Properties ctx)
 	{
+		return getRegions();
+	}
+	
+	/**
+	 *	Return Regions as Array
+	 *  @return MCountry Array
+	 */
+	public static synchronized MRegion[] getRegions()
+	{
 		if (s_regions.size() == 0)
-			loadAllRegions(ctx);
-		MRegion[] retValue = s_regions.values().stream().map(e ->{return new MRegion(ctx, e);}).toArray(MRegion[]::new);
-		Arrays.sort(retValue, new MRegion(ctx, 0, null));
+			loadAllRegions();
+		MRegion[] retValue = s_regions.values().stream().toArray(MRegion[]::new);
+		Arrays.sort(retValue, new MRegion(Env.getCtx(), 0, null));
 		return retValue;
 	}	//	getRegions
 
 	/**
 	 *	Return Array of Regions of Country
-	 * 	@param ctx context
+	 * 	@param ctx ignore
 	 *  @param C_Country_ID country
 	 *  @return MRegion Array
+	 *  @deprecated
 	 */
 	public static synchronized MRegion[] getRegions (Properties ctx, int C_Country_ID)
 	{
+		return getRegions(C_Country_ID);
+	}
+	
+	/**
+	 *	Return Array of Regions of Country
+	 *  @param C_Country_ID country
+	 *  @return MRegion Array
+	 */
+	public static synchronized MRegion[] getRegions (int C_Country_ID)
+	{
 		if (s_regions.size() == 0)
-			loadAllRegions(ctx);
+			loadAllRegions();
 		//  Sort it
-		MRegion[] retValue = s_regions.values().stream().filter(e-> e.getC_Country_ID()==C_Country_ID).map(e ->{return new MRegion(ctx, e);}).toArray(MRegion[]::new);
-		Arrays.sort(retValue, new MRegion(ctx, 0, null));
+		MRegion[] retValue = s_regions.values().stream().filter(e-> e.getC_Country_ID()==C_Country_ID).toArray(MRegion[]::new);
+		Arrays.sort(retValue, new MRegion(Env.getCtx(), 0, null));
 		return retValue;
 	}	//	getRegions
 
 	/**	Region Cache				*/
-	private static CCache<String,MRegion> s_regions = new CCache<String,MRegion>(Table_Name, Table_Name, 100, 0, false, 0);
+	private static ImmutablePOCache<String,MRegion> s_regions = new ImmutablePOCache<String,MRegion>(Table_Name, Table_Name, 100, 0, false, 0);
 	/** Default Region				*/
 	private static MRegion		s_default = null;
 	/**	Static Logger				*/

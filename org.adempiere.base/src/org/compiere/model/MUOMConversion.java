@@ -606,7 +606,12 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		Integer key = Integer.valueOf(M_Product_ID);
 		MUOMConversion[] result = (MUOMConversion[])s_conversionProduct.get(key);
 		if (result != null)
-			return Arrays.stream(result).map(e -> {return new MUOMConversion(ctx, e);}).toArray(MUOMConversion[]::new);
+		{
+			if (ctx == Env.getCtx())
+				return result;
+			else
+				return Arrays.stream(result).map(e -> {return new MUOMConversion(ctx, e).markImmutable();}).toArray(MUOMConversion[]::new);
+		}
 		
 		ArrayList<MUOMConversion> list = new ArrayList<MUOMConversion>();
 		//	Add default conversion
@@ -621,11 +626,15 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		.setOnlyActiveRecords(true)
 		.list();
 		list.addAll(conversions);
+		list.stream().forEach(e -> e.markImmutable());
 		
 		//	Convert & save
 		result = new MUOMConversion[list.size ()];
 		list.toArray (result);
-		s_conversionProduct.put(key, Arrays.stream(result).map(e -> {return new MUOMConversion(Env.getCtx(), e);}).toArray(MUOMConversion[]::new));
+		if (ctx == Env.getCtx())
+			s_conversionProduct.put(key, result);
+		else
+			s_conversionProduct.put(key, Arrays.stream(result).map(e -> {return new MUOMConversion(Env.getCtx(), e);}).toArray(MUOMConversion[]::new));
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("getProductConversions - M_Product_ID=" + M_Product_ID + " #" + result.length);
 		return result;
 	}	//	getProductConversions

@@ -33,8 +33,8 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import org.adempiere.base.Core;
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *  Image Model
@@ -48,12 +48,22 @@ public class MImage extends X_AD_Image
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7361463683427300715L;
-
+	private static final long serialVersionUID = 1850627989276185947L;
+	
 	private MStorageProvider provider;
 	
 	/**
-	 * 	Get MImage from Cache
+	 * 	Get MImage from Cache (immutable)
+	 *	@param AD_Image_ID id
+	 *	@return MImage
+	 */
+	public static MImage get (int AD_Image_ID)
+	{
+		return get(Env.getCtx(), AD_Image_ID);
+	}
+	
+	/**
+	 * 	Get MImage (Immutable) from Cache
 	 *	@param ctx context
 	 *	@param AD_Image_ID id
 	 *	@return MImage
@@ -64,20 +74,20 @@ public class MImage extends X_AD_Image
 			return new MImage (ctx, AD_Image_ID, null);
 		//
 		Integer key = Integer.valueOf(AD_Image_ID);
-		MImage retValue = (MImage) s_cache.get (key);
+		MImage retValue = s_cache.get (ctx, key, e -> new MImage(ctx, e));
 		if (retValue != null)
-			return new MImage(ctx, retValue);
+			return retValue;
 		retValue = new MImage (ctx, AD_Image_ID, (String)null);
 		if (retValue.get_ID () == AD_Image_ID)
 		{
-			s_cache.put (key, new MImage(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MImage(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MImage> s_cache = new CCache<Integer,MImage>(Table_Name, 20, 10);
+	private static ImmutableIntPOCache<Integer,MImage> s_cache = new ImmutableIntPOCache<Integer,MImage>(Table_Name, 20, 10);
 	
 	/**
 	 *  Constructor

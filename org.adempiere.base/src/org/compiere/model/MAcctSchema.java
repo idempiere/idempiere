@@ -27,6 +27,7 @@ import org.compiere.report.MReportTree;
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *  Accounting Schema Model (base)
@@ -41,21 +42,32 @@ public class MAcctSchema extends X_C_AcctSchema
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8940388112876468770L;
+	private static final long serialVersionUID = 405097978362430053L;
+
 
 	/**
-	 *  Get AccountSchema of Client
+	 *  Get AccountSchema
+	 *  @param C_AcctSchema_ID schema id
+	 *  @return Accounting schema
+	 */
+	public static MAcctSchema get (int C_AcctSchema_ID)
+	{
+		return get(Env.getCtx(), C_AcctSchema_ID);
+	}
+	
+	/**
+	 *  Get AccountSchema
 	 * 	@param ctx context
 	 *  @param C_AcctSchema_ID schema id
 	 *  @return Accounting schema
 	 */
 	public static MAcctSchema get (Properties ctx, int C_AcctSchema_ID)
 	{
-		return get(ctx, C_AcctSchema_ID, null);
+		return get(ctx, C_AcctSchema_ID, (String)null);
 	}	//	get
 
 	/**
-	 *  Get AccountSchema of Client
+	 *  Get AccountSchema
 	 * 	@param ctx context
 	 *  @param C_AcctSchema_ID schema id
 	 *  @param trxName optional trx
@@ -65,14 +77,14 @@ public class MAcctSchema extends X_C_AcctSchema
 	{
 		//  Check Cache
 		Integer key = Integer.valueOf(C_AcctSchema_ID);
-		MAcctSchema retValue = (MAcctSchema)s_cache.get(key);
+		MAcctSchema retValue = s_cache.get(ctx, key, e -> new MAcctSchema(ctx, e));
 		if (retValue != null)
-			return new MAcctSchema(ctx, retValue, trxName);
+			return retValue;
 		
 		retValue = new MAcctSchema (ctx, C_AcctSchema_ID, trxName);
 		if (retValue.get_ID() == C_AcctSchema_ID)
 		{
-			s_cache.put(key, new MAcctSchema(Env.getCtx(), retValue));
+			s_cache.put(key, retValue, e -> new MAcctSchema(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
@@ -102,7 +114,10 @@ public class MAcctSchema extends X_C_AcctSchema
 		Integer key = Integer.valueOf(AD_Client_ID);
 		if (s_schema.containsKey(key))
 		{
-			return Arrays.stream(s_schema.get(key)).map(e -> { return new MAcctSchema(ctx, e, trxName); }).toArray(MAcctSchema[]::new);
+			if (ctx == Env.getCtx())
+				return s_schema.get(key);
+			else
+				return Arrays.stream(s_schema.get(key)).map(e -> { return new MAcctSchema(ctx, e).markImmutable(); }).toArray(MAcctSchema[]::new);
 		}
 
 		//  Create New
@@ -132,21 +147,27 @@ public class MAcctSchema extends X_C_AcctSchema
 		{
 			if (acctschema.get_ID() != info.getC_AcctSchema1_ID())	//	already in list
 			{
-				if (acctschema.get_ID() != 0)	
+				if (acctschema.get_ID() != 0)
+				{
+					acctschema.markImmutable();
 					list.add(acctschema);
+				}
 			}
 		}
 		//  Save
 		MAcctSchema[] retValue = new MAcctSchema [list.size()];
 		list.toArray(retValue);
-		s_schema.put(key, Arrays.stream(retValue).map(e -> {return new MAcctSchema(Env.getCtx(), e);}).toArray(MAcctSchema[]::new));
+		if (ctx == Env.getCtx())
+			s_schema.put(key, retValue);
+		else
+			s_schema.put(key, Arrays.stream(retValue).map(e -> {return new MAcctSchema(Env.getCtx(), e).markImmutable();}).toArray(MAcctSchema[]::new));
 		return retValue;
 	}   //  getClientAcctSchema
 
 	/** Cache of Client AcctSchema Arrays		**/
 	private static CCache<Integer,MAcctSchema[]> s_schema = new CCache<Integer,MAcctSchema[]>(I_AD_ClientInfo.Table_Name, I_AD_ClientInfo.Table_Name+"|MAcctSchema[]", 3, 120, true);	//  3 clients
 	/**	Cache of AcctSchemas 					**/
-	private static CCache<Integer,MAcctSchema> s_cache = new CCache<Integer,MAcctSchema>(Table_Name, 3, 120, true);	//  3 accounting schemas
+	private static ImmutableIntPOCache<Integer,MAcctSchema> s_cache = new ImmutableIntPOCache<Integer,MAcctSchema>(Table_Name, 3, 120, true);	//  3 accounting schemas
 	
 	
 	/**************************************************************************
@@ -235,6 +256,7 @@ public class MAcctSchema extends X_C_AcctSchema
 	public MAcctSchema(Properties ctx, MAcctSchema copy, String trxName) 
 	{
 		super(ctx, 0, trxName);
+		copyPO(copy);
 		this.m_gl = copy.m_gl != null ? new MAcctSchemaGL(ctx, copy.m_gl) : null;
 		this.m_default = copy.m_default != null ? new MAcctSchemaDefault(ctx, copy.m_default) : null;
 		this.m_SuspenseError_Acct = copy.m_SuspenseError_Acct != null ? new MAccount(ctx, copy.m_SuspenseError_Acct) : null;
@@ -307,7 +329,11 @@ public class MAcctSchema extends X_C_AcctSchema
 	public MAcctSchemaGL getAcctSchemaGL()
 	{
 		if (m_gl == null)
+		{
 			m_gl = MAcctSchemaGL.get(getCtx(), getC_AcctSchema_ID());
+			if (m_gl != null && is_Immutable())
+				m_gl.markImmutable();
+		}
 		if (m_gl == null)
 			throw new IllegalStateException("No GL Definition for C_AcctSchema_ID=" + getC_AcctSchema_ID());
 		return m_gl;
@@ -320,7 +346,11 @@ public class MAcctSchema extends X_C_AcctSchema
 	public MAcctSchemaDefault getAcctSchemaDefault()
 	{
 		if (m_default == null)
+		{
 			m_default = MAcctSchemaDefault.get(getCtx(), getC_AcctSchema_ID());
+			if (m_default != null && is_Immutable())
+				m_default.markImmutable();
+		}
 		if (m_default == null)
 			throw new IllegalStateException("No Default Definition for C_AcctSchema_ID=" + getC_AcctSchema_ID());
 		return m_default;
@@ -360,7 +390,7 @@ public class MAcctSchema extends X_C_AcctSchema
 		if (m_gl == null)
 			getAcctSchemaGL();
 		int C_ValidCombination_ID = m_gl.getSuspenseBalancing_Acct();
-		m_SuspenseError_Acct = MAccount.get(getCtx(), C_ValidCombination_ID);
+		m_SuspenseError_Acct = MAccount.get(C_ValidCombination_ID);
 		return m_SuspenseError_Acct;
 	}	//	getSuspenseBalancing_Acct
 
@@ -386,7 +416,7 @@ public class MAcctSchema extends X_C_AcctSchema
 		if (m_gl == null)
 			getAcctSchemaGL();
 		int C_ValidCombination_ID = m_gl.getCurrencyBalancing_Acct();
-		m_CurrencyBalancing_Acct = MAccount.get(getCtx(), C_ValidCombination_ID);
+		m_CurrencyBalancing_Acct = MAccount.get(C_ValidCombination_ID);
 		return m_CurrencyBalancing_Acct;
 	}	//	getCurrencyBalancing_Acct
 
@@ -403,7 +433,7 @@ public class MAcctSchema extends X_C_AcctSchema
 		if (m_gl == null)
 			getAcctSchemaGL();
 		int C_ValidCombination_ID = m_gl.getIntercompanyDueTo_Acct();
-		m_DueTo_Acct = MAccount.get(getCtx(), C_ValidCombination_ID);
+		m_DueTo_Acct = MAccount.get(C_ValidCombination_ID);
 		return m_DueTo_Acct;
 	}	//	getDueTo_Acct
 
@@ -419,7 +449,7 @@ public class MAcctSchema extends X_C_AcctSchema
 		if (m_gl == null)
 			getAcctSchemaGL();
 		int C_ValidCombination_ID = m_gl.getIntercompanyDueFrom_Acct();
-		m_DueFrom_Acct = MAccount.get(getCtx(), C_ValidCombination_ID);
+		m_DueFrom_Acct = MAccount.get(C_ValidCombination_ID);
 		return m_DueFrom_Acct;
 	}	//	getDueFrom_Acct
 
@@ -462,7 +492,7 @@ public class MAcctSchema extends X_C_AcctSchema
 		if (getAD_OrgOnly_ID() == AD_Org_ID)
 			return false;
 		if (m_onlyOrg == null)
-			m_onlyOrg = MOrg.get(getCtx(), getAD_OrgOnly_ID());
+			m_onlyOrg = MOrg.get(getAD_OrgOnly_ID());
 		//	Not Summary Only - i.e. skip it
 		if (!m_onlyOrg.isSummary())
 			return true;
@@ -671,4 +701,15 @@ public class MAcctSchema extends X_C_AcctSchema
 		return true;
 	}	//	beforeSave
 	
+	@Override
+	public MAcctSchema markImmutable() 
+	{
+		MAcctSchema as = (MAcctSchema) super.markImmutable();
+		if (m_gl != null)
+			m_gl.markImmutable();
+		if (m_default != null)
+			m_default.markImmutable();
+		return as;
+	}
+
 }	//	MAcctSchema

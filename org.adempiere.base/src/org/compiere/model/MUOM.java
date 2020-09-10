@@ -23,10 +23,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.Ini;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Unit Of Measure Model
@@ -39,7 +38,7 @@ public class MUOM extends X_C_UOM
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3119054530389871561L;
+	private static final long serialVersionUID = 6277867983718121588L;
 	/** X12 Element 355 Code	Second	*/
 	public static final String		X12_SECOND = "03";
 	/** X12 Element 355 Code	Minute	*/
@@ -66,7 +65,7 @@ public class MUOM extends X_C_UOM
 	 */
 	public static int getMinute_UOM_ID (Properties ctx)
 	{
-		if (Ini.isClient())
+		synchronized (MUOM.class)
 		{
 			Iterator<MUOM> it = s_cache.values().iterator();
 			while (it.hasNext())
@@ -98,10 +97,20 @@ public class MUOM extends X_C_UOM
 	/*************************************************************************/
 
 	/**	UOM Cache				*/
-	protected static CCache<Integer,MUOM>	s_cache = new CCache<Integer,MUOM>(Table_Name, 30);
+	protected static ImmutableIntPOCache<Integer,MUOM>	s_cache = new ImmutableIntPOCache<Integer,MUOM>(Table_Name, 30);
 
 	/**
-	 * 	Get UOM from Cache
+	 * 	Get UOM from Cache (immutable)
+	 *	@param C_UOM_ID ID
+	 * 	@return UOM
+	 */
+	public static synchronized MUOM get (int C_UOM_ID)
+	{
+		return get(Env.getCtx(), C_UOM_ID);
+	}
+	
+	/**
+	 * 	Get UOM from Cache (immutable)
 	 * 	@param ctx context
 	 *	@param C_UOM_ID ID
 	 * 	@return UOM
@@ -111,14 +120,14 @@ public class MUOM extends X_C_UOM
 		if (s_cache.size() == 0)
 			loadUOMs (ctx);
 		//
-		MUOM uom = s_cache.get(C_UOM_ID);
+		MUOM uom = s_cache.get(ctx, C_UOM_ID, e -> new MUOM(ctx, e));
 		if (uom != null)
-			return new MUOM(ctx, uom);
+			return uom;
 		//
 		uom = new MUOM (ctx, C_UOM_ID, (String)null);
 		if (uom.get_ID() == C_UOM_ID)
 		{
-			s_cache.put(C_UOM_ID, new MUOM(Env.getCtx(), uom));
+			s_cache.put(C_UOM_ID, uom, e -> new MUOM(Env.getCtx(), e));
 			return uom;
 		}
 		return null;
@@ -155,14 +164,14 @@ public class MUOM extends X_C_UOM
 	 * 	Load All UOMs
 	 * 	@param ctx context
 	 */
-	protected static void loadUOMs (Properties ctx)
+	protected static synchronized void loadUOMs (Properties ctx)
 	{
 		List<MUOM> list = new Query(ctx, Table_Name, "IsActive='Y'", null)
 								.setApplyAccessFilter(MRole.SQL_NOTQUALIFIED, MRole.SQL_RO)
 								.list();
 		//
 		for (MUOM uom : list) {
-			s_cache.put(uom.get_ID(), new MUOM(Env.getCtx(), uom));
+			s_cache.put(uom.get_ID(), uom, e -> new MUOM(Env.getCtx(), e));
 		}
 	}	//	loadUOMs
 	
@@ -329,4 +338,10 @@ public class MUOM extends X_C_UOM
 		return X12_YEAR.equals(getX12DE355());
 	}
 
+	@Override
+	public MUOM markImmutable() {
+		return (MUOM) super.markImmutable();
+	}
+
+	
 }	//	MUOM

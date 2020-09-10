@@ -17,9 +17,9 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.model.X_AD_BroadcastMessage;
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * 
@@ -32,9 +32,9 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1908264699133879072L;
+	private static final long serialVersionUID = -5402131480890468471L;
 
-    static private CCache<Integer,MBroadcastMessage> s_cache = new CCache<Integer,MBroadcastMessage>("AD_BroadcastMessage", 30, 60);
+    static private ImmutableIntPOCache<Integer,MBroadcastMessage> s_cache = new ImmutableIntPOCache<Integer,MBroadcastMessage>("AD_BroadcastMessage", 30, 60);
 
     public MBroadcastMessage(Properties ctx, int AD_BroadcastMessage_ID,
 	    String trxName)
@@ -80,7 +80,17 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage
     }
     
     /**
-     * 
+     * Get MBroadcastMessage from cache (immutable)
+     * @param AD_BroadcastMessage_ID
+     * @return MBroadcastMessage or null
+     */
+	public static MBroadcastMessage get (int AD_BroadcastMessage_ID)
+	{
+		return get(Env.getCtx(), AD_BroadcastMessage_ID);
+	}
+	
+    /**
+     * Get MBroadcastMessage from cache (immutable)
      * @param ctx
      * @param AD_BroadcastMessage_ID
      * @return MBroadcastMessage or null
@@ -88,18 +98,18 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage
 	public static MBroadcastMessage get (Properties ctx, int AD_BroadcastMessage_ID)
 	{
 		Integer key = Integer.valueOf(AD_BroadcastMessage_ID);
-		MBroadcastMessage retValue = (MBroadcastMessage)s_cache.get(key);
+		MBroadcastMessage retValue = s_cache.get(ctx, key, e -> new MBroadcastMessage(ctx, e));
 		if (retValue == null)
 		{
 			retValue = new MBroadcastMessage (ctx, AD_BroadcastMessage_ID, (String)null);
 			if (retValue.get_ID() == AD_BroadcastMessage_ID)
 			{
-				s_cache.put(key, new MBroadcastMessage(Env.getCtx(), retValue));
+				s_cache.put(key, retValue, e -> new MBroadcastMessage(Env.getCtx(), e));
 				return retValue;
 			}
 			return null;
 		}
-		return new MBroadcastMessage(ctx, retValue);
+		return retValue;
 	}	//	get
     
 	
@@ -157,4 +167,10 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage
 		return true;
 	}
     
+	@Override
+	public MBroadcastMessage markImmutable() 
+	{
+		return (MBroadcastMessage) super.markImmutable();
+	}
+
 }

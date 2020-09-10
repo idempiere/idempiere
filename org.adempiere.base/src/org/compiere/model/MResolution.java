@@ -19,8 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * 	Request Resolution Model
@@ -32,12 +32,20 @@ public class MResolution extends X_R_Resolution
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 9163046533055602877L;
-
-
+	private static final long serialVersionUID = 7430644542278601152L;
 
 	/**
-	 * 	Get MResolution from Cache
+	 * 	Get MResolution from Cache (immutable)
+	 *	@param R_Resolution_ID id
+	 *	@return MResolution
+	 */
+	public static MResolution get (int R_Resolution_ID)
+	{
+		return get(Env.getCtx(), R_Resolution_ID);
+	}
+
+	/**
+	 * 	Get MResolution from Cache (immutable)
 	 *	@param ctx context
 	 *	@param R_Resolution_ID id
 	 *	@return MResolution
@@ -45,20 +53,20 @@ public class MResolution extends X_R_Resolution
 	public static MResolution get (Properties ctx, int R_Resolution_ID)
 	{
 		Integer key = Integer.valueOf(R_Resolution_ID);
-		MResolution retValue = (MResolution) s_cache.get (key);
+		MResolution retValue = s_cache.get (ctx, key, e -> new MResolution(ctx, e));
 		if (retValue != null)
-			return new MResolution(ctx, retValue);
+			return retValue;
 		retValue = new MResolution (ctx, R_Resolution_ID, (String)null);
 		if (retValue.get_ID () == R_Resolution_ID)
 		{
-			s_cache.put (key, new MResolution(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MResolution(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MResolution>	s_cache	= new CCache<Integer,MResolution>(Table_Name, 10);
+	private static ImmutableIntPOCache<Integer,MResolution>	s_cache	= new ImmutableIntPOCache<Integer,MResolution>(Table_Name, 10);
 	
 	
 	

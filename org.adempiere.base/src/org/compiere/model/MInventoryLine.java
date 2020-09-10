@@ -41,7 +41,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7083622834698840042L;
+	private static final long serialVersionUID = 3973418005721380194L;
 
 	/**
 	 * 	Get Inventory Line with parameters
@@ -189,7 +189,11 @@ public class MInventoryLine extends X_M_InventoryLine
 		if (m_product != null && m_product.getM_Product_ID() != M_Product_ID)
 			m_product = null;	//	reset
 		if (m_product == null)
+		{
 			m_product = MProduct.get(getCtx(), M_Product_ID);
+			if (is_Immutable())
+				m_product.markImmutable();
+		}
 		return m_product;
 	}	//	getProduct
 	
@@ -263,7 +267,11 @@ public class MInventoryLine extends X_M_InventoryLine
 	public MInventory getParent()
 	{
 		if (m_parent == null)
+		{
 			m_parent = new MInventory (getCtx(), getM_Inventory_ID(), get_TrxName());
+			if (is_Immutable())
+				m_parent.markImmutable();
+		}
 		return m_parent;
 	}	//	getParent
 	
@@ -494,4 +502,15 @@ public class MInventoryLine extends X_M_InventoryLine
 	public boolean isSOTrx() {
 		return getMovementQty().signum() < 0;
 	}
+	
+	@Override
+	public MInventoryLine markImmutable() {
+		MInventoryLine il = (MInventoryLine) super.markImmutable();
+		if (m_product != null)
+			m_product.markImmutable();
+		if (m_parent != null)
+			m_parent.markImmutable();
+		return il;
+	}
+
 }	//	MInventoryLine

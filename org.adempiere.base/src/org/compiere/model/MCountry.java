@@ -23,15 +23,17 @@ import java.sql.ResultSet;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Location Country Model (Value Object)
@@ -48,24 +50,35 @@ public class MCountry extends X_C_Country
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4966707939803861163L;
+	private static final long serialVersionUID = 6102749517340832365L;
 
 	/**
 	 * 	Get Country (cached)
 	 * 	@param ctx context
 	 *	@param C_Country_ID ID
 	 *	@return Country
+	 *  @deprecated
 	 */
 	public static MCountry get (Properties ctx, int C_Country_ID)
 	{
-		loadAllCountriesIfNeeded(ctx);
+		return get(C_Country_ID);
+	}
+	
+	/**
+	 * 	Get Country (Immutable, cached)
+	 *	@param C_Country_ID ID
+	 *	@return Country
+	 */
+	public static MCountry get (int C_Country_ID)
+	{
+		loadAllCountriesIfNeeded();
 		MCountry c = s_countries.get(C_Country_ID);
 		if (c != null)
-			return new MCountry(ctx, c);
-		c = new MCountry (ctx, C_Country_ID, (String)null);
+			return c;
+		c = new MCountry (Env.getCtx(), C_Country_ID, (String)null);
 		if (c.getC_Country_ID() == C_Country_ID)
 		{
-			s_countries.put(C_Country_ID, new MCountry(Env.getCtx(), c));
+			s_countries.put(C_Country_ID, c);
 			return c;
 		}
 		return null;
@@ -73,61 +86,79 @@ public class MCountry extends X_C_Country
 
 	/**
 	 * 	Get Default Country
-	 * 	@param ctx context
+	 * 	@param ctx ignore
 	 *	@return Country
+	 *  @deprecated
 	 */
 	public static MCountry getDefault (Properties ctx)
 	{
-		int clientID = Env.getAD_Client_ID(ctx);
+		return getDefault();
+	}
+	
+	/**
+	 * 	Get Default Country
+	 *	@return Country
+	 */
+	public static MCountry getDefault ()
+	{
+		int clientID = Env.getAD_Client_ID(Env.getCtx());
 		MCountry c = s_default.get(clientID);
 		if (c != null)
-			return new MCountry(ctx, c);
+			return c;
 
-		loadDefaultCountry(ctx);
+		loadDefaultCountry();
 		c = s_default.get(clientID);
-		return new MCountry(ctx, c);
+		return c;
 	}	//	get
 
 	/**
 	 *	Return Countries as Array
-	 * 	@param ctx context
+	 * 	@param ctx ignore
 	 *  @return MCountry Array
+	 *  @deprecated
 	 */
 	public static MCountry[] getCountries(Properties ctx)
 	{
-		loadAllCountriesIfNeeded(ctx);
-		MCountry[] retValue = new MCountry[s_countries.size()];
-		s_countries.values().toArray(retValue);
-		Arrays.sort(retValue, new MCountry(ctx, 0, null));
+		return getCountries();
+	}
+	
+	/**
+	 *	Return Countries as Array
+	 *  @return MCountry Array
+	 */
+	public static MCountry[] getCountries()
+	{
+		loadAllCountriesIfNeeded();
+		MCountry[] retValue = s_countries.values().toArray(new MCountry[0]);		
+		Arrays.sort(retValue, new MCountry(Env.getCtx(), 0, null));
 		return retValue;
 	}	//	getCountries
 
-	private static synchronized void loadAllCountriesIfNeeded(Properties ctx) {
+	private static synchronized void loadAllCountriesIfNeeded() {
 		if (s_countries == null || s_countries.isEmpty()) {
-			loadAllCountries(ctx);
+			loadAllCountries();
 		}
 	}
 	
 	/**
 	 * 	Load Countries.
 	 * 	Set Default Language to Client Language
-	 *	@param ctx context
 	 */
-	private static synchronized void loadAllCountries (Properties ctx)
+	private static synchronized void loadAllCountries ()
 	{
-		MClient client = MClient.get (ctx);
-		MLanguage lang = MLanguage.get(ctx, client.getAD_Language());
+		MClient client = MClient.get (Env.getCtx());
+		MLanguage lang = MLanguage.get(Env.getCtx(), client.getAD_Language());
 		//
 		if (s_countries == null)
-			s_countries = new CCache<Integer,MCountry>(Table_Name, 250);
-		List<MCountry> countries = new Query(ctx, Table_Name, "", null)
+			s_countries = new ImmutableIntPOCache<Integer,MCountry>(Table_Name, 250);
+		List<MCountry> countries = new Query(Env.getCtx(), Table_Name, "", null)
 			.setOnlyActiveRecords(true)
 			.list();
 		for (MCountry c : countries) {
-			s_countries.put(c.getC_Country_ID(), new MCountry(Env.getCtx(), c));
+			s_countries.put(c.getC_Country_ID(), c);
 			//	Country code of Client Language
 			if (lang != null && lang.getCountryCode().equals(c.getCountryCode()))
-				s_default.put(client.getAD_Client_ID(), new MCountry(Env.getCtx(), c));
+				s_default.put(client.getAD_Client_ID(), c);
 		}
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("#" + s_countries.size() 
 			+ " - Default=" + s_default);
@@ -135,19 +166,20 @@ public class MCountry extends X_C_Country
 
 	/**
 	 * Load Default Country for actual client on context
-	 * @param ctx
 	 */
-	private static void loadDefaultCountry(Properties ctx) {
-		loadAllCountriesIfNeeded(ctx);
-		MClient client = MClient.get (ctx);
+	private static void loadDefaultCountry() {
+		loadAllCountriesIfNeeded();
+		MClient client = MClient.get (Env.getCtx());
 		MCountry found = s_default.get(client.getAD_Client_ID());
 		if (found != null)
 			return;
 
-		MLanguage lang = MLanguage.get(ctx, client.getAD_Language());
+		MLanguage lang = MLanguage.get(Env.getCtx(), client.getAD_Language());
 		MCountry usa = null;
 
-		for (Entry<Integer, MCountry> cachedEntry : s_countries.entrySet()) {
+		//create local instance to avoid concurrent modification exception
+		Map<Integer, MCountry> countries = new HashMap<Integer, MCountry>(s_countries);
+		for (Entry<Integer, MCountry> cachedEntry : countries.entrySet()) {
 			MCountry c = cachedEntry.getValue();
 			//	Country code of Client Language
 			if (lang != null && lang.getCountryCode().equals(c.getCountryCode())) {
@@ -161,7 +193,7 @@ public class MCountry extends X_C_Country
 			s_default.put(client.getAD_Client_ID(), found);
 		else
 			s_default.put(client.getAD_Client_ID(), usa);
-		if (s_log.isLoggable(Level.FINE)) s_log.fine("#" + s_countries.size() 
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("#" + countries.size() 
 			+ " - Default=" + s_default);
 	}
 
@@ -182,9 +214,9 @@ public class MCountry extends X_C_Country
 	private static String		s_AD_Language = null;
 	
 	/**	Country Cache					*/
-	private static CCache<Integer,MCountry>	s_countries = null;
+	private static ImmutableIntPOCache<Integer,MCountry>	s_countries = null;
 	/**	Default Country 				*/
-	private static CCache<Integer,MCountry>	s_default = new CCache<Integer,MCountry>(Table_Name, Table_Name+"|Default", 3);
+	private static ImmutableIntPOCache<Integer,MCountry>	s_default = new ImmutableIntPOCache<Integer,MCountry>(Table_Name, Table_Name+"|Default", 3);
 	/**	Static Logger					*/
 	private static CLogger		s_log = CLogger.getCLogger (MCountry.class);
 	//	Default DisplaySequence	*/
@@ -337,7 +369,7 @@ public class MCountry extends X_C_Country
 			|| getC_Country_ID() == 0
 			|| !isHasRegion())
 			return false;
-		MRegion[] regions = MRegion.getRegions(getCtx(), getC_Country_ID());
+		MRegion[] regions = MRegion.getRegions(getC_Country_ID());
 		for (int i = 0; i < regions.length; i++)
 		{
 			if (C_Region_ID == regions[i].getC_Region_ID())

@@ -18,20 +18,19 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 public class MReportView extends X_AD_ReportView {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5674822764517548357L;
+	private static final long serialVersionUID = 6065574433744333005L;
 	
 	/**	Static Logger					*/
 	//private static CLogger	s_log	= CLogger.getCLogger (MReportView.class);
 	/**	Cache					*/
-	static private CCache<Integer,MReportView> s_cache = new CCache<Integer,MReportView>(Table_Name, 30, 60);
+	static private ImmutableIntPOCache<Integer,MReportView> s_cache = new ImmutableIntPOCache<Integer,MReportView>(Table_Name, 30, 60);
 	
 	
 	public MReportView(Properties ctx, int AD_ReportView_ID, String trxName) {
@@ -71,10 +70,19 @@ public class MReportView extends X_AD_ReportView {
 	}
 	
 	/**
-	 * 
+	 * Get MReportView from cache (immutable)
+	 * @param AD_ReportView_ID
+	 * @return MReportView
+	 */
+	public static MReportView get (int AD_ReportView_ID) {
+		return get(Env.getCtx(), AD_ReportView_ID);
+	}
+	
+	/**
+	 * Get MReportView from cache (immutable)
 	 * @param ctx
 	 * @param AD_ReportView_ID
-	 * @return
+	 * @return MReportView
 	 */
 	public static MReportView get (Properties ctx, int AD_ReportView_ID) {
 		if(AD_ReportView_ID==0) {
@@ -82,17 +90,17 @@ public class MReportView extends X_AD_ReportView {
 		}
 		
 		Integer key = Integer.valueOf(AD_ReportView_ID);
-		MReportView retValue = (MReportView)s_cache.get(key);
+		MReportView retValue = s_cache.get(ctx, key, e -> new MReportView(ctx, e));
 		if (retValue == null)
 		{
 			retValue = new MReportView (ctx, AD_ReportView_ID, (String)null);
 			if (retValue.get_ID() == AD_ReportView_ID)
 			{
-				s_cache.put(key, new MReportView(Env.getCtx(), retValue));
+				s_cache.put(key, retValue, e -> new MReportView(Env.getCtx(), e));
 				return retValue;
 			}
 			return null;
 		}
-		return new MReportView(ctx, retValue);
+		return retValue;
 	}	//	get
 }

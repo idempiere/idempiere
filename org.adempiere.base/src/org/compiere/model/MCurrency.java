@@ -19,8 +19,9 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  * 	Currency Model.
@@ -32,7 +33,7 @@ public class MCurrency extends X_C_Currency
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2262097171335518186L;
+	private static final long serialVersionUID = 4325153934518648373L;
 
 	/**
 	 * 	Currency Constructor
@@ -118,12 +119,22 @@ public class MCurrency extends X_C_Currency
 	}
 	
 	/**	Store System Currencies			**/
-	private static CCache<Integer,MCurrency> s_currencies = new CCache<Integer,MCurrency>(Table_Name, 50);
+	private static ImmutableIntPOCache<Integer,MCurrency> s_currencies = new ImmutableIntPOCache<Integer,MCurrency>(Table_Name, 50);
 	/** Cache System Currencies by using ISO code as key **/
-	private static CCache<String,MCurrency> s_currenciesISO = new CCache<String,MCurrency>(Table_Name, "C_CurrencyISO", 50);
+	private static ImmutablePOCache<String,MCurrency> s_currenciesISO = new ImmutablePOCache<String,MCurrency>(Table_Name, "C_CurrencyISO", 50);
 
 	/**
-	 * 	Get Currency using ISO code
+	 * 	Get Currency using ISO code from cache (immutable)
+	 *	@param ISOcode	Iso code
+	 *	@return MCurrency
+	 */
+	public static MCurrency get (String ISOcode)
+	{
+		return get(Env.getCtx(), ISOcode);
+	}
+	
+	/**
+	 * 	Get Currency using ISO code from cache (immutable)
 	 *	@param ctx Context
 	 *	@param ISOcode	Iso code
 	 *	@return MCurrency
@@ -131,9 +142,9 @@ public class MCurrency extends X_C_Currency
 	public static MCurrency get (Properties ctx, String ISOcode)
 	{
 		//	Try Cache
-		MCurrency retValue = (MCurrency)s_currenciesISO.get(ISOcode);
+		MCurrency retValue = (MCurrency)s_currenciesISO.get(ctx, ISOcode, e -> new MCurrency(ctx, e));
 		if (retValue != null)
-			return new MCurrency(ctx, retValue);
+			return retValue;
 
 		//	Try database
 		Query query = new Query(ctx, I_C_Currency.Table_Name, "ISO_Code=?", (String)null);
@@ -141,12 +152,22 @@ public class MCurrency extends X_C_Currency
 		retValue = (MCurrency)query.firstOnly();
 		
 		//	Save 
-		if (retValue!=null)
-			s_currenciesISO.put(ISOcode, new MCurrency(Env.getCtx(), retValue));
+		if (retValue!=null) {
+			s_currenciesISO.put(ISOcode, retValue, e -> new MCurrency(Env.getCtx(), e));
+		}
 		return retValue;
 	}	
 	
-
+	/**
+	 * 	Get Currency
+	 *	@param C_Currency_ID currency
+	 *	@return ISO Code
+	 */
+	public static MCurrency get (int C_Currency_ID)
+	{
+		return get(Env.getCtx(), C_Currency_ID);
+	}
+	
 	/**
 	 * 	Get Currency
 	 *	@param ctx Context
@@ -157,9 +178,9 @@ public class MCurrency extends X_C_Currency
 	{
 		//	Try Cache
 		Integer key = Integer.valueOf(C_Currency_ID);
-		MCurrency retValue = (MCurrency)s_currencies.get(key);
+		MCurrency retValue = (MCurrency)s_currencies.get(ctx, key, e -> new MCurrency(ctx, e));
 		if (retValue != null)
-			return new MCurrency(ctx, retValue);
+			return retValue;
 
 		//	Create it
 		retValue = new MCurrency(ctx, C_Currency_ID, (String)null);
@@ -167,8 +188,8 @@ public class MCurrency extends X_C_Currency
 		if (retValue.get_ID() == C_Currency_ID)
 		{
 			if (retValue.getAD_Client_ID() == 0)
-				s_currencies.put(key, new MCurrency(Env.getCtx(), retValue));
-			return retValue;
+				s_currencies.put(key, retValue, e -> new MCurrency(Env.getCtx(), e));
+			return (MCurrency) retValue.markImmutable();
 		}
 		return null;
 	}	//	get

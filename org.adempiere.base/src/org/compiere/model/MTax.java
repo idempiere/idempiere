@@ -28,6 +28,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *  Tax Model
@@ -43,10 +44,9 @@ public class MTax extends X_C_Tax
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5871827364071851846L;
-
+	private static final long serialVersionUID = -7971399495606742382L;
 	/**	Cache						*/
-	private static CCache<Integer,MTax>		s_cache	= new CCache<Integer,MTax>(Table_Name, 5);
+	private static ImmutableIntPOCache<Integer,MTax>		s_cache	= new ImmutableIntPOCache<Integer,MTax>(Table_Name, 5);
 	/**	Cache of Client						*/
 	private static CCache<Integer,MTax[]>	s_cacheAll = new CCache<Integer,MTax[]>(Table_Name, Table_Name+"_Of_Client", 5);
 	
@@ -66,7 +66,12 @@ public class MTax extends X_C_Tax
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
 		MTax[] retValue = (MTax[])s_cacheAll.get(AD_Client_ID);
 		if (retValue != null)
-			return Arrays.stream(retValue).map(e -> {return new MTax(ctx, e);}).toArray(MTax[]::new);
+		{
+			if (ctx == Env.getCtx())
+				return retValue;
+			else
+				return Arrays.stream(retValue).map(e -> {return new MTax(ctx, e).markImmutable();}).toArray(MTax[]::new);
+		}
 
 		//	Create it
 		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
@@ -77,16 +82,28 @@ public class MTax extends X_C_Tax
 								.list();
 		for (MTax tax : list)
 		{
-			s_cache.put(tax.get_ID(), new MTax(Env.getCtx(), tax));
+			s_cache.put(tax.get_ID(), tax, e -> new MTax(Env.getCtx(), e));
 		}
 		retValue = list.toArray(new MTax[list.size()]);
-		s_cacheAll.put(AD_Client_ID, Arrays.stream(retValue).map(e -> {return new MTax(Env.getCtx(), e);}).toArray(MTax[]::new));
+		if (ctx == Env.getCtx())
+			s_cacheAll.put(AD_Client_ID, retValue);
+		else
+			s_cacheAll.put(AD_Client_ID, Arrays.stream(retValue).map(e -> {return new MTax(Env.getCtx(), e);}).toArray(MTax[]::new));
 		return retValue;
 	}	//	getAll
 
+	/**
+	 * 	Get Tax from Cache (immutable)
+	 *	@param C_Tax_ID id
+	 *	@return MTax
+	 */
+	public static MTax get (int C_Tax_ID)
+	{
+		return get(Env.getCtx(), C_Tax_ID);
+	}
 	
 	/**
-	 * 	Get Tax from Cache
+	 * 	Get Tax from Cache (immutable)
 	 *	@param ctx context
 	 *	@param C_Tax_ID id
 	 *	@return MTax
@@ -94,13 +111,13 @@ public class MTax extends X_C_Tax
 	public static MTax get (Properties ctx, int C_Tax_ID)
 	{
 		Integer key = Integer.valueOf(C_Tax_ID);
-		MTax retValue = (MTax) s_cache.get (key);
+		MTax retValue = s_cache.get (ctx, key, e -> new MTax(ctx, e));
 		if (retValue != null)
-			return new MTax(ctx, retValue);
+			return retValue;
 		retValue = new MTax (ctx, C_Tax_ID, (String)null);
 		if (retValue.get_ID () == C_Tax_ID)
 		{
-			s_cache.put (key, new MTax(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MTax(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
@@ -212,6 +229,8 @@ public class MTax extends X_C_Tax
 			.setOnlyActiveRecords(true)
 			.list();	
 		//red1 - end -
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 	 
 		m_childTaxes = new MTax[list.size ()];
 		list.toArray (m_childTaxes);
@@ -236,6 +255,8 @@ public class MTax extends X_C_Tax
 			.setOrderBy(I_C_TaxPostal.COLUMNNAME_Postal+", "+I_C_TaxPostal.COLUMNNAME_Postal_To)
 			.list();	
 		//red1 - end -
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 
 		if (list.size() > 0) { 
 			m_postals = new MTaxPostal[list.size ()];
@@ -364,4 +385,15 @@ public class MTax extends X_C_Tax
 		return success;
 	}	//	afterSave
 
+	@Override
+	public MTax markImmutable() {
+		MTax tax = (MTax) super.markImmutable();
+		if (m_childTaxes != null && m_childTaxes.length > 0)
+			Arrays.stream(m_childTaxes).forEach(e -> e.markImmutable());
+		if (m_postals != null && m_postals.length > 0)
+			Arrays.stream(m_postals).forEach(e -> e.markImmutable());
+		
+		return tax;
+	}
+	
 }	//	MTax

@@ -22,10 +22,10 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *  Client Info Model
@@ -40,9 +40,18 @@ public class MClientInfo extends X_AD_ClientInfo
 	 */
 	private static final long serialVersionUID = 4861006368856890116L;
 
-
 	/**
-	 * 	Get Client Info
+	 * 	Get Client Info from cache (immutable)
+	 * 	@param AD_Client_ID id
+	 * 	@return Client Info
+	 */
+	public static MClientInfo get (int AD_Client_ID)
+	{
+		return get(Env.getCtx(), AD_Client_ID);
+	}
+	
+	/**
+	 * 	Get Client Info from cache (immutable)
 	 * 	@param ctx context
 	 * 	@param AD_Client_ID id
 	 * 	@return Client Info
@@ -53,7 +62,7 @@ public class MClientInfo extends X_AD_ClientInfo
 	}	//	get
 	
 	/**
-	 * 	Get Client Info
+	 * 	Get Client Info from cache (immutable)
 	 * 	@param ctx context
 	 * 	@param AD_Client_ID id
 	 * 	@param trxName optional trx
@@ -62,9 +71,9 @@ public class MClientInfo extends X_AD_ClientInfo
 	public static MClientInfo get (Properties ctx, int AD_Client_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(AD_Client_ID);
-		MClientInfo info = (MClientInfo)s_cache.get(key);
+		MClientInfo info = s_cache.get(ctx, key, e -> new MClientInfo(ctx, e));
 		if (info != null)
-			return new MClientInfo(ctx, info, trxName);
+			return info;
 		//
 		String sql = "SELECT * FROM AD_ClientInfo WHERE AD_Client_ID=?";
 		PreparedStatement pstmt = null;
@@ -77,7 +86,7 @@ public class MClientInfo extends X_AD_ClientInfo
 			if (rs.next ())
 			{
 				info = new MClientInfo (ctx, rs, trxName);
-				s_cache.put (key, new MClientInfo(Env.getCtx(), info));
+				s_cache.put (key, info, e -> new MClientInfo(Env.getCtx(), e));
 			}
 		}
 		catch (SQLException ex)
@@ -96,6 +105,15 @@ public class MClientInfo extends X_AD_ClientInfo
 	
 	/**
 	 * 	Get optionally cached client
+	 *	@return client
+	 */
+	public static MClientInfo get ()
+	{
+		return get(Env.getCtx());
+	}
+	
+	/**
+	 * 	Get optionally cached client
 	 *	@param ctx context
 	 *	@return client
 	 */
@@ -105,7 +123,7 @@ public class MClientInfo extends X_AD_ClientInfo
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MClientInfo> s_cache = new CCache<Integer,MClientInfo>(Table_Name, 2);
+	private static ImmutableIntPOCache<Integer,MClientInfo> s_cache = new ImmutableIntPOCache<Integer,MClientInfo>(Table_Name, 2);
 	/**	Logger						*/
 	private static CLogger		s_log = CLogger.getCLogger (MClientInfo.class);
 

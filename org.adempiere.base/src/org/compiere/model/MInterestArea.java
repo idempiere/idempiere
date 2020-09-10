@@ -23,10 +23,10 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *  Interest Area.
@@ -42,8 +42,7 @@ public class MInterestArea extends X_R_InterestArea
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6910076559329764930L;
-
+	private static final long serialVersionUID = -8171678779149295978L;
 
 	/**
 	 * 	Get all active interest areas
@@ -81,31 +80,40 @@ public class MInterestArea extends X_R_InterestArea
 		return retValue;
 	}	//	getAll
 
+	/**
+	 * 	Get MInterestArea from Cache (immutable)
+	 *	@param R_InterestArea_ID id
+	 *	@return MInterestArea
+	 */
+	public static MInterestArea get (int R_InterestArea_ID)
+	{
+		return get(Env.getCtx(), R_InterestArea_ID);
+	}
 	
 	/**
-	 * 	Get MInterestArea from Cache
-	 *	@param ctx context
+	 * 	Get MInterestArea from Cache (immutable)
+	 *  @param ctx context
 	 *	@param R_InterestArea_ID id
 	 *	@return MInterestArea
 	 */
 	public static MInterestArea get (Properties ctx, int R_InterestArea_ID)
 	{
 		Integer key = Integer.valueOf(R_InterestArea_ID);
-		MInterestArea retValue = (MInterestArea) s_cache.get (key);
+		MInterestArea retValue = s_cache.get (ctx, key, e -> new MInterestArea(ctx, e));
 		if (retValue != null)
-			return new MInterestArea(ctx, retValue);
-		retValue = new MInterestArea (ctx, R_InterestArea_ID, (String)null);
+			return retValue;
+		retValue = new MInterestArea (Env.getCtx(), R_InterestArea_ID, (String)null);
 		if (retValue.get_ID () == R_InterestArea_ID)
 		{
-			s_cache.put (key, new MInterestArea(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MInterestArea(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MInterestArea> s_cache = 
-		new CCache<Integer,MInterestArea>(Table_Name, 5);
+	private static ImmutableIntPOCache<Integer,MInterestArea> s_cache = 
+		new ImmutableIntPOCache<Integer,MInterestArea>(Table_Name, 5);
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MInterestArea.class);
 	

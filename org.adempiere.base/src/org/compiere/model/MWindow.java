@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFNode;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Window Model
@@ -41,20 +41,29 @@ import org.compiere.wf.MWFNode;
  */
 public class MWindow extends X_AD_Window
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9200113429427897527L;
+	private static final long serialVersionUID = -7482290667487859946L;
 
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MWindow.class);
 
 	/**	Cache						*/
-	private static CCache<Integer,MWindow> s_cache = new CCache<Integer,MWindow>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MWindow> s_cache = new ImmutableIntPOCache<Integer,MWindow>(Table_Name, 20);
 
 	/**
-	 * 	Get Window from Cache
+	 * 	Get Window from Cache (immutable)
+	 *	@param AD_Window_ID id
+	 *	@return MWindow
+	 */
+	public static MWindow get (int AD_Window_ID)
+	{
+		return get(Env.getCtx(), AD_Window_ID);
+	}
+	
+	/**
+	 * 	Get Window from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Window_ID id
 	 *	@return MWindow
@@ -62,13 +71,13 @@ public class MWindow extends X_AD_Window
 	public static MWindow get (Properties ctx, int AD_Window_ID)
 	{
 		Integer key = Integer.valueOf(AD_Window_ID);
-		MWindow retValue = s_cache.get (key);
-		if (retValue != null) {
-			return new MWindow(ctx, retValue);
-		}
+		MWindow retValue = s_cache.get (ctx, key, e -> new MWindow(ctx, e));
+		if (retValue != null) 
+			return retValue;
+		
 		retValue = new MWindow (ctx, AD_Window_ID, (String)null);
 		if (retValue.get_ID () == AD_Window_ID) {
-			s_cache.put (key, new MWindow(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MWindow(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
@@ -80,15 +89,13 @@ public class MWindow extends X_AD_Window
 	 * @param uu AD_Window_UU
 	 * @return MWindow object
 	 */
-	public static synchronized MWindow get(Properties ctx, String uu)
+	public static MWindow get(Properties ctx, String uu)
 	{
 		if (Util.isEmpty(uu, true))
 			return null;
-		MWindow retValue = null;
-		Iterator<MWindow> it = s_cache.values().iterator();
-		while (it.hasNext())
+		MWindow[] it = s_cache.values().toArray(new MWindow[0]);
+		for (MWindow retValue : it)
 		{
-			retValue = it.next();
 			if (uu.equals(retValue.getAD_Window_UU()))
 			{
 				return new MWindow(ctx, retValue);
@@ -96,7 +103,7 @@ public class MWindow extends X_AD_Window
 		}
 
 		final String whereClause = MWindow.COLUMNNAME_AD_Window_UU + "=?";
-		retValue = new Query(ctx, MWindow.Table_Name, whereClause, (String)null)
+		MWindow retValue = new Query(ctx, MWindow.Table_Name, whereClause, (String)null)
 				.setParameters(uu)
 				.setOnlyActiveRecords(true)
 				.first();
@@ -197,6 +204,8 @@ public class MWindow extends X_AD_Window
 		.setOrderBy(I_AD_Tab.COLUMNNAME_SeqNo)
 		.list();
 		//
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 		m_tabs = new MTab[list.size ()];
 		list.toArray (m_tabs);
 		return m_tabs;
@@ -308,4 +317,12 @@ public class MWindow extends X_AD_Window
 	}
 	//end vpj-cd e-evolution
 	
+	@Override
+	public MWindow markImmutable() {
+		MWindow window = (MWindow) super.markImmutable();
+		if (m_tabs != null && m_tabs.length > 0)
+			Arrays.stream(m_tabs).forEach(e -> e.markImmutable());
+		return window;
+	}
+
 }	//	M_Window

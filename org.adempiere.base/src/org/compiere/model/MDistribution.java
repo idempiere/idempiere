@@ -53,7 +53,7 @@ public class MDistribution extends X_GL_Distribution
 	public static MDistribution[] get (MAccount acct,  
 		String PostingType, int C_DocType_ID)
 	{
-		return get (acct.getCtx(), acct.getC_AcctSchema_ID(), 
+		return get (acct.getC_AcctSchema_ID(), 
 			PostingType, C_DocType_ID,
 			acct.getAD_Org_ID(), acct.getAccount_ID(),
 			acct.getM_Product_ID(), acct.getC_BPartner_ID(), acct.getC_Project_ID(),
@@ -64,7 +64,40 @@ public class MDistribution extends X_GL_Distribution
 
 	/**
 	 * 	Get Distributions for combination
-	 *	@param ctx context
+	 *	@param ctx ignore
+	 *	@param C_AcctSchema_ID schema
+	 *	@param PostingType posting type
+	 *	@param C_DocType_ID document type
+	 *	@param AD_Org_ID org
+	 *	@param Account_ID account
+	 *	@param M_Product_ID product
+	 *	@param C_BPartner_ID partner
+	 *	@param C_Project_ID project
+	 *	@param C_Campaign_ID campaign
+	 *	@param C_Activity_ID activity
+	 *	@param AD_OrgTrx_ID trx org
+	 *	@param C_SalesRegion_ID
+	 *	@param C_LocTo_ID location to
+	 *	@param C_LocFrom_ID location from
+	 *	@param User1_ID user 1
+	 *	@param User2_ID user 2
+	 *	@return array of distributions or null
+	 *  @deprecated
+	 */
+	public static MDistribution[] get (Properties ctx, int C_AcctSchema_ID, 
+		String PostingType, int C_DocType_ID,
+		int AD_Org_ID, int Account_ID,
+		int M_Product_ID, int C_BPartner_ID, int C_Project_ID,
+		int C_Campaign_ID, int C_Activity_ID, int AD_OrgTrx_ID,
+		int C_SalesRegion_ID, int C_LocTo_ID, int C_LocFrom_ID,
+		int User1_ID, int User2_ID)
+	{
+		return get(C_AcctSchema_ID, PostingType, C_DocType_ID, AD_Org_ID, Account_ID, M_Product_ID, C_BPartner_ID, 
+				C_Project_ID, C_Campaign_ID, C_Activity_ID, AD_OrgTrx_ID, C_SalesRegion_ID, C_LocTo_ID, C_LocFrom_ID, User1_ID, User2_ID);
+	}
+	
+	/**
+	 * 	Get Distributions for combination
 	 *	@param C_AcctSchema_ID schema
 	 *	@param PostingType posting type
 	 *	@param C_DocType_ID document type
@@ -83,7 +116,7 @@ public class MDistribution extends X_GL_Distribution
 	 *	@param User2_ID user 2
 	 *	@return array of distributions or null
 	 */
-	public static MDistribution[] get (Properties ctx, int C_AcctSchema_ID, 
+	public static MDistribution[] get (int C_AcctSchema_ID, 
 		String PostingType, int C_DocType_ID,
 		int AD_Org_ID, int Account_ID,
 		int M_Product_ID, int C_BPartner_ID, int C_Project_ID,
@@ -91,7 +124,7 @@ public class MDistribution extends X_GL_Distribution
 		int C_SalesRegion_ID, int C_LocTo_ID, int C_LocFrom_ID,
 		int User1_ID, int User2_ID)
 	{
-		MDistribution[] acctList = getAll(ctx);
+		MDistribution[] acctList = getAll();
 		if (acctList == null || acctList.length == 0)
 			return null;
 		//
@@ -148,16 +181,27 @@ public class MDistribution extends X_GL_Distribution
 	
 	/**
 	 * 	Get Distributions for Account
-	 *	@param ctx context
+	 *	@param ctx ignore
 	 *	@param Account_ID id
 	 *	@return array of distributions
 	 */
 	public static MDistribution[] get (Properties ctx, int Account_ID)
 	{
+		return get(Account_ID);
+	}
+	
+	/**
+	 * 	Get Distributions for Account
+	 *	@param Account_ID id
+	 *	@return array of distributions
+	 */
+	public static MDistribution[] get (int Account_ID)
+	{
+		Properties ctx = Env.getCtx();
 		Integer key = Integer.valueOf(Account_ID);
 		MDistribution[] retValue = (MDistribution[])s_accounts.get(key);
 		if (retValue != null)
-			return Arrays.stream(retValue).map(e -> {return new MDistribution(ctx, e);}).toArray(MDistribution[]::new);
+			return retValue;
 		String whereClause = "";
 		Object[] parameters = null;
 		if (Account_ID >= 0) {
@@ -170,20 +214,33 @@ public class MDistribution extends X_GL_Distribution
 			.list();
 		//
 		retValue = new MDistribution[list.size ()];
-		list.toArray (retValue);
-		s_accounts.put(key, Arrays.stream(retValue).map(e -> {return new MDistribution(Env.getCtx(), e);}).toArray(MDistribution[]::new));
+		retValue = list.toArray (retValue);
+		for(MDistribution md : retValue)
+			md.markImmutable();
+		s_accounts.put(key, retValue);
 		return retValue;
 	}	//	get
 	
 	/**
 	 * 	Get All Distributions
-	 *	@param ctx context
+	 *	@param ctx ignore
 	 *	@param Account_ID id
 	 *	@return array of distributions
+	 *  @deprecated
 	 */
 	public static MDistribution[] getAll (Properties ctx)
 	{
-		return get(ctx, -1);
+		return getAll();
+	}
+	
+	/**
+	 * 	Get All Distributions
+	 *	@param Account_ID id
+	 *	@return array of distributions
+	 */
+	public static MDistribution[] getAll ()
+	{
+		return get(-1);
 	}	//	get
 	
 	/**	Static Logger	*/
@@ -281,7 +338,8 @@ public class MDistribution extends X_GL_Distribution
 	public MDistributionLine[] getLines (boolean reload)
 	{
 		if (m_lines != null && !reload) {
-			set_TrxName(m_lines, get_TrxName());
+			if (!is_Immutable())
+				set_TrxName(m_lines, get_TrxName());
 			return m_lines;
 		}		
 		BigDecimal PercentTotal = Env.ZERO;
@@ -300,6 +358,8 @@ public class MDistribution extends X_GL_Distribution
 				hasNullRemainder = Env.ZERO.compareTo(dl.getPercent()) == 0;
 			}
 			dl.setParent(this);
+			if (is_Immutable())
+				dl.markImmutable();
 		}
 		//	Update Ratio when saved and difference
 		if (hasNullRemainder)
@@ -474,5 +534,16 @@ public class MDistribution extends X_GL_Distribution
 			setUser2_ID(0);
 		return true;
 	}	//	beforeSave
+
+	@Override
+	public MDistribution markImmutable() {
+		super.markImmutable();
+		if (m_lines != null && m_lines.length > 0) {
+			for (MDistributionLine line : m_lines)
+				line.markImmutable();
+		}
+		return this;
+	}
+	
 	
 }	//	MDistribution

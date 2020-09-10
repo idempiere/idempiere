@@ -37,7 +37,6 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -47,6 +46,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trace;
 import org.compiere.util.Util;
 import org.compiere.wf.MWorkflow;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  *	Role Model.
@@ -64,7 +64,7 @@ public final class MRole extends X_AD_Role
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4649095180532036099L;
+	private static final long serialVersionUID = 1916500679016906867L;
 
 	/**
 	 * 	Get Default (Client) Role
@@ -113,7 +113,7 @@ public final class MRole extends X_AD_Role
 	}
 
 	/**
-	 * 	Get Role for User
+	 * 	Get Role for User (immutable)
 	 * 	@param ctx context
 	 * 	@param AD_Role_ID role
 	 * 	@param AD_User_ID user
@@ -124,7 +124,7 @@ public final class MRole extends X_AD_Role
 	{
 		if (s_log.isLoggable(Level.INFO)) s_log.info("AD_Role_ID=" + AD_Role_ID + ", AD_User_ID=" + AD_User_ID + ", reload=" + reload);
 		String key = AD_Role_ID + "_" + AD_User_ID;
-		MRole role = (MRole)s_roles.get (key);
+		MRole role = (MRole)s_roles.get (ctx, key, e -> new MRole(ctx, e));
 		if (role == null || reload)
 		{
 			role = new MRole (ctx, AD_Role_ID, null);			
@@ -135,10 +135,10 @@ public final class MRole extends X_AD_Role
 			}
 			role.setAD_User_ID(AD_User_ID);
 			role.loadAccess(reload);
-			s_roles.put (key, new MRole(Env.getCtx(), role));
+			s_roles.put (key, role, e -> new MRole(Env.getCtx(), e));
 			if (s_log.isLoggable(Level.INFO)) s_log.info(role.toString());
 		}
-		return new MRole(ctx, role);
+		return role;
 	}	//	get
 
 	/**
@@ -237,7 +237,7 @@ public final class MRole extends X_AD_Role
 	}	//	getOf
 		
 	/** Role/User Cache			*/
-	private static CCache<String,MRole> s_roles = new CCache<String,MRole>(Table_Name, 5);
+	private static ImmutablePOCache<String,MRole> s_roles = new ImmutablePOCache<String,MRole>(Table_Name, 5);
 	/** Log						*/ 
 	private static CLogger			s_log = CLogger.getCLogger(MRole.class);
 	
@@ -868,7 +868,7 @@ public final class MRole extends X_AD_Role
 		//	Do we look for trees?
 		if (getAD_Tree_Org_ID() == 0)
 			return;
-		MOrg org = MOrg.get(getCtx(), oa.AD_Org_ID);
+		MOrg org = MOrg.get(oa.AD_Org_ID);
 		if (!org.isSummary())
 			return;
 		//	Summary Org - Get Dependents
@@ -2590,7 +2590,7 @@ public final class MRole extends X_AD_Role
 				clientName = MClient.get(getCtx(), AD_Client_ID).getName();
 			String orgName = "*";
 			if (AD_Org_ID != 0)
-				orgName = MOrg.get(getCtx(), AD_Org_ID).getName();
+				orgName = MOrg.get(AD_Org_ID).getName();
 			StringBuilder sb = new StringBuilder();
 			sb.append(Msg.translate(getCtx(), "AD_Client_ID")).append("=")
 				.append(clientName).append(" - ")

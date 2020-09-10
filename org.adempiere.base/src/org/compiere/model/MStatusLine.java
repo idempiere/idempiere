@@ -33,6 +33,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  *	Status Line Model
@@ -45,12 +46,11 @@ public class MStatusLine extends X_AD_StatusLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2473407023692665378L;
-
+	private static final long serialVersionUID = -2804602992872075936L;
 	/**	Logging								*/
 	private static CLogger		s_log = CLogger.getCLogger(MStatusLine.class);
 	/** Status Line Cache				*/
-	private static CCache<String, MStatusLine> s_cache = new CCache<String, MStatusLine>(Table_Name, 10);
+	private static ImmutablePOCache<String, MStatusLine> s_cache = new ImmutablePOCache<String, MStatusLine>(Table_Name, 10);
 	private static CCache<String, MStatusLine[]> s_cachew = new CCache<String, MStatusLine[]>(Table_Name, Table_Name+"|MStatusLine[]", 10);
 
 	/**
@@ -107,7 +107,7 @@ public class MStatusLine extends X_AD_StatusLine
 	}
 	
 	/**
-	 * Get the status line defined for the window|tab|table
+	 * Get the status line defined for the window|tab|table (immutable)
 	 * @param window_ID
 	 * @param tab_ID
 	 * @param table_ID
@@ -120,7 +120,7 @@ public class MStatusLine extends X_AD_StatusLine
 		{
 			retValue = s_cache.get(key.toString());
 			if (s_log.isLoggable(Level.FINEST)) s_log.finest("Cache: " + retValue);
-			return new MStatusLine(Env.getCtx(), retValue);
+			return retValue;
 		}
 
 		String sql = ""
@@ -159,13 +159,12 @@ public class MStatusLine extends X_AD_StatusLine
 		if (slid > 0) {
 			retValue = new MStatusLine(Env.getCtx(), slid, null);
 		}
-		s_cache.put(key.toString(), retValue);
-
+		s_cache.put(key.toString(), retValue, e -> new MStatusLine(Env.getCtx(), e));
 		return retValue;
 	}
 
 	/**
-	 * Get the widget lines defined for the window&tab&table
+	 * Get the widget lines defined for the window&tab&table (immutable)
 	 * @param window_ID
 	 * @param tab_ID
 	 * @param table_ID
@@ -195,6 +194,7 @@ public class MStatusLine extends X_AD_StatusLine
 	        ArrayList<MStatusLine> list = new ArrayList<MStatusLine>();
 	        for (int wlid : wlids) {
 				MStatusLine wl = new MStatusLine(Env.getCtx(), wlid, null);
+				wl.markImmutable();
 				list.add(wl);
 	        }
 			//	Convert to array

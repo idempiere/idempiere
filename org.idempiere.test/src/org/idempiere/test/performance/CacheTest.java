@@ -129,7 +129,7 @@ public class CacheTest extends AbstractTestCase {
 		assertEquals(oak, p2.getM_Product_ID());
 		assertTrue(pc.getHit() > hit, "Second get of product Oak, cache hit should increase");
 		
-		p2.set_TrxName(getTrxName());
+		p2 = new MProduct(Env.getCtx(), p2, getTrxName());
 		p2.setDescription("Test Update @ " + System.currentTimeMillis());
 		p2.saveEx();
 		
@@ -165,7 +165,7 @@ public class CacheTest extends AbstractTestCase {
 		
 		//test update when cache is empty
 		CacheMgt.get().reset();
-		p2.set_TrxName(getTrxName());
+		p2 = new MProduct(Env.getCtx(), p2, getTrxName());
 		p2.setDescription("Test1@"+System.currentTimeMillis());
 		p2.saveEx();
 		

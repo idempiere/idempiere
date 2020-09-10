@@ -23,7 +23,6 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
 
 /**
@@ -36,8 +35,6 @@ public class MPOSTerminal extends X_U_POSTerminal
 	 * 
 	 */
 	private static final long serialVersionUID = 6972567212871993024L;
-	/** Cache                   */
-    static private CCache<Integer,MPOSTerminal> s_cache = new CCache<Integer,MPOSTerminal>(Table_Name, 10, 60);
     
     /**
      * @param ctx Context
@@ -90,6 +87,15 @@ public class MPOSTerminal extends X_U_POSTerminal
 		copyPO(copy);
 	}
 	
+	/**
+     * @param U_POSTerminal_ID Terminal ID
+     * @return Terminal
+     */
+    public static MPOSTerminal get(int U_POSTerminal_ID)
+    {
+    	return get(Env.getCtx(), U_POSTerminal_ID);
+    }
+    
     /**
      * @param ctx Context
      * @param U_POSTerminal_ID Terminal ID
@@ -97,25 +103,14 @@ public class MPOSTerminal extends X_U_POSTerminal
      */
     public static MPOSTerminal get(Properties ctx, int U_POSTerminal_ID)
     {
-        Integer key = Integer.valueOf(U_POSTerminal_ID);
-        MPOSTerminal retValue = (MPOSTerminal)s_cache.get(key);
-        if (retValue == null)
+        MPOSTerminal retValue = new MPOSTerminal (ctx, U_POSTerminal_ID, (String)null);
+            
+        if (retValue.get_ID() != U_POSTerminal_ID)
         {
-            retValue = new MPOSTerminal (ctx, U_POSTerminal_ID, (String)null);
-            if (retValue.get_ID() != U_POSTerminal_ID)
-            {
-                return null;
-            }
-            s_cache.put(key, new MPOSTerminal(Env.getCtx(), retValue));
-            checkLock(retValue);
-            return retValue;
+            return null;
         }
-        else
-        {
-        	retValue = new MPOSTerminal(ctx, retValue);
-        	checkLock(retValue);
-        	return retValue;
-        }
+        checkLock(retValue);
+        return retValue;
     }
     
     protected void loadComplete(boolean success)
@@ -159,20 +154,5 @@ public class MPOSTerminal extends X_U_POSTerminal
         }
         
         return true;
-    }
-    
-    /**
-     * @see org.compiere.model.PO#afterSave(boolean, boolean)
-     */
-    protected boolean afterSave(boolean newRecord, boolean success)
-    {
-        success =  super.afterSave(newRecord, success);
-        
-        if (success)
-        {
-            s_cache.remove(Integer.valueOf(get_ID()));
-        }
-        
-        return success;
-    }
+    }    
 }

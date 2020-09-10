@@ -19,8 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 
 /**
@@ -37,13 +37,23 @@ public class MActivity extends X_C_Activity
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3014706648686670575L;
+	private static final long serialVersionUID = -5939026057597689130L;
 	
 	/** Static Cache */
-	private static CCache<Integer, MActivity> s_cache = new CCache<Integer, MActivity>(Table_Name, 30);
+	private static ImmutableIntPOCache<Integer, MActivity> s_cache = new ImmutableIntPOCache<Integer, MActivity>(Table_Name, 30);
 
 	/**
-	 * Get/Load Activity [CACHED]
+	 * Get/Load Activity [CACHED] (immutable)
+	 * @param C_Activity_ID
+	 * @return activity or null
+	 */
+	public static MActivity get(int C_Activity_ID)
+	{
+		return get(Env.getCtx(), C_Activity_ID);
+	}
+	
+	/**
+	 * Get/Load Activity [CACHED] (immutable)
 	 * @param ctx context
 	 * @param C_Activity_ID
 	 * @return activity or null
@@ -55,16 +65,16 @@ public class MActivity extends X_C_Activity
 			return null;
 		}
 		// Try cache
-		MActivity activity = s_cache.get(C_Activity_ID);
+		MActivity activity = s_cache.get(ctx, C_Activity_ID, e -> new MActivity(ctx, e));
 		if (activity != null)
 		{
-			return new MActivity(ctx, activity);
+			return activity;
 		}
 		// Load from DB
 		activity = new MActivity(ctx, C_Activity_ID, (String)null);
 		if (activity.get_ID() == C_Activity_ID)
 		{
-			s_cache.put(C_Activity_ID, new MActivity(Env.getCtx(), activity));
+			s_cache.put(C_Activity_ID, activity, e -> new MActivity(Env.getCtx(), e));
 			return activity;
 		}
 		return null;
@@ -158,5 +168,11 @@ public class MActivity extends X_C_Activity
 			delete_Tree(MTree_Base.TREETYPE_Activity);
 		return success;
 	}	//	afterDelete
+
+	@Override
+	public MActivity markImmutable() 
+	{
+		return (MActivity) super.markImmutable();
+	}
 
 }	//	MActivity

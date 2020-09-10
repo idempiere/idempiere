@@ -1347,6 +1347,11 @@ public abstract class PO
 	 */
 	protected void load (int ID, String trxName)
 	{
+		if (is_Immutable())
+		{
+			throw new AdempiereException("PO is Immutable");
+		}
+		
 		if (log.isLoggable(Level.FINEST)) log.finest("ID=" + ID);
 		if (ID > 0)
 		{
@@ -1372,6 +1377,11 @@ public abstract class PO
 	 */
 	public boolean load (String trxName)
 	{
+		if (is_Immutable())
+		{
+			throw new AdempiereException("PO is Immutable");
+		}
+		
 		m_trxName = trxName;
 		boolean success = true;
 		StringBuilder sql = new StringBuilder("SELECT ");
@@ -1459,6 +1469,11 @@ public abstract class PO
 	 */
 	protected boolean load (ResultSet rs)
 	{
+		if (is_Immutable())
+		{
+			throw new AdempiereException("PO is Immutable");
+		}
+		
 		int size = get_ColumnCount();
 		boolean success = true;
 		int index = 0;
@@ -1532,6 +1547,11 @@ public abstract class PO
 	 */
 	protected boolean load (HashMap<String,String> hmIn)
 	{
+		if (is_Immutable())
+		{
+			throw new AdempiereException("PO is Immutable");
+		}
+		
 		int size = get_ColumnCount();
 		boolean success = true;
 		int index = 0;
@@ -4938,9 +4958,10 @@ public abstract class PO
 	/**
 	 * Mark PO as Immutable
 	 */
-	public void markImmutable() {
+	public PO markImmutable() {
 		m_isImmutable = true;
 		m_trxName = null;
+		return this;
 	}
 	
 	/**

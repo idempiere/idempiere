@@ -20,9 +20,9 @@ import java.sql.ResultSet;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Calendar Model
@@ -35,11 +35,20 @@ public class MCalendar extends X_C_Calendar
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7721451326626542420L;
-
+	private static final long serialVersionUID = 6036302512252100576L;
 
 	/**
-	 * 	Get MCalendar from Cache
+	 * 	Get MCalendar from Cache (immutable)
+	 *	@param C_Calendar_ID id
+	 *	@return MCalendar
+	 */
+	public static MCalendar get (int C_Calendar_ID)
+	{
+		return get(Env.getCtx(), C_Calendar_ID);
+	}
+	
+	/**
+	 * 	Get MCalendar from Cache (immutable)
 	 *	@param ctx context
 	 *	@param C_Calendar_ID id
 	 *	@return MCalendar
@@ -47,13 +56,13 @@ public class MCalendar extends X_C_Calendar
 	public static MCalendar get (Properties ctx, int C_Calendar_ID)
 	{
 		Integer key = Integer.valueOf(C_Calendar_ID);
-		MCalendar retValue = (MCalendar) s_cache.get (key);
+		MCalendar retValue = (MCalendar) s_cache.get (ctx, key, e -> new MCalendar(ctx, e));
 		if (retValue != null)
-			return new MCalendar(ctx, retValue);
+			return retValue;
 		retValue = new MCalendar (ctx, C_Calendar_ID, (String)null);
 		if (retValue.get_ID () == C_Calendar_ID) 
 		{
-			s_cache.put (key, new MCalendar(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MCalendar(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
@@ -82,8 +91,8 @@ public class MCalendar extends X_C_Calendar
 	}	//	getDefault
 	
 	/**	Cache						*/
-	private static CCache<Integer,MCalendar> s_cache
-		= new CCache<Integer,MCalendar>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MCalendar> s_cache
+		= new ImmutableIntPOCache<Integer,MCalendar>(Table_Name, 20);
 	
 	
 	/*************************************************************************
@@ -161,4 +170,10 @@ public class MCalendar extends X_C_Calendar
 		return year;
 	}	//	createYear
 	
+	@Override
+	public MCalendar markImmutable() 
+	{
+		return (MCalendar) super.markImmutable();
+	}
+
 }	//	MCalendar

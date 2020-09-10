@@ -33,10 +33,10 @@ import java.util.logging.Level;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MImage;
 import org.compiere.model.X_AD_PrintTableFormat;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.POCopyCache;
 
 /**
  *	Table Print Format
@@ -52,7 +52,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -357529310875242899L;
+	private static final long serialVersionUID = -1608017405401341288L;
 
 	/**
 	 *	Standard Constructor
@@ -589,8 +589,8 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 	
 	/*************************************************************************/
 
-	private static CCache<Integer,MPrintTableFormat>	s_cache
-		= new CCache<Integer,MPrintTableFormat>(Table_Name, 3);
+	private static POCopyCache<Integer,MPrintTableFormat>	s_cache
+		= new POCopyCache<Integer,MPrintTableFormat>(Table_Name, 3);
 	/** Static Logger					*/
 	private static CLogger 	s_log = CLogger.getCLogger(MPrintTableFormat.class);
 
@@ -604,7 +604,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 	static public MPrintTableFormat get (Properties ctx, int AD_PrintTableFormat_ID, Font standard_font)
 	{
 		Integer ii = Integer.valueOf(AD_PrintTableFormat_ID);
-		MPrintTableFormat tf = (MPrintTableFormat)s_cache.get(ii);
+		MPrintTableFormat tf = s_cache.get(ii, e -> new MPrintTableFormat(ctx, e));
 		if (tf == null)
 		{
 			if (AD_PrintTableFormat_ID == 0)
@@ -617,11 +617,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 				if (tf.get_ID() != AD_PrintTableFormat_ID)
 					return null;
 			}
-			s_cache.put(tf.get_ID(), new MPrintTableFormat(Env.getCtx(), tf));
-		}
-		else
-		{
-			tf = new MPrintTableFormat(ctx, tf);
+			s_cache.put(tf.get_ID(), tf, e -> new MPrintTableFormat(Env.getCtx(), e));
 		}
 		tf.setStandard_Font(standard_font);
 		return tf;

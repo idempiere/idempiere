@@ -19,11 +19,11 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.IBAN;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 
 /**
@@ -37,10 +37,20 @@ public class MBankAccount extends X_C_BankAccount
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -110709935374907275L;
+	private static final long serialVersionUID = -3792366454862697171L;
 
 	/**
-	 * 	Get BankAccount from Cache
+	 * 	Get BankAccount from Cache (immutable)
+	 *	@param C_BankAccount_ID id
+	 *	@return MBankAccount
+	 */
+	public static MBankAccount get (int C_BankAccount_ID)
+	{
+		return get(Env.getCtx(), C_BankAccount_ID);
+	}
+	
+	/**
+	 * 	Get BankAccount from Cache (immutable)
 	 *	@param ctx context
 	 *	@param C_BankAccount_ID id
 	 *	@return MBankAccount
@@ -48,21 +58,21 @@ public class MBankAccount extends X_C_BankAccount
 	public static MBankAccount get (Properties ctx, int C_BankAccount_ID)
 	{
 		Integer key = Integer.valueOf(C_BankAccount_ID);
-		MBankAccount retValue = (MBankAccount) s_cache.get (key);
+		MBankAccount retValue = s_cache.get (ctx, key, e -> new MBankAccount(ctx, e));
 		if (retValue != null)
-			return new MBankAccount(ctx, retValue);
+			return retValue;
 		retValue = new MBankAccount (ctx, C_BankAccount_ID, (String)null);
 		if (retValue.get_ID () == C_BankAccount_ID)
 		{
-			s_cache.put (key, new MBankAccount(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MBankAccount(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MBankAccount>	s_cache
-		= new CCache<Integer,MBankAccount>(Table_Name, 5);
+	private static ImmutableIntPOCache<Integer,MBankAccount>	s_cache
+		= new ImmutableIntPOCache<Integer,MBankAccount>(Table_Name, 5);
 	
 	/**
 	 * 	Bank Account Model
@@ -192,5 +202,11 @@ public class MBankAccount extends X_C_BankAccount
 			return insert_Accounting("C_BankAccount_Acct", "C_AcctSchema_Default", null);
 		return success;
 	}	//	afterSave
+
+	@Override
+	public MBankAccount markImmutable() 
+	{
+		return (MBankAccount) super.markImmutable();
+	}
 
 }	//	MBankAccount

@@ -19,8 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 
 public class MRefTable extends X_AD_Ref_Table
@@ -28,7 +28,7 @@ public class MRefTable extends X_AD_Ref_Table
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3595900192339578282L;
+	private static final long serialVersionUID = 5068032076487795624L;
 
 	/**
 	 * 	Standard Constructor
@@ -98,15 +98,31 @@ public class MRefTable extends X_AD_Ref_Table
 	}
 
 	/**	Ref Table Cache				*/
-	private static CCache<Integer,MRefTable>	s_cache = new CCache<Integer,MRefTable>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MRefTable>	s_cache = new ImmutableIntPOCache<Integer,MRefTable>(Table_Name, 20);
 
+	/**
+	 * 	Get from Cache
+	 *	@param AD_Reference_ID id
+	 *	@return category
+	 */
+	public static MRefTable get (int AD_Reference_ID)
+	{
+		return get(Env.getCtx(), AD_Reference_ID);
+	}
+	
+	/**
+	 * 	Get from Cache (immutable)
+	 *	@param ctx context
+	 *	@param AD_Reference_ID id
+	 *	@return category
+	 */
 	public static MRefTable get (Properties ctx, int AD_Reference_ID)
 	{
 		return get (ctx, AD_Reference_ID, null);
 	}
 
 	/**
-	 * 	Get from Cache
+	 * 	Get from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Reference_ID id
 	 *  @param trxName trx
@@ -115,14 +131,14 @@ public class MRefTable extends X_AD_Ref_Table
 	public static MRefTable get (Properties ctx, int AD_Reference_ID, String trxName)
 	{
 		Integer ii = Integer.valueOf(AD_Reference_ID);
-		MRefTable retValue = (MRefTable)s_cache.get(ii);
+		MRefTable retValue = s_cache.get(ctx, ii, e -> new MRefTable(ctx, e));
 		if (retValue != null) {
-			return new MRefTable(ctx, retValue, trxName);
+			return retValue;
 		}
 		retValue = new MRefTable (ctx, AD_Reference_ID, trxName);
 		if (retValue.get_ID () == AD_Reference_ID)
 		{
-			s_cache.put (AD_Reference_ID, new MRefTable(Env.getCtx(), retValue));
+			s_cache.put (AD_Reference_ID, retValue, e -> new MRefTable(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;

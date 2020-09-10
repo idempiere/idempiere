@@ -39,7 +39,6 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_PrintFormat;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -47,6 +46,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	AD_PrintFormat - Print Format Model.
@@ -60,7 +60,7 @@ public class MPrintFormat extends X_AD_PrintFormat
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2979978408305853342L;
+	private static final long serialVersionUID = -5693788724825608611L;
 
 	/**
 	 *	Public Constructor.
@@ -86,6 +86,8 @@ public class MPrintFormat extends X_AD_PrintFormat
 
 	public void reloadItems() {
 		m_items = getItems();
+		if (is_Immutable() && m_items != null && m_items.length > 0)
+			Arrays.stream(m_items).forEach(e -> e.markImmutable());
 	}
 	
 	/**
@@ -469,6 +471,8 @@ public class MPrintFormat extends X_AD_PrintFormat
 	{
 		super.setAD_PrintTableFormat_ID(AD_PrintTableFormat_ID);
 		m_tFormat = MPrintTableFormat.get (getCtx(), AD_PrintTableFormat_ID, getAD_PrintFont_ID());
+		if (is_Immutable())
+			m_tFormat.markImmutable();
 	}	//	getAD_PrintTableFormat_ID
 
 	/**
@@ -478,7 +482,11 @@ public class MPrintFormat extends X_AD_PrintFormat
 	public MPrintTableFormat getTableFormat()
 	{
 		if (m_tFormat == null)
+		{
 			m_tFormat = MPrintTableFormat.get(getCtx(), getAD_PrintTableFormat_ID(), getAD_PrintFont_ID());
+			if (is_Immutable())
+				m_tFormat.markImmutable();
+		}
 		return m_tFormat;
 	}	//	getTableFormat
 
@@ -1125,10 +1133,20 @@ public class MPrintFormat extends X_AD_PrintFormat
 	}
 
 	/** Cached Formats						*/
-	static private CCache<Integer,MPrintFormat> s_formats = new CCache<Integer,MPrintFormat>(Table_Name, 30);
+	static private ImmutableIntPOCache<Integer,MPrintFormat> s_formats = new ImmutableIntPOCache<Integer,MPrintFormat>(Table_Name, 30);
 
 	/**
-	 * 	Get Format
+	 * 	Get Format from cache (immutable)
+	 * 	@param AD_PrintFormat_ID id
+	 * 	@return Format
+	 */
+	static public MPrintFormat get (int AD_PrintFormat_ID)
+	{
+		return get(Env.getCtx(), AD_PrintFormat_ID, false);
+	}
+	
+	/**
+	 * 	Get Format from cache (immutable)
 	 * 	@param ctx context
 	 * 	@param AD_PrintFormat_ID id
 	 *  @param readFromDisk refresh from disk
@@ -1139,19 +1157,19 @@ public class MPrintFormat extends X_AD_PrintFormat
 		Integer key = Integer.valueOf(AD_PrintFormat_ID);
 		MPrintFormat pf = null;
 		if (!readFromDisk)
-			pf = (MPrintFormat)s_formats.get(key);
+			pf = s_formats.get(ctx, key, e -> new MPrintFormat(ctx, e));
 		if (pf == null)
 		{
 			pf = new MPrintFormat (ctx, AD_PrintFormat_ID, (String)null);
 			if (pf.get_ID() == AD_PrintFormat_ID)
 			{
-				s_formats.put(key, new MPrintFormat(Env.getCtx(), pf));
+				s_formats.put(key, pf, e -> new MPrintFormat(Env.getCtx(), e));
 				return pf;
 			}
 			return null;
 		}
 
-		return new MPrintFormat(ctx, pf);
+		return pf;
 	}	//	get
 
 	/**
@@ -1299,6 +1317,17 @@ public class MPrintFormat extends X_AD_PrintFormat
 	public static int getZoomWindowID(int AD_PrintFormat_ID) {
 		int pfAD_Window_ID = Env.getZoomWindowID(Table_ID, AD_PrintFormat_ID);
 		return pfAD_Window_ID;
+	}
+
+	@Override
+	public MPrintFormat markImmutable() 
+	{
+		MPrintFormat pf = (MPrintFormat) super.markImmutable();
+		if (m_items != null && m_items.length > 0)
+			Arrays.stream(m_items).forEach(e -> e.markImmutable());
+		if (m_tFormat != null)
+			m_tFormat.markImmutable();
+		return pf;
 	}
 
 	/**************************************************************************

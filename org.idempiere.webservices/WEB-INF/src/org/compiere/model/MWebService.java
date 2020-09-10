@@ -33,14 +33,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Web Services Model
@@ -55,7 +54,17 @@ public class MWebService extends X_WS_WebService
 	private static final long serialVersionUID = 3561409141850981248L;
 
 	/**
-	 * 	Get MWebService from Cache
+	 * 	Get MWebService from Cache (immutable)
+	 * 	@param WS_WebService_ID id
+	 *	@return MWebService
+	 */
+	public static MWebService get (int WS_WebService_ID)
+	{
+		return get(Env.getCtx(), WS_WebService_ID);
+	}
+	
+	/**
+	 * 	Get MWebService from Cache (immutable)
 	 *	@param ctx context
 	 * 	@param WS_WebService_ID id
 	 *	@return MWebService
@@ -63,13 +72,13 @@ public class MWebService extends X_WS_WebService
 	public static MWebService get (Properties ctx, int WS_WebService_ID)
 	{
 		Integer key = Integer.valueOf(WS_WebService_ID);
-		MWebService retValue = (MWebService) s_cache.get (key);
+		MWebService retValue = s_cache.get (ctx, key, e -> new MWebService(ctx, e));
 		if (retValue != null)
-			return new MWebService(ctx, retValue);
+			return retValue;
 		retValue = new MWebService (ctx, WS_WebService_ID, (String)null);
 		if (retValue.get_ID () == WS_WebService_ID)
 		{
-			s_cache.put (key, new MWebService(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MWebService(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
@@ -81,14 +90,13 @@ public class MWebService extends X_WS_WebService
 	 *	@param webServiceValue
 	 *	@return Table
 	 */
-	public static synchronized MWebService get (Properties ctx, String webServiceValue)
+	public static MWebService get (Properties ctx, String webServiceValue)
 	{
 		if (webServiceValue == null)
 			return null;
-		Iterator<MWebService> it = s_cache.values().iterator();
-		while (it.hasNext())
+		MWebService[] it = s_cache.values().toArray(new MWebService[0]);
+		for (MWebService retValue : it)
 		{
-			MWebService retValue = it.next();
 			if (webServiceValue.equals(retValue.getValue())) 
 				return retValue;
 		}
@@ -158,6 +166,8 @@ public class MWebService extends X_WS_WebService
 			pstmt = null;
 		}
 		//
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 		m_methods = new MWebServiceMethod[list.size ()];
 		list.toArray (m_methods);
 		return m_methods;
@@ -183,7 +193,7 @@ public class MWebService extends X_WS_WebService
 	}	//	getMethod
 	
 	/**	Cache						*/
-	private static CCache<Integer,MWebService>	s_cache	= new CCache<Integer,MWebService>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MWebService>	s_cache	= new ImmutableIntPOCache<Integer,MWebService>(Table_Name, 20);
 	
 	/**	Static Logger	*/
 	private static final CLogger	s_log	= CLogger.getCLogger (MWebService.class);
@@ -247,4 +257,14 @@ public class MWebService extends X_WS_WebService
 		copyPO(copy);
 		this.m_methods = copy.m_methods != null ? Arrays.stream(copy.m_methods).map(e -> {return new MWebServiceMethod(ctx, e, trxName);}).toArray(MWebServiceMethod[]::new) : null;
 	}
+	
+	@Override
+	public MWebService markImmutable() 
+	{
+		MWebService ws = (MWebService) super.markImmutable();
+		if (m_methods != null && m_methods.length > 0)
+			Arrays.stream(m_methods).forEach(e -> e.markImmutable());
+		return ws;
+	}
+
 }	//	MWebService

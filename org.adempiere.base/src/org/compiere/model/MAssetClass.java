@@ -6,9 +6,9 @@ import java.util.Calendar;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.fa.feature.UseLifeImpl;
 
 /**	Asset Class
@@ -17,10 +17,11 @@ import org.idempiere.fa.feature.UseLifeImpl;
  */
 public class MAssetClass extends X_A_Asset_Class
 {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6526341869523579715L;
+	private static final long serialVersionUID = -7805056592418891872L;
 
 	/**
 	 *
@@ -72,11 +73,19 @@ public class MAssetClass extends X_A_Asset_Class
 	}
 	
 	/**		*/
-	private static CCache<Integer, MAssetClass> s_cache = new CCache<Integer, MAssetClass>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer, MAssetClass> s_cache = new ImmutableIntPOCache<Integer, MAssetClass>(Table_Name, 20);
 
 	/**	Get Asset Class from cache
+	 *	@param id A_Asset_Class_ID
+	 *	@return MAssetClass or null if not found
+	 */
+	public static MAssetClass get(int id) {
+		return get(Env.getCtx(), id);
+	}
+	
+	/**	Get Asset Class from cache
 	 *	@param ctx	context
-	 *	@param id		A_Asset_Class_ID
+	 *	@param id A_Asset_Class_ID
 	 *	@return MAssetClass or null if not found
 	 */
 	public static MAssetClass get(Properties ctx, int id) {
@@ -84,17 +93,17 @@ public class MAssetClass extends X_A_Asset_Class
 			return null;
 		}
 		
-		MAssetClass assetClass = s_cache.get(id);
+		MAssetClass assetClass = s_cache.get(ctx, id, e -> new MAssetClass(ctx, e));
 		if (assetClass == null) {
 			assetClass = new MAssetClass(ctx, id, (String)null);
 			if (assetClass.get_ID() == id) {
-				s_cache.put(id, new MAssetClass(Env.getCtx(), assetClass));
+				s_cache.put(id, assetClass, e -> new MAssetClass(Env.getCtx(), e));
 				return assetClass;
 			}
 			return null;
 		}		
 		
-		return new MAssetClass(ctx, assetClass);
+		return assetClass;
 	} // get
 	
 	/**
@@ -242,4 +251,10 @@ public class MAssetClass extends X_A_Asset_Class
 		}
 		return true;
 	}
+	
+	@Override
+	public MAssetClass markImmutable() {
+		return (MAssetClass) super.markImmutable();
+	}
+
 }

@@ -25,10 +25,10 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Discount Schema Model
@@ -41,45 +41,42 @@ public class MDiscountSchema extends X_M_DiscountSchema
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3314884382853756019L;
+	private static final long serialVersionUID = 4916780751688051566L;
 
 	/**
-	 * 	Get Discount Schema from Cache
-	 *	@param ctx ignore
-	 *	@param M_DiscountSchema_ID id
-	 *	@return MDiscountSchema
-	 *  @deprecated
-	 */
-	public static MDiscountSchema get (Properties ctx, int M_DiscountSchema_ID)
-	{
-		return get(M_DiscountSchema_ID);
-	}
-	
-	/**
-	 * 	Get Discount Schema from Cache
+	 * 	Get Discount Schema from Cache (immutable)
 	 *	@param M_DiscountSchema_ID id
 	 *	@return MDiscountSchema
 	 */
 	public static MDiscountSchema get (int M_DiscountSchema_ID)
 	{
-		Properties ctx = Env.getCtx();
+		return get(Env.getCtx(), M_DiscountSchema_ID);
+	}
+	
+	/**
+	 * 	Get Discount Schema from Cache (immutable)
+	 *  @param ctx context
+	 *	@param M_DiscountSchema_ID id
+	 *	@return MDiscountSchema
+	 */
+	public static MDiscountSchema get (Properties ctx, int M_DiscountSchema_ID)
+	{
 		Integer key = Integer.valueOf(M_DiscountSchema_ID);
-		MDiscountSchema retValue = (MDiscountSchema) s_cache.get (key);
+		MDiscountSchema retValue = s_cache.get (ctx, key, e -> new MDiscountSchema(ctx, e));
 		if (retValue != null)
 			return retValue;
 		retValue = new MDiscountSchema (ctx, M_DiscountSchema_ID, (String)null);
 		if (retValue.get_ID () == M_DiscountSchema_ID)
 		{
-			retValue.markImmutable();
-			s_cache.put (key, retValue);
+			s_cache.put (key, retValue, e -> new MDiscountSchema(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MDiscountSchema>	s_cache
-		= new CCache<Integer,MDiscountSchema>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MDiscountSchema>	s_cache
+		= new ImmutableIntPOCache<Integer,MDiscountSchema>(Table_Name, 20);
 
 	
 	/**************************************************************************
@@ -398,11 +395,12 @@ public class MDiscountSchema extends X_M_DiscountSchema
 	}	//	reSeq
 
 	@Override
-	public void markImmutable() {
+	public MDiscountSchema markImmutable() {
 		super.markImmutable();
 		if (m_lines != null)
 			Arrays.stream(m_lines).forEach(e -> {e.markImmutable();});
 		if (m_breaks != null)
 			Arrays.stream(m_breaks).forEach(e -> {e.markImmutable();});
+		return this;
 	}	
 }	//	MDiscountSchema

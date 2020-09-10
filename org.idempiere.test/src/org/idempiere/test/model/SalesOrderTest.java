@@ -34,6 +34,7 @@ import java.sql.Timestamp;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
@@ -277,5 +278,44 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		line1.load(getTrxName());
 		assertEquals(0, line1.getQtyReserved().intValue());		
+	}
+	
+	@Test
+	public void testPOSOrder() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		//Joe Block
+		order.setBPartner(MBPartner.get(Env.getCtx(), 118));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_POS);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDatePromised(today);
+		order.saveEx();
+		
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		//Azalea Bush
+		line1.setProduct(MProduct.get(Env.getCtx(), 128));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		line1.load(getTrxName());
+		assertEquals(0, line1.getQtyReserved().intValue());
+		assertEquals(1, line1.getQtyDelivered().intValue());
+		assertEquals(1, line1.getQtyInvoiced().intValue());
+		
+		MInOut[] shipments = order.getShipments();
+		assertEquals(1, shipments.length);
+		assertEquals(DocAction.STATUS_Completed, shipments[0].getDocStatus());
+		
+		MInvoice[] invoices = order.getInvoices();
+		assertEquals(1, invoices.length);
+		assertEquals(DocAction.STATUS_Completed, invoices[0].getDocStatus());
 	}
 }

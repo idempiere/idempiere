@@ -25,9 +25,9 @@ import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.FillMandatoryException;
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 
 /**
@@ -46,12 +46,22 @@ public class MResourceType extends X_S_ResourceType
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6303797933825680667L;
+	private static final long serialVersionUID = 1738229111191830237L;
 	/** Cache */
-	private static CCache<Integer, MResourceType> s_cache = new CCache<Integer, MResourceType>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer, MResourceType> s_cache = new ImmutableIntPOCache<Integer, MResourceType>(Table_Name, 20);
 	
 	/**
-	 * Get from Cache
+	 * Get from Cache (immutable)
+	 * @param S_ResourceType_ID
+	 * @return MResourceType
+	 */
+	public static MResourceType get(int S_ResourceType_ID) 
+	{
+		return get(Env.getCtx(), S_ResourceType_ID);
+	}
+	
+	/**
+	 * Get from Cache (immutable)
 	 * @param ctx
 	 * @param S_ResourceType_ID
 	 * @return MResourceType
@@ -61,16 +71,16 @@ public class MResourceType extends X_S_ResourceType
 		if (S_ResourceType_ID <= 0)
 			return null;
 		
-		MResourceType type = s_cache.get(S_ResourceType_ID);
+		MResourceType type = s_cache.get(ctx, S_ResourceType_ID, e -> new MResourceType(ctx, e));
 		if (type == null) {
 			type = new MResourceType(ctx, S_ResourceType_ID, (String)null);
 			if (type.get_ID() == S_ResourceType_ID) {
-				s_cache.put(S_ResourceType_ID, new MResourceType(Env.getCtx(), type));
+				s_cache.put(S_ResourceType_ID, type, e -> new MResourceType(Env.getCtx(), e));
 				return type;
 			}
 			return null;
 		}
-		return new MResourceType(ctx, type);
+		return type;
 	}
 	
 	/**

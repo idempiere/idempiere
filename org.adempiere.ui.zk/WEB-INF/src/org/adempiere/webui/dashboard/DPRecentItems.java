@@ -175,7 +175,11 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
     private void riDBremove(int AD_RecentItem_ID)
 	{
     	MRecentItem ri = MRecentItem.get(Env.getCtx(), AD_RecentItem_ID);
-    	ri.deleteEx(true);
+    	if (ri.get_ID() == AD_RecentItem_ID) 
+    	{
+    		ri = new MRecentItem(Env.getCtx(), ri);
+    		ri.deleteEx(true);
+    	}
 	}
 
     public void onEvent(Event event)

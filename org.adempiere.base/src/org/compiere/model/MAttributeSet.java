@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.exceptions.DBException;
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *  Product Attribute Set
@@ -47,6 +47,16 @@ public class MAttributeSet extends X_M_AttributeSet
 
 	/**
 	 * 	Get MAttributeSet from Cache
+	 *	@param M_AttributeSet_ID id
+	 *	@return MAttributeSet
+	 */
+	public static MAttributeSet get (int M_AttributeSet_ID)
+	{
+		return get(Env.getCtx(), M_AttributeSet_ID);
+	}
+	
+	/**
+	 * 	Get MAttributeSet from Cache
 	 *	@param ctx context
 	 *	@param M_AttributeSet_ID id
 	 *	@return MAttributeSet
@@ -54,21 +64,21 @@ public class MAttributeSet extends X_M_AttributeSet
 	public static MAttributeSet get (Properties ctx, int M_AttributeSet_ID)
 	{
 		Integer key = Integer.valueOf(M_AttributeSet_ID);
-		MAttributeSet retValue = (MAttributeSet) s_cache.get (key);
+		MAttributeSet retValue = s_cache.get (ctx, key, e -> new MAttributeSet(ctx, e));
 		if (retValue != null)
-			return new MAttributeSet(ctx, retValue);
+			return retValue;
 		retValue = new MAttributeSet (ctx, M_AttributeSet_ID, (String)null);
 		if (retValue.get_ID () == M_AttributeSet_ID)
 		{
-			s_cache.put (key, new MAttributeSet(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MAttributeSet(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MAttributeSet> s_cache
-		= new CCache<Integer,MAttributeSet> (Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MAttributeSet> s_cache
+		= new ImmutableIntPOCache<Integer,MAttributeSet> (Table_Name, 20);
 	
 	
 	/**
@@ -199,11 +209,15 @@ public class MAttributeSet extends X_M_AttributeSet
 			{
 				m_instanceAttributes = new MAttribute[list.size()];
 				list.toArray (m_instanceAttributes);
+				if (m_instanceAttributes.length > 0 && is_Immutable())
+					Arrays.stream(m_instanceAttributes).forEach(e -> e.markImmutable());
 			}
 			else
 			{
 				m_productAttributes = new MAttribute[list.size()];
 				list.toArray (m_productAttributes);
+				if (m_productAttributes.length > 0 && is_Immutable())
+					Arrays.stream(m_productAttributes).forEach(e -> e.markImmutable());
 			}
 		}
 		//
@@ -483,4 +497,14 @@ public class MAttributeSet extends X_M_AttributeSet
 		return success;
 	}	//	afterSave
 	
+	@Override
+	public MAttributeSet markImmutable() {
+		MAttributeSet mas = (MAttributeSet) super.markImmutable();
+		if (m_instanceAttributes != null && m_instanceAttributes.length > 0)
+			Arrays.stream(m_instanceAttributes).forEach(e -> e.markImmutable());
+		if (m_productAttributes != null && m_productAttributes.length > 0)
+			Arrays.stream(m_productAttributes).forEach(e -> e.markImmutable());
+		return mas;
+	}
+
 }	//	MAttributeSet

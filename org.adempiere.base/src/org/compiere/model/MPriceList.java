@@ -18,12 +18,11 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Price List Model
@@ -39,10 +38,32 @@ public class MPriceList extends X_M_PriceList
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5096935348390226068L;
+	private static final long serialVersionUID = 7128840936482927934L;
+
 
 	/**
-	 * 	Get Price List (cached)
+	 * 	Get Price List (cached) (immutable)
+	 *	@param M_PriceList_ID id
+	 *	@return PriceList
+	 */
+	public static MPriceList get (int M_PriceList_ID)
+	{
+		return get(M_PriceList_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get Price List (cached) (immutable)
+	 *	@param M_PriceList_ID id
+	 *	@param trxName transaction
+	 *	@return PriceList
+	 */
+	public static MPriceList get (int M_PriceList_ID, String trxName)
+	{
+		return get(Env.getCtx(), M_PriceList_ID, trxName);
+	}
+	
+	/**
+	 * 	Get Price List (cached) (immutable)
 	 *	@param ctx context
 	 *	@param M_PriceList_ID id
 	 *	@param trxName transaction
@@ -51,14 +72,18 @@ public class MPriceList extends X_M_PriceList
 	public static MPriceList get (Properties ctx, int M_PriceList_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(M_PriceList_ID);
-		MPriceList retValue = s_cache.get(key);
+		MPriceList retValue = s_cache.get(ctx, key, e -> new MPriceList(ctx, e));
 		if (retValue == null)
 		{
 			retValue = new MPriceList (ctx, M_PriceList_ID, trxName);
-			s_cache.put(key, new MPriceList(Env.getCtx(), retValue));
-			return retValue;
+			if (retValue.get_ID() == M_PriceList_ID)
+			{
+				s_cache.put(key, retValue, e -> new MPriceList(Env.getCtx(), e));
+				return retValue;
+			}
+			return null;
 		}
-		return new MPriceList(ctx, retValue, trxName);		
+		return retValue;		
 	}	//	get
 	
 	/**
@@ -70,12 +95,10 @@ public class MPriceList extends X_M_PriceList
 	public static MPriceList getDefault (Properties ctx, boolean IsSOPriceList)
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
-		MPriceList retValue = null;
 		//	Search for it in cache
-		Iterator<MPriceList> it = s_cache.values().iterator();
-		while (it.hasNext())
+		MPriceList[] it = s_cache.values().toArray(new MPriceList[0]);
+		for(MPriceList retValue : it)
 		{
-			retValue = it.next();
 			if (retValue.isDefault()
 					&& retValue.getAD_Client_ID() == AD_Client_ID
 					&& retValue.isSOPriceList() == IsSOPriceList)
@@ -86,7 +109,7 @@ public class MPriceList extends X_M_PriceList
 		
 		//	Get from DB
 		final String whereClause = "AD_Client_ID=? AND IsDefault=? AND IsSOPriceList=?";
-		retValue = new Query(ctx, Table_Name, whereClause, null)
+		MPriceList retValue = new Query(ctx, Table_Name, whereClause, null)
 						.setParameters(AD_Client_ID, "Y", IsSOPriceList ? "Y" : "N")
 						.setOnlyActiveRecords(true)
 						.setOrderBy("M_PriceList_ID")
@@ -95,7 +118,7 @@ public class MPriceList extends X_M_PriceList
 		//	Return value
 		if (retValue != null)
 		{
-			s_cache.put(retValue.get_ID(), retValue);
+			s_cache.put(retValue.get_ID(), retValue, e -> new MPriceList(Env.getCtx(), e));
 		}
 		return retValue;
 	}	//	getDefault
@@ -116,12 +139,10 @@ public class MPriceList extends X_M_PriceList
 
 		int M_Currency_ID = currency.get_ID();
 		
-		MPriceList retValue = null;
 		//	Search for it in cache
-		Iterator<MPriceList> it = s_cache.values().iterator();
-		while (it.hasNext())
+		MPriceList[] it = s_cache.values().toArray(new MPriceList[0]);
+		for (MPriceList retValue : it)
 		{
-			retValue = it.next();
 			if (retValue.isDefault()
 					&& retValue.getAD_Client_ID() == AD_Client_ID
 					&& retValue.isSOPriceList() == IsSOPriceList
@@ -134,7 +155,7 @@ public class MPriceList extends X_M_PriceList
 		
 		//	Get from DB
 		final String whereClause = "AD_Client_ID=? AND IsDefault=? AND IsSOPriceList=? AND C_Currency_ID=?";
-		retValue = new Query(ctx, Table_Name, whereClause, null)
+		MPriceList retValue = new Query(ctx, Table_Name, whereClause, null)
 						.setParameters(AD_Client_ID, "Y", IsSOPriceList ? "Y" : "N", M_Currency_ID)
 						.setOnlyActiveRecords(true)
 						.setOrderBy("M_PriceList_ID")
@@ -143,7 +164,7 @@ public class MPriceList extends X_M_PriceList
 		//	Return value
 		if (retValue != null)
 		{
-			s_cache.put(retValue.get_ID(), retValue);
+			s_cache.put(retValue.get_ID(), retValue, e -> new MPriceList(Env.getCtx(), e));
 		}
 		return retValue;
 	}
@@ -173,7 +194,7 @@ public class MPriceList extends X_M_PriceList
 	}	//	getPricePrecision
 	
 	/** Cache of Price Lists			*/
-	private static CCache<Integer,MPriceList> s_cache = new CCache<Integer,MPriceList>(Table_Name, 5, 5);
+	private static ImmutableIntPOCache<Integer,MPriceList> s_cache = new ImmutableIntPOCache<Integer,MPriceList>(Table_Name, 5, 5);
 	
 	
 	/**************************************************************************
@@ -285,6 +306,8 @@ public class MPriceList extends X_M_PriceList
 			if (log.isLoggable(Level.INFO)) log.info("None found M_PriceList_ID=" + getM_PriceList_ID() + " - " + valid);
 		else
 			if (log.isLoggable(Level.FINE)) log.fine(m_plv.toString());
+		if (m_plv != null && is_Immutable())
+			m_plv.markImmutable();
 		return m_plv;
 	}	//	getPriceListVersion
 
@@ -302,4 +325,12 @@ public class MPriceList extends X_M_PriceList
 		return m_precision.intValue();
 	}	//	getStandardPrecision
 	
+	@Override
+	public MPriceList markImmutable() {
+		MPriceList pl = (MPriceList) super.markImmutable();
+		if (m_plv != null)
+			m_plv.markImmutable();
+		return pl;
+	}
+
 }	//	MPriceList

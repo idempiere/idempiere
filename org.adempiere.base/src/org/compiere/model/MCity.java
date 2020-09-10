@@ -22,9 +22,9 @@ import java.text.Collator;
 import java.util.Comparator;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Location City Model (Value Object)
@@ -37,10 +37,20 @@ public class MCity extends X_C_City
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8905525315954621942L;
+	private static final long serialVersionUID = -3716470269471334172L;
 
 	/**
-	 * 	Get City (cached)
+	 * 	Get City (cached) (immutable)
+	 *	@param C_City_ID ID
+	 *	@return City
+	 */
+	public static MCity get (int C_City_ID)
+	{
+		return get(Env.getCtx(), C_City_ID);
+	}
+	
+	/**
+	 * 	Get City (cached) (immutable)
 	 * 	@param ctx context
 	 *	@param C_City_ID ID
 	 *	@return City
@@ -48,20 +58,20 @@ public class MCity extends X_C_City
 	public static MCity get (Properties ctx, int C_City_ID)
 	{
 		Integer key = Integer.valueOf(C_City_ID);
-		MCity r = s_Cities.get(key);
+		MCity r = s_Cities.get(ctx, key, e -> new MCity(ctx, e));
 		if (r != null)
-			return new MCity(ctx, r);
+			return r;
 		r = new MCity (ctx, C_City_ID, (String)null);
 		if (r.getC_City_ID() == C_City_ID)
 		{
-			s_Cities.put(key, new MCity(Env.getCtx(), r));
+			s_Cities.put(key, r, e -> new MCity(Env.getCtx(), e));
 			return r;
 		}
 		return null;
 	}	//	get
 
 	/**	City Cache				*/
-	private static CCache<Integer,MCity> s_Cities =  new CCache<Integer,MCity>(Table_Name, 20);;
+	private static ImmutableIntPOCache<Integer,MCity> s_Cities =  new ImmutableIntPOCache<Integer,MCity>(Table_Name, 20);;
 	/**	Static Logger				*/
 	@SuppressWarnings("unused")
 	private static CLogger		s_log = CLogger.getCLogger (MCity.class);

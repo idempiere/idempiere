@@ -35,13 +35,13 @@ import org.adempiere.base.Service;
 import org.adempiere.model.GenericPO;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Persistent Table Model
@@ -64,12 +64,22 @@ public class MTable extends X_AD_Table
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4736882280922026772L;
+	private static final long serialVersionUID = -4037560922339534982L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
 	/**
-	 * 	Get Table from Cache
+	 * 	Get Table from Cache (immutable)
+	 *	@param AD_Table_ID id
+	 *	@return MTable
+	 */
+	public static MTable get (int AD_Table_ID)
+	{
+		return get(Env.getCtx(), AD_Table_ID);
+	}
+	
+	/** 
+	 * 	Get Table from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Table_ID id
 	 *	@return MTable
@@ -80,23 +90,23 @@ public class MTable extends X_AD_Table
 	}	//	get
 
 	/**
-	 * 	Get Table from Cache
+	 * 	Get Table from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Table_ID id
 	 *	@param trxName transaction
 	 *	@return MTable
 	 */
-	public static MTable get (Properties ctx, int AD_Table_ID, String trxName)
+	public static synchronized MTable get (Properties ctx, int AD_Table_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(AD_Table_ID);
-		MTable retValue = s_cache.get (key);
+		MTable retValue = s_cache.get (ctx, key, e -> new MTable(ctx, e));
 		if (retValue != null) 
-			return new MTable(ctx, retValue, trxName);
+			return retValue;
 		
 		retValue = new MTable (ctx, AD_Table_ID, trxName);
 		if (retValue.get_ID () == AD_Table_ID) 
 		{
-			s_cache.put (key, new MTable(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MTable(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
@@ -178,7 +188,7 @@ public class MTable extends X_AD_Table
 
 
 	/**	Cache						*/
-	private static CCache<Integer,MTable> s_cache = new CCache<Integer,MTable>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MTable> s_cache = new ImmutableIntPOCache<Integer,MTable>(Table_Name, 20);
 
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MTable.class);
@@ -305,6 +315,8 @@ public class MTable extends X_AD_Table
 			rs = pstmt.executeQuery ();
 			while (rs.next ()) {
 				MColumn column = new MColumn (getCtx(), rs, get_TrxName());
+				if (is_Immutable())
+					column.markImmutable();
 				list.add (column);
 				m_columnNameMap.put(column.getColumnName().toUpperCase(), list.size() - 1);
 				m_columnIdMap.put(column.getAD_Column_ID(), list.size() - 1);
@@ -320,6 +332,8 @@ public class MTable extends X_AD_Table
 			rs = null; pstmt = null;
 		}
 		//
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 		m_columns = new MColumn[list.size ()];
 		list.toArray (m_columns);
 		return m_columns;
@@ -667,7 +681,9 @@ public class MTable extends X_AD_Table
 		query.setParameters(getAD_Table_ID());
 		query.setOrderBy(MViewComponent.COLUMNNAME_SeqNo);
 		query.setOnlyActiveRecords(true);
-		List<MTableIndex> list = query.<MTableIndex>list();
+		List<MViewComponent> list = query.list();
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 		
 		m_viewComponents = new MViewComponent[list.size()];
 		list.toArray(m_viewComponents);
@@ -706,4 +722,15 @@ public class MTable extends X_AD_Table
 				tablename.equals("M_AttributeSetInstance"));
 	}
 
+	@Override
+	public MTable markImmutable() {
+		MTable tbl = (MTable) super.markImmutable();
+		if (m_columns != null && m_columns.length > 0)
+			Arrays.stream(m_columns).forEach(e -> e.markImmutable());
+		if (m_viewComponents != null && m_viewComponents.length > 0)
+			Arrays.stream(m_viewComponents).forEach(e -> e.markImmutable());
+		return tbl;
+	}
+
+	
 }	//	MTable

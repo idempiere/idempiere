@@ -34,13 +34,13 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.DBException;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Persistent Column Model
@@ -53,15 +53,31 @@ public class MColumn extends X_AD_Column
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5934334786732835926L;
+	private static final long serialVersionUID = -1841918268550762201L;
 
+	/**
+	 * 	Get MColumn from Cache (immutable)
+	 * 	@param AD_Column_ID id
+	 *	@return MColumn
+	 */
+	public static MColumn get (int AD_Column_ID)
+	{
+		return get(Env.getCtx(), AD_Column_ID);
+	}
+	
+	/**
+	 * 	Get MColumn from Cache (immutable)
+	 *	@param ctx context
+	 * 	@param AD_Column_ID id
+	 *	@return MColumn
+	 */
 	public static MColumn get (Properties ctx, int AD_Column_ID)
 	{
 		return get(ctx, AD_Column_ID, null);
 	}
 
 	/**
-	 * 	Get MColumn from Cache
+	 * 	Get MColumn from Cache (immutable)
 	 *	@param ctx context
 	 * 	@param AD_Column_ID id
 	 * 	@param trxName trx
@@ -70,14 +86,14 @@ public class MColumn extends X_AD_Column
 	public static MColumn get(Properties ctx, int AD_Column_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(AD_Column_ID);
-		MColumn retValue = (MColumn) s_cache.get (key);
+		MColumn retValue = (MColumn) s_cache.get (ctx, key, e -> new MColumn(ctx, e));
 		if (retValue != null) 
-			return new MColumn(ctx, retValue, trxName);
+			return retValue;
 		
 		retValue = new MColumn (ctx, AD_Column_ID, trxName);
 		if (retValue.get_ID () == AD_Column_ID)
 		{
-			s_cache.put (key, new MColumn(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MColumn(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
@@ -117,7 +133,7 @@ public class MColumn extends X_AD_Column
 	}	//	getColumnName
 	
 	/**	Cache						*/
-	private static CCache<Integer,MColumn>	s_cache	= new CCache<Integer,MColumn>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MColumn>	s_cache	= new ImmutableIntPOCache<Integer,MColumn>(Table_Name, 20);
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MColumn.class);

@@ -5,9 +5,9 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**	Convention for the first year of depreciation (ex. FMCON, FYCON ...)
  *	@author Teo Sarca, SC Arhipac SRL
@@ -18,8 +18,8 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2274629486216430723L;
-
+	private static final long serialVersionUID = -3735111030292424391L;
+	
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context
@@ -76,19 +76,34 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention
 	}
 	
 	/**		Cache									*/
-	private static CCache<Integer,MDepreciationConvention> s_cache = new CCache<Integer,MDepreciationConvention>(Table_Name, 5);
+	private static ImmutableIntPOCache<Integer,MDepreciationConvention> s_cache = new ImmutableIntPOCache<Integer,MDepreciationConvention>(Table_Name, 5);
 	//~ /**		Static logger							*/
 	//~ private static Logger s_log = CLogger.getCLogger(MDepreciationConvention.class);
 	
+	/**
+	 * Get MDepreciationConvention from cache (immutable)
+	 * @param A_Depreciation_Convention_ID
+	 * @return MDepreciationConvention
+	 */
+	public static MDepreciationConvention get(int A_Depreciation_Convention_ID) {
+		return get(Env.getCtx(), A_Depreciation_Convention_ID);
+	}
+	
+	/**
+	 * Get MDepreciationConvention from cache (immutable)
+	 * @param ctx context
+	 * @param A_Depreciation_Convention_ID
+	 * @return MDepreciationConvention
+	 */
 	public static MDepreciationConvention get(Properties ctx, int A_Depreciation_Convention_ID) {
 		Integer key = Integer.valueOf(A_Depreciation_Convention_ID);
-		MDepreciationConvention conv = s_cache.get(key);
-		if (conv != null) {
-			return new MDepreciationConvention(ctx, conv);
-		}
+		MDepreciationConvention conv = s_cache.get(ctx, key, e -> new MDepreciationConvention(ctx, e));
+		if (conv != null) 
+			return conv;
+		
 		conv = new MDepreciationConvention(ctx, A_Depreciation_Convention_ID, (String)null);
 		if (conv.get_ID() == A_Depreciation_Convention_ID) {
-			s_cache.put(key, new MDepreciationConvention(Env.getCtx(), conv));
+			s_cache.put(key, conv, e -> new MDepreciationConvention(Env.getCtx(), e));
 			return conv;
 		}
 		return null;

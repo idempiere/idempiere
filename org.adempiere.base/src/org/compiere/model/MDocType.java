@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Document Type Model
@@ -41,7 +41,7 @@ public class MDocType extends X_C_DocType
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6556521509479670059L;
+	private static final long serialVersionUID = -7313617271586412889L;
 
 	/**
 	 * Return the first Doc Type for this BaseType
@@ -87,26 +87,37 @@ public class MDocType extends X_C_DocType
 	
 	/**
 	 * 	Get Document Type (cached)
+	 *	@param C_DocType_ID id
+	 *	@return document type
+	 */
+	static public MDocType get (int C_DocType_ID)
+	{
+		return get(Env.getCtx(), C_DocType_ID);
+	}
+	
+	/**
+	 * 	Get Document Type (cached)
 	 *	@param ctx context
 	 *	@param C_DocType_ID id
 	 *	@return document type
 	 */
 	static public MDocType get (Properties ctx, int C_DocType_ID)
 	{
-		MDocType retValue = (MDocType)s_cache.get(C_DocType_ID);
+		MDocType retValue = (MDocType)s_cache.get(ctx, C_DocType_ID, e -> new MDocType(ctx, e));
 		if (retValue != null)
-			return new MDocType(ctx, retValue);
+			return retValue;
+		
 		retValue = new MDocType (ctx, C_DocType_ID, (String)null);
 		if (retValue.getC_DocType_ID() == C_DocType_ID)
 		{
-			s_cache.put(C_DocType_ID, new MDocType(Env.getCtx(), retValue));
+			s_cache.put(C_DocType_ID, retValue, e -> new MDocType(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;		 
 	} 	//	get
 	
 	/**	Cache					*/
-	static private CCache<Integer,MDocType>	s_cache = new CCache<Integer,MDocType>(Table_Name, 20);
+	static private ImmutableIntPOCache<Integer,MDocType>	s_cache = new ImmutableIntPOCache<Integer,MDocType>(Table_Name, 20);
 	
 	/**************************************************************************
 	 * 	Standard Constructor
@@ -348,7 +359,7 @@ public class MDocType extends X_C_DocType
         int relatedDocTypeId = 0;
         if (docTypeId != 0)
         {
-            MDocType docType = MDocType.get(Env.getCtx(), docTypeId);
+            MDocType docType = MDocType.get(docTypeId);
             // FIXME: Should refactor code and remove the hard coded name
             // Should change document type to allow query the value
             if ("Return Material".equals(docType.getName()) ||

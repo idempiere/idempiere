@@ -27,10 +27,10 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Country Group Model
@@ -40,30 +40,40 @@ public class MCountryGroup extends X_C_CountryGroup
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4986629677773273899L;
+	private static final long serialVersionUID = 8489673276196368210L;
 
 	/**
-	 * 	Get Country Group (cached)
+	 * 	Get Country Group (cached) (immutable)
+	 *	@param C_CountryGroup_ID ID
+	 *	@return Country Group
+	 */
+	public static MCountryGroup get (int C_CountryGroup_ID)
+	{
+		return get(Env.getCtx(), C_CountryGroup_ID);
+	}
+	
+	/**
+	 * 	Get Country Group (cached) (immutable)
 	 * 	@param ctx context
 	 *	@param C_CountryGroup_ID ID
 	 *	@return Country Group
 	 */
 	public static MCountryGroup get (Properties ctx, int C_CountryGroup_ID)
 	{
-		MCountryGroup c = s_cache.get(C_CountryGroup_ID);
+		MCountryGroup c = s_cache.get(ctx, C_CountryGroup_ID, e -> new MCountryGroup(ctx, e));
 		if (c != null)
-			return new MCountryGroup(ctx, c);
+			return c;
 		c = new MCountryGroup (ctx, C_CountryGroup_ID, (String)null);
 		if (c.getC_CountryGroup_ID() == C_CountryGroup_ID)
 		{
-			s_cache.put(C_CountryGroup_ID, new MCountryGroup(Env.getCtx(), c));
+			s_cache.put(C_CountryGroup_ID, c, e -> new MCountryGroup(Env.getCtx(), e));
 			return c;
 		}
 		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MCountryGroup> s_cache	= new CCache<Integer,MCountryGroup>(Table_Name, 5);
+	private static ImmutableIntPOCache<Integer,MCountryGroup> s_cache	= new ImmutableIntPOCache<Integer,MCountryGroup>(Table_Name, 5);
 	/**	Static Logger					*/
 	@SuppressWarnings("unused")
 	private static CLogger		s_log = CLogger.getCLogger (MCountryGroup.class);

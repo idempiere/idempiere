@@ -20,9 +20,9 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Organization Model
@@ -35,8 +35,7 @@ public class MOrg extends X_AD_Org
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5604686137606338725L;
-
+	private static final long serialVersionUID = -696173265471741122L;
 
 	/**
 	 * 	Get Active Organizations Of Client
@@ -52,33 +51,42 @@ public class MOrg extends X_AD_Org
 								.list();
 		for (MOrg org : list)
 		{
-			s_cache.put(org.get_ID(), new MOrg(Env.getCtx(), org));
+			s_cache.put(org.get_ID(), org);
 		}
 		return list.toArray(new MOrg[list.size()]);
 	}	//	getOfClient
 	
 	/**
-	 * 	Get Org from Cache
-	 *	@param ctx context
+	 * 	Get Org from Cache (immutable)
+	 *	@param AD_Org_ID id
+	 *	@return MOrg
+	 */
+	public static MOrg get (int AD_Org_ID)
+	{
+		return get(Env.getCtx(), AD_Org_ID);
+	}
+	
+	/**
+	 * 	Get Org from Cache (immutable)
 	 *	@param AD_Org_ID id
 	 *	@return MOrg
 	 */
 	public static MOrg get (Properties ctx, int AD_Org_ID)
 	{
-		MOrg retValue = s_cache.get (AD_Org_ID);
+		MOrg retValue = s_cache.get (ctx, AD_Org_ID, e -> new MOrg(ctx, e));
 		if (retValue != null)
-			return new MOrg(ctx, retValue);
+			return retValue;
 		retValue = new MOrg (ctx, AD_Org_ID, (String)null);
 		if (retValue.get_ID () == AD_Org_ID)
 		{
-			s_cache.put (AD_Org_ID, new MOrg(Env.getCtx(), retValue));
+			s_cache.put (AD_Org_ID, retValue, e -> new MOrg(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MOrg>	s_cache	= new CCache<Integer,MOrg>(Table_Name, 50);
+	private static ImmutableIntPOCache<Integer,MOrg>	s_cache	= new ImmutableIntPOCache<Integer,MOrg>(Table_Name, 50);
 	
 	
 	/**************************************************************************
@@ -163,7 +171,8 @@ public class MOrg extends X_AD_Org
 	 */
 	public MOrgInfo getInfo()
 	{
-		return MOrgInfo.get(getCtx(), getAD_Org_ID(), get_TrxName());
+		MOrgInfo orgInfo = MOrgInfo.get(Env.getCtx(), getAD_Org_ID(), get_TrxName());
+		return new MOrgInfo(getCtx(), orgInfo, get_TrxName());
 	}	//	getMOrgInfo
 
 

@@ -31,8 +31,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 
 public class MSchedule extends X_AD_Schedule 
@@ -40,8 +40,7 @@ public class MSchedule extends X_AD_Schedule
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3319184522988847237L;
-
+	private static final long serialVersionUID = 7183417983901074702L;
 	private static Pattern VALID_IPV4_PATTERN = null;
 	private static Pattern VALID_IPV6_PATTERN = null;
 	private static final String ipv4Pattern = "(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])";
@@ -187,23 +186,39 @@ public class MSchedule extends X_AD_Schedule
 		return false;
 	} // checkIP
 
+	/**
+	 * Get MSchedule from cache (immutable)
+	 * @param AD_Schedule_ID
+	 * @return MSchedule
+	 */
+	public static MSchedule get(int AD_Schedule_ID) 
+	{
+		return get(Env.getCtx(), AD_Schedule_ID);
+	}
+	
+	/**
+	 * Get MSchedule from cache (immutable)
+	 * @param ctx
+	 * @param AD_Schedule_ID
+	 * @return MSchedule
+	 */
 	public static MSchedule get(Properties ctx, int AD_Schedule_ID) 
 	{
 		Integer key = Integer.valueOf(AD_Schedule_ID);
-		MSchedule retValue = (MSchedule)s_cache.get (key);
+		MSchedule retValue = s_cache.get (ctx, key, e -> new MSchedule(ctx, e));
 		if (retValue != null)
-			return new MSchedule(ctx, retValue);
+			return retValue;
 		retValue = new MSchedule (ctx, AD_Schedule_ID, (String)null);
 		if (retValue.get_ID() == AD_Schedule_ID)
 		{
-			s_cache.put (key, new MSchedule(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MSchedule(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	}
 
 	/**	Cache						*/
-	private static CCache<Integer, MSchedule> s_cache = new CCache<Integer, MSchedule> (Table_Name, 10);
+	private static ImmutableIntPOCache<Integer, MSchedule> s_cache = new ImmutableIntPOCache<Integer, MSchedule> (Table_Name, 10);
 
 	public boolean chekIPFormat(String ipOnly)
 	{

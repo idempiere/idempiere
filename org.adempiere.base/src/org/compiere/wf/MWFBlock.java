@@ -20,8 +20,8 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.model.X_AD_WF_Block;
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 
 /**
@@ -35,11 +35,20 @@ public class MWFBlock extends X_AD_WF_Block
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2084396539959122888L;
-
+	private static final long serialVersionUID = -650413593723153474L;
 
 	/**
-	 * 	Get MWFBlock from Cache
+	 * 	Get MWFBlock from Cache (immutable)
+	 *	@param AD_WF_Block_ID id
+	 *	@return MWFBlock
+	 */
+	public static MWFBlock get (int AD_WF_Block_ID)
+	{
+		return get(Env.getCtx(), AD_WF_Block_ID);
+	}
+	
+	/**
+	 * 	Get MWFBlock from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_WF_Block_ID id
 	 *	@return MWFBlock
@@ -47,20 +56,20 @@ public class MWFBlock extends X_AD_WF_Block
 	public static MWFBlock get (Properties ctx, int AD_WF_Block_ID)
 	{
 		Integer key = Integer.valueOf(AD_WF_Block_ID);
-		MWFBlock retValue = (MWFBlock) s_cache.get (key);
+		MWFBlock retValue = s_cache.get (ctx, key, e -> new MWFBlock(ctx, e));
 		if (retValue != null)
-			return new MWFBlock(ctx, retValue);
+			return retValue;
 		retValue = new MWFBlock (ctx, AD_WF_Block_ID, (String)null);
 		if (retValue.get_ID () == AD_WF_Block_ID)
 		{
-			s_cache.put (key, new MWFBlock(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MWFBlock(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MWFBlock>	s_cache	= new CCache<Integer,MWFBlock>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MWFBlock>	s_cache	= new ImmutableIntPOCache<Integer,MWFBlock>(Table_Name, 20);
 	
 	
 	/**
@@ -115,4 +124,11 @@ public class MWFBlock extends X_AD_WF_Block
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
+	
+	@Override
+	public MWFBlock markImmutable() 
+	{
+		return (MWFBlock) super.markImmutable();
+	}
+
 }	//	MWFBlock

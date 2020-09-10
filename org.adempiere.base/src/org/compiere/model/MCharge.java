@@ -20,10 +20,10 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Charge Model
@@ -39,7 +39,7 @@ public class MCharge extends X_C_Charge
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4628105180010713510L;
+	private static final long serialVersionUID = 1978008783808254164L;
 
 	/**
 	 *  Get Charge Account
@@ -80,7 +80,17 @@ public class MCharge extends X_C_Charge
 	}   //  getAccount
 
 	/**
-	 * 	Get MCharge from Cache
+	 * 	Get MCharge from Cache (immutable)
+	 *	@param C_Charge_ID id
+	 *	@return MCharge
+	 */
+	public static MCharge get (int C_Charge_ID)
+	{
+		return get(Env.getCtx(), C_Charge_ID);
+	}
+	
+	/**
+	 * 	Get MCharge from Cache (immutable)
 	 *	@param ctx context
 	 *	@param C_Charge_ID id
 	 *	@return MCharge
@@ -88,21 +98,21 @@ public class MCharge extends X_C_Charge
 	public static MCharge get (Properties ctx, int C_Charge_ID)
 	{
 		Integer key = Integer.valueOf(C_Charge_ID);
-		MCharge retValue = (MCharge)s_cache.get (key);
+		MCharge retValue = (MCharge)s_cache.get (ctx, key, e -> new MCharge(ctx, e));
 		if (retValue != null)
-			return new MCharge(ctx, retValue);
+			return retValue;
 		retValue = new MCharge (ctx, C_Charge_ID, (String)null);
 		if (retValue.get_ID() == C_Charge_ID)
 		{
-			s_cache.put (key, new MCharge(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MCharge(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer, MCharge> s_cache 
-		= new CCache<Integer, MCharge> (Table_Name, 10);
+	private static ImmutableIntPOCache<Integer, MCharge> s_cache 
+		= new ImmutableIntPOCache<Integer, MCharge> (Table_Name, 10);
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MCharge.class);

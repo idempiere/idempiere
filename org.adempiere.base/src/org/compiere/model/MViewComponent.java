@@ -116,6 +116,8 @@ public class MViewComponent extends X_AD_ViewComponent {
 		query.setOnlyActiveRecords(true);
 		query.setOrderBy("SeqNo, AD_ViewColumn_ID");
 		List<MViewColumn> list = query.<MViewColumn>list();
+		if (list.size() > 0)
+			list.stream().forEach(e -> e.markImmutable());
 		
 		m_columns = new MViewColumn[list.size()];
 		list.toArray(m_columns);
@@ -194,6 +196,15 @@ public class MViewComponent extends X_AD_ViewComponent {
 		return sb.toString();
 	}
 	
+	
+	@Override
+	public MViewComponent markImmutable() {
+		MViewComponent vc = (MViewComponent) super.markImmutable();
+		if (m_columns != null && m_columns.length > 0)
+			Arrays.stream(m_columns).forEach(e -> e.markImmutable());
+		return vc;
+	}
+
 	/**
      * 	String representation
      *	@return info

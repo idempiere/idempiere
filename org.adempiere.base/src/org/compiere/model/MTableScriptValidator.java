@@ -27,6 +27,7 @@ import org.apache.commons.collections.keyvalue.MultiKey;
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Table Validator Scripts
@@ -43,10 +44,20 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6272423660330749776L;
+	private static final long serialVersionUID = 6776991549481106111L;
 
 	/**
-	 * 	Get table script validator from cache
+	 * 	Get table script validator from cache (immutable)
+	 *	@param AD_Table_ScriptValidator_ID id
+	 *	@return MTableScriptValidator
+	 */
+	public static MTableScriptValidator get (int AD_Table_ScriptValidator_ID)
+	{
+		return get(Env.getCtx(), AD_Table_ScriptValidator_ID);
+	}
+	
+	/**
+	 * 	Get table script validator from cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Table_ScriptValidator_ID id
 	 *	@return MTableScriptValidator
@@ -54,13 +65,13 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator
 	public static MTableScriptValidator get (Properties ctx, int AD_Table_ScriptValidator_ID)
 	{
 		final Integer key = AD_Table_ScriptValidator_ID;
-		MTableScriptValidator retValue = (MTableScriptValidator) s_cache.get (key);
+		MTableScriptValidator retValue = s_cache.get (ctx, key, e -> new MTableScriptValidator(ctx, e));
 		if (retValue != null)
-			return new MTableScriptValidator(ctx, retValue);
+			return retValue;
 		retValue = new MTableScriptValidator (ctx, AD_Table_ScriptValidator_ID, (String)null);
 		if (retValue.get_ID () == AD_Table_ScriptValidator_ID)
 		{
-			s_cache.put (key, new MTableScriptValidator(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MTableScriptValidator(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
@@ -80,10 +91,7 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator
 		List<MTableScriptValidator> mvrs = s_cacheTableEvent.get(key);
 		if (mvrs != null)
 		{
-			if (mvrs.size() > 0)
-				return mvrs.stream().map(e ->{return new MTableScriptValidator(ctx, e);}).collect(Collectors.toCollection(ArrayList::new));
-			else
-				return null;
+			return mvrs;
 		}
 		//
 		// Fetch now
@@ -96,12 +104,17 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator
 		// Store to cache
 		for (MTableScriptValidator rule : mvrs)
 		{
-			s_cache.put(rule.get_ID(), new MTableScriptValidator(Env.getCtx(), rule));
+			s_cache.put(rule.get_ID(), rule, e -> new MTableScriptValidator(Env.getCtx(), e));
 		}
 		
 		// Store to cache
 		if (mvrs != null)
-			s_cacheTableEvent.put(key, mvrs.stream().map(e ->{return new MTableScriptValidator(Env.getCtx(), e);}).collect(Collectors.toCollection(ArrayList::new)));
+		{
+			if (ctx == Env.getCtx())
+				s_cacheTableEvent.put(key, mvrs.stream().collect(Collectors.toCollection(ArrayList::new)));
+			else
+				s_cacheTableEvent.put(key, mvrs.stream().map(e ->{return (MTableScriptValidator)new MTableScriptValidator(Env.getCtx(), e).markImmutable();}).collect(Collectors.toCollection(ArrayList::new)));
+		}
 		//
 		if (mvrs != null && mvrs.size() > 0)
 			return mvrs;
@@ -110,8 +123,8 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator
 	}	//	getModelValidatorRules
 
 	/**	Cache						*/
-	private static CCache<Integer,MTableScriptValidator> s_cache
-					= new CCache<Integer,MTableScriptValidator>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MTableScriptValidator> s_cache
+					= new ImmutableIntPOCache<Integer,MTableScriptValidator>(Table_Name, 20);
 	/** Cache / Table Event			*/
 	private static CCache<MultiKey,List<MTableScriptValidator>> s_cacheTableEvent
 					= new CCache<MultiKey,List<MTableScriptValidator>>(null, Table_Name+"_TableEvent", 20, false);

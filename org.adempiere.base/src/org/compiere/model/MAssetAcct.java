@@ -6,9 +6,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *  Asset Acct Model
@@ -16,10 +16,11 @@ import org.compiere.util.TimeUtil;
  */
 public class MAssetAcct extends X_A_Asset_Acct
 {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3919172418904053712L;
+	private static final long serialVersionUID = -8898773839204909595L;
 
 	/**
 	 * DO NOT USE DIRECTLY
@@ -70,25 +71,34 @@ public class MAssetAcct extends X_A_Asset_Acct
 	}
 	
 	/**		Static Cache: A_Asset_Acct_ID -> MAssetAcct					*/
-	private static CCache<Integer,MAssetAcct> s_cache = new CCache<Integer,MAssetAcct>(Table_Name, 5);
+	private static ImmutableIntPOCache<Integer,MAssetAcct> s_cache = new ImmutableIntPOCache<Integer,MAssetAcct>(Table_Name, 5);
 	
 	/**
-	 * Get Asset Accounting (from cache)
+	 * Get Asset Accounting (from cache) (immutable)
+	 * @param A_Asset_Acct_ID asset accounting id
+	 * @return asset accounting or null if not found
+	 */
+	public static MAssetAcct get (int A_Asset_Acct_ID)
+	{
+		return get(Env.getCtx(), A_Asset_Acct_ID);
+	}
+	
+	/**
+	 * Get Asset Accounting (from cache) (immutable)
 	 * @param ctx context
 	 * @param A_Asset_Acct_ID asset accounting id
 	 * @return asset accounting or null if not found
 	 */
 	public static MAssetAcct get (Properties ctx, int A_Asset_Acct_ID)
 	{
-		MAssetAcct acct = s_cache.get(A_Asset_Acct_ID);
+		MAssetAcct acct = s_cache.get(ctx, A_Asset_Acct_ID, e -> new MAssetAcct(ctx, e));
 		if (acct != null)
-		{
-			return new MAssetAcct(ctx, acct);
-		}
+			return acct;
+
 		acct = new MAssetAcct(ctx, A_Asset_Acct_ID, (String)null);
 		if (acct.get_ID() == A_Asset_Acct_ID)
 		{
-			s_cache.put(A_Asset_Acct_ID, new MAssetAcct(Env.getCtx(), acct));
+			s_cache.put(A_Asset_Acct_ID, acct, e -> new MAssetAcct(Env.getCtx(), e));
 			return acct;
 		}
 		return null;
@@ -121,7 +131,7 @@ public class MAssetAcct extends X_A_Asset_Acct
 								.first();
 		if (acct.get_ID() > 0)
 		{
-			s_cache.put(acct.get_ID(), new MAssetAcct(Env.getCtx(), acct));
+			s_cache.put(acct.get_ID(), acct, e -> new MAssetAcct(Env.getCtx(), e));
 		}
 		return acct;
 	}
@@ -181,5 +191,9 @@ public class MAssetAcct extends X_A_Asset_Acct
 		return true;
 	}
 	
-	
+	@Override
+	public MAssetAcct markImmutable() {
+		return (MAssetAcct) super.markImmutable();
+	}
+
 }	//	class MAssetAcct

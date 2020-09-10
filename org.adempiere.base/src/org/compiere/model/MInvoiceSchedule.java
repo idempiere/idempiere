@@ -23,9 +23,9 @@ import java.util.Calendar;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Invoice Schedule Model
@@ -38,12 +38,32 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1750020695983938895L;
-
+	private static final long serialVersionUID = -2480759794244343907L;
 
 	/**
-	 * 	Get MInvoiceSchedule from Cache
-	 *	@param ctx context
+	 * 	Get MInvoiceSchedule (Immutable) from Cache
+	 *	@param C_InvoiceSchedule_ID id
+	 *	@param trxName transaction
+	 *	@return MInvoiceSchedule
+	 */
+	public static MInvoiceSchedule get (int C_InvoiceSchedule_ID, String trxName)
+	{
+		return get(Env.getCtx(), C_InvoiceSchedule_ID, trxName);
+	}
+	
+	/**
+	 * 	Get MInvoiceSchedule (Immutable) from Cache
+	 *	@param C_InvoiceSchedule_ID id
+	 *	@return MInvoiceSchedule
+	 */
+	public static MInvoiceSchedule get (int C_InvoiceSchedule_ID)
+	{
+		return get(C_InvoiceSchedule_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get MInvoiceSchedule (Immutable) from Cache
+	 *  @param ctx context
 	 *	@param C_InvoiceSchedule_ID id
 	 *	@param trxName transaction
 	 *	@return MInvoiceSchedule
@@ -51,20 +71,20 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule
 	public static MInvoiceSchedule get (Properties ctx, int C_InvoiceSchedule_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(C_InvoiceSchedule_ID);
-		MInvoiceSchedule retValue = (MInvoiceSchedule) s_cache.get (key);
+		MInvoiceSchedule retValue = (MInvoiceSchedule) s_cache.get (ctx, key, e -> new MInvoiceSchedule(ctx, e));
 		if (retValue != null)
-			return new MInvoiceSchedule(ctx, retValue, trxName);
-		retValue = new MInvoiceSchedule (ctx, C_InvoiceSchedule_ID, trxName);
+			return retValue;
+		retValue = new MInvoiceSchedule (Env.getCtx(), C_InvoiceSchedule_ID, trxName);
 		if (retValue.get_ID () == C_InvoiceSchedule_ID) 
 		{
-			s_cache.put (key, new MInvoiceSchedule(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MInvoiceSchedule(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MInvoiceSchedule>	s_cache	= new CCache<Integer,MInvoiceSchedule>(Table_Name, 5);
+	private static ImmutableIntPOCache<Integer,MInvoiceSchedule>	s_cache	= new ImmutableIntPOCache<Integer,MInvoiceSchedule>(Table_Name, 5);
 	
 	
 	/**************************************************************************

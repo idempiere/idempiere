@@ -24,11 +24,11 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * 	Product Model
@@ -52,10 +52,20 @@ public class MProduct extends X_M_Product
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 285926961771269935L;
+	private static final long serialVersionUID = -6713953630334843853L;
 
 	/**
-	 * 	Get MProduct from Cache
+	 * 	Get MProduct from Cache (immutable)
+	 *	@param M_Product_ID id
+	 *	@return MProduct or null
+	 */
+	public static MProduct get (int M_Product_ID)
+	{
+		return get(Env.getCtx(), M_Product_ID);
+	}
+	
+	/**
+	 * 	Get MProduct from Cache (immutable)
 	 *	@param ctx context
 	 *	@param M_Product_ID id
 	 *	@return MProduct or null
@@ -67,26 +77,25 @@ public class MProduct extends X_M_Product
 			return null;
 		}
 		Integer key = Integer.valueOf(M_Product_ID);
-		MProduct retValue = (MProduct) s_cache.get (key);
+		MProduct retValue = s_cache.get (ctx, key, e -> new MProduct(ctx, e));
 		if (retValue != null)
-		{
-			return new MProduct(ctx, retValue);
-		}
+			return retValue;
+		
 		retValue = new MProduct (ctx, M_Product_ID, (String)null);
 		if (retValue.get_ID () == M_Product_ID)
 		{
-			s_cache.put (key, new MProduct(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MProduct(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	}	//	get
 
 	/**
-	 * 	Get MProduct from Cache
+	 * 	Get MProducts from db
 	 *	@param ctx context
 	 *	@param whereClause sql where clause
 	 *	@param trxName trx
-	 *	@return MProduct
+	 *	@return MProducts
 	 */
 	public static MProduct[] get (Properties ctx, String whereClause, String trxName)
 	{
@@ -140,7 +149,8 @@ public class MProduct extends X_M_Product
 		// Try Cache
 		if (trxName == null)
 		{
-			for (MProduct p : s_cache.values())
+			MProduct[] products = s_cache.values().toArray(new MProduct[0]);
+			for (MProduct p : products)
 			{
 				if (p.getS_Resource_ID() == S_Resource_ID)
 				{
@@ -173,7 +183,7 @@ public class MProduct extends X_M_Product
 	}	//	isProductStocked
 	
 	/**	Cache						*/
-	private static CCache<Integer,MProduct> s_cache	= new CCache<Integer,MProduct>(Table_Name, 40, 5);	//	5 minutes
+	private static ImmutableIntPOCache<Integer,MProduct> s_cache	= new ImmutableIntPOCache<Integer,MProduct>(Table_Name, 40, 5);	//	5 minutes
 	
 	/**************************************************************************
 	 * 	Standard Constructor
@@ -576,6 +586,8 @@ public class MProduct extends X_M_Product
 										.setOrderBy(I_M_ProductDownload.COLUMNNAME_Name)
 										.setParameters(get_ID())
 										.list();
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 		m_downloads = list.toArray(new MProductDownload[list.size()]);
 		return m_downloads;
 	}	//	getProductDownloads
@@ -962,4 +974,14 @@ public class MProduct extends X_M_Product
 		MCost cost = MCost.get(this, M_ASI_ID, as, AD_Org_ID, ce.getM_CostElement_ID(), get_TrxName());
 		return cost.is_new() ? null : cost;
 	}
+	
+	@Override
+	public MProduct markImmutable() 
+	{
+		MProduct po = (MProduct) super.markImmutable();
+		if (m_downloads != null && m_downloads.length > 0)
+			Arrays.stream(m_downloads).forEach(e -> e.markImmutable());
+		return po;
+	}
+
 }	//	MProduct

@@ -19,8 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  * 	Product Category Account Model
@@ -32,13 +32,36 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2075372131034904732L;
+	private static final long serialVersionUID = -7990259665379770596L;
 	/** Static cache */
-	private static CCache<String, MProductCategoryAcct>
-	s_cache = new CCache<String, MProductCategoryAcct>(Table_Name, 40, 5);
+	private static ImmutablePOCache<String, MProductCategoryAcct>
+	s_cache = new ImmutablePOCache<String, MProductCategoryAcct>(Table_Name, 40, 5);
 	
 	/**
 	 * 	Get Category Acct
+	 *	@param M_Product_Category_ID category
+	 *	@param C_AcctSchema_ID acct schema
+	 *	@return category acct
+	 */
+	public static MProductCategoryAcct get (int M_Product_Category_ID, int C_AcctSchema_ID)
+	{
+		return get(M_Product_Category_ID, C_AcctSchema_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get Category Acct
+	 *	@param M_Product_Category_ID category
+	 *	@param C_AcctSchema_ID acct schema
+	 *	@param trxName trx
+	 *	@return category acct
+	 */
+	public static MProductCategoryAcct get (int M_Product_Category_ID, int C_AcctSchema_ID, String trxName)
+	{
+		return get(Env.getCtx(), M_Product_Category_ID, C_AcctSchema_ID, trxName);
+	}
+	
+	/**
+	 * 	Get Category Acct from cache (immutable)
 	 *	@param ctx context
 	 *	@param M_Product_Category_ID category
 	 *	@param C_AcctSchema_ID acct schema
@@ -49,9 +72,9 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct
 							int M_Product_Category_ID, int C_AcctSchema_ID, String trxName)
 	{
 		String key = M_Product_Category_ID+"#"+C_AcctSchema_ID;
-		MProductCategoryAcct acct = s_cache.get(key);
+		MProductCategoryAcct acct = s_cache.get(ctx, key, e -> new MProductCategoryAcct(ctx, e));
 		if (acct != null)
-			return new MProductCategoryAcct(ctx, acct, trxName);
+			return acct;
 		
 		final String whereClause = "M_Product_Category_ID=? AND C_AcctSchema_ID=?";
 		acct = new Query(ctx, Table_Name, whereClause, trxName)
@@ -59,7 +82,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct
 					.firstOnly();
 		if (acct != null)
 		{
-			s_cache.put(key, new MProductCategoryAcct(Env.getCtx(), acct));
+			s_cache.put(key, acct, e -> new MProductCategoryAcct(Env.getCtx(), e));
 		}
 		return acct;
 	}	//	get

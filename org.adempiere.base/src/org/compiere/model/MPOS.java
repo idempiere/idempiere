@@ -21,9 +21,9 @@ import java.util.Properties;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 
 /**
@@ -37,10 +37,20 @@ public class MPOS extends X_C_POS
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1568195843844720536L;
+	private static final long serialVersionUID = 2499679269059812831L;
 
 	/**
-	 * 	Get POS from Cache
+	 * 	Get POS from Cache (immutable)
+	 *	@param C_POS_ID id
+	 *	@return MPOS
+	 */
+	public static MPOS get (int C_POS_ID)
+	{
+		return get(Env.getCtx(), C_POS_ID);
+	}
+	
+	/**
+	 * 	Get POS from Cache (immutable)
 	 *	@param ctx context
 	 *	@param C_POS_ID id
 	 *	@return MPOS
@@ -48,13 +58,13 @@ public class MPOS extends X_C_POS
 	public static MPOS get (Properties ctx, int C_POS_ID)
 	{
 		Integer key = Integer.valueOf(C_POS_ID);
-		MPOS retValue = (MPOS) s_cache.get (key);
+		MPOS retValue = (MPOS) s_cache.get (ctx, key, e -> new MPOS(ctx, e));
 		if (retValue != null)
-			return new MPOS(ctx, retValue);
+			return retValue;
 		retValue = new MPOS (ctx, C_POS_ID, (String)null);
 		if (retValue.get_ID () == C_POS_ID)
 		{
-			s_cache.put (key, new MPOS(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MPOS(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
@@ -78,7 +88,7 @@ public class MPOS extends X_C_POS
 	}	//	get
 	
 	/**	Cache						*/
-	private static CCache<Integer,MPOS> s_cache = new CCache<Integer,MPOS>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MPOS> s_cache = new ImmutableIntPOCache<Integer,MPOS>(Table_Name, 20);
 
 	/**
 	 * 	Standard Constructor
@@ -190,14 +200,24 @@ public class MPOS extends X_C_POS
 				m_template = MBPartner.getBPartnerCashTrx (getCtx(), getAD_Client_ID());
 			else
 				m_template = new MBPartner(getCtx(), getC_BPartnerCashTrx_ID(), get_TrxName());
+			if (is_Immutable() && m_template != null)
+				m_template.markImmutable();
 			if (log.isLoggable(Level.FINE)) log.fine("getBPartner - " + m_template);
 		}
 		return m_template;
 	}	//	getBPartner
 
 	@Override
+	public MPOS markImmutable() {
+		MPOS pos = (MPOS) super.markImmutable();
+		if (m_template != null)
+			m_template.markImmutable();
+		return pos;
+	}
+
+	@Override
 	public String toString() {
 		return super.getName();
-		}
+	}
 	
 }	//	MPOS

@@ -22,9 +22,9 @@ import static org.compiere.model.SystemIDs.ENTITYTYPE_DICTIONARY;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  * 	Enitity Type Model
@@ -45,29 +45,42 @@ public class MEntityType extends X_AD_EntityType
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8449015496292546851L;
+	private static final long serialVersionUID = -7160389442572466581L;
 
 	/**
-	 * Get EntityType object by name  
+	 * Get EntityType object by name (immutable)
+	 * @param entityType
+	 * @return entity type
+	 */
+	public static MEntityType get(String entityType)
+	{
+		return get(Env.getCtx(), entityType);
+	}
+	
+	/**
+	 * Get EntityType object by name (immutable)
 	 * @param ctx
 	 * @param entityType
-	 * @return
+	 * @return entity type
 	 */
 	public static MEntityType get(Properties ctx, String entityType)
 	{
-		MEntityType retValue = (MEntityType) s_cache.get (entityType);
+		MEntityType retValue = s_cache.get (ctx, entityType, e -> new MEntityType(ctx, e));
 		if (retValue != null)
-			return new MEntityType(ctx, retValue);
+			return retValue;
+		
 		retValue = new Query(ctx, Table_Name, "EntityType=?", null)
 			.setParameters(entityType)
 			.firstOnly();
+		
 		if (retValue != null)
-			s_cache.put (entityType, new MEntityType(Env.getCtx(), retValue));
+			s_cache.put (entityType, retValue, e -> new MEntityType(Env.getCtx(), e));
+		
 		return retValue;
 	}
 	
 	/** Cached EntityTypes						*/
-	private static CCache<String,MEntityType>	s_cache = new CCache<String,MEntityType>(Table_Name, 20);
+	private static ImmutablePOCache<String,MEntityType>	s_cache = new ImmutablePOCache<String,MEntityType>(Table_Name, 20);
 	/**	Logger	*/
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MEntityType.class);

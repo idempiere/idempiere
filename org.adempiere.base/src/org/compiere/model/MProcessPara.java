@@ -20,10 +20,10 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 
 /**
@@ -37,10 +37,20 @@ public class MProcessPara extends X_AD_Process_Para
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4580303034897910371L;
+	private static final long serialVersionUID = -770944613761780314L;
 
 	/**
-	 * 	Get MProcessPara from Cache
+	 * 	Get MProcessPara from Cache (immutable)
+	 *	@param AD_Process_Para_ID id
+	 *	@return MProcessPara
+	 */
+	public static MProcessPara get (int AD_Process_Para_ID)
+	{
+		return get(Env.getCtx(), AD_Process_Para_ID);
+	}
+	
+	/**
+	 * 	Get MProcessPara from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Process_Para_ID id
 	 *	@return MProcessPara
@@ -48,21 +58,21 @@ public class MProcessPara extends X_AD_Process_Para
 	public static MProcessPara get (Properties ctx, int AD_Process_Para_ID)
 	{
 		Integer key = Integer.valueOf(AD_Process_Para_ID);
-		MProcessPara retValue = (MProcessPara)s_cache.get (key);
+		MProcessPara retValue = s_cache.get (ctx, key, e -> new MProcessPara(ctx, e));
 		if (retValue != null)
-			return new MProcessPara(ctx, retValue);
+			return retValue;
 		retValue = new MProcessPara (ctx, AD_Process_Para_ID, (String)null);
 		if (retValue.get_ID () == AD_Process_Para_ID)
 		{
-			s_cache.put (key, new MProcessPara(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MProcessPara(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer, MProcessPara> s_cache 
-		= new CCache<Integer, MProcessPara> (Table_Name, 20);
+	private static ImmutableIntPOCache<Integer, MProcessPara> s_cache 
+		= new ImmutableIntPOCache<Integer, MProcessPara> (Table_Name, 20);
 	
 	
 	/**************************************************************************

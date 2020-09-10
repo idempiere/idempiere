@@ -28,10 +28,10 @@ import javax.print.attribute.standard.MediaSizeName;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_PrintPaper;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	AD_PrintPaper Print Paper Model
@@ -53,26 +53,26 @@ public class MPrintPaper extends X_AD_PrintPaper
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3609557177958141344L;
+	private static final long serialVersionUID = -4968342903056251506L;
 
 	/**
-	 * 	Get Paper
+	 * 	Get Paper from cache (immutable)
 	 * 	@param AD_PrintPaper_ID id
 	 * 	@return Paper
 	 */
 	static public MPrintPaper get (int AD_PrintPaper_ID)
 	{
 		Integer key = Integer.valueOf(AD_PrintPaper_ID);
-		MPrintPaper pp = (MPrintPaper)s_papers.get(key);
+		MPrintPaper pp = s_papers.get(key);
 		if (pp == null)
 		{
 			pp = new MPrintPaper (Env.getCtx(), AD_PrintPaper_ID, null);
-			s_papers.put(key, new MPrintPaper(Env.getCtx(), pp));
+			s_papers.put(key, pp);
 			return pp;
 		}
 		else
 			if (s_log.isLoggable(Level.CONFIG)) s_log.config("AD_PrintPaper_ID=" + AD_PrintPaper_ID);
-		return new MPrintPaper(Env.getCtx(), pp);
+		return pp;
 	}	//	get
 
 	/**
@@ -93,8 +93,8 @@ public class MPrintPaper extends X_AD_PrintPaper
 	/**	Logger				*/
 	private static CLogger s_log = CLogger.getCLogger(MPrintPaper.class);
 	/** Cached Fonts						*/
-	static private CCache<Integer,MPrintPaper> s_papers 
-		= new CCache<Integer,MPrintPaper>(Table_Name, 5);
+	static private ImmutableIntPOCache<Integer,MPrintPaper> s_papers 
+		= new ImmutableIntPOCache<Integer,MPrintPaper>(Table_Name, 5);
 	
 	
 	/**************************************************************************

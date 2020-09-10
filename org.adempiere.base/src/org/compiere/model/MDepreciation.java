@@ -7,10 +7,11 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.fa.exceptions.AssetNotImplementedException;
 import org.idempiere.fa.exceptions.AssetNotSupportedException;
 import org.idempiere.fa.service.api.DepreciationDTO;
@@ -23,11 +24,10 @@ import org.idempiere.fa.service.api.IDepreciationMethod;
  */
 public class MDepreciation extends X_A_Depreciation
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -632058079835100100L;
+	private static final long serialVersionUID = -4366354698409595086L;
 
 	/** Standard Constructor */
 	public MDepreciation (Properties ctx, int A_Depreciation_ID, String trxName)
@@ -77,11 +77,11 @@ public class MDepreciation extends X_A_Depreciation
 	}
 	
 	/**		Cache									*/
-	private static CCache<Integer,MDepreciation>
-	s_cache = new CCache<Integer,MDepreciation>(Table_Name, 5);
+	private static ImmutableIntPOCache<Integer,MDepreciation>
+	s_cache = new ImmutableIntPOCache<Integer,MDepreciation>(Table_Name, 5);
 	/**		Cache for type							*/
-	private static CCache<String,MDepreciation>
-	s_cache_forType = new CCache<String,MDepreciation>(Table_Name, Table_Name+"_DepreciationType", 5);
+	private static ImmutablePOCache<String,MDepreciation>
+	s_cache_forType = new ImmutablePOCache<String,MDepreciation>(Table_Name, Table_Name+"_DepreciationType", 5);
 	/**		Static logger							*/
 	private static Logger s_log = CLogger.getCLogger(MDepreciation.class);
 	/** The accuracy of calculation on depreciation */
@@ -97,24 +97,31 @@ public class MDepreciation extends X_A_Depreciation
 			return ;
 		}
 		
-		MDepreciation copy = new MDepreciation(Env.getCtx(), depr);
-		s_cache.put(depr.get_ID(), copy);
+		s_cache.put(depr.get_ID(), depr, e -> new MDepreciation(Env.getCtx(), e));
 		String key = "" + depr.getAD_Client_ID() + "_" + depr.getDepreciationType();
-		s_cache_forType.put(key, copy);
+		s_cache_forType.put(key, depr, e -> new MDepreciation(Env.getCtx(), e));
 	}
  
 	/**
-	 * Get Depreciation method
+	 * Get Depreciation method from cache (immutable)
+	 * @param A_Depreciation_ID depreciation id
+	 */
+	public static MDepreciation get(int A_Depreciation_ID)
+	{
+		return get(Env.getCtx(), A_Depreciation_ID);
+	}
+	
+	/**
+	 * Get Depreciation method from cache (immutable)
 	 * @param ctx
 	 * @param A_Depreciation_ID depreciation id
 	 */
 	public static MDepreciation get(Properties ctx, int A_Depreciation_ID)
 	{
-		MDepreciation depr = s_cache.get(A_Depreciation_ID);
+		MDepreciation depr = s_cache.get(ctx, A_Depreciation_ID, e -> new MDepreciation(ctx, e));
 		if (depr != null)
-		{
-			return new MDepreciation(ctx, depr);
-		}
+			return depr;
+		
 		depr = new MDepreciation(ctx, A_Depreciation_ID, (String)null);
 		if (depr.get_ID() == A_Depreciation_ID)
 		{
@@ -126,6 +133,15 @@ public class MDepreciation extends X_A_Depreciation
 
 	/**
 	 * Get Depreciation method
+	 * @param depreciationType depreciation type (e.g. SL)
+	 */
+	public static MDepreciation get(String depreciationType)
+	{
+		return get(Env.getCtx(), depreciationType);
+	}
+	
+	/**
+	 * Get Depreciation method (immutable)
 	 * @param ctx
 	 * @param depreciationType depreciation type (e.g. SL)
 	 */
@@ -133,11 +149,9 @@ public class MDepreciation extends X_A_Depreciation
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(ctx); 
 		String key = "" + AD_Client_ID + "_" + depreciationType;
-		MDepreciation depr = s_cache_forType.get(key);
+		MDepreciation depr = s_cache_forType.get(ctx, key, e -> new MDepreciation(ctx, e));
 		if (depr != null)
-		{
-			return new MDepreciation(ctx, depr);
-		}
+			return depr;
 		
 		final String whereClause = COLUMNNAME_DepreciationType+"=?"
 									+" AND AD_Client_ID IN (0,?)";
@@ -146,7 +160,7 @@ public class MDepreciation extends X_A_Depreciation
 						.setParameters(new Object[]{depreciationType, AD_Client_ID})
 						.firstOnly();
 		addToCache(depr);
-		return depr;
+		return (MDepreciation) depr.markImmutable();
 	}	//	get
 	
 	/**

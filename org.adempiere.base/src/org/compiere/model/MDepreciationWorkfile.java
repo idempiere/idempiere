@@ -9,8 +9,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
-import org.apache.commons.collections.keyvalue.MultiKey;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -348,29 +346,14 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 			return null;
 		}
 		
-		final MultiKey key = new MultiKey(A_Asset_ID, postingType);
-		MDepreciationWorkfile wk = s_cacheAsset.get(key);
-		if (wk != null)
-			return new MDepreciationWorkfile(ctx, wk, trxName);
-		/* @win temporary change as this code is causing duplicate create MDepreciationWorkfile on asset addition
-		final String whereClause = COLUMNNAME_A_Asset_ID+"=?"
-									+" AND "+COLUMNNAME_PostingType+"=? AND "+COLUMNNAME_A_QTY_Current+">?";
-		MDepreciationWorkfile wk = new Query(ctx, MDepreciationWorkfile.Table_Name, whereClause, trxName)
-											.setParameters(new Object[]{A_Asset_ID, postingType, 0})
-											.firstOnly();
-		*/
 		final String whereClause = COLUMNNAME_A_Asset_ID+"=?"
 									+" AND "+COLUMNNAME_PostingType+"=? AND " +  COLUMNNAME_C_AcctSchema_ID + "=?" ;
 
 		int acctSchemaId =  C_AcctSchema_ID==0 ? MClient.get(ctx).getAcctSchema().get_ID() : C_AcctSchema_ID;
-		wk = new Query(ctx, MDepreciationWorkfile.Table_Name, whereClause, trxName)
+		MDepreciationWorkfile wk = new Query(ctx, MDepreciationWorkfile.Table_Name, whereClause, trxName)
 				.setParameters(new Object[]{A_Asset_ID, postingType,acctSchemaId})
 				.firstOnly();
 				
-		if (wk != null)
-		{
-			s_cacheAsset.put(key, new MDepreciationWorkfile(Env.getCtx(), wk));
-		}
 		return wk;
 	}
 	
@@ -386,9 +369,6 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	{
 		return get(ctx, A_Asset_ID, postingType, trxName, 0);		
 	}
-	/** Static cache: Asset/PostingType -> Workfile */
-	private static CCache<MultiKey, MDepreciationWorkfile>
-	s_cacheAsset = new CCache<MultiKey, MDepreciationWorkfile>(Table_Name, Table_Name+"_Asset", 10); 
 	
 	/**	Returns the date of the last action
 	 */

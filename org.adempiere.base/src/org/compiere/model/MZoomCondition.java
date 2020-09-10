@@ -111,11 +111,12 @@ public class MZoomCondition extends X_AD_ZoomCondition
 				.setOnlyActiveRecords(true)
 				.setOrderBy(MZoomCondition.COLUMNNAME_SeqNo)
 				.list();
+			list.stream().forEach(e -> e.markImmutable());
 			conditions = list.toArray(new MZoomCondition[list.size()]);
-			s_conditions.put(AD_Table_ID, Arrays.stream(conditions).map(MZoomCondition::new).toArray(MZoomCondition[]::new));
+			s_conditions.put(AD_Table_ID, conditions);
 			return conditions;
 		}
-		return Arrays.stream(conditions).map(MZoomCondition::new).toArray(MZoomCondition[]::new);
+		return conditions;
 	}	//	getConditions
 
 	private static int findZoomWindowByTableId(int AD_Table_ID, MQuery query)

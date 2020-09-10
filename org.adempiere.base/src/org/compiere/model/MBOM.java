@@ -20,10 +20,10 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * 	BOM Model
@@ -35,11 +35,20 @@ public class MBOM extends X_M_BOM
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8885316310068284701L;
-
+	private static final long serialVersionUID = -6311001492891936078L;
 
 	/**
-	 * 	Get BOM from Cache
+	 * 	Get BOM from Cache (immutable)
+	 *	@param M_BOM_ID id
+	 *	@return MBOM
+	 */
+	public static MBOM get (int M_BOM_ID)
+	{
+		return get(Env.getCtx(), M_BOM_ID);
+	}
+	
+	/**
+	 * 	Get BOM from Cache (immutable)
 	 *	@param ctx context
 	 *	@param M_BOM_ID id
 	 *	@return MBOM
@@ -47,14 +56,14 @@ public class MBOM extends X_M_BOM
 	public static MBOM get (Properties ctx, int M_BOM_ID)
 	{
 		Integer key = Integer.valueOf(M_BOM_ID);
-		MBOM retValue = (MBOM) s_cache.get (key);
+		MBOM retValue = (MBOM) s_cache.get (ctx, key, e -> new MBOM(ctx, e));
 		if (retValue != null)
-			return new MBOM(ctx, retValue);
+			return retValue;
 		retValue = new MBOM (ctx, M_BOM_ID, (String)null);
 		if (retValue.get_ID () == M_BOM_ID)
 		{
-			s_cache.put (key, new MBOM(Env.getCtx(), retValue));
-			return retValue;
+			s_cache.put (key, retValue, e -> new MBOM(Env.getCtx(), e));
+			return retValue.markImmutable();
 		}
 		return null;
 	}	//	get
@@ -84,8 +93,8 @@ public class MBOM extends X_M_BOM
 	}	//	getOfProduct
 
 	/**	Cache						*/
-	private static CCache<Integer,MBOM>	s_cache	
-		= new CCache<Integer,MBOM>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MBOM>	s_cache	
+		= new ImmutableIntPOCache<Integer,MBOM>(Table_Name, 20);
 	/**	Logger						*/
 	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MBOM.class);
@@ -196,4 +205,10 @@ public class MBOM extends X_M_BOM
 		return true;
 	}	//	beforeSave
 	
+	@Override
+	public MBOM markImmutable() 
+	{
+		return (MBOM) super.markImmutable();
+	}
+
 }	//	MBOM

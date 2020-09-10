@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * 	Project Type Model
@@ -39,11 +39,20 @@ public class MProjectType extends X_C_ProjectType
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6041540981032251476L;
-
+	private static final long serialVersionUID = 2378841146277294989L;
 
 	/**
-	 * 	Get MProjectType from Cache
+	 * 	Get MProjectType from Cache (immutable)
+	 *	@param C_ProjectType_ID id
+	 *	@return MProjectType
+	 */
+	public static MProjectType get (int C_ProjectType_ID)
+	{
+		return get(Env.getCtx(), C_ProjectType_ID);
+	}
+
+	/**
+	 * 	Get MProjectType from Cache (immutable)
 	 *	@param ctx context
 	 *	@param C_ProjectType_ID id
 	 *	@return MProjectType
@@ -51,21 +60,21 @@ public class MProjectType extends X_C_ProjectType
 	public static MProjectType get (Properties ctx, int C_ProjectType_ID)
 	{
 		Integer key = Integer.valueOf(C_ProjectType_ID);
-		MProjectType retValue = (MProjectType)s_cache.get (key);
+		MProjectType retValue = s_cache.get (ctx, key, e -> new MProjectType(ctx, e));
 		if (retValue != null)
-			return new MProjectType(ctx, retValue);
+			return retValue;
 		retValue = new MProjectType (ctx, C_ProjectType_ID, (String)null);
 		if (retValue.get_ID() == C_ProjectType_ID)
 		{
-			s_cache.put (key, new MProjectType(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MProjectType(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer, MProjectType> s_cache 
-		= new CCache<Integer, MProjectType> (Table_Name, 20);
+	private static ImmutableIntPOCache<Integer, MProjectType> s_cache 
+		= new ImmutableIntPOCache<Integer, MProjectType> (Table_Name, 20);
 	
 	
 	/**************************************************************************

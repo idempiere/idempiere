@@ -8,10 +8,11 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  * Method of adjusting the difference between depreciation (Calculated) and registered as (booked).
@@ -23,7 +24,7 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4622027905888469713L;
+	private static final long serialVersionUID = -7477974832683140825L;
 
 	/** Standard Constructor */
 	public MDepreciationMethod (Properties ctx, int A_Depreciation_Method_ID, String trxName)
@@ -73,11 +74,11 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 	}
 	
 	/**		Cache									*/
-	private static CCache<Integer,MDepreciationMethod>
-	s_cache = new CCache<Integer,MDepreciationMethod>(Table_Name, 5);
+	private static ImmutableIntPOCache<Integer,MDepreciationMethod>
+	s_cache = new ImmutableIntPOCache<Integer,MDepreciationMethod>(Table_Name, 5);
 	/**		Cache for type							*/
-	private static CCache<String,MDepreciationMethod>
-	s_cache_forType = new CCache<String,MDepreciationMethod>(Table_Name, Table_Name+"_DepreciationType", 5);
+	private static ImmutablePOCache<String,MDepreciationMethod>
+	s_cache_forType = new ImmutablePOCache<String,MDepreciationMethod>(Table_Name, Table_Name+"_DepreciationType", 5);
 	
 	/**
 	 *
@@ -88,9 +89,8 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 		{
 			return;
 		}
-		MDepreciationMethod copy = new MDepreciationMethod(Env.getCtx(), depr);
-		s_cache.put(depr.get_ID(), copy);
-		s_cache_forType.put(depr.getDepreciationType(), copy);
+		s_cache.put(depr.get_ID(), depr, e -> new MDepreciationMethod(Env.getCtx(), e));
+		s_cache_forType.put(depr.getDepreciationType(), depr, e -> new MDepreciationMethod(Env.getCtx(), e));
 	}
 
 	/**
@@ -100,17 +100,29 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 	{
 		return 2;
 	}
- 
+	
 	/**
-	 *
+	 * Get MDepreciationMethod from cache (immutable)
+	 * @param A_Depreciation_Method_ID
+	 * @return MDepreciationMethod
+	 */
+	public static MDepreciationMethod get(int A_Depreciation_Method_ID)
+	{
+		return get(Env.getCtx(), A_Depreciation_Method_ID);
+	}
+	
+	/**
+	 * Get MDepreciationMethod from cache (immutable)
+	 * @param ctx
+	 * @param A_Depreciation_Method_ID
+	 * @return MDepreciationMethod
 	 */
 	public static MDepreciationMethod get(Properties ctx, int A_Depreciation_Method_ID)
 	{
-		MDepreciationMethod depr = s_cache.get(A_Depreciation_Method_ID);
+		MDepreciationMethod depr = s_cache.get(ctx, A_Depreciation_Method_ID, e -> new MDepreciationMethod(ctx, e));
 		if (depr != null)
-		{
-			return new MDepreciationMethod(ctx, depr);
-		}
+			return depr;
+
 		depr = new MDepreciationMethod(ctx, A_Depreciation_Method_ID, (String)null);
 		if (depr.get_ID() == A_Depreciation_Method_ID)
 		{
@@ -121,21 +133,33 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 	} // get
 
 	/**
-	 *
+	 * Get MDepreciationMethod from cache
+	 * @param depreciationType
+	 * @return MDepreciationMethod
+	 */
+	public static MDepreciationMethod get(String depreciationType)
+	{
+		return get(Env.getCtx(), depreciationType);
+	}
+	
+	/**
+	 * Get MDepreciationMethod from cache (immutable)
+	 * @param ctx
+	 * @param depreciationType
+	 * @return MDepreciationMethod
 	 */
 	public static MDepreciationMethod get(Properties ctx, String depreciationType)
 	{
 		String key = depreciationType;
-		MDepreciationMethod depr = s_cache_forType.get(key);
+		MDepreciationMethod depr = s_cache_forType.get(ctx, key, e -> new MDepreciationMethod(ctx, e));
 		if (depr != null)
-		{
-			return new MDepreciationMethod(ctx, depr);
-		}
+			return depr;
+		
 		depr = new Query(ctx, Table_Name, COLUMNNAME_DepreciationType+"=?", null)
 					.setParameters(new Object[]{depreciationType})
 					.firstOnly();
 		addToCache(depr);
-		return depr;
+		return (MDepreciationMethod) depr.markImmutable();
 	}
 
 	

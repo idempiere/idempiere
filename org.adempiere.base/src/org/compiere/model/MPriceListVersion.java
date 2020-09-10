@@ -36,7 +36,7 @@ public class MPriceListVersion extends X_M_PriceList_Version
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3607494586575155059L;
+	private static final long serialVersionUID = 1625884461739604147L;
 
 	/**
 	 * 	Standard Constructor
@@ -123,7 +123,11 @@ public class MPriceListVersion extends X_M_PriceList_Version
 	public MPriceList getPriceList()
 	{
 		if (m_pl == null && getM_PriceList_ID() != 0)
+		{
 			m_pl = MPriceList.get (getCtx(), getM_PriceList_ID(), null);
+			if (is_Immutable())
+				m_pl.markImmutable();
+		}
 		return m_pl;
 	}	//	PriceList
 	
@@ -138,6 +142,8 @@ public class MPriceListVersion extends X_M_PriceList_Version
 		if (m_pp != null && !refresh)
 			return m_pp;
 		m_pp = getProductPrice(null);
+		if (m_pp != null && m_pp.length > 0 && is_Immutable())
+			Arrays.stream(m_pp).forEach(e -> e.markImmutable());
 		return m_pp;
 	}	//	getProductPrice
 	
@@ -187,4 +193,15 @@ public class MPriceListVersion extends X_M_PriceList_Version
 		return true;
 	}	//	beforeSave
 	
+	@Override
+	public MPriceListVersion markImmutable() 
+	{
+		MPriceListVersion po = (MPriceListVersion) super.markImmutable();
+		if (m_pl != null)
+			m_pl.markImmutable();
+		if (m_pp != null && m_pp.length > 0)
+			Arrays.stream(m_pp).forEach(e -> e.markImmutable());
+		return po;
+	}
+
 }	//	MPriceListVersion

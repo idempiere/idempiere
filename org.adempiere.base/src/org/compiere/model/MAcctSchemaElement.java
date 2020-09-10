@@ -18,7 +18,6 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -47,7 +46,7 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 	private static final long serialVersionUID = -4642928142654938659L;
 
 	/**
-	 * Factory: Return ArrayList of Account Schema Elements
+	 * Get ArrayList of Account Schema Elements from cache
 	 * @param as Accounting Schema
 	 * @return ArrayList with Elements
 	 */
@@ -56,9 +55,7 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 		Integer key = Integer.valueOf(as.getC_AcctSchema_ID());
 		MAcctSchemaElement[] retValue = (MAcctSchemaElement[]) s_cache.get (key);
 		if (retValue != null)
-			return Arrays.stream(retValue)
-						.map(e -> { return new MAcctSchemaElement(as.getCtx(), e, as.get_TrxName()); })
-						.toArray(MAcctSchemaElement[]::new);
+			return retValue;
 
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("C_AcctSchema_ID=" + as.getC_AcctSchema_ID());
 		ArrayList<MAcctSchemaElement> list = new ArrayList<MAcctSchemaElement>();
@@ -74,12 +71,13 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 			if (s_log.isLoggable(Level.FINE)) s_log.fine(" - " + ase);
 			if (ase.isMandatory() && ase.getDefaultValue() == 0)
 				s_log.log(Level.SEVERE, "No default value for " + ase.getName());
+			ase.markImmutable();
 			list.add(ase);
 		}
 		
 		retValue = new MAcctSchemaElement[list.size()];
 		list.toArray(retValue);
-		s_cache.put (key, Arrays.stream(retValue).map(e -> {return new MAcctSchemaElement(Env.getCtx(), e);}).toArray(MAcctSchemaElement[]::new));
+		s_cache.put(key, retValue);
 		return retValue;
 	}   //  getAcctSchemaElements
 

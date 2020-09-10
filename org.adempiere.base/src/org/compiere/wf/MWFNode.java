@@ -30,16 +30,15 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MColumn;
 import org.compiere.model.MRole;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_Node;
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  *	Workflow Node Model
@@ -57,9 +56,18 @@ public class MWFNode extends X_AD_WF_Node
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4330589837679937718L;
+	private static final long serialVersionUID = 3328770995394833132L;
 
-
+	/**
+	 * 	Get WF Node from Cache
+	 *	@param AD_WF_Node_ID id
+	 *	@return MWFNode
+	 */
+	public static MWFNode get (int AD_WF_Node_ID)
+	{
+		return get(Env.getCtx(), AD_WF_Node_ID);
+	}
+	
 	/**
 	 * 	Get WF Node from Cache
 	 *	@param ctx context
@@ -69,20 +77,20 @@ public class MWFNode extends X_AD_WF_Node
 	public static MWFNode get (Properties ctx, int AD_WF_Node_ID)
 	{
 		String key = Env.getAD_Language(ctx) + "_" + AD_WF_Node_ID;
-		MWFNode retValue = (MWFNode) s_cache.get (key);
+		MWFNode retValue = s_cache.get (ctx, key, e -> new MWFNode(ctx, e));
 		if (retValue != null)
-			return new MWFNode(ctx, retValue);
+			return retValue;
 		retValue = new MWFNode (ctx, AD_WF_Node_ID, (String)null);
 		if (retValue.get_ID () == AD_WF_Node_ID)
 		{
-			s_cache.put (key, new MWFNode(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MWFNode(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<String,MWFNode>	s_cache	= new CCache<String,MWFNode> (Table_Name, 50);
+	private static ImmutablePOCache<String,MWFNode>	s_cache	= new ImmutablePOCache<String,MWFNode> (Table_Name, 50);
 	
 	
 	/**************************************************************************
@@ -145,17 +153,6 @@ public class MWFNode extends X_AD_WF_Node
 		super(ctx, rs, trxName);
 		loadNext();
 		loadTrl();
-		//	Save to Cache
-		String key = null;
-		try {
-			Integer wfnodeid = Integer.valueOf(rs.getInt("AD_WF_Node_ID"));
-			if (wfnodeid != null && wfnodeid.intValue() > 0)
-				key = Env.getAD_Language(ctx) + "_" + wfnodeid;
-		} catch (SQLException e) {
-			throw new AdempiereException(e);
-		}
-		if (key != null && !s_cache.containsKey(key))
-			s_cache.put (key, new MWFNode(Env.getCtx(), this));
 	}	//	MWFNode
 
 	/**
@@ -239,6 +236,8 @@ public class MWFNode extends X_AD_WF_Node
 		for (MWFNodeNext next : m_next)
 		{
 			next.setFromSplitAnd(splitAnd);
+			if (is_Immutable())
+				next.markImmutable();
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_next.size());
 	}	//	loadNext
@@ -439,7 +438,11 @@ public class MWFNode extends X_AD_WF_Node
 		if (getAD_Column_ID() == 0)
 			return null;
 		if (m_column == null)
+		{
 			m_column = MColumn.get(getCtx(), getAD_Column_ID());
+			if (is_Immutable())
+				m_column.markImmutable();
+		}
 		return m_column;
 	}	//	getColumn
 	
@@ -551,7 +554,11 @@ public class MWFNode extends X_AD_WF_Node
 	public MWFNodePara[] getParameters()
 	{
 		if (m_paras == null)
+		{
 			m_paras = MWFNodePara.getParameters(getCtx(), getAD_WF_Node_ID());
+			if (m_paras != null && m_paras.length > 0 && is_Immutable())
+				Arrays.stream(m_paras).forEach(e -> e.markImmutable());
+		}
 		return m_paras;
 	}	//	getParameters
 
@@ -753,4 +760,19 @@ public class MWFNode extends X_AD_WF_Node
 			return false;
 		return true;
 	}
+	
+	@Override
+	public MWFNode markImmutable() 
+	{
+		MWFNode node = (MWFNode) super.markImmutable();
+		if (m_column != null)
+			m_column.markImmutable();
+		if (m_next != null && m_next.size() > 0)
+			m_next.stream().forEach(e -> e.markImmutable());
+		if (m_paras != null && m_paras.length > 0)
+			Arrays.stream(m_paras).forEach(e -> e.markImmutable());
+		
+		return node;
+	}
+
 }	//	M_WFNext

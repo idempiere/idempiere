@@ -208,6 +208,8 @@ public class MScheduler extends X_AD_Scheduler
 		.setParameters(getAD_Scheduler_ID())
 		.setOnlyActiveRecords(true)
 		.list();
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 		m_parameter = new MSchedulerPara[list.size()];
 		list.toArray(m_parameter);
 		return m_parameter;
@@ -228,6 +230,9 @@ public class MScheduler extends X_AD_Scheduler
 		.setParameters(getAD_Scheduler_ID())
 		.setOnlyActiveRecords(true)
 		.list();
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
+			
 		m_recipients = new MSchedulerRecipient[list.size()];
 		list.toArray(m_recipients);
 		return m_recipients;
@@ -349,6 +354,18 @@ public class MScheduler extends X_AD_Scheduler
 	@Override
 	public String getCronPattern() {
 	   return MSchedule.get(getCtx(),getAD_Schedule_ID()).getCronPattern();
+	}
+
+	@Override
+	public MScheduler markImmutable() 
+	{
+		MScheduler scheduler = (MScheduler) super.markImmutable();
+		if (m_parameter != null && m_parameter.length > 0)
+			Arrays.stream(m_parameter).forEach(e -> e.markImmutable());
+		if (m_recipients != null && m_recipients.length > 0)
+			Arrays.stream(m_recipients).forEach(e -> e.markImmutable());
+		
+		return scheduler;
 	}
 
 }	//	MScheduler

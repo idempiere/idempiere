@@ -19,8 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Organization Info Model
@@ -36,46 +36,66 @@ public class MOrgInfo extends X_AD_OrgInfo
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2496591466841600079L;
+	private static final long serialVersionUID = -6257741576762100779L;
 
 	/**
-	 * 	Load Constructor
-	 *	@param ctx context
+	 *  Get MOrgInfo from cache (immutable)
 	 *	@param AD_Org_ID id
 	 *	@return Org Info
-	 *  @deprecated
 	 */
 	public static MOrgInfo get (Properties ctx, int AD_Org_ID)
 	{
-		return get(ctx, AD_Org_ID, null);
+		return get(ctx, AD_Org_ID, (String)null);
 	}	//	get
 
 	/**
-	 * 	Load Constructor
-	 *	@param ctx context
+	 * 	Get MOrgInfo from cache (immutable)
+	 *	@param AD_Org_ID id
+	 *  @param trxName
+	 *	@return Org Info
+	 */
+	public static MOrgInfo get (int AD_Org_ID, String trxName)
+	{
+		return get(Env.getCtx(), AD_Org_ID, trxName);
+	}
+	
+	/**
+	 * 	Get MOrgInfo from cache (immutable)
+	 *	@param AD_Org_ID id
+	 *	@return Org Info
+	 */
+	public static MOrgInfo get (int AD_Org_ID)
+	{
+		return get(AD_Org_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get MOrgInfo from cache (immutable)
+	 *  @param ctx context
 	 *	@param AD_Org_ID id
 	 *  @param trxName
 	 *	@return Org Info
 	 */
 	public static MOrgInfo get (Properties ctx, int AD_Org_ID, String trxName)
 	{
-		MOrgInfo retValue = s_cache.get(AD_Org_ID);
+		MOrgInfo retValue = s_cache.get(ctx, AD_Org_ID, e -> new MOrgInfo(ctx, e));
 		if (retValue != null)
-		{
-			return new MOrgInfo(ctx, retValue, trxName);
-		}
-		retValue = new Query(ctx, Table_Name, "AD_Org_ID=?", trxName)
+			return retValue;
+		
+		retValue = new Query(Env.getCtx(), Table_Name, "AD_Org_ID=?", trxName)
 						.setParameters(AD_Org_ID)
 						.firstOnly();
 		if (retValue != null)
 		{
-			s_cache.put(AD_Org_ID, new MOrgInfo(Env.getCtx(), retValue));
+			s_cache.put(AD_Org_ID, retValue, e -> new MOrgInfo(Env.getCtx(), e));
+			return retValue;
+
 		}
-		return retValue;
+		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MOrgInfo>	s_cache	= new CCache<Integer, MOrgInfo>(Table_Name, 50);
+	private static ImmutableIntPOCache<Integer,MOrgInfo>	s_cache	= new ImmutableIntPOCache<Integer, MOrgInfo>(Table_Name, 50);
 
 	
 	/**************************************************************************

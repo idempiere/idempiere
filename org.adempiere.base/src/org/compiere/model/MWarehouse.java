@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Warehouse Model
@@ -42,10 +42,20 @@ public class MWarehouse extends X_M_Warehouse
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3065089372599460372L;
-
+	private static final long serialVersionUID = 8956497787182027905L;
+	
 	/**
-	 * 	Get from Cache
+	 * 	Get from Cache (immutable)
+	 *	@param M_Warehouse_ID id
+	 *	@return warehouse
+	 */
+	public static MWarehouse get (int M_Warehouse_ID)
+	{
+		return get(Env.getCtx(), M_Warehouse_ID);
+	}
+	
+	/**
+	 * 	Get from Cache (immutable)
 	 *	@param ctx context
 	 *	@param M_Warehouse_ID id
 	 *	@return warehouse
@@ -56,7 +66,7 @@ public class MWarehouse extends X_M_Warehouse
 	}
 	
 	/**
-	 * Retrieves warehouse from cache under transaction scope
+	 * Retrieves warehouse from cache (immutable)
 	 * @param ctx				context
 	 * @param M_Warehouse_ID	id of warehouse to load
 	 * @param trxName			transaction name
@@ -65,14 +75,14 @@ public class MWarehouse extends X_M_Warehouse
 	public static MWarehouse get (Properties ctx, int M_Warehouse_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(M_Warehouse_ID);
-		MWarehouse retValue = (MWarehouse)s_cache.get(key);
+		MWarehouse retValue = s_cache.get(ctx, key, e -> new MWarehouse(ctx, e));
 		if (retValue != null)
-			return new MWarehouse(ctx, retValue, trxName);
+			return retValue;
 		//
 		retValue = new MWarehouse (ctx, M_Warehouse_ID, trxName);
 		if (retValue.get_ID() == M_Warehouse_ID)
 		{
-			s_cache.put (key, new MWarehouse(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MWarehouse(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
@@ -114,7 +124,7 @@ public class MWarehouse extends X_M_Warehouse
 	}	//	get
 	
 	/**	Cache					*/
-	protected static CCache<Integer,MWarehouse> s_cache = new CCache<Integer,MWarehouse>(Table_Name, 50 );	
+	protected static ImmutableIntPOCache<Integer,MWarehouse> s_cache = new ImmutableIntPOCache<Integer,MWarehouse>(Table_Name, 50 );	
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -209,6 +219,8 @@ public class MWarehouse extends X_M_Warehouse
 										.setOnlyActiveRecords(true)
 										.setOrderBy("X,Y,Z")
 										.list();
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 		m_locators = list.toArray(new MLocator[list.size()]);
 		return m_locators;
 	}	//	getLocators
@@ -310,5 +322,16 @@ public class MWarehouse extends X_M_Warehouse
 		
 		return success;
 	}	//	afterSave
+
+	@Override
+	public MWarehouse markImmutable() 
+	{
+		MWarehouse po = (MWarehouse) super.markImmutable();
+		if (m_locators != null && m_locators.length > 0)
+			Arrays.stream(m_locators).forEach(e -> e.markImmutable());
+		
+		return po;
+	}
+
 
 }	//	MWarehouse

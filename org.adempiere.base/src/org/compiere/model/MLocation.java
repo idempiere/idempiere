@@ -23,13 +23,13 @@ import java.util.Comparator;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Location (Address)
@@ -50,7 +50,8 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4100591609253985073L;
+	private static final long serialVersionUID = -3421958100626539835L;
+	
 	// http://jira.idempiere.com/browse/IDEMPIERE-147
 	public static String LOCATION_MAPS_URL_PREFIX     = MSysConfig.getValue(MSysConfig.LOCATION_MAPS_URL_PREFIX);
 	public static String LOCATION_MAPS_ROUTE_PREFIX   = MSysConfig.getValue(MSysConfig.LOCATION_MAPS_ROUTE_PREFIX);
@@ -59,7 +60,28 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	
 	/**
 	 * 	Get Location from Cache
-	 *	@param ctx context
+	 *	@param C_Location_ID id
+	 *	@param trxName transaction
+	 *	@return MLocation
+	 */
+	public static MLocation get (int C_Location_ID, String trxName)
+	{
+		return get(Env.getCtx(), C_Location_ID, trxName);
+	}
+	
+	/**
+	 * 	Get Location from Cache (immutable)
+	 *	@param C_Location_ID id
+	 *	@return MLocation
+	 */
+	public static MLocation get (int C_Location_ID)
+	{
+		return get(C_Location_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get Location from Cache (immutable)
+	 *  @param ctx context
 	 *	@param C_Location_ID id
 	 *	@param trxName transaction
 	 *	@return MLocation
@@ -68,16 +90,16 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	{
 		//	New
 		if (C_Location_ID == 0)
-			return new MLocation(ctx, C_Location_ID, trxName);
+			return new MLocation(Env.getCtx(), C_Location_ID, trxName);
 		//
 		Integer key = Integer.valueOf(C_Location_ID);
-		MLocation retValue = s_cache.get (key);
+		MLocation retValue = s_cache.get (ctx, key, e -> new MLocation(ctx, e));
 		if (retValue != null)
-			return new MLocation(ctx, retValue, trxName);
+			return retValue;
 		retValue = new MLocation (ctx, C_Location_ID, trxName);
 		if (retValue.get_ID () == C_Location_ID)		//	found
 		{
-			s_cache.put (key, new MLocation(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MLocation(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;					//	not found
@@ -123,7 +145,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	}	//	getBPLocation
 
 	/**	Cache						*/
-	private static CCache<Integer,MLocation> s_cache = new CCache<Integer,MLocation>(Table_Name, 100, 30);
+	private static ImmutableIntPOCache<Integer,MLocation> s_cache = new ImmutableIntPOCache<Integer,MLocation>(Table_Name, 100, 30);
 	/**	Static Logger				*/
 	private static CLogger	s_log = CLogger.getCLogger(MLocation.class);
 
@@ -139,9 +161,9 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		super (ctx, C_Location_ID, trxName);
 		if (C_Location_ID == 0)
 		{
-			MCountry defaultCountry = MCountry.getDefault(getCtx()); 
+			MCountry defaultCountry = MCountry.getDefault(); 
 			setCountry(defaultCountry);
-			MRegion defaultRegion = MRegion.getDefault(getCtx());
+			MRegion defaultRegion = MRegion.getDefault();
 			if (defaultRegion != null 
 				&& defaultRegion.getC_Country_ID() == defaultCountry.getC_Country_ID())
 				setRegion(defaultRegion);
@@ -232,7 +254,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		if (country != null)
 			m_c = country;
 		else
-			m_c = MCountry.getDefault(getCtx());
+			m_c = MCountry.getDefault();
 		super.setC_Country_ID (m_c.getC_Country_ID());
 	}	//	setCountry
 
@@ -244,7 +266,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	{
 		if (getC_Country_ID() != C_Country_ID)
 			setRegion(null);
-		setCountry (MCountry.get(getCtx(), C_Country_ID));
+		setCountry (MCountry.get(C_Country_ID));
 	}	//	setCountry
 
 	/**
@@ -260,9 +282,9 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		if (m_c == null)
 		{
 			if (getC_Country_ID() != 0)
-				m_c = MCountry.get(getCtx(), getC_Country_ID());
+				m_c = MCountry.get(getC_Country_ID());
 			else
-				m_c = MCountry.getDefault(getCtx());
+				m_c = MCountry.getDefault();
 		}
 		return m_c;
 	}	//	getCountry
@@ -284,7 +306,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	public String getCountry (boolean local)
 	{
 		if (local 
-			&& getC_Country_ID() == MCountry.getDefault(getCtx()).getC_Country_ID())
+			&& getC_Country_ID() == MCountry.getDefault().getC_Country_ID())
 			return null;
 		return getCountryName();
 	}	//	getCountry
@@ -296,7 +318,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	public String getCountry (boolean local, String language)
 	{
 		if (local 
-			&& getC_Country_ID() == MCountry.getDefault(getCtx()).getC_Country_ID())
+			&& getC_Country_ID() == MCountry.getDefault().getC_Country_ID())
 			return null;
 		MCountry mc = getCountry();
 		return mc.getTrlName(language);
@@ -346,7 +368,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 				setRegion(null);
 		}
 		else
-			setRegion (MRegion.get(getCtx(), C_Region_ID));
+			setRegion (MRegion.get(C_Region_ID));
 	}	//	setC_Region_ID
 	
 	/**
@@ -360,7 +382,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 			m_r = null;
 		//
 		if (m_r == null && getC_Region_ID() != 0)
-			m_r = MRegion.get(getCtx(), getC_Region_ID());
+			m_r = MRegion.get(getC_Region_ID());
 		return m_r;
 	}	//	getRegion
 	
@@ -468,7 +490,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	public boolean isAddressLinesReverse()
 	{
 		//	Local
-		if (MCountry.getDefault(getCtx()) != null && getC_Country_ID() == MCountry.getDefault(getCtx()).getC_Country_ID())
+		if (MCountry.getDefault() != null && getC_Country_ID() == MCountry.getDefault().getC_Country_ID())
 			return getCountry().isAddressLinesLocalReverse();
 		return getCountry().isAddressLinesReverse();
 	}	//	isAddressLinesReverse
@@ -494,7 +516,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		if (c == null)
 			return "CountryNotFound";
 
-		boolean local = MCountry.getDefault(getCtx()) != null && getC_Country_ID() == MCountry.getDefault(getCtx()).getC_Country_ID();
+		boolean local = MCountry.getDefault() != null && getC_Country_ID() == MCountry.getDefault().getC_Country_ID();
 		String inStr = local ? c.getDisplaySequenceLocal() : c.getDisplaySequence();
 		StringBuilder outStr = new StringBuilder();
 

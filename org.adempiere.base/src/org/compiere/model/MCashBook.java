@@ -17,12 +17,11 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
-import java.util.Iterator;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Cash Book Model
@@ -36,8 +35,18 @@ public class MCashBook extends X_C_CashBook
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3991585668643587699L;
+	private static final long serialVersionUID = -743516751730874877L;
 
+	/**
+	 * 	Get MCashBook from Cache
+	 *	@param C_CashBook_ID id
+	 *	@return MCashBook
+	 */
+	public static MCashBook get (int C_CashBook_ID)
+	{
+		return get(Env.getCtx(), C_CashBook_ID);
+	}
+	
 	/**
 	 * 	Get MCashBook from Cache
 	 *	@param ctx context
@@ -46,26 +55,26 @@ public class MCashBook extends X_C_CashBook
 	 */
 	public static MCashBook get (Properties ctx, int C_CashBook_ID)
 	{
-		return get(ctx, C_CashBook_ID, null);
+		return get(ctx, C_CashBook_ID, (String)null);
 	}	//	get
 	
 	/**
-	 * Gets MCashBook from Cache under transaction scope
+	 * Gets MCashBook from Cache
 	 * @param ctx 				context	
 	 * @param C_CashBook_ID		id of cashbook to load
-	 * @param trxName			transaction name
+	 * @param trxName			transaction to load mcashbook if it is not in cache
 	 * @return   Cashbook
 	 */
 	public static MCashBook get(Properties ctx, int C_CashBook_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(C_CashBook_ID);
-		MCashBook retValue = (MCashBook) s_cache.get (key);
+		MCashBook retValue = (MCashBook) s_cache.get (ctx, key, e -> (MCashBook)new MCashBook(ctx, e));
 		if (retValue != null)
-			return new MCashBook(ctx, retValue, trxName);
+			return retValue;
 		retValue = new MCashBook (ctx, C_CashBook_ID, trxName);
 		if (retValue.get_ID () == C_CashBook_ID)
 		{
-			s_cache.put (key, new MCashBook(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MCashBook(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
@@ -81,10 +90,9 @@ public class MCashBook extends X_C_CashBook
 	public static MCashBook get (Properties ctx, int AD_Org_ID, int C_Currency_ID)
 	{
 		//	Try from cache
-		Iterator<MCashBook> it = s_cache.values().iterator();
-		while (it.hasNext())
+		MCashBook[] it = s_cache.values().toArray(new MCashBook[0]);
+		for (MCashBook cb : it)
 		{
-			MCashBook cb = (MCashBook)it.next();
 			if (cb.getAD_Org_ID() == AD_Org_ID && cb.getC_Currency_ID() == C_Currency_ID)
 				return new MCashBook(ctx, cb);
 		}
@@ -105,8 +113,8 @@ public class MCashBook extends X_C_CashBook
 	
 
 	/**	Cache						*/
-	private static CCache<Integer,MCashBook> s_cache
-		= new CCache<Integer,MCashBook>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MCashBook> s_cache
+		= new ImmutableIntPOCache<Integer,MCashBook>(Table_Name, 20);
 	/**	Static Logger	*/
 	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MCashBook.class);

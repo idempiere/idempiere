@@ -19,8 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * 	Request Group Model
@@ -32,32 +32,41 @@ public class MGroup extends X_R_Group
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3218102715154328611L;
-
+	private static final long serialVersionUID = 9013217403211341916L;
 
 	/**
-	 * 	Get MGroup from Cache
-	 *	@param ctx context
+	 * 	Get MGroup from Cache (immutable)
 	 *	@param R_Group_ID id
-	 *	@return MGroup
+	 *	@return MGroup 
+	 */
+	public static MGroup get (int R_Group_ID)
+	{
+		return get(Env.getCtx(), R_Group_ID);
+	}
+	
+	/**
+	 * 	Get MGroup from Cache (immutable)
+	 *  @param ctx context
+	 *	@param R_Group_ID id
+	 *	@return Immutable instance of MGroup
 	 */
 	public static MGroup get (Properties ctx, int R_Group_ID)
 	{
 		Integer key = Integer.valueOf(R_Group_ID);
-		MGroup retValue = (MGroup) s_cache.get (key);
+		MGroup retValue = s_cache.get (ctx, key, e -> new MGroup(ctx, e));
 		if (retValue != null)
-			return new MGroup(ctx, retValue);
+			return retValue;
 		retValue = new MGroup (ctx, R_Group_ID, (String)null);
 		if (retValue.get_ID () == R_Group_ID)
 		{
-			s_cache.put (key, new MGroup(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MGroup(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MGroup> s_cache = new CCache<Integer,MGroup>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MGroup> s_cache = new ImmutableIntPOCache<Integer,MGroup>(Table_Name, 20);
 	
 	
 	/**************************************************************************

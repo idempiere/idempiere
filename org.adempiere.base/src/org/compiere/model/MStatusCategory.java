@@ -23,11 +23,11 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  * 	Request Status Category Model
@@ -40,8 +40,7 @@ public class MStatusCategory extends X_R_StatusCategory
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7538457243144691380L;
-
+	private static final long serialVersionUID = -5527646898927619293L;
 
 	/**
 	 * 	Get Default Status Categpru for Client
@@ -100,7 +99,17 @@ public class MStatusCategory extends X_R_StatusCategory
 	}	//	createDefault
 
 	/**
-	 * 	Get Request Status Category from Cache
+	 * 	Get Request Status Category from Cache (immutable)
+	 *	@param R_StatusCategory_ID id
+	 *	@return RStatusCategory
+	 */
+	public static MStatusCategory get (int R_StatusCategory_ID)
+	{
+		return get(Env.getCtx(), R_StatusCategory_ID);
+	}
+	
+	/**
+	 * 	Get Request Status Category from Cache (immutable)
 	 *	@param ctx context
 	 *	@param R_StatusCategory_ID id
 	 *	@return RStatusCategory
@@ -108,21 +117,21 @@ public class MStatusCategory extends X_R_StatusCategory
 	public static MStatusCategory get (Properties ctx, int R_StatusCategory_ID)
 	{
 		Integer key = Integer.valueOf(R_StatusCategory_ID);
-		MStatusCategory retValue = (MStatusCategory)s_cache.get (key);
+		MStatusCategory retValue = s_cache.get (ctx, key, e -> new MStatusCategory(ctx, e));
 		if (retValue != null)
-			return new MStatusCategory(ctx, retValue);
+			return retValue;
 		retValue = new MStatusCategory (ctx, R_StatusCategory_ID, (String)null);
 		if (retValue.get_ID() == R_StatusCategory_ID)
 		{
-			s_cache.put (key, new MStatusCategory(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MStatusCategory(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer, MStatusCategory> s_cache 
-		= new CCache<Integer, MStatusCategory> (Table_Name, 20);
+	private static ImmutableIntPOCache<Integer, MStatusCategory> s_cache 
+		= new ImmutableIntPOCache<Integer, MStatusCategory> (Table_Name, 20);
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MStatusCategory.class);
 	
@@ -223,6 +232,8 @@ public class MStatusCategory extends X_R_StatusCategory
 			pstmt = null;
 		}
 		//
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 		m_status = new MStatus[list.size ()];
 		list.toArray (m_status);
 		return m_status;
@@ -246,6 +257,15 @@ public class MStatusCategory extends X_R_StatusCategory
 				return m_status[0].getR_Status_ID();
 		return 0;
 	}	//	getDefaultR_Status_ID
+
+	@Override
+	public MStatusCategory markImmutable() 
+	{
+		MStatusCategory po = (MStatusCategory) super.markImmutable();
+		if (m_status != null && m_status.length > 0)
+			Arrays.stream(m_status).forEach(e -> e.markImmutable());
+		return po;
+	}
 
 	/**
 	 * 	String Representation

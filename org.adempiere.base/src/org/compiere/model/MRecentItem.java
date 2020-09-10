@@ -27,11 +27,11 @@ import java.util.logging.Level;
 import org.adempiere.base.Service;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
 import org.osgi.service.event.Event;
@@ -46,12 +46,12 @@ public class MRecentItem extends X_AD_RecentItem
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -311416268128338337L;
+	private static final long serialVersionUID = -6564296810614189111L;
 
 	public static final String ON_RECENT_ITEM_CHANGED_TOPIC = "onRecentItemChanged";
 
 	/**	Recent Item Cache				*/
-	private static CCache<String,MRecentItem>	s_cache = new CCache<String,MRecentItem>(Table_Name, 10);
+	private static ImmutablePOCache<String,MRecentItem>	s_cache = new ImmutablePOCache<String,MRecentItem>(Table_Name, 10);
 	/**	Logger			*/
 	private static CLogger s_log = CLogger.getCLogger(MRecentItem.class);
 
@@ -67,13 +67,6 @@ public class MRecentItem extends X_AD_RecentItem
 	public MRecentItem (Properties ctx, int AD_RecentItem_ID, String trxName)
 	{
 	      super (ctx, AD_RecentItem_ID, trxName);
-	      if (AD_RecentItem_ID > 0) {
-	    	  synchronized (MRecentItem.class) {
-	    		  String key = getCacheKey(AD_RecentItem_ID, ctx);
-	    		  if (!s_cache.containsKey(key))
-	    			  s_cache.put (key, new MRecentItem(Env.getCtx(), this));
-	    	  }
-	      }
 	}	//	MRecentItem
 
 	private static String getCacheKey(int AD_RecentItem_ID, Properties ctx) {
@@ -89,16 +82,6 @@ public class MRecentItem extends X_AD_RecentItem
 	public MRecentItem (Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
-		String key = null;
-		try {
-			key = getCacheKey(rs.getInt("AD_RecentItem_ID"), ctx);
-		} catch (SQLException e) {
-			throw new AdempiereException(e);
-		}
-		synchronized (MRecentItem.class) {
-			if (key != null && !s_cache.containsKey(key))
-				s_cache.put (key, new MRecentItem(Env.getCtx(), this));
-		}
 	}	//	MRecentItem
 
 	/**
@@ -134,7 +117,7 @@ public class MRecentItem extends X_AD_RecentItem
 	}
 	
 	/**
-	 * 	Get from Cache using ID
+	 * 	Get from Cache using ID (immutable)
 	 *	@param ctx context
 	 *	@param AD_RecentItem_ID id
 	 *	@return recent item
@@ -142,22 +125,22 @@ public class MRecentItem extends X_AD_RecentItem
 	public static synchronized MRecentItem get (Properties ctx, int AD_RecentItem_ID)
 	{
 		String ii = getCacheKey(AD_RecentItem_ID, ctx);
-		MRecentItem ri = (MRecentItem)s_cache.get(ii);
+		MRecentItem ri = s_cache.get(ctx, ii, e -> new MRecentItem(ctx, e));
 		if (ri == null)
 		{
 			ri = new MRecentItem (ctx, AD_RecentItem_ID, null);
 			if (ri.get_ID() == AD_RecentItem_ID)
 			{
-				s_cache.put(ii, new MRecentItem(Env.getCtx(), ri));
+				s_cache.put(ii, ri, e -> new MRecentItem(Env.getCtx(), e));
 				return ri;
 			}
 			return null;
 		}
-		return new MRecentItem(ctx, ri);
+		return ri;
 	}	//	get
 
 	/**
-	 * 	Get Recent Item from Cache using table+recordID
+	 * 	Get Recent Item from Cache using table+recordID (immutable)
 	 *	@param ctx context
 	 *	@param AD_Table_ID tableID
 	 *	@param Record_ID recordID
@@ -175,7 +158,7 @@ public class MRecentItem extends X_AD_RecentItem
 					&& Env.getAD_Language(ctx).equals(Env.getAD_Language(retValue.getCtx()))
 					)
 			{
-				return new MRecentItem(ctx, retValue);
+				return retValue;
 			}
 		}
 		//
@@ -205,7 +188,7 @@ public class MRecentItem extends X_AD_RecentItem
 		if (retValue != null)
 		{
 			String key = getCacheKey(retValue.getAD_RecentItem_ID(), ctx);
-			s_cache.put (key, new MRecentItem(Env.getCtx(), retValue));
+			s_cache.put (key, retValue, e -> new MRecentItem(Env.getCtx(), e));
 		}
 		return retValue;
 	}	//	get
@@ -282,7 +265,7 @@ public class MRecentItem extends X_AD_RecentItem
 		int cntri = DB.getSQLValue(null, "SELECT COUNT(*) FROM AD_RecentItem WHERE NVL(AD_User_ID,0)=? AND AD_Client_ID=?", AD_User_ID, AD_Client_ID);
 		if (cntri > maxri) {
 			int cntdel = cntri - maxri;
-			String sql = "SELECT AD_Table_ID, Record_ID FROM AD_RecentItem WHERE NVL(AD_User_ID,0)=? AND AD_Client_ID=? ORDER BY Updated";
+			String sql = "SELECT * FROM AD_RecentItem WHERE NVL(AD_User_ID,0)=? AND AD_Client_ID=? ORDER BY Updated";
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try
@@ -292,9 +275,7 @@ public class MRecentItem extends X_AD_RecentItem
 				pstmt.setInt(2, AD_Client_ID);
 				rs = pstmt.executeQuery ();
 				while (rs.next()) {
-					int AD_Table_ID = rs.getInt(1);
-					int Record_ID = rs.getInt(2);
-					MRecentItem ri = get(ctx, AD_Table_ID, Record_ID, AD_User_ID);
+					MRecentItem ri = new MRecentItem(ctx, rs, (String)null);
 					ri.deleteEx(true);
 					cntdel--;
 					if (cntdel == 0)

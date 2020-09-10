@@ -29,10 +29,10 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  *	Context Help Message Model
@@ -43,12 +43,11 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7208965344525556184L;
-
+	private static final long serialVersionUID = 3148838750037103261L;
 	/**	Logging								*/
 	private static CLogger		s_log = CLogger.getCLogger(MCtxHelpMsg.class);
 	/** Context Help Message Cache				*/
-	private static CCache<String, MCtxHelpMsg> s_cache = new CCache<String, MCtxHelpMsg>(Table_Name, 10);
+	private static ImmutablePOCache<String, MCtxHelpMsg> s_cache = new ImmutablePOCache<String, MCtxHelpMsg>(Table_Name, 10);
 
 	/**
 	 * 	Standard Constructor
@@ -99,25 +98,22 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg {
 	}
 	
 	/**
-	 * Get the context help message defined for the type, recordid, client, org
-	 * @param ctx ignore
+	 * Get the context help message defined for the type, recordid, client, org (immutable)
 	 * @param ctxtype
 	 * @param recordId
 	 * @return the context message record
-	 * @deprecated
 	 */
-	public static MCtxHelpMsg get(Properties ctx, String ctxType, int recordId) {
-		return get(ctxType, recordId);
+	public static MCtxHelpMsg get(String ctxType, int recordId) {
+		return get(Env.getCtx(), ctxType, recordId);
 	}
 	
 	/**
-	 * Get the context help message defined for the type, recordid, client, org
+	 * Get the context help message defined for the type, recordid, client, org (immutable)
 	 * @param ctxtype
 	 * @param recordId
 	 * @return an immutable instance of context message record (if any)
 	 */
-	public static MCtxHelpMsg get(String ctxType, int recordId) {
-		Properties ctx = Env.getCtx();
+	public static MCtxHelpMsg get(Properties ctx, String ctxType, int recordId) {
 		StringBuilder key = new StringBuilder()
 			.append(ctxType).append("|")
 			.append(recordId).append("|")
@@ -125,7 +121,7 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg {
 			.append(Env.getAD_Org_ID(ctx));
 		MCtxHelpMsg retValue = null;
 		if (s_cache.containsKey(key.toString())) {
-			retValue = s_cache.get(key.toString());
+			retValue = s_cache.get(ctx, key.toString(), e -> new MCtxHelpMsg(ctx, e));
 			if (s_log.isLoggable(Level.FINEST)) s_log.finest("Cache: " + retValue);
 			return retValue;
 		}
@@ -136,10 +132,8 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg {
 			retValue = query.setOrderBy("AD_Client_ID DESC, AD_Org_ID DESC, AD_CtxHelpMsg_ID DESC")
 					.setParameters(Env.getAD_Client_ID(ctx), Env.getAD_Org_ID(ctx), AD_CtxHelp_ID)
 					.first();
-			if (retValue != null)
-				retValue.markImmutable();
 		}
-		s_cache.put(key.toString(), retValue);
+		s_cache.put(key.toString(), retValue, e -> new MCtxHelpMsg(Env.getCtx(), e));
 		return retValue;
 	}
 

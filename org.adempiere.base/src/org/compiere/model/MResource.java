@@ -20,8 +20,8 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 
 
 /**
@@ -41,12 +41,22 @@ public class MResource extends X_S_Resource
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6799272062821593975L;
+	private static final long serialVersionUID = -6893347336885257619L;
 	/** Cache */
-	private static CCache<Integer, MResource> s_cache = new CCache<Integer, MResource>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer, MResource> s_cache = new ImmutableIntPOCache<Integer, MResource>(Table_Name, 20);
 	
 	/**
-	 * Get from Cache
+	 * Get from Cache (immutable)
+	 * @param S_Resource_ID
+	 * @return MResource
+	 */
+	public static MResource get(int S_Resource_ID)
+	{
+		return get(Env.getCtx(), S_Resource_ID);
+	}
+	
+	/**
+	 * Get from Cache (immutable)
 	 * @param ctx
 	 * @param S_Resource_ID
 	 * @return MResource
@@ -55,16 +65,16 @@ public class MResource extends X_S_Resource
 	{
 		if (S_Resource_ID <= 0)
 			return null;
-		MResource r = s_cache.get(S_Resource_ID);
+		MResource r = s_cache.get(ctx, S_Resource_ID, e -> new MResource(ctx, e));
 		if (r == null) {
 			r = new MResource(ctx, S_Resource_ID, (String)null);
 			if (r.get_ID() == S_Resource_ID) {
-				s_cache.put(S_Resource_ID, new MResource(Env.getCtx(), r));
+				s_cache.put(S_Resource_ID, r, e -> new MResource(Env.getCtx(), e));
 				return r;
 			}
 			return null;
 		}
-		return new MResource(ctx, r);
+		return r;
 	}
 
 	/**
@@ -138,6 +148,8 @@ public class MResource extends X_S_Resource
 		//
 		if (m_resourceType == null && getS_ResourceType_ID() != 0) {
 			m_resourceType = new MResourceType (getCtx(), getS_ResourceType_ID(), get_TrxName());
+			if (is_Immutable())
+				m_resourceType.markImmutable();
 		}
 		return m_resourceType;
 	}	//	getResourceType
@@ -151,8 +163,10 @@ public class MResource extends X_S_Resource
 		if (m_product == null)
 		{
 			m_product = MProduct.forS_Resource_ID(getCtx(), getS_Resource_ID(), get_TrxName());
+			if (is_Immutable())
+				m_product.markImmutable();
 		}
-		else
+		else if (!is_Immutable())
 		{
 			m_product.set_TrxName(get_TrxName());
 		}
@@ -209,6 +223,17 @@ public class MResource extends X_S_Resource
 			product.deleteEx(true);
 		}
 		return true;
+	}
+
+	@Override
+	public MResource markImmutable() 
+	{
+		MResource po = (MResource) super.markImmutable();
+		if (m_product != null)
+			m_product.markImmutable();
+		if (m_resourceType != null)
+			m_resourceType.markImmutable();
+		return po;
 	}
 
 	@Override
