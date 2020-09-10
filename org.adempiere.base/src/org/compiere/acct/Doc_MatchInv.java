@@ -585,22 +585,13 @@ public class Doc_MatchInv extends Doc
 		return "";
 	}
 	
-	public ArrayList<Fact> createMatShipmentFacts(MAcctSchema as) {
+	private ArrayList<Fact> createMatShipmentFacts(MAcctSchema as) {
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
 		setC_Currency_ID (as.getC_Currency_ID());
 		boolean isInterOrg = isInterOrg(as);
-
-		/**	Needs to be handled in PO Matching as no Receipt info
-		if (m_pc.isService())
-		{
-			log.fine("Service - skipped");
-			return fact;
-		}
-		**/
-
 
 		//  NotInvoicedReceipt      DR
 		//  From Receipt
@@ -633,7 +624,7 @@ public class Doc_MatchInv extends Doc
 				m_receiptLine.getM_InOut_ID(), m_receiptLine.getM_InOutLine_ID(),
 				multiplier))
 			{
-				p_Error = "Mat.Receipt not posted yet";
+				p_Error = "Mat.Shipment not posted yet";
 				return null;
 			}
 		}
