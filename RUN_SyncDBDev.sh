@@ -37,7 +37,7 @@ then
 Please run first install.app or install.console.app within eclipse"
     exit 1
 fi
-cd "$IDEMPIERE_HOME" || exit
+cd "$IDEMPIERE_HOME" || (echo "Cannot cd to $IDEMPIERE_HOME"; exit 1)
 CONN=$(grep "^Connection=.*type" "$PROPFILE")
 if [ -z "$CONN" ]
 then

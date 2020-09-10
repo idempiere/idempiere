@@ -1494,6 +1494,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	        	|| GridTable.DATA_INSERTED_MESSAGE.equals(adInfo)
 	        	|| GridTable.DATA_IGNORED_MESSAGE.equals(adInfo)
 	        	|| GridTable.DATA_UPDATE_COPIED_MESSAGE.equals(adInfo)
+	        	|| GridTable.DATA_SAVED_MESSAGE.equals(adInfo)
 	           ) {
 
 		        String prefix = null;

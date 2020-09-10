@@ -1,20 +1,21 @@
 #!/bin/sh
 
-if [ $IDEMPIERE_HOME ]; then
-    cd $IDEMPIERE_HOME/utils
+if [ "$IDEMPIERE_HOME" ]; then
+    cd "$IDEMPIERE_HOME"/utils || (echo "Cannot cd $IDEMPIERE_HOME/utils"; exit 1)
 else
-    cd "`dirname $0`"
+    cd "$(dirname "$0")" || (echo "Cannot cd "; exit 1)
 fi
-. ./myEnvironment.sh Server
+export ID_ENV=Server
+. ./myEnvironment.sh
 
-if [ $JAVA_HOME ]; then
+if [ "$JAVA_HOME" ]; then
   JAVA=$JAVA_HOME/bin/java
 else
   JAVA=java
 fi
 
 # $Id: RUN_ApplyPackInFromFolder.sh
-echo    Apply PackIn from Folder - $IDEMPIERE_HOME \($ADEMPIERE_DB_NAME\)
+echo    Apply PackIn from Folder - "$IDEMPIERE_HOME" \("$ADEMPIERE_DB_NAME"\)
 
 if [ $# -eq 1 ]
 then
@@ -24,11 +25,11 @@ else
     exit 1
 fi
 
-cd ..
+cd .. || (echo "Cannot cd .."; exit 1)
 
-echo    This Procedure import packin files from directory $DIRECTORY
+echo    This Procedure import packin files from directory "$DIRECTORY"
 
-$JAVA -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=false -jar plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.base.PackInFolderApplication $DIRECTORY
+$JAVA -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=false -jar plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.base.PackInFolderApplication "$DIRECTORY"
 
 echo    Done
 echo .

@@ -1209,10 +1209,12 @@ public class DB_Oracle implements AdempiereDatabase
 				.append("   select tb.*, ROWNUM oracle_native_rownum_ from (")
 				.append(sql)
 				.append(") tb) where oracle_native_rownum_ >= ")
-				.append(start)
-				.append(" AND oracle_native_rownum_ <= ")
-				.append(end)
-				.append(" order by oracle_native_rownum_");
+				.append(start);
+		if (end > 0) {
+			newSql.append(" AND oracle_native_rownum_ <= ")
+				.append(end);
+		}
+		newSql.append(" order by oracle_native_rownum_");
 
 		return newSql.toString();
 	}
