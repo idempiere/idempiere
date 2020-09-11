@@ -1045,10 +1045,12 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	 */
 	public String addPagingSQL(String sql, int start, int end) {
 		StringBuilder newSql = new StringBuilder(sql);
+		if (end > 0) {
+			newSql.append(" ")
+				.append(markNativeKeyword("LIMIT "))
+				.append(( end - start + 1 ));
+		}
 		newSql.append(" ")
-			.append(markNativeKeyword("LIMIT "))
-			.append(( end - start + 1 ))
-			.append(" ")
 			.append(markNativeKeyword("OFFSET "))
 			.append((start - 1));
 		return newSql.toString();

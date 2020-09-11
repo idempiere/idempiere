@@ -44,7 +44,7 @@ echo Synchronize iDempiere Database
 
 echo Upgrading database "$1@$ADEMPIERE_DB_NAME"
 
-if [ $# -eq 0 ] 
+if [ $# -eq 0 ]
   then
     echo "Usage: $0 <userAccount>"
     echo "Example: $0 adempiere adempiere"
@@ -92,7 +92,7 @@ apply_script()
     OUTFILE="$2"
     FILE="$3"
     echo "Applying $SCRIPT"
-    cat "$SCRIPT" | $CMD > "$OUTFILE" 2>&1
+    $CMD < "$SCRIPT" > "$OUTFILE" 2>&1
     APPLIED=Y
     if grep -E "$ERROR_STRINGS" "$OUTFILE" > /dev/null 2>&1
     then
@@ -120,7 +120,7 @@ process_fix()
     then
         TMPBASE="${FAILEDSCRIPT##*/}"
         BASE="${TMPBASE%.sql}"
-    elif [ "fix" = "$SUFFIX" ]       
+    elif [ "fix" = "$SUFFIX" ]
     then
         TMPBASE="${FAILEDSCRIPT##*/}"
         BASE="${TMPBASE%.[0-9][0-9][0-9].fix}"
@@ -283,7 +283,7 @@ then
     do
         OUTFILE=$TMPFOLDER/SyncDB_out_$$/$(basename "$FILE" .sql).out
         echo "Applying $FILE"
-        cat "$FILE" | $CMD > "$OUTFILE" 2>&1
+        $CMD < "$FILE" > "$OUTFILE" 2>&1
         if grep -E "$ERROR_STRINGS" "$OUTFILE" > /dev/null 2>&1
         then
             echo "Found error in $SCRIPT"

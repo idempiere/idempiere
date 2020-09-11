@@ -8,7 +8,7 @@
 echo Setting myEnvironment ....
 #	Clients only needs
 #		IDEMPIERE_HOME
-#		JAVA_HOME 
+#		JAVA_HOME
 #	Server install needs to change
 #		ADEMPIERE_DB_NAME	(for Oracle)
 #		passwords
@@ -67,7 +67,7 @@ export ADEMPIERE_JAVA
 IDEMPIERE_JAVA_OPTIONS="@IDEMPIERE_JAVA_OPTIONS@ -DIDEMPIERE_HOME=$IDEMPIERE_HOME"
 export IDEMPIERE_JAVA_OPTIONS
 
-if [ $DOLLAR$# -eq 0 ] 
-  then
+if [ "$ID_ENV" != "Server" ]
+then
     cp $IDEMPIERE_HOME/utils/myEnvironment.sh $IDEMPIERE_HOME/utils/myEnvironment.sav
 fi

@@ -35,6 +35,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.compiere.Adempiere;
 import org.compiere.print.util.SerializableMatrix;
 import org.compiere.print.util.SerializableMatrixImpl;
+import org.compiere.report.MReportLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Trace;
@@ -57,7 +58,7 @@ public class PrintData implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5013410697934610197L;
+	private static final long serialVersionUID = 3493453909439452289L;
 
 	/**
 	 * 	Data Parent Constructor
@@ -802,5 +803,38 @@ public class PrintData implements Serializable
 		System.out.println("");
 		pd1.dump();
 	}	//	main
+	
+	public MReportLine getMReportLine()
+	{
+		List<Serializable> nodes = m_matrix.getRowData();
+
+		if (nodes == null || !m_hasLevelNo)
+			return null;
+
+		for (int i = 0; i < nodes.size(); i++)
+		{
+			Object o = nodes.get(i);
+			if (o instanceof PrintDataElement)
+			{
+				PrintDataElement pde = (PrintDataElement) o;
+				if (MReportLine.COLUMNNAME_PA_ReportLine_ID.equals(pde.getColumnName()))
+				{
+					Integer ii = (Integer) pde.getValue();
+					if (ii > 0)
+					{
+						return new MReportLine(m_ctx, ii, null);
+					}
+				}
+			}
+		}
+		return null;
+	} // getMReportLine
+
+	public void addRow(boolean functionRow, int levelNo, int reportLineID)
+	{
+		addRow(functionRow, levelNo);
+		if (m_hasLevelNo && reportLineID != 0)
+			addNode(new PrintDataElement("PA_ReportLine_ID", reportLineID, DisplayType.Integer, null));
+	}
 
 }	//	PrintData

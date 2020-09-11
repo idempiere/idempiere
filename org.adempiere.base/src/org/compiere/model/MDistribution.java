@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -40,20 +41,21 @@ public class MDistribution extends X_GL_Distribution
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3782058638272715005L;
+	private static final long serialVersionUID = -5964912910470166735L;
 
 	/**
 	 * 	Get Distribution for combination
 	 *	@param acct account (ValidCombination)
 	 *	@param PostingType only posting type
 	 *	@param C_DocType_ID only document type
+	 *	@param dateAcct date (to be tested with ValidFrom/ValidTo)
 	 *	@return array of distributions
 	 */
 	public static MDistribution[] get (MAccount acct,  
-		String PostingType, int C_DocType_ID)
+		String PostingType, int C_DocType_ID, Timestamp dateAcct)
 	{
 		return get (acct.getCtx(), acct.getC_AcctSchema_ID(), 
-			PostingType, C_DocType_ID,
+			PostingType, C_DocType_ID, dateAcct,
 			acct.getAD_Org_ID(), acct.getAccount_ID(),
 			acct.getM_Product_ID(), acct.getC_BPartner_ID(), acct.getC_Project_ID(),
 			acct.getC_Campaign_ID(), acct.getC_Activity_ID(), acct.getAD_OrgTrx_ID(),
@@ -67,6 +69,7 @@ public class MDistribution extends X_GL_Distribution
 	 *	@param C_AcctSchema_ID schema
 	 *	@param PostingType posting type
 	 *	@param C_DocType_ID document type
+	 *	@param dateAcct date (to be tested with ValidFrom/ValidTo)
 	 *	@param AD_Org_ID org
 	 *	@param Account_ID account
 	 *	@param M_Product_ID product
@@ -83,7 +86,7 @@ public class MDistribution extends X_GL_Distribution
 	 *	@return array of distributions or null
 	 */
 	public static MDistribution[] get (Properties ctx, int C_AcctSchema_ID, 
-		String PostingType, int C_DocType_ID,
+		String PostingType, int C_DocType_ID, Timestamp dateAcct,
 		int AD_Org_ID, int Account_ID,
 		int M_Product_ID, int C_BPartner_ID, int C_Project_ID,
 		int C_Campaign_ID, int C_Activity_ID, int AD_OrgTrx_ID,
@@ -103,10 +106,14 @@ public class MDistribution extends X_GL_Distribution
 			//	Mandatory Acct Schema
 			if (distribution.getC_AcctSchema_ID() != C_AcctSchema_ID)
 				continue;
-			//	Only Posting Type / DocType
+			//	Only Posting Type / DocType / ValidFrom / ValidTo
 			if (distribution.getPostingType() != null && !distribution.getPostingType().equals(PostingType))
 				continue;
 			if (distribution.getC_DocType_ID() != 0 && distribution.getC_DocType_ID() != C_DocType_ID)
+				continue;
+			if (distribution.getValidFrom() != null && distribution.getValidFrom().after(dateAcct))
+				continue;
+			if (distribution.getValidTo() != null && distribution.getValidTo().before(dateAcct))
 				continue;
 			
 			//	Optional Elements - "non-Any"
