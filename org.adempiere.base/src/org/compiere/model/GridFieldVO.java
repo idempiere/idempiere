@@ -172,7 +172,8 @@ public class GridFieldVO implements Serializable, Cloneable
 				    vo.SeqNo = userDef.getSeqNo();
 				if (userDef.getAD_Val_Rule_ID() > 0)
 					vo.ValidationCode  = MValRule.get(vo.ctx, userDef.getAD_Val_Rule_ID()).getCode();
-				
+				if (userDef.getAD_Val_Rule_Lookup_ID() > 0)
+					vo.ValidationCodeLookup = MValRule.get(ctx, userDef.getAD_Val_Rule_Lookup_ID()).getCode();
 				if (userDef.getAD_LabelStyle_ID() > 0)
 					vo.AD_LabelStyle_ID = userDef.getAD_LabelStyle_ID();
 				
@@ -314,6 +315,8 @@ public class GridFieldVO implements Serializable, Cloneable
 					vo.AD_Reference_Value_ID = rs.getInt(i);
 				else if (columnName.equalsIgnoreCase("ValidationCode"))
 					vo.ValidationCode = rs.getString(i);
+				else if (columnName.equalsIgnoreCase("ValidationCodeLookup"))
+					vo.ValidationCodeLookup = rs.getString(i);
 				else if (columnName.equalsIgnoreCase("IsQuickForm"))
 					vo.IsQuickForm = "Y".equals(rs.getString (i));
 				else if (columnName.equalsIgnoreCase("ColumnSQL")) {
@@ -409,6 +412,7 @@ public class GridFieldVO implements Serializable, Cloneable
 			//
 			vo.AD_Reference_Value_ID = rs.getInt("AD_Reference_Value_ID");
 			vo.ValidationCode = rs.getString("ValidationCode");
+			vo.ValidationCodeLookup = rs.getString("ValidationCodeLookup");
 			vo.ReadOnlyLogic = rs.getString("ReadOnlyLogic");
 			vo.DisplayLogic= rs.getString("DisplayLogic");
 			vo.IsEncryptedField=rs.getString("IsEncrypted").equals("Y");
@@ -513,6 +517,7 @@ public class GridFieldVO implements Serializable, Cloneable
 		voT.AD_Reference_Value_ID = voF.AD_Reference_Value_ID;
 		// IDEMPIERE-229 Bug with Process parameter range
 		voT.ValidationCode = voF.ValidationCode;
+		voT.ValidationCodeLookup = voF.ValidationCodeLookup;
 		voT.IsEncryptedField = voF.IsEncryptedField;
 		voT.ReadOnlyLogic = voF.ReadOnlyLogic;
 		voT.DisplayLogic = voF.DisplayLogic;
@@ -729,6 +734,8 @@ public class GridFieldVO implements Serializable, Cloneable
 
 	/**	Lookup Validation code	*/
 	public String		ValidationCode = "";
+	/**	Lookup Validation code for Find Window	*/
+	public String	ValidationCodeLookup = "";
 	/**	Reference Value			*/
 	public int			AD_Reference_Value_ID = 0;
 
@@ -884,6 +891,7 @@ public class GridFieldVO implements Serializable, Cloneable
 			GridFieldVO clone = (GridFieldVO) super.clone();
 			clone.ctx = Env.getCtx();
 			if ( lookupInfo != null) {
+				clone.ValidationCodeLookup = ValidationCodeLookup;
 				clone.lookupInfo = lookupInfo.clone();
 				clone.lookupInfo.ctx = clone.ctx;
 			}

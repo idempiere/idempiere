@@ -185,6 +185,21 @@ public interface I_AD_Column
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
 
+    /** Column name AD_Val_Rule_Lookup_ID */
+    public static final String COLUMNNAME_AD_Val_Rule_Lookup_ID = "AD_Val_Rule_Lookup_ID";
+
+	/** Set Dynamic Validation (Lookup).
+	  * Override Dynamic Validation Rule for Lookup Window
+	  */
+	public void setAD_Val_Rule_Lookup_ID (int AD_Val_Rule_Lookup_ID);
+
+	/** Get Dynamic Validation (Lookup).
+	  * Override Dynamic Validation Rule for Lookup Window
+	  */
+	public int getAD_Val_Rule_Lookup_ID();
+
+	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException;
+
     /** Column name Callout */
     public static final String COLUMNNAME_Callout = "Callout";
 

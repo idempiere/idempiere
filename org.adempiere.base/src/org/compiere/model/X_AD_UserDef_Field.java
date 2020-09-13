@@ -30,7 +30,7 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200527L;
+	private static final long serialVersionUID = 20200911L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Field (Properties ctx, int AD_UserDef_Field_ID, String trxName)
@@ -304,6 +304,34 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	public int getAD_Val_Rule_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Val_Rule_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
+			.getPO(getAD_Val_Rule_Lookup_ID(), get_TrxName());	}
+
+	/** Set Dynamic Validation (Lookup).
+		@param AD_Val_Rule_Lookup_ID 
+		Override Dynamic Validation Rule for Lookup Window
+	  */
+	public void setAD_Val_Rule_Lookup_ID (int AD_Val_Rule_Lookup_ID)
+	{
+		if (AD_Val_Rule_Lookup_ID < 1) 
+			set_Value (COLUMNNAME_AD_Val_Rule_Lookup_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Val_Rule_Lookup_ID, Integer.valueOf(AD_Val_Rule_Lookup_ID));
+	}
+
+	/** Get Dynamic Validation (Lookup).
+		@return Override Dynamic Validation Rule for Lookup Window
+	  */
+	public int getAD_Val_Rule_Lookup_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Val_Rule_Lookup_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
