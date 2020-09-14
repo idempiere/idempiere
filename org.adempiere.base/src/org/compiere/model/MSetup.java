@@ -61,9 +61,20 @@ public final class MSetup
 	 */
 	public MSetup(Properties ctx, int WindowNo)
 	{
+		this(ctx, WindowNo, false);
+	}
+	
+	/**
+	 *  Constructor
+	 *  @param ctx context
+	 *  @param WindowNo window
+	 */
+	public MSetup(Properties ctx, int WindowNo, boolean dryRun)
+	{
 		m_ctx = new Properties(ctx);	//	copy
 		m_lang = Env.getAD_Language(m_ctx);
 		m_WindowNo = WindowNo;
+		m_dryRun = dryRun;
 	}   //  MSetup
 
 	/**	Logger			*/
@@ -101,6 +112,7 @@ public final class MSetup
 	private boolean         m_hasSRegion = false;
 	private boolean         m_hasActivity = false;
 
+	private boolean 		m_dryRun = false;
 	/**
 	 *  Create Client Info.
 	 *  - Client, Trees, Org, Role, User, User_Role
@@ -202,7 +214,7 @@ public final class MSetup
 		m_info.append(Msg.translate(m_lang, "AD_Org_ID")).append("=").append(name).append("\n");
 		
 		// Set Organization Phone, Phone2, Fax, EMail
-		MOrgInfo orgInfo = MOrgInfo.get(m_ctx, getAD_Org_ID(), m_trx.getTrxName());
+		MOrgInfo orgInfo = MOrgInfo.getCopy(m_ctx, getAD_Org_ID(), m_trx.getTrxName());
 		orgInfo.setPhone(phone);
 		orgInfo.setPhone2(phone2);
 		orgInfo.setFax(fax);
@@ -1442,6 +1454,10 @@ public final class MSetup
 		else
 			log.log(Level.SEVERE, "CashBook NOT inserted");
 		//
+		//do not commit if it is a dry run
+		if (m_dryRun)
+			return true;
+		
 		boolean success = m_trx.commit();
 		m_trx.close();
 		log.info("finish");
@@ -1527,4 +1543,11 @@ public final class MSetup
 		} catch (Exception e) {}
 	}
 
+	/**
+	 * 
+	 * @return trxName
+	 */
+	public String getTrxName() {
+		return m_trx != null ? m_trx.getTrxName() : null;
+	}
 }   //  MSetup

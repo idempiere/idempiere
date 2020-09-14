@@ -122,6 +122,21 @@ public class MClientInfo extends X_AD_ClientInfo
 		return get (ctx, Env.getAD_Client_ID(ctx), null);
 	}	//	get
 
+	/**
+	 * Get updateable copy of MClientInfo from cache
+	 * @param ctx
+	 * @param AD_Client_ID
+	 * @param trxName
+	 * @return MClientInfo
+	 */
+	public static MClientInfo getCopy(Properties ctx, int AD_Client_ID, String trxName)
+	{
+		MClientInfo ci = get(ctx, AD_Client_ID, trxName);
+		if (ci != null)
+			ci = new MClientInfo(ctx, ci, trxName);
+		return ci;
+	}
+	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MClientInfo> s_cache = new ImmutableIntPOCache<Integer,MClientInfo>(Table_Name, 2);
 	/**	Logger						*/

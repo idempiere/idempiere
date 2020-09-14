@@ -172,7 +172,7 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	 */
 	public MLocation getLocation(boolean requery) {
 		if (requery || m_location == null)
-			m_location = MLocation.get(getCtx(), getC_Location_ID(), get_TrxName());
+			m_location = MLocation.getCopy(getCtx(), getC_Location_ID(), get_TrxName());
 		return m_location;
 	} // getLocation
 

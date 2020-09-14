@@ -666,7 +666,18 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 	 */
 	public MPrintFormatItem copyToClient (int To_Client_ID, int AD_PrintFormat_ID)
 	{
-		MPrintFormatItem to = new MPrintFormatItem (p_ctx, 0, null);
+		return copyToClient(To_Client_ID, AD_PrintFormat_ID, (String)null);
+	}
+	
+	/**
+	 * 	Copy existing Definition To Client
+	 * 	@param To_Client_ID to client
+	 *  @param AD_PrintFormat_ID parent print format
+	 * 	@return print format item
+	 */
+	public MPrintFormatItem copyToClient (int To_Client_ID, int AD_PrintFormat_ID, String trxName)
+	{
+		MPrintFormatItem to = new MPrintFormatItem (p_ctx, 0, trxName);
 		MPrintFormatItem.copyValues(this, to);
 		to.setClientOrg(To_Client_ID, 0);
 		to.setAD_PrintFormat_ID(AD_PrintFormat_ID);

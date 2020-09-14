@@ -86,6 +86,22 @@ public class MImage extends X_AD_Image
 		return null;
 	} //	get
 
+	/**
+	 * Get updateable copy of MImage from cache
+	 * @param ctx context
+	 * @param AD_Image_ID
+	 * @param trxName transaction name
+	 * @return MImage
+	 */
+	public static MImage getCopy(Properties ctx, int AD_Image_ID, String trxName)
+	{
+		MImage img = get(AD_Image_ID);
+		if (img != null && img.getAD_Image_ID() > 0)
+			img = new MImage(ctx, img, trxName);
+		
+		return img;
+	}
+	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MImage> s_cache = new ImmutableIntPOCache<Integer,MImage>(Table_Name, 20, 10);
 	

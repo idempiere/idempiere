@@ -70,6 +70,21 @@ public class MBankAccount extends X_C_BankAccount
 		return null;
 	} //	get
 
+	/**
+	 * Get updateable copy of MBankAccount from cache
+	 * @param ctx
+	 * @param C_BankAccount_ID
+	 * @param trxName
+	 * @return MBankAccount
+	 */
+	public static MBankAccount getCopy(Properties ctx, int C_BankAccount_ID, String trxName)
+	{
+		MBankAccount mba = get(C_BankAccount_ID);
+		if (mba != null)
+			mba = new MBankAccount(ctx, mba, trxName);
+		return mba;
+	}
+	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MBankAccount>	s_cache
 		= new ImmutableIntPOCache<Integer,MBankAccount>(Table_Name, 5);

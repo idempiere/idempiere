@@ -202,6 +202,21 @@ public class MLocator extends X_M_Locator
 		return null;
 	} //	get
 
+	/**
+	 * Get updateable copy of MLocator from cache
+	 * @param ctx
+	 * @param M_Locator_ID
+	 * @param trxName
+	 * @return MLocator
+	 */
+	public static MLocator getCopy(Properties ctx, int M_Locator_ID, String trxName)
+	{
+		MLocator locator = get(M_Locator_ID);
+		if (locator != null)
+			locator = new MLocator(ctx, locator, trxName);
+		return locator;
+	}
+	
 	/**	Cache						*/
 	private final static ImmutableIntPOCache<Integer,MLocator> s_cache = new ImmutableIntPOCache<Integer,MLocator>(Table_Name, 20); 
 	 

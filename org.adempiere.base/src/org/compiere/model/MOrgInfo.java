@@ -94,6 +94,21 @@ public class MOrgInfo extends X_AD_OrgInfo
 		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MOrgInfo from cache
+	 * @param ctx
+	 * @param AD_Org_ID
+	 * @param trxName
+	 * @return MOrgInfo
+	 */
+	public static MOrgInfo getCopy(Properties ctx, int AD_Org_ID, String trxName)
+	{
+		MOrgInfo oi = get(ctx, AD_Org_ID, trxName);
+		if (oi != null)
+			oi = new MOrgInfo(ctx, oi, trxName);
+		return oi;
+	}
+	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MOrgInfo>	s_cache	= new ImmutableIntPOCache<Integer, MOrgInfo>(Table_Name, 50);
 

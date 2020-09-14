@@ -106,6 +106,21 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	}	//	get
 
 	/**
+	 * Get updateable copy of MLocation from cache
+	 * @param ctx context
+	 * @param C_Location_ID
+	 * @param trxName
+	 * @return MLocation
+	 */
+	public static MLocation getCopy(Properties ctx, int C_Location_ID, String trxName)
+	{
+		MLocation loc = get(C_Location_ID, trxName);
+		if (loc != null && loc.getC_Location_ID() > 0)
+			loc = new MLocation(ctx, loc, trxName);
+		return loc;
+	}
+	
+	/**
 	 *	Load Location with ID if Business Partner Location
 	 *	@param ctx context
 	 *  @param C_BPartner_Location_ID Business Partner Location

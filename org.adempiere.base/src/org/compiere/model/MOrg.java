@@ -195,7 +195,7 @@ public class MOrg extends X_AD_Org
 			//	Access
 			MRoleOrgAccess.createForOrg (this);
 			MRole role = MRole.getDefault(getCtx(), true);	//	reload
-			role.set_TrxName(get_TrxName());
+			role = new MRole(getCtx(), role, get_TrxName());
 			role.loadAccess(true); // reload org access within transaction
 			//	TreeNode
 			insert_Tree(MTree_Base.TREETYPE_Organization);

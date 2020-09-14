@@ -175,17 +175,28 @@ public final class MRole extends X_AD_Role
 	 */
 	public static MRole[] getOfClient (Properties ctx)
 	{
+		return getOfClient(ctx, (String)null);
+	}
+	
+	/**
+	 * 	Get Roles Of Client
+	 *	@param ctx context
+	 *  @param trxName
+	 *	@return roles of client
+	 */
+	public static MRole[] getOfClient (Properties ctx, String trxName)
+	{
 		String sql = "SELECT * FROM AD_Role WHERE AD_Client_ID=?";
 		ArrayList<MRole> list = new ArrayList<MRole> ();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, null);
+			pstmt = DB.prepareStatement (sql, trxName);
 			pstmt.setInt (1, Env.getAD_Client_ID(ctx));
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
-				list.add (new MRole(ctx, rs, null));
+				list.add (new MRole(ctx, rs, trxName));
 		}
 		catch (Exception e)
 		{

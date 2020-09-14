@@ -1004,14 +1004,14 @@ public class MPrintFormat extends X_AD_PrintFormat
 		MPrintFormatItem[] items = fromFormat.getItemsNotIn(toFormat.get_ID());
 		for (int i = 0; i < items.length; i++)
 		{
-			MPrintFormatItem pfi = items[i].copyToClient (toFormat.getAD_Client_ID(), toFormat.get_ID());
+			MPrintFormatItem pfi = items[i].copyToClient (toFormat.getAD_Client_ID(), toFormat.get_ID(), toFormat.get_TrxName());
 			if (pfi != null)
 				list.add (pfi);
 		}
 		//
 		MPrintFormatItem[] retValue = new MPrintFormatItem[list.size()];
 		list.toArray(retValue);
-		copyTranslationItems (items, retValue);	//	JTP fix
+		copyTranslationItems (items, retValue, toFormat.get_TrxName());	//	JTP fix
 		return retValue;
 	}	//	copyItems
 
@@ -1019,9 +1019,10 @@ public class MPrintFormat extends X_AD_PrintFormat
      *	Copy translation records (from - to)
      *	@param fromItems from items
      *	@param toItems to items
+     *  @param trxName
      */
     static private void copyTranslationItems (MPrintFormatItem[] fromItems,
-    	MPrintFormatItem[] toItems)
+    	MPrintFormatItem[] toItems, String trxName)
     {
     	if (fromItems == null || toItems == null)
             return;		//	should not happen
@@ -1048,7 +1049,7 @@ public class MPrintFormat extends X_AD_PrintFormat
             		.append(" WHERE old.AD_Language=new.AD_Language")
             		.append(" AND AD_PrintFormatItem_ID =").append(fromID)
             		.append(")");
-            int no = DB.executeUpdate(sql.toString(), null);
+            int no = DB.executeUpdate(sql.toString(), trxName);
             if (no == 0)	//	if first has no translation, the rest does neither
             	break;
             counter += no;
@@ -1080,7 +1081,21 @@ public class MPrintFormat extends X_AD_PrintFormat
 	public static MPrintFormat copyToClient (Properties ctx,
 		int AD_PrintFormat_ID, int to_Client_ID)
 	{
-		return copy (ctx, AD_PrintFormat_ID, 0, to_Client_ID);
+		return copyToClient(ctx, AD_PrintFormat_ID, to_Client_ID, (String)null);
+	}
+	
+	/**
+	 * 	Copy existing Definition To Client
+	 * 	@param ctx context
+	 * 	@param AD_PrintFormat_ID format
+	 * 	@param to_Client_ID to client
+	 *  @param trxName
+	 * 	@return print format
+	 */
+	public static MPrintFormat copyToClient (Properties ctx,
+		int AD_PrintFormat_ID, int to_Client_ID, String trxName)
+	{
+		return copy (ctx, AD_PrintFormat_ID, 0, to_Client_ID, trxName);
 	}	//	copy
 
 	/**
@@ -1094,14 +1109,28 @@ public class MPrintFormat extends X_AD_PrintFormat
 	private static MPrintFormat copy (Properties ctx, int from_AD_PrintFormat_ID,
 		int to_AD_PrintFormat_ID, int to_Client_ID)
 	{
+		return copy(ctx, from_AD_PrintFormat_ID, to_AD_PrintFormat_ID, to_Client_ID, (String)null);
+	}
+	
+	/**
+	 * 	Copy existing Definition To Client
+	 * 	@param ctx context
+	 * 	@param from_AD_PrintFormat_ID format
+	 *  @param to_AD_PrintFormat_ID to format or 0 for new
+	 * 	@param to_Client_ID to client (ignored, if to_AD_PrintFormat_ID <> 0)
+	 * 	@return print format
+	 */
+	private static MPrintFormat copy (Properties ctx, int from_AD_PrintFormat_ID,
+		int to_AD_PrintFormat_ID, int to_Client_ID, String trxName)
+	{
 		if (s_log.isLoggable(Level.INFO)) s_log.info ("From AD_PrintFormat_ID=" + from_AD_PrintFormat_ID
 			+ ", To AD_PrintFormat_ID=" + to_AD_PrintFormat_ID
 			+ ", To Client_ID=" + to_Client_ID);
 		if (from_AD_PrintFormat_ID == 0)
 			throw new IllegalArgumentException ("From_AD_PrintFormat_ID is 0");
 		//
-		MPrintFormat from = new MPrintFormat(ctx, from_AD_PrintFormat_ID, null);
-		MPrintFormat to = new MPrintFormat (ctx, to_AD_PrintFormat_ID, null);		//	could be 0
+		MPrintFormat from = new MPrintFormat(ctx, from_AD_PrintFormat_ID, trxName);
+		MPrintFormat to = new MPrintFormat (ctx, to_AD_PrintFormat_ID, trxName);		//	could be 0
 		MPrintFormat.copyValues (from, to);
 		//	New
 		if (to_AD_PrintFormat_ID == 0)

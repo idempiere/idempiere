@@ -1572,7 +1572,7 @@ public abstract class PO
 	protected void checkImmutable() {
 		if (is_Immutable())
 		{
-			throw new IllegalStateException("PO is Immutable");
+			throw new IllegalStateException("PO is Immutable: " + this);
 		}
 	}
 
