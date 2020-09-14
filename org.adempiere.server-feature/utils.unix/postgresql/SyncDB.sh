@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Author: Carlos Ruiz - globalqss
 # Script to synchronize the database for with latest migration scripts
@@ -51,15 +51,8 @@ cd "$DIR_SCRIPTS" || (echo "ERROR: Cannot change to folder $DIR_SCRIPTS"; exit 1
 echo "select name from ad_migrationscript" | $SILENTCMD | sed -e 's:^ ::' | grep -v '^$' | sort > $TMPFOLDER/lisDB_$$.txt
 
 # Create list of files in the migration folder
-: > $TMPFOLDER/lisFS_$$.txt
-find . -type d -name "$ADEMPIERE_DB_PATH" | grep -v "./processes_post_migration/$ADEMPIERE_DB_PATH" | while read -r FOLDER
-do
-    cd "${FOLDER}" || (echo "ERROR: Cannot change to folder $FOLDER"; exit 1)
-    ls -- *.sql 2>/dev/null >> $TMPFOLDER/lisFS_$$.txt
-    cd "$DIR_SCRIPTS" || (echo "ERROR: Cannot change to folder $DIR_SCRIPTS"; exit 1)
-done
-sort -o $TMPFOLDER/lisFS_$$.txt $TMPFOLDER/lisFS_$$.txt
-sort -o $TMPFOLDER/lisDB_$$.txt $TMPFOLDER/lisDB_$$.txt
+find . -type f -wholename "*/${ADEMPIERE_DB_PATH}/*.sql" ! -wholename "./processes_post_migration/${ADEMPIERE_DB_PATH}/*" | sed -e 's:.*/::' | sort > $TMPFOLDER/lisFS_$$.txt
+
 MSGERROR=""
 APPLIED=N
 # extract and process the list of pending files
@@ -67,7 +60,7 @@ comm -13 $TMPFOLDER/lisDB_$$.txt $TMPFOLDER/lisFS_$$.txt > $TMPFOLDER/lisPENDING
 if [ -s $TMPFOLDER/lisPENDING_$$.txt ]
 then
     mkdir $TMPFOLDER/SyncDB_out_$$
-    cat $TMPFOLDER/lisPENDING_$$.txt | while read -r FILE
+    while read -r FILE
     do
 	SCRIPT=$(find . -name "$FILE" | grep "/$ADEMPIERE_DB_PATH/")
 	OUTFILE=$TMPFOLDER/SyncDB_out_$$/$(basename "$FILE" .sql).out
@@ -80,7 +73,7 @@ then
 	    # Stop processing to allow user to fix the problem before processing additional files
 	    break
 	fi
-    done
+    done < $TMPFOLDER/lisPENDING_$$.txt
 else
     if [ -s $TMPFOLDER/lisFS_$$.txt ]
     then
