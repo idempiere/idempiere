@@ -15,8 +15,13 @@ public class Convert_Oracle extends Convert {
 	protected ArrayList<String> convertStatement(String sqlStatement) {
 		ArrayList<String> result = new ArrayList<String>();
 		result.add(sqlStatement);
-		if ("true".equals(System.getProperty("org.idempiere.db.oracle.debug"))) {
-			log.warning("Oracle -> " + sqlStatement);
+		if ("true".equals(System.getProperty("org.idempiere.db.debug"))) {
+			String filterOrDebug = System.getProperty("org.idempiere.db.debug.filter");
+			boolean print = true;
+			if (filterOrDebug != null)
+				print = sqlStatement.matches(filterOrDebug);
+			if (print)
+				log.warning("Oracle -> " + sqlStatement);
 		}
 		return result;
 	}

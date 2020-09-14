@@ -127,9 +127,16 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 			statement = recoverQuotedStrings(statement, retVars);
 		result.add(statement);
 
-		if ("true".equals(System.getProperty("org.idempiere.db.postgresql.debug"))) {
-			log.warning("Oracle -> " + sqlStatement);
-			log.warning("PgSQL  -> " + statement);
+		if ("true".equals(System.getProperty("org.idempiere.db.debug"))) {
+			String filterPgDebug = System.getProperty("org.idempiere.db.debug.filter");
+			boolean print = true;
+			if (filterPgDebug != null)
+				print = statement.matches(filterPgDebug);
+			// log.warning("Oracle -> " + oraStatement);
+			if (print) {
+				log.warning("Oracle -> " + sqlStatement);
+				log.warning("PgSQL  -> " + statement);
+			}
 		}
 		return result;
 	} // convertStatement
