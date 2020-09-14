@@ -617,6 +617,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				vo.Help = help != null ? help : "";
 				vo.AD_FieldStyle_ID = infoColumn.getAD_FieldStyle_ID();
 				vo.IsAutocomplete = infoColumn.isAutocomplete();
+				vo.IsReadOnly = infoColumn.isReadOnly();
 				GridField gridField = new GridField(vo);
 				gridFields.add(gridField);
 			}
