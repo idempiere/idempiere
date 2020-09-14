@@ -730,12 +730,7 @@ public abstract class PO
 	 */
 	protected final boolean set_Value (String ColumnName, Object value, boolean checkWritable)
 	{
-		if (is_Immutable())
-		{
-			if (log.isLoggable(Level.WARNING))
-				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
-			return false;
-		}
+		checkImmutable();
 		
 		if (value instanceof String && ColumnName.equals("WhereClause")
 			&& value.toString().toUpperCase().indexOf("=NULL") != -1)
@@ -795,12 +790,7 @@ public abstract class PO
 	 */
 	protected final boolean set_Value (int index, Object value, boolean checkWritable)
 	{
-		if (is_Immutable())
-		{
-			if (log.isLoggable(Level.WARNING))
-				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
-			return false;
-		}
+		checkImmutable();
 		
 		if (index < 0 || index >= get_ColumnCount())
 		{
@@ -957,12 +947,7 @@ public abstract class PO
 	   Fill the column ProcessedOn (if it exists) with a bigdecimal representation of current timestamp (with nanoseconds)
 	*/
 	public void setProcessedOn(String ColumnName, Object value, Object oldValue) {
-		if (is_Immutable())
-		{
-			if (log.isLoggable(Level.WARNING))
-				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
-			return;
-		}
+		checkImmutable();
 		
 		if ("Processed".equals(ColumnName)
 				&& value instanceof Boolean
@@ -1082,12 +1067,7 @@ public abstract class PO
 	 */
 	public final boolean set_CustomColumnReturningBoolean (String columnName, Object value)
 	{
-		if (is_Immutable())
-		{
-			if (log.isLoggable(Level.WARNING))
-				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
-			return false;
-		}
+		checkImmutable();
 		
 		// [ 1845793 ] PO.set_CustomColumn not updating correctly m_newValues
 		// this is for columns not in PO - verify and call proper method if exists
@@ -1122,12 +1102,7 @@ public abstract class PO
 	 */
 	private void set_Keys (String ColumnName, Object value)
 	{
-		if (is_Immutable())
-		{
-			if (log.isLoggable(Level.WARNING))
-				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
-			return;
-		}
+		checkImmutable();
 		
 		//	Update if KeyColumn
 		for (int i = 0; i < m_IDs.length; i++)
@@ -1347,10 +1322,7 @@ public abstract class PO
 	 */
 	protected void load (int ID, String trxName)
 	{
-		if (is_Immutable())
-		{
-			throw new AdempiereException("PO is Immutable");
-		}
+		checkImmutable();
 		
 		if (log.isLoggable(Level.FINEST)) log.finest("ID=" + ID);
 		if (ID > 0)
@@ -1377,10 +1349,7 @@ public abstract class PO
 	 */
 	public boolean load (String trxName)
 	{
-		if (is_Immutable())
-		{
-			throw new AdempiereException("PO is Immutable");
-		}
+		checkImmutable();
 		
 		m_trxName = trxName;
 		boolean success = true;
@@ -1469,10 +1438,7 @@ public abstract class PO
 	 */
 	protected boolean load (ResultSet rs)
 	{
-		if (is_Immutable())
-		{
-			throw new AdempiereException("PO is Immutable");
-		}
+		checkImmutable();
 		
 		int size = get_ColumnCount();
 		boolean success = true;
@@ -1547,10 +1513,7 @@ public abstract class PO
 	 */
 	protected boolean load (HashMap<String,String> hmIn)
 	{
-		if (is_Immutable())
-		{
-			throw new AdempiereException("PO is Immutable");
-		}
+		checkImmutable();
 		
 		int size = get_ColumnCount();
 		boolean success = true;
@@ -1605,6 +1568,13 @@ public abstract class PO
 		loadComplete(success);
 		return success;
 	}	//	load
+
+	protected void checkImmutable() {
+		if (is_Immutable())
+		{
+			throw new IllegalStateException("PO is Immutable");
+		}
+	}
 
 	/**
 	 *  Create Hashmap with data as Strings
@@ -2107,10 +2077,7 @@ public abstract class PO
 	 */
 	public boolean save()
 	{
-		if (is_Immutable())
-		{
-			throw new AdempiereException("PO is Immutable");
-		}
+		checkImmutable();
 		
 		checkValidContext();
 		CLogger.resetLast();
@@ -2469,10 +2436,7 @@ public abstract class PO
 
 	public void saveReplica (boolean isFromReplication) throws AdempiereException
 	{
-		if (is_Immutable())
-		{
-			throw new AdempiereException("PO is Immutable");
-		}
+		checkImmutable();
 		setReplication(isFromReplication);
 		saveEx();
 	}
@@ -3300,10 +3264,7 @@ public abstract class PO
 	 */
 	public boolean delete (boolean force)
 	{
-		if (is_Immutable())
-		{
-			throw new AdempiereException("PO is Immutable");
-		}
+		checkImmutable();
 		
 		checkValidContext();
 		CLogger.resetLast();
@@ -4330,12 +4291,7 @@ public abstract class PO
 	{
 		if (trxName != null)
 		{
-			if (is_Immutable())
-			{
-				if (log.isLoggable(Level.WARNING))
-					log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
-				return;
-			}
+			checkImmutable();
 		}
 		m_trxName = trxName;
 	}	//	setTrx
@@ -4792,18 +4748,12 @@ public abstract class PO
 	 *      @param doc Document
 	 */
 	public void setDoc(Doc doc) {
-		if (!is_Immutable())
-			m_doc = doc;
-		else if (log.isLoggable(Level.WARNING))
-			log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
+		m_doc = doc;		
 	}
 
 	public void setReplication(boolean isFromReplication)
 	{
-		if (!is_Immutable())
-			m_isReplication = isFromReplication;
-		else if (log.isLoggable(Level.WARNING))
-			log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
+		m_isReplication = isFromReplication;
 	}
 
 	public boolean isReplication()
@@ -4933,12 +4883,7 @@ public abstract class PO
 	}
 	
 	public void set_Attribute(String columnName, Object value) {
-		if (is_Immutable())
-		{
-			if (log.isLoggable(Level.WARNING))
-				log.log(Level.WARNING, "PO is Immutable", new Exception("PO is Immutable"));
-			return;
-		}
+		checkImmutable();
 		
 		if (m_attributes == null)
 			m_attributes = new HashMap<String, Object>();
