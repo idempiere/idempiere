@@ -1349,8 +1349,6 @@ public abstract class PO
 	 */
 	public boolean load (String trxName)
 	{
-		checkImmutable();
-		
 		m_trxName = trxName;
 		boolean success = true;
 		StringBuilder sql = new StringBuilder("SELECT ");
@@ -1425,6 +1423,8 @@ public abstract class PO
 		finally {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
+			if (is_Immutable())
+				m_trxName = null;
 		}
 		loadComplete(success);
 		return success;
@@ -1438,8 +1438,6 @@ public abstract class PO
 	 */
 	protected boolean load (ResultSet rs)
 	{
-		checkImmutable();
-		
 		int size = get_ColumnCount();
 		boolean success = true;
 		int index = 0;
@@ -1572,7 +1570,7 @@ public abstract class PO
 	protected void checkImmutable() {
 		if (is_Immutable())
 		{
-			throw new IllegalStateException("PO is Immutable: " + this);
+			throw new IllegalStateException("PO is Immutable: " + getClass().getName());
 		}
 	}
 

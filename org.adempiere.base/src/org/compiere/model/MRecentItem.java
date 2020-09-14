@@ -332,7 +332,10 @@ public class MRecentItem extends X_AD_RecentItem
 		PO po = table.getPO(getRecord_ID(), null);
 		if (po == null) {
 			/* Recent Item was deleted (probably with direct SQL DELETE) */
-			this.deleteEx(true, null);
+			if (is_Immutable())
+				new MRecentItem(Env.getCtx(), this).deleteEx(true);
+			else
+				this.deleteEx(true, null);
 			return null;
 		}
 
