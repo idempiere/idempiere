@@ -150,8 +150,8 @@ public class Doc_MatchInv extends Doc
 		ArrayList<FactLine> invGainLossFactLines = new ArrayList<FactLine>();
 		// invoice list
 		ArrayList<MInvoice> invList = new ArrayList<MInvoice>();
-		// current M_MatchInv inventory clearing/expense accounting fact line and the referenced C_Invoice_ID
-		HashMap<FactLine, Integer> htFactLineInv = new HashMap<FactLine, Integer>();
+		// C_Invoice_ID and the current M_MatchInv inventory clearing/expense accounting fact lines
+		HashMap<Integer, ArrayList<FactLine>> htFactLineInv = new HashMap<Integer, ArrayList<FactLine>>();
 		
 		//  Nothing to do
 		if (getM_Product_ID() == 0								//	no Product
@@ -316,7 +316,11 @@ public class Doc_MatchInv extends Doc
 			MInvoice invoice = m_invoiceLine.getParent();
 			if (!invList.contains(invoice))
 				invList.add(invoice);
-			htFactLineInv.put(cr, m_invoiceLine.getC_Invoice_ID());
+			ArrayList<FactLine> factLineList = htFactLineInv.get(invoice.get_ID());
+			if (factLineList == null)
+				factLineList = new ArrayList<FactLine>();
+			factLineList.add(cr);
+			htFactLineInv.put(invoice.get_ID(), factLineList);
 			p_Error = createInvoiceGainLoss(as, fact, expense, invoice, cr.getAmtSourceCr(), cr.getAmtAcctCr(), invGainLossFactLines, htFactLineInv);
 			if (p_Error != null)
 				return null;
@@ -614,8 +618,8 @@ public class Doc_MatchInv extends Doc
 		ArrayList<FactLine> invGainLossFactLines = new ArrayList<FactLine>();
 		// invoice list
 		ArrayList<MInvoice> invList = new ArrayList<MInvoice>();
-		// current M_MatchInv inventory clearing/expense accounting fact line and the referenced C_Invoice_ID
-		HashMap<FactLine, Integer> htFactLineInv = new HashMap<FactLine, Integer>();
+		// C_Invoice_ID and the current M_MatchInv inventory clearing/expense accounting fact lines
+		HashMap<Integer, ArrayList<FactLine>> htFactLineInv = new HashMap<Integer, ArrayList<FactLine>>();
 		
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
@@ -751,7 +755,11 @@ public class Doc_MatchInv extends Doc
 			MInvoice invoice = m_invoiceLine.getParent();
 			if (!invList.contains(invoice))
 				invList.add(invoice);
-			htFactLineInv.put(cr, m_invoiceLine.getC_Invoice_ID());
+			ArrayList<FactLine> factLineList = htFactLineInv.get(invoice.get_ID());
+			if (factLineList == null)
+				factLineList = new ArrayList<FactLine>();
+			factLineList.add(cr);
+			htFactLineInv.put(invoice.get_ID(), factLineList);
 			p_Error = createInvoiceGainLoss(as, fact, expense, invoice, cr.getAmtSourceDr(), cr.getAmtAcctDr(), invGainLossFactLines, htFactLineInv);
 			if (p_Error != null)
 				return null;
@@ -841,8 +849,8 @@ public class Doc_MatchInv extends Doc
 		ArrayList<FactLine> invGainLossFactLines = new ArrayList<FactLine>();
 		// invoice list
 		ArrayList<MInvoice> invList = new ArrayList<MInvoice>();
-		// current M_MatchInv inventory clearing/expense accounting fact line and the referenced C_Invoice_ID
-		HashMap<FactLine, Integer> htFactLineInv = new HashMap<FactLine, Integer>();
+		// C_Invoice_ID and the current M_MatchInv inventory clearing/expense accounting fact lines
+		HashMap<Integer, ArrayList<FactLine>> htFactLineInv = new HashMap<Integer, ArrayList<FactLine>>();
 		
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
@@ -1029,7 +1037,11 @@ public class Doc_MatchInv extends Doc
 			MInvoice invoice = refInvLine.getParent();
 			if (!invList.contains(invoice))
 				invList.add(invoice);
-			htFactLineInv.put(dr, refInvLine.getC_Invoice_ID());
+			ArrayList<FactLine> factLineList = htFactLineInv.get(invoice.get_ID());
+			if (factLineList == null)
+				factLineList = new ArrayList<FactLine>();
+			factLineList.add(dr);
+			htFactLineInv.put(invoice.get_ID(), factLineList);
 			p_Error = createInvoiceGainLoss(as, fact, expense, invoice, dr.getAmtSourceCr(), dr.getAmtAcctCr(), invGainLossFactLines, htFactLineInv);
 			if (p_Error != null)
 				return null;
@@ -1039,7 +1051,11 @@ public class Doc_MatchInv extends Doc
 			MInvoice invoice = m_invoiceLine.getParent();
 			if (!invList.contains(invoice))
 				invList.add(invoice);
-			htFactLineInv.put(cr, m_invoiceLine.getC_Invoice_ID());
+			ArrayList<FactLine> factLineList = htFactLineInv.get(invoice.get_ID());
+			if (factLineList == null)
+				factLineList = new ArrayList<FactLine>();
+			factLineList.add(cr);
+			htFactLineInv.put(invoice.get_ID(), factLineList);
 			p_Error = createInvoiceGainLoss(as, fact, expense, invoice, cr.getAmtSourceDr(), cr.getAmtAcctDr(), invGainLossFactLines, htFactLineInv);
 			if (p_Error != null)
 				return null;
@@ -1141,7 +1157,7 @@ public class Doc_MatchInv extends Doc
 	
 	private String createInvoiceGainLoss(MAcctSchema as, Fact fact, MAccount acct, 
 			MInvoice invoice, BigDecimal matchInvSource, BigDecimal matchInvAccounted, 
-			ArrayList<FactLine> invGainLossFactLines, HashMap<FactLine, Integer> htFactLineInv)
+			ArrayList<FactLine> invGainLossFactLines, HashMap<Integer, ArrayList<FactLine>> htFactLineInv)
 	{
 		BigDecimal invoiceSource = null;
 		BigDecimal invoiceAccounted = null;
@@ -1218,7 +1234,11 @@ public class Doc_MatchInv extends Doc
 			FactLine fl = fact.createLine (null, acct, as.getC_Currency_ID(), acctDifference.negate());
 			fl.setDescription(description.toString());
 			updateFactLine(fl);
-			htFactLineInv.put(fl, invoice.getC_Invoice_ID());
+			ArrayList<FactLine> factLineList = htFactLineInv.get(invoice.get_ID());
+			if (factLineList == null)
+				factLineList = new ArrayList<FactLine>();
+			factLineList.add(fl);
+			htFactLineInv.put(invoice.get_ID(), factLineList);
 			
 			fl = fact.createLine (null, loss, gain, as.getC_Currency_ID(), acctDifference);
 			fl.setDescription(description.toString());
@@ -1230,7 +1250,11 @@ public class Doc_MatchInv extends Doc
 			FactLine fl = fact.createLine (null, acct, as.getC_Currency_ID(), acctDifference);
 			fl.setDescription(description.toString());
 			updateFactLine(fl);
-			htFactLineInv.put(fl, invoice.getC_Invoice_ID());
+			ArrayList<FactLine> factLineList = htFactLineInv.get(invoice.get_ID());
+			if (factLineList == null)
+				factLineList = new ArrayList<FactLine>();
+			factLineList.add(fl);
+			htFactLineInv.put(invoice.get_ID(), factLineList);
 			
 			fl = fact.createLine (null, loss, gain, as.getC_Currency_ID(), acctDifference.negate());
 			fl.setDescription(description.toString());
@@ -1241,7 +1265,7 @@ public class Doc_MatchInv extends Doc
 	}	//	createInvoiceGainLoss
 	
 	private String createInvoiceRoundingCorrection(MAcctSchema as, Fact fact, MAccount acct, 
-			ArrayList<FactLine> invGainLossFactLines, ArrayList<MInvoice> invList, HashMap<FactLine, Integer> htFactLineInv) 
+			ArrayList<FactLine> invGainLossFactLines, ArrayList<MInvoice> invList, HashMap<Integer, ArrayList<FactLine>> htFactLineInv) 
 	{
 		// C_Invoice_ID and the total source amount from C_Invoice accounting fact lines
 		HashMap<Integer, BigDecimal> htInvSource = new HashMap<Integer, BigDecimal>();
@@ -1283,11 +1307,10 @@ public class Doc_MatchInv extends Doc
 		HashMap<Integer, BigDecimal> htTotalAmtSourceCr = new HashMap<Integer, BigDecimal>();
 		// C_Invoice_ID and the total accounted CR amount from the current M_MatchInv accounting fact lines
 		HashMap<Integer, BigDecimal> htTotalAmtAcctCr = new HashMap<Integer, BigDecimal>();
-		FactLine[] factlines = fact.getLines();
-		for (FactLine factLine : factlines)
+		for (Integer C_Invoice_ID : htFactLineInv.keySet())
 		{
-			Integer C_Invoice_ID = htFactLineInv.get(factLine);
-			if (C_Invoice_ID != null && C_Invoice_ID > 0)
+			ArrayList<FactLine> factLineList = htFactLineInv.get(C_Invoice_ID);
+			for (FactLine factLine : factLineList)
 			{
 				if (factLine.getAccount_ID() == acct.getAccount_ID())
 				{
