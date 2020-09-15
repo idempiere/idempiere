@@ -498,17 +498,24 @@ public class MatchInvTest extends AbstractTestCase {
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
 			MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 
+			BigDecimal amtAcctDrInvClr = BigDecimal.ZERO;
+			BigDecimal amtAcctCrInvClr = BigDecimal.ZERO;
 			String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MMatchInv.Table_ID 
 					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + mi.get_ID()
 					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + C_AcctSchema_ID;
 			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
 			for (int id : ids) {
 				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-				if (fa.getAccount_ID() == acctInvClr.getAccount_ID() && fa.getQty().compareTo(BigDecimal.ZERO) < 0)
+				if (fa.getAccount_ID() == acctInvClr.getAccount_ID() && fa.getQty().compareTo(BigDecimal.ZERO) < 0) {
 					assertTrue(fa.getAmtAcctCr().compareTo(Env.ZERO) >= 0);
-				else if (fa.getAccount_ID() == acctInvClr.getAccount_ID() && fa.getQty().compareTo(BigDecimal.ZERO) > 0)
+					amtAcctCrInvClr = amtAcctCrInvClr.add(fa.getAmtAcctCr());
+				}
+				else if (fa.getAccount_ID() == acctInvClr.getAccount_ID() && fa.getQty().compareTo(BigDecimal.ZERO) > 0) {
 					assertTrue(fa.getAmtAcctDr().compareTo(Env.ZERO) >= 0);
-			}
+					amtAcctDrInvClr = amtAcctDrInvClr.add(fa.getAmtAcctDr());
+				}
+			}			
+			assertTrue(amtAcctDrInvClr.compareTo(amtAcctCrInvClr) == 0);
 		}
 		
 		rollback();
