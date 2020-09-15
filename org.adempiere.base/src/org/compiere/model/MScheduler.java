@@ -190,7 +190,7 @@ public class MScheduler extends X_AD_Scheduler
 	 */
 	public MProcess getProcess()
 	{
-		return MProcess.get(getCtx(), getAD_Process_ID());
+		return MProcess.getCopy(getCtx(), getAD_Process_ID(), (String)null);
 	}	//	getProcess
 
 	/**

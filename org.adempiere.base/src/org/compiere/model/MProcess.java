@@ -83,6 +83,21 @@ public class MProcess extends X_AD_Process
 	}	//	get
 	
 	/**
+	 * Get updateable copy of MProcess from cache
+	 * @param ctx
+	 * @param AD_Process_ID
+	 * @param trxName
+	 * @return MProcess
+	 */
+	public static MProcess getCopy(Properties ctx, int AD_Process_ID, String trxName)
+	{
+		MProcess process = get(AD_Process_ID);
+		if (process != null)
+			process = new MProcess(ctx, process, trxName);
+		return process;
+	}
+	
+	/**
 	 * 	Get MProcess from Cache based on UUID (immutable)
 	 *	@param AD_Process_UU UUID
 	 *	@return MProcess

@@ -507,7 +507,7 @@ public class MRequest extends X_R_Request
 	{
 		if (getSalesRep_ID() == 0)
 			return null;
-		return MUser.get(getCtx(), getSalesRep_ID());
+		return MUser.getCopy(getCtx(), getSalesRep_ID(), get_TrxName());
 	}	//	getSalesRep
 	
 	/**

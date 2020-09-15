@@ -179,6 +179,21 @@ public class MUser extends X_AD_User
 	}	//	get
 
 	/**
+	 * Get updateable copy of MUser from cache
+	 * @param ctx
+	 * @param AD_User_ID
+	 * @param trxName
+	 * @return MUser
+	 */
+	public static MUser getCopy(Properties ctx, int AD_User_ID, String trxName)
+	{
+		MUser user = get(AD_User_ID);
+		if (user != null)
+			user = new MUser(ctx, user, trxName);
+		return user;
+	}
+	
+	/**
 	 * 	Get User
 	 *	@param ctx context
 	 *	@param name name

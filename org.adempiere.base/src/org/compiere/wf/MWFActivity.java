@@ -1098,8 +1098,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Report:AD_Process_ID=" + m_node.getAD_Process_ID());
 			//	Process
-			MProcess process = MProcess.get(getCtx(), m_node.getAD_Process_ID());
-			process.set_TrxName(trx != null ? trx.getTrxName() : null);
+			MProcess process = MProcess.getCopy(getCtx(), m_node.getAD_Process_ID(), (trx != null ? trx.getTrxName() : null));
 			if (!process.isReport() || process.getAD_ReportView_ID() == 0)
 				throw new IllegalStateException("Not a Report AD_Process_ID=" + m_node.getAD_Process_ID());
 			//
