@@ -29,7 +29,7 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200916L;
+	private static final long serialVersionUID = 20200917L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Column (Properties ctx, int AD_UserDef_Info_Column_ID, String trxName)
@@ -39,15 +39,10 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
         {
 			setAD_InfoColumn_ID (0);
 			setAD_UserDef_Info_Column_ID (0);
-			setIsAutocomplete (false);
-// N
+			setAD_UserDef_Info_ID (0);
+// @AD_UserDef_Info_ID@
 			setIsCentrallyMaintained (true);
 // Y
-			setIsDisplayed (true);
-// Y
-			setIsMandatory (false);
-			setIsQueryCriteria (false);
-			setIsReadOnly (false);
 			setSeqNo (0);
         } */
     }
@@ -226,6 +221,31 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 		return (String)get_Value(COLUMNNAME_AD_UserDef_Info_Column_UU);
 	}
 
+	public org.compiere.model.I_AD_UserDef_Info getAD_UserDef_Info() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_UserDef_Info)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Info.Table_Name)
+			.getPO(getAD_UserDef_Info_ID(), get_TrxName());	}
+
+	/** Set User defined Info Window.
+		@param AD_UserDef_Info_ID User defined Info Window	  */
+	public void setAD_UserDef_Info_ID (int AD_UserDef_Info_ID)
+	{
+		if (AD_UserDef_Info_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Info_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Info_ID, Integer.valueOf(AD_UserDef_Info_ID));
+	}
+
+	/** Get User defined Info Window.
+		@return User defined Info Window	  */
+	public int getAD_UserDef_Info_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserDef_Info_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
     {
 		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
@@ -359,28 +379,28 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 		return (String)get_Value(COLUMNNAME_InputFieldValidation);
 	}
 
+	/** IsAutocomplete AD_Reference_ID=319 */
+	public static final int ISAUTOCOMPLETE_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISAUTOCOMPLETE_Yes = "Y";
+	/** No = N */
+	public static final String ISAUTOCOMPLETE_No = "N";
 	/** Set Autocomplete.
 		@param IsAutocomplete 
 		Automatic completion for textfields
 	  */
-	public void setIsAutocomplete (boolean IsAutocomplete)
+	public void setIsAutocomplete (String IsAutocomplete)
 	{
-		set_Value (COLUMNNAME_IsAutocomplete, Boolean.valueOf(IsAutocomplete));
+
+		set_Value (COLUMNNAME_IsAutocomplete, IsAutocomplete);
 	}
 
 	/** Get Autocomplete.
 		@return Automatic completion for textfields
 	  */
-	public boolean isAutocomplete () 
+	public String getIsAutocomplete () 
 	{
-		Object oo = get_Value(COLUMNNAME_IsAutocomplete);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_IsAutocomplete);
 	}
 
 	/** Set Centrally maintained.
@@ -407,100 +427,100 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 		return false;
 	}
 
+	/** IsDisplayed AD_Reference_ID=319 */
+	public static final int ISDISPLAYED_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISDISPLAYED_Yes = "Y";
+	/** No = N */
+	public static final String ISDISPLAYED_No = "N";
 	/** Set Displayed.
 		@param IsDisplayed 
 		Determines, if this field is displayed
 	  */
-	public void setIsDisplayed (boolean IsDisplayed)
+	public void setIsDisplayed (String IsDisplayed)
 	{
-		set_Value (COLUMNNAME_IsDisplayed, Boolean.valueOf(IsDisplayed));
+
+		set_Value (COLUMNNAME_IsDisplayed, IsDisplayed);
 	}
 
 	/** Get Displayed.
 		@return Determines, if this field is displayed
 	  */
-	public boolean isDisplayed () 
+	public String getIsDisplayed () 
 	{
-		Object oo = get_Value(COLUMNNAME_IsDisplayed);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_IsDisplayed);
 	}
 
+	/** IsMandatory AD_Reference_ID=319 */
+	public static final int ISMANDATORY_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISMANDATORY_Yes = "Y";
+	/** No = N */
+	public static final String ISMANDATORY_No = "N";
 	/** Set Mandatory.
 		@param IsMandatory 
 		Data entry is required in this column
 	  */
-	public void setIsMandatory (boolean IsMandatory)
+	public void setIsMandatory (String IsMandatory)
 	{
-		set_Value (COLUMNNAME_IsMandatory, Boolean.valueOf(IsMandatory));
+
+		set_Value (COLUMNNAME_IsMandatory, IsMandatory);
 	}
 
 	/** Get Mandatory.
 		@return Data entry is required in this column
 	  */
-	public boolean isMandatory () 
+	public String getIsMandatory () 
 	{
-		Object oo = get_Value(COLUMNNAME_IsMandatory);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_IsMandatory);
 	}
 
+	/** IsQueryCriteria AD_Reference_ID=319 */
+	public static final int ISQUERYCRITERIA_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISQUERYCRITERIA_Yes = "Y";
+	/** No = N */
+	public static final String ISQUERYCRITERIA_No = "N";
 	/** Set Query Criteria.
 		@param IsQueryCriteria 
 		The column is also used as a query criteria
 	  */
-	public void setIsQueryCriteria (boolean IsQueryCriteria)
+	public void setIsQueryCriteria (String IsQueryCriteria)
 	{
-		set_Value (COLUMNNAME_IsQueryCriteria, Boolean.valueOf(IsQueryCriteria));
+
+		set_Value (COLUMNNAME_IsQueryCriteria, IsQueryCriteria);
 	}
 
 	/** Get Query Criteria.
 		@return The column is also used as a query criteria
 	  */
-	public boolean isQueryCriteria () 
+	public String getIsQueryCriteria () 
 	{
-		Object oo = get_Value(COLUMNNAME_IsQueryCriteria);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_IsQueryCriteria);
 	}
 
+	/** IsReadOnly AD_Reference_ID=319 */
+	public static final int ISREADONLY_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISREADONLY_Yes = "Y";
+	/** No = N */
+	public static final String ISREADONLY_No = "N";
 	/** Set Read Only.
 		@param IsReadOnly 
 		Field is read only
 	  */
-	public void setIsReadOnly (boolean IsReadOnly)
+	public void setIsReadOnly (String IsReadOnly)
 	{
-		set_Value (COLUMNNAME_IsReadOnly, Boolean.valueOf(IsReadOnly));
+
+		set_Value (COLUMNNAME_IsReadOnly, IsReadOnly);
 	}
 
 	/** Get Read Only.
 		@return Field is read only
 	  */
-	public boolean isReadOnly () 
+	public String getIsReadOnly () 
 	{
-		Object oo = get_Value(COLUMNNAME_IsReadOnly);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_IsReadOnly);
 	}
 
 	/** Set Name.

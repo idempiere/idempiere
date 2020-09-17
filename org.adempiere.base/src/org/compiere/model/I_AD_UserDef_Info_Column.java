@@ -140,6 +140,17 @@ public interface I_AD_UserDef_Info_Column
 	/** Get AD_UserDef_Info_Column_UU	  */
 	public String getAD_UserDef_Info_Column_UU();
 
+    /** Column name AD_UserDef_Info_ID */
+    public static final String COLUMNNAME_AD_UserDef_Info_ID = "AD_UserDef_Info_ID";
+
+	/** Set User defined Info Window	  */
+	public void setAD_UserDef_Info_ID (int AD_UserDef_Info_ID);
+
+	/** Get User defined Info Window	  */
+	public int getAD_UserDef_Info_ID();
+
+	public org.compiere.model.I_AD_UserDef_Info getAD_UserDef_Info() throws RuntimeException;
+
     /** Column name AD_Val_Rule_ID */
     public static final String COLUMNNAME_AD_Val_Rule_ID = "AD_Val_Rule_ID";
 
@@ -270,12 +281,12 @@ public interface I_AD_UserDef_Info_Column
 	/** Set Autocomplete.
 	  * Automatic completion for textfields
 	  */
-	public void setIsAutocomplete (boolean IsAutocomplete);
+	public void setIsAutocomplete (String IsAutocomplete);
 
 	/** Get Autocomplete.
 	  * Automatic completion for textfields
 	  */
-	public boolean isAutocomplete();
+	public String getIsAutocomplete();
 
     /** Column name IsCentrallyMaintained */
     public static final String COLUMNNAME_IsCentrallyMaintained = "IsCentrallyMaintained";
@@ -296,12 +307,12 @@ public interface I_AD_UserDef_Info_Column
 	/** Set Displayed.
 	  * Determines, if this field is displayed
 	  */
-	public void setIsDisplayed (boolean IsDisplayed);
+	public void setIsDisplayed (String IsDisplayed);
 
 	/** Get Displayed.
 	  * Determines, if this field is displayed
 	  */
-	public boolean isDisplayed();
+	public String getIsDisplayed();
 
     /** Column name IsMandatory */
     public static final String COLUMNNAME_IsMandatory = "IsMandatory";
@@ -309,12 +320,12 @@ public interface I_AD_UserDef_Info_Column
 	/** Set Mandatory.
 	  * Data entry is required in this column
 	  */
-	public void setIsMandatory (boolean IsMandatory);
+	public void setIsMandatory (String IsMandatory);
 
 	/** Get Mandatory.
 	  * Data entry is required in this column
 	  */
-	public boolean isMandatory();
+	public String getIsMandatory();
 
     /** Column name IsQueryCriteria */
     public static final String COLUMNNAME_IsQueryCriteria = "IsQueryCriteria";
@@ -322,12 +333,12 @@ public interface I_AD_UserDef_Info_Column
 	/** Set Query Criteria.
 	  * The column is also used as a query criteria
 	  */
-	public void setIsQueryCriteria (boolean IsQueryCriteria);
+	public void setIsQueryCriteria (String IsQueryCriteria);
 
 	/** Get Query Criteria.
 	  * The column is also used as a query criteria
 	  */
-	public boolean isQueryCriteria();
+	public String getIsQueryCriteria();
 
     /** Column name IsReadOnly */
     public static final String COLUMNNAME_IsReadOnly = "IsReadOnly";
@@ -335,12 +346,12 @@ public interface I_AD_UserDef_Info_Column
 	/** Set Read Only.
 	  * Field is read only
 	  */
-	public void setIsReadOnly (boolean IsReadOnly);
+	public void setIsReadOnly (String IsReadOnly);
 
 	/** Get Read Only.
 	  * Field is read only
 	  */
-	public boolean isReadOnly();
+	public String getIsReadOnly();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
